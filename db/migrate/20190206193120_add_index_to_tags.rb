@@ -9,7 +9,7 @@ class AddIndexToTags < ActiveRecord::Migration[5.0]
   disable_ddl_transaction!
 
   def up
-    add_concurrent_index :tags, :name, name: INDEX_NAME, using: :gin, opclasses: { name: :gin_trgm_ops }
+    add_concurrent_index :tags, :name, name: INDEX_NAME, using: :gin, opclass: { name: :gin_trgm_ops }
   end
 
   def down

@@ -788,7 +788,7 @@ class InitSchema < ActiveRecord::Migration[4.2]
       t.datetime_with_timezone "closed_at"
       t.index ["author_id"], name: "index_issues_on_author_id", using: :btree
       t.index ["confidential"], name: "index_issues_on_confidential", using: :btree
-      t.index ["description"], name: "index_issues_on_description_trigram", using: :gin, opclasses: {"description"=>"gin_trgm_ops"}
+      t.index ["description"], name: "index_issues_on_description_trigram", using: :gin, opclass: {"description"=>"gin_trgm_ops"}
       t.index ["milestone_id"], name: "index_issues_on_milestone_id", using: :btree
       t.index ["moved_to_id"], name: "index_issues_on_moved_to_id", where: "(moved_to_id IS NOT NULL)", using: :btree
       t.index ["project_id", "created_at", "id", "state"], name: "index_issues_on_project_id_and_created_at_and_id_and_state", using: :btree
@@ -797,7 +797,7 @@ class InitSchema < ActiveRecord::Migration[4.2]
       t.index ["project_id", "updated_at", "id", "state"], name: "index_issues_on_project_id_and_updated_at_and_id_and_state", using: :btree
       t.index ["relative_position"], name: "index_issues_on_relative_position", using: :btree
       t.index ["state"], name: "index_issues_on_state", using: :btree
-      t.index ["title"], name: "index_issues_on_title_trigram", using: :gin, opclasses: {"title"=>"gin_trgm_ops"}
+      t.index ["title"], name: "index_issues_on_title_trigram", using: :gin, opclass: {"title"=>"gin_trgm_ops"}
       t.index ["updated_by_id"], name: "index_issues_on_updated_by_id", where: "(updated_by_id IS NOT NULL)", using: :btree
     end
     create_table "keys", id: :serial do |t|
@@ -989,7 +989,7 @@ class InitSchema < ActiveRecord::Migration[4.2]
       t.index ["assignee_id"], name: "index_merge_requests_on_assignee_id", using: :btree
       t.index ["author_id"], name: "index_merge_requests_on_author_id", using: :btree
       t.index ["created_at"], name: "index_merge_requests_on_created_at", using: :btree
-      t.index ["description"], name: "index_merge_requests_on_description_trigram", using: :gin, opclasses: {"description"=>"gin_trgm_ops"}
+      t.index ["description"], name: "index_merge_requests_on_description_trigram", using: :gin, opclass: {"description"=>"gin_trgm_ops"}
       t.index ["head_pipeline_id"], name: "index_merge_requests_on_head_pipeline_id", using: :btree
       t.index ["latest_merge_request_diff_id"], name: "index_merge_requests_on_latest_merge_request_diff_id", using: :btree
       t.index ["merge_user_id"], name: "index_merge_requests_on_merge_user_id", where: "(merge_user_id IS NOT NULL)", using: :btree
@@ -1001,7 +1001,7 @@ class InitSchema < ActiveRecord::Migration[4.2]
       t.index ["target_project_id", "iid"], name: "index_merge_requests_on_target_project_id_and_iid", unique: true, using: :btree
       t.index ["target_project_id", "merge_commit_sha", "id"], name: "index_merge_requests_on_tp_id_and_merge_commit_sha_and_id", using: :btree
       t.index ["title"], name: "index_merge_requests_on_title", using: :btree
-      t.index ["title"], name: "index_merge_requests_on_title_trigram", using: :gin, opclasses: {"title"=>"gin_trgm_ops"}
+      t.index ["title"], name: "index_merge_requests_on_title_trigram", using: :gin, opclass: {"title"=>"gin_trgm_ops"}
       t.index ["updated_by_id"], name: "index_merge_requests_on_updated_by_id", where: "(updated_by_id IS NOT NULL)", using: :btree
     end
     create_table "merge_requests_closing_issues", id: :serial do |t|
@@ -1026,12 +1026,12 @@ class InitSchema < ActiveRecord::Migration[4.2]
       t.date "start_date"
       t.integer "cached_markdown_version"
       t.integer "group_id"
-      t.index ["description"], name: "index_milestones_on_description_trigram", using: :gin, opclasses: {"description"=>"gin_trgm_ops"}
+      t.index ["description"], name: "index_milestones_on_description_trigram", using: :gin, opclass: {"description"=>"gin_trgm_ops"}
       t.index ["due_date"], name: "index_milestones_on_due_date", using: :btree
       t.index ["group_id"], name: "index_milestones_on_group_id", using: :btree
       t.index ["project_id", "iid"], name: "index_milestones_on_project_id_and_iid", unique: true, using: :btree
       t.index ["title"], name: "index_milestones_on_title", using: :btree
-      t.index ["title"], name: "index_milestones_on_title_trigram", using: :gin, opclasses: {"title"=>"gin_trgm_ops"}
+      t.index ["title"], name: "index_milestones_on_title_trigram", using: :gin, opclass: {"title"=>"gin_trgm_ops"}
     end
     create_table "namespaces", id: :serial do |t|
       t.string "name", null: false
@@ -1054,11 +1054,11 @@ class InitSchema < ActiveRecord::Migration[4.2]
       t.string "runners_token"
       t.index ["created_at"], name: "index_namespaces_on_created_at", using: :btree
       t.index ["name", "parent_id"], name: "index_namespaces_on_name_and_parent_id", unique: true, using: :btree
-      t.index ["name"], name: "index_namespaces_on_name_trigram", using: :gin, opclasses: {"name"=>"gin_trgm_ops"}
+      t.index ["name"], name: "index_namespaces_on_name_trigram", using: :gin, opclass: {"name"=>"gin_trgm_ops"}
       t.index ["owner_id"], name: "index_namespaces_on_owner_id", using: :btree
       t.index ["parent_id", "id"], name: "index_namespaces_on_parent_id_and_id", unique: true, using: :btree
       t.index ["path"], name: "index_namespaces_on_path", using: :btree
-      t.index ["path"], name: "index_namespaces_on_path_trigram", using: :gin, opclasses: {"path"=>"gin_trgm_ops"}
+      t.index ["path"], name: "index_namespaces_on_path_trigram", using: :gin, opclass: {"path"=>"gin_trgm_ops"}
       t.index ["require_two_factor_authentication"], name: "index_namespaces_on_require_two_factor_authentication", using: :btree
       t.index ["type"], name: "index_namespaces_on_type", using: :btree
     end
@@ -1091,7 +1091,7 @@ class InitSchema < ActiveRecord::Migration[4.2]
       t.index ["created_at"], name: "index_notes_on_created_at", using: :btree
       t.index ["discussion_id"], name: "index_notes_on_discussion_id", using: :btree
       t.index ["line_code"], name: "index_notes_on_line_code", using: :btree
-      t.index ["note"], name: "index_notes_on_note_trigram", using: :gin, opclasses: {"note"=>"gin_trgm_ops"}
+      t.index ["note"], name: "index_notes_on_note_trigram", using: :gin, opclass: {"note"=>"gin_trgm_ops"}
       t.index ["noteable_id", "noteable_type"], name: "index_notes_on_noteable_id_and_noteable_type", using: :btree
       t.index ["noteable_type"], name: "index_notes_on_noteable_type", using: :btree
       t.index ["project_id", "noteable_type"], name: "index_notes_on_project_id_and_noteable_type", using: :btree
@@ -1304,14 +1304,14 @@ class InitSchema < ActiveRecord::Migration[4.2]
       t.index ["ci_id"], name: "index_projects_on_ci_id", using: :btree
       t.index ["created_at"], name: "index_projects_on_created_at", using: :btree
       t.index ["creator_id"], name: "index_projects_on_creator_id", using: :btree
-      t.index ["description"], name: "index_projects_on_description_trigram", using: :gin, opclasses: {"description"=>"gin_trgm_ops"}
+      t.index ["description"], name: "index_projects_on_description_trigram", using: :gin, opclass: {"description"=>"gin_trgm_ops"}
       t.index ["last_activity_at"], name: "index_projects_on_last_activity_at", using: :btree
       t.index ["last_repository_check_failed"], name: "index_projects_on_last_repository_check_failed", using: :btree
       t.index ["last_repository_updated_at"], name: "index_projects_on_last_repository_updated_at", using: :btree
-      t.index ["name"], name: "index_projects_on_name_trigram", using: :gin, opclasses: {"name"=>"gin_trgm_ops"}
+      t.index ["name"], name: "index_projects_on_name_trigram", using: :gin, opclass: {"name"=>"gin_trgm_ops"}
       t.index ["namespace_id"], name: "index_projects_on_namespace_id", using: :btree
       t.index ["path"], name: "index_projects_on_path", using: :btree
-      t.index ["path"], name: "index_projects_on_path_trigram", using: :gin, opclasses: {"path"=>"gin_trgm_ops"}
+      t.index ["path"], name: "index_projects_on_path_trigram", using: :gin, opclass: {"path"=>"gin_trgm_ops"}
       t.index ["pending_delete"], name: "index_projects_on_pending_delete", using: :btree
       t.index ["repository_storage"], name: "index_projects_on_repository_storage", using: :btree
       t.index ["runners_token"], name: "index_projects_on_runners_token", using: :btree
@@ -1375,7 +1375,7 @@ class InitSchema < ActiveRecord::Migration[4.2]
       t.datetime "updated_at", null: false
       t.boolean "permanent"
       t.index ["path"], name: "index_redirect_routes_on_path", unique: true, using: :btree
-      t.index ["path"], name: "index_redirect_routes_on_path_text_pattern_ops", using: :btree, opclasses: {"path"=>"varchar_pattern_ops"}
+      t.index ["path"], name: "index_redirect_routes_on_path_text_pattern_ops", using: :btree, opclass: {"path"=>"varchar_pattern_ops"}
       t.index ["permanent"], name: "index_redirect_routes_on_permanent", using: :btree
       t.index ["source_type", "source_id"], name: "index_redirect_routes_on_source_type_and_source_id", using: :btree
     end
@@ -1398,7 +1398,7 @@ class InitSchema < ActiveRecord::Migration[4.2]
       t.datetime "updated_at"
       t.string "name"
       t.index ["path"], name: "index_routes_on_path", unique: true, using: :btree
-      t.index ["path"], name: "index_routes_on_path_text_pattern_ops", using: :btree, opclasses: {"path"=>"varchar_pattern_ops"}
+      t.index ["path"], name: "index_routes_on_path_text_pattern_ops", using: :btree, opclass: {"path"=>"varchar_pattern_ops"}
       t.index ["source_type", "source_id"], name: "index_routes_on_source_type_and_source_id", unique: true, using: :btree
     end
     create_table "sent_notifications", id: :serial do |t|
@@ -1454,9 +1454,9 @@ class InitSchema < ActiveRecord::Migration[4.2]
       t.text "description"
       t.text "description_html"
       t.index ["author_id"], name: "index_snippets_on_author_id", using: :btree
-      t.index ["file_name"], name: "index_snippets_on_file_name_trigram", using: :gin, opclasses: {"file_name"=>"gin_trgm_ops"}
+      t.index ["file_name"], name: "index_snippets_on_file_name_trigram", using: :gin, opclass: {"file_name"=>"gin_trgm_ops"}
       t.index ["project_id"], name: "index_snippets_on_project_id", using: :btree
-      t.index ["title"], name: "index_snippets_on_title_trigram", using: :gin, opclasses: {"title"=>"gin_trgm_ops"}
+      t.index ["title"], name: "index_snippets_on_title_trigram", using: :gin, opclass: {"title"=>"gin_trgm_ops"}
       t.index ["updated_at"], name: "index_snippets_on_updated_at", using: :btree
       t.index ["visibility_level"], name: "index_snippets_on_visibility_level", using: :btree
     end
@@ -1663,16 +1663,16 @@ class InitSchema < ActiveRecord::Migration[4.2]
       t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true, using: :btree
       t.index ["created_at"], name: "index_users_on_created_at", using: :btree
       t.index ["email"], name: "index_users_on_email", unique: true, using: :btree
-      t.index ["email"], name: "index_users_on_email_trigram", using: :gin, opclasses: {"email"=>"gin_trgm_ops"}
+      t.index ["email"], name: "index_users_on_email_trigram", using: :gin, opclass: {"email"=>"gin_trgm_ops"}
       t.index ["ghost"], name: "index_users_on_ghost", using: :btree
       t.index ["incoming_email_token"], name: "index_users_on_incoming_email_token", using: :btree
       t.index ["name"], name: "index_users_on_name", using: :btree
-      t.index ["name"], name: "index_users_on_name_trigram", using: :gin, opclasses: {"name"=>"gin_trgm_ops"}
+      t.index ["name"], name: "index_users_on_name_trigram", using: :gin, opclass: {"name"=>"gin_trgm_ops"}
       t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
       t.index ["rss_token"], name: "index_users_on_rss_token", using: :btree
       t.index ["state"], name: "index_users_on_state", using: :btree
       t.index ["username"], name: "index_users_on_username", using: :btree
-      t.index ["username"], name: "index_users_on_username_trigram", using: :gin, opclasses: {"username"=>"gin_trgm_ops"}
+      t.index ["username"], name: "index_users_on_username_trigram", using: :gin, opclass: {"username"=>"gin_trgm_ops"}
     end
     create_table "users_star_projects", id: :serial do |t|
       t.integer "project_id", null: false
