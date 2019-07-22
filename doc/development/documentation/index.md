@@ -488,15 +488,17 @@ Currently, the following tests are in place:
    that all cURL examples in API docs use the full switches. It's recommended
    to [check locally](#previewing-the-changes-live) before pushing to GitLab by executing the command
    `bundle exec nanoc check internal_links` on your local
-   [`gitlab-docs`](https://gitlab.com/gitlab-org/gitlab-docs) directory.
+   [`gitlab-docs`](https://gitlab.com/gitlab-org/gitlab-docs) directory. In addition,
+   `docs-lint` also runs [markdownlint](styleguide.md#markdown-rules) to ensure the
+   markdown is consistent across all documentation.
 1. [`ee_compat_check`](../automatic_ce_ee_merge.md#avoiding-ce-ee-merge-conflicts-beforehand) (runs on CE only):
-    When you submit a merge request to GitLab Community Edition (CE),
-    there is this additional job that runs against Enterprise Edition (EE)
-    and checks if your changes can apply cleanly to the EE codebase.
-    If that job fails, read the instructions in the job log for what to do next.
-    As CE is merged into EE once a day, it's important to avoid merge conflicts.
-    Submitting an EE-equivalent merge request cherry-picking all commits from CE to EE is
-    essential to avoid them.
+   When you submit a merge request to GitLab Community Edition (CE),
+   there is this additional job that runs against Enterprise Edition (EE)
+   and checks if your changes can apply cleanly to the EE codebase.
+   If that job fails, read the instructions in the job log for what to do next.
+   As CE is merged into EE once a day, it's important to avoid merge conflicts.
+   Submitting an EE-equivalent merge request cherry-picking all commits from CE to EE is
+   essential to avoid them.
 1. [`ee-files-location-check`/`ee-specific-lines-check`](#ee-specific-lines-check) (runs on EE only):
    This test ensures that no new files/directories are created/changed in EE.
    All docs should be submitted in CE instead, regardless the tier they are on.
@@ -559,15 +561,16 @@ A file with `proselint` configuration must be placed in a
 #### `markdownlint`
 
 `markdownlint` checks that certain rules ([example](https://github.com/DavidAnson/markdownlint/blob/master/README.md#rules--aliases))
- are followed for Markdown syntax.
- Our [Documentation Style Guide](styleguide.md) and [Markdown Guide](https://about.gitlab.com/handbook/product/technical-writing/markdown-guide/)
- elaborate on which choices must be made when selecting Markdown syntax for
- GitLab documentation. This tool helps catch deviations from those guidelines.
+are followed for Markdown syntax. Our [Documentation Style Guide](styleguide.md) and
+[Markdown Guide](https://about.gitlab.com/handbook/product/technical-writing/markdown-guide/)
+elaborate on which choices must be made when selecting Markdown syntax for GitLab
+documentation. This tool helps catch deviations from those guidelines, and matches the
+tests run on the documentation by [`docs-lint`](#testing).
 
 `markdownlint` can be used [on the command line](https://github.com/igorshubovych/markdownlint-cli#markdownlint-cli--),
- either on a single Markdown file or on all Markdown files in a project. For example, to run
- `markdownlint` on all documentation in the [`gitlab-ce` project](https://gitlab.com/gitlab-org/gitlab-ce),
- run the following commands from within the `gitlab-ce` project:
+either on a single Markdown file or on all Markdown files in a project. For example, to run
+`markdownlint` on all documentation in the [`gitlab-ce` project](https://gitlab.com/gitlab-org/gitlab-ce),
+run the following commands from within the `gitlab-ce` project:
 
 ```sh
 cd doc
@@ -597,7 +600,7 @@ The following sample `markdownlint` configuration modifies the available default
   "line-length": false,
   "no-trailing-punctuation": false,
   "ol-prefix": { "style": "one" },
-  "blanks-around-fences": false,
+  "blanks-around-fences": true,
   "no-inline-html": {
     "allowed_elements": [
       "table",
@@ -612,11 +615,15 @@ The following sample `markdownlint` configuration modifies the available default
       "a",
       "strong",
       "i",
-      "div"
+      "div",
+      "b"
     ]
   },
   "hr-style": { "style": "---" },
-  "fenced-code-language": false
+  "code-block-style": { "style": "fenced" },
+  "fenced-code-language": false,
+  "no-duplicate-header": { "allow_different_nesting": true },
+  "commands-show-output": false
 }
 ```
 
