@@ -98,12 +98,38 @@ describe GroupPolicy do
   context 'maintainer' do
     let(:current_user) { maintainer }
 
-    it do
-      expect_allowed(*guest_permissions)
-      expect_allowed(*reporter_permissions)
-      expect_allowed(*developer_permissions)
-      expect_allowed(*maintainer_permissions)
-      expect_disallowed(*owner_permissions)
+    context 'with subgroup_creation level set to maintainer' do
+      let(:group) do
+        create(:group, :private, subgroup_creation_level: ::Gitlab::Access::MAINTAINER_SUBGROUP_ACCESS)
+      end
+
+      it 'allows every maintainer permission plus creating subgroups' do
+        allow(Group).to receive(:supports_nested_objects?).and_return(true)
+
+        create_subgroup_permission = [:create_subgroup]
+        updated_maintainer_permissions =
+          maintainer_permissions + create_subgroup_permission
+        updated_owner_permissions =
+          owner_permissions - create_subgroup_permission
+
+        expect_allowed(*guest_permissions)
+        expect_allowed(*reporter_permissions)
+        expect_allowed(*developer_permissions)
+        expect_allowed(*updated_maintainer_permissions)
+        expect_disallowed(*updated_owner_permissions)
+      end
+    end
+
+    context 'with subgroup_creation_level set to owner' do
+      it 'allows every maintainer permission' do
+        allow(Group).to receive(:supports_nested_objects?).and_return(true)
+
+        expect_allowed(*guest_permissions)
+        expect_allowed(*reporter_permissions)
+        expect_allowed(*developer_permissions)
+        expect_allowed(*maintainer_permissions)
+        expect_disallowed(*owner_permissions)
+      end
     end
   end
 
@@ -145,7 +171,8 @@ describe GroupPolicy do
 
       it 'allows every owner permission except creating subgroups' do
         create_subgroup_permission = [:create_subgroup]
-        updated_owner_permissions = owner_permissions - create_subgroup_permission
+        updated_owner_permissions =
+          owner_permissions - create_subgroup_permission
 
         expect_disallowed(*create_subgroup_permission)
         expect_allowed(*updated_owner_permissions)
@@ -157,16 +184,32 @@ describe GroupPolicy do
 
       it 'allows every owner permission except creating subgroups' do
         create_subgroup_permission = [:create_subgroup]
-        updated_owner_permissions = owner_permissions - create_subgroup_permission
+        updated_owner_permissions =
+          owner_permissions - create_subgroup_permission
 
         expect_disallowed(*create_subgroup_permission)
         expect_allowed(*updated_owner_permissions)
       end
     end
+
+    context 'maintainer' do
+      let(:current_user) { maintainer }
+
+      it 'allows every maintainer permission except creating subgroups' do
+        create_subgroup_permission = [:create_subgroup]
+        updated_maintainer_permissions =
+          maintainer_permissions - create_subgroup_permission
+
+        expect_disallowed(*create_subgroup_permission)
+        expect_allowed(*updated_maintainer_permissions)
+      end
+    end
   end
 
   describe 'private nested group use the highest access level from the group and inherited permissions', :nested_groups do
-    let(:nested_group) { create(:group, :private, parent: group) }
+    let(:nested_group) do
+      create(:group, :private, :owner_subgroup_creation_only, parent: group)
+    end
 
     before do
       nested_group.add_guest(guest)
@@ -457,6 +500,72 @@ describe GroupPolicy do
         let(:current_user) { owner }
 
         it { is_expected.to be_allowed(:create_projects) }
+      end
+    end
+  end
+
+  context "create_subgroup" do
+    context 'when group has subgroup creation level set to owner' do
+      let(:group) do
+        create(
+          :group,
+          subgroup_creation_level: ::Gitlab::Access::OWNER_SUBGROUP_ACCESS)
+      end
+
+      context 'reporter' do
+        let(:current_user) { reporter }
+
+        it { is_expected.to be_disallowed(:create_subgroup) }
+      end
+
+      context 'developer' do
+        let(:current_user) { developer }
+
+        it { is_expected.to be_disallowed(:create_subgroup) }
+      end
+
+      context 'maintainer' do
+        let(:current_user) { maintainer }
+
+        it { is_expected.to be_disallowed(:create_subgroup) }
+      end
+
+      context 'owner' do
+        let(:current_user) { owner }
+
+        it { is_expected.to be_allowed(:create_subgroup) }
+      end
+    end
+
+    context 'when group has subgroup creation level set to maintainer' do
+      let(:group) do
+        create(
+          :group,
+          subgroup_creation_level: ::Gitlab::Access::MAINTAINER_SUBGROUP_ACCESS)
+      end
+
+      context 'reporter' do
+        let(:current_user) { reporter }
+
+        it { is_expected.to be_disallowed(:create_subgroup) }
+      end
+
+      context 'developer' do
+        let(:current_user) { developer }
+
+        it { is_expected.to be_disallowed(:create_subgroup) }
+      end
+
+      context 'maintainer' do
+        let(:current_user) { maintainer }
+
+        it { is_expected.to be_allowed(:create_subgroup) }
+      end
+
+      context 'owner' do
+        let(:current_user) { owner }
+
+        it { is_expected.to be_allowed(:create_subgroup) }
       end
     end
   end

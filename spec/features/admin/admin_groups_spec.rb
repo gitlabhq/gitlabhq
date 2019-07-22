@@ -103,6 +103,14 @@ describe 'Admin Groups' do
       expect_selected_visibility(group.visibility_level)
     end
 
+    it 'shows the subgroup creation level dropdown populated with the group subgroup_creation_level value' do
+      group = create(:group, :private, :owner_subgroup_creation_only)
+
+      visit admin_group_edit_path(group)
+
+      expect(page).to have_content('Allowed to create subgroups')
+    end
+
     it 'edit group path does not change group name', :js do
       group = create(:group, :private)
 

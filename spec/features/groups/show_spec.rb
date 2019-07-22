@@ -56,32 +56,103 @@ describe 'Group show page' do
   end
 
   context 'subgroup support' do
-    let(:user) { create(:user) }
-
-    before do
-      group.add_owner(user)
-      sign_in(user)
+    let(:restricted_group) do
+      create(:group, subgroup_creation_level: ::Gitlab::Access::OWNER_SUBGROUP_ACCESS)
     end
 
-    context 'when subgroups are supported', :js, :nested_groups do
+    let(:relaxed_group) do
+      create(:group, subgroup_creation_level: ::Gitlab::Access::MAINTAINER_SUBGROUP_ACCESS)
+    end
+
+    let(:owner) { create(:user) }
+    let(:maintainer) { create(:user) }
+
+    context 'for owners' do
+      let(:path) { group_path(restricted_group) }
+
       before do
-        allow(Group).to receive(:supports_nested_objects?) { true }
-        visit path
+        restricted_group.add_owner(owner)
+        sign_in(owner)
       end
 
-      it 'allows creating subgroups' do
-        expect(page).to have_css("li[data-text='New subgroup']", visible: false)
+      context 'when subgroups are supported', :nested_groups do
+        before do
+          allow(Group).to receive(:supports_nested_objects?) { true }
+        end
+
+        it 'allows creating subgroups' do
+          visit path
+
+          expect(page)
+            .to have_css("li[data-text='New subgroup']", visible: false)
+        end
+      end
+
+      context 'when subgroups are not supported' do
+        before do
+          allow(Group).to receive(:supports_nested_objects?) { false }
+        end
+
+        it 'does not allow creating subgroups' do
+          visit path
+
+          expect(page)
+            .not_to have_selector("li[data-text='New subgroup']", visible: false)
+        end
       end
     end
 
-    context 'when subgroups are not supported' do
+    context 'for maintainers' do
       before do
-        allow(Group).to receive(:supports_nested_objects?) { false }
-        visit path
+        sign_in(maintainer)
       end
 
-      it 'allows creating subgroups' do
-        expect(page).not_to have_selector("li[data-text='New subgroup']", visible: false)
+      context 'when subgroups are supported', :nested_groups do
+        before do
+          allow(Group).to receive(:supports_nested_objects?) { true }
+        end
+
+        context 'when subgroup_creation_level is set to maintainers' do
+          before do
+            relaxed_group.add_maintainer(maintainer)
+          end
+
+          it 'allows creating subgroups' do
+            path = group_path(relaxed_group)
+            visit path
+
+            expect(page)
+              .to have_css("li[data-text='New subgroup']", visible: false)
+          end
+        end
+
+        context 'when subgroup_creation_level is set to owners' do
+          before do
+            restricted_group.add_maintainer(maintainer)
+          end
+
+          it 'does not allow creating subgroups' do
+            path = group_path(restricted_group)
+            visit path
+
+            expect(page)
+              .not_to have_selector("li[data-text='New subgroup']",
+                                    visible: false)
+          end
+        end
+      end
+
+      context 'when subgroups are not supported' do
+        before do
+          allow(Group).to receive(:supports_nested_objects?) { false }
+        end
+
+        it 'does not allow creating subgroups' do
+          visit path
+
+          expect(page)
+            .not_to have_selector("li[data-text='New subgroup']", visible: false)
+        end
       end
     end
   end

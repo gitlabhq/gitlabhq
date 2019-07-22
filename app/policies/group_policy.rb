@@ -38,6 +38,10 @@ class GroupPolicy < BasePolicy
     @subject.project_creation_level == ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS
   end
 
+  condition(:maintainer_can_create_group) do
+    @subject.subgroup_creation_level == ::Gitlab::Access::MAINTAINER_SUBGROUP_ACCESS
+  end
+
   rule { public_group }.policy do
     enable :read_group
     enable :read_list
@@ -105,6 +109,7 @@ class GroupPolicy < BasePolicy
   end
 
   rule { owner & nested_groups_supported }.enable :create_subgroup
+  rule { maintainer & maintainer_can_create_group & nested_groups_supported }.enable :create_subgroup
 
   rule { public_group | logged_in_viewable }.enable :view_globally
 

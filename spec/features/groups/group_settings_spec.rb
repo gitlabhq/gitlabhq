@@ -85,6 +85,14 @@ describe 'Edit group settings' do
     end
   end
 
+  describe 'subgroup creation level menu' do
+    it 'shows the selection menu' do
+      visit edit_group_path(group)
+
+      expect(page).to have_content('Allowed to create subgroups')
+    end
+  end
+
   describe 'edit group avatar' do
     before do
       visit edit_group_path(group)

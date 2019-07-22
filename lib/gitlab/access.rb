@@ -29,6 +29,10 @@ module Gitlab
     MAINTAINER_PROJECT_ACCESS = 1
     DEVELOPER_MAINTAINER_PROJECT_ACCESS = 2
 
+    # Default subgroup creation level
+    OWNER_SUBGROUP_ACCESS = 0
+    MAINTAINER_SUBGROUP_ACCESS = 1
+
     class << self
       delegate :values, to: :options
 
@@ -105,6 +109,13 @@ module Gitlab
 
       def project_creation_level_name(name)
         project_creation_options.key(name)
+      end
+
+      def subgroup_creation_options
+        {
+          s_('SubgroupCreationlevel|Owners') => OWNER_SUBGROUP_ACCESS,
+          s_('SubgroupCreationlevel|Maintainers') => MAINTAINER_SUBGROUP_ACCESS
+        }
       end
     end
 
