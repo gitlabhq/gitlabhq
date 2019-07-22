@@ -7,6 +7,7 @@ class PersonalAccessToken < ApplicationRecord
   add_authentication_token_field :token, digest: true
 
   REDIS_EXPIRY_TIME = 3.minutes
+  TOKEN_LENGTH = 20
 
   serialize :scopes, Array # rubocop:disable Cop/ActiveRecordSerialize
 

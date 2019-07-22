@@ -49,35 +49,32 @@ Registry.
 ## Authenticating to the GitLab NPM Registry
 
 If a project is private or you want to upload an NPM package to GitLab,
-credentials will need to be provided for authentication. Support is available
-only for [OAuth tokens](../../../api/oauth2.md#resource-owner-password-credentials-flow).
+credentials will need to be provided for authentication. Support is available for [OAuth tokens](../../../api/oauth2.md#resource-owner-password-credentials-flow) or [personal access tokens](../../profile/personal_access_tokens.md).
 
-CAUTION: **2FA not supported:**
-Authentication for personal access tokens is not yet supported
-([#9140](https://gitlab.com/gitlab-org/gitlab-ee/issues/9140)). If you have 2FA
-enabled, you won't be able to authenticate to the GitLab NPM Registry.
+CAUTION: **2FA is only supported with personal access tokens:**
+If you have 2FA enabled, you need to use a [personal access token](../../profile/personal_access_tokens.md) with OAuth headers. Standard OAuth tokens won't be able to authenticate to the GitLab NPM Registry.
 
 ### Authenticating with an OAuth token
 
-To authenticate with an [OAuth token](../../../api/oauth2.md#resource-owner-password-credentials-flow),
-add a corresponding section to your `.npmrc` file:
+To authenticate with an [OAuth token](../../../api/oauth2.md#resource-owner-password-credentials-flow)
+or [personal access token](../../profile/personal_access_tokens.md), add a corresponding section to your `.npmrc` file:
 
 ```ini
 ; Set URL for your scoped packages.
 ; For example package with name `@foo/bar` will use this URL for download
 @foo:registry=https://gitlab.com/api/v4/packages/npm/
 
-; Add the OAuth token for the scoped packages URL. This will allow you to download
+; Add the token for the scoped packages URL. This will allow you to download
 ; `@foo/` packages from private projects.
-//gitlab.com/api/v4/packages/npm/:_authToken=<your_oauth_token>
+//gitlab.com/api/v4/packages/npm/:_authToken=<your_token>
 
-; Add OAuth token for uploading to the registry. Replace <your_project_id>
+; Add token for uploading to the registry. Replace <your_project_id>
 ; with the project you want your package to be uploaded to.
-//gitlab.com/api/v4/projects/<your_project_id>/packages/npm/:_authToken=<your_oauth_token>
+//gitlab.com/api/v4/projects/<your_project_id>/packages/npm/:_authToken=<your_token>
 ```
 
 Replace `<your_project_id>` with your project ID which can be found on the home page
-of your project and `<your_oauth_token>` with your OAuth token.
+of your project and `<your_token>` with your OAuth or personal access token.
 
 If you have a self-hosted GitLab installation, replace `gitlab.com` with your
 domain name.
