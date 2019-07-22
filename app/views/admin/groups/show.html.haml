@@ -40,6 +40,11 @@
           %strong
             = @group.created_at.to_s(:medium)
 
+        %li
+          %span.light= _('ID:')
+          %strong
+            = @group.id
+
         = render_if_exists 'admin/namespace_plan_info', namespace: @group
 
         %li

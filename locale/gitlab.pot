@@ -5324,6 +5324,9 @@ msgstr ""
 msgid "ID"
 msgstr ""
 
+msgid "ID:"
+msgstr ""
+
 msgid "IDE|Allow live previews of JavaScript projects in the Web IDE using CodeSandbox client side evaluation."
 msgstr ""
 

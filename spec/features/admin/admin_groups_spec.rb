@@ -90,6 +90,7 @@ describe 'Admin Groups' do
       visit admin_group_path(group)
 
       expect(page).to have_content("Group: #{group.name}")
+      expect(page).to have_content("ID: #{group.id}")
     end
   end
 
