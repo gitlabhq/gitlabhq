@@ -1,0 +1,5 @@
+---
+title: Handle trailing slashes when generating Jira issue URLs
+merge_request: 30911
+author:
+type: fixed

@@ -236,7 +236,7 @@ describe JiraService do
         allow(JIRA::Resource::Remotelink).to receive(:all).and_return(nil)
 
         expect { @jira_service.close_issue(resource, ExternalIssue.new('JIRA-123', project)) }
-            .not_to raise_error(NoMethodError)
+            .not_to raise_error
       end
 
       # Check https://developer.atlassian.com/jiradev/jira-platform/guides/other/guide-jira-remote-issue-links/fields-in-remote-issue-links
@@ -606,6 +606,12 @@ describe JiraService do
         expect(service.properties['api_url']).to eq('http://jira.sample/api')
       end
     end
+
+    it 'removes trailing slashes from url' do
+      service = described_class.new(url: 'http://jira.test.com/path/')
+
+      expect(service.url).to eq('http://jira.test.com/path')
+    end
   end
 
   describe 'favicon urls', :request_store do
@@ -619,6 +625,22 @@ describe JiraService do
 
       props = described_class.new.send(:build_remote_link_props, url: 'http://example.com', title: 'title')
       expect(props[:object][:icon][:url16x16]).to match %r{^http://localhost/uploads/-/system/appearance/favicon/\d+/dk.png$}
+    end
+  end
+
+  context 'generating external URLs' do
+    let(:service) { described_class.new(url: 'http://jira.test.com/path/') }
+
+    describe '#issues_url' do
+      it 'handles trailing slashes' do
+        expect(service.issues_url).to eq('http://jira.test.com/path/browse/:id')
+      end
+    end
+
+    describe '#new_issue_url' do
+      it 'handles trailing slashes' do
+        expect(service.new_issue_url).to eq('http://jira.test.com/path/secure/CreateIssue.jspa')
+      end
     end
   end
 end
