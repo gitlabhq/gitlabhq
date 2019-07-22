@@ -69,3 +69,9 @@ Object.entries(jqueryMatchers).forEach(([matcherName, matcherFactory]) => {
 
 // Tech debt issue TBD
 testUtilsConfig.logModifiedComponents = false;
+
+// Basic stub for MutationObserver
+global.MutationObserver = () => ({
+  disconnect: () => {},
+  observe: () => {},
+});

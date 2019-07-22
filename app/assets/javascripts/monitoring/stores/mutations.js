@@ -96,4 +96,7 @@ export default {
   [types.SET_ADDITIONAL_PANEL_TYPES_ENABLED](state, enabled) {
     state.additionalPanelTypesEnabled = enabled;
   },
+  [types.SET_SHOW_ERROR_BANNER](state, enabled) {
+    state.showErrorBanner = enabled;
+  },
 };
