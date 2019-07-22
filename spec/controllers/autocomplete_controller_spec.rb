@@ -295,28 +295,6 @@ describe AutocompleteController do
       end
     end
 
-    context 'authorized projects with offset' do
-      before do
-        authorized_project2 = create(:project)
-        authorized_project3 = create(:project)
-
-        authorized_project.add_maintainer(user)
-        authorized_project2.add_maintainer(user)
-        authorized_project3.add_maintainer(user)
-      end
-
-      describe 'GET #projects with project ID and offset_id' do
-        before do
-          get(:projects, params: { project_id: project.id, offset_id: authorized_project.id })
-        end
-
-        it 'returns projects' do
-          expect(json_response).to be_kind_of(Array)
-          expect(json_response.size).to eq 2 # Of a total of 3
-        end
-      end
-    end
-
     context 'authorized projects without admin_issue ability' do
       before do
         authorized_project.add_guest(user)

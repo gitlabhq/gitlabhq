@@ -1675,26 +1675,6 @@ describe Project do
     end
   end
 
-  describe '.paginate_in_descending_order_using_id' do
-    let!(:project1) { create(:project) }
-    let!(:project2) { create(:project) }
-
-    it 'orders the relation in descending order' do
-      expect(described_class.paginate_in_descending_order_using_id)
-        .to eq([project2, project1])
-    end
-
-    it 'applies a limit to the relation' do
-      expect(described_class.paginate_in_descending_order_using_id(limit: 1))
-        .to eq([project2])
-    end
-
-    it 'limits projects by and ID when given' do
-      expect(described_class.paginate_in_descending_order_using_id(before: project2.id))
-        .to eq([project1])
-    end
-  end
-
   describe '.including_namespace_and_owner' do
     it 'eager loads the namespace and namespace owner' do
       create(:project)
