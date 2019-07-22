@@ -1,5 +1,0 @@
----
-title: Always shows author of created issue/started discussion/comment in HTML body and text of email
-merge_request: 29886
-author: Frank van Rest
-type: fixed

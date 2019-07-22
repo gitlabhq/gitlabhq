@@ -1,5 +1,0 @@
----
-title: Set higher TTL for write lock of trace to prevent concurrent archiving
-merge_request: 30064
-author:
-type: fixed

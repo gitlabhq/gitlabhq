@@ -1,5 +1,0 @@
----
-title: Fix Gitaly auto-detection caching
-merge_request: 30954
-author:
-type: performance

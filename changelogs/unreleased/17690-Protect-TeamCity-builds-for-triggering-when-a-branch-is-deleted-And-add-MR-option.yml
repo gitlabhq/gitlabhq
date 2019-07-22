@@ -1,5 +1,0 @@
----
-title: Protect TeamCity builds from triggering when a branch has been deleted. And a MR-option
-merge_request: 29836
-author: Nikolay Novikov, Raphael Tweitmann
-type: fixed

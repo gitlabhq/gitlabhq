@@ -1,5 +1,0 @@
----
-title: Resolve "500 error when forking via the web IDE button"
-merge_request: 29909
-author:
-type: fixed

@@ -1,5 +1,0 @@
----
-title: Improve performance of MergeRequestsController#ci_environment_status endpoint
-merge_request: 30224
-author:
-type: performance

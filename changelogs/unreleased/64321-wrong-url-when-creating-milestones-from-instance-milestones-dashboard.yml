@@ -1,5 +1,0 @@
----
-title: Fix wrong URL when creating milestones from instance milestones dashboard
-merge_request: 30512
-author:
-type: fixed

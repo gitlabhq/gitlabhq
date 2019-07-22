@@ -1,5 +1,0 @@
----
-title: Limit amount of JUnit tests returned
-merge_request: 30274
-author:
-type: performance

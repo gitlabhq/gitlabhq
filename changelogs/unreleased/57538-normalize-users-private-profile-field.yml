@@ -1,5 +1,0 @@
----
-title: Migrate NULL values for users.private_profile column and update users API to reject null value for private_profile.
-merge_request: 29888
-author:
-type: changed

@@ -1,5 +1,0 @@
----
-title: Updated container registry to display error message when special characters in path. Documentation has also been updated.
-merge_request: 29616
-author:
-type: changed

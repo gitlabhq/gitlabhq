@@ -1,5 +1,0 @@
----
-title: Use Rugged if we detect storage is NFS and we can access the disk
-merge_request: 29725
-author:
-type: performance

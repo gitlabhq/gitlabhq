@@ -1,5 +1,0 @@
----
-title: Use PostgreSQL 9.6.11 in CI tests
-merge_request: 30270
-author: Takuya Noguchi
-type: other

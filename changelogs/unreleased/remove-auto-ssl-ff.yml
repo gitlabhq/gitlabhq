@@ -1,6 +1,0 @@
----
-title: Add support for generating SSL certificates for custon pages domains through
-  Let's Encrypt
-merge_request:
-author:
-type: added

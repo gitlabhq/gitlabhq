@@ -1,6 +1,0 @@
----
-title: Migrate GitLab managed project-level clusters to unmanaged if they are missing
-  a Kubernetes service account token
-merge_request: 29648
-author:
-type: other

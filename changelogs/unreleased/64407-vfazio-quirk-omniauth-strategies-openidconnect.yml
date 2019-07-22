@@ -1,5 +1,0 @@
----
-title: Allow client authentication method to be configured for OpenID Connect
-merge_request: 30683
-author: Vincent Fazio
-type: fixed

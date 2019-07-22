@@ -1,5 +1,0 @@
----
-title: Expose saml_provider_id in the users API
-merge_request: 14045
-author:
-type: added

@@ -1,5 +1,0 @@
----
-title: Return 400 when deleting tags more often than once per hour.
-merge_request: 29448
-author:
-type: changed

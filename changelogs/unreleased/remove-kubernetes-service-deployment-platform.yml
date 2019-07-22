@@ -1,5 +1,0 @@
----
-title: Remove Kubernetes service integration and Kubernetes service template from available deployment platforms
-merge_request: 29786
-author:
-type: removed

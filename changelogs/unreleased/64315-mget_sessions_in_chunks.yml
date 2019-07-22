@@ -1,5 +1,0 @@
----
-title: Do Redis lookup in batches in ActiveSession.sessions_from_ids
-merge_request: 30561
-author:
-type: performance

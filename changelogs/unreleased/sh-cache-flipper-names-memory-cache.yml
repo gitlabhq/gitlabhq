@@ -1,5 +1,0 @@
----
-title: Cache Flipper persisted names directly to local memory storage
-merge_request: 30265
-author:
-type: performance

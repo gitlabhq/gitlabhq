@@ -1,5 +1,0 @@
----
-title: Fix pipelines table to update without refreshing after action
-merge_request: 30190
-author:
-type: fixed

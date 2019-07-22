@@ -1,5 +1,0 @@
----
-title: Sanitize LDAP output in Rake tasks
-merge_request: 28427
-author:
-type: fixed

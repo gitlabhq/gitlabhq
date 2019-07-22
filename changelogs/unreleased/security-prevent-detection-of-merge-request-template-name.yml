@@ -1,5 +1,0 @@
----
-title: Prevent the detection of merge request templates by unauthorized users
-merge_request:
-author:
-type: security

@@ -1,5 +1,0 @@
----
-title: Fix invalid SSL certificate errors on Drone CI service
-merge_request: 30422
-author:
-type: fixed
