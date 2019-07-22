@@ -91,11 +91,11 @@ class Issue < ApplicationRecord
     end
   end
 
-  class << self
-    alias_method :in_parents, :in_projects
+  def self.relative_positioning_query_base(issue)
+    in_projects(issue.parent_ids)
   end
 
-  def self.parent_column
+  def self.relative_positioning_parent_column
     :project_id
   end
 
