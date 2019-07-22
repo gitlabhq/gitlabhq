@@ -11,10 +11,9 @@ import MonitorSingleStatChart from './charts/single_stat.vue';
 import PanelType from './panel_type.vue';
 import GraphGroup from './graph_group.vue';
 import EmptyState from './empty_state.vue';
-import { timeWindows, timeWindowsKeyNames } from '../constants';
+import { sidebarAnimationDuration, timeWindows, timeWindowsKeyNames } from '../constants';
 import { getTimeDiff } from '../utils';
 
-const sidebarAnimationDuration = 150;
 let sidebarMutationObserver;
 
 export default {
@@ -370,8 +369,8 @@ export default {
     </div>
     <div v-if="!showEmptyState">
       <graph-group
-        v-for="(groupData, index) in groupsWithData"
-        :key="index"
+        v-for="groupData in groupsWithData"
+        :key="`${groupData.group}.${groupData.priority}`"
         :name="groupData.group"
         :show-panels="showPanels"
       >
