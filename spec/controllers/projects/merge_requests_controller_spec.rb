@@ -1053,16 +1053,38 @@ describe Projects::MergeRequestsController do
 
       let(:status) { pipeline.detailed_status(double('user')) }
 
-      before do
+      it 'returns a detailed head_pipeline status in json' do
         get_pipeline_status
-      end
 
-      it 'return a detailed head_pipeline status in json' do
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['text']).to eq status.text
         expect(json_response['label']).to eq status.label
         expect(json_response['icon']).to eq status.icon
         expect(json_response['favicon']).to match_asset_path "/assets/ci_favicons/#{status.favicon}.png"
+      end
+
+      context 'with project member visibility on a public project' do
+        let(:user)    { create(:user) }
+        let(:project) { create(:project, :repository, :public, :builds_private) }
+
+        it 'returns pipeline data to project members' do
+          project.add_developer(user)
+
+          get_pipeline_status
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['text']).to eq status.text
+          expect(json_response['label']).to eq status.label
+          expect(json_response['icon']).to eq status.icon
+          expect(json_response['favicon']).to match_asset_path "/assets/ci_favicons/#{status.favicon}.png"
+        end
+
+        it 'returns blank OK response to non-project-members' do
+          get_pipeline_status
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).to be_empty
+        end
       end
     end
 
@@ -1071,7 +1093,7 @@ describe Projects::MergeRequestsController do
         get_pipeline_status
       end
 
-      it 'return empty' do
+      it 'returns blank OK response' do
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response).to be_empty
       end
