@@ -102,20 +102,7 @@ any issue.
 
 Stage labels specify which [DevOps stage][devops-stages] the issue belongs to.
 
-The current stage labels are:
-
-- ~"devops::manage"
-- ~"devops::plan"
-- ~"devops::create"
-- ~"devops::verify"
-- ~"devops::package"
-- ~"devops::release"
-- ~"devops::configure"
-- ~"devops::monitor"
-- ~"devops::secure"
-- ~"devops::defend"
-- ~"devops::growth"
-- ~"devops::enablement"
+The current stage labels can be found by [searching the labels list for `devops::`](https://gitlab.com/groups/gitlab-org/-/labels?search=devops%3A%3A).
 
 These labels are [scoped labels](../../user/project/labels.md#scoped-labels-premium)
 and thus are mutually exclusive.
@@ -138,44 +125,8 @@ The Stage labels are used to generate the [direction pages][direction-pages] aut
 
 Group labels specify which [groups][structure-groups] the issue belongs to.
 
-The current group labels are:
+The current group labels can be found by [searching the labels list for `group::`](https://gitlab.com/groups/gitlab-org/-/labels?search=group%3A%3A).
 
-- ~"group::access"
-- ~"group::measure"
-- ~"group::source code"
-- ~"group::knowledge"
-- ~"group::editor"
-- ~"group::gitaly"  
-- ~"group::gitter"  
-- ~"group::team planning"
-- ~"group::enterprise planning"
-- ~"group::certify"
-- ~"group::ci and runner"
-- ~"group::testing"
-- ~"group::package"
-- ~"group::progressive delivery"
-- ~"group::release management"
-- ~"group::autodevops and kubernetes"
-- ~"group::serverless and paas"
-- ~"group::apm"
-- ~"group::health"
-- ~"group::static analysis"
-- ~"group::dynamic analysis"
-- ~"group::software composition analysis"
-- ~"group::runtime application security"
-- ~"group::threat management"
-- ~"group::application infrastructure security"
-- ~"group::activation"
-- ~"group::adoption"
-- ~"group::upsell"
-- ~"group::retention"
-- ~"group::fulfillment"
-- ~"group::telemetry"
-- ~"group::distribution"
-- ~"group::geo"
-- ~"group::memory"
-- ~"group::ecosystem"
-  
 These labels are [scoped labels](../../user/project/labels.md#scoped-labels-premium)
 and thus are mutually exclusive.
 
@@ -248,7 +199,7 @@ If a bug seems to fall between two severity labels, assign it to the higher-seve
 - Example(s) of ~S1
   - Data corruption/loss.
   - Security breach.
-  - Unable to create an issue or merge request. 
+  - Unable to create an issue or merge request.
   - Unable to add a comment or thread to the issue or merge request.
 - Example(s) of ~S2
   - Cannot submit changes through the web IDE but the commandline works.
@@ -259,7 +210,7 @@ If a bug seems to fall between two severity labels, assign it to the higher-seve
 - Example(s) of ~S4
   - Label colors are incorrect.
   - UI elements are not fully aligned.
-  
+
 ## Label for community contributors
 
 Issues that are beneficial to our users, 'nice to haves', that we currently do
