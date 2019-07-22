@@ -15,6 +15,12 @@ GitLab does it for you, out-of-the-box.
 [Let's Encrypt](https://letsencrypt.org) is a free, automated, and
 open source Certificate Authority.
 
+CAUTION: **Caution:**
+This feature is in **beta** and might present bugs and UX issues
+such as [#64870](https://gitlab.com/gitlab-org/gitlab-ce/issues/64870).
+See all the related issues linked from this [issue's description](https://gitlab.com/gitlab-org/gitlab-ce/issues/28996)
+for more information.
+
 ## Requirements
 
 Before you can enable automatic provisioning of a SSL certificate for your domain, make sure you have:
@@ -55,9 +61,22 @@ associated Pages domain. It will be also renewed automatically by GitLab.
 > - If you already have SSL certificate in domain settings it
 >   will continue to work until it will be replaced by Let's Encrypt's certificate.
 
-<!-- ## Troubleshooting
+## Troubleshooting
 
-Include any troubleshooting steps that you can foresee. If you know beforehand what issues
+### Error "Certificate misses intermediates"
+
+If you get an error **Certificate misses intermediates** while trying to enable Let's Encrypt integration for your domain, follow the steps below:
+
+1. Go to your project's **Settings > Pages**.
+1. Turn off **Force HTTPS** if it's turned on.
+1. Click **Details** on your domain.
+1. Click the **Edit** button in the top right corner of domain details page.
+1. Enable Let's Encrypt integration.
+1. Click **Save**.
+1. Go to your project's **Settings > Pages**.
+1. Turn on **Force HTTPS**.
+
+<!-- Include any troubleshooting steps that you can foresee. If you know beforehand what issues
 one might have when setting this up, or when something is changed, or on upgrading, it's
 important to describe those, too. Think of things that may go wrong and include them here.
 This is important to minimize requests for support, and to avoid doc comments with
