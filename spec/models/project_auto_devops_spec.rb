@@ -15,7 +15,7 @@ describe ProjectAutoDevops do
   it { is_expected.to respond_to(:updated_at) }
 
   describe '#predefined_variables' do
-    let(:auto_devops) { build_stubbed(:project_auto_devops, project: project, domain: domain) }
+    let(:auto_devops) { build_stubbed(:project_auto_devops, project: project) }
 
     context 'when deploy_strategy is manual' do
       let(:auto_devops) { build_stubbed(:project_auto_devops, :manual_deployment, project: project) }
