@@ -28,6 +28,7 @@ describe Gitlab::ImportExport::RelationRenameService do
 
     before do
       allow(shared).to receive(:export_path).and_return(import_path)
+      allow(ActiveSupport::JSON).to receive(:decode).and_call_original
       allow(ActiveSupport::JSON).to receive(:decode).with(file_content).and_return(json_file)
     end
 
