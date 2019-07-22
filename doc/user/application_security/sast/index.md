@@ -135,6 +135,58 @@ sast:
     CI_DEBUG_TRACE: "true"
 ```
 
+### Available variables
+
+SAST can be [configured](#customizing-the-sast-settings) using environment variables.
+
+#### Docker images
+
+The following are Docker image-related variables.
+
+| Environment variable          | Description                                                                    |
+|-------------------------------|--------------------------------------------------------------------------------|
+| `SAST_ANALYZER_IMAGES`        | Comma separated list of custom images. Default images are still enabled. Read more about [customizing analyzers](analyzers.md).       |
+| `SAST_ANALYZER_IMAGE_PREFIX`  | Override the name of the Docker registry providing the default images (proxy). Read more about [customizing analyzers](analyzers.md). |
+| `SAST_ANALYZER_IMAGE_TAG`     | Override the Docker tag of the default images. Read more about [customizing analyzers](analyzers.md).                                 |
+| `SAST_DEFAULT_ANALYZERS`      | Override the names of default images. Read more about [customizing analyzers](analyzers.md).                                          |
+| `SAST_PULL_ANALYZER_IMAGES`   | Pull the images from the Docker registry (set to 0 to disable). Read more about [customizing analyzers](analyzers.md).                 |
+
+### Vulnerability filters
+
+Some analyzers make it possible to filter out vulnerabilities under a given threshold.
+
+| `SAST_BANDIT_EXCLUDED_PATHS`  | -   | comma-separated list of paths to exclude from scan. Uses Python's [`fnmatch` syntax](https://docs.python.org/2/library/fnmatch.html) |
+| `SAST_BRAKEMAN_LEVEL`   |         1 | Ignore Brakeman vulnerabilities under given confidence level. Integer, 1=Low 3=High. |
+| `SAST_FLAWFINDER_LEVEL` |         1 | Ignore Flawfinder vulnerabilities under given risk level. Integer, 0=No risk, 5=High risk. |
+| `SAST_GITLEAKS_ENTROPY_LEVEL` | 8.0 | Minimum entropy for secret detection. Float, 0.0 = low, 8.0 = high. |
+| `SAST_GOSEC_LEVEL`      |         0 | Ignore gosec vulnerabilities under given confidence level. Integer, 0=Undefined, 1=Low, 1=Medium, 3=High. |
+| `SAST_EXCLUDED_PATHS`   |   -        | Exclude vulnerabilities from output based on the paths. This is a comma-separated list of patterns. Patterns can be globs, file or folder paths. Parent directories will also match patterns. |
+
+### Timeouts
+
+The following variables configure timeouts.
+
+| `SAST_DOCKER_CLIENT_NEGOTIATION_TIMEOUT` |      2m | Time limit for Docker client negotiation. Timeouts are parsed using Go's [`ParseDuration`](https://golang.org/pkg/time/#ParseDuration). Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h". For example, "300ms", "1.5h" or "2h45m". |
+| `SAST_PULL_ANALYZER_IMAGE_TIMEOUT`       |      5m | Time limit when pulling the image of an analyzer. Timeouts are parsed using Go's [`ParseDuration`](https://golang.org/pkg/time/#ParseDuration). Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h". For example, "300ms", "1.5h" or "2h45m". |
+| `SAST_RUN_ANALYZER_TIMEOUT`              |     20m | Time limit when running an analyzer. Timeouts are parsed using Go's [`ParseDuration`](https://golang.org/pkg/time/#ParseDuration). Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h". For example, "300ms", "1.5h" or "2h45m".|
+
+### Analyzer settings
+
+Some analyzers can be customized with environment variables.
+
+| Environment variable    | Analyzer | Description |
+|-------------------------|----------|----------|
+| `ANT_HOME`              | spotbugs | The `ANT_HOME` environment variable. |
+| `ANT_PATH`              | spotbugs | Path to the `ant` executable. |
+| `GRADLE_PATH`           | spotbugs | Path to the `gradle` executable. |
+| `JAVA_OPTS`             | spotbugs | Additional arguments for the `java` executable. |
+| `JAVA_PATH`             | spotbugs | Path to the `java` executable. |
+| `MAVEN_CLI_OPTS`        | spotbugs | Additional arguments for the `mvn` or `mvnw` executable. |
+| `MAVEN_PATH`            | spotbugs | Path to the `mvn` executable. |
+| `MAVEN_REPO_PATH`       | spotbugs | Path to the Maven local repository (shortcut for the `maven.repo.local` property). |
+| `SBT_PATH`              | spotbugs | Path to the `sbt` executable. |
+| `FAIL_NEVER`            | spotbugs | Set to `1` to ignore compilation failure. |
+
 ## Reports JSON format
 
 CAUTION: **Caution:**
