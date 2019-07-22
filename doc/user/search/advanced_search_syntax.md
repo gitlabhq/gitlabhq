@@ -50,9 +50,9 @@ here's a quick guide:
 
 The Advanced Syntax Search also supports the use of filters. The available filters are:
 
- - filename: Filters by filename. You can use the glob (`*`) operator for fuzzy matching.
- - path: Filters by path. You can use the glob (`*`) operator for fuzzy matching.
- - extension: Filters by extension in the filename. Please write the extension without a leading dot. Exact match only.
+- filename: Filters by filename. You can use the glob (`*`) operator for fuzzy matching.
+- path: Filters by path. You can use the glob (`*`) operator for fuzzy matching.
+- extension: Filters by extension in the filename. Please write the extension without a leading dot. Exact match only.
 
 To use them, simply add them to your query in the format `<filter_name>:<value>` without
  any spaces between the colon (`:`) and the value.

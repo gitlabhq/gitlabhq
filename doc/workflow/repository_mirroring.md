@@ -92,9 +92,9 @@ The repository will push soon. To force a push, click the appropriate button.
 
 1. On the destination GitLab instance, create a [personal access token](../user/profile/personal_access_tokens.md) with `API` scope.
 1. On the source GitLab instance:
-    1. Fill in the **Git repository URL** field using this format: `https://oauth2@<destination host>/<your_gitlab_group_or_name>/<your_gitlab_project>.git`.
-    1. Fill in **Password** field with the GitLab personal access token created on the destination GitLab instance.
-    1. Click the **Mirror repository** button.
+   1. Fill in the **Git repository URL** field using this format: `https://oauth2@<destination host>/<your_gitlab_group_or_name>/<your_gitlab_project>.git`.
+   1. Fill in **Password** field with the GitLab personal access token created on the destination GitLab instance.
+   1. Click the **Mirror repository** button.
 
 ## Pulling from a remote repository **(STARTER)**
 
@@ -118,9 +118,9 @@ To configure mirror pulling for an existing project:
 1. Select **Pull** from the **Mirror direction** dropdown.
 1. Select an authentication method from the **Authentication method** dropdown, if necessary.
 1. If necessary, check the following boxes:
-    - **Overwrite diverged branches**.
-    - **Trigger pipelines for mirror updates**.
-    - **Only mirror protected branches**.
+   - **Overwrite diverged branches**.
+   - **Trigger pipelines for mirror updates**.
+   - **Only mirror protected branches**.
 1. Click the **Mirror repository** button to save the configuration.
 
 ![Repository mirroring pull settings screen - upper part](img/repository_mirroring_pull_settings_upper.png)

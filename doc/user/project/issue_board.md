@@ -143,10 +143,10 @@ Create lists for each of your team members and quickly drag-and-drop issues onto
 
 - **Issue Board** - Each board represents a unique view for your issues. It can have multiple lists with each list consisting of issues represented by cards.
 - **List** - A column on the issue board that displays issues matching certain attributes. In addition to the default lists of 'Open' and 'Closed' issue, each additional list will show issues matching your chosen label or assignee. On the top of that list you can see the number of issues that belong to it.
-   - **Label list**: a list based on a label. It shows all opened issues with that label.
-   - **Assignee list**: a list which includes all issues assigned to a user.
-   - **Open** (default): shows all open issues that do not belong to one of the other lists. Always appears as the leftmost list.
-   - **Closed** (default): shows all closed issues. Always appears as the rightmost list.
+  - **Label list**: a list based on a label. It shows all opened issues with that label.
+  - **Assignee list**: a list which includes all issues assigned to a user.
+  - **Open** (default): shows all open issues that do not belong to one of the other lists. Always appears as the leftmost list.
+  - **Closed** (default): shows all closed issues. Always appears as the rightmost list.
 - **Card** - A box in the list that represents an individual issue. The information you can see on a card consists of the issue number, the issue title, the assignee, and the labels associated with the issue. You can drag cards from one list to another to change their label or assignee from that of the source list to that of the destination list.
 
 ## Permissions

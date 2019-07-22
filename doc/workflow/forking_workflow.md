@@ -10,31 +10,25 @@ document more information about using branches to work together.
 
 Forking a project is in most cases a two-step process.
 
-1.  Click on the fork button located in the middle of the page or a project's
-    home page right next to the stars button.
+1. Click on the fork button located in the middle of the page or a project's
+   home page right next to the stars button.
 
-    ![Fork button](img/forking_workflow_fork_button.png)
+   ![Fork button](img/forking_workflow_fork_button.png)
 
-    ---
+1. Once you do that, you'll be presented with a screen where you can choose
+   the namespace to fork to. Only namespaces (groups and your own
+   namespace) where you have write access to, will be shown. Click on the
+   namespace to create your fork there.
 
-1.  Once you do that, you'll be presented with a screen where you can choose
-    the namespace to fork to. Only namespaces (groups and your own
-    namespace) where you have write access to, will be shown. Click on the
-    namespace to create your fork there.
+   ![Choose namespace](img/forking_workflow_choose_namespace.png)
 
-    ![Choose namespace](img/forking_workflow_choose_namespace.png)
+   **Note:**
+   If the namespace you chose to fork the project to has another project with
+   the same path name, you will be presented with a warning that the forking
+   could not be completed. Try to resolve the error and repeat the forking
+   process.
 
-    ---
-
-    **Note:**
-    If the namespace you chose to fork the project to has another project with
-    the same path name, you will be presented with a warning that the forking
-    could not be completed. Try to resolve the error and repeat the forking
-    process.
-
-    ![Path taken error](img/forking_workflow_path_taken_error.png)
-
-    ---
+   ![Path taken error](img/forking_workflow_path_taken_error.png)
 
 After the forking is done, you can start working on the newly created
 repository. There, you will have full [Owner](../user/permissions.md)

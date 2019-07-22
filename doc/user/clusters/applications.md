@@ -19,8 +19,8 @@ This namespace:
 To see a list of available applications to install:
 
 1. For a:
-    - Project-level cluster, navigate to your project's **Operations > Kubernetes**.
-    - Group-level cluster, navigate to your group's **Kubernetes** page.
+   - Project-level cluster, navigate to your project's **Operations > Kubernetes**.
+   - Group-level cluster, navigate to your group's **Kubernetes** page.
 
 Install Helm first as it's used to install other applications.
 
@@ -232,8 +232,8 @@ The applications below can be upgraded.
 To upgrade an application:
 
 1. For a:
-    - Project-level cluster, navigate to your project's **Operations > Kubernetes**.
-    - Group-level cluster, navigate to your group's **Kubernetes** page.
+   - Project-level cluster, navigate to your project's **Operations > Kubernetes**.
+   - Group-level cluster, navigate to your group's **Kubernetes** page.
 1. Select your cluster.
 1. If an upgrade is available, the **Upgrade** button is displayed. Click the button to upgrade.
 
@@ -259,8 +259,8 @@ The applications below can be uninstalled.
 To uninstall an application:
 
 1. For a:
-    - Project-level cluster, navigate to your project's **Operations > Kubernetes**.
-    - Group-level cluster, navigate to your group's **Kubernetes** page.
+   - Project-level cluster, navigate to your project's **Operations > Kubernetes**.
+   - Group-level cluster, navigate to your group's **Kubernetes** page.
 1. Select your cluster.
 1. Click the **Uninstall** button for the application.
 

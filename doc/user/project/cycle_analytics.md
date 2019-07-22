@@ -21,19 +21,19 @@ Analytics** tab.
 There are seven stages that are tracked as part of the Cycle Analytics calculations.
 
 - **Issue** (Tracker)
-    - Time to schedule an issue (by milestone or by adding it to an issue board)
+  - Time to schedule an issue (by milestone or by adding it to an issue board)
 - **Plan** (Board)
-    - Time to first commit
+  - Time to first commit
 - **Code** (IDE)
-    - Time to create a merge request
+  - Time to create a merge request
 - **Test** (CI)
-    - Time it takes GitLab CI/CD to test your code
+  - Time it takes GitLab CI/CD to test your code
 - **Review** (Merge Request/MR)
-    - Time spent on code review
+  - Time spent on code review
 - **Staging** (Continuous Deployment)
-    - Time between merging and deploying to production
+  - Time between merging and deploying to production
 - **Production** (Total)
-    - Total lifecycle time; i.e. the velocity of the project or team
+  - Total lifecycle time; i.e. the velocity of the project or team
 
 ## How the data is measured
 

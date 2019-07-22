@@ -28,39 +28,39 @@ only 1 parent group. It resembles a directory behavior or a nested items list:
 - Group 1
   - Group 1.1
   - Group 1.2
-      - Group 1.2.1
-      - Group 1.2.2
-          - Group 1.2.2.1
+    - Group 1.2.1
+    - Group 1.2.2
+      - Group 1.2.2.1
 
 In a real world example, imagine maintaining a GNU/Linux distribution with the
 first group being the name of the distribution, and subsequent groups split as follows:
 
 - Organization Group - GNU/Linux distro
   - Category Subgroup - Packages
-      - (project) Package01
-      - (project) Package02
+    - (project) Package01
+    - (project) Package02
   - Category Subgroup - Software
-      - (project) Core
-      - (project) CLI
-      - (project) Android app
-      - (project) iOS app
+    - (project) Core
+    - (project) CLI
+    - (project) Android app
+    - (project) iOS app
   - Category Subgroup - Infra tools
-      - (project) Ansible playbooks
+    - (project) Ansible playbooks
 
 Another example of GitLab as a company would be the following:
 
 - Organization Group - GitLab
   - Category Subgroup - Marketing
-      - (project) Design
-      - (project) General
+    - (project) Design
+    - (project) General
   - Category Subgroup - Software
-      - (project) GitLab CE
-      - (project) GitLab EE
-      - (project) Omnibus GitLab
-      - (project) GitLab Runner
-      - (project) GitLab Pages daemon
+    - (project) GitLab CE
+    - (project) GitLab EE
+    - (project) Omnibus GitLab
+    - (project) GitLab Runner
+    - (project) GitLab Pages daemon
   - Category Subgroup - Infra tools
-      - (project) Chef cookbooks
+    - (project) Chef cookbooks
   - Category Subgroup - Executive team
 
 ---
@@ -88,13 +88,13 @@ To create a subgroup:
 1. In the group's dashboard expand the **New project** split button, select
    **New subgroup** and click the **New subgroup** button.
 
-    ![Subgroups page](img/create_subgroup_button.png)
+   ![Subgroups page](img/create_subgroup_button.png)
 
 1. Create a new group like you would normally do. Notice that the parent group
    namespace is fixed under **Group path**. The visibility level can differ from
    the parent group.
 
-    ![Subgroups page](img/create_new_group.png)
+   ![Subgroups page](img/create_new_group.png)
 
 1. Click the **Create group** button and you will be taken to the new group's
    dashboard page.
