@@ -138,6 +138,20 @@ describe Gitlab::Auth::UserAuthFinders do
         expect { find_user_from_access_token }.to raise_error(Gitlab::Auth::UnauthorizedError)
       end
     end
+
+    context 'with OAuth headers' do
+      it 'returns user' do
+        env['HTTP_AUTHORIZATION'] = "Bearer #{personal_access_token.token}"
+
+        expect(find_user_from_access_token).to eq user
+      end
+
+      it 'returns exception if invalid personal_access_token' do
+        env['HTTP_AUTHORIZATION'] = 'Bearer invalid_20byte_token'
+
+        expect { find_personal_access_token }.to raise_error(Gitlab::Auth::UnauthorizedError)
+      end
+    end
   end
 
   describe '#find_user_from_web_access_token' do

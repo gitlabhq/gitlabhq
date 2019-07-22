@@ -90,8 +90,8 @@ module Gitlab
       def find_personal_access_token
         token =
           current_request.params[PRIVATE_TOKEN_PARAM].presence ||
-          current_request.env[PRIVATE_TOKEN_HEADER].presence
-
+          current_request.env[PRIVATE_TOKEN_HEADER].presence ||
+          parsed_oauth_token
         return unless token
 
         # Expiration, revocation and scopes are verified in `validate_access_token!`
@@ -99,8 +99,11 @@ module Gitlab
       end
 
       def find_oauth_access_token
-        token = Doorkeeper::OAuth::Token.from_request(current_request, *Doorkeeper.configuration.access_token_methods)
+        token = parsed_oauth_token
         return unless token
+
+        # PATs with OAuth headers are not handled by OauthAccessToken
+        return if matches_personal_access_token_length?(token)
 
         # Expiration, revocation and scopes are verified in `validate_access_token!`
         oauth_token = OauthAccessToken.by_token(token)
@@ -108,6 +111,14 @@ module Gitlab
 
         oauth_token.revoke_previous_refresh_token!
         oauth_token
+      end
+
+      def parsed_oauth_token
+        Doorkeeper::OAuth::Token.from_request(current_request, *Doorkeeper.configuration.access_token_methods)
+      end
+
+      def matches_personal_access_token_length?(token)
+        token.length == PersonalAccessToken::TOKEN_LENGTH
       end
 
       # Check if the request is GET/HEAD, or if CSRF token is valid.

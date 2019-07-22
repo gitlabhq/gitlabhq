@@ -1,0 +1,5 @@
+---
+title: Personal access tokens are accepted using OAuth2 header format
+merge_request: 30277
+author:
+type: added

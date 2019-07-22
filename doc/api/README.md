@@ -272,6 +272,12 @@ Example of using the personal access token in a header:
 curl --header "Private-Token: <your_access_token>" https://gitlab.example.com/api/v4/projects
 ```
 
+You can also use personal access tokens with OAuth-compliant headers:
+
+```shell
+curl --header "Authorization: Bearer <your_access_token>" https://gitlab.example.com/api/v4/projects
+```
+
 Read more about [personal access tokens][pat].
 
 ### Session cookie
