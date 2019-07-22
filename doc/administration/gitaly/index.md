@@ -359,7 +359,7 @@ To configure Gitaly with TLS:
    gitaly['tls_listen_addr'] = "0.0.0.0:9999"
    gitaly['certificate_path'] = "path/to/cert.pem"
    gitaly['key_path'] = "path/to/key.pem"
-  ```
+   ```
 
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
 
