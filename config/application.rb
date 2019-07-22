@@ -168,7 +168,6 @@ module Gitlab
 
     # Import gitlab-svgs directly from vendored directory
     config.assets.paths << "#{config.root}/node_modules/@gitlab/svgs/dist"
-    config.assets.paths << "#{config.root}/node_modules"
     config.assets.precompile << "icons.svg"
     config.assets.precompile << "icons.json"
     config.assets.precompile << "illustrations/*.svg"
@@ -185,6 +184,10 @@ module Gitlab
 
     config.assets.paths << "#{config.root}/vendor/assets/javascripts/"
     config.assets.precompile << "snowplow/sp.js"
+
+    # This path must come last to avoid confusing sprockets
+    # See https://gitlab.com/gitlab-org/gitlab-ce/issues/64091#note_194512508
+    config.assets.paths << "#{config.root}/node_modules"
 
     # Compile non-JS/CSS assets in the ee/app/assets folder by default
     # Mimic sprockets-rails default: https://github.com/rails/sprockets-rails/blob/v3.2.1/lib/sprockets/railtie.rb#L84-L87
