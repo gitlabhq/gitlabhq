@@ -12,6 +12,7 @@ export default () => ({
   additionalPanelTypesEnabled: false,
   emptyState: 'gettingStarted',
   showEmptyState: true,
+  showErrorBanner: true,
   groups: [],
   deploymentData: [],
   environments: [],
