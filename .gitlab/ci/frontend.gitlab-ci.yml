@@ -210,15 +210,15 @@ qa:selectors:
 
 qa-frontend-node:8:
   <<: *qa-frontend-node
-  image: node:8-alpine
+  image: node:carbon
 
 qa-frontend-node:10:
   <<: *qa-frontend-node
-  image: node:10-alpine
+  image: node:dubnium
 
 qa-frontend-node:latest:
   <<: *qa-frontend-node
-  image: node:alpine
+  image: node:latest
   allow_failure: true
 
 lint:javascript:report:
