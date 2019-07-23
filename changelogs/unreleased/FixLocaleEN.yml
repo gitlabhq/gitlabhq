@@ -1,0 +1,5 @@
+---
+title: Remove duplicated mapping key in config/locales/en.yml
+merge_request: 30980
+author: Peter Dave Hello
+type: fixed
