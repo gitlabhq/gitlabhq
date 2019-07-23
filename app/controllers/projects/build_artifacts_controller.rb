@@ -51,6 +51,6 @@ class Projects::BuildArtifactsController < Projects::ApplicationController
   def job_from_ref
     return unless @ref_name
 
-    project.latest_successful_build_for(params[:job], @ref_name)
+    project.latest_successful_build_for_ref(params[:job], @ref_name)
   end
 end

@@ -1799,7 +1799,7 @@ describe Ci::Pipeline, :mailer do
     end
   end
 
-  describe '.latest_successful_for' do
+  describe '.latest_successful_for_ref' do
     include_context 'with some outdated pipelines'
 
     let!(:latest_successful_pipeline) do
@@ -1807,7 +1807,7 @@ describe Ci::Pipeline, :mailer do
     end
 
     it 'returns the latest successful pipeline' do
-      expect(described_class.latest_successful_for('ref'))
+      expect(described_class.latest_successful_for_ref('ref'))
         .to eq(latest_successful_pipeline)
     end
   end
