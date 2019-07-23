@@ -131,7 +131,7 @@ class Issue < ApplicationRecord
     when 'due_date'            then order_due_date_asc
     when 'due_date_asc'        then order_due_date_asc
     when 'due_date_desc'       then order_due_date_desc
-    when 'relative_position'   then order_relative_position_asc
+    when 'relative_position'   then order_relative_position_asc.with_order_id_desc
     else
       super
     end
