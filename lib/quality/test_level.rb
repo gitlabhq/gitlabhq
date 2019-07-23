@@ -14,6 +14,7 @@ module Quality
         finders
         frontend
         graphql
+        haml_lint
         helpers
         initializers
         javascripts
