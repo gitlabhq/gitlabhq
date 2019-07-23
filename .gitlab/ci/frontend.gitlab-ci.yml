@@ -138,9 +138,8 @@ karma:
       - chrome_debug.log
       - coverage-javascript/
       - tmp/tests/frontend/
-# see https://gitlab.com/gitlab-org/gitlab-ce/issues/64756
-#    reports:
-#      junit: junit_karma.xml
+    reports:
+      junit: junit_karma.xml
 
 jest:
   extends: .dedicated-no-docs-and-no-qa-pull-cache-job
@@ -163,9 +162,8 @@ jest:
       - coverage-frontend/
       - junit_jest.xml
       - tmp/tests/frontend/
-# see https://gitlab.com/gitlab-org/gitlab-ce/issues/64756
-#    reports:
-#      junit: junit_jest.xml
+    reports:
+      junit: junit_jest.xml
   cache:
     key: jest
     paths:
