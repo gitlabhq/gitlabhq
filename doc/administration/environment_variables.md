@@ -13,6 +13,7 @@ override certain values.
 
 Variable | Type | Description
 -------- | ---- | -----------
+`ENABLE_BOOTSNAP`                          | string  | Enables Bootsnap for speeding up initial Rails boot (`1` to enable)
 `GITLAB_CDN_HOST`                          | string  | Sets the base URL for a CDN to serve static assets (e.g. `//mycdnsubdomain.fictional-cdn.com`)
 `GITLAB_ROOT_PASSWORD`                     | string  | Sets the password for the `root` user on installation
 `GITLAB_HOST`                              | string  | The full URL of the GitLab server (including `http://` or `https://`)

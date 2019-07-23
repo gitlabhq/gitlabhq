@@ -2,6 +2,8 @@ source 'https://rubygems.org'
 
 gem 'rails', '5.2.3'
 
+gem 'bootsnap', '~> 1.4'
+
 # Improves copy-on-write performance for MRI
 gem 'nakayoshi_fork', '~> 0.0.4'
 
@@ -329,7 +331,6 @@ group :development do
 end
 
 group :development, :test do
-  gem 'bootsnap', '~> 1.4'
   gem 'bullet', '~> 5.5.0', require: !!ENV['ENABLE_BULLET']
   gem 'pry-byebug', '~> 3.5.1', platform: :mri
   gem 'pry-rails', '~> 0.3.4'
