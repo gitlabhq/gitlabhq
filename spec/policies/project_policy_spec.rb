@@ -126,6 +126,126 @@ describe ProjectPolicy do
         end
       end
     end
+
+    describe 'read_wiki' do
+      subject { described_class.new(user, project) }
+
+      member_roles = %i[guest developer]
+      stranger_roles = %i[anonymous non_member]
+
+      user_roles = stranger_roles + member_roles
+
+      # When a user is anonymous, their `current_user == nil`
+      let(:user) { create(:user) unless user_role == :anonymous }
+
+      before do
+        project.visibility = project_visibility
+        project.project_feature.update_attribute(:wiki_access_level, wiki_access_level)
+        project.add_user(user, user_role) if member_roles.include?(user_role)
+      end
+
+      title = ->(project_visibility, wiki_access_level, user_role) do
+        [
+          "project is #{Gitlab::VisibilityLevel.level_name project_visibility}",
+          "wiki is #{ProjectFeature.str_from_access_level wiki_access_level}",
+          "user is #{user_role}"
+        ].join(', ')
+      end
+
+      describe 'Situations where :read_wiki is always false' do
+        where(case_names: title,
+              project_visibility: Gitlab::VisibilityLevel.options.values,
+              wiki_access_level: [ProjectFeature::DISABLED],
+              user_role: user_roles)
+
+        with_them do
+          it { is_expected.to be_disallowed(:read_wiki) }
+        end
+      end
+
+      describe 'Situations where :read_wiki is always true' do
+        where(case_names: title,
+              project_visibility: [Gitlab::VisibilityLevel::PUBLIC],
+              wiki_access_level: [ProjectFeature::ENABLED],
+              user_role: user_roles)
+
+        with_them do
+          it { is_expected.to be_allowed(:read_wiki) }
+        end
+      end
+
+      describe 'Situations where :read_wiki requires project membership' do
+        context 'the wiki is private, and the user is a member' do
+          where(case_names: title,
+                project_visibility: [Gitlab::VisibilityLevel::PUBLIC,
+                                     Gitlab::VisibilityLevel::INTERNAL],
+                wiki_access_level: [ProjectFeature::PRIVATE],
+                user_role: member_roles)
+
+          with_them do
+            it { is_expected.to be_allowed(:read_wiki) }
+          end
+        end
+
+        context 'the wiki is private, and the user is not member' do
+          where(case_names: title,
+                project_visibility: [Gitlab::VisibilityLevel::PUBLIC,
+                                     Gitlab::VisibilityLevel::INTERNAL],
+                wiki_access_level: [ProjectFeature::PRIVATE],
+                user_role: stranger_roles)
+
+          with_them do
+            it { is_expected.to be_disallowed(:read_wiki) }
+          end
+        end
+
+        context 'the wiki is enabled, and the user is a member' do
+          where(case_names: title,
+                project_visibility: [Gitlab::VisibilityLevel::PRIVATE],
+                wiki_access_level: [ProjectFeature::ENABLED],
+                user_role: member_roles)
+
+          with_them do
+            it { is_expected.to be_allowed(:read_wiki) }
+          end
+        end
+
+        context 'the wiki is enabled, and the user is not a member' do
+          where(case_names: title,
+                project_visibility: [Gitlab::VisibilityLevel::PRIVATE],
+                wiki_access_level: [ProjectFeature::ENABLED],
+                user_role: stranger_roles)
+
+          with_them do
+            it { is_expected.to be_disallowed(:read_wiki) }
+          end
+        end
+      end
+
+      describe 'Situations where :read_wiki prohibits anonymous access' do
+        context 'the user is not anonymous' do
+          where(case_names: title,
+                project_visibility: [Gitlab::VisibilityLevel::INTERNAL],
+                wiki_access_level: [ProjectFeature::ENABLED, ProjectFeature::PUBLIC],
+                user_role: user_roles.reject { |u| u == :anonymous })
+
+          with_them do
+            it { is_expected.to be_allowed(:read_wiki) }
+          end
+        end
+
+        context 'the user is not anonymous' do
+          where(case_names: title,
+                project_visibility: [Gitlab::VisibilityLevel::INTERNAL],
+                wiki_access_level: [ProjectFeature::ENABLED, ProjectFeature::PUBLIC],
+                user_role: %i[anonymous])
+
+          with_them do
+            it { is_expected.to be_disallowed(:read_wiki) }
+          end
+        end
+      end
+    end
   end
 
   context 'issues feature' do

@@ -31,6 +31,47 @@ describe Projects::WikisController do
     end
   end
 
+  describe 'GET #history' do
+    before do
+      allow(controller)
+        .to receive(:can?)
+        .with(any_args)
+        .and_call_original
+
+      # The :create_wiki permission is irrelevant to reading history.
+      expect(controller)
+        .not_to receive(:can?)
+        .with(anything, :create_wiki, any_args)
+
+      allow(controller)
+        .to receive(:can?)
+        .with(anything, :read_wiki, any_args)
+        .and_return(allow_read_wiki)
+    end
+
+    shared_examples 'fetching history' do |expected_status|
+      before do
+        get :history, params: { namespace_id: project.namespace, project_id: project, id: wiki_title }
+      end
+
+      it "returns status #{expected_status}" do
+        expect(response).to have_http_status(expected_status)
+      end
+    end
+
+    it_behaves_like 'fetching history', :ok do
+      let(:allow_read_wiki)   { true }
+
+      it 'assigns @page_versions' do
+        expect(assigns(:page_versions)).to be_present
+      end
+    end
+
+    it_behaves_like 'fetching history', :not_found do
+      let(:allow_read_wiki)   { false }
+    end
+  end
+
   describe 'GET #show' do
     render_views
 
