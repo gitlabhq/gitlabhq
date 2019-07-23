@@ -185,7 +185,7 @@ module Gitlab
         return unless EXISTING_OBJECT_CHECK.include?(@relation_name)
         return unless @relation_hash['group_id']
 
-        @relation_hash['group_id'] = @project.group&.id
+        @relation_hash['group_id'] = @project.namespace_id
       end
 
       def reset_tokens!

@@ -3097,11 +3097,8 @@ describe Project do
     let(:project) { create(:project) }
 
     it 'shows full error updating an invalid MR' do
-      error_message = 'Failed to replace merge_requests because one or more of the new records could not be saved.'\
-        ' Validate fork Source project is not a fork of the target project'
-
       expect { project.append_or_update_attribute(:merge_requests, [create(:merge_request)]) }
-        .to raise_error(ActiveRecord::RecordNotSaved, error_message)
+        .to raise_error(ActiveRecord::RecordInvalid, /Failed to set merge_requests:/)
     end
 
     it 'updates the project successfully' do

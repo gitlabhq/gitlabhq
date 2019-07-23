@@ -27,7 +27,7 @@ module Gitlab
       #   {:merge_requests=>[:merge_request_diff, :notes]}
       def process_model_objects(model_object_hash)
         json_config_hash = {}
-        current_key = model_object_hash.keys.first
+        current_key = model_object_hash.first.first
 
         model_object_hash.values.flatten.each do |model_object|
           @attributes_finder.parse(current_key) { |hash| json_config_hash[current_key] ||= hash }
