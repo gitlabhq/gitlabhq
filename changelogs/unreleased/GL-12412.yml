@@ -1,0 +1,5 @@
+---
+title: Add DS_PIP_DEPENDENCY_PATH option to configure Dependency Scanning for projects using pip.
+merge_request: 30762
+author:
+type: changed
