@@ -554,7 +554,7 @@ describe Ci::Runner do
     end
 
     def expect_value_in_queues
-      Gitlab::Redis::Queues.with do |redis|
+      Gitlab::Redis::SharedState.with do |redis|
         runner_queue_key = runner.send(:runner_queue_key)
         expect(redis.get(runner_queue_key))
       end
@@ -627,7 +627,7 @@ describe Ci::Runner do
       end
 
       it 'cleans up the queue' do
-        Gitlab::Redis::Queues.with do |redis|
+        Gitlab::Redis::SharedState.with do |redis|
           expect(redis.get(queue_key)).to be_nil
         end
       end
