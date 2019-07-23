@@ -63,13 +63,11 @@ NOTE: **Note:** Since file system performance may affect GitLab's overall perfor
 ### CPU
 
 - 1 core supports up to 100 users but the application can be a bit slower due to having all workers and background jobs running on the same core
-- **2 cores** is the **recommended** number of cores and supports up to 500 users
-- 4 cores supports up to 2,000 users
-- 8 cores supports up to 5,000 users
-- 16 cores supports up to 10,000 users
-- 32 cores supports up to 20,000 users
-- 64 cores supports up to 40,000 users
-- More users? Run it on [multiple application servers](https://about.gitlab.com/high-availability/)
+- **2 cores** is the **recommended** minimum number of cores and supports up to 100 users
+- 4 cores supports up to 500 users
+- 8 cores supports up to 1,000 users
+- 32 cores supports up to 5,000 users
+- More users? Run it high-availability on [multiple application servers](https://about.gitlab.com/high-availability/)
 
 ### Memory
 
@@ -80,13 +78,11 @@ less memory GitLab will give strange errors during the reconfigure run and 500
 errors during usage.
 
 - 4GB RAM + 4GB swap supports up to 100 users but it will be very slow
-- **8GB RAM** is the **recommended** memory size for all installations and supports up to 100 users
-- 16GB RAM supports up to 2,000 users
-- 32GB RAM supports up to 4,000 users
-- 64GB RAM supports up to 8,000 users
-- 128GB RAM supports up to 16,000 users
-- 256GB RAM supports up to 32,000 users
-- More users? Run it on [multiple application servers](https://about.gitlab.com/high-availability/)
+- **8GB RAM** is the **recommended** minimum memory size for all installations and supports up to 100 users
+- 16GB RAM supports up to 500 users
+- 32GB RAM supports up to 1,000 users
+- 128GB RAM supports up to 5,000 users
+- More users? Run it high-availability on [multiple application servers](https://about.gitlab.com/high-availability/)
 
 We recommend having at least [2GB of swap on your server](https://askubuntu.com/a/505344/310789), even if you currently have
 enough available RAM. Having swap will help reduce the chance of errors occurring
