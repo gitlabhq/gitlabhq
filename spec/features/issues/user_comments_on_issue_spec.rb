@@ -41,16 +41,17 @@ describe "User comments on issue", :js do
       expect(page.find('pre code').text).to eq code_block_content
     end
 
-    it "does not render html content in mermaid" do
+    it "renders escaped HTML content in Mermaid" do
       html_content = "<img onerror=location=`javascript\\u003aalert\\u0028document.domain\\u0029` src=x>"
       mermaid_content = "graph LR\n  B-->D(#{html_content});"
+      escaped_content = CGI.escapeHTML(html_content).gsub('=', "&equals;")
       comment = "```mermaid\n#{mermaid_content}\n```"
 
       add_note(comment)
 
       wait_for_requests
 
-      expect(page.find('svg.mermaid')).to have_content html_content
+      expect(page.find('svg.mermaid')).to have_content escaped_content
     end
   end
 
