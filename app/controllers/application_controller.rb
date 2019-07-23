@@ -499,14 +499,20 @@ class ApplicationController < ActionController::Base
   end
 
   def stop_impersonation
-    impersonated_user = current_user
-
-    Gitlab::AppLogger.info("User #{impersonator.username} has stopped impersonating #{impersonated_user.username}")
+    log_impersonation_event
 
     warden.set_user(impersonator, scope: :user)
     session[:impersonator_id] = nil
 
     impersonated_user
+  end
+
+  def impersonated_user
+    current_user
+  end
+
+  def log_impersonation_event
+    Gitlab::AppLogger.info("User #{impersonator.username} has stopped impersonating #{impersonated_user.username}")
   end
 
   def impersonator
