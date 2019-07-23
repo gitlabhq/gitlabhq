@@ -1,7 +1,7 @@
 - force_priority = local_assigns.fetch(:force_priority, false)
 - subject_or_group_defined = defined?(@project) || defined?(@group)
-- show_label_issues_link = subject_or_group_defined && show_label_issuables_link?(label, :issues, project: @project)
-- show_label_merge_requests_link = subject_or_group_defined && show_label_issuables_link?(label, :merge_requests, project: @project)
+- show_label_issues_link = subject_or_group_defined && show_label_issuables_link?(label, :issues)
+- show_label_merge_requests_link = subject_or_group_defined && show_label_issuables_link?(label, :merge_requests)
 
 .label-name
   = render_label(label, tooltip: false)

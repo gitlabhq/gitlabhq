@@ -3,10 +3,8 @@ require 'spec_helper'
 describe LabelsHelper do
   describe '#show_label_issuables_link?' do
     shared_examples 'a valid response to show_label_issuables_link?' do |issuables_type, when_enabled = true, when_disabled = false|
-      let(:context_project) { project }
-
       context "when asking for a #{issuables_type} link" do
-        subject { show_label_issuables_link?(label.present(issuable_subject: nil), issuables_type, project: context_project) }
+        subject { show_label_issuables_link?(label.present(issuable_subject: nil), issuables_type) }
 
         context "when #{issuables_type} are enabled for the project" do
           let(:project) { create(:project, "#{issuables_type}_access_level": ProjectFeature::ENABLED) }
@@ -39,27 +37,11 @@ describe LabelsHelper do
       let(:label) { create(:group_label, group: group, title: 'bug') }
 
       context 'when asking for an issue link' do
-        context 'in the context of a project' do
-          it_behaves_like 'a valid response to show_label_issuables_link?', :issues, true, true
-        end
-
-        context 'in the context of a group' do
-          let(:context_project) { nil }
-
-          it_behaves_like 'a valid response to show_label_issuables_link?', :issues, true, true
-        end
+        it_behaves_like 'a valid response to show_label_issuables_link?', :issues, true, true
       end
 
       context 'when asking for a merge requests link' do
-        context 'in the context of a project' do
-          it_behaves_like 'a valid response to show_label_issuables_link?', :merge_requests, true, true
-        end
-
-        context 'in the context of a group' do
-          let(:context_project) { nil }
-
-          it_behaves_like 'a valid response to show_label_issuables_link?', :merge_requests, true, true
-        end
+        it_behaves_like 'a valid response to show_label_issuables_link?', :merge_requests, true, true
       end
     end
   end
