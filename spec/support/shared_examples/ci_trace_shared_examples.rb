@@ -720,6 +720,58 @@ shared_examples_for 'trace with enabled live trace feature' do
     end
   end
 
+  describe '#archived_trace_exist?' do
+    subject { trace.archived_trace_exist? }
+
+    context 'when trace does not exist' do
+      it { is_expected.to be_falsy }
+    end
+
+    context 'when archived trace exists' do
+      before do
+        create(:ci_job_artifact, :trace, job: build)
+      end
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when live trace exists' do
+      before do
+        Gitlab::Ci::Trace::ChunkedIO.new(build) do |stream|
+          stream.write('abc')
+        end
+      end
+
+      it { is_expected.to be_falsy }
+    end
+  end
+
+  describe '#live_trace_exist?' do
+    subject { trace.live_trace_exist? }
+
+    context 'when trace does not exist' do
+      it { is_expected.to be_falsy }
+    end
+
+    context 'when archived trace exists' do
+      before do
+        create(:ci_job_artifact, :trace, job: build)
+      end
+
+      it { is_expected.to be_falsy }
+    end
+
+    context 'when live trace exists' do
+      before do
+        Gitlab::Ci::Trace::ChunkedIO.new(build) do |stream|
+          stream.write('abc')
+        end
+      end
+
+      it { is_expected.to be_truthy }
+    end
+  end
+
   describe '#archive!' do
     subject { trace.archive! }
 

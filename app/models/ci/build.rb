@@ -531,6 +531,14 @@ module Ci
       trace.exist?
     end
 
+    def has_live_trace?
+      trace.live_trace_exist?
+    end
+
+    def has_archived_trace?
+      trace.archived_trace_exist?
+    end
+
     def artifacts_file
       job_artifacts_archive&.file
     end

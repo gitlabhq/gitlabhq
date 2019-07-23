@@ -176,6 +176,10 @@ module Ci
       end
     end
 
+    def self.archived_trace_exists_for?(job_id)
+      where(job_id: job_id).trace.take&.file&.file&.exists?
+    end
+
     private
 
     def file_format_adapter_class

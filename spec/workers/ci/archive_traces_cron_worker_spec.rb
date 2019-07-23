@@ -34,7 +34,7 @@ describe Ci::ArchiveTracesCronWorker do
 
     it 'executes service' do
       expect_any_instance_of(Ci::ArchiveTraceService)
-        .to receive(:execute).with(build)
+        .to receive(:execute).with(build, anything)
 
       subject
     end
@@ -60,7 +60,10 @@ describe Ci::ArchiveTracesCronWorker do
       end
 
       it 'puts a log' do
-        expect(Rails.logger).to receive(:error).with("Failed to archive trace. id: #{build.id} message: Unexpected error")
+        expect(Sidekiq.logger).to receive(:warn).with(
+          class: described_class.name,
+          message: "Failed to archive trace. message: Unexpected error.",
+          job_id: build.id)
 
         subject
       end

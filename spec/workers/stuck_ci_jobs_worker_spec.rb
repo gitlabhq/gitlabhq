@@ -7,8 +7,6 @@ describe StuckCiJobsWorker do
 
   let!(:runner) { create :ci_runner }
   let!(:job) { create :ci_build, runner: runner }
-  let(:trace_lease_key) { "trace:write:lock:#{job.id}" }
-  let(:trace_lease_uuid) { SecureRandom.uuid }
   let(:worker_lease_key) { StuckCiJobsWorker::EXCLUSIVE_LEASE_KEY }
   let(:worker_lease_uuid) { SecureRandom.uuid }
 
@@ -16,7 +14,6 @@ describe StuckCiJobsWorker do
 
   before do
     stub_exclusive_lease(worker_lease_key, worker_lease_uuid)
-    stub_exclusive_lease(trace_lease_key, trace_lease_uuid)
     job.update!(status: status, updated_at: updated_at)
   end
 
@@ -195,7 +192,6 @@ describe StuckCiJobsWorker do
     end
 
     it 'cancels exclusive leases after worker perform' do
-      expect_to_cancel_exclusive_lease(trace_lease_key, trace_lease_uuid)
       expect_to_cancel_exclusive_lease(worker_lease_key, worker_lease_uuid)
 
       worker.perform

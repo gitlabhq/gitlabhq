@@ -63,7 +63,15 @@ module Gitlab
       end
 
       def exist?
-        trace_artifact&.exists? || job.trace_chunks.any? || current_path.present? || old_trace.present?
+        archived_trace_exist? || live_trace_exist?
+      end
+
+      def archived_trace_exist?
+        trace_artifact&.exists?
+      end
+
+      def live_trace_exist?
+        job.trace_chunks.any? || current_path.present? || old_trace.present?
       end
 
       def read
@@ -167,7 +175,7 @@ module Gitlab
 
       def clone_file!(src_stream, temp_dir)
         FileUtils.mkdir_p(temp_dir)
-        Dir.mktmpdir('tmp-trace', temp_dir) do |dir_path|
+        Dir.mktmpdir("tmp-trace-#{job.id}", temp_dir) do |dir_path|
           temp_path = File.join(dir_path, "job.log")
           FileUtils.touch(temp_path)
           size = IO.copy_stream(src_stream, temp_path)

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe Ci::ArchiveTraceService, '#execute' do
-  subject { described_class.new.execute(job) }
+  subject { described_class.new.execute(job, worker_name: ArchiveTraceWorker.name) }
 
   context 'when job is finished' do
     let(:job) { create(:ci_build, :success, :trace_live) }
@@ -25,6 +25,34 @@ describe Ci::ArchiveTraceService, '#execute' do
         expect { subject }.not_to change { Ci::JobArtifact.trace.count }
       end
     end
+
+    context 'when job does not have trace' do
+      let(:job) { create(:ci_build, :success) }
+
+      it 'leaves a warning message in sidekiq log' do
+        expect(Sidekiq.logger).to receive(:warn).with(
+          class: ArchiveTraceWorker.name,
+          message: 'The job does not have live trace but going to be archived.',
+          job_id: job.id)
+
+        subject
+      end
+    end
+
+    context 'when job failed to archive trace but did not raise an exception' do
+      before do
+        allow_any_instance_of(Gitlab::Ci::Trace).to receive(:archive!) {}
+      end
+
+      it 'leaves a warning message in sidekiq log' do
+        expect(Sidekiq.logger).to receive(:warn).with(
+          class: ArchiveTraceWorker.name,
+          message: 'The job does not have archived trace after archiving.',
+          job_id: job.id)
+
+        subject
+      end
+    end
   end
 
   context 'when job is running' do
@@ -37,10 +65,10 @@ describe Ci::ArchiveTraceService, '#execute' do
               issue_url: 'https://gitlab.com/gitlab-org/gitlab-ce/issues/51502',
               extra: { job_id: job.id } ).once
 
-      expect(Rails.logger)
-        .to receive(:error)
-        .with("Failed to archive trace. id: #{job.id} message: Job is not finished yet")
-        .and_call_original
+      expect(Sidekiq.logger).to receive(:warn).with(
+        class: ArchiveTraceWorker.name,
+        message: "Failed to archive trace. message: Job is not finished yet.",
+        job_id: job.id).and_call_original
 
       expect(Gitlab::Metrics)
         .to receive(:counter)
