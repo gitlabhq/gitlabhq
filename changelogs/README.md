@@ -3,7 +3,7 @@
 To generate and validate your changelog entries:
 
 1. Run `bin/changelog` to generate.
-1. Run `scripts/lint-changelog-yaml` to validate.
+1. Run `yamllint changelogs` to validate.
 
 See [development/changelog] documentation for detailed usage.
 
