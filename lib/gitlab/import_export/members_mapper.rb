@@ -50,6 +50,8 @@ module Gitlab
         @project.project_members.destroy_all # rubocop: disable DestroyAll
 
         ProjectMember.create!(user: @user, access_level: ProjectMember::MAINTAINER, source_id: @project.id, importing: true)
+      rescue => e
+        raise e, "Error adding importer user to project members. #{e.message}"
       end
 
       def add_team_member(member, existing_user = nil)
