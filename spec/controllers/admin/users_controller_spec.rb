@@ -279,6 +279,12 @@ describe Admin::UsersController do
         expect(warden.user).to eq(user)
       end
 
+      it 'logs the beginning of the impersonation event' do
+        expect(Gitlab::AppLogger).to receive(:info).with("User #{admin.username} has started impersonating #{user.username}").and_call_original
+
+        post :impersonate, params: { id: user.username }
+      end
+
       it "redirects to root" do
         post :impersonate, params: { id: user.username }
 

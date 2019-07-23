@@ -39,7 +39,7 @@ class Admin::UsersController < Admin::ApplicationController
 
       warden.set_user(user, scope: :user)
 
-      Gitlab::AppLogger.info(_("User %{current_user_username} has started impersonating %{username}") % { current_user_username: current_user.username, username: user.username })
+      log_impersonation_event
 
       flash[:alert] = _("You are now impersonating %{username}") % { username: user.username }
 
@@ -235,5 +235,9 @@ class Admin::UsersController < Admin::ApplicationController
 
   def check_impersonation_availability
     access_denied! unless Gitlab.config.gitlab.impersonation_enabled
+  end
+
+  def log_impersonation_event
+    Gitlab::AppLogger.info(_("User %{current_user_username} has started impersonating %{username}") % { current_user_username: current_user.username, username: user.username })
   end
 end
