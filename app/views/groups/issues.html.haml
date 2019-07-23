@@ -13,7 +13,7 @@
       = render 'shared/issuable/feed_buttons'
 
       - if @can_bulk_update
-        = render_if_exists 'shared/issuable/bulk_update_button'
+        = render_if_exists 'shared/issuable/bulk_update_button', type: :issues
 
       = render 'shared/new_project_item_select', path: 'issues/new', label: "New issue", type: :issues, with_feature_enabled: 'issues', with_shared: false, include_projects_in_subgroups: true
 
