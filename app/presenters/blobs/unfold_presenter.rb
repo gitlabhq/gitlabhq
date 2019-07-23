@@ -16,8 +16,12 @@ module Blobs
     attribute :indent, Integer, default: 0
 
     def initialize(blob, params)
+      # Load all blob data first as we need to ensure they're all loaded first
+      # so we can accurately show the rest of the diff when unfolding.
+      load_all_blob_data
+
       @subject = blob
-      @all_lines = highlight.lines
+      @all_lines = blob.data.lines
       super(params)
 
       if full?
@@ -25,10 +29,12 @@ module Blobs
       end
     end
 
-    # Converts a String array to Gitlab::Diff::Line array, with match line added
+    # Returns an array of Gitlab::Diff::Line with match line added
     def diff_lines
-      diff_lines = lines.map do |line|
-        Gitlab::Diff::Line.new(line, nil, nil, nil, nil, rich_text: line)
+      diff_lines = lines.map.with_index do |line, index|
+        full_line = limited_blob_lines[index].delete("\n")
+
+        Gitlab::Diff::Line.new(full_line, nil, nil, nil, nil, rich_text: line)
       end
 
       add_match_line(diff_lines)
@@ -37,11 +43,7 @@ module Blobs
     end
 
     def lines
-      strong_memoize(:lines) do
-        lines = @all_lines
-        lines = lines[since - 1..to - 1] unless full?
-        lines.map(&:html_safe)
-      end
+      @lines ||= limit(highlight.lines).map(&:html_safe)
     end
 
     def match_line_text
@@ -70,6 +72,16 @@ module Blobs
       match_line = Gitlab::Diff::Line.new(match_line_text, 'match', nil, old_pos, new_pos)
 
       bottom? ? diff_lines.push(match_line) : diff_lines.unshift(match_line)
+    end
+
+    def limited_blob_lines
+      @limited_blob_lines ||= limit(@all_lines)
+    end
+
+    def limit(lines)
+      return lines if full?
+
+      lines[since - 1..to - 1]
     end
   end
 end

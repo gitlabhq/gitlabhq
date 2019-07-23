@@ -1,0 +1,5 @@
+---
+title: Fix suggestion on lines that are not part of an MR
+merge_request: 30606
+author:
+type: fixed

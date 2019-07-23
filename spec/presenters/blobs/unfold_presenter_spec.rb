@@ -54,8 +54,10 @@ describe Blobs::UnfoldPresenter do
         expect(lines.size).to eq(total_lines)
 
         lines.each.with_index do |line, index|
-          expect(line.text).to include("LC#{index + 1}")
-          expect(line.text).to eq(line.rich_text)
+          line_number = index + 1
+
+          expect(line.text).to eq(line_number.to_s)
+          expect(line.rich_text).to include("LC#{line_number}")
           expect(line.type).to be_nil
         end
       end
