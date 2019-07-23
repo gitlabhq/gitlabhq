@@ -23,7 +23,7 @@ describe Admin::RequestsProfilesController do
     end
 
     after do
-      File.unlink(test_file)
+      FileUtils.rm_rf(tmpdir)
     end
 
     context 'when loading HTML profile' do

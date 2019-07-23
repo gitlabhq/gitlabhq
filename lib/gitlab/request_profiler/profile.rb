@@ -7,19 +7,6 @@ module Gitlab
 
       alias_method :to_param, :name
 
-      def self.all
-        Dir["#{PROFILES_DIR}/*.{html,txt}"].map do |path|
-          new(File.basename(path))
-        end
-      end
-
-      def self.find(name)
-        file_path = File.join(PROFILES_DIR, name)
-        return unless File.exist?(file_path)
-
-        new(name)
-      end
-
       def initialize(name)
         @name = name
         @file_path = File.join(PROFILES_DIR, name)
@@ -27,8 +14,8 @@ module Gitlab
         set_attributes
       end
 
-      def content
-        File.read("#{PROFILES_DIR}/#{name}")
+      def valid?
+        @request_path.present?
       end
 
       def content_type
@@ -43,11 +30,13 @@ module Gitlab
       private
 
       def set_attributes
-        _, path, timestamp, profile_mode, type = name.split(/(.*)_(\d+)_(.*)\.(html|txt)$/)
-        @request_path      = path.tr('|', '/')
-        @time              = Time.at(timestamp.to_i).utc
-        @profile_mode      = profile_mode
-        @type              = type
+        matches = name.match(/^(?<path>.*)_(?<timestamp>\d+)(_(?<profile_mode>\w+))?\.(?<type>html|txt)$/)
+        return unless matches
+
+        @request_path      = matches[:path].tr('|', '/')
+        @time              = Time.at(matches[:timestamp].to_i).utc
+        @profile_mode      = matches[:profile_mode] || 'unknown'
+        @type              = matches[:type]
       end
     end
   end

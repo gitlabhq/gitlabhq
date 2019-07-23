@@ -1,13 +1,15 @@
 require 'spec_helper'
 
 describe 'Admin::RequestsProfilesController' do
+  let(:tmpdir) { Dir.mktmpdir('profiler-test') }
+
   before do
-    FileUtils.mkdir_p(Gitlab::RequestProfiler::PROFILES_DIR)
+    stub_const('Gitlab::RequestProfiler::PROFILES_DIR', tmpdir)
     sign_in(create(:admin))
   end
 
   after do
-    Gitlab::RequestProfiler.remove_all_profiles
+    FileUtils.rm_rf(tmpdir)
   end
 
   describe 'GET /admin/requests_profiles' do
@@ -60,6 +62,12 @@ describe 'Admin::RequestsProfilesController' do
             name: "|gitlab-org|infrastructure_#{time2.to_i}_memory.html",
             created: time2,
             profile_mode: 'Memory'
+          },
+          {
+            request_path: '/gitlab-org/infrastructure',
+            name: "|gitlab-org|infrastructure_#{time2.to_i}.html",
+            created: time2,
+            profile_mode: 'Unknown'
           }
         ]
       end
