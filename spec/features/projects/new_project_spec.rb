@@ -62,13 +62,7 @@ describe 'New project' do
         find('#import-project-tab').click
       end
 
-      context 'when using postgres', :postgresql do
-        it { expect(page).to have_link('Manifest file') }
-      end
-
-      context 'when using mysql', :mysql do
-        it { expect(page).not_to have_link('Manifest file') }
-      end
+      it { expect(page).to have_link('Manifest file') }
     end
 
     context 'Visibility level selector', :js do

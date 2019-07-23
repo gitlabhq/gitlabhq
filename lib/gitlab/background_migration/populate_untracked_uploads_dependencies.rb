@@ -176,23 +176,12 @@ module Gitlab
         self.table_name = 'projects'
 
         def self.find_by_full_path(path)
-          binary = Gitlab::Database.mysql? ? 'BINARY' : ''
-          order_sql = "(CASE WHEN #{binary} routes.path = #{connection.quote(path)} THEN 0 ELSE 1 END)"
+          order_sql = "(CASE WHEN routes.path = #{connection.quote(path)} THEN 0 ELSE 1 END)"
           where_full_path_in(path).reorder(order_sql).take
         end
 
         def self.where_full_path_in(path)
-          cast_lower = Gitlab::Database.postgresql?
-
-          path = connection.quote(path)
-
-          where =
-            if cast_lower
-              "(LOWER(routes.path) = LOWER(#{path}))"
-            else
-              "(routes.path = #{path})"
-            end
-
+          where = "(LOWER(routes.path) = LOWER(#{connection.quote(path)}))"
           joins("INNER JOIN routes ON routes.source_id = projects.id AND routes.source_type = 'Project'").where(where)
         end
       end

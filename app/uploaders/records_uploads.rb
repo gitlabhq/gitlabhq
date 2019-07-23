@@ -23,15 +23,7 @@ module RecordsUploads
       return unless model
       return unless file && file.exists?
 
-      # MySQL InnoDB may encounter a deadlock if a deletion and an
-      # insert is in the same transaction due to its next-key locking
-      # algorithm, so we need to skip the transaction.
-      # https://gitlab.com/gitlab-org/gitlab-ce/issues/55161#note_131556351
-      if Gitlab::Database.mysql?
-        readd_upload
-      else
-        Upload.transaction { readd_upload }
-      end
+      Upload.transaction { readd_upload }
     end
 
     def readd_upload

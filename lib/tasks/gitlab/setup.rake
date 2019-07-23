@@ -31,7 +31,6 @@ namespace :gitlab do
     terminate_all_connections unless Rails.env.production?
 
     Rake::Task["db:reset"].invoke
-    Rake::Task["add_limits_mysql"].invoke
     Rake::Task["setup_postgresql"].invoke
     Rake::Task["db:seed_fu"].invoke
   rescue Gitlab::TaskAbortedByUserError

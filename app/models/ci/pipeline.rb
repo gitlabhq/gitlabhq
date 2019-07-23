@@ -236,8 +236,6 @@ module Ci
 
       if limit
         ids = relation.limit(limit).select(:id)
-        # MySQL does not support limit in subquery
-        ids = ids.pluck(:id) if Gitlab::Database.mysql?
         relation = relation.where(id: ids)
       end
 

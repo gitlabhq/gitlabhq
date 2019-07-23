@@ -55,21 +55,13 @@ describe BackgroundMigrationWorker, :sidekiq, :clean_gitlab_redis_shared_state d
   end
 
   describe '#healthy_database?' do
-    context 'using MySQL', :mysql do
-      it 'returns true' do
-        expect(worker.healthy_database?).to eq(true)
-      end
-    end
+    context 'when replication lag is too great' do
+      it 'returns false' do
+        allow(Postgresql::ReplicationSlot)
+          .to receive(:lag_too_great?)
+          .and_return(true)
 
-    context 'using PostgreSQL', :postgresql do
-      context 'when replication lag is too great' do
-        it 'returns false' do
-          allow(Postgresql::ReplicationSlot)
-            .to receive(:lag_too_great?)
-            .and_return(true)
-
-          expect(worker.healthy_database?).to eq(false)
-        end
+        expect(worker.healthy_database?).to eq(false)
       end
 
       context 'when replication lag is small enough' do

@@ -33,29 +33,12 @@ module Routable
     #
     # Returns a single object, or nil.
     def find_by_full_path(path, follow_redirects: false)
-      # On MySQL we want to ensure the ORDER BY uses a case-sensitive match so
-      # any literal matches come first, for this we have to use "BINARY".
-      # Without this there's still no guarantee in what order MySQL will return
-      # rows.
-      #
-      # Why do we do this?
-      #
-      # Even though we have Rails validation on Route for unique paths
-      # (case-insensitive), there are old projects in our DB (and possibly
-      # clients' DBs) that have the same path with different cases.
-      # See https://gitlab.com/gitlab-org/gitlab-ce/issues/18603. Also note that
-      # our unique index is case-sensitive in Postgres.
-      binary = Gitlab::Database.mysql? ? 'BINARY' : ''
-      order_sql = Arel.sql("(CASE WHEN #{binary} routes.path = #{connection.quote(path)} THEN 0 ELSE 1 END)")
+      order_sql = Arel.sql("(CASE WHEN routes.path = #{connection.quote(path)} THEN 0 ELSE 1 END)")
       found = where_full_path_in([path]).reorder(order_sql).take
       return found if found
 
       if follow_redirects
-        if Gitlab::Database.postgresql?
-          joins(:redirect_routes).find_by("LOWER(redirect_routes.path) = LOWER(?)", path)
-        else
-          joins(:redirect_routes).find_by(redirect_routes: { path: path })
-        end
+        joins(:redirect_routes).find_by("LOWER(redirect_routes.path) = LOWER(?)", path)
       end
     end
 
@@ -67,27 +50,13 @@ module Routable
     #
     # Returns an ActiveRecord::Relation.
     def where_full_path_in(paths)
-      wheres = []
-      cast_lower = Gitlab::Database.postgresql?
+      return none if paths.empty?
 
-      paths.each do |path|
-        path = connection.quote(path)
-
-        where =
-          if cast_lower
-            "(LOWER(routes.path) = LOWER(#{path}))"
-          else
-            "(routes.path = #{path})"
-          end
-
-        wheres << where
+      wheres = paths.map do |path|
+        "(LOWER(routes.path) = LOWER(#{connection.quote(path)}))"
       end
 
-      if wheres.empty?
-        none
-      else
-        joins(:route).where(wheres.join(' OR '))
-      end
+      joins(:route).where(wheres.join(' OR '))
     end
   end
 

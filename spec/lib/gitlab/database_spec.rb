@@ -24,19 +24,11 @@ describe Gitlab::Database do
       expect(described_class.human_adapter_name).to eq('PostgreSQL')
     end
 
-    it 'returns MySQL when using MySQL' do
+    it 'returns Unknown when using anything else' do
       allow(described_class).to receive(:postgresql?).and_return(false)
 
-      expect(described_class.human_adapter_name).to eq('MySQL')
+      expect(described_class.human_adapter_name).to eq('Unknown')
     end
-  end
-
-  # These are just simple smoke tests to check if the methods work (regardless
-  # of what they may return).
-  describe '.mysql?' do
-    subject { described_class.mysql? }
-
-    it { is_expected.to satisfy { |val| val == true || val == false } }
   end
 
   describe '.postgresql?' do
@@ -50,15 +42,6 @@ describe Gitlab::Database do
       described_class.instance_variable_set(:@version, nil)
       example.run
       described_class.instance_variable_set(:@version, nil)
-    end
-
-    context "on mysql" do
-      it "extracts the version number" do
-        allow(described_class).to receive(:database_version)
-          .and_return("5.7.12-standard")
-
-        expect(described_class.version).to eq '5.7.12-standard'
-      end
     end
 
     context "on postgresql" do
@@ -80,7 +63,7 @@ describe Gitlab::Database do
   end
 
   describe '.postgresql_9_or_less?' do
-    it 'returns false when using MySQL' do
+    it 'returns false when not using postgresql' do
       allow(described_class).to receive(:postgresql?).and_return(false)
 
       expect(described_class.postgresql_9_or_less?).to eq(false)
@@ -134,7 +117,7 @@ describe Gitlab::Database do
   end
 
   describe '.join_lateral_supported?' do
-    it 'returns false when using MySQL' do
+    it 'returns false when not using postgresql' do
       allow(described_class).to receive(:postgresql?).and_return(false)
 
       expect(described_class.join_lateral_supported?).to eq(false)
@@ -156,7 +139,7 @@ describe Gitlab::Database do
   end
 
   describe '.replication_slots_supported?' do
-    it 'returns false when using MySQL' do
+    it 'returns false when not using postgresql' do
       allow(described_class).to receive(:postgresql?).and_return(false)
 
       expect(described_class.replication_slots_supported?).to eq(false)
@@ -248,43 +231,13 @@ describe Gitlab::Database do
   end
 
   describe '.nulls_last_order' do
-    context 'when using PostgreSQL' do
-      before do
-        expect(described_class).to receive(:postgresql?).and_return(true)
-      end
-
-      it { expect(described_class.nulls_last_order('column', 'ASC')).to eq 'column ASC NULLS LAST'}
-      it { expect(described_class.nulls_last_order('column', 'DESC')).to eq 'column DESC NULLS LAST'}
-    end
-
-    context 'when using MySQL' do
-      before do
-        expect(described_class).to receive(:postgresql?).and_return(false)
-      end
-
-      it { expect(described_class.nulls_last_order('column', 'ASC')).to eq 'column IS NULL, column ASC'}
-      it { expect(described_class.nulls_last_order('column', 'DESC')).to eq 'column DESC'}
-    end
+    it { expect(described_class.nulls_last_order('column', 'ASC')).to eq 'column ASC NULLS LAST'}
+    it { expect(described_class.nulls_last_order('column', 'DESC')).to eq 'column DESC NULLS LAST'}
   end
 
   describe '.nulls_first_order' do
-    context 'when using PostgreSQL' do
-      before do
-        expect(described_class).to receive(:postgresql?).and_return(true)
-      end
-
-      it { expect(described_class.nulls_first_order('column', 'ASC')).to eq 'column ASC NULLS FIRST'}
-      it { expect(described_class.nulls_first_order('column', 'DESC')).to eq 'column DESC NULLS FIRST'}
-    end
-
-    context 'when using MySQL' do
-      before do
-        expect(described_class).to receive(:postgresql?).and_return(false)
-      end
-
-      it { expect(described_class.nulls_first_order('column', 'ASC')).to eq 'column ASC'}
-      it { expect(described_class.nulls_first_order('column', 'DESC')).to eq 'column IS NULL, column DESC'}
-    end
+    it { expect(described_class.nulls_first_order('column', 'ASC')).to eq 'column ASC NULLS FIRST'}
+    it { expect(described_class.nulls_first_order('column', 'DESC')).to eq 'column DESC NULLS FIRST'}
   end
 
   describe '.with_connection_pool' do
@@ -394,10 +347,6 @@ describe Gitlab::Database do
     end
 
     context 'when using PostgreSQL' do
-      before do
-        allow(described_class).to receive(:mysql?).and_return(false)
-      end
-
       it 'allows the returning of the IDs of the inserted rows' do
         result = double(:result, values: [['10']])
 
@@ -463,30 +412,14 @@ describe Gitlab::Database do
   end
 
   describe '#true_value' do
-    it 'returns correct value for PostgreSQL' do
-      expect(described_class).to receive(:postgresql?).and_return(true)
-
+    it 'returns correct value' do
       expect(described_class.true_value).to eq "'t'"
-    end
-
-    it 'returns correct value for MySQL' do
-      expect(described_class).to receive(:postgresql?).and_return(false)
-
-      expect(described_class.true_value).to eq 1
     end
   end
 
   describe '#false_value' do
-    it 'returns correct value for PostgreSQL' do
-      expect(described_class).to receive(:postgresql?).and_return(true)
-
+    it 'returns correct value' do
       expect(described_class.false_value).to eq "'f'"
-    end
-
-    it 'returns correct value for MySQL' do
-      expect(described_class).to receive(:postgresql?).and_return(false)
-
-      expect(described_class.false_value).to eq 0
     end
   end
 
@@ -497,43 +430,33 @@ describe Gitlab::Database do
   end
 
   describe '.db_read_only?' do
-    context 'when using PostgreSQL' do
-      before do
-        allow(ActiveRecord::Base.connection).to receive(:execute).and_call_original
-        allow(described_class).to receive(:postgresql?).and_return(true)
-      end
-
-      it 'detects a read only database' do
-        allow(ActiveRecord::Base.connection).to receive(:execute).with('SELECT pg_is_in_recovery()').and_return([{ "pg_is_in_recovery" => "t" }])
-
-        expect(described_class.db_read_only?).to be_truthy
-      end
-
-      it 'detects a read only database' do
-        allow(ActiveRecord::Base.connection).to receive(:execute).with('SELECT pg_is_in_recovery()').and_return([{ "pg_is_in_recovery" => true }])
-
-        expect(described_class.db_read_only?).to be_truthy
-      end
-
-      it 'detects a read write database' do
-        allow(ActiveRecord::Base.connection).to receive(:execute).with('SELECT pg_is_in_recovery()').and_return([{ "pg_is_in_recovery" => "f" }])
-
-        expect(described_class.db_read_only?).to be_falsey
-      end
-
-      it 'detects a read write database' do
-        allow(ActiveRecord::Base.connection).to receive(:execute).with('SELECT pg_is_in_recovery()').and_return([{ "pg_is_in_recovery" => false }])
-
-        expect(described_class.db_read_only?).to be_falsey
-      end
+    before do
+      allow(ActiveRecord::Base.connection).to receive(:execute).and_call_original
+      allow(described_class).to receive(:postgresql?).and_return(true)
     end
 
-    context 'when using MySQL' do
-      before do
-        expect(described_class).to receive(:postgresql?).and_return(false)
-      end
+    it 'detects a read only database' do
+      allow(ActiveRecord::Base.connection).to receive(:execute).with('SELECT pg_is_in_recovery()').and_return([{ "pg_is_in_recovery" => "t" }])
 
-      it { expect(described_class.db_read_only?).to be_falsey }
+      expect(described_class.db_read_only?).to be_truthy
+    end
+
+    it 'detects a read only database' do
+      allow(ActiveRecord::Base.connection).to receive(:execute).with('SELECT pg_is_in_recovery()').and_return([{ "pg_is_in_recovery" => true }])
+
+      expect(described_class.db_read_only?).to be_truthy
+    end
+
+    it 'detects a read write database' do
+      allow(ActiveRecord::Base.connection).to receive(:execute).with('SELECT pg_is_in_recovery()').and_return([{ "pg_is_in_recovery" => "f" }])
+
+      expect(described_class.db_read_only?).to be_falsey
+    end
+
+    it 'detects a read write database' do
+      allow(ActiveRecord::Base.connection).to receive(:execute).with('SELECT pg_is_in_recovery()').and_return([{ "pg_is_in_recovery" => false }])
+
+      expect(described_class.db_read_only?).to be_falsey
     end
   end
 

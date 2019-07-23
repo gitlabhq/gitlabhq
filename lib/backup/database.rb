@@ -23,11 +23,6 @@ module Backup
 
       dump_pid =
         case config["adapter"]
-        when /^mysql/ then
-          progress.print "Dumping MySQL database #{config['database']} ... "
-          # Workaround warnings from MySQL 5.6 about passwords on cmd line
-          ENV['MYSQL_PWD'] = config["password"].to_s if config["password"]
-          spawn('mysqldump', *mysql_args, config['database'], out: compress_wr)
         when "postgresql" then
           progress.print "Dumping PostgreSQL database #{config['database']} ... "
           pg_env
@@ -57,11 +52,6 @@ module Backup
 
       restore_pid =
         case config["adapter"]
-        when /^mysql/ then
-          progress.print "Restoring MySQL database #{config['database']} ... "
-          # Workaround warnings from MySQL 5.6 about passwords on cmd line
-          ENV['MYSQL_PWD'] = config["password"].to_s if config["password"]
-          spawn('mysql', *mysql_args, config['database'], in: decompress_rd)
         when "postgresql" then
           progress.print "Restoring PostgreSQL database #{config['database']} ... "
           pg_env
@@ -79,23 +69,6 @@ module Backup
     end
 
     protected
-
-    def mysql_args
-      args = {
-        'host'      => '--host',
-        'port'      => '--port',
-        'socket'    => '--socket',
-        'username'  => '--user',
-        'encoding'  => '--default-character-set',
-        # SSL
-        'sslkey'    => '--ssl-key',
-        'sslcert'   => '--ssl-cert',
-        'sslca'     => '--ssl-ca',
-        'sslcapath' => '--ssl-capath',
-        'sslcipher' => '--ssl-cipher'
-      }
-      args.map { |opt, arg| "#{arg}=#{config[opt]}" if config[opt] }.compact
-    end
 
     def pg_env
       args = {

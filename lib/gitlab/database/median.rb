@@ -17,13 +17,9 @@ module Gitlab
       def extract_median(results)
         result = results.compact.first
 
-        if Gitlab::Database.postgresql?
-          result = result.first.presence
+        result = result.first.presence
 
-          result['median']&.to_f if result
-        elsif Gitlab::Database.mysql?
-          result.to_a.flatten.first
-        end
+        result['median']&.to_f if result
       end
 
       def extract_medians(results)
@@ -32,31 +28,6 @@ module Gitlab
         median_values.each_with_object({}) do |(id, median), hash|
           hash[id.to_i] = median&.to_f
         end
-      end
-
-      def mysql_median_datetime_sql(arel_table, query_so_far, column_sym)
-        query = arel_table.from
-                .from(arel_table.project(Arel.sql('*')).order(arel_table[column_sym]).as(arel_table.table_name))
-                .project(average([arel_table[column_sym]], 'median'))
-                .where(
-                  Arel::Nodes::Between.new(
-                    Arel.sql("(select @row_id := @row_id + 1)"),
-                    Arel::Nodes::And.new(
-                      [Arel.sql('@ct/2.0'),
-                       Arel.sql('@ct/2.0 + 1')]
-                    )
-                  )
-                ).
-                # Disallow negative values
-                where(arel_table[column_sym].gteq(0))
-
-        [
-          Arel.sql("CREATE TEMPORARY TABLE IF NOT EXISTS #{query_so_far.to_sql}"),
-          Arel.sql("set @ct := (select count(1) from #{arel_table.table_name});"),
-          Arel.sql("set @row_id := 0;"),
-          query.to_sql,
-          Arel.sql("DROP TEMPORARY TABLE IF EXISTS #{arel_table.table_name};")
-        ]
       end
 
       def pg_median_datetime_sql(arel_table, query_so_far, column_sym, partition_column = nil)
@@ -113,18 +84,8 @@ module Gitlab
 
       private
 
-      def median_queries(arel_table, query_so_far, column_sym, partition_column = nil)
-        if Gitlab::Database.postgresql?
-          pg_median_datetime_sql(arel_table, query_so_far, column_sym, partition_column)
-        elsif Gitlab::Database.mysql?
-          raise NotSupportedError, "partition_column is not supported for MySQL" if partition_column
-
-          mysql_median_datetime_sql(arel_table, query_so_far, column_sym)
-        end
-      end
-
       def execute_queries(arel_table, query_so_far, column_sym, partition_column = nil)
-        queries = median_queries(arel_table, query_so_far, column_sym, partition_column)
+        queries = pg_median_datetime_sql(arel_table, query_so_far, column_sym, partition_column)
 
         Array.wrap(queries).map { |query| ActiveRecord::Base.connection.execute(query) }
       end

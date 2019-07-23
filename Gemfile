@@ -16,7 +16,6 @@ gem 'sprockets', '~> 3.7.0'
 gem 'default_value_for', '~> 3.2.0'
 
 # Supported DBs
-gem 'mysql2', '~> 0.4.10', group: :mysql
 gem 'pg', '~> 1.1', group: :postgres
 
 gem 'rugged', '~> 0.28'
@@ -298,7 +297,6 @@ gem 'batch-loader', '~> 1.4.0'
 # Perf bar
 gem 'peek', '~> 1.0.1'
 gem 'peek-gc', '~> 0.0.2'
-gem 'peek-mysql2', '~> 1.2.0', group: :mysql
 gem 'peek-pg', '~> 1.3.0', group: :postgres
 gem 'peek-rblineprof', '~> 0.2.0'
 
