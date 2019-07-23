@@ -162,7 +162,7 @@ describe('VariableList', () => {
       });
 
       it('has a regex provided via a data attribute', () => {
-        expect($wrapper.attr('data-maskable-regex')).toBe('^[a-zA-Z0-9_+=/-]{8,}$');
+        expect($wrapper.attr('data-maskable-regex')).toBe('^[a-zA-Z0-9_+=/@:-]{8,}$');
       });
 
       it('allows values that are 8 characters long', done => {
