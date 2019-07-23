@@ -1,0 +1,5 @@
+---
+title: Fix pipeline emails not respecting group notification email setting
+merge_request: 30907
+author:
+type: fixed

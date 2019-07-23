@@ -95,6 +95,43 @@ describe Group do
       end
     end
 
+    describe '#notification_email_for' do
+      let(:user) { create(:user) }
+      let(:group) { create(:group) }
+      let(:subgroup) { create(:group, parent: group) }
+
+      let(:group_notification_email) { 'user+group@example.com' }
+      let(:subgroup_notification_email) { 'user+subgroup@example.com' }
+
+      subject { subgroup.notification_email_for(user) }
+
+      context 'when both group notification emails are set' do
+        it 'returns subgroup notification email' do
+          create(:notification_setting, user: user, source: group, notification_email: group_notification_email)
+          create(:notification_setting, user: user, source: subgroup, notification_email: subgroup_notification_email)
+
+          is_expected.to eq(subgroup_notification_email)
+        end
+      end
+
+      context 'when subgroup notification email is blank' do
+        it 'returns parent group notification email' do
+          create(:notification_setting, user: user, source: group, notification_email: group_notification_email)
+          create(:notification_setting, user: user, source: subgroup, notification_email: '')
+
+          is_expected.to eq(group_notification_email)
+        end
+      end
+
+      context 'when only the parent group notification email is set' do
+        it 'returns parent group notification email' do
+          create(:notification_setting, user: user, source: group, notification_email: group_notification_email)
+
+          is_expected.to eq(group_notification_email)
+        end
+      end
+    end
+
     describe '#visibility_level_allowed_by_parent' do
       let(:parent) { create(:group, :internal) }
       let(:sub_group) { build(:group, parent_id: parent.id) }

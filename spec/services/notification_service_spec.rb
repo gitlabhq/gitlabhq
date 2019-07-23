@@ -2063,26 +2063,58 @@ describe NotificationService, :mailer do
         end
 
         context 'when the creator has custom notifications enabled' do
-          before do
-            pipeline = create_pipeline(u_custom_notification_enabled, :success)
-            notification.pipeline_finished(pipeline)
-          end
+          let(:pipeline) { create_pipeline(u_custom_notification_enabled, :success) }
 
           it 'emails only the creator' do
+            notification.pipeline_finished(pipeline)
+
             should_only_email(u_custom_notification_enabled, kind: :bcc)
+          end
+
+          context 'when the creator has group notification email set' do
+            let(:group_notification_email) { 'user+group@example.com' }
+
+            before do
+              group = create(:group)
+
+              project.update(group: group)
+              create(:notification_setting, user: u_custom_notification_enabled, source: group, notification_email: group_notification_email)
+            end
+
+            it 'sends to group notification email' do
+              notification.pipeline_finished(pipeline)
+
+              expect(email_recipients(kind: :bcc).first).to eq(group_notification_email)
+            end
           end
         end
       end
 
       context 'with a failed pipeline' do
         context 'when the creator has no custom notification set' do
-          before do
-            pipeline = create_pipeline(u_member, :failed)
-            notification.pipeline_finished(pipeline)
-          end
+          let(:pipeline) { create_pipeline(u_member, :failed) }
 
           it 'emails only the creator' do
+            notification.pipeline_finished(pipeline)
+
             should_only_email(u_member, kind: :bcc)
+          end
+
+          context 'when the creator has group notification email set' do
+            let(:group_notification_email) { 'user+group@example.com' }
+
+            before do
+              group = create(:group)
+
+              project.update(group: group)
+              create(:notification_setting, user: u_member, source: group, notification_email: group_notification_email)
+            end
+
+            it 'sends to group notification email' do
+              notification.pipeline_finished(pipeline)
+
+              expect(email_recipients(kind: :bcc).first).to eq(group_notification_email)
+            end
           end
         end
 

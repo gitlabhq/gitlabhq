@@ -418,7 +418,9 @@ class NotificationService
       [pipeline.user], :watch,
       custom_action: :"#{pipeline.status}_pipeline",
       target: pipeline
-    ).map(&:notification_email)
+    ).map do |user|
+      user.notification_email_for(pipeline.project.group)
+    end
 
     if recipients.any?
       mailer.public_send(email_template, pipeline, recipients).deliver_later
