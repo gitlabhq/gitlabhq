@@ -7,7 +7,8 @@ module Maskable
   # * No escape characters
   # * No variables
   # * No spaces
-  # * Minimal length of 8 characters from the Base64 alphabets (RFC4648)
+  # * Minimal length of 8 characters
+  # * Characters must be from the Base64 alphabet (RFC4648) with the addition of @ and :
   # * Absolutely no fun is allowed
   REGEX = /\A[a-zA-Z0-9_+=\/@:-]{8,}\z/.freeze
 
