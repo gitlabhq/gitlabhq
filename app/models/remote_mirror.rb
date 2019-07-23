@@ -31,7 +31,7 @@ class RemoteMirror < ApplicationRecord
 
   scope :enabled, -> { where(enabled: true) }
   scope :started, -> { with_update_status(:started) }
-  scope :stuck,   -> { started.where('last_update_at < ? OR (last_update_at IS NULL AND updated_at < ?)', 1.day.ago, 1.day.ago) }
+  scope :stuck,   -> { started.where('last_update_at < ? OR (last_update_at IS NULL AND updated_at < ?)', 1.hour.ago, 3.hours.ago) }
 
   state_machine :update_status, initial: :none do
     event :update_start do
@@ -173,7 +173,7 @@ class RemoteMirror < ApplicationRecord
 
     result = URI.parse(url)
     result.password = '*****' if result.password
-    result.user = '*****' if result.user && result.user != "git" # tokens or other data may be saved as user
+    result.user = '*****' if result.user && result.user != 'git' # tokens or other data may be saved as user
     result.to_s
   end
 
