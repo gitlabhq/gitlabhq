@@ -8,10 +8,6 @@ describe API::CommitStatuses do
   let(:developer) { create_user(:developer) }
   let(:sha) { commit.id }
 
-  let(:commit_status) do
-    create(:commit_status, status: :pending, pipeline: pipeline)
-  end
-
   describe "GET /projects/:id/repository/commits/:sha/statuses" do
     let(:get_url) { "/projects/#{project.id}/repository/commits/#{sha}/statuses" }
 
@@ -237,6 +233,26 @@ describe API::CommitStatuses do
 
           it 'does not create a new commit status' do
             expect(CommitStatus.count).to eq 1
+          end
+        end
+
+        context 'when a pipeline id is specified' do
+          let!(:first_pipeline) { project.ci_pipelines.create(source: :push, sha: commit.id, ref: 'master', status: 'created') }
+          let!(:other_pipeline) { project.ci_pipelines.create(source: :push, sha: commit.id, ref: 'master', status: 'created') }
+
+          subject do
+            post api(post_url, developer), params: {
+              pipeline_id: other_pipeline.id,
+              state: 'success',
+              ref: 'master'
+            }
+          end
+
+          it 'update the correct pipeline' do
+            subject
+
+            expect(first_pipeline.reload.status).to eq('created')
+            expect(other_pipeline.reload.status).to eq('success')
           end
         end
       end

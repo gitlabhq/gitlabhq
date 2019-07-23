@@ -52,6 +52,7 @@ module API
         optional :name,        type: String,  desc: 'A string label to differentiate this status from the status of other systems. Default: "default"'
         optional :context,     type: String,  desc: 'A string label to differentiate this status from the status of other systems. Default: "default"'
         optional :coverage,    type: Float,   desc: 'The total code coverage'
+        optional :pipeline_id, type: Integer, desc: 'An existing pipeline ID, when multiple pipelines on the same commit SHA have been triggered'
       end
       # rubocop: disable CodeReuse/ActiveRecord
       post ':id/statuses/:sha' do
@@ -73,7 +74,8 @@ module API
 
         name = params[:name] || params[:context] || 'default'
 
-        pipeline = @project.pipeline_for(ref, commit.sha)
+        pipeline = @project.pipeline_for(ref, commit.sha, params[:pipeline_id])
+
         unless pipeline
           pipeline = @project.ci_pipelines.create!(
             source: :external,
