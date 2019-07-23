@@ -1,4 +1,4 @@
-import { commitActionTypes } from '../constants';
+import { commitActionTypes, FILE_VIEW_MODE_EDITOR } from '../constants';
 
 export const dataStructure = () => ({
   id: '',
@@ -43,7 +43,7 @@ export const dataStructure = () => ({
   editorColumn: 1,
   fileLanguage: '',
   eol: '',
-  viewMode: 'editor',
+  viewMode: FILE_VIEW_MODE_EDITOR,
   previewMode: null,
   size: 0,
   parentPath: null,

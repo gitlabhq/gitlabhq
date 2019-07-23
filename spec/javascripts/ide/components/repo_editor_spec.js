@@ -5,7 +5,7 @@ import axios from '~/lib/utils/axios_utils';
 import store from '~/ide/stores';
 import repoEditor from '~/ide/components/repo_editor.vue';
 import Editor from '~/ide/lib/editor';
-import { activityBarViews } from '~/ide/constants';
+import { activityBarViews, FILE_VIEW_MODE_EDITOR, FILE_VIEW_MODE_PREVIEW } from '~/ide/constants';
 import { createComponentWithStore } from '../../helpers/vue_mount_component_helper';
 import setTimeoutPromise from '../../helpers/set_timeout_promise_helper';
 import { file, resetStore } from '../helpers';
@@ -16,7 +16,7 @@ describe('RepoEditor', () => {
   beforeEach(done => {
     const f = {
       ...file(),
-      viewMode: 'editor',
+      viewMode: FILE_VIEW_MODE_EDITOR,
     };
     const RepoEditor = Vue.extend(repoEditor);
 
@@ -370,7 +370,7 @@ describe('RepoEditor', () => {
   describe('when files view mode is preview', () => {
     beforeEach(done => {
       spyOn(vm.editor, 'updateDimensions');
-      vm.file.viewMode = 'preview';
+      vm.file.viewMode = FILE_VIEW_MODE_PREVIEW;
       vm.$nextTick(done);
     });
 
@@ -392,7 +392,7 @@ describe('RepoEditor', () => {
 
     describe('when file view mode changes to editor', () => {
       beforeEach(done => {
-        vm.file.viewMode = 'editor';
+        vm.file.viewMode = FILE_VIEW_MODE_EDITOR;
 
         // one tick to trigger watch
         vm.$nextTick()
