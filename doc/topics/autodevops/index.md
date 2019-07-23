@@ -764,6 +764,7 @@ also be customized, and you can easily use a [custom buildpack](#custom-buildpac
 | `ROLLOUT_RESOURCE_TYPE`     | From GitLab 11.9, this variable allows specification of the resource type being deployed when using a custom helm chart. Default value is `deployment`. |
 | `ROLLOUT_STATUS_DISABLED`   | From GitLab 12.0, this variable allows to disable rollout status check because it doesn't support all resource types, for example, `cronjob`. |
 | `HELM_UPGRADE_EXTRA_ARGS`   | From GitLab 11.11, this variable allows extra arguments in `helm` commands when deploying the application. Note that using quotes will not prevent word splitting. **Tip:** you can use this variable to [customize the Auto Deploy helm chart](https://docs.gitlab.com/ee/topics/autodevops/index.html#custom-helm-chart) by applying custom override values with `--values my-values.yaml`. |
+| `HELM_RELEASE_NAME`   | From GitLab 12.1, this variable allows the `helm` release name to be overridden, this can be used to assign unique release names when deploying multiple projects to a single namespace  |
 
 TIP: **Tip:**
 Set up the replica variables using a
