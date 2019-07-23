@@ -1580,6 +1580,7 @@ ActiveRecord::Schema.define(version: 2019_07_29_090456) do
     t.datetime "updated_at"
     t.integer "saml_provider_id"
     t.string "secondary_extern_uid"
+    t.index "lower((extern_uid)::text), provider", name: "index_on_identities_lower_extern_uid_and_provider"
     t.index ["saml_provider_id"], name: "index_identities_on_saml_provider_id", where: "(saml_provider_id IS NOT NULL)"
     t.index ["user_id"], name: "index_identities_on_user_id"
   end
