@@ -1,0 +1,4 @@
+---
+title: Align access permissions for wiki history to those of wiki pages
+merge_request: 30470
+type: fixed
