@@ -2074,6 +2074,61 @@ describe Project do
     end
   end
 
+  describe '#latest_successful_build_for_sha' do
+    let(:project) { create(:project, :repository) }
+    let(:pipeline) { create_pipeline(project) }
+
+    context 'with many builds' do
+      it 'gives the latest builds from latest pipeline' do
+        pipeline1 = create_pipeline(project)
+        pipeline2 = create_pipeline(project)
+        create_build(pipeline1, 'test')
+        create_build(pipeline1, 'test2')
+        build1_p2 = create_build(pipeline2, 'test')
+        create_build(pipeline2, 'test2')
+
+        expect(project.latest_successful_build_for_sha(build1_p2.name))
+          .to eq(build1_p2)
+      end
+    end
+
+    context 'with succeeded pipeline' do
+      let!(:build) { create_build }
+
+      context 'standalone pipeline' do
+        it 'returns builds for ref for default_branch' do
+          expect(project.latest_successful_build_for_sha(build.name))
+            .to eq(build)
+        end
+
+        it 'returns empty relation if the build cannot be found' do
+          expect(project.latest_successful_build_for_sha('TAIL'))
+            .to be_nil
+        end
+      end
+
+      context 'with some pending pipeline' do
+        before do
+          create_build(create_pipeline(project, 'pending'))
+        end
+
+        it 'gives the latest build from latest pipeline' do
+          expect(project.latest_successful_build_for_sha(build.name))
+            .to eq(build)
+        end
+      end
+    end
+
+    context 'with pending pipeline' do
+      it 'returns empty relation' do
+        pipeline.update(status: 'pending')
+        pending_build = create_build(pipeline)
+
+        expect(project.latest_successful_build_for_sha(pending_build.name)).to be_nil
+      end
+    end
+  end
+
   describe '#latest_successful_build_for!' do
     let(:project) { create(:project, :repository) }
     let(:pipeline) { create_pipeline(project) }

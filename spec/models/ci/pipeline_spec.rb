@@ -1812,6 +1812,19 @@ describe Ci::Pipeline, :mailer do
     end
   end
 
+  describe '.latest_successful_for_sha' do
+    include_context 'with some outdated pipelines'
+
+    let!(:latest_successful_pipeline) do
+      create_pipeline(:success, 'ref', 'awesomesha', project)
+    end
+
+    it 'returns the latest successful pipeline' do
+      expect(described_class.latest_successful_for_sha('awesomesha'))
+        .to eq(latest_successful_pipeline)
+    end
+  end
+
   describe '.latest_successful_for_refs' do
     include_context 'with some outdated pipelines'
 
