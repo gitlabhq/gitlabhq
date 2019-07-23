@@ -71,7 +71,7 @@ Once you've set up your identity provider to work with GitLab, you'll need to co
 1. Navigate to the group's **Settings > SAML SSO**.
 1. Find the SSO URL from your Identity Provider and enter it the **Identity provider single sign on URL** field.
 1. Find and enter the fingerprint for the SAML token signing certificate in the **Certificate** field.
-1. Check the **Enable SAML authentication for this group** checkbox.
+1. Click the **Enable SAML authentication for this group** toggle switch.
 1. Click the **Save changes** button.
 
 ![Group SAML Settings for GitLab.com](img/group_saml_settings.png)
