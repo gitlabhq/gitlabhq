@@ -29,7 +29,16 @@ module Projects
       end
 
       def bulk_destroy
+        unless params[:ids].present?
+          head :bad_request
+          return
+        end
+
         @tags = (params[:ids] || []).map { |tag_name| image.tag(tag_name) }
+        unless @tags.all? { |tag| tag.valid_name? }
+          head :bad_request
+          return
+        end
 
         success_count = 0
         @tags.each do |tag|
