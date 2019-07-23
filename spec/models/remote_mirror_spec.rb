@@ -113,7 +113,7 @@ describe RemoteMirror, :mailer do
 
         remote_mirror = create(:remote_mirror)
 
-        expect(remote_mirror.remote_name).to eq("remote_mirror_secret")
+        expect(remote_mirror.remote_name).to eq('remote_mirror_secret')
       end
     end
 
@@ -201,11 +201,20 @@ describe RemoteMirror, :mailer do
   end
 
   context 'stuck mirrors' do
-    it 'includes mirrors stuck in started with no last_update_at set' do
+    it 'includes mirrors that were started over an hour ago' do
+      mirror = create_mirror(url: 'http://cantbeblank',
+                             update_status: 'started',
+                             last_update_at: 3.hours.ago,
+                             updated_at: 2.hours.ago)
+
+      expect(described_class.stuck.last).to eq(mirror)
+    end
+
+    it 'includes mirrors started over 3 hours ago for their first sync' do
       mirror = create_mirror(url: 'http://cantbeblank',
                              update_status: 'started',
                              last_update_at: nil,
-                             updated_at: 25.hours.ago)
+                             updated_at: 4.hours.ago)
 
       expect(described_class.stuck.last).to eq(mirror)
     end

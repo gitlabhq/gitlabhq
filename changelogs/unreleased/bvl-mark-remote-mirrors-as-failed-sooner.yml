@@ -1,0 +1,5 @@
+---
+title: Mark push mirrors as failed after 1 hour
+merge_request: 30999
+author:
+type: changed
