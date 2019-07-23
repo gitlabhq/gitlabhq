@@ -137,3 +137,13 @@ level with `NICENESS`. Below are the valid levels, but consult
 - `1` or `Realtime`
 - `2` or `Best-effort` (default)
 - `3` or `Idle`
+
+## Remove expired ActiveSession lookup keys
+
+```
+# omnibus-gitlab
+sudo gitlab-rake gitlab:cleanup:sessions:active_sessions_lookup_keys
+
+# installation from source
+bundle exec rake gitlab:cleanup:sessions:active_sessions_lookup_keys RAILS_ENV=production
+```
