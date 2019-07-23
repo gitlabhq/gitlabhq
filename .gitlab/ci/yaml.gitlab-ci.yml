@@ -6,4 +6,4 @@ lint-ci-gitlab:
   dependencies: []
   image: sdesbure/yamllint:latest
   script:
-    - yamllint .gitlab-ci.yml .gitlab/ci lib/gitlab/ci/templates
+    - yamllint .gitlab-ci.yml .gitlab/ci lib/gitlab/ci/templates changelogs
