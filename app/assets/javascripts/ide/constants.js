@@ -4,6 +4,10 @@ export const MAX_WINDOW_HEIGHT_COMPACT = 750;
 export const MAX_TITLE_LENGTH = 50;
 export const MAX_BODY_LENGTH = 72;
 
+// File view modes
+export const FILE_VIEW_MODE_EDITOR = 'editor';
+export const FILE_VIEW_MODE_PREVIEW = 'preview';
+
 export const activityBarViews = {
   edit: 'ide-tree',
   commit: 'commit-section',

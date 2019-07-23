@@ -1,5 +1,6 @@
 import mutations from '~/ide/stores/mutations/file';
 import state from '~/ide/stores/state';
+import { FILE_VIEW_MODE_PREVIEW } from '~/ide/constants';
 import { file } from '../../helpers';
 
 describe('IDE store file mutations', () => {
@@ -425,10 +426,10 @@ describe('IDE store file mutations', () => {
     it('updates file view mode', () => {
       mutations.SET_FILE_VIEWMODE(localState, {
         file: localFile,
-        viewMode: 'preview',
+        viewMode: FILE_VIEW_MODE_PREVIEW,
       });
 
-      expect(localFile.viewMode).toBe('preview');
+      expect(localFile.viewMode).toBe(FILE_VIEW_MODE_PREVIEW);
     });
   });
 

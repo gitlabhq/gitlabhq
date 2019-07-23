@@ -4,7 +4,12 @@ import { viewerInformationForPath } from '~/vue_shared/components/content_viewer
 import flash from '~/flash';
 import ContentViewer from '~/vue_shared/components/content_viewer/content_viewer.vue';
 import DiffViewer from '~/vue_shared/components/diff_viewer/diff_viewer.vue';
-import { activityBarViews, viewerTypes } from '../constants';
+import {
+  activityBarViews,
+  viewerTypes,
+  FILE_VIEW_MODE_EDITOR,
+  FILE_VIEW_MODE_PREVIEW,
+} from '../constants';
 import Editor from '../lib/editor';
 import ExternalLink from './external_link.vue';
 import FileTemplatesBar from './file_templates/bar.vue';
@@ -49,10 +54,10 @@ export default {
       return this.shouldHideEditor && this.file.mrChange && this.viewer === viewerTypes.mr;
     },
     isEditorViewMode() {
-      return this.file.viewMode === 'editor';
+      return this.file.viewMode === FILE_VIEW_MODE_EDITOR;
     },
     isPreviewViewMode() {
-      return this.file.viewMode === 'preview';
+      return this.file.viewMode === FILE_VIEW_MODE_PREVIEW;
     },
     editTabCSS() {
       return {
@@ -85,7 +90,7 @@ export default {
         if (this.currentActivityView !== activityBarViews.edit) {
           this.setFileViewMode({
             file: this.file,
-            viewMode: 'editor',
+            viewMode: FILE_VIEW_MODE_EDITOR,
           });
         }
       }
@@ -94,7 +99,7 @@ export default {
       if (this.currentActivityView !== activityBarViews.edit) {
         this.setFileViewMode({
           file: this.file,
-          viewMode: 'editor',
+          viewMode: FILE_VIEW_MODE_EDITOR,
         });
       }
     },
@@ -244,6 +249,8 @@ export default {
     },
   },
   viewerTypes,
+  FILE_VIEW_MODE_EDITOR,
+  FILE_VIEW_MODE_PREVIEW,
 };
 </script>
 
@@ -255,7 +262,7 @@ export default {
           <a
             href="javascript:void(0);"
             role="button"
-            @click.prevent="setFileViewMode({ file, viewMode: 'editor' })"
+            @click.prevent="setFileViewMode({ file, viewMode: $options.FILE_VIEW_MODE_EDITOR })"
           >
             <template v-if="viewer === $options.viewerTypes.edit">{{ __('Edit') }}</template>
             <template v-else>{{ __('Review') }}</template>
@@ -265,7 +272,7 @@ export default {
           <a
             href="javascript:void(0);"
             role="button"
-            @click.prevent="setFileViewMode({ file, viewMode: 'preview' })"
+            @click.prevent="setFileViewMode({ file, viewMode: $options.FILE_VIEW_MODE_PREVIEW })"
             >{{ file.previewMode.previewTitle }}</a
           >
         </li>
