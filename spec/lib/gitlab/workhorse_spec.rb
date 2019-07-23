@@ -404,6 +404,7 @@ describe Gitlab::Workhorse do
       end
 
       it 'set and notify' do
+        expect(Gitlab::Redis::SharedState).to receive(:with).and_call_original
         expect_any_instance_of(::Redis).to receive(:publish)
           .with(described_class::NOTIFICATION_CHANNEL, "test-key=test-value")
 
