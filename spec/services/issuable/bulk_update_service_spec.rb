@@ -16,22 +16,22 @@ describe Issuable::BulkUpdateService do
 
   shared_examples 'updates milestones' do
     it 'succeeds' do
-      result = bulk_update(issues, milestone_id: milestone.id)
+      result = bulk_update(issuables, milestone_id: milestone.id)
 
       expect(result[:success]).to be_truthy
-      expect(result[:count]).to eq(issues.count)
+      expect(result[:count]).to eq(issuables.count)
     end
 
-    it 'updates the issues milestone' do
-      bulk_update(issues, milestone_id: milestone.id)
+    it 'updates the issuables milestone' do
+      bulk_update(issuables, milestone_id: milestone.id)
 
-      issues.each do |issue|
-        expect(issue.reload.milestone).to eq(milestone)
+      issuables.each do |issuable|
+        expect(issuable.reload.milestone).to eq(milestone)
       end
     end
   end
 
-  context 'with project issues' do
+  context 'with project issuables' do
     describe 'close issues' do
       let(:issues) { create_list(:issue, 2, project: project) }
 
@@ -171,7 +171,7 @@ describe Issuable::BulkUpdateService do
     end
 
     describe 'updating milestones' do
-      let(:issues)    { [create(:issue, project: project)] }
+      let(:issuables) { [create(:issue, project: project)] }
       let(:milestone) { create(:milestone, project: project) }
 
       it_behaves_like 'updates milestones'
@@ -360,22 +360,32 @@ describe Issuable::BulkUpdateService do
     end
   end
 
-  context 'with group issues' do
+  context 'with group issuables ' do
     let(:group) { create(:group) }
 
-    context 'updating milestone' do
+    describe 'updating milestones' do
       let(:milestone) { create(:milestone, group: group) }
-      let(:project1)  { create(:project, :repository, group: group) }
-      let(:project2)  { create(:project, :repository, group: group) }
-      let(:issue1)    { create(:issue, project: project1) }
-      let(:issue2)    { create(:issue, project: project2) }
-      let(:issues)    { [issue1, issue2] }
+      let(:project)   { create(:project, :repository, group: group) }
 
       before do
         group.add_maintainer(user)
       end
 
-      it_behaves_like 'updates milestones'
+      context 'when issues' do
+        let(:issue1)    { create(:issue, project: project) }
+        let(:issue2)    { create(:issue, project: project) }
+        let(:issuables) { [issue1, issue2] }
+
+        it_behaves_like 'updates milestones'
+      end
+
+      context 'when merge requests' do
+        let(:merge_request1) { create(:merge_request, source_project: project, source_branch: 'branch-1') }
+        let(:merge_request2) { create(:merge_request, source_project: project, source_branch: 'branch-2') }
+        let(:issuables)      { [merge_request1, merge_request2] }
+
+        it_behaves_like 'updates milestones'
+      end
     end
   end
 end

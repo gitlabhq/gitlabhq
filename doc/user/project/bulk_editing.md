@@ -13,8 +13,8 @@ by using the bulk editing feature.
 ![Bulk editing](img/bulk-editing.png)
 
 NOTE: **Note:**
-Bulk editing of merge requests is only available at the project level.
-For more details, see [bulk editing group issues](../group/bulk_editing/index.md).
+Bulk editing issues and merge requests is also available at the group level.
+For more details, see [bulk editing group issues and merge requests](../group/bulk_editing/index.md).
 
 To update multiple project issues or merge requests at the same time:
 
