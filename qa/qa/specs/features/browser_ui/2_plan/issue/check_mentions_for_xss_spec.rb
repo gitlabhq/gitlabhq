@@ -3,7 +3,7 @@
 module QA
   context 'Plan' do
     describe 'check xss occurence in @mentions in issues' do
-      before do
+      it 'user mentions a user in comment' do
         QA::Runtime::Env.personal_access_token = QA::Runtime::Env.admin_personal_access_token
 
         unless QA::Runtime::Env.personal_access_token
@@ -39,9 +39,7 @@ module QA
           issue.project = project
         end
         issue.visit!
-      end
 
-      it 'user mentions a user in comment' do
         Page::Project::Issue::Show.perform do |show|
           show.select_all_activities_filter
           show.comment('cc-ing you here @eve')
