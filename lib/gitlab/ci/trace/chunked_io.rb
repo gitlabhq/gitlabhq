@@ -166,6 +166,13 @@ module Gitlab
         end
 
         def destroy!
+          # TODO: Remove this logging once we confirmed new live trace architecture is functional.
+          # See https://gitlab.com/gitlab-com/gl-infra/infrastructure/issues/4667.
+          unless build.has_archived_trace?
+            Sidekiq.logger.warn(message: 'The job does not have archived trace but going to be destroyed.',
+                                job_id: build.id)
+          end
+
           trace_chunks.fast_destroy_all
           @tell = @size = 0
         ensure

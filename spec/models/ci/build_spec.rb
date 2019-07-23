@@ -692,6 +692,34 @@ describe Ci::Build do
     end
   end
 
+  describe '#has_live_trace?' do
+    subject { build.has_live_trace? }
+
+    let(:build) { create(:ci_build, :trace_live) }
+
+    it { is_expected.to be_truthy }
+
+    context 'when build does not have live trace' do
+      let(:build) { create(:ci_build) }
+
+      it { is_expected.to be_falsy }
+    end
+  end
+
+  describe '#has_archived_trace?' do
+    subject { build.has_archived_trace? }
+
+    let(:build) { create(:ci_build, :trace_artifact) }
+
+    it { is_expected.to be_truthy }
+
+    context 'when build does not have archived trace' do
+      let(:build) { create(:ci_build) }
+
+      it { is_expected.to be_falsy }
+    end
+  end
+
   describe '#has_job_artifacts?' do
     subject { build.has_job_artifacts? }
 
