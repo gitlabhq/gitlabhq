@@ -18,9 +18,9 @@ module QA
 
         QA::Runtime::Env.personal_access_token = nil
 
-        Runtime::Browser.visit(:gitlab, Page::Main::Login)
-
         Page::Main::Menu.perform(&:sign_out) if Page::Main::Menu.perform { |p| p.has_personal_area?(wait: 0) }
+
+        Runtime::Browser.visit(:gitlab, Page::Main::Login)
 
         Page::Main::Login.perform(&:sign_in_using_credentials)
 
