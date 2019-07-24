@@ -7604,9 +7604,6 @@ msgstr ""
 msgid "PerformanceBar|SQL queries"
 msgstr ""
 
-msgid "PerformanceBar|profile"
-msgstr ""
-
 msgid "PerformanceBar|trace"
 msgstr ""
 

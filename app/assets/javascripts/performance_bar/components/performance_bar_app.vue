@@ -1,5 +1,4 @@
 <script>
-import $ from 'jquery';
 import { glEmojiTag } from '~/emoji';
 
 import detailedMetric from './detailed_metric.vue';
@@ -25,10 +24,6 @@ export default {
       required: true,
     },
     peekUrl: {
-      type: String,
-      required: true,
-    },
-    profileUrl: {
       type: String,
       required: true,
     },
@@ -74,9 +69,6 @@ export default {
     initialRequest() {
       return this.currentRequestId === this.requestId;
     },
-    lineProfileModal() {
-      return $('#modal-peek-line-profile');
-    },
     hasHost() {
       return this.currentRequest && this.currentRequest.details && this.currentRequest.details.host;
     },
@@ -90,10 +82,6 @@ export default {
   },
   mounted() {
     this.currentRequest = this.requestId;
-
-    if (this.lineProfileModal.length) {
-      this.lineProfileModal.modal('toggle');
-    }
   },
   methods: {
     changeCurrentRequest(newRequestId) {
@@ -124,17 +112,6 @@ export default {
         :header="metric.header"
         :keys="metric.keys"
       />
-      <div v-if="initialRequest" id="peek-view-rblineprof" class="view">
-        <button
-          v-if="lineProfileModal.length"
-          class="btn-link btn-blank"
-          data-toggle="modal"
-          data-target="#modal-peek-line-profile"
-        >
-          {{ s__('PerformanceBar|profile') }}
-        </button>
-        <a v-else :href="profileUrl">{{ s__('PerformanceBar|profile') }}</a>
-      </div>
       <div id="peek-view-gc" class="view">
         <span v-if="currentRequest.details" class="bold">
           <span title="Invoke Time">{{ currentRequest.details.gc.gc_time }}</span

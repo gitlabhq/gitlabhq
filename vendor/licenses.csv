@@ -816,7 +816,6 @@ pbkdf2,3.0.14,MIT
 peek,1.0.1,MIT
 peek-gc,0.0.2,MIT
 peek-mysql2,1.1.0,MIT
-peek-rblineprof,0.2.0,MIT
 peek-redis,1.2.0,MIT
 pg,0.18.4,"BSD,ruby,GPL"
 pify,3.0.0,MIT

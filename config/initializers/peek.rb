@@ -7,7 +7,6 @@ Rails.application.config.peek.adapter = :redis, { client: ::Redis.new(Gitlab::Re
 Peek.into Peek::Views::Host
 Peek.into Peek::Views::ActiveRecord
 Peek.into Peek::Views::Gitaly
-Peek.into Peek::Views::Rblineprof
 Peek.into Peek::Views::RedisDetailed
 Peek.into Peek::Views::Rugged
 Peek.into Peek::Views::GC
