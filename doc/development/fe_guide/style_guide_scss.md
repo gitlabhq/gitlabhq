@@ -212,6 +212,7 @@ selectors are intended for use only with JavaScript to allow for removal or
 renaming without breaking styling.
 
 ### IDs
+
 Don't use ID selectors in CSS.
 
 ```scss

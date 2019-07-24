@@ -1,4 +1,4 @@
-### Community members & roles
+# Community members & roles
 
 GitLab community members and their privileges/responsibilities.
 

@@ -52,8 +52,8 @@ You can view the exact JSON payload in the administration panel. To view the pay
 1. Expand **Settings** in the left sidebar and click on **Metrics and profiling**.
 1. Expand **Usage statistics** and click on the **Preview payload** button.
 
-You can see how [the usage ping data maps to different stages of the product](https://gitlab.com/gitlab-data/analytics/blob/master/transform/snowflake-dbt/data/ping_metrics_to_stage_mapping_data.csv). 
- 
+You can see how [the usage ping data maps to different stages of the product](https://gitlab.com/gitlab-data/analytics/blob/master/transform/snowflake-dbt/data/ping_metrics_to_stage_mapping_data.csv).
+
 ### Deactivate the usage ping
 
 The usage ping is opt-out. If you want to deactivate this feature, go to

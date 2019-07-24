@@ -25,7 +25,7 @@ else
 end
 ```
 
-# Read-only database
+## Read-only database
 
 The database can be used in read-only mode. In this case we have to
 make sure all GET requests don't attempt any write operations to the

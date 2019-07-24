@@ -345,7 +345,7 @@ GitLab provides API endpoints to:
   - [Triggering pipelines through the API](triggers/README.md).
   - [Pipeline triggers API](../api/pipeline_triggers.md).
 
-### Start multiple manual actions in a stage
+### Start multiple manual actions in a stage
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/27188) in GitLab 11.11.
 
