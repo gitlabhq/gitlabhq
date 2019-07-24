@@ -20,6 +20,7 @@ module Gitlab
       # Returns an array with [<uri>, <original-hostname>].
       # rubocop:disable Metrics/CyclomaticComplexity
       # rubocop:disable Metrics/ParameterLists
+      # rubocop:disable Metrics/PerceivedComplexity
       def validate!(
         url,
         ports: [],
@@ -32,6 +33,7 @@ module Gitlab
         dns_rebind_protection: true)
         # rubocop:enable Metrics/CyclomaticComplexity
         # rubocop:enable Metrics/ParameterLists
+        # rubocop:enable Metrics/PerceivedComplexity
 
         return [nil, nil] if url.nil?
 
@@ -56,7 +58,15 @@ module Gitlab
             addr.ipv6_v4mapped? ? addr.ipv6_to_ipv4 : addr
           end
         rescue SocketError
-          return [uri, nil]
+          # In the test suite we use a lot of mocked urls that are either invalid or
+          # don't exist. In order to avoid modifying a ton of tests and factories
+          # we allow invalid urls unless the environment variable RSPEC_ALLOW_INVALID_URLS
+          # is not true
+          return [uri, nil] if Rails.env.test? && ENV['RSPEC_ALLOW_INVALID_URLS'] == 'true'
+
+          # If the addr can't be resolved or the url is invalid (i.e http://1.1.1.1.1)
+          # we block the url
+          raise BlockedUrlError, "Host cannot be resolved or invalid"
         end
 
         protected_uri_with_hostname = enforce_uri_hostname(addrs_info, uri, hostname, dns_rebind_protection)
@@ -92,9 +102,9 @@ module Gitlab
       # we'll be making the request to the IP address, instead of using the hostname.
       def enforce_uri_hostname(addrs_info, uri, hostname, dns_rebind_protection)
         address = addrs_info.first
-        ip_address = address&.ip_address
+        ip_address = address.ip_address
 
-        return [uri, nil] unless dns_rebind_protection && ip_address && ip_address != hostname
+        return [uri, nil] unless dns_rebind_protection && ip_address != hostname
 
         uri = uri.dup
         uri.hostname = ip_address
