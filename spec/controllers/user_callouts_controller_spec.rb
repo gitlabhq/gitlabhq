@@ -13,7 +13,7 @@ describe UserCalloutsController do
     subject { post :create, params: { feature_name: feature_name }, format: :json }
 
     context 'with valid feature name' do
-      let(:feature_name) { UserCallout.feature_names.keys.first }
+      let(:feature_name) { UserCallout.feature_names.first.first }
 
       context 'when callout entry does not exist' do
         it 'creates a callout entry with dismissed state' do
@@ -28,7 +28,7 @@ describe UserCalloutsController do
       end
 
       context 'when callout entry already exists' do
-        let!(:callout) { create(:user_callout, feature_name: UserCallout.feature_names.keys.first, user: user) }
+        let!(:callout) { create(:user_callout, feature_name: UserCallout.feature_names.first.first, user: user) }
 
         it 'returns success' do
           subject

@@ -45,7 +45,7 @@ module Gitlab
       end
 
       def key_from_hash(value)
-        value.is_a?(Hash) ? value.keys.first : value
+        value.is_a?(Hash) ? value.first.first : value
       end
     end
   end

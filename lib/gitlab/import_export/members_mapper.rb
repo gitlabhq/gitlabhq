@@ -35,7 +35,7 @@ module Gitlab
       end
 
       def include?(old_author_id)
-        map.keys.include?(old_author_id) && map[old_author_id] != default_user_id
+        map.has_key?(old_author_id) && map[old_author_id] != default_user_id
       end
 
       private
