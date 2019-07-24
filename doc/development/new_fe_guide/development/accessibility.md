@@ -1,17 +1,21 @@
 # Accessiblity
+
 Using semantic HTML plays a key role when it comes to accessibility.
 
 ## Accessible Rich Internet Applications - ARIA
+
 WAI-ARIA, the Accessible Rich Internet Applications specification, defines a way to make Web content and Web applications more accessible to people with disabilities.
 
 > Note: It is [recommended][using-aria] to use semantic elements as the primary method to achieve accessibility rather than adding aria attributes. Adding aria attributes should be seen as a secondary method for creating accessible elements.
 
 ### Role
+
 The `role` attribute describes the role the element plays in the context of the document.
 
 Check the list of WAI-ARIA roles [here][roles]
 
 ## Icons
+
 When using icons or images that aren't absolutely needed to understand the context, we should use `aria-hidden="true"`.
 
 On the other hand, if an icon is crucial to understand the context we should do one of the following:
@@ -20,6 +24,7 @@ On the other hand, if an icon is crucial to understand the context we should do 
 1. Use `aria-labelledby` to point to an element that contains the explanation for that icon
 
 ## Form inputs
+
 In forms we should use the `for` attribute in the label statement:
 
 ```

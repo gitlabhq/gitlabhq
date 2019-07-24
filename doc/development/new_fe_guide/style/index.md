@@ -8,7 +8,7 @@
 
 ## [Vue style guide](vue.md)
 
-# Tooling
+## Tooling
 
 ## [Prettier](prettier.md)
 

@@ -10,7 +10,7 @@ If epics feature is not available a `403` status code will be returned.
 
 The [epic issues API](epic_issues.md) allows you to interact with issues associated with an epic.
 
-# Milestone dates integration
+## Milestone dates integration
 
 > [Introduced][ee-6448] in GitLab 11.3.
 
