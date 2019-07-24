@@ -1676,18 +1676,20 @@ GET /projects/:id/push_rule
   "author_email_regex": "",
   "file_name_regex": "",
   "max_file_size": 5,
-  "commit_committer_check": false
+  "commit_committer_check": false,
+  "reject_unsigned_commits": false
 }
 ```
 
 Users on GitLab [Premium, Silver, or higher](https://about.gitlab.com/pricing/) will also see
-the `commit_committer_check` parameter:
+the `commit_committer_check` and `reject_unsigned_commits` parameters:
 
 ```json
 {
   "id": 1,
   "project_id": 3,
-  "commit_committer_check": false
+  "commit_committer_check": false,
+  "reject_unsigned_commits": false
   ...
 }
 ```
@@ -1713,6 +1715,7 @@ POST /projects/:id/push_rule
 | `file_name_regex` **(STARTER)**               | string         | no       | All commited filenames must **not** match this, e.g. `(jar|exe)$` |
 | `max_file_size` **(STARTER)**                 | integer        | no       | Maximum file size (MB) |
 | `commit_committer_check` **(PREMIUM)**        | boolean        | no       | Users can only push commits to this repository that were committed with one of their own verified emails. |
+| `reject_unsigned_commits` **(PREMIUM)**        | boolean        | no       | Reject commit when it is not signed through GPG. |
 
 ### Edit project push rule
 
@@ -1735,6 +1738,7 @@ PUT /projects/:id/push_rule
 | `file_name_regex` **(STARTER)**               | string         | no       | All commited filenames must **not** match this, e.g. `(jar|exe)$` |
 | `max_file_size` **(STARTER)**                 | integer        | no       | Maximum file size (MB) |
 | `commit_committer_check` **(PREMIUM)**        | boolean        | no       | Users can only push commits to this repository that were committed with one of their own verified emails. |
+| `reject_unsigned_commits` **(PREMIUM)**        | boolean        | no       | Reject commit when it is not signed through GPG. |
 
 ### Delete project push rule
 
