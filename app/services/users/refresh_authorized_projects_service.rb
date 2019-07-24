@@ -102,13 +102,7 @@ module Users
     end
 
     def fresh_authorizations
-      klass = if Group.supports_nested_objects?
-                Gitlab::ProjectAuthorizations::WithNestedGroups
-              else
-                Gitlab::ProjectAuthorizations::WithoutNestedGroups
-              end
-
-      klass.new(user).calculate
+      Gitlab::ProjectAuthorizations.new(user).calculate
     end
   end
 end

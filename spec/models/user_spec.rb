@@ -985,7 +985,7 @@ describe User do
     it { expect(user.namespaces).to contain_exactly(user.namespace, group) }
     it { expect(user.manageable_namespaces).to contain_exactly(user.namespace, group) }
 
-    context 'with child groups', :nested_groups do
+    context 'with child groups' do
       let!(:subgroup) { create(:group, parent: group) }
 
       describe '#manageable_namespaces' do
@@ -2082,11 +2082,7 @@ describe User do
 
     subject { user.membership_groups }
 
-    if Group.supports_nested_objects?
-      it { is_expected.to contain_exactly parent_group, child_group }
-    else
-      it { is_expected.to contain_exactly parent_group }
-    end
+    it { is_expected.to contain_exactly parent_group, child_group }
   end
 
   describe '#authorizations_for_projects' do
@@ -2386,7 +2382,7 @@ describe User do
       it_behaves_like :member
     end
 
-    context 'with subgroup with different owner for project runner', :nested_groups do
+    context 'with subgroup with different owner for project runner' do
       let(:group) { create(:group) }
       let(:another_user) { create(:user) }
       let(:subgroup) { create(:group, parent: group) }
@@ -2490,22 +2486,16 @@ describe User do
         group.add_owner(user)
       end
 
-      if Group.supports_nested_objects?
-        it 'returns all groups' do
-          is_expected.to match_array [
-            group,
-            nested_group_1, nested_group_1_1,
-            nested_group_2, nested_group_2_1
-          ]
-        end
-      else
-        it 'returns the top-level groups' do
-          is_expected.to match_array [group]
-        end
+      it 'returns all groups' do
+        is_expected.to match_array [
+          group,
+          nested_group_1, nested_group_1_1,
+          nested_group_2, nested_group_2_1
+        ]
       end
     end
 
-    context 'user is member of the first child (internal node), branch 1', :nested_groups do
+    context 'user is member of the first child (internal node), branch 1' do
       before do
         nested_group_1.add_owner(user)
       end
@@ -2518,7 +2508,7 @@ describe User do
       end
     end
 
-    context 'user is member of the first child (internal node), branch 2', :nested_groups do
+    context 'user is member of the first child (internal node), branch 2' do
       before do
         nested_group_2.add_owner(user)
       end
@@ -2531,7 +2521,7 @@ describe User do
       end
     end
 
-    context 'user is member of the last child (leaf node)', :nested_groups do
+    context 'user is member of the last child (leaf node)' do
       before do
         nested_group_1_1.add_owner(user)
       end
@@ -2687,7 +2677,7 @@ describe User do
       end
     end
 
-    context 'with 2FA requirement from expanded groups', :nested_groups do
+    context 'with 2FA requirement from expanded groups' do
       let!(:group1) { create :group, require_two_factor_authentication: true }
       let!(:group1a) { create :group, parent: group1 }
 
@@ -2702,7 +2692,7 @@ describe User do
       end
     end
 
-    context 'with 2FA requirement on nested child group', :nested_groups do
+    context 'with 2FA requirement on nested child group' do
       let!(:group1) { create :group, require_two_factor_authentication: false }
       let!(:group1a) { create :group, require_two_factor_authentication: true, parent: group1 }
 

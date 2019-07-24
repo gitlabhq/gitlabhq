@@ -13,7 +13,7 @@ describe 'Groups > Members > List members' do
     sign_in(user1)
   end
 
-  it 'show members from current group and parent', :nested_groups do
+  it 'show members from current group and parent' do
     group.add_developer(user1)
     nested_group.add_developer(user2)
 
@@ -23,7 +23,7 @@ describe 'Groups > Members > List members' do
     expect(second_row.text).to include(user2.name)
   end
 
-  it 'show user once if member of both current group and parent', :nested_groups do
+  it 'show user once if member of both current group and parent' do
     group.add_developer(user1)
     nested_group.add_developer(user1)
 

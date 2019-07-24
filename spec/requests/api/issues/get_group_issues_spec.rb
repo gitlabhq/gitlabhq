@@ -82,7 +82,7 @@ describe API::Issues do
       end
     end
 
-    context 'when group has subgroups', :nested_groups do
+    context 'when group has subgroups' do
       let(:subgroup_1) { create(:group, parent: group) }
       let(:subgroup_2) { create(:group, parent: subgroup_1) }
 

@@ -58,7 +58,7 @@ describe GroupMemberPolicy do
     end
   end
 
-  context 'with the group parent', :postgresql do
+  context 'with the group parent' do
     let(:current_user) { create :user }
     let(:subgroup) { create(:group, :private, parent: group)}
 

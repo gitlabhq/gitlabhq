@@ -118,7 +118,7 @@ describe AutoDevopsHelper do
           it { is_expected.to eq('instance enabled') }
         end
 
-        context 'with groups', :nested_groups do
+        context 'with groups' do
           before do
             receiver.update(parent: parent)
           end
@@ -170,7 +170,7 @@ describe AutoDevopsHelper do
           it { is_expected.to eq('instance enabled') }
         end
 
-        context 'with groups', :nested_groups do
+        context 'with groups' do
           let(:receiver) { create(:project, :repository, namespace: group) }
 
           before do
@@ -203,7 +203,7 @@ describe AutoDevopsHelper do
           it { is_expected.to be_nil }
         end
 
-        context 'with groups', :nested_groups do
+        context 'with groups' do
           let(:receiver) { create(:project, :repository, namespace: group) }
 
           context 'when auto devops is disabled on group level' do

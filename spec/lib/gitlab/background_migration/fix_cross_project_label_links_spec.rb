@@ -75,7 +75,7 @@ describe Gitlab::BackgroundMigration::FixCrossProjectLabelLinks, :migration, sch
         create_resource(target_type, 1, 2)
       end
 
-      it 'ignores label links referencing ancestor group labels', :nested_groups do
+      it 'ignores label links referencing ancestor group labels' do
         labels_table.create(id: 4, title: 'bug', color: 'red', project_id: 2, type: 'ProjectLabel')
         label_links_table.create(label_id: 4, target_type: target_type, target_id: 1)
         link = label_links_table.create(label_id: 1, target_type: target_type, target_id: 1)
@@ -85,7 +85,7 @@ describe Gitlab::BackgroundMigration::FixCrossProjectLabelLinks, :migration, sch
         expect(link.reload.label_id).to eq(1)
       end
 
-      it 'checks also issues and MRs in subgroups', :nested_groups do
+      it 'checks also issues and MRs in subgroups' do
         link = label_links_table.create(label_id: 2, target_type: target_type, target_id: 1)
 
         subject.perform(1, 100)

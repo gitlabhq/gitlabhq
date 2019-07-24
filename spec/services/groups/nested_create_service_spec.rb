@@ -28,35 +28,7 @@ describe Groups::NestedCreateService do
     end
   end
 
-  describe 'without subgroups' do
-    let(:params) { { group_path: 'a-group' } }
-
-    before do
-      allow(Group).to receive(:supports_nested_objects?) { false }
-    end
-
-    it 'creates the group' do
-      group = service.execute
-
-      expect(group).to be_persisted
-    end
-
-    it 'returns the group if it already existed' do
-      existing_group = create(:group, path: 'a-group')
-
-      expect(service.execute).to eq(existing_group)
-    end
-
-    it 'raises an error when tring to create a subgroup' do
-      service = described_class.new(user, group_path: 'a-group/a-sub-group')
-
-      expect { service.execute }.to raise_error('Nested groups are not supported on MySQL')
-    end
-
-    it_behaves_like 'with a visibility level'
-  end
-
-  describe 'with subgroups', :nested_groups do
+  describe 'with subgroups' do
     let(:params) { { group_path: 'a-group/a-sub-group' } }
 
     describe "#execute" do

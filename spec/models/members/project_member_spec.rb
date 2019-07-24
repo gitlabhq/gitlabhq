@@ -130,7 +130,7 @@ describe ProjectMember do
       end
     end
 
-    context 'with parent group and a subgroup', :nested_groups do
+    context 'with parent group and a subgroup' do
       it_behaves_like 'inherited access level as a member of entity' do
         let(:subgroup) { create(:group, parent: parent_entity) }
         let(:entity) { create(:project, group: subgroup) }

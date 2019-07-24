@@ -32,7 +32,7 @@ describe ClusterAncestorsFinder, '#execute' do
       is_expected.to eq([project_cluster, group_cluster, instance_cluster])
     end
 
-    context 'nested groups', :nested_groups do
+    context 'nested groups' do
       let(:group) { create(:group, parent: parent_group) }
       let(:parent_group) { create(:group) }
 
@@ -65,7 +65,7 @@ describe ClusterAncestorsFinder, '#execute' do
       is_expected.to eq([group_cluster, instance_cluster])
     end
 
-    context 'nested groups', :nested_groups do
+    context 'nested groups' do
       let(:group) { create(:group, parent: parent_group) }
       let(:parent_group) { create(:group) }
 

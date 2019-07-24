@@ -56,7 +56,7 @@ RSpec.describe Namespace::RootStorageStatistics, type: :model do
 
     it_behaves_like 'data refresh'
 
-    context 'with subgroups', :nested_groups do
+    context 'with subgroups' do
       let(:subgroup1) { create(:group, parent: namespace)}
       let(:subgroup2) { create(:group, parent: subgroup1)}
 

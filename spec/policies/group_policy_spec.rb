@@ -51,7 +51,7 @@ describe GroupPolicy do
 
     it { expect_allowed(:read_label, :read_list) }
 
-    context 'in subgroups', :nested_groups do
+    context 'in subgroups' do
       let(:subgroup) { create(:group, :private, parent: group) }
       let(:project) { create(:project, namespace: subgroup) }
 
@@ -104,8 +104,6 @@ describe GroupPolicy do
       end
 
       it 'allows every maintainer permission plus creating subgroups' do
-        allow(Group).to receive(:supports_nested_objects?).and_return(true)
-
         create_subgroup_permission = [:create_subgroup]
         updated_maintainer_permissions =
           maintainer_permissions + create_subgroup_permission
@@ -122,8 +120,6 @@ describe GroupPolicy do
 
     context 'with subgroup_creation_level set to owner' do
       it 'allows every maintainer permission' do
-        allow(Group).to receive(:supports_nested_objects?).and_return(true)
-
         expect_allowed(*guest_permissions)
         expect_allowed(*reporter_permissions)
         expect_allowed(*developer_permissions)
@@ -137,8 +133,6 @@ describe GroupPolicy do
     let(:current_user) { owner }
 
     it do
-      allow(Group).to receive(:supports_nested_objects?).and_return(true)
-
       expect_allowed(*guest_permissions)
       expect_allowed(*reporter_permissions)
       expect_allowed(*developer_permissions)
@@ -151,8 +145,6 @@ describe GroupPolicy do
     let(:current_user) { admin }
 
     it do
-      allow(Group).to receive(:supports_nested_objects?).and_return(true)
-
       expect_allowed(*guest_permissions)
       expect_allowed(*reporter_permissions)
       expect_allowed(*developer_permissions)
@@ -161,52 +153,7 @@ describe GroupPolicy do
     end
   end
 
-  describe 'when nested group support feature is disabled' do
-    before do
-      allow(Group).to receive(:supports_nested_objects?).and_return(false)
-    end
-
-    context 'admin' do
-      let(:current_user) { admin }
-
-      it 'allows every owner permission except creating subgroups' do
-        create_subgroup_permission = [:create_subgroup]
-        updated_owner_permissions =
-          owner_permissions - create_subgroup_permission
-
-        expect_disallowed(*create_subgroup_permission)
-        expect_allowed(*updated_owner_permissions)
-      end
-    end
-
-    context 'owner' do
-      let(:current_user) { owner }
-
-      it 'allows every owner permission except creating subgroups' do
-        create_subgroup_permission = [:create_subgroup]
-        updated_owner_permissions =
-          owner_permissions - create_subgroup_permission
-
-        expect_disallowed(*create_subgroup_permission)
-        expect_allowed(*updated_owner_permissions)
-      end
-    end
-
-    context 'maintainer' do
-      let(:current_user) { maintainer }
-
-      it 'allows every maintainer permission except creating subgroups' do
-        create_subgroup_permission = [:create_subgroup]
-        updated_maintainer_permissions =
-          maintainer_permissions - create_subgroup_permission
-
-        expect_disallowed(*create_subgroup_permission)
-        expect_allowed(*updated_maintainer_permissions)
-      end
-    end
-  end
-
-  describe 'private nested group use the highest access level from the group and inherited permissions', :nested_groups do
+  describe 'private nested group use the highest access level from the group and inherited permissions' do
     let(:nested_group) do
       create(:group, :private, :owner_subgroup_creation_only, parent: group)
     end
@@ -289,8 +236,6 @@ describe GroupPolicy do
       let(:current_user) { owner }
 
       it do
-        allow(Group).to receive(:supports_nested_objects?).and_return(true)
-
         expect_allowed(*guest_permissions)
         expect_allowed(*reporter_permissions)
         expect_allowed(*developer_permissions)

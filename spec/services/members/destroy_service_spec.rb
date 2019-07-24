@@ -267,15 +267,15 @@ describe Members::DestroyService do
       expect(group.members.map(&:user)).not_to include(member_user)
     end
 
-    it 'removes the subgroup membership', :postgresql do
+    it 'removes the subgroup membership' do
       expect(subgroup.members.map(&:user)).not_to include(member_user)
     end
 
-    it 'removes the subsubgroup membership', :postgresql do
+    it 'removes the subsubgroup membership' do
       expect(subsubgroup.members.map(&:user)).not_to include(member_user)
     end
 
-    it 'removes the subsubproject membership', :postgresql do
+    it 'removes the subsubproject membership' do
       expect(subsubproject.members.map(&:user)).not_to include(member_user)
     end
 

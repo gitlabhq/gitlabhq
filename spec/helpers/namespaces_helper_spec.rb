@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe NamespacesHelper, :postgresql do
+describe NamespacesHelper do
   let!(:admin) { create(:admin) }
   let!(:admin_project_creation_level) { nil }
   let!(:admin_group) do
@@ -109,7 +109,7 @@ describe NamespacesHelper, :postgresql do
       expect(options).to include(user_group.name)
     end
 
-    context 'when nested groups are available', :nested_groups do
+    context 'when nested groups are available' do
       it 'includes groups nested in groups the user can administer' do
         allow(helper).to receive(:current_user).and_return(user)
         child_group = create(:group, :private, parent: user_group)

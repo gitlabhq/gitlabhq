@@ -24,7 +24,7 @@ describe Groups::LabelsController do
       expect(label_ids).to match_array([label_1.title, group_label_1.title])
     end
 
-    context 'with ancestor group', :nested_groups do
+    context 'with ancestor group' do
       set(:subgroup) { create(:group, parent: group) }
       set(:subgroup_label_1) { create(:group_label, group: subgroup, title: 'subgroup_label_1') }
 
@@ -32,7 +32,7 @@ describe Groups::LabelsController do
         subgroup.add_owner(user)
       end
 
-      it 'returns ancestor group labels', :nested_groups do
+      it 'returns ancestor group labels' do
         get :index, params: { group_id: subgroup, include_ancestor_groups: true, only_group_labels: true }, format: :json
 
         label_ids = json_response.map {|label| label['title']}

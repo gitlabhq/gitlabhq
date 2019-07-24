@@ -9,7 +9,7 @@ describe MembersFinder, '#execute' do
   set(:user3)        { create(:user) }
   set(:user4)        { create(:user) }
 
-  it 'returns members for project and parent groups', :nested_groups do
+  it 'returns members for project and parent groups' do
     nested_group.request_access(user1)
     member1 = group.add_maintainer(user2)
     member2 = nested_group.add_maintainer(user3)
@@ -20,7 +20,7 @@ describe MembersFinder, '#execute' do
     expect(result.to_a).to match_array([member1, member2, member3])
   end
 
-  it 'includes nested group members if asked', :nested_groups do
+  it 'includes nested group members if asked' do
     project = create(:project, namespace: group)
     nested_group.request_access(user1)
     member1 = group.add_maintainer(user2)
@@ -32,7 +32,7 @@ describe MembersFinder, '#execute' do
     expect(result.to_a).to match_array([member1, member2, member3])
   end
 
-  context 'when include_invited_groups_members == true', :nested_groups do
+  context 'when include_invited_groups_members == true' do
     subject { described_class.new(project, user2).execute(include_invited_groups_members: true) }
 
     set(:linked_group) { create(:group, :public, :access_requestable) }
@@ -40,7 +40,7 @@ describe MembersFinder, '#execute' do
     set(:linked_group_member) { linked_group.add_developer(user1) }
     set(:nested_linked_group_member) { nested_linked_group.add_developer(user2) }
 
-    it 'includes all the invited_groups members including members inherited from ancestor groups', :nested_groups do
+    it 'includes all the invited_groups members including members inherited from ancestor groups' do
       create(:project_group_link, project: project, group: nested_linked_group)
 
       expect(subject).to contain_exactly(linked_group_member, nested_linked_group_member)

@@ -62,7 +62,7 @@ describe GroupChildEntity do
     it_behaves_like 'group child json'
   end
 
-  describe 'for a group', :nested_groups do
+  describe 'for a group' do
     let(:description) { 'Awesomeness' }
     let(:object) do
       create(:group, :nested, :with_avatar,

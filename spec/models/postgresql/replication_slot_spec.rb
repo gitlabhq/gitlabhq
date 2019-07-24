@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Postgresql::ReplicationSlot, :postgresql do
+describe Postgresql::ReplicationSlot do
   describe '.in_use?' do
     it 'returns true when replication slots are present' do
       expect(described_class).to receive(:exists?).and_return(true)

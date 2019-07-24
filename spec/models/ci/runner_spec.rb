@@ -146,7 +146,7 @@ describe Ci::Runner do
       expect(described_class.belonging_to_parent_group_of_project(project.id)).to contain_exactly(runner)
     end
 
-    context 'with a parent group with a runner', :nested_groups do
+    context 'with a parent group with a runner' do
       let(:runner) { create(:ci_runner, :group, groups: [parent_group]) }
       let(:project) { create(:project, group: group) }
       let(:group) { create(:group, parent: parent_group) }

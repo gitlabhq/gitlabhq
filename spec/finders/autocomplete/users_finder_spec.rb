@@ -50,7 +50,7 @@ describe Autocomplete::UsersFinder do
       it { is_expected.to match_array([user1]) }
     end
 
-    context 'when passed a subgroup', :nested_groups do
+    context 'when passed a subgroup' do
       let(:grandparent) { create(:group, :public) }
       let(:parent) { create(:group, :public, parent: grandparent) }
       let(:child) { create(:group, :public, parent: parent) }

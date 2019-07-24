@@ -28,7 +28,7 @@ describe 'layouts/header/_new_dropdown' do
         )
       end
 
-      it 'has a "New subgroup" link', :nested_groups do
+      it 'has a "New subgroup" link' do
         render
 
         expect(rendered).to have_link(

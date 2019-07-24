@@ -530,7 +530,7 @@ describe API::Groups do
         expect(json_response.length).to eq(2)
       end
 
-      it "returns projects including those in subgroups", :nested_groups do
+      it "returns projects including those in subgroups" do
         subgroup = create(:group, parent: group1)
         create(:project, group: subgroup)
         create(:project, group: subgroup)
@@ -642,7 +642,7 @@ describe API::Groups do
     end
   end
 
-  describe 'GET /groups/:id/subgroups', :nested_groups do
+  describe 'GET /groups/:id/subgroups' do
     let!(:subgroup1) { create(:group, parent: group1) }
     let!(:subgroup2) { create(:group, :private, parent: group1) }
     let!(:subgroup3) { create(:group, :private, parent: group2) }
@@ -786,7 +786,7 @@ describe API::Groups do
         expect(response).to have_gitlab_http_status(403)
       end
 
-      context 'as owner', :nested_groups do
+      context 'as owner' do
         before do
           group2.add_owner(user1)
         end
@@ -798,7 +798,7 @@ describe API::Groups do
         end
       end
 
-      context 'as maintainer', :nested_groups do
+      context 'as maintainer' do
         before do
           group2.add_maintainer(user1)
         end
@@ -825,7 +825,7 @@ describe API::Groups do
         expect(json_response["visibility"]).to eq(Gitlab::VisibilityLevel.string_level(Gitlab::CurrentSettings.current_application_settings.default_group_visibility))
       end
 
-      it "creates a nested group", :nested_groups do
+      it "creates a nested group" do
         parent = create(:group)
         parent.add_owner(user3)
         group = attributes_for(:group, { parent_id: parent.id })

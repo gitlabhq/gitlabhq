@@ -14,10 +14,8 @@ module Types
       group.avatar_url(only_path: false)
     end
 
-    if ::Group.supports_nested_objects?
-      field :parent, GroupType,
-            null: true,
-            resolve: -> (obj, _args, _ctx) { Gitlab::Graphql::Loaders::BatchModelLoader.new(Group, obj.parent_id).find }
-    end
+    field :parent, GroupType,
+          null: true,
+          resolve: -> (obj, _args, _ctx) { Gitlab::Graphql::Loaders::BatchModelLoader.new(Group, obj.parent_id).find }
   end
 end

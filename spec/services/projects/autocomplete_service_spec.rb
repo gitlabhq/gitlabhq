@@ -118,7 +118,7 @@ describe Projects::AutocompleteService do
       expect(milestone_titles).to eq([group_milestone2.title, group_milestone1.title])
     end
 
-    context 'with nested groups', :nested_groups do
+    context 'with nested groups' do
       let(:subgroup) { create(:group, :public, parent: group) }
       let!(:subgroup_milestone) { create(:milestone, group: subgroup) }
 

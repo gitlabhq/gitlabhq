@@ -366,10 +366,7 @@ module API
       end
       expose :request_access_enabled
       expose :full_name, :full_path
-
-      if ::Group.supports_nested_objects?
-        expose :parent_id
-      end
+      expose :parent_id
 
       expose :custom_attributes, using: 'API::Entities::CustomAttribute', if: :with_custom_attributes
 

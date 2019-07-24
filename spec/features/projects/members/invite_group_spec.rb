@@ -58,7 +58,7 @@ describe 'Project > Members > Invite group', :js do
       end
     end
 
-    context 'for a project in a subgroup', :nested_groups do
+    context 'for a project in a subgroup' do
       let!(:group_to_share_with) { create(:group) }
       let(:root_group) { create(:group) }
       let(:subgroup) { create(:group, parent: root_group) }
@@ -181,7 +181,7 @@ describe 'Project > Members > Invite group', :js do
         group_to_share_with.add_maintainer(maintainer)
       end
 
-      it 'the groups dropdown does not show ancestors', :nested_groups do
+      it 'the groups dropdown does not show ancestors' do
         visit project_settings_members_path(project)
 
         click_on 'invite-group-tab'

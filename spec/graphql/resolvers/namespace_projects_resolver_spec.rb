@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Resolvers::NamespaceProjectsResolver, :nested_groups do
+describe Resolvers::NamespaceProjectsResolver do
   include GraphqlHelpers
 
   let(:current_user) { create(:user) }

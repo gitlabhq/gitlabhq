@@ -103,7 +103,7 @@ describe Gitlab::BareRepositoryImport::Importer, :seed_helper do
     end
   end
 
-  context 'with subgroups', :nested_groups do
+  context 'with subgroups' do
     let(:project_path) { 'a-group/a-sub-group/a-project' }
 
     let(:existing_group) do
@@ -185,20 +185,6 @@ describe Gitlab::BareRepositoryImport::Importer, :seed_helper do
       project = Project.find_by_full_path(project_path)
 
       expect(gitlab_shell.exists?(project.repository_storage, project.disk_path + '.wiki.git')).to be(true)
-    end
-  end
-
-  context 'when subgroups are not available' do
-    let(:project_path) { 'a-group/a-sub-group/a-project' }
-
-    before do
-      expect(Group).to receive(:supports_nested_objects?) { false }
-    end
-
-    describe '#create_project_if_needed' do
-      it 'raises an error' do
-        expect { importer.create_project_if_needed }.to raise_error('Nested groups are not supported on MySQL')
-      end
     end
   end
 

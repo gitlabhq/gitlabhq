@@ -126,7 +126,7 @@ describe PipelineSerializer do
         expect(subject.all? { |entry| entry[:merge_request].present? }).to be_truthy
       end
 
-      it 'preloads related merge requests', :postgresql do
+      it 'preloads related merge requests' do
         recorded = ActiveRecord::QueryRecorder.new { subject }
 
         expect(recorded.log)

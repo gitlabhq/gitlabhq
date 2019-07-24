@@ -86,7 +86,7 @@ describe GroupsHelper do
     end
   end
 
-  describe 'group_title', :nested_groups do
+  describe 'group_title' do
     let(:group) { create(:group) }
     let(:nested_group) { create(:group, parent: group) }
     let(:deep_nested_group) { create(:group, parent: nested_group) }
@@ -99,7 +99,7 @@ describe GroupsHelper do
   end
 
   # rubocop:disable Layout/SpaceBeforeComma
-  describe '#share_with_group_lock_help_text', :nested_groups do
+  describe '#share_with_group_lock_help_text' do
     let!(:root_group) { create(:group) }
     let!(:subgroup) { create(:group, parent: root_group) }
     let!(:sub_subgroup) { create(:group, parent: subgroup) }
@@ -230,7 +230,7 @@ describe GroupsHelper do
     end
   end
 
-  describe 'parent_group_options', :nested_groups do
+  describe 'parent_group_options' do
     let(:current_user) { create(:user) }
     let(:group) { create(:group, name: 'group') }
     let(:group2) { create(:group, name: 'group2') }

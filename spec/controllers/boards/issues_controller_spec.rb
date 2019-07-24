@@ -85,7 +85,7 @@ describe Boards::IssuesController do
           expect { list_issues(user: user, board: group_board, list: list3) }.not_to exceed_query_limit(control_count + (2 * 8 - 1))
         end
 
-        it 'avoids N+1 database queries when adding a subgroup, project, and issue', :nested_groups do
+        it 'avoids N+1 database queries when adding a subgroup, project, and issue' do
           create(:project, group: sub_group_1)
           create(:labeled_issue, project: project, labels: [development])
           control_count = ActiveRecord::QueryRecorder.new { list_issues(user: user, board: group_board, list: list3) }.count

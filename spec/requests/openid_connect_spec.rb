@@ -104,7 +104,7 @@ describe 'OpenID Connect requests' do
         expect(json_response).to match(id_token_claims.merge(user_info_claims))
 
         expected_groups = [group1.full_path, group3.full_path]
-        expected_groups << group4.full_path if Group.supports_nested_objects?
+        expected_groups << group4.full_path
         expect(json_response['groups']).to match_array(expected_groups)
       end
 

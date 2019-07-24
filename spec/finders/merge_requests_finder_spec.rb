@@ -42,7 +42,7 @@ describe MergeRequestsFinder do
           expect(merge_requests).to contain_exactly(merge_request1, merge_request2)
         end
 
-        it 'filters by group including subgroups', :nested_groups do
+        it 'filters by group including subgroups' do
           params = { group_id: group.id, include_subgroups: true }
 
           merge_requests = described_class.new(user, params).execute

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'getting projects', :nested_groups do
+describe 'getting projects' do
   include GraphqlHelpers
 
   let(:group)             { create(:group) }

@@ -50,7 +50,7 @@ describe 'Group issues page' do
     end
   end
 
-  context 'issues list', :nested_groups do
+  context 'issues list' do
     let(:subgroup) { create(:group, parent: group) }
     let(:subgroup_project) { create(:project, :public, group: subgroup)}
     let(:user_in_group) { create(:group_member, :maintainer, user: create(:user), group: group ).user }

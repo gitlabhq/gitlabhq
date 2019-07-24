@@ -63,7 +63,7 @@ describe API::Boards do
     end
   end
 
-  describe "POST /groups/:id/boards/lists", :nested_groups do
+  describe "POST /groups/:id/boards/lists" do
     set(:group) { create(:group) }
     set(:board_parent) { create(:group, parent: group ) }
     let(:url) { "/groups/#{board_parent.id}/boards/#{board.id}/lists" }

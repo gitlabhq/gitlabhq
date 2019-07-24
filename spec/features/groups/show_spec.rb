@@ -75,29 +75,12 @@ describe 'Group show page' do
         sign_in(owner)
       end
 
-      context 'when subgroups are supported', :nested_groups do
-        before do
-          allow(Group).to receive(:supports_nested_objects?) { true }
-        end
-
+      context 'when subgroups are supported' do
         it 'allows creating subgroups' do
           visit path
 
           expect(page)
             .to have_css("li[data-text='New subgroup']", visible: false)
-        end
-      end
-
-      context 'when subgroups are not supported' do
-        before do
-          allow(Group).to receive(:supports_nested_objects?) { false }
-        end
-
-        it 'does not allow creating subgroups' do
-          visit path
-
-          expect(page)
-            .not_to have_selector("li[data-text='New subgroup']", visible: false)
         end
       end
     end
@@ -107,11 +90,7 @@ describe 'Group show page' do
         sign_in(maintainer)
       end
 
-      context 'when subgroups are supported', :nested_groups do
-        before do
-          allow(Group).to receive(:supports_nested_objects?) { true }
-        end
-
+      context 'when subgroups are supported' do
         context 'when subgroup_creation_level is set to maintainers' do
           before do
             relaxed_group.add_maintainer(maintainer)
@@ -139,19 +118,6 @@ describe 'Group show page' do
               .not_to have_selector("li[data-text='New subgroup']",
                                     visible: false)
           end
-        end
-      end
-
-      context 'when subgroups are not supported' do
-        before do
-          allow(Group).to receive(:supports_nested_objects?) { false }
-        end
-
-        it 'does not allow creating subgroups' do
-          visit path
-
-          expect(page)
-            .not_to have_selector("li[data-text='New subgroup']", visible: false)
         end
       end
     end

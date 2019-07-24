@@ -32,18 +32,14 @@ module GroupTree
   def filtered_groups_with_ancestors(groups)
     filtered_groups = groups.search(params[:filter]).page(params[:page])
 
-    if Group.supports_nested_objects?
-      # We find the ancestors by ID of the search results here.
-      # Otherwise the ancestors would also have filters applied,
-      # which would cause them not to be preloaded.
-      #
-      # Pagination needs to be applied before loading the ancestors to
-      # make sure ancestors are not cut off by pagination.
-      Gitlab::ObjectHierarchy.new(Group.where(id: filtered_groups.select(:id)))
-        .base_and_ancestors
-    else
-      filtered_groups
-    end
+    # We find the ancestors by ID of the search results here.
+    # Otherwise the ancestors would also have filters applied,
+    # which would cause them not to be preloaded.
+    #
+    # Pagination needs to be applied before loading the ancestors to
+    # make sure ancestors are not cut off by pagination.
+    Gitlab::ObjectHierarchy.new(Group.where(id: filtered_groups.select(:id)))
+      .base_and_ancestors
   end
   # rubocop: enable CodeReuse/ActiveRecord
 end

@@ -45,7 +45,7 @@ describe DeploymentPlatform do
         is_expected.to eq(group_cluster.platform_kubernetes)
       end
 
-      context 'when child group has configured kubernetes cluster', :nested_groups do
+      context 'when child group has configured kubernetes cluster' do
         let(:child_group1) { create(:group, parent: group) }
         let!(:child_group1_cluster) { create(:cluster_for_group, groups: [child_group1]) }
 

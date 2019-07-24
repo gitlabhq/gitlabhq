@@ -19,7 +19,7 @@ describe GroupDescendantsFinder do
       expect(finder.has_children?).to be_truthy
     end
 
-    context 'when there are subgroups', :nested_groups do
+    context 'when there are subgroups' do
       it 'is true when there are projects' do
         create(:group, parent: group)
 
@@ -99,7 +99,7 @@ describe GroupDescendantsFinder do
         )
       end
 
-      context 'with nested groups', :nested_groups do
+      context 'with nested groups' do
         let!(:subgroup1) { create(:group, parent: group, name: 'a', path: 'sub-a') }
         let!(:subgroup2) { create(:group, parent: group, name: 'z', path: 'sub-z') }
 
@@ -126,7 +126,7 @@ describe GroupDescendantsFinder do
     end
   end
 
-  context 'with nested groups', :nested_groups do
+  context 'with nested groups' do
     let!(:project) { create(:project, namespace: group) }
     let!(:subgroup) { create(:group, :private, parent: group) }
 

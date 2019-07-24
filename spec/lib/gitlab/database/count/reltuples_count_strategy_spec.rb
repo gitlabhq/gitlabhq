@@ -8,7 +8,7 @@ describe Gitlab::Database::Count::ReltuplesCountStrategy do
 
   subject { described_class.new(models).count }
 
-  describe '#count', :postgresql do
+  describe '#count' do
     let(:models) { [Project, Identity] }
 
     context 'when reltuples is up to date' do

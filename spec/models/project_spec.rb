@@ -2292,7 +2292,7 @@ describe Project do
     end
   end
 
-  describe '#ancestors_upto', :nested_groups do
+  describe '#ancestors_upto' do
     let(:parent) { create(:group) }
     let(:child) { create(:group, parent: parent) }
     let(:child2) { create(:group, parent: child) }
@@ -2331,7 +2331,7 @@ describe Project do
       it { is_expected.to eq(group) }
     end
 
-    context 'in a nested group', :nested_groups do
+    context 'in a nested group' do
       let(:root) { create(:group) }
       let(:child) { create(:group, parent: root) }
       let(:project) { create(:project, group: child) }
@@ -2479,7 +2479,7 @@ describe Project do
         expect(forked_project.in_fork_network_of?(project)).to be_truthy
       end
 
-      it 'is true for a fork of a fork', :postgresql do
+      it 'is true for a fork of a fork' do
         other_fork = fork_project(forked_project)
 
         expect(other_fork.in_fork_network_of?(project)).to be_truthy
@@ -3801,7 +3801,7 @@ describe Project do
         end
       end
 
-      context 'when enabled on root parent', :nested_groups do
+      context 'when enabled on root parent' do
         let(:parent_group) { create(:group, parent: create(:group, :auto_devops_enabled)) }
 
         context 'when auto devops instance enabled' do
@@ -3821,7 +3821,7 @@ describe Project do
         end
       end
 
-      context 'when disabled on root parent', :nested_groups do
+      context 'when disabled on root parent' do
         let(:parent_group) { create(:group, parent: create(:group, :auto_devops_disabled)) }
 
         context 'when auto devops instance enabled' do
@@ -4264,18 +4264,16 @@ describe Project do
       expect(project.badges.count).to eq 3
     end
 
-    if Group.supports_nested_objects?
-      context 'with nested_groups' do
-        let(:parent_group) { create(:group) }
+    context 'with nested_groups' do
+      let(:parent_group) { create(:group) }
 
-        before do
-          create_list(:group_badge, 2, group: project_group)
-          project_group.update(parent: parent_group)
-        end
+      before do
+        create_list(:group_badge, 2, group: project_group)
+        project_group.update(parent: parent_group)
+      end
 
-        it 'returns the project and the project nested groups badges' do
-          expect(project.badges.count).to eq 5
-        end
+      it 'returns the project and the project nested groups badges' do
+        expect(project.badges.count).to eq 5
       end
     end
   end

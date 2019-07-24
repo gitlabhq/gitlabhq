@@ -89,7 +89,7 @@ describe GroupsController do
   end
 
   describe 'GET #new' do
-    context 'when creating subgroups', :nested_groups do
+    context 'when creating subgroups' do
       [true, false].each do |can_create_group_status|
         context "and can_create_group is #{can_create_group_status}" do
           before do
@@ -166,7 +166,7 @@ describe GroupsController do
       end
     end
 
-    context 'when creating subgroups', :nested_groups do
+    context 'when creating subgroups' do
       [true, false].each do |can_create_group_status|
         context "and can_create_group is #{can_create_group_status}" do
           context 'and logged in as Owner' do
@@ -584,7 +584,7 @@ describe GroupsController do
     end
   end
 
-  describe 'PUT transfer', :postgresql do
+  describe 'PUT transfer' do
     before do
       sign_in(user)
     end

@@ -18,10 +18,6 @@ module Groups
         return namespace
       end
 
-      if group_path.include?('/') && !Group.supports_nested_objects?
-        raise 'Nested groups are not supported on MySQL'
-      end
-
       create_group_path
     end
 
