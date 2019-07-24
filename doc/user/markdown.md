@@ -136,26 +136,26 @@ Supported formats (named colors are not supported):
 Color written inside backticks will be followed by a color "chip":
 
 ```markdown
-`#F00`
-`#F00A`
-`#FF0000`
-`#FF0000AA`
-`RGB(0,255,0)`
-`RGB(0%,100%,0%)`
-`RGBA(0,255,0,0.3)`
-`HSL(540,70%,50%)`
-`HSLA(540,70%,50%,0.3)`
+`#F00`  
+`#F00A`  
+`#FF0000`  
+`#FF0000AA`  
+`RGB(0,255,0)`  
+`RGB(0%,100%,0%)`  
+`RGBA(0,255,0,0.3)`  
+`HSL(540,70%,50%)`  
+`HSLA(540,70%,50%,0.3)`  
 ```
 
-`#F00`
-`#F00A`
-`#FF0000`
-`#FF0000AA`
-`RGB(0,255,0)`
-`RGB(0%,100%,0%)`
-`RGBA(0,255,0,0.3)`
-`HSL(540,70%,50%)`
-`HSLA(540,70%,50%,0.3)`
+`#F00`  
+`#F00A`  
+`#FF0000`  
+`#FF0000AA`  
+`RGB(0,255,0)`  
+`RGB(0%,100%,0%)`  
+`RGBA(0,255,0,0.3)`  
+`HSL(540,70%,50%)`  
+`HSLA(540,70%,50%,0.3)`  
 
 ### Diagrams and flowcharts using Mermaid
 
@@ -397,6 +397,7 @@ unordered or ordered lists:
   - [ ] Sub-task 1
   - [x] Sub-task 2
   - [ ] Sub-task 3
+
 1. [x] Completed task
 1. [ ] Incomplete task
    1. [ ] Sub-task 1
@@ -408,6 +409,7 @@ unordered or ordered lists:
   - [ ] Sub-task 1
   - [x] Sub-task 2
   - [ ] Sub-task 3
+
 1. [x] Completed task
 1. [ ] Incomplete task
    1. [ ] Sub-task 1
@@ -976,7 +978,7 @@ after the `</summary>` tag and before the `</details>` tag, as shown in the exam
 
 These details _will_ remain **hidden** until expanded.
 
-    PASTE LOGS HERE
+PASTE LOGS HERE
 
 </details>
 ```
@@ -988,7 +990,7 @@ These details _will_ remain **hidden** until expanded.
 
 These details <em>will</em> remain <b>hidden</b> until expanded.
 
-    PASTE LOGS HERE
+PASTE LOGS HERE
 
 </details>
 
@@ -1135,13 +1137,13 @@ GFM will autolink almost any URL you put into your text:
 ### Lists
 
 Ordered and unordered lists can be easily created. Add the number you want the list
-to start with, like `1. ` (with a space) at the start of each line for ordered lists.
+to start with, like `1.`, followed by a space, at the start of each line for ordered lists.
 After the first number, it does not matter what number you use, ordered lists will be
-numbered automatically by vertical order, so repeating `1. ` for all items in the
-same list is common. If you start with a number other than `1. `, it will use that as the first
+numbered automatically by vertical order, so repeating `1.` for all items in the
+same list is common. If you start with a number other than `1.`, it will use that as the first
 number, and count up from there.
 
-Add a `* `, `- ` or `+ ` (with a space) at the start of each line for unordered lists, but
+Add a `*`, `-` or `+`, followed by a space, at the start of each line for unordered lists, but
 you should not use a mix of them.
 
 Examples:
@@ -1156,7 +1158,9 @@ Examples:
 4. And another item.
 
 * Unordered lists can use asterisks
+
 - Or minuses
+
 + Or pluses
 ```
 
@@ -1170,9 +1174,11 @@ Examples:
    1. Next ordered sub-list item
 1. And another item.
 
-* Unordered lists can use asterisks
+- Unordered lists can use asterisks
+
 - Or minuses
-+ Or pluses
+
+- Or pluses
 
 ---
 
