@@ -9,6 +9,7 @@ sast:
   image: docker:stable
   variables:
     DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: ""
   allow_failure: true
   services:
     - docker:stable-dind

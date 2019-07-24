@@ -2,6 +2,8 @@ performance:
   stage: performance
   image: docker:stable
   allow_failure: true
+  variables:
+    DOCKER_TLS_CERTDIR: ""
   services:
     - docker:stable-dind
   script:
