@@ -33,16 +33,48 @@ module Gitlab
     # Increments the given key and returns true if the action should
     # be throttled.
     #
-    # key - An array of ActiveRecord instances
-    # threshold_value - The maximum number of times this action should occur in the given time interval
+    # key - An array of ActiveRecord instances or strings
+    # threshold_value - The maximum number of times this action should occur in the given time interval. If number is zero is considered disabled.
     def throttled?(key, threshold_value)
-      self.increment(key) > threshold_value
+      threshold_value > 0 &&
+        self.increment(key) > threshold_value
+    end
+
+    # Logs request into auth.log
+    #
+    # request - Web request to be logged
+    # type - A symbol key that represents the request.
+    # current_user - Current user of the request, it can be nil.
+    def log_request(request, type, current_user)
+      request_information = {
+        message: 'Action_Rate_Limiter_Request',
+        env: type,
+        ip: request.ip,
+        request_method: request.request_method,
+        fullpath: request.fullpath
+      }
+
+      if current_user
+        request_information.merge!({
+          user_id: current_user.id,
+          username: current_user.username
+        })
+      end
+
+      Gitlab::AuthLogger.error(request_information)
     end
 
     private
 
     def action_key(key)
-      serialized = key.map { |obj| "#{obj.class.model_name.to_s.underscore}:#{obj.id}" }.join(":")
+      serialized = key.map do |obj|
+        if obj.is_a?(String)
+          "#{obj}"
+        else
+          "#{obj.class.model_name.to_s.underscore}:#{obj.id}"
+        end
+      end.join(":")
+
       "action_rate_limiter:#{action}:#{serialized}"
     end
   end

@@ -5298,6 +5298,9 @@ msgstr[1] ""
 msgid "Hide values"
 msgstr ""
 
+msgid "Highest number of requests per minute for each raw path, default to 300. To disable throttling set to 0."
+msgstr ""
+
 msgid "Highest role:"
 msgstr ""
 
@@ -8715,6 +8718,9 @@ msgid "README"
 msgstr ""
 
 msgid "Rake Tasks Help"
+msgstr ""
+
+msgid "Raw blob request rate limit per minute"
 msgstr ""
 
 msgid "Read more"
@@ -12440,6 +12446,9 @@ msgid "You can specify notification level per group or per project."
 msgstr ""
 
 msgid "You can test your .gitlab-ci.yml in %{linkStart}CI Lint%{linkEnd}."
+msgstr ""
+
+msgid "You cannot access the raw file. Please wait a minute."
 msgstr ""
 
 msgid "You cannot impersonate a blocked user"

@@ -106,6 +106,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :lets_encrypt_notification_email,
       :lets_encrypt_terms_of_service_accepted,
       :domain_blacklist_file,
+      :raw_blob_request_limit,
       disabled_oauth_sign_in_sources: [],
       import_sources: [],
       repository_storages: [],

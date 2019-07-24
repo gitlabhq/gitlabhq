@@ -180,4 +180,20 @@ describe ApplicationSettings::UpdateService do
       described_class.new(application_settings, admin, { home_page_url: 'http://foo.bar' }).execute
     end
   end
+
+  context 'when raw_blob_request_limit is passsed' do
+    let(:params) do
+      {
+        raw_blob_request_limit: 600
+      }
+    end
+
+    it 'updates raw_blob_request_limit value' do
+      subject.execute
+
+      application_settings.reload
+
+      expect(application_settings.raw_blob_request_limit).to eq(600)
+    end
+  end
 end

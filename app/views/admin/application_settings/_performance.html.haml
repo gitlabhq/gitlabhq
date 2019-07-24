@@ -15,4 +15,10 @@
           AuthorizedKeysCommand. Click on the help icon for more details.
           = link_to icon('question-circle'), help_page_path('administration/operations/fast_ssh_key_lookup')
 
+    .form-group
+      = f.label :raw_blob_request_limit, _('Raw blob request rate limit per minute'), class: 'label-bold'
+      = f.number_field :raw_blob_request_limit, class: 'form-control'
+      .form-text.text-muted
+        = _('Highest number of requests per minute for each raw path, default to 300. To disable throttling set to 0.')
+
   = f.submit 'Save changes', class: "btn btn-success"
