@@ -1,0 +1,5 @@
+---
+title: Add support for exporting repository type data for LFS objects
+merge_request: 30830
+author:
+type: changed

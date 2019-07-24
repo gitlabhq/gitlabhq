@@ -19,6 +19,7 @@ Project.find_by_full_path('group/project').import_state.slice(:jid, :status, :la
 grep JID /var/log/gitlab/sidekiq/current
 grep "Import/Export error" /var/log/gitlab/sidekiq/current
 grep "Import/Export backtrace" /var/log/gitlab/sidekiq/current
+tail /var/log/gitlab/gitlab-rails/importer.log
 ```
 
 ## Troubleshooting performance issues

@@ -283,9 +283,6 @@ Introduced in GitLab 11.3. This file lives in `/var/log/gitlab/gitlab-rails/impo
 Omnibus GitLab packages or in `/home/git/gitlab/log/importer.log` for
 installations from source.
 
-Currently it logs the progress of project imports from the Bitbucket Server
-importer. Future importers may use this file.
-
 ## `auth.log`
 
 Introduced in GitLab 12.0. This file lives in `/var/log/gitlab/gitlab-rails/auth.log` for

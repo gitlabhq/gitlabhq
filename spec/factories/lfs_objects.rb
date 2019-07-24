@@ -14,6 +14,7 @@ FactoryBot.define do
   # objects, so the test needs to decide which (if any) object gets it
   trait :correct_oid do
     oid 'b804383982bb89b00e828e3f44c038cc991d3d1768009fc39ba8e2c081b9fb75'
+    size 1062
   end
 
   trait :object_storage do
