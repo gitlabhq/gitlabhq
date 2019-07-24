@@ -343,10 +343,15 @@ turn can do almost everything that the host can do. Be aware of the
 inherent security risk associated with performing `docker run` operations on
 arbitrary images as they effectively have root access.
 
-If you don't want to use GitLab Runner in privileged mode, first make sure that
-you don't have it installed via the applications, and then use the
-[Runner's Helm chart](../../../install/kubernetes/gitlab_runner_chart.md) to
-install it manually.
+If you don't want to use GitLab Runner in privileged mode, either:
+
+- Use shared Runners on GitLab.com. They don't have this security issue.
+- Set up your own Runners using configuration described at
+  [Shared Runners](../../gitlab_com/index.md#shared-runners). This involves:
+  1. Making sure that you don't have it installed via
+     [the applications](#installing-applications).
+  1. Installing a Runner
+     [using `docker+machine`](https://docs.gitlab.com/runner/executors/docker_machine.html).
 
 ## Installing applications
 

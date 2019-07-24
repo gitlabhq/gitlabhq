@@ -6,7 +6,6 @@ type: concepts, howto
 
 GitLab CI/CD allows you to use Docker Engine to build and test docker-based projects.
 
-
 One of the new trends in Continuous Integration/Deployment is to:
 
 1. Create an application image.
@@ -29,7 +28,16 @@ during jobs.
 
 ## Runner Configuration
 
-There are three methods to enable the use of `docker build` and `docker run` during jobs; each with their own tradeoffs.
+There are three methods to enable the use of `docker build` and `docker run`
+during jobs; each with their own tradeoffs.
+
+An alternative to using `docker build` is to [use kaniko](using_kaniko.md).
+This avoids having to execute Runner in privileged mode.
+
+TIP: **Tip:**
+To see how Docker and Runner are configured for shared Runners on
+GitLab.com, see [GitLab.com Shared
+Runners](../../user/gitlab_com/index.md#shared-runners).
 
 ### Use shell executor
 
@@ -88,9 +96,9 @@ For more information please read [On Docker security: `docker` group considered 
 The second approach is to use the special docker-in-docker (dind)
 [Docker image](https://hub.docker.com/_/docker/) with all tools installed
 (`docker`) and run the job script in context of that
-image in privileged mode. 
+image in privileged mode.
 
-NOTE: **Note:** `docker-compose` is not part of docker-in-docker (dind). In case you'd like to use `docker-compose` in your CI builds, please follow the [installation instructions for docker-compose](https://docs.docker.com/compose/install/) provided by docker. 
+NOTE: **Note:** `docker-compose` is not part of docker-in-docker (dind). In case you'd like to use `docker-compose` in your CI builds, please follow the [installation instructions for docker-compose](https://docs.docker.com/compose/install/) provided by docker.
 
 In order to do that, follow the steps:
 
@@ -114,6 +122,13 @@ In order to do that, follow the steps:
     the `privileged` mode to start the build and service containers.** If you
     want to use [docker-in-docker] mode, you always have to use `privileged = true`
     in your Docker containers.
+
+    DANGER: **Danger:**
+    By enabling `--docker-privileged`, you are effectively disabling all of
+    the security mechanisms of containers and exposing your host to privilege
+    escalation which can lead to container breakout. For more information, check
+    out the official Docker documentation on
+    [Runtime privilege and Linux capabilities][docker-cap].
 
     The above command will create a `config.toml` entry similar to this:
 
@@ -173,11 +188,6 @@ In order to do that, follow the steps:
 Docker-in-Docker works well, and is the recommended configuration, but it is
 not without its own challenges:
 
-- By enabling `--docker-privileged`, you are effectively disabling all of
-  the security mechanisms of containers and exposing your host to privilege
-  escalation which can lead to container breakout. For more information, check
-  out the official Docker documentation on
-  [Runtime privilege and Linux capabilities][docker-cap].
 - When using docker-in-docker, each job is in a clean environment without the past
   history. Concurrent jobs work fine because every build gets it's own
   instance of Docker engine so they won't conflict with each other. But this
