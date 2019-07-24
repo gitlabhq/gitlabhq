@@ -19,6 +19,11 @@ describe Gitlab::ImportExport::LfsSaver do
   describe '#save' do
     context 'when the project has LFS objects locally stored' do
       let(:lfs_object) { create(:lfs_object, :with_file) }
+      let(:lfs_json_file) { File.join(shared.export_path, Gitlab::ImportExport.lfs_objects_filename) }
+
+      def lfs_json
+        JSON.parse(IO.read(lfs_json_file))
+      end
 
       before do
         project.lfs_objects << lfs_object
@@ -35,6 +40,45 @@ describe Gitlab::ImportExport::LfsSaver do
 
         expect(File).to exist("#{shared.export_path}/lfs-objects/#{lfs_object.oid}")
       end
+
+      describe 'saving a json file' do
+        before do
+          # Create two more LfsObjectProject records with different `repository_type`s
+          %w(wiki design).each do |repository_type|
+            create(
+              :lfs_objects_project,
+              project: project,
+              repository_type: repository_type,
+              lfs_object: lfs_object
+            )
+          end
+
+          FileUtils.rm_rf(lfs_json_file)
+        end
+
+        it 'saves a json file correctly' do
+          saver.save
+
+          expect(File.exist?(lfs_json_file)).to eq(true)
+          expect(lfs_json).to eq(
+            {
+              lfs_object.oid => [
+                LfsObjectsProject.repository_types['wiki'],
+                LfsObjectsProject.repository_types['design'],
+                nil
+              ]
+            }
+          )
+        end
+
+        it 'does not save a json file if feature is disabled' do
+          stub_feature_flags(export_lfs_objects_projects: false)
+
+          saver.save
+
+          expect(File.exist?(lfs_json_file)).to eq(false)
+        end
+      end
     end
 
     context 'when the LFS objects are stored in object storage' do
@@ -42,8 +86,11 @@ describe Gitlab::ImportExport::LfsSaver do
 
       before do
         allow(LfsObjectUploader).to receive(:object_store_enabled?).and_return(true)
-        allow(lfs_object.file).to receive(:url).and_return('http://my-object-storage.local')
         project.lfs_objects << lfs_object
+
+        expect_next_instance_of(LfsObjectUploader) do |instance|
+          expect(instance).to receive(:url).and_return('http://my-object-storage.local')
+        end
       end
 
       it 'downloads the file to include in an archive' do
