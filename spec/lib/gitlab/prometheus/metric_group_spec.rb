@@ -17,7 +17,7 @@ describe Gitlab::Prometheus::MetricGroup do
     end
 
     it 'returns exactly three metric queries' do
-      expect(subject.map(&:metrics).flatten.map(&:id)).to contain_exactly(
+      expect(subject.flat_map(&:metrics).map(&:id)).to contain_exactly(
         common_metric_group_a.id, common_metric_group_b_q1.id,
         common_metric_group_b_q2.id)
     end
@@ -37,7 +37,7 @@ describe Gitlab::Prometheus::MetricGroup do
 
     subject do
       described_class.for_project(other_project)
-        .map(&:metrics).flatten
+        .flat_map(&:metrics)
         .map(&:id)
     end
 

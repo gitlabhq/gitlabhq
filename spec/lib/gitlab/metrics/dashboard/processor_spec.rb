@@ -101,9 +101,9 @@ describe Gitlab::Metrics::Dashboard::Processor do
   private
 
   def all_metrics
-    dashboard[:panel_groups].map do |group|
-      group[:panels].map { |panel| panel[:metrics] }
-    end.flatten
+    dashboard[:panel_groups].flat_map do |group|
+      group[:panels].flat_map { |panel| panel[:metrics] }
+    end
   end
 
   def get_metric_details(metric)
