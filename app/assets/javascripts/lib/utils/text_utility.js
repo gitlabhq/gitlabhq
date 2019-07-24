@@ -29,14 +29,6 @@ export const humanize = string =>
   string.charAt(0).toUpperCase() + string.replace(/_/g, ' ').slice(1);
 
 /**
- * Adds an 's' to the end of the string when count is bigger than 0
- * @param {String} str
- * @param {Number} count
- * @returns {String}
- */
-export const pluralize = (str, count) => str + (count > 1 || count === 0 ? 's' : '');
-
-/**
  * Replaces underscores with dashes
  * @param {*} str
  * @returns {String}
