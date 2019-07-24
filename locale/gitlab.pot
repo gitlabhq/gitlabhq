@@ -6917,6 +6917,9 @@ msgstr ""
 msgid "No data found"
 msgstr ""
 
+msgid "No data to display"
+msgstr ""
+
 msgid "No details available"
 msgstr ""
 
