@@ -39,6 +39,7 @@ Example response:
    "session_expire_delay" : 10080,
    "home_page_url" : null,
    "default_snippet_visibility" : "private",
+   "outbound_local_requests_whitelist": [],
    "domain_whitelist" : [],
    "domain_blacklist_enabled" : false,
    "domain_blacklist" : [],
@@ -113,6 +114,7 @@ Example response:
   "default_project_visibility": "internal",
   "default_snippet_visibility": "private",
   "default_group_visibility": "private",
+  "outbound_local_requests_whitelist": [],
   "domain_whitelist": [],
   "domain_blacklist_enabled" : false,
   "domain_blacklist" : [],
@@ -193,6 +195,7 @@ are listed in the descriptions of the relevant settings.
 | `domain_blacklist`                       | array of strings | required by: `domain_blacklist_enabled` | Users with e-mail addresses that match these domain(s) will NOT be able to sign-up. Wildcards allowed. Use separate lines for multiple entries. Ex: `domain.com`, `*.domain.com`. |
 | `domain_blacklist_enabled`               | boolean          | no                                   | (**If enabled, requires:** `domain_blacklist`) Allows blocking sign-ups from emails from specific domains. |
 | `domain_whitelist`                       | array of strings | no                                   | Force people to use only corporate emails for sign-up. Default is `null`, meaning there is no restriction. |
+| `outbound_local_requests_whitelist`      | array of strings | no                                   | Define a list of trusted domains or ip addresses to which local requests are allowed when local requests for hooks and services are disabled.
 | `dsa_key_restriction`                    | integer          | no                                   | The minimum allowed bit length of an uploaded DSA key. Default is `0` (no restriction). `-1` disables DSA keys. |
 | `ecdsa_key_restriction`                  | integer          | no                                   | The minimum allowed curve size (in bits) of an uploaded ECDSA key. Default is `0` (no restriction). `-1` disables ECDSA keys. |
 | `ed25519_key_restriction`                | integer          | no                                   | The minimum allowed curve size (in bits) of an uploaded ED25519 key. Default is `0` (no restriction). `-1` disables ED25519 keys. |

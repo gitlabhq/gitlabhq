@@ -45,18 +45,21 @@ module Gitlab
           ascii_only: ascii_only
         )
 
+        normalized_hostname = uri.normalized_host
         hostname = uri.hostname
         port = get_port(uri)
 
         address_info = get_address_info(hostname, port)
         return [uri, nil] unless address_info
 
-        protected_uri_with_hostname = enforce_uri_hostname(address_info, uri, hostname, dns_rebind_protection)
+        ip_address = ip_address(address_info)
+        protected_uri_with_hostname = enforce_uri_hostname(ip_address, uri, hostname, dns_rebind_protection)
 
         # Allow url from the GitLab instance itself but only for the configured hostname and ports
         return protected_uri_with_hostname if internal?(uri)
 
         validate_local_request(
+          normalized_hostname: normalized_hostname,
           address_info: address_info,
           allow_localhost: allow_localhost,
           allow_local_network: allow_local_network
@@ -83,15 +86,16 @@ module Gitlab
       #
       # The original hostname is used to validate the SSL, given in that scenario
       # we'll be making the request to the IP address, instead of using the hostname.
-      def enforce_uri_hostname(addrs_info, uri, hostname, dns_rebind_protection)
-        address = addrs_info.first
-        ip_address = address&.ip_address
-
+      def enforce_uri_hostname(ip_address, uri, hostname, dns_rebind_protection)
         return [uri, nil] unless dns_rebind_protection && ip_address && ip_address != hostname
 
         uri = uri.dup
         uri.hostname = ip_address
         [uri, hostname]
+      end
+
+      def ip_address(address_info)
+        address_info.first&.ip_address
       end
 
       def validate_uri(uri:, schemes:, ports:, enforce_sanitization:, enforce_user:, ascii_only:)
@@ -113,8 +117,18 @@ module Gitlab
       rescue SocketError
       end
 
-      def validate_local_request(address_info:, allow_localhost:, allow_local_network:)
+      def validate_local_request(
+        normalized_hostname:,
+        address_info:,
+        allow_localhost:,
+        allow_local_network:)
         return if allow_local_network && allow_localhost
+
+        ip_whitelist, domain_whitelist =
+          Gitlab::CurrentSettings.outbound_local_requests_whitelist_arrays
+
+        return if local_domain_whitelisted?(domain_whitelist, normalized_hostname) ||
+          local_ip_whitelisted?(ip_whitelist, ip_address(address_info))
 
         unless allow_localhost
           validate_localhost(address_info)
@@ -229,6 +243,16 @@ module Gitlab
         uri.scheme == 'ssh' &&
           uri.hostname == config.gitlab_shell.ssh_host &&
           (uri.port.blank? || uri.port == config.gitlab_shell.ssh_port)
+      end
+
+      def local_ip_whitelisted?(ip_whitelist, ip_string)
+        ip_obj = Gitlab::Utils.string_to_ip_object(ip_string)
+
+        ip_whitelist.any? { |ip| ip.include?(ip_obj) }
+      end
+
+      def local_domain_whitelisted?(domain_whitelist, domain_string)
+        domain_whitelist.include?(domain_string)
       end
 
       def config

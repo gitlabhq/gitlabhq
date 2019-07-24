@@ -1,0 +1,5 @@
+---
+title: Add Outbound requests whitelist for local networks
+merge_request: 30350
+author: Istvan Szalai
+type: added

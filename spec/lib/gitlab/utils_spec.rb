@@ -231,4 +231,23 @@ describe Gitlab::Utils do
       end
     end
   end
+
+  describe '.string_to_ip_object' do
+    it 'returns nil when string is nil' do
+      expect(described_class.string_to_ip_object(nil)).to eq(nil)
+    end
+
+    it 'returns nil when string is invalid IP' do
+      expect(described_class.string_to_ip_object('invalid ip')).to eq(nil)
+      expect(described_class.string_to_ip_object('')).to eq(nil)
+    end
+
+    it 'returns IP object when string is valid IP' do
+      expect(described_class.string_to_ip_object('192.168.1.1')).to eq(IPAddr.new('192.168.1.1'))
+      expect(described_class.string_to_ip_object('::ffff:a9fe:a864')).to eq(IPAddr.new('::ffff:a9fe:a864'))
+      expect(described_class.string_to_ip_object('[::ffff:a9fe:a864]')).to eq(IPAddr.new('::ffff:a9fe:a864'))
+      expect(described_class.string_to_ip_object('127.0.0.0/28')).to eq(IPAddr.new('127.0.0.0/28'))
+      expect(described_class.string_to_ip_object('1:0:0:0:0:0:0:0/124')).to eq(IPAddr.new('1:0:0:0:0:0:0:0/124'))
+    end
+  end
 end

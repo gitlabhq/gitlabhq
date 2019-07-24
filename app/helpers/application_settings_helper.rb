@@ -177,6 +177,7 @@ module ApplicationSettingsHelper
       :domain_blacklist_enabled,
       :domain_blacklist_raw,
       :domain_whitelist_raw,
+      :outbound_local_requests_whitelist_raw,
       :dsa_key_restriction,
       :ecdsa_key_restriction,
       :ed25519_key_restriction,

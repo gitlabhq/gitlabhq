@@ -220,53 +220,53 @@ describe Gitlab::UrlBlocker do
       end
       let(:fake_domain) { 'www.fakedomain.fake' }
 
-      context 'true (default)' do
+      shared_examples 'allows local requests' do |url_blocker_attributes|
         it 'does not block urls from private networks' do
           local_ips.each do |ip|
-            stub_domain_resolv(fake_domain, ip)
+            stub_domain_resolv(fake_domain, ip) do
+              expect(described_class).not_to be_blocked_url("http://#{fake_domain}", url_blocker_attributes)
+            end
 
-            expect(described_class).not_to be_blocked_url("http://#{fake_domain}")
-
-            unstub_domain_resolv
-
-            expect(described_class).not_to be_blocked_url("http://#{ip}")
+            expect(described_class).not_to be_blocked_url("http://#{ip}", url_blocker_attributes)
           end
         end
 
         it 'allows localhost endpoints' do
-          expect(described_class).not_to be_blocked_url('http://0.0.0.0', allow_localhost: true)
-          expect(described_class).not_to be_blocked_url('http://localhost', allow_localhost: true)
-          expect(described_class).not_to be_blocked_url('http://127.0.0.1', allow_localhost: true)
+          expect(described_class).not_to be_blocked_url('http://0.0.0.0', url_blocker_attributes)
+          expect(described_class).not_to be_blocked_url('http://localhost', url_blocker_attributes)
+          expect(described_class).not_to be_blocked_url('http://127.0.0.1', url_blocker_attributes)
         end
 
         it 'allows loopback endpoints' do
-          expect(described_class).not_to be_blocked_url('http://127.0.0.2', allow_localhost: true)
+          expect(described_class).not_to be_blocked_url('http://127.0.0.2', url_blocker_attributes)
         end
 
         it 'allows IPv4 link-local endpoints' do
-          expect(described_class).not_to be_blocked_url('http://169.254.169.254')
-          expect(described_class).not_to be_blocked_url('http://169.254.168.100')
+          expect(described_class).not_to be_blocked_url('http://169.254.169.254', url_blocker_attributes)
+          expect(described_class).not_to be_blocked_url('http://169.254.168.100', url_blocker_attributes)
         end
 
         it 'allows IPv6 link-local endpoints' do
-          expect(described_class).not_to be_blocked_url('http://[0:0:0:0:0:ffff:169.254.169.254]')
-          expect(described_class).not_to be_blocked_url('http://[::ffff:169.254.169.254]')
-          expect(described_class).not_to be_blocked_url('http://[::ffff:a9fe:a9fe]')
-          expect(described_class).not_to be_blocked_url('http://[0:0:0:0:0:ffff:169.254.168.100]')
-          expect(described_class).not_to be_blocked_url('http://[::ffff:169.254.168.100]')
-          expect(described_class).not_to be_blocked_url('http://[::ffff:a9fe:a864]')
-          expect(described_class).not_to be_blocked_url('http://[fe80::c800:eff:fe74:8]')
+          expect(described_class).not_to be_blocked_url('http://[0:0:0:0:0:ffff:169.254.169.254]', url_blocker_attributes)
+          expect(described_class).not_to be_blocked_url('http://[::ffff:169.254.169.254]', url_blocker_attributes)
+          expect(described_class).not_to be_blocked_url('http://[::ffff:a9fe:a9fe]', url_blocker_attributes)
+          expect(described_class).not_to be_blocked_url('http://[0:0:0:0:0:ffff:169.254.168.100]', url_blocker_attributes)
+          expect(described_class).not_to be_blocked_url('http://[::ffff:169.254.168.100]', url_blocker_attributes)
+          expect(described_class).not_to be_blocked_url('http://[::ffff:a9fe:a864]', url_blocker_attributes)
+          expect(described_class).not_to be_blocked_url('http://[fe80::c800:eff:fe74:8]', url_blocker_attributes)
         end
+      end
+
+      context 'true (default)' do
+        it_behaves_like 'allows local requests', { allow_localhost: true, allow_local_network: true }
       end
 
       context 'false' do
         it 'blocks urls from private networks' do
           local_ips.each do |ip|
-            stub_domain_resolv(fake_domain, ip)
-
-            expect(described_class).to be_blocked_url("http://#{fake_domain}", allow_local_network: false)
-
-            unstub_domain_resolv
+            stub_domain_resolv(fake_domain, ip) do
+              expect(described_class).to be_blocked_url("http://#{fake_domain}", allow_local_network: false)
+            end
 
             expect(described_class).to be_blocked_url("http://#{ip}", allow_local_network: false)
           end
@@ -286,15 +286,169 @@ describe Gitlab::UrlBlocker do
           expect(described_class).to be_blocked_url('http://[::ffff:a9fe:a864]', allow_local_network: false)
           expect(described_class).to be_blocked_url('http://[fe80::c800:eff:fe74:8]', allow_local_network: false)
         end
+
+        context 'when local domain/IP is whitelisted' do
+          let(:url_blocker_attributes) do
+            {
+              allow_localhost: false,
+              allow_local_network: false
+            }
+          end
+
+          before do
+            stub_application_setting(outbound_local_requests_whitelist: whitelist)
+          end
+
+          context 'with IPs in whitelist' do
+            let(:whitelist) do
+              [
+                '0.0.0.0',
+                '127.0.0.1',
+                '127.0.0.2',
+                '192.168.1.1',
+                '192.168.1.2',
+                '0:0:0:0:0:ffff:192.168.1.2',
+                '::ffff:c0a8:102',
+                '10.0.0.2',
+                '0:0:0:0:0:ffff:10.0.0.2',
+                '::ffff:a00:2',
+                '172.16.0.2',
+                '0:0:0:0:0:ffff:172.16.0.2',
+                '::ffff:ac10:20',
+                'feef::1',
+                'fee2::',
+                'fc00:bf8b:e62c:abcd:abcd:aaaa:aaaa:aaaa',
+                '0:0:0:0:0:ffff:169.254.169.254',
+                '::ffff:a9fe:a9fe',
+                '::ffff:169.254.168.100',
+                '::ffff:a9fe:a864',
+                'fe80::c800:eff:fe74:8',
+
+                # garbage IPs
+                '45645632345',
+                'garbage456:more345gar:bage'
+              ]
+            end
+
+            it_behaves_like 'allows local requests', { allow_localhost: false, allow_local_network: false }
+
+            it 'whitelists IP when dns_rebind_protection is disabled' do
+              stub_domain_resolv('example.com', '192.168.1.1') do
+                expect(described_class).not_to be_blocked_url("http://example.com",
+                  url_blocker_attributes.merge(dns_rebind_protection: false))
+              end
+            end
+          end
+
+          context 'with domains in whitelist' do
+            let(:whitelist) do
+              [
+                'www.example.com',
+                'example.com',
+                'xn--itlab-j1a.com',
+                'garbage$^$%#$^&$'
+              ]
+            end
+
+            it 'allows domains present in whitelist' do
+              domain = 'example.com'
+              subdomain1 = 'www.example.com'
+              subdomain2 = 'subdomain.example.com'
+
+              stub_domain_resolv(domain, '192.168.1.1') do
+                expect(described_class).not_to be_blocked_url("http://#{domain}",
+                  url_blocker_attributes)
+              end
+
+              stub_domain_resolv(subdomain1, '192.168.1.1') do
+                expect(described_class).not_to be_blocked_url("http://#{subdomain1}",
+                  url_blocker_attributes)
+              end
+
+              # subdomain2 is not part of the whitelist so it should be blocked
+              stub_domain_resolv(subdomain2, '192.168.1.1') do
+                expect(described_class).to be_blocked_url("http://#{subdomain2}",
+                  url_blocker_attributes)
+              end
+            end
+
+            it 'works with unicode and idna encoded domains' do
+              unicode_domain = 'ğitlab.com'
+              idna_encoded_domain = 'xn--itlab-j1a.com'
+
+              stub_domain_resolv(unicode_domain, '192.168.1.1') do
+                expect(described_class).not_to be_blocked_url("http://#{unicode_domain}",
+                  url_blocker_attributes)
+              end
+
+              stub_domain_resolv(idna_encoded_domain, '192.168.1.1') do
+                expect(described_class).not_to be_blocked_url("http://#{idna_encoded_domain}",
+                  url_blocker_attributes)
+              end
+            end
+          end
+
+          context 'with ip ranges in whitelist' do
+            let(:ipv4_range) { '127.0.0.0/28' }
+            let(:ipv6_range) { 'fd84:6d02:f6d8:c89e::/124' }
+
+            let(:whitelist) do
+              [
+                ipv4_range,
+                ipv6_range
+              ]
+            end
+
+            it 'blocks ipv4 range when not in whitelist' do
+              stub_application_setting(outbound_local_requests_whitelist: [])
+
+              IPAddr.new(ipv4_range).to_range.to_a.each do |ip|
+                expect(described_class).to be_blocked_url("http://#{ip}",
+                  url_blocker_attributes)
+              end
+            end
+
+            it 'allows all ipv4s in the range when in whitelist' do
+              IPAddr.new(ipv4_range).to_range.to_a.each do |ip|
+                expect(described_class).not_to be_blocked_url("http://#{ip}",
+                  url_blocker_attributes)
+              end
+            end
+
+            it 'blocks ipv6 range when not in whitelist' do
+              stub_application_setting(outbound_local_requests_whitelist: [])
+
+              IPAddr.new(ipv6_range).to_range.to_a.each do |ip|
+                expect(described_class).to be_blocked_url("http://[#{ip}]",
+                  url_blocker_attributes)
+              end
+            end
+
+            it 'allows all ipv6s in the range when in whitelist' do
+              IPAddr.new(ipv6_range).to_range.to_a.each do |ip|
+                expect(described_class).not_to be_blocked_url("http://[#{ip}]",
+                  url_blocker_attributes)
+              end
+            end
+
+            it 'blocks IPs outside the range' do
+              expect(described_class).to be_blocked_url("http://[fd84:6d02:f6d8:c89e:0:0:1:f]",
+                url_blocker_attributes)
+
+              expect(described_class).to be_blocked_url("http://127.0.1.15",
+                url_blocker_attributes)
+            end
+          end
+        end
       end
 
-      def stub_domain_resolv(domain, ip)
+      def stub_domain_resolv(domain, ip, &block)
         address = double(ip_address: ip, ipv4_private?: true, ipv6_link_local?: false, ipv4_loopback?: false, ipv6_loopback?: false, ipv4?: false)
         allow(Addrinfo).to receive(:getaddrinfo).with(domain, any_args).and_return([address])
         allow(address).to receive(:ipv6_v4mapped?).and_return(false)
-      end
 
-      def unstub_domain_resolv
+        yield
+
         allow(Addrinfo).to receive(:getaddrinfo).and_call_original
       end
     end
