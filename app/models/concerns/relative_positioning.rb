@@ -28,13 +28,6 @@ module RelativePositioning
   START_POSITION = Gitlab::Database::MAX_INT_VALUE / 2
   MAX_POSITION = Gitlab::Database::MAX_INT_VALUE
   IDEAL_DISTANCE = 500
-  MAX_SEQUENCE_LIMIT = 1000
-
-  class GapNotFound < StandardError
-    def message
-      'Could not find a gap in the sequence of relative positions.'
-    end
-  end
 
   class_methods do
     def move_nulls_to_end(objects)
@@ -117,8 +110,8 @@ module RelativePositioning
     return move_after(before) unless after
     return move_before(after) unless before
 
-    # If there is no place to insert an item we need to create one by moving the before item closer
-    # to its predecessor. This process will recursively move all the predecessors until we have a place
+    # If there is no place to insert an item we need to create one by moving the item
+    # before this and all preceding items until there is a gap
     before, after = after, before if after.relative_position < before.relative_position
     if (after.relative_position - before.relative_position) < 2
       after.move_sequence_before
@@ -132,7 +125,7 @@ module RelativePositioning
     pos_before = before.relative_position
     pos_after = before.next_relative_position
 
-    if before.shift_after?
+    if pos_after && (pos_after - pos_before) < 2
       before.move_sequence_after
     end
 
@@ -143,7 +136,7 @@ module RelativePositioning
     pos_after = after.relative_position
     pos_before = after.prev_relative_position
 
-    if after.shift_before?
+    if pos_before && (pos_after - pos_before) < 2
       after.move_sequence_before
     end
 
@@ -158,29 +151,76 @@ module RelativePositioning
     self.relative_position = self.class.position_between(min_relative_position || START_POSITION, MIN_POSITION)
   end
 
-  # Indicates if there is an item that should be shifted to free the place
-  def shift_after?
-    next_pos = next_relative_position
-    next_pos && (next_pos - relative_position) == 1
-  end
-
-  # Indicates if there is an item that should be shifted to free the place
-  def shift_before?
-    prev_pos = prev_relative_position
-    prev_pos && (relative_position - prev_pos) == 1
-  end
-
+  # Moves the sequence before the current item to the middle of the next gap
+  # For example, we have 5 11 12 13 14 15 and the current item is 15
+  # This moves the sequence 11 12 13 14 to 8 9 10 11
   def move_sequence_before
-    items_to_move = scoped_items_batch.where('relative_position <= ?', relative_position).order('relative_position DESC')
-    move_nearest_sequence(items_to_move, MIN_POSITION)
+    next_gap = find_next_gap_before
+    delta = optimum_delta_for_gap(next_gap)
+
+    move_sequence(next_gap[:start], relative_position, -delta)
   end
 
+  # Moves the sequence after the current item to the middle of the next gap
+  # For example, we have 11 12 13 14 15 21 and the current item is 11
+  # This moves the sequence 12 13 14 15 to 15 16 17 18
   def move_sequence_after
-    items_to_move = scoped_items_batch.where('relative_position >= ?', relative_position).order(:relative_position)
-    move_nearest_sequence(items_to_move, MAX_POSITION)
+    next_gap = find_next_gap_after
+    delta = optimum_delta_for_gap(next_gap)
+
+    move_sequence(relative_position, next_gap[:start], delta)
   end
 
   private
+
+  # Supposing that we have a sequence of items: 1 5 11 12 13 and the current item is 13
+  # This would return: `{ start: 11, end: 5 }`
+  def find_next_gap_before
+    items_with_next_pos = scoped_items
+                            .select('relative_position AS pos, LEAD(relative_position) OVER (ORDER BY relative_position DESC) AS next_pos')
+                            .where('relative_position <= ?', relative_position)
+                            .order(relative_position: :desc)
+
+    find_next_gap(items_with_next_pos).tap do |gap|
+      gap[:end] ||= MIN_POSITION
+    end
+  end
+
+  # Supposing that we have a sequence of items: 13 14 15 20 24 and the current item is 13
+  # This would return: `{ start: 15, end: 20 }`
+  def find_next_gap_after
+    items_with_next_pos = scoped_items
+                            .select('relative_position AS pos, LEAD(relative_position) OVER (ORDER BY relative_position ASC) AS next_pos')
+                            .where('relative_position >= ?', relative_position)
+                            .order(:relative_position)
+
+    find_next_gap(items_with_next_pos).tap do |gap|
+      gap[:end] ||= MAX_POSITION
+    end
+  end
+
+  def find_next_gap(items_with_next_pos)
+    gap = self.class.from(items_with_next_pos, :items_with_next_pos)
+                    .where('ABS(pos - next_pos) > 1 OR next_pos IS NULL')
+                    .limit(1)
+                    .pluck(:pos, :next_pos)
+                    .first
+
+    { start: gap[0], end: gap[1] }
+  end
+
+  def optimum_delta_for_gap(gap)
+    delta = ((gap[:start] - gap[:end]) / 2.0).abs.ceil
+
+    [delta, IDEAL_DISTANCE].min
+  end
+
+  def move_sequence(start_pos, end_pos, delta)
+    scoped_items
+      .where.not(id: self.id)
+      .where('relative_position BETWEEN ? AND ?', start_pos, end_pos)
+      .update_all("relative_position = relative_position + #{delta}")
+  end
 
   def calculate_relative_position(calculation)
     # When calculating across projects, this is much more efficient than
@@ -201,70 +241,5 @@ module RelativePositioning
 
   def scoped_items
     self.class.relative_positioning_query_base(self)
-  end
-
-  def scoped_items_batch
-    scoped_items.limit(MAX_SEQUENCE_LIMIT).select(:id, :relative_position).where.not(id: self.id)
-  end
-
-  # Supposing that we have a sequence of positions: 5 11 12 13 14 15,
-  # and we want to move another item between 14 and 15, then
-  # we shift previous positions at least by one item, but ideally to the middle
-  # of the nearest gap. In this case gap is between 5 and 11 so
-  # this would move 11 12 13 14 to 8 9 10 11.
-  def move_nearest_sequence(items, end_position)
-    gap_idx, gap_size = find_gap_in_sequence(items)
-
-    # If we didn't find a gap in the sequence, it's still possible that there
-    # are some free positions before the first item
-    if gap_idx.nil? && !items.empty? && items.size < MAX_SEQUENCE_LIMIT &&
-        items.last.relative_position != end_position
-
-      gap_idx = items.size
-      gap_size = end_position - items.last.relative_position
-    end
-
-    # The chance that there is a sequence of 1000 positions w/o gap is really
-    # low, but it would be good to rebalance all positions in the scope instead
-    # of raising an exception:
-    # https://gitlab.com/gitlab-org/gitlab-ce/issues/64514#note_192657097
-    raise GapNotFound if gap_idx.nil?
-    # No shift is needed if gap is next to the item being moved
-    return true if gap_idx == 0
-
-    delta = max_delta_for_sequence(gap_size)
-    sequence_ids = items.first(gap_idx).map(&:id)
-    move_ids_by_delta(sequence_ids, delta)
-  end
-
-  def max_delta_for_sequence(gap_size)
-    delta = gap_size / 2
-
-    if delta.abs > IDEAL_DISTANCE
-      delta = delta < 0 ? -IDEAL_DISTANCE : IDEAL_DISTANCE
-    end
-
-    delta
-  end
-
-  def move_ids_by_delta(ids, delta)
-    self.class.where(id: ids).update_all("relative_position=relative_position+#{delta}")
-  end
-
-  def find_gap_in_sequence(items)
-    prev = relative_position
-    gap = nil
-
-    items.each_with_index do |rec, idx|
-      size = rec.relative_position - prev
-      if size.abs > 1
-        gap = [idx, size]
-        break
-      end
-
-      prev = rec.relative_position
-    end
-
-    gap
   end
 end

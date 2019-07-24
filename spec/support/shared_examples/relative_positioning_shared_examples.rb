@@ -110,46 +110,6 @@ RSpec.shared_examples 'a class that supports relative positioning' do
     end
   end
 
-  describe '#shift_after?' do
-    before do
-      [item1, item2].each do |item1|
-        item1.move_to_end && item1.save
-      end
-    end
-
-    it 'returns true' do
-      item1.update(relative_position: item2.relative_position - 1)
-
-      expect(item1.shift_after?).to be_truthy
-    end
-
-    it 'returns false' do
-      item1.update(relative_position: item2.relative_position - 2)
-
-      expect(item1.shift_after?).to be_falsey
-    end
-  end
-
-  describe '#shift_before?' do
-    before do
-      [item1, item2].each do |item1|
-        item1.move_to_end && item1.save
-      end
-    end
-
-    it 'returns true' do
-      item1.update(relative_position: item2.relative_position + 1)
-
-      expect(item1.shift_before?).to be_truthy
-    end
-
-    it 'returns false' do
-      item1.update(relative_position: item2.relative_position + 2)
-
-      expect(item1.shift_before?).to be_falsey
-    end
-  end
-
   describe '#move_between' do
     before do
       [item1, item2].each do |item1|
@@ -297,13 +257,6 @@ RSpec.shared_examples 'a class that supports relative positioning' do
       positions = items.map { |item| item.reload.relative_position }
       expect(positions).to eq([50, 51, 102])
     end
-
-    it 'if raises an exception if gap is not found' do
-      stub_const('RelativePositioning::MAX_SEQUENCE_LIMIT', 2)
-      items = create_items_with_positions([100, 101, 102])
-
-      expect { items.last.move_sequence_before }.to raise_error(RelativePositioning::GapNotFound)
-    end
   end
 
   describe '#move_sequence_after' do
@@ -325,13 +278,6 @@ RSpec.shared_examples 'a class that supports relative positioning' do
 
       positions = items.map { |item| item.reload.relative_position }
       expect(positions).to eq([100, 601, 602])
-    end
-
-    it 'if raises an exception if gap is not found' do
-      stub_const('RelativePositioning::MAX_SEQUENCE_LIMIT', 2)
-      items = create_items_with_positions([100, 101, 102])
-
-      expect { items.first.move_sequence_after }.to raise_error(RelativePositioning::GapNotFound)
     end
   end
 end
