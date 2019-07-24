@@ -14,13 +14,13 @@ on maintainability, the ability to easily debug problems, or even performance.
 An example would be to use `ProjectsFinder` in `IssuesFinder` to limit issues to
 those belonging to a set of projects. While initially this may seem like a good
 idea, both classes provide a very high level interface with very little control.
-This means that `IssuesFinder` may not be able to produce a better optimised
+This means that `IssuesFinder` may not be able to produce a better optimized
 database query, as a large portion of the query is controlled by the internals
 of `ProjectsFinder`.
 
 To work around this problem, you would use the same code used by
 `ProjectsFinder`, instead of using `ProjectsFinder` itself directly. This allows
-you to compose your behaviour better, giving you more control over the behaviour
+you to compose your behavior better, giving you more control over the behavior
 of the code.
 
 To illustrate, consider the following code from `IssuableFinder#projects`:
@@ -52,7 +52,7 @@ functionality is added to this (high level) interface. Instead of _only_
 affecting the cases where this is necessary, it may also start affecting
 `IssuableFinder` in a negative way. For example, the query produced by
 `GroupProjectsFinder` may include unnecessary conditions. Since we're using a
-finder here, we can't easily opt-out of that behaviour. We could add options to
+finder here, we can't easily opt-out of that behavior. We could add options to
 do so, but then we'd need as many options as we have features. Every option adds
 two code paths, which means that for four features we have to cover 8 different
 code paths.
@@ -213,6 +213,5 @@ The API provided by Active Record itself, such as the `where` method, `save`,
 
 Everything in `app/workers`.
 
-The scheduling of Sidekiq jobs using `SomeWorker.perform_async`, `perform_in`,
-etc. Directly invoking a worker using `SomeWorker.new.perform` should be avoided
-at all times in application code, though this is fine to use in tests.
+Use `SomeWorker.perform_async` or `SomeWorker.perform_in` to schedule Sidekiq
+jobs. Never directly invoke a worker using `SomeWorker.new.perform`.

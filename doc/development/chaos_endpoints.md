@@ -69,7 +69,7 @@ curl http://localhost:3000/-/chaos/leakmem?memory_mb=1024&duration_s=10&token=se
 
 This endpoint attempts to fully utilise a single core, at 100%, for the given period.
 
-Depending on your rack server setup, your request may timeout after a predermined period (normally 60 seconds).
+Depending on your rack server setup, your request may timeout after a predetermined period (normally 60 seconds).
 If you're using Unicorn, this is done by killing the worker process.
 
 ```
@@ -80,7 +80,7 @@ GET /-/chaos/cpu_spin?duration_s=50&async=true
 
 | Attribute    | Type    | Required | Description                                                           |
 | ------------ | ------- | -------- | --------------------------------------------------------------------- |
-| `duration_s` | integer | no       | Duration, in seconds, that the core will be utilised. Defaults to 30s |
+| `duration_s` | integer | no       | Duration, in seconds, that the core will be utilized. Defaults to 30s |
 | `async`      | boolean | no       | Set to true to consume CPU in a Sidekiq background worker process     |
 
 ```bash
@@ -93,7 +93,7 @@ curl http://localhost:3000/-/chaos/cpu_spin?duration_s=60&token=secret
 This endpoint attempts to fully utilise a single core, and interleave it with DB request, for the given period.
 This endpoint can be used to model yielding execution to another threads when running concurrently.
 
-Depending on your rack server setup, your request may timeout after a predermined period (normally 60 seconds).
+Depending on your rack server setup, your request may timeout after a predetermined period (normally 60 seconds).
 If you're using Unicorn, this is done by killing the worker process.
 
 ```
@@ -105,7 +105,7 @@ GET /-/chaos/db_spin?duration_s=50&async=true
 | Attribute    | Type    | Required | Description                                                                 |
 | ------------ | ------- | -------- | --------------------------------------------------------------------------- |
 | `interval_s` | float   | no       | Interval, in seconds, for every DB request. Defaults to 1s                  |
-| `duration_s` | integer | no       | Duration, in seconds, that the core will be utilised. Defaults to 30s       |
+| `duration_s` | integer | no       | Duration, in seconds, that the core will be utilized. Defaults to 30s       |
 | `async`      | boolean | no       | Set to true to perform the operation in a Sidekiq background worker process |
 
 ```bash
