@@ -34,7 +34,9 @@ describe 'Math rendering', :js do
 
     visit project_issue_path(project, issue)
 
-    expect(page).to have_selector('.katex-error', text: "\href{javascript:alert('xss');}{xss}")
-    expect(page).to have_selector('.katex-html a', text: 'Gitlab')
+    page.within '.description > .md' do
+      expect(page).to have_selector('.katex-error')
+      expect(page).to have_selector('.katex-html a', text: 'Gitlab')
+    end
   end
 end
