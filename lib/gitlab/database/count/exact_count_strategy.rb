@@ -23,10 +23,6 @@ module Gitlab
         rescue *CONNECTION_ERRORS
           {}
         end
-
-        def self.enabled?
-          true
-        end
       end
     end
   end

@@ -23,18 +23,4 @@ describe Gitlab::Database::Count::ExactCountStrategy do
       expect(subject).to eq({})
     end
   end
-
-  describe '.enabled?' do
-    it 'is enabled for PostgreSQL' do
-      allow(Gitlab::Database).to receive(:postgresql?).and_return(true)
-
-      expect(described_class.enabled?).to be_truthy
-    end
-
-    it 'is enabled for MySQL' do
-      allow(Gitlab::Database).to receive(:postgresql?).and_return(false)
-
-      expect(described_class.enabled?).to be_truthy
-    end
-  end
 end

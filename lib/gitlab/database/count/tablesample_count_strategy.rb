@@ -28,10 +28,6 @@ module Gitlab
           {}
         end
 
-        def self.enabled?
-          Gitlab::Database.postgresql? && Feature.enabled?(:tablesample_counts)
-        end
-
         private
 
         def perform_count(model, estimate)
