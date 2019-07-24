@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module DashboardHelper
+  include IconsHelper
+
   def assigned_issues_dashboard_path
     issues_dashboard_path(assignee_username: current_user.username)
   end
@@ -23,6 +25,19 @@ module DashboardHelper
 
   def has_start_trial?
     false
+  end
+
+  def feature_entry(title, href: nil, enabled: true)
+    enabled_text = enabled ? 'on' : 'off'
+    label = "#{title}: status #{enabled_text}"
+    link_or_title = href && enabled ? tag.a(title, href: href) : title
+
+    tag.p(aria: { label: label }) do
+      concat(link_or_title)
+      concat(tag.span(class: ['light', 'float-right']) do
+        concat(boolean_to_icon(enabled))
+      end)
+    end
   end
 
   private
