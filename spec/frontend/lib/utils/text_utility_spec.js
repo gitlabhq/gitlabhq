@@ -29,20 +29,6 @@ describe('text_utility', () => {
     });
   });
 
-  describe('pluralize', () => {
-    it('should pluralize given string', () => {
-      expect(textUtils.pluralize('test', 2)).toBe('tests');
-    });
-
-    it('should pluralize when count is 0', () => {
-      expect(textUtils.pluralize('test', 0)).toBe('tests');
-    });
-
-    it('should not pluralize when count is 1', () => {
-      expect(textUtils.pluralize('test', 1)).toBe('test');
-    });
-  });
-
   describe('dasherize', () => {
     it('should replace underscores with dashes', () => {
       expect(textUtils.dasherize('foo_bar_foo')).toEqual('foo-bar-foo');
