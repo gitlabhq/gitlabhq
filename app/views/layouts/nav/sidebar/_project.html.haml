@@ -34,10 +34,6 @@
               = link_to project_releases_path(@project), title: _('Releases'), class: 'shortcuts-project-releases' do
                 %span= _('Releases')
 
-          = render_if_exists 'projects/sidebar/security_dashboard'
-
-          = render_if_exists 'projects/sidebar/dependencies'
-
           - if can?(current_user, :read_cycle_analytics, @project)
             = nav_link(path: 'cycle_analytics#show') do
               = link_to project_cycle_analytics_path(@project), title: _('Cycle Analytics'), class: 'shortcuts-project-cycle-analytics' do
@@ -202,6 +198,8 @@
                 = link_to charts_project_pipelines_path(@project), title: _('Charts'), class: 'shortcuts-pipelines-charts' do
                   %span
                     = _('Charts')
+
+      = render_if_exists 'layouts/nav/sidebar/project_security_link' # EE-specific
 
       - if project_nav_tab? :operations
         = nav_link(controller: sidebar_operations_paths) do
