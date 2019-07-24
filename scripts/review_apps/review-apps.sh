@@ -201,7 +201,7 @@ function deploy() {
 HELM_CMD=$(cat << EOF
   helm upgrade --install \
     --wait \
-    --timeout 600 \
+    --timeout 900 \
     --set releaseOverride="$CI_ENVIRONMENT_SLUG" \
     --set global.appConfig.enableUsagePing=false \
     --set global.imagePullPolicy=Always \
