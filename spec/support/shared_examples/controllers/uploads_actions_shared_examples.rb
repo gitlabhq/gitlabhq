@@ -74,6 +74,16 @@ shared_examples 'handle uploads' do
       UploadService.new(model, jpg, uploader_class).execute
     end
 
+    context 'when accessing a specific upload via different model' do
+      it 'responds with status 404' do
+        params.merge!(other_params)
+
+        show_upload
+
+        expect(response).to have_gitlab_http_status(404)
+      end
+    end
+
     context "when the model is public" do
       before do
         model.update_attribute(:visibility_level, Gitlab::VisibilityLevel::PUBLIC)
