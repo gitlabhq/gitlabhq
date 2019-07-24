@@ -1862,16 +1862,24 @@ class Project < ApplicationRecord
   end
 
   def append_or_update_attribute(name, value)
-    old_values = public_send(name.to_s) # rubocop:disable GitlabSecurity/PublicSend
+    if Project.reflect_on_association(name).try(:macro) == :has_many
+      # if this is 1-to-N relation, update the parent object
+      value.each do |item|
+        item.update!(
+          Project.reflect_on_association(name).foreign_key => id)
+      end
 
-    if Project.reflect_on_association(name).try(:macro) == :has_many && old_values.any?
-      update_attribute(name, old_values + value)
+      # force to drop relation cache
+      public_send(name).reset # rubocop:disable GitlabSecurity/PublicSend
+
+      # succeeded
+      true
     else
+      # if this is another relation or attribute, update just object
       update_attribute(name, value)
     end
-
-  rescue ActiveRecord::RecordNotSaved => e
-    handle_update_attribute_error(e, value)
+  rescue ActiveRecord::RecordInvalid => e
+    raise e, "Failed to set #{name}: #{e.message}"
   end
 
   # Tries to set repository as read_only, checking for existing Git transfers in progress beforehand
@@ -2258,18 +2266,6 @@ class Project < ApplicationRecord
     return false unless Gitlab.config.registry.enabled
 
     ContainerRepository.build_root_repository(self).has_tags?
-  end
-
-  def handle_update_attribute_error(ex, value)
-    if ex.message.start_with?('Failed to replace')
-      if value.respond_to?(:each)
-        invalid = value.detect(&:invalid?)
-
-        raise ex, ([ex.message] + invalid.errors.full_messages).join(' ') if invalid
-      end
-    end
-
-    raise ex
   end
 
   def fetch_branch_allows_collaboration(user, branch_name = nil)
