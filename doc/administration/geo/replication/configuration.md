@@ -17,7 +17,7 @@ You are encouraged to first read through all the steps before executing them
 in your testing/production environment.
 
 NOTE: **Note:**
-**Do not** set up any custom authentication for the **secondary** nodes. This will be handled by the **primary** node.  
+**Do not** set up any custom authentication for the **secondary** nodes. This will be handled by the **primary** node.
 Any change that requires access to the **Admin Area** needs to be done in the
 **primary** node because the **secondary** node is a read-only replica.
 
@@ -242,7 +242,7 @@ node's Geo Nodes dashboard in your browser.
 ![Geo dashboard](img/geo_node_dashboard.png)
 
 If your installation isn't working properly, check the
-[troubleshooting document].
+[troubleshooting document](troubleshooting.md).
 
 The two most obvious issues that can become apparent in the dashboard are:
 

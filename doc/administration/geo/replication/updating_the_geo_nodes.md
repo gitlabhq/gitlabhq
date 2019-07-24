@@ -251,7 +251,7 @@ Omnibus is the following:
 1. Check the steps about defining `postgresql['sql_user_password']`, `gitlab_rails['db_password']`.
 1. Make sure `postgresql['max_replication_slots']` matches the number of **secondary** Geo nodes locations.
 1. Install GitLab on the **secondary** server.
-1. Re-run the [database replication process][database-replication].
+1. Re-run the [database replication process](database.md#step-3-initiate-the-replication-process).
 
 ## Special update notes for 9.0.x
 
