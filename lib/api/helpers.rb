@@ -544,5 +544,9 @@ module API
 
       params[:archived]
     end
+
+    def ip_address
+      env["action_dispatch.remote_ip"].to_s || request.ip
+    end
   end
 end
