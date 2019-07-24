@@ -71,14 +71,18 @@ class Notify < BaseMailer
     address.format
   end
 
-  # Look up a User by their ID and return their email address
+  # Look up a User's notification email for a particular context.
+  # Can look up by their ID or can accept a User object.
   #
-  # recipient_id       - User ID
+  # recipient          - User object OR a User ID
   # notification_group - The parent group of the notification
   #
   # Returns a String containing the User's email address.
-  def recipient(recipient_id, notification_group = nil)
-    User.find(recipient_id).notification_email_for(notification_group)
+  def recipient(recipient, notification_group = nil)
+    user = recipient if recipient.is_a?(User)
+    user ||= User.find(recipient)
+
+    user.notification_email_for(notification_group)
   end
 
   # Formats arguments into a String suitable for use as an email subject

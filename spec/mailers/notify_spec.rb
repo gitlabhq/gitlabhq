@@ -640,7 +640,7 @@ describe Notify do
         project.request_access(user)
         project.requesters.find_by(user_id: user.id)
       end
-      subject { described_class.member_access_requested_email('project', project_member.id, recipient.notification_email) }
+      subject { described_class.member_access_requested_email('project', project_member.id, recipient.id) }
 
       it_behaves_like 'an email sent from GitLab'
       it_behaves_like 'it should not have Gmail Actions links'
@@ -737,9 +737,9 @@ describe Notify do
 
     describe 'project invitation accepted' do
       let(:invited_user) { create(:user, name: 'invited user') }
-      let(:maintainer) { create(:user).tap { |u| project.add_maintainer(u) } }
+      let(:recipient) { create(:user).tap { |u| project.add_maintainer(u) } }
       let(:project_member) do
-        invitee = invite_to_project(project, inviter: maintainer)
+        invitee = invite_to_project(project, inviter: recipient)
         invitee.accept_invite!(invited_user)
         invitee
       end
@@ -747,6 +747,7 @@ describe Notify do
       subject { described_class.member_invite_accepted_email('project', project_member.id) }
 
       it_behaves_like 'an email sent from GitLab'
+      it_behaves_like 'an email sent to a user'
       it_behaves_like 'it should not have Gmail Actions links'
       it_behaves_like "a user cannot unsubscribe through footer link"
       it_behaves_like 'appearance header and footer enabled'
@@ -762,16 +763,17 @@ describe Notify do
     end
 
     describe 'project invitation declined' do
-      let(:maintainer) { create(:user).tap { |u| project.add_maintainer(u) } }
+      let(:recipient) { create(:user).tap { |u| project.add_maintainer(u) } }
       let(:project_member) do
-        invitee = invite_to_project(project, inviter: maintainer)
+        invitee = invite_to_project(project, inviter: recipient)
         invitee.decline_invite!
         invitee
       end
 
-      subject { described_class.member_invite_declined_email('Project', project.id, project_member.invite_email, maintainer.id) }
+      subject { described_class.member_invite_declined_email('Project', project.id, project_member.invite_email, recipient.id) }
 
       it_behaves_like 'an email sent from GitLab'
+      it_behaves_like 'an email sent to a user'
       it_behaves_like 'it should not have Gmail Actions links'
       it_behaves_like "a user cannot unsubscribe through footer link"
       it_behaves_like 'appearance header and footer enabled'
@@ -1087,9 +1089,10 @@ describe Notify do
         group.request_access(user)
         group.requesters.find_by(user_id: user.id)
       end
-      subject { described_class.member_access_requested_email('group', group_member.id, recipient.notification_email) }
+      subject { described_class.member_access_requested_email('group', group_member.id, recipient.id) }
 
       it_behaves_like 'an email sent from GitLab'
+      it_behaves_like 'an email sent to a user'
       it_behaves_like 'it should not have Gmail Actions links'
       it_behaves_like "a user cannot unsubscribe through footer link"
       it_behaves_like 'appearance header and footer enabled'
@@ -1111,9 +1114,11 @@ describe Notify do
         group.request_access(user)
         group.requesters.find_by(user_id: user.id)
       end
+      let(:recipient) { user }
       subject { described_class.member_access_denied_email('group', group.id, user.id) }
 
       it_behaves_like 'an email sent from GitLab'
+      it_behaves_like 'an email sent to a user'
       it_behaves_like 'it should not have Gmail Actions links'
       it_behaves_like "a user cannot unsubscribe through footer link"
       it_behaves_like 'appearance header and footer enabled'
@@ -1128,10 +1133,12 @@ describe Notify do
 
     describe 'group access changed' do
       let(:group_member) { create(:group_member, group: group, user: user) }
+      let(:recipient) { user }
 
       subject { described_class.member_access_granted_email('group', group_member.id) }
 
       it_behaves_like 'an email sent from GitLab'
+      it_behaves_like 'an email sent to a user'
       it_behaves_like 'it should not have Gmail Actions links'
       it_behaves_like "a user cannot unsubscribe through footer link"
       it_behaves_like 'appearance header and footer enabled'

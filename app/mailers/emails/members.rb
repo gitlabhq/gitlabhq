@@ -9,11 +9,11 @@ module Emails
       helper_method :member_source, :member
     end
 
-    def member_access_requested_email(member_source_type, member_id, recipient_notification_email)
+    def member_access_requested_email(member_source_type, member_id, recipient_id)
       @member_source_type = member_source_type
       @member_id = member_id
 
-      mail(to: recipient_notification_email,
+      mail(to: recipient(recipient_id, notification_group),
            subject: subject("Request to join the #{member_source.human_name} #{member_source.model_name.singular}"))
     end
 
@@ -21,16 +21,15 @@ module Emails
       @member_source_type = member_source_type
       @member_id = member_id
 
-      mail(to: member.user.notification_email,
+      mail(to: recipient(member.user, notification_group),
            subject: subject("Access to the #{member_source.human_name} #{member_source.model_name.singular} was granted"))
     end
 
     def member_access_denied_email(member_source_type, source_id, user_id)
       @member_source_type = member_source_type
       @member_source = member_source_class.find(source_id)
-      requester = User.find(user_id)
 
-      mail(to: requester.notification_email,
+      mail(to: recipient(user_id, notification_group),
            subject: subject("Access to the #{member_source.human_name} #{member_source.model_name.singular} was denied"))
     end
 
@@ -48,7 +47,7 @@ module Emails
       @member_id = member_id
       return unless member.created_by
 
-      mail(to: member.created_by.notification_email,
+      mail(to: recipient(member.created_by, notification_group),
            subject: subject('Invitation accepted'))
     end
 
@@ -59,7 +58,7 @@ module Emails
       @member_source = member_source_class.find(source_id)
       @invite_email = invite_email
 
-      mail(to: recipient(created_by_id, member_source_type == 'Project' ? @member_source.group : @member_source),
+      mail(to: recipient(created_by_id, notification_group),
            subject: subject('Invitation declined'))
     end
 
@@ -69,6 +68,10 @@ module Emails
 
     def member_source
       @member_source ||= member.source
+    end
+
+    def notification_group
+      @member_source_type.casecmp?('project') ? member_source.group : member_source
     end
 
     private

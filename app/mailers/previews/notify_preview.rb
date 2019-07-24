@@ -105,11 +105,11 @@ class NotifyPreview < ActionMailer::Preview
   end
 
   def member_access_granted_email
-    Notify.member_access_granted_email('project', user.id).message
+    Notify.member_access_granted_email(member.source_type, member.id).message
   end
 
   def member_access_requested_email
-    Notify.member_access_requested_email('group', user.id, 'some@example.com').message
+    Notify.member_access_requested_email('group', user.id, user.id).message
   end
 
   def member_invite_accepted_email
@@ -181,6 +181,10 @@ class NotifyPreview < ActionMailer::Preview
 
   def user
     @user ||= User.last
+  end
+
+  def member
+    @member ||= Member.last
   end
 
   def create_note(params)
