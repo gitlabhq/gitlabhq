@@ -12,6 +12,8 @@ module Peek
       end
 
       def results
+        return {} unless calls > 0
+
         {
           duration: formatted_duration,
           calls: calls,

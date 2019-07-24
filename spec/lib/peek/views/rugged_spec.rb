@@ -11,6 +11,10 @@ describe Peek::Views::Rugged, :request_store do
     allow(Gitlab::RuggedInstrumentation).to receive(:peek_enabled?).and_return(true)
   end
 
+  it 'returns no results' do
+    expect(subject.results).to eq({})
+  end
+
   it 'returns aggregated results' do
     ::Gitlab::RuggedInstrumentation.query_time += 1.234
     ::Gitlab::RuggedInstrumentation.increment_query_count
