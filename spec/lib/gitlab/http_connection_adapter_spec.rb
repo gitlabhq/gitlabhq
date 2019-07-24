@@ -3,7 +3,13 @@
 require 'spec_helper'
 
 describe Gitlab::HTTPConnectionAdapter do
+  include StubRequests
+
   describe '#connection' do
+    before do
+      stub_all_dns('https://example.org', ip_address: '93.184.216.34')
+    end
+
     context 'when local requests are not allowed' do
       it 'sets up the connection' do
         uri = URI('https://example.org')
