@@ -1,0 +1,5 @@
+---
+title: Set DOCKER_TLS_CERTDIR in CI job templates to fix Docker-in-Docker service
+merge_request: 31080
+author:
+type: fixed
