@@ -1,7 +1,6 @@
 # Instance-level Kubernetes clusters
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/39840) in GitLab 11.11.
-> Instance-level cluster integration is currently in [Beta](https://about.gitlab.com/handbook/product/#alpha-beta-ga).
 
 ## Overview
 

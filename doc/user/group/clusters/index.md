@@ -5,7 +5,6 @@ type: reference
 # Group-level Kubernetes clusters
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/34758) in GitLab 11.6.
-> Group Cluster integration is currently in [Beta](https://about.gitlab.com/handbook/product/#alpha-beta-ga).
 
 ## Overview
 
