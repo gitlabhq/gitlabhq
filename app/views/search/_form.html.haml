@@ -3,14 +3,18 @@
   = hidden_field_tag :scope, params[:scope]
 
   .search-holder
-    .search-field-holder
-      = search_field_tag :search, params[:search], placeholder: _("Search for projects, issues, etc."), class: "form-control search-text-input js-search-input", id: "dashboard_search", autofocus: true, spellcheck: false
-      = icon("search", class: "search-icon")
-      %button.search-clear.js-search-clear{ class: ("hidden" if !params[:search].present?), type: "button", tabindex: "-1" }
-        = icon("times-circle")
-        %span.sr-only
-          = _("Clear search")
+    .search-field-holder.form-group
+      %label{ for: "dashboard_search" }
+        = _("What are you searching for?")
+      .position-relative
+        = search_field_tag :search, params[:search], placeholder: _("Search for projects, issues, etc."), class: "form-control search-text-input js-search-input", id: "dashboard_search", autofocus: true, spellcheck: false
+        = icon("search", class: "search-icon")
+        %button.search-clear.js-search-clear{ class: ("hidden" if !params[:search].present?), type: "button", tabindex: "-1" }
+          = icon("times-circle")
+          %span.sr-only
+            = _("Clear search")
     - unless params[:snippets].eql? 'true'
       = render 'filter'
-    = button_tag _("Search"), class: "btn btn-success btn-search"
-    = render_if_exists 'search/form_elasticsearch'
+    .d-flex-center.flex-column.flex-lg-row
+      = button_tag _("Search"), class: "btn btn-success btn-search form-control"
+      = render_if_exists 'search/form_elasticsearch'

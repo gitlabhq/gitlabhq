@@ -189,6 +189,7 @@ input[type='checkbox']:hover {
 .search-holder {
   @include media-breakpoint-up(sm) {
     display: flex;
+    align-items: flex-end;
   }
 
   .search-field-holder,
