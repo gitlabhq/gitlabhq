@@ -46,6 +46,7 @@ module Gitlab
       end
     end
 
+    # @deprecated
     def self.postgresql?
       adapter_name.casecmp('postgresql').zero?
     end
@@ -79,19 +80,19 @@ module Gitlab
     end
 
     def self.postgresql_9_or_less?
-      postgresql? && version.to_f < 10
+      version.to_f < 10
     end
 
     def self.join_lateral_supported?
-      postgresql? && version.to_f >= 9.3
+      version.to_f >= 9.3
     end
 
     def self.replication_slots_supported?
-      postgresql? && version.to_f >= 9.4
+      version.to_f >= 9.4
     end
 
     def self.postgresql_minimum_supported_version?
-      postgresql? && version.to_f >= 9.6
+      version.to_f >= 9.6
     end
 
     # map some of the function names that changed between PostgreSQL 9 and 10

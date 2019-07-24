@@ -17,10 +17,8 @@ describe 'admin visits dashboard' do
 
       # Make sure the fork_networks & fork_networks reltuples have been updated
       # to get a correct count on postgresql
-      if Gitlab::Database.postgresql?
-        ActiveRecord::Base.connection.execute('ANALYZE fork_networks')
-        ActiveRecord::Base.connection.execute('ANALYZE fork_network_members')
-      end
+      ActiveRecord::Base.connection.execute('ANALYZE fork_networks')
+      ActiveRecord::Base.connection.execute('ANALYZE fork_network_members')
 
       visit admin_root_path
 

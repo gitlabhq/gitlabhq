@@ -12,13 +12,8 @@ module Projects
       increment_fetch_count_sql = <<~SQL
         INSERT INTO #{table_name} (project_id, date, fetch_count)
         VALUES (#{project.id}, '#{Date.today}', 1)
+        ON CONFLICT (project_id, date) DO UPDATE SET fetch_count = #{table_name}.fetch_count + 1
       SQL
-
-      increment_fetch_count_sql += if Gitlab::Database.postgresql?
-                                     "ON CONFLICT (project_id, date) DO UPDATE SET fetch_count = #{table_name}.fetch_count + 1"
-                                   else
-                                     "ON DUPLICATE KEY UPDATE fetch_count = #{table_name}.fetch_count + 1"
-                                   end
 
       ActiveRecord::Base.connection.execute(increment_fetch_count_sql)
     end

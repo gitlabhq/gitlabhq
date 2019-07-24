@@ -96,12 +96,7 @@ module Gitlab
       private
 
       def raw_explain(query)
-        explain =
-          if Gitlab::Database.postgresql?
-            "EXPLAIN ANALYZE #{query};"
-          else
-            "EXPLAIN #{query};"
-          end
+        explain = "EXPLAIN ANALYZE #{query};"
 
         ActiveRecord::Base.connection.execute(explain)
       end

@@ -84,11 +84,7 @@ module Gitlab
         .and(t[:created_at].lteq(Date.current.end_of_day))
         .and(t[:author_id].eq(contributor.id))
 
-      date_interval = if Gitlab::Database.postgresql?
-                        "INTERVAL '#{Time.zone.now.utc_offset} seconds'"
-                      else
-                        "INTERVAL #{Time.zone.now.utc_offset} SECOND"
-                      end
+      date_interval = "INTERVAL '#{Time.zone.now.utc_offset} seconds'"
 
       Event.reorder(nil)
         .select(t[:project_id], t[:target_type], t[:action], "date(created_at + #{date_interval}) AS date", 'count(id) as total_amount')

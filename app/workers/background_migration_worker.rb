@@ -76,8 +76,6 @@ class BackgroundMigrationWorker
   # class_name - The name of the background migration that we might want to
   #              run.
   def healthy_database?
-    return true unless Gitlab::Database.postgresql?
-
     !Postgresql::ReplicationSlot.lag_too_great?
   end
 

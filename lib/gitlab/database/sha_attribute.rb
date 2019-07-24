@@ -2,14 +2,9 @@
 
 module Gitlab
   module Database
-    BINARY_TYPE =
-      if Gitlab::Database.postgresql?
-        # PostgreSQL defines its own class with slightly different
-        # behaviour from the default Binary type.
-        ActiveRecord::ConnectionAdapters::PostgreSQL::OID::Bytea
-      else
-        ActiveModel::Type::Binary
-      end
+    # PostgreSQL defines its own class with slightly different
+    # behaviour from the default Binary type.
+    BINARY_TYPE = ActiveRecord::ConnectionAdapters::PostgreSQL::OID::Bytea
 
     # Class for casting binary data to hexadecimal SHA1 hashes (and vice-versa).
     #

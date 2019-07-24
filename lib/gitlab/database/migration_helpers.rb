@@ -152,8 +152,6 @@ module Gitlab
 
       # Only available on Postgresql >= 9.2
       def supports_drop_index_concurrently?
-        return false unless Database.postgresql?
-
         version = select_one("SELECT current_setting('server_version_num') AS v")['v'].to_i
 
         version >= 90200
