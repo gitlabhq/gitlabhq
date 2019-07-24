@@ -186,6 +186,12 @@ describe Gitlab::Git::Repository, :seed_helper do
     it { is_expected.to be < 2 }
   end
 
+  describe '#to_s' do
+    subject { repository.to_s }
+
+    it { is_expected.to eq("<Gitlab::Git::Repository: group/project>") }
+  end
+
   describe '#object_directory_size' do
     before do
       allow(repository.gitaly_repository_client)

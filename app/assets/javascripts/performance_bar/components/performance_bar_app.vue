@@ -42,6 +42,12 @@ export default {
       keys: ['feature', 'request'],
     },
     {
+      metric: 'rugged',
+      header: 'Rugged calls',
+      details: 'details',
+      keys: ['feature', 'args'],
+    },
+    {
       metric: 'redis',
       header: 'Redis calls',
       details: 'details',
