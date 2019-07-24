@@ -259,6 +259,7 @@ Settings.registry['key']           ||= nil
 Settings.registry['issuer']        ||= nil
 Settings.registry['host_port']     ||= [Settings.registry['host'], Settings.registry['port']].compact.join(':')
 Settings.registry['path']            = Settings.absolute(Settings.registry['path'] || File.join(Settings.shared['path'], 'registry'))
+Settings.registry['notifications'] ||= []
 
 #
 # Error Reporting and Logging with Sentry

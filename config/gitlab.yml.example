@@ -400,6 +400,15 @@ production: &base
     # path: shared/registry
     # issuer: gitlab-issuer
 
+    # Add notification settings if you plan to use Geo Replication for the registry
+    # notifications:
+    # - name: geo_event
+    #   url: https://example.com/api/v4/container_registry_event/events
+    #   timeout: 2s
+    #   threshold: 5
+    #   backoff: 1s
+    #   headers:
+    #     Authorization: secret_phrase
 
   ## Error Reporting and Logging with Sentry
   sentry:
