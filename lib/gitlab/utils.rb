@@ -131,5 +131,12 @@ module Gitlab
         data
       end
     end
+
+    def string_to_ip_object(str)
+      return unless str
+
+      IPAddr.new(str)
+    rescue IPAddr::InvalidAddressError
+    end
   end
 end

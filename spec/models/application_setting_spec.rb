@@ -37,6 +37,17 @@ describe ApplicationSetting do
     it { is_expected.not_to allow_value("myemail@example.com").for(:lets_encrypt_notification_email) }
     it { is_expected.to allow_value("myemail@test.example.com").for(:lets_encrypt_notification_email) }
 
+    it { is_expected.to allow_value(['192.168.1.1'] * 1_000).for(:outbound_local_requests_whitelist) }
+    it { is_expected.not_to allow_value(['192.168.1.1'] * 1_001).for(:outbound_local_requests_whitelist) }
+    it { is_expected.to allow_value(['1' * 255]).for(:outbound_local_requests_whitelist) }
+    it { is_expected.not_to allow_value(['1' * 256]).for(:outbound_local_requests_whitelist) }
+    it { is_expected.not_to allow_value(['ğitlab.com']).for(:outbound_local_requests_whitelist) }
+    it { is_expected.to allow_value(['xn--itlab-j1a.com']).for(:outbound_local_requests_whitelist) }
+    it { is_expected.not_to allow_value(['<h1></h1>']).for(:outbound_local_requests_whitelist) }
+    it { is_expected.to allow_value(['gitlab.com']).for(:outbound_local_requests_whitelist) }
+    it { is_expected.to allow_value(nil).for(:outbound_local_requests_whitelist) }
+    it { is_expected.to allow_value([]).for(:outbound_local_requests_whitelist) }
+
     context "when user accepted let's encrypt terms of service" do
       before do
         setting.update(lets_encrypt_terms_of_service_accepted: true)

@@ -8998,6 +8998,9 @@ msgstr ""
 msgid "Requests Profiles"
 msgstr ""
 
+msgid "Requests to these domain(s)/address(es) on the local network will be allowed when local requests from hooks and services are disabled. IP ranges such as 1:0:0:0:0:0:0:0/124 or 127.0.0.0/28 are supported. Domain wildcards are not supported currently. Use comma, semicolon, or newline to separate multiple entries. The whitelist can hold a maximum of 4000 entries. Domains should use IDNA encoding. Ex: domain.com, 192.168.1.1, 127.0.0.0/28."
+msgstr ""
+
 msgid "Require all users in this group to setup Two-factor authentication"
 msgstr ""
 
@@ -12133,6 +12136,9 @@ msgstr[1] ""
 msgid "When:"
 msgstr ""
 
+msgid "Whitelist to allow requests to the local network from hooks and services"
+msgstr ""
+
 msgid "Who can see this group?"
 msgstr ""
 
@@ -12910,6 +12916,9 @@ msgid "is not a valid X509 certificate."
 msgstr ""
 
 msgid "is not an email you own"
+msgstr ""
+
+msgid "is too long (maximum is 1000 entries)"
 msgstr ""
 
 msgid "issue"

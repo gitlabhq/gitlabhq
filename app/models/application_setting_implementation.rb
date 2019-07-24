@@ -2,6 +2,7 @@
 
 module ApplicationSettingImplementation
   extend ActiveSupport::Concern
+  include Gitlab::Utils::StrongMemoize
 
   DOMAIN_LIST_SEPARATOR = %r{\s*[,;]\s*     # comma or semicolon, optionally surrounded by whitespace
                             |               # or
@@ -96,7 +97,8 @@ module ApplicationSettingImplementation
         diff_max_patch_bytes: Gitlab::Git::Diff::DEFAULT_MAX_PATCH_BYTES,
         commit_email_hostname: default_commit_email_hostname,
         protected_ci_variables: false,
-        local_markdown_version: 0
+        local_markdown_version: 0,
+        outbound_local_requests_whitelist: []
       }
     end
 
@@ -131,29 +133,50 @@ module ApplicationSettingImplementation
   end
 
   def domain_whitelist_raw
-    self.domain_whitelist&.join("\n")
+    array_to_string(self.domain_whitelist)
   end
 
   def domain_blacklist_raw
-    self.domain_blacklist&.join("\n")
+    array_to_string(self.domain_blacklist)
   end
 
   def domain_whitelist_raw=(values)
-    self.domain_whitelist = []
-    self.domain_whitelist = values.split(DOMAIN_LIST_SEPARATOR)
-    self.domain_whitelist.reject! { |d| d.empty? }
-    self.domain_whitelist
+    self.domain_whitelist = domain_strings_to_array(values)
   end
 
   def domain_blacklist_raw=(values)
-    self.domain_blacklist = []
-    self.domain_blacklist = values.split(DOMAIN_LIST_SEPARATOR)
-    self.domain_blacklist.reject! { |d| d.empty? }
-    self.domain_blacklist
+    self.domain_blacklist = domain_strings_to_array(values)
   end
 
   def domain_blacklist_file=(file)
     self.domain_blacklist_raw = file.read
+  end
+
+  def outbound_local_requests_whitelist_raw
+    array_to_string(self.outbound_local_requests_whitelist)
+  end
+
+  def outbound_local_requests_whitelist_raw=(values)
+    self.outbound_local_requests_whitelist = domain_strings_to_array(values)
+  end
+
+  def outbound_local_requests_whitelist_arrays
+    strong_memoize(:outbound_local_requests_whitelist_arrays) do
+      ip_whitelist = []
+      domain_whitelist = []
+
+      self.outbound_local_requests_whitelist.each do |str|
+        ip_obj = Gitlab::Utils.string_to_ip_object(str)
+
+        if ip_obj
+          ip_whitelist << ip_obj
+        else
+          domain_whitelist << str
+        end
+      end
+
+      [ip_whitelist, domain_whitelist]
+    end
   end
 
   def repository_storages
@@ -254,6 +277,17 @@ module ApplicationSettingImplementation
   end
 
   private
+
+  def array_to_string(arr)
+    arr&.join("\n")
+  end
+
+  def domain_strings_to_array(values)
+    values
+      .split(DOMAIN_LIST_SEPARATOR)
+      .reject(&:empty?)
+      .uniq
+  end
 
   def ensure_uuid!
     return if uuid?
