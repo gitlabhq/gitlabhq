@@ -46,7 +46,7 @@ RSpec.configure do |config|
 
   if ENV['CI']
     config.around do |example|
-      retry_times = example.metadata.keys.include?(:quarantine) ? 1 : 2
+      retry_times = example.metadata.key?(:quarantine) ? 1 : 2
       example.run_with_retry retry: retry_times
     end
   end

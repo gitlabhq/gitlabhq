@@ -13,7 +13,7 @@ module SessionlessAuthentication
   end
 
   def sessionless_user?
-    current_user && !session.keys.include?('warden.user.user.key')
+    current_user && !session.key?('warden.user.user.key')
   end
 
   def sessionless_sign_in(user)

@@ -292,7 +292,7 @@ class Note < ApplicationRecord
   end
 
   def special_role=(role)
-    raise "Role is undefined, #{role} not found in #{SpecialRole.values}" unless SpecialRole.values.include?(role)
+    raise "Role is undefined, #{role} not found in #{SpecialRole.values}" unless SpecialRole.value?(role)
 
     @special_role = role
   end
