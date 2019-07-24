@@ -35,19 +35,11 @@ end
 
 module Peek
   module Views
-    class RedisDetailed < View
+    class RedisDetailed < DetailedView
       REDACTED_MARKER = "<redacted>"
 
       def key
         'redis'
-      end
-
-      def results
-        {
-          calls: calls,
-          duration: formatted_duration,
-          details: details
-        }
       end
 
       def detail_store
@@ -55,15 +47,6 @@ module Peek
       end
 
       private
-
-      def formatted_duration
-        ms = duration * 1000
-        if ms >= 1000
-          "%.2fms" % ms
-        else
-          "%.0fms" % ms
-        end
-      end
 
       def duration
         detail_store.map { |entry| entry[:duration] }.sum # rubocop:disable CodeReuse/ActiveRecord
@@ -73,10 +56,8 @@ module Peek
         detail_store.count
       end
 
-      def details
+      def call_details
         detail_store
-          .sort { |a, b| b[:duration] <=> a[:duration] }
-          .map(&method(:format_call_details))
       end
 
       def format_call_details(call)

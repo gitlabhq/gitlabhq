@@ -27,9 +27,6 @@ describe Peek::Views::Rugged, :request_store do
                                                      args: [project.repository.raw, 'refs/heads/master'],
                                                      duration: 0.456)
 
-    expect(subject.duration).to be_within(0.00001).of(1.234)
-    expect(subject.calls).to eq(2)
-
     results = subject.results
     expect(results[:calls]).to eq(2)
     expect(results[:duration]).to eq('1234.00ms')
