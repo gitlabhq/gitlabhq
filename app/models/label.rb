@@ -33,7 +33,7 @@ class Label < ApplicationRecord
 
   default_scope { order(title: :asc) }
 
-  scope :templates, -> { where(template: true) }
+  scope :templates, -> { where(template: true, type: [Label.name, nil]) }
   scope :with_title, ->(title) { where(title: title) }
   scope :with_lists_and_board, -> { joins(lists: :board).merge(List.movable) }
   scope :on_project_boards, ->(project_id) { with_lists_and_board.where(boards: { project_id: project_id }) }
