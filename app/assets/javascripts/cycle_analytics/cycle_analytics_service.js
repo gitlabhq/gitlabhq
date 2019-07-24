@@ -8,22 +8,26 @@ export default class CycleAnalyticsService {
   }
 
   fetchCycleAnalyticsData(options = { startDate: 30 }) {
+    const { startDate, projectIds } = options;
+
     return this.axios
       .get('', {
         params: {
-          'cycle_analytics[start_date]': options.startDate,
+          'cycle_analytics[start_date]': startDate,
+          'cycle_analytics[project_ids]': projectIds,
         },
       })
       .then(x => x.data);
   }
 
   fetchStageData(options) {
-    const { stage, startDate } = options;
+    const { stage, startDate, projectIds } = options;
 
     return this.axios
       .get(`events/${stage.name}.json`, {
         params: {
           'cycle_analytics[start_date]': startDate,
+          'cycle_analytics[project_ids]': projectIds,
         },
       })
       .then(x => x.data);
