@@ -7227,10 +7227,16 @@ msgstr ""
 msgid "No schedules"
 msgstr ""
 
+msgid "No starrers matched your search"
+msgstr ""
+
 msgid "No template"
 msgstr ""
 
 msgid "No, directly import the existing email addresses and usernames."
+msgstr ""
+
+msgid "Nobody has starred this repository yet"
 msgstr ""
 
 msgid "None"

@@ -27,6 +27,6 @@
   = paginate @starrers, theme: 'gitlab'
 - else
   - if params[:search].present?
-    .nothing-here-block No starrers matched your search
+    .nothing-here-block= _('No starrers matched your search')
   - else
-    .nothing-here-block Nobody has starred this repository yet
+    .nothing-here-block= _('Nobody has starred this repository yet')
