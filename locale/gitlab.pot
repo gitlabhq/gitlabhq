@@ -10879,9 +10879,6 @@ msgstr ""
 msgid "Trigger was created successfully."
 msgstr ""
 
-msgid "Trigger was re-assigned."
-msgstr ""
-
 msgid "Trigger was successfully updated."
 msgstr ""
 
@@ -11782,9 +11779,6 @@ msgid "You cannot write to this read-only GitLab instance."
 msgstr ""
 
 msgid "You could not create a new trigger."
-msgstr ""
-
-msgid "You could not take ownership of trigger."
 msgstr ""
 
 msgid "You do not have any subscriptions yet"
