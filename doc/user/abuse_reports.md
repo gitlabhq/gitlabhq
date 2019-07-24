@@ -1,6 +1,12 @@
 # Abuse reports
 
-Report abuse from users to GitLab administrators.
+You can report abuse from other GitLab users to GitLab administrators.
+
+A GitLab administrator [can then choose](admin_area/abuse_reports.md) to:
+
+- Remove the user, which deletes them from the instance.
+- Block the user, which denies them access to the instance.
+- Or remove the report, which retains the users access to the instance.
 
 You can report a user through their:
 
@@ -12,7 +18,8 @@ You can report a user through their:
 
 To report abuse from a user's profile page:
 
-1. Click on the exclamation point report abuse button at the top right of the user's profile.
+1. Click on the exclamation point report abuse button at the top right of the
+   user's profile.
 1. Complete an abuse report.
 1. Click the **Send report** button.
 
@@ -26,15 +33,18 @@ To report abuse from a user's comment:
 1. Click the **Send report** button.
 
 NOTE: **Note:**
-A URL to the reported user's comment will be
-pre-filled in the abuse report's **Message** field.
+A URL to the reported user's comment will be pre-filled in the abuse report's
+**Message** field.
 
 ## Reporting abuse through a user's issue or merge request
 
 The **Report abuse** button is displayed at the top right of the issue or merge request:
 
-- When **Report abuse** is selected from the menu that appears when the **Close issue** or **Close merge request** button is clicked, for users that have permission to close the issue or merge request.
-- When viewing the issue or merge request, for users that don't have permission to close the issue or merge request.
+- When **Report abuse** is selected from the menu that appears when the
+  **Close issue** or **Close merge request** button is clicked, for users that
+  have permission to close the issue or merge request.
+- When viewing the issue or merge request, for users that don't have permission
+  to close the issue or merge request.
 
 With the **Report abuse** button displayed, to submit an abuse report:
 
