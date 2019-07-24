@@ -20,13 +20,8 @@ describe Projects::DownloadService do
 
     context 'for URLs that are on the whitelist' do
       before do
-        sham_rack_app = ShamRack.at('mycompany.fogbugz.com').stub
-        sham_rack_app.register_resource('/rails_sample.jpg', File.read(Rails.root + 'spec/fixtures/rails_sample.jpg'), 'image/jpg')
-        sham_rack_app.register_resource('/doc_sample.txt', File.read(Rails.root + 'spec/fixtures/doc_sample.txt'), 'text/plain')
-      end
-
-      after do
-        ShamRack.unmount_all
+        stub_request(:get, 'http://mycompany.fogbugz.com/rails_sample.jpg').to_return(body: File.read(Rails.root + 'spec/fixtures/rails_sample.jpg'))
+        stub_request(:get, 'http://mycompany.fogbugz.com/doc_sample.txt').to_return(body: File.read(Rails.root + 'spec/fixtures/doc_sample.txt'))
       end
 
       context 'an image file' do

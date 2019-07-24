@@ -116,7 +116,7 @@ describe ContainerRegistry::Blob do
         let(:location) { 'file:///etc/passwd' }
 
         it 'raises an error' do
-          expect { blob.data }.to raise_error(ArgumentError, 'invalid address')
+          expect { blob.data }.to raise_error(NoMethodError, %q{undefined method `request_uri' for #<URI::File file:///etc/passwd>})
         end
       end
     end
