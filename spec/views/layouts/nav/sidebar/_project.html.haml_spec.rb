@@ -21,7 +21,7 @@ describe 'layouts/nav/sidebar/_project' do
     end
   end
 
-  describe 'container registry tab' do
+  describe 'packages tab' do
     before do
       stub_container_registry_config(enabled: true)
 
@@ -31,24 +31,17 @@ describe 'layouts/nav/sidebar/_project' do
         .and_return('projects/registry/repositories')
     end
 
-    it 'has both Registry and Repository tabs' do
-      render
-
-      expect(rendered).to have_text 'Repository'
-      expect(rendered).to have_text 'Registry'
-    end
-
     it 'highlights sidebar item and flyout' do
       render
 
       expect(rendered).to have_css('.sidebar-top-level-items > li.active', count: 1)
-      expect(rendered).to have_css('.is-fly-out-only > li.active', count: 1)
+      expect(rendered).to have_css('.sidebar-sub-level-items > li.fly-out-top-item.active', count: 1)
     end
 
     it 'highlights container registry tab' do
       render
 
-      expect(rendered).to have_css('.sidebar-top-level-items > li.active', text: 'Registry')
+      expect(rendered).to have_css('.sidebar-sub-level-items > li:not(.fly-out-top-item).active', text: 'Container Registry')
     end
   end
 
