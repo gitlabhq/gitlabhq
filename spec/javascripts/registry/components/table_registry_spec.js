@@ -47,6 +47,7 @@ describe('table registry', () => {
       const textRendered = vm.$el
         .querySelector('.table tbody tr')
         .textContent.trim()
+        // replace additional whitespace characters (e.g. new lines) with a single empty space
         .replace(/\s\s+/g, ' ');
 
       expect(textRendered).toContain(repoPropsData.list[0].tag);

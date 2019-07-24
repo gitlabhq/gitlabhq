@@ -38,7 +38,6 @@ export default {
   },
   data() {
     return {
-      singleItemToBeDeleted: null,
       itemsToBeDeleted: [],
       modalId: `confirm-image-deletion-modal-${this.repo.id}`,
       selectAllChecked: false,
@@ -52,19 +51,20 @@ export default {
       return this.repo.pagination.total > this.repo.pagination.perPage;
     },
     modalTitle() {
-      if (this.singleItemSelected) {
-        return s__('ContainerRegistry|Remove image');
-      }
-      return s__('ContainerRegistry|Remove images');
+      return n__(
+        'ContainerRegistry|Remove image',
+        'ContainerRegistry|Remove images',
+        this.singleItemSelected ? 1 : this.itemsToBeDeleted.length,
+      );
     },
     modalDescription() {
       const selectedCount = this.itemsToBeDeleted.length;
 
       if (this.singleItemSelected) {
-        const { tag } =
-          this.singleItemToBeDeleted !== null
-            ? this.repo.list[this.singleItemToBeDeleted]
-            : this.repo.list[this.itemsToBeDeleted[0]];
+        // Attempt to pull 'single' property if it's an object in this.itemsToBeDeleted
+        // Otherwise, simply use the int value of the selected row
+        const { single: itemIndex = this.itemsToBeDeleted[0] } = this.itemsToBeDeleted[0];
+        const { tag } = this.repo.list[itemIndex];
 
         return sprintf(
           s__(`ContainerRegistry|You are about to delete the image <b>%{title}</b>. This will
@@ -80,7 +80,10 @@ export default {
       );
     },
     singleItemSelected() {
-      return this.singleItemToBeDeleted !== null || this.itemsToBeDeleted.length === 1;
+      return this.findSingleRowToDelete || this.itemsToBeDeleted.length === 1;
+    },
+    findSingleRowToDelete() {
+      return this.itemsToBeDeleted.find(x => x.single !== undefined);
     },
   },
   methods: {
@@ -91,21 +94,24 @@ export default {
     formatSize(size) {
       return numberToHumanSize(size);
     },
-    setSingleItemToBeDeleted(idx) {
-      this.singleItemToBeDeleted = idx;
+    addSingleItemToBeDeleted(index) {
+      this.itemsToBeDeleted.push({ single: index });
     },
-    resetSingleItemToBeDeleted() {
-      this.singleItemToBeDeleted = null;
+    removeSingleItemToBeDeleted() {
+      const singleIndex = this.itemsToBeDeleted.findIndex(x => x.single !== undefined);
+
+      if (singleIndex > -1) {
+        this.itemsToBeDeleted.splice(singleIndex, 1);
+      }
     },
     handleDeleteRegistry() {
       let { itemsToBeDeleted } = this;
-      this.itemsToBeDeleted = [];
 
-      if (this.singleItemToBeDeleted !== null) {
-        const { singleItemToBeDeleted } = this;
-        this.singleItemToBeDeleted = null;
-        itemsToBeDeleted = [singleItemToBeDeleted];
+      if (this.findSingleRowToDelete) {
+        itemsToBeDeleted = [this.findSingleRowToDelete.single];
       }
+
+      this.itemsToBeDeleted = [];
 
       if (this.bulkDeletePath) {
         this.deleteItems({
@@ -134,21 +140,21 @@ export default {
       }
     },
     selectAll() {
-      this.itemsToBeDeleted = this.repo.list.map((x, idx) => idx);
+      this.itemsToBeDeleted = this.repo.list.map((x, index) => index);
       this.selectAllChecked = true;
     },
     deselectAll() {
       this.itemsToBeDeleted = [];
       this.selectAllChecked = false;
     },
-    updateItemsToBeDeleted(idx) {
-      const delIdx = this.itemsToBeDeleted.findIndex(x => x === idx);
+    updateItemsToBeDeleted(index) {
+      const delIndex = this.itemsToBeDeleted.findIndex(x => x === index);
 
-      if (delIdx > -1) {
-        this.itemsToBeDeleted.splice(delIdx, 1);
+      if (delIndex > -1) {
+        this.itemsToBeDeleted.splice(delIndex, 1);
         this.selectAllChecked = false;
       } else {
-        this.itemsToBeDeleted.push(idx);
+        this.itemsToBeDeleted.push(index);
 
         if (this.itemsToBeDeleted.length === this.repo.list.length) {
           this.selectAllChecked = true;
@@ -191,13 +197,13 @@ export default {
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(item, idx) in repo.list" :key="item.tag">
+        <tr v-for="(item, index) in repo.list" :key="item.tag" class="image-row">
           <td class="check">
             <gl-form-checkbox
               v-if="item.canDelete"
               class="js-select-checkbox"
-              :checked="itemsToBeDeleted && itemsToBeDeleted.includes(idx)"
-              @change="updateItemsToBeDeleted(idx)"
+              :checked="itemsToBeDeleted && itemsToBeDeleted.includes(index)"
+              @change="updateItemsToBeDeleted(index)"
             />
           </td>
           <td class="monospace">
@@ -236,7 +242,7 @@ export default {
               :aria-label="s__('ContainerRegistry|Remove image')"
               variant="danger"
               class="js-delete-registry-row float-right btn-inverted btn-border-color btn-icon"
-              @click="setSingleItemToBeDeleted(idx)"
+              @click="addSingleItemToBeDeleted(index)"
             >
               <icon name="remove" />
             </gl-button>
@@ -255,7 +261,7 @@ export default {
       :modal-id="modalId"
       ok-variant="danger"
       @ok="handleDeleteRegistry"
-      @cancel="resetSingleItemToBeDeleted"
+      @cancel="removeSingleItemToBeDeleted"
     >
       <template v-slot:modal-title>{{ modalTitle }}</template>
       <template v-slot:modal-ok>{{ s__('ContainerRegistry|Remove image(s) and tags') }}</template>

@@ -32,26 +32,20 @@
 .table.tags {
   margin-bottom: 0;
 
-  th {
-    height: 55px;
-  }
-
-  tr {
-    &:hover {
-      td {
-        &.action-buttons {
-          opacity: 1;
-        }
-      }
-    }
-
-    td.check {
+  .image-row {
+    .check {
       padding-right: $gl-padding;
       width: 5%;
     }
 
-    td.action-buttons {
+    .action-buttons {
       opacity: 0;
+    }
+
+    &:hover {
+      .action-buttons {
+        opacity: 1;
+      }
     }
   }
 }

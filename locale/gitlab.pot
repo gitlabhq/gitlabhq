@@ -3130,12 +3130,11 @@ msgid "ContainerRegistry|Quick Start"
 msgstr ""
 
 msgid "ContainerRegistry|Remove image"
-msgstr ""
+msgid_plural "ContainerRegistry|Remove images"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "ContainerRegistry|Remove image(s) and tags"
-msgstr ""
-
-msgid "ContainerRegistry|Remove images"
 msgstr ""
 
 msgid "ContainerRegistry|Remove repository"
