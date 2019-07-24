@@ -37,6 +37,7 @@ class GlobalPolicy < BasePolicy
     enable :access_git
     enable :receive_notifications
     enable :use_quick_actions
+    enable :use_slash_commands
   end
 
   rule { blocked | internal }.policy do
@@ -44,6 +45,7 @@ class GlobalPolicy < BasePolicy
     prevent :access_api
     prevent :access_git
     prevent :receive_notifications
+    prevent :use_slash_commands
   end
 
   rule { required_terms_not_accepted }.policy do
@@ -61,6 +63,7 @@ class GlobalPolicy < BasePolicy
 
   rule { access_locked }.policy do
     prevent :log_in
+    prevent :use_slash_commands
   end
 
   rule { ~(anonymous & restricted_public_level) }.policy do
