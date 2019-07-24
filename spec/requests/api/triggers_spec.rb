@@ -270,34 +270,6 @@ describe API::Triggers do
     end
   end
 
-  describe 'POST /projects/:id/triggers/:trigger_id/take_ownership' do
-    context 'authenticated user with valid permissions' do
-      it 'updates owner' do
-        post api("/projects/#{project.id}/triggers/#{trigger.id}/take_ownership", user)
-
-        expect(response).to have_gitlab_http_status(200)
-        expect(json_response).to include('owner')
-        expect(trigger.reload.owner).to eq(user)
-      end
-    end
-
-    context 'authenticated user with invalid permissions' do
-      it 'does not update owner' do
-        post api("/projects/#{project.id}/triggers/#{trigger.id}/take_ownership", user2)
-
-        expect(response).to have_gitlab_http_status(403)
-      end
-    end
-
-    context 'unauthenticated user' do
-      it 'does not update owner' do
-        post api("/projects/#{project.id}/triggers/#{trigger.id}/take_ownership")
-
-        expect(response).to have_gitlab_http_status(401)
-      end
-    end
-  end
-
   describe 'DELETE /projects/:id/triggers/:trigger_id' do
     context 'authenticated user with valid permissions' do
       it 'deletes trigger' do

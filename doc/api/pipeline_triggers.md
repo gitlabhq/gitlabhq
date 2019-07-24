@@ -120,35 +120,6 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --form descript
 }
 ```
 
-## Take ownership of a project trigger
-
-Update an owner of a project trigger.
-
-```
-POST /projects/:id/triggers/:trigger_id/take_ownership
-```
-
-| Attribute     | Type    | required | Description              |
-|---------------|---------|----------|--------------------------|
-| `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user      |
-| `trigger_id`  | integer | yes      | The trigger id           |
-
-```
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/triggers/10/take_ownership"
-```
-
-```json
-{
-    "id": 10,
-    "description": "my trigger",
-    "created_at": "2016-01-07T09:53:58.235Z",
-    "last_used": null,
-    "token": "6d056f63e50fe6f8c5f8f4aa10edb7",
-    "updated_at": "2016-01-07T09:53:58.235Z",
-    "owner": null
-}
-```
-
 ## Remove a project trigger
 
 Remove a project's build trigger.

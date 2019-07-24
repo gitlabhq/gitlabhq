@@ -81,29 +81,6 @@ describe 'Triggers', :js do
     end
   end
 
-  describe 'trigger "Take ownership" workflow' do
-    before do
-      create(:ci_trigger, owner: user2, project: @project, description: trigger_title)
-      visit project_settings_ci_cd_path(@project)
-    end
-
-    it 'button "Take ownership" has correct alert' do
-      expected_alert = 'By taking ownership you will bind this trigger to your user account. With this the trigger will have access to all your projects as if it was you. Are you sure?'
-      expect(page.find('a.btn-trigger-take-ownership')['data-confirm']).to eq expected_alert
-    end
-
-    it 'take trigger ownership' do
-      # See if "Take ownership" on trigger works post trigger creation
-      page.accept_confirm do
-        first(:link, "Take ownership").send_keys(:return)
-      end
-
-      expect(page.find('.flash-notice')).to have_content 'Trigger was re-assigned.'
-      expect(page.find('.triggers-list')).to have_content trigger_title
-      expect(page.find('.triggers-list .trigger-owner')).to have_content user.name
-    end
-  end
-
   describe 'trigger "Revoke" workflow' do
     before do
       create(:ci_trigger, owner: user2, project: @project, description: trigger_title)
