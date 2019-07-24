@@ -48,18 +48,4 @@ describe Gitlab::Database::Count::ReltuplesCountStrategy do
       end
     end
   end
-
-  describe '.enabled?' do
-    it 'is enabled for PostgreSQL' do
-      allow(Gitlab::Database).to receive(:postgresql?).and_return(true)
-
-      expect(described_class.enabled?).to be_truthy
-    end
-
-    it 'is disabled for MySQL' do
-      allow(Gitlab::Database).to receive(:postgresql?).and_return(false)
-
-      expect(described_class.enabled?).to be_falsey
-    end
-  end
 end

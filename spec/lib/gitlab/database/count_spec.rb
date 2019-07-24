@@ -9,24 +9,13 @@ describe Gitlab::Database::Count do
   let(:models) { [Project, Identity] }
 
   context '.approximate_counts' do
-    context 'selecting strategies' do
-      let(:strategies) { [double('s1', enabled?: true), double('s2', enabled?: false)] }
-
-      it 'uses only enabled strategies' do
-        expect(strategies[0]).to receive(:new).and_return(double('strategy1', count: {}))
-        expect(strategies[1]).not_to receive(:new)
-
-        described_class.approximate_counts(models, strategies: strategies)
-      end
-    end
-
     context 'fallbacks' do
       subject { described_class.approximate_counts(models, strategies: strategies) }
 
       let(:strategies) do
         [
-          double('s1', enabled?: true, new: first_strategy),
-          double('s2', enabled?: true, new: second_strategy)
+          double('s1', new: first_strategy),
+          double('s2', new: second_strategy)
         ]
       end
 

@@ -31,10 +31,6 @@ module Gitlab
           {}
         end
 
-        def self.enabled?
-          Gitlab::Database.postgresql?
-        end
-
         private
 
         # Models using single-type inheritance (STI) don't work with

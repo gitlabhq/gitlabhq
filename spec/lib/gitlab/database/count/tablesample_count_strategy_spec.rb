@@ -56,22 +56,4 @@ describe Gitlab::Database::Count::TablesampleCountStrategy do
       end
     end
   end
-
-  describe '.enabled?' do
-    before do
-      stub_feature_flags(tablesample_counts: true)
-    end
-
-    it 'is enabled for PostgreSQL' do
-      allow(Gitlab::Database).to receive(:postgresql?).and_return(true)
-
-      expect(described_class.enabled?).to be_truthy
-    end
-
-    it 'is disabled for MySQL' do
-      allow(Gitlab::Database).to receive(:postgresql?).and_return(false)
-
-      expect(described_class.enabled?).to be_falsey
-    end
-  end
 end
