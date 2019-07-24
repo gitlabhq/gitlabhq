@@ -98,7 +98,8 @@ module ApplicationSettingImplementation
         commit_email_hostname: default_commit_email_hostname,
         protected_ci_variables: false,
         local_markdown_version: 0,
-        outbound_local_requests_whitelist: []
+        outbound_local_requests_whitelist: [],
+        raw_blob_request_limit: 300
       }
     end
 
