@@ -157,9 +157,6 @@ export default {
       'multipleDashboardsEnabled',
       'additionalPanelTypesEnabled',
     ]),
-    groupsWithData() {
-      return this.groups.filter(group => this.chartsWithData(group.metrics).length > 0);
-    },
     selectedDashboardText() {
       return this.currentDashboard || (this.allDashboards[0] && this.allDashboards[0].display_name);
     },
@@ -255,6 +252,9 @@ export default {
     },
     setTimeWindowParameter(key) {
       return `?time_window=${key}`;
+    },
+    groupHasData(group) {
+      return this.chartsWithData(group.metrics).length > 0;
     },
   },
   addMetric: {
@@ -369,14 +369,15 @@ export default {
     </div>
     <div v-if="!showEmptyState">
       <graph-group
-        v-for="groupData in groupsWithData"
+        v-for="groupData in groups"
         :key="`${groupData.group}.${groupData.priority}`"
         :name="groupData.group"
         :show-panels="showPanels"
+        :collapse-group="groupHasData(groupData)"
       >
         <template v-if="additionalPanelTypesEnabled">
           <panel-type
-            v-for="(graphData, graphIndex) in chartsWithData(groupData.metrics)"
+            v-for="(graphData, graphIndex) in groupData.metrics"
             :key="`panel-type-${graphIndex}`"
             :graph-data="graphData"
             :dashboard-width="elWidth"

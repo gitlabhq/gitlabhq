@@ -10,6 +10,10 @@ export default {
       required: false,
       default: true,
     },
+    collapseGroup: {
+      type: Boolean,
+      required: true,
+    },
   },
 };
 </script>
@@ -19,7 +23,7 @@ export default {
     <div class="card-header">
       <h4>{{ name }}</h4>
     </div>
-    <div class="card-body prometheus-graph-group"><slot></slot></div>
+    <div v-if="collapseGroup" class="card-body prometheus-graph-group"><slot></slot></div>
   </div>
   <div v-else class="prometheus-graph-group"><slot></slot></div>
 </template>
