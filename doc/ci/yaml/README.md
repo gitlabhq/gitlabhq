@@ -505,7 +505,7 @@ Feature.enable(:allow_unsafe_ruby_regexp)
 ### `only`/`except` (advanced)
 
 CAUTION: **Warning:**
-This an _alpha_ feature, and it is subject to change at any time without
+This is an _alpha_ feature, and it is subject to change at any time without
 prior notice!
 
 GitLab supports both simple and complex strategies, so it's possible to use an
