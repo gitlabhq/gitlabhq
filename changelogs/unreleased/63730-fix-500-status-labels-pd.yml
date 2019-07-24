@@ -1,0 +1,5 @@
+---
+title: Fix admin labels page when there are invalid records
+merge_request: 30885
+author:
+type: fixed

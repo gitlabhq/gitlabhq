@@ -193,4 +193,17 @@ describe Label do
       expect(described_class.optionally_subscribed_by(nil)).to match_array([label, label2])
     end
   end
+
+  describe '#templates' do
+    context 'with invalid template labels' do
+      it 'returns only valid template labels' do
+        create(:label)
+        # Project labels should not have template set to true
+        create(:label, template: true)
+        valid_template_label = described_class.create!(title: 'test', template: true, type: nil)
+
+        expect(described_class.templates).to eq([valid_template_label])
+      end
+    end
+  end
 end
