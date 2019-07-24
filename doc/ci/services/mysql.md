@@ -25,6 +25,12 @@ variables:
   MYSQL_ROOT_PASSWORD: "<your_mysql_password>"
 ```
 
+NOTE: **Note:**
+The `MYSQL_DATABASE` and `MYSQL_ROOT_PASSWORD` variables can't be set in the GitLab UI.
+To set them, assign them to a variable [in the UI](../variables/README.md#via-the-ui), 
+and then assign that variable to the 
+`MYSQL_DATABASE` and `MYSQL_ROOT_PASSWORD` variables in your `.gitlab-ci.yml`.
+
 And then configure your application to use the database, for example:
 
 ```yaml
