@@ -36,8 +36,6 @@
                   %span
                     = _('Activity')
 
-            = render_if_exists 'groups/sidebar/security_dashboard' # EE-specific
-
             - if group_sidebar_link?(:contribution_analytics)
               = nav_link(path: 'analytics#show') do
                 = link_to group_analytics_path(@group), title: _('Contribution Analytics'), data: { placement: 'right' } do
@@ -104,6 +102,8 @@
                 %strong.fly-out-top-item-name
                   = _('Merge Requests')
                 %span.badge.badge-pill.count.merge_counter.js-merge-counter.fly-out-badge= number_with_delimiter(merge_requests_count)
+
+      = render_if_exists "layouts/nav/ee/security_link" # EE-specific
 
       - if group_sidebar_link?(:kubernetes)
         = nav_link(controller: [:clusters]) do
