@@ -1,6 +1,7 @@
 # Auto DevOps
 
-> [Introduced][ce-37115] in GitLab 10.0. Generally available on GitLab 11.0.
+> - [Introduced][ce-37115] in GitLab 10.0.
+> - Generally available on GitLab 11.0.
 
 Auto DevOps provides pre-defined CI/CD configuration which allows you to automatically detect, build, test,
 deploy, and monitor your applications. Leveraging CI/CD best practices and tools, Auto DevOps aims
@@ -43,16 +44,16 @@ platform or a Platform as a Service (PaaS). It takes inspiration from the
 innovative work done by [Heroku](https://www.heroku.com/) and goes beyond it
 in multiple ways:
 
-1. Auto DevOps works with any Kubernetes cluster; you're not limited to running
-   on GitLab's infrastructure. (Note that many features also work without Kubernetes.)
-1. There is no additional cost (no markup on the infrastructure costs), and you
-   can use a self-hosted Kubernetes cluster or Containers as a Service on any
-   public cloud (for example, [Google Kubernetes Engine](https://cloud.google.com/kubernetes-engine/)).
-1. Auto DevOps has more features including security testing, performance testing,
-   and code quality testing.
-1. Auto DevOps offers an incremental graduation path. If you need advanced customizations,
-   you can start modifying the templates without having to start over on a
-   completely different platform. Review the [customizing](#customizing) section for more information.
+- Auto DevOps works with any Kubernetes cluster; you're not limited to running
+  on GitLab's infrastructure. (Note that many features also work without Kubernetes).
+- There is no additional cost (no markup on the infrastructure costs), and you
+  can use a self-hosted Kubernetes cluster or Containers as a Service on any
+  public cloud (for example, [Google Kubernetes Engine](https://cloud.google.com/kubernetes-engine/)).
+- Auto DevOps has more features including security testing, performance testing,
+  and code quality testing.
+- Auto DevOps offers an incremental graduation path. If you need advanced customizations,
+  you can start modifying the templates without having to start over on a
+  completely different platform. Review the [customizing](#customizing) section for more information.
 
 ## Features
 
@@ -90,38 +91,38 @@ For an overview on the creation of Auto DevOps, read the blog post [From 2/3 of 
 
 To make full use of Auto DevOps, you will need:
 
-1. **GitLab Runner** (needed for all stages) - Your Runner needs to be
-   configured to be able to run Docker. Generally this means using the
-   [Docker](https://docs.gitlab.com/runner/executors/docker.html) or [Kubernetes
-   executor](https://docs.gitlab.com/runner/executors/kubernetes.html), with
-   [privileged mode enabled](https://docs.gitlab.com/runner/executors/docker.html#use-docker-in-docker-with-privileged-mode).
-   The Runners do not need to be installed in the Kubernetes cluster, but the
-   Kubernetes executor is easy to use and is automatically autoscaling.
-   Docker-based Runners can be configured to autoscale as well, using [Docker
-   Machine](https://docs.gitlab.com/runner/install/autoscaling.html). Runners
-   should be registered as [shared Runners](../../ci/runners/README.md#registering-a-shared-runner)
-   for the entire GitLab instance, or [specific Runners](../../ci/runners/README.md#registering-a-specific-runner)
-   that are assigned to specific projects.
-1. **Base domain** (needed for Auto Review Apps and Auto Deploy) - You will need
-   a domain configured with wildcard DNS which is going to be used by all of your
-   Auto DevOps applications. [Read the specifics](#auto-devops-base-domain).
-1. **Kubernetes** (needed for Auto Review Apps, Auto Deploy, and Auto Monitoring) -
-   To enable deployments, you will need Kubernetes 1.5+. You need a [Kubernetes cluster][kubernetes-clusters]
-   for the project, or a Kubernetes [default service template](../../user/project/integrations/services_templates.md)
-   for the entire GitLab installation.
-   1. **A load balancer** - You can use NGINX ingress by deploying it to your
-      Kubernetes cluster using the
-      [`nginx-ingress`](https://github.com/kubernetes/charts/tree/master/stable/nginx-ingress)
-      Helm chart.
-1. **Prometheus** (needed for Auto Monitoring) - To enable Auto Monitoring, you
-   will need Prometheus installed somewhere (inside or outside your cluster) and
-   configured to scrape your Kubernetes cluster. To get response metrics
-   (in addition to system metrics), you need to
-   [configure Prometheus to monitor NGINX](../../user/project/integrations/prometheus_library/nginx_ingress.md#configuring-nginx-ingress-monitoring).
-   The [Prometheus service](../../user/project/integrations/prometheus.md)
-   integration needs to be enabled for the project, or enabled as a
-   [default service template](../../user/project/integrations/services_templates.md)
-   for the entire GitLab installation.
+- **GitLab Runner** (needed for all stages) - Your Runner needs to be
+  configured to be able to run Docker. Generally this means using the
+  [Docker](https://docs.gitlab.com/runner/executors/docker.html) or [Kubernetes
+  executor](https://docs.gitlab.com/runner/executors/kubernetes.html), with
+  [privileged mode enabled](https://docs.gitlab.com/runner/executors/docker.html#use-docker-in-docker-with-privileged-mode).
+  The Runners do not need to be installed in the Kubernetes cluster, but the
+  Kubernetes executor is easy to use and is automatically autoscaling.
+  Docker-based Runners can be configured to autoscale as well, using [Docker
+  Machine](https://docs.gitlab.com/runner/install/autoscaling.html). Runners
+  should be registered as [shared Runners](../../ci/runners/README.md#registering-a-shared-runner)
+  for the entire GitLab instance, or [specific Runners](../../ci/runners/README.md#registering-a-specific-runner)
+  that are assigned to specific projects.
+- **Base domain** (needed for Auto Review Apps and Auto Deploy) - You will need
+  a domain configured with wildcard DNS which is going to be used by all of your
+  Auto DevOps applications. [Read the specifics](#auto-devops-base-domain).
+- **Kubernetes** (needed for Auto Review Apps, Auto Deploy, and Auto Monitoring) -
+  To enable deployments, you will need Kubernetes 1.5+. You need a [Kubernetes cluster][kubernetes-clusters]
+  for the project, or a Kubernetes [default service template](../../user/project/integrations/services_templates.md)
+  for the entire GitLab installation.
+  - **A load balancer** - You can use NGINX ingress by deploying it to your
+    Kubernetes cluster using the
+    [`nginx-ingress`](https://github.com/kubernetes/charts/tree/master/stable/nginx-ingress)
+    Helm chart.
+- **Prometheus** (needed for Auto Monitoring) - To enable Auto Monitoring, you
+  will need Prometheus installed somewhere (inside or outside your cluster) and
+  configured to scrape your Kubernetes cluster. To get response metrics
+  (in addition to system metrics), you need to
+  [configure Prometheus to monitor NGINX](../../user/project/integrations/prometheus_library/nginx_ingress.md#configuring-nginx-ingress-monitoring).
+  The [Prometheus service](../../user/project/integrations/prometheus.md)
+  integration needs to be enabled for the project, or enabled as a
+  [default service template](../../user/project/integrations/services_templates.md)
+  for the entire GitLab installation.
 
 If you do not have Kubernetes or Prometheus installed, then Auto Review Apps,
 Auto Deploy, and Auto Monitoring will be silently skipped.
@@ -147,7 +148,7 @@ NOTE: **Note**
 A wildcard DNS A record matching the base domain(s) is required, for example,
 given a base domain of `example.com`, you'd need a DNS entry like:
 
-```
+```text
 *.example.com   3600     A     1.2.3.4
 ```
 
@@ -224,7 +225,7 @@ full use of Auto DevOps are available. If this is your fist time, we recommend y
 GitLab.com users can enable/disable Auto DevOps at the project-level only. Self-managed users
 can enable/disable Auto DevOps at the project-level, group-level or instance-level.
 
-### Enabling/disabling Auto DevOps at the instance-level (Administrators only)
+### At the instance level (Administrators only)
 
 Even when disabled at the instance level, group owners and project maintainers can still enable
 Auto DevOps at the group and project level, respectively.
@@ -234,7 +235,7 @@ Auto DevOps at the group and project level, respectively.
 1. If enabling, optionally set up the Auto DevOps [base domain](#auto-devops-base-domain) which will be used for Auto Deploy and Auto Review Apps.
 1. Click **Save changes** for the changes to take effect.
 
-### Enabling/disabling Auto DevOps at the group-level
+### At the group level
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/52447) in GitLab 11.10.
 
@@ -250,7 +251,7 @@ When enabling or disabling Auto DevOps at group-level, group configuration will 
 the subgroups and projects inside that group, unless Auto DevOps is specifically enabled or disabled on
 the subgroup or project.
 
-### Enabling/disabling Auto DevOps at the project-level
+### At the project level
 
 If enabling, check that your project doesn't have a `.gitlab-ci.yml`, or if one exists, remove it.
 
@@ -263,7 +264,7 @@ If enabling, check that your project doesn't have a `.gitlab-ci.yml`, or if one 
 
 When the feature has been enabled, an Auto DevOps pipeline is triggered on the default branch.
 
-### Feature flag to enable for a percentage of projects
+### Enable for a percentage of projects
 
 There is also a feature flag to enable Auto DevOps by default to your chosen percentage of projects.
 
@@ -371,7 +372,7 @@ Any differences between the source and target branches are also
 Static Application Security Testing (SAST) uses the
 [SAST Docker image](https://gitlab.com/gitlab-org/security-products/sast) to run static
 analysis on the current code and checks for potential security issues. The
-the Auto SAST stage will be skipped on licenses other than Ultimate and requires GitLab Runner 11.5 or above.
+Auto SAST stage will be skipped on licenses other than Ultimate and requires GitLab Runner 11.5 or above.
 
 Once the report is created, it's uploaded as an artifact which you can later download and
 check out.
@@ -488,7 +489,7 @@ Any security warnings are also shown in the merge request widget. Read how
 
 Auto Browser Performance Testing utilizes the [Sitespeed.io container](https://hub.docker.com/r/sitespeedio/sitespeed.io/) to measure the performance of a web page. A JSON report is created and uploaded as an artifact, which includes the overall performance score for each page. By default, the root page of Review and Production environments will be tested. If you would like to add additional URL's to test, simply add the paths to a file named `.gitlab-urls.txt` in the root directory, one per line. For example:
 
-```
+```text
 /
 /features
 /direction
@@ -1009,7 +1010,7 @@ multi-buildpack does not.
 
 As of GitLab 10.0, the supported buildpacks are:
 
-```
+```text
 - heroku-buildpack-multi     v1.0.0
 - heroku-buildpack-ruby      v168
 - heroku-buildpack-nodejs    v99
