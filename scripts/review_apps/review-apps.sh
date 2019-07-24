@@ -52,7 +52,7 @@ function delete() {
 function get_pod() {
   local app_name="${1}"
   local status="${2-Running}"
-  get_pod_cmd="kubectl get pods -n ${KUBE_NAMESPACE} --field-selector=status.phase=${status} -lapp=${app_name},release=${CI_ENVIRONMENT_SLUG} --no-headers -o=custom-columns=NAME:.metadata.name"
+  get_pod_cmd="kubectl get pods -n ${KUBE_NAMESPACE} --field-selector=status.phase=${status} -lapp=${app_name},release=${CI_ENVIRONMENT_SLUG} --no-headers -o=custom-columns=NAME:.metadata.name | tail -n 1"
   echoinfo "Waiting till '${app_name}' pod is ready" true
   echoinfo "Running '${get_pod_cmd}'"
 
