@@ -33,7 +33,7 @@ module Spec
 
         # Packs string components into an openssh-encoded pubkey.
         def pack_pubkey_components(strings)
-          (strings.map { |s| [s.length].pack('N') }).zip(strings).flatten.join
+          (strings.flat_map { |s| [s.length].pack('N') }).zip(strings).join
         end
       end
     end

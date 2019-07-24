@@ -265,7 +265,7 @@ describe Issuable::BulkUpdateService do
         end
 
         it 'removes the label IDs from all issues passed' do
-          expect(issues.map(&:reload).map(&:label_ids).flatten).not_to include(merge_requests.id)
+          expect(issues.map(&:reload).flat_map(&:label_ids)).not_to include(merge_requests.id)
         end
 
         it 'does not update issues not passed in' do
@@ -297,11 +297,11 @@ describe Issuable::BulkUpdateService do
         let(:remove_labels) { [regression] }
 
         it 'removes the label IDs from all issues passed' do
-          expect(issues.map(&:reload).map(&:label_ids).flatten).not_to include(regression.id)
+          expect(issues.map(&:reload).flat_map(&:label_ids)).not_to include(regression.id)
         end
 
         it 'ignores the label IDs parameter' do
-          expect(issues.map(&:reload).map(&:label_ids).flatten).not_to include(merge_requests.id)
+          expect(issues.map(&:reload).flat_map(&:label_ids)).not_to include(merge_requests.id)
         end
 
         it 'does not update issues not passed in' do
@@ -320,11 +320,11 @@ describe Issuable::BulkUpdateService do
         end
 
         it 'removes the label IDs from all issues passed' do
-          expect(issues.map(&:reload).map(&:label_ids).flatten).not_to include(merge_requests.id)
+          expect(issues.map(&:reload).flat_map(&:label_ids)).not_to include(merge_requests.id)
         end
 
         it 'ignores the label IDs parameter' do
-          expect(issues.map(&:reload).map(&:label_ids).flatten).not_to include(regression.id)
+          expect(issues.map(&:reload).flat_map(&:label_ids)).not_to include(regression.id)
         end
 
         it 'does not update issues not passed in' do

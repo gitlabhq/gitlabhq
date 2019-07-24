@@ -7,8 +7,8 @@ describe Gitlab::DatabaseImporters::CommonMetrics::Importer do
 
   context "does import common_metrics.yml" do
     let(:groups) { subject.content['panel_groups'] }
-    let(:panels) { groups.map { |group| group['panels'] }.flatten }
-    let(:metrics) { panels.map { |group| group['metrics'] }.flatten }
+    let(:panels) { groups.flat_map { |group| group['panels'] } }
+    let(:metrics) { panels.flat_map { |group| group['metrics'] } }
     let(:metric_ids) { metrics.map { |metric| metric['id'] } }
 
     before do

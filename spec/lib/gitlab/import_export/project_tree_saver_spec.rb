@@ -179,9 +179,9 @@ describe Gitlab::ImportExport::ProjectTreeSaver do
       end
 
       it 'has priorities associated to labels' do
-        priorities = saved_project_json['issues'].first['label_links'].map { |link| link['label']['priorities'] }
+        priorities = saved_project_json['issues'].first['label_links'].flat_map { |link| link['label']['priorities'] }
 
-        expect(priorities.flatten).not_to be_empty
+        expect(priorities).not_to be_empty
       end
 
       it 'has issue resource label events' do

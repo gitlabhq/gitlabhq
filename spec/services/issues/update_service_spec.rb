@@ -179,7 +179,7 @@ describe Issues::UpdateService, :mailer do
         it 'sends email to user2 about assign of new issue and email to user3 about issue unassignment' do
           deliveries = ActionMailer::Base.deliveries
           email = deliveries.last
-          recipients = deliveries.last(2).map(&:to).flatten
+          recipients = deliveries.last(2).flat_map(&:to)
           expect(recipients).to include(user2.email, user3.email)
           expect(email.subject).to include(issue.title)
         end

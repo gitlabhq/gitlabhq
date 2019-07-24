@@ -158,7 +158,7 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
         get_show_json
 
         json_response.dig('pipeline', 'details', 'stages').tap do |stages|
-          expect(stages.map(&:keys).flatten)
+          expect(stages.flat_map(&:keys))
             .to eq %w[name title status path dropdown_path]
         end
       end

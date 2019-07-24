@@ -81,10 +81,9 @@ describe WikiPage do
           grouped_entries = described_class.group_by_directory(wiki.list_pages)
 
           actual_order =
-            grouped_entries.map do |page_or_dir|
+            grouped_entries.flat_map do |page_or_dir|
               get_slugs(page_or_dir)
             end
-            .flatten
           expect(actual_order).to eq(expected_order)
         end
       end
