@@ -23,6 +23,7 @@
 1. Code should be written in [US English][us-english]
 1. [Go](../go_guide/index.md)
 1. [Python](../python_guide/index.md)
+1. [Shell scripting](../shell_scripting_guide/index.md)
 
 This is also the style used by linting tools such as
 [RuboCop](https://github.com/rubocop-hq/rubocop) and [Hound CI](https://houndci.com).
