@@ -331,7 +331,7 @@ project's dependencies with their versions. This list can be generated only for
 [languages and package managers](#supported-languages-and-package-managers)
 supported by Gemnasium.
 
-To see the generated dependency list, navigate to your project's **Project > Dependency List**.
+To see the generated dependency list, navigate to your project's **Security & Compliance > Dependency List**.
 
 ## Versioning and release process
 

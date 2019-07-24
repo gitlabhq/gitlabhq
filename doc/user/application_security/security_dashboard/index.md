@@ -49,7 +49,7 @@ The group Security Dashboard gives an overview of the vulnerabilities of all the
 projects in a group and its subgroups.
 
 First, navigate to the Security Dashboard found under your group's
-**Overview > Security Dashboard**.
+**Security** tab.
 
 Once you're on the dashboard, at the top you should see a series of filters for:
 
@@ -58,7 +58,7 @@ Once you're on the dashboard, at the top you should see a series of filters for:
 - Report type
 - Project
 
-![dashboard with action buttons and metrics](img/dashboard.png)
+![dashboard with action buttons and metrics](img/group_security_dashboard.png)
 
 Selecting one or more filters will filter the results in this page.
 The first section is an overview of all the vulnerabilities, grouped by severity.
