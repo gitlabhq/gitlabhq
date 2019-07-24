@@ -67,6 +67,13 @@ if ! cd "$app_root" ; then
  echo "Failed to cd into $app_root, exiting!";  exit 1
 fi
 
+# Select the web server to use
+if [ -z "$EXPERIMENTAL_PUMA" ]; then
+  use_web_server="unicorn"
+else
+  use_web_server="puma"
+fi
+
 
 ### Init Script functions
 
@@ -256,7 +263,7 @@ start_gitlab() {
   check_stale_pids
 
   if [ "$web_status" != "0" ]; then
-    echo "Starting GitLab web server"
+    echo "Starting GitLab web server ($use_web_server)"
   fi
   if [ "$sidekiq_status" != "0" ]; then
     echo "Starting GitLab Sidekiq"
@@ -281,7 +288,7 @@ start_gitlab() {
     # Remove old socket if it exists
     rm -f "$rails_socket" 2>/dev/null
     # Start the web server
-    RAILS_ENV=$RAILS_ENV EXPERIMENTAL_PUMA=$EXPERIMENTAL_PUMA bin/web start
+    RAILS_ENV=$RAILS_ENV USE_WEB_SERVER=$use_web_server bin/web start
   fi
 
   # If sidekiq is already running, don't start it again.
@@ -343,7 +350,7 @@ stop_gitlab() {
 
   if [ "$web_status" = "0" ]; then
     echo "Shutting down GitLab web server"
-    RAILS_ENV=$RAILS_ENV EXPERIMENTAL_PUMA=$EXPERIMENTAL_PUMA bin/web stop
+    RAILS_ENV=$RAILS_ENV USE_WEB_SERVER=$use_web_server bin/web stop
   fi
   if [ "$sidekiq_status" = "0" ]; then
     echo "Shutting down GitLab Sidekiq"
@@ -447,7 +454,7 @@ reload_gitlab(){
     exit 1
   fi
   printf "Reloading GitLab web server configuration... "
-  RAILS_ENV=$RAILS_ENV EXPERIMENTAL_PUMA=$EXPERIMENTAL_PUMA bin/web reload
+  RAILS_ENV=$RAILS_ENV USE_WEB_SERVER=$use_web_server bin/web reload
   echo "Done."
 
   echo "Restarting GitLab Sidekiq since it isn't capable of reloading its config..."
