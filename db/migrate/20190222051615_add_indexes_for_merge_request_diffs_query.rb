@@ -35,7 +35,7 @@ class AddIndexesForMergeRequestDiffsQuery < ActiveRecord::Migration[5.0]
   end
 
   def down
-    INDEX_SPECS.reverse.each do |spec|
+    INDEX_SPECS.reverse_each do |spec|
       remove_concurrent_index(*spec)
     end
   end

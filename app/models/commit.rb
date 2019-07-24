@@ -346,7 +346,7 @@ class Commit
       if commits_in_merge_request.present?
         message_body << ""
 
-        commits_in_merge_request.reverse.each do |commit_in_merge|
+        commits_in_merge_request.reverse_each do |commit_in_merge|
           message_body << "#{commit_in_merge.short_id} #{commit_in_merge.title}"
         end
       end
