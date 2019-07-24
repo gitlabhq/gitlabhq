@@ -1,6 +1,10 @@
 - @hide_top_links = true
-- breadcrumb_title _("Search")
 - page_title @search_term
+- @hide_breadcrumbs = true
+
+.page-title-holder.d-flex.align-items-center
+  %h1.page-title<
+    = _('Search')
 
 .prepend-top-default
   = render 'search/form'
