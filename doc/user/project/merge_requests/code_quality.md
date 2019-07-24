@@ -9,8 +9,18 @@ in [GitLab Starter](https://about.gitlab.com/pricing/) 9.3.
 
 With the help of [GitLab CI/CD](../../../ci/README.md), you can analyze your
 source code quality using GitLab Code Quality.
-Code Quality uses [Code Climate Engines](https://codeclimate.com), which are
-free and open source. Code Quality doesn't require a Code Climate subscription.
+
+Code Quality:
+
+- Uses [Code Climate Engines](https://codeclimate.com), which are
+  free and open source. Code Quality doesn't require a Code Climate
+  subscription.
+- Runs in [pipelines](../../../ci/pipelines.md) using an Docker image built in
+  [GitLab Code
+  Quality](https://gitlab.com/gitlab-org/security-products/codequality) project.
+- Can make use of a [template](#template-and-examples).
+- Is available with [Auto
+  DevOps](../../../topics/autodevops/index.md#auto-code-quality-starter).
 
 Going a step further, GitLab can show the Code Quality report right
 in the merge request widget area:
@@ -21,22 +31,48 @@ in the merge request widget area:
 
 For instance, consider the following workflow:
 
-1. Your backend team member starts a new implementation for making a certain feature in your app faster
-1. With Code Quality reports, they analyze how their implementation is impacting the code quality
-1. The metrics show that their code degrade the quality in 10 points
-1. You ask a co-worker to help them with this modification
-1. They both work on the changes until Code Quality report displays no degradations, only improvements
-1. You approve the merge request and authorize its deployment to staging
-1. Once verified, their changes are deployed to production
+1. Your backend team member starts a new implementation for making a certain
+   feature in your app faster.
+1. With Code Quality reports, they analyze how their implementation is impacting
+   the code quality.
+1. The metrics show that their code degrade the quality in 10 points.
+1. You ask a co-worker to help them with this modification.
+1. They both work on the changes until Code Quality report displays no
+   degradations, only improvements.
+1. You approve the merge request and authorize its deployment to staging.
+1. Once verified, their changes are deployed to production.
 
-## How it works
+## Template and examples
 
-First of all, you need to define a job in your `.gitlab-ci.yml` file that generates the
-[Code Quality report artifact](../../../ci/yaml/README.md#artifactsreportscodequality-starter).
+For most GitLab instances, the supplied template is the preferred method of
+implementing Code Quality. See
+[Analyze your project's Code Quality](../../../ci/examples/code_quality.md) for:
 
-The Code Quality report artifact is a subset of the
-[Code Climate spec](https://github.com/codeclimate/spec/blob/master/SPEC.md#data-types).
-It must be a JSON file containing an array of objects with the following properties:
+- Information on the builtin GitLab Code Quality template.
+- Examples of manual GitLab configuration for earlier GitLab versions.
+
+## Configuring jobs using variables
+
+The Code Quality job supports environment variables that users can set to
+configure job execution at runtime.
+
+For a list of available environment variables, see
+[Environment variables](https://gitlab.com/gitlab-org/security-products/codequality/blob/master/README.md#environment-variables).
+
+## Implementing a custom tool
+
+It's possible to have a custom tool provide Code Quality reports in GitLab. To
+do this:
+
+1. Define a job in your `.gitlab-ci.yml` file that generates the
+   [Code Quality report
+   artifact](../../../ci/yaml/README.md#artifactsreportscodequality-starter).
+1. Configure your tool to generate the Code Quality report artifact as a JSON
+   file that implements subset of the [Code Climate
+   spec](https://github.com/codeclimate/spec/blob/master/SPEC.md#data-types).
+
+The Code Quality report artifact JSON file must contain an array of objects
+with the following properties:
 
 | Name                   | Description                                                                            |
 | ---------------------- | -------------------------------------------------------------------------------------- |
@@ -63,13 +99,16 @@ Example:
 ```
 
 NOTE: **Note:**
-Although the Code Climate spec supports more properties, those are ignored by GitLab.
+Although the Code Climate spec supports more properties, those are ignored by
+GitLab.
 
-For more information on what the Code Quality job should look like, check the
-example on [analyzing a project's code quality](../../../ci/examples/code_quality.md).
+## Code Quality reports
 
-GitLab then checks this report, compares the metrics between the source and target
-branches, and shows the information right on the merge request.
+Once the Code Quality job has completed, GitLab:
+
+- Checks the generated report.
+- Compares the metrics between the source and target branches.
+- Shows the information right on the merge request.
 
 If multiple jobs in a pipeline generate a code quality artifact, only the artifact from
 the last created job (the job with the largest job ID) is used. To avoid confusion,
