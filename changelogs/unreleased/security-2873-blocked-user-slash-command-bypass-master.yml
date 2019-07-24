@@ -1,0 +1,5 @@
+---
+title: Restrict slash commands to users who can log in
+merge_request:
+author:
+type: security
