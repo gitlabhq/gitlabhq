@@ -16,7 +16,7 @@ describe ContainerRepository do
                                    host_port: 'registry.gitlab')
 
     stub_request(:get, 'http://registry.gitlab/v2/group/test/my_image/tags/list')
-      .with(headers: { 'Accept' => 'application/vnd.docker.distribution.manifest.v2+json' })
+      .with(headers: { 'Accept' => ContainerRegistry::Client::ACCEPTED_TYPES.join(', ') })
       .to_return(
         status: 200,
         body: JSON.dump(tags: ['test_tag']),
