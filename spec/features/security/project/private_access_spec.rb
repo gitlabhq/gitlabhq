@@ -126,7 +126,7 @@ describe "Private Project Access" do
 
   describe "GET /:project_path/blob" do
     let(:commit) { project.repository.commit }
-    subject { project_blob_path(project, File.join(commit.id, '.gitignore'))}
+    subject { project_blob_path(project, File.join(commit.id, '.gitignore')) }
 
     it { is_expected.to be_allowed_for(:admin) }
     it { is_expected.to be_allowed_for(:owner).of(project) }

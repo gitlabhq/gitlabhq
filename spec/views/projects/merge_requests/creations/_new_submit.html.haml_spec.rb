@@ -12,6 +12,7 @@ describe 'projects/merge_requests/creations/_new_submit.html.haml' do
     assign(:hidden_commit_count, 0)
     assign(:total_commit_count, merge_request.commits.count)
     assign(:project, merge_request.target_project)
+    assign(:target_project, merge_request.target_project)
     assign(:mr_presenter, merge_request.present(current_user: merge_request.author))
 
     allow(view).to receive(:can?).and_return(true)
