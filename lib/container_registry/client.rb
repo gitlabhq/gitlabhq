@@ -7,7 +7,9 @@ module ContainerRegistry
   class Client
     attr_accessor :uri
 
-    MANIFEST_VERSION = 'application/vnd.docker.distribution.manifest.v2+json'.freeze
+    DOCKER_DISTRIBUTION_MANIFEST_V2_TYPE = 'application/vnd.docker.distribution.manifest.v2+json'
+    OCI_MANIFEST_V1_TYPE = 'application/vnd.oci.image.manifest.v1+json'
+    ACCEPTED_TYPES = [DOCKER_DISTRIBUTION_MANIFEST_V2_TYPE, OCI_MANIFEST_V1_TYPE].freeze
 
     # Taken from: FaradayMiddleware::FollowRedirects
     REDIRECT_CODES = Set.new [301, 302, 303, 307]
@@ -60,12 +62,13 @@ module ContainerRegistry
     end
 
     def accept_manifest(conn)
-      conn.headers['Accept'] = MANIFEST_VERSION
+      conn.headers['Accept'] = ACCEPTED_TYPES
 
       conn.response :json, content_type: 'application/json'
       conn.response :json, content_type: 'application/vnd.docker.distribution.manifest.v1+prettyjws'
       conn.response :json, content_type: 'application/vnd.docker.distribution.manifest.v1+json'
-      conn.response :json, content_type: 'application/vnd.docker.distribution.manifest.v2+json'
+      conn.response :json, content_type: DOCKER_DISTRIBUTION_MANIFEST_V2_TYPE
+      conn.response :json, content_type: OCI_MANIFEST_V1_TYPE
     end
 
     def response_body(response, allow_redirect: false)
