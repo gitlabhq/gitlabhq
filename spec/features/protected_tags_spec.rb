@@ -16,6 +16,7 @@ describe 'Protected Tags', :js do
     it "allows creating explicit protected tags" do
       visit project_protected_tags_path(project)
       set_protected_tag_name('some-tag')
+      set_allowed_to('create') if Gitlab.ee?
       click_on "Protect"
 
       within(".protected-tags-list") { expect(page).to have_content('some-tag') }
@@ -29,6 +30,7 @@ describe 'Protected Tags', :js do
 
       visit project_protected_tags_path(project)
       set_protected_tag_name('some-tag')
+      set_allowed_to('create') if Gitlab.ee?
       click_on "Protect"
 
       within(".protected-tags-list") { expect(page).to have_content(commit.id[0..7]) }
@@ -37,6 +39,7 @@ describe 'Protected Tags', :js do
     it "displays an error message if the named tag does not exist" do
       visit project_protected_tags_path(project)
       set_protected_tag_name('some-tag')
+      set_allowed_to('create') if Gitlab.ee?
       click_on "Protect"
 
       within(".protected-tags-list") { expect(page).to have_content('tag was removed') }
@@ -47,6 +50,7 @@ describe 'Protected Tags', :js do
     it "allows creating protected tags with a wildcard" do
       visit project_protected_tags_path(project)
       set_protected_tag_name('*-stable')
+      set_allowed_to('create') if Gitlab.ee?
       click_on "Protect"
 
       within(".protected-tags-list") { expect(page).to have_content('*-stable') }
@@ -60,6 +64,7 @@ describe 'Protected Tags', :js do
 
       visit project_protected_tags_path(project)
       set_protected_tag_name('*-stable')
+      set_allowed_to('create') if Gitlab.ee?
       click_on "Protect"
 
       within(".protected-tags-list") do
@@ -75,6 +80,7 @@ describe 'Protected Tags', :js do
 
       visit project_protected_tags_path(project)
       set_protected_tag_name('*-stable')
+      set_allowed_to('create') if Gitlab.ee?
       click_on "Protect"
 
       visit project_protected_tags_path(project)
