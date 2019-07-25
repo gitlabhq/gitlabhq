@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_examples 'set sort order from user preference' do
   describe '#set_sort_order_from_user_preference' do
     # There is no issuable_sorting_field defined in any CE controllers yet,

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.shared_examples 'url validator examples' do |schemes|
   let(:validator) { described_class.new(attributes: [:link_url], **options) }
   let!(:badge) { build(:badge, link_url: 'http://www.example.com') }

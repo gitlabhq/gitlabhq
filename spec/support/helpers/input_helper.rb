@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # see app/assets/javascripts/test_utils/simulate_input.js
 
 module InputHelper

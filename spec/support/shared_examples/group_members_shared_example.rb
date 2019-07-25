@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.shared_examples 'members and requesters associations' do
   describe '#members_and_requesters' do
     it 'includes members and requesters' do

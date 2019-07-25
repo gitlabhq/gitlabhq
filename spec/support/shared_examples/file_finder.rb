@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_examples 'file finder' do
   let(:query) { 'files' }
   let(:search_results) { subject.find(query) }

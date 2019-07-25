@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec::Matchers.define :gitaly_request_with_path do |storage_name, relative_path|
   match do |actual|
     repository = actual.repository

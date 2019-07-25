@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_examples 'discussions API' do |parent_type, noteable_type, id_name, can_reply_to_individual_notes: false|
   describe "GET /#{parent_type}/:id/#{noteable_type}/:noteable_id/discussions" do
     it "returns an array of discussions" do

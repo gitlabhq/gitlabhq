@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.shared_examples 'Maintainer manages access requests' do
   let(:user) { create(:user) }
   let(:maintainer) { create(:user) }

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module CapybaraHelpers
   # Execute a block a certain number of times before considering it a failure
   #

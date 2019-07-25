@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_examples 'project hook data with deprecateds' do |project_key: :project|
   it 'contains project data' do
     expect(data[project_key][:name]).to eq(project.name)

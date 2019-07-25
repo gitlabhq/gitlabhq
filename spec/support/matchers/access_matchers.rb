@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # AccessMatchers
 #
 # The custom matchers contained in this module are used to test a user's access

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Specifications for behavior common to all objects with an email attribute.
 # Takes a list of email-format attributes and requires:
 # - subject { "the object with a attribute= setter"  }

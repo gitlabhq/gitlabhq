@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_context 'invalid urls' do
   let(:urls_with_CRLF) do
     ["http://127.0.0.1:333/pa\rth",

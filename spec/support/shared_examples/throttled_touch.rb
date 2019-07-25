@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_examples_for 'throttled touch' do
   describe '#touch' do
     it 'updates the updated_at timestamp' do

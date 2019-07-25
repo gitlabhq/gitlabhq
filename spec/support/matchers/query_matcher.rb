@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec::Matchers.define :make_queries_matching do |matcher, expected_count = nil|
   supports_block_expectations
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module MobileHelpers
   def resize_screen_xs
     resize_window(575, 768)

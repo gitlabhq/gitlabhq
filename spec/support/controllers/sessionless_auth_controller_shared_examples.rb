@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_examples 'authenticates sessionless user' do |path, format, params|
   params ||= {}
 

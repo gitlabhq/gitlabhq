@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.shared_examples 'an editable merge request' do
   it 'updates merge request', :js do
     find('.js-assignee-search').click

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_context 'with storage' do |store, **stub_params|
   before do
     subject.object_store = store

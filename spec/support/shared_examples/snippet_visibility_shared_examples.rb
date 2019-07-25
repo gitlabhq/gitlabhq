@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.shared_examples 'snippet visibility' do
   using RSpec::Parameterized::TableSyntax
 

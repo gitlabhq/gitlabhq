@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.shared_examples 'chat slash commands service' do
   describe "Associations" do
     it { is_expected.to respond_to :token }

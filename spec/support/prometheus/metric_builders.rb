@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Prometheus
   module MetricBuilders
     def simple_query(suffix = 'a', **opts)

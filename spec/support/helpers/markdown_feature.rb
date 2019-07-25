@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This is a helper class used by the GitLab Markdown feature spec
 #
 # Because the feature spec only cares about the output of the Markdown, and the

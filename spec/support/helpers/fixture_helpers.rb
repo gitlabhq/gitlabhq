@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module FixtureHelpers
   def fixture_file(filename, dir: '')
     return '' if filename.blank?

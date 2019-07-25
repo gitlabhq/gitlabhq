@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative "helpers/stub_configuration"
 require_relative "helpers/stub_metrics"
 require_relative "helpers/stub_object_storage"

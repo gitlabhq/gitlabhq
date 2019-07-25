@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_context 'unique ips sign in limit' do
   include StubENV
   before do

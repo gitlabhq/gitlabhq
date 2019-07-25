@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_context 'gitlab email notification' do
   set(:group) { create(:group) }
   set(:subgroup) { create(:group, parent: group) }

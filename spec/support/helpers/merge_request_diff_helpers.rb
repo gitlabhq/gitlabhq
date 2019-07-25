@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module MergeRequestDiffHelpers
   def click_diff_line(line_holder, diff_side = nil)
     line = get_line_components(line_holder, diff_side)

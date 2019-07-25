@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module StubMetrics
   def authentication_metrics
     Gitlab::Auth::Activity

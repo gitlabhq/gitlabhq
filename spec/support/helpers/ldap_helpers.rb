@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module LdapHelpers
   def ldap_adapter(provider = 'ldapmain', ldap = double(:ldap))
     ::Gitlab::Auth::LDAP::Adapter.new(provider, ldap)

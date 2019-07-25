@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_examples_for 'fast destroyable' do
   describe 'Forbid #destroy and #destroy_all' do
     it 'does not delete database rows and associted external data' do

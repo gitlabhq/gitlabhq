@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SelectionHelper
   def select_element(selector)
     find(selector)

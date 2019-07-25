@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ExpectNextInstanceOf
   def expect_next_instance_of(klass, *new_args)
     receive_new = receive(:new)

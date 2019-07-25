@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module NoteInteractionHelpers
   def open_more_actions_dropdown(note)
     note_element = find("#note_#{note.id}")

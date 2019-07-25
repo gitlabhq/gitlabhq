@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_examples 'handle uploads' do
   let(:user)  { create(:user) }
   let(:jpg)   { fixture_file_upload('spec/fixtures/rails_sample.jpg', 'image/jpg') }

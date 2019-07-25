@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.shared_examples 'members notifications' do |entity_type|
   let(:notification_service) { double('NotificationService').as_null_object }
 

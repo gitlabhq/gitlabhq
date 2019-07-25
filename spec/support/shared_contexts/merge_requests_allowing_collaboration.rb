@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_context 'merge request allowing collaboration' do
   include ProjectForksHelper
 

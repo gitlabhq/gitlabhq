@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec::Matchers.define :have_header_with_correct_id_and_link do |level, text, id, parent = ".md"|
   match do |actual|
     node = find("#{parent} h#{level} a#user-content-#{id}")

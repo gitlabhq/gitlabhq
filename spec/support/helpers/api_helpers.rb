@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ApiHelpers
   # Public: Prepend a request path with the path to the API
   #
@@ -30,11 +32,12 @@ module ApiHelpers
     end
 
     if query_string
-      full_path << (path.index('?') ? '&' : '?')
-      full_path << query_string
-    end
+      separator = path.index('?') ? '&' : '?'
 
-    full_path
+      full_path + separator + query_string
+    else
+      full_path
+    end
   end
 
   def expect_paginated_array_response(items)

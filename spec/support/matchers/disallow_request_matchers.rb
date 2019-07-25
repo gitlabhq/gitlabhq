@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec::Matchers.define :disallow_request do
   match do |middleware|
     alert = middleware.env['rack.session'].to_hash

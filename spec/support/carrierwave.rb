@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 CarrierWave.root = File.expand_path('tmp/tests/public', Rails.root)
 
 RSpec.configure do |config|

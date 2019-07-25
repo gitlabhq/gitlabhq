@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_examples 'issuable user dropdown behaviors' do
   include FilteredSearchHelpers
 

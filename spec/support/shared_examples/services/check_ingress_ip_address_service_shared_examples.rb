@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_examples 'check ingress ip executions' do |app_name|
   describe '#execute' do
     let(:application) { create(app_name, :installed) }

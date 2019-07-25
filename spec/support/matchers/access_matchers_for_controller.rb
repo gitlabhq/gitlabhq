@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # AccessMatchersForController
 #
 # For testing authorize_xxx in controller.

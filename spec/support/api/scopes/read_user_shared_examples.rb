@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_examples_for 'allows the "read_user" scope' do |api_version|
   let(:version) { api_version || 'v4' }
 

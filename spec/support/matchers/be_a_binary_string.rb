@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec::Matchers.define :be_a_binary_string do |_|
   match do |actual|
     actual.is_a?(String) && actual.encoding == Encoding.find('ASCII-8BIT')

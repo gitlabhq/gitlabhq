@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.configure do |config|
   def builds_path
     Rails.root.join('tmp/tests/builds')

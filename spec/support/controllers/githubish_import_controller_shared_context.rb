@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_context 'a GitHub-ish import controller' do
   let(:user) { create(:user) }
   let(:token) { "asdasd12345" }

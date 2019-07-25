@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Specifications for behavior common to all objects with executable attributes.
 # It can take a `default_params`.
 

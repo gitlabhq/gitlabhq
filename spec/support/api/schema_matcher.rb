@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SchemaPath
   def self.expand(schema, dir = nil)
     if Gitlab.ee? && dir.nil?

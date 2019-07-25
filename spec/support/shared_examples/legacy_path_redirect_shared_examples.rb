@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_examples 'redirecting a legacy path' do |source, target|
   include RSpec::Rails::RequestExampleGroup
 

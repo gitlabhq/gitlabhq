@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # rubocop:disable Metrics/AbcSize
 
 # Note: The ABC size is large here because we have a method generating test cases with

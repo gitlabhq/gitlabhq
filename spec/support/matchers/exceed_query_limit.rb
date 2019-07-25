@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ExceedQueryLimitHelpers
   def with_threshold(threshold)
     @threshold = threshold

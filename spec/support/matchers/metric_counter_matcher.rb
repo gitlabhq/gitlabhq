@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec::Matchers.define :increment do |counter|
   match do |adapter|
     expect(adapter.send(counter))

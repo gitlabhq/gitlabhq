@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_examples 'boards create service' do
   context 'when parent does not have a board' do
     it 'creates a new board' do

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module MigrationsHelpers
   module TrackUntrackedUploadsHelpers
     PUBLIC_DIR = File.join(Rails.root, 'tmp', 'tests', 'public')

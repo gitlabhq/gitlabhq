@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ChunkedIOHelpers
   def sample_trace_raw
     @sample_trace_raw ||= File.read(expand_fixture_path('trace/sample_trace'))

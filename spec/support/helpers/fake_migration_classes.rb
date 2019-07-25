@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class FakeRenameReservedPathMigrationV1 < ActiveRecord::Migration[4.2]
   include Gitlab::Database::RenameReservedPathsMigration::V1
 

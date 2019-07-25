@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec::Matchers.define :abort_execution do
   match do |code_block|
     @captured_stderr = StringIO.new

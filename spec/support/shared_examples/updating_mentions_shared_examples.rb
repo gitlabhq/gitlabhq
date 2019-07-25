@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.shared_examples 'updating mentions' do |service_class|
   let(:mentioned_user) { create(:user) }
   let(:service_class) { service_class }

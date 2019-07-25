@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'timeout'
 
 shared_examples 'malicious regexp' do

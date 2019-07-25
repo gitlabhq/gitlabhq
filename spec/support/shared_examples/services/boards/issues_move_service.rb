@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_examples 'issues move service' do |group|
   shared_examples 'updating timestamps' do
     it 'updates updated_at' do

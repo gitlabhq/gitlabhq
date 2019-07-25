@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module IssueHelpers
   def visit_issues(project, opts = {})
     visit project_issues_path project, opts

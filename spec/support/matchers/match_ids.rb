@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec::Matchers.define :match_ids do |*expected|
   match do |actual|
     actual_ids = map_ids(actual)

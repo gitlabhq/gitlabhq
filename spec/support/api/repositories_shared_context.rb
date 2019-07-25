@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_context 'disabled repository' do
   before do
     project.project_feature.update!(

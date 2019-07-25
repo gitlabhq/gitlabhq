@@ -40,7 +40,11 @@ describe Gitlab::Auth::OAuth::AuthHash do
       last_name:  last_name_ascii,
       name:       name_ascii,
       nickname:   nickname_ascii,
-      uid:        uid_ascii
+      uid:        uid_ascii,
+      address: {
+        locality: 'some locality',
+        country: 'some country'
+      }
     }
   end
 
@@ -51,6 +55,7 @@ describe Gitlab::Auth::OAuth::AuthHash do
     it { expect(auth_hash.username).to eql nickname_utf8 }
     it { expect(auth_hash.name).to eql name_utf8 }
     it { expect(auth_hash.password).not_to be_empty }
+    it { expect(auth_hash.location).to eq 'some locality, some country' }
   end
 
   context 'email not provided' do

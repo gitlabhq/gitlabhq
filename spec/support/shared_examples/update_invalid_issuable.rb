@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_examples 'update invalid issuable' do |klass|
   let(:params) do
     {

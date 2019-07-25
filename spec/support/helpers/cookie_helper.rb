@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Helper for setting cookies in Selenium/WebDriver
 #
 module CookieHelper

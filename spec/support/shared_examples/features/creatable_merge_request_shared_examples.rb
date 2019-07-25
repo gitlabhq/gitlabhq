@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.shared_examples 'a creatable merge request' do
   include WaitForRequests
 

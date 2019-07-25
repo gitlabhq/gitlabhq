@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_examples 'cluster application status specs' do |application_name|
   describe '#status' do
     let(:cluster) { create(:cluster, :provided_by_gcp) }

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module DropzoneHelper
   # Provides a way to perform `attach_file` for a Dropzone-based file input
   #

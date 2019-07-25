@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module AssetsHelpers
   # In a CI environment the assets are not compiled, as there is a CI job
   # `compile-assets` that compiles them in the prepare stage for all following

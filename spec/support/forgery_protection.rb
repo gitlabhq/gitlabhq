@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ForgeryProtection
   def with_forgery_protection
     ActionController::Base.allow_forgery_protection = true

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module StubFeatureFlags
   # Stub Feature flags with `flag_name: true/false`
   #

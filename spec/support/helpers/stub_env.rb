@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Inspired by https://github.com/ljkbennett/stub_env/blob/master/lib/stub_env/helpers.rb
 module StubENV
   def stub_env(key_or_hash, value = nil)

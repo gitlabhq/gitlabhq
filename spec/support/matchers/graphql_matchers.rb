@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec::Matchers.define :require_graphql_authorizations do |*expected|
   match do |field|
     expect(field.metadata[:authorize]).to eq(*expected)

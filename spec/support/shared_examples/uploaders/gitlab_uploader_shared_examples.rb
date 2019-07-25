@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_examples "matches the method pattern" do |method|
   let(:target) { subject }
   let(:args) { nil }

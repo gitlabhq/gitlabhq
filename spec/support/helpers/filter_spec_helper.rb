@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Helper methods for Banzai filter specs
 #
 # Must be included into specs manually

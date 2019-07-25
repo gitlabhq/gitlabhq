@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_examples 'an unauthorized API user' do
   it { is_expected.to eq(403) }
 end

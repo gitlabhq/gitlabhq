@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # These matchers are a syntactic hack to provide more readable expectations for
 # an Enumerable object.
 #

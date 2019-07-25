@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module MergeRequestHelpers
   def visit_merge_requests(project, opts = {})
     visit project_merge_requests_path project, opts

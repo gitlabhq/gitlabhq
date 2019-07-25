@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ImportExport
   module CommonUtil
     def setup_symlink(tmpdir, symlink_name)

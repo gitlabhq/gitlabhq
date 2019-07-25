@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_examples 'GET #show lists all variables' do
   it 'renders the variables as json' do
     subject

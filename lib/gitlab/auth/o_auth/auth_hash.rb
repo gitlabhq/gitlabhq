@@ -60,8 +60,7 @@ module Gitlab
 
         def get_info(key)
           value = info[key]
-          Gitlab::Utils.force_utf8(value) if value
-          value
+          value.is_a?(String) ? Gitlab::Utils.force_utf8(value) : value
         end
 
         def username_and_email

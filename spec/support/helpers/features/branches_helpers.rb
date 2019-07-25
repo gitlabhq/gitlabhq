@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # These helpers allow you to manipulate with sorting features.
 #
 # Usage:

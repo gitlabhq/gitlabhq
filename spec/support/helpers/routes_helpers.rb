@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module RoutesHelpers
   def fake_routes(&block)
     @routes = @routes.dup
