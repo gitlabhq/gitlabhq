@@ -1,0 +1,5 @@
+---
+title: Support setting of merge request title and description using git push options
+merge_request: 31068
+author:
+type: added

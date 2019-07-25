@@ -11,6 +11,8 @@ describe MergeRequests::PushOptionsHandlerService do
   let(:service) { described_class.new(project, user, changes, push_options) }
   let(:source_branch) { 'fix' }
   let(:target_branch) { 'feature' }
+  let(:title) { 'my title' }
+  let(:description) { 'my description' }
   let(:new_branch_changes) { "#{Gitlab::Git::BLANK_SHA} 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/#{source_branch}" }
   let(:existing_branch_changes) { "d14d6c0abdd253381df51a723d58691b2ee1ab08 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/#{source_branch}" }
   let(:deleted_branch_changes) { "d14d6c0abdd253381df51a723d58691b2ee1ab08 #{Gitlab::Git::BLANK_SHA} refs/heads/#{source_branch}" }
@@ -70,6 +72,26 @@ describe MergeRequests::PushOptionsHandlerService do
       service.execute
 
       expect(last_mr.target_branch).to eq(target_branch)
+    end
+  end
+
+  shared_examples_for 'a service that can set the title of a merge request' do
+    subject(:last_mr) { MergeRequest.last }
+
+    it 'sets the title' do
+      service.execute
+
+      expect(last_mr.title).to eq(title)
+    end
+  end
+
+  shared_examples_for 'a service that can set the description of a merge request' do
+    subject(:last_mr) { MergeRequest.last }
+
+    it 'sets the description' do
+      service.execute
+
+      expect(last_mr.description).to eq(description)
     end
   end
 
@@ -335,6 +357,138 @@ describe MergeRequests::PushOptionsHandlerService do
 
       it_behaves_like 'a service that does not create a merge request'
       it_behaves_like 'a service that can set the target of a merge request'
+    end
+
+    context 'with a deleted branch' do
+      let(:changes) { deleted_branch_changes }
+
+      it_behaves_like 'a service that does nothing'
+    end
+
+    context 'with the project default branch' do
+      let(:changes) { default_branch_changes }
+
+      it_behaves_like 'a service that does nothing'
+    end
+  end
+
+  describe '`title` push option' do
+    let(:push_options) { { title: title } }
+
+    context 'with a new branch' do
+      let(:changes) { new_branch_changes }
+
+      it_behaves_like 'a service that does not create a merge request'
+
+      it 'adds an error to the service' do
+        error = "A merge_request.create push option is required to create a merge request for branch #{source_branch}"
+
+        service.execute
+
+        expect(service.errors).to include(error)
+      end
+
+      context 'when coupled with the `create` push option' do
+        let(:push_options) { { create: true, title: title } }
+
+        it_behaves_like 'a service that can create a merge request'
+        it_behaves_like 'a service that can set the title of a merge request'
+      end
+    end
+
+    context 'with an existing branch but no open MR' do
+      let(:changes) { existing_branch_changes }
+
+      it_behaves_like 'a service that does not create a merge request'
+
+      it 'adds an error to the service' do
+        error = "A merge_request.create push option is required to create a merge request for branch #{source_branch}"
+
+        service.execute
+
+        expect(service.errors).to include(error)
+      end
+
+      context 'when coupled with the `create` push option' do
+        let(:push_options) { { create: true, title: title } }
+
+        it_behaves_like 'a service that can create a merge request'
+        it_behaves_like 'a service that can set the title of a merge request'
+      end
+    end
+
+    context 'with an existing branch that has a merge request open' do
+      let(:changes) { existing_branch_changes }
+      let!(:merge_request) { create(:merge_request, source_project: project, source_branch: source_branch)}
+
+      it_behaves_like 'a service that does not create a merge request'
+      it_behaves_like 'a service that can set the title of a merge request'
+    end
+
+    context 'with a deleted branch' do
+      let(:changes) { deleted_branch_changes }
+
+      it_behaves_like 'a service that does nothing'
+    end
+
+    context 'with the project default branch' do
+      let(:changes) { default_branch_changes }
+
+      it_behaves_like 'a service that does nothing'
+    end
+  end
+
+  describe '`description` push option' do
+    let(:push_options) { { description: description } }
+
+    context 'with a new branch' do
+      let(:changes) { new_branch_changes }
+
+      it_behaves_like 'a service that does not create a merge request'
+
+      it 'adds an error to the service' do
+        error = "A merge_request.create push option is required to create a merge request for branch #{source_branch}"
+
+        service.execute
+
+        expect(service.errors).to include(error)
+      end
+
+      context 'when coupled with the `create` push option' do
+        let(:push_options) { { create: true, description: description } }
+
+        it_behaves_like 'a service that can create a merge request'
+        it_behaves_like 'a service that can set the description of a merge request'
+      end
+    end
+
+    context 'with an existing branch but no open MR' do
+      let(:changes) { existing_branch_changes }
+
+      it_behaves_like 'a service that does not create a merge request'
+
+      it 'adds an error to the service' do
+        error = "A merge_request.create push option is required to create a merge request for branch #{source_branch}"
+
+        service.execute
+
+        expect(service.errors).to include(error)
+      end
+
+      context 'when coupled with the `create` push option' do
+        let(:push_options) { { create: true, description: description } }
+
+        it_behaves_like 'a service that can create a merge request'
+        it_behaves_like 'a service that can set the description of a merge request'
+      end
+    end
+
+    context 'with an existing branch that has a merge request open' do
+      let(:changes) { existing_branch_changes }
+      let!(:merge_request) { create(:merge_request, source_project: project, source_branch: source_branch)}
+
+      it_behaves_like 'a service that does not create a merge request'
+      it_behaves_like 'a service that can set the description of a merge request'
     end
 
     context 'with a deleted branch' do
