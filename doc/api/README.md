@@ -515,7 +515,7 @@ more than 10,000, the `X-Total` and `X-Total-Pages` headers as well as the
 
 ## Namespaced path encoding
 
-If using namespaced API calls, make sure that the `NAMESPACE/PROJECT_NAME` is
+If using namespaced API calls, make sure that the `NAMESPACE/PROJECT_PATH` is
 URL-encoded.
 
 For example, `/` is represented by `%2F`:
@@ -523,6 +523,11 @@ For example, `/` is represented by `%2F`:
 ```
 GET /api/v4/projects/diaspora%2Fdiaspora
 ```
+
+NOTE: **Note:**
+A project's **path** is not necessarily the same as its **name**.  A
+project's path can found in the project's URL or in the project's settings
+under **General > Advanced > Change path**.
 
 ## Branches and tags name encoding
 
