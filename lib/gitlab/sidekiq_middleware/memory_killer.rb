@@ -14,9 +14,12 @@ module Gitlab
       # shut Sidekiq down
       MUTEX = Mutex.new
 
+      attr_reader :worker
+
       def call(worker, job, queue)
         yield
 
+        @worker = worker
         current_rss = get_rss
 
         return unless MAX_RSS > 0 && current_rss > MAX_RSS
@@ -25,9 +28,11 @@ module Gitlab
           # Return if another thread is already waiting to shut Sidekiq down
           next unless MUTEX.try_lock
 
-          Sidekiq.logger.warn "Sidekiq worker PID-#{pid} current RSS #{current_rss}"\
-            " exceeds maximum RSS #{MAX_RSS} after finishing job #{worker.class} JID-#{job['jid']}"
-          Sidekiq.logger.warn "Sidekiq worker PID-#{pid} will stop fetching new jobs in #{GRACE_TIME} seconds, and will be shut down #{SHUTDOWN_WAIT} seconds later"
+          warn("Sidekiq worker PID-#{pid} current RSS #{current_rss}"\
+               " exceeds maximum RSS #{MAX_RSS} after finishing job #{worker.class} JID-#{job['jid']}")
+
+          warn("Sidekiq worker PID-#{pid} will stop fetching new jobs"\
+               " in #{GRACE_TIME} seconds, and will be shut down #{SHUTDOWN_WAIT} seconds later")
 
           # Wait `GRACE_TIME` to give the memory intensive job time to finish.
           # Then, tell Sidekiq to stop fetching new jobs.
@@ -59,23 +64,27 @@ module Gitlab
       def wait_and_signal_pgroup(time, signal, explanation)
         return wait_and_signal(time, signal, explanation) unless Process.getpgrp == pid
 
-        Sidekiq.logger.warn "waiting #{time} seconds before sending Sidekiq worker PGRP-#{pid} #{signal} (#{explanation})"
+        warn("waiting #{time} seconds before sending Sidekiq worker PGRP-#{pid} #{signal} (#{explanation})", signal: signal)
         sleep(time)
 
-        Sidekiq.logger.warn "sending Sidekiq worker PGRP-#{pid} #{signal} (#{explanation})"
+        warn("sending Sidekiq worker PGRP-#{pid} #{signal} (#{explanation})", signal: signal)
         Process.kill(signal, 0)
       end
 
       def wait_and_signal(time, signal, explanation)
-        Sidekiq.logger.warn "waiting #{time} seconds before sending Sidekiq worker PID-#{pid} #{signal} (#{explanation})"
+        warn("waiting #{time} seconds before sending Sidekiq worker PID-#{pid} #{signal} (#{explanation})", signal: signal)
         sleep(time)
 
-        Sidekiq.logger.warn "sending Sidekiq worker PID-#{pid} #{signal} (#{explanation})"
+        warn("sending Sidekiq worker PID-#{pid} #{signal} (#{explanation})", signal: signal)
         Process.kill(signal, pid)
       end
 
       def pid
         Process.pid
+      end
+
+      def warn(message, signal: nil)
+        Sidekiq.logger.warn(class: worker.class, pid: pid, signal: signal, message: message)
       end
     end
   end
