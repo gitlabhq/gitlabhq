@@ -2383,6 +2383,9 @@ msgstr ""
 msgid "ClusterIntegration|Certificate Authority bundle (PEM format)"
 msgstr ""
 
+msgid "ClusterIntegration|Choose a prefix to be used for your namespaces. Defaults to your project path."
+msgstr ""
+
 msgid "ClusterIntegration|Choose which applications to install on your Kubernetes cluster. Helm Tiller is required to install any of the following applications."
 msgstr ""
 
@@ -2620,6 +2623,9 @@ msgstr ""
 msgid "ClusterIntegration|Project namespace (optional, unique)"
 msgstr ""
 
+msgid "ClusterIntegration|Project namespace prefix (optional, unique)"
+msgstr ""
+
 msgid "ClusterIntegration|Prometheus"
 msgstr ""
 
@@ -2726,6 +2732,9 @@ msgid "ClusterIntegration|The associated load balancer and IP will be deleted an
 msgstr ""
 
 msgid "ClusterIntegration|The endpoint is in the process of being assigned. Please check your Kubernetes cluster or Quotas on Google Kubernetes Engine if it takes a long time."
+msgstr ""
+
+msgid "ClusterIntegration|The namespace associated with your project. This will be used for deploy boards, pod logs, and Web terminals."
 msgstr ""
 
 msgid "ClusterIntegration|There was a problem authenticating with your cluster. Please ensure your CA Certificate and Token are valid."

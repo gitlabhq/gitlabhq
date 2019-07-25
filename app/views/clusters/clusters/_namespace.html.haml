@@ -1,0 +1,14 @@
+- managed_namespace_help_text = s_('ClusterIntegration|Choose a prefix to be used for your namespaces. Defaults to your project path.')
+- non_managed_namespace_help_text = s_('ClusterIntegration|The namespace associated with your project. This will be used for deploy boards, pod logs, and Web terminals.')
+- managed_namespace_help_link = link_to _('More information'), help_page_path('user/project/clusters/index.md',
+  anchor: 'gitlab-managed-clusters'), target: '_blank'
+
+.js-namespace-prefixed
+  = platform_field.text_field :namespace,
+    label: s_('ClusterIntegration|Project namespace prefix (optional, unique)'), label_class: 'label-bold',
+    help: '%{help_text} %{help_link}'.html_safe % { help_text: managed_namespace_help_text, help_link: managed_namespace_help_link }
+.js-namespace.hidden
+  = platform_field.text_field :namespace,
+    label: s_('ClusterIntegration|Project namespace (optional, unique)'), label_class: 'label-bold',
+    help: '%{help_text}'.html_safe % { help_text: non_managed_namespace_help_text },
+    disabled: true
