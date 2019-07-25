@@ -2011,6 +2011,57 @@ msgstr ""
 msgid "Chat"
 msgstr ""
 
+msgid "ChatMessage|%{project_link}: Pipeline %{pipeline_link} of %{ref_type} %{branch_link} by %{user_combined_name} %{humanized_status} in %{duration}"
+msgstr ""
+
+msgid "ChatMessage|Branch"
+msgstr ""
+
+msgid "ChatMessage|Commit"
+msgstr ""
+
+msgid "ChatMessage|Failed job"
+msgstr ""
+
+msgid "ChatMessage|Failed stage"
+msgstr ""
+
+msgid "ChatMessage|Invalid CI config YAML file"
+msgstr ""
+
+msgid "ChatMessage|Pipeline #%{pipeline_id} %{humanized_status} in %{duration}"
+msgstr ""
+
+msgid "ChatMessage|Pipeline %{pipeline_link} of %{ref_type} %{branch_link} by %{user_combined_name} %{humanized_status}"
+msgstr ""
+
+msgid "ChatMessage|Tag"
+msgstr ""
+
+msgid "ChatMessage|and [%{count} more](%{pipeline_failed_jobs_url})"
+msgstr ""
+
+msgid "ChatMessage|failed"
+msgstr ""
+
+msgid "ChatMessage|has failed"
+msgstr ""
+
+msgid "ChatMessage|has passed"
+msgstr ""
+
+msgid "ChatMessage|has passed with warnings"
+msgstr ""
+
+msgid "ChatMessage|in %{duration}"
+msgstr ""
+
+msgid "ChatMessage|in %{project_link}"
+msgstr ""
+
+msgid "ChatMessage|passed"
+msgstr ""
+
 msgid "Check again"
 msgstr ""
 

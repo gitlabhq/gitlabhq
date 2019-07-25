@@ -292,7 +292,8 @@ describe MicrosoftTeamsService do
 
       context 'when disabled' do
         let(:pipeline) do
-          create(:ci_pipeline, :failed, project: project, ref: 'not-the-default-branch')
+          create(:ci_pipeline, :failed, project: project,
+                 sha: project.commit.sha, ref: 'not-the-default-branch')
         end
 
         before do
