@@ -1,3 +1,7 @@
+---
+type: reference, howto
+---
+
 # Container Scanning **(ULTIMATE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/3672)
@@ -47,7 +51,7 @@ To enable Container Scanning in your pipeline, you need:
   your Docker image to your project's [Container Registry](../../project/container_registry.md).
   The name of the Docker image should match the following scheme:
 
-  ```
+  ```text
   $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG:$CI_COMMIT_SHA
   ```
 
@@ -114,7 +118,7 @@ When the GitLab Runner uses the Docker executor and NFS is used
 (e.g., `/var/lib/docker` is on an NFS mount), Container Scanning might fail with
 an error like the following:
 
-```
+```text
 docker: Error response from daemon: failed to copy xattrs: failed to set xattr "security.selinux" on /path/to/file: operation not supported.
 ```
 
