@@ -1,5 +1,0 @@
----
-title: Use source project as permissions reference for MergeRequestsController#pipelines
-merge_request:
-author:
-type: security
