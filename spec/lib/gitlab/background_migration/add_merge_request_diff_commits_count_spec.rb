@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Gitlab::BackgroundMigration::AddMergeRequestDiffCommitsCount, :migration, schema: 20180105212544 do

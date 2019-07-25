@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameBase, :delete do

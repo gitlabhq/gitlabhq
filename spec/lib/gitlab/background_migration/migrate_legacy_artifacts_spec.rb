@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Gitlab::BackgroundMigration::MigrateLegacyArtifacts, :migration, schema: 20180816161409 do

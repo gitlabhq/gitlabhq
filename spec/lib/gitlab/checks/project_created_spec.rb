@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 describe Gitlab::Checks::ProjectCreated, :clean_gitlab_redis_shared_state do

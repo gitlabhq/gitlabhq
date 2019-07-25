@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 require 'lib/gitlab/cycle_analytics/shared_event_spec'
 
