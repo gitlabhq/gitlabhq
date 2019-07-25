@@ -45,7 +45,7 @@ The following identity providers are supported:
   Feature.enable(:group_scim, group)
   ```
 
-### GitLab configuration
+## GitLab configuration
 
 Once [Single sign-on](index.md) has been configured, we can:
 
@@ -55,41 +55,48 @@ Once [Single sign-on](index.md) has been configured, we can:
 
 ![SCIM token configuration](img/scim_token.png)
 
-## SCIM IdP configuration
+## Identity Provider configuration
 
-### Configuration on Azure
+### Azure
 
-In the [Single sign-on](index.md) configuration for the group, make sure
-that the **Name identifier value** (NameID) points to a unique identifier, such
-as the `user.objectid`. This will match the `extern_uid`  used on GitLab.
+First, double check the [Single sign-on](index.md) configuration for your group and ensure that **Name identifier value** (NameID) points to `user.objectid` or another unique identifier. This will match the `extern_uid` used on GitLab.
 
-The GitLab app in Azure needs to be configured following
-[Azure's SCIM setup](https://docs.microsoft.com/en-us/azure/active-directory/manage-apps/use-scim-to-provision-users-and-groups#getting-started).
+![Name identifier value mapping](img/scim_name_identifier_mapping.png)
 
-Note the following:
+#### Set up admin credentials
+
+Next, configure your GitLab application in Azure by following the
+[Provisioning users and groups to applications that support SCIM](https://docs.microsoft.com/en-us/azure/active-directory/manage-apps/use-scim-to-provision-users-and-groups#provisioning-users-and-groups-to-applications-that-support-scim) 
+section in Azure's SCIM setup documentation.
+
+During this configuration, note the following:
 
 - The `Tenant URL` and `secret token` are the ones retrieved in the
   [previous step](#gitlab-configuration).
 - Should there be any problems with the availability of GitLab or similar
   errors, the notification email set will get those.
+- It is recommended to set a notification email and check the **Send an email notification when a failure occurs** checkbox.
 - For mappings, we will only leave `Synchronize Azure Active Directory Users to AppName` enabled.
 
-You can then test the connection clicking on `Test Connection`.
+You can then test the connection by clicking on **Test Connection**. If the connection is successful, be sure to save your configuration before moving on.
 
-### Synchronize Azure Active Directory users
+#### Configure attribute mapping
 
-1. Click on `Synchronize Azure Active Directory Users to AppName`, to configure
-   the attribute mapping.
-1. Select the unique identifier (in the example `objectId`) as the `id` and `externalId`,
-   and enable the `Create`, `Update`, and `Delete` actions.
-1. Map the `userPricipalName` to `emails[type eq "work"].value` and `mailNickname` to
-   `userName`.
+1. Click on `Synchronize Azure Active Directory Users to AppName`, to configure the attribute mapping.
+1. Click **Delete** next to the `mail` mapping.
+1. Map `userPrincipalName` to `emails[type eq "work"].value` and change it's **Matching precedence** to `2`.
+1. Map `mailNickname` to `userName`.
+1. Create a new mapping by clicking **Add New Mapping** then set **Source attribute** to `objectId`, **Target attribute** to `id`, **Match objects using this attribute** to `Yes`, and **Matching precedence** to `1`.
+1. Create a new mapping by clicking **Add New Mapping** then set **Source attribute** to `objectId`, and **Target attribute** to `externalId`.
+1. Click the `userPrincipalName` mapping and change **Match objects using this attribute** to `No`.
 
-   Example configuration:
+    Save your changes and you should have the following configuration:
 
    ![Azure's attribute mapping configuration](img/scim_attribute_mapping.png)
 
-1. Click on **Show advanced options > Edit attribute list for AppName**.
+    NOTE: **Note:** If you used a unique identifier **other than** `objectId`, be sure to map it instead to both `id` and `externalId`.
+
+1. Below the mapping list click on **Show advanced options > Edit attribute list for AppName**.
 1. Leave the `id` as the primary and only required field.
 
    NOTE: **Note:**
@@ -99,12 +106,14 @@ You can then test the connection clicking on `Test Connection`.
    ![Azure's attribute advanced configuration](img/scim_advanced.png)
 
 1. Save all the screens and, in the **Provisioning** step, set
-   the `Provisioning Status` to `ON`.
+   the `Provisioning Status` to `On`.
+
+    ![Provisioning status toggle switch](img/scim_provisioning_status.png)
 
    NOTE: **Note:**
    You can control what is actually synced by selecting the `Scope`. For example,
    `Sync only assigned users and groups` will only sync the users assigned to
-   the application (`Users and groups`), otherwise it will sync the whole Active Directory.
+   the application (`Users and groups`), otherwise, it will sync the whole Active Directory.
 
 Once enabled, the synchronization details and any errors will appear on the
 bottom of the **Provisioning** screen, together with a link to the audit logs.
