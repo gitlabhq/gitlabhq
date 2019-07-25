@@ -1058,7 +1058,7 @@ planned for a subsequent release.
   case, you may need to customize your `.gitlab-ci.yml` with your test commands.
 - Auto Deploy will fail if GitLab can not create a Kubernetes namespace and
   service account for your project. For help debugging this issue, see
-  [Troubleshooting failed deployment jobs](../../user/project/clusters/index.md#troubleshooting-failed-deployment-jobs).
+  [Troubleshooting failed deployment jobs](../../user/project/clusters/index.md#troubleshooting).
 
 ### Disable the banner instance wide
 
