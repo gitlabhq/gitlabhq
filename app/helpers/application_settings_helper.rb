@@ -180,9 +180,11 @@ module ApplicationSettingsHelper
       :default_projects_limit,
       :default_snippet_visibility,
       :disabled_oauth_sign_in_sources,
+      :domain_blacklist,
       :domain_blacklist_enabled,
-      :domain_blacklist_raw,
-      :domain_whitelist_raw,
+      :domain_blacklist_raw, # TODO: remove in API v5
+      :domain_whitelist,
+      :domain_whitelist_raw, # TODO: remove in API v5
       :outbound_local_requests_whitelist_raw,
       :dsa_key_restriction,
       :ecdsa_key_restriction,

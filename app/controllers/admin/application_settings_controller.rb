@@ -86,6 +86,8 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
     params[:application_setting][:import_sources]&.delete("")
     params[:application_setting][:restricted_visibility_levels]&.delete("")
     params.delete(:domain_blacklist_raw) if params[:domain_blacklist_file]
+    params.delete(:domain_blacklist_raw) if params[:domain_blacklist]
+    params.delete(:domain_whitelist_raw) if params[:domain_whitelist]
 
     params.require(:application_setting).permit(
       visible_application_setting_attributes
