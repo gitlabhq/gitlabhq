@@ -242,7 +242,7 @@ I, [2015-02-13T06:17:00.679433 #9291]  INFO -- : Moving existing hooks directory
 
 User clone/fetch activity using ssh transport appears in this log as `executing git command <gitaly-upload-pack...`.
 
-## `unicorn\_stderr.log`
+## `unicorn_stderr.log`
 
 This file lives in `/var/log/gitlab/unicorn/unicorn_stderr.log` for
 Omnibus GitLab packages or in `/home/git/gitlab/log/unicorn_stderr.log` for
