@@ -261,7 +261,7 @@ Parameters:
 
 NOTE: **Note:**
 `name`, `api_url`, `ca_cert` and `token` can only be updated if the cluster was added
-through the ["Add an existing Kubernetes Cluster"](../user/project/clusters/index.md#adding-an-existing-kubernetes-cluster) option or
+through the ["Add existing Kubernetes cluster"](../user/project/clusters/index.md#add-existing-kubernetes-cluster) option or
 through the ["Add existing cluster to project"](#add-existing-cluster-to-project) endpoint.
 
 Example request:

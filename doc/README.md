@@ -302,7 +302,7 @@ The following documentation relates to the DevOps **Configure** stage:
 | Configure Topics                                                                                                                   | Description                                                               |
 |:-----------------------------------------------------------------------------------------------------------------------------------|:--------------------------------------------------------------------------|
 | [Auto DevOps](topics/autodevops/index.md)                                                                                          | Automatically employ a complete DevOps lifecycle.                         |
-| [Easy creation of Kubernetes<br/>clusters on GKE](user/project/clusters/index.md#adding-and-creating-a-new-gke-cluster-via-gitlab) | Use Google Kubernetes Engine and GitLab.                                  |
+| [Create Kubernetes clusters on GKE](user/project/clusters/index.md#add-new-gke-cluster) | Use Google Kubernetes Engine and GitLab.                                  |
 | [Executable Runbooks](user/project/clusters/runbooks/index.md)                                                                     | Documented procedures that explain how to carry out particular processes. |
 | [GitLab ChatOps](ci/chatops/README.md)                                                                                             | Interact with CI/CD jobs through chat services.                           |
 | [Installing Applications](user/project/clusters/index.md#installing-applications)                                                  | Deploy Helm, Ingress, and Prometheus on Kubernetes.                       |

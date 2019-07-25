@@ -5,11 +5,12 @@ be added directly to your configured cluster. These applications are
 needed for [Review Apps](../../ci/review_apps/index.md) and
 [deployments](../../ci/environments.md) when using [Auto DevOps](../../topics/autodevops/index.md).
 You can install them after you
-[create a cluster](../project/clusters/index.md#adding-and-creating-a-new-gke-cluster-via-gitlab).
+[create a cluster](../project/clusters/index.md#add-new-gke-cluster).
 
 ## Installing applications
 
 Applications managed by GitLab will be installed onto the `gitlab-managed-apps` namespace.
+
 This namespace:
 
 - Is different from the namespace used for project deployments.
