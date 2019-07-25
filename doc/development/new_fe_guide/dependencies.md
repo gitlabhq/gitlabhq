@@ -15,6 +15,18 @@ Exceptions are made for some tools that we require in the
 `gitlab:assets:compile` CI job such as `webpack-bundle-analyzer` to analyze our
 production assets post-compile.
 
+To add or upgrade a dependency, run:
+
+```sh
+yarn add <your dependency here>
+```
+
+This may introduce duplicate dependencies. To de-duplicate `yarn.lock`, run:
+
+```sh
+node_modules/.bin/yarn-deduplicate --list --strategy fewer yarn.lock && yarn install
+```
+
 ---
 
 > TODO: Add Dependencies
