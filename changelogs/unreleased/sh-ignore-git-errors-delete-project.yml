@@ -1,0 +1,5 @@
+---
+title: Ignore Gitaly errors if cache flushing fails on project destruction
+merge_request: 31164
+author:
+type: fixed
