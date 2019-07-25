@@ -70,7 +70,10 @@ module QA
           end
 
           def select_labels_and_refresh(labels)
-            click_element(:edit_link_labels)
+            Support::Retrier.retry_until do
+              click_element(:edit_link_labels)
+              has_element?(:dropdown_menu_labels, text: labels.first)
+            end
 
             labels.each do |label|
               within_element(:dropdown_menu_labels, text: label) do
