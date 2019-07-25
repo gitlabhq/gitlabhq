@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 describe 'Resolve an open thread in a merge request by creating an issue', :js do

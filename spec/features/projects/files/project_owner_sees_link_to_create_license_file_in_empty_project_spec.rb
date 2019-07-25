@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe 'Projects > Files > Project owner sees a link to create a license file in empty project', :js do

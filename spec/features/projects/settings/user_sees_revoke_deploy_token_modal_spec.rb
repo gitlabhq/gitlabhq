@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 describe 'Repository Settings > User sees revoke deploy token modal', :js do

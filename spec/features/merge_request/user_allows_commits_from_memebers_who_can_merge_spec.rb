@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe 'create a merge request, allowing commits from members who can merge to the target branch', :js do

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe 'Profile > Notifications > User changes notified_of_own_activity setting', :js do

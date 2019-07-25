@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 # This is a regression test for https://gitlab.com/gitlab-org/gitlab-ce/issues/37569

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "spec_helper"
 
 # The main goal of this spec is not to check whether the sorting UI works, but
