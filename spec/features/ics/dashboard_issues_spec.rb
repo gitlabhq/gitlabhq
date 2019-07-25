@@ -93,7 +93,7 @@ describe 'Dashboard Issues Calendar Feed' do
 
         expect(body).to have_text("SUMMARY:test title (in #{project.full_path})")
         # line length for ics is 75 chars
-        expected_description = "DESCRIPTION:Find out more at #{issue_url(issue)}".insert(75, ' ')
+        expected_description = (+"DESCRIPTION:Find out more at #{issue_url(issue)}").insert(75, ' ')
         expect(body).to have_text(expected_description)
         expect(body).to have_text("DTSTART;VALUE=DATE:#{Date.tomorrow.strftime('%Y%m%d')}")
         expect(body).to have_text("URL:#{issue_url(issue)}")
