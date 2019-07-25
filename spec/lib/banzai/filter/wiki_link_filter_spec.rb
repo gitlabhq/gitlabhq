@@ -90,7 +90,7 @@ describe Banzai::Filter::WikiLinkFilter do
         "javascript&#x003A;",
         "java\0script:",
         " &#14;  javascript:"
-        ]
+      ]
 
       invalid_slugs.each do |slug|
         context "with the slug #{slug}" do
