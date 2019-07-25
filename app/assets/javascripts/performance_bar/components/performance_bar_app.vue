@@ -43,13 +43,13 @@ export default {
     },
     {
       metric: 'rugged',
-      header: 'Rugged calls',
+      header: s__('PerformanceBar|Rugged calls'),
       details: 'details',
       keys: ['feature', 'args'],
     },
     {
       metric: 'redis',
-      header: 'Redis calls',
+      header: s__('PerformanceBar|Redis calls'),
       details: 'details',
       keys: ['cmd'],
     },

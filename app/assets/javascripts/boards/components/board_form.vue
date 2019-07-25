@@ -1,4 +1,5 @@
 <script>
+import { __ } from '~/locale';
 import Flash from '~/flash';
 import DeprecatedModal from '~/vue_shared/components/deprecated_modal.vue';
 import { visitUrl } from '~/lib/utils/url_utility';
@@ -86,12 +87,12 @@ export default {
     },
     buttonText() {
       if (this.isNewForm) {
-        return 'Create board';
+        return __('Create board');
       }
       if (this.isDeleteForm) {
-        return 'Delete';
+        return __('Delete');
       }
-      return 'Save changes';
+      return __('Save changes');
     },
     buttonKind() {
       if (this.isNewForm) {
@@ -104,15 +105,15 @@ export default {
     },
     title() {
       if (this.isNewForm) {
-        return 'Create new board';
+        return __('Create new board');
       }
       if (this.isDeleteForm) {
-        return 'Delete board';
+        return __('Delete board');
       }
       if (this.readonly) {
-        return 'Board scope';
+        return __('Board scope');
       }
-      return 'Edit board';
+      return __('Edit board');
     },
     readonly() {
       return !this.canAdminBoard;
@@ -138,7 +139,7 @@ export default {
             visitUrl(boardsStore.rootPath);
           })
           .catch(() => {
-            Flash('Failed to delete board. Please try again.');
+            Flash(__('Failed to delete board. Please try again.'));
             this.isLoading = false;
           });
       } else {
@@ -149,7 +150,7 @@ export default {
             visitUrl(data.board_path);
           })
           .catch(() => {
-            Flash('Unable to save your changes. Please try again.');
+            Flash(__('Unable to save your changes. Please try again.'));
             this.isLoading = false;
           });
       }
@@ -182,17 +183,19 @@ export default {
     @submit="submit"
   >
     <template slot="body">
-      <p v-if="isDeleteForm">Are you sure you want to delete this board?</p>
+      <p v-if="isDeleteForm">{{ __('Are you sure you want to delete this board?') }}</p>
       <form v-else class="js-board-config-modal" @submit.prevent>
         <div v-if="!readonly" class="append-bottom-20">
-          <label class="form-section-title label-bold" for="board-new-name"> Board name </label>
+          <label class="form-section-title label-bold" for="board-new-name">{{
+            __('Board name')
+          }}</label>
           <input
             id="board-new-name"
             ref="name"
             v-model="board.name"
             class="form-control"
             type="text"
-            placeholder="Enter board name"
+            :placeholder="__('Enter board name')"
             @keyup.enter="submit"
           />
         </div>
