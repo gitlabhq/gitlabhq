@@ -588,7 +588,7 @@ end
 
 [jasmine-focus]: https://jasmine.github.io/2.5/focused_specs.html
 [karma]: http://karma-runner.github.io/
-[vue-test]: https://docs.gitlab.com/ce/development/fe_guide/vue.html#testing-vue-components
+[vue-test]: ../fe_guide/vue.md#testing-vue-components
 [rspec]: https://github.com/rspec/rspec-rails#feature-specs
 [capybara]: https://github.com/teamcapybara/capybara
 [jasmine]: https://jasmine.github.io/

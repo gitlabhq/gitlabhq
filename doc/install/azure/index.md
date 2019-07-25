@@ -70,7 +70,7 @@ The first items we need to configure are the basic settings of the underlying vi
    > **Note:** if you're unsure which authentication type to use, select **Password**
 
    1. If you chose **SSH public key** - enter your `SSH public key` into the field provided
-   _(read the [SSH documentation][GitLab-Docs-SSH] to learn more about how to set up SSH
+   _(read the [SSH documentation](../../ssh/README.md) to learn more about how to set up SSH
    public keys)_
    1. If you chose **Password** - enter the password you wish to use _(this is the password that you
    will use later in this tutorial to [SSH] into the VM, so make sure it's a strong password/passphrase)_
@@ -407,7 +407,7 @@ on any cloud service you choose.
 
 ## Where to next?
 
-Check out our other [Technical Articles][GitLab-Technical-Articles] or browse the [GitLab Documentation][GitLab-Docs] to learn more about GitLab.
+Check out our other [Technical Articles](../../articles/index.md) or browse the [GitLab Documentation][GitLab-Docs](../../README.md) to learn more about GitLab.
 
 ### Useful links
 
@@ -423,9 +423,6 @@ Check out our other [Technical Articles][GitLab-Technical-Articles] or browse th
 - [SSH], [PuTTY] and [Using SSH in PuTTY][Using-SSH-In-Putty]
 
 [Original-Blog-Post]: https://about.gitlab.com/2016/07/13/how-to-setup-a-gitlab-instance-on-microsoft-azure/ "How to Set up a GitLab Instance on Microsoft Azure"
-[GitLab-Docs]: https://docs.gitlab.com/ce/README.html "GitLab Documentation"
-[GitLab-Technical-Articles]: https://docs.gitlab.com/ce/articles/index.html "GitLab Technical Articles"
-[GitLab-Docs-SSH]: https://docs.gitlab.com/ce/ssh/README.html "GitLab Documentation: SSH"
 [CE]: https://about.gitlab.com/features/
 [EE]: https://about.gitlab.com/features/#ee-starter
 

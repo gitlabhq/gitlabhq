@@ -192,10 +192,10 @@ The following table is an example of how the three different clusters would
 be configured.
 
 | Cluster name | Cluster environment scope | `KUBE_INGRESS_BASE_DOMAIN` variable value | Variable environment scope | Notes |
-| ------------ | -------------- | ----------------------------- | ------------- | ------ |
-| review       |  `review/*`    | `review.example.com`  | `review/*`      | The review cluster which will run all [Review Apps](../../ci/review_apps/index.md). `*` is a wildcard, which means it will be used by every environment name starting with `review/`. |
-| staging      |  `staging`     | `staging.example.com` | `staging`       | (Optional) The staging cluster which will run the deployments of the staging environments. You need to [enable it first](#deploy-policy-for-staging-and-production-environments). |
-| production   |  `production`  | `example.com`         | `production`    | The production cluster which will run the deployments of the production environment. You can use [incremental rollouts](#incremental-rollout-to-production-premium). |
+|--------------|---------------------------|-------------------------------------------|----------------------------|---|
+| review       | `review/*`                | `review.example.com`                      | `review/*`                 | The review cluster which will run all [Review Apps](../../ci/review_apps/index.md). `*` is a wildcard, which means it will be used by every environment name starting with `review/`. |
+| staging      | `staging`                 | `staging.example.com`                     | `staging`                  | (Optional) The staging cluster which will run the deployments of the staging environments. You need to [enable it first](#deploy-policy-for-staging-and-production-environments). |
+| production   | `production`              | `example.com`                             | `production`               | The production cluster which will run the deployments of the production environment. You can use [incremental rollouts](#incremental-rollout-to-production-premium). |
 
 To add a different cluster for each environment:
 
@@ -721,47 +721,47 @@ The following variables can be used for setting up the Auto DevOps domain,
 providing a custom Helm chart, or scaling your application. PostgreSQL can
 also be customized, and you can easily use a [custom buildpack](#custom-buildpacks).
 
-| **Variable**                 | **Description**                                                                                                                                                                                                               |
-| ------------                 | ---------------                                                                                                                                                                                                               |
-| `AUTO_DEVOPS_CHART`          | The Helm Chart used to deploy your apps; defaults to the one [provided by GitLab](https://gitlab.com/gitlab-org/charts/auto-deploy-app).                                                             |
-| `AUTO_DEVOPS_CHART_REPOSITORY` | The Helm Chart repository used to search for charts; defaults to `https://charts.gitlab.io`. |
-| `AUTO_DEVOPS_CHART_REPOSITORY_NAME` | From Gitlab 11.11, this variable can be used to set the name of the helm repository; defaults to "gitlab" |
+| **Variable**                            | **Description**                    |
+|-----------------------------------------|------------------------------------|
+| `AUTO_DEVOPS_CHART`                     | The Helm Chart used to deploy your apps; defaults to the one [provided by GitLab](https://gitlab.com/gitlab-org/charts/auto-deploy-app). |
+| `AUTO_DEVOPS_CHART_REPOSITORY`          | The Helm Chart repository used to search for charts; defaults to `https://charts.gitlab.io`. |
+| `AUTO_DEVOPS_CHART_REPOSITORY_NAME`     | From Gitlab 11.11, this variable can be used to set the name of the helm repository; defaults to "gitlab" |
 | `AUTO_DEVOPS_CHART_REPOSITORY_USERNAME` | From Gitlab 11.11, this variable can be used to set a username to connect to the helm repository. Defaults to no credentials. (Also set AUTO_DEVOPS_CHART_REPOSITORY_PASSWORD) |
 | `AUTO_DEVOPS_CHART_REPOSITORY_PASSWORD` | From Gitlab 11.11, this variable can be used to set a password to connect to the helm repository. Defaults to no credentials. (Also set AUTO_DEVOPS_CHART_REPOSITORY_USERNAME) |
-| `REPLICAS`                   | The number of replicas to deploy; defaults to 1.                                                                                                                                                                              |
-| `PRODUCTION_REPLICAS`        | The number of replicas to deploy in the production environment. Takes precedence over `REPLICAS` and defaults to 1. For zero downtime upgrades, set to 2 or greater.                                |
-| `CANARY_REPLICAS`            | The number of canary replicas to deploy for [Canary Deployments](../../user/project/canary_deployments.md); defaults to 1                                                                              |
-| `CANARY_PRODUCTION_REPLICAS` | The number of canary replicas to deploy for [Canary Deployments](../../user/project/canary_deployments.md) in the production environment. This takes precedence over `CANARY_REPLICAS`; defaults to 1  |
-| `ADDITIONAL_HOSTS`           | Fully qualified domain names specified as a comma-separated list that are added to the ingress hosts.                                                                                                                         |
-| `<ENVIRONMENT>_ADDITIONAL_HOSTS` | For a specific environment, the fully qualified domain names specified as a comma-separated list that are added to the ingress hosts. This takes precedence over `ADDITIONAL_HOSTS`.                                      |
-| `POSTGRES_ENABLED`           | Whether PostgreSQL is enabled; defaults to `"true"`. Set to `false` to disable the automatic deployment of PostgreSQL.                                                                                                        |
-| `POSTGRES_USER`              | The PostgreSQL user; defaults to `user`. Set it to use a custom username.                                                                                                                                                     |
-| `POSTGRES_PASSWORD`          | The PostgreSQL password; defaults to `testing-password`. Set it to use a custom password.                                                                                                                                     |
-| `POSTGRES_DB`                | The PostgreSQL database name; defaults to the value of [`$CI_ENVIRONMENT_SLUG`](../../ci/variables/README.md#predefined-environment-variables). Set it to use a custom database name.                               |
-| `POSTGRES_VERSION`           | Tag for the [`postgres` Docker image](https://hub.docker.com/_/postgres) to use. Defaults to `9.6.2`. |
-| `BUILDPACK_URL`              | The buildpack's full URL. It can point to either Git repositories or a tarball URL. For Git repositories, it is possible to point to a specific `ref`, for example `https://github.com/heroku/heroku-buildpack-ruby.git#v142` |
-| `SAST_CONFIDENCE_LEVEL`      | The minimum confidence level of security issues you want to be reported; `1` for Low, `2` for Medium, `3` for High; defaults to `3`.|
-| `DEP_SCAN_DISABLE_REMOTE_CHECKS` | Whether remote Dependency Scanning checks are disabled; defaults to `"false"`. Set to `"true"` to disable checks that send data to GitLab central servers. [Read more about remote checks](https://gitlab.com/gitlab-org/security-products/dependency-scanning#remote-checks).|
-| `DB_INITIALIZE`              | From GitLab 11.4, this variable can be used to specify the command to run to initialize the application's PostgreSQL database. It runs inside the application pod. |
-| `DB_MIGRATE`                 | From GitLab 11.4, this variable can be used to specify the command to run to migrate the application's PostgreSQL database. It runs inside the application pod. |
-| `STAGING_ENABLED`            | From GitLab 10.8, this variable can be used to define a [deploy policy for staging and production environments](#deploy-policy-for-staging-and-production-environments). |
-| `CANARY_ENABLED`             | From GitLab 11.0, this variable can be used to define a [deploy policy for canary environments](#deploy-policy-for-canary-environments-premium). |
-| `INCREMENTAL_ROLLOUT_MODE`| From GitLab 11.4, this variable, if present, can be used to enable an [incremental rollout](#incremental-rollout-to-production-premium) of your application for the production environment. Set to `manual` for manual deployment jobs or `timed` for automatic rollout deployments with a 5 minute delay each one. |
-| `TEST_DISABLED`              | From GitLab 11.0, this variable can be used to disable the `test` job. If the variable is present, the job will not be created. |
-| `CODE_QUALITY_DISABLED`       | From GitLab 11.0, this variable can be used to disable the `codequality` job. If the variable is present, the job will not be created. |
-| `LICENSE_MANAGEMENT_DISABLED` | From GitLab 11.0, this variable can be used to disable the `license_management` job. If the variable is present, the job will not be created. |
-| `SAST_DISABLED`              | From GitLab 11.0, this variable can be used to disable the `sast` job. If the variable is present, the job will not be created. |
-| `DEPENDENCY_SCANNING_DISABLED` | From GitLab 11.0, this variable can be used to disable the `dependency_scanning` job. If the variable is present, the job will not be created. |
-| `CONTAINER_SCANNING_DISABLED` | From GitLab 11.0, this variable can be used to disable the `sast:container` job. If the variable is present, the job will not be created. |
-| `REVIEW_DISABLED`            | From GitLab 11.0, this variable can be used to disable the `review` and the manual `review:stop` job. If the variable is present, these jobs will not be created. |
-| `DAST_DISABLED`              | From GitLab 11.0, this variable can be used to disable the `dast` job. If the variable is present, the job will not be created. |
-| `PERFORMANCE_DISABLED`       | From GitLab 11.0, this variable can be used to disable the `performance` job. If the variable is present, the job will not be created. |
-| `K8S_SECRET_*`               | From GitLab 11.7, any variable prefixed with [`K8S_SECRET_`](#application-secret-variables) will be made available by Auto DevOps as environment variables to the deployed application. |
-| `KUBE_INGRESS_BASE_DOMAIN`   | From GitLab 11.8, this variable can be used to set a domain per cluster. See [cluster domains](../../user/project/clusters/index.md#base-domain) for more information. |
-| `ROLLOUT_RESOURCE_TYPE`     | From GitLab 11.9, this variable allows specification of the resource type being deployed when using a custom helm chart. Default value is `deployment`. |
-| `ROLLOUT_STATUS_DISABLED`   | From GitLab 12.0, this variable allows to disable rollout status check because it doesn't support all resource types, for example, `cronjob`. |
-| `HELM_UPGRADE_EXTRA_ARGS`   | From GitLab 11.11, this variable allows extra arguments in `helm` commands when deploying the application. Note that using quotes will not prevent word splitting. **Tip:** you can use this variable to [customize the Auto Deploy helm chart](https://docs.gitlab.com/ee/topics/autodevops/index.html#custom-helm-chart) by applying custom override values with `--values my-values.yaml`. |
-| `HELM_RELEASE_NAME`   | From GitLab 12.1, this variable allows the `helm` release name to be overridden, this can be used to assign unique release names when deploying multiple projects to a single namespace  |
+| `REPLICAS`                              | The number of replicas to deploy; defaults to 1. |
+| `PRODUCTION_REPLICAS`                   | The number of replicas to deploy in the production environment. Takes precedence over `REPLICAS` and defaults to 1. For zero downtime upgrades, set to 2 or greater. |
+| `CANARY_REPLICAS`                       | The number of canary replicas to deploy for [Canary Deployments](../../user/project/canary_deployments.md); defaults to 1. |
+| `CANARY_PRODUCTION_REPLICAS`            | The number of canary replicas to deploy for [Canary Deployments](../../user/project/canary_deployments.md) in the production environment. This takes precedence over `CANARY_REPLICAS`; defaults to 1. |
+| `ADDITIONAL_HOSTS`                      | Fully qualified domain names specified as a comma-separated list that are added to the ingress hosts. |
+| `<ENVIRONMENT>_ADDITIONAL_HOSTS`        | For a specific environment, the fully qualified domain names specified as a comma-separated list that are added to the ingress hosts. This takes precedence over `ADDITIONAL_HOSTS`. |
+| `POSTGRES_ENABLED`                      | Whether PostgreSQL is enabled; defaults to `"true"`. Set to `false` to disable the automatic deployment of PostgreSQL. |
+| `POSTGRES_USER`                         | The PostgreSQL user; defaults to `user`. Set it to use a custom username. |
+| `POSTGRES_PASSWORD`                     | The PostgreSQL password; defaults to `testing-password`. Set it to use a custom password. |
+| `POSTGRES_DB`                           | The PostgreSQL database name; defaults to the value of [`$CI_ENVIRONMENT_SLUG`](../../ci/variables/README.md#predefined-environment-variables). Set it to use a custom database name. |
+| `POSTGRES_VERSION`                      | Tag for the [`postgres` Docker image](https://hub.docker.com/_/postgres) to use. Defaults to `9.6.2`. |
+| `BUILDPACK_URL`                         | The buildpack's full URL. It can point to either Git repositories or a tarball URL. For Git repositories, it is possible to point to a specific `ref`, for example `https://github.com/heroku/heroku-buildpack-ruby.git#v142`. |
+| `SAST_CONFIDENCE_LEVEL`                 | The minimum confidence level of security issues you want to be reported; `1` for Low, `2` for Medium, `3` for High; defaults to `3`. |
+| `DS_DISABLE_REMOTE_CHECKS`              | Whether remote Dependency Scanning checks are disabled; defaults to `"false"`. Set to `"true"` to disable checks that send data to GitLab central servers. [Read more about remote checks](../../user/application_security/dependency_scanning/index.md#remote-checks). |
+| `DB_INITIALIZE`                         | From GitLab 11.4, this variable can be used to specify the command to run to initialize the application's PostgreSQL database. It runs inside the application pod. |
+| `DB_MIGRATE`                            | From GitLab 11.4, this variable can be used to specify the command to run to migrate the application's PostgreSQL database. It runs inside the application pod. |
+| `STAGING_ENABLED`                       | From GitLab 10.8, this variable can be used to define a [deploy policy for staging and production environments](#deploy-policy-for-staging-and-production-environments). |
+| `CANARY_ENABLED`                        | From GitLab 11.0, this variable can be used to define a [deploy policy for canary environments](#deploy-policy-for-canary-environments-premium). |
+| `INCREMENTAL_ROLLOUT_MODE`              | From GitLab 11.4, this variable, if present, can be used to enable an [incremental rollout](#incremental-rollout-to-production-premium) of your application for the production environment. Set to `manual` for manual deployment jobs or `timed` for automatic rollout deployments with a 5 minute delay each one. |
+| `TEST_DISABLED`                         | From GitLab 11.0, this variable can be used to disable the `test` job. If the variable is present, the job will not be created. |
+| `CODE_QUALITY_DISABLED`                 | From GitLab 11.0, this variable can be used to disable the `codequality` job. If the variable is present, the job will not be created. |
+| `LICENSE_MANAGEMENT_DISABLED`           | From GitLab 11.0, this variable can be used to disable the `license_management` job. If the variable is present, the job will not be created. |
+| `SAST_DISABLED`                         | From GitLab 11.0, this variable can be used to disable the `sast` job. If the variable is present, the job will not be created. |
+| `DEPENDENCY_SCANNING_DISABLED`          | From GitLab 11.0, this variable can be used to disable the `dependency_scanning` job. If the variable is present, the job will not be created. |
+| `CONTAINER_SCANNING_DISABLED`           | From GitLab 11.0, this variable can be used to disable the `sast:container` job. If the variable is present, the job will not be created. |
+| `REVIEW_DISABLED`                       | From GitLab 11.0, this variable can be used to disable the `review` and the manual `review:stop` job. If the variable is present, these jobs will not be created. |
+| `DAST_DISABLED`                         | From GitLab 11.0, this variable can be used to disable the `dast` job. If the variable is present, the job will not be created. |
+| `PERFORMANCE_DISABLED`                  | From GitLab 11.0, this variable can be used to disable the `performance` job. If the variable is present, the job will not be created. |
+| `K8S_SECRET_*`                          | From GitLab 11.7, any variable prefixed with [`K8S_SECRET_`](#application-secret-variables) will be made available by Auto DevOps as environment variables to the deployed application. |
+| `KUBE_INGRESS_BASE_DOMAIN`              | From GitLab 11.8, this variable can be used to set a domain per cluster. See [cluster domains](../../user/project/clusters/index.md#base-domain) for more information. |
+| `ROLLOUT_RESOURCE_TYPE`                 | From GitLab 11.9, this variable allows specification of the resource type being deployed when using a custom helm chart. Default value is `deployment`. |
+| `ROLLOUT_STATUS_DISABLED`               | From GitLab 12.0, this variable allows to disable rollout status check because it doesn't support all resource types, for example, `cronjob`. |
+| `HELM_UPGRADE_EXTRA_ARGS`               | From GitLab 11.11, this variable allows extra arguments in `helm` commands when deploying the application. Note that using quotes will not prevent word splitting. **Tip:** you can use this variable to [customize the Auto Deploy helm chart](#custom-helm-chart) by applying custom override values with `--values my-values.yaml`. |
+| `HELM_RELEASE_NAME`                     | From GitLab 12.1, this variable allows the `helm` release name to be overridden, this can be used to assign unique release names when deploying multiple projects to a single namespace. |
 
 TIP: **Tip:**
 Set up the replica variables using a
