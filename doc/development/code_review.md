@@ -365,6 +365,31 @@ Enterprise Edition instance. This has some implications:
 1. **Filesystem access** can be slow, so try to avoid
    [shared files](shared_files.md) when an alternative solution is available.
 
+## Examples
+
+How code reviews are conducted can surprise new contributors. Here are some examples of code reviews that should help to orient you as to what to expect.
+
+**["Modify `DiffNote` to reuse it for Designs"](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/13703):**
+It contained everything from nitpicks around newlines to reasoning
+about what versions for designs are, how we should compare them
+if there was no previous version of a certain file (parent vs.
+blank `sha` vs empty tree).
+
+**["Support multi-line suggestions"](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/25211)**:
+The MR itself consists of a collaboration between FE and BE,
+and documenting comments from the author for the reviewer.
+There's some nitpicks, some questions for information, and
+towards the end, a security vulnerability.
+
+**["Allow multiple repositories per project"](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/10251)**:
+ZJ referred to the other projects (workhorse) this might impact,
+suggested some improvements for consistency. And James' comments
+helped us with overall code quality (using delegation, `&.` those
+types of things), and making the code more robust.
+
+**["Support multiple assignees for merge requests"](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/10161)**:
+A  good example of collaboration on an MR touching multiple parts of the codebase. Nick pointed out interesting edge cases, James Lopes also joined in raising concerns on import/export feature.
+
 ### Credits
 
 Largely based on the [thoughtbot code review guide].
