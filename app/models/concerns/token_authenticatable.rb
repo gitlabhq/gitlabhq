@@ -3,10 +3,8 @@
 module TokenAuthenticatable
   extend ActiveSupport::Concern
 
-  private
-
   class_methods do
-    private # rubocop:disable Lint/UselessAccessModifier
+    private
 
     def add_authentication_token_field(token_field, options = {})
       if token_authenticatable_fields.include?(token_field)

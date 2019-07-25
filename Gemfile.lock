@@ -321,7 +321,7 @@ GEM
     gitlab-markup (1.7.0)
     gitlab-sidekiq-fetcher (0.4.0)
       sidekiq (~> 5)
-    gitlab-styles (2.7.0)
+    gitlab-styles (2.8.0)
       rubocop (~> 0.69.0)
       rubocop-gitlab-security (~> 0.1.0)
       rubocop-performance (~> 1.1.0)
@@ -441,7 +441,7 @@ GEM
     jaeger-client (0.10.0)
       opentracing (~> 0.3)
       thrift
-    jaro_winkler (1.5.2)
+    jaro_winkler (1.5.3)
     jira-ruby (1.4.1)
       activesupport
       multipart-post
@@ -845,7 +845,7 @@ GEM
     ruby-fogbugz (0.2.1)
       crack (~> 0.4)
     ruby-prof (0.17.0)
-    ruby-progressbar (1.10.0)
+    ruby-progressbar (1.10.1)
     ruby-saml (1.7.2)
       nokogiri (>= 1.5.10)
     ruby_parser (3.13.1)
