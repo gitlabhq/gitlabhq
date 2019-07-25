@@ -183,7 +183,7 @@ describe 'Clusters Applications', :js do
             Clusters::Cluster.last.application_cert_manager.make_installed!
 
             expect(email_form_value).to eq('new_email@example.org')
-            expect(page).to have_css('.js-cluster-application-install-button', exact_text: 'Installed')
+            expect(page).to have_css('.js-cluster-application-uninstall-button', exact_text: 'Uninstall')
           end
 
           expect(page).to have_content('Cert-Manager was successfully installed on your Kubernetes cluster')

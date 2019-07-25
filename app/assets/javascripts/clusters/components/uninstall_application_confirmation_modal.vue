@@ -12,7 +12,7 @@ const CUSTOM_APP_WARNING_TEXT = {
     'ClusterIntegration|The associated load balancer and IP will be deleted and cannot be restored.',
   ),
   [CERT_MANAGER]: s__(
-    'ClusterIntegration|The associated certifcate will be deleted and cannot be restored.',
+    'ClusterIntegration|The associated private key will be deleted and cannot be restored.',
   ),
   [PROMETHEUS]: s__('ClusterIntegration|All data will be deleted and cannot be restored.'),
   [RUNNER]: s__('ClusterIntegration|Any running pipelines will be canceled.'),
