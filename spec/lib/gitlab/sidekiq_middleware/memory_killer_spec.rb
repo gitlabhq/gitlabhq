@@ -45,6 +45,9 @@ describe Gitlab::SidekiqMiddleware::MemoryKiller do
       expect(subject).to receive(:sleep).with(10).ordered
       expect(Process).to receive(:kill).with('SIGKILL', pid).ordered
 
+      expect(Sidekiq.logger)
+        .to receive(:warn).with(class: 'TestWorker', message: anything, pid: pid, signal: anything).at_least(:once)
+
       run
     end
 
