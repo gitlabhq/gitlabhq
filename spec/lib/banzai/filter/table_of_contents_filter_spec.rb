@@ -114,11 +114,11 @@ describe Banzai::Filter::TableOfContentsFilter do
     context 'table of contents nesting' do
       let(:results) do
         result(
-          header(1, 'Header 1') <<
-          header(2, 'Header 1-1') <<
-          header(3, 'Header 1-1-1') <<
-          header(2, 'Header 1-2') <<
-          header(1, 'Header 2') <<
+          header(1, 'Header 1') +
+          header(2, 'Header 1-1') +
+          header(3, 'Header 1-1-1') +
+          header(2, 'Header 1-2') +
+          header(1, 'Header 2') +
           header(2, 'Header 2-1')
         )
       end
