@@ -1049,14 +1049,14 @@ A new line due to the previous backslash.
 
 First paragraph.
 Another line in the same paragraph.
-A third line in the same paragraph, but this time ending with two spaces.
+A third line in the same paragraph, but this time ending with two spaces.  
 A new line directly under the first paragraph.
 
 <!-- (Do *NOT* remove the two ending whitespaces in the second line) -->
 <!-- (They are needed for the Markdown text to render correctly on docs.gitlab.com, the backslash works fine inside GitLab itself) -->
 
 Second paragraph.
-Another line, this time ending with a backslash.
+Another line, this time ending with a backslash.  
 A new line due to the previous backslash.
 
 ### Links
