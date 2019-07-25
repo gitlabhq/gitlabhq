@@ -55,7 +55,7 @@ module Gitlab
       def ensure_temporary_tracking_table_exists
         table_name = :untracked_files_for_uploads
 
-        unless ActiveRecord::Base.connection.data_source_exists?(table_name)
+        unless ActiveRecord::Base.connection.table_exists?(table_name)
           UntrackedFile.connection.create_table table_name do |t|
             t.string :path, limit: 600, null: false
             t.index :path, unique: true

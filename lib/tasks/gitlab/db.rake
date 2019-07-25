@@ -33,7 +33,7 @@ namespace :gitlab do
       # Removes the entry from the array
       tables.delete 'schema_migrations'
       # Truncate schema_migrations to ensure migrations re-run
-      connection.execute('TRUNCATE schema_migrations') if connection.data_source_exists? 'schema_migrations'
+      connection.execute('TRUNCATE schema_migrations') if connection.table_exists? 'schema_migrations'
 
       # Drop tables with cascade to avoid dependent table errors
       # PG: http://www.postgresql.org/docs/current/static/ddl-depend.html
