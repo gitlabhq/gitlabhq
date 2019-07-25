@@ -68,6 +68,17 @@ make sure you have applied the ~database label and rerun the
 `danger-review` CI job, or pick someone from the
 [`@gl-database` team](https://gitlab.com/groups/gl-database/-/group_members).
 
+### How to prepare for speedy database reviews
+
+In order to make reviewing easier and therefore faster, please consider preparing a comment
+and details for a database reviewer:
+
+- Provide queries in SQL form rather than ActiveRecord.
+- Format any queries with a SQL query formatter, for example with [sqlformat.darold.net](http://sqlformat.darold.net).
+- Consider providing query plans via a link to [explain.depesz.com](https://explain.depesz.com) or another tool instead of textual form.
+- For query changes, it is best to provide the SQL query along with a plan *before* and *after* the change. This helps to spot differences quickly.
+- When providing query plans, make sure to use good parameter values, so that the query executed is a good example and also hits enough data. Usually, the `gitlab-org` namespace (`namespace_id = 9970`) and the `gitlab-org/gitlab-ce` project (`project_id = 13083`) provides enough data to serve as a good example.
+
 ### How to review for database
 
 - Check migrations
