@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 FactoryBot.define do
   factory :oauth_application, class: 'Doorkeeper::Application', aliases: [:application] do
     sequence(:name) { |n| "OAuth App #{n}" }

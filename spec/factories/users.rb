@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 FactoryBot.define do
   factory :user, aliases: [:author, :assignee, :recipient, :owner, :resource_owner] do
     email { generate(:email) }

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 FactoryBot.define do
   factory :pages_domain, class: 'PagesDomain' do
     sequence(:domain) { |n| "my#{n}.domain.com" }

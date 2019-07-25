@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative '../support/helpers/gpg_helpers'
 
 FactoryBot.define do

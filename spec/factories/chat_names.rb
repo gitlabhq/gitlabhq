@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 FactoryBot.define do
   factory :chat_name, class: ChatName do
     user factory: :user

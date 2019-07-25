@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 FactoryBot.define do
   factory :conversational_development_index_metric, class: ConversationalDevelopmentIndex::Metric do
     leader_issues 9.256

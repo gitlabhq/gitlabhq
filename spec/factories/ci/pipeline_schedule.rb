@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 FactoryBot.define do
   factory :ci_pipeline_schedule, class: Ci::PipelineSchedule do
     cron '0 1 * * *'

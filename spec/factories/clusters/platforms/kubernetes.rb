@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 FactoryBot.define do
   factory :cluster_platform_kubernetes, class: Clusters::Platforms::Kubernetes do
     cluster

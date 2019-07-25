@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 FactoryBot.define do
   factory :ci_pipeline_schedule_variable, class: Ci::PipelineScheduleVariable do
     sequence(:key) { |n| "VARIABLE_#{n}" }

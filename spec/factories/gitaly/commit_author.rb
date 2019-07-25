@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 FactoryBot.define do
   factory :gitaly_commit_author, class: Gitaly::CommitAuthor do
     skip_create

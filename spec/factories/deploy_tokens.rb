@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 FactoryBot.define do
   factory :deploy_token do
     token { SecureRandom.hex(50) }

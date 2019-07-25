@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 FactoryBot.define do
   factory :web_hook_log do
     web_hook factory: :project_hook

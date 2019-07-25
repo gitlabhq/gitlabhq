@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 FactoryBot.define do
   factory :ci_variable, class: Ci::Variable do
     sequence(:key) { |n| "VARIABLE_#{n}" }

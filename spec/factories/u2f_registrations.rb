@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 FactoryBot.define do
   factory :u2f_registration do
     certificate { FFaker::BaconIpsum.characters(728) }
