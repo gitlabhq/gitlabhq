@@ -9,7 +9,7 @@ similar to [issue boards](../issue_board.md#issue-ordering-in-a-list).
 
 ## Manual sorting
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/62178) in GitLab 12.1.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/62178) in GitLab 12.2.
 
 When you select **Manual** sorting, you can change
 the order by dragging and dropping the issues. The changed order will persist. Everyone who visits the same list will see the reordered list, with some exceptions.
