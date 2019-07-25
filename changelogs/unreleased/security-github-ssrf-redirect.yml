@@ -1,5 +1,0 @@
----
-title: Do not allow localhost url redirection in GitHub Integration
-merge_request:
-author:
-type: security
