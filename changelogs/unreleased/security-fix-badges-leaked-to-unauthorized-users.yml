@@ -1,5 +1,0 @@
----
-title: Show badges if pipelines are public otherwise default to project permissions.
-erge_request:
-author:
-type: security
