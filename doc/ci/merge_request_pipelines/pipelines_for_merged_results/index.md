@@ -62,18 +62,32 @@ CAUTION: **Warning:**
 Make sure your `gitlab-ci.yml` file is [configured properly for pipelines for merge requests](../index.md#configuring-pipelines-for-merge-requests),
 otherwise pipelines for merged results won't run and your merge requests will be stuck in an unresolved state.
 
-## Merge Trains **(PREMIUM)**
+## Troubleshooting
 
-Read the [documentation on Merge Trains](merge_trains/index.md).
+### Pipelines for merged results not created even with new change pushed to merge request
 
-<!-- ## Troubleshooting
+Can be caused by some disabled feature flags. Please make sure that
+the following feature flags are enabled on your GitLab instance:
 
-Include any troubleshooting steps that you can foresee. If you know beforehand what issues
-one might have when setting this up, or when something is changed, or on upgrading, it's
-important to describe those, too. Think of things that may go wrong and include them here.
-This is important to minimize requests for support, and to avoid doc comments with
-questions that you know someone might ask.
+- `:ci_use_merge_request_ref`
+- `:merge_ref_auto_sync`
 
-Each scenario can be a third-level heading, e.g. `### Getting error message X`.
-If you have none to add when creating a doc, leave this section in place
-but commented out to help encourage others to add to it in the future. -->
+To check these feature flag values, please ask administrator to execute the following commands:
+
+```shell
+> sudo gitlab-rails console                         # Login to Rails console of GitLab instance.
+> Feature.enabled?(:ci_use_merge_request_ref)       # Check if it's enabled or not.
+> Feature.enable(:ci_use_merge_request_ref)         # Enable the feature flag.
+```
+
+## Using Merge Trains **(PREMIUM)**
+
+By enabling [Pipelines for merged results](#pipelines-for-merged-results-premium),
+GitLab will [automatically display](merge_trains/index.md#how-to-add-a-merge-request-to-a-merge-train)
+a **Start/Add Merge Train button** as the most recommended merge strategy.
+
+Generally, this is a safer option than merging merge requests immediately as your
+merge request will be evaluated with an expected post-merge result before the actual
+merge happens.
+
+For more information, read the [documentation on Merge Trains](merge_trains/index.md).

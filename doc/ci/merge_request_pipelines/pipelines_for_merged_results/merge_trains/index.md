@@ -80,14 +80,65 @@ button while the latest pipeline is running.
 
 ![Add to merge train when pipeline succeeds](img/merge_train_start_when_pipeline_succeeds_v12_0.png)
 
-<!-- ## Troubleshooting
+## Immediately merge a merge request with a merge train
 
-Include any troubleshooting steps that you can foresee. If you know beforehand what issues
-one might have when setting this up, or when something is changed, or on upgrading, it's
-important to describe those, too. Think of things that may go wrong and include them here.
-This is important to minimize requests for support, and to avoid doc comments with
-questions that you know someone might ask.
+In case, you have a high-priority merge request (e.g. critical patch) to be merged urgently,
+you can use **Merge Immediately** option for bypassing the merge train.
+This is the fastest option to get the change merged into the target branch.
 
-Each scenario can be a third-level heading, e.g. `### Getting error message X`.
-If you have none to add when creating a doc, leave this section in place
-but commented out to help encourage others to add to it in the future. -->
+![Merge Immediately](img/merge_train_immediate_merge.png)
+
+However, every time you merge a merge request immediately, it could affect the
+existing merge train to be reconstructed, specifically, it regenerates expected
+merge commits and pipelines. This means, merging immediately essentially wastes
+CI resources.
+
+## Troubleshooting
+
+### Merge request dropped from the merge train immediately
+
+If a merge request is not mergeable (for example, it's WIP, there is a merge
+conflict, etc), your merge request will be dropped from the merge train automatically.
+
+In these cases, the reason for dropping the merge request is in the **system notes**.
+
+To check the reason:
+
+1. Open the merge request that was dropped from the merge train.
+1. Open the **Discussion** tab.
+1. Find a system note that includes either:
+   - The text **... removed this merge request from the merge train because ...**
+   - **... aborted this merge request from the merge train because ...**
+   The reason is given in the text after the **because ...** phrase.
+
+![Merge Train Failure](img/merge_train_failure.png)
+
+### Merge When Pipeline Succeeds cannot be chosen
+
+[Merge When Pipeline Succeeds](../../../../user/project/merge_requests/merge_when_pipeline_succeeds.md)
+is unavailable when
+[Pipelines for Merged Results is enabled](../index.md#enabling-pipelines-for-merged-results).
+
+Follow [this issue](https://gitlab.com/gitlab-org/gitlab-ee/issues/12267) to
+track progress on this issue.
+
+### Merge Train disturbs your workflow
+
+First of all, please check if [merge immediately](#immediately-merge-a-merge-request-with-a-merge-train)
+is available as a workaround in your workflow. This is the most recommended
+workaround you'd be able to take immediately. If it's not available or acceptable,
+please read through this section.
+
+Merge train is enabled by default when you enable [Pipelines for merged results](../index.md),
+however, you can forcibly disable this feature by disabling the feature flag `:merge_trains_enabled`.
+After you disabled this feature, all the existing merge trains will be aborted and
+you will no longer see the **Start/Add Merge Train** button in merge requests.
+
+To check if the feature flag is enabled on your GitLab instance,
+please ask administrator to execute the following commands:
+
+```shell
+> sudo gitlab-rails console                         # Login to Rails console of GitLab instance.
+> Feature.enabled?(:merge_trains_enabled)           # Check if it's enabled or not.
+> Feature.disable(:merge_trains_enabled)            # Disable the feature flag.
+```
