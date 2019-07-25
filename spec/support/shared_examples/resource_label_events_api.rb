@@ -19,6 +19,7 @@ shared_examples 'resource_label_events API' do |parent_type, eventable_type, id_
 
     it "returns 404 when not authorized" do
       parent.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+      private_user = create(:user)
 
       get api("/#{parent_type}/#{parent.id}/#{eventable_type}/#{eventable[id_name]}/resource_label_events", private_user)
 
