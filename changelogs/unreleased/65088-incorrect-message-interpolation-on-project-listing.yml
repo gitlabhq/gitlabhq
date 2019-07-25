@@ -1,0 +1,5 @@
+---
+title: Fix incorrect use of message interpolation
+merge_request: 31121
+author:
+type: fixed
