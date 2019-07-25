@@ -69,7 +69,6 @@ function get_pod() {
       break
     fi
 
-    printf "."
     let "elapsed_seconds+=interval"
     sleep ${interval}
   done
@@ -360,7 +359,6 @@ function wait_for_review_app_to_be_accessible() {
       break
     fi
 
-    printf "."
     let "elapsed_seconds+=interval"
     sleep ${interval}
   done
