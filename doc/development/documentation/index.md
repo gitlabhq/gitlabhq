@@ -57,35 +57,22 @@ See the [Structure](styleguide.md#structure) section of the [Documentation Style
 We currently maintain two sets of docs: one in the
 [gitlab-ce](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc) repo and
 one in [gitlab-ee](https://gitlab.com/gitlab-org/gitlab-ee/tree/master/doc).
-They are similar, and most pages are identical, but they are different repositories.
-With the single codebase effort, we want to make those two sets identical, so when the
-time comes to have only one codebase, we'll be ready.
-
-Here are some links to get you up to speed with the current effort:
-
-- [CE/EE codebases blueprint](https://about.gitlab.com/handbook/engineering/infrastructure/blueprint/ce-ee-codebases/)
-- [CE/EE codebases merge design](https://about.gitlab.com/handbook/engineering/infrastructure/design/merge-ce-ee-codebases/)
-- [Single docs codebase epic](https://gitlab.com/groups/gitlab-org/-/epics/199)
-- [Issue board of related issues](https://gitlab.com/groups/gitlab-org/-/boards/981090?&label_name[]=Documentation&label_name[]=single%20codebase)
-- [Related merge requests](https://gitlab.com/groups/gitlab-org/-/merge_requests?scope=all&utf8=%E2%9C%93&state=all&label_name[]=Documentation&label_name[]=single%20codebase)
-- [Visualize the existing diffs](https://leipert-projects.gitlab.io/is-gitlab-pretty-yet/diff/?search=%5Edoc)
+They are identical, but they are different repositories. When the
+time comes to have only one codebase for the GitLab project, we'll be ready.
 
 ### CE first
 
-After a given documentation path is aligned across CE and EE, all merge requests
-affecting that path must be submitted to CE, regardless of the content it has.
-This means that:
+All merge requests for documentation must be submitted to CE, regardless of the content
+it has. This means that:
 
-- For **EE-only docs changes**, you only have to submit a CE MR.
+- For **EE-only docs changes**, you only have to submit an MR in the CE project.
 - For **EE-only features** that touch both the code and the docs, you have to submit
-  an EE MR containing all changes, and a CE MR containing only the docs changes
+  an EE MR containing all code changes, and a CE MR containing only the docs changes
   and without a changelog entry.
 
 This might seem like a duplicate effort, but it's only for the short term.
-A list of the already aligned docs can be found in
-[the epic description](https://gitlab.com/groups/gitlab-org/-/epics/199#ee-specific-lines-check).
 
-Since the docs will be combined, it's crucial to add the relevant
+Since the CE and EE docs are combined, it's crucial to add the relevant
 [product badges](styleguide.md#product-badges) for all EE documentation, so that
 we can discern which features belong to which tier.
 
@@ -94,19 +81,9 @@ we can discern which features belong to which tier.
 There's a special test in place
 ([`ee_specific_check.rb`](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/scripts/ee_specific_check/ee_specific_check.rb)),
 which, among others, checks and prevents creating/editing new files and directories
-in EE under `doc/`.
-
-We have a long list of documentation paths that are either whitelisted or not.
-Paths in the whitelist (not commented out) will not be subject to the test,
-which means you are allowed to create/change docs content in EE for the time
-being. The goal is to not have any doc whitelisted.
-
-At the time of this writing, the only items left to be aligned are the API docs:
-
-- `doc/api/*` ([issue](https://gitlab.com/gitlab-org/gitlab-ce/issues/60045) / [merge request](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/27491))
-
-Eventually, once all docs are aligned, we'll remove any doc reference from that
-script, so it catches everything.
+in EE under `doc/`. This should fail when changes to anything in `/doc` are submitted
+in an EE MR. To pass the test, simply remove the docs changes from the EE MR, and
+[submit them in CE](#ce-first).
 
 ## Changing document location
 
