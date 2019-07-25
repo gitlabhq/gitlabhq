@@ -262,14 +262,6 @@ Naming/HeredocDelimiterNaming:
 Naming/RescuedExceptionsVariableName:
   Enabled: false
 
-# Offense count: 3
-# Cop supports --auto-correct.
-Performance/ReverseEach:
-  Exclude:
-    - 'app/models/commit.rb'
-    - 'db/migrate/20190222051615_add_indexes_for_merge_request_diffs_query.rb'
-    - 'lib/gitlab/profiler.rb'
-
 # Offense count: 7081
 # Configuration parameters: Prefixes.
 # Prefixes: when, with, without

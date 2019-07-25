@@ -166,7 +166,7 @@ module Gitlab
         [model, times.count, times.sum]
       end
 
-      summarised_load_times.sort_by(&:last).reverse.each do |(model, query_count, time)|
+      summarised_load_times.sort_by(&:last).reverse_each do |(model, query_count, time)|
         logger.info("#{model} total (#{query_count}): #{time.round(2)}ms")
       end
     end
