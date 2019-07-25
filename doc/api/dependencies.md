@@ -17,8 +17,8 @@ supported by Gemnasium.
 
 ```
 GET /projects/:id/dependencies
-GET /projects/:id/vulnerabilities?package_manger=maven
-GET /projects/:id/vulnerabilities?package_manger=yarn,bundler
+GET /projects/:id/vulnerabilities?package_manager=maven
+GET /projects/:id/vulnerabilities?package_manager=yarn,bundler
 ```
 
 | Attribute     | Type           | Required | Description                                                                                                                                                                 |
