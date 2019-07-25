@@ -36,10 +36,6 @@
     label: s_('ClusterIntegration|Service Token'), label_class: 'label-bold',
     input_group_class: 'gl-field-error-anchor', append: show_token_btn + copy_token_btn
 
-    - if cluster.allow_user_defined_namespace?
-      = platform_field.text_field :namespace, label: s_('ClusterIntegration|Project namespace (optional, unique)'),
-        label_class: 'label-bold'
-
     = platform_field.form_group :authorization_type do
       = platform_field.check_box :authorization_type, { disabled: true, label: s_('ClusterIntegration|RBAC-enabled cluster'),
       label_class: 'label-bold', inline: true }, 'rbac', 'abac'
@@ -49,10 +45,14 @@
 
     .form-group
       = field.check_box :managed, { label: s_('ClusterIntegration|GitLab-managed cluster'),
+        class: 'js-gl-managed',
         label_class: 'label-bold' }
       .form-text.text-muted
         = s_('ClusterIntegration|Allow GitLab to manage namespace and service accounts for this cluster.')
         = link_to _('More information'), help_page_path('user/project/clusters/index.md', anchor: 'gitlab-managed-clusters'), target: '_blank'
+
+    - if cluster.allow_user_defined_namespace?
+      = render('clusters/clusters/namespace', platform_field: platform_field)
 
   .form-group
     = field.submit s_('ClusterIntegration|Save changes'), class: 'btn btn-success'

@@ -34,10 +34,6 @@
       autocomplete: 'off', label_class: 'label-bold',
       help: '%{help_text} %{help_link}'.html_safe % { help_text: token_help_text, help_link: more_info_link }
 
-    - if @user_cluster.allow_user_defined_namespace?
-      = platform_kubernetes_field.text_field :namespace,
-        label: s_('ClusterIntegration|Project namespace (optional, unique)'), label_class: 'label-bold'
-
     = platform_kubernetes_field.form_group :authorization_type,
       { help: '%{help_text} %{help_link}'.html_safe % { help_text: rbac_help_text, help_link: rbac_help_link } } do
       = platform_kubernetes_field.check_box :authorization_type,
@@ -46,10 +42,15 @@
 
   .form-group
     = field.check_box :managed, { label: s_('ClusterIntegration|GitLab-managed cluster'),
+      class: 'js-gl-managed',
       label_class: 'label-bold' }
     .form-text.text-muted
       = s_('ClusterIntegration|Allow GitLab to manage namespace and service accounts for this cluster.')
       = link_to _('More information'), help_page_path('user/project/clusters/index.md', anchor: 'gitlab-managed-clusters'), target: '_blank'
+
+  = field.fields_for :platform_kubernetes, @user_cluster.platform_kubernetes do |platform_kubernetes_field|
+    - if @user_cluster.allow_user_defined_namespace?
+      = render('clusters/clusters/namespace', platform_field: platform_kubernetes_field)
 
   .form-group
     = field.submit s_('ClusterIntegration|Add Kubernetes cluster'), class: 'btn btn-success'
