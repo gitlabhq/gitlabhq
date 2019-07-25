@@ -77,6 +77,53 @@ describe Projects::RepositoriesController do
           expect(response).to have_gitlab_http_status(404)
         end
       end
+
+      describe 'caching' do
+        it 'sets appropriate caching headers' do
+          get_archive
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(response.header['ETag']).to be_present
+          expect(response.header['Cache-Control']).to include('max-age=60, private')
+        end
+
+        context 'when project is public' do
+          let(:project) { create(:project, :repository, :public) }
+
+          it 'sets appropriate caching headers' do
+            get_archive
+
+            expect(response).to have_gitlab_http_status(200)
+            expect(response.header['ETag']).to be_present
+            expect(response.header['Cache-Control']).to include('max-age=60, public')
+          end
+        end
+
+        context 'when ref is a commit SHA' do
+          it 'max-age is set to 3600 in Cache-Control header' do
+            get_archive('ddd0f15ae83993f5cb66a927a28673882e99100b')
+
+            expect(response).to have_gitlab_http_status(200)
+            expect(response.header['Cache-Control']).to include('max-age=3600')
+          end
+        end
+
+        context 'when If-None-Modified header is set' do
+          it 'returns a 304 status' do
+            # Get the archive cached first
+            get_archive
+
+            request.headers['If-None-Match'] = response.headers['ETag']
+            get_archive
+
+            expect(response).to have_gitlab_http_status(304)
+          end
+        end
+
+        def get_archive(id = 'feature')
+          get :archive, params: { namespace_id: project.namespace, project_id: project, id: id }, format: 'zip'
+        end
+      end
     end
   end
 end
