@@ -326,6 +326,8 @@ Once enabled, an issue will be opened automatically when an alert is triggered w
 
 To further customize the issue, you can add labels, mentions, or any other supported [quick action](../quick_actions.md) in the selected issue template.
 
+Since [version 12.2](https://gitlab.com/gitlab-org/gitlab-ce/issues/63373), GitLab will tag each incident issue with the `incident` label automatically. If the label does not yet exist, it will be created automatically as well.
+
 If the metric exceeds the threshold of the alert for over 5 minutes, an email will be sent to all [Maintainers and Owners](../../permissions.md#project-members-permissions) of the project.
 
 ## Determining the performance impact of a merge
