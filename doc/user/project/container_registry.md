@@ -1,13 +1,8 @@
 # GitLab Container Registry
 
-> **Notes:**
->
 > - [Introduced][ce-4040] in GitLab 8.8.
 > - Docker Registry manifest `v1` support was added in GitLab 8.9 to support Docker
 >   versions earlier than 1.10.
-> - This document is about the user guide. To learn how to enable GitLab Container
->   Registry across your GitLab instance, visit the
->   [administrator documentation](../../administration/container_registry.md).
 > - Starting from GitLab 8.12, if you have 2FA enabled in your account, you need
 >   to pass a [personal access token][pat] instead of your password in order to
 >   login to GitLab's Container Registry.
@@ -16,28 +11,33 @@
 With the Docker Container Registry integrated into GitLab, every project can
 have its own space to store its Docker images.
 
+This document is the user guide. To learn how to enable GitLab Container
+Registry across your GitLab instance, visit the
+[administrator documentation](../../administration/container_registry.md).
+
 You can read more about Docker Registry at <https://docs.docker.com/registry/introduction/>.
 
 ## Enable the Container Registry for your project
 
-NOTE: **Note:**
-If you cannot find the Container Registry entry under your project's settings,
-that means that it is not enabled in your GitLab instance. Ask your administrator
-to enable it.
+If you cannot find the **Packages > Container Registry** entry under your
+project's sidebar, it is not enabled in your GitLab instance. Ask your
+administrator to enable GitLab Container Registry following the
+[administration documentation](../../administration/container_registry.md).
 
-1. First, ask your system administrator to enable GitLab Container Registry
-   following the [administration documentation](../../administration/container_registry.md).
-   If you are using GitLab.com, this is enabled by default so you can start using
-   the Registry immediately. Currently there is a soft (10GB) size restriction for
-   registry on GitLab.com, as part of the [repository size limit](repository/index.md).
-1. Go to your [project's General settings](settings/index.md#sharing-and-permissions)
+If you are using GitLab.com, this is enabled by default so you can start using
+the Registry immediately. Currently there is a soft (10GB) size restriction for
+registry on GitLab.com, as part of the [repository size limit](repository/index.md).
+
+Once enabled for your GitLab instance, to enable Container Registry for your
+project:
+
+1. Go to your project's **Settings > General** page.
+1. Expand the **Visibility, project features, permissions** section
    and enable the **Container Registry** feature on your project. For new
    projects this might be enabled by default. For existing projects
    (prior GitLab 8.8), you will have to explicitly enable it.
-1. Hit **Save changes** for the changes to take effect. You should now be able
-   to see the **Registry** link in the sidebar.
-
-![Container Registry](img/container_registry.png)
+1. Press **Save changes** for the changes to take effect. You should now be able
+   to see the **Packages > Container Registry**  link in the sidebar.
 
 ## Build and push images
 
@@ -49,14 +49,14 @@ to enable it.
 > - To move or rename a repository with a container registry you will have to
 >   delete all existing images.
 
-If you visit the **Registry** link under your project's menu, you can see the
-explicit instructions to login to the Container Registry using your GitLab
-credentials.
+If you visit the **Packages > Container Registry** link under your project's
+menu, you can see the explicit instructions to login to the Container Registry
+using your GitLab credentials.
 
 For example if the Registry's URL is `registry.example.com`, then you should be
 able to login with:
 
-```
+```sh
 docker login registry.example.com
 ```
 
@@ -64,14 +64,14 @@ Building and publishing images should be a straightforward process. Just make
 sure that you are using the Registry URL with the namespace and project name
 that is hosted on GitLab:
 
-```
+```sh
 docker build -t registry.example.com/group/project/image .
 docker push registry.example.com/group/project/image
 ```
 
 Your image will be named after the following scheme:
 
-```
+```text
 <registry URL>/<namespace>/<project>/<image>
 ```
 
@@ -79,7 +79,7 @@ GitLab supports up to three levels of image repository names.
 
 Following examples of image tags are valid:
 
-```
+```text
 registry.example.com/group/project:some-tag
 registry.example.com/group/project/image:latest
 registry.example.com/group/project/my/image:rc1
@@ -90,7 +90,7 @@ registry.example.com/group/project/my/image:rc1
 To download and run a container from images hosted in GitLab Container Registry,
 use `docker run`:
 
-```
+```sh
 docker run [options] registry.example.com/group/project/image [arguments]
 ```
 
@@ -100,7 +100,7 @@ For more information on running Docker containers, visit the
 ## Control Container Registry from within GitLab
 
 GitLab offers a simple Container Registry management panel. Go to your project
-and click **Registry** in the project menu.
+and click **Packages > Container Registry** in the project menu.
 
 This view will show you all tags in your project and will easily allow you to
 delete them.
@@ -173,9 +173,9 @@ curl localhost:5001/debug/vars
 A Docker connection error can occur when there are special characters in either the group,
 project or branch name. Special characters can include:
 
-* Leading underscore
-* Trailing hyphen/dash
-* Double hyphen/dash
+- Leading underscore
+- Trailing hyphen/dash
+- Double hyphen/dash
 
 To get around this, you can [change the group path](../group/index.md#changing-a-groups-path),
 [change the project path](../project/settings/index.md#renaming-a-repository) or chanage the branch
@@ -183,7 +183,8 @@ name.
 
 ### Advanced Troubleshooting
 
->**NOTE:** The following section is only recommended for experts.
+NOTE: **Note:**
+The following section is only recommended for experts.
 
 Sometimes it's not obvious what is wrong, and you may need to dive deeper into
 the communication between the Docker client and the Registry to find out
@@ -195,7 +196,7 @@ diagnose a problem with the S3 setup.
 A user attempted to enable an S3-backed Registry. The `docker login` step went
 fine. However, when pushing an image, the output showed:
 
-```
+```text
 The push refers to a repository [s3-testing.myregistry.com:4567/root/docker-test/docker-image]
 dc5e59c14160: Pushing [==================================================>] 14.85 kB
 03c20c1a019a: Pushing [==================================================>] 2.048 kB
@@ -218,7 +219,7 @@ at the communication between the client and the Registry.
 The REST API between the Docker client and Registry is [described
 here](https://docs.docker.com/registry/spec/api/). Normally, one would just
 use Wireshark or tcpdump to capture the traffic and see where things went
-wrong.  However, since all communications between Docker clients and servers
+wrong. However, since all communications between Docker clients and servers
 are done over HTTPS, it's a bit difficult to decrypt the traffic quickly even
 if you know the private key. What can we do instead?
 
