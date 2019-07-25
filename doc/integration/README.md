@@ -27,7 +27,7 @@ See the documentation below for details on how to configure these services.
 - [SAML](saml.md) Configure GitLab as a SAML 2.0 Service Provider
 - [Trello](trello_power_up.md) Integrate Trello with GitLab
 
-> GitLab Enterprise Edition contains [advanced Jenkins support][jenkins].
+> GitLab Enterprise Edition contains [advanced Jenkins support](jenkins.md).
 
 ## Project services
 
@@ -70,5 +70,3 @@ After that restart GitLab with:
 ```bash
 sudo gitlab-ctl restart
 ```
-
-[jenkins]: https://docs.gitlab.com/ee/integration/jenkins.html

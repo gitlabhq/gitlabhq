@@ -1092,6 +1092,6 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --data "domain_
 
 [cURL]: http://curl.haxx.se/ "cURL website"
 [single spaces]: http://www.slate.com/articles/technology/technology/2011/01/space_invaders.html
-[gfm]: https://docs.gitlab.com/ce/user/markdown.html#newlines "GitLab flavored markdown documentation"
+[gfm]: ../../user/markdown.md#newlines "GitLab flavored markdown documentation"
 [ce-1242]: https://gitlab.com/gitlab-org/gitlab-ce/issues/1242
 [doc-restart]: ../../administration/restart_gitlab.md "GitLab restart documentation"

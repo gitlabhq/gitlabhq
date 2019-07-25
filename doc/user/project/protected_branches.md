@@ -180,6 +180,5 @@ for details about the pipelines security model.
 [ce-4892]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/4892 "Allow developers to merge into a protected branch without having push access"
 [ce-5081]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/5081 "Allow creating protected branches that can't be pushed to"
 [ce-21393]: https://gitlab.com/gitlab-org/gitlab-ce/issues/21393
-[ee-restrict]: https://docs.gitlab.com/ee/user/project/protected_branches.html#restricting-push-and-merge-access-to-certain-users
 [perm]: ../permissions.md
 [ee]: https://about.gitlab.com/pricing/
