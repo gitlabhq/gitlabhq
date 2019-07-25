@@ -871,4 +871,12 @@ describe Issue do
       expect(issue.labels_hook_attrs).to eq([label.hook_attrs])
     end
   end
+
+  context "relative positioning" do
+    it_behaves_like "a class that supports relative positioning" do
+      let(:project) { create(:project) }
+      let(:factory) { :issue }
+      let(:default_params) { { project: project } }
+    end
+  end
 end
