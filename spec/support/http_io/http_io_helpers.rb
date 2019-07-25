@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module HttpIOHelpers
   def stub_remote_url_206(url, file_path)
     WebMock.stub_request(:get, url)

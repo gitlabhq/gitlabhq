@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_examples 'system note creation' do |update_params, note_text|
   subject { described_class.new(project, user).execute(issuable, old_labels: []) }
 

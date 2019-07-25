@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.shared_context 'MergeRequestsFinder multiple projects with merge requests context' do

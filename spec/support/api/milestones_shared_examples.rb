@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_examples_for 'group and project milestones' do |route_definition|
   let(:resource_route) { "#{route}/#{milestone.id}" }
   let(:label_1) { create(:label, title: 'label_1', project: project, priority: 1) }

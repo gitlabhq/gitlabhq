@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ActiveRecord
   class QueryRecorder
     attr_reader :log, :skip_cached, :cached

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module JiraServiceHelper
   JIRA_URL = "http://jira.example.net".freeze
   JIRA_API = JIRA_URL + "/rest/api/2"

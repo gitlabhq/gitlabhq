@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module PrometheusHelpers
   def prometheus_memory_query(environment_slug)
     %{avg(container_memory_usage_bytes{container_name!="POD",environment="#{environment_slug}"}) / 2^20}

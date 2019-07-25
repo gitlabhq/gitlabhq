@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec::Matchers.define :be_valid_commit do
   match do |actual|
     actual &&

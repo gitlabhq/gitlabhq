@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This shared example requires a `builder` and `user` variable
 shared_examples 'issuable hook data' do |kind|
   let(:data) { builder.build(user: user) }

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Service.available_services_names.each do |service|
   shared_context service do
     let(:dashed_service) { service.dasherize }

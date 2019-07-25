@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_examples 'a 404 response when source is private' do
   before do
     source.update_column(:visibility_level, Gitlab::VisibilityLevel::PRIVATE)

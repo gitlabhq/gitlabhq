@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ApiHelpers
   # Public: Prepend a request path with the path to the API
   #

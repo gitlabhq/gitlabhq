@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module TermsHelper
   def enforce_terms
     stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')

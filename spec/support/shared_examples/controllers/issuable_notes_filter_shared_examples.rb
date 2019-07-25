@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_examples 'issuable notes filter' do
   let(:params) do
     if issuable_parent.is_a?(Project)

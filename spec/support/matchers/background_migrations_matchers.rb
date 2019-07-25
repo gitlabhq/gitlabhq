@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec::Matchers.define :be_scheduled_delayed_migration do |delay, *expected|
   match do |migration|
     BackgroundMigrationWorker.jobs.any? do |job|

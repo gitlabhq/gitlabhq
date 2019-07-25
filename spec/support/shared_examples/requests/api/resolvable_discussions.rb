@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_examples 'resolvable discussions API' do |parent_type, noteable_type, id_name|
   describe "PUT /#{parent_type}/:id/#{noteable_type}/:noteable_id/discussions/:discussion_id" do
     it "resolves discussion if resolved is true" do

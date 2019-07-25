@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_examples 'lists list service' do
   context 'when the board has a backlog list' do
     let!(:backlog_list) { create(:backlog_list, board: board) }

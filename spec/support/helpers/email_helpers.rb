@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module EmailHelpers
   def sent_to_user(user, recipients: email_recipients)
     recipients.count { |to| to == user.notification_email }

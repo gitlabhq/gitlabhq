@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.shared_examples "redis_shared_examples" do
   include StubENV
 

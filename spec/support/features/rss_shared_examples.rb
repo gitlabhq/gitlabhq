@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_examples "an autodiscoverable RSS feed with current_user's feed token" do
   it "has an RSS autodiscovery link tag with current_user's feed token" do
     expect(page).to have_css("link[type*='atom+xml'][href*='feed_token=#{user.feed_token}']", visible: false)

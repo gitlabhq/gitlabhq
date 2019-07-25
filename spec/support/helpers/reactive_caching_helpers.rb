@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ReactiveCachingHelpers
   def reactive_cache_key(subject, *qualifiers)
     ([subject.class.reactive_cache_key.call(subject)].flatten + qualifiers).join(':')

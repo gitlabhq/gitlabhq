@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # These shared examples expect a `snippets` array of snippets
 RSpec.shared_examples 'paginated snippets' do |remote: false|
   it "is limited to #{Snippet.default_per_page} items per page" do

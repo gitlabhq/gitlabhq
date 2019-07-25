@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_examples_for "position formatter" do
   let(:formatter) { described_class.new(attrs) }
 

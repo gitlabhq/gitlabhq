@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_examples 'issuables list meta-data' do |issuable_type, action = nil|
   include ProjectForksHelper
 

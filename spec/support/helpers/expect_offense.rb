@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rubocop/rspec/support'
 
 # https://github.com/backus/rubocop-rspec/blob/master/spec/support/expect_offense.rb

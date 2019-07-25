@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_examples 'dirty submit form' do |selector_args|
   selectors = selector_args.is_a?(Array) ? selector_args : [selector_args]
 

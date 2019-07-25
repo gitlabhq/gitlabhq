@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Dir[Rails.root.join("app/models/project_services/chat_message/*.rb")].each { |f| require f }
 
 RSpec.shared_examples 'slack or mattermost notifications' do

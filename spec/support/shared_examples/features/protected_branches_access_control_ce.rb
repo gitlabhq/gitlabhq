@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_examples "protected branches > access control > CE" do
   ProtectedRefAccess::HUMAN_ACCESS_LEVELS.each do |(access_type_id, access_type_name)|
     it "allows creating protected branches that #{access_type_name} can push to" do

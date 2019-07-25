@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module QuickActionsHelpers
   def write_note(text)
     Sidekiq::Testing.fake! do

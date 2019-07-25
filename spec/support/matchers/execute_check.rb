@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec::Matchers.define :execute_check do |expected|
   match do |actual|
     expect(actual).to eq(SystemCheck)

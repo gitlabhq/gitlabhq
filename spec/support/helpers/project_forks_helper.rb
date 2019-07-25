@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ProjectForksHelper
   def fork_project(project, user = nil, params = {})
     Gitlab::GitalyClient.allow_n_plus_1_calls do

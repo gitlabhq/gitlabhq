@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_examples 'creating an issue for a thread' do
   it 'shows an issue with the title filled in' do
     title_field = page.find_field('issue[title]')

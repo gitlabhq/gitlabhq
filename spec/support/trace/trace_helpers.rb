@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module TraceHelpers
   def create_legacy_trace(build, content)
     File.open(legacy_trace_path(build), 'wb') { |stream| stream.write(content) }

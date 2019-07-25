@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class FakeU2fDevice
   attr_reader :name
 

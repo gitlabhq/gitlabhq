@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_examples 'comment on merge request file' do
   it 'adds a comment' do
     click_diff_line(find("[id='#{sample_commit.line_code}']"))

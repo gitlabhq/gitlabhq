@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Specs for reference links containing HTML.
 #
 # Requires a reference:

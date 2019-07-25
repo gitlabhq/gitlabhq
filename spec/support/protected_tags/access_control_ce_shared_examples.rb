@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.shared_examples "protected tags > access control > CE" do
   ProtectedRefAccess::HUMAN_ACCESS_LEVELS.each do |(access_type_id, access_type_name)|
     it "allows creating protected tags that #{access_type_name} can create" do

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ExclusiveLeaseHelpers
   def stub_exclusive_lease(key = nil, uuid = 'uuid', renew: false, timeout: nil)
     key     ||= instance_of(String)

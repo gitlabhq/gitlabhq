@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_context 'valid cluster create params' do
   let(:params) do
     {

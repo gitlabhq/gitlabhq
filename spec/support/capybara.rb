@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # rubocop:disable Style/GlobalVars
 require 'capybara/rails'
 require 'capybara/rspec'

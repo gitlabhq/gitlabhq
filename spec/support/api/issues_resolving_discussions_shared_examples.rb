@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_examples 'creating an issue resolving discussions through the API' do
   it 'creates a new project issue' do
     expect(response).to have_gitlab_http_status(:created)

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module DeviseHelpers
   # explicitly tells Devise which mapping to use
   # this is needed when we are testing a Devise controller bypassing the router

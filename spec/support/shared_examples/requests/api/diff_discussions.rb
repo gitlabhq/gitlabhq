@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_examples 'diff discussions API' do |parent_type, noteable_type, id_name|
   describe "GET /#{parent_type}/:id/#{noteable_type}/:noteable_id/discussions" do
     it "includes diff discussions" do

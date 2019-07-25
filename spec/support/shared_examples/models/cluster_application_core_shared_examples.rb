@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_examples 'cluster application core specs' do |application_name|
   it { is_expected.to belong_to(:cluster) }
   it { is_expected.to validate_presence_of(:cluster) }

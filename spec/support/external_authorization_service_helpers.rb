@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ExternalAuthorizationServiceHelpers
   def enable_external_authorization_service_check
     stub_application_setting(external_authorization_service_enabled: true)

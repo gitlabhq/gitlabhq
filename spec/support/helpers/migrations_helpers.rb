@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module MigrationsHelpers
   def active_record_base
     ActiveRecord::Base

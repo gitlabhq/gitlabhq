@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec::Matchers.define :have_issuable_counts do |opts|
   expected_counts = opts.map do |state, count|
     "#{state.to_s.humanize} #{count}"

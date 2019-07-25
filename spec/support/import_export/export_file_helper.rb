@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require './spec/support/import_export/configuration_helper'
 
 module ExportFileHelper

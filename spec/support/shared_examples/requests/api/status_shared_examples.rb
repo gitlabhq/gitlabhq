@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Specs for status checking.
 #
 # Requires an API request:

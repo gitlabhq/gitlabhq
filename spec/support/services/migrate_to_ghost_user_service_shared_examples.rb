@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "spec_helper"
 
 shared_examples "migrating a deleted user's associated records to the ghost user" do |record_class, fields|

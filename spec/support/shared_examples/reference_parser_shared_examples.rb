@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.shared_examples "referenced feature visibility" do |*related_features|
   let(:feature_fields) do
     related_features.map { |feature| (feature + "_access_level").to_sym }

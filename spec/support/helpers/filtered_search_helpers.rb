@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module FilteredSearchHelpers
   def filtered_search
     page.find('.filtered-search')

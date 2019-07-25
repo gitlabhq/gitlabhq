@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_examples 'helm commands' do
   describe '#generate_script' do
     let(:helm_setup) do

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module DatabaseConnectionHelpers
   def run_with_new_database_connection
     pool = ActiveRecord::Base.connection_pool

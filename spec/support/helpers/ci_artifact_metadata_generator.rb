@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # frozen_sting_literal: true
 
 # This generates fake CI metadata .gz for testing

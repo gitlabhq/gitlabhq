@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec::Matchers.define :have_gitlab_http_status do |expected|
   match do |actual|
     expect(actual).to have_http_status(expected)

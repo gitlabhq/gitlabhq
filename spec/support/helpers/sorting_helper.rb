@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Helper allows you to sort items
 #
 # Params

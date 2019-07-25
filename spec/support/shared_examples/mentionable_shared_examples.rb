@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Specifications for behavior common to all Mentionable implementations.
 # Requires a shared context containing:
 # - subject { "the mentionable implementation" }

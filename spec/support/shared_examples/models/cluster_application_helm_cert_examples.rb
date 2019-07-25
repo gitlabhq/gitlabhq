@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_examples 'cluster application helm specs' do |application_name|
   let(:application) { create(application_name) }
 

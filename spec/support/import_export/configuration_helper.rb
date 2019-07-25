@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ConfigurationHelper
   # Returns a list of models from hashes/arrays contained in +project_tree+
   def names_from_tree(project_tree)

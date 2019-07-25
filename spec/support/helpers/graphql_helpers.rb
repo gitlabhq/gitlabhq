@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module GraphqlHelpers
   MutationDefinition = Struct.new(:query, :variables)
 

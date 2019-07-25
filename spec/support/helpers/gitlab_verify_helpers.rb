@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module GitlabVerifyHelpers
   def collect_ranges(args = {})
     verifier = described_class.new(args.merge(batch_size: 1))

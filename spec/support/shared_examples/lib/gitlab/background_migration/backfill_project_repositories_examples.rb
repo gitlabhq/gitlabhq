@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_examples 'backfill migration for project repositories' do |storage|
   describe '#perform' do
     let(:storage_versions) { storage == :legacy ? [nil, 0] : [1, 2] }

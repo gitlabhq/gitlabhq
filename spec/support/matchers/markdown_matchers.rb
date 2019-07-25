@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # MarkdownMatchers
 #
 # Custom matchers for our custom HTML::Pipeline filters. These are used to test

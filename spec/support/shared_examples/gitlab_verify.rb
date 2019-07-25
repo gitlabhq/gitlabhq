@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.shared_examples 'Gitlab::Verify::BatchVerifier subclass' do
   describe 'batching' do
     let(:first_batch) { objects[0].id..objects[0].id }

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_examples 'milestone tabs' do
   def go(path, extra_params = {})
     params =

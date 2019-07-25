@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_examples 'project features apply to issuables' do |klass|
   let(:described_class) { klass }
 

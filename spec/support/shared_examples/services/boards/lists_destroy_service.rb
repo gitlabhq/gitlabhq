@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_examples 'lists destroy service' do
   context 'when list type is label' do
     it 'removes list from board' do

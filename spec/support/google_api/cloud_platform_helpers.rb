@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module GoogleApi
   module CloudPlatformHelpers
     def stub_google_api_validate_token

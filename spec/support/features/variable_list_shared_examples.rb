@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_examples 'variable list' do
   it 'shows list of variables' do
     page.within('.js-ci-variable-list-section') do

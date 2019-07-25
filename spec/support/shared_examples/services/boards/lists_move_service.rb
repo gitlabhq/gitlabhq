@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_examples 'lists move service' do
   let!(:planning)    { create(:list, board: board, position: 0) }
   let!(:development) { create(:list, board: board, position: 1) }

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 shared_examples_for 'model with uploads' do |supports_fileuploads|

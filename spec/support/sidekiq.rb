@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'sidekiq/testing/inline'
 
 # If Sidekiq::Testing.inline! is used, SQL transactions done inside

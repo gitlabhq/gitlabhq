@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_examples 'issuables requiring filter' do |action|
   it "doesn't load any issuables if no filter is set" do
     expect_any_instance_of(described_class).not_to receive(:issuables_collection)

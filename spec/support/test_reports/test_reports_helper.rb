@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module TestReportsHelper
   def create_test_case_rspec_success(name = 'test_spec')
     Gitlab::Ci::Reports::TestCase.new(

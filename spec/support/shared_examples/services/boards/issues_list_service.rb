@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_examples 'issues list service' do
   it 'delegates search to IssuesFinder' do
     params = { board_id: board.id, id: list1.id }

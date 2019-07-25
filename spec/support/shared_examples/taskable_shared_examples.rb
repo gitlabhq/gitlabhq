@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Specs for task state functionality for issues and merge requests.
 #
 # Requires a context containing:

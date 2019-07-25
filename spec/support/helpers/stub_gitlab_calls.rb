@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module StubGitlabCalls
   def stub_gitlab_calls
     stub_user
