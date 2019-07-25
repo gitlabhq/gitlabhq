@@ -1,3 +1,7 @@
+---
+type: reference, howto
+---
+
 # Dependency Scanning **(ULTIMATE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/5105)
@@ -150,7 +154,7 @@ using environment variables.
 | `DS_DOCKER_CLIENT_NEGOTIATION_TIMEOUT`  | Time limit for Docker client negotiation. Timeouts are parsed using Go's [`ParseDuration`](https://golang.org/pkg/time/#ParseDuration). Valid time units are `ns`, `us` (or `µs`), `ms`, `s`, `m`, `h`. For example, `300ms`, `1.5h`, or `2h45m`. |
 | `DS_PULL_ANALYZER_IMAGE_TIMEOUT`        | Time limit when pulling the image of an analyzer. Timeouts are parsed using Go's [`ParseDuration`](https://golang.org/pkg/time/#ParseDuration). Valid time units are `ns`, `us` (or `µs`), `ms`, `s`, `m`, `h`. For example, `300ms`, `1.5h`, or `2h45m`. |
 | `DS_RUN_ANALYZER_TIMEOUT`               | Time limit when running an analyzer. Timeouts are parsed using Go's [`ParseDuration`](https://golang.org/pkg/time/#ParseDuration). Valid time units are `ns`, `us` (or `µs`), `ms`, `s`, `m`, `h`. For example, `300ms`, `1.5h`, or `2h45m`. |
-| `PIP_INDEX_URL`                         | Base URL of Python Package Index (default https://pypi.org/simple). |
+| `PIP_INDEX_URL`                         | Base URL of Python Package Index (default `https://pypi.org/simple`). |
 | `PIP_EXTRA_INDEX_URL`                   | Array of [extra URLs](https://pip.pypa.io/en/stable/reference/pip_install/#cmdoption-extra-index-url) of package indexes to use in addition to `PIP_INDEX_URL`. Comma separated. |
 
 ## Reports JSON format
@@ -342,3 +346,15 @@ Please check the [Release Process documentation](https://gitlab.com/gitlab-org/s
 You can search the [gemnasium-db](https://gitlab.com/gitlab-org/security-products/gemnasium-db) project
 to find a vulnerability in the Gemnasium database.
 You can also [submit new vulnerabilities](https://gitlab.com/gitlab-org/security-products/gemnasium-db/blob/master/CONTRIBUTING.md).
+
+<!-- ## Troubleshooting
+
+Include any troubleshooting steps that you can foresee. If you know beforehand what issues
+one might have when setting this up, or when something is changed, or on upgrading, it's
+important to describe those, too. Think of things that may go wrong and include them here.
+This is important to minimize requests for support, and to avoid doc comments with
+questions that you know someone might ask.
+
+Each scenario can be a third-level heading, e.g. `### Getting error message X`.
+If you have none to add when creating a doc, leave this section in place
+but commented out to help encourage others to add to it in the future. -->
