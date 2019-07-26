@@ -20,7 +20,7 @@ describe 'Contextual sidebar', :js do
 
     expect(page).to have_selector('.is-showing-fly-out')
 
-    find('.qa-link-project').hover
+    find('a[data-qa-selector="project_link"]').hover
 
     expect(page).not_to have_selector('.is-showing-fly-out')
 
@@ -30,7 +30,7 @@ describe 'Contextual sidebar', :js do
 
     expect(page).to have_selector('.is-showing-fly-out')
 
-    find('.qa-link-project').hover
+    find('a[data-qa-selector="project_link"]').hover
 
     expect(page).to have_selector('.is-showing-fly-out')
   end
