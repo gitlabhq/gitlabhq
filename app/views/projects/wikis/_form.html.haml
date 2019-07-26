@@ -51,6 +51,6 @@
       .float-right
         = link_to _("Cancel"), project_wiki_path(@project, @page), class: 'btn btn-cancel btn-grouped'
     - else
-      = f.submit s_("Wiki|Create page"), class: 'btn-success btn qa-create-page-button'
+      = f.submit s_("Wiki|Create page"), class: 'btn-success btn qa-create-page-button rspec-create-page-button'
       .float-right
         = link_to _("Cancel"), project_wiki_path(@project, :home), class: 'btn btn-cancel'
