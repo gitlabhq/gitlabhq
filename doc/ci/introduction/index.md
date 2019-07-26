@@ -9,6 +9,11 @@ In this document we'll present an overview of the concepts of Continuous Integra
 Continuous Delivery, and Continuous Deployment, as well as an introduction to
 GitLab CI/CD.
 
+NOTE: **Out-of-the-box management systems can decrease hours spent on maintaining toolchains by 10% or more.**
+Watch our
+["Mastering continuous software development"](https://about.gitlab.com/webcast/mastering-ci-cd/)
+webcast to learn about continuous methods and how GitLab’s built-in CI can help you simplify and scale software development.
+
 ## Introduction to CI/CD methodologies
 
 The continuous methodologies of software development are based on
