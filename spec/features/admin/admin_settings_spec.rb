@@ -338,14 +338,17 @@ describe 'Admin updates settings' do
       visit network_admin_application_settings_path
 
       page.within('.as-outbound') do
-        check 'Allow requests to the local network from hooks and services'
+        check 'Allow requests to the local network from web hooks and services'
+        # Enabled by default
+        uncheck 'Allow requests to the local network from system hooks'
         # Enabled by default
         uncheck 'Enforce DNS rebinding attack protection'
         click_button 'Save changes'
       end
 
       expect(page).to have_content "Application settings saved successfully"
-      expect(current_settings.allow_local_requests_from_hooks_and_services).to be true
+      expect(current_settings.allow_local_requests_from_web_hooks_and_services).to be true
+      expect(current_settings.allow_local_requests_from_system_hooks).to be false
       expect(current_settings.dns_rebinding_protection_enabled).to be false
     end
   end

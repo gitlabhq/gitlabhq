@@ -23,14 +23,14 @@ describe Gitlab::HTTP do
     end
   end
 
-  describe 'allow_local_requests_from_hooks_and_services is' do
+  describe 'allow_local_requests_from_web_hooks_and_services is' do
     before do
       WebMock.stub_request(:get, /.*/).to_return(status: 200, body: 'Success')
     end
 
     context 'disabled' do
       before do
-        allow(Gitlab::CurrentSettings).to receive(:allow_local_requests_from_hooks_and_services?).and_return(false)
+        allow(Gitlab::CurrentSettings).to receive(:allow_local_requests_from_web_hooks_and_services?).and_return(false)
       end
 
       it 'deny requests to localhost' do
@@ -52,7 +52,7 @@ describe Gitlab::HTTP do
 
     context 'enabled' do
       before do
-        allow(Gitlab::CurrentSettings).to receive(:allow_local_requests_from_hooks_and_services?).and_return(true)
+        allow(Gitlab::CurrentSettings).to receive(:allow_local_requests_from_web_hooks_and_services?).and_return(true)
       end
 
       it 'allow requests to localhost' do

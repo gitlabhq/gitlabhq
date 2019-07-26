@@ -106,7 +106,7 @@ describe Clusters::Platforms::Kubernetes do
           before do
             allow(ApplicationSetting)
               .to receive(:current)
-              .and_return(ApplicationSetting.build_from_defaults(allow_local_requests_from_hooks_and_services: true))
+              .and_return(ApplicationSetting.build_from_defaults(allow_local_requests_from_web_hooks_and_services: true))
           end
 
           it { expect(kubernetes.save).to be_truthy }

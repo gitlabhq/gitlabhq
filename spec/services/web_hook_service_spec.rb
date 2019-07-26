@@ -19,15 +19,43 @@ describe WebHookService do
   let(:service_instance) { described_class.new(project_hook, data, :push_hooks) }
 
   describe '#initialize' do
-    it 'allow_local_requests is true if hook is a SystemHook' do
-      instance = described_class.new(build(:system_hook), data, :system_hook)
-      expect(instance.request_options[:allow_local_requests]).to be_truthy
-    end
+    context 'when SystemHook' do
+      context 'when allow_local_requests_from_system_hooks application setting is true' do
+        it 'allows local requests' do
+          stub_application_setting(allow_local_requests_from_system_hooks: true)
+          instance = described_class.new(build(:system_hook), data, :system_hook)
 
-    it 'allow_local_requests is false if hook is not a SystemHook' do
-      %i(project_hook service_hook web_hook_log).each do |hook|
-        instance = described_class.new(build(hook), data, hook)
-        expect(instance.request_options[:allow_local_requests]).to be_falsey
+          expect(instance.request_options[:allow_local_requests]).to be_truthy
+        end
+      end
+
+      context 'when allow_local_requests_from_system_hooks application setting is false' do
+        it 'denies local requests' do
+          stub_application_setting(allow_local_requests_from_system_hooks: false)
+          instance = described_class.new(build(:system_hook), data, :system_hook)
+
+          expect(instance.request_options[:allow_local_requests]).to be_falsey
+        end
+      end
+
+      context 'when ProjectHook' do
+        context 'when allow_local_requests_from_web_hooks_and_services application setting is true' do
+          it 'allows local requests' do
+            stub_application_setting(allow_local_requests_from_web_hooks_and_services: true)
+            instance = described_class.new(build(:project_hook), data, :project_hook)
+
+            expect(instance.request_options[:allow_local_requests]).to be_truthy
+          end
+        end
+
+        context 'when allow_local_requests_from_system_hooks application setting is false' do
+          it 'denies local requests' do
+            stub_application_setting(allow_local_requests_from_web_hooks_and_services: false)
+            instance = described_class.new(build(:project_hook), data, :project_hook)
+
+            expect(instance.request_options[:allow_local_requests]).to be_falsey
+          end
+        end
       end
     end
   end

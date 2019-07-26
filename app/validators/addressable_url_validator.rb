@@ -107,6 +107,6 @@ class AddressableUrlValidator < ActiveModel::EachValidator
     # calls this validator.
     #
     # See https://gitlab.com/gitlab-org/gitlab-ee/issues/9833
-    ApplicationSetting.current&.allow_local_requests_from_hooks_and_services?
+    ApplicationSetting.current&.allow_local_requests_from_web_hooks_and_services?
   end
 end

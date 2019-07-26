@@ -50,7 +50,7 @@ describe LfsDownloadObject do
         before do
           allow(ApplicationSetting)
             .to receive(:current)
-              .and_return(ApplicationSetting.build_from_defaults(allow_local_requests_from_hooks_and_services: setting))
+              .and_return(ApplicationSetting.build_from_defaults(allow_local_requests_from_web_hooks_and_services: setting))
         end
 
         context 'are allowed' do
