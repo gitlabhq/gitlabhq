@@ -15,7 +15,7 @@ describe('Badge component', () => {
     const buttons = vm.$el.querySelectorAll('button');
     return {
       badgeImage: vm.$el.querySelector('img.project-badge'),
-      loadingIcon: vm.$el.querySelector('.spinner'),
+      loadingIcon: vm.$el.querySelector('.gl-spinner'),
       reloadButton: buttons[buttons.length - 1],
     };
   };

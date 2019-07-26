@@ -148,7 +148,7 @@ describe('Board list component', () => {
     component.list.loadingMore = true;
 
     Vue.nextTick(() => {
-      expect(component.$el.querySelector('.board-list-count .spinner')).not.toBeNull();
+      expect(component.$el.querySelector('.board-list-count .gl-spinner')).not.toBeNull();
 
       done();
     });
