@@ -1,5 +1,6 @@
 <script>
 import { GlLink } from '@gitlab/ui';
+import { s__, sprintf } from '~/locale';
 
 export default {
   components: {
@@ -22,8 +23,28 @@ export default {
     },
   },
   computed: {
-    hasQuickActionsDocsPath() {
-      return this.quickActionsDocsPath !== '';
+    toolbarHelpHtml() {
+      const mdLinkStart = `<a href="${this.markdownDocsPath}" target="_blank" rel="noopener noreferrer" tabindex="-1">`;
+      const actionsLinkStart = `<a href="${this.quickActionsDocsPath}" target="_blank" rel="noopener noreferrer" tabindex="-1">`;
+      const linkEnd = '</a>';
+
+      if (this.markdownDocsPath && !this.quickActionsDocsPath) {
+        return sprintf(
+          s__('Editor|%{mdLinkStart}Markdown is supported%{mdLinkEnd}'),
+          { mdLinkStart, mdLinkEnd: linkEnd },
+          false,
+        );
+      } else if (this.markdownDocsPath && this.quickActionsDocsPath) {
+        return sprintf(
+          s__(
+            'Editor|%{mdLinkStart}Markdown%{mdLinkEnd} and %{actionsLinkStart}quick actions%{actionsLinkEnd} are supported',
+          ),
+          { mdLinkStart, mdLinkEnd: linkEnd, actionsLinkStart, actionsLinkEnd: linkEnd },
+          false,
+        );
+      }
+
+      return null;
     },
   },
 };
@@ -32,21 +53,7 @@ export default {
 <template>
   <div class="comment-toolbar clearfix">
     <div class="toolbar-text">
-      <template v-if="!hasQuickActionsDocsPath && markdownDocsPath">
-        <gl-link :href="markdownDocsPath" target="_blank" tabindex="-1">{{
-          __('Markdown is supported')
-        }}</gl-link>
-      </template>
-      <template v-if="hasQuickActionsDocsPath && markdownDocsPath">
-        <gl-link :href="markdownDocsPath" target="_blank" tabindex="-1">{{
-          __('Markdown')
-        }}</gl-link>
-        and
-        <gl-link :href="quickActionsDocsPath" target="_blank" tabindex="-1">{{
-          __('quick actions')
-        }}</gl-link>
-        are supported
-      </template>
+      <span v-html="toolbarHelpHtml"></span>
     </div>
     <span v-if="canAttachFile" class="uploading-container">
       <span class="uploading-progress-container hide">

@@ -132,9 +132,15 @@ describe "User creates wiki page" do
 
         fill_in(:wiki_content, with: ascii_content)
 
-        page.within(".wiki-form") do
-          click_button("Create page")
-        end
+        # This is the dumbest bug in the world:
+        # When the #wiki_content textarea is filled in, JS captures the `Enter` keydown event in order to do
+        # auto-indentation and manually inserts a newline. However, for whatever reason, when you try to click on the
+        # submit button in Capybara, it will not trigger the `click` event if a \n or \r character has been manually
+        # added to the textarea. It will, however, trigger ALL OTHER EVENTS, including `mouseover`/down/up, focus, and
+        # blur. Just not `click`. But only when you manually insert \n or \r - if you manually insert any other sequence
+        # then `click` is fired normally. And it's only Capybara. Browsers and JSDOM don't have this issue.
+        # So that's why the next line performs the click via JS.
+        page.execute_script("document.querySelector('.qa-create-page-button').click()")
 
         page.within ".md" do
           expect(page).to have_selector(".katex", count: 3).and have_content("2+2 is 4")

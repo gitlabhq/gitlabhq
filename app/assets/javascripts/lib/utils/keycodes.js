@@ -1,4 +1,10 @@
-export const UP_KEY_CODE = 38;
-export const DOWN_KEY_CODE = 40;
+export const BACKSPACE_KEY_CODE = 8;
 export const ENTER_KEY_CODE = 13;
 export const ESC_KEY_CODE = 27;
+export const SPACE_KEY_CODE = 32;
+export const UP_KEY_CODE = 38;
+export const DOWN_KEY_CODE = 40;
+export const Y_KEY_CODE = 89;
+export const Z_KEY_CODE = 90;
+export const LEFT_BRACKET_KEY_CODE = 219;
+export const RIGHT_BRACKET_KEY_CODE = 221;
