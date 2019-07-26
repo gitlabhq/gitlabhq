@@ -18,7 +18,7 @@ export default class Star {
           const isStarred = $starSpan.hasClass('starred');
           $this
             .parent()
-            .find('.star-count')
+            .find('.count')
             .text(data.star_count);
 
           if (isStarred) {
