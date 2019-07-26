@@ -113,6 +113,10 @@ description: 'Learn how to contribute to GitLab.'
 - [Database helper modules](database_helpers.md)
 - [Code comments](code_comments.md)
 
+## Case studies
+
+- [Database case study: Filtering by label](filtering_by_label.md)
+
 ## Integration guides
 
 - [Jira Connect app](integrations/jira_connect.md)
