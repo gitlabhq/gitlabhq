@@ -41,6 +41,7 @@ export default {
       itemsToBeDeleted: [],
       modalId: `confirm-image-deletion-modal-${this.repo.id}`,
       selectAllChecked: false,
+      modalDescription: '',
     };
   },
   computed: {
@@ -54,67 +55,68 @@ export default {
       return n__(
         'ContainerRegistry|Remove image',
         'ContainerRegistry|Remove images',
-        this.singleItemSelected ? 1 : this.itemsToBeDeleted.length,
+        this.itemsToBeDeleted.length === 0 ? 1 : this.itemsToBeDeleted.length,
       );
-    },
-    modalDescription() {
-      const selectedCount = this.itemsToBeDeleted.length;
-
-      if (this.singleItemSelected) {
-        // Attempt to pull 'single' property if it's an object in this.itemsToBeDeleted
-        // Otherwise, simply use the int value of the selected row
-        const { single: itemIndex = this.itemsToBeDeleted[0] } = this.itemsToBeDeleted[0];
-        const { tag } = this.repo.list[itemIndex];
-
-        return sprintf(
-          s__(`ContainerRegistry|You are about to delete the image <b>%{title}</b>. This will
-          delete the image and all tags pointing to this image.`),
-          { title: `${this.repo.name}:${tag}` },
-        );
-      }
-
-      return sprintf(
-        s__(`ContainerRegistry|You are about to delete <b>%{count}</b> images. This will
-          delete the images and all tags pointing to them.`),
-        { count: selectedCount },
-      );
-    },
-    singleItemSelected() {
-      return this.findSingleRowToDelete || this.itemsToBeDeleted.length === 1;
-    },
-    findSingleRowToDelete() {
-      return this.itemsToBeDeleted.find(x => x.single !== undefined);
     },
   },
   methods: {
-    ...mapActions(['fetchList', 'deleteItems']),
+    ...mapActions(['fetchList', 'deleteItem', 'multiDeleteItems']),
+    setModalDescription(itemsToDeleteLength, itemIndex) {
+      if (itemsToDeleteLength) {
+        this.modalDescription = sprintf(
+          s__(`ContainerRegistry|You are about to delete <b>%{count}</b> images. This will
+              delete the images and all tags pointing to them.`),
+          { count: itemsToDeleteLength },
+        );
+      } else {
+        const { tag } = this.repo.list[itemIndex];
+
+        this.modalDescription = sprintf(
+          s__(`ContainerRegistry|You are about to delete the image <b>%{title}</b>. This will
+              delete the image and all tags pointing to this image.`),
+          { title: `${this.repo.name}:${tag}` },
+        );
+      }
+    },
     layers(item) {
       return item.layers ? n__('%d layer', '%d layers', item.layers) : '';
     },
     formatSize(size) {
       return numberToHumanSize(size);
     },
-    addSingleItemToBeDeleted(index) {
-      this.itemsToBeDeleted.push({ single: index });
+    removeModalEvents() {
+      this.$refs.deleteModal.$refs.modal.$off('ok');
+      this.$refs.deleteModal.$refs.modal.$off('hide');
     },
-    removeSingleItemToBeDeleted() {
-      const singleIndex = this.itemsToBeDeleted.findIndex(x => x.single !== undefined);
+    deleteSingleItem(index) {
+      this.setModalDescription(0, index);
 
-      if (singleIndex > -1) {
-        this.itemsToBeDeleted.splice(singleIndex, 1);
-      }
+      this.$refs.deleteModal.$refs.modal.$once('ok', () => {
+        this.removeModalEvents();
+        this.handleSingleDelete(this.repo.list[index]);
+      });
+
+      this.$refs.deleteModal.$refs.modal.$once('hide', this.removeModalEvents);
     },
-    handleDeleteRegistry() {
-      let { itemsToBeDeleted } = this;
+    deleteMultipleItems() {
+      this.$refs.deleteModal.$refs.modal.$once('ok', () => {
+        this.removeModalEvents();
+        this.handleMultipleDelete();
+      });
 
-      if (this.findSingleRowToDelete) {
-        itemsToBeDeleted = [this.findSingleRowToDelete.single];
-      }
-
+      this.$refs.deleteModal.$refs.modal.$once('hide', this.removeModalEvents);
+    },
+    handleSingleDelete(itemToDelete) {
+      this.deleteItem(itemToDelete)
+        .then(() => this.fetchList({ repo: this.repo }))
+        .catch(() => this.showError(errorMessagesTypes.DELETE_REGISTRY));
+    },
+    handleMultipleDelete() {
+      const { itemsToBeDeleted } = this;
       this.itemsToBeDeleted = [];
 
       if (this.bulkDeletePath) {
-        this.deleteItems({
+        this.multiDeleteItems({
           path: this.bulkDeletePath,
           items: itemsToBeDeleted.map(x => this.repo.list[x].tag),
         })
@@ -142,6 +144,7 @@ export default {
     selectAll() {
       this.itemsToBeDeleted = this.repo.list.map((x, index) => index);
       this.selectAllChecked = true;
+      this.setModalDescription(this.itemsToBeDeleted.length);
     },
     deselectAll() {
       this.itemsToBeDeleted = [];
@@ -159,6 +162,12 @@ export default {
         if (this.itemsToBeDeleted.length === this.repo.list.length) {
           this.selectAllChecked = true;
         }
+      }
+
+      if (this.itemsToBeDeleted.length === 1) {
+        this.setModalDescription(0, this.itemsToBeDeleted[0]);
+      } else if (this.itemsToBeDeleted.length > 1) {
+        this.setModalDescription(this.itemsToBeDeleted.length);
       }
     },
   },
@@ -191,13 +200,14 @@ export default {
               variant="danger"
               :title="s__('ContainerRegistry|Remove selected images')"
               :aria-label="s__('ContainerRegistry|Remove selected images')"
+              @click="deleteMultipleItems()"
               ><icon name="remove"
             /></gl-button>
           </th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(item, index) in repo.list" :key="item.tag" class="image-row">
+        <tr v-for="(item, index) in repo.list" :key="item.tag" class="registry-image-row">
           <td class="check">
             <gl-form-checkbox
               v-if="item.canDelete"
@@ -242,7 +252,7 @@ export default {
               :aria-label="s__('ContainerRegistry|Remove image')"
               variant="danger"
               class="js-delete-registry-row float-right btn-inverted btn-border-color btn-icon"
-              @click="addSingleItemToBeDeleted(index)"
+              @click="deleteSingleItem(index)"
             >
               <icon name="remove" />
             </gl-button>
@@ -257,12 +267,7 @@ export default {
       :page-info="repo.pagination"
     />
 
-    <gl-modal
-      :modal-id="modalId"
-      ok-variant="danger"
-      @ok="handleDeleteRegistry"
-      @cancel="removeSingleItemToBeDeleted"
-    >
+    <gl-modal ref="deleteModal" :modal-id="modalId" ok-variant="danger">
       <template v-slot:modal-title>{{ modalTitle }}</template>
       <template v-slot:modal-ok>{{ s__('ContainerRegistry|Remove image(s) and tags') }}</template>
       <p v-html="modalDescription"></p>

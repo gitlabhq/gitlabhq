@@ -101,7 +101,7 @@ describe('table registry', () => {
         expect(findDeleteBtn().disabled).toBe(false);
 
         findDeleteBtn().click();
-        spyOn(vm, 'deleteItems').and.returnValue(Promise.resolve());
+        spyOn(vm, 'multiDeleteItems').and.returnValue(Promise.resolve());
 
         Vue.nextTick(() => {
           const modal = confirmationModal();
@@ -111,7 +111,7 @@ describe('table registry', () => {
 
           Vue.nextTick(() => {
             expect(vm.itemsToBeDeleted).toEqual([]);
-            expect(vm.deleteItems).toHaveBeenCalledWith({
+            expect(vm.multiDeleteItems).toHaveBeenCalledWith({
               path: bulkDeletePath,
               items: [firstImage.tag, secondImage.tag],
             });
@@ -142,13 +142,13 @@ describe('table registry', () => {
         expect(vm.itemsToBeDeleted).toEqual([0]);
         expect(findDeleteBtn().disabled).toBe(false);
         findDeleteBtn().click();
-        spyOn(vm, 'deleteItems').and.returnValue(Promise.resolve());
+        spyOn(vm, 'multiDeleteItems').and.returnValue(Promise.resolve());
 
         Vue.nextTick(() => {
           confirmationModal('.btn-danger').click();
 
           expect(vm.itemsToBeDeleted).toEqual([]);
-          expect(vm.deleteItems).toHaveBeenCalledWith({
+          expect(vm.multiDeleteItems).toHaveBeenCalledWith({
             path: bulkDeletePath,
             items: [firstImage.tag],
           });
