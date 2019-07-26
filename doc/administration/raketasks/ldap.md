@@ -28,6 +28,31 @@ limit by passing a number to the check task:
 rake gitlab:ldap:check[50]
 ```
 
+## Run a Group Sync
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/14735) in [GitLab Starter](https://about.gitlab.com/pricing/) 12.3.
+
+The following task will run a [group sync](../auth/ldap-ee.md#group-sync) immediately. This is valuable
+when you'd like to update all configured group memberships against LDAP without
+waiting for the next scheduled group sync to be run.
+
+NOTE: **NOTE:**
+If you'd like to change the frequency at which a group sync is performed,
+[adjust the cron schedule](../auth/ldap-ee.md#adjusting-ldap-group-sync-schedule)
+instead.
+
+**Omnibus Installation**
+
+```
+sudo gitlab-rake gitlab:ldap:group_sync
+```
+
+**Source Installation**
+
+```bash
+bundle exec rake gitlab:ldap:group_sync
+```
+
 ## Rename a provider
 
 If you change the LDAP server ID in `gitlab.yml` or `gitlab.rb` you will need
