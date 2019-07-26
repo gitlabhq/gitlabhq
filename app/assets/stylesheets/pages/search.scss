@@ -187,7 +187,8 @@ input[type='checkbox']:hover {
 }
 
 .search-holder {
-  @include media-breakpoint-up(sm) {
+
+  @include media-breakpoint-up(lg) {
     display: flex;
     align-items: flex-end;
   }
@@ -198,8 +199,9 @@ input[type='checkbox']:hover {
     position: relative;
     margin-right: 0;
 
-    @include media-breakpoint-up(sm) {
+    @include media-breakpoint-up(lg) {
       margin-right: 5px;
+      margin-bottom: 0;
     }
   }
 
@@ -222,7 +224,7 @@ input[type='checkbox']:hover {
     width: 100%;
     margin-top: 5px;
 
-    @include media-breakpoint-up(sm) {
+    @include media-breakpoint-up(lg) {
       width: auto;
       margin-top: 0;
       margin-left: 5px;
@@ -230,9 +232,12 @@ input[type='checkbox']:hover {
   }
 
   .dropdown {
-    @include media-breakpoint-up(sm) {
+    margin-bottom: $gl-padding;
+
+    @include media-breakpoint-up(lg) {
       margin-left: 5px;
       margin-right: 5px;
+      margin-bottom: 0;
     }
   }
 
@@ -240,8 +245,8 @@ input[type='checkbox']:hover {
     width: 100%;
     margin-top: 5px;
 
-    @include media-breakpoint-up(sm) {
-      width: 180px;
+    @include media-breakpoint-up(lg) {
+      width: 240px;
       margin-top: 0;
     }
   }
