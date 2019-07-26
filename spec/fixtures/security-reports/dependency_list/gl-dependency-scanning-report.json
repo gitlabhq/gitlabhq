@@ -7,7 +7,7 @@
       "message": "Vulnerabilities in libxml2 in nokogiri",
       "description": "  The version of libxml2 packaged with Nokogiri contains several vulnerabilities.\r\n  Nokogiri has mitigated these issues by upgrading to libxml 2.9.5.\r\n\r\n  It was discovered that a type confusion error existed in libxml2. An\r\n  attacker could use this to specially construct XML data that\r\n  could cause a denial of service or possibly execute arbitrary\r\n  code. (CVE-2017-0663)\r\n\r\n  It was discovered that libxml2 did not properly validate parsed entity\r\n  references. An attacker could use this to specially construct XML\r\n  data that could expose sensitive information. (CVE-2017-7375)\r\n\r\n  It was discovered that a buffer overflow existed in libxml2 when\r\n  handling HTTP redirects. An attacker could use this to specially\r\n  construct XML data that could cause a denial of service or possibly\r\n  execute arbitrary code. (CVE-2017-7376)\r\n\r\n  Marcel Böhme and Van-Thuan Pham discovered a buffer overflow in\r\n  libxml2 when handling elements. An attacker could use this to specially\r\n  construct XML data that could cause a denial of service or possibly\r\n  execute arbitrary code. (CVE-2017-9047)\r\n\r\n  Marcel Böhme and Van-Thuan Pham discovered a buffer overread\r\n  in libxml2 when handling elements. An attacker could use this\r\n  to specially construct XML data that could cause a denial of\r\n  service. (CVE-2017-9048)\r\n\r\n  Marcel Böhme and Van-Thuan Pham discovered multiple buffer overreads\r\n  in libxml2 when handling parameter-entity references. An attacker\r\n  could use these to specially construct XML data that could cause a\r\n  denial of service. (CVE-2017-9049, CVE-2017-9050)",
       "cve": "rails/Gemfile.lock:nokogiri:gemnasium:06565b64-486d-4326-b906-890d9915804d",
-      "severity": "Unknown",
+      "severity": "High",
       "solution": "Upgrade to latest version.",
       "scanner": {
         "id": "gemnasium",
@@ -48,7 +48,7 @@
       "message": "Infinite recursion in parameter entities in nokogiri",
       "description": "libxml2 incorrectly handles certain parameter entities. An attacker can leverage this with specially constructed XML data to cause libxml2 to consume resources, leading to a denial of service.",
       "cve": "rails/Gemfile.lock:nokogiri:gemnasium:6a0d56f6-2441-492a-9b14-edb95ac31919",
-      "severity": "Unknown",
+      "severity": "High",
       "solution": "Upgrade to latest version.",
       "scanner": {
         "id": "gemnasium",
