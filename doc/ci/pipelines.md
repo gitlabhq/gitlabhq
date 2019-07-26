@@ -6,6 +6,11 @@ type: reference
 
 > Introduced in GitLab 8.8.
 
+NOTE: **Tip:**
+Watch our
+["Mastering continuous software development"](https://about.gitlab.com/webcast/mastering-ci-cd/)
+webcast to see a comprehensive demo of GitLab CI/CD pipeline.
+
 ## Introduction
 
 Pipelines are the top-level component of continuous integration, delivery, and deployment.
