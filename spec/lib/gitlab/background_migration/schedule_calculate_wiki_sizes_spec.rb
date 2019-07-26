@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20190527194900_schedule_calculate_wiki_sizes.rb')
 

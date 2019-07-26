@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Gitlab::BackgroundMigration::EncryptColumns, :migration, schema: 20180910115836 do

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Gitlab::BackgroundMigration::MigrateStageIndex, :migration, schema: 20180420080616 do

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Gitlab::Auth::OAuth::AuthHash do
@@ -13,13 +15,13 @@ describe Gitlab::Auth::OAuth::AuthHash do
   end
 
   let(:uid_raw) do
-    "CN=Onur K\xC3\xBC\xC3\xA7\xC3\xBCk,OU=Test,DC=example,DC=net"
+    +"CN=Onur K\xC3\xBC\xC3\xA7\xC3\xBCk,OU=Test,DC=example,DC=net"
   end
-  let(:email_raw) { "onur.k\xC3\xBC\xC3\xA7\xC3\xBCk_ABC-123@example.net" }
-  let(:nickname_raw) { "ok\xC3\xBC\xC3\xA7\xC3\xBCk" }
-  let(:first_name_raw) { 'Onur' }
-  let(:last_name_raw) { "K\xC3\xBC\xC3\xA7\xC3\xBCk" }
-  let(:name_raw) { "Onur K\xC3\xBC\xC3\xA7\xC3\xBCk" }
+  let(:email_raw) { +"onur.k\xC3\xBC\xC3\xA7\xC3\xBCk_ABC-123@example.net" }
+  let(:nickname_raw) { +"ok\xC3\xBC\xC3\xA7\xC3\xBCk" }
+  let(:first_name_raw) { +'Onur' }
+  let(:last_name_raw) { +"K\xC3\xBC\xC3\xA7\xC3\xBCk" }
+  let(:name_raw) { +"Onur K\xC3\xBC\xC3\xA7\xC3\xBCk" }
 
   let(:uid_ascii) { uid_raw.force_encoding(Encoding::ASCII_8BIT) }
   let(:email_ascii) { email_raw.force_encoding(Encoding::ASCII_8BIT) }

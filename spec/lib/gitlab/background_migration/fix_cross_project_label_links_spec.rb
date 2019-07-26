@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Gitlab::BackgroundMigration::FixCrossProjectLabelLinks, :migration, schema: 20180702120647 do

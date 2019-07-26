@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'fast_spec_helper'
 
 describe Gitlab::Ci::Parsers::Test::Junit do

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Gitlab::Ci::Trace::ChunkedIO, :clean_gitlab_redis_cache do
@@ -312,7 +314,7 @@ describe Gitlab::Ci::Trace::ChunkedIO, :clean_gitlab_redis_cache do
     end
 
     context 'when utf-8 is being used' do
-      let(:sample_trace_raw) { sample_trace_raw_utf8.force_encoding(Encoding::BINARY) }
+      let(:sample_trace_raw) { sample_trace_raw_utf8.dup.force_encoding(Encoding::BINARY) }
       let(:sample_trace_raw_utf8) { "😺\n😺\n😺\n😺" }
 
       before do

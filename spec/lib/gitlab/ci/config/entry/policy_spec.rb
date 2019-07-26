@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'fast_spec_helper'
 require 'support/helpers/stub_feature_flags'
 require_dependency 'active_model'

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Gitlab::Ci::Pipeline::Expression::Lexeme::Null do

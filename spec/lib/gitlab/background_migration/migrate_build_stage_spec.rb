@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Gitlab::BackgroundMigration::MigrateBuildStage, :migration, schema: 20180212101928 do
