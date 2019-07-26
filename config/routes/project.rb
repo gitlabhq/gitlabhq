@@ -339,11 +339,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
       resource :variables, only: [:show, :update]
 
-      resources :triggers, only: [:index, :create, :edit, :update, :destroy] do
-        member do
-          post :take_ownership
-        end
-      end
+      resources :triggers, only: [:index, :create, :edit, :update, :destroy]
 
       resource :mirror, only: [:show, :update] do
         member do
