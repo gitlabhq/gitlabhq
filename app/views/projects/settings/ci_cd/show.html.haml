@@ -16,7 +16,7 @@
   .settings-content
     = render 'form'
 
-%section.qa-autodevops-settings.settings#autodevops-settings.no-animate{ class: ('expanded' if expanded) }
+%section.settings#autodevops-settings.no-animate{ class: ('expanded' if expanded), data: { qa_selector: 'autodevops_settings_content' } }
   .settings-header
     %h4
       = s_('CICD|Auto DevOps')
@@ -30,7 +30,7 @@
 
 = render_if_exists 'projects/settings/ci_cd/protected_environments', expanded: expanded
 
-%section.qa-runners-settings.settings.no-animate#js-runners-settings{ class: ('expanded' if expanded) }
+%section.settings.no-animate#js-runners-settings{ class: ('expanded' if expanded), data: { qa_selector: 'runners_settings_content' } }
   .settings-header
     %h4
       = _("Runners")
@@ -41,7 +41,7 @@
   .settings-content
     = render 'projects/runners/index'
 
-%section.qa-variables-settings.settings.no-animate{ class: ('expanded' if expanded) }
+%section.settings.no-animate{ class: ('expanded' if expanded), data: { qa_selector: 'variables_settings_content' } }
   .settings-header
     = render 'ci/variables/header', expanded: expanded
   .settings-content

@@ -8,33 +8,32 @@ module QA
           include Common
 
           view 'app/views/projects/settings/ci_cd/show.html.haml' do
-            element :autodevops_settings
-            element :runners_settings
-            element :variables_settings
+            element :autodevops_settings_content
+            element :runners_settings_content
+            element :variables_settings_content
           end
 
           view 'app/views/projects/settings/ci_cd/_autodevops_form.html.haml' do
-            element :enable_auto_devops_field, 'check_box :enabled' # rubocop:disable QA/ElementWithPattern
-            element :enable_auto_devops_button, "%strong= s_('CICD|Default to Auto DevOps pipeline')" # rubocop:disable QA/ElementWithPattern
-            element :save_changes_button, "submit _('Save changes')" # rubocop:disable QA/ElementWithPattern
+            element :enable_autodevops_checkbox
+            element :save_changes_button
           end
 
           def expand_runners_settings(&block)
-            expand_section(:runners_settings) do
+            expand_section(:runners_settings_content) do
               Settings::Runners.perform(&block)
             end
           end
 
           def expand_ci_variables(&block)
-            expand_section(:variables_settings) do
+            expand_section(:variables_settings_content) do
               Settings::CiVariables.perform(&block)
             end
           end
 
           def enable_auto_devops
-            expand_section(:autodevops_settings) do
-              check 'Default to Auto DevOps pipeline'
-              click_on 'Save changes'
+            expand_section(:autodevops_settings_content) do
+              check_element :enable_autodevops_checkbox
+              click_element :save_changes_button
             end
           end
         end
