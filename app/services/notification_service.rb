@@ -595,7 +595,7 @@ class NotificationService
   end
 
   def deliver_access_request_email(recipient, member)
-    mailer.member_access_requested_email(member.real_source_type, member.id, recipient.user.notification_email).deliver_later
+    mailer.member_access_requested_email(member.real_source_type, member.id, recipient.user.id).deliver_later
   end
 
   def fallback_to_group_owners_maintainers?(recipients, member)

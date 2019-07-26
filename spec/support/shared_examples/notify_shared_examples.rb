@@ -52,7 +52,7 @@ shared_examples 'an email sent to a user' do
     it 'is sent to user\'s group notification email' do
       group_notification_email = 'user+group@example.com'
 
-      create(:notification_setting, user: recipient, source: project.group, notification_email: group_notification_email)
+      create(:notification_setting, user: recipient, source: group, notification_email: group_notification_email)
 
       expect(subject).to deliver_to(group_notification_email)
     end
