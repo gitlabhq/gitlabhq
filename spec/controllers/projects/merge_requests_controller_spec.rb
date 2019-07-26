@@ -1120,6 +1120,22 @@ describe Projects::MergeRequestsController do
         end
       end
     end
+
+    context do
+      it_behaves_like 'discussions provider' do
+        let!(:author) { create(:user) }
+        let!(:project) { create(:project) }
+
+        let!(:merge_request) { create(:merge_request, source_project: project) }
+
+        let!(:mr_note1) { create(:discussion_note_on_merge_request, noteable: merge_request, project: project) }
+        let!(:mr_note2) { create(:discussion_note_on_merge_request, noteable: merge_request, project: project) }
+
+        let(:requested_iid) { merge_request.iid }
+        let(:expected_discussion_count) { 2 }
+        let(:expected_discussion_ids) { [mr_note1.discussion_id, mr_note2.discussion_id] }
+      end
+    end
   end
 
   describe 'GET edit' do

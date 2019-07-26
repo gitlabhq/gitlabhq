@@ -118,15 +118,10 @@ describe NotesFinder do
 
     context 'for target' do
       let(:project) { create(:project, :repository) }
-      let(:note1) { create :note_on_commit, project: project }
-      let(:note2) { create :note_on_commit, project: project }
+      let!(:note1) { create :note_on_commit, project: project }
+      let!(:note2) { create :note_on_commit, project: project }
       let(:commit) { note1.noteable }
       let(:params) { { target_id: commit.id, target_type: 'commit', last_fetched_at: 1.hour.ago.to_i } }
-
-      before do
-        note1
-        note2
-      end
 
       it 'finds all notes' do
         notes = described_class.new(project, user, params).execute
@@ -192,6 +187,28 @@ describe NotesFinder do
 
           expect { described_class.new(project, user, params).execute }.to raise_error(ActiveRecord::RecordNotFound)
         end
+      end
+    end
+
+    context 'for explicit target' do
+      let(:project) { create(:project, :repository) }
+      let!(:note1) { create :note_on_commit, project: project, created_at: 1.day.ago, updated_at: 2.hours.ago }
+      let!(:note2) { create :note_on_commit, project: project }
+      let(:commit) { note1.noteable }
+      let(:params) { { target: commit } }
+
+      it 'returns the expected notes' do
+        expect(described_class.new(project, user, params).execute).to eq([note1, note2])
+      end
+
+      it 'returns the expected notes when last_fetched_at is given' do
+        params = { target: commit, last_fetched_at: 1.hour.ago.to_i }
+        expect(described_class.new(project, user, params).execute).to eq([note2])
+      end
+
+      it 'fails when nil is provided' do
+        params = { target: nil }
+        expect { described_class.new(project, user, params).execute }.to raise_error(RuntimeError)
       end
     end
   end
