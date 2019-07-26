@@ -44,7 +44,6 @@ describe('detailedMetric', () => {
         },
         metric: 'gitaly',
         header: 'Gitaly calls',
-        details: 'details',
         keys: ['feature', 'request'],
       });
     });
@@ -79,8 +78,32 @@ describe('detailedMetric', () => {
       });
     });
 
-    it('displays the metric name', () => {
+    it('displays the metric title', () => {
       expect(vm.$el.innerText).toContain('gitaly');
+    });
+
+    describe('when using a custom metric title', () => {
+      beforeEach(() => {
+        vm = mountComponent(Vue.extend(detailedMetric), {
+          currentRequest: {
+            details: {
+              gitaly: {
+                duration: '123ms',
+                calls: '456',
+                details: requestDetails,
+              },
+            },
+          },
+          metric: 'gitaly',
+          title: 'custom',
+          header: 'Gitaly calls',
+          keys: ['feature', 'request'],
+        });
+      });
+
+      it('displays the custom title', () => {
+        expect(vm.$el.innerText).toContain('custom');
+      });
     });
   });
 });

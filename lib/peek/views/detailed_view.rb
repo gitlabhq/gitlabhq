@@ -11,22 +11,26 @@ module Peek
         }
       end
 
+      def detail_store
+        ::Gitlab::SafeRequestStore["#{key}_call_details"] ||= []
+      end
+
       private
 
       def duration
-        raise NotImplementedError
+        detail_store.map { |entry| entry[:duration] }.sum # rubocop:disable CodeReuse/ActiveRecord
       end
 
       def calls
-        raise NotImplementedError
+        detail_store.count
       end
 
       def call_details
-        raise NotImplementedError
+        detail_store
       end
 
       def format_call_details(call)
-        raise NotImplementedError
+        call.merge(duration: (call[:duration] * 1000).round(3))
       end
 
       def details

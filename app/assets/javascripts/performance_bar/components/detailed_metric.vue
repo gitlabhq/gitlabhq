@@ -16,11 +16,14 @@ export default {
       type: String,
       required: true,
     },
-    header: {
+    title: {
       type: String,
-      required: true,
+      required: false,
+      default() {
+        return this.metric;
+      },
     },
-    details: {
+    header: {
       type: String,
       required: true,
     },
@@ -34,7 +37,7 @@ export default {
       return this.currentRequest.details[this.metric];
     },
     detailsList() {
-      return this.metricDetails[this.details];
+      return this.metricDetails.details;
     },
   },
 };
@@ -101,6 +104,6 @@ export default {
 
       <div slot="footer"></div>
     </gl-modal>
-    {{ metric }}
+    {{ title }}
   </div>
 </template>
