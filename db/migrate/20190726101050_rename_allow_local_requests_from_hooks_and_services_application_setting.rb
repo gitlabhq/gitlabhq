@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class RenameAllowLocalRequestsFromHooksAndServicesApplicationSetting < ActiveRecord::Migration[5.2]
   include Gitlab::Database::MigrationHelpers
 
