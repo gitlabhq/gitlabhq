@@ -2,7 +2,7 @@
 
 # SystemHookUrlValidator
 #
-# Custom validator specifically for SystemHook URLs. This validator works like AddressableUrlValidator but
+# Custom validator specific to SystemHook URLs. This validator works like AddressableUrlValidator but
 # it blocks urls pointing to localhost or the local network depending on
 # ApplicationSetting.allow_local_requests_from_system_hooks
 #
@@ -14,8 +14,8 @@
 #
 class SystemHookUrlValidator < AddressableUrlValidator
   DEFAULT_OPTIONS = {
-    allow_localhost: true,
-    allow_local_network: true
+    allow_localhost: false,
+    allow_local_network: false
   }.freeze
 
   def initialize(options)
