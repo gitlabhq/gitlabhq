@@ -285,3 +285,19 @@ ul.indent-list {
     max-width: 350px;
   }
 }
+
+.horizontal-list {
+  padding-left: 0;
+  list-style: none;
+
+  > li {
+    float: left;
+  }
+
+  &.list-items-separated {
+    > li:not(:last-child)::after {
+      content: '\00b7';
+      margin: 0 $gl-padding-4;
+    }
+  }
+}
