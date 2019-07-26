@@ -139,7 +139,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       if user.two_factor_enabled? && !auth_user.bypass_two_factor?
         prompt_for_two_factor(user)
       else
-        sign_in_and_redirect(user)
+        sign_in_and_redirect(user, event: :authentication)
       end
     else
       fail_login(user)

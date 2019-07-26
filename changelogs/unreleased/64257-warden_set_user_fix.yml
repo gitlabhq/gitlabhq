@@ -1,0 +1,5 @@
+---
+title: Ensure Warden triggers after_authentication callback
+merge_request: 31138
+author:
+type: fixed

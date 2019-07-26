@@ -26,6 +26,17 @@ class SessionsController < Devise::SessionsController
   after_action :log_failed_login, if: -> { action_name == 'new' && failed_login? }
   helper_method :captcha_enabled?
 
+  # protect_from_forgery is already prepended in ApplicationController but
+  # authenticate_with_two_factor which signs in the user is prepended before
+  # that here.
+  # We need to make sure CSRF token is verified before authenticating the user
+  # because Devise.clean_up_csrf_token_on_authentication is set to true by
+  # default to avoid CSRF token fixation attacks. Authenticating the user first
+  # would cause the CSRF token to be cleared and then
+  # RequestForgeryProtection#verify_authenticity_token would fail because of
+  # token mismatch.
+  protect_from_forgery with: :exception, prepend: true
+
   CAPTCHA_HEADER = 'X-GitLab-Show-Login-Captcha'.freeze
 
   def new
