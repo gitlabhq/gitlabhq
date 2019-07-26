@@ -222,7 +222,8 @@ shared_examples_for "chat service" do |service_name|
 
       context "with not default branch" do
         let(:pipeline) do
-          create(:ci_pipeline, project: project, status: "failed", ref: "not-the-default-branch")
+          create(:ci_pipeline, :failed, project: project,
+                 sha: project.commit.sha, ref: "not-the-default-branch")
         end
 
         context "when notify_only_default_branch enabled" do
