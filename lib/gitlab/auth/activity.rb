@@ -37,14 +37,17 @@ module Gitlab
 
       def user_authenticated!
         self.class.user_authenticated_counter_increment!
+
+        case @opts[:message]
+        when :two_factor_authenticated
+          self.class.user_two_factor_authenticated_counter_increment!
+        end
       end
 
       def user_session_override!
         self.class.user_session_override_counter_increment!
 
         case @opts[:message]
-        when :two_factor_authenticated
-          self.class.user_two_factor_authenticated_counter_increment!
         when :sessionless_sign_in
           self.class.user_sessionless_authentication_counter_increment!
         end
