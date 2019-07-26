@@ -35,7 +35,7 @@
     = form_for [@project.namespace.becomes(Namespace), @project], remote: true, html: { multipart: true, class: "merge-request-settings-form js-mr-settings-form" }, authenticity_token: true do |f|
       %input{ name: 'update_section', type: 'hidden', value: 'js-merge-request-settings' }
       = render 'projects/merge_request_settings', form: f
-      = f.submit _('Save changes'), class: "btn btn-success qa-save-merge-request-changes"
+      = f.submit _('Save changes'), class: "btn btn-success qa-save-merge-request-changes rspec-save-merge-request-changes"
 
 = render_if_exists 'projects/merge_request_approvals_settings', expanded: expanded
 
