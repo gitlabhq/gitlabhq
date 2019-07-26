@@ -65,7 +65,7 @@ describe GroupsFinder do
       end
     end
 
-    context 'subgroups', :nested_groups do
+    context 'subgroups' do
       let(:user) { create(:user) }
       let!(:parent_group) { create(:group, :public) }
       let!(:public_subgroup) { create(:group, :public, parent: parent_group) }

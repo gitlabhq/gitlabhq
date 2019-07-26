@@ -25,7 +25,7 @@ describe ProjectGroupLink do
       expect(project_group_link).not_to be_valid
     end
 
-    it "doesn't allow a project to be shared with an ancestor of the group it is in", :nested_groups do
+    it "doesn't allow a project to be shared with an ancestor of the group it is in" do
       project_group_link.group = parent_group
 
       expect(project_group_link).not_to be_valid

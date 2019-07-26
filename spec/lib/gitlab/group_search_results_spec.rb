@@ -20,7 +20,7 @@ describe Gitlab::GroupSearchResults do
       expect(result).to eq [user1]
     end
 
-    it 'returns the user belonging to the subgroup matching the search query', :nested_groups do
+    it 'returns the user belonging to the subgroup matching the search query' do
       user1 = create(:user, username: 'gob_bluth')
       subgroup = create(:group, parent: group)
       create(:group_member, :developer, user: user1, group: subgroup)
@@ -32,7 +32,7 @@ describe Gitlab::GroupSearchResults do
       expect(result).to eq [user1]
     end
 
-    it 'returns the user belonging to the parent group matching the search query', :nested_groups do
+    it 'returns the user belonging to the parent group matching the search query' do
       user1 = create(:user, username: 'gob_bluth')
       parent_group = create(:group, children: [group])
       create(:group_member, :developer, user: user1, group: parent_group)
@@ -44,7 +44,7 @@ describe Gitlab::GroupSearchResults do
       expect(result).to eq [user1]
     end
 
-    it 'does not return the user belonging to the private subgroup', :nested_groups do
+    it 'does not return the user belonging to the private subgroup' do
       user1 = create(:user, username: 'gob_bluth')
       subgroup = create(:group, :private, parent: group)
       create(:group_member, :developer, user: user1, group: subgroup)

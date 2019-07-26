@@ -19,7 +19,7 @@ describe GroupProjectsFinder do
     context "only owned" do
       let(:options) { { only_owned: true } }
 
-      context 'with subgroups projects', :nested_groups do
+      context 'with subgroups projects' do
         before do
           options[:include_subgroups] = true
         end
@@ -33,7 +33,7 @@ describe GroupProjectsFinder do
     end
 
     context "all" do
-      context 'with subgroups projects', :nested_groups do
+      context 'with subgroups projects' do
         before do
           options[:include_subgroups] = true
         end
@@ -78,7 +78,7 @@ describe GroupProjectsFinder do
           subgroup_private_project.add_maintainer(current_user)
         end
 
-        context 'with subgroups projects', :nested_groups do
+        context 'with subgroups projects' do
           before do
             options[:include_subgroups] = true
           end
@@ -96,7 +96,7 @@ describe GroupProjectsFinder do
           current_user.update(external: true)
         end
 
-        context 'with subgroups projects', :nested_groups do
+        context 'with subgroups projects' do
           before do
             options[:include_subgroups] = true
           end
@@ -111,7 +111,7 @@ describe GroupProjectsFinder do
     end
 
     context "all" do
-      context 'with subgroups projects', :nested_groups do
+      context 'with subgroups projects' do
         before do
           options[:include_subgroups] = true
         end
@@ -153,7 +153,7 @@ describe GroupProjectsFinder do
     context "only owned" do
       let(:options) { { only_owned: true } }
 
-      context 'with subgroups projects', :nested_groups do
+      context 'with subgroups projects' do
         before do
           options[:include_subgroups] = true
         end

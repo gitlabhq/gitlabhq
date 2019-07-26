@@ -46,7 +46,7 @@ describe Groups::ChildrenController do
       end
     end
 
-    context 'for subgroups', :nested_groups do
+    context 'for subgroups' do
       let!(:public_subgroup) { create(:group, :public, parent: group) }
       let!(:private_subgroup) { create(:group, :private, parent: group) }
       let!(:public_project) { create(:project, :public, namespace: group) }
@@ -292,7 +292,7 @@ describe Groups::ChildrenController do
         end
       end
 
-      context 'with subgroups and projects', :nested_groups do
+      context 'with subgroups and projects' do
         let!(:first_page_subgroups) { create_list(:group, per_page, :public, parent: group) }
         let!(:other_subgroup) { create(:group, :public, parent: group) }
         let!(:next_page_projects) { create_list(:project, per_page, :public, namespace: group) }

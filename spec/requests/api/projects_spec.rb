@@ -1357,7 +1357,7 @@ describe API::Projects do
           end
         end
 
-        context 'nested group project', :nested_groups do
+        context 'nested group project' do
           let(:group) { create(:group) }
           let(:nested_group) { create(:group, parent: group) }
           let(:project2) { create(:project, group: nested_group) }

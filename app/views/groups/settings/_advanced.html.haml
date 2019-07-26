@@ -23,20 +23,19 @@
 
     = f.submit 'Change group path', class: 'btn btn-warning'
 
-- if supports_nested_groups?
-  .sub-section
-    %h4.warning-title Transfer group
-    = form_for @group, url: transfer_group_path(@group), method: :put do |f|
-      .form-group
-        = dropdown_tag('Select parent group', options: { toggle_class: 'js-groups-dropdown', title: 'Parent Group', filter: true, dropdown_class: 'dropdown-open-top dropdown-group-transfer', placeholder: 'Search groups', data: { data: parent_group_options(@group) } })
-        = hidden_field_tag 'new_parent_group_id'
+.sub-section
+  %h4.warning-title Transfer group
+  = form_for @group, url: transfer_group_path(@group), method: :put do |f|
+    .form-group
+      = dropdown_tag('Select parent group', options: { toggle_class: 'js-groups-dropdown', title: 'Parent Group', filter: true, dropdown_class: 'dropdown-open-top dropdown-group-transfer', placeholder: 'Search groups', data: { data: parent_group_options(@group) } })
+      = hidden_field_tag 'new_parent_group_id'
 
-      %ul
-        %li Be careful. Changing a group's parent can have unintended #{link_to 'side effects', 'https://docs.gitlab.com/ce/user/project/index.html#redirects-when-changing-repository-paths', target: 'blank'}.
-        %li You can only transfer the group to a group you manage.
-        %li You will need to update your local repositories to point to the new location.
-        %li If the parent group's visibility is lower than the group current visibility, visibility levels for subgroups and projects will be changed to match the new parent group's visibility.
-      = f.submit 'Transfer group', class: 'btn btn-warning'
+    %ul
+      %li Be careful. Changing a group's parent can have unintended #{link_to 'side effects', 'https://docs.gitlab.com/ce/user/project/index.html#redirects-when-changing-repository-paths', target: 'blank'}.
+      %li You can only transfer the group to a group you manage.
+      %li You will need to update your local repositories to point to the new location.
+      %li If the parent group's visibility is lower than the group current visibility, visibility levels for subgroups and projects will be changed to match the new parent group's visibility.
+    = f.submit 'Transfer group', class: 'btn btn-warning'
 
 .sub-section
   %h4.danger-title= _('Remove group')

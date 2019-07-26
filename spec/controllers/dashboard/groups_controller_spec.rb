@@ -26,7 +26,7 @@ describe Dashboard::GroupsController do
       expect(assigns(:groups)).to contain_exactly(member_of_group)
     end
 
-    context 'when rendering an expanded hierarchy with public groups you are not a member of', :nested_groups do
+    context 'when rendering an expanded hierarchy with public groups you are not a member of' do
       let!(:top_level_result) { create(:group, name: 'chef-top') }
       let!(:top_level_a) { create(:group, name: 'top-a') }
       let!(:sub_level_result_a) { create(:group, name: 'chef-sub-a', parent: top_level_a) }

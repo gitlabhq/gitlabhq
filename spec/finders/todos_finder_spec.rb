@@ -36,7 +36,7 @@ describe TodosFinder do
           expect(todos).to match_array([todo1])
         end
 
-        context 'with subgroups', :nested_groups do
+        context 'with subgroups' do
           let(:subgroup) { create(:group, parent: group) }
           let!(:todo3) { create(:todo, user: user, group: subgroup, target: issue) }
 

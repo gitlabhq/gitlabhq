@@ -35,7 +35,7 @@ describe 'groups/edit.html.haml' do
       it_behaves_like '"Share with group lock" setting', { disabled: false, checked: false }
     end
 
-    context 'for a subgroup', :nested_groups do
+    context 'for a subgroup' do
       let!(:subgroup) { create(:group, parent: root_group) }
       let(:sub_owner) { create(:user) }
       let(:test_group) { subgroup }

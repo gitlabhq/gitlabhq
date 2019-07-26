@@ -30,7 +30,7 @@ describe GroupTree do
       expect(assigns(:groups)).to contain_exactly(other_group)
     end
 
-    context 'for subgroups', :nested_groups do
+    context 'for subgroups' do
       it 'only renders root groups when no parent was given' do
         create(:group, :public, parent: group)
 
@@ -85,7 +85,7 @@ describe GroupTree do
         expect(json_response.first['id']).to eq(group.id)
       end
 
-      context 'nested groups', :nested_groups do
+      context 'nested groups' do
         it 'expands the tree when filtering' do
           subgroup = create(:group, :public, parent: group, name: 'filter')
 

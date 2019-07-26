@@ -69,7 +69,7 @@ describe GroupMember do
     end
   end
 
-  context 'access levels', :nested_groups do
+  context 'access levels' do
     context 'with parent group' do
       it_behaves_like 'inherited access level as a member of entity' do
         let(:entity) { create(:group, parent: parent_entity) }

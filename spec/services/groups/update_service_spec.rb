@@ -133,7 +133,7 @@ describe Groups::UpdateService do
     end
   end
 
-  context 'for a subgroup', :nested_groups do
+  context 'for a subgroup' do
     let(:subgroup) { create(:group, :private, parent: private_group) }
 
     context 'when the parent group share_with_group_lock is enabled' do

@@ -51,7 +51,7 @@ describe IssuesFinder do
           end
         end
 
-        context 'when include_subgroup param is true', :nested_groups do
+        context 'when include_subgroup param is true' do
           before do
             params[:include_subgroups] = true
           end

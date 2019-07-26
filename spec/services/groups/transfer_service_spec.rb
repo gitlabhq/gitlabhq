@@ -2,28 +2,13 @@
 
 require 'rails_helper'
 
-describe Groups::TransferService, :postgresql do
+describe Groups::TransferService do
   let(:user) { create(:user) }
   let(:new_parent_group) { create(:group, :public) }
   let!(:group_member) { create(:group_member, :owner, group: group, user: user) }
   let(:transfer_service) { described_class.new(group, user) }
 
   shared_examples 'ensuring allowed transfer for a group' do
-    context 'with other database than PostgreSQL' do
-      before do
-        allow(Group).to receive(:supports_nested_objects?).and_return(false)
-      end
-
-      it 'returns false' do
-        expect(transfer_service.execute(new_parent_group)).to be_falsy
-      end
-
-      it 'adds an error on group' do
-        transfer_service.execute(new_parent_group)
-        expect(transfer_service.error).to eq('Transfer failed: Database is not supported.')
-      end
-    end
-
     context "when there's an exception on GitLab shell directories" do
       let(:new_parent_group) { create(:group, :public) }
 

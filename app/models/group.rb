@@ -10,7 +10,6 @@ class Group < Namespace
   include Referable
   include SelectForProjectAuthorization
   include LoadedInGroupList
-  include Descendant
   include GroupDescendant
   include TokenAuthenticatable
   include WithUploads

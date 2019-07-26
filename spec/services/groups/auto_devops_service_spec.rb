@@ -47,7 +47,7 @@ describe Groups::AutoDevopsService, '#execute' do
         expect(subgroup_1.auto_devops_enabled?).to eq(false)
       end
 
-      context 'when subgroups have projects', :nested_groups do
+      context 'when subgroups have projects' do
         it 'reflects changes on projects' do
           subgroup_1 = create(:group, parent: group)
           project_1 = create(:project, namespace: subgroup_1)

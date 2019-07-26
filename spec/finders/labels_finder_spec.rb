@@ -89,7 +89,7 @@ describe LabelsFinder do
         end
       end
 
-      context 'when including labels from group ancestors', :nested_groups do
+      context 'when including labels from group ancestors' do
         it 'returns labels from group and its ancestors' do
           private_group_1.add_developer(user)
           private_subgroup_1.add_developer(user)
@@ -108,7 +108,7 @@ describe LabelsFinder do
         end
       end
 
-      context 'when including labels from group descendants', :nested_groups do
+      context 'when including labels from group descendants' do
         it 'returns labels from group and its descendants' do
           private_group_1.add_developer(user)
           private_subgroup_1.add_developer(user)
@@ -128,7 +128,7 @@ describe LabelsFinder do
       end
     end
 
-    context 'filtering by project_id', :nested_groups do
+    context 'filtering by project_id' do
       context 'when include_ancestor_groups is true' do
         let!(:sub_project) { create(:project, namespace: private_subgroup_1 ) }
         let!(:project_label) { create(:label, project: sub_project, title: 'Label 5') }

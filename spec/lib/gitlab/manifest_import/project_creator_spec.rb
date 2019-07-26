@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::ManifestImport::ProjectCreator, :postgresql do
+describe Gitlab::ManifestImport::ProjectCreator do
   let(:group) { create(:group) }
   let(:user) { create(:user) }
   let(:repository) do

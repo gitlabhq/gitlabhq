@@ -43,7 +43,6 @@ module Groups
 
     def ensure_allowed_transfer
       raise_transfer_error(:group_is_already_root) if group_is_already_root?
-      raise_transfer_error(:database_not_supported) unless Group.supports_nested_objects?
       raise_transfer_error(:same_parent_as_current) if same_parent?
       raise_transfer_error(:invalid_policies) unless valid_policies?
       raise_transfer_error(:namespace_with_same_path) if namespace_with_same_path?

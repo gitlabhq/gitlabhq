@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::ManifestImport::Manifest, :postgresql do
+describe Gitlab::ManifestImport::Manifest do
   let(:file) { File.open(Rails.root.join('spec/fixtures/aosp_manifest.xml')) }
   let(:manifest) { described_class.new(file) }
 

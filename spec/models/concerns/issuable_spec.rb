@@ -128,7 +128,7 @@ describe Issuable do
       expect(build_issuable(milestone.id).milestone_available?).to be_truthy
     end
 
-    it 'returns true with a milestone from the the parent of the issue project group', :nested_groups do
+    it 'returns true with a milestone from the the parent of the issue project group' do
       parent = create(:group)
       group.update(parent: parent)
       milestone = create(:milestone, group: parent)

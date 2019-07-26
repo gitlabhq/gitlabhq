@@ -31,7 +31,7 @@ RSpec.shared_context 'GroupPolicy context' do
       :admin_group_member,
       :change_visibility_level,
       :set_note_created_at,
-      (Gitlab::Database.postgresql? ? :create_subgroup : nil)
+      :create_subgroup
     ].compact
   end
 

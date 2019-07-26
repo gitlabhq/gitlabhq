@@ -116,7 +116,7 @@ describe Issues::UpdateService, :mailer do
         expect(issue.relative_position).to be_between(issue1.relative_position, issue2.relative_position)
       end
 
-      context 'when moving issue between issues from different projects', :nested_groups do
+      context 'when moving issue between issues from different projects' do
         let(:group) { create(:group) }
         let(:subgroup) { create(:group, parent: group) }
 
@@ -703,7 +703,7 @@ describe Issues::UpdateService, :mailer do
       end
     end
 
-    context 'when moving an issue ', :nested_groups do
+    context 'when moving an issue ' do
       it 'raises an error for invalid move ids within a project' do
         opts = { move_between_ids: [9000, 9999] }
 

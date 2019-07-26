@@ -112,7 +112,7 @@ describe Boards::Issues::ListService do
         it_behaves_like 'issues list service'
       end
 
-      context 'and group is an ancestor', :nested_groups do
+      context 'and group is an ancestor' do
         let(:parent) { create(:group) }
         let(:group) { create(:group, parent: parent) }
         let!(:backlog) { create(:backlog_list, board: board) }

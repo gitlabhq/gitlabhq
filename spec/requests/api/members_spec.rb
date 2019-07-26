@@ -99,7 +99,7 @@ describe API::Members do
     end
   end
 
-  describe 'GET /:source_type/:id/members/all', :nested_groups do
+  describe 'GET /:source_type/:id/members/all' do
     let(:nested_user) { create(:user) }
     let(:project_user) { create(:user) }
     let(:linked_group_user) { create(:user) }
@@ -238,7 +238,7 @@ describe API::Members do
       end
 
       context 'access levels' do
-        it 'does not create the member if group level is higher', :nested_groups do
+        it 'does not create the member if group level is higher' do
           parent = create(:group)
 
           group.update(parent: parent)
@@ -252,7 +252,7 @@ describe API::Members do
           expect(json_response['message']['access_level']).to eq(["should be greater than or equal to Developer inherited membership from group #{parent.name}"])
         end
 
-        it 'creates the member if group level is lower', :nested_groups do
+        it 'creates the member if group level is lower' do
           parent = create(:group)
 
           group.update(parent: parent)

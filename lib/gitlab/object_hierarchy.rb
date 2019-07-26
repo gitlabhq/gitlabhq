@@ -32,11 +32,6 @@ module Gitlab
     # Returns the maximum depth starting from the base
     # A base object with no children has a maximum depth of `1`
     def max_descendants_depth
-      unless hierarchy_supported?
-        # This makes the return value consistent with the case where hierarchy is supported
-        return descendants_base.exists? ? 1 : nil
-      end
-
       base_and_descendants(with_depth: true).maximum(DEPTH_COLUMN)
     end
 
@@ -66,8 +61,6 @@ module Gitlab
     # each parent.
     # rubocop: disable CodeReuse/ActiveRecord
     def base_and_ancestors(upto: nil, hierarchy_order: nil)
-      return ancestors_base unless hierarchy_supported?
-
       recursive_query = base_and_ancestors_cte(upto, hierarchy_order).apply_to(model.all)
       recursive_query = recursive_query.order(depth: hierarchy_order) if hierarchy_order
 
@@ -81,10 +74,6 @@ module Gitlab
     # When `with_depth` is `true`, a `depth` column is included where it starts with `1` for the base objects
     # and incremented as we go down the descendant tree
     def base_and_descendants(with_depth: false)
-      unless hierarchy_supported?
-        return with_depth ? descendants_base.select("1 as #{DEPTH_COLUMN}", objects_table[Arel.star]) : descendants_base
-      end
-
       read_only(base_and_descendants_cte(with_depth: with_depth).apply_to(model.all))
     end
 
@@ -112,8 +101,6 @@ module Gitlab
     # If nested objects are not supported, ancestors_base is returned.
     # rubocop: disable CodeReuse/ActiveRecord
     def all_objects
-      return ancestors_base unless hierarchy_supported?
-
       ancestors = base_and_ancestors_cte
       descendants = base_and_descendants_cte
 
@@ -134,10 +121,6 @@ module Gitlab
     # rubocop: enable CodeReuse/ActiveRecord
 
     private
-
-    def hierarchy_supported?
-      Gitlab::Database.postgresql?
-    end
 
     # rubocop: disable CodeReuse/ActiveRecord
     def base_and_ancestors_cte(stop_id = nil, hierarchy_order = nil)

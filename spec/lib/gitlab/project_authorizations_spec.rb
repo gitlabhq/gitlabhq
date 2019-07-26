@@ -20,13 +20,7 @@ describe Gitlab::ProjectAuthorizations do
   end
 
   let(:authorizations) do
-    klass = if Group.supports_nested_objects?
-              Gitlab::ProjectAuthorizations::WithNestedGroups
-            else
-              Gitlab::ProjectAuthorizations::WithoutNestedGroups
-            end
-
-    klass.new(user).calculate
+    described_class.new(user).calculate
   end
 
   it 'returns the correct number of authorizations' do
@@ -46,28 +40,26 @@ describe Gitlab::ProjectAuthorizations do
     expect(mapping[group_project.id]).to eq(Gitlab::Access::DEVELOPER)
   end
 
-  if Group.supports_nested_objects?
-    context 'with nested groups' do
-      let!(:nested_group) { create(:group, parent: group) }
-      let!(:nested_project) { create(:project, namespace: nested_group) }
+  context 'with nested groups' do
+    let!(:nested_group) { create(:group, parent: group) }
+    let!(:nested_project) { create(:project, namespace: nested_group) }
 
-      it 'includes nested groups' do
-        expect(authorizations.pluck(:project_id)).to include(nested_project.id)
-      end
+    it 'includes nested groups' do
+      expect(authorizations.pluck(:project_id)).to include(nested_project.id)
+    end
 
-      it 'inherits access levels when the user is not a member of a nested group' do
-        mapping = map_access_levels(authorizations)
+    it 'inherits access levels when the user is not a member of a nested group' do
+      mapping = map_access_levels(authorizations)
 
-        expect(mapping[nested_project.id]).to eq(Gitlab::Access::DEVELOPER)
-      end
+      expect(mapping[nested_project.id]).to eq(Gitlab::Access::DEVELOPER)
+    end
 
-      it 'uses the greatest access level when a user is a member of a nested group' do
-        nested_group.add_maintainer(user)
+    it 'uses the greatest access level when a user is a member of a nested group' do
+      nested_group.add_maintainer(user)
 
-        mapping = map_access_levels(authorizations)
+      mapping = map_access_levels(authorizations)
 
-        expect(mapping[nested_project.id]).to eq(Gitlab::Access::MAINTAINER)
-      end
+      expect(mapping[nested_project.id]).to eq(Gitlab::Access::MAINTAINER)
     end
   end
 end

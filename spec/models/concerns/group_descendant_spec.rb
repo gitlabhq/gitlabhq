@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe GroupDescendant, :nested_groups do
+describe GroupDescendant do
   let(:parent) { create(:group) }
   let(:subgroup) { create(:group, parent: parent) }
   let(:subsub_group) { create(:group, parent: subgroup) }
@@ -84,7 +84,7 @@ describe GroupDescendant, :nested_groups do
       it 'tracks the exception when a parent was not preloaded' do
         expect(Gitlab::Sentry).to receive(:track_exception).and_call_original
 
-        expect { GroupDescendant.build_hierarchy([subsub_group]) }.to raise_error(ArgumentError)
+        expect { described_class.build_hierarchy([subsub_group]) }.to raise_error(ArgumentError)
       end
 
       it 'recovers if a parent was not reloaded by querying for the parent' do
@@ -93,7 +93,7 @@ describe GroupDescendant, :nested_groups do
         # this does not raise in production, so stubbing it here.
         allow(Gitlab::Sentry).to receive(:track_exception)
 
-        expect(GroupDescendant.build_hierarchy([subsub_group])).to eq(expected_hierarchy)
+        expect(described_class.build_hierarchy([subsub_group])).to eq(expected_hierarchy)
       end
 
       it 'raises an error if not all elements were preloaded' do

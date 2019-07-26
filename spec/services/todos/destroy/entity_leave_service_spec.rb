@@ -176,7 +176,7 @@ describe Todos::Destroy::EntityLeaveService do
           end
         end
 
-        context 'with nested groups', :nested_groups do
+        context 'with nested groups' do
           let(:subgroup) { create(:group, :private, parent: group) }
           let(:subgroup2) { create(:group, :private, parent: group) }
           let(:subproject) { create(:project, group: subgroup) }

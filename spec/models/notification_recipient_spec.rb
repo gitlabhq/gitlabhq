@@ -49,7 +49,7 @@ describe NotificationRecipient do
   end
 
   context '#notification_setting' do
-    context 'for child groups', :nested_groups do
+    context 'for child groups' do
       let!(:moved_group) { create(:group) }
       let(:group) { create(:group) }
       let(:sub_group_1) { create(:group, parent: group) }

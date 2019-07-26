@@ -115,7 +115,7 @@ describe Projects::MilestonesController do
         end
       end
 
-      context 'with nested groups', :nested_groups do
+      context 'with nested groups' do
         let!(:subgroup) { create(:group, :public, parent: group) }
         let!(:subgroup_milestone) { create(:milestone, group: subgroup) }
 

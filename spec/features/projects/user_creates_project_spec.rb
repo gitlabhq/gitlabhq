@@ -26,7 +26,7 @@ describe 'User creates a project', :js do
     expect(page).to have_content(project.url_to_repo)
   end
 
-  context 'in a subgroup they do not own', :nested_groups do
+  context 'in a subgroup they do not own' do
     let(:parent) { create(:group) }
     let!(:subgroup) { create(:group, parent: parent) }
 

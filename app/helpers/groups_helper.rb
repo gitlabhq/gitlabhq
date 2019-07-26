@@ -127,10 +127,6 @@ module GroupsHelper
     groups.to_json
   end
 
-  def supports_nested_groups?
-    Group.supports_nested_objects?
-  end
-
   private
 
   def get_group_sidebar_links

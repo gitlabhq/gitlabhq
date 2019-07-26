@@ -31,7 +31,7 @@ module Members
       return unless member.is_a?(GroupMember) && member.user && member.group
 
       delete_project_members(member)
-      delete_subgroup_members(member) if Group.supports_nested_objects?
+      delete_subgroup_members(member)
     end
 
     def delete_project_members(member)

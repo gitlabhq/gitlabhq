@@ -44,7 +44,7 @@ describe Groups::CreateService, '#execute' do
     end
   end
 
-  describe 'creating subgroup', :nested_groups do
+  describe 'creating subgroup' do
     let!(:group) { create(:group) }
     let!(:service) { described_class.new(user, group_params.merge(parent_id: group.id)) }
 
@@ -54,47 +54,31 @@ describe Groups::CreateService, '#execute' do
       end
 
       it { is_expected.to be_persisted }
+    end
 
-      context 'when nested groups feature is disabled' do
-        it 'does not save group and returns an error' do
-          allow(Group).to receive(:supports_nested_objects?).and_return(false)
+    context 'as guest' do
+      it 'does not save group and returns an error' do
+        is_expected.not_to be_persisted
 
-          is_expected.not_to be_persisted
-          expect(subject.errors[:parent_id]).to include('You don’t have permission to create a subgroup in this group.')
-          expect(subject.parent_id).to be_nil
-        end
+        expect(subject.errors[:parent_id].first).to eq('You don’t have permission to create a subgroup in this group.')
+        expect(subject.parent_id).to be_nil
       end
     end
 
-    context 'when nested groups feature is enabled' do
+    context 'as owner' do
       before do
-        allow(Group).to receive(:supports_nested_objects?).and_return(true)
+        group.add_owner(user)
       end
 
-      context 'as guest' do
-        it 'does not save group and returns an error' do
-          is_expected.not_to be_persisted
+      it { is_expected.to be_persisted }
+    end
 
-          expect(subject.errors[:parent_id].first).to eq('You don’t have permission to create a subgroup in this group.')
-          expect(subject.parent_id).to be_nil
-        end
+    context 'as maintainer' do
+      before do
+        group.add_maintainer(user)
       end
 
-      context 'as owner' do
-        before do
-          group.add_owner(user)
-        end
-
-        it { is_expected.to be_persisted }
-      end
-
-      context 'as maintainer' do
-        before do
-          group.add_maintainer(user)
-        end
-
-        it { is_expected.to be_persisted }
-      end
+      it { is_expected.to be_persisted }
     end
   end
 

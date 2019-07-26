@@ -135,7 +135,7 @@ describe Users::RefreshAuthorizedProjectsService do
       end
     end
 
-    context 'projects of subgroups of groups the user is a member of', :nested_groups do
+    context 'projects of subgroups of groups the user is a member of' do
       let(:group) { create(:group) }
       let(:nested_group) { create(:group, parent: group) }
       let!(:other_project) { create(:project, group: nested_group) }
@@ -163,7 +163,7 @@ describe Users::RefreshAuthorizedProjectsService do
       end
     end
 
-    context 'projects shared with subgroups of groups the user is a member of', :nested_groups do
+    context 'projects shared with subgroups of groups the user is a member of' do
       let(:group) { create(:group) }
       let(:nested_group) { create(:group, parent: group) }
       let(:other_project) { create(:project) }

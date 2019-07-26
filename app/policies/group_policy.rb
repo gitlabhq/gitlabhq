@@ -16,8 +16,6 @@ class GroupPolicy < BasePolicy
   condition(:maintainer) { access_level >= GroupMember::MAINTAINER }
   condition(:reporter) { access_level >= GroupMember::REPORTER }
 
-  condition(:nested_groups_supported, scope: :global) { Group.supports_nested_objects? }
-
   condition(:has_parent, scope: :subject) { @subject.has_parent? }
   condition(:share_with_group_locked, scope: :subject) { @subject.share_with_group_lock? }
   condition(:parent_share_with_group_locked, scope: :subject) { @subject.parent&.share_with_group_lock? }
@@ -108,8 +106,8 @@ class GroupPolicy < BasePolicy
     enable :read_nested_project_resources
   end
 
-  rule { owner & nested_groups_supported }.enable :create_subgroup
-  rule { maintainer & maintainer_can_create_group & nested_groups_supported }.enable :create_subgroup
+  rule { owner }.enable :create_subgroup
+  rule { maintainer & maintainer_can_create_group }.enable :create_subgroup
 
   rule { public_group | logged_in_viewable }.enable :view_globally
 

@@ -27,7 +27,7 @@ describe 'Dashboard Groups page', :js do
     expect(page).not_to have_content(another_group.name)
   end
 
-  it 'shows subgroups the user is member of', :nested_groups do
+  it 'shows subgroups the user is member of' do
     group.add_owner(user)
     nested_group.add_owner(user)
 
@@ -40,7 +40,7 @@ describe 'Dashboard Groups page', :js do
     expect(page).to have_content(nested_group.name)
   end
 
-  context 'when filtering groups', :nested_groups do
+  context 'when filtering groups' do
     before do
       group.add_owner(user)
       nested_group.add_owner(user)
@@ -79,7 +79,7 @@ describe 'Dashboard Groups page', :js do
     end
   end
 
-  context 'with subgroups', :nested_groups do
+  context 'with subgroups' do
     let!(:subgroup) { create(:group, :public, parent: group) }
 
     before do

@@ -43,7 +43,7 @@ describe Clusters::ClusterPresenter do
       end
 
       shared_examples 'ancestor clusters' do
-        context 'ancestor clusters', :nested_groups do
+        context 'ancestor clusters' do
           let(:root_group) { create(:group, name: 'Root Group') }
           let(:parent) { create(:group, name: 'parent', parent: root_group) }
           let(:child) { create(:group, name: 'child', parent: parent) }

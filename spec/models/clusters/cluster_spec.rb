@@ -342,7 +342,7 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
       end
     end
 
-    context 'when sub-group has configured kubernetes cluster', :nested_groups do
+    context 'when sub-group has configured kubernetes cluster' do
       let(:sub_group_cluster) { create(:cluster, :provided_by_gcp, :group) }
       let(:sub_group) { sub_group_cluster.group }
       let(:project) { create(:project, group: sub_group) }

@@ -18,7 +18,7 @@ describe GroupMembersFinder, '#execute' do
     expect(result.to_a).to match_array([member3, member2, member1])
   end
 
-  it 'returns members for nested group', :nested_groups do
+  it 'returns members for nested group' do
     group.add_developer(user2)
     nested_group.request_access(user4)
     member1 = group.add_maintainer(user1)
@@ -30,7 +30,7 @@ describe GroupMembersFinder, '#execute' do
     expect(result.to_a).to match_array([member1, member3, member4])
   end
 
-  it 'returns members for descendant groups if requested', :nested_groups do
+  it 'returns members for descendant groups if requested' do
     member1 = group.add_maintainer(user2)
     member2 = group.add_maintainer(user1)
     nested_group.add_maintainer(user2)

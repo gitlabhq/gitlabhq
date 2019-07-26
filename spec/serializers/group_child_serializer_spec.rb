@@ -16,7 +16,7 @@ describe GroupChildSerializer do
       end
     end
 
-    context 'with a hierarchy', :nested_groups do
+    context 'with a hierarchy' do
       let(:parent) { create(:group) }
 
       subject(:serializer) do
@@ -75,7 +75,7 @@ describe GroupChildSerializer do
         expect(serializer.represent(build_list(:project, 2))).to be_kind_of(Array)
       end
 
-      context 'with a hierarchy', :nested_groups do
+      context 'with a hierarchy' do
         let(:parent) { create(:group) }
 
         subject(:serializer) do
