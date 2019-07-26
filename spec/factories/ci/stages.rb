@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 FactoryBot.define do
   factory :ci_stage, class: Ci::LegacyStage do
     skip_create

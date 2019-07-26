@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 FactoryBot.define do
   factory :ci_build_trace_chunk, class: Ci::BuildTraceChunk do
     build factory: :ci_build

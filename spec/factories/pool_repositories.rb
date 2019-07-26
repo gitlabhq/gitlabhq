@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 FactoryBot.define do
   factory :pool_repository do
     shard { Shard.by_name("default") }

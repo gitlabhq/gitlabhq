@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 FactoryBot.define do
   factory :namespace do
     sequence(:name) { |n| "namespace#{n}" }

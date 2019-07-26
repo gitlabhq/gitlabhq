@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 FactoryBot.define do
   factory :gitaly_tag, class: Gitaly::Tag do
     skip_create

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 FactoryBot.define do
   factory :cluster_provider_gcp, class: Clusters::Providers::Gcp do
     cluster

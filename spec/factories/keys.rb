@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative '../support/helpers/key_generator_helper'
 
 FactoryBot.define do

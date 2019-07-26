@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 FactoryBot.define do
   trait :base_badge do
     link_url { generate(:url) }
