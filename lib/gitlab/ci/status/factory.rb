@@ -34,11 +34,9 @@ module Gitlab
         def extended_statuses
           return @extended_statuses if defined?(@extended_statuses)
 
-          groups = self.class.extended_statuses.map do |group|
+          @extended_statuses = self.class.extended_statuses.flat_map do |group|
             Array(group).find { |status| status.matches?(@subject, @user) }
-          end
-
-          @extended_statuses = groups.flatten.compact
+          end.compact
         end
 
         def self.extended_statuses

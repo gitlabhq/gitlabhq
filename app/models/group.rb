@@ -388,7 +388,7 @@ class Group < Namespace
     variables = Ci::GroupVariable.where(group: list_of_ids)
     variables = variables.unprotected unless project.protected_for?(ref)
     variables = variables.group_by(&:group_id)
-    list_of_ids.reverse.map { |group| variables[group.id] }.compact.flatten
+    list_of_ids.reverse.flat_map { |group| variables[group.id] }.compact
   end
 
   def group_member(user)

@@ -40,7 +40,7 @@ module Gitlab
         end
 
         def reload!
-          @shards = Hash[*Shard.all.map { |shard| [shard.name, shard.id] }.flatten]
+          @shards = Hash[*Shard.all.flat_map { |shard| [shard.name, shard.id] }]
         end
       end
 
