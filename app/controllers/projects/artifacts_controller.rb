@@ -92,7 +92,10 @@ class Projects::ArtifactsController < Projects::ApplicationController
   def build_from_ref
     return unless @ref_name
 
-    project.latest_successful_build_for(params[:job], @ref_name)
+    commit = project.commit(@ref_name)
+    return unless commit
+
+    project.latest_successful_build_for_sha(params[:job], commit.id)
   end
 
   def artifacts_file

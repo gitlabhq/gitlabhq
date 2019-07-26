@@ -27,7 +27,7 @@ module API
         requirements: { ref_name: /.+/ } do
         authorize_download_artifacts!
 
-        latest_build = user_project.latest_successful_build_for!(params[:job], params[:ref_name])
+        latest_build = user_project.latest_successful_build_for_ref!(params[:job], params[:ref_name])
 
         present_carrierwave_file!(latest_build.artifacts_file)
       end
@@ -45,7 +45,7 @@ module API
           requirements: { ref_name: /.+/ } do
         authorize_download_artifacts!
 
-        build = user_project.latest_successful_build_for!(params[:job], params[:ref_name])
+        build = user_project.latest_successful_build_for_ref!(params[:job], params[:ref_name])
 
         path = Gitlab::Ci::Build::Artifacts::Path
                  .new(params[:artifact_path])

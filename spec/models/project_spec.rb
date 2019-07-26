@@ -2019,62 +2019,33 @@ describe Project do
     end
   end
 
-  describe '#latest_successful_build_for' do
+  describe '#latest_successful_build_for_ref' do
     let(:project) { create(:project, :repository) }
     let(:pipeline) { create_pipeline(project) }
 
-    context 'with many builds' do
-      it 'gives the latest builds from latest pipeline' do
-        pipeline1 = create_pipeline(project)
-        pipeline2 = create_pipeline(project)
-        create_build(pipeline1, 'test')
-        create_build(pipeline1, 'test2')
-        build1_p2 = create_build(pipeline2, 'test')
-        create_build(pipeline2, 'test2')
+    it_behaves_like 'latest successful build for sha or ref'
 
-        expect(project.latest_successful_build_for(build1_p2.name))
-          .to eq(build1_p2)
-      end
-    end
+    subject { project.latest_successful_build_for_ref(build_name) }
 
-    context 'with succeeded pipeline' do
-      let!(:build) { create_build }
+    context 'with a specified ref' do
+      let(:build) { create_build }
 
-      context 'standalone pipeline' do
-        it 'returns builds for ref for default_branch' do
-          expect(project.latest_successful_build_for(build.name))
-            .to eq(build)
-        end
+      subject { project.latest_successful_build_for_ref(build.name, project.default_branch) }
 
-        it 'returns empty relation if the build cannot be found' do
-          expect(project.latest_successful_build_for('TAIL'))
-            .to be_nil
-        end
-      end
-
-      context 'with some pending pipeline' do
-        before do
-          create_build(create_pipeline(project, 'pending'))
-        end
-
-        it 'gives the latest build from latest pipeline' do
-          expect(project.latest_successful_build_for(build.name))
-            .to eq(build)
-        end
-      end
-    end
-
-    context 'with pending pipeline' do
-      it 'returns empty relation' do
-        pipeline.update(status: 'pending')
-        pending_build = create_build(pipeline)
-
-        expect(project.latest_successful_build_for(pending_build.name)).to be_nil
-      end
+      it { is_expected.to eq(build) }
     end
   end
 
-  describe '#latest_successful_build_for!' do
+  describe '#latest_successful_build_for_sha' do
+    let(:project) { create(:project, :repository) }
+    let(:pipeline) { create_pipeline(project) }
+
+    it_behaves_like 'latest successful build for sha or ref'
+
+    subject { project.latest_successful_build_for_sha(build_name, project.commit.sha) }
+  end
+
+  describe '#latest_successful_build_for_ref!' do
     let(:project) { create(:project, :repository) }
     let(:pipeline) { create_pipeline(project) }
 
@@ -2087,7 +2058,7 @@ describe Project do
         build1_p2 = create_build(pipeline2, 'test')
         create_build(pipeline2, 'test2')
 
-        expect(project.latest_successful_build_for(build1_p2.name))
+        expect(project.latest_successful_build_for_ref!(build1_p2.name))
           .to eq(build1_p2)
       end
     end
@@ -2097,12 +2068,12 @@ describe Project do
 
       context 'standalone pipeline' do
         it 'returns builds for ref for default_branch' do
-          expect(project.latest_successful_build_for!(build.name))
+          expect(project.latest_successful_build_for_ref!(build.name))
             .to eq(build)
         end
 
         it 'returns exception if the build cannot be found' do
-          expect { project.latest_successful_build_for!(build.name, 'TAIL') }
+          expect { project.latest_successful_build_for_ref!(build.name, 'TAIL') }
             .to raise_error(ActiveRecord::RecordNotFound)
         end
       end
@@ -2113,7 +2084,7 @@ describe Project do
         end
 
         it 'gives the latest build from latest pipeline' do
-          expect(project.latest_successful_build_for!(build.name))
+          expect(project.latest_successful_build_for_ref!(build.name))
             .to eq(build)
         end
       end
@@ -2124,7 +2095,7 @@ describe Project do
         pipeline.update(status: 'pending')
         pending_build = create_build(pipeline)
 
-        expect { project.latest_successful_build_for!(pending_build.name) }
+        expect { project.latest_successful_build_for_ref!(pending_build.name) }
           .to raise_error(ActiveRecord::RecordNotFound)
       end
     end
@@ -4033,7 +4004,7 @@ describe Project do
 
     context 'with a ref that is not the default branch' do
       it 'returns the latest successful pipeline for the given ref' do
-        expect(project.ci_pipelines).to receive(:latest_successful_for).with('foo')
+        expect(project.ci_pipelines).to receive(:latest_successful_for_ref).with('foo')
 
         project.latest_successful_pipeline_for('foo')
       end
@@ -4061,7 +4032,7 @@ describe Project do
     it 'memoizes and returns the latest successful pipeline for the default branch' do
       pipeline = double(:pipeline)
 
-      expect(project.ci_pipelines).to receive(:latest_successful_for)
+      expect(project.ci_pipelines).to receive(:latest_successful_for_ref)
         .with(project.default_branch)
         .and_return(pipeline)
         .once
