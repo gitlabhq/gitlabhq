@@ -20,7 +20,7 @@ describe('MRWidgetChecking', () => {
   });
 
   it('renders loading icon', () => {
-    expect(vm.$el.querySelector('.mr-widget-icon span').classList).toContain('spinner');
+    expect(vm.$el.querySelector('.mr-widget-icon span').classList).toContain('gl-spinner');
   });
 
   it('renders information about merging', () => {

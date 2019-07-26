@@ -106,7 +106,7 @@ describe('Registry List', () => {
 
     it('should render a loading spinner', done => {
       Vue.nextTick(() => {
-        expect(vm.$el.querySelector('.spinner')).not.toBe(null);
+        expect(vm.$el.querySelector('.gl-spinner')).not.toBe(null);
         done();
       });
     });

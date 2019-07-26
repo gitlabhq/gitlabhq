@@ -60,7 +60,7 @@ describe('BadgeList component', () => {
 
     Vue.nextTick()
       .then(() => {
-        const loadingIcon = vm.$el.querySelector('.spinner');
+        const loadingIcon = vm.$el.querySelector('.gl-spinner');
 
         expect(loadingIcon).toBeVisible();
       })

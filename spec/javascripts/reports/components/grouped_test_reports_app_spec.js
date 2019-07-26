@@ -34,7 +34,7 @@ describe('Grouped Test Reports App', () => {
 
     it('renders success summary text', done => {
       setTimeout(() => {
-        expect(vm.$el.querySelector('.fa-spinner')).toBeNull();
+        expect(vm.$el.querySelector('.gl-spinner')).toBeNull();
         expect(vm.$el.querySelector('.js-code-text').textContent.trim()).toEqual(
           'Test summary contained no changed test results out of 11 total tests',
         );
@@ -61,7 +61,7 @@ describe('Grouped Test Reports App', () => {
 
     it('renders success summary text', done => {
       setTimeout(() => {
-        expect(vm.$el.querySelector('.spinner')).not.toBeNull();
+        expect(vm.$el.querySelector('.gl-spinner')).not.toBeNull();
         expect(vm.$el.querySelector('.js-code-text').textContent.trim()).toEqual(
           'Test summary results are being parsed',
         );
@@ -81,7 +81,7 @@ describe('Grouped Test Reports App', () => {
 
     it('renders failed summary text + new badge', done => {
       setTimeout(() => {
-        expect(vm.$el.querySelector('.spinner')).toBeNull();
+        expect(vm.$el.querySelector('.gl-spinner')).toBeNull();
         expect(vm.$el.querySelector('.js-code-text').textContent.trim()).toEqual(
           'Test summary contained 2 failed test results out of 11 total tests',
         );
@@ -109,7 +109,7 @@ describe('Grouped Test Reports App', () => {
 
     it('renders summary text', done => {
       setTimeout(() => {
-        expect(vm.$el.querySelector('.spinner')).toBeNull();
+        expect(vm.$el.querySelector('.gl-spinner')).toBeNull();
         expect(vm.$el.querySelector('.js-code-text').textContent.trim()).toEqual(
           'Test summary contained 2 failed test results and 2 fixed test results out of 11 total tests',
         );
@@ -137,7 +137,7 @@ describe('Grouped Test Reports App', () => {
 
     it('renders summary text', done => {
       setTimeout(() => {
-        expect(vm.$el.querySelector('.spinner')).toBeNull();
+        expect(vm.$el.querySelector('.gl-spinner')).toBeNull();
         expect(vm.$el.querySelector('.js-code-text').textContent.trim()).toEqual(
           'Test summary contained 2 fixed test results out of 11 total tests',
         );
@@ -190,7 +190,7 @@ describe('Grouped Test Reports App', () => {
     });
 
     it('renders loading summary text with loading icon', done => {
-      expect(vm.$el.querySelector('.spinner')).not.toBeNull();
+      expect(vm.$el.querySelector('.gl-spinner')).not.toBeNull();
       expect(vm.$el.querySelector('.js-code-text').textContent.trim()).toEqual(
         'Test summary results are being parsed',
       );

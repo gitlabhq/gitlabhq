@@ -72,7 +72,7 @@ describe('File Icon component', () => {
 
     const { classList } = vm.$el.querySelector('.loading-container span');
 
-    expect(classList.contains('spinner')).toEqual(true);
+    expect(classList.contains('gl-spinner')).toEqual(true);
   });
 
   it('should add a special class and a size class', () => {

@@ -18,7 +18,7 @@ describe('MR widget status icon component', () => {
     it('renders loading icon', () => {
       vm = mountComponent(Component, { status: 'loading' });
 
-      expect(vm.$el.querySelector('.mr-widget-icon span').classList).toContain('spinner');
+      expect(vm.$el.querySelector('.mr-widget-icon span').classList).toContain('gl-spinner');
     });
   });
 
