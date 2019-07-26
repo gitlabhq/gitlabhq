@@ -10,7 +10,7 @@ module API
             when String
               value.split(',').map(&:strip)
             when Array
-              value.map { |v| v.to_s.split(',').map(&:strip) }.flatten
+              value.flat_map { |v| v.to_s.split(',').map(&:strip) }
             when LabelsList
               value
             else

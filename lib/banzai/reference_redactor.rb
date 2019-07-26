@@ -33,7 +33,7 @@ module Banzai
     #
     # data - An Array of a Hashes mapping an HTML document to nodes to redact.
     def redact_document_nodes(all_document_nodes)
-      all_nodes = all_document_nodes.map { |x| x[:nodes] }.flatten
+      all_nodes = all_document_nodes.flat_map { |x| x[:nodes] }
       visible = nodes_visible_to_user(all_nodes)
       metadata = []
 

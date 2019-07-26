@@ -47,7 +47,7 @@ module ProtectedRef
 
     def access_levels_for_ref(ref, action:, protected_refs: nil)
       self.matching(ref, protected_refs: protected_refs)
-        .map(&:"#{action}_access_levels").flatten
+        .flat_map(&:"#{action}_access_levels")
     end
 
     # Returns all protected refs that match the given ref name.
