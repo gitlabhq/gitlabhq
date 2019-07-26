@@ -4,6 +4,10 @@ entry.
 
 ## 12.1.2
 
+### Security (1 change)
+
+- Use source project as permissions reference for MergeRequestsController#pipelines.
+
 ### Security (9 changes)
 
 - Restrict slash commands to users who can log in.
