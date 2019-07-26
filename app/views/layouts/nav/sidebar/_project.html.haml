@@ -9,7 +9,7 @@
           = @project.name
     %ul.sidebar-top-level-items
       = nav_link(path: sidebar_projects_paths, html_options: { class: 'home' }) do
-        = link_to project_path(@project), class: 'shortcuts-project qa-link-project' do
+        = link_to project_path(@project), class: 'shortcuts-project', data: { qa_selector: 'project_link' } do
           .nav-icon-container
             = sprite_icon('home')
           %span.nav-item-name
@@ -26,7 +26,7 @@
               %span= _('Details')
 
           = nav_link(path: 'projects#activity') do
-            = link_to activity_project_path(@project), title: _('Activity'), class: 'shortcuts-project-activity qa-activity-link' do
+            = link_to activity_project_path(@project), title: _('Activity'), class: 'shortcuts-project-activity', data: { qa_selector: 'activity_link' } do
               %span= _('Activity')
 
           - if project_nav_tab?(:releases)
@@ -146,7 +146,7 @@
 
       - if project_nav_tab? :merge_requests
         = nav_link(controller: @project.issues_enabled? ? :merge_requests : [:merge_requests, :labels, :milestones]) do
-          = link_to project_merge_requests_path(@project), class: 'shortcuts-merge_requests qa-merge-requests-link' do
+          = link_to project_merge_requests_path(@project), class: 'shortcuts-merge_requests', data: { qa_selector: 'merge_requests_link' } do
             .nav-icon-container
               = sprite_icon('git-merge')
             %span.nav-item-name#js-onboarding-mr-link
@@ -277,7 +277,7 @@
       - if project_nav_tab? :wiki
         - wiki_url = project_wiki_path(@project, :home)
         = nav_link(controller: :wikis) do
-          = link_to wiki_url, class: 'shortcuts-wiki qa-wiki-link' do
+          = link_to wiki_url, class: 'shortcuts-wiki', data: { qa_selector: 'wiki_link' } do
             .nav-icon-container
               = sprite_icon('book')
             %span.nav-item-name

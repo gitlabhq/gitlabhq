@@ -8,7 +8,7 @@
             .card.auto-devops-card
               .card-body
                 .form-check
-                  = form.check_box :enabled, class: 'form-check-input js-toggle-extra-settings', checked: auto_devops_enabled
+                  = form.check_box :enabled, class: 'form-check-input js-toggle-extra-settings', checked: auto_devops_enabled, data: { qa_selector: 'enable_autodevops_checkbox' }
                   = form.label :enabled, class: 'form-check-label' do
                     %strong= s_('CICD|Default to Auto DevOps pipeline')
                     - if auto_devops_enabled
@@ -42,4 +42,4 @@
                     = s_('CICD|Automatic deployment to staging, manual deployment to production')
                     = link_to icon('question-circle'), help_page_path('topics/autodevops/index.md', anchor: 'incremental-rollout-to-production'), target: '_blank'
 
-          = f.submit _('Save changes'), class: "btn btn-success prepend-top-15"
+          = f.submit _('Save changes'), class: "btn btn-success prepend-top-15", data: { qa_selector: 'save_changes_button' }

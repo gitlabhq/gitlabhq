@@ -10,7 +10,7 @@ module QA
           def self.included(base)
             base.class_eval do
               view 'app/views/layouts/nav/sidebar/_project.html.haml' do
-                element :link_project
+                element :project_link
               end
             end
           end
@@ -18,7 +18,7 @@ module QA
           def click_project
             retry_on_exception do
               within_sidebar do
-                click_element(:link_project)
+                click_element(:project_link)
               end
             end
           end
