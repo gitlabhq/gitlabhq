@@ -229,6 +229,19 @@ describe SubmoduleHelper do
         end
       end
     end
+
+    context 'unknown submodule' do
+      before do
+        # When there is no `.gitmodules` file, or if `.gitmodules` does not
+        # know the submodule at the specified path,
+        # `Repository#submodule_url_for` returns `nil`
+        stub_url(nil)
+      end
+
+      it 'returns no links' do
+        expect(subject).to eq([nil, nil])
+      end
+    end
   end
 
   context 'as view helpers in view context' do
