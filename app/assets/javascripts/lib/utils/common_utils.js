@@ -203,6 +203,71 @@ export const isMetaKey = e => e.metaKey || e.ctrlKey || e.altKey || e.shiftKey;
 // 3) Middle-click or Mouse Wheel Click (e.which is 2)
 export const isMetaClick = e => e.metaKey || e.ctrlKey || e.which === 2;
 
+export const getPlatformLeaderKey = () => {
+  // eslint-disable-next-line @gitlab/i18n/no-non-i18n-strings
+  if (navigator && navigator.platform && navigator.platform.startsWith('Mac')) {
+    return 'meta';
+  }
+  return 'ctrl';
+};
+
+export const getPlatformLeaderKeyHTML = () => {
+  if (getPlatformLeaderKey() === 'meta') {
+    return '&#8984;';
+  }
+  // eslint-disable-next-line @gitlab/i18n/no-non-i18n-strings
+  return 'Ctrl';
+};
+
+export const isPlatformLeaderKey = e => {
+  if (getPlatformLeaderKey() === 'meta') {
+    return Boolean(e.metaKey);
+  }
+  return Boolean(e.ctrlKey);
+};
+
+/**
+ * Tests if a KeyboardEvent corresponds exactly to a keystroke.
+ *
+ * This function avoids hacking around an old version of Mousetrap, which we ship at the moment. It should be removed after we upgrade to the newest Mousetrap. See:
+ * - https://gitlab.com/gitlab-org/gitlab-ce/issues/63182
+ * - https://gitlab.com/gitlab-org/gitlab-ce/issues/64246
+ *
+ * @example
+ *     // Matches the enter key with exactly zero modifiers
+ *     keystroke(event, 13)
+ *
+ * @example
+ *     // Matches Control-Shift-Z
+ *     keystroke(event, 90, 'cs')
+ *
+ * @param e The KeyboardEvent to test.
+ * @param keyCode The key code of the key to test. Why keycodes? IE/Edge don't support the more convenient `key` and `code` properties.
+ * @param modifiers A string of modifiers keys. Each modifier key is represented by one character. The set of pressed modifier keys must match the given string exactly. Available options are 'a' for Alt/Option, 'c' for Control, 'm' for Meta/Command, 's' for Shift, and 'l' for the leader key (Meta on MacOS and Control otherwise).
+ * @returns {boolean} True if the KeyboardEvent corresponds to the given keystroke.
+ */
+export const keystroke = (e, keyCode, modifiers = '') => {
+  if (!e || !keyCode) {
+    return false;
+  }
+
+  const leader = getPlatformLeaderKey();
+  const mods = modifiers.toLowerCase().replace('l', leader.charAt(0));
+
+  // Match depressed modifier keys
+  if (
+    e.altKey !== mods.includes('a') ||
+    e.ctrlKey !== mods.includes('c') ||
+    e.metaKey !== mods.includes('m') ||
+    e.shiftKey !== mods.includes('s')
+  ) {
+    return false;
+  }
+
+  // Match the depressed key
+  return keyCode === (e.keyCode || e.which);
+};
+
 export const contentTop = () => {
   const perfBar = $('#js-peek').outerHeight() || 0;
   const mrTabsHeight = $('.merge-request-tabs').outerHeight() || 0;

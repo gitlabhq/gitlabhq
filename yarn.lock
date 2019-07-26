@@ -8340,7 +8340,7 @@ monaco-editor@^0.15.6:
   resolved "https://registry.yarnpkg.com/monaco-editor/-/monaco-editor-0.15.6.tgz#d63b3b06f86f803464f003b252627c3eb4a09483"
   integrity sha512-JoU9V9k6KqT9R9Tiw1RTU8ohZ+Xnf9DMg6Ktqqw5hILumwmq7xqa/KLXw513uTUsWbhtnHoSJYYR++u3pkyxJg==
 
-mousetrap@^1.4.6:
+mousetrap@1.4.6:
   version "1.4.6"
   resolved "https://registry.yarnpkg.com/mousetrap/-/mousetrap-1.4.6.tgz#eaca72e22e56d5b769b7555873b688c3332e390a"
   integrity sha1-6spy4i5W1bdpt1VYc7aIwzMuOQo=
