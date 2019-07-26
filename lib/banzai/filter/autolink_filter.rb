@@ -18,6 +18,7 @@ module Banzai
     #
     class AutolinkFilter < HTML::Pipeline::Filter
       include ActionView::Helpers::TagHelper
+      include Gitlab::Utils::SanitizeNodeLink
 
       # Pattern to match text that should be autolinked.
       #
@@ -72,19 +73,11 @@ module Banzai
 
       private
 
-      # Return true if any of the UNSAFE_PROTOCOLS strings are included in the URI scheme
-      def contains_unsafe?(scheme)
-        return false unless scheme
-
-        scheme = scheme.strip.downcase
-        Banzai::Filter::SanitizationFilter::UNSAFE_PROTOCOLS.any? { |protocol| scheme.include?(protocol) }
-      end
-
       def autolink_match(match)
         # start by stripping out dangerous links
         begin
           uri = Addressable::URI.parse(match)
-          return match if contains_unsafe?(uri.scheme)
+          return match unless safe_protocol?(uri.scheme)
         rescue Addressable::URI::InvalidURIError
           return match
         end
