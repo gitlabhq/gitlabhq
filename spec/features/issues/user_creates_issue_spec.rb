@@ -28,7 +28,7 @@ describe "User creates issue" do
 
       fill_in("Title", with: issue_title)
       first('.js-md').click
-      first('.qa-issuable-form-description').native.send_keys('Description')
+      first('.rspec-issuable-form-description').native.send_keys('Description')
 
       click_button("Submit issue")
 
