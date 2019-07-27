@@ -50,11 +50,14 @@ The web application flow is:
    `/oauth/authorize` endpoint with the following GET parameters:
 
    ```
-   https://gitlab.example.com/oauth/authorize?client_id=APP_ID&redirect_uri=REDIRECT_URI&response_type=code&state=YOUR_UNIQUE_STATE_HASH
+   https://gitlab.example.com/oauth/authorize?client_id=APP_ID&redirect_uri=REDIRECT_URI&response_type=code&state=YOUR_UNIQUE_STATE_HASH&scope=REQUESTED_SCOPES
    ```
 
-   This will ask the user to approve the applications access to their account and
-   then redirect back to the `REDIRECT_URI` you provided. The redirect will
+   This will ask the user to approve the applications access to their account
+   based on the scopes specified in `REQUESTED_SCOPES` and then redirect back to
+   the `REDIRECT_URI` you provided. The [scope parameter](https://github.com/doorkeeper-gem/doorkeeper/wiki/Using-Scopes#requesting-particular-scopes)
+   is a space separated list of scopes you want to have access to (e.g. `scope=read_user+profile`
+   would request `read_user` and `profile` scopes). The redirect will
    include the GET `code` parameter, for example:
 
    ```
@@ -110,11 +113,14 @@ To request the access token, you should redirect the user to the
 `/oauth/authorize` endpoint using `token` response type:
 
 ```
-https://gitlab.example.com/oauth/authorize?client_id=APP_ID&redirect_uri=REDIRECT_URI&response_type=token&state=YOUR_UNIQUE_STATE_HASH
+https://gitlab.example.com/oauth/authorize?client_id=APP_ID&redirect_uri=REDIRECT_URI&response_type=token&state=YOUR_UNIQUE_STATE_HASH&scope=REQUESTED_SCOPES
 ```
 
-This will ask the user to approve the application's access to their account and
-then redirect them back to the `REDIRECT_URI` you provided. The redirect
+This will ask the user to approve the applications access to their account
+based on the scopes specified in `REQUESTED_SCOPES` and then redirect back to
+the `REDIRECT_URI` you provided. The [scope parameter](https://github.com/doorkeeper-gem/doorkeeper/wiki/Using-Scopes#requesting-particular-scopes)
+   is a space separated list of scopes you want to have access to (e.g. `scope=read_user+profile`
+would request `read_user` and `profile` scopes). The redirect
 will include a fragment with `access_token` as well as token details in GET
 parameters, for example:
 
