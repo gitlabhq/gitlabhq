@@ -153,7 +153,7 @@ class UsersController < ApplicationController
   end
 
   def load_starred_projects
-    @starred_projects = starred_projects.joined(user)
+    @starred_projects = starred_projects
 
     prepare_projects_for_rendering(@starred_projects)
   end
