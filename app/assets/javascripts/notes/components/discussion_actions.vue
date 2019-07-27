@@ -41,8 +41,8 @@ export default {
 <template>
   <div class="discussion-with-resolve-btn clearfix">
     <reply-placeholder
+      data-qa-selector="discussion_reply_tab"
       :button-text="s__('MergeRequests|Reply...')"
-      class="qa-discussion-reply"
       @onClick="$emit('showReplyForm')"
     />
 
