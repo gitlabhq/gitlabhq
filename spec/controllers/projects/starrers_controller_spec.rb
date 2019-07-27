@@ -5,6 +5,7 @@ require 'spec_helper'
 describe Projects::StarrersController do
   let(:user) { create(:user) }
   let(:private_user) { create(:user, private_profile: true) }
+  let(:admin) { create(:user, admin: true) }
   let(:project) { create(:project, :public, :repository) }
 
   before do
@@ -26,24 +27,56 @@ describe Projects::StarrersController do
         project.update_attribute(:visibility_level, Project::PUBLIC)
       end
 
-      it 'only public starrers are visible for non logged in users' do
-        get_starrers
+      context 'when no user is logged in' do
+        before do
+          get_starrers
+        end
 
-        user_ids = assigns[:starrers].map { |s| s['user_id'] }
-        expect(user_ids).to include(user.id)
-        expect(user_ids).not_to include(private_user.id)
+        it 'only public starrers are visible' do
+          user_ids = assigns[:starrers].map { |s| s['user_id'] }
+          expect(user_ids).to include(user.id)
+          expect(user_ids).not_to include(private_user.id)
+        end
+
+        it 'public/private starrers counts are correct' do
+          expect(assigns[:public_count]).to eq(1)
+          expect(assigns[:private_count]).to eq(1)
+        end
       end
 
       context 'when private user is logged in' do
         before do
           sign_in(private_user)
+
+          get_starrers
         end
 
         it 'their star is also visible' do
-          get_starrers
-
           user_ids = assigns[:starrers].map { |s| s['user_id'] }
           expect(user_ids).to include(user.id, private_user.id)
+        end
+
+        it 'public/private starrers counts are correct' do
+          expect(assigns[:public_count]).to eq(1)
+          expect(assigns[:private_count]).to eq(1)
+        end
+      end
+
+      context 'when admin is logged in' do
+        before do
+          sign_in(admin)
+
+          get_starrers
+        end
+
+        it 'all stars are visible' do
+          user_ids = assigns[:starrers].map { |s| s['user_id'] }
+          expect(user_ids).to include(user.id, private_user.id)
+        end
+
+        it 'public/private starrers counts are correct' do
+          expect(assigns[:public_count]).to eq(1)
+          expect(assigns[:private_count]).to eq(1)
         end
       end
     end
