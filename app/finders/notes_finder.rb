@@ -3,8 +3,6 @@
 class NotesFinder
   FETCH_OVERLAP = 5.seconds
 
-  attr_reader :target_type
-
   # Used to filter Notes
   # When used with target_type and target_id this returns notes specifically for the controller
   #
@@ -12,7 +10,6 @@ class NotesFinder
   #   current_user - which user check authorizations with
   #   project - which project to look for notes on
   #   params:
-  #     target: noteable
   #     target_type: string
   #     target_id: integer
   #     last_fetched_at: time
@@ -21,8 +18,7 @@ class NotesFinder
   def initialize(project, current_user, params = {})
     @project = project
     @current_user = current_user
-    @params = params.dup
-    @target_type = @params[:target_type]
+    @params = params
   end
 
   def execute
@@ -36,27 +32,7 @@ class NotesFinder
   def target
     return @target if defined?(@target)
 
-    if target_given?
-      use_explicit_target
-    else
-      find_target_by_type_and_ids
-    end
-  end
-
-  private
-
-  def target_given?
-    @params.key?(:target)
-  end
-
-  def use_explicit_target
-    @target = @params[:target]
-    @target_type = @target.class.name.underscore
-
-    @target
-  end
-
-  def find_target_by_type_and_ids
+    target_type = @params[:target_type]
     target_id   = @params[:target_id]
     target_iid  = @params[:target_iid]
 
@@ -69,11 +45,13 @@ class NotesFinder
           @project.commit(target_id)
         end
       else
-        noteable_for_type_by_id(target_type, target_id, target_iid)
+        noteables_for_type_by_id(target_type, target_id, target_iid)
       end
   end
 
-  def noteable_for_type_by_id(type, id, iid)
+  private
+
+  def noteables_for_type_by_id(type, id, iid)
     query = if id
               { id: id }
             else
@@ -97,6 +75,10 @@ class NotesFinder
     notes = notes_for_type(target_type)
 
     search(notes)
+  end
+
+  def target_type
+    @params[:target_type]
   end
 
   # rubocop: disable CodeReuse/ActiveRecord
