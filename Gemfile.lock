@@ -853,7 +853,7 @@ GEM
     rubyntlm (0.6.2)
     rubypants (0.2.0)
     rubyzip (1.2.2)
-    rugged (0.28.1)
+    rugged (0.28.2)
     safe_yaml (1.0.4)
     sanitize (4.6.6)
       crass (~> 1.0.2)
