@@ -98,12 +98,13 @@ module IssuableActions
     render json: { notice: "#{quantity} #{resource_name.pluralize(quantity)} updated" }
   end
 
-  # rubocop:disable CodeReuse/ActiveRecord
+  # rubocop: disable CodeReuse/ActiveRecord
   def discussions
-    notes = NotesFinder.new(project, current_user, finder_params_for_issuable).execute
-                .inc_relations_for_view
-                .includes(:noteable)
-                .fresh
+    notes = issuable.discussion_notes
+      .inc_relations_for_view
+      .with_notes_filter(notes_filter)
+      .includes(:noteable)
+      .fresh
 
     if notes_filter != UserPreference::NOTES_FILTERS[:only_comments]
       notes = ResourceEvents::MergeIntoNotesService.new(issuable, current_user).execute(notes)
@@ -116,7 +117,7 @@ module IssuableActions
 
     render json: discussion_serializer.represent(discussions, context: self)
   end
-  # rubocop:enable CodeReuse/ActiveRecord
+  # rubocop: enable CodeReuse/ActiveRecord
 
   private
 
@@ -221,13 +222,4 @@ module IssuableActions
   def parent
     @project || @group # rubocop:disable Gitlab/ModuleWithInstanceVariables
   end
-
-  # rubocop:disable Gitlab/ModuleWithInstanceVariables
-  def finder_params_for_issuable
-    {
-        target: @issuable,
-        notes_filter: notes_filter
-    }
-  end
-  # rubocop:enable Gitlab/ModuleWithInstanceVariables
 end
