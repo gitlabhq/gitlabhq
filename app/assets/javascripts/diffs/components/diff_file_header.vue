@@ -263,6 +263,7 @@ export default {
               :disabled="!diffHasDiscussions(diffFile)"
               :class="{ active: hasExpandedDiscussions }"
               class="js-btn-vue-toggle-comments btn"
+              data-qa-selector="toggle_comments_button"
               type="button"
               @click="handleToggleDiscussions"
             >

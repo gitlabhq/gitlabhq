@@ -32,7 +32,7 @@
     .merge-request-tabs-holder{ class: ("js-tabs-affix" unless ENV['RAILS_ENV'] == 'test') }
       .merge-request-tabs-container
         %ul.merge-request-tabs.nav-tabs.nav.nav-links
-          %li.notes-tab.qa-notes-tab
+          %li.notes-tab{ data: { qa_selector: 'notes_tab'} }
             = tab_link_for @merge_request, :show, force_link: @commit.present? do
               = _("Discussion")
               %span.badge.badge-pill= @merge_request.related_notes.user.count

@@ -293,12 +293,16 @@ export default {
                 <input
                   v-model="isUnresolving"
                   type="checkbox"
-                  class="qa-unresolve-review-discussion"
+                  data-qa-selector="unresolve_review_discussion_checkbox"
                 />
                 {{ __('Unresolve thread') }}
               </template>
               <template v-else>
-                <input v-model="isResolving" type="checkbox" class="qa-resolve-review-discussion" />
+                <input
+                  v-model="isResolving"
+                  type="checkbox"
+                  data-qa-selector="resolve_review_discussion_checkbox"
+                />
                 {{ __('Resolve thread') }}
               </template>
             </label>

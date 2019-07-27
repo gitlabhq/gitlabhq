@@ -44,7 +44,6 @@ export default {
           class="d-none d-sm-block"
         />
         <reply-placeholder
-          class="qa-discussion-reply"
           :button-text="__('Start a new discussion...')"
           @onClick="$emit('showNewDiscussionForm')"
         />
