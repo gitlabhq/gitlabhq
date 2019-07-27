@@ -16,8 +16,7 @@ module Projects
     private
 
     def move_notification_settings
-      prepare_relation(non_existent_notifications)
-        .update_all(source_id: @project.id)
+      non_existent_notifications.update_all(source_id: @project.id)
     end
 
     # Remove remaining notification settings from source_project

@@ -10,12 +10,5 @@ module Projects
 
       true
     end
-
-    private
-
-    def prepare_relation(relation, id_param = :id)
-      # TODO: Refactor and remove this method (https://gitlab.com/gitlab-org/gitlab-ce/issues/65054)
-      relation
-    end
   end
 end
