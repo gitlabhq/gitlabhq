@@ -56,6 +56,7 @@
     "clipboard": "^1.7.1",
     "codesandbox-api": "^0.0.20",
     "compression-webpack-plugin": "^2.0.0",
+    "copy-webpack-plugin": "^5.0.4",
     "core-js": "^3.1.3",
     "cropper": "^2.3.0",
     "css-loader": "^1.0.0",
