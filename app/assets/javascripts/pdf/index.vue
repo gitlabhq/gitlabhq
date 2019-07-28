@@ -40,6 +40,8 @@ export default {
         .then(() => this.$emit('pdflabload'))
         .catch(error => this.$emit('pdflaberror', error))
         .then(() => {
+          // Trigger a Vue update: https://vuejs.org/v2/guide/list.html#Caveats
+          this.pages.splice(this.pages.length);
           this.loading = false;
         });
     },
@@ -47,7 +49,11 @@ export default {
       const pagePromises = [];
       this.loading = true;
       for (let num = 1; num <= pdf.numPages; num += 1) {
-        pagePromises.push(pdf.getPage(num).then(p => this.pages.push(p)));
+        pagePromises.push(
+          pdf.getPage(num).then(p => {
+            this.pages[p.pageIndex] = p;
+          }),
+        );
       }
       return Promise.all(pagePromises);
     },
