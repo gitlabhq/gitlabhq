@@ -30,6 +30,10 @@ class GraphqlController < ApplicationController
     render_error(exception.message, status: :unprocessable_entity)
   end
 
+  rescue_from Gitlab::Graphql::Errors::ArgumentError do |exception|
+    render_error(exception.message, status: :unprocessable_entity)
+  end
+
   private
 
   def execute_multiplex
