@@ -551,7 +551,7 @@ describe Projects::EnvironmentsController do
         end
 
         context 'when the specified dashboard is the default dashboard' do
-          let(:dashboard_path) { Gitlab::Metrics::Dashboard::SystemDashboardService::SYSTEM_DASHBOARD_PATH }
+          let(:dashboard_path) { ::Metrics::Dashboard::SystemDashboardService::SYSTEM_DASHBOARD_PATH }
 
           it_behaves_like 'the default dashboard'
         end

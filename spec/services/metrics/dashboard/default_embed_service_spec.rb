@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::Metrics::Dashboard::DynamicDashboardService, :use_clean_rails_memory_store_caching do
+describe Metrics::Dashboard::DefaultEmbedService, :use_clean_rails_memory_store_caching do
   include MetricsDashboardHelpers
 
   set(:project) { build(:project) }
