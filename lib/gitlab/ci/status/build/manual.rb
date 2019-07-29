@@ -10,7 +10,7 @@ module Gitlab
               image: 'illustrations/manual_action.svg',
               size: 'svg-394',
               title: _('This job requires a manual action'),
-              content: _('This job depends on a user to trigger its process. Often they are used to deploy code to production environments')
+              content: _('This job requires manual intervention to start. Before starting this job, you can add variables below for last-minute configuration changes.')
             }
           end
 

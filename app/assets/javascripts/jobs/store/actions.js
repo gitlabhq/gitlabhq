@@ -209,5 +209,19 @@ export const receiveJobsForStageError = ({ commit }) => {
   flash(__('An error occurred while fetching the jobs.'));
 };
 
+export const triggerManualJob = ({ state }, variables) => {
+  const parsedVariables = variables.map(variable => {
+    const copyVar = Object.assign({}, variable);
+    delete copyVar.id;
+    return copyVar;
+  });
+
+  axios
+    .post(state.job.status.action.path, {
+      job_variables_attributes: parsedVariables,
+    })
+    .catch(() => flash(__('An error occurred while triggering the job.')));
+};
+
 // prevent babel-plugin-rewire from generating an invalid default during karma tests
 export default () => {};

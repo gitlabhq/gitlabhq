@@ -1080,6 +1080,9 @@ msgstr ""
 msgid "An error occurred while saving assignees"
 msgstr ""
 
+msgid "An error occurred while triggering the job."
+msgstr ""
+
 msgid "An error occurred while validating username"
 msgstr ""
 
@@ -2221,6 +2224,9 @@ msgstr ""
 msgid "CiVariables|Remove variable row"
 msgstr ""
 
+msgid "CiVariables|Specify variable values to be used in this run. The values specified in %{linkStart}CI/CD settings%{linkEnd} will be used as default"
+msgstr ""
+
 msgid "CiVariables|State"
 msgstr ""
 
@@ -2228,6 +2234,9 @@ msgid "CiVariables|Type"
 msgstr ""
 
 msgid "CiVariables|Value"
+msgstr ""
+
+msgid "CiVariables|Variables"
 msgstr ""
 
 msgid "CiVariable|* (All environments)"
@@ -7697,6 +7706,9 @@ msgstr ""
 msgid "Pipeline|Existing branch name or tag"
 msgstr ""
 
+msgid "Pipeline|Key"
+msgstr ""
+
 msgid "Pipeline|Pipeline"
 msgstr ""
 
@@ -7725,6 +7737,9 @@ msgid "Pipeline|Stop pipeline #%{pipelineId}?"
 msgstr ""
 
 msgid "Pipeline|Triggerer"
+msgstr ""
+
+msgid "Pipeline|Value"
 msgstr ""
 
 msgid "Pipeline|Variables"
@@ -11056,9 +11071,6 @@ msgstr ""
 msgid "This issue is locked."
 msgstr ""
 
-msgid "This job depends on a user to trigger its process. Often they are used to deploy code to production environments"
-msgstr ""
-
 msgid "This job depends on upstream jobs that need to succeed in order for this job to be triggered"
 msgstr ""
 
@@ -11111,6 +11123,9 @@ msgid "This job is the most recent deployment to %{link}."
 msgstr ""
 
 msgid "This job requires a manual action"
+msgstr ""
+
+msgid "This job requires manual intervention to start. Before starting this job, you can add variables below for last-minute configuration changes."
 msgstr ""
 
 msgid "This job will automatically run after its timer finishes. Often they are used for incremental roll-out deploys to production environments. When unscheduled it converts into a manual action."

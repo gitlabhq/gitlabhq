@@ -45,6 +45,11 @@ export default {
       required: false,
       default: null,
     },
+    variablesSettingsUrl: {
+      type: String,
+      required: false,
+      default: null,
+    },
     runnerHelpUrl: {
       type: String,
       required: false,
@@ -313,6 +318,9 @@ export default {
           :title="emptyStateTitle"
           :content="emptyStateIllustration.content"
           :action="emptyStateAction"
+          :playable="job.playable"
+          :scheduled="job.scheduled"
+          :variables-settings-url="variablesSettingsUrl"
         />
         <!-- EO empty state -->
 

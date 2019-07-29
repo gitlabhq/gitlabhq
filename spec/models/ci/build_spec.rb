@@ -21,7 +21,8 @@ describe Ci::Build do
   it { is_expected.to belong_to(:erased_by) }
   it { is_expected.to have_many(:trace_sections)}
   it { is_expected.to have_one(:deployment) }
-  it { is_expected.to have_one(:runner_session)}
+  it { is_expected.to have_one(:runner_session) }
+  it { is_expected.to have_many(:job_variables) }
   it { is_expected.to validate_presence_of(:ref) }
   it { is_expected.to respond_to(:has_trace?) }
   it { is_expected.to respond_to(:trace) }
@@ -2256,6 +2257,16 @@ describe Ci::Build do
       end
 
       it { is_expected.to include(manual_variable) }
+    end
+
+    context 'when job variable is defined' do
+      let(:job_variable) { { key: 'first', value: 'first', public: false, masked: false } }
+
+      before do
+        create(:ci_job_variable, job_variable.slice(:key, :value).merge(job: build))
+      end
+
+      it { is_expected.to include(job_variable) }
     end
 
     context 'when build is for tag' do

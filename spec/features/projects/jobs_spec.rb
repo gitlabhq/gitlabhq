@@ -701,12 +701,12 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
       it 'shows manual action empty state', :js do
         expect(page).to have_content(job.detailed_status(user).illustration[:title])
         expect(page).to have_content('This job requires a manual action')
-        expect(page).to have_content('This job depends on a user to trigger its process. Often they are used to deploy code to production environments')
-        expect(page).to have_link('Trigger this manual action')
+        expect(page).to have_content('This job requires manual intervention to start. Before starting this job, you can add variables below for last-minute configuration changes.')
+        expect(page).to have_button('Trigger this manual action')
       end
 
       it 'plays manual action and shows pending status', :js do
-        click_link 'Trigger this manual action'
+        click_button 'Trigger this manual action'
 
         wait_for_requests
         expect(page).to have_content('This job has not started yet')
@@ -734,8 +734,8 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
 
         wait_for_requests
         expect(page).to have_content('This job requires a manual action')
-        expect(page).to have_content('This job depends on a user to trigger its process. Often they are used to deploy code to production environments')
-        expect(page).to have_link('Trigger this manual action')
+        expect(page).to have_content('This job requires manual intervention to start. Before starting this job, you can add variables below for last-minute configuration changes.')
+        expect(page).to have_button('Trigger this manual action')
       end
     end
 

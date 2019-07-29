@@ -19,6 +19,7 @@ describe('Job App ', () => {
     runnerHelpUrl: 'help/runner',
     deploymentHelpUrl: 'help/deployment',
     runnerSettingsUrl: 'settings/ci-cd/runners',
+    variablesSettingsUrl: 'settings/ci-cd/variables',
     terminalPath: 'jobs/123/terminal',
     pagePath: `${gl.TEST_HOST}jobs/123`,
     logState:

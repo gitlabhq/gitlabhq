@@ -60,6 +60,19 @@ describe Ci::PlayBuildService, '#execute' do
 
       expect(build.reload.user).to eq user
     end
+
+    context 'when variables are supplied' do
+      let(:job_variables) do
+        [{ key: 'first', secret_value: 'first' },
+         { key: 'second', secret_value: 'second' }]
+      end
+
+      it 'assigns the variables to the build' do
+        service.execute(build, job_variables)
+
+        expect(build.reload.job_variables.map(&:key)).to contain_exactly('first', 'second')
+      end
+    end
   end
 
   context 'when build is not a playable manual action' do

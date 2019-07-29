@@ -10,6 +10,8 @@ describe('Empty State', () => {
     illustrationPath: 'illustrations/pending_job_empty.svg',
     illustrationSizeClass: 'svg-430',
     title: 'This job has not started yet',
+    playable: false,
+    variablesSettingsUrl: '',
   };
 
   const content = 'This job is in pending state and is waiting to be picked by a runner';
@@ -88,6 +90,46 @@ describe('Empty State', () => {
       });
 
       expect(vm.$el.querySelector('.js-job-empty-state-action')).toBeNull();
+    });
+  });
+
+  describe('without playbale action', () => {
+    it('does not render manual variables form', () => {
+      vm = mountComponent(Component, {
+        ...props,
+        content,
+      });
+
+      expect(vm.$el.querySelector('.js-manual-vars-form')).toBeNull();
+    });
+  });
+
+  describe('with playbale action and not scheduled job', () => {
+    it('renders manual variables form', () => {
+      vm = mountComponent(Component, {
+        ...props,
+        content,
+        playable: true,
+        scheduled: false,
+        action: {
+          path: 'runner',
+          button_title: 'Check runner',
+          method: 'post',
+        },
+      });
+
+      expect(vm.$el.querySelector('.js-manual-vars-form')).not.toBeNull();
+    });
+  });
+
+  describe('with playbale action and  scheduled job', () => {
+    it('does not render manual variables form', () => {
+      vm = mountComponent(Component, {
+        ...props,
+        content,
+      });
+
+      expect(vm.$el.querySelector('.js-manual-vars-form')).toBeNull();
     });
   });
 });
