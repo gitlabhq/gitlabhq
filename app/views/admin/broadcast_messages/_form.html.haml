@@ -17,19 +17,27 @@
         required: true,
         dir: 'auto',
         data: { preview_path: preview_admin_broadcast_messages_path }
-  .form-group.row.js-toggle-colors-container
-    .col-sm-10.offset-sm-2
-      = link_to 'Customize colors', '#', class: 'js-toggle-colors-link'
-  .form-group.row.js-toggle-colors-container.toggle-colors.hide
+  .form-group.row
     .col-sm-2.col-form-label
-      = f.label :color, "Background Color"
+      = f.label :color, _("Background color")
     .col-sm-10
-      = f.color_field :color, class: "form-control"
+      .input-group
+        .input-group-prepend
+          .input-group-text.label-color-preview{ :style => 'background-color: ' + @broadcast_message.color + '; color: ' + @broadcast_message.font }
+            = '&nbsp;'.html_safe
+        = f.text_field :color, class: "form-control"
+      .form-text.text-muted
+        = _('Choose any color.')
+        %br
+        = _("Or you can choose one of the suggested colors below")
+
+      = render_suggested_colors
+
   .form-group.row.js-toggle-colors-container.toggle-colors.hide
     .col-sm-2.col-form-label
       = f.label :font, "Font Color"
     .col-sm-10
-      = f.color_field :font, class: "form-control"
+      = f.color_field :font, class: "form-control text-font-color"
   .form-group.row
     .col-sm-2.col-form-label
       = f.label :starts_at, _("Starts at (UTC)")
