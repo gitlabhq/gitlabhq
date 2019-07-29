@@ -5,8 +5,6 @@ class ClusterProjectConfigureWorker
   include ClusterQueue
 
   def perform(project_id)
-    project = Project.find(project_id)
-
-    ::Clusters::RefreshService.create_or_update_namespaces_for_project(project)
+    # Scheduled for removal in https://gitlab.com/gitlab-org/gitlab-ce/issues/59319
   end
 end
