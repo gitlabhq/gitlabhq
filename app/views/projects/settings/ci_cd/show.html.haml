@@ -41,7 +41,7 @@
   .settings-content
     = render 'projects/runners/index'
 
-%section.settings.no-animate{ class: ('expanded' if expanded), data: { qa_selector: 'variables_settings_content' } }
+%section.qa-variables-settings.settings.no-animate#js-cicd-variables-settings{ class: ('expanded' if expanded), data: { qa_selector: 'variables_settings_content' } }
   .settings-header
     = render 'ci/variables/header', expanded: expanded
   .settings-content

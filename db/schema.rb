@@ -605,6 +605,16 @@ ActiveRecord::Schema.define(version: 2019_07_25_012225) do
     t.index ["project_id"], name: "index_ci_job_artifacts_on_project_id"
   end
 
+  create_table "ci_job_variables", force: :cascade do |t|
+    t.string "key", null: false
+    t.text "encrypted_value"
+    t.string "encrypted_value_iv"
+    t.bigint "job_id", null: false
+    t.integer "variable_type", limit: 2, default: 1, null: false
+    t.index ["job_id"], name: "index_ci_job_variables_on_job_id"
+    t.index ["key", "job_id"], name: "index_ci_job_variables_on_key_and_job_id", unique: true
+  end
+
   create_table "ci_pipeline_chat_data", force: :cascade do |t|
     t.integer "pipeline_id", null: false
     t.integer "chat_name_id", null: false
@@ -3637,6 +3647,7 @@ ActiveRecord::Schema.define(version: 2019_07_25_012225) do
   add_foreign_key "ci_group_variables", "namespaces", column: "group_id", name: "fk_33ae4d58d8", on_delete: :cascade
   add_foreign_key "ci_job_artifacts", "ci_builds", column: "job_id", on_delete: :cascade
   add_foreign_key "ci_job_artifacts", "projects", on_delete: :cascade
+  add_foreign_key "ci_job_variables", "ci_builds", column: "job_id", on_delete: :cascade
   add_foreign_key "ci_pipeline_chat_data", "chat_names", on_delete: :cascade
   add_foreign_key "ci_pipeline_chat_data", "ci_pipelines", column: "pipeline_id", on_delete: :cascade
   add_foreign_key "ci_pipeline_schedule_variables", "ci_pipeline_schedules", column: "pipeline_schedule_id", name: "fk_41c35fda51", on_delete: :cascade

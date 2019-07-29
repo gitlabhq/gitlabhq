@@ -40,6 +40,7 @@ module Ci
     has_many :trace_chunks, class_name: 'Ci::BuildTraceChunk', foreign_key: :build_id
 
     has_many :job_artifacts, class_name: 'Ci::JobArtifact', foreign_key: :job_id, dependent: :destroy, inverse_of: :job # rubocop:disable Cop/ActiveRecordDependent
+    has_many :job_variables, class_name: 'Ci::JobVariable', foreign_key: :job_id
 
     Ci::JobArtifact.file_types.each do |key, value|
       has_one :"job_artifacts_#{key}", -> { where(file_type: value) }, class_name: 'Ci::JobArtifact', inverse_of: :job, foreign_key: :job_id
@@ -48,6 +49,7 @@ module Ci
     has_one :runner_session, class_name: 'Ci::BuildRunnerSession', validate: true, inverse_of: :build
 
     accepts_nested_attributes_for :runner_session
+    accepts_nested_attributes_for :job_variables
 
     delegate :url, to: :runner_session, prefix: true, allow_nil: true
     delegate :terminal_specification, to: :runner_session, allow_nil: true
@@ -331,10 +333,10 @@ module Ci
     end
 
     # rubocop: disable CodeReuse/ServiceClass
-    def play(current_user)
+    def play(current_user, job_variables_attributes = nil)
       Ci::PlayBuildService
         .new(project, current_user)
-        .execute(self)
+        .execute(self, job_variables_attributes)
     end
     # rubocop: enable CodeReuse/ServiceClass
 
@@ -432,6 +434,7 @@ module Ci
         Gitlab::Ci::Variables::Collection.new
           .concat(persisted_variables)
           .concat(scoped_variables)
+          .concat(job_variables)
           .concat(persisted_environment_variables)
           .to_runner_variables
       end

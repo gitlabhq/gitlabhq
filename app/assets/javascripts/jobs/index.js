@@ -15,6 +15,7 @@ export default () => {
           deploymentHelpUrl: element.dataset.deploymentHelpUrl,
           runnerHelpUrl: element.dataset.runnerHelpUrl,
           runnerSettingsUrl: element.dataset.runnerSettingsUrl,
+          variablesSettingsUrl: element.dataset.variablesSettingsUrl,
           endpoint: element.dataset.endpoint,
           pagePath: element.dataset.buildOptionsPagePath,
           logState: element.dataset.buildOptionsLogState,

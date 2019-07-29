@@ -323,6 +323,20 @@ stage has a job with a manual action.
 
 ![Pipelines example](img/pipelines.png)
 
+### Specifying variables when running manual jobs
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/30485) in GitLab 12.2.
+
+When running manual jobs you can supply additional job specific variables.
+
+You can do this from the job page of the manual job you want to run with
+additional variables.
+
+This is useful when you want to alter the execution of a job by using
+environment variables.
+
+![Manual job variables](img/manual_job_variables.png)
+
 ### Delay a job in a pipeline graph
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/21767) in GitLab 11.4.
