@@ -1,11 +1,10 @@
 # Kubernetes clusters
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/35954) for
->   projects in GitLab 10.1.
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/34758) for
->   [groups](../../group/clusters/index.md) in GitLab 11.6.
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/39840) for
->   [instances](../../instance/clusters/index.md) in GitLab 11.11.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/35954) in GitLab 10.1 for projects.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/34758) in
+>   GitLab 11.6 for [groups](../../group/clusters/index.md).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/39840) in
+>   GitLab 11.11 for [instances](../../instance/clusters/index.md).
 
 GitLab provides many features with a Kubernetes integration. Kubernetes can be
 integrated with projects, but also:
@@ -75,6 +74,9 @@ To make full use of Auto DevOps(Auto Deploy, Auto Review Apps, and Auto Monitori
 you will need the Kubernetes project integration enabled.
 
 [Read more about Auto DevOps](../../../topics/autodevops/index.md)
+
+NOTE: **Note**
+Kubernetes clusters can be used without Auto DevOps.
 
 ### Web terminals
 
@@ -477,10 +479,10 @@ For example, let's say the following Kubernetes clusters exist in a project:
 | Cluster     | Environment scope |
 | ----------- | ----------------- |
 | Development | `*`               |
-| Staging     | `staging`         |
 | Production  | `production`      |
 
-And the following environments are set in [`.gitlab-ci.yml`](../../../ci/yaml/README.md):
+And the following environments are set in
+[`.gitlab-ci.yml`](../../../ci/yaml/README.md):
 
 ```yaml
 stages:
@@ -508,9 +510,12 @@ deploy to production:
 
 The result will then be:
 
-- The development cluster will be used for the "test" job.
-- The staging cluster will be used for the "deploy to staging" job.
-- The production cluster will be used for the "deploy to production" job.
+- The Development cluster details will be available in the `deploy to staging`
+  job.
+- The production cluster details will be available in the `deploy to production`
+  job.
+- No cluster details will be available in the `test` job because it doesn't
+  define any environment.
 
 ### Multiple Kubernetes clusters **(PREMIUM)**
 
@@ -615,8 +620,8 @@ use an A record. If your external endpoint is a hostname, use a CNAME record.
 
 ## Deploying to a Kubernetes cluster
 
-A Kubernetes cluster can be the destination for a deployment job, using
-special [deployment variables](#deployment-variables).
+A Kubernetes cluster can be the destination for a deployment job using special
+[deployment variables](#deployment-variables).
 
 ### Deployment variables
 
