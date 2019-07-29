@@ -20,6 +20,11 @@ export default {
       type: Number,
       required: true,
     },
+    index: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   computed: {
     ...mapState('monitoringDashboard', ['deploymentData', 'projectPath']),
@@ -64,6 +69,7 @@ export default {
       :alerts-endpoint="alertsEndpoint"
       :relevant-queries="graphData.queries"
       :alerts-to-manage="getGraphAlerts(graphData.queries)"
+      :modal-id="`alert-modal-${index}`"
       @setAlerts="setAlerts"
     />
   </monitor-area-chart>

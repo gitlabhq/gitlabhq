@@ -369,7 +369,7 @@ export default {
     </div>
     <div v-if="!showEmptyState">
       <graph-group
-        v-for="groupData in groups"
+        v-for="(groupData, index) in groups"
         :key="`${groupData.group}.${groupData.priority}`"
         :name="groupData.group"
         :show-panels="showPanels"
@@ -381,6 +381,7 @@ export default {
             :key="`panel-type-${graphIndex}`"
             :graph-data="graphData"
             :dashboard-width="elWidth"
+            :index="`${index}-${graphIndex}`"
           />
         </template>
         <template v-else>
@@ -399,6 +400,7 @@ export default {
               :alerts-endpoint="alertsEndpoint"
               :relevant-queries="graphData.queries"
               :alerts-to-manage="getGraphAlerts(graphData.queries)"
+              :modal-id="`alert-modal-${index}-${graphIndex}`"
               @setAlerts="setAlerts"
             />
           </monitor-area-chart>
