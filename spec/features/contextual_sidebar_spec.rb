@@ -16,21 +16,21 @@ describe 'Contextual sidebar', :js do
   it 'shows flyout navs when collapsed or expanded apart from on the active item when expanded' do
     expect(page).not_to have_selector('.js-sidebar-collapsed')
 
-    find('.qa-link-pipelines').hover
+    find('.rspec-link-pipelines').hover
 
     expect(page).to have_selector('.is-showing-fly-out')
 
-    find('a[data-qa-selector="project_link"]').hover
+    find('.rspec-project-link').hover
 
     expect(page).not_to have_selector('.is-showing-fly-out')
 
-    find('.qa-toggle-sidebar').click
+    find('.rspec-toggle-sidebar').click
 
-    find('.qa-link-pipelines').hover
+    find('.rspec-link-pipelines').hover
 
     expect(page).to have_selector('.is-showing-fly-out')
 
-    find('a[data-qa-selector="project_link"]').hover
+    find('.rspec-project-link').hover
 
     expect(page).to have_selector('.is-showing-fly-out')
   end

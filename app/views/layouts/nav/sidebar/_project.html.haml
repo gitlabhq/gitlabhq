@@ -9,7 +9,7 @@
           = @project.name
     %ul.sidebar-top-level-items
       = nav_link(path: sidebar_projects_paths, html_options: { class: 'home' }) do
-        = link_to project_path(@project), class: 'shortcuts-project', data: { qa_selector: 'project_link' } do
+        = link_to project_path(@project), class: 'shortcuts-project rspec-project-link', data: { qa_selector: 'project_link' } do
           .nav-icon-container
             = sprite_icon('home')
           %span.nav-item-name
@@ -163,7 +163,7 @@
 
       - if project_nav_tab? :pipelines
         = nav_link(controller: [:pipelines, :builds, :jobs, :pipeline_schedules, :artifacts]) do
-          = link_to project_pipelines_path(@project), class: 'shortcuts-pipelines qa-link-pipelines' do
+          = link_to project_pipelines_path(@project), class: 'shortcuts-pipelines qa-link-pipelines rspec-link-pipelines' do
             .nav-icon-container
               = sprite_icon('rocket')
             %span.nav-item-name#js-onboarding-pipelines-link
