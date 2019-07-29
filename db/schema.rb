@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_25_012225) do
+ActiveRecord::Schema.define(version: 2019_07_29_090456) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -1174,6 +1174,7 @@ ActiveRecord::Schema.define(version: 2019_07_25_012225) do
     t.index ["name"], name: "index_environments_on_name_varchar_pattern_ops", opclass: :varchar_pattern_ops
     t.index ["project_id", "name"], name: "index_environments_on_project_id_and_name", unique: true
     t.index ["project_id", "slug"], name: "index_environments_on_project_id_and_slug", unique: true
+    t.index ["project_id", "state"], name: "index_environments_on_project_id_and_state"
   end
 
   create_table "epic_issues", id: :serial, force: :cascade do |t|
