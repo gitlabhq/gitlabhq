@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Merge Request > Tries to access private repo of public project' do
+describe 'Merge Request > User tries to access private project information through the new mr page' do
   let(:current_user) { create(:user) }
   let(:private_project) do
     create(:project, :public, :repository,
@@ -34,6 +34,23 @@ describe 'Merge Request > Tries to access private repo of public project' do
 
     it "does not mention the project the user can't see the repo of" do
       expect(page).not_to have_content('nothing-to-see-here')
+    end
+
+    context 'when the user enters label information from the private project in the querystring' do
+      let(:inaccessible_label) { create(:label, project: private_project) }
+      let(:mr_path) do
+        project_new_merge_request_path(
+          owned_project,
+          merge_request: {
+            label_ids: [inaccessible_label.id],
+            source_branch: 'feature'
+          }
+        )
+      end
+
+      it 'does not expose the label name' do
+        expect(page).not_to have_content(inaccessible_label.name)
+      end
     end
   end
 end

@@ -2,6 +2,25 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 12.1.2
+
+### Security (1 change)
+
+- Use source project as permissions reference for MergeRequestsController#pipelines.
+
+### Security (9 changes)
+
+- Restrict slash commands to users who can log in.
+- Patch XSS issue in wiki links.
+- Queries for Upload should be scoped by model.
+- Filter merge request params on the new merge request page.
+- Fix Server Side Request Forgery mitigation bypass.
+- Show badges if pipelines are public otherwise default to project permissions.
+- Do not allow localhost url redirection in GitHub Integration.
+- Do not show moved issue id for users that cannot read issue.
+- Drop feature to take ownership of trigger token.
+
+
 ## 12.1.1
 
 - No changes.
@@ -623,6 +642,21 @@ entry.
 - Increase height of move issue dropdown.
 - Use grid and correct border radius for status badge.
 - Moves snowplow to CE repo.
+
+
+## 11.11.7
+
+### Security (9 changes)
+
+- Restrict slash commands to users who can log in.
+- Patch XSS issue in wiki links.
+- Filter merge request params on the new merge request page.
+- Fix Server Side Request Forgery mitigation bypass.
+- Show badges if pipelines are public otherwise default to project permissions.
+- Do not allow localhost url redirection in GitHub Integration.
+- Do not show moved issue id for users that cannot read issue.
+- Use source project as permissions reference for MergeRequestsController#pipelines.
+- Drop feature to take ownership of trigger token.
 
 
 ## 11.11.4 (2019-06-26)

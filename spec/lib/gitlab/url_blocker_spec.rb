@@ -68,6 +68,16 @@ describe Gitlab::UrlBlocker do
           expect(uri).to eq(Addressable::URI.parse('https://example.org'))
           expect(hostname).to eq(nil)
         end
+
+        context 'when it cannot be resolved' do
+          let(:import_url) { 'http://foobar.x' }
+
+          it 'raises error' do
+            stub_env('RSPEC_ALLOW_INVALID_URLS', 'false')
+
+            expect { described_class.validate!(import_url) }.to raise_error(described_class::BlockedUrlError)
+          end
+        end
       end
 
       context 'when the URL hostname is an IP address' do
@@ -78,6 +88,16 @@ describe Gitlab::UrlBlocker do
 
           expect(uri).to eq(Addressable::URI.parse('https://93.184.216.34'))
           expect(hostname).to be(nil)
+        end
+
+        context 'when it is invalid' do
+          let(:import_url) { 'http://1.1.1.1.1' }
+
+          it 'raises an error' do
+            stub_env('RSPEC_ALLOW_INVALID_URLS', 'false')
+
+            expect { described_class.validate!(import_url) }.to raise_error(described_class::BlockedUrlError)
+          end
         end
       end
     end
@@ -180,8 +200,6 @@ describe Gitlab::UrlBlocker do
     end
 
     it 'returns true for a non-alphanumeric hostname' do
-      stub_resolv
-
       aggregate_failures do
         expect(described_class).to be_blocked_url('ssh://-oProxyCommand=whoami/a')
 
@@ -454,10 +472,6 @@ describe Gitlab::UrlBlocker do
     end
 
     context 'when enforce_user is' do
-      before do
-        stub_resolv
-      end
-
       context 'false (default)' do
         it 'does not block urls with a non-alphanumeric username' do
           expect(described_class).not_to be_blocked_url('ssh://-oProxyCommand=whoami@example.com/a')
@@ -505,6 +519,18 @@ describe Gitlab::UrlBlocker do
         expect(described_class.blocked_url?('https://git‌lab.com/foo/foo.bar', ascii_only: true)).to be true
       end
     end
+
+    it 'blocks urls with invalid ip address' do
+      stub_env('RSPEC_ALLOW_INVALID_URLS', 'false')
+
+      expect(described_class).to be_blocked_url('http://8.8.8.8.8')
+    end
+
+    it 'blocks urls whose hostname cannot be resolved' do
+      stub_env('RSPEC_ALLOW_INVALID_URLS', 'false')
+
+      expect(described_class).to be_blocked_url('http://foobar.x')
+    end
   end
 
   describe '#validate_hostname' do
@@ -535,11 +561,5 @@ describe Gitlab::UrlBlocker do
         expect { described_class.send(:validate_hostname, ip) }.not_to raise_error
       end
     end
-  end
-
-  # Resolv does not support resolving UTF-8 domain names
-  # See https://bugs.ruby-lang.org/issues/4270
-  def stub_resolv
-    allow(Resolv).to receive(:getaddresses).and_return([])
   end
 end

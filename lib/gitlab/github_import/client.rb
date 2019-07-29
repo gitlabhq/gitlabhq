@@ -40,7 +40,7 @@ module Gitlab
       #            otherwise hitting the rate limit will result in a thread
       #            being blocked in a `sleep()` call for up to an hour.
       def initialize(token, per_page: 100, parallel: true)
-        @octokit = Octokit::Client.new(
+        @octokit = ::Octokit::Client.new(
           access_token: token,
           per_page: per_page,
           api_endpoint: api_endpoint
@@ -139,7 +139,7 @@ module Gitlab
 
         begin
           yield
-        rescue Octokit::TooManyRequests
+        rescue ::Octokit::TooManyRequests
           raise_or_wait_for_rate_limit
 
           # This retry will only happen when running in sequential mode as we'll
