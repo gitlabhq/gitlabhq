@@ -798,7 +798,7 @@ describe 'Copy as GFM', :js do
       context 'selecting one word of text' do
         it 'copies as inline code' do
           verify(
-            '.line[id="LC27"] .s2',
+            '.line[id="LC27"] .nl',
 
             '`"bio"`'
           )
