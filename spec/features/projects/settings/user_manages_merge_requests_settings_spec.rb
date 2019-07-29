@@ -94,7 +94,7 @@ describe 'Projects > Settings > User manages merge request settings' do
     it 'when unchecked sets :printing_merge_request_link_enabled to false' do
       uncheck('project_printing_merge_request_link_enabled')
       within('.merge-request-settings-form') do
-        find('.qa-save-merge-request-changes')
+        find('.rspec-save-merge-request-changes')
         click_on('Save changes')
       end
 
