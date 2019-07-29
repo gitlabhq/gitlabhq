@@ -42,7 +42,7 @@ describe 'User edit profile' do
     simulate_input('#user_name', 'Martin 😀')
     submit_settings
 
-    page.within('.qa-full-name') do
+    page.within('.rspec-full-name') do
       expect(page).to have_css '.gl-field-error-outline'
       expect(find('.gl-field-error')).not_to have_selector('.hidden')
       expect(find('.gl-field-error')).to have_content('Using emojis in names seems fun, but please try to set a status message instead')
