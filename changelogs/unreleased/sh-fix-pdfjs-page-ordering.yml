@@ -1,0 +1,5 @@
+---
+title: Fix pdf.js rendering pages in the wrong order
+merge_request: 31222
+author:
+type: fixed
