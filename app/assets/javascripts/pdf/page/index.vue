@@ -39,7 +39,9 @@ export default {
       .then(() => {
         this.rendering = false;
       })
-      .catch(error => this.$emit('pdflaberror', error));
+      .catch(error => {
+        this.$emit('pdflaberror', error);
+      });
   },
 };
 </script>
