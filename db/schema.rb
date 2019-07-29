@@ -1116,7 +1116,9 @@ ActiveRecord::Schema.define(version: 2019_07_25_012225) do
 
   create_table "design_management_versions", force: :cascade do |t|
     t.binary "sha", null: false
-    t.index ["sha"], name: "index_design_management_versions_on_sha", unique: true
+    t.bigint "issue_id"
+    t.index ["issue_id"], name: "index_design_management_versions_on_issue_id"
+    t.index ["sha", "issue_id"], name: "index_design_management_versions_on_sha_and_issue_id", unique: true
   end
 
   create_table "draft_notes", force: :cascade do |t|
@@ -3701,6 +3703,7 @@ ActiveRecord::Schema.define(version: 2019_07_25_012225) do
   add_foreign_key "design_management_designs", "projects", on_delete: :cascade
   add_foreign_key "design_management_designs_versions", "design_management_designs", column: "design_id", name: "fk_03c671965c", on_delete: :cascade
   add_foreign_key "design_management_designs_versions", "design_management_versions", column: "version_id", name: "fk_f4d25ba00c", on_delete: :cascade
+  add_foreign_key "design_management_versions", "issues", on_delete: :cascade
   add_foreign_key "draft_notes", "merge_requests", on_delete: :cascade
   add_foreign_key "draft_notes", "users", column: "author_id", on_delete: :cascade
   add_foreign_key "elasticsearch_indexed_namespaces", "namespaces", on_delete: :cascade
