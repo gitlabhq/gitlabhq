@@ -34,6 +34,12 @@ For [GitLab Starter][ee] users, this information will be automatically
 extracted and shown right in the merge request widget.
 [Learn more on Code Quality in merge requests](../../user/project/merge_requests/code_quality.md).
 
+CAUTION: **Caution:**
+On self-managed instances, if a malicious actor compromises the Code Quality job
+definition they will be able to execute privileged docker commands on the Runner
+host. Having proper access control policies mitigates this attack vector by
+allowing access only to trusted actors.
+
 ## Previous job definitions
 
 CAUTION: **Caution:**
