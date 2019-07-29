@@ -1,3 +1,7 @@
+---
+type: reference, howto
+---
+
 # Protected Branches
 
 [Permissions](../permissions.md) in GitLab are fundamentally defined around the
@@ -9,13 +13,13 @@ created protected branches.
 
 By default, a protected branch does four simple things:
 
-- it prevents its creation, if not already created, from everybody except users
-  with Maintainer permission
-- it prevents pushes from everybody except users with Maintainer permission
-- it prevents **anyone** from force pushing to the branch
-- it prevents **anyone** from deleting the branch
+- It prevents its creation, if not already created, from everybody except users
+  with Maintainer permission.
+- It prevents pushes from everybody except users with Maintainer permission.
+- It prevents **anyone** from force pushing to the branch.
+- It prevents **anyone** from deleting the branch.
 
->**Note**:
+NOTE: **Note:**
 A GitLab admin is allowed to push to the protected branches.
 
 See the [Changelog](#changelog) section for changes over time.
@@ -68,7 +72,7 @@ they are set to "Maintainers" by default.
 
 ## Restricting push and merge access to certain users **(STARTER)**
 
-> This feature was [introduced][ce-5081] in [GitLab Starter][ee] 8.11.
+> [Introduced][ce-5081] in [GitLab Starter][ee] 8.11.
 
 With GitLab Enterprise Edition you can restrict access to protected branches
 by choosing a role (Maintainers, Developers) as well as certain users. From the
@@ -174,11 +178,21 @@ for details about the pipelines security model.
 - Allow developers to merge into a protected branch without having push access [gitlab-org/gitlab-ce!4892][ce-4892]
 - Allow specifying protected branches using wildcards [gitlab-org/gitlab-ce!4665][ce-4665]
 
----
-
 [ce-4665]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/4665 "Allow specifying protected branches using wildcards"
 [ce-4892]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/4892 "Allow developers to merge into a protected branch without having push access"
 [ce-5081]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/5081 "Allow creating protected branches that can't be pushed to"
 [ce-21393]: https://gitlab.com/gitlab-org/gitlab-ce/issues/21393
 [perm]: ../permissions.md
 [ee]: https://about.gitlab.com/pricing/
+
+<!-- ## Troubleshooting
+
+Include any troubleshooting steps that you can foresee. If you know beforehand what issues
+one might have when setting this up, or when something is changed, or on upgrading, it's
+important to describe those, too. Think of things that may go wrong and include them here.
+This is important to minimize requests for support, and to avoid doc comments with
+questions that you know someone might ask.
+
+Each scenario can be a third-level heading, e.g. `### Getting error message X`.
+If you have none to add when creating a doc, leave this section in place
+but commented out to help encourage others to add to it in the future. -->
