@@ -6,6 +6,7 @@ const StatsWriterPlugin = require('webpack-stats-plugin').StatsWriterPlugin;
 const CompressionPlugin = require('compression-webpack-plugin');
 const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 const ROOT_PATH = path.resolve(__dirname, '..');
 const CACHE_PATH = process.env.WEBPACK_CACHE_PATH || path.join(ROOT_PATH, 'tmp/cache');
@@ -277,6 +278,13 @@ module.exports = {
         );
       }
     }),
+
+    new CopyWebpackPlugin([
+      {
+        from: path.join(ROOT_PATH, 'node_modules/pdfjs-dist/cmaps/'),
+        to: path.join(ROOT_PATH, 'public/assets/webpack/cmaps/'),
+      },
+    ]),
 
     // compression can require a lot of compute time and is disabled in CI
     IS_PRODUCTION && !NO_COMPRESSION && new CompressionPlugin(),

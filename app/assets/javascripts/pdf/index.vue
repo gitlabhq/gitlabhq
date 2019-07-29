@@ -34,7 +34,11 @@ export default {
     load() {
       this.pages = [];
       return pdfjsLib
-        .getDocument(this.document)
+        .getDocument({
+          url: this.document,
+          cMapUrl: '/assets/webpack/cmaps/',
+          cMapPacked: true,
+        })
         .then(this.renderPages)
         .then(pages => {
           this.pages = pages;
