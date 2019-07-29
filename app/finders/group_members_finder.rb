@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class GroupMembersFinder
+class GroupMembersFinder < UnionFinder
   def initialize(group)
     @group = group
   end
@@ -8,18 +8,18 @@ class GroupMembersFinder
   # rubocop: disable CodeReuse/ActiveRecord
   def execute(include_descendants: false)
     group_members = @group.members
-    wheres = []
+    relations = []
 
     return group_members unless @group.parent || include_descendants
 
-    wheres << "members.id IN (#{group_members.select(:id).to_sql})"
+    relations << group_members
 
     if @group.parent
       parents_members = GroupMember.non_request
         .where(source_id: @group.ancestors.select(:id))
         .where.not(user_id: @group.users.select(:id))
 
-      wheres << "members.id IN (#{parents_members.select(:id).to_sql})"
+      relations << parents_members
     end
 
     if include_descendants
@@ -27,10 +27,10 @@ class GroupMembersFinder
         .where(source_id: @group.descendants.select(:id))
         .where.not(user_id: @group.users.select(:id))
 
-      wheres << "members.id IN (#{descendant_members.select(:id).to_sql})"
+      relations << descendant_members
     end
 
-    GroupMember.where(wheres.join(' OR '))
+    find_union(relations, GroupMember)
   end
   # rubocop: enable CodeReuse/ActiveRecord
 end
