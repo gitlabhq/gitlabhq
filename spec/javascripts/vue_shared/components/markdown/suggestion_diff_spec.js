@@ -60,7 +60,7 @@ describe('Suggestion Diff component', () => {
 
   describe('init', () => {
     it('renders a suggestion header', () => {
-      expect(vm.$el.querySelector('.qa-suggestion-diff-header')).not.toBeNull();
+      expect(vm.$el.querySelector('.js-suggestion-diff-header')).not.toBeNull();
     });
 
     it('renders a diff table with syntax highlighting', () => {
