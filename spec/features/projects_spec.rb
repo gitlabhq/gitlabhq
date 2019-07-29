@@ -387,7 +387,7 @@ describe 'Project' do
     end
 
     it_behaves_like 'dirty submit form', [{ form: '.js-general-settings-form', input: 'input[name="project[name]"]' },
-                                          { form: '.qa-merge-request-settings', input: '#project_printing_merge_request_link_enabled' }]
+                                          { form: '.rspec-merge-request-settings', input: '#project_printing_merge_request_link_enabled' }]
   end
 
   def remove_with_confirm(button_text, confirm_with)
