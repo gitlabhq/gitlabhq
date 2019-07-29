@@ -68,7 +68,7 @@ shared_examples 'close quick action' do |issuable_type|
       it "does not close the #{issuable_type}" do
         add_note('/close')
 
-        expect(page).not_to have_content 'Commands applied'
+        expect(page).not_to have_content "Closed this #{issuable.to_ability_name.humanize(capitalize: false)}."
         expect(issuable).to be_open
       end
     end

@@ -12,7 +12,7 @@ shared_examples 'move quick action' do
       it 'moves the issue' do
         add_note("/move #{target_project.full_path}")
 
-        expect(page).to have_content 'Commands applied'
+        expect(page).to have_content "Moved this issue to #{target_project.full_path}."
         expect(issue.reload).to be_closed
 
         visit project_issue_path(target_project, issue)
@@ -29,7 +29,7 @@ shared_examples 'move quick action' do
 
         wait_for_requests
 
-        expect(page).to have_content 'Commands applied'
+        expect(page).to have_content "Moved this issue to #{project_unauthorized.full_path}."
         expect(issue.reload).to be_open
       end
     end
@@ -40,7 +40,7 @@ shared_examples 'move quick action' do
 
         wait_for_requests
 
-        expect(page).to have_content 'Commands applied'
+        expect(page).to have_content "Move this issue failed because target project doesn't exists"
         expect(issue.reload).to be_open
       end
     end
@@ -56,7 +56,7 @@ shared_examples 'move quick action' do
 
       shared_examples 'applies the commands to issues in both projects, target and source' do
         it "applies quick actions" do
-          expect(page).to have_content 'Commands applied'
+          expect(page).to have_content "Moved this issue to #{target_project.full_path}."
           expect(issue.reload).to be_closed
 
           visit project_issue_path(target_project, issue)

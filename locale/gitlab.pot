@@ -735,6 +735,15 @@ msgstr ""
 msgid "AddMember|Too many users specified (limit is %{user_limit})"
 msgstr ""
 
+msgid "Added"
+msgstr ""
+
+msgid "Added %{label_references} %{label_text}."
+msgstr ""
+
+msgid "Added a todo."
+msgstr ""
+
 msgid "Added at"
 msgstr ""
 
@@ -742,6 +751,9 @@ msgid "Adding new applications is disabled in your GitLab instance. Please conta
 msgstr ""
 
 msgid "Adds"
+msgstr ""
+
+msgid "Adds %{labels} %{label_text}."
 msgstr ""
 
 msgid "Adds a todo."
@@ -1332,6 +1344,9 @@ msgstr ""
 msgid "Assign"
 msgstr ""
 
+msgid "Assign command failed because no user was found"
+msgstr ""
+
 msgid "Assign custom color like #FF0000"
 msgstr ""
 
@@ -1353,6 +1368,9 @@ msgstr ""
 msgid "Assign yourself to this issue"
 msgstr ""
 
+msgid "Assigned %{assignee_users_sentence}."
+msgstr ""
+
 msgid "Assigned Issues"
 msgstr ""
 
@@ -1368,6 +1386,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "Assignee(s)"
+msgstr ""
+
+msgid "Assigns %{assignee_users_sentence}."
 msgstr ""
 
 msgid "Attach a file"
@@ -2005,6 +2026,9 @@ msgstr ""
 msgid "ChangeTypeAction|This will create a new commit in order to revert the existing changes."
 msgstr ""
 
+msgid "Changed the title to \"%{title_param}\"."
+msgstr ""
+
 msgid "Changes"
 msgstr ""
 
@@ -2341,7 +2365,16 @@ msgstr ""
 msgid "Close sidebar"
 msgstr ""
 
+msgid "Close this %{quick_action_target}"
+msgstr ""
+
 msgid "Closed"
+msgstr ""
+
+msgid "Closed this %{quick_action_target}."
+msgstr ""
+
+msgid "Closes this %{quick_action_target}."
 msgstr ""
 
 msgid "ClusterIntegration| %{custom_domain_start}More information%{custom_domain_end}."
@@ -2887,6 +2920,9 @@ msgstr ""
 msgid "Commands applied"
 msgstr ""
 
+msgid "Commands did not apply"
+msgstr ""
+
 msgid "Comment"
 msgstr ""
 
@@ -3186,6 +3222,9 @@ msgstr ""
 msgid "Copied"
 msgstr ""
 
+msgid "Copied labels and milestone from %{source_issuable_reference}."
+msgstr ""
+
 msgid "Copy %{http_label} clone URL"
 msgstr ""
 
@@ -3396,6 +3435,12 @@ msgstr ""
 msgid "Created At"
 msgstr ""
 
+msgid "Created a branch and a merge request to resolve this issue"
+msgstr ""
+
+msgid "Created branch '%{branch_name}' and a merge request to resolve this issue"
+msgstr ""
+
 msgid "Created by me"
 msgstr ""
 
@@ -3403,6 +3448,9 @@ msgid "Created on"
 msgstr ""
 
 msgid "Created on:"
+msgstr ""
+
+msgid "Creates a branch and a merge request to resolve this issue"
 msgstr ""
 
 msgid "Creates branch '%{branch_name}' and a merge request to resolve this issue"
@@ -6337,6 +6385,9 @@ msgstr ""
 msgid "Locked by %{fileLockUserName}"
 msgstr ""
 
+msgid "Locked the discussion"
+msgstr ""
+
 msgid "Locked to current projects"
 msgstr ""
 
@@ -6353,6 +6404,9 @@ msgid "MRDiff|Show changes only"
 msgstr ""
 
 msgid "MRDiff|Show full file"
+msgstr ""
+
+msgid "Made this issue confidential"
 msgstr ""
 
 msgid "Make and review changes in the browser with the Web IDE"
@@ -6436,6 +6490,9 @@ msgstr ""
 msgid "Mark as done"
 msgstr ""
 
+msgid "Mark as duplicate failed because referenced issue was not found"
+msgstr ""
+
 msgid "Mark as resolved"
 msgstr ""
 
@@ -6452,6 +6509,18 @@ msgid "Markdown Help"
 msgstr ""
 
 msgid "Markdown enabled"
+msgstr ""
+
+msgid "Marked this %{noun} as Work In Progress."
+msgstr ""
+
+msgid "Marked this issue as a duplicate of %{duplicate_param}."
+msgstr ""
+
+msgid "Marked to do as done."
+msgstr ""
+
+msgid "Marks this %{noun} as Work In Progress."
 msgstr ""
 
 msgid "Marks this issue as a duplicate of %{duplicate_reference}."
@@ -6497,6 +6566,9 @@ msgid "Members of <strong>%{project_name}</strong>"
 msgstr ""
 
 msgid "Merge"
+msgstr ""
+
+msgid "Merge (when the pipeline succeeds)"
 msgstr ""
 
 msgid "Merge Request"
@@ -6620,6 +6692,9 @@ msgid "Merged"
 msgstr ""
 
 msgid "Merged branches are being deleted. This can take some time depending on the number of branches. Please refresh the page to see changes."
+msgstr ""
+
+msgid "Merges this merge request when the pipeline succeeds."
 msgstr ""
 
 msgid "Messages"
@@ -6805,6 +6880,12 @@ msgstr ""
 msgid "Move issue from one column of the board to another"
 msgstr ""
 
+msgid "Move this issue failed because target project doesn't exists"
+msgstr ""
+
+msgid "Move this issue failed because you need to specify only one label."
+msgstr ""
+
 msgid "Move this issue to another project."
 msgstr ""
 
@@ -6812,6 +6893,12 @@ msgid "MoveIssue|Cannot move issue due to insufficient permissions!"
 msgstr ""
 
 msgid "MoveIssue|Cannot move issue to project it originates from!"
+msgstr ""
+
+msgid "Moved issue to %{label} column in the board."
+msgstr ""
+
+msgid "Moved this issue to %{path_to_project}."
 msgstr ""
 
 msgid "Moves issue to %{label} column in the board."
@@ -8986,10 +9073,37 @@ msgstr ""
 msgid "Remove time estimate"
 msgstr ""
 
+msgid "Removed %{assignee_text} %{assignee_references}."
+msgstr ""
+
+msgid "Removed %{label_references} %{label_text}."
+msgstr ""
+
+msgid "Removed %{milestone_reference} milestone."
+msgstr ""
+
+msgid "Removed all labels."
+msgstr ""
+
 msgid "Removed group can not be restored!"
 msgstr ""
 
 msgid "Removed projects cannot be restored!"
+msgstr ""
+
+msgid "Removed spent time."
+msgstr ""
+
+msgid "Removed the due date."
+msgstr ""
+
+msgid "Removed time estimate."
+msgstr ""
+
+msgid "Removes %{assignee_text} %{assignee_references}."
+msgstr ""
+
+msgid "Removes %{label_references} %{label_text}."
 msgstr ""
 
 msgid "Removes %{milestone_reference} milestone."
@@ -9025,10 +9139,22 @@ msgstr ""
 msgid "Reopen milestone"
 msgstr ""
 
+msgid "Reopen this %{quick_action_target}"
+msgstr ""
+
+msgid "Reopened this %{quick_action_target}."
+msgstr ""
+
+msgid "Reopens this %{quick_action_target}."
+msgstr ""
+
 msgid "Replace"
 msgstr ""
 
 msgid "Replace all label(s)"
+msgstr ""
+
+msgid "Replaced all labels with %{label_references} %{label_text}."
 msgstr ""
 
 msgid "Reply by email"
@@ -9369,6 +9495,9 @@ msgstr ""
 msgid "Scheduled"
 msgstr ""
 
+msgid "Scheduled to merge this merge request when the pipeline succeeds."
+msgstr ""
+
 msgid "Schedules"
 msgstr ""
 
@@ -9696,7 +9825,16 @@ msgstr ""
 msgid "Set requirements for a user to sign-in. Enable mandatory two-factor authentication."
 msgstr ""
 
+msgid "Set target branch"
+msgstr ""
+
+msgid "Set target branch to %{branch_name}."
+msgstr ""
+
 msgid "Set the default expiration time for each job's artifacts. 0 for unlimited. The default unit is in seconds, but you can define an alternative. For example: <code>4 mins 2 sec</code>, <code>2h42min</code>."
+msgstr ""
+
+msgid "Set the due date to %{due_date}."
 msgstr ""
 
 msgid "Set the duration for which the jobs will be considered as old and expired. Once that time passes, the jobs will be archived and no longer able to be retried. Make it empty to never expire jobs. It has to be no less than 1 day, for example: <code>15 days</code>, <code>1 month</code>, <code>2 years</code>."
@@ -9705,7 +9843,13 @@ msgstr ""
 msgid "Set the maximum file size for each job's artifacts"
 msgstr ""
 
+msgid "Set the milestone to %{milestone_reference}."
+msgstr ""
+
 msgid "Set time estimate"
+msgstr ""
+
+msgid "Set time estimate to %{time_estimate}."
 msgstr ""
 
 msgid "Set up CI/CD"
@@ -9751,6 +9895,9 @@ msgid "SetStatusModal|Sorry, we weren't able to set your status. Please try agai
 msgstr ""
 
 msgid "SetStatusModal|What's your status?"
+msgstr ""
+
+msgid "Sets target branch to %{branch_name}."
 msgstr ""
 
 msgid "Sets the due date to %{due_date}."
@@ -10334,7 +10481,16 @@ msgstr ""
 msgid "Subscribed"
 msgstr ""
 
+msgid "Subscribed to this %{quick_action_target}."
+msgstr ""
+
+msgid "Subscribes to this %{quick_action_target}."
+msgstr ""
+
 msgid "Subscription"
+msgstr ""
+
+msgid "Subtracted"
 msgstr ""
 
 msgid "Subtracts"
@@ -10482,6 +10638,12 @@ msgid "Tag list:"
 msgstr ""
 
 msgid "Tag this commit."
+msgstr ""
+
+msgid "Tagged this commit to %{tag_name} with \"%{message}\"."
+msgstr ""
+
+msgid "Tagged this commit to %{tag_name}."
 msgstr ""
 
 msgid "Tags"
@@ -11543,6 +11705,9 @@ msgstr ""
 msgid "ToggleButton|Toggle Status: ON"
 msgstr ""
 
+msgid "Toggled :%{name}: emoji award."
+msgstr ""
+
 msgid "Toggles :%{name}: emoji award."
 msgstr ""
 
@@ -11750,7 +11915,16 @@ msgstr ""
 msgid "Unlocked"
 msgstr ""
 
+msgid "Unlocked the discussion"
+msgstr ""
+
 msgid "Unlocks the discussion"
+msgstr ""
+
+msgid "Unmarked this %{noun} as Work In Progress."
+msgstr ""
+
+msgid "Unmarks this %{noun} as Work In Progress."
 msgstr ""
 
 msgid "Unresolve discussion"
@@ -11793,6 +11967,12 @@ msgid "Unsubscribe at project level"
 msgstr ""
 
 msgid "Unsubscribe from %{type}"
+msgstr ""
+
+msgid "Unsubscribed from this %{quick_action_target}."
+msgstr ""
+
+msgid "Unsubscribes from this %{quick_action_target}."
 msgstr ""
 
 msgid "Until"

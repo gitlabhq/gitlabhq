@@ -219,6 +219,52 @@ describe Gitlab::QuickActions::CommandDefinition do
     end
   end
 
+  describe "#execute_message" do
+    context "when the command is a noop" do
+      it 'returns nil' do
+        expect(subject.execute_message({}, nil)).to be_nil
+      end
+    end
+
+    context "when the command is not a noop" do
+      before do
+        subject.action_block = proc { self.run = true }
+      end
+
+      context "when the command is not available" do
+        before do
+          subject.condition_block = proc { false }
+        end
+
+        it 'returns nil' do
+          expect(subject.execute_message({}, nil)).to be_nil
+        end
+      end
+
+      context "when the command is available" do
+        context 'when the execution_message is a static string' do
+          before do
+            subject.execution_message = 'Assigned jacopo'
+          end
+
+          it 'returns this static string' do
+            expect(subject.execute_message({}, nil)).to eq('Assigned jacopo')
+          end
+        end
+
+        context 'when the explanation is dynamic' do
+          before do
+            subject.execution_message = proc { |arg| "Assigned #{arg}" }
+          end
+
+          it 'invokes the proc' do
+            expect(subject.execute_message({}, 'Jacopo')).to eq('Assigned Jacopo')
+          end
+        end
+      end
+    end
+  end
+
   describe '#explain' do
     context 'when the command is not available' do
       before do

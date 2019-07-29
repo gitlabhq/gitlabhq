@@ -5,7 +5,7 @@ shared_examples 'tag quick action' do
     it 'tags this commit' do
       add_note("/tag #{tag_name} #{tag_message}")
 
-      expect(page).to have_content 'Commands applied'
+      expect(page).to have_content %{Tagged this commit to #{tag_name} with "#{tag_message}".}
       expect(page).to have_content "tagged commit #{truncated_commit_sha}"
       expect(page).to have_content tag_name
 

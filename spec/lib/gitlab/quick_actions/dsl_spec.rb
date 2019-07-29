@@ -20,6 +20,9 @@ describe Gitlab::QuickActions::Dsl do
       desc do
         "A dynamic description for #{noteable.upcase}"
       end
+      execution_message do |arg|
+        "A dynamic execution message for #{noteable.upcase} passing #{arg}"
+      end
       params 'The first argument', 'The second argument'
       command :dynamic_description do |args|
         args.split
@@ -30,6 +33,7 @@ describe Gitlab::QuickActions::Dsl do
       explanation do |arg|
         "Action does something with #{arg}"
       end
+      execution_message 'Command applied correctly'
       condition do
         project == 'foo'
       end
@@ -67,6 +71,7 @@ describe Gitlab::QuickActions::Dsl do
       expect(no_args_def.aliases).to eq([:none])
       expect(no_args_def.description).to eq('A command with no args')
       expect(no_args_def.explanation).to eq('')
+      expect(no_args_def.execution_message).to eq('')
       expect(no_args_def.params).to eq([])
       expect(no_args_def.condition_block).to be_nil
       expect(no_args_def.types).to eq([])
@@ -78,6 +83,8 @@ describe Gitlab::QuickActions::Dsl do
       expect(explanation_with_aliases_def.aliases).to eq([:once, :first])
       expect(explanation_with_aliases_def.description).to eq('')
       expect(explanation_with_aliases_def.explanation).to eq('Static explanation')
+      expect(explanation_with_aliases_def.execution_message).to eq('')
+      expect(no_args_def.params).to eq([])
       expect(explanation_with_aliases_def.params).to eq(['The first argument'])
       expect(explanation_with_aliases_def.condition_block).to be_nil
       expect(explanation_with_aliases_def.types).to eq([])
@@ -88,7 +95,7 @@ describe Gitlab::QuickActions::Dsl do
       expect(dynamic_description_def.name).to eq(:dynamic_description)
       expect(dynamic_description_def.aliases).to eq([])
       expect(dynamic_description_def.to_h(OpenStruct.new(noteable: 'issue'))[:description]).to eq('A dynamic description for ISSUE')
-      expect(dynamic_description_def.explanation).to eq('')
+      expect(dynamic_description_def.execute_message(OpenStruct.new(noteable: 'issue'), 'arg')).to eq('A dynamic execution message for ISSUE passing arg')
       expect(dynamic_description_def.params).to eq(['The first argument', 'The second argument'])
       expect(dynamic_description_def.condition_block).to be_nil
       expect(dynamic_description_def.types).to eq([])
@@ -100,6 +107,7 @@ describe Gitlab::QuickActions::Dsl do
       expect(cc_def.aliases).to eq([])
       expect(cc_def.description).to eq('')
       expect(cc_def.explanation).to eq('')
+      expect(cc_def.execution_message).to eq('')
       expect(cc_def.params).to eq([])
       expect(cc_def.condition_block).to be_nil
       expect(cc_def.types).to eq([])
@@ -111,6 +119,7 @@ describe Gitlab::QuickActions::Dsl do
       expect(cond_action_def.aliases).to eq([])
       expect(cond_action_def.description).to eq('')
       expect(cond_action_def.explanation).to be_a_kind_of(Proc)
+      expect(cond_action_def.execution_message).to eq('Command applied correctly')
       expect(cond_action_def.params).to eq([])
       expect(cond_action_def.condition_block).to be_a_kind_of(Proc)
       expect(cond_action_def.types).to eq([])
@@ -122,6 +131,7 @@ describe Gitlab::QuickActions::Dsl do
       expect(with_params_parsing_def.aliases).to eq([])
       expect(with_params_parsing_def.description).to eq('')
       expect(with_params_parsing_def.explanation).to eq('')
+      expect(with_params_parsing_def.execution_message).to eq('')
       expect(with_params_parsing_def.params).to eq([])
       expect(with_params_parsing_def.condition_block).to be_nil
       expect(with_params_parsing_def.types).to eq([])
@@ -133,6 +143,7 @@ describe Gitlab::QuickActions::Dsl do
       expect(substitution_def.aliases).to eq([])
       expect(substitution_def.description).to eq('')
       expect(substitution_def.explanation).to eq('')
+      expect(substitution_def.execution_message).to eq('')
       expect(substitution_def.params).to eq(['<Comment>'])
       expect(substitution_def.condition_block).to be_nil
       expect(substitution_def.types).to eq([])
@@ -144,6 +155,7 @@ describe Gitlab::QuickActions::Dsl do
       expect(has_types.aliases).to eq([])
       expect(has_types.description).to eq('A command with types')
       expect(has_types.explanation).to eq('')
+      expect(has_types.execution_message).to eq('')
       expect(has_types.params).to eq([])
       expect(has_types.condition_block).to be_nil
       expect(has_types.types).to eq([Issue, Commit])

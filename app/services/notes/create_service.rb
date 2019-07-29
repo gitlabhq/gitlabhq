@@ -21,7 +21,7 @@ module Notes
 
       if quick_actions_service.supported?(note)
         options = { merge_request_diff_head_sha: merge_request_diff_head_sha }
-        content, update_params = quick_actions_service.execute(note, options)
+        content, update_params, message = quick_actions_service.execute(note, options)
 
         only_commands = content.empty?
 
@@ -52,7 +52,7 @@ module Notes
         # We must add the error after we call #save because errors are reset
         # when #save is called
         if only_commands
-          note.errors.add(:commands_only, 'Commands applied')
+          note.errors.add(:commands_only, message.presence || _('Commands did not apply'))
         end
       end
 

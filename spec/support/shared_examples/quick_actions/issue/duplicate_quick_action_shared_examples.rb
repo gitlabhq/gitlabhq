@@ -9,7 +9,6 @@ shared_examples 'duplicate quick action' do
         add_note("/duplicate ##{original_issue.to_reference}")
 
         expect(page).not_to have_content "/duplicate #{original_issue.to_reference}"
-        expect(page).to have_content 'Commands applied'
         expect(page).to have_content "marked this issue as a duplicate of #{original_issue.to_reference}"
 
         expect(issue.reload).to be_closed
@@ -28,7 +27,6 @@ shared_examples 'duplicate quick action' do
       it 'does not create a note, and does not mark the issue as a duplicate' do
         add_note("/duplicate ##{original_issue.to_reference}")
 
-        expect(page).not_to have_content 'Commands applied'
         expect(page).not_to have_content "marked this issue as a duplicate of #{original_issue.to_reference}"
 
         expect(issue.reload).to be_open
