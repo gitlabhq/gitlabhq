@@ -50,7 +50,7 @@
             = render_if_exists 'projects/mirrors/table_pull_row'
             - @project.remote_mirrors.each_with_index do |mirror, index|
               - next if mirror.new_record?
-              %tr.qa-mirrored-repository-row{ class: ('bg-secondary' if mirror.disabled?) }
+              %tr.qa-mirrored-repository-row.rspec-mirrored-repository-row{ class: ('bg-secondary' if mirror.disabled?) }
                 %td.qa-mirror-repository-url= mirror.safe_url
                 %td= _('Push')
                 %td.qa-mirror-last-update-at= mirror.last_update_at.present? ? time_ago_with_tooltip(mirror.last_update_at) : _('Never')
@@ -64,4 +64,4 @@
                     - if mirror.ssh_key_auth?
                       = clipboard_button(text: mirror.ssh_public_key, class: 'btn btn-default', title: _('Copy SSH public key'))
                     = render 'shared/remote_mirror_update_button', remote_mirror: mirror
-                    %button.js-delete-mirror.qa-delete-mirror.btn.btn-danger{ type: 'button', data: { mirror_id: mirror.id, toggle: 'tooltip', container: 'body' }, title: _('Remove') }= icon('trash-o')
+                    %button.js-delete-mirror.qa-delete-mirror.rspec-delete-mirror.btn.btn-danger{ type: 'button', data: { mirror_id: mirror.id, toggle: 'tooltip', container: 'body' }, title: _('Remove') }= icon('trash-o')

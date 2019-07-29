@@ -2,5 +2,5 @@
   %button.btn.disabled{ type: 'button', data: { toggle: 'tooltip', container: 'body' }, title: _('Updating') }
     = icon("refresh spin")
 - elsif remote_mirror.enabled?
-  = link_to update_now_project_mirror_path(@project, sync_remote: true), method: :post, class: "btn qa-update-now-button", data: { toggle: 'tooltip', container: 'body' }, title: _('Update now') do
+  = link_to update_now_project_mirror_path(@project, sync_remote: true), method: :post, class: "btn qa-update-now-button rspec-update-now-button", data: { toggle: 'tooltip', container: 'body' }, title: _('Update now') do
     = icon("refresh")
