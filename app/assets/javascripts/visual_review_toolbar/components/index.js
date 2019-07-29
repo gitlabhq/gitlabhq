@@ -1,33 +1,23 @@
-import { comment, postComment } from './comment';
-import {
-  COLLAPSE_BUTTON,
-  COMMENT_BUTTON,
-  FORM_CONTAINER,
-  LOGIN,
-  LOGOUT,
-  REVIEW_CONTAINER,
-} from './constants';
+import { changeSelectedMr, comment, logoutUser, postComment, saveComment } from './comment';
 import { authorizeUser, login } from './login';
+import { addMr, mrForm } from './mr_id';
 import { note } from './note';
-import { selectContainer } from './utils';
-import { buttonAndForm, logoutUser, toggleForm } from './wrapper';
-import { collapseButton } from './wrapper_icons';
+import { selectContainer, selectForm } from './utils';
+import { buttonAndForm, toggleForm } from './wrapper';
 
 export {
+  addMr,
   authorizeUser,
   buttonAndForm,
-  collapseButton,
+  changeSelectedMr,
   comment,
   login,
   logoutUser,
+  mrForm,
   note,
   postComment,
+  saveComment,
   selectContainer,
+  selectForm,
   toggleForm,
-  COLLAPSE_BUTTON,
-  COMMENT_BUTTON,
-  FORM_CONTAINER,
-  LOGIN,
-  LOGOUT,
-  REVIEW_CONTAINER,
 };

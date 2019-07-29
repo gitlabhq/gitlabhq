@@ -1,7 +1,8 @@
 import './styles/toolbar.css';
 
-import { buttonAndForm, note, selectContainer, REVIEW_CONTAINER } from './components';
-import { debounce, eventLookup, getInitialView, initializeState, updateWindowSize } from './store';
+import { buttonAndForm, note, selectForm, selectContainer } from './components';
+import { REVIEW_CONTAINER } from './shared';
+import { eventLookup, getInitialView, initializeGlobalListeners, initializeState } from './store';
 
 /*
 
@@ -20,7 +21,7 @@ import { debounce, eventLookup, getInitialView, initializeState, updateWindowSiz
 window.addEventListener('load', () => {
   initializeState(window, document);
 
-  const mainContent = buttonAndForm(getInitialView(window));
+  const mainContent = buttonAndForm(getInitialView());
   const container = document.createElement('div');
   container.setAttribute('id', REVIEW_CONTAINER);
   container.insertAdjacentHTML('beforeend', note);
@@ -29,8 +30,22 @@ window.addEventListener('load', () => {
   document.body.insertBefore(container, document.body.firstChild);
 
   selectContainer().addEventListener('click', event => {
-    eventLookup(event)();
+    eventLookup(event.target.id)();
   });
 
-  window.addEventListener('resize', debounce(updateWindowSize.bind(null, window), 200));
+  selectForm().addEventListener('submit', event => {
+    // this is important to prevent the form from adding data
+    // as URL params and inadvertently revealing secrets
+    event.preventDefault();
+
+    const id =
+      event.target.querySelector('.gitlab-button-wrapper') &&
+      event.target.querySelector('.gitlab-button-wrapper').getElementsByTagName('button')[0] &&
+      event.target.querySelector('.gitlab-button-wrapper').getElementsByTagName('button')[0].id;
+
+    // even if this is called with false, it's ok; it will get the default no-op
+    eventLookup(id)();
+  });
+
+  initializeGlobalListeners();
 });

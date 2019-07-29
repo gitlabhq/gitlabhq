@@ -1,35 +1,31 @@
-import { LOGIN, REMEMBER_TOKEN, TOKEN_BOX } from './constants';
+import { nextView } from '../store';
+import { localStorage, LOGIN, TOKEN_BOX } from '../shared';
 import { clearNote, postError } from './note';
-import { buttonClearStyles, selectRemember, selectToken } from './utils';
-import { addCommentForm } from './wrapper';
+import { rememberBox, submitButton } from './form_elements';
+import { selectRemember, selectToken } from './utils';
+import { addForm } from './wrapper';
+
+const labelText = `
+  Enter your <a class="gitlab-link" href="https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html">personal access token</a>
+`;
 
 const login = `
-  <div>
-    <label for="${TOKEN_BOX}" class="gitlab-label">Enter your <a class="gitlab-link" href="https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html">personal access token</a></label>
-    <input class="gitlab-input" type="password" id="${TOKEN_BOX}" name="${TOKEN_BOX}" aria-required="true" autocomplete="current-password">
-  </div>
-  <div class="gitlab-checkbox-wrapper">
-    <input type="checkbox" id="${REMEMBER_TOKEN}" name="${REMEMBER_TOKEN}" value="remember">
-    <label for="${REMEMBER_TOKEN}" class="gitlab-checkbox-label">Remember me</label>
-  </div>
-  <div class="gitlab-button-wrapper">
-    <button class="gitlab-button-wide gitlab-button gitlab-button-success" style="${buttonClearStyles}" type="button" id="${LOGIN}"> Submit </button>
-  </div>
+    <div>
+      <label for="${TOKEN_BOX}" class="gitlab-label">${labelText}</label>
+      <input class="gitlab-input" type="password" id="${TOKEN_BOX}" name="${TOKEN_BOX}" autocomplete="current-password" aria-required="true">
+    </div>
+    ${rememberBox()}
+    ${submitButton(LOGIN)}
 `;
 
 const storeToken = (token, state) => {
-  const { localStorage } = window;
   const rememberMe = selectRemember().checked;
 
-  // All the browsers we support have localStorage, so let's silently fail
-  // and go on with the rest of the functionality.
-  try {
-    if (rememberMe) {
-      localStorage.setItem('token', token);
-    }
-  } finally {
-    state.token = token;
+  if (rememberMe) {
+    localStorage.setItem('token', token);
   }
+
+  state.token = token;
 };
 
 const authorizeUser = state => {
@@ -45,7 +41,7 @@ const authorizeUser = state => {
   }
 
   storeToken(token, state);
-  addCommentForm();
+  addForm(nextView(state, LOGIN));
 };
 
-export { authorizeUser, login };
+export { authorizeUser, login, storeToken };
