@@ -95,10 +95,6 @@ class CohortsService
   # rubocop: enable CodeReuse/ActiveRecord
 
   def column_to_date(column)
-    if Gitlab::Database.postgresql?
-      "CAST(DATE_TRUNC('month', #{column}) AS date)"
-    else
-      "STR_TO_DATE(DATE_FORMAT(#{column}, '%Y-%m-01'), '%Y-%m-%d')"
-    end
+    "CAST(DATE_TRUNC('month', #{column}) AS date)"
   end
 end

@@ -17,19 +17,17 @@ describe Gitlab::Database do
     it 'returns the name of the adapter' do
       expect(described_class.adapter_name).to be_an_instance_of(String)
     end
-  end
-
-  describe '.human_adapter_name' do
-    it 'returns PostgreSQL when using PostgreSQL' do
-      allow(described_class).to receive(:postgresql?).and_return(true)
-
-      expect(described_class.human_adapter_name).to eq('PostgreSQL')
-    end
 
     it 'returns Unknown when using anything else' do
       allow(described_class).to receive(:postgresql?).and_return(false)
 
       expect(described_class.human_adapter_name).to eq('Unknown')
+    end
+  end
+
+  describe '.human_adapter_name' do
+    it 'returns PostgreSQL when using PostgreSQL' do
+      expect(described_class.human_adapter_name).to eq('PostgreSQL')
     end
   end
 
@@ -65,21 +63,18 @@ describe Gitlab::Database do
   end
 
   describe '.postgresql_9_or_less?' do
-    it 'returns false when not using postgresql' do
-      allow(described_class).to receive(:postgresql?).and_return(false)
-
-      expect(described_class.postgresql_9_or_less?).to eq(false)
+    it 'returns true when using postgresql 8.4' do
+      allow(described_class).to receive(:version).and_return('8.4')
+      expect(described_class.postgresql_9_or_less?).to eq(true)
     end
 
     it 'returns true when using PostgreSQL 9.6' do
-      allow(described_class).to receive(:postgresql?).and_return(true)
       allow(described_class).to receive(:version).and_return('9.6')
 
       expect(described_class.postgresql_9_or_less?).to eq(true)
     end
 
     it 'returns false when using PostgreSQL 10 or newer' do
-      allow(described_class).to receive(:postgresql?).and_return(true)
       allow(described_class).to receive(:version).and_return('10')
 
       expect(described_class.postgresql_9_or_less?).to eq(false)
@@ -87,53 +82,33 @@ describe Gitlab::Database do
   end
 
   describe '.postgresql_minimum_supported_version?' do
-    it 'returns false when not using PostgreSQL' do
-      allow(described_class).to receive(:postgresql?).and_return(false)
+    it 'returns false when using PostgreSQL 9.5' do
+      allow(described_class).to receive(:version).and_return('9.5')
 
       expect(described_class.postgresql_minimum_supported_version?).to eq(false)
     end
 
-    context 'when using PostgreSQL' do
-      before do
-        allow(described_class).to receive(:postgresql?).and_return(true)
-      end
+    it 'returns true when using PostgreSQL 9.6' do
+      allow(described_class).to receive(:version).and_return('9.6')
 
-      it 'returns false when using PostgreSQL 9.5' do
-        allow(described_class).to receive(:version).and_return('9.5')
+      expect(described_class.postgresql_minimum_supported_version?).to eq(true)
+    end
 
-        expect(described_class.postgresql_minimum_supported_version?).to eq(false)
-      end
+    it 'returns true when using PostgreSQL 10 or newer' do
+      allow(described_class).to receive(:version).and_return('10')
 
-      it 'returns true when using PostgreSQL 9.6' do
-        allow(described_class).to receive(:version).and_return('9.6')
-
-        expect(described_class.postgresql_minimum_supported_version?).to eq(true)
-      end
-
-      it 'returns true when using PostgreSQL 10 or newer' do
-        allow(described_class).to receive(:version).and_return('10')
-
-        expect(described_class.postgresql_minimum_supported_version?).to eq(true)
-      end
+      expect(described_class.postgresql_minimum_supported_version?).to eq(true)
     end
   end
 
   describe '.join_lateral_supported?' do
-    it 'returns false when not using postgresql' do
-      allow(described_class).to receive(:postgresql?).and_return(false)
-
-      expect(described_class.join_lateral_supported?).to eq(false)
-    end
-
     it 'returns false when using PostgreSQL 9.2' do
-      allow(described_class).to receive(:postgresql?).and_return(true)
       allow(described_class).to receive(:version).and_return('9.2.1')
 
       expect(described_class.join_lateral_supported?).to eq(false)
     end
 
     it 'returns true when using PostgreSQL 9.3.0 or newer' do
-      allow(described_class).to receive(:postgresql?).and_return(true)
       allow(described_class).to receive(:version).and_return('9.3.0')
 
       expect(described_class.join_lateral_supported?).to eq(true)
@@ -141,21 +116,13 @@ describe Gitlab::Database do
   end
 
   describe '.replication_slots_supported?' do
-    it 'returns false when not using postgresql' do
-      allow(described_class).to receive(:postgresql?).and_return(false)
-
-      expect(described_class.replication_slots_supported?).to eq(false)
-    end
-
     it 'returns false when using PostgreSQL 9.3' do
-      allow(described_class).to receive(:postgresql?).and_return(true)
       allow(described_class).to receive(:version).and_return('9.3.1')
 
       expect(described_class.replication_slots_supported?).to eq(false)
     end
 
     it 'returns true when using PostgreSQL 9.4.0 or newer' do
-      allow(described_class).to receive(:postgresql?).and_return(true)
       allow(described_class).to receive(:version).and_return('9.4.0')
 
       expect(described_class.replication_slots_supported?).to eq(true)
@@ -164,14 +131,12 @@ describe Gitlab::Database do
 
   describe '.pg_wal_lsn_diff' do
     it 'returns old name when using PostgreSQL 9.6' do
-      allow(described_class).to receive(:postgresql?).and_return(true)
       allow(described_class).to receive(:version).and_return('9.6')
 
       expect(described_class.pg_wal_lsn_diff).to eq('pg_xlog_location_diff')
     end
 
     it 'returns new name when using PostgreSQL 10 or newer' do
-      allow(described_class).to receive(:postgresql?).and_return(true)
       allow(described_class).to receive(:version).and_return('10')
 
       expect(described_class.pg_wal_lsn_diff).to eq('pg_wal_lsn_diff')
@@ -180,14 +145,12 @@ describe Gitlab::Database do
 
   describe '.pg_current_wal_insert_lsn' do
     it 'returns old name when using PostgreSQL 9.6' do
-      allow(described_class).to receive(:postgresql?).and_return(true)
       allow(described_class).to receive(:version).and_return('9.6')
 
       expect(described_class.pg_current_wal_insert_lsn).to eq('pg_current_xlog_insert_location')
     end
 
     it 'returns new name when using PostgreSQL 10 or newer' do
-      allow(described_class).to receive(:postgresql?).and_return(true)
       allow(described_class).to receive(:version).and_return('10')
 
       expect(described_class.pg_current_wal_insert_lsn).to eq('pg_current_wal_insert_lsn')
@@ -196,14 +159,12 @@ describe Gitlab::Database do
 
   describe '.pg_last_wal_receive_lsn' do
     it 'returns old name when using PostgreSQL 9.6' do
-      allow(described_class).to receive(:postgresql?).and_return(true)
       allow(described_class).to receive(:version).and_return('9.6')
 
       expect(described_class.pg_last_wal_receive_lsn).to eq('pg_last_xlog_receive_location')
     end
 
     it 'returns new name when using PostgreSQL 10 or newer' do
-      allow(described_class).to receive(:postgresql?).and_return(true)
       allow(described_class).to receive(:version).and_return('10')
 
       expect(described_class.pg_last_wal_receive_lsn).to eq('pg_last_wal_receive_lsn')
@@ -212,14 +173,12 @@ describe Gitlab::Database do
 
   describe '.pg_last_wal_replay_lsn' do
     it 'returns old name when using PostgreSQL 9.6' do
-      allow(described_class).to receive(:postgresql?).and_return(true)
       allow(described_class).to receive(:version).and_return('9.6')
 
       expect(described_class.pg_last_wal_replay_lsn).to eq('pg_last_xlog_replay_location')
     end
 
     it 'returns new name when using PostgreSQL 10 or newer' do
-      allow(described_class).to receive(:postgresql?).and_return(true)
       allow(described_class).to receive(:version).and_return('10')
 
       expect(described_class.pg_last_wal_replay_lsn).to eq('pg_last_wal_replay_lsn')
@@ -434,7 +393,6 @@ describe Gitlab::Database do
   describe '.db_read_only?' do
     before do
       allow(ActiveRecord::Base.connection).to receive(:execute).and_call_original
-      allow(described_class).to receive(:postgresql?).and_return(true)
     end
 
     it 'detects a read only database' do

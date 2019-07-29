@@ -320,7 +320,6 @@ class IssuableFinder
   def use_cte_for_search?
     strong_memoize(:use_cte_for_search) do
       next false unless search
-      next false unless Gitlab::Database.postgresql?
       # Only simple unsorted & simple sorts can use CTE
       next false if params[:sort].present? && !params[:sort].in?(klass.simple_sorts.keys)
 

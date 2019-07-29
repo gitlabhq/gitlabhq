@@ -12,11 +12,7 @@ describe Gitlab::Database::ShaAttribute do
   end
 
   let(:binary_from_db) do
-    if Gitlab::Database.postgresql?
-      "\\x#{sha}"
-    else
-      binary_sha
-    end
+    "\\x#{sha}"
   end
 
   let(:attribute) { described_class.new }

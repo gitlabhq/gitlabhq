@@ -147,19 +147,13 @@ module Gitlab
         "#{UntrackedFile.table_name} (path) VALUES #{values}"
       end
 
-      def postgresql?
-        strong_memoize(:postgresql) do
-          Gitlab::Database.postgresql?
-        end
-      end
-
       def can_bulk_insert_and_ignore_duplicates?
         !postgresql_pre_9_5?
       end
 
       def postgresql_pre_9_5?
         strong_memoize(:postgresql_pre_9_5) do
-          postgresql? && Gitlab::Database.version.to_f < 9.5
+          Gitlab::Database.version.to_f < 9.5
         end
       end
 

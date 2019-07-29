@@ -20,8 +20,7 @@ module Projects
     private
 
     def move_group_links
-      prepare_relation(non_existent_group_links)
-        .update_all(project_id: @project.id)
+      non_existent_group_links.update_all(project_id: @project.id)
     end
 
     # Remove remaining project group links from source_project

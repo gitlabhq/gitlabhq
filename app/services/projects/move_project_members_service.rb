@@ -20,7 +20,7 @@ module Projects
     private
 
     def move_project_members
-      prepare_relation(non_existent_members).update_all(source_id: @project.id)
+      non_existent_members.update_all(source_id: @project.id)
     end
 
     def remove_remaining_members

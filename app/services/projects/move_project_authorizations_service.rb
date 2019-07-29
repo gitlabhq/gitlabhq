@@ -21,8 +21,7 @@ module Projects
     private
 
     def move_project_authorizations
-      prepare_relation(non_existent_authorization, :user_id)
-        .update_all(project_id: @project.id)
+      non_existent_authorization.update_all(project_id: @project.id)
     end
 
     def remove_remaining_authorizations

@@ -137,8 +137,6 @@ module Gitlab
       end
 
       def extract_diff_epoch(diff)
-        return diff unless Gitlab::Database.postgresql?
-
         Arel.sql(%Q{EXTRACT(EPOCH FROM (#{diff.to_sql}))})
       end
 

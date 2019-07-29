@@ -8,11 +8,7 @@ describe ProjectFeature do
 
   describe '.quoted_access_level_column' do
     it 'returns the table name and quoted column name for a feature' do
-      expected = if Gitlab::Database.postgresql?
-                   '"project_features"."issues_access_level"'
-                 else
-                   '`project_features`.`issues_access_level`'
-                 end
+      expected = '"project_features"."issues_access_level"'
 
       expect(described_class.quoted_access_level_column(:issues)).to eq(expected)
     end

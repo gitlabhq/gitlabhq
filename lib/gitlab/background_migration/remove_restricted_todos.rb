@@ -50,14 +50,7 @@ module Gitlab
       private
 
       def remove_non_members_todos(project_id)
-        if Gitlab::Database.postgresql?
-          batch_remove_todos_cte(project_id)
-        else
-          unauthorized_project_todos(project_id)
-            .each_batch(of: 5000) do |batch|
-              batch.delete_all
-            end
-        end
+        batch_remove_todos_cte(project_id)
       end
 
       def remove_confidential_issue_todos(project_id)
@@ -90,13 +83,7 @@ module Gitlab
 
           next if target_types.empty?
 
-          if Gitlab::Database.postgresql?
-            batch_remove_todos_cte(project_id, target_types)
-          else
-            unauthorized_project_todos(project_id)
-              .where(target_type: target_types)
-              .delete_all
-          end
+          batch_remove_todos_cte(project_id, target_types)
         end
       end
 

@@ -16,8 +16,7 @@ module Projects
     private
 
     def move_deploy_keys_projects
-      prepare_relation(non_existent_deploy_keys_projects)
-        .update_all(project_id: @project.id)
+      non_existent_deploy_keys_projects.update_all(project_id: @project.id)
     end
 
     # rubocop: disable CodeReuse/ActiveRecord

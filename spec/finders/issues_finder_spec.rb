@@ -690,24 +690,11 @@ describe IssuesFinder do
     let(:finder) { described_class.new(nil, params) }
 
     before do
-      allow(Gitlab::Database).to receive(:postgresql?).and_return(true)
       stub_feature_flags(attempt_group_search_optimizations: true)
     end
 
     context 'when there is no search param' do
       let(:params) { { attempt_group_search_optimizations: true } }
-
-      it 'returns false' do
-        expect(finder.use_cte_for_search?).to be_falsey
-      end
-    end
-
-    context 'when the database is not Postgres' do
-      let(:params) { { search: 'foo', attempt_group_search_optimizations: true } }
-
-      before do
-        allow(Gitlab::Database).to receive(:postgresql?).and_return(false)
-      end
 
       it 'returns false' do
         expect(finder.use_cte_for_search?).to be_falsey
