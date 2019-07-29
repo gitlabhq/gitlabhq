@@ -5,10 +5,6 @@ class ClusterConfigureWorker
   include ClusterQueue
 
   def perform(cluster_id)
-    Clusters::Cluster.managed.find_by_id(cluster_id).try do |cluster|
-      if cluster.project_type?
-        Clusters::RefreshService.create_or_update_namespaces_for_cluster(cluster)
-      end
-    end
+    # Scheduled for removal in https://gitlab.com/gitlab-org/gitlab-ce/issues/59319
   end
 end
