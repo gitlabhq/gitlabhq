@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_dependency File.expand_path('gitlab/popen', __dir__)
+require 'pathname'
 
 module Gitlab
   def self.root
@@ -61,7 +61,7 @@ module Gitlab
 
   def self.ee?
     @is_ee ||=
-      if ENV['IS_GITLAB_EE'].present?
+      if ENV['IS_GITLAB_EE'] && !ENV['IS_GITLAB_EE'].empty?
         Gitlab::Utils.to_boolean(ENV['IS_GITLAB_EE'])
       else
         # We may use this method when the Rails environment is not loaded. This

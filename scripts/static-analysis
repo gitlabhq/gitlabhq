@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 
 # We don't have auto-loading here
+require_relative '../lib/gitlab'
 require_relative '../lib/gitlab/popen'
 require_relative '../lib/gitlab/popen/runner'
 
@@ -35,6 +36,10 @@ tasks = [
   %w[scripts/lint-conflicts.sh],
   %w[scripts/lint-rugged]
 ]
+
+if Gitlab.ee?
+  tasks.unshift(%w[ruby -rbundler/setup scripts/ee_specific_check/ee_specific_check.rb])
+end
 
 static_analysis = Gitlab::Popen::Runner.new
 

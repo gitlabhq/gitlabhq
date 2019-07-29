@@ -136,6 +136,12 @@ describe Gitlab do
 
       expect(described_class.ee?).to eq(false)
     end
+
+    it 'returns true when the IS_GITLAB_EE variable is not empty' do
+      stub_env('IS_GITLAB_EE', '1')
+
+      expect(described_class.ee?).to eq(true)
+    end
   end
 
   describe '.http_proxy_env?' do

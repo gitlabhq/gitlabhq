@@ -70,5 +70,13 @@ namespace :gitlab do
 
       Gitlab::DowntimeCheck.new.check_and_print(migrations)
     end
+
+    desc 'Sets up EE specific database functionality'
+
+    if Gitlab.ee?
+      task setup_ee: %w[geo:db:drop geo:db:create geo:db:schema:load geo:db:migrate]
+    else
+      task :setup_ee
+    end
   end
 end
