@@ -6,21 +6,34 @@ describe 'Dashboard > User filters todos', :js do
   let(:user_1)    { create(:user, username: 'user_1', name: 'user_1') }
   let(:user_2)    { create(:user, username: 'user_2', name: 'user_2') }
 
-  let(:project_1) { create(:project, name: 'project_1') }
-  let(:project_2) { create(:project, name: 'project_2') }
+  let(:group1) { create(:group) }
+  let(:group2) { create(:group) }
 
-  let(:issue) { create(:issue, title: 'issue', project: project_1) }
+  let(:project_1) { create(:project, name: 'project_1', namespace: group1) }
+  let(:project_2) { create(:project, name: 'project_2', namespace: group1) }
+  let(:project_3) { create(:project, name: 'project_3', namespace: group2) }
+
+  let(:issue1) { create(:issue, title: 'issue', project: project_1) }
+  let(:issue2) { create(:issue, title: 'issue', project: project_3) }
 
   let!(:merge_request) { create(:merge_request, source_project: project_2, title: 'merge_request') }
 
   before do
-    create(:todo, user: user_1, author: user_2, project: project_1, target: issue, action: 1)
+    create(:todo, user: user_1, author: user_2, project: project_1, target: issue1, action: 1)
+    create(:todo, user: user_1, author: user_2, project: project_3, target: issue2, action: 1)
     create(:todo, user: user_1, author: user_1, project: project_2, target: merge_request, action: 2)
 
     project_1.add_developer(user_1)
     project_2.add_developer(user_1)
+    project_3.add_developer(user_1)
     sign_in(user_1)
     visit dashboard_todos_path
+  end
+
+  it 'displays all todos without a filter' do
+    expect(page).to have_content issue1.to_reference(full: true)
+    expect(page).to have_content merge_request.to_reference(full: true)
+    expect(page).to have_content issue2.to_reference(full: true)
   end
 
   it 'filters by project' do
@@ -34,6 +47,20 @@ describe 'Dashboard > User filters todos', :js do
 
     expect(page).to     have_content project_1.full_name
     expect(page).not_to have_content project_2.full_name
+  end
+
+  it 'filters by group' do
+    click_button 'Group'
+    within '.dropdown-menu-group' do
+      fill_in 'Search groups', with: group1.full_name
+      click_link group1.full_name
+    end
+
+    wait_for_requests
+
+    expect(page).to     have_content issue1.to_reference(full: true)
+    expect(page).to     have_content merge_request.to_reference(full: true)
+    expect(page).not_to have_content issue2.to_reference(full: true)
   end
 
   context 'Author filter' do
@@ -65,7 +92,7 @@ describe 'Dashboard > User filters todos', :js do
     it 'shows only authors of existing done todos' do
       user_3 = create :user
       user_4 = create :user
-      create(:todo, user: user_1, author: user_3, project: project_1, target: issue, action: 1, state: :done)
+      create(:todo, user: user_1, author: user_3, project: project_1, target: issue1, action: 1, state: :done)
       create(:todo, user: user_1, author: user_4, project: project_2, target: merge_request, action: 2, state: :done)
 
       project_1.add_developer(user_3)
@@ -94,14 +121,15 @@ describe 'Dashboard > User filters todos', :js do
 
     wait_for_requests
 
-    expect(find('.todos-list')).to     have_content issue.to_reference
+    expect(find('.todos-list')).to     have_content issue1.to_reference
+    expect(find('.todos-list')).to     have_content issue2.to_reference
     expect(find('.todos-list')).not_to have_content merge_request.to_reference
   end
 
   describe 'filter by action' do
     before do
       create(:todo, :build_failed, user: user_1, author: user_2, project: project_1)
-      create(:todo, :marked, user: user_1, author: user_2, project: project_1, target: issue)
+      create(:todo, :marked, user: user_1, author: user_2, project: project_1, target: issue1)
     end
 
     it 'filters by Assigned' do

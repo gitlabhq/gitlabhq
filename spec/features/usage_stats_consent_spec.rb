@@ -8,7 +8,15 @@ describe 'Usage stats consent' do
     let(:message) { 'To help improve GitLab, we would like to periodically collect usage information.' }
 
     before do
-      allow(user).to receive(:has_current_license?).and_return false
+      if Gitlab.ee?
+        allow_any_instance_of(EE::User)
+          .to receive(:has_current_license?)
+          .and_return(false)
+      else
+        allow(user)
+          .to receive(:has_current_license?)
+          .and_return(false)
+      end
 
       gitlab_sign_in(user)
     end
