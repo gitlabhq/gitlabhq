@@ -45,5 +45,6 @@
     - if @snippet || @snippets
       = hidden_field_tag :snippets, true
     = hidden_field_tag :repository_ref, @ref
+    = hidden_field_tag :nav_source, 'navbar'
     = button_tag 'Go' if ENV['RAILS_ENV'] == 'test'
     .search-autocomplete-opts.hide{ :'data-autocomplete-path' => search_autocomplete_path, :'data-autocomplete-project-id' => @project.try(:id), :'data-autocomplete-project-ref' => @ref }

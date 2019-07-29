@@ -67,7 +67,8 @@ describe Gitlab::UsageData do
         wiki_pages_delete: a_kind_of(Integer),
         web_ide_views: a_kind_of(Integer),
         web_ide_commits: a_kind_of(Integer),
-        web_ide_merge_requests: a_kind_of(Integer)
+        web_ide_merge_requests: a_kind_of(Integer),
+        navbar_searches: a_kind_of(Integer)
       )
     end
 
