@@ -189,17 +189,11 @@ function deploy() {
   gitlab_shell_image_repository="${IMAGE_REPOSITORY}/gitlab-shell"
   gitlab_workhorse_image_repository="${IMAGE_REPOSITORY}/gitlab-workhorse-${IMAGE_VERSION}"
 
-  # Cleanup and previous installs, as FAILED and PENDING_UPGRADE will cause errors with `upgrade`
-  if [ "$CI_ENVIRONMENT_SLUG" != "production" ] && previous_deploy_failed "$CI_ENVIRONMENT_SLUG" ; then
-    echo "Deployment in bad state, cleaning up $CI_ENVIRONMENT_SLUG"
-    delete
-  fi
-
   create_application_secret
 
 HELM_CMD=$(cat << EOF
   helm upgrade --install \
-    --wait \
+    --atomic \
     --timeout 900 \
     --set releaseOverride="$CI_ENVIRONMENT_SLUG" \
     --set global.appConfig.enableUsagePing=false \
