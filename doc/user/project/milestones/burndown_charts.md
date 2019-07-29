@@ -1,6 +1,9 @@
+---
+type: reference
+---
+
 # Burndown Charts **(STARTER)**
 
-> **Notes:**
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/1540) in [GitLab Starter](https://about.gitlab.com/pricing/) 9.1 for project milestones.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/5354) in [GitLab Premium](https://about.gitlab.com/pricing/) 10.8 for group milestones.
 > - [Added](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/6495) to [GitLab Starter](https://about.gitlab.com/pricing/) 11.2 for group milestones.
@@ -20,7 +23,8 @@ yourself to have the same sense of progress.
 
 GitLab Starter plots it for you and presents it in a clear and beautiful chart.
 
-For an overview, check the video demonstration on [Mapping Work Versus Time, With Burndown Charts](https://about.gitlab.com/2017/04/25/mapping-work-to-do-versus-time-with-burndown-charts/).
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For an overview, check the video demonstration on [Mapping work versus time with Burndown Charts](https://www.youtube.com/watch?v=zJU2MuRChzs).
 
 ## Use cases
 
@@ -68,3 +72,15 @@ The Burndown Chart can also be toggled to display the cumulative open issue
 weight for a given day. When using this feature, make sure issue weights have
 been properly assigned, since an open issue with no weight adds zero to the
 cumulative value.
+
+<!-- ## Troubleshooting
+
+Include any troubleshooting steps that you can foresee. If you know beforehand what issues
+one might have when setting this up, or when something is changed, or on upgrading, it's
+important to describe those, too. Think of things that may go wrong and include them here.
+This is important to minimize requests for support, and to avoid doc comments with
+questions that you know someone might ask.
+
+Each scenario can be a third-level heading, e.g. `### Getting error message X`.
+If you have none to add when creating a doc, leave this section in place
+but commented out to help encourage others to add to it in the future. -->
