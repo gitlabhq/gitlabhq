@@ -86,11 +86,8 @@ module Gitlab
       #
       # The original hostname is used to validate the SSL, given in that scenario
       # we'll be making the request to the IP address, instead of using the hostname.
-      def enforce_uri_hostname(addrs_info, uri, hostname, dns_rebind_protection)
-        address = addrs_info.first
-        ip_address = address.ip_address
-
-        return [uri, nil] unless dns_rebind_protection && ip_address != hostname
+      def enforce_uri_hostname(ip_address, uri, hostname, dns_rebind_protection)
+        return [uri, nil] unless dns_rebind_protection && ip_address && ip_address != hostname
 
         uri = uri.dup
         uri.hostname = ip_address
