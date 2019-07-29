@@ -16,7 +16,7 @@ gem 'sprockets', '~> 3.7.0'
 gem 'default_value_for', '~> 3.2.0'
 
 # Supported DBs
-gem 'pg', '~> 1.1', group: :postgres
+gem 'pg', '~> 1.1'
 
 gem 'rugged', '~> 0.28'
 gem 'grape-path-helpers', '~> 1.1'
@@ -297,7 +297,6 @@ gem 'batch-loader', '~> 1.4.0'
 # Perf bar
 gem 'peek', '~> 1.0.1'
 gem 'peek-gc', '~> 0.0.2'
-gem 'peek-pg', '~> 1.3.0', group: :postgres
 gem 'peek-rblineprof', '~> 0.2.0'
 
 # Memory benchmarks

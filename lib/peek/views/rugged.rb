@@ -24,8 +24,7 @@ module Peek
       end
 
       def format_call_details(call)
-        call.merge(duration: (call[:duration] * 1000).round(3),
-                   args: format_args(call[:args]))
+        super.merge(args: format_args(call[:args]))
       end
 
       def format_args(args)

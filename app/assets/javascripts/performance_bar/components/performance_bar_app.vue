@@ -34,23 +34,25 @@ export default {
     },
   },
   detailedMetrics: [
-    { metric: 'pg', header: s__('PerformanceBar|SQL queries'), details: 'queries', keys: ['sql'] },
+    {
+      metric: 'active-record',
+      title: 'pg',
+      header: s__('PerformanceBar|SQL queries'),
+      keys: ['sql'],
+    },
     {
       metric: 'gitaly',
       header: s__('PerformanceBar|Gitaly calls'),
-      details: 'details',
       keys: ['feature', 'request'],
     },
     {
       metric: 'rugged',
       header: s__('PerformanceBar|Rugged calls'),
-      details: 'details',
       keys: ['feature', 'args'],
     },
     {
       metric: 'redis',
       header: s__('PerformanceBar|Redis calls'),
-      details: 'details',
       keys: ['cmd'],
     },
   ],
@@ -118,8 +120,8 @@ export default {
         :key="metric.metric"
         :current-request="currentRequest"
         :metric="metric.metric"
+        :title="metric.title"
         :header="metric.header"
-        :details="metric.details"
         :keys="metric.keys"
       />
       <div v-if="initialRequest" id="peek-view-rblineprof" class="view">

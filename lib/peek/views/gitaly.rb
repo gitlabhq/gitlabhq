@@ -20,8 +20,7 @@ module Peek
       def format_call_details(call)
         pretty_request = call[:request]&.reject { |k, v| v.blank? }.to_h.pretty_inspect
 
-        call.merge(duration: (call[:duration] * 1000).round(3),
-                   request: pretty_request || {})
+        super.merge(request: pretty_request || {})
       end
 
       def setup_subscribers

@@ -42,27 +42,10 @@ module Peek
         'redis'
       end
 
-      def detail_store
-        ::Gitlab::SafeRequestStore['redis_call_details'] ||= []
-      end
-
       private
 
-      def duration
-        detail_store.map { |entry| entry[:duration] }.sum # rubocop:disable CodeReuse/ActiveRecord
-      end
-
-      def calls
-        detail_store.count
-      end
-
-      def call_details
-        detail_store
-      end
-
       def format_call_details(call)
-        call.merge(cmd: format_command(call[:cmd]),
-                   duration: (call[:duration] * 1000).round(3))
+        super.merge(cmd: format_command(call[:cmd]))
       end
 
       def format_command(cmd)
