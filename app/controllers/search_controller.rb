@@ -31,6 +31,8 @@ class SearchController < ApplicationController
     render_commits if @scope == 'commits'
     eager_load_user_status if @scope == 'users'
 
+    increment_navbar_searches_counter
+
     check_single_commit_result
   end
 
@@ -69,5 +71,11 @@ class SearchController < ApplicationController
 
       redirect_to project_commit_path(@project, only_commit) if found_by_commit_sha
     end
+  end
+
+  def increment_navbar_searches_counter
+    return if params[:nav_source] != 'navbar'
+
+    Gitlab::UsageDataCounters::SearchCounter.increment_navbar_searches_count
   end
 end

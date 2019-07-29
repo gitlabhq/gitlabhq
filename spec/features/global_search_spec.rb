@@ -9,6 +9,15 @@ describe 'Global search' do
   before do
     project.add_maintainer(user)
     sign_in(user)
+
+    visit dashboard_projects_path
+  end
+
+  it 'increases usage ping searches counter' do
+    expect(Gitlab::UsageDataCounters::SearchCounter).to receive(:increment_navbar_searches_count)
+
+    fill_in "search", with: "foobar"
+    click_button "Go"
   end
 
   describe 'I search through the issues and I see pagination' do
@@ -18,8 +27,6 @@ describe 'Global search' do
     end
 
     it "has a pagination" do
-      visit dashboard_projects_path
-
       fill_in "search", with: "initial"
       click_button "Go"
 
@@ -29,8 +36,6 @@ describe 'Global search' do
   end
 
   it 'closes the dropdown on blur', :js do
-    visit dashboard_projects_path
-
     fill_in 'search', with: "a"
     dropdown = find('.js-dashboard-search-options')
 
