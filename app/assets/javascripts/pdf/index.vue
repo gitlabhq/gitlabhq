@@ -39,7 +39,7 @@ export default {
           cMapUrl: '/assets/webpack/cmaps/',
           cMapPacked: true,
         })
-        .then(this.renderPages)
+        .promise.then(this.renderPages)
         .then(pages => {
           this.pages = pages;
           this.$emit('pdflabload');

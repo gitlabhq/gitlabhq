@@ -17,7 +17,7 @@ describe('Page component', () => {
     pdfjsLib.GlobalWorkerOptions.workerSrc = workerSrc;
     pdfjsLib
       .getDocument(testPDF)
-      .then(pdf => pdf.getPage(1))
+      .promise.then(pdf => pdf.getPage(1))
       .then(page => {
         testPage = page;
       })
@@ -31,7 +31,8 @@ describe('Page component', () => {
 
   it('renders the page when mounting', done => {
     const promise = Promise.resolve();
-    spyOn(testPage, 'render').and.callFake(() => promise);
+    spyOn(testPage, 'render').and.returnValue({ promise });
+
     vm = mountComponent(Component, {
       page: testPage,
       number: 1,
