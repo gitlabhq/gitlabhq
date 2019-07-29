@@ -33,7 +33,7 @@ The following table lists examples with step-by-step tutorials that are containe
 | Java with Maven             | [How to deploy Maven projects to Artifactory with GitLab CI/CD](artifactory_and_gitlab/index.md).                          |
 | PHP with PHPunit, atoum     | [Testing PHP projects](php.md).                                                                                            |
 | PHP with NPM, SCP           | [Running Composer and NPM scripts with deployment via SCP in GitLab CI/CD](deployment/composer-npm-deploy.md).             |
-| PHP with Laravel, Ennvoy    | [Test and deploy Laravel applications with GitLab CI/CD and Envoy](laravel_with_gitlab_and_envoy/index.md).                |
+| PHP with Laravel, Envoy     | [Test and deploy Laravel applications with GitLab CI/CD and Envoy](laravel_with_gitlab_and_envoy/index.md).                |
 | Python on Heroku            | [Test and deploy a Python application with GitLab CI/CD](test-and-deploy-python-application-to-heroku.md).                 |
 | Ruby on Heroku              | [Test and deploy a Ruby application with GitLab CI/CD](test-and-deploy-ruby-application-to-heroku.md).                     |
 | Scala on Heroku             | [Test and deploy a Scala application to Heroku](test-scala-application.md).                                                |
