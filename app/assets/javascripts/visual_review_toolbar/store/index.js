@@ -1,5 +1,11 @@
-import { eventLookup, updateWindowSize } from './events';
-import { getInitialView, initializeState } from './state';
-import debounce from './utils';
+import { eventLookup, initializeGlobalListeners } from './events';
+import { nextView, getInitialView, initializeState, setUsingGracefulStorageFlag } from './state';
 
-export { debounce, eventLookup, getInitialView, initializeState, updateWindowSize };
+export {
+  eventLookup,
+  getInitialView,
+  initializeGlobalListeners,
+  initializeState,
+  nextView,
+  setUsingGracefulStorageFlag,
+};

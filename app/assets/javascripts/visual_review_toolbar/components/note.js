@@ -1,4 +1,4 @@
-import { NOTE, NOTE_CONTAINER, RED } from './constants';
+import { NOTE, NOTE_CONTAINER, RED } from '../shared';
 import { selectById, selectNote, selectNoteContainer } from './utils';
 
 const note = `

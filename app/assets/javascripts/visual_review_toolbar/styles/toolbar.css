@@ -107,10 +107,14 @@
 }
 
 .gitlab-button-wrapper {
-  margin-top: 1rem;
+  margin-top: 0.5rem;
   display: flex;
   align-items: baseline;
-  justify-content: flex-end;
+  /*
+    this makes sure the hit enter to submit picks the correct button
+    on the comment view
+   */
+  flex-direction: row-reverse;
 }
 
 .gitlab-collapse {
@@ -155,6 +159,12 @@
   text-decoration: underline;
 }
 
+.gitlab-link-button {
+  border: none;
+  cursor: pointer;
+  padding: 0 .15rem;
+}
+
 .gitlab-message {
   padding: .25rem 0;
   margin: 0;
@@ -165,7 +175,7 @@
   font-size: .7rem;
   line-height: 1rem;
   color: #666;
-  margin-bottom: 0;
+  margin-bottom: .5rem;
 }
 
 .gitlab-input {
