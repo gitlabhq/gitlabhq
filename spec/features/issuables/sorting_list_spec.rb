@@ -102,7 +102,7 @@ describe 'Sort Issuable List' do
         expect(first_merge_request).to include(last_updated_issuable.title)
         expect(last_merge_request).to include(first_updated_issuable.title)
 
-        find('.issues-other-filters .filter-dropdown-container .qa-reverse-sort').click
+        find('.issues-other-filters .filter-dropdown-container .rspec-reverse-sort').click
 
         expect(first_merge_request).to include(first_updated_issuable.title)
         expect(last_merge_request).to include(last_updated_issuable.title)
@@ -204,7 +204,7 @@ describe 'Sort Issuable List' do
         expect(first_issue).to include(last_updated_issuable.title)
         expect(last_issue).to include(first_updated_issuable.title)
 
-        find('.issues-other-filters .filter-dropdown-container .qa-reverse-sort').click
+        find('.issues-other-filters .filter-dropdown-container .rspec-reverse-sort').click
 
         expect(first_issue).to include(first_updated_issuable.title)
         expect(last_issue).to include(last_updated_issuable.title)

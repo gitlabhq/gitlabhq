@@ -22,7 +22,7 @@ describe WikiHelper do
   describe '#wiki_sort_controls' do
     let(:project) { create(:project) }
     let(:wiki_link) { helper.wiki_sort_controls(project, sort, direction) }
-    let(:classes) { "btn btn-default has-tooltip reverse-sort-btn qa-reverse-sort" }
+    let(:classes) { "btn btn-default has-tooltip reverse-sort-btn qa-reverse-sort rspec-reverse-sort" }
 
     def expected_link(sort, direction, icon_class)
       path = "/#{project.full_path}/wikis/pages?direction=#{direction}&sort=#{sort}"
