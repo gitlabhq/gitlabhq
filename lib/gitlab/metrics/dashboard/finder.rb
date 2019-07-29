@@ -47,22 +47,22 @@ module Gitlab
           private
 
           def service_for_path(dashboard_path, embedded:)
-            return dynamic_service if embedded
+            return embed_service if embedded
             return system_service if system_dashboard?(dashboard_path)
 
             project_service
           end
 
           def system_service
-            Gitlab::Metrics::Dashboard::SystemDashboardService
+            ::Metrics::Dashboard::SystemDashboardService
           end
 
           def project_service
-            Gitlab::Metrics::Dashboard::ProjectDashboardService
+            ::Metrics::Dashboard::ProjectDashboardService
           end
 
-          def dynamic_service
-            Gitlab::Metrics::Dashboard::DynamicDashboardService
+          def embed_service
+            ::Metrics::Dashboard::DefaultEmbedService
           end
 
           def system_dashboard?(filepath)
