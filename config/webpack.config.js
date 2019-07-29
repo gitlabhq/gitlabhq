@@ -157,7 +157,15 @@ module.exports = {
         loader: 'graphql-tag/loader',
       },
       {
+        test: /icons\.svg$/,
+        loader: 'file-loader',
+        options: {
+          name: '[name].[hash:8].[ext]',
+        },
+      },
+      {
         test: /\.svg$/,
+        exclude: /icons\.svg$/,
         loader: 'raw-loader',
       },
       {
