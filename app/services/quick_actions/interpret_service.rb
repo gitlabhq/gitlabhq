@@ -31,17 +31,19 @@ module QuickActions
     end
 
     # Takes a text and interprets the commands that are extracted from it.
-    # Returns the content without commands, and hash of changes to be applied to a record.
+    # Returns the content without commands, a hash of changes to be applied to a record
+    # and a string containing the execution_message to show to the user.
     def execute(content, quick_action_target, only: nil)
-      return [content, {}] unless current_user.can?(:use_quick_actions)
+      return [content, {}, ''] unless current_user.can?(:use_quick_actions)
 
       @quick_action_target = quick_action_target
       @updates = {}
+      @execution_message = {}
 
       content, commands = extractor.extract_commands(content, only: only)
       extract_updates(commands)
 
-      [content, @updates]
+      [content, @updates, execution_messages_for(commands)]
     end
 
     # Takes a text and interprets the commands that are extracted from it.
@@ -119,8 +121,12 @@ module QuickActions
       labels_params.scan(/"([^"]+)"|([^ ]+)/).flatten.compact
     end
 
-    def find_label_references(labels_param)
-      find_labels(labels_param).map(&:to_reference)
+    def find_label_references(labels_param, format = :id)
+      labels_to_reference(find_labels(labels_param), format)
+    end
+
+    def labels_to_reference(labels, format = :id)
+      labels.map { |l| l.to_reference(format: format) }
     end
 
     def find_label_ids(labels_param)
@@ -128,11 +134,24 @@ module QuickActions
     end
 
     def explain_commands(commands)
+      map_commands(commands, :explain)
+    end
+
+    def execution_messages_for(commands)
+      map_commands(commands, :execute_message).join(' ')
+    end
+
+    def map_commands(commands, method)
       commands.map do |name, arg|
         definition = self.class.definition_by_name(name)
         next unless definition
 
-        definition.explain(self, arg)
+        case method
+        when :explain
+          definition.explain(self, arg)
+        when :execute_message
+          @execution_message[name.to_sym] || definition.execute_message(self, arg)
+        end
       end.compact
     end
 

@@ -3,8 +3,8 @@
 module Gitlab
   module QuickActions
     class CommandDefinition
-      attr_accessor :name, :aliases, :description, :explanation, :params,
-        :condition_block, :parse_params_block, :action_block, :warning, :types
+      attr_accessor :name, :aliases, :description, :explanation, :execution_message,
+        :params, :condition_block, :parse_params_block, :action_block, :warning, :types
 
       def initialize(name, attributes = {})
         @name = name
@@ -13,6 +13,7 @@ module Gitlab
         @description = attributes[:description] || ''
         @warning = attributes[:warning] || ''
         @explanation = attributes[:explanation] || ''
+        @execution_message = attributes[:execution_message] || ''
         @params = attributes[:params] || []
         @condition_block = attributes[:condition_block]
         @parse_params_block = attributes[:parse_params_block]
@@ -48,11 +49,21 @@ module Gitlab
       end
 
       def execute(context, arg)
-        return if noop? || !available?(context)
+        return unless executable?(context)
 
         count_commands_executed_in(context)
 
         execute_block(action_block, context, arg)
+      end
+
+      def execute_message(context, arg)
+        return unless executable?(context)
+
+        if execution_message.respond_to?(:call)
+          execute_block(execution_message, context, arg)
+        else
+          execution_message
+        end
       end
 
       def to_h(context)
@@ -76,6 +87,10 @@ module Gitlab
       end
 
       private
+
+      def executable?(context)
+        !noop? && available?(context)
+      end
 
       def count_commands_executed_in(context)
         return unless context.respond_to?(:commands_executed_count=)

@@ -8,8 +8,9 @@ module Gitlab
 
       included do
         # MergeRequest only quick actions definitions
-        desc 'Merge (when the pipeline succeeds)'
-        explanation 'Merges this merge request when the pipeline succeeds.'
+        desc _('Merge (when the pipeline succeeds)')
+        explanation _('Merges this merge request when the pipeline succeeds.')
+        execution_message _('Scheduled to merge this merge request when the pipeline succeeds.')
         types MergeRequest
         condition do
           last_diff_sha = params && params[:merge_request_diff_head_sha]
@@ -22,10 +23,22 @@ module Gitlab
 
         desc 'Toggle the Work In Progress status'
         explanation do
-          verb = quick_action_target.work_in_progress? ? 'Unmarks' : 'Marks'
           noun = quick_action_target.to_ability_name.humanize(capitalize: false)
-          "#{verb} this #{noun} as Work In Progress."
+          if quick_action_target.work_in_progress?
+            _("Unmarks this %{noun} as Work In Progress.")
+          else
+            _("Marks this %{noun} as Work In Progress.")
+          end % { noun: noun }
         end
+        execution_message do
+          noun = quick_action_target.to_ability_name.humanize(capitalize: false)
+          if quick_action_target.work_in_progress?
+            _("Unmarked this %{noun} as Work In Progress.")
+          else
+            _("Marked this %{noun} as Work In Progress.")
+          end % { noun: noun }
+        end
+
         types MergeRequest
         condition do
           quick_action_target.respond_to?(:work_in_progress?) &&
@@ -36,9 +49,12 @@ module Gitlab
           @updates[:wip_event] = quick_action_target.work_in_progress? ? 'unwip' : 'wip'
         end
 
-        desc 'Set target branch'
+        desc _('Set target branch')
         explanation do |branch_name|
-          "Sets target branch to #{branch_name}."
+          _('Sets target branch to %{branch_name}.') % { branch_name: branch_name }
+        end
+        execution_message do |branch_name|
+          _('Set target branch to %{branch_name}.') % { branch_name: branch_name }
         end
         params '<Local branch name>'
         types MergeRequest

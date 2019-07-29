@@ -9,7 +9,8 @@ and commits that are usually done by clicking buttons or dropdowns in GitLab's U
 You can enter these commands while creating a new issue or merge request, or
 in comments of issues, epics, merge requests, and commits. Each command should be
 on a separate line in order to be properly detected and executed. Once executed,
-the commands are removed from the text body and not visible to anyone else.
+
+> From [GitLab 12.1](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/26672), an alert is displayed when a quick action is successfully applied.
 
 ## Quick Actions for issues and merge requests
 

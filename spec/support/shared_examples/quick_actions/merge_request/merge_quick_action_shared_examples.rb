@@ -10,7 +10,7 @@ shared_examples 'merge quick action' do
     it 'merges the MR' do
       add_note("/merge")
 
-      expect(page).to have_content 'Commands applied'
+      expect(page).to have_content 'Scheduled to merge this merge request when the pipeline succeeds.'
 
       expect(merge_request.reload).to be_merged
     end
