@@ -513,6 +513,30 @@ describe SystemNoteService do
     end
   end
 
+  describe '.zoom_link_added' do
+    subject { described_class.zoom_link_added(issue, project, author) }
+
+    it_behaves_like 'a system note' do
+      let(:action) { 'pinned_embed' }
+    end
+
+    it 'sets the zoom link added note text' do
+      expect(subject.note).to eq('a Zoom call was added to this issue')
+    end
+  end
+
+  describe '.zoom_link_removed' do
+    subject { described_class.zoom_link_removed(issue, project, author) }
+
+    it_behaves_like 'a system note' do
+      let(:action) { 'pinned_embed' }
+    end
+
+    it 'sets the zoom link removed note text' do
+      expect(subject.note).to eq('a Zoom call was removed from this issue')
+    end
+  end
+
   describe '.cross_reference' do
     subject { described_class.cross_reference(noteable, mentioner, author) }
 

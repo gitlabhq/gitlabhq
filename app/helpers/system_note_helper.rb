@@ -21,6 +21,7 @@ module SystemNoteHelper
     'discussion' => 'comment',
     'moved' => 'arrow-right',
     'outdated' => 'pencil-square',
+    'pinned_embed' => 'thumbtack',
     'duplicate' => 'issue-duplicate',
     'locked' => 'lock',
     'unlocked' => 'lock-open',
