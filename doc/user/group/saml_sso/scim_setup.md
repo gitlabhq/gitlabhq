@@ -78,7 +78,7 @@ During this configuration, note the following:
 - It is recommended to set a notification email and check the **Send an email notification when a failure occurs** checkbox.
 - For mappings, we will only leave `Synchronize Azure Active Directory Users to AppName` enabled.
 
-You can then test the connection by clicking on **Test Connection**. If the connection is successful, be sure to save your configuration before moving on.
+You can then test the connection by clicking on **Test Connection**. If the connection is successful, be sure to save your configuration before moving on. See below for [troubleshooting](#troubleshooting).
 
 #### Configure attribute mapping
 
@@ -118,14 +118,8 @@ You can then test the connection by clicking on **Test Connection**. If the conn
 Once enabled, the synchronization details and any errors will appear on the
 bottom of the **Provisioning** screen, together with a link to the audit logs.
 
-<!-- ## Troubleshooting
+## Troubleshooting
 
-Include any troubleshooting steps that you can foresee. If you know beforehand what issues
-one might have when setting this up, or when something is changed, or on upgrading, it's
-important to describe those, too. Think of things that may go wrong and include them here.
-This is important to minimize requests for support, and to avoid doc comments with
-questions that you know someone might ask.
+### Testing Azure connection: invalid credentials
 
-Each scenario can be a third-level heading, e.g. `### Getting error message X`.
-If you have none to add when creating a doc, leave this section in place
-but commented out to help encourage others to add to it in the future. -->
+When testing the connection, you may encounter an error: **You appear to have entered invalid credentials. Please confirm you are using the correct information for an administrative account**. If `Tenant URL` and `secret token` are correct, check whether your group path contains characters that may be considered invalid JSON primitives (such as `.`). Removing such characters from the group path typically resolves the error.
