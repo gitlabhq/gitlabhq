@@ -331,7 +331,7 @@ This will disable the option for all users who previously had permissions to
 operate project memberships, so no new users can be added. Furthermore, any
 request to add a new user to a project through API will not be possible.
 
-#### IP access restriction **(ULTIMATE)**
+#### IP access restriction **(ULTIMATE ONLY)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/1985) in
 [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.0.
