@@ -1,38 +1,39 @@
+---
+type: concepts, howto
+---
+
 # Signing commits with GPG
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9546) in GitLab 9.5.
+> - Subkeys support was added in GitLab 10.1.
+
+You can use a GPG key to sign Git commits made in a GitLab repository. Signed
+commits are labeled **Verified** if the identity of the committer can be
+verified. To verify the identity of a committer, GitLab requires their public
+GPG key.
 
 NOTE: **Note:**
 The term GPG is used for all OpenPGP/PGP/GPG related material and
 implementations.
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9546) in GitLab 9.5.
-> - Subkeys support was added in GitLab 10.1.
-
-GitLab can show whether a commit is verified or not when signed with a GPG key.
-All you need to do is upload the public GPG key in your profile settings.
-
 GPG verified tags are not supported yet.
 
-## Getting started with GPG
-
-Here are a few guides to get you started with GPG:
-
-- [Git Tools - Signing Your Work](https://git-scm.com/book/en/v2/Git-Tools-Signing-Your-Work)
-- [Managing OpenPGP Keys](https://riseup.net/en/security/message-security/openpgp/gpg-keys)
-- [OpenPGP Best Practices](https://riseup.net/en/security/message-security/openpgp/best-practices)
-- [Creating a new GPG key with subkeys](https://www.void.gr/kargig/blog/2013/12/02/creating-a-new-gpg-key-with-subkeys/) (advanced)
+See the [further reading](#further-reading) section for more details on GPG.
 
 ## How GitLab handles GPG
 
 GitLab uses its own keyring to verify the GPG signature. It does not access any
 public key server.
 
-In order to have a commit verified on GitLab the corresponding public key needs
-to be uploaded to GitLab. For a signature to be verified three conditions need
-to be met:
+For a commit to be verified by GitLab:
 
-1. The public key needs to be added your GitLab account
-1. One of the emails in the GPG key matches a **verified** email address you use in GitLab
-1. The committer's email matches the verified email from the gpg key
+- The committer must have a GPG public/private key pair.
+- The committer's public key must have been uploaded to their GitLab
+  account.
+- One of the emails in the GPG key must match a **verified** email address
+  used by the committer in GitLab.
+- The committer's email address must match the verified email address from the
+  GPG key.
 
 ## Generating a GPG key
 
@@ -65,8 +66,7 @@ started:
    Your selection? 1
    ```
 
-1. The next question is key length. We recommend to choose the highest value
-   which is `4096`:
+1. The next question is key length. We recommend you choose `4096`:
 
    ```
    RSA keys may be between 1024 and 4096 bits long.
@@ -74,8 +74,8 @@ started:
    Requested keysize is 4096 bits
    ```
 
-1. Next, you need to specify the validity period of your key. This is something
-   subjective, and you can use the default value which is to never expire:
+1. Specify the validity period of your key. This is something
+   subjective, and you can use the default value, which is to never expire:
 
    ```
    Please specify how long the key should be valid.
@@ -94,9 +94,9 @@ started:
    Is this correct? (y/N) y
    ```
 
-1. Enter you real name, the email address to be associated with this key (should
-   match a verified email address you use in GitLab) and an optional comment
-   (press <kbd>Enter</kbd> to skip):
+1. Enter your real name, the email address to be associated with this key
+   (should match a verified email address you use in GitLab) and an optional
+   comment (press <kbd>Enter</kbd> to skip):
 
    ```
    GnuPG needs to construct a user ID to identify your key.
@@ -270,3 +270,24 @@ via [push rules](../../../../push_rules/push_rules.md).
 ## GPG signing API
 
 Learn how to [get the GPG signature from a commit via API](../../../../api/commits.md#get-gpg-signature-of-a-commit).
+
+## Further reading
+
+For more details about GPG, see:
+
+- [Git Tools - Signing Your Work](https://git-scm.com/book/en/v2/Git-Tools-Signing-Your-Work)
+- [Managing OpenPGP Keys](https://riseup.net/en/security/message-security/openpgp/gpg-keys)
+- [OpenPGP Best Practices](https://riseup.net/en/security/message-security/openpgp/best-practices)
+- [Creating a new GPG key with subkeys](https://www.void.gr/kargig/blog/2013/12/02/creating-a-new-gpg-key-with-subkeys/) (advanced)
+
+<!-- ## Troubleshooting
+
+Include any troubleshooting steps that you can foresee. If you know beforehand what issues
+one might have when setting this up, or when something is changed, or on upgrading, it's
+important to describe those, too. Think of things that may go wrong and include them here.
+This is important to minimize requests for support, and to avoid doc comments with
+questions that you know someone might ask.
+
+Each scenario can be a third-level heading, e.g. `### Getting error message X`.
+If you have none to add when creating a doc, leave this section in place
+but commented out to help encourage others to add to it in the future. -->
