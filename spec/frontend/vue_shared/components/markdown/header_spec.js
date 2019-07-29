@@ -101,7 +101,7 @@ describe('Markdown field header component', () => {
     vm.canSuggest = false;
 
     Vue.nextTick(() => {
-      expect(vm.$el.querySelector('.qa-suggestion-btn')).toBe(null);
+      expect(vm.$el.querySelector('.js-suggestion-btn')).toBe(null);
     });
   });
 });

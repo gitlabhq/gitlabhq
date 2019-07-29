@@ -28,8 +28,8 @@ describe('Suggestion Diff component', () => {
     wrapper.destroy();
   });
 
-  const findApplyButton = () => wrapper.find('.qa-apply-btn');
-  const findHeader = () => wrapper.find('.qa-suggestion-diff-header');
+  const findApplyButton = () => wrapper.find('.js-apply-btn');
+  const findHeader = () => wrapper.find('.js-suggestion-diff-header');
   const findHelpButton = () => wrapper.find('.js-help-btn');
   const findLoading = () => wrapper.find(GlLoadingIcon);
 
