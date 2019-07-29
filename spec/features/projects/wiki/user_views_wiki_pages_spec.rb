@@ -42,7 +42,7 @@ describe 'User views wiki pages' do
     context 'desc' do
       before do
         page.within('.wiki-sort-dropdown') do
-          page.find('.qa-reverse-sort').click
+          page.find('.rspec-reverse-sort').click
         end
       end
 
@@ -75,7 +75,7 @@ describe 'User views wiki pages' do
     context 'desc' do
       before do
         page.within('.wiki-sort-dropdown') do
-          page.find('.qa-reverse-sort').click
+          page.find('.rspec-reverse-sort').click
         end
       end
 

@@ -50,7 +50,7 @@ module WikiHelper
 
   def wiki_sort_controls(project, sort, direction)
     sort ||= ProjectWiki::TITLE_ORDER
-    link_class = 'btn btn-default has-tooltip reverse-sort-btn qa-reverse-sort'
+    link_class = 'btn btn-default has-tooltip reverse-sort-btn qa-reverse-sort rspec-reverse-sort'
     reversed_direction = direction == 'desc' ? 'asc' : 'desc'
     icon_class = direction == 'desc' ? 'highest' : 'lowest'
 
