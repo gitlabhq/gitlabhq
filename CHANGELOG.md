@@ -2,9 +2,12 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 11.11.6
+
+- Unreleased due to QA failure.
+
 ## 11.11.5 (2019-06-27)
 
-- No changes.
 ### Security (10 changes)
 
 - Disable Rails SQL query cache when applying service templates. !30060
