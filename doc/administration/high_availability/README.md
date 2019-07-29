@@ -164,16 +164,13 @@ contention due to certain workloads.
 
 #### Reference Architecture
 
-- **Status:** Work-in-progress
 - **Supported Users (approximate):** 10,000
-- **Related Issues:** [gitlab-com/support/support-team-meta#1513](https://gitlab.com/gitlab-com/support/support-team-meta/issues/1513),
- [gitlab-org/quality/team-tasks#110](https://gitlab.com/gitlab-org/quality/team-tasks/issues/110)
+- **Known Issues:** While validating the reference architecture, slow endpoints were discovered and are being investigated. [gitlab-org/gitlab-ce/issues/64335](https://gitlab.com/gitlab-org/gitlab-ce/issues/64335)
 
-The Support and Quality teams are in the process of building and performance testing
-an environment that will support about 10,000 users. The specifications below
-are a work-in-progress representation of the work so far. Quality will be
-certifying this environment in FY20-Q2. The specifications may be adjusted
-prior to certification based on performance testing.
+The Support and Quality teams built, performance tested, and validated an
+environment that supports about 10,000 users. The specifications below are a
+representation of the work so far. The specifications may be adjusted in the
+future based on additional testing and iteration.
 
 - 3 PostgreSQL - 4 CPU, 8GB RAM per node
 - 1 PgBouncer - 2 CPU, 4GB RAM
