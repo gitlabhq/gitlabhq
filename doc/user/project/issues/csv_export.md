@@ -72,4 +72,4 @@ Data will be encoded with a comma as the column delimiter, with `"` used to quot
 
 ## Limitations
 
-As the issues will be sent as an email attachment, there is a limit on how much data can be exported. Currently this limit is 20MB to ensure successful delivery across a range of email providers. If this limit is reached we suggest narrowing the search before export, perhaps by exporting open and closed issues separately.
+As the issues will be sent as an email attachment, there is a limit on how much data can be exported. Currently this limit is 15MB to ensure successful delivery across a range of email providers. If this limit is reached we suggest narrowing the search before export, perhaps by exporting open and closed issues separately.
