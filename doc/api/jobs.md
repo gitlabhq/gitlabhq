@@ -491,7 +491,7 @@ Parameters
 Example request:
 
 ```sh
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/jobs/5/artifacts/some/release/file.pdf"
+curl --location --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/jobs/5/artifacts/some/release/file.pdf"
 ```
 
 Possible response status codes:
@@ -526,7 +526,7 @@ Parameters:
 Example request:
 
 ```sh
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/jobs/artifacts/master/raw/some/release/file.pdf?job=pdf"
+curl --location --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/jobs/artifacts/master/raw/some/release/file.pdf?job=pdf"
 ```
 
 Possible response status codes:
@@ -551,7 +551,7 @@ GET /projects/:id/jobs/:job_id/trace
 | job_id    | integer        | yes      | ID of a job.                                                                                                 |
 
 ```sh
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/jobs/8/trace"
+curl --location --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/jobs/8/trace"
 ```
 
 Possible response status codes:
