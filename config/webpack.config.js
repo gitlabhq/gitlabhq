@@ -89,6 +89,12 @@ const alias = {
 
   // the following resolves files which are different between CE and EE
   ee_else_ce: path.join(ROOT_PATH, 'app/assets/javascripts'),
+
+  // override loader path for icons.svg so we do not duplicate this asset
+  '@gitlab/svgs/dist/icons.svg': path.join(
+    ROOT_PATH,
+    'app/assets/javascripts/lib/utils/icons_path.js',
+  ),
 };
 
 if (IS_EE) {
