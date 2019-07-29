@@ -36,7 +36,7 @@ export default {
         :disabled="isDisabled"
         type="checkbox"
         name="squash"
-        class="qa-squash-checkbox"
+        class="qa-squash-checkbox js-squash-checkbox"
         @change="$emit('input', $event.target.checked)"
       />
       {{ __('Squash commits') }}

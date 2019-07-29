@@ -21,7 +21,7 @@ describe('Squash before merge component', () => {
   });
 
   describe('checkbox', () => {
-    const findCheckbox = () => wrapper.find('.qa-squash-checkbox');
+    const findCheckbox = () => wrapper.find('.js-squash-checkbox');
 
     it('is unchecked if passed value prop is false', () => {
       createComponent({
