@@ -1,4 +1,8 @@
-# GitLab quick actions
+---
+type: reference
+---
+
+# GitLab Quick Actions
 
 Quick actions are textual shortcuts for common actions on issues, epics, merge requests,
 and commits that are usually done by clicking buttons or dropdowns in GitLab's UI.
@@ -7,7 +11,7 @@ in comments of issues, epics, merge requests, and commits. Each command should b
 on a separate line in order to be properly detected and executed. Once executed,
 the commands are removed from the text body and not visible to anyone else.
 
-## Quick actions for issues and merge requests
+## Quick Actions for issues and merge requests
 
 The following quick actions are applicable to both issues and merge requests threads,
 discussions, and descriptions:
@@ -96,3 +100,15 @@ The following quick actions are applicable for epics threads and description:
 | `/remove_child_epic <&epic | group&epic | Epic URL>` | Removes child epic from epic ([introduced in GitLab 12.0](https://gitlab.com/gitlab-org/gitlab-ee/issues/7330)) |
 | `/parent_epic <&epic |  group&epic | Epic URL>` | Sets parent epic to epic ([introduced in GitLab 12.1](https://gitlab.com/gitlab-org/gitlab-ee/issues/10556)) |
 | `/remove_parent_epic` | Removes parent epic from epic ([introduced in GitLab 12.1](https://gitlab.com/gitlab-org/gitlab-ee/issues/10556)) |
+
+<!-- ## Troubleshooting
+
+Include any troubleshooting steps that you can foresee. If you know beforehand what issues
+one might have when setting this up, or when something is changed, or on upgrading, it's
+important to describe those, too. Think of things that may go wrong and include them here.
+This is important to minimize requests for support, and to avoid doc comments with
+questions that you know someone might ask.
+
+Each scenario can be a third-level heading, e.g. `### Getting error message X`.
+If you have none to add when creating a doc, leave this section in place
+but commented out to help encourage others to add to it in the future. -->
