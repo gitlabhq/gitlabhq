@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe 'Blob button line permalinks (BlobLinePermalinkUpdater)', :js do

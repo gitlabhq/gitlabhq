@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe 'User views a wiki page' do
@@ -129,7 +131,7 @@ describe 'User views a wiki page' do
   end
 
   context 'when page has invalid content encoding' do
-    let(:content) { 'whatever'.force_encoding('ISO-8859-1') }
+    let(:content) { (+'whatever').force_encoding('ISO-8859-1') }
 
     before do
       allow(Gitlab::EncodingHelper).to receive(:encode!).and_return(content)

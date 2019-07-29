@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe 'Using U2F (Universal 2nd Factor) Devices for Authentication', :js do

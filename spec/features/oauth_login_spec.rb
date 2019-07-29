@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe 'OAuth Login', :js, :allow_forgery_protection do

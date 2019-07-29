@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe 'Projects > Files > Find file keyboard shortcuts', :js do
