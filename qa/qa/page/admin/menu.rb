@@ -13,10 +13,22 @@ module QA
           element :admin_settings_metrics_and_profiling_item
         end
 
+        view 'app/views/layouts/nav/sidebar/_admin.html.haml' do
+          element :integration_settings_link
+        end
+
         def go_to_repository_settings
           hover_settings do
             within_submenu do
               click_element :admin_settings_repository_item
+            end
+          end
+        end
+
+        def go_to_integration_settings
+          hover_settings do
+            within_submenu do
+              click_element :integration_settings_link
             end
           end
         end

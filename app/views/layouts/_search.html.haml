@@ -13,7 +13,8 @@
                                             tabindex: '1',
                                             autocomplete: 'off',
                                             data: { issues_path: issues_dashboard_path,
-                                              mr_path: merge_requests_dashboard_path },
+                                              mr_path: merge_requests_dashboard_path,
+                                              qa_selector: 'search_term_field' },
                                             aria: { label: _('Search or jump to…') }
           %button.hidden.js-dropdown-search-toggle{ type: 'button', data: { toggle: 'dropdown' } }
           .dropdown-menu.dropdown-select.js-dashboard-search-options

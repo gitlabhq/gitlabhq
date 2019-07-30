@@ -27,6 +27,10 @@ module QA
           element :your_projects_link
         end
 
+        view 'app/views/layouts/_search.html.haml' do
+          element :search_term_field
+        end
+
         def go_to_groups
           within_top_menu do
             click_element :groups_dropdown
@@ -69,6 +73,10 @@ module QA
 
         def click_snippets_link
           click_element :snippets_link
+        end
+
+        def search_for(term)
+          fill_element :search_term_field, "#{term}\n"
         end
 
         def has_personal_area?(wait: Capybara.default_max_wait_time)
