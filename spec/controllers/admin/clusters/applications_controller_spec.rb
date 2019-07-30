@@ -84,7 +84,7 @@ describe Admin::Clusters::ApplicationsController do
       patch :update, params: params
     end
 
-    let!(:application) { create(:clusters_applications_cert_managers, :installed, cluster: cluster) }
+    let!(:application) { create(:clusters_applications_cert_manager, :installed, cluster: cluster) }
     let(:application_name) { application.name }
     let(:params) { { application: application_name, id: cluster.id, email: "new-email@example.com" } }
 

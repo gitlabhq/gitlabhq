@@ -496,7 +496,7 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
     context 'when applications are created' do
       let!(:helm) { create(:clusters_applications_helm, cluster: cluster) }
       let!(:ingress) { create(:clusters_applications_ingress, cluster: cluster) }
-      let!(:cert_manager) { create(:clusters_applications_cert_managers, cluster: cluster) }
+      let!(:cert_manager) { create(:clusters_applications_cert_manager, cluster: cluster) }
       let!(:prometheus) { create(:clusters_applications_prometheus, cluster: cluster) }
       let!(:runner) { create(:clusters_applications_runner, cluster: cluster) }
       let!(:jupyter) { create(:clusters_applications_jupyter, cluster: cluster) }
