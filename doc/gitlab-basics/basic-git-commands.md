@@ -1,3 +1,5 @@
-# Basic Git commands
+---
+redirect_to: 'start-using-git.md'
+---
 
-This section is now merged into [Start using Git](start-using-git.md).
+This document was moved to [another location](start-using-git.md).
