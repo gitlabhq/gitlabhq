@@ -76,7 +76,7 @@ module API
       def find_noteable(parent_type, parent_id, noteable_type, noteable_id)
         params = params_by_noteable_type_and_id(noteable_type, noteable_id)
 
-        noteable = NotesFinder.new(user_project, current_user, params).target
+        noteable = NotesFinder.new(current_user, params.merge(project: user_project)).target
         noteable = nil unless can?(current_user, noteable_read_ability_name(noteable), noteable)
         noteable || not_found!(noteable_type)
       end
