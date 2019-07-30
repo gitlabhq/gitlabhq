@@ -17,6 +17,16 @@ describe Gitlab::GitalyClient do
     })
   end
 
+  describe '.filesystem_id_from_disk' do
+    it 'catches errors' do
+      [Errno::ENOENT, Errno::EACCES, JSON::ParserError].each do |error|
+        allow(File).to receive(:read).with(described_class.storage_metadata_file_path('default')).and_raise(error)
+
+        expect(described_class.filesystem_id_from_disk('default')).to be_nil
+      end
+    end
+  end
+
   describe '.stub_class' do
     it 'returns the gRPC health check stub' do
       expect(described_class.stub_class(:health_check)).to eq(::Grpc::Health::V1::Health::Stub)

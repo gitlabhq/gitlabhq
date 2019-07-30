@@ -7273,6 +7273,9 @@ msgstr ""
 msgid "Owner"
 msgstr ""
 
+msgid "Packages"
+msgstr ""
+
 msgid "Page not found"
 msgstr ""
 
@@ -8767,9 +8770,6 @@ msgid "Register and see your runners for this project."
 msgstr ""
 
 msgid "Register with two-factor app"
-msgstr ""
-
-msgid "Registry"
 msgstr ""
 
 msgid "Related Deployed Jobs"

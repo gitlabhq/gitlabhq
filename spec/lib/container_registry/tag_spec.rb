@@ -9,7 +9,7 @@ describe ContainerRegistry::Tag do
   end
 
   let(:headers) do
-    { 'Accept' => 'application/vnd.docker.distribution.manifest.v2+json' }
+    { 'Accept' => ContainerRegistry::Client::ACCEPTED_TYPES.join(', ') }
   end
 
   let(:tag) { described_class.new(repository, 'tag') }

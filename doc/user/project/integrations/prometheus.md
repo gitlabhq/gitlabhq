@@ -191,7 +191,7 @@ The following tables outline the details of expected properties.
 
 | Property | Type | Required | Description |
 | ------ | ------ | ------ | ------- |
-| `type` | enum | no, defaults to `area-chart` | Specifies the chart type to use. Only `area-chart` is currently supported. |
+| `type` | enum | no, defaults to `area-chart` | Specifies the chart type to use. |
 | `title` | string | yes | Heading for the panel. |
 | `y_label` | string | no, but highly encouraged | Y-Axis label for the panel. |
 | `weight` | number | no, defaults to order in file | Order to appear within the grouping. Lower number means higher priority, which will be higher on the page. Numbers do not need to be consecutive. |
@@ -206,6 +206,65 @@ The following tables outline the details of expected properties.
 | `label` | string | no, but highly encouraged | Defines the legend-label for the query. Should be unique within the panel's metrics. |
 | `query` | string | yes if `query_range` is not defined | Defines the Prometheus query to be used to populate the chart/panel. If defined, the `query` endpoint of the [Prometheus API](https://prometheus.io/docs/prometheus/latest/querying/api/) will be utilized. |
 | `query_range` | string | yes if `query` is not defined | Defines the Prometheus query to be used to populate the chart/panel. If defined, the `query_range` endpoint of the [Prometheus API](https://prometheus.io/docs/prometheus/latest/querying/api/) will be utilized. |
+
+#### Panel types for dashboards
+
+The below panel types are supported in monitoring dashboards.
+
+##### Area
+
+To add an area panel type to a dashboard, look at the following sample dashboard file:
+
+```yaml
+dashboard: 'Dashboard Title'
+panel_groups:
+  - group: 'Group Title'
+    panels:
+      - type: area-chart
+        title: "Chart Title"
+        y_label: "Y-Axis"
+        metrics:
+          - id: 10
+            query_range: 'http_requests_total'
+            label: "Metric of Ages"
+            unit: "count"
+```
+
+Note the following properties:
+
+| Property | Type | Required | Description |
+| ------ | ------ | ------ | ------ |
+| type | string | no | Type of panel to be rendered. Optional for area panel types |
+| query_range | yes | required | For area panel types, you must use a [range query](https://prometheus.io/docs/prometheus/latest/querying/api/#range-queries) |
+
+![area panel type](img/prometheus_dashboard_area_panel_type.png)
+
+##### Single Stat
+
+To add a single stat panel type to a dashboard, look at the following sample dashboard file:
+
+```yaml
+dashboard: 'Dashboard Title'
+panel_groups:
+  - group: 'Group Title'
+    panels:
+      - title: "Single Stat"
+        type: "single-stat"
+        metrics:
+        - id: 10
+          query: 'max(go_memstats_alloc_bytes{job="prometheus"})'
+          unit: MB
+          label: "Total"
+```
+
+Note the following properties:
+
+| Property | Type | Required | Description |
+| ------ | ------ | ------ | ------ |
+| type | string | yes | Type of panel to be rendered. For single stat panel types, set to `single-stat` |
+| query | string | yes | For single stat panel types, you must use an [instant query](https://prometheus.io/docs/prometheus/latest/querying/api/#instant-queries) |
+
+![single stat panel type](img/prometheus_dashboard_single_stat_panel_type.png)
 
 ### Setting up alerts for Prometheus metrics **(ULTIMATE)**
 
