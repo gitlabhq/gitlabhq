@@ -1,0 +1,5 @@
+---
+title: Fix exception handling in Gitaly autodetection
+merge_request: 31285
+author:
+type: fixed
