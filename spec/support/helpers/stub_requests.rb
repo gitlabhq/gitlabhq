@@ -28,6 +28,19 @@ module StubRequests
                          .and_return([addr])
   end
 
+  def stub_all_dns(url, ip_address:)
+    url = URI(url)
+    port = 80 # arbitarily chosen, does not matter as we are not going to connect
+    socket = Socket.sockaddr_in(port, ip_address)
+    addr = Addrinfo.new(socket)
+
+    # See Gitlab::UrlBlocker
+    allow(Addrinfo).to receive(:getaddrinfo).and_call_original
+    allow(Addrinfo).to receive(:getaddrinfo)
+      .with(url.hostname, anything, nil, :STREAM)
+      .and_return([addr])
+  end
+
   def stubbed_hostname(url, hostname: IP_ADDRESS_STUB)
     url = parse_url(url)
     url.hostname = hostname
