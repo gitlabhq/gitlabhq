@@ -14,7 +14,7 @@ This example shows how to run Code Quality on your code by using GitLab CI/CD
 and Docker.
 
 First, you need GitLab Runner with
-[docker-in-docker executor](../docker/using_docker_build.md#use-docker-in-docker-executor).
+[docker-in-docker executor](../docker/using_docker_build.md#use-docker-in-docker-workflow-with-docker-executor).
 
 Once you set up the Runner, include the CodeQuality template in your CI config:
 

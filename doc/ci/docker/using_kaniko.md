@@ -11,7 +11,8 @@ Requires GitLab Runner 11.2 and above.
 container images from a Dockerfile, inside a container or Kubernetes cluster.
 
 kaniko solves two problems with using the
-[docker-in-docker build](using_docker_build.md#use-docker-in-docker-executor) method:
+[docker-in-docker
+build](using_docker_build.md#use-docker-in-docker-workflow-with-docker-executor) method:
 
 - Docker-in-docker requires [privileged mode](https://docs.docker.com/engine/reference/run/#runtime-privilege-and-linux-capabilities)
   in order to function, which is a significant security concern.

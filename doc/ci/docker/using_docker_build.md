@@ -91,7 +91,7 @@ NOTE: **Note:**
 By adding `gitlab-runner` to the `docker` group you are effectively granting `gitlab-runner` full root permissions.
 For more information please read [On Docker security: `docker` group considered harmful](https://www.andreas-jung.com/contents/on-docker-security-docker-group-considered-harmful).
 
-### Use docker-in-docker executor
+### Use docker-in-docker workflow with Docker executor
 
 The second approach is to use the special docker-in-docker (dind)
 [Docker image](https://hub.docker.com/_/docker/) with all tools installed
