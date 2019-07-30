@@ -230,7 +230,7 @@ are listed in the descriptions of the relevant settings.
 | `gravatar_enabled`                       | boolean          | no                                   | Enable Gravatar. |
 | `hashed_storage_enabled`                 | boolean          | no                                   | Create new projects using hashed storage paths: Enable immutable, hash-based paths and repository names to store repositories on disk. This prevents repositories from having to be moved or renamed when the Project URL changes and may improve disk I/O performance. (EXPERIMENTAL) |
 | `help_page_hide_commercial_content`      | boolean          | no                                   | Hide marketing-related entries from help. |
-| `help_page_support_url`                  | string           | no                                   | Alternate support URL for help page. |
+| `help_page_support_url`                  | string           | no                                   | Alternate support URL for help page and help dropdown. |
 | `help_page_text`                         | string           | no                                   | Custom text displayed on the help page. |
 | `help_text`                              | string           | no                                   | **(PREMIUM)** GitLab server administrator information |
 | `hide_third_party_offers`                | boolean          | no                                   | Do not display offers from third parties within GitLab. |

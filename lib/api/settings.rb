@@ -59,7 +59,7 @@ module API
       optional :grafana_url, type: String, desc: 'Grafana URL'
       optional :gravatar_enabled, type: Boolean, desc: 'Flag indicating if the Gravatar service is enabled'
       optional :help_page_hide_commercial_content, type: Boolean, desc: 'Hide marketing-related entries from help'
-      optional :help_page_support_url, type: String, desc: 'Alternate support URL for help page'
+      optional :help_page_support_url, type: String, desc: 'Alternate support URL for help page and help dropdown'
       optional :help_page_text, type: String, desc: 'Custom text displayed on the help page'
       optional :home_page_url, type: String, desc: 'We will redirect non-logged in users to this page'
       optional :housekeeping_enabled, type: Boolean, desc: 'Enable automatic repository housekeeping (git repack, git gc)'
