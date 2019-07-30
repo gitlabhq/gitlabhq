@@ -45,7 +45,7 @@ module Secpick
 
     def git_commands
       ["git fetch #{@options[:remote]} #{stable_branch}",
-       "git checkout -B #{source_branch} #{@options[:remote]}/#{stable_branch}",
+       "git checkout -B #{source_branch} #{@options[:remote]}/#{stable_branch} --no-track",
        "git cherry-pick #{@options[:sha]}",
        "git push #{@options[:remote]} #{source_branch}",
        "git checkout #{original_branch}"]
