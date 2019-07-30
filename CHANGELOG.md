@@ -2,6 +2,27 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 12.1.3
+
+### Fixed (11 changes)
+
+- Prevent multiple confirmation modals from opening when deleting a repository. !30532
+- Fix the project auto devops API. !30946
+- Fix "Certificate misses intermediates" UI error when enabling Let's Encrypt integration for pages domain. !30995
+- Fix xterm css not loading for environment terminal. !31023
+- Set DOCKER_TLS_CERTDIR in Auto Dev-Ops CI template to fix jobs using Docker-in-Docker. !31078
+- Set DOCKER_TLS_CERTDIR in CI job templates to fix Docker-in-Docker service. !31080
+- Support Docker OCI images. !31127
+- Fix error rendering submodules in MR diffs when there is no .gitmodules. !31162
+- Fix pdf.js rendering pages in the wrong order. !31222
+- Fix exception handling in Gitaly autodetection. !31285
+- Fix bug that caused diffs not to show on MRs with changes to submodules.
+
+### Performance (1 change)
+
+- Optimise import performance. !31045
+
+
 ## 12.1.2
 
 ### Security (1 change)

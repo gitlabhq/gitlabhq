@@ -1,5 +1,0 @@
----
-title: Set DOCKER_TLS_CERTDIR in Auto Dev-Ops CI template to fix jobs using Docker-in-Docker
-merge_request: 31078
-author:
-type: fixed

@@ -1,6 +1,0 @@
----
-title: Fix "Certificate misses intermediates" UI error when enabling Let's Encrypt
-  integration for pages domain
-merge_request: 30995
-author:
-type: fixed

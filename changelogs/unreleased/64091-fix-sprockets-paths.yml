@@ -1,5 +1,0 @@
----
-title: Fix xterm css not loading for environment terminal
-merge_request: 31023
-author:
-type: fixed

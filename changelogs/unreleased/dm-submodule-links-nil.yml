@@ -1,5 +1,0 @@
----
-title: Fix error rendering submodules in MR diffs when there is no .gitmodules
-merge_request: 31162
-author:
-type: fixed
