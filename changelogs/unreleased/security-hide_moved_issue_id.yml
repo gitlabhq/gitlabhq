@@ -1,0 +1,5 @@
+---
+title: Do not show moved issue id for users that cannot read issue
+merge_request:
+author:
+type: security

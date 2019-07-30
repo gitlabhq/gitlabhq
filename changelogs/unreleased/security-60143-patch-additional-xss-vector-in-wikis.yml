@@ -1,0 +1,5 @@
+---
+title: Patch XSS issue in wiki links
+merge_request:
+author:
+type: security
