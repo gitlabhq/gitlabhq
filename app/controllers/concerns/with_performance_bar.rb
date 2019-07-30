@@ -3,10 +3,6 @@
 module WithPerformanceBar
   extend ActiveSupport::Concern
 
-  included do
-    include Peek::Rblineprof::CustomControllerHelpers
-  end
-
   def peek_enabled?
     return false unless Gitlab::PerformanceBar.enabled?(current_user)
 

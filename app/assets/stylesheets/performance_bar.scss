@@ -1,6 +1,5 @@
 @import 'framework/variables';
 @import 'framework/variables_overrides';
-@import 'peek/views/rblineprof';
 
 #js-peek {
   position: fixed;
@@ -127,14 +126,4 @@
 
 #modal-peek-pg-queries-content {
   color: $black;
-}
-
-.peek-rblineprof-file {
-  pre.duration {
-    width: 280px;
-  }
-
-  .data {
-    overflow: visible;
-  }
 }

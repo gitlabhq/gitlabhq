@@ -14,8 +14,6 @@ It allows you to see (from left to right):
   ![Gitaly profiling using the Performance Bar](img/performance_bar_gitaly_calls.png)
 - time taken and number of [Rugged] calls, click through for details of these calls
   ![Rugged profiling using the Performance Bar](img/performance_bar_rugged_calls.png)
-- profile of the code used to generate the page, line by line. In the profile view, the numbers in the left panel represent wall time, cpu time, and number of calls (based on [rblineprof](https://github.com/tmm1/rblineprof)).
-  ![Line profiling using the Performance Bar](img/performance_bar_line_profiling.png)
 - time taken and number of Redis calls, click through for details of these calls
   ![Redis profiling using the Performance Bar](img/performance_bar_redis_calls.png)
 - time taken and number of Ruby GC calls
