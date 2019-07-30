@@ -340,31 +340,6 @@ function display_deployment_debug() {
   fi
 }
 
-function wait_for_review_app_to_be_accessible() {
-  echoinfo "Waiting for the Review App at ${CI_ENVIRONMENT_URL} to be accessible..." true
-
-  local interval=5
-  local elapsed_seconds=0
-  local max_seconds=$((2 * 60))
-  while true; do
-    local review_app_http_code
-    review_app_http_code=$(curl --silent --output /dev/null --max-time 5 --write-out "%{http_code}" "${CI_ENVIRONMENT_URL}/users/sign_in")
-    if [[ "${review_app_http_code}" -eq "200" ]] || [[ "${elapsed_seconds}" -gt "${max_seconds}" ]]; then
-      break
-    fi
-
-    let "elapsed_seconds+=interval"
-    sleep ${interval}
-  done
-
-  if [[ "${review_app_http_code}" -eq "200" ]]; then
-    echoinfo "The Review App at ${CI_ENVIRONMENT_URL} is ready after ${elapsed_seconds} seconds!"
-  else
-    echoerr "The Review App at ${CI_ENVIRONMENT_URL} isn't ready after ${max_seconds} seconds of polling..."
-    exit 1
-  fi
-}
-
 function add_license() {
   if [ -z "${REVIEW_APPS_EE_LICENSE}" ]; then echo "License not found" && return; fi
 
