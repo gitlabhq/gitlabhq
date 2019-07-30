@@ -12,7 +12,7 @@
   %ul.nav-links.search-filter.scrolling-tabs.nav.nav-tabs
     - if @project
       - if project_search_tabs?(:blobs)
-        %li{ class: active_when(@scope == 'blobs') }
+        %li{ class: active_when(@scope == 'blobs'), data: { qa_selector: 'code_tab' } }
           = link_to search_filter_path(scope: 'blobs') do
             = _("Code")
             %span.badge.badge-pill

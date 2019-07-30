@@ -236,7 +236,7 @@
                 %span
                   = _('General')
             = nav_link(path: 'application_settings#integrations') do
-              = link_to integrations_admin_application_settings_path, title: _('Integrations') do
+              = link_to integrations_admin_application_settings_path, title: _('Integrations'), data: { qa_selector: 'integration_settings_link' } do
                 %span
                   = _('Integrations')
             = nav_link(path: 'application_settings#repository') do

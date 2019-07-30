@@ -314,6 +314,10 @@ module QA
       autoload :Login, 'qa/page/mattermost/login'
     end
 
+    module Search
+      autoload :Results, 'qa/page/search/results'
+    end
+
     ##
     # Classes describing components that are used by several pages.
     #

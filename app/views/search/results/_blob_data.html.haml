@@ -1,10 +1,10 @@
-.blob-result
+.blob-result{ data: { qa_selector: 'result_item_content' } }
   .file-holder
-    .js-file-title.file-title
+    .js-file-title.file-title{ data: { qa_selector: 'file_title_content' } }
       = link_to blob_link do
         %i.fa.fa-file
         %strong
           = search_blob_title(project, file_name)
     - if blob.data
-      .file-content.code.term
+      .file-content.code.term{ data: { qa_selector: 'file_text_content' } }
         = render 'shared/file_highlight', blob: blob, first_line_number: blob.startline
