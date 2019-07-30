@@ -23,14 +23,14 @@ describe WebHookService do
       stub_application_setting(setting_name => setting)
     end
 
-    shared_examples_for 'respecting outbound network setting' do
-      context 'local requests are allowed' do
+    shared_examples_for 'respects outbound network setting' do
+      context 'when local requests are allowed' do
         let(:setting) { true }
 
         it { expect(hook.request_options[:allow_local_requests]).to be_truthy }
       end
 
-      context 'local requests are not allowed' do
+      context 'when local requests are not allowed' do
         let(:setting) { false }
 
         it { expect(hook.request_options[:allow_local_requests]).to be_falsey }
@@ -41,14 +41,14 @@ describe WebHookService do
       let(:setting_name) { :allow_local_requests_from_system_hooks }
       let(:hook) { described_class.new(build(:system_hook), data, :system_hook) }
 
-      include_examples 'respecting outbound network setting'
+      include_examples 'respects outbound network setting'
     end
 
     context 'when ProjectHook' do
       let(:setting_name) { :allow_local_requests_from_web_hooks_and_services }
       let(:hook) { described_class.new(build(:project_hook), data, :project_hook) }
 
-      include_examples 'respecting outbound network setting'
+      include_examples 'respects outbound network setting'
     end
   end
 

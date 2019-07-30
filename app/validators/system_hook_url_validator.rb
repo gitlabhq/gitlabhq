@@ -7,23 +7,11 @@
 # ApplicationSetting.allow_local_requests_from_system_hooks
 #
 # Example:
-#
 #   class SystemHook < WebHook
-#     validates :url, system_hook_url: { allow_localhost: true, allow_local_network: true }
+#     validates :url, system_hook_url: true
 #   end
 #
-class SystemHookUrlValidator < AddressableUrlValidator
-  DEFAULT_OPTIONS = {
-    allow_localhost: false,
-    allow_local_network: false
-  }.freeze
-
-  def initialize(options)
-    options.reverse_merge!(DEFAULT_OPTIONS)
-
-    super(options)
-  end
-
+class SystemHookUrlValidator < PublicUrlValidator
   def self.allow_setting_local_requests?
     ApplicationSetting.current&.allow_local_requests_from_system_hooks?
   end

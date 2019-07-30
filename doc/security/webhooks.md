@@ -38,11 +38,12 @@ local network from web hooks and services"* in the *"Outbound requests"* section
 inside the Admin area under **Settings**
 (`/admin/application_settings/network`):
 
-![Outbound requests admin settings](img/outbound_requests_section_v2.png)
+![Outbound requests admin settings](img/outbound_requests_section_v12_2.png)
 
->**Note:**
-*System hooks* are enabled to make requests to local network by default since they are set up by admins. 
-However, it can be turned off by disabling *"Allow requests to the local network from system hooks"* option.
+NOTE: **Note:**
+*System hooks* are enabled to make requests to local network by default since they are
+set up by administrators. However, you can turn this off by disabling the
+**Allow requests to the local network from system hooks** option.
 
 <!-- ## Troubleshooting
 

@@ -8,10 +8,10 @@ class RenameAllowLocalRequestsFromHooksAndServicesApplicationSetting < ActiveRec
   disable_ddl_transaction!
 
   def up
-    rename_column :application_settings, :allow_local_requests_from_hooks_and_services, :allow_local_requests_from_web_hooks_and_services
+    rename_column_concurrently :application_settings, :allow_local_requests_from_hooks_and_services, :allow_local_requests_from_web_hooks_and_services
   end
 
   def down
-    rename_column :application_settings, :allow_local_requests_from_web_hooks_and_services, :allow_local_requests_from_hooks_and_services
+    cleanup_concurrent_column_rename :application_settings, :allow_local_requests_from_web_hooks_and_services, :allow_local_requests_from_hooks_and_services
   end
 end

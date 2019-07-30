@@ -14,8 +14,7 @@ class SystemHook < WebHook
   default_value_for :repository_update_events, true
   default_value_for :merge_requests_events, false
 
-  validates :url, presence: true, public_url: false, system_hook_url: { allow_localhost: lambda(&:allow_local_requests?),
-                                                                        allow_local_network: lambda(&:allow_local_requests?) }
+  validates :url, system_hook_url: true
 
   # Allow urls pointing localhost and the local network
   def allow_local_requests?

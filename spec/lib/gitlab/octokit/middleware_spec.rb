@@ -30,7 +30,7 @@ describe Gitlab::Octokit::Middleware do
 
       context 'when localhost requests are not allowed' do
         before do
-          stub_application_setting(allow_local_requests_from_hooks_and_services: false)
+          stub_application_setting(allow_local_requests_from_web_hooks_and_services: false)
         end
 
         it_behaves_like 'Local URL'
@@ -38,7 +38,7 @@ describe Gitlab::Octokit::Middleware do
 
       context 'when localhost requests are allowed' do
         before do
-          stub_application_setting(allow_local_requests_from_hooks_and_services: true)
+          stub_application_setting(allow_local_requests_from_web_hooks_and_services: true)
         end
 
         it_behaves_like 'Public URL'
@@ -50,7 +50,7 @@ describe Gitlab::Octokit::Middleware do
 
       context 'when local network requests are not allowed' do
         before do
-          stub_application_setting(allow_local_requests_from_hooks_and_services: false)
+          stub_application_setting(allow_local_requests_from_web_hooks_and_services: false)
         end
 
         it_behaves_like 'Local URL'
@@ -58,7 +58,7 @@ describe Gitlab::Octokit::Middleware do
 
       context 'when local network requests are allowed' do
         before do
-          stub_application_setting(allow_local_requests_from_hooks_and_services: true)
+          stub_application_setting(allow_local_requests_from_web_hooks_and_services: true)
         end
 
         it_behaves_like 'Public URL'
