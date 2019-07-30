@@ -1,5 +1,0 @@
----
-title: Fix bug that caused diffs not to show on MRs with changes to submodules
-merge_request:
-author:
-type: fixed
