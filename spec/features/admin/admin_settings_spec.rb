@@ -356,16 +356,18 @@ describe 'Admin updates settings' do
     end
 
     it 'Change Help page' do
+      new_support_url = 'http://example.com/help'
+
       page.within('.as-help-page') do
         fill_in 'Help page text', with: 'Example text'
         check 'Hide marketing-related entries from help'
-        fill_in 'Support page URL', with: 'http://example.com/help'
+        fill_in 'Support page URL', with: new_support_url
         click_button 'Save changes'
       end
 
       expect(current_settings.help_page_text).to eq "Example text"
       expect(current_settings.help_page_hide_commercial_content).to be_truthy
-      expect(current_settings.help_page_support_url).to eq "http://example.com/help"
+      expect(current_settings.help_page_support_url).to eq new_support_url
       expect(page).to have_content "Application settings saved successfully"
     end
 
@@ -412,6 +414,34 @@ describe 'Admin updates settings' do
 
       expect(current_settings.lets_encrypt_notification_email).to eq 'my@test.example.com'
       expect(current_settings.lets_encrypt_terms_of_service_accepted).to eq true
+    end
+  end
+
+  context 'Nav bar' do
+    it 'Shows default help links in nav' do
+      default_support_url = 'https://about.gitlab.com/getting-help/'
+
+      visit root_dashboard_path
+
+      find('.header-help-dropdown-toggle').click
+
+      page.within '.header-help' do
+        expect(page).to have_link(text: 'Help', href: help_path)
+        expect(page).to have_link(text: 'Support', href: default_support_url)
+      end
+    end
+
+    it 'Shows custom support url in nav when set' do
+      new_support_url = 'http://example.com/help'
+      stub_application_setting(help_page_support_url: new_support_url)
+
+      visit root_dashboard_path
+
+      find('.header-help-dropdown-toggle').click
+
+      page.within '.header-help' do
+        expect(page).to have_link(text: 'Support', href: new_support_url)
+      end
     end
   end
 

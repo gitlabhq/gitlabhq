@@ -2,6 +2,8 @@
   - if current_user_menu?(:help)
     %li
       = link_to _("Help"), help_path
+    %li
+      = link_to _("Support"), support_url
     = render_if_exists "shared/learn_gitlab_menu_item"
     %li.divider
   %li
