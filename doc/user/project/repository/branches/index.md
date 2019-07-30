@@ -13,7 +13,7 @@ After pushing your changes to a new branch, you can:
 
 - Create a [merge request](../../merge_requests/index.md)
 - Perform inline code review
-- [Discuss](../../discussions/index.md) your implementation with your team
+- [Discuss](../../../discussions/index.md) your implementation with your team
 - Preview changes submitted to a new branch with [Review Apps](../../../../ci/review_apps/index.md).
 
 With [GitLab Starter](https://about.gitlab.com/pricing/), you can also request

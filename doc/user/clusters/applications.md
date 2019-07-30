@@ -95,7 +95,7 @@ CI/CD](../../ci/README.md), the open-source continuous integration
 service included with GitLab that coordinates the jobs. When installing
 the GitLab Runner via the applications, it will run in **privileged
 mode** by default. Make sure you read the [security
-implications](../project/clusters/index.md/#security-implications) before doing so.
+implications](../project/clusters/index.md#security-implications) before doing so.
 
 NOTE: **Note:**
 The
