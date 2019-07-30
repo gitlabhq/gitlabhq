@@ -76,7 +76,8 @@ describe('BoardsSelector', () => {
       document.querySelector('.js-boards-selector'),
     );
 
-    vm.$el.querySelector('.js-dropdown-toggle').click();
+    // Emits gl-dropdown show event to simulate the dropdown is opened at initialization time
+    vm.$children[0].$emit('show');
 
     Promise.all([allBoardsResponse, recentBoardsResponse])
       .then(() => vm.$nextTick())
