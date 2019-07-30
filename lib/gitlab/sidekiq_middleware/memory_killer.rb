@@ -84,7 +84,7 @@ module Gitlab
       end
 
       def warn(message, signal: nil)
-        Sidekiq.logger.warn(class: worker.class, pid: pid, signal: signal, message: message)
+        Sidekiq.logger.warn(class: worker.class.name, pid: pid, signal: signal, message: message)
       end
     end
   end
