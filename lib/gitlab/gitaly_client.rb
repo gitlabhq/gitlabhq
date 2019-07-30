@@ -413,7 +413,7 @@ module Gitlab
       metadata_file = File.read(storage_metadata_file_path(storage))
       metadata_hash = JSON.parse(metadata_file)
       metadata_hash['gitaly_filesystem_id']
-    rescue Errno::ENOENT, Errno::ACCESS, JSON::ParserError
+    rescue Errno::ENOENT, Errno::EACCES, JSON::ParserError
       nil
     end
 
