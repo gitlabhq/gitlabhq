@@ -44,6 +44,12 @@ describe Gitlab::ProjectTemplate do
     end
   end
 
+  describe '.archive_directory' do
+    subject { described_class.archive_directory }
+
+    it { is_expected.to be_a Pathname }
+  end
+
   describe 'instance methods' do
     subject { described_class.new('phoenix', 'Phoenix Framework', 'Phoenix description', 'link-to-template') }
 
