@@ -7,6 +7,7 @@ describe 'shared/milestones/_top.html.haml' do
 
   before do
     allow(milestone).to receive(:milestones) { [] }
+    allow(milestone).to receive(:milestone) { milestone }
   end
 
   it 'renders a deprecation message for a legacy milestone' do

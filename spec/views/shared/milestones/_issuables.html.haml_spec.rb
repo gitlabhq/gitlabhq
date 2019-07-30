@@ -6,7 +6,7 @@ describe 'shared/milestones/_issuables.html.haml' do
   before do
     allow(view).to receive_messages(title: nil, id: nil, show_project_name: nil,
                                     show_full_project_name: nil, dom_class: '',
-                                    issuables: double(size: issuables_size).as_null_object)
+                                    issuables: double(length: issuables_size).as_null_object)
 
     stub_template 'shared/milestones/_issuable.html.haml' => ''
   end
