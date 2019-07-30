@@ -7,11 +7,13 @@ module QA
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
         Page::Main::Login.perform(&:sign_in_using_credentials)
 
-        Runtime::Browser.visit(:mattermost, Page::Mattermost::Login)
-        Page::Mattermost::Login.perform(&:sign_in_using_oauth)
+        Support::Retrier.retry_on_exception do
+          Runtime::Browser.visit(:mattermost, Page::Mattermost::Login)
+          Page::Mattermost::Login.perform(&:sign_in_using_oauth)
 
-        Page::Mattermost::Main.perform do |page|
-          expect(page).to have_content(/(Welcome to: Mattermost|Logout GitLab Mattermost)/)
+          Page::Mattermost::Main.perform do |page|
+            expect(page).to have_content(/(Welcome to: Mattermost|Logout GitLab Mattermost)/)
+          end
         end
       end
     end
