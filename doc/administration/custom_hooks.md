@@ -21,7 +21,7 @@ administrators can add custom git hooks to any GitLab project.
 ## Create a custom Git hook for a repository
 
 Server-side Git hooks are typically placed in the repository's `hooks`
-subdirectory. In GitLab, hook directories are are symlinked to the gitlab-shell
+subdirectory. In GitLab, hook directories are symlinked to the gitlab-shell
 `hooks` directory for ease of maintenance between gitlab-shell upgrades.
 Custom hooks are implemented differently, but the behavior is exactly the same
 once the hook is created. Follow the steps below to set up a custom hook for a
