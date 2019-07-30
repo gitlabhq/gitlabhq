@@ -177,6 +177,7 @@ describe('table registry', () => {
 
     it('should show the plural title and image count when deleting more than one image', done => {
       selectAllCheckboxes();
+      vm.setModalDescription();
 
       Vue.nextTick(() => {
         expect(vm.modalTitle).toBe('Remove images');

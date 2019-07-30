@@ -59,14 +59,17 @@ export default {
       );
     },
   },
+  mounted() {
+    this.$refs.deleteModal.$refs.modal.$on('hide', this.removeModalEvents);
+  },
   methods: {
     ...mapActions(['fetchList', 'deleteItem', 'multiDeleteItems']),
-    setModalDescription(itemsToDeleteLength, itemIndex) {
-      if (itemsToDeleteLength) {
+    setModalDescription(itemIndex = -1) {
+      if (itemIndex === -1) {
         this.modalDescription = sprintf(
           s__(`ContainerRegistry|You are about to delete <b>%{count}</b> images. This will
               delete the images and all tags pointing to them.`),
-          { count: itemsToDeleteLength },
+          { count: this.itemsToBeDeleted.length },
         );
       } else {
         const { tag } = this.repo.list[itemIndex];
@@ -86,25 +89,26 @@ export default {
     },
     removeModalEvents() {
       this.$refs.deleteModal.$refs.modal.$off('ok');
-      this.$refs.deleteModal.$refs.modal.$off('hide');
     },
     deleteSingleItem(index) {
-      this.setModalDescription(0, index);
+      this.setModalDescription(index);
 
       this.$refs.deleteModal.$refs.modal.$once('ok', () => {
         this.removeModalEvents();
         this.handleSingleDelete(this.repo.list[index]);
       });
-
-      this.$refs.deleteModal.$refs.modal.$once('hide', this.removeModalEvents);
     },
     deleteMultipleItems() {
+      if (this.itemsToBeDeleted.length === 1) {
+        this.setModalDescription(this.itemsToBeDeleted[0]);
+      } else if (this.itemsToBeDeleted.length > 1) {
+        this.setModalDescription();
+      }
+
       this.$refs.deleteModal.$refs.modal.$once('ok', () => {
         this.removeModalEvents();
         this.handleMultipleDelete();
       });
-
-      this.$refs.deleteModal.$refs.modal.$once('hide', this.removeModalEvents);
     },
     handleSingleDelete(itemToDelete) {
       this.deleteItem(itemToDelete)
@@ -144,7 +148,6 @@ export default {
     selectAll() {
       this.itemsToBeDeleted = this.repo.list.map((x, index) => index);
       this.selectAllChecked = true;
-      this.setModalDescription(this.itemsToBeDeleted.length);
     },
     deselectAll() {
       this.itemsToBeDeleted = [];
@@ -162,12 +165,6 @@ export default {
         if (this.itemsToBeDeleted.length === this.repo.list.length) {
           this.selectAllChecked = true;
         }
-      }
-
-      if (this.itemsToBeDeleted.length === 1) {
-        this.setModalDescription(0, this.itemsToBeDeleted[0]);
-      } else if (this.itemsToBeDeleted.length > 1) {
-        this.setModalDescription(this.itemsToBeDeleted.length);
       }
     },
   },
