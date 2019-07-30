@@ -125,19 +125,23 @@ This also applies to views.
 ### EE features based on CE features
 
 For features that build on existing CE features, write a module in the `EE`
-namespace and `prepend` it in the CE class, on the last line of the file that
-the class resides in. This makes conflicts less likely to happen during CE to EE
-merges because only one line is added to the CE class - the `prepend` line. For
-example, to prepend a module into the `User` class you would use the following
-approach:
+namespace and inject it in the CE class, on the last line of the file that the
+class resides in. This makes conflicts less likely to happen during CE to EE
+merges because only one line is added to the CE class - the line that injects
+the module. For example, to prepend a module into the `User` class you would use
+the following approach:
 
 ```ruby
 class User < ActiveRecord::Base
   # ... lots of code here ...
 end
 
-User.prepend(EE::User)
+User.prepend_if_ee('EE::User')
 ```
+
+Do not use methods such as `prepend`, `extend`, and `include`. Instead, use
+`prepend_if_ee`, `extend_if_ee`, or `include_if_ee`. These methods take a
+_String_ containing the full module name as the argument, not the module itself.
 
 Since the module would require an `EE` namespace, the file should also be
 put in an `ee/` sub-directory. For example, we want to extend the user model
@@ -255,7 +259,7 @@ class ApplicationController < ActionController::Base
   # ...
 end
 
-ApplicationController.prepend(EE::ApplicationController)
+ApplicationController.prepend_if_ee('EE::ApplicationController')
 ```
 
 And create a new file in the `ee/` sub-directory with the altered
@@ -504,9 +508,9 @@ EE-specific LDAP classes in `ee/lib/ee/gitlab/ldap`.
 
 ### Code in `lib/api/`
 
-It can be very tricky to extend EE features by a single line of `prepend`,
-and for each different [Grape](https://github.com/ruby-grape/grape) feature,
-we might need different strategies to extend it. To apply different strategies
+It can be very tricky to extend EE features by a single line of `prepend_if_ee`,
+and for each different [Grape](https://github.com/ruby-grape/grape) feature, we
+might need different strategies to extend it. To apply different strategies
 easily, we would use `extend ActiveSupport::Concern` in the EE module.
 
 Put the EE module files following
@@ -543,12 +547,12 @@ constants.
 We can define `params` and utilize `use` in another `params` definition to
 include params defined in EE. However, we need to define the "interface" first
 in CE in order for EE to override it. We don't have to do this in other places
-due to `prepend`, but Grape is complex internally and we couldn't easily do
-that, so we'll follow regular object-oriented practices that we define the
+due to `prepend_if_ee`, but Grape is complex internally and we couldn't easily
+do that, so we'll follow regular object-oriented practices that we define the
 interface first here.
 
 For example, suppose we have a few more optional params for EE. We can move the
-params out of the `Grape::API` class to a helper module, so we can `prepend` it
+params out of the `Grape::API` class to a helper module, so we can inject it
 before it would be used in the class.
 
 ```ruby
@@ -583,7 +587,7 @@ module API
   end
 end
 
-API::Helpers::ProjectsHelpers.prepend(EE::API::Helpers::ProjectsHelpers)
+API::Helpers::ProjectsHelpers.prepend_if_ee('EE::API::Helpers::ProjectsHelpers')
 ```
 
 We could override it in EE module:
@@ -624,7 +628,7 @@ module API
   end
 end
 
-API::JobArtifacts.prepend(EE::API::JobArtifacts)
+API::JobArtifacts.prepend_if_ee('EE::API::JobArtifacts')
 ```
 
 And then we can follow regular object-oriented practices to override it:
@@ -677,7 +681,7 @@ module API
   end
 end
 
-API::MergeRequests.prepend(EE::API::MergeRequests)
+API::MergeRequests.prepend_if_ee('EE::API::MergeRequests')
 ```
 
 Note that `update_merge_request_ee` doesn't do anything in CE, but
@@ -717,8 +721,8 @@ Sometimes we need to use different arguments for a particular API route, and we
 can't easily extend it with an EE module because Grape has different context in
 different blocks. In order to overcome this, we need to move the data to a class
 method that resides in a separate module or class. This allows us to extend that
-module or class before its data is used, without having to place a `prepend` in
-the middle of CE code.
+module or class before its data is used, without having to place a
+`prepend_if_ee` in the middle of CE code.
 
 For example, in one place we need to pass an extra argument to
 `at_least_one_of` so that the API could consider an EE-only argument as the
@@ -739,7 +743,7 @@ module API
   end
 end
 
-API::MergeRequests::Parameters.prepend(EE::API::MergeRequests::Parameters)
+API::MergeRequests::Parameters.prepend_if_ee('EE::API::MergeRequests::Parameters')
 
 # api/merge_requests.rb
 module API
@@ -789,7 +793,7 @@ class Identity < ActiveRecord::Base
     [:provider]
   end
 
-  prepend EE::Identity
+  prepend_if_ee('EE::Identity')
 
   validates :extern_uid,
     allow_blank: true,
@@ -841,7 +845,7 @@ class Identity < ActiveRecord::Base
   end
 end
 
-Identity::UniquenessScopes.prepend(EE::Identity::UniquenessScopes)
+Identity::UniquenessScopes.prepend_if_ee('EE::Identity::UniquenessScopes')
 
 # app/models/identity.rb
 class Identity < ActiveRecord::Base
