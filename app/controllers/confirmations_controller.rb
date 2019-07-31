@@ -11,7 +11,7 @@ class ConfirmationsController < Devise::ConfirmationsController
   protected
 
   def after_resending_confirmation_instructions_path_for(resource)
-    users_almost_there_path
+    Feature.enabled?(:soft_email_confirmation) ? stored_location_for(resource) || dashboard_projects_path : users_almost_there_path
   end
 
   def after_confirmation_path_for(resource_name, resource)
