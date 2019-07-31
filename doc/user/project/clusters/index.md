@@ -620,8 +620,16 @@ use an A record. If your external endpoint is a hostname, use a CNAME record.
 
 ## Deploying to a Kubernetes cluster
 
-A Kubernetes cluster can be the destination for a deployment job using special
-[deployment variables](#deployment-variables).
+A Kubernetes cluster can be the destination for a deployment job. If
+
+- The cluster is integrated with GitLab, special
+  [deployment variables](#deployment-variables) are made available to your job
+  and configuration is not required. You can immediately begin interacting with
+  the cluster from your jobs using tools such as `kubectl` or `helm`.
+- You don't use GitLab's cluster integration you can still deploy to your
+  cluster. However, you will need configure Kubernetes tools yourself
+  using [environment variables](../../../ci/variables/README.md#creating-a-custom-environment-variable)
+  before you can interact with the cluster from your jobs.
 
 ### Deployment variables
 
