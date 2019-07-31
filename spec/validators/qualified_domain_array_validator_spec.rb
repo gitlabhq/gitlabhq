@@ -19,17 +19,6 @@ describe QualifiedDomainArrayValidator do
 
   subject { validator.validate(record) }
 
-  shared_examples 'cannot be blank' do
-    it 'returns error when attribute is blank' do
-      record.domain_array = []
-
-      subject
-
-      expect(record.errors).to be_present
-      expect(record.errors.first[1]).to eq 'entries cannot be blank'
-    end
-  end
-
   shared_examples 'can be nil' do
     it 'allows when attribute is nil' do
       record.domain_array = nil
@@ -40,10 +29,20 @@ describe QualifiedDomainArrayValidator do
     end
   end
 
+  shared_examples 'can be blank' do
+    it 'allows when attribute is blank' do
+      record.domain_array = []
+
+      subject
+
+      expect(record.errors).to be_empty
+    end
+  end
+
   describe 'validations' do
     let(:validator) { described_class.new(attributes: [:domain_array]) }
 
-    it_behaves_like 'cannot be blank'
+    it_behaves_like 'can be blank'
 
     it 'returns error when attribute is nil' do
       record.domain_array = nil
@@ -51,6 +50,7 @@ describe QualifiedDomainArrayValidator do
       subject
 
       expect(record.errors).to be_present
+      expect(record.errors.first[1]).to eq('entries cannot be nil')
     end
 
     it 'allows when domain is valid' do
@@ -91,21 +91,13 @@ describe QualifiedDomainArrayValidator do
     let(:validator) { described_class.new(attributes: [:domain_array], allow_nil: true) }
 
     it_behaves_like 'can be nil'
-
-    it_behaves_like 'cannot be blank'
+    it_behaves_like 'can be blank'
   end
 
   context 'when allow_blank is set to true' do
     let(:validator) { described_class.new(attributes: [:domain_array], allow_blank: true) }
 
     it_behaves_like 'can be nil'
-
-    it 'allows when attribute is blank' do
-      record.domain_array = []
-
-      subject
-
-      expect(record.errors).to be_empty
-    end
+    it_behaves_like 'can be blank'
   end
 end
