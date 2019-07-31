@@ -44,7 +44,7 @@ module Clusters
       private
 
       def post_install_script
-        ["/usr/bin/kubectl create -f /data/helm/certmanager/config/cluster_issuer.yaml"]
+        ["kubectl create -f /data/helm/certmanager/config/cluster_issuer.yaml"]
       end
 
       def cluster_issuer_file

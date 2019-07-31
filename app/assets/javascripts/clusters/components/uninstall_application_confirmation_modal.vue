@@ -13,7 +13,9 @@ const CUSTOM_APP_WARNING_TEXT = {
   ),
   [PROMETHEUS]: s__('ClusterIntegration|All data will be deleted and cannot be restored.'),
   [RUNNER]: s__('ClusterIntegration|Any running pipelines will be canceled.'),
-  [KNATIVE]: s__('ClusterIntegration|The associated IP will be deleted and cannot be restored.'),
+  [KNATIVE]: s__(
+    'ClusterIntegration|The associated IP and all deployed services will be deleted and cannot be restored. Uninstalling Knative will also remove Istio from your cluster. This will not effect any other applications.',
+  ),
   [JUPYTER]: s__(
     'ClusterIntegration|All data not committed to GitLab will be deleted and cannot be restored.',
   ),

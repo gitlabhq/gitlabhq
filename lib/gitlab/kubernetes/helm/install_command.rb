@@ -27,9 +27,9 @@ module Gitlab
             wait_for_tiller_command,
             repository_command,
             repository_update_command,
-            preinstall_command,
+            preinstall,
             install_command,
-            postinstall_command
+            postinstall
           ].compact.join("\n")
         end
 
@@ -56,14 +56,6 @@ module Gitlab
             value_flag
 
           command.shelljoin
-        end
-
-        def preinstall_command
-          preinstall.join("\n") if preinstall
-        end
-
-        def postinstall_command
-          postinstall.join("\n") if postinstall
         end
 
         def install_flag

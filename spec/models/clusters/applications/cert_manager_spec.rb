@@ -48,7 +48,7 @@ describe Clusters::Applications::CertManager do
       expect(subject.version).to eq('v0.5.2')
       expect(subject).to be_rbac
       expect(subject.files).to eq(cert_manager.files.merge(cluster_issuer_file))
-      expect(subject.postinstall).to eq(['/usr/bin/kubectl create -f /data/helm/certmanager/config/cluster_issuer.yaml'])
+      expect(subject.postinstall).to eq(['kubectl create -f /data/helm/certmanager/config/cluster_issuer.yaml'])
     end
 
     context 'for a specific user' do
