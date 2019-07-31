@@ -1,0 +1,6 @@
+---
+title: Default dependency job stage index to Infinity, and correctly report it as
+  undefined in prior stages
+merge_request: 31116
+author:
+type: fixed

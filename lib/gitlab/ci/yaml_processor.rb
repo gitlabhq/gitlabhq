@@ -144,7 +144,9 @@ module Gitlab
         job[:dependencies].each do |dependency|
           raise ValidationError, "#{name} job: undefined dependency: #{dependency}" unless @jobs[dependency.to_sym]
 
-          unless @stages.index(@jobs[dependency.to_sym][:stage]) < stage_index
+          dependency_stage_index = @stages.index(@jobs[dependency.to_sym][:stage])
+
+          unless dependency_stage_index.present? && dependency_stage_index < stage_index
             raise ValidationError, "#{name} job: dependency #{dependency} is not defined in prior stages"
           end
         end
