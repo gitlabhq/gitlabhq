@@ -46,25 +46,24 @@ need to do (we assume you have [git-annex enabled](../git_annex.md#using-gitlab-
 repository and that you have made backups in case something goes wrong).
 Fire up a terminal, navigate to your Git repository and:
 
-
 1. Disable `git-annex`:
 
-    ```bash
-    git annex sync --content
-    git annex direct
-    git annex uninit
-    git annex indirect
-    ```
+   ```bash
+   git annex sync --content
+   git annex direct
+   git annex uninit
+   git annex indirect
+   ```
 
 1. Enable `git-lfs`:
 
-    ```
-    git lfs install
-    git lfs track <files>
-    git add .
-    git commit -m "commit message"
-    git push
-    ```
+   ```
+   git lfs install
+   git lfs track <files>
+   git add .
+   git commit -m "commit message"
+   git push
+   ```
 
 ### Disabling Git Annex in your repo
 
@@ -86,72 +85,72 @@ if the server also has Git Annex 6 installed. Read more in the
 
 1. Backup your repository
 
-    ```bash
-    cd repository
-    git annex sync --content
-    cd ..
-    git clone repository repository-backup
-    cd repository-backup
-    git annex get
-    cd ..
-    ```
+   ```bash
+   cd repository
+   git annex sync --content
+   cd ..
+   git clone repository repository-backup
+   cd repository-backup
+   git annex get
+   cd ..
+   ```
 
 1. Use `annex direct`:
 
-    ```bash
-    cd repository
-    git annex direct
-    ```
+   ```bash
+   cd repository
+   git annex direct
+   ```
 
-    The output should be similar to this:
+   The output should be similar to this:
 
-    ```bash
-    commit
-    On branch master
-    Your branch is up-to-date with 'origin/master'.
-    nothing to commit, working tree clean
-    ok
-    direct debian.iso ok
-    direct  ok
-    ```
+   ```bash
+   commit
+   On branch master
+   Your branch is up-to-date with 'origin/master'.
+   nothing to commit, working tree clean
+   ok
+   direct debian.iso ok
+   direct  ok
+   ```
 
 1. Disable Git Annex with [`annex uninit`][uninit]:
 
-    ```bash
-    git annex uninit
-    ```
+   ```bash
+   git annex uninit
+   ```
 
-    The output should be similar to this:
+   The output should be similar to this:
 
-    ```bash
-    unannex debian.iso ok
-    Deleted branch git-annex (was 2534d2c).
-    ```
+   ```bash
+   unannex debian.iso ok
+   Deleted branch git-annex (was 2534d2c).
+   ```
 
-    This will `unannex` every file in the repository, leaving the original files.
+   This will `unannex` every file in the repository, leaving the original files.
 
 1. Switch back to `indirect` mode:
 
-    ```bash
-    git annex indirect
-    ```
+   ```bash
+   git annex indirect
+   ```
 
-    The output should be similar to this:
+   The output should be similar to this:
 
-    ```bash
-    (merging origin/git-annex into git-annex...)
-    (recording state in git...)
-    commit  (recording state in git...)
+   ```bash
+   (merging origin/git-annex into git-annex...)
+   (recording state in git...)
+   commit  (recording state in git...)
 
-    ok
-    (recording state in git...)
-    [master fac3194] commit before switching to indirect mode
-     1 file changed, 1 deletion(-)
-     delete mode 120000 alpine-virt-3.4.4-x86_64.iso
-    ok
-    indirect  ok
-    ok
-    ```
+   ok
+   (recording state in git...)
+   [master fac3194] commit before switching to indirect mode
+    1 file changed, 1 deletion(-)
+    delete mode 120000 alpine-virt-3.4.4-x86_64.iso
+   ok
+   indirect  ok
+   ok
+   ```
 
 ---
 
@@ -216,16 +215,16 @@ branches created by Git Annex: `git-annex`, and all under `synced/`.
 
 ![repository branches](images/git-annex-branches.png)
 
-You can also do this on the commandline with:
+You can also do this on the command line with:
 
-    ```bash
-    git branch -d synced/master
-    git branch -d synced/git-annex
-    git push origin :synced/master
-    git push origin :synced/git-annex
-    git push origin :git-annex
-    git remote prune origin
-    ```
+```bash
+git branch -d synced/master
+git branch -d synced/git-annex
+git push origin :synced/master
+git push origin :synced/git-annex
+git push origin :git-annex
+git remote prune origin
+```
 
 If there are still some Annex objects inside your repository (`.git/annex/`)
 or references inside `.git/config`, run `annex uninit` again:

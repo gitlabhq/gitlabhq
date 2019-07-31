@@ -110,21 +110,21 @@ At this point there are 3 options to undo the local changes you have:
 
 - Discard all local changes, but save them for possible re-use [later](#quickly-save-local-changes):
 
-    ```shell
-    git stash
-    ```
+  ```shell
+  git stash
+  ```
 
 - Discarding local changes (permanently) to a file:
 
-    ```shell
-    git checkout -- <file>
-    ```
+  ```shell
+  git checkout -- <file>
+  ```
 
 - Discard all local changes to all files permanently:
 
-    ```shell
-    git reset --hard
-    ```
+  ```shell
+  git reset --hard
+  ```
 
 Before executing `git reset --hard`, keep in mind that there is also a way to
 just temporary store the changes without committing them using `git stash`.
@@ -182,27 +182,27 @@ Now you have 4 options to undo your changes:
 
 - Unstage the file to current commit (HEAD):
 
-    ```shell
-    git reset HEAD <file>
-    ```
+  ```shell
+  git reset HEAD <file>
+  ```
 
 - Unstage everything - retain changes:
 
-    ```shell
-    git reset
-    ```
+  ```shell
+  git reset
+  ```
 
 - Discard all local changes, but save them for [later](#quickly-save-local-changes):
 
-    ```shell
-    git stash
-    ```
+  ```shell
+  git stash
+  ```
 
 - Discard everything permanently:
 
-    ```shell
-    git reset --hard
-    ```
+  ```shell
+  git reset --hard
+  ```
 
 ## Committed local changes
 
@@ -240,21 +240,21 @@ In our example we will end up with commit `B`, that introduced bug/error. We hav
 
 - Undo (swap additions and deletions) changes introduced by commit `B`:
 
-    ```shell
-    git revert commit-B-id
-    ```
+  ```shell
+  git revert commit-B-id
+  ```
 
 - Undo changes on a single file or directory from commit `B`, but retain them in the staged state:
 
-    ```shell
-    git checkout commit-B-id <file>
-    ```
+  ```shell
+  git checkout commit-B-id <file>
+  ```
 
 - Undo changes on a single file or directory from commit `B`, but retain them in the unstaged state:
 
-    ```shell
-    git reset  commit-B-id <file>
-    ```
+  ```shell
+  git reset  commit-B-id <file>
+  ```
 
 - There is one command we also must not forget: **creating a new branch**
   from the point where changes are not applicable or where the development has hit a
@@ -270,14 +270,14 @@ In our example we will end up with commit `B`, that introduced bug/error. We hav
   you can [cherry-pick](../../../user/project/merge_requests/cherry_pick_changes.md#cherry-picking-a-commit)
   that commit into a new merge request.
 
-    ![Create a new branch to avoid clashing](img/branching.png)
+  ![Create a new branch to avoid clashing](img/branching.png)
 
-    ```shell
-    git checkout commit-B-id
-    git checkout -b new-path-of-feature
-    # Create <commit F>
-    git commit -a
-    ```
+  ```shell
+  git checkout commit-B-id
+  git checkout -b new-path-of-feature
+  # Create <commit F>
+  git commit -a
+  ```
 
 ### With history modification
 
@@ -297,9 +297,9 @@ delete commit `B`.
 
 - Rebase the range from current commit D to A:
 
-    ```shell
-    git rebase -i A
-    ```
+  ```shell
+  git rebase -i A
+  ```
 
 - Command opens your favorite editor where you write `drop` in front of commit
  `B`, but you leave default `pick` with all other commits. Save and exit the
@@ -310,9 +310,9 @@ In case you want to modify something introduced in commit `B`.
 
 - Rebase the range from current commit D to A:
 
-    ```shell
-    git rebase -i A
-    ```
+  ```shell
+  git rebase -i A
+  ```
 
 - Command opens your favorite text editor where you write `edit` in front of commit
  `B`, but leave default `pick` with all other commits. Save and exit the editor to
@@ -320,9 +320,9 @@ In case you want to modify something introduced in commit `B`.
 
 - Now do your edits and commit changes:
 
-    ```shell
-    git commit -a
-    ```
+  ```shell
+  git commit -a
+  ```
 
 You can find some more examples in [below section where we explain how to modify
 history](#how-modifying-history-is-done)

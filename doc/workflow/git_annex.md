@@ -54,13 +54,13 @@ sudo yum install epel-release && sudo yum install git-annex
 For omnibus-gitlab packages, only one configuration setting is needed.
 The Omnibus package will internally set the correct options in all locations.
 
-1.  In `/etc/gitlab/gitlab.rb` add the following line:
+1. In `/etc/gitlab/gitlab.rb` add the following line:
 
-    ```ruby
-    gitlab_shell['git_annex_enabled'] = true
-    ```
+   ```ruby
+   gitlab_shell['git_annex_enabled'] = true
+   ```
 
-1.  Save the file and [reconfigure GitLab][] for the changes to take effect.
+1. Save the file and [reconfigure GitLab][] for the changes to take effect.
 
 ### Configuration for installations from source
 
@@ -69,20 +69,20 @@ There are 2 settings to enable git-annex on your GitLab server.
 One is located in `config/gitlab.yml` of the GitLab repository and the other
 one is located in `config.yml` of gitlab-shell.
 
-1.  In `config/gitlab.yml` add or edit the following lines:
+1. In `config/gitlab.yml` add or edit the following lines:
 
-    ```yaml
-    gitlab_shell:
-      git_annex_enabled: true
-    ```
+   ```yaml
+   gitlab_shell:
+     git_annex_enabled: true
+   ```
 
-1.  In `config.yml` of gitlab-shell add or edit the following lines:
+1. In `config.yml` of gitlab-shell add or edit the following lines:
 
-    ```yaml
-    git_annex_enabled: true
-    ```
+   ```yaml
+   git_annex_enabled: true
+   ```
 
-1.  Save the files and [restart GitLab][] for the changes to take effect.
+1. Save the files and [restart GitLab][] for the changes to take effect.
 
 ## Using GitLab git-annex
 
