@@ -7,6 +7,27 @@ describe GraphqlController do
     stub_feature_flags(graphql: true)
   end
 
+  describe 'ArgumentError' do
+    let(:user) { create(:user) }
+    let(:message) { 'green ideas sleep furiously' }
+
+    before do
+      sign_in(user)
+    end
+
+    it 'handles argument errors' do
+      allow(subject).to receive(:execute) do
+        raise Gitlab::Graphql::Errors::ArgumentError, message
+      end
+
+      post :execute
+
+      expect(json_response).to include(
+        'errors' => include(a_hash_including('message' => message))
+      )
+    end
+  end
+
   describe 'POST #execute' do
     context 'when user is logged in' do
       let(:user) { create(:user) }
