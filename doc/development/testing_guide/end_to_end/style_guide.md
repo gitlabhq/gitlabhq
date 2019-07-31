@@ -45,7 +45,7 @@ Notice that in the above example, before clicking the `:operations_environments_
 
 > We can create these methods as helpers to abstract multi-step navigation.
 
-### Element naming convention
+## Element naming convention
 
 When adding new elements to a page, it's important that we have a uniform element naming convention.
 
@@ -67,7 +67,7 @@ We follow a simple formula roughly based on hungarian notation.
 *Note: This list is a work in progress. This list will eventually be the end-all enumeration of all available types.
         I.e., any element that does not end with something in this list is bad form.*
 
-#### Examples
+### Examples
 
 **Good**
 
