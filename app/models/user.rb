@@ -1505,6 +1505,13 @@ class User < ApplicationRecord
     super
   end
 
+  # override from Devise::Confirmable
+  def confirmation_period_valid?
+    return false if Feature.disabled?(:soft_email_confirmation)
+
+    super
+  end
+
   private
 
   def default_private_profile_to_false
