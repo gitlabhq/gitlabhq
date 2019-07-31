@@ -158,7 +158,18 @@ module ApplicationSettingImplementation
   end
 
   def outbound_local_requests_whitelist_raw=(values)
+    clear_memoization(:outbound_local_requests_whitelist_arrays)
+
     self.outbound_local_requests_whitelist = domain_strings_to_array(values)
+  end
+
+  def add_to_outbound_local_requests_whitelist(values_array)
+    clear_memoization(:outbound_local_requests_whitelist_arrays)
+
+    self.outbound_local_requests_whitelist ||= []
+    self.outbound_local_requests_whitelist += values_array
+
+    self.outbound_local_requests_whitelist.uniq!
   end
 
   def outbound_local_requests_whitelist_arrays

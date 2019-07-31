@@ -90,19 +90,17 @@ describe SelfMonitoring::Project::CreateService do
         )
       end
 
-      # This should pass when https://gitlab.com/gitlab-org/gitlab-ce/issues/44496
-      # is complete and the prometheus listen address is added to the whitelist.
-      # context 'when local requests from hooks and services are not allowed' do
-      #   before do
-      #     allow(ApplicationSetting)
-      #       .to receive(:current)
-      #       .and_return(
-      #         ApplicationSetting.build_from_defaults(allow_local_requests_from_hooks_and_services: false)
-      #       )
-      #   end
+      context 'when local requests from hooks and services are not allowed' do
+        before do
+          allow(ApplicationSetting)
+            .to receive(:current)
+            .and_return(
+              ApplicationSetting.build_from_defaults(allow_local_requests_from_hooks_and_services: false)
+            )
+        end
 
-      #   it_behaves_like 'has prometheus service', 'http://localhost:9090'
-      # end
+        it_behaves_like 'has prometheus service', 'http://localhost:9090'
+      end
 
       context 'with non default prometheus address' do
         before do
