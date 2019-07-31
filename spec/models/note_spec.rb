@@ -913,6 +913,22 @@ describe Note do
     end
   end
 
+  describe '#special_role=' do
+    let(:role) { Note::SpecialRole::FIRST_TIME_CONTRIBUTOR }
+
+    it 'assigns role' do
+      subject.special_role = role
+
+      expect(subject.special_role).to eq(role)
+    end
+
+    it 'does not assign unknown role' do
+      expect { subject.special_role = :bogus }.to raise_error(/Role is undefined/)
+
+      expect(subject.special_role).to be_nil
+    end
+  end
+
   describe '#parent' do
     it 'returns project for project notes' do
       project = create(:project)
