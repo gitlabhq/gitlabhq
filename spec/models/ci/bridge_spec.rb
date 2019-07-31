@@ -23,7 +23,7 @@ describe Ci::Bridge do
     let(:status) { bridge.detailed_status(user) }
 
     it 'returns detailed status object' do
-      expect(status).to be_a Gitlab::Ci::Status::Success
+      expect(status).to be_a Gitlab::Ci::Status::Created
     end
   end
 

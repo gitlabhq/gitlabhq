@@ -1929,6 +1929,13 @@ describe Ci::Pipeline, :mailer do
     it { is_expected.to be_an(Array) }
   end
 
+  describe '.bridgeable_statuses' do
+    subject { described_class.bridgeable_statuses }
+
+    it { is_expected.to be_an(Array) }
+    it { is_expected.not_to include('created', 'preparing', 'pending') }
+  end
+
   describe '#status' do
     let(:build) do
       create(:ci_build, :created, pipeline: pipeline, name: 'test')
