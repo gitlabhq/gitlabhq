@@ -1085,6 +1085,31 @@ module Gitlab
 
           it { expect { subject }.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, 'test1 job: dependency deploy is not defined in prior stages') }
         end
+
+        context 'when a job depends on another job that references a not-yet defined stage' do
+          let(:config) do
+            {
+              "stages" => [
+                "version"
+              ],
+              "version" => {
+                "stage" => "version",
+                "dependencies" => ["release:components:versioning"],
+                "script" => ["./versioning/versioning"]
+              },
+              ".release_go" => {
+                "stage" => "build",
+                "script" => ["cd versioning"]
+              },
+              "release:components:versioning" => {
+                "stage" => "build",
+                "script" => ["cd versioning"]
+              }
+            }
+          end
+
+          it { expect { subject }.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, /is not defined in prior stages/) }
+        end
       end
 
       describe "Hidden jobs" do
