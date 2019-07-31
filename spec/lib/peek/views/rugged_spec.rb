@@ -24,7 +24,7 @@ describe Peek::Views::Rugged, :request_store do
                                                      args: [project.repository.raw, 'HEAD'],
                                                      duration: 0.123)
     ::Gitlab::RuggedInstrumentation.add_call_details(feature: :rugged_test2,
-                                                     args: [project.repository.raw, 'refs/heads/master'],
+                                                     args: [project.repository, 'refs/heads/master'],
                                                      duration: 0.456)
 
     results = subject.results
@@ -32,7 +32,11 @@ describe Peek::Views::Rugged, :request_store do
     expect(results[:duration]).to eq('1234.00ms')
     expect(results[:details].count).to eq(2)
 
-    expect(results[:details][0][:args]).to eq([project.repository.raw.to_s, "refs/heads/master"])
-    expect(results[:details][1][:args]).to eq([project.repository.raw.to_s, "HEAD"])
+    expected = [
+      [project.repository.raw.to_s, "HEAD"],
+      [project.repository.to_s, "refs/heads/master"]
+    ]
+
+    expect(results[:details].map { |data| data[:args] }).to match_array(expected)
   end
 end
