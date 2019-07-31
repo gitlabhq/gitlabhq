@@ -111,18 +111,18 @@ For example, if you were to move `doc/workflow/lfs/lfs_administration.md` to
 1. Copy `doc/workflow/lfs/lfs_administration.md` to `doc/administration/lfs.md`
 1. Replace the contents of `doc/workflow/lfs/lfs_administration.md` with:
 
-    ```md
-    This document was moved to [another location](../../administration/lfs.md).
-    ```
+   ```md
+   This document was moved to [another location](../../administration/lfs.md).
+   ```
 
 1. Find and replace any occurrences of the old location with the new one.
    A quick way to find them is to use `git grep`. First go to the root directory
    where you cloned the `gitlab-ce` repository and then do:
 
-    ```sh
-    git grep -n "workflow/lfs/lfs_administration"
-    git grep -n "lfs/lfs_administration"
-    ```
+   ```sh
+   git grep -n "workflow/lfs/lfs_administration"
+   git grep -n "lfs/lfs_administration"
+   ```
 
 NOTE: **Note:**
 If the document being moved has any Disqus comments on it, there are extra steps
@@ -296,45 +296,45 @@ You can combine one or more of the following:
 1. **Linking to an anchor link.** Use `anchor` as part of the `help_page_path`
    method:
 
-    ```haml
-    = link_to 'Help page', help_page_path('user/permissions', anchor: 'anchor-link')
-    ```
+   ```haml
+   = link_to 'Help page', help_page_path('user/permissions', anchor: 'anchor-link')
+   ```
 
 1. **Opening links in a new tab.** This should be the default behavior:
 
-    ```haml
-    = link_to 'Help page', help_page_path('user/permissions'), target: '_blank'
-    ```
+   ```haml
+   = link_to 'Help page', help_page_path('user/permissions'), target: '_blank'
+   ```
 
 1. **Linking to a circle icon.** Usually used in settings where a long
    description cannot be used, like near checkboxes. You can basically use
    any font awesome icon, but prefer the `question-circle`:
 
-    ```haml
-    = link_to icon('question-circle'), help_page_path('user/permissions')
-    ```
+   ```haml
+   = link_to icon('question-circle'), help_page_path('user/permissions')
+   ```
 
 1. **Using a button link.** Useful in places where text would be out of context
    with the rest of the page layout:
 
-    ```haml
-    = link_to 'Help page', help_page_path('user/permissions'),  class: 'btn btn-info'
-    ```
+   ```haml
+   = link_to 'Help page', help_page_path('user/permissions'),  class: 'btn btn-info'
+   ```
 
 1. **Using links inline of some text.**
 
-    ```haml
-    Description to #{link_to 'Help page', help_page_path('user/permissions')}.
-    ```
+   ```haml
+   Description to #{link_to 'Help page', help_page_path('user/permissions')}.
+   ```
 
 1. **Adding a period at the end of the sentence.** Useful when you don't want
    the period to be part of the link:
 
-    ```haml
-    = succeed '.' do
-      Learn more in the
-      = link_to 'Help page', help_page_path('user/permissions')
-    ```
+   ```haml
+   = succeed '.' do
+     Learn more in the
+     = link_to 'Help page', help_page_path('user/permissions')
+   ```
 
 ### GitLab `/help` tests
 

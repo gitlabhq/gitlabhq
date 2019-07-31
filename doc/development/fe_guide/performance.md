@@ -30,8 +30,8 @@ To improve the time to first render we are using lazy loading for images. This w
 the actual image source on the `data-src` attribute. After the HTML is rendered and JavaScript is loaded,
 the value of `data-src` will be moved to `src` automatically if the image is in the current viewport.
 
--  Prepare images in HTML for lazy loading by renaming the `src` attribute to `data-src` AND adding the class `lazy`.
--  If you are using the Rails `image_tag` helper, all images will be lazy-loaded by default unless `lazy: false` is provided.
+- Prepare images in HTML for lazy loading by renaming the `src` attribute to `data-src` AND adding the class `lazy`.
+- If you are using the Rails `image_tag` helper, all images will be lazy-loaded by default unless `lazy: false` is provided.
 
 If you are asynchronously adding content which contains lazy images then you need to call the function
 `gl.lazyLoader.searchLazyImages()` which will search for lazy images and load them if needed.
@@ -96,26 +96,26 @@ bundle and included on the page.
   DOM has loaded, you should attach an event handler to the `DOMContentLoaded`
   event with:
 
-    ```javascript
-    import initMyWidget from './my_widget';
+  ```javascript
+  import initMyWidget from './my_widget';
 
-    document.addEventListener('DOMContentLoaded', () => {
-      initMyWidget();
-    });
-    ```
+  document.addEventListener('DOMContentLoaded', () => {
+    initMyWidget();
+  });
+  ```
 
 - **Supporting Module Placement:**
-    - If a class or a module is _specific to a particular route_, try to locate
-      it close to the entry point it will be used. For instance, if
-      `my_widget.js` is only imported within `pages/widget/show/index.js`, you
-      should place the module at `pages/widget/show/my_widget.js` and import it
-      with a relative path (e.g. `import initMyWidget from './my_widget';`).
-    - If a class or module is _used by multiple routes_, place it within a
-      shared directory at the closest common parent directory for the entry
-      points that import it.  For example, if `my_widget.js` is imported within
-      both `pages/widget/show/index.js` and `pages/widget/run/index.js`, then
-      place the module at `pages/widget/shared/my_widget.js` and import it with
-      a relative path if possible (e.g. `../shared/my_widget`).
+  - If a class or a module is _specific to a particular route_, try to locate
+    it close to the entry point it will be used. For instance, if
+    `my_widget.js` is only imported within `pages/widget/show/index.js`, you
+    should place the module at `pages/widget/show/my_widget.js` and import it
+    with a relative path (e.g. `import initMyWidget from './my_widget';`).
+  - If a class or module is _used by multiple routes_, place it within a
+    shared directory at the closest common parent directory for the entry
+    points that import it.  For example, if `my_widget.js` is imported within
+    both `pages/widget/show/index.js` and `pages/widget/run/index.js`, then
+    place the module at `pages/widget/shared/my_widget.js` and import it with
+    a relative path if possible (e.g. `../shared/my_widget`).
 
 - **Enterprise Edition Caveats:**
   For GitLab Enterprise Edition, page-specific entry points will override their
@@ -161,7 +161,7 @@ General tips:
 - Use code-splitting dynamic imports wherever possible to lazy-load code that is not needed initially.
 - [High Performance Animations][high-perf-animations]
 
--------
+---
 
 ## Additional Resources
 

@@ -1,15 +1,18 @@
 # Vuex
+
 To manage the state of an application you should use [Vuex][vuex-docs].
 
 _Note:_ All of the below is explained in more detail in the official [Vuex documentation][vuex-docs].
 
 ## Separation of concerns
+
 Vuex is composed of State, Getters, Mutations, Actions and Modules.
 
 When a user clicks on an action, we need to `dispatch` it. This action will `commit` a mutation that will change the state.
 _Note:_ The action itself will not update the state, only a mutation should update the state.
 
 ## File structure
+
 When using Vuex at GitLab, separate this concerns into different files to improve readability:
 
 ```
@@ -21,10 +24,12 @@ When using Vuex at GitLab, separate this concerns into different files to improv
   ├── state.js          # state
   └── mutation_types.js # mutation types
 ```
+
 The following example shows an application that lists and adds users to the state.
 (For a more complex example implementation take a look at the security applications store in [here](https://gitlab.com/gitlab-org/gitlab-ee/tree/master/ee/app/assets/javascripts/vue_shared/security_reports/store))
 
 ### `index.js`
+
 This is the entry point for our store. You can use the following as a guide:
 
 ```javascript
@@ -47,6 +52,7 @@ export default createStore();
 ```
 
 ### `state.js`
+
 The first thing you should do before writing any code is to design the state.
 
 Often we need to provide data from haml to our Vue application. Let's store it in the state for better access.
@@ -66,9 +72,11 @@ Often we need to provide data from haml to our Vue application. Let's store it i
 ```
 
 #### Access `state` properties
+
 You can use `mapState` to access state properties in the components.
 
 ### `actions.js`
+
 An action is a payload of information to send data from our application to our store.
 
 An action is usually composed by a `type` and a `payload` and they describe what happened.
@@ -110,6 +118,7 @@ In this file, we will write the actions that will call the respective mutations:
 ```
 
 #### Actions Pattern: `request` and `receive` namespaces
+
 When a request is made we often want to show a loading state to the user.
 
 Instead of creating an action to toggle the loading state and dispatch it in the component,
@@ -136,6 +145,7 @@ By following this pattern we guarantee:
 1. Actions are simple and straightforward
 
 #### Dispatching actions
+
 To dispatch an action from a component, use the `mapActions` helper:
 
 ```javascript
@@ -154,6 +164,7 @@ import { mapActions } from 'vuex';
 ```
 
 ### `mutations.js`
+
 The mutations specify how the application state changes in response to actions sent to the store.
 The only way to change state in a Vuex store should be by committing a mutation.
 
@@ -193,6 +204,7 @@ Remember that actions only describe that something happened, they don't describe
 ```
 
 ### `getters.js`
+
 Sometimes we may need to get derived state based on store state, like filtering for a specific prop.
 Using a getter will also cache the result based on dependencies due to [how computed props work](https://vuejs.org/v2/guide/computed.html#Computed-Caching-vs-Methods)
 This can be done through the `getters`:
@@ -219,6 +231,7 @@ import { mapGetters } from 'vuex';
 ```
 
 ### `mutation_types.js`
+
 From [vuex mutations docs][vuex-mutations]:
 > It is a commonly seen pattern to use constants for mutation types in various Flux implementations. This allows the code to take advantage of tooling like linters, and putting all constants in a single file allows your collaborators to get an at-a-glance view of what mutations are possible in the entire application.
 
@@ -227,6 +240,7 @@ export const ADD_USER = 'ADD_USER';
 ```
 
 ### How to include the store in your application
+
 The store should be included in the main component of your application:
 
 ```javascript
@@ -241,6 +255,7 @@ The store should be included in the main component of your application:
 ```
 
 ### Communicating with the Store
+
 ```javascript
 <script>
 import { mapActions, mapState, mapGetters } from 'vuex';
@@ -298,29 +313,33 @@ export default {
 
 1. Do not call a mutation directly. Always use an action to commit a mutation. Doing so will keep consistency throughout the application. From Vuex docs:
 
-    >  why don't we just call store.commit('action') directly? Well, remember that mutations must be synchronous? Actions aren't. We can perform asynchronous operations inside an action.
+   >  why don't we just call store.commit('action') directly? Well, remember that mutations must be synchronous? Actions aren't. We can perform asynchronous operations inside an action.
 
-    ```javascript
-      // component.vue
+   ```javascript
+     // component.vue
 
-      // bad
-      created() {
-        this.$store.commit('mutation');
-      }
+     // bad
+     created() {
+       this.$store.commit('mutation');
+     }
 
-      // good
-      created() {
-        this.$store.dispatch('action');
-      }
-    ```
+     // good
+     created() {
+       this.$store.dispatch('action');
+     }
+   ```
+
 1. Use mutation types instead of hardcoding strings. It will be less error prone.
 1. The State will be accessible in all components descending from the use where the store is instantiated.
 
 ### Testing Vuex
+
 #### Testing Vuex concerns
+
 Refer to [vuex docs][vuex-testing] regarding testing Actions, Getters and Mutations.
 
 #### Testing components that need a store
+
 Smaller components might use `store` properties to access the data.
 In order to write unit tests for those components, we need to include the store and provide the correct state:
 
@@ -363,6 +382,7 @@ describe('component', () => {
 ```
 
 #### Testing Vuex actions and getters
+
 Because we're currently using [`babel-plugin-rewire`](https://github.com/speedskater/babel-plugin-rewire), you may encounter the following error when testing your Vuex actions and getters:
 `[vuex] actions should be function or object with "handler" function`
 
