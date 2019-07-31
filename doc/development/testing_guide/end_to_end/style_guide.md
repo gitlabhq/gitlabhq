@@ -98,3 +98,47 @@ view '...' do
   element :ssh_clone_url
 end
 ```
+
+## Block argument naming
+
+To have a standard on how we call pages when using the `.perform` method, we use the name of page object being called, all lowercased, and separated by underscore, if needed (see good and bad examples below.) This also applies to resources. We chose not to simply use `page` because that would shadow the Capybara DSL, potentially leading to confusion and bugs.
+
+### Examples
+
+**Good**
+
+```ruby
+# qa/specs/features/browser_ui/1_manage/project/add_project_member_spec.rb
+
+Page::Project::Settings::Members.perform do |members|
+  members.do_something
+end
+```
+
+```ruby
+# qa/specs/features/ee/browser_ui/3_create/merge_request/add_batch_comments_in_merge_request_spec.rb
+
+Resource::MergeRequest.fabricate! do |merge_request|
+  merge_request.do_something_else
+end
+```
+
+**Bad**
+
+```ruby
+# qa/specs/features/browser_ui/1_manage/project/add_project_member_spec.rb
+
+Page::Project::Settings::Members.perform do |project_settings_members_page|
+  project_settings_members_page.do_something
+end
+```
+
+```ruby
+# qa/specs/features/ee/browser_ui/3_create/merge_request/add_batch_comments_in_merge_request_spec.rb
+
+Resource::MergeRequest.fabricate! do |merge_request_page|
+  merge_request_page.do_something_else
+end
+```
+
+> Besides the advantage of having a standard in place, by following this standard we also write shorter lines of code.
