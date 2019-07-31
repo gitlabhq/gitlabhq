@@ -32,6 +32,12 @@ module Gitlab
         payload['message'] = "#{base_message(payload)}: start"
         payload['job_status'] = 'start'
 
+        # Old gitlab-shell messages don't provide enqueued_at/created_at attributes
+        enqueued_at = payload['enqueued_at'] || payload['created_at']
+        if enqueued_at
+          payload['scheduling_latency_s'] = elapsed(Time.iso8601(enqueued_at).to_f)
+        end
+
         payload
       end
 
