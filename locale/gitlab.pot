@@ -3282,6 +3282,9 @@ msgstr ""
 msgid "Copy token to clipboard"
 msgstr ""
 
+msgid "Could not add prometheus URL to whitelist"
+msgstr ""
+
 msgid "Could not authorize chat nickname. Try again!"
 msgstr ""
 
@@ -8730,6 +8733,9 @@ msgid "ProjectsNew|Visibility Level"
 msgstr ""
 
 msgid "ProjectsNew|Want to house several dependent projects under the same namespace? %{link_start}Create a group.%{link_end}"
+msgstr ""
+
+msgid "Prometheus listen_address is not a valid URI"
 msgstr ""
 
 msgid "PrometheusService|%{exporters} with %{metrics} were found"

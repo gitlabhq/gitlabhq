@@ -15,6 +15,8 @@ module ApplicationSettings
 
       update_terms(@params.delete(:terms))
 
+      add_to_outbound_local_requests_whitelist(@params.delete(:add_to_outbound_local_requests_whitelist))
+
       if params.key?(:performance_bar_allowed_group_path)
         params[:performance_bar_allowed_group_id] = performance_bar_allowed_group_id
       end
@@ -30,6 +32,13 @@ module ApplicationSettings
 
     def usage_stats_updated?
       params.key?(:usage_ping_enabled) || params.key?(:version_check_enabled)
+    end
+
+    def add_to_outbound_local_requests_whitelist(values)
+      values_array = Array(values).reject(&:empty?)
+      return if values_array.empty?
+
+      @application_setting.add_to_outbound_local_requests_whitelist(values_array)
     end
 
     def update_terms(terms)

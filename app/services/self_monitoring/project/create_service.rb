@@ -14,6 +14,7 @@ module SelfMonitoring
       steps :validate_admins,
         :create_project,
         :add_project_members,
+        :add_to_whitelist,
         :add_prometheus_manual_configuration
 
       def initialize
@@ -59,15 +60,29 @@ module SelfMonitoring
         end
       end
 
-      def add_prometheus_manual_configuration
+      def add_to_whitelist
         return success unless prometheus_enabled?
         return success unless prometheus_listen_address.present?
 
-        # TODO: Currently, adding the internal prometheus server as a manual configuration
-        # is only possible if the setting to allow webhooks and services to connect
-        # to local network is on.
-        # https://gitlab.com/gitlab-org/gitlab-ce/issues/44496 will add
-        # a whitelist that will allow connections to certain ips on the local network.
+        uri = parse_url(internal_prometheus_listen_address_uri)
+        return error(_('Prometheus listen_address is not a valid URI')) unless uri
+
+        result = ApplicationSettings::UpdateService.new(
+          Gitlab::CurrentSettings.current_application_settings,
+          project_owner,
+          outbound_local_requests_whitelist: [uri.normalized_host]
+        ).execute
+
+        if result
+          success
+        else
+          error(_('Could not add prometheus URL to whitelist'))
+        end
+      end
+
+      def add_prometheus_manual_configuration
+        return success unless prometheus_enabled?
+        return success unless prometheus_listen_address.present?
 
         service = project.find_or_initialize_service('prometheus')
 
@@ -77,6 +92,11 @@ module SelfMonitoring
         end
 
         success
+      end
+
+      def parse_url(uri_string)
+        Addressable::URI.parse(uri_string)
+      rescue Addressable::URI::InvalidURIError, TypeError
       end
 
       def prometheus_enabled?
