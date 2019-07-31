@@ -121,26 +121,6 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
     end
   end
 
-  describe '.missing_kubernetes_namespace' do
-    let!(:cluster) { create(:cluster, :provided_by_gcp, :project) }
-    let(:project) { cluster.project }
-    let(:kubernetes_namespaces) { project.kubernetes_namespaces }
-
-    subject do
-      described_class.joins(:projects).where(projects: { id: project.id }).missing_kubernetes_namespace(kubernetes_namespaces)
-    end
-
-    it { is_expected.to contain_exactly(cluster) }
-
-    context 'kubernetes namespace exists' do
-      before do
-        create(:cluster_kubernetes_namespace, project: project, cluster: cluster)
-      end
-
-      it { is_expected.to be_empty }
-    end
-  end
-
   describe 'validations' do
     subject { cluster.valid? }
 
@@ -419,31 +399,6 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
       it 'returns a platform' do
         is_expected.to eq(cluster.platform_kubernetes)
         expect(subject.class.name.deconstantize).to eq(Clusters::Platforms.to_s)
-      end
-    end
-  end
-
-  describe '#all_projects' do
-    let(:project) { create(:project) }
-    let(:cluster) { create(:cluster, projects: [project]) }
-
-    subject { cluster.all_projects }
-
-    context 'project cluster' do
-      it 'returns project' do
-        is_expected.to eq([project])
-      end
-    end
-
-    context 'group cluster' do
-      let(:cluster) { create(:cluster, :group) }
-      let(:group) { cluster.group }
-      let(:project) { create(:project, group: group) }
-      let(:subgroup) { create(:group, parent: group) }
-      let(:subproject) { create(:project, group: subgroup) }
-
-      it 'returns all projects for group' do
-        is_expected.to contain_exactly(project, subproject)
       end
     end
   end

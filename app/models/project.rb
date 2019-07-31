@@ -415,12 +415,6 @@ class Project < ApplicationRecord
     .where(project_ci_cd_settings: { group_runners_enabled: true })
   end
 
-  scope :missing_kubernetes_namespace, -> (kubernetes_namespaces) do
-    subquery = kubernetes_namespaces.select('1').where('clusters_kubernetes_namespaces.project_id = projects.id')
-
-    where('NOT EXISTS (?)', subquery)
-  end
-
   enum auto_cancel_pending_pipelines: { disabled: 0, enabled: 1 }
 
   chronic_duration_attr :build_timeout_human_readable, :build_timeout,
