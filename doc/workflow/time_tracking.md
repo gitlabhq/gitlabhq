@@ -22,8 +22,8 @@ below.
 
 ## How to enter data
 
-Time Tracking uses two [quick actions] that GitLab introduced with this new
-feature: `/spend` and `/estimate`.
+Time Tracking uses two [quick actions](../user/project/quick_actions.md)
+that GitLab introduced with this new feature: `/spend` and `/estimate`.
 
 Quick actions can be used in the body of an issue or a merge request, but also
 in a comment in both an issue or a merge request.
@@ -73,16 +73,15 @@ The following time units are available:
 
 Default conversion rates are 1mo = 4w, 1w = 5d and 1d = 8h.
 
-### Limit displayed units to hours
+### Limit displayed units to hours **(CORE ONLY)**
 
-> Introduced in GitLab 12.1.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/29469/) in GitLab 12.1.
 
-The display of time units can be limited to hours through the option in **Admin Area > Settings > Preferences** under 'Localization'.
+In GitLab self-managed instances, the display of time units can be limited to
+hours through the option in **Admin Area > Settings > Preferences** under **Localization**.
 
 With this option enabled, `75h` is displayed instead of `1w 4d 3h`.
 
 ## Other interesting links
 
 - [Time Tracking landing page on about.gitlab.com](https://about.gitlab.com/solutions/time-tracking/)
-
-[quick actions]: ../user/project/quick_actions.md
