@@ -1,3 +1,7 @@
+---
+type: howto
+---
+
 # Deleting a User account
 
 Users can be deleted from a GitLab instance, either by:
@@ -64,8 +68,20 @@ for such records. Any commits made by a deleted user will still display the
 username of the original user.
 
 When a user is deleted from an [abuse report](../../admin_area/abuse_reports.md)
-or spam log, these associated records are not ghosted and will be removed, along
-with any groups the user is a sole owner of.
+or spam log, these associated
+records are not ghosted and will be removed, along with any groups the user
+is a sole owner of. Administrators can also request this behavior when
+deleting users from the [API](../../../api/users.md#user-deletion) or the
+Admin Area.
 
-Administrators can also request this behavior when deleting users from the
-[API](../../../api/users.md#user-deletion) or the Admin Area.
+<!-- ## Troubleshooting
+
+Include any troubleshooting steps that you can foresee. If you know beforehand what issues
+one might have when setting this up, or when something is changed, or on upgrading, it's
+important to describe those, too. Think of things that may go wrong and include them here.
+This is important to minimize requests for support, and to avoid doc comments with
+questions that you know someone might ask.
+
+Each scenario can be a third-level heading, e.g. `### Getting error message X`.
+If you have none to add when creating a doc, leave this section in place
+but commented out to help encourage others to add to it in the future. -->

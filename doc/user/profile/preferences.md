@@ -1,11 +1,17 @@
+---
+type: concepts, howto
+---
+
 # Profile preferences
 
 A user's profile preferences page allows the user to customize various aspects
 of GitLab to their liking.
 
-To navigate to your profile's preferences, click your avatar icon in the top
-right corner, select **Settings** and then choose **Preferences** from the
-left sidebar.
+To navigate to your profile's preferences:
+
+1. Click your avatar.
+1. Select **Settings**.
+1. Click **Preferences** in the sidebar.
 
 ## Navigation theme
 
@@ -15,7 +21,7 @@ and left side navigation.
 Using individual color themes might help you differentiate between your different
 GitLab instances.
 
-The default palette is Indigo. You can choose between 10 different themes:
+The default theme is Indigo. You can choose between 10 themes:
 
 - Indigo
 - Light Indigo
@@ -39,7 +45,7 @@ for syntax highlighting. For a list of supported languages visit the rouge websi
 Changing this setting allows you to customize the color theme when viewing any
 syntax highlighted code on GitLab.
 
-The default syntax theme is White, and you can choose among 5 different colors:
+The default syntax theme is White, and you can choose among 5 different themes:
 
 - White
 - Dark
@@ -102,7 +108,7 @@ Select your preferred language from a list of supported languages.
 
 ### First day of the week
 
-The first day of the week can be customised for calendar views and date pickers.
+The first day of the week can be customized for calendar views and date pickers.
 
 You can choose one of the following options as the first day of the week:
 
@@ -111,3 +117,15 @@ You can choose one of the following options as the first day of the week:
 - Monday
 
 If you select **System Default**, the system-wide default setting will be used.
+
+<!-- ## Troubleshooting
+
+Include any troubleshooting steps that you can foresee. If you know beforehand what issues
+one might have when setting this up, or when something is changed, or on upgrading, it's
+important to describe those, too. Think of things that may go wrong and include them here.
+This is important to minimize requests for support, and to avoid doc comments with
+questions that you know someone might ask.
+
+Each scenario can be a third-level heading, e.g. `### Getting error message X`.
+If you have none to add when creating a doc, leave this section in place
+but commented out to help encourage others to add to it in the future. -->

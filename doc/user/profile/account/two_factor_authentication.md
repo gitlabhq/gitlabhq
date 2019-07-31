@@ -1,3 +1,7 @@
+---
+type: howto
+---
+
 # Two-Factor Authentication
 
 Two-factor Authentication (2FA) provides an additional level of security to your
@@ -15,7 +19,7 @@ When you enable 2FA, don't forget to back up your [recovery codes](#recovery-cod
 
 In addition to time-based one time passwords (TOTP), GitLab supports U2F
 (universal 2nd factor) devices as the second factor of authentication. Once
-enabled, in addition to supplying your username and password to login, you'll
+enabled, in addition to supplying your username and password to log in, you'll
 be prompted to activate your U2F device (usually by pressing a button on it),
 and it will perform secure authentication on your behalf.
 
@@ -238,3 +242,15 @@ Sign in and re-enable two-factor authentication as soon as possible.
   - The user logs out and attempts to log in via `first.host.xyz` - U2F authentication succeeds.
   - The user logs out and attempts to log in via `second.host.xyz` - U2F authentication fails, because
     the U2F key has only been registered on `first.host.xyz`.
+
+<!-- ## Troubleshooting
+
+Include any troubleshooting steps that you can foresee. If you know beforehand what issues
+one might have when setting this up, or when something is changed, or on upgrading, it's
+important to describe those, too. Think of things that may go wrong and include them here.
+This is important to minimize requests for support, and to avoid doc comments with
+questions that you know someone might ask.
+
+Each scenario can be a third-level heading, e.g. `### Getting error message X`.
+If you have none to add when creating a doc, leave this section in place
+but commented out to help encourage others to add to it in the future. -->
