@@ -27,6 +27,10 @@ class Note < ApplicationRecord
       def values
         constants.map {|const| self.const_get(const)}
       end
+
+      def value?(val)
+        values.include?(val)
+      end
     end
   end
 
