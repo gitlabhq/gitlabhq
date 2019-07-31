@@ -3,11 +3,11 @@
 require 'rails_helper'
 
 describe Clusters::Applications::CertManager do
-  let(:cert_manager) { create(:clusters_applications_cert_managers) }
+  let(:cert_manager) { create(:clusters_applications_cert_manager) }
 
-  include_examples 'cluster application core specs', :clusters_applications_cert_managers
-  include_examples 'cluster application status specs', :clusters_applications_cert_managers
-  include_examples 'cluster application version specs', :clusters_applications_cert_managers
+  include_examples 'cluster application core specs', :clusters_applications_cert_manager
+  include_examples 'cluster application status specs', :clusters_applications_cert_manager
+  include_examples 'cluster application version specs', :clusters_applications_cert_manager
   include_examples 'cluster application initial status specs'
 
   describe '#can_uninstall?' do
@@ -72,7 +72,7 @@ describe Clusters::Applications::CertManager do
     end
 
     context 'application failed to install previously' do
-      let(:cert_manager) { create(:clusters_applications_cert_managers, :errored, version: '0.0.1') }
+      let(:cert_manager) { create(:clusters_applications_cert_manager, :errored, version: '0.0.1') }
 
       it 'is initialized with the locked version' do
         expect(subject.version).to eq('v0.5.2')

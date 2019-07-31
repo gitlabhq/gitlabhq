@@ -24,7 +24,7 @@ describe Gitlab::UsageData do
       create(:cluster, :group, :disabled)
       create(:clusters_applications_helm, :installed, cluster: gcp_cluster)
       create(:clusters_applications_ingress, :installed, cluster: gcp_cluster)
-      create(:clusters_applications_cert_managers, :installed, cluster: gcp_cluster)
+      create(:clusters_applications_cert_manager, :installed, cluster: gcp_cluster)
       create(:clusters_applications_prometheus, :installed, cluster: gcp_cluster)
       create(:clusters_applications_runner, :installed, cluster: gcp_cluster)
       create(:clusters_applications_knative, :installed, cluster: gcp_cluster)
