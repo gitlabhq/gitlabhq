@@ -23,9 +23,9 @@ class QualifiedDomainArrayValidator < ActiveModel::EachValidator
   private
 
   def validate_value_present(record, attribute, value)
-    return unless value.blank?
+    return unless value.nil?
 
-    record.errors.add(attribute, _('entries cannot be blank'))
+    record.errors.add(attribute, _('entries cannot be nil'))
   end
 
   def validate_host_length(record, attribute, value)

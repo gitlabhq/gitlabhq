@@ -45,7 +45,7 @@ describe ApplicationSetting do
     it { is_expected.to allow_value(['xn--itlab-j1a.com']).for(:outbound_local_requests_whitelist) }
     it { is_expected.not_to allow_value(['<h1></h1>']).for(:outbound_local_requests_whitelist) }
     it { is_expected.to allow_value(['gitlab.com']).for(:outbound_local_requests_whitelist) }
-    it { is_expected.to allow_value(nil).for(:outbound_local_requests_whitelist) }
+    it { is_expected.not_to allow_value(nil).for(:outbound_local_requests_whitelist) }
     it { is_expected.to allow_value([]).for(:outbound_local_requests_whitelist) }
 
     context "when user accepted let's encrypt terms of service" do

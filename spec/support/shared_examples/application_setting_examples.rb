@@ -40,6 +40,11 @@ RSpec.shared_examples 'string of domains' do |attribute|
     setting.method("#{attribute}_raw=").call("example;34543:garbage:fdh5654;")
     expect(setting.method(attribute).call).to contain_exactly('example', '34543:garbage:fdh5654')
   end
+
+  it 'does not raise error with nil' do
+    setting.method("#{attribute}_raw=").call(nil)
+    expect(setting.method(attribute).call).to eq([])
+  end
 end
 
 RSpec.shared_examples 'application settings examples' do
@@ -74,6 +79,12 @@ RSpec.shared_examples 'application settings examples' do
       domain_whitelist = ['www.example.com', 'example.com', 'subdomain.example.com']
 
       expect(setting.outbound_local_requests_whitelist_arrays).to contain_exactly(ip_whitelist, domain_whitelist)
+    end
+
+    it 'does not raise error with nil' do
+      setting.outbound_local_requests_whitelist = nil
+
+      expect(setting.outbound_local_requests_whitelist_arrays).to contain_exactly([], [])
     end
   end
 
