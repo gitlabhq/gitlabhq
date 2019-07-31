@@ -1,5 +1,11 @@
 # Geo Replication **(PREMIUM ONLY)**
 
+> - Introduced in GitLab Enterprise Edition 8.9.
+> - Using Geo in combination with
+>   [High Availability](../../high_availability/README.md)
+>   is considered **Generally Available** (GA) in
+>   [GitLab Premium](https://about.gitlab.com/pricing/) 10.4.
+
 Geo is the solution for widely distributed development teams.
 
 ## Overview
@@ -8,14 +14,14 @@ Fetching large repositories can take a long time for teams located far from a si
 
 Geo provides local, read-only instances of your GitLab instances, reducing the time it takes to clone and fetch large repositories and speeding up development.
 
+> **Notes:**
+>
 > - Geo is part of [GitLab Premium](https://about.gitlab.com/pricing/#self-managed).
-> - Introduced in GitLab Enterprise Edition 8.9.
 > - We recommend you use:
 >   - At least GitLab Enterprise Edition 10.0 for basic Geo features.
 >   - The latest version for a better experience.
 > - Make sure that all nodes run the same GitLab version.
 > - Geo requires PostgreSQL 9.6 and Git 2.9, in addition to GitLab's usual [minimum requirements](../../../install/requirements.md).
-> - Using Geo in combination with [High Availability](../../high_availability/README.md) is considered **Generally Available** (GA) in GitLab [GitLab Premium](https://about.gitlab.com/pricing/) 10.4.
 
 For a video introduction to Geo, see [Introduction to GitLab Geo - GitLab Features](https://www.youtube.com/watch?v=-HDLxSjEh6w).
 
