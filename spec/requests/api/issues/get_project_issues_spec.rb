@@ -389,7 +389,7 @@ describe API::Issues do
     it 'returns an array of issues with any milestone' do
       get api("#{base_url}/issues", user), params: { milestone: any_milestone_title }
 
-      expect_paginated_array_response([issue.id, closed_issue.id])
+      expect_paginated_array_response([issue.id, confidential_issue.id, closed_issue.id])
     end
 
     context 'without sort params' do

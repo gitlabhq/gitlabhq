@@ -484,22 +484,19 @@ class IssuableFinder
 
   # rubocop: disable CodeReuse/ActiveRecord
   def by_milestone(items)
-    if milestones?
-      if filter_by_no_milestone?
-        items = items.left_joins_milestones.where(milestone_id: [-1, nil])
-      elsif filter_by_any_milestone?
-        items = items.any_milestone
-      elsif filter_by_upcoming_milestone?
-        upcoming_ids = Milestone.upcoming_ids(projects, related_groups)
-        items = items.left_joins_milestones.where(milestone_id: upcoming_ids)
-      elsif filter_by_started_milestone?
-        items = items.left_joins_milestones.merge(Milestone.started)
-      else
-        items = items.with_milestone(params[:milestone_title])
-      end
-    end
+    return items unless milestones?
+    return items if filter_by_any_milestone?
 
-    items
+    if filter_by_no_milestone?
+      items.left_joins_milestones.where(milestone_id: nil)
+    elsif filter_by_upcoming_milestone?
+      upcoming_ids = Milestone.upcoming_ids(projects, related_groups)
+      items.left_joins_milestones.where(milestone_id: upcoming_ids)
+    elsif filter_by_started_milestone?
+      items.left_joins_milestones.merge(Milestone.started)
+    else
+      items.with_milestone(params[:milestone_title])
+    end
   end
   # rubocop: enable CodeReuse/ActiveRecord
 

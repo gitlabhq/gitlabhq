@@ -113,13 +113,13 @@ describe IssuesFinder do
         let(:params) { { milestone_title: 'Any' } }
 
         it 'returns issues with any assigned milestone' do
-          expect(issues).to contain_exactly(issue1)
+          expect(issues).to contain_exactly(issue1, issue2, issue3, issue4)
         end
 
         it 'returns issues with any assigned milestone (deprecated)' do
           params[:milestone_title] = Milestone::Any.title
 
-          expect(issues).to contain_exactly(issue1)
+          expect(issues).to contain_exactly(issue1, issue2, issue3, issue4)
         end
       end
 
