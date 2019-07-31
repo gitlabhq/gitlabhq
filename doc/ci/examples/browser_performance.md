@@ -15,7 +15,7 @@ your code by using GitLab CI/CD and [sitespeed.io](https://www.sitespeed.io)
 using Docker-in-Docker.
 
 First, you need GitLab Runner with
-[docker-in-docker executor](../docker/using_docker_build.md#use-docker-in-docker-executor).
+[docker-in-docker build](../docker/using_docker_build.md#use-docker-in-docker-workflow-with-docker-executor).
 
 Once you set up the Runner, add a new job to `.gitlab-ci.yml` that
 generates the expected report:
