@@ -12,6 +12,7 @@ class ApplicationController < ActionController::Base
   include EnforcesTwoFactorAuthentication
   include WithPerformanceBar
   include SessionlessAuthentication
+  include ConfirmEmailWarning
 
   before_action :authenticate_user!
   before_action :enforce_terms!, if: :should_enforce_terms?
