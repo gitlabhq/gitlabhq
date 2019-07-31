@@ -20,33 +20,33 @@ See [our current .eslintrc](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/
 
 1. **Never Ever EVER** disable eslint globally for a file
 
-    ```javascript
-      // bad
-      /* eslint-disable */
+   ```javascript
+     // bad
+     /* eslint-disable */
 
-      // better
-      /* eslint-disable some-rule, some-other-rule */
+     // better
+     /* eslint-disable some-rule, some-other-rule */
 
-      // best
-      // nothing :)
-    ```
+     // best
+     // nothing :)
+   ```
 
 1. If you do need to disable a rule for a single violation, try to do it as locally as possible
 
-    ```javascript
-      // bad
-      /* eslint-disable no-new */
+   ```javascript
+     // bad
+     /* eslint-disable no-new */
 
-      import Foo from 'foo';
+     import Foo from 'foo';
 
-      new Foo();
+     new Foo();
 
-      // better
-      import Foo from 'foo';
+     // better
+     import Foo from 'foo';
 
-      // eslint-disable-next-line no-new
-      new Foo();
-    ```
+     // eslint-disable-next-line no-new
+     new Foo();
+   ```
 
 1. There are few rules that we need to disable due to technical debt. Which are:
    1. [no-new][eslint-new]
@@ -55,113 +55,113 @@ See [our current .eslintrc](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/
 1. When they are needed _always_ place ESlint directive comment blocks on the first line of a script,
    followed by any global declarations, then a blank newline prior to any imports or code.
 
-    ```javascript
-      // bad
-      /* global Foo */
-      /* eslint-disable no-new */
-      import Bar from './bar';
+   ```javascript
+     // bad
+     /* global Foo */
+     /* eslint-disable no-new */
+     import Bar from './bar';
 
-      // good
-      /* eslint-disable no-new */
-      /* global Foo */
+     // good
+     /* eslint-disable no-new */
+     /* global Foo */
 
-      import Bar from './bar';
-    ```
+     import Bar from './bar';
+   ```
 
 1. **Never** disable the `no-undef` rule. Declare globals with `/* global Foo */` instead.
 
 1. When declaring multiple globals, always use one `/* global [name] */` line per variable.
 
-    ```javascript
-      // bad
-      /* globals Flash, Cookies, jQuery */
+   ```javascript
+     // bad
+     /* globals Flash, Cookies, jQuery */
 
-      // good
-      /* global Flash */
-      /* global Cookies */
-      /* global jQuery */
-    ```
+     // good
+     /* global Flash */
+     /* global Cookies */
+     /* global jQuery */
+   ```
 
 1. Use up to 3 parameters for a function or class. If you need more accept an Object instead.
 
-    ```javascript
-      // bad
-      fn(p1, p2, p3, p4) {}
+   ```javascript
+     // bad
+     fn(p1, p2, p3, p4) {}
 
-      // good
-      fn(options) {}
-    ```
+     // good
+     fn(options) {}
+   ```
 
 #### Modules, Imports, and Exports
 
 1. Use ES module syntax to import modules
 
-    ```javascript
-      // bad
-      const SomeClass = require('some_class');
+   ```javascript
+     // bad
+     const SomeClass = require('some_class');
 
-      // good
-      import SomeClass from 'some_class';
+     // good
+     import SomeClass from 'some_class';
 
-      // bad
-      module.exports = SomeClass;
+     // bad
+     module.exports = SomeClass;
 
-      // good
-      export default SomeClass;
-    ```
+     // good
+     export default SomeClass;
+   ```
 
-    Import statements are following usual naming guidelines, for example object literals use camel case:
+   Import statements are following usual naming guidelines, for example object literals use camel case:
 
-    ```javascript
-      // some_object file
-      export default {
-        key: 'value',
-      };
+   ```javascript
+     // some_object file
+     export default {
+       key: 'value',
+     };
 
-      // bad
-      import ObjectLiteral from 'some_object';
+     // bad
+     import ObjectLiteral from 'some_object';
 
-      // good
-      import objectLiteral from 'some_object';
-    ```
+     // good
+     import objectLiteral from 'some_object';
+   ```
 
 1. Relative paths: when importing a module in the same directory, a child
    directory, or an immediate parent directory prefer relative paths.  When
    importing a module which is two or more levels up, prefer either `~/` or `ee/`.
 
-    In **app/assets/javascripts/my-feature/subdir**:
+   In **app/assets/javascripts/my-feature/subdir**:
 
-    ```javascript
-    // bad
-    import Foo from '~/my-feature/foo';
-    import Bar from '~/my-feature/subdir/bar';
-    import Bin from '~/my-feature/subdir/lib/bin';
+   ```javascript
+   // bad
+   import Foo from '~/my-feature/foo';
+   import Bar from '~/my-feature/subdir/bar';
+   import Bin from '~/my-feature/subdir/lib/bin';
 
-    // good
-    import Foo from '../foo';
-    import Bar from './bar';
-    import Bin from './lib/bin';
-    ```
+   // good
+   import Foo from '../foo';
+   import Bar from './bar';
+   import Bin from './lib/bin';
+   ```
 
-    In **spec/javascripts**:
+   In **spec/javascripts**:
 
-    ```javascript
-    // bad
-    import Foo from '../../app/assets/javascripts/my-feature/foo';
+   ```javascript
+   // bad
+   import Foo from '../../app/assets/javascripts/my-feature/foo';
 
-    // good
-    import Foo from '~/my-feature/foo';
-    ```
+   // good
+   import Foo from '~/my-feature/foo';
+   ```
 
-    When referencing an **EE component**:
+   When referencing an **EE component**:
 
-    ```javascript
-    // bad
-    import Foo from '../../../../../ee/app/assets/javascripts/my-feature/ee-foo';
+   ```javascript
+   // bad
+   import Foo from '../../../../../ee/app/assets/javascripts/my-feature/ee-foo';
 
-    // good
-    import Foo from 'ee/my-feature/foo';
-    ```
+   // good
+   import Foo from 'ee/my-feature/foo';
+   ```
 
 1. Avoid using IIFE. Although we have a lot of examples of files which wrap their
    contents in IIFEs (immediately-invoked function expressions),
@@ -170,136 +170,136 @@ See [our current .eslintrc](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/
 
 1. Avoid adding to the global namespace.
 
-    ```javascript
-      // bad
-      window.MyClass = class { /* ... */ };
+   ```javascript
+     // bad
+     window.MyClass = class { /* ... */ };
 
-      // good
-      export default class MyClass { /* ... */ }
-    ```
+     // good
+     export default class MyClass { /* ... */ }
+   ```
 
 1. Side effects are forbidden in any script which contains export
 
-    ```javascript
-      // bad
-      export default class MyClass { /* ... */ }
+   ```javascript
+     // bad
+     export default class MyClass { /* ... */ }
 
-      document.addEventListener("DOMContentLoaded", function(event) {
-        new MyClass();
-      }
-    ```
+     document.addEventListener("DOMContentLoaded", function(event) {
+       new MyClass();
+     }
+   ```
 
 #### Data Mutation and Pure functions
 
 1. Strive to write many small pure functions, and minimize where mutations occur.
 
-    ```javascript
-    // bad
-    const values = {foo: 1};
+   ```javascript
+   // bad
+   const values = {foo: 1};
 
-    function impureFunction(items) {
-      const bar = 1;
+   function impureFunction(items) {
+     const bar = 1;
 
-      items.foo = items.a * bar + 2;
+     items.foo = items.a * bar + 2;
 
-      return items.a;
-    }
+     return items.a;
+   }
 
-    const c = impureFunction(values);
+   const c = impureFunction(values);
 
-    // good
-    var values = {foo: 1};
+   // good
+   var values = {foo: 1};
 
-    function pureFunction (foo) {
-      var bar = 1;
+   function pureFunction (foo) {
+     var bar = 1;
 
-      foo = foo * bar + 2;
+     foo = foo * bar + 2;
 
-      return foo;
-    }
+     return foo;
+   }
 
-    var c = pureFunction(values.foo);
+   var c = pureFunction(values.foo);
     ```
 
 1. Avoid constructors with side-effects.
    Although we aim for code without side-effects we need some side-effects for our code to run.
 
-    If the class won't do anything if we only instantiate it, it's ok to add side effects into the constructor (_Note:_ The following is just an example. If the only purpose of the class is to add an event listener and handle the callback a function will be more suitable.)
+   If the class won't do anything if we only instantiate it, it's ok to add side effects into the constructor (_Note:_ The following is just an example. If the only purpose of the class is to add an event listener and handle the callback a function will be more suitable.)
 
-    ```javascript
-    // Bad
-    export class Foo {
-      constructor() {
-        this.init();
-      }
-      init() {
-        document.addEventListener('click', this.handleCallback)
-      },
-      handleCallback() {
+   ```javascript
+   // Bad
+   export class Foo {
+     constructor() {
+       this.init();
+     }
+     init() {
+       document.addEventListener('click', this.handleCallback)
+     },
+     handleCallback() {
 
-      }
-    }
+     }
+   }
 
-    // Good
-    export class Foo {
-      constructor() {
-        document.addEventListener()
-      }
-      handleCallback() {
-      }
-    }
-    ```
+   // Good
+   export class Foo {
+     constructor() {
+       document.addEventListener()
+     }
+     handleCallback() {
+     }
+   }
+   ```
 
-    On the other hand, if a class only needs to extend a third party/add event listeners in some specific cases, they should be initialized outside of the constructor.
+   On the other hand, if a class only needs to extend a third party/add event listeners in some specific cases, they should be initialized outside of the constructor.
 
 1. Prefer `.map`, `.reduce` or `.filter` over `.forEach`
    A forEach will most likely cause side effects, it will be mutating the array being iterated. Prefer using `.map`,
    `.reduce` or `.filter`
 
-    ```javascript
-      const users = [ { name: 'Foo' }, { name: 'Bar' } ];
+   ```javascript
+     const users = [ { name: 'Foo' }, { name: 'Bar' } ];
 
-      // bad
-      users.forEach((user, index) => {
-        user.id = index;
-      });
+     // bad
+     users.forEach((user, index) => {
+       user.id = index;
+     });
 
-      // good
-      const usersWithId = users.map((user, index) => {
-        return Object.assign({}, user, { id: index });
-      });
-    ```
+     // good
+     const usersWithId = users.map((user, index) => {
+       return Object.assign({}, user, { id: index });
+     });
+   ```
 
 #### Parse Strings into Numbers
 
 1. `parseInt()` is preferable over `Number()` or `+`
 
-    ```javascript
-      // bad
-      +'10' // 10
+   ```javascript
+     // bad
+     +'10' // 10
 
-      // good
-      Number('10') // 10
+     // good
+     Number('10') // 10
 
-      // better
-      parseInt('10', 10);
-    ```
+     // better
+     parseInt('10', 10);
+   ```
 
 #### CSS classes used for JavaScript
 
 1. If the class is being used in Javascript it needs to be prepend with `js-`
 
-    ```html
-      // bad
-      <button class="add-user">
-        Add User
-      </button>
+   ```html
+     // bad
+     <button class="add-user">
+       Add User
+     </button>
 
-      // good
-      <button class="js-add-user">
-        Add User
-      </button>
-    ```
+     // good
+     <button class="js-add-user">
+       Add User
+     </button>
+   ```
 
 ### Vue.js
 
@@ -314,43 +314,44 @@ Please check this [rules][eslint-plugin-vue-rules] for more documentation.
 1. The store has it's own file
 1. Use a function in the bundle file to instantiate the Vue component:
 
-    ```javascript
-      // bad
-      class {
-        init() {
-          new Component({})
-        }
-      }
+   ```javascript
+     // bad
+     class {
+       init() {
+         new Component({})
+       }
+     }
 
-      // good
-      document.addEventListener('DOMContentLoaded', () => new Vue({
-        el: '#element',
-        components: {
-          componentName
-        },
-        render: createElement => createElement('component-name'),
-      }));
-    ```
+     // good
+     document.addEventListener('DOMContentLoaded', () => new Vue({
+       el: '#element',
+       components: {
+         componentName
+       },
+       render: createElement => createElement('component-name'),
+     }));
+   ```
 
 1. Do not use a singleton for the service or the store
 
-    ```javascript
-      // bad
-      class Store {
-        constructor() {
-          if (!this.prototype.singleton) {
-            // do something
-          }
-        }
-      }
+   ```javascript
+     // bad
+     class Store {
+       constructor() {
+         if (!this.prototype.singleton) {
+           // do something
+         }
+       }
+     }
 
-      // good
-      class Store {
-        constructor() {
-          // do something
-        }
-      }
-    ```
+     // good
+     class Store {
+       constructor() {
+         // do something
+       }
+     }
+   ```
+
 1. Use `.vue` for Vue templates. Do not use `%template` in HAML.
 
 #### Naming
@@ -358,38 +359,38 @@ Please check this [rules][eslint-plugin-vue-rules] for more documentation.
 1. **Extensions**: Use `.vue` extension for Vue components. Do not use `.js` as file extension ([#34371]).
 1. **Reference Naming**: Use PascalCase for their instances:
 
-    ```javascript
-      // bad
-      import cardBoard from 'cardBoard.vue'
+   ```javascript
+     // bad
+     import cardBoard from 'cardBoard.vue'
 
-      components: {
-        cardBoard,
-      };
+     components: {
+       cardBoard,
+     };
 
-      // good
-      import CardBoard from 'cardBoard.vue'
+     // good
+     import CardBoard from 'cardBoard.vue'
 
-      components: {
-        CardBoard,
-      };
-    ```
+     components: {
+       CardBoard,
+     };
+   ```
 
 1. **Props Naming:**  Avoid using DOM component prop names.
 1. **Props Naming:** Use kebab-case instead of camelCase to provide props in templates.
 
-    ```javascript
-      // bad
-      <component class="btn">
+   ```javascript
+     // bad
+     <component class="btn">
 
-      // good
-      <component css-class="btn">
+     // good
+     <component css-class="btn">
 
-      // bad
-      <component myProp="prop" />
+     // bad
+     <component myProp="prop" />
 
-      // good
-      <component my-prop="prop" />
-    ```
+     // good
+     <component my-prop="prop" />
+   ```
 
 [#34371]: https://gitlab.com/gitlab-org/gitlab-ce/issues/34371
 
@@ -399,205 +400,205 @@ Please check this [rules][eslint-plugin-vue-rules] for more documentation.
 
    1. With more than one attribute, all attributes should be on a new line:
 
-        ```javascript
-          // bad
-          <component v-if="bar"
-              param="baz" />
+      ```javascript
+        // bad
+        <component v-if="bar"
+            param="baz" />
 
-          <button class="btn">Click me</button>
+        <button class="btn">Click me</button>
 
-          // good
-          <component
-            v-if="bar"
-            param="baz"
-          />
+        // good
+        <component
+          v-if="bar"
+          param="baz"
+        />
 
-          <button class="btn">
-            Click me
-          </button>
-        ```
+        <button class="btn">
+          Click me
+        </button>
+      ```
 
    1. The tag can be inline if there is only one attribute:
 
-        ```javascript
-          // good
-            <component bar="bar" />
+      ```javascript
+        // good
+          <component bar="bar" />
 
-          // good
-            <component
-              bar="bar"
-              />
+        // good
+          <component
+            bar="bar"
+            />
 
-          // bad
-           <component
-              bar="bar" />
-        ```
+        // bad
+         <component
+            bar="bar" />
+      ```
 
 #### Quotes
 
 1. Always use double quotes `"` inside templates and single quotes `'` for all other JS.
 
-    ```javascript
-      // bad
-      template: `
-        <button :class='style'>Button</button>
-      `
+   ```javascript
+     // bad
+     template: `
+       <button :class='style'>Button</button>
+     `
 
-      // good
-      template: `
-        <button :class="style">Button</button>
-      `
-    ```
+     // good
+     template: `
+       <button :class="style">Button</button>
+     `
+   ```
 
 #### Props
 
 1. Props should be declared as an object
 
-    ```javascript
-      // bad
-      props: ['foo']
+   ```javascript
+     // bad
+     props: ['foo']
 
-      // good
-      props: {
-        foo: {
-          type: String,
-          required: false,
-          default: 'bar'
-        }
-      }
-    ```
+     // good
+     props: {
+       foo: {
+         type: String,
+         required: false,
+         default: 'bar'
+       }
+     }
+   ```
 
 1. Required key should always be provided when declaring a prop
 
-    ```javascript
-      // bad
-      props: {
-        foo: {
-          type: String,
-        }
-      }
+   ```javascript
+     // bad
+     props: {
+       foo: {
+         type: String,
+       }
+     }
 
-      // good
-      props: {
-        foo: {
-          type: String,
-          required: false,
-          default: 'bar'
-        }
-      }
-    ```
+     // good
+     props: {
+       foo: {
+         type: String,
+         required: false,
+         default: 'bar'
+       }
+     }
+   ```
 
 1. Default key should be provided if the prop is not required.
    _Note:_ There are some scenarios where we need to check for the existence of the property.
    On those a default key should not be provided.
 
-    ```javascript
-      // good
-      props: {
-        foo: {
-          type: String,
-          required: false,
-        }
-      }
+   ```javascript
+     // good
+     props: {
+       foo: {
+         type: String,
+         required: false,
+       }
+     }
 
-      // good
-      props: {
-        foo: {
-          type: String,
-          required: false,
-          default: 'bar'
-        }
-      }
+     // good
+     props: {
+       foo: {
+         type: String,
+         required: false,
+         default: 'bar'
+       }
+     }
 
-      // good
-      props: {
-        foo: {
-          type: String,
-          required: true
-        }
-      }
-    ```
+     // good
+     props: {
+       foo: {
+         type: String,
+         required: true
+       }
+     }
+   ```
 
 #### Data
 
 1. `data` method should always be a function
 
-    ```javascript
-      // bad
-      data: {
-        foo: 'foo'
-      }
+   ```javascript
+     // bad
+     data: {
+       foo: 'foo'
+     }
 
-      // good
-      data() {
-        return {
-          foo: 'foo'
-        };
-      }
-    ```
+     // good
+     data() {
+       return {
+         foo: 'foo'
+       };
+     }
+   ```
 
 #### Directives
 
 1. Shorthand `@` is preferable over `v-on`
 
-    ```javascript
-      // bad
-      <component v-on:click="eventHandler"/>
+   ```javascript
+     // bad
+     <component v-on:click="eventHandler"/>
 
-      // good
-      <component @click="eventHandler"/>
-    ```
+     // good
+     <component @click="eventHandler"/>
+   ```
 
 1. Shorthand `:` is preferable over `v-bind`
 
-    ```javascript
-      // bad
-      <component v-bind:class="btn"/>
+   ```javascript
+     // bad
+     <component v-bind:class="btn"/>
 
-      // good
-      <component :class="btn"/>
-    ```
+     // good
+     <component :class="btn"/>
+   ```
 
 1. Shorthand `#` is preferable over `v-slot`
 
-    ```javascript
-      // bad
-      <template v-slot:header></template>
+   ```javascript
+     // bad
+     <template v-slot:header></template>
 
-      // good
-      <template #header></template>
-    ```
+     // good
+     <template #header></template>
+   ```
 
 #### Closing tags
 
 1. Prefer self closing component tags
 
-    ```javascript
-      // bad
-      <component></component>
+   ```javascript
+     // bad
+     <component></component>
 
-      // good
-      <component />
-    ```
+     // good
+     <component />
+   ```
 
 #### Ordering
 
 1. Tag order in `.vue` file
 
-    ```
-    <script>
-      // ...
-    </script>
+   ```
+   <script>
+     // ...
+   </script>
 
-    <template>
-      // ...
-    </template>
+   <template>
+     // ...
+   </template>
 
-    // We don't use scoped styles but there are few instances of this
-    <style>
-      // ...
-    </style>
-    ```
+   // We don't use scoped styles but there are few instances of this
+   <style>
+     // ...
+   </style>
+   ```
 
 1. Properties in a Vue Component:
    Check [order of properties in components rule][vue-order].
@@ -608,50 +609,50 @@ When using `v-for` you need to provide a *unique* `:key` attribute for each item
 
 1. If the elements of the array being iterated have an unique `id` it is advised to use it:
 
-    ```html
-      <div
-        v-for="item in items"
-        :key="item.id"
-      >
-        <!-- content -->
-      </div>
-    ```
+   ```html
+     <div
+       v-for="item in items"
+       :key="item.id"
+     >
+       <!-- content -->
+     </div>
+   ```
 
 1. When the elements being iterated don't have a unique id, you can use the array index as the `:key` attribute
 
-    ```html
-      <div
-        v-for="(item, index) in items"
-        :key="index"
-      >
-        <!-- content -->
-      </div>
-    ```
+   ```html
+     <div
+       v-for="(item, index) in items"
+       :key="index"
+     >
+       <!-- content -->
+     </div>
+   ```
 
 1. When using `v-for` with `template` and there is more than one child element, the `:key` values must be unique. It's advised to use `kebab-case` namespaces.
 
-    ```html
-      <template v-for="(item, index) in items">
-        <span :key="`span-${index}`"></span>
-        <button :key="`button-${index}`"></button>
-      </template>
-    ```
+   ```html
+     <template v-for="(item, index) in items">
+       <span :key="`span-${index}`"></span>
+       <button :key="`button-${index}`"></button>
+     </template>
+   ```
 
 1. When dealing with nested `v-for` use the same guidelines as above.
 
-    ```html
-      <div
-        v-for="item in items"
-        :key="item.id"
-      >
-        <span
-          v-for="element in array"
-          :key="element.id"
-        >
-          <!-- content -->
-        </span>
-      </div>
-    ```
+   ```html
+     <div
+       v-for="item in items"
+       :key="item.id"
+     >
+       <span
+         v-for="element in array"
+         :key="element.id"
+       >
+         <!-- content -->
+       </span>
+     </div>
+   ```
 
 Useful links:
 
@@ -662,35 +663,35 @@ Useful links:
 
 1. Tooltips: Do not rely on `has-tooltip` class name for Vue components
 
-    ```javascript
-      // bad
-      <span
-        class="has-tooltip"
-        title="Some tooltip text">
-        Text
-      </span>
+   ```javascript
+     // bad
+     <span
+       class="has-tooltip"
+       title="Some tooltip text">
+       Text
+     </span>
 
-      // good
-      <span
-        v-tooltip
-        title="Some tooltip text">
-        Text
-      </span>
-    ```
+     // good
+     <span
+       v-tooltip
+       title="Some tooltip text">
+       Text
+     </span>
+   ```
 
 1. Tooltips: When using a tooltip, include the tooltip directive, `./app/assets/javascripts/vue_shared/directives/tooltip.js`
 
 1. Don't change `data-original-title`.
 
-    ```javascript
-      // bad
-      <span data-original-title="tooltip text">Foo</span>
+   ```javascript
+     // bad
+     <span data-original-title="tooltip text">Foo</span>
 
-      // good
-      <span title="tooltip text">Foo</span>
+     // good
+     <span title="tooltip text">Foo</span>
 
-      $('span').tooltip('_fixTitle');
-    ```
+     $('span').tooltip('_fixTitle');
+   ```
 
 ### The Javascript/Vue Accord
 
