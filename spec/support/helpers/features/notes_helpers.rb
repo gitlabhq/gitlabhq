@@ -23,6 +23,14 @@ module Spec
             end
           end
 
+          def edit_note(note_text_to_edit, new_note_text)
+            page.within('#notes-list li.note', text: note_text_to_edit) do
+              find('.js-note-edit').click
+              fill_in('note[note]', with: new_note_text)
+              find('.js-comment-button').click
+            end
+          end
+
           def preview_note(text)
             page.within('.js-main-target-form') do
               filled_text = fill_in('note[note]', with: text)
