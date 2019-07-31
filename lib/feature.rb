@@ -80,6 +80,13 @@ class Feature
       get(key).disable_group(group)
     end
 
+    def remove(key)
+      feature = get(key)
+      return unless persisted?(feature)
+
+      feature.remove
+    end
+
     def flipper
       if Gitlab::SafeRequestStore.active?
         Gitlab::SafeRequestStore[:flipper] ||= build_flipper_instance
