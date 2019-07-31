@@ -171,6 +171,11 @@ In this scenario, the `UPSTREAM_BRANCH` variable with a value related to the
 upstream pipeline will be passed to the `downstream-job` job, and will be available
 within the context of all downstream builds.
 
+NOTE: **Tip:**
+Upstream pipelines take precedence over downstream ones. If there are two
+variables with the same name defined in both upstream and downstream projects,
+the ones defined in the upstream project will take precedence.
+
 ### Limitations
 
 Because bridge jobs are a little different to regular jobs, it is not
