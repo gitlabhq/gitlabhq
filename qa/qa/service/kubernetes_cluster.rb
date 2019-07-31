@@ -30,6 +30,7 @@ module QA
           --enable-basic-auth
           --region #{Runtime::Env.gcloud_region}
           --disk-size 10GB
+          --num-nodes #{Runtime::Env.gcloud_num_nodes}
           && gcloud container clusters
           get-credentials
           --region #{Runtime::Env.gcloud_region}
