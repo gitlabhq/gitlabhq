@@ -123,3 +123,17 @@ bottom of the **Provisioning** screen, together with a link to the audit logs.
 ### Testing Azure connection: invalid credentials
 
 When testing the connection, you may encounter an error: **You appear to have entered invalid credentials. Please confirm you are using the correct information for an administrative account**. If `Tenant URL` and `secret token` are correct, check whether your group path contains characters that may be considered invalid JSON primitives (such as `.`). Removing such characters from the group path typically resolves the error.
+
+### Azure: (Field) can't be blank sync error
+
+When checking the Audit Logs for the Provisioning, you can sometimes see the
+error `Namespace can't be blank, Name can't be blank, and User can't be blank.`
+
+This is likely caused because not all required fields (such as first name and 
+last name) are present for all users being mapped.
+
+As a workaround, try an alternate mapping:
+
+1. Follow the Azure mapping instructions from above.
+1. Delete the `name.formatted` target attribute entry.
+1. Change the `displayName` source attribute to have `name.formatted` target attribute.
