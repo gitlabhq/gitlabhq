@@ -16,7 +16,7 @@
       .col-md-4
         %button#js-setup-u2f-device.btn.btn-info.btn-block{ disabled: true }= _("Set up new U2F device")
       .col-md-8
-        %p.text-warning= _("You need to register a two-factor authentication app before you can set up a U2F device.")
+        %p= _("You need to register a two-factor authentication app before you can set up a U2F device.")
 
 %script#js-register-u2f-in-progress{ type: "text/template" }
   %p= _("Trying to communicate with your device. Plug it in (if you haven't already) and press the button on the device now.")
