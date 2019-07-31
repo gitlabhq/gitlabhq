@@ -34,7 +34,7 @@ module RelativePositioning
   end
 
   class_methods do
-    def move_to_end(objects)
+    def move_nulls_to_end(objects)
       objects = objects.reject(&:relative_position)
 
       return if objects.empty?
@@ -43,7 +43,7 @@ module RelativePositioning
 
       self.transaction do
         objects.each do |object|
-          relative_position = position_between(max_relative_position, MAX_POSITION)
+          relative_position = position_between(max_relative_position || START_POSITION, MAX_POSITION)
           object.relative_position = relative_position
           max_relative_position = relative_position
           object.save(touch: false)
