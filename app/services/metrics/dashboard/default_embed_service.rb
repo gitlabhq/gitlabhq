@@ -23,7 +23,7 @@ module Metrics
       # Returns a new dashboard with only the matching
       # metrics from the system dashboard, stripped of groups.
       # @return [Hash]
-      def raw_dashboard
+      def get_raw_dashboard
         panels = panel_groups.each_with_object([]) do |group, panels|
           matched_panels = group['panels'].select { |panel| matching_panel?(panel) }
 
