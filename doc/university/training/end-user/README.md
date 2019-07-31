@@ -54,6 +54,7 @@ project.
 ---
 
 ## Git Setup
+
 Workshop Time!
 
 ---
@@ -88,7 +89,7 @@ git config --global --list
 ```
 
 - You might want or be required to use an SSH key.
-    - Instructions: [SSH](http://doc.gitlab.com/ce/ssh/README.html)
+  - Instructions: [SSH](http://doc.gitlab.com/ce/ssh/README.html)
 
 ---
 
@@ -119,13 +120,13 @@ cd ~/workspace
 ### Git Workflow
 
 - Untracked files
-    - New files that Git has not been told to track previously.
+  - New files that Git has not been told to track previously.
 - Working area (Workspace)
-    - Files that have been modified but are not committed.
+  - Files that have been modified but are not committed.
 - Staging area (Index)
-    - Modified files that have been marked to go in the next commit.
+  - Modified files that have been marked to go in the next commit.
 - Upstream
-    - Hosted repository on a shared server
+  - Hosted repository on a shared server
 
 ---
 
@@ -229,8 +230,6 @@ git push origin squash_some_bugs
 
 ---
 
-### Feedback and Collaboration
-
 - Review the Thoughtbot code-review guide for suggestions to follow when reviewing merge requests:[Thoughtbot](https://github.com/thoughtbot/guides/tree/master/code-review)
 - See GitLab merge requests for examples: [Merge Requests](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests)
 
@@ -266,20 +265,22 @@ git push origin squash_some_bugs
 
 ### Example 1/2
 
-    git checkout -b conflicts_branch
+```sh
+git checkout -b conflicts_branch
 
-    # vi conflicts.rb
-    # Add 'Line4' and 'Line5'
+# vi conflicts.rb
+# Add 'Line4' and 'Line5'
 
-    git commit -am "add line4 and line5"
-    git push origin conflicts_branch
+git commit -am "add line4 and line5"
+git push origin conflicts_branch
 
-    git checkout master
+git checkout master
 
-    # vi conflicts.rb
-    # Add 'Line6' and 'Line7'
-    git commit -am "add line6 and line7"
-    git push origin master
+# vi conflicts.rb
+# Add 'Line6' and 'Line7'
+git commit -am "add line6 and line7"
+git push origin master
+```
 
 ---
 
@@ -287,20 +288,22 @@ git push origin squash_some_bugs
 
 Create a merge request on the GitLab web UI. You'll see a conflict warning.
 
-    git checkout conflicts_branch
-    git fetch
-    git rebase master
+```sh
+git checkout conflicts_branch
+git fetch
+git rebase master
 
-    # Fix conflicts by editing the files.
+# Fix conflicts by editing the files.
 
-    git add conflicts.rb
-    # No need to commit this file
+git add conflicts.rb
+# No need to commit this file
 
-    git rebase --continue
+git rebase --continue
 
-    # Remember that we have rewritten our commit history so we
-    # need to force push so that our remote branch is restructured
-    git push origin conflicts_branch -f
+# Remember that we have rewritten our commit history so we
+# need to force push so that our remote branch is restructured
+git push origin conflicts_branch -f
+```
 
 ---
 
@@ -321,20 +324,28 @@ Create a merge request on the GitLab web UI. You'll see a conflict warning.
 
 To remove files from stage use reset HEAD. Where HEAD is the last commit of the current branch:
 
-    git reset HEAD <file>
+```sh
+git reset HEAD <file>
+```
 
 This will unstage the file but maintain the modifications. To revert the file back to the state it was in before the changes we can use:
 
-    git checkout -- <file>
+```sh
+git checkout -- <file>
+```
 
 To remove a file from disk and repo use 'git rm' and to rm a dir use the '-r' flag:
 
-    git rm '*.txt'
-    git rm -r <dirname>
+```sh
+git rm '*.txt'
+git rm -r <dirname>
+```
 
 If we want to remove a file from the repository but keep it on disk, say we forgot to add it to our .gitignore file then use `--cache`:
 
-    git rm <filename> --cache
+```sh
+git rm <filename> --cache
+```
 
 ---
 
@@ -342,19 +353,27 @@ If we want to remove a file from the repository but keep it on disk, say we forg
 
 Undo last commit putting everything back into the staging area:
 
-    git reset --soft HEAD^
+```sh
+git reset --soft HEAD^
+```
 
 Add files and change message with:
 
-    git commit --amend -m "New Message"
+```sh
+git commit --amend -m "New Message"
+```
 
 Undo last and remove changes
 
-    git reset --hard HEAD^
+```sh
+git reset --hard HEAD^
+```
 
 Same as last one but for two commits back:
 
-    git reset --hard HEAD^^
+```sh
+git reset --hard HEAD^^
+```
 
 Don't reset after pushing
 
@@ -373,35 +392,38 @@ Don't reset after pushing
 1. Pull for updates
 1. Push changes
 
-----
+---
 
-    # Change file edit_this_file.rb
-    git status
-    git commit -am "kjkfjkg"
-    git log
-    git commit --amend -m "New comment added"
-    git log
-    git reset --soft HEAD^
-    git log
-    git pull origin master
-    git push origin master
+```sh
+# Change file edit_this_file.rb
+git status
+git commit -am "kjkfjkg"
+git log
+git commit --amend -m "New comment added"
+git log
+git reset --soft HEAD^
+git log
+git pull origin master
+git push origin master
+```
 
 ---
 
-### Note
+### git revert vs git reset
 
-git revert vs git reset
 Reset removes the commit while revert removes the changes but leaves the commit
 Revert is safer considering we can revert a revert
 
-    # Changed file
-    git commit -am "bug introduced"
-    git revert HEAD
-    # New commit created reverting changes
-    # Now we want to re apply the reverted commit
-    git log # take hash from the revert commit
-    git revert <rev commit hash>
-    # reverted commit is back (new commit created again)
+```sh
+# Changed file
+git commit -am "bug introduced"
+git revert HEAD
+# New commit created reverting changes
+# Now we want to re apply the reverted commit
+git log # take hash from the revert commit
+git revert <rev commit hash>
+# reverted commit is back (new commit created again)
+```
 
 ---
 
@@ -415,11 +437,11 @@ Revert is safer considering we can revert a revert
 
 ### Version Control
 
- - Local VCS was used with a filesystem or a simple db.
- - Centralized VCS such as Subversion includes collaboration but
-   still is prone to data loss as the main server is the single point of
-   failure.
- - Distributed VCS enables the team to have a complete copy of the project
-   and work with little dependency to the main server. In case of a main
-   server failing the project can be recovered by any of the latest copies
-   from the team
+- Local VCS was used with a filesystem or a simple db.
+- Centralized VCS such as Subversion includes collaboration but
+  still is prone to data loss as the main server is the single point of
+  failure.
+- Distributed VCS enables the team to have a complete copy of the project
+  and work with little dependency to the main server. In case of a main
+  server failing the project can be recovered by any of the latest copies
+  from the team

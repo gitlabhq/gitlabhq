@@ -51,11 +51,11 @@ Configuring *both* the client and the server is unnecessary.
 - On UNIX, edit `~/.ssh/config` (create the file if it doesn’t exist) and
   add or edit:
 
-    ```text
-    Host your-gitlab-instance-url.com
-      ServerAliveInterval 60
-      ServerAliveCountMax 5
-    ```
+  ```text
+  Host your-gitlab-instance-url.com
+    ServerAliveInterval 60
+    ServerAliveCountMax 5
+  ```
 
 - On Windows, if you are using PuTTY, go to your session properties, then
   navigate to "Connection" and under "Sending of null packets to keep
