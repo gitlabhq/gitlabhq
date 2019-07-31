@@ -2815,7 +2815,7 @@ msgstr ""
 msgid "ClusterIntegration|The URL used to access the Kubernetes API."
 msgstr ""
 
-msgid "ClusterIntegration|The associated IP will be deleted and cannot be restored."
+msgid "ClusterIntegration|The associated IP and all deployed services will be deleted and cannot be restored. Uninstalling Knative will also remove Istio from your cluster. This will not effect any other applications."
 msgstr ""
 
 msgid "ClusterIntegration|The associated certifcate will be deleted and cannot be restored."

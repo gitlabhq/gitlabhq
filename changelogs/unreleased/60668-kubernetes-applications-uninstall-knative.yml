@@ -1,0 +1,5 @@
+---
+title: Allow Knative to be uninstalled from the UI
+merge_request: 30458
+author:
+type: added

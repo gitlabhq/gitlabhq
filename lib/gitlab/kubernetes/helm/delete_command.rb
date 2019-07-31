@@ -7,19 +7,24 @@ module Gitlab
         include BaseCommand
         include ClientCommand
 
+        attr_reader :predelete, :postdelete
         attr_accessor :name, :files
 
-        def initialize(name:, rbac:, files:)
+        def initialize(name:, rbac:, files:, predelete: nil, postdelete: nil)
           @name = name
           @files = files
           @rbac = rbac
+          @predelete = predelete
+          @postdelete = postdelete
         end
 
         def generate_script
           super + [
             init_command,
             wait_for_tiller_command,
-            delete_command
+            predelete,
+            delete_command,
+            postdelete
           ].compact.join("\n")
         end
 

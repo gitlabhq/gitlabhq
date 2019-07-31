@@ -7,6 +7,7 @@ module Clusters
       REPOSITORY = 'https://storage.googleapis.com/triggermesh-charts'.freeze
       METRICS_CONFIG = 'https://storage.googleapis.com/triggermesh-charts/istio-metrics.yaml'.freeze
       FETCH_IP_ADDRESS_DELAY = 30.seconds
+      API_RESOURCES_PATH = 'config/knative/api_resources.yml'
 
       self.table_name = 'clusters_applications_knative'
 
@@ -46,12 +47,6 @@ module Clusters
         { "domain" => hostname }.to_yaml
       end
 
-      # Handled in a new issue:
-      # https://gitlab.com/gitlab-org/gitlab-ce/issues/59369
-      def allowed_to_uninstall?
-        false
-      end
-
       def install_command
         Gitlab::Kubernetes::Helm::InstallCommand.new(
           name: name,
@@ -76,10 +71,57 @@ module Clusters
         cluster.kubeclient.get_service('istio-ingressgateway', 'istio-system')
       end
 
+      def uninstall_command
+        Gitlab::Kubernetes::Helm::DeleteCommand.new(
+          name: name,
+          rbac: cluster.platform_kubernetes_rbac?,
+          files: files,
+          predelete: delete_knative_services_and_metrics,
+          postdelete: delete_knative_istio_leftovers
+        )
+      end
+
       private
+
+      def delete_knative_services_and_metrics
+        delete_knative_services + delete_knative_istio_metrics.to_a
+      end
+
+      def delete_knative_services
+        cluster.kubernetes_namespaces.map do |kubernetes_namespace|
+          "kubectl delete ksvc --all -n #{kubernetes_namespace.namespace}"
+        end
+      end
+
+      def delete_knative_istio_leftovers
+        delete_knative_namespaces + delete_knative_and_istio_crds
+      end
+
+      def delete_knative_namespaces
+        [
+          "kubectl delete --ignore-not-found ns knative-serving",
+          "kubectl delete --ignore-not-found ns knative-build"
+        ]
+      end
+
+      def delete_knative_and_istio_crds
+        api_resources.map do |crd|
+          "kubectl delete --ignore-not-found crd #{crd}"
+        end
+      end
+
+      # returns an array of CRDs to be postdelete since helm does not
+      # manage the CRDs it creates.
+      def api_resources
+        @api_resources ||= YAML.safe_load(File.read(Rails.root.join(API_RESOURCES_PATH)))
+      end
 
       def install_knative_metrics
         ["kubectl apply -f #{METRICS_CONFIG}"] if cluster.application_prometheus_available?
+      end
+
+      def delete_knative_istio_metrics
+        ["kubectl delete --ignore-not-found -f #{METRICS_CONFIG}"] if cluster.application_prometheus_available?
       end
 
       def verify_cluster?

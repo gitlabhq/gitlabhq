@@ -126,7 +126,7 @@ describe 'Clusters Applications', :js do
             it 'shows status transition' do
               page.within('.js-cluster-application-row-knative') do
                 expect(domainname_form_value).to eq('domain.example.org')
-                expect(page).to have_css('.js-cluster-application-install-button', exact_text: 'Installed')
+                expect(page).to have_css('.js-cluster-application-uninstall-button', exact_text: 'Uninstall')
               end
 
               expect(page).to have_content('Knative was successfully installed on your Kubernetes cluster')
