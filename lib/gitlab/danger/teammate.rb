@@ -39,7 +39,7 @@ module Gitlab
       def has_capability?(project, category, kind, labels)
         case category
         when :test
-          area = role[/Test Automation Engineer, (\w+)/, 1]
+          area = role[/Test Automation Engineer(?:.*?, (\w+))/, 1]
 
           area && labels.any?(area) if kind == :reviewer
         else

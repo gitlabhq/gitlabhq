@@ -40,6 +40,14 @@ describe Gitlab::Danger::Teammate do
         it '#maintainer? returns false' do
           expect(subject.maintainer?(project, :test, labels)).to be_falsey
         end
+
+        context 'when hyperlink is mangled in the role' do
+          let(:role) { '<a href="#">Test Automation Engineer</a>, Create' }
+
+          it '#reviewer? returns true' do
+            expect(subject.reviewer?(project, :test, labels)).to be_truthy
+          end
+        end
       end
 
       context 'when role is Test Automation Engineer, Manage' do

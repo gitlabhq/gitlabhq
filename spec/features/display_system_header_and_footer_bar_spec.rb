@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'rails_helper'
+require 'spec_helper'
 
 describe 'Display system header and footer bar' do
   let(:header_message) { "Foo" }
