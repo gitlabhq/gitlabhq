@@ -181,6 +181,10 @@ module QA
         ENV.fetch('GCLOUD_REGION')
       end
 
+      def gcloud_num_nodes
+        ENV.fetch('GCLOUD_NUM_NODES', 3)
+      end
+
       def has_gcloud_credentials?
         %w[GCLOUD_ACCOUNT_KEY GCLOUD_ACCOUNT_EMAIL].none? { |var| ENV[var].to_s.empty? }
       end
