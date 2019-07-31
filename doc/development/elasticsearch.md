@@ -148,6 +148,36 @@ Uses an [Edge NGram token filter](https://www.elastic.co/guide/en/elasticsearch/
 - Searches can have their own analyzers. Remember to check when editing analyzers
 - `Character` filters (as opposed to token filters) always replace the original character, so they're not a good choice as they can hinder exact searches
 
+## Architecture
+
+GitLab uses `elasticsearch-rails` for handling communication with Elasticsearch server. However, in order to achieve zero-downtime deployment during schema changes, an extra abstraction layer is built to allow:
+
+* Indexing (writes) to multiple indexes, with different mappings
+* Switching to different index for searches (reads) on the fly
+
+Currently we are on the process of migrating models to this new design (e.g. `Snippet`), and it is hardwired to work with a single version for now.
+
+Traditionally, `elasticsearch-rails` provides class and instance level `__elasticsearch__` proxy methods. If you call `Issue.__elasticsearch__`, you will get an instance of `Elasticsearch::Model::Proxy::ClassMethodsProxy`, and if you call `Issue.first.__elasticsearch__`, you will get an instance of `Elasticsearch::Model::Proxy::InstanceMethodsProxy`. These proxy objects would talk to Elasticsearch server directly.
+
+In the new design, `__elasticsearch__` instead represents one extra layer of proxy. It would keep multiple versions of the actual proxy objects, and it would forward read and write calls to the proxy of the intended version.
+
+The `elasticsearch-rails`'s way of specifying each model's mappings and other settings is to create a module for the model to include. However in the new design, each model would have its own corresponding subclassed proxy object, where the settings reside in. For example, snippet related setting in the past reside in `SnippetsSearch` module, but in the new design would reside in `SnippetClassProxy` (which is a subclass of `Elasticsearch::Model::Proxy::ClassMethodsProxy`). This reduces namespace pollution in model classes.
+
+The global configurations per version are now in the `Elastic::(Version)::Config` class. You can change mappings there.
+
+### Creating new version of schema
+
+Currently GitLab would still work with a single version of setting. Once it is implemented, multiple versions of setting can exists in different folders (e.g. `ee/lib/elastic/v12p1` and `ee/lib/elastic/v12p3`). To keep a continuous git history, the latest version lives under the `/latest` folder, but is aliased as the latest version.
+
+If the current version is `v12p1`, and we need to create a new version for `v12p3`, the steps are as follows:
+
+1. Copy the entire folder of `v12p1` as `v12p3`
+1. Change the namespace for files under `v12p3` folder from `V12p1` to `V12p3` (which are still aliased to `Latest`)
+1. Delete `v12p1` folder
+1. Copy the entire folder of `latest` as `v12p1`
+1. Change the namespace for files under `v12p1` folder from `Latest` to `V12p1`
+1. Make changes to `Latest` as needed
+
 ## Troubleshooting
 
 ### Getting `flood stage disk watermark [95%] exceeded`
