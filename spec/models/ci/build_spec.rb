@@ -149,6 +149,56 @@ describe Ci::Build do
     end
   end
 
+  describe '.with_stale_live_trace' do
+    subject { described_class.with_stale_live_trace }
+
+    context 'when build has a stale live trace' do
+      let!(:build) { create(:ci_build, :success, :trace_live, finished_at: 1.day.ago) }
+
+      it 'selects the build' do
+        is_expected.to eq([build])
+      end
+    end
+
+    context 'when build does not have a stale live trace' do
+      let!(:build) { create(:ci_build, :success, :trace_live, finished_at: 1.hour.ago) }
+
+      it 'does not select the build' do
+        is_expected.to be_empty
+      end
+    end
+  end
+
+  describe '.finished_before' do
+    subject { described_class.finished_before(date) }
+
+    let(:date) { 1.hour.ago }
+
+    context 'when build has finished one day ago' do
+      let!(:build) { create(:ci_build, :success, finished_at: 1.day.ago) }
+
+      it 'selects the build' do
+        is_expected.to eq([build])
+      end
+    end
+
+    context 'when build has finished 30 minutes ago' do
+      let!(:build) { create(:ci_build, :success, finished_at: 30.minutes.ago) }
+
+      it 'returns an empty array' do
+        is_expected.to be_empty
+      end
+    end
+
+    context 'when build is still running' do
+      let!(:build) { create(:ci_build, :running) }
+
+      it 'returns an empty array' do
+        is_expected.to be_empty
+      end
+    end
+  end
+
   describe '.with_reports' do
     subject { described_class.with_reports(Ci::JobArtifact.test_reports) }
 
