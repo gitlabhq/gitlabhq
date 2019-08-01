@@ -171,6 +171,7 @@ export default class ClusterStore {
           this.state.applications.cert_manager.email || serverAppEntry.email;
       } else if (appId === JUPYTER) {
         this.state.applications.jupyter.hostname =
+          this.state.applications.jupyter.hostname ||
           serverAppEntry.hostname ||
           (this.state.applications.ingress.externalIp
             ? `jupyter.${this.state.applications.ingress.externalIp}.nip.io`
