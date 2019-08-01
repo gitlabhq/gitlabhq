@@ -222,6 +222,20 @@ describe AutocompleteController do
         expect(response_user_ids).to contain_exactly(non_member.id)
       end
     end
+
+    context 'merge_request_iid parameter included' do
+      before do
+        sign_in(user)
+      end
+
+      it 'includes can_merge option to users' do
+        merge_request = create(:merge_request, source_project: project)
+
+        get(:users, params: { merge_request_iid: merge_request.iid, project_id: project.id })
+
+        expect(json_response.first).to have_key('can_merge')
+      end
+    end
   end
 
   context 'GET projects' do
