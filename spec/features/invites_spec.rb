@@ -16,11 +16,10 @@ describe 'Invites' do
     group_invite.generate_invite_token!
   end
 
-  def confirm_email_and_sign_in(new_user)
+  def confirm_email(new_user)
     new_user_token = User.find_by_email(new_user.email).confirmation_token
 
     visit user_confirmation_path(confirmation_token: new_user_token)
-    fill_in_sign_in_form(new_user)
   end
 
   def fill_in_sign_up_form(new_user)
@@ -154,17 +153,41 @@ describe 'Invites' do
     context 'email confirmation enabled' do
       let(:send_email_confirmation) { true }
 
-      it 'signs up and redirects to root page with all the project/groups invitation automatically accepted' do
-        fill_in_sign_up_form(new_user)
-        confirm_email_and_sign_in(new_user)
+      context 'when soft email confirmation is not enabled' do
+        before do
+          # stub_feature_flags(soft_email_confirmation: false)
+          allow(User).to receive(:allow_unconfirmed_access_for).and_return 0
+        end
 
-        expect(current_path).to eq(root_path)
-        expect(page).to have_content(project.full_name)
-        visit group_path(group)
-        expect(page).to have_content(group.full_name)
+        it 'signs up and redirects to root page with all the project/groups invitation automatically accepted' do
+          fill_in_sign_up_form(new_user)
+          confirm_email(new_user)
+          fill_in_sign_in_form(new_user)
+
+          expect(current_path).to eq(root_path)
+          expect(page).to have_content(project.full_name)
+          visit group_path(group)
+          expect(page).to have_content(group.full_name)
+        end
       end
 
-      it "doesn't accept invitations until the user confirm his email" do
+      context 'when soft email confirmation is enabled' do
+        before do
+          allow(User).to receive(:allow_unconfirmed_access_for).and_return 2.days
+        end
+
+        it 'signs up and redirects to root page with all the project/groups invitation automatically accepted' do
+          fill_in_sign_up_form(new_user)
+          confirm_email(new_user)
+
+          expect(current_path).to eq(root_path)
+          expect(page).to have_content(project.full_name)
+          visit group_path(group)
+          expect(page).to have_content(group.full_name)
+        end
+      end
+
+      it "doesn't accept invitations until the user confirms his email" do
         fill_in_sign_up_form(new_user)
         sign_in(owner)
 
@@ -175,11 +198,32 @@ describe 'Invites' do
       context 'the user sign-up using a different email address' do
         let(:invite_email) { build_stubbed(:user).email }
 
-        it 'signs up and redirects to the invitation page' do
-          fill_in_sign_up_form(new_user)
-          confirm_email_and_sign_in(new_user)
+        context 'when soft email confirmation is not enabled' do
+          before do
+            stub_feature_flags(soft_email_confirmation: false)
+            allow(User).to receive(:allow_unconfirmed_access_for).and_return 0
+          end
 
-          expect(current_path).to eq(invite_path(group_invite.raw_invite_token))
+          it 'signs up and redirects to the invitation page' do
+            fill_in_sign_up_form(new_user)
+            confirm_email(new_user)
+            fill_in_sign_in_form(new_user)
+
+            expect(current_path).to eq(invite_path(group_invite.raw_invite_token))
+          end
+        end
+
+        context 'when soft email confirmation is enabled' do
+          before do
+            stub_feature_flags(soft_email_confirmation: true)
+            allow(User).to receive(:allow_unconfirmed_access_for).and_return 2.days
+          end
+
+          it 'signs up and redirects to the invitation page' do
+            fill_in_sign_up_form(new_user)
+
+            expect(current_path).to eq(invite_path(group_invite.raw_invite_token))
+          end
         end
       end
     end
