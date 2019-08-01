@@ -115,6 +115,28 @@ On every [pipeline][gitlab-pipeline] in the `qa` stage, the
 browser performance testing using a
 [Sitespeed.io Container](../../user/project/merge_requests/browser_performance_testing.md).
 
+## Cluster configuration
+
+### Node pools
+
+Both `review-apps-ce` and `review-apps-ee` clusters are currently set up with
+two node pools:
+
+- a node pool of non-preemptible `n1-standard-2` (2 vCPU, 7.5 GB memory) nodes
+  dedicated to the `tiller` deployment (see below) with a single node.
+- a node pool of preemptible `n1-standard-2` (2 vCPU, 7.5 GB memory) nodes,
+  with a minimum of 1 node and a maximum of 250 nodes.
+
+### Helm/Tiller
+
+The `tiller` deployment (the Helm server) is deployed to a dedicated node pool
+that has the `app=helm` label and a specific
+[taint](https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/)
+to prevent other pods from being scheduled on this node pool.
+
+This is to ensure Tiller isn't affected by "noisy" neighbors that could put
+their node under pressure.
+
 ## How to:
 
 ### Log into my Review App
@@ -240,15 +262,6 @@ thousands of unused Docker images.**
   > We have to start somewhere and improve later. Also, we're using the
   CNG-mirror project to store these Docker images so that we can just wipe out
   the registry at some point, and use a new fresh, empty one.
-
-**How big are the Kubernetes clusters (`review-apps-ce` and `review-apps-ee`)?**
-
-  > The clusters are currently set up with a single pool of preemptible nodes,
-  with a minimum of 1 node and a maximum of 500 nodes.
-
-**What are the machine running on the cluster?**
-
-  > We're currently using `n1-standard-1` (1 vCPU, 3.75 GB memory) machines.
 
 **How do we secure this from abuse? Apps are open to the world so we need to
 find a way to limit it to only us.**
