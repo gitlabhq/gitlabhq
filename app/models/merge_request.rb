@@ -752,7 +752,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def check_mergeability
-    MergeRequests::MergeabilityCheckService.new(self).execute
+    MergeRequests::MergeabilityCheckService.new(self).execute(retry_lease: false)
   end
   # rubocop: enable CodeReuse/ServiceClass
 
