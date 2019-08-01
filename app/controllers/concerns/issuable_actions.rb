@@ -227,7 +227,7 @@ module IssuableActions
     {
         target: @issuable,
         notes_filter: notes_filter
-    }.tap { |hash| hash[:project] = project if respond_to?(:project, true) }
+    }.tap { |new_params| new_params[:project] = project if respond_to?(:project, true) }
   end
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
 end
