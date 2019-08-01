@@ -2950,6 +2950,16 @@ describe Project do
           expect(project.public_path_for_source_path('file.html', sha)).to be_nil
         end
       end
+
+      it 'returns a public path with a leading slash unmodified' do
+        route_map = Gitlab::RouteMap.new(<<-MAP.strip_heredoc)
+          - source: 'source/file.html'
+            public: '/public/file'
+        MAP
+        allow(project).to receive(:route_map_for).with(sha).and_return(route_map)
+
+        expect(project.public_path_for_source_path('source/file.html', sha)).to eq('/public/file')
+      end
     end
 
     context 'when there is no route map' do

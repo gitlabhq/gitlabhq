@@ -204,7 +204,7 @@ class Environment < ApplicationRecord
     public_path = project.public_path_for_source_path(path, commit_sha)
     return unless public_path
 
-    [external_url, public_path].join('/')
+    [external_url.delete_suffix('/'), public_path.delete_prefix('/')].join('/')
   end
 
   def expire_etag_cache
