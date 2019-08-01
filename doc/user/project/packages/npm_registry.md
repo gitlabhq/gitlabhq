@@ -81,6 +81,10 @@ domain name.
 
 You should now be able to download and upload NPM packages to your project.
 
+NOTE: **Note:**
+If you encounter an error message with [Yarn](https://yarnpkg.com/en/), see the
+[troubleshooting section](#troubleshooting).
+
 ## Uploading packages
 
 Before you will be able to upload a package, you need to specify the registry
@@ -116,3 +120,29 @@ a given scope, you will receive a `403 Forbidden!` error.
 If you upload a package with a same name and version twice, GitLab will show
 both packages in the UI, but the GitLab NPM Registry will expose the most recent
 one as it supports only one package per version for `npm install`.
+
+## Troubleshooting
+
+### Error running yarn with NPM registry
+
+If you are using [yarn](https://yarnpkg.com/en/) with the NPM registry, you may get
+an error message like:
+
+```sh
+yarn install v1.15.2
+warning package.json: No license field
+info No lockfile found.
+warning XXX: No license field
+[1/4] 🔍  Resolving packages...
+[2/4] 🚚  Fetching packages...
+error An unexpected error occurred: "https://gitlab.com/api/v4/projects/XXX/packages/npm/XXX/XXX/-/XXX/XXX-X.X.X.tgz: Request failed \"404 Not Found\"".
+info If you think this is a bug, please open a bug report with the information provided in "/Users/XXX/gitlab-migration/module-util/yarn-error.log".
+info Visit https://yarnpkg.com/en/docs/cli/install for documentation about this command
+```
+
+In this case, try adding this to your `.npmrc` file (and replace `<your_oauth_token>`
+with your with your OAuth or personal access token):
+
+```text
+//gitlab.com/api/v4/projects/:_authToken=<your_oauth_token>
+```
