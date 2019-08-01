@@ -111,7 +111,7 @@ describe HelpController do
         it 'renders the raw file' do
           get :show,
               params: {
-                path: 'user/project/img/labels_default'
+                path: 'user/project/img/labels_default_v12_1'
               },
               format: :png
           expect(response).to be_success
