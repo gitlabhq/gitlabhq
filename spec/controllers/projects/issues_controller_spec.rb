@@ -1260,6 +1260,28 @@ describe Projects::IssuesController do
         sign_in(user)
       end
 
+      context do
+        it_behaves_like 'discussions provider' do
+          let!(:author) { create(:user) }
+          let!(:project) { create(:project) }
+
+          let!(:issue) { create(:issue, project: project, author: user) }
+
+          let!(:note_on_issue1) { create(:discussion_note_on_issue, noteable: issue, project: issue.project, author: create(:user)) }
+          let!(:note_on_issue2) { create(:discussion_note_on_issue, noteable: issue, project: issue.project, author: create(:user)) }
+
+          let(:requested_iid) { issue.iid }
+          let(:expected_discussion_count) { 3 }
+          let(:expected_discussion_ids) do
+            [
+              issue.notes.first.discussion_id,
+              note_on_issue1.discussion_id,
+              note_on_issue2.discussion_id
+            ]
+          end
+        end
+      end
+
       it 'returns discussion json' do
         get :discussions, params: { namespace_id: project.namespace, project_id: project, id: issue.iid }
 

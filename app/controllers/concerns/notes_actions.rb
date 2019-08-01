@@ -243,7 +243,7 @@ module NotesActions
   end
 
   def notes_finder
-    @notes_finder ||= NotesFinder.new(project, current_user, finder_params)
+    @notes_finder ||= NotesFinder.new(current_user, finder_params)
   end
 
   def note_serializer

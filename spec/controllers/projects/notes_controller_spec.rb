@@ -43,7 +43,7 @@ describe Projects::NotesController do
       request.headers['X-Last-Fetched-At'] = last_fetched_at
 
       expect(NotesFinder).to receive(:new)
-        .with(anything, anything, hash_including(last_fetched_at: last_fetched_at))
+        .with(anything, hash_including(last_fetched_at: last_fetched_at))
         .and_call_original
 
       get :index, params: request_params

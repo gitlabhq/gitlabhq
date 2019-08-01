@@ -27,7 +27,9 @@ class Snippets::NotesController < ApplicationController
   alias_method :noteable, :snippet
 
   def finder_params
-    params.merge(last_fetched_at: last_fetched_at, target_id: snippet.id, target_type: 'personal_snippet')
+    params.merge(last_fetched_at: last_fetched_at, target_id: snippet.id, target_type: 'personal_snippet').tap do |merged_params|
+      merged_params[:project] = project if respond_to?(:project)
+    end
   end
 
   def authorize_read_snippet!
