@@ -39,9 +39,10 @@ project:
 1. Create a new project by selecting **Import project from ➔ Repo by URL**
 1. Add the following URL:
 
-    ```
-    https://gitlab.com/gitlab-examples/maven/simple-maven-dep.git
-    ```
+   ```
+   https://gitlab.com/gitlab-examples/maven/simple-maven-dep.git
+   ```
+
 1. Click **Create project**
 
 This application is nothing more than a basic class with a stub for a JUnit based test suite.
@@ -63,15 +64,15 @@ The application is ready to use, but you need some additional steps to deploy it
 1. Copy the snippet in the `pom.xml` file for your project, just after the
    `dependencies` section. The snippet should look like this:
 
-    ```xml
-    <distributionManagement>
-      <repository>
-        <id>central</id>
-        <name>83d43b5afeb5-releases</name>
-        <url>${env.MAVEN_REPO_URL}/libs-release-local</url>
-      </repository>
-    </distributionManagement>
-    ```
+   ```xml
+   <distributionManagement>
+     <repository>
+       <id>central</id>
+       <name>83d43b5afeb5-releases</name>
+       <url>${env.MAVEN_REPO_URL}/libs-release-local</url>
+     </repository>
+   </distributionManagement>
+   ```
 
 Another step you need to do before you can deploy the dependency to Artifactory
 is to configure the authentication data. It is a simple task, but Maven requires
@@ -86,18 +87,18 @@ parameter in `.gitlab-ci.yml` to use the custom location instead of the default 
 1. Create a file called `settings.xml` in the `.m2` folder
 1. Copy the following content into a `settings.xml` file:
 
-    ```xml
-    <settings xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.1.0 http://maven.apache.org/xsd/settings-1.1.0.xsd"
-        xmlns="http://maven.apache.org/SETTINGS/1.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-      <servers>
-        <server>
-          <id>central</id>
-          <username>${env.MAVEN_REPO_USER}</username>
-          <password>${env.MAVEN_REPO_PASS}</password>
-        </server>
-      </servers>
-    </settings>
-    ```
+   ```xml
+   <settings xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.1.0 http://maven.apache.org/xsd/settings-1.1.0.xsd"
+       xmlns="http://maven.apache.org/SETTINGS/1.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+     <servers>
+       <server>
+         <id>central</id>
+         <username>${env.MAVEN_REPO_USER}</username>
+         <password>${env.MAVEN_REPO_PASS}</password>
+       </server>
+     </servers>
+   </settings>
+   ```
 
     Username and password will be replaced by the correct values using variables.
 
@@ -187,9 +188,10 @@ We'll use again a Maven app that can be cloned from our example project:
 1. Create a new project by selecting **Import project from ➔ Repo by URL**
 1. Add the following URL:
 
-    ```
-    https://gitlab.com/gitlab-examples/maven/simple-maven-app.git
-    ```
+   ```
+   https://gitlab.com/gitlab-examples/maven/simple-maven-app.git
+   ```
+
 1. Click **Create project**
 
 This one is a simple app as well. If you look at the `src/main/java/com/example/app/App.java`
@@ -204,13 +206,13 @@ Since Maven doesn't know how to resolve the dependency, you need to modify the c
 1. Copy the snippet in the `dependencies` section of the `pom.xml` file.
    The snippet should look like this:
 
-    ```xml
-    <dependency>
-      <groupId>com.example.dep</groupId>
-      <artifactId>simple-maven-dep</artifactId>
-      <version>1.0</version>
-    </dependency>
-    ```
+   ```xml
+   <dependency>
+     <groupId>com.example.dep</groupId>
+     <artifactId>simple-maven-dep</artifactId>
+     <version>1.0</version>
+   </dependency>
+   ```
 
 ### Configure the Artifactory repository location
 
