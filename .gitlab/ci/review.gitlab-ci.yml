@@ -101,8 +101,7 @@ schedule:review-build-cng:
     - install_tiller
     - install_external_dns
     - download_chart
-    - deploy || display_deployment_debug
-    - wait_for_review_app_to_be_accessible
+    - deploy || (display_deployment_debug && exit 1)
     - add_license
   artifacts:
     paths: [review_app_url.txt]
