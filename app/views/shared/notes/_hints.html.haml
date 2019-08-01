@@ -1,13 +1,14 @@
 - supports_quick_actions = local_assigns.fetch(:supports_quick_actions, false)
 .comment-toolbar.clearfix
   .toolbar-text
-    - md_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer" tabindex="-1">'.html_safe % { url: help_page_path('user/markdown') }
-    - actions_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer" tabindex="-1">'.html_safe % { url: help_page_path('user/project/quick_actions') }
-    - link_end = '</a>'.html_safe
+    = link_to _('Markdown'), help_page_path('user/markdown'), target: '_blank', tabindex: -1
     - if supports_quick_actions
-      = s_('Editor|%{mdLinkStart}Markdown%{mdLinkEnd} and %{actionsLinkStart}quick actions%{actionsLinkEnd} are supported').html_safe % { mdLinkStart: md_link_start, mdLinkEnd: link_end, actionsLinkStart: actions_link_start, actionsLinkEnd: link_end }
+      and
+      = link_to _('quick actions'), help_page_path('user/project/quick_actions'), target: '_blank', tabindex: -1
+      are
     - else
-      = s_('Editor|%{mdLinkStart}Markdown is supported%{mdLinkEnd}').html_safe % { mdLinkStart: md_link_start, mdLinkEnd: link_end }
+      is
+    supported
 
   %span.uploading-container
     %span.uploading-progress-container.hide
