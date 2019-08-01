@@ -85,6 +85,10 @@ class ProjectWiki
     list_pages(limit: 1).empty?
   end
 
+  def exists?
+    !empty?
+  end
+
   # Lists wiki pages of the repository.
   #
   # limit - max number of pages returned by the method.

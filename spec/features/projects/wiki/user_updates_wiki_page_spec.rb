@@ -70,7 +70,7 @@ describe 'User updates wiki page' do
     context 'in a user namespace' do
       let(:project) { create(:project, :wiki_repo) }
 
-      it 'updates a page' do
+      it 'updates a page', :js do
         # Commit message field should have correct value.
         expect(page).to have_field('wiki[message]', with: 'Update home')
 
@@ -80,6 +80,18 @@ describe 'User updates wiki page' do
         expect(page).to have_content('Home')
         expect(page).to have_content("Last edited by #{user.name}")
         expect(page).to have_content('My awesome wiki!')
+      end
+
+      it 'updates the commit message as the title is changed', :js do
+        fill_in(:wiki_title, with: 'Wiki title')
+
+        expect(page).to have_field('wiki[message]', with: 'Update Wiki title')
+      end
+
+      it 'does not allow XSS', :js do
+        fill_in(:wiki_title, with: '<script>')
+
+        expect(page).to have_field('wiki[message]', with: 'Update &lt;script&gt;')
       end
 
       it 'shows a validation error message' do
@@ -129,7 +141,7 @@ describe 'User updates wiki page' do
     context 'in a group namespace' do
       let(:project) { create(:project, :wiki_repo, namespace: create(:group, :public)) }
 
-      it 'updates a page' do
+      it 'updates a page', :js do
         # Commit message field should have correct value.
         expect(page).to have_field('wiki[message]', with: 'Update home')
 

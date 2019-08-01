@@ -3,11 +3,11 @@
 require 'spec_helper'
 
 describe Projects::WikisController do
-  let(:project) { create(:project, :public, :repository) }
-  let(:user) { project.owner }
+  set(:project) { create(:project, :public, :repository) }
+  set(:user) { project.owner }
   let(:project_wiki) { ProjectWiki.new(project, user) }
   let(:wiki) { project_wiki.wiki }
-  let(:wiki_title) { 'page-title-test' }
+  let(:wiki_title) { 'page title test' }
 
   before do
     create_page(wiki_title, 'hello world')
@@ -17,6 +17,21 @@ describe Projects::WikisController do
 
   after do
     destroy_page(wiki_title)
+  end
+
+  describe 'GET #new' do
+    subject { get :new, params: { namespace_id: project.namespace, project_id: project } }
+
+    it 'redirects to #show and appends a `random_title` param' do
+      subject
+
+      expect(response).to have_http_status(302)
+      expect(Rails.application.routes.recognize_path(response.redirect_url)).to include(
+        controller: 'projects/wikis',
+        action: 'show'
+      )
+      expect(response.redirect_url).to match(/\?random_title=true\Z/)
+    end
   end
 
   describe 'GET #pages' do
@@ -75,40 +90,62 @@ describe Projects::WikisController do
   describe 'GET #show' do
     render_views
 
-    subject { get :show, params: { namespace_id: project.namespace, project_id: project, id: wiki_title } }
+    let(:random_title) { nil }
 
-    it 'limits the retrieved pages for the sidebar' do
-      expect(controller).to receive(:load_wiki).and_return(project_wiki)
+    subject { get :show, params: { namespace_id: project.namespace, project_id: project, id: id, random_title: random_title } }
 
-      # empty? call
-      expect(project_wiki).to receive(:list_pages).with(limit: 1).and_call_original
-      # Sidebar entries
-      expect(project_wiki).to receive(:list_pages).with(limit: 15).and_call_original
+    context 'when page exists' do
+      let(:id) { wiki_title }
 
-      subject
-
-      expect(response).to have_http_status(:ok)
-      expect(response.body).to include(wiki_title)
-    end
-
-    context 'when page content encoding is invalid' do
-      it 'sets flash error' do
-        allow(controller).to receive(:valid_encoding?).and_return(false)
+      it 'limits the retrieved pages for the sidebar' do
+        expect(controller).to receive(:load_wiki).and_return(project_wiki)
+        expect(project_wiki).to receive(:list_pages).with(limit: 15).and_call_original
 
         subject
 
         expect(response).to have_http_status(:ok)
-        expect(flash[:notice]).to eq 'The content of this page is not encoded in UTF-8. Edits can only be made via the Git repository.'
+        expect(assigns(:page).title).to eq(wiki_title)
+      end
+
+      context 'when page content encoding is invalid' do
+        it 'sets flash error' do
+          allow(controller).to receive(:valid_encoding?).and_return(false)
+
+          subject
+
+          expect(response).to have_http_status(:ok)
+          expect(flash[:notice]).to eq('The content of this page is not encoded in UTF-8. Edits can only be made via the Git repository.')
+        end
+      end
+    end
+
+    context 'when the page does not exist' do
+      let(:id) { 'does not exist' }
+
+      before do
+        subject
+      end
+
+      it 'builds a new wiki page with the id as the title' do
+        expect(assigns(:page).title).to eq(id)
+      end
+
+      context 'when a random_title param is present' do
+        let(:random_title) { true }
+
+        it 'builds a new wiki page with no title' do
+          expect(assigns(:page).title).to be_empty
+        end
       end
     end
 
     context 'when page is a file' do
       include WikiHelpers
 
-      let(:path) { upload_file_to_wiki(project, user, file_name) }
+      let(:id) { upload_file_to_wiki(project, user, file_name) }
 
       before do
-        get :show, params: { namespace_id: project.namespace, project_id: project, id: path }
+        subject
       end
 
       context 'when file is an image' do

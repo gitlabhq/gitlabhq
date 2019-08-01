@@ -1,6 +1,5 @@
 import bp from '../../../breakpoints';
-import { parseQueryStringIntoObject } from '../../../lib/utils/common_utils';
-import { mergeUrlParams, redirectTo } from '../../../lib/utils/url_utility';
+import { s__, sprintf } from '~/locale';
 
 export default class Wikis {
   constructor() {
@@ -12,32 +11,37 @@ export default class Wikis {
       sidebarToggles[i].addEventListener('click', e => this.handleToggleSidebar(e));
     }
 
-    this.newWikiForm = document.querySelector('form.new-wiki-page');
-    if (this.newWikiForm) {
-      this.newWikiForm.addEventListener('submit', e => this.handleNewWikiSubmit(e));
+    this.isNewWikiPage = Boolean(document.querySelector('.js-new-wiki-page'));
+    this.editTitleInput = document.querySelector('form.wiki-form #wiki_title');
+    this.commitMessageInput = document.querySelector('form.wiki-form #wiki_message');
+    this.commitMessageI18n = this.isNewWikiPage
+      ? s__('WikiPageCreate|Create %{pageTitle}')
+      : s__('WikiPageEdit|Update %{pageTitle}');
+
+    if (this.editTitleInput) {
+      // Initialize the commit message on load
+      if (this.editTitleInput.value) this.setWikiCommitMessage(this.editTitleInput.value);
+
+      // Set the commit message as the page title is changed
+      this.editTitleInput.addEventListener('keyup', e => this.handleWikiTitleChange(e));
     }
 
     window.addEventListener('resize', () => this.renderSidebar());
     this.renderSidebar();
   }
 
-  handleNewWikiSubmit(e) {
-    if (!this.newWikiForm) return;
+  handleWikiTitleChange(e) {
+    this.setWikiCommitMessage(e.target.value);
+  }
 
-    const slugInput = this.newWikiForm.querySelector('#new_wiki_path');
+  setWikiCommitMessage(rawTitle) {
+    let title = rawTitle;
 
-    const slug = slugInput.value;
+    // Replace hyphens with spaces
+    if (title) title = title.replace(/-+/g, ' ');
 
-    if (slug.length > 0) {
-      const wikisPath = slugInput.getAttribute('data-wikis-path');
-
-      // If the wiki is empty, we need to merge the current URL params to keep the "create" view.
-      const params = parseQueryStringIntoObject(window.location.search.substr(1));
-      const url = mergeUrlParams(params, `${wikisPath}/${slug}`);
-      redirectTo(url);
-
-      e.preventDefault();
-    }
+    const newCommitMessage = sprintf(this.commitMessageI18n, { pageTitle: title });
+    this.commitMessageInput.value = newCommitMessage;
   }
 
   handleToggleSidebar(e) {

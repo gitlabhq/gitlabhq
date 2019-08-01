@@ -42,10 +42,10 @@ describe "User creates wiki page" do
 
         click_link("link test")
 
-        expect(page).to have_content("Create Page")
+        expect(page).to have_content("Create New Page")
       end
 
-      it "shows non-escaped link in the pages list", :js, :quarantine do
+      it "shows non-escaped link in the pages list", :quarantine do
         fill_in(:wiki_title, with: "one/two/three-test")
 
         page.within(".wiki-form") do
@@ -58,7 +58,9 @@ describe "User creates wiki page" do
         expect(page).to have_xpath("//a[@href='/#{project.full_path}/wikis/one/two/three-test']")
       end
 
-      it "has `Create home` as a commit message" do
+      it "has `Create home` as a commit message", :js do
+        wait_for_requests
+
         expect(page).to have_field("wiki[message]", with: "Create home")
       end
 
@@ -81,7 +83,7 @@ describe "User creates wiki page" do
         expect(current_path).to eq(project_wiki_path(project, "test"))
 
         page.within(:css, ".nav-text") do
-          expect(page).to have_content("test").and have_content("Create Page")
+          expect(page).to have_content("Create New Page")
         end
 
         click_link("Home")
@@ -93,7 +95,7 @@ describe "User creates wiki page" do
         expect(current_path).to eq(project_wiki_path(project, "api"))
 
         page.within(:css, ".nav-text") do
-          expect(page).to have_content("Create").and have_content("api")
+          expect(page).to have_content("Create")
         end
 
         click_link("Home")
@@ -105,7 +107,7 @@ describe "User creates wiki page" do
         expect(current_path).to eq(project_wiki_path(project, "raketasks"))
 
         page.within(:css, ".nav-text") do
-          expect(page).to have_content("Create").and have_content("rake")
+          expect(page).to have_content("Create")
         end
       end
 
@@ -150,6 +152,8 @@ describe "User creates wiki page" do
       let(:project) { create(:project, :wiki_repo, namespace: create(:group, :public)) }
 
       it "has `Create home` as a commit message" do
+        wait_for_requests
+
         expect(page).to have_field("wiki[message]", with: "Create home")
       end
 
@@ -181,20 +185,15 @@ describe "User creates wiki page" do
         it "creates a page with a single word" do
           click_link("New page")
 
-          page.within("#modal-new-wiki") do
-            fill_in(:new_wiki_path, with: "foo")
-
-            click_button("Create page")
+          page.within(".wiki-form") do
+            fill_in(:wiki_title, with: "foo")
+            fill_in(:wiki_content, with: "My awesome wiki!")
           end
 
           # Commit message field should have correct value.
           expect(page).to have_field("wiki[message]", with: "Create foo")
 
-          page.within(".wiki-form") do
-            fill_in(:wiki_content, with: "My awesome wiki!")
-
-            click_button("Create page")
-          end
+          click_button("Create page")
 
           expect(page).to have_content("foo")
                      .and have_content("Last edited by #{user.name}")
@@ -204,20 +203,15 @@ describe "User creates wiki page" do
         it "creates a page with spaces in the name" do
           click_link("New page")
 
-          page.within("#modal-new-wiki") do
-            fill_in(:new_wiki_path, with: "Spaces in the name")
-
-            click_button("Create page")
+          page.within(".wiki-form") do
+            fill_in(:wiki_title, with: "Spaces in the name")
+            fill_in(:wiki_content, with: "My awesome wiki!")
           end
 
           # Commit message field should have correct value.
           expect(page).to have_field("wiki[message]", with: "Create Spaces in the name")
 
-          page.within(".wiki-form") do
-            fill_in(:wiki_content, with: "My awesome wiki!")
-
-            click_button("Create page")
-          end
+          click_button("Create page")
 
           expect(page).to have_content("Spaces in the name")
                      .and have_content("Last edited by #{user.name}")
@@ -227,10 +221,9 @@ describe "User creates wiki page" do
         it "creates a page with hyphens in the name" do
           click_link("New page")
 
-          page.within("#modal-new-wiki") do
-            fill_in(:new_wiki_path, with: "hyphens-in-the-name")
-
-            click_button("Create page")
+          page.within(".wiki-form") do
+            fill_in(:wiki_title, with: "hyphens-in-the-name")
+            fill_in(:wiki_content, with: "My awesome wiki!")
           end
 
           # Commit message field should have correct value.
@@ -251,12 +244,6 @@ describe "User creates wiki page" do
       it "shows the emoji autocompletion dropdown" do
         click_link("New page")
 
-        page.within("#modal-new-wiki") do
-          fill_in(:new_wiki_path, with: "test-autocomplete")
-
-          click_button("Create page")
-        end
-
         page.within(".wiki-form") do
           find("#wiki_content").native.send_keys("")
 
@@ -274,20 +261,15 @@ describe "User creates wiki page" do
         it "creates a page" do
           click_link("New page")
 
-          page.within("#modal-new-wiki") do
-            fill_in(:new_wiki_path, with: "foo")
-
-            click_button("Create page")
+          page.within(".wiki-form") do
+            fill_in(:wiki_title, with: "foo")
+            fill_in(:wiki_content, with: "My awesome wiki!")
           end
 
           # Commit message field should have correct value.
           expect(page).to have_field("wiki[message]", with: "Create foo")
 
-          page.within(".wiki-form") do
-            fill_in(:wiki_content, with: "My awesome wiki!")
-
-            click_button("Create page")
-          end
+          click_button("Create page")
 
           expect(page).to have_content("foo")
                      .and have_content("Last edited by #{user.name}")

@@ -12888,13 +12888,7 @@ msgstr ""
 msgid "WikiMarkdownTip|To link to a (new) page, simply type %{link_example}"
 msgstr ""
 
-msgid "WikiNewPagePlaceholder|how-to-setup"
-msgstr ""
-
 msgid "WikiNewPageTip|Tip: You can specify the full path for the new file. We will automatically create any missing directories."
-msgstr ""
-
-msgid "WikiNewPageTitle|New Wiki Page"
 msgstr ""
 
 msgid "WikiPageConfirmDelete|Are you sure you want to delete this page?"
@@ -12912,19 +12906,16 @@ msgstr ""
 msgid "WikiPageConflictMessage|the page"
 msgstr ""
 
-msgid "WikiPageCreate|Create %{page_title}"
+msgid "WikiPageCreate|Create %{pageTitle}"
 msgstr ""
 
-msgid "WikiPageEdit|Update %{page_title}"
-msgstr ""
-
-msgid "WikiPage|Page slug"
+msgid "WikiPageEdit|Update %{pageTitle}"
 msgstr ""
 
 msgid "WikiPage|Write your content or drag files here…"
 msgstr ""
 
-msgid "Wiki|Create Page"
+msgid "Wiki|Create New Page"
 msgstr ""
 
 msgid "Wiki|Create page"
@@ -12943,6 +12934,9 @@ msgid "Wiki|New page"
 msgstr ""
 
 msgid "Wiki|Page history"
+msgstr ""
+
+msgid "Wiki|Page title"
 msgstr ""
 
 msgid "Wiki|Page version"

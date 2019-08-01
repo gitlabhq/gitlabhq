@@ -1,8 +1,8 @@
-- commit_message = @page.persisted? ? s_("WikiPageEdit|Update %{page_title}") : s_("WikiPageCreate|Create %{page_title}")
-- commit_message = commit_message % { page_title: @page.title }
+- form_classes = 'wiki-form common-note-form prepend-top-default js-quick-submit'
+- form_classes += ' js-new-wiki-page' unless @page.persisted?
 
 = form_for [@project.namespace.becomes(Namespace), @project, @page], method: @page.persisted? ? :put : :post,
-           html: { class: 'wiki-form common-note-form prepend-top-default js-quick-submit' },
+           html: { class: form_classes },
            data: { uploads_path: uploads_path } do |f|
   = form_errors(@page)
 
@@ -12,12 +12,14 @@
   .form-group.row
     .col-sm-12= f.label :title, class: 'control-label-full-width'
     .col-sm-12
-      = f.text_field :title, class: 'form-control qa-wiki-title-textbox', value: @page.title
-      - if @page.persisted?
-        %span.d-inline-block.mw-100.prepend-top-5
-          = icon('lightbulb-o')
+      = f.text_field :title, class: 'form-control qa-wiki-title-textbox', value: @page.title, required: true, autofocus: !@page.persisted?, placeholder: _('Wiki|Page title')
+      %span.d-inline-block.mw-100.prepend-top-5
+        = icon('lightbulb-o')
+        - if @page.persisted?
           = s_("WikiEditPageTip|Tip: You can move this page by adding the path to the beginning of the title.")
           = link_to icon('question-circle'), help_page_path('user/project/wiki/index', anchor: 'moving-a-wiki-page'), target: '_blank'
+        - else
+          = s_("WikiNewPageTip|Tip: You can specify the full path for the new file. We will automatically create any missing directories.")
   .form-group.row
     .col-sm-12= f.label :format, class: 'control-label-full-width'
     .col-sm-12
@@ -43,7 +45,7 @@
 
   .form-group.row
     .col-sm-12= f.label :commit_message, class: 'control-label-full-width'
-    .col-sm-12= f.text_field :message, class: 'form-control qa-wiki-message-textbox', rows: 18, value: commit_message
+    .col-sm-12= f.text_field :message, class: 'form-control qa-wiki-message-textbox', rows: 18, value: nil
 
   .form-actions
     - if @page && @page.persisted?

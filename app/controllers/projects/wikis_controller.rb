@@ -16,6 +16,10 @@ class Projects::WikisController < Projects::ApplicationController
     redirect_to(project_wiki_path(@project, @page))
   end
 
+  def new
+    redirect_to project_wiki_path(@project, SecureRandom.uuid, random_title: true)
+  end
+
   def pages
     @wiki_pages = Kaminari.paginate_array(
       @project_wiki.list_pages(sort: params[:sort], direction: params[:direction])
@@ -24,17 +28,25 @@ class Projects::WikisController < Projects::ApplicationController
     @wiki_entries = WikiPage.group_by_directory(@wiki_pages)
   end
 
+  # `#show` handles a number of scenarios:
+  #
+  # - If `id` matches a WikiPage, then show the wiki page.
+  # - If `id` is a file in the wiki repository, then send the file.
+  # - If we know the user wants to create a new page with the given `id`,
+  #   then display a create form.
+  # - Otherwise show the empty wiki page and invite the user to create a page.
   def show
-    view_param = @project_wiki.empty? ? params[:view] : 'create'
-
     if @page
       set_encoding_error unless valid_encoding?
 
       render 'show'
     elsif file_blob
       send_blob(@project_wiki.repository, file_blob)
-    elsif can?(current_user, :create_wiki, @project) && view_param == 'create'
-      @page = build_page(title: params[:id])
+    elsif show_create_form?
+      # Assign a title to the WikiPage unless `id` is a randomly generated slug from #new
+      title = params[:id] unless params[:random_title].present?
+
+      @page = build_page(title: title)
 
       render 'edit'
     else
@@ -110,6 +122,15 @@ class Projects::WikisController < Projects::ApplicationController
 
   private
 
+  def show_create_form?
+    can?(current_user, :create_wiki, @project) &&
+      @page.nil? &&
+      # Always show the create form when the wiki has had at least one page created.
+      # Otherwise, we only show the form when the user has navigated from
+      # the 'empty wiki' page
+      (@project_wiki.exists? || params[:view] == 'create')
+  end
+
   def load_project_wiki
     @project_wiki = load_wiki
 
@@ -135,7 +156,7 @@ class Projects::WikisController < Projects::ApplicationController
     params.require(:wiki).permit(:title, :content, :format, :message, :last_commit_sha)
   end
 
-  def build_page(args)
+  def build_page(args = {})
     WikiPage.new(@project_wiki).tap do |page|
       page.update_attributes(args) # rubocop:disable Rails/ActiveRecordAliases
     end
