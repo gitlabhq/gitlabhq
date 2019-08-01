@@ -70,8 +70,12 @@ class ContainerRepository < ApplicationRecord
     digests = tags.map { |tag| tag.digest }.to_set
 
     digests.all? do |digest|
-      client.delete_repository_tag(self.path, digest)
+      delete_tag_by_digest(digest)
     end
+  end
+
+  def delete_tag_by_digest(digest)
+    client.delete_repository_tag(self.path, digest)
   end
 
   def self.build_from_path(path)

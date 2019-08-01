@@ -17,6 +17,14 @@ module Auth
     end
 
     def self.full_access_token(*names)
+      access_token(%w(*), names)
+    end
+
+    def self.pull_access_token(*names)
+      access_token(['pull'], names)
+    end
+
+    def self.access_token(actions, names)
       names = names.flatten
       registry = Gitlab.config.registry
       token = JSONWebToken::RSAToken.new(registry.key)
@@ -25,7 +33,7 @@ module Auth
       token.expire_time = token_expire_at
 
       token[:access] = names.map do |name|
-        { type: 'repository', name: name, actions: %w(*) }
+        { type: 'repository', name: name, actions: actions }
       end
 
       token.encoded

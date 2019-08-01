@@ -296,6 +296,12 @@ Gitlab.ee do
   Settings['geo'] ||= Settingslogic.new({})
   # For backwards compatibility, default to gitlab_url and if so, ensure it ends with "/"
   Settings.geo['node_name'] = Settings.geo['node_name'].presence || Settings.gitlab['url'].chomp('/').concat('/')
+
+  #
+  # Registry replication
+  #
+  Settings.geo['registry_replication'] ||= Settingslogic.new({})
+  Settings.geo.registry_replication['enabled'] ||= false
 end
 
 #
@@ -473,6 +479,9 @@ Gitlab.ee do
   Settings.cron_jobs['geo_repository_verification_secondary_scheduler_worker'] ||= Settingslogic.new({})
   Settings.cron_jobs['geo_repository_verification_secondary_scheduler_worker']['cron'] ||= '*/1 * * * *'
   Settings.cron_jobs['geo_repository_verification_secondary_scheduler_worker']['job_class'] ||= 'Geo::RepositoryVerification::Secondary::SchedulerWorker'
+  Settings.cron_jobs['geo_container_repository_sync_worker'] ||= Settingslogic.new({})
+  Settings.cron_jobs['geo_container_repository_sync_worker']['cron'] ||= '*/1 * * * *'
+  Settings.cron_jobs['geo_container_repository_sync_worker']['job_class'] ||= 'Geo::ContainerRepositorySyncDispatchWorker'
   Settings.cron_jobs['historical_data_worker'] ||= Settingslogic.new({})
   Settings.cron_jobs['historical_data_worker']['cron'] ||= '0 12 * * *'
   Settings.cron_jobs['historical_data_worker']['job_class'] = 'HistoricalDataWorker'

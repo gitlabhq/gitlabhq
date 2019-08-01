@@ -145,6 +145,19 @@ describe Auth::ContainerRegistryAuthenticationService do
     it_behaves_like 'not a container repository factory'
   end
 
+  describe '#pull_access_token' do
+    let(:project) { create(:project) }
+    let(:token) { described_class.pull_access_token(project.full_path) }
+
+    subject { { token: token } }
+
+    it_behaves_like 'an accessible' do
+      let(:actions) { ['pull'] }
+    end
+
+    it_behaves_like 'not a container repository factory'
+  end
+
   context 'user authorization' do
     let(:current_user) { create(:user) }
 
