@@ -1435,6 +1435,7 @@ ActiveRecord::Schema.define(version: 2019_07_29_090456) do
     t.integer "minimum_reverification_interval", default: 7, null: false
     t.string "internal_url"
     t.string "name", null: false
+    t.integer "container_repositories_max_capacity", default: 10, null: false
     t.index ["access_key"], name: "index_geo_nodes_on_access_key"
     t.index ["name"], name: "index_geo_nodes_on_name", unique: true
     t.index ["primary"], name: "index_geo_nodes_on_primary"

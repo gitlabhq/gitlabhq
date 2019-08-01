@@ -19,6 +19,7 @@ ActiveSupport::Inflector.inflections do |inflect|
     project_registry
     file_registry
     job_artifact_registry
+    container_repository_registry
     vulnerability_feedback
     vulnerabilities_feedback
     group_view

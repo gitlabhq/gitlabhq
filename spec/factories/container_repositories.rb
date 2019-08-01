@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :container_repository do
-    name 'test_image'
+    sequence(:name) { |n| "test_image_#{n}" }
     project
 
     transient do

@@ -427,6 +427,11 @@ production: &base
     # If it is blank, it defaults to external_url.
     node_name: ''
 
+    registry_replication:
+      # enabled: true
+      # primary_api_url: http://localhost:5000/ # internal address to the primary registry, will be used by GitLab to directly communicate with primary registry API
+
+
   #
   # 2. GitLab CI settings
   # ==========================
