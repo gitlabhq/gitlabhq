@@ -370,8 +370,11 @@ variables take precedence over those defined in `.gitlab-ci.yml`.
 ## Unsupported variables
 
 There are cases where some variables cannot be used in the context of a
-`.gitlab-ci.yml` definition (for example under `script`). Read more
-about which variables are [not supported](where_variables_can_be_used.md).
+`.gitlab-ci.yml` definition (for example under `script`). Read more about which variables are [not supported](where_variables_can_be_used.md).
+ 
+## Where variables can be used 
+
+Click [here](where_variables_can_be_used.md) for a section that describes where and how the different types of variables can be used.
 
 ## Advanced use
 
