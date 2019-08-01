@@ -7,24 +7,6 @@ RSpec.describe Namespace::AggregationSchedule, :clean_gitlab_redis_shared_state,
 
   it { is_expected.to belong_to :namespace }
 
-  describe '.delay_timeout' do
-    context 'when timeout is set on redis' do
-      it 'uses personalized timeout' do
-        Gitlab::Redis::SharedState.with do |redis|
-          redis.set(described_class::REDIS_SHARED_KEY, 1.hour)
-        end
-
-        expect(described_class.delay_timeout).to eq(1.hour)
-      end
-    end
-
-    context 'when timeout is not set on redis' do
-      it 'uses default timeout' do
-        expect(described_class.delay_timeout).to eq(3.hours)
-      end
-    end
-  end
-
   describe '#schedule_root_storage_statistics' do
     let(:namespace) { create(:namespace) }
     let(:aggregation_schedule) { namespace.build_aggregation_schedule }
@@ -85,22 +67,6 @@ RSpec.describe Namespace::AggregationSchedule, :clean_gitlab_redis_shared_state,
         # Executing again, this time workers should not be scheduled
         # due to the lease not been released.
         aggregation_schedule.schedule_root_storage_statistics
-      end
-    end
-
-    context 'with a personalized lease timeout' do
-      before do
-        Gitlab::Redis::SharedState.with do |redis|
-          redis.set(described_class::REDIS_SHARED_KEY, 1.hour)
-        end
-      end
-
-      it 'uses a personalized time' do
-        expect(Namespaces::RootStatisticsWorker)
-          .to receive(:perform_in)
-          .with(1.hour, aggregation_schedule.namespace_id)
-
-        aggregation_schedule.save!
       end
     end
   end
