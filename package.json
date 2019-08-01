@@ -100,7 +100,7 @@
     "mermaid": "^8.2.3",
     "monaco-editor": "^0.15.6",
     "monaco-editor-webpack-plugin": "^1.7.0",
-    "mousetrap": "1.4.6",
+    "mousetrap": "^1.4.6",
     "pdfjs-dist": "^2.0.943",
     "pikaday": "^1.6.1",
     "popper.js": "^1.14.7",
