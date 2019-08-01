@@ -1069,6 +1069,12 @@ Container Registry. **Restarting a pod, scaling a service, or other actions whic
 require on-going access to the registry may fail**. On-going secure access is
 planned for a subsequent release.
 
+### Private registry support
+
+There is no documented way of using private container registry with Auto DevOps.
+We strongly advise using GitLab Container Registry with Auto DevOps in order to
+simplify configuration and prevent any unforeseen issues.
+
 ## Troubleshooting
 
 - Auto Build and Auto Test may fail in detecting your language/framework. There
