@@ -214,7 +214,7 @@ class Project < ApplicationRecord
     as: :source, class_name: 'ProjectMember', dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
   has_many :members_and_requesters, as: :source, class_name: 'ProjectMember'
 
-  has_many :deploy_keys_projects
+  has_many :deploy_keys_projects, inverse_of: :project
   has_many :deploy_keys, through: :deploy_keys_projects
   has_many :users_star_projects
   has_many :starrers, through: :users_star_projects, source: :user
