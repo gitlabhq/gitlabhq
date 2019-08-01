@@ -942,7 +942,7 @@ class User < ApplicationRecord
 
   def accessible_deploy_keys
     @accessible_deploy_keys ||= begin
-      key_ids = project_deploy_keys.pluck(:id)
+      key_ids = project_deploy_keys.pluck(:deploy_key_id)
       key_ids.push(*DeployKey.are_public.pluck(:id))
       DeployKey.where(id: key_ids)
     end
