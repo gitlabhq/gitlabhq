@@ -7,16 +7,29 @@ type: reference
 # LDAP
 
 GitLab integrates with LDAP to support user authentication.
-This integration works with most LDAP-compliant directory
-servers, including Microsoft Active Directory, Apple Open Directory, Open LDAP,
-and 389 Server. GitLab Enterprise Editions include enhanced integration,
+
+This integration works with most LDAP-compliant directory servers, including:
+
+- Microsoft Active Directory
+- Apple Open Directory
+- Open LDAP
+- 389 Server.
+
+GitLab Enterprise Editions (EE) include enhanced integration,
 including group membership syncing as well as multiple LDAP servers support.
 
-## GitLab EE
+For more details about EE-specific LDAP features, see the
+[LDAP Enterprise Edition documentation](ldap-ee.md).
 
-The information on this page is relevant for both GitLab CE and EE. For more
-details about EE-specific LDAP features, see the
-[LDAP Enterprise Edition documentation](ldap-ee.md). **(STARTER ONLY)**
+NOTE: **Note:**
+The information on this page is relevant for both GitLab CE and EE.
+
+## Overview
+
+[LDAP](https://en.wikipedia.org/wiki/Lightweight_Directory_Access_Protocol)
+stands for **Lightweight Directory Access Protocol**, which is a standard
+application protocol for accessing and maintaining distributed directory
+information services over an Internet Protocol (IP) network.
 
 ## Security
 
@@ -64,9 +77,12 @@ NOTE: **Note**:
 In GitLab Enterprise Edition Starter, you can configure multiple LDAP servers
 to connect to one GitLab server.
 
-For a complete guide on configuring LDAP with GitLab Community Edition, please check
-the admin guide [How to configure LDAP with GitLab CE](how_to_configure_ldap_gitlab_ce/index.md).
-For GitLab Enterprise Editions, see also [How to configure LDAP with GitLab EE](how_to_configure_ldap_gitlab_ee/index.md). **(STARTER ONLY)**
+For a complete guide on configuring LDAP with:
+
+- GitLab Community Edition, see
+  [How to configure LDAP with GitLab CE](how_to_configure_ldap_gitlab_ce/index.md).
+- Enterprise Editions, see
+  [How to configure LDAP with GitLab EE](how_to_configure_ldap_gitlab_ee/index.md). **(STARTER ONLY)**
 
 To enable LDAP integration you need to add your LDAP server settings in
 `/etc/gitlab/gitlab.rb` or `/home/git/gitlab/config/gitlab.yml` for Omnibus
@@ -384,7 +400,7 @@ production:
 Tip: If you want to limit access to the nested members of an Active Directory
 group, you can use the following syntax:
 
-```
+```text
 (memberOf:1.2.840.113556.1.4.1941:=CN=My Group,DC=Example,DC=com)
 ```
 
@@ -402,13 +418,13 @@ The `user_filter` DN can contain special characters. For example:
 
 - A comma:
 
-  ```
+  ```text
   OU=GitLab, Inc,DC=gitlab,DC=com
   ```
 
 - Open and close brackets:
 
-  ```
+  ```text
   OU=Gitlab (Inc),DC=gitlab,DC=com
   ```
 
@@ -417,13 +433,13 @@ The `user_filter` DN can contain special characters. For example:
 
 - Escape commas with `\2C`. For example:
 
-  ```
+  ```text
   OU=GitLab\2C Inc,DC=gitlab,DC=com
   ```
 
 - Escape open and close brackets with `\28` and `\29`, respectively. For example:
 
-  ```
+  ```text
   OU=Gitlab \28Inc\29,DC=gitlab,DC=com
   ```
 
@@ -507,11 +523,11 @@ timeout), the login is rejected and a message will be logged to
 
 ### Debug LDAP user filter with ldapsearch
 
-This example uses ldapsearch and assumes you are using ActiveDirectory. The
+This example uses `ldapsearch` and assumes you are using ActiveDirectory. The
 following query returns the login names of the users that will be allowed to
 log in to GitLab if you configure your own user_filter.
 
-```
+```sh
 ldapsearch -H ldaps://$host:$port -D "$bind_dn" -y bind_dn_password.txt  -b "$base" "$user_filter" sAMAccountName
 ```
 
