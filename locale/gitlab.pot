@@ -7937,6 +7937,9 @@ msgstr ""
 msgid "Please add a list to your board first"
 msgstr ""
 
+msgid "Please check your email (%{email}) to verify that you own this address. Didn't receive it? %{resend_link}. Wrong email address? %{update_link}."
+msgstr ""
+
 msgid "Please choose a group URL with no special characters."
 msgstr ""
 
@@ -9308,6 +9311,9 @@ msgid "Resend confirmation email"
 msgstr ""
 
 msgid "Resend invite"
+msgstr ""
+
+msgid "Resend it"
 msgstr ""
 
 msgid "Reset health check access token"
@@ -12057,6 +12063,9 @@ msgid "Update"
 msgstr ""
 
 msgid "Update failed"
+msgstr ""
+
+msgid "Update it"
 msgstr ""
 
 msgid "Update now"
