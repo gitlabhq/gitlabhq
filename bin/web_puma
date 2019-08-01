@@ -10,7 +10,7 @@ puma_config="$app_root/config/puma.rb"
 
 spawn_puma()
 {
-  exec bundle exec puma --config "${puma_config}" "$@"
+  exec bundle exec puma --config "${puma_config}" --environment "$RAILS_ENV" "$@"
 }
 
 get_puma_pid()
