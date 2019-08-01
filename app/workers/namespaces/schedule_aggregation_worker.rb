@@ -12,7 +12,7 @@ module Namespaces
       namespace = Namespace.find(namespace_id)
       root_ancestor = namespace.root_ancestor
 
-      return unless update_statistics_enabled_for?(root_ancestor) && !root_ancestor.aggregation_scheduled?
+      return if root_ancestor.aggregation_scheduled?
 
       Namespace::AggregationSchedule.safe_find_or_create_by!(namespace_id: root_ancestor.id)
     rescue ActiveRecord::RecordNotFound
@@ -36,10 +36,6 @@ module Namespaces
 
     def log_error(root_ancestor_id)
       Gitlab::SidekiqLogger.error("Namespace can't be scheduled for aggregation: #{root_ancestor_id} does not exist")
-    end
-
-    def update_statistics_enabled_for?(root_ancestor)
-      Feature.enabled?(:update_statistics_namespace, root_ancestor)
     end
   end
 end

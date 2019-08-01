@@ -140,18 +140,7 @@ describe ProjectStatistics do
       let(:namespace) { create(:group) }
       let(:project) { create(:project, namespace: namespace) }
 
-      context 'when the feature flag is off' do
-        it 'does not schedule the aggregation worker' do
-          stub_feature_flags(update_statistics_namespace: false, namespace: namespace)
-
-          expect(Namespaces::ScheduleAggregationWorker)
-            .not_to receive(:perform_async)
-
-          statistics.refresh!(only: [:lfs_objects_size])
-        end
-      end
-
-      context 'when the feature flag is on' do
+      context 'when arguments are passed' do
         it 'schedules the aggregation worker' do
           expect(Namespaces::ScheduleAggregationWorker)
             .to receive(:perform_async)

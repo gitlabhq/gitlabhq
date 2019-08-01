@@ -32,19 +32,6 @@ shared_examples_for 'UpdateProjectStatistics' do
 
       subject.save!
     end
-
-    context 'when feature flag is disabled for the namespace' do
-      it 'does not schedules a namespace statistics worker' do
-        namespace = subject.project.root_ancestor
-
-        stub_feature_flags(update_statistics_namespace: false, namespace: namespace)
-
-        expect(Namespaces::ScheduleAggregationWorker)
-          .not_to receive(:perform_async)
-
-        subject.save!
-      end
-    end
   end
 
   context 'when updating' do
@@ -87,20 +74,6 @@ shared_examples_for 'UpdateProjectStatistics' do
         subject.save!
       end.not_to exceed_query_limit(control_count)
     end
-
-    context 'when the feature flag is disabled for the namespace' do
-      it 'does not schedule a namespace statistics worker' do
-        namespace = subject.project.root_ancestor
-
-        stub_feature_flags(update_statistics_namespace: false, namespace: namespace)
-
-        expect(Namespaces::ScheduleAggregationWorker)
-          .not_to receive(:perform_async)
-
-        subject.write_attribute(statistic_attribute, read_attribute + delta)
-        subject.save!
-      end
-    end
   end
 
   context 'when destroying' do
@@ -142,19 +115,6 @@ shared_examples_for 'UpdateProjectStatistics' do
 
         project.update(pending_delete: true)
         project.destroy!
-      end
-    end
-
-    context 'when feature flag is disabled for the namespace' do
-      it 'does not schedule a namespace statistics worker' do
-        namespace = subject.project.root_ancestor
-
-        stub_feature_flags(update_statistics_namespace: false, namespace: namespace)
-
-        expect(Namespaces::ScheduleAggregationWorker)
-          .not_to receive(:perform_async)
-
-        subject.destroy!
       end
     end
   end

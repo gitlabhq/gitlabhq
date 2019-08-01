@@ -93,13 +93,7 @@ class ProjectStatistics < ApplicationRecord
 
   def schedule_namespace_aggregation_worker
     run_after_commit do
-      next unless schedule_aggregation_worker?
-
       Namespaces::ScheduleAggregationWorker.perform_async(project.namespace_id)
     end
-  end
-
-  def schedule_aggregation_worker?
-    Feature.enabled?(:update_statistics_namespace, project&.root_ancestor)
   end
 end
