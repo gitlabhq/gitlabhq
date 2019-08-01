@@ -305,25 +305,25 @@ For example, the following two definitions are equal:
 
 1. Using a string as an option to `image` and `services`:
 
-    ```yaml
-    image: "registry.example.com/my/image:latest"
+   ```yaml
+   image: "registry.example.com/my/image:latest"
 
-    services:
-    - postgresql:9.4
-    - redis:latest
-    ```
+   services:
+   - postgresql:9.4
+   - redis:latest
+   ```
 
 1. Using a map as an option to `image` and `services`. The use of `image:name` is
    required:
 
-    ```yaml
-    image:
-      name: "registry.example.com/my/image:latest"
+   ```yaml
+   image:
+     name: "registry.example.com/my/image:latest"
 
-    services:
-    - name: postgresql:9.4
-    - name: redis:latest
-    ```
+   services:
+   - name: postgresql:9.4
+   - name: redis:latest
+   ```
 
 ### Available settings for `image`
 
@@ -526,6 +526,7 @@ it's provided as an environment variable. This is because GitLab Runnner uses **
 runtime.
 
 ### Using statically-defined credentials
+
 There are two approaches that you can take in order to access a
 private registry. Both require setting the environment variable
 `DOCKER_AUTH_CONFIG` with appropriate authentication info.
@@ -555,18 +556,18 @@ There are two ways to determine the value of `DOCKER_AUTH_CONFIG`:
 
 - **First way -** Do a `docker login` on your local machine:
 
-    ```bash
-    docker login registry.example.com:5000 --username my_username --password my_password
-    ```
+  ```bash
+  docker login registry.example.com:5000 --username my_username --password my_password
+  ```
 
-    Then copy the content of `~/.docker/config.json`.
+  Then copy the content of `~/.docker/config.json`.
 
-    If you don't need access to the registry from your computer, you
-    can do a `docker logout`:
+  If you don't need access to the registry from your computer, you
+  can do a `docker logout`:
 
-    ```bash
-    docker logout registry.example.com:5000
-    ```
+  ```bash
+  docker logout registry.example.com:5000
+  ```
 
 - **Second way -** In some setups, it's possible that Docker client
   will use the available system keystore to store the result of `docker
@@ -575,12 +576,12 @@ There are two ways to determine the value of `DOCKER_AUTH_CONFIG`:
   `${username}:${password}` manually. Open a terminal and execute the
   following command:
 
-    ```bash
-    echo -n "my_username:my_password" | base64
+  ```bash
+  echo -n "my_username:my_password" | base64
 
-    # Example output to copy
-    bXlfdXNlcm5hbWU6bXlfcGFzc3dvcmQ=
-    ```
+  # Example output to copy
+  bXlfdXNlcm5hbWU6bXlfcGFzc3dvcmQ=
+  ```
 
 #### Configuring a job
 
@@ -590,25 +591,25 @@ follow these steps:
 1. Create a [variable](../variables/README.md#gitlab-cicd-environment-variables) `DOCKER_AUTH_CONFIG` with the content of the
    Docker configuration file as the value:
 
-    ```json
-    {
-        "auths": {
-            "registry.example.com:5000": {
-                "auth": "bXlfdXNlcm5hbWU6bXlfcGFzc3dvcmQ="
-            }
-        }
-    }
-    ```
+   ```json
+   {
+       "auths": {
+           "registry.example.com:5000": {
+               "auth": "bXlfdXNlcm5hbWU6bXlfcGFzc3dvcmQ="
+           }
+       }
+   }
+   ```
 
 1. You can now use any private image from `registry.example.com:5000` defined in
    `image` and/or `services` in your `.gitlab-ci.yml` file:
 
-    ```yaml
-    image: registry.example.com:5000/namespace/image:tag
-    ```
+   ```yaml
+   image: registry.example.com:5000/namespace/image:tag
+   ```
 
-    In the example above, GitLab Runner will look at `registry.example.com:5000` for the
-    image `namespace/image:tag`.
+   In the example above, GitLab Runner will look at `registry.example.com:5000` for the
+   image `namespace/image:tag`.
 
 You can add configuration for as many registries as you want, adding more
 registries to the `"auths"` hash as described above.
@@ -637,10 +638,10 @@ To add `DOCKER_AUTH_CONFIG` to a Runner:
 
 1. Modify the Runner's `config.toml` file as follows:
 
-    ```toml
-    [[runners]]
-      environment = ["DOCKER_AUTH_CONFIG={\"auths\":{\"registry.example.com:5000\":{\"auth\":\"bXlfdXNlcm5hbWU6bXlfcGFzc3dvcmQ=\"}}}"]
-    ```
+   ```toml
+   [[runners]]
+     environment = ["DOCKER_AUTH_CONFIG={\"auths\":{\"registry.example.com:5000\":{\"auth\":\"bXlfdXNlcm5hbWU6bXlfcGFzc3dvcmQ=\"}}}"]
+   ```
 
 1. Restart the Runner service.
 
@@ -662,16 +663,17 @@ To configure credentials store, follow these steps:
    Make sure helper program is available in GitLab Runner `$PATH`.
 
 1. Make GitLab Runner use it. There are two ways to accomplish this. Either:
+
    - Create a
      [variable](../variables/README.md#gitlab-cicd-environment-variables)
      `DOCKER_AUTH_CONFIG` with the content of the
-   Docker configuration file as the value:
+     Docker configuration file as the value:
 
-    ```json
-      {
-        "credsStore": "osxkeychain"
-      }
-    ```
+     ```json
+       {
+         "credsStore": "osxkeychain"
+       }
+     ```
 
    - Or, if you are running self-hosted Runners, add the above JSON to
      `${GITLAB_RUNNER_HOME}/.docker/config.json`. GitLab Runner will read this config file
@@ -693,17 +695,18 @@ To configure access for `aws_account_id.dkr.ecr.region.amazonaws.com`, follow th
 1. Make sure `docker-credential-ecr-login` is available in GitLab Runner's `$PATH`.
 
 1. Make GitLab Runner use it. There are two ways to accomplish this. Either:
+
    - Create a [variable](../variables/README.md#gitlab-cicd-environment-variables)
      `DOCKER_AUTH_CONFIG` with the content of the
-   Docker configuration file as the value:
+     Docker configuration file as the value:
 
-    ```json
-    {
-      "credHelpers": {
-        "aws_account_id.dkr.ecr.region.amazonaws.com": "ecr-login"
-      }
-    }
-    ```
+     ```json
+     {
+       "credHelpers": {
+         "aws_account_id.dkr.ecr.region.amazonaws.com": "ecr-login"
+       }
+     }
+     ```
 
    - Or, if you are running self-hosted Runners,
      add the above JSON to `${GITLAB_RUNNER_HOME}/.docker/config.json`.
@@ -713,12 +716,12 @@ To configure access for `aws_account_id.dkr.ecr.region.amazonaws.com`, follow th
 1. You can now use any private image from `aws_account_id.dkr.ecr.region.amazonaws.com` defined in
    `image` and/or `services` in your `.gitlab-ci.yml` file:
 
-    ```yaml
-    image: aws_account_id.dkr.ecr.region.amazonaws.com/private/image:latest
-    ```
+   ```yaml
+   image: aws_account_id.dkr.ecr.region.amazonaws.com/private/image:latest
+   ```
 
-    In the example above, GitLab Runner will look at `aws_account_id.dkr.ecr.region.amazonaws.com` for the
-    image `private/image:latest`.
+   In the example above, GitLab Runner will look at `aws_account_id.dkr.ecr.region.amazonaws.com` for the
+   image `private/image:latest`.
 
 You can add configuration for as many registries as you want, adding more
 registries to the `"credHelpers"` hash as described above.
