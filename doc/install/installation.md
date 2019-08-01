@@ -938,7 +938,7 @@ To use GitLab with Puma:
    cd /home/git/gitlab
 
    # Copy config file for the web server
-   sudo -u git -H config/puma.rb.example config/puma.rb
+   sudo -u git -H cp config/puma.rb.example config/puma.rb
    ```
 
 1. Edit the system `init.d` script to use `EXPERIMENTAL_PUMA=1` flag. If you have `/etc/default/gitlab`, then you should edit it instead.
