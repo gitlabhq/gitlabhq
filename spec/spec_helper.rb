@@ -48,6 +48,9 @@ Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
 quality_level = Quality::TestLevel.new
 
 RSpec.configure do |config|
+  config.filter_run focus: true
+  config.run_all_when_everything_filtered = true
+
   config.use_transactional_fixtures = true
   config.use_instantiated_fixtures  = false
   config.fixture_path = Rails.root
