@@ -325,10 +325,6 @@ FactoryBot.define do
     jira_service
   end
 
-  factory :kubernetes_project, parent: :project do
-    kubernetes_service
-  end
-
   factory :mock_deployment_project, parent: :project do
     mock_deployment_service
   end
