@@ -1112,6 +1112,86 @@ module Gitlab
         end
       end
 
+      describe "Needs" do
+        let(:needs) { }
+        let(:dependencies) { }
+
+        let(:config) do
+          {
+            build1: { stage: 'build', script: 'test' },
+            build2: { stage: 'build', script: 'test' },
+            test1: { stage: 'test', script: 'test', needs: needs, dependencies: dependencies },
+            test2: { stage: 'test', script: 'test' },
+            deploy: { stage: 'test', script: 'test' }
+          }
+        end
+
+        subject { Gitlab::Ci::YamlProcessor.new(YAML.dump(config)) }
+
+        context 'no needs' do
+          it { expect { subject }.not_to raise_error }
+        end
+
+        context 'needs to builds' do
+          let(:needs) { %w(build1 build2) }
+
+          it "does create jobs with valid specification" do
+            expect(subject.builds.size).to eq(5)
+            expect(subject.builds[0]).to eq(
+              stage: "build",
+              stage_idx: 0,
+              name: "build1",
+              options: {
+                script: ["test"]
+              },
+              when: "on_success",
+              allow_failure: false,
+              yaml_variables: []
+            )
+            expect(subject.builds[2]).to eq(
+              stage: "test",
+              stage_idx: 1,
+              name: "test1",
+              options: {
+                script: ["test"]
+              },
+              needs_attributes: [
+                { name: "build1" },
+                { name: "build2" }
+              ],
+              when: "on_success",
+              allow_failure: false,
+              yaml_variables: []
+            )
+          end
+        end
+
+        context 'needs to builds defined as symbols' do
+          let(:needs) { [:build1, :build2] }
+
+          it { expect { subject }.not_to raise_error }
+        end
+
+        context 'undefined need' do
+          let(:needs) { ['undefined'] }
+
+          it { expect { subject }.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, 'test1 job: undefined need: undefined') }
+        end
+
+        context 'needs to deploy' do
+          let(:needs) { ['deploy'] }
+
+          it { expect { subject }.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, 'test1 job: need deploy is not defined in prior stages') }
+        end
+
+        context 'needs and dependencies that are mismatching' do
+          let(:needs) { %w(build1) }
+          let(:dependencies) { %w(build2) }
+
+          it { expect { subject }.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, 'jobs:test1 dependencies the build2 should be part of needs') }
+        end
+      end
+
       describe "Hidden jobs" do
         let(:config_processor) { Gitlab::Ci::YamlProcessor.new(config) }
         subject { config_processor.stage_builds_attributes("test") }

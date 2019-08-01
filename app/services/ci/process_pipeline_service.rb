@@ -4,19 +4,23 @@ module Ci
   class ProcessPipelineService < BaseService
     attr_reader :pipeline
 
-    def execute(pipeline)
+    def execute(pipeline, trigger_build_name = nil)
       @pipeline = pipeline
 
       update_retried
 
-      new_builds =
+      success =
         stage_indexes_of_created_processables.flat_map do |index|
           process_stage(index)
-        end
+        end.any?
+
+      # we evaluate dependent needs,
+      # only when the another job has finished
+      success = process_builds_with_needs(trigger_build_name) || success
 
       @pipeline.update_status
 
-      new_builds.any?
+      success
     end
 
     private
@@ -36,9 +40,37 @@ module Ci
       end
     end
 
+    def process_builds_with_needs(trigger_build_name)
+      return false unless trigger_build_name
+      return false unless Feature.enabled?(:ci_dag_support, project)
+
+      created_processables
+        .with_needs(trigger_build_name)
+        .find_each
+        .map(&method(:process_build_with_needs))
+        .any?
+    end
+
+    def process_build_with_needs(build)
+      current_status = status_for_build_needs(build.needs.map(&:name))
+
+      return unless HasStatus::COMPLETED_STATUSES.include?(current_status)
+
+      Gitlab::OptimisticLocking.retry_lock(build) do |subject|
+        Ci::ProcessBuildService.new(project, @user)
+          .execute(subject, current_status)
+      end
+    end
+
     # rubocop: disable CodeReuse/ActiveRecord
     def status_for_prior_stages(index)
       pipeline.builds.where('stage_idx < ?', index).latest.status || 'success'
+    end
+    # rubocop: enable CodeReuse/ActiveRecord
+
+    # rubocop: disable CodeReuse/ActiveRecord
+    def status_for_build_needs(needs)
+      pipeline.builds.where(name: needs).latest.status || 'success'
     end
     # rubocop: enable CodeReuse/ActiveRecord
 

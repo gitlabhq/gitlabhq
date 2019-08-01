@@ -38,6 +38,7 @@ module Ci
     has_one :deployment, as: :deployable, class_name: 'Deployment'
     has_many :trace_sections, class_name: 'Ci::BuildTraceSection'
     has_many :trace_chunks, class_name: 'Ci::BuildTraceChunk', foreign_key: :build_id
+    has_many :needs, class_name: 'Ci::BuildNeed', foreign_key: :build_id, inverse_of: :build
 
     has_many :job_artifacts, class_name: 'Ci::JobArtifact', foreign_key: :job_id, dependent: :destroy, inverse_of: :job # rubocop:disable Cop/ActiveRecordDependent
     has_many :job_variables, class_name: 'Ci::JobVariable', foreign_key: :job_id
@@ -50,6 +51,7 @@ module Ci
 
     accepts_nested_attributes_for :runner_session
     accepts_nested_attributes_for :job_variables
+    accepts_nested_attributes_for :needs
 
     delegate :url, to: :runner_session, prefix: true, allow_nil: true
     delegate :terminal_specification, to: :runner_session, allow_nil: true
@@ -713,11 +715,21 @@ module Ci
 
       depended_jobs = depends_on_builds
 
-      return depended_jobs unless options[:dependencies].present?
-
-      depended_jobs.select do |job|
-        options[:dependencies].include?(job.name)
+      # find all jobs that are dependent on
+      if options[:dependencies].present?
+        depended_jobs = depended_jobs.select do |job|
+          options[:dependencies].include?(job.name)
+        end
       end
+
+      # find all jobs that are needed by this one
+      if options[:needs].present?
+        depended_jobs = depended_jobs.select do |job|
+          options[:needs].include?(job.name)
+        end
+      end
+
+      depended_jobs
     end
 
     def empty_dependencies?

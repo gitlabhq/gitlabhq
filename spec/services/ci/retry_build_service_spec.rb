@@ -67,6 +67,7 @@ describe Ci::RetryBuildService do
       end
 
       create(:ci_job_variable, job: build)
+      create(:ci_build_need, build: build)
 
       build.reload
     end

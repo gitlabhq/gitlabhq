@@ -1,0 +1,5 @@
+---
+title: "Support creating DAGs in CI config through the `needs` key"
+merge_request: 31328
+author:
+type: added

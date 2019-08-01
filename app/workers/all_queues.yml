@@ -88,6 +88,7 @@
 - pipeline_processing:ci_build_prepare
 - pipeline_processing:build_queue
 - pipeline_processing:build_success
+- pipeline_processing:build_process
 - pipeline_processing:pipeline_process
 - pipeline_processing:pipeline_success
 - pipeline_processing:pipeline_update

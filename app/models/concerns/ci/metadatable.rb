@@ -29,6 +29,7 @@ module Ci
     def degenerate!
       self.class.transaction do
         self.update!(options: nil, yaml_variables: nil)
+        self.needs.all.delete_all
         self.metadata&.destroy
       end
     end

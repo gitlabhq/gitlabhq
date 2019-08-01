@@ -19,7 +19,8 @@ describe Ci::Build do
   it { is_expected.to belong_to(:runner) }
   it { is_expected.to belong_to(:trigger_request) }
   it { is_expected.to belong_to(:erased_by) }
-  it { is_expected.to have_many(:trace_sections)}
+  it { is_expected.to have_many(:trace_sections) }
+  it { is_expected.to have_many(:needs) }
   it { is_expected.to have_one(:deployment) }
   it { is_expected.to have_one(:runner_session) }
   it { is_expected.to have_many(:job_variables) }
@@ -179,6 +180,30 @@ describe Ci::Build do
 
         expect(recorded.count).to eq(2)
       end
+    end
+  end
+
+  describe '.with_needs' do
+    let!(:build) { create(:ci_build) }
+    let!(:build_need_a) { create(:ci_build_need, build: build) }
+    let!(:build_need_b) { create(:ci_build_need, build: build) }
+
+    context 'when passing build name' do
+      subject { described_class.with_needs(build_need_a.name) }
+
+      it { is_expected.to contain_exactly(build) }
+    end
+
+    context 'when not passing any build name' do
+      subject { described_class.with_needs }
+
+      it { is_expected.to contain_exactly(build) }
+    end
+
+    context 'when not matching build name' do
+      subject { described_class.with_needs('undefined') }
+
+      it { is_expected.to be_empty }
     end
   end
 
@@ -594,6 +619,46 @@ describe Ci::Build do
 
       expect(staging.depends_on_builds.map(&:id))
         .to contain_exactly(build.id, retried_rspec.id, rubocop_test.id)
+    end
+
+    describe '#dependencies' do
+      let(:dependencies) { }
+      let(:needs) { }
+
+      let!(:final) do
+        create(:ci_build,
+          pipeline: pipeline, name: 'final',
+          stage_idx: 3, stage: 'deploy', options: {
+            dependencies: dependencies,
+            needs: needs
+          }
+        )
+      end
+
+      subject { final.dependencies }
+
+      context 'when depedencies are defined' do
+        let(:dependencies) { %w(rspec staging) }
+
+        it { is_expected.to contain_exactly(rspec_test, staging) }
+      end
+
+      context 'when needs are defined' do
+        let(:needs) { %w(build rspec staging) }
+
+        it { is_expected.to contain_exactly(build, rspec_test, staging) }
+      end
+
+      context 'when needs and dependencies are defined' do
+        let(:dependencies) { %w(rspec staging) }
+        let(:needs) { %w(build rspec staging) }
+
+        it { is_expected.to contain_exactly(rspec_test, staging) }
+      end
+
+      context 'when nor dependencies or needs are defined' do
+        it { is_expected.to contain_exactly(build, rspec_test, rubocop_test, staging) }
+      end
     end
   end
 
@@ -3614,6 +3679,7 @@ describe Ci::Build do
 
     before do
       build.ensure_metadata
+      build.needs.create!(name: 'another-job')
     end
 
     it 'drops metadata' do
@@ -3621,6 +3687,7 @@ describe Ci::Build do
 
       expect(build.reload).to be_degenerated
       expect(build.metadata).to be_nil
+      expect(build.needs).to be_empty
     end
   end
 
