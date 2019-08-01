@@ -15,17 +15,18 @@ module Gitlab
       raise ArgumentError, 'Key needs to be specified' unless key
 
       lease = Gitlab::ExclusiveLease.new(key, timeout: ttl)
+      retried = false
 
       until uuid = lease.try_obtain
         # Keep trying until we obtain the lease. To prevent hammering Redis too
         # much we'll wait for a bit.
         sleep(sleep_sec)
-        break if (retries -= 1) < 0
+        (retries -= 1) < 0 ? break : retried ||= true
       end
 
       raise FailedToObtainLockError, 'Failed to obtain a lock' unless uuid
 
-      yield
+      yield(retried)
     ensure
       Gitlab::ExclusiveLease.cancel(key, uuid)
     end
