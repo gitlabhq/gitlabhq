@@ -116,17 +116,21 @@ schedule:review-deploy:
   <<: *review-schedules-only
 
 review-stop:
-  <<: *review-base
+  <<: *review-only
+  extends: .single-script-job-dedicated-runner
+  image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-charts-build-base
   stage: review
   when: manual
   allow_failure: true
   variables:
-    GIT_DEPTH: "1"
+    SCRIPT_NAME: review_apps/review-apps.sh
   environment:
     <<: *review-environment
     action: stop
   script:
-    - source scripts/review_apps/review-apps.sh
+    - wget $CI_PROJECT_URL/raw/$CI_COMMIT_SHA/scripts/utils.sh
+    - source utils.sh
+    - source $(basename $SCRIPT_NAME)
     - delete
 
 .review-qa-base: &review-qa-base
