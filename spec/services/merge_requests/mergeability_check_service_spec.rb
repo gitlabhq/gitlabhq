@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe MergeRequests::MergeabilityCheckService do
+describe MergeRequests::MergeabilityCheckService, :clean_gitlab_redis_shared_state do
   shared_examples_for 'unmergeable merge request' do
     it 'updates or keeps merge status as cannot_be_merged' do
       subject
@@ -60,24 +60,69 @@ describe MergeRequests::MergeabilityCheckService do
 
     subject { described_class.new(merge_request).execute }
 
+    def execute_within_threads(amount:, retry_lease: true)
+      threads = []
+
+      amount.times do
+        # Let's use a different object for each thread to get closer
+        # to a real world scenario.
+        mr = MergeRequest.find(merge_request.id)
+
+        threads << Thread.new do
+          described_class.new(mr).execute(retry_lease: retry_lease)
+        end
+      end
+
+      threads.each(&:join)
+      threads
+    end
+
     before do
       project.add_developer(merge_request.author)
     end
 
     it_behaves_like 'mergeable merge request'
 
-    context 'when multiple calls to the service' do
-      it 'returns success' do
-        subject
-        result = subject
-
-        expect(result).to be_a(ServiceResponse)
-        expect(result.success?).to be(true)
+    context 'when lock is disabled' do
+      before do
+        stub_feature_flags(merge_ref_auto_sync_lock: false)
       end
 
-      it 'second call does not change the merge-ref' do
-        expect { subject }.to change(merge_request, :merge_ref_head).from(nil)
-        expect { subject }.not_to change(merge_request.merge_ref_head, :id)
+      it_behaves_like 'mergeable merge request'
+    end
+
+    context 'when concurrent calls' do
+      it 'waits first lock and returns "cached" result in subsequent calls' do
+        threads = execute_within_threads(amount: 3)
+        results = threads.map { |t| t.value.status }
+
+        expect(results).to contain_exactly(:success, :success, :success)
+      end
+
+      it 'writes the merge-ref once' do
+        service = instance_double(MergeRequests::MergeToRefService)
+
+        expect(MergeRequests::MergeToRefService).to receive(:new).once { service }
+        expect(service).to receive(:execute).once.and_return(success: true)
+
+        execute_within_threads(amount: 3)
+      end
+
+      it 'resets one merge request upon execution' do
+        expect_any_instance_of(MergeRequest).to receive(:reset).once
+
+        execute_within_threads(amount: 2)
+      end
+
+      context 'when retry_lease flag is false' do
+        it 'the first call succeeds, subsequent concurrent calls get a lock error response' do
+          threads = execute_within_threads(amount: 3, retry_lease: false)
+          results = threads.map { |t| [t.value.status, t.value.message] }
+
+          expect(results).to contain_exactly([:error, 'Failed to obtain a lock'],
+                                             [:error, 'Failed to obtain a lock'],
+                                             [:success, nil])
+        end
       end
     end
 
@@ -102,8 +147,7 @@ describe MergeRequests::MergeabilityCheckService do
 
     context 'when broken' do
       before do
-        allow(merge_request).to receive(:broken?) { true }
-        allow(project.repository).to receive(:can_be_merged?) { false }
+        expect(merge_request).to receive(:broken?) { true }
       end
 
       it_behaves_like 'unmergeable merge request'
@@ -117,10 +161,13 @@ describe MergeRequests::MergeabilityCheckService do
       end
     end
 
-    context 'when it has conflicts' do
-      before do
-        allow(merge_request).to receive(:broken?) { false }
-        allow(project.repository).to receive(:can_be_merged?) { false }
+    context 'when it cannot be merged on git' do
+      let(:merge_request) do
+        create(:merge_request,
+               merge_status: :unchecked,
+               source_branch: 'conflict-resolvable',
+               source_project: project,
+               target_branch: 'conflict-start')
       end
 
       it_behaves_like 'unmergeable merge request'

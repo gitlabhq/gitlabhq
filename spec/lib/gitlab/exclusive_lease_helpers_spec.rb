@@ -25,13 +25,13 @@ describe Gitlab::ExclusiveLeaseHelpers, :clean_gitlab_redis_shared_state do
       end
 
       it 'calls the given block' do
-        expect { |b| class_instance.in_lock(unique_key, &b) }.to yield_control.once
+        expect { |b| class_instance.in_lock(unique_key, &b) }.to yield_with_args(false)
       end
 
       it 'calls the given block continuously' do
-        expect { |b| class_instance.in_lock(unique_key, &b) }.to yield_control.once
-        expect { |b| class_instance.in_lock(unique_key, &b) }.to yield_control.once
-        expect { |b| class_instance.in_lock(unique_key, &b) }.to yield_control.once
+        expect { |b| class_instance.in_lock(unique_key, &b) }.to yield_with_args(false)
+        expect { |b| class_instance.in_lock(unique_key, &b) }.to yield_with_args(false)
+        expect { |b| class_instance.in_lock(unique_key, &b) }.to yield_with_args(false)
       end
 
       it 'cancels the exclusive lease after the block' do
@@ -67,6 +67,15 @@ describe Gitlab::ExclusiveLeaseHelpers, :clean_gitlab_redis_shared_state do
           expect(lease).to receive(:try_obtain).exactly(4).times
 
           expect { subject }.to raise_error('Failed to obtain a lock')
+        end
+
+        context 'when lease is granted after retry' do
+          it 'yields block with true' do
+            expect(lease).to receive(:try_obtain).exactly(3).times { nil }
+            expect(lease).to receive(:try_obtain).once { unique_key }
+
+            expect { |b| class_instance.in_lock(unique_key, &b) }.to yield_with_args(true)
+          end
         end
       end
 
