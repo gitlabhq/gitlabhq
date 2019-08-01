@@ -12,7 +12,6 @@ import 'core-js/es/promise/finally';
 import 'core-js/es/string/code-point-at';
 import 'core-js/es/string/from-code-point';
 import 'core-js/es/string/includes';
-import 'core-js/es/string/repeat';
 import 'core-js/es/string/starts-with';
 import 'core-js/es/string/ends-with';
 import 'core-js/es/symbol';
