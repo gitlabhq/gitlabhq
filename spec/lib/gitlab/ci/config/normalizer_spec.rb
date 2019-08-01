@@ -49,37 +49,44 @@ describe Gitlab::Ci::Config::Normalizer do
       end
     end
 
-    context 'when jobs depend on parallelized jobs' do
-      let(:config) { { job_name => job_config, other_job: { script: 'echo 1', dependencies: [job_name.to_s] } } }
+    %i[dependencies needs].each do |context|
+      context "when job has #{context} on parallelized jobs" do
+        let(:config) do
+          {
+            job_name => job_config,
+            other_job: { script: 'echo 1', context => [job_name.to_s] }
+          }
+        end
 
-      it 'parallelizes dependencies' do
-        job_names = ["rspec 1/5", "rspec 2/5", "rspec 3/5", "rspec 4/5", "rspec 5/5"]
+        it "parallelizes #{context}" do
+          job_names = ["rspec 1/5", "rspec 2/5", "rspec 3/5", "rspec 4/5", "rspec 5/5"]
 
-        expect(subject[:other_job][:dependencies]).to include(*job_names)
+          expect(subject[:other_job][context]).to include(*job_names)
+        end
+
+        it "does not include original job name in #{context}" do
+          expect(subject[:other_job][context]).not_to include(job_name)
+        end
       end
 
-      it 'does not include original job name in dependencies' do
-        expect(subject[:other_job][:dependencies]).not_to include(job_name)
-      end
-    end
+      context "when there are #{context} which are both parallelized and not" do
+        let(:config) do
+          {
+            job_name => job_config,
+            other_job: { script: 'echo 1' },
+            final_job: { script: 'echo 1', context => [job_name.to_s, "other_job"] }
+          }
+        end
 
-    context 'when there are dependencies which are both parallelized and not' do
-      let(:config) do
-        {
-          job_name => job_config,
-          other_job: { script: 'echo 1' },
-          final_job: { script: 'echo 1', dependencies: [job_name.to_s, "other_job"] }
-        }
-      end
+        it "parallelizes #{context}" do
+          job_names = ["rspec 1/5", "rspec 2/5", "rspec 3/5", "rspec 4/5", "rspec 5/5"]
 
-      it 'parallelizes dependencies' do
-        job_names = ["rspec 1/5", "rspec 2/5", "rspec 3/5", "rspec 4/5", "rspec 5/5"]
+          expect(subject[:final_job][context]).to include(*job_names)
+        end
 
-        expect(subject[:final_job][:dependencies]).to include(*job_names)
-      end
-
-      it 'includes the regular job in dependencies' do
-        expect(subject[:final_job][:dependencies]).to include('other_job')
+        it "includes the regular job in #{context}" do
+          expect(subject[:final_job][context]).to include('other_job')
+        end
       end
     end
   end

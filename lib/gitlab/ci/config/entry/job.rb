@@ -13,7 +13,7 @@ module Gitlab
 
           ALLOWED_KEYS = %i[tags script only except type image services
                             allow_failure type stage when start_in artifacts cache
-                            dependencies before_script after_script variables
+                            dependencies needs before_script after_script variables
                             environment coverage retry parallel extends].freeze
 
           validations do
@@ -34,11 +34,22 @@ module Gitlab
                              message: 'should be on_success, on_failure, ' \
                                       'always, manual or delayed' }
               validates :dependencies, array_of_strings: true
+              validates :needs, array_of_strings: true
               validates :extends, array_of_strings_or_string: true
             end
 
             validates :start_in, duration: { limit: '1 day' }, if: :delayed?
             validates :start_in, absence: true, unless: :delayed?
+
+            validate do
+              next unless dependencies.present?
+              next unless needs.present?
+
+              missing_needs = dependencies - needs
+              if missing_needs.any?
+                errors.add(:dependencies, "the #{missing_needs.join(", ")} should be part of needs")
+              end
+            end
           end
 
           entry :before_script, Entry::Script,
@@ -95,10 +106,10 @@ module Gitlab
           helpers :before_script, :script, :stage, :type, :after_script,
                   :cache, :image, :services, :only, :except, :variables,
                   :artifacts, :environment, :coverage, :retry,
-                  :parallel
+                  :parallel, :needs
 
           attributes :script, :tags, :allow_failure, :when, :dependencies,
-                     :retry, :parallel, :extends, :start_in
+                     :needs, :retry, :parallel, :extends, :start_in
 
           def self.matching?(name, config)
             !name.to_s.start_with?('.') &&
@@ -178,7 +189,8 @@ module Gitlab
               parallel: parallel_defined? ? parallel_value.to_i : nil,
               artifacts: artifacts_value,
               after_script: after_script_value,
-              ignore: ignored? }
+              ignore: ignored?,
+              needs: needs_defined? ? needs_value : nil }
           end
         end
       end

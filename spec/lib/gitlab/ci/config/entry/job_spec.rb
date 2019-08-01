@@ -86,6 +86,22 @@ describe Gitlab::Ci::Config::Entry::Job do
           it { expect(entry).to be_valid }
         end
       end
+
+      context 'when has needs' do
+        let(:config) do
+          { script: 'echo', needs: ['another-job'] }
+        end
+
+        it { expect(entry).to be_valid }
+
+        context 'when has dependencies' do
+          let(:config) do
+            { script: 'echo', dependencies: ['another-job'], needs: ['another-job'] }
+          end
+
+          it { expect(entry).to be_valid }
+        end
+      end
     end
 
     context 'when entry value is not correct' do
@@ -221,6 +237,43 @@ describe Gitlab::Ci::Config::Entry::Job do
         it 'returns error about invalid type' do
           expect(entry).not_to be_valid
           expect(entry.errors).to include 'job start in must be blank'
+        end
+      end
+
+      context 'when has dependencies' do
+        context 'that are not a array of strings' do
+          let(:config) do
+            { script: 'echo', dependencies: 'build-job' }
+          end
+
+          it 'returns error about invalid type' do
+            expect(entry).not_to be_valid
+            expect(entry.errors).to include 'job dependencies should be an array of strings'
+          end
+        end
+      end
+
+      context 'when has needs' do
+        context 'that are not a array of strings' do
+          let(:config) do
+            { script: 'echo', needs: 'build-job' }
+          end
+
+          it 'returns error about invalid type' do
+            expect(entry).not_to be_valid
+            expect(entry.errors).to include 'job needs should be an array of strings'
+          end
+        end
+
+        context 'when have dependencies that are not subset of needs' do
+          let(:config) do
+            { script: 'echo', dependencies: ['another-job'], needs: ['build-job'] }
+          end
+
+          it 'returns error about invalid data' do
+            expect(entry).not_to be_valid
+            expect(entry.errors).to include 'job dependencies the another-job should be part of needs'
+          end
         end
       end
     end

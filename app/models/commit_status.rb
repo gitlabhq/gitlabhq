@@ -43,6 +43,12 @@ class CommitStatus < ApplicationRecord
   scope :after_stage, -> (index) { where('stage_idx > ?', index) }
   scope :processables, -> { where(type: %w[Ci::Build Ci::Bridge]) }
 
+  scope :with_needs, -> (names = nil) do
+    needs = Ci::BuildNeed.scoped_build.select(1)
+    needs = needs.where(name: names) if names
+    where('EXISTS (?)', needs).preload(:needs)
+  end
+
   # We use `CommitStatusEnums.failure_reasons` here so that EE can more easily
   # extend this `Hash` with new values.
   enum_with_nil failure_reason: ::CommitStatusEnums.failure_reasons
@@ -116,7 +122,7 @@ class CommitStatus < ApplicationRecord
       commit_status.run_after_commit do
         if pipeline_id
           if complete? || manual?
-            PipelineProcessWorker.perform_async(pipeline_id)
+            BuildProcessWorker.perform_async(id)
           else
             PipelineUpdateWorker.perform_async(pipeline_id)
           end

@@ -40,6 +40,7 @@ module Gitlab
           environment: job[:environment_name],
           coverage_regex: job[:coverage],
           yaml_variables: yaml_variables(name),
+          needs_attributes: job[:needs]&.map { |need| { name: need } },
           options: {
             image: job[:image],
             services: job[:services],
@@ -108,6 +109,7 @@ module Gitlab
 
           validate_job_stage!(name, job)
           validate_job_dependencies!(name, job)
+          validate_job_needs!(name, job)
           validate_job_environment!(name, job)
         end
       end
@@ -148,6 +150,22 @@ module Gitlab
 
           unless dependency_stage_index.present? && dependency_stage_index < stage_index
             raise ValidationError, "#{name} job: dependency #{dependency} is not defined in prior stages"
+          end
+        end
+      end
+
+      def validate_job_needs!(name, job)
+        return unless job[:needs]
+
+        stage_index = @stages.index(job[:stage])
+
+        job[:needs].each do |need|
+          raise ValidationError, "#{name} job: undefined need: #{need}" unless @jobs[need.to_sym]
+
+          needs_stage_index = @stages.index(@jobs[need.to_sym][:stage])
+
+          unless needs_stage_index.present? && needs_stage_index < stage_index
+            raise ValidationError, "#{name} job: need #{need} is not defined in prior stages"
           end
         end
       end
