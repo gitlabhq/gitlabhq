@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples "a class that supports relative positioning" do
+RSpec.shared_examples 'a class that supports relative positioning' do
   let(:item1) { create(factory, default_params) }
   let(:item2) { create(factory, default_params) }
   let(:new_item) { create(factory, default_params) }
@@ -11,6 +11,9 @@ RSpec.shared_examples "a class that supports relative positioning" do
 
   describe '.move_nulls_to_end' do
     it 'moves items with null relative_position to the end' do
+      skip("#{item1} has a default relative position") if item1.relative_position
+      skip("#{item2} has a default relative position") if item2.relative_position
+
       described_class.move_nulls_to_end([item1, item2])
 
       expect(item2.prev_relative_position).to eq item1.relative_position
@@ -19,6 +22,8 @@ RSpec.shared_examples "a class that supports relative positioning" do
     end
 
     it 'moves the item near the start position when there are no existing positions' do
+      skip("#{item1} has a default relative position") if item1.relative_position
+
       described_class.move_nulls_to_end([item1])
 
       expect(item1.relative_position).to eq(described_class::START_POSITION + described_class::IDEAL_DISTANCE)
