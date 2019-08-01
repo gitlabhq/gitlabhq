@@ -5,6 +5,8 @@ class CleanupAllowLocalRequestsFromHooksAndServicesApplicationSettingRename < Ac
 
   DOWNTIME = false
 
+  disable_ddl_transaction!
+
   def up
     cleanup_concurrent_column_rename :application_settings, :allow_local_requests_from_hooks_and_services, :allow_local_requests_from_web_hooks_and_services
   end

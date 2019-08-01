@@ -95,7 +95,7 @@ describe SelfMonitoring::Project::CreateService do
           allow(ApplicationSetting)
             .to receive(:current)
             .and_return(
-              ApplicationSetting.build_from_defaults(allow_local_requests_from_hooks_and_services: false)
+              ApplicationSetting.build_from_defaults(allow_local_requests_from_web_hooks_and_services: false)
             )
         end
 

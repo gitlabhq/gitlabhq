@@ -64,7 +64,10 @@ Example response:
    "performance_bar_allowed_group_id": 42,
    "instance_statistics_visibility_private": false,
    "user_show_add_ssh_key_message": true,
-   "local_markdown_version": 0
+   "local_markdown_version": 0,
+   "allow_local_requests_from_hooks_and_services": true,
+   "allow_local_requests_from_web_hooks_and_services": true,
+   "allow_local_requests_from_system_hooks": false
 }
 ```
 
@@ -138,7 +141,10 @@ Example response:
   "user_show_add_ssh_key_message": true,
   "file_template_project_id": 1,
   "local_markdown_version": 0,
-  "geo_node_allowed_ips": "0.0.0.0/0, ::/0"
+  "geo_node_allowed_ips": "0.0.0.0/0, ::/0",
+  "allow_local_requests_from_hooks_and_services": true,
+  "allow_local_requests_from_web_hooks_and_services": true,
+  "allow_local_requests_from_system_hooks": false
 }
 ```
 
@@ -177,6 +183,7 @@ are listed in the descriptions of the relevant settings.
 | `akismet_api_key`                        | string           | required by: `akismet_enabled`       | API key for akismet spam protection. |
 | `akismet_enabled`                        | boolean          | no                                   | (**If enabled, requires:** `akismet_api_key`) Enable or disable akismet spam protection. |
 | `allow_group_owners_to_manage_ldap`      | boolean          | no                                   | **(PREMIUM)** Set to `true` to allow group owners to manage LDAP |
+| `allow_local_requests_from_hooks_and_services` | boolean    | no                                   | (Deprecated: Use `allow_local_requests_from_web_hooks_and_services` instead) Allow requests to the local network from hooks and services. |
 | `allow_local_requests_from_web_hooks_and_services` | boolean    | no                                   | Allow requests to the local network from web hooks and services. |
 | `allow_local_requests_from_system_hooks` | boolean    | no                                   | Allow requests to the local network from system hooks. |
 | `authorized_keys_enabled`                | boolean          | no                                   | By default, we write to the `authorized_keys` file to support Git over SSH without additional configuration. GitLab can be optimized to authenticate SSH keys via the database file. Only disable this if you have configured your OpenSSH server to use the AuthorizedKeysCommand. |
