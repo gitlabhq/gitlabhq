@@ -9,16 +9,19 @@ RSpec.shared_examples "a class that supports relative positioning" do
     create(factory, params.merge(default_params))
   end
 
-  describe '.move_to_end' do
-    it 'moves the object to the end' do
-      item1.update(relative_position: 5)
-      item2.update(relative_position: 15)
-
-      described_class.move_to_end([item1, item2])
+  describe '.move_nulls_to_end' do
+    it 'moves items with null relative_position to the end' do
+      described_class.move_nulls_to_end([item1, item2])
 
       expect(item2.prev_relative_position).to eq item1.relative_position
       expect(item1.prev_relative_position).to eq nil
       expect(item2.next_relative_position).to eq nil
+    end
+
+    it 'moves the item near the start position when there are no existing positions' do
+      described_class.move_nulls_to_end([item1])
+
+      expect(item1.relative_position).to eq(described_class::START_POSITION + described_class::IDEAL_DISTANCE)
     end
 
     it 'does not perform any moves if all items have their relative_position set' do
@@ -26,7 +29,7 @@ RSpec.shared_examples "a class that supports relative positioning" do
 
       expect(item1).not_to receive(:save)
 
-      described_class.move_to_end([item1])
+      described_class.move_nulls_to_end([item1])
     end
   end
 
