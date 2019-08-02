@@ -45,7 +45,7 @@ Notice that in the above example, before clicking the `:operations_environments_
 
 > We can create these methods as helpers to abstract multi-step navigation.
 
-### Element naming convention
+## Element naming convention
 
 When adding new elements to a page, it's important that we have a uniform element naming convention.
 
@@ -67,7 +67,7 @@ We follow a simple formula roughly based on hungarian notation.
 *Note: This list is a work in progress. This list will eventually be the end-all enumeration of all available types.
         I.e., any element that does not end with something in this list is bad form.*
 
-#### Examples
+### Examples
 
 **Good**
 
@@ -98,3 +98,47 @@ view '...' do
   element :ssh_clone_url
 end
 ```
+
+## Block argument naming
+
+To have a standard on how we call pages when using the `.perform` method, we use the name of page object being called, all lowercased, and separated by underscore, if needed (see good and bad examples below.) This also applies to resources. We chose not to simply use `page` because that would shadow the Capybara DSL, potentially leading to confusion and bugs.
+
+### Examples
+
+**Good**
+
+```ruby
+# qa/specs/features/browser_ui/1_manage/project/add_project_member_spec.rb
+
+Page::Project::Settings::Members.perform do |members|
+  members.do_something
+end
+```
+
+```ruby
+# qa/specs/features/ee/browser_ui/3_create/merge_request/add_batch_comments_in_merge_request_spec.rb
+
+Resource::MergeRequest.fabricate! do |merge_request|
+  merge_request.do_something_else
+end
+```
+
+**Bad**
+
+```ruby
+# qa/specs/features/browser_ui/1_manage/project/add_project_member_spec.rb
+
+Page::Project::Settings::Members.perform do |project_settings_members_page|
+  project_settings_members_page.do_something
+end
+```
+
+```ruby
+# qa/specs/features/ee/browser_ui/3_create/merge_request/add_batch_comments_in_merge_request_spec.rb
+
+Resource::MergeRequest.fabricate! do |merge_request_page|
+  merge_request_page.do_something_else
+end
+```
+
+> Besides the advantage of having a standard in place, by following this standard we also write shorter lines of code.
