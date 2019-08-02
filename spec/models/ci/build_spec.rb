@@ -630,10 +630,15 @@ describe Ci::Build do
         create(:ci_build,
           pipeline: pipeline, name: 'final',
           stage_idx: 3, stage: 'deploy', options: {
-            dependencies: dependencies,
-            needs: needs
+            dependencies: dependencies
           }
         )
+      end
+
+      before do
+        needs.to_a.each do |need|
+          create(:ci_build_need, build: final, name: need)
+        end
       end
 
       subject { final.dependencies }
@@ -648,6 +653,14 @@ describe Ci::Build do
         let(:needs) { %w(build rspec staging) }
 
         it { is_expected.to contain_exactly(build, rspec_test, staging) }
+
+        context 'when ci_dag_support is disabled' do
+          before do
+            stub_feature_flags(ci_dag_support: false)
+          end
+
+          it { is_expected.to contain_exactly(build, rspec_test, rubocop_test, staging) }
+        end
       end
 
       context 'when needs and dependencies are defined' do
