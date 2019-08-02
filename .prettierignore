@@ -7,3 +7,4 @@
 # ignore stylesheets for now as this clashes with our linter
 *.css
 *.scss
+*.md
