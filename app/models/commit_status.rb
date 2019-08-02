@@ -122,7 +122,7 @@ class CommitStatus < ApplicationRecord
       commit_status.run_after_commit do
         if pipeline_id
           if complete? || manual?
-            BuildProcessWorker.perform_async(id)
+            PipelineProcessWorker.perform_async(pipeline_id, [id])
           else
             PipelineUpdateWorker.perform_async(pipeline_id)
           end

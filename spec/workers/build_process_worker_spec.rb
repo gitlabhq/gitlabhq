@@ -10,7 +10,7 @@ describe BuildProcessWorker do
 
       it 'processes build' do
         expect_any_instance_of(Ci::Pipeline).to receive(:process!)
-          .with(build.name)
+          .with([build.id])
 
         described_class.new.perform(build.id)
       end

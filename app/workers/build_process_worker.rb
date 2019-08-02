@@ -9,7 +9,7 @@ class BuildProcessWorker
   # rubocop: disable CodeReuse/ActiveRecord
   def perform(build_id)
     CommitStatus.find_by(id: build_id).try do |build|
-      build.pipeline.process!(build.name)
+      build.pipeline.process!([build_id])
     end
   end
   # rubocop: enable CodeReuse/ActiveRecord
