@@ -18,6 +18,7 @@ include:
 - [Third party offers](third_party_offers.md)
 - [Usage statistics](usage_statistics.md)
 - [Visibility and access controls](visibility_and_access_controls.md)
+- [User and IP rate limits](user_and_ip_rate_limits.md)
 - [Custom templates repository](instance_template_repository.md) **(PREMIUM)**
 
 NOTE: **Note:**

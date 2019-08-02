@@ -298,6 +298,79 @@ Web front-ends:
 - `memory_limit_min` = 1024MiB
 - `memory_limit_max` = 1280MiB
 
+## GitLab.com-specific rate limits
+
+NOTE: **Note:**
+See [Rate limits](../../security/rate_limits.md) for administrator
+documentation.
+
+IP blocks usually happen when GitLab.com receives unusual traffic from a single
+IP address that the system views as potentially malicious based on rate limit
+settings. After the unusual traffic ceases, the IP address will be automatically
+released depending on the type of block, as described below.
+
+If you receive a `403 Forbidden` error for all requests to GitLab.com, please
+check for any automated processes that may be triggering a block. For
+assistance, contact [GitLab Support](https://support.gitlab.com)
+with details, such as the affected IP address.
+
+### HAProxy API throttle
+
+GitLab.com responds with HTTP status code 429 to API requests over 10 requests
+per second per IP address.
+
+The following example headers are included for all API requests:
+
+```
+RateLimit-Limit: 600
+RateLimit-Observed: 6
+RateLimit-Remaining: 594
+RateLimit-Reset: 1563325137
+RateLimit-ResetTime: Wed, 17 Jul 2019 00:58:57 GMT
+```
+
+Source:
+
+- Search for `rate_limit_http_rate_per_minute` and `rate_limit_sessions_per_second` in [GitLab.com's current HAProxy settings](https://gitlab.com/gitlab-cookbooks/gitlab-haproxy/blob/master/attributes/default.rb).
+
+### Rack Attack initializer
+
+#### Protected paths throttle
+
+GitLab.com responds with HTTP status code 429 to POST requests at protected
+paths over 10 requests per **minute** per IP address.
+
+See the source below for which paths are protected. This includes user creation,
+user confirmation, user sign in, and password reset.
+
+This header is included in responses to blocked requests:
+
+```
+Retry-After: 60
+```
+
+Source:
+
+- Search for `rate_limit_requests_per_period`, `rate_limit_period`, and `rack_attack_protected_paths` in [GitLab.com's current Rails app settings](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/files/gitlab-cookbooks/gitlab/attributes/default.rb).
+
+#### Git and container registry failed authentication ban
+
+GitLab.com responds with HTTP status code 403 for 1 hour, if 30 failed
+authentication requests were received in a 3-minute period from a single IP address.
+
+This applies only to Git requests and container registry (`/jwt/auth`) requests
+(combined).
+
+This limit is reset by requests that authenticate successfully. For example, 29
+failed authentication requests followed by 1 successful request, followed by 29
+more failed authentication requests would not trigger a ban.
+
+No response headers are provided.
+
+### Admin Area settings
+
+GitLab.com does not currently use these settings.
+
 ## GitLab.com at scale
 
 In addition to the GitLab Enterprise Edition Omnibus install, GitLab.com uses

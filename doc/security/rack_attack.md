@@ -2,7 +2,9 @@
 type: reference, howto
 ---
 
-# Rack Attack
+# Rack Attack initializer
+
+## Overview
 
 [Rack Attack](https://github.com/kickstarter/rack-attack), also known as Rack::Attack, is a Ruby gem
 that is meant to protect GitLab with the ability to customize throttling and
@@ -14,19 +16,72 @@ If you find throttling is not enough to protect you against abusive clients,
 Rack Attack offers IP whitelisting, blacklisting, Fail2ban style filtering, and
 tracking.
 
-**Note:** Starting with 11.2, Rack Attack is disabled by default. To continue
-using Rack Attack, please enable it by [configuring `gitlab.rb` as described in Settings](#settings).
+For more information on how to use these options see the [Rack Attack README](https://github.com/kickstarter/rack-attack/blob/master/README.md).
 
-By default, user sign-in, user sign-up (if enabled), and user password reset is
-limited to 6 requests per minute. After trying for 6 times, the client will
-have to wait for the next minute to be able to try again.
+NOTE: **Note:** See
+[User and IP rate limits](../user/admin_area/settings/user_and_ip_rate_limits.md)
+for simpler throttles that are configured in UI.
 
-If you installed or upgraded GitLab by following the [official guides](../install/README.md),
-Rack Attack should be disabled by default. If your instance is not exposed to any incoming
-connections, it is recommended that you leave Rack Attack disabled.
+NOTE: **Note:** Starting with 11.2, Rack Attack is disabled by default. If your
+instance is not exposed to the public internet, it is recommended that you leave
+Rack Attack disabled.
 
-For more information on how to use these options check out
-[rack-attack README](https://github.com/kickstarter/rack-attack/blob/master/README.md).
+## Behavior
+
+If set up as described in the [Settings](#settings) section below, two behaviors
+will be enabled:
+
+- Protected paths will be throttled
+- Failed authentications for Git and container registry requests will trigger a temporary IP ban
+
+### Protected paths throttle
+
+GitLab responds with HTTP status code 429 to POST requests at protected paths
+over 10 requests per minute per IP address.
+
+By default, protected paths are:
+
+```ruby
+default['gitlab']['gitlab-rails']['rack_attack_protected_paths'] = [
+  '/users/password',
+  '/users/sign_in',
+  '/api/#{API::API.version}/session.json',
+  '/api/#{API::API.version}/session',
+  '/users',
+  '/users/confirmation',
+  '/unsubscribes/',
+  '/import/github/personal_access_token'
+]
+```
+
+This header is included in responses to blocked requests:
+
+```
+Retry-After: 60
+```
+
+For example, the following are limited to a maximum 10 requests per minute:
+
+- user sign-in
+- user sign-up (if enabled)
+- user password reset
+
+After trying for 10 times, the client will
+have to wait a minute before to be able to try again.
+
+### Git and container registry failed authentication ban
+
+GitLab responds with HTTP status code 403 for 1 hour, if 30 failed
+authentication requests were received in a 3-minute period from a single IP address.
+
+This applies only to Git requests and container registry (`/jwt/auth`) requests
+(combined).
+
+This limit is reset by requests that authenticate successfully. For example, 29
+failed authentication requests followed by 1 successful request, followed by 29
+more failed authentication requests would not trigger a ban.
+
+No response headers are provided.
 
 ## Settings
 
