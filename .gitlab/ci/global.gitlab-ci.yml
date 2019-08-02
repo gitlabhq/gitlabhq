@@ -31,12 +31,12 @@
 .no-docs:
   except:
     refs:
-      - /(^docs[\/-].*|.*-docs$)/
+      - /(^docs[\/-].+|.+-docs$)/
 
 .no-docs-and-no-qa:
   except:
     refs:
-      - /(^docs[\/-].*|.*-docs$)/
+      - /(^docs[\/-].+|.+-docs$)/
       - /(^qa[\/-].*|.*-qa$)/
 
 .dedicated-no-docs-pull-cache-job:

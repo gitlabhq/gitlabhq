@@ -73,7 +73,7 @@ gitlab:assets:compile pull-cache:
     refs:
       - master@gitlab-org/gitlab-ce
       - master@gitlab-org/gitlab-ee
-      - /(^docs[\/-].*|.*-docs$)/
+      - /(^docs[\/-].+|.+-docs$)/
 
 .compile-assets-metadata:
   extends: .dedicated-runner
@@ -111,7 +111,7 @@ compile-assets pull-cache:
     refs:
       - master@gitlab-org/gitlab-ce
       - master@gitlab-org/gitlab-ee
-      - /(^docs[\/-].*|.*-docs$)/
+      - /(^docs[\/-].+|.+-docs$)/
 
 karma:
   extends: .dedicated-no-docs-pull-cache-job

@@ -7,7 +7,7 @@
   except:
     refs:
       - master
-      - /(^docs[\/-].*|.*-docs$)/
+      - /(^docs[\/-].+|.+-docs$)/
 
 .review-schedules-only: &review-schedules-only
   only:
@@ -20,7 +20,7 @@
   except:
     refs:
       - tags
-      - /(^docs[\/-].*|.*-docs$)/
+      - /(^docs[\/-].+|.+-docs$)/
 
 .review-base: &review-base
   extends: .dedicated-runner
