@@ -64,7 +64,7 @@ module Clusters
           name: name,
           rbac: cluster.platform_kubernetes_rbac?,
           files: files,
-          predelete: delete_knative_istio_metrics.to_a
+          predelete: delete_knative_istio_metrics
         )
       end
 
@@ -104,11 +104,15 @@ module Clusters
       end
 
       def install_knative_metrics
-        ["kubectl apply -f #{Clusters::Applications::Knative::METRICS_CONFIG}"] if cluster.application_knative_available?
+        return [] unless cluster.application_knative_available?
+
+        ["kubectl apply -f #{Clusters::Applications::Knative::METRICS_CONFIG}"]
       end
 
       def delete_knative_istio_metrics
-        ["kubectl delete -f #{Clusters::Applications::Knative::METRICS_CONFIG}"] if cluster.application_knative_available?
+        return [] unless cluster.application_knative_available?
+
+        ["kubectl delete -f #{Clusters::Applications::Knative::METRICS_CONFIG}"]
       end
     end
   end
