@@ -5,13 +5,11 @@ class AddAllowLocalRequestsFromSystemHooksToApplicationSettings < ActiveRecord::
 
   DOWNTIME = false
 
-  disable_ddl_transaction!
-
   def up
-    add_column_with_default(:application_settings, :allow_local_requests_from_system_hooks,
-                            :boolean,
-                            default: true,
-                            allow_null: false)
+    add_column(:application_settings, :allow_local_requests_from_system_hooks,
+               :boolean,
+               default: true,
+               null: false)
   end
 
   def down
