@@ -73,15 +73,14 @@ export default {
     },
     renderBlock() {
       return (
-        this.job.merge_request ||
         this.job.duration ||
-        this.job.finished_data ||
+        this.job.finished_at ||
         this.job.erased_at ||
         this.job.queued ||
+        this.hasTimeout ||
         this.job.runner ||
         this.job.coverage ||
-        this.job.tags.length ||
-        this.job.cancel_path
+        this.job.tags.length
       );
     },
     hasArtifact() {
@@ -160,7 +159,7 @@ export default {
           </gl-link>
         </div>
 
-        <div :class="{ block: renderBlock }">
+        <div v-if="renderBlock" class="block">
           <detail-row
             v-if="job.duration"
             :value="duration"
