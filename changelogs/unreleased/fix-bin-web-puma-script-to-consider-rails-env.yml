@@ -1,0 +1,5 @@
+---
+title: Make `bin/web_puma` consider RAILS_ENV
+merge_request: 31378
+author:
+type: fixed
