@@ -4936,6 +4936,9 @@ msgstr ""
 msgid "Filter results by project"
 msgstr ""
 
+msgid "Filter your projects by name"
+msgstr ""
+
 msgid "Filter..."
 msgstr ""
 
