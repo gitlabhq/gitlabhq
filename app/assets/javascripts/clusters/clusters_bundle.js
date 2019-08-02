@@ -48,6 +48,9 @@ export default class Clusters {
     } = document.querySelector('.js-edit-cluster-form').dataset;
 
     this.clusterId = clusterId;
+    this.clusterNewlyCreatedKey = `cluster_${this.clusterId}_newly_created`;
+    this.clusterBannerDismissedKey = `cluster_${this.clusterId}_banner_dismissed`;
+
     this.store = new ClustersStore();
     this.store.setHelpPaths(helpPath, ingressHelpPath, ingressDnsHelpPath);
     this.store.setManagePrometheusPath(managePrometheusPath);
@@ -81,18 +84,19 @@ export default class Clusters {
     this.showTokenButton = document.querySelector('.js-show-cluster-token');
     this.tokenField = document.querySelector('.js-cluster-token');
     this.ingressDomainHelpText = document.querySelector('.js-ingress-domain-help-text');
-    this.ingressDomainSnippet = this.ingressDomainHelpText.querySelector(
-      '.js-ingress-domain-snippet',
-    );
+    this.ingressDomainSnippet =
+      this.ingressDomainHelpText &&
+      this.ingressDomainHelpText.querySelector('.js-ingress-domain-snippet');
 
     Clusters.initDismissableCallout();
     initSettingsPanels();
-    setupToggleButtons(document.querySelector('.js-cluster-enable-toggle-area'));
+    const toggleButtonsContainer = document.querySelector('.js-cluster-enable-toggle-area');
+    if (toggleButtonsContainer) {
+      setupToggleButtons(toggleButtonsContainer);
+    }
     this.initApplications(clusterType);
 
-    if (this.store.state.status !== 'created') {
-      this.updateContainer(null, this.store.state.status, this.store.state.statusReason);
-    }
+    this.updateContainer(null, this.store.state.status, this.store.state.statusReason);
 
     this.addListeners();
     if (statusPath) {
@@ -247,35 +251,56 @@ export default class Clusters {
 
   setBannerDismissedState(status, isDismissed) {
     if (AccessorUtilities.isLocalStorageAccessSafe()) {
-      window.localStorage.setItem(
-        `cluster_${this.clusterId}_banner_dismissed`,
-        `${status}_${isDismissed}`,
-      );
+      window.localStorage.setItem(this.clusterBannerDismissedKey, `${status}_${isDismissed}`);
     }
   }
 
   isBannerDismissed(status) {
     let bannerState;
     if (AccessorUtilities.isLocalStorageAccessSafe()) {
-      bannerState = window.localStorage.getItem(`cluster_${this.clusterId}_banner_dismissed`);
+      bannerState = window.localStorage.getItem(this.clusterBannerDismissedKey);
     }
 
     return bannerState === `${status}_true`;
   }
 
-  updateContainer(prevStatus, status, error) {
-    this.hideAll();
+  setClusterNewlyCreated(state) {
+    if (AccessorUtilities.isLocalStorageAccessSafe()) {
+      window.localStorage.setItem(this.clusterNewlyCreatedKey, Boolean(state));
+    }
+  }
 
-    if (this.isBannerDismissed(status)) {
+  isClusterNewlyCreated() {
+    // once this is true, it will always be true for a given page load
+    if (!this.isNewlyCreated) {
+      let newlyCreated;
+      if (AccessorUtilities.isLocalStorageAccessSafe()) {
+        newlyCreated = window.localStorage.getItem(this.clusterNewlyCreatedKey);
+      }
+
+      this.isNewlyCreated = newlyCreated === 'true';
+    }
+    return this.isNewlyCreated;
+  }
+
+  updateContainer(prevStatus, status, error) {
+    if (status !== 'created' && this.isBannerDismissed(status)) {
       return;
     }
     this.setBannerDismissedState(status, false);
 
-    // We poll all the time but only want the `created` banner to show when newly created
-    if (this.store.state.status !== 'created' || prevStatus !== this.store.state.status) {
+    if (prevStatus !== status) {
+      this.hideAll();
+
       switch (status) {
         case 'created':
-          this.successContainer.classList.remove('hidden');
+          if (this.isClusterNewlyCreated()) {
+            this.setClusterNewlyCreated(false);
+            this.successContainer.classList.remove('hidden');
+          } else if (prevStatus) {
+            this.setClusterNewlyCreated(true);
+            window.location.reload();
+          }
           break;
         case 'errored':
           this.errorContainer.classList.remove('hidden');
@@ -292,7 +317,6 @@ export default class Clusters {
           this.creatingContainer.classList.remove('hidden');
           break;
         default:
-          this.hideAll();
       }
     }
   }

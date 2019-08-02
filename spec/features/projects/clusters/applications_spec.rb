@@ -22,9 +22,8 @@ describe 'Clusters Applications', :js do
       let(:cluster) { create(:cluster, :providing_by_gcp, projects: [project]) }
 
       it 'user is unable to install applications' do
-        page.within('.js-cluster-application-row-helm') do
-          expect(page).to have_css('.js-cluster-application-install-button[disabled]', exact_text: 'Install')
-        end
+        expect(page).not_to have_css('.js-cluster-application-row-helm')
+        expect(page).not_to have_css('.js-cluster-application-install-button')
       end
     end
 

@@ -147,47 +147,80 @@ describe('Clusters', () => {
   });
 
   describe('updateContainer', () => {
+    const { location } = window;
+
+    beforeEach(() => {
+      delete window.location;
+      window.location = {
+        reload: jest.fn(),
+        hash: location.hash,
+      };
+    });
+
+    afterEach(() => {
+      window.location = location;
+    });
+
     describe('when creating cluster', () => {
       it('should show the creating container', () => {
         cluster.updateContainer(null, 'creating');
 
         expect(cluster.creatingContainer.classList.contains('hidden')).toBeFalsy();
-
         expect(cluster.successContainer.classList.contains('hidden')).toBeTruthy();
-
         expect(cluster.errorContainer.classList.contains('hidden')).toBeTruthy();
+        expect(window.location.reload).not.toHaveBeenCalled();
       });
 
       it('should continue to show `creating` banner with subsequent updates of the same status', () => {
+        cluster.updateContainer(null, 'creating');
         cluster.updateContainer('creating', 'creating');
 
         expect(cluster.creatingContainer.classList.contains('hidden')).toBeFalsy();
-
         expect(cluster.successContainer.classList.contains('hidden')).toBeTruthy();
-
         expect(cluster.errorContainer.classList.contains('hidden')).toBeTruthy();
+        expect(window.location.reload).not.toHaveBeenCalled();
       });
     });
 
     describe('when cluster is created', () => {
-      it('should show the success container and fresh the page', () => {
-        cluster.updateContainer(null, 'created');
+      it('should hide the "creating" banner and refresh the page', () => {
+        jest.spyOn(cluster, 'setClusterNewlyCreated');
+        cluster.updateContainer(null, 'creating');
+        cluster.updateContainer('creating', 'created');
 
         expect(cluster.creatingContainer.classList.contains('hidden')).toBeTruthy();
-
-        expect(cluster.successContainer.classList.contains('hidden')).toBeFalsy();
-
+        expect(cluster.successContainer.classList.contains('hidden')).toBeTruthy();
         expect(cluster.errorContainer.classList.contains('hidden')).toBeTruthy();
+        expect(window.location.reload).toHaveBeenCalled();
+        expect(cluster.setClusterNewlyCreated).toHaveBeenCalledWith(true);
       });
 
-      it('should not show a banner when status is already `created`', () => {
+      it('when the page is refreshed, it should show the "success" banner', () => {
+        jest.spyOn(cluster, 'setClusterNewlyCreated');
+        jest.spyOn(cluster, 'isClusterNewlyCreated').mockReturnValue(true);
+
+        cluster.updateContainer(null, 'created');
         cluster.updateContainer('created', 'created');
 
         expect(cluster.creatingContainer.classList.contains('hidden')).toBeTruthy();
-
-        expect(cluster.successContainer.classList.contains('hidden')).toBeTruthy();
-
+        expect(cluster.successContainer.classList.contains('hidden')).toBeFalsy();
         expect(cluster.errorContainer.classList.contains('hidden')).toBeTruthy();
+        expect(window.location.reload).not.toHaveBeenCalled();
+        expect(cluster.setClusterNewlyCreated).toHaveBeenCalledWith(false);
+      });
+
+      it('should not show a banner when status is already `created`', () => {
+        jest.spyOn(cluster, 'setClusterNewlyCreated');
+        jest.spyOn(cluster, 'isClusterNewlyCreated').mockReturnValue(false);
+
+        cluster.updateContainer(null, 'created');
+        cluster.updateContainer('created', 'created');
+
+        expect(cluster.creatingContainer.classList.contains('hidden')).toBeTruthy();
+        expect(cluster.successContainer.classList.contains('hidden')).toBeTruthy();
+        expect(cluster.errorContainer.classList.contains('hidden')).toBeTruthy();
+        expect(window.location.reload).not.toHaveBeenCalled();
+        expect(cluster.setClusterNewlyCreated).not.toHaveBeenCalled();
       });
     });
 
