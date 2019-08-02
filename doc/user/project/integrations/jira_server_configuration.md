@@ -3,8 +3,8 @@
 We need to create a user in Jira which will have access to all projects that
 need to integrate with GitLab.
 
-As an example, we'll create a user named `gitlab` and add it to the `Jira-developers`
-group.
+As an example, we'll create a user named `gitlab` and add it to a new group
+named `gitlab-developers`.
 
 NOTE: **Note**
 It is important that the Jira user created for the integration is given 'write'
