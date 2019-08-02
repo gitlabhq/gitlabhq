@@ -715,18 +715,14 @@ module Ci
 
       depended_jobs = depends_on_builds
 
-      # find all jobs that are dependent on
-      if options[:dependencies].present?
-        depended_jobs = depended_jobs.select do |job|
-          options[:dependencies].include?(job.name)
-        end
+      # find all jobs that are needed
+      if Feature.enabled?(:ci_dag_support, project) && needs.exists?
+        depended_jobs = depended_jobs.where(name: needs.select(:name))
       end
 
-      # find all jobs that are needed by this one
-      if options[:needs].present?
-        depended_jobs = depended_jobs.select do |job|
-          options[:needs].include?(job.name)
-        end
+      # find all jobs that are dependent on
+      if options[:dependencies].present?
+        depended_jobs = depended_jobs.where(name: options[:dependencies])
       end
 
       depended_jobs
