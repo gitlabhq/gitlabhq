@@ -185,8 +185,9 @@ describe Ci::Build do
 
   describe '.with_needs' do
     let!(:build) { create(:ci_build) }
+    let!(:build_b) { create(:ci_build) }
     let!(:build_need_a) { create(:ci_build_need, build: build) }
-    let!(:build_need_b) { create(:ci_build_need, build: build) }
+    let!(:build_need_b) { create(:ci_build_need, build: build_b) }
 
     context 'when passing build name' do
       subject { described_class.with_needs(build_need_a.name) }
@@ -197,7 +198,7 @@ describe Ci::Build do
     context 'when not passing any build name' do
       subject { described_class.with_needs }
 
-      it { is_expected.to contain_exactly(build) }
+      it { is_expected.to contain_exactly(build, build_b) }
     end
 
     context 'when not matching build name' do
