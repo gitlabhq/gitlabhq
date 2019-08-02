@@ -996,10 +996,10 @@
   resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-1.67.0.tgz#c7b94eca13b99fd3aaa737fb6dcc0abc41d3c579"
   integrity sha512-hJOmWEs6RkjzyKkb1vc9wwKGZIBIP0coHkxu/KgOoxhBVudpGk4CH7xJ6UuB2TKpb0SEh5CC1CzRZfBYaFhsaA==
 
-"@gitlab/ui@^5.11.1":
-  version "5.11.1"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-5.11.1.tgz#10ee8a4410eb249032142f85f6180b6c465c48d7"
-  integrity sha512-bxIB3//aaYZIT6fpDKhIW60gvVvOCbw6inqC8xffQmklFYFKgcZjEIBu3RH5oJ6t3zFxeelcPQG7+t2F+p3bIg==
+"@gitlab/ui@5.12.0":
+  version "5.12.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-5.12.0.tgz#e44a227de3df287c63eb36162361fb451e344f69"
+  integrity sha512-QCKG3gaO4UL5yqGNqcioPPFz3rJl6J22tt8DwgARAFREGu20KK0VChHEY0xOyShCU595mKz0XgJZF+8NuxXUtw==
   dependencies:
     "@babel/standalone" "^7.0.0"
     "@gitlab/vue-toasted" "^1.2.1"
@@ -8354,7 +8354,7 @@ moment-mini@^2.22.1:
   resolved "https://registry.yarnpkg.com/moment-mini/-/moment-mini-2.22.1.tgz#bc32d73e43a4505070be6b53494b17623183420d"
   integrity sha512-OUCkHOz7ehtNMYuZjNciXUfwTuz8vmF1MTbAy59ebf+ZBYZO5/tZKuChVWCX+uDo+4idJBpGltNfV8st+HwsGw==
 
-moment@2.x, moment@^2.10.2:
+moment@^2.10.2:
   version "2.24.0"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.24.0.tgz#0d055d53f5052aa653c9f6eb68bb5d12bf5c2b5b"
   integrity sha512-bV7f+6l2QigeBBZSM/6yTNq4P2fNpSWj/0e7jQcy87A8e7o2nAfP/34/2ky5Vw4B9S446EtIhodAzkFCcR4dQg==
@@ -9308,12 +9308,10 @@ pify@^4.0.0, pify@^4.0.1:
   resolved "https://registry.yarnpkg.com/pify/-/pify-4.0.1.tgz#4b2cd25c50d598735c50292224fd8c6df41e3231"
   integrity sha512-uB80kBFb/tfd68bVleG9T5GGsGPjJrLAUpR5PZIrhBnIaRTQRjqdJSsIKkOP6OAIFbj7GOrcudc5pNjZ+geV2g==
 
-pikaday@^1.6.1:
-  version "1.6.1"
-  resolved "https://registry.yarnpkg.com/pikaday/-/pikaday-1.6.1.tgz#b91bcb9b8539cedd8d6d08e4e7465e12095671b0"
-  integrity sha512-B+pxVcSGuzLblMe4dnhCF3dnI2zkyj5GAqanGX9cVcOk90fp2ULo1OZFUPRXQXUE5tmcimnk1tPOFs8tUHQetQ==
-  optionalDependencies:
-    moment "2.x"
+pikaday@^1.8.0:
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/pikaday/-/pikaday-1.8.0.tgz#ce930e257042e852e6aadee1115e01554b2d71c5"
+  integrity sha512-SgGxMYX0NHj9oQnMaSyAipr2gOrbB4Lfs/TJTb6H6hRHs39/5c5VZi73Q8hr53+vWjdn6HzkWcj8Vtl3c9ziaA==
 
 pinkie-promise@^2.0.0:
   version "2.0.1"
