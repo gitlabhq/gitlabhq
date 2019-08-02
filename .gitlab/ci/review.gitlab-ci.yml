@@ -261,6 +261,7 @@ danger-review:
   except:
     refs:
       - master
+      - /^[\d-]+-stable(-ee)?$/
     variables:
       - $CI_COMMIT_REF_NAME =~ /^ce-to-ee-.*/
       - $CI_COMMIT_REF_NAME =~ /.*-stable(-ee)?-prepare-.*/
