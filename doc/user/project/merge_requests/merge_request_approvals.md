@@ -331,6 +331,16 @@ the dropdown) `approver` and select the user.
 
 ![Filter MRs by an approver](img/filter_approver_merge_requests.png)
 
+## Security approvals in merge requests **(ULTIMATE)**
+
+> Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing) 12.2.
+
+Merge Request Approvals can be configured to require approval from a member
+of your security team when a vulnerability would be introduced by a merge request.
+
+For more information, see 
+[Security approvals in merge requests](../../application_security/index.md#security-approvals-in-merge-requests-ultimate).
+
 <!-- ## Troubleshooting
 
 Include any troubleshooting steps that you can foresee. If you know beforehand what issues
