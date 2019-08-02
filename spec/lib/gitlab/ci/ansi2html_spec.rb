@@ -4,11 +4,11 @@ describe Gitlab::Ci::Ansi2html do
   subject { described_class }
 
   it "prints non-ansi as-is" do
-    expect(convert_html("Hello")).to eq('<span class="">Hello</span>')
+    expect(convert_html("Hello")).to eq('<span>Hello</span>')
   end
 
   it "strips non-color-changing control sequences" do
-    expect(convert_html("Hello \e[2Kworld")).to eq('<span class="">Hello world</span>')
+    expect(convert_html("Hello \e[2Kworld")).to eq('<span>Hello world</span>')
   end
 
   it "prints simply red" do
@@ -32,7 +32,7 @@ describe Gitlab::Ci::Ansi2html do
   end
 
   it "resets colors after red on blue" do
-    expect(convert_html("\e[31;44mHello\e[0m world")).to eq('<span class="term-fg-red term-bg-blue">Hello</span><span class=""> world</span>')
+    expect(convert_html("\e[31;44mHello\e[0m world")).to eq('<span class="term-fg-red term-bg-blue">Hello</span><span> world</span>')
   end
 
   it "performs color change from red/blue to yellow/blue" do
@@ -44,11 +44,11 @@ describe Gitlab::Ci::Ansi2html do
   end
 
   it "performs color change from red/blue to reset to yellow/green" do
-    expect(convert_html("\e[31;44mHello\e[0m \e[33;42mworld")).to eq('<span class="term-fg-red term-bg-blue">Hello</span><span class=""> </span><span class="term-fg-yellow term-bg-green">world</span>')
+    expect(convert_html("\e[31;44mHello\e[0m \e[33;42mworld")).to eq('<span class="term-fg-red term-bg-blue">Hello</span><span> </span><span class="term-fg-yellow term-bg-green">world</span>')
   end
 
   it "ignores unsupported codes" do
-    expect(convert_html("\e[51mHello\e[0m")).to eq('<span class="">Hello</span>')
+    expect(convert_html("\e[51mHello\e[0m")).to eq('<span>Hello</span>')
   end
 
   it "prints light red" do
@@ -72,8 +72,8 @@ describe Gitlab::Ci::Ansi2html do
   end
 
   it "resets bold text" do
-    expect(convert_html("\e[1mHello\e[21m world")).to eq('<span class="term-bold">Hello</span><span class=""> world</span>')
-    expect(convert_html("\e[1mHello\e[22m world")).to eq('<span class="term-bold">Hello</span><span class=""> world</span>')
+    expect(convert_html("\e[1mHello\e[21m world")).to eq('<span class="term-bold">Hello</span><span> world</span>')
+    expect(convert_html("\e[1mHello\e[22m world")).to eq('<span class="term-bold">Hello</span><span> world</span>')
   end
 
   it "prints italic text" do
@@ -81,7 +81,7 @@ describe Gitlab::Ci::Ansi2html do
   end
 
   it "resets italic text" do
-    expect(convert_html("\e[3mHello\e[23m world")).to eq('<span class="term-italic">Hello</span><span class=""> world</span>')
+    expect(convert_html("\e[3mHello\e[23m world")).to eq('<span class="term-italic">Hello</span><span> world</span>')
   end
 
   it "prints underlined text" do
@@ -89,7 +89,7 @@ describe Gitlab::Ci::Ansi2html do
   end
 
   it "resets underlined text" do
-    expect(convert_html("\e[4mHello\e[24m world")).to eq('<span class="term-underline">Hello</span><span class=""> world</span>')
+    expect(convert_html("\e[4mHello\e[24m world")).to eq('<span class="term-underline">Hello</span><span> world</span>')
   end
 
   it "prints concealed text" do
@@ -97,7 +97,7 @@ describe Gitlab::Ci::Ansi2html do
   end
 
   it "resets concealed text" do
-    expect(convert_html("\e[8mHello\e[28m world")).to eq('<span class="term-conceal">Hello</span><span class=""> world</span>')
+    expect(convert_html("\e[8mHello\e[28m world")).to eq('<span class="term-conceal">Hello</span><span> world</span>')
   end
 
   it "prints crossed-out text" do
@@ -105,7 +105,7 @@ describe Gitlab::Ci::Ansi2html do
   end
 
   it "resets crossed-out text" do
-    expect(convert_html("\e[9mHello\e[29m world")).to eq('<span class="term-cross">Hello</span><span class=""> world</span>')
+    expect(convert_html("\e[9mHello\e[29m world")).to eq('<span class="term-cross">Hello</span><span> world</span>')
   end
 
   it "can print 256 xterm fg colors" do
@@ -137,15 +137,15 @@ describe Gitlab::Ci::Ansi2html do
   end
 
   it "prints &lt;" do
-    expect(convert_html("<")).to eq('<span class="">&lt;</span>')
+    expect(convert_html("<")).to eq('<span>&lt;</span>')
   end
 
   it "replaces newlines with line break tags" do
-    expect(convert_html("\n")).to eq('<span class=""><br/><span class=""></span></span>')
+    expect(convert_html("\n")).to eq('<span><br/></span>')
   end
 
   it "groups carriage returns with newlines" do
-    expect(convert_html("\r\n")).to eq('<span class=""><br/><span class=""></span></span>')
+    expect(convert_html("\r\n")).to eq('<span><br/></span>')
   end
 
   describe "incremental update" do
@@ -182,7 +182,7 @@ describe Gitlab::Ci::Ansi2html do
 
     context "with partial sequence" do
       let(:pre_text) { "Hello\e" }
-      let(:pre_html) { "<span class=\"\">Hello</span>" }
+      let(:pre_html) { "<span>Hello</span>" }
       let(:text) { "[1m World" }
       let(:html) { "<span class=\"term-bold\"> World</span>" }
 
@@ -191,9 +191,9 @@ describe Gitlab::Ci::Ansi2html do
 
     context 'with new line' do
       let(:pre_text) { "Hello\r" }
-      let(:pre_html) { "<span class=\"\">Hello\r</span>" }
+      let(:pre_html) { "<span>Hello\r</span>" }
       let(:text) { "\nWorld" }
-      let(:html) { "<span class=\"\"><br/><span class=\"\">World</span></span>" }
+      let(:html) { "<span><br/>World</span>" }
 
       it_behaves_like 'stateable converter'
     end
@@ -220,7 +220,7 @@ describe Gitlab::Ci::Ansi2html do
         text = "#{section_start}Some text#{section_end}"
         class_name_start = section_start.gsub("\033[0K", '').gsub('<', '&lt;')
         class_name_end = section_end.gsub("\033[0K", '').gsub('<', '&lt;')
-        html = %{<span class="">#{class_name_start}Some text#{class_name_end}</span>}
+        html = %{<span>#{class_name_start}Some text#{class_name_end}</span>}
 
         expect(convert_html(text)).to eq(html)
       end
@@ -230,12 +230,11 @@ describe Gitlab::Ci::Ansi2html do
       let(:text) { "#{section_start}Some text#{section_end}" }
 
       it 'prints light red' do
-        text = "#{section_start}\e[91mHello\e[0m\n#{section_end}"
+        text = "#{section_start}\e[91mHello\e[0m\nLine 1\nLine 2\nLine 3\n#{section_end}"
         header = %{<span class="term-fg-l-red section js-section-header section-header js-s-#{class_name(section_name)}">Hello</span>}
         line_break = %{<span class="section js-section-header section-header js-s-#{class_name(section_name)}"><br/></span>}
-        line = %{<span class="section line s_#{class_name(section_name)}"></span>}
-        empty_line = %{<span class="section js-s-#{class_name(section_name)}"></span>}
-        html = "#{section_start_html}#{header}#{line_break}#{line}#{empty_line}#{section_end_html}"
+        output_line = %{<span class="section line js-s-#{class_name(section_name)}">Line 1<br/>Line 2<br/>Line 3<br/></span>}
+        html = "#{section_start_html}#{header}#{line_break}#{output_line}#{section_end_html}"
 
         expect(convert_html(text)).to eq(html)
       end
