@@ -33,15 +33,18 @@ information services over an Internet Protocol (IP) network.
 
 ## Security
 
-GitLab assumes that LDAP users are not able to change their LDAP 'mail', 'email'
-or 'userPrincipalName' attribute. An LDAP user who is allowed to change their
-email on the LDAP server can potentially
-[take over any account](#enabling-ldap-sign-in-for-existing-gitlab-users)
-on your GitLab server.
+GitLab assumes that LDAP users:
+
+- Are not able to change their LDAP `mail`, `email`, or `userPrincipalName` attribute.
+  An LDAP user who is allowed to change their email on the LDAP server can potentially
+  [take over any account](#enabling-ldap-sign-in-for-existing-gitlab-users)
+  on your GitLab server.
+- Have unique email addresses, otherwise it is possible for LDAP users with the same
+  email address to share the same GitLab account.
 
 We recommend against using LDAP integration if your LDAP users are
-allowed to change their 'mail', 'email' or 'userPrincipalName'  attribute on
-the LDAP server.
+allowed to change their 'mail', 'email' or 'userPrincipalName' attribute on
+the LDAP server or share email addresses.
 
 ### User deletion
 
