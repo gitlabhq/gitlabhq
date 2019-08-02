@@ -14,6 +14,7 @@ module Clusters
 
       include ::Clusters::Concerns::ApplicationCore
       include ::Clusters::Concerns::ApplicationStatus
+      include ::Gitlab::Utils::StrongMemoize
 
       default_value_for :version, Gitlab::Kubernetes::Helm::HELM_VERSION
 
@@ -29,15 +30,34 @@ module Clusters
         self.status = 'installable' if cluster&.platform_kubernetes_active?
       end
 
-      # We will implement this in future MRs.
-      # Basically we need to check all other applications are not installed
-      # first.
+      # It can only be uninstalled if there are no other applications installed
+      # or with intermitent installation statuses in the database.
       def allowed_to_uninstall?
-        false
+        strong_memoize(:allowed_to_uninstall) do
+          applications = nil
+
+          Clusters::Cluster::APPLICATIONS.each do |application_name, klass|
+            next if application_name == 'helm'
+
+            extra_apps = Clusters::Applications::Helm.where('EXISTS (?)', klass.select(1).where(cluster_id: cluster_id))
+
+            applications = applications.present? ? applications.or(extra_apps) : extra_apps
+          end
+
+          !applications.exists?
+        end
       end
 
       def install_command
         Gitlab::Kubernetes::Helm::InitCommand.new(
+          name: name,
+          files: files,
+          rbac: cluster.platform_kubernetes_rbac?
+        )
+      end
+
+      def uninstall_command
+        Gitlab::Kubernetes::Helm::ResetCommand.new(
           name: name,
           files: files,
           rbac: cluster.platform_kubernetes_rbac?

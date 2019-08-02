@@ -2,9 +2,12 @@
 import { GlModal } from '@gitlab/ui';
 import { sprintf, s__ } from '~/locale';
 import trackUninstallButtonClickMixin from 'ee_else_ce/clusters/mixins/track_uninstall_button_click';
-import { INGRESS, CERT_MANAGER, PROMETHEUS, RUNNER, KNATIVE, JUPYTER } from '../constants';
+import { HELM, INGRESS, CERT_MANAGER, PROMETHEUS, RUNNER, KNATIVE, JUPYTER } from '../constants';
 
 const CUSTOM_APP_WARNING_TEXT = {
+  [HELM]: s__(
+    'ClusterIntegration|The associated Tiller pod will be deleted and cannot be restored.',
+  ),
   [INGRESS]: s__(
     'ClusterIntegration|The associated load balancer and IP will be deleted and cannot be restored.',
   ),
