@@ -84,7 +84,7 @@ module Clusters
       private
 
       def delete_knative_services_and_metrics
-        delete_knative_services + delete_knative_istio_metrics.to_a
+        delete_knative_services + delete_knative_istio_metrics
       end
 
       def delete_knative_services
@@ -117,11 +117,15 @@ module Clusters
       end
 
       def install_knative_metrics
-        ["kubectl apply -f #{METRICS_CONFIG}"] if cluster.application_prometheus_available?
+        return [] unless cluster.application_prometheus_available?
+
+        ["kubectl apply -f #{METRICS_CONFIG}"]
       end
 
       def delete_knative_istio_metrics
-        ["kubectl delete --ignore-not-found -f #{METRICS_CONFIG}"] if cluster.application_prometheus_available?
+        return [] unless cluster.application_prometheus_available?
+
+        ["kubectl delete --ignore-not-found -f #{METRICS_CONFIG}"]
       end
 
       def verify_cluster?

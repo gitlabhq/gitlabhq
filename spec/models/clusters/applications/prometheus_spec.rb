@@ -142,7 +142,7 @@ describe Clusters::Applications::Prometheus do
     end
 
     it 'does not install knative metrics' do
-      expect(subject.postinstall).to be_nil
+      expect(subject.postinstall).to be_empty
     end
 
     context 'with knative installed' do
