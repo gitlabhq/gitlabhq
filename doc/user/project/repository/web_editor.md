@@ -105,7 +105,7 @@ Once you click it, a new branch will be created that diverges from the default
 branch of your project, by default `master`. The branch name will be based on
 the title of the issue and as a prefix, it will have its internal ID. Thus, the example
 screenshot above will yield a branch named
-`2-et-cum-et-sed-expedita-repellat-consequatur-ut-assumenda-numquam-rerum`.
+`23177-add-support-for-rich-references-to-referables`.
 
 Since GitLab 9.0, when you click the `New branch` in an empty repository project, GitLab automatically creates the master branch, commits a blank `README.md` file to it and creates and redirects you to a new branch based on the issue title.
 If your [project is already configured with a deployment service][project-services-doc] (e.g. Kubernetes), GitLab takes one step further and prompts you to set up [auto deploy][auto-deploy-doc] by helping you create a `.gitlab-ci.yml` file.
