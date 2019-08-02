@@ -33,8 +33,8 @@ review-docs-deploy:
     - gem install gitlab --no-document
     - ./$SCRIPT_NAME deploy
   only:
-    - /(^docs[\/-].*|.*-docs$)/@gitlab-org/gitlab-ce
-    - /(^docs[\/-].*|.*-docs$)/@gitlab-org/gitlab-ee
+    - /(^docs[\/-].+|.+-docs$)/@gitlab-org/gitlab-ce
+    - /(^docs[\/-].+|.+-docs$)/@gitlab-org/gitlab-ee
   except:
     - /(^qa[\/-].*|.*-qa$)/
 

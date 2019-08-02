@@ -71,7 +71,7 @@ flaky-examples-check:
   except:
     refs:
       - master
-      - /(^docs[\/-].*|.*-docs$)/
+      - /(^docs[\/-].+|.+-docs$)/
       - /(^qa[\/-].*|.*-qa$)/
   artifacts:
     expire_in: 30d
