@@ -13348,16 +13348,13 @@ msgstr ""
 msgid "Your request for access has been queued for review."
 msgstr ""
 
-msgid "a Zoom call was added to this issue"
-msgstr ""
-
-msgid "a Zoom call was removed from this issue"
-msgstr ""
-
 msgid "a deleted user"
 msgstr ""
 
 msgid "added %{created_at_timeago}"
+msgstr ""
+
+msgid "added a Zoom call to this issue"
 msgstr ""
 
 msgid "ago"
@@ -13894,6 +13891,9 @@ msgid "remove"
 msgstr ""
 
 msgid "remove due date"
+msgstr ""
+
+msgid "removed a Zoom call from this issue"
 msgstr ""
 
 msgid "rendered diff"

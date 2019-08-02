@@ -598,11 +598,11 @@ module SystemNoteService
   end
 
   def zoom_link_added(issue, project, author)
-    create_note(NoteSummary.new(issue, project, author, _('a Zoom call was added to this issue'), action: 'pinned_embed'))
+    create_note(NoteSummary.new(issue, project, author, _('added a Zoom call to this issue'), action: 'pinned_embed'))
   end
 
   def zoom_link_removed(issue, project, author)
-    create_note(NoteSummary.new(issue, project, author, _('a Zoom call was removed from this issue'), action: 'pinned_embed'))
+    create_note(NoteSummary.new(issue, project, author, _('removed a Zoom call from this issue'), action: 'pinned_embed'))
   end
 
   private

@@ -521,7 +521,7 @@ describe SystemNoteService do
     end
 
     it 'sets the zoom link added note text' do
-      expect(subject.note).to eq('a Zoom call was added to this issue')
+      expect(subject.note).to eq('added a Zoom call to this issue')
     end
   end
 
@@ -533,7 +533,7 @@ describe SystemNoteService do
     end
 
     it 'sets the zoom link removed note text' do
-      expect(subject.note).to eq('a Zoom call was removed from this issue')
+      expect(subject.note).to eq('removed a Zoom call from this issue')
     end
   end
 
