@@ -194,16 +194,10 @@ module Gitlab
         end
 
         def handle_new_line
-          css_classes = []
-
-          if @sections.any?
-            css_classes = %w[section line] + sections.map { |section| "s_#{section}" }
-          end
-
           write_in_tag %{<br/>}
-          write_raw %{<span class="#{css_classes.join(' ')}"></span>} if css_classes.any?
+
+          close_open_tags if @sections.any? && @lineno_in_section == 0
           @lineno_in_section += 1
-          open_new_tag
         end
 
         def handle_section(scanner)
@@ -310,11 +304,24 @@ module Gitlab
 
           if @sections.any?
             css_classes << "section"
-            css_classes << "js-section-header section-header" if @lineno_in_section == 0
+
+            css_classes << if @lineno_in_section == 0
+                             "js-section-header section-header"
+                           else
+                             "line"
+                           end
+
             css_classes += sections.map { |section| "js-s-#{section}" }
           end
 
-          @out << %{<span class="#{css_classes.join(' ')}">}
+          close_open_tags
+
+          @out << if css_classes.any?
+                    %{<span class="#{css_classes.join(' ')}">}
+                  else
+                    %{<span>}
+                  end
+
           @n_open_tags += 1
         end
 
