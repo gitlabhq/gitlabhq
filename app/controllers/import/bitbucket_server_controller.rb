@@ -57,7 +57,7 @@ class Import::BitbucketServerController < Import::BaseController
 
   # rubocop: disable CodeReuse/ActiveRecord
   def status
-    @collection = bitbucket_client.repos(page_offset: page_offset, limit: limit_per_page, filter: params[:filter_bitbucket_projects])
+    @collection = bitbucket_client.repos(page_offset: page_offset, limit: limit_per_page, filter: params[:filter])
     @repos, @incompatible_repos = @collection.partition { |repo| repo.valid? }
 
     # Use the import URL to filter beyond what BaseService#find_already_added_projects

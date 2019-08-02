@@ -25,7 +25,7 @@ module BitbucketServer
 
     def repos(page_offset: 0, limit: nil, filter: nil)
       path = "/repos"
-      path += "?q=name=#{filter}" if filter
+      path += "?name=#{filter}" if filter
       get_collection(path, :repo, page_offset: page_offset, limit: limit)
     end
 

@@ -17,12 +17,13 @@
       = button_tag class: 'btn btn-import btn-success js-import-all' do
         = _('Import all projects')
         = icon('spinner spin', class: 'loading-icon')
-  .btn-group
-    = link_to('Reconfigure', configure_import_bitbucket_server_path, class: 'btn btn-primary', method: :post)
 
-  .input-btn-group.float-right
-    = form_tag status_import_bitbucket_server_path, :method => 'get' do
-      = text_field_tag :filter_bitbucket_projects, params[:filter_bitbucket_projects], class: 'form-control', placeholder: _('Filter your projects by name'), size: 40
+.btn-group
+  = link_to('Reconfigure', configure_import_bitbucket_server_path, class: 'btn btn-primary', method: :post)
+
+.input-btn-group.float-right
+  = form_tag status_import_bitbucket_server_path, :method => 'get' do
+    = text_field_tag :filter, params[:filter], class: 'form-control append-bottom-10', placeholder: _('Filter your projects by name'), size: 40, autoFocus: true
 
 .table-responsive.prepend-top-10
   %table.table.import-jobs
@@ -66,7 +67,7 @@
                   = text_field_tag :path, current_user.namespace_path, class: "input-group-text input-large form-control", tabindex: 1, disabled: true
               %span.input-group-prepend
                 .input-group-text /
-              = text_field_tag :path, sanitize_project_name(repo.slug), class: "input-mini form-control", tabindex: 2, autofocus: true, required: true
+              = text_field_tag :path, sanitize_project_name(repo.slug), class: "input-mini form-control", tabindex: 2, required: true
           %td.import-actions.job-status
             = button_tag class: 'btn btn-import js-add-to-import' do
               Import
