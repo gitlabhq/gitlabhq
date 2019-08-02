@@ -28,8 +28,10 @@ const setState = glManagedCheckbox => {
 const initGkeNamespace = () => {
   const glManagedCheckbox = document.querySelector('.js-gl-managed');
 
-  setState(glManagedCheckbox); // this is needed in order to set the initial state
-  glManagedCheckbox.addEventListener('change', () => setState(glManagedCheckbox));
+  if (glManagedCheckbox) {
+    setState(glManagedCheckbox); // this is needed in order to set the initial state
+    glManagedCheckbox.addEventListener('change', () => setState(glManagedCheckbox));
+  }
 };
 
 export default initGkeNamespace;
