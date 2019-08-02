@@ -53,7 +53,7 @@ There are two types of project templates:
 - [Built-in templates](#built-in-templates), sourced from the following groups:
   - [`project-templates`](https://gitlab.com/gitlab-org/project-templates)
   - [`pages`](https://gitlab.com/pages)
-- [Custom project templates](#custom-project-templates-premium-only), for custom templates
+- [Custom project templates](#custom-project-templates-premium), for custom templates
   configured by GitLab administrators and users.
 
 #### Built-in templates
@@ -78,7 +78,7 @@ You can improve the existing built-in templates or contribute new ones in the
 [`project-templates`](https://gitlab.com/gitlab-org/project-templates) and
 [`pages`](https://gitlab.com/pages) groups.
 
-#### Custom project templates **(PREMIUM ONLY)**
+#### Custom project templates **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/6860) in
 [GitLab Premium](https://about.gitlab.com/pricing) 11.2.
