@@ -1,0 +1,5 @@
+---
+title: Resolve Incorrect empty state message on Explore projects
+merge_request: 25578
+author:
+type: fixed
