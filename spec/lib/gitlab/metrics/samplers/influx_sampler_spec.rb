@@ -17,15 +17,7 @@ describe Gitlab::Metrics::Samplers::InfluxSampler do
     it 'samples various statistics' do
       expect(sampler).to receive(:sample_memory_usage)
       expect(sampler).to receive(:sample_file_descriptors)
-      expect(sampler).to receive(:sample_gc)
       expect(sampler).to receive(:flush)
-
-      sampler.sample
-    end
-
-    it 'clears any GC profiles' do
-      expect(sampler).to receive(:flush)
-      expect(GC::Profiler).to receive(:clear)
 
       sampler.sample
     end
@@ -64,18 +56,6 @@ describe Gitlab::Metrics::Samplers::InfluxSampler do
         .and_call_original
 
       sampler.sample_file_descriptors
-    end
-  end
-
-  describe '#sample_gc' do
-    it 'adds a metric containing garbage collection statistics' do
-      expect(GC::Profiler).to receive(:total_time).and_return(0.24)
-
-      expect(sampler).to receive(:add_metric)
-        .with(/gc_statistics/, an_instance_of(Hash))
-        .and_call_original
-
-      sampler.sample_gc
     end
   end
 
