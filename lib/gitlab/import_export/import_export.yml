@@ -80,6 +80,13 @@ project_tree:
   - :ci_cd_settings
   - :error_tracking_setting
   - :metrics_setting
+  - boards:
+    - lists:
+      - label:
+        - :priorities
+      - milestone:
+        - events:
+          - :push_event_payload
 
 # Only include the following attributes for the models specified.
 included_attributes:
@@ -216,6 +223,8 @@ methods:
     - :action
   project_badges:
     - :type
+  lists:
+    - :list_type
 
 # EE specific relationships and settings to include. All of this will be merged
 # into the previous structures if EE is used.
