@@ -35,11 +35,11 @@ You can see GitLab's keyboard shortcuts by using <kbd>shift</kbd> + <kbd>?</kbd>
 
 | Keyboard Shortcut | Description |
 | ----------------- | ----------- |
-| <kbd>g</kbd> + <kbd>a</kbd> | Go to the activity feed |
-| <kbd>g</kbd> + <kbd>p</kbd> | Go to projects |
-| <kbd>g</kbd> + <kbd>i</kbd> | Go to issues |
-| <kbd>g</kbd> + <kbd>m</kbd> | Go to merge requests |
-| <kbd>g</kbd> + <kbd>t</kbd> | Go to todos |
+| <kbd>Shift</kbd> + <kbd>a</kbd> | Go to the activity feed |
+| <kbd>Shift</kbd> + <kbd>p</kbd> | Go to projects |
+| <kbd>Shift</kbd> + <kbd>i</kbd> | Go to issues |
+| <kbd>Shift</kbd> + <kbd>m</kbd> | Go to merge requests |
+| <kbd>Shift</kbd> + <kbd>t</kbd> | Go to todos |
 
 ## Project
 
