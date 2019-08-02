@@ -1,5 +1,5 @@
 import { nextView } from '../store';
-import { localStorage, COMMENT_BOX, LOGOUT } from '../shared';
+import { localStorage, COMMENT_BOX, LOGOUT, STORAGE_MR_ID, STORAGE_TOKEN } from '../shared';
 import { clearNote } from './note';
 import { buttonClearStyles } from './utils';
 import { addForm } from './wrapper';
@@ -27,8 +27,8 @@ const comment = state => {
 // If we reach a design where we can logout from multiple views, promote this
 // to it's own package
 const logoutUser = state => {
-  localStorage.removeItem('token');
-  localStorage.removeItem('mergeRequestId');
+  localStorage.removeItem(STORAGE_TOKEN);
+  localStorage.removeItem(STORAGE_MR_ID);
   state.token = '';
   state.mergeRequestId = '';
 

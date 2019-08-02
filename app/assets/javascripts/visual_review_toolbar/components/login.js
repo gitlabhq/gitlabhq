@@ -1,5 +1,5 @@
 import { nextView } from '../store';
-import { localStorage, LOGIN, TOKEN_BOX } from '../shared';
+import { localStorage, LOGIN, TOKEN_BOX, STORAGE_TOKEN } from '../shared';
 import { clearNote, postError } from './note';
 import { rememberBox, submitButton } from './form_elements';
 import { selectRemember, selectToken } from './utils';
@@ -22,7 +22,7 @@ const storeToken = (token, state) => {
   const rememberMe = selectRemember().checked;
 
   if (rememberMe) {
-    localStorage.setItem('token', token);
+    localStorage.setItem(STORAGE_TOKEN, token);
   }
 
   state.token = token;
