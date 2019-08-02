@@ -186,24 +186,19 @@ input[type='checkbox']:hover {
   }
 }
 
-.search-holder {
+.search-field-holder,
+.project-filter-form {
+  flex: 1 0 auto;
+  position: relative;
 
-  @include media-breakpoint-up(lg) {
-    display: flex;
-    align-items: flex-end;
-  }
-
-  .search-field-holder,
-  .project-filter-form {
-    flex: 1 0 auto;
-    position: relative;
+  .search-holder & {
     margin-right: 0;
 
-    @include media-breakpoint-up(lg) {
+    @include media-breakpoint-up(sm) {
       margin-right: 5px;
-      margin-bottom: 0;
     }
   }
+
 
   .search-icon {
     position: absolute;
@@ -218,13 +213,20 @@ input[type='checkbox']:hover {
     padding-left: $gl-padding + 15px;
     padding-right: $gl-padding + 15px;
   }
+}
+
+.search-holder {
+  @include media-breakpoint-up(sm) {
+    display: flex;
+  }
 
   .btn-search,
-  .btn-success {
+  .btn-success,
+  .dropdown-menu-toggle {
     width: 100%;
     margin-top: 5px;
 
-    @include media-breakpoint-up(lg) {
+    @include media-breakpoint-up(sm) {
       width: auto;
       margin-top: 0;
       margin-left: 5px;
@@ -232,21 +234,15 @@ input[type='checkbox']:hover {
   }
 
   .dropdown {
-    margin-bottom: $gl-padding;
-
-    @include media-breakpoint-up(lg) {
+    @include media-breakpoint-up(sm) {
       margin-left: 5px;
       margin-right: 5px;
-      margin-bottom: 0;
     }
   }
 
   .dropdown-menu-toggle {
-    width: 100%;
-    margin-top: 5px;
-
-    @include media-breakpoint-up(lg) {
-      width: 240px;
+    @include media-breakpoint-up(sm) {
+      width: 180px;
       margin-top: 0;
     }
   }
@@ -265,6 +261,25 @@ input[type='checkbox']:hover {
   &:hover,
   &:focus {
     color: $blue-600;
+  }
+}
+
+.search-page-form {
+  .dropdown-menu-toggle,
+  .btn-search {
+    width: 100%;
+  }
+
+  .dropdown-menu-toggle {
+    @include media-breakpoint-up(lg) {
+      width: 240px;
+    }
+  }
+
+  .btn-search {
+    @include media-breakpoint-up(lg) {
+      width: auto;
+    }
   }
 }
 

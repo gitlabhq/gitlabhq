@@ -1,9 +1,9 @@
-= form_tag search_path, method: :get, class: 'js-search-form' do |f|
+= form_tag search_path, method: :get, class: 'search-page-form js-search-form' do |f|
   = hidden_field_tag :snippets, params[:snippets]
   = hidden_field_tag :scope, params[:scope]
 
-  .search-holder
-    .search-field-holder.form-group
+  .d-lg-flex.align-items-end
+    .search-field-holder.form-group.mr-lg-1.mb-lg-0
       %label{ for: "dashboard_search" }
         = _("What are you searching for?")
       .position-relative
@@ -16,5 +16,5 @@
     - unless params[:snippets].eql? 'true'
       = render 'filter'
     .d-flex-center.flex-column.flex-lg-row
-      = button_tag _("Search"), class: "btn btn-success btn-search form-control"
+      = button_tag _("Search"), class: "btn btn-success btn-search form-control mt-lg-0 ml-lg-1 align-self-end"
       = render_if_exists 'search/form_elasticsearch'
