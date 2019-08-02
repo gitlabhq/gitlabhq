@@ -73,15 +73,10 @@ module UpdateProjectStatistics
 
     def schedule_namespace_aggregation_worker
       run_after_commit do
-        next unless schedule_aggregation_worker?
+        next if project.nil?
 
         Namespaces::ScheduleAggregationWorker.perform_async(project.namespace_id)
       end
-    end
-
-    def schedule_aggregation_worker?
-      !project.nil? &&
-        Feature.enabled?(:update_statistics_namespace, project.root_ancestor)
     end
   end
 end

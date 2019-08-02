@@ -9,7 +9,7 @@ module Namespaces
     def perform(namespace_id)
       namespace = Namespace.find(namespace_id)
 
-      return unless update_statistics_enabled_for?(namespace) && namespace.aggregation_scheduled?
+      return unless namespace.aggregation_scheduled?
 
       Namespaces::StatisticsRefresherService.new.execute(namespace)
 
@@ -22,10 +22,6 @@ module Namespaces
 
     def log_error(namespace_path, error_message)
       Gitlab::SidekiqLogger.error("Namespace statistics can't be updated for #{namespace_path}: #{error_message}")
-    end
-
-    def update_statistics_enabled_for?(namespace)
-      Feature.enabled?(:update_statistics_namespace, namespace)
     end
   end
 end

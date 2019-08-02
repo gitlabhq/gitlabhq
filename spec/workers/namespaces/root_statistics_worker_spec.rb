@@ -74,15 +74,4 @@ describe Namespaces::RootStatisticsWorker, '#perform' do
       worker.perform(group.id)
     end
   end
-
-  context 'when update_statistics_namespace is off' do
-    it 'does not create a new one' do
-      stub_feature_flags(update_statistics_namespace: false, namespace: group)
-
-      expect_any_instance_of(Namespaces::StatisticsRefresherService)
-        .not_to receive(:execute)
-
-      worker.perform(group.id)
-    end
-  end
 end

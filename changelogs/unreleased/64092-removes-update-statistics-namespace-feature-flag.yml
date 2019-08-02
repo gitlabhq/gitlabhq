@@ -1,0 +1,5 @@
+---
+title: Enables storage statistics for root namespaces on database
+merge_request: 31392
+author:
+type: other

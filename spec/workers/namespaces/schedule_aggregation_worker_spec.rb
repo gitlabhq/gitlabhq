@@ -31,16 +31,6 @@ describe Namespaces::ScheduleAggregationWorker, '#perform', :clean_gitlab_redis_
         expect(group.aggregation_schedule).to be_present
       end
     end
-
-    context 'when update_statistics_namespace is off' do
-      it 'does not create a new one' do
-        stub_feature_flags(update_statistics_namespace: false, namespace: group)
-
-        expect do
-          worker.perform(group.id)
-        end.not_to change(Namespace::AggregationSchedule, :count)
-      end
-    end
   end
 
   context 'when group is not the root ancestor' do
