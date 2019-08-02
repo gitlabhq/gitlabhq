@@ -21,6 +21,7 @@
 - own_projects_current_user_empty_message_header = s_('UserProfile|You haven\'t created any personal projects.')
 - own_projects_current_user_empty_message_description = s_('UserProfile|Your projects can be available publicly, internally, or privately, at your choice.')
 - own_projects_visitor_empty_message = s_('UserProfile|This user doesn\'t have any personal projects')
+- explore_page_empty_message = s_('UserProfile|Explore public groups to find projects to contribute to.')
 - primary_button_label = _('New project')
 - primary_button_link = new_project_path
 - secondary_button_label = _('Explore groups')
@@ -58,4 +59,4 @@
         current_user_empty_message_description: own_projects_current_user_empty_message_description,
         primary_button_label: primary_button_label,
         primary_button_link: primary_button_link,
-        visitor_empty_message: own_projects_visitor_empty_message }
+        visitor_empty_message: defined?(explore_page) && explore_page ? explore_page_empty_message : own_projects_visitor_empty_message }

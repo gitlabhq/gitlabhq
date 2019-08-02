@@ -1,1 +1,2 @@
-= render 'shared/projects/list', projects: projects, user: current_user
+- is_explore_page = defined?(explore_page) && explore_page
+= render 'shared/projects/list', projects: projects, user: current_user, explore_page: is_explore_page

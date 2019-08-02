@@ -10,4 +10,4 @@
   = render 'explore/head'
 
 = render 'explore/projects/nav' unless Feature.enabled?(:project_list_filter_bar) && current_user
-= render 'projects', projects: @projects
+= render 'projects', projects: @projects, explore_page: true
