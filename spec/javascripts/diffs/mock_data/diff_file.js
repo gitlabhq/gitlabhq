@@ -1,3 +1,5 @@
+// Copied to ee/spec/frontend/diffs/mock_data/diff_file.js
+
 export default {
   submodule: false,
   submodule_link: null,

@@ -34,6 +34,10 @@ describe DiffNote do
 
   subject { create(:diff_note_on_merge_request, project: project, position: position, noteable: merge_request) }
 
+  describe 'validations' do
+    it_behaves_like 'a valid diff positionable note', :diff_note_on_commit
+  end
+
   describe "#position=" do
     context "when provided a string" do
       it "sets the position" do

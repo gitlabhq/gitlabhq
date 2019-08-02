@@ -10,6 +10,8 @@ module DiffPositionableNote
     serialize :original_position, Gitlab::Diff::Position # rubocop:disable Cop/ActiveRecordSerialize
     serialize :position, Gitlab::Diff::Position # rubocop:disable Cop/ActiveRecordSerialize
     serialize :change_position, Gitlab::Diff::Position # rubocop:disable Cop/ActiveRecordSerialize
+
+    validate :diff_refs_match_commit, if: :for_commit?
   end
 
   %i(original_position position change_position).each do |meth|
@@ -70,5 +72,11 @@ module DiffPositionableNote
     else
       self.position = result[:position]
     end
+  end
+
+  def diff_refs_match_commit
+    return if self.original_position.diff_refs == commit&.diff_refs
+
+    errors.add(:commit_id, 'does not match the diff refs')
   end
 end

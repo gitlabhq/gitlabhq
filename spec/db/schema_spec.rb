@@ -27,7 +27,7 @@ describe 'Database schema' do
     cluster_providers_gcp: %w[gcp_project_id operation_id],
     deploy_keys_projects: %w[deploy_key_id],
     deployments: %w[deployable_id environment_id user_id],
-    draft_notes: %w[discussion_id],
+    draft_notes: %w[discussion_id commit_id],
     emails: %w[user_id],
     events: %w[target_id],
     epics: %w[updated_by_id last_edited_by_id start_date_sourcing_milestone_id due_date_sourcing_milestone_id],

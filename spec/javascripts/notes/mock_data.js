@@ -1,3 +1,5 @@
+// Copied to ee/spec/frontend/notes/mock_data.js
+
 export const notesDataMock = {
   discussionsPath: '/gitlab-org/gitlab-ce/issues/26/discussions.json',
   lastFetchedAt: 1501862675,
