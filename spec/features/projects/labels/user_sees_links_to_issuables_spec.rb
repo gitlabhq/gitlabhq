@@ -19,8 +19,10 @@ describe 'Projects > Labels > User sees links to issuables' do
       let(:project) { create(:project, :public) }
 
       it 'shows links to MRs and issues' do
-        expect(page).to have_link('view merge requests')
-        expect(page).to have_link('view open issues')
+        page.within('.labels-container') do
+          expect(page).to have_link('Merge requests')
+          expect(page).to have_link('Issues')
+        end
       end
     end
 
@@ -28,8 +30,10 @@ describe 'Projects > Labels > User sees links to issuables' do
       let(:project) { create(:project, :public, issues_access_level: ProjectFeature::DISABLED) }
 
       it 'shows links to MRs but not to issues' do
-        expect(page).to have_link('view merge requests')
-        expect(page).not_to have_link('view open issues')
+        page.within('.labels-container') do
+          expect(page).to have_link('Merge requests')
+          expect(page).not_to have_link('Issues')
+        end
       end
     end
 
@@ -37,8 +41,10 @@ describe 'Projects > Labels > User sees links to issuables' do
       let(:project) { create(:project, :public, merge_requests_access_level: ProjectFeature::DISABLED) }
 
       it 'shows links to issues but not to MRs' do
-        expect(page).not_to have_link('view merge requests')
-        expect(page).to have_link('view open issues')
+        page.within('.labels-container') do
+          expect(page).not_to have_link('Merge requests')
+          expect(page).to have_link('Issues')
+        end
       end
     end
   end
@@ -51,8 +57,10 @@ describe 'Projects > Labels > User sees links to issuables' do
       let(:project) { create(:project, :public, namespace: group) }
 
       it 'shows links to MRs and issues' do
-        expect(page).to have_link('view merge requests')
-        expect(page).to have_link('view open issues')
+        page.within('.labels-container') do
+          expect(page).to have_link('Merge requests')
+          expect(page).to have_link('Issues')
+        end
       end
     end
 
@@ -60,8 +68,10 @@ describe 'Projects > Labels > User sees links to issuables' do
       let(:project) { create(:project, :public, namespace: group, issues_access_level: ProjectFeature::DISABLED) }
 
       it 'shows links to MRs and issues' do
-        expect(page).to have_link('view merge requests')
-        expect(page).to have_link('view open issues')
+        page.within('.labels-container') do
+          expect(page).to have_link('Merge requests')
+          expect(page).to have_link('Issues')
+        end
       end
     end
 
@@ -69,8 +79,10 @@ describe 'Projects > Labels > User sees links to issuables' do
       let(:project) { create(:project, :public, namespace: group, merge_requests_access_level: ProjectFeature::DISABLED) }
 
       it 'shows links to MRs and issues' do
-        expect(page).to have_link('view merge requests')
-        expect(page).to have_link('view open issues')
+        page.within('.labels-container') do
+          expect(page).to have_link('Merge requests')
+          expect(page).to have_link('Issues')
+        end
       end
     end
   end

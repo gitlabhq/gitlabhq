@@ -11,7 +11,9 @@ describe 'Groups > Labels > User sees links to issuables' do
   end
 
   it 'shows links to MRs and issues' do
-    expect(page).to have_link('view merge requests')
-    expect(page).to have_link('view open issues')
+    page.within('.labels-container') do
+      expect(page).to have_link('Merge requests')
+      expect(page).to have_link('Issues')
+    end
   end
 end

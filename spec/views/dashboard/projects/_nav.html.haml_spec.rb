@@ -4,7 +4,7 @@ describe 'dashboard/projects/_nav.html.haml' do
   it 'highlights All tab by default' do
     render
 
-    expect(rendered).to have_css('li.active a', text: 'All')
+    expect(rendered).to have_css('a.active', text: 'All')
   end
 
   it 'highlights Personal tab personal param is present' do
@@ -12,6 +12,6 @@ describe 'dashboard/projects/_nav.html.haml' do
 
     render
 
-    expect(rendered).to have_css('li.active a', text: 'Personal')
+    expect(rendered).to have_css('a.active', text: 'Personal')
   end
 end

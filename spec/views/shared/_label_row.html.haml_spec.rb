@@ -7,9 +7,20 @@ describe 'shared/_label_row.html.haml' do
   }
 
   label_types.each do |label_type, label_factory|
-    let!(:label) { create(label_factory) }
+    let!(:label) do
+      label_record = create(label_factory)
+      label_record.present(issuable_subject: label_record.subject)
+    end
 
     context "for a #{label_type}" do
+      before do
+        if label.project_label?
+          @project = label.project
+        else
+          @group = label.group
+        end
+      end
+
       it 'has a non-linked label title' do
         render 'shared/label_row', label: label
 
