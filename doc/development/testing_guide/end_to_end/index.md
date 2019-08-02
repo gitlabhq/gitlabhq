@@ -65,28 +65,24 @@ Below you can read more about how to use it and how does it work.
 Currently, we are using _multi-project pipeline_-like approach to run QA
 pipelines.
 
-![QA on merge requests CI/CD architecture](../img/qa_on_merge_requests_cicd_architecture.png)
-
-<details>
-<summary>Show mermaid source</summary>
-<pre>
+```mermaid
 graph LR
     A1 -.->|1. Triggers an omnibus-gitlab pipeline and wait for it to be done| A2
-    B2[<b>`Trigger-qa` stage</b><br />`Trigger:qa-test` job] -.->|2. Triggers a gitlab-qa pipeline and wait for it to be done| A3
+    B2[`Trigger-qa` stage<br>`Trigger:qa-test` job] -.->|2. Triggers a gitlab-qa pipeline and wait for it to be done| A3
 
-subgraph gitlab-ce/ee pipeline
-    A1[<b>`test` stage</b><br />`package-and-qa` job]
+subgraph "gitlab-ce/ee pipeline"
+    A1[`test` stage<br>`package-and-qa` job]
     end
 
-subgraph omnibus-gitlab pipeline
-    A2[<b>`Trigger-docker` stage</b><br />`Trigger:gitlab-docker` job] -->|once done| B2
+subgraph "omnibus-gitlab pipeline"
+    A2[`Trigger-docker` stage<br>`Trigger:gitlab-docker` job] -->|once done| B2
     end
 
-subgraph gitlab-qa pipeline
-    A3>QA jobs run] -.->|3. Reports back the pipeline result to the `package-and-qa` job<br />and post the result  on the original commit tested| A1
+subgraph "gitlab-qa pipeline"
+    A3>QA jobs run] -.->|3. Reports back the pipeline result to the `package-and-qa` job<br>and post the result  on the original commit tested| A1
     end
-</pre>
-</details>
+```
+
 
 1. Developer triggers a manual action, that can be found in CE / EE merge
    requests. This starts a chain of pipelines in multiple projects.
