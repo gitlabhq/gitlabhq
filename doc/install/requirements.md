@@ -146,8 +146,8 @@ CREATE EXTENSION postgres_fdw;
 
 ## Unicorn Workers
 
-For most instances we recommend using: CPU cores + 1 = unicorn workers.
-So for a machine with 2 cores, 3 unicorn workers is ideal.
+For most instances we recommend using: (CPU cores * 1.5) + 1 = unicorn workers.
+For example a node with 4 cores would have 7 unicorn workers.
 
 For all machines that have 2GB and up we recommend a minimum of three unicorn workers.
 If you have a 1GB machine we recommend to configure only two Unicorn workers to prevent excessive swapping.
