@@ -10,12 +10,13 @@ module Gitlab
           delegate :size, to: :seeds
           delegate :dig, to: :seeds
 
-          def initialize(pipeline, attributes)
+          def initialize(pipeline, attributes, previous_stages)
             @pipeline = pipeline
             @attributes = attributes
+            @previous_stages = previous_stages
 
             @builds = attributes.fetch(:builds).map do |attributes|
-              Seed::Build.new(@pipeline, attributes)
+              Seed::Build.new(@pipeline, attributes, previous_stages)
             end
           end
 
@@ -32,6 +33,12 @@ module Gitlab
             end
           end
 
+          def seeds_names
+            strong_memoize(:seeds_names) do
+              seeds.map(&:name).to_set
+            end
+          end
+
           def included?
             seeds.any?
           end
@@ -39,13 +46,7 @@ module Gitlab
           def to_resource
             strong_memoize(:stage) do
               ::Ci::Stage.new(attributes).tap do |stage|
-                seeds.each do |seed|
-                  if seed.bridge?
-                    stage.bridges << seed.to_resource
-                  else
-                    stage.builds << seed.to_resource
-                  end
-                end
+                stage.statuses = seeds.map(&:to_resource)
               end
             end
           end

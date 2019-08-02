@@ -38,8 +38,8 @@ describe Gitlab::Ci::Pipeline::Chain::Populate do
     it 'populates pipeline with stages' do
       expect(pipeline.stages).to be_one
       expect(pipeline.stages.first).not_to be_persisted
-      expect(pipeline.stages.first.builds).to be_one
-      expect(pipeline.stages.first.builds.first).not_to be_persisted
+      expect(pipeline.stages.first.statuses).to be_one
+      expect(pipeline.stages.first.statuses.first).not_to be_persisted
     end
 
     it 'correctly assigns user' do
@@ -191,8 +191,8 @@ describe Gitlab::Ci::Pipeline::Chain::Populate do
         step.perform!
 
         expect(pipeline.stages.size).to eq 1
-        expect(pipeline.stages.first.builds.size).to eq 1
-        expect(pipeline.stages.first.builds.first.name).to eq 'rspec'
+        expect(pipeline.stages.first.statuses.size).to eq 1
+        expect(pipeline.stages.first.statuses.first.name).to eq 'rspec'
       end
     end
 
