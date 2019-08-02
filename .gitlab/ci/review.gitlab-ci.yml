@@ -35,7 +35,7 @@
   <<: *review-base
   image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-qa-alpine
   services:
-    - docker:stable-dind
+    - docker:19.03.0-dind
   tags:
     - gitlab-org
     - docker
