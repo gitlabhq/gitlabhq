@@ -695,6 +695,13 @@ The correct encoding for the query parameter would be:
 There are many unofficial GitLab API Clients for most of the popular
 programming languages. Visit the [GitLab website] for a complete list.
 
+## Rate limits
+
+For administrator documentation on rate limit settings, check out
+[Rate limits](../security/rate_limits.md). To find the settings that are
+specifically used by GitLab.com, see
+[GitLab.com-specific rate limits](../user/gitlab_com/index.md).
+
 [GitLab website]: https://about.gitlab.com/applications/#api-clients "Clients using the GitLab API"
 [lib-api-url]: https://gitlab.com/gitlab-org/gitlab-ce/tree/master/lib/api/api.rb
 [ce-3749]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/3749
