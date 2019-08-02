@@ -62,6 +62,8 @@ NOTE: **Note:** Since file system performance may affect GitLab's overall perfor
 
 ### CPU
 
+This is the recommended minimum hardware for a handful of example GitLab user base sizes. Your exact needs may be more, depending on your workload. Your workload is influenced by factors such as - but not limited to - how active your users are, how much automation you use, mirroring, and repo/change size.
+
 - 1 core supports up to 100 users but the application can be a bit slower due to having all workers and background jobs running on the same core
 - **2 cores** is the **recommended** minimum number of cores and supports up to 100 users
 - 4 cores supports up to 500 users
@@ -70,6 +72,8 @@ NOTE: **Note:** Since file system performance may affect GitLab's overall perfor
 - More users? Run it high-availability on [multiple application servers](https://about.gitlab.com/high-availability/)
 
 ### Memory
+
+This is the recommended minimum hardware for a handful of example GitLab user base sizes. Your exact needs may be more, depending on your workload. Your workload is influenced by factors such as - but not limited to - how active your users are, how much automation you use, mirroring, and repo/change size.
 
 You need at least 8GB of addressable memory (RAM + swap) to install and use GitLab!
 The operating system and any other running applications will also be using memory

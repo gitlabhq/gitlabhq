@@ -172,6 +172,8 @@ environment that supports about 10,000 users. The specifications below are a
 representation of the work so far. The specifications may be adjusted in the
 future based on additional testing and iteration.
 
+NOTE: **Note:** The specifications here were performance tested against a specific coded workload. Your exact needs may be more, depending on your workload. Your workload is influenced by factors such as - but not limited to - how active your users are, how much automation you use, mirroring, and repo/change size.
+
 - 3 PostgreSQL - 4 CPU, 16GiB memory per node
 - 1 PgBouncer - 2 CPU, 4GiB memory
 - 2 Redis - 2 CPU, 8GiB memory per node
