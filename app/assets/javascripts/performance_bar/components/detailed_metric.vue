@@ -44,7 +44,7 @@ export default {
 </script>
 <template>
   <div
-    v-if="currentRequest.details"
+    v-if="currentRequest.details && metricDetails"
     :id="`peek-view-${metric}`"
     class="view qa-performance-bar-detailed-metric"
   >
