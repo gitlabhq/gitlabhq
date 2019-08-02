@@ -253,6 +253,7 @@ The applications below can be uninstalled.
 | Application | GitLab version | Notes |
 | ----------- | -------------- | ----- |
 | GitLab Runner  | 12.2+         | Any running pipelines will be canceled. |
+| Helm  | 12.2+         | The associated Tiller pod will be deleted and cannot be restored. |
 | Ingress  | 12.1+         | The associated load balancer and IP will be deleted and cannot be restored. Furthermore, it can only be uninstalled if JupyterHub is not installed. |
 | JupyterHub  | 12.1+         | All data not committed to GitLab will be deleted and cannot be restored. |
 | Knative  | 12.1+         | The associated IP will be deleted and cannot be restored. |

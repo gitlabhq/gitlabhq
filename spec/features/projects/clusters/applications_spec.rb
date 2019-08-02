@@ -63,7 +63,8 @@ describe 'Clusters Applications', :js do
 
             Clusters::Cluster.last.application_helm.make_installed!
 
-            expect(page).to have_css('.js-cluster-application-install-button[disabled]', exact_text: 'Installed')
+            expect(page).not_to have_css('.js-cluster-application-install-button')
+            expect(page).to have_css('.js-cluster-application-uninstall-button:not([disabled])', exact_text: 'Uninstall')
           end
 
           expect(page).to have_content('Helm Tiller was successfully installed on your Kubernetes cluster')
