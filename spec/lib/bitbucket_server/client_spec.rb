@@ -58,6 +58,17 @@ describe BitbucketServer::Client do
 
       subject.repos(page_offset: 10, limit: 25)
     end
+
+    context 'when filter param is passed' do
+      let(:filter) { 'test' }
+      let(:expected_path) { "#{path}?name=#{filter}" }
+
+      it 'requests a collection with filter applied' do
+        expect(BitbucketServer::Paginator).to receive(:new).with(anything, expected_path, :repo, page_offset: 0, limit: nil)
+
+        subject.repos(filter: filter)
+      end
+    end
   end
 
   describe '#create_branch' do
