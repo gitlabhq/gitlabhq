@@ -794,6 +794,24 @@ describe User do
     end
   end
 
+  describe '#accessible_deploy_keys' do
+    let(:user) { create(:user) }
+    let(:project) { create(:project) }
+    let!(:private_deploy_keys_project) { create(:deploy_keys_project) }
+    let!(:public_deploy_keys_project) { create(:deploy_keys_project) }
+    let!(:accessible_deploy_keys_project) { create(:deploy_keys_project, project: project) }
+
+    before do
+      public_deploy_keys_project.deploy_key.update(public: true)
+      project.add_developer(user)
+    end
+
+    it 'user can only see deploy keys accessible to right projects' do
+      expect(user.accessible_deploy_keys).to match_array([public_deploy_keys_project.deploy_key,
+                                                          accessible_deploy_keys_project.deploy_key])
+    end
+  end
+
   describe '#deploy_keys' do
     include_context 'user keys'
 
