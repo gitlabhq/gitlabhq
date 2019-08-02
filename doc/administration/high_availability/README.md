@@ -172,14 +172,14 @@ environment that supports about 10,000 users. The specifications below are a
 representation of the work so far. The specifications may be adjusted in the
 future based on additional testing and iteration.
 
-- 3 PostgreSQL - 4 CPU, 8GB RAM per node
-- 1 PgBouncer - 2 CPU, 4GB RAM
-- 2 Redis - 2 CPU, 8GB RAM per node
-- 3 Consul/Sentinel - 2 CPU, 2GB RAM per node
-- 4 Sidekiq - 4 CPU, 8GB RAM per node
-- 5 GitLab application nodes - 20 CPU, 64GB RAM per node
-- 1 Gitaly - 20 CPU, 64GB RAM
-- 1 Monitoring node - 4 CPU, 8GB RAM
+- 3 PostgreSQL - 4 CPU, 16GiB memory per node
+- 1 PgBouncer - 2 CPU, 4GiB memory
+- 2 Redis - 2 CPU, 8GiB memory per node
+- 3 Consul/Sentinel - 2 CPU, 2GiB memory per node
+- 4 Sidekiq - 4 CPU, 16GiB memory per node
+- 5 GitLab application nodes - 16 CPU, 64GiB memory per node
+- 1 Gitaly - 16 CPU, 64GiB memory
+- 1 Monitoring node - 2 CPU, 8GiB memory, 100GiB local storage
 
 ### Fully Distributed
 
