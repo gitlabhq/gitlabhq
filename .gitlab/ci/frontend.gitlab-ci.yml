@@ -19,7 +19,7 @@
   dependencies:
     - setup-test-env
   services:
-    - docker:stable-dind
+    - docker:19.03.0-dind
   variables:
     NODE_ENV: "production"
     RAILS_ENV: "production"
