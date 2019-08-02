@@ -1,0 +1,5 @@
+---
+title: Fix inline rendering of relative paths to SVGs from the current repository
+merge_request: 31352
+author:
+type: fixed
