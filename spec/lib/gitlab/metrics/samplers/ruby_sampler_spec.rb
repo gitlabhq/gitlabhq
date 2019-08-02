@@ -59,17 +59,29 @@ describe Gitlab::Metrics::Samplers::RubySampler do
     end
 
     it 'clears any GC profiles' do
-      expect(GC::Profiler).to receive(:clear)
+      expect(GC::Profiler).to receive(:clear).at_least(:once)
 
       sampler.sample
     end
   end
 
   describe '#sample_gc' do
-    it 'adds a metric containing garbage collection time statistics' do
-      expect(GC::Profiler).to receive(:total_time).and_return(0.24)
+    let!(:sampler) { described_class.new(5) }
 
-      expect(sampler.metrics[:total_time]).to receive(:increment).with({}, 0.24)
+    let(:gc_reports) { [{ GC_TIME: 0.1 }, { GC_TIME: 0.2 }, { GC_TIME: 0.3 }] }
+
+    it 're-enables GC::Profiler if needed' do
+      expect(GC::Profiler).to receive(:enable)
+
+      sampler.sample
+    end
+
+    it 'observes GC cycles time' do
+      expect(sampler).to receive(:sample_gc_reports).and_return(gc_reports)
+
+      expect(sampler.metrics[:gc_duration_seconds]).to receive(:observe).with({}, 0.1).ordered
+      expect(sampler.metrics[:gc_duration_seconds]).to receive(:observe).with({}, 0.2).ordered
+      expect(sampler.metrics[:gc_duration_seconds]).to receive(:observe).with({}, 0.3).ordered
 
       sampler.sample
     end

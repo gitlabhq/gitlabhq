@@ -6,7 +6,11 @@ module Gitlab
   module Metrics
     module Samplers
       class RubySampler < BaseSampler
+        GC_REPORT_BUCKETS = [0.001, 0.002, 0.005, 0.01, 0.05, 0.1, 0.5].freeze
+
         def initialize(interval)
+          GC::Profiler.clear
+
           metrics[:process_start_time_seconds].set(labels, Time.now.to_i)
 
           super
@@ -37,7 +41,7 @@ module Gitlab
             process_resident_memory_bytes:  ::Gitlab::Metrics.gauge(with_prefix(:process, :resident_memory_bytes), 'Memory used', labels),
             process_start_time_seconds:     ::Gitlab::Metrics.gauge(with_prefix(:process, :start_time_seconds), 'Process start time seconds'),
             sampler_duration:               ::Gitlab::Metrics.counter(with_prefix(:sampler, :duration_seconds_total), 'Sampler time', labels),
-            total_time:                     ::Gitlab::Metrics.counter(with_prefix(:gc, :duration_seconds_total), 'Total GC time', labels)
+            gc_duration_seconds:            ::Gitlab::Metrics.histogram(with_prefix(:gc, :duration_seconds), 'GC time', labels, GC_REPORT_BUCKETS)
           }
 
           GC.stat.keys.each do |key|
@@ -57,20 +61,27 @@ module Gitlab
           sample_gc
 
           metrics[:sampler_duration].increment(labels, System.monotonic_time - start_time)
-        ensure
-          GC::Profiler.clear
         end
 
         private
 
         def sample_gc
-          # Collect generic GC stats.
+          # Observe all GC samples
+          sample_gc_reports.each do |report|
+            metrics[:gc_duration_seconds].observe(labels, report[:GC_TIME])
+          end
+
+          # Collect generic GC stats
           GC.stat.each do |key, value|
             metrics[key].set(labels, value)
           end
+        end
 
-          # Collect the GC time since last sample in float seconds.
-          metrics[:total_time].increment(labels, GC::Profiler.total_time)
+        def sample_gc_reports
+          GC::Profiler.enable
+          GC::Profiler.raw_data
+        ensure
+          GC::Profiler.clear
         end
 
         def set_memory_usage_metrics

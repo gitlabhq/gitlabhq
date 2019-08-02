@@ -1,0 +1,5 @@
+---
+title: Fix GC::Profiler metrics fetching
+merge_request: 31331
+author:
+type: fixed
