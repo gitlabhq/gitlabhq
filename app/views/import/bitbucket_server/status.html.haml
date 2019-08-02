@@ -20,6 +20,10 @@
   .btn-group
     = link_to('Reconfigure', configure_import_bitbucket_server_path, class: 'btn btn-primary', method: :post)
 
+  .input-btn-group.float-right
+    = form_tag status_import_bitbucket_server_path, :method => 'get' do
+      = text_field_tag :filter_bitbucket_projects, params[:filter_bitbucket_projects], class: 'form-control', placeholder: _('Filter your projects by name'), size: 40
+
 .table-responsive.prepend-top-10
   %table.table.import-jobs
     %colgroup.import-jobs-from-col
