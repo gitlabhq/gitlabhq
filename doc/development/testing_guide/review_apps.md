@@ -8,38 +8,33 @@ Review Apps are automatically deployed by each pipeline, both in
 
 ### CI/CD architecture diagram
 
-![Review Apps CI/CD architecture](img/review_apps_cicd_architecture.png)
-
-<details>
-<summary>Show mermaid source</summary>
-<pre>
+```mermaid
 graph TD
     build-qa-image -.->|once the `prepare` stage is done| gitlab:assets:compile
     review-build-cng -->|triggers a CNG-mirror pipeline and wait for it to be done| CNG-mirror
     review-build-cng -.->|once the `test` stage is done| review-deploy
     review-deploy -.->|once the `review` stage is done| review-qa-smoke
 
-subgraph 1. gitlab-ce/ee `prepare` stage
+subgraph "1. gitlab-ce/ee `prepare` stage"
     build-qa-image
     end
 
-subgraph 2. gitlab-ce/ee `test` stage
+subgraph "2. gitlab-ce/ee `test` stage"
     gitlab:assets:compile -->|plays dependent job once done| review-build-cng
     end
 
-subgraph 3. gitlab-ce/ee `review` stage
-    review-deploy["review-deploy<br /><br />Helm deploys the Review App using the Cloud<br/>Native images built by the CNG-mirror pipeline.<br /><br />Cloud Native images are deployed to the `review-apps-ce` or `review-apps-ee`<br />Kubernetes (GKE) cluster, in the GCP `gitlab-review-apps` project."]
+subgraph "3. gitlab-ce/ee `review` stage"
+    review-deploy["review-deploy<br><br>Helm deploys the Review App using the Cloud<br/>Native images built by the CNG-mirror pipeline.<br><br>Cloud Native images are deployed to the `review-apps-ce` or `review-apps-ee`<br>Kubernetes (GKE) cluster, in the GCP `gitlab-review-apps` project."]
     end
 
-subgraph 4. gitlab-ce/ee `qa` stage
-    review-qa-smoke[review-qa-smoke<br /><br />gitlab-qa runs the smoke suite against the Review App.]
+subgraph "4. gitlab-ce/ee `qa` stage"
+    review-qa-smoke[review-qa-smoke<br><br>gitlab-qa runs the smoke suite against the Review App.]
     end
 
-subgraph CNG-mirror pipeline
+subgraph "CNG-mirror pipeline"
     CNG-mirror>Cloud Native images are built];
     end
-</pre>
-</details>
+```
 
 ### Detailed explanation
 
