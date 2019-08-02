@@ -786,6 +786,50 @@ describe Ci::ProcessPipelineService, '#execute' do
         expect(builds.pending).to contain_exactly(deploy)
       end
     end
+
+    context 'when one of the jobs is run on a failure' do
+      let!(:linux_notify) { create_build('linux:notify', stage: 'deploy', stage_idx: 2, when: 'on_failure') }
+
+      let!(:linux_notify_on_build) { create(:ci_build_need, build: linux_notify, name: 'linux:build') }
+
+      context 'when another job in build phase fails first' do
+        context 'when ci_dag_support is enabled' do
+          it 'does skip linux:notify' do
+            expect(process_pipeline).to be_truthy
+
+            mac_build.reset.drop!
+            linux_build.reset.success!
+
+            expect(linux_notify.reset).to be_skipped
+          end
+        end
+
+        context 'when ci_dag_support is disabled' do
+          before do
+            stub_feature_flags(ci_dag_support: false)
+          end
+
+          it 'does run linux:notify' do
+            expect(process_pipeline).to be_truthy
+
+            mac_build.reset.drop!
+            linux_build.reset.success!
+
+            expect(linux_notify.reset).to be_pending
+          end
+        end
+      end
+
+      context 'when linux:build job fails first' do
+        it 'does run linux:notify' do
+          expect(process_pipeline).to be_truthy
+
+          linux_build.reset.drop!
+
+          expect(linux_notify.reset).to be_pending
+        end
+      end
+    end
   end
 
   def process_pipeline
