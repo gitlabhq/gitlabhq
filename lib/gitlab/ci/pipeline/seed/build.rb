@@ -9,9 +9,10 @@ module Gitlab
 
           delegate :dig, to: :@attributes
 
-          def initialize(pipeline, attributes)
+          def initialize(pipeline, attributes, previous_stages)
             @pipeline = pipeline
             @attributes = attributes
+            @previous_stages = previous_stages
 
             @only = Gitlab::Ci::Build::Policy
               .fabricate(attributes.delete(:only))
@@ -19,10 +20,15 @@ module Gitlab
               .fabricate(attributes.delete(:except))
           end
 
+          def name
+            dig(:name)
+          end
+
           def included?
             strong_memoize(:inclusion) do
-              @only.all? { |spec| spec.satisfied_by?(@pipeline, self) } &&
-                @except.none? { |spec| spec.satisfied_by?(@pipeline, self) }
+              all_of_only? &&
+                none_of_except? &&
+                all_of_needs?
             end
           end
 
@@ -40,6 +46,25 @@ module Gitlab
 
           def bridge?
             @attributes.to_h.dig(:options, :trigger).present?
+          end
+
+          def all_of_only?
+            @only.all? { |spec| spec.satisfied_by?(@pipeline, self) }
+          end
+
+          def none_of_except?
+            @except.none? { |spec| spec.satisfied_by?(@pipeline, self) }
+          end
+
+          def all_of_needs?
+            return true unless Feature.enabled?(:ci_dag_support, @pipeline.project)
+            return true if dig(:needs_attributes).nil?
+
+            dig(:needs_attributes).all? do |need|
+              @previous_stages.any? do |stage|
+                stage.seeds_names.include?(need[:name])
+              end
+            end
           end
 
           def to_resource

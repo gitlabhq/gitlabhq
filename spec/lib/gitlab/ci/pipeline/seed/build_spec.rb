@@ -6,8 +6,9 @@ describe Gitlab::Ci::Pipeline::Seed::Build do
   let(:project) { create(:project, :repository) }
   let(:pipeline) { create(:ci_empty_pipeline, project: project) }
   let(:attributes) { { name: 'rspec', ref: 'master' } }
+  let(:previous_stages) { [] }
 
-  let(:seed_build) { described_class.new(pipeline, attributes) }
+  let(:seed_build) { described_class.new(pipeline, attributes, previous_stages) }
 
   describe '#attributes' do
     subject { seed_build.attributes }
@@ -379,6 +380,41 @@ describe Gitlab::Ci::Pipeline::Seed::Build do
 
         it { is_expected.not_to be_included }
       end
+    end
+  end
+
+  describe 'applying needs: dependency' do
+    subject { seed_build }
+
+    let(:attributes) do
+      {
+        name: 'rspec',
+        needs_attributes: [{
+          name: 'build'
+        }]
+      }
+    end
+
+    context 'when build job is not present in prior stages' do
+      it { is_expected.not_to be_included }
+    end
+
+    context 'when build job is part of prior stages' do
+      let(:stage_attributes) do
+        {
+          name: 'build',
+          index: 0,
+          builds: [{ name: 'build' }]
+        }
+      end
+
+      let(:stage_seed) do
+        Gitlab::Ci::Pipeline::Seed::Stage.new(pipeline, stage_attributes, [])
+      end
+
+      let(:previous_stages) { [stage_seed] }
+
+      it { is_expected.to be_included }
     end
   end
 end

@@ -1099,6 +1099,62 @@ describe Ci::CreatePipelineService do
         end
       end
     end
+
+    context 'when needs is used' do
+      let(:pipeline) { execute_service }
+
+      let(:config) do
+        {
+          build_a: {
+            stage: "build",
+            script: "ls",
+            only: %w[master]
+          },
+          test_a: {
+            stage: "test",
+            script: "ls",
+            only: %w[master feature tags],
+            needs: %w[build_a]
+          },
+          deploy: {
+            stage: "deploy",
+            script: "ls",
+            only: %w[tags]
+          }
+        }
+      end
+
+      before do
+        stub_ci_pipeline_yaml_file(YAML.dump(config))
+      end
+
+      context 'when pipeline on master is created' do
+        let(:ref_name) { 'refs/heads/master' }
+
+        it 'creates a pipeline with build_a and test_a' do
+          expect(pipeline).to be_persisted
+          expect(pipeline.builds.map(&:name)).to contain_exactly("build_a", "test_a")
+        end
+      end
+
+      context 'when pipeline on feature is created' do
+        let(:ref_name) { 'refs/heads/feature' }
+
+        it 'does not create a pipeline as test_a depends on build_a' do
+          expect(pipeline).not_to be_persisted
+          expect(pipeline.builds).to be_empty
+        end
+      end
+
+      context 'when pipeline on v1.0.0 is created' do
+        let(:ref_name) { 'refs/tags/v1.0.0' }
+
+        it 'does create a pipeline only with deploy' do
+          expect(pipeline).to be_persisted
+          expect(pipeline.builds.map(&:name)).to contain_exactly("deploy")
+        end
+      end
+    end
   end
 
   describe '#execute!' do

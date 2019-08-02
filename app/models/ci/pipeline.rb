@@ -504,8 +504,9 @@ module Ci
       return [] unless config_processor
 
       strong_memoize(:stage_seeds) do
-        seeds = config_processor.stages_attributes.map do |attributes|
-          Gitlab::Ci::Pipeline::Seed::Stage.new(self, attributes)
+        seeds = config_processor.stages_attributes.inject([]) do |previous_stages, attributes|
+          seed = Gitlab::Ci::Pipeline::Seed::Stage.new(self, attributes, previous_stages)
+          previous_stages + [seed]
         end
 
         seeds.select(&:included?)
