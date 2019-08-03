@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe UsersStarProjectsFinder do
@@ -22,19 +24,19 @@ describe UsersStarProjectsFinder do
     describe 'as same user' do
       let(:current_user) { private_user }
 
-      it { is_expected.to eq(private_stars + public_stars) }
+      it { is_expected.to match_array(private_stars + public_stars) }
     end
 
     describe 'as other user' do
       let(:current_user) { other_user }
 
-      it { is_expected.to eq(public_stars) }
+      it { is_expected.to match_array(public_stars) }
     end
 
     describe 'as no user' do
       let(:current_user) { nil }
 
-      it { is_expected.to eq(public_stars) }
+      it { is_expected.to match_array(public_stars) }
     end
   end
 end

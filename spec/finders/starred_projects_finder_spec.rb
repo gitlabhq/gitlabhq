@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe StarredProjectsFinder do
@@ -21,19 +23,19 @@ describe StarredProjectsFinder do
     describe 'as same user' do
       let(:current_user) { user }
 
-      it { is_expected.to eq([project2, project1]) }
+      it { is_expected.to contain_exactly(project1, project2) }
     end
 
     describe 'as other user' do
       let(:current_user) { other_user }
 
-      it { is_expected.to eq([project2, project1]) }
+      it { is_expected.to contain_exactly(project1, project2) }
     end
 
     describe 'as no user' do
       let(:current_user) { nil }
 
-      it { is_expected.to eq([project2, project1]) }
+      it { is_expected.to contain_exactly(project1, project2) }
     end
   end
 end
