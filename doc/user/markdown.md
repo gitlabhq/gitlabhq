@@ -185,6 +185,49 @@ graph TD;
   C-->D;
 ```
 
+#### Subgraphs
+
+NOTE: **Note:** GitLab 12.1 and up now [requires quotes around subgraph
+titles that contain multiple words](https://github.com/knsv/mermaid/pull/845).
+
+Subgraphs can also be included:
+
+~~~
+```mermaid
+graph TB
+
+  SubGraph1 --> SubGraph1Flow
+  subgraph "SubGraph 1 Flow"
+  SubGraph1Flow(SubNode 1)
+  SubGraph1Flow -- Choice1 --> DoChoice1
+  SubGraph1Flow -- Choice2 --> DoChoice2
+  end
+
+  subgraph "Main Graph"
+  Node1[Node 1] --> Node2[Node 2]
+  Node2 --> SubGraph1[Jump to SubGraph1]
+  SubGraph1 --> FinalThing[Final Thing]
+end
+```
+~~~
+
+```mermaid
+graph TB
+
+  SubGraph1 --> SubGraph1Flow
+  subgraph "SubGraph 1 Flow"
+  SubGraph1Flow(SubNode 1)
+  SubGraph1Flow -- Choice1 --> DoChoice1
+  SubGraph1Flow -- Choice2 --> DoChoice2
+  end
+
+  subgraph "Main Graph"
+  Node1[Node 1] --> Node2[Node 2]
+  Node2 --> SubGraph1[Jump to SubGraph1]
+  SubGraph1 --> FinalThing[Final Thing]
+end
+```
+
 ### Emoji
 
 > If this is not rendered correctly, [view it in GitLab itself](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md#emoji).

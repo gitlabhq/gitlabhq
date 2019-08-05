@@ -546,7 +546,7 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['id']).to eq job.id
         expect(json_response['status']).to eq job.status
-        expect(json_response['html']).to eq('<span class="">BUILD TRACE</span>')
+        expect(json_response['html']).to eq('<span>BUILD TRACE</span>')
       end
     end
 

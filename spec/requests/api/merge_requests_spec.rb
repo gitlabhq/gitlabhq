@@ -1571,7 +1571,7 @@ describe API::MergeRequests do
     end
   end
 
-  describe "GET /projects/:id/merge_requests/:merge_request_iid/merge_ref" do
+  describe "GET /projects/:id/merge_requests/:merge_request_iid/merge_ref", :clean_gitlab_redis_shared_state do
     before do
       merge_request.mark_as_unchecked!
     end

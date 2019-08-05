@@ -3,6 +3,7 @@
 module MergeRequests
   class MergeabilityCheckService < ::BaseService
     include Gitlab::Utils::StrongMemoize
+    include Gitlab::ExclusiveLeaseHelpers
 
     delegate :project, to: :@merge_request
     delegate :repository, to: :project
@@ -21,13 +22,35 @@ module MergeRequests
     # where we need the current state of the merge ref in repository, the `recheck`
     # argument is required.
     #
+    # retry_lease - Concurrent calls wait for at least 10 seconds until the
+    # lease is granted (other process finishes running). Returns an error
+    # ServiceResponse if the lease is not granted during this time.
+    #
     # Returns a ServiceResponse indicating merge_status is/became can_be_merged
     # and the merge-ref is synced. Success in case of being/becoming mergeable,
     # error otherwise.
-    def execute(recheck: false)
+    def execute(recheck: false, retry_lease: true)
       return ServiceResponse.error(message: 'Invalid argument') unless merge_request
       return ServiceResponse.error(message: 'Unsupported operation') if Gitlab::Database.read_only?
+      return check_mergeability(recheck) unless merge_ref_auto_sync_lock_enabled?
 
+      in_write_lock(retry_lease: retry_lease) do |retried|
+        # When multiple calls are waiting for the same lock (retry_lease),
+        # it's possible that when granted, the MR status was already updated for
+        # that object, therefore we reset if there was a lease retry.
+        merge_request.reset if retried
+
+        check_mergeability(recheck)
+      end
+    rescue FailedToObtainLockError => error
+      ServiceResponse.error(message: error.message)
+    end
+
+    private
+
+    attr_reader :merge_request
+
+    def check_mergeability(recheck)
       recheck! if recheck
       update_merge_status
 
@@ -46,9 +69,21 @@ module MergeRequests
       ServiceResponse.success(payload: payload)
     end
 
-    private
+    # It's possible for this service to send concurrent requests to Gitaly in order
+    # to "git update-ref" the same ref. Therefore we handle a light exclusive
+    # lease here.
+    #
+    def in_write_lock(retry_lease:, &block)
+      lease_key = "mergeability_check:#{merge_request.id}"
 
-    attr_reader :merge_request
+      lease_opts = {
+        ttl:       1.minute,
+        retries:   retry_lease ? 10 : 0,
+        sleep_sec: retry_lease ? 1.second : 0
+      }
+
+      in_lock(lease_key, lease_opts, &block)
+    end
 
     def payload
       strong_memoize(:payload) do
@@ -115,6 +150,10 @@ module MergeRequests
 
     def merge_ref_auto_sync_enabled?
       Feature.enabled?(:merge_ref_auto_sync, project, default_enabled: true)
+    end
+
+    def merge_ref_auto_sync_lock_enabled?
+      Feature.enabled?(:merge_ref_auto_sync_lock, project, default_enabled: true)
     end
   end
 end
