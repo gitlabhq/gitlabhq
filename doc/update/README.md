@@ -135,6 +135,30 @@ If you need to downgrade your Enterprise Edition installation back to Community
 Edition, you can follow [this guide][ee-ce] to make the process as smooth as
 possible.
 
+## Version specific upgrading instructions
+
+### 12.2.0
+
+In 12.2.0, we enabled Rails' authenticated cookie encryption. Old sessions are
+automatically upgraded.
+
+However, session cookie downgrades are not supported. So after upgrading to 12.2.0,
+any downgrades would result to all sessions being invalidated and users are logged out.
+
+### 12.0.0
+
+In 12.0.0 we made various database related changes. These changes require that
+users first upgrade to the latest 11.11 patch release. Once upgraded to 11.11.x,
+users can upgrade to 12.x. Failure to do so may result in database migrations
+not being applied, which could lead to application errors.
+
+Example 1: you are currently using GitLab 11.11.3, which is the latest patch
+release for 11.11.x. You can upgrade as usual to 12.0.0, 12.1.0, etc.
+
+Example 2: you are currently using a version of GitLab 10.x. To upgrade, first
+upgrade to 11.11.3. Once upgraded to 11.11.3 you can safely upgrade to 12.0.0
+or future versions.
+
 ## Miscellaneous
 
 - [MySQL to PostgreSQL](mysql_to_postgresql.md) guides you through migrating

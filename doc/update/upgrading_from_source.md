@@ -378,20 +378,6 @@ Example:
 Additional instructions here.
 -->
 
-### 12.0.0
-
-In 12.0.0 we made various database related changes. These changes require that
-users first upgrade to the latest 11.11 patch release. Once upgraded to 11.11.x,
-users can upgrade to 12.x. Failure to do so may result in database migrations
-not being applied, which could lead to application errors.
-
-Example 1: you are currently using GitLab 11.11.3, which is the latest patch
-release for 11.11.x. You can upgrade as usual to 12.0.0, 12.1.0, etc.
-
-Example 2: you are currently using a version of GitLab 10.x. To upgrade, first
-upgrade to 11.11.3. Once upgraded to 11.11.3 you can safely upgrade to 12.0.0
-or future versions.
-
 ## Things went south? Revert to previous version
 
 ### 1. Revert the code to the previous version
