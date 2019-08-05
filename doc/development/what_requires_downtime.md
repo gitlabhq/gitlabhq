@@ -140,7 +140,7 @@ done without requiring downtime. However, this does require that any application
 changes are deployed _first_. Thus, changing the constraints of a column should
 happen in a post-deployment migration.
 NOTE: Avoid using `change_column` as it produces inefficient query because it re-defines
-the whole column type. For example, to add a NOT NULL constraint, prefer `change_column_null `
+the whole column type. For example, to add a NOT NULL constraint, prefer `change_column_null`
 
 ## Changing Column Types
 

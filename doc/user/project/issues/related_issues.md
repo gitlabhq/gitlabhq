@@ -19,7 +19,7 @@ Issues from a different project require additional information like the
 group and the project name. For example:
 
 - same project: `#44`
-- same group: `project#44 `
+- same group: `project#44`
 - different group: `group/project#44`
 
 Valid references will be added to a temporary list that you can review.
