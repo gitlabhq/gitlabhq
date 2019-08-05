@@ -2,6 +2,19 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 12.1.4
+
+### Fixed (3 changes, 1 of them is from the community)
+
+- Properly translate term in projects list. !30958
+- Add exclusive lease to mergeability check process. !31082
+- Fix Docker in Docker (DIND) listen port behavior change by adding DOCKER_TLS_CERTDIR in CI job templates. !31201 (Cameron Boulton)
+
+### Performance (1 change)
+
+- Improve job log rendering performance. !31262
+
+
 ## 12.1.3
 
 ### Fixed (11 changes)
