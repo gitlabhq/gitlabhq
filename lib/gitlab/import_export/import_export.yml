@@ -84,9 +84,6 @@ project_tree:
     - lists:
       - label:
         - :priorities
-      - milestone:
-        - events:
-          - :push_event_payload
 
 # Only include the following attributes for the models specified.
 included_attributes:
