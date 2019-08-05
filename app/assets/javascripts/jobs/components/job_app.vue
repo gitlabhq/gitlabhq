@@ -73,6 +73,10 @@ export default {
       type: String,
       required: true,
     },
+    projectPath: {
+      type: String,
+      required: true,
+    },
     logState: {
       type: String,
       required: true,
@@ -258,6 +262,7 @@ export default {
           :quota-used="job.runners.quota.used"
           :quota-limit="job.runners.quota.limit"
           :runners-path="runnerHelpUrl"
+          :project-path="projectPath"
         />
 
         <environments-block

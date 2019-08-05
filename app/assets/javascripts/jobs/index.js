@@ -20,6 +20,7 @@ export default () => {
           pagePath: element.dataset.buildOptionsPagePath,
           logState: element.dataset.buildOptionsLogState,
           buildStatus: element.dataset.buildOptionsBuildStatus,
+          projectPath: element.dataset.projectPath,
         },
       });
     },
