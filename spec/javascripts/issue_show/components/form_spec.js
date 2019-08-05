@@ -1,81 +1,98 @@
 import Vue from 'vue';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import formComponent from '~/issue_show/components/form.vue';
 import eventHub from '~/issue_show/event_hub';
 
 describe('Inline edit form component', () => {
   let vm;
-  let autosave;
-  let autosaveObj;
+  const defaultProps = {
+    canDestroy: true,
+    formState: {
+      title: 'b',
+      description: 'a',
+      lockedWarningVisible: false,
+    },
+    issuableType: 'issue',
+    markdownPreviewPath: '/',
+    markdownDocsPath: '/',
+    projectPath: '/',
+    projectNamespace: '/',
+  };
 
-  beforeEach(done => {
-    autosaveObj = { reset: jasmine.createSpy() };
-
-    autosave = spyOnDependency(formComponent, 'Autosave').and.returnValue(autosaveObj);
-
-    const Component = Vue.extend(formComponent);
-
-    vm = new Component({
-      propsData: {
-        canDestroy: true,
-        formState: {
-          title: 'b',
-          description: 'a',
-          lockedWarningVisible: false,
-        },
-        issuableType: 'issue',
-        markdownPreviewPath: '/',
-        markdownDocsPath: '/',
-        projectPath: '/',
-        projectNamespace: '/',
-      },
-    }).$mount();
-
-    Vue.nextTick(done);
+  afterEach(() => {
+    vm.$destroy();
   });
 
+  const createComponent = props => {
+    const Component = Vue.extend(formComponent);
+
+    vm = mountComponent(Component, {
+      ...defaultProps,
+      ...props,
+    });
+  };
+
   it('does not render template selector if no templates exist', () => {
+    createComponent();
+
     expect(vm.$el.querySelector('.js-issuable-selector-wrap')).toBeNull();
   });
 
-  it('renders template selector when templates exists', done => {
-    vm.issuableTemplates = ['test'];
+  it('renders template selector when templates exists', () => {
+    createComponent({ issuableTemplates: ['test'] });
 
-    Vue.nextTick(() => {
-      expect(vm.$el.querySelector('.js-issuable-selector-wrap')).not.toBeNull();
-
-      done();
-    });
+    expect(vm.$el.querySelector('.js-issuable-selector-wrap')).not.toBeNull();
   });
 
   it('hides locked warning by default', () => {
+    createComponent();
+
     expect(vm.$el.querySelector('.alert')).toBeNull();
   });
 
-  it('shows locked warning if formState is different', done => {
-    vm.formState.lockedWarningVisible = true;
+  it('shows locked warning if formState is different', () => {
+    createComponent({ formState: { ...defaultProps.formState, lockedWarningVisible: true } });
 
-    Vue.nextTick(() => {
-      expect(vm.$el.querySelector('.alert')).not.toBeNull();
+    expect(vm.$el.querySelector('.alert')).not.toBeNull();
+  });
 
-      done();
+  it('hides locked warning when currently saving', () => {
+    createComponent({
+      formState: { ...defaultProps.formState, updateLoading: true, lockedWarningVisible: true },
     });
+
+    expect(vm.$el.querySelector('.alert')).toBeNull();
   });
 
-  it('initialized Autosave on mount', () => {
-    expect(autosave).toHaveBeenCalledTimes(2);
-  });
+  describe('autosave', () => {
+    let autosaveObj;
+    let autosave;
 
-  it('calls reset on autosave when eventHub emits appropriate events', () => {
-    eventHub.$emit('close.form');
+    beforeEach(() => {
+      autosaveObj = { reset: jasmine.createSpy() };
+      autosave = spyOnDependency(formComponent, 'Autosave').and.returnValue(autosaveObj);
+    });
 
-    expect(autosaveObj.reset).toHaveBeenCalledTimes(2);
+    it('initialized Autosave on mount', () => {
+      createComponent();
 
-    eventHub.$emit('delete.issuable');
+      expect(autosave).toHaveBeenCalledTimes(2);
+    });
 
-    expect(autosaveObj.reset).toHaveBeenCalledTimes(4);
+    it('calls reset on autosave when eventHub emits appropriate events', () => {
+      createComponent();
 
-    eventHub.$emit('update.issuable');
+      eventHub.$emit('close.form');
 
-    expect(autosaveObj.reset).toHaveBeenCalledTimes(6);
+      expect(autosaveObj.reset).toHaveBeenCalledTimes(2);
+
+      eventHub.$emit('delete.issuable');
+
+      expect(autosaveObj.reset).toHaveBeenCalledTimes(4);
+
+      eventHub.$emit('update.issuable');
+
+      expect(autosaveObj.reset).toHaveBeenCalledTimes(6);
+    });
   });
 });
