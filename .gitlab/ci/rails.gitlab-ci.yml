@@ -1,12 +1,12 @@
 .use-pg: &use-pg
   services:
-    - name: postgres:9.6.11
+    - name: postgres:9.6.14
       command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
     - name: redis:alpine
 
 .use-pg-10: &use-pg-10
   services:
-    - name: postgres:10.7
+    - name: postgres:10.9
       command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
     - name: redis:alpine
 
