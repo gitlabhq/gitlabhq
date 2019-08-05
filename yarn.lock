@@ -996,17 +996,17 @@
   resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-1.67.0.tgz#c7b94eca13b99fd3aaa737fb6dcc0abc41d3c579"
   integrity sha512-hJOmWEs6RkjzyKkb1vc9wwKGZIBIP0coHkxu/KgOoxhBVudpGk4CH7xJ6UuB2TKpb0SEh5CC1CzRZfBYaFhsaA==
 
-"@gitlab/ui@5.12.0":
-  version "5.12.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-5.12.0.tgz#e44a227de3df287c63eb36162361fb451e344f69"
-  integrity sha512-QCKG3gaO4UL5yqGNqcioPPFz3rJl6J22tt8DwgARAFREGu20KK0VChHEY0xOyShCU595mKz0XgJZF+8NuxXUtw==
+"@gitlab/ui@5.12.1":
+  version "5.12.1"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-5.12.1.tgz#70035747cec96a729e012924ab2d3e3b6067a558"
+  integrity sha512-W4rvZj2Fab1UpXR0Wyi7wSvj+5Ko+TWHibC/q/FSRHMsbeSLq77lljd7rQWeXXNMBvEKwr4NqSmckWsjaSOLfw==
   dependencies:
     "@babel/standalone" "^7.0.0"
     "@gitlab/vue-toasted" "^1.2.1"
     bootstrap "4.3.1"
     bootstrap-vue "2.0.0-rc.27"
     copy-to-clipboard "^3.0.8"
-    echarts "^4.2.0-rc.2"
+    echarts "^4.2.1"
     highlight.js "^9.13.1"
     js-beautify "^1.8.8"
     lodash "^4.17.14"
@@ -4309,7 +4309,7 @@ ecc-jsbn@~0.1.1:
     jsbn "~0.1.0"
     safer-buffer "^2.1.0"
 
-echarts@^4.2.0-rc.2:
+echarts@^4.2.1:
   version "4.2.1"
   resolved "https://registry.yarnpkg.com/echarts/-/echarts-4.2.1.tgz#9a8ea3b03354f86f824d97625c334cf16965ef03"
   integrity sha512-pw4xScRPsLegD/cqEcoXRKeA2SD4+s+Kyo0Na166NamOWhzNl2yI5RZ2rE97tBlAopNmhyMeBVpAeD5qb+ee1A==
