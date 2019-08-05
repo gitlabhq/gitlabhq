@@ -1,9 +1,11 @@
 <script>
 import { GlButton, GlTooltipDirective, GlLoadingIcon } from '@gitlab/ui';
-import { s__, sprintf } from '~/locale';
+import axios from '~/lib/utils/axios_utils';
+import flash from '~/flash';
+import { s__, __, sprintf } from '~/locale';
 import GlCountdown from '~/vue_shared/components/gl_countdown.vue';
+import Icon from '~/vue_shared/components/icon.vue';
 import eventHub from '../event_hub';
-import Icon from '../../vue_shared/components/icon.vue';
 
 export default {
   directives: {
@@ -44,7 +46,24 @@ export default {
 
       this.isLoading = true;
 
-      eventHub.$emit('postAction', action.path);
+      /**
+       * Ideally, the component would not make an api call directly.
+       * However, in order to use the eventhub and know when to
+       * toggle back the `isLoading` property we'd need an ID
+       * to track the request with a wacther - since this component
+       * is rendered at least 20 times in the same page, moving the
+       * api call directly here is the most performant solution
+       */
+      axios
+        .post(`${action.path}.json`)
+        .then(() => {
+          this.isLoading = false;
+          eventHub.$emit('updateTable');
+        })
+        .catch(() => {
+          this.isLoading = false;
+          flash(__('An error occurred while making the request.'));
+        });
     },
 
     isActionDisabled(action) {
