@@ -19,16 +19,36 @@ describe WebHookService do
   let(:service_instance) { described_class.new(project_hook, data, :push_hooks) }
 
   describe '#initialize' do
-    it 'allow_local_requests is true if hook is a SystemHook' do
-      instance = described_class.new(build(:system_hook), data, :system_hook)
-      expect(instance.request_options[:allow_local_requests]).to be_truthy
+    before do
+      stub_application_setting(setting_name => setting)
     end
 
-    it 'allow_local_requests is false if hook is not a SystemHook' do
-      %i(project_hook service_hook web_hook_log).each do |hook|
-        instance = described_class.new(build(hook), data, hook)
-        expect(instance.request_options[:allow_local_requests]).to be_falsey
+    shared_examples_for 'respects outbound network setting' do
+      context 'when local requests are allowed' do
+        let(:setting) { true }
+
+        it { expect(hook.request_options[:allow_local_requests]).to be_truthy }
       end
+
+      context 'when local requests are not allowed' do
+        let(:setting) { false }
+
+        it { expect(hook.request_options[:allow_local_requests]).to be_falsey }
+      end
+    end
+
+    context 'when SystemHook' do
+      let(:setting_name) { :allow_local_requests_from_system_hooks }
+      let(:hook) { described_class.new(build(:system_hook), data, :system_hook) }
+
+      include_examples 'respects outbound network setting'
+    end
+
+    context 'when ProjectHook' do
+      let(:setting_name) { :allow_local_requests_from_web_hooks_and_services }
+      let(:hook) { described_class.new(build(:project_hook), data, :project_hook) }
+
+      include_examples 'respects outbound network setting'
     end
   end
 

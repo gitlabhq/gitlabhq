@@ -34,15 +34,16 @@ to 127.0.0.1, ::1 and 0.0.0.0, as well as IPv4 10.0.0.0/8, 172.16.0.0/12,
 192.168.0.0/16 and IPv6 site-local (ffc0::/10) addresses won't be allowed.
 
 This behavior can be overridden by enabling the option *"Allow requests to the
-local network from hooks and services"* in the *"Outbound requests"* section
+local network from web hooks and services"* in the *"Outbound requests"* section
 inside the Admin area under **Settings**
 (`/admin/application_settings/network`):
 
-![Outbound requests admin settings](img/outbound_requests_section.png)
+![Outbound requests admin settings](img/outbound_requests_section_v12_2.png)
 
->**Note:**
-*System hooks* are exempt from this protection because they are set up by
-admins.
+NOTE: **Note:**
+*System hooks* are enabled to make requests to local network by default since they are
+set up by administrators. However, you can turn this off by disabling the
+**Allow requests to the local network from system hooks** option.
 
 <!-- ## Troubleshooting
 

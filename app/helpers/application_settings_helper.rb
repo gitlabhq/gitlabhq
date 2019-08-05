@@ -160,6 +160,8 @@ module ApplicationSettingsHelper
       :akismet_api_key,
       :akismet_enabled,
       :allow_local_requests_from_hooks_and_services,
+      :allow_local_requests_from_web_hooks_and_services,
+      :allow_local_requests_from_system_hooks,
       :dns_rebinding_protection_enabled,
       :archive_builds_in_human_readable,
       :authorized_keys_enabled,

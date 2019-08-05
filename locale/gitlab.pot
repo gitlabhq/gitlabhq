@@ -948,6 +948,12 @@ msgstr ""
 msgid "Allow requests to the local network from hooks and services."
 msgstr ""
 
+msgid "Allow requests to the local network from system hooks"
+msgstr ""
+
+msgid "Allow requests to the local network from web hooks and services"
+msgstr ""
+
 msgid "Allow this key to push to repository as well? (Default only allows pull access.)"
 msgstr ""
 

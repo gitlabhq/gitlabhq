@@ -128,7 +128,7 @@ module Gitlab
       private
 
       def validate_url!
-        return if Gitlab::CurrentSettings.allow_local_requests_from_hooks_and_services?
+        return if Gitlab::CurrentSettings.allow_local_requests_from_web_hooks_and_services?
 
         Gitlab::UrlBlocker.validate!(api_prefix, allow_local_network: false)
       end

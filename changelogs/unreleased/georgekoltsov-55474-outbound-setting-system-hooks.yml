@@ -1,0 +1,5 @@
+---
+title: Add new outbound network requests application setting for system hooks
+merge_request: 31177
+author:
+type: added

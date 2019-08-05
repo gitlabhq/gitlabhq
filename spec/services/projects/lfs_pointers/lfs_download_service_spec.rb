@@ -17,7 +17,7 @@ describe Projects::LfsPointers::LfsDownloadService do
   before do
     ApplicationSetting.create_from_defaults
 
-    stub_application_setting(allow_local_requests_from_hooks_and_services: local_request_setting)
+    stub_application_setting(allow_local_requests_from_web_hooks_and_services: local_request_setting)
     allow(project).to receive(:lfs_enabled?).and_return(true)
   end
 
