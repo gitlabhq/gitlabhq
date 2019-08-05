@@ -1,7 +1,7 @@
 <!--
 # Read me first!
 
-Set the title to: `Security Release: 11.4.X, 11.3.X, and 11.2.X`
+Set the title to: `Security Release: 12.2.X, 12.1.X, and 12.0.X`
 -->
 
 ## Releases tasks
@@ -12,9 +12,9 @@ Set the title to: `Security Release: 11.4.X, 11.3.X, and 11.2.X`
 
 ## Version issues:
 
-* 11.4.X: {release task link}
-* 11.3.X: {release task link}
-* 11.2.X: {release task link}
+* 12.2.X: {release task link}
+* 12.1.X: {release task link}
+* 12.0.X: {release task link}
 
 ## Security Issues:
 
@@ -34,9 +34,9 @@ Set the title to: `Security Release: 11.4.X, 11.3.X, and 11.2.X`
 
 | Version | MR |
 |---------|----|
-| 11.4 | {https://dev.gitlab.org/gitlab/gitlabhq/merge_requests/ link} |
-| 11.3 | {https://dev.gitlab.org/gitlab/gitlabhq/merge_requests/ link} |
-| 11.2 | {https://dev.gitlab.org/gitlab/gitlabhq/merge_requests/ link} |
+| 12.2 | {https://dev.gitlab.org/gitlab/gitlabhq/merge_requests/ link} |
+| 12.1 | {https://dev.gitlab.org/gitlab/gitlabhq/merge_requests/ link} |
+| 12.0 | {https://dev.gitlab.org/gitlab/gitlabhq/merge_requests/ link} |
 | master | {https://dev.gitlab.org/gitlab/gitlabhq/merge_requests/ link} |
 
 
@@ -48,9 +48,9 @@ Set the title to: `Security Release: 11.4.X, 11.3.X, and 11.2.X`
 
 | Version | MR |
 |---------|----|
-| 11.4| {https://dev.gitlab.org/gitlab/gitlab-ee/merge_requests/ link} |
-| 11.3 | {https://dev.gitlab.org/gitlab/gitlab-ee/merge_requests/ link} |
-| 11.2 | {https://dev.gitlab.org/gitlab/gitlab-ee/merge_requests/ link} |
+| 12.2 | {https://dev.gitlab.org/gitlab/gitlab-ee/merge_requests/ link} |
+| 12.1 | {https://dev.gitlab.org/gitlab/gitlab-ee/merge_requests/ link} |
+| 12.0 | {https://dev.gitlab.org/gitlab/gitlab-ee/merge_requests/ link} |
 | master | {https://dev.gitlab.org/gitlab/gitlab-ee/merge_requests/ link} |
 
 
