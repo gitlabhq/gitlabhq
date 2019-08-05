@@ -110,7 +110,7 @@ end
 ```
 
 > Notice that the test itself is simple. The most challenging part is the creation of the application state, which will be covered later.
-
+>
 > The exemplified test case's MVC is not enough for the change to be merged, but it helps to build up the test logic. The reason is that we do not want to use locators directly in the tests, and tests **must** use [Page Objects] before they can be merged. This way we better separate the responsibilities, where the Page Objects encapsulate elements and methods that allow us to interact with pages, while the spec files describe the test cases in more business-related language.
 
 Below are the steps that the test covers:
@@ -211,7 +211,7 @@ A pre-condition for the entire test suite is defined in the `before :context` bl
 
 > For our test suite, due to the need of the tests being completely independent of each other, we won't use the `before :context` block. The `before :context` block would make the tests dependent on each other because the first test changes the label of the issue, and the second one depends on the `'animal::fox'` label being set.
 
-> **Tip:** In case of a test suite with only one `it` block it's ok to use only the `before` block (see below) with all the test's pre-conditions.
+TIP: **Tip:** In case of a test suite with only one `it` block it's ok to use only the `before` block (see below) with all the test's pre-conditions.
 
 #### `before`
 
@@ -274,11 +274,11 @@ end
 In the `before` block we create all the application state needed for the tests to run. We do that by using the `Runtime::Browser.visit` method to go to the login page, by performing a `sign_in_using_credentials` from the `Login` Page Object, by fabricating resources via APIs (`issue`, and `Resource::Label`), and by using the `issue.visit!` to visit the issue page.
 
 > A project is created in the background by creating the `issue` resource.
-
+>
 > When creating the [Resources], notice that when calling the `fabricate_via_api` method, we pass some attribute:values, like `title`, and `labels` for the `issue` resource; and `project` and `title` for the `label` resource.
-
+>
 > What's important to understand here is that by creating the application state mostly using the public APIs we save a lot of time in the test suite setup stage.
-
+>
 > Soon we will cover the use of the already existing resources' methods and the creation of your own `fabricate_via_api` methods for resources where this is still not available, but first, let's optimize our implementation.
 
 ### 6. Optimization
@@ -362,7 +362,7 @@ First, in the [issue resource](https://gitlab.com/gitlab-org/gitlab-ee/blob/d358
 Add the following `attribute :id` and `attribute :labels` right above the [`attribute :title`](https://gitlab.com/gitlab-org/gitlab-ee/blob/d3584e80b4236acdf393d815d604801573af72cc/qa/qa/resource/issue.rb#L15).
 
 > This line is needed to allow for the issue fabrication, and for labels to be automatically added to the issue when fabricating it via API.
-
+>
 > We add the attributes above the existing attribute to keep them alphabetically organized.
 
 Then, let's initialize an instance variable for labels to allow an empty array as default value when such information is not passed during the resource fabrication, since this optional. [Between the attributes and the `fabricate!` method](https://gitlab.com/gitlab-org/gitlab-ee/blob/1a1f1408728f19b2aa15887cd20bddab7e70c8bd/qa/qa/resource/issue.rb#L18), add the following:
@@ -437,7 +437,7 @@ By defining the `resource_web_url(resource)` method, we override the one from th
 
 By defining the `api_get_path` method, we **would** allow for the [`ApiFabricator`](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/qa/qa/resource/api_fabricator.rb) module to know which path to use to get a single label, but since there's no path available for that in the publich API, we raise a `NotImplementedError` instead.
 
-By defining the `api_post_path` method, we allow for the [`ApiFabricator `](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/qa/qa/resource/api_fabricator.rb) module to know which path to use to create a new label in a specific project.
+By defining the `api_post_path` method, we allow for the [`ApiFabricator`](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/qa/qa/resource/api_fabricator.rb) module to know which path to use to create a new label in a specific project.
 
 By defining the `api_post_body` method, we we allow for the [`ApiFabricator.api_post`](https://gitlab.com/gitlab-org/gitlab-ee/blob/a9177ca1812bac57e2b2fa4560e1d5dd8ffac38b/qa/qa/resource/api_fabricator.rb#L68) method to know which data to send when making the `POST` request.
 
@@ -580,7 +580,7 @@ filter_output = search_field_tag search_id, nil, class: "dropdown-input-field", 
 
 > `data-qa-*` data attributes and CSS classes starting with `qa-` are used solely for the purpose of QA and testing.
 > By defining these, we add **testability** to the application.
-
+>
 > When defining a data attribute like: `qa_selector: 'labels_block'`, it should match the element definition: `element :labels_block`. We use a [sanity test](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/qa/qa/page#how-did-we-solve-fragile-tests-problem) to check that defined elements have their respective selectors in the specified views.
 
 #### Updates in the `QA::Page::Base` class
@@ -598,8 +598,6 @@ end
 This method receives an element (`name`) and the `keys` that it will send to that element, and the keys are an array that can receive strings, or "special" keys, like `:enter`.
 
 As you might remember, in the Issue Page Object we call this method like this: `send_keys_to_element(:dropdown_input_field, [label, :enter])`.
-
-___
 
 With that, you should be able to start writing end-to-end tests yourself. *Congratulations!*
 

@@ -71,10 +71,10 @@ sudo service sshd reload
 Confirm that SSH is working by removing your user's SSH key in the UI, adding a
 new one, and attempting to pull a repo.
 
-> **Note:** For Omnibus Docker, `AuthorizedKeysCommand` is setup by default in
+NOTE: **Note:** For Omnibus Docker, `AuthorizedKeysCommand` is setup by default in
 GitLab 11.11 and later.
 
-> **Warning:** Do not disable writes until SSH is confirmed to be working
+CAUTION: **Caution:** Do not disable writes until SSH is confirmed to be working
 perfectly, because the file will quickly become out-of-date.
 
 In the case of lookup failures (which are common), the `authorized_keys`
