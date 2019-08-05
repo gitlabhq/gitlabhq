@@ -4,9 +4,6 @@ $: << File.expand_path(File.dirname(__FILE__))
 
 Encoding.default_external = 'UTF-8'
 
-require_relative '../lib/gitlab'
-require_relative '../config/initializers/0_inject_enterprise_edition_module'
-
 module QA
   ##
   # GitLab QA runtime classes, mostly singletons.

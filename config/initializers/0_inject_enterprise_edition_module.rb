@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'active_support/inflector'
-
 module InjectEnterpriseEditionModule
   def prepend_if_ee(constant)
     prepend(constant.constantize) if Gitlab.ee?
