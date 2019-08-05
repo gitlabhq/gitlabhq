@@ -148,9 +148,9 @@ RSpec.configure do |config|
     Gitlab::ThreadMemoryCache.cache_backend.clear
   end
 
-  config.around(:example, :quarantine) do
+  config.around(:example, :quarantine) do |example|
     # Skip tests in quarantine unless we explicitly focus on them.
-    skip('In quarantine') unless config.inclusion_filter[:quarantine]
+    example.run if config.inclusion_filter[:quarantine]
   end
 
   config.before(:example, :request_store) do
