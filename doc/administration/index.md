@@ -185,3 +185,5 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 - [Debugging tips](troubleshooting/debug.md): Tips to debug problems when things go wrong
 - [Log system](logs.md): Where to look for logs.
 - [Sidekiq Troubleshooting](troubleshooting/sidekiq.md): Debug when Sidekiq appears hung and is not processing jobs.
+- Useful [diagnostics tools](troubleshooting/diagnostics_tools.md) that are sometimes used by the GitLab
+  Support team.
