@@ -155,16 +155,15 @@ module SearchHelper
       li_class = 'active'
       count = @search_results.formatted_count(scope)
     else
-      count = 0
-      badge_class = 'js-search-count'
-      badge_data = { scope: scope, url: search_count_path(search_params) }
+      badge_class = 'js-search-count hidden'
+      badge_data = { url: search_count_path(search_params) }
     end
 
     content_tag :li, class: li_class, data: data do
       link_to search_path(search_params) do
         concat label
         concat ' '
-        concat content_tag(:span, count, class: 'badge badge-pill', data: { scope: scope })
+        concat content_tag(:span, count, class: ['badge badge-pill', badge_class], data: badge_data)
       end
     end
   end

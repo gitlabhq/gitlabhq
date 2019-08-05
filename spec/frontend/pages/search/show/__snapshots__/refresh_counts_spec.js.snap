@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`pages/search/show/refresh_counts fetches and displays search counts 1`] = `
+"<div class=\\"badge\\">22</div>
+<div class=\\"badge js-search-count\\" data-url=\\"http://test.host/search/count?search=lorem+ipsum&amp;project_id=3&amp;scope=issues\\">4</div>
+<div class=\\"badge js-search-count\\" data-url=\\"http://test.host/search/count?search=lorem+ipsum&amp;project_id=3&amp;scope=merge_requests\\">5</div>"
+`;
