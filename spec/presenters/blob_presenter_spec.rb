@@ -28,15 +28,53 @@ describe BlobPresenter, :seed_helper do
     subject { described_class.new(blob) }
 
     it 'returns highlighted content' do
-      expect(Gitlab::Highlight).to receive(:highlight).with('files/ruby/regex.rb', git_blob.data, plain: nil, language: nil)
+      expect(Gitlab::Highlight)
+        .to receive(:highlight)
+        .with(
+          'files/ruby/regex.rb',
+          git_blob.data,
+          since: nil,
+          plain: nil,
+          language: nil
+        )
 
       subject.highlight
     end
 
     it 'returns plain content when :plain is true' do
-      expect(Gitlab::Highlight).to receive(:highlight).with('files/ruby/regex.rb', git_blob.data, plain: true, language: nil)
+      expect(Gitlab::Highlight)
+        .to receive(:highlight)
+        .with(
+          'files/ruby/regex.rb',
+          git_blob.data,
+          since: nil,
+          plain: true,
+          language: nil
+        )
 
       subject.highlight(plain: true)
+    end
+
+    context '"since" and "to" are present' do
+      before do
+        allow(git_blob)
+          .to receive(:data)
+          .and_return("line one\nline two\nline 3\nline 4")
+      end
+
+      it 'returns limited highlighted content' do
+        expect(Gitlab::Highlight)
+          .to receive(:highlight)
+          .with(
+            'files/ruby/regex.rb',
+            "line two\nline 3\n",
+            since: 2,
+            language: nil,
+            plain: nil
+          )
+
+        subject.highlight(since: 2, to: 3)
+      end
     end
 
     context 'gitlab-language contains a match' do
@@ -45,7 +83,15 @@ describe BlobPresenter, :seed_helper do
       end
 
       it 'passes language to inner call' do
-        expect(Gitlab::Highlight).to receive(:highlight).with('files/ruby/regex.rb', git_blob.data, plain: nil, language: 'ruby')
+        expect(Gitlab::Highlight)
+          .to receive(:highlight)
+          .with(
+            'files/ruby/regex.rb',
+            git_blob.data,
+            since: nil,
+            plain: nil,
+            language: 'ruby'
+          )
 
         subject.highlight
       end
