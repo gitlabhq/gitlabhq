@@ -2827,10 +2827,10 @@ msgstr ""
 msgid "ClusterIntegration|The associated Tiller pod will be deleted and cannot be restored."
 msgstr ""
 
-msgid "ClusterIntegration|The associated certifcate will be deleted and cannot be restored."
+msgid "ClusterIntegration|The associated load balancer and IP will be deleted and cannot be restored."
 msgstr ""
 
-msgid "ClusterIntegration|The associated load balancer and IP will be deleted and cannot be restored."
+msgid "ClusterIntegration|The associated private key will be deleted and cannot be restored."
 msgstr ""
 
 msgid "ClusterIntegration|The endpoint is in the process of being assigned. Please check your Kubernetes cluster or Quotas on Google Kubernetes Engine if it takes a long time."
