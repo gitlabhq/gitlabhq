@@ -10,9 +10,22 @@ all you need to do is update GitLab itself:
 
 1. Log into each node (**primary** and **secondary** nodes).
 1. [Update GitLab][update].
-1. [Update tracking database on **secondary** node](#update-tracking-database-on-secondary-node) when
-   the tracking database is enabled.
 1. [Test](#check-status-after-updating) **primary** and **secondary** nodes, and check version in each.
+
+### Check status after updating
+
+Now that the update process is complete, you may want to check whether
+everything is working correctly:
+
+1. Run the Geo raketask on all nodes, everything should be green:
+
+   ```sh
+   sudo gitlab-rake gitlab:geo:check
+   ```
+
+1. Check the **primary** node's Geo dashboard for any errors.
+1. Test the data replication by pushing code to the **primary** node and see if it
+   is received by **secondary** nodes.
 
 ## Upgrading to GitLab 12.1
 
@@ -419,22 +432,7 @@ is prepended with the relevant node for better clarity:
    sudo gitlab-ctl start
    ```
 
-## Check status after updating
-
-Now that the update process is complete, you may want to check whether
-everything is working correctly:
-
-1. Run the Geo raketask on all nodes, everything should be green:
-
-   ```sh
-   sudo gitlab-rake gitlab:geo:check
-   ```
-
-1. Check the **primary** node's Geo dashboard for any errors.
-1. Test the data replication by pushing code to the **primary** node and see if it
-   is received by **secondary** nodes.
-
-## Update tracking database on **secondary** node
+### Update tracking database on **secondary** node
 
 After updating a **secondary** node, you might need to run migrations on
 the tracking database. The tracking database was added in GitLab 9.1,
