@@ -42,7 +42,7 @@ module GroupDescendant
       parent = child.parent
 
       exception = ArgumentError.new <<~MSG
-        parent: [GroupDescendant: #{parent.inspect}] was not preloaded for [#{child.inspect}]")
+        Parent was not preloaded for child when rendering group hierarchy.
         This error is not user facing, but causes a +1 query.
       MSG
       extras = {
@@ -50,7 +50,7 @@ module GroupDescendant
         child: child.inspect,
         preloaded: preloaded.map(&:full_path)
       }
-      issue_url = 'https://gitlab.com/gitlab-org/gitlab-ce/issues/40785'
+      issue_url = 'https://gitlab.com/gitlab-org/gitlab-ce/issues/49404'
 
       Gitlab::Sentry.track_exception(exception, issue_url: issue_url, extra: extras)
     end
