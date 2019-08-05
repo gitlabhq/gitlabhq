@@ -469,7 +469,16 @@ One current feature of GitLab that still requires a shared directory (NFS) is
 There is [work in progress](https://gitlab.com/gitlab-org/gitlab-pages/issues/196)
 to eliminate the need for NFS to support GitLab Pages.
 
-## Troubleshooting
+## Troubleshooting Gitaly
+
+### Commits, pushes, and clones return a 401
+
+```
+remote: GitLab: 401 Unauthorized
+```
+
+You will need to sync your `gitlab-secrets.json` file with your GitLab
+app nodes.
 
 ### `gitaly-debug`
 
