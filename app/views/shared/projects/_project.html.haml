@@ -89,4 +89,4 @@
             %span.icon-wrapper.pipeline-status
               = render 'ci/status/icon', status: project.commit.last_pipeline.detailed_status(current_user), type: 'commit', tooltip_placement: 'top', path: pipeline_path
         .updated-note
-          %span Updated #{updated_tooltip}
+          %span #{_('Updated')} #{updated_tooltip}
