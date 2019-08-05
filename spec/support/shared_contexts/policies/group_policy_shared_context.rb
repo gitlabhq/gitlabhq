@@ -16,7 +16,7 @@ RSpec.shared_context 'GroupPolicy context' do
       read_group_merge_requests
    ]
   end
-  let(:reporter_permissions) { [:admin_label] }
+  let(:reporter_permissions) { %i[admin_label read_container_image] }
   let(:developer_permissions) { [:admin_milestone] }
   let(:maintainer_permissions) do
     %i[

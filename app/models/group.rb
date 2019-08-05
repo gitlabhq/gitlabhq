@@ -44,6 +44,8 @@ class Group < Namespace
   has_many :cluster_groups, class_name: 'Clusters::Group'
   has_many :clusters, through: :cluster_groups, class_name: 'Clusters::Cluster'
 
+  has_many :container_repositories, through: :projects
+
   has_many :todos
 
   accepts_nested_attributes_for :variables, allow_destroy: true

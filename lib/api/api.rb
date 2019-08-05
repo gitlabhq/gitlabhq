@@ -104,7 +104,6 @@ module API
     mount ::API::BroadcastMessages
     mount ::API::Commits
     mount ::API::CommitStatuses
-    mount ::API::ContainerRegistry
     mount ::API::DeployKeys
     mount ::API::Deployments
     mount ::API::Environments
@@ -116,6 +115,7 @@ module API
     mount ::API::GroupLabels
     mount ::API::GroupMilestones
     mount ::API::Groups
+    mount ::API::GroupContainerRepositories
     mount ::API::GroupVariables
     mount ::API::ImportGithub
     mount ::API::Internal
@@ -138,6 +138,7 @@ module API
     mount ::API::Pipelines
     mount ::API::PipelineSchedules
     mount ::API::ProjectClusters
+    mount ::API::ProjectContainerRepositories
     mount ::API::ProjectEvents
     mount ::API::ProjectExport
     mount ::API::ProjectImport

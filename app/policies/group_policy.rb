@@ -68,6 +68,7 @@ class GroupPolicy < BasePolicy
   rule { developer }.enable :admin_milestone
 
   rule { reporter }.policy do
+    enable :read_container_image
     enable :admin_label
     enable :admin_list
     enable :admin_issue
