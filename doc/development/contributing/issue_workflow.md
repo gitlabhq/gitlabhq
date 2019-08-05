@@ -240,7 +240,7 @@ know how difficult the issue is. Additionally:
   as suitable for people that have never contributed to GitLab before on the
   [Up For Grabs campaign](http://up-for-grabs.net)
 - We encourage people that have never contributed to any open source project to
-  look for [`Accepting merge requests` issues with a weight of 1][firt-timers]
+  look for [`Accepting merge requests` issues with a weight of 1][first-timers]
 
 If you've decided that you would like to work on an issue, please @-mention
 the [appropriate product manager](https://about.gitlab.com/handbook/product/#who-to-talk-to-for-what)
@@ -253,8 +253,8 @@ GitLab team members who apply the ~"Accepting merge requests" label to an issue
 should update the issue description with a responsible product manager, inviting
 any potential community contributor to @-mention per above.
 
-[up-for-grabs]: https://gitlab.com/groups/gitlab-org/-/issues?state=opened&label_name[]=Accepting+merge+requests&assignee_id=0&sort=weight
-[firt-timers]: https://gitlab.com/groups/gitlab-org/-/issues?state=opened&label_name[]=Accepting+merge+requests&assignee_id=0&sort=weight&weight=1
+[up-for-grabs]: https://gitlab.com/groups/gitlab-org/-/issues?state=opened&label_name[]=Accepting+merge+requests&assignee_id=None&sort=weight
+[first-timers]: https://gitlab.com/groups/gitlab-org/-/issues?state=opened&label_name[]=Accepting+merge+requests&assignee_id=None&sort=weight&weight=1
 
 ## Issue triaging
 
