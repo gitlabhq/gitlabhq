@@ -52,7 +52,37 @@ as appropriate. The plugins file list is updated for each event, there is no
 need to restart GitLab to apply a new plugin.
 
 If a plugin executes with non-zero exit code or GitLab fails to execute it, a
-message will be logged to `plugin.log`.
+message will be logged to:
+
+- `gitlab-rails/plugin.log` in an Omnibus installation.
+- `log/plugin.log` in a source installation.
+
+## Creating plugins
+
+Below is an example that will only response on the event `project_create` and
+will inform the admins from the GitLab instance that a new project has been created.
+
+```ruby
+# By using the embedded ruby version we eliminate the possibility that our chosen language
+# would be unavailable from
+#!/opt/gitlab/embedded/bin/ruby
+require 'json'
+require 'mail'
+
+# The incoming variables are in JSON format so we need to parse it first.
+ARGS = JSON.parse(STDIN.read)
+
+# We only want to trigger this plugin on the event project_create
+return unless ARGS['event_name'] == 'project_create'
+
+# We will inform our admins of our gitlab instance that a new project is created
+Mail.deliver do
+  from    'info@gitlab_instance.com'
+  to      'admin@gitlab_instance.com'
+  subject "new project " + ARGS['name']
+  body    ARGS['owner_name'] + 'created project ' + ARGS['name']
+end
+```
 
 ## Validation
 
