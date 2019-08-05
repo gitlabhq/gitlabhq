@@ -1,0 +1,5 @@
+---
+title: Optimize relative re-positioning when moving issues.
+merge_request: 30938
+author:
+type: fixed

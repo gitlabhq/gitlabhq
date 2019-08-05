@@ -29,10 +29,6 @@ module RelativePositioning
   MAX_POSITION = Gitlab::Database::MAX_INT_VALUE
   IDEAL_DISTANCE = 500
 
-  included do
-    after_save :save_positionable_neighbours
-  end
-
   class_methods do
     def move_nulls_to_end(objects)
       objects = objects.reject(&:relative_position)
@@ -114,11 +110,12 @@ module RelativePositioning
     return move_after(before) unless after
     return move_before(after) unless before
 
-    # If there is no place to insert an item we need to create one by moving the before item closer
-    # to its predecessor. This process will recursively move all the predecessors until we have a place
+    # If there is no place to insert an item we need to create one by moving the item
+    # before this and all preceding items until there is a gap
+    before, after = after, before if after.relative_position < before.relative_position
     if (after.relative_position - before.relative_position) < 2
-      before.move_before
-      @positionable_neighbours = [before] # rubocop:disable Gitlab/ModuleWithInstanceVariables
+      after.move_sequence_before
+      before.reset
     end
 
     self.relative_position = self.class.position_between(before.relative_position, after.relative_position)
@@ -128,12 +125,8 @@ module RelativePositioning
     pos_before = before.relative_position
     pos_after = before.next_relative_position
 
-    if before.shift_after?
-      item_to_move = self.class.relative_positioning_query_base(self).find_by!(relative_position: pos_after)
-      item_to_move.move_after
-      @positionable_neighbours = [item_to_move] # rubocop:disable Gitlab/ModuleWithInstanceVariables
-
-      pos_after = item_to_move.relative_position
+    if pos_after && (pos_after - pos_before) < 2
+      before.move_sequence_after
     end
 
     self.relative_position = self.class.position_between(pos_before, pos_after)
@@ -143,12 +136,8 @@ module RelativePositioning
     pos_after = after.relative_position
     pos_before = after.prev_relative_position
 
-    if after.shift_before?
-      item_to_move = self.class.relative_positioning_query_base(self).find_by!(relative_position: pos_before)
-      item_to_move.move_before
-      @positionable_neighbours = [item_to_move] # rubocop:disable Gitlab/ModuleWithInstanceVariables
-
-      pos_before = item_to_move.relative_position
+    if pos_before && (pos_after - pos_before) < 2
+      after.move_sequence_before
     end
 
     self.relative_position = self.class.position_between(pos_before, pos_after)
@@ -162,36 +151,82 @@ module RelativePositioning
     self.relative_position = self.class.position_between(min_relative_position || START_POSITION, MIN_POSITION)
   end
 
-  # Indicates if there is an item that should be shifted to free the place
-  def shift_after?
-    next_pos = next_relative_position
-    next_pos && (next_pos - relative_position) == 1
+  # Moves the sequence before the current item to the middle of the next gap
+  # For example, we have 5 11 12 13 14 15 and the current item is 15
+  # This moves the sequence 11 12 13 14 to 8 9 10 11
+  def move_sequence_before
+    next_gap = find_next_gap_before
+    delta = optimum_delta_for_gap(next_gap)
+
+    move_sequence(next_gap[:start], relative_position, -delta)
   end
 
-  # Indicates if there is an item that should be shifted to free the place
-  def shift_before?
-    prev_pos = prev_relative_position
-    prev_pos && (relative_position - prev_pos) == 1
+  # Moves the sequence after the current item to the middle of the next gap
+  # For example, we have 11 12 13 14 15 21 and the current item is 11
+  # This moves the sequence 12 13 14 15 to 15 16 17 18
+  def move_sequence_after
+    next_gap = find_next_gap_after
+    delta = optimum_delta_for_gap(next_gap)
+
+    move_sequence(relative_position, next_gap[:start], delta)
   end
 
   private
 
-  # rubocop:disable Gitlab/ModuleWithInstanceVariables
-  def save_positionable_neighbours
-    return unless @positionable_neighbours
+  # Supposing that we have a sequence of items: 1 5 11 12 13 and the current item is 13
+  # This would return: `{ start: 11, end: 5 }`
+  def find_next_gap_before
+    items_with_next_pos = scoped_items
+                            .select('relative_position AS pos, LEAD(relative_position) OVER (ORDER BY relative_position DESC) AS next_pos')
+                            .where('relative_position <= ?', relative_position)
+                            .order(relative_position: :desc)
 
-    status = @positionable_neighbours.all? { |item| item.save(touch: false) }
-    @positionable_neighbours = nil
-
-    status
+    find_next_gap(items_with_next_pos).tap do |gap|
+      gap[:end] ||= MIN_POSITION
+    end
   end
-  # rubocop:enable Gitlab/ModuleWithInstanceVariables
+
+  # Supposing that we have a sequence of items: 13 14 15 20 24 and the current item is 13
+  # This would return: `{ start: 15, end: 20 }`
+  def find_next_gap_after
+    items_with_next_pos = scoped_items
+                            .select('relative_position AS pos, LEAD(relative_position) OVER (ORDER BY relative_position ASC) AS next_pos')
+                            .where('relative_position >= ?', relative_position)
+                            .order(:relative_position)
+
+    find_next_gap(items_with_next_pos).tap do |gap|
+      gap[:end] ||= MAX_POSITION
+    end
+  end
+
+  def find_next_gap(items_with_next_pos)
+    gap = self.class.from(items_with_next_pos, :items_with_next_pos)
+                    .where('ABS(pos - next_pos) > 1 OR next_pos IS NULL')
+                    .limit(1)
+                    .pluck(:pos, :next_pos)
+                    .first
+
+    { start: gap[0], end: gap[1] }
+  end
+
+  def optimum_delta_for_gap(gap)
+    delta = ((gap[:start] - gap[:end]) / 2.0).abs.ceil
+
+    [delta, IDEAL_DISTANCE].min
+  end
+
+  def move_sequence(start_pos, end_pos, delta)
+    scoped_items
+      .where.not(id: self.id)
+      .where('relative_position BETWEEN ? AND ?', start_pos, end_pos)
+      .update_all("relative_position = relative_position + #{delta}")
+  end
 
   def calculate_relative_position(calculation)
     # When calculating across projects, this is much more efficient than
     # MAX(relative_position) without the GROUP BY, due to index usage:
     # https://gitlab.com/gitlab-org/gitlab-ce/issues/54276#note_119340977
-    relation = self.class.relative_positioning_query_base(self)
+    relation = scoped_items
                  .order(Gitlab::Database.nulls_last_order('position', 'DESC'))
                  .group(self.class.relative_positioning_parent_column)
                  .limit(1)
@@ -202,5 +237,9 @@ module RelativePositioning
       .pluck(self.class.relative_positioning_parent_column, Arel.sql("#{calculation}(relative_position) AS position"))
       .first&.
       last
+  end
+
+  def scoped_items
+    self.class.relative_positioning_query_base(self)
   end
 end

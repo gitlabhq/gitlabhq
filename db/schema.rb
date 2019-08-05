@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_01_114109) do
+ActiveRecord::Schema.define(version: 2019_08_02_012622) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -1716,7 +1716,7 @@ ActiveRecord::Schema.define(version: 2019_08_01_114109) do
     t.index ["project_id", "created_at", "id", "state"], name: "index_issues_on_project_id_and_created_at_and_id_and_state"
     t.index ["project_id", "due_date", "id", "state"], name: "idx_issues_on_project_id_and_due_date_and_id_and_state_partial", where: "(due_date IS NOT NULL)"
     t.index ["project_id", "iid"], name: "index_issues_on_project_id_and_iid", unique: true
-    t.index ["project_id", "state", "relative_position", "id"], name: "index_issues_on_project_id_and_state_and_rel_position_and_id", order: { id: :desc }
+    t.index ["project_id", "relative_position", "state", "id"], name: "index_issues_on_project_id_and_rel_position_and_state_and_id", order: { id: :desc }
     t.index ["project_id", "updated_at", "id", "state"], name: "index_issues_on_project_id_and_updated_at_and_id_and_state"
     t.index ["relative_position"], name: "index_issues_on_relative_position"
     t.index ["state"], name: "index_issues_on_state"
