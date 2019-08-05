@@ -21,7 +21,7 @@ export const getQuickActionText = note => {
       text = __('Applying multiple commands');
     } else {
       const commandDescription = executedCommands[0].description.toLowerCase();
-      text = sprintf(__('Applying command to %{commandDescription}', { commandDescription }));
+      text = sprintf(__('Applying command to %{commandDescription}'), { commandDescription });
     }
   }
 
