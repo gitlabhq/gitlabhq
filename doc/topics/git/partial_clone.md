@@ -32,7 +32,7 @@ support:
 Briefly, partial clone works by:
 
 - excluding objects from being transferred when cloning or fetching a
-repository using a new `--filter` flag
+  repository using a new `--filter` flag
 - downloading missing objects on demand
 
 Follow [Git for enormous repositories](https://gitlab.com/groups/gitlab-org/-/epics/773) for roadmap and updates.
@@ -78,53 +78,53 @@ With the `uploadpack.allowFilter` and `uploadpack.allowAnySHA1InWant` options
 enabled on the Git server:
 
 1. **Create a filter spec.** For example, consider a monolithic repository with
-many applications, each in a different subdirectory in the root. Create a file
-`shiny-app/.filterspec` using the GitLab web interface:
+   many applications, each in a different subdirectory in the root. Create a file
+   `shiny-app/.filterspec` using the GitLab web interface:
 
-    ```.gitignore
-    # Only the paths listed in the file will be downloaded when performing a
-    # partial clone using `--filter=sparse:oid=shiny-app/.gitfilterspec`
-    
-    # Explicitly include filterspec needed to configure sparse checkout with
-    # git config --local core.sparsecheckout true
-    # git show master:snazzy-app/.gitfilterspec >> .git/info/sparse-checkout
-    shiny-app/.gitfilterspec
-    
-    # Shiny App
-    shiny-app/
-    
-    # Dependencies
-    shimmery-app/
-    shared-component-a/
-    shared-component-b/
-    ```
+   ```.gitignore
+   # Only the paths listed in the file will be downloaded when performing a
+   # partial clone using `--filter=sparse:oid=shiny-app/.gitfilterspec`
+
+   # Explicitly include filterspec needed to configure sparse checkout with
+   # git config --local core.sparsecheckout true
+   # git show master:snazzy-app/.gitfilterspec >> .git/info/sparse-checkout
+   shiny-app/.gitfilterspec
+
+   # Shiny App
+   shiny-app/
+
+   # Dependencies
+   shimmery-app/
+   shared-component-a/
+   shared-component-b/
+   ```
 
 2. *Create a new Git repository and fetch.* Support for `--filter=sparse:oid`
-using the clone command is incomplete, so we will emulate the clone command
-by hand, using `git init` and `git fetch`. Follow
-[gitaly#1769](https://gitlab.com/gitlab-org/gitaly/issues/1769) for updates.
+   using the clone command is incomplete, so we will emulate the clone command
+   by hand, using `git init` and `git fetch`. Follow
+   [gitaly#1769](https://gitlab.com/gitlab-org/gitaly/issues/1769) for updates.
 
     ```bash
     # Create a new directory for the Git repository
     mkdir jumbo-repo && cd jumbo-repo
-    
+
     # Initialize a new Git repository
     git init
-    
+
     # Add the remote
     git remote add origin git@gitlab.com/example/jumbo-repo
-    
+
     # Enable partial clone support for the remote
     git config --local extensions.partialClone origin
-    
+
     # Fetch the filtered set of objects using the filterspec stored on the
     # server. WARNING: this step is slow!
     git fetch --filter=sparse:oid=master:shiny-app/.gitfilterspec origin
-    
+
     # Optional: observe there are missing objects that we have not fetched
     git rev-list --all --quiet --objects --missing=print | wc -l
     ```
-    
+
     CAUTION: **IDE and Shell integrations:**
     Git integrations with `bash`, `zsh`, etc and editors that automatically
     show Git status information often run `git fetch` which will fetch the
@@ -132,13 +132,13 @@ by hand, using `git init` and `git fetch`. Follow
     integrations.
 
 3. **Sparse checkout** must be enabled and configured to prevent objects from
-other paths being downloaded automatically when checking out branches. Follow
-[gitaly#1765](https://gitlab.com/gitlab-org/gitaly/issues/1765) for updates.
+   other paths being downloaded automatically when checking out branches. Follow
+   [gitaly#1765](https://gitlab.com/gitlab-org/gitaly/issues/1765) for updates.
 
     ```bash
     # Enable sparse checkout
     git config --local core.sparsecheckout true
-    
+
     # Configure sparse checkout
     git show master:snazzy-app/.gitfilterspec >> .git/info/sparse-checkout
 
