@@ -88,7 +88,7 @@
 }
 
 .mr-widget-info {
-  padding-left: $gl-padding-50 - $gl-padding-32;
+  padding-left: $gl-padding;
   padding-right: $gl-padding;
 }
 
@@ -262,22 +262,10 @@
     }
   }
 
-  .widget-status-icon {
-    align-self: flex-start;
-
-    button {
-      margin-left: $gl-padding;
-    }
-  }
-
   .mr-widget-body {
     line-height: 28px;
 
     @include clearfix;
-
-    button {
-      margin-left: $gl-padding;
-    }
 
     .approve-btn {
       margin-right: 5px;
@@ -527,7 +515,7 @@
 }
 
 .mr-links {
-  padding-left: $status-icon-size + $gl-btn-padding;
+  padding-left: $gl-padding-8 + $status-icon-size + $gl-btn-padding;
 
   &:last-child {
     padding-bottom: $gl-padding;
