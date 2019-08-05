@@ -34,7 +34,7 @@ describe 'User edits snippet', :js do
     click_button('Save changes')
     wait_for_requests
 
-    link = find('a.no-attachment-icon img[alt="banana_sample"]')['src']
+    link = find('a.no-attachment-icon img:not(.lazy)[alt="banana_sample"]')['src']
     expect(link).to match(%r{/uploads/-/system/personal_snippet/#{snippet.id}/\h{32}/banana_sample\.gif\z})
   end
 
