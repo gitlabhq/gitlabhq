@@ -84,6 +84,10 @@ that are on the remote repository, eg. for a branch from origin:
 git lfs fetch origin master
 ```
 
+### Migrate an existing repo to Git LFS
+
+Read the documentation on how to [migrate an existing Git repo with Git LFS](../../topics/git/migrate_to_git_lfs/index.md).
+
 ## File Locking
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/35856) in GitLab 10.5.
