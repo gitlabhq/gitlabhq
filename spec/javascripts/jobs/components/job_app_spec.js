@@ -24,6 +24,7 @@ describe('Job App ', () => {
     variablesSettingsUrl: 'settings/ci-cd/variables',
     terminalPath: 'jobs/123/terminal',
     pagePath: `${gl.TEST_HOST}jobs/123`,
+    projectPath: 'user-name/project-name',
     logState:
       'eyJvZmZzZXQiOjE3NDUxLCJuX29wZW5fdGFncyI6MCwiZmdfY29sb3IiOm51bGwsImJnX2NvbG9yIjpudWxsLCJzdHlsZV9tYXNrIjowfQ%3D%3D',
   };
