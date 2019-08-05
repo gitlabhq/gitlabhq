@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 module API
-  class ContainerRegistry < Grape::API
+  class ProjectContainerRepositories < Grape::API
     include PaginationParams
 
-    REGISTRY_ENDPOINT_REQUIREMENTS = API::NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(
+    REPOSITORY_ENDPOINT_REQUIREMENTS = API::NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(
       tag_name: API::NO_SLASH_URL_PART_REGEX)
 
     before { error!('404 Not Found', 404) unless Feature.enabled?(:container_registry_api, user_project, default_enabled: true) }
@@ -20,11 +20,14 @@ module API
       end
       params do
         use :pagination
+        optional :tags, type: Boolean, default: false, desc: 'Determines if tags should be included'
       end
       get ':id/registry/repositories' do
-        repositories = user_project.container_repositories.ordered
+        repositories = ContainerRepositoriesFinder.new(
+          id: user_project.id, container_type: :project
+        ).execute
 
-        present paginate(repositories), with: Entities::ContainerRegistry::Repository
+        present paginate(repositories), with: Entities::ContainerRegistry::Repository, tags: params[:tags]
       end
 
       desc 'Delete repository' do
@@ -33,7 +36,7 @@ module API
       params do
         requires :repository_id, type: Integer, desc: 'The ID of the repository'
       end
-      delete ':id/registry/repositories/:repository_id', requirements: REGISTRY_ENDPOINT_REQUIREMENTS do
+      delete ':id/registry/repositories/:repository_id', requirements: REPOSITORY_ENDPOINT_REQUIREMENTS do
         authorize_admin_container_image!
 
         DeleteContainerRepositoryWorker.perform_async(current_user.id, repository.id)
@@ -49,7 +52,7 @@ module API
         requires :repository_id, type: Integer, desc: 'The ID of the repository'
         use :pagination
       end
-      get ':id/registry/repositories/:repository_id/tags', requirements: REGISTRY_ENDPOINT_REQUIREMENTS do
+      get ':id/registry/repositories/:repository_id/tags', requirements: REPOSITORY_ENDPOINT_REQUIREMENTS do
         authorize_read_container_image!
 
         tags = Kaminari.paginate_array(repository.tags)
@@ -65,7 +68,7 @@ module API
         optional :keep_n, type: Integer, desc: 'Keep n of latest tags with matching name'
         optional :older_than, type: String, desc: 'Delete older than: 1h, 1d, 1month'
       end
-      delete ':id/registry/repositories/:repository_id/tags', requirements: REGISTRY_ENDPOINT_REQUIREMENTS do
+      delete ':id/registry/repositories/:repository_id/tags', requirements: REPOSITORY_ENDPOINT_REQUIREMENTS do
         authorize_admin_container_image!
 
         message = 'This request has already been made. You can run this at most once an hour for a given container repository'
@@ -85,7 +88,7 @@ module API
         requires :repository_id, type: Integer, desc: 'The ID of the repository'
         requires :tag_name, type: String, desc: 'The name of the tag'
       end
-      get ':id/registry/repositories/:repository_id/tags/:tag_name', requirements: REGISTRY_ENDPOINT_REQUIREMENTS do
+      get ':id/registry/repositories/:repository_id/tags/:tag_name', requirements: REPOSITORY_ENDPOINT_REQUIREMENTS do
         authorize_read_container_image!
         validate_tag!
 
@@ -99,7 +102,7 @@ module API
         requires :repository_id, type: Integer, desc: 'The ID of the repository'
         requires :tag_name, type: String, desc: 'The name of the tag'
       end
-      delete ':id/registry/repositories/:repository_id/tags/:tag_name', requirements: REGISTRY_ENDPOINT_REQUIREMENTS do
+      delete ':id/registry/repositories/:repository_id/tags/:tag_name', requirements: REPOSITORY_ENDPOINT_REQUIREMENTS do
         authorize_destroy_container_image!
         validate_tag!
 
