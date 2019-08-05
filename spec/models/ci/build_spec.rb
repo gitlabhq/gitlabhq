@@ -208,6 +208,22 @@ describe Ci::Build do
     end
   end
 
+  describe '.without_needs' do
+    let!(:build) { create(:ci_build) }
+
+    subject { described_class.without_needs }
+
+    context 'when no build_need is created' do
+      it { is_expected.to contain_exactly(build) }
+    end
+
+    context 'when a build_need is created' do
+      let!(:need_a) { create(:ci_build_need, build: build) }
+
+      it { is_expected.to be_empty }
+    end
+  end
+
   describe '#enqueue' do
     let(:build) { create(:ci_build, :created) }
 

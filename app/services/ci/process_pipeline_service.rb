@@ -9,10 +9,7 @@ module Ci
 
       update_retried
 
-      success =
-        stage_indexes_of_created_processables.flat_map do |index|
-          process_stage(index)
-        end.any?
+      success = process_stages_without_needs
 
       # we evaluate dependent needs,
       # only when the another job has finished
@@ -25,18 +22,19 @@ module Ci
 
     private
 
-    def process_stage(index)
+    def process_stages_without_needs
+      stage_indexes_of_created_processables_without_needs.flat_map do |index|
+        process_stage_without_needs(index)
+      end.any?
+    end
+
+    def process_stage_without_needs(index)
       current_status = status_for_prior_stages(index)
 
-      return if HasStatus::BLOCKED_STATUS.include?(current_status)
+      return unless HasStatus::COMPLETED_STATUSES.include?(current_status)
 
-      if HasStatus::COMPLETED_STATUSES.include?(current_status)
-        created_processables_in_stage(index).select do |build|
-          Gitlab::OptimisticLocking.retry_lock(build) do |subject|
-            Ci::ProcessBuildService.new(project, @user)
-              .execute(build, current_status)
-          end
-        end
+      created_processables_in_stage_without_needs(index).select do |build|
+        process_build(build, current_status)
       end
     end
 
@@ -56,6 +54,10 @@ module Ci
 
       return unless HasStatus::COMPLETED_STATUSES.include?(current_status)
 
+      process_build(build, current_status)
+    end
+
+    def process_build(build, current_status)
       Gitlab::OptimisticLocking.retry_lock(build) do |subject|
         Ci::ProcessBuildService.new(project, @user)
           .execute(subject, current_status)
@@ -75,16 +77,26 @@ module Ci
     # rubocop: enable CodeReuse/ActiveRecord
 
     # rubocop: disable CodeReuse/ActiveRecord
-    def stage_indexes_of_created_processables
-      created_processables.order(:stage_idx).pluck(Arel.sql('DISTINCT stage_idx'))
+    def stage_indexes_of_created_processables_without_needs
+      created_processables_without_needs.order(:stage_idx)
+        .pluck(Arel.sql('DISTINCT stage_idx'))
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
     # rubocop: disable CodeReuse/ActiveRecord
-    def created_processables_in_stage(index)
-      created_processables.where(stage_idx: index)
+    def created_processables_in_stage_without_needs(index)
+      created_processables_without_needs
+        .where(stage_idx: index)
     end
     # rubocop: enable CodeReuse/ActiveRecord
+
+    def created_processables_without_needs
+      if Feature.enabled?(:ci_dag_support, project)
+        pipeline.processables.created.without_needs
+      else
+        pipeline.processables.created
+      end
+    end
 
     def created_processables
       pipeline.processables.created
