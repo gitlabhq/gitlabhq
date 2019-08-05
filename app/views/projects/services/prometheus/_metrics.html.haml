@@ -1,28 +1,34 @@
 - project = local_assigns.fetch(:project)
 
-.card.js-panel-monitored-metrics{ data: { active_metrics: active_common_project_prometheus_metrics_path(project, :json), metrics_help_path: help_page_path('user/project/integrations/prometheus_library/index') } }
-  .card-header
-    = s_('PrometheusService|Common metrics')
-    %span.badge.badge-pill.js-monitored-count 0
-  .card-body
-    .loading-metrics.js-loading-metrics
-      %p.prepend-top-10.prepend-left-10
-        = icon('spinner spin', class: 'metrics-load-spinner')
-        = s_('PrometheusService|Finding and configuring metrics...')
-    .empty-metrics.hidden.js-empty-metrics
-      %p.text-tertiary.prepend-top-10.prepend-left-10
-        = s_('PrometheusService|Waiting for your first deployment to an environment to find common metrics')
-    %ul.list-unstyled.metrics-list.hidden.js-metrics-list
+.col-lg-3
+  %p
+    = s_('PrometheusService|Common metrics are automatically monitored based on a library of metrics from popular exporters.')
+    = link_to s_('PrometheusService|More information'), help_page_path('user/project/integrations/prometheus_library/index'), target: '_blank', rel: "noopener noreferrer"
 
-.card.hidden.js-panel-missing-env-vars
-  .card-header
-    = icon('caret-right lg fw', class: 'panel-toggle js-panel-toggle', 'aria-label' => 'Toggle panel')
-    = s_('PrometheusService|Missing environment variable')
-    %span.badge.badge-pill.js-env-var-count 0
-  .card-body.hidden
-    .flash-container
-      .flash-notice
-        .flash-text
-          = s_("PrometheusService|To set up automatic monitoring, add the environment variable %{variable} to exporter's queries." % { variable: "<code>$CI_ENVIRONMENT_SLUG</code>" }).html_safe
-          = link_to s_('PrometheusService|More information'), help_page_path('user/project/integrations/prometheus', anchor: 'metrics-and-labels')
-    %ul.list-unstyled.metrics-list.js-missing-var-metrics-list
+.col-lg-9
+  .card.js-panel-monitored-metrics{ data: { active_metrics: active_common_project_prometheus_metrics_path(project, :json), metrics_help_path: help_page_path('user/project/integrations/prometheus_library/index') } }
+    .card-header
+      = s_('PrometheusService|Common metrics')
+      %span.badge.badge-pill.js-monitored-count 0
+    .card-body
+      .loading-metrics.js-loading-metrics
+        %p.prepend-top-10.prepend-left-10
+          = icon('spinner spin', class: 'metrics-load-spinner')
+          = s_('PrometheusService|Finding and configuring metrics...')
+      .empty-metrics.hidden.js-empty-metrics
+        %p.text-tertiary.prepend-top-10.prepend-left-10
+          = s_('PrometheusService|Waiting for your first deployment to an environment to find common metrics')
+      %ul.list-unstyled.metrics-list.hidden.js-metrics-list
+
+  .card.hidden.js-panel-missing-env-vars
+    .card-header
+      = icon('caret-right lg fw', class: 'panel-toggle js-panel-toggle', 'aria-label' => 'Toggle panel')
+      = s_('PrometheusService|Missing environment variable')
+      %span.badge.badge-pill.js-env-var-count 0
+    .card-body.hidden
+      .flash-container
+        .flash-notice
+          .flash-text
+            = s_("PrometheusService|To set up automatic monitoring, add the environment variable %{variable} to exporter's queries." % { variable: "<code>$CI_ENVIRONMENT_SLUG</code>" }).html_safe
+            = link_to s_('PrometheusService|More information'), help_page_path('user/project/integrations/prometheus', anchor: 'metrics-and-labels')
+      %ul.list-unstyled.metrics-list.js-missing-var-metrics-list
