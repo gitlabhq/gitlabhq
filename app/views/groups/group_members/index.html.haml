@@ -36,8 +36,8 @@
   .tab-content
     #existing_members.tab-pane{ :class => ("active" unless pending_active) }
       .card.card-without-border
-        .card-header.flex-project-members-panel
-          %span.flex-project-title
+        .d-flex.flex-column.flex-md-row.row-content-block.second-block
+          %span.flex-grow-1
             Members with access to
             %strong= @group.name
           = form_tag group_group_members_path(@group), method: :get, class: 'form-inline member-search-form flex-project-members-form' do
@@ -47,7 +47,7 @@
                 %button.member-search-btn{ type: "submit", "aria-label" => "Submit search" }
                   = icon("search")
               - if can_manage_members
-                = label_tag '2fa', '2FA', class: 'col-form-label label-bold pl-2 pr-2'
+                = label_tag '2fa', '2FA', class: 'col-form-label label-bold append-right-8'
                 = render 'shared/members/filter_2fa_dropdown'
               = render 'shared/members/sort_dropdown'
         %ul.content-list.members-list
@@ -57,8 +57,8 @@
     - if show_invited_members
       #invited_members.tab-pane{ :class => ("active" if pending_active) }
         .card.card-without-border
-          .card-header.flex-project-members-panel
-            %span.flex-project-title
+          .d-flex.flex-column.flex-md-row.row-content-block.second-block
+            %span.flex-grow-1
               Members with pending access to
               %strong= @group.name
             = form_tag group_group_members_path(@group), method: :get, class: 'form-inline member-search-form flex-project-members-form' do
