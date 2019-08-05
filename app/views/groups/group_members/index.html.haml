@@ -35,7 +35,7 @@
 
   .tab-content
     #existing_members.tab-pane{ :class => ("active" unless pending_active) }
-      .card
+      .card.card-without-border
         .card-header.flex-project-members-panel
           %span.flex-project-title
             Members with access to
@@ -56,7 +56,7 @@
 
     - if show_invited_members
       #invited_members.tab-pane{ :class => ("active" if pending_active) }
-        .card
+        .card.card-without-border
           .card-header.flex-project-members-panel
             %span.flex-project-title
               Members with pending access to
