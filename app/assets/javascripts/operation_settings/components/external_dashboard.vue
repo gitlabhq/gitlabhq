@@ -50,9 +50,11 @@ export default {
       <form>
         <gl-form-group
           :label="s__('ExternalMetrics|Full dashboard URL')"
+          label-for="full-dashboard-url"
           :description="s__('ExternalMetrics|Enter the URL of the dashboard you want to link to')"
         >
           <gl-form-input
+            id="full-dashboard-url"
             v-model="userDashboardUrl"
             placeholder="https://my-org.gitlab.io/my-dashboards"
             @keydown.enter.native.prevent="updateExternalDashboardUrl"
