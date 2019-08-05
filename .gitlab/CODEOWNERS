@@ -1,6 +1,6 @@
 # Backend Maintainers are the default for all ruby files
-*.rb @ashmckenzie @ayufan @dbalexandre @DouweM @dzaporozhets @godfat @grzesiek @mkozono @mayra-cabrera @nick.thomas @rspeicher @rymai @reprazent @smcgivern @tkuah
-*.rake @ashmckenzie @ayufan @dbalexandre @DouweM @dzaporozhets @godfat @grzesiek @mkozono @mayra-cabrera @nick.thomas @rspeicher @rymai @reprazent @smcgivern @tkuah
+*.rb @gitlab-org/maintainers/rails-backend
+*.rake @gitlab-org/maintainers/rails-backend
 
 # Technical writing team are the default reviewers for everything in `doc/`
 /doc/ @axil @marcia @eread @mikelewis
@@ -10,11 +10,11 @@ app/assets/ @ClemMakesApps @fatihacet @filipa @iamphill @mikegreiling @timzallma
 *.scss @annabeldunstone @ClemMakesApps @fatihacet @filipa @iamphill @mikegreiling @timzallmann @kushalpandya @pslaughter
 
 # Maintainers from the Database team should review changes in `db/`
-db/ @abrandl @NikolayS
-lib/gitlab/background_migration/ @abrandl @NikolayS
-lib/gitlab/database/ @abrandl @NikolayS
-lib/gitlab/sql/ @abrandl @NikolayS
-/ee/db/ @abrandl @NikolayS
+db/ @gl-database
+lib/gitlab/background_migration/ @gl-database
+lib/gitlab/database/ @gl-database
+lib/gitlab/sql/ @gl-database
+/ee/db/ @gl-database
 
 # Feature specific owners
 /ee/lib/gitlab/code_owners/ @reprazent
