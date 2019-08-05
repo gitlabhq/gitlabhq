@@ -48,6 +48,7 @@ The following are resources about version control concepts:
 
 The following resources may help you become more efficient at using Git:
 
+- [Useful Git commands](useful_git_commands.md) collected by the GitLab support team.
 - [Git Tips & Tricks](https://about.gitlab.com/2016/12/08/git-tips-and-tricks/)
 - [Eight Tips to help you work better with Git](https://about.gitlab.com/2015/02/19/8-tips-to-help-you-work-better-with-git/)
 
