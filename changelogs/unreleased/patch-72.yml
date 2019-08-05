@@ -1,0 +1,5 @@
+---
+title: Fix Docker in Docker (DIND) listen port behavior change by adding DOCKER_TLS_CERTDIR in CI job templates.
+merge_request: 31201
+author: Cameron Boulton
+type: fixed

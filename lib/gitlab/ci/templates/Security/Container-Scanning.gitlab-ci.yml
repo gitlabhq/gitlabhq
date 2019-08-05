@@ -5,6 +5,7 @@ container_scanning:
   image: docker:stable
   variables:
     DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: ""
     # Defining two new variables based on GitLab's CI/CD predefined variables
     # https://docs.gitlab.com/ee/ci/variables/#predefined-environment-variables
     CI_APPLICATION_REPOSITORY: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG
