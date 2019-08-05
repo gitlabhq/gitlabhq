@@ -39,10 +39,10 @@ module Gitlab
           SELECT
               project_id,
               id,
-              artifacts_expire_at,
+              artifacts_expire_at #{add_missing_db_timezone},
               #{LEGACY_PATH_FILE_LOCATION},
-              created_at,
-              created_at,
+              created_at #{add_missing_db_timezone},
+              created_at #{add_missing_db_timezone},
               artifacts_file,
               artifacts_size,
               COALESCE(artifacts_file_store, #{FILE_LOCAL_STORE}),
@@ -81,10 +81,10 @@ module Gitlab
           SELECT
               project_id,
               id,
-              artifacts_expire_at,
+              artifacts_expire_at #{add_missing_db_timezone},
               #{LEGACY_PATH_FILE_LOCATION},
-              created_at,
-              created_at,
+              created_at #{add_missing_db_timezone},
+              created_at #{add_missing_db_timezone},
               artifacts_metadata,
               NULL,
               COALESCE(artifacts_metadata_store, #{FILE_LOCAL_STORE}),
@@ -120,6 +120,12 @@ module Gitlab
               id BETWEEN #{start_id.to_i} AND #{stop_id.to_i}
               AND artifacts_file <> ''
         SQL
+      end
+
+      def add_missing_db_timezone
+        return '' unless Gitlab::Database.postgresql?
+
+        'at time zone \'UTC\''
       end
     end
   end
