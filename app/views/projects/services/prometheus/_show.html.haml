@@ -1,12 +1,9 @@
-.row.prepend-top-default.append-bottom-default.prometheus-metrics-monitoring.js-prometheus-metrics-monitoring
+.row
   .col-lg-3
     %h4.prepend-top-0
       = s_('PrometheusService|Metrics')
-    %p
-      = s_('PrometheusService|Common metrics are automatically monitored based on a library of metrics from popular exporters.')
-      = link_to s_('PrometheusService|More information'), help_page_path('user/project/integrations/prometheus_library/index'), target: '_blank', rel: "noopener noreferrer"
 
-  .col-lg-9
-    = render 'projects/services/prometheus/metrics', project: @project
+.row.append-bottom-default.prometheus-metrics-monitoring.js-prometheus-metrics-monitoring
+  = render 'projects/services/prometheus/metrics', project: @project
 
 = render_if_exists 'projects/services/prometheus/external_alerts', project: @project
