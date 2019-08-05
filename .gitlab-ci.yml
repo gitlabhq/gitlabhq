@@ -29,7 +29,6 @@ stages:
   - qa
   - post-test
   - pages
-  - post-cleanup
 
 include:
   - local: .gitlab/ci/global.gitlab-ci.yml
