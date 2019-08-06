@@ -36,6 +36,10 @@ MarkdownPreview.prototype.showPreview = function($form) {
 
   mdText = $form.find('textarea.markdown-area').val();
 
+  if (mdText === undefined) {
+    return;
+  }
+
   if (mdText.trim().length === 0) {
     preview.text(this.emptyMessage);
     this.hideReferencedUsers($form);
