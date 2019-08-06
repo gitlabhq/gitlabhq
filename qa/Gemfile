@@ -1,6 +1,7 @@
 source 'https://rubygems.org'
 
 gem 'gitlab-qa'
+gem 'activesupport', '5.2.3' # This should stay in sync with the root's Gemfile
 gem 'pry-byebug', '~> 3.5.1', platform: :mri
 gem 'capybara', '~> 2.16.1'
 gem 'capybara-screenshot', '~> 1.0.18'
