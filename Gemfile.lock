@@ -522,7 +522,7 @@ GEM
       mime-types-data (~> 3.2015)
     mime-types-data (3.2019.0331)
     mimemagic (0.3.2)
-    mini_magick (4.8.0)
+    mini_magick (4.9.5)
     mini_mime (1.0.1)
     mini_portile2 (2.4.0)
     minitest (5.11.3)
