@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
 class DeployKeysProject < ApplicationRecord
-  belongs_to :project
+  belongs_to :project, inverse_of: :deploy_keys_projects
   belongs_to :deploy_key, inverse_of: :deploy_keys_projects
-
   scope :without_project_deleted,  -> { joins(:project).where(projects: { pending_delete: false }) }
   scope :in_project, ->(project) { where(project: project) }
   scope :with_write_access, -> { where(can_push: true) }

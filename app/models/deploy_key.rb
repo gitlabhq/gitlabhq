@@ -2,12 +2,14 @@
 
 class DeployKey < Key
   include IgnorableColumn
+  include FromUnion
 
   has_many :deploy_keys_projects, inverse_of: :deploy_key, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :projects, through: :deploy_keys_projects
 
   scope :in_projects, ->(projects) { joins(:deploy_keys_projects).where('deploy_keys_projects.project_id in (?)', projects) }
   scope :are_public,  -> { where(public: true) }
+  scope :with_projects, -> { includes(deploy_keys_projects: { project: [:route, :namespace] }) }
 
   ignore_column :can_push
 
@@ -22,7 +24,7 @@ class DeployKey < Key
   end
 
   def almost_orphaned?
-    self.deploy_keys_projects.length == 1
+    self.deploy_keys_projects.count == 1
   end
 
   def destroyed_when_orphaned?
@@ -46,6 +48,6 @@ class DeployKey < Key
   end
 
   def projects_with_write_access
-    Project.preload(:route).where(id: deploy_keys_projects.with_write_access.select(:project_id))
+    Project.with_route.where(id: deploy_keys_projects.with_write_access.select(:project_id))
   end
 end
