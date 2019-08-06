@@ -5,17 +5,17 @@ Troubleshooting ElasticSearch requires:
 - Knowledge of common terms.
 - Establishing within which category the problem fits.
 
-## Common Terminology
+## Common terminology
 
 - **Lucene**: A full-text search library written in Java.
 - **Near Realtime (NRT)**: Refers to the slight latency from the time to index a
   document to the time when it becomes searchable.
-- **Cluster**: A collection of one or more nodes that work together to hold all 
+- **Cluster**: A collection of one or more nodes that work together to hold all
   the data, providing indexing and search capabilities.
 - **Node**: A single server that works as part of a cluster.
 - **Index**: A collection of documents that have somewhat similar characteristics.
 - **Document**: A basic unit of information that can be indexed.
-- **Shards**: Fully-functional and independent subdivisions of indices. Each shard is actually 
+- **Shards**: Fully-functional and independent subdivisions of indices. Each shard is actually
   a Lucene index.
 - **Replicas**: Failover mechanisms that duplicate indices.
 
@@ -138,7 +138,7 @@ graph TD;
   F7(Escalate to<br>GitLab support.)
 ```
 
-## Troubleshooting Walkthrough
+## Troubleshooting walkthrough
 
 Most ElasticSearch troubleshooting can be broken down into 4 categories:
 
@@ -150,7 +150,7 @@ Most ElasticSearch troubleshooting can be broken down into 4 categories:
 Generally speaking, if it does not fall into those four categories, it is either:
 
 - Something GitLab support needs to look into.
-- Not a true ElasticSearch issue. 
+- Not a true ElasticSearch issue.
 
 Exercise caution. Issues that appear to be ElasticSearch problems can be OS-level issues.
 
@@ -186,12 +186,12 @@ Moving past that, it is best to attempt the same search using the [ElasticSearch
 
 If the results:
 
-- Sync up, then there is not a technical "issue" per se. Instead, it might be a problem 
-  with the ElasticSearch filters we are using. This can be complicated, so it is best to 
-  escalate to GitLab support to check these and guide you on the potential on whether or 
+- Sync up, then there is not a technical "issue" per se. Instead, it might be a problem
+  with the ElasticSearch filters we are using. This can be complicated, so it is best to
+  escalate to GitLab support to check these and guide you on the potential on whether or
   not a feature request is needed.
 - Do not match up, this indicates a problem with the documents generated from the
-  project. It is best to re-index that project and proceed with 
+  project. It is best to re-index that project and proceed with
   [Troubleshooting indexing](#troubleshooting-indexing).
 
 ### Troubleshooting indexing
@@ -200,13 +200,13 @@ Troubleshooting indexing issues can be tricky. It can pretty quickly go to eithe
 support or your ElasticSearch admin.
 
 The best place to start is to determine if the issue is with creating an empty index.
-If it is, check on the ElasticSearch side to determine if the `gitlab-production` (the 
+If it is, check on the ElasticSearch side to determine if the `gitlab-production` (the
 name for the GitLab index) exists. If it exists, manually delete it on the ElasticSearch
-side and attempt to recreate it from the 
-[`create_empty_index`](../../integration/elasticsearch.md#gitlab-elasticsearch-rake-tasks) 
+side and attempt to recreate it from the
+[`create_empty_index`](../../integration/elasticsearch.md#gitlab-elasticsearch-rake-tasks)
 rake task.
 
-If you still encounter issues, try creating an index manually on the ElasticSearch 
+If you still encounter issues, try creating an index manually on the ElasticSearch
 instance. The details of the index aren't important here, as we want to test if indices
 can be made. If the indices:
 
@@ -317,7 +317,7 @@ dig further into these.
 Feel free to reach out to GitLab support, but this is likely to be something a skilled
 ElasticSearch admin has more experience with.
 
-## Common Issues
+## Common issues
 
 All common issues [should be documented](../../integration/elasticsearch.md#troubleshooting). If not,
 feel free to update that page with issues you encounter and solutions.
