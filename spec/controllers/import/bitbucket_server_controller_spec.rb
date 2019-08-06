@@ -134,6 +134,8 @@ describe Import::BitbucketServerController do
   describe 'GET status' do
     render_views
 
+    let(:repos) { instance_double(BitbucketServer::Collection) }
+
     before do
       allow(controller).to receive(:bitbucket_client).and_return(client)
 
@@ -145,7 +147,6 @@ describe Import::BitbucketServerController do
 
     it 'assigns repository categories' do
       created_project = create(:project, :import_finished, import_type: 'bitbucket_server', creator_id: user.id, import_source: @created_repo.browse_url)
-      repos = instance_double(BitbucketServer::Collection)
 
       expect(repos).to receive(:partition).and_return([[@repo, @created_repo], [@invalid_repo]])
       expect(repos).to receive(:current_page).and_return(1)
@@ -158,6 +159,17 @@ describe Import::BitbucketServerController do
       expect(assigns(:already_added_projects)).to eq([created_project])
       expect(assigns(:repos)).to eq([@repo])
       expect(assigns(:incompatible_repos)).to eq([@invalid_repo])
+    end
+
+    context 'when filtering' do
+      let(:filter) { 'test' }
+
+      it 'passes filter param to bitbucket client' do
+        expect(repos).to receive(:partition).and_return([[@repo, @created_repo], [@invalid_repo]])
+        expect(client).to receive(:repos).with(filter: filter, limit: 25, page_offset: 0).and_return(repos)
+
+        get :status, params: { filter: filter }, as: :json
+      end
     end
   end
 
