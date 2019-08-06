@@ -3,7 +3,7 @@
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/660) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.2.
 
 CAUTION: **Warning:**
-This an __alpha__ feature and is subject to change at any time without
+This an **alpha** feature and is subject to change at any time without
 prior notice.
 
 ## Overview
@@ -56,3 +56,14 @@ of the design, and will replace the previous version.
 
 Images on the Design Management page can be enlarged by clicking on them.
 
+## Adding annotations to designs
+
+When a design image is displayed, you can add annotations to it by clicking on
+the image. A badge is added to the image and a form is displayed to start a new
+discussion. For example:
+
+![Starting a new discussion on design](img/adding_note_to_design_1.png)
+
+When submitted, the form saves a badge linked to the discussion on the image. Different discussions have different badge numbers. For example:
+
+![Discussions on design annotations](img/adding_note_to_design_2.png)
