@@ -62,6 +62,14 @@ describe Gitlab::Highlight do
       expect(lines[2].text).to eq('        """')
     end
 
+    context 'since param is present' do
+      it 'highlights with the LC starting from "since" param' do
+        lines = described_class.highlight(file_name, content, since: 2).lines
+
+        expect(lines[0]).to include('LC2')
+      end
+    end
+
     context 'diff highlighting' do
       let(:file_name) { 'test.diff' }
       let(:content) { "+aaa\n+bbb\n- ccc\n ddd\n"}
