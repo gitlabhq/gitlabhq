@@ -173,6 +173,7 @@ module Projects
     end
 
     def remove_registry_tags
+      return true unless Gitlab.config.registry.enabled
       return false unless remove_legacy_registry_tags
 
       project.container_repositories.find_each do |container_repository|
