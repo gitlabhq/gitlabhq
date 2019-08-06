@@ -229,12 +229,6 @@ The default approval settings can now be overridden when creating a
    in the **No. approvals required** box.
 1. Click **Update approvers**.
 
-There are however some restrictions:
-
-- The amount of required approvals, if changed, must be greater than the default
-  set at the project level. This ensures that you're not forced to adjust settings
-  when someone is unavailable for approval, yet the process is still enforced.
-
 NOTE: **Note:**
 If you are contributing to a forked project, things are a little different.
 Read what happens  when the
@@ -242,14 +236,9 @@ Read what happens  when the
 
 ## Overriding merge request approvals default settings **(PREMIUM)**
 
-In GitLab Premium, when the approval rules are [set at the project level](#editing-approvals-premium), and
-**Can override approvers and approvals required per merge request** is checked, there are a few more
-restrictions (compared to [GitLab Starter](#overriding-the-merge-request-approvals-default-settings)):
-
-- Approval rules can be added to an MR with no restriction.
-- For project sourced approval rules, editing and removing approvers is not allowed.
-- The approvals required of all approval rules is configurable, but if a rule is backed by a project rule, then it is restricted
-  to the minimum approvals required set in the project's corresponding rule.
+In GitLab Premium, when the approval rules are [set at the project level](#editing-approvals-premium),
+and **Can override approvers and approvals required per merge request** is checked,
+approval rules can be added to an MR with no restriction.
 
 ## Resetting approvals on push
 
