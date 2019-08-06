@@ -1,0 +1,5 @@
+---
+title: Remove counts from default labels API responses
+merge_request: 31543
+author:
+type: changed
