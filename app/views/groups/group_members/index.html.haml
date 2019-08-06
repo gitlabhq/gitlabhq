@@ -1,4 +1,4 @@
-- page_title "Members"
+- page_title _("Members")
 - can_manage_members = can?(current_user, :admin_group_member, @group)
 - show_invited_members = can_manage_members && @invited_members.exists?
 - total_members = @members.total_count
@@ -7,12 +7,12 @@
 
 .project-members-page.prepend-top-default
   %h4
-    Members
+    = _("Members")
   %hr
   - if can_manage_members
     .project-members-new.append-bottom-default
       %p.clearfix
-        Add new member to
+        = _("Add new member to")
         %strong= @group.name
       = render "new_group_member"
 
@@ -24,30 +24,30 @@
     %li.nav-item
       = link_to "#existing_members", class: ["nav-link", ("active" unless pending_active)] , 'data-toggle' => 'tab' do
         %span
-          Existing
+          = _("Existing")
         %span.badge.badge-pill= @members.total_count
     - if show_invited_members
       %li.nav-item
         = link_to "#invited_members", class: ["nav-link", ("active" if pending_active)], 'data-toggle' => 'tab' do
           %span
-            Pending
+            = _("Pending")
           %span.badge.badge-pill= @invited_members.total_count
 
   .tab-content
     #existing_members.tab-pane{ :class => ("active" unless pending_active) }
       .card.card-without-border
         .d-flex.flex-column.flex-md-row.row-content-block.second-block
-          %span.flex-grow-1
-            Members with access to
+          %span.flex-grow-1.align-self-md-center.col-form-label
+            = _("Members with access to")
             %strong= @group.name
-          = form_tag group_group_members_path(@group), method: :get, class: 'form-inline member-search-form flex-project-members-form' do
-            .form-group
-              .position-relative.append-right-8
-                = search_field_tag :search, params[:search], { placeholder: 'Search', class: 'form-control', spellcheck: false }
-                %button.member-search-btn{ type: "submit", "aria-label" => "Submit search" }
+          = form_tag group_group_members_path(@group), method: :get, class: 'form-inline member-search-form' do
+            .form-group.flex-grow
+              .position-relative.pr-md-2
+                = search_field_tag :search, params[:search], { placeholder: _('Search'), class: 'form-control', spellcheck: false }
+                %button.member-search-btn{ type: "submit", "aria-label" => _("Submit search") }
                   = icon("search")
               - if can_manage_members
-                = label_tag '2fa', '2FA', class: 'col-form-label label-bold append-right-8'
+                = label_tag '2fa', '2FA', class: 'col-form-label label-bold pr-md-2'
                 = render 'shared/members/filter_2fa_dropdown'
               = render 'shared/members/sort_dropdown'
         %ul.content-list.members-list
@@ -59,13 +59,13 @@
         .card.card-without-border
           .d-flex.flex-column.flex-md-row.row-content-block.second-block
             %span.flex-grow-1
-              Members with pending access to
+              = _("Members with pending access to")
               %strong= @group.name
-            = form_tag group_group_members_path(@group), method: :get, class: 'form-inline member-search-form flex-project-members-form' do
+            = form_tag group_group_members_path(@group), method: :get, class: 'form-inline member-search-form' do
               .form-group
-                .position-relative.append-right-8
-                  = search_field_tag :search_invited, params[:search_invited], { placeholder: 'Search', class: 'form-control', spellcheck: false }
-                  %button.member-search-btn{ type: "submit", "aria-label" => "Submit search" }
+                .position-relative.pr-md-2
+                  = search_field_tag :search_invited, params[:search_invited], { placeholder: _('Search'), class: 'form-control', spellcheck: false }
+                  %button.member-search-btn{ type: "submit", "aria-label" => _("Submit search") }
                     = icon("search")
           %ul.content-list.members-list
             = render partial: 'shared/members/member', collection: @invited_members, as: :member
