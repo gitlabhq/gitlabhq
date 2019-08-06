@@ -182,27 +182,65 @@ describe Projects::CreateService, '#execute' do
   context 'restricted visibility level' do
     before do
       stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::PUBLIC])
-
-      opts.merge!(
-        visibility_level: Gitlab::VisibilityLevel::PUBLIC
-      )
     end
 
-    it 'does not allow a restricted visibility level for non-admins' do
-      project = create_project(user, opts)
-      expect(project).to respond_to(:errors)
-      expect(project.errors.messages).to have_key(:visibility_level)
-      expect(project.errors.messages[:visibility_level].first).to(
-        match('restricted by your GitLab administrator')
-      )
+    shared_examples 'restricted visibility' do
+      it 'does not allow a restricted visibility level for non-admins' do
+        project = create_project(user, opts)
+
+        expect(project).to respond_to(:errors)
+        expect(project.errors.messages).to have_key(:visibility_level)
+        expect(project.errors.messages[:visibility_level].first).to(
+          match('restricted by your GitLab administrator')
+        )
+      end
+
+      it 'allows a restricted visibility level for admins' do
+        admin = create(:admin)
+        project = create_project(admin, opts)
+
+        expect(project.errors.any?).to be(false)
+        expect(project.saved?).to be(true)
+      end
     end
 
-    it 'allows a restricted visibility level for admins' do
-      admin = create(:admin)
-      project = create_project(admin, opts)
+    context 'when visibility is project based' do
+      before do
+        opts.merge!(
+          visibility_level: Gitlab::VisibilityLevel::PUBLIC
+        )
+      end
 
-      expect(project.errors.any?).to be(false)
-      expect(project.saved?).to be(true)
+      include_examples 'restricted visibility'
+    end
+
+    context 'when visibility is overridden' do
+      let(:visibility) { 'public' }
+
+      before do
+        opts.merge!(
+          import_data: {
+            data: {
+              override_params: {
+                visibility: visibility
+              }
+            }
+          }
+        )
+      end
+
+      include_examples 'restricted visibility'
+
+      context 'when visibility is misspelled' do
+        let(:visibility) { 'publik' }
+
+        it 'does not restrict project creation' do
+          project = create_project(user, opts)
+
+          expect(project.errors.any?).to be(false)
+          expect(project.saved?).to be(true)
+        end
+      end
     end
   end
 
