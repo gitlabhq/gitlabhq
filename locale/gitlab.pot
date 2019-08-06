@@ -900,6 +900,9 @@ msgstr ""
 msgid "After a successful password update, you will be redirected to the login page where you can log in with your new password."
 msgstr ""
 
+msgid "Alerts"
+msgstr ""
+
 msgid "All"
 msgstr ""
 
@@ -6866,6 +6869,9 @@ msgid "Monitoring"
 msgstr ""
 
 msgid "More"
+msgstr ""
+
+msgid "More actions"
 msgstr ""
 
 msgid "More information"
