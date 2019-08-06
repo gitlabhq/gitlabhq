@@ -19,7 +19,7 @@ describe 'Groups > Members > Sort members' do
 
     expect(first_member).to include(owner.name)
     expect(second_member).to include(developer.name)
-    expect(page).to have_css('.member-sort-dropdown .dropdown-toggle-text', text: 'Name, ascending')
+    expect(page).to have_css('.qa-member-sort-dropdown .dropdown-toggle-text', text: 'Name, ascending')
   end
 
   it 'sorts by access level ascending' do
@@ -27,7 +27,7 @@ describe 'Groups > Members > Sort members' do
 
     expect(first_member).to include(developer.name)
     expect(second_member).to include(owner.name)
-    expect(page).to have_css('.member-sort-dropdown .dropdown-toggle-text', text: 'Access level, ascending')
+    expect(page).to have_css('.qa-member-sort-dropdown .dropdown-toggle-text', text: 'Access level, ascending')
   end
 
   it 'sorts by access level descending' do
@@ -35,7 +35,7 @@ describe 'Groups > Members > Sort members' do
 
     expect(first_member).to include(owner.name)
     expect(second_member).to include(developer.name)
-    expect(page).to have_css('.member-sort-dropdown .dropdown-toggle-text', text: 'Access level, descending')
+    expect(page).to have_css('.qa-member-sort-dropdown .dropdown-toggle-text', text: 'Access level, descending')
   end
 
   it 'sorts by last joined' do
@@ -43,7 +43,7 @@ describe 'Groups > Members > Sort members' do
 
     expect(first_member).to include(developer.name)
     expect(second_member).to include(owner.name)
-    expect(page).to have_css('.member-sort-dropdown .dropdown-toggle-text', text: 'Last joined')
+    expect(page).to have_css('.qa-member-sort-dropdown .dropdown-toggle-text', text: 'Last joined')
   end
 
   it 'sorts by oldest joined' do
@@ -51,7 +51,7 @@ describe 'Groups > Members > Sort members' do
 
     expect(first_member).to include(owner.name)
     expect(second_member).to include(developer.name)
-    expect(page).to have_css('.member-sort-dropdown .dropdown-toggle-text', text: 'Oldest joined')
+    expect(page).to have_css('.qa-member-sort-dropdown .dropdown-toggle-text', text: 'Oldest joined')
   end
 
   it 'sorts by name ascending' do
@@ -59,7 +59,7 @@ describe 'Groups > Members > Sort members' do
 
     expect(first_member).to include(owner.name)
     expect(second_member).to include(developer.name)
-    expect(page).to have_css('.member-sort-dropdown .dropdown-toggle-text', text: 'Name, ascending')
+    expect(page).to have_css('.qa-member-sort-dropdown .dropdown-toggle-text', text: 'Name, ascending')
   end
 
   it 'sorts by name descending' do
@@ -67,7 +67,7 @@ describe 'Groups > Members > Sort members' do
 
     expect(first_member).to include(developer.name)
     expect(second_member).to include(owner.name)
-    expect(page).to have_css('.member-sort-dropdown .dropdown-toggle-text', text: 'Name, descending')
+    expect(page).to have_css('.qa-member-sort-dropdown .dropdown-toggle-text', text: 'Name, descending')
   end
 
   it 'sorts by recent sign in', :clean_gitlab_redis_shared_state do
@@ -75,7 +75,7 @@ describe 'Groups > Members > Sort members' do
 
     expect(first_member).to include(owner.name)
     expect(second_member).to include(developer.name)
-    expect(page).to have_css('.member-sort-dropdown .dropdown-toggle-text', text: 'Recent sign in')
+    expect(page).to have_css('.qa-member-sort-dropdown .dropdown-toggle-text', text: 'Recent sign in')
   end
 
   it 'sorts by oldest sign in', :clean_gitlab_redis_shared_state do
@@ -83,7 +83,7 @@ describe 'Groups > Members > Sort members' do
 
     expect(first_member).to include(developer.name)
     expect(second_member).to include(owner.name)
-    expect(page).to have_css('.member-sort-dropdown .dropdown-toggle-text', text: 'Oldest sign in')
+    expect(page).to have_css('.qa-member-sort-dropdown .dropdown-toggle-text', text: 'Oldest sign in')
   end
 
   def visit_members_list(sort:)

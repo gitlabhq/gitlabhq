@@ -19,7 +19,7 @@ describe 'Groups > Members > Filter members' do
 
     expect(first_member).to include(user.name)
     expect(second_member).to include(user_with_2fa.name)
-    expect(page).to have_css('.member-filter-2fa-dropdown .dropdown-toggle-text', text: '2FA: Everyone')
+    expect(page).to have_css('.member-filter-2fa-dropdown .dropdown-toggle-text', text: 'Everyone')
   end
 
   it 'shows only 2FA members' do
@@ -27,7 +27,7 @@ describe 'Groups > Members > Filter members' do
 
     expect(first_member).to include(user_with_2fa.name)
     expect(members_list.size).to eq(1)
-    expect(page).to have_css('.member-filter-2fa-dropdown .dropdown-toggle-text', text: '2FA: Enabled')
+    expect(page).to have_css('.member-filter-2fa-dropdown .dropdown-toggle-text', text: 'Enabled')
   end
 
   it 'shows only non 2FA members' do
@@ -35,7 +35,7 @@ describe 'Groups > Members > Filter members' do
 
     expect(first_member).to include(user.name)
     expect(members_list.size).to eq(1)
-    expect(page).to have_css('.member-filter-2fa-dropdown .dropdown-toggle-text', text: '2FA: Disabled')
+    expect(page).to have_css('.member-filter-2fa-dropdown .dropdown-toggle-text', text: 'Disabled')
   end
 
   def visit_members_list(options = {})

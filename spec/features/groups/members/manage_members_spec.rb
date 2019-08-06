@@ -100,7 +100,7 @@ describe 'Groups > Members > Manage members' do
 
     click_link('Pending')
 
-    page.within('.content-list.invited-members-list') do
+    page.within('.content-list.members-list') do
       expect(page).to have_content('test@example.com')
       expect(page).to have_content('Invited')
       expect(page).to have_button('Reporter')
