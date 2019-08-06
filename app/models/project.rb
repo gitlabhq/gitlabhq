@@ -1487,6 +1487,9 @@ class Project < ApplicationRecord
   end
 
   def pipeline_for(ref, sha = nil, id = nil)
+    sha ||= commit(ref).try(:sha)
+    return unless sha
+
     if id.present?
       pipelines_for(ref, sha).find_by(id: id)
     else
@@ -1494,11 +1497,7 @@ class Project < ApplicationRecord
     end
   end
 
-  def pipelines_for(ref, sha = nil)
-    sha ||= commit(ref).try(:sha)
-
-    return unless sha
-
+  def pipelines_for(ref, sha)
     ci_pipelines.order(id: :desc).where(sha: sha, ref: ref)
   end
 
