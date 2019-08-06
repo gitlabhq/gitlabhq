@@ -5,6 +5,8 @@ module Chaos
     include ApplicationWorker
     include ChaosQueue
 
+    sidekiq_options retry: false
+
     def perform
       Gitlab::Chaos.kill
     end
