@@ -72,13 +72,14 @@ POST /projects/:id/approvals
 
 **Parameters:**
 
-| Attribute                                        | Type    | Required | Description                                                   |
-| ------------------------------------------------ | ------- | -------- | ----------------------------------------------------------    |
-| `id`                                             | integer | yes      | The ID of a project                                           |
-| `approvals_before_merge`                         | integer | no       | How many approvals are required before an MR can be merged    |
-| `reset_approvals_on_push`                        | boolean | no       | Reset approvals on a new push                                 |
-| `disable_overriding_approvers_per_merge_request` | boolean | no       | Allow/Disallow overriding approvers per MR                    |
-| `merge_requests_author_approval`                 | boolean | no       | Allow/Disallow authors be able to self approve merge requests |
+| Attribute                                        | Type    | Required | Description                                                                                         |
+| ------------------------------------------------ | ------- | -------- | --------------------------------------------------------------------------------------------------- |
+| `id`                                             | integer | yes      | The ID of a project                                                                                 |
+| `approvals_before_merge`                         | integer | no       | How many approvals are required before an MR can be merged                                          |
+| `reset_approvals_on_push`                        | boolean | no       | Reset approvals on a new push                                                                       |
+| `disable_overriding_approvers_per_merge_request` | boolean | no       | Allow/Disallow overriding approvers per MR                                                          |
+| `merge_requests_author_approval`                 | boolean | no       | Allow/Disallow authors from self approving merge requests; `true` means authors cannot self approve |
+| `merge_requests_disable_committers_approval`     | boolean | no       | Allow/Disallow committers from self approving merge requests                                        |
 
 ```json
 {
@@ -115,7 +116,8 @@ POST /projects/:id/approvals
   "approvals_before_merge": 2,
   "reset_approvals_on_push": true,
   "disable_overriding_approvers_per_merge_request": false,
-  "merge_requests_author_approval": false
+  "merge_requests_author_approval": false,
+  "merge_requests_disable_committers_approval": false
 }
 ```
 
