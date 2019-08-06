@@ -1,18 +1,18 @@
 ---
+type: index
 description: Learn how to customize GitLab's appearance for self-managed installations.
 ---
 
 # Customizing GitLab's appearance **(CORE ONLY)**
 
-For GitLab self-managed instances, it's possible to customize
-a few pages.
+For GitLab self-managed instances, you can customize the page logo,
+email headers, favicon, and several other aspects of GitLab's appearance.
 
-Read through the following documents to adjust GitLab's
-look and feel to meet your needs:
+The following pages explain how to customize the appearance of your instance:
 
-- [Custom login page](branded_login_page.md)
-- [Custom header and email logo](branded_page_and_email_header.md)
-- [Custom favicon](favicon.md)
-- [Libravatar](libravatar.md)
-- [New project page](new_project_page.md)
-- [Custom `/help` message](help_message.md)
+- [Changing the logo and description on the login page](branded_login_page.md)
+- [Changing the navigation bar and email header logo](branded_page_and_email_header.md)
+- [Changing the favicon](favicon.md)
+- [Customizing the new project page](new_project_page.md)
+- [Customizing the `/help` and login page messages](help_message.md)
+- [Using the Libravatar service with GitLab](libravatar.md)
