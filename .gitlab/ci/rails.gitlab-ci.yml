@@ -105,7 +105,7 @@
   variables:
     SETUP_DB: "false"
   script:
-    - git fetch https://gitlab.com/gitlab-org/gitlab-ce.git v9.3.0
+    - git fetch https://gitlab.com/gitlab-org/gitlab-ce.git v11.5.0
     - git checkout -f FETCH_HEAD
     - sed -i "s/gem 'oj', '~> 2.17.4'//" Gemfile
     - bundle update google-protobuf grpc
@@ -113,6 +113,7 @@
     - date
     - cp config/gitlab.yml.example config/gitlab.yml
     - bundle exec rake db:drop db:create db:schema:load db:seed_fu
+    - bundle exec rake add_limits_mysql
     - date
     - git checkout -f $CI_COMMIT_SHA
     - bundle install $BUNDLE_INSTALL_FLAGS
