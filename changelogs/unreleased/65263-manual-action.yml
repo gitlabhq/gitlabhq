@@ -1,0 +1,5 @@
+---
+title: Hides loading spinner in pipelines actions after request has been fullfiled
+merge_request:
+author:
+type: fixed
