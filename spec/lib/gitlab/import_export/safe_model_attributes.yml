@@ -693,3 +693,22 @@ ProjectMetricsSetting:
 - external_dashboard_url
 - created_at
 - updated_at
+Board:
+- id
+- project_id
+- created_at
+- updated_at
+- group_id
+- milestone_id
+- weight
+- name
+List:
+- id
+- board_id
+- label_id
+- list_type
+- position
+- created_at
+- updated_at
+- milestone_id
+- user_id

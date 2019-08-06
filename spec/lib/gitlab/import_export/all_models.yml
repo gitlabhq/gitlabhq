@@ -469,3 +469,17 @@ incident_management_setting:
 merge_trains:
 - project
 - merge_request
+boards:
+- group
+- lists
+- destroyable_lists
+- milestone
+- board_labels
+- board_assignee
+- assignee
+- labels
+lists:
+- user
+- milestone
+- board
+- label

@@ -272,6 +272,10 @@ describe Gitlab::ImportExport::ProjectTreeSaver do
           expect(saved_project_json).not_to include("runners_token" => 'token')
         end
       end
+
+      it 'has a board and a list' do
+        expect(saved_project_json['boards'].first['lists']).not_to be_empty
+      end
     end
   end
 
@@ -326,6 +330,9 @@ describe Gitlab::ImportExport::ProjectTreeSaver do
 
     create(:project_badge, project: project)
     create(:project_badge, project: project)
+
+    board = create(:board, project: project, name: 'TestBoard')
+    create(:list, board: board, position: 0, label: project_label)
 
     project
   end
