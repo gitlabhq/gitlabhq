@@ -44,6 +44,11 @@ export const isInIssuePage = () => checkPageAndAction('issues', 'show');
 export const isInMRPage = () => checkPageAndAction('merge_requests', 'show');
 export const isInEpicPage = () => checkPageAndAction('epics', 'show');
 
+export const getCspNonceValue = () => {
+  const metaTag = document.querySelector('meta[name=csp-nonce]');
+  return metaTag && metaTag.content;
+};
+
 export const ajaxGet = url =>
   axios
     .get(url, {
@@ -51,7 +56,7 @@ export const ajaxGet = url =>
       responseType: 'text',
     })
     .then(({ data }) => {
-      $.globalEval(data);
+      $.globalEval(data, { nonce: getCspNonceValue() });
     });
 
 export const rstrip = val => {

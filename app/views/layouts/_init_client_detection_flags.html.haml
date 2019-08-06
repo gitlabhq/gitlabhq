@@ -1,7 +1,7 @@
 - client = client_js_flags
 
 - if client
-  -# haml-lint:disable InlineJavaScript
-  :javascript
-    gl = window.gl || {};
-    gl.client = #{client.to_json};
+  = javascript_tag nonce: true do
+    :plain
+      gl = window.gl || {};
+      gl.client = #{client.to_json};
