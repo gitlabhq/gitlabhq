@@ -152,37 +152,35 @@ export default {
         :href="mergeRequestRef.path"
         :title="mergeRequestRef.title"
         class="ref-name"
+        >{{ mergeRequestRef.iid }}</gl-link
       >
-        {{ mergeRequestRef.iid }}
-      </gl-link>
       <gl-link
         v-else
         v-gl-tooltip
         :href="commitRef.ref_url"
         :title="commitRef.name"
         class="ref-name"
+        >{{ commitRef.name }}</gl-link
       >
-        {{ commitRef.name }}
-      </gl-link>
     </template>
     <icon name="commit" class="commit-icon js-commit-icon" />
 
-    <gl-link :href="commitUrl" class="commit-sha mr-0"> {{ shortSha }} </gl-link>
+    <gl-link :href="commitUrl" class="commit-sha mr-0">{{ shortSha }}</gl-link>
 
-    <div class="commit-title flex-truncate-parent">
-      <tooltip-on-truncate v-if="title" class="flex-truncate-child" :title="title">
+    <div class="commit-title">
+      <span v-if="title" class="flex-truncate-parent">
         <user-avatar-link
           v-if="hasAuthor"
           :link-href="author.path"
           :img-src="author.avatar_url"
           :img-alt="userImageAltDescription"
           :tooltip-text="author.username"
-          class="avatar-image-container"
+          class="avatar-image-container text-decoration-none"
         />
-        <gl-link :href="commitUrl" class="commit-row-message cgray">
-          {{ title }}
-        </gl-link>
-      </tooltip-on-truncate>
+        <tooltip-on-truncate :title="title" class="flex-truncate-child">
+          <gl-link :href="commitUrl" class="commit-row-message cgray">{{ title }}</gl-link>
+        </tooltip-on-truncate>
+      </span>
       <span v-else>{{ __("Can't find HEAD commit for this branch") }}</span>
     </div>
   </div>
