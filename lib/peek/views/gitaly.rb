@@ -3,6 +3,24 @@
 module Peek
   module Views
     class Gitaly < DetailedView
+      DEFAULT_THRESHOLDS = {
+        calls: 30,
+        duration: 1,
+        individual_call: 0.5
+      }.freeze
+
+      THRESHOLDS = {
+        production: {
+          calls: 30,
+          duration: 1,
+          individual_call: 0.5
+        }
+      }.freeze
+
+      def self.thresholds
+        @thresholds ||= THRESHOLDS.fetch(Rails.env.to_sym, DEFAULT_THRESHOLDS)
+      end
+
       private
 
       def duration

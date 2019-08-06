@@ -3,6 +3,24 @@
 module Peek
   module Views
     class ActiveRecord < DetailedView
+      DEFAULT_THRESHOLDS = {
+        calls: 100,
+        duration: 3,
+        individual_call: 1
+      }.freeze
+
+      THRESHOLDS = {
+        production: {
+          calls: 100,
+          duration: 15,
+          individual_call: 5
+        }
+      }.freeze
+
+      def self.thresholds
+        @thresholds ||= THRESHOLDS.fetch(Rails.env.to_sym, DEFAULT_THRESHOLDS)
+      end
+
       private
 
       def setup_subscribers
