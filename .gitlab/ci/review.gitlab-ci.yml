@@ -7,6 +7,7 @@
   except:
     refs:
       - master
+      - /^\d+-\d+-auto-deploy-\d+$/
       - /(^docs[\/-].+|.+-docs$)/
 
 .review-schedules-only: &review-schedules-only
@@ -264,6 +265,7 @@ danger-review:
   except:
     refs:
       - master
+      - /^\d+-\d+-auto-deploy-\d+$/
       - /^[\d-]+-stable(-ee)?$/
     variables:
       - $CI_COMMIT_REF_NAME =~ /^ce-to-ee-.*/
