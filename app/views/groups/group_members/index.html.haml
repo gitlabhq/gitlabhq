@@ -1,8 +1,6 @@
 - page_title _("Members")
 - can_manage_members = can?(current_user, :admin_group_member, @group)
 - show_invited_members = can_manage_members && @invited_members.exists?
-- total_members = @members.total_count
-- total_members += @invited_members.total_count if show_invited_members
 - pending_active = params[:search_invited].present?
 
 .project-members-page.prepend-top-default
