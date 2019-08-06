@@ -235,6 +235,12 @@ MergeRequest::Metrics:
 - latest_build_started_at
 - latest_build_finished_at
 - first_deployed_to_production_at
+- first_comment_at
+- first_commit_at
+- last_commit_at
+- diff_size
+- modified_paths_size
+- commits_count
 Ci::Pipeline:
 - id
 - project_id

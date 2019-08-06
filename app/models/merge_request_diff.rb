@@ -196,6 +196,12 @@ class MergeRequestDiff < ApplicationRecord
     real_size.presence || raw_diffs.size
   end
 
+  def lines_count
+    strong_memoize(:lines_count) do
+      diffs.diff_files.sum(&:line_count)
+    end
+  end
+
   def raw_diffs(options = {})
     if options[:ignore_whitespace_change]
       @diffs_no_whitespace ||= compare.diffs(options)
