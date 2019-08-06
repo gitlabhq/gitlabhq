@@ -641,8 +641,6 @@ GEM
       concurrent-ruby (>= 0.9.0)
       concurrent-ruby-ext (>= 0.9.0)
       railties (>= 4.0.0)
-    peek-gc (0.0.2)
-      peek
     pg (1.1.4)
     po_to_json (1.0.1)
       json (>= 1.6.0)
@@ -1173,7 +1171,6 @@ DEPENDENCIES
   omniauth_openid_connect (~> 0.3.1)
   org-ruby (~> 0.9.12)
   peek (~> 1.0.1)
-  peek-gc (~> 0.0.2)
   pg (~> 1.1)
   premailer-rails (~> 1.9.7)
   prometheus-client-mmap (~> 0.9.8)

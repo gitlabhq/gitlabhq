@@ -16,7 +16,6 @@ It allows you to see (from left to right):
   ![Rugged profiling using the Performance Bar](img/performance_bar_rugged_calls.png)
 - time taken and number of Redis calls, click through for details of these calls
   ![Redis profiling using the Performance Bar](img/performance_bar_redis_calls.png)
-- time taken and number of Ruby GC calls
 
 On the far right is a request selector that allows you to view the same metrics
 (excluding the page timing and line profiler) for any requests made while the
