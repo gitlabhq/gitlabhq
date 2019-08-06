@@ -71,6 +71,11 @@ bug](https://bugzilla.redhat.com/show_bug.cgi?id=1552203) that may be fixed in
 [more recent kernels with this
 commit](https://github.com/torvalds/linux/commit/95da1b3a5aded124dd1bda1e3cdb876184813140).
 
+NOTE: **Note** Red Hat Enterprise 7 [shipped a kernel
+update](https://access.redhat.com/errata/RHSA-2019:2029) on August 6,
+2019 that may have resolved this problem. The following instructions may
+not be needed if the latest kernel is updated properly.
+
 GitLab recommends all NFS users disable the NFS server
 delegation feature. To disable NFS server delegations
 on an Linux NFS server, do the following:
