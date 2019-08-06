@@ -32,8 +32,8 @@ Import your projects from Bitbucket Server to GitLab with minimal effort.
 1. Attachments in Markdown are currently not imported.
 1. Task lists are not imported.
 1. Emoji reactions are not imported
-1. Project filtering does not support fuzzy search (only starts with or full
-   match strings are currently supported)
+1. Project filtering does not support fuzzy search (only `starts with` or `full
+   match strings` are currently supported)
 
 ## How it works
 

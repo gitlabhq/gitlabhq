@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Import::BitbucketServerController < Import::BaseController
+  include ActionView::Helpers::SanitizeHelper
+
   before_action :verify_bitbucket_server_import_enabled
   before_action :bitbucket_auth, except: [:new, :configure]
   before_action :validate_import_params, only: [:create]
@@ -57,7 +59,7 @@ class Import::BitbucketServerController < Import::BaseController
 
   # rubocop: disable CodeReuse/ActiveRecord
   def status
-    @collection = bitbucket_client.repos(page_offset: page_offset, limit: limit_per_page, filter: params[:filter])
+    @collection = bitbucket_client.repos(page_offset: page_offset, limit: limit_per_page, filter: sanitized_filter_param)
     @repos, @incompatible_repos = @collection.partition { |repo| repo.valid? }
 
     # Use the import URL to filter beyond what BaseService#find_already_added_projects
@@ -146,5 +148,9 @@ class Import::BitbucketServerController < Import::BaseController
 
   def limit_per_page
     BitbucketServer::Paginator::PAGE_LENGTH
+  end
+
+  def sanitized_filter_param
+    sanitize(params[:filter])
   end
 end

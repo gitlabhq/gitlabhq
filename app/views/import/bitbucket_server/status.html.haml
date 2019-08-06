@@ -23,7 +23,7 @@
 
 .input-btn-group.float-right
   = form_tag status_import_bitbucket_server_path, :method => 'get' do
-    = text_field_tag :filter, params[:filter], class: 'form-control append-bottom-10', placeholder: _('Filter your projects by name'), size: 40, autoFocus: true
+    = text_field_tag :filter, sanitize(params[:filter]), class: 'form-control append-bottom-10', placeholder: _('Filter your projects by name'), size: 40, autoFocus: true
 
 .table-responsive.prepend-top-10
   %table.table.import-jobs
