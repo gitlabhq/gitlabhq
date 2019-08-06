@@ -1156,7 +1156,6 @@ describe Project do
 
   describe '#pipeline_for' do
     let(:project) { create(:project, :repository) }
-    let!(:pipeline) { create_pipeline(project) }
 
     shared_examples 'giving the correct pipeline' do
       it { is_expected.to eq(pipeline) }
@@ -1168,24 +1167,34 @@ describe Project do
       end
     end
 
-    context 'with explicit sha' do
-      subject { project.pipeline_for('master', pipeline.sha) }
+    context 'with a matching pipeline' do
+      let!(:pipeline) { create_pipeline(project) }
 
-      it_behaves_like 'giving the correct pipeline'
+      context 'with explicit sha' do
+        subject { project.pipeline_for('master', pipeline.sha) }
 
-      context 'with supplied id' do
-        let!(:other_pipeline) { create_pipeline(project) }
+        it_behaves_like 'giving the correct pipeline'
 
-        subject { project.pipeline_for('master', pipeline.sha, other_pipeline.id) }
+        context 'with supplied id' do
+          let!(:other_pipeline) { create_pipeline(project) }
 
-        it { is_expected.to eq(other_pipeline) }
+          subject { project.pipeline_for('master', pipeline.sha, other_pipeline.id) }
+
+          it { is_expected.to eq(other_pipeline) }
+        end
+      end
+
+      context 'with implicit sha' do
+        subject { project.pipeline_for('master') }
+
+        it_behaves_like 'giving the correct pipeline'
       end
     end
 
-    context 'with implicit sha' do
+    context 'when there is no matching pipeline' do
       subject { project.pipeline_for('master') }
 
-      it_behaves_like 'giving the correct pipeline'
+      it { is_expected.to be_nil }
     end
   end
 
@@ -1194,11 +1203,9 @@ describe Project do
     let!(:pipeline) { create_pipeline(project) }
     let!(:other_pipeline) { create_pipeline(project) }
 
-    context 'with implicit sha' do
-      subject { project.pipelines_for('master') }
+    subject { project.pipelines_for(project.default_branch, project.commit.sha) }
 
-      it { is_expected.to contain_exactly(pipeline, other_pipeline) }
-    end
+    it { is_expected.to contain_exactly(pipeline, other_pipeline) }
   end
 
   describe '#builds_enabled' do
