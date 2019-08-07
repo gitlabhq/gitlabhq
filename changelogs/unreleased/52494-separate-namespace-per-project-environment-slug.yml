@@ -1,0 +1,5 @@
+---
+title: Use separate Kubernetes namespaces per environment
+merge_request: 30711
+author:
+type: added

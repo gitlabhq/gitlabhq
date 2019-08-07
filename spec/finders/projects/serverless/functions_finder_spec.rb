@@ -11,12 +11,15 @@ describe Projects::Serverless::FunctionsFinder do
   let(:cluster) { create(:cluster, :project, :provided_by_gcp) }
   let(:service) { cluster.platform_kubernetes }
   let(:project) { cluster.project }
+  let(:environment) { create(:environment, project: project) }
+  let!(:deployment) { create(:deployment, :success, environment: environment, cluster: cluster) }
+  let(:knative_services_finder) { environment.knative_services_finder }
 
   let(:namespace) do
     create(:cluster_kubernetes_namespace,
       cluster: cluster,
-      cluster_project: cluster.cluster_project,
-      project: cluster.cluster_project.project)
+      project: project,
+      environment: environment)
   end
 
   before do
@@ -29,11 +32,9 @@ describe Projects::Serverless::FunctionsFinder do
     end
 
     context 'when reactive_caching has finished' do
-      let(:knative_services_finder) { project.clusters.first.knative_services_finder(project) }
-
       before do
-        allow_any_instance_of(Clusters::Cluster)
-          .to receive(:knative_services_finder)
+        allow(Clusters::KnativeServicesFinder)
+          .to receive(:new)
           .and_return(knative_services_finder)
         synchronous_reactive_cache(knative_services_finder)
       end
@@ -47,8 +48,6 @@ describe Projects::Serverless::FunctionsFinder do
       end
 
       context 'reactive_caching is finished and knative is installed' do
-        let(:knative_services_finder) { project.clusters.first.knative_services_finder(project) }
-
         it 'returns true' do
           stub_kubeclient_knative_services(namespace: namespace.namespace)
           stub_kubeclient_service_pods(nil, namespace: namespace.namespace)
@@ -74,24 +73,24 @@ describe Projects::Serverless::FunctionsFinder do
 
       it 'there are functions', :use_clean_rails_memory_store_caching do
         stub_kubeclient_service_pods
-        stub_reactive_cache(cluster.knative_services_finder(project),
+        stub_reactive_cache(knative_services_finder,
           {
             services: kube_knative_services_body(namespace: namespace.namespace, name: cluster.project.name)["items"],
             pods: kube_knative_pods_body(cluster.project.name, namespace.namespace)["items"]
           },
-          *cluster.knative_services_finder(project).cache_args)
+          *knative_services_finder.cache_args)
 
         expect(finder.execute).not_to be_empty
       end
 
       it 'has a function', :use_clean_rails_memory_store_caching do
         stub_kubeclient_service_pods
-        stub_reactive_cache(cluster.knative_services_finder(project),
+        stub_reactive_cache(knative_services_finder,
           {
             services: kube_knative_services_body(namespace: namespace.namespace, name: cluster.project.name)["items"],
             pods: kube_knative_pods_body(cluster.project.name, namespace.namespace)["items"]
           },
-          *cluster.knative_services_finder(project).cache_args)
+          *knative_services_finder.cache_args)
 
         result = finder.service(cluster.environment_scope, cluster.project.name)
         expect(result).not_to be_empty
@@ -109,7 +108,7 @@ describe Projects::Serverless::FunctionsFinder do
       let(:finder) { described_class.new(project) }
 
       before do
-        allow(finder).to receive(:prometheus_adapter).and_return(prometheus_adapter)
+        allow(Prometheus::AdapterService).to receive(:new).and_return(double(prometheus_adapter: prometheus_adapter))
         allow(prometheus_adapter).to receive(:query).and_return(prometheus_empty_body('matrix'))
       end
 

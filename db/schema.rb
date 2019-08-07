@@ -880,6 +880,7 @@ ActiveRecord::Schema.define(version: 2019_08_02_235445) do
     t.integer "cluster_type", limit: 2, default: 3, null: false
     t.string "domain"
     t.boolean "managed", default: true, null: false
+    t.boolean "namespace_per_environment", default: false, null: false
     t.index ["enabled"], name: "index_clusters_on_enabled"
     t.index ["user_id"], name: "index_clusters_on_user_id"
   end
@@ -984,9 +985,12 @@ ActiveRecord::Schema.define(version: 2019_08_02_235445) do
     t.string "encrypted_service_account_token_iv"
     t.string "namespace", null: false
     t.string "service_account_name"
+    t.bigint "environment_id"
     t.index ["cluster_id", "namespace"], name: "kubernetes_namespaces_cluster_and_namespace", unique: true
+    t.index ["cluster_id", "project_id", "environment_id"], name: "index_kubernetes_namespaces_on_cluster_project_environment_id", unique: true
     t.index ["cluster_id"], name: "index_clusters_kubernetes_namespaces_on_cluster_id"
     t.index ["cluster_project_id"], name: "index_clusters_kubernetes_namespaces_on_cluster_project_id"
+    t.index ["environment_id"], name: "index_clusters_kubernetes_namespaces_on_environment_id"
     t.index ["project_id"], name: "index_clusters_kubernetes_namespaces_on_project_id"
   end
 
@@ -3711,6 +3715,7 @@ ActiveRecord::Schema.define(version: 2019_08_02_235445) do
   add_foreign_key "clusters_applications_runners", "clusters", on_delete: :cascade
   add_foreign_key "clusters_kubernetes_namespaces", "cluster_projects", on_delete: :nullify
   add_foreign_key "clusters_kubernetes_namespaces", "clusters", on_delete: :cascade
+  add_foreign_key "clusters_kubernetes_namespaces", "environments", on_delete: :nullify
   add_foreign_key "clusters_kubernetes_namespaces", "projects", on_delete: :nullify
   add_foreign_key "container_repositories", "projects"
   add_foreign_key "dependency_proxy_blobs", "namespaces", column: "group_id", name: "fk_db58bbc5d7", on_delete: :cascade

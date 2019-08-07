@@ -9,12 +9,12 @@ module Clusters
     belongs_to :cluster_project, class_name: 'Clusters::Project'
     belongs_to :cluster, class_name: 'Clusters::Cluster'
     belongs_to :project, class_name: '::Project'
+    belongs_to :environment, optional: true
     has_one :platform_kubernetes, through: :cluster
-
-    before_validation :set_defaults
 
     validates :namespace, presence: true
     validates :namespace, uniqueness: { scope: :cluster_id }
+    validates :environment_id, uniqueness: { scope: [:cluster_id, :project_id] }, allow_nil: true
 
     validates :service_account_name, presence: true
 
@@ -27,6 +27,7 @@ module Clusters
         algorithm: 'aes-256-cbc'
 
     scope :has_service_account_token, -> { where.not(encrypted_service_account_token: nil) }
+    scope :with_environment_slug, -> (slug) { joins(:environment).where(environments: { slug: slug }) }
 
     def token_name
       "#{namespace}-token"
@@ -42,33 +43,7 @@ module Clusters
       end
     end
 
-    def set_defaults
-      self.namespace ||= default_platform_kubernetes_namespace
-      self.namespace ||= default_project_namespace
-      self.service_account_name ||= default_service_account_name
-    end
-
     private
-
-    def default_service_account_name
-      return unless namespace
-
-      "#{namespace}-service-account"
-    end
-
-    def default_platform_kubernetes_namespace
-      platform_kubernetes&.namespace.presence
-    end
-
-    def default_project_namespace
-      Gitlab::NamespaceSanitizer.sanitize(project_slug) if project_slug
-    end
-
-    def project_slug
-      return unless project
-
-      "#{project.path}-#{project.id}".downcase
-    end
 
     def kubeconfig
       to_kubeconfig(

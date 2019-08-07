@@ -7,14 +7,18 @@ describe Clusters::KnativeServicesFinder do
   include ReactiveCachingHelpers
 
   let(:cluster) { create(:cluster, :project, :provided_by_gcp) }
-  let(:service) { cluster.platform_kubernetes }
+  let(:service) { environment.deployment_platform }
   let(:project) { cluster.cluster_project.project }
+  let(:environment) { create(:environment, project: project) }
+  let!(:deployment) { create(:deployment, :success, environment: environment, cluster: cluster) }
   let(:namespace) do
     create(:cluster_kubernetes_namespace,
       cluster: cluster,
-      cluster_project: cluster.cluster_project,
-      project: project)
+      project: project,
+      environment: environment)
   end
+
+  let(:finder) { described_class.new(cluster, environment) }
 
   before do
     stub_kubeclient_knative_services(namespace: namespace.namespace)
@@ -35,7 +39,7 @@ describe Clusters::KnativeServicesFinder do
 
     context 'when using synchronous reactive cache' do
       before do
-        synchronous_reactive_cache(cluster.knative_services_finder(project))
+        synchronous_reactive_cache(finder)
       end
 
       context 'when there are functions for cluster namespace' do
@@ -60,21 +64,21 @@ describe Clusters::KnativeServicesFinder do
   end
 
   describe '#service_pod_details' do
-    subject { cluster.knative_services_finder(project).service_pod_details(project.name) }
+    subject { finder.service_pod_details(project.name) }
 
     it_behaves_like 'a cached data'
   end
 
   describe '#services' do
-    subject { cluster.knative_services_finder(project).services }
+    subject { finder.services }
 
     it_behaves_like 'a cached data'
   end
 
   describe '#knative_detected' do
-    subject { cluster.knative_services_finder(project).knative_detected }
+    subject { finder.knative_detected }
     before do
-      synchronous_reactive_cache(cluster.knative_services_finder(project))
+      synchronous_reactive_cache(finder)
     end
 
     context 'when knative is installed' do
@@ -85,7 +89,7 @@ describe Clusters::KnativeServicesFinder do
       it { is_expected.to be_truthy }
       it "discovers knative installation" do
         expect { subject }
-          .to change { cluster.kubeclient.knative_client.discovered }
+          .to change { finder.cluster.kubeclient.knative_client.discovered }
           .from(false)
           .to(true)
       end

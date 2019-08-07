@@ -434,7 +434,7 @@ The instructions below relate to installing and running Certbot on a Linux serve
    ./certbot-auto certonly --manual --preferred-challenges dns -d '*.<namespace>.example.com'
    ```
 
-   Where `<namespace>` is the namespace created by GitLab for your serverless project (composed of `<projectname+id>`) and
+   Where `<namespace>` is the namespace created by GitLab for your serverless project (composed of `<project_name>-<project_id>-<environment>`) and
    `example.com` is the domain being used for your project. If you are unsure what the namespace of your project is, navigate
    to the **Operations > Serverless** page of your project and inspect
    the endpoint provided for your function/app.

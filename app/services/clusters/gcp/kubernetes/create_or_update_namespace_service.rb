@@ -11,7 +11,6 @@ module Clusters
         end
 
         def execute
-          configure_kubernetes_namespace
           create_project_service_account
           configure_kubernetes_token
 
@@ -21,10 +20,6 @@ module Clusters
         private
 
         attr_reader :cluster, :kubernetes_namespace, :platform
-
-        def configure_kubernetes_namespace
-          kubernetes_namespace.set_defaults
-        end
 
         def create_project_service_account
           Clusters::Gcp::Kubernetes::CreateOrUpdateServiceAccountService.namespace_creator(

@@ -51,11 +51,6 @@ module Clusters
       delegate :provided_by_user?, to: :cluster, allow_nil: true
       delegate :allow_user_defined_namespace?, to: :cluster, allow_nil: true
 
-      # This is just to maintain compatibility with KubernetesService, which
-      # will be removed in https://gitlab.com/gitlab-org/gitlab-ce/issues/39217.
-      # It can be removed once KubernetesService is gone.
-      delegate :kubernetes_namespace_for, to: :cluster, allow_nil: true
-
       alias_method :active?, :enabled?
 
       enum_with_nil authorization_type: {
@@ -66,7 +61,7 @@ module Clusters
 
       default_value_for :authorization_type, :rbac
 
-      def predefined_variables(project:)
+      def predefined_variables(project:, environment_name:)
         Gitlab::Ci::Variables::Collection.new.tap do |variables|
           variables.append(key: 'KUBE_URL', value: api_url)
 
@@ -77,15 +72,14 @@ module Clusters
           end
 
           if !cluster.managed?
-            project_namespace = namespace.presence || "#{project.path}-#{project.id}".downcase
+            namespace = Gitlab::Kubernetes::DefaultNamespace.new(cluster, project: project).from_environment_name(environment_name)
 
             variables
-              .append(key: 'KUBE_URL', value: api_url)
               .append(key: 'KUBE_TOKEN', value: token, public: false, masked: true)
-              .append(key: 'KUBE_NAMESPACE', value: project_namespace)
-              .append(key: 'KUBECONFIG', value: kubeconfig(project_namespace), public: false, file: true)
+              .append(key: 'KUBE_NAMESPACE', value: namespace)
+              .append(key: 'KUBECONFIG', value: kubeconfig(namespace), public: false, file: true)
 
-          elsif kubernetes_namespace = cluster.kubernetes_namespaces.has_service_account_token.find_by(project: project)
+          elsif kubernetes_namespace = find_persisted_namespace(project, environment_name: environment_name)
             variables.concat(kubernetes_namespace.predefined_variables)
           end
 
@@ -110,6 +104,22 @@ module Clusters
       end
 
       private
+
+      ##
+      # Environment slug can be predicted given an environment
+      # name, so even if the environment isn't persisted yet we
+      # still know what to look for.
+      def environment_slug(name)
+        Gitlab::Slug::Environment.new(name).generate
+      end
+
+      def find_persisted_namespace(project, environment_name:)
+        Clusters::KubernetesNamespaceFinder.new(
+          cluster,
+          project: project,
+          environment_slug: environment_slug(environment_name)
+        ).execute
+      end
 
       def kubeconfig(namespace)
         to_kubeconfig(

@@ -23,7 +23,7 @@ describe Gitlab::Prometheus::QueryVariables do
 
     context 'with deployment platform' do
       context 'with project cluster' do
-        let(:kube_namespace) { environment.deployment_platform.cluster.kubernetes_namespace_for(project) }
+        let(:kube_namespace) { environment.deployment_namespace }
 
         before do
           create(:cluster, :project, :provided_by_user, projects: [project])
@@ -38,8 +38,8 @@ describe Gitlab::Prometheus::QueryVariables do
         let(:project2) { create(:project) }
         let(:kube_namespace) { k8s_ns.namespace }
 
-        let!(:k8s_ns) { create(:cluster_kubernetes_namespace, cluster: cluster, project: project) }
-        let!(:k8s_ns2) { create(:cluster_kubernetes_namespace, cluster: cluster, project: project2) }
+        let!(:k8s_ns) { create(:cluster_kubernetes_namespace, cluster: cluster, project: project, environment: environment) }
+        let!(:k8s_ns2) { create(:cluster_kubernetes_namespace, cluster: cluster, project: project2, environment: environment) }
 
         before do
           group.projects << project
