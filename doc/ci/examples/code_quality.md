@@ -1,5 +1,5 @@
 ---
-redirect_from: 'https://docs.gitlab.com/ee/ci/examples/code_climate.html'
+disqus_identifier: 'https://docs.gitlab.com/ee/ci/examples/code_climate.html'
 type: reference, howto
 ---
 

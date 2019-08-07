@@ -170,7 +170,7 @@ Disqus uses an identifier per page, and for docs.gitlab.com, the page identifier
 is configured to be the page URL. Therefore, when we change the document location,
 we need to preserve the old URL as the same Disqus identifier.
 
-To do that, add to the frontmatter the variable `redirect_from`,
+To do that, add to the frontmatter the variable `disqus_identifier`,
 using the old URL as value. For example, let's say I moved the document
 available under `https://docs.gitlab.com/my-old-location/README.html` to a new location,
 `https://docs.gitlab.com/my-new-location/index.html`.
@@ -179,11 +179,11 @@ Into the **new document** frontmatter add the following:
 
 ```yaml
 ---
-redirect_from: 'https://docs.gitlab.com/my-old-location/README.html'
+disqus_identifier: 'https://docs.gitlab.com/my-old-location/README.html'
 ---
 ```
 
-Note: it is necessary to include the file name in the `redirect_from` URL,
+Note: it is necessary to include the file name in the `disqus_identifier` URL,
 even if it's `index.html` or `README.html`.
 
 ## Branch naming
