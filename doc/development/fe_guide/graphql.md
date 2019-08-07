@@ -47,7 +47,7 @@ new Vue({
 });
 ```
 
-Read more about [Vue Apollo][vue-apollo] in the [Vue Apollo documentation][vue-apollo-docs].
+Read more about [Vue Apollo][vue-apollo] in the [Vue Apollo documentation](https://vue-apollo.netlify.com/guide/).
 
 ### Local state with Apollo
 
@@ -118,7 +118,6 @@ Read more about the [Apollo] client in the [Apollo documentation](https://www.ap
 
 [Apollo]: https://www.apollographql.com/
 [vue-apollo]: https://github.com/Akryum/vue-apollo/
-[vue-apollo-docs]: https://akryum.github.io/vue-apollo/
 [feature-flags]: ../feature_flags.md
 [default-client]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/app/assets/javascripts/lib/graphql.js
 [vue-test-utils]: https://vue-test-utils.vuejs.org/

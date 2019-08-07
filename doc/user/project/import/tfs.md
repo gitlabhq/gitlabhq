@@ -1,6 +1,6 @@
 # Migrating from TFS
 
-[TFS](https://visualstudio.microsoft.com/tfs/) is a set of tools developed by Microsoft
+[TFS](https://azure.microsoft.com/en-us/services/devops/server/) is a set of tools developed by Microsoft
 which also includes a centralized version control system (TFVC) similar to Git.
 
 In this document, we emphasize on the TFVC to Git migration.
