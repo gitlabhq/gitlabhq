@@ -6,8 +6,8 @@
 /doc/ @axil @marcia @eread @mikelewis
 
 # Frontend maintainers should see everything in `app/assets/`
-app/assets/ @ClemMakesApps @fatihacet @filipa @iamphill @mikegreiling @timzallmann @kushalpandya @pslaughter
-*.scss @annabeldunstone @ClemMakesApps @fatihacet @filipa @iamphill @mikegreiling @timzallmann @kushalpandya @pslaughter
+app/assets/ @ClemMakesApps @fatihacet @filipa @mikegreiling @timzallmann @kushalpandya @pslaughter
+*.scss @annabeldunstone @ClemMakesApps @fatihacet @filipa @mikegreiling @timzallmann @kushalpandya @pslaughter
 
 # Maintainers from the Database team should review changes in `db/`
 db/ @gl-database
