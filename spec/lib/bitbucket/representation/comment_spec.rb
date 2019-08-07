@@ -4,7 +4,7 @@ require 'spec_helper'
 
 describe Bitbucket::Representation::Comment do
   describe '#author' do
-    it { expect(described_class.new('user' => { 'username' => 'Ben' }).author).to eq('Ben') }
+    it { expect(described_class.new('user' => { 'nickname' => 'Ben' }).author).to eq('Ben') }
     it { expect(described_class.new({}).author).to be_nil }
   end
 
