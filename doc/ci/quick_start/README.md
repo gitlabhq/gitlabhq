@@ -13,6 +13,10 @@ NOTE: **Note:**
 Please keep in mind that only project Maintainers and Admin users have
 the permissions to access a project's settings.
 
+NOTE: **Note:**
+Coming over to GitLab from Jenkins? Check out our [reference](../jenkins/index.md)
+for converting your pre-existing pipelines over to our format.
+
 GitLab offers a [continuous integration][ci] service. If you
 [add a `.gitlab-ci.yml` file][yaml] to the root directory of your repository,
 and configure your GitLab project to use a [Runner], then each commit or
