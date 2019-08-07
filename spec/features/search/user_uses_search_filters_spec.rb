@@ -22,7 +22,7 @@ describe 'User uses search filters', :js do
 
       wait_for_requests
 
-      page.within('.search-holder') do
+      page.within('.search-page-form') do
         click_link(group.name)
       end
 

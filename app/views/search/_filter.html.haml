@@ -2,10 +2,11 @@
   = hidden_field_tag :group_id, params[:group_id]
 - if params[:project_id].present?
   = hidden_field_tag :project_id, params[:project_id]
-.dropdown
-  %button.dropdown-menu-toggle.js-search-group-dropdown{ type: "button", data: { toggle: "dropdown", default_label: _('Group:'), group_id: params[:group_id] } }
+.dropdown.form-group.mb-lg-0.mx-lg-1
+  %label.d-block{ for: "dashboard_search_group" }
+    = _("Group")
+  %button.dropdown-menu-toggle.js-search-group-dropdown.mt-0{ type: "button", id: "dashboard_search_group", data: { toggle: "dropdown", group_id: params[:group_id] } }
     %span.dropdown-toggle-text
-      = _("Group:")
       - if @group.present?
         = @group.name
       - else
@@ -17,10 +18,11 @@
     = dropdown_content
     = dropdown_loading
 
-.dropdown.project-filter
-  %button.dropdown-menu-toggle.js-search-project-dropdown{ type: "button", data: { toggle: "dropdown", default_label: _('Project:') } }
+.dropdown.project-filter.form-group.mb-lg-0.mx-lg-1
+  %label.d-block{ for: "dashboard_search_project" }
+    = _("Project")
+  %button.dropdown-menu-toggle.js-search-project-dropdown.mt-0{ type: "button", id: "dashboard_search_project", data: { toggle: "dropdown"} }
     %span.dropdown-toggle-text
-      = _("Project:")
       - if @project.present?
         = @project.full_name
       - else

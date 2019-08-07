@@ -186,21 +186,19 @@ input[type='checkbox']:hover {
   }
 }
 
-.search-holder {
-  @include media-breakpoint-up(sm) {
-    display: flex;
-  }
+.search-field-holder,
+.project-filter-form {
+  flex: 1 0 auto;
+  position: relative;
 
-  .search-field-holder,
-  .project-filter-form {
-    flex: 1 0 auto;
-    position: relative;
+  .search-holder & {
     margin-right: 0;
 
     @include media-breakpoint-up(sm) {
       margin-right: 5px;
     }
   }
+
 
   .search-icon {
     position: absolute;
@@ -215,9 +213,16 @@ input[type='checkbox']:hover {
     padding-left: $gl-padding + 15px;
     padding-right: $gl-padding + 15px;
   }
+}
+
+.search-holder {
+  @include media-breakpoint-up(sm) {
+    display: flex;
+  }
 
   .btn-search,
-  .btn-success {
+  .btn-success,
+  .dropdown-menu-toggle {
     width: 100%;
     margin-top: 5px;
 
@@ -236,9 +241,6 @@ input[type='checkbox']:hover {
   }
 
   .dropdown-menu-toggle {
-    width: 100%;
-    margin-top: 5px;
-
     @include media-breakpoint-up(sm) {
       width: 180px;
       margin-top: 0;
@@ -259,6 +261,25 @@ input[type='checkbox']:hover {
   &:hover,
   &:focus {
     color: $blue-600;
+  }
+}
+
+.search-page-form {
+  .dropdown-menu-toggle,
+  .btn-search {
+    width: 100%;
+  }
+
+  .dropdown-menu-toggle {
+    @include media-breakpoint-up(lg) {
+      width: 240px;
+    }
+  }
+
+  .btn-search {
+    @include media-breakpoint-up(lg) {
+      width: auto;
+    }
   }
 }
 
