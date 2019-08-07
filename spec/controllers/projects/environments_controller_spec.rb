@@ -518,10 +518,10 @@ describe Projects::EnvironmentsController do
       end
     end
 
-    shared_examples_for 'the default dynamic dashboard' do
+    shared_examples_for 'specified dashboard embed' do |expected_titles|
       it_behaves_like '200 response'
 
-      it 'contains only the Memory and CPU charts' do
+      it 'contains only the specified charts' do
         get :metrics_dashboard, params: environment_params(dashboard_params)
 
         dashboard = json_response['dashboard']
@@ -531,8 +531,12 @@ describe Projects::EnvironmentsController do
         expect(dashboard['dashboard']).to be_nil
         expect(dashboard['panel_groups'].length).to eq 1
         expect(panel_group['group']).to be_nil
-        expect(titles).to eq ['Memory Usage (Total)', 'Core Usage (Total)']
+        expect(titles).to eq expected_titles
       end
+    end
+
+    shared_examples_for 'the default dynamic dashboard' do
+      it_behaves_like 'specified dashboard embed', ['Memory Usage (Total)', 'Core Usage (Total)']
     end
 
     shared_examples_for 'dashboard can be specified' do
@@ -551,7 +555,7 @@ describe Projects::EnvironmentsController do
         end
 
         context 'when the specified dashboard is the default dashboard' do
-          let(:dashboard_path) { ::Metrics::Dashboard::SystemDashboardService::SYSTEM_DASHBOARD_PATH }
+          let(:dashboard_path) { system_dashboard_path }
 
           it_behaves_like 'the default dashboard'
         end
@@ -564,11 +568,39 @@ describe Projects::EnvironmentsController do
 
         it_behaves_like 'the default dynamic dashboard'
 
-        context 'when the dashboard is specified' do
-          let(:dashboard_params) { { format: :json, embedded: true, dashboard: '.gitlab/dashboards/fake.yml' } }
+        context 'when incomplete dashboard params are provided' do
+          let(:dashboard_params) { { format: :json, embedded: true, title: 'Title' } }
 
-          # The dashboard param should be ignored.
+          # The title param should be ignored.
           it_behaves_like 'the default dynamic dashboard'
+        end
+
+        context 'when invalid params are provided' do
+          let(:dashboard_params) { { format: :json, embedded: true, metric_id: 16 } }
+
+          # The superfluous param should be ignored.
+          it_behaves_like 'the default dynamic dashboard'
+        end
+
+        context 'when the dashboard is correctly specified' do
+          let(:dashboard_params) do
+            {
+              format: :json,
+              embedded: true,
+              dashboard: system_dashboard_path,
+              group: business_metric_title,
+              title: 'title',
+              y_label: 'y_label'
+            }
+          end
+
+          it_behaves_like 'error response', :not_found
+
+          context 'and exists' do
+            let!(:metric) { create(:prometheus_metric, project: project) }
+
+            it_behaves_like 'specified dashboard embed', ['title']
+          end
         end
       end
     end

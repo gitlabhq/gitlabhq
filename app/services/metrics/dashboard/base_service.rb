@@ -5,17 +5,14 @@
 module Metrics
   module Dashboard
     class BaseService < ::BaseService
-      PROCESSING_ERROR = Gitlab::Metrics::Dashboard::Stages::BaseStage::DashboardProcessingError
-      NOT_FOUND_ERROR = Gitlab::Template::Finders::RepoTemplateFinder::FileNotFoundError
+      include Gitlab::Metrics::Dashboard::Errors
 
       def get_dashboard
         return error('Insufficient permissions.', :unauthorized) unless allowed?
 
         success(dashboard: process_dashboard)
-      rescue NOT_FOUND_ERROR
-        error("#{dashboard_path} could not be found.", :not_found)
-      rescue PROCESSING_ERROR => e
-        error(e.message, :unprocessable_entity)
+      rescue StandardError => e
+        handle_errors(e)
       end
 
       # Summary of all known dashboards for the service.

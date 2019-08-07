@@ -5,10 +5,9 @@ require 'spec_helper'
 describe Gitlab::Metrics::Dashboard::Finder, :use_clean_rails_memory_store_caching do
   include MetricsDashboardHelpers
 
-  set(:project) { build(:project) }
+  set(:project) { create(:project) }
   set(:user) { create(:user) }
   set(:environment) { create(:environment, project: project) }
-  let(:system_dashboard_path) { ::Metrics::Dashboard::SystemDashboardService::SYSTEM_DASHBOARD_PATH}
 
   before do
     project.add_maintainer(user)
@@ -52,9 +51,80 @@ describe Gitlab::Metrics::Dashboard::Finder, :use_clean_rails_memory_store_cachi
     end
 
     context 'when the dashboard is expected to be embedded' do
-      let(:service_call) { described_class.find(project, user, environment, dashboard_path: nil, embedded: true) }
+      let(:service_call) { described_class.find(project, user, environment, **params) }
+      let(:params) { { embedded: true } }
 
       it_behaves_like 'valid embedded dashboard service response'
+
+      context 'when params are incomplete' do
+        let(:params) { { embedded: true, dashboard_path: system_dashboard_path } }
+
+        it_behaves_like 'valid embedded dashboard service response'
+      end
+
+      context 'when the panel is specified' do
+        context 'as a custom metric' do
+          let(:params) do
+            { embedded: true,
+              dashboard_path: system_dashboard_path,
+              group: business_metric_title,
+              title: 'title',
+              y_label: 'y_label' }
+          end
+
+          it_behaves_like 'misconfigured dashboard service response', :not_found
+
+          context 'when the metric exists' do
+            before do
+              create(:prometheus_metric, project: project)
+            end
+
+            it_behaves_like 'valid embedded dashboard service response'
+          end
+        end
+
+        context 'as a project-defined panel' do
+          let(:dashboard_path) { '.gitlab/dashboard/test.yml' }
+          let(:params) do
+            { embedded: true,
+              dashboard_path: dashboard_path,
+              group: 'Group A',
+              title: 'Super Chart A1',
+              y_label: 'y_label' }
+          end
+
+          it_behaves_like 'misconfigured dashboard service response', :not_found
+
+          context 'when the metric exists' do
+            let(:project) { project_with_dashboard(dashboard_path) }
+
+            it_behaves_like 'valid embedded dashboard service response'
+          end
+        end
+      end
+    end
+  end
+
+  describe '.find_raw' do
+    let(:dashboard) { YAML.load_file(Rails.root.join('config', 'prometheus', 'common_metrics.yml')) }
+    let(:params) { {} }
+
+    subject { described_class.find_raw(project, **params) }
+
+    it { is_expected.to eq dashboard }
+
+    context 'when the system dashboard is specified' do
+      let(:params) { { dashboard_path: system_dashboard_path } }
+
+      it { is_expected.to eq dashboard }
+    end
+
+    context 'when an existing project dashboard is specified' do
+      let(:dashboard) { YAML.safe_load(fixture_file('lib/gitlab/metrics/dashboard/sample_dashboard.yml')) }
+      let(:params) { { dashboard_path: '.gitlab/dashboards/test.yml' } }
+      let(:project) { project_with_dashboard(params[:dashboard_path]) }
+
+      it { is_expected.to eq dashboard }
     end
   end
 

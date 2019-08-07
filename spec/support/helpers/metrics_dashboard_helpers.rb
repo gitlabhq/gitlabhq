@@ -18,6 +18,14 @@ module MetricsDashboardHelpers
     project.repository.refresh_method_caches([:metrics_dashboard])
   end
 
+  def system_dashboard_path
+    Metrics::Dashboard::SystemDashboardService::SYSTEM_DASHBOARD_PATH
+  end
+
+  def business_metric_title
+    PrometheusMetricEnums.group_details[:business][:group_title]
+  end
+
   shared_examples_for 'misconfigured dashboard service response' do |status_code|
     it 'returns an appropriate message and status code' do
       result = service_call
