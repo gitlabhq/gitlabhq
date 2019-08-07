@@ -59,6 +59,7 @@ module API
         }
 
         override_params = import_params.delete(:override_params)
+        filter_attributes_using_license!(override_params) if override_params
 
         project = ::Projects::GitlabProjectsImportService.new(
           current_user, project_params, override_params
