@@ -63,7 +63,7 @@ describe Sentry::Client do
 
   shared_examples 'maps exceptions' do
     exceptions = {
-      HTTParty::Error => 'Error when connecting to Sentry',
+      Gitlab::HTTP::Error => 'Error when connecting to Sentry',
       Net::OpenTimeout => 'Connection to Sentry timed out',
       SocketError => 'Received SocketError when trying to connect to Sentry',
       OpenSSL::SSL::SSLError => 'Sentry returned invalid SSL data',

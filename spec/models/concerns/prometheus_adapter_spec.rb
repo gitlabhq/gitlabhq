@@ -40,13 +40,13 @@ describe PrometheusAdapter, :use_clean_rails_memory_store_caching do
 
     describe 'matched_metrics' do
       let(:matched_metrics_query) { Gitlab::Prometheus::Queries::MatchedMetricQuery }
-      let(:prometheus_client_wrapper) { double(:prometheus_client_wrapper, label_values: nil) }
+      let(:prometheus_client) { double(:prometheus_client, label_values: nil) }
 
       context 'with valid data' do
         subject { service.query(:matched_metrics) }
 
         before do
-          allow(service).to receive(:prometheus_client_wrapper).and_return(prometheus_client_wrapper)
+          allow(service).to receive(:prometheus_client).and_return(prometheus_client)
           synchronous_reactive_cache(service)
         end
 

@@ -33,7 +33,7 @@ describe Projects::LfsPointers::LfsDownloadLinkListService do
 
   before do
     allow(project).to receive(:lfs_enabled?).and_return(true)
-    response = instance_double(HTTParty::Response)
+    response = instance_double(Gitlab::HTTP::Response)
     allow(response).to receive(:body).and_return(objects_response.to_json)
     allow(response).to receive(:success?).and_return(true)
     allow(Gitlab::HTTP).to receive(:post).and_return(response)
@@ -95,7 +95,7 @@ describe Projects::LfsPointers::LfsDownloadLinkListService do
 
     shared_examples 'JSON parse errors' do |body|
       it 'raises error' do
-        response = instance_double(HTTParty::Response)
+        response = instance_double(Gitlab::HTTP::Response)
         allow(response).to receive(:body).and_return(body)
         allow(response).to receive(:success?).and_return(true)
         allow(Gitlab::HTTP).to receive(:post).and_return(response)
