@@ -93,8 +93,10 @@ GitLab will add the following default labels to the project:
 To create a **group label**, navigate to **Issues > Labels** in the **group** and create
 it from there. This page only shows group labels in this group.
 
-Alternatively, you can create group labels from the Epic sidebar. Please note that the
-created label will belong to the immediate group to which the epic belongs. **(ULTIMATE)**
+Alternatively, you can create group labels from the Epic sidebar. **(ULTIMATE)**
+
+Please note that the created label will belong to the immediate group to which the
+epic belongs.
 
 ![Create Labels from Epic](img/labels_epic_sidebar_v12_1.png)
 
