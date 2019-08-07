@@ -5,11 +5,18 @@ require 'spec_helper'
 describe MetricsController do
   include StubENV
 
-  let(:metrics_multiproc_dir) { Dir.mktmpdir }
+  let(:metrics_multiproc_dir) { @metrics_multiproc_dir }
   let(:whitelisted_ip) { '127.0.0.1' }
   let(:whitelisted_ip_range) { '10.0.0.0/24' }
   let(:ip_in_whitelisted_range) { '10.0.0.1' }
   let(:not_whitelisted_ip) { '10.0.1.1' }
+
+  around do |example|
+    Dir.mktmpdir do |path|
+      @metrics_multiproc_dir = path
+      example.run
+    end
+  end
 
   before do
     stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
