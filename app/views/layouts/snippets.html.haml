@@ -3,8 +3,8 @@
 
 - content_for :page_specific_javascripts do
   - if snippets_upload_path
-    -# haml-lint:disable InlineJavaScript
-    :javascript
-      window.uploads_path = "#{snippets_upload_path}";
+    = javascript_tag nonce: true do
+      :plain
+        window.uploads_path = "#{snippets_upload_path}";
 
 = render template: "layouts/application"

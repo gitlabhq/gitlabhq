@@ -40,7 +40,7 @@
 
   = stylesheet_link_tag "highlight/themes/#{user_color_scheme}", media: "all"
 
-  = Gon::Base.render_data
+  = Gon::Base.render_data(nonce: content_security_policy_nonce)
 
   - if content_for?(:library_javascripts)
     = yield :library_javascripts
@@ -56,6 +56,7 @@
   = yield :project_javascripts
 
   = csrf_meta_tags
+  = csp_meta_tag
 
   - unless browser.safari?
     %meta{ name: 'referrer', content: 'origin-when-cross-origin' }
