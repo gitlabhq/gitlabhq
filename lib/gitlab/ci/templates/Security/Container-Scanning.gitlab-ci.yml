@@ -25,6 +25,7 @@ container_scanning:
     # https://hub.docker.com/r/arminc/clair-local-scan/tags
     CLAIR_LOCAL_SCAN_VERSION: v2.0.8_0ed98e9ead65a51ba53f7cc53fa5e80c92169207
     CLAIR_EXECUTABLE_VERSION: v12
+    CLAIR_EXECUTABLE_SHA: 44f2a3fdd7b0d102c98510e7586f6956edc89ab72c6943980f92f4979f7f4081
     ## Disable the proxy for clair-local-scan, otherwise Container Scanning will
     ## fail when a proxy is used.
     NO_PROXY: ${DOCKER_SERVICE},localhost
@@ -44,6 +45,7 @@ container_scanning:
     - apk add -U wget ca-certificates
     - docker pull ${CI_APPLICATION_REPOSITORY}:${CI_APPLICATION_TAG}
     - wget https://github.com/arminc/clair-scanner/releases/download/${CLAIR_EXECUTABLE_VERSION}/clair-scanner_linux_amd64
+    - echo "${CLAIR_EXECUTABLE_SHA}  clair-scanner_linux_amd64" | sha256sum -c
     - mv clair-scanner_linux_amd64 clair-scanner
     - chmod +x clair-scanner
     - touch clair-whitelist.yml
