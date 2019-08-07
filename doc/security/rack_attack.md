@@ -20,9 +20,9 @@ For more information on how to use these options see the [Rack Attack README](ht
 
 NOTE: **Note:** See
 [User and IP rate limits](../user/admin_area/settings/user_and_ip_rate_limits.md)
-for simpler throttles that are configured in UI.
+for simpler limits that are configured in the UI.
 
-NOTE: **Note:** Starting with 11.2, Rack Attack is disabled by default. If your
+NOTE: **Note:** Starting with GitLab 11.2, Rack Attack is disabled by default. If your
 instance is not exposed to the public internet, it is recommended that you leave
 Rack Attack disabled.
 
@@ -31,13 +31,13 @@ Rack Attack disabled.
 If set up as described in the [Settings](#settings) section below, two behaviors
 will be enabled:
 
-- Protected paths will be throttled
-- Failed authentications for Git and container registry requests will trigger a temporary IP ban
+- Protected paths will be throttled.
+- Failed authentications for Git and container registry requests will trigger a temporary IP ban.
 
 ### Protected paths throttle
 
-GitLab responds with HTTP status code 429 to POST requests at protected paths
-over 10 requests per minute per IP address.
+GitLab responds with HTTP status code `429` to POST requests at protected paths
+that exceed 10 requests per minute per IP address.
 
 By default, protected paths are:
 
@@ -62,16 +62,16 @@ Retry-After: 60
 
 For example, the following are limited to a maximum 10 requests per minute:
 
-- user sign-in
-- user sign-up (if enabled)
-- user password reset
+- User sign-in
+- User sign-up (if enabled)
+- User password reset
 
-After trying for 10 times, the client will
-have to wait a minute before to be able to try again.
+After 10 requests, the client must wait a minute before it can
+try again.
 
 ### Git and container registry failed authentication ban
 
-GitLab responds with HTTP status code 403 for 1 hour, if 30 failed
+GitLab responds with HTTP status code `403` for 1 hour, if 30 failed
 authentication requests were received in a 3-minute period from a single IP address.
 
 This applies only to Git requests and container registry (`/jwt/auth`) requests
@@ -145,7 +145,7 @@ If you want more restrictive/relaxed throttle rules, edit
 For example, more relaxed throttle rules will be if you set
 `limit: 3` and `period: 1.seconds` (this will allow 3 requests per second).
 You can also add other paths to the protected list by adding to `paths_to_be_protected`
-variable. If you change any of these settings do not forget to restart your
+variable. If you change any of these settings you must restart your
 GitLab instance.
 
 ## Remove blocked IPs from Rack Attack via Redis
