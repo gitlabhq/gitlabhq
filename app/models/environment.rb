@@ -48,6 +48,7 @@ class Environment < ApplicationRecord
   end
   scope :in_review_folder, -> { where(environment_type: "review") }
   scope :for_name, -> (name) { where(name: name) }
+  scope :preload_cluster, -> { preload(last_deployment: :cluster) }
 
   ##
   # Search environments which have names like the given query.
@@ -170,7 +171,7 @@ class Environment < ApplicationRecord
 
   def deployment_namespace
     strong_memoize(:kubernetes_namespace) do
-      deployment_platform&.kubernetes_namespace_for(project)
+      deployment_platform.cluster.kubernetes_namespace_for(self) if deployment_platform
     end
   end
 
@@ -230,6 +231,12 @@ class Environment < ApplicationRecord
   def deployment_platform
     strong_memoize(:deployment_platform) do
       project.deployment_platform(environment: self.name)
+    end
+  end
+
+  def knative_services_finder
+    if last_deployment&.cluster
+      Clusters::KnativeServicesFinder.new(last_deployment.cluster, self)
     end
   end
 

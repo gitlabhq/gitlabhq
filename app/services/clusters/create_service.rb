@@ -11,7 +11,8 @@ module Clusters
     def execute(access_token: nil)
       raise ArgumentError, 'Unknown clusterable provided' unless clusterable
 
-      cluster_params = params.merge(user: current_user).merge(clusterable_params)
+      cluster_params = params.merge(global_params).merge(clusterable_params)
+
       cluster_params[:provider_gcp_attributes].try do |provider|
         provider[:access_token] = access_token
       end
@@ -33,6 +34,10 @@ module Clusters
 
     def clusterable
       @clusterable ||= params.delete(:clusterable)
+    end
+
+    def global_params
+      { user: current_user, namespace_per_environment: Feature.enabled?(:kubernetes_namespace_per_environment, default_enabled: true) }
     end
 
     def clusterable_params

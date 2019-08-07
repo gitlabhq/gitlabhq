@@ -13,11 +13,11 @@ module Clusters
     self.reactive_cache_key = ->(finder) { finder.model_name }
     self.reactive_cache_worker_finder = ->(_id, *cache_args) { from_cache(*cache_args) }
 
-    attr_reader :cluster, :project
+    attr_reader :cluster, :environment
 
-    def initialize(cluster, project)
+    def initialize(cluster, environment)
       @cluster = cluster
-      @project = project
+      @environment = environment
     end
 
     def with_reactive_cache_memoized(*cache_args, &block)
@@ -30,11 +30,11 @@ module Clusters
       clear_reactive_cache!(*cache_args)
     end
 
-    def self.from_cache(cluster_id, project_id)
+    def self.from_cache(cluster_id, environment_id)
       cluster = Clusters::Cluster.find(cluster_id)
-      project = ::Project.find(project_id)
+      environment = Environment.find(environment_id)
 
-      new(cluster, project)
+      new(cluster, environment)
     end
 
     def calculate_reactive_cache(*)
@@ -56,7 +56,7 @@ module Clusters
     end
 
     def cache_args
-      [cluster.id, project.id]
+      [cluster.id, environment.id]
     end
 
     def service_pod_details(service)
@@ -84,7 +84,7 @@ module Clusters
     private
 
     def search_namespace
-      @search_namespace ||= cluster.kubernetes_namespace_for(project)
+      @search_namespace ||= cluster.kubernetes_namespace_for(environment)
     end
 
     def knative_client

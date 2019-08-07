@@ -384,13 +384,9 @@ NOTE: **Note:**
 [RBAC](#rbac-cluster-resources) is recommended and the GitLab default.
 
 GitLab creates the necessary service accounts and privileges to install and run
-[GitLab managed applications](#installing-applications). When GitLab creates the cluster:
-
-- A `gitlab` service account with `cluster-admin` privileges is created in the `default` namespace
-  to manage the newly created cluster.
-- A project service account with [`edit`
-  privileges](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles)
-  is created in the GitLab-created project namespace for [deployment jobs](#deployment-variables).
+[GitLab managed applications](#installing-applications). When GitLab creates the cluster,
+a `gitlab` service account with `cluster-admin` privileges is created in the `default` namespace
+to manage the newly created cluster.
 
   NOTE: **Note:**
   Restricted service account for deployment was [introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/51716) in GitLab 11.5.
@@ -412,32 +408,37 @@ The resources created by GitLab differ depending on the type of cluster.
 
 GitLab creates the following resources for ABAC clusters.
 
-| Name              | Type                 | Details                           | Created when               |
-|:------------------|:---------------------|:----------------------------------|:---------------------------|
-| `gitlab`          | `ServiceAccount`     | `default` namespace               | Creating a new GKE Cluster |
-| `gitlab-token`    | `Secret`             | Token for `gitlab` ServiceAccount | Creating a new GKE Cluster |
-| `tiller`          | `ServiceAccount`     | `gitlab-managed-apps` namespace   | Installing Helm Tiller     |
-| `tiller-admin`    | `ClusterRoleBinding` | `cluster-admin` roleRef           | Installing Helm Tiller     |
-| Project namespace | `ServiceAccount`     | Uses namespace of Project         | Deploying to a cluster     |
-| Project namespace | `Secret`             | Token for project ServiceAccount  | Deploying to a cluster     |
+| Name                  | Type                 | Details                              | Created when               |
+|:----------------------|:---------------------|:-------------------------------------|:---------------------------|
+| `gitlab`              | `ServiceAccount`     | `default` namespace                         | Creating a new GKE Cluster |
+| `gitlab-token`        | `Secret`             | Token for `gitlab` ServiceAccount           | Creating a new GKE Cluster |
+| `tiller`              | `ServiceAccount`     | `gitlab-managed-apps` namespace             | Installing Helm Tiller     |
+| `tiller-admin`        | `ClusterRoleBinding` | `cluster-admin` roleRef                     | Installing Helm Tiller     |
+| Environment namespace | `Namespace`          | Contains all environment-specific resources | Deploying to a cluster     |
+| Environment namespace | `ServiceAccount`     | Uses namespace of environment               | Deploying to a cluster     |
+| Environment namespace | `Secret`             | Token for environment ServiceAccount        | Deploying to a cluster     |
 
 #### RBAC cluster resources
 
 GitLab creates the following resources for RBAC clusters.
 
-| Name              | Type                 | Details                                                                                                    | Created when               |
-|:------------------|:---------------------|:-----------------------------------------------------------------------------------------------------------|:---------------------------|
-| `gitlab`          | `ServiceAccount`     | `default` namespace                                                                                        | Creating a new GKE Cluster |
-| `gitlab-admin`    | `ClusterRoleBinding` | [`cluster-admin`](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles) roleRef | Creating a new GKE Cluster |
-| `gitlab-token`    | `Secret`             | Token for `gitlab` ServiceAccount                                                                          | Creating a new GKE Cluster |
-| `tiller`          | `ServiceAccount`     | `gitlab-managed-apps` namespace                                                                            | Installing Helm Tiller     |
-| `tiller-admin`    | `ClusterRoleBinding` | `cluster-admin` roleRef                                                                                    | Installing Helm Tiller     |
-| Project namespace | `ServiceAccount`     | Uses namespace of Project                                                                                  | Deploying to a cluster     |
-| Project namespace | `Secret`             | Token for project ServiceAccount                                                                           | Deploying to a cluster     |
-| Project namespace | `RoleBinding`        | [`edit`](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles) roleRef          | Deploying to a cluster     |
+| Name                  | Type                 | Details                                                                                                    | Created when               |
+|:----------------------|:---------------------|:-----------------------------------------------------------------------------------------------------------|:---------------------------|
+| `gitlab`              | `ServiceAccount`     | `default` namespace                                                                                        | Creating a new GKE Cluster |
+| `gitlab-admin`        | `ClusterRoleBinding` | [`cluster-admin`](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles) roleRef | Creating a new GKE Cluster |
+| `gitlab-token`        | `Secret`             | Token for `gitlab` ServiceAccount                                                                          | Creating a new GKE Cluster |
+| `tiller`              | `ServiceAccount`     | `gitlab-managed-apps` namespace                                                                            | Installing Helm Tiller     |
+| `tiller-admin`        | `ClusterRoleBinding` | `cluster-admin` roleRef                                                                                    | Installing Helm Tiller     |
+| Environment namespace | `Namespace`          | Contains all environment-specific resources                                                                | Deploying to a cluster     |
+| Environment namespace | `ServiceAccount`     | Uses namespace of environment                                                                              | Deploying to a cluster     |
+| Environment namespace | `Secret`             | Token for environment ServiceAccount                                                                       | Deploying to a cluster     |
+| Environment namespace | `RoleBinding`        | [`edit`](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles) roleRef          | Deploying to a cluster     |
 
 NOTE: **Note:**
-Project-specific resources are only created if your cluster is [managed by GitLab](#gitlab-managed-clusters).
+Environment-specific resources are only created if your cluster is [managed by GitLab](#gitlab-managed-clusters).
+
+NOTE: **Note:**
+If your project was created before GitLab 12.2 it will use a single namespace for all project environments.
 
 #### Security of GitLab Runners
 
@@ -640,8 +641,8 @@ GitLab CI/CD build environment.
 | Variable | Description |
 | -------- | ----------- |
 | `KUBE_URL` | Equal to the API URL. |
-| `KUBE_TOKEN` | The Kubernetes token of the [project service account](#access-controls). |
-| `KUBE_NAMESPACE` | The Kubernetes namespace is auto-generated if not specified. The default value is `<project_name>-<project_id>`. You can overwrite it to use different one if needed, otherwise the `KUBE_NAMESPACE` variable will receive the default value. |
+| `KUBE_TOKEN` | The Kubernetes token of the [environment service account](#access-controls). |
+| `KUBE_NAMESPACE` | The Kubernetes namespace is auto-generated if not specified. The default value is `<project_name>-<project_id>-<environment>`. You can overwrite it to use different one if needed, otherwise the `KUBE_NAMESPACE` variable will receive the default value. |
 | `KUBE_CA_PEM_FILE` | Path to a file containing PEM data. Only present if a custom CA bundle was specified. |
 | `KUBE_CA_PEM` | (**deprecated**) Raw PEM data. Only if a custom CA bundle was specified. |
 | `KUBECONFIG` | Path to a file containing `kubeconfig` for this deployment. CA bundle would be embedded if specified. This config also embeds the same token defined in `KUBE_TOKEN` so you likely will only need this variable. This variable name is also automatically picked up by `kubectl` so you won't actually need to reference it explicitly if using `kubectl`. |

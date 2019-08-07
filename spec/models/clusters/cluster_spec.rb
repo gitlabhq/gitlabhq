@@ -38,11 +38,6 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
 
   it { is_expected.to respond_to :project }
 
-  it do
-    expect(subject.knative_services_finder(subject.project))
-      .to be_instance_of(Clusters::KnativeServicesFinder)
-  end
-
   describe '.enabled' do
     subject { described_class.enabled }
 
@@ -534,60 +529,39 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
     end
   end
 
-  describe '#find_or_initialize_kubernetes_namespace_for_project' do
-    let(:cluster) { create(:cluster, :project, :provided_by_gcp) }
-    let(:project) { cluster.projects.first }
+  describe '#kubernetes_namespace_for' do
+    let(:cluster) { create(:cluster, :group) }
+    let(:environment) { create(:environment) }
 
-    subject { cluster.find_or_initialize_kubernetes_namespace_for_project(project) }
+    subject { cluster.kubernetes_namespace_for(environment) }
 
-    context 'kubernetes namespace exists' do
-      context 'with no service account token' do
-        let!(:kubernetes_namespace) { create(:cluster_kubernetes_namespace, project: project, cluster: cluster) }
-
-        it { is_expected.to eq kubernetes_namespace }
-      end
-
-      context 'with a service account token' do
-        let!(:kubernetes_namespace) { create(:cluster_kubernetes_namespace, :with_token, project: project, cluster: cluster) }
-
-        it { is_expected.to eq kubernetes_namespace }
-      end
+    before do
+      expect(Clusters::KubernetesNamespaceFinder).to receive(:new)
+        .with(cluster, project: environment.project, environment_slug: environment.slug)
+        .and_return(double(execute: persisted_namespace))
     end
 
-    context 'kubernetes namespace does not exist' do
-      it 'initializes a new namespace and sets default values' do
-        expect(subject).to be_new_record
-        expect(subject.project).to eq project
-        expect(subject.cluster).to eq cluster
-        expect(subject.namespace).to be_present
-        expect(subject.service_account_name).to be_present
-      end
+    context 'a persisted namespace exists' do
+      let(:persisted_namespace) { create(:cluster_kubernetes_namespace) }
+
+      it { is_expected.to eq persisted_namespace.namespace }
     end
 
-    context 'a custom scope is provided' do
-      let(:scope) { cluster.kubernetes_namespaces.has_service_account_token }
+    context 'no persisted namespace exists' do
+      let(:persisted_namespace) { nil }
+      let(:namespace_generator) { double }
+      let(:default_namespace) { 'a-default-namespace' }
 
-      subject { cluster.find_or_initialize_kubernetes_namespace_for_project(project, scope: scope) }
-
-      context 'kubernetes namespace exists' do
-        context 'with no service account token' do
-          let!(:kubernetes_namespace) { create(:cluster_kubernetes_namespace, project: project, cluster: cluster) }
-
-          it 'initializes a new namespace and sets default values' do
-            expect(subject).to be_new_record
-            expect(subject.project).to eq project
-            expect(subject.cluster).to eq cluster
-            expect(subject.namespace).to be_present
-            expect(subject.service_account_name).to be_present
-          end
-        end
-
-        context 'with a service account token' do
-          let!(:kubernetes_namespace) { create(:cluster_kubernetes_namespace, :with_token, project: project, cluster: cluster) }
-
-          it { is_expected.to eq kubernetes_namespace }
-        end
+      before do
+        expect(Gitlab::Kubernetes::DefaultNamespace).to receive(:new)
+          .with(cluster, project: environment.project)
+          .and_return(namespace_generator)
+        expect(namespace_generator).to receive(:from_environment_slug)
+          .with(environment.slug)
+          .and_return(default_namespace)
       end
+
+      it { is_expected.to eq default_namespace }
     end
   end
 

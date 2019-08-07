@@ -24,7 +24,7 @@ class MockDeploymentService < Service
     %w()
   end
 
-  def predefined_variables(project:)
+  def predefined_variables(project:, environment_name:)
     []
   end
 

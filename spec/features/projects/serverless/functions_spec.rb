@@ -39,17 +39,19 @@ describe 'Functions', :js do
     let(:cluster) { create(:cluster, :project, :provided_by_gcp) }
     let(:service) { cluster.platform_kubernetes }
     let(:project) { cluster.project }
-    let(:knative_services_finder) { project.clusters.first.knative_services_finder(project) }
+    let(:environment) { create(:environment, project: project) }
+    let!(:deployment) { create(:deployment, :success, cluster: cluster, environment: environment) }
+    let(:knative_services_finder) { environment.knative_services_finder }
     let(:namespace) do
       create(:cluster_kubernetes_namespace,
         cluster: cluster,
-        cluster_project: cluster.cluster_project,
-        project: cluster.cluster_project.project)
+        project: cluster.cluster_project.project,
+        environment: environment)
     end
 
     before do
-      allow_any_instance_of(Clusters::Cluster)
-        .to receive(:knative_services_finder)
+      allow(Clusters::KnativeServicesFinder)
+        .to receive(:new)
         .and_return(knative_services_finder)
       synchronous_reactive_cache(knative_services_finder)
       stub_kubeclient_knative_services(stub_get_services_options)

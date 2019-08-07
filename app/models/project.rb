@@ -1855,8 +1855,12 @@ class Project < ApplicationRecord
     end
   end
 
-  def deployment_variables(environment: nil)
-    deployment_platform(environment: environment)&.predefined_variables(project: self) || []
+  def deployment_variables(environment:)
+    platform = deployment_platform(environment: environment)
+
+    return [] unless platform.present?
+
+    platform.predefined_variables(project: self, environment_name: environment)
   end
 
   def auto_devops_variables

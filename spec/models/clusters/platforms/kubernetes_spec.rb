@@ -205,192 +205,77 @@ describe Clusters::Platforms::Kubernetes do
     it { is_expected.to be_truthy }
   end
 
-  describe '#kubernetes_namespace_for' do
-    let(:cluster) { create(:cluster, :project) }
-    let(:project) { cluster.project }
-
-    let(:platform) do
-      create(:cluster_platform_kubernetes,
-             cluster: cluster,
-             namespace: namespace)
-    end
-
-    subject { platform.kubernetes_namespace_for(project) }
-
-    context 'with a namespace assigned' do
-      let(:namespace) { 'namespace-123' }
-
-      it { is_expected.to eq(namespace) }
-
-      context 'kubernetes namespace is present but has no service account token' do
-        let!(:kubernetes_namespace) { create(:cluster_kubernetes_namespace, cluster: cluster) }
-
-        it { is_expected.to eq(namespace) }
-      end
-    end
-
-    context 'with no namespace assigned' do
-      let(:namespace) { nil }
-
-      context 'when kubernetes namespace is present' do
-        let(:kubernetes_namespace) { create(:cluster_kubernetes_namespace, :with_token, cluster: cluster) }
-
-        before do
-          kubernetes_namespace
-        end
-
-        it { is_expected.to eq(kubernetes_namespace.namespace) }
-
-        context 'kubernetes namespace has no service account token' do
-          before do
-            kubernetes_namespace.update!(namespace: 'old-namespace', service_account_token: nil)
-          end
-
-          it { is_expected.to eq("#{project.path}-#{project.id}") }
-        end
-      end
-
-      context 'when kubernetes namespace is not present' do
-        it { is_expected.to eq("#{project.path}-#{project.id}") }
-      end
-    end
-  end
-
   describe '#predefined_variables' do
-    let!(:cluster) { create(:cluster, :project, platform_kubernetes: kubernetes) }
-    let(:kubernetes) { create(:cluster_platform_kubernetes, api_url: api_url, ca_cert: ca_pem) }
-    let(:api_url) { 'https://kube.domain.com' }
-    let(:ca_pem) { File.read(Rails.root.join('spec/fixtures/clusters/sample_cert.pem')) }
+    let(:project) { create(:project) }
+    let(:cluster) { create(:cluster, :group, platform_kubernetes: platform) }
+    let(:platform) { create(:cluster_platform_kubernetes) }
+    let(:persisted_namespace) { create(:cluster_kubernetes_namespace, project: project, cluster: cluster) }
 
-    subject { kubernetes.predefined_variables(project: cluster.project) }
+    let(:environment_name) { 'env/production' }
+    let(:environment_slug) { Gitlab::Slug::Environment.new(environment_name).generate }
 
-    shared_examples 'setting variables' do
-      it 'sets the variables' do
-        expect(subject).to include(
-          { key: 'KUBE_URL', value: api_url, public: true },
-          { key: 'KUBE_CA_PEM', value: ca_pem, public: true },
-          { key: 'KUBE_CA_PEM_FILE', value: ca_pem, public: true, file: true }
-        )
+    subject { platform.predefined_variables(project: project, environment_name: environment_name) }
+
+    before do
+      allow(Clusters::KubernetesNamespaceFinder).to receive(:new)
+        .with(cluster, project: project, environment_slug: environment_slug)
+        .and_return(double(execute: persisted_namespace))
+    end
+
+    it { is_expected.to include(key: 'KUBE_URL', value: platform.api_url, public: true) }
+
+    context 'platform has a CA certificate' do
+      let(:ca_pem) { File.read(Rails.root.join('spec/fixtures/clusters/sample_cert.pem')) }
+      let(:platform) { create(:cluster_platform_kubernetes, ca_cert: ca_pem) }
+
+      it { is_expected.to include(key: 'KUBE_CA_PEM', value: ca_pem, public: true) }
+      it { is_expected.to include(key: 'KUBE_CA_PEM_FILE', value: ca_pem, public: true, file: true) }
+    end
+
+    context 'kubernetes namespace exists' do
+      let(:variable) { Hash(key: :fake_key, value: 'fake_value') }
+      let(:namespace_variables) { Gitlab::Ci::Variables::Collection.new([variable]) }
+
+      before do
+        expect(persisted_namespace).to receive(:predefined_variables).and_return(namespace_variables)
+      end
+
+      it { is_expected.to include(variable) }
+    end
+
+    context 'kubernetes namespace does not exist' do
+      let(:persisted_namespace) { nil }
+      let(:namespace) { 'kubernetes-namespace' }
+      let(:kubeconfig) { 'kubeconfig' }
+
+      before do
+        allow(Gitlab::Kubernetes::DefaultNamespace).to receive(:new)
+          .with(cluster, project: project).and_return(double(from_environment_name: namespace))
+        allow(platform).to receive(:kubeconfig).with(namespace).and_return(kubeconfig)
+      end
+
+      it { is_expected.not_to include(key: 'KUBE_TOKEN', value: platform.token, public: false, masked: true) }
+      it { is_expected.not_to include(key: 'KUBE_NAMESPACE', value: namespace) }
+      it { is_expected.not_to include(key: 'KUBECONFIG', value: kubeconfig, public: false, file: true) }
+
+      context 'cluster is unmanaged' do
+        let(:cluster) { create(:cluster, :group, :not_managed, platform_kubernetes: platform) }
+
+        it { is_expected.to include(key: 'KUBE_TOKEN', value: platform.token, public: false, masked: true) }
+        it { is_expected.to include(key: 'KUBE_NAMESPACE', value: namespace) }
+        it { is_expected.to include(key: 'KUBECONFIG', value: kubeconfig, public: false, file: true) }
       end
     end
 
-    context 'kubernetes namespace is created with no service account token' do
-      let!(:kubernetes_namespace) { create(:cluster_kubernetes_namespace, cluster: cluster) }
+    context 'cluster variables' do
+      let(:variable) { Hash(key: :fake_key, value: 'fake_value') }
+      let(:cluster_variables) { Gitlab::Ci::Variables::Collection.new([variable]) }
 
-      it_behaves_like 'setting variables'
-
-      it 'does not set KUBE_TOKEN' do
-        expect(subject).not_to include(
-          { key: 'KUBE_TOKEN', value: kubernetes.token, public: false, masked: true }
-        )
-      end
-    end
-
-    context 'kubernetes namespace is created with service account token' do
-      let!(:kubernetes_namespace) { create(:cluster_kubernetes_namespace, :with_token, cluster: cluster) }
-
-      it_behaves_like 'setting variables'
-
-      it 'sets KUBE_TOKEN' do
-        expect(subject).to include(
-          { key: 'KUBE_TOKEN', value: kubernetes_namespace.service_account_token, public: false, masked: true }
-        )
+      before do
+        expect(cluster).to receive(:predefined_variables).and_return(cluster_variables)
       end
 
-      context 'the cluster has been set to unmanaged after the namespace was created' do
-        before do
-          cluster.update!(managed: false)
-        end
-
-        it_behaves_like 'setting variables'
-
-        it 'sets KUBE_TOKEN from the platform' do
-          expect(subject).to include(
-            { key: 'KUBE_TOKEN', value: kubernetes.token, public: false, masked: true }
-          )
-        end
-
-        context 'the platform has a custom namespace set' do
-          before do
-            kubernetes.update!(namespace: 'custom-namespace')
-          end
-
-          it 'sets KUBE_NAMESPACE from the platform' do
-            expect(subject).to include(
-              { key: 'KUBE_NAMESPACE', value: kubernetes.namespace, public: true, masked: false }
-            )
-          end
-        end
-
-        context 'there is no namespace specified on the platform' do
-          let(:project) { cluster.project }
-
-          before do
-            kubernetes.update!(namespace: nil)
-          end
-
-          it 'sets KUBE_NAMESPACE to a default for the project' do
-            expect(subject).to include(
-              { key: 'KUBE_NAMESPACE', value: "#{project.path}-#{project.id}", public: true, masked: false }
-            )
-          end
-        end
-      end
-    end
-
-    context 'group level cluster' do
-      let!(:cluster) { create(:cluster, :group, platform_kubernetes: kubernetes) }
-
-      let(:project) { create(:project, group: cluster.group) }
-
-      subject { kubernetes.predefined_variables(project: project) }
-
-      context 'no kubernetes namespace for the project' do
-        it_behaves_like 'setting variables'
-
-        it 'does not return KUBE_TOKEN' do
-          expect(subject).not_to include(
-            { key: 'KUBE_TOKEN', value: kubernetes.token, public: false }
-          )
-        end
-
-        context 'the cluster is not managed' do
-          let!(:cluster) { create(:cluster, :group, :not_managed, platform_kubernetes: kubernetes) }
-
-          it_behaves_like 'setting variables'
-
-          it 'sets KUBE_TOKEN' do
-            expect(subject).to include(
-              { key: 'KUBE_TOKEN', value: kubernetes.token, public: false, masked: true }
-            )
-          end
-        end
-      end
-
-      context 'kubernetes namespace exists for the project' do
-        let!(:kubernetes_namespace) { create(:cluster_kubernetes_namespace, :with_token, cluster: cluster, project: project) }
-
-        it_behaves_like 'setting variables'
-
-        it 'sets KUBE_TOKEN' do
-          expect(subject).to include(
-            { key: 'KUBE_TOKEN', value: kubernetes_namespace.service_account_token, public: false, masked: true }
-          )
-        end
-      end
-    end
-
-    context 'with a domain' do
-      let!(:cluster) do
-        create(:cluster, :provided_by_gcp, :with_domain,
-               platform_kubernetes: kubernetes)
-      end
-
-      it 'sets KUBE_INGRESS_BASE_DOMAIN' do
-        expect(subject).to include(
-          { key: 'KUBE_INGRESS_BASE_DOMAIN', value: cluster.domain, public: true }
-        )
-      end
+      it { is_expected.to include(variable) }
     end
   end
 
@@ -410,7 +295,7 @@ describe Clusters::Platforms::Kubernetes do
     end
 
     context 'with valid pods' do
-      let(:pod) { kube_pod(environment_slug: environment.slug, namespace: cluster.kubernetes_namespace_for(project), project_slug: project.full_path_slug) }
+      let(:pod) { kube_pod(environment_slug: environment.slug, namespace: cluster.kubernetes_namespace_for(environment), project_slug: project.full_path_slug) }
       let(:pod_with_no_terminal) { kube_pod(environment_slug: environment.slug, project_slug: project.full_path_slug, status: "Pending") }
       let(:terminals) { kube_terminals(service, pod) }
       let(:pods) { [pod, pod, pod_with_no_terminal, kube_pod(environment_slug: "should-be-filtered-out")] }

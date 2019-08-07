@@ -24,8 +24,43 @@ RSpec.describe Clusters::KubernetesNamespace, type: :model do
     end
   end
 
+  describe '.with_environment_slug' do
+    let(:cluster) { create(:cluster, :group) }
+    let(:environment) { create(:environment, slug: slug) }
+
+    let(:slug) { 'production' }
+
+    subject { described_class.with_environment_slug(slug) }
+
+    context 'there is no associated environment' do
+      let!(:namespace) { create(:cluster_kubernetes_namespace, cluster: cluster, project: environment.project) }
+
+      it { is_expected.to be_empty }
+    end
+
+    context 'there is an assicated environment' do
+      let!(:namespace) do
+        create(
+          :cluster_kubernetes_namespace,
+          cluster: cluster,
+          project: environment.project,
+          environment: environment
+        )
+      end
+
+      context 'with a matching slug' do
+        it { is_expected.to eq [namespace] }
+      end
+
+      context 'without a matching slug' do
+        let(:environment) { create(:environment, slug: 'staging') }
+
+        it { is_expected.to be_empty }
+      end
+    end
+  end
+
   describe 'namespace uniqueness validation' do
-    let(:cluster_project) { create(:cluster_project) }
     let(:kubernetes_namespace) { build(:cluster_kubernetes_namespace, namespace: 'my-namespace') }
 
     subject { kubernetes_namespace }
@@ -34,6 +69,7 @@ RSpec.describe Clusters::KubernetesNamespace, type: :model do
       before do
         create(:cluster_kubernetes_namespace,
                cluster: kubernetes_namespace.cluster,
+               environment: kubernetes_namespace.environment,
                namespace: 'my-namespace')
       end
 
@@ -42,52 +78,6 @@ RSpec.describe Clusters::KubernetesNamespace, type: :model do
 
     context 'when cluster is not using the namespace' do
       it { is_expected.to be_valid }
-    end
-  end
-
-  describe '#set_defaults' do
-    let(:kubernetes_namespace) { build(:cluster_kubernetes_namespace) }
-    let(:cluster) { kubernetes_namespace.cluster }
-    let(:platform) { kubernetes_namespace.platform_kubernetes }
-
-    subject { kubernetes_namespace.set_defaults }
-
-    describe '#namespace' do
-      before do
-        platform.update_column(:namespace, namespace)
-      end
-
-      context 'when platform has a namespace assigned' do
-        let(:namespace) { 'platform-namespace' }
-
-        it 'copies the namespace' do
-          subject
-
-          expect(kubernetes_namespace.namespace).to eq('platform-namespace')
-        end
-      end
-
-      context 'when platform does not have namespace assigned' do
-        let(:project) { kubernetes_namespace.project }
-        let(:namespace) { nil }
-        let(:project_slug) { "#{project.path}-#{project.id}" }
-
-        it 'fallbacks to project namespace' do
-          subject
-
-          expect(kubernetes_namespace.namespace).to eq(project_slug)
-        end
-      end
-    end
-
-    describe '#service_account_name' do
-      let(:service_account_name) { "#{kubernetes_namespace.namespace}-service-account" }
-
-      it 'sets a service account name based on namespace' do
-        subject
-
-        expect(kubernetes_namespace.service_account_name).to eq(service_account_name)
-      end
     end
   end
 

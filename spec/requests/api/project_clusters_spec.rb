@@ -336,7 +336,6 @@ describe API::ProjectClusters do
         it 'does not update cluster attributes' do
           expect(cluster.domain).not_to eq('new_domain.com')
           expect(cluster.platform_kubernetes.namespace).not_to eq('invalid_namespace')
-          expect(cluster.kubernetes_namespace_for(project)).not_to eq('invalid_namespace')
         end
 
         it 'returns validation errors' do

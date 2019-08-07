@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 describe Gitlab::Ci::Build::Prerequisite::KubernetesNamespace do
-  let(:build) { create(:ci_build) }
-
   describe '#unmet?' do
+    let(:build) { create(:ci_build) }
+
     subject { described_class.new(build).unmet? }
 
     context 'build has no deployment' do
@@ -18,7 +18,6 @@ describe Gitlab::Ci::Build::Prerequisite::KubernetesNamespace do
 
     context 'build has a deployment' do
       let!(:deployment) { create(:deployment, deployable: build, cluster: cluster) }
-      let(:cluster) { nil }
 
       context 'and a cluster to deploy to' do
         let(:cluster) { create(:cluster, :group) }
@@ -32,12 +31,17 @@ describe Gitlab::Ci::Build::Prerequisite::KubernetesNamespace do
         end
 
         context 'and a namespace is already created for this project' do
-          let!(:kubernetes_namespace) { create(:cluster_kubernetes_namespace, :with_token, cluster: cluster, project: build.project) }
+          let(:kubernetes_namespace) { instance_double(Clusters::KubernetesNamespace, service_account_token: 'token') }
+
+          before do
+            allow(Clusters::KubernetesNamespaceFinder).to receive(:new)
+              .and_return(double(execute: kubernetes_namespace))
+          end
 
           it { is_expected.to be_falsey }
 
           context 'and the service_account_token is blank' do
-            let!(:kubernetes_namespace) { create(:cluster_kubernetes_namespace, :without_token, cluster: cluster, project: build.project) }
+            let(:kubernetes_namespace) { instance_double(Clusters::KubernetesNamespace, service_account_token: nil) }
 
             it { is_expected.to be_truthy }
           end
@@ -45,34 +49,79 @@ describe Gitlab::Ci::Build::Prerequisite::KubernetesNamespace do
       end
 
       context 'and no cluster to deploy to' do
+        let(:cluster) { nil }
+
         it { is_expected.to be_falsey }
       end
     end
   end
 
   describe '#complete!' do
-    let!(:deployment) { create(:deployment, deployable: build, cluster: cluster) }
-    let(:service) { double(execute: true) }
-    let(:cluster) { nil }
+    let(:build) { create(:ci_build) }
+    let(:prerequisite) { described_class.new(build) }
 
-    subject { described_class.new(build).complete! }
+    subject { prerequisite.complete! }
 
     context 'completion is required' do
       let(:cluster) { create(:cluster, :group) }
+      let(:deployment) { create(:deployment, cluster: cluster) }
+      let(:service) { double(execute: true) }
+      let(:kubernetes_namespace) { double }
 
-      it 'creates a kubernetes namespace' do
-        expect(Clusters::Gcp::Kubernetes::CreateOrUpdateNamespaceService)
-          .to receive(:new)
-          .with(cluster: cluster, kubernetes_namespace: instance_of(Clusters::KubernetesNamespace))
-          .and_return(service)
+      before do
+        allow(prerequisite).to receive(:unmet?).and_return(true)
+        allow(build).to receive(:deployment).and_return(deployment)
+      end
 
-        expect(service).to receive(:execute).once
+      context 'kubernetes namespace does not exist' do
+        let(:namespace_builder) { double(execute: kubernetes_namespace)}
 
-        subject
+        before do
+          allow(Clusters::KubernetesNamespaceFinder).to receive(:new)
+            .and_return(double(execute: nil))
+        end
+
+        it 'creates a namespace using a new record' do
+          expect(Clusters::BuildKubernetesNamespaceService)
+            .to receive(:new)
+            .with(cluster, environment: deployment.environment)
+            .and_return(namespace_builder)
+
+          expect(Clusters::Gcp::Kubernetes::CreateOrUpdateNamespaceService)
+            .to receive(:new)
+            .with(cluster: cluster, kubernetes_namespace: kubernetes_namespace)
+            .and_return(service)
+
+          expect(service).to receive(:execute).once
+
+          subject
+        end
+      end
+
+      context 'kubernetes namespace exists (but has no service_account_token)' do
+        before do
+          allow(Clusters::KubernetesNamespaceFinder).to receive(:new)
+            .and_return(double(execute: kubernetes_namespace))
+        end
+
+        it 'creates a namespace using the tokenless record' do
+          expect(Clusters::BuildKubernetesNamespaceService).not_to receive(:new)
+
+          expect(Clusters::Gcp::Kubernetes::CreateOrUpdateNamespaceService)
+            .to receive(:new)
+            .with(cluster: cluster, kubernetes_namespace: kubernetes_namespace)
+            .and_return(service)
+
+          subject
+        end
       end
     end
 
     context 'completion is not required' do
+      before do
+        allow(prerequisite).to receive(:unmet?).and_return(false)
+      end
+
       it 'does not create a namespace' do
         expect(Clusters::Gcp::Kubernetes::CreateOrUpdateNamespaceService).not_to receive(:new)
 
