@@ -260,13 +260,21 @@ module Gitlab
       end
 
       def pull_request_comment_attributes(comment)
+        author_id = gitlab_user_id(project, comment.author)
+
         {
           project: project,
-          note: comment.note,
-          author_id: gitlab_user_id(project, comment.author),
+          note: comment_note(comment, author_id),
+          author_id: author_id,
           created_at: comment.created_at,
           updated_at: comment.updated_at
         }
+      end
+
+      def comment_note(comment, author_id)
+        note = ''
+        note += @formatter.author_line(comment.author) if author_id == project.creator_id
+        note + comment.note
       end
 
       def log_error(details)
