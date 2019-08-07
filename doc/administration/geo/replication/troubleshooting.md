@@ -230,7 +230,7 @@ sudo gitlab-ctl reconfigure
 This will increase the timeout to three hours (10800 seconds). Choose a time
 long enough to accommodate a full clone of your largest repositories.
 
-### Reseting Geo **secondary** node replication
+### Resetting Geo **secondary** node replication
 
 If you get a **secondary** node in a broken state and want to reset the replication state,
 to start again from scratch, there are a few steps that can help you:
@@ -523,6 +523,20 @@ In an Omnibus GitLab installation, the file should be in `/var/opt/gitlab/gitlab
 If it doesn't exist or inadvertent changes have been made to it, run `sudo gitlab-ctl reconfigure` to restore it to its correct state.
 
 If this path is mounted on a remote volume, please check your volume configuration and that it has correct permissions.
+
+### An existing tracking database cannot be reused
+
+Geo cannot reuse an existing tracking database.
+
+It is safest to use a fresh secondary, or reset the whole secondary by following
+[Resetting Geo secondary node replication](#resetting-geo-secondary-node-replication).
+
+If you are not concerned about possible orphaned directories and files, then you
+can simply reset the existing tracking database with:
+
+```sh
+sudo gitlab-rake geo:db:reset
+```
 
 ### Geo node has a database that is writable which is an indication it is not configured for replication with the primary node.
 
