@@ -46,9 +46,9 @@ export const setNotesFetchedState = ({ commit }, state) =>
 
 export const toggleDiscussion = ({ commit }, data) => commit(types.TOGGLE_DISCUSSION, data);
 
-export const fetchDiscussions = ({ commit, dispatch }, { path, filter }) =>
+export const fetchDiscussions = ({ commit, dispatch }, { path, filter, persistFilter }) =>
   service
-    .fetchDiscussions(path, filter)
+    .fetchDiscussions(path, filter, persistFilter)
     .then(res => res.json())
     .then(discussions => {
       commit(types.SET_INITIAL_DISCUSSIONS, discussions);
@@ -411,9 +411,9 @@ export const setLoadingState = ({ commit }, data) => {
   commit(types.SET_NOTES_LOADING_STATE, data);
 };
 
-export const filterDiscussion = ({ dispatch }, { path, filter }) => {
+export const filterDiscussion = ({ dispatch }, { path, filter, persistFilter }) => {
   dispatch('setLoadingState', true);
-  dispatch('fetchDiscussions', { path, filter })
+  dispatch('fetchDiscussions', { path, filter, persistFilter })
     .then(() => {
       dispatch('setLoadingState', false);
       dispatch('setNotesFetchedState', true);

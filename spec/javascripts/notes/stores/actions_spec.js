@@ -892,4 +892,31 @@ describe('Actions Notes Store', () => {
       });
     });
   });
+
+  describe('filterDiscussion', () => {
+    const path = 'some-discussion-path';
+    const filter = 0;
+
+    beforeEach(() => {
+      dispatch.and.returnValue(new Promise(() => {}));
+    });
+
+    it('fetches discussions with filter and persistFilter false', () => {
+      actions.filterDiscussion({ dispatch }, { path, filter, persistFilter: false });
+
+      expect(dispatch.calls.allArgs()).toEqual([
+        ['setLoadingState', true],
+        ['fetchDiscussions', { path, filter, persistFilter: false }],
+      ]);
+    });
+
+    it('fetches discussions with filter and persistFilter true', () => {
+      actions.filterDiscussion({ dispatch }, { path, filter, persistFilter: true });
+
+      expect(dispatch.calls.allArgs()).toEqual([
+        ['setLoadingState', true],
+        ['fetchDiscussions', { path, filter, persistFilter: true }],
+      ]);
+    });
+  });
 });

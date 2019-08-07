@@ -18,8 +18,13 @@ describe 'User opens link to comment', :js do
 
       visit Gitlab::UrlBuilder.build(note)
 
+      wait_for_requests
+
       expect(page.find('#discussion-filter-dropdown')).to have_content('Show all activity')
       expect(page).not_to have_content('Something went wrong while fetching comments')
+
+      # Auto-switching to show all notes shouldn't be persisted
+      expect(user.reload.notes_filter_for(note.noteable)).to eq(UserPreference::NOTES_FILTERS[:only_activity])
     end
   end
 
