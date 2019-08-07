@@ -17,6 +17,18 @@ module API
         @project # rubocop:disable Gitlab/ModuleWithInstanceVariables
       end
 
+      def access_checker_for(actor, protocol)
+        access_checker_klass.new(actor.key_or_user, project, protocol,
+          authentication_abilities: ssh_authentication_abilities,
+          namespace_path: namespace_path,
+          project_path: project_path,
+          redirected_path: redirected_path)
+      end
+
+      def access_checker_klass
+        repo_type.access_checker_class
+      end
+
       def ssh_authentication_abilities
         [
           :read_project,

@@ -35,36 +35,14 @@ module API
         #   project - project full_path (not path on disk)
         #   action - git action (git-upload-pack or git-receive-pack)
         #   changes - changes as "oldrev newrev ref", see Gitlab::ChangesList
-        # rubocop: disable CodeReuse/ActiveRecord
         post "/allowed" do
           # Stores some Git-specific env thread-safely
           env = parse_env
           Gitlab::Git::HookEnv.set(gl_repository, env) if project
 
-          actor =
-            if params[:key_id]
-              Key.find_by(id: params[:key_id])
-            elsif params[:user_id]
-              User.find_by(id: params[:user_id])
-            elsif params[:username]
-              UserFinder.new(params[:username]).find_by_username
-            end
-
-          protocol = params[:protocol]
-
-          actor.update_last_used_at if actor.is_a?(Key)
-          user =
-            if actor.is_a?(Key)
-              actor.user
-            else
-              actor
-            end
-
-          access_checker_klass = repo_type.access_checker_class
-          access_checker = access_checker_klass.new(actor, project,
-                                                    protocol, authentication_abilities: ssh_authentication_abilities,
-                                                    namespace_path: namespace_path, project_path: project_path,
-                                                    redirected_path: redirected_path)
+          actor = Support::GitAccessActor.from_params(params)
+          actor.update_last_used_at!
+          access_checker = access_checker_for(actor, params[:protocol])
 
           check_result = begin
                            result = access_checker.check(params[:action], params[:changes])
@@ -78,15 +56,15 @@ module API
                            break response_with_status(code: 404, success: false, message: e.message)
                          end
 
-          log_user_activity(actor)
+          log_user_activity(actor.user)
 
           case check_result
           when ::Gitlab::GitAccessResult::Success
             payload = {
               gl_repository: gl_repository,
               gl_project_path: gl_project_path,
-              gl_id: Gitlab::GlId.gl_id(user),
-              gl_username: user&.username,
+              gl_id: Gitlab::GlId.gl_id(actor.user),
+              gl_username: actor.username,
               git_config_options: [],
               gitaly: gitaly_payload(params[:action]),
               gl_console_messages: check_result.console_messages
@@ -105,7 +83,6 @@ module API
             response_with_status(code: 500, success: false, message: UNKNOWN_CHECK_RESULT_ERROR)
           end
         end
-        # rubocop: enable CodeReuse/ActiveRecord
 
         # rubocop: disable CodeReuse/ActiveRecord
         post "/lfs_authenticate" do
