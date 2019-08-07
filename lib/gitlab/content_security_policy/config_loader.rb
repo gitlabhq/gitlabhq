@@ -5,7 +5,7 @@ module Gitlab
     class ConfigLoader
       DIRECTIVES = %w(base_uri child_src connect_src default_src font_src
                       form_action frame_ancestors frame_src img_src manifest_src
-                      media_src object_src script_src style_src worker_src).freeze
+                      media_src object_src report_uri script_src style_src worker_src).freeze
 
       def self.default_settings_hash
         {
