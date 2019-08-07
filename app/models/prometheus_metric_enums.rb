@@ -9,13 +9,17 @@ module PrometheusMetricEnums
       aws_elb: -3,
       nginx: -4,
       kubernetes: -5,
-      nginx_ingress: -6,
+      nginx_ingress: -6
+    }.merge(custom_groups).freeze
+  end
 
-      # custom/user groups
+  # custom/user groups
+  def self.custom_groups
+    {
       business: 0,
       response: 1,
       system: 2
-    }
+    }.freeze
   end
 
   def self.group_details
@@ -50,16 +54,20 @@ module PrometheusMetricEnums
         group_title: _('System metrics (Kubernetes)'),
         required_metrics: %w(container_memory_usage_bytes container_cpu_usage_seconds_total),
         priority: 5
-      }.freeze,
+      }.freeze
+    }.merge(custom_group_details).freeze
+  end
 
-      # custom/user groups
+  # custom/user groups
+  def self.custom_group_details
+    {
       business: {
         group_title: _('Business metrics (Custom)'),
         priority: 0
       }.freeze,
       response: {
         group_title: _('Response metrics (Custom)'),
-      priority: -5
+        priority: -5
       }.freeze,
       system: {
         group_title: _('System metrics (Custom)'),
