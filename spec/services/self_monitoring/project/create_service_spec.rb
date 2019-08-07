@@ -30,15 +30,13 @@ describe SelfMonitoring::Project::CreateService do
 
     context 'with admin users' do
       let(:project) { result[:project] }
+      let(:group) { result[:group] }
+      let(:application_setting) { Gitlab::CurrentSettings.current_application_settings }
 
       let!(:user) { create(:user, :admin) }
 
       before do
-        allow(ApplicationSetting)
-          .to receive(:current)
-          .and_return(
-            ApplicationSetting.build_from_defaults(allow_local_requests_from_web_hooks_and_services: true)
-          )
+        application_setting.allow_local_requests_from_web_hooks_and_services = true
       end
 
       shared_examples 'has prometheus service' do |listen_address|
@@ -55,6 +53,15 @@ describe SelfMonitoring::Project::CreateService do
 
       it_behaves_like 'has prometheus service', 'http://localhost:9090'
 
+      it 'creates group' do
+        expect(result[:status]).to eq(:success)
+        expect(group).to be_persisted
+        expect(group.name).to eq(described_class::GROUP_NAME)
+        expect(group.path).to start_with(described_class::GROUP_PATH)
+        expect(group.path.split('-').last.length).to eq(8)
+        expect(group.visibility_level).to eq(described_class::VISIBILITY_LEVEL)
+      end
+
       it 'creates project with internal visibility' do
         expect(result[:status]).to eq(:success)
         expect(project.visibility_level).to eq(Gitlab::VisibilityLevel::INTERNAL)
@@ -62,7 +69,7 @@ describe SelfMonitoring::Project::CreateService do
       end
 
       it 'creates project with internal visibility even when internal visibility is restricted' do
-        stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::INTERNAL])
+        application_setting.restricted_visibility_levels = [Gitlab::VisibilityLevel::INTERNAL]
 
         expect(result[:status]).to eq(:success)
         expect(project.visibility_level).to eq(Gitlab::VisibilityLevel::INTERNAL)
@@ -71,8 +78,8 @@ describe SelfMonitoring::Project::CreateService do
 
       it 'creates project with correct name and description' do
         expect(result[:status]).to eq(:success)
-        expect(project.name).to eq(described_class::DEFAULT_NAME)
-        expect(project.description).to eq(described_class::DEFAULT_DESCRIPTION)
+        expect(project.name).to eq(described_class::PROJECT_NAME)
+        expect(project.description).to eq(described_class::PROJECT_DESCRIPTION)
       end
 
       it 'adds all admins as maintainers' do
@@ -81,25 +88,53 @@ describe SelfMonitoring::Project::CreateService do
         create(:user)
 
         expect(result[:status]).to eq(:success)
-        expect(project.owner).to eq(user)
-        expect(project.members.collect(&:user)).to contain_exactly(user, admin1, admin2)
-        expect(project.members.collect(&:access_level)).to contain_exactly(
-          Gitlab::Access::MAINTAINER,
+        expect(project.owner).to eq(group)
+        expect(group.members.collect(&:user)).to contain_exactly(user, admin1, admin2)
+        expect(group.members.collect(&:access_level)).to contain_exactly(
+          Gitlab::Access::OWNER,
           Gitlab::Access::MAINTAINER,
           Gitlab::Access::MAINTAINER
         )
       end
 
+      it 'saves the project id' do
+        expect(result[:status]).to eq(:success)
+        expect(application_setting.instance_administration_project_id).to eq(project.id)
+      end
+
+      it 'returns error when saving project ID fails' do
+        allow(application_setting).to receive(:update) { false }
+
+        expect(result[:status]).to eq(:error)
+        expect(result[:failed_step]).to eq(:save_project_id)
+        expect(result[:message]).to eq('Could not save project ID')
+      end
+
+      it 'does not fail when a project already exists' do
+        expect(result[:status]).to eq(:success)
+
+        second_result = subject.execute
+
+        expect(second_result[:status]).to eq(:success)
+        expect(second_result[:project]).to eq(project)
+        expect(second_result[:group]).to eq(group)
+      end
+
       context 'when local requests from hooks and services are not allowed' do
         before do
-          allow(ApplicationSetting)
-            .to receive(:current)
-            .and_return(
-              ApplicationSetting.build_from_defaults(allow_local_requests_from_web_hooks_and_services: false)
-            )
+          application_setting.allow_local_requests_from_web_hooks_and_services = false
         end
 
         it_behaves_like 'has prometheus service', 'http://localhost:9090'
+
+        it 'does not overwrite the existing whitelist' do
+          application_setting.outbound_local_requests_whitelist = ['example.com']
+
+          expect(result[:status]).to eq(:success)
+          expect(application_setting.outbound_local_requests_whitelist).to contain_exactly(
+            'example.com', 'localhost'
+          )
+        end
       end
 
       context 'with non default prometheus address' do
@@ -175,7 +210,7 @@ describe SelfMonitoring::Project::CreateService do
           expect(result).to eq({
             status: :error,
             message: 'Could not add admins as members',
-            failed_step: :add_project_members
+            failed_step: :add_group_members
           })
         end
       end

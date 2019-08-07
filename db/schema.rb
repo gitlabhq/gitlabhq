@@ -230,9 +230,11 @@ ActiveRecord::Schema.define(version: 2019_08_02_235445) do
     t.integer "raw_blob_request_limit", default: 300, null: false
     t.boolean "allow_local_requests_from_web_hooks_and_services", default: false, null: false
     t.boolean "allow_local_requests_from_system_hooks", default: true, null: false
+    t.bigint "instance_administration_project_id"
     t.string "snowplow_collector_hostname"
     t.index ["custom_project_templates_group_id"], name: "index_application_settings_on_custom_project_templates_group_id"
     t.index ["file_template_project_id"], name: "index_application_settings_on_file_template_project_id"
+    t.index ["instance_administration_project_id"], name: "index_applicationsettings_on_instance_administration_project_id"
     t.index ["usage_stats_set_by_user_id"], name: "index_application_settings_on_usage_stats_set_by_user_id"
   end
 
@@ -3623,6 +3625,7 @@ ActiveRecord::Schema.define(version: 2019_08_02_235445) do
 
   add_foreign_key "application_settings", "namespaces", column: "custom_project_templates_group_id", on_delete: :nullify
   add_foreign_key "application_settings", "projects", column: "file_template_project_id", name: "fk_ec757bd087", on_delete: :nullify
+  add_foreign_key "application_settings", "projects", column: "instance_administration_project_id", on_delete: :nullify
   add_foreign_key "application_settings", "users", column: "usage_stats_set_by_user_id", name: "fk_964370041d", on_delete: :nullify
   add_foreign_key "approval_merge_request_rule_sources", "approval_merge_request_rules", on_delete: :cascade
   add_foreign_key "approval_merge_request_rule_sources", "approval_project_rules", on_delete: :cascade

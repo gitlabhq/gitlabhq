@@ -10,6 +10,8 @@ class ApplicationSetting < ApplicationRecord
   add_authentication_token_field :runners_registration_token, encrypted: -> { Feature.enabled?(:application_settings_tokens_optional_encryption, default_enabled: true) ? :optional : :required }
   add_authentication_token_field :health_check_access_token
 
+  belongs_to :instance_administration_project, class_name: "Project"
+
   # Include here so it can override methods from
   # `add_authentication_token_field`
   # We don't prepend for now because otherwise we'll need to

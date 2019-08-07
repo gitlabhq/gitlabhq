@@ -3297,6 +3297,9 @@ msgstr ""
 msgid "Could not add prometheus URL to whitelist"
 msgstr ""
 
+msgid "Could not add prometheus URL to whitelist, errors: %{errors}"
+msgstr ""
+
 msgid "Could not authorize chat nickname. Try again!"
 msgstr ""
 
@@ -3307,6 +3310,12 @@ msgid "Could not connect to FogBugz, check your URL"
 msgstr ""
 
 msgid "Could not create Wiki Repository at this time. Please try again later."
+msgstr ""
+
+msgid "Could not create instance administration project. Errors: %{errors}"
+msgstr ""
+
+msgid "Could not create project"
 msgstr ""
 
 msgid "Could not delete chat nickname %{chat_name}."
@@ -3322,6 +3331,12 @@ msgid "Could not revoke impersonation token %{token_name}."
 msgstr ""
 
 msgid "Could not revoke personal access token %{personal_access_token_name}."
+msgstr ""
+
+msgid "Could not save instance administration project ID, errors: %{errors}"
+msgstr ""
+
+msgid "Could not save project ID"
 msgstr ""
 
 msgid "Coverage"
@@ -5785,6 +5800,12 @@ msgid "Instance Statistics"
 msgstr ""
 
 msgid "Instance Statistics visibility"
+msgstr ""
+
+msgid "Instance administration project already exists"
+msgstr ""
+
+msgid "Instance administrators group already exists"
 msgstr ""
 
 msgid "Instance does not support multiple Kubernetes clusters"
