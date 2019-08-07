@@ -86,16 +86,15 @@ describe Clusters::Applications::Prometheus do
                project: cluster.cluster_project.project)
       end
 
-      it 'creates proxy prometheus rest client' do
-        expect(subject.prometheus_client).to be_instance_of(RestClient::Resource)
+      it 'creates proxy prometheus_client' do
+        expect(subject.prometheus_client).to be_instance_of(Gitlab::PrometheusClient)
       end
 
-      it 'creates proper url' do
-        expect(subject.prometheus_client.url).to eq("#{kubernetes_url}/api/v1/namespaces/gitlab-managed-apps/services/prometheus-prometheus-server:80/proxy")
-      end
-
-      it 'copies options and headers from kube client to proxy client' do
-        expect(subject.prometheus_client.options).to eq(kube_client.rest_client.options.merge(headers: kube_client.headers))
+      it 'copies proxy_url, options and headers from kube client to prometheus_client' do
+        expect(Gitlab::PrometheusClient)
+          .to(receive(:new))
+          .with(a_valid_url, kube_client.rest_client.options.merge(headers: kube_client.headers))
+        subject.prometheus_client
       end
 
       context 'when cluster is not reachable' do

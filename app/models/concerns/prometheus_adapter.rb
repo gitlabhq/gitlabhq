@@ -14,10 +14,6 @@ module PrometheusAdapter
       raise NotImplementedError
     end
 
-    def prometheus_client_wrapper
-      Gitlab::PrometheusClient.new(prometheus_client)
-    end
-
     def can_query?
       prometheus_client.present?
     end
@@ -35,7 +31,7 @@ module PrometheusAdapter
     def calculate_reactive_cache(query_class_name, *args)
       return unless prometheus_client
 
-      data = Object.const_get(query_class_name, false).new(prometheus_client_wrapper).query(*args)
+      data = Object.const_get(query_class_name, false).new(prometheus_client).query(*args)
       {
         success: true,
         data: data,

@@ -63,15 +63,16 @@ class PrometheusService < MonitoringService
 
   # Check we can connect to the Prometheus API
   def test(*args)
-    Gitlab::PrometheusClient.new(prometheus_client).ping
-
+    prometheus_client.ping
     { success: true, result: 'Checked API endpoint' }
   rescue Gitlab::PrometheusClient::Error => err
     { success: false, result: err }
   end
 
   def prometheus_client
-    RestClient::Resource.new(api_url, max_redirects: 0) if should_return_client?
+    return unless should_return_client?
+
+    Gitlab::PrometheusClient.new(api_url)
   end
 
   def prometheus_available?
@@ -84,7 +85,7 @@ class PrometheusService < MonitoringService
   private
 
   def should_return_client?
-    api_url && manual_configuration? && active? && valid?
+    api_url.present? && manual_configuration? && active? && valid?
   end
 
   def synchronize_service_state

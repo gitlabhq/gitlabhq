@@ -131,7 +131,7 @@ describe Prometheus::ProxyService do
         allow(environment).to receive(:prometheus_adapter)
           .and_return(prometheus_adapter)
         allow(prometheus_adapter).to receive(:can_query?).and_return(true)
-        allow(prometheus_adapter).to receive(:prometheus_client_wrapper)
+        allow(prometheus_adapter).to receive(:prometheus_client)
           .and_return(prometheus_client)
       end
 
