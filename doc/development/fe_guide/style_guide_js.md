@@ -49,8 +49,8 @@ See [our current .eslintrc](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/
    ```
 
 1. There are few rules that we need to disable due to technical debt. Which are:
-   1. [no-new][eslint-new]
-   1. [class-methods-use-this][eslint-this]
+   1. [no-new](https://eslint.org/docs/rules/no-new)
+   1. [class-methods-use-this](https://eslint.org/docs/rules/class-methods-use-this)
 
 1. When they are needed _always_ place ESlint directive comment blocks on the first line of a script,
    followed by any global declarations, then a blank newline prior to any imports or code.
@@ -714,8 +714,6 @@ The goal of this accord is to make sure we are all on the same page.
 
 [airbnb-js-style-guide]: https://github.com/airbnb/javascript
 [eslintrc]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/.eslintrc
-[eslint-this]: http://eslint.org/docs/rules/class-methods-use-this
-[eslint-new]: http://eslint.org/docs/rules/no-new
 [eslint-plugin-vue]: https://github.com/vuejs/eslint-plugin-vue
 [eslint-plugin-vue-rules]: https://github.com/vuejs/eslint-plugin-vue#bulb-rules
 [vue-order]: https://github.com/vuejs/eslint-plugin-vue/blob/master/docs/rules/order-in-components.md

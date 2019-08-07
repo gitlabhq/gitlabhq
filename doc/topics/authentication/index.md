@@ -23,7 +23,7 @@ This page gathers all the resources for the topic **Authentication** within GitL
   - [How to Configure LDAP with GitLab CE](../../administration/auth/how_to_configure_ldap_gitlab_ce/index.md)
   - [How to Configure LDAP with GitLab EE](../../administration/auth/how_to_configure_ldap_gitlab_ee/index.md) **(STARTER)**
   - [Feature Highlight: LDAP Integration](https://about.gitlab.com/2014/07/10/feature-highlight-ldap-sync/)
-  - [Debugging LDAP](https://about.gitlab.com/handbook/support/workflows/support-engineering/ldap/debugging_ldap.html)
+  - [Debugging LDAP](https://about.gitlab.com/handbook/support/workflows/debugging_ldap.html)
 - **Integrations:**
   - [OmniAuth](../../integration/omniauth.md)
   - [Authentiq OmniAuth Provider](../../administration/auth/authentiq.md#authentiq-omniauth-provider)
