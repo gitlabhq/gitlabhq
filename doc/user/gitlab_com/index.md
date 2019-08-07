@@ -316,7 +316,8 @@ with details, such as the affected IP address.
 
 ### HAProxy API throttle
 
-GitLab.com responds with HTTP status code 429 to API requests over 10 requests
+GitLab.com responds with HTTP status code `429` to API requests that exceed 10
+requests
 per second per IP address.
 
 The following example headers are included for all API requests:
@@ -335,10 +336,12 @@ Source:
 
 ### Rack Attack initializer
 
+Details of rate limits enforced by [Rack Attack](../../security/rack_attack.md).
+
 #### Protected paths throttle
 
-GitLab.com responds with HTTP status code 429 to POST requests at protected
-paths over 10 requests per **minute** per IP address.
+GitLab.com responds with HTTP status code `429` to POST requests at protected
+paths that exceed 10 requests per **minute** per IP address.
 
 See the source below for which paths are protected. This includes user creation,
 user confirmation, user sign in, and password reset.
