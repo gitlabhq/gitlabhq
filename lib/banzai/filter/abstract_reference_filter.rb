@@ -337,6 +337,24 @@ module Banzai
         @current_project_namespace_path ||= project&.namespace&.full_path
       end
 
+      def records_per_parent
+        @_records_per_project ||= {}
+
+        @_records_per_project[object_class.to_s.underscore] ||= begin
+          hash = Hash.new { |h, k| h[k] = {} }
+
+          parent_per_reference.each do |path, parent|
+            record_ids = references_per_parent[path]
+
+            parent_records(parent, record_ids).each do |record|
+              hash[parent][record_identifier(record)] = record
+            end
+          end
+
+          hash
+        end
+      end
+
       private
 
       def full_project_path(namespace, project_ref)
