@@ -1,0 +1,6 @@
+---
+title: 'Fix BitBucketCloud imported project''s comments missing author line (''Created
+  by: <user>'')'
+merge_request: 31579
+author:
+type: fixed
