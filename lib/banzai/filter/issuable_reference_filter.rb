@@ -3,22 +3,8 @@
 module Banzai
   module Filter
     class IssuableReferenceFilter < AbstractReferenceFilter
-      def records_per_parent
-        @records_per_project ||= {}
-
-        @records_per_project[object_class.to_s.underscore] ||= begin
-          hash = Hash.new { |h, k| h[k] = {} }
-
-          parent_per_reference.each do |path, parent|
-            record_ids = references_per_parent[path]
-
-            parent_records(parent, record_ids).each do |record|
-              hash[parent][record.iid.to_i] = record
-            end
-          end
-
-          hash
-        end
+      def record_identifier(record)
+        record.iid.to_i
       end
 
       def find_object(parent, iid)

@@ -19,12 +19,11 @@ module Banzai
       end
 
       def find_object(project, id)
-        return unless project.is_a?(Project)
+        return unless project.is_a?(Project) && project.valid_repo?
 
-        if project && project.valid_repo?
-          # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/43894
-          Gitlab::GitalyClient.allow_n_plus_1_calls { project.commit(id) }
-        end
+        _, record = records_per_parent[project].detect { |k, _v| Gitlab::Git.shas_eql?(k, id) }
+
+        record
       end
 
       def referenced_merge_request_commit_shas
@@ -65,6 +64,14 @@ module Banzai
       end
 
       private
+
+      def record_identifier(record)
+        record.id
+      end
+
+      def parent_records(parent, ids)
+        parent.commits_by(oids: ids.to_a)
+      end
 
       def noteable
         context[:noteable]
