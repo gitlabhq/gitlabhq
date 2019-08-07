@@ -105,7 +105,7 @@ describe('Empty State', () => {
   });
 
   describe('with playbale action and not scheduled job', () => {
-    it('renders manual variables form', () => {
+    beforeEach(() => {
       vm = mountComponent(Component, {
         ...props,
         content,
@@ -117,8 +117,14 @@ describe('Empty State', () => {
           method: 'post',
         },
       });
+    });
 
+    it('renders manual variables form', () => {
       expect(vm.$el.querySelector('.js-manual-vars-form')).not.toBeNull();
+    });
+
+    it('does not render the empty state action', () => {
+      expect(vm.$el.querySelector('.js-job-empty-state-action')).toBeNull();
     });
   });
 
