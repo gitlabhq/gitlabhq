@@ -17,11 +17,10 @@ The logo in the header of some emails can be customized, see the [logo customiza
 The additional text will appear at the bottom of any email and can be used for
 legal/auditing/compliance reasons.
 
-1. Go to **Admin area > Settings** (`/admin/application_settings`).
-1. Under the **Email** section, change the **Additional text** field.
-1. Hit **Save** for the changes to take effect.
-
-![Admin email settings](img/email_settings.png)
+1. Go to **Admin Area > Settings > Preferences** (`/admin/application_settings/preferences`).
+1. Expand the **Email** section.
+1. Enter your text in the **Additional text** field.
+1. Click **Save**.
 
 [ee-5031]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/5031
 [eep]: https://about.gitlab.com/pricing/
