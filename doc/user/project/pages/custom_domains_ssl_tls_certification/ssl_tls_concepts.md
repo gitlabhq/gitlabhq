@@ -67,7 +67,7 @@ There are some certificate authorities that
 offer free certificates, aiming to make the internet more secure
 to everyone. The most popular is [Let's Encrypt](https://letsencrypt.org/),
 which issues certificates trusted by most of browsers, it's open
-source, and free to use. See our tutorial on [how to secure your GitLab Pages website with Let's Encrypt](../lets_encrypt_for_gitlab_pages.md).
+source, and free to use. See [GitLab Pages integration with Let's Encrypt](../custom_domains_ssl_tls_certification/lets_encrypt_integration.md) to enable HTTPS on your custom domain.
 
 Similarly popular are [certificates issued by CloudFlare](https://www.cloudflare.com/ssl/),
 which also offers a [free CDN service](https://blog.cloudflare.com/cloudflares-free-cdn-and-you/).
