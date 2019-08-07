@@ -149,7 +149,7 @@ gitk --follow <file>
 
 ### Use a custom SSH key for a git command
 
-```text
+```sh
 GIT_SSH_COMMAND="ssh -i ~/.ssh/gitlabadmin" git <command>
 ```
 
@@ -157,13 +157,13 @@ GIT_SSH_COMMAND="ssh -i ~/.ssh/gitlabadmin" git <command>
 
 With SSH:
 
-```text
+```sh
 GIT_SSH_COMMAND="ssh -vvv" git clone <git@url>
 ```
 
 With HTTPS:
 
-```text
+```sh
 GIT_TRACE_PACKET=1 GIT_TRACE=2 GIT_CURL_VERBOSE=1 git clone <url>
 ```
 
