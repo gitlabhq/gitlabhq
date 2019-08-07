@@ -1450,6 +1450,8 @@ ActiveRecord::Schema.define(version: 2019_08_02_235445) do
     t.string "internal_url"
     t.string "name", null: false
     t.integer "container_repositories_max_capacity", default: 10, null: false
+    t.datetime_with_timezone "created_at"
+    t.datetime_with_timezone "updated_at"
     t.index ["access_key"], name: "index_geo_nodes_on_access_key"
     t.index ["name"], name: "index_geo_nodes_on_name", unique: true
     t.index ["primary"], name: "index_geo_nodes_on_primary"
