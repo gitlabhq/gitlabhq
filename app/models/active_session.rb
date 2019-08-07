@@ -136,8 +136,10 @@ class ActiveSession
     # only the single key entries are automatically expired by redis, the
     # lookup entries in the set need to be removed manually.
     session_ids_and_entries = session_ids.zip(entries)
-    session_ids_and_entries.reject { |_session_id, entry| entry }.each do |session_id, _entry|
-      redis.srem(lookup_key_name(user.id), session_id)
+    redis.pipelined do
+      session_ids_and_entries.reject { |_session_id, entry| entry }.each do |session_id, _entry|
+        redis.srem(lookup_key_name(user.id), session_id)
+      end
     end
 
     entries.compact
