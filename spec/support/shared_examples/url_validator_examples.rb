@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'url validator examples' do |schemes|
-  let(:validator) { described_class.new(attributes: [:link_url], **options) }
-  let!(:badge) { build(:badge, link_url: 'http://www.example.com') }
-
-  subject { validator.validate(badge) }
-
   describe '#validate' do
+    let(:validator) { described_class.new(attributes: [:link_url], **options) }
+    let(:badge) { build(:badge, link_url: 'http://www.example.com') }
+
+    subject { validator.validate(badge) }
+
     context 'with no options' do
       let(:options) { {} }
 
@@ -39,6 +39,55 @@ RSpec.shared_examples 'url validator examples' do |schemes|
 
         expect(badge.errors).to be_present
       end
+    end
+  end
+end
+
+RSpec.shared_examples 'public url validator examples' do |setting|
+  let(:validator) { described_class.new(attributes: [:link_url]) }
+  let(:badge) { build(:badge, link_url: 'http://www.example.com') }
+
+  subject { validator.validate(badge) }
+
+  context 'by default' do
+    it 'blocks urls pointing to localhost' do
+      badge.link_url = 'https://127.0.0.1'
+
+      subject
+
+      expect(badge.errors).to be_present
+    end
+
+    it 'blocks urls pointing to the local network' do
+      badge.link_url = 'https://192.168.1.1'
+
+      subject
+
+      expect(badge.errors).to be_present
+    end
+  end
+
+  context 'when local requests are allowed' do
+    let!(:settings) { create(:application_setting) }
+
+    before do
+      stub_application_setting(setting)
+    end
+
+    it 'does not block urls pointing to localhost' do
+      badge.link_url = 'https://127.0.0.1'
+
+      subject
+
+      expect(badge.errors).not_to be_present
+    end
+
+    it 'does not block urls pointing to the local network' do
+      badge.link_url = 'https://192.168.1.1'
+
+      subject
+
+      expect(badge.errors).not_to be_present
     end
   end
 end

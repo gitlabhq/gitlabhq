@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_31_084415) do
+ActiveRecord::Schema.define(version: 2019_08_02_235445) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -183,7 +183,6 @@ ActiveRecord::Schema.define(version: 2019_07_31_084415) do
     t.string "external_authorization_service_default_label"
     t.boolean "pages_domain_verification_enabled", default: true, null: false
     t.string "user_default_internal_regex"
-    t.boolean "allow_local_requests_from_hooks_and_services", default: false, null: false
     t.float "external_authorization_service_timeout", default: 0.5
     t.text "external_auth_client_cert"
     t.text "encrypted_external_auth_client_key"
@@ -230,6 +229,8 @@ ActiveRecord::Schema.define(version: 2019_07_31_084415) do
     t.string "grafana_url", default: "/-/grafana", null: false
     t.string "outbound_local_requests_whitelist", limit: 255, default: [], null: false, array: true
     t.integer "raw_blob_request_limit", default: 300, null: false
+    t.boolean "allow_local_requests_from_web_hooks_and_services", default: false, null: false
+    t.boolean "allow_local_requests_from_system_hooks", default: true, null: false
     t.index ["custom_project_templates_group_id"], name: "index_application_settings_on_custom_project_templates_group_id"
     t.index ["file_template_project_id"], name: "index_application_settings_on_file_template_project_id"
     t.index ["usage_stats_set_by_user_id"], name: "index_application_settings_on_usage_stats_set_by_user_id"
@@ -879,6 +880,7 @@ ActiveRecord::Schema.define(version: 2019_07_31_084415) do
     t.integer "cluster_type", limit: 2, default: 3, null: false
     t.string "domain"
     t.boolean "managed", default: true, null: false
+    t.boolean "namespace_per_environment", default: false, null: false
     t.index ["enabled"], name: "index_clusters_on_enabled"
     t.index ["user_id"], name: "index_clusters_on_user_id"
   end
@@ -983,9 +985,12 @@ ActiveRecord::Schema.define(version: 2019_07_31_084415) do
     t.string "encrypted_service_account_token_iv"
     t.string "namespace", null: false
     t.string "service_account_name"
+    t.bigint "environment_id"
     t.index ["cluster_id", "namespace"], name: "kubernetes_namespaces_cluster_and_namespace", unique: true
+    t.index ["cluster_id", "project_id", "environment_id"], name: "index_kubernetes_namespaces_on_cluster_project_environment_id", unique: true
     t.index ["cluster_id"], name: "index_clusters_kubernetes_namespaces_on_cluster_id"
     t.index ["cluster_project_id"], name: "index_clusters_kubernetes_namespaces_on_cluster_project_id"
+    t.index ["environment_id"], name: "index_clusters_kubernetes_namespaces_on_environment_id"
     t.index ["project_id"], name: "index_clusters_kubernetes_namespaces_on_project_id"
   end
 
@@ -1715,7 +1720,7 @@ ActiveRecord::Schema.define(version: 2019_07_31_084415) do
     t.index ["project_id", "created_at", "id", "state"], name: "index_issues_on_project_id_and_created_at_and_id_and_state"
     t.index ["project_id", "due_date", "id", "state"], name: "idx_issues_on_project_id_and_due_date_and_id_and_state_partial", where: "(due_date IS NOT NULL)"
     t.index ["project_id", "iid"], name: "index_issues_on_project_id_and_iid", unique: true
-    t.index ["project_id", "state", "relative_position", "id"], name: "index_issues_on_project_id_and_state_and_rel_position_and_id", order: { id: :desc }
+    t.index ["project_id", "relative_position", "state", "id"], name: "index_issues_on_project_id_and_rel_position_and_state_and_id", order: { id: :desc }
     t.index ["project_id", "updated_at", "id", "state"], name: "index_issues_on_project_id_and_updated_at_and_id_and_state"
     t.index ["relative_position"], name: "index_issues_on_relative_position"
     t.index ["state"], name: "index_issues_on_state"
@@ -1769,6 +1774,7 @@ ActiveRecord::Schema.define(version: 2019_07_31_084415) do
     t.boolean "public", default: false, null: false
     t.datetime "last_used_at"
     t.index ["fingerprint"], name: "index_keys_on_fingerprint", unique: true
+    t.index ["id", "type"], name: "index_on_deploy_keys_id_and_type_and_public", unique: true, where: "(public = true)"
     t.index ["user_id"], name: "index_keys_on_user_id"
   end
 
@@ -1978,6 +1984,12 @@ ActiveRecord::Schema.define(version: 2019_07_31_084415) do
     t.integer "merged_by_id"
     t.integer "latest_closed_by_id"
     t.datetime_with_timezone "latest_closed_at"
+    t.datetime_with_timezone "first_comment_at"
+    t.datetime_with_timezone "first_commit_at"
+    t.datetime_with_timezone "last_commit_at"
+    t.integer "diff_size"
+    t.integer "modified_paths_size"
+    t.integer "commits_count"
     t.index ["first_deployed_to_production_at"], name: "index_merge_request_metrics_on_first_deployed_to_production_at"
     t.index ["latest_closed_at"], name: "index_merge_request_metrics_on_latest_closed_at", where: "(latest_closed_at IS NOT NULL)"
     t.index ["latest_closed_by_id"], name: "index_merge_request_metrics_on_latest_closed_by_id"
@@ -3703,6 +3715,7 @@ ActiveRecord::Schema.define(version: 2019_07_31_084415) do
   add_foreign_key "clusters_applications_runners", "clusters", on_delete: :cascade
   add_foreign_key "clusters_kubernetes_namespaces", "cluster_projects", on_delete: :nullify
   add_foreign_key "clusters_kubernetes_namespaces", "clusters", on_delete: :cascade
+  add_foreign_key "clusters_kubernetes_namespaces", "environments", on_delete: :nullify
   add_foreign_key "clusters_kubernetes_namespaces", "projects", on_delete: :nullify
   add_foreign_key "container_repositories", "projects"
   add_foreign_key "dependency_proxy_blobs", "namespaces", column: "group_id", name: "fk_db58bbc5d7", on_delete: :cascade

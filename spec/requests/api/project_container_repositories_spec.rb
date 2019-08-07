@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe API::ContainerRegistry do
+describe API::ProjectContainerRepositories do
   include ExclusiveLeaseHelpers
 
   set(:project) { create(:project, :private) }
@@ -11,6 +11,16 @@ describe API::ContainerRegistry do
 
   let(:root_repository) { create(:container_repository, :root, project: project) }
   let(:test_repository) { create(:container_repository, project: project) }
+
+  let(:users) do
+    {
+      anonymous: nil,
+      developer: developer,
+      guest: guest,
+      maintainer: maintainer,
+      reporter: reporter
+    }
+  end
 
   let(:api_user) { maintainer }
 
@@ -27,57 +37,24 @@ describe API::ContainerRegistry do
     test_repository
   end
 
-  shared_examples 'being disallowed' do |param|
-    context "for #{param}" do
-      let(:api_user) { public_send(param) }
-
-      it 'returns access denied' do
-        subject
-
-        expect(response).to have_gitlab_http_status(:forbidden)
-      end
-    end
-
-    context "for anonymous" do
-      let(:api_user) { nil }
-
-      it 'returns not found' do
-        subject
-
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
-    end
-  end
-
   describe 'GET /projects/:id/registry/repositories' do
-    subject { get api("/projects/#{project.id}/registry/repositories", api_user) }
+    let(:url) { "/projects/#{project.id}/registry/repositories" }
 
-    it_behaves_like 'being disallowed', :guest
+    subject { get api(url, api_user) }
 
-    context 'for reporter' do
-      let(:api_user) { reporter }
+    it_behaves_like 'rejected container repository access', :guest, :forbidden
+    it_behaves_like 'rejected container repository access', :anonymous, :not_found
 
-      it 'returns a list of repositories' do
-        subject
-
-        expect(json_response.length).to eq(2)
-        expect(json_response.map { |repository| repository['id'] }).to contain_exactly(
-          root_repository.id, test_repository.id)
-      end
-
-      it 'returns a matching schema' do
-        subject
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response).to match_response_schema('registry/repositories')
-      end
+    it_behaves_like 'returns repositories for allowed users', :reporter, 'project' do
+      let(:object) { project }
     end
   end
 
   describe 'DELETE /projects/:id/registry/repositories/:repository_id' do
     subject { delete api("/projects/#{project.id}/registry/repositories/#{root_repository.id}", api_user) }
 
-    it_behaves_like 'being disallowed', :developer
+    it_behaves_like 'rejected container repository access', :developer, :forbidden
+    it_behaves_like 'rejected container repository access', :anonymous, :not_found
 
     context 'for maintainer' do
       let(:api_user) { maintainer }
@@ -96,7 +73,8 @@ describe API::ContainerRegistry do
   describe 'GET /projects/:id/registry/repositories/:repository_id/tags' do
     subject { get api("/projects/#{project.id}/registry/repositories/#{root_repository.id}/tags", api_user) }
 
-    it_behaves_like 'being disallowed', :guest
+    it_behaves_like 'rejected container repository access', :guest, :forbidden
+    it_behaves_like 'rejected container repository access', :anonymous, :not_found
 
     context 'for reporter' do
       let(:api_user) { reporter }
@@ -124,10 +102,13 @@ describe API::ContainerRegistry do
   describe 'DELETE /projects/:id/registry/repositories/:repository_id/tags' do
     subject { delete api("/projects/#{project.id}/registry/repositories/#{root_repository.id}/tags", api_user), params: params }
 
-    it_behaves_like 'being disallowed', :developer do
+    context 'disallowed' do
       let(:params) do
         { name_regex: 'v10.*' }
       end
+
+      it_behaves_like 'rejected container repository access', :developer, :forbidden
+      it_behaves_like 'rejected container repository access', :anonymous, :not_found
     end
 
     context 'for maintainer' do
@@ -191,7 +172,8 @@ describe API::ContainerRegistry do
   describe 'GET /projects/:id/registry/repositories/:repository_id/tags/:tag_name' do
     subject { get api("/projects/#{project.id}/registry/repositories/#{root_repository.id}/tags/rootA", api_user) }
 
-    it_behaves_like 'being disallowed', :guest
+    it_behaves_like 'rejected container repository access', :guest, :forbidden
+    it_behaves_like 'rejected container repository access', :anonymous, :not_found
 
     context 'for reporter' do
       let(:api_user) { reporter }
@@ -222,7 +204,8 @@ describe API::ContainerRegistry do
   describe 'DELETE /projects/:id/registry/repositories/:repository_id/tags/:tag_name' do
     subject { delete api("/projects/#{project.id}/registry/repositories/#{root_repository.id}/tags/rootA", api_user) }
 
-    it_behaves_like 'being disallowed', :reporter
+    it_behaves_like 'rejected container repository access', :reporter, :forbidden
+    it_behaves_like 'rejected container repository access', :anonymous, :not_found
 
     context 'for developer' do
       let(:api_user) { developer }

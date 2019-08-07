@@ -575,6 +575,34 @@ describe Environment, :use_clean_rails_memory_store_caching do
     end
   end
 
+  describe '#deployment_namespace' do
+    let(:environment) { create(:environment) }
+
+    subject { environment.deployment_namespace }
+
+    before do
+      allow(environment).to receive(:deployment_platform).and_return(deployment_platform)
+    end
+
+    context 'no deployment platform available' do
+      let(:deployment_platform) { nil }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'deployment platform is available' do
+      let(:cluster) { create(:cluster, :provided_by_user, :project, projects: [environment.project]) }
+      let(:deployment_platform) { cluster.platform }
+
+      it 'retrieves a namespace from the cluster' do
+        expect(cluster).to receive(:kubernetes_namespace_for)
+          .with(environment).and_return('mock-namespace')
+
+        expect(subject).to eq 'mock-namespace'
+      end
+    end
+  end
+
   describe '#terminals' do
     subject { environment.terminals }
 
@@ -821,6 +849,37 @@ describe Environment, :use_clean_rails_memory_store_caching do
       expect_any_instance_of(Prometheus::AdapterService).to receive(:prometheus_adapter)
 
       subject.prometheus_adapter
+    end
+  end
+
+  describe '#knative_services_finder' do
+    let(:environment) { create(:environment) }
+
+    subject { environment.knative_services_finder }
+
+    context 'environment has no deployments' do
+      it { is_expected.to be_nil }
+    end
+
+    context 'environment has a deployment' do
+      let!(:deployment) { create(:deployment, :success, environment: environment, cluster: cluster) }
+
+      context 'with no cluster associated' do
+        let(:cluster) { nil }
+
+        it { is_expected.to be_nil }
+      end
+
+      context 'with a cluster associated' do
+        let(:cluster) { create(:cluster) }
+
+        it 'calls the service finder' do
+          expect(Clusters::KnativeServicesFinder).to receive(:new)
+            .with(cluster, environment).and_return(:finder)
+
+          is_expected.to eq :finder
+        end
+      end
     end
   end
 end

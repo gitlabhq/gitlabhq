@@ -170,7 +170,7 @@ gem 'acts-as-taggable-on', '~> 6.0'
 gem 'sidekiq', '~> 5.2.7'
 gem 'sidekiq-cron', '~> 1.0'
 gem 'redis-namespace', '~> 1.6.0'
-gem 'gitlab-sidekiq-fetcher', '~> 0.4.0', require: 'sidekiq-reliable-fetch'
+gem 'gitlab-sidekiq-fetcher', '0.5.1', require: 'sidekiq-reliable-fetch'
 
 # Cron Parser
 gem 'fugit', '~> 1.2.1'
@@ -200,12 +200,12 @@ gem 'js_regex', '~> 3.1'
 # User agent parsing
 gem 'device_detector'
 
-# Cache
-gem 'redis-rails', '~> 5.0.2'
-
 # Redis
-gem 'redis', '~> 3.2'
+gem 'redis', '~> 4.0'
 gem 'connection_pool', '~> 2.0'
+
+# Redis session store
+gem 'redis-rails', '~> 5.0.2'
 
 # Discord integration
 gem 'discordrb-webhooks-blackst0ne', '~> 3.3', require: false
@@ -296,7 +296,6 @@ gem 'batch-loader', '~> 1.4.0'
 
 # Perf bar
 gem 'peek', '~> 1.0.1'
-gem 'peek-gc', '~> 0.0.2'
 
 # Memory benchmarks
 gem 'derailed_benchmarks', require: false

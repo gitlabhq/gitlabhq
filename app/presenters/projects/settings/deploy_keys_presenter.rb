@@ -12,48 +12,38 @@ module Projects
         @key ||= DeployKey.new.tap { |dk| dk.deploy_keys_projects.build }
       end
 
-      # rubocop: disable CodeReuse/ActiveRecord
       def enabled_keys
-        @enabled_keys ||= project.deploy_keys.includes(:projects)
-      end
-      # rubocop: enable CodeReuse/ActiveRecord
-
-      def any_keys_enabled?
-        enabled_keys.any?
+        project.deploy_keys
       end
 
       def available_keys
-        @available_keys ||= current_user.accessible_deploy_keys - enabled_keys
+        current_user
+          .accessible_deploy_keys
+          .id_not_in(enabled_keys.select(:id))
+          .with_projects
       end
 
-      # rubocop: disable CodeReuse/ActiveRecord
       def available_project_keys
-        @available_project_keys ||= current_user.project_deploy_keys.includes(:projects) - enabled_keys
-      end
-      # rubocop: enable CodeReuse/ActiveRecord
-
-      def key_available?(deploy_key)
-        available_keys.include?(deploy_key)
+        current_user
+          .project_deploy_keys
+          .id_not_in(enabled_keys.select(:id))
+          .with_projects
       end
 
-      # rubocop: disable CodeReuse/ActiveRecord
       def available_public_keys
-        return @available_public_keys if defined?(@available_public_keys)
-
-        @available_public_keys ||= DeployKey.are_public.includes(:projects) - enabled_keys
-
-        # Public keys that are already used by another accessible project are already
-        # in @available_project_keys.
-        @available_public_keys -= available_project_keys
+        DeployKey
+          .are_public
+          .id_not_in(enabled_keys.select(:id))
+          .id_not_in(available_project_keys.select(:id))
+          .with_projects
       end
-      # rubocop: enable CodeReuse/ActiveRecord
 
       def as_json
         serializer = DeployKeySerializer.new # rubocop: disable CodeReuse/Serializer
         opts = { user: current_user }
 
         {
-          enabled_keys: serializer.represent(enabled_keys, opts),
+          enabled_keys: serializer.represent(enabled_keys.with_projects, opts),
           available_project_keys: serializer.represent(available_project_keys, opts),
           public_keys: serializer.represent(available_public_keys, opts)
         }

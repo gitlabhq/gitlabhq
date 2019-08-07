@@ -4,6 +4,20 @@ FactoryBot.define do
   factory :clusters_applications_helm, class: Clusters::Applications::Helm do
     cluster factory: %i(cluster provided_by_gcp)
 
+    before(:create) do
+      allow(Gitlab::Kubernetes::Helm::Certificate).to receive(:generate_root)
+        .and_return(
+          double(
+            key_string: File.read(Rails.root.join('spec/fixtures/clusters/sample_key.key')),
+            cert_string: File.read(Rails.root.join('spec/fixtures/clusters/sample_cert.pem'))
+          )
+        )
+    end
+
+    after(:create) do
+      allow(Gitlab::Kubernetes::Helm::Certificate).to receive(:generate_root).and_call_original
+    end
+
     trait :not_installable do
       status(-2)
     end

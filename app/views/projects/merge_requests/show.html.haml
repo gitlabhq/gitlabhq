@@ -16,13 +16,13 @@
     - if @merge_request.source_branch_exists?
       = render "projects/merge_requests/how_to_merge"
 
-    -# haml-lint:disable InlineJavaScript
-    :javascript
-      window.gl = window.gl || {};
-      window.gl.mrWidgetData = #{serialize_issuable(@merge_request, serializer: 'widget', issues_links: true)}
+    = javascript_tag nonce: true do
+      :plain
+        window.gl = window.gl || {};
+        window.gl.mrWidgetData = #{serialize_issuable(@merge_request, serializer: 'widget', issues_links: true)}
 
-      window.gl.mrWidgetData.squash_before_merge_help_path = '#{help_page_path("user/project/merge_requests/squash_and_merge")}';
-      window.gl.mrWidgetData.troubleshooting_docs_path = '#{help_page_path('user/project/merge_requests/index.md', anchor: 'troubleshooting')}';
+        window.gl.mrWidgetData.squash_before_merge_help_path = '#{help_page_path("user/project/merge_requests/squash_and_merge")}';
+        window.gl.mrWidgetData.troubleshooting_docs_path = '#{help_page_path('user/project/merge_requests/index.md', anchor: 'troubleshooting')}';
 
     #js-vue-mr-widget.mr-widget
 

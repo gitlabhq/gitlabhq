@@ -933,7 +933,7 @@ class User < ApplicationRecord
   end
 
   def project_deploy_keys
-    DeployKey.unscoped.in_projects(authorized_projects.pluck(:id)).distinct(:id)
+    DeployKey.in_projects(authorized_projects.select(:id)).distinct(:id)
   end
 
   def highest_role
@@ -941,11 +941,10 @@ class User < ApplicationRecord
   end
 
   def accessible_deploy_keys
-    @accessible_deploy_keys ||= begin
-      key_ids = project_deploy_keys.pluck(:id)
-      key_ids.push(*DeployKey.are_public.pluck(:id))
-      DeployKey.where(id: key_ids)
-    end
+    DeployKey.from_union([
+      DeployKey.where(id: project_deploy_keys.select(:deploy_key_id)),
+      DeployKey.are_public
+    ])
   end
 
   def created_by

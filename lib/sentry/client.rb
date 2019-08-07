@@ -67,7 +67,7 @@ module Sentry
 
     def handle_request_exceptions
       yield
-    rescue HTTParty::Error => e
+    rescue Gitlab::HTTP::Error => e
       Gitlab::Sentry.track_acceptable_exception(e)
       raise_error 'Error when connecting to Sentry'
     rescue Net::OpenTimeout

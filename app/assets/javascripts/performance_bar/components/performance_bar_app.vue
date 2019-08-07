@@ -112,12 +112,6 @@ export default {
         :header="metric.header"
         :keys="metric.keys"
       />
-      <div id="peek-view-gc" class="view">
-        <span v-if="currentRequest.details" class="bold">
-          <span title="Invoke Time">{{ currentRequest.details.gc.gc_time }}</span
-          >ms / <span title="Invoke Count">{{ currentRequest.details.gc.invokes }}</span> gc
-        </span>
-      </div>
       <div
         v-if="currentRequest.details && currentRequest.details.tracing"
         id="peek-view-trace"

@@ -6,8 +6,8 @@
 
 - content_for :page_specific_javascripts do
   - if current_user
-    -# haml-lint:disable InlineJavaScript
-    :javascript
-      window.uploads_path = "#{group_uploads_path(@group)}";
+    = javascript_tag nonce: true do
+      :plain
+        window.uploads_path = "#{group_uploads_path(@group)}";
 
 = render template: "layouts/application"

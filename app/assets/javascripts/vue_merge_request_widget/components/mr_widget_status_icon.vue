@@ -32,10 +32,13 @@ export default {
 };
 </script>
 <template>
-  <div class="d-flex widget-status-icon">
-    <div v-if="isLoading" class="mr-widget-icon"><gl-loading-icon size="sm" /></div>
-
-    <ci-icon v-else :status="statusObj" :size="24" />
+  <div class="d-flex align-self-start">
+    <div class="square s24 h-auto d-flex-center append-right-default">
+      <div v-if="isLoading" class="mr-widget-icon">
+        <gl-loading-icon size="sm" />
+      </div>
+      <ci-icon v-else :status="statusObj" :size="24" />
+    </div>
 
     <button
       v-if="showDisabledButton"

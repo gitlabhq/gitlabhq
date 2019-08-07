@@ -1162,6 +1162,7 @@ module API
         attributes = ::ApplicationSettingsHelper.visible_attributes
         attributes.delete(:performance_bar_allowed_group_path)
         attributes.delete(:performance_bar_enabled)
+        attributes.delete(:allow_local_requests_from_hooks_and_services)
 
         attributes
       end
@@ -1180,6 +1181,7 @@ module API
       # support legacy names, can be removed in v5
       expose :password_authentication_enabled_for_web, as: :password_authentication_enabled
       expose :password_authentication_enabled_for_web, as: :signin_enabled
+      expose :allow_local_requests_from_web_hooks_and_services, as: :allow_local_requests_from_hooks_and_services
     end
 
     # deprecated old Release representation

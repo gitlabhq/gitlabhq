@@ -4,7 +4,7 @@ module Ci
   class ProcessPipelineService < BaseService
     attr_reader :pipeline
 
-    def execute(pipeline, trigger_build_name = nil)
+    def execute(pipeline, trigger_build_ids = nil)
       @pipeline = pipeline
 
       update_retried
@@ -13,7 +13,7 @@ module Ci
 
       # we evaluate dependent needs,
       # only when the another job has finished
-      success = process_builds_with_needs(trigger_build_name) || success
+      success = process_builds_with_needs(trigger_build_ids) || success
 
       @pipeline.update_status
 
@@ -38,12 +38,18 @@ module Ci
       end
     end
 
-    def process_builds_with_needs(trigger_build_name)
-      return false unless trigger_build_name
+    def process_builds_with_needs(trigger_build_ids)
+      return false unless trigger_build_ids.present?
       return false unless Feature.enabled?(:ci_dag_support, project)
 
+      # rubocop: disable CodeReuse/ActiveRecord
+      trigger_build_names = pipeline.statuses
+        .where(id: trigger_build_ids)
+        .select(:name)
+      # rubocop: enable CodeReuse/ActiveRecord
+
       created_processables
-        .with_needs(trigger_build_name)
+        .with_needs(trigger_build_names)
         .find_each
         .map(&method(:process_build_with_needs))
         .any?

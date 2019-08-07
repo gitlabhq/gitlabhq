@@ -612,8 +612,8 @@ module Ci
     end
 
     # rubocop: disable CodeReuse/ServiceClass
-    def process!(trigger_build_name = nil)
-      Ci::ProcessPipelineService.new(project, user).execute(self, trigger_build_name)
+    def process!(trigger_build_ids = nil)
+      Ci::ProcessPipelineService.new(project, user).execute(self, trigger_build_ids)
     end
     # rubocop: enable CodeReuse/ServiceClass
 

@@ -53,6 +53,7 @@ module Clusters
     validates :name, cluster_name: true
     validates :cluster_type, presence: true
     validates :domain, allow_blank: true, hostname: { allow_numeric_hostname: true }
+    validates :namespace_per_environment, inclusion: { in: [true, false] }
 
     validate :restrict_modification, on: :update
     validate :no_groups, unless: :group_type?
@@ -99,16 +100,6 @@ module Clusters
     scope :managed, -> { where(managed: true) }
 
     scope :default_environment, -> { where(environment_scope: DEFAULT_ENVIRONMENT) }
-
-    scope :with_knative_installed, -> { joins(:application_knative).merge(Clusters::Applications::Knative.available) }
-
-    scope :preload_knative, -> {
-      preload(
-        :kubernetes_namespaces,
-        :platform_kubernetes,
-        :application_knative
-      )
-    }
 
     def self.ancestor_clusters_for_clusterable(clusterable, hierarchy_order: :asc)
       return [] if clusterable.is_a?(Instance)
@@ -177,36 +168,15 @@ module Clusters
       platform_kubernetes.kubeclient if kubernetes?
     end
 
-    ##
-    # This is subtly different to #find_or_initialize_kubernetes_namespace_for_project
-    # below because it will ignore any namespaces that have not got a service account
-    # token. This provides a guarantee that any namespace selected here can be used
-    # for cluster operations - a namespace needs to have a service account configured
-    # before it it can be used.
-    #
-    # This is used for selecting a namespace to use when querying a cluster, or
-    # generating variables to pass to CI.
-    def kubernetes_namespace_for(project)
-      find_or_initialize_kubernetes_namespace_for_project(
-        project, scope: kubernetes_namespaces.has_service_account_token
-      ).namespace
-    end
+    def kubernetes_namespace_for(environment)
+      project = environment.project
+      persisted_namespace = Clusters::KubernetesNamespaceFinder.new(
+        self,
+        project: project,
+        environment_slug: environment.slug
+      ).execute
 
-    ##
-    # This is subtly different to #kubernetes_namespace_for because it will include
-    # namespaces that have yet to receive a service account token. This allows
-    # the namespace configuration process to be repeatable - if a namespace has
-    # already been created without a token we don't need to create another
-    # record entirely, just set the token on the pre-existing namespace.
-    #
-    # This is used for configuring cluster namespaces.
-    def find_or_initialize_kubernetes_namespace_for_project(project, scope: kubernetes_namespaces)
-      attributes = { project: project }
-      attributes[:cluster_project] = cluster_project if project_type?
-
-      scope.find_or_initialize_by(attributes).tap do |namespace|
-        namespace.set_defaults
-      end
+      persisted_namespace&.namespace || Gitlab::Kubernetes::DefaultNamespace.new(self, project: project).from_environment_slug(environment.slug)
     end
 
     def allow_user_defined_namespace?
@@ -223,10 +193,6 @@ module Clusters
 
         variables.append(key: KUBE_INGRESS_BASE_DOMAIN, value: kube_ingress_domain)
       end
-    end
-
-    def knative_services_finder(project)
-      @knative_services_finder ||= KnativeServicesFinder.new(self, project)
     end
 
     private

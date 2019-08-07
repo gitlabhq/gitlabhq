@@ -1,5 +1,12 @@
 <script>
-import { GlButton, GlDropdown, GlDropdownItem, GlModal, GlModalDirective } from '@gitlab/ui';
+import {
+  GlButton,
+  GlDropdown,
+  GlDropdownItem,
+  GlModal,
+  GlModalDirective,
+  GlTooltipDirective,
+} from '@gitlab/ui';
 import _ from 'underscore';
 import { mapActions, mapState } from 'vuex';
 import { s__ } from '~/locale';
@@ -30,7 +37,8 @@ export default {
     GlModal,
   },
   directives: {
-    GlModalDirective,
+    GlModal: GlModalDirective,
+    GlTooltip: GlTooltipDirective,
   },
   props: {
     externalDashboardUrl: {
@@ -328,7 +336,7 @@ export default {
       <div class="d-flex">
         <div v-if="addingMetricsAvailable">
           <gl-button
-            v-gl-modal-directive="$options.addMetric.modalId"
+            v-gl-modal="$options.addMetric.modalId"
             class="js-add-metric-button text-success border-success"
             >{{ $options.addMetric.title }}</gl-button
           >
@@ -395,14 +403,35 @@ export default {
             :project-path="projectPath"
             group-id="monitor-area-chart"
           >
-            <alert-widget
-              v-if="alertWidgetAvailable && graphData"
-              :alerts-endpoint="alertsEndpoint"
-              :relevant-queries="graphData.queries"
-              :alerts-to-manage="getGraphAlerts(graphData.queries)"
-              :modal-id="`alert-modal-${index}-${graphIndex}`"
-              @setAlerts="setAlerts"
-            />
+            <div class="d-flex align-items-center">
+              <alert-widget
+                v-if="alertWidgetAvailable && graphData"
+                :modal-id="`alert-modal-${index}-${graphIndex}`"
+                :alerts-endpoint="alertsEndpoint"
+                :relevant-queries="graphData.queries"
+                :alerts-to-manage="getGraphAlerts(graphData.queries)"
+                @setAlerts="setAlerts"
+              />
+              <gl-dropdown
+                v-if="alertWidgetAvailable"
+                v-gl-tooltip
+                class="mx-2"
+                toggle-class="btn btn-transparent border-0"
+                :right="true"
+                :no-caret="true"
+                :title="__('More actions')"
+              >
+                <template slot="button-content">
+                  <icon name="ellipsis_v" class="text-secondary" />
+                </template>
+                <gl-dropdown-item
+                  v-if="alertWidgetAvailable"
+                  v-gl-modal="`alert-modal-${index}-${graphIndex}`"
+                >
+                  {{ __('Alerts') }}
+                </gl-dropdown-item>
+              </gl-dropdown>
+            </div>
           </monitor-area-chart>
         </template>
       </graph-group>

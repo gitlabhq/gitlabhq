@@ -21,7 +21,8 @@ module ApplicationSettingImplementation
       {
         after_sign_up_text: nil,
         akismet_enabled: false,
-        allow_local_requests_from_hooks_and_services: false,
+        allow_local_requests_from_web_hooks_and_services: false,
+        allow_local_requests_from_system_hooks: true,
         dns_rebinding_protection_enabled: true,
         authorized_keys_enabled: true, # TODO default to false if the instance is configured to use AuthorizedKeysCommand
         container_registry_token_expire_delay: 5,

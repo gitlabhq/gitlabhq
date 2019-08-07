@@ -10,12 +10,12 @@ describe AnalyticsIssueEntity do
       id: "1",
       created_at: "2016-11-12 15:04:02.948604",
       author: user,
-      name: project.name,
-      path: project.namespace
+      project_path: project.path,
+      namespace_path: project.namespace.route.path
     }
   end
 
-  let(:project) { create(:project) }
+  let(:project) { create(:project, name: 'my project') }
   let(:request) { EntityRequest.new(entity: :merge_request) }
 
   let(:entity) do

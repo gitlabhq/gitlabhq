@@ -27,7 +27,6 @@ export default {
     return {
       width: 0,
       height: 0,
-      isLoaded: false,
     };
   },
   computed: {
@@ -63,8 +62,6 @@ export default {
         this.height = contentImg.naturalHeight;
 
         this.$nextTick(() => {
-          this.isLoaded = true;
-
           this.$emit('imgLoaded', {
             width: this.width,
             height: this.height,

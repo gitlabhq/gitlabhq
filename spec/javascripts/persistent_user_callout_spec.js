@@ -22,6 +22,24 @@ describe('PersistentUserCallout', () => {
     return fixture;
   }
 
+  function createDeferredLinkFixture() {
+    const fixture = document.createElement('div');
+    fixture.innerHTML = `
+      <div
+        class="container"
+        data-dismiss-endpoint="${dismissEndpoint}"
+        data-feature-id="${featureName}"
+        data-defer-links="true"
+      >
+        <button type="button" class="js-close"></button>
+        <a href="/somewhere-pleasant" target="_blank" class="deferred-link">A link</a>
+        <a href="/somewhere-else" target="_blank" class="normal-link">Another link</a>
+      </div>
+    `;
+
+    return fixture;
+  }
+
   describe('dismiss', () => {
     let button;
     let mockAxios;
@@ -68,6 +86,75 @@ describe('PersistentUserCallout', () => {
           expect(Flash).toHaveBeenCalledWith(
             'An error occurred while dismissing the alert. Refresh the page and try again.',
           );
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+  });
+
+  describe('deferred links', () => {
+    let button;
+    let deferredLink;
+    let normalLink;
+    let mockAxios;
+    let persistentUserCallout;
+    let windowSpy;
+
+    beforeEach(() => {
+      const fixture = createDeferredLinkFixture();
+      const container = fixture.querySelector('.container');
+      button = fixture.querySelector('.js-close');
+      deferredLink = fixture.querySelector('.deferred-link');
+      normalLink = fixture.querySelector('.normal-link');
+      mockAxios = new MockAdapter(axios);
+      persistentUserCallout = new PersistentUserCallout(container);
+      spyOn(persistentUserCallout.container, 'remove');
+      windowSpy = spyOn(window, 'open').and.callFake(() => {});
+    });
+
+    afterEach(() => {
+      mockAxios.restore();
+    });
+
+    it('defers loading of a link until callout is dismissed', done => {
+      const { href, target } = deferredLink;
+      mockAxios.onPost(dismissEndpoint).replyOnce(200);
+
+      deferredLink.click();
+
+      setTimeoutPromise()
+        .then(() => {
+          expect(windowSpy).toHaveBeenCalledWith(href, target);
+          expect(persistentUserCallout.container.remove).toHaveBeenCalled();
+          expect(mockAxios.history.post[0].data).toBe(
+            JSON.stringify({ feature_name: featureName }),
+          );
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+
+    it('does not dismiss callout on non-deferred links', done => {
+      normalLink.click();
+
+      setTimeoutPromise()
+        .then(() => {
+          expect(windowSpy).not.toHaveBeenCalled();
+          expect(persistentUserCallout.container.remove).not.toHaveBeenCalled();
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+
+    it('does not follow link when notification is closed', done => {
+      mockAxios.onPost(dismissEndpoint).replyOnce(200);
+
+      button.click();
+
+      setTimeoutPromise()
+        .then(() => {
+          expect(windowSpy).not.toHaveBeenCalled();
+          expect(persistentUserCallout.container.remove).toHaveBeenCalled();
         })
         .then(done)
         .catch(done.fail);

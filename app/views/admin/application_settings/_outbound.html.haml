@@ -4,9 +4,13 @@
   %fieldset
     .form-group
       .form-check
-        = f.check_box :allow_local_requests_from_hooks_and_services, class: 'form-check-input'
-        = f.label :allow_local_requests_from_hooks_and_services, class: 'form-check-label' do
-          Allow requests to the local network from hooks and services
+        = f.check_box :allow_local_requests_from_web_hooks_and_services, class: 'form-check-input'
+        = f.label :allow_local_requests_from_web_hooks_and_services, class: 'form-check-label' do
+          = _('Allow requests to the local network from web hooks and services')
+      .form-check
+        = f.check_box :allow_local_requests_from_system_hooks, class: 'form-check-input'
+        = f.label :allow_local_requests_from_system_hooks, class: 'form-check-label' do
+          = _('Allow requests to the local network from system hooks')
 
     .form-group
       = f.label :outbound_local_requests_whitelist_raw, class: 'label-bold' do

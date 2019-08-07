@@ -49,7 +49,7 @@ class Projects::BranchesController < Projects::ApplicationController
         branches = BranchesFinder.new(repository, params.permit(names: [])).execute
 
         Gitlab::GitalyClient.allow_n_plus_1_calls do
-          render json: branches.to_h { |branch| [branch.name, service.call(branch)] }
+          render json: branches.map { |branch| [branch.name, service.call(branch)] }.to_h
         end
       end
     end

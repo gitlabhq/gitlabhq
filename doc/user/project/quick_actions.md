@@ -70,6 +70,19 @@ Many quick actions require a parameter, for example: username, milestone, and
 label. [Autocomplete characters](autocomplete_characters.md) can make it easier
 to enter a parameter, compared to selecting items from a list.
 
+## Quick actions parameters
+
+The easiest way to set parameters for quick actions is to use autocomplete. If
+you manually enter a parameter, it must be enclosed in double quotation marks
+(`"`), unless it contains only:
+
+1. ASCII letters.
+2. Numerals.
+3. Underscore, hyphen, question mark, dot, and ampersand.
+
+Parameters are also case-sensitive. Autocomplete handles this, and the insertion
+of quotation marks, automatically.
+
 ## Quick actions for commit messages
 
 The following quick actions are applicable for commit messages:

@@ -24,18 +24,21 @@ special searches:
 ## Installing Elasticsearch
 
 Elasticsearch is _not_ included in the Omnibus packages. You will have to
-install it yourself whether you are using the Omnibus package or installed
-GitLab from source. Providing detailed information on installing Elasticsearch
-is out of the scope of this document.
+[install it yourself](https://www.elastic.co/guide/en/elasticsearch/reference/current/install-elasticsearch.html "Elasticsearch installation documentation")
+whether you are using the Omnibus package or installed GitLab from source.
+Providing detailed information on installing Elasticsearch is out of the scope
+of this document.
+
+NOTE: **Note:**
+Elasticsearch should be installed on a separate server, whether you install
+it yourself or by using the
+[Amazon Elasticsearch](http://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-gsg.html)
+service. Running Elasticsearch on the same server as GitLab is not recommended
+and it will likely cause performance degradation on the GitLab installation.
 
 Once the data is added to the database or repository and [Elasticsearch is
 enabled in the admin area](#enabling-elasticsearch) the search index will be
-updated automatically. Elasticsearch can be installed on the same machine as
-GitLab or on a separate server, or you can use the [Amazon Elasticsearch](http://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/es-gsg.html)
-service.
-
-You can follow the steps as described in the [official web site](https://www.elastic.co/guide/en/elasticsearch/reference/current/install-elasticsearch.html "Elasticsearch installation documentation") or
-use the packages that are available for your OS.
+updated automatically.
 
 ## Elasticsearch repository indexer (beta)
 

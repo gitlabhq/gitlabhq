@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Gitlab::PrometheusClient do
   include PrometheusHelpers
 
-  subject { described_class.new(RestClient::Resource.new('https://prometheus.example.com')) }
+  subject { described_class.new('https://prometheus.example.com') }
 
   describe '#ping' do
     it 'issues a "query" request to the API endpoint' do
@@ -79,8 +79,16 @@ describe Gitlab::PrometheusClient do
         expect(req_stub).to have_been_requested
       end
 
-      it 'raises a Gitlab::PrometheusClient::Error error when a RestClient::Exception is rescued' do
-        req_stub = stub_prometheus_request_with_exception(prometheus_url, RestClient::Exception)
+      it 'raises a Gitlab::PrometheusClient::Error error when a Gitlab::HTTP::ResponseError is rescued' do
+        req_stub = stub_prometheus_request_with_exception(prometheus_url, Gitlab::HTTP::ResponseError)
+
+        expect { subject }
+          .to raise_error(Gitlab::PrometheusClient::Error, "Network connection error")
+        expect(req_stub).to have_been_requested
+      end
+
+      it 'raises a Gitlab::PrometheusClient::Error error when a Gitlab::HTTP::ResponseError with a code is rescued' do
+        req_stub = stub_prometheus_request_with_exception(prometheus_url, Gitlab::HTTP::ResponseError.new(code: 400))
 
         expect { subject }
           .to raise_error(Gitlab::PrometheusClient::Error, "Network connection error")
@@ -89,13 +97,13 @@ describe Gitlab::PrometheusClient do
     end
 
     context 'ping' do
-      subject { described_class.new(RestClient::Resource.new(prometheus_url)).ping }
+      subject { described_class.new(prometheus_url).ping }
 
       it_behaves_like 'exceptions are raised'
     end
 
     context 'proxy' do
-      subject { described_class.new(RestClient::Resource.new(prometheus_url)).proxy('query', { query: '1' }) }
+      subject { described_class.new(prometheus_url).proxy('query', { query: '1' }) }
 
       it_behaves_like 'exceptions are raised'
     end
@@ -310,15 +318,32 @@ describe Gitlab::PrometheusClient do
         end
       end
 
-      context 'when RestClient::Exception is raised' do
+      context 'when Gitlab::HTTP::ResponseError is raised' do
         before do
-          stub_prometheus_request_with_exception(query_url, RestClient::Exception)
+          stub_prometheus_request_with_exception(query_url, response_error)
         end
 
-        it 'raises PrometheusClient::Error' do
-          expect { subject.proxy('query', { query: prometheus_query }) }.to(
-            raise_error(Gitlab::PrometheusClient::Error, 'Network connection error')
-          )
+        context "without response code" do
+          let(:response_error) { Gitlab::HTTP::ResponseError }
+          it 'raises PrometheusClient::Error' do
+            expect { subject.proxy('query', { query: prometheus_query }) }.to(
+              raise_error(Gitlab::PrometheusClient::Error, 'Network connection error')
+            )
+          end
+        end
+
+        context "with response code" do
+          let(:response_error) do
+            response = Net::HTTPResponse.new(1.1, 400, '{}sumpthin')
+            allow(response).to receive(:body) { '{}' }
+            Gitlab::HTTP::ResponseError.new(response)
+          end
+
+          it 'raises Gitlab::PrometheusClient::QueryError' do
+            expect { subject.proxy('query', { query: prometheus_query }) }.to(
+              raise_error(Gitlab::PrometheusClient::QueryError, 'Bad data received')
+            )
+          end
         end
       end
     end

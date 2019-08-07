@@ -155,7 +155,7 @@
   text-overflow: ellipsis;
 
   @include media-breakpoint-up(md) {
-    flex: 0 0 90%;
+    flex: 0 0 85%;
   }
 
   .avatar {

@@ -7,8 +7,8 @@
 - content_for :project_javascripts do
   - project = @target_project || @project
   - if current_user
-    -# haml-lint:disable InlineJavaScript
-    :javascript
-      window.uploads_path = "#{project_uploads_path(project)}";
+    = javascript_tag nonce: true do
+      :plain
+        window.uploads_path = "#{project_uploads_path(project)}";
 
 = render template: "layouts/application"

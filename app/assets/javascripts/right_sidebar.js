@@ -101,10 +101,12 @@ Sidebar.prototype.toggleTodo = function(e) {
       this.todoUpdateDone(data);
     })
     .catch(() =>
-      flash(sprintf(__('There was an error %{message} todo.')), {
-        message:
-          ajaxType === 'post' ? s__('RightSidebar|adding a') : s__('RightSidebar|deleting the'),
-      }),
+      flash(
+        sprintf(__('There was an error %{message} todo.'), {
+          message:
+            ajaxType === 'post' ? s__('RightSidebar|adding a') : s__('RightSidebar|deleting the'),
+        }),
+      ),
     );
 };
 

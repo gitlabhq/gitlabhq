@@ -32,6 +32,8 @@
       = link_to dashboard_snippets_path, class: 'dashboard-shortcuts-snippets qa-snippets-link' do
         = _('Snippets')
 
+  = render_if_exists 'layouts/nav/sidebar/analytics_link'
+
   - if any_dashboard_nav_link?([:groups, :milestones, :activity, :snippets])
     %li.header-more.dropdown.d-xl-none{ class: ('d-lg-none' unless has_extra_nav_icons?) }
       %a{ href: "#", data: { toggle: "dropdown" } }
@@ -53,6 +55,9 @@
             = nav_link(controller: 'dashboard/snippets') do
               = link_to dashboard_snippets_path, class: 'dashboard-shortcuts-snippets' do
                 = _('Snippets')
+
+          = render_if_exists 'layouts/nav/sidebar/analytics_more_link'
+
           %li.dropdown.d-lg-none
             = render_if_exists 'dashboard/operations/nav_link_list'
           - if can?(current_user, :read_instance_statistics)

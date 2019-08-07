@@ -47,6 +47,29 @@ production: &base
     #
     # relative_url_root: /gitlab
 
+    # Content Security Policy
+    # See https://guides.rubyonrails.org/security.html#content-security-policy
+    content_security_policy:
+      enabled: false
+      report_only: false
+      directives:
+        base_uri:
+        child_src:
+        connect_src: "'self' http://localhost:3808 ws://localhost:3808 wss://localhost:3000"
+        default_src: "'self'"
+        font_src:
+        form_action:
+        frame_ancestors: "'self'"
+        frame_src: "'self' https://www.google.com/recaptcha/ https://www.recaptcha.net/ https://content.googleapis.com https://content-compute.googleapis.com https://content-cloudbilling.googleapis.com https://content-cloudresourcemanager.googleapis.com"
+        img_src: "* data: blob"
+        manifest_src:
+        media_src:
+        object_src: "'self' http://localhost:3808 'unsafe-inline' 'unsafe-eval' https://www.google.com/recaptcha/ https://www.recaptcha.net/ https://www.gstatic.com/recaptcha/ https://apis.google.com"
+        script_src:
+        style_src: "'self' 'unsafe-inline'"
+        worker_src: "http://localhost:3000 blob:"
+        report_uri:
+
     # Trusted Proxies
     # Customize if you have GitLab behind a reverse proxy which is running on a different machine.
     # Add the IP address for your reverse proxy to the list, otherwise users will appear signed in from that address.

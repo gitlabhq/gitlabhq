@@ -69,7 +69,7 @@ class BranchesFinder
     return branches unless names
 
     branch_names = names.to_set
-    branches.filter do |branch|
+    branches.select do |branch|
       branch_names.include?(branch.name)
     end
   end

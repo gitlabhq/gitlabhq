@@ -10,9 +10,10 @@ class DeployKeyEntity < Grape::Entity
   expose :created_at
   expose :updated_at
   expose :deploy_keys_projects, using: DeployKeysProjectEntity do |deploy_key|
-    deploy_key.deploy_keys_projects
-              .without_project_deleted
-              .select { |deploy_key_project| Ability.allowed?(options[:user], :read_project, deploy_key_project.project) }
+    deploy_key.deploy_keys_projects.select do |deploy_key_project|
+      !deploy_key_project.project&.pending_delete? &&
+        Ability.allowed?(options[:user], :read_project, deploy_key_project.project)
+    end
   end
   expose :can_edit
 

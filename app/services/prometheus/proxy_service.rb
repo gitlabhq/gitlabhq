@@ -98,7 +98,7 @@ module Prometheus
     end
 
     def prometheus_client_wrapper
-      prometheus_adapter&.prometheus_client_wrapper
+      prometheus_adapter&.prometheus_client
     end
 
     def can_query?

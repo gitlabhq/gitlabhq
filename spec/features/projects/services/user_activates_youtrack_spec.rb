@@ -48,7 +48,7 @@ describe 'User activates issue tracker', :js do
 
       context 'when the connection test fails' do
         it 'activates the service' do
-          stub_request(:head, url).to_raise(HTTParty::Error)
+          stub_request(:head, url).to_raise(Gitlab::HTTP::Error)
 
           click_link(tracker)
           fill_form

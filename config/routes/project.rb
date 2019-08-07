@@ -500,6 +500,10 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           get :realtime_changes
           post :create_merge_request
           get :discussions, format: :json
+
+          Gitlab.ee do
+            get 'designs(/*vueroute)', to: 'issues#show', format: false
+          end
         end
 
         collection do

@@ -1,5 +1,6 @@
 import Vue from 'vue';
-import eventHub from '~/pipelines/event_hub';
+import MockAdapter from 'axios-mock-adapter';
+import axios from '~/lib/utils/axios_utils';
 import PipelinesActions from '~/pipelines/components/pipelines_actions.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import { TEST_HOST } from 'spec/test_constants';
@@ -7,9 +8,15 @@ import { TEST_HOST } from 'spec/test_constants';
 describe('Pipelines Actions dropdown', () => {
   const Component = Vue.extend(PipelinesActions);
   let vm;
+  let mock;
 
   afterEach(() => {
     vm.$destroy();
+    mock.restore();
+  });
+
+  beforeEach(() => {
+    mock = new MockAdapter(axios);
   });
 
   describe('manual actions', () => {
@@ -39,6 +46,22 @@ describe('Pipelines Actions dropdown', () => {
       const dropdownItem = vm.$el.querySelector('.dropdown-menu li:last-child button');
 
       expect(dropdownItem).toBeDisabled();
+    });
+
+    describe('on click', () => {
+      it('makes a request and toggles the loading state', done => {
+        mock.onPost(actions.path).reply(200);
+
+        vm.$el.querySelector('.dropdown-menu li button').click();
+
+        expect(vm.isLoading).toEqual(true);
+
+        setTimeout(() => {
+          expect(vm.isLoading).toEqual(false);
+
+          done();
+        });
+      });
     });
   });
 
@@ -71,26 +94,27 @@ describe('Pipelines Actions dropdown', () => {
         .catch(done.fail);
     });
 
-    it('emits postAction event after confirming', () => {
-      const emitSpy = jasmine.createSpy('emit');
-      eventHub.$on('postAction', emitSpy);
+    it('makes post request after confirming', done => {
+      mock.onPost(scheduledJobAction.path).reply(200);
       spyOn(window, 'confirm').and.callFake(() => true);
 
       findDropdownItem(scheduledJobAction).click();
 
       expect(window.confirm).toHaveBeenCalled();
-      expect(emitSpy).toHaveBeenCalledWith(scheduledJobAction.path);
+      setTimeout(() => {
+        expect(mock.history.post.length).toBe(1);
+        done();
+      });
     });
 
-    it('does not emit postAction event if confirmation is cancelled', () => {
-      const emitSpy = jasmine.createSpy('emit');
-      eventHub.$on('postAction', emitSpy);
+    it('does not make post request if confirmation is cancelled', () => {
+      mock.onPost(scheduledJobAction.path).reply(200);
       spyOn(window, 'confirm').and.callFake(() => false);
 
       findDropdownItem(scheduledJobAction).click();
 
       expect(window.confirm).toHaveBeenCalled();
-      expect(emitSpy).not.toHaveBeenCalled();
+      expect(mock.history.post.length).toBe(0);
     });
 
     it('displays the remaining time in the dropdown', () => {

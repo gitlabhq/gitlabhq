@@ -182,7 +182,7 @@ module QA
       end
 
       def gcloud_num_nodes
-        ENV.fetch('GCLOUD_NUM_NODES', 3)
+        ENV.fetch('GCLOUD_NUM_NODES', 1)
       end
 
       def has_gcloud_credentials?

@@ -98,7 +98,10 @@ a group in the **Usage Quotas** page available to the group page settings list.
 
 If you're using GitLab.com, you can purchase additional CI minutes so your
 pipelines will not be blocked after you have used all your CI minutes from your
-main quota.
+main quota. Additional minutes:
+
+- Are only used once the shared quota included in your subscription runs out.
+- Roll over month to month.
 
 In order to purchase additional minutes, you should follow these steps:
 

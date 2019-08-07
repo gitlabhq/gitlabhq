@@ -18,7 +18,7 @@ The steps below are the minimum necessary to configure a Monitoring node running
 Omnibus:
 
 1. SSH into the Monitoring node.
-1. [Download/install](https://about.gitlab.com/install) the Omnibus GitLab
+1. [Download/install](https://about.gitlab.com/install/) the Omnibus GitLab
    package you want using **steps 1 and 2** from the GitLab downloads page.
    - Do not complete any other steps on the download page.
 

@@ -105,10 +105,6 @@ describe PrometheusService, :use_clean_rails_memory_store_caching do
     context 'manual configuration is enabled' do
       let(:manual_configuration) { true }
 
-      it 'returns rest client from api_url' do
-        expect(service.prometheus_client.url).to eq(api_url)
-      end
-
       it 'calls valid?' do
         allow(service).to receive(:valid?).and_call_original
 

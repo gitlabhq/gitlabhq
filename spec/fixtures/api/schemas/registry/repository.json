@@ -17,6 +17,9 @@
     "path": {
       "type": "string"
     },
+    "project_id": {
+      "type": "integer"
+    },
     "location": {
       "type": "string"
     },
@@ -28,7 +31,8 @@
     },
     "destroy_path": {
       "type": "string"
-    }
+    },
+    "tags": { "$ref": "tags.json" }
   },
   "additionalProperties": false
 }

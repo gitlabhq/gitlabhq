@@ -1,4 +1,9 @@
 /* eslint-disable class-methods-use-this */
+/**
+ * This file is intended to be deleted.
+ * The existing functions will removed one by one in favor of using the board store directly.
+ * see https://gitlab.com/gitlab-org/gitlab-ce/issues/61621
+ */
 
 import boardsStore from '~/boards/stores/boards_store';
 

@@ -25,6 +25,9 @@ describe API::Settings, 'Settings' do
       expect(json_response['ed25519_key_restriction']).to eq(0)
       expect(json_response['performance_bar_allowed_group_id']).to be_nil
       expect(json_response['instance_statistics_visibility_private']).to be(false)
+      expect(json_response['allow_local_requests_from_hooks_and_services']).to be(false)
+      expect(json_response['allow_local_requests_from_web_hooks_and_services']).to be(false)
+      expect(json_response['allow_local_requests_from_system_hooks']).to be(true)
       expect(json_response).not_to have_key('performance_bar_allowed_group_path')
       expect(json_response).not_to have_key('performance_bar_enabled')
     end
@@ -67,7 +70,9 @@ describe API::Settings, 'Settings' do
             instance_statistics_visibility_private: true,
             diff_max_patch_bytes: 150_000,
             default_branch_protection: ::Gitlab::Access::PROTECTION_DEV_CAN_MERGE,
-            local_markdown_version: 3
+            local_markdown_version: 3,
+            allow_local_requests_from_web_hooks_and_services: true,
+            allow_local_requests_from_system_hooks: false
           }
 
         expect(response).to have_gitlab_http_status(200)
@@ -95,6 +100,8 @@ describe API::Settings, 'Settings' do
         expect(json_response['diff_max_patch_bytes']).to eq(150_000)
         expect(json_response['default_branch_protection']).to eq(Gitlab::Access::PROTECTION_DEV_CAN_MERGE)
         expect(json_response['local_markdown_version']).to eq(3)
+        expect(json_response['allow_local_requests_from_web_hooks_and_services']).to eq(true)
+        expect(json_response['allow_local_requests_from_system_hooks']).to eq(false)
       end
     end
 
@@ -115,6 +122,14 @@ describe API::Settings, 'Settings' do
 
       expect(response).to have_gitlab_http_status(200)
       expect(json_response['performance_bar_allowed_group_id']).to be_nil
+    end
+
+    it 'supports legacy allow_local_requests_from_hooks_and_services' do
+      put api("/application/settings", admin),
+          params: { allow_local_requests_from_hooks_and_services: true }
+
+      expect(response).to have_gitlab_http_status(200)
+      expect(json_response['allow_local_requests_from_hooks_and_services']).to eq(true)
     end
 
     context 'external policy classification settings' do

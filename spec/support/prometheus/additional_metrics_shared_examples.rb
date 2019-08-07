@@ -50,7 +50,7 @@ RSpec.shared_examples 'additional metrics query' do
         let!(:cluster) { create(:cluster, :project, :provided_by_gcp) }
         let(:project) { cluster.project }
         let(:environment) { create(:environment, slug: 'environment-slug', project: project) }
-        let(:kube_namespace) { project.deployment_platform.kubernetes_namespace_for(project) }
+        let(:kube_namespace) { environment.deployment_namespace }
 
         it_behaves_like 'query context containing environment slug and filter'
 

@@ -903,6 +903,9 @@ msgstr ""
 msgid "After a successful password update, you will be redirected to the login page where you can log in with your new password."
 msgstr ""
 
+msgid "Alerts"
+msgstr ""
+
 msgid "All"
 msgstr ""
 
@@ -949,6 +952,12 @@ msgid "Allow rendering of PlantUML diagrams in Asciidoc documents."
 msgstr ""
 
 msgid "Allow requests to the local network from hooks and services."
+msgstr ""
+
+msgid "Allow requests to the local network from system hooks"
+msgstr ""
+
+msgid "Allow requests to the local network from web hooks and services"
 msgstr ""
 
 msgid "Allow this key to push to repository as well? (Default only allows pull access.)"
@@ -2824,10 +2833,10 @@ msgstr ""
 msgid "ClusterIntegration|The associated Tiller pod will be deleted and cannot be restored."
 msgstr ""
 
-msgid "ClusterIntegration|The associated certifcate will be deleted and cannot be restored."
+msgid "ClusterIntegration|The associated load balancer and IP will be deleted and cannot be restored."
 msgstr ""
 
-msgid "ClusterIntegration|The associated load balancer and IP will be deleted and cannot be restored."
+msgid "ClusterIntegration|The associated private key will be deleted and cannot be restored."
 msgstr ""
 
 msgid "ClusterIntegration|The endpoint is in the process of being assigned. Please check your Kubernetes cluster or Quotas on Google Kubernetes Engine if it takes a long time."
@@ -6872,6 +6881,9 @@ msgid "Monitoring"
 msgstr ""
 
 msgid "More"
+msgstr ""
+
+msgid "More actions"
 msgstr ""
 
 msgid "More information"

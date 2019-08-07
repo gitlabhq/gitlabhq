@@ -36,12 +36,17 @@ installations will be better served with the default configuration
 used by Omnibus and the GitLab source installation guide.
 
 Starting with GitLab 11.4, Gitaly is able to serve all Git requests without
-needed a shared NFS mount for Git repository data.
+requiring a shared NFS mount for Git repository data.
 Between 11.4 and 11.8 the exception was the
 [Elasticsearch indexer](https://gitlab.com/gitlab-org/gitlab-elasticsearch-indexer).
 But since 11.8 the indexer uses Gitaly for data access as well. NFS can still
 be leveraged for redudancy on block level of the Git data. But only has to
 be mounted on the Gitaly server.
+
+Starting with GitLab 11.8, it is possible to use ElasticSearch in conjunction with
+a Gitaly setup that isn't utilising NFS. In order to use ElasticSearch in this
+scenario, the [new repository indexer](../../integration/elasticsearch.md#elasticsearch-repository-indexer-beta)
+needs to be enabled in your GitLab configuration.
 
 NOTE: **Note:** While Gitaly can be used as a replacement for NFS, it's not recommended
 to use EFS as it may impact GitLab's performance. Review the [relevant documentation](../high_availability/nfs.md#avoid-using-awss-elastic-file-system-efs)
@@ -469,7 +474,16 @@ One current feature of GitLab that still requires a shared directory (NFS) is
 There is [work in progress](https://gitlab.com/gitlab-org/gitlab-pages/issues/196)
 to eliminate the need for NFS to support GitLab Pages.
 
-## Troubleshooting
+## Troubleshooting Gitaly
+
+### Commits, pushes, and clones return a 401
+
+```
+remote: GitLab: 401 Unauthorized
+```
+
+You will need to sync your `gitlab-secrets.json` file with your GitLab
+app nodes.
 
 ### `gitaly-debug`
 

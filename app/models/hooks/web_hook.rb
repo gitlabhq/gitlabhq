@@ -15,8 +15,8 @@ class WebHook < ApplicationRecord
 
   has_many :web_hook_logs, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
-  validates :url, presence: true, public_url: { allow_localhost: lambda(&:allow_local_requests?),
-                                                allow_local_network: lambda(&:allow_local_requests?) }
+  validates :url, presence: true
+  validates :url, public_url: true, unless: ->(hook) { hook.is_a?(SystemHook) }
 
   validates :token, format: { without: /\n/ }
   validates :push_events_branch_filter, branch_filter: true
@@ -35,6 +35,6 @@ class WebHook < ApplicationRecord
 
   # Allow urls pointing localhost and the local network
   def allow_local_requests?
-    false
+    Gitlab::CurrentSettings.allow_local_requests_from_web_hooks_and_services?
   end
 end

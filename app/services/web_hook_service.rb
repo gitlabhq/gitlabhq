@@ -17,8 +17,10 @@ class WebHookService
     @hook = hook
     @data = data
     @hook_name = hook_name.to_s
-    @request_options = { timeout: Gitlab.config.gitlab.webhook_timeout }
-    @request_options.merge!(allow_local_requests: true) if @hook.is_a?(SystemHook)
+    @request_options = {
+      timeout: Gitlab.config.gitlab.webhook_timeout,
+      allow_local_requests: hook.allow_local_requests?
+    }
   end
 
   def execute

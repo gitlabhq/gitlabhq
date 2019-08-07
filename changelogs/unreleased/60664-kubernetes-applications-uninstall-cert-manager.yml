@@ -1,0 +1,5 @@
+---
+title: Allow Cert-Manager to be uninstalled
+merge_request: 31166
+author:
+type: added

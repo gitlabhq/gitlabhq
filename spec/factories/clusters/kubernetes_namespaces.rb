@@ -5,12 +5,21 @@ FactoryBot.define do
     association :cluster, :project, :provided_by_gcp
 
     after(:build) do |kubernetes_namespace|
-      if kubernetes_namespace.cluster.project_type?
-        cluster_project = kubernetes_namespace.cluster.cluster_project
+      cluster = kubernetes_namespace.cluster
+
+      if cluster.project_type?
+        cluster_project = cluster.cluster_project
 
         kubernetes_namespace.project = cluster_project.project
         kubernetes_namespace.cluster_project = cluster_project
       end
+
+      kubernetes_namespace.namespace ||=
+        Gitlab::Kubernetes::DefaultNamespace.new(
+          cluster,
+          project: kubernetes_namespace.project
+        ).from_environment_slug(kubernetes_namespace.environment&.slug)
+      kubernetes_namespace.service_account_name ||= "#{kubernetes_namespace.namespace}-service-account"
     end
 
     trait :with_token do

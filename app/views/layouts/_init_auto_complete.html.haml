@@ -4,8 +4,8 @@
 - datasources = autocomplete_data_sources(object, noteable_type)
 
 - if object
-  -# haml-lint:disable InlineJavaScript
-  :javascript
-    gl = window.gl || {};
-    gl.GfmAutoComplete = gl.GfmAutoComplete || {};
-    gl.GfmAutoComplete.dataSources = #{datasources.to_json};
+  = javascript_tag nonce: true do
+    :plain
+      gl = window.gl || {};
+      gl.GfmAutoComplete = gl.GfmAutoComplete || {};
+      gl.GfmAutoComplete.dataSources = #{datasources.to_json};

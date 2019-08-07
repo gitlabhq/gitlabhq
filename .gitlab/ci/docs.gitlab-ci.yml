@@ -15,7 +15,7 @@ review-docs-deploy-manual:
   extends:
     - .review-docs
     - .no-docs-and-no-qa
-  stage: build
+  stage: review
   script:
     - gem install gitlab --no-document
     - ./$SCRIPT_NAME deploy
@@ -28,7 +28,7 @@ review-docs-deploy-manual:
 # Useful to preview the docs changes live.
 review-docs-deploy:
   <<: *review-docs
-  stage: post-test
+  stage: review
   script:
     - gem install gitlab --no-document
     - ./$SCRIPT_NAME deploy
@@ -41,7 +41,7 @@ review-docs-deploy:
 # Cleanup remote environment of gitlab-docs
 review-docs-cleanup:
   <<: *review-docs
-  stage: post-cleanup
+  stage: review
   environment:
     name: review-docs/$CI_COMMIT_REF_SLUG
     action: stop

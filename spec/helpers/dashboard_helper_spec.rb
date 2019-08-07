@@ -12,7 +12,7 @@ describe DashboardHelper do
     it 'has all the expected links by default' do
       menu_items = [:projects, :groups, :activity, :milestones, :snippets]
 
-      expect(helper.dashboard_nav_links).to contain_exactly(*menu_items)
+      expect(helper.dashboard_nav_links).to include(*menu_items)
     end
 
     it 'does not contain cross project elements when the user cannot read cross project' do

@@ -214,7 +214,7 @@ class Project < ApplicationRecord
     as: :source, class_name: 'ProjectMember', dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
   has_many :members_and_requesters, as: :source, class_name: 'ProjectMember'
 
-  has_many :deploy_keys_projects
+  has_many :deploy_keys_projects, inverse_of: :project
   has_many :deploy_keys, through: :deploy_keys_projects
   has_many :users_star_projects
   has_many :starrers, through: :users_star_projects, source: :user
@@ -1487,6 +1487,9 @@ class Project < ApplicationRecord
   end
 
   def pipeline_for(ref, sha = nil, id = nil)
+    sha ||= commit(ref).try(:sha)
+    return unless sha
+
     if id.present?
       pipelines_for(ref, sha).find_by(id: id)
     else
@@ -1494,11 +1497,7 @@ class Project < ApplicationRecord
     end
   end
 
-  def pipelines_for(ref, sha = nil)
-    sha ||= commit(ref).try(:sha)
-
-    return unless sha
-
+  def pipelines_for(ref, sha)
     ci_pipelines.order(id: :desc).where(sha: sha, ref: ref)
   end
 
@@ -1856,8 +1855,12 @@ class Project < ApplicationRecord
     end
   end
 
-  def deployment_variables(environment: nil)
-    deployment_platform(environment: environment)&.predefined_variables(project: self) || []
+  def deployment_variables(environment:)
+    platform = deployment_platform(environment: environment)
+
+    return [] unless platform.present?
+
+    platform.predefined_variables(project: self, environment_name: environment)
   end
 
   def auto_devops_variables

@@ -3,10 +3,11 @@
 module Projects
   module Serverless
     class FunctionsFinder
+      include Gitlab::Utils::StrongMemoize
+
       attr_reader :project
 
       def initialize(project)
-        @clusters = project.clusters
         @project = project
       end
 
@@ -16,9 +17,8 @@ module Projects
 
       # Possible return values: Clusters::KnativeServicesFinder::KNATIVE_STATE
       def knative_installed
-        states = @clusters.map do |cluster|
-          cluster.application_knative
-          cluster.knative_services_finder(project).knative_detected.tap do |state|
+        states = services_finders.map do |finder|
+          finder.knative_detected.tap do |state|
             return state if state == ::Clusters::KnativeServicesFinder::KNATIVE_STATES['checking'] # rubocop:disable Cop/AvoidReturnFromBlocks
           end
         end
@@ -31,66 +31,70 @@ module Projects
       end
 
       def invocation_metrics(environment_scope, name)
-        return unless prometheus_adapter&.can_query?
+        environment = finders_for_scope(environment_scope).first&.environment
 
-        cluster = @clusters.find do |c|
-          environment_scope == c.environment_scope
+        if environment.present? && environment.prometheus_adapter&.can_query?
+          func = ::Serverless::Function.new(project, name, environment.deployment_namespace)
+          environment.prometheus_adapter.query(:knative_invocation, func)
         end
-
-        func = ::Serverless::Function.new(project, name, cluster.kubernetes_namespace_for(project))
-        prometheus_adapter.query(:knative_invocation, func)
       end
 
       def has_prometheus?(environment_scope)
-        @clusters.any? do |cluster|
-          environment_scope == cluster.environment_scope && cluster.application_prometheus_available?
+        finders_for_scope(environment_scope).any? do |finder|
+          finder.cluster.application_prometheus_available?
         end
       end
 
       private
 
       def knative_service(environment_scope, name)
-        @clusters.map do |cluster|
-          next if environment_scope != cluster.environment_scope
-
-          services = cluster
-            .knative_services_finder(project)
+        finders_for_scope(environment_scope).map do |finder|
+          services = finder
             .services
             .select { |svc| svc["metadata"]["name"] == name }
 
-          add_metadata(cluster, services).first unless services.nil?
+          add_metadata(finder, services).first unless services.nil?
         end
       end
 
       def knative_services
-        @clusters.map do |cluster|
-          services = cluster
-            .knative_services_finder(project)
-            .services
+        services_finders.map do |finder|
+          services = finder.services
 
-          add_metadata(cluster, services) unless services.nil?
+          add_metadata(finder, services) unless services.nil?
         end
       end
 
-      def add_metadata(cluster, services)
-        services.each do |s|
-          s["environment_scope"] = cluster.environment_scope
-          s["cluster_id"] = cluster.id
+      def add_metadata(finder, services)
+        add_pod_count = services.one?
 
-          if services.length == 1
-            s["podcount"] = cluster
-              .knative_services_finder(project)
+        services.each do |s|
+          s["environment_scope"] = finder.cluster.environment_scope
+          s["cluster_id"] = finder.cluster.id
+
+          if add_pod_count
+            s["podcount"] = finder
               .service_pod_details(s["metadata"]["name"])
               .length
           end
         end
       end
 
-      # rubocop: disable CodeReuse/ServiceClass
-      def prometheus_adapter
-        @prometheus_adapter ||= ::Prometheus::AdapterService.new(project).prometheus_adapter
+      def services_finders
+        strong_memoize(:services_finders) do
+          available_environments.map(&:knative_services_finder).compact
+        end
       end
-      # rubocop: enable CodeReuse/ServiceClass
+
+      def available_environments
+        @project.environments.available.preload_cluster
+      end
+
+      def finders_for_scope(environment_scope)
+        services_finders.select do |finder|
+          environment_scope == finder.cluster.environment_scope
+        end
+      end
     end
   end
 end

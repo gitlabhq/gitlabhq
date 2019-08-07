@@ -1,0 +1,5 @@
+---
+title: Update Packer.gitlab-ci.yml to use latest image
+merge_request:
+author: Kelly Hair
+type: other
