@@ -287,7 +287,7 @@ are listed in the descriptions of the relevant settings.
 | `recaptcha_enabled`                      | boolean          | no                                   | (**If enabled, requires:** `recaptcha_private_key` and `recaptcha_site_key`) Enable recaptcha. |
 | `recaptcha_private_key`                  | string           | required by: `recaptcha_enabled`     | Private key for recaptcha. |
 | `recaptcha_site_key`                     | string           | required by: `recaptcha_enabled`     | Site key for recaptcha. |
-| `receive_max_input_size`                 | integer          | no                                   | Maximum push size (MB) |
+| `receive_max_input_size`                 | integer          | no                                   | Maximum push size (MB). |
 | `repository_checks_enabled`              | boolean          | no                                   | GitLab will periodically run `git fsck` in all project and wiki repositories to look for silent disk corruption issues. |
 | `repository_size_limit`                  | integer          | no                                   | **(PREMIUM)** Size limit per repository (MB) |
 | `repository_storages`                    | array of strings | no                                   | A list of names of enabled storage paths, taken from `gitlab.yml`. New projects will be created in one of these stores, chosen at random. |
