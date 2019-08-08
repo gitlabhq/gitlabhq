@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable @gitlab/vue-i18n/no-bare-strings */
 import Sortable from 'sortablejs';
 import { GlLoadingIcon } from '@gitlab/ui';
 import boardNewIssue from './board_new_issue.vue';

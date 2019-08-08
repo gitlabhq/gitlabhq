@@ -66,7 +66,7 @@ export default {
         <template v-if="detailsList.length">
           <tr v-for="(item, index) in detailsList" :key="index">
             <td>
-              <span>{{ item.duration }}ms</span>
+              <span>{{ sprintf(__('%{duration}ms'), { duration: item.duration }) }}</span>
             </td>
             <td>
               <div class="js-toggle-container">

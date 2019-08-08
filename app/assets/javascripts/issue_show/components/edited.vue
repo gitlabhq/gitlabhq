@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable @gitlab/vue-i18n/no-bare-strings */
 import timeAgoTooltip from '../../vue_shared/components/time_ago_tooltip.vue';
 
 export default {

@@ -49,8 +49,8 @@ export default {
       return this.author.id ? this.author.id : '';
     },
     authorUrl() {
-      // TODO: when the vue i18n rules are merged need to disable @gitlab/i18n/no-non-i18n-strings
       // name: 'mailto:' is a false positive: https://gitlab.com/gitlab-org/frontend/eslint-plugin-i18n/issues/26#possible-false-positives
+      // eslint-disable-next-line @gitlab/i18n/no-non-i18n-strings
       return this.author.web_url || `mailto:${this.commit.author_email}`;
     },
     authorAvatar() {

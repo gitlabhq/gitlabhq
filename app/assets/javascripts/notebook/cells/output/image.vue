@@ -25,7 +25,7 @@ export default {
   },
   computed: {
     imgSrc() {
-      return `data:${this.outputType};base64,${this.rawCode}`;
+      return `data:${this.outputType};base64,${this.rawCode}`; // eslint-disable-line @gitlab/i18n/no-non-i18n-strings
     },
     showOutput() {
       return this.index === 0;
