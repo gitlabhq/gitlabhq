@@ -11,7 +11,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   before_action :verify_api_request!, only: :terminal_websocket_authorize
   before_action :expire_etag_cache, only: [:index]
   before_action only: [:metrics, :additional_metrics, :metrics_dashboard] do
-    push_frontend_feature_flag(:environment_metrics_use_prometheus_endpoint)
+    push_frontend_feature_flag(:environment_metrics_use_prometheus_endpoint, default_enabled: true)
     push_frontend_feature_flag(:environment_metrics_show_multiple_dashboards)
     push_frontend_feature_flag(:environment_metrics_additional_panel_types)
     push_frontend_feature_flag(:prometheus_computed_alerts)
