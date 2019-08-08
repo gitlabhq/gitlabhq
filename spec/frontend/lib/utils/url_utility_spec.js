@@ -34,6 +34,41 @@ describe('URL utility', () => {
     });
   });
 
+  describe('getParameterValues', () => {
+    beforeEach(() => {
+      setWindowLocation({
+        href: 'https://gitlab.com?test=passing&multiple=1&multiple=2',
+        // make our fake location act like real window.location.toString
+        // URL() (used in getParameterValues) does this if passed an object
+        toString() {
+          return this.href;
+        },
+      });
+    });
+
+    it('returns empty array for no params', () => {
+      expect(urlUtils.getParameterValues()).toEqual([]);
+    });
+
+    it('returns empty array for non-matching params', () => {
+      expect(urlUtils.getParameterValues('notFound')).toEqual([]);
+    });
+
+    it('returns single match', () => {
+      expect(urlUtils.getParameterValues('test')).toEqual(['passing']);
+    });
+
+    it('returns multiple matches', () => {
+      expect(urlUtils.getParameterValues('multiple')).toEqual(['1', '2']);
+    });
+
+    it('accepts url as second arg', () => {
+      const url = 'https://gitlab.com?everything=works';
+      expect(urlUtils.getParameterValues('everything', url)).toEqual(['works']);
+      expect(urlUtils.getParameterValues('test', url)).toEqual([]);
+    });
+  });
+
   describe('mergeUrlParams', () => {
     it('adds w', () => {
       expect(urlUtils.mergeUrlParams({ w: 1 }, '#frag')).toBe('?w=1#frag');

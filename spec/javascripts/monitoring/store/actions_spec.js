@@ -313,8 +313,8 @@ describe('Monitoring store actions', () => {
     it('commits prometheus query result', done => {
       const commit = jasmine.createSpy();
       const params = {
-        start: '1557216349.469',
-        end: '1557218149.469',
+        start: '2019-08-06T12:40:02.184Z',
+        end: '2019-08-06T20:40:02.184Z',
       };
       const metric = metricsDashboardResponse.dashboard.panel_groups[0].panels[0].metrics[0];
       const state = storeState();

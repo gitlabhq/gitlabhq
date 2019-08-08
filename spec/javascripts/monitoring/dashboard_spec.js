@@ -307,7 +307,7 @@ describe('Dashboard', () => {
       });
 
       spyOn(component.$store, 'dispatch').and.stub();
-      const getTimeDiffSpy = spyOnDependency(Dashboard, 'getTimeDiff');
+      const getTimeDiffSpy = spyOnDependency(Dashboard, 'getTimeDiff').and.callThrough();
 
       component.$store.commit(
         `monitoringDashboard/${types.RECEIVE_ENVIRONMENTS_DATA_SUCCESS}`,
@@ -319,7 +319,7 @@ describe('Dashboard', () => {
       Vue.nextTick()
         .then(() => {
           expect(component.$store.dispatch).toHaveBeenCalled();
-          expect(getTimeDiffSpy).toHaveBeenCalledWith(component.selectedTimeWindow);
+          expect(getTimeDiffSpy).toHaveBeenCalled();
 
           done();
         })
@@ -327,7 +327,17 @@ describe('Dashboard', () => {
     });
 
     it('shows a specific time window selected from the url params', done => {
-      spyOnDependency(Dashboard, 'getParameterValues').and.returnValue(['thirtyMinutes']);
+      const start = 1564439536;
+      const end = 1564441336;
+      spyOnDependency(Dashboard, 'getTimeDiff').and.returnValue({
+        start,
+        end,
+      });
+      spyOnDependency(Dashboard, 'getParameterValues').and.callFake(param => {
+        if (param === 'start') return [start];
+        if (param === 'end') return [end];
+        return [];
+      });
 
       component = new DashboardComponent({
         el: document.querySelector('.prometheus-graphs'),

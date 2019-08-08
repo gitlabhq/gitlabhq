@@ -18,8 +18,8 @@ import MonitorSingleStatChart from './charts/single_stat.vue';
 import PanelType from './panel_type.vue';
 import GraphGroup from './graph_group.vue';
 import EmptyState from './empty_state.vue';
-import { sidebarAnimationDuration, timeWindows, timeWindowsKeyNames } from '../constants';
-import { getTimeDiff } from '../utils';
+import { sidebarAnimationDuration, timeWindows } from '../constants';
+import { getTimeDiff, getTimeWindow } from '../utils';
 
 let sidebarMutationObserver;
 
@@ -147,6 +147,7 @@ export default {
       selectedTimeWindow: '',
       selectedTimeWindowKey: '',
       formIsValid: null,
+      timeWindows: {},
     };
   },
   computed: {
@@ -184,17 +185,6 @@ export default {
       currentDashboard: this.currentDashboard,
       projectPath: this.projectPath,
     });
-
-    this.timeWindows = timeWindows;
-    this.selectedTimeWindowKey =
-      _.escape(getParameterValues('time_window')[0]) || timeWindowsKeyNames.eightHours;
-
-    // Set default time window if the selectedTimeWindowKey is bogus
-    if (!Object.keys(this.timeWindows).includes(this.selectedTimeWindowKey)) {
-      this.selectedTimeWindowKey = timeWindowsKeyNames.eightHours;
-    }
-
-    this.selectedTimeWindow = this.timeWindows[this.selectedTimeWindowKey];
   },
   beforeDestroy() {
     if (sidebarMutationObserver) {
@@ -205,7 +195,20 @@ export default {
     if (!this.hasMetrics) {
       this.setGettingStartedEmptyState();
     } else {
-      this.fetchData(getTimeDiff(this.selectedTimeWindow));
+      const defaultRange = getTimeDiff();
+      const start = getParameterValues('start')[0] || defaultRange.start;
+      const end = getParameterValues('end')[0] || defaultRange.end;
+
+      const range = {
+        start,
+        end,
+      };
+
+      this.timeWindows = timeWindows;
+      this.selectedTimeWindowKey = getTimeWindow(range);
+      this.selectedTimeWindow = this.timeWindows[this.selectedTimeWindowKey];
+
+      this.fetchData(range);
 
       sidebarMutationObserver = new MutationObserver(this.onSidebarMutation);
       sidebarMutationObserver.observe(document.querySelector('.layout-page'), {
@@ -259,7 +262,8 @@ export default {
       return this.timeWindows[key] === this.selectedTimeWindow;
     },
     setTimeWindowParameter(key) {
-      return `?time_window=${key}`;
+      const { start, end } = getTimeDiff(key);
+      return `?start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}`;
     },
     groupHasData(group) {
       return this.chartsWithData(group.metrics).length > 0;
