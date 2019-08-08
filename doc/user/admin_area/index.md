@@ -272,7 +272,7 @@ The **Logs** page provides access to the following log files:
 | Log file                | Contents |
 | :---------------------- | :------- |
 | `application.log`       | GitLab user activity |
-| `githost.log`           | Failed GitLab interaction with Git repositories |
+| `git_json.log`          | Failed GitLab interaction with Git repositories |
 | `production.log`        | Requests received from Unicorn, and the actions taken to serve those requests |
 | `sidekiq.log`           | Background jobs |
 | `repocheck.log`         | Repository activity |
