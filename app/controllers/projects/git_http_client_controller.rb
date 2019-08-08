@@ -49,7 +49,8 @@ class Projects::GitHttpClientController < Projects::ApplicationController
         send_final_spnego_response
         return # Allow access
       end
-    elsif project && download_request? && Guest.can?(:download_code, project)
+    elsif project && download_request? && http_allowed? && Guest.can?(:download_code, project)
+
       @authentication_result = Gitlab::Auth::Result.new(nil, project, :none, [:download_code])
 
       return # Allow access
@@ -112,5 +113,9 @@ class Projects::GitHttpClientController < Projects::ApplicationController
 
   def ci?
     authentication_result.ci?(project)
+  end
+
+  def http_allowed?
+    Gitlab::ProtocolAccess.allowed?('http')
   end
 end
