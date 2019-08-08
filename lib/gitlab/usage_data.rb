@@ -140,6 +140,8 @@ module Gitlab
         [
          Gitlab::UsageDataCounters::WikiPageCounter,
          Gitlab::UsageDataCounters::WebIdeCounter,
+         Gitlab::UsageDataCounters::NoteCounter,
+         Gitlab::UsageDataCounters::SnippetCounter,
          Gitlab::UsageDataCounters::SearchCounter
         ]
       end

@@ -9,5 +9,9 @@ module Notes
         note.noteable.diffs.clear_cache
       end
     end
+
+    def increment_usage_counter(note)
+      Gitlab::UsageDataCounters::NoteCounter.count(:create, note.noteable_type)
+    end
   end
 end
