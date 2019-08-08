@@ -17,4 +17,27 @@ describe 'Project variables', :js do
   end
 
   it_behaves_like 'variable list'
+
+  it 'adds new variable with a special environment scope' do
+    page.within('.js-ci-variable-list-section .js-row:last-child') do
+      find('.js-ci-variable-input-key').set('somekey')
+      find('.js-ci-variable-input-value').set('somevalue')
+
+      find('.js-variable-environment-toggle').click
+      find('.js-variable-environment-dropdown-wrapper .dropdown-input-field').set('review/*')
+      find('.js-variable-environment-dropdown-wrapper .js-dropdown-create-new-item').click
+
+      expect(find('input[name="variables[variables_attributes][][environment_scope]"]', visible: false).value).to eq('review/*')
+    end
+
+    click_button('Save variables')
+    wait_for_requests
+
+    visit page_path
+
+    page.within('.js-ci-variable-list-section .js-row:nth-child(2)') do
+      expect(find('.js-ci-variable-input-key').value).to eq('somekey')
+      expect(page).to have_content('review/*')
+    end
+  end
 end
