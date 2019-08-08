@@ -7,8 +7,6 @@ module API
     before { authenticate! }
     before { authorize! :admin_build, user_project }
 
-    helpers Helpers::VariablesHelpers
-
     helpers do
       def filter_variable_parameters(params)
         # This method exists so that EE can more easily filter out certain
@@ -59,8 +57,7 @@ module API
         optional :protected, type: Boolean, desc: 'Whether the variable is protected'
         optional :masked, type: Boolean, desc: 'Whether the variable is masked'
         optional :variable_type, type: String, values: Ci::Variable.variable_types.keys, desc: 'The type of variable, must be one of env_var or file. Defaults to env_var'
-
-        use :optional_params_ee
+        optional :environment_scope, type: String, desc: 'The environment_scope of the variable'
       end
       post ':id/variables' do
         variable_params = declared_params(include_missing: false)
@@ -84,8 +81,7 @@ module API
         optional :protected, type: Boolean, desc: 'Whether the variable is protected'
         optional :masked, type: Boolean, desc: 'Whether the variable is masked'
         optional :variable_type, type: String, values: Ci::Variable.variable_types.keys, desc: 'The type of variable, must be one of env_var or file'
-
-        use :optional_params_ee
+        optional :environment_scope, type: String, desc: 'The environment_scope of the variable'
       end
       # rubocop: disable CodeReuse/ActiveRecord
       put ':id/variables/:key' do

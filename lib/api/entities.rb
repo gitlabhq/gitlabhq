@@ -1346,6 +1346,7 @@ module API
       expose :variable_type, :key, :value
       expose :protected?, as: :protected, if: -> (entity, _) { entity.respond_to?(:protected?) }
       expose :masked?, as: :masked, if: -> (entity, _) { entity.respond_to?(:masked?) }
+      expose :environment_scope, if: -> (entity, _) { entity.respond_to?(:environment_scope) }
     end
 
     class Pipeline < PipelineBasic

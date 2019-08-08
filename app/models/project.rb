@@ -1828,11 +1828,16 @@ class Project < ApplicationRecord
   end
 
   def ci_variables_for(ref:, environment: nil)
-    # EE would use the environment
-    if protected_for?(ref)
-      variables
+    result = if protected_for?(ref)
+               variables
+             else
+               variables.unprotected
+             end
+
+    if environment
+      result.on_environment(environment)
     else
-      variables.unprotected
+      result.where(environment_scope: '*')
     end
   end
 

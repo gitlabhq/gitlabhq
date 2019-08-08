@@ -32,6 +32,14 @@ describe Gitlab::Regex do
     it { is_expected.not_to match('/') }
   end
 
+  describe '.environment_scope_regex' do
+    subject { described_class.environment_scope_regex }
+
+    it { is_expected.to match('foo') }
+    it { is_expected.to match('foo*Z') }
+    it { is_expected.not_to match('!!()()') }
+  end
+
   describe '.environment_slug_regex' do
     subject { described_class.environment_slug_regex }
 

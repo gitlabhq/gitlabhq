@@ -7,4 +7,5 @@ class VariableEntity < Grape::Entity
 
   expose :protected?, as: :protected
   expose :masked?, as: :masked
+  expose :environment_scope
 end

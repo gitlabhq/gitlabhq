@@ -6,6 +6,7 @@ module Ci
     include HasVariable
     include Presentable
     include Maskable
+    prepend HasEnvironmentScope
 
     belongs_to :project
 
