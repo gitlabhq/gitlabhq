@@ -41,6 +41,7 @@ module Notes
         todo_service.new_note(note, current_user)
         clear_noteable_diffs_cache(note)
         Suggestions::CreateService.new(note).execute
+        increment_usage_counter(note)
       end
 
       if quick_actions_service.commands_executed_count.to_i > 0

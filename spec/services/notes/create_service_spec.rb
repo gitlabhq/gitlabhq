@@ -365,5 +365,43 @@ describe Notes::CreateService do
             .and change { existing_note.updated_at }
       end
     end
+
+    describe "usage counter" do
+      let(:counter) { Gitlab::UsageDataCounters::NoteCounter }
+
+      context 'snippet note' do
+        let(:snippet) { create(:project_snippet, project: project) }
+        let(:opts) { { note: 'reply', noteable_type: 'Snippet', noteable_id: snippet.id, project: project } }
+
+        it 'increments usage counter' do
+          expect do
+            note = described_class.new(project, user, opts).execute
+
+            expect(note).to be_valid
+          end.to change { counter.read(:create, opts[:noteable_type]) }.by 1
+        end
+
+        it 'does not increment usage counter when creation fails' do
+          expect do
+            note = described_class.new(project, user, { note: '' }).execute
+
+            expect(note).to be_invalid
+          end.not_to change { counter.read(:create, opts[:noteable_type]) }
+        end
+      end
+
+      context 'issue note' do
+        let(:issue) { create(:issue, project: project) }
+        let(:opts) { { note: 'reply', noteable_type: 'Issue', noteable_id: issue.id, project: project } }
+
+        it 'does not increment usage counter' do
+          expect do
+            note = described_class.new(project, user, opts).execute
+
+            expect(note).to be_valid
+          end.not_to change { counter.read(:create, opts[:noteable_type]) }
+        end
+      end
+    end
   end
 end
