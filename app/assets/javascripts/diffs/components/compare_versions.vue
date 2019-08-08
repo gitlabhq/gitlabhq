@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable @gitlab/vue-i18n/no-bare-strings */
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { GlTooltipDirective, GlLink, GlButton } from '@gitlab/ui';
 import { __ } from '~/locale';

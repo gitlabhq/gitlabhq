@@ -43,7 +43,7 @@ renderer.paragraph = t => {
   if (typeof katex !== 'undefined') {
     const katexString = text
       .replace(/&amp;/g, '&')
-      .replace(/&=&/g, '\\space=\\space')
+      .replace(/&=&/g, '\\space=\\space') // eslint-disable-line @gitlab/i18n/no-non-i18n-strings
       .replace(/<(\/?)em>/g, '_');
     const regex = new RegExp(katexRegexString, 'gi');
     const matchLocation = katexString.search(regex);

@@ -44,6 +44,8 @@ export default {
   },
   computed: {
     changedIcon() {
+      // False positive i18n lint: https://gitlab.com/gitlab-org/frontend/eslint-plugin-i18n/issues/26
+      // eslint-disable-next-line @gitlab/i18n/no-non-i18n-strings
       const suffix = !this.file.changed && this.file.staged && !this.showStagedIcon ? '-solid' : '';
 
       if (this.forceModifiedIcon) return `file-modified${suffix}`;

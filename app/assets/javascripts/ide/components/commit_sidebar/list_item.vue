@@ -45,6 +45,8 @@ export default {
   },
   computed: {
     iconName() {
+      // name: '-solid' is a false positive: https://gitlab.com/gitlab-org/frontend/eslint-plugin-i18n/issues/26#possible-false-positives
+      // eslint-disable-next-line @gitlab/i18n/no-non-i18n-strings
       const suffix = this.stagedList ? '-solid' : '';
 
       return `${getCommitIconMap(this.file).icon}${suffix}`;

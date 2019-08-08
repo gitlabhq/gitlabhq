@@ -76,7 +76,6 @@ export default {
       if (this.hasHost && this.currentRequest.details.host.canary) {
         return glEmojiTag('baby_chick');
       }
-
       return '';
     },
   },

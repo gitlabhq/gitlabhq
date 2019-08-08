@@ -115,6 +115,7 @@ export default {
       <component :is="linkComponent" :to="routerLinkTo" :href="url" class="str-truncated">
         {{ fullPath }}
       </component>
+      <!-- eslint-disable-next-line @gitlab/vue-i18n/no-bare-strings -->
       <gl-badge v-if="lfsOid" variant="default" class="label-lfs ml-1">LFS</gl-badge>
       <template v-if="isSubmodule">
         @ <gl-link :href="submoduleTreeUrl" class="commit-sha">{{ shortSha }}</gl-link>

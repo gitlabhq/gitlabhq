@@ -81,9 +81,11 @@ export default {
       );
     },
     dockerBuildCommand() {
+      // eslint-disable-next-line @gitlab/i18n/no-non-i18n-strings
       return `docker build -t ${this.repositoryUrl} .`;
     },
     dockerPushCommand() {
+      // eslint-disable-next-line @gitlab/i18n/no-non-i18n-strings
       return `docker push ${this.repositoryUrl}`;
     },
   },

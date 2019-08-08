@@ -1,4 +1,5 @@
 <script>
+// import { sprintf, __ } from '~/locale';
 import Modal from '~/vue_shared/components/gl_modal.vue';
 import LoadingButton from '~/vue_shared/components/loading_button.vue';
 import CodeBlock from '~/vue_shared/components/code_block.vue';
@@ -47,9 +48,9 @@ export default {
             </a>
           </template>
 
-          <template v-else-if="field.type === $options.fieldTypes.miliseconds">
-            {{ field.value }} ms
-          </template>
+          <template v-else-if="field.type === $options.fieldTypes.miliseconds">{{
+            sprintf(__('%{value} ms'), { value: field.value })
+          }}</template>
 
           <template v-else-if="field.type === $options.fieldTypes.text">
             {{ field.value }}
