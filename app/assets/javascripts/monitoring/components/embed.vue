@@ -1,8 +1,9 @@
 <script>
 import { mapActions, mapState } from 'vuex';
+import { getParameterValues, removeParams } from '~/lib/utils/url_utility';
 import GraphGroup from './graph_group.vue';
 import MonitorAreaChart from './charts/area.vue';
-import { sidebarAnimationDuration, timeWindowsKeyNames, timeWindows } from '../constants';
+import { sidebarAnimationDuration } from '../constants';
 import { getTimeDiff } from '../utils';
 
 let sidebarMutationObserver;
@@ -19,10 +20,17 @@ export default {
     },
   },
   data() {
+    const defaultRange = getTimeDiff();
+    const start = getParameterValues('start', this.dashboardUrl)[0] || defaultRange.start;
+    const end = getParameterValues('end', this.dashboardUrl)[0] || defaultRange.end;
+
+    const params = {
+      start,
+      end,
+    };
+
     return {
-      params: {
-        ...getTimeDiff(timeWindows[timeWindowsKeyNames.eightHours]),
-      },
+      params,
       elWidth: 0,
     };
   },
@@ -73,7 +81,7 @@ export default {
         prometheusEndpointEnabled: true,
       });
       this.setEndpoints({
-        dashboardEndpoint: this.dashboardUrl,
+        dashboardEndpoint: removeParams(['start', 'end'], this.dashboardUrl),
       });
       this.setShowErrorBanner(false);
     },

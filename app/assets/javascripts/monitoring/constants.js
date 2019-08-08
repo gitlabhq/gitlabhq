@@ -21,11 +21,19 @@ export const timeWindows = {
   oneWeek: __('1 week'),
 };
 
-export const timeWindowsKeyNames = {
-  thirtyMinutes: 'thirtyMinutes',
-  threeHours: 'threeHours',
-  eightHours: 'eightHours',
-  oneDay: 'oneDay',
-  threeDays: 'threeDays',
-  oneWeek: 'oneWeek',
+export const secondsIn = {
+  thirtyMinutes: 60 * 30,
+  threeHours: 60 * 60 * 3,
+  eightHours: 60 * 60 * 8,
+  oneDay: 60 * 60 * 24 * 1,
+  threeDays: 60 * 60 * 24 * 3,
+  oneWeek: 60 * 60 * 24 * 7 * 1,
 };
+
+export const timeWindowsKeyNames = Object.keys(secondsIn).reduce(
+  (otherTimeWindows, timeWindow) => ({
+    ...otherTimeWindows,
+    [timeWindow]: timeWindow,
+  }),
+  {},
+);
