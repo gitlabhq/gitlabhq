@@ -27,6 +27,7 @@ On your profile page, you will see the following information:
 - Groups: [groups](../group/index.md) you're a member of
 - Contributed projects: [projects](../project/index.md) you contributed to
 - Personal projects: your personal projects (respecting the project's visibility level)
+- Starred projects: projects you starred
 - Snippets: your personal code [snippets](../snippets.md#personal-snippets)
 
 ## Profile settings
@@ -91,6 +92,7 @@ The following information will be hidden from the user profile page (`https://gi
 - Groups tab
 - Contributed projects tab
 - Personal projects tab
+- Starred projects tab
 - Snippets tab
 
 To enable private profile:

@@ -7227,10 +7227,16 @@ msgstr ""
 msgid "No schedules"
 msgstr ""
 
+msgid "No starrers matched your search"
+msgstr ""
+
 msgid "No template"
 msgstr ""
 
 msgid "No, directly import the existing email addresses and usernames."
+msgstr ""
+
+msgid "Nobody has starred this repository yet"
 msgstr ""
 
 msgid "None"
@@ -8541,6 +8547,12 @@ msgid "ProjectOverview|Go to your fork"
 msgstr ""
 
 msgid "ProjectOverview|Star"
+msgstr ""
+
+msgid "ProjectOverview|Starrer"
+msgstr ""
+
+msgid "ProjectOverview|Starrers"
 msgstr ""
 
 msgid "ProjectOverview|Unstar"
@@ -10268,6 +10280,9 @@ msgstr ""
 msgid "SortOptions|Oldest sign in"
 msgstr ""
 
+msgid "SortOptions|Oldest starred"
+msgstr ""
+
 msgid "SortOptions|Oldest updated"
 msgstr ""
 
@@ -10281,6 +10296,9 @@ msgid "SortOptions|Recent last activity"
 msgstr ""
 
 msgid "SortOptions|Recent sign in"
+msgstr ""
+
+msgid "SortOptions|Recently starred"
 msgstr ""
 
 msgid "SortOptions|Sort direction"
@@ -10374,6 +10392,9 @@ msgid "StarredProjectsEmptyState|Visit a project page and press on a star icon. 
 msgstr ""
 
 msgid "StarredProjectsEmptyState|You don't have starred projects yet."
+msgstr ""
+
+msgid "Starrers"
 msgstr ""
 
 msgid "Stars"
@@ -12218,6 +12239,12 @@ msgstr ""
 msgid "UserProfile|Snippets in GitLab can either be private, internal, or public."
 msgstr ""
 
+msgid "UserProfile|Star projects to track their progress and show your appreciation."
+msgstr ""
+
+msgid "UserProfile|Starred projects"
+msgstr ""
+
 msgid "UserProfile|Subscribe"
 msgstr ""
 
@@ -12228,6 +12255,9 @@ msgid "UserProfile|This user has a private profile"
 msgstr ""
 
 msgid "UserProfile|This user hasn't contributed to any projects"
+msgstr ""
+
+msgid "UserProfile|This user hasn't starred any projects"
 msgstr ""
 
 msgid "UserProfile|View all"

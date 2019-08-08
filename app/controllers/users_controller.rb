@@ -17,7 +17,7 @@ class UsersController < ApplicationController
   prepend_before_action(only: [:show]) { authenticate_sessionless_user!(:rss) }
   before_action :user, except: [:exists]
   before_action :authorize_read_user_profile!,
-                only: [:calendar, :calendar_activities, :groups, :projects, :contributed_projects, :snippets]
+                only: [:calendar, :calendar_activities, :groups, :projects, :contributed_projects, :starred_projects, :snippets]
 
   def show
     respond_to do |format|
@@ -57,6 +57,22 @@ class UsersController < ApplicationController
   def projects
     load_projects
 
+    present_projects(@projects)
+  end
+
+  def contributed
+    load_contributed_projects
+
+    present_projects(@contributed_projects)
+  end
+
+  def starred
+    load_starred_projects
+
+    present_projects(@starred_projects)
+  end
+
+  def present_projects(projects)
     skip_pagination = Gitlab::Utils.to_boolean(params[:skip_pagination])
     skip_namespace = Gitlab::Utils.to_boolean(params[:skip_namespace])
     compact_mode = Gitlab::Utils.to_boolean(params[:compact_mode])
@@ -64,20 +80,7 @@ class UsersController < ApplicationController
     respond_to do |format|
       format.html { render 'show' }
       format.json do
-        pager_json("shared/projects/_list", @projects.count, projects: @projects, skip_pagination: skip_pagination, skip_namespace: skip_namespace, compact_mode: compact_mode)
-      end
-    end
-  end
-
-  def contributed
-    load_contributed_projects
-
-    respond_to do |format|
-      format.html { render 'show' }
-      format.json do
-        render json: {
-          html: view_to_html_string("shared/projects/_list", projects: @contributed_projects)
-        }
+        pager_json("shared/projects/_list", projects.count, projects: projects, skip_pagination: skip_pagination, skip_namespace: skip_namespace, compact_mode: compact_mode)
       end
     end
   end
@@ -120,6 +123,10 @@ class UsersController < ApplicationController
     ContributedProjectsFinder.new(user).execute(current_user)
   end
 
+  def starred_projects
+    StarredProjectsFinder.new(user, current_user: current_user).execute
+  end
+
   def contributions_calendar
     @contributions_calendar ||= Gitlab::ContributionsCalendar.new(user, current_user)
   end
@@ -143,6 +150,12 @@ class UsersController < ApplicationController
     @contributed_projects = contributed_projects.joined(user)
 
     prepare_projects_for_rendering(@contributed_projects)
+  end
+
+  def load_starred_projects
+    @starred_projects = starred_projects
+
+    prepare_projects_for_rendering(@starred_projects)
   end
 
   def load_groups

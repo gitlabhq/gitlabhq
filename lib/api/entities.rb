@@ -77,6 +77,11 @@ module API
       expose :last_activity_on, as: :last_activity_at # Back-compat
     end
 
+    class UserStarsProject < Grape::Entity
+      expose :starred_since
+      expose :user, using: Entities::UserBasic
+    end
+
     class Identity < Grape::Entity
       expose :provider, :extern_uid
     end

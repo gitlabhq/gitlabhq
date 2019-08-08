@@ -115,6 +115,22 @@ module API
 
         present_projects load_projects
       end
+
+      desc 'Get projects starred by a user' do
+        success Entities::BasicProjectDetails
+      end
+      params do
+        requires :user_id, type: String, desc: 'The ID or username of the user'
+        use :collection_params
+        use :statistics_params
+      end
+      get ":user_id/starred_projects" do
+        user = find_user(params[:user_id])
+        not_found!('User') unless user
+
+        starred_projects = StarredProjectsFinder.new(user, params: project_finder_params, current_user: current_user).execute
+        present_projects starred_projects
+      end
     end
 
     resource :projects do
@@ -356,6 +372,19 @@ module API
         else
           not_modified!
         end
+      end
+
+      desc 'Get the users who starred a project' do
+        success Entities::UserBasic
+      end
+      params do
+        optional :search, type: String, desc: 'Return list of users matching the search criteria'
+        use :pagination
+      end
+      get ':id/starrers' do
+        starrers = UsersStarProjectsFinder.new(user_project, params, current_user: current_user).execute
+
+        present paginate(starrers), with: Entities::UserStarsProject
       end
 
       desc 'Get languages in project repository'

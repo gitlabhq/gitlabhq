@@ -89,7 +89,7 @@ module UsersHelper
     tabs = []
 
     if can?(current_user, :read_user_profile, @user)
-      tabs += [:overview, :activity, :groups, :contributed, :projects, :snippets]
+      tabs += [:overview, :activity, :groups, :contributed, :projects, :starred, :snippets]
     end
 
     tabs

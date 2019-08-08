@@ -6,11 +6,11 @@
     %span.flex-project-title
       = _("Members of <strong>%{project_name}</strong>").html_safe % { project_name: sanitize(project.name, tags: []) }
     %span.badge.badge-pill= members.total_count
-    = form_tag project_project_members_path(project), method: :get, class: 'form-inline member-search-form flex-project-members-form' do
+    = form_tag project_project_members_path(project), method: :get, class: 'form-inline user-search-form flex-users-form' do
       .form-group
         .position-relative
           = search_field_tag :search, params[:search], { placeholder: _('Find existing members by name'), class: 'form-control', spellcheck: false }
-          %button.member-search-btn{ type: "submit", "aria-label" => _("Submit search") }
+          %button.user-search-btn{ type: "submit", "aria-label" => _("Submit search") }
             = icon("search")
         = render 'shared/members/sort_dropdown'
   %ul.content-list.members-list.qa-members-list

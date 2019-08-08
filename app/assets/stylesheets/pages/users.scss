@@ -1,0 +1,105 @@
+.user-sort-dropdown {
+  margin-left: $gl-padding-8;
+}
+
+.user-search-form {
+  position: relative;
+
+  @include media-breakpoint-up(sm) {
+    float: right;
+  }
+
+  .dropdown {
+    width: 100%;
+    margin-top: 5px;
+
+    .dropdown-menu-toggle {
+      vertical-align: middle;
+      width: 100%;
+    }
+
+    @include media-breakpoint-up(sm) {
+      margin-top: 0;
+      width: 155px;
+    }
+  }
+
+  .form-control {
+    width: 100%;
+    padding-right: 35px;
+
+    @include media-breakpoint-up(sm) {
+      width: 250px;
+    }
+  }
+}
+
+.user-search-btn {
+  position: absolute;
+  right: 4px;
+  top: 0;
+  height: 35px;
+  padding-left: 10px;
+  padding-right: 10px;
+  color: $gray-darkest;
+  background: transparent;
+  border: 0;
+  outline: 0;
+}
+
+.flex-users-panel {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+
+  @include media-breakpoint-down(sm) {
+    display: block;
+
+    .flex-project-title {
+      vertical-align: top;
+      display: inline-block;
+      max-width: 90%;
+    }
+  }
+
+  .flex-project-title {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .badge.badge-pill {
+    height: 17px;
+    line-height: 16px;
+    margin-right: 5px;
+    padding-top: 1px;
+    padding-bottom: 1px;
+  }
+
+  .flex-users-form {
+    flex-wrap: nowrap;
+    white-space: nowrap;
+    margin-left: auto;
+  }
+}
+
+.content-list.members-list li {
+  display: flex;
+  justify-content: space-between;
+
+  .list-item-name {
+    float: none;
+    display: flex;
+    flex: 1;
+  }
+}
+
+.card-body .user-info {
+  float: left;
+
+  .user {
+    color: $gl-text-color;
+    font-weight: $gl-font-weight-bold;
+  }
+}
