@@ -192,6 +192,7 @@ class MergeRequest < ApplicationRecord
   alias_attribute :project, :target_project
   alias_attribute :project_id, :target_project_id
   alias_attribute :auto_merge_enabled, :merge_when_pipeline_succeeds
+  alias_method :issuing_parent, :target_project
 
   def self.reference_prefix
     '!'
