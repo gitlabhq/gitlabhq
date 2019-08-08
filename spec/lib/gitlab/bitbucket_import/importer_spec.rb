@@ -184,11 +184,11 @@ describe Gitlab::BitbucketImport::Importer do
 
         notes = merge_request.notes.order(:id).to_a
         start_note = notes.first
-        expect(start_note.note).to include(@inline_note.note)
+        expect(start_note.note).to eq(@inline_note.note)
         expect(start_note.note).not_to include(author_line)
 
         reply_note = notes.last
-        expect(reply_note.note).to include(@reply.note)
+        expect(reply_note.note).to eq(@reply.note)
         expect(reply_note.note).not_to include(author_line)
       end
     end
