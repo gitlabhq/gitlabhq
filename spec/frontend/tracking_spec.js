@@ -31,13 +31,6 @@ describe('Tracking', () => {
 
       expect(snowplowSpy).not.toHaveBeenCalled();
     });
-
-    it('skips tracking if ', () => {
-      window.snowplow = false;
-      Tracking.event('_category_', '_eventName_');
-
-      expect(snowplowSpy).not.toHaveBeenCalled();
-    });
   });
 
   describe('tracking interface events', () => {
