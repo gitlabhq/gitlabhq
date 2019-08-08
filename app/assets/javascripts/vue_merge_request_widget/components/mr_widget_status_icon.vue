@@ -34,8 +34,8 @@ export default {
 <template>
   <div class="d-flex align-self-start">
     <div class="square s24 h-auto d-flex-center append-right-default">
-      <div v-if="isLoading" class="mr-widget-icon">
-        <gl-loading-icon size="sm" />
+      <div v-if="isLoading" class="mr-widget-icon d-inline-flex">
+        <gl-loading-icon size="md" class="mr-loading-icon d-inline-flex" />
       </div>
       <ci-icon v-else :status="statusObj" :size="24" />
     </div>
