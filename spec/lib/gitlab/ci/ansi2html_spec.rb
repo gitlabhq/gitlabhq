@@ -209,7 +209,7 @@ describe Gitlab::Ci::Ansi2html do
     let(:section_start) { "section_start:#{section_start_time.to_i}:#{section_name}\r\033[0K"}
     let(:section_end) { "section_end:#{section_end_time.to_i}:#{section_name}\r\033[0K"}
     let(:section_start_html) do
-      '<div class="js-section-start fa fa-caret-down append-right-8 cursor-pointer"' \
+      '<div class="js-section-start fa fa-caret-down pr-2 cursor-pointer"' \
       " data-timestamp=\"#{section_start_time.to_i}\" data-section=\"#{class_name(section_name)}\"" \
       ' role="button"></div>'
     end
@@ -233,8 +233,8 @@ describe Gitlab::Ci::Ansi2html do
 
       it 'prints light red' do
         text = "#{section_start}\e[91mHello\e[0m\nLine 1\nLine 2\nLine 3\n#{section_end}"
-        header = %{<span class="term-fg-l-red section js-section-header section-header js-s-#{class_name(section_name)}">Hello</span>}
-        line_break = %{<span class="section js-section-header section-header js-s-#{class_name(section_name)}"><br/></span>}
+        header = %{<span class="term-fg-l-red section js-section-header section-header cursor-pointer js-s-#{class_name(section_name)}">Hello</span>}
+        line_break = %{<span class="section js-section-header section-header cursor-pointer js-s-#{class_name(section_name)}"><br/></span>}
         output_line = %{<span class="section line js-s-#{class_name(section_name)}">Line 1<br/>Line 2<br/>Line 3<br/></span>}
         html = "#{section_start_html}#{header}#{line_break}#{output_line}#{section_end_html}"
 

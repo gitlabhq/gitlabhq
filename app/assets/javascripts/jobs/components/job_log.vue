@@ -48,9 +48,14 @@ export default {
       }
     },
     removeEventListener() {
-      this.$el
-        .querySelectorAll('.js-section-start')
-        .forEach(el => el.removeEventListener('click', this.handleSectionClick));
+      this.$el.querySelectorAll('.js-section-start').forEach(el => {
+        const titleSection = el.nextSibling;
+        titleSection.removeEventListener(
+          'click',
+          this.handleHeaderClick.bind(this, el, el.dataset.section),
+        );
+        el.removeEventListener('click', this.handleSectionClick);
+      });
     },
     /**
      * The collapsible rows are sent in HTML from the backend
@@ -58,9 +63,28 @@ export default {
      *
      */
     handleCollapsibleRows() {
-      this.$el
-        .querySelectorAll('.js-section-start')
-        .forEach(el => el.addEventListener('click', this.handleSectionClick));
+      this.$el.querySelectorAll('.js-section-start').forEach(el => {
+        const titleSection = el.nextSibling;
+        titleSection.addEventListener(
+          'click',
+          this.handleHeaderClick.bind(this, el, el.dataset.section),
+        );
+        el.addEventListener('click', this.handleSectionClick);
+      });
+    },
+
+    handleHeaderClick(arrowElement, section) {
+      this.updateToggleSection(arrowElement, section);
+    },
+
+    updateToggleSection(arrow, section) {
+      // toggle the arrow class
+      arrow.classList.toggle('fa-caret-right');
+      arrow.classList.toggle('fa-caret-down');
+
+      // hide the sections
+      const sibilings = this.$el.querySelectorAll(`.js-s-${section}:not(.js-section-header)`);
+      sibilings.forEach(row => row.classList.toggle('hidden'));
     },
     /**
      * On click, we toggle the hidden class of
@@ -68,14 +92,7 @@ export default {
      */
     handleSectionClick(evt) {
       const clickedArrow = evt.currentTarget;
-      // toggle the arrow class
-      clickedArrow.classList.toggle('fa-caret-right');
-      clickedArrow.classList.toggle('fa-caret-down');
-
-      const { section } = clickedArrow.dataset;
-      const sibilings = this.$el.querySelectorAll(`.js-s-${section}:not(.js-section-header)`);
-
-      sibilings.forEach(row => row.classList.toggle('hidden'));
+      this.updateToggleSection(clickedArrow, clickedArrow.dataset.section);
     },
   },
 };
