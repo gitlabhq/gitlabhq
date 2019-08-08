@@ -92,7 +92,8 @@ We recommend having at least [2GB of swap on your server](https://askubuntu.com/
 enough available RAM. Having swap will help reduce the chance of errors occurring
 if your available memory changes. We also recommend [configuring the kernel's swappiness setting](https://askubuntu.com/a/103916)
 to a low value like `10` to make the most of your RAM while still having the swap
-available when needed.
+available when needed. 
+Our [Memory Team](https://about.gitlab.com/handbook/engineering/development/enablement/memory/) is actively working to reduce this requirement. 
 
 NOTE: **Note:** The 25 workers of Sidekiq will show up as separate processes in your process overview (such as `top` or `htop`) but they share the same RAM allocation since Sidekiq is a multithreaded application. Please see the section below about Unicorn workers for information about how many you need of those.
 
