@@ -1,7 +1,10 @@
 import $ from 'jquery';
 import Vue from 'vue';
 import Cookies from 'js-cookie';
+import { GlEmptyState } from '@gitlab/ui';
+import filterMixins from 'ee_else_ce/analytics/cycle_analytics/mixins/filter_mixins';
 import Flash from '../flash';
+import { __ } from '~/locale';
 import Translate from '../vue_shared/translate';
 import banner from './components/banner.vue';
 import stageCodeComponent from './components/stage_code_component.vue';
@@ -11,7 +14,6 @@ import stageStagingComponent from './components/stage_staging_component.vue';
 import stageTestComponent from './components/stage_test_component.vue';
 import CycleAnalyticsService from './cycle_analytics_service';
 import CycleAnalyticsStore from './cycle_analytics_store';
-import { __ } from '~/locale';
 
 Vue.use(Translate);
 
@@ -24,6 +26,7 @@ export default () => {
     el: '#cycle-analytics',
     name: 'CycleAnalytics',
     components: {
+      GlEmptyState,
       banner,
       'stage-issue-component': stageComponent,
       'stage-plan-component': stageComponent,
@@ -32,12 +35,15 @@ export default () => {
       'stage-review-component': stageReviewComponent,
       'stage-staging-component': stageStagingComponent,
       'stage-production-component': stageComponent,
+      GroupsDropdownFilter: () =>
+        import('ee_component/analytics/shared/components/groups_dropdown_filter.vue'),
+      ProjectsDropdownFilter: () =>
+        import('ee_component/analytics/shared/components/projects_dropdown_filter.vue'),
+      DateRangeDropdown: () =>
+        import('ee_component/analytics/shared/components/date_range_dropdown.vue'),
     },
+    mixins: [filterMixins],
     data() {
-      const cycleAnalyticsService = new CycleAnalyticsService({
-        requestPath: cycleAnalyticsEl.dataset.requestPath,
-      });
-
       return {
         store: CycleAnalyticsStore,
         state: CycleAnalyticsStore.state,
@@ -47,7 +53,7 @@ export default () => {
         hasError: false,
         startDate: 30,
         isOverviewDialogDismissed: Cookies.get(OVERVIEW_DIALOG_COOKIE),
-        service: cycleAnalyticsService,
+        service: this.createCycleAnalyticsService(cycleAnalyticsEl.dataset.requestPath),
       };
     },
     computed: {
@@ -124,6 +130,7 @@ export default () => {
           .fetchStageData({
             stage,
             startDate: this.startDate,
+            projectIds: this.selectedProjectIds,
           })
           .then(response => {
             this.isEmptyStage = !response.events.length;
@@ -138,6 +145,11 @@ export default () => {
       dismissOverviewDialog() {
         this.isOverviewDialogDismissed = true;
         Cookies.set(OVERVIEW_DIALOG_COOKIE, '1', { expires: 365 });
+      },
+      createCycleAnalyticsService(requestPath) {
+        return new CycleAnalyticsService({
+          requestPath,
+        });
       },
     },
   });
