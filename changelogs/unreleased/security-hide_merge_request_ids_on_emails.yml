@@ -1,0 +1,5 @@
+---
+title: Prevent disclosure of merge request ID via email
+merge_request:
+author:
+type: security

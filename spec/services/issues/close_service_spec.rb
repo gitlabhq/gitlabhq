@@ -60,34 +60,62 @@ describe Issues::CloseService do
 
   describe '#close_issue' do
     context "closed by a merge request" do
-      before do
+      it 'mentions closure via a merge request' do
         perform_enqueued_jobs do
           described_class.new(project, user).close_issue(issue, closed_via: closing_merge_request)
         end
-      end
 
-      it 'mentions closure via a merge request' do
         email = ActionMailer::Base.deliveries.last
 
         expect(email.to.first).to eq(user2.email)
         expect(email.subject).to include(issue.title)
         expect(email.body.parts.map(&:body)).to all(include(closing_merge_request.to_reference))
       end
+
+      context 'when user cannot read merge request' do
+        it 'does not mention merge request' do
+          project.project_feature.update_attribute(:repository_access_level, ProjectFeature::DISABLED)
+          perform_enqueued_jobs do
+            described_class.new(project, user).close_issue(issue, closed_via: closing_merge_request)
+          end
+
+          email = ActionMailer::Base.deliveries.last
+          body_text = email.body.parts.map(&:body).join(" ")
+
+          expect(email.to.first).to eq(user2.email)
+          expect(email.subject).to include(issue.title)
+          expect(body_text).not_to include(closing_merge_request.to_reference)
+        end
+      end
     end
 
     context "closed by a commit" do
-      before do
+      it 'mentions closure via a commit' do
         perform_enqueued_jobs do
           described_class.new(project, user).close_issue(issue, closed_via: closing_commit)
         end
-      end
 
-      it 'mentions closure via a commit' do
         email = ActionMailer::Base.deliveries.last
 
         expect(email.to.first).to eq(user2.email)
         expect(email.subject).to include(issue.title)
         expect(email.body.parts.map(&:body)).to all(include(closing_commit.id))
+      end
+
+      context 'when user cannot read the commit' do
+        it 'does not mention the commit id' do
+          project.project_feature.update_attribute(:repository_access_level, ProjectFeature::DISABLED)
+          perform_enqueued_jobs do
+            described_class.new(project, user).close_issue(issue, closed_via: closing_commit)
+          end
+
+          email = ActionMailer::Base.deliveries.last
+          body_text = email.body.parts.map(&:body).join(" ")
+
+          expect(email.to.first).to eq(user2.email)
+          expect(email.subject).to include(issue.title)
+          expect(body_text).not_to include(closing_commit.id)
+        end
       end
     end
 
