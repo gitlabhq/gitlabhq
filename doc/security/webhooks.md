@@ -45,6 +45,36 @@ NOTE: **Note:**
 set up by administrators. However, you can turn this off by disabling the
 **Allow requests to the local network from system hooks** option.
 
+## Whitelist for local requests
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/44496) in GitLab 12.2
+
+You can allow certain domains and IP addresses to be accessible to both *system hooks*
+and *webhooks* even when local requests are not allowed by adding them to the
+whitelist. Navigate to **Admin Area > Settings > Network** (`/admin/application_settings/network`)
+and expand **Outbound requests**:
+
+![Outbound local requests whitelist](img/whitelist.png)
+
+The whilelist entries can be separated by semicolons, commas or whitespaces
+(including newlines) and be in different formats like hostnames, IP addresses and/or
+IP ranges. IPv6 is supported. Hostnames that contain unicode characters should
+use IDNA encoding.
+
+The whitelist can hold a maximum of 1000 entries. Each entry can be a maximum of
+255 characters.
+
+Example:
+
+```text
+example.com;gitlab.example.com
+127.0.0.1,1:0:0:0:0:0:0:1
+127.0.0.0/8 1:0:0:0:0:0:0:0/124
+```
+
+NOTE: **Note:**
+Wildcards (`*.example.com`) and ports (`127.0.0.1:3000`) are not currently supported.
+
 <!-- ## Troubleshooting
 
 Include any troubleshooting steps that you can foresee. If you know beforehand what issues

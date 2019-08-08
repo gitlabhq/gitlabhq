@@ -53,3 +53,8 @@ sudo gitlab-rake gitlab:web_hook:list NAMESPACE=acme
 # source installations
 bundle exec rake gitlab:web_hook:list NAMESPACE=acme RAILS_ENV=production
 ```
+
+## Local requests in webhooks
+
+[Requests to local network by webhooks](../security/webhooks.md) can be allowed
+or blocked by an administrator.
