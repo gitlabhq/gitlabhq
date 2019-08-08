@@ -23,6 +23,7 @@
           = render "shared/issuable/label_dropdown", classes: ["js-issuable-form-dropdown"], selected: issuable.labels, data_options: { field_name: "#{issuable.class.model_name.param_key}[label_ids][]", show_any: false }, dropdown_title: "Select label"
 
     = render_if_exists "shared/issuable/form/weight", issuable: issuable, form: form
+    = render_if_exists "shared/issuable/form/merge_request_blocks", issuable: issuable, form: form
 
   - if has_due_date
     .col-lg-6
