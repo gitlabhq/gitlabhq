@@ -76,7 +76,7 @@ to access it. This is where an SSH key pair comes in handy.
      ## without extra base64 encoding.
      ## https://gitlab.com/gitlab-examples/ssh-private-key/issues/1#note_48526556
      ##
-     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
+     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
 
      ##
      ## Create the SSH directory and give it the right permissions
