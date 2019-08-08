@@ -10,8 +10,7 @@
   - if can_manage_members
     .project-members-new.append-bottom-default
       %p.clearfix
-        = _("Add new member to")
-        %strong= @group.name
+        = _("Add new member to <strong>%{group_name}</strong>").html_safe % { group_name: @group.name }
       = render "new_group_member"
 
     = render 'shared/members/requests', membership_source: @group, requesters: @requesters
@@ -36,13 +35,12 @@
       .card.card-without-border
         .d-flex.flex-column.flex-md-row.row-content-block.second-block
           %span.flex-grow-1.align-self-md-center.col-form-label
-            = _("Members with access to")
-            %strong= @group.name
+            = _("Members with access to <strong>%{group_name}</strong>").html_safe % { group_name: @group.name }
           = form_tag group_group_members_path(@group), method: :get, class: 'form-inline member-search-form' do
             .form-group.flex-grow
-              .position-relative.pr-md-2
+              .position-relative.mr-md-2
                 = search_field_tag :search, params[:search], { placeholder: _('Search'), class: 'form-control', spellcheck: false }
-                %button.member-search-btn{ type: "submit", "aria-label" => _("Submit search") }
+                %button.member-search-btn.border-left{ type: "submit", "aria-label" => _("Submit search") }
                   = icon("search")
               - if can_manage_members
                 = label_tag '2fa', '2FA', class: 'col-form-label label-bold pr-md-2'
@@ -57,13 +55,12 @@
         .card.card-without-border
           .d-flex.flex-column.flex-md-row.row-content-block.second-block
             %span.flex-grow-1
-              = _("Members with pending access to")
-              %strong= @group.name
+              = _("Members with pending access to <strong>%{group_name}</strong>").html_safe % { group_name: @group.name }
             = form_tag group_group_members_path(@group), method: :get, class: 'form-inline member-search-form' do
               .form-group
-                .position-relative.pr-md-2
+                .position-relative.mr-md-2
                   = search_field_tag :search_invited, params[:search_invited], { placeholder: _('Search'), class: 'form-control', spellcheck: false }
-                  %button.member-search-btn{ type: "submit", "aria-label" => _("Submit search") }
+                  %button.member-search-btn.border-left{ type: "submit", "aria-label" => _("Submit search") }
                     = icon("search")
           %ul.content-list.members-list
             = render partial: 'shared/members/member', collection: @invited_members, as: :member
