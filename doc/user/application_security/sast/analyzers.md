@@ -17,19 +17,19 @@ This is achieved by implementing the [common API](https://gitlab.com/gitlab-org/
 
 SAST supports the following official analyzers:
 
-- [Bandit](https://gitlab.com/gitlab-org/security-products/analyzers/bandit)
-- [Brakeman](https://gitlab.com/gitlab-org/security-products/analyzers/brakeman)
-- [ESLint (Javascript)](https://gitlab.com/gitlab-org/security-products/analyzers/eslint)
-- [SpotBugs with the Find Sec Bugs plugin (Ant, Gradle and wrapper, Grails, Maven and wrapper, SBT)](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs)
-- [Flawfinder](https://gitlab.com/gitlab-org/security-products/analyzers/flawfinder)
-- [Gosec](https://gitlab.com/gitlab-org/security-products/analyzers/gosec)
-- [NodeJsScan](https://gitlab.com/gitlab-org/security-products/analyzers/nodejs-scan)
-- [PHP CS security-audit](https://gitlab.com/gitlab-org/security-products/analyzers/phpcs-security-audit)
-- [Secrets (Gitleaks, TruffleHog & Diffence secret detectors)](https://gitlab.com/gitlab-org/security-products/analyzers/secrets)
-- [Security Code Scan (.NET)](https://gitlab.com/gitlab-org/security-products/analyzers/security-code-scan)
-- [TSLint (Typescript)](https://gitlab.com/gitlab-org/security-products/analyzers/tslint)
-- [Sobelow (Elixir Phoenix)](https://gitlab.com/gitlab-org/security-products/analyzers/sobelow)
-- [PMD (Apex only)](https://gitlab.com/gitlab-org/security-products/analyzers/pmd-apex)
+- [`bandit`](https://gitlab.com/gitlab-org/security-products/analyzers/bandit) (Bandit)
+- [`brakeman`](https://gitlab.com/gitlab-org/security-products/analyzers/brakeman) (Brakeman)
+- [`eslint`](https://gitlab.com/gitlab-org/security-products/analyzers/eslint) (ESLint (Javascript))
+- [`flawfinder`](https://gitlab.com/gitlab-org/security-products/analyzers/flawfinder) (Flawfinder)
+- [`gosec`](https://gitlab.com/gitlab-org/security-products/analyzers/gosec) (Gosec)
+- [`nodejs-scan`](https://gitlab.com/gitlab-org/security-products/analyzers/nodejs-scan) (NodeJsScan)
+- [`phpcs-security-audit`](https://gitlab.com/gitlab-org/security-products/analyzers/phpcs-security-audit) (PHP CS security-audit)
+- [`pmd-apex`](https://gitlab.com/gitlab-org/security-products/analyzers/pmd-apex) (PMD (Apex only))
+- [`secrets`](https://gitlab.com/gitlab-org/security-products/analyzers/secrets) (Secrets (Gitleaks, TruffleHog & Diffence secret detectors))
+- [`security-code-scan`](https://gitlab.com/gitlab-org/security-products/analyzers/security-code-scan) (Security Code Scan (.NET))
+- [`sobelow`](https://gitlab.com/gitlab-org/security-products/analyzers/sobelow) (Sobelow (Elixir Phoenix))
+- [`spotbugs`](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs) (SpotBugs with the Find Sec Bugs plugin (Ant, Gradle and wrapper, Grails, Maven and wrapper, SBT))
+- [`tslint`](https://gitlab.com/gitlab-org/security-products/analyzers/tslint) (TSLint (Typescript))
 
 The analyzers are published as Docker images that SAST will use to launch
 dedicated containers for each analysis.
