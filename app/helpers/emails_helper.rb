@@ -90,6 +90,8 @@ module EmailsHelper
     when MergeRequest
       merge_request = MergeRequest.find(closed_via[:id]).present
 
+      return "" unless Ability.allowed?(@recipient, :read_merge_request, merge_request)
+
       case format
       when :html
         merge_request_link = link_to(merge_request.to_reference, merge_request.web_url)
@@ -102,6 +104,8 @@ module EmailsHelper
       # Technically speaking this should be Commit but per
       # https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/15610#note_163812339
       # we can't deserialize Commit without custom serializer for ActiveJob
+      return "" unless Ability.allowed?(@recipient, :download_code, @project)
+
       _("via %{closed_via}") % { closed_via: closed_via }
     else
       ""

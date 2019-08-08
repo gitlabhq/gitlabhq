@@ -34,6 +34,8 @@ module Emails
       setup_issue_mail(issue_id, recipient_id, closed_via: closed_via)
 
       @updated_by = User.find(updated_by_user_id)
+      @recipient = User.find(recipient_id)
+
       mail_answer_thread(@issue, issue_thread_options(updated_by_user_id, recipient_id, reason))
     end
 
