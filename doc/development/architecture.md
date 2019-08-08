@@ -568,7 +568,7 @@ Usage: /etc/init.d/postgresql {start|stop|restart|reload|force-reload|status} [v
 
 gitlabhq (includes Unicorn and Sidekiq logs)
 
-- `/home/git/gitlab/log/` contains `application.log`, `production.log`, `sidekiq.log`, `unicorn.stdout.log`, `githost.log` and `unicorn.stderr.log` normally.
+- `/home/git/gitlab/log/` contains `application.log`, `production.log`, `sidekiq.log`, `unicorn.stdout.log`, `git_json.log` and `unicorn.stderr.log` normally.
 
 gitlab-shell
 

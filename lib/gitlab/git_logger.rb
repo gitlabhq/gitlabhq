@@ -3,7 +3,7 @@
 module Gitlab
   class GitLogger < JsonLogger
     def self.file_name_noext
-      'githost'
+      'git_json'
     end
   end
 end

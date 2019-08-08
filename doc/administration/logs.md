@@ -151,14 +151,15 @@ etc. For example:
 {"severity":"ERROR","time":"2018-11-23T15:42:11.647Z","exception":"Kubeclient::HttpError","error_code":null,"service":"Clusters::Applications::InstallService","app_id":2,"project_ids":[19],"group_ids":[],"message":"SSL_connect returned=1 errno=0 state=error: certificate verify failed (unable to get local issuer certificate)"}
 ```
 
-## `githost.log`
+## `git_json.log`
 
-This file lives in `/var/log/gitlab/gitlab-rails/githost.log` for
-Omnibus GitLab packages or in `/home/git/gitlab/log/githost.log` for
+This file lives in `/var/log/gitlab/gitlab-rails/git_json.log` for
+Omnibus GitLab packages or in `/home/git/gitlab/log/git_json.log` for
 installations from source.
 
 NOTE: **Note:**
-After 12.2, this file will be stored in JSON format.
+After 12.2, this file was renamed from `githost.log` to
+`git_json.log` and stored in JSON format.
 
 GitLab has to interact with Git repositories but in some rare cases
 something can go wrong and in this case you will know what exactly
