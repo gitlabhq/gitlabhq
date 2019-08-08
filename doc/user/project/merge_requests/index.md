@@ -47,7 +47,7 @@ With **[GitLab Enterprise Edition][ee]**, you can also:
 - Analyze your dependencies for vulnerabilities with [Dependency Scanning](../../application_security/dependency_scanning/index.md) **(ULTIMATE)**
 - Analyze your Docker images for vulnerabilities with [Container Scanning](../../application_security/container_scanning/index.md) **(ULTIMATE)**
 - Determine the performance impact of changes with [Browser Performance Testing](#browser-performance-testing-premium) **(PREMIUM)**
-- Specify merge order dependencies with [Blocking Merge Requests](#blocking-merge-requests-premium) **(PREMIUM)**
+- Specify merge order dependencies with [Cross-project Merge Request Dependencies](#cross-project-merge-request-dependencies-premium) **(PREMIUM)**
 
 ## Use cases
 
@@ -451,20 +451,20 @@ GitLab runs the [Sitespeed.io container][sitespeed-container] and displays the d
 
 [Read more about Browser Performance Testing.](browser_performance_testing.md)
 
-## Blocking Merge Requests **(PREMIUM)**
+## Cross-project Merge Request Dependencies **(PREMIUM)**
 
 > Introduced in [GitLab Premium][products] 12.2.
 
-A single logical change may be split across several merge requests, and perhaps
-even across several projects. When this happens, the order in which MRs are
-merged is important.
+A single logical change may be split across several merge requests, across
+several projects. When this happens, the order in which MRs are merged is
+important.
 
-GitLab allows you to specify that a merge request is blocked by other MRs. With
+GitLab allows you to specify that a merge request depends on other MRs. With
 this relationship in place, the merge request cannot be merged until all of its
-blockers have also been merged, helping to maintain the consistency of a single
-logical change.
+dependencies have also been merged, helping to maintain the consistency of a
+single logical change.
 
-[Read more about Blocking Merge Requests.](blocking_merge_requests.md)
+[Read more about cross-project merge request dependencies.](merge_request_dependencies.md)
 
 ## Security reports **(ULTIMATE)**
 
