@@ -12,7 +12,7 @@ public access directory (`/public` under your GitLab instance), like at [https:/
 
 ### Public projects
 
-Public projects can be cloned **without any** authentication.
+Public projects can be cloned **without any** authentication over https.
 
 They will be listed in the public access directory (`/public`) for all users.
 
