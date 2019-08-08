@@ -1,4 +1,4 @@
-- @can_bulk_update = can?(current_user, :admin_issue, @group)
+- @can_bulk_update = can?(current_user, :admin_issue, @group) && @group.feature_available?(:group_bulk_edit)
 
 - page_title "Issues"
 = content_for :meta_tags do

@@ -1,25 +1,31 @@
-# Bulk editing issue and merge request milestones **(PREMIUM)**
+# Bulk editing issues, merge requests, and epics at the group level **(PREMIUM)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/7249) for issues in
-  [GitLab Premium](https://about.gitlab.com/pricing/) 12.1.
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/12719) for merge
-  requests in GitLab [GitLab Premium](https://about.gitlab.com/pricing/) 12.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/7249) for issues in [GitLab Premium](https://about.gitlab.com/pricing/) 12.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/12719) for merge requests in [GitLab Premium](https://about.gitlab.com/pricing/) 12.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/7250) for epics in [GitLab Premium](https://about.gitlab.com/pricing/) 12.2.
 
-Milestones can be updated simultaneously across multiple issues or merge requests by using the bulk editing feature.
+## Editing milestones and labels
+
+> **Notes:**
+>
+> - A permission level of `Reporter` or higher is required in order to manage issues.
+> - A permission level of `Developer` or higher is required in order to manage merge requests.
+> - A permission level of `Reporter` or higher is required in order to manage epics.
+
+By using the bulk editing feature:
+
+- Milestones can be updated simultaneously across multiple issues or merge requests.
+- Labels can be updated simultaneously across multiple issues, merge requests, or epics.
 
 ![Bulk editing](img/bulk-editing.png)
 
-NOTE: **Note:**
-A permission level of `Reporter` or higher is required in order to manage issues, and
-a permission level of `Developer` or higher is required in order to manage merge requests.
+To bulk update group issues, merge requests, or epics:
 
-To bulk update group issue or merge request milestones:
-
-1. Navigate to the issues or merge requests list.
-1. Click the **Edit issues** or **Edit merge requests** button.
-   - This will open a sidebar on the right-hand side of your screen where an editable field
-     for milestones will be displayed.
-   - Checkboxes will also appear beside each issue or merge request.
-1. Check the checkbox beside each issue to be edited.
-1. Select the desired milestone from the sidebar.
+1. Navigate to the issues, merge requests, or epics list.
+1. Click **Edit issues**, **Edit merge requests**, or **Edit epics**.
+    - This will open a sidebar on the right-hand side where editable fields
+      for milestones and labels will be displayed.
+    - Checkboxes will also appear beside each issue, merge request, or epic.
+1. Check the checkbox beside each issue, merge request, or epic to be edited.
+1. Select the desired new values from the sidebar.
 1. Click **Update all**.
