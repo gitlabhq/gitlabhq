@@ -188,3 +188,5 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 - Useful [diagnostics tools](troubleshooting/diagnostics_tools.md) that are sometimes used by the GitLab
   Support team.
 - [Troubleshooting ElasticSearch](troubleshooting/elasticsearch.md): Tips to troubleshoot ElasticSearch.
+- [Kubernetes troubleshooting](troubleshooting/kubernetes_cheat_sheet.md): Commands and tips useful
+  for troubleshooting Kubernetes-related issues.
