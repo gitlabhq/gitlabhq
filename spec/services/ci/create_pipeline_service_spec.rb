@@ -23,6 +23,7 @@ describe Ci::CreatePipelineService do
       trigger_request: nil,
       variables_attributes: nil,
       merge_request: nil,
+      external_pull_request: nil,
       push_options: nil,
       source_sha: nil,
       target_sha: nil,
@@ -36,8 +37,11 @@ describe Ci::CreatePipelineService do
                  source_sha: source_sha,
                  target_sha: target_sha }
 
-      described_class.new(project, user, params).execute(
-        source, save_on_errors: save_on_errors, trigger_request: trigger_request, merge_request: merge_request)
+      described_class.new(project, user, params).execute(source,
+        save_on_errors: save_on_errors,
+        trigger_request: trigger_request,
+        merge_request: merge_request,
+        external_pull_request: external_pull_request)
     end
     # rubocop:enable Metrics/ParameterLists
 
@@ -769,6 +773,152 @@ describe Ci::CreatePipelineService do
           expect(pipeline.builds.count).to eq(1)
           expect(pipeline.builds.first.persisted_environment).to be_nil
           expect(pipeline.builds.first.deployment).to be_nil
+        end
+      end
+    end
+
+    describe 'Pipeline for external pull requests' do
+      let(:pipeline) do
+        execute_service(source: source,
+                        external_pull_request: pull_request,
+                        ref: ref_name,
+                        source_sha: source_sha,
+                        target_sha: target_sha)
+      end
+
+      before do
+        stub_ci_pipeline_yaml_file(YAML.dump(config))
+      end
+
+      let(:ref_name) { 'refs/heads/feature' }
+      let(:source_sha) { project.commit(ref_name).id }
+      let(:target_sha) { nil }
+
+      context 'when source is external pull request' do
+        let(:source) { :external_pull_request_event }
+
+        context 'when config has external_pull_requests keywords' do
+          let(:config) do
+            {
+              build: {
+                stage: 'build',
+                script: 'echo'
+              },
+              test: {
+                stage: 'test',
+                script: 'echo',
+                only: ['external_pull_requests']
+              },
+              pages: {
+                stage: 'deploy',
+                script: 'echo',
+                except: ['external_pull_requests']
+              }
+            }
+          end
+
+          context 'when external pull request is specified' do
+            let(:pull_request) { create(:external_pull_request, project: project, source_branch: 'feature', target_branch: 'master') }
+            let(:ref_name) { pull_request.source_ref }
+
+            it 'creates an external pull request pipeline' do
+              expect(pipeline).to be_persisted
+              expect(pipeline).to be_external_pull_request_event
+              expect(pipeline.external_pull_request).to eq(pull_request)
+              expect(pipeline.source_sha).to eq(source_sha)
+              expect(pipeline.builds.order(:stage_id)
+                .map(&:name))
+                .to eq(%w[build test])
+            end
+
+            context 'when ref is tag' do
+              let(:ref_name) { 'refs/tags/v1.1.0' }
+
+              it 'does not create an extrnal pull request pipeline' do
+                expect(pipeline).not_to be_persisted
+                expect(pipeline.errors[:tag]).to eq(["is not included in the list"])
+              end
+            end
+
+            context 'when pull request is created from fork' do
+              it 'does not create an external pull request pipeline'
+            end
+
+            context "when there are no matched jobs" do
+              let(:config) do
+                {
+                  test: {
+                    stage: 'test',
+                    script: 'echo',
+                    except: ['external_pull_requests']
+                  }
+                }
+              end
+
+              it 'does not create a detached merge request pipeline' do
+                expect(pipeline).not_to be_persisted
+                expect(pipeline.errors[:base]).to eq(["No stages / jobs for this pipeline."])
+              end
+            end
+          end
+
+          context 'when external pull request is not specified' do
+            let(:pull_request) { nil }
+
+            it 'does not create an external pull request pipeline' do
+              expect(pipeline).not_to be_persisted
+              expect(pipeline.errors[:external_pull_request]).to eq(["can't be blank"])
+            end
+          end
+        end
+
+        context "when config does not have external_pull_requests keywords" do
+          let(:config) do
+            {
+              build: {
+                stage: 'build',
+                script: 'echo'
+              },
+              test: {
+                stage: 'test',
+                script: 'echo'
+              },
+              pages: {
+                stage: 'deploy',
+                script: 'echo'
+              }
+            }
+          end
+
+          context 'when external pull request is specified' do
+            let(:pull_request) do
+              create(:external_pull_request,
+                project: project,
+                source_branch: Gitlab::Git.ref_name(ref_name),
+                target_branch: 'master')
+            end
+
+            it 'creates an external pull request pipeline' do
+              expect(pipeline).to be_persisted
+              expect(pipeline).to be_external_pull_request_event
+              expect(pipeline.external_pull_request).to eq(pull_request)
+              expect(pipeline.source_sha).to eq(source_sha)
+              expect(pipeline.builds.order(:stage_id)
+                .map(&:name))
+                .to eq(%w[build test pages])
+            end
+          end
+
+          context 'when external pull request is not specified' do
+            let(:pull_request) { nil }
+
+            it 'does not create an external pull request pipeline' do
+              expect(pipeline).not_to be_persisted
+
+              expect(pipeline.errors[:base])
+                .to eq(['Failed to build the pipeline!'])
+            end
+          end
         end
       end
     end

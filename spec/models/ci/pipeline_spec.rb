@@ -20,6 +20,7 @@ describe Ci::Pipeline, :mailer do
   it { is_expected.to belong_to(:auto_canceled_by) }
   it { is_expected.to belong_to(:pipeline_schedule) }
   it { is_expected.to belong_to(:merge_request) }
+  it { is_expected.to belong_to(:external_pull_request) }
 
   it { is_expected.to have_many(:statuses) }
   it { is_expected.to have_many(:trigger_requests) }
@@ -883,6 +884,25 @@ describe Ci::Pipeline, :mailer do
         it 'does not expose labels variable' do
           expect(subject.to_hash.keys).not_to include('CI_MERGE_REQUEST_LABELS')
         end
+      end
+    end
+
+    context 'when source is external pull request' do
+      let(:pipeline) do
+        create(:ci_pipeline, source: :external_pull_request_event, external_pull_request: pull_request)
+      end
+
+      let(:pull_request) { create(:external_pull_request, project: project) }
+
+      it 'exposes external pull request pipeline variables' do
+        expect(subject.to_hash)
+          .to include(
+            'CI_EXTERNAL_PULL_REQUEST_IID' => pull_request.pull_request_iid.to_s,
+            'CI_EXTERNAL_PULL_REQUEST_SOURCE_BRANCH_SHA' => pull_request.source_sha,
+            'CI_EXTERNAL_PULL_REQUEST_TARGET_BRANCH_SHA' => pull_request.target_sha,
+            'CI_EXTERNAL_PULL_REQUEST_SOURCE_BRANCH_NAME' => pull_request.source_branch,
+            'CI_EXTERNAL_PULL_REQUEST_TARGET_BRANCH_NAME' => pull_request.target_branch
+          )
       end
     end
   end
