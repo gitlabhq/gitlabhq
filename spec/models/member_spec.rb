@@ -172,14 +172,16 @@ describe Member do
       it { expect(described_class.non_request).to include @accepted_request_member }
     end
 
-    describe '.search_invited' do
+    describe '.search_invite_email' do
       it 'returns only the matching e-mail' do
         create(:group_member, :invited)
 
-        invited = described_class.search_invited(@invited_member.invite_email)
+        invited = described_class.search_invite_email(@invited_member.invite_email)
 
         expect(invited.count).to eq(1)
         expect(invited.first).to eq(@invited_member)
+
+        expect(described_class.search_invite_email('bad-email@example.com').count).to eq(0)
       end
     end
 

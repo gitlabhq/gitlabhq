@@ -29,7 +29,7 @@ class Groups::GroupMembersController < Groups::ApplicationController
 
     if can_manage_members
       @invited_members = @members.invite
-      @invited_members = @invited_members.search_invited(params[:search_invited]) if params[:search_invited].present?
+      @invited_members = @invited_members.search_invite_email(params[:search_invited]) if params[:search_invited].present?
       @invited_members = present_members(@invited_members.page(params[:invited_members_page]).per(MEMBER_PER_PAGE_LIMIT))
     end
 

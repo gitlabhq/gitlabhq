@@ -107,7 +107,7 @@ class Member < ApplicationRecord
       joins(:user).merge(User.search(query))
     end
 
-    def search_invited(query)
+    def search_invite_email(query)
       invite.where(['invite_email ILIKE ?', "%#{query}%"])
     end
 
