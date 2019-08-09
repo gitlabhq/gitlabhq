@@ -35,7 +35,7 @@
       .card.card-without-border
         .d-flex.flex-column.flex-md-row.row-content-block.second-block
           %span.flex-grow-1.align-self-md-center.col-form-label
-            = _("Members with access to <strong>%{group_name}</strong>").html_safe % { group_name: @group.name }
+            = _("Members with access to %{strongStart}%{group_name}%{strongEnd}").html_safe % { group_name: @group.name, strongStart: '<strong>', strongEnd: '</strong>' }
           = form_tag group_group_members_path(@group), method: :get, class: 'form-inline member-search-form' do
             .form-group.flex-grow
               .position-relative.mr-md-2
@@ -55,7 +55,7 @@
         .card.card-without-border
           .d-flex.flex-column.flex-md-row.row-content-block.second-block
             %span.flex-grow-1
-              = _("Members with pending access to <strong>%{group_name}</strong>").html_safe % { group_name: @group.name }
+              = _("Members with pending access to %{strongStart}%{group_name}%{strongEnd}").html_safe % { group_name: @group.name, strongStart: '<strong>', strongEnd: '</strong>' }
             = form_tag group_group_members_path(@group), method: :get, class: 'form-inline member-search-form' do
               .form-group
                 .position-relative.mr-md-2

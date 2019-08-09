@@ -708,7 +708,7 @@ msgstr ""
 msgid "Add new directory"
 msgstr ""
 
-msgid "Add new member to <strong>%{group_name}</strong>"
+msgid "Add new member to %{strongStart}%{group_name}%{strongEnd}"
 msgstr ""
 
 msgid "Add or subtract spent time"
@@ -6586,10 +6586,10 @@ msgstr ""
 msgid "Members of <strong>%{project_name}</strong>"
 msgstr ""
 
-msgid "Members with access to <strong>%{group_name}</strong>"
+msgid "Members with access to %{strongStart}%{group_name}%{strongEnd}"
 msgstr ""
 
-msgid "Members with pending access to <strong>%{group_name}</strong>"
+msgid "Members with pending access to %{strongStart}%{group_name}%{strongEnd}"
 msgstr ""
 
 msgid "Merge"
