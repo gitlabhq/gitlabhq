@@ -35,7 +35,7 @@ module Gitlab
         # Old gitlab-shell messages don't provide enqueued_at/created_at attributes
         enqueued_at = payload['enqueued_at'] || payload['created_at']
         if enqueued_at
-          payload['scheduling_latency_s'] = elapsed(Time.iso8601(enqueued_at).to_f)
+          payload['scheduling_latency_s'] = elapsed_by_absolute_time(Time.iso8601(enqueued_at))
         end
 
         payload
@@ -82,6 +82,10 @@ module Gitlab
         keys.each do |key|
           payload[key] = format_time(payload[key]) if payload[key]
         end
+      end
+
+      def elapsed_by_absolute_time(start)
+        (Time.now.utc - start).to_f.round(3)
       end
 
       def elapsed(start)
