@@ -55,7 +55,7 @@ export default class MilestoneSelect {
       const $sidebarCollapsedValue = $block.find('.sidebar-collapsed-icon');
       const $value = $block.find('.value');
       const $loading = $block.find('.block-loading').fadeOut();
-      selectedMilestoneDefault = showAny ? __('Any Milestone') : null;
+      selectedMilestoneDefault = showAny ? '' : null;
       selectedMilestoneDefault =
         showNo && defaultNo ? __('No Milestone') : selectedMilestoneDefault;
       selectedMilestone = $dropdown.data('selected') || selectedMilestoneDefault;
@@ -74,16 +74,14 @@ export default class MilestoneSelect {
             if (showAny) {
               extraOptions.push({
                 id: null,
-                // eslint-disable-next-line @gitlab/i18n/no-non-i18n-strings
-                name: 'Any',
+                name: null,
                 title: __('Any Milestone'),
               });
             }
             if (showNo) {
               extraOptions.push({
                 id: -1,
-                // eslint-disable-next-line @gitlab/i18n/no-non-i18n-strings
-                name: 'None',
+                name: __('No Milestone'),
                 title: __('No Milestone'),
               });
             }
