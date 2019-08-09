@@ -59,7 +59,7 @@ module API
       end
 
       def get_note(noteable, note_id)
-        note = noteable.notes.with_metadata.find(note_id)
+        note = noteable.notes.with_metadata.find(params[:note_id])
         can_read_note = note.visible_for?(current_user)
 
         if can_read_note
