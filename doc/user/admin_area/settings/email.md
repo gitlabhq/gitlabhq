@@ -17,11 +17,10 @@ The logo in the header of some emails can be customized, see the [logo customiza
 The additional text will appear at the bottom of any email and can be used for
 legal/auditing/compliance reasons.
 
-1. Go to **Admin area > Settings** (`/admin/application_settings`).
-1. Under the **Email** section, change the **Additional text** field.
-1. Hit **Save** for the changes to take effect.
-
-![Admin email settings](img/email_settings.png)
+1. Go to **Admin Area > Settings > Preferences** (`/admin/application_settings/preferences`).
+1. Expand the **Email** section.
+1. Enter your text in the **Additional text** field.
+1. Click **Save**.
 
 [ee-5031]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/5031
 [eep]: https://about.gitlab.com/pricing/
@@ -35,11 +34,13 @@ This configuration option sets the email hostname for [private commit emails](..
 
 In order to change this option:
 
-1. Go to **Admin area > Settings** (`/admin/application_settings`).
-1. Under the **Email** section, change the **Custom hostname (for private commit emails)** field.
-1. Hit **Save** for the changes to take effect.
+1. Go to **Admin Area > Settings > Preferences** (`/admin/application_settings/preferences`).
+1. Expand the **Email** section.
+1. Enter the desire hostname in the **Custom hostname (for private commit emails)** field.
+1. Click **Save changes**.
 
-NOTE: **Note**: Once the hostname gets configured, every private commit email using the previous hostname, will not get
+NOTE: **Note:**
+Once the hostname gets configured, every private commit email using the previous hostname, will not get
 recognized by GitLab. This can directly conflict with certain [Push rules](../../../push_rules/push_rules.md) such as
 `Check whether author is a GitLab user` and `Check whether committer is the current authenticated user`.
 

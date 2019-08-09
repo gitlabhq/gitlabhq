@@ -241,6 +241,18 @@ describe Projects::DestroyService do
           expect(destroy_project(project, user)).to be false
         end
       end
+
+      context 'when registry is disabled' do
+        before do
+          stub_container_registry_config(enabled: false)
+        end
+
+        it 'does not attempting to remove any tags' do
+          expect(Projects::ContainerRepository::DestroyService).not_to receive(:new)
+
+          destroy_project(project, user)
+        end
+      end
     end
 
     context 'when there are tags for legacy root repository' do

@@ -692,7 +692,7 @@ with `review/` would have that particular variable.
 
 Some GitLab features can behave differently for each environment.
 For example, you can
-[create a secret variable to be injected only into a production environment](variables/README.md#limiting-environment-scopes-of-environment-variables-premium). **(PREMIUM)**
+[create a secret variable to be injected only into a production environment](variables/README.md#limiting-environment-scopes-of-environment-variables).
 
 In most cases, these features use the _environment specs_ mechanism, which offers
 an efficient way to implement scoping within each environment group.

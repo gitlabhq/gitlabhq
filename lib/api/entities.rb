@@ -77,6 +77,11 @@ module API
       expose :last_activity_on, as: :last_activity_at # Back-compat
     end
 
+    class UserStarsProject < Grape::Entity
+      expose :starred_since
+      expose :user, using: Entities::UserBasic
+    end
+
     class Identity < Grape::Entity
       expose :provider, :extern_uid
     end
@@ -1085,16 +1090,18 @@ module API
     end
 
     class Label < LabelBasic
-      expose :open_issues_count do |label, options|
-        label.open_issues_count(options[:current_user])
-      end
+      with_options if: lambda { |_, options| options[:with_counts] } do
+        expose :open_issues_count do |label, options|
+          label.open_issues_count(options[:current_user])
+        end
 
-      expose :closed_issues_count do |label, options|
-        label.closed_issues_count(options[:current_user])
-      end
+        expose :closed_issues_count do |label, options|
+          label.closed_issues_count(options[:current_user])
+        end
 
-      expose :open_merge_requests_count do |label, options|
-        label.open_merge_requests_count(options[:current_user])
+        expose :open_merge_requests_count do |label, options|
+          label.open_merge_requests_count(options[:current_user])
+        end
       end
 
       expose :subscribed do |label, options|
@@ -1341,6 +1348,7 @@ module API
       expose :variable_type, :key, :value
       expose :protected?, as: :protected, if: -> (entity, _) { entity.respond_to?(:protected?) }
       expose :masked?, as: :masked, if: -> (entity, _) { entity.respond_to?(:masked?) }
+      expose :environment_scope, if: -> (entity, _) { entity.respond_to?(:environment_scope) }
     end
 
     class Pipeline < PipelineBasic

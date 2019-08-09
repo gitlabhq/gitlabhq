@@ -67,7 +67,7 @@ Also check on your GitLab server.
 ```
 # On your GitLab server:
 # Omnibus
-sudo gitlab-rake gitlab:backup:create SKIP=repositories,uploads
+sudo gitlab-backup create SKIP=repositories,uploads
 
 # Source
 cd /home/git/gitlab

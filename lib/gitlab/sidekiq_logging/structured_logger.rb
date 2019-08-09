@@ -15,9 +15,9 @@ module Gitlab
 
         yield
 
-        Sidekiq.logger.info log_job_done(started_at, base_payload)
+        Sidekiq.logger.info log_job_done(job, started_at, base_payload)
       rescue => job_exception
-        Sidekiq.logger.warn log_job_done(started_at, base_payload, job_exception)
+        Sidekiq.logger.warn log_job_done(job, started_at, base_payload, job_exception)
 
         raise
       end
@@ -28,6 +28,10 @@ module Gitlab
         "#{payload['class']} JID-#{payload['jid']}"
       end
 
+      def add_instrumentation_keys!(job, output_payload)
+        output_payload.merge!(job.slice(*::Gitlab::InstrumentationHelper::KEYS))
+      end
+
       def log_job_start(started_at, payload)
         payload['message'] = "#{base_message(payload)}: start"
         payload['job_status'] = 'start'
@@ -35,14 +39,15 @@ module Gitlab
         # Old gitlab-shell messages don't provide enqueued_at/created_at attributes
         enqueued_at = payload['enqueued_at'] || payload['created_at']
         if enqueued_at
-          payload['scheduling_latency_s'] = elapsed(Time.iso8601(enqueued_at).to_f)
+          payload['scheduling_latency_s'] = elapsed_by_absolute_time(Time.iso8601(enqueued_at))
         end
 
         payload
       end
 
-      def log_job_done(started_at, payload, job_exception = nil)
+      def log_job_done(job, started_at, payload, job_exception = nil)
         payload = payload.dup
+        add_instrumentation_keys!(job, payload)
         payload['duration'] = elapsed(started_at)
         payload['completed_at'] = Time.now.utc
 
@@ -82,6 +87,10 @@ module Gitlab
         keys.each do |key|
           payload[key] = format_time(payload[key]) if payload[key]
         end
+      end
+
+      def elapsed_by_absolute_time(start)
+        (Time.now.utc - start).to_f.round(3)
       end
 
       def elapsed(start)

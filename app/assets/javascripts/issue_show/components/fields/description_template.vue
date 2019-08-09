@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable @gitlab/vue-i18n/no-bare-strings */
 import $ from 'jquery';
 import IssuableTemplateSelectors from '../../../templates/issuable_template_selectors';
 

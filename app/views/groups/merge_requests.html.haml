@@ -1,4 +1,4 @@
-- @can_bulk_update = can?(current_user, :admin_merge_request, @group)
+- @can_bulk_update = can?(current_user, :admin_merge_request, @group) && @group.feature_available?(:group_bulk_edit)
 
 - page_title "Merge Requests"
 

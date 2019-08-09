@@ -151,7 +151,7 @@ function fetchPrometheusResult(prometheusEndpoint, params) {
  */
 export const fetchPrometheusMetric = ({ commit }, { metric, params }) => {
   const { start, end } = params;
-  const timeDiff = end - start;
+  const timeDiff = (new Date(end) - new Date(start)) / 1000;
 
   const minStep = 60;
   const queryDataPoints = 600;

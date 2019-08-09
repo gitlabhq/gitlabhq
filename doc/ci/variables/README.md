@@ -94,7 +94,7 @@ This means that the value of the variable will be hidden in job logs,
 though it must match certain requirements to do so:
 
 - The value must be in a single line.
-- The value must only consist of characters from the Base64 alphabet, defined in [RFC4648](https://tools.ietf.org/html/rfc4648).
+- The value must only consist of characters from the Base64 alphabet ([RFC4648](https://tools.ietf.org/html/rfc4648)) with the addition of `@` and `:`.
 - The value must be at least 8 characters long.
 - The value must not use variables.
 
@@ -393,7 +393,7 @@ Protected variables can be added by going to your project's
 
 Once you set them, they will be available for all subsequent pipelines.
 
-### Limiting environment scopes of environment variables **(PREMIUM)**
+### Limiting environment scopes of environment variables
 
 You can limit the environment scope of a variable by
 [defining which environments][envs] it can be available for.

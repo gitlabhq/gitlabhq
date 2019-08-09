@@ -150,4 +150,17 @@ describe PrometheusMetric do
       expect(subject.to_query_metric.queries).to eq(queries)
     end
   end
+
+  describe '#to_metric_hash' do
+    it 'returns a hash suitable for inclusion on a metrics dashboard' do
+      expected_output = {
+        query_range: subject.query,
+        unit: subject.unit,
+        label: subject.legend,
+        metric_id: subject.id
+      }
+
+      expect(subject.to_metric_hash).to eq(expected_output)
+    end
+  end
 end

@@ -190,7 +190,7 @@ Those environments are tied to jobs that use [Auto Deploy](#auto-deploy), so
 except for the environment scope, they would also need to have a different
 domain they would be deployed to. This is why you need to define a separate
 `KUBE_INGRESS_BASE_DOMAIN` variable for all the above
-[based on the environment](../../ci/variables/README.md#limiting-environment-scopes-of-environment-variables-premium).
+[based on the environment](../../ci/variables/README.md#limiting-environment-scopes-of-environment-variables).
 
 The following table is an example of how the three different clusters would
 be configured.
@@ -662,10 +662,10 @@ repo or by specifying a project variable:
 You can also make use of the `HELM_UPGRADE_EXTRA_ARGS` environment variable to override the default values in the `values.yaml` file in the [default Helm chart](https://gitlab.com/gitlab-org/charts/auto-deploy-app).
 To apply your own `values.yaml` file to all Helm upgrade commands in Auto Deploy set `HELM_UPGRADE_EXTRA_ARGS` to `--values my-values.yaml`.
 
-### Custom Helm chart per environment **(PREMIUM)**
+### Custom Helm chart per environment
 
 You can specify the use of a custom Helm chart per environment by scoping the environment variable
-to the desired environment. See [Limiting environment scopes of variables](../../ci/variables/README.md#limiting-environment-scopes-of-environment-variables-premium).
+to the desired environment. See [Limiting environment scopes of variables](../../ci/variables/README.md#limiting-environment-scopes-of-environment-variables).
 
 ### Customizing `.gitlab-ci.yml`
 

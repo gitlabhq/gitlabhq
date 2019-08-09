@@ -145,6 +145,9 @@ msgid_plural "%{count} participants"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%{duration}ms"
+msgstr ""
+
 msgid "%{edit_in_new_fork_notice} Try to cherry-pick this commit again."
 msgstr ""
 
@@ -283,6 +286,9 @@ msgid "%{user_name} profile page"
 msgstr ""
 
 msgid "%{username}'s avatar"
+msgstr ""
+
+msgid "%{value} ms"
 msgstr ""
 
 msgid "%{verb} %{time_spent_value} spent time."
@@ -2260,6 +2266,9 @@ msgstr ""
 msgid "CiVariables|Remove variable row"
 msgstr ""
 
+msgid "CiVariables|Scope"
+msgstr ""
+
 msgid "CiVariables|Specify variable values to be used in this run. The values specified in %{linkStart}CI/CD settings%{linkEnd} will be used as default"
 msgstr ""
 
@@ -2281,13 +2290,22 @@ msgstr ""
 msgid "CiVariable|All environments"
 msgstr ""
 
+msgid "CiVariable|Create wildcard"
+msgstr ""
+
 msgid "CiVariable|Error occurred while saving variables"
 msgstr ""
 
 msgid "CiVariable|Masked"
 msgstr ""
 
+msgid "CiVariable|New environment"
+msgstr ""
+
 msgid "CiVariable|Protected"
+msgstr ""
+
+msgid "CiVariable|Search environments"
 msgstr ""
 
 msgid "CiVariable|Toggle masked"
@@ -3300,6 +3318,9 @@ msgstr ""
 msgid "Could not add prometheus URL to whitelist"
 msgstr ""
 
+msgid "Could not add prometheus URL to whitelist, errors: %{errors}"
+msgstr ""
+
 msgid "Could not authorize chat nickname. Try again!"
 msgstr ""
 
@@ -3310,6 +3331,12 @@ msgid "Could not connect to FogBugz, check your URL"
 msgstr ""
 
 msgid "Could not create Wiki Repository at this time. Please try again later."
+msgstr ""
+
+msgid "Could not create instance administration project. Errors: %{errors}"
+msgstr ""
+
+msgid "Could not create project"
 msgstr ""
 
 msgid "Could not delete chat nickname %{chat_name}."
@@ -3325,6 +3352,12 @@ msgid "Could not revoke impersonation token %{token_name}."
 msgstr ""
 
 msgid "Could not revoke personal access token %{personal_access_token_name}."
+msgstr ""
+
+msgid "Could not save instance administration project ID, errors: %{errors}"
+msgstr ""
+
+msgid "Could not save project ID"
 msgstr ""
 
 msgid "Coverage"
@@ -5266,9 +5299,6 @@ msgstr ""
 msgid "Group was successfully updated."
 msgstr ""
 
-msgid "Group:"
-msgstr ""
-
 msgid "Group: %{group_name}"
 msgstr ""
 
@@ -5796,6 +5826,12 @@ msgstr ""
 msgid "Instance Statistics visibility"
 msgstr ""
 
+msgid "Instance administration project already exists"
+msgstr ""
+
+msgid "Instance administrators group already exists"
+msgstr ""
+
 msgid "Instance does not support multiple Kubernetes clusters"
 msgstr ""
 
@@ -6139,9 +6175,6 @@ msgid "Kubernetes configured"
 msgstr ""
 
 msgid "Kubernetes error: %{error_code}"
-msgstr ""
-
-msgid "Kubernetes service integration has been disabled. Fields on this page are not used by GitLab, you can configure your Kubernetes clusters using the new <a href=\"%{url}\"/>Kubernetes Clusters</a> page"
 msgstr ""
 
 msgid "LDAP"
@@ -7221,10 +7254,16 @@ msgstr ""
 msgid "No schedules"
 msgstr ""
 
+msgid "No starrers matched your search"
+msgstr ""
+
 msgid "No template"
 msgstr ""
 
 msgid "No, directly import the existing email addresses and usernames."
+msgstr ""
+
+msgid "Nobody has starred this repository yet"
 msgstr ""
 
 msgid "None"
@@ -8498,9 +8537,6 @@ msgstr ""
 msgid "Project visibility level will be changed to match namespace rules when transferring to a group."
 msgstr ""
 
-msgid "Project:"
-msgstr ""
-
 msgid "ProjectActivityRSS|Subscribe"
 msgstr ""
 
@@ -8538,6 +8574,12 @@ msgid "ProjectOverview|Go to your fork"
 msgstr ""
 
 msgid "ProjectOverview|Star"
+msgstr ""
+
+msgid "ProjectOverview|Starrer"
+msgstr ""
+
+msgid "ProjectOverview|Starrers"
 msgstr ""
 
 msgid "ProjectOverview|Unstar"
@@ -9636,6 +9678,12 @@ msgstr ""
 msgid "SearchAutocomplete|in this project"
 msgstr ""
 
+msgid "SearchCodeResults|in"
+msgstr ""
+
+msgid "SearchCodeResults|of %{link_to_project}"
+msgstr ""
+
 msgid "SearchResults|Showing %{from} - %{to} of %{count} %{scope} for \"%{term}\""
 msgstr ""
 
@@ -10265,6 +10313,9 @@ msgstr ""
 msgid "SortOptions|Oldest sign in"
 msgstr ""
 
+msgid "SortOptions|Oldest starred"
+msgstr ""
+
 msgid "SortOptions|Oldest updated"
 msgstr ""
 
@@ -10278,6 +10329,9 @@ msgid "SortOptions|Recent last activity"
 msgstr ""
 
 msgid "SortOptions|Recent sign in"
+msgstr ""
+
+msgid "SortOptions|Recently starred"
 msgstr ""
 
 msgid "SortOptions|Sort direction"
@@ -10371,6 +10425,9 @@ msgid "StarredProjectsEmptyState|Visit a project page and press on a star icon. 
 msgstr ""
 
 msgid "StarredProjectsEmptyState|You don't have starred projects yet."
+msgstr ""
+
+msgid "Starrers"
 msgstr ""
 
 msgid "Stars"
@@ -10849,6 +10906,9 @@ msgstr ""
 msgid "The character highlighter helps you keep the subject line to %{titleLength} characters and wrap the body at %{bodyLength} so they are readable in git."
 msgstr ""
 
+msgid "The code of a detached pipeline is tested against the source branch instead of merged results"
+msgstr ""
+
 msgid "The coding stage shows the time from the first commit to creating the merge request. The data will automatically be added here once you create your first merge request."
 msgstr ""
 
@@ -10898,9 +10958,6 @@ msgid "The group settings for %{group_links} require you to enable Two-Factor Au
 msgstr ""
 
 msgid "The import will time out after %{timeout}. For repositories that take longer, use a clone/push combination."
-msgstr ""
-
-msgid "The instance-level Kubernetes service integration is disabled. Your data has been migrated to an <a href=\"%{url}\"/>instance-level cluster</a>."
 msgstr ""
 
 msgid "The invitation could not be accepted."
@@ -11345,9 +11402,6 @@ msgid "This page is unavailable because you are not allowed to read information 
 msgstr ""
 
 msgid "This page will be removed in a future release."
-msgstr ""
-
-msgid "This pipeline is run on the source branch"
 msgstr ""
 
 msgid "This pipeline makes use of a predefined CI/CD configuration enabled by %{strongStart}Auto DevOps.%{strongEnd}"
@@ -12215,6 +12269,12 @@ msgstr ""
 msgid "UserProfile|Snippets in GitLab can either be private, internal, or public."
 msgstr ""
 
+msgid "UserProfile|Star projects to track their progress and show your appreciation."
+msgstr ""
+
+msgid "UserProfile|Starred projects"
+msgstr ""
+
 msgid "UserProfile|Subscribe"
 msgstr ""
 
@@ -12225,6 +12285,9 @@ msgid "UserProfile|This user has a private profile"
 msgstr ""
 
 msgid "UserProfile|This user hasn't contributed to any projects"
+msgstr ""
+
+msgid "UserProfile|This user hasn't starred any projects"
 msgstr ""
 
 msgid "UserProfile|View all"
@@ -12447,6 +12510,9 @@ msgid "Wednesday"
 msgstr ""
 
 msgid "Welcome to your Issue Board!"
+msgstr ""
+
+msgid "What are you searching for?"
 msgstr ""
 
 msgid "When a runner is locked, it cannot be assigned to other projects"

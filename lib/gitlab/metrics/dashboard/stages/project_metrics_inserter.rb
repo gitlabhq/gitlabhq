@@ -97,7 +97,7 @@ module Gitlab
           end
 
           def new_metric(metric)
-            metric.queries.first.merge(metric_id: metric.id)
+            metric.to_metric_hash
           end
         end
       end

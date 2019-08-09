@@ -327,6 +327,7 @@ When installing the GitLab package, do not supply `EXTERNAL_URL` value.
    postgresql['sql_user_password'] = 'POSTGRESQL_PASSWORD_HASH'
    # Replace X with value of number of db nodes + 1
    postgresql['max_wal_senders'] = X
+   postgresql['max_replication_slots'] = X
 
    # Replace XXX.XXX.XXX.XXX/YY with Network Address
    postgresql['trust_auth_cidr_addresses'] = %w(XXX.XXX.XXX.XXX/YY)

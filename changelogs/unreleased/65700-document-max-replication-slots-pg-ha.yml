@@ -1,0 +1,5 @@
+---
+title: Add max_replication_slots to PG HA documentation
+merge_request: 31534
+author:
+type: other

@@ -465,6 +465,194 @@ GET /users/:user_id/projects
 ]
 ```
 
+## List projects starred by a user
+
+Get a list of visible projects owned by the given user. When accessed without authentication, only public projects are returned.
+
+```
+GET /users/:user_id/starred_projects
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `user_id` | string | yes | The ID or username of the user. |
+| `archived` | boolean | no | Limit by archived status. |
+| `visibility` | string | no | Limit by visibility `public`, `internal`, or `private`. |
+| `order_by` | string | no | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, or `last_activity_at` fields. Default is `created_at`. |
+| `sort` | string | no | Return projects sorted in `asc` or `desc` order. Default is `desc`. |
+| `search` | string | no | Return list of projects matching the search criteria. |
+| `simple` | boolean | no | Return only limited fields for each project. This is a no-op without authentication as then _only_ simple fields are returned.. |
+| `owned` | boolean | no | Limit by projects explicitly owned by the current user. |
+| `membership` | boolean | no | Limit by projects that the current user is a member of. |
+| `starred` | boolean | no | Limit by projects starred by the current user. |
+| `statistics` | boolean | no | Include project statistics. |
+| `with_custom_attributes` | boolean | no | Include [custom attributes](custom_attributes.md) in response (admins only). |
+| `with_issues_enabled` | boolean | no | Limit by enabled issues feature. |
+| `with_merge_requests_enabled` | boolean | no | Limit by enabled merge requests feature. |
+| `min_access_level` | integer | no | Limit by current user minimal [access level](members.md). |
+
+```bash
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/users/5/starred_projects"
+```
+
+Example response:
+
+```json
+[
+  {
+    "id": 4,
+    "description": null,
+    "default_branch": "master",
+    "visibility": "private",
+    "ssh_url_to_repo": "git@example.com:diaspora/diaspora-client.git",
+    "http_url_to_repo": "http://example.com/diaspora/diaspora-client.git",
+    "web_url": "http://example.com/diaspora/diaspora-client",
+    "readme_url": "http://example.com/diaspora/diaspora-client/blob/master/README.md",
+    "tag_list": [
+      "example",
+      "disapora client"
+    ],
+    "owner": {
+      "id": 3,
+      "name": "Diaspora",
+      "created_at": "2013-09-30T13:46:02Z"
+    },
+    "name": "Diaspora Client",
+    "name_with_namespace": "Diaspora / Diaspora Client",
+    "path": "diaspora-client",
+    "path_with_namespace": "diaspora/diaspora-client",
+    "issues_enabled": true,
+    "open_issues_count": 1,
+    "merge_requests_enabled": true,
+    "jobs_enabled": true,
+    "wiki_enabled": true,
+    "snippets_enabled": false,
+    "resolve_outdated_diff_discussions": false,
+    "container_registry_enabled": false,
+    "created_at": "2013-09-30T13:46:02Z",
+    "last_activity_at": "2013-09-30T13:46:02Z",
+    "creator_id": 3,
+    "namespace": {
+      "id": 3,
+      "name": "Diaspora",
+      "path": "diaspora",
+      "kind": "group",
+      "full_path": "diaspora"
+    },
+    "import_status": "none",
+    "archived": false,
+    "avatar_url": "http://example.com/uploads/project/avatar/4/uploads/avatar.png",
+    "shared_runners_enabled": true,
+    "forks_count": 0,
+    "star_count": 0,
+    "runners_token": "b8547b1dc37721d05889db52fa2f02",
+    "public_jobs": true,
+    "shared_with_groups": [],
+    "only_allow_merge_if_pipeline_succeeds": false,
+    "only_allow_merge_if_all_discussions_are_resolved": false,
+    "request_access_enabled": false,
+    "merge_method": "merge",
+    "statistics": {
+      "commit_count": 37,
+      "storage_size": 1038090,
+      "repository_size": 1038090,
+      "lfs_objects_size": 0,
+      "job_artifacts_size": 0
+    },
+    "_links": {
+      "self": "http://example.com/api/v4/projects",
+      "issues": "http://example.com/api/v4/projects/1/issues",
+      "merge_requests": "http://example.com/api/v4/projects/1/merge_requests",
+      "repo_branches": "http://example.com/api/v4/projects/1/repository_branches",
+      "labels": "http://example.com/api/v4/projects/1/labels",
+      "events": "http://example.com/api/v4/projects/1/events",
+      "members": "http://example.com/api/v4/projects/1/members"
+    }
+  },
+  {
+    "id": 6,
+    "description": null,
+    "default_branch": "master",
+    "visibility": "private",
+    "ssh_url_to_repo": "git@example.com:brightbox/puppet.git",
+    "http_url_to_repo": "http://example.com/brightbox/puppet.git",
+    "web_url": "http://example.com/brightbox/puppet",
+    "readme_url": "http://example.com/brightbox/puppet/blob/master/README.md",
+    "tag_list": [
+      "example",
+      "puppet"
+    ],
+    "owner": {
+      "id": 4,
+      "name": "Brightbox",
+      "created_at": "2013-09-30T13:46:02Z"
+    },
+    "name": "Puppet",
+    "name_with_namespace": "Brightbox / Puppet",
+    "path": "puppet",
+    "path_with_namespace": "brightbox/puppet",
+    "issues_enabled": true,
+    "open_issues_count": 1,
+    "merge_requests_enabled": true,
+    "jobs_enabled": true,
+    "wiki_enabled": true,
+    "snippets_enabled": false,
+    "resolve_outdated_diff_discussions": false,
+    "container_registry_enabled": false,
+    "created_at": "2013-09-30T13:46:02Z",
+    "last_activity_at": "2013-09-30T13:46:02Z",
+    "creator_id": 3,
+    "namespace": {
+      "id": 4,
+      "name": "Brightbox",
+      "path": "brightbox",
+      "kind": "group",
+      "full_path": "brightbox"
+    },
+    "import_status": "none",
+    "import_error": null,
+    "permissions": {
+      "project_access": {
+        "access_level": 10,
+        "notification_level": 3
+      },
+      "group_access": {
+        "access_level": 50,
+        "notification_level": 3
+      }
+    },
+    "archived": false,
+    "avatar_url": null,
+    "shared_runners_enabled": true,
+    "forks_count": 0,
+    "star_count": 0,
+    "runners_token": "b8547b1dc37721d05889db52fa2f02",
+    "public_jobs": true,
+    "shared_with_groups": [],
+    "only_allow_merge_if_pipeline_succeeds": false,
+    "only_allow_merge_if_all_discussions_are_resolved": false,
+    "request_access_enabled": false,
+    "merge_method": "merge",
+    "statistics": {
+      "commit_count": 12,
+      "storage_size": 2066080,
+      "repository_size": 2066080,
+      "lfs_objects_size": 0,
+      "job_artifacts_size": 0
+    },
+    "_links": {
+      "self": "http://example.com/api/v4/projects",
+      "issues": "http://example.com/api/v4/projects/1/issues",
+      "merge_requests": "http://example.com/api/v4/projects/1/merge_requests",
+      "repo_branches": "http://example.com/api/v4/projects/1/repository_branches",
+      "labels": "http://example.com/api/v4/projects/1/labels",
+      "events": "http://example.com/api/v4/projects/1/events",
+      "members": "http://example.com/api/v4/projects/1/members"
+    }
+  }
+]
+```
+
 ## Get single project
 
 Get a specific project. This endpoint can be accessed without authentication if
@@ -1155,6 +1343,51 @@ Example response:
 }
 ```
 
+## List Starrers of a project
+
+List the users who starred the specified project.
+
+```
+GET /projects/:id/starrers
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `search` | string | no | Search for specific users. |
+
+```bash
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/starrers"
+```
+
+Example responses:
+
+```json
+[
+  {
+    "starred_since": "2019-01-28T14:47:30.642Z",
+    "user":
+      {
+        "id": 1,
+        "username": "jane_smith",
+        "name": "Jane Smith",
+        "state": "active",
+        "avatar_url": "http://localhost:3000/uploads/user/avatar/1/cd8.jpeg",
+        "web_url": "http://localhost:3000/jane_smith"
+      }
+  },
+    "starred_since": "2018-01-02T11:40:26.570Z",
+    "user":
+      {
+        "id": 2,
+        "username": "janine_smith",
+        "name": "Janine Smith",
+        "state": "blocked",
+        "avatar_url": "http://gravatar.com/../e32131cd8.jpeg",
+        "web_url": "http://localhost:3000/janine_smith"
+      }
+]
+```
+
 ## Languages
 
 Get languages used in a project with percentage value.
@@ -1676,18 +1909,20 @@ GET /projects/:id/push_rule
   "author_email_regex": "",
   "file_name_regex": "",
   "max_file_size": 5,
-  "commit_committer_check": false
+  "commit_committer_check": false,
+  "reject_unsigned_commits": false
 }
 ```
 
 Users on GitLab [Premium, Silver, or higher](https://about.gitlab.com/pricing/) will also see
-the `commit_committer_check` parameter:
+the `commit_committer_check` and `reject_unsigned_commits` parameters:
 
 ```json
 {
   "id": 1,
   "project_id": 3,
-  "commit_committer_check": false
+  "commit_committer_check": false,
+  "reject_unsigned_commits": false
   ...
 }
 ```
@@ -1713,6 +1948,7 @@ POST /projects/:id/push_rule
 | `file_name_regex` **(STARTER)**               | string         | no       | All commited filenames must **not** match this, e.g. `(jar|exe)$` |
 | `max_file_size` **(STARTER)**                 | integer        | no       | Maximum file size (MB) |
 | `commit_committer_check` **(PREMIUM)**        | boolean        | no       | Users can only push commits to this repository that were committed with one of their own verified emails. |
+| `reject_unsigned_commits` **(PREMIUM)**        | boolean        | no       | Reject commit when it is not signed through GPG. |
 
 ### Edit project push rule
 
@@ -1735,6 +1971,7 @@ PUT /projects/:id/push_rule
 | `file_name_regex` **(STARTER)**               | string         | no       | All commited filenames must **not** match this, e.g. `(jar|exe)$` |
 | `max_file_size` **(STARTER)**                 | integer        | no       | Maximum file size (MB) |
 | `commit_committer_check` **(PREMIUM)**        | boolean        | no       | Users can only push commits to this repository that were committed with one of their own verified emails. |
+| `reject_unsigned_commits` **(PREMIUM)**        | boolean        | no       | Reject commits when they are not GPG signed. |
 
 ### Delete project push rule
 

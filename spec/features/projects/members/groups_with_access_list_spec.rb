@@ -52,18 +52,18 @@ describe 'Projects > Members > Groups with access list', :js do
 
   context 'search in existing members (yes, this filters the groups list as well)' do
     it 'finds no results' do
-      page.within '.member-search-form' do
+      page.within '.user-search-form' do
         fill_in 'search', with: 'testing 123'
-        find('.member-search-btn').click
+        find('.user-search-btn').click
       end
 
       expect(page).not_to have_selector('.group_member')
     end
 
     it 'finds results' do
-      page.within '.member-search-form' do
+      page.within '.user-search-form' do
         fill_in 'search', with: group.name
-        find('.member-search-btn').click
+        find('.user-search-btn').click
       end
 
       expect(page).to have_selector('.group_member', count: 1)

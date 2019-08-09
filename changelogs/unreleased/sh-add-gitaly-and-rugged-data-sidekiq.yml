@@ -1,0 +1,5 @@
+---
+title: Add Gitaly and Rugged call timing in Sidekiq logs
+merge_request: 31651
+author:
+type: other

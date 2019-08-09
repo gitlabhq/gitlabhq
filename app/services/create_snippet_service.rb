@@ -23,6 +23,7 @@ class CreateSnippetService < BaseService
 
     if snippet.save
       UserAgentDetailService.new(snippet, @request).create
+      Gitlab::UsageDataCounters::SnippetCounter.count(:create)
     end
 
     snippet

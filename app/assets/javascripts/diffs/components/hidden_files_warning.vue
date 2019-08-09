@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable @gitlab/vue-i18n/no-bare-strings */
 export default {
   props: {
     total: {

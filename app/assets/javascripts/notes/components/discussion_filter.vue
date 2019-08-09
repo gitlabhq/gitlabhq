@@ -61,7 +61,7 @@ export default {
   },
   methods: {
     ...mapActions(['filterDiscussion', 'setCommentsDisabled', 'setTargetNoteHash']),
-    selectFilter(value) {
+    selectFilter(value, persistFilter = true) {
       const filter = parseInt(value, 10);
 
       // close dropdown
@@ -69,7 +69,11 @@ export default {
 
       if (filter === this.currentValue) return;
       this.currentValue = filter;
-      this.filterDiscussion({ path: this.getNotesDataByProp('discussionsPath'), filter });
+      this.filterDiscussion({
+        path: this.getNotesDataByProp('discussionsPath'),
+        filter,
+        persistFilter,
+      });
       this.toggleCommentsForm();
     },
     toggleDropdown() {
@@ -85,7 +89,7 @@ export default {
       const hash = getLocationHash();
 
       if (/^note_/.test(hash) && this.currentValue !== DISCUSSION_FILTERS_DEFAULT_VALUE) {
-        this.selectFilter(this.defaultValue);
+        this.selectFilter(this.defaultValue, false);
         this.toggleDropdown(); // close dropdown
         this.setTargetNoteHash(hash);
       }

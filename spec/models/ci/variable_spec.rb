@@ -10,6 +10,7 @@ describe Ci::Variable do
   describe 'validations' do
     it { is_expected.to include_module(Presentable) }
     it { is_expected.to include_module(Maskable) }
+    it { is_expected.to include_module(HasEnvironmentScope) }
     it { is_expected.to validate_uniqueness_of(:key).scoped_to(:project_id, :environment_scope).with_message(/\(\w+\) has already been taken/) }
   end
 

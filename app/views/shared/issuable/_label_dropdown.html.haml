@@ -1,4 +1,5 @@
 - project = @target_project || @project
+- edit_context = local_assigns.fetch(:edit_context, nil) || project
 - show_create = local_assigns.fetch(:show_create, true)
 - extra_options = local_assigns.fetch(:extra_options, true)
 - filter_submit = local_assigns.fetch(:filter_submit, true)
@@ -8,7 +9,7 @@
 - classes = local_assigns.fetch(:classes, [])
 - selected = local_assigns.fetch(:selected, nil)
 - dropdown_title = local_assigns.fetch(:dropdown_title, "Filter by label")
-- dropdown_data = label_dropdown_data(@project, labels: labels_filter_path_with_defaults, default_label: "Labels")
+- dropdown_data = label_dropdown_data(edit_context, labels: labels_filter_path_with_defaults(only_group_labels: edit_context.is_a?(Group)), default_label: "Labels")
 - dropdown_data.merge!(data_options)
 - label_name = local_assigns.fetch(:label_name, "Labels")
 - no_default_styles = local_assigns.fetch(:no_default_styles, false)

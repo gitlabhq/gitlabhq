@@ -1,0 +1,21 @@
+- form_field = local_assigns.fetch(:form_field, nil)
+- variable = local_assigns.fetch(:variable, nil)
+
+- if @project
+  - environment_scope = variable&.environment_scope || '*'
+  - environment_scope_label = environment_scope == '*' ? s_('CiVariable|All environments') : environment_scope
+
+  %input{ type: "hidden", name: "#{form_field}[variables_attributes][][environment_scope]", value: environment_scope }
+  = dropdown_tag(environment_scope_label,
+                 options: { wrapper_class: 'ci-variable-body-item js-variable-environment-dropdown-wrapper',
+                            toggle_class: 'js-variable-environment-toggle wide',
+                            filter: true,
+                            dropdown_class: "dropdown-menu-selectable",
+                            placeholder: s_('CiVariable|Search environments'),
+                            footer_content: true,
+                            data: { selected: environment_scope } }) do
+    %ul.dropdown-footer-list
+      %li
+        %button{ class: "dropdown-create-new-item-button js-dropdown-create-new-item", title: s_('CiVariable|New environment') }
+          = s_('CiVariable|Create wildcard')
+          %code

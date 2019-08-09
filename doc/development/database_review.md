@@ -90,12 +90,20 @@ and details for a database reviewer:
   - Ensure that migrations execute in a transaction or only contain
     concurrent index/foreign key helpers (with transactions disabled)
   - Check consistency with `db/schema.rb` and that migrations are [reversible](migration_style_guide.md#reversibility)
+  - Check queries timing (If any): Queries executed in a migration
+    need to fit comfortable within `15s` - preferably much less than that - on GitLab.com.
+- Check [background migrations](background_migrations.md):
   - For data migrations, establish a time estimate for execution
-- Check post deploy migration
-  - Make sure we can expect post deploy migrations to finish within 1 hour max.
-- Check background migrations
+  - They should only be used when migrating data in larger tables.
+    - If a single `update` is below than `1s` the query can be placed
+      directly in a regular migration (inside `db/migrate`).
   - Review queries (for example, make sure batch sizes are fine)
   - Establish a time estimate for execution
+  - Because execution time can be longer than for a regular migration,
+    it's suggested to treat background migrations as post migrations:
+    place them in `db/post_migrate` instead of `db/migrate`. Keep in mind
+    that post migrations are executed post-deployment in production.
+- Check [timing guidelines for migrations](#timing-guidelines-for-migrations)
 - Query performance
   - Check for any obviously complex queries and queries the author specifically
     points out for review (if any)
@@ -110,3 +118,17 @@ and details for a database reviewer:
     (eg indexes, columns), you can use a [one-off instance from the restore
     pipeline](https://ops.gitlab.net/gitlab-com/gl-infra/gitlab-restore/postgres-gprd)
     in order to establish a proper testing environment.
+
+### Timing guidelines for migrations
+
+In general, migrations for a single deploy shouldn't take longer than
+1 hour for GitLab.com. The following guidelines are not hard rules, they were
+estimated to keep migration timing to a minimum.
+
+NOTE: **Note:** Keep in mind that all runtimes should be measured against GitLab.com.
+
+| Migration Type | Execution Time Recommended | Notes |
+|----|----|---|
+| Regular migrations on `db/migrate` | `3 minutes` | A valid exception  are index creation as this can take a long time. |
+| Post migrations on `db/post_migrate` | `10 minutes` | |
+| Background migrations | --- | Since these are suitable for larger tables, it's not possible to set a precise timing guideline, however, any query must stay well below `10s` of execution time. |

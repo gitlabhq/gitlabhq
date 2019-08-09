@@ -17,15 +17,20 @@
 - contributed_projects_illustration_path = 'illustrations/profile-page/contributed-projects.svg'
 - contributed_projects_current_user_empty_message_header = s_('UserProfile|Explore public groups to find projects to contribute to.')
 - contributed_projects_visitor_empty_message = s_('UserProfile|This user hasn\'t contributed to any projects')
+- starred_projects_illustration_path = 'illustrations/starred_empty.svg'
+- starred_projects_current_user_empty_message_header = s_('UserProfile|Star projects to track their progress and show your appreciation.')
+- starred_projects_visitor_empty_message = s_('UserProfile|This user hasn\'t starred any projects')
 - own_projects_illustration_path = 'illustrations/profile-page/personal-project.svg'
 - own_projects_current_user_empty_message_header = s_('UserProfile|You haven\'t created any personal projects.')
 - own_projects_current_user_empty_message_description = s_('UserProfile|Your projects can be available publicly, internally, or privately, at your choice.')
 - own_projects_visitor_empty_message = s_('UserProfile|This user doesn\'t have any personal projects')
 - explore_page_empty_message = s_('UserProfile|Explore public groups to find projects to contribute to.')
-- primary_button_label = _('New project')
-- primary_button_link = new_project_path
-- secondary_button_label = _('Explore groups')
-- secondary_button_link = explore_groups_path
+- new_project_button_label = _('New project')
+- new_project_button_link = new_project_path
+- explore_projects_button_label = _('Explore projects')
+- explore_projects_button_link = explore_projects_path
+- explore_groups_button_label = _('Explore groups')
+- explore_groups_button_link = explore_groups_path
 
 .js-projects-list-holder
   - if any_projects?(projects)
@@ -48,15 +53,21 @@
     - if @contributed_projects
       = render partial: 'shared/empty_states/profile_tabs', locals: { illustration_path: contributed_projects_illustration_path,
         current_user_empty_message_header: contributed_projects_current_user_empty_message_header,
-        primary_button_label: primary_button_label,
-        primary_button_link: primary_button_link,
-        secondary_button_label: secondary_button_label,
-        secondary_button_link: secondary_button_link,
+        primary_button_label: new_project_button_label,
+        primary_button_link: new_project_button_link,
+        secondary_button_label: explore_groups_button_label,
+        secondary_button_link: explore_groups_button_link,
         visitor_empty_message: contributed_projects_visitor_empty_message }
+    - elsif @starred_projects
+      = render partial: 'shared/empty_states/profile_tabs', locals: { illustration_path: starred_projects_illustration_path,
+        current_user_empty_message_header: starred_projects_current_user_empty_message_header,
+        primary_button_label: explore_projects_button_label,
+        primary_button_link: explore_projects_button_link,
+        visitor_empty_message: starred_projects_visitor_empty_message }
     - else
       = render partial: 'shared/empty_states/profile_tabs', locals: { illustration_path: own_projects_illustration_path,
         current_user_empty_message_header: own_projects_current_user_empty_message_header,
         current_user_empty_message_description: own_projects_current_user_empty_message_description,
-        primary_button_label: primary_button_label,
-        primary_button_link: primary_button_link,
+        primary_button_label: new_project_button_label,
+        primary_button_link: new_project_button_link,
         visitor_empty_message: defined?(explore_page) && explore_page ? explore_page_empty_message : own_projects_visitor_empty_message }

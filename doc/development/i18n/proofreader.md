@@ -80,6 +80,7 @@ are very appreciative of the work done by translators and proofreaders!
 - Russian
   - Nikita Grylov - [GitLab](https://gitlab.com/nixel2007), [Crowdin](https://crowdin.com/profile/nixel2007)
   - Alexy Lustin - [GitLab](https://gitlab.com/allustin), [Crowdin](https://crowdin.com/profile/lustin)
+  - Mark Minakou - [GitLab](https://gitlab.com/sandzhaj), [Crowdin](https://crowdin.com/profile/sandzhaj)
   - NickVolynkin - [Crowdin](https://crowdin.com/profile/NickVolynkin)
 - Serbian (Cyrillic)
   - Proofreaders needed.

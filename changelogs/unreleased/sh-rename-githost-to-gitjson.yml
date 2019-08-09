@@ -1,0 +1,5 @@
+---
+title: Rename githost.log -> git_json.log
+merge_request: 31634
+author:
+type: changed

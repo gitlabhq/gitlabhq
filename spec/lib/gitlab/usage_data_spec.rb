@@ -62,6 +62,9 @@ describe Gitlab::UsageData do
       ))
 
       expect(subject).to include(
+        snippet_create: a_kind_of(Integer),
+        snippet_update: a_kind_of(Integer),
+        snippet_comment: a_kind_of(Integer),
         wiki_pages_create: a_kind_of(Integer),
         wiki_pages_update: a_kind_of(Integer),
         wiki_pages_delete: a_kind_of(Integer),

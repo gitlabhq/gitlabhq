@@ -13,7 +13,8 @@ describe Gitlab::ContentSecurityPolicy::ConfigLoader do
         child_src: "'self' https://child.example.com",
         default_src: "'self' https://other.example.com",
         script_src: "'self'  https://script.exammple.com ",
-        worker_src: "data:  https://worker.example.com"
+        worker_src: "data:  https://worker.example.com",
+        report_uri: "http://example.com"
       }
     }
   end
@@ -46,6 +47,7 @@ describe Gitlab::ContentSecurityPolicy::ConfigLoader do
       expect(policy.directives['default-src']).to eq(expected_config(:default_src))
       expect(policy.directives['child-src']).to eq(expected_config(:child_src))
       expect(policy.directives['worker-src']).to eq(expected_config(:worker_src))
+      expect(policy.directives['report-uri']).to eq(expected_config(:report_uri))
     end
 
     it 'ignores malformed policy statements' do

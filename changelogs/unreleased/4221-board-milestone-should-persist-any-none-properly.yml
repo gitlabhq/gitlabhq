@@ -1,5 +1,0 @@
----
-title: For milestone filters, treat Any as No Filter (using null). Use -1 for No Milestone
-merge_request:
-author:
-type: changed

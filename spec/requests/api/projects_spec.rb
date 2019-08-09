@@ -838,6 +838,28 @@ describe API::Projects do
     end
   end
 
+  describe 'GET /users/:user_id/starred_projects/' do
+    before do
+      user3.update(starred_projects: [project, project2, project3])
+    end
+
+    it 'returns error when user not found' do
+      get api('/users/9999/starred_projects/')
+
+      expect(response).to have_gitlab_http_status(404)
+      expect(json_response['message']).to eq('404 User Not Found')
+    end
+
+    it 'returns projects filtered by user' do
+      get api("/users/#{user3.id}/starred_projects/", user)
+
+      expect(response).to have_gitlab_http_status(200)
+      expect(response).to include_pagination_headers
+      expect(json_response).to be_an Array
+      expect(json_response.map { |project| project['id'] }).to contain_exactly(project.id, project2.id, project3.id)
+    end
+  end
+
   describe 'POST /projects/user/:id' do
     it 'creates new project without path but with name and return 201' do
       expect { post api("/projects/user/#{user.id}", admin), params: { name: 'Foo Project' } }.to change { Project.count }.by(1)
@@ -2144,6 +2166,85 @@ describe API::Projects do
         expect { post api("/projects/#{project.id}/unstar", user) }.not_to change { project.reload.star_count }
 
         expect(response).to have_gitlab_http_status(304)
+      end
+    end
+  end
+
+  describe 'GET /projects/:id/starrers' do
+    shared_examples_for 'project starrers response' do
+      it 'returns an array of starrers' do
+        get api("/projects/#{public_project.id}/starrers", current_user)
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(json_response[0]['starred_since']).to be_present
+        expect(json_response[0]['user']).to be_present
+      end
+
+      it 'returns the proper security headers' do
+        get api('/projects/1/starrers', current_user)
+
+        expect(response).to include_security_headers
+      end
+    end
+
+    let(:public_project) { create(:project, :public) }
+    let(:private_user) { create(:user, private_profile: true) }
+
+    before do
+      user.update(starred_projects: [public_project])
+      private_user.update(starred_projects: [public_project])
+    end
+
+    it 'returns not_found(404) for not existing project' do
+      get api("/projects/9999999999/starrers", user)
+
+      expect(response).to have_gitlab_http_status(:not_found)
+    end
+
+    context 'public project without user' do
+      it_behaves_like 'project starrers response' do
+        let(:current_user) { nil }
+      end
+
+      it 'returns only starrers with a public profile' do
+        get api("/projects/#{public_project.id}/starrers", nil)
+
+        user_ids = json_response.map { |s| s['user']['id'] }
+        expect(user_ids).to include(user.id)
+        expect(user_ids).not_to include(private_user.id)
+      end
+    end
+
+    context 'public project with user with private profile' do
+      it_behaves_like 'project starrers response' do
+        let(:current_user) { private_user }
+      end
+
+      it 'returns current user with a private profile' do
+        get api("/projects/#{public_project.id}/starrers", private_user)
+
+        user_ids = json_response.map { |s| s['user']['id'] }
+        expect(user_ids).to include(user.id, private_user.id)
+      end
+    end
+
+    context 'private project' do
+      context 'with unauthorized user' do
+        it 'returns not_found for existing but unauthorized project' do
+          get api("/projects/#{project3.id}/starrers", user3)
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      context 'without user' do
+        it 'returns not_found for existing but unauthorized project' do
+          get api("/projects/#{project3.id}/starrers", nil)
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
       end
     end
   end

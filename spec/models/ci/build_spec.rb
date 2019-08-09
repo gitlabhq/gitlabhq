@@ -2340,6 +2340,32 @@ describe Ci::Build do
           it_behaves_like 'containing environment variables'
         end
       end
+
+      context 'when project has an environment specific variable' do
+        let(:environment_specific_variable) do
+          { key: 'MY_STAGING_ONLY_VARIABLE', value: 'environment_specific_variable', public: false, masked: false }
+        end
+
+        before do
+          create(:ci_variable, environment_specific_variable.slice(:key, :value)
+            .merge(project: project, environment_scope: 'stag*'))
+        end
+
+        it_behaves_like 'containing environment variables'
+
+        context 'when environment scope does not match build environment' do
+          it { is_expected.not_to include(environment_specific_variable) }
+        end
+
+        context 'when environment scope matches build environment' do
+          before do
+            create(:environment, name: 'staging', project: project)
+            build.update!(environment: 'staging')
+          end
+
+          it { is_expected.to include(environment_specific_variable) }
+        end
+      end
     end
 
     context 'when build started manually' do

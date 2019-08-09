@@ -7,6 +7,7 @@ describe CacheableAttributes do
     Class.new do
       include ActiveModel::Model
       extend ActiveModel::Callbacks
+      include ActiveModel::AttributeMethods
       define_model_callbacks :commit
       include CacheableAttributes
 
@@ -34,44 +35,60 @@ describe CacheableAttributes do
     end
   end
 
+  before do
+    stub_const("MinimalTestClass", minimal_test_class)
+  end
+
   shared_context 'with defaults' do
     before do
-      minimal_test_class.define_singleton_method(:defaults) do
+      MinimalTestClass.define_singleton_method(:defaults) do
         { foo: 'a', bar: 'b', baz: 'c' }
       end
     end
   end
 
+  describe '.expire', :use_clean_rails_memory_store_caching, :request_store do
+    it 'wipes the cache' do
+      obj = MinimalTestClass.new
+      obj.cache!
+      expect(MinimalTestClass.cached).not_to eq(nil)
+
+      MinimalTestClass.expire
+
+      expect(MinimalTestClass.cached).to eq(nil)
+    end
+  end
+
   describe '.current_without_cache' do
     it 'defaults to last' do
-      expect(minimal_test_class.current_without_cache).to eq(minimal_test_class.last)
+      expect(MinimalTestClass.current_without_cache).to eq(MinimalTestClass.last)
     end
 
     it 'can be overridden' do
-      minimal_test_class.define_singleton_method(:current_without_cache) do
+      MinimalTestClass.define_singleton_method(:current_without_cache) do
         first
       end
 
-      expect(minimal_test_class.current_without_cache).to eq(minimal_test_class.first)
+      expect(MinimalTestClass.current_without_cache).to eq(MinimalTestClass.first)
     end
   end
 
   describe '.cache_key' do
     it 'excludes cache attributes' do
-      expect(minimal_test_class.cache_key).to eq("TestClass:#{Gitlab::VERSION}:#{Rails.version}")
+      expect(MinimalTestClass.cache_key).to eq("TestClass:#{Gitlab::VERSION}:#{Rails.version}")
     end
   end
 
   describe '.defaults' do
     it 'defaults to {}' do
-      expect(minimal_test_class.defaults).to eq({})
+      expect(MinimalTestClass.defaults).to eq({})
     end
 
     context 'with defaults defined' do
       include_context 'with defaults'
 
       it 'can be overridden' do
-        expect(minimal_test_class.defaults).to eq({ foo: 'a', bar: 'b', baz: 'c' })
+        expect(MinimalTestClass.defaults).to eq({ foo: 'a', bar: 'b', baz: 'c' })
       end
     end
   end
@@ -81,13 +98,13 @@ describe CacheableAttributes do
 
     context 'without any attributes given' do
       it 'intializes a new object with the defaults' do
-        expect(minimal_test_class.build_from_defaults.attributes).to eq(minimal_test_class.defaults.stringify_keys)
+        expect(MinimalTestClass.build_from_defaults.attributes).to eq(MinimalTestClass.defaults.stringify_keys)
       end
     end
 
     context 'with attributes given' do
       it 'intializes a new object with the given attributes merged into the defaults' do
-        expect(minimal_test_class.build_from_defaults(foo: 'd').attributes['foo']).to eq('d')
+        expect(MinimalTestClass.build_from_defaults(foo: 'd').attributes['foo']).to eq('d')
       end
     end
 
@@ -108,8 +125,8 @@ describe CacheableAttributes do
   describe '.current', :use_clean_rails_memory_store_caching do
     context 'redis unavailable' do
       before do
-        allow(minimal_test_class).to receive(:last).and_return(:last)
-        expect(Rails.cache).to receive(:read).with(minimal_test_class.cache_key).and_raise(Redis::BaseError)
+        allow(MinimalTestClass).to receive(:last).and_return(:last)
+        expect(Rails.cache).to receive(:read).with(MinimalTestClass.cache_key).and_raise(Redis::BaseError)
       end
 
       context 'in production environment' do
@@ -120,7 +137,7 @@ describe CacheableAttributes do
         it 'returns an uncached record and logs a warning' do
           expect(Rails.logger).to receive(:warn).with("Cached record for TestClass couldn't be loaded, falling back to uncached record: Redis::BaseError")
 
-          expect(minimal_test_class.current).to eq(:last)
+          expect(MinimalTestClass.current).to eq(:last)
         end
       end
 
@@ -132,7 +149,7 @@ describe CacheableAttributes do
         it 'returns an uncached record and logs a warning' do
           expect(Rails.logger).not_to receive(:warn)
 
-          expect { minimal_test_class.current }.to raise_error(Redis::BaseError)
+          expect { MinimalTestClass.current }.to raise_error(Redis::BaseError)
         end
       end
     end
@@ -202,7 +219,7 @@ describe CacheableAttributes do
   describe '.cached', :use_clean_rails_memory_store_caching do
     context 'when cache is cold' do
       it 'returns nil' do
-        expect(minimal_test_class.cached).to be_nil
+        expect(MinimalTestClass.cached).to be_nil
       end
     end
 

@@ -36,6 +36,22 @@ describe CreateSnippetService do
     end
   end
 
+  describe 'usage counter' do
+    let(:counter) { Gitlab::UsageDataCounters::SnippetCounter }
+
+    it 'increments count' do
+      expect do
+        create_snippet(nil, @admin, @opts)
+      end.to change { counter.read(:create) }.by 1
+    end
+
+    it 'does not increment count if create fails' do
+      expect do
+        create_snippet(nil, @admin, {})
+      end.not_to change { counter.read(:create) }
+    end
+  end
+
   def create_snippet(project, user, opts)
     CreateSnippetService.new(project, user, opts).execute
   end

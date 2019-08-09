@@ -162,7 +162,6 @@ class Project < ApplicationRecord
   has_one :bugzilla_service
   has_one :gitlab_issue_tracker_service, inverse_of: :project
   has_one :external_wiki_service
-  has_one :kubernetes_service, inverse_of: :project
   has_one :prometheus_service, inverse_of: :project
   has_one :mock_ci_service
   has_one :mock_deployment_service
@@ -1828,11 +1827,16 @@ class Project < ApplicationRecord
   end
 
   def ci_variables_for(ref:, environment: nil)
-    # EE would use the environment
-    if protected_for?(ref)
-      variables
+    result = if protected_for?(ref)
+               variables
+             else
+               variables.unprotected
+             end
+
+    if environment
+      result.on_environment(environment)
     else
-      variables.unprotected
+      result.where(environment_scope: '*')
     end
   end
 

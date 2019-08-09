@@ -1,5 +1,5 @@
 import { comment, login, mrForm } from '../components';
-import { localStorage, COMMENT_BOX, LOGIN, MR_ID } from '../shared';
+import { localStorage, COMMENT_BOX, LOGIN, MR_ID, STORAGE_MR_ID, STORAGE_TOKEN } from '../shared';
 
 const state = {
   browser: '',
@@ -74,8 +74,8 @@ const initializeState = (wind, doc) => {
 };
 
 const getInitialView = () => {
-  const token = localStorage.getItem('token');
-  const mrId = localStorage.getItem('mergeRequestId');
+  const token = localStorage.getItem(STORAGE_TOKEN);
+  const mrId = localStorage.getItem(STORAGE_MR_ID);
 
   if (token) {
     state.token = token;

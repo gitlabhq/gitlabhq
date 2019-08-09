@@ -81,7 +81,7 @@ export default {
         :variables-settings-url="variablesSettingsUrl"
       />
       <div class="text-content">
-        <div v-if="action" class="text-center">
+        <div v-if="action && !shouldRenderManualVariables" class="text-center">
           <gl-link
             :href="action.path"
             :data-method="action.method"

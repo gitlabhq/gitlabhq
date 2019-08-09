@@ -16,7 +16,8 @@
     "unit": { "type": "string" },
     "label": { "type": "string" },
     "track": { "type": "string" },
-    "prometheus_endpoint_path": { "type": "string" }
+    "prometheus_endpoint_path": { "type": "string" },
+    "metric_id": { "type": "number" }
   },
   "additionalProperties": false
 }

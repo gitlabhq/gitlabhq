@@ -224,7 +224,7 @@ describe('AjaxFormVariableList', () => {
 
   describe('maskableRegex', () => {
     it('takes in the regex provided by the data attribute', () => {
-      expect(container.dataset.maskableRegex).toBe('^[a-zA-Z0-9_+=/-]{8,}$');
+      expect(container.dataset.maskableRegex).toBe('^[a-zA-Z0-9_+=/@:-]{8,}$');
       expect(ajaxVariableList.maskableRegex).toBe(container.dataset.maskableRegex);
     });
   });

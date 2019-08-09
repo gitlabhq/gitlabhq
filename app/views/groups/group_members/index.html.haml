@@ -36,11 +36,11 @@
         .d-flex.flex-column.flex-md-row.row-content-block.second-block
           %span.flex-grow-1.align-self-md-center.col-form-label
             = _("Members with access to %{strongStart}%{group_name}%{strongEnd}").html_safe % { group_name: @group.name, strongStart: '<strong>', strongEnd: '</strong>' }
-          = form_tag group_group_members_path(@group), method: :get, class: 'form-inline member-search-form' do
+          = form_tag group_group_members_path(@group), method: :get, class: 'form-inline user-search-form' do
             .form-group.flex-grow
               .position-relative.mr-md-2
                 = search_field_tag :search, params[:search], { placeholder: _('Search'), class: 'form-control', spellcheck: false }
-                %button.member-search-btn.border-left{ type: "submit", "aria-label" => _("Submit search") }
+                %button.user-search-btn.border-left{ type: "submit", "aria-label" => _("Submit search") }
                   = icon("search")
               - if can_manage_members
                 = label_tag '2fa', '2FA', class: 'col-form-label label-bold pr-md-2'
@@ -56,11 +56,11 @@
           .d-flex.flex-column.flex-md-row.row-content-block.second-block
             %span.flex-grow-1
               = _("Members with pending access to %{strongStart}%{group_name}%{strongEnd}").html_safe % { group_name: @group.name, strongStart: '<strong>', strongEnd: '</strong>' }
-            = form_tag group_group_members_path(@group), method: :get, class: 'form-inline member-search-form' do
+            = form_tag group_group_members_path(@group), method: :get, class: 'form-inline user-search-form' do
               .form-group
                 .position-relative.mr-md-2
                   = search_field_tag :search_invited, params[:search_invited], { placeholder: _('Search'), class: 'form-control', spellcheck: false }
-                  %button.member-search-btn.border-left{ type: "submit", "aria-label" => _("Submit search") }
+                  %button.user-search-btn.border-left{ type: "submit", "aria-label" => _("Submit search") }
                     = icon("search")
           %ul.content-list.members-list
             = render partial: 'shared/members/member', collection: @invited_members, as: :member

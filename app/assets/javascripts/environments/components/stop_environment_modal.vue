@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable @gitlab/vue-i18n/no-bare-strings */
 import { GlTooltipDirective } from '@gitlab/ui';
 import GlModal from '~/vue_shared/components/gl_modal.vue';
 import { s__, sprintf } from '~/locale';

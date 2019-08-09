@@ -1,0 +1,5 @@
+---
+title: Add missing report-uri to CSP config
+merge_request: 31593
+author:
+type: fixed

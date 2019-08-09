@@ -19,7 +19,11 @@ module API
       end
 
       def get_labels(parent, entity)
-        present paginate(available_labels_for(parent)), with: entity, current_user: current_user, parent: parent
+        present paginate(available_labels_for(parent)),
+                with: entity,
+                current_user: current_user,
+                parent: parent,
+                with_counts: params[:with_counts]
       end
 
       def create_label(parent, entity)

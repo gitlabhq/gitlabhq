@@ -1,0 +1,19 @@
+- starrer = local_assigns.fetch(:starrer)
+
+.col-lg-3.col-md-4.col-sm-12
+  .card
+    .card-body
+      = image_tag avatar_icon_for_user(starrer.user, 40), class: "avatar s40", alt: ''
+
+      .user-info
+        .block-truncated
+          = link_to starrer.user.name, user_path(starrer.user), class: 'user js-user-link', data: { user_id: starrer.user.id }
+
+        .block-truncated
+          %span.cgray= starrer.user.to_reference
+
+          - if starrer.user == current_user
+            %span.badge.badge-success.prepend-left-5= _("It's you")
+
+        .block-truncated
+          = time_ago_with_tooltip(starrer.starred_since)

@@ -98,5 +98,25 @@ describe('Job Log', () => {
         .then(done)
         .catch(done.fail);
     });
+
+    it('toggles hidden class to the sibilings rows when header section is clicked', done => {
+      vm.$nextTick()
+        .then(() => {
+          const { section } = vm.$el.querySelector('.js-section-header').dataset;
+          vm.$el.querySelector('.js-section-header').click();
+
+          vm.$el.querySelectorAll(`.js-s-${section}:not(.js-section-header)`).forEach(el => {
+            expect(el.classList.contains('hidden')).toEqual(true);
+          });
+
+          vm.$el.querySelector('.js-section-header').click();
+
+          vm.$el.querySelectorAll(`.js-s-${section}:not(.js-section-header)`).forEach(el => {
+            expect(el.classList.contains('hidden')).toEqual(false);
+          });
+        })
+        .then(done)
+        .catch(done.fail);
+    });
   });
 });

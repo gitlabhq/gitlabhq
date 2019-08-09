@@ -31,7 +31,159 @@ describe Issuable::BulkUpdateService do
     end
   end
 
-  context 'with project issuables' do
+  shared_examples 'updating labels' do
+    def create_issue_with_labels(labels)
+      create(:labeled_issue, project: project, labels: labels)
+    end
+
+    let(:issue_all_labels) { create_issue_with_labels([bug, regression, merge_requests]) }
+    let(:issue_bug_and_regression) { create_issue_with_labels([bug, regression]) }
+    let(:issue_bug_and_merge_requests) { create_issue_with_labels([bug, merge_requests]) }
+    let(:issue_no_labels) { create(:issue, project: project) }
+    let(:issues) { [issue_all_labels, issue_bug_and_regression, issue_bug_and_merge_requests, issue_no_labels] }
+
+    let(:labels) { [] }
+    let(:add_labels) { [] }
+    let(:remove_labels) { [] }
+
+    let(:bulk_update_params) do
+      {
+        label_ids:        labels.map(&:id),
+        add_label_ids:    add_labels.map(&:id),
+        remove_label_ids: remove_labels.map(&:id)
+      }
+    end
+
+    before do
+      bulk_update(issues, bulk_update_params)
+    end
+
+    context 'when label_ids are passed' do
+      let(:issues) { [issue_all_labels, issue_no_labels] }
+      let(:labels) { [bug, regression] }
+
+      it 'updates the labels of all issues passed to the labels passed' do
+        expect(issues.map(&:reload).map(&:label_ids)).to all(match_array(labels.map(&:id)))
+      end
+
+      it 'does not update issues not passed in' do
+        expect(issue_bug_and_regression.label_ids).to contain_exactly(bug.id, regression.id)
+      end
+
+      context 'when those label IDs are empty' do
+        let(:labels) { [] }
+
+        it 'updates the issues passed to have no labels' do
+          expect(issues.map(&:reload).map(&:label_ids)).to all(be_empty)
+        end
+      end
+    end
+
+    context 'when add_label_ids are passed' do
+      let(:issues) { [issue_all_labels, issue_bug_and_merge_requests, issue_no_labels] }
+      let(:add_labels) { [bug, regression, merge_requests] }
+
+      it 'adds those label IDs to all issues passed' do
+        expect(issues.map(&:reload).map(&:label_ids)).to all(include(*add_labels.map(&:id)))
+      end
+
+      it 'does not update issues not passed in' do
+        expect(issue_bug_and_regression.label_ids).to contain_exactly(bug.id, regression.id)
+      end
+    end
+
+    context 'when remove_label_ids are passed' do
+      let(:issues) { [issue_all_labels, issue_bug_and_merge_requests, issue_no_labels] }
+      let(:remove_labels) { [bug, regression, merge_requests] }
+
+      it 'removes those label IDs from all issues passed' do
+        expect(issues.map(&:reload).map(&:label_ids)).to all(be_empty)
+      end
+
+      it 'does not update issues not passed in' do
+        expect(issue_bug_and_regression.label_ids).to contain_exactly(bug.id, regression.id)
+      end
+    end
+
+    context 'when add_label_ids and remove_label_ids are passed' do
+      let(:issues) { [issue_all_labels, issue_bug_and_merge_requests, issue_no_labels] }
+      let(:add_labels) { [bug] }
+      let(:remove_labels) { [merge_requests] }
+
+      it 'adds the label IDs to all issues passed' do
+        expect(issues.map(&:reload).map(&:label_ids)).to all(include(bug.id))
+      end
+
+      it 'removes the label IDs from all issues passed' do
+        expect(issues.map(&:reload).flat_map(&:label_ids)).not_to include(merge_requests.id)
+      end
+
+      it 'does not update issues not passed in' do
+        expect(issue_bug_and_regression.label_ids).to contain_exactly(bug.id, regression.id)
+      end
+    end
+
+    context 'when add_label_ids and label_ids are passed' do
+      let(:issues) { [issue_all_labels, issue_bug_and_regression, issue_bug_and_merge_requests] }
+      let(:labels) { [merge_requests] }
+      let(:add_labels) { [regression] }
+
+      it 'adds the label IDs to all issues passed' do
+        expect(issues.map(&:reload).map(&:label_ids)).to all(include(regression.id))
+      end
+
+      it 'ignores the label IDs parameter' do
+        expect(issues.map(&:reload).map(&:label_ids)).to all(include(bug.id))
+      end
+
+      it 'does not update issues not passed in' do
+        expect(issue_no_labels.label_ids).to be_empty
+      end
+    end
+
+    context 'when remove_label_ids and label_ids are passed' do
+      let(:issues) { [issue_no_labels, issue_bug_and_regression] }
+      let(:labels) { [merge_requests] }
+      let(:remove_labels) { [regression] }
+
+      it 'removes the label IDs from all issues passed' do
+        expect(issues.map(&:reload).flat_map(&:label_ids)).not_to include(regression.id)
+      end
+
+      it 'ignores the label IDs parameter' do
+        expect(issues.map(&:reload).flat_map(&:label_ids)).not_to include(merge_requests.id)
+      end
+
+      it 'does not update issues not passed in' do
+        expect(issue_all_labels.label_ids).to contain_exactly(bug.id, regression.id, merge_requests.id)
+      end
+    end
+
+    context 'when add_label_ids, remove_label_ids, and label_ids are passed' do
+      let(:issues) { [issue_bug_and_merge_requests, issue_no_labels] }
+      let(:labels) { [regression] }
+      let(:add_labels) { [bug] }
+      let(:remove_labels) { [merge_requests] }
+
+      it 'adds the label IDs to all issues passed' do
+        expect(issues.map(&:reload).map(&:label_ids)).to all(include(bug.id))
+      end
+
+      it 'removes the label IDs from all issues passed' do
+        expect(issues.map(&:reload).flat_map(&:label_ids)).not_to include(merge_requests.id)
+      end
+
+      it 'ignores the label IDs parameter' do
+        expect(issues.map(&:reload).flat_map(&:label_ids)).not_to include(regression.id)
+      end
+
+      it 'does not update issues not passed in' do
+        expect(issue_bug_and_regression.label_ids).to contain_exactly(bug.id, regression.id)
+      end
+    end
+  end
+
+  context 'with issuables at a project level' do
     describe 'close issues' do
       let(:issues) { create_list(:issue, 2, project: project) }
 
@@ -178,159 +330,11 @@ describe Issuable::BulkUpdateService do
     end
 
     describe 'updating labels' do
-      def create_issue_with_labels(labels)
-        create(:labeled_issue, project: project, labels: labels)
-      end
-
       let(:bug) { create(:label, project: project) }
       let(:regression) { create(:label, project: project) }
       let(:merge_requests) { create(:label, project: project) }
 
-      let(:issue_all_labels) { create_issue_with_labels([bug, regression, merge_requests]) }
-      let(:issue_bug_and_regression) { create_issue_with_labels([bug, regression]) }
-      let(:issue_bug_and_merge_requests) { create_issue_with_labels([bug, merge_requests]) }
-      let(:issue_no_labels) { create(:issue, project: project) }
-      let(:issues) { [issue_all_labels, issue_bug_and_regression, issue_bug_and_merge_requests, issue_no_labels] }
-
-      let(:labels) { [] }
-      let(:add_labels) { [] }
-      let(:remove_labels) { [] }
-
-      let(:bulk_update_params) do
-        {
-          label_ids:        labels.map(&:id),
-          add_label_ids:    add_labels.map(&:id),
-          remove_label_ids: remove_labels.map(&:id)
-        }
-      end
-
-      before do
-        bulk_update(issues, bulk_update_params)
-      end
-
-      context 'when label_ids are passed' do
-        let(:issues) { [issue_all_labels, issue_no_labels] }
-        let(:labels) { [bug, regression] }
-
-        it 'updates the labels of all issues passed to the labels passed' do
-          expect(issues.map(&:reload).map(&:label_ids)).to all(match_array(labels.map(&:id)))
-        end
-
-        it 'does not update issues not passed in' do
-          expect(issue_bug_and_regression.label_ids).to contain_exactly(bug.id, regression.id)
-        end
-
-        context 'when those label IDs are empty' do
-          let(:labels) { [] }
-
-          it 'updates the issues passed to have no labels' do
-            expect(issues.map(&:reload).map(&:label_ids)).to all(be_empty)
-          end
-        end
-      end
-
-      context 'when add_label_ids are passed' do
-        let(:issues) { [issue_all_labels, issue_bug_and_merge_requests, issue_no_labels] }
-        let(:add_labels) { [bug, regression, merge_requests] }
-
-        it 'adds those label IDs to all issues passed' do
-          expect(issues.map(&:reload).map(&:label_ids)).to all(include(*add_labels.map(&:id)))
-        end
-
-        it 'does not update issues not passed in' do
-          expect(issue_bug_and_regression.label_ids).to contain_exactly(bug.id, regression.id)
-        end
-      end
-
-      context 'when remove_label_ids are passed' do
-        let(:issues) { [issue_all_labels, issue_bug_and_merge_requests, issue_no_labels] }
-        let(:remove_labels) { [bug, regression, merge_requests] }
-
-        it 'removes those label IDs from all issues passed' do
-          expect(issues.map(&:reload).map(&:label_ids)).to all(be_empty)
-        end
-
-        it 'does not update issues not passed in' do
-          expect(issue_bug_and_regression.label_ids).to contain_exactly(bug.id, regression.id)
-        end
-      end
-
-      context 'when add_label_ids and remove_label_ids are passed' do
-        let(:issues) { [issue_all_labels, issue_bug_and_merge_requests, issue_no_labels] }
-        let(:add_labels) { [bug] }
-        let(:remove_labels) { [merge_requests] }
-
-        it 'adds the label IDs to all issues passed' do
-          expect(issues.map(&:reload).map(&:label_ids)).to all(include(bug.id))
-        end
-
-        it 'removes the label IDs from all issues passed' do
-          expect(issues.map(&:reload).flat_map(&:label_ids)).not_to include(merge_requests.id)
-        end
-
-        it 'does not update issues not passed in' do
-          expect(issue_bug_and_regression.label_ids).to contain_exactly(bug.id, regression.id)
-        end
-      end
-
-      context 'when add_label_ids and label_ids are passed' do
-        let(:issues) { [issue_all_labels, issue_bug_and_regression, issue_bug_and_merge_requests] }
-        let(:labels) { [merge_requests] }
-        let(:add_labels) { [regression] }
-
-        it 'adds the label IDs to all issues passed' do
-          expect(issues.map(&:reload).map(&:label_ids)).to all(include(regression.id))
-        end
-
-        it 'ignores the label IDs parameter' do
-          expect(issues.map(&:reload).map(&:label_ids)).to all(include(bug.id))
-        end
-
-        it 'does not update issues not passed in' do
-          expect(issue_no_labels.label_ids).to be_empty
-        end
-      end
-
-      context 'when remove_label_ids and label_ids are passed' do
-        let(:issues) { [issue_no_labels, issue_bug_and_regression] }
-        let(:labels) { [merge_requests] }
-        let(:remove_labels) { [regression] }
-
-        it 'removes the label IDs from all issues passed' do
-          expect(issues.map(&:reload).flat_map(&:label_ids)).not_to include(regression.id)
-        end
-
-        it 'ignores the label IDs parameter' do
-          expect(issues.map(&:reload).flat_map(&:label_ids)).not_to include(merge_requests.id)
-        end
-
-        it 'does not update issues not passed in' do
-          expect(issue_all_labels.label_ids).to contain_exactly(bug.id, regression.id, merge_requests.id)
-        end
-      end
-
-      context 'when add_label_ids, remove_label_ids, and label_ids are passed' do
-        let(:issues) { [issue_bug_and_merge_requests, issue_no_labels] }
-        let(:labels) { [regression] }
-        let(:add_labels) { [bug] }
-        let(:remove_labels) { [merge_requests] }
-
-        it 'adds the label IDs to all issues passed' do
-          expect(issues.map(&:reload).map(&:label_ids)).to all(include(bug.id))
-        end
-
-        it 'removes the label IDs from all issues passed' do
-          expect(issues.map(&:reload).flat_map(&:label_ids)).not_to include(merge_requests.id)
-        end
-
-        it 'ignores the label IDs parameter' do
-          expect(issues.map(&:reload).flat_map(&:label_ids)).not_to include(regression.id)
-        end
-
-        it 'does not update issues not passed in' do
-          expect(issue_bug_and_regression.label_ids).to contain_exactly(bug.id, regression.id)
-        end
-      end
+      it_behaves_like 'updating labels'
     end
 
     describe 'subscribe to issues' do
@@ -360,7 +364,7 @@ describe Issuable::BulkUpdateService do
     end
   end
 
-  context 'with group issuables ' do
+  context 'with issuables at a group level' do
     let(:group) { create(:group) }
 
     describe 'updating milestones' do
@@ -386,6 +390,19 @@ describe Issuable::BulkUpdateService do
 
         it_behaves_like 'updates milestones'
       end
+    end
+
+    describe 'updating labels' do
+      let(:project)        { create(:project, :repository, group: group) }
+      let(:bug)            { create(:group_label, group: group) }
+      let(:regression)     { create(:group_label, group: group) }
+      let(:merge_requests) { create(:group_label, group: group) }
+
+      before do
+        group.add_reporter(user)
+      end
+
+      it_behaves_like 'updating labels'
     end
   end
 end

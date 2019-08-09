@@ -97,6 +97,22 @@ have a [start or due date](#start-date-and-due-date), then you can see a
 
 Drag and drop to reorder issues and child epics. New issues and child epics added to an epic appear at the top of the list.
 
+## Updating epics
+
+### Using bulk editing
+
+To apply labels across multiple epics:
+
+1. Go to the Epics list.
+1. Click **Edit epics**.
+    - Checkboxes will appear beside each epic.
+    - A sidebar on the right-hand side will appear, with an editable field for labels.
+1. Check the checkbox beside each epic to be edited.
+1. Select the desired labels.
+1. Click **Update all**.
+
+![bulk editing](img/bulk_editing.png)
+
 ## Deleting an epic
 
 NOTE: **Note:**

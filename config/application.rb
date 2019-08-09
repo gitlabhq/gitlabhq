@@ -105,10 +105,23 @@ module Gitlab
     # - Sentry DSN (:sentry_dsn)
     # - File content from Web Editor (:content)
     # - Jira shared secret (:sharedSecret)
+    # - Titles, bodies, and descriptions for notes, issues, etc.
     #
-    # NOTE: It is **IMPORTANT** to also update gitlab-workhorse's filter when adding parameters here to not
-    #       introduce another security vulnerability: https://gitlab.com/gitlab-org/gitlab-workhorse/issues/182
-    config.filter_parameters += [/token$/, /password/, /secret/, /key$/, /^note$/, /^text$/]
+    # NOTE: It is **IMPORTANT** to also update labkit's filter when
+    #       adding parameters here to not introduce another security
+    #       vulnerability:
+    #       https://gitlab.com/gitlab-org/labkit/blob/master/mask/matchers.go
+    config.filter_parameters += [
+      /token$/,
+      /password/,
+      /secret/,
+      /key$/,
+      /^body$/,
+      /^description$/,
+      /^note$/,
+      /^text$/,
+      /^title$/
+    ]
     config.filter_parameters += %i(
       certificate
       encrypted_key

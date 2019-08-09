@@ -3,6 +3,8 @@ import { __, sprintf } from '~/locale';
 import tooltip from '~/vue_shared/directives/tooltip';
 
 export default {
+  // name: 'Assignees' is a false positive: https://gitlab.com/gitlab-org/frontend/eslint-plugin-i18n/issues/26#possible-false-positives
+  // eslint-disable-next-line @gitlab/i18n/no-non-i18n-strings
   name: 'Assignees',
   directives: {
     tooltip,

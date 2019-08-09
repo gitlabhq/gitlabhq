@@ -36,6 +36,7 @@ module Gitlab
             description: description_for(release),
             created_at: release.created_at,
             updated_at: release.updated_at,
+            released_at: release.published_at,
             project_id: project.id
           }
         end

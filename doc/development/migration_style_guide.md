@@ -10,9 +10,7 @@ migrations are written carefully, can be applied online and adhere to the style
 guide below.
 
 Migrations are **not** allowed to require GitLab installations to be taken
-offline unless _absolutely necessary_. Downtime assumptions should be based on
-the behaviour of a migration when performed using PostgreSQL, as various
-operations in MySQL may require downtime without there being alternatives.
+offline unless _absolutely necessary_.
 
 When downtime is necessary the migration has to be approved by:
 
@@ -343,10 +341,7 @@ class AddOptionsToBuildMetadata < ActiveRecord::Migration[5.0]
 end
 ```
 
-On MySQL the `JSON` and `JSONB` is translated to `TEXT 1MB`, as `JSONB` is PostgreSQL only feature.
-
-For above reason you have to use a serializer to provide a translation layer
-in order to support PostgreSQL and MySQL seamlessly:
+You have to use a serializer to provide a translation layer:
 
 ```ruby
 class BuildMetadata
@@ -356,7 +351,7 @@ end
 
 ## Testing
 
-Make sure that your migration works with MySQL and PostgreSQL with data. An
+Make sure that your migration works for databases with data. An
 empty database does not guarantee that your migration is correct.
 
 Make sure your migration can be reversed.

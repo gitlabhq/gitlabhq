@@ -5,10 +5,10 @@ module Gitlab
     module Dashboard
       module Stages
         class BaseStage
+          include Gitlab::Metrics::Dashboard::Defaults
+
           DashboardProcessingError = Class.new(StandardError)
           LayoutError = Class.new(DashboardProcessingError)
-
-          DEFAULT_PANEL_TYPE = 'area-chart'
 
           attr_reader :project, :environment, :dashboard
 

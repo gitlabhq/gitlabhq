@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable @gitlab/vue-i18n/no-bare-strings */
 import { GlLink } from '@gitlab/ui';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 

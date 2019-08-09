@@ -1,0 +1,5 @@
+---
+title: Batch processing of commit refs in markdown processing
+merge_request: 31037
+author:
+type: performance

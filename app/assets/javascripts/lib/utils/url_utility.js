@@ -2,8 +2,8 @@ import { join as joinPaths } from 'path';
 
 // Returns an array containing the value(s) of the
 // of the key passed as an argument
-export function getParameterValues(sParam) {
-  const sPageURL = decodeURIComponent(window.location.search.substring(1));
+export function getParameterValues(sParam, url = window.location) {
+  const sPageURL = decodeURIComponent(new URL(url).search.substring(1));
 
   return sPageURL.split('&').reduce((acc, urlParam) => {
     const sParameterName = urlParam.split('=');

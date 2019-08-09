@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable @gitlab/vue-i18n/no-bare-strings */
 import _ from 'underscore';
 import { GlLink, GlTooltip, GlTooltipDirective } from '@gitlab/ui';
 import { __ } from '~/locale';

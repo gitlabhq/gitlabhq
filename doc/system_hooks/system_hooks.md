@@ -644,6 +644,11 @@ X-Gitlab-Event: System Hook
 }
 ```
 
+## Local requests in system hooks
+
+[Requests to local network by system hooks](../security/webhooks.md) can be allowed
+or blocked by an administrator.
+
 <!-- ## Troubleshooting
 
 Include any troubleshooting steps that you can foresee. If you know beforehand what issues

@@ -14,6 +14,16 @@ describe Gitlab::CurrentSettings do
     end
   end
 
+  describe '.expire_current_application_settings', :use_clean_rails_memory_store_caching, :request_store do
+    include_context 'with settings in cache'
+
+    it 'expires the cache' do
+      described_class.expire_current_application_settings
+
+      expect(ActiveRecord::QueryRecorder.new { described_class.current_application_settings }.count).not_to eq(0)
+    end
+  end
+
   describe '#current_application_settings', :use_clean_rails_memory_store_caching do
     it 'allows keys to be called directly' do
       db_settings = create(:application_setting,

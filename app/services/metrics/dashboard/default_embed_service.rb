@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 # Responsible for returning a filtered system dashboard
-# containing only the default embedded metrics. In future,
-# this class may be updated to support filtering to
-# alternate metrics/panels.
+# containing only the default embedded metrics. This class
+# operates by selecting metrics directly from the system
+# dashboard.
 #
 # Why isn't this filtering in a processing stage? By filtering
 # here, we ensure the dynamically-determined dashboard is cached.
@@ -11,7 +11,7 @@
 # Use Gitlab::Metrics::Dashboard::Finder to retrive dashboards.
 module Metrics
   module Dashboard
-    class DefaultEmbedService < ::Metrics::Dashboard::BaseService
+    class DefaultEmbedService < ::Metrics::Dashboard::BaseEmbedService
       # For the default filtering for embedded metrics,
       # uses the 'id' key in dashboard-yml definition for
       # identification.
@@ -31,10 +31,6 @@ module Metrics
         end
 
         { 'panel_groups' => [{ 'panels' => panels }] }
-      end
-
-      def cache_key
-        "dynamic_metrics_dashboard_#{metric_identifiers.join('_')}"
       end
 
       private
@@ -57,6 +53,10 @@ module Metrics
 
       def metric_identifiers
         DEFAULT_EMBEDDED_METRICS_IDENTIFIERS
+      end
+
+      def identifiers
+        metric_identifiers.join('|')
       end
     end
   end

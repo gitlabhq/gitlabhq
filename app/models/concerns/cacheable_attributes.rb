@@ -5,6 +5,8 @@ module CacheableAttributes
 
   included do
     after_commit { self.class.expire }
+
+    private_class_method :request_store_cache_key
   end
 
   class_methods do
@@ -32,7 +34,11 @@ module CacheableAttributes
     end
 
     def cached
-      Gitlab::SafeRequestStore[:"#{name}_cached_attributes"] ||= retrieve_from_cache
+      Gitlab::SafeRequestStore[request_store_cache_key] ||= retrieve_from_cache
+    end
+
+    def request_store_cache_key
+      :"#{name}_cached_attributes"
     end
 
     def retrieve_from_cache
@@ -58,6 +64,7 @@ module CacheableAttributes
     end
 
     def expire
+      Gitlab::SafeRequestStore.delete(request_store_cache_key)
       cache_backend.delete(cache_key)
     rescue
       # Gracefully handle when Redis is not available. For example,

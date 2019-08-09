@@ -1,4 +1,5 @@
 <script>
+/* eslint-disable @gitlab/vue-i18n/no-bare-strings */
 import { GlPopover, GlSkeletonLoading } from '@gitlab/ui';
 import Icon from '../../vue_shared/components/icon.vue';
 import CiIcon from '../../vue_shared/components/ci_icon.vue';
@@ -7,7 +8,8 @@ import query from '../queries/merge_request.query.graphql';
 import { mrStates, humanMRStates } from '../constants';
 
 export default {
-  name: 'MRPopover',
+  // name: 'MRPopover' is a false positive: https://gitlab.com/gitlab-org/frontend/eslint-plugin-i18n/issues/25
+  name: 'MRPopover', // eslint-disable-line @gitlab/i18n/no-non-i18n-strings
   components: {
     GlPopover,
     GlSkeletonLoading,
@@ -102,9 +104,11 @@ export default {
         <ci-icon v-if="detailedStatus" :status="detailedStatus" />
       </div>
       <h5 class="my-2">{{ mergeRequestTitle }}</h5>
+      <!-- eslint-disable @gitlab/vue-i18n/no-bare-strings -->
       <div class="text-secondary">
         {{ `${projectPath}!${mergeRequestIID}` }}
       </div>
+      <!-- eslint-enable @gitlab/vue-i18n/no-bare-strings -->
     </div>
   </gl-popover>
 </template>

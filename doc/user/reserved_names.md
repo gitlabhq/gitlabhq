@@ -40,19 +40,18 @@ It is currently not possible to create a project with the following names:
 
 Currently the following names are reserved as top level groups:
 
-- 503.html
 - \-
 - .well-known
 - 404.html
 - 422.html
 - 500.html
 - 502.html
+- 503.html
 - abuse_reports
 - admin
 - api
 - apple-touch-icon-precomposed.png
 - apple-touch-icon.png
-- files
 - assets
 - autocomplete
 - ci
@@ -61,12 +60,14 @@ Currently the following names are reserved as top level groups:
 - explore
 - favicon.ico
 - favicon.png
+- files
 - groups
 - health_check
 - help
 - import
 - invites
 - jwt
+- login
 - notification_settings
 - oauth
 - profile
@@ -78,8 +79,6 @@ Currently the following names are reserved as top level groups:
 - sent_notifications
 - slash-command-logo.png
 - snippets
-- u
-- unicorn_test
 - unsubscribes
 - uploads
 - users
@@ -88,22 +87,5 @@ Currently the following names are reserved as top level groups:
 These group names are unavailable as subgroup names:
 
 - \-
-- activity
-- analytics
-- audit_events
-- avatar
-- edit
-- group_members
-- hooks
-- issues
-- labels
-- ldap
-- ldap_group_links
-- merge_requests
-- milestones
-- notification_setting
-- pipeline_quota
-- projects
-- subgroups
 
 [reserved]:  https://gitlab.com/gitlab-org/gitlab-ce/blob/master/lib/gitlab/path_regex.rb
