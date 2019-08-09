@@ -437,6 +437,8 @@ GEM
     influxdb (0.2.3)
       cause
       json
+    invisible_captcha (0.12.1)
+      rails (>= 3.2.0)
     ipaddress (0.8.3)
     jaeger-client (0.10.0)
       opentracing (~> 0.3)
@@ -1126,6 +1128,7 @@ DEPENDENCIES
   httparty (~> 0.16.4)
   icalendar
   influxdb (~> 0.2)
+  invisible_captcha (~> 0.12.1)
   jira-ruby (~> 1.4)
   js_regex (~> 3.1)
   json-schema (~> 2.8.0)
