@@ -1,5 +1,5 @@
 import { nextView } from '../store';
-import { MR_ID, MR_ID_BUTTON, localStorage } from '../shared';
+import { MR_ID, MR_ID_BUTTON, STORAGE_MR_ID, localStorage } from '../shared';
 import { clearNote, postError } from './note';
 import { rememberBox, submitButton } from './form_elements';
 import { selectForm, selectMrBox, selectRemember } from './utils';
@@ -23,7 +23,7 @@ const storeMR = (id, state) => {
   const rememberMe = selectRemember().checked;
 
   if (rememberMe) {
-    localStorage.setItem('mergeRequestId', id);
+    localStorage.setItem(STORAGE_MR_ID, id);
   }
 
   state.mergeRequestId = id;

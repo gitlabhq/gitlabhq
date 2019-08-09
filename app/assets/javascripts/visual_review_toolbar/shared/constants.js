@@ -15,6 +15,12 @@ const REMEMBER_ITEM = 'gitlab-remember-item';
 const REVIEW_CONTAINER = 'gitlab-review-container';
 const TOKEN_BOX = 'gitlab-token';
 
+// Storage keys
+const STORAGE_PREFIX = '--gitlab'; // Using `--` to make the prefix more unique
+const STORAGE_MR_ID = `${STORAGE_PREFIX}-merge-request-id`;
+const STORAGE_TOKEN = `${STORAGE_PREFIX}-token`;
+const STORAGE_COMMENT = `${STORAGE_PREFIX}-comment`;
+
 // colors — these are applied programmatically
 // rest of styles belong in ./styles
 const BLACK = 'rgba(46, 46, 46, 1)';
@@ -39,6 +45,9 @@ export {
   REMEMBER_ITEM,
   REVIEW_CONTAINER,
   TOKEN_BOX,
+  STORAGE_MR_ID,
+  STORAGE_TOKEN,
+  STORAGE_COMMENT,
   BLACK,
   CLEAR,
   MUTED,

@@ -1,5 +1,5 @@
 import { nextView } from '../store';
-import { localStorage, CHANGE_MR_ID_BUTTON, COMMENT_BOX } from '../shared';
+import { localStorage, CHANGE_MR_ID_BUTTON, COMMENT_BOX, STORAGE_MR_ID } from '../shared';
 import { clearNote } from './note';
 import { buttonClearStyles } from './utils';
 import { addForm } from './wrapper';
@@ -18,7 +18,7 @@ const selectedMrNote = state => {
 };
 
 const clearMrId = state => {
-  localStorage.removeItem('mergeRequestId');
+  localStorage.removeItem(STORAGE_MR_ID);
   state.mergeRequestId = '';
 };
 
