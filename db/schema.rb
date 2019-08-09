@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_02_235445) do
+ActiveRecord::Schema.define(version: 2019_08_06_071559) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -1194,7 +1194,7 @@ ActiveRecord::Schema.define(version: 2019_08_02_235445) do
   create_table "epic_issues", id: :serial, force: :cascade do |t|
     t.integer "epic_id", null: false
     t.integer "issue_id", null: false
-    t.integer "relative_position", default: 1073741823, null: false
+    t.integer "relative_position"
     t.index ["epic_id"], name: "index_epic_issues_on_epic_id"
     t.index ["issue_id"], name: "index_epic_issues_on_issue_id", unique: true
   end
