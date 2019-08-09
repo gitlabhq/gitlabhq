@@ -2,17 +2,25 @@
   = render partial: "search/results/empty"
   = render_if_exists 'shared/promotions/promote_advanced_search'
 - else
-  .row-content-block
+  .row-content-block.d-md-flex.text-left.align-items-center
     - unless @search_objects.is_a?(Kaminari::PaginatableWithoutCount)
       = search_entries_info(@search_objects, @scope, @search_term)
     - unless @show_snippets
       - if @project
-        - link_to_project = link_to(@project.full_name, [@project.namespace.becomes(Namespace), @project])
-        = _("in project %{link_to_project}").html_safe % { link_to_project: link_to_project }
+        - link_to_project = link_to(@project.full_name, [@project.namespace.becomes(Namespace), @project], class: 'ml-md-1')
+        - if @scope == 'blobs'
+          - repository_ref = params[:repository_ref].to_s.presence || @project.default_branch
+          = s_("SearchCodeResults|in")
+          .mx-md-1
+            = render partial: "shared/ref_switcher", locals: { ref: repository_ref, form_path: request.fullpath, field_name: 'repository_ref' }
+          = s_('SearchCodeResults|of %{link_to_project}').html_safe % { link_to_project: link_to_project }
+        - else
+          = _("in project %{link_to_project}").html_safe % { link_to_project: link_to_project }
       - elsif @group
-        - link_to_group = link_to(@group.name, @group)
+        - link_to_group = link_to(@group.name, @group, class: 'ml-md-1')
         = _("in group %{link_to_group}").html_safe % { link_to_group: link_to_group }
   = render_if_exists 'shared/promotions/promote_advanced_search'
+
   .results.prepend-top-10
     - if @scope == 'commits'
       %ul.content-list.commit-list

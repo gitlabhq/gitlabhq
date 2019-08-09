@@ -9666,6 +9666,12 @@ msgstr ""
 msgid "SearchAutocomplete|in this project"
 msgstr ""
 
+msgid "SearchCodeResults|in"
+msgstr ""
+
+msgid "SearchCodeResults|of %{link_to_project}"
+msgstr ""
+
 msgid "SearchResults|Showing %{from} - %{to} of %{count} %{scope} for \"%{term}\""
 msgstr ""
 

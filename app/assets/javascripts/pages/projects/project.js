@@ -1,9 +1,10 @@
-/* eslint-disable func-names, no-var, no-return-assign, one-var, object-shorthand, vars-on-top */
+/* eslint-disable func-names, no-var, no-return-assign, object-shorthand, vars-on-top */
 
 import $ from 'jquery';
 import Cookies from 'js-cookie';
 import { __ } from '~/locale';
-import { visitUrl } from '~/lib/utils/url_utility';
+import { visitUrl, mergeUrlParams } from '~/lib/utils/url_utility';
+import { serializeForm } from '~/lib/utils/forms';
 import axios from '~/lib/utils/axios_utils';
 import flash from '~/flash';
 import projectSelect from '../../project_select';
@@ -107,9 +108,10 @@ export default class Project {
     refLink.href = '#';
 
     return $('.js-project-refs-dropdown').each(function() {
-      var $dropdown, selected;
-      $dropdown = $(this);
-      selected = $dropdown.data('selected');
+      var $dropdown = $(this);
+      var selected = $dropdown.data('selected');
+      var fieldName = $dropdown.data('fieldName');
+      var shouldVisit = Boolean($dropdown.data('visit'));
       return $dropdown.glDropdown({
         data(term, callback) {
           axios
@@ -127,7 +129,7 @@ export default class Project {
         filterRemote: true,
         filterByText: true,
         inputFieldName: $dropdown.data('inputFieldName'),
-        fieldName: $dropdown.data('fieldName'),
+        fieldName,
         renderRow: function(ref) {
           var li = refListItem.cloneNode(false);
 
@@ -158,15 +160,12 @@ export default class Project {
         clicked: function(options) {
           const { e } = options;
           e.preventDefault();
-          if ($('input[name="ref"]').length) {
+          if ($(`input[name="${fieldName}"]`).length) {
             var $form = $dropdown.closest('form');
-
-            var $visit = $dropdown.data('visit');
-            var shouldVisit = $visit ? true : $visit;
             var action = $form.attr('action');
-            var divider = action.indexOf('?') === -1 ? '?' : '&';
+
             if (shouldVisit) {
-              visitUrl(`${action}${divider}${$form.serialize()}`);
+              visitUrl(mergeUrlParams(serializeForm($form[0]), action));
             }
           }
         },
