@@ -1,0 +1,46 @@
+{
+  "type": "object",
+  "properties" : {
+    "id": { "type": "integer" },
+    "iid": { "type": "integer" },
+    "description": { "type": ["string", "null"] },
+    "title": { "type": "string" },
+    "auto_merge_enabled": { "type": "boolean" },
+    "state": { "type": "string" },
+    "merge_commit_sha": { "type": ["string", "null"] },
+    "short_merge_commit_sha": { "type": ["string", "null"] },
+    "merge_error": { "type": ["string", "null"] },
+    "merge_status": { "type": "string" },
+    "merge_user_id": { "type": ["integer", "null"] },
+    "source_branch": { "type": "string" },
+    "source_project_id": { "type": "integer" },
+    "target_branch": { "type": "string" },
+    "target_branch_sha": { "type": "string" },
+    "target_project_id": { "type": "integer" },
+    "squash": { "type": "boolean" },
+    "rebase_in_progress": { "type": "boolean" },
+    "default_squash_commit_message": { "type": "string" },
+    "commits_count": { "type": ["integer", "null"] },
+    "merge_ongoing": { "type": "boolean" },
+    "work_in_progress": { "type": "boolean" },
+    "has_conflicts": { "type": "boolean" },
+    "can_be_merged": { "type": "boolean" },
+    "remove_source_branch": { "type": ["boolean", "null"] },
+    "source_branch_exists": { "type": "boolean" },
+    "branch_missing": { "type": "boolean" },
+    "commits_without_merge_commits": { "type": "array" },
+    "diff_head_sha": { "type": ["string", "null"] },
+    "metrics": {
+      "oneOf": [
+        { "type": "null" },
+        { "$ref": "merge_request_metrics.json" }
+      ]
+    },
+    "diverged_commits_count": { "type": "integer" },
+    "target_branch_commits_path": { "type": "string" },
+    "target_branch_tree_path": { "type": "string" },
+    "merge_commit_path": { "type": ["string", "null"] },
+    "source_branch_with_namespace_link": { "type": "string" },
+    "source_branch_path": { "type": "string" }
+  }
+}

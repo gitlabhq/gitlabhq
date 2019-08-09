@@ -73,6 +73,7 @@ class MergeRequest < ApplicationRecord
   after_update :clear_memoized_shas
   after_update :reload_diff_if_branch_changed
   after_save :ensure_metrics
+  after_commit :expire_etag_cache
 
   # When this attribute is true some MR validation is ignored
   # It allows us to close or modify broken merge requests
@@ -389,6 +390,10 @@ class MergeRequest < ApplicationRecord
   def merge_async(user_id, params)
     jid = MergeWorker.perform_async(id, user_id, params.to_h)
     update_column(:merge_jid, jid)
+
+    # merge_ongoing? depends on merge_jid
+    # expire etag cache since the attribute is changed without triggering callbacks
+    expire_etag_cache
   end
 
   # Set off a rebase asynchronously, atomically updating the `rebase_jid` of
@@ -409,6 +414,10 @@ class MergeRequest < ApplicationRecord
 
       update_column(:rebase_jid, jid)
     end
+
+    # rebase_in_progress? depends on rebase_jid
+    # expire etag cache since the attribute is changed without triggering callbacks
+    expire_etag_cache
   end
 
   def merge_participants
@@ -1428,5 +1437,12 @@ class MergeRequest < ApplicationRecord
       variables.append(key: 'CI_MERGE_REQUEST_SOURCE_PROJECT_URL', value: source_project.web_url)
       variables.append(key: 'CI_MERGE_REQUEST_SOURCE_BRANCH_NAME', value: source_branch.to_s)
     end
+  end
+
+  def expire_etag_cache
+    return unless project.namespace
+
+    key = Gitlab::Routing.url_helpers.cached_widget_project_json_merge_request_path(project, self, format: :json)
+    Gitlab::EtagCaching::Store.new.touch(key)
   end
 end

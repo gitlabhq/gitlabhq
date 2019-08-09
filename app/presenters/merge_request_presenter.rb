@@ -208,14 +208,6 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
     merge_request.subscribed?(current_user, merge_request.target_project)
   end
 
-  def conflicts_docs_path
-    help_page_path('user/project/merge_requests/resolve_conflicts.md')
-  end
-
-  def merge_request_pipelines_docs_path
-    help_page_path('ci/merge_request_pipelines/index.md')
-  end
-
   def source_branch_link
     if source_branch_exists?
       link_to(source_branch, source_branch_commits_path, class: 'ref-name')
