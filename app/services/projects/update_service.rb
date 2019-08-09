@@ -122,7 +122,7 @@ module Projects
       ProjectWiki.new(project, project.owner).wiki
     rescue ProjectWiki::CouldNotCreateWikiError
       log_error("Could not create wiki for #{project.full_name}")
-      Gitlab::Metrics.counter(:wiki_can_not_be_created_total, 'Counts the times we failed to create a wiki')
+      Gitlab::Metrics.counter(:wiki_can_not_be_created_total, 'Counts the times we failed to create a wiki').increment
     end
 
     def update_pages_config
