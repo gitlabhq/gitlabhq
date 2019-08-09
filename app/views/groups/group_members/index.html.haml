@@ -10,7 +10,7 @@
   - if can_manage_members
     .project-members-new.append-bottom-default
       %p.clearfix
-        = _("Add new member to %{strongStart}%{group_name}%{strongEnd}").html_safe % { group_name: @group.name, strongStart: '<strong>'.html_safe, strongEnd: '</strong>'.html_safe }
+        = _("Add new member to %{strong_start}%{group_name}%{strong_end}").html_safe % { group_name: @group.name, strong_start: '<strong>'.html_safe, strong_end: '</strong>'.html_safe }
       = render "new_group_member"
 
     = render 'shared/members/requests', membership_source: @group, requesters: @requesters
@@ -35,7 +35,7 @@
       .card.card-without-border
         .d-flex.flex-column.flex-md-row.row-content-block.second-block
           %span.flex-grow-1.align-self-md-center.col-form-label
-            = _("Members with access to %{strongStart}%{group_name}%{strongEnd}").html_safe % { group_name: @group.name, strongStart: '<strong>'.html_safe, strongEnd: '</strong>'.html_safe }
+            = _("Members with access to %{strong_start}%{group_name}%{strong_end}").html_safe % { group_name: @group.name, strong_start: '<strong>'.html_safe, strong_end: '</strong>'.html_safe }
           = form_tag group_group_members_path(@group), method: :get, class: 'form-inline user-search-form' do
             .form-group.flex-grow
               .position-relative.mr-md-2
@@ -55,7 +55,7 @@
         .card.card-without-border
           .d-flex.flex-column.flex-md-row.row-content-block.second-block
             %span.flex-grow-1
-              = _("Members with pending access to %{strongStart}%{group_name}%{strongEnd}").html_safe % { group_name: @group.name, strongStart: '<strong>'.html_safe, strongEnd: '</strong>'.html_safe }
+              = _("Members with pending access to %{strong_start}%{group_name}%{strong_end}").html_safe % { group_name: @group.name, strong_start: '<strong>'.html_safe, strong_end: '</strong>'.html_safe }
             = form_tag group_group_members_path(@group), method: :get, class: 'form-inline user-search-form' do
               .form-group
                 .position-relative.mr-md-2
