@@ -1,17 +1,17 @@
 .prometheus-graphs {
-  .dropdowns {
-    .dropdown-menu-toggle {
-      svg {
-        position: absolute;
-        right: 5%;
-        top: 25%;
-      }
+  .dropdown-buttons {
+    > div {
+      margin-left: auto;
     }
+  }
 
-    .dropdown-menu-toggle,
-    .dropdown-menu {
-      width: 240px;
-    }
+  .col-form-label {
+    line-height: 1;
+    padding-top: 0;
+  }
+
+  .form-group {
+    margin-bottom: map-get($spacing-scale, 3);
   }
 }
 
