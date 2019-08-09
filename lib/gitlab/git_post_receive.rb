@@ -27,6 +27,14 @@ module Gitlab
       end
     end
 
+    def branches_exist?
+      changes_refs do |_oldrev, _newrev, ref|
+        return true if Gitlab::Git.branch_ref?(ref) # rubocop:disable Cop/AvoidReturnFromBlocks
+      end
+
+      false
+    end
+
     private
 
     def deserialize_changes(changes)

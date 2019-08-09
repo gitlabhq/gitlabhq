@@ -42,6 +42,9 @@ class PostReceive
     user = identify_user(post_received)
     return false unless user
 
+    # Expire the branches cache so we have updated data for this push
+    post_received.project.repository.expire_branches_cache if post_received.branches_exist?
+
     post_received.enum_for(:changes_refs).with_index do |(oldrev, newrev, ref), index|
       service_klass =
         if Gitlab::Git.tag_ref?(ref)

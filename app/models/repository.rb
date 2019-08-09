@@ -460,8 +460,8 @@ class Repository
   end
 
   # Runs code after a new branch has been created.
-  def after_create_branch
-    expire_branches_cache
+  def after_create_branch(expire_cache: true)
+    expire_branches_cache if expire_cache
 
     repository_event(:push_branch)
   end
@@ -474,8 +474,8 @@ class Repository
   end
 
   # Runs code after an existing branch has been removed.
-  def after_remove_branch
-    expire_branches_cache
+  def after_remove_branch(expire_cache: true)
+    expire_branches_cache if expire_cache
   end
 
   def method_missing(msg, *args, &block)
