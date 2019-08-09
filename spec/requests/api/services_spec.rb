@@ -10,10 +10,7 @@ describe API::Services do
   end
 
   Service.available_services_names.each do |service|
-    # TODO: Remove below `if: (service != "kubernetes")` in the next release
-    # KubernetesService was deprecated and it can't be updated. Right now it's
-    # only readable. It should be completely removed in the next iteration.
-    describe "PUT /projects/:id/services/#{service.dasherize}", if: (service != "kubernetes") do
+    describe "PUT /projects/:id/services/#{service.dasherize}" do
       include_context service
 
       it "updates #{service} settings" do
@@ -62,10 +59,7 @@ describe API::Services do
       end
     end
 
-    # TODO: Remove below `if: (service != "kubernetes")` in the next release
-    # KubernetesService was deprecated and it can't be updated. Right now it's
-    # only readable. It should be completely removed in the next iteration.
-    describe "DELETE /projects/:id/services/#{service.dasherize}", if: (service != "kubernetes") do
+    describe "DELETE /projects/:id/services/#{service.dasherize}" do
       include_context service
 
       before do

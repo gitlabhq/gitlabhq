@@ -1,0 +1,5 @@
+---
+title: Remove Kubernetes service integration page
+merge_request: 31365
+author:
+type: removed

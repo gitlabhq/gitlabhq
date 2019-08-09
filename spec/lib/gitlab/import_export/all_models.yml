@@ -277,7 +277,6 @@ project:
 - bugzilla_service
 - gitlab_issue_tracker_service
 - external_wiki_service
-- kubernetes_service
 - mock_ci_service
 - mock_deployment_service
 - mock_monitoring_service

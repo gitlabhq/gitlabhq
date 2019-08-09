@@ -6171,9 +6171,6 @@ msgstr ""
 msgid "Kubernetes error: %{error_code}"
 msgstr ""
 
-msgid "Kubernetes service integration has been disabled. Fields on this page are not used by GitLab, you can configure your Kubernetes clusters using the new <a href=\"%{url}\"/>Kubernetes Clusters</a> page"
-msgstr ""
-
 msgid "LDAP"
 msgstr ""
 
@@ -10940,9 +10937,6 @@ msgid "The group settings for %{group_links} require you to enable Two-Factor Au
 msgstr ""
 
 msgid "The import will time out after %{timeout}. For repositories that take longer, use a clone/push combination."
-msgstr ""
-
-msgid "The instance-level Kubernetes service integration is disabled. Your data has been migrated to an <a href=\"%{url}\"/>instance-level cluster</a>."
 msgstr ""
 
 msgid "The invitation could not be accepted."
