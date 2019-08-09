@@ -27,7 +27,15 @@ module Gitlab
 
           klass = target_parent.is_a?(Namespace) ? NamespaceFileUploader : FileUploader
           moved = klass.copy_to(file, target_parent)
-          moved.markdown_link
+
+          moved_markdown = moved.markdown_link
+
+          # Prevents rewrite of plain links as embedded
+          if was_embedded?(markdown)
+            moved_markdown
+          else
+            moved_markdown.sub(/\A!/, "")
+          end
         end
       end
 
@@ -41,6 +49,10 @@ module Gitlab
         end
 
         referenced_files.compact.select(&:exists?)
+      end
+
+      def was_embedded?(markdown)
+        markdown.starts_with?("!")
       end
 
       private

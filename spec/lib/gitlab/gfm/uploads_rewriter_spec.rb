@@ -55,6 +55,17 @@ describe Gitlab::Gfm::UploadsRewriter do
       end
     end
 
+    it 'does not rewrite plain links as embedded' do
+      embedded_link = image_uploader.markdown_link
+      plain_image_link = embedded_link.sub(/\A!/, "")
+      text = "#{plain_image_link} and #{embedded_link}"
+
+      moved_text = described_class.new(text, old_project, user).rewrite(new_project)
+
+      expect(moved_text.scan(/!\[.*?\]/).count).to eq(1)
+      expect(moved_text.scan(/\A\[.*?\]/).count).to eq(1)
+    end
+
     context "file are stored locally" do
       include_examples "files are accessible"
     end
