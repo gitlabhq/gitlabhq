@@ -27,12 +27,10 @@ module Gitlab
       end
     end
 
-    def branches_exist?
-      changes_refs do |_oldrev, _newrev, ref|
-        return true if Gitlab::Git.branch_ref?(ref) # rubocop:disable Cop/AvoidReturnFromBlocks
+    def includes_branches?
+      enum_for(:changes_refs).any? do |_oldrev, _newrev, ref|
+        Gitlab::Git.branch_ref?(ref)
       end
-
-      false
     end
 
     private

@@ -7,7 +7,7 @@ describe ::Gitlab::GitPostReceive do
 
   subject { described_class.new(project, "project-#{project.id}", changes.dup, {}) }
 
-  describe '#branches_exist?' do
+  describe '#includes_branches?' do
     context 'with no branches' do
       let(:changes) do
         <<~EOF
@@ -18,7 +18,7 @@ describe ::Gitlab::GitPostReceive do
       end
 
       it 'returns false' do
-        expect(subject.branches_exist?).to be_falsey
+        expect(subject.includes_branches?).to be_falsey
       end
     end
 
@@ -32,7 +32,7 @@ describe ::Gitlab::GitPostReceive do
       end
 
       it 'returns true' do
-        expect(subject.branches_exist?).to be_truthy
+        expect(subject.includes_branches?).to be_truthy
       end
     end
 
@@ -45,7 +45,7 @@ describe ::Gitlab::GitPostReceive do
       end
 
       it 'returns false' do
-        expect(subject.branches_exist?).to be_falsey
+        expect(subject.includes_branches?).to be_falsey
       end
     end
   end

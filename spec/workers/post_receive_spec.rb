@@ -61,16 +61,21 @@ describe PostReceive do
       end
 
       context "branches" do
-        let(:changes) { '123456 789012 refs/heads/tést' }
+        let(:changes) do
+          <<~EOF
+            '123456 789012 refs/heads/tést1'
+            '123456 789012 refs/heads/tést2'
+          EOF
+        end
 
         it 'expires the branches cache' do
-          expect(project.repository).to receive(:expire_branches_cache)
+          expect(project.repository).to receive(:expire_branches_cache).once
 
           described_class.new.perform(gl_repository, key_id, base64_changes)
         end
 
         it 'calls Git::BranchPushService' do
-          expect_next_instance_of(Git::BranchPushService) do |service|
+          expect_any_instance_of(Git::BranchPushService) do |service|
             expect(service).to receive(:execute).and_return(true)
           end
 
