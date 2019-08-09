@@ -10888,6 +10888,9 @@ msgstr ""
 msgid "The character highlighter helps you keep the subject line to %{titleLength} characters and wrap the body at %{bodyLength} so they are readable in git."
 msgstr ""
 
+msgid "The code of a detached pipeline is tested against the source branch instead of merged results"
+msgstr ""
+
 msgid "The coding stage shows the time from the first commit to creating the merge request. The data will automatically be added here once you create your first merge request."
 msgstr ""
 
@@ -11381,9 +11384,6 @@ msgid "This page is unavailable because you are not allowed to read information 
 msgstr ""
 
 msgid "This page will be removed in a future release."
-msgstr ""
-
-msgid "This pipeline is run on the source branch"
 msgstr ""
 
 msgid "This pipeline makes use of a predefined CI/CD configuration enabled by %{strongStart}Auto DevOps.%{strongEnd}"
