@@ -8,15 +8,16 @@
 .col-lg-9
   .card.js-panel-monitored-metrics{ data: { active_metrics: active_common_project_prometheus_metrics_path(project, :json), metrics_help_path: help_page_path('user/project/integrations/prometheus_library/index') } }
     .card-header
-      = s_('PrometheusService|Common metrics')
+      %strong
+        = s_('PrometheusService|Common metrics')
       %span.badge.badge-pill.js-monitored-count 0
     .card-body
       .loading-metrics.js-loading-metrics
-        %p.prepend-top-10.prepend-left-10
+        %p.m-3
           = icon('spinner spin', class: 'metrics-load-spinner')
           = s_('PrometheusService|Finding and configuring metrics...')
       .empty-metrics.hidden.js-empty-metrics
-        %p.text-tertiary.prepend-top-10.prepend-left-10
+        %p.text-tertiary.m-3
           = s_('PrometheusService|Waiting for your first deployment to an environment to find common metrics')
       %ul.list-unstyled.metrics-list.hidden.js-metrics-list
 
