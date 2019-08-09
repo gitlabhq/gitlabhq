@@ -2,6 +2,7 @@ import $ from 'jquery';
 import Flash from '~/flash';
 import Api from '~/api';
 import { __ } from '~/locale';
+import Project from '~/pages/projects/project';
 
 export default class Search {
   constructor() {
@@ -69,6 +70,8 @@ export default class Search {
       },
       clicked: () => Search.submitSearch(),
     });
+
+    Project.initRefSwitcher();
   }
 
   eventListeners() {

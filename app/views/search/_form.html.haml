@@ -1,6 +1,7 @@
 = form_tag search_path, method: :get, class: 'search-page-form js-search-form' do |f|
   = hidden_field_tag :snippets, params[:snippets]
   = hidden_field_tag :scope, params[:scope]
+  = hidden_field_tag :repository_ref, params[:repository_ref]
 
   .d-lg-flex.align-items-end
     .search-field-holder.form-group.mr-lg-1.mb-lg-0

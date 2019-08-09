@@ -1,12 +1,19 @@
-- dropdown_toggle_text = @ref || @project.default_branch
-= form_tag switch_project_refs_path(@project), method: :get, class: "project-refs-form" do
-  = hidden_field_tag :destination, destination
+- return unless @project
+
+- ref = local_assigns.fetch(:ref, @ref)
+- form_path = local_assigns.fetch(:form_path, switch_project_refs_path(@project))
+- dropdown_toggle_text = ref || @project.default_branch
+- field_name = local_assigns.fetch(:field_name, 'ref')
+
+= form_tag form_path, method: :get, class: "project-refs-form" do
+  - if defined?(destination)
+    = hidden_field_tag :destination, destination
   - if defined?(path)
     = hidden_field_tag :path, path
   - @options && @options.each do |key, value|
     = hidden_field_tag key, value, id: nil
   .dropdown
-    = dropdown_toggle dropdown_toggle_text, { toggle: "dropdown", selected: dropdown_toggle_text, ref: @ref, refs_url: refs_project_path(@project, sort: 'updated_desc'), field_name: 'ref', submit_form_on_click: true, visit: true }, { toggle_class: "js-project-refs-dropdown qa-branches-select" }
+    = dropdown_toggle dropdown_toggle_text, { toggle: "dropdown", selected: dropdown_toggle_text, ref: ref, refs_url: refs_project_path(@project, sort: 'updated_desc'), field_name: field_name, submit_form_on_click: true, visit: true }, { toggle_class: "js-project-refs-dropdown qa-branches-select" }
     .dropdown-menu.dropdown-menu-selectable.git-revision-dropdown.dropdown-menu-paging.qa-branches-dropdown{ class: ("dropdown-menu-right" if local_assigns[:align_right]) }
       .dropdown-page-one
         = dropdown_title _("Switch branch/tag")
