@@ -1,5 +1,0 @@
----
-title: Upgrade pages to 1.7.1 to prevent gitlab api token recovery from cookie
-merge_request:
-author:
-type: security

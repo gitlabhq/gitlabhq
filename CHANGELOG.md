@@ -2,6 +2,14 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 12.1.5
+
+### Security (2 changes)
+
+- Upgrade Gitaly to 1.53.2 to prevent revision flag injection exploits.
+- Upgrade pages to 1.7.1 to prevent gitlab api token recovery from cookie.
+
+
 ## 12.1.4
 
 ### Fixed (3 changes, 1 of them is from the community)
