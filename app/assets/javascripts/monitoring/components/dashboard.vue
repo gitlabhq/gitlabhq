@@ -3,6 +3,7 @@ import {
   GlButton,
   GlDropdown,
   GlDropdownItem,
+  GlFormGroup,
   GlModal,
   GlModalDirective,
   GlTooltipDirective,
@@ -34,6 +35,7 @@ export default {
     GlButton,
     GlDropdown,
     GlDropdownItem,
+    GlFormGroup,
     GlModal,
   },
   directives: {
@@ -278,107 +280,136 @@ export default {
 
 <template>
   <div class="prometheus-graphs">
-    <div class="gl-p-3 border-bottom bg-gray-light d-flex justify-content-between">
-      <div
-        v-if="environmentsEndpoint"
-        class="dropdowns d-flex align-items-center justify-content-between"
-      >
-        <div v-if="multipleDashboardsEnabled" class="d-flex align-items-center">
-          <label class="mb-0">{{ __('Dashboard') }}</label>
-          <gl-dropdown
-            class="ml-2 mr-3 js-dashboards-dropdown"
-            toggle-class="dropdown-menu-toggle"
-            :text="selectedDashboardText"
+    <div class="gl-p-3 pb-0 border-bottom bg-gray-light">
+      <div class="row">
+        <template v-if="environmentsEndpoint">
+          <gl-form-group
+            v-if="multipleDashboardsEnabled"
+            :label="__('Dashboard')"
+            label-size="sm"
+            label-for="monitor-dashboards-dropdown"
+            class="col-sm-12 col-md-4 col-lg-2"
           >
-            <gl-dropdown-item
-              v-for="dashboard in allDashboards"
-              :key="dashboard.path"
-              :active="dashboard.path === currentDashboard"
-              active-class="is-active"
-              :href="`?dashboard=${dashboard.path}`"
+            <gl-dropdown
+              id="monitor-dashboards-dropdown"
+              class="mb-0 d-flex js-dashboards-dropdown"
+              toggle-class="dropdown-menu-toggle"
+              :text="selectedDashboardText"
             >
-              {{ dashboard.display_name || dashboard.path }}
-            </gl-dropdown-item>
-          </gl-dropdown>
-        </div>
-        <div class="d-flex align-items-center">
-          <strong>{{ s__('Metrics|Environment') }}</strong>
-          <gl-dropdown
-            class="prepend-left-10 js-environments-dropdown"
-            toggle-class="dropdown-menu-toggle"
-            :text="currentEnvironmentName"
-            :disabled="environments.length === 0"
-          >
-            <gl-dropdown-item
-              v-for="environment in environments"
-              :key="environment.id"
-              :active="environment.name === currentEnvironmentName"
-              active-class="is-active"
-              :href="environment.metrics_path"
-              >{{ environment.name }}</gl-dropdown-item
-            >
-          </gl-dropdown>
-        </div>
-        <div v-if="!showEmptyState" class="d-flex align-items-center prepend-left-8">
-          <strong>{{ s__('Metrics|Show last') }}</strong>
-          <gl-dropdown
-            class="prepend-left-10 js-time-window-dropdown"
-            toggle-class="dropdown-menu-toggle"
-            :text="selectedTimeWindow"
-          >
-            <gl-dropdown-item
-              v-for="(value, key) in timeWindows"
-              :key="key"
-              :active="activeTimeWindow(key)"
-              :href="setTimeWindowParameter(key)"
-              active-class="active"
-              >{{ value }}</gl-dropdown-item
-            >
-          </gl-dropdown>
-        </div>
-      </div>
-      <div class="d-flex">
-        <div v-if="addingMetricsAvailable">
-          <gl-button
-            v-gl-modal="$options.addMetric.modalId"
-            class="js-add-metric-button text-success border-success"
-            >{{ $options.addMetric.title }}</gl-button
-          >
-          <gl-modal
-            ref="addMetricModal"
-            :modal-id="$options.addMetric.modalId"
-            :title="$options.addMetric.title"
-          >
-            <form ref="customMetricsForm" :action="customMetricsPath" method="post">
-              <custom-metrics-form-fields
-                :validate-query-path="validateQueryPath"
-                form-operation="post"
-                @formValidation="setFormValidity"
-              />
-            </form>
-            <div slot="modal-footer">
-              <gl-button @click="hideAddMetricModal">{{ __('Cancel') }}</gl-button>
-              <gl-button
-                :disabled="!formIsValid"
-                variant="success"
-                @click="submitCustomMetricsForm"
-                >{{ __('Save changes') }}</gl-button
+              <gl-dropdown-item
+                v-for="dashboard in allDashboards"
+                :key="dashboard.path"
+                :active="dashboard.path === currentDashboard"
+                active-class="is-active"
+                :href="`?dashboard=${dashboard.path}`"
+                >{{ dashboard.display_name || dashboard.path }}</gl-dropdown-item
               >
-            </div>
-          </gl-modal>
-        </div>
-        <gl-button
-          v-if="externalDashboardUrl.length"
-          class="js-external-dashboard-link prepend-left-8"
-          variant="primary"
-          :href="externalDashboardUrl"
-          target="_blank"
+            </gl-dropdown>
+          </gl-form-group>
+
+          <gl-form-group
+            :label="s__('Metrics|Environment')"
+            label-size="sm"
+            label-for="monitor-environments-dropdown"
+            class="col-sm-6 col-md-4 col-lg-2"
+          >
+            <gl-dropdown
+              id="monitor-environments-dropdown"
+              class="mb-0 d-flex js-environments-dropdown"
+              toggle-class="dropdown-menu-toggle"
+              :text="currentEnvironmentName"
+              :disabled="environments.length === 0"
+            >
+              <gl-dropdown-item
+                v-for="environment in environments"
+                :key="environment.id"
+                :active="environment.name === currentEnvironmentName"
+                active-class="is-active"
+                :href="environment.metrics_path"
+                >{{ environment.name }}</gl-dropdown-item
+              >
+            </gl-dropdown>
+          </gl-form-group>
+
+          <gl-form-group
+            v-if="!showEmptyState"
+            :label="s__('Metrics|Show last')"
+            label-size="sm"
+            label-for="monitor-time-window-dropdown"
+            class="col-sm-6 col-md-4 col-lg-2"
+          >
+            <gl-dropdown
+              id="monitor-time-window-dropdown"
+              class="mb-0 d-flex js-time-window-dropdown"
+              toggle-class="dropdown-menu-toggle"
+              :text="selectedTimeWindow"
+            >
+              <gl-dropdown-item
+                v-for="(value, key) in timeWindows"
+                :key="key"
+                :active="activeTimeWindow(key)"
+                :href="setTimeWindowParameter(key)"
+                active-class="active"
+                >{{ value }}</gl-dropdown-item
+              >
+            </gl-dropdown>
+          </gl-form-group>
+        </template>
+
+        <gl-form-group
+          v-if="addingMetricsAvailable || externalDashboardUrl.length"
+          label-for="prometheus-graphs-dropdown-buttons"
+          class="dropdown-buttons col-lg d-lg-flex align-items-end"
         >
-          {{ __('View full dashboard') }}
-          <icon name="external-link" />
-        </gl-button>
+          <div id="prometheus-graphs-dropdown-buttons">
+            <gl-button
+              v-if="addingMetricsAvailable"
+              v-gl-modal="$options.addMetric.modalId"
+              class="mr-2 mt-1 js-add-metric-button text-success border-success"
+            >
+              {{ $options.addMetric.title }}
+            </gl-button>
+            <gl-modal
+              v-if="addingMetricsAvailable"
+              ref="addMetricModal"
+              :modal-id="$options.addMetric.modalId"
+              :title="$options.addMetric.title"
+            >
+              <form ref="customMetricsForm" :action="customMetricsPath" method="post">
+                <custom-metrics-form-fields
+                  :validate-query-path="validateQueryPath"
+                  form-operation="post"
+                  @formValidation="setFormValidity"
+                />
+              </form>
+              <div slot="modal-footer">
+                <gl-button @click="hideAddMetricModal">{{ __('Cancel') }}</gl-button>
+                <gl-button
+                  :disabled="!formIsValid"
+                  variant="success"
+                  @click="submitCustomMetricsForm"
+                >
+                  {{ __('Save changes') }}
+                </gl-button>
+              </div>
+            </gl-modal>
+
+            <gl-button
+              v-if="externalDashboardUrl.length"
+              class="mt-1 js-external-dashboard-link"
+              variant="primary"
+              :href="externalDashboardUrl"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {{ __('View full dashboard') }}
+              <icon name="external-link" />
+            </gl-button>
+          </div>
+        </gl-form-group>
       </div>
     </div>
+
     <div v-if="!showEmptyState">
       <graph-group
         v-for="(groupData, index) in groups"
