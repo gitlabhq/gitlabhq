@@ -10,7 +10,7 @@
   - if can_manage_members
     .project-members-new.append-bottom-default
       %p.clearfix
-        = _("Add new member to <strong>%{group_name}</strong>").html_safe % { group_name: @group.name }
+        = _("Add new member to %{strongStart}%{group_name}%{strongEnd}").html_safe % { group_name: @group.name, strongStart: '<strong>', strongEnd: '</strong>' }
       = render "new_group_member"
 
     = render 'shared/members/requests', membership_source: @group, requesters: @requesters
