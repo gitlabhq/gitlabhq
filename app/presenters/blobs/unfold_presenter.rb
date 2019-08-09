@@ -21,19 +21,20 @@ module Blobs
       load_all_blob_data
 
       @subject = blob
+      @all_lines = blob.data.lines
       super(params)
 
       if full?
-        self.attributes = { since: 1, to: all_lines.size, bottom: false, unfold: false, offset: 0, indent: 0 }
+        self.attributes = { since: 1, to: @all_lines.size, bottom: false, unfold: false, offset: 0, indent: 0 }
       end
     end
 
     # Returns an array of Gitlab::Diff::Line with match line added
     def diff_lines
-      diff_lines = limited_blob_lines(since, to).map.with_index do |line, index|
-        full_line = line.delete("\n")
+      diff_lines = lines.map.with_index do |line, index|
+        full_line = limited_blob_lines[index].delete("\n")
 
-        Gitlab::Diff::Line.new(full_line, nil, nil, nil, nil, rich_text: lines[index])
+        Gitlab::Diff::Line.new(full_line, nil, nil, nil, nil, rich_text: line)
       end
 
       add_match_line(diff_lines)
@@ -42,7 +43,7 @@ module Blobs
     end
 
     def lines
-      @lines ||= highlight(since: since, to: to).lines.map(&:html_safe)
+      @lines ||= limit(highlight.lines).map(&:html_safe)
     end
 
     def match_line_text
@@ -58,7 +59,7 @@ module Blobs
     def add_match_line(diff_lines)
       return unless unfold?
 
-      if bottom? && to < all_lines.size
+      if bottom? && to < @all_lines.size
         old_pos = to - offset
         new_pos = to
       elsif since != 1
@@ -71,6 +72,16 @@ module Blobs
       match_line = Gitlab::Diff::Line.new(match_line_text, 'match', nil, old_pos, new_pos)
 
       bottom? ? diff_lines.push(match_line) : diff_lines.unshift(match_line)
+    end
+
+    def limited_blob_lines
+      @limited_blob_lines ||= limit(@all_lines)
+    end
+
+    def limit(lines)
+      return lines if full?
+
+      lines[since - 1..to - 1]
     end
   end
 end
