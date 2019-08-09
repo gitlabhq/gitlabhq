@@ -5,6 +5,10 @@ require 'spec_helper'
 describe 'Signup' do
   include TermsHelper
 
+  before do
+    stub_feature_flags(invisible_captcha: false)
+  end
+
   let(:new_user) { build_stubbed(:user) }
 
   describe 'username validation', :js do
