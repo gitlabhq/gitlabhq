@@ -27,19 +27,7 @@ unless Sidekiq.server?
         queue_duration: event.payload[:queue_duration]
       }
 
-      gitaly_calls = Gitlab::GitalyClient.get_request_count
-
-      if gitaly_calls > 0
-        payload[:gitaly_calls] = gitaly_calls
-        payload[:gitaly_duration] = Gitlab::GitalyClient.query_time_ms
-      end
-
-      rugged_calls = Gitlab::RuggedInstrumentation.query_count
-
-      if rugged_calls > 0
-        payload[:rugged_calls] = rugged_calls
-        payload[:rugged_duration_ms] = Gitlab::RuggedInstrumentation.query_time_ms
-      end
+      ::Gitlab::InstrumentationHelper.add_instrumentation_data(payload)
 
       payload[:response] = event.payload[:response] if event.payload[:response]
       payload[Labkit::Correlation::CorrelationId::LOG_KEY] = Labkit::Correlation::CorrelationId.current_id

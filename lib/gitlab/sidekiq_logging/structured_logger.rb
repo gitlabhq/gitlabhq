@@ -15,9 +15,9 @@ module Gitlab
 
         yield
 
-        Sidekiq.logger.info log_job_done(started_at, base_payload)
+        Sidekiq.logger.info log_job_done(job, started_at, base_payload)
       rescue => job_exception
-        Sidekiq.logger.warn log_job_done(started_at, base_payload, job_exception)
+        Sidekiq.logger.warn log_job_done(job, started_at, base_payload, job_exception)
 
         raise
       end
@@ -26,6 +26,10 @@ module Gitlab
 
       def base_message(payload)
         "#{payload['class']} JID-#{payload['jid']}"
+      end
+
+      def add_instrumentation_keys!(job, output_payload)
+        output_payload.merge!(job.slice(*::Gitlab::InstrumentationHelper::KEYS))
       end
 
       def log_job_start(started_at, payload)
@@ -41,8 +45,9 @@ module Gitlab
         payload
       end
 
-      def log_job_done(started_at, payload, job_exception = nil)
+      def log_job_done(job, started_at, payload, job_exception = nil)
         payload = payload.dup
+        add_instrumentation_keys!(job, payload)
         payload['duration'] = elapsed(started_at)
         payload['completed_at'] = Time.now.utc
 

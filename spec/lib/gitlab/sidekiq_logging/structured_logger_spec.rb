@@ -153,5 +153,29 @@ describe Gitlab::SidekiqLogging::StructuredLogger do
         end
       end
     end
+
+    context 'with Gitaly and Rugged calls' do
+      let(:timing_data) do
+        {
+          gitaly_calls: 10,
+          gitaly_duration: 10000,
+          rugged_calls: 1,
+          rugged_duration_ms: 5000
+        }
+      end
+
+      before do
+        job.merge!(timing_data)
+      end
+
+      it 'logs with Gitaly and Rugged timing data' do
+        Timecop.freeze(timestamp) do
+          expect(logger).to receive(:info).with(start_payload.except('args')).ordered
+          expect(logger).to receive(:info).with(end_payload.except('args')).ordered
+
+          subject.call(job, 'test_queue') { }
+        end
+      end
+    end
   end
 end

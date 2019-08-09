@@ -39,6 +39,7 @@ Sidekiq.configure_server do |config|
     chain.add Gitlab::SidekiqMiddleware::RequestStoreMiddleware unless ENV['SIDEKIQ_REQUEST_STORE'] == '0'
     chain.add Gitlab::SidekiqMiddleware::BatchLoader
     chain.add Gitlab::SidekiqMiddleware::CorrelationLogger
+    chain.add Gitlab::SidekiqMiddleware::InstrumentationLogger
     chain.add Gitlab::SidekiqStatus::ServerMiddleware
   end
 
