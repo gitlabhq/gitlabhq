@@ -82,7 +82,7 @@ describe 'Projects > Members > Sorting' do
 
     expect(first_member).to include(developer.name)
     expect(second_member).to include(maintainer.name)
-    expect(page).to have_css('.qa-user-sort-dropdowns .dropdown-toggle-text', text: 'Oldest sign in')
+    expect(page).to have_css('.qa-user-sort-dropdown .dropdown-toggle-text', text: 'Oldest sign in')
   end
 
   def visit_members_list(sort:)
