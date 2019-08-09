@@ -1,0 +1,5 @@
+---
+title: Remove extra padding from disabled comment box
+merge_request: 31603
+author:
+type: fixed
