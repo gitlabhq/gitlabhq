@@ -613,31 +613,13 @@ describe Projects::EnvironmentsController do
       end
     end
 
-    shared_examples_for 'dashboard cannot be embedded' do
-      context 'when the embedded flag is included' do
-        let(:dashboard_params) { { format: :json, embedded: true } }
-
-        it_behaves_like 'the default dashboard'
-      end
-    end
-
     let(:dashboard_params) { { format: :json } }
 
     it_behaves_like 'the default dashboard'
     it_behaves_like 'dashboard can be specified'
     it_behaves_like 'dashboard can be embedded'
 
-    context 'when multiple dashboards is enabled and embedding metrics is disabled' do
-      before do
-        stub_feature_flags(gfm_embedded_metrics: false)
-      end
-
-      it_behaves_like 'the default dashboard'
-      it_behaves_like 'dashboard can be specified'
-      it_behaves_like 'dashboard cannot be embedded'
-    end
-
-    context 'when multiple dashboards is disabled and embedding metrics is enabled' do
+    context 'when multiple dashboards is disabled' do
       before do
         stub_feature_flags(environment_metrics_show_multiple_dashboards: false)
       end
@@ -645,19 +627,6 @@ describe Projects::EnvironmentsController do
       it_behaves_like 'the default dashboard'
       it_behaves_like 'dashboard cannot be specified'
       it_behaves_like 'dashboard can be embedded'
-    end
-
-    context 'when multiple dashboards and embedding metrics are disabled' do
-      before do
-        stub_feature_flags(
-          environment_metrics_show_multiple_dashboards: false,
-          gfm_embedded_metrics: false
-        )
-      end
-
-      it_behaves_like 'the default dashboard'
-      it_behaves_like 'dashboard cannot be specified'
-      it_behaves_like 'dashboard cannot be embedded'
     end
   end
 

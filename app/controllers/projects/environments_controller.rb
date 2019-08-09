@@ -161,7 +161,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   end
 
   def metrics_dashboard
-    if Feature.enabled?(:gfm_embedded_metrics, project) && params[:embedded]
+    if params[:embedded]
       result = dashboard_finder.find(
         project,
         current_user,

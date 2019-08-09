@@ -18,9 +18,7 @@ $.fn.renderGFM = function renderGFM() {
   highlightCurrentUser(this.find('.gfm-project_member').get());
   initUserPopovers(this.find('.gfm-project_member').get());
   initMRPopovers(this.find('.gfm-merge_request').get());
-  if (gon.features && gon.features.gfmEmbeddedMetrics) {
-    renderMetrics(this.find('.js-render-metrics').get());
-  }
+  renderMetrics(this.find('.js-render-metrics').get());
   return this;
 };
 
