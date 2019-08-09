@@ -19,13 +19,13 @@
 
   %ul.nav-links.mobile-separator.nav.nav-tabs.clearfix
     %li.nav-item
-      = link_to "#existing_members", class: ["nav-link", ("active" unless pending_active)] , data-toggle: 'tab' do
+      = link_to "#existing_members", class: ["nav-link", ("active" unless pending_active)] , 'data-toggle' => 'tab' do
         %span
           = _("Existing")
         %span.badge.badge-pill= @members.total_count
     - if show_invited_members
       %li.nav-item
-        = link_to "#invited_members", class: ["nav-link", ("active" if pending_active)], data-toggle: 'tab' do
+        = link_to "#invited_members", class: ["nav-link", ("active" if pending_active)], 'data-toggle' => 'tab' do
           %span
             = _("Pending")
           %span.badge.badge-pill= @invited_members.total_count
