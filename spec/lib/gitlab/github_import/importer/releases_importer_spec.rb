@@ -6,6 +6,7 @@ describe Gitlab::GithubImport::Importer::ReleasesImporter do
   let(:importer) { described_class.new(project, client) }
   let(:created_at) { Time.new(2017, 1, 1, 12, 00) }
   let(:updated_at) { Time.new(2017, 1, 1, 12, 15) }
+  let(:released_at) { Time.new(2017, 1, 1, 12, 00) }
 
   let(:release) do
     double(
@@ -13,7 +14,8 @@ describe Gitlab::GithubImport::Importer::ReleasesImporter do
       tag_name: '1.0',
       body: 'This is my release',
       created_at: created_at,
-      updated_at: updated_at
+      updated_at: updated_at,
+      published_at: released_at
     )
   end
 
@@ -23,7 +25,8 @@ describe Gitlab::GithubImport::Importer::ReleasesImporter do
         tag_name: '1.0',
         description: 'This is my release',
         created_at: created_at,
-        updated_at: updated_at
+        updated_at: updated_at,
+        released_at: released_at
       }
 
       expect(importer).to receive(:build_releases).and_return([release_hash])
