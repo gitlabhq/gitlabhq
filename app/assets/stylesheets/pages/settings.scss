@@ -272,7 +272,7 @@
   }
 
   .custom-monitored-metrics {
-    .card-title {
+    .card-header {
       display: flex;
       align-items: center;
 
@@ -289,17 +289,6 @@
     .custom-metric-link-bold {
       font-weight: $gl-font-weight-bold;
       text-decoration: none;
-    }
-  }
-
-  .loading-metrics,
-  .empty-metrics {
-    padding: 30px 10px;
-
-    p,
-    .btn {
-      margin-top: 10px;
-      margin-bottom: 0;
     }
   }
 
