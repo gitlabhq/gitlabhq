@@ -67,7 +67,7 @@ export default {
         class="form-control dropdown-input-field"
         @input="searchBranches"
       />
-      <icon :size="18" name="search" class="input-icon" />
+      <icon :size="18" name="search" class="ml-3 input-icon" />
     </label>
     <div class="dropdown-content ide-merge-requests-dropdown-content d-flex">
       <gl-loading-icon
@@ -75,7 +75,7 @@ export default {
         :size="2"
         class="mt-3 mb-3 align-self-center ml-auto mr-auto"
       />
-      <ul v-else class="mb-3 w-100">
+      <ul v-else class="mb-0 w-100">
         <template v-if="hasBranches">
           <li v-for="item in branches" :key="item.name">
             <item :item="item" :project-id="currentProjectId" :is-active="isActiveBranch(item)" />
