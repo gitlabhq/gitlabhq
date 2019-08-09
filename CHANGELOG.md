@@ -686,6 +686,14 @@ entry.
 - Moves snowplow to CE repo.
 
 
+## 11.11.8
+
+### Security (2 changes)
+
+- Upgrade Gitaly to 1.42.7 to prevent revision flag injection exploits.
+- Upgrade pages to 1.5.1 to prevent gitlab api token recovery from cookie.
+
+
 ## 11.11.7
 
 ### Security (9 changes)
