@@ -438,7 +438,7 @@ NOTE: **Note:**
 Environment-specific resources are only created if your cluster is [managed by GitLab](#gitlab-managed-clusters).
 
 NOTE: **Note:**
-If your project was created before GitLab 12.2 it will use a single namespace for all project environments.
+If your cluster was created before GitLab 12.2, it will use a single namespace for all project environments.
 
 #### Security of GitLab Runners
 
@@ -651,6 +651,9 @@ GitLab CI/CD build environment.
 NOTE: **NOTE:**
 Prior to GitLab 11.5, `KUBE_TOKEN` was the Kubernetes token of the main
 service account of the cluster integration.
+
+NOTE: **Note:**
+If your cluster was created before GitLab 12.2, default `KUBE_NAMESPACE` will be set to `<project_name>-<project_id>`.
 
 ### Troubleshooting
 
