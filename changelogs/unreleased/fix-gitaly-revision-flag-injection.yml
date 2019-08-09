@@ -1,0 +1,5 @@
+---
+title: Upgrade Gitaly to 1.47.2 to prevent revision flag injection exploits
+merge_request:
+author:
+type: security
