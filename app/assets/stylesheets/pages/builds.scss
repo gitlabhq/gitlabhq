@@ -124,6 +124,26 @@
     float: left;
     padding-left: $gl-padding-8;
   }
+
+  .section-start {
+    display: inline;
+  }
+
+  .section-start,
+  .section-header {
+    &:hover {
+      cursor: pointer;
+
+      &::after {
+        content: '';
+        background-color: rgba($white-light, 0.2);
+        left: 0;
+        right: 0;
+        position: absolute;
+        height: $job-log-highlight-height;
+      }
+    }
+  }
 }
 
 .build-header {
