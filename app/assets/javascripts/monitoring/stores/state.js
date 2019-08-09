@@ -10,6 +10,7 @@ export default () => ({
   useDashboardEndpoint: false,
   multipleDashboardsEnabled: false,
   additionalPanelTypesEnabled: false,
+  exportMetricsToCsvEnabled: false,
   emptyState: 'gettingStarted',
   showEmptyState: true,
   showErrorBanner: true,

@@ -15,6 +15,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
     push_frontend_feature_flag(:environment_metrics_show_multiple_dashboards)
     push_frontend_feature_flag(:environment_metrics_additional_panel_types)
     push_frontend_feature_flag(:prometheus_computed_alerts)
+    push_frontend_feature_flag(:export_metrics_to_csv_enabled)
   end
 
   def index
