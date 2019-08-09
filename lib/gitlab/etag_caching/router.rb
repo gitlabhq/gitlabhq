@@ -61,6 +61,10 @@ module Gitlab
         Gitlab::EtagCaching::Router::Route.new(
           %r(#{RESERVED_WORDS_PREFIX}/import/gitea/realtime_changes\.json\z),
           'realtime_changes_import_gitea'
+        ),
+        Gitlab::EtagCaching::Router::Route.new(
+          %r(#{RESERVED_WORDS_PREFIX}/merge_requests/\d+/cached_widget\.json\z),
+          'merge_request_widget'
         )
       ].freeze
 

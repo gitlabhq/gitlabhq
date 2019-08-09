@@ -1988,6 +1988,7 @@ describe MergeRequest do
       params = {}
       merge_jid = 'hash-123'
 
+      expect(merge_request).to receive(:expire_etag_cache)
       expect(MergeWorker).to receive(:perform_async).with(merge_request.id, user_id, params) do
         merge_jid
       end
@@ -2011,6 +2012,7 @@ describe MergeRequest do
         .with(merge_request.id, user_id)
         .and_return(rebase_jid)
 
+      expect(merge_request).to receive(:expire_etag_cache)
       expect(merge_request).to receive(:lock!).and_call_original
 
       execute

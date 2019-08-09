@@ -166,6 +166,7 @@ export default {
         ciEnvironmentsStatusPath: store.ciEnvironmentsStatusPath,
         mergeRequestBasicPath: store.mergeRequestBasicPath,
         mergeRequestWidgetPath: store.mergeRequestWidgetPath,
+        mergeRequestCachedWidgetPath: store.mergeRequestCachedWidgetPath,
         mergeActionsContentPath: store.mergeActionsContentPath,
         rebasePath: store.rebasePath,
       };
@@ -176,8 +177,7 @@ export default {
     checkStatus(cb, isRebased) {
       return this.service
         .checkStatus()
-        .then(res => res.data)
-        .then(data => {
+        .then(({ data }) => {
           this.handleNotification(data);
           this.mr.setData(data, isRebased);
           this.setFaviconHelper();

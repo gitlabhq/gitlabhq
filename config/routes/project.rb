@@ -267,6 +267,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
             get :pipelines
             get :diffs, to: 'merge_requests/diffs#show'
             get :widget, to: 'merge_requests/content#widget'
+            get :cached_widget, to: 'merge_requests/content#cached_widget'
           end
 
           get :diff_for_path, controller: 'merge_requests/diffs'

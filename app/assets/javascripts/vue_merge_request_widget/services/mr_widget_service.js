@@ -34,7 +34,16 @@ export default class MRWidgetService {
   }
 
   checkStatus() {
-    return axios.get(this.endpoints.mergeRequestWidgetPath);
+    // two endpoints are requested in order to get MR info:
+    // one which is etag-cached and invalidated and another one which is not cached
+    // the idea is to move all the fields to etag-cached endpoint and then perform only one request
+    // https://gitlab.com/gitlab-org/gitlab-ce/issues/61559#note_188801390
+    const getData = axios.get(this.endpoints.mergeRequestWidgetPath);
+    const getCachedData = axios.get(this.endpoints.mergeRequestCachedWidgetPath);
+
+    return axios
+      .all([getData, getCachedData])
+      .then(axios.spread((res, cachedRes) => ({ data: Object.assign(res.data, cachedRes.data) })));
   }
 
   fetchMergeActionsContent() {
