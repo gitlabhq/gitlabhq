@@ -240,7 +240,7 @@ module Gitlab
 
     # Ensures that Gitaly is not being abuse through n+1 misuse etc
     def self.enforce_gitaly_request_limits(call_site)
-      # Only count limits in request-response environments (not sidekiq for example)
+      # Only count limits in request-response environments
       return unless Gitlab::SafeRequestStore.active?
 
       # This is this actual number of times this call was made. Used for information purposes only
