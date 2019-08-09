@@ -806,7 +806,7 @@ $note-form-margin-left: 72px;
   border-radius: $border-radius-base;
   border: 1px solid $border-gray-normal;
   color: $note-disabled-comment-color;
-  padding: 90px 0;
+  padding: $gl-padding-8 0;
 
   &.discussion-locked {
     border: 0;
