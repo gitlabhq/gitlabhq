@@ -89,7 +89,7 @@ New end-to-end and integration tests (Selenium and API) should be added to the
 
 Please note if automated tests already exist.
 
-When adding new automated tests, please keep [testing levels](https://docs.gitlab.com/ce/development/testing_guide/testing_levels.html)
+When adding new automated tests, please keep [testing levels](https://docs.gitlab.com/ee/development/testing_guide/testing_levels.html)
 in mind.
 -->
 
