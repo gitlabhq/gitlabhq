@@ -40,16 +40,6 @@ describe Banzai::Filter::InlineMetricsFilter do
         expect(doc.at_css('p').to_s).to include paragraph
         expect(doc.at_css('.js-render-metrics')).to be_present
       end
-
-      context 'when the feature is disabled' do
-        before do
-          stub_feature_flags(gfm_embedded_metrics: false)
-        end
-
-        it 'does nothing' do
-          expect(doc.to_s).to eq input
-        end
-      end
     end
   end
 end

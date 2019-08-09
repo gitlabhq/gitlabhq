@@ -13,8 +13,6 @@ module Banzai
       # uses to identify the embedded content, removing
       # only unnecessary nodes.
       def call
-        return doc unless Feature.enabled?(:gfm_embedded_metrics, context[:project])
-
         nodes.each do |node|
           path = paths_by_node[node]
           user_has_access = user_access_by_path[path]

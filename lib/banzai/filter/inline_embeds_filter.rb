@@ -10,8 +10,6 @@ module Banzai
       # the link, and insert this node after any html content
       # surrounding the link.
       def call
-        return doc unless Feature.enabled?(:gfm_embedded_metrics, context[:project])
-
         doc.xpath(xpath_search).each do |node|
           next unless element = element_to_embed(node)
 

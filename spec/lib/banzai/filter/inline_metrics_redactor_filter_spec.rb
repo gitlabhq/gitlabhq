@@ -11,16 +11,6 @@ describe Banzai::Filter::InlineMetricsRedactorFilter do
   let(:input) { %(<a href="#{url}">example</a>) }
   let(:doc) { filter(input) }
 
-  context 'when the feature is disabled' do
-    before do
-      stub_feature_flags(gfm_embedded_metrics: false)
-    end
-
-    it 'does nothing' do
-      expect(doc.to_s).to eq input
-    end
-  end
-
   context 'without a metrics charts placeholder' do
     it 'leaves regular non-metrics links unchanged' do
       expect(doc.to_s).to eq input
