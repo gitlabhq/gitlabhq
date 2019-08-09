@@ -102,7 +102,11 @@ export default {
       <span
         v-if="pipeline.flags.detached_merge_request_pipeline"
         v-gl-tooltip
-        :title="__('This pipeline is run on the source branch')"
+        :title="
+          __(
+            'The code of a detached pipeline is tested against the source branch instead of merged results',
+          )
+        "
         class="js-pipeline-url-detached badge badge-info"
       >
         {{ __('detached') }}

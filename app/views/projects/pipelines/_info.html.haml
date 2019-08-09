@@ -43,7 +43,7 @@
       } }
         Auto DevOps
     - if @pipeline.detached_merge_request_pipeline?
-      %span.js-pipeline-url-mergerequest.badge.badge-info.has-tooltip{ title: "This pipeline is run on the source branch" }
+      %span.js-pipeline-url-mergerequest.badge.badge-info.has-tooltip{ title: "The code of a detached pipeline is tested against the source branch instead of merged results" }
         detached
     - if @pipeline.stuck?
       %span.js-pipeline-url-stuck.badge.badge-warning
