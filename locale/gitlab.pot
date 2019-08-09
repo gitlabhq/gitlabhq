@@ -4007,6 +4007,9 @@ msgstr ""
 msgid "Download"
 msgstr ""
 
+msgid "Download CSV"
+msgstr ""
+
 msgid "Download artifacts"
 msgstr ""
 

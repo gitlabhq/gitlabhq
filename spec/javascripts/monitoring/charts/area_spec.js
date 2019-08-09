@@ -1,9 +1,9 @@
 import { shallowMount } from '@vue/test-utils';
+import { createStore } from '~/monitoring/stores';
 import { GlLink } from '@gitlab/ui';
 import { GlAreaChart, GlChartSeriesLabel } from '@gitlab/ui/dist/charts';
 import { shallowWrapperContainsSlotText } from 'spec/helpers/vue_test_utils_helper';
 import Area from '~/monitoring/components/charts/area.vue';
-import { createStore } from '~/monitoring/stores';
 import * as types from '~/monitoring/stores/mutation_types';
 import { TEST_HOST } from 'spec/test_constants';
 import MonitoringMock, { deploymentData } from '../mock_data';
@@ -17,13 +17,14 @@ describe('Area component', () => {
   let mockGraphData;
   let areaChart;
   let spriteSpy;
+  let store;
 
   beforeEach(() => {
-    const store = createStore();
-
+    store = createStore();
     store.commit(`monitoringDashboard/${types.RECEIVE_METRICS_DATA_SUCCESS}`, MonitoringMock.data);
     store.commit(`monitoringDashboard/${types.RECEIVE_DEPLOYMENTS_DATA_SUCCESS}`, deploymentData);
 
+    store.dispatch('monitoringDashboard/setFeatureFlags', { exportMetricsToCsvEnabled: true });
     [mockGraphData] = store.state.monitoringDashboard.groups[0].metrics;
 
     areaChart = shallowMount(Area, {
@@ -36,6 +37,7 @@ describe('Area component', () => {
       slots: {
         default: mockWidgets,
       },
+      store,
     });
 
     spriteSpy = spyOnDependency(Area, 'getSvgIconPathContent').and.callFake(
@@ -104,6 +106,16 @@ describe('Area component', () => {
           expect(commitLink.attributes('href')).toEqual(commitUrl);
         });
       });
+    });
+  });
+
+  describe('when exportMetricsToCsvEnabled is disabled', () => {
+    beforeEach(() => {
+      store.dispatch('monitoringDashboard/setFeatureFlags', { exportMetricsToCsvEnabled: false });
+    });
+
+    it('does not render the Download CSV button', () => {
+      expect(areaChart.contains('glbutton-stub')).toBe(false);
     });
   });
 
@@ -250,6 +262,24 @@ describe('Area component', () => {
     describe('yAxisLabel', () => {
       it('constructs a label for the chart y-axis', () => {
         expect(areaChart.vm.yAxisLabel).toBe('CPU');
+      });
+    });
+
+    describe('csvText', () => {
+      it('converts data from json to csv', () => {
+        const header = `timestamp,${mockGraphData.y_label}`;
+        const data = mockGraphData.queries[0].result[0].values;
+        const firstRow = `${data[0][0]},${data[0][1]}`;
+
+        expect(areaChart.vm.csvText).toMatch(`^${header}\r\n${firstRow}`);
+      });
+    });
+
+    describe('downloadLink', () => {
+      it('produces a link to download metrics as csv', () => {
+        const link = areaChart.vm.downloadLink;
+
+        expect(link).toContain('blob:');
       });
     });
   });
