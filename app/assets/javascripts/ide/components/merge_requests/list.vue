@@ -76,19 +76,17 @@ export default {
 
 <template>
   <div>
-    <div class="dropdown-input mt-3 pb-3 mb-0 border-bottom">
-      <div class="position-relative">
-        <tokened-input
-          v-model="search"
-          :tokens="searchTokens"
-          :placeholder="__('Search merge requests')"
-          @focus="onSearchFocus"
-          @input="searchMergeRequests"
-          @removeToken="setSearchType(null)"
-        />
-        <icon :size="18" name="search" class="input-icon" />
-      </div>
-    </div>
+    <label class="dropdown-input pt-3 pb-3 mb-0 border-bottom block" @click.stop>
+      <tokened-input
+        v-model="search"
+        :tokens="searchTokens"
+        :placeholder="__('Search merge requests')"
+        @focus="onSearchFocus"
+        @input="searchMergeRequests"
+        @removeToken="setSearchType(null)"
+      />
+      <icon :size="18" name="search" class="input-icon" />
+    </label>
     <div class="dropdown-content ide-merge-requests-dropdown-content d-flex">
       <gl-loading-icon
         v-if="isLoading"
@@ -107,7 +105,7 @@ export default {
                 <span class="d-flex append-right-default ide-search-list-current-icon">
                   <icon :size="18" name="search" />
                 </span>
-                <span> {{ searchType.label }} </span>
+                <span>{{ searchType.label }}</span>
               </button>
             </li>
           </template>

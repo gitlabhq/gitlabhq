@@ -58,19 +58,17 @@ export default {
 
 <template>
   <div>
-    <div class="dropdown-input mt-3 pb-3 mb-0 border-bottom">
-      <div class="position-relative">
-        <input
-          ref="searchInput"
-          v-model="search"
-          :placeholder="__('Search branches')"
-          type="search"
-          class="form-control dropdown-input-field"
-          @input="searchBranches"
-        />
-        <icon :size="18" name="search" class="input-icon" />
-      </div>
-    </div>
+    <label class="dropdown-input pt-3 pb-3 mb-0 border-bottom block position-relative" @click.stop>
+      <input
+        ref="searchInput"
+        v-model="search"
+        :placeholder="__('Search branches')"
+        type="search"
+        class="form-control dropdown-input-field"
+        @input="searchBranches"
+      />
+      <icon :size="18" name="search" class="input-icon" />
+    </label>
     <div class="dropdown-content ide-merge-requests-dropdown-content d-flex">
       <gl-loading-icon
         v-if="isLoading"
