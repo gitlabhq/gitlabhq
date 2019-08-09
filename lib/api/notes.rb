@@ -43,7 +43,7 @@ module API
             # mismatch between the pagination headers info and the actual notes
             # array returned, but this is really a edge-case.
             paginate(raw_notes)
-            .reject { |n| n.cross_reference_not_visible_for?(current_user) }
+            .select { |note| note.visible_for?(current_user) }
           present notes, with: Entities::Note
         end
         # rubocop: enable CodeReuse/ActiveRecord

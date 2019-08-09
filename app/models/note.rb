@@ -325,6 +325,10 @@ class Note < ApplicationRecord
     cross_reference? && !all_referenced_mentionables_allowed?(user)
   end
 
+  def visible_for?(user)
+    !cross_reference_not_visible_for?(user)
+  end
+
   def award_emoji?
     can_be_award_emoji? && contains_emoji_only?
   end
