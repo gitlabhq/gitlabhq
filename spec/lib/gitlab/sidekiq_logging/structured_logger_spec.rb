@@ -3,8 +3,8 @@ require 'spec_helper'
 describe Gitlab::SidekiqLogging::StructuredLogger do
   describe '#call' do
     let(:timestamp) { Time.iso8601('2018-01-01T12:00:00Z') }
-    let(:created_at) { timestamp }
-    let(:scheduling_latency_s) { 0.0 }
+    let(:created_at) { timestamp - 1.second }
+    let(:scheduling_latency_s) { 1.0 }
 
     let(:job) do
       {
