@@ -6,16 +6,15 @@ module Gitlab
     TIMEOUT_FOREGROUND = 3.seconds
     MAXIMUM_TEXT_HIGHLIGHT_SIZE = 1.megabyte
 
-    def self.highlight(blob_name, blob_content, since: nil, language: nil, plain: false)
-      new(blob_name, blob_content, since: since, language: language)
+    def self.highlight(blob_name, blob_content, language: nil, plain: false)
+      new(blob_name, blob_content, language: language)
         .highlight(blob_content, continue: false, plain: plain)
     end
 
     attr_reader :blob_name
 
-    def initialize(blob_name, blob_content, since: nil, language: nil)
+    def initialize(blob_name, blob_content, language: nil)
       @formatter = Rouge::Formatters::HTMLGitlab
-      @since = since
       @language = language
       @blob_name = blob_name
       @blob_content = blob_content
@@ -54,13 +53,13 @@ module Gitlab
     end
 
     def highlight_plain(text)
-      @formatter.format(Rouge::Lexers::PlainText.lex(text), since: @since).html_safe
+      @formatter.format(Rouge::Lexers::PlainText.lex(text)).html_safe
     end
 
     def highlight_rich(text, continue: true)
       tag = lexer.tag
       tokens = lexer.lex(text, continue: continue)
-      Timeout.timeout(timeout_time) { @formatter.format(tokens, tag: tag, since: @since).html_safe }
+      Timeout.timeout(timeout_time) { @formatter.format(tokens, tag: tag).html_safe }
     rescue Timeout::Error => e
       Gitlab::Sentry.track_exception(e)
       highlight_plain(text)
