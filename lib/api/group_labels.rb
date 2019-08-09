@@ -16,6 +16,8 @@ module API
         success Entities::GroupLabel
       end
       params do
+        optional :with_counts, type: Boolean, default: false,
+                 desc: 'Include issue and merge request counts'
         use :pagination
       end
       get ':id/labels' do

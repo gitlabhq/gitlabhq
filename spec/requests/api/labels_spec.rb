@@ -11,65 +11,76 @@ describe API::Labels do
   end
 
   describe 'GET /projects/:id/labels' do
+    let(:group) { create(:group) }
+    let!(:group_label) { create(:group_label, title: 'feature', group: group) }
+
+    before do
+      project.update!(group: group)
+    end
+
     it 'returns all available labels to the project' do
-      group = create(:group)
-      group_label = create(:group_label, title: 'feature', group: group)
-      project.update(group: group)
-      create(:labeled_issue, project: project, labels: [group_label], author: user)
-      create(:labeled_issue, project: project, labels: [label1], author: user, state: :closed)
-      create(:labeled_merge_request, labels: [priority_label], author: user, source_project: project )
-
-      expected_keys = %w(
-        id name color text_color description
-        open_issues_count closed_issues_count open_merge_requests_count
-        subscribed priority is_project_label
-      )
-
       get api("/projects/#{project.id}/labels", user)
 
       expect(response).to have_gitlab_http_status(200)
       expect(response).to include_pagination_headers
-      expect(json_response).to be_an Array
+      expect(json_response).to all(match_schema('public_api/v4/labels/project_label'))
       expect(json_response.size).to eq(3)
-      expect(json_response.first.keys).to match_array expected_keys
       expect(json_response.map { |l| l['name'] }).to match_array([group_label.name, priority_label.name, label1.name])
+    end
 
-      label1_response = json_response.find { |l| l['name'] == label1.title }
-      group_label_response = json_response.find { |l| l['name'] == group_label.title }
-      priority_label_response = json_response.find { |l| l['name'] == priority_label.title }
+    context 'when the with_counts parameter is set' do
+      before do
+        create(:labeled_issue, project: project, labels: [group_label], author: user)
+        create(:labeled_issue, project: project, labels: [label1], author: user, state: :closed)
+        create(:labeled_merge_request, labels: [priority_label], author: user, source_project: project )
+      end
 
-      expect(label1_response['open_issues_count']).to eq(0)
-      expect(label1_response['closed_issues_count']).to eq(1)
-      expect(label1_response['open_merge_requests_count']).to eq(0)
-      expect(label1_response['name']).to eq(label1.name)
-      expect(label1_response['color']).to be_present
-      expect(label1_response['text_color']).to be_present
-      expect(label1_response['description']).to be_nil
-      expect(label1_response['priority']).to be_nil
-      expect(label1_response['subscribed']).to be_falsey
-      expect(label1_response['is_project_label']).to be_truthy
+      it 'includes counts in the response' do
+        get api("/projects/#{project.id}/labels", user), params: { with_counts: true }
 
-      expect(group_label_response['open_issues_count']).to eq(1)
-      expect(group_label_response['closed_issues_count']).to eq(0)
-      expect(group_label_response['open_merge_requests_count']).to eq(0)
-      expect(group_label_response['name']).to eq(group_label.name)
-      expect(group_label_response['color']).to be_present
-      expect(group_label_response['text_color']).to be_present
-      expect(group_label_response['description']).to be_nil
-      expect(group_label_response['priority']).to be_nil
-      expect(group_label_response['subscribed']).to be_falsey
-      expect(group_label_response['is_project_label']).to be_falsey
+        expect(response).to have_gitlab_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response).to all(match_schema('public_api/v4/labels/project_label_with_counts'))
+        expect(json_response.size).to eq(3)
+        expect(json_response.map { |l| l['name'] }).to match_array([group_label.name, priority_label.name, label1.name])
 
-      expect(priority_label_response['open_issues_count']).to eq(0)
-      expect(priority_label_response['closed_issues_count']).to eq(0)
-      expect(priority_label_response['open_merge_requests_count']).to eq(1)
-      expect(priority_label_response['name']).to eq(priority_label.name)
-      expect(priority_label_response['color']).to be_present
-      expect(priority_label_response['text_color']).to be_present
-      expect(priority_label_response['description']).to be_nil
-      expect(priority_label_response['priority']).to eq(3)
-      expect(priority_label_response['subscribed']).to be_falsey
-      expect(priority_label_response['is_project_label']).to be_truthy
+        label1_response = json_response.find { |l| l['name'] == label1.title }
+        group_label_response = json_response.find { |l| l['name'] == group_label.title }
+        priority_label_response = json_response.find { |l| l['name'] == priority_label.title }
+
+        expect(label1_response).to include('open_issues_count' => 0,
+                                           'closed_issues_count' => 1,
+                                           'open_merge_requests_count' => 0,
+                                           'name' => label1.name,
+                                           'description' => nil,
+                                           'color' => a_string_matching(/^#\h{6}$/),
+                                           'text_color' => a_string_matching(/^#\h{6}$/),
+                                           'priority' => nil,
+                                           'subscribed' => false,
+                                           'is_project_label' => true)
+
+        expect(group_label_response).to include('open_issues_count' => 1,
+                                                'closed_issues_count' => 0,
+                                                'open_merge_requests_count' => 0,
+                                                'name' => group_label.name,
+                                                'description' => nil,
+                                                'color' => a_string_matching(/^#\h{6}$/),
+                                                'text_color' => a_string_matching(/^#\h{6}$/),
+                                                'priority' => nil,
+                                                'subscribed' => false,
+                                                'is_project_label' => false)
+
+        expect(priority_label_response).to include('open_issues_count' => 0,
+                                                   'closed_issues_count' => 0,
+                                                   'open_merge_requests_count' => 1,
+                                                   'name' => priority_label.name,
+                                                   'description' => nil,
+                                                   'color' => a_string_matching(/^#\h{6}$/),
+                                                   'text_color' => a_string_matching(/^#\h{6}$/),
+                                                   'priority' => 3,
+                                                   'subscribed' => false,
+                                                   'is_project_label' => true)
+      end
     end
   end
 

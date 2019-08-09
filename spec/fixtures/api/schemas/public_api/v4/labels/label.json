@@ -1,0 +1,11 @@
+{
+  "type": "object",
+  "properties": {
+    "id": { "type": "integer" },
+    "name": { "type": "string" },
+    "color": { "type": "string" },
+    "text_color": { "type": "string" },
+    "description": { "type": ["string", "null"] },
+    "subscribed": { "type": "boolean" }
+  }
+}

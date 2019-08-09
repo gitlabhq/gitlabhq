@@ -14,11 +14,24 @@ describe API::GroupLabels do
       get api("/groups/#{group.id}/labels", user)
 
       expect(response).to have_gitlab_http_status(200)
-      expect(response).to match_response_schema('public_api/v4/group_labels')
       expect(response).to include_pagination_headers
       expect(json_response).to be_an Array
+      expect(json_response).to all(match_schema('public_api/v4/labels/label'))
       expect(json_response.size).to eq(2)
       expect(json_response.map {|r| r['name'] }).to contain_exactly('feature', 'bug')
+    end
+
+    context 'when the with_counts parameter is set' do
+      it 'includes counts in the response' do
+        get api("/groups/#{group.id}/labels", user), params: { with_counts: true }
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(json_response).to all(match_schema('public_api/v4/labels/label_with_counts'))
+        expect(json_response.size).to eq(2)
+        expect(json_response.map { |r| r['open_issues_count'] }).to contain_exactly(0, 0)
+      end
     end
   end
 
