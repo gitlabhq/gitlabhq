@@ -1,0 +1,5 @@
+---
+title: Add a field for released_at to GH importer
+merge_request: 31496
+author:
+type: fixed
