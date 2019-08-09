@@ -17,7 +17,6 @@ end
 
 require ::File.expand_path('../config/environment', __FILE__)
 
-
 # The following is necessary to ensure stale Prometheus metrics don't accumulate over time.
 # It needs to be done as early as here to ensure metrics files aren't deleted.
 # After we hit our app in `warmup`, first metrics and corresponding files already being created,
