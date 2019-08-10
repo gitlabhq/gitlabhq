@@ -1429,6 +1429,10 @@ ActiveRecord::Schema.define(version: 2019_08_06_071559) do
     t.integer "repositories_retrying_verification_count"
     t.integer "wikis_retrying_verification_count"
     t.integer "projects_count"
+    t.integer "container_repositories_count"
+    t.integer "container_repositories_synced_count"
+    t.integer "container_repositories_failed_count"
+    t.integer "container_repositories_registry_count"
     t.index ["geo_node_id"], name: "index_geo_node_statuses_on_geo_node_id", unique: true
   end
 
