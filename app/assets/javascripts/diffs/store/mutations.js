@@ -71,18 +71,30 @@ export default {
   },
 
   [types.ADD_CONTEXT_LINES](state, options) {
-    const { lineNumbers, contextLines, fileHash } = options;
+    const { lineNumbers, contextLines, fileHash, isExpandDown, nextLineNumbers } = options;
     const { bottom } = options.params;
     const diffFile = findDiffFile(state.diffFiles, fileHash);
 
     removeMatchLine(diffFile, lineNumbers, bottom);
 
-    const lines = addLineReferences(contextLines, lineNumbers, bottom).map(line => ({
-      ...line,
-      line_code: line.line_code || `${fileHash}_${line.old_line}_${line.new_line}`,
-      discussions: line.discussions || [],
-      hasForm: false,
-    }));
+    const lines = addLineReferences(
+      contextLines,
+      lineNumbers,
+      bottom,
+      isExpandDown,
+      nextLineNumbers,
+    ).map(line => {
+      const lineCode =
+        line.type === 'match'
+          ? `${fileHash}_${line.meta_data.old_pos}_${line.meta_data.new_pos}_match`
+          : line.line_code || `${fileHash}_${line.old_line}_${line.new_line}`;
+      return {
+        ...line,
+        line_code: lineCode,
+        discussions: line.discussions || [],
+        hasForm: false,
+      };
+    });
 
     addContextLines({
       inlineLines: diffFile.highlighted_diff_lines,
@@ -90,6 +102,7 @@ export default {
       contextLines: lines,
       bottom,
       lineNumbers,
+      isExpandDown,
     });
   },
 

@@ -121,7 +121,7 @@ export function removeMatchLine(diffFile, lineNumbers, bottom) {
   diffFile.parallel_diff_lines.splice(indexForParallel + factor, 1);
 }
 
-export function addLineReferences(lines, lineNumbers, bottom) {
+export function addLineReferences(lines, lineNumbers, bottom, isExpandDown, nextLineNumbers) {
   const { oldLineNumber, newLineNumber } = lineNumbers;
   const lineCount = lines.length;
   let matchLineIndex = -1;
@@ -135,15 +135,20 @@ export function addLineReferences(lines, lineNumbers, bottom) {
         new_line: bottom ? newLineNumber + index + 1 : newLineNumber + index - lineCount,
       });
     }
-
     return l;
   });
 
   if (matchLineIndex > -1) {
     const line = linesWithNumbers[matchLineIndex];
-    const targetLine = bottom
-      ? linesWithNumbers[matchLineIndex - 1]
-      : linesWithNumbers[matchLineIndex + 1];
+    let targetLine;
+
+    if (isExpandDown) {
+      targetLine = nextLineNumbers;
+    } else if (bottom) {
+      targetLine = linesWithNumbers[matchLineIndex - 1];
+    } else {
+      targetLine = linesWithNumbers[matchLineIndex + 1];
+    }
 
     Object.assign(line, {
       meta_data: {
@@ -152,26 +157,27 @@ export function addLineReferences(lines, lineNumbers, bottom) {
       },
     });
   }
-
   return linesWithNumbers;
 }
 
 export function addContextLines(options) {
-  const { inlineLines, parallelLines, contextLines, lineNumbers } = options;
+  const { inlineLines, parallelLines, contextLines, lineNumbers, isExpandDown } = options;
   const normalizedParallelLines = contextLines.map(line => ({
     left: line,
     right: line,
     line_code: line.line_code,
   }));
+  const factor = isExpandDown ? 1 : 0;
 
-  if (options.bottom) {
+  if (!isExpandDown && options.bottom) {
     inlineLines.push(...contextLines);
     parallelLines.push(...normalizedParallelLines);
   } else {
     const inlineIndex = findIndexInInlineLines(inlineLines, lineNumbers);
     const parallelIndex = findIndexInParallelLines(parallelLines, lineNumbers);
-    inlineLines.splice(inlineIndex, 0, ...contextLines);
-    parallelLines.splice(parallelIndex, 0, ...normalizedParallelLines);
+
+    inlineLines.splice(inlineIndex + factor, 0, ...contextLines);
+    parallelLines.splice(parallelIndex + factor, 0, ...normalizedParallelLines);
   }
 }
 

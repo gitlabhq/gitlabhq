@@ -3,9 +3,11 @@ import { mapGetters } from 'vuex';
 import draftCommentsMixin from 'ee_else_ce/diffs/mixins/draft_comments';
 import parallelDiffTableRow from './parallel_diff_table_row.vue';
 import parallelDiffCommentRow from './parallel_diff_comment_row.vue';
+import parallelDiffExpansionRow from './parallel_diff_expansion_row.vue';
 
 export default {
   components: {
+    parallelDiffExpansionRow,
     parallelDiffTableRow,
     parallelDiffCommentRow,
     ParallelDraftCommentRow: () =>
@@ -43,8 +45,23 @@ export default {
     :data-commit-id="commitId"
     class="code diff-wrap-lines js-syntax-highlight text-file"
   >
+    <!-- Need to insert an empty row to solve "table-layout:fixed" equal width when expansion row is the first line -->
+    <tr>
+      <td style="width: 50px;"></td>
+      <td></td>
+      <td style="width: 50px;"></td>
+      <td></td>
+    </tr>
     <tbody>
       <template v-for="(line, index) in diffLines">
+        <parallel-diff-expansion-row
+          :key="`expand-${index}`"
+          :file-hash="diffFile.file_hash"
+          :context-lines-path="diffFile.context_lines_path"
+          :line="line"
+          :is-top="index === 0"
+          :is-bottom="index + 1 === diffLinesLength"
+        />
         <parallel-diff-table-row
           :key="line.line_code"
           :file-hash="diffFile.file_hash"

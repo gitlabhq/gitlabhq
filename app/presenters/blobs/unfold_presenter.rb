@@ -9,7 +9,7 @@ module Blobs
 
     attribute :full, Boolean, default: false
     attribute :since, GtOneCoercion
-    attribute :to, GtOneCoercion
+    attribute :to, Integer
     attribute :bottom, Boolean
     attribute :unfold, Boolean, default: true
     attribute :offset, Integer
@@ -24,9 +24,7 @@ module Blobs
       @all_lines = blob.data.lines
       super(params)
 
-      if full?
-        self.attributes = { since: 1, to: @all_lines.size, bottom: false, unfold: false, offset: 0, indent: 0 }
-      end
+      self.attributes = prepare_attributes
     end
 
     # Returns an array of Gitlab::Diff::Line with match line added
@@ -43,7 +41,9 @@ module Blobs
     end
 
     def lines
-      @lines ||= limit(highlight.lines).map(&:html_safe)
+      strong_memoize(:lines) do
+        limit(highlight.lines).map(&:html_safe)
+      end
     end
 
     def match_line_text
@@ -56,10 +56,34 @@ module Blobs
 
     private
 
+    def prepare_attributes
+      return attributes unless full? || to == -1
+
+      full_opts = {
+        since: 1,
+        to: all_lines_size,
+        bottom: false,
+        unfold: false,
+        offset: 0,
+        indent: 0
+      }
+
+      return full_opts if full?
+
+      full_opts.merge(attributes.slice(:since))
+    end
+
+    def all_lines_size
+      strong_memoize(:all_lines_size) do
+        @all_lines.size
+      end
+    end
+
     def add_match_line(diff_lines)
       return unless unfold?
+      return if bottom? && to >= all_lines_size
 
-      if bottom? && to < @all_lines.size
+      if bottom? && to < all_lines_size
         old_pos = to - offset
         new_pos = to
       elsif since != 1
@@ -75,7 +99,9 @@ module Blobs
     end
 
     def limited_blob_lines
-      @limited_blob_lines ||= limit(@all_lines)
+      strong_memoize(:limited_blob_lines) do
+        limit(@all_lines)
+      end
     end
 
     def limit(lines)

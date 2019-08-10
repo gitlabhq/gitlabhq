@@ -70,15 +70,6 @@ describe('DiffLineGutterContent', () => {
   });
 
   describe('template', () => {
-    it('should render three dots for context lines', () => {
-      const component = createComponent({
-        isMatchLine: true,
-      });
-
-      expect(component.$el.querySelector('span').classList.contains('context-cell')).toEqual(true);
-      expect(component.$el.innerText).toEqual('...');
-    });
-
     it('should render comment button', () => {
       const component = createComponent({
         showCommentButton: true,

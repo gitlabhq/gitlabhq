@@ -81,6 +81,8 @@ describe('DiffsStoreMutations', () => {
         params: {
           bottom: true,
         },
+        isExpandDown: false,
+        nextLineNumbers: {},
       };
       const diffFile = {
         file_hash: options.fileHash,
@@ -108,6 +110,8 @@ describe('DiffsStoreMutations', () => {
         options.contextLines,
         options.lineNumbers,
         options.params.bottom,
+        options.isExpandDown,
+        options.nextLineNumbers,
       );
 
       expect(addContextLinesSpy).toHaveBeenCalledWith({
@@ -116,6 +120,7 @@ describe('DiffsStoreMutations', () => {
         contextLines: options.contextLines,
         bottom: options.params.bottom,
         lineNumbers: options.lineNumbers,
+        isExpandDown: false,
       });
     });
   });

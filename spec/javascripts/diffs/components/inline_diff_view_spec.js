@@ -28,9 +28,9 @@ describe('InlineDiffView', () => {
     it('should have rendered diff lines', () => {
       const el = component.$el;
 
-      expect(el.querySelectorAll('tr.line_holder').length).toEqual(6);
+      expect(el.querySelectorAll('tr.line_holder').length).toEqual(5);
       expect(el.querySelectorAll('tr.line_holder.new').length).toEqual(2);
-      expect(el.querySelectorAll('tr.line_holder.match').length).toEqual(1);
+      expect(el.querySelectorAll('tr.line_expansion.match').length).toEqual(1);
       expect(el.textContent.indexOf('Bad dates')).toBeGreaterThan(-1);
     });
 

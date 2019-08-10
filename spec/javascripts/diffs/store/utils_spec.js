@@ -260,6 +260,17 @@ describe('DiffsStoreUtils', () => {
       expect(linesWithReferences[1].meta_data.old_pos).toEqual(2);
       expect(linesWithReferences[1].meta_data.new_pos).toEqual(3);
     });
+
+    it('should add correct line references when isExpandDown is true', () => {
+      const lines = [{ type: null }, { type: MATCH_LINE_TYPE }];
+      const linesWithReferences = utils.addLineReferences(lines, lineNumbers, false, true, {
+        old_line: 10,
+        new_line: 11,
+      });
+
+      expect(linesWithReferences[1].meta_data.old_pos).toEqual(10);
+      expect(linesWithReferences[1].meta_data.new_pos).toEqual(11);
+    });
   });
 
   describe('trimFirstCharOfLineContent', () => {
