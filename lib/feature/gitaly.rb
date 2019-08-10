@@ -10,6 +10,7 @@ class Feature
         get_commit_signatures
         cache_invalidator
         inforef_uploadpack_cache
+        get_all_lfs_pointers_go
       ].freeze
 
     DEFAULT_ON_FLAGS = Set.new([]).freeze
