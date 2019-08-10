@@ -3899,6 +3899,9 @@ msgstr ""
 msgid "Diffs|No file name available"
 msgstr ""
 
+msgid "Diffs|Show all lines"
+msgstr ""
+
 msgid "Diffs|Something went wrong while fetching diff lines."
 msgstr ""
 
@@ -4649,10 +4652,16 @@ msgstr ""
 msgid "Expand all"
 msgstr ""
 
+msgid "Expand down"
+msgstr ""
+
 msgid "Expand dropdown"
 msgstr ""
 
 msgid "Expand sidebar"
+msgstr ""
+
+msgid "Expand up"
 msgstr ""
 
 msgid "Expiration date"

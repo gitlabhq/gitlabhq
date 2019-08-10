@@ -2,6 +2,7 @@
 import { mapActions, mapState } from 'vuex';
 import DiffTableCell from './diff_table_cell.vue';
 import {
+  MATCH_LINE_TYPE,
   NEW_LINE_TYPE,
   OLD_LINE_TYPE,
   CONTEXT_LINE_TYPE,
@@ -58,6 +59,9 @@ export default {
     inlineRowId() {
       return this.line.line_code || `${this.fileHash}_${this.line.old_line}_${this.line.new_line}`;
     },
+    isMatchLine() {
+      return this.line.type === MATCH_LINE_TYPE;
+    },
   },
   created() {
     this.newLineType = NEW_LINE_TYPE;
@@ -81,6 +85,7 @@ export default {
 
 <template>
   <tr
+    v-if="!isMatchLine"
     :id="inlineRowId"
     :class="classNameMap"
     class="line_holder"

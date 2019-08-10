@@ -68,12 +68,12 @@ describe 'Merge request > User posts diff notes', :js do
     context 'with a match line' do
       it 'does not allow commenting on the left side' do
         line_holder = find('.match', match: :first).find(:xpath, '..')
-        should_not_allow_commenting(line_holder, 'left')
+        match_should_not_allow_commenting(line_holder)
       end
 
       it 'does not allow commenting on the right side' do
         line_holder = find('.match', match: :first).find(:xpath, '..')
-        should_not_allow_commenting(line_holder, 'right')
+        match_should_not_allow_commenting(line_holder)
       end
     end
 
@@ -136,7 +136,7 @@ describe 'Merge request > User posts diff notes', :js do
 
     context 'with a match line' do
       it 'does not allow commenting' do
-        should_not_allow_commenting(find('.match', match: :first))
+        match_should_not_allow_commenting(find('.match', match: :first))
       end
     end
 
@@ -222,7 +222,7 @@ describe 'Merge request > User posts diff notes', :js do
 
     context 'with a match line' do
       it 'does not allow commenting' do
-        should_not_allow_commenting(find('.match', match: :first))
+        match_should_not_allow_commenting(find('.match', match: :first))
       end
     end
   end
@@ -249,6 +249,10 @@ describe 'Merge request > User posts diff notes', :js do
     line = get_line_components(line_holder, diff_side)
     line[:content].hover
     expect(line[:num]).not_to have_css comment_button_class
+  end
+
+  def match_should_not_allow_commenting(line_holder)
+    expect(line_holder).not_to have_css comment_button_class
   end
 
   def write_comment_on_line(line_holder, diff_side)

@@ -3,6 +3,7 @@ import { mapActions, mapState } from 'vuex';
 import $ from 'jquery';
 import DiffTableCell from './diff_table_cell.vue';
 import {
+  MATCH_LINE_TYPE,
   NEW_LINE_TYPE,
   OLD_LINE_TYPE,
   CONTEXT_LINE_TYPE,
@@ -75,6 +76,12 @@ export default {
         },
       ];
     },
+    isMatchLineLeft() {
+      return this.line.left && this.line.left.type === MATCH_LINE_TYPE;
+    },
+    isMatchLineRight() {
+      return this.line.right && this.line.right.type === MATCH_LINE_TYPE;
+    },
   },
   created() {
     this.newLineType = NEW_LINE_TYPE;
@@ -122,7 +129,7 @@ export default {
     @mouseover="handleMouseMove"
     @mouseout="handleMouseMove"
   >
-    <template v-if="line.left">
+    <template v-if="line.left && !isMatchLineLeft">
       <diff-table-cell
         :file-hash="fileHash"
         :context-lines-path="contextLinesPath"
@@ -148,7 +155,7 @@ export default {
       <td class="diff-line-num old_line empty-cell"></td>
       <td class="line_content parallel left-side empty-cell"></td>
     </template>
-    <template v-if="line.right">
+    <template v-if="line.right && !isMatchLineRight">
       <diff-table-cell
         :file-hash="fileHash"
         :context-lines-path="contextLinesPath"

@@ -183,7 +183,7 @@ export const cancelCommentForm = ({ commit }, { lineCode, fileHash }) => {
 };
 
 export const loadMoreLines = ({ commit }, options) => {
-  const { endpoint, params, lineNumbers, fileHash } = options;
+  const { endpoint, params, lineNumbers, fileHash, isExpandDown, nextLineNumbers } = options;
 
   params.from_merge_request = true;
 
@@ -195,6 +195,8 @@ export const loadMoreLines = ({ commit }, options) => {
       contextLines,
       params,
       fileHash,
+      isExpandDown,
+      nextLineNumbers,
     });
   });
 };

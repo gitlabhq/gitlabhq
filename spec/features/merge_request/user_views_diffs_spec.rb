@@ -17,10 +17,24 @@ describe 'User views diffs', :js do
   end
 
   shared_examples 'unfold diffs' do
-    it 'unfolds diffs' do
+    it 'unfolds diffs upwards' do
       first('.js-unfold').click
-
       expect(find('.file-holder[id="a5cc2925ca8258af241be7e5b0381edf30266302"] .text-file')).to have_content('.bundle')
+    end
+
+    it 'unfolds diffs to the start' do
+      first('.js-unfold-all').click
+      expect(find('.file-holder[id="a5cc2925ca8258af241be7e5b0381edf30266302"] .text-file')).to have_content('.rbc')
+    end
+
+    it 'unfolds diffs downwards' do
+      first('.js-unfold-down').click
+      expect(find('.file-holder[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd"] .text-file')).to have_content('.popen3')
+    end
+
+    it 'unfolds diffs to the end' do
+      page.all('.js-unfold-down').last
+      expect(find('.file-holder[id="6eb14e00385d2fb284765eb1cd8d420d33d63fc9"] .text-file')).to have_content('end')
     end
   end
 

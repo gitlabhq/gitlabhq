@@ -408,6 +408,14 @@ table.code {
   table-layout: fixed;
   border-radius: 0 0 $border-radius-default $border-radius-default;
 
+  tr:first-of-type.line_expansion > td {
+    border-top: 0;
+  }
+
+  tr:nth-last-of-type(2).line_expansion > td {
+    border-bottom: 0;
+  }
+
   tr.line_holder td {
     line-height: $code-line-height;
     font-size: $code-font-size;

@@ -380,7 +380,9 @@ describe('DiffsStoreActions', () => {
       const params = { since: 6, to: 26 };
       const lineNumbers = { oldLineNumber: 3, newLineNumber: 5 };
       const fileHash = 'ff9200';
-      const options = { endpoint, params, lineNumbers, fileHash };
+      const isExpandDown = false;
+      const nextLineNumbers = {};
+      const options = { endpoint, params, lineNumbers, fileHash, isExpandDown, nextLineNumbers };
       const mock = new MockAdapter(axios);
       const contextLines = { contextLines: [{ lineCode: 6 }] };
       mock.onGet(endpoint).reply(200, contextLines);
@@ -392,7 +394,7 @@ describe('DiffsStoreActions', () => {
         [
           {
             type: types.ADD_CONTEXT_LINES,
-            payload: { lineNumbers, contextLines, params, fileHash },
+            payload: { lineNumbers, contextLines, params, fileHash, isExpandDown, nextLineNumbers },
           },
         ],
         [],

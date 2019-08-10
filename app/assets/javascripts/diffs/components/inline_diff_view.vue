@@ -3,6 +3,7 @@ import { mapGetters } from 'vuex';
 import draftCommentsMixin from 'ee_else_ce/diffs/mixins/draft_comments';
 import inlineDiffTableRow from './inline_diff_table_row.vue';
 import inlineDiffCommentRow from './inline_diff_comment_row.vue';
+import inlineDiffExpansionRow from './inline_diff_expansion_row.vue';
 
 export default {
   components: {
@@ -10,6 +11,7 @@ export default {
     inlineDiffTableRow,
     InlineDraftCommentRow: () =>
       import('ee_component/batch_comments/components/inline_draft_comment_row.vue'),
+    inlineDiffExpansionRow,
   },
   mixins: [draftCommentsMixin],
   props: {
@@ -43,10 +45,24 @@ export default {
     :data-commit-id="commitId"
     class="code diff-wrap-lines js-syntax-highlight text-file js-diff-inline-view"
   >
+    <!-- Need to insert an empty row to solve "table-layout:fixed" equal width when expansion row is the first line -->
+    <tr>
+      <td style="width: 50px;"></td>
+      <td style="width: 50px;"></td>
+      <td></td>
+    </tr>
     <tbody>
       <template v-for="(line, index) in diffLines">
+        <inline-diff-expansion-row
+          :key="`expand-${index}`"
+          :file-hash="diffFile.file_hash"
+          :context-lines-path="diffFile.context_lines_path"
+          :line="line"
+          :is-top="index === 0"
+          :is-bottom="index + 1 === diffLinesLength"
+        />
         <inline-diff-table-row
-          :key="line.line_code"
+          :key="`${line.line_code || index}`"
           :file-hash="diffFile.file_hash"
           :context-lines-path="diffFile.context_lines_path"
           :line="line"
