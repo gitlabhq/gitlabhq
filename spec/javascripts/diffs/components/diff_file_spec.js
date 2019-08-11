@@ -15,8 +15,12 @@ describe('DiffFile', () => {
     }).$mount();
   });
 
+  afterEach(() => {
+    vm.$destroy();
+  });
+
   describe('template', () => {
-    it('should render component with file header, file content components', () => {
+    it('should render component with file header, file content components', done => {
       const el = vm.$el;
       const { file_hash, file_path } = vm.file;
 
@@ -30,9 +34,13 @@ describe('DiffFile', () => {
 
       vm.file.renderIt = true;
 
-      vm.$nextTick(() => {
-        expect(el.querySelectorAll('.line_content').length).toBeGreaterThan(5);
-      });
+      vm.$nextTick()
+        .then(() => {
+          expect(el.querySelectorAll('.line_content').length).toBeGreaterThanOrEqual(5);
+          expect(el.querySelectorAll('.js-line-expansion-content').length).toBe(1);
+        })
+        .then(done)
+        .catch(done.fail);
     });
 
     describe('collapsed', () => {
