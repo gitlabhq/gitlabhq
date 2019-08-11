@@ -2450,7 +2450,21 @@
           "author": {
             "name": "Ottis Schuster II"
           },
-          "events": []
+          "events": [],
+          "suggestions": [
+            {
+              "id": 1,
+              "note_id": 674,
+              "relative_order": 0,
+              "applied": false,
+              "commit_id": null,
+              "from_content": "Original line\n",
+              "to_content": "New line\n",
+              "lines_above": 0,
+              "lines_below": 0,
+              "outdated": false
+            }
+          ]
         },
         {
           "id": 675,
