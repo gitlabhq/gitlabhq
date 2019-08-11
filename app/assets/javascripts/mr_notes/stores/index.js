@@ -9,7 +9,7 @@ Vue.use(Vuex);
 export const createStore = () =>
   new Vuex.Store({
     modules: {
-      page: mrPageModule,
+      page: mrPageModule(),
       notes: notesModule(),
       diffs: diffsModule(),
     },

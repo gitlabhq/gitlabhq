@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import CompareVersionsComponent from '~/diffs/components/compare_versions.vue';
-import store from '~/mr_notes/stores';
+import { createStore } from '~/mr_notes/stores';
 import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import diffsMockData from '../mock_data/merge_request_diffs';
 import getDiffWithCommit from '../mock_data/diff_with_commit';
@@ -10,6 +10,8 @@ describe('CompareVersions', () => {
   const targetBranch = { branchName: 'tmp-wine-dev', versionIndex: -1 };
 
   beforeEach(() => {
+    const store = createStore();
+
     store.state.diffs.addedLines = 10;
     store.state.diffs.removedLines = 20;
     store.state.diffs.diffFiles.push('test');

@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import ParallelDiffView from '~/diffs/components/parallel_diff_view.vue';
-import store from 'ee_else_ce/mr_notes/stores';
+import { createStore } from 'ee_else_ce/mr_notes/stores';
 import * as constants from '~/diffs/constants';
 import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import diffFileMockData from '../mock_data/diff_file';
@@ -12,7 +12,7 @@ describe('ParallelDiffView', () => {
   beforeEach(() => {
     const diffFile = getDiffFileMock();
 
-    component = createComponentWithStore(Vue.extend(ParallelDiffView), store, {
+    component = createComponentWithStore(Vue.extend(ParallelDiffView), createStore(), {
       diffFile,
       diffLines: diffFile.parallel_diff_lines,
     }).$mount();

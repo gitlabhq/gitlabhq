@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import store from '~/mr_notes/stores';
+import { createStore } from '~/mr_notes/stores';
 import InlineDiffTableRow from '~/diffs/components/inline_diff_table_row.vue';
 import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import diffFileMockData from '../mock_data/diff_file';
@@ -9,7 +9,7 @@ describe('InlineDiffTableRow', () => {
   const thisLine = diffFileMockData.highlighted_diff_lines[0];
 
   beforeEach(() => {
-    vm = createComponentWithStore(Vue.extend(InlineDiffTableRow), store, {
+    vm = createComponentWithStore(Vue.extend(InlineDiffTableRow), createStore(), {
       line: thisLine,
       fileHash: diffFileMockData.file_hash,
       contextLinesPath: 'contextLinesPath',

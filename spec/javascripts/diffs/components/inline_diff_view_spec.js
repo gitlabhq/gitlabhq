@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import '~/behaviors/markdown/render_gfm';
 import InlineDiffView from '~/diffs/components/inline_diff_view.vue';
-import store from 'ee_else_ce/mr_notes/stores';
+import { createStore } from 'ee_else_ce/mr_notes/stores';
 import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import diffFileMockData from '../mock_data/diff_file';
 import discussionsMockData from '../mock_data/diff_discussions';
@@ -14,6 +14,8 @@ describe('InlineDiffView', () => {
 
   beforeEach(done => {
     const diffFile = getDiffFileMock();
+
+    const store = createStore();
 
     store.dispatch('diffs/setInlineDiffViewType');
     component = createComponentWithStore(Vue.extend(InlineDiffView), store, {
