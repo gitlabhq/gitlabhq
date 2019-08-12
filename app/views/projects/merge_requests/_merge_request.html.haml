@@ -41,11 +41,11 @@
       %ul.controls.d-flex.align-items-end
         - if merge_request.merged?
           %li.issuable-status.d-none.d-sm-inline-block
-            MERGED
+            = _('MERGED')
         - elsif merge_request.closed?
           %li.issuable-status.d-none.d-sm-inline-block
             = icon('ban')
-            CLOSED
+            = _('CLOSED')
         - if can?(current_user, :read_pipeline, merge_request.head_pipeline)
           %li.issuable-pipeline-status.d-none.d-sm-flex
             = render 'ci/status/icon', status: merge_request.head_pipeline.detailed_status(current_user), option_css_classes: 'd-flex'
@@ -61,4 +61,5 @@
         = render 'shared/issuable_meta_data', issuable: merge_request
 
       .float-right.issuable-updated-at.d-none.d-sm-inline-block
-        %span updated #{time_ago_with_tooltip(merge_request.updated_at, placement: 'bottom', html_class: 'merge_request_updated_ago')}
+        %span
+          = _('updated %{time_ago}').html_safe % { time_ago: time_ago_with_tooltip(merge_request.updated_at, placement: 'bottom', html_class: 'merge_request_updated_ago') }

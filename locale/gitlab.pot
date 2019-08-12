@@ -1951,6 +1951,9 @@ msgstr ""
 msgid "CICD|instance enabled"
 msgstr ""
 
+msgid "CLOSED"
+msgstr ""
+
 msgid "CONTRIBUTING"
 msgstr ""
 
@@ -6572,6 +6575,9 @@ msgid "Logo was successfully removed."
 msgstr ""
 
 msgid "Logs"
+msgstr ""
+
+msgid "MERGED"
 msgstr ""
 
 msgid "MRDiff|Show changes only"
@@ -13940,6 +13946,9 @@ msgid "unicode domains should use IDNA encoding"
 msgstr ""
 
 msgid "updated"
+msgstr ""
+
+msgid "updated %{time_ago}"
 msgstr ""
 
 msgid "user avatar"
