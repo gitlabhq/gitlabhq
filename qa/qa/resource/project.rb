@@ -15,6 +15,7 @@ module QA
       attribute :add_name_uuid
       attribute :description
       attribute :standalone
+      attribute :runners_token
 
       attribute :group do
         Group.fabricate!

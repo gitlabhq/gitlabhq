@@ -17,7 +17,7 @@ module QA
 
         @repository_location = @project.repository_ssh_location
 
-        Resource::Runner.fabricate_via_browser_ui! do |resource|
+        Resource::Runner.fabricate_via_api! do |resource|
           resource.project = @project
           resource.name = @runner_name
           resource.tags = %w[qa docker]
