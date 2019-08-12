@@ -29,8 +29,12 @@ def cleanup_prometheus_multiproc_dir
   end
 end
 
+def master_process?
+  Prometheus::PidProvider.worker_id.in? %w(unicorn_master puma_master)
+end
+
 warmup do |app|
-  cleanup_prometheus_multiproc_dir
+  cleanup_prometheus_multiproc_dir if master_process?
 
   client = Rack::MockRequest.new(app)
   client.get('/')
