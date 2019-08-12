@@ -25,7 +25,7 @@ describe Git::BranchHooksService do
   end
 
   describe "Git Push Data" do
-    subject(:push_data) { service.execute }
+    subject(:push_data) { service.send(:push_data) }
 
     it 'has expected push data attributes' do
       is_expected.to match a_hash_including(
@@ -109,6 +109,7 @@ describe Git::BranchHooksService do
         expect(event.push_event_payload).to be_an_instance_of(PushEventPayload)
         expect(event.push_event_payload.commit_from).to eq(oldrev)
         expect(event.push_event_payload.commit_to).to eq(newrev)
+        expect(event.push_event_payload.commit_title).to eq('Change some files')
         expect(event.push_event_payload.ref).to eq('master')
         expect(event.push_event_payload.commit_count).to eq(1)
       end
@@ -124,6 +125,7 @@ describe Git::BranchHooksService do
         expect(event.push_event_payload).to be_an_instance_of(PushEventPayload)
         expect(event.push_event_payload.commit_from).to be_nil
         expect(event.push_event_payload.commit_to).to eq(newrev)
+        expect(event.push_event_payload.commit_title).to eq('Initial commit')
         expect(event.push_event_payload.ref).to eq('master')
         expect(event.push_event_payload.commit_count).to be > 1
       end

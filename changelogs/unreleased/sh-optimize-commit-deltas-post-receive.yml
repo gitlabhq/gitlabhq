@@ -1,0 +1,5 @@
+---
+title: Reduce Gitaly calls in PostReceive
+merge_request: 31741
+author:
+type: performance

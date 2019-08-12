@@ -78,7 +78,10 @@ describe Git::BranchPushService, services: true do
 
     it "creates a new pipeline" do
       expect { subject }.to change { Ci::Pipeline.count }
-      expect(Ci::Pipeline.last).to be_push
+
+      pipeline = Ci::Pipeline.last
+      expect(pipeline).to be_push
+      expect(Gitlab::Git::BRANCH_REF_PREFIX + pipeline.ref).to eq(ref)
     end
   end
 
@@ -123,6 +126,10 @@ describe Git::BranchPushService, services: true do
 
   describe "Webhooks" do
     context "execute webhooks" do
+      before do
+        create(:project_hook, push_events: true, project: project)
+      end
+
       it "when pushing a branch for the first time" do
         expect(project).to receive(:execute_hooks)
         expect(project.default_branch).to eq("master")
