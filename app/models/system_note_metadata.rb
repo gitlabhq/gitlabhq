@@ -9,7 +9,7 @@ class SystemNoteMetadata < ApplicationRecord
   TYPES_WITH_CROSS_REFERENCES = %w[
     commit cross_reference
     close duplicate
-    moved
+    moved merge
   ].freeze
 
   ICON_TYPES = %w[
