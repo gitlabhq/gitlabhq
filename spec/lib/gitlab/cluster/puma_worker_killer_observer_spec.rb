@@ -17,9 +17,7 @@ describe Gitlab::Cluster::PumaWorkerKillerObserver do
     it 'increments timeout counter' do
       worker = double(index: 0)
 
-      expect(counter)
-        .to receive(:increment)
-        .with({ worker: 'worker_0' })
+      expect(counter).to receive(:increment)
 
       subject.callback.call(worker)
     end

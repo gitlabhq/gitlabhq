@@ -1,0 +1,5 @@
+---
+title: Fix active metric files being wiped after the app starts
+merge_request: 31668
+author:
+type: fixed
