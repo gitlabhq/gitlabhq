@@ -47,6 +47,23 @@ describe 'User edit profile' do
     end
   end
 
+  describe 'when I change my email' do
+    before do
+      user.send_reset_password_instructions
+    end
+
+    it 'clears the reset password token' do
+      expect(user.reset_password_token?).to be true
+
+      fill_in 'user_email', with: 'new-email@example.com'
+      submit_settings
+
+      user.reload
+      expect(user.confirmation_token).not_to be_nil
+      expect(user.reset_password_token?).to be false
+    end
+  end
+
   context 'user avatar' do
     before do
       attach_file(:user_avatar, Rails.root.join('spec', 'fixtures', 'banana_sample.gif'))
