@@ -30,6 +30,34 @@ There are some high level differences between the products worth mentioning:
 - GitLab comes with a [container registry](../../user/project/container_registry.md), and we recommend using
   container images to set up your build environment.
 
+## Groovy vs. YAML
+
+Jenkins Pipelines are based on [Groovy](https://groovy-lang.org/), so the pipeline specification is written as code. 
+GitLab works a bit differently, we use the more highly structured [YAML](https://yaml.org/) format, which
+places scripting elements inside of `script:` blocks separate from the pipeline specification itself.
+
+This is a strength of GitLab, in that it helps keep the learning curve much simpler to get up and running
+and avoids some of the problem of unconstrained complexity which can make your Jenkinsfiles hard to understand
+and manage.
+
+That said, we do of course still value DRY (don't repeat yourself) principles and want to ensure that
+behaviors of your jobs can be codified once and applied as needed. You can use the `extends:` syntax to
+[templatize your jobs](../yaml/README.md#extends), and `include:` can be used to [bring in entire sets of behaviors](../yaml/README.md#include)
+to pipelines in different projects.
+
+```yaml
+.in-docker:
+  tags:
+    - docker
+  image: alpine
+
+rspec:
+  extends:
+    - .in-docker
+  script:
+    - rake rspec
+```      
+
 ## Artifact publishing
 
 Artifacts may work a bit differently than you've used them with Jenkins. In GitLab, any job can define
