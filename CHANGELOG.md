@@ -2,6 +2,14 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 12.1.5
+
+### Security (2 changes)
+
+- Upgrade Gitaly to 1.53.2 to prevent revision flag injection exploits.
+- Upgrade pages to 1.7.1 to prevent gitlab api token recovery from cookie.
+
+
 ## 12.1.4
 
 ### Fixed (3 changes, 1 of them is from the community)
@@ -329,6 +337,10 @@ entry.
 - Removes EE differences for app/views/layouts/fullscreen.html.haml.
 - Removes EE differences for app/views/admin/users/show.html.haml.
 
+
+## 12.0.6
+
+- No changes.
 
 ## 12.0.3 (2019-06-27)
 
@@ -676,6 +688,14 @@ entry.
 - Increase height of move issue dropdown.
 - Use grid and correct border radius for status badge.
 - Moves snowplow to CE repo.
+
+
+## 11.11.8
+
+### Security (2 changes)
+
+- Upgrade Gitaly to 1.42.7 to prevent revision flag injection exploits.
+- Upgrade pages to 1.5.1 to prevent gitlab api token recovery from cookie.
 
 
 ## 11.11.7
