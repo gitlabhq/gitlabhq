@@ -15,7 +15,7 @@
 .gitlab:assets:compile-metadata:
   <<: *assets-compile-cache
   extends: .dedicated-no-docs-pull-cache-job
-  image: dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.6.3-git-2.22-chrome-73.0-node-12.x-yarn-1.16-graphicsmagick-1.3.29-docker-18.06.1
+  image: dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.6.3-git-2.22-chrome-73.0-node-12.x-yarn-1.16-graphicsmagick-1.3.33-docker-18.06.1
   dependencies:
     - setup-test-env
   services:
