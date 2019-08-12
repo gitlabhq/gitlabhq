@@ -1,0 +1,6 @@
+---
+title: Fixed display of some sections and externalized all text in the shortcuts modal
+  overlay
+merge_request: 31594
+author:
+type: fixed
