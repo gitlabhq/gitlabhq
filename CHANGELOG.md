@@ -338,6 +338,10 @@ entry.
 - Removes EE differences for app/views/admin/users/show.html.haml.
 
 
+## 12.0.6
+
+- No changes.
+
 ## 12.0.3 (2019-06-27)
 
 - No changes.
