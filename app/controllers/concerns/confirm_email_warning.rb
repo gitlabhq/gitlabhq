@@ -10,9 +10,9 @@ module ConfirmEmailWarning
   protected
 
   def set_confirm_warning
-    return if peek_request? || json_request? || !request.get?
     return unless current_user
     return if current_user.confirmed?
+    return if peek_request? || json_request? || !request.get?
 
     email = current_user.unconfirmed_email || current_user.email
 
