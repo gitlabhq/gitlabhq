@@ -7,9 +7,8 @@ downtime.
 
 ## Adding Columns
 
-On PostgreSQL you can safely add a new column to an existing table as long as it
-does **not** have a default value. For example, this query would not require
-downtime:
+You can safely add a new column to an existing table as long as it does **not**
+have a default value. For example, this query would not require downtime:
 
 ```sql
 ALTER TABLE projects ADD COLUMN random_value int;
@@ -26,11 +25,6 @@ This requires updating every single row in the `projects` table so that
 `random_value` is set to `42` by default. This requires updating all rows and
 indexes in a table. This in turn acquires enough locks on the table for it to
 effectively block any other queries.
-
-As of MySQL 5.6 adding a column to a table is still quite an expensive
-operation, even when using `ALGORITHM=INPLACE` and `LOCK=NONE`. This means
-downtime _may_ be required when modifying large tables as otherwise the
-operation could potentially take hours to complete.
 
 Adding a column with a default value _can_ be done without requiring downtime
 when using the migration helper method
@@ -311,8 +305,7 @@ migrations](background_migrations.md#cleaning-up).
 ## Adding Indexes
 
 Adding indexes is an expensive process that blocks INSERT and UPDATE queries for
-the duration. When using PostgreSQL one can work around this by using the
-`CONCURRENTLY` option:
+the duration. You can work around this by using the `CONCURRENTLY` option:
 
 ```sql
 CREATE INDEX CONCURRENTLY index_name ON projects (column_name);
@@ -336,17 +329,9 @@ end
 Note that `add_concurrent_index` can not be reversed automatically, thus you
 need to manually define `up` and `down`.
 
-When running this on PostgreSQL the `CONCURRENTLY` option mentioned above is
-used. On MySQL this method produces a regular `CREATE INDEX` query.
-
-MySQL doesn't really have a workaround for this. Supposedly it _can_ create
-indexes without the need for downtime but only for variable width columns. The
-details on this are a bit sketchy. Since it's better to be safe than sorry one
-should assume that adding indexes requires downtime on MySQL.
-
 ## Dropping Indexes
 
-Dropping an index does not require downtime on both PostgreSQL and MySQL.
+Dropping an index does not require downtime.
 
 ## Adding Tables
 
@@ -370,7 +355,7 @@ transaction this means this approach would require downtime.
 
 GitLab allows you to work around this by using
 `Gitlab::Database::MigrationHelpers#add_concurrent_foreign_key`. This method
-ensures that when PostgreSQL is used no downtime is needed.
+ensures that no downtime is needed.
 
 ## Removing Foreign Keys
 

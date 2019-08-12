@@ -35,8 +35,8 @@ Once a test is in quarantine, there are 3 choices:
 
 Quarantined tests are run on the CI in dedicated jobs that are allowed to fail:
 
-- `rspec-pg-quarantine` and `rspec-mysql-quarantine` (CE & EE)
-- `rspec-pg-quarantine-ee` and `rspec-mysql-quarantine-ee` (EE only)
+- `rspec-pg-quarantine` (CE & EE)
+- `rspec-pg-quarantine-ee` (EE only)
 
 ## Automatic retries and flaky tests detection
 
