@@ -32,6 +32,8 @@ Import your projects from Bitbucket Server to GitLab with minimal effort.
 1. Attachments in Markdown are currently not imported.
 1. Task lists are not imported.
 1. Emoji reactions are not imported
+1. Project filtering does not support fuzzy search (only `starts with` or `full
+   match strings` are currently supported)
 
 ## How it works
 
@@ -68,7 +70,7 @@ namespace that started the import process.
    ![Grant access](img/bitbucket_server_import_credentials.png)
 
 1. Click on the projects that you'd like to import or **Import all projects**.
-   You can also select the namespace under which each project will be
+   You can also filter projects by name and select the namespace under which each project will be
    imported.
 
-   ![Import projects](img/bitbucket_server_import_select_project.png)
+   ![Import projects](img/bitbucket_server_import_select_project_v12_3.png)
