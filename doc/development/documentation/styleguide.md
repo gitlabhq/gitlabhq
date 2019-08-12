@@ -41,7 +41,7 @@ Include any media types/sources if the content is relevant to readers. You can f
 
 ### No special types
 
-In the software industry, it is a best practice to organize documentatioin in different types. For example, [Divio recommends](https://www.divio.com/blog/documentation/):
+In the software industry, it is a best practice to organize documentation in different types. For example, [Divio recommends](https://www.divio.com/blog/documentation/):
 
 1. Tutorials
 1. How-to guides
