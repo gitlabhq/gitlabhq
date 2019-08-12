@@ -1,0 +1,5 @@
+---
+title: Show cross-referenced MR-id in issues' activities only to authorized users
+merge_request:
+author:
+type: security
