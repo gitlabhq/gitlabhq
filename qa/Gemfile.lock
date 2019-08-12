@@ -52,7 +52,7 @@ GEM
     mini_portile2 (2.4.0)
     minitest (5.11.1)
     netrc (0.11.0)
-    nokogiri (1.10.3)
+    nokogiri (1.10.4)
       mini_portile2 (~> 2.4.0)
     parallel (1.17.0)
     parallel_tests (2.29.0)
@@ -112,13 +112,13 @@ DEPENDENCIES
   faker (~> 1.6, >= 1.6.6)
   gitlab-qa
   knapsack (~> 1.17)
-  nokogiri (~> 1.10.3)
+  nokogiri (~> 1.10.4)
   parallel_tests (~> 2.29)
   pry-byebug (~> 3.5.1)
   rake (~> 12.3.0)
   rspec (~> 3.7)
   rspec-retry (~> 0.6.1)
-  rspec_junit_formatter (~> 0.4.1) 
+  rspec_junit_formatter (~> 0.4.1)
   selenium-webdriver (~> 3.12)
 
 BUNDLED WITH
