@@ -58,6 +58,7 @@ Rails.application.routes.draw do
   # Search
   get 'search' => 'search#show'
   get 'search/autocomplete' => 'search#autocomplete', as: :search_autocomplete
+  get 'search/count' => 'search#count', as: :search_count
 
   # JSON Web Token
   get 'jwt/auth' => 'jwt#auth'

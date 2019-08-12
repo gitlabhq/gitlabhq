@@ -438,18 +438,20 @@ class User < ApplicationRecord
 
       order = <<~SQL
         CASE
-          WHEN users.name = %{query} THEN 0
-          WHEN users.username = %{query} THEN 1
-          WHEN users.email = %{query} THEN 2
+          WHEN users.name = :query THEN 0
+          WHEN users.username = :query THEN 1
+          WHEN users.email = :query THEN 2
           ELSE 3
         END
       SQL
+
+      sanitized_order_sql = Arel.sql(sanitize_sql_array([order, query: query]))
 
       where(
         fuzzy_arel_match(:name, query, lower_exact_match: true)
           .or(fuzzy_arel_match(:username, query, lower_exact_match: true))
           .or(arel_table[:email].eq(query))
-      ).reorder(order % { query: ApplicationRecord.connection.quote(query) }, :name)
+      ).reorder(sanitized_order_sql, :name)
     end
 
     # Limits the result set to users _not_ in the given query/list of IDs.

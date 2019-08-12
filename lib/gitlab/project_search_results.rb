@@ -29,6 +29,21 @@ module Gitlab
       end
     end
 
+    def formatted_count(scope)
+      case scope
+      when 'blobs'
+        blobs_count.to_s
+      when 'notes'
+        formatted_limited_count(limited_notes_count)
+      when 'wiki_blobs'
+        wiki_blobs_count.to_s
+      when 'commits'
+        commits_count.to_s
+      else
+        super
+      end
+    end
+
     def users
       super.where(id: @project.team.members) # rubocop:disable CodeReuse/ActiveRecord
     end

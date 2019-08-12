@@ -22,6 +22,17 @@ module Gitlab
       end
     end
 
+    def formatted_count(scope)
+      case scope
+      when 'snippet_titles'
+        snippet_titles_count.to_s
+      when 'snippet_blobs'
+        snippet_blobs_count.to_s
+      else
+        super
+      end
+    end
+
     def snippet_titles_count
       @snippet_titles_count ||= snippet_titles.count
     end

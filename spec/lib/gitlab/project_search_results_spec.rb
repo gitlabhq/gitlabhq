@@ -22,6 +22,28 @@ describe Gitlab::ProjectSearchResults do
     it { expect(results.query).to eq('hello world') }
   end
 
+  describe '#formatted_count' do
+    using RSpec::Parameterized::TableSyntax
+
+    let(:results) { described_class.new(user, project, query) }
+
+    where(:scope, :count_method, :expected) do
+      'blobs'      | :blobs_count            | '1234'
+      'notes'      | :limited_notes_count    | '1000+'
+      'wiki_blobs' | :wiki_blobs_count       | '1234'
+      'commits'    | :commits_count          | '1234'
+      'projects'   | :limited_projects_count | '1000+'
+      'unknown'    | nil                     | nil
+    end
+
+    with_them do
+      it 'returns the expected formatted count' do
+        expect(results).to receive(count_method).and_return(1234) if count_method
+        expect(results.formatted_count(scope)).to eq(expected)
+      end
+    end
+  end
+
   shared_examples 'general blob search' do |entity_type, blob_kind|
     let(:query) { 'files' }
     subject(:results) { described_class.new(user, project, query).objects(blob_type) }

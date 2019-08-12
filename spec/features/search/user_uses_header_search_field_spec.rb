@@ -96,6 +96,23 @@ describe 'User uses header search field', :js do
       let(:url) { root_path }
       let(:scope_name) { 'All GitLab' }
     end
+
+    context 'when searching through the search field' do
+      before do
+        create(:issue, project: project, title: 'project issue')
+
+        fill_in('search', with: 'project')
+        find('#search').send_keys(:enter)
+      end
+
+      it 'displays result counts for all categories' do
+        expect(page).to have_content('Projects 1')
+        expect(page).to have_content('Issues 1')
+        expect(page).to have_content('Merge requests 0')
+        expect(page).to have_content('Milestones 0')
+        expect(page).to have_content('Users 0')
+      end
+    end
   end
 
   context 'when user is in a project scope' do
