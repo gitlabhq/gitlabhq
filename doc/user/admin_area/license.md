@@ -30,22 +30,22 @@ Otherwise, you can:
 
 1. Navigate manually to the **Admin Area** by clicking the wrench icon in the menu bar.
 
-    ![Admin area icon](img/admin_wrench.png)
+   ![Admin area icon](img/admin_wrench.png)
 
 1. And then going to the **License** tab and click on **Upload New License**.
 
-    ![License admin area](img/license_admin_area.png)
+   ![License admin area](img/license_admin_area.png)
 
 1. If you've received a `.gitlab-license` file, you should have already downloaded
    it in your local machine. You can then upload it directly by choosing the
    license file and clicking the **Upload license** button. In the image below,
    you can see that the selected license file is named `GitLab.gitlab-license`.
 
-    ![Upload license](img/license_upload.png)
+   ![Upload license](img/license_upload.png)
 
-    If you've received your license as plain text, you need to select the
-    "Enter license key" option, copy the license, paste it into the "License key"
-    field and click **Upload license**.
+   If you've received your license as plain text, you need to select the
+   "Enter license key" option, copy the license, paste it into the "License key"
+   field and click **Upload license**.
 
 ## Add your license at install time
 

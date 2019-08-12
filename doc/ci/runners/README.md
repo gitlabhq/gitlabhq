@@ -62,7 +62,7 @@ You can only register a shared Runner if you are an admin of the GitLab instance
 
 1. Grab the shared-Runner token on the `admin/runners` page
 
-    ![Shared Runners admin area](img/shared_runners_admin.png)
+   ![Shared Runners admin area](img/shared_runners_admin.png)
 
 1. [Register the Runner][register]
 
@@ -373,12 +373,12 @@ attacker.
 
 To reset the token:
 
-1. Go to **Settings > CI/CD** for a specified Project
-1. Expand the **General pipelines settings** section
-1. Find the **Runner token** form field and click the **Reveal value** button
-1. Delete the value and save the form
+1. Go to **Settings > CI/CD** for a specified Project.
+1. Expand the **General pipelines settings** section.
+1. Find the **Runner token** form field and click the **Reveal value** button.
+1. Delete the value and save the form.
 1. After the page is refreshed, expand the **Runners settings** section
-    and check the registration token - it should be changed
+   and check the registration token - it should be changed.
 
 From now on the old token is not valid anymore and will not allow to register
 a new Runner to the project. If you are using any tools to provision and

@@ -22,7 +22,7 @@ higher can also edit a comment made by someone else.
 You can also reply to a comment notification email to reply to the comment if
 [Reply by email] is configured for your GitLab instance. Replying to a standard comment
 creates another standard comment. Replying to a threaded comment creates a reply in the thread. Email replies support
- [Markdown] and [quick actions], just as if you replied from the web.
+[Markdown] and [quick actions], just as if you replied from the web.
 
 ## Resolvable comments and threads
 
@@ -58,17 +58,17 @@ To create a commit diff thread:
 1. Navigate to the merge request **Commits** tab. A list of commits that
    constitute the merge request will be shown.
 
-    ![Merge request commits tab](img/merge_request_commits_tab.png)
+   ![Merge request commits tab](img/merge_request_commits_tab.png)
 
 1. Navigate to a specific commit, click on the **Changes** tab (where you
    will only be presented diffs from the selected commit), and leave a comment.
 
-    ![Commit diff discussion in merge request context](img/commit_comment_mr_context.png)
+   ![Commit diff discussion in merge request context](img/commit_comment_mr_context.png)
 
 1. Any threads created this way will be shown in the merge request's
    **Discussions** tab and are resolvable.
 
-    ![Merge request Discussions tab](img/commit_comment_mr_discussions_tab.png)
+   ![Merge request Discussions tab](img/commit_comment_mr_discussions_tab.png)
 
 Threads created this way will only appear in the original merge request
 and not when navigating to that commit under your project's
@@ -343,8 +343,8 @@ bottom of the screen with two buttons:
 
 - **Discard**: Discards all comments that have not been submitted.
 - **Finish review**: Opens a list of comments ready to be submitted for review.
-   Clicking **Submit review** will publish all comments. Any quick actions
-   submitted are performed at this time.
+  Clicking **Submit review** will publish all comments. Any quick actions
+  submitted are performed at this time.
 
 Alternatively, every pending comment has a button to finish the entire review.
 
@@ -389,18 +389,18 @@ the Merge Request authored by the user that applied them.
 1. Choose a line of code to be changed, add a new comment, then click
    on the **Insert suggestion** icon in the toolbar:
 
-    ![Add a new comment](img/insert_suggestion.png)
+   ![Add a new comment](img/insert_suggestion.png)
 
 1. In the comment, add your suggestion to the pre-populated code block:
 
-    ![Add a suggestion into a code block tagged properly](img/make_suggestion.png)
+   ![Add a suggestion into a code block tagged properly](img/make_suggestion.png)
 
 1. Click **Comment**.
 
-    The suggestions in the comment can be applied by the merge request author
-    directly from the merge request:
+   The suggestions in the comment can be applied by the merge request author
+   directly from the merge request:
 
-    ![Apply suggestions](img/suggestion.png)
+   ![Apply suggestions](img/suggestion.png)
 
 Once the author applies a suggestion, it will be marked with the **Applied** label,
 the thread will be automatically resolved, and GitLab will create a new commit

@@ -38,13 +38,13 @@ those projects provide a barebones application built on some well-known framewor
    Rails, Spring, or NodeJS Express project. For this example,
    we'll use the Ruby on Rails template.
 
-    ![Select project template](img/guide_project_template.png)
+   ![Select project template](img/guide_project_template.png)
 
 1. Give your project a name, optionally a description, and make it public so that
    you can take advantage of the features available in the
    [GitLab Gold plan](https://about.gitlab.com/pricing/#gitlab-com).
 
-    ![Create project](img/guide_create_project.png)
+   ![Create project](img/guide_create_project.png)
 
 1. Click **Create project**.
 
@@ -56,20 +56,20 @@ under which this application will be deployed.
 1. On the project's landing page, click the button labeled **Add Kubernetes cluster**
    (note that this option is also available when you navigate to **Operations > Kubernetes**).
 
-    ![Project landing page](img/guide_project_landing_page.png)
+   ![Project landing page](img/guide_project_landing_page.png)
 
 1. Choose **Create on Google Kubernetes Engine**.
 
-    ![Choose GKE](img/guide_choose_gke.png)
+   ![Choose GKE](img/guide_choose_gke.png)
 
 1. Sign in with Google.
 
-    ![Google sign in](img/guide_google_signin.png)
+   ![Google sign in](img/guide_google_signin.png)
 
 1. Connect with your Google account and press **Allow** when asked (this will
    be shown only the first time you connect GitLab with your Google account).
 
-    ![Google auth](img/guide_google_auth.png)
+   ![Google auth](img/guide_google_auth.png)
 
 1. The last step is to fill in the cluster details. Give it a name, leave the
    environment scope as is, and choose the GCP project under which the cluster
@@ -80,7 +80,7 @@ under which this application will be deployed.
    cluster will be created, enter the number of nodes you want it to have, and
    finally choose their [machine type](https://cloud.google.com/compute/docs/machine-types).
 
-    ![GitLab GKE cluster details](img/guide_gitlab_gke_details.png)
+   ![GitLab GKE cluster details](img/guide_gitlab_gke_details.png)
 
 1. Once ready, click **Create Kubernetes cluster**.
 
@@ -133,7 +133,7 @@ Now that the Kubernetes cluster is set up and ready, let's enable Auto DevOps.
    successfully runs on the `master` branch.
 1. Click **Save changes**.
 
-    ![Auto DevOps settings](img/guide_enable_autodevops.png)
+   ![Auto DevOps settings](img/guide_enable_autodevops.png)
 
 Once you complete all the above and save your changes, a new pipeline is
 automatically created. To view the pipeline, go to **CI/CD > Pipelines**.
@@ -201,7 +201,7 @@ applications. In the rightmost column for the production environment, you can ma
   Prometheus collects data about the Kubernetes cluster and how the application
   affects it (in terms of memory/CPU usage, latency, etc.).
 
-    ![Environments metrics](img/guide_environments_metrics.png)
+  ![Environments metrics](img/guide_environments_metrics.png)
 
 - The third icon is the [web terminal](../../ci/environments.md#web-terminals)
   and it will open a terminal session right inside the container where the

@@ -107,18 +107,18 @@ In order to purchase additional minutes, you should follow these steps:
 
 1. Go to **Group > Settings > Pipelines quota**. Once you are on that page, click on **Buy additional minutes**.
 
-    ![Buy additional minutes](img/buy_btn.png)
+   ![Buy additional minutes](img/buy_btn.png)
 
 1. Locate the subscription card that is linked to your group on GitLab.com,
    click on **Buy more CI minutes**, and complete the details about the transaction.
 
-    ![Buy additional minutes](img/buy_minutes_card.png)
+   ![Buy additional minutes](img/buy_minutes_card.png)
 
 1. Once we have processed your payment, the extra CI minutes
    will be synced to your Group and you can visualize it from  the
    **Group > Settings > Pipelines quota** page:
 
-    ![Additional minutes](img/additional_minutes.png)
+   ![Additional minutes](img/additional_minutes.png)
 
 Be aware that:
 
