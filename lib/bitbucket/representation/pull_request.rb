@@ -4,7 +4,7 @@ module Bitbucket
   module Representation
     class PullRequest < Representation::Base
       def author
-        raw.fetch('author', {}).fetch('username', nil)
+        raw.fetch('author', {}).fetch('nickname', nil)
       end
 
       def description

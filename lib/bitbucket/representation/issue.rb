@@ -14,7 +14,7 @@ module Bitbucket
       end
 
       def author
-        raw.dig('reporter', 'username')
+        raw.dig('reporter', 'nickname')
       end
 
       def description

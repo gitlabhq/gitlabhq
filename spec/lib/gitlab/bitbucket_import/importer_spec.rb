@@ -25,12 +25,12 @@ describe Gitlab::BitbucketImport::Importer do
   let(:reporters) do
     [
       nil,
-      { "username" => "reporter1" },
+      { "nickname" => "reporter1" },
       nil,
-      { "username" => "reporter2" },
-      { "username" => "reporter1" },
+      { "nickname" => "reporter2" },
+      { "nickname" => "reporter1" },
       nil,
-      { "username" => "reporter3" }
+      { "nickname" => "reporter3" }
     ]
   end
 
@@ -115,6 +115,7 @@ describe Gitlab::BitbucketImport::Importer do
         created_at: Time.now,
         updated_at: Time.now)
     end
+    let(:author_line) { "*Created by: someuser*\n\n" }
 
     before do
       allow(subject).to receive(:import_wiki)
@@ -128,7 +129,7 @@ describe Gitlab::BitbucketImport::Importer do
         old_pos: nil,
         new_pos: 4,
         note: 'Hello world',
-        author: 'root',
+        author: 'someuser',
         created_at: Time.now,
         updated_at: Time.now,
         inline?: true,
@@ -139,7 +140,7 @@ describe Gitlab::BitbucketImport::Importer do
         iid: 3,
         file_path: '.gitmodules',
         note: 'Hello world',
-        author: 'root',
+        author: 'someuser',
         created_at: Time.now,
         updated_at: Time.now,
         inline?: true,
@@ -163,11 +164,33 @@ describe Gitlab::BitbucketImport::Importer do
       notes = merge_request.notes.order(:id).to_a
       start_note = notes.first
       expect(start_note).to be_a(DiffNote)
-      expect(start_note.note).to eq(@inline_note.note)
+      expect(start_note.note).to include(@inline_note.note)
+      expect(start_note.note).to include(author_line)
 
       reply_note = notes.last
       expect(reply_note).to be_a(DiffNote)
-      expect(reply_note.note).to eq(@reply.note)
+      expect(reply_note.note).to include(@reply.note)
+      expect(reply_note.note).to include(author_line)
+    end
+
+    context 'when user exists in GitLab' do
+      let!(:existing_user) { create(:user, username: 'someuser') }
+      let!(:identity) { create(:identity, provider: 'bitbucket', extern_uid: existing_user.username, user: existing_user) }
+
+      it 'does not add author line to comments' do
+        expect { subject.execute }.to change { MergeRequest.count }.by(1)
+
+        merge_request = MergeRequest.first
+
+        notes = merge_request.notes.order(:id).to_a
+        start_note = notes.first
+        expect(start_note.note).to eq(@inline_note.note)
+        expect(start_note.note).not_to include(author_line)
+
+        reply_note = notes.last
+        expect(reply_note.note).to eq(@reply.note)
+        expect(reply_note.note).not_to include(author_line)
+      end
     end
 
     context 'when importing a pull request throws an exception' do
