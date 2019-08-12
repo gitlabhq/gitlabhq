@@ -424,8 +424,8 @@ group :ed25519 do
   gem 'bcrypt_pbkdf', '~> 1.0'
 end
 
-# Gitaly GRPC client
-gem 'gitaly-proto', '~> 1.37.0', require: 'gitaly'
+# Gitaly GRPC protocol definitions
+gem 'gitaly', '~> 1.58.0'
 
 gem 'grpc', '~> 1.19.0'
 
