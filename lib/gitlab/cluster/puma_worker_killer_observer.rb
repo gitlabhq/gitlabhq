@@ -15,9 +15,7 @@ module Gitlab
       private
 
       def log_termination(worker)
-        labels = { worker: "worker_#{worker.index}" }
-
-        @counter.increment(labels)
+        @counter.increment
       end
     end
   end
