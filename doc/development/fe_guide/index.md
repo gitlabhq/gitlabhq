@@ -17,6 +17,8 @@ Working with our frontend assets requires Node (v8.10.0 or greater) and Yarn
 
 For our currently-supported browsers, see our [requirements][requirements].
 
+Use [BrowserStack](https://www.browserstack.com/) to test with our supported browsers. Login to BrowserStack with the credentials saved in GitLab's [shared 1Password account](https://about.gitlab.com/handbook/security/#1password-for-teams).
+
 ## Initiatives
 
 Current high-level frontend goals are listed on [Frontend Epics](https://gitlab.com/groups/gitlab-org/-/epics?label_name%5B%5D=frontend).
