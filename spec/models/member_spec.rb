@@ -173,7 +173,7 @@ describe Member do
     end
 
     describe '.search_invite_email' do
-      it 'returns only the matching e-mail' do
+      it 'returns only members the matching e-mail' do
         create(:group_member, :invited)
 
         invited = described_class.search_invite_email(@invited_member.invite_email)
