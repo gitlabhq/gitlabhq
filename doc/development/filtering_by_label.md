@@ -35,7 +35,7 @@ LIMIT 20 OFFSET 0
 In particular, note that:
 
 1. We `GROUP BY issues.id` so that we can ...
-2. Use the `HAVING (COUNT(DISTINCT labels.title) = 2)` condition to ensure that
+1. Use the `HAVING (COUNT(DISTINCT labels.title) = 2)` condition to ensure that
    all matched issues have both labels.
 
 This is more complicated than is ideal. It makes the query construction more
@@ -103,7 +103,7 @@ This has some strong advantages over titles:
 
 1. Unless a label is deleted, or a project is moved, we never need to
    bulk-update the denormalized column.
-2. It uses less storage than the titles.
+1. It uses less storage than the titles.
 
 Unfortunately, our application design makes this hard. If we were able to query
 just by label ID easily, we wouldn't need the `INNER JOIN labels` in the initial
@@ -115,7 +115,7 @@ We do not want users to have to know about the different IDs, which means that
 given this data set:
 
 | Project | ~Plan label ID | ~backend label ID |
-| ---     | ---            | ---               |
+| ------- | -------------- | ----------------- |
 | A       | 11             | 12                |
 | B       | 21             | 22                |
 | C       | 31             | 32                |

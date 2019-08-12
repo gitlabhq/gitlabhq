@@ -99,49 +99,49 @@ enabled on the Git server:
    shared-component-b/
    ```
 
-2. *Create a new Git repository and fetch.* Support for `--filter=sparse:oid`
+1. *Create a new Git repository and fetch.* Support for `--filter=sparse:oid`
    using the clone command is incomplete, so we will emulate the clone command
    by hand, using `git init` and `git fetch`. Follow
    [gitaly#1769](https://gitlab.com/gitlab-org/gitaly/issues/1769) for updates.
 
-    ```bash
-    # Create a new directory for the Git repository
-    mkdir jumbo-repo && cd jumbo-repo
+   ```bash
+   # Create a new directory for the Git repository
+   mkdir jumbo-repo && cd jumbo-repo
 
-    # Initialize a new Git repository
-    git init
+   # Initialize a new Git repository
+   git init
 
-    # Add the remote
-    git remote add origin git@gitlab.com/example/jumbo-repo
+   # Add the remote
+   git remote add origin git@gitlab.com/example/jumbo-repo
 
-    # Enable partial clone support for the remote
-    git config --local extensions.partialClone origin
+   # Enable partial clone support for the remote
+   git config --local extensions.partialClone origin
 
-    # Fetch the filtered set of objects using the filterspec stored on the
-    # server. WARNING: this step is slow!
-    git fetch --filter=sparse:oid=master:shiny-app/.gitfilterspec origin
+   # Fetch the filtered set of objects using the filterspec stored on the
+   # server. WARNING: this step is slow!
+   git fetch --filter=sparse:oid=master:shiny-app/.gitfilterspec origin
 
-    # Optional: observe there are missing objects that we have not fetched
-    git rev-list --all --quiet --objects --missing=print | wc -l
-    ```
+   # Optional: observe there are missing objects that we have not fetched
+   git rev-list --all --quiet --objects --missing=print | wc -l
+   ```
 
-    CAUTION: **IDE and Shell integrations:**
-    Git integrations with `bash`, `zsh`, etc and editors that automatically
-    show Git status information often run `git fetch` which will fetch the
-    entire repository. You many need to disable or reconfigure these
-    integrations.
+   CAUTION: **IDE and Shell integrations:**
+   Git integrations with `bash`, `zsh`, etc and editors that automatically
+   show Git status information often run `git fetch` which will fetch the
+   entire repository. You many need to disable or reconfigure these
+   integrations.
 
-3. **Sparse checkout** must be enabled and configured to prevent objects from
+1. **Sparse checkout** must be enabled and configured to prevent objects from
    other paths being downloaded automatically when checking out branches. Follow
    [gitaly#1765](https://gitlab.com/gitlab-org/gitaly/issues/1765) for updates.
 
-    ```bash
-    # Enable sparse checkout
-    git config --local core.sparsecheckout true
+   ```bash
+   # Enable sparse checkout
+   git config --local core.sparsecheckout true
 
-    # Configure sparse checkout
-    git show master:snazzy-app/.gitfilterspec >> .git/info/sparse-checkout
+   # Configure sparse checkout
+   git show master:snazzy-app/.gitfilterspec >> .git/info/sparse-checkout
 
-    # Checkout master
-    git checkout master
-    ```
+   # Checkout master
+   git checkout master
+   ```

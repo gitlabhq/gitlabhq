@@ -23,11 +23,11 @@ merge requests in the same project cannot depend on each other.
 
 ## Use cases
 
-* Ensure changes to a library are merged before changes to a project that
+- Ensure changes to a library are merged before changes to a project that
   imports the library
-* Prevent a documentation-only merge request from being merged before the merge request
+- Prevent a documentation-only merge request from being merged before the merge request
   implementing the feature to be documented
-* Require an merge request updating a permissions matrix to be merged before merging an
+- Require an merge request updating a permissions matrix to be merged before merging an
   merge request from someone who hasn't yet been granted permissions
 
 It is common for a single logical change to span several merge requests, spread
@@ -97,9 +97,9 @@ merge.
 
 ## Limitations
 
-* API support: [gitlab-ee#12551](https://gitlab.com/gitlab-org/gitlab-ee/issues/12551)
-* Dependencies are not preserved across project export/import: [gitlab-ee#12549](https://gitlab.com/gitlab-org/gitlab-ee/issues/12549)
-* Complex merge order dependencies are not supported: [gitlab-ee#11393](https://gitlab.com/gitlab-org/gitlab-ee/issues/11393)
+- API support: [gitlab-ee#12551](https://gitlab.com/gitlab-org/gitlab-ee/issues/12551)
+- Dependencies are not preserved across project export/import: [gitlab-ee#12549](https://gitlab.com/gitlab-org/gitlab-ee/issues/12549)
+- Complex merge order dependencies are not supported: [gitlab-ee#11393](https://gitlab.com/gitlab-org/gitlab-ee/issues/11393)
 
 The last item merits a little more explanation. Dependencies between merge
 requests can be described as a graph of relationships. The simplest possible
@@ -121,7 +121,6 @@ graph LR;
 
 Several different merge requests can also directly depend upon the
 same merge request:
-
 
 ```mermaid
 graph LR;

@@ -27,8 +27,6 @@ but not recommended and out of the scope of this document.
 Read the [insecure Registry documentation][docker-insecure] if you want to
 implement this.
 
----
-
 **Installations from source**
 
 If you have installed GitLab from source:
@@ -116,8 +114,6 @@ GitLab from source respectively.
 Be careful to choose a port different than the one that Registry listens to (`5000` by default),
 otherwise you will run into conflicts.
 
----
-
 **Omnibus GitLab installations**
 
 1. Your `/etc/gitlab/gitlab.rb` should contain the Registry URL as well as the
@@ -141,8 +137,6 @@ otherwise you will run into conflicts.
 
 1. Save the file and [reconfigure GitLab][] for the changes to take effect.
 
----
-
 **Installations from source**
 
 1. Open `/home/git/gitlab/config/gitlab.yml`, find the `registry` entry and
@@ -157,8 +151,6 @@ otherwise you will run into conflicts.
 
 1. Save the file and [restart GitLab][] for the changes to take effect.
 1. Make the relevant changes in NGINX as well (domain, port, TLS certificates path).
-
----
 
 Users should now be able to login to the Container Registry with their GitLab
 credentials using:
@@ -176,8 +168,6 @@ domain (e.g., `registry.gitlab.example.com`).
 
 Let's assume that you want the container Registry to be accessible at
 `https://registry.gitlab.example.com`.
-
----
 
 **Omnibus GitLab installations**
 
@@ -210,8 +200,6 @@ look like:
 > registry_nginx['ssl_certificate_key'] = "/etc/gitlab/ssl/certificate.key"
 > ```
 
----
-
 **Installations from source**
 
 1. Open `/home/git/gitlab/config/gitlab.yml`, find the `registry` entry and
@@ -225,8 +213,6 @@ look like:
 
 1. Save the file and [restart GitLab][] for the changes to take effect.
 1. Make the relevant changes in NGINX as well (domain, port, TLS certificates path).
-
----
 
 Users should now be able to login to the Container Registry using their GitLab
 credentials:
@@ -252,8 +238,6 @@ Registry application itself.
 
 1. Save the file and [reconfigure GitLab][] for the changes to take effect.
 
----
-
 **Installations from source**
 
 1. Open `/home/git/gitlab/config/gitlab.yml`, find the `registry` entry and
@@ -272,8 +256,6 @@ If the Container Registry is enabled, then it will be available on all new
 projects. To disable this function and let the owners of a project to enable
 the Container Registry by themselves, follow the steps below.
 
----
-
 **Omnibus GitLab installations**
 
 1. Edit `/etc/gitlab/gitlab.rb` and add the following line:
@@ -283,8 +265,6 @@ the Container Registry by themselves, follow the steps below.
    ```
 
 1. Save the file and [reconfigure GitLab][] for the changes to take effect.
-
----
 
 **Installations from source**
 
@@ -321,8 +301,6 @@ This path is accessible to:
 > **Warning** You should confirm that all GitLab, Registry and web server users
 have access to this directory.
 
----
-
 **Omnibus GitLab installations**
 
 The default location where images are stored in Omnibus, is
@@ -335,8 +313,6 @@ The default location where images are stored in Omnibus, is
    ```
 
 1. Save the file and [reconfigure GitLab][] for the changes to take effect.
-
----
 
 **Installations from source**
 
@@ -445,8 +421,6 @@ In the examples below we set the Registry's port to `5001`.
    ```
 
 1. Save the file and [reconfigure GitLab][] for the changes to take effect.
-
----
 
 **Installations from source**
 
@@ -565,8 +539,6 @@ To configure a notification endpoint in Omnibus:
 
 1. Save the file and [reconfigure GitLab][] for the changes to take effect.
 
----
-
 **Installations from source**
 
 Configuring the notification endpoint is done in your registry config YML file created
@@ -640,8 +612,6 @@ Start with a value between `25000000` (25MB) and `50000000` (50MB).
 
 1. Save the file and [reconfigure GitLab][] for the changes to take effect.
 
----
-
 **For installations from source**
 
 1. Edit `config/gitlab.yml`:
@@ -672,8 +642,6 @@ You can add a configuration option for backwards compatibility.
    ```
 
 1. Save the file and [reconfigure GitLab][] for the changes to take effect.
-
----
 
 **For installations from source**
 

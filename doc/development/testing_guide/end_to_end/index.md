@@ -83,7 +83,6 @@ subgraph "gitlab-qa pipeline"
     end
 ```
 
-
 1. Developer triggers a manual action, that can be found in CE / EE merge
    requests. This starts a chain of pipelines in multiple projects.
 

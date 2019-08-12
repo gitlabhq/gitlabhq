@@ -24,8 +24,6 @@ SNI and exposes pages using HTTP2 by default.
 You are encouraged to read its [README][pages-readme] to fully understand how
 it works.
 
----
-
 In the case of [custom domains](#custom-domains) (but not
 [wildcard domains](#wildcard-domains)), the Pages daemon needs to listen on
 ports `80` and/or `443`. For that reason, there is some flexibility in the way
@@ -92,8 +90,6 @@ since that is needed in all configurations.
 
 - [Wildcard DNS setup](#dns-configuration)
 
----
-
 URL scheme: `http://page.example.io`
 
 This is the minimum setup that you can use Pages with. It is the base for all
@@ -152,13 +148,12 @@ The Pages daemon doesn't listen to the outside world.
 
 ### Wildcard domains with TLS support
 
-> **Requirements:**
-> - [Wildcard DNS setup](#dns-configuration)
-> - Wildcard TLS certificate
->
-> ---
->
-> URL scheme: `https://page.example.io`
+**Requirements:**
+
+- [Wildcard DNS setup](#dns-configuration)
+- Wildcard TLS certificate
+
+URL scheme: `https://page.example.io`
 
 Nginx will proxy all requests to the daemon. Pages daemon doesn't listen to the
 outside world.
@@ -217,13 +212,12 @@ that without TLS certificates.
 
 ### Custom domains
 
-> **Requirements:**
-> - [Wildcard DNS setup](#dns-configuration)
-> - Secondary IP
->
-> ---
->
-> URL scheme: `http://page.example.io` and `http://domain.com`
+**Requirements:**
+
+- [Wildcard DNS setup](#dns-configuration)
+- Secondary IP
+
+URL scheme: `http://page.example.io` and `http://domain.com`
 
 In that case, the pages daemon is running, Nginx still proxies requests to
 the daemon but the daemon is also able to receive requests from the outside
@@ -282,14 +276,13 @@ world. Custom domains are supported, but no TLS.
 
 ### Custom domains with TLS support
 
-> **Requirements:**
-> - [Wildcard DNS setup](#dns-configuration)
-> - Wildcard TLS certificate
-> - Secondary IP
->
-> ---
->
-> URL scheme: `https://page.example.io` and `https://domain.com`
+**Requirements:**
+
+- [Wildcard DNS setup](#dns-configuration)
+- Wildcard TLS certificate
+- Secondary IP
+
+URL scheme: `https://page.example.io` and `https://domain.com`
 
 In that case, the pages daemon is running, Nginx still proxies requests to
 the daemon but the daemon is also able to receive requests from the outside

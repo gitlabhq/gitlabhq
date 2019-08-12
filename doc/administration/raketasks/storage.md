@@ -105,8 +105,6 @@ sudo gitlab-rake gitlab:storage:legacy_projects
 sudo -u git -H bundle exec rake gitlab:storage:legacy_projects RAILS_ENV=production
 ```
 
----
-
 To list projects using **Legacy** storage:
 
 **Omnibus Installation**
@@ -138,8 +136,6 @@ sudo gitlab-rake gitlab:storage:hashed_projects
 sudo -u git -H bundle exec rake gitlab:storage:hashed_projects RAILS_ENV=production
 ```
 
----
-
 To list projects using **Hashed** storage:
 
 **Omnibus Installation**
@@ -170,8 +166,6 @@ sudo gitlab-rake gitlab:storage:legacy_attachments
 sudo -u git -H bundle exec rake gitlab:storage:legacy_attachments RAILS_ENV=production
 ```
 
----
-
 To list project attachments using **Legacy** storage:
 
 **Omnibus Installation**
@@ -201,8 +195,6 @@ sudo gitlab-rake gitlab:storage:hashed_attachments
 ```bash
 sudo -u git -H bundle exec rake gitlab:storage:hashed_attachments RAILS_ENV=production
 ```
-
----
 
 To list project attachments using **Hashed** storage:
 

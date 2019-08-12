@@ -77,8 +77,8 @@ you manually enter a parameter, it must be enclosed in double quotation marks
 (`"`), unless it contains only:
 
 1. ASCII letters.
-2. Numerals.
-3. Underscore, hyphen, question mark, dot, and ampersand.
+1. Numerals.
+1. Underscore, hyphen, question mark, dot, and ampersand.
 
 Parameters are also case-sensitive. Autocomplete handles this, and the insertion
 of quotation marks, automatically.

@@ -20,84 +20,85 @@ It is recommended to run pgbouncer alongside the `gitlab-rails` service, or on i
 
 1. Edit `/etc/gitlab/gitlab.rb` replacing values noted in the `# START user configuration` section:
 
-    ```ruby
-    # Disable all components except Pgbouncer and Consul agent
-    roles ['pgbouncer_role']
+   ```ruby
+   # Disable all components except Pgbouncer and Consul agent
+   roles ['pgbouncer_role']
 
-    # Configure Pgbouncer
-    pgbouncer['admin_users'] = %w(pgbouncer gitlab-consul)
+   # Configure Pgbouncer
+   pgbouncer['admin_users'] = %w(pgbouncer gitlab-consul)
 
-    # Configure Consul agent
-    consul['watchers'] = %w(postgresql)
+   # Configure Consul agent
+   consul['watchers'] = %w(postgresql)
 
-    # START user configuration
-    # Please set the real values as explained in Required Information section
-    # Replace CONSUL_PASSWORD_HASH with with a generated md5 value
-    # Replace PGBOUNCER_PASSWORD_HASH with with a generated md5 value
-    pgbouncer['users'] = {
-      'gitlab-consul': {
-        password: 'CONSUL_PASSWORD_HASH'
-      },
-      'pgbouncer': {
-        password: 'PGBOUNCER_PASSWORD_HASH'
-      }
-    }
-    # Replace placeholders:
-    #
-    # Y.Y.Y.Y consul1.gitlab.example.com Z.Z.Z.Z
-    # with the addresses gathered for CONSUL_SERVER_NODES
-    consul['configuration'] = {
-      retry_join: %w(Y.Y.Y.Y consul1.gitlab.example.com Z.Z.Z.Z)
-    }
-    #
-    # END user configuration
-    ```
+   # START user configuration
+   # Please set the real values as explained in Required Information section
+   # Replace CONSUL_PASSWORD_HASH with with a generated md5 value
+   # Replace PGBOUNCER_PASSWORD_HASH with with a generated md5 value
+   pgbouncer['users'] = {
+     'gitlab-consul': {
+       password: 'CONSUL_PASSWORD_HASH'
+     },
+     'pgbouncer': {
+       password: 'PGBOUNCER_PASSWORD_HASH'
+     }
+   }
+   # Replace placeholders:
+   #
+   # Y.Y.Y.Y consul1.gitlab.example.com Z.Z.Z.Z
+   # with the addresses gathered for CONSUL_SERVER_NODES
+   consul['configuration'] = {
+     retry_join: %w(Y.Y.Y.Y consul1.gitlab.example.com Z.Z.Z.Z)
+   }
+   #
+   # END user configuration
+   ```
 
-    > `pgbouncer_role` was introduced with GitLab 10.3
+   NOTE: **Note:**
+   `pgbouncer_role` was introduced with GitLab 10.3.
 
-1.  Run `gitlab-ctl reconfigure`
+1. Run `gitlab-ctl reconfigure`
 
 1. Create a `.pgpass` file so Consul is able to
    reload pgbouncer. Enter the `PGBOUNCER_PASSWORD` twice when asked:
 
-    ```sh
-    gitlab-ctl write-pgpass --host 127.0.0.1 --database pgbouncer --user pgbouncer --hostuser gitlab-consul
-    ```
+   ```sh
+   gitlab-ctl write-pgpass --host 127.0.0.1 --database pgbouncer --user pgbouncer --hostuser gitlab-consul
+   ```
 
 #### PGBouncer Checkpoint
 
 1. Ensure the node is talking to the current master:
 
-    ```sh
-    gitlab-ctl pgb-console # You will be prompted for PGBOUNCER_PASSWORD
-    ```
+   ```sh
+   gitlab-ctl pgb-console # You will be prompted for PGBOUNCER_PASSWORD
+   ```
 
-    If there is an error `psql: ERROR:  Auth failed` after typing in the
-    password, ensure you previously generated the MD5 password hashes with the correct
-    format. The correct format is to concatenate the password and the username:
-    `PASSWORDUSERNAME`. For example, `Sup3rS3cr3tpgbouncer` would be the text
-    needed to generate an MD5 password hash for the `pgbouncer` user.
+   If there is an error `psql: ERROR:  Auth failed` after typing in the
+   password, ensure you previously generated the MD5 password hashes with the correct
+   format. The correct format is to concatenate the password and the username:
+   `PASSWORDUSERNAME`. For example, `Sup3rS3cr3tpgbouncer` would be the text
+   needed to generate an MD5 password hash for the `pgbouncer` user.
 
 1. Once the console prompt is available, run the following queries:
 
-    ```sh
-    show databases ; show clients ;
-    ```
+   ```sh
+   show databases ; show clients ;
+   ```
 
-    The output should be similar to the following:
+   The output should be similar to the following:
 
-    ```
-            name         |  host       | port |      database       | force_user | pool_size | reserve_pool | pool_mode | max_connections | current_connections
-    ---------------------+-------------+------+---------------------+------------+-----------+--------------+-----------+-----------------+---------------------
-     gitlabhq_production | MASTER_HOST | 5432 | gitlabhq_production |            |        20 |            0 |           |               0 |                   0
-     pgbouncer           |             | 6432 | pgbouncer           | pgbouncer  |         2 |            0 | statement |               0 |                   0
-    (2 rows)
+   ```
+           name         |  host       | port |      database       | force_user | pool_size | reserve_pool | pool_mode | max_connections | current_connections
+   ---------------------+-------------+------+---------------------+------------+-----------+--------------+-----------+-----------------+---------------------
+    gitlabhq_production | MASTER_HOST | 5432 | gitlabhq_production |            |        20 |            0 |           |               0 |                   0
+    pgbouncer           |             | 6432 | pgbouncer           | pgbouncer  |         2 |            0 | statement |               0 |                   0
+   (2 rows)
 
-     type |   user    |      database       |  state  |   addr         | port  | local_addr | local_port |    connect_time     |    request_time     |    ptr    | link | remote_pid | tls
-    ------+-----------+---------------------+---------+----------------+-------+------------+------------+---------------------+---------------------+-----------+------+------------+-----
-     C    | pgbouncer | pgbouncer           | active  | 127.0.0.1      | 56846 | 127.0.0.1  |       6432 | 2017-08-21 18:09:59 | 2017-08-21 18:10:48 | 0x22b3880 |      |          0 |
-    (2 rows)
-    ```
+    type |   user    |      database       |  state  |   addr         | port  | local_addr | local_port |    connect_time     |    request_time     |    ptr    | link | remote_pid | tls
+   ------+-----------+---------------------+---------+----------------+-------+------------+------------+---------------------+---------------------+-----------+------+------------+-----
+    C    | pgbouncer | pgbouncer           | active  | 127.0.0.1      | 56846 | 127.0.0.1  |       6432 | 2017-08-21 18:09:59 | 2017-08-21 18:10:48 | 0x22b3880 |      |          0 |
+   (2 rows)
+   ```
 
 ### Running Pgbouncer as part of a non-HA GitLab installation
 

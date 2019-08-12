@@ -591,15 +591,13 @@ exist, you should see something like:
 
 ### Monitoring environments
 
-> **Notes:**
->
-> - For the monitoring dashboard to appear, you need to:
->   - Enable the [Prometheus integration](../user/project/integrations/prometheus.md).
->   - Configure Prometheus to collect at least one [supported metric](../user/project/integrations/prometheus_library/index.md).
-> - With GitLab 9.2, all deployments to an environment are shown directly on the monitoring dashboard.
-
 If you have enabled [Prometheus for monitoring system and response metrics](../user/project/integrations/prometheus.md),
-you can monitor the behavior of your app running in each environment.
+you can monitor the behavior of your app running in each environment. For the monitoring
+dashboard to appear, you need to Configure Prometheus to collect at least one
+[supported metric](../user/project/integrations/prometheus_library/index.md).
+
+NOTE: **Note:**
+Since GitLab 9.2, all deployments to an environment are shown directly on the monitoring dashboard.
 
 Once configured, GitLab will attempt to retrieve [supported performance metrics](../user/project/integrations/prometheus_library/index.md)
 for any environment that has had a successful deployment. If monitoring data was
