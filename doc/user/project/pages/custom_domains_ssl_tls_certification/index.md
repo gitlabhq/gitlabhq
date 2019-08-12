@@ -1,7 +1,7 @@
 ---
 last_updated: 2019-07-04
 type: reference, howto
-redirect_from: 'https://docs.gitlab.com/ee/user/project/pages/getting_started_part_three.html'
+disqus_identifier: 'https://docs.gitlab.com/ee/user/project/pages/getting_started_part_three.html'
 ---
 
 # Custom domains and SSL/TLS Certificates

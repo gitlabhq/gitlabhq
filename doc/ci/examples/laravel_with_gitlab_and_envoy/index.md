@@ -1,5 +1,5 @@
 ---
-redirect_from: 'https://docs.gitlab.com/ee/articles/laravel_with_gitlab_and_envoy/index.html'
+disqus_identifier: 'https://docs.gitlab.com/ee/articles/laravel_with_gitlab_and_envoy/index.html'
 author: Mehran Rasulian
 author_gitlab: mehranrasulian
 level: intermediate

@@ -1,5 +1,4 @@
 ---
-redirect_from: 'code_quality_diff.md'
 redirect_to: 'code_quality.md'
 ---
 

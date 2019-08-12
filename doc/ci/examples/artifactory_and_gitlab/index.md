@@ -1,5 +1,5 @@
 ---
-redirect_from: 'https://docs.gitlab.com/ee/articles/artifactory_and_gitlab/index.html'
+disqus_identifier: 'https://docs.gitlab.com/ee/articles/artifactory_and_gitlab/index.html'
 author: Fabio Busatto
 author_gitlab: bikebilly
 level: intermediate

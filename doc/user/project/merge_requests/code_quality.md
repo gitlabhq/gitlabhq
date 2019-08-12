@@ -1,5 +1,6 @@
 ---
 type: reference, howto
+disqus_identifier: 'https://docs.gitlab.com/ee/user/project/merge_requests/code_quality_diff.html'
 ---
 
 # Code Quality **(STARTER)**
