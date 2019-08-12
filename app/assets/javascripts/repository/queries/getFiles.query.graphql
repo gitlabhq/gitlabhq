@@ -1,13 +1,10 @@
+#import "~/graphql_shared/fragments/pageInfo.fragment.graphql"
+
 fragment TreeEntry on Entry {
   id
   name
   flatPath
   type
-}
-
-fragment PageInfo on PageInfo {
-  hasNextPage
-  endCursor
 }
 
 query getFiles(
