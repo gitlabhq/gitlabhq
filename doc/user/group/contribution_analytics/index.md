@@ -4,7 +4,8 @@ type: reference
 
 # Contribution Analytics **(STARTER)**
 
-> Introduced in [GitLab Starter](https://about.gitlab.com/pricing/) 8.3.
+> - Introduced in [GitLab Starter](https://about.gitlab.com/pricing/) 8.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/3090) for subgroups in GitLab 12.2.
 
 ## Overview
 
