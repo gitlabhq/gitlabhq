@@ -332,7 +332,7 @@
                   %td.shortcut
                     %kbd l
                   %td Change Label
-              %tbody.hidden-shortcut{ style: 'display:none' }
+              %tbody.hidden-shortcut.merge_requests{ style: 'display:none' }
                 %tr
                   %th
                   %th Merge Requests
@@ -368,6 +368,14 @@
                     \/
                     %kbd k
                   %td Move to previous file
+                %tr
+                  %td.shortcut
+                    %kbd n
+                  %td= _("Move to next unresolved discussion")
+                %tr
+                  %td.shortcut
+                    %kbd p
+                  %td= _("Move to previous unresolved discussion")
               %tbody.hidden-shortcut{ style: 'display:none' }
                 %tr
                   %th

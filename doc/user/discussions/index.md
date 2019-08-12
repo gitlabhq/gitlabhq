@@ -88,6 +88,11 @@ Jump button next to the Reply field on a thread.
 You can also jump to the first unresolved thread from the button next to the
 resolved threads tracker.
 
+You can also use keyboard shortcuts to navigate among threads:
+
+- Use <kbd>n</kbd> to jump to the next unresolved thread.
+- Use <kbd>p</kbd> to jump to the previous unresolved thread.
+
 !["8/9 threads resolved"](img/threads_resolved.png)
 
 ### Marking a comment or thread as resolved

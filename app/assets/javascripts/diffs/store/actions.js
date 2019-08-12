@@ -109,7 +109,7 @@ export const toggleLineDiscussions = ({ commit }, options) => {
 export const renderFileForDiscussionId = ({ commit, rootState, state }, discussionId) => {
   const discussion = rootState.notes.discussions.find(d => d.id === discussionId);
 
-  if (discussion) {
+  if (discussion && discussion.diff_file) {
     const file = state.diffFiles.find(f => f.file_hash === discussion.diff_file.file_hash);
 
     if (file) {

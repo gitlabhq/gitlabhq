@@ -6952,6 +6952,12 @@ msgstr ""
 msgid "Move this issue to another project."
 msgstr ""
 
+msgid "Move to next unresolved discussion"
+msgstr ""
+
+msgid "Move to previous unresolved discussion"
+msgstr ""
+
 msgid "MoveIssue|Cannot move issue due to insufficient permissions!"
 msgstr ""
 
