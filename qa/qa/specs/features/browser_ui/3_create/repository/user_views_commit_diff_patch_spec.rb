@@ -2,8 +2,7 @@
 
 module QA
   context 'Create' do
-    # failure reported: https://gitlab.com/gitlab-org/quality/nightly/issues/42
-    describe 'Commit data', :quarantine do
+    describe 'Commit data' do
       before(:context) do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
         Page::Main::Login.perform(&:sign_in_using_credentials)
