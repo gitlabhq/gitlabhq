@@ -186,7 +186,10 @@ describe Projects::UpdateService do
 
         expect_any_instance_of(ProjectWiki).to receive(:wiki).and_raise(ProjectWiki::CouldNotCreateWikiError)
         expect_any_instance_of(described_class).to receive(:log_error).with("Could not create wiki for #{project.full_name}")
-        expect(Gitlab::Metrics).to receive(:counter)
+
+        counter = double(:counter)
+        expect(Gitlab::Metrics).to receive(:counter).with(:wiki_can_not_be_created_total, 'Counts the times we failed to create a wiki').and_return(counter)
+        expect(counter).to receive(:increment)
 
         update_project(project, user, project_feature_attributes: { wiki_access_level: ProjectFeature::ENABLED })
       end

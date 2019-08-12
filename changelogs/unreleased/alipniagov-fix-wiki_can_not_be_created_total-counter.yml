@@ -1,0 +1,5 @@
+---
+title: Fix :wiki_can_not_be_created_total counter
+merge_request: 31673
+author:
+type: fixed
