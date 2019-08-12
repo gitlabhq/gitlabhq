@@ -30,7 +30,7 @@ describe Gitlab::Kubernetes::Helm::Pod do
       it 'generates the appropriate specifications for the container' do
         container = subject.generate.spec.containers.first
         expect(container.name).to eq('helm')
-        expect(container.image).to eq('registry.gitlab.com/gitlab-org/cluster-integration/helm-install-image/releases/2.12.3-kube-1.11.7')
+        expect(container.image).to eq('registry.gitlab.com/gitlab-org/cluster-integration/helm-install-image/releases/2.14.3-kube-1.11.10')
         expect(container.env.count).to eq(3)
         expect(container.env.map(&:name)).to match_array([:HELM_VERSION, :TILLER_NAMESPACE, :COMMAND_SCRIPT])
         expect(container.command).to match_array(["/bin/sh"])
