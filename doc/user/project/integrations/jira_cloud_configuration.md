@@ -9,7 +9,7 @@ below to create one:
    It is important that the user associated with this email address has *write* access
    to projects in Jira.
 
-2. Click **Create API token**.
+1. Click **Create API token**.
 
 ![Jira API token](img/jira_api_token_menu.png)
 

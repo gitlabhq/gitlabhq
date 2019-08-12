@@ -40,10 +40,9 @@ Below is a list of supported `data-track-*` attributes:
 | attribute             | required | description |
 |:----------------------|:---------|:------------|
 | `data-track-event`    | true     | Action the user is taking. Clicks should be `click` and activations should be `activate`, so for example, focusing a form field would be `activate_form_input`, and clicking a button would be `click_button`. |
-| `data-track-label`    | false    | The `label` as described [in our Feature Instrumentation taxonomy](https://about.gitlab.com/handbook/product/feature-instrumentation/#taxonomy) |
-| `data-track-property` | false    | The `property` as described [in our Feature Instrumentation taxonomy](https://about.gitlab.com/handbook/product/feature-instrumentation/#taxonomy)
-| `data-track-value`    | false    | The `value` as described [in our Feature Instrumentation taxonomy](https://about.gitlab.com/handbook/product/feature-instrumentation/#taxonomy). If omitted, this will be the elements `value` property or an empty string. For checkboxes, the default value will be the element's checked attribute or `false` when unchecked. 
-
+| `data-track-label`    | false    | The `label` as described [in our Feature Instrumentation taxonomy](https://about.gitlab.com/handbook/product/feature-instrumentation/#taxonomy). |
+| `data-track-property` | false    | The `property` as described [in our Feature Instrumentation taxonomy](https://about.gitlab.com/handbook/product/feature-instrumentation/#taxonomy). |
+| `data-track-value`    | false    | The `value` as described [in our Feature Instrumentation taxonomy](https://about.gitlab.com/handbook/product/feature-instrumentation/#taxonomy). If omitted, this will be the elements `value` property or an empty string. For checkboxes, the default value will be the element's checked attribute or `false` when unchecked. |
 
 ## Tracking in raw Javascript
 
@@ -68,7 +67,6 @@ document.getElementById('my_button').addEventListener('click', () => {
   });
 })
 ```
-
 
 ## Toggling tracking on or off
 

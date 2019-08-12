@@ -67,8 +67,6 @@ For source installations, make sure the `kerberos` gem group
 
 1. [Restart GitLab] for the changes to take effect.
 
----
-
 **Omnibus package installations**
 
 1. Edit `/etc/gitlab/gitlab.rb`:
@@ -82,8 +80,6 @@ For source installations, make sure the `kerberos` gem group
    ```
 
 1. [Reconfigure GitLab] for the changes to take effect.
-
----
 
 GitLab will now offer the `negotiate` authentication method for signing in and
 HTTP Git access, enabling Git clients that support this authentication protocol
@@ -172,8 +168,6 @@ keep offering only `basic` authentication.
 
 1. [Restart GitLab] and NGINX for the changes to take effect.
 
----
-
 **For Omnibus package installations**
 
 1. Edit `/etc/gitlab/gitlab.rb`:
@@ -185,8 +179,6 @@ keep offering only `basic` authentication.
    ```
 
 1. [Reconfigure GitLab] for the changes to take effect.
-
----
 
 After this change, all Git remote URLs will have to be updated to
 `https://gitlab.example.com:8443/mygroup/myproject.git` in order to use
@@ -222,8 +214,6 @@ remove the OmniAuth provider named `kerberos` from your `gitlab.yml` /
    ```
 
 1. [Restart GitLab] for the changes to take effect.
-
----
 
 **For Omnibus installations**
 

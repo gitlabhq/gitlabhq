@@ -14,14 +14,8 @@ Fetching large repositories can take a long time for teams located far from a si
 
 Geo provides local, read-only instances of your GitLab instances, reducing the time it takes to clone and fetch large repositories and speeding up development.
 
-> **Notes:**
->
-> - Geo is part of [GitLab Premium](https://about.gitlab.com/pricing/#self-managed).
-> - We recommend you use:
->   - At least GitLab Enterprise Edition 10.0 for basic Geo features.
->   - The latest version for a better experience.
-> - Make sure that all nodes run the same GitLab version.
-> - Geo requires PostgreSQL 9.6 and Git 2.9, in addition to GitLab's usual [minimum requirements](../../../install/requirements.md).
+NOTE: **Note:**
+Check the [requirements](#requirements-for-running-geo) carefully before setting up Geo.
 
 For a video introduction to Geo, see [Introduction to GitLab Geo - GitLab Features](https://www.youtube.com/watch?v=-HDLxSjEh6w).
 
@@ -117,6 +111,13 @@ The following are required to run Geo:
   - [Ubuntu](https://www.ubuntu.com) 16.04+
 - PostgreSQL 9.6+ with [FDW](https://www.postgresql.org/docs/9.6/postgres-fdw.html) support and [Streaming Replication](https://wiki.postgresql.org/wiki/Streaming_Replication)
 - Git 2.9+
+- All nodes must run the same GitLab version.
+
+Additionally, check GitLab's [minimum requirements](../../../install/requirements.md),
+and we recommend you use:
+
+- At least GitLab Enterprise Edition 10.0 for basic Geo features.
+- The latest version for a better experience.
 
 ### Firewall rules
 
