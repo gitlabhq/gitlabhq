@@ -2,7 +2,7 @@
 type: index, reference
 ---
 
-# Customers
+# Customer Docs
 
 This section contains information for:
 

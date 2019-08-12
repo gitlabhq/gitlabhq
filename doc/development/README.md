@@ -3,7 +3,7 @@ comments: false
 description: 'Learn how to contribute to GitLab.'
 ---
 
-# GitLab development guides
+# Contributor and Development Docs
 
 ## Get started!
 

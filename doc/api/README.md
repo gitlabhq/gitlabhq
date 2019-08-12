@@ -1,4 +1,4 @@
-# GitLab API
+# API Docs
 
 Automate GitLab via a simple and powerful API.
 
@@ -6,7 +6,7 @@ The main GitLab API is a [REST](https://en.wikipedia.org/wiki/Representational_s
 
 ## Available API resources
 
-For a list of the available resources and their endpoints, see 
+For a list of the available resources and their endpoints, see
 [API resources](api_resources.md).
 
 ## SCIM **(SILVER ONLY)**
