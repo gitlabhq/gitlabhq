@@ -70,6 +70,9 @@ export default {
     hasIssuableTemplates() {
       return this.issuableTemplates.length;
     },
+    showLockedWarning() {
+      return this.formState.lockedWarningVisible && !this.formState.updateLoading;
+    },
   },
   created() {
     eventHub.$on('delete.issuable', this.resetAutosave);
@@ -117,7 +120,7 @@ export default {
 
 <template>
   <form>
-    <locked-warning v-if="formState.lockedWarningVisible" />
+    <locked-warning v-if="showLockedWarning" />
     <div class="row">
       <div v-if="hasIssuableTemplates" class="col-sm-4 col-lg-3">
         <description-template

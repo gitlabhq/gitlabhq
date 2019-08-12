@@ -1,0 +1,5 @@
+---
+title: Fix flashing conflict warning when editing issues
+merge_request: 31469
+author:
+type: fixed
