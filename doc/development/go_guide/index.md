@@ -107,6 +107,32 @@ Modules](https://github.com/golang/go/wiki/Modules). It provides a way to
 define and lock dependencies for reproducible builds. It should be used
 whenever possible.
 
+When Go Modules are in use, there should not be a `vendor/` directory. Instead,
+Go will automatically download dependencies when they are needed to build the
+project. This is in line with how dependencies are handled with Bundler in Ruby
+projects, and makes merge requests easier to review.
+
+In some cases, such as building a Go project for it to act as a dependency of a
+CI run for another project, removing the `vendor/` directory means the code must
+be downloaded repeatedly, which can lead to intermittent problems due to rate
+limiting or network failures. In these circumstances, you should cache the
+downloaded code between runs with a `.gitlab-ci.yml` snippet like this:
+
+```yaml
+.go-cache:
+  variables:
+    GOPATH: $CI_PROJECT_DIR/.go
+  before_script:
+    - mkdir -p .go
+  cache:
+    paths:
+      - .go/pkg/mod/
+
+test:
+  extends: .go-cache
+  # ...
+```
+
 There was a [bug on modules
 checksums](https://github.com/golang/go/issues/29278) in Go < v1.11.4, so make
 sure to use at least this version to avoid `checksum mismatch` errors.
