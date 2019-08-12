@@ -261,6 +261,41 @@ describe('Multi-file store utils', () => {
         },
       ]);
     });
+
+    it('filters out folders from the list', () => {
+      const files = [
+        {
+          path: 'a',
+          type: 'blob',
+          deleted: true,
+        },
+        {
+          path: 'c',
+          type: 'tree',
+          deleted: true,
+        },
+        {
+          path: 'c/d',
+          type: 'blob',
+          deleted: true,
+        },
+      ];
+
+      const flattendFiles = utils.getCommitFiles(files);
+
+      expect(flattendFiles).toEqual([
+        {
+          path: 'a',
+          type: 'blob',
+          deleted: true,
+        },
+        {
+          path: 'c/d',
+          type: 'blob',
+          deleted: true,
+        },
+      ]);
+    });
   });
 
   describe('mergeTrees', () => {

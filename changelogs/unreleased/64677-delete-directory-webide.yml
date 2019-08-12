@@ -1,0 +1,5 @@
+---
+title: Fixed removing directories in Web IDE
+merge_request: 31727
+author:
+type: fixed
