@@ -1,0 +1,5 @@
+---
+title: Fix an issue where clicking outside the MR/branch search box in WebIDE closed the dropdown.
+merge_request: 31523
+author:
+type: fixed
