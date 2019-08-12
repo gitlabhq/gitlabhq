@@ -10,7 +10,7 @@
 1. [From Gitea](gitea.md)
 1. [From Perforce](perforce.md)
 1. [From SVN](svn.md)
-1. [From TFS](tfs.md)
+1. [From TFVC](tfvc.md)
 1. [From repo by URL](repo_by_url.md)
 1. [By uploading a manifest file (AOSP)](manifest.md)
 1. [From Gemnasium](gemnasium.md)
