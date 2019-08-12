@@ -34,11 +34,11 @@ that the `master` branch is protected by default.
 1. From the **Branch** dropdown menu, select the branch you want to protect and
    click **Protect**. In the screenshot below, we chose the `develop` branch.
 
-    ![Protected branches page](img/protected_branches_page.png)
+   ![Protected branches page](img/protected_branches_page.png)
 
 1. Once done, the protected branch will appear in the "Protected branches" list.
 
-    ![Protected branches list](img/protected_branches_list.png)
+   ![Protected branches list](img/protected_branches_list.png)
 
 ## Using the Allowed to merge and Allowed to push settings
 
@@ -145,7 +145,7 @@ branches via GitLab's web interface:
 1. In order to prevent accidental deletion, an additional confirmation is
    required
 
-    ![Delete protected branches](img/protected_branches_delete.png)
+   ![Delete protected branches](img/protected_branches_delete.png)
 
 Deleting a protected branch is only allowed via the web interface, not via Git.
 This means that you can't accidentally delete a protected branch from your

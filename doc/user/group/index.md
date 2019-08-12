@@ -91,11 +91,11 @@ To create a new Group, either:
 
 - In the top menu, click **Groups** and then **Your Groups**, and click the green button **New group**.
 
-    ![new group from groups page](img/new_group_from_groups.png)
+  ![new group from groups page](img/new_group_from_groups.png)
 
 - Or, in the top menu, expand the `plus` sign and choose **New group**.
 
-    ![new group from elsewhere](img/new_group_from_other_pages.png)
+  ![new group from elsewhere](img/new_group_from_other_pages.png)
 
 Add the following information:
 
@@ -104,15 +104,15 @@ Add the following information:
 1. The **Group name** will automatically populate the URL. Optionally, you can change it.
    This is the name that displays in group views.
    The name can contain only:
-     - Alphanumeric characters
-     - Underscores
-     - Dashes and dots
-     - Spaces
+   - Alphanumeric characters
+   - Underscores
+   - Dashes and dots
+   - Spaces
 1. The **Group URL** is the namespace under which your projects will be hosted.
    The URL can contain only:
-     - Alphanumeric characters
-     - Underscores
-     - Dashes and dots (it cannot start with dashes or end in a dot)
+   - Alphanumeric characters
+   - Underscores
+   - Dashes and dots (it cannot start with dashes or end in a dot)
 1. Optionally, you can add a brief description to tell others
    what this group is about.
 1. Optionally, choose an avatar for your group.
@@ -166,12 +166,12 @@ There are two different ways to add a new project to a group:
 
 - Select a group, and then click **New project**. You can then continue [creating your project](../../gitlab-basics/create-project.md).
 
-    ![New project](img/create_new_project_from_group.png)
+  ![New project](img/create_new_project_from_group.png)
 
 - While you are creating a project, select a group namespace
   you've already created from the dropdown menu.
 
-    ![Select group](img/select_group_dropdown.png)
+  ![Select group](img/select_group_dropdown.png)
 
 ### Default project-creation level
 

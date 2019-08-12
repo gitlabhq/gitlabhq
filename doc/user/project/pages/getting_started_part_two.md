@@ -86,17 +86,17 @@ You can also take some **optional** further steps:
 
 - _Remove the fork relationship._ The fork relationship is necessary to contribute back to the project you originally forked from. If you don't have any intentions to do so, you can remove it. To do so, navigate to your project's **Settings**, expand **Advanced settings**, and scroll down to **Remove fork relationship**:
 
-    ![remove fork relationship](img/remove_fork_relationship.png)
+  ![remove fork relationship](img/remove_fork_relationship.png)
 
 - _Make it a user or group website._ To turn a **project website** forked
   from the Pages group into a **user/group** website, you'll need to:
-    - Rename it to `namespace.gitlab.io`: go to your project's
-      **Settings > General** and expand **Advanced**. Scroll down to
-      **Rename repository** and change the path to `namespace.gitlab.io`.
-    - Adjust your SSG's [base URL](#urls-and-baseurls) from `"project-name"` to
-      `""`. This setting will be at a different place for each SSG, as each of them
-      have their own structure and file tree. Most likely, it will be in the SSG's
-      config file.
+  - Rename it to `namespace.gitlab.io`: go to your project's
+    **Settings > General** and expand **Advanced**. Scroll down to
+    **Rename repository** and change the path to `namespace.gitlab.io`.
+  - Adjust your SSG's [base URL](#urls-and-baseurls) from `"project-name"` to
+    `""`. This setting will be at a different place for each SSG, as each of them
+    have their own structure and file tree. Most likely, it will be in the SSG's
+    config file.
 
 ### Create a project from scratch
 
@@ -107,12 +107,12 @@ You can also take some **optional** further steps:
    files to your project, add, commit and push to GitLab.
 1. From the your **Project**'s page, click **Set up CI/CD**:
 
-    ![setup GitLab CI/CD](img/setup_ci.png)
+   ![setup GitLab CI/CD](img/setup_ci.png)
 
 1. Choose one of the templates from the dropbox menu.
    Pick up the template corresponding to the SSG you're using (or plain HTML).
 
-    ![gitlab-ci templates](img/choose_ci_template.png)
+   ![gitlab-ci templates](img/choose_ci_template.png)
 
 Once you have both site files and `.gitlab-ci.yml` in your project's
 root, GitLab CI/CD will build your site and deploy it with Pages.
@@ -123,20 +123,20 @@ where you'll find its default URL.
 > **Notes:**
 >
 > - GitLab Pages [supports any SSG](https://about.gitlab.com/2016/06/17/ssg-overview-gitlab-pages-part-3-examples-ci/), but,
-  if you don't find yours among the templates, you'll need
-  to configure your own `.gitlab-ci.yml`. To do that, please
-  read through the article [Creating and Tweaking GitLab CI/CD for GitLab Pages](getting_started_part_four.md). New SSGs are very welcome among
-  the [example projects](https://gitlab.com/pages). If you set
-  up a new one, please
-  [contribute](https://gitlab.com/pages/pages.gitlab.io/blob/master/CONTRIBUTING.md)
-  to our examples.
+>   if you don't find yours among the templates, you'll need
+>   to configure your own `.gitlab-ci.yml`. To do that, please
+>   read through the article [Creating and Tweaking GitLab CI/CD for GitLab Pages](getting_started_part_four.md). New SSGs are very welcome among
+>   the [example projects](https://gitlab.com/pages). If you set
+>   up a new one, please
+>   [contribute](https://gitlab.com/pages/pages.gitlab.io/blob/master/CONTRIBUTING.md)
+>   to our examples.
 >
 > - The second step _"Clone it to your local computer"_, can be done
-  differently, achieving the same results: instead of cloning the bare
-  repository to you local computer and moving your site files into it,
-  you can run `git init` in your local website directory, add the
-  remote URL: `git remote add origin git@gitlab.com:namespace/project-name.git`,
-  then add, commit, and push to GitLab.
+>   differently, achieving the same results: instead of cloning the bare
+>   repository to you local computer and moving your site files into it,
+>   you can run `git init` in your local website directory, add the
+>   remote URL: `git remote add origin git@gitlab.com:namespace/project-name.git`,
+>   then add, commit, and push to GitLab.
 
 ## URLs and Baseurls
 

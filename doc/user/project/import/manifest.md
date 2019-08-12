@@ -1,7 +1,6 @@
 # Import multiple repositories by uploading a manifest file
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/28811) in
-GitLab 11.2.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/28811) in GitLab 11.2.
 
 GitLab allows you to import all the required Git repositories
 based on a manifest file like the one used by the
@@ -56,4 +55,4 @@ You can start the import with:
    to the import status page with projects list based on the manifest file.
 1. Check the list and click **Import all repositories** to start the import.
 
-    ![Manifest status](img/manifest_status.png)
+   ![Manifest status](img/manifest_status.png)

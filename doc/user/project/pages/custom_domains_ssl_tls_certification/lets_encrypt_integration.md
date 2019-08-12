@@ -47,7 +47,7 @@ Once you've met the requirements, to enable Let's Encrypt integration:
 1. Click **Edit** in the top-right corner.
 1. Enable Let's Encrypt integration by switching **Automatic certificate management using Let's Encrypt**:
 
-    ![Enable Let's Encrypt](img/lets_encrypt_integration_v12_1.png)
+   ![Enable Let's Encrypt](img/lets_encrypt_integration_v12_1.png)
 
 1. Click **Save changes**.
 

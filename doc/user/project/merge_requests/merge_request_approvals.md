@@ -44,7 +44,7 @@ To edit the merge request approvals:
 1. Navigate to your project's **Settings > General** and expand
    **Merge request approvals**.
 
-    ![Approvals starter project empty](img/approvals_starter_project_empty.png)
+   ![Approvals starter project empty](img/approvals_starter_project_empty.png)
 
 1. Click **Edit**.
 1. Search for users or groups that will be [eligible to approve](#eligible-approvers)
@@ -54,7 +54,7 @@ To edit the merge request approvals:
    box. Note: the minimum can be 0.
 1. Click **Update approvers**.
 
-    ![Approvals starter project edit](img/approvals_starter_project_edit.png)
+   ![Approvals starter project edit](img/approvals_starter_project_edit.png)
 
 The steps above are the minimum required to get approvals working in your
 merge requests, but there are a couple more options available that might be
@@ -83,7 +83,7 @@ request approval rules:
 1. Give the approval rule a name that describes the set of approvers selected.
 1. Click **Add approvers** to submit the new rule.
 
-    ![Approvals premium project edit](img/approvals_premium_project_edit.png)
+   ![Approvals premium project edit](img/approvals_premium_project_edit.png)
 
 ## Multiple approval rules **(PREMIUM)**
 
@@ -144,14 +144,17 @@ the following is possible:
 
   - If the required number of approvals has _not_ been yet met, they can approve
     it by clicking the displayed **Approve** button.
-      ![Approve](img/approve.png)
+
+    ![Approve](img/approve.png)
+
   - If the required number of approvals has already been met, they can still
     approve it by clicking the displayed **Approve additionally** button.
-      ![Add approval](img/approve_additionally.png)
+
+    ![Add approval](img/approve_additionally.png)
 
 - **They have already approved this merge request**: They can remove their approval.
 
-    ![Remove approval](img/remove_approval.png)
+  ![Remove approval](img/remove_approval.png)
 
 NOTE: **Note:**
 The merge request author is only allowed to approve their own merge request
@@ -159,7 +162,7 @@ if [**Prevent author approval**](#allowing-merge-request-authors-to-approve-thei
 
 For a given merge request, if the approval restrictions have been satisfied,
 the merge request is unblocked and can be merged.
-Note, that meeting the required number of approvals is a necessary, but not
+Note that meeting the required number of approvals is a necessary, but not
 sufficient condition for unblocking a merge request from being merged. There
 are other conditions that may block it, such as merge conflicts,
 [pending discussions](../../discussions/index.md#only-allow-merge-requests-to-be-merged-if-all-threads-are-resolved)
@@ -203,7 +206,7 @@ First, you have to enable this option in the project's settings:
 1. Tick the "Can override approvers and approvals required per merge request"
    checkbox
 
-    ![Approvals can override](img/approvals_can_override.png)
+   ![Approvals can override](img/approvals_can_override.png)
 
 1. Click **Save changes**
 
@@ -259,7 +262,7 @@ new commits are pushed to the source branch of the merge request:
 1. Tick the "Remove all approvals in a merge request when new commits are pushed to its source branch"
    checkbox
 
-    ![Approvals remove on push](img/approvals_remove_on_push.png)
+   ![Approvals remove on push](img/approvals_remove_on_push.png)
 
 1. Click **Save changes**
 
