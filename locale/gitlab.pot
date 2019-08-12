@@ -300,6 +300,9 @@ msgstr ""
 msgid "'%{source}' is not a import source"
 msgstr ""
 
+msgid "(Show all)"
+msgstr ""
+
 msgid "(external source)"
 msgstr ""
 
@@ -2008,6 +2011,15 @@ msgstr ""
 msgid "Certificate (PEM)"
 msgstr ""
 
+msgid "Change Label"
+msgstr ""
+
+msgid "Change assignee"
+msgstr ""
+
+msgid "Change milestone"
+msgstr ""
+
 msgid "Change path"
 msgstr ""
 
@@ -2986,6 +2998,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "Commit %{commit_id}"
+msgstr ""
+
+msgid "Commit (when editing commit message)"
 msgstr ""
 
 msgid "Commit Message"
@@ -4100,10 +4115,22 @@ msgstr ""
 msgid "Edit identity for %{user_name}"
 msgstr ""
 
+msgid "Edit issue"
+msgstr ""
+
 msgid "Edit issues"
 msgstr ""
 
+msgid "Edit last comment (when focused on an empty textarea)"
+msgstr ""
+
+msgid "Edit merge request"
+msgstr ""
+
 msgid "Edit public deploy key"
+msgstr ""
+
+msgid "Edit wiki page"
 msgstr ""
 
 msgid "Email"
@@ -4957,6 +4984,9 @@ msgstr ""
 msgid "Find the newly extracted <code>Takeout/Google Code Project Hosting/GoogleCodeProjectHosting.json</code> file."
 msgstr ""
 
+msgid "Finding Project File"
+msgstr ""
+
 msgid "Fingerprint"
 msgstr ""
 
@@ -4979,6 +5009,12 @@ msgid "FlowdockService|Flowdock Git source token"
 msgstr ""
 
 msgid "FlowdockService|Flowdock is a collaboration web app for technical teams."
+msgstr ""
+
+msgid "Focus Filter"
+msgstr ""
+
+msgid "Focus Search"
 msgstr ""
 
 msgid "FogBugz Email"
@@ -5200,6 +5236,9 @@ msgstr ""
 msgid "Given access %{time_ago}"
 msgstr ""
 
+msgid "Global Shortcuts"
+msgstr ""
+
 msgid "Global notification settings"
 msgstr ""
 
@@ -5224,10 +5263,79 @@ msgstr ""
 msgid "Go to %{link_to_google_takeout}."
 msgstr ""
 
+msgid "Go to commits"
+msgstr ""
+
+msgid "Go to environments"
+msgstr ""
+
+msgid "Go to file"
+msgstr ""
+
+msgid "Go to file permalink"
+msgstr ""
+
+msgid "Go to files"
+msgstr ""
+
+msgid "Go to finding file"
+msgstr ""
+
+msgid "Go to groups"
+msgstr ""
+
+msgid "Go to issue boards"
+msgstr ""
+
+msgid "Go to issues"
+msgstr ""
+
+msgid "Go to jobs"
+msgstr ""
+
+msgid "Go to kubernetes"
+msgstr ""
+
+msgid "Go to merge requests"
+msgstr ""
+
+msgid "Go to metrics"
+msgstr ""
+
+msgid "Go to milestones"
+msgstr ""
+
+msgid "Go to network graph"
+msgstr ""
+
 msgid "Go to parent"
 msgstr ""
 
 msgid "Go to project"
+msgstr ""
+
+msgid "Go to projects"
+msgstr ""
+
+msgid "Go to repository charts"
+msgstr ""
+
+msgid "Go to snippets"
+msgstr ""
+
+msgid "Go to the activity feed"
+msgstr ""
+
+msgid "Go to the project's activity feed"
+msgstr ""
+
+msgid "Go to the project's overview page"
+msgstr ""
+
+msgid "Go to todos"
+msgstr ""
+
+msgid "Go to wiki"
 msgstr ""
 
 msgid "Go to your fork"
@@ -6165,6 +6273,9 @@ msgstr ""
 msgid "Key: %{key}"
 msgstr ""
 
+msgid "Keyboard Shortcuts"
+msgstr ""
+
 msgid "Kubernetes"
 msgstr ""
 
@@ -6958,6 +7069,12 @@ msgstr ""
 msgid "Move issue from one column of the board to another"
 msgstr ""
 
+msgid "Move selection down"
+msgstr ""
+
+msgid "Move selection up"
+msgstr ""
+
 msgid "Move this issue failed because target project doesn't exists"
 msgstr ""
 
@@ -6967,7 +7084,13 @@ msgstr ""
 msgid "Move this issue to another project."
 msgstr ""
 
+msgid "Move to next file"
+msgstr ""
+
 msgid "Move to next unresolved discussion"
+msgstr ""
+
+msgid "Move to previous file"
 msgstr ""
 
 msgid "Move to previous unresolved discussion"
@@ -7031,6 +7154,9 @@ msgid "Nav|Sign out and sign in with a different account"
 msgstr ""
 
 msgid "Network"
+msgstr ""
+
+msgid "Network Graph"
 msgstr ""
 
 msgid "Never"
@@ -7491,6 +7617,9 @@ msgid "Open"
 msgstr ""
 
 msgid "Open Documentation"
+msgstr ""
+
+msgid "Open Selection"
 msgstr ""
 
 msgid "Open comment type dropdown"
@@ -8498,6 +8627,12 @@ msgstr ""
 msgid "Project Badges"
 msgstr ""
 
+msgid "Project File"
+msgstr ""
+
+msgid "Project Files browsing"
+msgstr ""
+
 msgid "Project ID"
 msgstr ""
 
@@ -9250,6 +9385,9 @@ msgstr ""
 msgid "Replaced all labels with %{label_references} %{label_text}."
 msgstr ""
 
+msgid "Reply (quoting selected text)"
+msgstr ""
+
 msgid "Reply by email"
 msgstr ""
 
@@ -9612,13 +9750,25 @@ msgstr ""
 msgid "Scopes"
 msgstr ""
 
+msgid "Scroll down"
+msgstr ""
+
 msgid "Scroll down to <strong>Google Code Project Hosting</strong> and enable the switch on the right."
+msgstr ""
+
+msgid "Scroll left"
+msgstr ""
+
+msgid "Scroll right"
 msgstr ""
 
 msgid "Scroll to bottom"
 msgstr ""
 
 msgid "Scroll to top"
+msgstr ""
+
+msgid "Scroll up"
 msgstr ""
 
 msgid "Search"
@@ -10063,6 +10213,9 @@ msgid "Show parent subgroups"
 msgstr ""
 
 msgid "Show whitespace changes"
+msgstr ""
+
+msgid "Show/hide this dialog"
 msgstr ""
 
 msgid "Showing %d event"
@@ -11780,6 +11933,9 @@ msgstr ""
 msgid "Today"
 msgstr ""
 
+msgid "Toggle Markdown preview"
+msgstr ""
+
 msgid "Toggle Sidebar"
 msgstr ""
 
@@ -11802,6 +11958,9 @@ msgid "Toggle navigation"
 msgstr ""
 
 msgid "Toggle sidebar"
+msgstr ""
+
+msgid "Toggle the Performance Bar"
 msgstr ""
 
 msgid "Toggle thread"
@@ -12563,6 +12722,9 @@ msgid "Who will be able to see this group?"
 msgstr ""
 
 msgid "Wiki"
+msgstr ""
+
+msgid "Wiki pages"
 msgstr ""
 
 msgid "Wiki was successfully updated."

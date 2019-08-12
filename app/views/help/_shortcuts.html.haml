@@ -3,9 +3,9 @@
     .modal-content
       .modal-header
         %h4.modal-title
-          Keyboard Shortcuts
+          = _('Keyboard Shortcuts')
           %small
-            = link_to '(Show all)', '#', class: 'js-more-help-button'
+            = link_to _('(Show all)'), '#', class: 'js-more-help-button'
         %button.close{ type: "button", "data-dismiss": "modal", "aria-label" => _('Close') }
           %span{ "aria-hidden": true } &times;
       .modal-body
@@ -15,281 +15,281 @@
               %tbody
                 %tr
                   %th
-                  %th Global Shortcuts
+                  %th= _('Global Shortcuts')
                 %tr
                   %td.shortcut
                     %kbd s
-                  %td Focus Search
+                  %td= _('Focus Search')
                 %tr
                   %td.shortcut
                     %kbd f
-                  %td Focus Filter
+                  %td= _('Focus Filter')
                 %tr
                   %td.shortcut
                     %kbd p
                     %kbd b
-                  %td Toggle the Performance Bar
+                  %td= _('Toggle the Performance Bar')
                 %tr
                   %td.shortcut
                     %kbd ?
-                  %td Show/hide this dialog
+                  %td= _('Show/hide this dialog')
                 %tr
                   %td.shortcut
                     - if browser.platform.mac?
                       %kbd &#8984; shift p
                     - else
                       %kbd ctrl shift p
-                  %td Toggle Markdown preview
+                  %td= _('Toggle Markdown preview')
                 %tr
                   %td.shortcut
                     %kbd
                       %i.fa.fa-arrow-up
-                  %td Edit last comment (when focused on an empty textarea)
+                  %td= _('Edit last comment (when focused on an empty textarea)')
                 %tr
                   %td.shortcut
                     %kbd shift t
                   %td
-                    Go to todos
+                    = _('Go to todos')
                 %tr
                   %td.shortcut
                     %kbd shift a
                   %td
-                    Go to the activity feed
+                    = _('Go to the activity feed')
                 %tr
                   %td.shortcut
                     %kbd shift p
                   %td
-                    Go to projects
+                    = _('Go to projects')
                 %tr
                   %td.shortcut
                     %kbd shift i
                   %td
-                    Go to issues
+                    = _('Go to issues')
                 %tr
                   %td.shortcut
                     %kbd shift m
                   %td
-                    Go to merge requests
+                    = _('Go to merge requests')
                 %tr
                   %td.shortcut
                     %kbd shift g
                   %td
-                    Go to groups
+                    = _('Go to groups')
                 %tr
                   %td.shortcut
                     %kbd shift l
                   %td
-                    Go to milestones
+                    = _('Go to milestones')
                 %tr
                   %td.shortcut
                     %kbd shift s
                   %td
-                    Go to snippets
+                    = _('Go to snippets')
               %tbody
                 %tr
                   %th
-                  %th Finding Project File
+                  %th= _('Finding Project File')
                 %tr
                   %td.shortcut
                     %kbd
                       %i.fa.fa-arrow-up
-                  %td Move selection up
+                  %td= _('Move selection up')
                 %tr
                   %td.shortcut
                     %kbd
                       %i.fa.fa-arrow-down
-                  %td Move selection down
+                  %td= _('Move selection down')
                 %tr
                   %td.shortcut
                     %kbd enter
-                  %td Open Selection
+                  %td= _('Open Selection')
                 %tr
                   %td.shortcut
                     %kbd esc
-                  %td Go back
+                  %td= _('Go back')
           .col-lg-4
             %table.shortcut-mappings
               %tbody
                 %tr
                   %th
-                  %th Project
+                  %th= _('Project')
                 %tr
                   %td.shortcut
                     %kbd g
                     %kbd p
                   %td
-                    Go to the project's overview page
+                    = _('Go to the project\'s overview page')
                 %tr
                   %td.shortcut
                     %kbd g
                     %kbd v
                   %td
-                    Go to the project's activity feed
+                    = _('Go to the project\'s activity feed')
                 %tr
                   %td.shortcut
                     %kbd g
                     %kbd f
                   %td
-                    Go to files
+                    = _('Go to files')
                 %tr
                   %td.shortcut
                     %kbd g
                     %kbd c
                   %td
-                    Go to commits
+                    = _('Go to commits')
                 %tr
                   %td.shortcut
                     %kbd g
                     %kbd j
                   %td
-                    Go to jobs
+                    = _('Go to jobs')
                 %tr
                   %td.shortcut
                     %kbd g
                     %kbd n
                   %td
-                    Go to network graph
+                    = _('Go to network graph')
                 %tr
                   %td.shortcut
                     %kbd g
                     %kbd d
                   %td
-                    Go to repository charts
+                    = _('Go to repository charts')
                 %tr
                   %td.shortcut
                     %kbd g
                     %kbd i
                   %td
-                    Go to issues
+                    = _('Go to issues')
                 %tr
                   %td.shortcut
                     %kbd g
                     %kbd b
                   %td
-                    Go to issue boards
+                    = _('Go to issue boards')
                 %tr
                   %td.shortcut
                     %kbd g
                     %kbd m
                   %td
-                    Go to merge requests
+                    = _('Go to merge requests')
                 %tr
                   %td.shortcut
                     %kbd g
                     %kbd e
                   %td
-                    Go to environments
+                    = _('Go to environments')
                 %tr
                   %td.shortcut
                     %kbd g
                     %kbd l
                   %td
-                    Go to metrics
+                    = _('Go to metrics')
                 %tr
                   %td.shortcut
                     %kbd g
                     %kbd k
                   %td
-                    Go to kubernetes
+                    = _('Go to kubernetes')
                 %tr
                   %td.shortcut
                     %kbd g
                     %kbd s
                   %td
-                    Go to snippets
+                    = _('Go to snippets')
                 %tr
                   %td.shortcut
                     %kbd g
                     %kbd w
                   %td
-                    Go to wiki
+                    = _('Go to wiki')
                 %tr
                   %td.shortcut
                     %kbd t
-                  %td Go to finding file
+                  %td= _('Go to finding file')
                 %tr
                   %td.shortcut
                     %kbd i
-                  %td New issue
+                  %td= _('New issue')
 
               %tbody
                 %tr
                   %th
-                  %th Project Files browsing
+                  %th= _('Project Files browsing')
                 %tr
                   %td.shortcut
                     %kbd
                       %i.fa.fa-arrow-up
-                  %td Move selection up
+                  %td= _('Move selection up')
                 %tr
                   %td.shortcut
                     %kbd
                       %i.fa.fa-arrow-down
-                  %td Move selection down
+                  %td= _('Move selection down')
                 %tr
                   %td.shortcut
                     %kbd enter
-                  %td Open Selection
+                  %td= _('Open Selection')
               %tbody
                 %tr
                   %th
-                  %th Project File
+                  %th= _('Project File')
                 %tr
                   %td.shortcut
                     %kbd y
-                  %td Go to file permalink
+                  %td= _('Go to file permalink')
               %tbody
                 %tr
                   %th
-                  %th Web IDE
+                  %th= _('Web IDE')
                 %tr
                   %td.shortcut
                     - if browser.platform.mac?
                       %kbd &#8984; p
                     - else
                       %kbd ctrl p
-                  %td Go to file
+                  %td= _('Go to file')
                 %tr
                   %td.shortcut
                     - if browser.platform.mac?
                       %kbd &#8984; enter
                     - else
                       %kbd ctrl enter
-                  %td Commit (when editing commit message)
+                  %td= _('Commit (when editing commit message)')
           .col-lg-4
             %table.shortcut-mappings
-              %tbody.hidden-shortcut{ style: 'display:none' }
+              %tbody.hidden-shortcut.network{ style: 'display:none' }
                 %tr
                   %th
-                  %th Network Graph
+                  %th= _('Network Graph')
                 %tr
                   %td.shortcut
                     %kbd
                       %i.fa.fa-arrow-left
                     \/
                     %kbd h
-                  %td Scroll left
+                  %td= _('Scroll left')
                 %tr
                   %td.shortcut
                     %kbd
                       %i.fa.fa-arrow-right
                     \/
                     %kbd l
-                  %td Scroll right
+                  %td= _('Scroll right')
                 %tr
                   %td.shortcut
                     %kbd
                       %i.fa.fa-arrow-up
                     \/
                     %kbd k
-                  %td Scroll up
+                  %td= _('Scroll up')
                 %tr
                   %td.shortcut
                     %kbd
                       %i.fa.fa-arrow-down
                     \/
                     %kbd j
-                  %td Scroll down
+                  %td= _('Scroll down')
                 %tr
                   %td.shortcut
                     %kbd
@@ -298,7 +298,7 @@
                     \/
                     %kbd
                       shift k
-                  %td Scroll to top
+                  %td= _('Scroll to top')
                 %tr
                   %td.shortcut
                     %kbd
@@ -307,80 +307,80 @@
                     \/
                     %kbd
                       shift j
-                  %td Scroll to bottom
-              %tbody.hidden-shortcut{ style: 'display:none' }
+                  %td= _('Scroll to bottom')
+              %tbody.hidden-shortcut.issues{ style: 'display:none' }
                 %tr
                   %th
-                  %th Issues
+                  %th= _('Issues')
                 %tr
                   %td.shortcut
                     %kbd a
-                  %td Change assignee
+                  %td= _('Change assignee')
                 %tr
                   %td.shortcut
                     %kbd m
-                  %td Change milestone
+                  %td= _('Change milestone')
                 %tr
                   %td.shortcut
                     %kbd r
-                  %td Reply (quoting selected text)
+                  %td= _('Reply (quoting selected text)')
                 %tr
                   %td.shortcut
                     %kbd e
-                  %td Edit issue
+                  %td= _('Edit issue')
                 %tr
                   %td.shortcut
                     %kbd l
-                  %td Change Label
+                  %td= _('Change Label')
               %tbody.hidden-shortcut.merge_requests{ style: 'display:none' }
                 %tr
                   %th
-                  %th Merge Requests
+                  %th= _('Merge Requests')
                 %tr
                   %td.shortcut
                     %kbd a
-                  %td Change assignee
+                  %td= _('Change assignee')
                 %tr
                   %td.shortcut
                     %kbd m
-                  %td Change milestone
+                  %td= _('Change milestone')
                 %tr
                   %td.shortcut
                     %kbd r
-                  %td Reply (quoting selected text)
+                  %td= _('Reply (quoting selected text)')
                 %tr
                   %td.shortcut
                     %kbd e
-                  %td Edit merge request
+                  %td= _('Edit merge request')
                 %tr
                   %td.shortcut
                     %kbd l
-                  %td Change Label
+                  %td= _('Change Label')
                 %tr
                   %td.shortcut
                     %kbd ]
                     \/
                     %kbd j
-                  %td Move to next file
+                  %td= _('Move to next file')
                 %tr
                   %td.shortcut
                     %kbd [
                     \/
                     %kbd k
-                  %td Move to previous file
+                  %td= _('Move to previous file')
                 %tr
                   %td.shortcut
                     %kbd n
-                  %td= _("Move to next unresolved discussion")
+                  %td= _('Move to next unresolved discussion')
                 %tr
                   %td.shortcut
                     %kbd p
-                  %td= _("Move to previous unresolved discussion")
-              %tbody.hidden-shortcut{ style: 'display:none' }
+                  %td= _('Move to previous unresolved discussion')
+              %tbody.hidden-shortcut.wiki{ style: 'display:none' }
                 %tr
                   %th
-                  %th Wiki pages
+                  %th= _('Wiki pages')
                 %tr
                   %td.shortcut
                     %kbd e
-                  %td Edit wiki page
+                  %td= _('Edit wiki page')
