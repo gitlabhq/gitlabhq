@@ -94,9 +94,6 @@ export default {
 
       return __('Merge');
     },
-    shouldShowMergeOptionsDropdown() {
-      return this.isAutoMergeAvailable && !this.mr.onlyAllowMergeIfPipelineSucceeds;
-    },
     isRemoveSourceBranchButtonDisabled() {
       return this.isMergeButtonDisabled;
     },
@@ -246,7 +243,7 @@ export default {
               {{ mergeButtonText }}
             </button>
             <button
-              v-if="isAutoMergeAvailable"
+              v-if="shouldShowMergeImmediatelyDropdown"
               :disabled="isMergeButtonDisabled"
               type="button"
               class="btn btn-sm btn-info dropdown-toggle js-merge-moment"
@@ -256,7 +253,7 @@ export default {
               <i class="fa fa-chevron-down qa-merge-moment-dropdown" aria-hidden="true"></i>
             </button>
             <ul
-              v-if="shouldShowMergeOptionsDropdown"
+              v-if="shouldShowMergeImmediatelyDropdown"
               class="dropdown-menu dropdown-menu-right"
               role="menu"
             >
