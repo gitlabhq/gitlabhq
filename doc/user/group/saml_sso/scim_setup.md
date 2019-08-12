@@ -90,11 +90,11 @@ You can then test the connection by clicking on **Test Connection**. If the conn
 1. Create a new mapping by clicking **Add New Mapping** then set **Source attribute** to `objectId`, and **Target attribute** to `externalId`.
 1. Click the `userPrincipalName` mapping and change **Match objects using this attribute** to `No`.
 
-    Save your changes and you should have the following configuration:
+   Save your changes and you should have the following configuration:
 
    ![Azure's attribute mapping configuration](img/scim_attribute_mapping.png)
 
-    NOTE: **Note:** If you used a unique identifier **other than** `objectId`, be sure to map it instead to both `id` and `externalId`.
+   NOTE: **Note:** If you used a unique identifier **other than** `objectId`, be sure to map it instead to both `id` and `externalId`.
 
 1. Below the mapping list click on **Show advanced options > Edit attribute list for AppName**.
 1. Leave the `id` as the primary and only required field.
@@ -108,7 +108,7 @@ You can then test the connection by clicking on **Test Connection**. If the conn
 1. Save all the screens and, in the **Provisioning** step, set
    the `Provisioning Status` to `On`.
 
-    ![Provisioning status toggle switch](img/scim_provisioning_status.png)
+   ![Provisioning status toggle switch](img/scim_provisioning_status.png)
 
    NOTE: **Note:**
    You can control what is actually synced by selecting the `Scope`. For example,

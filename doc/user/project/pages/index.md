@@ -101,7 +101,7 @@ To get started with GitLab Pages, you can either:
 1. Select **Create from Template**.
 1. Choose one of the templates starting with **Pages**:
 
-    ![Project templates for Pages](img/pages_project_templates_v11_8.png)
+   ![Project templates for Pages](img/pages_project_templates_v11_8.png)
 
 1. From the left sidebar, navigate to your project's **CI/CD > Pipelines**
    and click **Run pipeline** to trigger GitLab CI/CD to build and deploy your

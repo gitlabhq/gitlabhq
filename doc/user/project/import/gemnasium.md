@@ -5,13 +5,17 @@ instance or GitLab.com.
 
 ## Why is Gemnasium.com closed?
 
-Gemnasium has been [acquired by GitLab](https://about.gitlab.com/press/releases/2018-01-30-gemnasium-acquisition.html)
+Gemnasium was [acquired by GitLab](https://about.gitlab.com/press/releases/2018-01-30-gemnasium-acquisition.html)
 in January 2018. Since May 15, 2018, the services provided by Gemnasium are no longer available.
 The team behind Gemnasium has joined GitLab as the new Security Products team
-and is working on a wider range of tools than just Dependency Scanning:
-[SAST](../../application_security/sast/index.md),
-[DAST](../../application_security/dast/index.md),
-[Container Scanning](../../application_security/container_scanning/index.md) and more.
+and is working on a [wide range of tools](../../application_security/index.md),
+including:
+
+- [Dependency Scanning](../../application_security/dependency_scanning/index.md)
+- [SAST](../../application_security/sast/index.md)
+- [DAST](../../application_security/dast/index.md)
+- [Container Scanning](../../application_security/container_scanning/index.md)
+
 If you want to continue monitoring your dependencies, see the
 [Migrating to GitLab](#migrating-to-gitlab) section below.
 
@@ -57,27 +61,27 @@ back to both GitLab and GitHub when completed.
 
 1. Create a new project, and select the "CI/CD for external repo" tab:
 
-    ![Create new Project](img/gemnasium/create_project.png)
+   ![Create new Project](img/gemnasium/create_project.png)
 
 1. Use the "GitHub" button to connect your repositories.
 
-    ![Connect from GitHub](img/gemnasium/connect_github.png)
+   ![Connect from GitHub](img/gemnasium/connect_github.png)
 
 1. Select the project(s) to be set up with GitLab CI/CD and chose "Connect".
 
-    ![Select projects](img/gemnasium/select_project.png)
+   ![Select projects](img/gemnasium/select_project.png)
 
-    Once the configuration is done, you may click on your new
-    project on GitLab.
+   Once the configuration is done, you may click on your new
+   project on GitLab.
 
-    ![click on connected project](img/gemnasium/project_connected.png)
+   ![click on connected project](img/gemnasium/project_connected.png)
 
-    Your project is now mirrored on GitLab, where the Runners will be able to access
-    your source code and run your tests.
+   Your project is now mirrored on GitLab, where the Runners will be able to access
+   your source code and run your tests.
 
-    Optional step: If you set this up on GitLab.com, make sure the project is
-    public (in the project settings) if your GitHub project is public, since
-    the security feature is available only for [GitLab Ultimate](https://about.gitlab.com/pricing).
+   Optional step: If you set this up on GitLab.com, make sure the project is
+   public (in the project settings) if your GitHub project is public, since
+   the security feature is available only for [GitLab Ultimate](https://about.gitlab.com/pricing).
 
 1. To set up the dependency scanning job, corresponding to what Gemnasium was
    doing, you must create a `.gitlab-ci.yml` file, or update it according to
@@ -85,16 +89,16 @@ back to both GitLab and GitHub when completed.
    The mirroring is pull-only by default, so you may create or update the file on
    GitHub:
 
-    ![Edit gitlab-ci.yml file](img/gemnasium/edit_gitlab-ci.png)
+   ![Edit gitlab-ci.yml file](img/gemnasium/edit_gitlab-ci.png)
 
 1. Once your file has been committed, a new pipeline will be automatically
    triggered if your file is valid:
 
-    ![pipeline](img/gemnasium/pipeline.png)
+   ![pipeline](img/gemnasium/pipeline.png)
 
 1. The result of the job will be visible directly from the pipeline view:
 
-    ![security report](img/gemnasium/report.png)
+   ![security report](img/gemnasium/report.png)
 
 NOTE: **Note:**
 If you don't commit very often to your project, you may want to use
