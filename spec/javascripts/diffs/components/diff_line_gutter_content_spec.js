@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import DiffLineGutterContent from '~/diffs/components/diff_line_gutter_content.vue';
-import store from '~/mr_notes/stores';
+import { createStore } from '~/mr_notes/stores';
 import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import discussionsMockData from '../mock_data/diff_discussions';
 import diffFileMockData from '../mock_data/diff_file';
@@ -23,7 +23,7 @@ describe('DiffLineGutterContent', () => {
     props.fileHash = getDiffFileMock().file_hash;
     props.contextLinesPath = '/context/lines/path';
 
-    return createComponentWithStore(cmp, store, props).$mount();
+    return createComponentWithStore(cmp, createStore(), props).$mount();
   };
 
   describe('computed', () => {
@@ -61,7 +61,7 @@ describe('DiffLineGutterContent', () => {
           contextLinesPath: '/context/lines/path',
         };
         props.line.discussions = [Object.assign({}, discussionsMockData)];
-        const component = createComponentWithStore(cmp, store, props).$mount();
+        const component = createComponentWithStore(cmp, createStore(), props).$mount();
 
         expect(component.hasDiscussions).toEqual(true);
         expect(component.shouldShowAvatarsOnGutter).toEqual(true);

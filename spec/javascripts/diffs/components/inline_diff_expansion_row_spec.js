@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import store from '~/mr_notes/stores';
+import { createStore } from '~/mr_notes/stores';
 import InlineDiffExpansionRow from '~/diffs/components/inline_diff_expansion_row.vue';
 import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import diffFileMockData from '../mock_data/diff_file';
@@ -18,7 +18,7 @@ describe('InlineDiffExpansionRow', () => {
     };
     const props = Object.assign({}, defaults, options);
 
-    return createComponentWithStore(cmp, store, props).$mount();
+    return createComponentWithStore(cmp, createStore(), props).$mount();
   };
 
   describe('template', () => {

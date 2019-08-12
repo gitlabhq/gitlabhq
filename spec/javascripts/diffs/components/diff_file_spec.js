@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import DiffFileComponent from '~/diffs/components/diff_file.vue';
 import { diffViewerModes, diffViewerErrors } from '~/ide/constants';
-import store from 'ee_else_ce/mr_notes/stores';
+import { createStore } from 'ee_else_ce/mr_notes/stores';
 import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import diffFileMockData from '../mock_data/diff_file';
 
@@ -9,7 +9,7 @@ describe('DiffFile', () => {
   let vm;
 
   beforeEach(() => {
-    vm = createComponentWithStore(Vue.extend(DiffFileComponent), store, {
+    vm = createComponentWithStore(Vue.extend(DiffFileComponent), createStore(), {
       file: JSON.parse(JSON.stringify(diffFileMockData)),
       canCurrentUserFork: false,
     }).$mount();
@@ -36,7 +36,7 @@ describe('DiffFile', () => {
 
       vm.$nextTick()
         .then(() => {
-          expect(el.querySelectorAll('.line_content').length).toBeGreaterThanOrEqual(5);
+          expect(el.querySelectorAll('.line_content').length).toBe(5);
           expect(el.querySelectorAll('.js-line-expansion-content').length).toBe(1);
         })
         .then(done)

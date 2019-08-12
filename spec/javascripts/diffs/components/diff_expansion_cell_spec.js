@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import store from '~/mr_notes/stores';
+import { createStore } from '~/mr_notes/stores';
 import DiffExpansionCell from '~/diffs/components/diff_expansion_cell.vue';
 import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import diffFileMockData from '../mock_data/diff_file';
@@ -22,7 +22,7 @@ describe('DiffExpansionCell', () => {
     };
     const props = Object.assign({}, defaults, options);
 
-    return createComponentWithStore(cmp, store, props).$mount();
+    return createComponentWithStore(cmp, createStore(), props).$mount();
   };
 
   describe('top row', () => {
