@@ -37,11 +37,11 @@ project_tree:
     - :user
   - merge_requests:
     - :metrics
-    - :suggestions
     - notes:
       - :author
       - events:
         - :push_event_payload
+      - :suggestions
     - merge_request_diff:
       - :merge_request_diff_commits
       - :merge_request_diff_files

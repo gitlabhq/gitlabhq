@@ -125,6 +125,13 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
         expect(MergeRequest.find_by(title: 'MR1').resource_label_events).not_to be_empty
       end
 
+      it 'restores suggestion' do
+        note = Note.find_by("note LIKE 'Saepe asperiores exercitationem non dignissimos laborum reiciendis et ipsum%'")
+
+        expect(note.suggestions.count).to eq(1)
+        expect(note.suggestions.first.from_content).to eq("Original line\n")
+      end
+
       context 'event at forth level of the tree' do
         let(:event) { Event.where(action: 6).first }
 
