@@ -16,6 +16,39 @@ describe Groups::GroupMembersController do
       expect(response).to have_gitlab_http_status(200)
       expect(response).to render_template(:index)
     end
+
+    context 'user with owner access' do
+      let!(:invited) { create_list(:group_member, 3, :invited, group: group) }
+
+      before do
+        group.add_owner(user)
+        sign_in(user)
+      end
+
+      it 'assigns invited members' do
+        get :index, params: { group_id: group }
+
+        expect(assigns(:invited_members).map(&:invite_email)).to match_array(invited.map(&:invite_email))
+      end
+
+      it 'restricts search to one email' do
+        get :index, params: { group_id: group, search_invited: invited.first.invite_email }
+
+        expect(assigns(:invited_members).map(&:invite_email)).to match_array(invited.first.invite_email)
+      end
+
+      it 'paginates invited list' do
+        stub_const('Groups::GroupMembersController::MEMBER_PER_PAGE_LIMIT', 2)
+
+        get :index, params: { group_id: group, invited_members_page: 1 }
+
+        expect(assigns(:invited_members).count).to eq(2)
+
+        get :index, params: { group_id: group, invited_members_page: 2 }
+
+        expect(assigns(:invited_members).count).to eq(1)
+      end
+    end
   end
 
   describe 'POST create' do

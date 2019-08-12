@@ -714,6 +714,9 @@ msgstr ""
 msgid "Add new directory"
 msgstr ""
 
+msgid "Add new member to %{strong_start}%{group_name}%{strong_end}"
+msgstr ""
+
 msgid "Add or subtract spent time"
 msgstr ""
 
@@ -4643,6 +4646,9 @@ msgstr ""
 msgid "Except policy:"
 msgstr ""
 
+msgid "Existing"
+msgstr ""
+
 msgid "Existing members and groups"
 msgstr ""
 
@@ -6623,6 +6629,12 @@ msgid "Members can be added by project <i>Maintainers</i> or <i>Owners</i>"
 msgstr ""
 
 msgid "Members of <strong>%{project_name}</strong>"
+msgstr ""
+
+msgid "Members with access to %{strong_start}%{group_name}%{strong_end}"
+msgstr ""
+
+msgid "Members with pending access to %{strong_start}%{group_name}%{strong_end}"
 msgstr ""
 
 msgid "Merge"

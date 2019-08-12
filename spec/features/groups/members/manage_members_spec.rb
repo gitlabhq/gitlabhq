@@ -98,7 +98,9 @@ describe 'Groups > Members > Manage members' do
 
     add_user('test@example.com', 'Reporter')
 
-    page.within(second_row) do
+    click_link('Pending')
+
+    page.within('.content-list.members-list') do
       expect(page).to have_content('test@example.com')
       expect(page).to have_content('Invited')
       expect(page).to have_button('Reporter')
