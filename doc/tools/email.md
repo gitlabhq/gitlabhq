@@ -19,12 +19,12 @@ at their primary email address.
 1. Go to the admin area using the wrench icon in the top right corner and
    navigate to **Overview > Users > Send email to users**.
 
-    ![admin users](email1.png)
+   ![admin users](email1.png)
 
 1. Compose an email and choose where it will be sent (all users or users of a
    chosen group or project):
 
-    ![compose an email](email2.png)
+   ![compose an email](email2.png)
 
 ## Unsubscribing from emails
 

@@ -19,7 +19,7 @@ To enable the Facebook OmniAuth provider you must register your application with
 
 1. Enter the address of your GitLab installation at the bottom of the package
 
-    ![Facebook Website URL](img/facebook_website_url.png)
+   ![Facebook Website URL](img/facebook_website_url.png)
 
 1. Choose "Next"
 
@@ -29,7 +29,7 @@ To enable the Facebook OmniAuth provider you must register your application with
 
 1. Fill in a contact email for your app
 
-    ![Facebook App Settings](img/facebook_app_settings.png)
+   ![Facebook App Settings](img/facebook_app_settings.png)
 
 1. Choose "Save Changes"
 
@@ -45,7 +45,7 @@ To enable the Facebook OmniAuth provider you must register your application with
 
 1. You should now see an app key and app secret (see screenshot). Keep this page open as you continue configuration.
 
-    ![Facebook API Keys](img/facebook_api_keys.png)
+   ![Facebook API Keys](img/facebook_api_keys.png)
 
 1. On your GitLab server, open the configuration file.
 

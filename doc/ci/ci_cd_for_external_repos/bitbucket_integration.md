@@ -44,7 +44,7 @@ To use GitLab CI/CD with a Bitbucket Cloud repository:
    Passwords** to authenticate the build status script setting commit build
    statuses in Bitbucket. Repository write permissions are required.
 
-    ![Bitbucket Cloud webhook](img/bitbucket_app_password.png)
+   ![Bitbucket Cloud webhook](img/bitbucket_app_password.png)
 
 1. In GitLab, from **Settings > CI/CD > Environment variables**, add variables to allow
    communication with Bitbucket via the Bitbucket API:

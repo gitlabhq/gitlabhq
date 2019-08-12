@@ -378,8 +378,8 @@ Here's what happens behind the scenes:
 1. `script` is executed.
 1. `after_script` is executed.
 1. `cache` runs and the `vendor/` directory is zipped into `cache.zip`.
-    This file is then saved in the directory based on the
-    [Runner's setting](#where-the-caches-are-stored) and the `cache: key`.
+   This file is then saved in the directory based on the
+   [Runner's setting](#where-the-caches-are-stored) and the `cache: key`.
 1. `job B` runs.
 1. The cache is extracted (if found).
 1. `before_script` is executed.
@@ -520,7 +520,7 @@ via GitLab's UI:
 1. Navigate to your project's **CI/CD > Pipelines** page.
 1. Click on the **Clear Runner caches** button to clean up the cache.
 
-    ![Clear Runners cache](img/clear_runners_cache.png)
+   ![Clear Runners cache](img/clear_runners_cache.png)
 
 1. On the next push, your CI/CD job will use a new cache.
 
