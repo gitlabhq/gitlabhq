@@ -183,6 +183,15 @@ export const nextUnresolvedDiscussionId = (state, getters) => (discussionId, dif
   return slicedIds.length ? idsOrdered.slice(currentIndex + 1, currentIndex + 2)[0] : idsOrdered[0];
 };
 
+export const previousUnresolvedDiscussionId = (state, getters) => (discussionId, diffOrder) => {
+  const idsOrdered = getters.unresolvedDiscussionsIdsOrdered(diffOrder);
+  const currentIndex = idsOrdered.indexOf(discussionId);
+  const slicedIds = idsOrdered.slice(currentIndex - 1, currentIndex);
+
+  // Get the last ID if there is none after the currentIndex
+  return slicedIds.length ? slicedIds[0] : idsOrdered[idsOrdered.length - 1];
+};
+
 // @param {Boolean} diffOrder - is ordered by diff?
 export const firstUnresolvedDiscussionId = (state, getters) => diffOrder => {
   if (diffOrder) {

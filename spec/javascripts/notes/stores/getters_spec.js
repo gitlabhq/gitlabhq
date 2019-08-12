@@ -256,6 +256,54 @@ describe('Getters Notes Store', () => {
     });
   });
 
+  describe('previousUnresolvedDiscussionId', () => {
+    describe('with unresolved discussions', () => {
+      const localGetters = {
+        unresolvedDiscussionsIdsOrdered: () => ['123', '456', '789'],
+      };
+
+      it('with bogus returns falsey', () => {
+        expect(getters.previousUnresolvedDiscussionId(state, localGetters)('bogus')).toBe('456');
+      });
+
+      [
+        { id: '123', expected: '789' },
+        { id: '456', expected: '123' },
+        { id: '789', expected: '456' },
+      ].forEach(({ id, expected }) => {
+        it(`with ${id}, returns previous value`, () => {
+          expect(getters.previousUnresolvedDiscussionId(state, localGetters)(id)).toBe(expected);
+        });
+      });
+    });
+
+    describe('with 1 unresolved discussion', () => {
+      const localGetters = {
+        unresolvedDiscussionsIdsOrdered: () => ['123'],
+      };
+
+      it('with bogus returns id', () => {
+        expect(getters.previousUnresolvedDiscussionId(state, localGetters)('bogus')).toBe('123');
+      });
+
+      it('with match, returns value', () => {
+        expect(getters.previousUnresolvedDiscussionId(state, localGetters)('123')).toEqual('123');
+      });
+    });
+
+    describe('with 0 unresolved discussions', () => {
+      const localGetters = {
+        unresolvedDiscussionsIdsOrdered: () => [],
+      };
+
+      it('returns undefined', () => {
+        expect(
+          getters.previousUnresolvedDiscussionId(state, localGetters)('bogus'),
+        ).toBeUndefined();
+      });
+    });
+  });
+
   describe('firstUnresolvedDiscussionId', () => {
     const localGetters = {
       unresolvedDiscussionsIdsByDate: ['123', '456'],
