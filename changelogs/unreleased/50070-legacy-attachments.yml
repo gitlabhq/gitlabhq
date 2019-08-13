@@ -1,0 +1,5 @@
+---
+title: Create rake tasks for migrating legacy uploads out of deprecated paths
+merge_request: 29409
+author:
+type: other

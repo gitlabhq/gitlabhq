@@ -309,6 +309,12 @@ GraphQL queries are recorded in that file. For example:
 {"query_string":"query IntrospectionQuery{__schema {queryType { name },mutationType { name }}}...(etc)","variables":{"a":1,"b":2},"complexity":181,"depth":1,"duration":7}
 ```
 
+## `migrations.log`
+
+Introduced in GitLab 12.3. This file lives in `/var/log/gitlab/gitlab-rails/migrations.log` for
+Omnibus GitLab packages or in `/home/git/gitlab/log/migrations.log` for
+installations from source.
+
 ## Reconfigure Logs
 
 Reconfigure log files live in `/var/log/gitlab/reconfigure` for Omnibus GitLab
