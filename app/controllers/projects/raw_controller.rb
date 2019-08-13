@@ -26,7 +26,7 @@ class Projects::RawController < Projects::ApplicationController
     limiter.log_request(request, :raw_blob_request_limit, current_user)
 
     flash[:alert] = _('You cannot access the raw file. Please wait a minute.')
-    redirect_to project_blob_path(@project, File.join(@ref, @path))
+    redirect_to project_blob_path(@project, File.join(@ref, @path)), status: :too_many_requests
   end
 
   def raw_blob_request_limit
