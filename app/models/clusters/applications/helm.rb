@@ -41,7 +41,7 @@ module Clusters
 
             extra_apps = Clusters::Applications::Helm.where('EXISTS (?)', klass.select(1).where(cluster_id: cluster_id))
 
-            applications = applications.present? ? applications.or(extra_apps) : extra_apps
+            applications = applications ? applications.or(extra_apps) : extra_apps
           end
 
           !applications.exists?
