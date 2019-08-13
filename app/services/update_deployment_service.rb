@@ -42,7 +42,7 @@ class UpdateDeploymentService
     return unless environment_url
 
     @expanded_environment_url =
-      ExpandVariables.expand(environment_url, variables)
+      ExpandVariables.expand(environment_url, -> { variables })
   end
 
   def environment_url
