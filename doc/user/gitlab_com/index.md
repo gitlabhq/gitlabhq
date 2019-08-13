@@ -223,7 +223,7 @@ and the following environment variables:
 
 | Setting                                 | GitLab.com | Default   |
 |--------                                 |----------- |--------   |
-| `SIDEKIQ_MEMORY_KILLER_MAX_RSS`         | `1000000`  | `1000000` |
+| `SIDEKIQ_MEMORY_KILLER_MAX_RSS`         | `1000000`  | `2000000` |
 | `SIDEKIQ_MEMORY_KILLER_SHUTDOWN_SIGNAL` | `SIGKILL`  | -         |
 | `SIDEKIQ_LOG_ARGUMENTS`                 | `1`        | -         |
 
