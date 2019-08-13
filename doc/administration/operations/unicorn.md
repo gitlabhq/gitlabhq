@@ -69,7 +69,7 @@ unicorn['worker_memory_limit_min'] = "400 * 1 << 20"
 unicorn['worker_memory_limit_max'] = "650 * 1 << 20"
 ```
 
-Otherwise, you can set the `GITLAB_UNICORN_MEMORY_MIN` and `GITLAB_UNICORN_MEMORY_MIN`
+Otherwise, you can set the `GITLAB_UNICORN_MEMORY_MIN` and `GITLAB_UNICORN_MEMORY_MAX`
 [environment variables](../environment_variables.md).
 
 This is what a Unicorn worker memory restart looks like in unicorn_stderr.log.
