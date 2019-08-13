@@ -71,7 +71,8 @@ describe Gitlab::UsageData do
         web_ide_views: a_kind_of(Integer),
         web_ide_commits: a_kind_of(Integer),
         web_ide_merge_requests: a_kind_of(Integer),
-        navbar_searches: a_kind_of(Integer)
+        navbar_searches: a_kind_of(Integer),
+        source_code_pushes: a_kind_of(Integer)
       )
     end
 

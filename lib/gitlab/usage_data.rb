@@ -142,7 +142,8 @@ module Gitlab
          Gitlab::UsageDataCounters::WebIdeCounter,
          Gitlab::UsageDataCounters::NoteCounter,
          Gitlab::UsageDataCounters::SnippetCounter,
-         Gitlab::UsageDataCounters::SearchCounter
+         Gitlab::UsageDataCounters::SearchCounter,
+         Gitlab::UsageDataCounters::SourceCodeCounter
         ]
       end
 
