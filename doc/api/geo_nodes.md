@@ -27,6 +27,7 @@ Example response:
     "current": true,
     "files_max_capacity": 10,
     "repos_max_capacity": 25,
+    "container_repositories_max_capacity": 10,
     "verification_max_capacity": 100,
     "clone_protocol": "http"
   },
@@ -40,6 +41,7 @@ Example response:
     "current": false,
     "files_max_capacity": 10,
     "repos_max_capacity": 25,
+    "container_repositories_max_capacity": 10,
     "verification_max_capacity": 100,
     "clone_protocol": "http"
   }
@@ -69,6 +71,7 @@ Example response:
   "current": true,
   "files_max_capacity": 10,
   "repos_max_capacity": 25,
+  "container_repositories_max_capacity": 10,
   "verification_max_capacity": 100,
   "clone_protocol": "http"
 }
@@ -94,6 +97,7 @@ PUT /geo_nodes/:id
 | `files_max_capacity` | integer | no        | Control the maximum concurrency of LFS/attachment backfill for this secondary node. |
 | `repos_max_capacity` | integer | no        | Control the maximum concurrency of repository backfill for this secondary node.     |
 | `verification_max_capacity` | integer | no | Control the maximum concurrency of verification for this node. |
+| `container_repositories_max_capacity` | integer | no | Control the maximum concurrency of container repository sync for this node. |
 
 Example response:
 
@@ -108,6 +112,7 @@ Example response:
   "current": true,
   "files_max_capacity": 10,
   "repos_max_capacity": 25,
+  "container_repositories_max_capacity": 10,
   "verification_max_capacity": 100,
   "clone_protocol": "http"
 }
@@ -151,6 +156,7 @@ Example response:
   "current": true,
   "files_max_capacity": 10,
   "repos_max_capacity": 25,
+  "container_repositories_max_capacity": 10,
   "verification_max_capacity": 100,
   "clone_protocol": "http"
 }
