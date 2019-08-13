@@ -4,6 +4,17 @@ type: reference
 
 # Account and limit settings
 
+## Max attachment size
+
+You can change the maximum file size for attachments in comments and replies in GitLab.
+Navigate to **Admin Area (wrench icon) > Settings > General**, then expand **Account and Limit**.
+From here, you can increase or decrease by changing the value in `Maximum attachment size (MB)`.
+
+NOTE: **Note:**
+If you choose a size larger than what is currently configured for the web server,
+you will likely get errors. See the [troubleshooting section](#troubleshooting) for more
+details.
+
 ## Repository size limit **(STARTER)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/740) in [GitLab Enterprise Edition 8.12](https://about.gitlab.com/2016/09/22/gitlab-8-12-released/#limit-project-size-ee).
@@ -51,14 +62,18 @@ For details on manually purging files, see [reducing the repository size using G
 NOTE: **Note:**
 GitLab.com repository size [is set by GitLab](../../gitlab_com/index.md#repository-size-limit).
 
-<!-- ## Troubleshooting
+## Troubleshooting
 
-Include any troubleshooting steps that you can foresee. If you know beforehand what issues
-one might have when setting this up, or when something is changed, or on upgrading, it's
-important to describe those, too. Think of things that may go wrong and include them here.
-This is important to minimize requests for support, and to avoid doc comments with
-questions that you know someone might ask.
+### 413 Request Entity Too Large
 
-Each scenario can be a third-level heading, e.g. `### Getting error message X`.
-If you have none to add when creating a doc, leave this section in place
-but commented out to help encourage others to add to it in the future. -->
+If you are attaching a file to a comment or reply in GitLab and receive the `413 Request Entity Too Large`
+error, it is likely caused by having a [max attachment size](#max-attachment-size)
+larger than what the web server is configured to allow.
+
+If you wanted to increase the max attachment size to 200m in a GitLab
+[Omnibus](https://docs.gitlab.com/omnibus/) install, for example, you might need to
+add the line below to `/etc/gitlab/gitlab.rb` before increasing the max attachment size:
+
+```
+nginx['client_max_body_size'] = "200m"
+```
