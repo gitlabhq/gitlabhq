@@ -1,3 +1,4 @@
+# coding: utf-8
 require 'spec_helper'
 require 'mime/types'
 
@@ -124,6 +125,12 @@ describe API::Commits do
           expect(response).to have_gitlab_http_status(400)
           expect(json_response['error']).to eq('since is invalid')
         end
+      end
+
+      context "with empty ref_name parameter" do
+        let(:route) { "/projects/#{project_id}/repository/commits?ref_name=" }
+
+        it_behaves_like 'project commits'
       end
 
       context "path optional parameter" do
