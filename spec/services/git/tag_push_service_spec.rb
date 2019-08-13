@@ -26,8 +26,8 @@ describe Git::TagPushService do
       subject
     end
 
-    it 'flushes the tags cache' do
-      expect(project.repository).to receive(:expire_tags_cache)
+    it 'does not flush the tags cache' do
+      expect(project.repository).not_to receive(:expire_tags_cache)
 
       subject
     end

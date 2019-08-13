@@ -418,25 +418,29 @@ class Repository
   end
 
   # Runs code before pushing (= creating or removing) a tag.
+  #
+  # Note that this doesn't expire the tags. You may need to call
+  # expire_caches_for_tags or expire_tags_cache.
   def before_push_tag
+    repository_event(:push_tag)
+  end
+
+  def expire_caches_for_tags
     expire_statistics_caches
     expire_emptiness_caches
     expire_tags_cache
-
-    repository_event(:push_tag)
   end
 
   # Runs code before removing a tag.
   def before_remove_tag
-    expire_tags_cache
-    expire_statistics_caches
+    expire_caches_for_tags
 
     repository_event(:remove_tag)
   end
 
   # Runs code after removing a tag.
   def after_remove_tag
-    expire_tags_cache
+    expire_caches_for_tags
   end
 
   # Runs code after the HEAD of a repository is changed.

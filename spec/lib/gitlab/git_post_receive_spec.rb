@@ -49,4 +49,47 @@ describe ::Gitlab::GitPostReceive do
       end
     end
   end
+
+  describe '#includes_tags?' do
+    context 'with no tags' do
+      let(:changes) do
+        <<~EOF
+          654321 210987 refs/notags/tag1
+          654322 210986 refs/heads/test1
+          654323 210985 refs/merge-requests/mr1
+        EOF
+      end
+
+      it 'returns false' do
+        expect(subject.includes_tags?).to be_falsey
+      end
+    end
+
+    context 'with tags' do
+      let(:changes) do
+        <<~EOF
+          654322 210986 refs/heads/test1
+          654321 210987 refs/tags/tag1
+          654323 210985 refs/merge-requests/mr1
+        EOF
+      end
+
+      it 'returns true' do
+        expect(subject.includes_tags?).to be_truthy
+      end
+    end
+
+    context 'with malformed changes' do
+      let(:changes) do
+        <<~EOF
+          ref/tags/1 a
+          sometag refs/tags/2
+        EOF
+      end
+
+      it 'returns false' do
+        expect(subject.includes_tags?).to be_falsey
+      end
+    end
+  end
 end
