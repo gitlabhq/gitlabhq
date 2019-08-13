@@ -1,0 +1,5 @@
+---
+title: Bump Helm to 2.14.3 and kubectl to 1.11.10 for Kubernetes integration
+merge_request: 31716
+author:
+type: other

@@ -3,8 +3,8 @@
 module Gitlab
   module Kubernetes
     module Helm
-      HELM_VERSION = '2.12.3'.freeze
-      KUBECTL_VERSION = '1.11.7'.freeze
+      HELM_VERSION = '2.14.3'.freeze
+      KUBECTL_VERSION = '1.11.10'.freeze
       NAMESPACE = 'gitlab-managed-apps'.freeze
       SERVICE_ACCOUNT = 'tiller'.freeze
       CLUSTER_ROLE_BINDING = 'tiller-admin'.freeze
