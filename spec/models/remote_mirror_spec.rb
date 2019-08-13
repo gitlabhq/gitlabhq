@@ -153,14 +153,14 @@ describe RemoteMirror, :mailer do
     end
   end
 
-  describe '#mark_as_failed' do
+  describe '#mark_as_failed!' do
     let(:remote_mirror) { create(:remote_mirror) }
     let(:error_message) { 'http://user:pass@test.com/root/repoC.git/' }
     let(:sanitized_error_message) { 'http://*****:*****@test.com/root/repoC.git/' }
 
     subject do
       remote_mirror.update_start
-      remote_mirror.mark_as_failed(error_message)
+      remote_mirror.mark_as_failed!(error_message)
     end
 
     it 'sets the update_status to failed' do
@@ -204,8 +204,8 @@ describe RemoteMirror, :mailer do
     it 'includes mirrors that were started over an hour ago' do
       mirror = create_mirror(url: 'http://cantbeblank',
                              update_status: 'started',
-                             last_update_at: 3.hours.ago,
-                             updated_at: 2.hours.ago)
+                             last_update_started_at: 3.hours.ago,
+                             last_update_at: 2.hours.ago)
 
       expect(described_class.stuck.last).to eq(mirror)
     end
@@ -214,7 +214,7 @@ describe RemoteMirror, :mailer do
       mirror = create_mirror(url: 'http://cantbeblank',
                              update_status: 'started',
                              last_update_at: nil,
-                             updated_at: 4.hours.ago)
+                             last_update_started_at: 4.hours.ago)
 
       expect(described_class.stuck.last).to eq(mirror)
     end

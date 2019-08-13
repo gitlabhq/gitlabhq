@@ -10,49 +10,91 @@ describe Projects::UpdateRemoteMirrorService do
 
   subject(:service) { described_class.new(project, project.creator) }
 
-  describe "#execute" do
+  describe '#execute' do
+    subject(:execute!) { service.execute(remote_mirror, 0) }
+
     before do
       project.repository.add_branch(project.owner, 'existing-branch', 'master')
 
       allow(remote_mirror).to receive(:update_repository).and_return(true)
     end
 
-    it "ensures the remote exists" do
+    it 'ensures the remote exists' do
       stub_fetch_remote(project, remote_name: remote_name, ssh_auth: remote_mirror)
 
       expect(remote_mirror).to receive(:ensure_remote!)
 
-      service.execute(remote_mirror)
+      execute!
     end
 
-    it "fetches the remote repository" do
+    it 'fetches the remote repository' do
       expect(project.repository)
         .to receive(:fetch_remote)
-        .with(remote_mirror.remote_name, no_tags: true, ssh_auth: remote_mirror)
+              .with(remote_mirror.remote_name, no_tags: true, ssh_auth: remote_mirror)
 
-      service.execute(remote_mirror)
+      execute!
     end
 
-    it "returns success when updated succeeds" do
+    it 'marks the mirror as started when beginning' do
+      expect(remote_mirror).to receive(:update_start!).and_call_original
+
+      execute!
+    end
+
+    it 'marks the mirror as successfully finished' do
       stub_fetch_remote(project, remote_name: remote_name, ssh_auth: remote_mirror)
 
-      result = service.execute(remote_mirror)
+      result = execute!
 
       expect(result[:status]).to eq(:success)
+      expect(remote_mirror).to be_finished
+    end
+
+    it 'marks the mirror as failed and raises the error when an unexpected error occurs' do
+      allow(project.repository).to receive(:fetch_remote).and_raise('Badly broken')
+
+      expect { execute! }.to raise_error /Badly broken/
+
+      expect(remote_mirror).to be_failed
+      expect(remote_mirror.last_error).to include('Badly broken')
+    end
+
+    context 'when the update fails because of a `Gitlab::Git::CommandError`' do
+      before do
+        allow(project.repository).to receive(:fetch_remote).and_raise(Gitlab::Git::CommandError.new('fetch failed'))
+      end
+
+      it 'wraps `Gitlab::Git::CommandError`s in a service error' do
+        expect(execute!).to eq(status: :error, message: 'fetch failed')
+      end
+
+      it 'marks the mirror as to be retried' do
+        execute!
+
+        expect(remote_mirror).to be_to_retry
+        expect(remote_mirror.last_error).to include('fetch failed')
+      end
+
+      it "marks the mirror as failed after #{described_class::MAX_TRIES} tries" do
+        service.execute(remote_mirror, described_class::MAX_TRIES)
+
+        expect(remote_mirror).to be_failed
+        expect(remote_mirror.last_error).to include('fetch failed')
+      end
     end
 
     context 'when syncing all branches' do
-      it "push all the branches the first time" do
+      it 'push all the branches the first time' do
         stub_fetch_remote(project, remote_name: remote_name, ssh_auth: remote_mirror)
 
         expect(remote_mirror).to receive(:update_repository).with({})
 
-        service.execute(remote_mirror)
+        execute!
       end
     end
 
     context 'when only syncing protected branches' do
-      it "sync updated protected branches" do
+      it 'sync updated protected branches' do
         stub_fetch_remote(project, remote_name: remote_name, ssh_auth: remote_mirror)
         protected_branch = create_protected_branch(project)
         remote_mirror.only_protected_branches = true
@@ -61,7 +103,7 @@ describe Projects::UpdateRemoteMirrorService do
           .to receive(:update_repository)
           .with(only_branches_matching: [protected_branch.name])
 
-        service.execute(remote_mirror)
+        execute!
       end
 
       def create_protected_branch(project)

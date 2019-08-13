@@ -6419,7 +6419,13 @@ msgstr ""
 msgid "Last seen"
 msgstr ""
 
+msgid "Last successful update"
+msgstr ""
+
 msgid "Last update"
+msgstr ""
+
+msgid "Last update attempt"
 msgstr ""
 
 msgid "Last updated"

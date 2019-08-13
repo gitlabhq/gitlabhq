@@ -43,7 +43,8 @@
                 = _('Mirrored repositories')
                 = render_if_exists 'projects/mirrors/mirrored_repositories_count'
               %th= _('Direction')
-              %th= _('Last update')
+              %th= _('Last update attempt')
+              %th= _('Last successful update')
               %th
               %th
           %tbody.js-mirrors-table-body
@@ -53,6 +54,8 @@
               %tr.qa-mirrored-repository-row.rspec-mirrored-repository-row{ class: ('bg-secondary' if mirror.disabled?) }
                 %td.qa-mirror-repository-url= mirror.safe_url
                 %td= _('Push')
+                %td
+                  = mirror.last_update_started_at.present? ? time_ago_with_tooltip(mirror.last_update_started_at) : _('Never')
                 %td.qa-mirror-last-update-at= mirror.last_update_at.present? ? time_ago_with_tooltip(mirror.last_update_at) : _('Never')
                 %td
                   - if mirror.disabled?

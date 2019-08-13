@@ -1,50 +1,53 @@
 # frozen_string_literal: true
 
 class RepositoryUpdateRemoteMirrorWorker
-  UpdateAlreadyInProgressError = Class.new(StandardError)
   UpdateError = Class.new(StandardError)
 
   include ApplicationWorker
+  include Gitlab::ExclusiveLeaseHelpers
 
   sidekiq_options retry: 3, dead: false
 
-  sidekiq_retry_in { |count| 30 * count }
+  LOCK_WAIT_TIME = 30.seconds
+  MAX_TRIES = 3
 
-  sidekiq_retries_exhausted do |msg, _|
-    Sidekiq.logger.warn "Failed #{msg['class']} with #{msg['args']}: #{msg['error_message']}"
-  end
-
-  def perform(remote_mirror_id, scheduled_time)
-    remote_mirror = RemoteMirrorFinder.new(id: remote_mirror_id).execute
+  def perform(remote_mirror_id, scheduled_time, tries = 0)
+    remote_mirror = RemoteMirror.find_by_id(remote_mirror_id)
+    return unless remote_mirror
     return if remote_mirror.updated_since?(scheduled_time)
 
-    raise UpdateAlreadyInProgressError if remote_mirror.update_in_progress?
-
-    remote_mirror.update_start
-
-    project = remote_mirror.project
-    current_user = project.creator
-    result = Projects::UpdateRemoteMirrorService.new(project, current_user).execute(remote_mirror)
-    raise UpdateError, result[:message] if result[:status] == :error
-
-    remote_mirror.update_finish
-  rescue UpdateAlreadyInProgressError
-    raise
-  rescue UpdateError => ex
-    fail_remote_mirror(remote_mirror, ex.message)
-    raise
-  rescue => ex
-    return unless remote_mirror
-
-    fail_remote_mirror(remote_mirror, ex.message)
-    raise UpdateError, "#{ex.class}: #{ex.message}"
+    # If the update is already running, wait for it to finish before running again
+    # This will wait for a total of 90 seconds in 3 steps
+    in_lock(remote_mirror_update_lock(remote_mirror.id),
+            retries: 3,
+            ttl: remote_mirror.max_runtime,
+            sleep_sec: LOCK_WAIT_TIME) do
+      update_mirror(remote_mirror, scheduled_time, tries)
+    end
+  rescue Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError
+    # If an update runs longer than 1.5 minutes, we'll reschedule it
+    # with a backoff. The next run will check if the previous update would
+    # include the changes that triggered this update and become a no-op.
+    self.class.perform_in(remote_mirror.backoff_delay, remote_mirror.id, scheduled_time, tries)
   end
 
   private
 
-  def fail_remote_mirror(remote_mirror, message)
-    remote_mirror.mark_as_failed(message)
+  def update_mirror(mirror, scheduled_time, tries)
+    project = mirror.project
+    current_user = project.creator
+    result = Projects::UpdateRemoteMirrorService.new(project, current_user).execute(mirror, tries)
 
-    Rails.logger.error(message) # rubocop:disable Gitlab/RailsLogger
+    if result[:status] == :error && mirror.to_retry?
+      schedule_retry(mirror, scheduled_time, tries)
+    end
+  end
+
+  def remote_mirror_update_lock(mirror_id)
+    [self.class.name, mirror_id].join(':')
+  end
+
+  def schedule_retry(mirror, scheduled_time, tries)
+    self.class.perform_in(mirror.backoff_delay, mirror.id, scheduled_time, tries + 1)
   end
 end

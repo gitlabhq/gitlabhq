@@ -4,6 +4,8 @@ class RemoteMirror < ApplicationRecord
   include AfterCommitQueue
   include MirrorAuthentication
 
+  MAX_FIRST_RUNTIME = 3.hours
+  MAX_INCREMENTAL_RUNTIME = 1.hour
   PROTECTED_BACKOFF_DELAY   = 1.minute
   UNPROTECTED_BACKOFF_DELAY = 5.minutes
 
@@ -31,11 +33,18 @@ class RemoteMirror < ApplicationRecord
 
   scope :enabled, -> { where(enabled: true) }
   scope :started, -> { with_update_status(:started) }
-  scope :stuck,   -> { started.where('last_update_at < ? OR (last_update_at IS NULL AND updated_at < ?)', 1.hour.ago, 3.hours.ago) }
+
+  scope :stuck, -> do
+    started
+      .where('(last_update_started_at < ? AND last_update_at IS NOT NULL)',
+             MAX_INCREMENTAL_RUNTIME.ago)
+      .or(where('(last_update_started_at < ? AND last_update_at IS NULL)',
+                MAX_FIRST_RUNTIME.ago))
+  end
 
   state_machine :update_status, initial: :none do
     event :update_start do
-      transition [:none, :finished, :failed] => :started
+      transition any => :started
     end
 
     event :update_finish do
@@ -46,9 +55,14 @@ class RemoteMirror < ApplicationRecord
       transition started: :failed
     end
 
+    event :update_retry do
+      transition started: :to_retry
+    end
+
     state :started
     state :finished
     state :failed
+    state :to_retry
 
     after_transition any => :started do |remote_mirror, _|
       Gitlab::Metrics.add_event(:remote_mirrors_running)
@@ -138,16 +152,27 @@ class RemoteMirror < ApplicationRecord
   end
 
   def updated_since?(timestamp)
-    last_update_started_at && last_update_started_at > timestamp && !update_failed?
+    return false if failed?
+
+    last_update_started_at && last_update_started_at > timestamp
   end
 
   def mark_for_delete_if_blank_url
     mark_for_destruction if url.blank?
   end
 
-  def mark_as_failed(error_message)
-    update_column(:last_error, Gitlab::UrlSanitizer.sanitize(error_message))
-    update_fail
+  def update_error_message(error_message)
+    self.last_error = Gitlab::UrlSanitizer.sanitize(error_message)
+  end
+
+  def mark_for_retry!(error_message)
+    update_error_message(error_message)
+    update_retry!
+  end
+
+  def mark_as_failed!(error_message)
+    update_error_message(error_message)
+    update_fail!
   end
 
   def url=(value)
@@ -190,6 +215,18 @@ class RemoteMirror < ApplicationRecord
     update_column(:error_notification_sent, true)
   end
 
+  def backoff_delay
+    if self.only_protected_branches
+      PROTECTED_BACKOFF_DELAY
+    else
+      UNPROTECTED_BACKOFF_DELAY
+    end
+  end
+
+  def max_runtime
+    last_update_at.present? ? MAX_INCREMENTAL_RUNTIME : MAX_FIRST_RUNTIME
+  end
+
   private
 
   def store_credentials
@@ -217,14 +254,6 @@ class RemoteMirror < ApplicationRecord
     return false unless self.last_update_started_at
 
     self.last_update_started_at >= Time.now - backoff_delay
-  end
-
-  def backoff_delay
-    if self.only_protected_branches
-      PROTECTED_BACKOFF_DELAY
-    else
-      UNPROTECTED_BACKOFF_DELAY
-    end
   end
 
   def reset_fields
