@@ -6,7 +6,9 @@ type: reference, howto
 
 > - Introduced in GitLab 9.1 as [Trigger Schedule](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/10533).
 > - [Renamed to Pipeline Schedule](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/10853) in GitLab 9.2.
-> - Cron notation is parsed by [Fugit](https://github.com/floraison/fugit).
+
+NOTE: **Note:**
+Cron notation is parsed by [Fugit](https://github.com/floraison/fugit).
 
 Pipelines are normally run based on certain conditions being met. For example, when a branch is pushed to repository.
 
