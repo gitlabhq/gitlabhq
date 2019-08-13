@@ -16,8 +16,11 @@ module Gitlab
                             dependencies needs before_script after_script variables
                             environment coverage retry parallel extends].freeze
 
+          REQUIRED_BY_NEEDS = %i[stage].freeze
+
           validations do
             validates :config, allowed_keys: ALLOWED_KEYS
+            validates :config, required_keys: REQUIRED_BY_NEEDS, if: :has_needs?
             validates :config, presence: true
             validates :script, presence: true
             validates :name, presence: true

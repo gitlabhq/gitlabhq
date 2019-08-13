@@ -18,6 +18,10 @@ module Gitlab
 
                 config[attribute]
               end
+
+              define_method("has_#{attribute}?") do
+                config.is_a?(Hash) && config.key?(attribute)
+              end
             end
           end
         end
