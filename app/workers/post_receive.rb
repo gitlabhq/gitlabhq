@@ -77,6 +77,7 @@ class PostReceive
   def after_project_changes_hooks(post_received, user, refs, changes)
     hook_data = Gitlab::DataBuilder::Repository.update(post_received.project, user, changes, refs)
     SystemHooksService.new.execute_hooks(hook_data, :repository_update_hooks)
+    Gitlab::UsageDataCounters::SourceCodeCounter.count(:pushes)
   end
 
   def process_wiki_changes(post_received)
