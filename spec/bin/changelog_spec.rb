@@ -15,7 +15,7 @@ describe 'bin/changelog' do
       allow(entry).to receive(:branch_name).and_return('long-branch-' * 100)
 
       file_path = entry.send(:file_path)
-      expect(file_path.length).to eq(140)
+      expect(file_path.length).to eq(99)
     end
   end
 
