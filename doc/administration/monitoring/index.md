@@ -2,6 +2,9 @@
 
 Explore our features to monitor your GitLab instance:
 
+- [GitLab self-monitoring](gitlab_instance_administration_project/index.md): The
+  GitLab instance administration project helps to monitor the GitLab instance and
+  take action on alerts.
 - [Performance monitoring](performance/index.md): GitLab Performance Monitoring makes it possible to measure a wide variety of statistics of your instance.
 - [Prometheus](prometheus/index.md): Prometheus is a powerful time-series monitoring service, providing a flexible platform for monitoring GitLab and other software products.
 - [GitHub imports](github_imports.md): Monitor the health and progress of GitLab's GitHub importer with various Prometheus metrics.
