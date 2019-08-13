@@ -1781,6 +1781,12 @@ describe Repository do
 
       repository.after_create_branch
     end
+
+    it 'does not expire the branch caches when specified' do
+      expect(repository).not_to receive(:expire_branches_cache)
+
+      repository.after_create_branch(expire_cache: false)
+    end
   end
 
   describe '#after_remove_branch' do
@@ -1788,6 +1794,12 @@ describe Repository do
       expect(repository).to receive(:expire_branches_cache)
 
       repository.after_remove_branch
+    end
+
+    it 'does not expire the branch caches when specified' do
+      expect(repository).not_to receive(:expire_branches_cache)
+
+      repository.after_remove_branch(expire_cache: false)
     end
   end
 

@@ -63,7 +63,7 @@ module Git
     end
 
     def branch_create_hooks
-      project.repository.after_create_branch
+      project.repository.after_create_branch(expire_cache: false)
       project.after_create_default_branch if default_branch?
     end
 
@@ -78,7 +78,7 @@ module Git
     end
 
     def branch_remove_hooks
-      project.repository.after_remove_branch
+      project.repository.after_remove_branch(expire_cache: false)
     end
 
     # Schedules processing of commit messages

@@ -27,6 +27,12 @@ module Gitlab
       end
     end
 
+    def includes_branches?
+      enum_for(:changes_refs).any? do |_oldrev, _newrev, ref|
+        Gitlab::Git.branch_ref?(ref)
+      end
+    end
+
     private
 
     def deserialize_changes(changes)

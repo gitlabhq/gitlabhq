@@ -1,0 +1,5 @@
+---
+title: Invalidate branches cache on PostReceive
+merge_request: 31653
+author:
+type: fixed
