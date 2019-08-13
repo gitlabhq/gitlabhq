@@ -16,7 +16,7 @@ through the [continuous methodologies](introduction/index.md#introduction-to-cic
 NOTE: **Out-of-the-box management systems can decrease hours spent on maintaining toolchains by 10% or more.**
 Watch our
 ["Mastering continuous software development"](https://about.gitlab.com/webcast/mastering-ci-cd/)
-webcast to learn about continuous methods and how GitLab’s built-in CI can help you simplify and scale software development. 
+webcast to learn about continuous methods and how GitLab’s built-in CI can help you simplify and scale software development.
 
 ## Overview
 
@@ -67,11 +67,11 @@ to your needs:
 For a broader overview, see the [CI/CD getting started](quick_start/README.md) guide.
 
 Once you're familiar with how GitLab CI/CD works, see the
-[`. gitlab-ci.yml` full reference](yaml/README.md)
+[`.gitlab-ci.yml` full reference](yaml/README.md)
 for all the attributes you can set and use.
 
 NOTE: **Note:**
-GitLab CI/CD and [shared runners](runners/README.md#shared-specific-and-group-runners) are enabled in GitLab.com and available for all users, limited only to the [user's pipelines quota](../user/admin_area/settings/continuous_integration.md#extra-shared-runners-pipeline-minutes-quota-free-only).
+GitLab CI/CD and [shared runners](runners/README.md#shared-specific-and-group-runners) are enabled in GitLab.com and available for all users, limited only to the [user's pipelines quota](../user/gitlab_com/index.md#shared-runners).
 
 ## Configuration
 

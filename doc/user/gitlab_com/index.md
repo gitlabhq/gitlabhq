@@ -81,13 +81,12 @@ IP based firewall can be configured by looking up all
 
 ## Shared Runners
 
-Shared Runners on GitLab.com run in [autoscale mode] and powered by
-Google Cloud Platform. Autoscaling means reduced
-waiting times to spin up CI/CD jobs, and isolated VMs for each project,
-thus maximizing security.
-They're free to use for public open source projects and limited to 2000 CI
-minutes per month per group for private projects. Read about all
-[GitLab.com plans](https://about.gitlab.com/pricing/).
+Shared Runners on GitLab.com run in [autoscale mode] and powered by Google Cloud Platform.
+Autoscaling means reduced waiting times to spin up CI/CD jobs, and isolated VMs for each project,
+thus maximizing security. They're free to use for public open source projects and limited
+to 2000 CI minutes per month per group for private projects. More minutes
+[can be purchased](../../subscriptions/index.md#extra-shared-runners-pipeline-minutes), if
+needed. Read about all [GitLab.com plans](https://about.gitlab.com/pricing/).
 
 All your CI/CD jobs run on [n1-standard-1 instances](https://cloud.google.com/compute/docs/machine-types) with 3.75GB of RAM, CoreOS and the latest Docker Engine
 installed. Instances provide 1 vCPU and 25GB of HDD disk space. The default
