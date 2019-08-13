@@ -1,0 +1,5 @@
+---
+title: Only expire tag cache once per push
+merge_request: 31641
+author:
+type: performance

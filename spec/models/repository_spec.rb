@@ -1744,11 +1744,22 @@ describe Repository do
     end
   end
 
-  describe '#before_push_tag' do
+  describe '#expires_caches_for_tags' do
     it 'flushes the cache' do
       expect(repository).to receive(:expire_statistics_caches)
       expect(repository).to receive(:expire_emptiness_caches)
       expect(repository).to receive(:expire_tags_cache)
+
+      repository.expire_caches_for_tags
+    end
+  end
+
+  describe '#before_push_tag' do
+    it 'logs an event' do
+      expect(repository).not_to receive(:expire_statistics_caches)
+      expect(repository).not_to receive(:expire_emptiness_caches)
+      expect(repository).not_to receive(:expire_tags_cache)
+      expect(repository).to receive(:repository_event).with(:push_tag)
 
       repository.before_push_tag
     end
