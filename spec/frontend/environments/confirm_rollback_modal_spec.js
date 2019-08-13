@@ -61,7 +61,7 @@ describe('Confirm Rollback Modal Component', () => {
         environment,
       },
     });
-    const eventHubSpy = spyOn(eventHub, '$emit');
+    const eventHubSpy = jest.spyOn(eventHub, '$emit');
     const modal = component.find(GlModal);
     modal.vm.$emit('ok');
 

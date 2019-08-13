@@ -6,6 +6,7 @@ import { config as testUtilsConfig } from '@vue/test-utils';
 import { initializeTestTimeout } from './helpers/timeout';
 import { loadHTMLFixture, setHTMLFixture } from './helpers/fixtures';
 import { setupManualMocks } from './mocks/mocks_helper';
+import customMatchers from './matchers';
 
 // Expose jQuery so specs using jQuery plugins can be imported nicely.
 // Here is an issue to explore better alternatives:
@@ -66,6 +67,8 @@ Object.entries(jqueryMatchers).forEach(([matcherName, matcherFactory]) => {
     [matcherName]: matcherFactory().compare,
   });
 });
+
+expect.extend(customMatchers);
 
 // Tech debt issue TBD
 testUtilsConfig.logModifiedComponents = false;
