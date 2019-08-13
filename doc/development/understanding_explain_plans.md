@@ -199,7 +199,7 @@ more common ones here.
 
 A full list of all the available nodes and their descriptions can be found in
 the [PostgreSQL source file
-"plannodes.h"](https://github.com/postgres/postgres/blob/master/src/include/nodes/plannodes.h)
+"plannodes.h"](https://gitlab.com/postgres/postgres/blob/master/src/include/nodes/plannodes.h)
 
 ### Seq Scan
 
@@ -224,7 +224,7 @@ used when we would read too much data from an index scan, but too little to
 perform a sequential scan. A bitmap scan uses what is known as a [bitmap
 index](https://en.wikipedia.org/wiki/Bitmap_index) to perform its work.
 
-The [source code of PostgreSQL](https://github.com/postgres/postgres/blob/1c2cb2744bf3d8ad751cd5cf3b347f10f48492b3/src/include/nodes/plannodes.h#L446-L457)
+The [source code of PostgreSQL](https://gitlab.com/postgres/postgres/blob/REL_11_STABLE/src/include/nodes/plannodes.h#L441)
 states the following on bitmap scans:
 
 > Bitmap Index Scan delivers a bitmap of potential tuple locations; it does not
