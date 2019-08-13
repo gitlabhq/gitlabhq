@@ -23,13 +23,21 @@ describe Clusters::Applications::Helm do
       Clusters::Cluster::APPLICATIONS.keys.each do |application_name|
         next if application_name == 'helm'
 
-        it do
+        it "is false when #{application_name} is installed" do
           cluster_application = create("clusters_applications_#{application_name}".to_sym)
 
           helm = cluster_application.cluster.application_helm
 
           expect(helm.allowed_to_uninstall?).to be_falsy
         end
+      end
+
+      it 'executes a single query only' do
+        cluster_application = create(:clusters_applications_ingress)
+        helm = cluster_application.cluster.application_helm
+
+        query_count = ActiveRecord::QueryRecorder.new { helm.allowed_to_uninstall? }.count
+        expect(query_count).to eq(1)
       end
     end
 
