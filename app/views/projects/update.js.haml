@@ -4,7 +4,7 @@
     location.reload();
 - else
   :plain
-    $(".project-edit-errors").html("#{escape_javascript(render('errors'))}");
+    $(".flash-container").html("#{escape_javascript(render('errors'))}");
     $('.save-project-loader').hide();
     $('.project-edit-container').show();
     $('.edit-project .js-btn-success-general-project-settings').enable();
