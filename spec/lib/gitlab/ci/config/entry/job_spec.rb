@@ -89,14 +89,23 @@ describe Gitlab::Ci::Config::Entry::Job do
 
       context 'when has needs' do
         let(:config) do
-          { script: 'echo', needs: ['another-job'] }
+          {
+            stage: 'test',
+            script: 'echo',
+            needs: ['another-job']
+          }
         end
 
         it { expect(entry).to be_valid }
 
         context 'when has dependencies' do
           let(:config) do
-            { script: 'echo', dependencies: ['another-job'], needs: ['another-job'] }
+            {
+              stage: 'test',
+              script: 'echo',
+              dependencies: ['another-job'],
+              needs: ['another-job']
+            }
           end
 
           it { expect(entry).to be_valid }
@@ -256,7 +265,11 @@ describe Gitlab::Ci::Config::Entry::Job do
       context 'when has needs' do
         context 'that are not a array of strings' do
           let(:config) do
-            { script: 'echo', needs: 'build-job' }
+            {
+              stage: 'test',
+              script: 'echo',
+              needs: 'build-job'
+            }
           end
 
           it 'returns error about invalid type' do
@@ -267,12 +280,31 @@ describe Gitlab::Ci::Config::Entry::Job do
 
         context 'when have dependencies that are not subset of needs' do
           let(:config) do
-            { script: 'echo', dependencies: ['another-job'], needs: ['build-job'] }
+            {
+              stage: 'test',
+              script: 'echo',
+              dependencies: ['another-job'],
+              needs: ['build-job']
+            }
           end
 
           it 'returns error about invalid data' do
             expect(entry).not_to be_valid
             expect(entry.errors).to include 'job dependencies the another-job should be part of needs'
+          end
+        end
+
+        context 'when stage: is missing' do
+          let(:config) do
+            {
+              script: 'echo',
+              needs: ['build-job']
+            }
+          end
+
+          it 'returns error about invalid data' do
+            expect(entry).not_to be_valid
+            expect(entry.errors).to include 'job config missing required keys: stage'
           end
         end
       end

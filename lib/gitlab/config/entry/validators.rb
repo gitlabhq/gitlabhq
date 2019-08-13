@@ -26,6 +26,17 @@ module Gitlab
           end
         end
 
+        class RequiredKeysValidator < ActiveModel::EachValidator
+          def validate_each(record, attribute, value)
+            present_keys = options[:in] - value.try(:keys).to_a
+
+            if present_keys.any?
+              record.errors.add(attribute, "missing required keys: " +
+                present_keys.join(', '))
+            end
+          end
+        end
+
         class AllowedValuesValidator < ActiveModel::EachValidator
           def validate_each(record, attribute, value)
             unless options[:in].include?(value.to_s)

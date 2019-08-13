@@ -25,7 +25,9 @@ describe Gitlab::Config::Entry::Attributable do
     end
 
     it 'returns the value of config' do
+      expect(instance).to have_name
       expect(instance.name).to eq 'some name'
+      expect(instance).to have_test
       expect(instance.test).to eq 'some test'
     end
 
@@ -42,6 +44,7 @@ describe Gitlab::Config::Entry::Attributable do
     end
 
     it 'returns nil' do
+      expect(instance).not_to have_test
       expect(instance.test).to be_nil
     end
   end
