@@ -2,99 +2,70 @@
 
 require 'rails_helper'
 
-describe RepositoryUpdateRemoteMirrorWorker do
+describe RepositoryUpdateRemoteMirrorWorker, :clean_gitlab_redis_shared_state do
   subject { described_class.new }
 
-  let(:remote_mirror) { create(:project, :repository, :remote_mirror).remote_mirrors.first }
+  let(:remote_mirror) { create(:remote_mirror) }
   let(:scheduled_time) { Time.now - 5.minutes }
 
   around do |example|
     Timecop.freeze(Time.now) { example.run }
   end
 
+  def expect_mirror_service_to_return(mirror, result, tries = 0)
+    expect_next_instance_of(Projects::UpdateRemoteMirrorService) do |service|
+      expect(service).to receive(:execute).with(mirror, tries).and_return(result)
+    end
+  end
+
   describe '#perform' do
-    context 'with status none' do
-      before do
-        remote_mirror.update(update_status: 'none')
-      end
+    it 'calls out to the service to perform the update' do
+      expect_mirror_service_to_return(remote_mirror, status: :success)
 
-      it 'sets status as finished when update remote mirror service executes successfully' do
-        expect_any_instance_of(Projects::UpdateRemoteMirrorService).to receive(:execute).with(remote_mirror).and_return(status: :success)
-
-        expect { subject.perform(remote_mirror.id, Time.now) }.to change { remote_mirror.reload.update_status }.to('finished')
-      end
-
-      it 'resets the notification flag upon success' do
-        expect_any_instance_of(Projects::UpdateRemoteMirrorService).to receive(:execute).with(remote_mirror).and_return(status: :success)
-        remote_mirror.update_column(:error_notification_sent, true)
-
-        expect { subject.perform(remote_mirror.id, Time.now) }.to change { remote_mirror.reload.error_notification_sent }.to(false)
-      end
-
-      it 'sets status as failed when update remote mirror service executes with errors' do
-        error_message = 'fail!'
-
-        expect_next_instance_of(Projects::UpdateRemoteMirrorService) do |service|
-          expect(service).to receive(:execute).with(remote_mirror).and_return(status: :error, message: error_message)
-        end
-
-        # Mock the finder so that it returns an object we can set expectations on
-        expect_next_instance_of(RemoteMirrorFinder) do |finder|
-          expect(finder).to receive(:execute).and_return(remote_mirror)
-        end
-        expect(remote_mirror).to receive(:mark_as_failed).with(error_message)
-
-        expect do
-          subject.perform(remote_mirror.id, Time.now)
-        end.to raise_error(RepositoryUpdateRemoteMirrorWorker::UpdateError, error_message)
-      end
-
-      it 'does nothing if last_update_started_at is higher than the time the job was scheduled in' do
-        remote_mirror.update(last_update_started_at: Time.now)
-
-        expect_any_instance_of(RemoteMirror).to receive(:updated_since?).with(scheduled_time).and_return(true)
-        expect_any_instance_of(Projects::UpdateRemoteMirrorService).not_to receive(:execute).with(remote_mirror)
-
-        expect(subject.perform(remote_mirror.id, scheduled_time)).to be_nil
-      end
+      subject.perform(remote_mirror.id, scheduled_time)
     end
 
-    context 'with unexpected error' do
-      it 'marks mirror as failed' do
-        allow_any_instance_of(Projects::UpdateRemoteMirrorService).to receive(:execute).with(remote_mirror).and_raise(RuntimeError)
+    it 'does not do anything if the mirror was already updated' do
+      remote_mirror.update(last_update_started_at: Time.now, update_status: :finished)
 
-        expect do
-          subject.perform(remote_mirror.id, Time.now)
-        end.to raise_error(RepositoryUpdateRemoteMirrorWorker::UpdateError)
-        expect(remote_mirror.reload.update_status).to eq('failed')
-      end
+      expect(Projects::UpdateRemoteMirrorService).not_to receive(:new)
+
+      subject.perform(remote_mirror.id, scheduled_time)
     end
 
-    context 'with another worker already running' do
-      before do
-        remote_mirror.update(update_status: 'started')
-      end
+    it 'schedules a retry when the mirror is marked for retrying' do
+      remote_mirror = create(:remote_mirror, update_status: :to_retry)
+      expect_mirror_service_to_return(remote_mirror, status: :error, message: 'Retry!')
 
-      it 'raises RemoteMirrorUpdateAlreadyInProgressError' do
-        expect do
-          subject.perform(remote_mirror.id, Time.now)
-        end.to raise_error(RepositoryUpdateRemoteMirrorWorker::UpdateAlreadyInProgressError)
-      end
+      expect(described_class)
+        .to receive(:perform_in)
+              .with(remote_mirror.backoff_delay, remote_mirror.id, scheduled_time, 1)
+
+      subject.perform(remote_mirror.id, scheduled_time)
     end
 
-    context 'with status failed' do
-      before do
-        remote_mirror.update(update_status: 'failed')
+    it 'clears the lease if there was an unexpected exception' do
+      expect_next_instance_of(Projects::UpdateRemoteMirrorService) do |service|
+        expect(service).to receive(:execute).with(remote_mirror, 1).and_raise('Unexpected!')
       end
+      expect { subject.perform(remote_mirror.id, Time.now, 1) }.to raise_error('Unexpected!')
 
-      it 'sets status as finished if last_update_started_at is higher than the time the job was scheduled in' do
-        remote_mirror.update(last_update_started_at: Time.now)
+      lease = Gitlab::ExclusiveLease.new("#{described_class.name}:#{remote_mirror.id}", timeout: 1.second)
 
-        expect_any_instance_of(RemoteMirror).to receive(:updated_since?).with(scheduled_time).and_return(false)
-        expect_any_instance_of(Projects::UpdateRemoteMirrorService).to receive(:execute).with(remote_mirror).and_return(status: :success)
+      expect(lease.try_obtain).not_to be_nil
+    end
 
-        expect { subject.perform(remote_mirror.id, scheduled_time) }.to change { remote_mirror.reload.update_status }.to('finished')
-      end
+    it 'retries 3 times for the worker to finish before rescheduling' do
+      expect(subject).to receive(:in_lock)
+                           .with("#{described_class.name}:#{remote_mirror.id}",
+                                 retries: 3,
+                                 ttl: remote_mirror.max_runtime,
+                                 sleep_sec: described_class::LOCK_WAIT_TIME)
+                           .and_raise(Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError)
+      expect(described_class).to receive(:perform_in)
+                                   .with(remote_mirror.backoff_delay, remote_mirror.id, scheduled_time, 0)
+
+      subject.perform(remote_mirror.id, scheduled_time)
     end
   end
 end

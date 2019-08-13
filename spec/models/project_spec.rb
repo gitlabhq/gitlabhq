@@ -2252,6 +2252,21 @@ describe Project do
     end
   end
 
+  describe '#mark_stuck_remote_mirrors_as_failed!' do
+    it 'fails stuck remote mirrors' do
+      project = create(:project, :repository, :remote_mirror)
+
+      project.remote_mirrors.first.update(
+        update_status: :started,
+        last_update_started_at: 2.days.ago
+      )
+
+      expect do
+        project.mark_stuck_remote_mirrors_as_failed!
+      end.to change { project.remote_mirrors.stuck.count }.from(1).to(0)
+    end
+  end
+
   describe '#ancestors_upto' do
     let(:parent) { create(:group) }
     let(:child) { create(:group, parent: parent) }
