@@ -40,7 +40,7 @@ shared_examples 'move quick action' do
 
         wait_for_requests
 
-        expect(page).to have_content "Move this issue failed because target project doesn't exists"
+        expect(page).to have_content "Failed to move this issue because target project doesn't exist."
         expect(issue.reload).to be_open
       end
     end

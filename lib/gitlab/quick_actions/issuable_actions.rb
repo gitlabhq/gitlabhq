@@ -145,9 +145,9 @@ module Gitlab
           run_label_command(labels: find_labels(labels_param), command: :relabel, updates_key: :label_ids)
         end
 
-        desc _('Add a todo')
-        explanation _('Adds a todo.')
-        execution_message _('Added a todo.')
+        desc _('Add a To Do')
+        explanation _('Adds a To Do.')
+        execution_message _('Added a To Do.')
         types Issuable
         condition do
           quick_action_target.persisted? &&
@@ -157,9 +157,9 @@ module Gitlab
           @updates[:todo_event] = 'add'
         end
 
-        desc _('Mark to do as done')
-        explanation _('Marks to do as done.')
-        execution_message _('Marked to do as done.')
+        desc _('Mark To Do as done')
+        explanation _('Marks To Do as done.')
+        execution_message _('Marked To Do as done.')
         types Issuable
         condition do
           quick_action_target.persisted? &&

@@ -138,6 +138,8 @@ class Label < ApplicationRecord
   end
 
   def self.on_project_board?(project_id, label_id)
+    return false if label_id.blank?
+
     on_project_boards(project_id).where(id: label_id).exists?
   end
 

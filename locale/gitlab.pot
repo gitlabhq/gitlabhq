@@ -675,9 +675,6 @@ msgstr ""
 msgid "Add a task list"
 msgstr ""
 
-msgid "Add a todo"
-msgstr ""
-
 msgid "Add an SSH key"
 msgstr ""
 
@@ -753,7 +750,7 @@ msgstr ""
 msgid "Added %{label_references} %{label_text}."
 msgstr ""
 
-msgid "Added a todo."
+msgid "Added a To Do."
 msgstr ""
 
 msgid "Added at"
@@ -768,7 +765,7 @@ msgstr ""
 msgid "Adds %{labels} %{label_text}."
 msgstr ""
 
-msgid "Adds a todo."
+msgid "Adds a To Do."
 msgstr ""
 
 msgid "Admin Area"
@@ -1363,9 +1360,6 @@ msgid "Assets"
 msgstr ""
 
 msgid "Assign"
-msgstr ""
-
-msgid "Assign command failed because no user was found"
 msgstr ""
 
 msgid "Assign custom color like #FF0000"
@@ -2968,9 +2962,6 @@ msgstr ""
 msgid "Commands applied"
 msgstr ""
 
-msgid "Commands did not apply"
-msgstr ""
-
 msgid "Comment"
 msgstr ""
 
@@ -3396,7 +3387,7 @@ msgstr ""
 msgid "Create a GitLab account first, and then connect it to your %{label} account."
 msgstr ""
 
-msgid "Create a merge request."
+msgid "Create a merge request"
 msgstr ""
 
 msgid "Create a new branch"
@@ -3504,10 +3495,10 @@ msgstr ""
 msgid "Created At"
 msgstr ""
 
-msgid "Created a branch and a merge request to resolve this issue"
+msgid "Created a branch and a merge request to resolve this issue."
 msgstr ""
 
-msgid "Created branch '%{branch_name}' and a merge request to resolve this issue"
+msgid "Created branch '%{branch_name}' and a merge request to resolve this issue."
 msgstr ""
 
 msgid "Created by me"
@@ -3519,10 +3510,10 @@ msgstr ""
 msgid "Created on:"
 msgstr ""
 
-msgid "Creates a branch and a merge request to resolve this issue"
+msgid "Creates a branch and a merge request to resolve this issue."
 msgstr ""
 
-msgid "Creates branch '%{branch_name}' and a merge request to resolve this issue"
+msgid "Creates branch '%{branch_name}' and a merge request to resolve this issue."
 msgstr ""
 
 msgid "Creating graphs uses the data from the Prometheus server. If this takes a long time, ensure that data is available."
@@ -4799,6 +4790,12 @@ msgstr ""
 msgid "Failed create wiki"
 msgstr ""
 
+msgid "Failed to apply commands."
+msgstr ""
+
+msgid "Failed to assign a user because no user was found."
+msgstr ""
+
 msgid "Failed to change the owner"
 msgstr ""
 
@@ -4839,6 +4836,18 @@ msgid "Failed to load errors from Sentry. Error message: %{errorMessage}"
 msgstr ""
 
 msgid "Failed to load related branches"
+msgstr ""
+
+msgid "Failed to mark this issue as a duplicate because referenced issue was not found."
+msgstr ""
+
+msgid "Failed to move this issue because label was not found."
+msgstr ""
+
+msgid "Failed to move this issue because only a single label can be provided."
+msgstr ""
+
+msgid "Failed to move this issue because target project doesn't exist."
 msgstr ""
 
 msgid "Failed to promote label due to internal error. Please contact administrators."
@@ -6562,13 +6571,13 @@ msgstr ""
 msgid "Locked by %{fileLockUserName}"
 msgstr ""
 
-msgid "Locked the discussion"
+msgid "Locked the discussion."
 msgstr ""
 
 msgid "Locked to current projects"
 msgstr ""
 
-msgid "Locks the discussion"
+msgid "Locks the discussion."
 msgstr ""
 
 msgid "Logo was successfully removed."
@@ -6586,13 +6595,13 @@ msgstr ""
 msgid "MRDiff|Show full file"
 msgstr ""
 
-msgid "Made this issue confidential"
+msgid "Made this issue confidential."
 msgstr ""
 
 msgid "Make and review changes in the browser with the Web IDE"
 msgstr ""
 
-msgid "Make issue confidential."
+msgid "Make issue confidential"
 msgstr ""
 
 msgid "Make sure you save it - you won't be able to access it again."
@@ -6601,7 +6610,7 @@ msgstr ""
 msgid "Make sure you're logged into the account that owns the projects you'd like to import."
 msgstr ""
 
-msgid "Makes this issue confidential"
+msgid "Makes this issue confidential."
 msgstr ""
 
 msgid "Manage"
@@ -6667,10 +6676,10 @@ msgstr ""
 msgid "March"
 msgstr ""
 
-msgid "Mark as done"
+msgid "Mark To Do as done"
 msgstr ""
 
-msgid "Mark as duplicate failed because referenced issue was not found"
+msgid "Mark as done"
 msgstr ""
 
 msgid "Mark as resolved"
@@ -6680,9 +6689,6 @@ msgid "Mark comment as resolved"
 msgstr ""
 
 msgid "Mark this issue as a duplicate of another issue"
-msgstr ""
-
-msgid "Mark to do as done"
 msgstr ""
 
 msgid "Markdown"
@@ -6697,22 +6703,22 @@ msgstr ""
 msgid "Markdown is supported"
 msgstr ""
 
+msgid "Marked To Do as done."
+msgstr ""
+
 msgid "Marked this %{noun} as Work In Progress."
 msgstr ""
 
 msgid "Marked this issue as a duplicate of %{duplicate_param}."
 msgstr ""
 
-msgid "Marked to do as done."
+msgid "Marks To Do as done."
 msgstr ""
 
 msgid "Marks this %{noun} as Work In Progress."
 msgstr ""
 
 msgid "Marks this issue as a duplicate of %{duplicate_reference}."
-msgstr ""
-
-msgid "Marks to do as done."
 msgstr ""
 
 msgid "Max access level"
@@ -7079,12 +7085,6 @@ msgid "Move selection down"
 msgstr ""
 
 msgid "Move selection up"
-msgstr ""
-
-msgid "Move this issue failed because target project doesn't exists"
-msgstr ""
-
-msgid "Move this issue failed because you need to specify only one label."
 msgstr ""
 
 msgid "Move this issue to another project."
@@ -12188,10 +12188,10 @@ msgstr ""
 msgid "Unlocked"
 msgstr ""
 
-msgid "Unlocked the discussion"
+msgid "Unlocked the discussion."
 msgstr ""
 
-msgid "Unlocks the discussion"
+msgid "Unlocks the discussion."
 msgstr ""
 
 msgid "Unmarked this %{noun} as Work In Progress."

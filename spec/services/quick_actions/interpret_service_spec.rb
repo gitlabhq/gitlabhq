@@ -226,7 +226,7 @@ describe QuickActions::InterpretService do
       it 'returns the todo message' do
         _, _, message = service.execute(content, issuable)
 
-        expect(message).to eq('Added a todo.')
+        expect(message).to eq('Added a To Do.')
       end
     end
 
@@ -242,7 +242,7 @@ describe QuickActions::InterpretService do
         TodoService.new.mark_todo(issuable, developer)
         _, _, message = service.execute(content, issuable)
 
-        expect(message).to eq('Marked to do as done.')
+        expect(message).to eq('Marked To Do as done.')
       end
     end
 
@@ -453,7 +453,7 @@ describe QuickActions::InterpretService do
       it 'returns the lock discussion message' do
         _, _, message = service.execute(content, issuable)
 
-        expect(message).to eq('Locked the discussion')
+        expect(message).to eq('Locked the discussion.')
       end
     end
 
@@ -470,7 +470,7 @@ describe QuickActions::InterpretService do
       it 'returns the unlock discussion message' do
         _, _, message = service.execute(content, issuable)
 
-        expect(message).to eq('Unlocked the discussion')
+        expect(message).to eq('Unlocked the discussion.')
       end
     end
 
@@ -570,7 +570,7 @@ describe QuickActions::InterpretService do
       it 'returns move issue failure message when the referenced issue is not found' do
         _, _, message = service.execute('/move invalid', issue)
 
-        expect(message).to eq("Move this issue failed because target project doesn't exists")
+        expect(message).to eq("Failed to move this issue because target project doesn't exist.")
       end
     end
 
@@ -584,7 +584,7 @@ describe QuickActions::InterpretService do
       it 'returns the confidential message' do
         _, _, message = service.execute(content, issuable)
 
-        expect(message).to eq('Made this issue confidential')
+        expect(message).to eq('Made this issue confidential.')
       end
     end
 
@@ -783,7 +783,7 @@ describe QuickActions::InterpretService do
       end
     end
 
-    it_behaves_like 'empty command', "Assign command failed because no user was found" do
+    it_behaves_like 'empty command', "Failed to assign a user because no user was found." do
       let(:content) { '/assign @abcd1234' }
       let(:issuable) { issue }
     end
@@ -1217,12 +1217,12 @@ describe QuickActions::InterpretService do
           let(:issuable) { issue }
         end
 
-        it_behaves_like 'empty command', 'Mark as duplicate failed because referenced issue was not found' do
+        it_behaves_like 'empty command', 'Failed to mark this issue as a duplicate because referenced issue was not found.' do
           let(:content) { "/duplicate imaginary#1234" }
           let(:issuable) { issue }
         end
 
-        it_behaves_like 'empty command', 'Mark as duplicate failed because referenced issue was not found' do
+        it_behaves_like 'empty command', 'Failed to mark this issue as a duplicate because referenced issue was not found.' do
           let(:other_project) { create(:project, :private) }
           let(:issue_duplicate) { create(:issue, project: other_project) }
 
@@ -1287,7 +1287,7 @@ describe QuickActions::InterpretService do
         let(:issuable) { issue }
       end
 
-      it_behaves_like 'empty command', 'Mark as duplicate failed because referenced issue was not found' do
+      it_behaves_like 'empty command', 'Failed to mark this issue as a duplicate because referenced issue was not found.' do
         let(:content) { '/duplicate #{issue.to_reference}' }
         let(:issuable) { issue }
       end
@@ -1463,19 +1463,19 @@ describe QuickActions::InterpretService do
       context 'if the given label does not exist' do
         let(:issuable) { issue }
         let(:content) { '/board_move ~"Fake Label"' }
-        it_behaves_like 'empty command', 'Move this issue failed because you need to specify only one label.'
+        it_behaves_like 'empty command', 'Failed to move this issue because label was not found.'
       end
 
       context 'if multiple labels are given' do
         let(:issuable) { issue }
         let(:content) { %{/board_move ~"#{inreview.title}" ~"#{todo.title}"} }
-        it_behaves_like 'empty command', 'Move this issue failed because you need to specify only one label.'
+        it_behaves_like 'empty command', 'Failed to move this issue because only a single label can be provided.'
       end
 
       context 'if the given label is not a list on the board' do
         let(:issuable) { issue }
         let(:content) { %{/board_move ~"#{bug.title}"} }
-        it_behaves_like 'empty command'
+        it_behaves_like 'empty command', 'Failed to move this issue because label was not found.'
       end
 
       context 'if issuable is not an Issue' do
@@ -1552,7 +1552,7 @@ describe QuickActions::InterpretService do
       it 'returns the create_merge_request message' do
         _, _, message = service.execute(content, issuable)
 
-        expect(message).to eq("Created branch '#{branch_name}' and a merge request to resolve this issue")
+        expect(message).to eq("Created branch '#{branch_name}' and a merge request to resolve this issue.")
       end
     end
   end
@@ -1814,13 +1814,13 @@ describe QuickActions::InterpretService do
         it 'uses the default branch name' do
           _, explanations = service.explain(content, issue)
 
-          expect(explanations).to eq(['Creates a branch and a merge request to resolve this issue'])
+          expect(explanations).to eq(['Creates a branch and a merge request to resolve this issue.'])
         end
 
         it 'returns the execution message using the default branch name' do
           _, _, message = service.execute(content, issue)
 
-          expect(message).to eq('Created a branch and a merge request to resolve this issue')
+          expect(message).to eq('Created a branch and a merge request to resolve this issue.')
         end
       end
 
@@ -1830,13 +1830,13 @@ describe QuickActions::InterpretService do
         it 'uses the given branch name' do
           _, explanations = service.explain(content, issue)
 
-          expect(explanations).to eq(["Creates branch 'foo' and a merge request to resolve this issue"])
+          expect(explanations).to eq(["Creates branch 'foo' and a merge request to resolve this issue."])
         end
 
         it 'returns the execution message using the given branch name' do
           _, _, message = service.execute(content, issue)
 
-          expect(message).to eq("Created branch 'foo' and a merge request to resolve this issue")
+          expect(message).to eq("Created branch 'foo' and a merge request to resolve this issue.")
         end
       end
     end
