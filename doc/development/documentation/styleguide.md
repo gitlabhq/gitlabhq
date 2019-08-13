@@ -283,24 +283,44 @@ Check specific punctuation rules for [list items](#list-items) below.
 
 ## List items
 
-- Always start list items with a capital letter.
+- Always start list items with a capital letter, unless they are parameters or commands
+  that are in backticks, or similar.
 - Always leave a blank line before and after a list.
-- Begin a line with spaces (not tabs) to denote a subitem.
-- To nest subitems, indent them with two spaces.
-- To nest code blocks, indent them with four spaces.
-- Only use ordered lists when their items describe a sequence of steps to follow.
+- Begin a line with spaces (not tabs) to denote a [nested subitem](#nesting-inside-a-list-item).
+- Only use ordered lists when their items describe a sequence of steps to follow:
+
+  Do:
+
+  These are the steps to do something:
+
+  1. First, do step 1
+  1. Then, do step 2
+  1. Finally, do step 3
+
+  Don't:
+
+  This is a list of different features:
+
+  1. Feature 1
+  1. Feature 2
+  1. Feature 3
 
 **Markup:**
 
 - Use dashes (`-`) for unordered lists instead of asterisks (`*`).
-- Use the number one (`1`) for each item in an ordered list.
-  When rendered, the list items will appear with sequential numbering.
+- Prefix `1.` to each item in an ordered list.
+  When rendered, the list items will appear with sequential numbering automatically.
 
 **Punctuation:**
 
-- Do not add commas (`,`) or semicolons (`;`) to the end of a list item.
-- Only add periods to the end of a list item if the item consists of a complete sentence. The [definition of full sentence](https://www2.le.ac.uk/offices/ld/resources/writing/grammar/grammar-guides/sentence) is: _"a complete sentence always contains a verb, expresses a complete idea, and makes sense standing alone"_.
-- Be consistent throughout the list: if the majority of the items do not end in a period, do not end any of the items in a period, even if they consist of a complete sentence. The opposite is also valid: if the majority of the items end with a period, end all with a period.
+- Do not add commas (`,`) or semicolons (`;`) to the end of list items.
+- Only add periods to the end of a list item if the item consists of a complete sentence.
+  The [definition of full sentence](https://www2.le.ac.uk/offices/ld/resources/writing/grammar/grammar-guides/sentence)
+  is: _"a complete sentence always contains a verb, expresses a complete idea, and makes sense standing alone"_.
+- Be consistent throughout the list: if the majority of the items do not end in a period,
+  do not end any of the items in a period, even if they consist of a complete sentence.
+  The opposite is also valid: if the majority of the items end with a period, end
+  all with a period.
 - Separate list items from explanatory text with a colon (`:`). For example:
 
   ```md
@@ -330,11 +350,85 @@ Do:
 - Let's say this is also a complete sentence.
 - Not a complete sentence.
 
-Don't:
+Don't (third item should have a `.` to match the first and second items):
 
 - Let's say this is a complete sentence.
 - Let's say this is also a complete sentence.
 - Not a complete sentence
+
+### Nesting inside a list item
+
+It is possible to nest items under a list item, so that they render with the same indentation
+as the list item. This can be done with:
+
+- [Code blocks](#code-blocks)
+- [Blockquotes](#blockquotes)
+- [Alert boxes](#alert-boxes)
+- [Images](#images)
+
+Items nested in lists should always align with the first character of the list item.
+In unordered lists (using `-`), this means two spaces for each level of indentation:
+
+~~~md
+- Unordered list item 1
+
+  A line nested using 2 spaces to align with the `U` above.
+
+- Unordered list item 2
+
+  > A quote block that will nest
+  > inside list item 2.
+
+- Unordered list item 3
+
+  ```text
+  a codeblock that will next inside list item 3
+  ```
+
+- Unordered list item 4
+
+  ![an image that will nest inside list item 4](image.png)
+~~~
+
+For ordered lists, use three spaces for each level of indentation:
+
+~~~md
+1. Ordered list item 1
+
+   A line nested using 3 spaces to align with the `O` above.
+
+1. Ordered list item 2
+
+   > A quote block that will nest
+   > inside list item 2.
+
+1. Ordered list item 3
+
+   ```text
+   a codeblock that will next inside list item 3
+   ```
+
+1. Ordered list item 4
+
+   ![an image that will nest inside list item 4](image.png)
+~~~
+
+You can nest full lists inside other lists using the same rules as above. If you wish
+to mix types, that is also possible, as long as you don't mix items at the same level:
+
+```
+1. Ordered list item one.
+1. Ordered list item two.
+   - Nested unordered list item one.
+   - Nested unordered list item two.
+1. Ordered list item three.
+
+- Unordered list item one.
+- Unordered list item two.
+  1. Nested ordered list item one.
+  1. Nested ordered list item two.
+- Unordered list item three.
+```
 
 ## Quotes
 
