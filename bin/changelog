@@ -23,7 +23,7 @@ module ChangelogHelpers
   Abort = Class.new(StandardError)
   Done = Class.new(StandardError)
 
-  MAX_FILENAME_LENGTH = 140 # ecryptfs has a limit of 140 characters
+  MAX_FILENAME_LENGTH = 99 # GNU tar has a 99 character limit
 
   def capture_stdout(cmd)
     output = IO.popen(cmd, &:read)
