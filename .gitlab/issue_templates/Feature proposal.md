@@ -26,7 +26,7 @@ Add all known Documentation Requirements here, per https://docs.gitlab.com/ee/de
 
 ### Testing
 
-<!-- What risks does this change pose? How might it affect the quality of the product? What additional test coverage or changes to tests will be needed? Will it require cross-browser testing? See the test engineering process for further guidelines: https://about.gitlab.com/handbook/engineering/quality/guidelines/test-engineering/ -->
+<!-- What risks does this change pose? How might it affect the quality of the product? What additional test coverage or changes to tests will be needed? Will it require cross-browser testing? See the test engineering process for further help: https://about.gitlab.com/handbook/engineering/quality/test-engineering/ -->
 
 ### What does success look like, and how can we measure that?
 
