@@ -85,8 +85,20 @@ describe PostReceive do
         end
       end
 
-      context 'tags' do
-        let(:changes) { '123456 789012 refs/tags/tag' }
+      context "tags" do
+        let(:changes) do
+          <<~EOF
+            654321 210987 refs/tags/tag1
+            654322 210986 refs/tags/tag2
+            654323 210985 refs/tags/tag3
+            654324 210984 refs/tags/tag4
+            654325 210983 refs/tags/tag5
+          EOF
+        end
+
+        before do
+          expect(Gitlab::GlRepository).to receive(:parse).and_return([project, Gitlab::GlRepository::PROJECT])
+        end
 
         it 'does not expire branches cache' do
           expect(project.repository).not_to receive(:expire_branches_cache)
@@ -94,8 +106,18 @@ describe PostReceive do
           described_class.new.perform(gl_repository, key_id, base64_changes)
         end
 
-        it 'calls Git::TagPushService' do
-          expect_next_instance_of(Git::TagPushService) do |service|
+        it "only invalidates tags once" do
+          expect(project.repository).to receive(:repository_event).exactly(5).times.with(:push_tag).and_call_original
+          expect(project.repository).to receive(:expire_caches_for_tags).once.and_call_original
+          expect(project.repository).to receive(:expire_tags_cache).once.and_call_original
+
+          described_class.new.perform(gl_repository, key_id, base64_changes)
+        end
+
+        it "calls Git::TagPushService" do
+          expect(Git::BranchPushService).not_to receive(:new)
+
+          expect_any_instance_of(Git::TagPushService) do |service|
             expect(service).to receive(:execute).and_return(true)
           end
 
