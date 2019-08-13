@@ -21,7 +21,7 @@ GET /projects/:id/releases/:tag_name/assets/links
 Example request:
 
 ```sh
-curl --header "PRIVATE-TOKEN: gDybLx3yrUK_HLp3qPjS" "http://localhost:3000/api/v4/projects/24/releases/v0.1/assets/links"
+curl --header "PRIVATE-TOKEN: gDybLx3yrUK_HLp3qPjS" "https://gitlab.example.com/api/v4/projects/24/releases/v0.1/assets/links"
 ```
 
 Example response:
@@ -60,7 +60,7 @@ GET /projects/:id/releases/:tag_name/assets/links/:link_id
 Example request:
 
 ```sh
-curl --header "PRIVATE-TOKEN: gDybLx3yrUK_HLp3qPjS" "http://localhost:3000/api/v4/projects/24/releases/v0.1/assets/links/1"
+curl --header "PRIVATE-TOKEN: gDybLx3yrUK_HLp3qPjS" "https://gitlab.example.com/api/v4/projects/24/releases/v0.1/assets/links/1"
 ```
 
 Example response:
@@ -96,7 +96,7 @@ curl --request POST \
      --header "PRIVATE-TOKEN: gDybLx3yrUK_HLp3qPjS" \
      --data name="awesome-v0.2.dmg" \
      --data url="http://192.168.10.15:3000" \
-     "http://localhost:3000/api/v4/projects/24/releases/v0.1/assets/links"
+     "https://gitlab.example.com/api/v4/projects/24/releases/v0.1/assets/links"
 ```
 
 Example response:
@@ -132,7 +132,7 @@ You have to specify at least one of `name` or `url`
 Example request:
 
 ```sh
-curl --request PUT --data name="new name" --header "PRIVATE-TOKEN: gDybLx3yrUK_HLp3qPjS" "http://localhost:3000/api/v4/projects/24/releases/v0.1/assets/links/1"
+curl --request PUT --data name="new name" --header "PRIVATE-TOKEN: gDybLx3yrUK_HLp3qPjS" "https://gitlab.example.com/api/v4/projects/24/releases/v0.1/assets/links/1"
 ```
 
 Example response:
@@ -163,7 +163,7 @@ DELETE /projects/:id/releases/:tag_name/assets/links/:link_id
 Example request:
 
 ```sh
-curl --request DELETE --header "PRIVATE-TOKEN: gDybLx3yrUK_HLp3qPjS" "http://localhost:3000/api/v4/projects/24/releases/v0.1/assets/links/1"
+curl --request DELETE --header "PRIVATE-TOKEN: gDybLx3yrUK_HLp3qPjS" "https://gitlab.example.com/api/v4/projects/24/releases/v0.1/assets/links/1"
 ```
 
 Example response:
