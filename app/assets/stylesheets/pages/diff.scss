@@ -1032,7 +1032,6 @@ table.code {
   $top-pos: $header-height + $mr-tabs-height + $mr-version-controls-height + 10px;
   top: $header-height + $mr-tabs-height + $mr-version-controls-height + 10px;
   max-height: calc(100vh - #{$top-pos});
-  padding-right: $gl-padding;
   z-index: 202;
 
   .with-performance-bar & {
@@ -1043,7 +1042,7 @@ table.code {
 
   .drag-handle {
     bottom: 16px;
-    transform: translateX(-6px);
+    transform: translateX(10px);
   }
 }
 

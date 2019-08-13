@@ -305,7 +305,7 @@ export default {
         <div
           v-show="showTreeList"
           :style="{ width: `${treeWidth}px` }"
-          class="diff-tree-list js-diff-tree-list"
+          class="diff-tree-list js-diff-tree-list mr-3"
         >
           <panel-resizer
             :size.sync="treeWidth"
