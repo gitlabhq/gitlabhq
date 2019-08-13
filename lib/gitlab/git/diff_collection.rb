@@ -81,6 +81,12 @@ module Gitlab
         end
       end
 
+      def line_count
+        populate!
+
+        @line_count
+      end
+
       def decorate!
         collection = each_with_index do |element, i|
           @array[i] = yield(element)

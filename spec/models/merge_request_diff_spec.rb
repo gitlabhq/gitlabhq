@@ -400,6 +400,18 @@ describe MergeRequestDiff do
     end
   end
 
+  describe '#first_commit' do
+    it 'returns first commit' do
+      expect(diff_with_commits.first_commit.sha).to eq(diff_with_commits.merge_request_diff_commits.last.sha)
+    end
+  end
+
+  describe '#last_commit' do
+    it 'returns last commit' do
+      expect(diff_with_commits.last_commit.sha).to eq(diff_with_commits.merge_request_diff_commits.first.sha)
+    end
+  end
+
   describe '#commits_by_shas' do
     let(:commit_shas) { diff_with_commits.commit_shas }
 
@@ -489,7 +501,7 @@ describe MergeRequestDiff do
     subject { diff_with_commits }
 
     it 'returns sum of all changed lines count in diff files' do
-      expect(subject.lines_count).to eq 109
+      expect(subject.lines_count).to eq 189
     end
   end
 end
