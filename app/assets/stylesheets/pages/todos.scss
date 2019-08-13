@@ -4,7 +4,7 @@
  */
 
 .todos-list > .todo {
-  // workaround because we cannot use border-colapse
+  // workaround because we cannot use border-collapse
   border-top: 1px solid transparent;
   display: flex;
   flex-direction: row;
