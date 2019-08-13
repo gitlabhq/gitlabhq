@@ -68,7 +68,7 @@ module ChatMessage
         title_link: pipeline_url,
         fields: attachments_fields,
         footer: project.name,
-        footer_icon: project.avatar_url,
+        footer_icon: project.avatar_url(only_path: false),
         ts: finished_at
       }]
     end

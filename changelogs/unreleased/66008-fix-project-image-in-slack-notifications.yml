@@ -1,0 +1,5 @@
+---
+title: Fix project avatar image in Slack pipeline notifications
+merge_request: 31788
+author:
+type: fixed
