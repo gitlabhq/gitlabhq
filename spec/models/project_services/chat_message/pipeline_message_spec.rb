@@ -42,9 +42,9 @@ describe ChatMessage::PipelineMessage do
 
   before do
     test_commit = double("A test commit", committer: args[:user], title: "A test commit message")
-    test_project = double("A test project",
-                          commit_by: test_commit, name: args[:project][:name],
-                          web_url: args[:project][:web_url], avatar_url: args[:project][:avatar_url])
+    test_project = double("A test project", commit_by: test_commit, name: args[:project][:name], web_url: args[:project][:web_url])
+    allow(test_project).to receive(:avatar_url).with(no_args).and_return("/avatar")
+    allow(test_project).to receive(:avatar_url).with(only_path: false).and_return(args[:project][:avatar_url])
     allow(Project).to receive(:find) { test_project }
 
     test_pipeline = double("A test pipeline", has_yaml_errors?: has_yaml_errors,
