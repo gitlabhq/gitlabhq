@@ -13,7 +13,11 @@ shared_examples 'clusterable policies' do
         clusterable.add_developer(current_user)
       end
 
+      it { expect_disallowed(:read_cluster) }
       it { expect_disallowed(:add_cluster) }
+      it { expect_disallowed(:create_cluster) }
+      it { expect_disallowed(:update_cluster) }
+      it { expect_disallowed(:admin_cluster) }
     end
 
     context 'with a maintainer' do
@@ -22,7 +26,11 @@ shared_examples 'clusterable policies' do
       end
 
       context 'with no clusters' do
+        it { expect_allowed(:read_cluster) }
         it { expect_allowed(:add_cluster) }
+        it { expect_allowed(:create_cluster) }
+        it { expect_allowed(:update_cluster) }
+        it { expect_allowed(:admin_cluster) }
       end
     end
   end

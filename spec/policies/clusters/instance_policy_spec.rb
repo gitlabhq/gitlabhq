@@ -9,6 +9,8 @@ describe Clusters::InstancePolicy do
   describe 'rules' do
     context 'when user' do
       it { expect(policy).to be_disallowed :read_cluster }
+      it { expect(policy).to be_disallowed :add_cluster }
+      it { expect(policy).to be_disallowed :create_cluster }
       it { expect(policy).to be_disallowed :update_cluster }
       it { expect(policy).to be_disallowed :admin_cluster }
     end
@@ -17,6 +19,8 @@ describe Clusters::InstancePolicy do
       let(:user) { create(:admin) }
 
       it { expect(policy).to be_allowed :read_cluster }
+      it { expect(policy).to be_allowed :add_cluster }
+      it { expect(policy).to be_allowed :create_cluster }
       it { expect(policy).to be_allowed :update_cluster }
       it { expect(policy).to be_allowed :admin_cluster }
     end
