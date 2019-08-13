@@ -143,6 +143,37 @@ If the guidelines are not met, the MR will not pass the
 [Danger checks](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/danger/commit_messages/Dangerfile).
 For more information see [How to Write a Git Commit Message](https://chris.beams.io/posts/git-commit/).
 
+Example commit message template that can be used on your machine that embodies the above (guide for [how to apply template](https://codeinthehole.com/tips/a-useful-template-for-commit-messages/)):
+
+```text
+# (If applied, this commit will...) <subject> (Max 50 char)
+# |<----  Using a Maximum Of 50 Characters  ---->|
+
+
+# Explain why this change is being made
+# |<----   Try To Limit Each Line to a Maximum Of 72 Characters   ---->|
+
+# Provide links or keys to any relevant tickets, articles or other resources
+# Use issues and merge requests' full URLs instead of short references,
+# as they are displayed as plain text outside of GitLab
+
+# --- COMMIT END ---
+# --------------------
+# Remember to
+#    Capitalize the subject line
+#    Use the imperative mood in the subject line
+#    Do not end the subject line with a period
+#    Subject must contain at least 3 words
+#    Separate subject from body with a blank line
+#    Commits that change 30 or more lines across at least 3 files must
+#    describe these changes in the commit body
+#    Do not use Emojis
+#    Use the body to explain what and why vs. how
+#    Can use multiple lines with "-" for bullet points in body
+#    For more information: https://chris.beams.io/posts/git-commit/
+# --------------------
+```
+
 ## Contribution acceptance criteria
 
 To make sure that your merge request can be approved, please ensure that it meets
