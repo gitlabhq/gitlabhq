@@ -384,7 +384,7 @@ module Ci
       return unless has_environment?
 
       strong_memoize(:expanded_environment_name) do
-        ExpandVariables.expand(environment, simple_variables)
+        ExpandVariables.expand(environment, -> { simple_variables })
       end
     end
 
