@@ -190,3 +190,8 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 - [Troubleshooting ElasticSearch](troubleshooting/elasticsearch.md): Tips to troubleshoot ElasticSearch.
 - [Kubernetes troubleshooting](troubleshooting/kubernetes_cheat_sheet.md): Commands and tips useful
   for troubleshooting Kubernetes-related issues.
+- Useful links from the Support Team:
+  - [GitLab Developer Docs](https://docs.gitlab.com/ee/development/README.html).
+  - [Repairing and recovering broken git repositories](https://git.seveas.net/repairing-and-recovering-broken-git-repositories.html).
+  - [Testing with OpenSSL](https://www.feistyduck.com/library/openssl-cookbook/online/ch-testing-with-openssl.html).
+  - [Strace zine](https://wizardzines.com/zines/strace/).
