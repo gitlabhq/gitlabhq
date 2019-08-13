@@ -1,6 +1,8 @@
-# Event Tracking
+# Event tracking
 
-We use a tracking interface that wraps up [Snowplow](https://github.com/snowplow/snowplow) for tracking custom events. Snowplow implements page tracking, but also exposes custom event tracking.
+GitLab provides `Tracking`, an interface that wraps
+[Snowplow](https://github.com/snowplow/snowplow) for tracking custom events.
+It uses Snowplow's custom event tracking functions.
 
 The tracking interface can be imported in JS files as follows:
 
