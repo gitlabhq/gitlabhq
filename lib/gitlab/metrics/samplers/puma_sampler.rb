@@ -15,7 +15,6 @@ module Gitlab
             puma_workers:            ::Gitlab::Metrics.gauge(:puma_workers, 'Total number of workers'),
             puma_running_workers:    ::Gitlab::Metrics.gauge(:puma_running_workers, 'Number of active workers'),
             puma_stale_workers:      ::Gitlab::Metrics.gauge(:puma_stale_workers, 'Number of stale workers'),
-            puma_phase:              ::Gitlab::Metrics.gauge(:puma_phase, 'Phase number (increased during phased restarts)'),
             puma_running:            ::Gitlab::Metrics.gauge(:puma_running, 'Number of running threads'),
             puma_queued_connections: ::Gitlab::Metrics.gauge(:puma_queued_connections, 'Number of connections in that worker\'s "todo" set waiting for a worker thread'),
             puma_active_connections: ::Gitlab::Metrics.gauge(:puma_active_connections, 'Number of threads processing a request'),
@@ -54,7 +53,6 @@ module Gitlab
             last_status = worker['last_status']
             labels = { worker: "worker_#{worker['index']}" }
 
-            metrics[:puma_phase].set(labels, worker['phase'])
             set_worker_metrics(last_status, labels) if last_status.present?
           end
         end
@@ -76,7 +74,6 @@ module Gitlab
           metrics[:puma_workers].set(labels, stats['workers'])
           metrics[:puma_running_workers].set(labels, stats['booted_workers'])
           metrics[:puma_stale_workers].set(labels, stats['old_workers'])
-          metrics[:puma_phase].set(labels, stats['phase'])
         end
 
         def set_worker_metrics(stats, labels = {})

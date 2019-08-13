@@ -120,7 +120,6 @@ When Puma is used instead of Unicorn, following metrics are available:
 | puma_workers                                 | Gauge   | 12.0  | Total number of workers |
 | puma_running_workers                         | Gauge   | 12.0  | Number of booted workers |
 | puma_stale_workers                           | Gauge   | 12.0  | Number of old workers |
-| puma_phase                                   | Gauge   | 12.0  | Phase number (increased during phased restarts) |
 | puma_running                                 | Gauge   | 12.0  | Number of running threads |
 | puma_queued_connections                      | Gauge   | 12.0  | Number of connections in that worker's "todo" set waiting for a worker thread |
 | puma_active_connections                      | Gauge   | 12.0  | Number of threads processing a request |

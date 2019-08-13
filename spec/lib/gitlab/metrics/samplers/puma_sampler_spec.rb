@@ -46,8 +46,6 @@ describe Gitlab::Metrics::Samplers::PumaSampler do
         expect(subject.metrics[:puma_workers]).to receive(:set).with(labels, 2)
         expect(subject.metrics[:puma_running_workers]).to receive(:set).with(labels, 2)
         expect(subject.metrics[:puma_stale_workers]).to receive(:set).with(labels, 0)
-        expect(subject.metrics[:puma_phase]).to receive(:set).once.with(labels, 2)
-        expect(subject.metrics[:puma_phase]).to receive(:set).once.with({ worker: 'worker_0' }, 1)
 
         subject.sample
       end
