@@ -57,13 +57,25 @@ describe PostReceive do
     context 'with changes' do
       before do
         allow_any_instance_of(Gitlab::GitPostReceive).to receive(:identify).and_return(project.owner)
+        allow(Gitlab::GlRepository).to receive(:parse).and_return([project, Gitlab::GlRepository::PROJECT])
       end
 
       context "branches" do
-        let(:changes) { "123456 789012 refs/heads/tést" }
+        let(:changes) do
+          <<~EOF
+            '123456 789012 refs/heads/tést1'
+            '123456 789012 refs/heads/tést2'
+          EOF
+        end
 
-        it "calls Git::BranchPushService" do
-          expect_next_instance_of(Git::BranchPushService) do |service|
+        it 'expires the branches cache' do
+          expect(project.repository).to receive(:expire_branches_cache).once
+
+          described_class.new.perform(gl_repository, key_id, base64_changes)
+        end
+
+        it 'calls Git::BranchPushService' do
+          expect_any_instance_of(Git::BranchPushService) do |service|
             expect(service).to receive(:execute).and_return(true)
           end
 
@@ -73,15 +85,21 @@ describe PostReceive do
         end
       end
 
-      context "tags" do
-        let(:changes) { "123456 789012 refs/tags/tag" }
+      context 'tags' do
+        let(:changes) { '123456 789012 refs/tags/tag' }
 
-        it "calls Git::TagPushService" do
-          expect(Git::BranchPushService).not_to receive(:execute)
+        it 'does not expire branches cache' do
+          expect(project.repository).not_to receive(:expire_branches_cache)
 
+          described_class.new.perform(gl_repository, key_id, base64_changes)
+        end
+
+        it 'calls Git::TagPushService' do
           expect_next_instance_of(Git::TagPushService) do |service|
             expect(service).to receive(:execute).and_return(true)
           end
+
+          expect(Git::BranchPushService).not_to receive(:new)
 
           described_class.new.perform(gl_repository, key_id, base64_changes)
         end
