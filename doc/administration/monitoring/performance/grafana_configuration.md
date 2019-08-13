@@ -118,6 +118,36 @@ If you have set up Grafana, you can enable a link to access it easily from the s
 1. Click **Save changes**.
 1. The new link will be available in the admin area under **Monitoring > Metrics Dashboard**.
 
+## Security Update
+
+Users running GitLab version 12.0 or later should immediately upgrade to one of the following security releases due to a known vulnerability with the embedded Grafana dashboard:
+
+- 12.0.6
+- 12.1.6
+
+After upgrading, the Grafana dashboard will be disabled and the location of your existing Grafana data will be changed from `/var/opt/gitlab/grafana/data/` to `/var/opt/gitlab/grafana/data.bak.#{Date.today}/`.
+
+To prevent the data from being relocated, you can run the following command prior to upgrading:
+
+```sh
+echo "0" > /var/opt/gitlab/grafana/CVE_reset_status
+```
+
+To reinstate your old data, move it back into its original location:
+
+```
+sudo mv /var/opt/gitlab/grafana/data.bak.xxxx/ /var/opt/gitlab/grafana/data/
+```
+
+However, you should **not** reinstate your old data _except_ under one of the following conditions:
+
+1. If you are certain that you changed your default admin password when you enabled Grafana
+1. If you run GitLab in a private network, accessed only by trusted users, and your Grafana login page has not been exposed to the internet
+
+If you require access to your old Grafana data but do not meet one of these criteria, you may consider reinstating it temporarily, [exporting the dashboards](https://grafana.com/docs/reference/export_import/#exporting-a-dashboard) you need, then refreshing the data and [re-importing your dashboards](https://grafana.com/docs/reference/export_import/#importing-a-dashboard). Note that this poses a temporary vulnerability while your old Grafana data is in use, and the decision to do so should be weighed carefully with your need to access existing data and dashboards.
+
+For more information and further mitigation details, please refer to our [blog post on the security release](https://about.gitlab.com/2019/08/12/critical-security-release-gitlab-12-dot-1-dot-6-released/).
+
 ---
 
 Read more on:
