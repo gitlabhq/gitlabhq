@@ -221,6 +221,52 @@ The following table describes details of your subscription for groups:
 | Subscription start date | Date your subscription started. If this is for a Free plan, is the date you transitioned off your group's paid plan. |
 | Subscription end date | Date your current subscription will end. Does not apply to Free plans. |
 
+#### Extra Shared Runners pipeline minutes
+
+If you're using GitLab.com, you can purchase additional CI minutes so your
+pipelines will not be blocked after you have used all your CI minutes from your
+main quota. Additional minutes:
+
+- Are only used once the shared quota included in your subscription runs out.
+- Roll over month to month.
+
+In order to purchase additional minutes, you should follow these steps:
+
+1. Go to **Group > Settings > Pipelines quota**. Once you are on that page, click on **Buy additional minutes**.
+
+   ![Buy additional minutes](img/buy_btn.png)
+
+1. Locate the subscription card that is linked to your group on GitLab.com,
+   click on **Buy more CI minutes**, and complete the details about the transaction.
+
+   ![Buy additional minutes](img/buy_minutes_card.png)
+
+1. Once we have processed your payment, the extra CI minutes
+   will be synced to your Group and you can visualize it from the
+   **Group > Settings > Pipelines quota** page:
+
+   ![Additional minutes](img/additional_minutes.png)
+
+Be aware that:
+
+1. If you have purchased extra CI minutes before the purchase of a paid plan,
+   we will calculate a pro-rated charge for your paid plan. That means you may
+   be charged for less than one year since your subscription was previously
+   created with the extra CI minutes.
+1. Once the extra CI minutes has been assigned to a Group they cannot be transferred
+   to a different Group.
+1. If you have some minutes used over your default quota, these minutes will
+   be deducted from your Additional Minutes quota immediately after your purchase of additional
+   minutes.
+
+##### What happens when my CI minutes run out
+
+When the CI minutes run out, an email is sent automatically to notify the owner(s)
+of the group/namespace, including a link to [purchase more minutes](https://customers.gitlab.com/plans).
+
+If you are not the owner of the group, you will need to contact them to let them know they need to
+[purchase more minutes](https://customers.gitlab.com/plans).
+
 ## Subscription changes and your data
 
 When your subscription or trial expires, GitLab does not delete your data.
