@@ -60,7 +60,7 @@ describe Projects::RawController do
         execute_raw_requests(requests: 6, project: project, file_path: file_path)
 
         expect(flash[:alert]).to eq('You cannot access the raw file. Please wait a minute.')
-        expect(response).to redirect_to(project_blob_path(project, file_path))
+        expect(response).to have_gitlab_http_status(429)
       end
 
       it 'logs the event on auth.log' do
@@ -92,7 +92,7 @@ describe Projects::RawController do
           execute_raw_requests(requests: 3, project: project, file_path: modified_path)
 
           expect(flash[:alert]).to eq('You cannot access the raw file. Please wait a minute.')
-          expect(response).to redirect_to(project_blob_path(project, modified_path))
+          expect(response).to have_gitlab_http_status(429)
         end
       end
 
@@ -120,7 +120,7 @@ describe Projects::RawController do
           execute_raw_requests(requests: 6, project: project, file_path: file_path)
 
           expect(flash[:alert]).to eq('You cannot access the raw file. Please wait a minute.')
-          expect(response).to redirect_to(project_blob_path(project, file_path))
+          expect(response).to have_gitlab_http_status(429)
 
           # Accessing upcase version of readme
           file_path = "#{commit_sha}/README.md"
