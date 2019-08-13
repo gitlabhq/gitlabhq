@@ -1113,7 +1113,7 @@ describe Ci::CreatePipelineService do
           test_a: {
             stage: "test",
             script: "ls",
-            only: %w[master feature tags],
+            only: %w[master feature],
             needs: %w[build_a]
           },
           deploy: {
@@ -1143,6 +1143,7 @@ describe Ci::CreatePipelineService do
         it 'does not create a pipeline as test_a depends on build_a' do
           expect(pipeline).not_to be_persisted
           expect(pipeline.builds).to be_empty
+          expect(pipeline.errors[:base]).to contain_exactly("test_a: needs 'build_a'")
         end
       end
 

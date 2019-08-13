@@ -396,7 +396,14 @@ describe Gitlab::Ci::Pipeline::Seed::Build do
     end
 
     context 'when build job is not present in prior stages' do
-      it { is_expected.not_to be_included }
+      it "is included" do
+        is_expected.to be_included
+      end
+
+      it "returns an error" do
+        expect(subject.errors).to contain_exactly(
+          "rspec: needs 'build'")
+      end
     end
 
     context 'when build job is part of prior stages' do
@@ -414,7 +421,13 @@ describe Gitlab::Ci::Pipeline::Seed::Build do
 
       let(:previous_stages) { [stage_seed] }
 
-      it { is_expected.to be_included }
+      it "is included" do
+        is_expected.to be_included
+      end
+
+      it "does not have errors" do
+        expect(subject.errors).to be_empty
+      end
     end
   end
 end
