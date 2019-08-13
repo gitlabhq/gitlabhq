@@ -53,7 +53,7 @@ module Notes
         # We must add the error after we call #save because errors are reset
         # when #save is called
         if only_commands
-          note.errors.add(:commands_only, message.presence || _('Commands did not apply'))
+          note.errors.add(:commands_only, message.presence || _('Failed to apply commands.'))
         end
       end
 

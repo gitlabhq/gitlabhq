@@ -57,19 +57,18 @@ module Gitlab
           labels = find_labels(target_list_name)
           label_ids = labels.map(&:id)
 
-          if label_ids.size == 1
+          if label_ids.size > 1
+            message = _('Failed to move this issue because only a single label can be provided.')
+          elsif !Label.on_project_board?(quick_action_target.project_id, label_ids.first)
+            message = _('Failed to move this issue because label was not found.')
+          else
             label_id = label_ids.first
-
-            # Ensure this label corresponds to a list on the board
-            next unless Label.on_project_board?(quick_action_target.project_id, label_id)
 
             @updates[:remove_label_ids] =
               quick_action_target.labels.on_project_boards(quick_action_target.project_id).where.not(id: label_id).pluck(:id) # rubocop: disable CodeReuse/ActiveRecord
             @updates[:add_label_ids] = [label_id]
 
             message = _("Moved issue to %{label} column in the board.") % { label: labels_to_reference(labels).first }
-          else
-            message = _('Move this issue failed because you need to specify only one label.')
           end
 
           @execution_message[:board_move] = message
@@ -93,7 +92,7 @@ module Gitlab
 
             message = _("Marked this issue as a duplicate of %{duplicate_param}.") % { duplicate_param: duplicate_param }
           else
-            message = _('Mark as duplicate failed because referenced issue was not found')
+            message = _('Failed to mark this issue as a duplicate because referenced issue was not found.')
           end
 
           @execution_message[:duplicate] = message
@@ -117,18 +116,18 @@ module Gitlab
 
             message = _("Moved this issue to %{path_to_project}.") % { path_to_project: target_project_path }
           else
-            message = _("Move this issue failed because target project doesn't exists")
+            message = _("Failed to move this issue because target project doesn't exist.")
           end
 
           @execution_message[:move] = message
         end
 
-        desc _('Make issue confidential.')
+        desc _('Make issue confidential')
         explanation do
-          _('Makes this issue confidential')
+          _('Makes this issue confidential.')
         end
         execution_message do
-          _('Made this issue confidential')
+          _('Made this issue confidential.')
         end
         types Issue
         condition do
@@ -138,19 +137,19 @@ module Gitlab
           @updates[:confidential] = true
         end
 
-        desc _('Create a merge request.')
+        desc _('Create a merge request')
         explanation do |branch_name = nil|
           if branch_name
-            _("Creates branch '%{branch_name}' and a merge request to resolve this issue") % { branch_name: branch_name }
+            _("Creates branch '%{branch_name}' and a merge request to resolve this issue.") % { branch_name: branch_name }
           else
-            _('Creates a branch and a merge request to resolve this issue')
+            _('Creates a branch and a merge request to resolve this issue.')
           end
         end
         execution_message do |branch_name = nil|
           if branch_name
-            _("Created branch '%{branch_name}' and a merge request to resolve this issue") % { branch_name: branch_name }
+            _("Created branch '%{branch_name}' and a merge request to resolve this issue.") % { branch_name: branch_name }
           else
-            _('Created a branch and a merge request to resolve this issue')
+            _('Created a branch and a merge request to resolve this issue.')
           end
         end
         params "<branch name>"

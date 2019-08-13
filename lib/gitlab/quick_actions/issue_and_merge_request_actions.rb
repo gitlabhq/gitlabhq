@@ -24,7 +24,7 @@ module Gitlab
         end
         command :assign do |users|
           if users.empty?
-            @execution_message[:assign] = _("Assign command failed because no user was found")
+            @execution_message[:assign] = _("Failed to assign a user because no user was found.")
             next
           end
 
@@ -211,8 +211,8 @@ module Gitlab
         end
 
         desc _("Lock the discussion")
-        explanation _("Locks the discussion")
-        execution_message _("Locked the discussion")
+        explanation _("Locks the discussion.")
+        execution_message _("Locked the discussion.")
         types Issue, MergeRequest
         condition do
           quick_action_target.persisted? &&
@@ -224,8 +224,8 @@ module Gitlab
         end
 
         desc _("Unlock the discussion")
-        explanation _("Unlocks the discussion")
-        execution_message _("Unlocked the discussion")
+        explanation _("Unlocks the discussion.")
+        execution_message _("Unlocked the discussion.")
         types Issue, MergeRequest
         condition do
           quick_action_target.persisted? &&
