@@ -4,9 +4,9 @@ class RegistrationsController < Devise::RegistrationsController
   include Recaptcha::Verify
   include AcceptsPendingInvitations
   include RecaptchaExperimentHelper
+  include InvisibleCaptcha
 
   prepend_before_action :check_captcha, only: :create
-  invisible_captcha only: :create, on_timestamp_spam: :on_timestamp_spam_callback
   before_action :whitelist_query_limiting, only: [:destroy]
   before_action :ensure_terms_accepted,
     if: -> { action_name == 'create' && Gitlab::CurrentSettings.current_application_settings.enforce_terms? }
@@ -134,11 +134,5 @@ class RegistrationsController < Devise::RegistrationsController
 
   def terms_accepted?
     Gitlab::Utils.to_boolean(params[:terms_opt_in])
-  end
-
-  def on_timestamp_spam_callback
-    return unless Feature.enabled?(:invisible_captcha)
-
-    redirect_to new_user_session_path, alert: InvisibleCaptcha.timestamp_error_message
   end
 end

@@ -102,6 +102,15 @@ describe RegistrationsController do
       let(:session_params) { { invisible_captcha_timestamp: form_rendered_time.iso8601 } }
       let(:form_rendered_time) { Time.current }
       let(:submit_time) { form_rendered_time + treshold }
+      let(:auth_log_attributes) do
+        {
+          message: auth_log_message,
+          env: :invisible_captcha_signup_bot_detected,
+          ip: '0.0.0.0',
+          request_method: 'POST',
+          fullpath: '/users'
+        }
+      end
 
       describe 'the honeypot has not been filled and the signup form has not been submitted too quickly' do
         it 'creates an account' do
@@ -111,11 +120,16 @@ describe RegistrationsController do
         end
       end
 
-      describe 'the honeypot has been filled' do
+      describe 'honeypot spam detection' do
         let(:user_params) { super().merge(firstname: 'Roy', lastname: 'Batty') }
+        let(:auth_log_message) { 'Invisible_Captcha_Honeypot_Request' }
 
-        it 'refuses to create an account and renders an empty body' do
+        it 'logs the request, refuses to create an account and renders an empty body' do
           travel_to(submit_time) do
+            expect(Gitlab::Metrics).to receive(:counter)
+              .with(:bot_blocked_by_invisible_captcha_honeypot, 'Counter of blocked sign up attempts with filled honeypot')
+              .and_call_original
+            expect(Gitlab::AuthLogger).to receive(:error).with(auth_log_attributes).once
             expect { post(:create, params: user_params, session: session_params) }.not_to change(User, :count)
             expect(response).to have_gitlab_http_status(200)
             expect(response.body).to be_empty
@@ -123,26 +137,38 @@ describe RegistrationsController do
         end
       end
 
-      context 'the sign up form has been submitted without the invisible_captcha_timestamp parameter' do
-        let(:session_params) { nil }
+      describe 'timestamp spam detection' do
+        let(:auth_log_message) { 'Invisible_Captcha_Timestamp_Request' }
 
-        it 'refuses to create an account and displays a flash alert' do
-          travel_to(submit_time) do
-            expect { post(:create, params: user_params, session: session_params) }.not_to change(User, :count)
-            expect(response).to redirect_to(new_user_session_path)
-            expect(flash[:alert]).to include 'That was a bit too quick! Please resubmit.'
+        context 'the sign up form has been submitted without the invisible_captcha_timestamp parameter' do
+          let(:session_params) { nil }
+
+          it 'logs the request, refuses to create an account and displays a flash alert' do
+            travel_to(submit_time) do
+              expect(Gitlab::Metrics).to receive(:counter)
+                .with(:bot_blocked_by_invisible_captcha_timestamp, 'Counter of blocked sign up attempts with invalid timestamp')
+                .and_call_original
+              expect(Gitlab::AuthLogger).to receive(:error).with(auth_log_attributes).once
+              expect { post(:create, params: user_params, session: session_params) }.not_to change(User, :count)
+              expect(response).to redirect_to(new_user_session_path)
+              expect(flash[:alert]).to include 'That was a bit too quick! Please resubmit.'
+            end
           end
         end
-      end
 
-      context 'the sign up form has been submitted too quickly' do
-        let(:submit_time) { form_rendered_time }
+        context 'the sign up form has been submitted too quickly' do
+          let(:submit_time) { form_rendered_time }
 
-        it 'refuses to create an account and displays a flash alert' do
-          travel_to(submit_time) do
-            expect { post(:create, params: user_params, session: session_params) }.not_to change(User, :count)
-            expect(response).to redirect_to(new_user_session_path)
-            expect(flash[:alert]).to include 'That was a bit too quick! Please resubmit.'
+          it 'logs the request, refuses to create an account and displays a flash alert' do
+            travel_to(submit_time) do
+              expect(Gitlab::Metrics).to receive(:counter)
+                .with(:bot_blocked_by_invisible_captcha_timestamp, 'Counter of blocked sign up attempts with invalid timestamp')
+                .and_call_original
+              expect(Gitlab::AuthLogger).to receive(:error).with(auth_log_attributes).once
+              expect { post(:create, params: user_params, session: session_params) }.not_to change(User, :count)
+              expect(response).to redirect_to(new_user_session_path)
+              expect(flash[:alert]).to include 'That was a bit too quick! Please resubmit.'
+            end
           end
         end
       end
