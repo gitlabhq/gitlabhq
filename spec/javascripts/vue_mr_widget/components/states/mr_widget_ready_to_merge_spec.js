@@ -236,24 +236,26 @@ describe('ReadyToMerge', () => {
       });
     });
 
-    describe('shouldShowMergeOptionsDropdown', () => {
-      it('should return false when no auto merge strategies are available', () => {
-        Vue.set(vm.mr, 'availableAutoMergeStrategies', []);
+    describe('shouldShowMergeImmediatelyDropdown', () => {
+      it('should return false if no pipeline is active', () => {
+        Vue.set(vm.mr, 'isPipelineActive', false);
+        Vue.set(vm.mr, 'onlyAllowMergeIfPipelineSucceeds', false);
 
-        expect(vm.shouldShowMergeOptionsDropdown).toBe(false);
+        expect(vm.shouldShowMergeImmediatelyDropdown).toBe(false);
       });
 
-      it('should return true when at least one auto merge strategy is available', () => {
-        Vue.set(vm.mr, 'availableAutoMergeStrategies', [ATMTWPS_MERGE_STRATEGY]);
-
-        expect(vm.shouldShowMergeOptionsDropdown).toBe(true);
-      });
-
-      it('should return false when pipeline active but only merge when pipeline succeeds set in project options', () => {
-        Vue.set(vm.mr, 'availableAutoMergeStrategies', [ATMTWPS_MERGE_STRATEGY]);
+      it('should return false if "Pipelines must succeed" is enabled for the current project', () => {
+        Vue.set(vm.mr, 'isPipelineActive', true);
         Vue.set(vm.mr, 'onlyAllowMergeIfPipelineSucceeds', true);
 
-        expect(vm.shouldShowMergeOptionsDropdown).toBe(false);
+        expect(vm.shouldShowMergeImmediatelyDropdown).toBe(false);
+      });
+
+      it('should return true if the MR\'s pipeline is active and "Pipelines must succeed" is not enabled for the current project', () => {
+        Vue.set(vm.mr, 'isPipelineActive', true);
+        Vue.set(vm.mr, 'onlyAllowMergeIfPipelineSucceeds', false);
+
+        expect(vm.shouldShowMergeImmediatelyDropdown).toBe(true);
       });
     });
 

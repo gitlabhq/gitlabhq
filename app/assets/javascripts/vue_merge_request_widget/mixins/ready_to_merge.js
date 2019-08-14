@@ -15,5 +15,8 @@ export default {
       // MWPS is currently the only auto merge strategy available in CE
       return __('Merge when pipeline succeeds');
     },
+    shouldShowMergeImmediatelyDropdown() {
+      return this.mr.isPipelineActive && !this.mr.onlyAllowMergeIfPipelineSucceeds;
+    },
   },
 };
