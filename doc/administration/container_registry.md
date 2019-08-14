@@ -669,6 +669,39 @@ To get around this, you can [change the group path](../user/group/index.md#chang
 branch name. Another option is to create a [push rule](../push_rules/push_rules.html) to prevent
 this at the instance level.
 
+### Image push errors
+
+When getting errors or "retrying" loops in an attempt to push an image but `docker login` works fine,
+there is likely an issue with the headers forwarded to the registry by NGINX. The default recommended
+NGINX configurations should handle this, but it might occur in custom setups where the SSL is
+offloaded to a third party reverse proxy.
+
+This problem was discussed in a [docker project issue][docker-image-push-issue] and a simple solution
+would be to enable relative urls in the registry.
+
+**For Omnibus installations**
+
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   registry['env'] = {
+     "REGISTRY_HTTP_RELATIVEURLS" => true
+   }
+   ```
+
+1. Save the file and [reconfigure GitLab][] for the changes to take effect.
+
+**For installations from source**
+
+1. Edit the YML configuration file you created when you [deployed the registry][registry-deploy]. Add the following snippet:
+
+   ```yaml
+   http:
+       relativeurls: true
+   ```
+
+1. Restart the registry for the changes to take affect.
+
 [ce-18239]: https://gitlab.com/gitlab-org/gitlab-ce/issues/18239
 [docker-insecure-self-signed]: https://docs.docker.com/registry/insecure/#use-self-signed-certificates
 [reconfigure gitlab]: restart_gitlab.md#omnibus-gitlab-reconfigure
@@ -687,3 +720,4 @@ this at the instance level.
 [new-domain]: #configure-container-registry-under-its-own-domain
 [notifications-config]: https://docs.docker.com/registry/notifications/
 [registry-notifications-config]: https://docs.docker.com/registry/configuration/#notifications
+[docker-image-push-issue]: https://github.com/docker/distribution/issues/970
