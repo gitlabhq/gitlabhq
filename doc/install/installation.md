@@ -202,8 +202,8 @@ Then select 'Internet Site' and press enter to confirm the hostname.
 
 The Ruby interpreter is required to run GitLab.
 
-**Note:** The current supported Ruby (MRI) version is 2.5.x. GitLab 11.6
-  dropped support for Ruby 2.4.x.
+**Note:** The current supported Ruby (MRI) version is 2.6.x. GitLab 12.2
+  dropped support for Ruby 2.5.x.
 
 The use of Ruby version managers such as [RVM], [rbenv] or [chruby] with GitLab
 in production, frequently leads to hard to diagnose problems. For example,

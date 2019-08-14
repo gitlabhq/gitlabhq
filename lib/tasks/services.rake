@@ -86,7 +86,7 @@ namespace :services do
     doc_start = Time.now
     doc_path = File.join(Rails.root, 'doc', 'api', 'services.md')
 
-    result = ERB.new(services_template, 0, '>')
+    result = ERB.new(services_template, trim_mode: '>')
       .result(OpenStruct.new(services: services).instance_eval { binding })
 
     File.open(doc_path, 'w') do |f|
