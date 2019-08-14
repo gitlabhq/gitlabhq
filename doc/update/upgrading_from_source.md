@@ -47,8 +47,8 @@ sudo service gitlab stop
 
 ### 3. Update Ruby
 
-NOTE: Beginning in GitLab 11.6, we only support Ruby 2.5 or higher, and dropped
-support for Ruby 2.4. Be sure to upgrade if necessary.
+NOTE: Beginning in GitLab 12.2, we only support Ruby 2.6 or higher, and dropped
+support for Ruby 2.5. Be sure to upgrade if necessary.
 
 You can check which version you are running with `ruby -v`.
 
