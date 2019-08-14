@@ -233,6 +233,16 @@ nested groups if you have membership in one of its parents.
 To learn more, read through the documentation on
 [subgroups memberships](group/subgroups/index.md#membership).
 
+## Guest User
+
+Create a user and assign to a project with a role as `Guest` user, this user 
+will be considered as guest user by GitLab and will not take up the license. 
+There is no specific `Guest` role for newly created users. If this user will 
+be assigned a higher role to any of the projects and groups then this user will 
+take a license seat. If a user creates a project this user becomes a maintainer, 
+therefore, takes up a license seat as well, in order to prevent this you have 
+to go and edit user profile and mark the user as External.
+
 ## External users permissions
 
 In cases where it is desired that a user has access only to some internal or
