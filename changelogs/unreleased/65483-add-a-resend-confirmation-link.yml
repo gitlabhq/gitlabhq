@@ -1,0 +1,5 @@
+---
+title: Allow users to resend a confirmation link when the grace period has expired
+merge_request: 31476
+author:
+type: changed

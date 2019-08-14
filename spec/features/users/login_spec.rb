@@ -95,6 +95,42 @@ describe 'Login' do
     end
   end
 
+  describe 'with an unconfirmed email address' do
+    let!(:user) { create(:user, confirmed_at: nil) }
+    let(:grace_period) { 2.days }
+
+    before do
+      stub_application_setting(send_user_confirmation_email: true)
+      allow(User).to receive(:allow_unconfirmed_access_for).and_return grace_period
+    end
+
+    context 'within the grace period' do
+      it 'allows to login' do
+        expect(authentication_metrics).to increment(:user_authenticated_counter)
+
+        gitlab_sign_in(user)
+
+        expect(page).not_to have_content('You have to confirm your email address before continuing.')
+        expect(page).not_to have_link('Resend confirmation email', href: new_user_confirmation_path)
+      end
+    end
+
+    context 'when the confirmation grace period is expired' do
+      it 'prevents the user from logging in and renders a resend confirmation email link' do
+        travel_to((grace_period + 1.day).from_now) do
+          expect(authentication_metrics)
+            .to increment(:user_unauthenticated_counter)
+            .and increment(:user_session_destroyed_counter).twice
+
+          gitlab_sign_in(user)
+
+          expect(page).to have_content('You have to confirm your email address before continuing.')
+          expect(page).to have_link('Resend confirmation email', href: new_user_confirmation_path)
+        end
+      end
+    end
+  end
+
   describe 'with the ghost user' do
     it 'disallows login' do
       expect(authentication_metrics)
