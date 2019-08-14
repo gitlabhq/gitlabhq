@@ -64,11 +64,15 @@ module Clusters
       end
 
       def delete_private_key
-        "kubectl delete secret -n #{Gitlab::Kubernetes::Helm::NAMESPACE} #{private_key_name} --ignore-not-found" if private_key_name.present?
+        return unless private_key_name.present?
+
+        args = %W(secret -n #{Gitlab::Kubernetes::Helm::NAMESPACE} #{private_key_name} --ignore-not-found)
+
+        Gitlab::Kubernetes::KubectlCmd.delete(*args)
       end
 
       def delete_crd(definition)
-        "kubectl delete crd #{definition} --ignore-not-found"
+        Gitlab::Kubernetes::KubectlCmd.delete("crd", definition, "--ignore-not-found")
       end
 
       def cluster_issuer_file

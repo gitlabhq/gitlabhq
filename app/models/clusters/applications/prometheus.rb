@@ -106,13 +106,13 @@ module Clusters
       def install_knative_metrics
         return [] unless cluster.application_knative_available?
 
-        ["kubectl apply -f #{Clusters::Applications::Knative::METRICS_CONFIG}"]
+        [Gitlab::Kubernetes::KubectlCmd.apply_file(Clusters::Applications::Knative::METRICS_CONFIG)]
       end
 
       def delete_knative_istio_metrics
         return [] unless cluster.application_knative_available?
 
-        ["kubectl delete -f #{Clusters::Applications::Knative::METRICS_CONFIG}"]
+        [Gitlab::Kubernetes::KubectlCmd.delete("-f", Clusters::Applications::Knative::METRICS_CONFIG)]
       end
     end
   end

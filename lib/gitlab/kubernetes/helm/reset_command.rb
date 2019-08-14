@@ -38,9 +38,9 @@ module Gitlab
         # Tracking this method to be removed here:
         # https://gitlab.com/gitlab-org/gitlab-ce/issues/52791#note_199374155
         def delete_tiller_replicaset
-          command = %w[kubectl delete replicaset -n gitlab-managed-apps -l name=tiller]
+          delete_args = %w[replicaset -n gitlab-managed-apps -l name=tiller]
 
-          command.shelljoin
+          Gitlab::Kubernetes::KubectlCmd.delete(*delete_args)
         end
 
         def reset_helm_command
