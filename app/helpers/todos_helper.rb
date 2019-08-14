@@ -26,7 +26,7 @@ module TodosHelper
   end
 
   def todo_target_link(todo)
-    text = raw("#{todo.target_type.titleize.downcase} ") +
+    text = raw(todo_target_type_name(todo) + ' ') +
       if todo.for_commit?
         content_tag(:span, todo.target_reference, class: 'commit-sha')
       else
@@ -36,21 +36,32 @@ module TodosHelper
     link_to text, todo_target_path(todo), class: 'has-tooltip', title: todo.target.title
   end
 
+  def todo_target_type_name(todo)
+    todo.target_type.titleize.downcase
+  end
+
   def todo_target_path(todo)
     return unless todo.target.present?
 
-    anchor = dom_id(todo.note) if todo.note.present?
+    path_options = todo_target_path_options(todo)
 
     if todo.for_commit?
-      project_commit_path(todo.project,
-                                    todo.target, anchor: anchor)
+      project_commit_path(todo.project, todo.target, path_options)
     else
       path = [todo.parent, todo.target]
 
       path.unshift(:pipelines) if todo.build_failed?
 
-      polymorphic_path(path, anchor: anchor)
+      polymorphic_path(path, path_options)
     end
+  end
+
+  def todo_target_path_options(todo)
+    { anchor: todo_target_path_anchor(todo) }
+  end
+
+  def todo_target_path_anchor(todo)
+    dom_id(todo.note) if todo.note.present?
   end
 
   def todo_target_state_pill(todo)
