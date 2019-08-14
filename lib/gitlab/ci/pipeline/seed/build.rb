@@ -9,6 +9,10 @@ module Gitlab
 
           delegate :dig, to: :@attributes
 
+          # When the `ci_dag_limit_needs` is enabled it uses the lower limit
+          LOW_NEEDS_LIMIT = 5
+          HARD_NEEDS_LIMIT = 50
+
           def initialize(pipeline, attributes, previous_stages)
             @pipeline = pipeline
             @attributes = attributes
@@ -77,8 +81,14 @@ module Gitlab
           end
 
           def needs_errors
-            return unless Feature.enabled?(:ci_dag_support, @pipeline.project)
             return if @needs_attributes.nil?
+
+            if @needs_attributes.size > max_needs_allowed
+              return [
+                "#{name}: one job can only need #{max_needs_allowed} others, but you have listed #{@needs_attributes.size}. " \
+                  "See needs keyword documentation for more details"
+              ]
+            end
 
             @needs_attributes.flat_map do |need|
               result = @previous_stages.any? do |stage|
@@ -87,6 +97,14 @@ module Gitlab
 
               "#{name}: needs '#{need[:name]}'" unless result
             end.compact
+          end
+
+          def max_needs_allowed
+            if Feature.enabled?(:ci_dag_limit_needs, @project, default_enabled: true)
+              LOW_NEEDS_LIMIT
+            else
+              HARD_NEEDS_LIMIT
+            end
           end
         end
       end

@@ -386,12 +386,16 @@ describe Gitlab::Ci::Pipeline::Seed::Build do
   describe 'applying needs: dependency' do
     subject { seed_build }
 
+    let(:needs_count) { 1 }
+
+    let(:needs_attributes) do
+      Array.new(needs_count, name: 'build')
+    end
+
     let(:attributes) do
       {
         name: 'rspec',
-        needs_attributes: [{
-          name: 'build'
-        }]
+        needs_attributes: needs_attributes
       }
     end
 
@@ -427,6 +431,32 @@ describe Gitlab::Ci::Pipeline::Seed::Build do
 
       it "does not have errors" do
         expect(subject.errors).to be_empty
+      end
+    end
+
+    context 'when lower limit of needs is reached' do
+      before do
+        stub_feature_flags(ci_dag_limit_needs: true)
+      end
+
+      let(:needs_count) { described_class::LOW_NEEDS_LIMIT + 1 }
+
+      it "returns an error" do
+        expect(subject.errors).to contain_exactly(
+          "rspec: one job can only need 5 others, but you have listed 6. See needs keyword documentation for more details")
+      end
+    end
+
+    context 'when upper limit of needs is reached' do
+      before do
+        stub_feature_flags(ci_dag_limit_needs: false)
+      end
+
+      let(:needs_count) { described_class::HARD_NEEDS_LIMIT + 1 }
+
+      it "returns an error" do
+        expect(subject.errors).to contain_exactly(
+          "rspec: one job can only need 50 others, but you have listed 51. See needs keyword documentation for more details")
       end
     end
   end
