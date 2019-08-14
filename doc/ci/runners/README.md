@@ -319,21 +319,21 @@ How this feature will work:
 1. You set the _maximum job timeout_ for a Runner to 24 hours
 1. You set the _CI/CD Timeout_ for a project to **2 hours**
 1. You start a job
-1. The job, if running longer, will be timeouted after **2 hours**
+1. The job, if running longer, will be timed out after **2 hours**
 
 **Example 2 - Runner timeout not configured**
 
 1. You remove the _maximum job timeout_ configuration from a Runner
 1. You set the _CI/CD Timeout_ for a project to **2 hours**
 1. You start a job
-1. The job, if running longer, will be timeouted after **2 hours**
+1. The job, if running longer, will be timed out after **2 hours**
 
 **Example 3 - Runner timeout smaller than project timeout**
 
 1. You set the _maximum job timeout_ for a Runner to **30 minutes**
 1. You set the _CI/CD Timeout_ for a project to 2 hours
 1. You start a job
-1. The job, if running longer, will be timeouted after **30 minutes**
+1. The job, if running longer, will be timed out after **30 minutes**
 
 ### Be careful with sensitive information
 
