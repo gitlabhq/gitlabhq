@@ -287,6 +287,8 @@ as pushing changes:
 - Set the target of the merge request to a particular branch.
 - Set the merge request to merge when its pipeline succeeds.
 - Set the merge request to remove the source branch when it's merged.
+- Set the title of the merge request to a particular title.
+- Set the description of the merge request to a particular description.
 
 ### Create a new merge request using git push options
 
