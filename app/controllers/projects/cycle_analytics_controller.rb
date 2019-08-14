@@ -14,8 +14,14 @@ class Projects::CycleAnalyticsController < Projects::ApplicationController
     @cycle_analytics_no_data = @cycle_analytics.no_stats?
 
     respond_to do |format|
-      format.html
-      format.json { render json: cycle_analytics_json }
+      format.html do
+        Gitlab::UsageDataCounters::CycleAnalyticsCounter.count(:views)
+
+        render :show
+      end
+      format.json do
+        render json: cycle_analytics_json
+      end
     end
   end
 

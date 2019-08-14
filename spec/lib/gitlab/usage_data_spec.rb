@@ -59,6 +59,7 @@ describe Gitlab::UsageData do
         avg_cycle_analytics
         influxdb_metrics_enabled
         prometheus_metrics_enabled
+        cycle_analytics_views
       ))
 
       expect(subject).to include(
@@ -72,6 +73,7 @@ describe Gitlab::UsageData do
         web_ide_commits: a_kind_of(Integer),
         web_ide_merge_requests: a_kind_of(Integer),
         navbar_searches: a_kind_of(Integer),
+        cycle_analytics_views: a_kind_of(Integer),
         source_code_pushes: a_kind_of(Integer)
       )
     end
