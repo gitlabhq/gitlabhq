@@ -107,6 +107,7 @@ function deferredInitialisation() {
       .then(() => {
         $('select.select2').select2({
           width: 'resolve',
+          minimumResultsForSearch: 10,
           dropdownAutoWidth: true,
         });
 
