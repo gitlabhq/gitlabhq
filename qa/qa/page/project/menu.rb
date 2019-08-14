@@ -5,7 +5,7 @@ module QA
     module Project
       class Menu < Page::Base
         include SubMenus::Common
-
+        include SubMenus::Project
         include SubMenus::CiCd
         include SubMenus::Issues
         include SubMenus::Operations

@@ -3,36 +3,29 @@
 require 'digest/sha1'
 
 module QA
-  # Failure issue: https://gitlab.com/gitlab-org/quality/nightly/issues/70
-  context 'Release', :docker, :quarantine do
+  context 'Release', :docker do
     describe 'Git clone using a deploy key' do
-      def login
+      before do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
         Page::Main::Login.perform(&:sign_in_using_credentials)
-      end
-
-      before(:all) do
-        login
 
         @runner_name = "qa-runner-#{Time.now.to_i}"
 
-        @project = Resource::Project.fabricate! do |resource|
+        @project = Resource::Project.fabricate_via_api! do |resource|
           resource.name = 'deploy-key-clone-project'
         end
 
         @repository_location = @project.repository_ssh_location
 
-        Resource::Runner.fabricate! do |resource|
+        Resource::Runner.fabricate_via_browser_ui! do |resource|
           resource.project = @project
           resource.name = @runner_name
           resource.tags = %w[qa docker]
           resource.image = 'gitlab/gitlab-runner:ubuntu'
         end
-
-        Page::Main::Menu.perform(&:sign_out)
       end
 
-      after(:all) do
+      after do
         Service::Runner.new(@runner_name).remove!
       end
 
@@ -46,9 +39,7 @@ module QA
         it "user sets up a deploy key with #{key_class}(#{bits}) to clone code using pipelines" do
           key = key_class.new(*bits)
 
-          login
-
-          Resource::DeployKey.fabricate! do |resource|
+          Resource::DeployKey.fabricate_via_browser_ui! do |resource|
             resource.project = @project
             resource.title = "deploy key #{key.name}(#{key.bits})"
             resource.key = key.public_key
@@ -56,7 +47,7 @@ module QA
 
           deploy_key_name = "DEPLOY_KEY_#{key.name}_#{key.bits}"
 
-          Resource::CiVariable.fabricate! do |resource|
+          Resource::CiVariable.fabricate_via_browser_ui! do |resource|
             resource.project = @project
             resource.key = deploy_key_name
             resource.value = key.private_key

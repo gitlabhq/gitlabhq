@@ -52,13 +52,11 @@ module QA
             raise NotImplementedError if Runtime::User.ldap_user? && user&.credentials_given?
 
             if Runtime::User.ldap_user?
-              sign_in_using_ldap_credentials
+              sign_in_using_ldap_credentials(user || Runtime::User)
             else
               sign_in_using_gitlab_credentials(user || Runtime::User)
             end
           end
-
-          Page::Main::Menu.perform(&:has_personal_area?)
         end
 
         def sign_in_using_admin_credentials
@@ -71,6 +69,25 @@ module QA
             set_initial_password_if_present
 
             sign_in_using_gitlab_credentials(admin)
+          end
+
+          Page::Main::Menu.perform(&:has_personal_area?)
+        end
+
+        def sign_in_using_ldap_credentials(user)
+          # Log out if already logged in
+          Page::Main::Menu.perform do |menu|
+            menu.sign_out if menu.has_personal_area?(wait: 0)
+          end
+
+          using_wait_time 0 do
+            set_initial_password_if_present
+
+            switch_to_ldap_tab
+
+            fill_element :username_field, user.ldap_username
+            fill_element :password_field, user.ldap_password
+            click_element :sign_in_button
           end
 
           Page::Main::Menu.perform(&:has_personal_area?)
@@ -132,14 +149,6 @@ module QA
         end
 
         private
-
-        def sign_in_using_ldap_credentials
-          switch_to_ldap_tab
-
-          fill_element :username_field, Runtime::User.ldap_username
-          fill_element :password_field, Runtime::User.ldap_password
-          click_element :sign_in_button
-        end
 
         def sign_in_using_gitlab_credentials(user)
           switch_to_sign_in_tab if has_sign_in_tab?

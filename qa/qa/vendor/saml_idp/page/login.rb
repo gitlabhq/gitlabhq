@@ -12,6 +12,14 @@ module QA
             fill_in 'password', with: 'user1pass'
             click_on 'Login'
           end
+
+          def login_if_required
+            login if login_required?
+          end
+
+          def login_required?
+            page.has_text?('Enter your username and password')
+          end
         end
       end
     end

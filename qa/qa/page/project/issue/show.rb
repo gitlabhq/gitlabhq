@@ -14,7 +14,7 @@ module QA
           end
 
           view 'app/assets/javascripts/notes/components/discussion_filter.vue' do
-            element :discussion_filter
+            element :discussion_filter, required: true
             element :filter_options
           end
 
