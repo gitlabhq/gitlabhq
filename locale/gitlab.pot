@@ -7703,6 +7703,9 @@ msgstr ""
 msgid "Other visibility settings have been disabled by the administrator."
 msgstr ""
 
+msgid "Our Privacy Policy has changed, please visit %{privacy_policy_link} to review these changes."
+msgstr ""
+
 msgid "Outbound requests"
 msgstr ""
 
