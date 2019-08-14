@@ -42,14 +42,19 @@ module Ci
       return false unless trigger_build_ids.present?
       return false unless Feature.enabled?(:ci_dag_support, project)
 
-      # rubocop: disable CodeReuse/ActiveRecord
-      trigger_build_names = pipeline.statuses
-        .where(id: trigger_build_ids)
-        .select(:name)
-      # rubocop: enable CodeReuse/ActiveRecord
+      # we find processables that are dependent:
+      # 1. because of current dependency,
+      trigger_build_names = pipeline.processables.latest
+        .for_ids(trigger_build_ids).names
 
+      # 2. does not have builds that not yet complete
+      incomplete_build_names = pipeline.processables.latest
+        .incomplete.names
+
+      # Each found processable is guaranteed here to have completed status
       created_processables
         .with_needs(trigger_build_names)
+        .without_needs(incomplete_build_names)
         .find_each
         .map(&method(:process_build_with_needs))
         .any?
@@ -70,17 +75,13 @@ module Ci
       end
     end
 
-    # rubocop: disable CodeReuse/ActiveRecord
     def status_for_prior_stages(index)
-      pipeline.builds.where('stage_idx < ?', index).latest.status || 'success'
+      pipeline.processables.status_for_prior_stages(index)
     end
-    # rubocop: enable CodeReuse/ActiveRecord
 
-    # rubocop: disable CodeReuse/ActiveRecord
     def status_for_build_needs(needs)
-      pipeline.builds.where(name: needs).latest.status || 'success'
+      pipeline.processables.status_for_names(needs)
     end
-    # rubocop: enable CodeReuse/ActiveRecord
 
     # rubocop: disable CodeReuse/ActiveRecord
     def stage_indexes_of_created_processables_without_needs
@@ -89,12 +90,10 @@ module Ci
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
-    # rubocop: disable CodeReuse/ActiveRecord
     def created_processables_in_stage_without_needs(index)
       created_processables_without_needs
-        .where(stage_idx: index)
+        .for_stage(index)
     end
-    # rubocop: enable CodeReuse/ActiveRecord
 
     def created_processables_without_needs
       if Feature.enabled?(:ci_dag_support, project)

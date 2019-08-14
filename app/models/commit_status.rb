@@ -40,8 +40,11 @@ class CommitStatus < ApplicationRecord
   scope :ordered, -> { order(:name) }
   scope :latest_ordered, -> { latest.ordered.includes(project: :namespace) }
   scope :retried_ordered, -> { retried.ordered.includes(project: :namespace) }
+  scope :before_stage, -> (index) { where('stage_idx < ?', index) }
+  scope :for_stage, -> (index) { where(stage_idx: index) }
   scope :after_stage, -> (index) { where('stage_idx > ?', index) }
   scope :processables, -> { where(type: %w[Ci::Build Ci::Bridge]) }
+  scope :for_ids, -> (ids) { where(id: ids) }
 
   scope :with_needs, -> (names = nil) do
     needs = Ci::BuildNeed.scoped_build.select(1)
@@ -49,8 +52,10 @@ class CommitStatus < ApplicationRecord
     where('EXISTS (?)', needs).preload(:needs)
   end
 
-  scope :without_needs, -> do
-    where('NOT EXISTS (?)', Ci::BuildNeed.scoped_build.select(1))
+  scope :without_needs, -> (names = nil) do
+    needs = Ci::BuildNeed.scoped_build.select(1)
+    needs = needs.where(name: names) if names
+    where('NOT EXISTS (?)', needs)
   end
 
   # We use `CommitStatusEnums.failure_reasons` here so that EE can more easily
@@ -147,6 +152,18 @@ class CommitStatus < ApplicationRecord
       end
       # rubocop: enable CodeReuse/ServiceClass
     end
+  end
+
+  def self.names
+    select(:name)
+  end
+
+  def self.status_for_prior_stages(index)
+    before_stage(index).latest.status || 'success'
+  end
+
+  def self.status_for_names(names)
+    where(name: names).latest.status || 'success'
   end
 
   def locking_enabled?
