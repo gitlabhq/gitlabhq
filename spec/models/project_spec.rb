@@ -4312,6 +4312,39 @@ describe Project do
     end
   end
 
+  describe '#has_active_hooks?' do
+    set(:project) { create(:project) }
+
+    it { expect(project.has_active_hooks?).to be_falsey }
+
+    it 'returns true when a matching push hook exists' do
+      create(:project_hook, push_events: true, project: project)
+
+      expect(project.has_active_hooks?(:merge_request_events)).to be_falsey
+      expect(project.has_active_hooks?).to be_truthy
+    end
+
+    it 'returns true when a matching system hook exists' do
+      create(:system_hook, push_events: true)
+
+      expect(project.has_active_hooks?(:merge_request_events)).to be_falsey
+      expect(project.has_active_hooks?).to be_truthy
+    end
+  end
+
+  describe '#has_active_services?' do
+    set(:project) { create(:project) }
+
+    it { expect(project.has_active_services?).to be_falsey }
+
+    it 'returns true when a matching service exists' do
+      create(:custom_issue_tracker_service, push_events: true, merge_requests_events: false, project: project)
+
+      expect(project.has_active_services?(:merge_request_hooks)).to be_falsey
+      expect(project.has_active_services?).to be_truthy
+    end
+  end
+
   describe '#badges' do
     let(:project_group) { create(:group) }
     let(:project) { create(:project, path: 'avatar', namespace: project_group) }

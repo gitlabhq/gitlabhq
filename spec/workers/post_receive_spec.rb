@@ -273,6 +273,8 @@ describe PostReceive do
     end
 
     it "asks the project to trigger all hooks" do
+      create(:project_hook, push_events: true, tag_push_events: true, project: project)
+      create(:custom_issue_tracker_service, push_events: true, merge_requests_events: false, project: project)
       allow(Project).to receive(:find_by).and_return(project)
 
       expect(project).to receive(:execute_hooks).twice

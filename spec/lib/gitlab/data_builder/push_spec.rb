@@ -3,8 +3,42 @@
 require 'spec_helper'
 
 describe Gitlab::DataBuilder::Push do
+  include RepoHelpers
+
   let(:project) { create(:project, :repository) }
   let(:user) { build(:user, public_email: 'public-email@example.com') }
+
+  describe '.build' do
+    let(:sample) { RepoHelpers.sample_compare }
+    let(:commits) { project.repository.commits_between(sample.commits.first, sample.commits.last) }
+    let(:subject) do
+      described_class.build(project: project,
+                            user: user,
+                            ref: sample.target_branch,
+                            commits: commits,
+                            commits_count: commits.length,
+                            message: 'test message',
+                            with_changed_files: with_changed_files)
+    end
+
+    context 'with changed files' do
+      let(:with_changed_files) { true }
+
+      it 'returns commit hook data' do
+        expect(subject[:project]).to eq(project.hook_attrs)
+        expect(subject[:commits].first.keys).to include(*%i(added removed modified))
+      end
+    end
+
+    context 'without changed files' do
+      let(:with_changed_files) { false }
+
+      it 'returns commit hook data without include deltas' do
+        expect(subject[:project]).to eq(project.hook_attrs)
+        expect(subject[:commits].first.keys).not_to include(*%i(added removed modified))
+      end
+    end
+  end
 
   describe '.build_sample' do
     let(:data) { described_class.build_sample(project, user) }

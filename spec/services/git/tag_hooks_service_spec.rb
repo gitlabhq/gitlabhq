@@ -26,7 +26,8 @@ describe Git::TagHooksService, :service do
 
   describe 'System hooks' do
     it 'Executes system hooks' do
-      push_data = service.execute
+      push_data = service.send(:push_data)
+      expect(project).to receive(:has_active_hooks?).and_return(true)
 
       expect_next_instance_of(SystemHooksService) do |system_hooks_service|
         expect(system_hooks_service)
@@ -40,6 +41,7 @@ describe Git::TagHooksService, :service do
 
   describe "Webhooks" do
     it "executes hooks on the project" do
+      expect(project).to receive(:has_active_hooks?).and_return(true)
       expect(project).to receive(:execute_hooks)
 
       service.execute
@@ -61,7 +63,7 @@ describe Git::TagHooksService, :service do
 
   describe 'Push data' do
     shared_examples_for 'tag push data expectations' do
-      subject(:push_data) { service.execute }
+      subject(:push_data) { service.send(:push_data) }
       it 'has expected push data attributes' do
         is_expected.to match a_hash_including(
           object_kind: 'tag_push',
