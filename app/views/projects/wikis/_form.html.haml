@@ -14,7 +14,7 @@
     .col-sm-12
       = f.text_field :title, class: 'form-control qa-wiki-title-textbox', value: @page.title
       - if @page.persisted?
-        %span.edit-wiki-page-slug-tip
+        %span.d-inline-block.mw-100.prepend-top-5
           = icon('lightbulb-o')
           = s_("WikiEditPageTip|Tip: You can move this page by adding the path to the beginning of the title.")
           = link_to icon('question-circle'), help_page_path('user/project/wiki/index', anchor: 'moving-a-wiki-page'), target: '_blank'

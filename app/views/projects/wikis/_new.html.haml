@@ -11,7 +11,7 @@
             = label_tag :new_wiki_path do
               %span= s_("WikiPage|Page slug")
             = text_field_tag :new_wiki_path, nil, placeholder: s_("WikiNewPagePlaceholder|how-to-setup"), class: 'form-control', required: true, :'data-wikis-path' => project_wikis_path(@project), autofocus: true
-            %span.new-wiki-page-slug-tip
+            %span.d-inline-block.mw-100.prepend-top-5
               = icon('lightbulb-o')
               = s_("WikiNewPageTip|Tip: You can specify the full path for the new file. We will automatically create any missing directories.")
           .form-actions
