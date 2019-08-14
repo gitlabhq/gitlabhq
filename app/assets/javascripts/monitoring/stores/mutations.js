@@ -99,7 +99,4 @@ export default {
   [types.SET_SHOW_ERROR_BANNER](state, enabled) {
     state.showErrorBanner = enabled;
   },
-  [types.SET_EXPORT_METRICS_TO_CSV_ENABLED](state, enabled) {
-    state.exportMetricsToCsvEnabled = enabled;
-  },
 };

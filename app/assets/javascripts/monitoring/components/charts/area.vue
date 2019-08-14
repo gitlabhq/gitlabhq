@@ -1,7 +1,6 @@
 <script>
 import { __ } from '~/locale';
-import { mapState } from 'vuex';
-import { GlLink, GlButton } from '@gitlab/ui';
+import { GlLink } from '@gitlab/ui';
 import { GlAreaChart, GlChartSeriesLabel } from '@gitlab/ui/dist/charts';
 import dateFormat from 'dateformat';
 import { debounceByAnimationFrame, roundOffFloat } from '~/lib/utils/common_utils';
@@ -16,7 +15,6 @@ let debouncedResize;
 export default {
   components: {
     GlAreaChart,
-    GlButton,
     GlChartSeriesLabel,
     GlLink,
     Icon,
@@ -69,7 +67,6 @@ export default {
     };
   },
   computed: {
-    ...mapState('monitoringDashboard', ['exportMetricsToCsvEnabled']),
     chartData() {
       // Transforms & supplements query data to render appropriate labels & styles
       // Input: [{ queryAttributes1 }, { queryAttributes2 }]
@@ -179,18 +176,6 @@ export default {
     yAxisLabel() {
       return `${this.graphData.y_label}`;
     },
-    csvText() {
-      const chartData = this.chartData[0].data;
-      const header = `timestamp,${this.graphData.y_label}\r\n`; // eslint-disable-line @gitlab/i18n/no-non-i18n-strings
-      return chartData.reduce((csv, data) => {
-        const row = data.join(',');
-        return `${csv}${row}\r\n`;
-      }, header);
-    },
-    downloadLink() {
-      const data = new Blob([this.csvText], { type: 'text/plain' });
-      return window.URL.createObjectURL(data);
-    },
   },
   watch: {
     containerWidth: 'onResize',
@@ -259,16 +244,6 @@ export default {
     <div :class="{ 'prometheus-graph-embed w-100 p-3': showBorder }">
       <div class="prometheus-graph-header">
         <h5 ref="graphTitle" class="prometheus-graph-title">{{ graphData.title }}</h5>
-        <gl-button
-          v-if="exportMetricsToCsvEnabled"
-          :href="downloadLink"
-          :title="__('Download CSV')"
-          :aria-label="__('Download CSV')"
-          style="margin-left: 200px;"
-          download="chart_metrics.csv"
-        >
-          {{ __('Download CSV') }}
-        </gl-button>
         <div ref="graphWidgets" class="prometheus-graph-widgets"><slot></slot></div>
       </div>
       <gl-area-chart

@@ -5,7 +5,7 @@ import { timeWindows, timeWindowsKeyNames } from '~/monitoring/constants';
 import * as types from '~/monitoring/stores/mutation_types';
 import { createStore } from '~/monitoring/stores';
 import axios from '~/lib/utils/axios_utils';
-import {
+import MonitoringMock, {
   metricsGroupsAPIResponse,
   mockApiEndpoint,
   environmentData,
@@ -40,6 +40,7 @@ describe('Dashboard', () => {
   let mock;
   let store;
   let component;
+  let mockGraphData;
 
   beforeEach(() => {
     setFixtures(`
@@ -479,6 +480,38 @@ describe('Dashboard', () => {
 
         expect(dashboardDropdown).not.toEqual(null);
         done();
+      });
+    });
+  });
+
+  describe('when downloading metrics data as CSV', () => {
+    beforeEach(() => {
+      component = new DashboardComponent({
+        propsData: {
+          ...propsData,
+        },
+        store,
+      });
+      store.commit(
+        `monitoringDashboard/${types.RECEIVE_METRICS_DATA_SUCCESS}`,
+        MonitoringMock.data,
+      );
+      [mockGraphData] = component.$store.state.monitoringDashboard.groups[0].metrics;
+    });
+
+    describe('csvText', () => {
+      it('converts metrics data from json to csv', () => {
+        const header = `timestamp,${mockGraphData.y_label}`;
+        const data = mockGraphData.queries[0].result[0].values;
+        const firstRow = `${data[0][0]},${data[0][1]}`;
+
+        expect(component.csvText(mockGraphData)).toMatch(`^${header}\r\n${firstRow}`);
+      });
+    });
+
+    describe('downloadCsv', () => {
+      it('produces a link with a Blob', () => {
+        expect(component.downloadCsv(mockGraphData)).toContain(`blob:`);
       });
     });
   });

@@ -13,7 +13,6 @@ export default (props = {}) => {
         prometheusEndpointEnabled: gon.features.environmentMetricsUsePrometheusEndpoint,
         multipleDashboardsEnabled: gon.features.environmentMetricsShowMultipleDashboards,
         additionalPanelTypesEnabled: gon.features.environmentMetricsAdditionalPanelTypes,
-        exportMetricsToCsvEnabled: gon.features.exportMetricsToCsvEnabled,
       });
     }
 

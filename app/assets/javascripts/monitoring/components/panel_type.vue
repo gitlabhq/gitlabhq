@@ -1,7 +1,14 @@
 <script>
 import { mapState } from 'vuex';
 import _ from 'underscore';
-import { GlDropdown, GlDropdownItem, GlModal, GlModalDirective } from '@gitlab/ui';
+import {
+  GlDropdown,
+  GlDropdownItem,
+  GlModal,
+  GlModalDirective,
+  GlTooltipDirective,
+} from '@gitlab/ui';
+import Icon from '~/vue_shared/components/icon.vue';
 import MonitorAreaChart from './charts/area.vue';
 import MonitorSingleStatChart from './charts/single_stat.vue';
 import MonitorEmptyChart from './charts/empty_chart.vue';
@@ -11,12 +18,14 @@ export default {
     MonitorAreaChart,
     MonitorSingleStatChart,
     MonitorEmptyChart,
+    Icon,
     GlDropdown,
     GlDropdownItem,
     GlModal,
   },
   directives: {
     GlModal: GlModalDirective,
+    GlTooltip: GlTooltipDirective,
   },
   props: {
     graphData: {
@@ -40,6 +49,19 @@ export default {
     },
     graphDataHasMetrics() {
       return this.graphData.queries[0].result.length > 0;
+    },
+    csvText() {
+      const chartData = this.graphData.queries[0].result[0].values;
+      const yLabel = this.graphData.y_label;
+      const header = `timestamp,${yLabel}\r\n`; // eslint-disable-line @gitlab/i18n/no-non-i18n-strings
+      return chartData.reduce((csv, data) => {
+        const row = data.join(',');
+        return `${csv}${row}\r\n`;
+      }, header);
+    },
+    downloadCsv() {
+      const data = new Blob([this.csvText], { type: 'text/plain' });
+      return window.URL.createObjectURL(data);
     },
   },
   methods: {
@@ -81,7 +103,6 @@ export default {
         @setAlerts="setAlerts"
       />
       <gl-dropdown
-        v-if="alertWidgetAvailable"
         v-gl-tooltip
         class="mx-2"
         toggle-class="btn btn-transparent border-0"
@@ -92,6 +113,9 @@ export default {
         <template slot="button-content">
           <icon name="ellipsis_v" class="text-secondary" />
         </template>
+        <gl-dropdown-item :href="downloadCsv" download="chart_metrics.csv">
+          {{ __('Download CSV') }}
+        </gl-dropdown-item>
         <gl-dropdown-item v-if="alertWidgetAvailable" v-gl-modal="`alert-modal-${index}`">
           {{ __('Alerts') }}
         </gl-dropdown-item>

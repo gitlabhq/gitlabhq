@@ -235,6 +235,19 @@ export default {
         chart.metrics.some(metric => this.metricsWithData.includes(metric.metric_id)),
       );
     },
+    csvText(graphData) {
+      const chartData = graphData.queries[0].result[0].values;
+      const yLabel = graphData.y_label;
+      const header = `timestamp,${yLabel}\r\n`; // eslint-disable-line @gitlab/i18n/no-non-i18n-strings
+      return chartData.reduce((csv, data) => {
+        const row = data.join(',');
+        return `${csv}${row}\r\n`;
+      }, header);
+    },
+    downloadCsv(graphData) {
+      const data = new Blob([this.csvText(graphData)], { type: 'text/plain' });
+      return window.URL.createObjectURL(data);
+    },
     // TODO: BEGIN, Duplicated code with panel_type until feature flag is removed
     // Issue number: https://gitlab.com/gitlab-org/gitlab-ce/issues/63845
     getGraphAlerts(queries) {
@@ -448,7 +461,6 @@ export default {
                 @setAlerts="setAlerts"
               />
               <gl-dropdown
-                v-if="alertWidgetAvailable"
                 v-gl-tooltip
                 class="mx-2"
                 toggle-class="btn btn-transparent border-0"
@@ -459,6 +471,9 @@ export default {
                 <template slot="button-content">
                   <icon name="ellipsis_v" class="text-secondary" />
                 </template>
+                <gl-dropdown-item :href="downloadCsv(graphData)" download="chart_metrics.csv">
+                  {{ __('Download CSV') }}
+                </gl-dropdown-item>
                 <gl-dropdown-item
                   v-if="alertWidgetAvailable"
                   v-gl-modal="`alert-modal-${index}-${graphIndex}`"
