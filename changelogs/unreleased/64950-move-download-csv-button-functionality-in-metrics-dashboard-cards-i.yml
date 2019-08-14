@@ -1,0 +1,5 @@
+---
+title: 'feat: adds a download to csv functionality to the dropdown in prometheus metrics'
+merge_request: 31679
+author:
+type: changed
