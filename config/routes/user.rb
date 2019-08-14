@@ -43,13 +43,6 @@ scope '-/users', module: :users do
   end
 end
 
-scope '-/users', module: :users do
-  resources :terms, only: [:index] do
-    post :accept, on: :member
-    post :decline, on: :member
-  end
-end
-
 scope(constraints: { username: Gitlab::PathRegex.root_namespace_route_regex }) do
   scope(path: 'users/:username',
         as: :user,
