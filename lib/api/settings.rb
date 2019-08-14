@@ -125,6 +125,12 @@ module API
       optional :instance_statistics_visibility_private, type: Boolean, desc: 'When set to `true` Instance statistics will only be available to admins'
       optional :local_markdown_version, type: Integer, desc: "Local markdown version, increase this value when any cached markdown should be invalidated"
       optional :allow_local_requests_from_hooks_and_services, type: Boolean, desc: 'Deprecated: Use :allow_local_requests_from_web_hooks_and_services instead. Allow requests to the local network from hooks and services.' # support legacy names, can be removed in v5
+      optional :snowplow_enabled, type: Grape::API::Boolean, desc: 'Enable Snowplow tracking'
+      given snowplow_enabled: ->(val) { val } do
+        requires :snowplow_collector_hostname, type: String, desc: 'The Snowplow collector hostname'
+        optional :snowplow_cookie_domain, type: String, desc: 'The Snowplow cookie domain'
+        optional :snowplow_site_id, type: String, desc: 'The Snowplow site name / application ic'
+      end
 
       ApplicationSetting::SUPPORTED_KEY_TYPES.each do |type|
         optional :"#{type}_key_restriction",

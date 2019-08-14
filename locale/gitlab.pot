@@ -2953,6 +2953,9 @@ msgstr ""
 msgid "Collapse sidebar"
 msgstr ""
 
+msgid "Collector hostname"
+msgstr ""
+
 msgid "ComboSearch is not defined"
 msgstr ""
 
@@ -3120,6 +3123,9 @@ msgstr ""
 msgid "Configure storage path settings."
 msgstr ""
 
+msgid "Configure the %{link} integration."
+msgstr ""
+
 msgid "Configure the way a user creates a new account."
 msgstr ""
 
@@ -3259,6 +3265,9 @@ msgid "Control the display of third party offers."
 msgstr ""
 
 msgid "ConvDev Index"
+msgstr ""
+
+msgid "Cookie domain"
 msgstr ""
 
 msgid "Copied"
@@ -4251,6 +4260,9 @@ msgid "Enable reCAPTCHA or Akismet and set IP limits."
 msgstr ""
 
 msgid "Enable shared Runners"
+msgstr ""
+
+msgid "Enable snowplow tracking"
 msgstr ""
 
 msgid "Enable two-factor authentication"
@@ -10286,6 +10298,9 @@ msgstr ""
 msgid "Similar issues"
 msgstr ""
 
+msgid "Site ID"
+msgstr ""
+
 msgid "Size and domain settings for static websites"
 msgstr ""
 
@@ -10314,6 +10329,9 @@ msgid "SnippetsEmptyState|There are no snippets to show."
 msgstr ""
 
 msgid "SnippetsEmptyState|They can be either public or private."
+msgstr ""
+
+msgid "Snowplow"
 msgstr ""
 
 msgid "Some email servers do not support overriding the email sender name. Enable this option to include the name of the author of the issue, merge request or comment in the email body instead."

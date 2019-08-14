@@ -70,6 +70,23 @@ describe 'layouts/_head' do
     expect(rendered).to match('<link rel="stylesheet" media="all" href="/stylesheets/highlight/themes/solarised-light.css" />')
   end
 
+  context 'when an asset_host is set and snowplow url is set' do
+    let(:asset_host) { 'http://test.host' }
+
+    before do
+      allow(ActionController::Base).to receive(:asset_host).and_return(asset_host)
+      allow(Gitlab::CurrentSettings).to receive(:snowplow_enabled?).and_return(true)
+      allow(Gitlab::CurrentSettings).to receive(:snowplow_collector_hostname).and_return('www.snow.plow')
+    end
+
+    it 'add a snowplow script tag with asset host' do
+      render
+      expect(rendered).to match('http://test.host/assets/snowplow/')
+      expect(rendered).to match('window.snowplow')
+      expect(rendered).to match('www.snow.plow')
+    end
+  end
+
   def stub_helper_with_safe_string(method)
     allow_any_instance_of(PageLayoutHelper).to receive(method)
       .and_return(%q{foo" http-equiv="refresh}.html_safe)

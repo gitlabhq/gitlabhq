@@ -1,0 +1,30 @@
+- expanded = true if !@application_setting.valid? && @application_setting.errors.any? { |k| k.to_s.start_with?('snowplow_') }
+%section.settings.as-snowplow.no-animate#js-snowplow-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('Snowplow')
+    %button.btn.btn-default.js-settings-toggle{ type: 'button' }
+      = expanded ? _('Collapse') : _('Expand')
+    %p
+      = _('Configure the %{link} integration.').html_safe % { link: link_to('Snowplow', 'https://snowplowanalytics.com/', target: '_blank') }
+  .settings-content
+
+    = form_for @application_setting, url: integrations_admin_application_settings_path, html: { class: 'fieldset-form' } do |f|
+      = form_errors(@application_setting)
+
+      %fieldset
+        .form-group
+          .form-check
+            = f.check_box :snowplow_enabled, class: 'form-check-input'
+            = f.label :snowplow_enabled, _('Enable snowplow tracking'), class: 'form-check-label'
+        .form-group
+          = f.label :snowplow_collector_hostname, _('Collector hostname'), class: 'label-light'
+          = f.text_field :snowplow_collector_hostname, class: 'form-control', placeholder: 'snowplow.example.com'
+        .form-group
+          = f.label :snowplow_site_id, _('Site ID'), class: 'label-light'
+          = f.text_field :snowplow_site_id, class: 'form-control'
+        .form-group
+          = f.label :snowplow_cookie_domain, _('Cookie domain'), class: 'label-light'
+          = f.text_field :snowplow_cookie_domain, class: 'form-control'
+
+      = f.submit _('Save changes'), class: 'btn btn-success'
