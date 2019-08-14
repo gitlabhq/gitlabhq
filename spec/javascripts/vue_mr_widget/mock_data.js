@@ -233,6 +233,8 @@ export default {
     'http://localhost:3000/root/acets-app/commit/53027d060246c8f47e4a9310fb332aa52f221775',
   troubleshooting_docs_path: 'help',
   merge_request_pipelines_docs_path: '/help/ci/merge_request_pipelines/index.md',
+  merge_train_when_pipeline_succeeds_docs_path:
+    '/help/ci/merge_request_pipelines/pipelines_for_merged_results/merge_trains/#startadd-to-merge-train-when-pipeline-succeeds',
   squash: true,
   visual_review_app_available: true,
   merge_trains_enabled: true,

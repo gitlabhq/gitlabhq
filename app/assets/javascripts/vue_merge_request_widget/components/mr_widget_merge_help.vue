@@ -23,7 +23,7 @@ export default {
 };
 </script>
 <template>
-  <section class="mr-widget-help">
+  <section class="mr-widget-help font-italic">
     <template v-if="missingBranch">
       {{ missingBranchInfo }}
     </template>

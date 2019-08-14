@@ -31,6 +31,9 @@ export default class MergeRequestStore {
     this.targetBranchSha = data.target_branch_sha;
     this.sourceBranch = data.source_branch;
     this.sourceBranchProtected = data.source_branch_protected;
+    this.conflictsDocsPath = data.conflicts_docs_path;
+    this.mergeRequestPipelinesHelpPath = data.merge_request_pipelines_docs_path;
+    this.mergeTrainWhenPipelineSucceedsDocsPath = data.merge_train_when_pipeline_succeeds_docs_path;
     this.mergeStatus = data.merge_status;
     this.commitMessage = data.default_merge_commit_message;
     this.shortMergeCommitSha = data.short_merge_commit_sha;
