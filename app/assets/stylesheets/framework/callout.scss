@@ -9,7 +9,9 @@
 .bs-callout {
   margin: $gl-padding 0;
   padding: $gl-padding;
-  border-left: 3px solid $border-color;
+  border-color: $border-color;
+  border-style: solid;
+  border-width: 0 0 0 3px;
   color: $text-color;
   background: $gray-light;
 
@@ -48,6 +50,10 @@
   background-color: $blue-100;
   border-color: $blue-200;
   color: $blue-700;
+
+  h4 {
+    color: $blue-700;
+  }
 }
 
 .bs-callout-success {
