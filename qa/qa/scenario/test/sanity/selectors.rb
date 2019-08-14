@@ -7,11 +7,13 @@ module QA
         class Selectors < Scenario::Template
           include Scenario::Bootable
 
-          PAGES = [QA::Page].freeze
+          def pages
+            @pages ||= [QA::Page]
+          end
 
           def perform(*)
-            validators = PAGES.map do |pages|
-              Page::Validator.new(pages)
+            validators = pages.map do |page|
+              Page::Validator.new(page)
             end
 
             validators.flat_map(&:errors).tap do |errors|

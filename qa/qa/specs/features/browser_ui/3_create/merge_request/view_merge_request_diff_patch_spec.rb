@@ -7,13 +7,18 @@ module QA
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
         Page::Main::Login.perform(&:sign_in_using_credentials)
 
-        @merge_request = Resource::MergeRequest.fabricate! do |merge_request|
+        project = Resource::Project.fabricate_via_api! do |project|
+          project.name = 'project'
+        end
+
+        @merge_request = Resource::MergeRequest.fabricate_via_api! do |merge_request|
+          merge_request.project = project
           merge_request.title = 'This is a merge request'
-          merge_request.description = 'For downloading patches and diffs'
+          merge_request.description = '... for downloading patches and diffs'
         end
       end
 
-      it 'user views merge request email patches' do
+      it 'views the merge request email patches' do
         @merge_request.visit!
         Page::MergeRequest::Show.perform(&:view_email_patches)
 
@@ -22,7 +27,7 @@ module QA
         expect(page).to have_content('diff --git a/added_file.txt b/added_file.txt')
       end
 
-      it 'user views merge request plain diff' do
+      it 'views the merge request plain diff' do
         @merge_request.visit!
         Page::MergeRequest::Show.perform(&:view_plain_diff)
 

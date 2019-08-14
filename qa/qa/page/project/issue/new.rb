@@ -6,7 +6,7 @@ module QA
       module Issue
         class New < Page::Base
           view 'app/views/shared/issuable/_form.html.haml' do
-            element :submit_issue_button, 'form.submit "Submit' # rubocop:disable QA/ElementWithPattern
+            element :issuable_create_button
           end
 
           view 'app/views/shared/issuable/form/_title.html.haml' do
@@ -26,7 +26,7 @@ module QA
           end
 
           def create_new_issue
-            click_on 'Submit issue'
+            click_element :issuable_create_button, Page::Project::Issue::Show
           end
         end
       end
