@@ -1,0 +1,4 @@
+en:
+  invisible_captcha:
+    sentence_for_humans: If you are human, please ignore this field.
+    timestamp_error_message: That was a bit too quick! Please resubmit.

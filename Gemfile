@@ -51,6 +51,7 @@ gem 'jwt', '~> 2.1.0'
 # Spam and anti-bot protection
 gem 'recaptcha', '~> 4.11', require: 'recaptcha/rails'
 gem 'akismet', '~> 2.0'
+gem 'invisible_captcha', '~> 0.12.1'
 
 # Two-factor authentication
 gem 'devise-two-factor', '~> 3.0.0'

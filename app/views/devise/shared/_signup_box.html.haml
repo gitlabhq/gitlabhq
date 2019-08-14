@@ -5,6 +5,8 @@
     = form_for(resource, as: "new_#{resource_name}", url: registration_path(resource_name), html: { class: "new_new_user gl-show-field-errors", "aria-live" => "assertive" }) do |f|
       .devise-errors
         = render "devise/shared/error_messages", resource: resource
+      - if Feature.enabled?(:invisible_captcha)
+        = invisible_captcha
       .name.form-group
         = f.label :name, _('Full name'), class: 'label-bold'
         = f.text_field :name, class: "form-control top js-block-emoji js-validate-length", :data => { :max_length => max_name_length, :max_length_message => s_("SignUp|Name is too long (maximum is %{max_length} characters).") % { max_length: max_name_length }, :qa_selector => 'new_user_name_field' }, required: true, title: _("This field is required.")

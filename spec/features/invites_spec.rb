@@ -10,6 +10,7 @@ describe 'Invites' do
   let(:group_invite) { group.group_members.invite.last }
 
   before do
+    stub_feature_flags(invisible_captcha: false)
     project.add_maintainer(owner)
     group.add_user(owner, Gitlab::Access::OWNER)
     group.add_developer('user@example.com', owner)

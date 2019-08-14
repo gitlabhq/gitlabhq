@@ -4,6 +4,7 @@ class RegistrationsController < Devise::RegistrationsController
   include Recaptcha::Verify
   include AcceptsPendingInvitations
   include RecaptchaExperimentHelper
+  include InvisibleCaptcha
 
   prepend_before_action :check_captcha, only: :create
   before_action :whitelist_query_limiting, only: [:destroy]
