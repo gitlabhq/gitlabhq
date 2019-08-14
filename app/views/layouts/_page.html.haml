@@ -17,6 +17,4 @@
       .d-flex
     %div{ class: "#{(container_class unless @no_container)} #{@content_class}" }
       .content{ id: "content-body" }
-        - if Gitlab.com? && show_privacy_policy_update_64341?
-          = render "layouts/privacy_policy_update_callout"
         = yield

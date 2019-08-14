@@ -45,26 +45,6 @@ describe UserCalloutsHelper do
     end
   end
 
-  describe '.show_privacy_policy_update_64341?' do
-    subject { helper.show_privacy_policy_update_64341? }
-
-    context 'when user has not dismissed' do
-      before do
-        allow(helper).to receive(:user_dismissed?).and_return(false)
-      end
-
-      it { is_expected.to be true }
-    end
-
-    context 'when user dismissed' do
-      before do
-        allow(helper).to receive(:user_dismissed?).and_return(true)
-      end
-
-      it { is_expected.to be false }
-    end
-  end
-
   describe '.render_flash_user_callout' do
     it 'renders the flash_user_callout partial' do
       expect(helper).to receive(:render)
