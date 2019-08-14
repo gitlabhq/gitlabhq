@@ -354,6 +354,27 @@ Prometheus server.
 
 ![Merge Request with Performance Impact](img/merge_request_performance.png)
 
+## Embedding metric charts within Gitlab Flavored Markdown
+
+> [Introduced][ce-29691] in GitLab 12.2.
+> Requires [Kubernetes](prometheus_library/kubernetes.md) metrics.
+
+It is possible to display metrics charts within [GitLab Flavored Markdown](../../markdown.md#gitlab-flavored-markdown-gfm).
+
+To display a metric chart, include a link of the form `https://<root_url>/<project>/environments/<environment_id>/metrics`.
+
+The following requirements must be met for the metric to unfurl:
+
+- The `<environment_id>` must correspond to a real environment.
+- Prometheus must be monitoring the environment.
+- The GitLab instance must be configured to receive data from the environment.
+- The user must be allowed access to the monitoring dashboard for the environment ([Reporter or higher](../../permissions.md)).
+- The dashboard must have data within the last 8 hours.
+
+ If all of the above are true, then the metric will unfurl as seen below:
+
+![Embedded Metrics](img/embed_metrics.png)
+
 ## Troubleshooting
 
 If the "No data found" screen continues to appear, it could be due to:
@@ -376,4 +397,5 @@ If the "No data found" screen continues to appear, it could be due to:
 [ci-environment-slug]: ../../../ci/variables/#predefined-environment-variables
 [ce-8935]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/8935
 [ce-10408]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/10408
+[ce-29691]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/29691
 [promgldocs]: ../../../administration/monitoring/prometheus/index.md
