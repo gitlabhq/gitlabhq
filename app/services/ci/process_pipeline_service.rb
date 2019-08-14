@@ -40,7 +40,7 @@ module Ci
 
     def process_builds_with_needs(trigger_build_ids)
       return false unless trigger_build_ids.present?
-      return false unless Feature.enabled?(:ci_dag_support, project)
+      return false unless Feature.enabled?(:ci_dag_support, project, default_enabled: true)
 
       # rubocop: disable CodeReuse/ActiveRecord
       trigger_build_names = pipeline.statuses
@@ -97,7 +97,7 @@ module Ci
     # rubocop: enable CodeReuse/ActiveRecord
 
     def created_processables_without_needs
-      if Feature.enabled?(:ci_dag_support, project)
+      if Feature.enabled?(:ci_dag_support, project, default_enabled: true)
         pipeline.processables.created.without_needs
       else
         pipeline.processables.created

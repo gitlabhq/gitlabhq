@@ -716,7 +716,7 @@ module Ci
       depended_jobs = depends_on_builds
 
       # find all jobs that are needed
-      if Feature.enabled?(:ci_dag_support, project) && needs.exists?
+      if Feature.enabled?(:ci_dag_support, project, default_enabled: true) && needs.exists?
         depended_jobs = depended_jobs.where(name: needs.select(:name))
       end
 
