@@ -1,0 +1,29 @@
+- return unless Gitlab::CurrentSettings.snowplow_enabled?
+
+= javascript_tag nonce: true do
+  :plain
+    ;(function(p,l,o,w,i,n,g){if(!p[i]){p.GlobalSnowplowNamespace=p.GlobalSnowplowNamespace||[];
+    p.GlobalSnowplowNamespace.push(i);p[i]=function(){(p[i].q=p[i].q||[]).push(arguments)
+    };p[i].q=p[i].q||[];n=l.createElement(o);g=l.getElementsByTagName(o)[0];n.async=1;
+    n.src=w;g.parentNode.insertBefore(n,g)}}(window,document,"script","#{asset_url('snowplow/sp.js')}","snowplow"));
+
+    window.snowplow('newTracker', '#{Gitlab::SnowplowTracker::NAMESPACE}', '#{Gitlab::CurrentSettings.snowplow_collector_hostname}', {
+      appId: '#{Gitlab::CurrentSettings.snowplow_site_id}',
+      cookieDomain: '#{Gitlab::CurrentSettings.snowplow_cookie_domain}',
+      userFingerprint: false,
+      respectDoNotTrack: true,
+      forceSecureTracker: true,
+      post: true,
+      contexts: { webPage: true },
+      stateStorageStrategy: "localStorage"
+    });
+
+    window.snowplow('enableActivityTracking', 30, 30);
+    window.snowplow('trackPageView');
+
+- return unless Feature.enabled?(:additional_snowplow_tracking, @group)
+
+= javascript_tag nonce: true do
+  :plain
+    window.snowplow('enableFormTracking');
+    window.snowplow('enableLinkClickTracking');

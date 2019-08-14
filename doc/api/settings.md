@@ -321,4 +321,8 @@ are listed in the descriptions of the relevant settings.
 | `user_show_add_ssh_key_message`          | boolean          | no                                   | When set to `false` disable the "You won't be able to pull or push project code via SSH" warning shown to users with no uploaded SSH key. |
 | `version_check_enabled`                  | boolean          | no                                   | Let GitLab inform you when an update is available. |
 | `local_markdown_version`                 | integer          | no                                   | Increase this value when any cached markdown should be invalidated. |
+| `snowplow_enabled`                       | boolean          | no                                   | Enable snowplow tracking. |
+| `snowplow_collector_hostname`            | string           | required by: `snowplow_enabled`      | The Snowplow collector hostname. (e.g. `snowplow.trx.gitlab.net`) | 
+| `snowplow_site_id`                       | string           | no                                   | The Snowplow site name / application id. (e.g. `gitlab`) |
+| `snowplow_cookie_domain`                 | string           | no                                   | The Snowplow cookie domain. (e.g. `.gitlab.com`) |
 | `geo_node_allowed_ips`                   | string           | yes                                  | **(PREMIUM)** Comma-separated list of IPs and CIDRs of allowed secondary nodes. For example, `1.1.1.1, 2.2.2.0/24`. |

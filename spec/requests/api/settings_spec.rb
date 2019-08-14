@@ -144,6 +144,7 @@ describe API::Settings, 'Settings' do
           external_auth_client_key_pass: "5iveL!fe"
         }
       end
+
       let(:attribute_names) { settings.keys.map(&:to_s) }
 
       it 'includes the attributes in the API' do
@@ -161,6 +162,56 @@ describe API::Settings, 'Settings' do
         expect(response).to have_gitlab_http_status(200)
         settings.each do |attribute, value|
           expect(ApplicationSetting.current.public_send(attribute)).to eq(value)
+        end
+      end
+    end
+
+    context "snowplow tracking settings" do
+      let(:settings) do
+        {
+          snowplow_collector_hostname: "snowplow.example.com",
+          snowplow_cookie_domain: ".example.com",
+          snowplow_enabled: true,
+          snowplow_site_id: "site_id"
+        }
+      end
+
+      let(:attribute_names) { settings.keys.map(&:to_s) }
+
+      it "includes the attributes in the API" do
+        get api("/application/settings", admin)
+
+        expect(response).to have_gitlab_http_status(200)
+        attribute_names.each do |attribute|
+          expect(json_response.keys).to include(attribute)
+        end
+      end
+
+      it "allows updating the settings" do
+        put api("/application/settings", admin), params: settings
+
+        expect(response).to have_gitlab_http_status(200)
+        settings.each do |attribute, value|
+          expect(ApplicationSetting.current.public_send(attribute)).to eq(value)
+        end
+      end
+
+      context "missing snowplow_collector_hostname value when snowplow_enabled is true" do
+        it "returns a blank parameter error message" do
+          put api("/application/settings", admin), params: { snowplow_enabled: true }
+
+          expect(response).to have_gitlab_http_status(400)
+          expect(json_response["error"]).to eq("snowplow_collector_hostname is missing")
+        end
+
+        it "handles validation errors" do
+          put api("/application/settings", admin), params: settings.merge({
+            snowplow_collector_hostname: nil
+          })
+
+          expect(response).to have_gitlab_http_status(400)
+          message = json_response["message"]
+          expect(message["snowplow_collector_hostname"]).to include("can't be blank")
         end
       end
     end

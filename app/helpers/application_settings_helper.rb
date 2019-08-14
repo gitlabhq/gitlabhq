@@ -270,7 +270,11 @@ module ApplicationSettingsHelper
       :diff_max_patch_bytes,
       :commit_email_hostname,
       :protected_ci_variables,
-      :local_markdown_version
+      :local_markdown_version,
+      :snowplow_collector_hostname,
+      :snowplow_cookie_domain,
+      :snowplow_enabled,
+      :snowplow_site_id
     ]
   end
 

@@ -99,6 +99,11 @@ class ApplicationSetting < ApplicationRecord
             presence: true,
             if: :plantuml_enabled
 
+  validates :snowplow_collector_hostname,
+            presence: true,
+            hostname: true,
+            if: :snowplow_enabled
+
   validates :max_attachment_size,
             presence: true,
             numericality: { only_integer: true, greater_than: 0 }
