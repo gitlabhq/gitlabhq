@@ -121,6 +121,16 @@ describe Gitlab::Ci::Pipeline::Seed::Stage do
     end
   end
 
+  describe '#seeds_errors' do
+    it 'returns all errors from seeds' do
+      expect(subject.seeds.first)
+        .to receive(:errors) { ["build error"] }
+
+      expect(subject.errors).to contain_exactly(
+        "build error")
+    end
+  end
+
   describe '#to_resource' do
     it 'builds a valid stage object with all builds' do
       subject.to_resource.save!

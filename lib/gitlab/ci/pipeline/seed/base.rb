@@ -13,6 +13,10 @@ module Gitlab
             raise NotImplementedError
           end
 
+          def errors
+            raise NotImplementedError
+          end
+
           def to_resource
             raise NotImplementedError
           end

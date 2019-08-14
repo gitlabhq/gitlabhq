@@ -33,6 +33,12 @@ module Gitlab
             end
           end
 
+          def errors
+            strong_memoize(:errors) do
+              seeds.flat_map(&:errors).compact
+            end
+          end
+
           def seeds_names
             strong_memoize(:seeds_names) do
               seeds.map(&:name).to_set
