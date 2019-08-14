@@ -33,6 +33,7 @@ Sidekiq.configure_server do |config|
   config.redis = queues_config_hash
 
   config.server_middleware do |chain|
+    chain.add Gitlab::SidekiqMiddleware::JobsThreads unless ENV['DISABLE_SIDEKIQ_INTERRUPT_RUNNING_JOBS']
     chain.add Gitlab::SidekiqMiddleware::Metrics if Settings.monitoring.sidekiq_exporter
     chain.add Gitlab::SidekiqMiddleware::ArgumentsLogger if ENV['SIDEKIQ_LOG_ARGUMENTS'] && !enable_json_logs
     chain.add Gitlab::SidekiqMiddleware::MemoryKiller if ENV['SIDEKIQ_MEMORY_KILLER_MAX_RSS']
@@ -57,6 +58,8 @@ Sidekiq.configure_server do |config|
     # Clear any connections that might have been obtained before starting
     # Sidekiq (e.g. in an initializer).
     ActiveRecord::Base.clear_all_connections!
+
+    Gitlab::SidekiqStatus::Monitor.instance.start unless ENV['DISABLE_SIDEKIQ_INTERRUPT_RUNNING_JOBS']
   end
 
   if enable_reliable_fetch?
