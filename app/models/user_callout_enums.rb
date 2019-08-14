@@ -14,8 +14,7 @@ module UserCalloutEnums
       gke_cluster_integration: 1,
       gcp_signup_offer: 2,
       cluster_security_warning: 3,
-      suggest_popover_dismissed: 9,
-      privacy_policy_update_64341: 10 # Privacy Policy Update: https://gitlab.com/gitlab-org/gitlab-ce/issues/64341
+      suggest_popover_dismissed: 9
     }
   end
 end

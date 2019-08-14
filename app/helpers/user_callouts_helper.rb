@@ -4,8 +4,6 @@ module UserCalloutsHelper
   GKE_CLUSTER_INTEGRATION = 'gke_cluster_integration'.freeze
   GCP_SIGNUP_OFFER = 'gcp_signup_offer'.freeze
   SUGGEST_POPOVER_DISMISSED = 'suggest_popover_dismissed'.freeze
-  # Privacy Policy Update: https://gitlab.com/gitlab-org/gitlab-ce/issues/64341
-  PRIVACY_POLICY_UPDATE_64341 = 'privacy_policy_update_64341'.freeze
 
   def show_gke_cluster_integration_callout?(project)
     can?(current_user, :create_cluster, project) &&
@@ -25,10 +23,6 @@ module UserCalloutsHelper
 
   def show_suggest_popover?
     !user_dismissed?(SUGGEST_POPOVER_DISMISSED)
-  end
-
-  def show_privacy_policy_update_64341?
-    !user_dismissed?(PRIVACY_POLICY_UPDATE_64341)
   end
 
   private

@@ -32,7 +32,6 @@ import initSearchAutocomplete from './search_autocomplete';
 import GlFieldErrors from './gl_field_errors';
 import initUserPopovers from './user_popovers';
 import { __ } from './locale';
-import initPrivacyPolicyUpdateCallout from './privacy_policy_update_callout';
 
 import 'ee_else_ce/main_ee';
 
@@ -80,7 +79,6 @@ function deferredInitialisation() {
   initLogoAnimation();
   initUsagePingConsent();
   initUserPopovers();
-  initPrivacyPolicyUpdateCallout();
 
   if (document.querySelector('.search')) initSearchAutocomplete();
 
