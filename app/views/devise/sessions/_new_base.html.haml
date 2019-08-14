@@ -1,20 +1,23 @@
 = form_for(resource, as: resource_name, url: session_path(resource_name), html: { class: 'new_user gl-show-field-errors', 'aria-live' => 'assertive'}) do |f|
   .form-group
-    = f.label "Username or email", for: "user_login", class: 'label-bold'
-    = f.text_field :login, class: "form-control top", autofocus: "autofocus", autocapitalize: "off", autocorrect: "off", required: true, title: "This field is required.", data: { qa_selector: 'login_field' }
+    = f.label _('Username or email'), for: 'user_login', class: 'label-bold'
+    = f.text_field :login, class: 'form-control top', autofocus: 'autofocus', autocapitalize: 'off', autocorrect: 'off', required: true, title: _('This field is required.'), data: { qa_selector: 'login_field' }
   .form-group
     = f.label :password, class: 'label-bold'
-    = f.password_field :password, class: "form-control bottom", required: true, title: "This field is required.", data: { qa_selector: 'password_field' }
+    = f.password_field :password, class: 'form-control bottom', required: true, title: _('This field is required.'), data: { qa_selector: 'password_field' }
   - if devise_mapping.rememberable?
     .remember-me
-      %label{ for: "user_remember_me" }
+      %label{ for: 'user_remember_me' }
         = f.check_box :remember_me, class: 'remember-me-checkbox'
         %span Remember me
-      .float-right.forgot-password
-        = link_to "Forgot your password?", new_password_path(:user)
+      .float-right
+        - if unconfirmed_email?
+          = link_to _('Resend confirmation email'), new_user_confirmation_path
+        - else
+          = link_to _('Forgot your password?'), new_password_path(:user)
     %div
     - if captcha_enabled?
       = recaptcha_tags
 
   .submit-container.move-submit-down
-    = f.submit "Sign in", class: "btn btn-success", data: { qa_selector: 'sign_in_button' }
+    = f.submit _('Sign in'), class: 'btn btn-success', data: { qa_selector: 'sign_in_button' }
