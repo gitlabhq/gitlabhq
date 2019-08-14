@@ -11,6 +11,20 @@ describe Projects::CycleAnalyticsController do
     project.add_maintainer(user)
   end
 
+  context "counting page views for 'show'" do
+    it 'increases the counter' do
+      expect(Gitlab::UsageDataCounters::CycleAnalyticsCounter).to receive(:count).with(:views)
+
+      get(:show,
+          params: {
+            namespace_id: project.namespace,
+            project_id: project
+          })
+
+      expect(response).to be_success
+    end
+  end
+
   describe 'cycle analytics not set up flag' do
     context 'with no data' do
       it 'is true' do
