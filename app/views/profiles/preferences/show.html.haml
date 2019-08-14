@@ -45,20 +45,20 @@
     .form-group
       = f.label :layout, class: 'label-bold' do
         = s_('Preferences|Layout width')
-      = f.select :layout, layout_choices, {}, class: 'form-control'
+      = f.select :layout, layout_choices, {}, class: 'select2'
       .form-text.text-muted
         = s_('Preferences|Choose between fixed (max. 1280px) and fluid (100%%) application layout.')
     .form-group
       = f.label :dashboard, class: 'label-bold' do
         = s_('Preferences|Default dashboard')
-      = f.select :dashboard, dashboard_choices, {}, class: 'form-control'
+      = f.select :dashboard, dashboard_choices, {}, class: 'select2'
 
     = render_if_exists 'profiles/preferences/group_overview_selector', f: f # EE-specific
 
     .form-group
       = f.label :project_view, class: 'label-bold' do
         = s_('Preferences|Project overview content')
-      = f.select :project_view, project_view_choices, {}, class: 'form-control'
+      = f.select :project_view, project_view_choices, {}, class: 'select2'
       .form-text.text-muted
         = s_('Preferences|Choose what content you want to see on a project’s overview page.')
 
@@ -82,7 +82,7 @@
     .form-group
       = f.label :first_day_of_week, class: 'label-bold' do
         = _('First day of the week')
-      = f.select :first_day_of_week, first_day_of_week_choices_with_default, {}, class: 'form-control'
+      = f.select :first_day_of_week, first_day_of_week_choices_with_default, {}, class: 'select2'
   - if Feature.enabled?(:user_time_settings)
     .col-sm-12
       %hr
