@@ -5215,6 +5215,9 @@ msgstr ""
 msgid "GitLab User"
 msgstr ""
 
+msgid "GitLab member or Email address"
+msgstr ""
+
 msgid "GitLab project export"
 msgstr ""
 
@@ -9910,9 +9913,6 @@ msgid "Select an existing Kubernetes cluster or create a new one"
 msgstr ""
 
 msgid "Select branch/tag"
-msgstr ""
-
-msgid "Select members to invite"
 msgstr ""
 
 msgid "Select merge moment"

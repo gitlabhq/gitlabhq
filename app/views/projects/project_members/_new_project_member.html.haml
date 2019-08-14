@@ -2,7 +2,7 @@
   .col-sm-12
     = form_for @project_member, as: :project_member, url: project_project_members_path(@project), html: { class: 'users-project-form' } do |f|
       .form-group
-        = label_tag :user_ids, _("Select members to invite"), class: "label-bold"
+        = label_tag :user_ids, _("GitLab member or Email address"), class: "label-bold"
         = users_select_tag(:user_ids, multiple: true, class: "input-clamp qa-member-select-input", scope: :all, email_user: true, placeholder: "Search for members to update or invite")
       .form-group
         = label_tag :access_level, _("Choose a role permission"), class: "label-bold"
