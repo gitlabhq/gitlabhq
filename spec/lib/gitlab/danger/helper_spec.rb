@@ -101,13 +101,13 @@ describe Gitlab::Danger::Helper do
 
   describe '#changes_by_category' do
     it 'categorizes changed files' do
-      expect(fake_git).to receive(:added_files) { %w[foo foo.md foo.rb foo.js db/foo lib/gitlab/database/foo.rb qa/foo ee/changelogs/foo.yml] }
+      expect(fake_git).to receive(:added_files) { %w[foo foo.md foo.rb foo.js db/migrate/foo lib/gitlab/database/foo.rb qa/foo ee/changelogs/foo.yml] }
       allow(fake_git).to receive(:modified_files) { [] }
       allow(fake_git).to receive(:renamed_files) { [] }
 
       expect(helper.changes_by_category).to eq(
         backend: %w[foo.rb],
-        database: %w[db/foo lib/gitlab/database/foo.rb],
+        database: %w[db/migrate/foo lib/gitlab/database/foo.rb],
         frontend: %w[foo.js],
         none: %w[ee/changelogs/foo.yml foo.md],
         qa: %w[qa/foo],
@@ -173,8 +173,13 @@ describe Gitlab::Danger::Helper do
 
       'ee/FOO_VERSION' | :unknown
 
-      'db/foo'                                                    | :database
-      'ee/db/foo'                                                 | :database
+      'db/schema.rb'                                              | :database
+      'db/migrate/foo'                                            | :database
+      'db/post_migrate/foo'                                       | :database
+      'ee/db/migrate/foo'                                         | :database
+      'ee/db/post_migrate/foo'                                    | :database
+      'ee/db/geo/migrate/foo'                                     | :database
+      'ee/db/geo/post_migrate/foo'                                | :database
       'app/models/project_authorization.rb'                       | :database
       'app/services/users/refresh_authorized_projects_service.rb' | :database
       'lib/gitlab/background_migration.rb'                        | :database
@@ -187,6 +192,9 @@ describe Gitlab::Danger::Helper do
       'lib/gitlab/github_import/foo'                              | :database
       'lib/gitlab/sql/foo'                                        | :database
       'rubocop/cop/migration/foo'                                 | :database
+
+      'db/fixtures/foo.rb'                                 | :backend
+      'ee/db/fixtures/foo.rb'                              | :backend
 
       'qa/foo' | :qa
       'ee/qa/foo' | :qa
