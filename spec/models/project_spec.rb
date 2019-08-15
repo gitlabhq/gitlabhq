@@ -98,6 +98,7 @@ describe Project do
     it { is_expected.to have_many(:lfs_file_locks) }
     it { is_expected.to have_many(:project_deploy_tokens) }
     it { is_expected.to have_many(:deploy_tokens).through(:project_deploy_tokens) }
+    it { is_expected.to have_many(:cycle_analytics_stages) }
 
     it 'has an inverse relationship with merge requests' do
       expect(described_class.reflect_on_association(:merge_requests).has_inverse?).to eq(:target_project)

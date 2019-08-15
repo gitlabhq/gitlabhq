@@ -283,6 +283,7 @@ class Project < ApplicationRecord
   has_one :ci_cd_settings, class_name: 'ProjectCiCdSetting', inverse_of: :project, autosave: true, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
   has_many :remote_mirrors, inverse_of: :project
+  has_many :cycle_analytics_stages, class_name: 'Analytics::CycleAnalytics::ProjectStage'
 
   accepts_nested_attributes_for :variables, allow_destroy: true
   accepts_nested_attributes_for :project_feature, update_only: true
