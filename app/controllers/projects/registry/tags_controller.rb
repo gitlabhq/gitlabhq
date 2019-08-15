@@ -5,6 +5,8 @@ module Projects
     class TagsController < ::Projects::Registry::ApplicationController
       before_action :authorize_destroy_container_image!, only: [:destroy]
 
+      LIMIT = 15
+
       def index
         respond_to do |format|
           format.json do
@@ -34,7 +36,13 @@ module Projects
           return
         end
 
-        @tags = (params[:ids] || []).map { |tag_name| image.tag(tag_name) }
+        tag_names = params[:ids] || []
+        if tag_names.size > LIMIT
+          head :bad_request
+          return
+        end
+
+        @tags = tag_names.map { |tag_name| image.tag(tag_name) }
         unless @tags.all? { |tag| tag.valid_name? }
           head :bad_request
           return
@@ -55,7 +63,7 @@ module Projects
       private
 
       def tags
-        Kaminari::PaginatableArray.new(image.tags, limit: 15)
+        Kaminari::PaginatableArray.new(image.tags, limit: LIMIT)
       end
 
       def image
