@@ -1,5 +1,7 @@
 # Cycle Analytics
 
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/12077) at a group level in [GitLab Premium and Silver](https://about.gitlab.com/pricing/) 12.2 (enabled by feature flag `analytics`).
+
 Cycle Analytics measures the time spent to go from an [idea to production] - also known
 as cycle time - for each of your projects. Cycle Analytics displays the median time for an idea to
 reach production, along with the time typically spent in each DevOps stage along the way.
@@ -13,10 +15,16 @@ calculates a separate median for each stage.
 
 ## Overview
 
-You can find the Cycle Analytics page under your project's **Project ➔ Cycle
-Analytics** tab.
+Cycle Analytics are available at a:
 
-![Cycle Analytics landing page](img/cycle_analytics_landing_page.png)
+- Group level from the top navigation bar **Analytics > Cycle Analytics**. **(PREMIUM)**
+
+  In the future, multiple groups will be selectable which will effectively make this an
+  instance-level feature.
+
+- Project level from a project's **Project > Cycle Analytics**.
+
+  ![Cycle Analytics landing page](img/cycle_analytics_landing_page.png)
 
 There are seven stages that are tracked as part of the Cycle Analytics calculations.
 
@@ -134,13 +142,25 @@ A few notes:
 
 ## Permissions
 
-The current permissions on the Cycle Analytics dashboard are:
+The current permissions on the Project Cycle Analytics dashboard are:
 
 - Public projects - anyone can access
 - Internal projects - any authenticated user can access
 - Private projects - any member Guest and above can access
 
 You can [read more about permissions][permissions] in general.
+
+NOTE: **Note:**
+As of GitLab 12.2, the project-level page is deprecated. You should access
+project-level Cycle Analytics from **Analytics > Cycle Analytics** in the top
+navigation bar. We will ensure that the same project-level functionality is available
+to CE users in the new analytics space.
+
+For Cycle Analytics functionality introduced in GitLab 12.2 and later:
+
+- Users must have Reporter access or above.
+- Features are available only on
+  [Premium or Silver tiers](https://about.gitlab.com/pricing/) and above.
 
 ## More resources
 
