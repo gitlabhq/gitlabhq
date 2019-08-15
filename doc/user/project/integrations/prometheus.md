@@ -354,7 +354,7 @@ Prometheus server.
 
 ![Merge Request with Performance Impact](img/merge_request_performance.png)
 
-## Embedding metric charts within Gitlab Flavored Markdown
+## Embedding metric charts within GitLab Flavored Markdown
 
 > [Introduced][ce-29691] in GitLab 12.2.
 > Requires [Kubernetes](prometheus_library/kubernetes.md) metrics.
