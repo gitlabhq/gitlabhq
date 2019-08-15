@@ -55,7 +55,7 @@ changes you made after picking the template and return it to its initial status.
 
 ![Description templates](img/description_templates.png)
 
-## Setting a default template for issues and merge requests  **(STARTER)**
+## Setting a default template for merge requests and issues  **(STARTER)**
 
 > **Notes:**
 >
@@ -66,20 +66,20 @@ changes you made after picking the template and return it to its initial status.
 > - Templates for merge requests were [introduced][ee-7478ece] in GitLab EE 6.9.
 
 The visibility of issues and/or merge requests should be set to either "Everyone
-with access" or "Only Project Members" in your project's **Settings** otherwise the
+with access" or "Only Project Members" in your project's **Settings / Visibility, project features, permissions** section, otherwise the
 template text areas won't show. This is the default behavior so in most cases
 you should be fine.
 
-Go to your project's **Settings** and fill in the "Default description template
-for issues" and "Default description template for merge requests" text areas
-for issues and merge requests respectively. Since GitLab issues and merge
-request support [Markdown](../markdown.md), you can use special markup like
+Go to your project's **Settings** and under the **Merge requests** header, click *Expand* and fill in the "Default description template
+for merge requests" text area. Under the **Default issue template**, click *Expand* and fill in "Default description template for issues" text area. Since GitLab merge request and issues
+ support [Markdown](../markdown.md), you can use special markup like
 headings, lists, etc.
 
-![Default description templates](img/description_templates_default_settings.png)
+![Default merge request description templates](img/description_templates_merge_request_settings.png)
+![Default issue description templates](img/description_templates_issue_settings.png)
 
 After you add the description, hit **Save changes** for the settings to take
-effect. Now, every time a new issue or merge request is created, it will be
+effect. Now, every time a new merge request or issue is created, it will be
 pre-filled with the text you entered in the template(s).
 
 ## Description template example
