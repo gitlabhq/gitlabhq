@@ -9,6 +9,7 @@ module Projects
 
     # rubocop: disable CodeReuse/ActiveRecord
     def execute
+      remove_unallowed_params
       validate!
 
       ensure_wiki_exists if enabling_wiki?
@@ -52,6 +53,10 @@ module Projects
       if changing_default_branch?
         raise ValidationError.new(s_("UpdateProject|Could not set the default branch")) unless project.change_head(params[:default_branch])
       end
+    end
+
+    def remove_unallowed_params
+      params.delete(:emails_disabled) unless can?(current_user, :set_emails_disabled, project)
     end
 
     def after_update

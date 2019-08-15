@@ -2315,6 +2315,57 @@ describe Project do
     end
   end
 
+  describe '#emails_disabled?' do
+    let(:project) { create(:project, emails_disabled: false) }
+
+    context 'emails disabled in group' do
+      it 'returns true' do
+        allow(project.namespace).to receive(:emails_disabled?) { true }
+
+        expect(project.emails_disabled?).to be_truthy
+      end
+    end
+
+    context 'emails enabled in group' do
+      before do
+        allow(project.namespace).to receive(:emails_disabled?) { false }
+      end
+
+      it 'returns false' do
+        expect(project.emails_disabled?).to be_falsey
+      end
+
+      it 'returns true' do
+        project.update_attribute(:emails_disabled, true)
+
+        expect(project.emails_disabled?).to be_truthy
+      end
+    end
+
+    context 'when :emails_disabled feature flag is off' do
+      before do
+        stub_feature_flags(emails_disabled: false)
+      end
+
+      context 'emails disabled in group' do
+        it 'returns false' do
+          allow(project.namespace).to receive(:emails_disabled?) { true }
+
+          expect(project.emails_disabled?).to be_falsey
+        end
+      end
+
+      context 'emails enabled in group' do
+        it 'returns false' do
+          allow(project.namespace).to receive(:emails_disabled?) { false }
+          project.update_attribute(:emails_disabled, true)
+
+          expect(project.emails_disabled?).to be_falsey
+        end
+      end
+    end
+  end
+
   describe '#lfs_enabled?' do
     let(:project) { create(:project) }
 

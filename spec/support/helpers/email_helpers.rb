@@ -31,6 +31,10 @@ module EmailHelpers
     expect(ActionMailer::Base.deliveries).to be_empty
   end
 
+  def should_email_anyone
+    expect(ActionMailer::Base.deliveries).not_to be_empty
+  end
+
   def email_recipients(kind: :to)
     ActionMailer::Base.deliveries.flat_map(&kind)
   end

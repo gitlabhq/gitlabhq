@@ -361,6 +361,7 @@ class ProjectsController < Projects::ApplicationController
       :container_registry_enabled,
       :default_branch,
       :description,
+      :emails_disabled,
       :external_authorization_classification_label,
       :import_url,
       :issues_tracker,

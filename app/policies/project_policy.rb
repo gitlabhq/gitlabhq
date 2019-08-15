@@ -162,6 +162,7 @@ class ProjectPolicy < BasePolicy
     enable :set_issue_created_at
     enable :set_issue_updated_at
     enable :set_note_created_at
+    enable :set_emails_disabled
   end
 
   rule { can?(:guest_access) }.policy do
