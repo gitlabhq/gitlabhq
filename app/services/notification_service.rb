@@ -321,6 +321,9 @@ class NotificationService
   end
 
   def decline_project_invite(project_member)
+    # Must always send, regardless of project/namespace configuration since it's a
+    # response to the user's action.
+
     mailer.member_invite_declined_email(
       project_member.real_source_type,
       project_member.project.id,
@@ -351,8 +354,8 @@ class NotificationService
   end
 
   def decline_group_invite(group_member)
-    # always send this one, since it's a response to the user's own
-    # action
+    # Must always send, regardless of project/namespace configuration since it's a
+    # response to the user's action.
 
     mailer.member_invite_declined_email(
       group_member.real_source_type,
@@ -410,6 +413,10 @@ class NotificationService
   end
 
   def pipeline_finished(pipeline, recipients = nil)
+    # Must always check project configuration since recipients could be a list of emails
+    # from the PipelinesEmailService integration.
+    return if pipeline.project.emails_disabled?
+
     email_template = "pipeline_#{pipeline.status}_email"
 
     return unless mailer.respond_to?(email_template)
@@ -428,6 +435,8 @@ class NotificationService
   end
 
   def autodevops_disabled(pipeline, recipients)
+    return if pipeline.project.emails_disabled?
+
     recipients.each do |recipient|
       mailer.autodevops_disabled_email(pipeline, recipient).deliver_later
     end
@@ -472,10 +481,14 @@ class NotificationService
   end
 
   def repository_cleanup_success(project, user)
+    return if project.emails_disabled?
+
     mailer.send(:repository_cleanup_success_email, project, user).deliver_later
   end
 
   def repository_cleanup_failure(project, user, error)
+    return if project.emails_disabled?
+
     mailer.send(:repository_cleanup_failure_email, project, user, error).deliver_later
   end
 

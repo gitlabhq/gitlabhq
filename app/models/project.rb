@@ -631,6 +631,13 @@ class Project < ApplicationRecord
 
   alias_method :ancestors, :ancestors_upto
 
+  def emails_disabled?
+    strong_memoize(:emails_disabled) do
+      # disabling in the namespace overrides the project setting
+      Feature.enabled?(:emails_disabled, self, default_enabled: true) && (super || namespace.emails_disabled?)
+    end
+  end
+
   def lfs_enabled?
     return namespace.lfs_enabled? if self[:lfs_enabled].nil?
 

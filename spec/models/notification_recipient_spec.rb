@@ -9,6 +9,38 @@ describe NotificationRecipient do
 
   subject(:recipient) { described_class.new(user, :watch, target: target, project: project) }
 
+  describe '#notifiable?' do
+    let(:recipient) { described_class.new(user, :mention, target: target, project: project) }
+
+    context 'when emails are disabled' do
+      it 'returns false if group disabled' do
+        expect(project.namespace).to receive(:emails_disabled?).and_return(true)
+        expect(recipient).to receive(:emails_disabled?).and_call_original
+        expect(recipient.notifiable?).to eq false
+      end
+
+      it 'returns false if project disabled' do
+        expect(project).to receive(:emails_disabled?).and_return(true)
+        expect(recipient).to receive(:emails_disabled?).and_call_original
+        expect(recipient.notifiable?).to eq false
+      end
+    end
+
+    context 'when emails are enabled' do
+      it 'returns true if group enabled' do
+        expect(project.namespace).to receive(:emails_disabled?).and_return(false)
+        expect(recipient).to receive(:emails_disabled?).and_call_original
+        expect(recipient.notifiable?).to eq true
+      end
+
+      it 'returns true if project enabled' do
+        expect(project).to receive(:emails_disabled?).and_return(false)
+        expect(recipient).to receive(:emails_disabled?).and_call_original
+        expect(recipient.notifiable?).to eq true
+      end
+    end
+  end
+
   describe '#has_access?' do
     before do
       allow(user).to receive(:can?).and_call_original

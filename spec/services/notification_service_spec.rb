@@ -240,45 +240,50 @@ describe NotificationService, :mailer do
       end
 
       describe '#new_note' do
-        it do
-          add_users(project)
-          add_user_subscriptions(issue)
-          reset_delivered_emails!
+        context do
+          before do
+            add_users(project)
+            add_user_subscriptions(issue)
+            reset_delivered_emails!
+          end
 
-          expect(SentNotification).to receive(:record).with(issue, any_args).exactly(10).times
+          it do
+            expect(SentNotification).to receive(:record).with(issue, any_args).exactly(10).times
 
-          notification.new_note(note)
+            notification.new_note(note)
 
-          should_email(@u_watcher)
-          should_email(note.noteable.author)
-          should_email(note.noteable.assignees.first)
-          should_email(@u_custom_global)
-          should_email(@u_mentioned)
-          should_email(@subscriber)
-          should_email(@watcher_and_subscriber)
-          should_email(@subscribed_participant)
-          should_email(@u_custom_off)
-          should_email(@unsubscribed_mentioned)
-          should_not_email(@u_guest_custom)
-          should_not_email(@u_guest_watcher)
-          should_not_email(note.author)
-          should_not_email(@u_participating)
-          should_not_email(@u_disabled)
-          should_not_email(@unsubscriber)
-          should_not_email(@u_outsider_mentioned)
-          should_not_email(@u_lazy_participant)
-        end
+            should_email(@u_watcher)
+            should_email(note.noteable.author)
+            should_email(note.noteable.assignees.first)
+            should_email(@u_custom_global)
+            should_email(@u_mentioned)
+            should_email(@subscriber)
+            should_email(@watcher_and_subscriber)
+            should_email(@subscribed_participant)
+            should_email(@u_custom_off)
+            should_email(@unsubscribed_mentioned)
+            should_not_email(@u_guest_custom)
+            should_not_email(@u_guest_watcher)
+            should_not_email(note.author)
+            should_not_email(@u_participating)
+            should_not_email(@u_disabled)
+            should_not_email(@unsubscriber)
+            should_not_email(@u_outsider_mentioned)
+            should_not_email(@u_lazy_participant)
+          end
 
-        it "emails the note author if they've opted into notifications about their activity" do
-          add_users(project)
-          add_user_subscriptions(issue)
-          reset_delivered_emails!
+          it "emails the note author if they've opted into notifications about their activity" do
+            note.author.notified_of_own_activity = true
 
-          note.author.notified_of_own_activity = true
+            notification.new_note(note)
 
-          notification.new_note(note)
+            should_email(note.author)
+          end
 
-          should_email(note.author)
+          it_behaves_like 'project emails are disabled' do
+            let(:notification_target)  { note }
+            let(:notification_trigger) { notification.new_note(note) }
+          end
         end
 
         it 'filters out "mentioned in" notes' do
@@ -336,6 +341,11 @@ describe NotificationService, :mailer do
         let(:group) { create(:group) }
 
         it_behaves_like 'new note notifications'
+
+        it_behaves_like 'project emails are disabled' do
+          let(:notification_target)  { note }
+          let(:notification_trigger) { notification.new_note(note) }
+        end
 
         context 'which is a subgroup' do
           let!(:parent) { create(:group) }
@@ -471,6 +481,11 @@ describe NotificationService, :mailer do
 
           expect(Notify).not_to receive(:note_issue_email)
           notification.new_note(mentioned_note)
+        end
+
+        it_behaves_like 'project emails are disabled' do
+          let(:notification_target)  { note }
+          let(:notification_trigger) { notification.new_note(note) }
         end
       end
     end
@@ -619,6 +634,11 @@ describe NotificationService, :mailer do
           notification.new_note(note)
           should_not_email(@u_committer)
         end
+
+        it_behaves_like 'project emails are disabled' do
+          let(:notification_target)  { note }
+          let(:notification_trigger) { notification.new_note(note) }
+        end
       end
     end
 
@@ -644,6 +664,11 @@ describe NotificationService, :mailer do
           expect(SentNotification.last(3).map(&:recipient).map(&:id))
             .to contain_exactly(*merge_request.assignees.pluck(:id), merge_request.author.id, @u_watcher.id)
           expect(SentNotification.last.in_reply_to_discussion_id).to eq(note.discussion_id)
+        end
+
+        it_behaves_like 'project emails are disabled' do
+          let(:notification_target)  { note }
+          let(:notification_trigger) { notification.new_note(note) }
         end
       end
     end
@@ -819,6 +844,11 @@ describe NotificationService, :mailer do
         should_email(user_4)
       end
 
+      it_behaves_like 'project emails are disabled' do
+        let(:notification_target)  { issue }
+        let(:notification_trigger) { notification.new_issue(issue, @u_disabled) }
+      end
+
       context 'confidential issues' do
         let(:author) { create(:user) }
         let(:assignee) { create(:user) }
@@ -861,6 +891,11 @@ describe NotificationService, :mailer do
       let(:mentionable) { issue }
 
       include_examples 'notifications for new mentions'
+
+      it_behaves_like 'project emails are disabled' do
+        let(:notification_target)  { issue }
+        let(:notification_trigger) { send_notifications(@u_watcher, @u_participant_mentioned, @u_custom_global, @u_mentioned) }
+      end
     end
 
     describe '#reassigned_issue' do
@@ -969,6 +1004,11 @@ describe NotificationService, :mailer do
         let(:issuable) { issue }
         let(:notification_trigger) { notification.reassigned_issue(issue, @u_disabled, [assignee]) }
       end
+
+      it_behaves_like 'project emails are disabled' do
+        let(:notification_target)  { issue }
+        let(:notification_trigger) { notification.reassigned_issue(issue, @u_disabled, [assignee]) }
+      end
     end
 
     describe '#relabeled_issue' do
@@ -1028,6 +1068,11 @@ describe NotificationService, :mailer do
         should_email(subscriber_to_both)
       end
 
+      it_behaves_like 'project emails are disabled' do
+        let(:notification_target)  { issue }
+        let(:notification_trigger) { notification.relabeled_issue(issue, [group_label_2, label_2], @u_disabled) }
+      end
+
       context 'confidential issues' do
         let(:author) { create(:user) }
         let(:assignee) { create(:user) }
@@ -1065,12 +1110,19 @@ describe NotificationService, :mailer do
     end
 
     describe '#removed_milestone_issue' do
-      it_behaves_like 'altered milestone notification on issue' do
+      context do
         let(:milestone) { create(:milestone, project: project, issues: [issue]) }
         let!(:subscriber_to_new_milestone) { create(:user) { |u| issue.toggle_subscription(u, project) } }
 
-        before do
-          notification.removed_milestone_issue(issue, issue.author)
+        it_behaves_like 'altered milestone notification on issue' do
+          before do
+            notification.removed_milestone_issue(issue, issue.author)
+          end
+        end
+
+        it_behaves_like 'project emails are disabled' do
+          let(:notification_target)  { issue }
+          let(:notification_trigger) { notification.removed_milestone_issue(issue, issue.author) }
         end
       end
 
@@ -1110,12 +1162,19 @@ describe NotificationService, :mailer do
     end
 
     describe '#changed_milestone_issue' do
-      it_behaves_like 'altered milestone notification on issue' do
+      context do
         let(:new_milestone) { create(:milestone, project: project, issues: [issue]) }
         let!(:subscriber_to_new_milestone) { create(:user) { |u| issue.toggle_subscription(u, project) } }
 
-        before do
-          notification.changed_milestone_issue(issue, new_milestone, issue.author)
+        it_behaves_like 'altered milestone notification on issue' do
+          before do
+            notification.changed_milestone_issue(issue, new_milestone, issue.author)
+          end
+        end
+
+        it_behaves_like 'project emails are disabled' do
+          let(:notification_target)  { issue }
+          let(:notification_trigger) { notification.changed_milestone_issue(issue, new_milestone, issue.author) }
         end
       end
 
@@ -1183,6 +1242,11 @@ describe NotificationService, :mailer do
         let(:issuable) { issue }
         let(:notification_trigger) { notification.close_issue(issue, @u_disabled) }
       end
+
+      it_behaves_like 'project emails are disabled' do
+        let(:notification_target)  { issue }
+        let(:notification_trigger) { notification.close_issue(issue, @u_disabled) }
+      end
     end
 
     describe '#reopen_issue' do
@@ -1214,6 +1278,11 @@ describe NotificationService, :mailer do
         let(:issuable) { issue }
         let(:notification_trigger) { notification.reopen_issue(issue, @u_disabled) }
       end
+
+      it_behaves_like 'project emails are disabled' do
+        let(:notification_target)  { issue }
+        let(:notification_trigger) { notification.reopen_issue(issue, @u_disabled) }
+      end
     end
 
     describe '#issue_moved' do
@@ -1238,6 +1307,11 @@ describe NotificationService, :mailer do
       it_behaves_like 'participating notifications' do
         let(:participant) { create(:user, username: 'user-participant') }
         let(:issuable) { issue }
+        let(:notification_trigger) { notification.issue_moved(issue, new_issue, @u_disabled) }
+      end
+
+      it_behaves_like 'project emails are disabled' do
+        let(:notification_target)  { issue }
         let(:notification_trigger) { notification.issue_moved(issue, new_issue, @u_disabled) }
       end
     end
@@ -1278,6 +1352,11 @@ describe NotificationService, :mailer do
       it_behaves_like 'participating notifications' do
         let(:participant) { create(:user, username: 'user-participant') }
         let(:issuable) { issue }
+        let(:notification_trigger) { notification.issue_due(issue) }
+      end
+
+      it_behaves_like 'project emails are disabled' do
+        let(:notification_target)  { issue }
         let(:notification_trigger) { notification.issue_due(issue) }
       end
     end
@@ -1374,6 +1453,11 @@ describe NotificationService, :mailer do
         should_email(user_4)
       end
 
+      it_behaves_like 'project emails are disabled' do
+        let(:notification_target)  { merge_request }
+        let(:notification_trigger) { notification.new_merge_request(merge_request, @u_disabled) }
+      end
+
       context 'participating' do
         it_should_behave_like 'participating by assignee notification' do
           let(:participant) { create(:user, username: 'user-participant')}
@@ -1406,6 +1490,11 @@ describe NotificationService, :mailer do
       let(:mentionable) { merge_request }
 
       include_examples 'notifications for new mentions'
+
+      it_behaves_like 'project emails are disabled' do
+        let(:notification_target)  { merge_request }
+        let(:notification_trigger) { send_notifications(@u_watcher, @u_participant_mentioned, @u_custom_global, @u_mentioned) }
+      end
     end
 
     describe '#reassigned_merge_request' do
@@ -1449,6 +1538,11 @@ describe NotificationService, :mailer do
         let(:issuable) { merge_request }
         let(:notification_trigger) { notification.reassigned_merge_request(merge_request, current_user, [assignee]) }
       end
+
+      it_behaves_like 'project emails are disabled' do
+        let(:notification_target)  { merge_request }
+        let(:notification_trigger) { notification.reassigned_merge_request(merge_request, current_user, [assignee]) }
+      end
     end
 
     describe '#push_to_merge_request' do
@@ -1477,6 +1571,11 @@ describe NotificationService, :mailer do
       it_behaves_like 'participating notifications' do
         let(:participant) { create(:user, username: 'user-participant') }
         let(:issuable) { merge_request }
+        let(:notification_trigger) { notification.push_to_merge_request(merge_request, @u_disabled) }
+      end
+
+      it_behaves_like 'project emails are disabled' do
+        let(:notification_target)  { merge_request }
         let(:notification_trigger) { notification.push_to_merge_request(merge_request, @u_disabled) }
       end
     end
@@ -1512,27 +1611,42 @@ describe NotificationService, :mailer do
         should_not_email(@u_participating)
         should_not_email(@u_lazy_participant)
       end
+
+      it_behaves_like 'project emails are disabled' do
+        let(:notification_target)  { merge_request }
+        let(:notification_trigger) { notification.relabeled_merge_request(merge_request, [group_label_2, label_2], @u_disabled) }
+      end
     end
 
     describe '#removed_milestone_merge_request' do
-      it_behaves_like 'altered milestone notification on merge request' do
-        let(:milestone) { create(:milestone, project: project, merge_requests: [merge_request]) }
-        let!(:subscriber_to_new_milestone) { create(:user) { |u| merge_request.toggle_subscription(u, project) } }
+      let(:milestone) { create(:milestone, project: project, merge_requests: [merge_request]) }
+      let!(:subscriber_to_new_milestone) { create(:user) { |u| merge_request.toggle_subscription(u, project) } }
 
+      it_behaves_like 'altered milestone notification on merge request' do
         before do
           notification.removed_milestone_merge_request(merge_request, merge_request.author)
         end
       end
+
+      it_behaves_like 'project emails are disabled' do
+        let(:notification_target)  { merge_request }
+        let(:notification_trigger) { notification.removed_milestone_merge_request(merge_request, merge_request.author) }
+      end
     end
 
     describe '#changed_milestone_merge_request' do
-      it_behaves_like 'altered milestone notification on merge request' do
-        let(:new_milestone) { create(:milestone, project: project, merge_requests: [merge_request]) }
-        let!(:subscriber_to_new_milestone) { create(:user) { |u| merge_request.toggle_subscription(u, project) } }
+      let(:new_milestone) { create(:milestone, project: project, merge_requests: [merge_request]) }
+      let!(:subscriber_to_new_milestone) { create(:user) { |u| merge_request.toggle_subscription(u, project) } }
 
+      it_behaves_like 'altered milestone notification on merge request' do
         before do
           notification.changed_milestone_merge_request(merge_request, new_milestone, merge_request.author)
         end
+      end
+
+      it_behaves_like 'project emails are disabled' do
+        let(:notification_target)  { merge_request }
+        let(:notification_trigger) { notification.changed_milestone_merge_request(merge_request, new_milestone, merge_request.author) }
       end
     end
 
@@ -1542,6 +1656,11 @@ describe NotificationService, :mailer do
 
         should_email(merge_request.author)
         expect(email_recipients.size).to eq(1)
+      end
+
+      it_behaves_like 'project emails are disabled' do
+        let(:notification_target)  { merge_request }
+        let(:notification_trigger) { notification.merge_request_unmergeable(merge_request) }
       end
 
       describe 'when merge_when_pipeline_succeeds is true' do
@@ -1588,6 +1707,11 @@ describe NotificationService, :mailer do
       it_behaves_like 'participating notifications' do
         let(:participant) { create(:user, username: 'user-participant') }
         let(:issuable) { merge_request }
+        let(:notification_trigger) { notification.close_mr(merge_request, @u_disabled) }
+      end
+
+      it_behaves_like 'project emails are disabled' do
+        let(:notification_target)  { merge_request }
         let(:notification_trigger) { notification.close_mr(merge_request, @u_disabled) }
       end
     end
@@ -1642,6 +1766,11 @@ describe NotificationService, :mailer do
         let(:issuable) { merge_request }
         let(:notification_trigger) { notification.merge_mr(merge_request, @u_disabled) }
       end
+
+      it_behaves_like 'project emails are disabled' do
+        let(:notification_target)  { merge_request }
+        let(:notification_trigger) { notification.merge_mr(merge_request, @u_disabled) }
+      end
     end
 
     describe '#reopen_merge_request' do
@@ -1672,6 +1801,11 @@ describe NotificationService, :mailer do
         let(:issuable) { merge_request }
         let(:notification_trigger) { notification.reopen_mr(merge_request, @u_disabled) }
       end
+
+      it_behaves_like 'project emails are disabled' do
+        let(:notification_target)  { merge_request }
+        let(:notification_trigger) { notification.reopen_mr(merge_request, @u_disabled) }
+      end
     end
 
     describe "#resolve_all_discussions" do
@@ -1693,6 +1827,11 @@ describe NotificationService, :mailer do
       it_behaves_like 'participating notifications' do
         let(:participant) { create(:user, username: 'user-participant') }
         let(:issuable) { merge_request }
+        let(:notification_trigger) { notification.resolve_all_discussions(merge_request, @u_disabled) }
+      end
+
+      it_behaves_like 'project emails are disabled' do
+        let(:notification_target)  { merge_request }
         let(:notification_trigger) { notification.resolve_all_discussions(merge_request, @u_disabled) }
       end
     end
@@ -1717,6 +1856,11 @@ describe NotificationService, :mailer do
         should_not_email(@u_guest_watcher)
         should_not_email(@u_guest_custom)
         should_not_email(@u_disabled)
+      end
+
+      it_behaves_like 'project emails are disabled' do
+        let(:notification_target)  { project }
+        let(:notification_trigger) { notification.project_was_moved(project, "gitlab/gitlab") }
       end
 
       context 'users not having access to the new location' do
@@ -1762,6 +1906,11 @@ describe NotificationService, :mailer do
 
           should_only_email(@u_participating)
         end
+
+        it_behaves_like 'project emails are disabled' do
+          let(:notification_target)  { project }
+          let(:notification_trigger) { notification.project_exported(project, @u_participating) }
+        end
       end
 
       describe '#project_not_exported' do
@@ -1769,6 +1918,11 @@ describe NotificationService, :mailer do
           notification.project_not_exported(project, @u_participating, ['error'])
 
           should_only_email(@u_participating)
+        end
+
+        it_behaves_like 'project emails are disabled' do
+          let(:notification_target)  { project }
+          let(:notification_trigger) { notification.project_not_exported(project, @u_participating, ['error']) }
         end
       end
     end
@@ -1799,6 +1953,11 @@ describe NotificationService, :mailer do
         should_email(owner)
         should_email(maintainer)
         should_not_email(developer)
+      end
+
+      it_behaves_like 'group emails are disabled' do
+        let(:notification_target)  { group }
+        let(:notification_trigger) { group.request_access(added_user) }
       end
     end
 
@@ -1839,6 +1998,11 @@ describe NotificationService, :mailer do
           should_not_email_anyone
         end
       end
+
+      it_behaves_like 'group emails are disabled' do
+        let(:notification_target)  { group }
+        let(:notification_trigger) { group.add_guest(added_user) }
+      end
     end
   end
 
@@ -1859,6 +2023,11 @@ describe NotificationService, :mailer do
 
           should_only_email(project.owner)
         end
+
+        it_behaves_like 'project emails are disabled' do
+          let(:notification_target)  { project }
+          let(:notification_trigger) { project.request_access(added_user) }
+        end
       end
 
       context 'for a project in a group' do
@@ -1878,7 +2047,7 @@ describe NotificationService, :mailer do
       end
     end
 
-    describe '#decline_group_invite' do
+    describe '#decline_project_invite' do
       let(:member) { create(:user) }
 
       before do
@@ -1898,6 +2067,11 @@ describe NotificationService, :mailer do
       it do
         create_member!
         should_only_email(added_user)
+      end
+
+      it_behaves_like 'project emails are disabled' do
+        let(:notification_target)  { project }
+        let(:notification_trigger) { create_member! }
       end
 
       context 'when notifications are disabled' do
@@ -2071,6 +2245,11 @@ describe NotificationService, :mailer do
             should_only_email(u_custom_notification_enabled, kind: :bcc)
           end
 
+          it_behaves_like 'project emails are disabled' do
+            let(:notification_target)  { pipeline }
+            let(:notification_trigger) { notification.pipeline_finished(pipeline) }
+          end
+
           context 'when the creator has group notification email set' do
             let(:group_notification_email) { 'user+group@example.com' }
 
@@ -2098,6 +2277,11 @@ describe NotificationService, :mailer do
             notification.pipeline_finished(pipeline)
 
             should_only_email(u_member, kind: :bcc)
+          end
+
+          it_behaves_like 'project emails are disabled' do
+            let(:notification_target)  { pipeline }
+            let(:notification_trigger) { notification.pipeline_finished(pipeline) }
           end
 
           context 'when the creator has group notification email set' do
@@ -2215,6 +2399,11 @@ describe NotificationService, :mailer do
           should_only_email(u_maintainer1, u_maintainer2, u_owner)
         end
 
+        it_behaves_like 'project emails are disabled' do
+          let(:notification_target)  { domain }
+          let(:notification_trigger) { notify! }
+        end
+
         it 'emails nobody if the project is missing' do
           domain.project = nil
 
@@ -2222,30 +2411,6 @@ describe NotificationService, :mailer do
 
           should_not_email_anyone
         end
-      end
-    end
-
-    describe '#pages_domain_verification_failed' do
-      it 'emails current watching maintainers' do
-        notification.pages_domain_verification_failed(domain)
-
-        should_only_email(u_maintainer1, u_maintainer2, u_owner)
-      end
-    end
-
-    describe '#pages_domain_enabled' do
-      it 'emails current watching maintainers' do
-        notification.pages_domain_enabled(domain)
-
-        should_only_email(u_maintainer1, u_maintainer2, u_owner)
-      end
-    end
-
-    describe '#pages_domain_disabled' do
-      it 'emails current watching maintainers' do
-        notification.pages_domain_disabled(domain)
-
-        should_only_email(u_maintainer1, u_maintainer2, u_owner)
       end
     end
   end
@@ -2266,6 +2431,11 @@ describe NotificationService, :mailer do
         should_email(owner, times: 1)         # Once for the disable pipeline.
         should_email(pipeline_user, times: 2) # Once for the new permission, once for the disable.
       end
+
+      it_behaves_like 'project emails are disabled' do
+        let(:notification_target)  { project }
+        let(:notification_trigger) { notification.autodevops_disabled(pipeline, [owner.email, pipeline_user.email]) }
+      end
     end
   end
 
@@ -2279,6 +2449,11 @@ describe NotificationService, :mailer do
 
         should_email(user)
       end
+
+      it_behaves_like 'project emails are disabled' do
+        let(:notification_target)  { project }
+        let(:notification_trigger) { notification.repository_cleanup_success(project, user) }
+      end
     end
 
     describe '#repository_cleanup_failure' do
@@ -2286,6 +2461,11 @@ describe NotificationService, :mailer do
         notification.repository_cleanup_failure(project, user, 'Some error')
 
         should_email(user)
+      end
+
+      it_behaves_like 'project emails are disabled' do
+        let(:notification_target)  { project }
+        let(:notification_trigger) { notification.repository_cleanup_failure(project, user, 'Some error') }
       end
     end
   end
@@ -2319,6 +2499,11 @@ describe NotificationService, :mailer do
         notification.remote_mirror_update_failed(remote_mirror)
 
         should_only_email(u_maintainer1, u_maintainer2, u_owner)
+      end
+
+      it_behaves_like 'project emails are disabled' do
+        let(:notification_target)  { project }
+        let(:notification_trigger) { notification.remote_mirror_update_failed(remote_mirror) }
       end
     end
   end

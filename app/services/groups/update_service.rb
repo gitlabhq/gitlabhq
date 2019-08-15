@@ -46,6 +46,11 @@ module Groups
       params.delete(:parent_id)
     end
 
+    # overridden in EE
+    def remove_unallowed_params
+      params.delete(:emails_disabled) unless can?(current_user, :set_emails_disabled, group)
+    end
+
     def valid_share_with_group_lock_change?
       return true unless changing_share_with_group_lock?
       return true if can?(current_user, :change_share_with_group_lock, group)

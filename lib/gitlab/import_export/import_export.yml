@@ -137,6 +137,7 @@ excluded_attributes:
     - :packages_enabled
     - :mirror_last_update_at
     - :mirror_last_successful_update_at
+    - :emails_disabled
   namespaces:
     - :runners_token
     - :runners_token_encrypted
