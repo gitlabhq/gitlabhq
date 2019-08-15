@@ -9,8 +9,8 @@ module Labels
       @params = params
     end
 
-    def find_or_create_by_titles
-      labels = params.delete(:labels)
+    def find_or_create_by_titles(key = :labels)
+      labels = params.delete(key)
 
       return [] unless labels
 

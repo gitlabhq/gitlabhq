@@ -76,8 +76,17 @@ class IssuableBaseService < BaseService
   end
 
   def filter_labels
-    params[:add_label_ids] = labels_service.filter_labels_ids_in_param(:add_label_ids) if params[:add_label_ids]
-    params[:remove_label_ids] = labels_service.filter_labels_ids_in_param(:remove_label_ids) if params[:remove_label_ids]
+    if params[:add_label_ids]
+      params[:add_label_ids] = labels_service.filter_labels_ids_in_param(:add_label_ids)
+    elsif params[:add_labels]
+      params[:add_label_ids] = labels_service.find_or_create_by_titles(:add_labels).map(&:id)
+    end
+
+    if params[:remove_label_ids]
+      params[:remove_label_ids] = labels_service.filter_labels_ids_in_param(:remove_label_ids)
+    elsif params[:remove_labels]
+      params[:remove_label_ids] = labels_service.find_or_create_by_titles(:remove_labels).map(&:id)
+    end
 
     if params[:label_ids]
       params[:label_ids] = labels_service.filter_labels_ids_in_param(:label_ids)
