@@ -333,6 +333,10 @@ curl --request PUT localhost:9200/gitlab-production/_settings --data '{
 
 Enable Elasticsearch search in **Admin > Settings > Integrations**. That's it. Enjoy it!
 
+### Index limit
+
+Currently for repository and snippet files, GitLab would only index up to 1 MB of content, in order to avoid indexing timeout.
+
 ## GitLab Elasticsearch Rake Tasks
 
 There are several rake tasks available to you via the command line:
