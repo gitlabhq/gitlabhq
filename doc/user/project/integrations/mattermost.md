@@ -14,7 +14,7 @@ To enable Mattermost integration you must create an incoming webhook integration
 1. Save it, copy the **Webhook URL**, we'll need this later for GitLab.
 
 There might be some cases that Incoming Webhooks are blocked by admin, ask your mattermost admin to enable
-it on `https://mattermost.example/admin_console/integrations/custom`.
+it on **Mattermost System Console > Integrations > Integration Management**, or on **Mattermost System Console > Integrations > Custom Integrations** in Mattermost versions 5.11 and earlier.
 
 Display name override is not enabled by default, you need to ask your admin to enable it on that same section.
 
