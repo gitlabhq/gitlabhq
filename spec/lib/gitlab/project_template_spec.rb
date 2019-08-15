@@ -28,6 +28,18 @@ describe Gitlab::ProjectTemplate do
     end
   end
 
+  describe '#project_path' do
+    subject { described_class.new('name', 'title', 'description', 'https://gitlab.com/some/project/path').project_path }
+
+    it { is_expected.to eq 'some/project/path' }
+  end
+
+  describe '#uri_encoded_project_path' do
+    subject { described_class.new('name', 'title', 'description', 'https://gitlab.com/some/project/path').uri_encoded_project_path }
+
+    it { is_expected.to eq 'some%2Fproject%2Fpath' }
+  end
+
   describe '.find' do
     subject { described_class.find(query) }
 

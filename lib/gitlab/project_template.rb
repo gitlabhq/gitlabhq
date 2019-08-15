@@ -24,6 +24,14 @@ module Gitlab
       "#{preview}.git"
     end
 
+    def project_path
+      URI.parse(preview).path.sub(%r{\A/}, '')
+    end
+
+    def uri_encoded_project_path
+      ERB::Util.url_encode(project_path)
+    end
+
     def ==(other)
       name == other.name && title == other.title
     end
