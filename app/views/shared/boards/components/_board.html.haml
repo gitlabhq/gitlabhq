@@ -1,7 +1,7 @@
 .board.d-inline-block.h-100.px-2.align-top.ws-normal{ ":class" => '{ "is-draggable": !list.preset, "is-expandable": list.isExpandable, "is-collapsed": !list.isExpanded, "board-type-assignee": list.type === "assignee" }',
-  ":data-id" => "list.id" }
+  ":data-id" => "list.id", data: { qa_selector: "board_list" } }
   .board-inner.d-flex.flex-column.position-relative.h-100.rounded
-    %header.board-header{ ":class" => '{ "has-border": list.label && list.label.color, "position-relative": list.isExpanded, "position-absolute position-top-0 position-left-0 w-100 h-100": !list.isExpanded }', ":style" => "{ borderTopColor: (list.label && list.label.color ? list.label.color : null) }" }
+    %header.board-header{ ":class" => '{ "has-border": list.label && list.label.color, "position-relative": list.isExpanded, "position-absolute position-top-0 position-left-0 w-100 h-100": !list.isExpanded }', ":style" => "{ borderTopColor: (list.label && list.label.color ? list.label.color : null) }", data: { qa_selector: "board_list_header" } }
       %h3.board-title.m-0.d-flex.js-board-handle{ ":class" => '{ "user-can-drag": (!disabled && !list.preset), "border-bottom-0": !list.isExpanded }' }
 
         .board-title-caret.no-drag{ "v-if": "list.isExpandable",

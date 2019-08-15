@@ -16,7 +16,7 @@
 #board-app.boards-app.position-relative{ "v-cloak" => "true", data: board_data, ":class" => "{ 'is-compact': detailIssueVisible }" }
   = render 'shared/issuable/search_bar', type: :boards, board: board
 
-  .boards-list.w-100.py-3.px-2.text-nowrap
+  .boards-list.w-100.py-3.px-2.text-nowrap{ data: { qa_selector: "boards_list" } }
     .boards-app-loading.w-100.text-center{ "v-if" => "loading" }
       = icon("spinner spin 2x")
     %board{ "v-cloak" => "true",
