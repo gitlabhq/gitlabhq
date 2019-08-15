@@ -17,6 +17,8 @@ describe API::Discussions do
     let!(:note) { create(:system_note, noteable: merge_request, project: project, note: cross_reference) }
     let!(:note_metadata) { create(:system_note_metadata, note: note, action: 'cross_reference') }
     let(:cross_reference) { "test commit #{commit.to_reference(project)}" }
+    let(:pat) { create(:personal_access_token, user: user) }
+
     let(:url) { "/projects/#{project.id}/merge_requests/#{merge_request.iid}/discussions" }
 
     before do
@@ -30,7 +32,7 @@ describe API::Discussions do
       new_note = create(:system_note, noteable: merge_request, project: project, note: new_cross_reference)
       create(:system_note_metadata, note: new_note, action: 'cross_reference')
 
-      get api(url, user)
+      get api(url, user, personal_access_token: pat)
       expect(response).to have_gitlab_http_status(200)
       expect(json_response.count).to eq(1)
       expect(json_response.first['notes'].count).to eq(1)
@@ -45,7 +47,7 @@ describe API::Discussions do
       expect_any_instance_of(Repository).not_to receive(:find_commit).with(commit.id)
 
       control = ActiveRecord::QueryRecorder.new do
-        get api(url, user)
+        get api(url, user, personal_access_token: pat)
       end
 
       expect(response).to have_gitlab_http_status(200)
@@ -57,7 +59,7 @@ describe API::Discussions do
 
       RequestStore.clear!
 
-      expect { get api(url, user) }.not_to exceed_query_limit(control)
+      expect { get api(url, user, personal_access_token: pat) }.not_to exceed_query_limit(control)
       expect(response).to have_gitlab_http_status(200)
     end
   end
