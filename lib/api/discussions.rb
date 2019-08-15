@@ -4,6 +4,7 @@ module API
   class Discussions < Grape::API
     include PaginationParams
     helpers ::API::Helpers::NotesHelpers
+    helpers ::RendersNotes
 
     before { authenticate! }
 
@@ -23,21 +24,15 @@ module API
           requires :noteable_id, types: [Integer, String], desc: 'The ID of the noteable'
           use :pagination
         end
-        # rubocop: disable CodeReuse/ActiveRecord
+
         get ":id/#{noteables_path}/:noteable_id/discussions" do
           noteable = find_noteable(parent_type, params[:id], noteable_type, params[:noteable_id])
 
-          notes = noteable.notes
-            .inc_relations_for_view
-            .includes(:noteable)
-            .fresh
-
-          notes = notes.reject { |n| n.cross_reference_not_visible_for?(current_user) }
+          notes = readable_discussion_notes(noteable)
           discussions = Kaminari.paginate_array(Discussion.build_collection(notes, noteable))
 
           present paginate(discussions), with: Entities::Discussion
         end
-        # rubocop: enable CodeReuse/ActiveRecord
 
         desc "Get a single #{noteable_type.to_s.downcase} discussion" do
           success Entities::Discussion
@@ -226,13 +221,24 @@ module API
 
     helpers do
       # rubocop: disable CodeReuse/ActiveRecord
-      def readable_discussion_notes(noteable, discussion_id)
+      def readable_discussion_notes(noteable, discussion_id = nil)
         notes = noteable.notes
-          .where(discussion_id: discussion_id)
+        notes = notes.where(discussion_id: discussion_id) if discussion_id
+        notes = notes
           .inc_relations_for_view
           .includes(:noteable)
           .fresh
 
+        # Without RendersActions#prepare_notes_for_rendering,
+        # Note#cross_reference_not_visible_for? will attempt to render
+        # Markdown references mentioned in the note to see whether they
+        # should be redacted. For notes that reference a commit, this
+        # would also incur a Gitaly call to verify the commit exists.
+        #
+        # With prepare_notes_for_rendering, we can avoid Gitaly calls
+        # because notes are redacted if they point to projects that
+        # cannot be accessed by the user.
+        notes = prepare_notes_for_rendering(notes)
         notes.reject { |n| n.cross_reference_not_visible_for?(current_user) }
       end
       # rubocop: enable CodeReuse/ActiveRecord
