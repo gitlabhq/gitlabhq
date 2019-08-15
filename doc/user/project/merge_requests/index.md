@@ -334,6 +334,8 @@ git push -o merge_request.create -o merge_request.merge_when_pipeline_succeeds
 
 ### Set removing the source branch using git push options
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/64320) in GitLab 12.2.
+
 To set an existing merge request to remove the source branch when the
 merge request is merged, the
 `merge_request.remove_source_branch` push option can be used:
@@ -347,6 +349,8 @@ You can also use this push option in addition to the
 
 ### Set merge request title using git push options
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/64320) in GitLab 12.2.
+
 To set the title of an existing merge request, use
 the `merge_request.title` push option:
 
@@ -358,6 +362,8 @@ You can also use this push option in addition to the
 `merge_request.create` push option.
 
 ### Set merge request description using git push options
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/64320) in GitLab 12.2.
 
 To set the description of an existing merge request, use
 the `merge_request.description` push option:
