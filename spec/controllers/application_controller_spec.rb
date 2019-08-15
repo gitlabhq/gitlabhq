@@ -641,24 +641,32 @@ describe ApplicationController do
         end
       end
 
-      it 'does not set a custom header' do
+      it 'sets a custom header' do
         get :index, format: :json
 
-        expect(response.headers['X-GitLab-Custom-Error']).to be_nil
+        expect(response.headers['X-GitLab-Custom-Error']).to eq '1'
       end
-    end
 
-    context 'given a json response for an html request' do
-      controller do
-        def index
-          render json: {}, status: :unprocessable_entity
+      context 'for html request' do
+        it 'sets a custom header' do
+          get :index
+
+          expect(response.headers['X-GitLab-Custom-Error']).to eq '1'
         end
       end
 
-      it 'does not set a custom header' do
-        get :index
+      context 'for 200 response' do
+        controller do
+          def index
+            render json: {}, status: :ok
+          end
+        end
 
-        expect(response.headers['X-GitLab-Custom-Error']).to be_nil
+        it 'does not set a custom header' do
+          get :index, format: :json
+
+          expect(response.headers['X-GitLab-Custom-Error']).to be_nil
+        end
       end
     end
   end
