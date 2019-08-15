@@ -116,7 +116,7 @@ class ApplicationController < ActionController::Base
   def render(*args)
     super.tap do
       # Set a header for custom error pages to prevent them from being intercepted by gitlab-workhorse
-      if workhorse_excluded_content_types.include?(response.content_type) && (400..599).cover?(response.status)
+      if (400..599).cover?(response.status) && workhorse_excluded_content_types.include?(response.content_type)
         response.headers['X-GitLab-Custom-Error'] = '1'
       end
     end
