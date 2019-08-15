@@ -172,6 +172,13 @@ class Namespace < ApplicationRecord
     end
   end
 
+  # any ancestor can disable emails for all descendants
+  def emails_disabled?
+    strong_memoize(:emails_disabled) do
+      Feature.enabled?(:emails_disabled, self, default_enabled: true) && self_and_ancestors.where(emails_disabled: true).exists?
+    end
+  end
+
   def lfs_enabled?
     # User namespace will always default to the global setting
     Gitlab.config.lfs.enabled

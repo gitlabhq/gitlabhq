@@ -369,9 +369,28 @@ describe Projects::UpdateService do
       end
     end
 
+    context 'when updating #emails_disabled' do
+      it 'updates the attribute for the project owner' do
+        expect { update_project(project, user, emails_disabled: true) }
+          .to change { project.emails_disabled }
+          .to(true)
+      end
+
+      it 'does not update when not project owner' do
+        maintainer = create(:user)
+        project.add_user(maintainer, :maintainer)
+
+        expect { update_project(project, maintainer, emails_disabled: true) }
+          .not_to change { project.emails_disabled }
+      end
+    end
+
     context 'with external authorization enabled' do
       before do
         enable_external_authorization_service_check
+
+        allow(::Gitlab::ExternalAuthorization)
+          .to receive(:access_allowed?).with(user, 'default_label', project.full_path).and_call_original
       end
 
       it 'does not save the project with an error if the service denies access' do
@@ -402,8 +421,7 @@ describe Projects::UpdateService do
       end
 
       it 'does not check the label when it does not change' do
-        expect(::Gitlab::ExternalAuthorization)
-          .not_to receive(:access_allowed?)
+        expect(::Gitlab::ExternalAuthorization).to receive(:access_allowed?).once
 
         update_project(project, user, { name: 'New name' })
       end

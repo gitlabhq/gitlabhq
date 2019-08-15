@@ -24,6 +24,7 @@ class EmailsOnPushService < Service
 
   def execute(push_data)
     return unless supported_events.include?(push_data[:object_kind])
+    return if project.emails_disabled?
 
     EmailsOnPushWorker.perform_async(
       project_id,

@@ -853,4 +853,64 @@ describe Namespace do
       it { is_expected.to be_falsy }
     end
   end
+
+  describe '#emails_disabled?' do
+    context 'when not a subgroup' do
+      it 'returns false' do
+        group = create(:group, emails_disabled: false)
+
+        expect(group.emails_disabled?).to be_falsey
+      end
+
+      it 'returns true' do
+        group = create(:group, emails_disabled: true)
+
+        expect(group.emails_disabled?).to be_truthy
+      end
+    end
+
+    context 'when a subgroup' do
+      let(:grandparent) { create(:group) }
+      let(:parent)      { create(:group, parent: grandparent) }
+      let(:group)       { create(:group, parent: parent) }
+
+      it 'returns false' do
+        expect(group.emails_disabled?).to be_falsey
+      end
+
+      context 'when ancestor emails are disabled' do
+        it 'returns true' do
+          grandparent.update_attribute(:emails_disabled, true)
+
+          expect(group.emails_disabled?).to be_truthy
+        end
+      end
+    end
+
+    context 'when :emails_disabled feature flag is off' do
+      before do
+        stub_feature_flags(emails_disabled: false)
+      end
+
+      context 'when not a subgroup' do
+        it 'returns false' do
+          group = create(:group, emails_disabled: true)
+
+          expect(group.emails_disabled?).to be_falsey
+        end
+      end
+
+      context 'when a subgroup and ancestor emails are disabled' do
+        let(:grandparent) { create(:group) }
+        let(:parent)      { create(:group, parent: grandparent) }
+        let(:group)       { create(:group, parent: parent) }
+
+        it 'returns false' do
+          grandparent.update_attribute(:emails_disabled, true)
+
+          expect(group.emails_disabled?).to be_falsey
+        end
+      end
+    end
+  end
 end

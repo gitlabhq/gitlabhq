@@ -86,6 +86,7 @@ describe Groups::UpdateService do
 
   context "unauthorized visibility_level validation" do
     let!(:service) { described_class.new(internal_group, user, visibility_level: 99) }
+
     before do
       internal_group.add_user(user, Gitlab::Access::MAINTAINER)
     end
@@ -93,6 +94,20 @@ describe Groups::UpdateService do
     it "does not change permission level" do
       service.execute
       expect(internal_group.errors.count).to eq(1)
+    end
+  end
+
+  context 'when updating #emails_disabled' do
+    let(:service) { described_class.new(internal_group, user, emails_disabled: true) }
+
+    it 'updates the attribute' do
+      internal_group.add_user(user, Gitlab::Access::OWNER)
+
+      expect { service.execute }.to change { internal_group.emails_disabled }.to(true)
+    end
+
+    it 'does not update when not group owner' do
+      expect { service.execute }.not_to change { internal_group.emails_disabled }
     end
   end
 

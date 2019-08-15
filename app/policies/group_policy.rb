@@ -92,6 +92,7 @@ class GroupPolicy < BasePolicy
     enable :change_visibility_level
 
     enable :set_note_created_at
+    enable :set_emails_disabled
   end
 
   rule { can?(:read_nested_project_resources) }.policy do
