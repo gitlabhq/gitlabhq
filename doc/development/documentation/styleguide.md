@@ -877,10 +877,10 @@ Other text includes deprecation notices and version-specific how-to information.
 When a feature is available in EE-only tiers, add the corresponding tier according to the
 feature availability:
 
+- For GitLab Core and GitLab.com Free: `**(CORE)**`.
 - For GitLab Starter and GitLab.com Bronze: `**(STARTER)**`.
 - For GitLab Premium and GitLab.com Silver: `**(PREMIUM)**`.
 - For GitLab Ultimate and GitLab.com Gold: `**(ULTIMATE)**`.
-- For GitLab Core and GitLab.com Free: `**(CORE)**`.
 
 To exclude GitLab.com tiers (when the feature is not available in GitLab.com), add the
 keyword "only":
@@ -892,6 +892,7 @@ keyword "only":
 
 For GitLab.com only tiers (when the feature is not available for self-hosted instances):
 
+- For GitLab Free and higher tiers: `**(FREE ONLY)**`.
 - For GitLab Bronze and higher tiers: `**(BRONZE ONLY)**`.
 - For GitLab Silver and higher tiers: `**(SILVER ONLY)**`.
 - For GitLab Gold: `**(GOLD ONLY)**`.
