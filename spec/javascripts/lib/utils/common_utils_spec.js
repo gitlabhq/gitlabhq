@@ -895,6 +895,45 @@ describe('common_utils', () => {
     });
   });
 
+  describe('searchBy', () => {
+    const searchSpace = {
+      iid: 1,
+      reference: '&1',
+      title: 'Error omnis quos consequatur ullam a vitae sed omnis libero cupiditate.',
+      url: '/groups/gitlab-org/-/epics/1',
+    };
+
+    it('returns null when `query` or `searchSpace` params are empty/undefined', () => {
+      expect(commonUtils.searchBy('omnis', null)).toBeNull();
+      expect(commonUtils.searchBy('', searchSpace)).toBeNull();
+      expect(commonUtils.searchBy()).toBeNull();
+    });
+
+    it('returns object with matching props based on `query` & `searchSpace` params', () => {
+      // String `omnis` is found only in `title` prop so return just that
+      expect(commonUtils.searchBy('omnis', searchSpace)).toEqual(
+        jasmine.objectContaining({
+          title: searchSpace.title,
+        }),
+      );
+
+      // String `1` is found in both `iid` and `reference` props so return both
+      expect(commonUtils.searchBy('1', searchSpace)).toEqual(
+        jasmine.objectContaining({
+          iid: searchSpace.iid,
+          reference: searchSpace.reference,
+        }),
+      );
+
+      // String `/epics/1` is found in `url` prop so return just that
+      expect(commonUtils.searchBy('/epics/1', searchSpace)).toEqual(
+        jasmine.objectContaining({
+          url: searchSpace.url,
+        }),
+      );
+    });
+  });
+
   describe('isScopedLabel', () => {
     it('returns true when `::` is present in title', () => {
       expect(commonUtils.isScopedLabel({ title: 'foo::bar' })).toBe(true);
