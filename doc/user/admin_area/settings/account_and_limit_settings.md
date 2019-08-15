@@ -44,12 +44,19 @@ there are no restrictions.
 
 These settings can be found within:
 
-- Each project's settings.
-- A group's settings.
-- The **Size limit per repository (MB)** field in the **Account and limit** section of a GitLab instance's
-  settings by navigating to either:
-  - **Admin Area > Settings > General**.
-  - The path `/admin/application_settings`.
+- Each project's settings:
+  1. From the Project's homepage, navigate to **Settings > General**.
+  1. Fill in the **Repository size limit (MB)** field in the **Naming, topics, avatar** section.
+  1. Click **Save changes**.
+- Each group's settings:
+  1. From the Group's homepage, navigate to **Settings > General**.
+  1. Fill in the **Repository size limit (MB)** field in the **Naming, visibility** section.
+  1. Click **Save changes**.
+- GitLab's global settings:
+  1. From the Dashboard, navigate to **Admin Area > Settings > General**.
+  1. Expand the **Account and limit** section.
+  1. Fill in the **Size limit per repository (MB)** field.
+  1. Click **Save changes**.
 
 The first push of a new project, including LFS objects, will be checked for size
 and **will** be rejected if the sum of their sizes exceeds the maximum allowed
