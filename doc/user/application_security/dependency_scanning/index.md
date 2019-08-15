@@ -327,16 +327,11 @@ Once a vulnerability is found, you can interact with it. Read more on how to
 For more information about the vulnerabilities database update, check the
 [maintenance table](../index.md#maintenance-and-update-of-the-vulnerabilities-database).
 
-## Dependency List
+## Dependency List **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/10075) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.0.
-
-An additional benefit of Dependency Scanning is the ability to get a list of your
-project's dependencies with their versions. This list can be generated only for
-[languages and package managers](#supported-languages-and-package-managers)
-supported by Gemnasium.
-
-To see the generated dependency list, navigate to your project's **Security & Compliance > Dependency List**.
+An additional benefit of Dependency Scanning is the ability to view your
+project's dependencies and their known vulnerabilities. Read more about
+the [Dependency List](../dependency_list/index.md).
 
 ## Versioning and release process
 

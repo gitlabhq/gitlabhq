@@ -25,6 +25,7 @@ GitLab can scan and report any vulnerabilities found in your project.
 | Secure scanning tool                                                         | Description                                                            |
 |:-----------------------------------------------------------------------------|:-----------------------------------------------------------------------|
 | [Container Scanning](container_scanning/index.md) **(ULTIMATE)**             | Scan Docker containers for known vulnerabilities.                      |
+| [Dependency List](dependency_list/index.md) **(ULTIMATE)**                   | View your project's dependencies and their known vulnerabilities.      |
 | [Dependency Scanning](dependency_scanning/index.md) **(ULTIMATE)**           | Analyze your dependencies for known vulnerabilities.                   |
 | [Dynamic Application Security Testing (DAST)](dast/index.md) **(ULTIMATE)**  | Analyze running web applications for known vulnerabilities.            |
 | [License Management](license_management/index.md) **(ULTIMATE)**             | Search your project's dependencies for their licenses.                 |

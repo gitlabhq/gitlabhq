@@ -99,6 +99,7 @@ When you create a project in GitLab, you'll have access to a large number of
 - [NPM packages](packages/npm_registry.md): your private NPM package registry in GitLab. **(PREMIUM)**
 - [Code owners](code_owners.md): specify code owners for certain files **(STARTER)**
 - [License Management](../application_security/license_management/index.md): approve and blacklist licenses for projects. **(ULTIMATE)**
+- [Dependency List](../application_security/dependency_list/index.md): view project dependencies. **(ULTIMATE)**
 
 ### Project integrations
 

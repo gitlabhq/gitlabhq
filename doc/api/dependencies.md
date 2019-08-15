@@ -11,7 +11,7 @@ Every call to this endpoint requires authentication. To perform this call, user 
 ## List project dependencies
 
 Get a list of project dependencies. This API partially mirroring 
-[Dependency List](../user/application_security/dependency_scanning/index.md#dependency-list) feature.
+[Dependency List](../user/application_security/dependency_list/index.md) feature.
 This list can be generated only for [languages and package managers](../user/application_security/dependency_scanning/index.md#supported-languages-and-package-managers)
 supported by Gemnasium. 
 
