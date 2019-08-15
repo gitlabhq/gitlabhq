@@ -6,9 +6,10 @@ axios.isMock = true;
 axios.defaults.adapter = config => {
   const message =
     `Unexpected unmocked request: ${JSON.stringify(config, null, 2)}\n` +
-    'Consider using the `axios-mock-adapter` in tests.';
+    'Consider using the `axios-mock-adapter` module in tests.';
   const error = new Error(message);
   error.config = config;
+  global.fail(error);
   throw error;
 };
 
