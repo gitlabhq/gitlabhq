@@ -50,7 +50,12 @@ The button to do this has a different label depending on whether the issue is al
 
 #### 3. Assignee
 
-An issue can be assigned to yourself, another person, or [many people](#31-multiple-assignees-STARTER).
+An issue can be assigned to:
+
+- Yourself.
+- Another person.
+- [Many people](#31-multiple-assignees-STARTER). **(STARTER)**
+
 The assignee(s) can be changed as often as needed. The idea is that the assignees are
 responsible for that issue until it's reassigned to someone else to take it from there.
 When assigned to someone, it will appear in their assigned issues list.
