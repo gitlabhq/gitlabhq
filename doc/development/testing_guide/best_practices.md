@@ -70,6 +70,7 @@ bundle exec rspec spec/[path]/[to]/[spec].rb
 - On `before` and `after` hooks, prefer it scoped to `:context` over `:all`
 - When using `evaluate_script("$('.js-foo').testSomething()")` (or `execute_script`) which acts on a given element,
   use a Capyabara matcher beforehand (e.g. `find('.js-foo')`) to ensure the element actually exists.
+- Use `focus: true` to isolate parts of the specs you want to run.
 
 [four-phase-test]: https://robots.thoughtbot.com/four-phase-test
 
