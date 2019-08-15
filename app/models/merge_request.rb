@@ -220,18 +220,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def rebase_in_progress?
-    (rebase_jid.present? && Gitlab::SidekiqStatus.running?(rebase_jid)) ||
-      gitaly_rebase_in_progress?
-  end
-
-  # TODO: remove the Gitaly lookup after v12.1, when rebase_jid will be reliable
-  def gitaly_rebase_in_progress?
-    strong_memoize(:gitaly_rebase_in_progress) do
-      # The source project can be deleted
-      next false unless source_project
-
-      source_project.repository.rebase_in_progress?(id)
-    end
+    rebase_jid.present? && Gitlab::SidekiqStatus.running?(rebase_jid)
   end
 
   # Use this method whenever you need to make sure the head_pipeline is synced with the

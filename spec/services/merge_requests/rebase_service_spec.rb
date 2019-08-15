@@ -25,7 +25,7 @@ describe MergeRequests::RebaseService do
   describe '#execute' do
     context 'when another rebase is already in progress' do
       before do
-        allow(merge_request).to receive(:gitaly_rebase_in_progress?).and_return(true)
+        allow(repository).to receive(:rebase_in_progress?).with(merge_request.id).and_return(true)
       end
 
       it 'saves the error message' do
