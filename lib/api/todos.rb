@@ -110,3 +110,5 @@ module API
     end
   end
 end
+
+API::Todos.prepend_if_ee('EE::API::Todos')
