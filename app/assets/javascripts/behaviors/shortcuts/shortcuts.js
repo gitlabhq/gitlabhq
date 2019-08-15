@@ -4,7 +4,7 @@ import Mousetrap from 'mousetrap';
 import axios from '../../lib/utils/axios_utils';
 import { refreshCurrentPage, visitUrl } from '../../lib/utils/url_utility';
 import findAndFollowLink from '../../lib/utils/navigation_utility';
-import { parseBoolean } from '~/lib/utils/common_utils';
+import { parseBoolean, getCspNonceValue } from '~/lib/utils/common_utils';
 
 const defaultStopCallback = Mousetrap.stopCallback;
 Mousetrap.stopCallback = (e, element, combo) => {
@@ -94,7 +94,7 @@ export default class Shortcuts {
         responseType: 'text',
       })
       .then(({ data }) => {
-        $.globalEval(data);
+        $.globalEval(data, { nonce: getCspNonceValue() });
 
         if (location && location.length > 0) {
           const results = [];
