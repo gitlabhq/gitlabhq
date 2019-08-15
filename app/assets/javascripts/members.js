@@ -17,6 +17,8 @@ export default class Members {
   }
 
   dropdownClicked(options) {
+    options.e.preventDefault();
+
     this.formSubmit(null, options.$el);
   }
 

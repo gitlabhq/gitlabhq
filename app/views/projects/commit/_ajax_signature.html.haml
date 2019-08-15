@@ -1,2 +1,2 @@
 - if commit.has_signature?
-  %a{ href: 'javascript:void(0)', tabindex: 0, class: commit_signature_badge_classes('js-loading-gpg-badge'), data: { toggle: 'tooltip', placement: 'top', title: _('GPG signature (loading...)'), 'commit-sha' => commit.sha } }
+  %button{ tabindex: 0, class: commit_signature_badge_classes('js-loading-gpg-badge'), data: { toggle: 'tooltip', placement: 'top', title: _('GPG signature (loading...)'), 'commit-sha' => commit.sha } }
