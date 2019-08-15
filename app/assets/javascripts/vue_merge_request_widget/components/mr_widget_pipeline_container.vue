@@ -18,8 +18,8 @@ export default {
     Deployment,
     MrWidgetContainer,
     MrWidgetPipeline,
-    MergeTrainInfo: () =>
-      import('ee_component/vue_merge_request_widget/components/merge_train_info.vue'),
+    MergeTrainPositionIndicator: () =>
+      import('ee_component/vue_merge_request_widget/components/merge_train_position_indicator.vue'),
   },
   props: {
     mr: {
@@ -62,7 +62,7 @@ export default {
     showVisualReviewAppLink() {
       return this.mr.visualReviewAppAvailable;
     },
-    showMergeTrainInfo() {
+    showMergeTrainPositionIndicator() {
       return _.isNumber(this.mr.mergeTrainIndex);
     },
   },
@@ -90,8 +90,8 @@ export default {
           :visual-review-app-meta="visualReviewAppMeta"
         />
       </div>
-      <merge-train-info
-        v-if="showMergeTrainInfo"
+      <merge-train-position-indicator
+        v-if="showMergeTrainPositionIndicator"
         class="mr-widget-extension"
         :merge-train-index="mr.mergeTrainIndex"
       />

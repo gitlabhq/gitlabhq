@@ -397,7 +397,6 @@
 
   .mr-widget-help {
     padding: 10px 16px 10px ($gl-padding-8 * 7);
-    font-style: italic;
   }
 
   .ci-coverage {
@@ -906,7 +905,7 @@
 }
 
 .deploy-heading,
-.merge-train-info {
+.merge-train-position-indicator {
   @include media-breakpoint-up(md) {
     padding: $gl-padding-8 $gl-padding;
   }
