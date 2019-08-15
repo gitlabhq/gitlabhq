@@ -21,12 +21,24 @@ module Gitlab
                 \/(?<environment>\d+)
                 \/metrics
                 (?<query>
-                  \?[a-z0-9_=-]+
-                  (&[a-z0-9_=-]+)*
+                  \?[a-zA-Z0-9%.()+_=-]+
+                  (&[a-zA-Z0-9%.()+_=-]+)*
                 )?
                 (?<anchor>\#[a-z0-9_-]+)?
               )
             }x
+          end
+
+          # Parses query params out from full url string into hash.
+          #
+          # Ex) 'https://<root>/<project>/<environment>/metrics?title=Title&group=Group'
+          #       --> { title: 'Title', group: 'Group' }
+          def parse_query(url)
+            query_string = URI.parse(url).query.to_s
+
+            CGI.parse(query_string)
+              .transform_values { |value| value.first }
+              .symbolize_keys
           end
 
           # Builds a metrics dashboard url based on the passed in arguments

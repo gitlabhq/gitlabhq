@@ -15,17 +15,6 @@ module Banzai
         )
       end
 
-      # Endpoint FE should hit to collect the appropriate
-      # chart information
-      def metrics_dashboard_url(params)
-        Gitlab::Metrics::Dashboard::Url.build_dashboard_url(
-          params['namespace'],
-          params['project'],
-          params['environment'],
-          embedded: true
-        )
-      end
-
       # Search params for selecting metrics links. A few
       # simple checks is enough to boost performance without
       # the cost of doing a full regex match.
@@ -37,6 +26,28 @@ module Banzai
       # Regular expression matching metrics urls
       def link_pattern
         Gitlab::Metrics::Dashboard::Url.regex
+      end
+
+      private
+
+      # Endpoint FE should hit to collect the appropriate
+      # chart information
+      def metrics_dashboard_url(params)
+        Gitlab::Metrics::Dashboard::Url.build_dashboard_url(
+          params['namespace'],
+          params['project'],
+          params['environment'],
+          embedded: true,
+          **query_params(params['url'])
+        )
+      end
+
+      # Parses query params out from full url string into hash.
+      #
+      # Ex) 'https://<root>/<project>/<environment>/metrics?title=Title&group=Group'
+      #       --> { title: 'Title', group: 'Group' }
+      def query_params(url)
+        Gitlab::Metrics::Dashboard::Url.parse_query(url)
       end
     end
   end

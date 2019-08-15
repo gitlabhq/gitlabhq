@@ -26,13 +26,31 @@ describe 'Metrics rendering', :js, :use_clean_rails_memory_store_caching do
     restore_host
   end
 
-  context 'with deployments and related deployable present' do
-    it 'shows embedded metrics' do
+  it 'shows embedded metrics' do
+    visit project_issue_path(project, issue)
+
+    expect(page).to have_css('div.prometheus-graph')
+    expect(page).to have_text('Memory Usage (Total)')
+    expect(page).to have_text('Core Usage (Total)')
+  end
+
+  context 'when dashboard params are in included the url' do
+    let(:metrics_url) { metrics_project_environment_url(project, environment, **chart_params) }
+
+    let(:chart_params) do
+      {
+        group: 'System metrics (Kubernetes)',
+        title: 'Memory Usage (Pod average)',
+        y_label: 'Memory Used per Pod (MB)'
+      }
+    end
+
+    it 'shows embedded metrics for the specifiec chart' do
       visit project_issue_path(project, issue)
 
       expect(page).to have_css('div.prometheus-graph')
-      expect(page).to have_text('Memory Usage (Total)')
-      expect(page).to have_text('Core Usage (Total)')
+      expect(page).to have_text(chart_params[:title])
+      expect(page).to have_text(chart_params[:y_label])
     end
   end
 
