@@ -10,7 +10,7 @@
       = message
   %p
     = s_('403|Please contact your GitLab administrator to get permission.')
-  .action-container.js-go-back{ style: 'display: none' }
-    %a{ href: 'javascript:history.back()', class: 'btn btn-success' }
+  .action-container.js-go-back{ hidden: true }
+    %button{ type: 'button', class: 'btn btn-success' }
       = s_('Go Back')
 = render "errors/footer"
