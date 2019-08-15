@@ -12,7 +12,7 @@ describe Banzai::Filter::InlineMetricsFilter do
     let(:url) { 'https://foo.com' }
 
     it 'leaves regular non-metrics links unchanged' do
-      expect(doc.to_s).to eq input
+      expect(doc.to_s).to eq(input)
     end
   end
 
@@ -21,7 +21,7 @@ describe Banzai::Filter::InlineMetricsFilter do
     let(:url) { urls.metrics_namespace_project_environment_url(*params) }
 
     it 'leaves the original link unchanged' do
-      expect(doc.at_css('a').to_s).to eq input
+      expect(doc.at_css('a').to_s).to eq(input)
     end
 
     it 'appends a metrics charts placeholder with dashboard url after metrics links' do
@@ -29,7 +29,7 @@ describe Banzai::Filter::InlineMetricsFilter do
       expect(node).to be_present
 
       dashboard_url = urls.metrics_dashboard_namespace_project_environment_url(*params, embedded: true)
-      expect(node.attribute('data-dashboard-url').to_s).to eq dashboard_url
+      expect(node.attribute('data-dashboard-url').to_s).to eq(dashboard_url)
     end
 
     context 'when the metrics dashboard link is part of a paragraph' do
@@ -37,8 +37,33 @@ describe Banzai::Filter::InlineMetricsFilter do
       let(:input) { %(<p>#{paragraph}</p>) }
 
       it 'appends the charts placeholder after the enclosing paragraph' do
-        expect(doc.at_css('p').to_s).to include paragraph
+        expect(doc.at_css('p').to_s).to include(paragraph)
         expect(doc.at_css('.js-render-metrics')).to be_present
+      end
+    end
+
+    context 'with dashboard params specified' do
+      let(:params) do
+        [
+          'foo',
+          'bar',
+          12,
+          {
+            embedded: true,
+            dashboard: 'config/prometheus/common_metrics.yml',
+            group: 'System metrics (Kubernetes)',
+            title: 'Core Usage (Pod Average)',
+            y_label: 'Cores per Pod'
+          }
+        ]
+      end
+
+      it 'appends a metrics charts placeholder with dashboard url after metrics links' do
+        node = doc.at_css('.js-render-metrics')
+        expect(node).to be_present
+
+        dashboard_url = urls.metrics_dashboard_namespace_project_environment_url(*params)
+        expect(node.attribute('data-dashboard-url').to_s).to eq(dashboard_url)
       end
     end
   end
