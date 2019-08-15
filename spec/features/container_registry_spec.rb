@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe "Container Registry", :js do
+describe 'Container Registry', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project) }
 
@@ -40,8 +40,7 @@ describe "Container Registry", :js do
     it 'user removes entire container repository' do
       visit_container_registry
 
-      expect_any_instance_of(ContainerRepository)
-        .to receive(:delete_tags!).and_return(true)
+      expect_any_instance_of(ContainerRepository).to receive(:delete_tags!).and_return(true)
 
       click_on(class: 'js-remove-repo')
       expect(find('.modal .modal-title')).to have_content 'Remove repository'
@@ -54,10 +53,9 @@ describe "Container Registry", :js do
       find('.js-toggle-repo').click
       wait_for_requests
 
-      expect_any_instance_of(ContainerRegistry::Tag)
-        .to receive(:delete).and_return(true)
+      expect_any_instance_of(ContainerRegistry::Tag).to receive(:delete).and_return(true)
 
-      click_on(class: 'js-delete-registry')
+      click_on(class: 'js-delete-registry-row', visible: false)
       expect(find('.modal .modal-title')).to have_content 'Remove image'
       find('.modal .modal-footer .btn-danger').click
     end

@@ -477,7 +477,11 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           # in JSON format, or a request for tag named `latest.json`.
           scope format: false do
             resources :tags, only: [:index, :destroy],
-                             constraints: { id: Gitlab::Regex.container_registry_tag_regex }
+                             constraints: { id: Gitlab::Regex.container_registry_tag_regex } do
+              collection do
+                delete :bulk_destroy
+              end
+            end
           end
         end
       end

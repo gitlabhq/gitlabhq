@@ -31,4 +31,21 @@
 
 .table.tags {
   margin-bottom: 0;
+
+  .registry-image-row {
+    .check {
+      padding-right: $gl-padding;
+      width: 5%;
+    }
+
+    .action-buttons {
+      opacity: 0;
+    }
+
+    &:hover {
+      .action-buttons {
+        opacity: 1;
+      }
+    }
+  }
 }

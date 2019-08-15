@@ -6,11 +6,18 @@ module ContainerRegistry
 
     attr_reader :repository, :name
 
+    # https://github.com/docker/distribution/commit/3150937b9f2b1b5b096b2634d0e7c44d4a0f89fb
+    TAG_NAME_REGEX = /^[\w][\w.-]{0,127}$/.freeze
+
     delegate :registry, :client, to: :repository
     delegate :revision, :short_revision, to: :config_blob, allow_nil: true
 
     def initialize(repository, name)
       @repository, @name = repository, name
+    end
+
+    def valid_name?
+      !name.match(TAG_NAME_REGEX).nil?
     end
 
     def valid?
