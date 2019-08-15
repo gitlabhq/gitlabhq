@@ -26,6 +26,44 @@ ActiveRecord::Schema.define(version: 2019_08_12_070645) do
     t.integer "cached_markdown_version"
   end
 
+  create_table "analytics_cycle_analytics_group_stages", force: :cascade do |t|
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+    t.integer "relative_position"
+    t.integer "start_event_identifier", null: false
+    t.integer "end_event_identifier", null: false
+    t.bigint "group_id", null: false
+    t.bigint "start_event_label_id"
+    t.bigint "end_event_label_id"
+    t.boolean "hidden", default: false, null: false
+    t.boolean "custom", default: true, null: false
+    t.string "name", limit: 255, null: false
+    t.index ["end_event_label_id"], name: "index_analytics_ca_group_stages_on_end_event_label_id"
+    t.index ["group_id", "name"], name: "index_analytics_ca_group_stages_on_group_id_and_name", unique: true
+    t.index ["group_id"], name: "index_analytics_ca_group_stages_on_group_id"
+    t.index ["relative_position"], name: "index_analytics_ca_group_stages_on_relative_position"
+    t.index ["start_event_label_id"], name: "index_analytics_ca_group_stages_on_start_event_label_id"
+  end
+
+  create_table "analytics_cycle_analytics_project_stages", force: :cascade do |t|
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+    t.integer "relative_position"
+    t.integer "start_event_identifier", null: false
+    t.integer "end_event_identifier", null: false
+    t.bigint "project_id", null: false
+    t.bigint "start_event_label_id"
+    t.bigint "end_event_label_id"
+    t.boolean "hidden", default: false, null: false
+    t.boolean "custom", default: true, null: false
+    t.string "name", limit: 255, null: false
+    t.index ["end_event_label_id"], name: "index_analytics_ca_project_stages_on_end_event_label_id"
+    t.index ["project_id", "name"], name: "index_analytics_ca_project_stages_on_project_id_and_name", unique: true
+    t.index ["project_id"], name: "index_analytics_ca_project_stages_on_project_id"
+    t.index ["relative_position"], name: "index_analytics_ca_project_stages_on_relative_position"
+    t.index ["start_event_label_id"], name: "index_analytics_ca_project_stages_on_start_event_label_id"
+  end
+
   create_table "appearances", id: :serial, force: :cascade do |t|
     t.string "title", null: false
     t.text "description", null: false
@@ -3632,6 +3670,12 @@ ActiveRecord::Schema.define(version: 2019_08_12_070645) do
     t.index ["type"], name: "index_web_hooks_on_type"
   end
 
+  add_foreign_key "analytics_cycle_analytics_group_stages", "labels", column: "end_event_label_id", on_delete: :cascade
+  add_foreign_key "analytics_cycle_analytics_group_stages", "labels", column: "start_event_label_id", on_delete: :cascade
+  add_foreign_key "analytics_cycle_analytics_group_stages", "namespaces", column: "group_id", on_delete: :cascade
+  add_foreign_key "analytics_cycle_analytics_project_stages", "labels", column: "end_event_label_id", on_delete: :cascade
+  add_foreign_key "analytics_cycle_analytics_project_stages", "labels", column: "start_event_label_id", on_delete: :cascade
+  add_foreign_key "analytics_cycle_analytics_project_stages", "projects", on_delete: :cascade
   add_foreign_key "application_settings", "namespaces", column: "custom_project_templates_group_id", on_delete: :nullify
   add_foreign_key "application_settings", "projects", column: "file_template_project_id", name: "fk_ec757bd087", on_delete: :nullify
   add_foreign_key "application_settings", "projects", column: "instance_administration_project_id", on_delete: :nullify
