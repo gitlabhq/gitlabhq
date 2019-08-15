@@ -52,7 +52,7 @@ The following metrics and visualizations are available on a project or group lev
 
 ## Retrieving data
 
-Users can retrieve three months of data when they deploy Cycle Analytics for the first time.
+Users can retrieve three months of data when they deploy Productivity Analytics for the first time.
 
 To retrieve data for a different time span, run the following in the GitLab directory:
 
