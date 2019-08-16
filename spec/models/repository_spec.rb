@@ -1815,22 +1815,36 @@ describe Repository do
   end
 
   describe '#after_create' do
+    it 'calls expire_status_cache' do
+      expect(repository).to receive(:expire_status_cache)
+
+      repository.after_create
+    end
+
+    it 'logs an event' do
+      expect(repository).to receive(:repository_event).with(:create_repository)
+
+      repository.after_create
+    end
+  end
+
+  describe '#expire_status_cache' do
     it 'flushes the exists cache' do
       expect(repository).to receive(:expire_exists_cache)
 
-      repository.after_create
+      repository.expire_status_cache
     end
 
     it 'flushes the root ref cache' do
       expect(repository).to receive(:expire_root_ref_cache)
 
-      repository.after_create
+      repository.expire_status_cache
     end
 
     it 'flushes the emptiness caches' do
       expect(repository).to receive(:expire_emptiness_caches)
 
-      repository.after_create
+      repository.expire_status_cache
     end
   end
 

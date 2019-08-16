@@ -8,8 +8,6 @@ module Git
     PROCESS_COMMIT_LIMIT = 100
 
     def execute
-      project.repository.after_create if project.empty_repo?
-
       create_events
       create_pipelines
       execute_project_hooks
@@ -70,11 +68,11 @@ module Git
     end
 
     def enqueue_invalidate_cache
-      ProjectCacheWorker.perform_async(
-        project.id,
-        invalidated_file_types,
-        [:commit_count, :repository_size]
-      )
+      file_types = invalidated_file_types
+
+      return unless file_types.present?
+
+      ProjectCacheWorker.perform_async(project.id, file_types, [], false)
     end
 
     def base_params

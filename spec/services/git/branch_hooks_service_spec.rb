@@ -158,9 +158,13 @@ describe Git::BranchHooksService do
     let(:blank_sha) { Gitlab::Git::BLANK_SHA }
 
     def clears_cache(extended: [])
-      expect(ProjectCacheWorker)
-        .to receive(:perform_async)
-        .with(project.id, extended, %i[commit_count repository_size])
+      expect(service).to receive(:invalidated_file_types).and_return(extended)
+
+      if extended.present?
+        expect(ProjectCacheWorker)
+          .to receive(:perform_async)
+          .with(project.id, extended, [], false)
+      end
 
       service.execute
     end

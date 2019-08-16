@@ -389,11 +389,15 @@ class Repository
     expire_statistics_caches
   end
 
-  # Runs code after a repository has been created.
-  def after_create
+  def expire_status_cache
     expire_exists_cache
     expire_root_ref_cache
     expire_emptiness_caches
+  end
+
+  # Runs code after a repository has been created.
+  def after_create
+    expire_status_cache
 
     repository_event(:create_repository)
   end
