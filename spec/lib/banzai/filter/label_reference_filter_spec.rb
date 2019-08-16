@@ -8,6 +8,11 @@ describe Banzai::Filter::LabelReferenceFilter do
   let(:label)     { create(:label, project: project) }
   let(:reference) { label.to_reference }
 
+  it_behaves_like 'HTML text with references' do
+    let(:resource) { label }
+    let(:resource_text) { resource.title }
+  end
+
   it 'requires project context' do
     expect { described_class.call('') }.to raise_error(ArgumentError, /:project/)
   end
