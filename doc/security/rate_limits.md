@@ -22,11 +22,12 @@ similarly mitigated by a rate limit.
 
 ## Admin Area settings
 
-See
-[User and IP rate limits](../user/admin_area/settings/user_and_ip_rate_limits.md).
+- [User and IP rate limits](../user/admin_area/settings/user_and_ip_rate_limits.md).
+- [Rate limits on raw endpoints](../user/admin_area/settings/rate_limits_on_raw_endpoints.md)
 
 ## Rack Attack initializer
 
 This method of rate limiting is cumbersome, but has some advantages. It allows
 throttling of specific paths, and is also integrated into Git and container
 registry requests. See [Rack Attack initializer](rack_attack.md).
+
