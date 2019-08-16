@@ -103,7 +103,7 @@ describe SelfMonitoring::Project::CreateService do
       end
 
       it 'returns error when saving project ID fails' do
-        allow(application_setting).to receive(:update) { false }
+        allow(application_setting).to receive(:save) { false }
 
         expect(result[:status]).to eq(:error)
         expect(result[:failed_step]).to eq(:save_project_id)
