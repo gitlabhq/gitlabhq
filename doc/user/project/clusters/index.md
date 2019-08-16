@@ -173,6 +173,9 @@ Starting from [GitLab 12.1](https://gitlab.com/gitlab-org/gitlab-ce/issues/55902
 
 ### Add existing Kubernetes cluster
 
+NOTE: **Note:**
+Kubernetes integration is not supported for arm64 clusters. See the issue [Helm Tiller fails to install on arm64 cluster](https://gitlab.com/gitlab-org/gitlab-ce/issues/64044) for details.
+
 To add an existing Kubernetes cluster to your project:
 
 1. Navigate to your project's **Operations > Kubernetes** page.
