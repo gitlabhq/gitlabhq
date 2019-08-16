@@ -146,6 +146,7 @@ export default {
         <span ref="textOutput" :style="levelIndentation" class="file-row-name str-truncated">
           <file-icon
             v-if="!showChangedIcon || file.type === 'tree'"
+            class="file-row-icon"
             :file-name="file.name"
             :loading="file.loading"
             :folder="isTree"
@@ -223,13 +224,8 @@ export default {
   white-space: nowrap;
 }
 
-.file-row-name svg {
+.file-row-name .file-row-icon {
   margin-right: 2px;
   vertical-align: middle;
-}
-
-.file-row-name .loading-container {
-  display: inline-block;
-  margin-right: 4px;
 }
 </style>
