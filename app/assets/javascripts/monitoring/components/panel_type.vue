@@ -1,6 +1,7 @@
 <script>
 import { mapState } from 'vuex';
 import _ from 'underscore';
+import { __ } from '~/locale';
 import {
   GlDropdown,
   GlDropdownItem,
@@ -28,6 +29,10 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   props: {
+    clipboardText: {
+      type: String,
+      required: true,
+    },
     graphData: {
       type: Object,
       required: true,
@@ -76,6 +81,9 @@ export default {
     isPanelType(type) {
       return this.graphData.type && this.graphData.type === type;
     },
+    showToast() {
+      this.$toast.show(__('Link copied to clipboard'));
+    },
   },
 };
 </script>
@@ -115,6 +123,13 @@ export default {
         </template>
         <gl-dropdown-item :href="downloadCsv" download="chart_metrics.csv">
           {{ __('Download CSV') }}
+        </gl-dropdown-item>
+        <gl-dropdown-item
+          class="js-chart-link"
+          :data-clipboard-text="clipboardText"
+          @click="showToast"
+        >
+          {{ __('Generate link to chart') }}
         </gl-dropdown-item>
         <gl-dropdown-item v-if="alertWidgetAvailable" v-gl-modal="`alert-modal-${index}`">
           {{ __('Alerts') }}
