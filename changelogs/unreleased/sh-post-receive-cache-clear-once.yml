@@ -1,0 +1,5 @@
+---
+title: Expire project caches once per push instead of once per ref
+merge_request: 31876
+author:
+type: performance

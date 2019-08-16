@@ -37,6 +37,29 @@ describe PostReceive do
   end
 
   describe "#process_project_changes" do
+    context 'with an empty project' do
+      let(:empty_project) { create(:project, :empty_repo) }
+      let(:changes) { "123456 789012 refs/heads/tést1\n" }
+
+      before do
+        allow_any_instance_of(Gitlab::GitPostReceive).to receive(:identify).and_return(empty_project.owner)
+        allow(Gitlab::GlRepository).to receive(:parse).and_return([empty_project, Gitlab::GlRepository::PROJECT])
+      end
+
+      it 'expire the status cache' do
+        expect(empty_project.repository).to receive(:expire_status_cache)
+
+        perform
+      end
+
+      it 'schedules a cache update for commit count and size' do
+        expect(ProjectCacheWorker).to receive(:perform_async)
+                                        .with(empty_project.id, [], [:repository_size, :commit_count], true)
+
+        perform
+      end
+    end
+
     context 'empty changes' do
       it "does not call any PushService but runs after project hooks" do
         expect(Git::BranchPushService).not_to receive(:new)
@@ -67,15 +90,22 @@ describe PostReceive do
       context "branches" do
         let(:changes) do
           <<~EOF
-            '123456 789012 refs/heads/tést1'
-            '123456 789012 refs/heads/tést2'
+            123456 789012 refs/heads/tést1
+            123456 789012 refs/heads/tést2
           EOF
         end
 
         it 'expires the branches cache' do
           expect(project.repository).to receive(:expire_branches_cache).once
 
-          described_class.new.perform(gl_repository, key_id, base64_changes)
+          perform
+        end
+
+        it 'expires the status cache' do
+          expect(project).to receive(:empty_repo?).and_return(true)
+          expect(project.repository).to receive(:expire_status_cache)
+
+          perform
         end
 
         it 'calls Git::BranchPushService' do
@@ -86,6 +116,30 @@ describe PostReceive do
           expect(Git::TagPushService).not_to receive(:new)
 
           perform
+        end
+
+        it 'schedules a cache update for repository size only' do
+          expect(ProjectCacheWorker).to receive(:perform_async)
+                                          .with(project.id, [], [:repository_size], true)
+
+          perform
+        end
+
+        context 'with a default branch' do
+          let(:changes) do
+            <<~EOF
+              123456 789012 refs/heads/tést1
+              123456 789012 refs/heads/tést2
+              678912 123455 refs/heads/#{project.default_branch}
+            EOF
+          end
+
+          it 'schedules a cache update for commit count and size' do
+            expect(ProjectCacheWorker).to receive(:perform_async)
+                                            .with(project.id, [], [:repository_size, :commit_count], true)
+
+            perform
+          end
         end
       end
 
@@ -107,7 +161,7 @@ describe PostReceive do
         it 'does not expire branches cache' do
           expect(project.repository).not_to receive(:expire_branches_cache)
 
-          described_class.new.perform(gl_repository, key_id, base64_changes)
+          perform
         end
 
         it "only invalidates tags once" do
@@ -115,7 +169,7 @@ describe PostReceive do
           expect(project.repository).to receive(:expire_caches_for_tags).once.and_call_original
           expect(project.repository).to receive(:expire_tags_cache).once.and_call_original
 
-          described_class.new.perform(gl_repository, key_id, base64_changes)
+          perform
         end
 
         it "calls Git::TagPushService" do
@@ -126,6 +180,13 @@ describe PostReceive do
           end
 
           expect(Git::BranchPushService).not_to receive(:new)
+
+          perform
+        end
+
+        it 'schedules a single ProjectCacheWorker update' do
+          expect(ProjectCacheWorker).to receive(:perform_async)
+                                          .with(project.id, [], [:repository_size], true)
 
           perform
         end

@@ -12,13 +12,15 @@ class ProjectCacheWorker
   #         CHANGELOG.
   # statistics - An Array containing columns from ProjectStatistics to
   #              refresh, if empty all columns will be refreshed
+  # refresh_statistics - A boolean that determines whether project statistics should
+  #                     be updated.
   # rubocop: disable CodeReuse/ActiveRecord
-  def perform(project_id, files = [], statistics = [])
+  def perform(project_id, files = [], statistics = [], refresh_statistics = true)
     project = Project.find_by(id: project_id)
 
     return unless project
 
-    update_statistics(project, statistics)
+    update_statistics(project, statistics) if refresh_statistics
 
     return unless project.repository.exists?
 

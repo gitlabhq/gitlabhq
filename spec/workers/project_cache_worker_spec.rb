@@ -49,6 +49,16 @@ describe ProjectCacheWorker do
         worker.perform(project.id, %w(readme))
       end
 
+      context 'with statistics disabled' do
+        let(:statistics) { [] }
+
+        it 'does not update the project statistics' do
+          expect(worker).not_to receive(:update_statistics)
+
+          worker.perform(project.id, [], [], false)
+        end
+      end
+
       context 'with statistics' do
         let(:statistics) { %w(repository_size) }
 

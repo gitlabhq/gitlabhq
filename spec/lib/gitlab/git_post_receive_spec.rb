@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe ::Gitlab::GitPostReceive do
-  let(:project) { create(:project) }
+  set(:project) { create(:project, :repository) }
 
   subject { described_class.new(project, "project-#{project.id}", changes.dup, {}) }
 
@@ -89,6 +89,49 @@ describe ::Gitlab::GitPostReceive do
 
       it 'returns false' do
         expect(subject.includes_tags?).to be_falsey
+      end
+    end
+  end
+
+  describe '#includes_default_branch?' do
+    context 'with no default branch' do
+      let(:changes) do
+        <<~EOF
+          654321 210987 refs/heads/test1
+          654322 210986 refs/tags/#{project.default_branch}
+          654323 210985 refs/heads/test3
+        EOF
+      end
+
+      it 'returns false' do
+        expect(subject.includes_default_branch?).to be_falsey
+      end
+    end
+
+    context 'with a project with no default branch' do
+      let(:changes) do
+        <<~EOF
+          654321 210987 refs/heads/test1
+        EOF
+      end
+
+      it 'returns true' do
+        expect(project).to receive(:default_branch).and_return(nil)
+        expect(subject.includes_default_branch?).to be_truthy
+      end
+    end
+
+    context 'with default branch' do
+      let(:changes) do
+        <<~EOF
+          654322 210986 refs/heads/test1
+          654321 210987 refs/tags/test2
+          654323 210985 refs/heads/#{project.default_branch}
+        EOF
+      end
+
+      it 'returns true' do
+        expect(subject.includes_default_branch?).to be_truthy
       end
     end
   end
