@@ -1,0 +1,5 @@
+---
+title: Fix 500 errors in commits api caused by empty ref_name parameter
+merge_request:
+author:
+type: fixed

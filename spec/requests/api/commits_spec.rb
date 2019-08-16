@@ -126,6 +126,12 @@ describe API::Commits do
         end
       end
 
+      context "with empty ref_name parameter" do
+        let(:route) { "/projects/#{project_id}/repository/commits?ref_name=" }
+
+        it_behaves_like 'project commits'
+      end
+
       context "path optional parameter" do
         it "returns project commits matching provided path parameter" do
           path = 'files/ruby/popen.rb'

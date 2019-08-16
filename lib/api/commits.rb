@@ -43,7 +43,7 @@ module API
         path = params[:path]
         before = params[:until]
         after = params[:since]
-        ref = params[:ref_name] || user_project.try(:default_branch) || 'master' unless params[:all]
+        ref = params[:ref_name].presence || user_project.try(:default_branch) || 'master' unless params[:all]
         offset = (params[:page] - 1) * params[:per_page]
         all = params[:all]
         with_stats = params[:with_stats]
