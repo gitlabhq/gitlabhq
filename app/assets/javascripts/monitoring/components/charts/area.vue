@@ -45,6 +45,11 @@ export default {
       required: false,
       default: () => false,
     },
+    singleEmbed: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     thresholds: {
       type: Array,
       required: false,
@@ -240,7 +245,10 @@ export default {
 </script>
 
 <template>
-  <div class="prometheus-graph col-12 col-lg-6" :class="[showBorder ? 'p-2' : 'p-0']">
+  <div
+    class="prometheus-graph col-12"
+    :class="[showBorder ? 'p-2' : 'p-0', { 'col-lg-6': !singleEmbed }]"
+  >
     <div :class="{ 'prometheus-graph-embed w-100 p-3': showBorder }">
       <div class="prometheus-graph-header">
         <h5 ref="graphTitle" class="prometheus-graph-title">{{ graphData.title }}</h5>
