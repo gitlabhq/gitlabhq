@@ -103,3 +103,13 @@ sudo -u git -H bundle exec rake "gitlab:uploads:migrate[NamespaceFileUploader, S
 sudo -u git -H bundle exec rake "gitlab:uploads:migrate[FileUploader, MergeRequest]"
 
 ```
+
+## Migrate legacy uploads out of deprecated paths
+
+> Introduced in GitLab 12.3.
+
+To migrate all uploads created by legacy uploaders, run: 
+
+```shell
+bundle exec rake gitlab:uploads:legacy:migrate
+```
