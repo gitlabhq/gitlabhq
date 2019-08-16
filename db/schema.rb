@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_12_070645) do
+ActiveRecord::Schema.define(version: 2019_08_15_093949) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -2279,7 +2279,7 @@ ActiveRecord::Schema.define(version: 2019_08_12_070645) do
     t.index ["line_code"], name: "index_notes_on_line_code"
     t.index ["note"], name: "index_notes_on_note_trigram", opclass: :gin_trgm_ops, using: :gin
     t.index ["noteable_id", "noteable_type"], name: "index_notes_on_noteable_id_and_noteable_type"
-    t.index ["noteable_type"], name: "index_notes_on_noteable_type"
+    t.index ["project_id", "id"], name: "index_notes_on_project_id_and_id_and_system_false", where: "(NOT system)"
     t.index ["project_id", "noteable_type"], name: "index_notes_on_project_id_and_noteable_type"
     t.index ["review_id"], name: "index_notes_on_review_id"
   end
