@@ -87,7 +87,6 @@ export default {
       :file="file"
       :show-tooltip="true"
       :show-staged-icon="true"
-      :force-modified-icon="true"
     />
     <new-dropdown
       :type="file.type"
