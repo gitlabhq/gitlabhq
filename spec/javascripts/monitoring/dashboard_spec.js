@@ -1,4 +1,6 @@
 import Vue from 'vue';
+import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { GlToast } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
 import Dashboard from '~/monitoring/components/dashboard.vue';
 import { timeWindows, timeWindowsKeyNames } from '~/monitoring/constants';
@@ -13,6 +15,7 @@ import MonitoringMock, {
   dashboardGitResponse,
 } from './mock_data';
 
+const localVue = createLocalVue();
 const propsData = {
   hasMetrics: false,
   documentationPath: '/path/to/docs',
@@ -59,7 +62,9 @@ describe('Dashboard', () => {
   });
 
   afterEach(() => {
-    component.$destroy();
+    if (component) {
+      component.$destroy();
+    }
     mock.restore();
   });
 
@@ -370,6 +375,51 @@ describe('Dashboard', () => {
 
         done();
       });
+    });
+  });
+
+  describe('link to chart', () => {
+    let wrapper;
+    const currentDashboard = 'TEST_DASHBOARD';
+    localVue.use(GlToast);
+    const link = () => wrapper.find('.js-chart-link');
+    const clipboardText = () => link().element.dataset.clipboardText;
+
+    beforeEach(done => {
+      mock.onGet(mockApiEndpoint).reply(200, metricsGroupsAPIResponse);
+
+      wrapper = shallowMount(DashboardComponent, {
+        localVue,
+        sync: false,
+        attachToDocument: true,
+        propsData: { ...propsData, hasMetrics: true, currentDashboard },
+        store,
+      });
+
+      setTimeout(done);
+    });
+
+    afterEach(() => {
+      wrapper.destroy();
+    });
+
+    it('adds a copy button to the dropdown', () => {
+      expect(link().text()).toContain('Generate link to chart');
+    });
+
+    it('contains a link to the dashboard', () => {
+      expect(clipboardText()).toContain(`dashboard=${currentDashboard}`);
+      expect(clipboardText()).toContain(`group=`);
+      expect(clipboardText()).toContain(`title=`);
+      expect(clipboardText()).toContain(`y_label=`);
+    });
+
+    it('creates a toast when clicked', () => {
+      spyOn(wrapper.vm.$toast, 'show').and.stub();
+
+      link().vm.$emit('click');
+
+      expect(wrapper.vm.$toast.show).toHaveBeenCalled();
     });
   });
 

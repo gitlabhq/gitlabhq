@@ -10,9 +10,9 @@ import {
 } from '@gitlab/ui';
 import _ from 'underscore';
 import { mapActions, mapState } from 'vuex';
-import { s__ } from '~/locale';
+import { __, s__ } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
-import { getParameterValues } from '~/lib/utils/url_utility';
+import { getParameterValues, mergeUrlParams } from '~/lib/utils/url_utility';
 import invalidUrl from '~/lib/utils/invalid_url';
 import MonitorAreaChart from './charts/area.vue';
 import MonitorSingleStatChart from './charts/single_stat.vue';
@@ -168,8 +168,11 @@ export default {
       'multipleDashboardsEnabled',
       'additionalPanelTypesEnabled',
     ]),
+    firstDashboard() {
+      return this.allDashboards[0] || {};
+    },
     selectedDashboardText() {
-      return this.currentDashboard || (this.allDashboards[0] && this.allDashboards[0].display_name);
+      return this.currentDashboard || this.firstDashboard.display_name;
     },
     addingMetricsAvailable() {
       return IS_EE && this.canAddMetrics && !this.showEmptyState;
@@ -257,6 +260,14 @@ export default {
     },
     getGraphAlertValues(queries) {
       return Object.values(this.getGraphAlerts(queries));
+    },
+    showToast() {
+      this.$toast.show(__('Link copied to clipboard'));
+    },
+    generateLink(group, title, yLabel) {
+      const dashboard = this.currentDashboard || this.firstDashboard.path;
+      const params = { dashboard, group, title, y_label: yLabel };
+      return mergeUrlParams(params, window.location.href);
     },
     // TODO: END
     hideAddMetricModal() {
@@ -435,6 +446,7 @@ export default {
           <panel-type
             v-for="(graphData, graphIndex) in groupData.metrics"
             :key="`panel-type-${graphIndex}`"
+            :clipboard-text="generateLink(groupData.group, graphData.title, graphData.y_label)"
             :graph-data="graphData"
             :dashboard-width="elWidth"
             :index="`${index}-${graphIndex}`"
@@ -473,6 +485,15 @@ export default {
                 </template>
                 <gl-dropdown-item :href="downloadCsv(graphData)" download="chart_metrics.csv">
                   {{ __('Download CSV') }}
+                </gl-dropdown-item>
+                <gl-dropdown-item
+                  class="js-chart-link"
+                  :data-clipboard-text="
+                    generateLink(groupData.group, graphData.title, graphData.y_label)
+                  "
+                  @click="showToast"
+                >
+                  {{ __('Generate link to chart') }}
                 </gl-dropdown-item>
                 <gl-dropdown-item
                   v-if="alertWidgetAvailable"
