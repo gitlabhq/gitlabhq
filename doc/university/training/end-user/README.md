@@ -9,11 +9,7 @@ which can be found at [End User Slides](https://gitlab-org.gitlab.io/end-user-tr
 through it's [RevealJS](https://gitlab.com/gitlab-org/end-user-training-slides)
 project.
 
----
-
 ## Git Intro
-
----
 
 ### What is a Version Control System (VCS)
 
@@ -22,16 +18,12 @@ project.
 - Disaster Recovery
 - Types of VCS: Local, Centralized and Distributed
 
----
-
 ### Short Story of Git
 
 - 1991-2002: The Linux kernel was being maintained by sharing archived files
   and patches.
 - 2002: The Linux kernel project began using a DVCS called BitKeeper
 - 2005: BitKeeper revoked the free-of-charge status and Git was created
-
----
 
 ### What is Git
 
@@ -42,8 +34,6 @@ project.
 - Disaster recovery friendly
 - Open Source
 
----
-
 ### Getting Help
 
 - Use the tools at your disposal when you get stuck.
@@ -51,13 +41,9 @@ project.
   - Use Google (i.e. StackOverflow, Google groups)
   - Read documentation at <https://git-scm.com>
 
----
-
 ## Git Setup
 
 Workshop Time!
-
----
 
 ### Setup
 
@@ -68,8 +54,6 @@ Workshop Time!
 - Linux
   - Debian: `sudo apt-get install git-all`
   - Red Hat `sudo yum install git-all`
-
----
 
 ### Configure
 
@@ -91,15 +75,11 @@ git config --global --list
 - You might want or be required to use an SSH key.
   - Instructions: [SSH](http://doc.gitlab.com/ce/ssh/README.html)
 
----
-
 ### Workspace
 
 - Choose a directory on you machine easy to access
 - Create a workspace or development directory
 - This is where we'll be working and adding content
-
----
 
 ```bash
 mkdir ~/development
@@ -111,11 +91,7 @@ mkdir ~/workspace
 cd ~/workspace
 ```
 
----
-
 ## Git Basics
-
----
 
 ### Git Workflow
 
@@ -128,8 +104,6 @@ cd ~/workspace
 - Upstream
   - Hosted repository on a shared server
 
----
-
 ### GitLab
 
 - GitLab is an application to code, test and deploy.
@@ -137,16 +111,12 @@ cd ~/workspace
   issue tracking, Merge Requests, and other features.
 - The hosted version of GitLab is gitlab.com
 
----
-
 ### New Project
 
 - Sign in into your gitlab.com account
 - Create a project
 - Choose to import from 'Any Repo by URL' and use <https://gitlab.com/gitlab-org/training-examples.git>
 - On your machine clone the `training-examples` project
-
----
 
 ### Git and GitLab basics
 
@@ -158,8 +128,6 @@ cd ~/workspace
 1. Push the commit to the remote
 1. View the git log
 
----
-
 ```shell
 # Edit `edit_this_file.rb`
 git status
@@ -170,16 +138,12 @@ git push origin master
 git log
 ```
 
----
-
 ### Feature Branching
 
 1. Create a new feature branch called `squash_some_bugs`
 1. Edit `bugs.rb` and remove all the bugs.
 1. Commit
 1. Push
-
----
 
 ```shell
 git checkout -b squash_some_bugs
@@ -190,13 +154,7 @@ git commit -m 'Fix some buggy code'
 git push origin squash_some_bugs
 ```
 
----
-
 ## Merge Request
-
----
-
-### Merge requests
 
 - When you want feedback create a merge request
 - Target is the ‘default’ branch (usually master)
@@ -206,8 +164,6 @@ git push origin squash_some_bugs
 - Anyone can comment, not just the assignee
 - Push corrections to the same branch
 
----
-
 ### Merge request example
 
 - Create your first merge request
@@ -215,8 +171,6 @@ git push origin squash_some_bugs
   - View the diff (changes) and leave a comment
   - Push a new commit to the same branch
   - Review the changes again and notice the update
-
----
 
 ### Feedback and Collaboration
 
@@ -230,23 +184,16 @@ git push origin squash_some_bugs
 
 ---
 
-- Review the Thoughtbot code-review guide for suggestions to follow when reviewing merge requests:[Thoughtbot](https://github.com/thoughtbot/guides/tree/master/code-review)
+- Review the Thoughtbot code-review guide for suggestions to follow when reviewing merge requests:
+  [Thoughtbot](https://github.com/thoughtbot/guides/tree/master/code-review)
 - See GitLab merge requests for examples: [Merge Requests](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests)
 
----
-
 ## Merge Conflicts
-
----
-
-### Merge Conflicts
 
 - Happen often
 - Learning to fix conflicts is hard
 - Practice makes perfect
 - Force push after fixing conflicts. Be careful!
-
----
 
 ### Example Plan
 
@@ -260,8 +207,6 @@ git push origin squash_some_bugs
 1. Stage the file and continue rebasing
 1. Force push the changes
 1. Finally continue with the Merge Request
-
----
 
 ### Example 1/2
 
@@ -281,8 +226,6 @@ git checkout master
 git commit -am "add line6 and line7"
 git push origin master
 ```
-
----
 
 ### Example 2/2
 
@@ -305,8 +248,6 @@ git rebase --continue
 git push origin conflicts_branch -f
 ```
 
----
-
 ### Notes
 
 - When to use `git merge` and when to use `git rebase`
@@ -314,11 +255,7 @@ git push origin conflicts_branch -f
 - Merge when bringing changes from feature to master
 - Reference: <https://www.atlassian.com/git/tutorials/merging-vs-rebasing/>
 
----
-
 ## Revert and Unstage
-
----
 
 ### Unstage
 
@@ -346,8 +283,6 @@ If we want to remove a file from the repository but keep it on disk, say we forg
 ```sh
 git rm <filename> --cache
 ```
-
----
 
 ### Undo Commits
 
@@ -377,8 +312,6 @@ git reset --hard HEAD^^
 
 Don't reset after pushing
 
----
-
 ### Reset Workflow
 
 1. Edit file again 'edit_this_file.rb'
@@ -392,8 +325,6 @@ Don't reset after pushing
 1. Pull for updates
 1. Push changes
 
----
-
 ```sh
 # Change file edit_this_file.rb
 git status
@@ -406,8 +337,6 @@ git log
 git pull origin master
 git push origin master
 ```
-
----
 
 ### git revert vs git reset
 
@@ -425,15 +354,9 @@ git revert <rev commit hash>
 # reverted commit is back (new commit created again)
 ```
 
----
-
 ## Questions
 
----
-
 ## Instructor Notes
-
----
 
 ### Version Control
 

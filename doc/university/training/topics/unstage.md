@@ -4,8 +4,6 @@ comments: false
 
 # Unstage
 
-## Unstage
-
 - To remove files from stage use reset HEAD where HEAD is the last commit of the current branch. This will unstage the file but maintain the modifications.
 
   ```bash

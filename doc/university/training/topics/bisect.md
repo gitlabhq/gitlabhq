@@ -4,13 +4,11 @@ comments: false
 
 # Bisect
 
-## Bisect
-
 - Find a commit that introduced a bug
 - Works through a process of elimination
 - Specify a known good and bad revision to begin
 
-## Bisect
+## Bisect sample workflow
 
 1. Start the bisect process
 1. Enter the bad revision (usually latest commit)

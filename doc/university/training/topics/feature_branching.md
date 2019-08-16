@@ -11,14 +11,12 @@ comments: false
 - Push branches to the server frequently
   - Hint: This is a cheap backup for your work-in-progress code
 
-## Feature branching
+## Feature branching sample workflow
 
 1. Create a new feature branch called 'squash_some_bugs'
 1. Edit '`bugs.rb`' and remove all the bugs.
 1. Commit
 1. Push
-
-## Commands
 
 ```sh
 git checkout -b squash_some_bugs

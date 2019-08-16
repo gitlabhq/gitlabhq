@@ -35,8 +35,6 @@ comments: false
 1. Create a '`Workspace`' directory in your home directory.
 1. Clone the '`training-examples`' project.
 
-## Commands
-
 ```sh
 mkdir ~/workspace
 cd ~/workspace
@@ -68,8 +66,6 @@ Modified files that have been marked to go in the next commit.
 1. Commit
 1. Push the commit to the remote
 1. View the git log
-
-## Commands
 
 ```sh
 # Edit `edit_this_file.rb`

@@ -4,8 +4,6 @@ comments: false
 
 # Git Add
 
-## Git Add
-
 Adds content to the index or staging area.
 
 - Adds a list of file:
@@ -19,8 +17,6 @@ Adds content to the index or staging area.
   ```bash
   git add -A
   ```
-
-## Git add continued
 
 - Add all text files in current dir:
 

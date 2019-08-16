@@ -9,7 +9,7 @@ comments: false
 - Practice makes perfect
 - Force push after fixing conflicts. Be careful!
 
-## Merge conflicts
+## Merge conflicts sample workflow
 
 1. Checkout a new branch and edit `conflicts.rb`. Add 'Line4' and 'Line5'.
 1. Commit and push.
@@ -21,8 +21,6 @@ comments: false
 1. Stage the file and continue rebasing.
 1. Force push the changes.
 1. Finally continue with the Merge Request.
-
-## Commands
 
 ```sh
 git checkout -b conflicts_branch

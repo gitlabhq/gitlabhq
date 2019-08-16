@@ -816,7 +816,7 @@ To configure your application variables:
 
 1. Create a CI Variable, ensuring the key is prefixed with
    `K8S_SECRET_`. For example, you can create a variable with key
-`K8S_SECRET_RAILS_MASTER_KEY`.
+   `K8S_SECRET_RAILS_MASTER_KEY`.
 
 1. Run an Auto Devops pipeline either by manually creating a new
    pipeline or by pushing a code change to GitLab.
@@ -1017,10 +1017,10 @@ Everything behaves the same way, except:
 
 - It's enabled by setting the `INCREMENTAL_ROLLOUT_MODE` variable to `timed`.
 - Instead of the standard `production` job, the following jobs with a 5 minute delay between each are created:
-    1. `timed rollout 10%`
-    1. `timed rollout 25%`
-    1. `timed rollout 50%`
-    1. `timed rollout 100%`
+  1. `timed rollout 10%`
+  1. `timed rollout 25%`
+  1. `timed rollout 50%`
+  1. `timed rollout 100%`
 
 ## Currently supported languages
 
