@@ -104,7 +104,7 @@ export default {
         v-gl-tooltip
         :title="
           __(
-            'The code of a detached pipeline is tested against the source branch instead of merged results',
+            'Pipelines for merge requests are configured. A detached pipeline runs in the context of the merge request, and not against the merged result. Learn more on the documentation for Pipelines for Merged Results.',
           )
         "
         class="js-pipeline-url-detached badge badge-info"

@@ -7982,6 +7982,9 @@ msgstr ""
 msgid "Pipelines for last year"
 msgstr ""
 
+msgid "Pipelines for merge requests are configured. A detached pipeline runs in the context of the merge request, and not against the merged result. Learn more on the documentation for Pipelines for Merged Results."
+msgstr ""
+
 msgid "Pipelines settings for '%{project_name}' were successfully updated."
 msgstr ""
 
@@ -11111,9 +11114,6 @@ msgid "The X509 Certificate to use when mutual TLS is required to communicate wi
 msgstr ""
 
 msgid "The character highlighter helps you keep the subject line to %{titleLength} characters and wrap the body at %{bodyLength} so they are readable in git."
-msgstr ""
-
-msgid "The code of a detached pipeline is tested against the source branch instead of merged results"
 msgstr ""
 
 msgid "The coding stage shows the time from the first commit to creating the merge request. The data will automatically be added here once you create your first merge request."
