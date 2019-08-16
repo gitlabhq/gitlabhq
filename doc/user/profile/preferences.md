@@ -87,6 +87,16 @@ You have 8 options here that you can use for your default dashboard view:
 - Assigned Merge Requests
 - Operations Dashboard **(PREMIUM)**
 
+### Group overview content
+
+The **Group overview content** dropdown allows you to choose what information is
+displayed on a group’s home page.
+
+You can choose between 2 options:
+
+- Details (default)
+- [Security dashboard](../application_security/security_dashboard/index.md) **(ULTIMATE)**
+
 ### Project overview content
 
 The project overview content setting allows you to choose what content you want to
