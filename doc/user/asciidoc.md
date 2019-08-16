@@ -277,11 +277,11 @@ source - a listing that is embellished with (colorized) syntax highlighting
 ----
 ```
 
-````asciidoc
+~~~asciidoc
 \```language
 fenced code - a shorthand syntax for the source block
 \```
-````
+~~~
 
 ```asciidoc
 [,attribution,citetitle]

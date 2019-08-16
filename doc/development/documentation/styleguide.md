@@ -655,15 +655,16 @@ nicely on different mobile devices.
 
 ## Code blocks
 
-- Always wrap code added to a sentence in inline code blocks (``` ` ```).
+- Always wrap code added to a sentence in inline code blocks (`` ` ``).
   E.g., `.gitlab-ci.yml`, `git add .`, `CODEOWNERS`, `only: master`.
   File names, commands, entries, and anything that refers to code should be added to code blocks.
   To make things easier for the user, always add a full code block for things that can be
   useful to copy and paste, as they can easily do it with the button on code blocks.
+- Add a blank line above and below code blocks.
 - For regular code blocks, always use a highlighting class corresponding to the
   language for better readability. Examples:
 
-  ````md
+  ~~~md
   ```ruby
   Ruby code
   ```
@@ -673,16 +674,17 @@ nicely on different mobile devices.
   ```
 
   ```md
-  Markdown code
+  [Markdown code example](example.md)
   ```
 
   ```text
-  Code for which no specific highlighting class is available.
+  Code or text for which no specific highlighting class is available.
   ```
-  ````
+  ~~~
 
-- To display raw markdown instead of rendered markdown, use four backticks on their own lines around the
-  markdown to display. See [example](https://gitlab.com/gitlab-org/gitlab-ce/blob/8c1991b9bb7e3b8d606481fdea316d633cfa5eb7/doc/development/documentation/styleguide.md#L275-287).
+- To display raw markdown instead of rendered markdown, you can use triple backticks
+  with `md`, like the `Markdown code` example above, unless you want to include triple
+  backticks in the code block as well. In that case, use triple tildes (`~~~`) instead.
 - For a complete reference on code blocks, check the [Kramdown guide](https://about.gitlab.com/handbook/product/technical-writing/markdown-guide/#code-blocks).
 
 ## Alert boxes
@@ -1024,7 +1026,7 @@ on this document. Further explanation is given below.
 
 The following can be used as a template to get started:
 
-````md
+~~~md
 ## Descriptive title
 
 One or two sentence description of what endpoint does.
@@ -1052,7 +1054,7 @@ Example response:
   }
 ]
 ```
-````
+~~~
 
 ### Fake tokens
 
@@ -1080,7 +1082,7 @@ You can use the following fake tokens as examples.
 ### Method description
 
 Use the following table headers to describe the methods. Attributes should
-always be in code blocks using backticks (``` ` ```).
+always be in code blocks using backticks (`` ` ``).
 
 ```md
 | Attribute | Type | Required | Description |
