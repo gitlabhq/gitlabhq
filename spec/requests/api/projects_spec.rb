@@ -1494,6 +1494,17 @@ describe API::Projects do
 
         expect(response).to have_gitlab_http_status(404)
       end
+
+      it 'filters out users listed in skip_users' do
+        other_user = create(:user)
+        project.team.add_developer(other_user)
+
+        get api("/projects/#{project.id}/users?skip_users=#{user.id}", user)
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response.size).to eq(1)
+        expect(json_response[0]['id']).to eq(other_user.id)
+      end
     end
   end
 

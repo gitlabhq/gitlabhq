@@ -855,6 +855,7 @@ GET /projects/:id/users
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `search` | string | no | Search for specific users |
+| `skip_users` | array[int] | no | Filter out users with the specified IDs |
 
 ```json
 [

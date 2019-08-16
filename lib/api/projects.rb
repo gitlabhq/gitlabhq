@@ -489,11 +489,13 @@ module API
       end
       params do
         optional :search, type: String, desc: 'Return list of users matching the search criteria'
+        optional :skip_users, type: Array[Integer], desc: 'Filter out users with the specified IDs'
         use :pagination
       end
       get ':id/users' do
         users = DeclarativePolicy.subject_scope { user_project.team.users }
         users = users.search(params[:search]) if params[:search].present?
+        users = users.where_not_in(params[:skip_users]) if params[:skip_users].present?
 
         present paginate(users), with: Entities::UserBasic
       end
