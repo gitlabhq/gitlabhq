@@ -10,14 +10,14 @@ import {
   GlTooltipDirective,
 } from '@gitlab/ui';
 import Icon from '~/vue_shared/components/icon.vue';
-import MonitorAreaChart from './charts/area.vue';
+import MonitorTimeSeriesChart from './charts/time_series.vue';
 import MonitorSingleStatChart from './charts/single_stat.vue';
 import MonitorEmptyChart from './charts/empty_chart.vue';
 
 export default {
   components: {
-    MonitorAreaChart,
     MonitorSingleStatChart,
+    MonitorTimeSeriesChart,
     MonitorEmptyChart,
     Icon,
     GlDropdown,
@@ -92,7 +92,7 @@ export default {
     v-if="isPanelType('single-stat') && graphDataHasMetrics"
     :graph-data="graphData"
   />
-  <monitor-area-chart
+  <monitor-time-series-chart
     v-else-if="graphDataHasMetrics"
     :graph-data="graphData"
     :deployment-data="deploymentData"
@@ -136,6 +136,6 @@ export default {
         </gl-dropdown-item>
       </gl-dropdown>
     </div>
-  </monitor-area-chart>
+  </monitor-time-series-chart>
   <monitor-empty-chart v-else :graph-title="graphData.title" />
 </template>
