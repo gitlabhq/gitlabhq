@@ -51,15 +51,21 @@ module Banzai
         # default implementation.
         return super(text, pattern) if pattern != Milestone.reference_pattern
 
-        unescape_html_entities(text).gsub(pattern) do |match|
+        milestones = {}
+        unescaped_html = unescape_html_entities(text).gsub(pattern) do |match|
           milestone = find_milestone($~[:project], $~[:namespace], $~[:milestone_iid], $~[:milestone_name])
 
           if milestone
-            yield match, milestone.id, $~[:project], $~[:namespace], $~
+            milestones[milestone.id] = yield match, milestone.id, $~[:project], $~[:namespace], $~
+            "#{REFERENCE_PLACEHOLDER}#{milestone.id}"
           else
-            escape_html_entities(match)
+            match
           end
         end
+
+        return text if milestones.empty?
+
+        escape_with_placeholders(unescaped_html, milestones)
       end
 
       def find_milestone(project_ref, namespace_ref, milestone_id, milestone_name)
