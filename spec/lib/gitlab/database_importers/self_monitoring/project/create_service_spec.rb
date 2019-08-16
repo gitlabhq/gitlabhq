@@ -130,7 +130,7 @@ describe Gitlab::DatabaseImporters::SelfMonitoring::Project::CreateService do
       end
 
       it 'returns error when saving project ID fails' do
-        allow(application_setting).to receive(:update) { false }
+        allow(application_setting).to receive(:save) { false }
 
         expect { result }.to raise_error(StandardError, 'Could not save project ID')
       end
