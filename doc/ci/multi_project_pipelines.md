@@ -176,6 +176,21 @@ Upstream pipelines take precedence over downstream ones. If there are two
 variables with the same name defined in both upstream and downstream projects,
 the ones defined in the upstream project will take precedence.
 
+### Mirroring status from upstream pipeline
+
+You can mirror the pipeline status from an upstream pipeline to a bridge job by
+using the `needs:pipeline` keyword. The latest pipeline status from master is
+replicated to the bridge job.
+
+Example:
+
+```yaml
+upstream_bridge:
+  stage: test
+  needs:
+    pipeline: other/project
+```
+
 ### Limitations
 
 Because bridge jobs are a little different to regular jobs, it is not

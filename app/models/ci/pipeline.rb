@@ -328,6 +328,10 @@ module Ci
       config_sources.values_at(:repository_source, :auto_devops_source, :unknown_source)
     end
 
+    def self.bridgeable_statuses
+      ::Ci::Pipeline::AVAILABLE_STATUSES - %w[created preparing pending]
+    end
+
     def stages_count
       statuses.select(:stage).distinct.count
     end

@@ -57,7 +57,10 @@ module Gitlab
           end
 
           def bridge?
-            @attributes.to_h.dig(:options, :trigger).present?
+            attributes_hash = @attributes.to_h
+            attributes_hash.dig(:options, :trigger).present? ||
+              (attributes_hash.dig(:options, :bridge_needs).instance_of?(Hash) &&
+               attributes_hash.dig(:options, :bridge_needs, :pipeline).present?)
           end
 
           def to_resource
