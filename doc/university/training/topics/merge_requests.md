@@ -30,8 +30,6 @@ comments: false
 - Be as receptive as possible
 - Feedback is about the best code, not the person. You are not your code
 
-## Feedback and Collaboration
-
 Review the Thoughtbot code-review guide for suggestions to follow when reviewing merge requests:
 [https://github.com/thoughtbot/guides/tree/master/code-review](https://github.com/thoughtbot/guides/tree/master/code-review)
 

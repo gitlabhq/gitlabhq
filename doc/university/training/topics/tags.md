@@ -11,17 +11,11 @@ type: reference
 - Many projects combine an annotated release tag with a stable branch
 - Consider setting deployment/release tags automatically
 
-# Tags
+## Tags sample workflow
 
 - Create a lightweight tag
 - Create an annotated tag
 - Push the tags to the remote repository
-
-**Additional resources**
-
-<https://git-scm.com/book/en/Git-Basics-Tagging>
-
-# Commands
 
 ```sh
 git checkout master
@@ -35,6 +29,10 @@ git tag
 
 git push origin --tags
 ```
+
+**Additional resources**
+
+<https://git-scm.com/book/en/Git-Basics-Tagging>
 
 <!-- ## Troubleshooting
 

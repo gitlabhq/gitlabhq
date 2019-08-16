@@ -4,13 +4,11 @@ comments: false
 
 # Cherry Pick
 
-## Cherry Pick
-
 - Given an existing commit on one branch, apply the change to another branch
 - Useful for backporting bug fixes to previous release branches
 - Make the commit on the master branch and pick in to stable
 
-## Cherry Pick
+## Cherry Pick sample workflow
 
 1. Check out a new 'stable' branch from 'master'
 1. Change back to 'master'
@@ -18,8 +16,6 @@ comments: false
 1. Check commit log to get the commit SHA
 1. Check out the 'stable' branch
 1. Cherry pick the commit using the SHA obtained earlier
-
-## Commands
 
 ```bash
 git checkout master
