@@ -26,6 +26,14 @@ ActiveRecord::Schema.define(version: 2019_08_15_093949) do
     t.integer "cached_markdown_version"
   end
 
+  create_table "allowed_email_domains", force: :cascade do |t|
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+    t.integer "group_id", null: false
+    t.string "domain", limit: 255, null: false
+    t.index ["group_id"], name: "index_allowed_email_domains_on_group_id"
+  end
+
   create_table "analytics_cycle_analytics_group_stages", force: :cascade do |t|
     t.datetime_with_timezone "created_at", null: false
     t.datetime_with_timezone "updated_at", null: false
@@ -3670,6 +3678,7 @@ ActiveRecord::Schema.define(version: 2019_08_15_093949) do
     t.index ["type"], name: "index_web_hooks_on_type"
   end
 
+  add_foreign_key "allowed_email_domains", "namespaces", column: "group_id", on_delete: :cascade
   add_foreign_key "analytics_cycle_analytics_group_stages", "labels", column: "end_event_label_id", on_delete: :cascade
   add_foreign_key "analytics_cycle_analytics_group_stages", "labels", column: "start_event_label_id", on_delete: :cascade
   add_foreign_key "analytics_cycle_analytics_group_stages", "namespaces", column: "group_id", on_delete: :cascade

@@ -18,6 +18,7 @@
           %span.descr.text-muted= share_with_group_lock_help_text(@group)
 
     = render_if_exists 'groups/settings/ip_restriction', f: f, group: @group
+    = render_if_exists 'groups/settings/allowed_email_domain', f: f, group: @group
     = render 'groups/settings/lfs', f: f
     = render 'groups/settings/project_creation_level', f: f, group: @group
     = render 'groups/settings/subgroup_creation_level', f: f, group: @group
