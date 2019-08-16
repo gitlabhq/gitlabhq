@@ -32,6 +32,10 @@ describe DeploymentEntity do
     expect(subject).to include(:created_at)
   end
 
+  it 'exposes finished_at' do
+    expect(subject).to include(:finished_at)
+  end
+
   context 'when the pipeline has another manual action' do
     let(:other_build) { create(:ci_build, :manual, name: 'another deploy', pipeline: pipeline) }
     let!(:other_deployment) { create(:deployment, deployable: other_build) }

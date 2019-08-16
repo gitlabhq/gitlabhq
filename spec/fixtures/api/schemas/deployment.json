@@ -3,6 +3,7 @@
   "required": [
     "sha",
     "created_at",
+    "finished_at",
     "iid",
     "tag",
     "last?",
@@ -11,6 +12,7 @@
   ],
   "properties": {
     "created_at": { "type": "string" },
+    "finished_at": { "type": ["string", "null"] },
     "id": { "type": "integer" },
     "iid": { "type": "integer" },
     "last?": { "type": "boolean" },
