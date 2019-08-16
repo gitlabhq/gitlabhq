@@ -25,6 +25,10 @@ export default {
     Mousetrap.bind('n', () => this.jumpToNextDiscussion());
     Mousetrap.bind('p', () => this.jumpToPreviousDiscussion());
   },
+  beforeDestroy() {
+    Mousetrap.unbind('n');
+    Mousetrap.unbind('p');
+  },
   methods: {
     ...mapActions(['expandDiscussion']),
     jumpToNextDiscussion() {

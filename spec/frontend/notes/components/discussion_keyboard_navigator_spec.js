@@ -74,4 +74,31 @@ describe('notes/components/discussion_keyboard_navigator', () => {
       expect(wrapper.vm.currentDiscussionId).toEqual(expectedPrevId);
     });
   });
+
+  describe('on destroy', () => {
+    beforeEach(() => {
+      jest.spyOn(Mousetrap, 'unbind');
+
+      createComponent();
+
+      wrapper.destroy();
+    });
+
+    it('unbinds keys', () => {
+      expect(Mousetrap.unbind).toHaveBeenCalledWith('n');
+      expect(Mousetrap.unbind).toHaveBeenCalledWith('p');
+    });
+
+    it('does not call jumpToNextDiscussion when pressing `n`', () => {
+      Mousetrap.trigger('n');
+
+      expect(wrapper.vm.jumpToDiscussion).not.toHaveBeenCalled();
+    });
+
+    it('does not call jumpToNextDiscussion when pressing `p`', () => {
+      Mousetrap.trigger('p');
+
+      expect(wrapper.vm.jumpToDiscussion).not.toHaveBeenCalled();
+    });
+  });
 });
