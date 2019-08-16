@@ -4,15 +4,14 @@ entry.
 
 ## 12.1.6
 
-- No changes.
-
-## 12.1.5
-
 ### Security (2 changes)
 
 - Upgrade Gitaly to 1.53.2 to prevent revision flag injection exploits.
 - Upgrade pages to 1.7.1 to prevent gitlab api token recovery from cookie.
 
+## 12.1.5
+
+- No changes.
 
 ## 12.1.4
 
