@@ -69,12 +69,12 @@ class RegistrationsController < Devise::RegistrationsController
 
   def after_sign_up_path_for(user)
     Gitlab::AppLogger.info(user_created_message(confirmed: user.confirmed?))
-    user.confirmed? ? stored_location_for(user) || dashboard_projects_path : users_almost_there_path
+    confirmed_or_unconfirmed_access_allowed(user) ? stored_location_or_dashboard(user) : users_almost_there_path
   end
 
   def after_inactive_sign_up_path_for(resource)
     Gitlab::AppLogger.info(user_created_message)
-    users_almost_there_path
+    Feature.enabled?(:soft_email_confirmation) ? dashboard_projects_path : users_almost_there_path
   end
 
   private
@@ -134,5 +134,13 @@ class RegistrationsController < Devise::RegistrationsController
 
   def terms_accepted?
     Gitlab::Utils.to_boolean(params[:terms_opt_in])
+  end
+
+  def confirmed_or_unconfirmed_access_allowed(user)
+    user.confirmed? || Feature.enabled?(:soft_email_confirmation)
+  end
+
+  def stored_location_or_dashboard(user)
+    stored_location_for(user) || dashboard_projects_path
   end
 end

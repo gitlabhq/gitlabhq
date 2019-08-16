@@ -781,4 +781,39 @@ describe 'Login' do
       end
     end
   end
+
+  context 'when sending confirmation email and not yet confirmed' do
+    let!(:user) { create(:user, confirmed_at: nil) }
+    let(:grace_period) { 2.days }
+
+    before do
+      stub_application_setting(send_user_confirmation_email: true)
+      stub_feature_flags(soft_email_confirmation: true)
+      allow(User).to receive(:allow_unconfirmed_access_for).and_return grace_period
+    end
+
+    it 'allows login and shows a flash warning to confirm the email address' do
+      expect(authentication_metrics).to increment(:user_authenticated_counter)
+
+      gitlab_sign_in(user)
+
+      expect(current_path).to eq root_path
+      expect(page).to have_content("Please check your email (#{user.email}) to verify that you own this address.")
+    end
+
+    context "when not having confirmed within Devise's allow_unconfirmed_access_for time" do
+      it 'does not allow login and shows a flash alert to confirm the email address' do
+        travel_to((grace_period + 1.day).from_now) do
+          expect(authentication_metrics)
+            .to increment(:user_unauthenticated_counter)
+            .and increment(:user_session_destroyed_counter).twice
+
+          gitlab_sign_in(user)
+
+          expect(current_path).to eq new_user_session_path
+          expect(page).to have_content('You have to confirm your email address before continuing.')
+        end
+      end
+    end
+  end
 end

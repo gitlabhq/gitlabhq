@@ -30,13 +30,36 @@ describe RegistrationsController do
       end
 
       context 'when send_user_confirmation_email is true' do
-        it 'does not authenticate user and sends confirmation email' do
+        before do
           stub_application_setting(send_user_confirmation_email: true)
+        end
 
-          post(:create, params: user_params)
+        context 'when soft email confirmation is not enabled' do
+          before do
+            stub_feature_flags(soft_email_confirmation: false)
+            allow(User).to receive(:allow_unconfirmed_access_for).and_return 0
+          end
 
-          expect(ActionMailer::Base.deliveries.last.to.first).to eq(user_params[:user][:email])
-          expect(subject.current_user).to be_nil
+          it 'does not authenticate the user and sends a confirmation email' do
+            post(:create, params: user_params)
+
+            expect(ActionMailer::Base.deliveries.last.to.first).to eq(user_params[:user][:email])
+            expect(subject.current_user).to be_nil
+          end
+        end
+
+        context 'when soft email confirmation is enabled' do
+          before do
+            stub_feature_flags(soft_email_confirmation: true)
+            allow(User).to receive(:allow_unconfirmed_access_for).and_return 2.days
+          end
+
+          it 'authenticates the user and sends a confirmation email' do
+            post(:create, params: user_params)
+
+            expect(ActionMailer::Base.deliveries.last.to.first).to eq(user_params[:user][:email])
+            expect(response).to redirect_to(dashboard_projects_path)
+          end
         end
       end
 

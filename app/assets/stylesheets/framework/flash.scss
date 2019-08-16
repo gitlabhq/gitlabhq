@@ -43,6 +43,7 @@
     @extend .alert;
     background-color: $orange-100;
     color: $orange-900;
+    cursor: default;
     margin: 0;
   }
 
