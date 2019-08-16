@@ -26,11 +26,6 @@ export default {
       required: false,
       default: false,
     },
-    forceModifiedIcon: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     size: {
       type: Number,
       required: false,
@@ -47,8 +42,6 @@ export default {
       // False positive i18n lint: https://gitlab.com/gitlab-org/frontend/eslint-plugin-i18n/issues/26
       // eslint-disable-next-line @gitlab/i18n/no-non-i18n-strings
       const suffix = !this.file.changed && this.file.staged && !this.showStagedIcon ? '-solid' : '';
-
-      if (this.forceModifiedIcon) return `file-modified${suffix}`;
 
       return `${getCommitIconMap(this.file).icon}${suffix}`;
     },
@@ -88,7 +81,7 @@ export default {
     v-gl-tooltip.right
     :title="tooltipTitle"
     :class="{ 'ml-auto': isCentered }"
-    class="file-changed-icon"
+    class="file-changed-icon d-inline-block"
   >
     <icon v-if="showIcon" :name="changedIcon" :size="size" :css-classes="changedIconClass" />
   </span>
