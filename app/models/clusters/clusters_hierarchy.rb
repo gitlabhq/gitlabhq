@@ -46,7 +46,7 @@ module Clusters
 
     def group_clusters_base_query
       group_parent_id_alias = alias_as_column(groups[:parent_id], 'group_parent_id')
-      join_sources = ::Group.left_joins(:clusters).join_sources
+      join_sources = ::Group.left_joins(:clusters).arel.join_sources
 
       model
         .unscoped
@@ -59,7 +59,7 @@ module Clusters
     def project_clusters_base_query
       projects = ::Project.arel_table
       project_parent_id_alias = alias_as_column(projects[:namespace_id], 'group_parent_id')
-      join_sources = ::Project.left_joins(:clusters).join_sources
+      join_sources = ::Project.left_joins(:clusters).arel.join_sources
 
       model
         .unscoped
