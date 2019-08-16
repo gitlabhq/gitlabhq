@@ -488,15 +488,6 @@ without having to check the entire job log.
 
 [Read more about JUnit test reports](../../../ci/junit_test_reports.md).
 
-## Live preview with Review Apps
-
-If you configured [Review Apps](https://about.gitlab.com/features/review-apps/) for your project,
-you can preview the changes submitted to a feature-branch through a merge request
-in a per-branch basis. No need to checkout the branch, install and preview locally;
-all your changes will be available to preview by anyone with the Review Apps link.
-
-[Read more about Review Apps.](../../../ci/review_apps/index.md)
-
 ## Merge request diff file navigation
 
 When reviewing changes in the **Changes** tab the diff can be navigated using
