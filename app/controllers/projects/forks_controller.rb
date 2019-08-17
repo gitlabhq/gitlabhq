@@ -9,16 +9,14 @@ class Projects::ForksController < Projects::ApplicationController
   before_action :authorize_download_code!
   before_action :authenticate_user!, only: [:new, :create]
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def index
-    base_query = project.forks.includes(:creator)
+    @total_forks_count    = project.forks.size
+    @public_forks_count   = project.forks.public_only.size
+    @private_forks_count  = @total_forks_count - project.forks.public_and_internal_only.size
+    @internal_forks_count = @total_forks_count - @public_forks_count - @private_forks_count
 
-    forks                = ForkProjectsFinder.new(project, params: params.merge(search: params[:filter_projects]), current_user: current_user).execute
-    @total_forks_count   = base_query.size
-    @private_forks_count = @total_forks_count - forks.size
-    @public_forks_count  = @total_forks_count - @private_forks_count
-
-    @forks = forks.page(params[:page])
+    @forks = ForkProjectsFinder.new(project, params: params.merge(search: params[:filter_projects]), current_user: current_user).execute
+    @forks = @forks.page(params[:page])
 
     respond_to do |format|
       format.html
@@ -30,7 +28,6 @@ class Projects::ForksController < Projects::ApplicationController
       end
     end
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   def new
     @namespaces = current_user.manageable_namespaces
