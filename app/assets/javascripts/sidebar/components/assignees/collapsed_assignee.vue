@@ -12,7 +12,7 @@ export default {
     },
     issuableType: {
       type: String,
-      require: true,
+      required: false,
       default: 'issue',
     },
   },
