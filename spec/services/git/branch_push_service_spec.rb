@@ -76,6 +76,22 @@ describe Git::BranchPushService, services: true do
       stub_ci_pipeline_to_return_yaml_file
     end
 
+    it 'creates a pipeline with the right parameters' do
+      expect(Ci::CreatePipelineService)
+        .to receive(:new)
+        .with(project,
+              user,
+              {
+                before: oldrev,
+                after: newrev,
+                ref: ref,
+                checkout_sha: SeedRepo::Commit::ID,
+                push_options: {}
+              }).and_call_original
+
+      subject
+    end
+
     it "creates a new pipeline" do
       expect { subject }.to change { Ci::Pipeline.count }
 
