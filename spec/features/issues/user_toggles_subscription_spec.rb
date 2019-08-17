@@ -27,4 +27,14 @@ describe "User toggles subscription", :js do
     # Check we're unsubscribed.
     expect(subscription_button).to have_css("button:not(.is-checked)")
   end
+
+  context 'when project emails are disabled' do
+    let(:project) { create(:project_empty_repo, :public, emails_disabled: true) }
+
+    it 'is disabled' do
+      expect(page).to have_content('Notifications have been disabled by the project or group owner')
+      expect(page).to have_selector('.js-emails-disabled', visible: true)
+      expect(page).not_to have_selector('.js-issuable-subscribe-button')
+    end
+  end
 end

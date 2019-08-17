@@ -411,6 +411,17 @@ To enable this feature, navigate to the group settings page, expand the
 Define project templates at a group level by setting a group as the template source.
 [Learn more about group-level project templates](custom_project_templates.md).
 
+#### Disabling email notifications
+
+You can disable all email notifications related to the group, which also includes
+it's subgroups and projects.
+
+To enable this feature:
+ 
+1. Navigate to the group's **Settings > General** page.
+1. Expand the **Permissions, LFS, 2FA** section, and select **Disable email notifications**.
+1. Click **Save changes**.
+
 ### Advanced settings
 
 - **Projects**: View all projects within that group, add members to each project,

@@ -1,6 +1,8 @@
 - empty_repo = @project.empty_repo?
 - show_auto_devops_callout = show_auto_devops_callout?(@project)
 - max_project_topic_length = 15
+- emails_disabled = @project.emails_disabled?
+
 .project-home-panel{ class: [("empty-project" if empty_repo), ("js-keep-hidden-on-navigation" if vue_file_list_enabled?)] }
   .row.append-bottom-8
     .home-panel-title-row.col-md-12.col-lg-6.d-flex
@@ -41,7 +43,7 @@
     .project-repo-buttons.col-md-12.col-lg-6.d-inline-flex.flex-wrap.justify-content-lg-end
       - if current_user
         .d-inline-flex
-          = render 'shared/notifications/new_button', notification_setting: @notification_setting, btn_class: 'btn-xs'
+          = render 'shared/notifications/new_button', notification_setting: @notification_setting, btn_class: 'btn-xs', emails_disabled: emails_disabled
 
       .count-buttons.d-inline-flex
         = render 'projects/buttons/star'

@@ -65,4 +65,12 @@ describe 'Projects > Show > User manages notifications', :js do
       end
     end
   end
+
+  context 'when project emails are disabled' do
+    let(:project) { create(:project, :public, :repository, emails_disabled: true) }
+
+    it 'is disabled' do
+      expect(page).to have_selector('.notifications-btn.disabled', visible: true)
+    end
+  end
 end
