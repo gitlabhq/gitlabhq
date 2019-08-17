@@ -96,7 +96,8 @@ module API
           with: Entities::Issue,
           with_labels_details: declared_params[:with_labels_details],
           current_user: current_user,
-          issuable_metadata: issuable_meta_data(issues, 'Issue', current_user)
+          issuable_metadata: issuable_meta_data(issues, 'Issue', current_user),
+          include_subscribed: false
         }
 
         present issues, options
@@ -122,7 +123,8 @@ module API
           with: Entities::Issue,
           with_labels_details: declared_params[:with_labels_details],
           current_user: current_user,
-          issuable_metadata: issuable_meta_data(issues, 'Issue', current_user)
+          issuable_metadata: issuable_meta_data(issues, 'Issue', current_user),
+          include_subscribed: false
         }
 
         present issues, options

@@ -136,7 +136,6 @@ Example response:
          "award_emoji":"http://example.com/api/v4/projects/1/issues/76/award_emoji",
          "project":"http://example.com/api/v4/projects/1"
       },
-      "subscribed": false,
       "task_completion_status":{
          "count":0,
          "completed_count":0
@@ -441,7 +440,6 @@ Example response:
          "award_emoji":"http://example.com/api/v4/projects/4/issues/41/award_emoji",
          "project":"http://example.com/api/v4/projects/4"
       },
-      "subscribed": false,
       "task_completion_status":{
          "count":0,
          "completed_count":0
