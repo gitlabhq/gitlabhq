@@ -5,7 +5,7 @@ module NotificationsHelper
 
   def notification_icon_class(level)
     case level.to_sym
-    when :disabled
+    when :disabled, :owner_disabled
       'microphone-slash'
     when :participating
       'volume-up'
@@ -15,6 +15,16 @@ module NotificationsHelper
       'at'
     when :global
       'globe'
+    end
+  end
+
+  def notification_icon_level(notification_setting, emails_disabled = false)
+    if emails_disabled
+      'owner_disabled'
+    elsif notification_setting.global?
+      current_user.global_notification_setting.level
+    else
+      notification_setting.level
     end
   end
 
@@ -53,6 +63,8 @@ module NotificationsHelper
       _('Use your global notification setting')
     when :custom
       _('You will only receive notifications for the events you choose')
+    when :owner_disabled
+      _('Notifications have been disabled by the project or group owner')
     end
   end
 

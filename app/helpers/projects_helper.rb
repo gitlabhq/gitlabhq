@@ -155,6 +155,12 @@ module ProjectsHelper
     end
   end
 
+  def can_disable_emails?(project, current_user)
+    return false if project.group&.emails_disabled?
+
+    can?(current_user, :set_emails_disabled, project) && Feature.enabled?(:emails_disabled, project, default_enabled: true)
+  end
+
   def last_push_event
     current_user&.recent_push(@project)
   end
@@ -541,13 +547,15 @@ module ProjectsHelper
       snippetsAccessLevel: feature.snippets_access_level,
       pagesAccessLevel: feature.pages_access_level,
       containerRegistryEnabled: !!project.container_registry_enabled,
-      lfsEnabled: !!project.lfs_enabled
+      lfsEnabled: !!project.lfs_enabled,
+      emailsDisabled: project.emails_disabled?
     }
   end
 
   def project_permissions_panel_data(project)
     {
       currentSettings: project_permissions_settings(project),
+      canDisableEmails: can_disable_emails?(project, current_user),
       canChangeVisibilityLevel: can_change_visibility_level?(project, current_user),
       allowedVisibilityOptions: project_allowed_visibility_levels(project),
       visibilityHelpPath: help_page_path('public_access/public_access'),

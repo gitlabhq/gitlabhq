@@ -98,6 +98,10 @@ class IssuableSidebarBasicEntity < Grape::Entity
     autocomplete_projects_path(project_id: issuable.project.id)
   end
 
+  expose :project_emails_disabled do |issuable|
+    issuable.project.emails_disabled?
+  end
+
   private
 
   def current_user

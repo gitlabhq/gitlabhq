@@ -32,6 +32,12 @@ links will be missing from the sidebar UI.
 You can still access them with direct links if you can access Merge Requests. This is deliberate, if you can see
 Issues or Merge Requests, both of which use Labels and Milestones, then you shouldn't be denied access to Labels and Milestones pages.
 
+#### Disabling email notifications
+
+You can disable all email notifications related to the project by selecting the 
+**Disable email notifications** checkbox.  Only the project owner is allowed to change
+this setting.
+
 ### Issue settings
 
 Add an [issue description template](../description_templates.md#description-templates) to your project, so that every new issue will start with a custom template.
