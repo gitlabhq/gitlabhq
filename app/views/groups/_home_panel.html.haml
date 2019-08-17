@@ -1,4 +1,5 @@
 - can_create_subgroups = can?(current_user, :create_subgroup, @group)
+- emails_disabled = @group.emails_disabled?
 
 .group-home-panel
   .row.mb-3
@@ -21,7 +22,7 @@
     .home-panel-buttons.col-md-12.col-lg-6.d-inline-flex.flex-wrap.justify-content-lg-end
       - if current_user
         .group-buttons
-          = render 'shared/notifications/new_button', notification_setting: @notification_setting, btn_class: 'btn'
+          = render 'shared/notifications/new_button', notification_setting: @notification_setting, btn_class: 'btn', emails_disabled: emails_disabled
           - if can? current_user, :create_projects, @group
             - new_project_label = _("New project")
             - new_subgroup_label = _("New subgroup")

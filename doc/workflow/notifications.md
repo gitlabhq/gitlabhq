@@ -51,6 +51,10 @@ Organization like this is suitable for users that belong to different groups but
 same need for being notified for every group they are member of.
 These settings can be configured on group page under the name of the group. It will be the dropdown with the bell icon. They can also be configured on the user profile notifications dropdown.
 
+The group owner can disable email notifications for a group, which also includes
+it's subgroups and projects.  If this is the case, you will not receive any corresponding notifications,
+and the notification button will be disabled with an explanatory tooltip. 
+
 ### Project Settings
 
 ![notification settings](img/notification_project_settings.png)
@@ -59,6 +63,10 @@ Project settings are at the top level and any setting placed at this level will 
 other setting.
 This is suitable for users that have different needs for notifications per project basis.
 These settings can be configured on project page under the name of the project. It will be the dropdown with the bell icon. They can also be configured on the user profile notifications dropdown.
+
+The project owner (or it's group owner) can disable email notifications for the project.
+If this is the case, you will not receive any corresponding notifications, and the notification
+button will be disabled with an explanatory tooltip. 
 
 ## Notification events
 

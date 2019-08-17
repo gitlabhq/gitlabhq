@@ -3943,6 +3943,9 @@ msgstr ""
 msgid "Disable"
 msgstr ""
 
+msgid "Disable email notifications"
+msgstr ""
+
 msgid "Disable for this project"
 msgstr ""
 
@@ -5481,6 +5484,9 @@ msgstr ""
 msgid "GroupSettings|Default to Auto DevOps pipeline for all projects within this group"
 msgstr ""
 
+msgid "GroupSettings|Disable email notifications"
+msgstr ""
+
 msgid "GroupSettings|Learn more about badges."
 msgstr ""
 
@@ -5506,6 +5512,9 @@ msgid "GroupSettings|This setting is applied on %{ancestor_group}. You can overr
 msgstr ""
 
 msgid "GroupSettings|This setting will be applied to all subgroups unless overridden by a group owner. Groups that already have access to the project will continue to have access unless removed manually."
+msgstr ""
+
+msgid "GroupSettings|This setting will override user notification preferences for all members of the group, subgroups, and projects."
 msgstr ""
 
 msgid "GroupSettings|cannot be disabled when the parent group \"Share with group lock\" is enabled, except by the owner of the parent group"
@@ -7590,6 +7599,9 @@ msgid "NotificationSetting|Custom"
 msgstr ""
 
 msgid "Notifications"
+msgstr ""
+
+msgid "Notifications have been disabled by the project or group owner"
 msgstr ""
 
 msgid "Notifications off"
@@ -11659,6 +11671,9 @@ msgid "This runner will only run on pipelines triggered on protected branches"
 msgstr ""
 
 msgid "This setting can be overridden in each project."
+msgstr ""
+
+msgid "This setting will override user notification preferences for all project members."
 msgstr ""
 
 msgid "This setting will update the hostname that is used to generate private commit emails. %{learn_more}"

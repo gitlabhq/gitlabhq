@@ -59,6 +59,12 @@ describe 'Projects > Settings > Visibility settings', :js do
         end
       end
     end
+
+    context 'disable email notifications' do
+      it 'is visible' do
+        expect(page).to have_selector('.js-emails-disabled', visible: true)
+      end
+    end
   end
 
   context 'as maintainer' do
@@ -75,6 +81,12 @@ describe 'Projects > Settings > Visibility settings', :js do
 
       expect(visibility_select_container).to have_selector 'select[name="project[visibility_level]"]:disabled'
       expect(visibility_select_container).to have_content 'The project can be accessed by anyone, regardless of authentication.'
+    end
+
+    context 'disable email notifications' do
+      it 'is not available' do
+        expect(page).not_to have_selector('.js-emails-disabled', visible: true)
+      end
     end
   end
 end

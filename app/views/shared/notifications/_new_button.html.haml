@@ -1,6 +1,13 @@
-- btn_class = local_assigns.fetch(:btn_class, nil)
+- btn_class = local_assigns.fetch(:btn_class, '')
+- emails_disabled = local_assigns.fetch(:emails_disabled, false)
 
 - if notification_setting
+  - if emails_disabled
+    - button_title = notification_description(:owner_disabled)
+    - btn_class << " disabled"
+  - else
+    - button_title = _("Notification setting - %{notification_title}") % { notification_title: notification_title(notification_setting.level) }
+
   .js-notification-dropdown.notification-dropdown.home-panel-action-button.prepend-top-default.append-right-8.dropdown.inline
     = form_for notification_setting, remote: true, html: { class: "inline notification-form no-label" } do |f|
       = hidden_setting_source_input(notification_setting)
@@ -9,14 +16,14 @@
       .js-notification-toggle-btns
         %div{ class: ("btn-group" if notification_setting.custom?) }
           - if notification_setting.custom?
-            %button.dropdown-new.btn.btn-default.has-tooltip.notifications-btn#notifications-button{ type: "button", title: _("Notification setting - %{notification_title}") % { notification_title: notification_title(notification_setting.level) }, class: "#{btn_class}", "aria-label" => _("Notification setting - %{notification_title}") % { notification_title: notification_title(notification_setting.level) }, data: { container: "body", placement: 'top', toggle: "modal", target: "#" + notifications_menu_identifier("modal", notification_setting), display: 'static' } }
+            %button.dropdown-new.btn.btn-default.has-tooltip.notifications-btn#notifications-button{ type: "button", title: button_title, class: "#{btn_class}", "aria-label" => button_title, data: { container: "body", placement: 'top', toggle: "modal", target: "#" + notifications_menu_identifier("modal", notification_setting), display: 'static' } }
               = notification_setting_icon(notification_setting)
               %span.js-notification-loading.fa.hidden
             %button.btn.dropdown-toggle{ data: { toggle: "dropdown", target: notifications_menu_identifier("dropdown", notification_setting), flip: "false" }, class: "#{btn_class}" }
               = sprite_icon("arrow-down", css_class: "icon mr-0")
               .sr-only Toggle dropdown
           - else
-            %button.dropdown-new.btn.btn-default.has-tooltip.notifications-btn#notifications-button{ type: "button", title: _("Notification setting - %{notification_title}") % { notification_title: notification_title(notification_setting.level) }, class: "#{btn_class}", "aria-label" => _("Notification setting - %{notification_title}") % { notification_title: notification_title(notification_setting.level) }, data: { container: "body", placement: 'top', toggle: "dropdown", target: notifications_menu_identifier("dropdown", notification_setting), flip: "false" } }
+            %button.dropdown-new.btn.btn-default.has-tooltip.notifications-btn#notifications-button{ type: "button", title: button_title, class: "#{btn_class}", "aria-label" => button_title, data: { container: "body", placement: 'top', toggle: "dropdown", target: notifications_menu_identifier("dropdown", notification_setting), flip: "false" } }
               = notification_setting_icon(notification_setting)
               %span.js-notification-loading.fa.hidden
               = sprite_icon("arrow-down", css_class: "icon")

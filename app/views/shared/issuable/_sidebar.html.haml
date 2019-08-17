@@ -137,7 +137,11 @@
       .js-sidebar-participants-entry-point
 
       - if signed_in
-        .js-sidebar-subscriptions-entry-point
+        - if issuable_sidebar[:project_emails_disabled]
+          .block.js-emails-disabled
+            = notification_description(:owner_disabled)
+        - else
+          .js-sidebar-subscriptions-entry-point
 
       - project_ref = issuable_sidebar[:reference]
       .block.project-reference

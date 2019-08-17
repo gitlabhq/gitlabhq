@@ -161,4 +161,27 @@ describe 'Group show page' do
       expect(find('.group-row:nth-child(3) .namespace-title > a')).to have_content(project3.title)
     end
   end
+
+  context 'notification button', :js do
+    let(:maintainer) { create(:user) }
+    let!(:project)   { create(:project, namespace: group) }
+
+    before do
+      group.add_maintainer(maintainer)
+      sign_in(maintainer)
+    end
+
+    it 'is enabled by default' do
+      visit path
+
+      expect(page).to have_selector('.notifications-btn:not(.disabled)', visible: true)
+    end
+
+    it 'is disabled if emails are disabled' do
+      group.update_attribute(:emails_disabled, true)
+      visit path
+
+      expect(page).to have_selector('.notifications-btn.disabled', visible: true)
+    end
+  end
 end
