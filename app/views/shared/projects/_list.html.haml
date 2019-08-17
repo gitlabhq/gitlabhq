@@ -42,12 +42,6 @@
           avatar: avatar, stars: stars, css_class: css_class, ci: ci, use_creator_avatar: use_creator_avatar,
           forks: forks, show_last_commit_as_description: show_last_commit_as_description, user: user, merge_requests: merge_requests,
           issues: issues, pipeline_status: pipeline_status, compact_mode: compact_mode
-
-      - if @private_forks_count && @private_forks_count > 0
-        %li.project-row.private-forks-notice
-          = icon('lock fw', base: 'circle', class: 'fa-lg private-fork-icon')
-          %strong= pluralize(@private_forks_count, 'private fork')
-          %span &nbsp;you have no access to.
     = paginate_collection(projects, remote: remote) unless skip_pagination
   - else
     - if @contributed_projects

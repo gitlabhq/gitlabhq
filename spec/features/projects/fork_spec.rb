@@ -121,7 +121,6 @@ describe 'Project fork' do
       end
 
       expect(page).not_to have_content("#{another_project_fork.namespace.human_name} / #{another_project_fork.name}")
-      expect(page).to have_content("1 private fork")
     end
   end
 
