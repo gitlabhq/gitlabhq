@@ -284,13 +284,16 @@ Introduced in GitLab 11.3. This file lives in `/var/log/gitlab/gitlab-rails/impo
 Omnibus GitLab packages or in `/home/git/gitlab/log/importer.log` for
 installations from source.
 
-## `auth.log`
+## `auth.log`
 
 Introduced in GitLab 12.0. This file lives in `/var/log/gitlab/gitlab-rails/auth.log` for
 Omnibus GitLab packages or in `/home/git/gitlab/log/auth.log` for
 installations from source.
 
-It logs information whenever [Rack Attack] registers an abusive request.
+This log records:
+
+- Information whenever [Rack Attack] registers an abusive request.
+- Requests over the [Rate Limit] on raw endpoints.
 
 NOTE: **Note:**
 From [%12.1](https://gitlab.com/gitlab-org/gitlab-ce/issues/62756), user id and username are available on this log.
@@ -334,3 +337,4 @@ installations from source.
 
 [repocheck]: repository_checks.md
 [Rack Attack]: ../security/rack_attack.md
+[Rate Limit]: ../user/admin_area/settings/rate_limits_on_raw_endpoints.md
