@@ -1146,6 +1146,7 @@ ActiveRecord::Schema.define(version: 2019_08_28_083843) do
     t.integer "status", limit: 2, null: false
     t.datetime_with_timezone "finished_at"
     t.integer "cluster_id"
+    t.index ["cluster_id", "status"], name: "index_deployments_on_cluster_id_and_status"
     t.index ["cluster_id"], name: "index_deployments_on_cluster_id"
     t.index ["created_at"], name: "index_deployments_on_created_at"
     t.index ["deployable_type", "deployable_id"], name: "index_deployments_on_deployable_type_and_deployable_id"
