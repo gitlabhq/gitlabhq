@@ -59,15 +59,14 @@ Once [Single sign-on](index.md) has been configured, we can:
 
 ### Azure
 
-First, double check the [Single sign-on](index.md) configuration for your group and ensure that **Name identifier value** (NameID) points to `user.objectid` or another unique identifier. This will match the `extern_uid` used on GitLab.
+The SAML application that was created during [Single sign-on](index.md) setup now needs to be set up for SCIM.
 
-![Name identifier value mapping](img/scim_name_identifier_mapping.png)
+1. Check the configuration for your GitLab SAML app and ensure that **Name identifier value** (NameID) points to `user.objectid` or another unique identifier. This will match the `extern_uid` used on GitLab.
 
-#### Set up admin credentials
+   ![Name identifier value mapping](img/scim_name_identifier_mapping.png)
 
-Next, configure your GitLab application in Azure by following the
-[Provisioning users and groups to applications that support SCIM](https://docs.microsoft.com/en-us/azure/active-directory/manage-apps/use-scim-to-provision-users-and-groups#provisioning-users-and-groups-to-applications-that-support-scim) 
-section in Azure's SCIM setup documentation.
+1. Set up automatic provisioning and administrative credentials by following the
+   [Provisioning users and groups to applications that support SCIM](https://docs.microsoft.com/en-us/azure/active-directory/manage-apps/use-scim-to-provision-users-and-groups#provisioning-users-and-groups-to-applications-that-support-scim) section in Azure's SCIM setup documentation.
 
 During this configuration, note the following:
 
@@ -97,6 +96,7 @@ You can then test the connection by clicking on **Test Connection**. If the conn
    NOTE: **Note:** If you used a unique identifier **other than** `objectId`, be sure to map it instead to both `id` and `externalId`.
 
 1. Below the mapping list click on **Show advanced options > Edit attribute list for AppName**.
+
 1. Leave the `id` as the primary and only required field.
 
    NOTE: **Note:**
@@ -129,8 +129,7 @@ When testing the connection, you may encounter an error: **You appear to have en
 When checking the Audit Logs for the Provisioning, you can sometimes see the
 error `Namespace can't be blank, Name can't be blank, and User can't be blank.`
 
-This is likely caused because not all required fields (such as first name and 
-last name) are present for all users being mapped.
+This is likely caused because not all required fields (such as first name and last name) are present for all users being mapped.
 
 As a workaround, try an alternate mapping:
 
