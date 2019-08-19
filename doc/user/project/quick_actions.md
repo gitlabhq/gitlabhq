@@ -40,18 +40,20 @@ discussions, and descriptions:
 | `/label ~label1 ~label2`   | Add label(s). Label names can also start without ~ but mixed syntax is not supported.                   | ✓     | ✓             |
 | `/unlabel ~label1 ~label2` | Remove all or specific label(s)| ✓     | ✓             |
 | `/relabel ~label1 ~label2` | Replace existing label(s) with those specified | ✓     | ✓             |
-| `/copy_metadata <#issue | !merge_request>` | Copy labels and milestone from other issue or merge request in the project | ✓     | ✓             |
+| `/copy_metadata <#issue>` | Copy labels and milestone from another issue in the project | ✓     | ✓             |
+| `/copy_metadata <!merge_request>` | Copy labels and milestone from another merge request in the project | ✓     | ✓             |
 | `/estimate <1w 3d 2h 14m>` | Set time estimate | ✓     | ✓             |
 | `/remove_estimate`       | Remove time estimate             | ✓     | ✓             |
-| `/spend <time(1h 30m | -1h 5m)> <date(YYYY-MM-DD)>` | Add or subtract spent time; optionally, specify the date that time was spent on | ✓     | ✓             |
+| `/spend <time(1h 30m)> <date(YYYY-MM-DD)>` | Add spent time; optionally, specify the date that time was spent on | ✓     | ✓             |
+| `/spend <time(-1h 5m)> <date(YYYY-MM-DD)>` | Subtract spent time; optionally, specify the date that time was spent on | ✓     | ✓             |
 | `/remove_time_spent`       | Remove time spent              | ✓     | ✓             |
 | `/lock`                    | Lock the thread                | ✓     | ✓             |
 | `/unlock`                  | Unlock the thread              | ✓     | ✓             |
-| `/due <in 2 days | this Friday | December 31st>`| Set due date | ✓ | |
+| `/due <date>` | Set due date. Examples of valid `<date>` include `in 2 days`, `this Friday` and `December 31st`. | ✓ | |
 | `/remove_due_date`         | Remove due date                | ✓     |               |
-| `/weight <0 | 1 | 2 | ...>` | Set weight **(STARTER)**       | ✓     |               |
+| `/weight <value>` | Set weight. Valid options for `<value>` include `0`, `1`, `2`, etc. **(STARTER)**       | ✓     |               |
 | `/clear_weight`            | Clears weight **(STARTER)**    | ✓     |               |
-| `/epic <&epic | group&epic | Epic URL>` | Add to epic **(ULTIMATE)** | ✓ |             |
+| `/epic <epic>` | Add to epic `<epic>`. The `<epic>` value should be in the format of `&epic`, `group&epic` or `epic-URL`. **(ULTIMATE)** | ✓ |             |
 | `/remove_epic`             | Removes from epic **(ULTIMATE)** | ✓   |               |
 | `/promote`                 | Promote issue to epic **(ULTIMATE)** | ✓   |               |
 | `/confidential`            | Make confidential              | ✓     |               |
@@ -110,9 +112,9 @@ The following quick actions are applicable for epics threads and description:
 | `/label ~label1 ~label2`   | Add label(s)                            |
 | `/unlabel ~label1 ~label2` | Remove all or specific label(s)         |
 | `/relabel ~label1 ~label2` | Replace existing label(s) with those specified |
-| `/child_epic <&epic |  group&epic | Epic URL>` | Adds child epic to epic ([introduced in GitLab 12.0](https://gitlab.com/gitlab-org/gitlab-ee/issues/7330)) |
-| `/remove_child_epic <&epic | group&epic | Epic URL>` | Removes child epic from epic ([introduced in GitLab 12.0](https://gitlab.com/gitlab-org/gitlab-ee/issues/7330)) |
-| `/parent_epic <&epic |  group&epic | Epic URL>` | Sets parent epic to epic ([introduced in GitLab 12.1](https://gitlab.com/gitlab-org/gitlab-ee/issues/10556)) |
+| `/child_epic <epic>` | Adds child epic to `<epic>`. The `<epic>` value should be in the format of `&epic`, `group&epic` or `epic-URL`. ([Introduced in GitLab 12.0](https://gitlab.com/gitlab-org/gitlab-ee/issues/7330)) **(ULTIMATE)**|
+| `/remove_child_epic <epic>` | Removes child epic from `<epic>`. The `<epic>` value should be in the format of `&epic`, `group&epic` or `epic-URL`. ([Introduced in GitLab 12.0](https://gitlab.com/gitlab-org/gitlab-ee/issues/7330)) **(ULTIMATE)** |
+| `/parent_epic <epic>` | Sets parent epic to `<epic>`. The `<epic>` value should be in the format of `&epic`, `group&epic` or `epic-URL`. ([introduced in GitLab 12.1](https://gitlab.com/gitlab-org/gitlab-ee/issues/10556)) **(ULTIMATE)** |
 | `/remove_parent_epic` | Removes parent epic from epic ([introduced in GitLab 12.1](https://gitlab.com/gitlab-org/gitlab-ee/issues/10556)) |
 
 <!-- ## Troubleshooting
