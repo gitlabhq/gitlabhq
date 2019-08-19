@@ -35,9 +35,10 @@ Documentation for GitLab instance administrators is under [LFS administration do
 - Git LFS always assumes HTTPS so if you have GitLab server on HTTP you will have
   to add the URL to Git config manually (see [troubleshooting](#troubleshooting))
 
->**Note**: With 8.12 GitLab added LFS support to SSH. The Git LFS communication
- still goes over HTTP, but now the SSH client passes the correct credentials
- to the Git LFS client, so no action is required by the user.
+NOTE: **Note:**
+With 8.12 GitLab added LFS support to SSH. The Git LFS communication
+still goes over HTTP, but now the SSH client passes the correct credentials
+to the Git LFS client, so no action is required by the user.
 
 ## Using Git LFS
 
@@ -61,12 +62,13 @@ git commit -am "Added Debian iso"     # commit the file meta data
 git push origin master                # sync the git repo and large file to the GitLab server
 ```
 
-> **Note**: Make sure that `.gitattributes` is tracked by git. Otherwise Git
-> LFS will not be working properly for people cloning the project.
->
-> ```bash
-> git add .gitattributes
-> ```
+NOTE: **Note:**
+**Make sure** that `.gitattributes` is tracked by Git. Otherwise Git
+LFS will not be working properly for people cloning the project.
+
+```bash
+git add .gitattributes
+```
 
 Cloning the repository works the same as before. Git automatically detects the
 LFS-tracked files and clones them via HTTP. If you performed the git clone
@@ -216,9 +218,10 @@ git config --add lfs.url "http://gitlab.example.com/group/project.git/info/lfs"
 
 ### Credentials are always required when pushing an object
 
->**Note**: With 8.12 GitLab added LFS support to SSH. The Git LFS communication
- still goes over HTTP, but now the SSH client passes the correct credentials
- to the Git LFS client, so no action is required by the user.
+NOTE: **Note:**
+With 8.12 GitLab added LFS support to SSH. The Git LFS communication
+still goes over HTTP, but now the SSH client passes the correct credentials
+to the Git LFS client, so no action is required by the user.
 
 Given that Git LFS uses HTTP Basic Authentication to authenticate the user pushing
 the LFS object on every push for every object, user HTTPS credentials are required.

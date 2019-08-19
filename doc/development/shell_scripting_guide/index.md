@@ -24,7 +24,8 @@ Having said all of the above, we recommend staying away from shell scripts
 as much as possible. A language like Ruby or Python (if required for
 consistency with codebases that we leverage) is almost always a better choice.
 The high-level interpreted languages have more readable syntax, offer much more
-mature capabilities for unit-testing, linting, and error reporting.  
+mature capabilities for unit-testing, linting, and error reporting.
+
 Use shell scripts only if there's a strong restriction on project's
 dependencies size or any other requirements that are more important
 in a particular case.
@@ -48,12 +49,12 @@ that is:
 
 This section describes the tools that should be made a mandatory part of
 a project's CI pipeline if it contains shell scripts. These tools
-automate shell code formatting, checking for errors or vulnerabilities, etc.   
+automate shell code formatting, checking for errors or vulnerabilities, etc.
 
 ### Linting
 
 We're using the [ShellCheck](https://www.shellcheck.net/) utility in its default configuration to lint our
-shell scripts. 
+shell scripts.
 
 All projects with shell scripts should use this GitLab CI/CD job:
 
@@ -98,7 +99,7 @@ NOTE: **Note:**
 This is a work in progress.
 
 It is an [ongoing effort](https://gitlab.com/gitlab-org/gitlab-ce/issues/64016) to evaluate different tools for the
-automated testing of shell scripts (like [BATS](https://github.com/sstephenson/bats)).  
+automated testing of shell scripts (like [BATS](https://github.com/sstephenson/bats)).
 
 ## Code Review
 

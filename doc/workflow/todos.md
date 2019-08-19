@@ -35,8 +35,8 @@ A To Do displays on your To-Do List when:
 - You are `@mentioned` in a comment on a commit
 - A job in the CI pipeline running for your merge request failed, but this
   job is not allowed to fail
-- An open merge request becomes unmergeable due to conflict, and you are either: 
-  - The author 
+- An open merge request becomes unmergeable due to conflict, and you are either:
+  - The author
   - Have set it to automatically merge once the pipeline succeeds
 
 To-do triggers are not affected by [GitLab Notification Email settings](notifications.md).

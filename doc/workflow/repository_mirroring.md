@@ -37,8 +37,7 @@ The following are some possible use cases for repository mirroring:
 
 ## Pushing to a remote repository **(CORE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/249) in GitLab Enterprise
-> Edition 8.7. [Moved to GitLab Core](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/18715) in 10.8.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/249) in GitLab Enterprise Edition 8.7. [Moved to GitLab Core](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/18715) in 10.8.
 
 For an existing project, you can set up push mirroring as follows:
 
@@ -67,8 +66,7 @@ section.
 
 ### Push only protected branches **(CORE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/3350) in
-> [GitLab Starter](https://about.gitlab.com/pricing/) 10.3. [Moved to GitLab Core](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/18715) in 10.8.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/3350) in [GitLab Starter](https://about.gitlab.com/pricing/) 10.3. [Moved to GitLab Core](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/18715) in 10.8.
 
 You can choose to only push your protected branches from GitLab to your remote repository.
 
@@ -98,8 +96,7 @@ The repository will push soon. To force a push, click the appropriate button.
 
 ## Pulling from a remote repository **(STARTER)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/51) in GitLab Enterprise Edition 8.2.
-> [Added Git LFS support](https://gitlab.com/gitlab-org/gitlab-ee/issues/10871) in [GitLab Starter](https://about.gitlab.com/pricing/) 11.11.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/51) in GitLab Enterprise Edition 8.2. [Added Git LFS support](https://gitlab.com/gitlab-org/gitlab-ee/issues/10871) in [GitLab Starter](https://about.gitlab.com/pricing/) 11.11.
 
 NOTE: **Note:** This feature [is available for free](https://gitlab.com/gitlab-org/gitlab-ee/issues/10361) to
 GitLab.com users until September 22nd, 2019.
@@ -157,8 +154,7 @@ Repository mirrors are updated as Sidekiq becomes available to process them. If 
 
 ### SSH authentication
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/2551) for Pull mirroring in [GitLab Starter](https://about.gitlab.com/pricing/) 9.5.
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/22982) for Push mirroring in [GitLab Core](https://about.gitlab.com/pricing/) 11.6
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/2551) for Pull mirroring in [GitLab Starter](https://about.gitlab.com/pricing/) 9.5. [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/22982) for Push mirroring in [GitLab Core](https://about.gitlab.com/pricing/) 11.6
 
 SSH authentication is mutual:
 
@@ -245,8 +241,7 @@ key to keep the mirror running.
 
 ### Overwrite diverged branches **(STARTER)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/4559) in
-> [GitLab Starter](https://about.gitlab.com/pricing/) 10.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/4559) in [GitLab Starter](https://about.gitlab.com/pricing/) 10.6.
 
 You can choose to always update your local branches with remote versions, even if they have
 diverged from the remote.
@@ -258,8 +253,7 @@ To use this option, check the **Overwrite diverged branches** box when creating 
 
 ### Only mirror protected branches **(STARTER)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/3326) in
-> [GitLab Starter](https://about.gitlab.com/pricing/) 10.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/3326) in [GitLab Starter](https://about.gitlab.com/pricing/) 10.3.
 
 You can choose to pull mirror only the protected branches from your remote repository to GitLab.
 Non-protected branches are not mirrored and can diverge.
@@ -268,8 +262,7 @@ To use this option, check the **Only mirror protected branches** box when creati
 
 ### Hard failure **(STARTER)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/3117) in
-> [GitLab Starter](https://about.gitlab.com/pricing/) 10.2.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/3117) in [GitLab Starter](https://about.gitlab.com/pricing/) 10.2.
 
 Once the mirroring process is unsuccessfully retried 14 times in a row, it will get marked as hard
 failed. This will become visible in either the:
@@ -282,8 +275,7 @@ project mirroring again by [Forcing an update](#forcing-an-update-core).
 
 ### Trigger update using API **(STARTER)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/3453) in
-[GitLab Starter](https://about.gitlab.com/pricing/) 10.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/3453) in [GitLab Starter](https://about.gitlab.com/pricing/) 10.3.
 
 Pull mirroring uses polling to detect new branches and commits added upstream, often minutes
 afterwards. If you notify GitLab by [API](../api/projects.md#start-the-pull-mirroring-process-for-a-project-starter),
@@ -325,9 +317,10 @@ protected branches.
 
 ### Preventing conflicts using a `pre-receive` hook
 
-> **Warning:** The solution proposed will negatively impact the performance of
-> Git push operations because they will be proxied to the upstream Git
-> repository.
+CAUTION: **Warning:**
+The solution proposed will negatively impact the performance of
+Git push operations because they will be proxied to the upstream Git
+repository.
 
 A server-side `pre-receive` hook can be used to prevent the race condition
 described above by only accepting the push after first pushing the commit to

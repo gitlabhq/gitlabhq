@@ -46,8 +46,7 @@ In `config/gitlab.yml`:
 
 ## Storing LFS objects in remote object storage
 
-> [Introduced][ee-2760] in [GitLab Premium][eep] 10.0. Brought to GitLab Core
-in 10.7.
+> [Introduced][ee-2760] in [GitLab Premium][eep] 10.0. Brought to GitLab Core in 10.7.
 
 It is possible to store LFS objects in remote object storage which allows you
 to offload local hard disk R/W operations, and free up disk space significantly.
@@ -91,7 +90,7 @@ Here is a configuration example with S3.
 | `aws_access_key_id` | AWS credentials, or compatible | `ABC123DEF456` |
 | `aws_secret_access_key` | AWS credentials, or compatible | `ABC123DEF456ABC123DEF456ABC123DEF456` |
 | `aws_signature_version` | AWS signature version to use. 2 or 4 are valid options. Digital Ocean Spaces and other providers may need 2. | 4 |
-| `enable_signature_v4_streaming` | Set to true to enable HTTP chunked transfers with AWS v4 signatures (https://docs.aws.amazon.com/AmazonS3/latest/API/sigv4-streaming.html). Oracle Cloud S3 needs this to be false | true
+| `enable_signature_v4_streaming` | Set to true to enable HTTP chunked transfers with [AWS v4 signatures](https://docs.aws.amazon.com/AmazonS3/latest/API/sigv4-streaming.html). Oracle Cloud S3 needs this to be false | true |
 | `region` | AWS region | us-east-1 |
 | `host` | S3 compatible host for when not using AWS, e.g. `localhost` or `storage.example.com` | s3.amazonaws.com |
 | `endpoint` | Can be used when configuring an S3 compatible service such as [Minio](https://www.minio.io), by entering a URL such as `http://127.0.0.1:9000` | (optional) |
@@ -107,7 +106,9 @@ Here is a configuration example with GCS.
 | `google_client_email` | The email address of the service account | `foo@gcp-project-12345.iam.gserviceaccount.com` |
 | `google_json_key_location` | The json key path | `/path/to/gcp-project-12345-abcde.json` |
 
-_NOTE: The service account must have permission to access the bucket. [See more](https://cloud.google.com/storage/docs/authentication)_
+NOTE: **Note:**
+The service account must have permission to access the bucket.
+[See more](https://cloud.google.com/storage/docs/authentication)
 
 Here is a configuration example with Rackspace Cloud Files.
 
@@ -119,7 +120,13 @@ Here is a configuration example with Rackspace Cloud Files.
 | `rackspace_region` | The Rackspace storage region to use, a three letter code from the [list of service access endpoints](https://developer.rackspace.com/docs/cloud-files/v1/general-api-info/service-access/) | `iad` |
 | `rackspace_temp_url_key` | The private key you have set in the Rackspace API for temporary URLs. Read more [here](https://developer.rackspace.com/docs/cloud-files/v1/use-cases/public-access-to-your-cloud-files-account/#tempurl) | `ABC123DEF456ABC123DEF456ABC123DE` |
 
-_NOTES: Regardless of whether the container has public access enabled or disabled, Fog will use the TempURL method to grant access to LFS objects. If you see errors in logs referencing instantiating storage with a temp-url-key, ensure that you have set they key properly on the Rackspace API and in gitlab.rb. You can verify the value of the key Rackspace has set by sending a GET request with token header to the service access endpoint URL and comparing the output of the returned headers._
+NOTE: **Note:**
+Regardless of whether the container has public access enabled or disabled, Fog will
+use the TempURL method to grant access to LFS objects. If you see errors in logs referencing
+instantiating storage with a temp-url-key, ensure that you have set they key properly
+on the Rackspace API and in gitlab.rb. You can verify the value of the key Rackspace
+has set by sending a GET request with token header to the service access endpoint URL
+and comparing the output of the returned headers.
 
 ### Manual uploading to an object storage
 
@@ -167,13 +174,13 @@ On Omnibus installations, the settings are prefixed by `lfs_object_store_`:
 1. Save the file and [reconfigure GitLab]s for the changes to take effect.
 1. Migrate any existing local LFS objects to the object storage:
 
-    ```bash
-    gitlab-rake gitlab:lfs:migrate
-    ```
+   ```bash
+   gitlab-rake gitlab:lfs:migrate
+   ```
 
-    This will migrate existing LFS objects to object storage. New LFS objects
-    will be forwarded to object storage unless
-    `gitlab_rails['lfs_object_store_background_upload']` is set to false.
+   This will migrate existing LFS objects to object storage. New LFS objects
+   will be forwarded to object storage unless
+   `gitlab_rails['lfs_object_store_background_upload']` is set to false.
 
 ### S3 for installations from source
 
@@ -203,13 +210,13 @@ For source installations the settings are nested under `lfs:` and then
 1. Save the file and [restart GitLab][] for the changes to take effect.
 1. Migrate any existing local LFS objects to the object storage:
 
-    ```bash
-    sudo -u git -H bundle exec rake gitlab:lfs:migrate RAILS_ENV=production
-    ```
+   ```bash
+   sudo -u git -H bundle exec rake gitlab:lfs:migrate RAILS_ENV=production
+   ```
 
-    This will migrate existing LFS objects to object storage. New LFS objects
-    will be forwarded to object storage unless `background_upload` is set to
-    false.
+   This will migrate existing LFS objects to object storage. New LFS objects
+   will be forwarded to object storage unless `background_upload` is set to
+   false.
 
 ## Storage statistics
 

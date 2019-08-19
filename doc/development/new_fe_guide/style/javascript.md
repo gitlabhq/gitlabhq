@@ -192,4 +192,4 @@ rules only if you are invoking/instantiating existing code modules.
 - [class-method-use-this](http://eslint.org/docs/rules/class-methods-use-this)
 
 > Note: Disable these rules on a per line basis. This makes it easier to refactor
-  in the future. E.g. use `eslint-disable-next-line` or `eslint-disable-line`.
+> in the future. E.g. use `eslint-disable-next-line` or `eslint-disable-line`.
