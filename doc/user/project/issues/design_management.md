@@ -35,9 +35,19 @@ to be enabled:
 
 ## Limitations
 
-- Files uploaded must have a file extension of either `png`, `jpg`, `jpeg`, `gif`, `bmp`, `tiff` or `ico`. The [`svg` extension is not yet supported](https://gitlab.com/gitlab-org/gitlab-ee/issues/12771).
+- Files uploaded must have a file extension of either `png`, `jpg`, `jpeg`, `gif`, `bmp`, `tiff` or `ico`.
+  The [`svg` extension is not yet supported](https://gitlab.com/gitlab-org/gitlab-ee/issues/12771).
+- Design uploads are limited to 10 files at a time.
 - [Designs cannot yet be deleted](https://gitlab.com/gitlab-org/gitlab-ee/issues/11089).
-- Design Management is [not yet supported in the project export](https://gitlab.com/gitlab-org/gitlab-ee/issues/11090).
+- Design Management is
+  [not yet supported in the project export](https://gitlab.com/gitlab-org/gitlab-ee/issues/11090).
+- Design Management data
+  [isn't deleted when a project is destroyed](https://gitlab.com/gitlab-org/gitlab-ee/issues/13429) yet.
+- Design Management data [won't be moved](https://gitlab.com/gitlab-org/gitlab-ee/issues/13426)
+  when an issue is moved, nor [deleted](https://gitlab.com/gitlab-org/gitlab-ee/issues/13427)
+  when an issue is deleted.
+- Design Management
+  [isn't supported by Geo](https://gitlab.com/groups/gitlab-org/-/epics/1633) yet.
 
 ## The Design Management page
 
