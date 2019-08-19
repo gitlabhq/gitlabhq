@@ -9,8 +9,8 @@ when making _backend_ changes that might involve multiple features or [component
 
 ## Uploads
 
-GitLab supports uploads to [object storage]. That means every feature and 
-change that affects uploads should also be tested against [object storage], 
+GitLab supports uploads to [object storage]. That means every feature and
+change that affects uploads should also be tested against [object storage],
 which is _not_ enabled by default in [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit).
 
 When working on a related feature, make sure to enable and test it
