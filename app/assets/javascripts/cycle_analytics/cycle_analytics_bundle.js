@@ -12,6 +12,7 @@ import stageComponent from './components/stage_component.vue';
 import stageReviewComponent from './components/stage_review_component.vue';
 import stageStagingComponent from './components/stage_staging_component.vue';
 import stageTestComponent from './components/stage_test_component.vue';
+import stageNavItem from './components/stage_nav_item.vue';
 import CycleAnalyticsService from './cycle_analytics_service';
 import CycleAnalyticsStore from './cycle_analytics_store';
 
@@ -41,6 +42,7 @@ export default () => {
         import('ee_component/analytics/shared/components/projects_dropdown_filter.vue'),
       DateRangeDropdown: () =>
         import('ee_component/analytics/shared/components/date_range_dropdown.vue'),
+      'stage-nav-item': stageNavItem,
     },
     mixins: [filterMixins],
     data() {
