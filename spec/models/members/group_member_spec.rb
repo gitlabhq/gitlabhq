@@ -3,19 +3,29 @@
 require 'spec_helper'
 
 describe GroupMember do
-  describe '.count_users_by_group_id' do
-    it 'counts users by group ID' do
-      user_1 = create(:user)
-      user_2 = create(:user)
-      group_1 = create(:group)
-      group_2 = create(:group)
+  context 'scopes' do
+    describe '.count_users_by_group_id' do
+      it 'counts users by group ID' do
+        user_1 = create(:user)
+        user_2 = create(:user)
+        group_1 = create(:group)
+        group_2 = create(:group)
 
-      group_1.add_owner(user_1)
-      group_1.add_owner(user_2)
-      group_2.add_owner(user_1)
+        group_1.add_owner(user_1)
+        group_1.add_owner(user_2)
+        group_2.add_owner(user_1)
 
-      expect(described_class.count_users_by_group_id).to eq(group_1.id => 2,
-                                                            group_2.id => 1)
+        expect(described_class.count_users_by_group_id).to eq(group_1.id => 2,
+                                                              group_2.id => 1)
+      end
+    end
+
+    describe '.of_ldap_type' do
+      it 'returns ldap type users' do
+        group_member = create(:group_member, :ldap)
+
+        expect(described_class.of_ldap_type).to eq([group_member])
+      end
     end
   end
 

@@ -188,8 +188,8 @@ module Gitlab
         {} # augmented in EE
       end
 
-      def count(relation, fallback: -1)
-        relation.count
+      def count(relation, count_by: nil, fallback: -1)
+        count_by ? relation.count(count_by) : relation.count
       rescue ActiveRecord::StatementInvalid
         fallback
       end

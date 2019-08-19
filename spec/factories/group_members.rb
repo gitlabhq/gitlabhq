@@ -20,5 +20,9 @@ FactoryBot.define do
         "email#{n}@email.com"
       end
     end
+
+    trait(:ldap) do
+      ldap true
+    end
   end
 end
