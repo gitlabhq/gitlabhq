@@ -40,6 +40,8 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   def saml
     omniauth_flow(Gitlab::Auth::Saml)
+  rescue Gitlab::Auth::Saml::IdentityLinker::UnverifiedRequest
+    redirect_unverified_saml_initiation
   end
 
   def omniauth_error
@@ -84,8 +86,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       return render_403 unless link_provider_allowed?(oauth['provider'])
 
       log_audit_event(current_user, with: oauth['provider'])
-
-      identity_linker ||= auth_module::IdentityLinker.new(current_user, oauth)
+      identity_linker ||= auth_module::IdentityLinker.new(current_user, oauth, session)
 
       link_identity(identity_linker)
 
@@ -176,6 +177,10 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     flash[:alert] = _('Wrong extern UID provided. Make sure Auth0 is configured correctly.')
 
     redirect_to new_user_session_path
+  end
+
+  def redirect_unverified_saml_initiation
+    redirect_to profile_account_path, notice: _('Request to link SAML account must be authorized')
   end
 
   def handle_disabled_provider
