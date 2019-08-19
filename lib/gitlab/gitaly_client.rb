@@ -406,7 +406,8 @@ module Gitlab
     def self.filesystem_id(storage)
       response = Gitlab::GitalyClient::ServerService.new(storage).info
       storage_status = response.storage_statuses.find { |status| status.storage_name == storage }
-      storage_status.filesystem_id
+
+      storage_status&.filesystem_id
     end
 
     def self.filesystem_id_from_disk(storage)
