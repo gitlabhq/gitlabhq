@@ -1,6 +1,6 @@
 # Hash Indexes
 
-Both PostgreSQL and MySQL support hash indexes besides the regular btree
+PostgreSQL supports hash indexes besides the regular btree
 indexes. Hash indexes however are to be avoided at all costs. While they may
 _sometimes_ provide better performance the cost of rehashing can be very high.
 More importantly: at least until PostgreSQL 10.0 hash indexes are not

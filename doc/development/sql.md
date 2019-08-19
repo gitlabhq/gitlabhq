@@ -15,14 +15,11 @@ FROM issues
 WHERE title LIKE 'WIP:%';
 ```
 
-On PostgreSQL the `LIKE` statement is case-sensitive. On MySQL this depends on
-the case-sensitivity of the collation, which is usually case-insensitive. To
-perform a case-insensitive `LIKE` on PostgreSQL you have to use `ILIKE` instead.
-This statement in turn isn't supported on MySQL.
+On PostgreSQL the `LIKE` statement is case-sensitive. To perform a case-insensitive
+`LIKE` you have to use `ILIKE` instead.
 
-To work around this problem you should write `LIKE` queries using Arel instead
-of raw SQL fragments as Arel automatically uses `ILIKE` on PostgreSQL and `LIKE`
-on MySQL. This means that instead of this:
+To handle this automatically you should use `LIKE` queries using Arel instead
+of raw SQL fragments, as Arel automatically uses `ILIKE` on PostgreSQL.
 
 ```ruby
 Issue.where('title LIKE ?', 'WIP:%')
@@ -45,7 +42,7 @@ table = Issue.arel_table
 Issue.where(table[:title].matches('WIP:%').or(table[:foo].matches('WIP:%')))
 ```
 
-For PostgreSQL this produces:
+On PostgreSQL, this produces:
 
 ```sql
 SELECT *
@@ -53,18 +50,10 @@ FROM issues
 WHERE (title ILIKE 'WIP:%' OR foo ILIKE 'WIP:%')
 ```
 
-In turn for MySQL this produces:
-
-```sql
-SELECT *
-FROM issues
-WHERE (title LIKE 'WIP:%' OR foo LIKE 'WIP:%')
-```
-
 ## LIKE & Indexes
 
-Neither PostgreSQL nor MySQL use any indexes when using `LIKE` / `ILIKE` with a
-wildcard at the start. For example, this will not use any indexes:
+PostgreSQL won't use any indexes when using `LIKE` / `ILIKE` with a wildcard at
+the start. For example, this will not use any indexes:
 
 ```sql
 SELECT *
@@ -75,9 +64,8 @@ WHERE title ILIKE '%WIP:%';
 Because the value for `ILIKE` starts with a wildcard the database is not able to
 use an index as it doesn't know where to start scanning the indexes.
 
-MySQL provides no known solution to this problem. Luckily PostgreSQL _does_
-provide a solution: trigram GIN indexes. These indexes can be created as
-follows:
+Luckily, PostgreSQL _does_ provide a solution: trigram GIN indexes. These
+indexes can be created as follows:
 
 ```sql
 CREATE INDEX [CONCURRENTLY] index_name_here
