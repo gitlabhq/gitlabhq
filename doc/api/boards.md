@@ -466,7 +466,7 @@ Example response:
 
 ## Delete a board list
 
-Only for admins and project owners. Soft deletes the board list in question.
+Only for admins and project owners. Deletes the board list in question.
 
 ```
 DELETE /projects/:id/boards/:board_id/lists/:list_id

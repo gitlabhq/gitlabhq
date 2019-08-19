@@ -790,7 +790,7 @@ the `weight` parameter:
 
 ## Delete an issue
 
-Only for admins and project owners. Soft deletes the issue in question.
+Only for admins and project owners. Deletes the issue in question.
 
 ```
 DELETE /projects/:id/issues/:issue_iid
