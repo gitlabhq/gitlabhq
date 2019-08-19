@@ -375,8 +375,6 @@ group :development, :test do
   gem 'license_finder', '~> 5.4', require: false
   gem 'knapsack', '~> 1.17'
 
-  gem 'activerecord_sane_schema_dumper', '1.0'
-
   gem 'stackprof', '~> 0.2.10', require: false
 
   gem 'simple_po_parser', '~> 1.1.2', require: false

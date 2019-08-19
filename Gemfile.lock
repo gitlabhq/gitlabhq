@@ -41,8 +41,6 @@ GEM
     activerecord-explain-analyze (0.1.0)
       activerecord (>= 4)
       pg
-    activerecord_sane_schema_dumper (1.0)
-      rails (>= 5, < 6)
     activestorage (5.2.3)
       actionpack (= 5.2.3)
       activerecord (= 5.2.3)
@@ -1028,7 +1026,6 @@ DEPENDENCIES
   ace-rails-ap (~> 4.1.0)
   acme-client (~> 2.0.2)
   activerecord-explain-analyze (~> 0.1)
-  activerecord_sane_schema_dumper (= 1.0)
   acts-as-taggable-on (~> 6.0)
   addressable (~> 2.5.2)
   akismet (~> 2.0)
