@@ -200,7 +200,7 @@ code.
 ### Why merge automatically?
 
 As we work towards continuous deployments and a single repository for both CE
-and EE, we need to first make sure that all CE changes make their way into CE as
+and EE, we need to first make sure that all CE changes make their way into EE as
 fast as possible. Past experiences and data have shown that periodic CE to EE
 merge requests do not scale, and often take a very long time to complete. For
 example, [in this
