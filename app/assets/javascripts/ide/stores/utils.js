@@ -129,7 +129,7 @@ export const commitActionForFile = file => {
 
 export const getCommitFiles = stagedFiles =>
   stagedFiles.reduce((acc, file) => {
-    if (file.moved) return acc;
+    if (file.moved || file.type === 'tree') return acc;
 
     return acc.concat({
       ...file,
