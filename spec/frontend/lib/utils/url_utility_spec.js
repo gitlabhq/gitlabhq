@@ -94,6 +94,12 @@ describe('URL utility', () => {
     it('adds and updates encoded params', () => {
       expect(urlUtils.mergeUrlParams({ a: '&', q: '?' }, '?a=%23#frag')).toBe('?a=%26&q=%3F#frag');
     });
+
+    it('treats "+" as "%20"', () => {
+      expect(urlUtils.mergeUrlParams({ ref: 'bogus' }, '?a=lorem+ipsum&ref=charlie')).toBe(
+        '?a=lorem%20ipsum&ref=bogus',
+      );
+    });
   });
 
   describe('removeParams', () => {
