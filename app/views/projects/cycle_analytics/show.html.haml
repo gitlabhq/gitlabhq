@@ -34,40 +34,29 @@
                       {{ n__('Last %d day', 'Last %d days', 90) }}
     .stage-panel-container
       .card.stage-panel
-        .card-header
+        .card-header.border-bottom-0
           %nav.col-headers
             %ul
-              %li.stage-header
-                %span.stage-name
+              %li.stage-header.pl-5
+                %span.stage-name.font-weight-bold
                   {{ s__('ProjectLifecycle|Stage') }}
                 %i.has-tooltip.fa.fa-question-circle{ "data-placement" => "top", title: _("The phase of the development lifecycle."), "aria-hidden" => "true" }
               %li.median-header
-                %span.stage-name
+                %span.stage-name.font-weight-bold
                   {{ __('Median') }}
                 %i.has-tooltip.fa.fa-question-circle{ "data-placement" => "top", title: _("The value lying at the midpoint of a series of observed values. E.g., between 3, 5, 9, the median is 5. Between 3, 5, 7, 8, the median is (5+7)/2 = 6."), "aria-hidden" => "true" }
-              %li.event-header
-                %span.stage-name
+              %li.event-header.pl-3
+                %span.stage-name.font-weight-bold
                   {{ currentStage ? __(currentStage.legend) : __('Related Issues') }}
                 %i.has-tooltip.fa.fa-question-circle{ "data-placement" => "top", title: _("The collection of events added to the data gathered for that stage."), "aria-hidden" => "true" }
-              %li.total-time-header
-                %span.stage-name
+              %li.total-time-header.pr-5.text-right
+                %span.stage-name.font-weight-bold
                   {{ __('Total Time') }}
                 %i.has-tooltip.fa.fa-question-circle{ "data-placement" => "top", title: _("The time taken by each data entry gathered by that stage."), "aria-hidden" => "true" }
         .stage-panel-body
           %nav.stage-nav
             %ul
-              %li.stage-nav-item{ ':class' => '{ active: stage.active }', '@click' => 'selectStage(stage)', "v-for" => "stage in state.stages" }
-                .stage-nav-item-cell.stage-name
-                  {{ stage.title }}
-                .stage-nav-item-cell.stage-median
-                  %template{ "v-if" => "stage.isUserAllowed" }
-                    %span{ "v-if" => "stage.value" }
-                      {{ stage.value }}
-                    %span.stage-empty{ "v-else" => true }
-                      {{ __('Not enough data') }}
-                  %template{ "v-else" => true }
-                    %span.not-available
-                      {{ __('Not available') }}
+              %stage-nav-item{ "v-for" => "stage in state.stages", ":key" => '`ca-stage-title-${stage.title}`', '@select' => 'selectStage(stage)', ":title" => "stage.title", ":is-user-allowed" => "stage.isUserAllowed", ":value" => "stage.value", ":is-active" => "stage.active" }
           .section.stage-events
             %template{ "v-if" => "isLoadingStage" }
               = icon("spinner spin")
