@@ -1,0 +1,18 @@
+- if @domain.auto_ssl_enabled?
+  - if @domain.enabled?
+    - if @domain.certificate_text
+      %pre
+        = @domain.certificate_text
+    - else
+      .bs-callout.bs-callout-info
+        = _("GitLab is obtaining a Let's Encrypt SSL certificate for this domain. This process can take some time. Please try again later.")
+  - else
+    .bs-callout.bs-callout-warning
+      = _("A Let's Encrypt SSL certificate can not be obtained until your domain is verified.")
+- else
+  - if @domain.certificate_text
+    %pre
+      = @domain.certificate_text
+  - else
+    .light
+      = _("missing")

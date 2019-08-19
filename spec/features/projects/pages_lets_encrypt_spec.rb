@@ -75,12 +75,10 @@ describe "Pages with Let's Encrypt", :https_pages_enabled do
   end
 
   shared_examples 'user sees private keys only for user provided certificate' do
-    before do
-      visit edit_project_pages_domain_path(project, domain)
-    end
-
     shared_examples 'user do not see private key' do
       it 'user do not see private key' do
+        visit edit_project_pages_domain_path(project, domain)
+
         expect(find_field('Key (PEM)', visible: :all, disabled: :all).value).to be_blank
       end
     end
@@ -101,6 +99,8 @@ describe "Pages with Let's Encrypt", :https_pages_enabled do
       let(:domain) { create(:pages_domain, project: project) }
 
       it 'user sees private key' do
+        visit edit_project_pages_domain_path(project, domain)
+
         expect(find_field('Key (PEM)').value).not_to be_blank
       end
     end

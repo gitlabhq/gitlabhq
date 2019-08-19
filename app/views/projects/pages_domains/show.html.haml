@@ -60,9 +60,4 @@
       %td
         = _("Certificate")
       %td
-        - if @domain.certificate_text
-          %pre
-            = @domain.certificate_text
-        - else
-          .light
-            = _("missing")
+        = render 'certificate'

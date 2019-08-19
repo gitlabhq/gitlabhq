@@ -1,0 +1,6 @@
+---
+title: Add warning to pages domains that obtaining/deploying SSL certificates through
+  Let's Encrypt can take some time
+merge_request: 31765
+author:
+type: other
