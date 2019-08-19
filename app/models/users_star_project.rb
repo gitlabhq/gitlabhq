@@ -17,6 +17,7 @@ class UsersStarProject < ApplicationRecord
   scope :by_project, -> (project) { where(project_id: project.id) }
   scope :with_visible_profile, -> (user) { joins(:user).merge(User.with_visible_profile(user)) }
   scope :with_public_profile, -> { joins(:user).merge(User.with_public_profile) }
+  scope :preload_users, -> { preload(:user) }
 
   class << self
     def sort_by_attribute(method)
