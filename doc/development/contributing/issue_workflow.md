@@ -60,37 +60,18 @@ Subject labels are always all-lowercase.
 
 ## Team labels
 
-**Important**: Most of the team labels will be soon deprecated in favor of [Group labels](#group-labels).
+**Important**: Most of the historical team labels (e.g. Manage, Plan etc.) are
+now deprecated in favor of [Group labels](#group-labels) and [Stage labels](#stage-labels).
 
 Team labels specify what team is responsible for this issue.
 Assigning a team label makes sure issues get the attention of the appropriate
 people.
 
-The team labels planned for deprecation are:
-
-- ~Configure
-- ~Create
-- ~Defend
-- ~Distribution
-- ~Ecosystem
-- ~Geo
-- ~Gitaly
-- ~Growth
-- ~Manage
-- ~Memory
-- ~Monitor
-- ~Plan
-- ~Release
-- ~Secure
-- ~Verify
-
-The following team labels are **true** teams per our [organization structure](https://about.gitlab.com/company/team/structure/#organizational-structure) which will remain post deprecation.
+The current team labels are:
 
 - ~Delivery
 - ~Documentation
-
-The descriptions on the [labels page](https://gitlab.com/gitlab-org/gitlab-ce/-/labels) explain what falls under the
-responsibility of each team.
+- ~Quality
 
 Team labels are always capitalized so that they show up as the first label for
 any issue.
@@ -120,13 +101,13 @@ and thus are mutually exclusive.
 
 You can find the groups listed in the [Product Stages, Groups, and Categories][product-categories] page.
 
-We use the term group to map down product requirements from our product stages. 
+We use the term group to map down product requirements from our product stages.
 As a team needs some way to collect the work their members are planning to be assigned to, we use the `~group::` labels to do so.
 
 Normally there is a 1:1 relationship between Stage labels and Group labels. In the spirit of "Everyone can contribute",
 any issue can be picked up by any group, depending on current priorities. For example, an issue labeled ~"devops::create" may be picked up by the ~"group::access" group.
 
-We also use stage and group labels to help quantify our [throughput](https://about.gitlab.com/handbook/engineering/management/throughput). 
+We also use stage and group labels to help quantify our [throughput](https://about.gitlab.com/handbook/engineering/management/throughput).
 Please read [Stage and Group labels in Throughtput](https://about.gitlab.com/handbook/engineering/management/throughput/#stage-and-group-labels-in-throughput) for more information on how the labels are used in this context.
 
 [structure-groups]: https://about.gitlab.com/company/team/structure/#groups
