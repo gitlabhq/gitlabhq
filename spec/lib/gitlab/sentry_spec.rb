@@ -65,6 +65,7 @@ describe Gitlab::Sentry do
 
   context '.track_acceptable_exception' do
     let(:exception) { RuntimeError.new('boom') }
+    let(:issue_url) { 'http://gitlab.com/gitlab-org/gitlab-ce/issues/1' }
 
     before do
       allow(described_class).to receive(:enabled?).and_return(true)
@@ -74,7 +75,7 @@ describe Gitlab::Sentry do
     it 'calls Raven.capture_exception' do
       expected_extras = {
         some_other_info: 'info',
-        issue_url: 'http://gitlab.com/gitlab-org/gitlab-ce/issues/1'
+        issue_url: issue_url
       }
 
       expected_tags = {
@@ -88,9 +89,33 @@ describe Gitlab::Sentry do
 
       described_class.track_acceptable_exception(
         exception,
-        issue_url: 'http://gitlab.com/gitlab-org/gitlab-ce/issues/1',
+        issue_url: issue_url,
         extra: { some_other_info: 'info' }
       )
+    end
+
+    context 'the exception implements :sentry_extra_data' do
+      let(:extra_info) { { event: 'explosion', size: :massive } }
+      let(:exception) { double(message: 'bang!', sentry_extra_data: extra_info) }
+
+      it 'includes the extra data from the exception in the tracking information' do
+        expect(Raven).to receive(:capture_exception)
+          .with(exception, a_hash_including(extra: a_hash_including(extra_info)))
+
+        described_class.track_acceptable_exception(exception)
+      end
+    end
+
+    context 'the exception implements :sentry_extra_data, which returns nil' do
+      let(:exception) { double(message: 'bang!', sentry_extra_data: nil) }
+
+      it 'just includes the other extra info' do
+        extra_info = { issue_url: issue_url }
+        expect(Raven).to receive(:capture_exception)
+          .with(exception, a_hash_including(extra: a_hash_including(extra_info)))
+
+        described_class.track_acceptable_exception(exception, extra_info)
+      end
     end
   end
 end
