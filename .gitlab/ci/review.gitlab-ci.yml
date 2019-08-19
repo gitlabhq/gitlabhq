@@ -50,7 +50,7 @@ build-qa-image:
   <<: *review-docker
   stage: test
   script:
-    - time docker build --cache-from ${LATEST_QA_IMAGE} --tag ${QA_IMAGE} ./qa/
+    - time docker build --cache-from ${LATEST_QA_IMAGE} --tag ${QA_IMAGE} --file ./qa/Dockerfile ./
     - echo "${CI_JOB_TOKEN}" | docker login --username gitlab-ci-token --password-stdin ${CI_REGISTRY}
     - time docker push ${QA_IMAGE}
 

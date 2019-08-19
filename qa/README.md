@@ -123,10 +123,11 @@ To set multiple cookies, separate them with the `;` character, for example: `QA_
 
 Once you have made changes to the CE/EE repositories, you may want to build a
 Docker image to test locally instead of waiting for the `gitlab-ce-qa` or
-`gitlab-ee-qa` nightly builds. To do that, you can run from this directory:
+`gitlab-ee-qa` nightly builds. To do that, you can run **from the top `gitlab`
+directory** (one level up from this directory):
 
 ```sh
-docker build -t gitlab/gitlab-ce-qa:nightly .
+docker build -t gitlab/gitlab-ce-qa:nightly --file ./qa/Dockerfile ./
 ```
 
 [GDK]: https://gitlab.com/gitlab-org/gitlab-development-kit/
