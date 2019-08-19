@@ -2,7 +2,7 @@
 
 Storing SHA1 hashes as strings is not very space efficient. A SHA1 as a string
 requires at least 40 bytes, an additional byte to store the encoding, and
-perhaps more space depending on the internals of PostgreSQL and MySQL.
+perhaps more space depending on the internals of PostgreSQL.
 
 On the other hand, if one were to store a SHA1 as binary one would only need 20
 bytes for the actual SHA1, and 1 or 4 bytes of additional space (again depending

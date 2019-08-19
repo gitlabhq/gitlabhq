@@ -112,57 +112,6 @@ Below are the shared Runners settings.
 
 The full contents of our `config.toml` are:
 
-**DigitalOcean**
-
-```toml
-concurrent = X
-check_interval = 1
-metrics_server = "X"
-sentry_dsn = "X"
-
-[[runners]]
-  name = "docker-auto-scale"
-  request_concurrency = X
-  url = "https://gitlab.com/"
-  token = "SHARED_RUNNER_TOKEN"
-  executor = "docker+machine"
-  environment = [
-    "DOCKER_DRIVER=overlay2"
-  ]
-  limit = X
-  [runners.docker]
-    image = "ruby:2.5"
-    privileged = true
-  [runners.machine]
-    IdleCount = 20
-    IdleTime = 1800
-    OffPeakPeriods = ["* * * * * sat,sun *"]
-    OffPeakTimezone = "UTC"
-    OffPeakIdleCount = 5
-    OffPeakIdleTime = 1800
-    MaxBuilds = 1
-    MachineName = "srm-%s"
-    MachineDriver = "digitalocean"
-    MachineOptions = [
-      "digitalocean-image=X",
-      "digitalocean-ssh-user=core",
-      "digitalocean-region=nyc1",
-      "digitalocean-size=s-2vcpu-2gb",
-      "digitalocean-private-networking",
-      "digitalocean-tags=shared_runners,gitlab_com",
-      "engine-registry-mirror=http://INTERNAL_IP_OF_OUR_REGISTRY_MIRROR",
-      "digitalocean-access-token=DIGITAL_OCEAN_ACCESS_TOKEN",
-    ]
-  [runners.cache]
-    Type = "s3"
-    BucketName = "runner"
-    Insecure = true
-    Shared = true
-    ServerAddress = "INTERNAL_IP_OF_OUR_CACHE_SERVER"
-    AccessKey = "ACCESS_KEY"
-    SecretKey = "ACCESS_SECRET_KEY"
-```
-
 **Google Cloud Platform**
 
 ```toml
@@ -178,20 +127,25 @@ sentry_dsn = "X"
   token = "SHARED_RUNNER_TOKEN"
   executor = "docker+machine"
   environment = [
-    "DOCKER_DRIVER=overlay2"
+    "DOCKER_DRIVER=overlay2",
+    "DOCKER_TLS_CERTDIR="
   ]
   limit = X
   [runners.docker]
     image = "ruby:2.5"
     privileged = true
+    volumes = [
+      "/certs/client",
+      "/dummy-sys-class-dmi-id:/sys/class/dmi/id:ro" # Make kaniko builds work on GCP.
+    ]
   [runners.machine]
-    IdleCount = 20
-    IdleTime = 1800
+    IdleCount = 50
+    IdleTime = 3600
     OffPeakPeriods = ["* * * * * sat,sun *"]
     OffPeakTimezone = "UTC"
-    OffPeakIdleCount = 5
-    OffPeakIdleTime = 1800
-    MaxBuilds = 1
+    OffPeakIdleCount = 15
+    OffPeakIdleTime = 3600
+    MaxBuilds = 1 # For security reasons we delete the VM after job has finished so it's not reused.
     MachineName = "srm-%s"
     MachineDriver = "google"
     MachineOptions = [
@@ -202,17 +156,18 @@ sentry_dsn = "X"
       "google-tags=gitlab-com,srm",
       "google-use-internal-ip",
       "google-zone=us-east1-d",
+      "engine-opt=mtu=1460", # Set MTU for container interface, for more information check https://gitlab.com/gitlab-org/gitlab-runner/issues/3214#note_82892928
       "google-machine-image=PROJECT/global/images/IMAGE",
-      "engine-registry-mirror=http://INTERNAL_IP_OF_OUR_REGISTRY_MIRROR"
+      "engine-opt=ipv6", # This will create IPv6 interfaces in the containers.
+      "engine-opt=fixed-cidr-v6=fc00::/7",
+      "google-operation-backoff-initial-interval=2" # Custom flag from forked docker-machine, for more information check https://github.com/docker/machine/pull/4600
     ]
   [runners.cache]
-    Type = "s3"
-    BucketName = "runner"
-    Insecure = true
+    Type = "gcs"
     Shared = true
-    ServerAddress = "INTERNAL_IP_OF_OUR_CACHE_SERVER"
-    AccessKey = "ACCESS_KEY"
-    SecretKey = "ACCESS_SECRET_KEY"
+    [runners.cache.gcs]
+      CredentialsFile = "/path/to/file"
+      BucketName = "bucket-name"
 ```
 
 ## Sidekiq

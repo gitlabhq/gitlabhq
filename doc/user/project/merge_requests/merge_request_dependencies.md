@@ -2,9 +2,9 @@
 type: reference, concepts
 ---
 
-# Cross-project merge request dependencies **(PREMIUM)**
+# Cross-project Merge Request dependencies **(PREMIUM)**
 
-> Introduced in GitLab Premium 12.2
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/9688) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.2.
 
 Cross-project merge request dependencies allows a required order of merging
 between merge requests in different projects to be expressed. If a
@@ -24,11 +24,11 @@ merge requests in the same project cannot depend on each other.
 ## Use cases
 
 - Ensure changes to a library are merged before changes to a project that
-  imports the library
+  imports the library.
 - Prevent a documentation-only merge request from being merged before the merge request
-  implementing the feature to be documented
+  implementing the feature to be documented.
 - Require an merge request updating a permissions matrix to be merged before merging an
-  merge request from someone who hasn't yet been granted permissions
+  merge request from someone who hasn't yet been granted permissions.
 
 It is common for a single logical change to span several merge requests, spread
 out across multiple projects, and the order in which they are merged can be
@@ -60,33 +60,33 @@ new merge request in `awesome-project` (or by editing it, if it already exists).
 The dependency needs to be configured on the **dependent** merge
 request. There is a "Cross-project dependencies" section in the form:
 
-![Cross-project dependencies form control](img/cross-project-dependencies-edit.png)
+![Cross-project dependencies form control](img/cross_project_dependencies_edit_v12_2.png)
 
 Anyone who can edit a merge request can change the list of dependencies.
 
 New dependencies can be added by reference, or by URL. To remove a dependency,
-press the "X" by its reference.
+press the **X** by its reference.
 
 As dependencies are specified across projects, it's possible that someone else
 has added a dependency for a merge request in a project you don't have access to.
 These are shown as a simple count:
 
-![Cross-project dependencies form control with inaccessible merge requests](img/cross-project-dependencies-edit-inaccessible.png)
+![Cross-project dependencies form control with inaccessible merge requests](img/cross_project_dependencies_edit_inaccessible_v12_2.png)
 
-If necessary, you can remove all the dependencies like this by pressing the "X",
-just as you would for a single, visible dependency.
+If necessary, you can remove all the dependencies like this by pressing the
+**X**, just as you would for a single, visible dependency.
 
-Once you're finished, press the "Save changes" button to submit the request, or
-"Cancel" to return without making any changes.
+Once you're finished, press the **Save changes** button to submit the request,
+or **Cancel** to return without making any changes.
 
 The list of configured dependencies, and the status of each one, is shown in the
 merge request widget:
 
-![Cross-project dependencies in merge request widget](img/cross-project-dependencies-view.png)
+![Cross-project dependencies in merge request widget](img/cross_project_dependencies_view_v12_2.png)
 
-Until all dependencies have, themselves, been merged, the "Merge"
+Until all dependencies have, themselves, been merged, the **Merge**
 button will be disabled for the dependent merge request. In
-particular, note that **closed** merge request still prevent their
+particular, note that **closed merge requests** still prevent their
 dependents from being merged - it is impossible to automatically
 determine whether the dependency expressed by a closed merge request
 has been satisfied in some other way or not.

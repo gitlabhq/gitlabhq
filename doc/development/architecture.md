@@ -20,7 +20,7 @@ A typical install of GitLab will be on GNU/Linux. It uses Nginx or Apache as a w
 
 We also support deploying GitLab on Kubernetes using our [gitlab Helm chart](https://docs.gitlab.com/charts/).
 
-The GitLab web app uses MySQL or PostgreSQL for persistent database information (e.g. users, permissions, issues, other meta data). GitLab stores the bare git repositories it serves in `/home/git/repositories` by default. It also keeps default branch and hook information with the bare repository.
+The GitLab web app uses PostgreSQL for persistent database information (e.g. users, permissions, issues, other meta data). GitLab stores the bare git repositories it serves in `/home/git/repositories` by default. It also keeps default branch and hook information with the bare repository.
 
 When serving repositories over HTTP/HTTPS GitLab utilizes the GitLab API to resolve authorization and access as well as serving git objects.
 
@@ -511,7 +511,15 @@ To summarize here's the [directory structure of the `git` user home directory](.
 ps aux | grep '^git'
 ```
 
-GitLab has several components to operate. As a system user (i.e. any user that is not the `git` user) it requires a persistent database (MySQL/PostreSQL) and redis database. It also uses Apache httpd or Nginx to proxypass Unicorn. As the `git` user it starts Sidekiq and Unicorn (a simple ruby HTTP server running on port `8080` by default). Under the GitLab user there are normally 4 processes: `unicorn_rails master` (1 process), `unicorn_rails worker` (2 processes), `sidekiq` (1 process).
+GitLab has several components to operate. It requires a persistent database
+(PostgreSQL) and redis database, and uses Apache httpd or Nginx to proxypass
+Unicorn. All these components should run as different system users to GitLab
+(e.g., `postgres`, `redis` and `www-data`, instead of `git`).
+
+As the `git` user it starts Sidekiq and Unicorn (a simple ruby HTTP server
+running on port `8080` by default). Under the GitLab user there are normally 4
+processes: `unicorn_rails master` (1 process), `unicorn_rails worker`
+(2 processes), `sidekiq` (1 process).
 
 ### Repository access
 
@@ -554,12 +562,9 @@ $ /etc/init.d/nginx
 Usage: nginx {start|stop|restart|reload|force-reload|status|configtest}
 ```
 
-Persistent database (one of the following)
+Persistent database
 
 ```
-/etc/init.d/mysqld
-Usage: /etc/init.d/mysqld {start|stop|status|restart|condrestart|try-restart|reload|force-reload}
-
 $ /etc/init.d/postgresql
 Usage: /etc/init.d/postgresql {start|stop|restart|reload|force-reload|status} [version ..]
 ```
@@ -596,11 +601,6 @@ redis
 PostgreSQL
 
 - `/var/log/postgresql/*`
-
-MySQL
-
-- `/var/log/mysql/*`
-- `/var/log/mysql.*`
 
 ### GitLab specific config files
 

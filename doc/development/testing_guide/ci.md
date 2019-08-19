@@ -39,7 +39,6 @@ slowest test files and try to improve them.
 
 ## CI setup
 
-- On CE and EE, the test suite runs both PostgreSQL and MySQL.
 - Rails logging to `log/test.log` is disabled by default in CI [for
   performance reasons][logging]. To override this setting, provide the
   `RAILS_ENABLE_TEST_LOG` environment variable.
