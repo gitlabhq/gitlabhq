@@ -17,24 +17,16 @@ end
 
 require ::File.expand_path('../config/environment', __FILE__)
 
-# The following is necessary to ensure stale Prometheus metrics don't accumulate over time.
-# It needs to be done as early as here to ensure metrics files aren't deleted.
-# After we hit our app in `warmup`, first metrics and corresponding files already being created,
-# for example in `lib/gitlab/metrics/requests_rack_middleware.rb`.
-def cleanup_prometheus_multiproc_dir
-  if dir = ::Prometheus::Client.configuration.multiprocess_files_dir
-    old_metrics = Dir[File.join(dir, '*.db')]
-
-    FileUtils.rm_rf(old_metrics)
-  end
-end
-
 def master_process?
   Prometheus::PidProvider.worker_id.in? %w(unicorn_master puma_master)
 end
 
 warmup do |app|
-  cleanup_prometheus_multiproc_dir if master_process?
+  # The following is necessary to ensure stale Prometheus metrics don't accumulate over time.
+  # It needs to be done as early as here to ensure metrics files aren't deleted.
+  # After we hit our app in `warmup`, first metrics and corresponding files already being created,
+  # for example in `lib/gitlab/metrics/requests_rack_middleware.rb`.
+  Prometheus::CleanupMultiprocDirService.new.execute if master_process?
 
   client = Rack::MockRequest.new(app)
   client.get('/')
