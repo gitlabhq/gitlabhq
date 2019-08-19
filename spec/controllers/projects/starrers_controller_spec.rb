@@ -32,6 +32,20 @@ describe Projects::StarrersController do
       end
     end
 
+    context 'N+1 queries' do
+      render_views
+
+      it 'avoids N+1s loading users', :request_store do
+        get_starrers
+
+        control_count = ActiveRecord::QueryRecorder.new { get_starrers }.count
+
+        create_list(:user, 5).each { |user| user.toggle_star(project) }
+
+        expect { get_starrers }.not_to exceed_query_limit(control_count)
+      end
+    end
+
     context 'when project is public' do
       before do
         project.update_attribute(:visibility_level, Project::PUBLIC)
