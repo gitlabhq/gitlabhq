@@ -342,7 +342,7 @@ underlying projects, issues, etc, by IP address. This can help ensure that
 particular content doesn't leave the premises, while not blocking off access to
 the entire instance.
 
-Add whitelisted IP subnet using CIDR notation to the group settings and anyone
+Add one or more whitelisted IP subnets using CIDR notation in comma separated format to the group settings and anyone
 coming from a different IP address won't be able to access the restricted
 content.
 
