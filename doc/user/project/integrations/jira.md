@@ -93,7 +93,7 @@ even if the status you are changing to is the same.
 After saving the configuration, your GitLab project will be able to interact
 with all Jira projects in your Jira instance and you'll see the Jira link on the GitLab project pages that takes you to the appropriate Jira project.
 
-![Jira service page](img/jira_service_page.png)
+![Jira service page](img/jira_service_page_v12_2.png)
 
 ## Jira issues
 
