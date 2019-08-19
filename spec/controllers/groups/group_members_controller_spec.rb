@@ -172,7 +172,7 @@ describe Groups::GroupMembersController do
         it '[JS] removes user from members' do
           delete :destroy, params: { group_id: group, id: member }, xhr: true
 
-          expect(response).to be_success
+          expect(response).to be_successful
           expect(group.members).not_to include member
         end
       end

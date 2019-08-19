@@ -10,7 +10,7 @@ describe Profiles::KeysController do
       it "does not generally work" do
         get :get_keys, params: { username: 'not-existent' }
 
-        expect(response).not_to be_success
+        expect(response).not_to be_successful
       end
     end
 
@@ -18,7 +18,7 @@ describe Profiles::KeysController do
       it "does generally work" do
         get :get_keys, params: { username: user.username }
 
-        expect(response).to be_success
+        expect(response).to be_successful
       end
 
       it "renders all keys separated with a new line" do
@@ -41,7 +41,7 @@ describe Profiles::KeysController do
       it "does generally work" do
         get :get_keys, params: { username: user.username }
 
-        expect(response).to be_success
+        expect(response).to be_successful
       end
 
       it "renders all non deploy keys separated with a new line" do

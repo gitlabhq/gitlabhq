@@ -49,7 +49,7 @@ describe Projects::RefsController do
       expect(::Gitlab::GitalyClient).to receive(:allow_ref_name_caching).and_call_original
 
       xhr_get(:js)
-      expect(response).to be_success
+      expect(response).to be_successful
     end
 
     it 'renders JSON' do
@@ -57,7 +57,7 @@ describe Projects::RefsController do
 
       xhr_get(:json)
 
-      expect(response).to be_success
+      expect(response).to be_successful
       expect(json_response).to be_kind_of(Array)
     end
   end

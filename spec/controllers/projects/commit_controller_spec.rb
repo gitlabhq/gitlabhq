@@ -45,14 +45,14 @@ describe Projects::CommitController do
     it 'handles binary files' do
       go(id: TestEnv::BRANCH_SHA['binary-encoding'], format: 'html')
 
-      expect(response).to be_success
+      expect(response).to be_successful
     end
 
     shared_examples "export as" do |format|
       it "does generally work" do
         go(id: commit.id, format: format)
 
-        expect(response).to be_success
+        expect(response).to be_successful
       end
 
       it "generates it" do
@@ -110,7 +110,7 @@ describe Projects::CommitController do
               id: commit.id
             })
 
-        expect(response).to be_success
+        expect(response).to be_successful
       end
     end
 
@@ -177,7 +177,7 @@ describe Projects::CommitController do
               id: commit.id
             })
 
-        expect(response).not_to be_success
+        expect(response).not_to be_successful
         expect(response).to have_gitlab_http_status(404)
       end
     end
@@ -234,7 +234,7 @@ describe Projects::CommitController do
               id: master_pickable_commit.id
             })
 
-        expect(response).not_to be_success
+        expect(response).not_to be_successful
         expect(response).to have_gitlab_http_status(404)
       end
     end

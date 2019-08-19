@@ -159,7 +159,7 @@ describe Projects::ServicesController do
 
     context 'with approved services' do
       it 'renders edit page' do
-        expect(response).to be_success
+        expect(response).to be_successful
       end
     end
   end

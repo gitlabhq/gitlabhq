@@ -19,7 +19,7 @@ describe UsersController do
         it 'renders the show template' do
           get :show, params: { username: user.username }
 
-          expect(response).to be_success
+          expect(response).to be_successful
           expect(response).to render_template('show')
         end
       end
@@ -362,7 +362,7 @@ describe UsersController do
             it 'responds with success' do
               get :show, params: { username: user.username }
 
-              expect(response).to be_success
+              expect(response).to be_successful
             end
           end
 
@@ -418,7 +418,7 @@ describe UsersController do
             it 'responds with success' do
               get :projects, params: { username: user.username }
 
-              expect(response).to be_success
+              expect(response).to be_successful
             end
           end
 

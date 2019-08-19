@@ -186,7 +186,7 @@ describe Groups::MilestonesController do
     it "removes milestone" do
       delete :destroy, params: { group_id: group.to_param, id: milestone.iid }, format: :js
 
-      expect(response).to be_success
+      expect(response).to be_successful
       expect { Milestone.find(milestone.id) }.to raise_exception(ActiveRecord::RecordNotFound)
     end
   end

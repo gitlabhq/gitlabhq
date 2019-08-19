@@ -158,7 +158,7 @@ describe Projects::ProjectMembersController do
             id: member
           }, xhr: true
 
-          expect(response).to be_success
+          expect(response).to be_successful
           expect(project.members).not_to include member
         end
       end

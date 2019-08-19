@@ -21,7 +21,7 @@ describe Projects::CycleAnalyticsController do
             project_id: project
           })
 
-      expect(response).to be_success
+      expect(response).to be_successful
     end
   end
 
@@ -34,7 +34,7 @@ describe Projects::CycleAnalyticsController do
               project_id: project
             })
 
-        expect(response).to be_success
+        expect(response).to be_successful
         expect(assigns(:cycle_analytics_no_data)).to eq(true)
       end
     end
@@ -55,7 +55,7 @@ describe Projects::CycleAnalyticsController do
               project_id: project
             })
 
-        expect(response).to be_success
+        expect(response).to be_successful
         expect(assigns(:cycle_analytics_no_data)).to eq(false)
       end
     end

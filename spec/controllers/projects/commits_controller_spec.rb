@@ -79,7 +79,7 @@ describe Projects::CommitsController do
           end
 
           it "renders as atom" do
-            expect(response).to be_success
+            expect(response).to be_successful
             expect(response.content_type).to eq('application/atom+xml')
           end
 
@@ -104,7 +104,7 @@ describe Projects::CommitsController do
           end
 
           it "renders as HTML" do
-            expect(response).to be_success
+            expect(response).to be_successful
             expect(response.content_type).to eq('text/html')
           end
         end

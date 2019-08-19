@@ -57,7 +57,7 @@ describe Projects::MergeRequestsController do
 
           go(format: :html)
 
-          expect(response).to be_success
+          expect(response).to be_successful
         end
       end
 
@@ -66,7 +66,7 @@ describe Projects::MergeRequestsController do
 
         go(format: :html)
 
-        expect(response).to be_success
+        expect(response).to be_successful
       end
 
       context "that is invalid" do
@@ -75,7 +75,7 @@ describe Projects::MergeRequestsController do
         it "renders merge request page" do
           go(format: :html)
 
-          expect(response).to be_success
+          expect(response).to be_successful
         end
       end
     end
@@ -124,7 +124,7 @@ describe Projects::MergeRequestsController do
         it "renders merge request page" do
           go(format: :json)
 
-          expect(response).to be_success
+          expect(response).to be_successful
         end
       end
     end

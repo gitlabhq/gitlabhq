@@ -16,7 +16,7 @@ describe Projects::CycleAnalytics::EventsController do
       it 'is empty' do
         get_issue
 
-        expect(response).to be_success
+        expect(response).to be_successful
         expect(JSON.parse(response.body)['events']).to be_empty
       end
     end
@@ -32,7 +32,7 @@ describe Projects::CycleAnalytics::EventsController do
       it 'is not empty' do
         get_issue
 
-        expect(response).to be_success
+        expect(response).to be_successful
       end
 
       it 'contains event detais' do
@@ -49,7 +49,7 @@ describe Projects::CycleAnalytics::EventsController do
         it 'is empty' do
           get_issue(additional_params: { cycle_analytics: { start_date: 7 } })
 
-          expect(response).to be_success
+          expect(response).to be_successful
 
           expect(JSON.parse(response.body)['events']).to be_empty
         end
