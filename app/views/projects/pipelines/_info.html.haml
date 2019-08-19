@@ -43,7 +43,7 @@
       } }
         Auto DevOps
     - if @pipeline.detached_merge_request_pipeline?
-      %span.js-pipeline-url-mergerequest.badge.badge-info.has-tooltip{ title: "The code of a detached pipeline is tested against the source branch instead of merged results" }
+      %span.js-pipeline-url-mergerequest.badge.badge-info.has-tooltip{ title: _('Pipelines for merge requests are configured. A detached pipeline runs in the context of the merge request, and not against the merged result. Learn more on the documentation for Pipelines for Merged Results.') }
         detached
     - if @pipeline.stuck?
       %span.js-pipeline-url-stuck.badge.badge-warning
