@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_15_114644) do
+ActiveRecord::Schema.define(version: 2019_08_16_151221) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -2397,6 +2397,7 @@ ActiveRecord::Schema.define(version: 2019_07_15_114644) do
     t.string "title"
     t.integer "active_pipelines_limit"
     t.integer "pipeline_size_limit"
+    t.integer "active_jobs_limit", default: 0
     t.index ["name"], name: "index_plans_on_name", using: :btree
   end
 
