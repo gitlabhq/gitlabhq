@@ -445,6 +445,19 @@ complexity of RSpec expectations.They should be placed under
 a certain type of specs only (e.g. features, requests etc.) but shouldn't be if
 they apply to multiple type of specs.
 
+#### `be_like_time`
+
+Time returned from a database can differ in precision from time objects
+in Ruby, so we need flexible tolerances when comparing in specs. We can
+use `be_like_time` to compare that times are within one second of each
+other.
+
+Example:
+
+```ruby
+expect(metrics.merged_at).to be_like_time(time)
+```
+
 #### `have_gitlab_http_status`
 
 Prefer `have_gitlab_http_status` over `have_http_status` because the former
