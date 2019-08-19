@@ -82,7 +82,7 @@
                   %ul
                     - member.valid_level_roles.each do |role, role_id|
                       %li
-                        = link_to role, "javascript:void(0)",
+                        = link_to role, '#',
                           class: ("is-active" if member.access_level == role_id),
                           data: { id: role_id, el_id: dom_id(member) }
                     = render_if_exists 'shared/members/ee/revert_ldap_group_sync_option',

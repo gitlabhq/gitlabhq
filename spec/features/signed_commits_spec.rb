@@ -15,8 +15,8 @@ describe 'GPG signed commits' do
 
     visit project_commit_path(project, ref)
 
-    expect(page).to have_link 'Unverified'
-    expect(page).not_to have_link 'Verified'
+    expect(page).to have_button 'Unverified'
+    expect(page).not_to have_button 'Verified'
 
     # user changes his email which makes the gpg key verified
     perform_enqueued_jobs do
@@ -26,8 +26,8 @@ describe 'GPG signed commits' do
 
     visit project_commit_path(project, ref)
 
-    expect(page).not_to have_link 'Unverified'
-    expect(page).to have_link 'Verified'
+    expect(page).not_to have_button 'Unverified'
+    expect(page).to have_button 'Verified'
   end
 
   it 'changes from unverified to verified when the user adds the missing gpg key' do
@@ -36,8 +36,8 @@ describe 'GPG signed commits' do
 
     visit project_commit_path(project, ref)
 
-    expect(page).to have_link 'Unverified'
-    expect(page).not_to have_link 'Verified'
+    expect(page).to have_button 'Unverified'
+    expect(page).not_to have_button 'Verified'
 
     # user adds the gpg key which makes the signature valid
     perform_enqueued_jobs do
@@ -46,8 +46,8 @@ describe 'GPG signed commits' do
 
     visit project_commit_path(project, ref)
 
-    expect(page).not_to have_link 'Unverified'
-    expect(page).to have_link 'Verified'
+    expect(page).not_to have_button 'Unverified'
+    expect(page).to have_button 'Verified'
   end
 
   context 'shows popover badges', :js do
@@ -136,7 +136,7 @@ describe 'GPG signed commits' do
       visit project_commit_path(project, GpgHelpers::SIGNED_AND_AUTHORED_SHA)
 
       # wait for the signature to get generated
-      expect(page).to have_link 'Verified'
+      expect(page).to have_button 'Verified'
 
       user_1.destroy!
 

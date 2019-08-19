@@ -32,7 +32,7 @@
             %ul
               - Gitlab::Access.options.each do |role, role_id|
                 %li
-                  = link_to role, "javascript:void(0)",
+                  = link_to role, '#',
                     class: ("is-active" if group_link.group_access == role_id),
                     data: { id: role_id, el_id: dom_id }
       .clearable-input.member-form-control.d-sm-inline-block
