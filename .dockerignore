@@ -1,0 +1,72 @@
+# `build_from_dir` can't find Dockerfile when `.dockerignore` is "*"
+# See https://github.com/swipely/docker-api/issues/484
+# Ignore all folders except qa/, config/initializers and the root of lib/ since
+# the files we need to build the QA image are in these folders.
+# Following are the files we need:
+# - ./config/initializers/0_inject_enterprise_edition_module.rb
+# - ./lib/gitlab.rb
+# - ./qa/
+# - ./INSTALLATION_TYPE
+# - ./VERSION
+
+/app/
+/bin/
+/builds/
+/changelogs/
+/config/environments/
+/config/helpers/
+/config/knative/
+/config/locales/
+/config/prometheus/
+/config/routes/
+/danger/
+/db/
+/doc/
+/docker/
+/ee/
+/fixtures/
+/templates/
+/lint/
+/lib/api/
+/lib/assets/
+/lib/backup/
+/lib/banzai/
+/lib/bitbucket/
+/lib/server/
+/lib/constraints/
+/lib/registry/
+/lib/policy/
+/lib/feature/
+/lib/flowdock/
+/lib/generators/
+/lib/gitaly/
+/lib/gitlab/
+/lib/api/
+/lib/token/
+/lib/mattermost/
+/lib/teams/
+/lib/storage/
+/lib/auth/
+/lib/peek/
+/lib/prometheus/
+/lib/quality/
+/lib/rouge/
+/lib/flaky/
+/lib/zip/
+/lib/sentry/
+/lib/serializers/
+/lib/support/
+/lib/check/
+/lib/tasks/
+/locale/
+/log/
+/modules/
+/plugins/
+/public/
+/rubocop/
+/scripts/
+/shared/
+/spec/
+/symbol/
+/tmp/
+/vendor/
