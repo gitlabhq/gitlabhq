@@ -113,3 +113,4 @@
   - [elastic_namespace_indexer, 1]
   - [export_csv, 1]
   - [incident_management, 2]
+  - [jira_connect, 1]
