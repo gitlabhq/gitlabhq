@@ -177,18 +177,22 @@ describe Projects::PipelinesController do
       end
 
       it 'does not perform N + 1 queries' do
+        # Set up all required variables
+        get_pipeline_json
+
         control_count = ActiveRecord::QueryRecorder.new { get_pipeline_json }.count
 
-        create_build('test', 1, 'rspec 1')
-        create_build('test', 1, 'spinach 0')
-        create_build('test', 1, 'spinach 1')
-        create_build('test', 1, 'audit')
-        create_build('post deploy', 3, 'pages 1')
-        create_build('post deploy', 3, 'pages 2')
+        first_build = pipeline.builds.first
+        first_build.tag_list << [:hello, :world]
+        create(:deployment, deployable: first_build)
+
+        second_build = pipeline.builds.second
+        second_build.tag_list << [:docker, :ruby]
+        create(:deployment, deployable: second_build)
 
         new_count = ActiveRecord::QueryRecorder.new { get_pipeline_json }.count
 
-        expect(new_count).to be_within(12).of(control_count)
+        expect(new_count).to be_within(1).of(control_count)
       end
     end
 
