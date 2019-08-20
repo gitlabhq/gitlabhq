@@ -182,7 +182,7 @@ were used and display this on the projects pages. If this information is missing
 be added after updating the default branch on the project. This process can take up to 5
 minutes.
 
-![Repository Languages bar](img/repository_languages.png)
+![Repository Languages bar](img/repository_languages_v12_2.gif)
 
 Not all files are detected, among others; documentation,
 vendored code, and most markup languages are excluded. This behaviour can be
