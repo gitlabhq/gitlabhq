@@ -40,7 +40,7 @@ module RestClient
       end
 
       def allow_settings_local_requests?
-        Gitlab::CurrentSettings.allow_local_requests_from_hooks_and_services?
+        Gitlab::CurrentSettings.allow_local_requests_from_web_hooks_and_services?
       end
     end
 

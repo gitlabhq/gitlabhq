@@ -101,7 +101,7 @@ describe 'rest-client dns rebinding protection' do
 
   context 'when local requests are allowed' do
     before do
-      stub_application_setting(allow_local_requests_from_hooks_and_services: true)
+      stub_application_setting(allow_local_requests_from_web_hooks_and_services: true)
     end
 
     it 'allows an external request' do
