@@ -495,14 +495,6 @@ that runner.
 
 ## Define an image from a private Container Registry
 
-> **Notes:**
->
-> - This feature requires GitLab Runner **1.8** or higher
-> - For GitLab Runner versions **>= 0.6, <1.8** there was a partial
->   support for using private registries, which required manual configuration
->   of credentials on runner's host. We recommend to upgrade your Runner to
->   at least version **1.8** if you want to use private registries.
-
 To access private container registries, the GitLab Runner process can use:
 
 - [Statically defined credentials](#using-statically-defined-credentials). That is, a username and password for a specific registry.
@@ -524,6 +516,17 @@ GitLab Runner reads this configuration **only** from `config.toml` and ignores i
 it's provided as an environment variable. This is because GitLab Runnner uses **only**
 `config.toml` configuration and doesn't interpolate **ANY** environment variables at
 runtime.
+
+### Requirements and limitations
+
+- This feature requires GitLab Runner **1.8** or higher.
+- For GitLab Runner versions **>= 0.6, <1.8** there was a partial
+  support for using private registries, which required manual configuration
+  of credentials on runner's host. We recommend to upgrade your Runner to
+  at least version **1.8** if you want to use private registries.
+- Not available for [Kubernetes executor](https://docs.gitlab.com/runner/executors/kubernetes.html),
+  follow <https://gitlab.com/gitlab-org/gitlab-runner/issues/2673> for
+  details.
 
 ### Using statically-defined credentials
 
