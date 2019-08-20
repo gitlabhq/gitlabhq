@@ -111,6 +111,10 @@ $monokai-gi: #a6e22e;
     color: $monokai-text-color;
   }
 
+  .line_expansion {
+    @include diff-expansion($monokai-bg, $monokai-border, $monokai-k);
+  }
+
   // Diff line
   .line_holder {
     &.match .line_content,

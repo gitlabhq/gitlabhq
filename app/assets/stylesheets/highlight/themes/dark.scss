@@ -111,6 +111,10 @@ $dark-il: #de935f;
     color: $dark-line-color;
   }
 
+  .line_expansion {
+    @include diff-expansion($dark-main-bg, $dark-border, $dark-na);
+  }
+
   // Diff line
   .line_holder {
     &.match .line_content,
