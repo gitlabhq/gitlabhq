@@ -9,6 +9,7 @@ module Banzai
     # Context options:
     #   :commit
     #   :group
+    #   :current_user
     #   :project
     #   :project_wiki
     #   :ref
@@ -18,6 +19,7 @@ module Banzai
 
       def call
         return doc if context[:system_note]
+        return doc unless visible_to_user?
 
         @uri_types = {}
         clear_memoization(:linkable_files)
@@ -166,6 +168,16 @@ module Banzai
         Gitlab.config.gitlab.relative_url_root.presence || '/'
       end
 
+      def visible_to_user?
+        if project
+          Ability.allowed?(current_user, :download_code, project)
+        elsif group
+          Ability.allowed?(current_user, :read_group, group)
+        else # Objects detached from projects or groups, e.g. Personal Snippets.
+          true
+        end
+      end
+
       def ref
         context[:ref] || project.default_branch
       end
@@ -176,6 +188,10 @@ module Banzai
 
       def project
         context[:project]
+      end
+
+      def current_user
+        context[:current_user]
       end
 
       def repository
