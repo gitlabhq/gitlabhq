@@ -169,3 +169,121 @@ The PostgreSQL wiki has details on the query you can run to see blocking
 queries. The query is different based on PostgreSQL version. See
 [Lock Monitoring](https://wiki.postgresql.org/wiki/Lock_Monitoring) for
 the query details.
+
+## Managing Sidekiq queues
+
+It is possible to use [Sidekiq API](https://github.com/mperham/sidekiq/wiki/API)
+to perform a number of troubleshoting on Sidekiq.
+
+These are the administrative commands and it should only be used if currently
+admin interface is not suitable due to scale of installation.
+
+All this commands should be run using `gitlab-rails console`.
+
+### View the queue size
+
+```ruby
+Sidekiq::Queue.new("pipeline_processing:build_queue").size
+```
+
+### Enumerate all enqueued jobs
+
+```ruby
+queue = Sidekiq::Queue.new("chaos:chaos_sleep")
+queue.each do |job|
+  # job.klass # => 'MyWorker'
+  # job.args # => [1, 2, 3]
+  # job.jid # => jid
+  # job.queue # => chaos:chaos_sleep
+  # job["retry"] # => 3
+  # job.item # => {
+  #   "class"=>"Chaos::SleepWorker",
+  #   "args"=>[1000],
+  #   "retry"=>3,
+  #   "queue"=>"chaos:chaos_sleep",
+  #   "backtrace"=>true,
+  #   "queue_namespace"=>"chaos",
+  #   "jid"=>"39bc482b823cceaf07213523",
+  #   "created_at"=>1566317076.266069,
+  #   "correlation_id"=>"c323b832-a857-4858-b695-672de6f0e1af",
+  #   "enqueued_at"=>1566317076.26761},
+  # }
+
+  # job.delete if job.jid == 'abcdef1234567890'
+end
+```
+
+### Enumerate currently running jobs
+
+```ruby
+workers = Sidekiq::Workers.new
+workers.each do |process_id, thread_id, work|
+  # process_id is a unique identifier per Sidekiq process
+  # thread_id is a unique identifier per thread
+  # work is a Hash which looks like:
+  # {"queue"=>"chaos:chaos_sleep",
+  #  "payload"=>
+  #  { "class"=>"Chaos::SleepWorker",
+  #    "args"=>[1000],
+  #    "retry"=>3,
+  #    "queue"=>"chaos:chaos_sleep",
+  #    "backtrace"=>true,
+  #    "queue_namespace"=>"chaos",
+  #    "jid"=>"b2a31e3eac7b1a99ff235869",
+  #    "created_at"=>1566316974.9215662,
+  #    "correlation_id"=>"e484fb26-7576-45f9-bf21-b99389e1c53c",
+  #    "enqueued_at"=>1566316974.9229589},
+  #  "run_at"=>1566316974}],
+end
+```
+
+### Remove sidekiq jobs for given parameters (destructive)
+
+```ruby
+# for jobs like this:
+# RepositoryImportWorker.new.perform_async(100)
+id_list = [100]
+
+queue = Sidekiq::Queue.new('repository_import')
+queue.each do |job|
+  job.delete if id_list.include?(job.args[0])
+end
+```
+
+### Remove specific job ID (destructive)
+
+```ruby
+queue = Sidekiq::Queue.new('repository_import')
+queue.each do |job|
+  job.delete if job.jid == 'my-job-id'
+end
+```
+
+## Canceling running jobs (destructive)
+
+> Introduced in GitLab 12.3.
+
+This is highly risky operation and use it as last resort.
+Doing that might result in data corruption, as the job
+is interrupted mid-execution and it is not guaranteed
+that proper rollback of transactions is implemented.
+
+```ruby
+Gitlab::SidekiqMonitor.cancel_job('job-id')
+```
+
+> This requires the Sidekiq to be run with `SIDEKIQ_MONITOR_WORKER=1`
+> environment variable.
+
+To perform of the interrupt we use `Thread.raise` which
+has number of drawbacks, as mentioned in [Why Ruby’s Timeout is dangerous (and Thread.raise is terrifying)](https://jvns.ca/blog/2015/11/27/why-rubys-timeout-is-dangerous-and-thread-dot-raise-is-terrifying/):
+
+> This is where the implications get interesting, and terrifying. This means that an exception can get raised:
+>
+> * during a network request (ok, as long as the surrounding code is prepared to catch Timeout::Error)
+> * during the cleanup for the network request
+> * during a rescue block
+> * while creating an object to save to the database afterwards
+> * in any of your code, regardless of whether it could have possibly raised an exception before
+>
+> Nobody writes code to defend against an exception being raised on literally any line. That’s not even possible. So Thread.raise is  basically like a sneak attack on your code that could result in almost anything. It would probably be okay if it were pure-functional code that did not modify any state. But this is Ruby, so that’s unlikely :)
