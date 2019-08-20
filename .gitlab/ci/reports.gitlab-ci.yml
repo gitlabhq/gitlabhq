@@ -2,6 +2,7 @@ include:
   - template: Code-Quality.gitlab-ci.yml
   - template: Security/SAST.gitlab-ci.yml
   - template: Security/Dependency-Scanning.gitlab-ci.yml
+  - template: Security/DAST.gitlab-ci.yml
 
 code_quality:
   extends: .dedicated-no-docs
@@ -23,4 +24,13 @@ dependency_scanning:
   extends: .dedicated-no-docs
   tags: []
   before_script: []
+  cache: {}
+
+dast:
+  extends: .dedicated-no-docs
+  stage: qa
+  dependencies:
+    - review-deploy
+  before_script:
+    - export DAST_WEBSITE="$(cat review_app_url.txt)"
   cache: {}
