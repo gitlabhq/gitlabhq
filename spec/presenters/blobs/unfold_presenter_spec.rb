@@ -10,16 +10,31 @@ describe Blobs::UnfoldPresenter do
   let(:subject) { described_class.new(blob, params) }
 
   describe '#initialize' do
+    let(:result) { subject }
+
+    context 'with empty params' do
+      let(:params) { {} }
+
+      it 'sets default attributes' do
+        expect(result.full?).to eq(false)
+        expect(result.since).to eq(1)
+        expect(result.to).to eq(1)
+        expect(result.bottom).to eq(false)
+        expect(result.unfold).to eq(true)
+        expect(result.offset).to eq(0)
+        expect(result.indent).to eq(0)
+      end
+    end
+
     context 'when full is false' do
       let(:params) { { full: false, since: 2, to: 3, bottom: false, offset: 1, indent: 1 } }
 
       it 'sets attributes' do
-        result = subject
-
         expect(result.full?).to eq(false)
         expect(result.since).to eq(2)
         expect(result.to).to eq(3)
         expect(result.bottom).to eq(false)
+        expect(result.unfold).to eq(true)
         expect(result.offset).to eq(1)
         expect(result.indent).to eq(1)
       end
@@ -29,12 +44,11 @@ describe Blobs::UnfoldPresenter do
       let(:params) { { full: true, since: 2, to: 3, bottom: false, offset: 1, indent: 1 } }
 
       it 'sets other attributes' do
-        result = subject
-
         expect(result.full?).to eq(true)
         expect(result.since).to eq(1)
         expect(result.to).to eq(blob.lines.size)
         expect(result.bottom).to eq(false)
+        expect(result.unfold).to eq(false)
         expect(result.offset).to eq(0)
         expect(result.indent).to eq(0)
       end
@@ -44,12 +58,11 @@ describe Blobs::UnfoldPresenter do
       let(:params) { { full: false, since: 2, to: -1, bottom: true, offset: 1, indent: 1 } }
 
       it 'sets other attributes' do
-        result = subject
-
         expect(result.full?).to eq(false)
         expect(result.since).to eq(2)
         expect(result.to).to eq(blob.lines.size)
         expect(result.bottom).to eq(false)
+        expect(result.unfold).to eq(false)
         expect(result.offset).to eq(0)
         expect(result.indent).to eq(0)
       end
