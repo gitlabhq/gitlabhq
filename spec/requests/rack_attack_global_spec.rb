@@ -112,9 +112,9 @@ describe 'Rack Attack global throttles' do
         arguments = {
           message: 'Rack_Attack',
           env: :throttle,
-          ip: '127.0.0.1',
+          remote_ip: '127.0.0.1',
           request_method: 'GET',
-          fullpath: get_args.first,
+          path: get_args.first,
           user_id: user.id,
           username: user.username
         }
@@ -213,9 +213,9 @@ describe 'Rack Attack global throttles' do
         arguments = {
           message: 'Rack_Attack',
           env: :throttle,
-          ip: '127.0.0.1',
+          remote_ip: '127.0.0.1',
           request_method: 'GET',
-          fullpath: '/users/sign_in'
+          path: '/users/sign_in'
         }
 
         expect(Gitlab::AuthLogger).to receive(:error).with(arguments)
@@ -377,9 +377,9 @@ describe 'Rack Attack global throttles' do
         arguments = {
           message: 'Rack_Attack',
           env: :throttle,
-          ip: '127.0.0.1',
+          remote_ip: '127.0.0.1',
           request_method: 'GET',
-          fullpath: '/dashboard/snippets',
+          path: '/dashboard/snippets',
           user_id: user.id,
           username: user.username
         }

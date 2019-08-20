@@ -74,9 +74,9 @@ describe Gitlab::ActionRateLimiter, :clean_gitlab_redis_cache do
       {
         message: 'Action_Rate_Limiter_Request',
         env: type,
-        ip: '127.0.0.1',
+        remote_ip: '127.0.0.1',
         request_method: 'GET',
-        fullpath: fullpath
+        path: fullpath
       }
     end
 

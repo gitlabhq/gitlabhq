@@ -7,9 +7,9 @@ ActiveSupport::Notifications.subscribe('rack.attack') do |name, start, finish, r
     rack_attack_info = {
       message: 'Rack_Attack',
       env: req.env['rack.attack.match_type'],
-      ip: req.ip,
+      remote_ip: req.ip,
       request_method: req.request_method,
-      fullpath: req.fullpath
+      path: req.fullpath
     }
 
     if %w(throttle_authenticated_api throttle_authenticated_web).include? req.env['rack.attack.matched']

@@ -129,9 +129,9 @@ describe RegistrationsController do
         {
           message: auth_log_message,
           env: :invisible_captcha_signup_bot_detected,
-          ip: '0.0.0.0',
+          remote_ip: '0.0.0.0',
           request_method: 'POST',
-          fullpath: '/users'
+          path: '/users'
         }
       end
 

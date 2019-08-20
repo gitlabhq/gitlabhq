@@ -41,9 +41,9 @@ module InvisibleCaptcha
     request_information = {
       message: message,
       env: :invisible_captcha_signup_bot_detected,
-      ip: request.ip,
+      remote_ip: request.ip,
       request_method: request.request_method,
-      fullpath: request.fullpath
+      path: request.fullpath
     }
 
     Gitlab::AuthLogger.error(request_information)
