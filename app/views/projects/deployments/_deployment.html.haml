@@ -15,10 +15,10 @@
           .flex-truncate-child
             = link_to [@project.namespace.becomes(Namespace), @project, deployment.deployable], class: 'build-link' do
               #{deployment.deployable.name} (##{deployment.deployable.id})
-        - if deployment.user
+        - if deployment.deployed_by
           %div
             by
-            = user_avatar(user: deployment.user, size: 20, css_class: "mr-0 float-none")
+            = user_avatar(user: deployment.deployed_by, size: 20, css_class: "mr-0 float-none")
 
   .table-section.section-15{ role: 'gridcell' }
     .table-mobile-header{ role: 'rowheader' }= _("Created")

@@ -21,7 +21,7 @@ class DeploymentEntity < Grape::Entity
   expose :finished_at
   expose :tag
   expose :last?
-  expose :user, using: UserEntity
+  expose :deployed_by, as: :user, using: UserEntity
 
   expose :deployable do |deployment, opts|
     deployment.deployable.yield_self do |deployable|
