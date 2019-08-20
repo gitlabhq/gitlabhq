@@ -34,8 +34,11 @@
     color: $gl-text-color;
   }
 
-// Diff line
+  .line_expansion {
+    @include diff-expansion($gray-light, $white-normal, $gl-text-color);
+  }
 
+  // Diff line
   $none-over-bg: #ded7fc;
   $none-expanded-border: #e0e0e0;
   $none-expanded-bg: #e0e0e0;

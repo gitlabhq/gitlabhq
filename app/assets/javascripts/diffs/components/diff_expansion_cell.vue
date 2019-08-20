@@ -212,12 +212,12 @@ export default {
 </script>
 
 <template>
-  <td :colspan="colspan">
+  <td :colspan="colspan" class="text-center">
     <div class="content js-line-expansion-content">
       <a
         v-if="canExpandUp"
         v-tooltip
-        class="cursor-pointer js-unfold unfold-icon"
+        class="cursor-pointer js-unfold unfold-icon d-inline-block pt-2 pb-2"
         data-placement="top"
         data-container="body"
         :title="__('Expand up')"
@@ -232,7 +232,7 @@ export default {
       <a
         v-if="canExpandDown"
         v-tooltip
-        class="cursor-pointer js-unfold-down has-tooltip unfold-icon"
+        class="cursor-pointer js-unfold-down has-tooltip unfold-icon d-inline-block pt-2 pb-2"
         data-placement="top"
         data-container="body"
         :title="__('Expand down')"
