@@ -13,7 +13,7 @@ describe Gitlab::SidekiqMiddleware::Metrics do
     let(:running_jobs_metric) { double('running jobs metric') }
 
     before do
-      allow(Gitlab::Metrics).to receive(:histogram).with(:sidekiq_jobs_completion_seconds, anything).and_return(completion_seconds_metric)
+      allow(Gitlab::Metrics).to receive(:histogram).with(:sidekiq_jobs_completion_seconds, anything, anything).and_return(completion_seconds_metric)
       allow(Gitlab::Metrics).to receive(:counter).with(:sidekiq_jobs_failed_total, anything).and_return(failed_total_metric)
       allow(Gitlab::Metrics).to receive(:counter).with(:sidekiq_jobs_retried_total, anything).and_return(retried_total_metric)
       allow(Gitlab::Metrics).to receive(:gauge).with(:sidekiq_running_jobs, anything, {}, :livesum).and_return(running_jobs_metric)
