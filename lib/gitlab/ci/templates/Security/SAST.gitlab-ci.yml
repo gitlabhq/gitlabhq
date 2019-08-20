@@ -46,11 +46,14 @@ sast:
           SAST_DOCKER_CLIENT_NEGOTIATION_TIMEOUT \
           SAST_PULL_ANALYZER_IMAGE_TIMEOUT \
           SAST_RUN_ANALYZER_TIMEOUT \
+          SAST_JAVA_VERSION \
           ANT_HOME \
           ANT_PATH \
           GRADLE_PATH \
           JAVA_OPTS \
           JAVA_PATH \
+          JAVA_8_VERSION \
+          JAVA_11_VERSION \
           MAVEN_CLI_OPTS \
           MAVEN_PATH \
           MAVEN_REPO_PATH \
