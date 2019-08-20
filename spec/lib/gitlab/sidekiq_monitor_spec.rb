@@ -145,9 +145,7 @@ describe Gitlab::SidekiqMonitor do
       context 'when jid is not found' do
         it 'does not log cancellation message' do
           expect(Sidekiq.logger).not_to receive(:warn)
-          expect(subject).to be_a(Thread)
-
-          subject.join
+          expect(subject).to be_nil
         end
       end
 

@@ -110,11 +110,13 @@ module Gitlab
     def process_job_cancel(jid)
       return unless jid
 
-      # since this might take time, process cancel in a new thread
-      Thread.new do
-        find_thread(jid) do |thread|
-          next unless thread
+      # try to find thread without lock
+      return unless find_thread_unsafe(jid)
 
+      Thread.new do
+        # try to find a thread, but with guaranteed
+        # handle that this thread corresponds to actually running job
+        find_thread_with_lock(jid) do |thread|
           Sidekiq.logger.warn(
             class: self.class,
             action: 'cancel',
@@ -130,13 +132,18 @@ module Gitlab
     # This method needs to be thread-safe
     # This is why it passes thread in block,
     # to ensure that we do process this thread
-    def find_thread(jid)
-      return unless jid
+    def find_thread_unsafe(jid)
+      jobs_thread[jid]
+    end
+
+    def find_thread_with_lock(jid)
+      # don't try to lock if we cannot find the thread
+      return unless find_thread_unsafe(jid)
 
       jobs_mutex.synchronize do
-        thread = jobs_thread[jid]
-        yield(thread)
-        thread
+        find_thread_unsafe(jid).tap do |thread|
+          yield(thread) if thread
+        end
       end
     end
 
