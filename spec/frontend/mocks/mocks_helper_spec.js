@@ -46,7 +46,9 @@ describe('mocks_helper.js', () => {
     readdir.sync.mockReturnValue([]);
     setupManualMocks();
 
-    readdir.mock.calls.forEach(call => {
+    const readdirSpy = readdir.sync;
+    expect(readdirSpy).toHaveBeenCalled();
+    readdirSpy.mock.calls.forEach(call => {
       expect(call[1].deep).toBeLessThan(100);
     });
   });
