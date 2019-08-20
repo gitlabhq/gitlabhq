@@ -1734,8 +1734,8 @@ This example creates three paths of execution:
    in the first stage (see [gitlab-ce#65504](https://gitlab.com/gitlab-org/gitlab-ce/issues/65504)).
 1. If `needs:` refers to a job that is marked as `parallel:`.
    the current job will depend on all parallel jobs created.
-1. `needs:` is similar to `dependencies:` in that needs to use jobs from
-   prior stages, this means that it is impossible to create circular
+1. `needs:` is similar to `dependencies:` in that it needs to use jobs from
+   prior stages, meaning it is impossible to create circular
    dependencies or depend on jobs in the current stage (see [gitlab-ce#65505](https://gitlab.com/gitlab-org/gitlab-ce/issues/65505)).
 1. Related to the above, stages must be explicitly defined for all jobs
    that have the keyword `needs:` or are referred to by one.
