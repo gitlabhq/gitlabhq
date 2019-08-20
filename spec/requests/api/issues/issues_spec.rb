@@ -216,6 +216,10 @@ describe API::Issues do
         expect_paginated_array_response([issue.id, closed_issue.id])
         expect(json_response.first['title']).to eq(issue.title)
         expect(json_response.last).to have_key('web_url')
+        # Calculating the value of subscribed field triggers Markdown
+        # processing. We can't do that for multiple issues / merge
+        # requests in a single API request.
+        expect(json_response.last).not_to have_key('subscribed')
       end
 
       it 'returns an array of closed issues' do

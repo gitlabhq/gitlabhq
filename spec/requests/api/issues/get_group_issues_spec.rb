@@ -342,6 +342,14 @@ describe API::Issues do
         group_project.add_reporter(user)
       end
 
+      it 'exposes known attributes' do
+        get api(base_url, admin)
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response.last.keys).to include(*%w(id iid project_id title description))
+        expect(json_response.last).not_to have_key('subscribed')
+      end
+
       it 'returns all group issues (including opened and closed)' do
         get api(base_url, admin)
 
