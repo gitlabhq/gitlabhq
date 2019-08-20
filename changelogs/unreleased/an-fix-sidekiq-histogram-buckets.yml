@@ -1,0 +1,5 @@
+---
+title: Allow latency measurements of sidekiq jobs taking > 2.5s
+merge_request: 32001
+author:
+type: fixed
