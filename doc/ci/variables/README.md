@@ -94,7 +94,10 @@ This means that the value of the variable will be hidden in job logs,
 though it must match certain requirements to do so:
 
 - The value must be in a single line.
-- The value must only consist of characters from the Base64 alphabet ([RFC4648](https://tools.ietf.org/html/rfc4648)) with the addition of `@` and `:`.
+- The value must only consist of characters from the Base64 alphabet (RFC4648).
+
+  [In GitLab 12.2](https://gitlab.com/gitlab-org/gitlab-ce/issues/63043)
+  and newer, `@` and `:` are also valid values.
 - The value must be at least 8 characters long.
 - The value must not use variables.
 
@@ -509,7 +512,7 @@ Below you can find supported syntax reference:
 1. Checking for an empty variable
 
    Examples:
-  
+
    - `$VARIABLE == ""`
    - `$VARIABLE != ""` (introduced in GitLab 11.11)
 
