@@ -101,24 +101,8 @@ pre.code,
   color: $white-code-color;
 }
 
-// Expansion line
 .line_expansion {
-  background-color: $gray-light;
-
-  td {
-    border-top: 1px solid $border-color;
-    border-bottom: 1px solid $border-color;
-    text-align: center;
-  }
-
-  a {
-    color: $blue-600;
-  }
-
-  .unfold-icon {
-    display: inline-block;
-    padding: 8px 0;
-  }
+  @include diff-expansion($gray-light, $border-color, $blue-600);
 }
 
 // Diff line
