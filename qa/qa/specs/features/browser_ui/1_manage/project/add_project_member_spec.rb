@@ -19,7 +19,7 @@ module QA
           page.add_member(user.username)
         end
 
-        expect(page).to have_content(/@#{user.username}\nGiven access/)
+        expect(page).to have_content(/@#{user.username}(\n| )?Given access/)
       end
     end
   end
