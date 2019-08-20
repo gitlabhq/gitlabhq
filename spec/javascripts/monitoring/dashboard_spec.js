@@ -414,6 +414,26 @@ describe('Dashboard', () => {
       expect(clipboardText()).toContain(`y_label=`);
     });
 
+    it('undefined parameter is stripped', done => {
+      wrapper.setProps({ currentDashboard: undefined });
+
+      wrapper.vm.$nextTick(() => {
+        expect(clipboardText()).not.toContain(`dashboard=`);
+        expect(clipboardText()).toContain(`y_label=`);
+        done();
+      });
+    });
+
+    it('null parameter is stripped', done => {
+      wrapper.setProps({ currentDashboard: null });
+
+      wrapper.vm.$nextTick(() => {
+        expect(clipboardText()).not.toContain(`dashboard=`);
+        expect(clipboardText()).toContain(`y_label=`);
+        done();
+      });
+    });
+
     it('creates a toast when clicked', () => {
       spyOn(wrapper.vm.$toast, 'show').and.stub();
 
