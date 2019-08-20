@@ -67,9 +67,9 @@ describe Projects::RawController do
         attributes = {
           message: 'Action_Rate_Limiter_Request',
           env: :raw_blob_request_limit,
-          ip: '0.0.0.0',
+          remote_ip: '0.0.0.0',
           request_method: 'GET',
-          fullpath: "/#{project.full_path}/raw/#{file_path}"
+          path: "/#{project.full_path}/raw/#{file_path}"
         }
 
         expect(Gitlab::AuthLogger).to receive(:error).with(attributes).once

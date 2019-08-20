@@ -18,7 +18,7 @@ module API
                   formatter: Gitlab::GrapeLogging::Formatters::LogrageWithTimestamp.new,
                   include: [
                     GrapeLogging::Loggers::FilterParameters.new(LOG_FILTERS),
-                    GrapeLogging::Loggers::ClientEnv.new,
+                    Gitlab::GrapeLogging::Loggers::ClientEnvLogger.new,
                     Gitlab::GrapeLogging::Loggers::RouteLogger.new,
                     Gitlab::GrapeLogging::Loggers::UserLogger.new,
                     Gitlab::GrapeLogging::Loggers::QueueDurationLogger.new,

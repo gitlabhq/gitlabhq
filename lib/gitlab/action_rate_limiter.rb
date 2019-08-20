@@ -49,9 +49,9 @@ module Gitlab
       request_information = {
         message: 'Action_Rate_Limiter_Request',
         env: type,
-        ip: request.ip,
+        remote_ip: request.ip,
         request_method: request.request_method,
-        fullpath: request.fullpath
+        path: request.fullpath
       }
 
       if current_user
