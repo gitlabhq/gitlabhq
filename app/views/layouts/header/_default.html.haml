@@ -4,6 +4,7 @@
   - search_path_url = search_path(group_id: group.id)
 - else
   - search_path_url = search_path
+- has_impersonation_link = header_link?(:admin_impersonation)
 
 %header.navbar.navbar-gitlab.navbar-expand-sm.js-navbar{ data: { qa_selector: 'navbar' } }
   %a.sr-only.gl-accessibility{ href: "#content-body", tabindex: "1" } Skip to content
@@ -64,14 +65,14 @@
             .dropdown-menu.dropdown-menu-right
               = render 'layouts/header/help_dropdown'
           - if header_link?(:user_dropdown)
-            %li.nav-item.header-user.dropdown{ data: { track_label: "profile_dropdown", track_event: "click_dropdown", track_value: "", qa_selector: 'user_menu' } }
+            %li.nav-item.header-user.dropdown{ data: { track_label: "profile_dropdown", track_event: "click_dropdown", track_value: "", qa_selector: 'user_menu' }, class: ('mr-0' if has_impersonation_link) }
               = link_to current_user, class: user_dropdown_class, data: { toggle: "dropdown" } do
                 = image_tag avatar_icon_for_user(current_user, 23), width: 23, height: 23, class: "header-user-avatar qa-user-avatar"
                 = sprite_icon('angle-down', css_class: 'caret-down')
               .dropdown-menu.dropdown-menu-right
                 = render 'layouts/header/current_user_dropdown'
-          - if header_link?(:admin_impersonation)
-            %li.nav-item.impersonation
+          - if has_impersonation_link
+            %li.nav-item.impersonation.ml-0
               = link_to admin_impersonation_path, class: 'nav-link impersonation-btn', method: :delete, title: _('Stop impersonation'), aria: { label: _('Stop impersonation') }, data: { toggle: 'tooltip', placement: 'bottom', container: 'body' } do
                 = icon('user-secret')
           - if header_link?(:sign_in)

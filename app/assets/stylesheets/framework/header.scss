@@ -131,7 +131,6 @@
       > li:not(.d-none) a {
         @include media-breakpoint-down(xs) {
           margin-left: 0;
-          min-width: 100%;
         }
       }
     }
@@ -233,7 +232,6 @@
       .impersonation-btn,
       .impersonation-btn:hover {
         background-color: $white-light;
-        margin-left: 0;
         border-top-left-radius: 0;
         border-bottom-left-radius: 0;
 
