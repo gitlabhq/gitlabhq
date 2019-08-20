@@ -67,8 +67,17 @@ export default {
 </script>
 
 <template>
-  <gl-link v-gl-tooltip="tooltipOption" :href="assigneeUrl" :title="tooltipTitle" class="d-flex">
-    <assignee-avatar :user="user" :img-size="32" :issuable-type="issuableType" />
-    <slot :user="user"></slot>
+  <!-- must be `d-inline-block` or parent flex-basis causes width issues -->
+  <gl-link
+    v-gl-tooltip="tooltipOption"
+    :href="assigneeUrl"
+    :title="tooltipTitle"
+    class="d-inline-block"
+  >
+    <!-- use d-flex so that slot can be appropriately styled -->
+    <span class="d-flex">
+      <assignee-avatar :user="user" :img-size="32" :issuable-type="issuableType" />
+      <slot :user="user"></slot>
+    </span>
   </gl-link>
 </template>
