@@ -497,6 +497,15 @@ list.
 
 ![Merge request diff file navigation](img/merge_request_diff_file_navigation.png)
 
+### Incrementally expand merge request diffs
+
+By default, the diff shows only the parts of a file which are changed.
+To view more unchanged lines above or below a change click on the
+**Expand up** or **Expand down** icons. You can also click on **Show all lines**
+to expand the entire file.
+
+![Incrementally expand merge request diffs](img/incrementally_expand_merge_request_diffs_v12_2.png)
+
 ## Ignore whitespace changes in Merge Request diff view
 
 If you click the **Hide whitespace changes** button, you can see the diff
