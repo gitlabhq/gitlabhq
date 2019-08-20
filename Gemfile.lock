@@ -1252,7 +1252,6 @@ DEPENDENCIES
   unicorn-worker-killer (~> 0.4.4)
   validates_hostname (~> 1.0.6)
   version_sorter (~> 2.2.4)
-  virtus (~> 1.0.1)
   vmstat (~> 2.3.0)
   webmock (~> 3.5.1)
   webpack-rails (~> 0.9.10)
