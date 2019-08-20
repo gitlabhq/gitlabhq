@@ -584,6 +584,52 @@ Unless you have a `Dockerfile` in your repo, your image is built with
 Herokuish, and you must prefix commands run in these images with `/bin/herokuish
 procfile exec` to replicate the environment where your application will run.
 
+#### Workers
+
+Some web applications need to run extra deployments for "worker processes". For
+example it is common in a Rails application to have a separate worker process
+to run background tasks like sending emails.
+
+The [default Helm chart](https://gitlab.com/gitlab-org/charts/auto-deploy-app)
+used in Auto Deploy [has support for running worker
+processes](https://gitlab.com/gitlab-org/charts/auto-deploy-app/merge_requests/9).
+
+In order to run a worker you'll need to ensure that it is able to respond to
+the standard health checks which expect a successful HTTP response on port
+`5000`. For sidekiq you could make use of the
+[sidekiq_alive gem](https://rubygems.org/gems/sidekiq_alive) to do this. 
+
+In order to work with sidekiq you'll also need to ensure your deployments have
+access to a redis instance. Auto DevOps won't deploy this for you so you'll
+need to manage this separately and then set a CI variable
+`K8S_SECRET_REDIS_URL` which the URL of this instance to ensure it's passed
+into your deployments.
+
+Once you have configured your worker to respond to health checks you you will
+need to configure a CI variable `HELM_UPGRADE_EXTRA_ARGS` with the value
+`--values helm-values.yaml`. Then you can, for example, run a
+[sidekiq](https://github.com/mperham/sidekiq) worker for your rails application
+by adding a file named `helm-values.yaml` to your repo with the following
+content:
+
+```yml
+workers:
+  sidekiq:
+    replicaCount: 1
+    command:
+    - /bin/herokuish
+    - procfile
+    - exec
+    - sidekiq
+    preStopCommand:
+    - /bin/herokuish
+    - procfile
+    - exec
+    - sidekiqctl
+    - quiet
+    terminationGracePeriodSeconds: 60
+```
+
 ### Auto Monitoring
 
 See the [requirements](#requirements) for Auto Monitoring to enable this stage.
