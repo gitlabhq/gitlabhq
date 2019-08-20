@@ -645,7 +645,10 @@ module API
         end
       end
 
-      expose :subscribed do |issue, options|
+      # Calculating the value of subscribed field triggers Markdown
+      # processing. We can't do that for multiple issues / merge
+      # requests in a single API request.
+      expose :subscribed, if: -> (_, options) { options.fetch(:include_subscribed, true) } do |issue, options|
         issue.subscribed?(options[:current_user], options[:project] || issue.project)
       end
     end
