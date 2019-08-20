@@ -1,4 +1,4 @@
-# Geo Replication **(PREMIUM ONLY)**
+# Replication (Geo) **(PREMIUM ONLY)**
 
 > - Introduced in GitLab Enterprise Edition 8.9.
 > - Using Geo in combination with
@@ -6,7 +6,7 @@
 >   is considered **Generally Available** (GA) in
 >   [GitLab Premium](https://about.gitlab.com/pricing/) 10.4.
 
-Geo is the solution for widely distributed development teams.
+Replication with Geo is the solution for widely distributed development teams.
 
 ## Overview
 
