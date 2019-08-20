@@ -22,6 +22,10 @@ module StubGitlabCalls
     allow_any_instance_of(Ci::Pipeline).to receive(:ci_yaml_file) { ci_yaml }
   end
 
+  def stub_pipeline_modified_paths(pipeline, modified_paths)
+    allow(pipeline).to receive(:modified_paths).and_return(modified_paths)
+  end
+
   def stub_repository_ci_yaml_file(sha:, path: '.gitlab-ci.yml')
     allow_any_instance_of(Repository)
       .to receive(:gitlab_ci_yml_for).with(sha, path)

@@ -13,7 +13,12 @@ describe Gitlab::Ci::Build::Policy::Variables do
     build(:ci_build, pipeline: pipeline, project: project, ref: 'master')
   end
 
-  let(:seed) { double('build seed', to_resource: ci_build) }
+  let(:seed) do
+    double('build seed',
+      to_resource: ci_build,
+      scoped_variables_hash: ci_build.scoped_variables_hash
+    )
+  end
 
   before do
     pipeline.variables.build(key: 'CI_PROJECT_NAME', value: '')
@@ -83,7 +88,12 @@ describe Gitlab::Ci::Build::Policy::Variables do
         build(:ci_bridge, pipeline: pipeline, project: project, ref: 'master')
       end
 
-      let(:seed) { double('bridge seed', to_resource: bridge) }
+      let(:seed) do
+        double('bridge seed',
+          to_resource: bridge,
+          scoped_variables_hash: ci_build.scoped_variables_hash
+        )
+      end
 
       it 'is satisfied by a matching expression for a bridge job' do
         policy = described_class.new(['$MY_VARIABLE'])

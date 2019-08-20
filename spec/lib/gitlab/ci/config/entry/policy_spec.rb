@@ -51,8 +51,6 @@ describe Gitlab::Ci::Config::Entry::Policy do
 
           let(:config) { ['/^(?!master).+/'] }
 
-          subject { described_class.new([regexp]) }
-
           context 'when allow_unsafe_ruby_regexp is disabled' do
             before do
               stub_feature_flags(allow_unsafe_ruby_regexp: false)
@@ -112,8 +110,6 @@ describe Gitlab::Ci::Config::Entry::Policy do
       include StubFeatureFlags
 
       let(:config) { { refs: ['/^(?!master).+/'] } }
-
-      subject { described_class.new([regexp]) }
 
       context 'when allow_unsafe_ruby_regexp is disabled' do
         before do
@@ -200,6 +196,14 @@ describe Gitlab::Ci::Config::Entry::Policy do
       it 'is a correct configuraton' do
         expect(entry).to be_valid
         expect(entry.value).to eq(config)
+      end
+    end
+
+    context 'when changes policy is invalid' do
+      let(:config) { { changes: 'some/*' } }
+
+      it 'returns errors' do
+        expect(entry.errors).to include /changes should be an array of strings/
       end
     end
 

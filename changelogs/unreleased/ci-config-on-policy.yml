@@ -1,0 +1,5 @@
+---
+title: Introduced Build::Rules configuration for Ci::Build
+merge_request: 29011
+author:
+type: added
