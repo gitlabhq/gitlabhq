@@ -15,6 +15,60 @@ describe Gitlab::Ci::Pipeline::Seed::Build do
 
     it { is_expected.to be_a(Hash) }
     it { is_expected.to include(:name, :project, :ref) }
+
+    context 'with job:when' do
+      let(:attributes) { { name: 'rspec', ref: 'master', when: 'on_failure' } }
+
+      it { is_expected.to include(when: 'on_failure') }
+    end
+
+    context 'with job:when:delayed' do
+      let(:attributes) { { name: 'rspec', ref: 'master', when: 'delayed', start_in: '3 hours' } }
+
+      it { is_expected.to include(when: 'delayed', start_in: '3 hours') }
+    end
+
+    context 'with job:rules:[when:]' do
+      context 'is matched' do
+        let(:attributes) { { name: 'rspec', ref: 'master', rules: [{ if: '$VAR == null', when: 'always' }] } }
+
+        it { is_expected.to include(when: 'always') }
+      end
+
+      context 'is not matched' do
+        let(:attributes) { { name: 'rspec', ref: 'master', rules: [{ if: '$VAR != null', when: 'always' }] } }
+
+        it { is_expected.to include(when: 'never') }
+      end
+    end
+
+    context 'with job:rules:[when:delayed]' do
+      context 'is matched' do
+        let(:attributes) { { name: 'rspec', ref: 'master', rules: [{ if: '$VAR == null', when: 'delayed', start_in: '3 hours' }] } }
+
+        it { is_expected.to include(when: 'delayed', start_in: '3 hours') }
+      end
+
+      context 'is not matched' do
+        let(:attributes) { { name: 'rspec', ref: 'master', rules: [{ if: '$VAR != null', when: 'delayed', start_in: '3 hours' }] } }
+
+        it { is_expected.to include(when: 'never') }
+      end
+    end
+
+    context 'with job:rules but no explicit when:' do
+      context 'is matched' do
+        let(:attributes) { { name: 'rspec', ref: 'master', rules: [{ if: '$VAR == null' }] } }
+
+        it { is_expected.to include(when: 'on_success') }
+      end
+
+      context 'is not matched' do
+        let(:attributes) { { name: 'rspec', ref: 'master', rules: [{ if: '$VAR != null' }] } }
+
+        it { is_expected.to include(when: 'never') }
+      end
+    end
   end
 
   describe '#bridge?' do
@@ -366,9 +420,25 @@ describe Gitlab::Ci::Pipeline::Seed::Build do
 
         it { is_expected.not_to be_included }
       end
+
+      context 'when using both only and except policies' do
+        let(:attributes) do
+          {
+            name: 'rspec',
+            only: {
+              refs: ["branches@#{pipeline.project_full_path}"]
+            },
+            except: {
+              refs: ["branches@#{pipeline.project_full_path}"]
+            }
+          }
+        end
+
+        it { is_expected.not_to be_included }
+      end
     end
 
-    context 'when repository path does not matches' do
+    context 'when repository path does not match' do
       context 'when using only' do
         let(:attributes) do
           { name: 'rspec', only: { refs: %w[branches@fork] } }
@@ -395,6 +465,215 @@ describe Gitlab::Ci::Pipeline::Seed::Build do
         end
 
         it { is_expected.not_to be_included }
+      end
+    end
+
+    context 'using rules:' do
+      using RSpec::Parameterized
+
+      let(:attributes) { { name: 'rspec', rules: rule_set } }
+
+      context 'with a matching if: rule' do
+        context 'with an explicit `when: never`' do
+          where(:rule_set) do
+            [
+              [[{ if: '$VARIABLE == null',              when: 'never' }]],
+              [[{ if: '$VARIABLE == null',              when: 'never' }, { if: '$VARIABLE == null', when: 'always' }]],
+              [[{ if: '$VARIABLE != "the wrong value"', when: 'never' }, { if: '$VARIABLE == null', when: 'always' }]]
+            ]
+          end
+
+          with_them do
+            it { is_expected.not_to be_included }
+
+            it 'correctly populates when:' do
+              expect(seed_build.attributes).to include(when: 'never')
+            end
+          end
+        end
+
+        context 'with an explicit `when: always`' do
+          where(:rule_set) do
+            [
+              [[{ if: '$VARIABLE == null',              when: 'always' }]],
+              [[{ if: '$VARIABLE == null',              when: 'always' }, { if: '$VARIABLE == null', when: 'never' }]],
+              [[{ if: '$VARIABLE != "the wrong value"', when: 'always' }, { if: '$VARIABLE == null', when: 'never' }]]
+            ]
+          end
+
+          with_them do
+            it { is_expected.to be_included }
+
+            it 'correctly populates when:' do
+              expect(seed_build.attributes).to include(when: 'always')
+            end
+          end
+        end
+
+        context 'with an explicit `when: on_failure`' do
+          where(:rule_set) do
+            [
+              [[{ if: '$CI_JOB_NAME == "rspec" && $VAR == null', when: 'on_failure' }]],
+              [[{ if: '$VARIABLE != null',              when: 'delayed', start_in: '1 day' }, { if: '$CI_JOB_NAME   == "rspec"', when: 'on_failure' }]],
+              [[{ if: '$VARIABLE == "the wrong value"', when: 'delayed', start_in: '1 day' }, { if: '$CI_BUILD_NAME == "rspec"', when: 'on_failure' }]]
+            ]
+          end
+
+          with_them do
+            it { is_expected.to be_included }
+
+            it 'correctly populates when:' do
+              expect(seed_build.attributes).to include(when: 'on_failure')
+            end
+          end
+        end
+
+        context 'with an explicit `when: delayed`' do
+          where(:rule_set) do
+            [
+              [[{ if: '$VARIABLE == null',              when: 'delayed', start_in: '1 day' }]],
+              [[{ if: '$VARIABLE == null',              when: 'delayed', start_in: '1 day' }, { if: '$VARIABLE == null', when: 'never' }]],
+              [[{ if: '$VARIABLE != "the wrong value"', when: 'delayed', start_in: '1 day' }, { if: '$VARIABLE == null', when: 'never' }]]
+            ]
+          end
+
+          with_them do
+            it { is_expected.to be_included }
+
+            it 'correctly populates when:' do
+              expect(seed_build.attributes).to include(when: 'delayed', start_in: '1 day')
+            end
+          end
+        end
+
+        context 'without an explicit when: value' do
+          where(:rule_set) do
+            [
+              [[{ if: '$VARIABLE == null'              }]],
+              [[{ if: '$VARIABLE == null'              }, { if: '$VARIABLE == null' }]],
+              [[{ if: '$VARIABLE != "the wrong value"' }, { if: '$VARIABLE == null' }]]
+            ]
+          end
+
+          with_them do
+            it { is_expected.to be_included }
+
+            it 'correctly populates when:' do
+              expect(seed_build.attributes).to include(when: 'on_success')
+            end
+          end
+        end
+      end
+
+      context 'with a matching changes: rule' do
+        let(:pipeline) do
+          create(:ci_pipeline, project: project).tap do |pipeline|
+            stub_pipeline_modified_paths(pipeline, %w[app/models/ci/pipeline.rb spec/models/ci/pipeline_spec.rb .gitlab-ci.yml])
+          end
+        end
+
+        context 'with an explicit `when: never`' do
+          where(:rule_set) do
+            [
+              [[{ changes: %w[*/**/*.rb],                 when: 'never' }, { changes: %w[*/**/*.rb],                 when: 'always' }]],
+              [[{ changes: %w[app/models/ci/pipeline.rb], when: 'never' }, { changes: %w[app/models/ci/pipeline.rb], when: 'always' }]],
+              [[{ changes: %w[spec/**/*.rb],              when: 'never' }, { changes: %w[spec/**/*.rb],              when: 'always' }]],
+              [[{ changes: %w[*.yml],                     when: 'never' }, { changes: %w[*.yml],                     when: 'always' }]],
+              [[{ changes: %w[.*.yml],                    when: 'never' }, { changes: %w[.*.yml],                    when: 'always' }]],
+              [[{ changes: %w[**/*],                      when: 'never' }, { changes: %w[**/*],                      when: 'always' }]],
+              [[{ changes: %w[*/**/*.rb *.yml],           when: 'never' }, { changes: %w[*/**/*.rb *.yml],           when: 'always' }]],
+              [[{ changes: %w[.*.yml **/*],               when: 'never' }, { changes: %w[.*.yml **/*],               when: 'always' }]]
+            ]
+          end
+
+          with_them do
+            it { is_expected.not_to be_included }
+
+            it 'correctly populates when:' do
+              expect(seed_build.attributes).to include(when: 'never')
+            end
+          end
+        end
+
+        context 'with an explicit `when: always`' do
+          where(:rule_set) do
+            [
+              [[{ changes: %w[*/**/*.rb],                 when: 'always' }, { changes: %w[*/**/*.rb],                 when: 'never' }]],
+              [[{ changes: %w[app/models/ci/pipeline.rb], when: 'always' }, { changes: %w[app/models/ci/pipeline.rb], when: 'never' }]],
+              [[{ changes: %w[spec/**/*.rb],              when: 'always' }, { changes: %w[spec/**/*.rb],              when: 'never' }]],
+              [[{ changes: %w[*.yml],                     when: 'always' }, { changes: %w[*.yml],                     when: 'never' }]],
+              [[{ changes: %w[.*.yml],                    when: 'always' }, { changes: %w[.*.yml],                    when: 'never' }]],
+              [[{ changes: %w[**/*],                      when: 'always' }, { changes: %w[**/*],                      when: 'never' }]],
+              [[{ changes: %w[*/**/*.rb *.yml],           when: 'always' }, { changes: %w[*/**/*.rb *.yml],           when: 'never' }]],
+              [[{ changes: %w[.*.yml **/*],               when: 'always' }, { changes: %w[.*.yml **/*],               when: 'never' }]]
+            ]
+          end
+
+          with_them do
+            it { is_expected.to be_included }
+
+            it 'correctly populates when:' do
+              expect(seed_build.attributes).to include(when: 'always')
+            end
+          end
+        end
+
+        context 'without an explicit when: value' do
+          where(:rule_set) do
+            [
+              [[{ changes: %w[*/**/*.rb]                 }]],
+              [[{ changes: %w[app/models/ci/pipeline.rb] }]],
+              [[{ changes: %w[spec/**/*.rb]              }]],
+              [[{ changes: %w[*.yml]                     }]],
+              [[{ changes: %w[.*.yml]                    }]],
+              [[{ changes: %w[**/*]                      }]],
+              [[{ changes: %w[*/**/*.rb *.yml]           }]],
+              [[{ changes: %w[.*.yml **/*]               }]]
+            ]
+          end
+
+          with_them do
+            it { is_expected.to be_included }
+
+            it 'correctly populates when:' do
+              expect(seed_build.attributes).to include(when: 'on_success')
+            end
+          end
+        end
+      end
+
+      context 'with no matching rule' do
+        where(:rule_set) do
+          [
+            [[{ if: '$VARIABLE != null',              when: 'never'  }]],
+            [[{ if: '$VARIABLE != null',              when: 'never'  }, { if: '$VARIABLE != null', when: 'always' }]],
+            [[{ if: '$VARIABLE == "the wrong value"', when: 'never'  }, { if: '$VARIABLE != null', when: 'always' }]],
+            [[{ if: '$VARIABLE != null',              when: 'always' }]],
+            [[{ if: '$VARIABLE != null',              when: 'always' }, { if: '$VARIABLE != null', when: 'never' }]],
+            [[{ if: '$VARIABLE == "the wrong value"', when: 'always' }, { if: '$VARIABLE != null', when: 'never' }]],
+            [[{ if: '$VARIABLE != null'                              }]],
+            [[{ if: '$VARIABLE != null'                              }, { if: '$VARIABLE != null' }]],
+            [[{ if: '$VARIABLE == "the wrong value"'                 }, { if: '$VARIABLE != null' }]]
+          ]
+        end
+
+        with_them do
+          it { is_expected.not_to be_included }
+
+          it 'correctly populates when:' do
+            expect(seed_build.attributes).to include(when: 'never')
+          end
+        end
+      end
+
+      context 'with no rules' do
+        let(:rule_set) { [] }
+
+        it { is_expected.not_to be_included }
+
+        it 'correctly populates when:' do
+          expect(seed_build.attributes).to include(when: 'never')
+        end
       end
     end
   end
@@ -475,5 +754,11 @@ describe Gitlab::Ci::Pipeline::Seed::Build do
           "rspec: one job can only need 50 others, but you have listed 51. See needs keyword documentation for more details")
       end
     end
+  end
+
+  describe '#scoped_variables_hash' do
+    subject { seed_build.scoped_variables_hash }
+
+    it { is_expected.to eq(seed_build.to_resource.scoped_variables_hash) }
   end
 end

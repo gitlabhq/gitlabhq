@@ -125,9 +125,11 @@ module Gitlab
         describe 'delayed job entry' do
           context 'when delayed is defined' do
             let(:config) do
-              YAML.dump(rspec: { script: 'rollout 10%',
-                                 when: 'delayed',
-                                 start_in: '1 day' })
+              YAML.dump(rspec: {
+                script:   'rollout 10%',
+                when:     'delayed',
+                start_in: '1 day'
+              })
             end
 
             it 'has the attributes' do
@@ -726,18 +728,47 @@ module Gitlab
         end
       end
 
-      describe "When" do
-        %w(on_success on_failure always).each do |when_state|
-          it "returns #{when_state} when defined" do
+      describe 'when:' do
+        (Gitlab::Ci::Config::Entry::Job::ALLOWED_WHEN - %w[delayed]).each do |when_state|
+          it "#{when_state} creates one build and sets when:" do
             config = YAML.dump({
-                                 rspec: { script: "rspec", when: when_state }
-                               })
+              rspec: { script: 'rspec', when: when_state }
+            })
 
             config_processor = Gitlab::Ci::YamlProcessor.new(config)
             builds = config_processor.stage_builds_attributes("test")
 
             expect(builds.size).to eq(1)
             expect(builds.first[:when]).to eq(when_state)
+          end
+        end
+
+        context 'delayed' do
+          context 'with start_in' do
+            it 'creates one build and sets when:' do
+              config = YAML.dump({
+                rspec: { script: 'rspec', when: 'delayed', start_in: '1 hour' }
+              })
+
+              config_processor = Gitlab::Ci::YamlProcessor.new(config)
+              builds = config_processor.stage_builds_attributes("test")
+
+              expect(builds.size).to eq(1)
+              expect(builds.first[:when]).to eq('delayed')
+              expect(builds.first[:options][:start_in]).to eq('1 hour')
+            end
+          end
+
+          context 'without start_in' do
+            it 'raises an error' do
+              config = YAML.dump({
+                rspec: { script: 'rspec', when: 'delayed' }
+              })
+
+              expect do
+                Gitlab::Ci::YamlProcessor.new(config)
+              end.to raise_error(YamlProcessor::ValidationError, /start in should be a duration/)
+            end
           end
         end
       end
@@ -1132,7 +1163,7 @@ module Gitlab
           it { expect { subject }.not_to raise_error }
         end
 
-        context 'needs to builds' do
+        context 'needs two builds' do
           let(:needs) { %w(build1 build2) }
 
           it "does create jobs with valid specification" do
@@ -1169,7 +1200,7 @@ module Gitlab
           end
         end
 
-        context 'needs to builds defined as symbols' do
+        context 'needs two builds defined as symbols' do
           let(:needs) { [:build1, :build2] }
 
           it { expect { subject }.not_to raise_error }
@@ -1192,6 +1223,67 @@ module Gitlab
           let(:dependencies) { %w(build2) }
 
           it { expect { subject }.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, 'jobs:test1 dependencies the build2 should be part of needs') }
+        end
+      end
+
+      describe 'rules' do
+        subject { Gitlab::Ci::YamlProcessor.new(YAML.dump(config)) }
+
+        let(:config) do
+          {
+            var_default:     { stage: 'build',  script: 'test', rules: [{ if: '$VAR == null' }] },
+            var_when:        { stage: 'build',  script: 'test', rules: [{ if: '$VAR == null', when: 'always' }] },
+            var_and_changes: { stage: 'build',  script: 'test', rules: [{ if: '$VAR == null', changes: %w[README], when: 'always' }] },
+            changes_not_var: { stage: 'test',   script: 'test', rules: [{ if: '$VAR != null', changes: %w[README] }] },
+            var_not_changes: { stage: 'test',   script: 'test', rules: [{ if: '$VAR == null', changes: %w[other/file.rb], when: 'always' }] },
+            nothing:         { stage: 'test',   script: 'test', rules: [{ when: 'manual' }] },
+            var_never:       { stage: 'deploy', script: 'test', rules: [{ if: '$VAR == null', when: 'never' }] },
+            var_delayed:     { stage: 'deploy', script: 'test', rules: [{ if: '$VAR == null', when: 'delayed', start_in: '3 hours' }] },
+            two_rules:       { stage: 'deploy', script: 'test', rules: [{ if: '$VAR == null', when: 'on_success' }, { changes: %w[README], when: 'manual' }] }
+          }
+        end
+
+        it 'raises no exceptions' do
+          expect { subject }.not_to raise_error
+        end
+
+        it 'returns all jobs regardless of their inclusion' do
+          expect(subject.builds.count).to eq(config.keys.count)
+        end
+
+        context 'used with job-level when' do
+          let(:config) do
+            {
+              var_default: {
+                stage: 'build',
+                script: 'test',
+                when: 'always',
+                rules: [{ if: '$VAR == null' }]
+              }
+            }
+          end
+
+          it 'raises a ValidationError' do
+            expect { subject }.to raise_error(YamlProcessor::ValidationError, /may not be used with `rules`: when/)
+          end
+        end
+
+        context 'used with job-level when:delayed' do
+          let(:config) do
+            {
+              var_default: {
+                stage: 'build',
+                script: 'test',
+                when: 'delayed',
+                start_in: '10 minutes',
+                rules: [{ if: '$VAR == null' }]
+              }
+            }
+          end
+
+          it 'raises a ValidationError' do
+            expect { subject }.to raise_error(YamlProcessor::ValidationError, /may not be used with `rules`: when, start_in/)
+          end
         end
       end
 
@@ -1513,7 +1605,7 @@ module Gitlab
           config = YAML.dump({ rspec: { script: "test", when: 1 } })
           expect do
             Gitlab::Ci::YamlProcessor.new(config)
-          end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, "jobs:rspec when should be on_success, on_failure, always, manual or delayed")
+          end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, "jobs:rspec when should be one of: #{Gitlab::Ci::Config::Entry::Job::ALLOWED_WHEN.join(', ')}")
         end
 
         it "returns errors if job artifacts:name is not an a string" do

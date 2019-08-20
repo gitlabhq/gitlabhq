@@ -20,8 +20,10 @@ module Gitlab
             present_keys = value.try(:keys).to_a & options[:in]
 
             if present_keys.any?
-              record.errors.add(attribute, "contains disallowed keys: " +
-                present_keys.join(', '))
+              message = options[:message] || "contains disallowed keys"
+              message += ": #{present_keys.join(', ')}"
+
+              record.errors.add(attribute, message)
             end
           end
         end
@@ -61,6 +63,16 @@ module Gitlab
           def validate_each(record, attribute, value)
             unless validate_array_of_strings(value)
               record.errors.add(attribute, 'should be an array of strings')
+            end
+          end
+        end
+
+        class ArrayOfHashesValidator < ActiveModel::EachValidator
+          include LegacyValidationHelpers
+
+          def validate_each(record, attribute, value)
+            unless value.is_a?(Array) && value.map { |hsh| hsh.is_a?(Hash) }.all?
+              record.errors.add(attribute, 'should be an array of hashes')
             end
           end
         end
@@ -227,6 +239,14 @@ module Gitlab
           def validate_each(record, attribute, value)
             unless validate_variables(value)
               record.errors.add(attribute, 'should be a hash of key value pairs')
+            end
+          end
+        end
+
+        class ExpressionValidator < ActiveModel::EachValidator
+          def validate_each(record, attribute, value)
+            unless value.is_a?(String) && ::Gitlab::Ci::Pipeline::Expression::Statement.new(value).valid?
+              record.errors.add(attribute, 'Invalid expression syntax')
             end
           end
         end
