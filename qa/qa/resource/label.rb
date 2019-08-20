@@ -7,6 +7,7 @@ module QA
     class Label < Base
       attr_accessor :description, :color
 
+      attribute :id
       attribute :title
 
       attribute :project do
