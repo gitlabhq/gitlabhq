@@ -114,7 +114,7 @@ describe HelpController do
                 path: 'user/project/img/labels_default_v12_1'
               },
               format: :png
-          expect(response).to be_success
+          expect(response).to be_successful
           expect(response.content_type).to eq 'image/png'
           expect(response.headers['Content-Disposition']).to match(/^inline;/)
         end

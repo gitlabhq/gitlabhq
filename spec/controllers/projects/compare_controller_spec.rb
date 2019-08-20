@@ -19,7 +19,7 @@ describe Projects::CompareController do
     end
 
     it 'returns successfully' do
-      expect(response).to be_success
+      expect(response).to be_successful
     end
   end
 
@@ -49,7 +49,7 @@ describe Projects::CompareController do
         it 'shows some diffs with ignore whitespace change option' do
           show_request
 
-          expect(response).to be_success
+          expect(response).to be_successful
           diff_file = assigns(:diffs).diff_files.first
           expect(diff_file).not_to be_nil
           expect(assigns(:commits).length).to be >= 1
@@ -67,7 +67,7 @@ describe Projects::CompareController do
         it 'sets the diffs and commits ivars' do
           show_request
 
-          expect(response).to be_success
+          expect(response).to be_successful
           expect(assigns(:diffs).diff_files.first).not_to be_nil
           expect(assigns(:commits).length).to be >= 1
         end
@@ -81,7 +81,7 @@ describe Projects::CompareController do
       it 'sets empty diff and commit ivars' do
         show_request
 
-        expect(response).to be_success
+        expect(response).to be_successful
         expect(assigns(:diffs)).to eq([])
         expect(assigns(:commits)).to eq([])
       end
@@ -94,7 +94,7 @@ describe Projects::CompareController do
       it 'sets empty diff and commit ivars' do
         show_request
 
-        expect(response).to be_success
+        expect(response).to be_successful
         expect(assigns(:diffs)).to eq([])
         expect(assigns(:commits)).to eq([])
       end

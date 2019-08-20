@@ -28,7 +28,7 @@ describe Projects::MergeRequests::CreationsController do
       it 'renders new merge request widget template' do
         get :new, params: get_diff_params
 
-        expect(response).to be_success
+        expect(response).to be_successful
       end
     end
 
@@ -56,7 +56,7 @@ describe Projects::MergeRequests::CreationsController do
         it 'limits total commits' do
           get :new, params: large_diff_params
 
-          expect(response).to be_success
+          expect(response).to be_successful
 
           total = assigns(:total_commit_count)
           expect(assigns(:commits)).to be_an Array
@@ -70,7 +70,7 @@ describe Projects::MergeRequests::CreationsController do
       it 'shows total commits' do
         get :new, params: large_diff_params
 
-        expect(response).to be_success
+        expect(response).to be_successful
 
         total = assigns(:total_commit_count)
         expect(assigns(:commits)).to be_an CommitCollection
@@ -89,7 +89,7 @@ describe Projects::MergeRequests::CreationsController do
 
         get :diffs, params: get_diff_params.merge(format: 'json')
 
-        expect(response).to be_success
+        expect(response).to be_successful
         expect(assigns[:diffs]).to be_nil
       end
     end

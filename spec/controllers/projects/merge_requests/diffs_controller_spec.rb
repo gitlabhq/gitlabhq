@@ -66,7 +66,7 @@ describe Projects::MergeRequests::DiffsController do
         end
 
         it 'renders' do
-          expect(response).to be_success
+          expect(response).to be_successful
           expect(response.body).to have_content('Subproject commit')
         end
       end
