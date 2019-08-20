@@ -1,13 +1,3 @@
-export const userDataMock = {
-  avatar_url: 'mock_path',
-  id: 1,
-  name: 'Root',
-  state: 'active',
-  username: 'root',
-  web_url: '',
-  can_merge: true,
-};
-
 const RESPONSE_MAP = {
   GET: {
     '/gitlab-org/gitlab-shell/issues/5.json': {

@@ -224,7 +224,6 @@ describe('Assignee component', () => {
 
       expect(userItems.length).toBe(3);
       expect(userItems[0].dataset.originalTitle).toBe(users[2].name);
-      expect(userItems[0].dataset.originalTitle).not.toBe(users[0].name);
     });
 
     it('passes the sorted assignees to the collapsed-assignee-list', () => {
@@ -244,7 +243,6 @@ describe('Assignee component', () => {
       const collapsedButton = component.$el.querySelector('.sidebar-collapsed-user button');
 
       expect(collapsedButton.innerText.trim()).toBe(users[2].name);
-      expect(collapsedButton.innerText.trim()).not.toBe(users[0].name);
     });
   });
 });

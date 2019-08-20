@@ -39,7 +39,7 @@ describe('AssigneeAvatar', () => {
   it('does not show warning icon if assignee can merge', () => {
     createComponent();
 
-    expect(wrapper.element.querySelector('.merge-icon')).toBeNull();
+    expect(wrapper.find('.merge-icon').exists()).toBe(false);
   });
 
   it('shows warning icon if assignee cannot merge', () => {
@@ -49,7 +49,7 @@ describe('AssigneeAvatar', () => {
       },
     });
 
-    expect(wrapper.element.querySelector('.merge-icon')).not.toBeNull();
+    expect(wrapper.find('.merge-icon').exists()).toBe(true);
   });
 
   it('does not show warning icon for issuableType = "issue"', () => {
@@ -57,7 +57,7 @@ describe('AssigneeAvatar', () => {
       issuableType: 'issue',
     });
 
-    expect(wrapper.element.querySelector('.merge-icon')).toBeNull();
+    expect(wrapper.find('.merge-icon').exists()).toBe(false);
   });
 
   it.each`

@@ -77,54 +77,30 @@ describe('CollapsedAssigneeList component', () => {
 
     beforeEach(() => {
       users = UsersMockHelper.createNumberRandomUsers(2);
+
+      createComponent({ users });
     });
 
-    describe('default', () => {
-      beforeEach(() => {
-        createComponent({ users });
-      });
-
-      it('has multiple-users class', () => {
-        expect(wrapper.classes('multiple-users')).toBe(true);
-      });
-
-      it('does not display an avatar count', () => {
-        expect(findAvatarCounter().exists()).toBe(false);
-      });
-
-      it('returns just two collapsed users', () => {
-        expect(findAssignees().length).toBe(2);
-      });
+    it('has multiple-users class', () => {
+      expect(wrapper.classes('multiple-users')).toBe(true);
     });
 
-    it('has correct "cannot merge" tooltip when no user can merge', () => {
-      users[0].can_merge = false;
-      users[1].can_merge = false;
-
-      createComponent({
-        users,
-      });
-
-      expect(getTooltipTitle()).toEqual(`${users[0].name}, ${users[1].name} (no one can merge)`);
+    it('does not display an avatar count', () => {
+      expect(findAvatarCounter().exists()).toBe(false);
     });
 
-    it('does not have "merge" word in tooltip if everyone can merge', () => {
-      users[0].can_merge = true;
-      users[1].can_merge = true;
-
-      createComponent({
-        users,
-      });
-
-      expect(getTooltipTitle()).toEqual(`${users[0].name}, ${users[1].name}`);
+    it('returns just two collapsed users', () => {
+      expect(findAssignees().length).toBe(2);
     });
   });
 
   describe('More than two assignees/users', () => {
     let users;
+    let userNames;
 
     beforeEach(() => {
       users = UsersMockHelper.createNumberRandomUsers(3);
+      userNames = users.map(x => x.name).join(', ');
     });
 
     describe('default', () => {
@@ -142,6 +118,18 @@ describe('CollapsedAssigneeList component', () => {
       });
     });
 
+    it('has corrent "no one can merge" tooltip when no one can merge', () => {
+      users[0].can_merge = false;
+      users[1].can_merge = false;
+      users[2].can_merge = false;
+
+      createComponent({
+        users,
+      });
+
+      expect(getTooltipTitle()).toEqual(`${userNames} (no one can merge)`);
+    });
+
     it('has correct "cannot merge" tooltip when one user can merge', () => {
       users[0].can_merge = true;
       users[1].can_merge = false;
@@ -151,7 +139,7 @@ describe('CollapsedAssigneeList component', () => {
         users,
       });
 
-      expect(getTooltipTitle()).toContain('1/3 can merge');
+      expect(getTooltipTitle()).toEqual(`${userNames} (1/3 can merge)`);
     });
 
     it('has correct "cannot merge" tooltip when more than one user can merge', () => {
@@ -163,7 +151,7 @@ describe('CollapsedAssigneeList component', () => {
         users,
       });
 
-      expect(getTooltipTitle()).toContain('2/3 can merge');
+      expect(getTooltipTitle()).toEqual(`${userNames} (2/3 can merge)`);
     });
 
     it('does not have "merge" in tooltip if everyone can merge', () => {
@@ -175,10 +163,10 @@ describe('CollapsedAssigneeList component', () => {
         users,
       });
 
-      expect(getTooltipTitle()).not.toContain('merge');
+      expect(getTooltipTitle()).toEqual(userNames);
     });
 
-    it('displays the correct avatar count via a computed property if less than default max counter', () => {
+    it('displays the correct avatar count', () => {
       users = UsersMockHelper.createNumberRandomUsers(5);
 
       createComponent({

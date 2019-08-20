@@ -1,6 +1,10 @@
 import { shallowMount } from '@vue/test-utils';
 import CollapsedAssignee from '~/sidebar/components/assignees/collapsed_assignee.vue';
+import AssigneeAvatar from '~/sidebar/components/assignees/assignee_avatar.vue';
 import userDataMock from '../../user_data_mock';
+
+const TEST_USER = userDataMock();
+const TEST_ISSUABLE_TYPE = 'merge_request';
 
 describe('CollapsedAssignee assignee component', () => {
   let wrapper;
@@ -8,6 +12,7 @@ describe('CollapsedAssignee assignee component', () => {
   function createComponent(props = {}) {
     const propsData = {
       user: userDataMock(),
+      issuableType: TEST_ISSUABLE_TYPE,
       ...props,
     };
 
@@ -29,6 +34,16 @@ describe('CollapsedAssignee assignee component', () => {
         .find('.author')
         .text()
         .trim(),
-    ).toEqual(wrapper.vm.user.name);
+    ).toEqual(TEST_USER.name);
+  });
+
+  it('has assignee avatar', () => {
+    createComponent();
+
+    expect(wrapper.find(AssigneeAvatar).props()).toEqual({
+      imgSize: 24,
+      user: TEST_USER,
+      issuableType: TEST_ISSUABLE_TYPE,
+    });
   });
 });

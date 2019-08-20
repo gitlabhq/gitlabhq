@@ -1,4 +1,3 @@
-import Vue from 'vue';
 import { mount } from '@vue/test-utils';
 import UncollapsedAssigneeList from '~/sidebar/components/assignees/uncollapsed_assignee_list.vue';
 import AssigneeAvatarLink from '~/sidebar/components/assignees/assignee_avatar_link.vue';
@@ -56,79 +55,48 @@ describe('UncollapsedAssigneeList component', () => {
     });
   });
 
-  describe('Two or more assignees/users', () => {
-    beforeEach(() => {
-      createComponent({
-        users: UsersMockHelper.createNumberRandomUsers(3),
-      });
-    });
-
-    it('more than one user', () => {
-      expect(wrapper.findAll(AssigneeAvatarLink).length).toBe(3);
-    });
-
-    it('shows the "show-less" assignees label', done => {
-      const users = UsersMockHelper.createNumberRandomUsers(6);
-
-      createComponent({
-        users,
-      });
-
-      expect(wrapper.vm.$el.querySelectorAll('.user-item').length).toEqual(DEFAULT_RENDER_COUNT);
-
-      expect(wrapper.vm.$el.querySelector('.user-list-more')).not.toBe(null);
-      const usersLabelExpectation = users.length - DEFAULT_RENDER_COUNT;
-
-      expect(wrapper.vm.$el.querySelector('.user-list-more .btn-link').innerText.trim()).not.toBe(
-        `+${usersLabelExpectation} more`,
-      );
-      wrapper.vm.toggleShowLess();
-      Vue.nextTick(() => {
-        expect(wrapper.vm.$el.querySelector('.user-list-more .btn-link').innerText.trim()).toBe(
-          '- show less',
-        );
-        done();
-      });
-    });
-
-    it('shows the "show-less" when "n+ more " label is clicked', done => {
-      createComponent({
-        users: UsersMockHelper.createNumberRandomUsers(6),
-      });
-
-      wrapper.vm.$el.querySelector('.user-list-more .btn-link').click();
-      Vue.nextTick(() => {
-        expect(wrapper.vm.$el.querySelector('.user-list-more .btn-link').innerText.trim()).toBe(
-          '- show less',
-        );
-        done();
-      });
-    });
-
-    it('does not show n+ more label when less than render count', () => {
-      expect(findMoreButton().exists()).toBe(false);
-    });
-  });
-
   describe('n+ more label', () => {
-    beforeEach(() => {
-      createComponent({
-        users: UsersMockHelper.createNumberRandomUsers(DEFAULT_RENDER_COUNT + 1),
+    describe('when users count is rendered users', () => {
+      beforeEach(() => {
+        createComponent({
+          users: UsersMockHelper.createNumberRandomUsers(DEFAULT_RENDER_COUNT),
+        });
+      });
+
+      it('does not show more label', () => {
+        expect(findMoreButton().exists()).toBe(false);
       });
     });
 
-    it('shows "+1 more" label', () => {
-      expect(findMoreButton().text()).toBe('+ 1 more');
-      expect(wrapper.findAll(AssigneeAvatarLink).length).toBe(DEFAULT_RENDER_COUNT);
-    });
+    describe('when more than rendered users', () => {
+      beforeEach(() => {
+        createComponent({
+          users: UsersMockHelper.createNumberRandomUsers(DEFAULT_RENDER_COUNT + 1),
+        });
+      });
 
-    it('shows "show less" label', done => {
-      findMoreButton().trigger('click');
+      it('shows "+1 more" label', () => {
+        expect(findMoreButton().text()).toBe('+ 1 more');
+      });
 
-      Vue.nextTick(() => {
-        expect(findMoreButton().text()).toBe('- show less');
-        expect(wrapper.findAll(AssigneeAvatarLink).length).toBe(DEFAULT_RENDER_COUNT + 1);
-        done();
+      it('shows truncated users', () => {
+        expect(wrapper.findAll(AssigneeAvatarLink).length).toBe(DEFAULT_RENDER_COUNT);
+      });
+
+      describe('when more button is clicked', () => {
+        beforeEach(() => {
+          findMoreButton().trigger('click');
+
+          return wrapper.vm.$nextTick();
+        });
+
+        it('shows "show less" label', () => {
+          expect(findMoreButton().text()).toBe('- show less');
+        });
+
+        it('shows all users', () => {
+          expect(wrapper.findAll(AssigneeAvatarLink).length).toBe(DEFAULT_RENDER_COUNT + 1);
+        });
       });
     });
   });
