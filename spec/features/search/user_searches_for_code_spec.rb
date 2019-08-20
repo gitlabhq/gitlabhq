@@ -39,23 +39,43 @@ describe 'User searches for code' do
     context 'when on a project page', :js do
       before do
         visit(search_path)
-      end
-
-      include_examples 'top right search form'
-
-      it 'finds code' do
         find('.js-search-project-dropdown').click
 
         page.within('.project-filter') do
           click_link(project.full_name)
         end
+      end
 
+      include_examples 'top right search form'
+
+      it 'finds code' do
         fill_in('dashboard_search', with: 'rspec')
         find('.btn-search').click
 
         page.within('.results') do
           expect(find(:css, '.search-results')).to have_content('Update capybara, rspec-rails, poltergeist to recent versions')
         end
+      end
+
+      it 'search mutiple words with refs switching' do
+        expected_result = 'Use `snake_case` for naming files'
+        search = 'for naming files'
+
+        fill_in('dashboard_search', with: search)
+        find('.btn-search').click
+
+        page.within('.results') do
+          expect(find('.search-results')).to have_content(expected_result)
+        end
+
+        find('.js-project-refs-dropdown').click
+        find('.dropdown-page-one .dropdown-content').click_link('v1.0.0')
+
+        page.within('.results') do
+          expect(find(:css, '.search-results')).to have_content(expected_result)
+        end
+
+        expect(find_field('dashboard_search').value).to eq(search)
       end
     end
 
