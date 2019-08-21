@@ -13,7 +13,7 @@ import MonitoringMock, {
   environmentData,
   singleGroupResponse,
   dashboardGitResponse,
-} from './mock_data';
+} from '../mock_data';
 
 const localVue = createLocalVue();
 const propsData = {
