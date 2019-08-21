@@ -1,0 +1,5 @@
+---
+title: Fix 500 errors caused by pattern matching with variables in CI Lint
+merge_request: 31719
+author:
+type: fixed

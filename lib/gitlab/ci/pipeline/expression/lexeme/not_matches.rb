@@ -11,8 +11,9 @@ module Gitlab
             def evaluate(variables = {})
               text = @left.evaluate(variables)
               regexp = @right.evaluate(variables)
+              return true unless regexp
 
-              regexp.scan(text.to_s).none?
+              regexp.scan(text.to_s).empty?
             end
 
             def self.build(_value, behind, ahead)

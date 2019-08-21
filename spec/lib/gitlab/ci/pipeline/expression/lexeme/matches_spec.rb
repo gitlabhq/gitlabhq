@@ -69,6 +69,34 @@ describe Gitlab::Ci::Pipeline::Expression::Lexeme::Matches do
       it { is_expected.to eq(false) }
     end
 
+    context 'when right is nil' do
+      let(:left_value)  { 'my-awesome-string' }
+      let(:right_value) { nil }
+
+      it { is_expected.to eq(false) }
+    end
+
+    context 'when left and right are nil' do
+      let(:left_value)  { nil }
+      let(:right_value) { nil }
+
+      it { is_expected.to eq(false) }
+    end
+
+    context 'when left is an empty string' do
+      let(:left_value)  { '' }
+      let(:right_value) { Gitlab::UntrustedRegexp.new('pattern') }
+
+      it { is_expected.to eq(false) }
+    end
+
+    context 'when left and right are empty strings' do
+      let(:left_value)  { '' }
+      let(:right_value) { Gitlab::UntrustedRegexp.new('') }
+
+      it { is_expected.to eq(true) }
+    end
+
     context 'when left is a multiline string and matches right' do
       let(:left_value) do
         <<~TEXT
