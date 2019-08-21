@@ -64,6 +64,7 @@ The following list depicts what the network architecture of Gitaly is:
   topology.
 - A `(Gitaly address, Gitaly token)` corresponds to a Gitaly server.
 - A Gitaly server hosts one or more storages.
+- A GitLab server can use one or more Gitaly servers.
 - Gitaly addresses must be specified in such a way that they resolve
   correctly for ALL Gitaly clients.
 - Gitaly clients are: Unicorn, Sidekiq, gitlab-workhorse,
@@ -77,14 +78,16 @@ The following list depicts what the network architecture of Gitaly is:
 - Authentication is done through a static token which is shared among the Gitaly
   and GitLab Rails nodes.
 
-Below we describe how to configure a Gitaly server at address
-`gitaly.internal:8075` with secret token `abc123secret`. We assume
-your GitLab installation has two repository storages, `default` and
-`storage1`.
+Below we describe how to configure two Gitaly servers one at
+`gitaly1.internal` and the other at `gitaly2.internal`
+with secret token `abc123secret`. We assume
+your GitLab installation has three repository storages: `default`,
+`storage1` and `storage2`.
 
 ### 1. Installation
 
-First install Gitaly using either Omnibus GitLab or install it from source:
+First install Gitaly on each Gitaly server using either
+Omnibus GitLab or install it from source:
 
 - For Omnibus GitLab: [Download/install](https://about.gitlab.com/install/) the Omnibus GitLab
   package you want using **steps 1 and 2** from the GitLab downloads page but
@@ -119,7 +122,7 @@ Configure a token on the instance that runs the GitLab Rails application.
 
 ### 3. Gitaly server configuration
 
-Next, on the Gitaly server, you need to configure storage paths, enable
+Next, on the Gitaly servers, you need to configure storage paths, enable
 the network listener and configure the token.
 
 NOTE: **Note:** if you want to reduce the risk of downtime when you enable
@@ -175,15 +178,29 @@ Check the directory layout on your Gitaly server to be sure.
    gitaly['listen_addr'] = "0.0.0.0:8075"
    gitaly['auth_token'] = 'abc123secret'
 
-   gitaly['storage'] = [
-     { 'name' => 'default' },
-     { 'name' => 'storage1' },
-   ]
-
    # To use TLS for Gitaly you need to add
    gitaly['tls_listen_addr'] = "0.0.0.0:9999"
    gitaly['certificate_path'] = "path/to/cert.pem"
    gitaly['key_path'] = "path/to/key.pem"
+   ```
+
+1. Append the following to `/etc/gitlab/gitlab.rb` for each respective server:
+   
+   For `gitaly1.internal`:
+
+   ```
+   gitaly['storage'] = [
+     { 'name' => 'default' },
+     { 'name' => 'storage1' },
+   ]
+   ```
+   
+   For `gitaly2.internal`:
+
+   ```
+   gitaly['storage'] = [
+     { 'name' => 'storage2' },
+   ]
    ```
 
    NOTE: **Note:**
@@ -206,12 +223,25 @@ Check the directory layout on your Gitaly server to be sure.
 
    [auth]
    token = 'abc123secret'
+   ```
 
+1. Append the following to `/home/git/gitaly/config.toml` for each respective server:
+   
+   For `gitaly1.internal`:
+
+   ```toml
    [[storage]]
    name = 'default'
 
    [[storage]]
    name = 'storage1'
+   ```
+   
+   For `gitaly2.internal`:
+
+   ```toml
+   [[storage]]
+   name = 'storage2'
    ```
 
    NOTE: **Note:**
@@ -231,9 +261,13 @@ then all Gitaly requests will fail.
 Additionally, you need to
 [disable Rugged if previously manually enabled](../high_availability/nfs.md#improving-nfs-performance-with-gitlab).
 
-We assume that your Gitaly server can be reached at
-`gitaly.internal:8075` from your GitLab server, and that Gitaly can read and
-write to `/mnt/gitlab/default` and `/mnt/gitlab/storage1` respectively.
+We assume that your `gitaly1.internal` Gitaly server can be reached at
+`gitaly1.internal:8075` from your GitLab server, and that Gitaly server 
+can read and write to `/mnt/gitlab/default` and `/mnt/gitlab/storage1`.
+
+We assume also that your `gitaly2.internal` Gitaly server can be reached at
+`gitaly2.internal:8075` from your GitLab server, and that Gitaly server 
+can read and write to `/mnt/gitlab/storage2`. 
 
 **For Omnibus GitLab**
 
@@ -241,8 +275,9 @@ write to `/mnt/gitlab/default` and `/mnt/gitlab/storage1` respectively.
 
    ```ruby
    git_data_dirs({
-     'default' => { 'gitaly_address' => 'tcp://gitaly.internal:8075' },
-     'storage1' => { 'gitaly_address' => 'tcp://gitaly.internal:8075' },
+     'default' => { 'gitaly_address' => 'tcp://gitaly1.internal:8075' },
+     'storage1' => { 'gitaly_address' => 'tcp://gitaly1.internal:8075' },
+     'storage2' => { 'gitaly_address' => 'tcp://gitaly2.internal:8075' },
    })
 
    gitlab_rails['gitaly_token'] = 'abc123secret'
@@ -268,9 +303,11 @@ write to `/mnt/gitlab/default` and `/mnt/gitlab/storage1` respectively.
      repositories:
        storages:
          default:
-           gitaly_address: tcp://gitaly.internal:8075
+           gitaly_address: tcp://gitaly1.internal:8075
          storage1:
-           gitaly_address: tcp://gitaly.internal:8075
+           gitaly_address: tcp://gitaly1.internal:8075
+         storage2:
+           gitaly_address: tcp://gitaly2.internal:8075
 
      gitaly:
        token: 'abc123secret'
@@ -350,8 +387,9 @@ To configure Gitaly with TLS:
 
    ```ruby
    git_data_dirs({
-     'default' => { 'gitaly_address' => 'tls://gitaly.internal:9999' },
-     'storage1' => { 'gitaly_address' => 'tls://gitaly.internal:9999' },
+     'default' => { 'gitaly_address' => 'tls://gitaly1.internal:9999' },
+     'storage1' => { 'gitaly_address' => 'tls://gitaly1.internal:9999' },
+     'storage2' => { 'gitaly_address' => 'tls://gitaly2.internal:9999' },
    })
 
    gitlab_rails['gitaly_token'] = 'abc123secret'
@@ -377,9 +415,11 @@ To configure Gitaly with TLS:
      repositories:
        storages:
          default:
-           gitaly_address: tls://gitaly.internal:9999
+           gitaly_address: tls://gitaly1.internal:9999
          storage1:
-           gitaly_address: tls://gitaly.internal:9999
+           gitaly_address: tls://gitaly1.internal:9999
+         storage2:
+           gitaly_address: tls://gitaly2.internal:9999
 
      gitaly:
        token: 'abc123secret'
