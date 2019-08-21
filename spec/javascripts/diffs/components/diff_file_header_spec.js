@@ -372,7 +372,7 @@ describe('diff_file_header', () => {
       });
 
       it('displays old and new path if the file was renamed', () => {
-        props.diffFile.viewer.name = diffViewerModes.renamed;
+        props.diffFile.renamed_file = true;
 
         vm = mountComponentWithStore(Component, { props, store });
 
