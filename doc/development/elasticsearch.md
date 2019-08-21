@@ -186,12 +186,7 @@ The global configurations per version are now in the `Elastic::(Version)::Config
 
 ### Creating new version of schema
 
-NOTE: **Note:** this is not applicable yet as multiple indices functionality is not fully implemented. See the
-the following issues for more details:
-
-* https://gitlab.com/gitlab-org/gitlab-ee/issues/12548
-* https://gitlab.com/gitlab-org/gitlab-ee/issues/12555
-* https://gitlab.com/gitlab-org/gitlab-ee/issues/13533
+NOTE: **Note:** this is not applicable yet as multiple indices functionality is not fully implemented.
 
 Folders like `ee/lib/elastic/v12p1` contain snapshots of search logic from different versions. To keep a continuous git history, the latest version lives under `ee/lib/elastic/latest`, but its classes are aliased under an actual version (e.g. `ee/lib/elastic/v12p3`). When referencing these classes, never use the `Latest` namespace directly, but use the actual version (e.g. `V12p3`).
 
