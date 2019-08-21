@@ -152,7 +152,13 @@ Uses an [Edge NGram token filter](https://www.elastic.co/guide/en/elasticsearch/
 
 Currently GitLab can only handle a single version of setting. Any setting/schema changes would require reindexing everything from scratch. Since reindexing can take a long time, this can cause search functionality downtime.
 
-To avoid downtime, GitLab is working on to allow multiple indices to function at the same time. Whenever the schema changes, the admin will be able to create a new index and reindex to it, while users still searches using the older stable index. Any data updates would be forwarded to both indices. Once the new index is ready, admin can mark it as the read node where search takes place, and remove the old index.
+To avoid downtime, GitLab is working to support multiple indices that
+can function at the same time. Whenever the schema changes, the admin
+will be able to create a new index and reindex to it, while searches
+continue to go to the older, stable index. Any data updates will be
+forwarded to both indices. Once the new index is ready, an admin can
+mark it active, which will direct all searches to it, and remove the old
+index.
 
 This is also helpful for migrating to new servers, e.g. moving to/from AWS.
 
@@ -180,7 +186,12 @@ The global configurations per version are now in the `Elastic::(Version)::Config
 
 ### Creating new version of schema
 
-NOTE: **Note:** this is not applicable yet as multiple indices functionality is not fully implemented.
+NOTE: **Note:** this is not applicable yet as multiple indices functionality is not fully implemented. See the
+the following issues for more details:
+
+* https://gitlab.com/gitlab-org/gitlab-ee/issues/12548
+* https://gitlab.com/gitlab-org/gitlab-ee/issues/12555
+* https://gitlab.com/gitlab-org/gitlab-ee/issues/13533
 
 Folders like `ee/lib/elastic/v12p1` contain snapshots of search logic from different versions. To keep a continuous git history, the latest version lives under `ee/lib/elastic/latest`, but its classes are aliased under an actual version (e.g. `ee/lib/elastic/v12p3`). When referencing these classes, never use the `Latest` namespace directly, but use the actual version (e.g. `V12p3`).
 
