@@ -30,7 +30,14 @@ export default {
   },
 
   mounted() {
+    if (window.recaptchaDialogCallback) {
+      throw new Error('recaptchaDialogCallback is already defined!');
+    }
     window.recaptchaDialogCallback = this.submit.bind(this);
+  },
+
+  beforeDestroy() {
+    window.recaptchaDialogCallback = null;
   },
 
   methods: {
