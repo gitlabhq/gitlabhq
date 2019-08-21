@@ -32,7 +32,7 @@ module IssuableCollectionsAction
 
   private
 
-  def issuable_sorting_field
+  def sorting_field
     case action_name
     when 'issues'
       Issue::SORTING_PREFERENCE_FIELD

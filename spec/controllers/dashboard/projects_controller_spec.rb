@@ -40,6 +40,14 @@ describe Dashboard::ProjectsController do
 
         expect(assigns(:projects)).to eq([project, project2])
       end
+
+      context 'project sorting' do
+        let(:project) { create(:project) }
+
+        it_behaves_like 'set sort order from user preference' do
+          let(:sorting_param) { 'created_asc' }
+        end
+      end
     end
   end
 

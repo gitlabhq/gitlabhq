@@ -190,7 +190,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
   protected
 
-  def issuable_sorting_field
+  def sorting_field
     Issue::SORTING_PREFERENCE_FIELD
   end
 

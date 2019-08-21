@@ -3,12 +3,13 @@
 class Explore::ProjectsController < Explore::ApplicationController
   include ParamsBackwardCompatibility
   include RendersMemberAccess
+  include SortingHelper
+  include SortingPreference
 
   before_action :set_non_archived_param
+  before_action :set_sorting
 
   def index
-    params[:sort] ||= 'latest_activity_desc'
-    @sort = params[:sort]
     @projects = load_projects
 
     respond_to do |format|
@@ -23,7 +24,6 @@ class Explore::ProjectsController < Explore::ApplicationController
 
   def trending
     params[:trending] = true
-    @sort = params[:sort]
     @projects = load_projects
 
     respond_to do |format|
@@ -67,4 +67,17 @@ class Explore::ProjectsController < Explore::ApplicationController
     prepare_projects_for_rendering(projects)
   end
   # rubocop: enable CodeReuse/ActiveRecord
+
+  def set_sorting
+    params[:sort] = set_sort_order
+    @sort = params[:sort]
+  end
+
+  def default_sort_order
+    sort_value_latest_activity
+  end
+
+  def sorting_field
+    Project::SORTING_PREFERENCE_FIELD
+  end
 end
