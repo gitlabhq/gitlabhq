@@ -137,6 +137,15 @@ otherwise you will run into conflicts.
 
 1. Save the file and [reconfigure GitLab][] for the changes to take effect.
 
+1. Validate using:
+
+   ```sh
+   openssl s_client -showcerts -servername gitlab.example.com -connect gitlab.example.com:443 > cacert.pem
+   ```
+
+NOTE: **Note:**
+If your certificate provider provides the CA Bundle certificates, append them to the TLS certificate file.
+
 **Installations from source**
 
 1. Open `/home/git/gitlab/config/gitlab.yml`, find the `registry` entry and
