@@ -63,12 +63,15 @@ describe('Autosave', () => {
         expect(field.trigger).toHaveBeenCalled();
       });
 
-      it('triggers native event', done => {
-        autosave.field.get(0).addEventListener('change', () => {
-          done();
-        });
+      it('triggers native event', () => {
+        const fieldElement = autosave.field.get(0);
+        const eventHandler = jest.fn();
+        fieldElement.addEventListener('change', eventHandler);
 
         Autosave.prototype.restore.call(autosave);
+
+        expect(eventHandler).toHaveBeenCalledTimes(1);
+        fieldElement.removeEventListener('change', eventHandler);
       });
     });
 
