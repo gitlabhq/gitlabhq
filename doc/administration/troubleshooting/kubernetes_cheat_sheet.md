@@ -29,7 +29,7 @@ and they will assist you with any issues you are having.
   ```bash
   # for minikube:
   minikube dashboard —url
-  # for non-local installations if access via kubectl is configured:
+  # for non-local installations if access via Kubectl is configured:
   kubectl proxy
   ```
 
@@ -49,7 +49,7 @@ and they will assist you with any issues you are having.
 - What to do with pods in `CrashLoopBackoff` status:
 
   - Check logs via Kubernetes dashboard.
-  - Check logs via `kubectl`:
+  - Check logs via Kubectl:
 
     ```bash
     kubectl logs <unicorn pod> -c dependencies
@@ -72,7 +72,7 @@ and they will assist you with any issues you are having.
   This is the principle of Kubernetes, read [Twelve-factor app](https://12factor.net/)
   for details.
 
-## Gitlab-specific kubernetes information
+## GitLab-specific kubernetes information
 
 - Minimal config that can be used to test a Kubernetes helm chart can be found
   [here](https://gitlab.com/charts/gitlab/issues/620).
@@ -83,7 +83,7 @@ and they will assist you with any issues you are having.
   kubectl logs gitlab-unicorn-7656fdd6bf-jqzfs -c unicorn
   ```
 
-- It is not possible to get all the logs via `kubectl` at once, like with `gitlab-ctl tail`,
+- It is not possible to get all the logs via Kubectl at once, like with `gitlab-ctl tail`,
   but a number of third-party tools can be used to do it:
 
   - [Kubetail](https://github.com/johanhaleby/kubetail)
@@ -131,7 +131,7 @@ and they will assist you with any issues you are having.
   - Check the output of `kubectl get events -w --all-namespaces`.
   - Check the logs of pods within `gitlab-managed-apps` namespace.
   - On the side of GitLab check sidekiq log and kubernetes log. When GitLab is installed
-    via helm chart, kubernetes.log can be found inside the sidekiq pod.
+    via Helm Chart, `kubernetes.log` can be found inside the sidekiq pod.
 
 - How to get your initial admin password <https://docs.gitlab.com/charts/installation/deployment.html#initial-login>:
 
@@ -142,19 +142,19 @@ and they will assist you with any issues you are having.
   kubectl get secret <secret-name> -ojsonpath={.data.password} | base64 --decode ; echo
   ```
 
-- How to connect to a GitLab postgres database:
+- How to connect to a GitLab Postgres database:
 
   ```bash
   kubectl exec -it <task-runner-pod-name> -- /srv/gitlab/bin/rails dbconsole -p
   ```
   
-- How to get info about helm installation status:
+- How to get info about Helm installation status:
 
   ```bash
   helm status name-of-installation
   ```
 
-- How to update GitLab installed using helm chart:
+- How to update GitLab installed using Helm Chart:
 
   ```bash
   helm repo upgrade
@@ -179,25 +179,25 @@ and they will assist you with any issues you are having.
     helm upgrade <release name> <chart path> -f gitlab.yaml
     ```
 
-## Installation of minimal GitLab config via minukube on macOS
+## Installation of minimal GitLab config via Minukube on macOS
 
 This section is based on [Developing for Kubernetes with Minikube](https://gitlab.com/charts/gitlab/blob/master/doc/minikube/index.md)
 and [Helm](https://gitlab.com/charts/gitlab/blob/master/doc/helm/index.md). Refer
 to those documents for details.
 
-- Install kubectl via Homebrew:
+- Install Kubectl via Homebrew:
 
   ```bash
   brew install kubernetes-cli
   ```
 
-- Install minikube via Homebrew:
+- Install Minikube via Homebrew:
 
   ```bash
   brew cask install minikube
   ```
 
-- Start minikube and configure it. If minikube cannot start, try running `minikube delete && minikube start`
+- Start Minikube and configure it. If Minikube cannot start, try running `minikube delete && minikube start`
   and repeat the steps:
 
   ```bash
@@ -206,7 +206,7 @@ to those documents for details.
   minikube addons enable kube-dns
   ```
 
-- Install helm via Homebrew and initialize it:
+- Install Helm via Homebrew and initialize it:
 
   ```bash
   brew install kubernetes-helm
@@ -219,7 +219,7 @@ to those documents for details.
 - Find the IP address in the output of `minikube ip` and update the yaml file with
   this IP address.
 
-- Install the GitLab helm chart:
+- Install the GitLab Helm Chart:
 
   ```bash
   helm repo add gitlab https://charts.gitlab.io
