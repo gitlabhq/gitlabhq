@@ -1127,7 +1127,7 @@ the `approvals_before_merge` parameter:
 
 ## Delete a merge request
 
-Only for admins and project owners. Soft deletes the merge request in question.
+Only for admins and project owners. Deletes the merge request in question.
 
 ```
 DELETE /projects/:id/merge_requests/:merge_request_iid
