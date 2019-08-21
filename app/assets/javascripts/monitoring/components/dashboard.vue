@@ -15,7 +15,7 @@ import Icon from '~/vue_shared/components/icon.vue';
 import { getParameterValues, mergeUrlParams } from '~/lib/utils/url_utility';
 import invalidUrl from '~/lib/utils/invalid_url';
 import PanelType from 'ee_else_ce/monitoring/components/panel_type.vue';
-import MonitorAreaChart from './charts/area.vue';
+import MonitorTimeSeriesChart from './charts/time_series.vue';
 import MonitorSingleStatChart from './charts/single_stat.vue';
 import GraphGroup from './graph_group.vue';
 import EmptyState from './empty_state.vue';
@@ -26,7 +26,7 @@ let sidebarMutationObserver;
 
 export default {
   components: {
-    MonitorAreaChart,
+    MonitorTimeSeriesChart,
     MonitorSingleStatChart,
     PanelType,
     GraphGroup,
@@ -465,7 +465,7 @@ export default {
           />
         </template>
         <template v-else>
-          <monitor-area-chart
+          <monitor-time-series-chart
             v-for="(graphData, graphIndex) in chartsWithData(groupData.metrics)"
             :key="graphIndex"
             :graph-data="graphData"
@@ -473,7 +473,7 @@ export default {
             :thresholds="getGraphAlertValues(graphData.queries)"
             :container-width="elWidth"
             :project-path="projectPath"
-            group-id="monitor-area-chart"
+            group-id="monitor-time-series-chart"
           >
             <div class="d-flex align-items-center">
               <alert-widget
@@ -515,7 +515,7 @@ export default {
                 </gl-dropdown-item>
               </gl-dropdown>
             </div>
-          </monitor-area-chart>
+          </monitor-time-series-chart>
         </template>
       </graph-group>
     </div>

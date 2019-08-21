@@ -166,7 +166,7 @@ panel_groups:
       label: Total (cores)
       unit: "cores"
   - title: "Memory Usage (Pod average)"
-    type: "area-chart"
+    type: "line-chart"
     y_label: "Memory Used per Pod (MB)"
     weight: 2
     metrics:
@@ -175,7 +175,7 @@ panel_groups:
       label: Pod average (MB)
       unit: MB
   - title: "Canary: Memory Usage (Pod Average)"
-    type: "area-chart"
+    type: "line-chart"
     y_label: "Memory Used per Pod (MB)"
     weight: 2
     metrics:
@@ -185,7 +185,7 @@ panel_groups:
       unit: MB
       track: canary
   - title: "Core Usage (Pod Average)"
-    type: "area-chart"
+    type: "line-chart"
     y_label: "Cores per Pod"
     weight: 1
     metrics:
@@ -194,7 +194,7 @@ panel_groups:
       label: Pod average (cores)
       unit: "cores"
   - title: "Canary: Core Usage (Pod Average)"
-    type: "area-chart"
+    type: "line-chart"
     y_label: "Cores per Pod"
     weight: 1
     metrics:
