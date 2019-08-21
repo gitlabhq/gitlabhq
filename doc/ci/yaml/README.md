@@ -518,9 +518,23 @@ Four keys are available:
 - `changes`
 - `kubernetes`
 
-If you use multiple keys under `only` or `except`, they act as an AND. The logic is:
+If you use multiple keys under `only` or `except`, the keys will be evaluated as a
+single conjoined expression. That is:
+
+- `only:` means "include this job if all of the conditions match".
+- `except:` means "exclude this job if any of the conditions match".
+
+The the individual keys are logically joined by an AND:
 
 > (any of refs) AND (any of variables) AND (any of changes) AND (if kubernetes is active)
+
+`except` is implemented as a negation of this complete expression:
+
+> NOT((any of refs) AND (any of variables) AND (any of changes) AND (if kubernetes is active))
+
+This, more intuitively, means the keys join by an OR. A functionally equivalent expression:
+
+> (any of refs) OR (any of variables) OR (any of changes) OR (if kubernetes is active)
 
 #### `only:refs`/`except:refs`
 
