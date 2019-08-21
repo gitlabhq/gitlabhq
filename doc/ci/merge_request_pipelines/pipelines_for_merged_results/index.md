@@ -35,10 +35,9 @@ get out of WIP status or resolve merge conflicts as soon as possible.
 
 ## Requirements and limitations
 
-Pipelines for merged results require:
+Pipelines for merged results require a [GitLab Runner][runner] 11.9 or newer.
 
-- [GitLab Runner](https://gitlab.com/gitlab-org/gitlab-runner) 11.9 or newer.
-- [Gitaly](https://gitlab.com/gitlab-org/gitaly) 1.21.0 or newer.
+[runner]: https://gitlab.com/gitlab-org/gitlab-runner
 
 In addition, pipelines for merged results have the following limitations:
 
