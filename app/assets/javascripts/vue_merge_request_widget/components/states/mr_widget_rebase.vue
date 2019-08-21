@@ -50,6 +50,7 @@ export default {
           startTag: '<span class="label-branch">',
           endTag: '</span>',
         },
+        false,
       );
     },
   },

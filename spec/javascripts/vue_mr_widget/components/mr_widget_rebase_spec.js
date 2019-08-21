@@ -83,6 +83,24 @@ describe('Merge request widget rebase component', () => {
       expect(text).toContain('foo');
       expect(text.replace(/\s\s+/g, ' ')).toContain('to allow this merge request to be merged.');
     });
+
+    it('should render the correct target branch name', () => {
+      const targetBranch = 'fake-branch-to-test-with';
+      vm = mountComponent(Component, {
+        mr: {
+          rebaseInProgress: false,
+          canPushToSourceBranch: false,
+          targetBranch,
+        },
+        service: {},
+      });
+
+      const elem = vm.$el.querySelector('.rebase-state-find-class-convention span');
+
+      expect(elem.innerHTML).toContain(
+        `Fast-forward merge is not possible. Rebase the source branch onto <span class="label-branch">${targetBranch}</span> to allow this merge request to be merged.`,
+      );
+    });
   });
 
   describe('methods', () => {
