@@ -101,8 +101,7 @@ describe 'User views a wiki page' do
       click_on('image')
 
       expect(current_path).to match("wikis/#{path}")
-      expect(page).to have_content('New Wiki Page')
-      expect(page).to have_content('Create page')
+      expect(page).to have_content('Create New Page')
     end
   end
 
@@ -156,6 +155,6 @@ describe 'User views a wiki page' do
     find('.shortcuts-wiki').click
     click_link "Create your first page"
 
-    expect(page).to have_content('Home · Create Page')
+    expect(page).to have_content('Create New Page')
   end
 end

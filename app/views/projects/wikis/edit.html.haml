@@ -13,14 +13,11 @@
     %h2.wiki-page-title
       - if @page.persisted?
         = link_to @page.human_title, project_wiki_path(@project, @page)
-      - else
-        = @page.human_title
-      %span.light
-        &middot;
-        - if @page.persisted?
+        %span.light
+          &middot;
           = s_("Wiki|Edit Page")
-        - else
-          = s_("Wiki|Create Page")
+      - else
+        = s_("Wiki|Create New Page")
 
   .nav-controls
     - if @page.persisted?
