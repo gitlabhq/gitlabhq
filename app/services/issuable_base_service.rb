@@ -344,10 +344,7 @@ class IssuableBaseService < BaseService
 
   def toggle_award(issuable)
     award = params.delete(:emoji_award)
-    if award
-      todo_service.new_award_emoji(issuable, current_user)
-      issuable.toggle_award_emoji(award, current_user)
-    end
+    AwardEmojis::ToggleService.new(issuable, award, current_user).execute if award
   end
 
   def associations_before_update(issuable)

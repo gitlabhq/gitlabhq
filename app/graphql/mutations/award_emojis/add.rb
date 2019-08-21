@@ -10,14 +10,11 @@ module Mutations
 
         check_object_is_awardable!(awardable)
 
-        # TODO this will be handled by AwardEmoji::AddService
-        # See https://gitlab.com/gitlab-org/gitlab-ce/issues/63372 and
-        # https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/29782
-        award = awardable.create_award_emoji(args[:name], current_user)
+        service = ::AwardEmojis::AddService.new(awardable, args[:name], current_user).execute
 
         {
-          award_emoji: (award if award.persisted?),
-          errors: errors_on_object(award)
+          award_emoji: (service[:award] if service[:status] == :success),
+          errors: service[:errors] || []
         }
       end
     end

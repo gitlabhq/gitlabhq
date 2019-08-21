@@ -69,12 +69,12 @@ module API
           post endpoint do
             not_found!('Award Emoji') unless can_read_awardable? && can_award_awardable?
 
-            award = awardable.create_award_emoji(params[:name], current_user)
+            service = AwardEmojis::AddService.new(awardable, params[:name], current_user).execute
 
-            if award.persisted?
-              present award, with: Entities::AwardEmoji
+            if service[:status] == :success
+              present service[:award], with: Entities::AwardEmoji
             else
-              not_found!("Award Emoji #{award.errors.messages}")
+              not_found!("Award Emoji #{service[:message]}")
             end
           end
 

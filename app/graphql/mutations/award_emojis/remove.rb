@@ -10,22 +10,11 @@ module Mutations
 
         check_object_is_awardable!(awardable)
 
-        # TODO this check can be removed once AwardEmoji services are available.
-        # See https://gitlab.com/gitlab-org/gitlab-ce/issues/63372 and
-        # https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/29782
-        unless awardable.awarded_emoji?(args[:name], current_user)
-          raise Gitlab::Graphql::Errors::ResourceNotAvailable,
-                'You have not awarded emoji of type name to the awardable'
-        end
-
-        # TODO this will be handled by AwardEmoji::DestroyService
-        # See https://gitlab.com/gitlab-org/gitlab-ce/issues/63372 and
-        # https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/29782
-        awardable.remove_award_emoji(args[:name], current_user)
+        service = ::AwardEmojis::DestroyService.new(awardable, args[:name], current_user).execute
 
         {
           # Mutation response is always a `nil` award_emoji
-          errors: []
+          errors: service[:errors] || []
         }
       end
     end

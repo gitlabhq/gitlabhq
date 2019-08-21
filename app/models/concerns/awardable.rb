@@ -106,30 +106,6 @@ module Awardable
   end
 
   def awarded_emoji?(emoji_name, current_user)
-    award_emoji.where(name: emoji_name, user: current_user).exists?
-  end
-
-  def create_award_emoji(name, current_user)
-    return unless emoji_awardable?
-
-    award_emoji.create(name: normalize_name(name), user: current_user)
-  end
-
-  def remove_award_emoji(name, current_user)
-    award_emoji.where(name: name, user: current_user).destroy_all # rubocop: disable DestroyAll
-  end
-
-  def toggle_award_emoji(emoji_name, current_user)
-    if awarded_emoji?(emoji_name, current_user)
-      remove_award_emoji(emoji_name, current_user)
-    else
-      create_award_emoji(emoji_name, current_user)
-    end
-  end
-
-  private
-
-  def normalize_name(name)
-    Gitlab::Emoji.normalize_emoji_name(name)
+    award_emoji.named(emoji_name).awarded_by(current_user).exists?
   end
 end

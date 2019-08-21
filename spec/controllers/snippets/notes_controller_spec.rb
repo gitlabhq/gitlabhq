@@ -288,11 +288,13 @@ describe Snippets::NotesController do
 
   describe 'POST toggle_award_emoji' do
     let(:note) { create(:note_on_personal_snippet, noteable: public_snippet) }
+    let(:emoji_name) { 'thumbsup'}
+
     before do
       sign_in(user)
     end
 
-    subject { post(:toggle_award_emoji, params: { snippet_id: public_snippet, id: note.id, name: "thumbsup" }) }
+    subject { post(:toggle_award_emoji, params: { snippet_id: public_snippet, id: note.id, name: emoji_name }) }
 
     it "toggles the award emoji" do
       expect { subject }.to change { note.award_emoji.count }.by(1)
@@ -301,7 +303,7 @@ describe Snippets::NotesController do
     end
 
     it "removes the already awarded emoji when it exists" do
-      note.toggle_award_emoji('thumbsup', user) # create award emoji before
+      create(:award_emoji, awardable: note, name: emoji_name, user: user)
 
       expect { subject }.to change { AwardEmoji.count }.by(-1)
 

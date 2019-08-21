@@ -82,16 +82,6 @@ describe Awardable do
     end
   end
 
-  describe "#toggle_award_emoji" do
-    it "adds an emoji if it isn't awarded yet" do
-      expect { issue.toggle_award_emoji("thumbsup", award_emoji.user) }.to change { AwardEmoji.count }.by(1)
-    end
-
-    it "toggles already awarded emoji" do
-      expect { issue.toggle_award_emoji("thumbsdown", award_emoji.user) }.to change { AwardEmoji.count }.by(-1)
-    end
-  end
-
   describe 'querying award_emoji on an Awardable' do
     let(:issue) { create(:issue) }
 
