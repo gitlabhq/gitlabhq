@@ -524,7 +524,7 @@ single conjoined expression. That is:
 - `only:` means "include this job if all of the conditions match".
 - `except:` means "exclude this job if any of the conditions match".
 
-The the individual keys are logically joined by an AND:
+With `only`, individual keys are logically joined by an AND:
 
 > (any of refs) AND (any of variables) AND (any of changes) AND (if kubernetes is active)
 
@@ -1735,7 +1735,7 @@ This example creates three paths of execution:
 1. If `needs:` is set to point to a job that is not instantiated
    because of `only/except` rules or otherwise does not exist, the
    job will fail.
-1. Note that on day one of the launch, we are temporarily limiting the 
+1. Note that on day one of the launch, we are temporarily limiting the
    maximum number of jobs that a single job can need in the `needs:` array. Track
    our [infrastructure issue](https://gitlab.com/gitlab-com/gl-infra/infrastructure/issues/7541)
    for details on the current limit.
