@@ -1,19 +1,18 @@
+# frozen_string_literal: true
 # rubocop:disable Style/SignalException
 
 require 'yaml'
 
-NO_CHANGELOG_LABELS = %w[backstage ci-build Documentation meta QA test].freeze
-SEE_DOC = "See [the documentation](https://docs.gitlab.com/ce/development/changelog.html).".freeze
-CREATE_CHANGELOG_MESSAGE = <<~MSG.freeze
+NO_CHANGELOG_LABELS = %w[backstage ci-build meta].freeze
+SEE_DOC = "See [the documentation](https://docs.gitlab.com/ce/development/changelog.html)."
+CREATE_CHANGELOG_MESSAGE = <<~MSG
 You can create one with:
 
 ```
 bin/changelog -m %<mr_iid>s "%<mr_title>s"
 ```
 
-If your merge request doesn't warrant a CHANGELOG entry,
-consider adding any of the %<labels>s labels.
-#{SEE_DOC}
+Note: Merge requests with %<labels>s do not trigger this check.
 MSG
 
 def ee_changelog?(changelog_path)
@@ -60,7 +59,7 @@ if changelog_needed
   if changelog_found
     check_changelog(changelog_found)
   else
-    warn "**[CHANGELOG missing](https://docs.gitlab.com/ce/development/changelog.html).**\n\n" +
+    message "**[CHANGELOG missing](https://docs.gitlab.com/ce/development/changelog.html)**: If this merge request [doesn't need a CHANGELOG entry](https://docs.gitlab.com/ee/development/changelog.html#what-warrants-a-changelog-entry), feel free to ignore this message.\n\n" +
       format(CREATE_CHANGELOG_MESSAGE, mr_iid: gitlab.mr_json["iid"], mr_title: mr_title, labels: presented_no_changelog_labels)
   end
 end
