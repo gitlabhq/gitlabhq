@@ -25,5 +25,17 @@ describe Gitlab::SidekiqMiddleware::Monitor do
 
       expect(result).to eq('value')
     end
+
+    context 'when cancel happens' do
+      subject do
+        monitor.call(worker, job, queue) do
+          raise Gitlab::SidekiqMonitor::CancelledError
+        end
+      end
+
+      it 'does skip this job' do
+        expect { subject }.to raise_error(Sidekiq::JobRetry::Skip)
+      end
+    end
   end
 end

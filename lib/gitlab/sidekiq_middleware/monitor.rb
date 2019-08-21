@@ -7,6 +7,9 @@ module Gitlab
         Gitlab::SidekiqMonitor.instance.within_job(job['jid'], queue) do
           yield
         end
+      rescue Gitlab::SidekiqMonitor::CancelledError
+        # ignore retries
+        raise Sidekiq::JobRetry::Skip
       end
     end
   end

@@ -54,7 +54,7 @@ describe Gitlab::SidekiqMonitor do
       it 'logs start message' do
         expect(Sidekiq.logger).to receive(:info)
           .with(
-            class: described_class,
+            class: described_class.to_s,
             action: 'start',
             message: 'Starting Monitor Daemon')
 
@@ -66,7 +66,7 @@ describe Gitlab::SidekiqMonitor do
       it 'logs stop message' do
         expect(Sidekiq.logger).to receive(:warn)
           .with(
-            class: described_class,
+            class: described_class.to_s,
             action: 'stop',
             message: 'Stopping Monitor Daemon')
 
@@ -78,7 +78,7 @@ describe Gitlab::SidekiqMonitor do
       it 'logs StandardError message' do
         expect(Sidekiq.logger).to receive(:warn)
           .with(
-            class: described_class,
+            class: described_class.to_s,
             action: 'exception',
             message: 'My Exception')
 
@@ -91,7 +91,7 @@ describe Gitlab::SidekiqMonitor do
       it 'logs and raises Exception message' do
         expect(Sidekiq.logger).to receive(:warn)
           .with(
-            class: described_class,
+            class: described_class.to_s,
             action: 'exception',
             message: 'My Exception')
 
@@ -131,13 +131,13 @@ describe Gitlab::SidekiqMonitor do
 
         expect(Sidekiq.logger).to receive(:info)
           .with(
-            class: described_class,
+            class: described_class.to_s,
             action: 'start',
             message: 'Starting Monitor Daemon')
 
         expect(Sidekiq.logger).to receive(:info)
           .with(
-            class: described_class,
+            class: described_class.to_s,
             channel: described_class::NOTIFICATION_CHANNEL,
             message: 'Received payload on channel',
             payload: payload
@@ -215,7 +215,7 @@ describe Gitlab::SidekiqMonitor do
         it 'does log cancellation message' do
           expect(Sidekiq.logger).to receive(:warn)
             .with(
-              class: described_class,
+              class: described_class.to_s,
               action: 'cancel',
               message: 'Canceling thread with CancelledError',
               jid: 'my-jid',

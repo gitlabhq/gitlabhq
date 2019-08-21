@@ -30,7 +30,7 @@ module Gitlab
 
       if cancelled?(jid)
         Sidekiq.logger.warn(
-          class: self.class,
+          class: self.class.to_s,
           action: 'run',
           queue: queue,
           jid: jid,
@@ -62,7 +62,7 @@ module Gitlab
 
     def start_working
       Sidekiq.logger.info(
-        class: self.class,
+        class: self.class.to_s,
         action: 'start',
         message: 'Starting Monitor Daemon'
       )
@@ -74,7 +74,7 @@ module Gitlab
 
     ensure
       Sidekiq.logger.warn(
-        class: self.class,
+        class: self.class.to_s,
         action: 'stop',
         message: 'Stopping Monitor Daemon'
       )
@@ -94,7 +94,7 @@ module Gitlab
       end
     rescue Exception => e # rubocop:disable Lint/RescueException
       Sidekiq.logger.warn(
-        class: self.class,
+        class: self.class.to_s,
         action: 'exception',
         message: e.message
       )
@@ -105,7 +105,7 @@ module Gitlab
 
     def process_message(message)
       Sidekiq.logger.info(
-        class: self.class,
+        class: self.class.to_s,
         channel: NOTIFICATION_CHANNEL,
         message: 'Received payload on channel',
         payload: message
@@ -139,7 +139,7 @@ module Gitlab
         # running job
         find_thread_with_lock(jid) do |thread|
           Sidekiq.logger.warn(
-            class: self.class,
+            class: self.class.to_s,
             action: 'cancel',
             message: 'Canceling thread with CancelledError',
             jid: jid,

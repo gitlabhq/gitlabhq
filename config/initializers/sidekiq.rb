@@ -28,12 +28,13 @@ if Rails.env.development?
 end
 
 enable_json_logs = Gitlab.config.sidekiq.log_format == 'json'
+enable_sidekiq_monitor = ENV.fetch("SIDEKIQ_MONITOR_WORKER", 0).to_i.nonzero?
 
 Sidekiq.configure_server do |config|
   config.redis = queues_config_hash
 
   config.server_middleware do |chain|
-    chain.add Gitlab::SidekiqMiddleware::Monitor
+    chain.add Gitlab::SidekiqMiddleware::Monitor if enable_sidekiq_monitor
     chain.add Gitlab::SidekiqMiddleware::Metrics if Settings.monitoring.sidekiq_exporter
     chain.add Gitlab::SidekiqMiddleware::ArgumentsLogger if ENV['SIDEKIQ_LOG_ARGUMENTS'] && !enable_json_logs
     chain.add Gitlab::SidekiqMiddleware::MemoryKiller if ENV['SIDEKIQ_MEMORY_KILLER_MAX_RSS']
@@ -59,9 +60,7 @@ Sidekiq.configure_server do |config|
     # Sidekiq (e.g. in an initializer).
     ActiveRecord::Base.clear_all_connections!
 
-    if ENV.fetch("SIDEKIQ_MONITOR_WORKER", 0).to_i.nonzero?
-      Gitlab::SidekiqMonitor.instance.start
-    end
+    Gitlab::SidekiqMonitor.instance.start if enable_sidekiq_monitor
   end
 
   if enable_reliable_fetch?
