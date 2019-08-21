@@ -1,0 +1,6 @@
+---
+title: Update the timestamp in Operations > Environments to show correct deployment
+  date for manual deploy jobs
+merge_request: 32072
+author:
+type: fixed
