@@ -93,3 +93,9 @@ Object.assign(global, {
     clearTimeout(id);
   },
 });
+
+// make sure that each test actually tests something
+// see https://jestjs.io/docs/en/expect#expecthasassertions
+beforeEach(() => {
+  expect.hasAssertions();
+});
