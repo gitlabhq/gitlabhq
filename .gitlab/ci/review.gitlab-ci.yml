@@ -1,15 +1,3 @@
-.review-only: &review-only
-  only:
-    refs:
-      - branches@gitlab-org/gitlab-ce
-      - branches@gitlab-org/gitlab-ee
-    kubernetes: active
-  except:
-    refs:
-      - master
-      - /^\d+-\d+-auto-deploy-\d+$/
-      - /(^docs[\/-].+|.+-docs$)/
-
 .review-schedules-only: &review-schedules-only
   only:
     refs:
@@ -24,8 +12,9 @@
       - /(^docs[\/-].+|.+-docs$)/
 
 .review-base: &review-base
-  extends: .dedicated-runner
-  <<: *review-only
+  extends:
+    - .dedicated-runner
+    - .review-only
   image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-charts-build-base
   cache: {}
   dependencies: []
@@ -68,7 +57,7 @@ build-qa-image:
     - BUILD_TRIGGER_TOKEN=$REVIEW_APPS_BUILD_TRIGGER_TOKEN ./scripts/trigger-build cng
 
 review-build-cng:
-  <<: *review-only
+  extends: .review-only
   <<: *review-build-cng-base
 
 schedule:review-build-cng:
@@ -117,8 +106,9 @@ schedule:review-deploy:
   <<: *review-schedules-only
 
 review-stop:
-  <<: *review-only
-  extends: .single-script-job-dedicated-runner
+  extends:
+    - .single-script-job-dedicated-runner
+    - .review-only
   image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-charts-build-base
   stage: review
   when: manual
