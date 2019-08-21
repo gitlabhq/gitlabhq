@@ -543,6 +543,73 @@ describe Notify do
       end
     end
 
+    describe '#mail_thread' do
+      set(:mail_thread_note) { create(:note) }
+
+      let(:headers) do
+        {
+          from: 'someone@test.com',
+          to: 'someone-else@test.com',
+          subject: 'something',
+          template_name: '_note_email' # re-use this for testing
+        }
+      end
+
+      let(:mailer) do
+        mailer = described_class.new
+        mailer.instance_variable_set(:@note, mail_thread_note)
+        mailer
+      end
+
+      context 'the model has no namespace' do
+        class TopLevelThing
+          include Referable
+          include Noteable
+
+          def to_reference(*_args)
+            'tlt-ref'
+          end
+
+          def id
+            'tlt-id'
+          end
+        end
+
+        subject do
+          mailer.send(:mail_thread, TopLevelThing.new, headers)
+        end
+
+        it 'has X-GitLab-Namespaced-Thing-ID header' do
+          expect(subject.header['X-GitLab-TopLevelThing-ID'].value).to eq('tlt-id')
+        end
+      end
+
+      context 'the model has a namespace' do
+        module Namespaced
+          class Thing
+            include Referable
+            include Noteable
+
+            def to_reference(*_args)
+              'some-reference'
+            end
+
+            def id
+              'some-id'
+            end
+          end
+        end
+
+        subject do
+          mailer.send(:mail_thread, Namespaced::Thing.new, headers)
+        end
+
+        it 'has X-GitLab-Namespaced-Thing-ID header' do
+          expect(subject.header['X-GitLab-Namespaced-Thing-ID'].value).to eq('some-id')
+        end
+      end
+    end
+
     context 'for issue notes' do
       let(:host) { Gitlab.config.gitlab.host }
 
