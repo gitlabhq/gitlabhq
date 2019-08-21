@@ -269,6 +269,12 @@ Note the following properties:
 
 ![single stat panel type](img/prometheus_dashboard_single_stat_panel_type.png)
 
+### Downloading data as CSV
+
+Data from Prometheus charts on the metrics dashboard can be downloaded as CSV. 
+
+![Downloading as CSV](img/download_as_csv.png)
+
 ### Setting up alerts for Prometheus metrics **(ULTIMATE)**
 
 #### Managed Prometheus instances
