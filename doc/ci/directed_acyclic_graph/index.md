@@ -65,7 +65,7 @@ as quickly as possible.
 Relationships are defined between jobs using the [`needs:` keyword](../yaml/README.md#needs).
 
 Note that `needs:` also works with the [parallel](../yaml/README.md#parallel) keyword,
-giving your powerful options for parallelization within your pipeline.
+giving you powerful options for parallelization within your pipeline.
 
 ## Limitations
 
