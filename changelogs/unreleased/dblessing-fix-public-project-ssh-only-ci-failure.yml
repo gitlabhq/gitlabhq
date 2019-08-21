@@ -1,5 +1,0 @@
----
-title: Allow CI to clone public projects when HTTP protocol is disabled
-merge_request: 31632
-author:
-type: fixed

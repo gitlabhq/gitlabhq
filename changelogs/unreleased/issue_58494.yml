@@ -1,5 +1,0 @@
----
-title: Prevent turning plain links into embedded when moving issues
-merge_request: 31489
-author:
-type: fixed

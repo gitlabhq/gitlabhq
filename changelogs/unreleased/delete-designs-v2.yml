@@ -1,4 +1,0 @@
----
-title: Adds event enum column to DesignsVersions join table
-merge_request: 30745
-type: added

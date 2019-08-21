@@ -1,5 +1,0 @@
----
-title: Improve MembersFinder query performance using UNION
-merge_request: 30451
-author: Jacopo Beschi @jacopo-beschi
-type: performance

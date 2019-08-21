@@ -1,5 +1,0 @@
----
-title: Allow multiple Auto DevOps projects to deploy to a single namespace within a k8s cluster
-merge_request: 30360
-author: James Keogh
-type: added

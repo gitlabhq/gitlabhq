@@ -1,5 +1,0 @@
----
-title: Look up upstream commits once before queuing ProcessCommitWorkers
-merge_request:
-author:
-type: performance

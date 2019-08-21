@@ -1,5 +1,0 @@
----
-title: Add partial index on identities table to speed up LDAP lookups
-merge_request: 26710
-author:
-type: performance

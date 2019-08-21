@@ -1,6 +1,0 @@
----
-title: When GitLab import fails during importer user mapping step, add an explicit
-  error message mentioning importer
-merge_request: 30838
-author:
-type: other

@@ -1,5 +1,0 @@
----
-title: Only track Redis calls if Peek is enabled
-merge_request: 31438
-author:
-type: performance

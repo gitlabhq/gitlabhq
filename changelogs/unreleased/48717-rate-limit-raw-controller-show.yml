@@ -1,5 +1,0 @@
----
-title: Add Rate Request Limiter to RawController#show endpoint
-merge_request: 30635
-author:
-type: added

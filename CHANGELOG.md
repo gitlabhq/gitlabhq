@@ -2,6 +2,246 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 12.2.0
+
+### Security (4 changes, 1 of them is from the community)
+
+- Update mini_magick to 4.9.5. !31505 (Takuya Noguchi)
+- Upgrade Rugged to 0.28.3. !31794
+- Queries for Upload should be scoped by model.
+- Restrict slash commands to users who can log in.
+
+### Removed (3 changes)
+
+- Remove Kubernetes service integration page. !31365
+- Remove line profiler from performance bar.
+- Remove GC metrics from performance bar.
+
+### Fixed (74 changes, 4 of them are from the community)
+
+- Resolve Incorrect empty state message on Explore projects. !25578
+- Search issuables by iids. !28302 (Riccardo Padovani)
+- Make it easier to find invited group members. !28436
+- fix: updates to include units for the y axis label. !30330
+- Align access permissions for wiki history to those of wiki pages. !30470
+- Add index for issues on relative position, project, and state for manual sorting. !30542
+- Fix suggestion on lines that are not part of an MR. !30606
+- Add empty chart component. !30682
+- Remove blank block from job sidebar. !30754
+- Remove duplicate buttons in diff discussion. !30757
+- Order projects in 'Move issue' dropdown by name. !30778
+- Fix bug in dashboard display of closed milestones. !30820
+- Fixes alignment issues with reports. !30839
+- Ensure visibility icons in group/project listings are grey. !30858
+- Fix admin labels page when there are invalid records. !30885
+- Extra logging for new live trace architecture. !30892
+- Fix pipeline emails not respecting group notification email setting. !30907
+- Handle trailing slashes when generating Jira issue URLs. !30911
+- Optimize relative re-positioning when moving issues. !30938
+- Better support clickable tasklists inside blockquotes. !30952
+- Add space to "merged by" widget. !30972
+- Remove duplicated mapping key in config/locales/en.yml. !30980 (Peter Dave Hello)
+- Update Mermaid to v8.2.3. !30985
+- Use persistent Redis cluster for Workhorse pub/sub notifications. !30990
+- Remove :livesum from RubySampler metrics. !31047
+- Fix pid discovery for Unicorn processes in `PidProvider`. !31056
+- Respect group notification email when sending group access notifications. !31089
+- Default dependency job stage index to Infinity, and correctly report it as undefined in prior stages. !31116
+- Fix incorrect use of message interpolation. !31121
+- Moved labels out of fields on Search page. !31137
+- Ensure Warden triggers after_authentication callback. !31138
+- Fix admin area user access level radio button labels. !31154
+- Ignore Gitaly errors if cache flushing fails on project destruction. !31164
+- Prevent double slash in review apps path. !31212
+- Make pdf.js render CJK characters. !31220
+- Prevent discussion filter from persisting to `Show all activity` when opening links to notes. !31229
+- Improve layout of dropdowns in the metrics dashboard page. !31239
+- Remove pdf.js deprecation warnings. !31253
+- Fix GC::Profiler metrics fetching. !31331
+- Jupyter fixes. !31332 (Amit Rathi)
+- Fix first-time contributor notes not rendering. !31340
+- Fix inline rendering of relative paths to SVGs from the current repository. !31352
+- Make `bin/web_puma` consider RAILS_ENV. !31378
+- Removed extrenal dashboard legend border. !31407
+- Fix visual review app storage keys. !31427
+- Fix flashing conflict warning when editing issues. !31469
+- Fix broken issue links and possible 500 error on cycle analytics page when project name and path are different. !31471
+- Prevent turning plain links into embedded when moving issues. !31489
+- Add a field for released_at to GH importer. !31496
+- Adjust size and align MR-widget loading icon. !31503
+- Fix an issue where clicking outside the MR/branch search box in WebIDE closed the dropdown. !31523
+- Don't attempt to contact registry if it is disabled. !31553
+- Fix IDE new files icon in tree. !31560
+- Fix missing author line (`Created by: <user>`) in MRs/issues/comments of imported Bitbucket Cloud project. !31579
+- Add missing report-uri to CSP config. !31593
+- Fixed display of some sections and externalized all text in the shortcuts modal overlay. !31594
+- Remove extra padding from disabled comment box. !31603
+- Allow CI to clone public projects when HTTP protocol is disabled. !31632
+- error message for general settings. !31636 (Mesut Güneş)
+- Invalidate branches cache on PostReceive. !31653
+- Fix active metric files being wiped after the app starts. !31668
+- Fix :wiki_can_not_be_created_total counter. !31673
+- Fix job logs where style changes were broken down into separate lines. !31674
+- Properly save suggestions in project exports. !31690
+- Fix project avatar image in Slack pipeline notifications. !31788
+- Fix empty error flash message on profile:account page when updating username with username that has already been taken. !31809
+- Fix starrers counts after searching. !31823
+- Fix pipelines not always being created after a push. !31927
+- Fix 500 errors in commits api caused by empty ref_name parameter.
+- Center loading icon in CI action component.
+- Prevents showing 2 tooltips in pipelines table.
+- Fix tag page layout.
+- Prevent duplicated trigger action button.
+- Hides loading spinner in pipelines actions after request has been fullfiled.
+
+### Changed (31 changes, 5 of them are from the community)
+
+- Update cluster page automatically when cluster is created. !27189
+- Add branch/tags/commits dropdown filter on the search page for searching codes. !28282 (minghuan lei)
+- Add support for start_sha to commits API. !29598
+- Maintainers can create subgroups. !29718 (Fabio Papa)
+- Extract Auto DevOps deploy functions into a base image. !30404
+- Add MR form to Visual Review (EE) runtime configuration. !30481
+- Adjust redis cache metrics. !30572
+- Add DS_PIP_DEPENDENCY_PATH option to configure Dependency Scanning for projects using pip. !30762
+- Bring scoped environment variables to core. !30779
+- Add Web IDE Usage Ping for Create SMAU. !30800
+- Update the container scanning CI template to use v12 of the clair scanner. !30809
+- Multiple pipeline support for Commit status. !30828 (Gaetan Semet)
+- Add support for exporting repository type data for LFS objects. !30830
+- Avoid increasing redis counters when usage_ping is disabled. !30949
+- Added navbar searches usage ping counter. !30953
+- Convert githost.log to JSON format. !30967
+- Adjusted the clickable area of collapsed sidebar elements. !30974 (Michel Engelen)
+- Mark push mirrors as failed after 1 hour. !30999
+- Allows masking @ and : characters. !31065
+- Remove incorrect fallback when determining which cluster to use when retrieving MR performance metrics. !31126
+- Retry push mirrors faster when running concurrently, improve error handling when push mirrors fail. !31247
+- Make issue boards importable. !31434 (Jason Colyer)
+- Allow users to resend a confirmation link when the grace period has expired. !31476
+- Remove counts from default labels API responses. !31543
+- Upgrade to Gitaly v1.57.0. !31568
+- Rename githost.log -> git_json.log. !31634
+- Load search result counts asynchronously. !31663
+- feat: adds a download to csv functionality to the dropdown in prometheus metrics. !31679
+- Adjust copy for adding additional members. !31726
+- Upgrade to Gitaly v1.59.0. !31743
+- Filter title, description, and body parameters from logs.
+
+### Performance (17 changes, 1 of them is from the community)
+
+- Add partial index on identities table to speed up LDAP lookups. !26710
+- Improve MembersFinder query performance using UNION. !30451 (Jacopo Beschi @jacopo-beschi)
+- Rake task to cleanup expired ActiveSession lookup keys. !30668
+- Update usage ping cron behavior. !30842
+- Make Bootsnap available via ENABLE_BOOTSNAP=1. !30963
+- Batch processing of commit refs in markdown processing. !31037
+- Use tablesample approximate counting by default. !31048
+- Create index on environments by state. !31231
+- Split MR widget into etag-cached and non-cached serializers. !31354
+- Speed up loading and filtering deploy keys and their projects. !31384
+- Only track Redis calls if Peek is enabled. !31438
+- Only expire tag cache once per push. !31641
+- Reduce Gitaly calls in PostReceive. !31741
+- Eliminate many Gitaly calls in discussions API. !31834
+- Optimize DB indexes for ES indexing of notes. !31846
+- Expire project caches once per push instead of once per ref. !31876
+- Look up upstream commits once before queuing ProcessCommitWorkers.
+
+### Added (51 changes, 11 of them are from the community)
+
+- Make starred projects and starrers of a project publicly visible. !24690
+- Make quick action commands applied banner more useful. !26672 (Jacopo Beschi @jacopo-beschi)
+- Allow Helm to be uninstalled from the UI. !27359
+- Improve pipeline status Slack notifications. !27683
+- Add links to relevant configuration areas in admin area overview. !29306
+- Display project id on project admin page. !29734 (Zsolt Kovari)
+- Display group id on group admin page. !29735 (Zsolt Kovari)
+- Resolve Keyboard shortcut for jump to NEXT unresolved discussion. !30144
+- Personal access tokens are accepted using OAuth2 header format. !30277
+- Add Outbound requests whitelist for local networks. !30350 (Istvan Szalai)
+- Allow multiple Auto DevOps projects to deploy to a single namespace within a k8s cluster. !30360 (James Keogh)
+- Allow Knative to be uninstalled from the UI. !30458
+- Add admin-configurable "Support page URL" link to top Help dropdown menu. !30459 (Diego Louzán)
+- Allow specifying variables when running manual jobs. !30485
+- Use predictable environment slugs. !30551
+- Return an ETag header for the archive endpoint. !30581
+- Add Rate Request Limiter to RawController#show endpoint. !30635
+- Add git blame to GitLab API. !30675 (Oleg Zubchenko)
+- Use separate Kubernetes namespaces per environment. !30711
+- Support remove source branch on merge w/ push options. !30728
+- Deploy serverless apps with gitlabktl. !30740
+- Adjust group level analytics to accept multiple ids. !30744
+- Adds event enum column to DesignsVersions join table. !30745
+- Allow email notifications to be disabled for all members of a group or project. !30755 (Dustin Spicuzza)
+- Export and download CSV from metrics charts. !30760
+- Add API endpoints to return container repositories and tags from the group level. !30817
+- Add support for deferred links in persistent user callouts. !30818
+- Add system notes for when a Zoom call was added/removed from an issue. !30857 (Jacopo Beschi @jacopo-beschi)
+- Count wiki creation, update and delete events. !30864
+- Add new expansion options for merge request diffs. !30927
+- Count snippet creation, update and comment events. !30930
+- Update namespace label for GitLab-managed clusters. !30935
+- UI for disabling group/project email notifications. !30961 (Dustin Spicuzza)
+- Support setting of merge request title and description using git push options. !31068
+- Add new table to store email domain per group. !31071
+- Redirect from a project wiki git route to the project wiki home. !31085
+- Link and embed metrics in GitLab Flavored Markdown. !31106
+- Moves snowplow tracking from ee to ce. !31160 (jejacks0n)
+- Allow Cert-Manager to be uninstalled. !31166
+- Add new outbound network requests application setting for system hooks. !31177
+- Allow links to metrics dashboard at a specific time. !31283
+- Enable embedding of specific metrics charts in GFM. !31304
+- Support creating DAGs in CI config through the `needs` key. !31328
+- Generate shareable link for specific metric charts. !31339
+- Add support for Content-Security-Policy. !31402
+- Add BitBucketServer project import filtering. !31420
+- Embed specific metrics chart in issue. !31644
+- Track page views for cycle analytics show page. !31717
+- Add usage pings for source code pushes. !31734
+- Makes collapsible title clickable in job log.
+- Adds highlight to the collapsible section.
+
+### Other (36 changes, 9 of them are from the community)
+
+- Rewrite `if:` argument in before_action and alike when `only:` is also used. !24412 (George Thomas @thegeorgeous)
+- Create rake tasks for migrating legacy uploads out of deprecated paths. !29409
+- Remove the warning style from the U2F device message in user settings > account. !30119 (matejlatin)
+- Set visibility level 'Private' for restricted 'Internal' imported projects when 'Internal' visibility setting is restricted in admin settings. !30522
+- Change BoardService in favor of boardsStore on board blank state of the component board. !30546 (eduarmreyes)
+- Adds Sidekiq scheduling latency structured logging field. !30784
+- Adds chaos endpoints to Sidekiq. !30814
+- Added multi-select deletion of container registry images. !30837
+- When GitLab import fails during importer user mapping step, add an explicit error message mentioning importer. !30838
+- Add Rugged calls and duration to API and Rails logs. !30871
+- Fixed distorted avatars when resource not reachable. !30904 (Marc Schwede)
+- Update GitLab Runner Helm Chart to 0.7.0. !30950
+- Use Rails 5.2 Redis caching store. !30966
+- Add Rugged calls to performance bar. !30983
+- add color selector to broadcast messages form. !30988
+- Harmonize selections in user settings. !31110 (Marc Schwede)
+- Update rouge to v3.7.0. !31254
+- Update 'Ruby on Rails' project template. !31310
+- Fix mirroring help text. !31348 (jramsay)
+- Enhance style of the shared runners limit. !31386
+- Enables storage statistics for root namespaces on database. !31392
+- Improve quick action error messages. !31451
+- Enable authenticated cookie encryption. !31463
+- Update karma to 4.2.0. !31495 (Takuya Noguchi)
+- Add max_replication_slots to PG HA documentation. !31534
+- Create database tables for the new cycle analytics backend. !31621
+- Updated the detached pipeline badge tooltip text to offer a better explanation. !31626
+- Add Gitaly and Rugged call timing in Sidekiq logs. !31651
+- Fix the style-lint errors and warnings for `app/assets/stylesheets/pages/wiki.scss`. !31656
+- Update GraphicsMagick from 1.3.29 to 1.3.33 for CI tests. !31692 (Takuya Noguchi)
+- Migrate remaining users with null private_profile. !31708
+- Bump Helm to 2.14.3 and kubectl to 1.11.10 for Kubernetes integration. !31716
+- Updated the personal access token api scope description to reflect the permissions it grants. !31759
+- Add finished_at to the internal API Deployment entity. !31808
+- Remove Security Dashboard feature flag. !31820
+- Update Packer.gitlab-ci.yml to use latest image. (Kelly Hair)
+
+
 ## 12.1.5
 
 ### Security (2 changes)

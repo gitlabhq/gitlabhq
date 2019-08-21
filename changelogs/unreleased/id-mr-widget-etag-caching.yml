@@ -1,5 +1,0 @@
----
-title: Split MR widget into etag-cached and non-cached serializers
-merge_request: 31354
-author:
-type: performance

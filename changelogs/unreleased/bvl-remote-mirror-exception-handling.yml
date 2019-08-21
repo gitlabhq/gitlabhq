@@ -1,6 +1,0 @@
----
-title: Retry push mirrors faster when running concurrently, improve error handling
-  when push mirrors fail
-merge_request: 31247
-author:
-type: changed

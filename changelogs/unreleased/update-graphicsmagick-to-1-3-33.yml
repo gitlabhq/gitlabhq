@@ -1,5 +1,0 @@
----
-title: Update GraphicsMagick from 1.3.29 to 1.3.33 for CI tests
-merge_request: 31692
-author: Takuya Noguchi
-type: other

@@ -1,5 +1,0 @@
----
-title: Update the container scanning CI template to use v12 of the clair scanner.
-merge_request: 30809
-author:
-type: changed

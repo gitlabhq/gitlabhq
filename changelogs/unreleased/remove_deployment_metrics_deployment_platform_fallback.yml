@@ -1,6 +1,0 @@
----
-title: Remove incorrect fallback when determining which cluster to use when retrieving
-  MR performance metrics
-merge_request: 31126
-author:
-type: changed

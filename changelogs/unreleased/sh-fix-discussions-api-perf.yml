@@ -1,5 +1,0 @@
----
-title: Eliminate many Gitaly calls in discussions API
-merge_request: 31834
-author:
-type: performance
