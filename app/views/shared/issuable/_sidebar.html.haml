@@ -38,7 +38,7 @@
           = _('Milestone')
           = icon('spinner spin', class: 'hidden block-loading', 'aria-hidden': 'true')
           - if can_edit_issuable
-            = link_to _('Edit'), '#', class: 'js-sidebar-dropdown-toggle edit-link float-right'
+            = link_to _('Edit'), '#', class: 'js-sidebar-dropdown-toggle edit-link float-right', data: { track_label: "right_sidebar", track_property: "milestone", track_event: "click_edit_button", track_value: "" }
         .value.hide-collapsed
           - if milestone.present?
             = link_to milestone[:title], milestone[:web_url], class: "bold has-tooltip", title: sidebar_milestone_remaining_days(milestone), data: { container: "body", html: 'true', boundary: 'viewport' }
@@ -66,7 +66,7 @@
             = _('Due date')
             = icon('spinner spin', class: 'hidden block-loading', 'aria-hidden': 'true')
             - if can_edit_issuable
-              = link_to _('Edit'), '#', class: 'js-sidebar-dropdown-toggle edit-link float-right'
+              = link_to _('Edit'), '#', class: 'js-sidebar-dropdown-toggle edit-link float-right', data: { track_label: "right_sidebar", track_property: "due_date", track_event: "click_edit_button", track_value: "" }
           .value.hide-collapsed
             %span.value-content
               - if issuable_sidebar[:due_date]
@@ -102,7 +102,7 @@
           = _('Labels')
           = icon('spinner spin', class: 'hidden block-loading', 'aria-hidden': 'true')
           - if can_edit_issuable
-            = link_to _('Edit'), '#', class: 'js-sidebar-dropdown-toggle edit-link qa-edit-link-labels float-right'
+            = link_to _('Edit'), '#', class: 'js-sidebar-dropdown-toggle edit-link qa-edit-link-labels float-right', data: { track_label: "right_sidebar", track_property: "labels", track_event: "click_edit_button", track_value: "" }
         .value.issuable-show-labels.dont-hide.hide-collapsed.qa-labels-block{ class: ("has-labels" if selected_labels.any?) }
           - if selected_labels.any?
             - selected_labels.each do |label_hash|
@@ -160,7 +160,7 @@
             = custom_icon('icon_arrow_right')
           .dropdown.sidebar-move-issue-dropdown.hide-collapsed
             %button.btn.btn-default.btn-block.js-sidebar-dropdown-toggle.js-move-issue{ type: 'button',
-              data: { toggle: 'dropdown', display: 'static' } }
+              data: { toggle: 'dropdown', display: 'static', track_label: "right_sidebar", track_property: "move_issue", track_event: "click_button", track_value: "" } }
               = _('Move issue')
             .dropdown-menu.dropdown-menu-selectable.dropdown-extended-height
               = dropdown_title(_('Move issue'))
