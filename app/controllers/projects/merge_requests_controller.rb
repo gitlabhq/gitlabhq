@@ -219,7 +219,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   alias_method :issuable, :merge_request
   alias_method :awardable, :merge_request
 
-  def issuable_sorting_field
+  def sorting_field
     MergeRequest::SORTING_PREFERENCE_FIELD
   end
 

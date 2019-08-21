@@ -4,10 +4,12 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
   include ParamsBackwardCompatibility
   include RendersMemberAccess
   include OnboardingExperimentHelper
+  include SortingHelper
+  include SortingPreference
 
   prepend_before_action(only: [:index]) { authenticate_sessionless_user!(:rss) }
   before_action :set_non_archived_param
-  before_action :default_sorting
+  before_action :set_sorting
   before_action :projects, only: [:index]
   skip_cross_project_access_check :index, :starred
 
@@ -59,11 +61,6 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
     end
   end
 
-  def default_sorting
-    params[:sort] ||= 'latest_activity_desc'
-    @sort = params[:sort]
-  end
-
   # rubocop: disable CodeReuse/ActiveRecord
   def load_projects(finder_params)
     @total_user_projects_count = ProjectsFinder.new(params: { non_public: true }, current_user: current_user).execute
@@ -87,5 +84,18 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
       .to_a
 
     Events::RenderService.new(current_user).execute(@events, atom_request: request.format.atom?)
+  end
+
+  def set_sorting
+    params[:sort] = set_sort_order
+    @sort = params[:sort]
+  end
+
+  def default_sort_order
+    sort_value_latest_activity
+  end
+
+  def sorting_field
+    Project::SORTING_PREFERENCE_FIELD
   end
 end
