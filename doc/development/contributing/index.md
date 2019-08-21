@@ -93,26 +93,20 @@ When submitting code to GitLab, you may feel that your contribution requires the
 
 When your code contains more than 500 changes, any major breaking changes, or an external library, `@mention` a maintainer in the merge request. If you are not sure who to mention, the reviewer will add one early in the merge request process.
 
-## Issues
+## Issues workflow
 
-This [documentation](issue_workflow.md) outlines the current issue process.
+This [documentation](issue_workflow.md) outlines the current issue workflow:
 
-- [Type labels](issue_workflow.md#type-labels)
-- [Subject labels](issue_workflow.md#subject-labels)
-- [Team labels](issue_workflow.md#team-labels)
-- [Release Scoping labels](issue_workflow.md#release-scoping-labels)
-- [Priority labels](issue_workflow.md#priority-labels)
-- [Severity labels](issue_workflow.md#severity-labels)
-- [Label for community contributors](issue_workflow.md#label-for-community-contributors)
-- [Issue triaging](issue_workflow.md#issue-triaging)
-- [Feature proposals](issue_workflow.md#feature-proposals)
 - [Issue tracker guidelines](issue_workflow.md#issue-tracker-guidelines)
+- [Issue triaging](issue_workflow.md#issue-triaging)
+- [Labels](issue_workflow.md#labels)
+- [Feature proposals](issue_workflow.md#feature-proposals)
 - [Issue weight](issue_workflow.md#issue-weight)
 - [Regression issues](issue_workflow.md#regression-issues)
 - [Technical and UX debt](issue_workflow.md#technical-and-ux-debt)
-- [Stewardship](issue_workflow.md#stewardship)
+- [Technical debt in follow-up issues](issue_workflow.md#technical-debt-in-follow-up-issues)
 
-## Merge requests
+## Merge requests workflow
 
 This [documentation](merge_request_workflow.md) outlines the current merge request process.
 

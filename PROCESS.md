@@ -267,9 +267,7 @@ The two scenarios below can [bypass the exception request in the release process
 When a bug is found:
 1. Create an issue describing the problem in the most detailed way possible.
 1. If possible, provide links to real examples and how to reproduce the problem.
-1. Label the issue properly, using the [team label](https://docs.gitlab.com/ee/development/contributing/issue_workflow.html#team-labels),
-   the [subject label](https://docs.gitlab.com/ee/development/contributing/issue_workflow.html#subject-labels)
-   and any other label that may apply in the specific case
+1. Label the issue properly, by respecting the [Partial triage level](https://about.gitlab.com/handbook/engineering/issue-triage/#partial-triage).
 1. Notify the respective Engineering Manager to evaluate and apply the [Severity label](https://docs.gitlab.com/ee/development/contributing/issue_workflow.html#severity-labels) and [Priority label](https://docs.gitlab.com/ee/development/contributing/issue_workflow.html#priority-labels).
 The counterpart Product Manager is included to weigh-in on prioritization as needed.
 1. If the ~bug is **NOT** a regression:
