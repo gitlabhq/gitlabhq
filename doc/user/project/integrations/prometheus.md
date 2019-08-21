@@ -369,6 +369,10 @@ It is possible to display metrics charts within [GitLab Flavored Markdown](../..
 
 To display a metric chart, include a link of the form `https://<root_url>/<project>/environments/<environment_id>/metrics`.
 
+A single chart may also be embedded. You can generate a link to the chart via the dropdown located on the right side of the chart:  
+
+![Generate Link To Chart](img/generate_link_to_chart.png)
+
 The following requirements must be met for the metric to unfurl:
 
 - The `<environment_id>` must correspond to a real environment.
