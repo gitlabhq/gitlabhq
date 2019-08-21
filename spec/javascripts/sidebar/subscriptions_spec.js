@@ -6,8 +6,10 @@ import mountComponent from 'spec/helpers/vue_mount_component_helper';
 describe('Subscriptions', function() {
   let vm;
   let Subscriptions;
+  let statsSpy;
 
   beforeEach(() => {
+    statsSpy = spyOnDependency(subscriptions, 'trackEvent');
     Subscriptions = Vue.extend(subscriptions);
   });
 
@@ -56,6 +58,13 @@ describe('Subscriptions', function() {
 
     expect(eventHub.$emit).toHaveBeenCalledWith('toggleSubscription', jasmine.any(Object));
     expect(vm.$emit).toHaveBeenCalledWith('toggleSubscription', jasmine.any(Object));
+  });
+
+  it('calls trackEvent when toggled', () => {
+    vm = mountComponent(Subscriptions, { subscribed: true });
+    vm.toggleSubscription();
+
+    expect(statsSpy).toHaveBeenCalled();
   });
 
   it('onClickCollapsedIcon method emits `toggleSidebar` event on component', () => {

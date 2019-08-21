@@ -4,8 +4,10 @@ import confidentialIssueSidebar from '~/sidebar/components/confidential/confiden
 describe('Confidential Issue Sidebar Block', () => {
   let vm1;
   let vm2;
+  let statsSpy;
 
   beforeEach(() => {
+    statsSpy = spyOnDependency(confidentialIssueSidebar, 'trackEvent');
     const Component = Vue.extend(confidentialIssueSidebar);
     const service = {
       update: () => Promise.resolve(true),
@@ -66,5 +68,11 @@ describe('Confidential Issue Sidebar Block', () => {
 
       done();
     });
+  });
+
+  it('calls trackEvent when "Edit" is clicked', () => {
+    vm1.$el.querySelector('.confidential-edit').click();
+
+    expect(statsSpy).toHaveBeenCalled();
   });
 });

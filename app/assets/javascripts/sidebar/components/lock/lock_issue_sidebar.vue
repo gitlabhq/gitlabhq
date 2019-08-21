@@ -6,6 +6,7 @@ import issuableMixin from '~/vue_shared/mixins/issuable';
 import Icon from '~/vue_shared/components/icon.vue';
 import eventHub from '~/sidebar/event_hub';
 import editForm from './edit_form.vue';
+import { trackEvent } from 'ee_else_ce/event_tracking/issue_sidebar';
 
 export default {
   components: {
@@ -65,7 +66,11 @@ export default {
     toggleForm() {
       this.mediator.store.isLockDialogOpen = !this.mediator.store.isLockDialogOpen;
     },
+    onEditClick() {
+      this.toggleForm();
 
+      trackEvent('click_edit_button', 'lock_issue');
+    },
     updateLockedAttribute(locked) {
       this.mediator.service
         .update(this.issuableType, {
@@ -109,7 +114,7 @@ export default {
         v-if="isEditable"
         class="float-right lock-edit"
         type="button"
-        @click.prevent="toggleForm"
+        @click.prevent="onEditClick"
       >
         {{ __('Edit') }}
       </button>
