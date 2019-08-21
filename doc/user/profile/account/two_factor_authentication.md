@@ -48,6 +48,7 @@ To enable 2FA:
       - [andOTP](https://github.com/andOTP/andOTP): feature rich open source app for Android which supports PGP encrypted backups.
       - [FreeOTP](https://freeotp.github.io/): open source app for Android.
       - [Google Authenticator](https://support.google.com/accounts/answer/1066447?hl=en): proprietary app for iOS and Android.
+      - [SailOTP](https://openrepos.net/content/seiichiro0185/sailotp): open source app for SailFish OS.
    1. In the application, add a new entry in one of two ways:
       - Scan the code presented in GitLab with your device's camera to add the
         entry automatically.
