@@ -1,5 +1,0 @@
----
-title: Fix broken issue links and possible 500 error on cycle analytics page when project name and path are different
-merge_request: 31471
-author:
-type: fixed

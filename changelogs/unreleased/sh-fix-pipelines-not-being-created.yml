@@ -1,5 +1,0 @@
----
-title: Fix pipelines not always being created after a push
-merge_request: 31927
-author:
-type: fixed

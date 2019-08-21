@@ -1,5 +1,0 @@
----
-title: Speed up loading and filtering deploy keys and their projects
-merge_request: 31384
-author:
-type: performance

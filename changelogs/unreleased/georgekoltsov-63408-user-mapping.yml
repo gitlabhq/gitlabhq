@@ -1,5 +1,0 @@
----
-title: 'Fix missing author line (`Created by: <user>`) in MRs/issues/comments of imported Bitbucket Cloud project'
-merge_request: 31579
-author:
-type: fixed

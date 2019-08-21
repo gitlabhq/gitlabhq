@@ -1,5 +1,0 @@
----
-title: Use persistent Redis cluster for Workhorse pub/sub notifications
-merge_request: 30990
-author:
-type: fixed

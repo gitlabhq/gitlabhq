@@ -1,5 +1,0 @@
----
-title: Optimize DB indexes for ES indexing of notes
-merge_request: 31846
-author:
-type: performance

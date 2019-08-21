@@ -1,5 +1,0 @@
----
-title: Fix job logs where style changes were broken down into separate lines
-merge_request: 31674
-author:
-type: fixed

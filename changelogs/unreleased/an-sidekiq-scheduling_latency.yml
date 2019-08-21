@@ -1,5 +1,0 @@
----
-title: Adds Sidekiq scheduling latency structured logging field
-merge_request: 30784
-author:
-type: other

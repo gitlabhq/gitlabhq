@@ -1,6 +1,0 @@
----
-title: Fix empty error flash message on profile:account page when updating username
-  with username that has already been taken
-merge_request: 31809
-author:
-type: fixed

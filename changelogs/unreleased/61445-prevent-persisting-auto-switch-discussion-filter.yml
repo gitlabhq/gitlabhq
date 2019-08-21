@@ -1,6 +1,0 @@
----
-title: Prevent discussion filter from persisting to `Show all activity` when opening
-  links to notes
-merge_request: 31229
-author:
-type: fixed

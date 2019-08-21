@@ -1,5 +1,0 @@
----
-title: Use tablesample approximate counting by default.
-merge_request: 31048
-author:
-type: performance

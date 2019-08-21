@@ -1,5 +1,0 @@
----
-title: Rake task to cleanup expired ActiveSession lookup keys
-merge_request: 30668
-author:
-type: performance

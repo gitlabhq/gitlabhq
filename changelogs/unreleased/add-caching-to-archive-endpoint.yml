@@ -1,5 +1,0 @@
----
-title: Return an ETag header for the archive endpoint
-merge_request: 30581
-author:
-type: added

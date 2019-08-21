@@ -1,5 +1,0 @@
----
-title: Fix pid discovery for Unicorn processes in `PidProvider`
-merge_request: 31056
-author:
-type: fixed
