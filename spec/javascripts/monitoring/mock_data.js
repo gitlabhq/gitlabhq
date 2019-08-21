@@ -1,5 +1,7 @@
 export const mockApiEndpoint = `${gl.TEST_HOST}/monitoring/mock`;
 
+export const mockProjectPath = '/frontend-fixtures/environments-project';
+
 export const metricsGroupsAPIResponse = {
   success: true,
   data: [
@@ -902,7 +904,7 @@ export const metricsDashboardResponse = {
           },
           {
             title: 'Memory Usage (Pod average)',
-            type: 'area-chart',
+            type: 'line-chart',
             y_label: 'Memory Used per Pod',
             weight: 2,
             metrics: [

@@ -8,6 +8,10 @@ export const graphTypes = {
   deploymentData: 'scatter',
 };
 
+export const symbolSizes = {
+  default: 14,
+};
+
 export const lineTypes = {
   default: 'solid',
 };
@@ -19,6 +23,11 @@ export const timeWindows = {
   oneDay: __('1 day'),
   threeDays: __('3 days'),
   oneWeek: __('1 week'),
+};
+
+export const dateFormats = {
+  timeOfDay: 'h:MM TT',
+  default: 'dd mmm yyyy, h:MMTT',
 };
 
 export const secondsIn = {
