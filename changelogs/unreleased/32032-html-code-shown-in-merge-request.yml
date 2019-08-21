@@ -1,0 +1,5 @@
+---
+title: Fix HTML rendering for fast-forward rebases in merge request widget
+merge_request: 32032
+author:
+type: fixed
