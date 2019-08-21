@@ -8,7 +8,7 @@ class MergeRequestSerializer < BaseSerializer
     entity ||=
       case opts[:serializer]
       when 'sidebar'
-        IssuableSidebarBasicEntity
+        MergeRequestSidebarBasicEntity
       when 'sidebar_extras'
         MergeRequestSidebarExtrasEntity
       when 'basic'

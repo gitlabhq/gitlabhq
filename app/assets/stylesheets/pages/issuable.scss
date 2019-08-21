@@ -126,6 +126,16 @@
   }
 }
 
+.assignee {
+  .merge-icon {
+    color: $orange-500;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    text-shadow: -1px -1px 0 $white-light, 1px -1px 0 $white-light, -1px 1px 0 $white-light, 1px 1px 0 $white-light;
+  }
+}
+
 .right-sidebar {
   position: fixed;
   top: $header-height;
@@ -202,19 +212,12 @@
     &.assignee {
       .author-link {
         display: block;
-        padding-left: 42px;
         position: relative;
 
         &:hover {
           .author {
             text-decoration: underline;
           }
-        }
-
-        .avatar {
-          left: 0;
-          position: absolute;
-          top: 0;
         }
       }
     }
@@ -352,13 +355,6 @@
 
     .title .gutter-toggle {
       margin-top: 0;
-    }
-
-    .assignee .avatar {
-      float: left;
-      margin-right: 10px;
-      margin-bottom: 0;
-      margin-left: 0;
     }
 
     .assignee .user-list .avatar {
@@ -519,6 +515,10 @@
 
     .issuable-header-btn {
       display: none;
+    }
+
+    .merge-icon {
+      font-size: 10px;
     }
 
     .multiple-users {

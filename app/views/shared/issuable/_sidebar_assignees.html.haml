@@ -20,6 +20,8 @@
     placeholder: _('Search users'),
     data: { first_user: issuable_sidebar.dig(:current_user, :username),
       current_user: true,
+      iid: issuable_sidebar[:iid],
+      issuable_type: issuable_type,
       project_id: issuable_sidebar[:project_id],
       author_id: issuable_sidebar[:author_id],
       field_name: "#{issuable_type}[assignee_ids][]",

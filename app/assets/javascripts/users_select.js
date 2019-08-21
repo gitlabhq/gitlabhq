@@ -62,6 +62,8 @@ function UsersSelect(currentUser, els, options = {}) {
         options.showCurrentUser = $dropdown.data('currentUser');
         options.todoFilter = $dropdown.data('todoFilter');
         options.todoStateFilter = $dropdown.data('todoStateFilter');
+        options.iid = $dropdown.data('iid');
+        options.issuableType = $dropdown.data('issuableType');
         showNullUser = $dropdown.data('nullUser');
         defaultNullUser = $dropdown.data('nullUserDefault');
         showMenuAbove = $dropdown.data('showMenuAbove');
@@ -239,7 +241,7 @@ function UsersSelect(currentUser, els, options = {}) {
           '<% if( avatar ) { %> <a class="author-link" href="/<%- username %>"> <img width="24" class="avatar avatar-inline s24" alt="" src="<%- avatar %>"> </a> <% } else { %> <i class="fa fa-user"></i> <% } %>',
         );
         assigneeTemplate = _.template(
-          `<% if (username) { %> <a class="author-link bold" href="/<%- username %>"> <% if( avatar ) { %> <img width="32" class="avatar avatar-inline s32" alt="" src="<%- avatar %>"> <% } %> <span class="author"><%- name %></span> <span class="username"> @<%- username %> </span> </a> <% } else { %> <span class="no-value assign-yourself"> 
+          `<% if (username) { %> <a class="author-link bold" href="/<%- username %>"> <% if( avatar ) { %> <img width="32" class="avatar avatar-inline s32" alt="" src="<%- avatar %>"> <% } %> <span class="author"><%- name %></span> <span class="username"> @<%- username %> </span> </a> <% } else { %> <span class="no-value assign-yourself">
           ${sprintf(s__('UsersSelect|No assignee - %{openingTag} assign yourself %{closingTag}'), {
             openingTag: '<a href="#" class="js-assign-yourself">',
             closingTag: '</a>',
@@ -423,6 +425,8 @@ function UsersSelect(currentUser, els, options = {}) {
             const { $el, e, isMarking } = options;
             const user = options.selectedObj;
 
+            $el.tooltip('dispose');
+
             if ($dropdown.hasClass('js-multiselect')) {
               const isActive = $el.hasClass('is-active');
               const previouslySelected = $dropdown
@@ -570,20 +574,11 @@ function UsersSelect(currentUser, els, options = {}) {
                 user.name,
               )}</a></li>`;
             } else {
-              img = "<img src='" + avatar + "' class='avatar avatar-inline' width='32' />";
+              // 0 margin, because it's now handled by a wrapper
+              img = "<img src='" + avatar + "' class='avatar avatar-inline m-0' width='32' />";
             }
 
-            return `
-            <li data-user-id=${user.id}>
-              <a href='#' class='dropdown-menu-user-link ${selected === true ? 'is-active' : ''}'>
-                ${img}
-                <strong class='dropdown-menu-user-full-name'>
-                  ${_.escape(user.name)}
-                </strong>
-                ${username ? `<span class='dropdown-menu-user-username'>${username}</span>` : ''}
-              </a>
-            </li>
-          `;
+            return _this.renderRow(options.issuableType, user, selected, username, img);
           },
         });
       };
@@ -764,6 +759,11 @@ UsersSelect.prototype.users = function(query, options, callback) {
     author_id: options.authorId || null,
     skip_users: options.skipUsers || null,
   };
+
+  if (options.issuableType === 'merge_request') {
+    params.merge_request_iid = options.iid || null;
+  }
+
   return axios.get(url, { params }).then(({ data }) => {
     callback(data);
   });
@@ -774,6 +774,46 @@ UsersSelect.prototype.buildUrl = function(url) {
     url = gon.relative_url_root.replace(/\/$/, '') + url;
   }
   return url;
+};
+
+UsersSelect.prototype.renderRow = function(issuableType, user, selected, username, img) {
+  const tooltip = issuableType === 'merge_request' && !user.can_merge ? __('Cannot merge') : '';
+  const tooltipClass = tooltip ? `has-tooltip` : '';
+  const selectedClass = selected === true ? 'is-active' : '';
+  const linkClasses = `${selectedClass} ${tooltipClass}`;
+  const tooltipAttributes = tooltip
+    ? `data-container="body" data-placement="left" data-title="${tooltip}"`
+    : '';
+
+  return `
+    <li data-user-id=${user.id}>
+      <a href="#" class="dropdown-menu-user-link d-flex align-items-center ${linkClasses}" ${tooltipAttributes}>
+        ${this.renderRowAvatar(issuableType, user, img)}
+        <span class="d-flex flex-column overflow-hidden">
+          <strong class="dropdown-menu-user-full-name">
+            ${_.escape(user.name)}
+          </strong>
+          ${username ? `<span class="dropdown-menu-user-username">${username}</span>` : ''}
+        </span>
+      </a>
+    </li>
+  `;
+};
+
+UsersSelect.prototype.renderRowAvatar = function(issuableType, user, img) {
+  if (user.beforeDivider) {
+    return img;
+  }
+
+  const mergeIcon =
+    issuableType === 'merge_request' && !user.can_merge
+      ? '<i class="fa fa-exclamation-triangle merge-icon"></i>'
+      : '';
+
+  return `<span class="position-relative mr-2">
+    ${img}
+    ${mergeIcon}
+  </span>`;
 };
 
 export default UsersSelect;

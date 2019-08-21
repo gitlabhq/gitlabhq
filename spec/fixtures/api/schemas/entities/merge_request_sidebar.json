@@ -2,6 +2,7 @@
   "type": "object",
   "properties" : {
     "id": { "type": "integer" },
+    "iid": { "type": "integer" },
     "type": { "type": "string" },
     "author_id": { "type": "integer" },
     "project_id": { "type": "integer" },
