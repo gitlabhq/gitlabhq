@@ -31,25 +31,34 @@ describe Gitlab::SidekiqMonitor do
       end
 
       it 'raises exception' do
-        expect { monitor.within_job(jid, 'queue') }.to raise_error(described_class::CancelledError)
+        expect { monitor.within_job(jid, 'queue') }.to raise_error(
+          described_class::CancelledError)
       end
     end
   end
 
   describe '#start_working' do
-    subject { monitor.start_working }
+    subject { monitor.send(:start_working) }
+
+    before do
+      # we want to run at most once cycle
+      # we toggle `enabled?` flag after the first call
+      stub_const('Gitlab::SidekiqMonitor::RECONNECT_TIME', 0)
+      allow(monitor).to receive(:enabled?).and_return(true, false)
+
+      allow(Sidekiq.logger).to receive(:info)
+      allow(Sidekiq.logger).to receive(:warn)
+    end
 
     context 'when structured logging is used' do
-      before do
-        allow_any_instance_of(::Redis).to receive(:subscribe)
-      end
-
       it 'logs start message' do
         expect(Sidekiq.logger).to receive(:info)
           .with(
             class: described_class,
             action: 'start',
             message: 'Starting Monitor Daemon')
+
+        expect(::Gitlab::Redis::SharedState).to receive(:with)
 
         subject
       end
@@ -61,10 +70,25 @@ describe Gitlab::SidekiqMonitor do
             action: 'stop',
             message: 'Stopping Monitor Daemon')
 
+        expect(::Gitlab::Redis::SharedState).to receive(:with)
+
         subject
       end
 
-      it 'logs exception message' do
+      it 'logs StandardError message' do
+        expect(Sidekiq.logger).to receive(:warn)
+          .with(
+            class: described_class,
+            action: 'exception',
+            message: 'My Exception')
+
+        expect(::Gitlab::Redis::SharedState).to receive(:with)
+          .and_raise(StandardError, 'My Exception')
+
+        expect { subject }.not_to raise_error
+      end
+
+      it 'logs and raises Exception message' do
         expect(Sidekiq.logger).to receive(:warn)
           .with(
             class: described_class,
@@ -75,6 +99,20 @@ describe Gitlab::SidekiqMonitor do
           .and_raise(Exception, 'My Exception')
 
         expect { subject }.to raise_error(Exception, 'My Exception')
+      end
+    end
+
+    context 'when StandardError is raised' do
+      it 'does retry connection' do
+        expect(::Gitlab::Redis::SharedState).to receive(:with)
+          .and_raise(StandardError, 'My Exception')
+
+        expect(::Gitlab::Redis::SharedState).to receive(:with)
+
+        # we expect to run `process_messages` twice
+        expect(monitor).to receive(:enabled?).and_return(true, true, false)
+
+        subject
       end
     end
 
@@ -128,6 +166,19 @@ describe Gitlab::SidekiqMonitor do
     end
   end
 
+  describe '#stop' do
+    let!(:monitor_thread) { monitor.start }
+
+    it 'does stop the thread' do
+      expect(monitor_thread).to be_alive
+
+      expect { monitor.stop }.not_to raise_error
+
+      expect(monitor_thread).not_to be_alive
+      expect { monitor_thread.value }.to raise_error(Interrupt)
+    end
+  end
+
   describe '#process_job_cancel' do
     subject { monitor.send(:process_job_cancel, jid) }
 
@@ -156,6 +207,11 @@ describe Gitlab::SidekiqMonitor do
           monitor.jobs_thread[jid] = thread
         end
 
+        after do
+          thread.kill
+        rescue
+        end
+
         it 'does log cancellation message' do
           expect(Sidekiq.logger).to receive(:warn)
             .with(
@@ -175,8 +231,9 @@ describe Gitlab::SidekiqMonitor do
 
           subject.join
 
-          expect(thread).not_to be_alive
-          expect { thread.value }.to raise_error(described_class::CancelledError)
+          # we wait for the thread to be cancelled
+          # by `process_job_cancel`
+          expect { thread.join(5) }.to raise_error(described_class::CancelledError)
         end
       end
     end

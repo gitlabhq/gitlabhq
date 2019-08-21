@@ -46,7 +46,10 @@ module Gitlab
 
         if thread
           thread.wakeup if thread.alive?
-          thread.join unless Thread.current == thread
+          begin
+            thread.join unless Thread.current == thread
+          rescue Exception # rubocop:disable Lint/RescueException
+          end
           @thread = nil
         end
       end

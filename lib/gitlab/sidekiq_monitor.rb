@@ -6,6 +6,7 @@ module Gitlab
 
     NOTIFICATION_CHANNEL = 'sidekiq:cancel:notifications'.freeze
     CANCEL_DEADLINE = 24.hours.seconds
+    RECONNECT_TIME = 3.seconds
 
     # We use exception derived from `Exception`
     # to consider this as an very low-level exception
@@ -33,7 +34,8 @@ module Gitlab
           action: 'run',
           queue: queue,
           jid: jid,
-          canceled: true)
+          canceled: true
+        )
         raise CancelledError
       end
 
@@ -42,32 +44,6 @@ module Gitlab
       jobs_mutex.synchronize do
         jobs_thread.delete(jid)
       end
-    end
-
-    def start_working
-      Sidekiq.logger.info(
-        class: self.class,
-        action: 'start',
-        message: 'Starting Monitor Daemon')
-
-      ::Gitlab::Redis::SharedState.with do |redis|
-        redis.subscribe(NOTIFICATION_CHANNEL) do |on|
-          on.message do |channel, message|
-            process_message(message)
-          end
-        end
-      end
-
-      Sidekiq.logger.warn(
-        class: self.class,
-        action: 'stop',
-        message: 'Stopping Monitor Daemon')
-    rescue Exception => e # rubocop:disable Lint/RescueException
-      Sidekiq.logger.warn(
-        class: self.class,
-        action: 'exception',
-        message: e.message)
-      raise e
     end
 
     def self.cancel_job(jid)
@@ -84,12 +60,56 @@ module Gitlab
 
     private
 
+    def start_working
+      Sidekiq.logger.info(
+        class: self.class,
+        action: 'start',
+        message: 'Starting Monitor Daemon'
+      )
+
+      while enabled?
+        process_messages
+        sleep(RECONNECT_TIME)
+      end
+
+    ensure
+      Sidekiq.logger.warn(
+        class: self.class,
+        action: 'stop',
+        message: 'Stopping Monitor Daemon'
+      )
+    end
+
+    def stop_working
+      thread.raise(Interrupt) if thread.alive?
+    end
+
+    def process_messages
+      ::Gitlab::Redis::SharedState.with do |redis|
+        redis.subscribe(NOTIFICATION_CHANNEL) do |on|
+          on.message do |channel, message|
+            process_message(message)
+          end
+        end
+      end
+    rescue Exception => e # rubocop:disable Lint/RescueException
+      Sidekiq.logger.warn(
+        class: self.class,
+        action: 'exception',
+        message: e.message
+      )
+
+      # we re-raise system exceptions
+      raise e unless e.is_a?(StandardError)
+    end
+
     def process_message(message)
       Sidekiq.logger.info(
         class: self.class,
         channel: NOTIFICATION_CHANNEL,
         message: 'Received payload on channel',
-        payload: message)
+        payload: message
+      )
 
       message = safe_parse(message)
       return unless message
@@ -115,14 +135,16 @@ module Gitlab
 
       Thread.new do
         # try to find a thread, but with guaranteed
-        # handle that this thread corresponds to actually running job
+        # that handle for thread corresponds to actually
+        # running job
         find_thread_with_lock(jid) do |thread|
           Sidekiq.logger.warn(
             class: self.class,
             action: 'cancel',
             message: 'Canceling thread with CancelledError',
             jid: jid,
-            thread_id: thread.object_id)
+            thread_id: thread.object_id
+          )
 
           thread&.raise(CancelledError)
         end
