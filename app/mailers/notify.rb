@@ -125,9 +125,8 @@ class Notify < BaseMailer
   def mail_thread(model, headers = {})
     add_project_headers
     add_unsubscription_headers_and_links
+    add_model_headers(model)
 
-    headers["X-GitLab-#{model.class.name}-ID"] = model.id
-    headers["X-GitLab-#{model.class.name}-IID"] = model.iid if model.respond_to?(:iid)
     headers['X-GitLab-Reply-Key'] = reply_key
 
     @reason = headers['X-GitLab-NotificationReason']
@@ -194,6 +193,18 @@ class Notify < BaseMailer
 
   def reply_key
     @reply_key ||= SentNotification.reply_key
+  end
+
+  # This method applies threading headers to the email to identify
+  # the instance we are discussing.
+  #
+  # All model instances must have `#id`, and may implement `#iid`.
+  def add_model_headers(object)
+    # Use replacement so we don't strip the module.
+    prefix = "X-GitLab-#{object.class.name.gsub(/::/, '-')}"
+
+    headers["#{prefix}-ID"] = object.id
+    headers["#{prefix}-IID"] = object.iid if object.respond_to?(:iid)
   end
 
   def add_project_headers
