@@ -27,7 +27,7 @@ If that's not the case or if you have an external Prometheus instance or an HA s
 you should
 [configure it manually](../../../user/project/integrations/prometheus.md#manual-configuration-of-prometheus).
 
-## Taking action on Prometheus alerts **[ULTIMATE]**
+## Taking action on Prometheus alerts **(ULTIMATE)**
 
 You can [add a webhook](../../../user/project/integrations/prometheus.md#external-prometheus-instances)
 to the Prometheus config in order for GitLab to receive notifications of any alerts.
