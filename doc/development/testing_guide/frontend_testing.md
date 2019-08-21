@@ -232,7 +232,7 @@ module. GitLab has a custom `spyOnDependency` method which utilizes
 [babel-plugin-rewire](https://github.com/speedskater/babel-plugin-rewire) to
 achieve this. It can be used like so:
 
-```js
+```javascript
 // my_module.js
 import { visitUrl } from '~/lib/utils/url_utility';
 
@@ -241,7 +241,7 @@ export default function doSomething() {
 }
 ```
 
-```js
+```javascript
 // my_module_spec.js
 import doSomething from '~/my_module';
 
@@ -847,7 +847,7 @@ See also the [RSpec testing guidelines](../testing_guide/best_practices.md#rspec
 
 A `:js` flag is added to the test to make sure the full environment is loaded.
 
-```js
+```ruby
 scenario 'successfully', :js do
   sign_in(create(:admin))
 end
@@ -857,7 +857,7 @@ The steps of each test are written using capybara methods ([documentation](https
 
 Bear in mind <abbr title="XMLHttpRequest">XHR</abbr> calls might require you to use `wait_for_requests` in between steps, like so:
 
-```rspec
+```ruby
 find('.form-control').native.send_keys(:enter)
 
 wait_for_requests
@@ -871,7 +871,7 @@ expect(page).not_to have_selector('.card')
 
 We have a helper available to make testing actions easier, as per [official documentation](https://vuex.vuejs.org/guide/testing.html):
 
-```js
+```javascript
 testAction(
   actions.actionName, // action
   { }, // params to be passed to action
@@ -899,7 +899,7 @@ To make mounting a Vue component easier and more readable, we have a few helpers
 
 Examples of usage:
 
-```js
+```javascript
 beforeEach(() => {
   vm = createComponentWithStore(Component, store);
 
@@ -909,7 +909,7 @@ beforeEach(() => {
 });
 ```
 
-```js
+```javascript
 beforeEach(() => {
   vm = mountComponentWithStore(Component, {
     el: '#dummy-element',
@@ -921,7 +921,7 @@ beforeEach(() => {
 
 Don't forget to clean up:
 
-```js
+```javascript
 afterEach(() => {
   vm.$destroy();
 });
