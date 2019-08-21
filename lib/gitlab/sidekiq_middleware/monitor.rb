@@ -8,8 +8,12 @@ module Gitlab
           yield
         end
       rescue Gitlab::SidekiqMonitor::CancelledError
+        # push job to DeadSet
+        payload = ::Sidekiq.dump_json(job)
+        ::Sidekiq::DeadSet.new.kill(payload, notify_failure: false)
+
         # ignore retries
-        raise Sidekiq::JobRetry::Skip
+        raise ::Sidekiq::JobRetry::Skip
       end
     end
   end

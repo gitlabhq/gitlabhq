@@ -33,8 +33,16 @@ describe Gitlab::SidekiqMiddleware::Monitor do
         end
       end
 
-      it 'does skip this job' do
+      it 'skips the job' do
         expect { subject }.to raise_error(Sidekiq::JobRetry::Skip)
+      end
+
+      it 'puts job in DeadSet' do
+        ::Sidekiq::DeadSet.new.clear
+
+        expect do
+          subject rescue Sidekiq::JobRetry::Skip
+        end.to change { ::Sidekiq::DeadSet.new.size }.by(1)
       end
     end
   end
