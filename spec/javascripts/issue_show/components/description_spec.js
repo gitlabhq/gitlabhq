@@ -1,5 +1,6 @@
 import $ from 'jquery';
 import Vue from 'vue';
+import '~/behaviors/markdown/render_gfm';
 import Description from '~/issue_show/components/description.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
@@ -91,6 +92,7 @@ describe('Description component', () => {
     let TaskList;
 
     beforeEach(() => {
+      vm.$destroy();
       vm = mountComponent(
         DescriptionComponent,
         Object.assign({}, props, {
