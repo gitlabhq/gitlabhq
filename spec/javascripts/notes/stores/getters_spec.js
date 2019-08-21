@@ -14,6 +14,13 @@ import {
 
 const discussionWithTwoUnresolvedNotes = 'merge_requests/resolved_diff_discussion.json';
 
+// Helper function to ensure that we're using the same schema across tests.
+const createDiscussionNeighborParams = (discussionId, diffOrder, step) => ({
+  discussionId,
+  diffOrder,
+  step,
+});
+
 describe('Getters Notes Store', () => {
   let state;
 
@@ -25,7 +32,6 @@ describe('Getters Notes Store', () => {
       targetNoteHash: 'hash',
       lastFetchedAt: 'timestamp',
       isNotesFetched: false,
-
       notesData: notesDataMock,
       userData: userDataMock,
       noteableData: noteableDataMock,
@@ -244,62 +250,104 @@ describe('Getters Notes Store', () => {
     });
   });
 
-  describe('nextUnresolvedDiscussionId', () => {
-    const localGetters = {
-      unresolvedDiscussionsIdsOrdered: () => ['123', '456', '789'],
-    };
-
-    it('should return the ID of the discussion after the ID provided', () => {
-      expect(getters.nextUnresolvedDiscussionId(state, localGetters)('123')).toBe('456');
-      expect(getters.nextUnresolvedDiscussionId(state, localGetters)('456')).toBe('789');
-      expect(getters.nextUnresolvedDiscussionId(state, localGetters)('789')).toBe('123');
-    });
-  });
-
-  describe('previousUnresolvedDiscussionId', () => {
-    describe('with unresolved discussions', () => {
-      const localGetters = {
+  describe('findUnresolvedDiscussionIdNeighbor', () => {
+    let localGetters;
+    beforeEach(() => {
+      localGetters = {
         unresolvedDiscussionsIdsOrdered: () => ['123', '456', '789'],
       };
+    });
 
-      it('with bogus returns falsey', () => {
-        expect(getters.previousUnresolvedDiscussionId(state, localGetters)('bogus')).toBe('456');
-      });
+    [
+      { step: 1, id: '123', expected: '456' },
+      { step: 1, id: '456', expected: '789' },
+      { step: 1, id: '789', expected: '123' },
+      { step: -1, id: '123', expected: '789' },
+      { step: -1, id: '456', expected: '123' },
+      { step: -1, id: '789', expected: '456' },
+    ].forEach(({ step, id, expected }) => {
+      it(`with step ${step} and id ${id}, returns next value`, () => {
+        const params = createDiscussionNeighborParams(id, true, step);
 
-      [
-        { id: '123', expected: '789' },
-        { id: '456', expected: '123' },
-        { id: '789', expected: '456' },
-      ].forEach(({ id, expected }) => {
-        it(`with ${id}, returns previous value`, () => {
-          expect(getters.previousUnresolvedDiscussionId(state, localGetters)(id)).toBe(expected);
-        });
+        expect(getters.findUnresolvedDiscussionIdNeighbor(state, localGetters)(params)).toBe(
+          expected,
+        );
       });
     });
 
     describe('with 1 unresolved discussion', () => {
-      const localGetters = {
-        unresolvedDiscussionsIdsOrdered: () => ['123'],
-      };
-
-      it('with bogus returns id', () => {
-        expect(getters.previousUnresolvedDiscussionId(state, localGetters)('bogus')).toBe('123');
+      beforeEach(() => {
+        localGetters = {
+          unresolvedDiscussionsIdsOrdered: () => ['123'],
+        };
       });
 
-      it('with match, returns value', () => {
-        expect(getters.previousUnresolvedDiscussionId(state, localGetters)('123')).toEqual('123');
+      [{ step: 1, id: '123', expected: '123' }, { step: -1, id: '123', expected: '123' }].forEach(
+        ({ step, id, expected }) => {
+          it(`with step ${step} and match, returns only value`, () => {
+            const params = createDiscussionNeighborParams(id, true, step);
+
+            expect(getters.findUnresolvedDiscussionIdNeighbor(state, localGetters)(params)).toBe(
+              expected,
+            );
+          });
+        },
+      );
+
+      it('with no match, returns only value', () => {
+        const params = createDiscussionNeighborParams('bogus', true, 1);
+
+        expect(getters.findUnresolvedDiscussionIdNeighbor(state, localGetters)(params)).toBe('123');
       });
     });
 
     describe('with 0 unresolved discussions', () => {
-      const localGetters = {
-        unresolvedDiscussionsIdsOrdered: () => [],
-      };
+      beforeEach(() => {
+        localGetters = {
+          unresolvedDiscussionsIdsOrdered: () => [],
+        };
+      });
 
-      it('returns undefined', () => {
-        expect(
-          getters.previousUnresolvedDiscussionId(state, localGetters)('bogus'),
-        ).toBeUndefined();
+      [{ step: 1 }, { step: -1 }].forEach(({ step }) => {
+        it(`with step ${step}, returns undefined`, () => {
+          const params = createDiscussionNeighborParams('bogus', true, step);
+
+          expect(
+            getters.findUnresolvedDiscussionIdNeighbor(state, localGetters)(params),
+          ).toBeUndefined();
+        });
+      });
+    });
+  });
+
+  describe('findUnresolvedDiscussionIdNeighbor aliases', () => {
+    let neighbor;
+    let findUnresolvedDiscussionIdNeighbor;
+    let localGetters;
+
+    beforeEach(() => {
+      neighbor = {};
+      findUnresolvedDiscussionIdNeighbor = jasmine.createSpy().and.returnValue(neighbor);
+      localGetters = { findUnresolvedDiscussionIdNeighbor };
+    });
+
+    describe('nextUnresolvedDiscussionId', () => {
+      it('should return result of find neighbor', () => {
+        const expectedParams = createDiscussionNeighborParams('123', true, 1);
+        const result = getters.nextUnresolvedDiscussionId(state, localGetters)('123', true);
+
+        expect(findUnresolvedDiscussionIdNeighbor).toHaveBeenCalledWith(expectedParams);
+        expect(result).toBe(neighbor);
+      });
+    });
+
+    describe('previosuUnresolvedDiscussionId', () => {
+      it('should return result of find neighbor', () => {
+        const expectedParams = createDiscussionNeighborParams('123', true, -1);
+        const result = getters.previousUnresolvedDiscussionId(state, localGetters)('123', true);
+
+        expect(findUnresolvedDiscussionIdNeighbor).toHaveBeenCalledWith(expectedParams);
+        expect(result).toBe(neighbor);
       });
     });
   });

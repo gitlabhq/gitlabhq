@@ -171,26 +171,33 @@ export const isLastUnresolvedDiscussion = (state, getters) => (discussionId, dif
   return lastDiscussionId === discussionId;
 };
 
+export const findUnresolvedDiscussionIdNeighbor = (state, getters) => ({
+  discussionId,
+  diffOrder,
+  step,
+}) => {
+  const ids = getters.unresolvedDiscussionsIdsOrdered(diffOrder);
+  const index = ids.indexOf(discussionId) + step;
+
+  if (index < 0 && step < 0) {
+    return ids[ids.length - 1];
+  }
+
+  if (index === ids.length && step > 0) {
+    return ids[0];
+  }
+
+  return ids[index];
+};
+
 // Gets the ID of the discussion following the one provided, respecting order (diff or date)
 // @param {Boolean} discussionId - id of the current discussion
 // @param {Boolean} diffOrder - is ordered by diff?
-export const nextUnresolvedDiscussionId = (state, getters) => (discussionId, diffOrder) => {
-  const idsOrdered = getters.unresolvedDiscussionsIdsOrdered(diffOrder);
-  const currentIndex = idsOrdered.indexOf(discussionId);
-  const slicedIds = idsOrdered.slice(currentIndex + 1, currentIndex + 2);
+export const nextUnresolvedDiscussionId = (state, getters) => (discussionId, diffOrder) =>
+  getters.findUnresolvedDiscussionIdNeighbor({ discussionId, diffOrder, step: 1 });
 
-  // Get the first ID if there is none after the currentIndex
-  return slicedIds.length ? idsOrdered.slice(currentIndex + 1, currentIndex + 2)[0] : idsOrdered[0];
-};
-
-export const previousUnresolvedDiscussionId = (state, getters) => (discussionId, diffOrder) => {
-  const idsOrdered = getters.unresolvedDiscussionsIdsOrdered(diffOrder);
-  const currentIndex = idsOrdered.indexOf(discussionId);
-  const slicedIds = idsOrdered.slice(currentIndex - 1, currentIndex);
-
-  // Get the last ID if there is none after the currentIndex
-  return slicedIds.length ? slicedIds[0] : idsOrdered[idsOrdered.length - 1];
-};
+export const previousUnresolvedDiscussionId = (state, getters) => (discussionId, diffOrder) =>
+  getters.findUnresolvedDiscussionIdNeighbor({ discussionId, diffOrder, step: -1 });
 
 // @param {Boolean} diffOrder - is ordered by diff?
 export const firstUnresolvedDiscussionId = (state, getters) => diffOrder => {
