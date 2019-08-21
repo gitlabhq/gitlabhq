@@ -619,6 +619,42 @@ See also [Notes on testing Vue components](../fe_guide/vue.html#testing-vue-comp
 
 Unit tests are on the lowest abstraction level and typically test functionality that is not directly perceivable by a user.
 
+```mermaid
+graph RL
+    plain[Plain JavaScript];
+    Vue[Vue Components];
+    feature-flags[Feature Flags];
+    license-checks[License Checks];
+
+    plain---Vuex;
+    plain---GraphQL;
+    Vue---plain;
+    Vue---Vuex;
+    Vue---GraphQL;
+    browser---plain;
+    browser---Vue;
+    plain---backend;
+    Vuex---backend;
+    GraphQL---backend;
+    Vue---backend;
+    backend---database;
+    backend---feature-flags;
+    backend---license-checks;
+
+    class plain tested;
+    class Vuex tested;
+
+    classDef node color:#909090,fill:#f0f0f0,stroke-width:2px,stroke:#909090
+    classDef label stroke-width:0;
+    classDef tested color:#000000,fill:#a0c0ff,stroke:#6666ff,stroke-width:2px,stroke-dasharray: 5, 5;
+
+    subgraph " "
+    tested;
+    mocked;
+    class tested tested;
+    end
+```
+
 #### When to use unit tests
 
 <details>
@@ -711,6 +747,41 @@ Unit tests are on the lowest abstraction level and typically test functionality 
 
 Component tests cover the state of a single component that is perceivable by a user depending on external signals such as user input, events fired from other components, or application state.
 
+```mermaid
+graph RL
+    plain[Plain JavaScript];
+    Vue[Vue Components];
+    feature-flags[Feature Flags];
+    license-checks[License Checks];
+
+    plain---Vuex;
+    plain---GraphQL;
+    Vue---plain;
+    Vue---Vuex;
+    Vue---GraphQL;
+    browser---plain;
+    browser---Vue;
+    plain---backend;
+    Vuex---backend;
+    GraphQL---backend;
+    Vue---backend;
+    backend---database;
+    backend---feature-flags;
+    backend---license-checks;
+
+    class Vue tested;
+
+    classDef node color:#909090,fill:#f0f0f0,stroke-width:2px,stroke:#909090
+    classDef label stroke-width:0;
+    classDef tested color:#000000,fill:#a0c0ff,stroke:#6666ff,stroke-width:2px,stroke-dasharray: 5, 5;
+
+    subgraph " "
+    tested;
+    mocked;
+    class tested tested;
+    end
+```
+
 #### When to use component tests
 
 - Vue components
@@ -781,6 +852,46 @@ Component tests cover the state of a single component that is perceivable by a u
 Integration tests cover the interaction between all components on a single page.
 Their abstraction level is comparable to how a user would interact with the UI.
 
+```mermaid
+graph RL
+    plain[Plain JavaScript];
+    Vue[Vue Components];
+    feature-flags[Feature Flags];
+    license-checks[License Checks];
+
+    plain---Vuex;
+    plain---GraphQL;
+    Vue---plain;
+    Vue---Vuex;
+    Vue---GraphQL;
+    browser---plain;
+    browser---Vue;
+    plain---backend;
+    Vuex---backend;
+    GraphQL---backend;
+    Vue---backend;
+    backend---database;
+    backend---feature-flags;
+    backend---license-checks;
+
+    class plain tested;
+    class Vue tested;
+    class Vuex tested;
+    class GraphQL tested;
+    class browser tested;
+    linkStyle 0,1,2,3,4,5,6 stroke:#6666ff,stroke-width:2px,stroke-dasharray: 5, 5;
+
+    classDef node color:#909090,fill:#f0f0f0,stroke-width:2px,stroke:#909090
+    classDef label stroke-width:0;
+    classDef tested color:#000000,fill:#a0c0ff,stroke:#6666ff,stroke-width:2px,stroke-dasharray: 5, 5;
+
+    subgraph " "
+    tested;
+    mocked;
+    class tested tested;
+    end
+```
+
 #### When to use integration tests
 
 <details>
@@ -837,6 +948,47 @@ In contrast to [frontend integration tests](#frontend-integration-tests), featur
 This also implies that database queries are executed which makes this category significantly slower.
 
 See also the [RSpec testing guidelines](../testing_guide/best_practices.md#rspec).
+
+```mermaid
+graph RL
+    plain[Plain JavaScript];
+    Vue[Vue Components];
+    feature-flags[Feature Flags];
+    license-checks[License Checks];
+
+    plain---Vuex;
+    plain---GraphQL;
+    Vue---plain;
+    Vue---Vuex;
+    Vue---GraphQL;
+    browser---plain;
+    browser---Vue;
+    plain---backend;
+    Vuex---backend;
+    GraphQL---backend;
+    Vue---backend;
+    backend---database;
+    backend---feature-flags;
+    backend---license-checks;
+
+    class backend tested;
+    class plain tested;
+    class Vue tested;
+    class Vuex tested;
+    class GraphQL tested;
+    class browser tested;
+    linkStyle 0,1,2,3,4,5,6,7,8,9,10 stroke:#6666ff,stroke-width:2px,stroke-dasharray: 5, 5;
+
+    classDef node color:#909090,fill:#f0f0f0,stroke-width:2px,stroke:#909090
+    classDef label stroke-width:0;
+    classDef tested color:#000000,fill:#a0c0ff,stroke:#6666ff,stroke-width:2px,stroke-dasharray: 5, 5;
+
+    subgraph " "
+    tested;
+    mocked;
+    class tested tested;
+    end
+```
 
 #### When to use feature tests
 
