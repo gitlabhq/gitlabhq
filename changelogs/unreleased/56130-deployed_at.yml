@@ -1,0 +1,5 @@
+---
+title: Replace finished_at with deployed_at for the internal API Deployment entity
+merge_request: 32000
+author:
+type: other

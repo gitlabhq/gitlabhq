@@ -32,8 +32,8 @@ describe DeploymentEntity do
     expect(subject).to include(:created_at)
   end
 
-  it 'exposes finished_at' do
-    expect(subject).to include(:finished_at)
+  it 'exposes deployed_at' do
+    expect(subject).to include(:deployed_at)
   end
 
   context 'when the pipeline has another manual action' do
