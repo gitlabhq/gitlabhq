@@ -318,6 +318,102 @@ describe ProjectsController do
     end
   end
 
+  describe 'POST #archive' do
+    let(:group) { create(:group) }
+    let(:project) { create(:project, group: group) }
+
+    before do
+      sign_in(user)
+    end
+
+    context 'for a user with the ability to archive a project' do
+      before do
+        group.add_owner(user)
+
+        post :archive, params: {
+          namespace_id: project.namespace.path,
+          id: project.path
+        }
+      end
+
+      it 'archives the project' do
+        expect(project.reload.archived?).to be_truthy
+      end
+
+      it 'redirects to projects path' do
+        expect(response).to have_gitlab_http_status(302)
+        expect(response).to redirect_to(project_path(project))
+      end
+    end
+
+    context 'for a user that does not have the ability to archive a project' do
+      before do
+        project.add_maintainer(user)
+
+        post :archive, params: {
+          namespace_id: project.namespace.path,
+          id: project.path
+        }
+      end
+
+      it 'does not archive the project' do
+        expect(project.reload.archived?).to be_falsey
+      end
+
+      it 'returns 404' do
+        expect(response).to have_gitlab_http_status(404)
+      end
+    end
+  end
+
+  describe 'POST #unarchive' do
+    let(:group) { create(:group) }
+    let(:project) { create(:project, :archived, group: group) }
+
+    before do
+      sign_in(user)
+    end
+
+    context 'for a user with the ability to unarchive a project' do
+      before do
+        group.add_owner(user)
+
+        post :unarchive, params: {
+          namespace_id: project.namespace.path,
+          id: project.path
+        }
+      end
+
+      it 'unarchives the project' do
+        expect(project.reload.archived?).to be_falsey
+      end
+
+      it 'redirects to projects path' do
+        expect(response).to have_gitlab_http_status(302)
+        expect(response).to redirect_to(project_path(project))
+      end
+    end
+
+    context 'for a user that does not have the ability to unarchive a project' do
+      before do
+        project.add_maintainer(user)
+
+        post :unarchive, params: {
+          namespace_id: project.namespace.path,
+          id: project.path
+        }
+      end
+
+      it 'does not unarchive the project' do
+        expect(project.reload.archived?).to be_truthy
+      end
+
+      it 'returns 404' do
+        expect(response).to have_gitlab_http_status(404)
+      end
+    end
+  end
+
   describe '#housekeeping' do
     let(:group) { create(:group) }
     let(:project) { create(:project, group: group) }
