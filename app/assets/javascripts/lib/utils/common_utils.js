@@ -732,6 +732,66 @@ export const NavigationType = {
 };
 
 /**
+ * Method to perform case-insensitive search for a string
+ * within multiple properties and return object containing
+ * properties in case there are multiple matches or `null`
+ * if there's no match.
+ *
+ * Eg; Suppose we want to allow user to search using for a string
+ *     within `iid`, `title`, `url` or `reference` props of a target object;
+ *
+ *     const objectToSearch = {
+ *       "iid": 1,
+ *       "title": "Error omnis quos consequatur ullam a vitae sed omnis libero cupiditate. &3",
+ *       "url": "/groups/gitlab-org/-/epics/1",
+ *       "reference": "&1",
+ *     };
+ *
+ *    Following is how we call searchBy and the return values it will yield;
+ *
+ *    -  `searchBy('omnis', objectToSearch);`: This will return `{ title: ... }` as our
+ *        query was found within title prop we only return that.
+ *    -  `searchBy('1', objectToSearch);`: This will return `{ "iid": ..., "reference": ..., "url": ... }`.
+ *    -  `searchBy('https://gitlab.com/groups/gitlab-org/-/epics/1', objectToSearch);`:
+ *        This will return `{ "url": ... }`.
+ *    -  `searchBy('foo', objectToSearch);`: This will return `null` as no property value
+ *        matched with our query.
+ *
+ *    You can learn more about behaviour of this method by referring to tests
+ *    within `spec/javascripts/lib/utils/common_utils_spec.js`.
+ *
+ * @param {string} query String to search for
+ * @param {object} searchSpace Object containing properties to search in for `query`
+ */
+export const searchBy = (query = '', searchSpace = {}) => {
+  const targetKeys = searchSpace !== null ? Object.keys(searchSpace) : [];
+
+  if (!query || !targetKeys.length) {
+    return null;
+  }
+
+  const normalizedQuery = query.toLowerCase();
+  const matches = targetKeys
+    .filter(item => {
+      const searchItem = `${searchSpace[item]}`.toLowerCase();
+
+      return (
+        searchItem.indexOf(normalizedQuery) > -1 ||
+        normalizedQuery.indexOf(searchItem) > -1 ||
+        normalizedQuery === searchItem
+      );
+    })
+    .reduce((acc, prop) => {
+      const match = acc;
+      match[prop] = searchSpace[prop];
+
+      return acc;
+    }, {});
+
+  return Object.keys(matches).length ? matches : null;
+};
+
+/**
  * Checks if the given Label has a special syntax `::` in
  * it's title.
  *

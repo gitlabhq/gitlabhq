@@ -22,6 +22,8 @@ export default Vue.extend({
   components: {
     AssigneeTitle,
     Assignees,
+    SidebarEpicsSelect: () =>
+      import('ee_component/sidebar/components/sidebar_item_epics_select.vue'),
     RemoveBtn,
     Subscriptions,
     TimeTracker,
