@@ -39,6 +39,10 @@ module QA
             element :commit_button
           end
 
+          view 'app/assets/javascripts/ide/components/commit_sidebar/new_merge_request_option.vue' do
+            element :start_new_mr_checkbox
+          end
+
           def has_file?(file_name)
             within_element(:file_list) do
               page.has_content? file_name
@@ -100,6 +104,7 @@ module QA
             # animation is still in process even when the buttons have the
             # expected visibility.
             commit_success_msg_shown = retry_until do
+              uncheck_element :start_new_mr_checkbox
               click_element :commit_button
 
               wait(reload: false) do

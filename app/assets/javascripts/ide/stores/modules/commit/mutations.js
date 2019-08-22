@@ -24,7 +24,4 @@ export default {
       shouldCreateMR: shouldCreateMR === undefined ? !state.shouldCreateMR : shouldCreateMR,
     });
   },
-  [types.INTERACT_WITH_NEW_MR](state) {
-    Object.assign(state, { interactedWithNewMR: true });
-  },
 };

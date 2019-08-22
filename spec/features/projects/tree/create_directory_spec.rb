@@ -32,10 +32,12 @@ describe 'Multi-file editor new directory', :js do
       click_button('Create directory')
     end
 
+    expect(page).to have_content('folder name')
+
     first('.ide-tree-actions button').click
 
-    page.within('.modal-dialog') do
-      find('.form-control').set('file name')
+    page.within('.modal') do
+      find('.form-control').set('folder name/file name')
 
       click_button('Create file')
     end
@@ -44,13 +46,18 @@ describe 'Multi-file editor new directory', :js do
 
     find('.js-ide-commit-mode').click
 
-    find('.multi-file-commit-list-item').hover
     click_button 'Stage'
 
     fill_in('commit-message', with: 'commit message ide')
 
+    find(:css, ".js-ide-commit-new-mr input").set(false)
+
+    wait_for_requests
+
     page.within '.multi-file-commit-form' do
       click_button('Commit')
+
+      wait_for_requests
     end
 
     find('.js-ide-edit-mode').click

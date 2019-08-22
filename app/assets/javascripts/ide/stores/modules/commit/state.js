@@ -3,6 +3,5 @@ export default () => ({
   commitAction: '1',
   newBranchName: '',
   submitCommitLoading: false,
-  shouldCreateMR: false,
-  interactedWithNewMR: false,
+  shouldCreateMR: true,
 });

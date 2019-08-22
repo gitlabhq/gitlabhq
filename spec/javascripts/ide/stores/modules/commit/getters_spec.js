@@ -1,6 +1,6 @@
 import commitState from '~/ide/stores/modules/commit/state';
-import consts from '~/ide/stores/modules/commit/constants';
 import * as getters from '~/ide/stores/modules/commit/getters';
+import consts from '~/ide/stores/modules/commit/constants';
 
 describe('IDE commit module getters', () => {
   let state;
@@ -55,15 +55,15 @@ describe('IDE commit module getters', () => {
       });
     });
 
-    it('defualts to currentBranchId', () => {
-      expect(getters.branchName(state, null, rootState)).toBe('master');
+    it('defaults to currentBranchId when not committing to a new branch', () => {
+      localGetters.isCreatingNewBranch = false;
+
+      expect(getters.branchName(state, localGetters, rootState)).toBe('master');
     });
 
-    describe('COMMIT_TO_NEW_BRANCH', () => {
+    describe('commit to a new branch', () => {
       beforeEach(() => {
-        Object.assign(state, {
-          commitAction: consts.COMMIT_TO_NEW_BRANCH,
-        });
+        localGetters.isCreatingNewBranch = true;
       });
 
       it('uses newBranchName when not empty', () => {
@@ -142,6 +142,154 @@ describe('IDE commit module getters', () => {
           'Update index.js\nDeleted test-file',
         );
       });
+    });
+  });
+
+  describe('isCreatingNewBranch', () => {
+    it('returns false if NOT creating a new branch', () => {
+      state.commitAction = consts.COMMIT_TO_CURRENT_BRANCH;
+
+      expect(getters.isCreatingNewBranch(state)).toBeFalsy();
+    });
+
+    it('returns true if creating a new branch', () => {
+      state.commitAction = consts.COMMIT_TO_NEW_BRANCH;
+
+      expect(getters.isCreatingNewBranch(state)).toBeTruthy();
+    });
+  });
+
+  describe('shouldHideNewMrOption', () => {
+    let localGetters = {};
+    let rootGetters = {};
+
+    beforeEach(() => {
+      localGetters = {
+        isCreatingNewBranch: null,
+      };
+      rootGetters = {
+        isOnDefaultBranch: null,
+        hasMergeRequest: null,
+        canPushToBranch: null,
+      };
+    });
+
+    describe('NO existing MR for the branch', () => {
+      beforeEach(() => {
+        rootGetters.hasMergeRequest = false;
+      });
+
+      it('should never hide "New MR" option', () => {
+        expect(getters.shouldHideNewMrOption(state, localGetters, null, rootGetters)).toBeFalsy();
+      });
+    });
+
+    describe('existing MR for the branch', () => {
+      beforeEach(() => {
+        rootGetters.hasMergeRequest = true;
+      });
+
+      it('should NOT hide "New MR" option if user can NOT push to the current branch', () => {
+        rootGetters.canPushToBranch = false;
+
+        expect(getters.shouldHideNewMrOption(state, localGetters, null, rootGetters)).toBeFalsy();
+      });
+
+      it('should hide "New MR" option if user can push to the current branch', () => {
+        rootGetters.canPushToBranch = true;
+
+        expect(getters.shouldHideNewMrOption(state, localGetters, null, rootGetters)).toBeTruthy();
+      });
+    });
+
+    describe('user can NOT push the branch', () => {
+      beforeEach(() => {
+        rootGetters.canPushToBranch = false;
+      });
+
+      it('should never hide "New MR" option', () => {
+        expect(getters.shouldHideNewMrOption(state, localGetters, null, rootGetters)).toBeFalsy();
+      });
+    });
+
+    describe('user can push to the branch', () => {
+      beforeEach(() => {
+        rootGetters.canPushToBranch = true;
+      });
+
+      it('should NOT hide "New MR" option if there is NO existing MR for the current branch', () => {
+        rootGetters.hasMergeRequest = false;
+
+        expect(getters.shouldHideNewMrOption(state, localGetters, null, rootGetters)).toBeFalsy();
+      });
+
+      it('should hide "New MR" option if there is existing MR for the current branch', () => {
+        rootGetters.hasMergeRequest = true;
+
+        expect(getters.shouldHideNewMrOption(state, localGetters, null, rootGetters)).toBeTruthy();
+      });
+    });
+
+    describe('default branch', () => {
+      beforeEach(() => {
+        rootGetters.isOnDefaultBranch = true;
+      });
+
+      describe('committing to the same branch', () => {
+        beforeEach(() => {
+          localGetters.isCreatingNewBranch = false;
+          rootGetters.canPushToBranch = true;
+        });
+
+        it('should hide "New MR" when there is an existing MR', () => {
+          rootGetters.hasMergeRequest = true;
+
+          expect(
+            getters.shouldHideNewMrOption(state, localGetters, null, rootGetters),
+          ).toBeTruthy();
+        });
+
+        it('should hide "New MR" when there is no existing MR', () => {
+          rootGetters.hasMergeRequest = false;
+
+          expect(
+            getters.shouldHideNewMrOption(state, localGetters, null, rootGetters),
+          ).toBeTruthy();
+        });
+      });
+
+      describe('creating a new branch', () => {
+        beforeEach(() => {
+          localGetters.isCreatingNewBranch = true;
+        });
+
+        it('should NOT hide "New MR" option no matter existence of an MR or write access', () => {
+          rootGetters.hasMergeRequest = false;
+          rootGetters.canPushToBranch = true;
+
+          expect(getters.shouldHideNewMrOption(state, localGetters, null, rootGetters)).toBeFalsy();
+
+          rootGetters.hasMergeRequest = true;
+          rootGetters.canPushToBranch = true;
+
+          expect(getters.shouldHideNewMrOption(state, localGetters, null, rootGetters)).toBeFalsy();
+
+          rootGetters.hasMergeRequest = false;
+          rootGetters.canPushToBranch = false;
+
+          expect(getters.shouldHideNewMrOption(state, localGetters, null, rootGetters)).toBeFalsy();
+        });
+      });
+    });
+
+    it('should never hide "New MR" option when creating a new branch', () => {
+      localGetters.isCreatingNewBranch = true;
+
+      rootGetters.isOnDefaultBranch = false;
+      rootGetters.hasMergeRequest = true;
+      rootGetters.canPushToBranch = true;
+
+      expect(getters.shouldHideNewMrOption(state, localGetters, null, rootGetters)).toBeFalsy();
     });
   });
 });
