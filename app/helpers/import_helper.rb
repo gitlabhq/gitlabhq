@@ -45,17 +45,14 @@ module ImportHelper
   end
 
   def import_github_authorize_message
-    _('To import GitHub repositories, you first need to authorize GitLab to access the list of your GitHub repositories:')
+    _('To connect GitHub repositories, you first need to authorize GitLab to access the list of your GitHub repositories.')
   end
 
   def import_github_personal_access_token_message
-    personal_access_token_link = link_to _('Personal Access Token'), 'https://github.com/settings/tokens'
+    link_url = 'https://github.com/settings/tokens'
+    link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: link_url }
 
-    if github_import_configured?
-      _('Alternatively, you can use a %{personal_access_token_link}. When you create your Personal Access Token, you will need to select the <code>repo</code> scope, so we can display a list of your public and private repositories which are available to import.').html_safe % { personal_access_token_link: personal_access_token_link }
-    else
-      _('To import GitHub repositories, you can use a %{personal_access_token_link}. When you create your Personal Access Token, you will need to select the <code>repo</code> scope, so we can display a list of your public and private repositories which are available to import.').html_safe % { personal_access_token_link: personal_access_token_link }
-    end
+    _('Create and provide your GitHub %{link_start}Personal Access Token%{link_end}. You will need to select the <code>repo</code> scope, so we can display a list of your public and private repositories which are available to import.').html_safe % { link_start: link_start, link_end: '</a>'.html_safe }
   end
 
   def import_configure_github_admin_message

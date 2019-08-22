@@ -1,30 +1,32 @@
-- title = has_ci_cd_only_params? ? _('Connect repositories from GitHub') : _('GitHub import')
+- title = _('Authenticate with GitHub')
 - page_title title
 - breadcrumb_title title
 - header_title _("Projects"), root_path
 
-%h3.page-title
-  = icon 'github', text: _('Import repositories from GitHub')
+%h2.page-title
+  = title
 
-- if github_import_configured?
-  %p
-    = import_github_authorize_message
+%p
+  = import_github_authorize_message
 
-  = link_to _('List your GitHub repositories'), status_import_github_path(ci_cd_only: params[:ci_cd_only]), class: 'btn btn-success'
+- if github_import_configured? && !has_ci_cd_only_params?
+  = link_to icon('github', text: title), status_import_github_path, class: 'btn btn-success'
 
   %hr
 
-%p
-  = import_github_personal_access_token_message
+- unless github_import_configured? || has_ci_cd_only_params?
+  .bs-callout.bs-callout-info
+    = import_configure_github_admin_message
 
-= form_tag personal_access_token_import_github_path, method: :post, class: 'form-inline' do
+= form_tag personal_access_token_import_github_path, method: :post do
   .form-group
-    = text_field_tag :personal_access_token, '', class: 'form-control append-right-8', placeholder: _('Personal Access Token'), size: 40
-    = submit_tag _('List your GitHub repositories'), class: 'btn btn-success'
+    %label.label-bold= _('Personal Access Token')
+    = text_field_tag :personal_access_token, '', class: 'form-control', placeholder: _('e.g. %{token}') % { token: '8d3f016698e...' }
+    %span.form-text.text-muted
+      = import_github_personal_access_token_message
 
   = render_if_exists 'import/github/ci_cd_only'
 
-- unless github_import_configured?
-  %hr
-  %p
-    = import_configure_github_admin_message
+  .form-actions.d-flex.justify-content-end
+    = link_to _('Cancel'), new_project_path, class: 'btn'
+    = submit_tag _('Authenticate'), class: 'btn btn-success ml-2'

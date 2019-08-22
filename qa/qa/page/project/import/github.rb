@@ -9,7 +9,7 @@ module QA
 
           view 'app/views/import/github/new.html.haml' do
             element :personal_access_token_field, 'text_field_tag :personal_access_token' # rubocop:disable QA/ElementWithPattern
-            element :list_repos_button, "submit_tag _('List your GitHub repositories')" # rubocop:disable QA/ElementWithPattern
+            element :authenticate_button, "submit_tag _('Authenticate')" # rubocop:disable QA/ElementWithPattern
           end
 
           view 'app/assets/javascripts/import_projects/components/provider_repo_table_row.vue' do
