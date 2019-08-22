@@ -1582,7 +1582,7 @@ dashboards.
 The `license_management` report collects [Licenses](../../user/project/merge_requests/license_management.md)
 as artifacts.
 
-The collected License Management report will be uploaded to GitLab as an artifact and will
+The collected License Compliance report will be uploaded to GitLab as an artifact and will
 be automatically shown in merge requests, pipeline view and provide data for security
 dashboards.
 

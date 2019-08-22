@@ -167,7 +167,7 @@ In the **test** stage, GitLab runs various checks on the application:
 - The `sast` job runs static analysis on the current code to check for potential
   security issues and is allowed to fail([Auto SAST](index.md#auto-sast-ultimate)) **(ULTIMATE)**
 - The `license_management` job searches the application's dependencies to determine each of their
-  licenses and is allowed to fail ([Auto License Management](index.md#auto-license-management-ultimate)) **(ULTIMATE)**
+  licenses and is allowed to fail ([Auto License Compliance](index.md#auto-license-compliance-ultimate)) **(ULTIMATE)**
 
 NOTE: **Note:**
 As you might have noticed, all jobs except `test` are allowed to fail in the
