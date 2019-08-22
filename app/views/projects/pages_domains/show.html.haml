@@ -21,7 +21,7 @@
       %td
         = _("Domain")
       %td
-        = link_to @domain.url do
+        = link_to @domain.url, target: :_blank, rel: 'noopener noreferrer' do
           = @domain.url
           = icon('external-link')
     %tr
