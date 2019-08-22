@@ -2,7 +2,7 @@
 type: reference, howto
 ---
 
-# License Management **(ULTIMATE)**
+# License Compliance **(ULTIMATE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/5483)
 in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.0.
@@ -10,18 +10,18 @@ in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.0.
 ## Overview
 
 If you are using [GitLab CI/CD](../../../ci/README.md), you can search your project dependencies for their licenses
-using License Management.
+using License Compliance.
 
-You can take advantage of License Management by either [including the job](#configuration)
+You can take advantage of License Compliance by either [including the job](#configuration)
 in your existing `.gitlab-ci.yml` file or by implicitly using
-[Auto License Management](../../../topics/autodevops/index.md#auto-license-management-ultimate)
+[Auto License Compliance](../../../topics/autodevops/index.md#auto-license-compliance-ultimate)
 that is provided by [Auto DevOps](../../../topics/autodevops/index.md).
 
-GitLab checks the License Management report, compares the licenses between the
+GitLab checks the License Compliance report, compares the licenses between the
 source and target branches, and shows the information right on the merge request.
 Blacklisted licenses will be clearly visible with an `x` red icon next to them
 as well as new licenses which need a decision from you. In addition, you can
-[manually approve or blacklist](#project-policies-for-license-management)
+[manually approve or blacklist](#project-policies-for-license-compliance)
 licenses in your project's settings.
 
 NOTE: **Note:**
@@ -31,7 +31,7 @@ will be displayed in the merge request area. That is the case when you add the
 Consecutive merge requests will have something to compare to and the license
 management report will be shown properly.
 
-![License Management Widget](img/license_management.png)
+![License Compliance Widget](img/license_management.png)
 
 If you are a project or group Maintainer, you can click on a license to be given
 the choice to approve it or blacklist it.
@@ -66,12 +66,12 @@ The following languages and package managers are supported.
 
 ## Requirements
 
-To run a License Management scanning job, you need GitLab Runner with the
+To run a License Compliance scanning job, you need GitLab Runner with the
 [`docker` executor](https://docs.gitlab.com/runner/executors/docker.html).
 
 ## Configuration
 
-For GitLab 11.9 and later, to enable License Management, you must
+For GitLab 11.9 and later, to enable License Compliance, you must
 [include](../../../ci/yaml/README.md#includetemplate) the
 [`License-Management.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/lib/gitlab/ci/templates/Security/License-Management.gitlab-ci.yml)
 that's provided as a part of your GitLab installation.
@@ -89,14 +89,14 @@ The included template will create a `license_management` job in your CI/CD pipel
 and scan your dependencies to find their licenses.
 
 The results will be saved as a
-[License Management report artifact](../../../ci/yaml/README.md#artifactsreportslicense_management-ultimate)
+[License Compliance report artifact](../../../ci/yaml/README.md#artifactsreportslicense_management-ultimate)
 that you can later download and analyze. Due to implementation limitations, we
-always take the latest License Management artifact available. Behind the scenes, the
-[GitLab License Management Docker image](https://gitlab.com/gitlab-org/security-products/license-management)
+always take the latest License Compliance artifact available. Behind the scenes, the
+[GitLab License Compliance Docker image](https://gitlab.com/gitlab-org/security-products/license-management)
 is used to detect the languages/frameworks and in turn analyzes the licenses.
 
-The License Management settings can be changed through environment variables by using the
-[`variables`](../../../ci/yaml/README.md#variables) parameter in `.gitlab-ci.yml`. These variables are documented in the [License Management documentation](https://gitlab.com/gitlab-org/security-products/license-management#settings).
+The License Compliance settings can be changed through environment variables by using the
+[`variables`](../../../ci/yaml/README.md#variables) parameter in `.gitlab-ci.yml`. These variables are documented in the [License Compliance documentation](https://gitlab.com/gitlab-org/security-products/license-management#settings).
 
 ### Installing custom dependencies
 
@@ -143,7 +143,7 @@ license_management:
 
 ### Configuring Maven projects
 
-The License Management tool provides a `MAVEN_CLI_OPTS` environment variable which can hold
+The License Compliance tool provides a `MAVEN_CLI_OPTS` environment variable which can hold
 the command line arguments to pass to the `mvn install` command which is executed under the hood.
 Feel free to use it for the customization of Maven execution. For example:
 
@@ -169,7 +169,7 @@ If you still need to run tests during `mvn install`, add `-DskipTests=false` to
 
 > [Introduced](https://gitlab.com/gitlab-org/security-products/license-management/merge_requests/36) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.0.
 
-License Management uses Python 2.7 and pip 10.0 by default.
+License Compliance uses Python 2.7 and pip 10.0 by default.
 If your project requires Python 3, you can switch to Python 3.5 and pip 19.1
 by setting the `LM_PYTHON_VERSION` environment variable to `3`.
 
@@ -182,7 +182,7 @@ license_management:
     LM_PYTHON_VERSION: 3
 ```
 
-## Project policies for License Management
+## Project policies for License Compliance
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/5940)
 in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.4.
@@ -196,10 +196,10 @@ To approve or blacklist a license:
 
 1. Either use the **Manage licenses** button in the merge request widget, or
    navigate to the project's **Settings > CI/CD** and expand the
-   **License Management** section.
+   **License Compliance** section.
 1. Click the **Add a license** button.
 
-   ![License Management Add License](img/license_management_add_license.png)
+   ![License Compliance Add License](img/license_management_add_license.png)
 
 1. In the **License name** dropdown, either:
    - Select one of the available licenses. You can search for licenses in the field
@@ -211,17 +211,17 @@ To approve or blacklist a license:
 
 To modify an existing license:
 
-1. In the **License Management** list, click the **Approved/Declined** dropdown to change it to the desired status.
+1. In the **License Compliance** list, click the **Approved/Declined** dropdown to change it to the desired status.
 
-   ![License Management Settings](img/license_management_settings.png)
+   ![License Compliance Settings](img/license_management_settings.png)
 
 Searching for Licenses:
 
 1. Use the **Search** box to search for a specific license.
 
-   ![License Management Search](img/license_management_search.png)
+   ![License Compliance Search](img/license_management_search.png)
 
-## License Management report under pipelines
+## License Compliance report under pipelines
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/5491)
 in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.2.
@@ -230,7 +230,7 @@ From your project's left sidebar, navigate to **CI/CD > Pipelines** and click on
 pipeline ID that has a `license_management` job to see the Licenses tab with the listed
 licenses (if any).
 
-![License Management Pipeline Tab](img/license_management_pipeline_tab.png)
+![License Compliance Pipeline Tab](img/license_management_pipeline_tab.png)
 
 <!-- ## Troubleshooting
 
