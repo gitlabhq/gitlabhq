@@ -5,15 +5,15 @@ This API is in an alpha stage and considered unstable.
 The response payload may be subject to change or breakage
 across GitLab releases.
 
-Every call to this endpoint requires authentication. To perform this call, user should be authorized to read 
-[Project Security Dashboard](../user/application_security/security_dashboard/index.md#project-security-dashboard). 
+Every call to this endpoint requires authentication. To perform this call, user should be authorized to read
+[Project Security Dashboard](../user/application_security/security_dashboard/index.md#project-security-dashboard).
 
 ## List project dependencies
 
-Get a list of project dependencies. This API partially mirroring 
+Get a list of project dependencies. This API partially mirroring
 [Dependency List](../user/application_security/dependency_list/index.md) feature.
 This list can be generated only for [languages and package managers](../user/application_security/dependency_scanning/index.md#supported-languages-and-package-managers)
-supported by Gemnasium. 
+supported by Gemnasium.
 
 ```
 GET /projects/:id/dependencies

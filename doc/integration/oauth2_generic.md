@@ -12,7 +12,7 @@ This strategy is designed to allow configuration of the simple OmniAuth SSO proc
 1. Strategy parses user information from the response, using a **configurable** format
 1. GitLab finds or creates the returned user and logs them in
 
-## Limitations of this Strategy:
+## Limitations of this Strategy
 
 - It can only be used for Single Sign on, and will not provide any other access granted by any OAuth provider
   (importing projects or users, etc)

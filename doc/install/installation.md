@@ -789,7 +789,7 @@ nginx: configuration file /etc/nginx/nginx.conf test failed`
 sudo service nginx restart
 ```
 
-## Done!
+## Post-install
 
 ### Double-check Application Status
 

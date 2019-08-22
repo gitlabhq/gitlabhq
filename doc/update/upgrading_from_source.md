@@ -313,7 +313,7 @@ For Ubuntu 16.04.1 LTS:
 sudo systemctl daemon-reload
 ```
 
-### 13. Install libs, migrations, etc.
+### 13. Install libs, migrations, etc
 
 ```bash
 cd /home/git/gitlab

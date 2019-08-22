@@ -30,4 +30,3 @@ similarly mitigated by a rate limit.
 This method of rate limiting is cumbersome, but has some advantages. It allows
 throttling of specific paths, and is also integrated into Git and container
 registry requests. See [Rack Attack initializer](rack_attack.md).
-

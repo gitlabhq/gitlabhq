@@ -18,7 +18,7 @@ rule "MD025"
 rule "MD028"
 rule "MD029", :style => :one
 rule "MD030"
-rule "MD032"
+# rule "MD032"
 rule "MD034"
 rule "MD037"
 rule "MD038"

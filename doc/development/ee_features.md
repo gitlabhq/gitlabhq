@@ -945,7 +945,7 @@ export default {
 - Since we [can't async load a mixin](https://github.com/vuejs/vue-loader/issues/418#issuecomment-254032223) we will use the [`ee_else_ce`](../development/ee_features.md#javascript-code-in-assetsjavascripts) alias we already have for webpack.
   - This means all the EE specific props, computed properties, methods, etc that are EE only should be in a mixin in the `ee/` folder and we need to create a CE counterpart of the mixin
 
-##### Example:
+##### Example
 
 ```javascript
 import mixin from 'ee_else_ce/path/mixin';
@@ -976,7 +976,7 @@ For regular JS files, the approach is similar.
    1. An EE file should be created with the EE only code, and it should extend the CE counterpart.
    1. For code inside functions that can't be extended, the code should be moved into a new file and we should use `ee_else_ce` helper:
 
-#### Example:
+#### Example
 
 ```javascript
   import eeCode from 'ee_else_ce/ee_code';

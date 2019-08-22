@@ -331,7 +331,7 @@ Courier, which we will install later to add IMAP authentication, requires mailbo
       a logout
       ```
 
-## Done!
+## Done
 
 If all the tests were successful, Postfix is all set up and ready to receive email! Continue with the [incoming email] guide to configure GitLab.
 

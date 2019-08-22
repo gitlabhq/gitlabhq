@@ -157,8 +157,8 @@ for example, without needing to explicitly pass an access token.
 With a few API endpoints you can use a [GitLab CI job token](../user/project/new_ci_build_permissions_model.md#job-token)
 to authenticate with the API:
 
-* [Get job artifacts](jobs.md#get-job-artifacts)
-* [Pipeline triggers](pipeline_triggers.md)
+- [Get job artifacts](jobs.md#get-job-artifacts)
+- [Pipeline triggers](pipeline_triggers.md)
 
 ### Impersonation tokens
 
