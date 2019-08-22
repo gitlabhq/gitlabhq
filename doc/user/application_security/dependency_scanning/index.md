@@ -141,7 +141,7 @@ dependency_scanning:
 Dependency Scanning can be [configured](#customizing-the-dependency-scanning-settings)
 using environment variables.
 
-| Environment variable                    | Function |
+| Environment variable                    | Description |
 |--------------------------------         |----------|
 | `DS_ANALYZER_IMAGES`                    | Comma separated list of custom images. The official default images are still enabled. Read more about [customizing analyzers](analyzers.md). |
 | `DS_ANALYZER_IMAGE_PREFIX`              | Override the name of the Docker registry providing the official default images (proxy). Read more about [customizing analyzers](analyzers.md). |
@@ -276,7 +276,7 @@ it highlighted:
 Here is the description of the report file structure nodes and their meaning. All fields are mandatory to be present in
 the report JSON unless stated otherwise. Presence of optional fields depends on the underlying analyzers being used.
 
-| Report JSON node                                     | Function |
+| Report JSON node                                     | Description |
 |------------------------------------------------------|----------|
 | `version`                                            | Report syntax version used to generate this JSON. |
 | `vulnerabilities`                                    | Array of vulnerability objects. |
