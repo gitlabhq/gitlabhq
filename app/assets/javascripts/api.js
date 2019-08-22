@@ -14,6 +14,7 @@ const Api = {
   projectPath: '/api/:version/projects/:id',
   forkedProjectsPath: '/api/:version/projects/:id/forks',
   projectLabelsPath: '/:namespace_path/:project_path/-/labels',
+  projectUsersPath: '/api/:version/projects/:id/users',
   projectMergeRequestsPath: '/api/:version/projects/:id/merge_requests',
   projectMergeRequestPath: '/api/:version/projects/:id/merge_requests/:mrid',
   projectMergeRequestChangesPath: '/api/:version/projects/:id/merge_requests/:mrid/changes',
@@ -106,6 +107,20 @@ const Api = {
 
         return data;
       });
+  },
+
+  projectUsers(projectPath, query = '', options = {}) {
+    const url = Api.buildUrl(this.projectUsersPath).replace(':id', encodeURIComponent(projectPath));
+
+    return axios
+      .get(url, {
+        params: {
+          search: query,
+          per_page: 20,
+          ...options,
+        },
+      })
+      .then(({ data }) => data);
   },
 
   // Return single project
