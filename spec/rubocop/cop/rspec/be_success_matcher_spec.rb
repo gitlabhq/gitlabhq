@@ -27,6 +27,14 @@ describe RuboCop::Cop::RSpec::BeSuccessMatcher do
     end
   end
 
+  shared_examples 'an autocorrected be_success call' do |content, autocorrected_content|
+    it "registers an offense for `#{content}` and autocorrects it to `#{autocorrected_content}`" do
+      autocorrected = autocorrect_source(content, source_file)
+
+      expect(autocorrected).to eql(autocorrected_content)
+    end
+  end
+
   context 'in a controller spec file' do
     before do
       allow(cop).to receive(:in_controller_spec?).and_return(true)
@@ -34,10 +42,12 @@ describe RuboCop::Cop::RSpec::BeSuccessMatcher do
 
     context "using expect(response).to be_success call" do
       it_behaves_like 'an offensive be_success call', OFFENSE_CALL_EXPECT_TO_BE_SUCCESS
+      it_behaves_like 'an autocorrected be_success call', OFFENSE_CALL_EXPECT_TO_BE_SUCCESS, CALL_EXPECT_TO_BE_SUCCESSFUL
     end
 
     context "using is_expected.to be_success call" do
       it_behaves_like 'an offensive be_success call', OFFENSE_CALL_IS_EXPECTED_TO_BE_SUCCESS
+      it_behaves_like 'an autocorrected be_success call', OFFENSE_CALL_IS_EXPECTED_TO_BE_SUCCESS, CALL_IS_EXPECTED_TO_BE_SUCCESSFUL
     end
 
     context "using expect(response).to be_successful" do

@@ -44,6 +44,12 @@ module RuboCop
 
           add_offense(node, location: :expression, message: MESSAGE)
         end
+
+        def autocorrect(node)
+          lambda do |corrector|
+            corrector.insert_after(node.loc.expression, "ful")
+          end
+        end
       end
     end
   end
