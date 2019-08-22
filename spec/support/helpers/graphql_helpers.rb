@@ -176,6 +176,23 @@ module GraphqlHelpers
     end
   end
 
+  def expect_graphql_errors_to_include(regexes_to_match)
+    raise "No errors. Was expecting to match #{regexes_to_match}" if graphql_errors.nil? || graphql_errors.empty?
+
+    error_messages = flattened_errors.collect { |error_hash| error_hash["message"] }
+    Array.wrap(regexes_to_match).flatten.each do |regex|
+      expect(error_messages).to include a_string_matching regex
+    end
+  end
+
+  def expect_graphql_errors_to_be_empty
+    expect(flattened_errors).to be_empty
+  end
+
+  def flattened_errors
+    Array.wrap(graphql_errors).flatten.compact
+  end
+
   # Raises an error if no response is found
   def graphql_mutation_response(mutation_name)
     graphql_data.fetch(GraphqlHelpers.fieldnamerize(mutation_name))
