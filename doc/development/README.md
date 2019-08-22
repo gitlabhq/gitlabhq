@@ -116,6 +116,7 @@ description: 'Learn how to contribute to GitLab.'
 ## Case studies
 
 - [Database case study: Filtering by label](filtering_by_label.md)
+- [Database case study: Namespaces storage statistics](namespaces_storage_statistics.md)
 
 ## Integration guides
 
