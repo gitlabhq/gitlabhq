@@ -1,5 +1,59 @@
 # frozen_string_literal: true
 
+shared_examples 'with cross-reference system notes' do
+  let(:merge_request) { create(:merge_request) }
+  let(:project) { merge_request.project }
+  let(:new_merge_request) { create(:merge_request) }
+  let(:commit) { new_merge_request.project.commit }
+  let!(:note) { create(:system_note, noteable: merge_request, project: project, note: cross_reference) }
+  let!(:note_metadata) { create(:system_note_metadata, note: note, action: 'cross_reference') }
+  let(:cross_reference) { "test commit #{commit.to_reference(project)}" }
+  let(:pat) { create(:personal_access_token, user: user) }
+
+  before do
+    project.add_developer(user)
+    new_merge_request.project.add_developer(user)
+
+    hidden_merge_request = create(:merge_request)
+    new_cross_reference = "test commit #{hidden_merge_request.project.commit}"
+    new_note = create(:system_note, noteable: merge_request, project: project, note: new_cross_reference)
+    create(:system_note_metadata, note: new_note, action: 'cross_reference')
+  end
+
+  it 'returns only the note that the user should see' do
+    get api(url, user, personal_access_token: pat)
+
+    expect(response).to have_gitlab_http_status(200)
+    expect(json_response.count).to eq(1)
+    expect(notes_in_response.count).to eq(1)
+
+    parsed_note = notes_in_response.first
+    expect(parsed_note['id']).to eq(note.id)
+    expect(parsed_note['body']).to eq(cross_reference)
+    expect(parsed_note['system']).to be true
+  end
+
+  it 'avoids Git calls and N+1 SQL queries', :request_store do
+    expect_any_instance_of(Repository).not_to receive(:find_commit).with(commit.id)
+
+    control = ActiveRecord::QueryRecorder.new do
+      get api(url, user, personal_access_token: pat)
+    end
+
+    expect(response).to have_gitlab_http_status(200)
+
+    RequestStore.clear!
+
+    new_note = create(:system_note, noteable: merge_request, project: project, note: cross_reference)
+    create(:system_note_metadata, note: new_note, action: 'cross_reference')
+
+    RequestStore.clear!
+
+    expect { get api(url, user, personal_access_token: pat) }.not_to exceed_query_limit(control)
+    expect(response).to have_gitlab_http_status(200)
+  end
+end
+
 shared_examples 'discussions API' do |parent_type, noteable_type, id_name, can_reply_to_individual_notes: false|
   describe "GET /#{parent_type}/:id/#{noteable_type}/:noteable_id/discussions" do
     it "returns an array of discussions" do

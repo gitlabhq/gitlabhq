@@ -9,6 +9,13 @@ describe API::Notes do
     project.add_reporter(user)
   end
 
+  context 'when there are cross-reference system notes' do
+    let(:url) { "/projects/#{project.id}/merge_requests/#{merge_request.iid}/notes" }
+    let(:notes_in_response) { json_response }
+
+    it_behaves_like 'with cross-reference system notes'
+  end
+
   context "when noteable is an Issue" do
     let!(:issue) { create(:issue, project: project, author: user) }
     let!(:issue_note) { create(:note, noteable: issue, project: project, author: user) }
