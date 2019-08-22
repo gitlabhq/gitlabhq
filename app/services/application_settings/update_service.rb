@@ -7,8 +7,7 @@ module ApplicationSettings
     attr_reader :params, :application_setting
 
     def execute
-      disable_ext_auth = params[:external_authorization_service_enabled].present? && !Gitlab::Utils.to_boolean(params[:external_authorization_service_enabled])
-      validate_classification_label(application_setting, :external_authorization_service_default_label) unless disable_ext_auth
+      validate_classification_label(application_setting, :external_authorization_service_default_label) unless bypass_external_auth?
 
       if application_setting.errors.any?
         return false
@@ -59,6 +58,10 @@ module ApplicationSettings
       return unless Gitlab::Utils.to_boolean(performance_bar_enabled)
 
       Group.find_by_full_path(group_full_path)&.id if group_full_path.present?
+    end
+
+    def bypass_external_auth?
+      params.key?(:external_authorization_service_enabled) && !Gitlab::Utils.to_boolean(params[:external_authorization_service_enabled])
     end
   end
 end

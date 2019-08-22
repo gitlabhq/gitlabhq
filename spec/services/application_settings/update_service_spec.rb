@@ -201,6 +201,12 @@ describe ApplicationSettings::UpdateService do
       enable_external_authorization_service_check
     end
 
+    it 'does not validate labels if external authorization gets disabled' do
+      expect_any_instance_of(described_class).not_to receive(:validate_classification_label)
+
+      described_class.new(application_settings, admin, { external_authorization_service_enabled: false }).execute
+    end
+
     it 'does not save the settings with an error if the service denies access' do
       expect(::Gitlab::ExternalAuthorization)
         .to receive(:access_allowed?).with(admin, 'new-label') { false }
