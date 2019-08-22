@@ -1,0 +1,5 @@
+---
+title: Optimise UpdateBuildQueueService
+merge_request: 32095
+author:
+type: performance
