@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe JSONWebToken::RSAToken do
   let(:rsa_key) do
     OpenSSL::PKey::RSA.new <<-eos.strip_heredoc
