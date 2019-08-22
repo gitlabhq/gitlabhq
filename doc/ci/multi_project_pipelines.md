@@ -205,5 +205,5 @@ Some features are not implemented yet. For example, support for environments.
 - `stage`
 - `allow_failure`
 - `only` and `except`
-- `when`
+- `when` (only with `on_success`, `on_failure`, and `always` values)
 - `extends`
