@@ -436,25 +436,114 @@ describe TodoService do
         should_create_todo(user: john_doe, target: confidential_issue, author: john_doe, action: Todo::DIRECTLY_ADDRESSED, note: addressed_note_on_confidential_issue)
       end
 
-      context 'on commit' do
-        let(:project) { create(:project, :repository) }
+      context 'commits' do
+        let(:base_commit_todo_attrs) { { target_id: nil, target_type: 'Commit', author: john_doe } }
 
-        it 'creates a todo for each valid mentioned user when leaving a note on commit' do
-          service.new_note(note_on_commit, john_doe)
+        context 'leaving a note on a commit in a public project' do
+          let(:project) { create(:project, :repository, :public) }
+          it 'creates a todo for each valid mentioned user' do
+            expected_todo = base_commit_todo_attrs.merge(
+              action: Todo::MENTIONED,
+              note: note_on_commit,
+              commit_id: note_on_commit.commit_id
+            )
 
-          should_create_todo(user: member, target_id: nil, target_type: 'Commit', commit_id: note_on_commit.commit_id, author: john_doe, action: Todo::MENTIONED, note: note_on_commit)
-          should_create_todo(user: author, target_id: nil, target_type: 'Commit', commit_id: note_on_commit.commit_id, author: john_doe, action: Todo::MENTIONED, note: note_on_commit)
-          should_create_todo(user: john_doe, target_id: nil, target_type: 'Commit', commit_id: note_on_commit.commit_id, author: john_doe, action: Todo::MENTIONED, note: note_on_commit)
-          should_not_create_todo(user: non_member, target_id: nil, target_type: 'Commit', commit_id: note_on_commit.commit_id, author: john_doe, action: Todo::MENTIONED, note: note_on_commit)
+            service.new_note(note_on_commit, john_doe)
+
+            should_create_todo(expected_todo.merge(user: member))
+            should_create_todo(expected_todo.merge(user: author))
+            should_create_todo(expected_todo.merge(user: john_doe))
+            should_create_todo(expected_todo.merge(user: guest))
+            should_create_todo(expected_todo.merge(user: non_member))
+          end
+
+          it 'creates a directly addressed todo for each valid mentioned user' do
+            expected_todo = base_commit_todo_attrs.merge(
+              action: Todo::DIRECTLY_ADDRESSED,
+              note: addressed_note_on_commit,
+              commit_id: addressed_note_on_commit.commit_id
+            )
+
+            service.new_note(addressed_note_on_commit, john_doe)
+
+            should_create_todo(expected_todo.merge(user: member))
+            should_create_todo(expected_todo.merge(user: author))
+            should_create_todo(expected_todo.merge(user: john_doe))
+            should_create_todo(expected_todo.merge(user: guest))
+            should_create_todo(expected_todo.merge(user: non_member))
+          end
         end
 
-        it 'creates a directly addressed todo for each valid mentioned user when leaving a note on commit' do
-          service.new_note(addressed_note_on_commit, john_doe)
+        context 'leaving a note on a commit in a public project with private code' do
+          let(:project) { create(:project, :repository, :public, :repository_private) }
 
-          should_create_todo(user: member, target_id: nil, target_type: 'Commit', commit_id: addressed_note_on_commit.commit_id, author: john_doe, action: Todo::DIRECTLY_ADDRESSED, note: addressed_note_on_commit)
-          should_create_todo(user: author, target_id: nil, target_type: 'Commit', commit_id: addressed_note_on_commit.commit_id, author: john_doe, action: Todo::DIRECTLY_ADDRESSED, note: addressed_note_on_commit)
-          should_create_todo(user: john_doe, target_id: nil, target_type: 'Commit', commit_id: addressed_note_on_commit.commit_id, author: john_doe, action: Todo::DIRECTLY_ADDRESSED, note: addressed_note_on_commit)
-          should_not_create_todo(user: non_member, target_id: nil, target_type: 'Commit', commit_id: addressed_note_on_commit.commit_id, author: john_doe, action: Todo::DIRECTLY_ADDRESSED, note: addressed_note_on_commit)
+          it 'creates a todo for each valid mentioned user' do
+            expected_todo = base_commit_todo_attrs.merge(
+              action: Todo::MENTIONED,
+              note: note_on_commit,
+              commit_id: note_on_commit.commit_id
+            )
+
+            service.new_note(note_on_commit, john_doe)
+
+            should_create_todo(expected_todo.merge(user: member))
+            should_create_todo(expected_todo.merge(user: author))
+            should_create_todo(expected_todo.merge(user: john_doe))
+            should_create_todo(expected_todo.merge(user: guest))
+            should_not_create_todo(expected_todo.merge(user: non_member))
+          end
+
+          it 'creates a directly addressed todo for each valid mentioned user' do
+            expected_todo = base_commit_todo_attrs.merge(
+              action: Todo::DIRECTLY_ADDRESSED,
+              note: addressed_note_on_commit,
+              commit_id: addressed_note_on_commit.commit_id
+            )
+
+            service.new_note(addressed_note_on_commit, john_doe)
+
+            should_create_todo(expected_todo.merge(user: member))
+            should_create_todo(expected_todo.merge(user: author))
+            should_create_todo(expected_todo.merge(user: john_doe))
+            should_create_todo(expected_todo.merge(user: guest))
+            should_not_create_todo(expected_todo.merge(user: non_member))
+          end
+        end
+
+        context 'leaving a note on a commit in a private project' do
+          let(:project) { create(:project, :repository, :private) }
+
+          it 'creates a todo for each valid mentioned user' do
+            expected_todo = base_commit_todo_attrs.merge(
+              action: Todo::MENTIONED,
+              note: note_on_commit,
+              commit_id: note_on_commit.commit_id
+            )
+
+            service.new_note(note_on_commit, john_doe)
+
+            should_create_todo(expected_todo.merge(user: member))
+            should_create_todo(expected_todo.merge(user: author))
+            should_create_todo(expected_todo.merge(user: john_doe))
+            should_not_create_todo(expected_todo.merge(user: guest))
+            should_not_create_todo(expected_todo.merge(user: non_member))
+          end
+
+          it 'creates a directly addressed todo for each valid mentioned user' do
+            expected_todo = base_commit_todo_attrs.merge(
+              action: Todo::DIRECTLY_ADDRESSED,
+              note: addressed_note_on_commit,
+              commit_id: addressed_note_on_commit.commit_id
+            )
+
+            service.new_note(addressed_note_on_commit, john_doe)
+
+            should_create_todo(expected_todo.merge(user: member))
+            should_create_todo(expected_todo.merge(user: author))
+            should_create_todo(expected_todo.merge(user: john_doe))
+            should_not_create_todo(expected_todo.merge(user: guest))
+            should_not_create_todo(expected_todo.merge(user: non_member))
+          end
         end
       end
 
