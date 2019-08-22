@@ -46,12 +46,14 @@ module EntityDateHelper
   # If start date is provided and elapsed, with no due date, it returns "# days elapsed"
   def remaining_days_in_words(due_date, start_date = nil)
     if due_date&.past?
-      content_tag(:strong, 'Past due')
+      content_tag(:strong, _('Past due'))
+    elsif due_date&.today?
+      content_tag(:strong, _('Today'))
     elsif start_date&.future?
-      content_tag(:strong, 'Upcoming')
+      content_tag(:strong, _('Upcoming'))
     elsif due_date
       is_upcoming = (due_date - Date.today).to_i > 0
-      time_ago = time_ago_in_words(due_date)
+      time_ago = distance_of_time_in_words(due_date, Date.today)
 
       # https://gitlab.com/gitlab-org/gitlab-ce/issues/49440
       #
@@ -59,8 +61,8 @@ module EntityDateHelper
       # of the string instead of piecewise translations.
       content = time_ago
         .gsub(/\d+/) { |match| "<strong>#{match}</strong>" }
-        .remove("about ")
-      remaining_or_ago = is_upcoming ? _("remaining") : _("ago")
+        .remove('about ')
+      remaining_or_ago = is_upcoming ? _('remaining') : _('ago')
 
       "#{content} #{remaining_or_ago}".html_safe
     elsif start_date&.past?

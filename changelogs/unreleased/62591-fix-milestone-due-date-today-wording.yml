@@ -1,0 +1,5 @@
+---
+title: Fix wording on milestone due date when milestone is due today
+merge_request: 32096
+author:
+type: changed

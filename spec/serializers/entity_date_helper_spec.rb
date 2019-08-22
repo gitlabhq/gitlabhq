@@ -57,6 +57,28 @@ describe EntityDateHelper do
       end
     end
 
+    context 'when milestone due date is today' do
+      let(:milestone_remaining) { date_helper_class.remaining_days_in_words(Date.today) }
+
+      it 'returns today' do
+        expect(milestone_remaining).to eq("<strong>Today</strong>")
+      end
+    end
+
+    context 'when milestone due date is tomorrow' do
+      let(:milestone_remaining) { date_helper_class.remaining_days_in_words(Date.tomorrow) }
+
+      it 'returns 1 day remaining' do
+        expect(milestone_remaining).to eq("<strong>1</strong> day remaining")
+      end
+
+      it 'returns 1 day remaining when queried mid-day' do
+        Timecop.freeze(Time.utc(2017, 3, 17, 13, 10)) do
+          expect(milestone_remaining).to eq("<strong>1</strong> day remaining")
+        end
+      end
+    end
+
     context 'when less than 1 year and more than 30 days remaining' do
       let(:milestone_remaining) { date_helper_class.remaining_days_in_words(2.months.from_now.utc.to_date) }
 
