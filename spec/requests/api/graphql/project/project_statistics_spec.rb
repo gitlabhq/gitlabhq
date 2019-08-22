@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'rendering namespace statistics' do
+describe 'rendering project statistics' do
   include GraphqlHelpers
 
   let(:project) { create(:project) }

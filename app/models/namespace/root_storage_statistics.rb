@@ -8,6 +8,8 @@ class Namespace::RootStorageStatistics < ApplicationRecord
   belongs_to :namespace
   has_one :route, through: :namespace
 
+  scope :for_namespace_ids, ->(namespace_ids) { where(namespace_id: namespace_ids) }
+
   delegate :all_projects, to: :namespace
 
   def recalculate!
