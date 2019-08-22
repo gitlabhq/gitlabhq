@@ -2,7 +2,7 @@
 type: reference
 ---
 
-# Visibility and access controls
+# Visibility and access controls **(CORE ONLY)**
 
 GitLab allows administrators to:
 

@@ -2,7 +2,7 @@
 type: reference
 ---
 
-# Sign-up restrictions
+# Sign-up restrictions **(CORE ONLY)**
 
 You can use sign-up restrictions to require user email confirmation, as well as
 to blacklist or whitelist email addresses belonging to specific domains.

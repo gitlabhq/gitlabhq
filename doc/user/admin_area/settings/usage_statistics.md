@@ -2,7 +2,7 @@
 type: reference
 ---
 
-# Usage statistics
+# Usage statistics **(CORE ONLY)**
 
 GitLab Inc. will periodically collect information about your instance in order
 to perform various actions.

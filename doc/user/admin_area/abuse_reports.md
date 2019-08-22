@@ -2,7 +2,7 @@
 type: reference, howto
 ---
 
-# Abuse reports
+# Abuse reports **(CORE ONLY)**
 
 View and resolve abuse reports from GitLab users.
 

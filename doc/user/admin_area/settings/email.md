@@ -2,7 +2,7 @@
 type: reference
 ---
 
-# Email
+# Email **(CORE ONLY)**
 
 You can customize some of the content in emails sent from your GitLab instance.
 

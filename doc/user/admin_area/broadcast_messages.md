@@ -2,7 +2,7 @@
 type: reference, howto
 ---
 
-# Broadcast Messages
+# Broadcast Messages **(CORE ONLY)**
 
 GitLab can display messages to all users of a GitLab instance in a banner that appears in the UI.
 

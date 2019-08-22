@@ -2,7 +2,7 @@
 type: reference
 ---
 
-# Account and limit settings
+# Account and limit settings **(CORE ONLY)**
 
 ## Max attachment size
 
