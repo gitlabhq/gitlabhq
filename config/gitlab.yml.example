@@ -50,12 +50,12 @@ production: &base
     # Content Security Policy
     # See https://guides.rubyonrails.org/security.html#content-security-policy
     content_security_policy:
-      enabled: false
+      enabled: true
       report_only: false
       directives:
         base_uri:
         child_src:
-        connect_src: "'self' http://localhost:3808 ws://localhost:3808 wss://localhost:3000"
+        connect_src: "'self' http://localhost:* ws://localhost:* wss://localhost:*"
         default_src: "'self'"
         font_src:
         form_action:
@@ -64,10 +64,10 @@ production: &base
         img_src: "* data: blob:"
         manifest_src:
         media_src:
-        object_src: "'self' http://localhost:3808 'unsafe-inline' 'unsafe-eval' https://www.google.com/recaptcha/ https://www.recaptcha.net/ https://www.gstatic.com/recaptcha/ https://apis.google.com"
-        script_src:
+        object_src: "'none'"
+        script_src: "'self' 'unsafe-eval' http://localhost:* https://www.google.com/recaptcha/ https://www.recaptcha.net/ https://www.gstatic.com/recaptcha/ https://apis.google.com"
         style_src: "'self' 'unsafe-inline'"
-        worker_src: "http://localhost:3000 blob:"
+        worker_src: "'self' blob:"
         report_uri:
 
     # Trusted Proxies
@@ -1098,6 +1098,27 @@ test:
   gitlab:
     host: localhost
     port: 80
+
+    content_security_policy:
+      enabled: true
+      report_only: false
+      directives:
+        base_uri:
+        child_src:
+        connect_src:
+        default_src: "'self'"
+        font_src:
+        form_action:
+        frame_ancestors: "'self'"
+        frame_src: "'self' https://www.google.com/recaptcha/ https://www.recaptcha.net/ https://content.googleapis.com https://content-compute.googleapis.com https://content-cloudbilling.googleapis.com https://content-cloudresourcemanager.googleapis.com"
+        img_src: "* data: blob:"
+        manifest_src:
+        media_src:
+        object_src: "'none'"
+        script_src: "'self' 'unsafe-eval' http://localhost:* https://www.google.com/recaptcha/ https://www.recaptcha.net/ https://www.gstatic.com/recaptcha/ https://apis.google.com"
+        style_src: "'self' 'unsafe-inline'"
+        worker_src: "'self' blob:"
+        report_uri:
 
     # When you run tests we clone and set up gitlab-shell
     # In order to set it up correctly you need to specify
