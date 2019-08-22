@@ -1,0 +1,5 @@
+---
+title: Remove oauth form from GitHub CI/CD only import authentication
+merge_request: 31488
+author:
+type: changed

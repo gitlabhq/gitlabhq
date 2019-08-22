@@ -280,7 +280,7 @@ describe 'New project' do
         end
 
         it 'shows import instructions' do
-          expect(page).to have_content('Import repositories from GitHub')
+          expect(page).to have_content('Authenticate with GitHub')
           expect(current_path).to eq new_import_github_path
         end
       end
