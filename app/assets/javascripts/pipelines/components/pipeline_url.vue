@@ -67,7 +67,7 @@ export default {
       <span
         v-if="pipeline.flags.latest"
         v-gl-tooltip
-        :title="__('Latest pipeline for this branch')"
+        :title="__('Latest pipeline for the most recent commit on this branch')"
         class="js-pipeline-url-latest badge badge-success"
       >
         {{ __('latest') }}

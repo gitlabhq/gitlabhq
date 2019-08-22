@@ -21,7 +21,7 @@
     .icon-container
       = sprite_icon('flag')
     - if @pipeline.latest?
-      %span.js-pipeline-url-latest.badge.badge-success.has-tooltip{ title: _("Latest pipeline for this branch") }
+      %span.js-pipeline-url-latest.badge.badge-success.has-tooltip{ title: _("Latest pipeline for the most recent commit on this branch") }
         latest
     - if @pipeline.has_yaml_errors?
       %span.js-pipeline-url-yaml.badge.badge-danger.has-tooltip{ title: @pipeline.yaml_errors }
