@@ -87,9 +87,6 @@ export default class MergeRequestStore {
     this.allowCollaboration = data.allow_collaboration;
     this.sourceProjectId = data.source_project_id;
     this.targetProjectId = data.target_project_id;
-    this.mergePipelinesEnabled = Boolean(data.merge_pipelines_enabled);
-    this.mergeTrainsCount = data.merge_trains_count || 0;
-    this.mergeTrainIndex = data.merge_train_index;
 
     // CI related
     this.hasCI = data.has_ci;

@@ -84,8 +84,10 @@ class MergeRequestWidgetEntity < Grape::Entity
 
   private
 
+  delegate :current_user, to: :request
+
   def presenter(merge_request)
     @presenters ||= {}
-    @presenters[merge_request] ||= MergeRequestPresenter.new(merge_request, current_user: request.current_user) # rubocop: disable CodeReuse/Presenter
+    @presenters[merge_request] ||= MergeRequestPresenter.new(merge_request, current_user: current_user) # rubocop: disable CodeReuse/Presenter
   end
 end
