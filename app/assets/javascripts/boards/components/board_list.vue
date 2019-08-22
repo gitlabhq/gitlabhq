@@ -227,6 +227,7 @@ export default {
   <div
     :class="{ 'd-none': !list.isExpanded, 'd-flex flex-column': list.isExpanded }"
     class="board-list-component position-relative h-100"
+    data-qa-selector="board_list_cards_area"
   >
     <div v-if="loading" class="board-list-loading text-center" :aria-label="__('Loading issues')">
       <gl-loading-icon />
