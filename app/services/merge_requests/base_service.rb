@@ -17,11 +17,9 @@ module MergeRequests
     end
 
     def execute_hooks(merge_request, action = 'open', old_rev: nil, old_associations: {})
-      if merge_request.project
-        merge_data = hook_data(merge_request, action, old_rev: old_rev, old_associations: old_associations)
-        merge_request.project.execute_hooks(merge_data, :merge_request_hooks)
-        merge_request.project.execute_services(merge_data, :merge_request_hooks)
-      end
+      merge_data = hook_data(merge_request, action, old_rev: old_rev, old_associations: old_associations)
+      merge_request.project.execute_hooks(merge_data, :merge_request_hooks)
+      merge_request.project.execute_services(merge_data, :merge_request_hooks)
     end
 
     def cleanup_environments(merge_request)
