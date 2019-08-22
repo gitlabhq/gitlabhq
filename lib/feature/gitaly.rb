@@ -6,8 +6,10 @@ class Feature
   class Gitaly
     # Server feature flags should use '_' to separate words.
     SERVER_FEATURE_FLAGS =
-      [
-        'get_commit_signatures'.freeze
+      %w[
+        get_commit_signatures
+        cache_invalidator
+        inforef_uploadpack_cache
       ].freeze
 
     DEFAULT_ON_FLAGS = Set.new([]).freeze
