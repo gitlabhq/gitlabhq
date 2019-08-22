@@ -1,0 +1,5 @@
+---
+title: Allow Knative to be installed on group and instance level clusters
+merge_request: 32128
+author:
+type: added

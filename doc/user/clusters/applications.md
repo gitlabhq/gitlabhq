@@ -188,7 +188,8 @@ You can clone repositories from the files tab in Jupyter:
 
 ### Knative
 
-> Available for project-level clusters since GitLab 11.5.
+> - Available for project-level clusters since GitLab 11.5.
+> - Available for group-level and instance-level clusters since GitLab 12.3.
 
 [Knative](https://cloud.google.com/knative) provides a platform to
 create, deploy, and manage serverless workloads from a Kubernetes

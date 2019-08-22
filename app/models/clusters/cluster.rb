@@ -10,7 +10,6 @@ module Clusters
     self.table_name = 'clusters'
 
     PROJECT_ONLY_APPLICATIONS = {
-      Applications::Knative.application_name => Applications::Knative
     }.freeze
     APPLICATIONS = {
       Applications::Helm.application_name => Applications::Helm,
@@ -18,7 +17,8 @@ module Clusters
       Applications::CertManager.application_name => Applications::CertManager,
       Applications::Prometheus.application_name => Applications::Prometheus,
       Applications::Runner.application_name => Applications::Runner,
-      Applications::Jupyter.application_name => Applications::Jupyter
+      Applications::Jupyter.application_name => Applications::Jupyter,
+      Applications::Knative.application_name => Applications::Knative
     }.merge(PROJECT_ONLY_APPLICATIONS).freeze
     DEFAULT_ENVIRONMENT = '*'
     KUBE_INGRESS_BASE_DOMAIN = 'KUBE_INGRESS_BASE_DOMAIN'
