@@ -1,0 +1,47 @@
+{
+  project(fullPath: "gitlab-org/gitlab-ce") {
+    group {
+      projects {
+        edges {
+          node {
+            group {
+              projects {
+                edges {
+                  node {
+                    group {
+                      projects {
+                        edges {
+                          node {
+                            group {
+                              projects {
+                                edges {
+                                  node {
+                                    group {
+                                      projects {
+                                        edges {
+                                          node {
+                                            group {
+                                              description
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
