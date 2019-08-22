@@ -171,7 +171,9 @@ review-qa-all:
     - gitlab-qa Test::Instance::Any "${QA_IMAGE}" "${CI_ENVIRONMENT_URL}" -- --format RspecJunitFormatter --out tmp/rspec-${CI_JOB_ID}.xml --format html --out tmp/rspec.htm --color --format documentation
 
 parallel-spec-reports:
-  extends: .dedicated-runner
+  extends:
+    - .dedicated-runner
+    - .no-docs
   dependencies:
     - review-qa-all
   image: ruby:2.6-alpine

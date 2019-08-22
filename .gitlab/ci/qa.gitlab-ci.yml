@@ -15,13 +15,13 @@
     - branches@gitlab-org/gitlab-ce
     - branches@gitlab-org/gitlab-ee
 
-package-and-qa:
-  extends: .package-and-qa-base
+package-and-qa-manual:
+  extends:
+    - .package-and-qa-base
+    - .no-docs-and-no-qa
   when: manual
-  except:
-    - /(^qa[\/-].*|.*-qa$)/
 
-package-and-qa-always:
+package-and-qa:
   extends: .package-and-qa-base
   allow_failure: true
   only:
