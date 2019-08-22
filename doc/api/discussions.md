@@ -160,7 +160,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab
 Adds a new note to the thread. This can also [create a thread from a single comment](../user/discussions/#start-a-thread-by-replying-to-a-standard-comment).
 
 **WARNING**
-Notes can be added to other items than comments (system notes, etc.) making them threads. 
+Notes can be added to other items than comments (system notes, etc.) making them threads.
 
 ```
 POST /projects/:id/issues/:issue_iid/discussions/:discussion_id/notes

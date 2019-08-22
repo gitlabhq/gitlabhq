@@ -6,7 +6,7 @@ type: reference
 
 GitLab allows [Owners](../user/permissions.md) to set a projects' visibility as **public**, **internal**
 or **private**. These visibility levels affect who can see the project in the
-public access directory (`/public` under your GitLab instance), like at [https://gitlab.com/public]().
+public access directory (`/public` under your GitLab instance), like at <https://gitlab.com/public>
 
 ## Visibility of projects
 

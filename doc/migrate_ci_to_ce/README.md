@@ -227,7 +227,7 @@ sudo mv /path/to/12345_gitlab_ci_backup.tar /var/opt/gitlab/backups/
 sudo mv /path/to/12345_gitlab_ci_backup.tar /home/git/gitlab/tmp/backups/
 ```
 
-### 5. Import the CI data into GitLab.
+### 5. Import the CI data into GitLab
 
 This step will delete any existing CI data on your GitLab server. There should
 be no CI data yet because you turned CI on the GitLab server off earlier.

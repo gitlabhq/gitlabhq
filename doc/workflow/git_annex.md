@@ -200,7 +200,7 @@ searching for your distribution.
 Although there is no general guide for `git-annex` errors, there are a few tips
 on how to go around the warnings.
 
-### git-annex-shell: Not a git-annex or gcrypt repository.
+### git-annex-shell: Not a git-annex or gcrypt repository
 
 This warning can appear on the initial `git annex sync --content` and is caused
 by differences in `git-annex-shell`. You can read more about it

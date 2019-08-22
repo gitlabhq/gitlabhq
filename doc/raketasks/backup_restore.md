@@ -978,4 +978,3 @@ If this happens, check the following:
 
 1. Confirm there is sufficent diskspace for the gzip operation.
 1. If NFS is being used, check if the mount option `timeo` is set. The default is `600`, and changing this to smaller values have resulted in this error.
-

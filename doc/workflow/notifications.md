@@ -53,7 +53,7 @@ These settings can be configured on group page under the name of the group. It w
 
 The group owner can disable email notifications for a group, which also includes
 it's subgroups and projects.  If this is the case, you will not receive any corresponding notifications,
-and the notification button will be disabled with an explanatory tooltip. 
+and the notification button will be disabled with an explanatory tooltip.
 
 ### Project Settings
 
@@ -66,7 +66,7 @@ These settings can be configured on project page under the name of the project. 
 
 The project owner (or it's group owner) can disable email notifications for the project.
 If this is the case, you will not receive any corresponding notifications, and the notification
-button will be disabled with an explanatory tooltip. 
+button will be disabled with an explanatory tooltip.
 
 ## Notification events
 

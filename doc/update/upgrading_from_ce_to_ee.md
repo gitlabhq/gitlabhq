@@ -54,7 +54,7 @@ sudo -u git -H git remote add -f ee https://gitlab.com/gitlab-org/gitlab-ee.git
 sudo -u git -H git checkout EE_BRANCH
 ```
 
-### 3. Install libs, migrations, etc.
+### 3. Install libs, migrations, etc
 
 ```sh
 cd /home/git/gitlab

@@ -41,7 +41,7 @@ sudo -u git -H git checkout -- Gemfile.lock db/schema.rb locale
 sudo -u git -H git checkout LATEST_TAG -b LATEST_TAG
 ```
 
-### 3. Install libs, migrations, etc.
+### 3. Install libs, migrations, etc
 
 ```bash
 cd /home/git/gitlab

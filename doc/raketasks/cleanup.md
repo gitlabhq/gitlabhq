@@ -1,6 +1,10 @@
 # Cleanup
 
-## Remove garbage from filesystem. Important! Data loss!
+## Remove garbage from filesystem
+
+DANGER: **Danger:**
+The commands below will remove data permanently from your GitLab instance. Only use
+these commands if you are 100% certain that it is safe to delete this data.
 
 Remove namespaces(dirs) from all repository storage paths if they don't exist in GitLab database.
 

@@ -173,13 +173,13 @@ Now, every time you create an MR for CE and EE:
 
 ## How we run the Automatic CE->EE merge at GitLab
 
-At GitLab, we use the [Merge Train](https://gitlab.com/gitlab-org/merge-train) 
-project to keep our [gitlab-ee](https://gitlab.com/gitlab-org/gitlab-ee) 
-repository updated with commits from 
+At GitLab, we use the [Merge Train](https://gitlab.com/gitlab-org/merge-train)
+project to keep our [gitlab-ee](https://gitlab.com/gitlab-org/gitlab-ee)
+repository updated with commits from
 [gitlab-ce](https://gitlab.com/gitlab-org/gitlab-ce).
 
 We have a mirror of the [Merge Train](https://gitlab.com/gitlab-org/merge-train)
-project [configured](https://ops.gitlab.net/gitlab-org/merge-train) to run an 
+project [configured](https://ops.gitlab.net/gitlab-org/merge-train) to run an
 automatic CE->EE merge job every twenty minutes as a scheduled CI job.  The
 [configured](https://ops.gitlab.net/gitlab-org/merge-train) Merge Train project
 is only accessible to authorized GitLab staff.

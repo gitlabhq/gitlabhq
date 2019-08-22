@@ -11,7 +11,7 @@
 
 ## How to use
 
-### Create a new folder to import your Git repositories from.
+### Create a new folder to import your Git repositories from
 
 The new folder needs to have git user ownership and read/write/execute access for git user and its group:
 
@@ -19,7 +19,7 @@ The new folder needs to have git user ownership and read/write/execute access fo
 sudo -u git mkdir -p /var/opt/gitlab/git-data/repository-import-<date>/new_group
 ```
 
-### Copy your bare repositories inside this newly created folder:
+### Copy your bare repositories inside this newly created folder
 
 - Any .git repositories found on any of the subfolders will be imported as projects
 - Groups will be created as needed, these could be nested folders. Example:
@@ -38,7 +38,7 @@ sudo chown -R git:git /var/opt/gitlab/git-data/repository-import-<date>
 
 If you are using an installation from source, replace `/var/opt/gitlab/` with `/home/git`.
 
-### Run the command below depending on your type of installation:
+### Run the command below depending on your type of installation
 
 #### Omnibus Installation
 

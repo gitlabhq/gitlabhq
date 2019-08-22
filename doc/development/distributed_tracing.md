@@ -179,4 +179,3 @@ By default, the Jaeger search UI is available at <http://localhost:16686/search>
 TIP: **Tip:**
 Don't forget that you will need to generate traces by using the application before
 they appear in the Jaeger UI.
-

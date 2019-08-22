@@ -57,12 +57,6 @@ render incorrectly:
   - milk
 ```
 
-1. Chocolate
-  - dark
-  - milk
-
----
-
 Simply add a space to each nested item to align the `-` with the first character of
 the top list item (`C` in this case):
 
@@ -265,8 +259,7 @@ this font installed by default.
 
 ### Front matter
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/23331)
-  in GitLab 11.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/23331) in GitLab 11.6.
 
 Front matter is metadata included at the beginning of a markdown document, preceding
 its content. This data can be used by static site generators such as [Jekyll](https://jekyllrb.com/docs/front-matter/),
@@ -865,18 +858,6 @@ or underscores
 
 ___
 ```
-
-Three or more hyphens,
-
----
-
-asterisks,
-
-***
-
-or underscores
-
-___
 
 ### Images
 

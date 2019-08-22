@@ -51,7 +51,7 @@ allowed.
 
 – <https://github.com/ruby-grape/grape#declared>
 
-### Exclude params from parent namespaces!
+### Exclude params from parent namespaces
 
 > By default `declared(params)`includes parameters that were defined in all
 parent namespaces.
@@ -64,7 +64,7 @@ In most cases you will want to exclude params from the parent namespaces:
 declared(params, include_parent_namespaces: false)
 ```
 
-### When to use `declared(params)`?
+### When to use `declared(params)`
 
 You should always use `declared(params)` when you pass the params hash as
 arguments to a method call.
