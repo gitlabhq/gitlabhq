@@ -61,7 +61,7 @@ production: &base
         form_action:
         frame_ancestors: "'self'"
         frame_src: "'self' https://www.google.com/recaptcha/ https://www.recaptcha.net/ https://content.googleapis.com https://content-compute.googleapis.com https://content-cloudbilling.googleapis.com https://content-cloudresourcemanager.googleapis.com"
-        img_src: "* data: blob"
+        img_src: "* data: blob:"
         manifest_src:
         media_src:
         object_src: "'self' http://localhost:3808 'unsafe-inline' 'unsafe-eval' https://www.google.com/recaptcha/ https://www.recaptcha.net/ https://www.gstatic.com/recaptcha/ https://apis.google.com"
