@@ -75,6 +75,8 @@ From there, you can see the following actions:
 - User was removed from project
 - Project export was downloaded
 - Project repository was downloaded
+- Project was archived
+- Project was unarchived
 
 ### Instance events **(PREMIUM ONLY)**
 

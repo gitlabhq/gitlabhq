@@ -29,6 +29,7 @@ class ProjectsController < Projects::ApplicationController
 
   # Authorize
   before_action :authorize_admin_project!, only: [:edit, :update, :housekeeping, :download_export, :export, :remove_export, :generate_new_export]
+  before_action :authorize_archive_project!, only: [:archive, :unarchive]
   before_action :event_filter, only: [:show, :activity]
 
   layout :determine_layout
@@ -164,8 +165,6 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def archive
-    return access_denied! unless can?(current_user, :archive_project, @project)
-
     ::Projects::UpdateService.new(@project, current_user, archived: true).execute
 
     respond_to do |format|
@@ -174,8 +173,6 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def unarchive
-    return access_denied! unless can?(current_user, :archive_project, @project)
-
     ::Projects::UpdateService.new(@project, current_user, archived: false).execute
 
     respond_to do |format|
