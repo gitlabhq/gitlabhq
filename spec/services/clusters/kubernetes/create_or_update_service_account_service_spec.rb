@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-describe Clusters::Gcp::Kubernetes::CreateOrUpdateServiceAccountService do
+describe Clusters::Kubernetes::CreateOrUpdateServiceAccountService do
   include KubernetesHelpers
 
   let(:api_url) { 'http://111.111.111.111' }
@@ -143,8 +143,8 @@ describe Clusters::Gcp::Kubernetes::CreateOrUpdateServiceAccountService do
 
         stub_kubeclient_get_role_binding_error(api_url, role_binding_name, namespace: namespace)
         stub_kubeclient_create_role_binding(api_url, namespace: namespace)
-        stub_kubeclient_put_role(api_url, Clusters::Gcp::Kubernetes::GITLAB_KNATIVE_SERVING_ROLE_NAME, namespace: namespace)
-        stub_kubeclient_put_role_binding(api_url, Clusters::Gcp::Kubernetes::GITLAB_KNATIVE_SERVING_ROLE_BINDING_NAME, namespace: namespace)
+        stub_kubeclient_put_role(api_url, Clusters::Kubernetes::GITLAB_KNATIVE_SERVING_ROLE_NAME, namespace: namespace)
+        stub_kubeclient_put_role_binding(api_url, Clusters::Kubernetes::GITLAB_KNATIVE_SERVING_ROLE_BINDING_NAME, namespace: namespace)
       end
 
       it_behaves_like 'creates service account and token'
@@ -175,10 +175,10 @@ describe Clusters::Gcp::Kubernetes::CreateOrUpdateServiceAccountService do
       it 'creates a role and role binding granting knative serving permissions to the service account' do
         subject
 
-        expect(WebMock).to have_requested(:put, api_url + "/apis/rbac.authorization.k8s.io/v1/namespaces/#{namespace}/roles/#{Clusters::Gcp::Kubernetes::GITLAB_KNATIVE_SERVING_ROLE_NAME}").with(
+        expect(WebMock).to have_requested(:put, api_url + "/apis/rbac.authorization.k8s.io/v1/namespaces/#{namespace}/roles/#{Clusters::Kubernetes::GITLAB_KNATIVE_SERVING_ROLE_NAME}").with(
           body: hash_including(
             metadata: {
-              name: Clusters::Gcp::Kubernetes::GITLAB_KNATIVE_SERVING_ROLE_NAME,
+              name: Clusters::Kubernetes::GITLAB_KNATIVE_SERVING_ROLE_NAME,
               namespace: namespace
             },
             rules: [{

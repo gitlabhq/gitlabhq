@@ -87,7 +87,7 @@ describe Gitlab::Ci::Build::Prerequisite::KubernetesNamespace do
             .with(cluster, environment: deployment.environment)
             .and_return(namespace_builder)
 
-          expect(Clusters::Gcp::Kubernetes::CreateOrUpdateNamespaceService)
+          expect(Clusters::Kubernetes::CreateOrUpdateNamespaceService)
             .to receive(:new)
             .with(cluster: cluster, kubernetes_namespace: kubernetes_namespace)
             .and_return(service)
@@ -107,7 +107,7 @@ describe Gitlab::Ci::Build::Prerequisite::KubernetesNamespace do
         it 'creates a namespace using the tokenless record' do
           expect(Clusters::BuildKubernetesNamespaceService).not_to receive(:new)
 
-          expect(Clusters::Gcp::Kubernetes::CreateOrUpdateNamespaceService)
+          expect(Clusters::Kubernetes::CreateOrUpdateNamespaceService)
             .to receive(:new)
             .with(cluster: cluster, kubernetes_namespace: kubernetes_namespace)
             .and_return(service)
@@ -123,7 +123,7 @@ describe Gitlab::Ci::Build::Prerequisite::KubernetesNamespace do
       end
 
       it 'does not create a namespace' do
-        expect(Clusters::Gcp::Kubernetes::CreateOrUpdateNamespaceService).not_to receive(:new)
+        expect(Clusters::Kubernetes::CreateOrUpdateNamespaceService).not_to receive(:new)
 
         subject
       end
