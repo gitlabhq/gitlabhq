@@ -39,6 +39,11 @@ have an instance available you can follow the instructions below to use
 the [GitLab Development Kit (GDK)][GDK].
 This is the recommended option if you would like to contribute to the tests.
 
+Note: GitLab QA uses [Selenium WebDriver](https://www.seleniumhq.org/) via
+[Cabybara](http://teamcapybara.github.io/capybara/), and by default it targets Chrome as
+the browser to use. You will need to have Chrome (or Chromium) and
+[chromedriver](https://chromedriver.chromium.org/) installed / in your `$PATH`.
+
 ### Run the end-to-end tests in a local development environment
 
 Follow the GDK instructions to [prepare](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/prepare.md)
