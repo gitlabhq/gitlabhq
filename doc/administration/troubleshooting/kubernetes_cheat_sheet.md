@@ -83,12 +83,22 @@ and they will assist you with any issues you are having.
   kubectl logs gitlab-unicorn-7656fdd6bf-jqzfs -c unicorn
   ```
 
-- It is not possible to get all the logs via Kubectl at once, like with `gitlab-ctl tail`,
-  but a number of third-party tools can be used to do it:
+- Tail and follow all pods that share a label (in this case, `unicorn`):
 
-  - [Kubetail](https://github.com/johanhaleby/kubetail)
-  - [kail: kubernetes tail](https://github.com/boz/kail)
-  - [stern](https://github.com/wercker/stern)
+  ```bash
+  # all containers in the unicorn pods
+  kubectl logs -f -l app=unicorn --all-containers=true --max-log-requests=50
+
+  # only the unicorn containers in all unicorn pods
+  kubectl logs -f -l app=unicorn -c unicorn --max-log-requests=50
+  ```
+
+- One can stream logs from all containers at once, similar to the Omnibus
+  command `gitlab-ctl tail`:
+
+  ```bash
+  kubectl logs -f -l release=gitlab --all-containers=true --max-log-requests=100
+  ```
 
 - Check all events in the `gitlab` namespace (the namespace name can be different if you
   specified a different one when deploying the helm chart):
