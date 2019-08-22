@@ -655,3 +655,33 @@ To fix this problem, confirm that your [`gitlab-secrets.json` file](#3-gitaly-se
 on the Gitaly node matches the one on all other nodes. If it doesn't match,
 update the secrets file on the Gitaly node to match the others, then
 [reconfigure the node](../restart_gitlab.md#omnibus-gitlab-reconfigure).
+
+### Command line tools cannot connect to Gitaly
+
+If you are having trouble connecting to a Gitaly node with command line (CLI) tools, and certain actions result in a `14: Connect Failed` error message, it means that gRPC cannot reach your Gitaly node.
+
+Verify that you can reach Gitaly via TCP:
+
+```bash
+sudo gitlab-rake gitlab:tcp_check[GITALY_SERVER_IP,GITALY_LISTEN_PORT]
+```
+
+If the TCP connection fails, check your network settings and your firewall rules. If the TCP connection succeeds, your networking and firewall rules are correct.
+
+If you use proxy servers in your command line environment, such as Bash, these can interfere with your gRPC traffic.
+
+If you use Bash or a compatible command line environment, run the following commands to determine whether you have proxy servers configured:
+
+```bash
+echo $http_proxy
+echo $https_proxy
+```
+
+If either of these variables have a value, your Gitaly CLI connections may be getting routed through a proxy which cannot connect to Gitaly.
+
+To remove the proxy setting, run the following commands (depending on which variables had values):
+
+```bash
+unset http_proxy
+unset https_proxy
+```
