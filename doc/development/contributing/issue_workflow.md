@@ -79,6 +79,24 @@ already reserved for subject labels).
 The descriptions on the [labels page](https://gitlab.com/groups/gitlab-org/-/labels)
 explain what falls under each type label.
 
+### Facet labels
+
+Sometimes it's useful to refine the type of an issue. In those cases, you can
+add facet labels.
+
+Following is a non-exhaustive list of facet labels:
+
+- ~enhancement: This label can refine an issue that has the ~feature label.
+- ~"master:broken": This label can refine an issue that has the ~bug label.
+- ~"master:flaky": This label can refine an issue that has the ~bug label.
+- ~"technical debt": This label can refine an issue that has the ~backstage label.
+- ~"static analysis": This label can refine an issue that has the ~backstage label.
+- ~"ci-build": This label can refine an issue that has the ~backstage label.
+- ~performance: A performance issue could describe a ~bug or a ~feature.
+- ~security: A security issue could describe a ~bug or a ~feature.
+- ~database: A database issue could describe a ~bug or a ~feature.
+- ~customer: This relates to an issue that was created by a customer, or that is of interest for a customer.
+
 ### Stage labels
 
 Stage labels specify which [stage](https://about.gitlab.com/handbook/product/categories/#hierarchy) the issue belongs to.
