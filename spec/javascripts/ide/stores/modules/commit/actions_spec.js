@@ -57,6 +57,44 @@ describe('IDE commit module actions', () => {
         .then(done)
         .catch(done.fail);
     });
+
+    it('sets shouldCreateMR to true if "Create new MR" option is visible', done => {
+      store.state.shouldHideNewMrOption = false;
+
+      testAction(
+        actions.updateCommitAction,
+        {},
+        store.state,
+        [
+          {
+            type: mutationTypes.UPDATE_COMMIT_ACTION,
+            payload: { commitAction: jasmine.anything() },
+          },
+          { type: mutationTypes.TOGGLE_SHOULD_CREATE_MR, payload: true },
+        ],
+        [],
+        done,
+      );
+    });
+
+    it('sets shouldCreateMR to false if "Create new MR" option is hidden', done => {
+      store.state.shouldHideNewMrOption = true;
+
+      testAction(
+        actions.updateCommitAction,
+        {},
+        store.state,
+        [
+          {
+            type: mutationTypes.UPDATE_COMMIT_ACTION,
+            payload: { commitAction: jasmine.anything() },
+          },
+          { type: mutationTypes.TOGGLE_SHOULD_CREATE_MR, payload: false },
+        ],
+        [],
+        done,
+      );
+    });
   });
 
   describe('updateBranchName', () => {
@@ -541,147 +579,10 @@ describe('IDE commit module actions', () => {
         actions.toggleShouldCreateMR,
         {},
         store.state,
-        [
-          { type: mutationTypes.TOGGLE_SHOULD_CREATE_MR },
-          { type: mutationTypes.INTERACT_WITH_NEW_MR },
-        ],
+        [{ type: mutationTypes.TOGGLE_SHOULD_CREATE_MR }],
         [],
         done,
       );
-    });
-  });
-
-  describe('setShouldCreateMR', () => {
-    beforeEach(() => {
-      store.state.projects = {
-        project: {
-          default_branch: 'master',
-          branches: {
-            master: {
-              name: 'master',
-            },
-            feature: {
-              name: 'feature',
-            },
-          },
-        },
-      };
-
-      store.state.currentProjectId = 'project';
-    });
-
-    it('sets to false when the current branch already has an MR', done => {
-      store.state.commit.currentMergeRequestId = 1;
-      store.state.commit.commitAction = consts.COMMIT_TO_CURRENT_BRANCH;
-      store.state.currentMergeRequestId = '1';
-      store.state.currentBranchId = 'feature';
-      spyOn(store, 'commit').and.callThrough();
-
-      store
-        .dispatch('commit/setShouldCreateMR')
-        .then(() => {
-          expect(store.commit.calls.allArgs()[0]).toEqual(
-            jasmine.arrayContaining([`commit/${mutationTypes.TOGGLE_SHOULD_CREATE_MR}`, false]),
-          );
-          done();
-        })
-        .catch(done.fail);
-    });
-
-    it('changes to false when current branch is the default branch and user has not interacted', done => {
-      store.state.commit.interactedWithNewMR = false;
-      store.state.currentBranchId = 'master';
-      store.state.commit.commitAction = consts.COMMIT_TO_CURRENT_BRANCH;
-      spyOn(store, 'commit').and.callThrough();
-
-      store
-        .dispatch('commit/setShouldCreateMR')
-        .then(() => {
-          expect(store.commit.calls.allArgs()[0]).toEqual(
-            jasmine.arrayContaining([`commit/${mutationTypes.TOGGLE_SHOULD_CREATE_MR}`, false]),
-          );
-          done();
-        })
-        .catch(done.fail);
-    });
-
-    it('changes to true when "create new branch" is selected and user has not interacted', done => {
-      store.state.commit.commitAction = consts.COMMIT_TO_NEW_BRANCH;
-      store.state.commit.interactedWithNewMR = false;
-      spyOn(store, 'commit').and.callThrough();
-
-      store
-        .dispatch('commit/setShouldCreateMR')
-        .then(() => {
-          expect(store.commit.calls.allArgs()[0]).toEqual(
-            jasmine.arrayContaining([`commit/${mutationTypes.TOGGLE_SHOULD_CREATE_MR}`, true]),
-          );
-          done();
-        })
-        .catch(done.fail);
-    });
-
-    it('does not change anything if user has interacted and comitting to new branch', done => {
-      store.state.commit.commitAction = consts.COMMIT_TO_NEW_BRANCH;
-      store.state.commit.interactedWithNewMR = true;
-      spyOn(store, 'commit').and.callThrough();
-
-      store
-        .dispatch('commit/setShouldCreateMR')
-        .then(() => {
-          expect(store.commit).not.toHaveBeenCalled();
-          done();
-        })
-        .catch(done.fail);
-    });
-
-    it('does not change anything if user has interacted and comitting to branch without MR', done => {
-      store.state.commit.commitAction = consts.COMMIT_TO_CURRENT_BRANCH;
-      store.state.commit.currentMergeRequestId = null;
-      store.state.commit.interactedWithNewMR = true;
-      spyOn(store, 'commit').and.callThrough();
-
-      store
-        .dispatch('commit/setShouldCreateMR')
-        .then(() => {
-          expect(store.commit).not.toHaveBeenCalled();
-          done();
-        })
-        .catch(done.fail);
-    });
-
-    it('still changes to false if hiding the checkbox', done => {
-      store.state.currentBranchId = 'feature';
-      store.state.commit.commitAction = consts.COMMIT_TO_CURRENT_BRANCH;
-      store.state.currentMergeRequestId = '1';
-      store.state.commit.interactedWithNewMR = true;
-      spyOn(store, 'commit').and.callThrough();
-
-      store
-        .dispatch('commit/setShouldCreateMR')
-        .then(() => {
-          expect(store.commit.calls.allArgs()[0]).toEqual(
-            jasmine.arrayContaining([`commit/${mutationTypes.TOGGLE_SHOULD_CREATE_MR}`, false]),
-          );
-          done();
-        })
-        .catch(done.fail);
-    });
-
-    it('does not change to false when on master and user has interacted even if MR exists', done => {
-      store.state.currentBranchId = 'master';
-      store.state.commit.commitAction = consts.COMMIT_TO_CURRENT_BRANCH;
-      store.state.currentMergeRequestId = '1';
-      store.state.commit.interactedWithNewMR = true;
-      spyOn(store, 'commit').and.callThrough();
-
-      store
-        .dispatch('commit/setShouldCreateMR')
-        .then(() => {
-          expect(store.commit).not.toHaveBeenCalled();
-          done();
-        })
-        .catch(done.fail);
     });
   });
 });

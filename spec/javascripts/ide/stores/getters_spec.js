@@ -221,4 +221,36 @@ describe('IDE store getters', () => {
       });
     });
   });
+
+  describe('canPushToBranch', () => {
+    it('returns false when no currentBranch exists', () => {
+      const localGetters = {
+        currentProject: undefined,
+      };
+
+      expect(getters.canPushToBranch({}, localGetters)).toBeFalsy();
+    });
+
+    it('returns true when can_push to currentBranch', () => {
+      const localGetters = {
+        currentProject: {
+          default_branch: 'master',
+        },
+        currentBranch: { can_push: true },
+      };
+
+      expect(getters.canPushToBranch({}, localGetters)).toBeTruthy();
+    });
+
+    it('returns false when !can_push to currentBranch', () => {
+      const localGetters = {
+        currentProject: {
+          default_branch: 'master',
+        },
+        currentBranch: { can_push: false },
+      };
+
+      expect(getters.canPushToBranch({}, localGetters)).toBeFalsy();
+    });
+  });
 });

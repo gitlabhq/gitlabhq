@@ -1,43 +1,36 @@
 <script>
-import { mapGetters, createNamespacedHelpers } from 'vuex';
+import { createNamespacedHelpers } from 'vuex';
 
 const {
   mapState: mapCommitState,
-  mapGetters: mapCommitGetters,
   mapActions: mapCommitActions,
+  mapGetters: mapCommitGetters,
 } = createNamespacedHelpers('commit');
 
 export default {
   computed: {
     ...mapCommitState(['shouldCreateMR']),
-    ...mapCommitGetters(['isCommittingToCurrentBranch', 'isCommittingToDefaultBranch']),
-    ...mapGetters(['hasMergeRequest', 'isOnDefaultBranch']),
-    currentBranchHasMr() {
-      return this.hasMergeRequest && this.isCommittingToCurrentBranch;
-    },
-    showNewMrOption() {
-      return (
-        this.isCommittingToDefaultBranch || !this.currentBranchHasMr || this.isCommittingToNewBranch
-      );
-    },
-  },
-  mounted() {
-    this.setShouldCreateMR();
+    ...mapCommitGetters(['shouldHideNewMrOption']),
   },
   methods: {
-    ...mapCommitActions(['toggleShouldCreateMR', 'setShouldCreateMR']),
+    ...mapCommitActions(['toggleShouldCreateMR']),
   },
 };
 </script>
 
 <template>
-  <div v-if="showNewMrOption">
+  <fieldset v-if="!shouldHideNewMrOption">
     <hr class="my-2" />
-    <label class="mb-0">
-      <input :checked="shouldCreateMR" type="checkbox" @change="toggleShouldCreateMR" />
+    <label class="mb-0 js-ide-commit-new-mr">
+      <input
+        :checked="shouldCreateMR"
+        type="checkbox"
+        data-qa-selector="start_new_mr_checkbox"
+        @change="toggleShouldCreateMR"
+      />
       <span class="prepend-left-10">
         {{ __('Start a new merge request') }}
       </span>
     </label>
-  </div>
+  </fieldset>
 </template>

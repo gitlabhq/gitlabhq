@@ -1,33 +1,36 @@
 import Vue from 'vue';
 import store from '~/ide/stores';
-import consts from '~/ide/stores/modules/commit/constants';
 import NewMergeRequestOption from '~/ide/components/commit_sidebar/new_merge_request_option.vue';
 import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
-import { projectData } from 'spec/ide/mock_data';
+import { projectData, branches } from 'spec/ide/mock_data';
 import { resetStore } from 'spec/ide/helpers';
+import consts from '../../../../../app/assets/javascripts/ide/stores/modules/commit/constants';
 
 describe('create new MR checkbox', () => {
   let vm;
-  const createComponent = ({
-    hasMR = false,
-    commitAction = consts.COMMIT_TO_NEW_BRANCH,
-    currentBranchId = 'master',
-  } = {}) => {
+  const setMR = () => {
+    vm.$store.state.currentMergeRequestId = '1';
+    vm.$store.state.projects[store.state.currentProjectId].mergeRequests[
+      store.state.currentMergeRequestId
+    ] = { foo: 'bar' };
+  };
+
+  const createComponent = ({ currentBranchId = 'master', createNewBranch = false } = {}) => {
     const Component = Vue.extend(NewMergeRequestOption);
 
     vm = createComponentWithStore(Component, store);
 
+    vm.$store.state.commit.commitAction = createNewBranch
+      ? consts.COMMIT_TO_NEW_BRANCH
+      : consts.COMMIT_TO_CURRENT_BRANCH;
+
     vm.$store.state.currentBranchId = currentBranchId;
     vm.$store.state.currentProjectId = 'abcproject';
-    vm.$store.state.commit.commitAction = commitAction;
-    Vue.set(vm.$store.state.projects, 'abcproject', { ...projectData });
 
-    if (hasMR) {
-      vm.$store.state.currentMergeRequestId = '1';
-      vm.$store.state.projects[store.state.currentProjectId].mergeRequests[
-        store.state.currentMergeRequestId
-      ] = { foo: 'bar' };
-    }
+    const proj = JSON.parse(JSON.stringify(projectData));
+    proj.branches[currentBranchId] = branches.find(branch => branch.name === currentBranchId);
+
+    Vue.set(vm.$store.state.projects, 'abcproject', proj);
 
     return vm.$mount();
   };
@@ -38,30 +41,131 @@ describe('create new MR checkbox', () => {
     resetStore(vm.$store);
   });
 
-  it('is hidden when an MR already exists and committing to current branch', () => {
-    createComponent({
-      hasMR: true,
-      commitAction: consts.COMMIT_TO_CURRENT_BRANCH,
-      currentBranchId: 'feature',
+  describe('for default branch', () => {
+    describe('is rendered when pushing to a new branch', () => {
+      beforeEach(() => {
+        createComponent({
+          currentBranchId: 'master',
+          createNewBranch: true,
+        });
+      });
+
+      it('has NO new MR', () => {
+        expect(vm.$el.textContent).not.toBe('');
+      });
+
+      it('has new MR', done => {
+        setMR();
+
+        vm.$nextTick()
+          .then(() => {
+            expect(vm.$el.textContent).not.toBe('');
+          })
+          .then(done)
+          .catch(done.fail);
+      });
     });
 
-    expect(vm.$el.textContent).toBe('');
+    describe('is NOT rendered when pushing to the same branch', () => {
+      beforeEach(() => {
+        createComponent({
+          currentBranchId: 'master',
+          createNewBranch: false,
+        });
+      });
+
+      it('has NO new MR', () => {
+        expect(vm.$el.textContent).toBe('');
+      });
+
+      it('has new MR', done => {
+        setMR();
+
+        vm.$nextTick()
+          .then(() => {
+            expect(vm.$el.textContent).toBe('');
+          })
+          .then(done)
+          .catch(done.fail);
+      });
+    });
   });
 
-  it('does not hide checkbox if MR does not exist', () => {
-    createComponent({ hasMR: false });
+  describe('for protected branch', () => {
+    describe('when user does not have the write access', () => {
+      beforeEach(() => {
+        createComponent({
+          currentBranchId: 'protected/no-access',
+        });
+      });
 
-    expect(vm.$el.querySelector('input[type="checkbox"]').hidden).toBe(false);
+      it('is rendered if MR does not exists', () => {
+        expect(vm.$el.textContent).not.toBe('');
+      });
+
+      it('is rendered if MR exists', done => {
+        setMR();
+
+        vm.$nextTick()
+          .then(() => {
+            expect(vm.$el.textContent).not.toBe('');
+          })
+          .then(done)
+          .catch(done.fail);
+      });
+    });
+
+    describe('when user has the write access', () => {
+      beforeEach(() => {
+        createComponent({
+          currentBranchId: 'protected/access',
+        });
+      });
+
+      it('is rendered if MR does not exist', () => {
+        expect(vm.$el.textContent).not.toBe('');
+      });
+
+      it('is hidden if MR exists', done => {
+        setMR();
+
+        vm.$nextTick()
+          .then(() => {
+            expect(vm.$el.textContent).toBe('');
+          })
+          .then(done)
+          .catch(done.fail);
+      });
+    });
   });
 
-  it('does not hide checkbox when creating a new branch', () => {
-    createComponent({ commitAction: consts.COMMIT_TO_NEW_BRANCH });
+  describe('for regular branch', () => {
+    beforeEach(() => {
+      createComponent({
+        currentBranchId: 'regular',
+      });
+    });
 
-    expect(vm.$el.querySelector('input[type="checkbox"]').hidden).toBe(false);
+    it('is rendered if no MR exists', () => {
+      expect(vm.$el.textContent).not.toBe('');
+    });
+
+    it('is hidden if MR exists', done => {
+      setMR();
+
+      vm.$nextTick()
+        .then(() => {
+          expect(vm.$el.textContent).toBe('');
+        })
+        .then(done)
+        .catch(done.fail);
+    });
   });
 
   it('dispatches toggleShouldCreateMR when clicking checkbox', () => {
-    createComponent();
+    createComponent({
+      currentBranchId: 'regular',
+    });
     const el = vm.$el.querySelector('input[type="checkbox"]');
     spyOn(vm.$store, 'dispatch');
     el.dispatchEvent(new Event('change'));
