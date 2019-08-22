@@ -5,6 +5,8 @@ require 'spec_helper'
 describe Ci::ArchiveTracesCronWorker do
   subject { described_class.new.perform }
 
+  let(:finished_at) { 1.day.ago }
+
   before do
     stub_feature_flags(ci_enable_live_trace: true)
   end
@@ -28,7 +30,7 @@ describe Ci::ArchiveTracesCronWorker do
   end
 
   context 'when a job succeeded' do
-    let!(:build) { create(:ci_build, :success, :trace_live) }
+    let!(:build) { create(:ci_build, :success, :trace_live, finished_at: finished_at) }
 
     it_behaves_like 'archives trace'
 
@@ -39,9 +41,15 @@ describe Ci::ArchiveTracesCronWorker do
       subject
     end
 
+    context 'when the job finished recently' do
+      let(:finished_at) { 1.hour.ago }
+
+      it_behaves_like 'does not archive trace'
+    end
+
     context 'when a trace had already been archived' do
       let!(:build) { create(:ci_build, :success, :trace_live, :trace_artifact) }
-      let!(:build2) { create(:ci_build, :success, :trace_live) }
+      let!(:build2) { create(:ci_build, :success, :trace_live, finished_at: finished_at) }
 
       it 'continues to archive live traces' do
         subject
@@ -52,7 +60,7 @@ describe Ci::ArchiveTracesCronWorker do
     end
 
     context 'when an unexpected exception happened during archiving' do
-      let!(:build) { create(:ci_build, :success, :trace_live) }
+      let!(:build) { create(:ci_build, :success, :trace_live, finished_at: finished_at) }
 
       before do
         allow(Gitlab::Sentry).to receive(:track_exception)
@@ -71,7 +79,7 @@ describe Ci::ArchiveTracesCronWorker do
   end
 
   context 'when a job was cancelled' do
-    let!(:build) { create(:ci_build, :canceled, :trace_live) }
+    let!(:build) { create(:ci_build, :canceled, :trace_live, finished_at: finished_at) }
 
     it_behaves_like 'archives trace'
   end

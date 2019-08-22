@@ -1,0 +1,5 @@
+---
+title: Avoid conflicts between ArchiveTracesCronWorker and ArchiveTraceWorker
+merge_request: 31376
+author:
+type: fixed
