@@ -6,7 +6,7 @@ describe NamespacePolicy do
   let(:admin) { create(:admin) }
   let(:namespace) { create(:namespace, owner: owner) }
 
-  let(:owner_permissions) { [:create_projects, :admin_namespace, :read_namespace] }
+  let(:owner_permissions) { [:create_projects, :admin_namespace, :read_namespace, :read_statistics] }
 
   subject { described_class.new(current_user, namespace) }
 

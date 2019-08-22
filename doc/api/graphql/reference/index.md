@@ -109,6 +109,7 @@ The API can be explored interactively using the [GraphiQL IDE](../index.md#graph
 | `visibility` | String |  |
 | `lfsEnabled` | Boolean |  |
 | `requestAccessEnabled` | Boolean |  |
+| `rootStorageStatistics` | RootStorageStatistics | The aggregated storage statistics. Only available if the namespace has no parent |
 | `userPermissions` | GroupPermissions! | Permissions for the current user on the resource |
 | `webUrl` | String! |  |
 | `avatarUrl` | String |  |
@@ -452,6 +453,17 @@ The API can be explored interactively using the [GraphiQL IDE](../index.md#graph
 | `empty` | Boolean! |  |
 | `exists` | Boolean! |  |
 | `tree` | Tree |  |
+
+### RootStorageStatistics
+
+| Name  | Type  | Description |
+| ---   |  ---- | ----------  |
+| `storageSize` | Int! | The total storage in Bytes |
+| `repositorySize` | Int! | The git repository size in Bytes |
+| `lfsObjectsSize` | Int! | The LFS objects size in Bytes |
+| `buildArtifactsSize` | Int! | The CI artifacts size in Bytes |
+| `packagesSize` | Int! | The packages size in Bytes |
+| `wikiSize` | Int! | The wiki size in Bytes |
 
 ### Submodule
 

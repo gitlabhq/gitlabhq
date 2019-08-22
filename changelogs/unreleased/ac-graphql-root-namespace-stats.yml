@@ -1,0 +1,5 @@
+---
+title: Expose namespace storage statistics with GraphQL
+merge_request: 32012
+author:
+type: added

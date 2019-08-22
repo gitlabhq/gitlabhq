@@ -8,6 +8,19 @@ RSpec.describe Namespace::RootStorageStatistics, type: :model do
 
   it { is_expected.to delegate_method(:all_projects).to(:namespace) }
 
+  context 'scopes' do
+    describe '.for_namespace_ids' do
+      it 'returns only requested namespaces' do
+        stats = create_list(:namespace_root_storage_statistics, 3)
+        namespace_ids = stats[0..1].map { |s| s.namespace_id }
+
+        requested_stats = described_class.for_namespace_ids(namespace_ids).pluck(:namespace_id)
+
+        expect(requested_stats).to eq(namespace_ids)
+      end
+    end
+  end
+
   describe '#recalculate!' do
     let(:namespace) { create(:group) }
     let(:root_storage_statistics) { create(:namespace_root_storage_statistics, namespace: namespace) }
