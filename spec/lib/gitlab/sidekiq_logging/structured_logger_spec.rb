@@ -36,7 +36,9 @@ describe Gitlab::SidekiqLogging::StructuredLogger do
         'message' => 'TestWorker JID-da883554ee4fe414012f5f42: done: 0.0 sec',
         'job_status' => 'done',
         'duration' => 0.0,
-        "completed_at" => timestamp.iso8601(3)
+        "completed_at" => timestamp.iso8601(3),
+        "system_s" => 0.0,
+        "user_s" => 0.0
       )
     end
     let(:exception_payload) do
@@ -52,6 +54,13 @@ describe Gitlab::SidekiqLogging::StructuredLogger do
       allow(Sidekiq).to receive(:logger).and_return(logger)
 
       allow(subject).to receive(:current_time).and_return(timestamp.to_f)
+
+      allow(Process).to receive(:times).and_return(
+        stime:  0.0,
+        utime:  0.0,
+        cutime: 0.0,
+        cstime: 0.0
+      )
     end
 
     subject { described_class.new }
@@ -169,6 +178,32 @@ describe Gitlab::SidekiqLogging::StructuredLogger do
       end
 
       it 'logs with Gitaly and Rugged timing data' do
+        Timecop.freeze(timestamp) do
+          expect(logger).to receive(:info).with(start_payload.except('args')).ordered
+          expect(logger).to receive(:info).with(end_payload.except('args')).ordered
+
+          subject.call(job, 'test_queue') { }
+        end
+      end
+    end
+
+    def ctime(times)
+      times[:cstime] + times[:cutime]
+    end
+
+    context 'with ctime value greater than 0' do
+      let(:times_start) { { stime: 0.04999, utime: 0.0483, cstime: 0.0188, cutime: 0.0188 } }
+      let(:times_end)   { { stime: 0.0699, utime: 0.0699, cstime: 0.0399, cutime: 0.0399 } }
+
+      before do
+        end_payload['system_s'] = 0.02
+        end_payload['user_s'] = 0.022
+        end_payload['child_s'] = 0.042
+
+        allow(Process).to receive(:times).and_return(times_start, times_end)
+      end
+
+      it 'logs with ctime data and other cpu data' do
         Timecop.freeze(timestamp) do
           expect(logger).to receive(:info).with(start_payload.except('args')).ordered
           expect(logger).to receive(:info).with(end_payload.except('args')).ordered

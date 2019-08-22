@@ -8,16 +8,16 @@ module Gitlab
       MAXIMUM_JOB_ARGUMENTS_LENGTH = 10.kilobytes
 
       def call(job, queue)
-        started_at = current_time
+        started_time = get_time
         base_payload = parse_job(job)
 
-        Sidekiq.logger.info log_job_start(started_at, base_payload)
+        Sidekiq.logger.info log_job_start(base_payload)
 
         yield
 
-        Sidekiq.logger.info log_job_done(job, started_at, base_payload)
+        Sidekiq.logger.info log_job_done(job, started_time, base_payload)
       rescue => job_exception
-        Sidekiq.logger.warn log_job_done(job, started_at, base_payload, job_exception)
+        Sidekiq.logger.warn log_job_done(job, started_time, base_payload, job_exception)
 
         raise
       end
@@ -32,7 +32,7 @@ module Gitlab
         output_payload.merge!(job.slice(*::Gitlab::InstrumentationHelper::KEYS))
       end
 
-      def log_job_start(started_at, payload)
+      def log_job_start(payload)
         payload['message'] = "#{base_message(payload)}: start"
         payload['job_status'] = 'start'
 
@@ -45,11 +45,12 @@ module Gitlab
         payload
       end
 
-      def log_job_done(job, started_at, payload, job_exception = nil)
+      def log_job_done(job, started_time, payload, job_exception = nil)
         payload = payload.dup
         add_instrumentation_keys!(job, payload)
-        payload['duration'] = elapsed(started_at)
-        payload['completed_at'] = Time.now.utc
+
+        elapsed_time = elapsed(started_time)
+        add_time_keys!(elapsed_time, payload)
 
         message = base_message(payload)
 
@@ -67,6 +68,14 @@ module Gitlab
         convert_to_iso8601(payload, DONE_TIMESTAMP_FIELDS)
 
         payload
+      end
+
+      def add_time_keys!(time, payload)
+        payload['duration'] = time[:duration].round(3)
+        payload['system_s'] = time[:stime].round(3)
+        payload['user_s'] = time[:utime].round(3)
+        payload['child_s'] = time[:ctime].round(3) if time[:ctime] > 0
+        payload['completed_at'] = Time.now.utc
       end
 
       def parse_job(job)
@@ -93,8 +102,25 @@ module Gitlab
         (Time.now.utc - start).to_f.round(3)
       end
 
-      def elapsed(start)
-        (current_time - start).round(3)
+      def elapsed(t0)
+        t1 = get_time
+        {
+          duration: t1[:now] - t0[:now],
+          stime: t1[:times][:stime] - t0[:times][:stime],
+          utime: t1[:times][:utime] - t0[:times][:utime],
+          ctime: ctime(t1[:times]) - ctime(t0[:times])
+        }
+      end
+
+      def get_time
+        {
+          now: current_time,
+          times: Process.times
+        }
+      end
+
+      def ctime(times)
+        times[:cstime] + times[:cutime]
       end
 
       def current_time
