@@ -2,7 +2,7 @@
 type: reference
 ---
 
-# User and IP rate limits
+# User and IP rate limits **(CORE ONLY)**
 
 Rate limiting is a common technique used to improve the security and durability
 of a web application. For more details, see

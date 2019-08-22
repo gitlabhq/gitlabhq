@@ -2,7 +2,7 @@
 type: reference
 ---
 
-# Diff limits administration
+# Diff limits administration **(CORE ONLY)**
 
 You can set a maximum size for display of diff files (patches).
 

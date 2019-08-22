@@ -2,7 +2,7 @@
 type: concepts, howto
 ---
 
-# Health Check
+# Health Check **(CORE ONLY)**
 
 > - Liveness and readiness probes were [introduced][ce-10416] in GitLab 9.1.
 > - The `health_check` endpoint was [introduced][ce-3888] in GitLab 8.8 and was

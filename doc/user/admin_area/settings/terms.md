@@ -2,7 +2,7 @@
 type: reference
 ---
 
-# Enforce accepting Terms of Service
+# Enforce accepting Terms of Service **(CORE ONLY)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/18570)
 > in [GitLab Core](https://about.gitlab.com/pricing/) 10.8

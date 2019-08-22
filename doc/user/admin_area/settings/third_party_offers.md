@@ -2,7 +2,7 @@
 type: reference
 ---
 
-# Third party offers
+# Third party offers **(CORE ONLY)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/20379)
 > in [GitLab Core](https://about.gitlab.com/pricing/) 11.1
