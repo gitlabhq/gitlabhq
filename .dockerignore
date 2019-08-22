@@ -4,6 +4,7 @@
 # the files we need to build the QA image are in these folders.
 # Following are the files we need:
 # - ./config/initializers/0_inject_enterprise_edition_module.rb
+# - ./ee/app/models/license.rb
 # - ./lib/gitlab.rb
 # - ./qa/
 # - ./INSTALLATION_TYPE
@@ -23,7 +24,14 @@
 /db/
 /doc/
 /docker/
-/ee/
+/ee/bin/
+/ee/changelogs/
+/ee/config/
+/ee/db/
+/ee/fixtures/
+/ee/lib/
+/ee/locale/
+/ee/spec/
 /fixtures/
 /templates/
 /lint/
