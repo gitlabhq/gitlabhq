@@ -76,3 +76,15 @@
     - apk add --update openssl
     - wget $CI_PROJECT_URL/raw/$CI_COMMIT_SHA/scripts/$SCRIPT_NAME
     - chmod 755 $(basename $SCRIPT_NAME)
+
+.review-only: &review-only
+  only:
+    refs:
+      - branches@gitlab-org/gitlab-ce
+      - branches@gitlab-org/gitlab-ee
+    kubernetes: active
+  except:
+    refs:
+      - master
+      - /^\d+-\d+-auto-deploy-\d+$/
+      - /(^docs[\/-].+|.+-docs$)/

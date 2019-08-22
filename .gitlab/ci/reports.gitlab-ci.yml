@@ -27,7 +27,9 @@ dependency_scanning:
   cache: {}
 
 dast:
-  extends: .dedicated-no-docs
+  extends:
+    - .dedicated-runner
+    - .review-only
   stage: qa
   dependencies:
     - review-deploy
