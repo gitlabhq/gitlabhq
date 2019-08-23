@@ -2,6 +2,19 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 12.2.1
+
+### Fixed (3 changes)
+
+- Fix for embedded metrics undefined params. !31975
+- Fix "ERR value is not an integer or out of range" errors. !32126
+- Prevent duplicated trigger action button.
+
+### Performance (1 change)
+
+- Fix Gitaly N+1 calls with listing issues/MRs via API. !31938
+
+
 ## 12.2.0
 
 ### Security (4 changes, 1 of them is from the community)
