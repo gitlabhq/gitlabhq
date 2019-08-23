@@ -269,6 +269,12 @@ Note the following properties:
 
 ![single stat panel type](img/prometheus_dashboard_single_stat_panel_type.png)
 
+### Downloading data as CSV
+
+Data from Prometheus charts on the metrics dashboard can be downloaded as CSV. 
+
+![Downloading as CSV](img/download_as_csv.png)
+
 ### Setting up alerts for Prometheus metrics **(ULTIMATE)**
 
 #### Managed Prometheus instances
@@ -362,6 +368,10 @@ Prometheus server.
 It is possible to display metrics charts within [GitLab Flavored Markdown](../../markdown.md#gitlab-flavored-markdown-gfm).
 
 To display a metric chart, include a link of the form `https://<root_url>/<project>/environments/<environment_id>/metrics`.
+
+A single chart may also be embedded. You can generate a link to the chart via the dropdown located on the right side of the chart:  
+
+![Generate Link To Chart](img/generate_link_to_chart.png)
 
 The following requirements must be met for the metric to unfurl:
 

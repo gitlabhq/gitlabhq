@@ -575,6 +575,7 @@ describe API::Issues do
       expect(json_response['assignee']).to be_a Hash
       expect(json_response['author']).to be_a Hash
       expect(json_response['confidential']).to be_falsy
+      expect(json_response['subscribed']).to be_truthy
     end
 
     it 'exposes the closed_at attribute' do

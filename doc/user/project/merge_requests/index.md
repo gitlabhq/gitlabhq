@@ -41,7 +41,7 @@ With **[GitLab Enterprise Edition][ee]**, you can also:
 - View the deployment process across projects with [Multi-Project Pipelines](../../../ci/multi_project_pipelines.md) **(PREMIUM)**
 - Request [approvals](merge_request_approvals.md) from your managers **(STARTER)**
 - Analyze the impact of your changes with [Code Quality reports](code_quality.md) **(STARTER)**
-- Manage the licenses of your dependencies with [License Management](../../application_security/license_management/index.md) **(ULTIMATE)**
+- Manage the licenses of your dependencies with [License Compliance](../../application_security/license_management/index.md) **(ULTIMATE)**
 - Analyze your source code for vulnerabilities with [Static Application Security Testing](../../application_security/sast/index.md) **(ULTIMATE)**
 - Analyze your running web applications for vulnerabilities with [Dynamic Application Security Testing](../../application_security/dast/index.md) **(ULTIMATE)**
 - Analyze your dependencies for vulnerabilities with [Dependency Scanning](../../application_security/dependency_scanning/index.md) **(ULTIMATE)**
@@ -57,7 +57,7 @@ A. Consider you are a software developer working in a team:
 1. You gather feedback from your team
 1. You work on the implementation optimizing code with [Code Quality reports](code_quality.md) **(STARTER)**
 1. You verify your changes with [JUnit test reports](../../../ci/junit_test_reports.md) in GitLab CI/CD
-1. You avoid using dependencies whose license is not compatible with your project with [License Management reports](license_management.md) **(ULTIMATE)**
+1. You avoid using dependencies whose license is not compatible with your project with [License Compliance reports](license_management.md) **(ULTIMATE)**
 1. You request the [approval](#merge-request-approvals-starter) from your manager
 1. Your manager pushes a commit with their final review, [approves the merge request](merge_request_approvals.md), and set it to [merge when pipeline succeeds](#merge-when-pipeline-succeeds) (Merge Request Approvals are available in GitLab Starter)
 1. Your changes get deployed to production with [manual actions](../../../ci/yaml/README.md#whenmanual) for GitLab CI/CD
@@ -496,6 +496,15 @@ changes, you can quickly jump to any changed file using the file tree or file
 list.
 
 ![Merge request diff file navigation](img/merge_request_diff_file_navigation.png)
+
+### Incrementally expand merge request diffs
+
+By default, the diff shows only the parts of a file which are changed.
+To view more unchanged lines above or below a change click on the
+**Expand up** or **Expand down** icons. You can also click on **Show all lines**
+to expand the entire file.
+
+![Incrementally expand merge request diffs](img/incrementally_expand_merge_request_diffs_v12_2.png)
 
 ## Ignore whitespace changes in Merge Request diff view
 

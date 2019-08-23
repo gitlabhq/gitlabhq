@@ -264,12 +264,12 @@ export default {
     showToast() {
       this.$toast.show(__('Link copied to clipboard'));
     },
+    // TODO: END
     generateLink(group, title, yLabel) {
       const dashboard = this.currentDashboard || this.firstDashboard.path;
-      const params = { dashboard, group, title, y_label: yLabel };
+      const params = _.pick({ dashboard, group, title, y_label: yLabel }, value => value != null);
       return mergeUrlParams(params, window.location.href);
     },
-    // TODO: END
     hideAddMetricModal() {
       this.$refs.addMetricModal.hide();
     },

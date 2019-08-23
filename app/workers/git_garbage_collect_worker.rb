@@ -24,7 +24,7 @@ class GitGarbageCollectWorker
 
     task = task.to_sym
 
-    ::Projects::GitDeduplicationService.new(project).execute
+    ::Projects::GitDeduplicationService.new(project).execute if task == :gc
 
     gitaly_call(task, project.repository.raw_repository)
 

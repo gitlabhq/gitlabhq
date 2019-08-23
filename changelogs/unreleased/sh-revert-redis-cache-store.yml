@@ -1,0 +1,5 @@
+---
+title: Fix "ERR value is not an integer or out of range" errors
+merge_request: 32126
+author:
+type: fixed

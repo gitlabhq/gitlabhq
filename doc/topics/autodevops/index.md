@@ -65,7 +65,7 @@ project in a simple and automatic way:
 1. [Auto Code Quality](#auto-code-quality-starter) **(STARTER)**
 1. [Auto SAST (Static Application Security Testing)](#auto-sast-ultimate) **(ULTIMATE)**
 1. [Auto Dependency Scanning](#auto-dependency-scanning-ultimate) **(ULTIMATE)**
-1. [Auto License Management](#auto-license-management-ultimate) **(ULTIMATE)**
+1. [Auto License Compliance](#auto-license-compliance-ultimate) **(ULTIMATE)**
 1. [Auto Container Scanning](#auto-container-scanning-ultimate) **(ULTIMATE)**
 1. [Auto Review Apps](#auto-review-apps)
 1. [Auto DAST (Dynamic Application Security Testing)](#auto-dast-ultimate) **(ULTIMATE)**
@@ -401,13 +401,13 @@ check out.
 Any security warnings are also shown in the merge request widget. Read more about
 [Dependency Scanning](../../user/application_security/dependency_scanning/index.md).
 
-### Auto License Management **(ULTIMATE)**
+### Auto License Compliance **(ULTIMATE)**
 
 > Introduced in [GitLab Ultimate][ee] 11.0.
 
-License Management uses the
-[License Management Docker image](https://gitlab.com/gitlab-org/security-products/license-management)
-to search the project dependencies for their license. The Auto License Management stage
+License Compliance uses the
+[License Compliance Docker image](https://gitlab.com/gitlab-org/security-products/license-management)
+to search the project dependencies for their license. The Auto License Compliance stage
 will be skipped on licenses other than Ultimate.
 
 Once the
@@ -415,7 +415,7 @@ report is created, it's uploaded as an artifact which you can later download and
 check out.
 
 Any licenses are also shown in the merge request widget. Read more how
-[License Management works](../../user/application_security/license_management/index.md).
+[License Compliance works](../../user/application_security/license_management/index.md).
 
 ### Auto Container Scanning **(ULTIMATE)**
 

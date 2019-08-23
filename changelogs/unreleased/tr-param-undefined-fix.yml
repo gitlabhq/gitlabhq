@@ -1,0 +1,5 @@
+---
+title: Fix for embedded metrics undefined params
+merge_request: 31975
+author:
+type: fixed

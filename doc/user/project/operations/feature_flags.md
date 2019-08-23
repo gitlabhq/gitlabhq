@@ -112,6 +112,19 @@ If this strategy is selected, then the Unleash client **must** be given a user i
 
 **Percent rollout (logged in users)** is implemented using the Unleash [gradualRolloutUserId](https://unleash.github.io/docs/activation_strategy#gradualrolloutuserid) activation strategy.
 
+## Target Users
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/8240) in GitLab 12.2.
+
+A feature flag may be enabled for a list of target users.
+
+![Feature flag target users](img/target_users_v12_2.png)
+
+CAUTION: **Caution:**
+The Unleash client **must** be given a user id for the feature to be enabled for target users. See the [Ruby example](#ruby-application-example) below.
+
+**Target users** is implemented using the Unleash [userWithId](https://unleash.github.io/docs/activation_strategy#userwithid) activation strategy.
+
 ## Integrating with your application
 
 In order to use Feature Flags, you need to first
@@ -207,7 +220,7 @@ func main() {
 
 Here's an example of how to integrate the feature flags in a Ruby application.
 
-The Unleash client is given a user id for use with a **Percent rollout (logged in users)** rollout strategy.
+The Unleash client is given a user id for use with a **Percent rollout (logged in users)** rollout strategy or a list of **Target Users**.
 
 ```ruby
 #!/usr/bin/env ruby
