@@ -8,6 +8,7 @@ class CreateCiBuildsRunnerSession < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   def change
+    # rubocop:disable Migration/AddLimitToStringColumns
     create_table :ci_builds_runner_session, id: :bigserial do |t|
       t.integer :build_id, null: false
       t.string :url, null: false
@@ -17,5 +18,6 @@ class CreateCiBuildsRunnerSession < ActiveRecord::Migration[4.2]
       t.foreign_key :ci_builds, column: :build_id, on_delete: :cascade
       t.index :build_id, unique: true
     end
+    # rubocop:enable Migration/AddLimitToStringColumns
   end
 end

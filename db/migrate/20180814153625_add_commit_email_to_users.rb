@@ -28,6 +28,6 @@ class AddCommitEmailToUsers < ActiveRecord::Migration[4.2]
   # disable_ddl_transaction!
 
   def change
-    add_column :users, :commit_email, :string
+    add_column :users, :commit_email, :string # rubocop:disable Migration/AddLimitToStringColumns
   end
 end

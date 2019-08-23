@@ -6,6 +6,7 @@ class AddKnativeApplication < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   def change
+    # rubocop:disable Migration/AddLimitToStringColumns
     create_table "clusters_applications_knative" do |t|
       t.references :cluster, null: false, unique: true, foreign_key: { on_delete: :cascade }
 
@@ -16,5 +17,6 @@ class AddKnativeApplication < ActiveRecord::Migration[4.2]
       t.string "hostname"
       t.text "status_reason"
     end
+    # rubocop:enable Migration/AddLimitToStringColumns
   end
 end

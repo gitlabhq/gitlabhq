@@ -5,6 +5,7 @@ class CreateClustersKubernetesNamespaces < ActiveRecord::Migration[4.2]
   INDEX_NAME = 'kubernetes_namespaces_cluster_and_namespace'
 
   def change
+    # rubocop:disable Migration/AddLimitToStringColumns
     create_table :clusters_kubernetes_namespaces, id: :bigserial do |t|
       t.references :cluster, null: false, index: true, foreign_key: { on_delete: :cascade }
       t.references :project, index: true, foreign_key: { on_delete: :nullify }
@@ -20,5 +21,6 @@ class CreateClustersKubernetesNamespaces < ActiveRecord::Migration[4.2]
 
       t.index [:cluster_id, :namespace], name: INDEX_NAME, unique: true
     end
+    # rubocop:enable Migration/AddLimitToStringColumns
   end
 end

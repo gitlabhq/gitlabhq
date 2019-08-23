@@ -4,6 +4,6 @@ class AddUsernameToDeployTokens < ActiveRecord::Migration[5.1]
   DOWNTIME = false
 
   def change
-    add_column :deploy_tokens, :username, :string
+    add_column :deploy_tokens, :username, :string # rubocop:disable Migration/AddLimitToStringColumns
   end
 end

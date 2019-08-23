@@ -7,7 +7,7 @@ class AddNameAuthorIdAndShaToReleases < ActiveRecord::Migration[5.0]
 
   def change
     add_column :releases, :author_id, :integer
-    add_column :releases, :name, :string
-    add_column :releases, :sha, :string
+    add_column :releases, :name, :string # rubocop:disable Migration/AddLimitToStringColumns
+    add_column :releases, :sha, :string # rubocop:disable Migration/AddLimitToStringColumns
   end
 end

@@ -5,6 +5,7 @@ class CreateRemoteMirrors < ActiveRecord::Migration[4.2]
 
   disable_ddl_transaction!
 
+  # rubocop:disable Migration/AddLimitToStringColumns
   def up
     return if table_exists?(:remote_mirrors)
 
@@ -27,6 +28,7 @@ class CreateRemoteMirrors < ActiveRecord::Migration[4.2]
       t.timestamps null: false
     end
   end
+  # rubocop:enable Migration/AddLimitToStringColumns
 
   def down
     # ee/db/migrate/20160321161032_create_remote_mirrors_ee.rb will remove the table

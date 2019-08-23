@@ -9,7 +9,7 @@ class AddStateToPoolRepository < ActiveRecord::Migration[5.0]
   # the transactions don't have to be disabled
   # rubocop: disable Migration/AddConcurrentForeignKey, Migration/AddIndex
   def change
-    add_column(:pool_repositories, :state, :string, null: true)
+    add_column(:pool_repositories, :state, :string, null: true) # rubocop:disable Migration/AddLimitToStringColumns
 
     add_column :pool_repositories, :source_project_id, :integer
     add_index :pool_repositories, :source_project_id, unique: true

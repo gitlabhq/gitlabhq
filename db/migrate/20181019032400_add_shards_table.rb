@@ -5,7 +5,7 @@ class AddShardsTable < ActiveRecord::Migration[4.2]
 
   def change
     create_table :shards do |t|
-      t.string :name, null: false, index: { unique: true }
+      t.string :name, null: false, index: { unique: true } # rubocop:disable Migration/AddLimitToStringColumns
     end
   end
 end

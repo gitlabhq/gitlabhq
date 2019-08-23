@@ -12,6 +12,6 @@ class RemoveKodingFromApplicationSettings < ActiveRecord::Migration[4.2]
 
   def down
     add_column :application_settings, :koding_enabled, :boolean # rubocop:disable Migration/SaferBooleanColumn
-    add_column :application_settings, :koding_url, :string
+    add_column :application_settings, :koding_url, :string # rubocop:disable Migration/AddLimitToStringColumns
   end
 end

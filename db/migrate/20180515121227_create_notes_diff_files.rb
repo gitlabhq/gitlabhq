@@ -4,6 +4,7 @@ class CreateNotesDiffFiles < ActiveRecord::Migration[4.2]
   disable_ddl_transaction!
 
   def change
+    # rubocop:disable Migration/AddLimitToStringColumns
     create_table :note_diff_files do |t|
       t.references :diff_note, references: :notes, null: false, index: { unique: true }
       t.text :diff, null: false
@@ -18,5 +19,6 @@ class CreateNotesDiffFiles < ActiveRecord::Migration[4.2]
 
     # rubocop:disable Migration/AddConcurrentForeignKey
     add_foreign_key :note_diff_files, :notes, column: :diff_note_id, on_delete: :cascade
+    # rubocop:enable Migration/AddLimitToStringColumns
   end
 end

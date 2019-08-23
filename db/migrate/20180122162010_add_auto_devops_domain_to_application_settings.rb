@@ -8,6 +8,6 @@ class AddAutoDevopsDomainToApplicationSettings < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   def change
-    add_column :application_settings, :auto_devops_domain, :string
+    add_column :application_settings, :auto_devops_domain, :string # rubocop:disable Migration/AddLimitToStringColumns
   end
 end

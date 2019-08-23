@@ -9,6 +9,6 @@ class KnativeExternalIp < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   def change
-    add_column :clusters_applications_knative, :external_ip, :string
+    add_column :clusters_applications_knative, :external_ip, :string # rubocop:disable Migration/AddLimitToStringColumns
   end
 end
