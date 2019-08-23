@@ -48,7 +48,7 @@ local location or even use object storage.
 
 The dependency proxy files for Omnibus GitLab installations are stored under
 `/var/opt/gitlab/gitlab-rails/shared/dependency_proxy/` and for source
-installations under `shared/dependency_proxy/` (relative to the git home directory).
+installations under `shared/dependency_proxy/` (relative to the Git home directory).
 To change the local storage path:
 
 **Omnibus GitLab installations**

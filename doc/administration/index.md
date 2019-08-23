@@ -193,6 +193,6 @@ Learn how to install, configure, update, and maintain your GitLab instance.
   for troubleshooting Kubernetes-related issues.
 - Useful links from the Support Team:
   - [GitLab Developer Docs](https://docs.gitlab.com/ee/development/README.html).
-  - [Repairing and recovering broken git repositories](https://git.seveas.net/repairing-and-recovering-broken-git-repositories.html).
+  - [Repairing and recovering broken Git repositories](https://git.seveas.net/repairing-and-recovering-broken-git-repositories.html).
   - [Testing with OpenSSL](https://www.feistyduck.com/library/openssl-cookbook/online/ch-testing-with-openssl.html).
   - [Strace zine](https://wizardzines.com/zines/strace/).

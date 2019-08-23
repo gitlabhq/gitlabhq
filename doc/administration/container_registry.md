@@ -471,7 +471,7 @@ You can use GitLab as an auth endpoint and use a non-bundled Container Registry.
    ```
 
 1. A certificate keypair is required for GitLab and the Container Registry to
-   communicate securely.  By default omnibus-gitlab will generate one keypair,
+   communicate securely.  By default Omnibus GitLab will generate one keypair,
    which is saved to `/var/opt/gitlab/gitlab-rails/etc/gitlab-registry.key`.
    When using a non-bundled Container Registry, you will need to supply a
    custom certificate key. To do that, add the following to
@@ -487,7 +487,7 @@ You can use GitLab as an auth endpoint and use a non-bundled Container Registry.
 
    **Note:** The file specified at `registry_key_path` gets populated with the
    content specified by `internal_key`, each time reconfigure is executed. If
-   no file is specified, omnibus-gitlab will default it to
+   no file is specified, Omnibus GitLab will default it to
    `/var/opt/gitlab/gitlab-rails/etc/gitlab-registry.key` and will populate
    it.
 

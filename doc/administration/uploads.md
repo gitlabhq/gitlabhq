@@ -57,7 +57,7 @@ This configuration relies on valid AWS credentials to be configured already.
 
 ## Object Storage Settings
 
-For source installations the following settings are nested under `uploads:` and then `object_store:`. On omnibus installs they are prefixed by `uploads_object_store_`.
+For source installations the following settings are nested under `uploads:` and then `object_store:`. On Omnibus GitLab installs they are prefixed by `uploads_object_store_`.
 
 | Setting | Description | Default |
 |---------|-------------|---------|

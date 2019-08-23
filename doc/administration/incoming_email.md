@@ -151,7 +151,7 @@ Reply by email should now be working.
 
 #### Postfix
 
-Example configuration for Postfix mail server. Assumes mailbox incoming@gitlab.example.com.
+Example configuration for Postfix mail server. Assumes mailbox `incoming@gitlab.example.com`.
 
 Example for Omnibus installs:
 
@@ -218,7 +218,7 @@ incoming_email:
 
 #### Gmail
 
-Example configuration for Gmail/G Suite. Assumes mailbox gitlab-incoming@gmail.com.
+Example configuration for Gmail/G Suite. Assumes mailbox `gitlab-incoming@gmail.com`.
 
 Example for Omnibus installs:
 

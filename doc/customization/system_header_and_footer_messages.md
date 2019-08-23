@@ -8,7 +8,7 @@ Navigate to the **Admin** area and go to the **Appearance** page.
 Under **System header and footer** insert your header message and/or footer message.
 Both background and font color of the header and footer are customizable.
 
-You can also apply the header and footer messages to gitlab emails,
+You can also apply the header and footer messages to GitLab emails,
 by checking the **Enable header and footer in emails** checkbox.
 Note that color settings will only be applied within the app interface and not to emails
 
