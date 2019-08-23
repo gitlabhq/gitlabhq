@@ -80,6 +80,13 @@ describe Ci::Runner do
     end
   end
 
+  describe 'constraints' do
+    it '.UPDATE_CONTACT_COLUMN_EVERY' do
+      expect(described_class::UPDATE_CONTACT_COLUMN_EVERY.max)
+        .to be <= described_class::ONLINE_CONTACT_TIMEOUT
+    end
+  end
+
   describe '#access_level' do
     context 'when creating new runner and access_level is nil' do
       let(:runner) do

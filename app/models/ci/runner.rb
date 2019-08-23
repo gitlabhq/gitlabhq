@@ -23,13 +23,17 @@ module Ci
       project_type: 3
     }
 
-    RUNNER_QUEUE_EXPIRY_TIME = 60.minutes
     ONLINE_CONTACT_TIMEOUT = 1.hour
-    UPDATE_DB_RUNNER_INFO_EVERY = 40.minutes
+    RUNNER_QUEUE_EXPIRY_TIME = 1.hour
+
+    # This needs to be less than `ONLINE_CONTACT_TIMEOUT`
+    UPDATE_CONTACT_COLUMN_EVERY = (40.minutes..55.minutes).freeze
+
     AVAILABLE_TYPES_LEGACY = %w[specific shared].freeze
     AVAILABLE_TYPES = runner_types.keys.freeze
     AVAILABLE_STATUSES = %w[active paused online offline].freeze
     AVAILABLE_SCOPES = (AVAILABLE_TYPES_LEGACY + AVAILABLE_TYPES + AVAILABLE_STATUSES).freeze
+
     FORM_EDITABLE = %i[description tag_list active run_untagged locked access_level maximum_timeout_human_readable].freeze
 
     ignore_column :is_shared
@@ -46,7 +50,7 @@ module Ci
 
     scope :active, -> { where(active: true) }
     scope :paused, -> { where(active: false) }
-    scope :online, -> { where('contacted_at > ?', contact_time_deadline) }
+    scope :online, -> { where('contacted_at > ?', online_contact_time_deadline) }
     # The following query using negation is cheaper than using `contacted_at <= ?`
     # because there are less runners online than have been created. The
     # resulting query is quickly finding online ones and then uses the regular
@@ -55,6 +59,8 @@ module Ci
     # scan.
     scope :offline, -> { where.not(id: online) }
     scope :ordered, -> { order(id: :desc) }
+
+    scope :with_recent_runner_queue, -> { where('contacted_at > ?', recent_queue_deadline) }
 
     # BACKWARD COMPATIBILITY: There are needed to maintain compatibility with `AVAILABLE_SCOPES` used by `lib/api/runners.rb`
     scope :deprecated_shared, -> { instance_type }
@@ -137,8 +143,16 @@ module Ci
       fuzzy_search(query, [:token, :description])
     end
 
-    def self.contact_time_deadline
+    def self.online_contact_time_deadline
       ONLINE_CONTACT_TIMEOUT.ago
+    end
+
+    def self.recent_queue_deadline
+      # we add queue expiry + online
+      # - contacted_at can be updated at any time within this interval
+      #   we have always accurate `contacted_at` but it is stored in Redis
+      #   and not persisted in database
+      (ONLINE_CONTACT_TIMEOUT + RUNNER_QUEUE_EXPIRY_TIME).ago
     end
 
     def self.order_by(order)
@@ -174,7 +188,7 @@ module Ci
     end
 
     def online?
-      contacted_at && contacted_at > self.class.contact_time_deadline
+      contacted_at && contacted_at > self.class.online_contact_time_deadline
     end
 
     def status
@@ -275,9 +289,7 @@ module Ci
 
     def persist_cached_data?
       # Use a random threshold to prevent beating DB updates.
-      # It generates a distribution between [40m, 80m].
-
-      contacted_at_max_age = UPDATE_DB_RUNNER_INFO_EVERY + Random.rand(UPDATE_DB_RUNNER_INFO_EVERY)
+      contacted_at_max_age = Random.rand(UPDATE_CONTACT_COLUMN_EVERY)
 
       real_contacted_at = read_attribute(:contacted_at)
       real_contacted_at.nil? ||
