@@ -3353,6 +3353,12 @@ msgstr ""
 msgid "Copy token to clipboard"
 msgstr ""
 
+msgid "Could not add admins as members"
+msgstr ""
+
+msgid "Could not add admins as members to self-monitoring project. Errors: %{errors}"
+msgstr ""
+
 msgid "Could not add prometheus URL to whitelist"
 msgstr ""
 
@@ -3369,6 +3375,9 @@ msgid "Could not connect to FogBugz, check your URL"
 msgstr ""
 
 msgid "Could not create Wiki Repository at this time. Please try again later."
+msgstr ""
+
+msgid "Could not create group"
 msgstr ""
 
 msgid "Could not create instance administration project. Errors: %{errors}"
@@ -3396,6 +3405,12 @@ msgid "Could not save instance administration project ID, errors: %{errors}"
 msgstr ""
 
 msgid "Could not save project ID"
+msgstr ""
+
+msgid "Could not save prometheus manual configuration"
+msgstr ""
+
+msgid "Could not save prometheus manual configuration for self-monitoring project. Errors: %{errors}"
 msgstr ""
 
 msgid "Coverage"
@@ -7400,7 +7415,13 @@ msgstr ""
 msgid "No Tag"
 msgstr ""
 
+msgid "No active admin user found"
+msgstr ""
+
 msgid "No activities found"
+msgstr ""
+
+msgid "No application_settings found"
 msgstr ""
 
 msgid "No available namespaces to fork the project."
@@ -8744,6 +8765,9 @@ msgid "Project URL"
 msgstr ""
 
 msgid "Project access must be granted explicitly to each user."
+msgstr ""
+
+msgid "Project already created"
 msgstr ""
 
 msgid "Project and wiki repositories"
@@ -13959,6 +13983,12 @@ msgid "project"
 msgstr ""
 
 msgid "project avatar"
+msgstr ""
+
+msgid "prometheus.enable is not present in gitlab.yml"
+msgstr ""
+
+msgid "prometheus.listen_address is not present in gitlab.yml"
 msgstr ""
 
 msgid "quick actions"
