@@ -1,0 +1,5 @@
+---
+title: Eliminate Gitaly N+1 queries with notes API
+merge_request: 32089
+author:
+type: performance

@@ -3,6 +3,8 @@
 module API
   module Helpers
     module NotesHelpers
+      include ::RendersNotes
+
       def self.noteable_types
         # This is a method instead of a constant, allowing EE to more easily
         # extend it.
