@@ -46,7 +46,7 @@ module Gitlab
           user_with_password_for_git(login, password) ||
           Gitlab::Auth::Result.new
 
-        rate_limit!(ip, success: result.success?, login: login)
+        rate_limit!(ip, success: result.success?, login: login) unless skip_rate_limit?(login: login)
         Gitlab::Auth::UniqueIpsLimiter.limit_user!(result.actor)
 
         return result if result.success? || authenticate_using_internal_or_ldap_password?
@@ -118,6 +118,10 @@ module Gitlab
       # rubocop:enable Gitlab/RailsLogger
 
       private
+
+      def skip_rate_limit?(login:)
+        ::Ci::Build::CI_REGISTRY_USER == login
+      end
 
       def authenticate_using_internal_or_ldap_password?
         Gitlab::CurrentSettings.password_authentication_enabled_for_git? || Gitlab::Auth::LDAP::Config.enabled?

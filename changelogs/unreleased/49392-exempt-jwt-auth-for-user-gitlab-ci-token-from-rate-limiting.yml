@@ -1,0 +1,5 @@
+---
+title: Exempt user gitlab-ci-token from rate limiting
+merge_request: 31909
+author:
+type: fixed
