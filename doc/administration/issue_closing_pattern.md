@@ -13,7 +13,7 @@ in the project's default branch.
 In order to change the pattern you need to have access to the server that GitLab
 is installed on.
 
-The default pattern can be located in [gitlab.yml.example] under the
+The default pattern can be located in [`gitlab.yml.example`] under the
 "Automatic issue closing" section.
 
 > **Tip:**

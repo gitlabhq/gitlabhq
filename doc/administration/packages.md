@@ -55,7 +55,7 @@ local location or even use object storage.
 
 The packages for Omnibus GitLab installations are stored under
 `/var/opt/gitlab/gitlab-rails/shared/packages/` and for source
-installations under `shared/packages/` (relative to the git homedir).
+installations under `shared/packages/` (relative to the Git homedir).
 To change the local storage path:
 
 **Omnibus GitLab installations**

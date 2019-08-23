@@ -232,7 +232,7 @@ are listed in the descriptions of the relevant settings.
 | `file_template_project_id`               | integer          | no                                   | **(PREMIUM)** The ID of a project to load custom file templates from |
 | `first_day_of_week`                      | integer          | no                                   | Start day of the week for calendar views and date pickers. Valid values are `0` (default) for Sunday, `1` for Monday, and `6` for Saturday. |
 | `geo_status_timeout`                     | integer          | no                                   | **(PREMIUM)** The amount of seconds after which a request to get a secondary node status will time out. |
-| `gitaly_timeout_default`                 | integer          | no                                   | Default Gitaly timeout, in seconds. This timeout is not enforced for git fetch/push operations or Sidekiq jobs. Set to `0` to disable timeouts. |
+| `gitaly_timeout_default`                 | integer          | no                                   | Default Gitaly timeout, in seconds. This timeout is not enforced for Git fetch/push operations or Sidekiq jobs. Set to `0` to disable timeouts. |
 | `gitaly_timeout_fast`                    | integer          | no                                   | Gitaly fast operation timeout, in seconds. Some Gitaly operations are expected to be fast. If they exceed this threshold, there may be a problem with a storage shard and 'failing fast' can help maintain the stability of the GitLab instance. Set to `0` to disable timeouts. |
 | `gitaly_timeout_medium`                  | integer          | no                                   | Medium Gitaly timeout, in seconds. This should be a value between the Fast and the Default timeout. Set to `0` to disable timeouts. |
 | `gravatar_enabled`                       | boolean          | no                                   | Enable Gravatar. |
@@ -244,7 +244,7 @@ are listed in the descriptions of the relevant settings.
 | `hide_third_party_offers`                | boolean          | no                                   | Do not display offers from third parties within GitLab. |
 | `home_page_url`                          | string           | no                                   | Redirect to this URL when not logged in. |
 | `housekeeping_bitmaps_enabled`           | boolean          | required by: `housekeeping_enabled`  | Enable Git pack file bitmap creation. |
-| `housekeeping_enabled`                   | boolean          | no                                   | (**If enabled, requires:** `housekeeping_bitmaps_enabled`, `housekeeping_full_repack_period`, `housekeeping_gc_period`, and `housekeeping_incremental_repack_period`) Enable or disable git housekeeping. |
+| `housekeeping_enabled`                   | boolean          | no                                   | (**If enabled, requires:** `housekeeping_bitmaps_enabled`, `housekeeping_full_repack_period`, `housekeeping_gc_period`, and `housekeeping_incremental_repack_period`) Enable or disable Git housekeeping. |
 | `housekeeping_full_repack_period`        | integer          | required by: `housekeeping_enabled`  | Number of Git pushes after which an incremental `git repack` is run. |
 | `housekeeping_gc_period`                 | integer          | required by: `housekeeping_enabled`  | Number of Git pushes after which `git gc` is run. |
 | `housekeeping_incremental_repack_period` | integer          | required by: `housekeeping_enabled`  | Number of Git pushes after which an incremental `git repack` is run. |

@@ -174,7 +174,7 @@ been necessary. These are:
 
 #### 12.0
 
-- [Use refspec to clone/fetch git
+- [Use refspec to clone/fetch Git
   repository](https://gitlab.com/gitlab-org/gitlab-runner/issues/4069).
 - [Old cache
   configuration](https://gitlab.com/gitlab-org/gitlab-runner/issues/4070).

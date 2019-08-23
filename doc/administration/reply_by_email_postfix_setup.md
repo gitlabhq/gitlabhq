@@ -18,7 +18,7 @@ The instructions make the assumption that you will be using the email address `i
    sudo apt-get install postfix
    ```
 
-   When asked about the environment, select 'Internet Site'. When asked to confirm the hostname, make sure it matches gitlab.example.com`.
+   When asked about the environment, select 'Internet Site'. When asked to confirm the hostname, make sure it matches `gitlab.example.com`.
 
 1. Install the `mailutils` package.
 

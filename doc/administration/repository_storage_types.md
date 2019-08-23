@@ -118,7 +118,7 @@ If you do have any existing integration, you may want to do a small rollout firs
 to validate. You can do so by specifying a range with the operation.
 
 This is an example of how to limit the rollout to Project IDs 50 to 100, running in
-an Omnibus Gitlab installation:
+an Omnibus GitLab installation:
 
 ```bash
 sudo gitlab-rake gitlab:storage:migrate_to_hashed ID_FROM=50 ID_TO=100
@@ -139,7 +139,7 @@ To schedule a complete rollback, see the
 [rake task documentation for storage rollback](raketasks/storage.md#rollback-from-hashed-storage-to-legacy-storage) for instructions.
 
 The rollback task also supports specifying a range of Project IDs. Here is an example
-of limiting the rollout to Project IDs 50 to 100, in an Omnibus Gitlab installation:
+of limiting the rollout to Project IDs 50 to 100, in an Omnibus GitLab installation:
 
 ```bash
 sudo gitlab-rake gitlab:storage:rollback_to_legacy ID_FROM=50 ID_TO=100
@@ -185,7 +185,7 @@ CI Artifacts are S3 compatible since **9.4** (GitLab Premium), and available in 
 
 ##### LFS Objects
 
-LFS Objects implements a similar storage pattern using 2 chars, 2 level folders, following git own implementation:
+LFS Objects implements a similar storage pattern using 2 chars, 2 level folders, following Git own implementation:
 
 ```ruby
 "shared/lfs-objects/#{oid[0..1}/#{oid[2..3]}/#{oid[4..-1]}"

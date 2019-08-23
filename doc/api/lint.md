@@ -1,4 +1,4 @@
-# Validate the .gitlab-ci.yml (API)
+# Validate the `.gitlab-ci.yml` (API)
 
 > [Introduced][ce-5953] in GitLab 8.12.
 
@@ -10,7 +10,7 @@ POST /ci/lint
 
 | Attribute  | Type    | Required | Description |
 | ---------- | ------- | -------- | -------- |
-| `content`  | string    | yes      | the .gitlab-ci.yaml content|
+| `content`  | string    | yes      | the `.gitlab-ci.yaml` content|
 
 ```bash
 curl --header "Content-Type: application/json" https://gitlab.example.com/api/v4/ci/lint --data '{"content": "{ \"image\": \"ruby:2.6\", \"services\": [\"postgres\"], \"before_script\": [\"bundle install\", \"bundle exec rake db:create\"], \"variables\": {\"DB_NAME\": \"postgres\"}, \"types\": [\"test\", \"deploy\", \"notify\"], \"rspec\": { \"script\": \"rake spec\", \"tags\": [\"ruby\", \"postgres\"], \"only\": [\"branches\"]}}"}'

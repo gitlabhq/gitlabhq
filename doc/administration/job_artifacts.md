@@ -94,7 +94,7 @@ If you're enabling S3 in [GitLab HA](high_availability/README.md), you will need
 
 ### Object Storage Settings
 
-For source installations the following settings are nested under `artifacts:` and then `object_store:`. On omnibus installs they are prefixed by `artifacts_object_store_`.
+For source installations the following settings are nested under `artifacts:` and then `object_store:`. On Omnibus GitLab installs they are prefixed by `artifacts_object_store_`.
 
 | Setting | Description | Default |
 |---------|-------------|---------|

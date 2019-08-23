@@ -14,7 +14,7 @@ server.
 
 ## Configuration
 
-In the [gitlab.yml gravatar section](https://gitlab.com/gitlab-org/gitlab-ce/blob/672bd3902d86b78d730cea809fce312ec49d39d7/config/gitlab.yml.example#L122), set
+In the [`gitlab.yml` gravatar section](https://gitlab.com/gitlab-org/gitlab-ce/blob/672bd3902d86b78d730cea809fce312ec49d39d7/config/gitlab.yml.example#L122), set
 the configuration options as follows:
 
 ### For HTTP
@@ -46,7 +46,7 @@ For example, you host a service on `http://libravatar.example.com` and the
 
 `http://libravatar.example.com/avatar/%{hash}?s=%{size}&d=identicon`
 
-### Omnibus-gitlab example
+### Omnibus GitLab example
 
 In `/etc/gitlab/gitlab.rb`:
 

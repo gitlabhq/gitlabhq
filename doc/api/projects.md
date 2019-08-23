@@ -2037,13 +2037,13 @@ Read more in the [Project Badges](project_badges.md) documentation.
 
 The non-default [issue and merge request description templates](../user/project/description_templates.md) are managed inside the project's repository. So you can manage them via the API through the [Repositories API](repositories.md) and the [Repository Files API](repository_files.md).
 
-## Download snapshot of a git repository
+## Download snapshot of a Git repository
 
 > Introduced in GitLab 10.7
 
 This endpoint may only be accessed by an administrative user.
 
-Download a snapshot of the project (or wiki, if requested) git repository. This
+Download a snapshot of the project (or wiki, if requested) Git repository. This
 snapshot is always in uncompressed [tar](https://en.wikipedia.org/wiki/Tar_(computing))
 format.
 

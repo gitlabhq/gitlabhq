@@ -112,7 +112,7 @@ Parameters:
 - `tag_name` (required) - The name of a tag
 - `ref` (required) - Create tag using commit SHA, another tag name, or branch name.
 - `message` (optional) - Creates annotated tag.
-- `release_description` (optional) - Add release notes to the git tag and store it in the GitLab database.
+- `release_description` (optional) - Add release notes to the Git tag and store it in the GitLab database.
 
 ```json
 {
@@ -166,7 +166,7 @@ Parameters:
 
 ## Create a new release
 
-Add release notes to the existing git tag. If there
+Add release notes to the existing Git tag. If there
 already exists a release for the given tag, status code `409` is returned.
 
 ```

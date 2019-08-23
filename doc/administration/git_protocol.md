@@ -53,7 +53,7 @@ sudo service ssh restart
 ## Instructions
 
 In order to use the new protocol, clients need to either pass the configuration
-`-c protocol.version=2` to the git command, or set it globally:
+`-c protocol.version=2` to the Git command, or set it globally:
 
 ```sh
 git config --global protocol.version 2

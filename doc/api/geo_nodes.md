@@ -111,7 +111,7 @@ PUT /geo_nodes/:id
 |-----------------------------|---------|-----------|---------------------------------------------------------------------------|
 | `id`                        | integer | yes       | The ID of the Geo node.                                                   |
 | `enabled`                   | boolean | no        | Flag indicating if the Geo node is enabled.                               |
-| `name`                      | string  | yes       | The unique identifier for the Geo node. Must match `geo_node_name` if it is set in gitlab.rb, otherwise it must match `external_url`. |
+| `name`                      | string  | yes       | The unique identifier for the Geo node. Must match `geo_node_name` if it is set in `gitlab.rb`, otherwise it must match `external_url`. |
 | `url`                       | string  | yes       | The user-facing URL of the Geo node. |
 | `internal_url`              | string  | no        | The URL defined on the primary node that secondary nodes should use to contact it. Returns `url` if not set.|
 | `files_max_capacity`        | integer | no        | Control the maximum concurrency of LFS/attachment backfill for this secondary node. |

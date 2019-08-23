@@ -60,8 +60,8 @@ POST /features/:name
 | `value` | integer/string | yes | `true` or `false` to enable/disable, or an integer for percentage of time |
 | `feature_group` | string | no | A Feature group name |
 | `user` | string | no | A GitLab username |
-| `group` | string | no | A GitLab group's path, for example 'gitlab-org' |
-| `project` | string | no | A projects path, for example 'gitlab-org/gitlab-ce' |
+| `group` | string | no | A GitLab group's path, for example `gitlab-org` |
+| `project` | string | no | A projects path, for example `gitlab-org/gitlab-ce` |
 
 Note that you can enable or disable a feature for a `feature_group`, a `user`,
 a `group`, and a `project` in a single API call.
