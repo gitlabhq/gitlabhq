@@ -12,6 +12,10 @@ module QA
           @session_address = Runtime::Address.new(api_client.address, request_path)
         end
 
+        def mask_url
+          @session_address.address.sub(/private_token=.*/, "private_token=[****]")
+        end
+
         def url
           @session_address.address
         end
