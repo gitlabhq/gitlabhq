@@ -180,7 +180,7 @@ class Projects::PipelinesController < Projects::ApplicationController
                   else
                     project
                       .all_pipelines
-                      .includes(user: :status)
+                      .includes(builds: :tags, user: :status)
                       .find_by!(id: params[:id])
                       .present(current_user: current_user)
                   end
