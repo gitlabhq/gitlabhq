@@ -1,0 +1,5 @@
+---
+title: fix charts scroll handle icon to use gitlab svg
+merge_request: 31825
+author:
+type: fixed
