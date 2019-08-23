@@ -1,0 +1,5 @@
+---
+title: Read pipelines from public projects through API without an access token
+merge_request: 31816
+author:
+type: fixed

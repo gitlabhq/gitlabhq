@@ -17,6 +17,8 @@ describe API::Pipelines do
   end
 
   describe 'GET /projects/:id/pipelines ' do
+    it_behaves_like 'pipelines visibility table'
+
     context 'authorized user' do
       it 'returns project pipelines' do
         get api("/projects/#{project.id}/pipelines", user)
@@ -401,6 +403,15 @@ describe API::Pipelines do
   end
 
   describe 'GET /projects/:id/pipelines/:pipeline_id' do
+    it_behaves_like 'pipelines visibility table' do
+      let(:pipelines_api_path) do
+        "/projects/#{project.id}/pipelines/#{pipeline.id}"
+      end
+
+      let(:api_response) { response_status == 200 ? response : json_response }
+      let(:response_200) { match_response_schema('public_api/v4/pipeline/detail') }
+    end
+
     context 'authorized user' do
       it 'exposes known attributes' do
         get api("/projects/#{project.id}/pipelines/#{pipeline.id}", user)

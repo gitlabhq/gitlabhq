@@ -4,7 +4,7 @@ module API
   class Pipelines < Grape::API
     include PaginationParams
 
-    before { authenticate! }
+    before { authenticate_non_get! }
 
     params do
       requires :id, type: String, desc: 'The project ID'
@@ -32,6 +32,7 @@ module API
       end
       get ':id/pipelines' do
         authorize! :read_pipeline, user_project
+        authorize! :read_build, user_project
 
         pipelines = PipelinesFinder.new(user_project, current_user, params).execute
         present paginate(pipelines), with: Entities::PipelineBasic
