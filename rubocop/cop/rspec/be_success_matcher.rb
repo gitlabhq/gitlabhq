@@ -26,7 +26,7 @@ module RuboCop
       class BeSuccessMatcher < RuboCop::Cop::Cop
         include SpecHelpers
 
-        MESSAGE = "Don't use deprecated `success?` method, use `successful?` instead.".freeze
+        MESSAGE = 'Do not use deprecated `success?` method, use `successful?` instead.'.freeze
 
         def_node_search :expect_to_be_success?, <<~PATTERN
           (send (send nil? :expect (send nil? ...)) :to (send nil? :be_success))
@@ -49,7 +49,7 @@ module RuboCop
 
         def autocorrect(node)
           lambda do |corrector|
-            corrector.insert_after(node.loc.expression, "ful")
+            corrector.insert_after(node.loc.expression, 'ful')
           end
         end
       end

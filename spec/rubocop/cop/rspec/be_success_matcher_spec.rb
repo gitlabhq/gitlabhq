@@ -42,17 +42,17 @@ describe RuboCop::Cop::RSpec::BeSuccessMatcher do
       allow(cop).to receive(:in_controller_spec?).and_return(true)
     end
 
-    context "using expect(response).to be_success call" do
+    context 'using expect(response).to be_success call' do
       it_behaves_like 'an offensive be_success call', OFFENSE_CALL_EXPECT_TO_BE_SUCCESS
       it_behaves_like 'an autocorrected be_success call', OFFENSE_CALL_EXPECT_TO_BE_SUCCESS, CALL_EXPECT_TO_BE_SUCCESSFUL
     end
 
-    context "using is_expected.to be_success call" do
+    context 'using is_expected.to be_success call' do
       it_behaves_like 'an offensive be_success call', OFFENSE_CALL_IS_EXPECTED_TO_BE_SUCCESS
       it_behaves_like 'an autocorrected be_success call', OFFENSE_CALL_IS_EXPECTED_TO_BE_SUCCESS, CALL_IS_EXPECTED_TO_BE_SUCCESSFUL
     end
 
-    context "using expect(response).to be_successful" do
+    context 'using expect(response).to be_successful' do
       it "does not register an offense" do
         inspect_source(CALL_EXPECT_TO_BE_SUCCESSFUL)
 
@@ -60,8 +60,8 @@ describe RuboCop::Cop::RSpec::BeSuccessMatcher do
       end
     end
 
-    context "using is_expected.to be_successful" do
-      it "does not register an offense" do
+    context 'using is_expected.to be_successful' do
+      it 'does not register an offense' do
         inspect_source(CALL_IS_EXPECTED_TO_BE_SUCCESSFUL)
 
         expect(cop.offenses.size).to eq(0)
@@ -70,16 +70,16 @@ describe RuboCop::Cop::RSpec::BeSuccessMatcher do
   end
 
   context 'outside of a controller spec file' do
-    context "using expect(response).to be_success call" do
-      it "does not register an offense" do
+    context 'using expect(response).to be_success call' do
+      it 'does not register an offense' do
         inspect_source(OFFENSE_CALL_EXPECT_TO_BE_SUCCESS)
 
         expect(cop.offenses.size).to eq(0)
       end
     end
 
-    context "using is_expected.to be_success call" do
-      it "does not register an offense" do
+    context 'using is_expected.to be_success call' do
+      it 'does not register an offense' do
         inspect_source(OFFENSE_CALL_IS_EXPECTED_TO_BE_SUCCESS)
 
         expect(cop.offenses.size).to eq(0)
