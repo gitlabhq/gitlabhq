@@ -27,6 +27,16 @@ describe Gitlab::GitalyClient do
     end
   end
 
+  describe '.filesystem_id' do
+    it 'returns an empty string when the storage is not found in the response' do
+      response = double("response")
+      allow(response).to receive(:storage_statuses).and_return([])
+      allow_any_instance_of(Gitlab::GitalyClient::ServerService).to receive(:info).and_return(response)
+
+      expect(described_class.filesystem_id('default')).to eq(nil)
+    end
+  end
+
   describe '.stub_class' do
     it 'returns the gRPC health check stub' do
       expect(described_class.stub_class(:health_check)).to eq(::Grpc::Health::V1::Health::Stub)
