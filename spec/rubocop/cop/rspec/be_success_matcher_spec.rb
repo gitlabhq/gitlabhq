@@ -10,10 +10,16 @@ require_relative '../../../../rubocop/cop/rspec/be_success_matcher'
 describe RuboCop::Cop::RSpec::BeSuccessMatcher do
   include CopHelper
 
-  OFFENSE_CALL_EXPECT_TO_BE_SUCCESS = %(expect(response).to be_success).freeze
-  OFFENSE_CALL_IS_EXPECTED_TO_BE_SUCCESS = %(is_expected.to be_success).freeze
-  CALL_EXPECT_TO_BE_SUCCESSFUL = %(expect(response).to be_successful).freeze
-  CALL_IS_EXPECTED_TO_BE_SUCCESSFUL = %(is_expected.to be_successful).freeze
+  CODE_EXAMPLES = [
+    {
+      bad: %(expect(response).to be_success).freeze,
+      good: %(expect(response).to be_successful).freeze
+    },
+    {
+      bad: %(is_expected.to be_success).freeze,
+      good: %(is_expected.to be_successful).freeze
+    }
+  ]
 
   let(:source_file) { 'spec/foo_spec.rb' }
 
@@ -42,47 +48,30 @@ describe RuboCop::Cop::RSpec::BeSuccessMatcher do
       allow(cop).to receive(:in_controller_spec?).and_return(true)
     end
 
-    context 'using expect(response).to be_success call' do
-      it_behaves_like 'an offensive be_success call', OFFENSE_CALL_EXPECT_TO_BE_SUCCESS
-      it_behaves_like 'an autocorrected be_success call', OFFENSE_CALL_EXPECT_TO_BE_SUCCESS, CALL_EXPECT_TO_BE_SUCCESSFUL
-    end
-
-    context 'using is_expected.to be_success call' do
-      it_behaves_like 'an offensive be_success call', OFFENSE_CALL_IS_EXPECTED_TO_BE_SUCCESS
-      it_behaves_like 'an autocorrected be_success call', OFFENSE_CALL_IS_EXPECTED_TO_BE_SUCCESS, CALL_IS_EXPECTED_TO_BE_SUCCESSFUL
-    end
-
-    context 'using expect(response).to be_successful' do
-      it "does not register an offense" do
-        inspect_source(CALL_EXPECT_TO_BE_SUCCESSFUL)
-
-        expect(cop.offenses.size).to eq(0)
+    CODE_EXAMPLES.each do |code_example|
+      context "using #{code_example[:bad]} call" do
+        it_behaves_like 'an offensive be_success call', code_example[:bad]
+        it_behaves_like 'an autocorrected be_success call', code_example[:bad], code_example[:good]
       end
-    end
 
-    context 'using is_expected.to be_successful' do
-      it 'does not register an offense' do
-        inspect_source(CALL_IS_EXPECTED_TO_BE_SUCCESSFUL)
+      context "using #{code_example[:good]} call" do
+        it "does not register an offense" do
+          inspect_source(code_example[:good])
 
-        expect(cop.offenses.size).to eq(0)
+          expect(cop.offenses.size).to eq(0)
+        end
       end
     end
   end
 
   context 'outside of a controller spec file' do
-    context 'using expect(response).to be_success call' do
-      it 'does not register an offense' do
-        inspect_source(OFFENSE_CALL_EXPECT_TO_BE_SUCCESS)
+    CODE_EXAMPLES.each do |code_example|
+      context "using #{code_example[:bad]} call" do
+        it 'does not register an offense' do
+          inspect_source(code_example[:bad])
 
-        expect(cop.offenses.size).to eq(0)
-      end
-    end
-
-    context 'using is_expected.to be_success call' do
-      it 'does not register an offense' do
-        inspect_source(OFFENSE_CALL_IS_EXPECTED_TO_BE_SUCCESS)
-
-        expect(cop.offenses.size).to eq(0)
+          expect(cop.offenses.size).to eq(0)
+        end
       end
     end
   end
