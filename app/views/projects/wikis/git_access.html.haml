@@ -1,15 +1,17 @@
 - @content_class = "limit-container-width" unless fluid_layout
 - page_title s_("WikiClone|Git Access"), _("Wiki")
 
-.wiki-page-header.top-area.has-sidebar-toggle
+.wiki-page-header.top-area.has-sidebar-toggle.py-3.flex-column.flex-lg-row
   %button.btn.btn-default.d-block.d-sm-block.d-md-none.float-right.sidebar-toggle.js-sidebar-wiki-toggle{ role: "button", type: "button" }
     = icon('angle-double-left')
 
-  .git-access-header
-    = _("Clone repository")
-    %strong= @project_wiki.full_path
+  .git-access-header.w-100.d-flex.flex-column.justify-content-center
+    %span
+      = _("Clone repository")
+      %strong= @project_wiki.full_path
 
-  = render "shared/clone_panel", project: @project_wiki
+  .pt-3.pt-lg-0.w-100
+    = render "shared/clone_panel", project: @project_wiki
 
 .wiki-git-access
   %h3= s_("WikiClone|Install Gollum")
