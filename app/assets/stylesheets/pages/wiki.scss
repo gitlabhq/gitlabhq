@@ -32,13 +32,11 @@
     color: $gl-text-color-secondary;
   }
 
-  .git-access-header {
-    padding: $gl-padding 0 $gl-padding-top;
-  }
-
   .git-clone-holder {
-    width: 100%;
-    padding-bottom: 40px;
+    .input-group-prepend,
+    .input-group-append {
+      background-color: transparent;
+    }
   }
 
   button.sidebar-toggle {
@@ -48,19 +46,8 @@
     display: block;
   }
 
-  @include media-breakpoint-up(sm) {
-    &.has-sidebar-toggle {
-      padding-right: 40px;
-    }
-
-    .git-clone-holder {
-      width: 480px;
-      padding-bottom: $gl-padding;
-    }
-
-    .nav-controls {
-      width: auto;
-    }
+  &.has-sidebar-toggle .git-access-header {
+    padding-right: $sidebar-toggle-width;
   }
 
   @include media-breakpoint-up(md) {
@@ -103,10 +90,6 @@
 
   .blocks-container {
     padding: 0 $gl-padding;
-  }
-
-  .block {
-    width: 100%;
   }
 
   a {

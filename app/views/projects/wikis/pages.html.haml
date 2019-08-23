@@ -5,13 +5,13 @@
 - sort_title = wiki_sort_title(params[:sort])
 
 %div{ class: container_class }
-  .wiki-page-header.top-area
+  .wiki-page-header.top-area.flex-column.flex-lg-row
 
     .nav-text.flex-fill
       %h2.wiki-page-title
         = s_("Wiki|Wiki Pages")
 
-    .nav-controls
+    .nav-controls.pb-md-3.pb-lg-0
       = link_to project_wikis_git_access_path(@project), class: 'btn' do
         = icon('cloud-download')
         = _("Clone repository")
