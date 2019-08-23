@@ -314,7 +314,7 @@ Source:
 
 #### Git and container registry failed authentication ban
 
-GitLab.com responds with HTTP status code 403 for 1 hour, if 30 failed
+GitLab.com responds with HTTP status code `403` for 1 hour, if 30 failed
 authentication requests were received in a 3-minute period from a single IP address.
 
 This applies only to Git requests and container registry (`/jwt/auth`) requests
@@ -323,6 +323,8 @@ This applies only to Git requests and container registry (`/jwt/auth`) requests
 This limit is reset by requests that authenticate successfully. For example, 29
 failed authentication requests followed by 1 successful request, followed by 29
 more failed authentication requests would not trigger a ban.
+
+JWT requests authenticated by gitlab-ci-token are excluded from this limit.
 
 No response headers are provided.
 
