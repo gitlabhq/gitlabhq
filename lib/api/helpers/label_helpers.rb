@@ -11,9 +11,9 @@ module API
         optional :description, type: String, desc: 'The description of label to be created'
       end
 
-      def find_label(parent, id, include_ancestor_groups: true)
+      def find_label(parent, id_or_title, include_ancestor_groups: true)
         labels = available_labels_for(parent, include_ancestor_groups: include_ancestor_groups)
-        label = labels.find_by_id(id) || labels.find_by_title(id)
+        label = labels.find_by_id(id_or_title) || labels.find_by_title(id_or_title)
 
         label || not_found!('Label')
       end
@@ -35,12 +35,7 @@ module API
         priority = params.delete(:priority)
         label_params = declared_params(include_missing: false)
 
-        label =
-          if parent.is_a?(Project)
-            ::Labels::CreateService.new(label_params).execute(project: parent)
-          else
-            ::Labels::CreateService.new(label_params).execute(group: parent)
-          end
+        label = ::Labels::CreateService.new(label_params).execute(create_service_params(parent))
 
         if label.persisted?
           if parent.is_a?(Project)
@@ -56,9 +51,12 @@ module API
       def update_label(parent, entity)
         authorize! :admin_label, parent
 
-        label = find_label(parent, params[:name], include_ancestor_groups: false)
+        label = find_label(parent, params_id_or_title, include_ancestor_groups: false)
         update_priority = params.key?(:priority)
         priority = params.delete(:priority)
+
+        # params is used to update the label so we need to remove this field here
+        params.delete(:label_id)
 
         label = ::Labels::UpdateService.new(declared_params(include_missing: false)).execute(label)
         render_validation_error!(label) unless label.valid?
@@ -77,9 +75,23 @@ module API
       def delete_label(parent)
         authorize! :admin_label, parent
 
-        label = find_label(parent, params[:name], include_ancestor_groups: false)
+        label = find_label(parent, params_id_or_title, include_ancestor_groups: false)
 
         destroy_conditionally!(label)
+      end
+
+      def params_id_or_title
+        @params_id_or_title ||= params[:label_id] || params[:name]
+      end
+
+      def create_service_params(parent)
+        if parent.is_a?(Project)
+          { project: parent }
+        elsif parent.is_a?(Group)
+          { group: parent }
+        else
+          raise TypeError, 'Parent type is not supported'
+        end
       end
     end
   end
