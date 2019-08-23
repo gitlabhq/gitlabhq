@@ -83,7 +83,7 @@ request approval rules:
 1. Give the approval rule a name that describes the set of approvers selected.
 1. Click **Add approvers** to submit the new rule.
 
-   ![Approvals premium project edit](img/approvals_premium_project_edit.png)
+   ![Approvals premium project edit](img/approvals_premium_project_edit_v12_3.png)
 
 ## Multiple approval rules **(PREMIUM)**
 
