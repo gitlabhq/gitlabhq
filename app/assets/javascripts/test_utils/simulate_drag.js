@@ -153,7 +153,11 @@ export default function simulateDrag(options) {
 
     if (progress >= 1) {
       if (options.ondragend) options.ondragend();
-      simulateEvent(toEl, 'mouseup');
+
+      if (options.performDrop) {
+        simulateEvent(toEl, 'mouseup');
+      }
+
       clearInterval(dragInterval);
       window.SIMULATE_DRAG_ACTIVE = 0;
     }

@@ -1,0 +1,5 @@
+---
+title: Hide duplicate board list while dragging
+merge_request: 32099
+author:
+type: fixed

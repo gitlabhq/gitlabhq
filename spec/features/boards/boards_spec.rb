@@ -236,6 +236,15 @@ describe 'Issue Boards', :js do
         expect(find('.board:nth-child(2)')).to have_content(planning.title)
       end
 
+      it 'dragging does not duplicate list' do
+        selector = '.board:not(.is-ghost) .board-header'
+        expect(page).to have_selector(selector, text: development.title, count: 1)
+
+        drag(list_from_index: 2, list_to_index: 1, selector: '.board-header', perform_drop: false)
+
+        expect(page).to have_selector(selector, text: development.title, count: 1)
+      end
+
       it 'issue moves between lists' do
         drag(list_from_index: 1, from_index: 1, list_to_index: 2)
 
@@ -576,7 +585,7 @@ describe 'Issue Boards', :js do
     end
   end
 
-  def drag(selector: '.board-list', list_from_index: 0, from_index: 0, to_index: 0, list_to_index: 0)
+  def drag(selector: '.board-list', list_from_index: 0, from_index: 0, to_index: 0, list_to_index: 0, perform_drop: true)
     # ensure there is enough horizontal space for four boards
     resize_window(2000, 800)
 
@@ -585,7 +594,8 @@ describe 'Issue Boards', :js do
             list_from_index: list_from_index,
             from_index: from_index,
             to_index: to_index,
-            list_to_index: list_to_index)
+            list_to_index: list_to_index,
+            perform_drop: perform_drop)
   end
 
   def wait_for_board_cards(board_number, expected_cards)

@@ -86,6 +86,9 @@
 }
 
 .board {
+  // the next line cannot be replaced with .d-inline-block because it breaks display: none of SortableJS
+  // see https://gitlab.com/gitlab-org/gitlab-ce/issues/64828
+  display: inline-block;
   width: calc(85vw - 15px);
 
   @include media-breakpoint-up(sm) {
