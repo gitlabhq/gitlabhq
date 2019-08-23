@@ -1,6 +1,7 @@
 require 'peek/adapters/redis'
 
 Peek::Adapters::Redis.prepend ::Gitlab::PerformanceBar::RedisAdapterWhenPeekEnabled
+Peek.singleton_class.prepend ::Gitlab::PerformanceBar::WithTopLevelWarnings
 
 Rails.application.config.peek.adapter = :redis, { client: ::Redis.new(Gitlab::Redis::Cache.params) }
 
