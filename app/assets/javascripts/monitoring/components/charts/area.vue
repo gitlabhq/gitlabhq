@@ -126,7 +126,7 @@ export default {
           },
         },
         series: this.scatterSeries,
-        dataZoom: this.dataZoomConfig,
+        dataZoom: [this.dataZoomConfig],
       };
     },
     dataZoomConfig() {
