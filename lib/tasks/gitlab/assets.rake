@@ -10,13 +10,7 @@ namespace :gitlab do
         rake:assets:precompile
         webpack:compile
         gitlab:assets:fix_urls
-        gitlab:assets:compile_vrt
       ].each(&Gitlab::TaskHelpers.method(:invoke_and_time_task))
-    end
-
-    desc 'GitLab | Assets | Compile visual review toolbar'
-    task :compile_vrt do
-      system 'yarn', 'webpack-vrt'
     end
 
     desc 'GitLab | Assets | Clean up old compiled frontend assets'

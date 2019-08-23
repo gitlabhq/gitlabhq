@@ -1021,6 +1021,11 @@
     vue "^2.6.10"
     vue-loader "^15.4.2"
 
+"@gitlab/visual-review-tools@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/visual-review-tools/-/visual-review-tools-1.0.0.tgz#6012e0a19797c1f5dad34ccf4dacdaf38e400a73"
+  integrity sha512-xMvz9IwrXisQ1MH+Tj6lfbQcQSiQy88nTPuQV6OTLBGuV+vIQeVwXeIkQeTKuSpd0GqZvigPdRqxyQCa3blpIg==
+
 "@gitlab/vue-toasted@^1.2.1":
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/@gitlab/vue-toasted/-/vue-toasted-1.2.1.tgz#f407b5aa710863e5b7f021f4a1f66160331ab263"
