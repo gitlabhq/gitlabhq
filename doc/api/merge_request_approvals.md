@@ -704,7 +704,7 @@ POST /projects/:id/merge_requests/:merge_request_iid/approval_rules
 | `users`                    | integer | no       | The ids of users as approvers                  |
 | `groups`                   | integer | no       | The ids of groups as approvers                 |
 
-**Important:** WHen `approval_project_rule_id` is set, the `name`, `users` and
+**Important:** When `approval_project_rule_id` is set, the `name`, `users` and
 `groups` of project-level rule will be copied. The `approvals_required` specified
 will be used.
 
@@ -776,6 +776,9 @@ PUT /projects/:id/merge_request/:merge_request_iid/approval_rules/:approval_rule
 ```
 
 **Important:** Approvers and groups not in the `users`/`groups` param will be **removed**
+
+**Important:** Updating a `report_approver` or `code_owner` rule is not allowed.
+These are system generated rules.
 
 **Parameters:**
 
@@ -855,6 +858,9 @@ You can delete merge request approval rules using the following endpoint:
 ```
 DELETE /projects/:id/merge_requests/:merge_request_iid/approval_rules/:approval_rule_id
 ```
+
+**Important:** Deleting a `report_approver` or `code_owner` rule is not allowed.
+These are system generated rules.
 
 **Parameters:**
 
