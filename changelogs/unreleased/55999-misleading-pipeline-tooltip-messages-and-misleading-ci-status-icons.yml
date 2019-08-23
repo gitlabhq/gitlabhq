@@ -1,0 +1,5 @@
+---
+title: Remove "Commit" from pipeline status tooltips
+merge_request: 31861
+author:
+type: fixed

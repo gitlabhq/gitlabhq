@@ -169,7 +169,7 @@ describe 'Dashboard Projects' do
         expect(page).to have_xpath("//a[@href='#{pipelines_project_commit_path(project, project.commit, ref: pipeline.ref)}']")
         expect(page).to have_css('.ci-status-link')
         expect(page).to have_css('.ci-status-icon-success')
-        expect(page).to have_link('Commit: passed')
+        expect(page).to have_link('Pipeline: passed')
       end
     end
 
@@ -189,7 +189,7 @@ describe 'Dashboard Projects' do
           expect(page).not_to have_xpath("//a[@href='#{pipelines_project_commit_path(project, project.commit, ref: pipeline.ref)}']")
           expect(page).not_to have_css('.ci-status-link')
           expect(page).not_to have_css('.ci-status-icon-success')
-          expect(page).not_to have_link('Commit: passed')
+          expect(page).not_to have_link('Pipeline: passed')
         end
       end
     end

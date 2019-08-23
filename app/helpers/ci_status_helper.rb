@@ -105,14 +105,13 @@ module CiStatusHelper
     path = pipelines_project_commit_path(project, commit, ref: ref)
 
     render_status_with_link(
-      'commit',
       commit.status(ref),
       path,
       tooltip_placement: tooltip_placement,
       icon_size: 24)
   end
 
-  def render_status_with_link(type, status, path = nil, tooltip_placement: 'left', cssclass: '', container: 'body', icon_size: 16)
+  def render_status_with_link(status, path = nil, type: _('pipeline'), tooltip_placement: 'left', cssclass: '', container: 'body', icon_size: 16)
     klass = "ci-status-link ci-status-icon-#{status.dasherize} d-inline-flex #{cssclass}"
     title = "#{type.titleize}: #{ci_label_for_status(status)}"
     data = { toggle: 'tooltip', placement: tooltip_placement, container: container }

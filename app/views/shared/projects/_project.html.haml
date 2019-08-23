@@ -89,7 +89,7 @@
           - if pipeline_status && can?(current_user, :read_cross_project) && project.pipeline_status.has_status? && can?(current_user, :read_build, project)
             - pipeline_path = pipelines_project_commit_path(project.pipeline_status.project, project.pipeline_status.sha, ref: project.pipeline_status.ref)
             %span.icon-wrapper.pipeline-status
-              = render 'ci/status/icon', status: project.commit.last_pipeline.detailed_status(current_user), type: 'commit', tooltip_placement: 'top', path: pipeline_path
+              = render 'ci/status/icon', status: project.commit.last_pipeline.detailed_status(current_user), tooltip_placement: 'top', path: pipeline_path
         .updated-note
           %span
             = _('Updated')
