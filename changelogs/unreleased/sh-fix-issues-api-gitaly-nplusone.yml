@@ -1,5 +1,0 @@
----
-title: Fix Gitaly N+1 calls with listing issues/MRs via API
-merge_request: 31938
-author:
-type: performance
