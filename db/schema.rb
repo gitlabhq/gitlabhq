@@ -3015,7 +3015,6 @@ ActiveRecord::Schema.define(version: 2019_08_15_093949) do
     t.datetime_with_timezone "released_at", null: false
     t.index ["author_id"], name: "index_releases_on_author_id"
     t.index ["project_id", "tag"], name: "index_releases_on_project_id_and_tag"
-    t.index ["project_id"], name: "index_releases_on_project_id"
   end
 
   create_table "remote_mirrors", id: :serial, force: :cascade do |t|
