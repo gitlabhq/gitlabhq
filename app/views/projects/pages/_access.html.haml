@@ -5,9 +5,11 @@
     .card-body
       %p
         %strong
-          Congratulations! Your pages are served under:
+          = _("Your pages are served under:")
 
       %p= link_to @project.pages_url, @project.pages_url
 
       - @project.pages_domains.each do |domain|
         %p= link_to domain.url, domain.url
+    .card-footer.alert-primary
+      = _("It may take up to 30 minutes before the site is available after the first deployment.")
