@@ -38,11 +38,13 @@ module API
         success Entities::ProjectLabel
       end
       params do
-        requires :name, type: String, desc: 'The name of the label to be updated'
+        optional :label_id, type: Integer, desc: 'The id of the label to be updated'
+        optional :name, type: String, desc: 'The name of the label to be updated'
         optional :new_name, type: String, desc: 'The new name of the label'
         optional :color, type: String, desc: "The new color of the label given in 6-digit hex notation with leading '#' sign (e.g. #FFAABB) or one of the allowed CSS color names"
         optional :description, type: String, desc: 'The new description of label'
         optional :priority, type: Integer, desc: 'The priority of the label', allow_blank: true
+        exactly_one_of :label_id, :name
         at_least_one_of :new_name, :color, :description, :priority
       end
       put ':id/labels' do
@@ -53,7 +55,9 @@ module API
         success Entities::ProjectLabel
       end
       params do
-        requires :name, type: String, desc: 'The name of the label to be deleted'
+        optional :label_id, type: Integer, desc: 'The id of the label to be deleted'
+        optional :name, type: String, desc: 'The name of the label to be deleted'
+        exactly_one_of :label_id, :name
       end
       delete ':id/labels' do
         delete_label(user_project)

@@ -137,8 +137,9 @@ DELETE /projects/:id/labels
 
 | Attribute | Type    | Required | Description           |
 | --------- | ------- | -------- | --------------------- |
-| `id`      | integer/string    | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
-| `name`    | string  | yes      | The name of the label |
+| `id`            | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `label_id`      | integer        | yes (or `name`)                   | The id of the existing label     |
+| `name`          | string         | yes (or `label_id`)               | The name of the existing label   |
 
 ```bash
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/labels?name=bug"
@@ -156,7 +157,8 @@ PUT /projects/:id/labels
 | Attribute       | Type    | Required                          | Description                      |
 | --------------- | ------- | --------------------------------- | -------------------------------  |
 | `id`      | integer/string    | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
-| `name`          | string  | yes                               | The name of the existing label   |
+| `label_id`      | integer | yes (or `name`)                   | The id of the existing label     |
+| `name`          | string  | yes (or `label_id`)               | The name of the existing label   |
 | `new_name`      | string  | yes if `color` is not provided    | The new name of the label        |
 | `color`         | string  | yes if `new_name` is not provided | The color of the label given in 6-digit hex notation with leading '#' sign (e.g. #FFAABB) or one of the [CSS color names](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#Color_keywords) |
 | `description`   | string  | no                                | The new description of the label |
