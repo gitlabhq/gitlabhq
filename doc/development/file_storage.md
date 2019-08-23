@@ -2,6 +2,8 @@
 
 We use the [CarrierWave] gem to handle file upload, store and retrieval.
 
+File uploads should be accelerated by workhorse, for details please refer to [uploads development documentation](uploads.md).
+
 There are many places where file uploading is used, according to contexts:
 
 - System

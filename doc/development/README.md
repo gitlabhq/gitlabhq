@@ -65,6 +65,7 @@ description: 'Learn how to contribute to GitLab.'
 - [Repository mirroring](repository_mirroring.md)
 - [Git LFS](lfs.md)
 - [Developing against interacting components or features](interacting_components.md)
+- [File uploads](uploads.md)
 
 ## Performance guides
 
