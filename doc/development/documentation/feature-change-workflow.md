@@ -69,7 +69,7 @@ To follow a consistent workflow every month, documentation changes
 involve the Product Managers, the developer who shipped the feature,
 and the technical writer for the DevOps stage. Each role is described below.
 
-The Documentation items in the GitLab CE/EE [Feature Proposal issue template](https://gitlab.com/gitlab-org/gitlab-ce/raw/template-improvements-for-documentation/.gitlab/issue_templates/Feature%20proposal.md)
+The Documentation items in the GitLab CE/EE [Feature Proposal issue template](https://gitlab.com/gitlab-org/gitlab-ce/raw/master/.gitlab/issue_templates/Feature%20proposal.md)
 and default merge request template will assist you with following this process.
 
 ### Product Manager role
