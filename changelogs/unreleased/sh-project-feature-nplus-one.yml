@@ -1,0 +1,5 @@
+---
+title: Remove N+1 SQL query loading project feature in dashboard
+merge_request: 32169
+author:
+type: performance

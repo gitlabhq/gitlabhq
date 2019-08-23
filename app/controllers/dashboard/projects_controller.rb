@@ -70,6 +70,7 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
                 .new(params: finder_params, current_user: current_user)
                 .execute
                 .includes(:route, :creator, :group, namespace: [:route, :owner])
+                .preload(:project_feature)
                 .page(finder_params[:page])
 
     prepare_projects_for_rendering(projects)
