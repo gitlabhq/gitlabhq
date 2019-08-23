@@ -12,7 +12,7 @@
             .domain-status.ci-status-icon.has-tooltip{ class: "ci-status-icon-#{status}", title: tooltip }
               = sprite_icon("status_#{status}", size: 16 )
           .domain-name
-            = link_to domain.url do
+            = link_to domain.url, target: :_blank, rel: 'noopener noreferrer' do
               = domain.url
               = icon('external-link')
             - if domain.subject
