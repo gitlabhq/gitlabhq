@@ -21,9 +21,13 @@ if Labkit::Tracing.enabled?
     end
   end
 
+  # Instrument Redis
+  Labkit::Tracing::Redis.instrument
+
   # Instrument Rails
   Labkit::Tracing::Rails::ActiveRecordSubscriber.instrument
   Labkit::Tracing::Rails::ActionViewSubscriber.instrument
+  Labkit::Tracing::Rails::ActiveSupportSubscriber.instrument
 
   # In multi-processed clustered architectures (puma, unicorn) don't
   # start tracing until the worker processes are spawned. This works
