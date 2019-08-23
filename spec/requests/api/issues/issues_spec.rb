@@ -607,6 +607,22 @@ describe API::Issues do
         expect_paginated_array_response([closed_issue.id, issue.id])
       end
 
+      context 'with issues list sort options' do
+        it 'accepts only predefined order by params' do
+          API::Helpers::IssuesHelpers.sort_options.each do |sort_opt|
+            get api('/issues', user), params: { order_by: sort_opt, sort: 'asc' }
+            expect(response).to have_gitlab_http_status(200)
+          end
+        end
+
+        it 'fails to sort with non predefined options' do
+          %w(milestone title abracadabra).each do |sort_opt|
+            get api('/issues', user), params: { order_by: sort_opt, sort: 'asc' }
+            expect(response).to have_gitlab_http_status(400)
+          end
+        end
+      end
+
       it 'matches V4 response schema' do
         get api('/issues', user)
 

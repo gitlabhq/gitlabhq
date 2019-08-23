@@ -186,16 +186,15 @@ module Issuable
     def sort_by_attribute(method, excluded_labels: [])
       sorted =
         case method.to_s
-        when 'downvotes_desc'                       then order_downvotes_desc
-        when 'label_priority'                       then order_labels_priority(excluded_labels: excluded_labels)
-        when 'label_priority_desc'                  then order_labels_priority('DESC', excluded_labels: excluded_labels)
-        when 'milestone', 'milestone_due_asc'       then order_milestone_due_asc
-        when 'milestone_due_desc'                   then order_milestone_due_desc
-        when 'popularity', 'popularity_desc'        then order_upvotes_desc
-        when 'popularity_asc'                       then order_upvotes_asc
-        when 'priority', 'priority_asc'             then order_due_date_and_labels_priority(excluded_labels: excluded_labels)
-        when 'priority_desc'                        then order_due_date_and_labels_priority('DESC', excluded_labels: excluded_labels)
-        when 'upvotes_desc'                         then order_upvotes_desc
+        when 'downvotes_desc'                                 then order_downvotes_desc
+        when 'label_priority', 'label_priority_asc'           then order_labels_priority(excluded_labels: excluded_labels)
+        when 'label_priority_desc'                            then order_labels_priority('DESC', excluded_labels: excluded_labels)
+        when 'milestone', 'milestone_due_asc'                 then order_milestone_due_asc
+        when 'milestone_due_desc'                             then order_milestone_due_desc
+        when 'popularity_asc'                                 then order_upvotes_asc
+        when 'popularity', 'popularity_desc', 'upvotes_desc'  then order_upvotes_desc
+        when 'priority', 'priority_asc'                       then order_due_date_and_labels_priority(excluded_labels: excluded_labels)
+        when 'priority_desc'                                  then order_due_date_and_labels_priority('DESC', excluded_labels: excluded_labels)
         else order_by(method)
         end
 

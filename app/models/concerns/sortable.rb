@@ -27,14 +27,18 @@ module Sortable
     def simple_sorts
       {
         'created_asc' => -> { order_created_asc },
+        'created_at_asc' => -> { order_created_asc },
         'created_date' => -> { order_created_desc },
         'created_desc' => -> { order_created_desc },
+        'created_at_desc' => -> { order_created_desc },
         'id_asc' => -> { order_id_asc },
         'id_desc' => -> { order_id_desc },
         'name_asc' => -> { order_name_asc },
         'name_desc' => -> { order_name_desc },
         'updated_asc' => -> { order_updated_asc },
-        'updated_desc' => -> { order_updated_desc }
+        'updated_at_asc' => -> { order_updated_asc },
+        'updated_desc' => -> { order_updated_desc },
+        'updated_at_desc' => -> { order_updated_desc }
       }
     end
 
