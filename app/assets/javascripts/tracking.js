@@ -15,8 +15,14 @@ const extractData = (el, opts = {}) => {
 };
 
 export default class Tracking {
+  static trackable() {
+    return !['1', 'yes'].includes(
+      window.doNotTrack || navigator.doNotTrack || navigator.msDoNotTrack,
+    );
+  }
+
   static enabled() {
-    return typeof window.snowplow === 'function';
+    return typeof window.snowplow === 'function' && this.trackable();
   }
 
   static event(category = document.body.dataset.page, event = 'generic', data = {}) {

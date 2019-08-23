@@ -15,6 +15,12 @@ describe('Tracking', () => {
       snowplowSpy = jest.spyOn(window, 'snowplow');
     });
 
+    afterEach(() => {
+      window.doNotTrack = undefined;
+      navigator.doNotTrack = undefined;
+      navigator.msDoNotTrack = undefined;
+    });
+
     it('tracks to snowplow (our current tracking system)', () => {
       Tracking.event('_category_', '_eventName_', { label: '_label_' });
 
@@ -27,6 +33,27 @@ describe('Tracking', () => {
 
     it('skips tracking if snowplow is unavailable', () => {
       window.snowplow = false;
+      Tracking.event('_category_', '_eventName_');
+
+      expect(snowplowSpy).not.toHaveBeenCalled();
+    });
+
+    it('skips tracking if the user does not want to be tracked (general spec)', () => {
+      window.doNotTrack = '1';
+      Tracking.event('_category_', '_eventName_');
+
+      expect(snowplowSpy).not.toHaveBeenCalled();
+    });
+
+    it('skips tracking if the user does not want to be tracked (firefox legacy)', () => {
+      navigator.doNotTrack = 'yes';
+      Tracking.event('_category_', '_eventName_');
+
+      expect(snowplowSpy).not.toHaveBeenCalled();
+    });
+
+    it('skips tracking if the user does not want to be tracked (IE legacy)', () => {
+      navigator.msDoNotTrack = '1';
       Tracking.event('_category_', '_eventName_');
 
       expect(snowplowSpy).not.toHaveBeenCalled();
