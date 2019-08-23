@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Plan' do
+  # Failure issue https://gitlab.com/gitlab-org/quality/staging/issues/68
+  context 'Plan', :quarantine do
     describe 'filter issue comments activities' do
       let(:issue_title) { 'issue title' }
 
