@@ -298,6 +298,13 @@ module.exports = {
         from: path.join(ROOT_PATH, 'node_modules/pdfjs-dist/cmaps/'),
         to: path.join(ROOT_PATH, 'public/assets/webpack/cmaps/'),
       },
+      {
+        from: path.join(
+          ROOT_PATH,
+          'node_modules/@gitlab/visual-review-tools/dist/visual_review_toolbar.js',
+        ),
+        to: path.join(ROOT_PATH, 'public/assets/webpack'),
+      },
     ]),
 
     // compression can require a lot of compute time and is disabled in CI
