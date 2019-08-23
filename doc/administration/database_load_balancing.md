@@ -122,6 +122,7 @@ production:
     discover:
       nameserver: localhost
       record: secondary.postgresql.service.consul
+      record_type: A
       port: 8600
       interval: 60
       disconnect_timeout: 120
@@ -137,11 +138,15 @@ The following options can be set:
 | Option               | Description                                                                                       | Default   |
 |----------------------|---------------------------------------------------------------------------------------------------|-----------|
 | `nameserver`         | The nameserver to use for looking up the DNS record.                                              | localhost |
-| `record`             | The A record to look up. This option is required for service discovery to work.                   |           |
+| `record`             | The record to look up. This option is required for service discovery to work.                     |           |
+| `record_type`        | Optional record type to look up, this can be either A or SRV (since GitLab 12.3)                  | A         |
 | `port`               | The port of the nameserver.                                                                       | 8600      |
 | `interval`           | The minimum time in seconds between checking the DNS record.                                      | 60        |
 | `disconnect_timeout` | The time in seconds after which an old connection is closed, after the list of hosts was updated. | 120       |
 | `use_tcp`            | Lookup DNS resources using TCP instead of UDP                                                     | false     |
+
+If `record_type` is set to `SRV`, GitLab will continue to use a round-robin algorithm
+and will ignore the `weight` and `priority` in the record.
 
 The `interval` value specifies the _minimum_ time between checks. If the A
 record has a TTL greater than this value, then service discovery will honor said
