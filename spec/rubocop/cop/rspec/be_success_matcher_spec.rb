@@ -16,10 +16,26 @@ describe RuboCop::Cop::RSpec::BeSuccessMatcher do
       good: %(expect(response).to be_successful).freeze
     },
     {
+      bad: %(expect(response).to_not be_success).freeze,
+      good: %(expect(response).to_not be_successful).freeze
+    },
+    {
+      bad: %(expect(response).not_to be_success).freeze,
+      good: %(expect(response).not_to be_successful).freeze
+    },
+    {
       bad: %(is_expected.to be_success).freeze,
       good: %(is_expected.to be_successful).freeze
+    },
+    {
+      bad: %(is_expected.to_not be_success).freeze,
+      good: %(is_expected.to_not be_successful).freeze
+    },
+    {
+      bad: %(is_expected.not_to be_success).freeze,
+      good: %(is_expected.not_to be_successful).freeze
     }
-  ]
+  ].freeze
 
   let(:source_file) { 'spec/foo_spec.rb' }
 
@@ -55,7 +71,7 @@ describe RuboCop::Cop::RSpec::BeSuccessMatcher do
       end
 
       context "using #{code_example[:good]} call" do
-        it "does not register an offense" do
+        it 'does not register an offense' do
           inspect_source(code_example[:good])
 
           expect(cop.offenses.size).to eq(0)

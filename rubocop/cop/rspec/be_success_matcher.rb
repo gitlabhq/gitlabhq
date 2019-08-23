@@ -29,11 +29,11 @@ module RuboCop
         MESSAGE = 'Do not use deprecated `success?` method, use `successful?` instead.'.freeze
 
         def_node_search :expect_to_be_success?, <<~PATTERN
-          (send (send nil? :expect (send nil? ...)) :to (send nil? :be_success))
+          (send (send nil? :expect (send nil? ...)) {:to :not_to :to_not} (send nil? :be_success))
         PATTERN
 
         def_node_search :is_expected_to_be_success?, <<~PATTERN
-          (send (send nil? :is_expected) :to (send nil? :be_success))
+          (send (send nil? :is_expected) {:to :not_to :to_not} (send nil? :be_success))
         PATTERN
 
         def be_success_usage?(node)
