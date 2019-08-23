@@ -935,7 +935,7 @@ ActiveRecord::Schema.define(version: 2019_08_28_083843) do
     t.integer "cluster_type", limit: 2, default: 3, null: false
     t.string "domain"
     t.boolean "managed", default: true, null: false
-    t.boolean "namespace_per_environment", default: false, null: false
+    t.boolean "namespace_per_environment", default: true, null: false
     t.index ["enabled"], name: "index_clusters_on_enabled"
     t.index ["user_id"], name: "index_clusters_on_user_id"
   end
