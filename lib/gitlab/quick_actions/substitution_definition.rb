@@ -17,8 +17,9 @@ module Gitlab
         return unless content
 
         all_names.each do |a_name|
-          content.gsub!(%r{/#{a_name} ?(.*)$}i, execute_block(action_block, context, '\1'))
+          content = content.gsub(%r{/#{a_name} ?(.*)$}i, execute_block(action_block, context, '\1'))
         end
+
         content
       end
     end

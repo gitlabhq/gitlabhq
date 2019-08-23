@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'fast_spec_helper'
 
 describe Gitlab::Serializer::Ci::Variables do

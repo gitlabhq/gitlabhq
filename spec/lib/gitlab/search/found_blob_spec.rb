@@ -1,4 +1,5 @@
 # coding: utf-8
+# frozen_string_literal: true
 
 require 'spec_helper'
 
@@ -108,7 +109,7 @@ describe Gitlab::Search::FoundBlob do
       end
 
       context 'with ISO-8859-1' do
-        let(:search_result) { "master:encoding/iso8859.txt\x001\x00\xC4\xFC\nmaster:encoding/iso8859.txt\x002\x00\nmaster:encoding/iso8859.txt\x003\x00foo\n".force_encoding(Encoding::ASCII_8BIT) }
+        let(:search_result) { (+"master:encoding/iso8859.txt\x001\x00\xC4\xFC\nmaster:encoding/iso8859.txt\x002\x00\nmaster:encoding/iso8859.txt\x003\x00foo\n").force_encoding(Encoding::ASCII_8BIT) }
 
         it 'returns results as UTF-8' do
           expect(subject.filename).to eq('encoding/iso8859.txt')

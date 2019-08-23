@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'fast_spec_helper'
 require 'support/shared_examples/malicious_regexp_shared_examples'
 require 'support/helpers/stub_feature_flags'

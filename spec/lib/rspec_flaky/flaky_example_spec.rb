@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe RspecFlaky::FlakyExample, :aggregate_failures do
