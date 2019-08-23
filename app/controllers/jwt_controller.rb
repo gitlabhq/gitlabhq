@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class JwtController < ApplicationController
+  skip_around_action :set_session_storage
   skip_before_action :authenticate_user!
   skip_before_action :verify_authenticity_token
   before_action :authenticate_project_or_user

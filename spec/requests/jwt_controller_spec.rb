@@ -108,6 +108,14 @@ describe JwtController do
           end
         end
       end
+
+      it 'does not cause session based checks to be activated' do
+        expect(Gitlab::Session).not_to receive(:with_session)
+
+        get '/jwt/auth', params: parameters, headers: headers
+
+        expect(response).to have_gitlab_http_status(200)
+      end
     end
 
     context 'using invalid login' do
