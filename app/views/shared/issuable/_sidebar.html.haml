@@ -139,7 +139,9 @@
       - if signed_in
         - if issuable_sidebar[:project_emails_disabled]
           .block.js-emails-disabled
-            = notification_description(:owner_disabled)
+            .sidebar-collapsed-icon.has-tooltip{ title: notification_description(:owner_disabled), data: { placement: "left", container: "body", boundary: 'viewport' } }
+              = notification_setting_icon
+            .hide-collapsed= notification_description(:owner_disabled)
         - else
           .js-sidebar-subscriptions-entry-point
 
