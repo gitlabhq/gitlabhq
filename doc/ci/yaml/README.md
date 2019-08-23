@@ -1700,19 +1700,19 @@ mac:build:
 
 linux:rspec:
   stage: test
-  needs: [linux:build]
+  needs: ["linux:build"]
 
 linux:rubocop:
   stage: test
-  needs: [linux:build]
+  needs: ["linux:build"]
 
 mac:rspec:
   stage: test
-  needs: [mac:build]
+  needs: ["mac:build"]
 
 mac:rubocop:
   stage: test
-  needs: [mac:build]
+  needs: ["mac:build"]
 
 production:
   stage: deploy
