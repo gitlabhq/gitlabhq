@@ -4,7 +4,7 @@ class AddUserInternalRegexToApplicationSetting < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   def up
-    add_column :application_settings, :user_default_internal_regex, :string, null: true
+    add_column :application_settings, :user_default_internal_regex, :string, null: true # rubocop:disable Migration/AddLimitToStringColumns
   end
 
   def down

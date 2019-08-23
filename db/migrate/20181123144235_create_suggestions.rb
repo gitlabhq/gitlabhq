@@ -8,7 +8,7 @@ class CreateSuggestions < ActiveRecord::Migration[5.0]
       t.references :note, foreign_key: { on_delete: :cascade }, null: false
       t.integer :relative_order, null: false, limit: 2
       t.boolean :applied, null: false, default: false
-      t.string :commit_id
+      t.string :commit_id # rubocop:disable Migration/AddLimitToStringColumns
       t.text :from_content, null: false
       t.text :to_content, null: false
 

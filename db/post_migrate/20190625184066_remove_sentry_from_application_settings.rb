@@ -32,7 +32,7 @@ class RemoveSentryFromApplicationSettings < ActiveRecord::Migration[5.0]
     end
 
     SENTRY_DSN_COLUMNS.each do |column|
-      add_column(:application_settings, column, :string) unless column_exists?(:application_settings, column)
+      add_column(:application_settings, column, :string) unless column_exists?(:application_settings, column) # rubocop:disable Migration/AddLimitToStringColumns
     end
   end
 end

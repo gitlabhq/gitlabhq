@@ -5,6 +5,7 @@
 # rubocop:disable Metrics/AbcSize
 # rubocop:disable Migration/AddConcurrentForeignKey
 # rubocop:disable Style/WordArray
+# rubocop:disable Migration/AddLimitToStringColumns
 
 class InitSchema < ActiveRecord::Migration[4.2]
   DOWNTIME = false
@@ -1852,3 +1853,4 @@ class InitSchema < ActiveRecord::Migration[4.2]
     raise ActiveRecord::IrreversibleMigration, "The initial migration is not revertable"
   end
 end
+# rubocop:enable Migration/AddLimitToStringColumns

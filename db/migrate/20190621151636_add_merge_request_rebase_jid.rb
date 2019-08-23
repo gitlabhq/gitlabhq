@@ -4,6 +4,6 @@ class AddMergeRequestRebaseJid < ActiveRecord::Migration[5.1]
   DOWNTIME = false
 
   def change
-    add_column :merge_requests, :rebase_jid, :string
+    add_column :merge_requests, :rebase_jid, :string # rubocop:disable Migration/AddLimitToStringColumns
   end
 end

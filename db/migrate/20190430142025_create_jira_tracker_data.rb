@@ -9,6 +9,7 @@ class CreateJiraTrackerData < ActiveRecord::Migration[5.1]
   DOWNTIME = false
 
   def change
+    # rubocop:disable Migration/AddLimitToStringColumns
     create_table :jira_tracker_data do |t|
       t.references :service, foreign_key: { on_delete: :cascade }, type: :integer, index: true, null: false
       t.timestamps_with_timezone
@@ -22,5 +23,6 @@ class CreateJiraTrackerData < ActiveRecord::Migration[5.1]
       t.string :encrypted_password_iv
       t.string :jira_issue_transition_id
     end
+    # rubocop:enable Migration/AddLimitToStringColumns
   end
 end

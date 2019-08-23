@@ -8,7 +8,9 @@ class AddUploadsBuilderContext < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   def change
+    # rubocop:disable Migration/AddLimitToStringColumns
     add_column :uploads, :mount_point, :string
     add_column :uploads, :secret, :string
+    # rubocop:enable Migration/AddLimitToStringColumns
   end
 end

@@ -2,6 +2,7 @@ class CreateDeployTokens < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   def change
+    # rubocop:disable Migration/AddLimitToStringColumns
     create_table :deploy_tokens do |t|
       t.boolean :revoked, default: false
       t.boolean :read_repository, null: false, default: false
@@ -15,5 +16,6 @@ class CreateDeployTokens < ActiveRecord::Migration[4.2]
 
       t.index [:token, :expires_at, :id], where: "(revoked IS FALSE)"
     end
+    # rubocop:enable Migration/AddLimitToStringColumns
   end
 end

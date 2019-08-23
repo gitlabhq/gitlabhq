@@ -6,6 +6,6 @@ class AddIdentifierToPrometheusMetric < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   def change
-    add_column :prometheus_metrics, :identifier, :string
+    add_column :prometheus_metrics, :identifier, :string # rubocop:disable Migration/AddLimitToStringColumns
   end
 end

@@ -6,8 +6,8 @@ class AddColumnsProjectErrorTrackingSettings < ActiveRecord::Migration[5.0]
   DOWNTIME = false
 
   def change
-    add_column :project_error_tracking_settings, :project_name, :string
-    add_column :project_error_tracking_settings, :organization_name, :string
+    add_column :project_error_tracking_settings, :project_name, :string # rubocop:disable Migration/AddLimitToStringColumns
+    add_column :project_error_tracking_settings, :organization_name, :string # rubocop:disable Migration/AddLimitToStringColumns
 
     change_column_default :project_error_tracking_settings, :enabled, from: true, to: false
 

@@ -11,7 +11,7 @@ class AddFieldsToUserPreferences < ActiveRecord::Migration[5.0]
   DOWNTIME = false
 
   def up
-    add_column(:user_preferences, :timezone, :string)
+    add_column(:user_preferences, :timezone, :string) # rubocop:disable Migration/AddLimitToStringColumns
     add_column(:user_preferences, :time_display_relative, :boolean)
     add_column(:user_preferences, :time_format_in_24h, :boolean)
   end
