@@ -8026,7 +8026,7 @@ msgstr ""
 msgid "PipelineSheduleIntervalPattern|Custom"
 msgstr ""
 
-msgid "PipelineStatusTooltip|Commit: %{ci_status}"
+msgid "PipelineStatusTooltip|Pipeline: %{ciStatus}"
 msgstr ""
 
 msgid "PipelineStatusTooltip|Pipeline: %{ci_status}"
@@ -13941,6 +13941,9 @@ msgid "password"
 msgstr ""
 
 msgid "pending comment"
+msgstr ""
+
+msgid "pipeline"
 msgstr ""
 
 msgid "private"

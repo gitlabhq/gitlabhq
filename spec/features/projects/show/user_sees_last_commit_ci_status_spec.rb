@@ -18,7 +18,7 @@ describe 'Projects > Show > User sees last commit CI status' do
 
     page.within '.blob-commit-info' do
       expect(page).to have_content(project.commit.sha[0..6])
-      expect(page).to have_link('Commit: skipped')
+      expect(page).to have_link('Pipeline: skipped')
     end
   end
 end
