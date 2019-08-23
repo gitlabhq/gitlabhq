@@ -322,4 +322,30 @@ describe Deployment do
       end
     end
   end
+
+  describe '#deployed_by' do
+    it 'returns the deployment user if there is no deployable' do
+      deployment_user = create(:user)
+      deployment = create(:deployment, deployable: nil, user: deployment_user)
+
+      expect(deployment.deployed_by).to eq(deployment_user)
+    end
+
+    it 'returns the deployment user if the deployable have no user' do
+      deployment_user = create(:user)
+      build = create(:ci_build, user: nil)
+      deployment = create(:deployment, deployable: build, user: deployment_user)
+
+      expect(deployment.deployed_by).to eq(deployment_user)
+    end
+
+    it 'returns the deployable user if there is one' do
+      build_user = create(:user)
+      deployment_user = create(:user)
+      build = create(:ci_build, user: build_user)
+      deployment = create(:deployment, deployable: build, user: deployment_user)
+
+      expect(deployment.deployed_by).to eq(build_user)
+    end
+  end
 end
