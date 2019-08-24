@@ -8,6 +8,10 @@ FactoryBot.define do
     file_type :archive
     file_format :zip
 
+    trait :expired do
+      expire_at { Date.yesterday }
+    end
+
     trait :remote_store do
       file_store JobArtifactUploader::Store::REMOTE
     end
