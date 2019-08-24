@@ -8299,7 +8299,7 @@ msgstr ""
 msgid "Preferences|Behavior"
 msgstr ""
 
-msgid "Preferences|Choose between fixed (max. 1280px) and fluid (100%%) application layout."
+msgid "Preferences|Choose between fixed (max. 1280px) and fluid (%{percentage}) application layout."
 msgstr ""
 
 msgid "Preferences|Choose what content you want to see on a project’s overview page."
