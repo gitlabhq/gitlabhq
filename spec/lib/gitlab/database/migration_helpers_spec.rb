@@ -619,8 +619,16 @@ describe Gitlab::Database::MigrationHelpers do
         .with(/CREATE OR REPLACE FUNCTION foo()/m)
 
       expect(model).to receive(:execute)
+        .with(/DROP TRIGGER IF EXISTS foo/m)
+
+      expect(model).to receive(:execute)
         .with(/CREATE TRIGGER foo/m)
 
+      model.install_rename_triggers_for_postgresql('foo', :users, :old, :new)
+    end
+
+    it 'does not fail if trigger already exists' do
+      model.install_rename_triggers_for_postgresql('foo', :users, :old, :new)
       model.install_rename_triggers_for_postgresql('foo', :users, :old, :new)
     end
   end

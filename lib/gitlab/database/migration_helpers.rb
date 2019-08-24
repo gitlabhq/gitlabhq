@@ -747,6 +747,11 @@ module Gitlab
         EOF
 
         execute <<-EOF.strip_heredoc
+        DROP TRIGGER IF EXISTS #{trigger}
+        ON #{table}
+        EOF
+
+        execute <<-EOF.strip_heredoc
         CREATE TRIGGER #{trigger}
         BEFORE INSERT OR UPDATE
         ON #{table}
