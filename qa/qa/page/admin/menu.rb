@@ -49,6 +49,14 @@ module QA
           end
         end
 
+        def go_to_network_settings
+          hover_settings do
+            within_submenu do
+              click_element :admin_settings_network_item
+            end
+          end
+        end
+
         private
 
         def hover_settings
