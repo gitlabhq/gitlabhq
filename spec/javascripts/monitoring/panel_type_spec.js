@@ -1,7 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import PanelType from '~/monitoring/components/panel_type.vue';
 import EmptyChart from '~/monitoring/components/charts/empty_chart.vue';
-import AreaChart from '~/monitoring/components/charts/area.vue';
+import TimeSeriesChart from '~/monitoring/components/charts/time_series.vue';
 import { graphDataPrometheusQueryRange } from './mock_data';
 import { createStore } from '~/monitoring/stores';
 
@@ -62,9 +62,10 @@ describe('Panel Type component', () => {
       });
     });
 
-    describe('Area Chart panel type', () => {
+    describe('Time Series Chart panel type', () => {
       it('is rendered', () => {
-        expect(panelType.find(AreaChart).exists()).toBe(true);
+        expect(panelType.find(TimeSeriesChart).isVueInstance()).toBe(true);
+        expect(panelType.find(TimeSeriesChart).exists()).toBe(true);
       });
 
       it('sets clipboard text on the dropdown', () => {

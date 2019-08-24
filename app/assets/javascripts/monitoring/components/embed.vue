@@ -2,7 +2,7 @@
 import { mapActions, mapState } from 'vuex';
 import { getParameterValues, removeParams } from '~/lib/utils/url_utility';
 import GraphGroup from './graph_group.vue';
-import MonitorAreaChart from './charts/area.vue';
+import MonitorTimeSeriesChart from './charts/time_series.vue';
 import { sidebarAnimationDuration } from '../constants';
 import { getTimeDiff } from '../utils';
 
@@ -11,7 +11,7 @@ let sidebarMutationObserver;
 export default {
   components: {
     GraphGroup,
-    MonitorAreaChart,
+    MonitorTimeSeriesChart,
   },
   props: {
     dashboardUrl: {
@@ -92,7 +92,7 @@ export default {
 <template>
   <div class="metrics-embed" :class="{ 'd-inline-flex col-lg-6 p-0': isSingleChart }">
     <div v-if="charts.length" class="row w-100 m-n2 pb-4">
-      <monitor-area-chart
+      <monitor-time-series-chart
         v-for="graphData in charts"
         :key="graphData.title"
         :graph-data="graphData"

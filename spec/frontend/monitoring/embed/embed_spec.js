@@ -1,7 +1,7 @@
 import { createLocalVue, shallowMount } from '@vue/test-utils';
 import Vuex from 'vuex';
 import Embed from '~/monitoring/components/embed.vue';
-import MonitorAreaChart from '~/monitoring/components/charts/area.vue';
+import MonitorTimeSeriesChart from '~/monitoring/components/charts/time_series.vue';
 import { TEST_HOST } from 'helpers/test_constants';
 import { groups, initialState, metricsData, metricsWithData } from './mock_data';
 
@@ -55,7 +55,7 @@ describe('Embed', () => {
 
     it('shows an empty state when no metrics are present', () => {
       expect(wrapper.find('.metrics-embed').exists()).toBe(true);
-      expect(wrapper.find(MonitorAreaChart).exists()).toBe(false);
+      expect(wrapper.find(MonitorTimeSeriesChart).exists()).toBe(false);
     });
   });
 
@@ -71,8 +71,8 @@ describe('Embed', () => {
     it('shows a chart when metrics are present', () => {
       wrapper.setProps({});
       expect(wrapper.find('.metrics-embed').exists()).toBe(true);
-      expect(wrapper.find(MonitorAreaChart).exists()).toBe(true);
-      expect(wrapper.findAll(MonitorAreaChart).length).toBe(2);
+      expect(wrapper.find(MonitorTimeSeriesChart).exists()).toBe(true);
+      expect(wrapper.findAll(MonitorTimeSeriesChart).length).toBe(2);
     });
   });
 });
