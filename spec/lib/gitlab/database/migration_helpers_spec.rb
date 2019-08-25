@@ -576,6 +576,38 @@ describe Gitlab::Database::MigrationHelpers do
 
         model.rename_column_concurrently(:users, :old, :new)
       end
+
+      context 'when default is false' do
+        let(:old_column) do
+          double(:column,
+               type: :boolean,
+               limit: nil,
+               default: false,
+               null: false,
+               precision: nil,
+               scale: nil)
+        end
+
+        it 'copies the default to the new column' do
+          expect(model).to receive(:change_column_default)
+            .with(:users, :new, old_column.default)
+
+          model.rename_column_concurrently(:users, :old, :new)
+        end
+      end
+    end
+  end
+
+  describe '#undo_rename_column_concurrently' do
+    it 'reverses the operations of rename_column_concurrently' do
+      expect(model).to receive(:check_trigger_permissions!).with(:users)
+
+      expect(model).to receive(:remove_rename_triggers_for_postgresql)
+        .with(:users, /trigger_.{12}/)
+
+      expect(model).to receive(:remove_column).with(:users, :new)
+
+      model.undo_rename_column_concurrently(:users, :old, :new)
     end
   end
 
@@ -589,6 +621,80 @@ describe Gitlab::Database::MigrationHelpers do
       expect(model).to receive(:remove_column).with(:users, :old)
 
       model.cleanup_concurrent_column_rename(:users, :old, :new)
+    end
+  end
+
+  describe '#undo_cleanup_concurrent_column_rename' do
+    context 'in a transaction' do
+      it 'raises RuntimeError' do
+        allow(model).to receive(:transaction_open?).and_return(true)
+
+        expect { model.undo_cleanup_concurrent_column_rename(:users, :old, :new) }
+          .to raise_error(RuntimeError)
+      end
+    end
+
+    context 'outside a transaction' do
+      let(:new_column) do
+        double(:column,
+              type: :integer,
+              limit: 8,
+              default: 0,
+              null: false,
+              precision: 5,
+              scale: 1)
+      end
+
+      let(:trigger_name) { model.rename_trigger_name(:users, :old, :new) }
+
+      before do
+        allow(model).to receive(:transaction_open?).and_return(false)
+        allow(model).to receive(:column_for).and_return(new_column)
+      end
+
+      it 'reverses the operations of cleanup_concurrent_column_rename' do
+        expect(model).to receive(:check_trigger_permissions!).with(:users)
+
+        expect(model).to receive(:install_rename_triggers_for_postgresql)
+          .with(trigger_name, '"users"', '"old"', '"new"')
+
+        expect(model).to receive(:add_column)
+          .with(:users, :old, :integer,
+              limit: new_column.limit,
+              precision: new_column.precision,
+              scale: new_column.scale)
+
+        expect(model).to receive(:change_column_default)
+          .with(:users, :old, new_column.default)
+
+        expect(model).to receive(:update_column_in_batches)
+
+        expect(model).to receive(:change_column_null).with(:users, :old, false)
+
+        expect(model).to receive(:copy_indexes).with(:users, :new, :old)
+        expect(model).to receive(:copy_foreign_keys).with(:users, :new, :old)
+
+        model.undo_cleanup_concurrent_column_rename(:users, :old, :new)
+      end
+
+      context 'when default is false' do
+        let(:new_column) do
+          double(:column,
+               type: :boolean,
+               limit: nil,
+               default: false,
+               null: false,
+               precision: nil,
+               scale: nil)
+        end
+
+        it 'copies the default to the old column' do
+          expect(model).to receive(:change_column_default)
+            .with(:users, :old, new_column.default)
+
+          model.undo_cleanup_concurrent_column_rename(:users, :old, :new)
+        end
+      end
     end
   end
 

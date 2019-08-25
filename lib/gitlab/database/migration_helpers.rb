@@ -470,7 +470,7 @@ module Gitlab
         # We set the default value _after_ adding the column so we don't end up
         # updating any existing data with the default value. This isn't
         # necessary since we copy over old values further down.
-        change_column_default(table, new, old_col.default) if old_col.default
+        change_column_default(table, new, old_col.default) unless old_col.default.nil?
 
         install_rename_triggers(table, old, new)
 
@@ -480,6 +480,16 @@ module Gitlab
 
         copy_indexes(table, old, new)
         copy_foreign_keys(table, old, new)
+      end
+
+      def undo_rename_column_concurrently(table, old, new)
+        trigger_name = rename_trigger_name(table, old, new)
+
+        check_trigger_permissions!(table)
+
+        remove_rename_triggers_for_postgresql(table, trigger_name)
+
+        remove_column(table, new)
       end
 
       # Installs triggers in a table that keep a new column in sync with an old
@@ -545,6 +555,35 @@ module Gitlab
         remove_rename_triggers_for_postgresql(table, trigger_name)
 
         remove_column(table, old)
+      end
+
+      def undo_cleanup_concurrent_column_rename(table, old, new, type: nil)
+        if transaction_open?
+          raise 'undo_cleanup_concurrent_column_rename can not be run inside a transaction'
+        end
+
+        check_trigger_permissions!(table)
+
+        new_column = column_for(table, new)
+
+        add_column(table, old, type || new_column.type,
+                   limit: new_column.limit,
+                   precision: new_column.precision,
+                   scale: new_column.scale)
+
+        # We set the default value _after_ adding the column so we don't end up
+        # updating any existing data with the default value. This isn't
+        # necessary since we copy over old values further down.
+        change_column_default(table, old, new_column.default) unless new_column.default.nil?
+
+        install_rename_triggers(table, old, new)
+
+        update_column_in_batches(table, old, Arel::Table.new(table)[new])
+
+        change_column_null(table, old, false) unless new_column.null
+
+        copy_indexes(table, new, old)
+        copy_foreign_keys(table, new, old)
       end
 
       # Changes the column type of a table using a background migration.
