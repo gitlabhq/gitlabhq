@@ -12,6 +12,6 @@ class RenameAllowLocalRequestsFromHooksAndServicesApplicationSetting < ActiveRec
   end
 
   def down
-    cleanup_concurrent_column_rename :application_settings, :allow_local_requests_from_web_hooks_and_services, :allow_local_requests_from_hooks_and_services
+    undo_rename_column_concurrently :application_settings, :allow_local_requests_from_hooks_and_services, :allow_local_requests_from_web_hooks_and_services
   end
 end
