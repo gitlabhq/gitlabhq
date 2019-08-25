@@ -75,9 +75,9 @@ export default {
     },
     allDiscussions() {
       if (this.isLoading) {
-        const totalNotes = parseInt(this.notesData.totalNotes, 10) || 0;
+        const prerenderedNotesCount = parseInt(this.notesData.prerenderedNotesCount, 10) || 0;
 
-        return new Array(totalNotes).fill({
+        return new Array(prerenderedNotesCount).fill({
           isSkeletonNote: true,
         });
       }

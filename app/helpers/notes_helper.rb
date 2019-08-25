@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module NotesHelper
+  MAX_PRERENDERED_NOTES = 10
+
   def note_target_fields(note)
     if note.noteable
       hidden_field_tag(:target_type, note.noteable.class.name.underscore) +
@@ -169,7 +171,7 @@ module NotesHelper
       closePath: close_issuable_path(issuable),
       reopenPath: reopen_issuable_path(issuable),
       notesPath: notes_url,
-      totalNotes: issuable.discussions.length,
+      prerenderedNotesCount: issuable.capped_notes_count(MAX_PRERENDERED_NOTES),
       lastFetchedAt: Time.now.to_i
     }
   end
