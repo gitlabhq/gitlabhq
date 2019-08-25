@@ -94,6 +94,19 @@ describe ProjectPolicy do
     permissions.each { |p| is_expected.not_to be_allowed(p) }
   end
 
+  context 'with no project feature' do
+    subject { described_class.new(owner, project) }
+
+    before do
+      project.project_feature.destroy
+      project.reload
+    end
+
+    it 'returns false' do
+      is_expected.to be_disallowed(:read_build)
+    end
+  end
+
   it 'does not include the read_issue permission when the issue author is not a member of the private project' do
     project = create(:project, :private)
     issue   = create(:issue, project: project, author: create(:user))

@@ -502,6 +502,8 @@ class ProjectPolicy < BasePolicy
   end
 
   def feature_available?(feature)
+    return false unless project.project_feature
+
     case project.project_feature.access_level(feature)
     when ProjectFeature::DISABLED
       false
