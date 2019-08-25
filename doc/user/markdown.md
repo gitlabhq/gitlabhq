@@ -181,9 +181,6 @@ graph TD;
 
 #### Subgraphs
 
-NOTE: **Note:** GitLab 12.1 and up now [requires quotes around subgraph
-titles that contain multiple words](https://github.com/knsv/mermaid/pull/845).
-
 Subgraphs can also be included:
 
 ~~~
