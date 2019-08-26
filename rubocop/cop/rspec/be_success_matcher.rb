@@ -26,7 +26,7 @@ module RuboCop
       class BeSuccessMatcher < RuboCop::Cop::Cop
         include SpecHelpers
 
-        MESSAGE = 'Do not use deprecated `success?` method, use `successful?` instead.'.freeze
+        MESSAGE = 'Do not use deprecated `success?` method, use `successful?` instead.'
 
         def_node_search :expect_to_be_success?, <<~PATTERN
           (send (send nil? :expect (send nil? ...)) {:to :not_to :to_not} (send nil? :be_success))

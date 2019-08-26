@@ -273,3 +273,4 @@ RSpec/BeSuccessMatcher:
     - 'spec/support/shared_examples/controllers/**/*'
     - 'ee/spec/support/shared_examples/controllers/**/*'
     - 'spec/support/controllers/**/*'
+    - 'ee/spec/support/controllers/**/*'
