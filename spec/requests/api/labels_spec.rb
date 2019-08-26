@@ -475,45 +475,47 @@ describe API::Labels do
 
   describe 'PUT /projects/:id/labels/promote' do
     let(:group) { create(:group) }
+    let!(:project1) { create(:project, namespace: group) }
+    let!(:label1) { create(:label, title: 'label1', project: project1) }
 
     before do
-      project.update(group: group)
+      group.add_owner(user)
     end
 
     it 'returns 200 if label is promoted' do
-      put api("/projects/#{project.id}/labels/promote", user), params: { name: label1.name }
+      put api("/projects/#{project1.id}/labels/promote", user), params: { name: label1.name }
 
       expect(response).to have_gitlab_http_status(200)
       expect(json_response['name']).to eq(label1.name)
       expect(json_response['color']).to eq(label1.color)
     end
 
-    it 'returns 400 if group label already exists' do
+    it 'returns 200 if group label already exists' do
       create(:group_label, title: label1.name, group: group)
 
-      put api("/projects/#{project.id}/labels/promote", user), params: { name: label1.name }
+      put api("/projects/#{project1.id}/labels/promote", user), params: { name: label1.name }
 
-      expect(response).to have_gitlab_http_status(400)
-      expect(json_response['message']).to eq('Failed to promote project label to group label')
+      expect(response).to have_gitlab_http_status(200)
+      expect(project1.labels.size).to eq(0)
     end
 
     it 'returns 403 if guest promotes label' do
       guest = create(:user)
-      project.add_guest(guest)
+      project1.add_guest(guest)
 
-      put api("/projects/#{project.id}/labels/promote", guest), params: { name: label1.name }
+      put api("/projects/#{project1.id}/labels/promote", guest), params: { name: label1.name }
 
       expect(response).to have_gitlab_http_status(403)
     end
 
     it 'returns 404 if label does not exist' do
-      put api("/projects/#{project.id}/labels/promote", user), params: { name: 'unknown' }
+      put api("/projects/#{project1.id}/labels/promote", user), params: { name: 'unknown' }
 
       expect(response).to have_gitlab_http_status(404)
     end
 
     it 'returns 400 if no label name given' do
-      put api("/projects/#{project.id}/labels/promote", user)
+      put api("/projects/#{project1.id}/labels/promote", user)
 
       expect(response).to have_gitlab_http_status(400)
       expect(json_response['error']).to eq('name is missing')
