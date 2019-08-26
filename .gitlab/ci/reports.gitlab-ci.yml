@@ -4,36 +4,29 @@ include:
   - template: Security/Dependency-Scanning.gitlab-ci.yml
   - template: Security/DAST.gitlab-ci.yml
 
+.reports:
+  extends:
+    - .default-retry
+    - .except-docs
+  tags:
+    - gitlab-org
+    - docker
+
 code_quality:
-  extends: .dedicated-no-docs
-  # gitlab-org runners set `privileged: false` but we need to have it set to true
-  # since we're using Docker in Docker
-  tags: []
-  before_script: []
-  cache: {}
+  extends: .reports
 
 sast:
-  extends: .dedicated-no-docs
-  tags: []
-  before_script: []
-  cache: {}
+  extends: .reports
   variables:
     SAST_BRAKEMAN_LEVEL: 2
     SAST_EXCLUDED_PATHS: qa,spec,doc
 
 dependency_scanning:
-  extends: .dedicated-no-docs
-  tags: []
-  before_script: []
-  cache: {}
+  extends: .reports
 
 dast:
-  extends:
-    - .dedicated-runner
-    - .review-only
+  extends: .reports
   stage: qa
-  dependencies:
-    - review-deploy
+  dependencies: ["review-deploy"]
   before_script:
     - export DAST_WEBSITE="$(cat review_app_url.txt)"
-  cache: {}

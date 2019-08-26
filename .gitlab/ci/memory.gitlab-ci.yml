@@ -1,5 +1,12 @@
 memory-static:
-  extends: .dedicated-no-docs-no-db-pull-cache-job
+  extends:
+    - .default-tags
+    - .default-retry
+    - .default-cache
+    - .default-before_script
+    - .except-docs
+  variables:
+    SETUP_DB: "false"
   script:
     # Uses two different reports from the 'derailed_benchmars' gem.
 
@@ -23,7 +30,13 @@ memory-static:
 # The application is booted in `production` environment.
 # All tests are run without a webserver (directly using Rack::Mock by default).
 memory-on-boot:
-  extends: .rspec-metadata-pg-10
+  extends:
+    - .default-tags
+    - .default-retry
+    - .default-cache
+    - .default-before_script
+    - .use-pg-10
+    - .except-docs-qa
   variables:
     NODE_ENV: "production"
     RAILS_ENV: "production"

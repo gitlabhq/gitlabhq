@@ -1,10 +1,8 @@
 .package-and-qa-base:
   image: ruby:2.6-alpine
   stage: qa
-  before_script: []
   needs: ["build-qa-image", "gitlab:assets:compile pull-cache"]
   dependencies: []
-  cache: {}
   variables:
     GIT_DEPTH: "1"
   retry: 0
@@ -19,7 +17,9 @@
     - master
 
 package-and-qa-manual:
-  extends: .package-and-qa-base
+  extends:
+    - .package-and-qa-base
+    - .except-docs-qa
   when: manual
   except:
     - master

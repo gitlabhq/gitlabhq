@@ -1,52 +1,31 @@
-.use-pg: &use-pg
-  services:
-    - name: postgres:9.6.14
-      command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
-    - name: redis:alpine
-
-.use-pg-10: &use-pg-10
-  services:
-    - name: postgres:10.9
-      command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
-    - name: redis:alpine
-
-.only-schedules-master: &only-schedules-master
+.only-schedules-master:
   only:
-    - schedules@gitlab-org/gitlab-ce
-    - schedules@gitlab-org/gitlab-ee
-    - master@gitlab-org/gitlab-ce
-    - master@gitlab-org/gitlab-ee
-    - master@gitlab/gitlabhq
-    - master@gitlab/gitlab-ee
+    refs:
+      - schedules@gitlab-org/gitlab-ce
+      - schedules@gitlab-org/gitlab-ee
+      - master@gitlab-org/gitlab-ce
+      - master@gitlab-org/gitlab-ee
+      - master@gitlab/gitlabhq
+      - master@gitlab/gitlab-ee
 
-.gitlab-setup: &gitlab-setup
+.rake-exec:
   extends:
-    - .dedicated-no-docs-and-no-qa-pull-cache-job
-    - .use-pg
+    - .default-tags
+    - .default-retry
+    - .default-cache
+    - .default-before_script
   variables:
     SETUP_DB: "false"
   script:
-    # Manually clone gitlab-test and only seed this project in
-    # db/fixtures/development/04_project.rb thanks to SIZE=1 below
-    - git clone https://gitlab.com/gitlab-org/gitlab-test.git
-       /home/git/repositories/gitlab-org/gitlab-test.git
-    - scripts/gitaly-test-spawn
-    - force=yes SIZE=1 FIXTURE_PATH="db/fixtures/development" bundle exec rake gitlab:setup
-  artifacts:
-    when: on_failure
-    expire_in: 1d
-    paths:
-      - log/development.log
-
-.rake-exec: &rake-exec
-  extends: .dedicated-no-docs-no-db-pull-cache-job
-  script:
     - bundle exec rake $CI_JOB_NAME
 
-.rspec-metadata: &rspec-metadata
+.rspec-base:
   extends:
-    - .dedicated-pull-cache-job
-    - .no-docs-and-no-qa
+    - .default-tags
+    - .default-retry
+    - .default-cache
+    - .default-before_script
+    - .except-docs-qa
   stage: test
   script:
     - JOB_NAME=( $CI_JOB_NAME )
@@ -83,25 +62,164 @@
     reports:
       junit: junit_rspec.xml
 
-.rspec-metadata-pg: &rspec-metadata-pg
-  <<: *rspec-metadata
-  <<: *use-pg
+.rspec-base-pg:
+  extends:
+    - .rspec-base
+    - .use-pg
 
-.rspec-metadata-pg-10: &rspec-metadata-pg-10
-  <<: *rspec-metadata
-  <<: *use-pg-10
-  image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.6.3-golang-1.11-git-2.22-chrome-73.0-node-12.x-yarn-1.16-postgresql-10-graphicsmagick-1.3.33"
+.rspec-base-pg-10:
+  extends:
+    - .rspec-base
+    - .use-pg-10
+
+setup-test-env:
+  extends:
+    - .default-tags
+    - .default-retry
+    - .default-cache
+    - .default-before_script
+    - .use-pg
+    - .except-docs
+  stage: prepare
+  script:
+    - bundle exec ruby -Ispec -e 'require "spec_helper" ; TestEnv.init'
+    - scripts/gitaly-test-build  # Do not use 'bundle exec' here
+  artifacts:
+    expire_in: 7d
+    paths:
+      - tmp/tests
+      - config/secrets.yml
+      - vendor/gitaly-ruby
+
+rspec unit pg:
+  extends: .rspec-base-pg
+  parallel: 20
+
+rspec integration pg:
+  extends: .rspec-base-pg
+  parallel: 6
+
+rspec system pg:
+  extends: .rspec-base-pg
+  parallel: 24
+
+rspec unit pg-10:
+  extends:
+    - .rspec-base-pg-10
+    - .only-schedules-master
+  parallel: 20
+
+rspec integration pg-10:
+  extends:
+    - .rspec-base-pg-10
+    - .only-schedules-master
+  parallel: 6
+
+rspec system pg-10:
+  extends:
+    - .rspec-base-pg-10
+    - .only-schedules-master
+  parallel: 24
+
+rspec-fast-spec-helper:
+  extends: .rspec-base-pg
+  script:
+    - bundle exec rspec spec/fast_spec_helper.rb
+
+rspec quarantine pg:
+  extends:
+    - .default-before_script
+    - .rspec-base-pg
+    - .only-schedules-master
+  script:
+    - export NO_KNAPSACK=1 CACHE_CLASSES=true
+    - scripts/gitaly-test-spawn
+    - bin/rspec --color --format documentation --tag quarantine -- spec/
+  allow_failure: true
+
+static-analysis:
+  extends:
+    - .default-tags
+    - .default-retry
+    - .default-cache
+    - .default-before_script
+    - .except-docs
+  dependencies: ["setup-test-env", "compile-assets", "compile-assets pull-cache"]
+  variables:
+    SETUP_DB: "false"
+  script:
+    - scripts/static-analysis
+  cache:
+    key: "debian-stretch-ruby-2.6.3-and-rubocop"
+    paths:
+      - vendor/ruby
+      - tmp/rubocop_cache
+    policy: pull-push
+
+downtime_check:
+  extends: .rake-exec
+  except:
+    refs:
+      - master
+      - tags
+      - /^[\d-]+-stable(-ee)?$/
+      - /(^docs[\/-].+|.+-docs$)/
+      - /(^qa[\/-].*|.*-qa$)/
+  dependencies: ["setup-test-env"]
+
+ee_compat_check:
+  extends: .rake-exec
+  dependencies: []
+  except:
+    refs:
+      - master
+      - tags
+      - branches@gitlab-org/gitlab-ee
+      - branches@gitlab/gitlab-ee
+      - /^[\d-]+-stable(-ee)?$/
+      - /(^docs[\/-].+|.+-docs$)/
+      - /^security-/
+  artifacts:
+    name: "${CI_JOB_NAME}_${CI_COMIT_REF_NAME}_${CI_COMMIT_SHA}"
+    when: always
+    expire_in: 10d
+    paths:
+      - ee_compat_check/patches/*.patch
 
 # DB migration, rollback, and seed jobs
-.db-migrate-reset: &db-migrate-reset
-  extends: .dedicated-no-docs-and-no-qa-pull-cache-job
+db:migrate:reset:
+  extends:
+    - .default-tags
+    - .default-retry
+    - .default-cache
+    - .default-before_script
+    - .use-pg
+    - .except-docs-qa
+  dependencies: ["setup-test-env"]
   script:
     - bundle exec rake db:migrate:reset
-  dependencies:
-    - setup-test-env
 
-.migration-paths: &migration-paths
-  extends: .dedicated-no-docs-and-no-qa-pull-cache-job
+db:check-schema:
+  extends:
+    - .default-tags
+    - .default-retry
+    - .default-cache
+    - .default-before_script
+    - .use-pg
+    - .except-docs-qa
+  dependencies: ["setup-test-env"]
+  script:
+    - source scripts/schema_changed.sh
+
+db:migrate-from-v11.11.0:
+  extends:
+    - .default-tags
+    - .default-retry
+    - .default-cache
+    - .default-before_script
+    - .use-pg
+    - .except-docs-qa
+  dependencies: ["setup-test-env"]
   variables:
     SETUP_DB: "false"
   script:
@@ -121,155 +239,53 @@
     - . scripts/prepare_build.sh
     - date
     - bundle exec rake db:migrate
-  dependencies:
-    - setup-test-env
 
-setup-test-env:
+db:rollback:
   extends:
-    - .dedicated-runner-default-cache
-    - .no-docs
+    - .default-tags
+    - .default-retry
+    - .default-cache
+    - .default-before_script
     - .use-pg
-  stage: prepare
-  script:
-    - bundle exec ruby -Ispec -e 'require "spec_helper" ; TestEnv.init'
-    - scripts/gitaly-test-build  # Do not use 'bundle exec' here
-  artifacts:
-    expire_in: 7d
-    paths:
-      - tmp/tests
-      - config/secrets.yml
-      - vendor/gitaly-ruby
-
-rspec unit pg:
-  <<: *rspec-metadata-pg
-  parallel: 20
-
-rspec integration pg:
-  <<: *rspec-metadata-pg
-  parallel: 6
-
-rspec system pg:
-  <<: *rspec-metadata-pg
-  parallel: 24
-
-rspec unit pg-10:
-  <<: *rspec-metadata-pg-10
-  <<: *only-schedules-master
-  parallel: 20
-
-rspec integration pg-10:
-  <<: *rspec-metadata-pg-10
-  <<: *only-schedules-master
-  parallel: 6
-
-rspec system pg-10:
-  <<: *rspec-metadata-pg-10
-  <<: *only-schedules-master
-  parallel: 24
-
-rspec-fast-spec-helper:
-  <<: *rspec-metadata-pg
-  script:
-    - bundle exec rspec spec/fast_spec_helper.rb
-
-.rspec-quarantine: &rspec-quarantine
-  <<: *only-schedules-master
-  script:
-    - export CACHE_CLASSES=true
-    - scripts/gitaly-test-spawn
-    - bin/rspec --color --format documentation --tag quarantine -- spec/
-
-rspec quarantine pg:
-  <<: *rspec-metadata-pg
-  <<: *rspec-quarantine
-  allow_failure: true
-
-static-analysis:
-  extends: .dedicated-no-docs-no-db-pull-cache-job
-  dependencies:
-    - compile-assets
-    - compile-assets pull-cache
-    - setup-test-env
-  script:
-    - scripts/static-analysis
-  cache:
-    key: "debian-stretch-ruby-2.6.3-node-12.x-and-rubocop"
-    paths:
-      - vendor/ruby
-      - .yarn-cache/
-      - tmp/rubocop_cache
-    policy: pull-push
-
-downtime_check:
-  <<: *rake-exec
-  except:
-    refs:
-      - master
-      - tags
-      - /^[\d-]+-stable(-ee)?$/
-      - /(^docs[\/-].+|.+-docs$)/
-      - /(^qa[\/-].*|.*-qa$)/
-  dependencies:
-    - setup-test-env
-
-ee_compat_check:
-  <<: *rake-exec
-  dependencies: []
-  except:
-    refs:
-      - master
-      - tags
-      - /[\d-]+-stable(-ee)?/
-      - /^security-/
-      - branches@gitlab-org/gitlab-ee
-      - branches@gitlab/gitlab-ee
-      - /(^docs[\/-].+|.+-docs$)/
-  retry: 0
-  artifacts:
-    name: "${CI_JOB_NAME}_${CI_COMIT_REF_NAME}_${CI_COMMIT_SHA}"
-    when: always
-    expire_in: 10d
-    paths:
-      - ee_compat_check/patches/*.patch
-
-db:migrate:reset-pg:
-  <<: *db-migrate-reset
-  <<: *use-pg
-
-db:check-schema-pg:
-  <<: *db-migrate-reset
-  <<: *use-pg
-  script:
-    - source scripts/schema_changed.sh
-
-migration:path-pg:
-  <<: *migration-paths
-  <<: *use-pg
-
-.db-rollback: &db-rollback
-  extends: .dedicated-no-docs-and-no-qa-pull-cache-job
+    - .except-docs-qa
+  dependencies: ["setup-test-env"]
   script:
     - bundle exec rake db:migrate VERSION=20180101160629
     - bundle exec rake db:migrate SKIP_SCHEMA_VERSION_CHECK=true
-  dependencies:
-    - setup-test-env
 
-db:rollback-pg:
-  <<: *db-rollback
-  <<: *use-pg
-
-gitlab:setup-pg:
-  <<: *gitlab-setup
-  <<: *use-pg
-  dependencies:
-    - setup-test-env
+gitlab:setup:
+  extends:
+    - .default-tags
+    - .default-retry
+    - .default-cache
+    - .default-before_script
+    - .use-pg
+    - .except-docs-qa
+  dependencies: ["setup-test-env"]
+  variables:
+    SETUP_DB: "false"
+  script:
+    # Manually clone gitlab-test and only seed this project in
+    # db/fixtures/development/04_project.rb thanks to SIZE=1 below
+    - git clone https://gitlab.com/gitlab-org/gitlab-test.git
+       /home/git/repositories/gitlab-org/gitlab-test.git
+    - scripts/gitaly-test-spawn
+    - force=yes SIZE=1 FIXTURE_PATH="db/fixtures/development" bundle exec rake gitlab:setup
+  artifacts:
+    when: on_failure
+    expire_in: 1d
+    paths:
+      - log/development.log
 
 coverage:
   # Don't include dedicated-no-docs-no-db-pull-cache-job here since we need to
   # download artifacts from all the rspec jobs instead of from setup-test-env only
   extends:
-    - .dedicated-runner-default-cache
-    - .no-docs-and-no-qa
+    - .default-tags
+    - .default-retry
+    - .default-cache
+    - .default-before_script
+    - .except-docs-qa
   cache:
     policy: pull
   variables:

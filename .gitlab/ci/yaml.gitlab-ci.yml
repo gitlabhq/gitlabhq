@@ -1,9 +1,10 @@
 # Yamllint of *.yml for .gitlab-ci.yml.
 # This uses rules from project root `.yamllint`.
 lint-ci-gitlab:
-  extends: .dedicated-runner
-  before_script: []
-  dependencies: []
+  extends:
+    - .default-tags
+    - .default-retry
   image: sdesbure/yamllint:latest
+  dependencies: []
   script:
     - yamllint .gitlab-ci.yml .gitlab/ci lib/gitlab/ci/templates changelogs

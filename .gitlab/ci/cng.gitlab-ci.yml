@@ -1,16 +1,15 @@
 cloud-native-image:
   image: ruby:2.6-alpine
-  before_script: []
   dependencies: []
   stage: post-test
   allow_failure: true
   variables:
     GIT_DEPTH: "1"
-  cache: {}
   when: manual
   script:
     - install_gitlab_gem
     - CNG_PROJECT_PATH="gitlab-org/build/CNG" BUILD_TRIGGER_TOKEN=$CI_JOB_TOKEN ./scripts/trigger-build cng
   only:
-    - tags@gitlab-org/gitlab-ce
-    - tags@gitlab-org/gitlab-ee
+    refs:
+      - tags@gitlab-org/gitlab-ce
+      - tags@gitlab-org/gitlab-ee

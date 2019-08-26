@@ -1,83 +1,56 @@
-.dedicated-runner:
+.default-tags:
+  tags:
+    - gitlab-org
+
+.default-retry:
   retry:
     max: 2  # This is confusing but this means "3 runs at max".
     when:
       - unknown_failure
       - api_failure
       - runner_system_failure
-  tags:
-    - gitlab-org
 
-.default-cache: &default-cache
-  key: "debian-stretch-ruby-2.6.3-node-12.x"
-  paths:
-    - vendor/ruby
-    - .yarn-cache/
-    - vendor/gitaly-ruby
-
-.dedicated-runner-default-cache:
-  extends: .dedicated-runner
-  cache:
-    <<: *default-cache
+.default-before_script:
+  before_script:
+    - date
+    - source scripts/utils.sh
+    - source scripts/prepare_build.sh
+    - date
 
 # Jobs that only need to pull cache
-.dedicated-pull-cache-job:
-  extends: .dedicated-runner
+.default-cache:
   cache:
-    <<: *default-cache
+    key: "debian-stretch-ruby-2.6.3-node-12.x"
+    paths:
+      - vendor/ruby
+      - .yarn-cache/
+      - vendor/gitaly-ruby
     policy: pull
-  stage: test
 
-.no-docs:
+.except-docs:
   except:
     refs:
       - /(^docs[\/-].+|.+-docs$)/
 
-.no-docs-and-no-qa:
+.except-qa:
+  except:
+    refs:
+      - /(^qa[\/-].*|.*-qa$)/
+
+.except-docs-qa:
   except:
     refs:
       - /(^docs[\/-].+|.+-docs$)/
       - /(^qa[\/-].*|.*-qa$)/
 
-.dedicated-no-docs-pull-cache-job:
-  extends:
-    - .dedicated-pull-cache-job
-    - .no-docs
+.except-docs-qa-geo:
+  except:
+    refs:
+      - /(^docs[\/-].+|.+-docs$)/
+      - /(^qa[\/-].*|.*-qa$)/
+      - /(^geo[\/-].*|.*-geo$)/
 
-.dedicated-no-docs-and-no-qa-pull-cache-job:
-  extends:
-    - .dedicated-pull-cache-job
-    - .no-docs-and-no-qa
-
-# Jobs that do not need a DB
-.dedicated-no-docs-no-db-pull-cache-job:
-  extends: .dedicated-no-docs-pull-cache-job
-  variables:
-    SETUP_DB: "false"
-
-# Jobs that need a dedicated runner, with no cache
-.dedicated-no-docs:
-  extends:
-    - .dedicated-runner
-    - .no-docs
-
-.single-script-job-dedicated-runner:
-  extends: .dedicated-runner
-  image: ruby:2.6-alpine
-  stage: test
-  cache: {}
-  dependencies: []
-  variables:
-    GIT_STRATEGY: none
-  before_script:
-    # We don't clone the repo by using GIT_STRATEGY: none and only download the
-    # single script we need here so it's much faster than cloning.
-    - export SCRIPT_NAME="${SCRIPT_NAME:-$CI_JOB_NAME}"
-    - apk add --update openssl
-    - wget $CI_PROJECT_URL/raw/$CI_COMMIT_SHA/scripts/$SCRIPT_NAME
-    - chmod 755 $(basename $SCRIPT_NAME)
-
-.review-only: &review-only
+.review-only:
   only:
     refs:
       - branches@gitlab-org/gitlab-ce
@@ -88,3 +61,16 @@
       - master
       - /^\d+-\d+-auto-deploy-\d+$/
       - /(^docs[\/-].+|.+-docs$)/
+
+.use-pg:
+  services:
+    - name: postgres:9.6.14
+      command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
+    - name: redis:alpine
+
+.use-pg-10:
+  image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.6.3-golang-1.11-git-2.22-chrome-73.0-node-12.x-yarn-1.16-postgresql-10-graphicsmagick-1.3.33"
+  services:
+    - name: postgres:10.9
+      command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
+    - name: redis:alpine
