@@ -4,8 +4,6 @@ module Gitlab
   module DatabaseImporters
     module SelfMonitoring
       module Project
-        include Stepable
-
         class CreateService < ::BaseService
           include Stepable
 
