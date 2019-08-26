@@ -1,5 +1,23 @@
 import $ from 'jquery';
 
+const DEFAULT_SNOWPLOW_OPTIONS = {
+  namespace: 'gl',
+  hostname: window.location.hostname,
+  cookieDomain: window.location.hostname,
+  appId: '',
+  userFingerprint: false,
+  respectDoNotTrack: true,
+  forceSecureTracker: true,
+  eventMethod: 'post',
+  contexts: { webPage: true },
+  // Page tracking tracks a single event when the page loads.
+  pageTrackingEnabled: false,
+  // Activity tracking tracks when a user is still interacting with the page.
+  // Events like scrolling and mouse movements are used to determine if the
+  // user has the tab active and is still actively engaging.
+  activityTrackingEnabled: false,
+};
+
 const extractData = (el, opts = {}) => {
   const { trackEvent, trackLabel = '', trackProperty = '' } = el.dataset;
   let trackValue = el.dataset.trackValue || el.value || '';
@@ -70,4 +88,14 @@ export default class Tracking {
       this.constructor.event(category || this.category, ...extractData(e.currentTarget, opts));
     };
   }
+}
+
+export function initUserTracking() {
+  if (!Tracking.enabled()) return;
+
+  const opts = Object.assign({}, DEFAULT_SNOWPLOW_OPTIONS, window.snowplowOptions);
+  window.snowplow('newTracker', opts.namespace, opts.hostname, opts);
+
+  if (opts.activityTrackingEnabled) window.snowplow('enableActivityTracking', 30, 30);
+  if (opts.pageTrackingEnabled) window.snowplow('trackPageView'); // must be after enableActivityTracking
 }
