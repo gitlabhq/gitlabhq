@@ -35,6 +35,7 @@ the `author` field. GitLab team members **should not**.
 
 - Any user-facing change **should** have a changelog entry. Example: "GitLab now
   uses system fonts for all text."
+- Any docs-only changes **should not** have a changelog entry.
 - Any change behind a feature flag **should not** have a changelog entry. The entry should be added [in the merge request removing the feature flags](feature_flags/development.md).
 - A fix for a regression introduced and then fixed in the same release (i.e.,
   fixing a bug introduced during a monthly release candidate) **should not**
