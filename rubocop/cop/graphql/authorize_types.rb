@@ -1,13 +1,9 @@
 # frozen_string_literal: true
 
-require_relative '../../spec_helpers'
-
 module RuboCop
   module Cop
     module Graphql
       class AuthorizeTypes < RuboCop::Cop::Cop
-        include SpecHelpers
-
         MSG = 'Add an `authorize :ability` call to the type: '\
               'https://docs.gitlab.com/ee/development/api_graphql_styleguide.html#type-authorization'
 
@@ -32,8 +28,6 @@ module RuboCop
         private
 
         def in_type?(node)
-          return if in_spec?(node)
-
           path = node.location.expression.source_buffer.name
 
           path.include?(TYPES_DIR)

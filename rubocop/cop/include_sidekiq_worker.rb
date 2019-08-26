@@ -1,11 +1,9 @@
-require_relative '../spec_helpers'
+# frozen_string_literal: true
 
 module RuboCop
   module Cop
     # Cop that makes sure workers include `ApplicationWorker`, not `Sidekiq::Worker`.
     class IncludeSidekiqWorker < RuboCop::Cop::Cop
-      include SpecHelpers
-
       MSG = 'Include `ApplicationWorker`, not `Sidekiq::Worker`.'.freeze
 
       def_node_matcher :includes_sidekiq_worker?, <<~PATTERN
@@ -13,7 +11,6 @@ module RuboCop
       PATTERN
 
       def on_send(node)
-        return if in_spec?(node)
         return unless includes_sidekiq_worker?(node)
 
         add_offense(node.arguments.first, location: :expression)

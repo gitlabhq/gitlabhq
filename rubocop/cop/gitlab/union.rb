@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-require_relative '../../spec_helpers'
 
 module RuboCop
   module Cop
@@ -7,8 +6,6 @@ module RuboCop
       # Cop that disallows the use of `Gitlab::SQL::Union`, in favour of using
       # the `FromUnion` module.
       class Union < RuboCop::Cop::Cop
-        include SpecHelpers
-
         MSG = 'Use the `FromUnion` concern, instead of using `Gitlab::SQL::Union` directly'
 
         def_node_matcher :raw_union?, <<~PATTERN
@@ -17,7 +14,6 @@ module RuboCop
 
         def on_send(node)
           return unless raw_union?(node)
-          return if in_spec?(node)
 
           add_offense(node, location: :expression)
         end

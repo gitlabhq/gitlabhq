@@ -16,10 +16,4 @@ describe RuboCop::Cop::Gitlab::Union do
     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use the `FromUnion` concern, instead of using `Gitlab::SQL::Union` directly
     SOURCE
   end
-
-  it 'does not flag the use of Gitlab::SQL::Union in a spec' do
-    allow(cop).to receive(:in_spec?).and_return(true)
-
-    expect_no_offenses('Gitlab::SQL::Union.new([foo])')
-  end
 end

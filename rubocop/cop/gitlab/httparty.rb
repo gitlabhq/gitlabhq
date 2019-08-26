@@ -1,11 +1,9 @@
-require_relative '../../spec_helpers'
+# frozen_string_literal: true
 
 module RuboCop
   module Cop
     module Gitlab
       class HTTParty < RuboCop::Cop::Cop
-        include SpecHelpers
-
         MSG_SEND = <<~EOL.freeze
           Avoid calling `HTTParty` directly. Instead, use the Gitlab::HTTP
           wrapper. To allow request to localhost or the private network set
@@ -27,8 +25,6 @@ module RuboCop
         PATTERN
 
         def on_send(node)
-          return if in_spec?(node)
-
           add_offense(node, location: :expression, message: MSG_SEND) if httparty_node?(node)
           add_offense(node, location: :expression, message: MSG_INCLUDE) if includes_httparty?(node)
         end
