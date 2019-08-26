@@ -6,6 +6,10 @@ class PersonalFileUploader < FileUploader
     options.storage_path
   end
 
+  def self.workhorse_local_upload_path
+    File.join(options.storage_path, 'uploads', TMP_UPLOAD_PATH)
+  end
+
   def self.base_dir(model, _store = nil)
     # base_dir is the path seen by the user when rendering Markdown, so
     # it should be the same for both local and object storage. It is
