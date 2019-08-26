@@ -82,18 +82,16 @@ by another folder with the next 2 characters. They are both stored in a special
 
 > [Introduced](https://gitlab.com/gitlab-org/gitaly/issues/1606) in GitLab 12.1.
 
-Forks of public projects are deduplicated by creating a third repository, the object pool, containing the objects from the source project. Using `objects/info/alternates`, the source project and forks use the object pool for shared objects. Objects are moved from the source project to the object pool when housekeeping is run on the source project.
+Forks of public projects are deduplicated by creating a third repository, the
+object pool, containing the objects from the source project. Using
+`objects/info/alternates`, the source project and forks use the object pool for
+shared objects. Objects are moved from the source project to the object pool
+when housekeeping is run on the source project.
 
 ```ruby
 # object pool paths
 "@pools/#{hash[0..1]}/#{hash[2..3]}/#{hash}.git"
 ```
-
-Object pools can be disabled using the `object_pools` feature flag, and can be
-disabled for individual projects by executing
-`Feature.disable(:object_pools, Project.find(<id>))`. Disabling object pools
-will not change existing deduplicated forks, but will prevent new forks from
-being deduplicated.
 
 DANGER: **Danger:**
 Do not run `git prune` or `git gc` in pool repositories! This can

@@ -2175,8 +2175,7 @@ class Project < ApplicationRecord
     hashed_storage?(:repository) &&
       public? &&
       repository_exists? &&
-      Gitlab::CurrentSettings.hashed_storage_enabled &&
-      Feature.enabled?(:object_pools, self, default_enabled: true)
+      Gitlab::CurrentSettings.hashed_storage_enabled
   end
 
   def leave_pool_repository
