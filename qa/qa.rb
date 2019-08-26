@@ -359,6 +359,13 @@ module QA
     autoload :KubernetesCluster, 'qa/service/kubernetes_cluster'
     autoload :Omnibus, 'qa/service/omnibus'
     autoload :Runner, 'qa/service/runner'
+
+    module ClusterProvider
+      autoload :Base, 'qa/service/cluster_provider/base'
+      autoload :Gcloud, 'qa/service/cluster_provider/gcloud'
+      autoload :Minikube, 'qa/service/cluster_provider/minikube'
+      autoload :K3d, 'qa/service/cluster_provider/k3d'
+    end
   end
 
   ##
