@@ -1,0 +1,5 @@
+---
+title: Fix HTML injection for label description
+merge_request:
+author:
+type: security
