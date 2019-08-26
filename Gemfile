@@ -295,7 +295,7 @@ gem 'gettext', '~> 3.2.2', require: false, group: :development
 gem 'batch-loader', '~> 1.4.0'
 
 # Perf bar
-gem 'peek', '~> 1.0.1'
+gem 'peek', git: 'https://github.com/smcgivern/peek', branch: 'remove-peek-request-id'
 
 # Snowplow events tracking
 gem 'snowplow-tracker', '~> 0.6.1'

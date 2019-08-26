@@ -4,8 +4,8 @@
 module Gitlab
   module PerformanceBar
     module RedisAdapterWhenPeekEnabled
-      def save
-        super unless ::Peek.request_id.blank?
+      def save(request_id)
+        super if ::Peek.enabled? && request_id.present?
       end
     end
   end

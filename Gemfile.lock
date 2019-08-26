@@ -1,3 +1,11 @@
+GIT
+  remote: https://github.com/smcgivern/peek
+  revision: b7164ce54b63670f5406f4dc3cb3f5594d71bfaa
+  branch: remove-peek-request-id
+  specs:
+    peek (1.0.1)
+      railties (>= 4.0.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -147,8 +155,6 @@ GEM
       adamantium (~> 0.2.0)
       equalizer (~> 0.0.9)
     concurrent-ruby (1.1.5)
-    concurrent-ruby-ext (1.1.5)
-      concurrent-ruby (= 1.1.5)
     connection_pool (2.2.2)
     contracts (0.11.0)
     crack (0.4.3)
@@ -640,10 +646,6 @@ GEM
     parser (2.6.3.0)
       ast (~> 2.4.0)
     parslet (1.8.2)
-    peek (1.0.1)
-      concurrent-ruby (>= 0.9.0)
-      concurrent-ruby-ext (>= 0.9.0)
-      railties (>= 4.0.0)
     pg (1.1.4)
     po_to_json (1.0.1)
       json (>= 1.6.0)
@@ -1177,7 +1179,7 @@ DEPENDENCIES
   omniauth_crowd (~> 2.2.0)
   omniauth_openid_connect (~> 0.3.1)
   org-ruby (~> 0.9.12)
-  peek (~> 1.0.1)
+  peek!
   pg (~> 1.1)
   premailer-rails (~> 1.9.7)
   prometheus-client-mmap (~> 0.9.8)

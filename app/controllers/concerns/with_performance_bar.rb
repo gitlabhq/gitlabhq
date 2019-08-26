@@ -3,6 +3,12 @@
 module WithPerformanceBar
   extend ActiveSupport::Concern
 
+  included do
+    before_action :peek_enabled? # Warm cache
+  end
+
+  protected
+
   def peek_enabled?
     return false unless Gitlab::PerformanceBar.enabled?(current_user)
 
