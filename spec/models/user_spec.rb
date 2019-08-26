@@ -103,6 +103,14 @@ describe User do
       it { is_expected.to validate_length_of(:name).is_at_most(128) }
     end
 
+    describe 'first name' do
+      it { is_expected.to validate_length_of(:first_name).is_at_most(255) }
+    end
+
+    describe 'last name' do
+      it { is_expected.to validate_length_of(:last_name).is_at_most(255) }
+    end
+
     describe 'username' do
       it 'validates presence' do
         expect(subject).to validate_presence_of(:username)
@@ -675,6 +683,18 @@ describe User do
         expect(user).to receive(:update_invalid_gpg_signatures).at_most(:twice)
         user.update!(email: 'shawnee.ritchie@denesik.com')
       end
+    end
+  end
+
+  describe 'name getters' do
+    let(:user) { create(:user, name: 'Kane Martin William') }
+
+    it 'derives first name from full name, if not present' do
+      expect(user.first_name).to eq('Kane')
+    end
+
+    it 'derives last name from full name, if not present' do
+      expect(user.last_name).to eq('Martin William')
     end
   end
 
