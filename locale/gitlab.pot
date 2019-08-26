@@ -7113,9 +7113,6 @@ msgstr ""
 msgid "Minimum length is %{minimum_password_length} characters."
 msgstr ""
 
-msgid "Mirror a repository"
-msgstr ""
-
 msgid "Mirror direction"
 msgstr ""
 
