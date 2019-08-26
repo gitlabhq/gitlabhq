@@ -10,7 +10,7 @@ module API
       end
 
       def update_note(noteable, note_id)
-        note = noteable.notes.find(params[:note_id])
+        note = noteable.notes.find(note_id)
 
         authorize! :admin_note, note
 
@@ -59,8 +59,8 @@ module API
       end
 
       def get_note(noteable, note_id)
-        note = noteable.notes.with_metadata.find(params[:note_id])
-        can_read_note = !note.cross_reference_not_visible_for?(current_user)
+        note = noteable.notes.with_metadata.find(note_id)
+        can_read_note = note.visible_for?(current_user)
 
         if can_read_note
           present note, with: Entities::Note
@@ -79,6 +79,10 @@ module API
         noteable = NotesFinder.new(user_project, current_user, params).target
         noteable = nil unless can?(current_user, noteable_read_ability_name(noteable), noteable)
         noteable || not_found!(noteable_type)
+      end
+
+      def reject_note?(noteable_type, noteable, parent_type, parent_id, note)
+        note.cross_reference_not_visible_for?(current_user)
       end
 
       def params_by_noteable_type_and_id(type, id)

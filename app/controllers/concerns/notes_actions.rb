@@ -29,7 +29,7 @@ module NotesActions
     end
 
     notes = prepare_notes_for_rendering(notes)
-    notes = notes.reject { |n| n.cross_reference_not_visible_for?(current_user) }
+    notes = notes.select { |n| n.visible_for?(current_user) }
 
     notes_json[:notes] =
       if use_note_serializer?
