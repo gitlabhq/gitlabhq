@@ -22,7 +22,7 @@ email_smime:
 ```
 
 - Both files must be provided PEM-encoded.
-- The key file must be unencrypted so that Gitlab can read it without user 
+- The key file must be unencrypted so that Gitlab can read it without user
   intervention.
 
 NOTE: **Note:** Be mindful of the access levels for your private keys and visibility to
