@@ -115,7 +115,7 @@ class RegistrationsController < Devise::RegistrationsController
   end
 
   def resource
-    @resource ||= Users::BuildService.new(current_user, sign_up_params).execute
+    @resource ||= Users::BuildService.new(current_user, sign_up_params).execute(skip_authorization: true)
   end
 
   def devise_mapping
