@@ -1,4 +1,4 @@
-require_relative '../../spec_helpers'
+# frozen_string_literal: true
 
 module RuboCop
   module Cop
@@ -17,8 +17,6 @@ module RuboCop
       #     stub_env('FOO', 'bar')
       #   end
       class EnvAssignment < RuboCop::Cop::Cop
-        include SpecHelpers
-
         MESSAGE = "Don't assign to ENV, use `stub_env` instead.".freeze
 
         def_node_search :env_assignment?, <<~PATTERN
@@ -28,7 +26,6 @@ module RuboCop
         # Following is what node.children looks like on a match
         # [s(:const, nil, :ENV), :[]=, s(:str, "key"), s(:str, "value")]
         def on_send(node)
-          return unless in_spec?(node)
           return unless env_assignment?(node)
 
           add_offense(node, location: :expression, message: MESSAGE)

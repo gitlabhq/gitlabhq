@@ -178,6 +178,9 @@ Gitlab/ModuleWithInstanceVariables:
 
 Gitlab/HTTParty:
   Enabled: true
+  Exclude:
+    - 'spec/**/*'
+    - 'ee/spec/**/*'
 
 GitlabSecurity/PublicSend:
   Enabled: true
@@ -211,3 +214,54 @@ ActiveRecordAssociationReload:
   Exclude:
     - 'spec/**/*'
     - 'ee/spec/**/*'
+
+RSpec/FactoriesInMigrationSpecs:
+  Enabled: true
+  Include:
+    - 'spec/migrations/**/*.rb'
+    - 'ee/spec/migrations/**/*.rb'
+    - 'spec/lib/gitlab/background_migration/**/*.rb'
+    - 'ee/spec/lib/gitlab/background_migration/**/*.rb'
+
+Cop/IncludeActionViewContext:
+  Enabled: true
+  Exclude:
+    - 'spec/**/*'
+    - 'ee/spec/**/*'
+
+Cop/IncludeSidekiqWorker:
+  Enabled: true
+  Exclude:
+    - 'spec/**/*'
+    - 'ee/spec/**/*'
+
+Gitlab/Union:
+  Enabled: true
+  Exclude:
+    - 'spec/**/*'
+    - 'ee/spec/**/*'
+
+Cop/SidekiqOptionsQueue:
+  Enabled: true
+  Exclude:
+    - 'spec/**/*.rb'
+    - 'ee/spec/**/*.rb'
+
+Graphql/AuthorizeTypes:
+  Enabled: true
+  Exclude:
+    - 'spec/**/*.rb'
+    - 'ee/spec/**/*.rb'
+
+RSpec/EnvAssignment:
+  Enable: true
+  Include:
+    - 'spec/**/*.rb'
+    - 'ee/spec/**/*.rb'
+  Exclude:
+    - 'spec/**/fast_spec_helper.rb'
+    - 'ee/spec/**/fast_spec_helper.rb'
+    - 'spec/**/rails_helper.rb'
+    - 'ee/spec/**/rails_helper.rb'
+    - 'spec/**/spec_helper.rb'
+    - 'ee/spec/**/spec_helper.rb'

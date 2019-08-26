@@ -8,8 +8,6 @@ require_relative '../../../../rubocop/cop/rspec/factories_in_migration_specs'
 describe RuboCop::Cop::RSpec::FactoriesInMigrationSpecs do
   include CopHelper
 
-  let(:source_file) { 'spec/migrations/foo_spec.rb' }
-
   subject(:cop) { described_class.new }
 
   shared_examples 'an offensive factory call' do |namespace|
@@ -27,22 +25,6 @@ describe RuboCop::Cop::RSpec::FactoriesInMigrationSpecs do
     end
   end
 
-  context 'in a migration spec file' do
-    before do
-      allow(cop).to receive(:in_migration_spec?).and_return(true)
-    end
-
-    it_behaves_like 'an offensive factory call', ''
-    it_behaves_like 'an offensive factory call', 'FactoryBot.'
-  end
-
-  context 'outside of a migration spec file' do
-    it "does not register an offense" do
-      expect_no_offenses(<<-RUBY)
-        describe 'foo' do
-          let(:user) { create(:user) }
-        end
-      RUBY
-    end
-  end
+  it_behaves_like 'an offensive factory call', ''
+  it_behaves_like 'an offensive factory call', 'FactoryBot.'
 end

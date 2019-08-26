@@ -33,27 +33,13 @@ describe RuboCop::Cop::RSpec::EnvAssignment do
     end
   end
 
-  context 'in a spec file' do
-    before do
-      allow(cop).to receive(:in_spec?).and_return(true)
-    end
-
-    context 'with a key using single quotes' do
-      it_behaves_like 'an offensive ENV#[]= call', OFFENSE_CALL_SINGLE_QUOTES_KEY
-      it_behaves_like 'an autocorrected ENV#[]= call', OFFENSE_CALL_SINGLE_QUOTES_KEY, %(stub_env('FOO', 'bar'))
-    end
-
-    context 'with a key using double quotes' do
-      it_behaves_like 'an offensive ENV#[]= call', OFFENSE_CALL_DOUBLE_QUOTES_KEY
-      it_behaves_like 'an autocorrected ENV#[]= call', OFFENSE_CALL_DOUBLE_QUOTES_KEY, %(stub_env("FOO", 'bar'))
-    end
+  context 'with a key using single quotes' do
+    it_behaves_like 'an offensive ENV#[]= call', OFFENSE_CALL_SINGLE_QUOTES_KEY
+    it_behaves_like 'an autocorrected ENV#[]= call', OFFENSE_CALL_SINGLE_QUOTES_KEY, %(stub_env('FOO', 'bar'))
   end
 
-  context 'outside of a spec file' do
-    it "does not register an offense for `#{OFFENSE_CALL_SINGLE_QUOTES_KEY}` in a non-spec file" do
-      inspect_source(OFFENSE_CALL_SINGLE_QUOTES_KEY)
-
-      expect(cop.offenses.size).to eq(0)
-    end
+  context 'with a key using double quotes' do
+    it_behaves_like 'an offensive ENV#[]= call', OFFENSE_CALL_DOUBLE_QUOTES_KEY
+    it_behaves_like 'an autocorrected ENV#[]= call', OFFENSE_CALL_DOUBLE_QUOTES_KEY, %(stub_env("FOO", 'bar'))
   end
 end
