@@ -67,6 +67,7 @@ module ApplicationSettingImplementation
         project_export_enabled: true,
         protected_ci_variables: false,
         recaptcha_enabled: false,
+        login_recaptcha_protection_enabled: false,
         repository_checks_enabled: true,
         repository_storages: ['default'],
         require_two_factor_authentication: false,
