@@ -24,6 +24,6 @@ module Types
           resolver: Resolvers::MetadataResolver,
           description: 'Metadata about GitLab'
 
-    field :echo, GraphQL::STRING_TYPE, null: false, function: Functions::Echo.new
+    field :echo, GraphQL::STRING_TYPE, null: false, resolver: Resolvers::EchoResolver
   end
 end

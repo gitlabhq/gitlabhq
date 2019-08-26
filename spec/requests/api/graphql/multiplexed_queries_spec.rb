@@ -6,9 +6,9 @@ describe 'Multiplexed queries' do
 
   it 'returns responses for multiple queries' do
     queries = [
-      { query: 'query($text: String) { echo(text: $text) }',
+      { query: 'query($text: String!) { echo(text: $text) }',
         variables: { 'text' => 'Hello' } },
-      { query: 'query($text: String) { echo(text: $text) }',
+      { query: 'query($text: String!) { echo(text: $text) }',
         variables: { 'text' => 'World' } }
     ]
 
@@ -23,8 +23,8 @@ describe 'Multiplexed queries' do
 
   it 'returns error and data combinations' do
     queries = [
-      { query: 'query($text: String) { broken query }' },
-      { query: 'query working($text: String) { echo(text: $text) }',
+      { query: 'query($text: String!) { broken query }' },
+      { query: 'query working($text: String!) { echo(text: $text) }',
         variables: { 'text' => 'World' } }
     ]
 

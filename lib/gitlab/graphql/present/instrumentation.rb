@@ -23,7 +23,9 @@ module Gitlab
             end
 
             presenter = presented_in.presenter_class.new(object, **context.to_h)
-            wrapped = presented_type.class.new(presenter, context)
+
+            # we have to use the new `authorized_new` method, as `new` is protected
+            wrapped = presented_type.class.authorized_new(presenter, context)
 
             old_resolver.call(wrapped, args, context)
           end
