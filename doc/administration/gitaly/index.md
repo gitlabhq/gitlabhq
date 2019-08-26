@@ -518,6 +518,47 @@ One current feature of GitLab that still requires a shared directory (NFS) is
 There is [work in progress](https://gitlab.com/gitlab-org/gitlab-pages/issues/196)
 to eliminate the need for NFS to support GitLab Pages.
 
+## Limiting RPC concurrency
+
+It can happen that CI clone traffic puts a large strain on your Gitaly
+service. The bulk of the work gets done in the SSHUploadPack (for Git
+SSH) and PostUploadPack (for Git HTTP) RPC's. To prevent such workloads
+from overcrowding your Gitaly server you can set concurrency limits in
+Gitaly's configuration file.
+
+```ruby
+# in /etc/gitlab/gitlab.rb
+
+gitaly['concurrency'] = [
+  {
+    'rpc' => "/gitaly.SmartHTTPService/PostUploadPack",
+    'max_per_repo' => 20
+  },
+  {
+    'rpc' => "/gitaly.SSHService/SSHUploadPack",
+    'max_per_repo' => 20
+  }
+]
+```
+This will limit the number of in-flight RPC calls for the given RPC's.
+The limit is applied per repository. In the example above, each on the
+Gitaly server can have at most 20 simultaneous PostUploadPack calls in
+flight, and the same for SSHUploadPack. If another request comes in for
+a repository that hase used up its 20 slots, that request will get
+queued.
+
+You can observe the behavior of this queue via the Gitaly logs and via
+Prometheus. In the Gitaly logs, you can look for the string (or
+structured log field) `acquire_ms`. Messages that have this field are
+reporting about the concurrency limiter. In Prometheus, look for the
+`gitaly_rate_limiting_in_progress`, `gitaly_rate_limiting_queued` and
+`gitaly_rate_limiting_seconds` metrics.
+
+The name of the Prometheus metric is not quite right because this is a
+concurrency limiter, not a rate limiter. If a client makes 1000 requests
+in a row in a very short timespan, the concurrency will not exceed 1,
+and this mechanism (the concurrency limiter) will do nothing.
+
 ## Troubleshooting Gitaly
 
 ### Commits, pushes, and clones return a 401
