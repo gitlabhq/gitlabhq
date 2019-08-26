@@ -133,7 +133,7 @@ module Gitlab
     NO_SUFFIX_REGEX = /(?<!\.git|\.atom)/.freeze
     NAMESPACE_FORMAT_REGEX = /(?:#{NAMESPACE_FORMAT_REGEX_JS})#{NO_SUFFIX_REGEX}/.freeze
     PROJECT_PATH_FORMAT_REGEX = /(?:#{PATH_REGEX_STR})#{NO_SUFFIX_REGEX}/.freeze
-    FULL_NAMESPACE_FORMAT_REGEX = %r{(#{NAMESPACE_FORMAT_REGEX}/)*#{NAMESPACE_FORMAT_REGEX}}.freeze
+    FULL_NAMESPACE_FORMAT_REGEX = %r{(#{NAMESPACE_FORMAT_REGEX}/){,#{Namespace::NUMBER_OF_ANCESTORS_ALLOWED}}#{NAMESPACE_FORMAT_REGEX}}.freeze
 
     def root_namespace_route_regex
       @root_namespace_route_regex ||= begin

@@ -46,6 +46,7 @@ describe Issuable do
       it { is_expected.to validate_presence_of(:author) }
       it { is_expected.to validate_presence_of(:title) }
       it { is_expected.to validate_length_of(:title).is_at_most(255) }
+      it { is_expected.to validate_length_of(:description).is_at_most(1_000_000) }
     end
 
     describe 'milestone' do
@@ -762,6 +763,56 @@ describe Issuable do
         expect(first_time_contributor_issue).not_to be_first_contribution
         expect(contributor_issue).not_to be_first_contribution
       end
+    end
+  end
+
+  describe '#matches_cross_reference_regex?' do
+    context "issue description with long path string" do
+      let(:mentionable) { build(:issue, description: "/a" * 50000) }
+
+      it_behaves_like 'matches_cross_reference_regex? fails fast'
+    end
+
+    context "note with long path string" do
+      let(:mentionable) { build(:note, note: "/a" * 50000) }
+
+      it_behaves_like 'matches_cross_reference_regex? fails fast'
+    end
+
+    context "note with long path string" do
+      let(:project) { create(:project, :public, :repository) }
+      let(:mentionable) { project.commit }
+
+      before do
+        expect(mentionable.raw).to receive(:message).and_return("/a" * 50000)
+      end
+
+      it_behaves_like 'matches_cross_reference_regex? fails fast'
+    end
+  end
+
+  describe '#matches_cross_reference_regex?' do
+    context "issue description with long path string" do
+      let(:mentionable) { build(:issue, description: "/a" * 50000) }
+
+      it_behaves_like 'matches_cross_reference_regex? fails fast'
+    end
+
+    context "note with long path string" do
+      let(:mentionable) { build(:note, note: "/a" * 50000) }
+
+      it_behaves_like 'matches_cross_reference_regex? fails fast'
+    end
+
+    context "note with long path string" do
+      let(:project) { create(:project, :public, :repository) }
+      let(:mentionable) { project.commit }
+
+      before do
+        expect(mentionable.raw).to receive(:message).and_return("/a" * 50000)
+      end
+
+      it_behaves_like 'matches_cross_reference_regex? fails fast'
     end
   end
 end

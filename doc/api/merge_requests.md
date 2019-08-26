@@ -779,7 +779,7 @@ POST /projects/:id/merge_requests
 | `title`                    | string  | yes      | Title of MR                                                                     |
 | `assignee_id`              | integer | no       | Assignee user ID                                                                |
 | `assignee_ids`             | Array[integer] | no  | The ID of the user(s) to assign the MR to. Set to `0` or provide an empty value to unassign all assignees.  |
-| `description`              | string  | no       | Description of MR                                                               |
+| `description`              | string  | no       | Description of MR. Limited to 1 000 000 characters. |
 | `target_project_id`        | integer | no       | The target project (numeric id)                                                 |
 | `labels`                   | string  | no       | Labels for MR as a comma-separated list                                         |
 | `milestone_id`             | integer | no       | The global ID of a milestone                                                           |
@@ -911,7 +911,7 @@ PUT /projects/:id/merge_requests/:merge_request_iid
 | `assignee_ids`             | Array[integer] | no  | The ID of the user(s) to assign the MR to. Set to `0` or provide an empty value to unassign all assignees.  |
 | `milestone_id`             | integer | no       | The global ID of a milestone to assign the merge request to. Set to `0` or provide an empty value to unassign a milestone.|
 | `labels`                   | string  | no       | Comma-separated label names for a merge request. Set to an empty string to unassign all labels.                    |
-| `description`              | string  | no       | Description of MR                                                               |
+| `description`              | string  | no       | Description of MR. Limited to 1 000 000 characters. |
 | `state_event`              | string  | no       | New state (close/reopen)                                                        |
 | `remove_source_branch`     | boolean | no       | Flag indicating if a merge request should remove the source branch when merging |
 | `squash`                   | boolean | no       | Squash commits into a single commit when merging |

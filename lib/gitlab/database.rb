@@ -11,6 +11,10 @@ module Gitlab
     # https://dev.mysql.com/doc/refman/5.7/en/datetime.html
     MAX_TIMESTAMP_VALUE = Time.at((1 << 31) - 1).freeze
 
+    # The maximum number of characters for text fields, to avoid DoS attacks via parsing huge text fields
+    # https://gitlab.com/gitlab-org/gitlab-ce/issues/61974
+    MAX_TEXT_SIZE_LIMIT = 1_000_000
+
     def self.config
       ActiveRecord::Base.configurations[Rails.env]
     end
