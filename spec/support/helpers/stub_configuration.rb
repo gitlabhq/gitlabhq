@@ -89,6 +89,10 @@ module StubConfiguration
     allow(Gitlab.config.gitlab_shell).to receive_messages(to_settings(messages))
   end
 
+  def stub_asset_proxy_setting(messages)
+    allow(Gitlab.config.asset_proxy).to receive_messages(to_settings(messages))
+  end
+
   private
 
   # Modifies stubbed messages to also stub possible predicate versions

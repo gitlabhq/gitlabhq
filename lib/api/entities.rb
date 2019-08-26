@@ -1141,6 +1141,9 @@ module API
         attributes.delete(:performance_bar_allowed_group_path)
         attributes.delete(:performance_bar_enabled)
 
+        # let's not expose the secret key in a response
+        attributes.delete(:asset_proxy_secret_key)
+
         attributes
       end
 

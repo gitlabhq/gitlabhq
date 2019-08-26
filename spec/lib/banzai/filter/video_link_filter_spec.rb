@@ -47,4 +47,26 @@ describe Banzai::Filter::VideoLinkFilter do
       expect(element['src']).to eq '/path/my_image.jpg'
     end
   end
+
+  context 'when asset proxy is enabled' do
+    it 'uses the correct src' do
+      stub_asset_proxy_setting(enabled: true)
+
+      proxy_src = 'https://assets.example.com/6d8b63'
+      canonical_src = 'http://example.com/test.mp4'
+      image = %(<img src="#{proxy_src}" data-canonical-src="#{canonical_src}" />)
+      container = filter(image, asset_proxy_enabled: true).children.first
+
+      expect(container['class']).to eq 'video-container'
+
+      video, paragraph = container.children
+
+      expect(video['src']).to eq proxy_src
+      expect(video['data-canonical-src']).to eq canonical_src
+
+      link = paragraph.children.first
+
+      expect(link['href']).to eq proxy_src
+    end
+  end
 end
