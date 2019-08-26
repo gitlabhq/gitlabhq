@@ -49,7 +49,7 @@ class GitlabSchema < GraphQL::Schema
     def id_from_object(object)
       unless object.respond_to?(:to_global_id)
         # This is an error in our schema and needs to be solved. So raise a
-        # more meaningfull error message
+        # more meaningful error message
         raise "#{object} does not implement `to_global_id`. "\
               "Include `GlobalID::Identification` into `#{object.class}"
       end
