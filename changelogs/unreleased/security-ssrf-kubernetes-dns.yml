@@ -1,0 +1,5 @@
+---
+title: Fix SSRF via DNS rebinding in Kubernetes Integration
+merge_request:
+author:
+type: security
