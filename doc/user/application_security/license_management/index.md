@@ -169,9 +169,9 @@ If you still need to run tests during `mvn install`, add `-DskipTests=false` to
 
 > [Introduced](https://gitlab.com/gitlab-org/security-products/license-management/merge_requests/36) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.0.
 
-License Compliance uses Python 2.7 and pip 10.0 by default.
-If your project requires Python 3, you can switch to Python 3.5 and pip 19.1
-by setting the `LM_PYTHON_VERSION` environment variable to `3`.
+License Compliance uses Python 3.5 and pip 19.1 by default.
+If your project requires Python 2, you can switch to Python 2.7 and pip 10.0
+by setting the `LM_PYTHON_VERSION` environment variable to `2`.
 
 ```yaml
 include:
@@ -179,7 +179,7 @@ include:
 
 license_management:
   variables:
-    LM_PYTHON_VERSION: 3
+    LM_PYTHON_VERSION: 2
 ```
 
 ## Project policies for License Compliance
