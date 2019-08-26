@@ -28,14 +28,6 @@ With default whitelist settings, the probes can be accessed from localhost using
 ```text
 GET http://localhost/-/health
 ```
-```text
-GET http://localhost/-/readiness
-```
-```text
-GET http://localhost/-/liveness
-```text
-GET http://localhost/-/health
-```
 
 ```text
 GET http://localhost/-/readiness
