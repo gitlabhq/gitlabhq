@@ -13,7 +13,7 @@ keeping everything in the same place, so that you don't need to jump
 between different platforms to organize your workflow.
 
 With GitLab Issue Boards, you organize your issues in lists that correspond to
-their assigned labels, visualizing issues designed as cards throughout that lists.
+their assigned labels, visualizing issues designed as cards throughout those lists.
 
 You define your process and GitLab organizes it for you. You add your labels
 then create the corresponding list to pull in your existing issues. When
@@ -27,12 +27,9 @@ Issue Boards** (version introduced in GitLab 8.11 - August 2016).
 
 ### Advanced features of Issue Boards
 
-With [GitLab Starter](https://about.gitlab.com/pricing/), you can create
-[multiple issue boards](#multiple-issue-boards-starter) for a given project. **(STARTER)**
-
-With [GitLab Premium](https://about.gitlab.com/pricing/), you can also create multiple
-issue boards for your groups, and add lists for [assignees](#assignee-lists-premium) and
-[milestones](#milestone-lists-premium). **(PREMIUM)**
+- Create multiple issue boards per project.
+- Create multiple issue boards per group. **(PREMIUM)**
+- Add lists for [assignees](#assignee-lists-premium) and [milestones](#milestone-lists-premium). **(PREMIUM)**
 
 Check all the [advanced features of Issue Boards](#gitlab-enterprise-features-for-issue-boards)
 below.
@@ -58,8 +55,7 @@ You create issues, host code, perform reviews, build, test,
 and deploy from one single platform. Issue Boards help you to visualize
 and manage the entire process _in_ GitLab.
 
-With [Multiple Issue Boards](#use-cases-for-multiple-issue-boards), available
-only in [different tiers of GitLab Enterprise Edition](#gitlab-enterprise-features-for-issue-boards),
+With [Multiple Issue Boards](#use-cases-for-multiple-issue-boards),
 you go even further, as you can not only keep yourself and your project
 organized from a broader perspective with one Issue Board per project,
 but also allow your team members to organize their own workflow by creating
@@ -88,7 +84,7 @@ If we have the labels "**backend**", "**frontend**", "**staging**", and
 "**production**", and an Issue Board with a list for each, we can:
 
 - Visualize the entire flow of implementations since the
-  beginning of the development lifecycle until deployed to production
+  beginning of the development life cycle until deployed to production
 - Prioritize the issues in a list by moving them vertically
 - Move issues between lists to organize them according to the labels you've set
 - Add multiple issues to lists in the board by selecting one or more existing issues
@@ -97,8 +93,7 @@ If we have the labels "**backend**", "**frontend**", "**staging**", and
 
 ### Use cases for Multiple Issue Boards
 
-With [Multiple Issue Boards](#multiple-issue-boards-starter), available only in
-[GitLab Enterprise Edition](https://about.gitlab.com/pricing/),
+With [Multiple Issue Boards](#multiple-issue-boards),
 each team can have their own board to organize their workflow individually.
 
 #### Scrum team
@@ -159,13 +154,14 @@ Issue Board, that is, create or delete lists and drag issues from one list to an
 GitLab Issue Boards are available on GitLab Core and GitLab.com Free, but some
 advanced functionalities are only present in higher tiers: GitLab.com Bronze,
 Silver, or Gold, or GitLab self-managed Starter, Premium, and Ultimate, as described
-on the following sections.
+in the following sections.
 
 For a collection of [features per tier](#summary-of-features-per-tier), check the summary below.
 
-### Multiple Issue Boards **(STARTER)**
+### Multiple Issue Boards
 
-> Introduced in [GitLab Enterprise Edition 8.13](https://about.gitlab.com/2016/10/22/gitlab-8-13-released/#multiple-issue-boards-ee).
+> - Multiple Issue Boards per project [moved](https://gitlab.com/gitlab-org/gitlab-ce/issues/53811) to [GitLab Core](https://about.gitlab.com/pricing/) in GitLab 12.1.
+> - Multiple Issue Boards per group is available in [GitLab Premium Edition](https://about.gitlab.com/pricing/).
 
 Multiple Issue Boards, as the name suggests, allow for more than one Issue Board
 for a given project or group. This is great for large projects with more than one team
@@ -183,10 +179,6 @@ These are shortcuts to your last 4 visited boards.
 
 When you're revisiting an issue board in a project or group with multiple boards,
 GitLab will automatically load the last board you visited.
-
-NOTE: **Note:**
-The Multiple Issue Boards feature is available for
-**projects in GitLab Starter Edition** and for **groups in GitLab Premium Edition**.
 
 ### Configurable Issue Boards **(STARTER)**
 

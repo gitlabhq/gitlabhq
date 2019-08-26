@@ -17,7 +17,7 @@ When you create a project in GitLab, you'll have access to a large number of
 
 - [Issue tracker](issues/index.md): Discuss implementations with your team within issues
   - [Issue Boards](issue_board.md): Organize and prioritize your workflow
-  - [Multiple Issue Boards](issue_board.md#multiple-issue-boards-starter): Allow your teams to create their own workflows (Issue Boards) for the same project **(STARTER)**
+  - [Multiple Issue Boards](issue_board.md#multiple-issue-boards): Allow your teams to create their own workflows (Issue Boards) for the same project
 - [Repositories](repository/index.md): Host your code in a fully
   integrated platform
   - [Branches](repository/branches/index.md): use Git branching strategies to
@@ -34,7 +34,7 @@ When you create a project in GitLab, you'll have access to a large number of
 
 - [Issue tracker](issues/index.md): Discuss implementations with your team within issues
   - [Issue Boards](issue_board.md): Organize and prioritize your workflow
-  - [Multiple Issue Boards](issue_board.md#multiple-issue-boards-starter): Allow your teams to create their own workflows (Issue Boards) for the same project **(STARTER)**
+  - [Multiple Issue Boards](issue_board.md#multiple-issue-boards): Allow your teams to create their own workflows (Issue Boards) for the same project
 - [Merge Requests](merge_requests/index.md): Apply your branching
   strategy and get reviewed by your team
   - [Merge Request Approvals](merge_requests/merge_request_approvals.md): Ask for approval before
