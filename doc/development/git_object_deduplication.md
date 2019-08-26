@@ -8,30 +8,6 @@ storage disk use. To counteract this problem, we are adding Git object
 deduplication for forks to GitLab. In this document, we will describe how
 GitLab implements Git object deduplication.
 
-## Enabling Git object deduplication via feature flags
-
-As of GitLab 12.0, Git object deduplication in GitLab is still behind a
-feature flag. In this document, you can read about the effects of
-enabling the feature. Also, note that Git object deduplication is
-limited to forks of public projects on hashed repository storage.
-
-You can enable deduplication globally by setting the `object_pools`
-feature flag to `true`:
-
-``` {.ruby}
-Feature.enable(:object_pools)
-```
-
-Or just for forks of a specific project:
-
-``` {.ruby}
-fork_parent = Project.find(MY_PROJECT_ID)
-Feature.enable(:object_pools, fork_parent)
-```
-
-To check if a project uses Git object deduplication, look in a Rails
-console if `project.pool_repository` is present.
-
 ## Pool repositories
 
 ### Understanding Git alternates
