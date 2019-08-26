@@ -14,10 +14,10 @@ module Banzai
           # such as on `mailto:` links. Since we've been using it, do an
           # initial parse for validity and then use Addressable
           # for IDN support, etc
-          uri = uri_strict(node['href'].to_s)
+          uri = uri_strict(node_src(node))
           if uri
-            node.set_attribute('href', uri.to_s)
-            addressable_uri = addressable_uri(node['href'])
+            node.set_attribute(node_src_attribute(node), uri.to_s)
+            addressable_uri = addressable_uri(node_src(node))
           else
             addressable_uri = nil
           end
@@ -34,6 +34,16 @@ module Banzai
       end
 
       private
+
+      # if this is a link to a proxied image, then `src` is already the correct
+      # proxied url, so work with the `data-canonical-src`
+      def node_src_attribute(node)
+        node['data-canonical-src'] ? 'data-canonical-src' : 'href'
+      end
+
+      def node_src(node)
+        node[node_src_attribute(node)]
+      end
 
       def uri_strict(href)
         URI.parse(href)
@@ -72,7 +82,7 @@ module Banzai
         return unless uri
         return unless context[:emailable_links]
 
-        unencoded_uri_str = Addressable::URI.unencode(node['href'])
+        unencoded_uri_str = Addressable::URI.unencode(node_src(node))
 
         if unencoded_uri_str == node.content && idn?(uri)
           node.content = uri.normalize

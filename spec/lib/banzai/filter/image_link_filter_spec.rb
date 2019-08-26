@@ -26,4 +26,11 @@ describe Banzai::Filter::ImageLinkFilter do
     doc = filter(%Q(<p>test #{image('/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg')} inline</p>))
     expect(doc.to_html).to match %r{^<p>test <a[^>]*><img[^>]*></a> inline</p>$}
   end
+
+  it 'keep the data-canonical-src' do
+    doc = filter(%q(<img src="http://assets.example.com/6cd/4d7" data-canonical-src="http://example.com/test.png" />))
+
+    expect(doc.at_css('img')['src']).to eq doc.at_css('a')['href']
+    expect(doc.at_css('img')['data-canonical-src']).to eq doc.at_css('a')['data-canonical-src']
+  end
 end
