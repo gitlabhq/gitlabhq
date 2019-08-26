@@ -923,6 +923,29 @@ backup beforehand.
    UPDATE ci_runners SET token = null, token_encrypted = null;
    ```
 
+#### Reset pending pipeline jobs
+
+1. Enter the DB console:
+
+   For Omnibus GitLab packages:
+
+   ```sh
+   sudo gitlab-rails dbconsole
+   ```
+
+   For installations from source:
+
+   ```sh
+   sudo -u git -H bundle exec rails dbconsole RAILS_ENV=production
+   ```
+
+1. Clear all the tokens for pending jobs:
+
+   ```sql
+   -- Clear build tokens
+   UPDATE ci_builds SET token = null, token_encrypted = null;
+   ```
+
 A similar strategy can be employed for the remaining features - by removing the
 data that cannot be decrypted, GitLab can be brought back into working order,
 and the lost data can be manually replaced.
