@@ -161,6 +161,8 @@ class User < ApplicationRecord
   #
   # Note: devise :validatable above adds validations for :email and :password
   validates :name, presence: true, length: { maximum: 128 }
+  validates :first_name, length: { maximum: 255 }
+  validates :last_name, length: { maximum: 255 }
   validates :email, confirmation: true
   validates :notification_email, presence: true
   validates :notification_email, devise_email: true, if: ->(user) { user.notification_email != user.email }
@@ -881,7 +883,15 @@ class User < ApplicationRecord
   end
 
   def first_name
-    name.split.first unless name.blank?
+    read_attribute(:first_name) || begin
+      name.split(' ').first unless name.blank?
+    end
+  end
+
+  def last_name
+    read_attribute(:last_name) || begin
+      name.split(' ').drop(1).join(' ') unless name.blank?
+    end
   end
 
   def projects_limit_left

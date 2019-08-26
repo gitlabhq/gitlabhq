@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_15_093949) do
+ActiveRecord::Schema.define(version: 2019_08_20_163320) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -3511,6 +3511,8 @@ ActiveRecord::Schema.define(version: 2019_08_15_093949) do
     t.text "note"
     t.integer "roadmap_layout", limit: 2
     t.integer "bot_type", limit: 2
+    t.string "first_name", limit: 255
+    t.string "last_name", limit: 255
     t.index ["accepted_term_id"], name: "index_users_on_accepted_term_id"
     t.index ["admin"], name: "index_users_on_admin"
     t.index ["bot_type"], name: "index_users_on_bot_type"
