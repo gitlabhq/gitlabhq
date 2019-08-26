@@ -30,17 +30,20 @@ describe Gitlab::Graphql::MarkdownField do
       let(:note) { build(:note, note: '# Markdown!') }
       let(:thing_with_markdown) { double('markdown thing', object: note) }
       let(:expected_markdown) { '<h1 data-sourcepos="1:1-1:11" dir="auto">Markdown!</h1>' }
+      let(:query_type) { GraphQL::ObjectType.new }
+      let(:schema) { GraphQL::Schema.define(query: query_type, mutation: nil)}
+      let(:context) { GraphQL::Query::Context.new(query: OpenStruct.new(schema: schema), values: nil, object: nil) }
 
       it 'renders markdown from the same property as the field name without the `_html` suffix' do
         field = class_with_markdown_field(:note_html, null: false).fields['noteHtml']
 
-        expect(field.to_graphql.resolve(thing_with_markdown, {}, {})).to eq(expected_markdown)
+        expect(field.to_graphql.resolve(thing_with_markdown, {}, context)).to eq(expected_markdown)
       end
 
       it 'renders markdown from a specific property when a `method` argument is passed' do
         field = class_with_markdown_field(:test_html, null: false, method: :note).fields['testHtml']
 
-        expect(field.to_graphql.resolve(thing_with_markdown, {}, {})).to eq(expected_markdown)
+        expect(field.to_graphql.resolve(thing_with_markdown, {}, context)).to eq(expected_markdown)
       end
     end
   end
