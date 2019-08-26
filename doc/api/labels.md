@@ -188,7 +188,7 @@ Example response:
 
 ## Promote a project label to a group label
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/25218) in GitLab 11.9.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/25218) in GitLab 12.3.
 
 Promotes a project label to a group label.
 

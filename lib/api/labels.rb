@@ -64,7 +64,7 @@ module API
       end
 
       desc 'Promote a label to a group label' do
-        detail 'This feature was added in GitLab 11.9'
+        detail 'This feature was added in GitLab 12.3'
         success Entities::GroupLabel
       end
       params do
