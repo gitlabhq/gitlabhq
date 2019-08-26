@@ -30,7 +30,7 @@ module Gitlab
       # Avoid using `format` since it can throw TypeErrors
       # which we want to avoid on unsanitised env var input
       tracing_url_template.to_s
-        .gsub(/\{\{\s*correlation_id\s*\}\}/, Gitlab::CorrelationId.current_id.to_s)
+        .gsub(/\{\{\s*correlation_id\s*\}\}/, Labkit::Correlation::CorrelationId.current_id.to_s)
         .gsub(/\{\{\s*service\s*\}\}/, Gitlab.process_name)
     end
   end

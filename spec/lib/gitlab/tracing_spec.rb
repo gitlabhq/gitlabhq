@@ -59,7 +59,7 @@ describe Gitlab::Tracing do
       it 'returns the correct state for .tracing_url' do
         expect(described_class).to receive(:tracing_url_enabled?).and_return(tracing_url_enabled?)
         allow(described_class).to receive(:tracing_url_template).and_return(tracing_url_template)
-        allow(Gitlab::CorrelationId).to receive(:current_id).and_return(correlation_id)
+        allow(Labkit::Correlation::CorrelationId).to receive(:current_id).and_return(correlation_id)
         allow(Gitlab).to receive(:process_name).and_return(process_name)
 
         expect(described_class.tracing_url).to eq(tracing_url)
