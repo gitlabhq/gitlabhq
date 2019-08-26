@@ -76,11 +76,11 @@ class ApplicationSetting < ApplicationRecord
 
   validates :recaptcha_site_key,
             presence: true,
-            if: :recaptcha_enabled
+            if: :recaptcha_or_login_protection_enabled
 
   validates :recaptcha_private_key,
             presence: true,
-            if: :recaptcha_enabled
+            if: :recaptcha_or_login_protection_enabled
 
   validates :sentry_dsn,
             presence: true,
@@ -299,5 +299,9 @@ class ApplicationSetting < ApplicationRecord
   rescue ActiveRecord::RecordNotUnique
     # We already have an ApplicationSetting record, so just return it.
     current_without_cache
+  end
+
+  def recaptcha_or_login_protection_enabled
+    recaptcha_enabled || login_recaptcha_protection_enabled
   end
 end
