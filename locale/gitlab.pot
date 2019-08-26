@@ -2977,6 +2977,9 @@ msgstr ""
 msgid "Commands applied"
 msgstr ""
 
+msgid "Commands did not apply"
+msgstr ""
+
 msgid "Comment"
 msgstr ""
 

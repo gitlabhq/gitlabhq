@@ -14,6 +14,7 @@ import NoteBody from './note_body.vue';
 import eventHub from '../event_hub';
 import noteable from '../mixins/noteable';
 import resolvable from '../mixins/resolvable';
+import httpStatusCodes from '~/lib/utils/http_status';
 
 export default {
   name: 'NoteableNote',
@@ -122,7 +123,13 @@ export default {
   },
 
   methods: {
-    ...mapActions(['deleteNote', 'updateNote', 'toggleResolveNote', 'scrollToNoteIfNeeded']),
+    ...mapActions([
+      'deleteNote',
+      'removeNote',
+      'updateNote',
+      'toggleResolveNote',
+      'scrollToNoteIfNeeded',
+    ]),
     editHandler() {
       this.isEditing = true;
       this.$emit('handleEdit');
@@ -185,15 +192,21 @@ export default {
           this.updateSuccess();
           callback();
         })
-        .catch(() => {
-          this.isRequesting = false;
-          this.isEditing = true;
-          this.$nextTick(() => {
-            const msg = __('Something went wrong while editing your comment. Please try again.');
-            Flash(msg, 'alert', this.$el);
-            this.recoverNoteContent(noteText);
+        .catch(response => {
+          if (response.status === httpStatusCodes.GONE) {
+            this.removeNote(this.note);
+            this.updateSuccess();
             callback();
-          });
+          } else {
+            this.isRequesting = false;
+            this.isEditing = true;
+            this.$nextTick(() => {
+              const msg = __('Something went wrong while editing your comment. Please try again.');
+              Flash(msg, 'alert', this.$el);
+              this.recoverNoteContent(noteText);
+              callback();
+            });
+          }
         });
     },
     formCancelHandler(shouldConfirm, isDirty) {
