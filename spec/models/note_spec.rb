@@ -22,6 +22,7 @@ describe Note do
   end
 
   describe 'validation' do
+    it { is_expected.to validate_length_of(:note).is_at_most(1_000_000) }
     it { is_expected.to validate_presence_of(:note) }
     it { is_expected.to validate_presence_of(:project) }
 
