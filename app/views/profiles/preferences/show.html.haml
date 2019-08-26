@@ -47,7 +47,7 @@
         = s_('Preferences|Layout width')
       = f.select :layout, layout_choices, {}, class: 'select2'
       .form-text.text-muted
-        = s_('Preferences|Choose between fixed (max. 1280px) and fluid (100%%) application layout.')
+        = s_('Preferences|Choose between fixed (max. 1280px) and fluid (%{percentage}) application layout.').html_safe % { percentage: '100%' }
     .form-group
       = f.label :dashboard, class: 'label-bold' do
         = s_('Preferences|Default dashboard')
