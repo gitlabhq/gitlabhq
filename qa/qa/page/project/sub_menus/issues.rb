@@ -10,6 +10,7 @@ module QA
           def self.included(base)
             base.class_eval do
               view 'app/views/layouts/nav/sidebar/_project.html.haml' do
+                element :issue_boards_link
                 element :issues_item
                 element :labels_link
                 element :milestones_link
@@ -26,6 +27,14 @@ module QA
           def click_milestones
             within_sidebar do
               click_element :milestones_link
+            end
+          end
+
+          def go_to_boards
+            hover_issues do
+              within_submenu do
+                click_element(:issue_boards_link)
+              end
             end
           end
 
