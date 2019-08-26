@@ -1,0 +1,5 @@
+---
+title: Guard against deleted project feature entry in project permissions
+merge_request: 32187
+author:
+type: fixed
