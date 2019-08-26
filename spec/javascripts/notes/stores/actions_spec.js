@@ -336,7 +336,7 @@ describe('Actions Notes Store', () => {
     });
   });
 
-  describe('deleteNote', () => {
+  describe('removeNote', () => {
     const endpoint = `${TEST_HOST}/note`;
     let axiosMock;
 
@@ -357,7 +357,7 @@ describe('Actions Notes Store', () => {
       const note = { path: endpoint, id: 1 };
 
       testAction(
-        actions.deleteNote,
+        actions.removeNote,
         note,
         store.state,
         [
@@ -384,7 +384,7 @@ describe('Actions Notes Store', () => {
       $('body').attr('data-page', 'projects:merge_requests:show');
 
       testAction(
-        actions.deleteNote,
+        actions.removeNote,
         note,
         store.state,
         [
@@ -402,6 +402,45 @@ describe('Actions Notes Store', () => {
           },
           {
             type: 'diffs/removeDiscussionsFromDiff',
+          },
+        ],
+        done,
+      );
+    });
+  });
+
+  describe('deleteNote', () => {
+    const endpoint = `${TEST_HOST}/note`;
+    let axiosMock;
+
+    beforeEach(() => {
+      axiosMock = new AxiosMockAdapter(axios);
+      axiosMock.onDelete(endpoint).replyOnce(200, {});
+
+      $('body').attr('data-page', '');
+    });
+
+    afterEach(() => {
+      axiosMock.restore();
+
+      $('body').attr('data-page', '');
+    });
+
+    it('dispatches removeNote', done => {
+      const note = { path: endpoint, id: 1 };
+
+      testAction(
+        actions.deleteNote,
+        note,
+        {},
+        [],
+        [
+          {
+            type: 'removeNote',
+            payload: {
+              id: 1,
+              path: 'http://test.host/note',
+            },
           },
         ],
         done,

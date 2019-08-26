@@ -61,18 +61,22 @@ export const updateDiscussion = ({ commit, state }, discussion) => {
   return utils.findNoteObjectById(state.discussions, discussion.id);
 };
 
-export const deleteNote = ({ commit, dispatch, state }, note) =>
+export const removeNote = ({ commit, dispatch, state }, note) => {
+  const discussion = state.discussions.find(({ id }) => id === note.discussion_id);
+
+  commit(types.DELETE_NOTE, note);
+
+  dispatch('updateMergeRequestWidget');
+  dispatch('updateResolvableDiscussionsCounts');
+
+  if (isInMRPage()) {
+    dispatch('diffs/removeDiscussionsFromDiff', discussion);
+  }
+};
+
+export const deleteNote = ({ dispatch }, note) =>
   axios.delete(note.path).then(() => {
-    const discussion = state.discussions.find(({ id }) => id === note.discussion_id);
-
-    commit(types.DELETE_NOTE, note);
-
-    dispatch('updateMergeRequestWidget');
-    dispatch('updateResolvableDiscussionsCounts');
-
-    if (isInMRPage()) {
-      dispatch('diffs/removeDiscussionsFromDiff', discussion);
-    }
+    dispatch('removeNote', note);
   });
 
 export const updateNote = ({ commit, dispatch }, { endpoint, note }) =>

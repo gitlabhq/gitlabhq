@@ -89,5 +89,54 @@ shared_examples 'move quick action' do
         it_behaves_like 'applies the commands to issues in both projects, target and source'
       end
     end
+
+    context 'when editing comments' do
+      let(:target_project) { create(:project, :public) }
+
+      before do
+        target_project.add_maintainer(user)
+
+        sign_in(user)
+        visit project_issue_path(project, issue)
+        wait_for_all_requests
+      end
+
+      it 'moves the issue after quickcommand note was updated' do
+        # misspelled quick action
+        add_note("test note.\n/mvoe #{target_project.full_path}")
+
+        expect(issue.reload).not_to be_closed
+
+        edit_note("/mvoe #{target_project.full_path}", "test note.\n/move #{target_project.full_path}")
+        wait_for_all_requests
+
+        expect(page).to have_content 'test note.'
+        expect(issue.reload).to be_closed
+
+        visit project_issue_path(target_project, issue)
+        wait_for_all_requests
+
+        expect(page).to have_content 'Issues 1'
+      end
+
+      it 'deletes the note if it was updated to just contain a command' do
+        # missspelled quick action
+        add_note("test note.\n/mvoe #{target_project.full_path}")
+
+        expect(page).not_to have_content 'Commands applied'
+        expect(issue.reload).not_to be_closed
+
+        edit_note("/mvoe #{target_project.full_path}", "/move #{target_project.full_path}")
+        wait_for_all_requests
+
+        expect(page).not_to have_content "/move #{target_project.full_path}"
+        expect(issue.reload).to be_closed
+
+        visit project_issue_path(target_project, issue)
+        wait_for_all_requests
+
+        expect(page).to have_content 'Issues 1'
+      end
+    end
   end
 end

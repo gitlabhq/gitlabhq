@@ -8,24 +8,70 @@ module Notes
       old_mentioned_users = note.mentioned_users.to_a
 
       note.update(params.merge(updated_by: current_user))
-      note.create_new_cross_references!(current_user)
 
-      if note.previous_changes.include?('note')
-        TodoService.new.update_note(note, current_user, old_mentioned_users)
+      only_commands = false
+
+      quick_actions_service = QuickActionsService.new(project, current_user)
+      if quick_actions_service.supported?(note)
+        content, update_params, message = quick_actions_service.execute(note, {})
+
+        only_commands = content.empty?
+
+        note.note = content
       end
 
-      if note.supports_suggestion?
-        Suggestion.transaction do
-          note.suggestions.delete_all
-          Suggestions::CreateService.new(note).execute
+      unless only_commands
+        note.create_new_cross_references!(current_user)
+
+        update_todos(note, old_mentioned_users)
+
+        update_suggestions(note)
+      end
+
+      if quick_actions_service.commands_executed_count.to_i > 0
+        if update_params.present?
+          quick_actions_service.apply_updates(update_params, note)
+          note.commands_changes = update_params
         end
 
-        # We need to refresh the previous suggestions call cache
-        # in order to get the new records.
-        note.reset
+        if only_commands
+          delete_note(note, message)
+          note = nil
+        else
+          note.save
+        end
       end
 
       note
+    end
+
+    private
+
+    def delete_note(note, message)
+      # We must add the error after we call #save because errors are reset
+      # when #save is called
+      note.errors.add(:commands_only, message.presence || _('Commands did not apply'))
+
+      Notes::DestroyService.new(project, current_user).execute(note)
+    end
+
+    def update_suggestions(note)
+      return unless note.supports_suggestion?
+
+      Suggestion.transaction do
+        note.suggestions.delete_all
+        Suggestions::CreateService.new(note).execute
+      end
+
+      # We need to refresh the previous suggestions call cache
+      # in order to get the new records.
+      note.reset
+    end
+
+    def update_todos(note, old_mentioned_users)
+      return unless note.previous_changes.include?('note')
+
+      TodoService.new.update_note(note, current_user, old_mentioned_users)
     end
   end
 end

@@ -19,6 +19,7 @@ const httpStatusCodes = {
   UNAUTHORIZED: 401,
   FORBIDDEN: 403,
   NOT_FOUND: 404,
+  GONE: 410,
   UNPROCESSABLE_ENTITY: 422,
 };
 

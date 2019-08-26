@@ -73,6 +73,11 @@ module NotesActions
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def update
     @note = Notes::UpdateService.new(project, current_user, update_note_params).execute(note)
+    unless @note
+      head :gone
+      return
+    end
+
     prepare_notes_for_rendering([@note])
 
     respond_to do |format|

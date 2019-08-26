@@ -6,7 +6,7 @@ class Projects::NotesController < Projects::ApplicationController
   include NotesHelper
   include ToggleAwardEmoji
 
-  before_action :whitelist_query_limiting, only: [:create]
+  before_action :whitelist_query_limiting, only: [:create, :update]
   before_action :authorize_read_note!
   before_action :authorize_create_note!, only: [:create]
   before_action :authorize_resolve_note!, only: [:resolve, :unresolve]
