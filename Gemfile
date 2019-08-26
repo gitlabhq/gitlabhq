@@ -438,6 +438,7 @@ gem 'toml-rb', '~> 1.0.0', require: false
 gem 'flipper', '~> 0.13.0'
 gem 'flipper-active_record', '~> 0.13.0'
 gem 'flipper-active_support_cache_store', '~> 0.13.0'
+gem 'unleash', '~> 0.1.5'
 
 # Structured logging
 gem 'lograge', '~> 0.5'
