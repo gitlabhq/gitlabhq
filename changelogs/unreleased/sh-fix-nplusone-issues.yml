@@ -1,0 +1,5 @@
+---
+title: Fix N+1 Gitaly calls in /api/v4/projects/:id/issues
+merge_request: 32171
+author:
+type: performance
