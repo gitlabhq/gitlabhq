@@ -5,6 +5,7 @@ type: index
 
 # Security
 
+- [Password storage](password_storage.md)
 - [Password length limits](password_length_limits.md)
 - [Restrict SSH key technologies and minimum length](ssh_keys_restrictions.md)
 - [Rate limits](rate_limits.md)
