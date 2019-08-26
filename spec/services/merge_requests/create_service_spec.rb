@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe MergeRequests::CreateService do
+describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state do
   include ProjectForksHelper
 
   let(:project) { create(:project, :repository) }
@@ -284,6 +284,12 @@ describe MergeRequests::CreateService do
             expect(merge_request.pipelines_for_merge_request.count).to eq(0)
           end
         end
+      end
+
+      it 'increments the usage data counter of create event' do
+        counter = Gitlab::UsageDataCounters::MergeRequestCounter
+
+        expect { service.execute }.to change { counter.read(:create) }.by(1)
       end
     end
 

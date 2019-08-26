@@ -27,6 +27,7 @@ module MergeRequests
       issuable.cache_merge_request_closes_issues!(current_user)
       create_pipeline_for(issuable, current_user)
       issuable.update_head_pipeline
+      Gitlab::UsageDataCounters::MergeRequestCounter.count(:create)
 
       super
     end
