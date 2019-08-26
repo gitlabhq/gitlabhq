@@ -1,0 +1,5 @@
+---
+title: Fix 500 error in CI lint when included templates are an array
+merge_request: 32232
+author:
+type: fixed

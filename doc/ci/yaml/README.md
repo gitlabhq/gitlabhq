@@ -2170,6 +2170,14 @@ include:
   - template: Auto-DevOps.gitlab-ci.yml
 ```
 
+Multiple `include:template` files:
+
+```yaml
+include:
+  - template: Android-Fastlane.gitlab-ci.yml
+  - template: Auto-DevOps.gitlab-ci.yml
+```
+
 All [nested includes](#nested-includes) will be executed only with the permission of the user,
 so it is possible to use project, remote or template includes.
 
