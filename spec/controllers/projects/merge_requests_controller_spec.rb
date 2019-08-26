@@ -721,19 +721,63 @@ describe Projects::MergeRequestsController do
   end
 
   describe 'GET test_reports' do
+    let(:merge_request) do
+      create(:merge_request,
+        :with_diffs,
+        :with_merge_request_pipeline,
+        target_project: project,
+        source_project: project
+      )
+    end
+
     subject do
-      get :test_reports,
-          params: {
-            namespace_id: project.namespace.to_param,
-            project_id: project,
-            id: merge_request.iid
-          },
-          format: :json
+      get :test_reports, params: {
+        namespace_id: project.namespace.to_param,
+        project_id: project,
+        id: merge_request.iid
+      },
+      format: :json
     end
 
     before do
       allow_any_instance_of(MergeRequest)
-        .to receive(:compare_test_reports).and_return(comparison_status)
+        .to receive(:compare_test_reports)
+        .and_return(comparison_status)
+
+      allow_any_instance_of(MergeRequest)
+        .to receive(:actual_head_pipeline)
+        .and_return(merge_request.all_pipelines.take)
+    end
+
+    describe 'permissions on a public project with private CI/CD' do
+      let(:project) { create :project, :repository, :public, :builds_private }
+      let(:comparison_status) { { status: :parsed, data: { summary: 1 } } }
+
+      context 'while signed out' do
+        before do
+          sign_out(user)
+        end
+
+        it 'responds with a 404' do
+          subject
+
+          expect(response).to have_gitlab_http_status(404)
+          expect(response.body).to be_blank
+        end
+      end
+
+      context 'while signed in as an unrelated user' do
+        before do
+          sign_in(create(:user))
+        end
+
+        it 'responds with a 404' do
+          subject
+
+          expect(response).to have_gitlab_http_status(404)
+          expect(response.body).to be_blank
+        end
+      end
     end
 
     context 'when comparison is being processed' do
