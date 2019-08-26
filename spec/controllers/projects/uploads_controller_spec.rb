@@ -10,6 +10,11 @@ describe Projects::UploadsController do
     { namespace_id: model.namespace.to_param, project_id: model }
   end
 
+  let(:other_model) { create(:project, :public) }
+  let(:other_params) do
+    { namespace_id: other_model.namespace.to_param, project_id: other_model }
+  end
+
   it_behaves_like 'handle uploads'
 
   context 'when the URL the old style, without /-/system' do

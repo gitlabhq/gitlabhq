@@ -35,7 +35,7 @@ module RecordsUploads
     end
 
     def readd_upload
-      uploads.where(path: upload_path).delete_all
+      uploads.where(model: model, path: upload_path).delete_all
       upload.delete if upload
 
       self.upload = build_upload.tap(&:save!)

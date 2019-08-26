@@ -85,6 +85,27 @@ describe RecordsUploads do
       expect { existing.reload }.to raise_error(ActiveRecord::RecordNotFound)
       expect(Upload.count).to eq(1)
     end
+
+    it 'does not affect other uploads with different model but the same path' do
+      project = create(:project)
+      other_project = create(:project)
+
+      uploader = RecordsUploadsExampleUploader.new(other_project)
+
+      upload_for_project = Upload.create!(
+        path: File.join('uploads', 'rails_sample.jpg'),
+        size: 512.kilobytes,
+        model: project,
+        uploader: uploader.class.to_s
+      )
+
+      uploader.store!(upload_fixture('rails_sample.jpg'))
+
+      upload_for_project_fresh = Upload.find(upload_for_project.id)
+
+      expect(upload_for_project).to eq(upload_for_project_fresh)
+      expect(Upload.count).to eq(2)
+    end
   end
 
   describe '#destroy_upload callback' do
