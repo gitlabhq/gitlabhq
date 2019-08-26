@@ -5,6 +5,8 @@ shared_examples 'handle uploads' do
   let(:secret) { FileUploader.generate_secret }
   let(:uploader_class) { FileUploader }
 
+  it_behaves_like 'handle uploads authorize'
+
   describe "POST #create" do
     context 'when a user is not authorized to upload a file' do
       it 'returns 404 status' do
@@ -269,7 +271,9 @@ shared_examples 'handle uploads' do
       end
     end
   end
+end
 
+shared_examples 'handle uploads authorize' do
   describe "POST #authorize" do
     context 'when a user is not authorized to upload a file' do
       it 'returns 404 status' do
@@ -282,7 +286,12 @@ shared_examples 'handle uploads' do
     context 'when a user can upload a file' do
       before do
         sign_in(user)
-        model.add_developer(user)
+
+        if model.is_a?(PersonalSnippet)
+          model.update!(author: user)
+        else
+          model.add_developer(user)
+        end
       end
 
       context 'and the request bypassed workhorse' do
