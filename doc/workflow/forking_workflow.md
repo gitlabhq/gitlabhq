@@ -10,8 +10,7 @@ document more information about using branches to work together.
 
 Forking a project is in most cases a two-step process.
 
-1. Click on the fork button located in the middle of the page or a project's
-   home page right next to the stars button.
+1. Click on the fork button located located in between the star and clone buttons on the project's home page.
 
    ![Fork button](img/forking_workflow_fork_button.png)
 
@@ -25,7 +24,7 @@ Forking a project is in most cases a two-step process.
    **Note:**
    If the namespace you chose to fork the project to has another project with
    the same path name, you will be presented with a warning that the forking
-   could not be completed. Try to resolve the error and repeat the forking
+   could not be completed. Try to resolve the error before repeating the forking
    process.
 
    ![Path taken error](img/forking_workflow_path_taken_error.png)
@@ -44,7 +43,7 @@ create the [merge request](merge_requests.md).
 ![Selecting branches](forking/branch_select.png)
 
 You can then assign the merge request to someone to have them review
-your changes. Upon pressing the 'Accept Merge Request' button, your
+your changes. Upon pressing the 'Submit Merge Request' button, your
 changes will be added to the repository and branch you're merging into.
 
 ![New merge request](forking/merge_request.png)
