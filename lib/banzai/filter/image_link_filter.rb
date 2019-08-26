@@ -18,6 +18,9 @@ module Banzai
             rel: 'noopener noreferrer'
           )
 
+          # make sure the original non-proxied src carries over to the link
+          link['data-canonical-src'] = img['data-canonical-src'] if img['data-canonical-src']
+
           link.children = img.clone
 
           img.replace(link)
