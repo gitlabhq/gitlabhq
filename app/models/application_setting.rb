@@ -75,11 +75,11 @@ class ApplicationSetting < ApplicationRecord
 
   validates :recaptcha_site_key,
             presence: true,
-            if: :recaptcha_enabled
+            if: :recaptcha_or_login_protection_enabled
 
   validates :recaptcha_private_key,
             presence: true,
-            if: :recaptcha_enabled
+            if: :recaptcha_or_login_protection_enabled
 
   validates :akismet_api_key,
             presence: true,
@@ -291,5 +291,9 @@ class ApplicationSetting < ApplicationRecord
   # memory.
   def self.cache_backend
     Gitlab::ThreadMemoryCache.cache_backend
+  end
+
+  def recaptcha_or_login_protection_enabled
+    recaptcha_enabled || login_recaptcha_protection_enabled
   end
 end
