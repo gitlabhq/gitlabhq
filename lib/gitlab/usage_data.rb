@@ -142,7 +142,8 @@ module Gitlab
          Gitlab::UsageDataCounters::SnippetCounter,
          Gitlab::UsageDataCounters::SearchCounter,
          Gitlab::UsageDataCounters::CycleAnalyticsCounter,
-         Gitlab::UsageDataCounters::SourceCodeCounter
+         Gitlab::UsageDataCounters::SourceCodeCounter,
+         Gitlab::UsageDataCounters::MergeRequestCounter
         ]
       end
 

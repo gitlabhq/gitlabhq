@@ -69,6 +69,7 @@ describe Gitlab::UsageData do
         snippet_update: a_kind_of(Integer),
         snippet_comment: a_kind_of(Integer),
         merge_request_comment: a_kind_of(Integer),
+        merge_request_create: a_kind_of(Integer),
         commit_comment: a_kind_of(Integer),
         wiki_pages_create: a_kind_of(Integer),
         wiki_pages_update: a_kind_of(Integer),
