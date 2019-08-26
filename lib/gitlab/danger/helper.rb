@@ -126,6 +126,7 @@ module Gitlab
         %r{\A(ee/)?vendor/(languages\.yml|licenses\.csv)\z} => :backend,
         %r{\A(Dangerfile|Gemfile|Gemfile.lock|Procfile|Rakefile|\.gitlab-ci\.yml)\z} => :backend,
         %r{\A[A-Z_]+_VERSION\z} => :backend,
+        %r{\A\.rubocop(_todo)?\.yml\z} => :backend,
 
         %r{\A(ee/)?qa/} => :qa,
 
