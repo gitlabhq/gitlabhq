@@ -1,12 +1,12 @@
 import Vue from 'vue';
-import GkeMachineTypeDropdown from '~/projects/gke_cluster_dropdowns/components/gke_machine_type_dropdown.vue';
-import { createStore } from '~/projects/gke_cluster_dropdowns/store';
+import GkeMachineTypeDropdown from '~/create_cluster/gke_cluster/components/gke_machine_type_dropdown.vue';
+import { createStore } from '~/create_cluster/gke_cluster/store';
 import {
   SET_PROJECT,
   SET_PROJECT_BILLING_STATUS,
   SET_ZONE,
   SET_MACHINE_TYPES,
-} from '~/projects/gke_cluster_dropdowns/store/mutation_types';
+} from '~/create_cluster/gke_cluster/store/mutation_types';
 import { mountComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import {
   selectedZoneMock,
