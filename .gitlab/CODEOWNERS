@@ -9,12 +9,13 @@
 app/assets/ @ClemMakesApps @fatihacet @filipa @mikegreiling @timzallmann @kushalpandya @pslaughter
 *.scss @annabeldunstone @ClemMakesApps @fatihacet @filipa @mikegreiling @timzallmann @kushalpandya @pslaughter
 
-# Maintainers from the Database team should review changes in `db/`
-db/ @gl-database
-lib/gitlab/background_migration/ @gl-database
-lib/gitlab/database/ @gl-database
-lib/gitlab/sql/ @gl-database
-/ee/db/ @gl-database
+# Database maintainers should review changes in `db/`
+db/ @gitlab-org/maintainers/database
+lib/gitlab/background_migration/ @gitlab-org/maintainers/database
+lib/gitlab/database/ @gitlab-org/maintainers/database
+lib/gitlab/sql/ @gitlab-org/maintainers/database
+lib/gitlab/github_import/ @gitlab-org/maintainers/database
+/ee/db/ @gitlab-org/maintainers/database
 
 # Feature specific owners
 /ee/lib/gitlab/code_owners/ @reprazent
