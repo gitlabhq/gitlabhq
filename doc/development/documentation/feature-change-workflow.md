@@ -92,7 +92,7 @@ do the following:
 
 #### Authoring
 
-As a developer, you must ship the documentation with the code of the feature that
+As a developer, you should ship the documentation with the code of the feature that
 you are creating or updating. The documentation is an essential part of the product.
 Technical writers are happy to help, as requested and planned on an issue-by-issue basis.
 
@@ -111,8 +111,8 @@ Follow the process below unless otherwise agreed with the product manager and te
   idea or outline, or request any other help, ping the Technical Writer for the relevant
   [DevOps stage](https://about.gitlab.com/handbook/product/categories/#devops-stages)
   in your issue or MR, or write within `#docs` on the GitLab Slack.
-- The docs must be merged with the code **by the feature freeze date**, otherwise
-  the feature cannot be included with the release. A policy for documenting feature-flagged
+- The docs should be merged with the code **by the feature freeze date**, otherwise
+  the feature should not be included with the release. The PM can decide if a feature can ship without documentation.  A policy for documenting feature-flagged
   issues is forthcoming and you are welcome to join the [discussion](https://gitlab.com/gitlab-org/gitlab-ce/issues/56813).
 
 #### Reviews and merging
