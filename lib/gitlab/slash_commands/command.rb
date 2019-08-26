@@ -21,7 +21,7 @@ module Gitlab
           if command.allowed?(project, current_user)
             command.new(project, chat_name, params).execute(match)
           else
-            Gitlab::SlashCommands::Presenters::Access.new.access_denied
+            Gitlab::SlashCommands::Presenters::Access.new.access_denied(project)
           end
         else
           Gitlab::SlashCommands::Help.new(project, chat_name, params)
