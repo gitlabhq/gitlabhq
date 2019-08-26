@@ -41,7 +41,6 @@ module RuboCop
         end
 
         def on_send(node)
-          return unless in_controller_spec?(node)
           return unless be_success_usage?(node)
 
           add_offense(node, location: :expression, message: MESSAGE)

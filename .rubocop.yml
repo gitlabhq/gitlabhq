@@ -265,3 +265,11 @@ RSpec/EnvAssignment:
     - 'ee/spec/**/rails_helper.rb'
     - 'spec/**/spec_helper.rb'
     - 'ee/spec/**/spec_helper.rb'
+RSpec/BeSuccessMatcher:
+  Enabled: true
+  Include:
+    - 'spec/controllers/**/*'
+    - 'ee/spec/controllers/**/*'
+    - 'spec/support/shared_examples/controllers/**/*'
+    - 'ee/spec/support/shared_examples/controllers/**/*'
+    - 'spec/support/controllers/**/*'
