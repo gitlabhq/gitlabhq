@@ -852,10 +852,10 @@ Get the users list of a project.
 GET /projects/:id/users
 ```
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `search` | string | no | Search for specific users |
-| `skip_users` | array[int] | no | Filter out users with the specified IDs |
+| Attribute    | Type          | Required | Description |
+| ------------ | ------------- | -------- | ----------- |
+| `search`     | string        | no       | Search for specific users |
+| `skip_users` | integer array | no       | Filter out users with the specified IDs |
 
 ```json
 [
