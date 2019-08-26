@@ -3045,6 +3045,47 @@ describe User do
     end
   end
 
+  describe '#will_save_change_to_login?' do
+    let(:user) { create(:user, username: 'old-username', email: 'old-email@example.org') }
+    let(:new_username) { 'new-name' }
+    let(:new_email) { 'new-email@example.org' }
+
+    subject { user.will_save_change_to_login? }
+
+    context 'when the username is changed' do
+      before do
+        user.username = new_username
+      end
+
+      it { is_expected.to be true }
+    end
+
+    context 'when the email is changed' do
+      before do
+        user.email = new_email
+      end
+
+      it { is_expected.to be true }
+    end
+
+    context 'when both email and username are changed' do
+      before do
+        user.username = new_username
+        user.email = new_email
+      end
+
+      it { is_expected.to be true }
+    end
+
+    context 'when email and username aren\'t changed' do
+      before do
+        user.name = 'new_name'
+      end
+
+      it { is_expected.to be_falsy }
+    end
+  end
+
   describe '#sync_attribute?' do
     let(:user) { described_class.new }
 
