@@ -94,6 +94,36 @@ If you want to whitelist some specific vulnerabilities, you can do so by definin
 them in a YAML file named `clair-whitelist.yml`. Read more in the
 [Clair documentation](https://github.com/arminc/clair-scanner/blob/master/README.md#example-whitelist-yaml-file).
 
+## Example
+
+The following is a sample `.gitlab-ci.yml` that will build your Docker Image, push it to the container registry and run Container Scanning. 
+
+```yaml
+variables:
+  DOCKER_DRIVER: overlay2
+
+services:
+  - docker:stable-dind
+
+stages:
+  - build
+  - test
+
+include:
+  - template: Container-Scanning.gitlab-ci.yml
+
+build:
+  image: docker:stable
+  stage: build
+  variables:
+    IMAGE: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG:$CI_COMMIT_SHA
+  script:
+    - docker info
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+    - docker build -t $IMAGE .
+    - docker push $IMAGE
+```
+
 ## Security Dashboard
 
 The Security Dashboard is a good place to get an overview of all the security
