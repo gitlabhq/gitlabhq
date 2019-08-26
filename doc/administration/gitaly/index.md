@@ -139,7 +139,7 @@ Git operations in GitLab will result in an API error.
 
 NOTE: **Note:**
 In most or all cases, the storage paths below end in `/repositories` which is
-not that case with `path` in `git_data_dirs` of Omnibus GitLab installations.
+not the case with `path` in `git_data_dirs` of Omnibus GitLab installations.
 Check the directory layout on your Gitaly server to be sure.
 
 **For Omnibus GitLab**
@@ -283,10 +283,6 @@ can read and write to `/mnt/gitlab/storage2`.
    gitlab_rails['gitaly_token'] = 'abc123secret'
    ```
 
-   NOTE: **Note:**
-   In some cases, you'll have to set `path` for each `git_data_dirs` in the
-   format `'path' => '/mnt/gitlab/<storage name>'`.
-
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
 1. Tail the logs to see the requests:
 
@@ -304,18 +300,22 @@ can read and write to `/mnt/gitlab/storage2`.
        storages:
          default:
            gitaly_address: tcp://gitaly1.internal:8075
+           path: /some/dummy/path
          storage1:
            gitaly_address: tcp://gitaly1.internal:8075
+           path: /some/dummy/path
          storage2:
            gitaly_address: tcp://gitaly2.internal:8075
+           path: /some/dummy/path
 
      gitaly:
        token: 'abc123secret'
    ```
 
    NOTE: **Note:**
-   In some cases, you'll have to set `path` for each of the `storages` in the
-   format `path: /mnt/gitlab/<storage name>/repositories`.
+   `/some/dummy/path` should be set to a local folder that exists, however no
+   data will be stored in this folder. This will no longer be necessary after
+   [this issue](https://gitlab.com/gitlab-org/gitaly/issues/1282) is resolved.
 
 1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source).
 1. Tail the logs to see the requests:
@@ -416,18 +416,22 @@ To configure Gitaly with TLS:
        storages:
          default:
            gitaly_address: tls://gitaly1.internal:9999
+           path: /some/dummy/path
          storage1:
            gitaly_address: tls://gitaly1.internal:9999
+           path: /some/dummy/path
          storage2:
            gitaly_address: tls://gitaly2.internal:9999
+           path: /some/dummy/path
 
      gitaly:
        token: 'abc123secret'
    ```
 
    NOTE: **Note:**
-   In some cases, you'll have to set `path` for each of the `storages` in the
-   format `path: /mnt/gitlab/<storage name>/repositories`.
+   `/some/dummy/path` should be set to a local folder that exists, however no
+   data will be stored in this folder. This will no longer be necessary after
+   [this issue](https://gitlab.com/gitlab-org/gitaly/issues/1282) is resolved.
 
 1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source).
 1. On the Gitaly server nodes, edit `/home/git/gitaly/config.toml`:
