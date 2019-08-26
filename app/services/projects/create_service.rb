@@ -5,9 +5,11 @@ module Projects
     include ValidatesClassificationLabel
 
     def initialize(user, params)
-      @current_user, @params = user, params.dup
-      @skip_wiki = @params.delete(:skip_wiki)
+      @current_user, @params  = user, params.dup
+      @skip_wiki              = @params.delete(:skip_wiki)
       @initialize_with_readme = Gitlab::Utils.to_boolean(@params.delete(:initialize_with_readme))
+      @import_data            = @params.delete(:import_data)
+      @relations_block        = @params.delete(:relations_block)
     end
 
     def execute
@@ -15,14 +17,11 @@ module Projects
         return ::Projects::CreateFromTemplateService.new(current_user, params).execute
       end
 
-      import_data = params.delete(:import_data)
-      relations_block = params.delete(:relations_block)
-
       @project = Project.new(params)
 
       # Make sure that the user is allowed to use the specified visibility level
-      unless Gitlab::VisibilityLevel.allowed_for?(current_user, @project.visibility_level)
-        deny_visibility_level(@project)
+      if project_visibility.restricted?
+        deny_visibility_level(@project, project_visibility.visibility_level)
         return @project
       end
 
@@ -44,7 +43,7 @@ module Projects
         @project.namespace_id = current_user.namespace_id
       end
 
-      relations_block&.call(@project)
+      @relations_block&.call(@project)
       yield(@project) if block_given?
 
       validate_classification_label(@project, :external_authorization_classification_label)
@@ -54,7 +53,7 @@ module Projects
 
       @project.creator = current_user
 
-      save_project_and_import_data(import_data)
+      save_project_and_import_data
 
       after_create_actions if @project.persisted?
 
@@ -129,9 +128,9 @@ module Projects
       !@project.feature_available?(:wiki, current_user) || @skip_wiki
     end
 
-    def save_project_and_import_data(import_data)
+    def save_project_and_import_data
       Project.transaction do
-        @project.create_or_update_import_data(data: import_data[:data], credentials: import_data[:credentials]) if import_data
+        @project.create_or_update_import_data(data: @import_data[:data], credentials: @import_data[:credentials]) if @import_data
 
         if @project.save
           unless @project.gitlab_project_import?
@@ -191,6 +190,12 @@ module Projects
       else
         fail(error: @project.errors.full_messages.join(', '))
       end
+    end
+
+    def project_visibility
+      @project_visibility ||= Gitlab::VisibilityLevelChecker
+        .new(current_user, @project, project_params: { import_data: @import_data })
+        .level_restricted?
     end
   end
 end
