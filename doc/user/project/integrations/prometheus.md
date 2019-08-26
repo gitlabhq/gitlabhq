@@ -194,7 +194,7 @@ The following tables outline the details of expected properties.
 
 | Property | Type | Required | Description |
 | ------ | ------ | ------ | ------- |
-| `type` | enum | no, defaults to `area-chart` | Specifies the chart type to use. |
+| `type` | enum | no, defaults to `area-chart` | Specifies the chart type to use, can be `area-chart` or `line-chart` |
 | `title` | string | yes | Heading for the panel. |
 | `y_label` | string | no, but highly encouraged | Y-Axis label for the panel. |
 | `weight` | number | no, defaults to order in file | Order to appear within the grouping. Lower number means higher priority, which will be higher on the page. Numbers do not need to be consecutive. |
