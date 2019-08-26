@@ -102,7 +102,7 @@ files to your local computer, automatically preserving the Git connection with t
 remote repository.
 
 You can either clone it via HTTPS or [SSH](../ssh/README.md). If you chose to clone
-it via HTTPS, you'll have to enter your credentials every time you pull and push. You can read more about credential storage in the [Git Credentials documentation](https://git-scm.com/book/en/v2/Git-Tools-Credential-Storage). With SSH, you enter your credentials only once. 
+it via HTTPS, you'll have to enter your credentials every time you pull and push. You can read more about credential storage in the [Git Credentials documentation](https://git-scm.com/book/en/v2/Git-Tools-Credential-Storage). With SSH, you enter your credentials only once.
 
 You can find both paths (HTTPS and SSH) by navigating to your project's landing page
 and clicking **Clone**. GitLab will prompt you with both paths, from which you can copy
@@ -157,7 +157,7 @@ git pull <REMOTE> <name-of-branch>
 When you clone a repository, `REMOTE` is typically `origin`. This is where the
 repository was cloned from, and it indicates the SSH or HTTPS URL of the repository
 on the remote server. `<name-of-branch>` is usually `master`, but it may be any existing
-branch. You can create additional named remotes and branches as necessary. 
+branch. You can create additional named remotes and branches as necessary.
 
 You can learn more on how Git manages remote repositories in the [Git Remote documentation](https://git-scm.com/book/en/v2/Git-Basics-Working-with-Remotes).
 
@@ -169,7 +169,7 @@ To view your remote repositories, type:
 git remote -v
 ```
 
-The `-v` flag stands for verbose. 
+The `-v` flag stands for verbose.
 
 ### Add a remote repository
 

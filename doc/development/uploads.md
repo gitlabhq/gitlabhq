@@ -174,14 +174,14 @@ sequenceDiagram
     c ->>+w: POST /some/url/upload
 
     w->>+s: save the incoming file on a temporary location
-    s-->>-w: 
+    s-->>-w:  
 
     w->>+r:  POST /some/url/upload
     Note over w,r: file was replaced with its location<br>and other metadata
 
     opt requires async processing
       r->>+redis: schedule a job
-      redis-->>-r: 
+      redis-->>-r:  
     end
 
     r-->>-c: request result
@@ -230,17 +230,17 @@ sequenceDiagram
 
     w->>+os: PUT file
     Note over w,os: file is stored on a temporary location. Rails select the destination
-    os-->>-w: 
+    os-->>-w:  
 
     w->>+r:  POST /some/url/upload
     Note over w,r: file was replaced with its location<br>and other metadata
 
     r->>+os: move object to final destination
-    os-->>-r: 
+    os-->>-r:  
 
     opt requires async processing
       r->>+redis: schedule a job
-      redis-->>-r: 
+      redis-->>-r:  
     end
 
     r-->>-c: request result
@@ -268,4 +268,3 @@ sequenceDiagram
 This option affect the response to the `/authorize` call. When not enabled, the API response will not contain presigned URLs and workhorse will write the file the shared disk, on the path is provided by rails, acting like object storage was disabled.
 
 Once the request reachs rails, it will schedule an object storage upload as a sidekiq job.
-

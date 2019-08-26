@@ -6,7 +6,7 @@ To view rendered emails "sent" in your development instance, visit
 [`/rails/letter_opener`](http://localhost:3000/rails/letter_opener).
 
 Please note that [S/MIME signed](../administration/smime_signing_email.md) emails
-[cannot be currently previewed](https://github.com/fgrehm/letter_opener_web/issues/96) with 
+[cannot be currently previewed](https://github.com/fgrehm/letter_opener_web/issues/96) with
 `letter_opener`.
 
 ## Mailer previews

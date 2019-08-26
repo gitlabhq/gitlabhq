@@ -1,7 +1,7 @@
 # rubocop:disable Style/SignalException
 # frozen_string_literal: true
 
-has_only_docs_changes = helper.all_changed_files.all? { |file| file.start_with?('doc/', '.gitlab/ci/docs.gitlab-ci.yml', '.mdlrc') || file.end_with?('.md') }
+has_only_docs_changes = helper.all_changed_files.all? { |file| file.start_with?('doc/', '.gitlab/ci/docs.gitlab-ci.yml', '.markdownlint.json') || file.end_with?('.md') }
 is_docs_only_branch = gitlab.branch_for_head =~ /(^docs[\/-].*|.*-docs$)/
 
 if is_docs_only_branch && !has_only_docs_changes

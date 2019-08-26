@@ -20,8 +20,8 @@ every time the project is saved.
 The summary of those statistics per namespace is then retrieved
 by [`Namespaces#with_statistics`](https://gitlab.com/gitlab-org/gitlab-ce/blob/v12.2.0.pre/app/models/namespace.rb#L70) scope. Analyzing this query we noticed that:
 
-* It takes up to `1.2` seconds for namespaces with over `15k` projects.
-* It can't be analyzed with [ChatOps](chatops_on_gitlabcom.md), as it times out.
+- It takes up to `1.2` seconds for namespaces with over `15k` projects.
+- It can't be analyzed with [ChatOps](chatops_on_gitlabcom.md), as it times out.
 
 Additionally, the pattern that is currently used to update the project statistics
 (the callback) doesn't scale adequately. It is currently one of the largest
@@ -62,8 +62,8 @@ REFRESH MATERIALIZED VIEW root_namespace_storage_statistics;
 
 While this implied a single query update (and probably a fast one), it has some downsides:
 
-* Materialized views syntax varies from PostgreSQL and MySQL. While this feature was worked on, MySQL was still supported by GitLab.
-* Rails does not have native support for materialized views. We'd need to use a specialized gem to take care of the management of the database views, which implies additional work.
+- Materialized views syntax varies from PostgreSQL and MySQL. While this feature was worked on, MySQL was still supported by GitLab.
+- Rails does not have native support for materialized views. We'd need to use a specialized gem to take care of the management of the database views, which implies additional work.
 
 ### Attempt B: An update through a CTE
 
@@ -131,8 +131,8 @@ WHERE namespace_id IN (
 
 Even though this approach would make aggregating much easier, it has some major downsides:
 
-* We'd have to migrate **all namespaces** by adding and filling a new column. Because of the size of the table, dealing with time/cost will not be great. The background migration will take approximately `153h`, see <https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/29772>.
-* Background migration has to be shipped one release before, delaying the functionality by another milestone.
+- We'd have to migrate **all namespaces** by adding and filling a new column. Because of the size of the table, dealing with time/cost will not be great. The background migration will take approximately `153h`, see <https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/29772>.
+- Background migration has to be shipped one release before, delaying the functionality by another milestone.
 
 ### Attempt E (final): Update the namespace storage statistics in async way
 
@@ -155,10 +155,10 @@ but we refresh them through Sidekiq jobs and in different transactions:
 
 This implementation has the following benefits:
 
-* All the updates are done async, so we're not increasing the length of the transactions for `project_statistics`.
-* We're doing the update in a single SQL query.
-* It is compatible with PostgreSQL and MySQL.
-* No background migration required.
+- All the updates are done async, so we're not increasing the length of the transactions for `project_statistics`.
+- We're doing the update in a single SQL query.
+- It is compatible with PostgreSQL and MySQL.
+- No background migration required.
 
 The only downside of this approach is that namespaces' statistics are updated up to `1.5` hours after the change is done,
 which means there's a time window in which the statistics are inaccurate. Because we're still not
@@ -171,8 +171,8 @@ performant approach of aggregating the root namespaces.
 
 All the details regarding this use case can be found on:
 
-* <https://gitlab.com/gitlab-org/gitlab-ce/issues/62214>
-* Merge Request with the implementation: <https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/28996>
+- <https://gitlab.com/gitlab-org/gitlab-ce/issues/62214>
+- Merge Request with the implementation: <https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/28996>
 
 Performance of the namespace storage statistics were measured in staging and production (GitLab.com). All results were posted
 on <https://gitlab.com/gitlab-org/gitlab-ce/issues/64092>: No problem has been reported so far.

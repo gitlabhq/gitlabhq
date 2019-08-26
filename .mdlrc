@@ -1,7 +1,0 @@
-# This is the options file for mdl, configured in .gitlab/ci/docs.gitlab-ci.yml,
-# and related to the style file ./mdlrc.style
-
-# See https://github.com/markdownlint/markdownlint/blob/master/docs/configuration.md
-
-ignore_front_matter true
-style File.expand_path('.mdlrc.style', __dir__)
