@@ -1,0 +1,5 @@
+---
+title: Don't check external authorization when disabling the service
+merge_request: 32102
+author: Robert Schilling
+type: fixed
