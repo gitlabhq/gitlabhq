@@ -5,6 +5,7 @@ describe Banzai::Filter::RelativeLinkFilter do
     contexts.reverse_merge!({
       commit:         commit,
       project:        project,
+      current_user:   user,
       group:          group,
       project_wiki:   project_wiki,
       ref:            ref,
@@ -31,7 +32,8 @@ describe Banzai::Filter::RelativeLinkFilter do
     %(<div>#{element}</div>)
   end
 
-  let(:project)        { create(:project, :repository) }
+  let(:project)        { create(:project, :repository, :public) }
+  let(:user)           { create(:user) }
   let(:group)          { nil }
   let(:project_path)   { project.full_path }
   let(:ref)            { 'markdown' }
@@ -70,6 +72,11 @@ describe Banzai::Filter::RelativeLinkFilter do
 
   context 'with an empty repository' do
     let(:project) { create(:project_empty_repo) }
+    include_examples :preserve_unchanged
+  end
+
+  context 'without project repository access' do
+    let(:project) { create(:project, :repository, repository_access_level: ProjectFeature::PRIVATE) }
     include_examples :preserve_unchanged
   end
 
@@ -280,6 +287,37 @@ describe Banzai::Filter::RelativeLinkFilter do
     let(:relative_path) { "/#{project.full_path}#{upload_path}" }
 
     context 'to a project upload' do
+      context 'without project repository access' do
+        let(:project) { create(:project, :repository, repository_access_level: ProjectFeature::PRIVATE) }
+
+        it 'does not rebuild relative URL for a link' do
+          doc = filter(link(upload_path))
+          expect(doc.at_css('a')['href']).to eq(upload_path)
+
+          doc = filter(nested(link(upload_path)))
+          expect(doc.at_css('a')['href']).to eq(upload_path)
+        end
+
+        it 'does not rebuild relative URL for an image' do
+          doc = filter(image(upload_path))
+          expect(doc.at_css('img')['src']).to eq(upload_path)
+
+          doc = filter(nested(image(upload_path)))
+          expect(doc.at_css('img')['src']).to eq(upload_path)
+        end
+
+        context 'with an absolute URL' do
+          let(:absolute_path) { Gitlab.config.gitlab.url + relative_path }
+          let(:only_path) { false }
+
+          it 'does not rewrite the link' do
+            doc = filter(link(upload_path))
+
+            expect(doc.at_css('a')['href']).to eq(upload_path)
+          end
+        end
+      end
+
       context 'with an absolute URL' do
         let(:absolute_path) { Gitlab.config.gitlab.url + relative_path }
         let(:only_path) { false }
@@ -329,10 +367,40 @@ describe Banzai::Filter::RelativeLinkFilter do
     end
 
     context 'to a group upload' do
-      let(:upload_link) { link('/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg') }
+      let(:upload_path) { '/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg' }
+      let(:upload_link) { link(upload_path) }
       let(:group) { create(:group) }
       let(:project) { nil }
       let(:relative_path) { "/groups/#{group.full_path}/-/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg" }
+
+      context 'without group read access' do
+        let(:group) { create(:group, :private) }
+
+        it 'does not rewrite the link' do
+          doc = filter(upload_link)
+
+          expect(doc.at_css('a')['href']).to eq(upload_path)
+        end
+
+        it 'does not rewrite the link for subgroup' do
+          group.update!(parent: create(:group))
+
+          doc = filter(upload_link)
+
+          expect(doc.at_css('a')['href']).to eq(upload_path)
+        end
+
+        context 'with an absolute URL' do
+          let(:absolute_path) { Gitlab.config.gitlab.url + relative_path }
+          let(:only_path) { false }
+
+          it 'does not rewrite the link' do
+            doc = filter(upload_link)
+
+            expect(doc.at_css('a')['href']).to eq(upload_path)
+          end
+        end
+      end
 
       context 'with an absolute URL' do
         let(:absolute_path) { Gitlab.config.gitlab.url + relative_path }
