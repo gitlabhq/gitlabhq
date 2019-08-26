@@ -32,7 +32,7 @@ module API
             .includes(:noteable)
             .fresh
 
-          notes = notes.reject { |n| n.cross_reference_not_visible_for?(current_user) }
+          notes = notes.select { |n| n.visible_for?(current_user) }
           discussions = Kaminari.paginate_array(Discussion.build_collection(notes, noteable))
 
           present paginate(discussions), with: Entities::Discussion
@@ -233,7 +233,7 @@ module API
           .includes(:noteable)
           .fresh
 
-        notes.reject { |n| n.cross_reference_not_visible_for?(current_user) }
+        notes.select { |n| n.visible_for?(current_user) }
       end
       # rubocop: enable CodeReuse/ActiveRecord
     end
