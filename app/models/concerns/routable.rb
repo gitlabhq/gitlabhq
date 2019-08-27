@@ -38,7 +38,7 @@ module Routable
       if Feature.enabled?(:routable_two_step_lookup)
         # Case sensitive match first (it's cheaper and the usual case)
         # If we didn't have an exact match, we perform a case insensitive search
-        found = joins(:route).find_by(routes: { path: path }) || where_full_path_in([path]).take
+        found = includes(:route).find_by(routes: { path: path }) || where_full_path_in([path]).take
       else
         order_sql = Arel.sql("(CASE WHEN routes.path = #{connection.quote(path)} THEN 0 ELSE 1 END)")
         found = where_full_path_in([path]).reorder(order_sql).take
@@ -67,7 +67,7 @@ module Routable
         "(LOWER(routes.path) = LOWER(#{connection.quote(path)}))"
       end
 
-      joins(:route).where(wheres.join(' OR '))
+      includes(:route).where(wheres.join(' OR ')).references(:routes)
     end
 
     # Temporary instrumentation of method calls

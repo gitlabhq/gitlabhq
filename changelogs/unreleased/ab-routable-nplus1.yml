@@ -1,0 +1,5 @@
+---
+title: Preload routes information to fix N+1 issue
+merge_request: 32352
+author:
+type: performance
