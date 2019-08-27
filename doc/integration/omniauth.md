@@ -277,3 +277,23 @@ omniauth:
   sync_profile_from_provider: ['twitter', 'google_oauth2']
   sync_profile_attributes: ['email', 'location']
 ```
+## Bypassing two factor authentication
+
+Starting with GitLab 12.3, this allows users to login with the specified
+providers without two factor authentication.
+
+Define the allowed providers using an array, e.g. `["twitter", 'google_oauth2']`, or as
+`true`/`false` to allow all providers or none. This option should only be configured
+for providers which already have two factor authentication (default: false).
+This configration dose not apply to SAML.
+
+```ruby
+gitlab_rails['omniauth_allow_bypass_two_factor'] = ['twitter', 'google_oauth2']
+```
+
+**For installations from source**
+
+```yaml
+omniauth:
+  allow_bypass_two_factor: ['twitter', 'google_oauth2']
+```
