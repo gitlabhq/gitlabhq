@@ -1,5 +1,0 @@
----
-title: Avoid exposing unaccessible repo data upon GFM post processing
-merge_request:
-author:
-type: security
