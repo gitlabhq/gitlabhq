@@ -8,9 +8,6 @@ include:
   extends:
     - .default-retry
     - .except-docs
-  tags:
-    - gitlab-org
-    - docker
 
 code_quality:
   extends: .reports
