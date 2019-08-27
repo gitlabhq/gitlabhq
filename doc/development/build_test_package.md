@@ -3,7 +3,7 @@
 While developing a new feature or modifying an existing one, it is helpful if an
 installable package (or a docker image) containing those changes is available
 for testing. For this very purpose, a manual job is provided in the GitLab CI/CD
-pipeline that can be used to trigger a pipeline in the omnibus-gitlab repository
+pipeline that can be used to trigger a pipeline in the Omnibus GitLab repository
 that will create:
 
 - A deb package for Ubuntu 16.04, available as a build artifact, and
@@ -12,7 +12,7 @@ that will create:
   (images titled `gitlab-ce` and `gitlab-ee` respectively and image tag is the
   commit which triggered the pipeline).
 
-When you push a commit to either the gitlab-ce or gitlab-ee project, the
+When you push a commit to either the GitLab CE or GitLab EE project, the
 pipeline for that commit will have a `build-package` manual action you can
 trigger.
 
@@ -30,9 +30,9 @@ branch `0-1-stable`, modify the content of `GITALY_SERVER_VERSION` to
 `0-1-stable` and push the commit. This will create a manual job that can be
 used to trigger the build.
 
-## Specifying the branch in omnibus-gitlab repository
+## Specifying the branch in Omnibus GitLab repository
 
-In scenarios where a configuration change is to be introduced and omnibus-gitlab
+In scenarios where a configuration change is to be introduced and Omnibus GitLab
 repository already has the necessary changes in a specific branch, you can build
 a package against that branch through an environment variable named
 `OMNIBUS_BRANCH`. To do this, specify that environment variable with the name of

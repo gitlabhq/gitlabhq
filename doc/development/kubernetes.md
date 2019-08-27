@@ -107,7 +107,7 @@ Mitigation strategies include:
 ## Debugging
 
 Logs related to the Kubernetes integration can be found in
-[kubernetes.log](../administration/logs.md#kuberneteslog). On a local
+[`kubernetes.log`](../administration/logs.md#kuberneteslog). On a local
 GDK install, this will be present in `log/kubernetes.log`.
 
 Some services such as

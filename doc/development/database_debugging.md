@@ -9,7 +9,7 @@ An easy first step is to search for your error in Slack or google "GitLab (my er
 
 Available `RAILS_ENV`
 
-- `production` (generally not for your main GDK db, but you may need this for e.g. omnibus)
+- `production` (generally not for your main GDK db, but you may need this for e.g. Omnibus)
 - `development` (this is your main GDK db)
 - `test` (used for tests like rspec)
 

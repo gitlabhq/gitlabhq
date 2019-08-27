@@ -10,7 +10,7 @@ learn, in order to make full use of the command line.
 
 ## Start working on your project
 
-To work on a git project locally (from your own computer), with the command line,
+To work on a Git project locally (from your own computer), with the command line,
 first you will need to [clone (copy) it](start-using-git.md#clone-a-repository) to
 your computer.
 

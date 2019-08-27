@@ -170,7 +170,7 @@ while `pull` requests will continue to be served by the **secondary** node for m
 HTTPS and SSH requests are handled differently:
 
 - With HTTPS, we will give the user a `HTTP 302 Redirect` pointing to the project on the **primary** node.
-  The git client is wise enough to understand that status code and process the redirection.
+  The Git client is wise enough to understand that status code and process the redirection.
 - With SSH, because there is no equivalent way to perform a redirect, we have to proxy the request.
   This is done inside [`gitlab-shell`](https://gitlab.com/gitlab-org/gitlab-shell), by first translating the request
   to the HTTP protocol, and then proxying it to the **primary** node.

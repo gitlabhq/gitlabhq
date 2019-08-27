@@ -70,7 +70,7 @@ git commit -m "DESCRIBE COMMIT IN A FEW WORDS"
 ```
 
 Now you can push (send) your changes (in the branch `<branch-name>`) to GitLab
-(the git remote named 'origin'):
+(the Git remote named 'origin'):
 
 ```sh
 git push origin <branch-name>
