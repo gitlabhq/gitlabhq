@@ -197,6 +197,17 @@ describe Gitlab::DatabaseImporters::SelfMonitoring::Project::CreateService do
         end
       end
 
+      context 'when prometheus setting is nil' do
+        before do
+          stub_config(prometheus: nil)
+        end
+
+        it 'does not fail' do
+          expect(result).to include(status: :success)
+          expect(project.prometheus_service).to be_nil
+        end
+      end
+
       context 'when prometheus setting is disabled in gitlab.yml' do
         let(:prometheus_settings) do
           {

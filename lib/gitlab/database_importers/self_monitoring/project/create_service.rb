@@ -173,7 +173,7 @@ module Gitlab
           end
 
           def prometheus_enabled?
-            Gitlab.config.prometheus.enable
+            Gitlab.config.prometheus.enable if Gitlab.config.prometheus
           rescue Settingslogic::MissingSetting
             log_error(_('prometheus.enable is not present in gitlab.yml'))
 
@@ -181,7 +181,7 @@ module Gitlab
           end
 
           def prometheus_listen_address
-            Gitlab.config.prometheus.listen_address
+            Gitlab.config.prometheus.listen_address if Gitlab.config.prometheus
           rescue Settingslogic::MissingSetting
             log_error(_('prometheus.listen_address is not present in gitlab.yml'))
 
