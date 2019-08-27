@@ -8,5 +8,5 @@ disable those changes, without having to revert an entire release.
 Before using feature flags for GitLab's development, read through the following:
 
 - [Process for using features flags](process.md).
-- [Developing with feature flags documentation](development.md).
-- [Controlling feature flags documentation](controls.md).
+- [Developing with feature flags](development.md).
+- [Controlling feature flags](controls.md).
