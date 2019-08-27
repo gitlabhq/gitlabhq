@@ -6,6 +6,6 @@ class AddTokenEncryptedToDeployTokens < ActiveRecord::Migration[5.1]
   DOWNTIME = false
 
   def change
-    add_column :deploy_tokens, :token_encrypted, :string
+    add_column :deploy_tokens, :token_encrypted, :string, limit: 255
   end
 end
