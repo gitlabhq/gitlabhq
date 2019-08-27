@@ -1,0 +1,5 @@
+---
+title: Do not translate system notes into author's language
+merge_request: 32264
+author:
+type: fixed

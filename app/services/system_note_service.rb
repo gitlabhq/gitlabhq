@@ -67,7 +67,7 @@ module SystemNoteService
     create_note(NoteSummary.new(noteable, project, author, body, action: 'assignee'))
   end
 
-  # Called when the assignees of an Issue is changed or removed
+  # Called when the assignees of an issuable is changed or removed
   #
   # issuable - Issuable object (responds to assignees)
   # project  - Project owning noteable
@@ -88,10 +88,12 @@ module SystemNoteService
   def change_issuable_assignees(issuable, project, author, old_assignees)
     unassigned_users = old_assignees - issuable.assignees
     added_users = issuable.assignees.to_a - old_assignees
-
     text_parts = []
-    text_parts << "assigned to #{added_users.map(&:to_reference).to_sentence}" if added_users.any?
-    text_parts << "unassigned #{unassigned_users.map(&:to_reference).to_sentence}" if unassigned_users.any?
+
+    Gitlab::I18n.with_default_locale do
+      text_parts << "assigned to #{added_users.map(&:to_reference).to_sentence}" if added_users.any?
+      text_parts << "unassigned #{unassigned_users.map(&:to_reference).to_sentence}" if unassigned_users.any?
+    end
 
     body = text_parts.join(' and ')
 
