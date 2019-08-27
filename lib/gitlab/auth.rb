@@ -198,12 +198,10 @@ module Gitlab
         end.uniq
       end
 
-      # rubocop: disable CodeReuse/ActiveRecord
       def deploy_token_check(login, password)
         return unless password.present?
 
-        token =
-          DeployToken.active.find_by(token: password)
+        token = DeployToken.active.find_by_token(password)
 
         return unless token && login
         return if login != token.username
@@ -214,7 +212,6 @@ module Gitlab
           Gitlab::Auth::Result.new(token, token.project, :deploy_token, scopes)
         end
       end
-      # rubocop: enable CodeReuse/ActiveRecord
 
       def lfs_token_check(login, encoded_token, project)
         deploy_key_matches = login.match(/\Alfs\+deploy-key-(\d+)\z/)
