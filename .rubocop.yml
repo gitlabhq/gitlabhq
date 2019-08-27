@@ -50,7 +50,9 @@ Style/FrozenStringLiteralComment:
     - 'config/**/*'
     - 'danger/**/*'
     - 'db/**/*'
-    - 'ee/**/*'
+    - 'ee/db/**/*'
+    - 'ee/spec/**/*'
+    - 'ee/lib/tasks/**/*'
     - 'lib/tasks/**/*'
     - 'qa/**/*'
     - 'rubocop/**/*'
@@ -91,6 +93,7 @@ Naming/FileName:
     - JSON
     - LDAP
     - SAML
+    - SSO
     - IO
     - HMAC
     - QA
