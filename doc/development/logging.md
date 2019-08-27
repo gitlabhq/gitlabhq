@@ -133,7 +133,7 @@ importer progresses. Here's what to do:
    logs in `/var/log/gitlab/gitlab-rails/*.log` every hour and [keep at
    most 30 compressed files](https://docs.gitlab.com/omnibus/settings/logs.html#logrotate).
    On GitLab.com, that setting is only 6 compressed files. These settings should suffice
-   for most users, but you may need to tweak them in [omnibus-gitlab](https://gitlab.com/gitlab-org/omnibus-gitlab).
+   for most users, but you may need to tweak them in [Omnibus GitLab](https://gitlab.com/gitlab-org/omnibus-gitlab).
 
 1. If you add a new file, submit an issue to the [production
    tracker](https://gitlab.com/gitlab-com/gl-infra/production/issues) or

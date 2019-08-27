@@ -40,9 +40,11 @@ There is no need to install any plugins
 
 If you're interested on working with the new beta repo indexer, all you need to do is:
 
-- git clone git@gitlab.com:gitlab-org/gitlab-elasticsearch-indexer.git
-- make
-- make install
+```sh
+git clone git@gitlab.com:gitlab-org/gitlab-elasticsearch-indexer.git
+make
+make install
+```
 
 this adds `gitlab-elasticsearch-indexer` to `$GOPATH/bin`, please make sure that is in your `$PATH`. After that GitLab will find it and you'll be able to enable it in the admin settings area.
 
@@ -188,7 +190,7 @@ The global configurations per version are now in the `Elastic::(Version)::Config
 
 NOTE: **Note:** this is not applicable yet as multiple indices functionality is not fully implemented.
 
-Folders like `ee/lib/elastic/v12p1` contain snapshots of search logic from different versions. To keep a continuous git history, the latest version lives under `ee/lib/elastic/latest`, but its classes are aliased under an actual version (e.g. `ee/lib/elastic/v12p3`). When referencing these classes, never use the `Latest` namespace directly, but use the actual version (e.g. `V12p3`).
+Folders like `ee/lib/elastic/v12p1` contain snapshots of search logic from different versions. To keep a continuous Git history, the latest version lives under `ee/lib/elastic/latest`, but its classes are aliased under an actual version (e.g. `ee/lib/elastic/v12p3`). When referencing these classes, never use the `Latest` namespace directly, but use the actual version (e.g. `V12p3`).
 
 The version name basically follows GitLab's release version. If setting is changed in 12.3, we will create a new namespace called `V12p3` (p stands for "point"). Raise an issue if there is a need to name a version differently.
 

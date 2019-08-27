@@ -169,7 +169,7 @@ There are three different things that can go wrong here.
 In this case, we miss out on disk space savings but all RPC's on A
 itself will function fine. The next time garbage collection runs on A,
 the alternates connection gets established in Gitaly. This is done by
-`Projects::GitDeduplicationService` in gitlab-rails.
+`Projects::GitDeduplicationService` in GitLab Rails.
 
 #### 2. SQL says repo A belongs to pool P1 but Gitaly says A has alternate objects in pool P2
 

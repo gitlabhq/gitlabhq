@@ -35,7 +35,7 @@ Gitlab::Popen.popen(%W(find /some/path -not -path /some/path -mmin +120 -delete)
 
 This coding style could have prevented CVE-2013-4490.
 
-## Always use the configurable git binary path for git commands
+## Always use the configurable Git binary path for Git commands
 
 ```ruby
 # Wrong
@@ -114,7 +114,7 @@ user = `whoami`
 user, exit_status = Gitlab::Popen.popen(%W(whoami))
 ```
 
-In other repositories, such as gitlab-shell you can also use `IO.popen`.
+In other repositories, such as GitLab Shell you can also use `IO.popen`.
 
 ```ruby
 # Safe IO.popen example

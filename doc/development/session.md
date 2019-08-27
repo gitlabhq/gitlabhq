@@ -17,7 +17,7 @@ When storing values in a session it is best to:
 - Use simple primitives and avoid storing objects to avoid marshaling complications.
 - Clean up after unneeded variables to keep memory usage in Redis down.
 
-## Gitlab::Session
+## GitLab::Session
 
 Sometimes you might want to persist data in the session instead of another store like the database. `Gitlab::Session` lets you access this without passing the session around extensively. For example, you could access it from within a policy without having to pass the session through to each place permissions are checked from.
 

@@ -57,18 +57,18 @@ of this page:
 ```
 
 - `/home/git/.ssh` - Contains OpenSSH settings. Specifically the `authorized_keys`
-  file managed by gitlab-shell.
+  file managed by GitLab Shell.
 - `/home/git/gitlab` - GitLab core software.
 - `/home/git/gitlab-shell` - Core add-on component of GitLab. Maintains SSH
   cloning and other functionality.
 - `/home/git/repositories` - Bare repositories for all projects organized by
-  namespace. This is where the git repositories which are pushed/pulled are
+  namespace. This is where the Git repositories which are pushed/pulled are
   maintained for all projects. **This area contains critical data for projects.
   [Keep a backup](../raketasks/backup_restore.md).**
 
 NOTE: **Note:**
 The default locations for repositories can be configured in `config/gitlab.yml`
-of GitLab and `config.yml` of gitlab-shell.
+of GitLab and `config.yml` of GitLab Shell.
 
 For a more in-depth overview, see the [GitLab architecture doc](../development/architecture.md).
 
@@ -569,7 +569,7 @@ GitLab Shell application startup time can be greatly reduced by disabling RubyGe
 - Compile Ruby with `configure --disable-rubygems` to disable RubyGems by default. Not recommended for system-wide Ruby.
 - Omnibus GitLab [replaces the *shebang* line of the `gitlab-shell/bin/*` scripts](https://gitlab.com/gitlab-org/omnibus-gitlab/merge_requests/1707).
 
-### Install gitlab-workhorse
+### Install GitLab Workhorse
 
 GitLab-Workhorse uses [GNU Make](https://www.gnu.org/software/make/). The
 following command-line will install GitLab-Workhorse in `/home/git/gitlab-workhorse`
@@ -833,7 +833,7 @@ To use GitLab with HTTPS:
 1. In `gitlab.yml`:
    1. Set the `port` option in section 1 to `443`.
    1. Set the `https` option in section 1 to `true`.
-1. In the `config.yml` of gitlab-shell:
+1. In the `config.yml` of GitLab Shell:
    1. Set `gitlab_url` option to the HTTPS endpoint of GitLab (e.g. `https://git.example.com`).
    1. Set the certificates using either the `ca_file` or `ca_path` option.
 1. Use the `gitlab-ssl` Nginx example config instead of the `gitlab` config.
@@ -852,7 +852,7 @@ Using a self-signed certificate is discouraged but if you must use it, follow th
    sudo chmod o-r gitlab.key
    ```
 
-1. In the `config.yml` of gitlab-shell set `self_signed_cert` to `true`.
+1. In the `config.yml` of GitLab Shell set `self_signed_cert` to `true`.
 
 ### Enable Reply by email
 
@@ -950,8 +950,8 @@ To use GitLab with Puma:
 
 If you see this message when attempting to clone a repository hosted by GitLab,
 this is likely due to an outdated Nginx or Apache configuration, or a missing or
-misconfigured gitlab-workhorse instance. Double-check that you've
-[installed Go](#3-go), [installed gitlab-workhorse](#install-gitlab-workhorse),
+misconfigured GitLab Workhorse instance. Double-check that you've
+[installed Go](#3-go), [installed GitLab Workhorse](#install-gitlab-workhorse),
 and correctly [configured Nginx](#site-configuration).
 
 ### google-protobuf "LoadError: /lib/x86_64-linux-gnu/libc.so.6: version `GLIBC_2.14' not found"

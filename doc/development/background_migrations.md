@@ -294,7 +294,7 @@ to migrate you database down and up, which can result in other background
 migrations being called. That means that using `spy` test doubles with
 `have_received` is encouraged, instead of using regular test doubles, because
 your expectations defined in a `it` block can conflict with what is being
-called in RSpec hooks. See [gitlab-org/gitlab-ce#35351][issue-rspec-hooks]
+called in RSpec hooks. See [issue #35351][issue-rspec-hooks]
 for more details.
 
 ## Best practices

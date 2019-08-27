@@ -45,13 +45,13 @@ The process for adding new Gitaly features is:
 - release a new version of gitaly-proto
 - write implementation and tests for the RPC [in Gitaly](https://gitlab.com/gitlab-org/gitaly), in Go or Ruby
 - release a new version of Gitaly
-- write client code in gitlab-ce/ee, gitlab-workhorse or gitlab-shell that calls the new Gitaly RPC
+- write client code in GitLab CE/EE, GitLab Workhorse or GitLab Shell that calls the new Gitaly RPC
 
 These steps often overlap. It is possible to use an unreleased version
 of Gitaly and gitaly-proto during testing and development.
 
 - See the [Gitaly repo](https://gitlab.com/gitlab-org/gitaly/blob/master/CONTRIBUTING.md#development-and-testing-with-a-custom-gitaly-proto) for instructions on writing server side code with an unreleased protocol.
-- See [below](#running-tests-with-a-locally-modified-version-of-gitaly) for instructions on running gitlab-ce tests with a modified version of Gitaly.
+- See [below](#running-tests-with-a-locally-modified-version-of-gitaly) for instructions on running GitLab CE tests with a modified version of Gitaly.
 - In GDK run `gdk install` and restart `gdk run` (or `gdk run app`) to use a locally modified Gitaly version for development
 
 ### Gitaly-ruby
@@ -146,7 +146,7 @@ Once the code is wrapped in this block, this code-path will be excluded from n+1
 
 ## Request counts
 
-Commits and other git data, is now fetched through Gitaly. These fetches can,
+Commits and other Git data, is now fetched through Gitaly. These fetches can,
 much like with a database, be batched. This improves performance for the client
 and for Gitaly itself and therefore for the users too. To keep performance stable
 and guard performance regressions, Gitaly calls can be counted and the call count
@@ -164,10 +164,10 @@ end
 
 ## Running tests with a locally modified version of Gitaly
 
-Normally, gitlab-ce/ee tests use a local clone of Gitaly in
+Normally, GitLab CE/EE tests use a local clone of Gitaly in
 `tmp/tests/gitaly` pinned at the version specified in
 `GITALY_SERVER_VERSION`. The `GITALY_SERVER_VERSION` file supports
-`=my-branch` syntax to use a custom branch in gitlab-org/gitaly. If
+`=my-branch` syntax to use a custom branch in <https://gitlab.com/gitlab-org/gitaly>. If
 you want to run tests locally against a modified version of Gitaly you
 can replace `tmp/tests/gitaly` with a symlink. This is much faster
 because the `=my-branch` syntax forces a Gitaly re-install each time
@@ -276,9 +276,9 @@ Here are the steps to gate a new feature in Gitaly behind a feature flag.
    require.NoError(t, err)
    ```
 
-### Gitlab-Rails
+### GitLab Rails
 
-1. Add feature flag to `lib/gitlab/gitaly_client.rb` (in gitlab-rails):
+1. Add feature flag to `lib/gitlab/gitaly_client.rb` (in GitLab Rails):
 
    ```ruby
    SERVER_FEATURE_FLAGS = %w[go-find-all-tags].freeze

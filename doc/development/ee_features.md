@@ -910,7 +910,7 @@ import bundle from 'ee_else_ce/protected_branches/protected_branches_bundle.js';
 ```
 
 See the frontend guide [performance section](fe_guide/performance.md) for
-information on managing page-specific javascript within EE.
+information on managing page-specific JavaScript within EE.
 
 ## Vue code in `assets/javascript`
 
@@ -1057,7 +1057,7 @@ Here is a workflow to make sure those changes end up backported safely into CE t
 
 **Note:** regarding SCSS, make sure the files living outside `/ee/` don't diverge between CE and EE projects.
 
-## gitlab-svgs
+## GitLab-svgs
 
 Conflicts in `app/assets/images/icons.json` or `app/assets/images/icons.svg` can
 be resolved simply by regenerating those assets with

@@ -110,7 +110,7 @@ Make sure to follow all steps below:
 
    **Note:**
    If you are using a custom init script, make sure to edit the above
-   gitlab-workhorse setting as needed.
+   GitLab Workhorse setting as needed.
 
 1. [Restart GitLab][] for the changes to take effect.
 
