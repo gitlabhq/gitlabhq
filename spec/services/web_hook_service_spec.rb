@@ -35,31 +35,38 @@ describe WebHookService do
   describe '#execute' do
     before do
       project.hooks << [project_hook]
-
-      WebMock.stub_request(:post, project_hook.url)
     end
 
     context 'when token is defined' do
       let(:project_hook) { create(:project_hook, :token) }
 
       it 'POSTs to the webhook URL' do
+        stub_full_request(project_hook.url, method: :post)
+
         service_instance.execute
-        expect(WebMock).to have_requested(:post, project_hook.url).with(
+
+        expect(WebMock).to have_requested(:post, stubbed_hostname(project_hook.url)).with(
           headers: headers.merge({ 'X-Gitlab-Token' => project_hook.token })
         ).once
       end
     end
 
     it 'POSTs to the webhook URL' do
+      stub_full_request(project_hook.url, method: :post)
+
       service_instance.execute
-      expect(WebMock).to have_requested(:post, project_hook.url).with(
+
+      expect(WebMock).to have_requested(:post, stubbed_hostname(project_hook.url)).with(
         headers: headers
       ).once
     end
 
     it 'POSTs the data as JSON' do
+      stub_full_request(project_hook.url, method: :post)
+
       service_instance.execute
-      expect(WebMock).to have_requested(:post, project_hook.url).with(
+
+      expect(WebMock).to have_requested(:post, stubbed_hostname(project_hook.url)).with(
         headers: headers
       ).once
     end
@@ -95,7 +102,7 @@ describe WebHookService do
     end
 
     it 'catches exceptions' do
-      WebMock.stub_request(:post, project_hook.url).to_raise(StandardError.new('Some error'))
+      stub_full_request(project_hook.url, method: :post).to_raise(StandardError.new('Some error'))
 
       expect { service_instance.execute }.to raise_error(StandardError)
     end
@@ -105,20 +112,20 @@ describe WebHookService do
       exceptions.each do |exception_class|
         exception = exception_class.new('Exception message')
 
-        WebMock.stub_request(:post, project_hook.url).to_raise(exception)
+        stub_full_request(project_hook.url, method: :post).to_raise(exception)
         expect(service_instance.execute).to eq({ status: :error, message: exception.to_s })
         expect { service_instance.execute }.not_to raise_error
       end
     end
 
     it 'handles 200 status code' do
-      WebMock.stub_request(:post, project_hook.url).to_return(status: 200, body: 'Success')
+      stub_full_request(project_hook.url, method: :post).to_return(status: 200, body: 'Success')
 
       expect(service_instance.execute).to include({ status: :success, http_status: 200, message: 'Success' })
     end
 
     it 'handles 2xx status codes' do
-      WebMock.stub_request(:post, project_hook.url).to_return(status: 201, body: 'Success')
+      stub_full_request(project_hook.url, method: :post).to_return(status: 201, body: 'Success')
 
       expect(service_instance.execute).to include({ status: :success, http_status: 201, message: 'Success' })
     end
@@ -128,7 +135,7 @@ describe WebHookService do
 
       context 'with success' do
         before do
-          WebMock.stub_request(:post, project_hook.url).to_return(status: 200, body: 'Success')
+          stub_full_request(project_hook.url, method: :post).to_return(status: 200, body: 'Success')
           service_instance.execute
         end
 
@@ -145,7 +152,7 @@ describe WebHookService do
 
       context 'with exception' do
         before do
-          WebMock.stub_request(:post, project_hook.url).to_raise(SocketError.new('Some HTTP Post error'))
+          stub_full_request(project_hook.url, method: :post).to_raise(SocketError.new('Some HTTP Post error'))
           service_instance.execute
         end
 
@@ -162,7 +169,7 @@ describe WebHookService do
 
       context 'with unsafe response body' do
         before do
-          WebMock.stub_request(:post, project_hook.url).to_return(status: 200, body: "\xBB")
+          stub_full_request(project_hook.url, method: :post).to_return(status: 200, body: "\xBB")
           service_instance.execute
         end
 
@@ -182,7 +189,7 @@ describe WebHookService do
         let(:service_instance) { described_class.new(service_hook, data, 'service_hook') }
 
         before do
-          WebMock.stub_request(:post, service_hook.url).to_return(status: 200, body: 'Success')
+          stub_full_request(service_hook.url, method: :post).to_return(status: 200, body: 'Success')
         end
 
         it { expect { service_instance.execute }.not_to change(WebHookLog, :count) }

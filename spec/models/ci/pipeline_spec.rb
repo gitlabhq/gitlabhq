@@ -4,6 +4,7 @@ require 'spec_helper'
 
 describe Ci::Pipeline, :mailer do
   include ProjectForksHelper
+  include StubRequests
 
   let(:user) { create(:user) }
   set(:project) { create(:project) }
@@ -2484,7 +2485,7 @@ describe Ci::Pipeline, :mailer do
       let(:enabled) { true }
 
       before do
-        WebMock.stub_request(:post, hook.url)
+        stub_full_request(hook.url, method: :post)
       end
 
       context 'with multiple builds' do
@@ -2538,7 +2539,7 @@ describe Ci::Pipeline, :mailer do
         end
 
         def have_requested_pipeline_hook(status)
-          have_requested(:post, hook.url).with do |req|
+          have_requested(:post, stubbed_hostname(hook.url)).with do |req|
             json_body = JSON.parse(req.body)
             json_body['object_attributes']['status'] == status &&
               json_body['builds'].length == 2
