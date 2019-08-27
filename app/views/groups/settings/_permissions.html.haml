@@ -31,4 +31,4 @@
     = render 'groups/settings/two_factor_auth', f: f
     = render_if_exists 'groups/member_lock_setting', f: f, group: @group
 
-  = f.submit _('Save changes'), class: 'btn btn-success prepend-top-default js-dirty-submit'
+  = f.submit _('Save changes'), class: 'btn btn-success prepend-top-default js-dirty-submit', data: { qa_selector: 'save_permissions_changes_button' }

@@ -160,6 +160,10 @@ module QA
     module Group
       autoload :New, 'qa/page/group/new'
       autoload :Show, 'qa/page/group/show'
+
+      module Settings
+        autoload :General, 'qa/page/group/settings/general'
+      end
     end
 
     module File
