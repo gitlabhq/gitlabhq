@@ -58,7 +58,7 @@ describe Group, 'Routable' do
     end
   end
 
-  describe '.find_by_full_path' do
+  shared_examples_for '.find_by_full_path' do
     let!(:nested_group) { create(:group, parent: group) }
 
     context 'without any redirect routes' do
@@ -107,6 +107,24 @@ describe Group, 'Routable' do
           it { expect(described_class.find_by_full_path(nested_group_redirect_route.path, follow_redirects: true)).to eq(nested_group) }
         end
       end
+    end
+  end
+
+  describe '.find_by_full_path' do
+    context 'with routable_two_step_lookup feature' do
+      before do
+        stub_feature_flags(routable_two_step_lookup: true)
+      end
+
+      it_behaves_like '.find_by_full_path'
+    end
+
+    context 'without routable_two_step_lookup feature' do
+      before do
+        stub_feature_flags(routable_two_step_lookup: false)
+      end
+
+      it_behaves_like '.find_by_full_path'
     end
   end
 
