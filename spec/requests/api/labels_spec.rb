@@ -473,6 +473,55 @@ describe API::Labels do
     end
   end
 
+  describe 'PUT /projects/:id/labels/promote' do
+    let(:group) { create(:group) }
+
+    before do
+      group.add_owner(user)
+      project.update!(group: group)
+    end
+
+    it 'returns 200 if label is promoted' do
+      put api("/projects/#{project.id}/labels/promote", user), params: { name: label1.name }
+
+      expect(response).to have_gitlab_http_status(200)
+      expect(json_response['name']).to eq(label1.name)
+      expect(json_response['color']).to eq(label1.color)
+    end
+
+    it 'returns 200 if group label already exists' do
+      create(:group_label, title: label1.name, group: group)
+
+      expect { put api("/projects/#{project.id}/labels/promote", user), params: { name: label1.name } }
+        .to change(project.labels, :count).by(-1)
+        .and change(group.labels, :count).by(0)
+
+      expect(response).to have_gitlab_http_status(200)
+    end
+
+    it 'returns 403 if guest promotes label' do
+      guest = create(:user)
+      project.add_guest(guest)
+
+      put api("/projects/#{project.id}/labels/promote", guest), params: { name: label1.name }
+
+      expect(response).to have_gitlab_http_status(403)
+    end
+
+    it 'returns 404 if label does not exist' do
+      put api("/projects/#{project.id}/labels/promote", user), params: { name: 'unknown' }
+
+      expect(response).to have_gitlab_http_status(404)
+    end
+
+    it 'returns 400 if no label name given' do
+      put api("/projects/#{project.id}/labels/promote", user)
+
+      expect(response).to have_gitlab_http_status(400)
+      expect(json_response['error']).to eq('name is missing')
+    end
+  end
+
   describe "POST /projects/:id/labels/:label_id/subscribe" do
     context "when label_id is a label title" do
       it "subscribes to the label" do

@@ -186,6 +186,40 @@ Example response:
 }
 ```
 
+## Promote a project label to a group label
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/25218) in GitLab 12.3.
+
+Promotes a project label to a group label.
+
+```
+PUT /projects/:id/labels/promote
+```
+
+| Attribute       | Type    | Required                          | Description                      |
+| --------------- | ------- | --------------------------------- | -------------------------------  |
+| `id`      | integer/string    | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `name`          | string  | yes                               | The name of the existing label   |
+
+```bash
+curl --request PUT --data "name=documentation" --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/labels/promote"
+```
+
+Example response:
+
+```json
+{
+  "id" : 8,
+  "name" : "documentation",
+  "color" : "#8E44AD",
+  "description": "Documentation",
+  "open_issues_count": 1,
+  "closed_issues_count": 0,
+  "open_merge_requests_count": 2,
+  "subscribed": false
+}
+```
+
 ## Subscribe to a label
 
 Subscribes the authenticated user to a label to receive notifications.
