@@ -87,9 +87,7 @@ module Users
         :password_automatically_set,
         :name,
         :password,
-        :username,
-        :first_name,
-        :last_name
+        :username
       ]
     end
 
