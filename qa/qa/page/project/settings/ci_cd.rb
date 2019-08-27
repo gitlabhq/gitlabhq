@@ -13,11 +13,6 @@ module QA
             element :variables_settings_content
           end
 
-          view 'app/views/projects/settings/ci_cd/_autodevops_form.html.haml' do
-            element :enable_autodevops_checkbox
-            element :save_changes_button
-          end
-
           def expand_runners_settings(&block)
             expand_section(:runners_settings_content) do
               Settings::Runners.perform(&block)
@@ -30,10 +25,9 @@ module QA
             end
           end
 
-          def enable_auto_devops
+          def expand_auto_devops(&block)
             expand_section(:autodevops_settings_content) do
-              check_element :enable_autodevops_checkbox
-              click_element :save_changes_button
+              Settings::AutoDevops.perform(&block)
             end
           end
         end
