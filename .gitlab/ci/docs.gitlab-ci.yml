@@ -73,10 +73,11 @@ docs lint:
   dependencies: []
   script:
     - scripts/lint-doc.sh
+    # Lint Markdown
+    - markdownlint --config .markdownlint.json doc/**/*.md
+    # Prepare docs for build
     - mv doc/ /tmp/gitlab-docs/content/$DOCS_GITLAB_REPO_SUFFIX
     - cd /tmp/gitlab-docs
-    # Lint Markdown
-    - markdownlint --config $CI_PROJECT_DIR/.markdownlint.json content/$DOCS_GITLAB_REPO_SUFFIX/**/*.md
     # Build HTML from Markdown
     - bundle exec nanoc
     # Check the internal links
