@@ -14,62 +14,53 @@ describe RuboCop::Cop::RSpec::BeSuccessMatcher do
 
   subject(:cop) { described_class.new }
 
-  shared_examples 'an offensive be_success call' do |content|
-    it "registers an offense for `#{content}`" do
-      inspect_source(content, source_file)
-
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.offenses.map(&:line)).to eq([1])
-      expect(cop.highlights).to eq([content])
-    end
-  end
-
-  shared_examples 'an autocorrected be_success call' do |content, autocorrected_content|
-    it "registers an offense for `#{content}` and autocorrects it to `#{autocorrected_content}`" do
-      autocorrected = autocorrect_source(content, source_file)
-
-      expect(autocorrected).to eql(autocorrected_content)
-    end
-  end
-
   shared_examples 'cop' do |good:, bad:|
     context "using #{bad} call" do
-      it_behaves_like 'an offensive be_success call', bad
-      it_behaves_like 'an autocorrected be_success call', bad, good
+      it "registers an offense for `#{bad}`" do
+        inspect_source(bad, source_file)
+
+        expect(cop.offenses.size).to eq(1)
+        expect(cop.offenses.map(&:line)).to eq([1])
+        expect(cop.highlights).to eq([bad])
+      end
+
+      it "registers an offense for `#{bad}` and autocorrects it to `#{good}`" do
+        autocorrected = autocorrect_source(bad, source_file)
+
+        expect(autocorrected).to eql(good)
+      end
     end
 
     context "using #{good} call" do
       it 'does not register an offense' do
         inspect_source(good)
 
-        expect(cop.offenses.size).to eq(0)
+        expect(cop.offenses).to be_empty
       end
     end
   end
 
-  describe 'using different code examples' do
-    it_behaves_like 'cop',
-      bad: 'expect(response).to be_success',
-      good: 'expect(response).to be_successful'
+  it_behaves_like 'cop',
+    bad: 'expect(response).to be_success',
+    good: 'expect(response).to be_successful'
 
-    it_behaves_like 'cop',
-      bad: 'expect(response).to_not be_success',
-      good: 'expect(response).to_not be_successful'
+  it_behaves_like 'cop',
+    bad: 'expect(response).to_not be_success',
+    good: 'expect(response).to_not be_successful'
 
-    it_behaves_like 'cop',
-      bad: 'expect(response).not_to be_success',
-      good: 'expect(response).not_to be_successful'
+  it_behaves_like 'cop',
+    bad: 'expect(response).not_to be_success',
+    good: 'expect(response).not_to be_successful'
 
-    it_behaves_like 'cop',
-      bad: 'is_expected.to be_success',
-      good: 'is_expected.to be_successful'
+  it_behaves_like 'cop',
+    bad: 'is_expected.to be_success',
+    good: 'is_expected.to be_successful'
 
-    it_behaves_like 'cop',
-      bad: 'is_expected.to_not be_success',
-      good: 'is_expected.to_not be_successful'
+  it_behaves_like 'cop',
+    bad: 'is_expected.to_not be_success',
+    good: 'is_expected.to_not be_successful'
 
-    it_behaves_like 'cop',
-      bad: 'is_expected.not_to be_success',
-      good: 'is_expected.not_to be_successful'
-  end
+  it_behaves_like 'cop',
+    bad: 'is_expected.not_to be_success',
+    good: 'is_expected.not_to be_successful'
 end
