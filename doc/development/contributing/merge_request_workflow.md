@@ -1,4 +1,4 @@
-# Merge requests
+# Merge requests workflow
 
 We welcome merge requests from everyone, with fixes and improvements
 to GitLab code, tests, and documentation. The issues that are specifically suitable
