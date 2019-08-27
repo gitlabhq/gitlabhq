@@ -1,5 +1,5 @@
 import PersistentUserCallout from '~/persistent_user_callout';
-import initGkeDropdowns from '~/projects/gke_cluster_dropdowns';
+import initGkeDropdowns from '~/create_cluster/gke_cluster';
 
 function initGcpSignupCallout() {
   const callout = document.querySelector('.gcp-signup-offer');

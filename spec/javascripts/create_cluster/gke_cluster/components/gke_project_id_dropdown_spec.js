@@ -1,7 +1,7 @@
 import Vue from 'vue';
-import GkeProjectIdDropdown from '~/projects/gke_cluster_dropdowns/components/gke_project_id_dropdown.vue';
-import { createStore } from '~/projects/gke_cluster_dropdowns/store';
-import { SET_PROJECTS } from '~/projects/gke_cluster_dropdowns/store/mutation_types';
+import GkeProjectIdDropdown from '~/create_cluster/gke_cluster/components/gke_project_id_dropdown.vue';
+import { createStore } from '~/create_cluster/gke_cluster/store';
+import { SET_PROJECTS } from '~/create_cluster/gke_cluster/store/mutation_types';
 import { mountComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import { emptyProjectMock, selectedProjectMock } from '../mock_data';
 

@@ -1,4 +1,4 @@
-import * as getters from '~/projects/gke_cluster_dropdowns/store/getters';
+import * as getters from '~/create_cluster/gke_cluster/store/getters';
 import { selectedProjectMock, selectedZoneMock, selectedMachineTypeMock } from '../mock_data';
 
 describe('GCP Cluster Dropdown Store Getters', () => {

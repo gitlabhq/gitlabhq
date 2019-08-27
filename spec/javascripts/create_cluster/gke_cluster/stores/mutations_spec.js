@@ -1,5 +1,5 @@
-import { createStore } from '~/projects/gke_cluster_dropdowns/store';
-import * as types from '~/projects/gke_cluster_dropdowns/store/mutation_types';
+import { createStore } from '~/create_cluster/gke_cluster/store';
+import * as types from '~/create_cluster/gke_cluster/store/mutation_types';
 import {
   selectedProjectMock,
   selectedZoneMock,
