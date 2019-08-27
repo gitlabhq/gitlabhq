@@ -100,6 +100,7 @@ The following table lists available parameters for jobs:
 | [`stage`](#stage)                                  | Defines a job stage (default: `test`).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
 | [`only`](#onlyexcept-basic)                        | Limit when jobs are created. Also available: [`only:refs`, `only:kubernetes`, `only:variables`, and `only:changes`](#onlyexcept-advanced).                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | [`except`](#onlyexcept-basic)                      | Limit when jobs are not created. Also available: [`except:refs`, `except:kubernetes`, `except:variables`, and `except:changes`](#onlyexcept-advanced).                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| [`rules`](#rules)                                  | List of coniditions to evaluate and determine selected attributes of a build and whether or not it is created. May not be used alongside `only`/`except`.
 | [`tags`](#tags)                                    | List of tags which are used to select Runner.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 | [`allow_failure`](#allow_failure)                  | Allow job to fail. Failed job doesn't contribute to commit status.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
 | [`when`](#when)                                    | When to run job. Also available: `when:manual` and `when:delayed`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
@@ -689,6 +690,125 @@ docker build service one:
 In the scenario above, if a merge request is created or updated that changes
 either files in `service-one` directory or the `Dockerfile`, GitLab creates
 and triggers the `docker build service one` job.
+
+### `rules`
+
+Using `rules` allows for a list of individual rule objects to be evaluated
+*in order*, until one matches and dynamically provides attributes to the job.
+
+Available rule clauses include:
+
+- `if` (similar to [`only:variables`](#onlyvariablesexceptvariables)).
+- `changes` (same as [`only:changes`](#onlychangesexceptchanges)).
+
+For example, using `if`:
+
+```yaml
+job:
+  script: "echo Hello, Rules!"
+  rules:
+    - if: '$CI_MERGE_REQUEST_TARGET_BRANCH == "master"' # This rule will be evaluated
+      when: always
+    - if: '$VAR =~ /pattern/' # This rule will only be evaluated if the first does not match
+      when: manual
+    - when: on_success # A Rule entry with no conditional clauses evaluates to true. If neither of the first two Rules match, this one will and set job:when to "on_success"
+```
+
+If the first rule does not match, further rules will be evaluated sequentially
+until a match is found. The above configuration will specify that `job` should
+be built and run for every pipeline on merge requests targeting `master`,
+regardless of the status of other builds.
+
+#### `rules:if`
+
+`rules:if` differs slightly from `only:variables` by accepting only a single
+expression string, rather than an array of them. Any set of expressions to be
+evaluated should be conjoined into a single expression using `&&` or `||`. For example:
+
+```yaml
+job:
+  script: "echo Hello, Rules!"
+  rules:
+    - if: '$CI_MERGE_REQUEST_SOURCE_BRANCH =~ /^feature/ && $CI_MERGE_REQUEST_TARGET_BRANCH == "master"' # This rule will be evaluated
+      when: always
+    - if: '$CI_MERGE_REQUEST_SOURCE_BRANCH =~ /^feature/' # This rule will only be evaluated if the target branch is not "master"
+      when: manual
+    - if: '$CI_MERGE_REQUEST_SOURCE_BRANCH' # If neither of the first two match but the simple presence does, we set to "on_success" by default
+```
+
+If none of the provided rules match, the job will be set to `when:never`, and
+not included in the pipeline. If `rules:when` is not included in the configuration
+at all, the behavior defaults to `job:when`, which continues to default to
+`on_success`.
+
+#### `rules:changes`
+
+`changes` works exactly the same way as [`only`/`except`](#onlychangesexceptchanges),
+accepting an array of paths. The following configuration configures a job to be
+run manually if `Dockerfile` has changed OR `$VAR == "string value"`. Otherwise
+it is set to `when:on_success` by the last rule, where 0 clauses evaluate as
+vacuously true.
+
+```yaml
+docker build:
+  script: docker build -t my-image:$CI_COMMIT_REF_SLUG .
+  rules:
+    - changes: # Will include the job and set to when:manual if any of the follow paths match a modified file.
+      - Dockerfile
+      when: manual
+    - if: '$VAR == "string value"'
+      when: manual # Will include the job and set to when:manual if the expression evaluates to true, after the `changes:` rule fails to match.
+    - when: on_success # If neither of the first rules match, set to on_success
+
+```
+
+#### Complex Rule Clauses
+
+To conjoin `if` and `changes` clauses with an AND, use them in the same rule.
+Here we run the job manually if `Dockerfile` or any file in `docker/scripts/`
+has changed AND `$VAR == "string value"`. Otherwise, the job will not be
+included in the pipeline.
+
+```yaml
+docker build:
+  script: docker build -t my-image:$CI_COMMIT_REF_SLUG .
+  rules:
+    - if: '$VAR == "string value"'
+      changes: # Will include the job and set to when:manual if any of the follow paths match a modified file.
+      - Dockerfile
+      - docker/scripts/*
+      when: manual
+  # - when: never would be redundant here, this is implied any time rules are listed.
+```
+
+The only clauses currently available are `if` and `changes`. Keywords such as
+`branches` or `refs` that are currently available for `only`/`except` are not
+yet available in `rules` as they are being individually considered for their
+usage and behavior in the newer context.
+
+#### Permitted attributes
+
+The only job attributes currently set by `rules` are `when` and `start_in`, if
+`when` is set to `delayed`. A job will be included in a pipeline if `when` is
+evaluated to any value except `never`.
+
+Delayed jobs require a `start_in` value, so rule objects do as well. For example:
+
+```yaml
+docker build:
+  script: docker build -t my-image:$CI_COMMIT_REF_SLUG .
+  rules:
+    - changes: # Will include the job and delay 3 hours when the Dockerfile has changed
+      - Dockerfile
+      when: delayed
+      start_in: '3 hours'
+    - when: on_success # Otherwise include the job and set to run normally
+
+```
+
+Additional Job configuration may be added to rules in the future, if something
+useful isn't available, please open an issue on
+[Gitlab CE](https://www.gitlab.com/gitlab-org/gitlab-ce/issues).
 
 ### `tags`
 
