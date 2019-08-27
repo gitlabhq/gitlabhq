@@ -123,8 +123,8 @@ production instances, they recommend considerably more resources.
 
 Storage requirements also vary based on the installation side, but as a rule of
 thumb, you should allocate the total size of your production database, **plus**
-two-thirds of the total size of your git repositories. Efforts to reduce this
-total are being tracked in this epic: [gitlab-org&153](https://gitlab.com/groups/gitlab-org/-/epics/153).
+two-thirds of the total size of your Git repositories. Efforts to reduce this
+total are being tracked in [epic &153](https://gitlab.com/groups/gitlab-org/-/epics/153).
 
 ## Enabling Elasticsearch
 
@@ -341,27 +341,27 @@ Currently for repository and snippet files, GitLab would only index up to 1 MB o
 
 There are several rake tasks available to you via the command line:
 
-- [sudo gitlab-rake gitlab:elastic:index](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/ee/lib/tasks/gitlab/elastic.rake)
+- [`sudo gitlab-rake gitlab:elastic:index`](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/ee/lib/tasks/gitlab/elastic.rake)
   - This is a wrapper task. It does the following:
     - `sudo gitlab-rake gitlab:elastic:create_empty_index`
     - `sudo gitlab-rake gitlab:elastic:clear_index_status`
     - `sudo gitlab-rake gitlab:elastic:index_projects`
     - `sudo gitlab-rake gitlab:elastic:index_snippets`
-- [sudo gitlab-rake gitlab:elastic:index_projects](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/ee/lib/tasks/gitlab/elastic.rake)
+- [`sudo gitlab-rake gitlab:elastic:index_projects`](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/ee/lib/tasks/gitlab/elastic.rake)
   - This iterates over all projects and queues sidekiq jobs to index them in the background.
-- [sudo gitlab-rake gitlab:elastic:index_projects_status](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/ee/lib/tasks/gitlab/elastic.rake)
+- [`sudo gitlab-rake gitlab:elastic:index_projects_status`](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/ee/lib/tasks/gitlab/elastic.rake)
   - This determines the overall status of the indexing. It is done by counting the total number of indexed projects, dividing by a count of the total number of projects, then multiplying by 100.
-- [sudo gitlab-rake gitlab:elastic:create_empty_index](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/ee/lib/tasks/gitlab/elastic.rake)
+- [`sudo gitlab-rake gitlab:elastic:create_empty_index`](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/ee/lib/tasks/gitlab/elastic.rake)
   - This generates an empty index on the Elasticsearch side.
-- [sudo gitlab-rake gitlab:elastic:clear_index_status](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/ee/lib/tasks/gitlab/elastic.rake)
+- [`sudo gitlab-rake gitlab:elastic:clear_index_status`](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/ee/lib/tasks/gitlab/elastic.rake)
   - This deletes all instances of IndexStatus for all projects.
-- [sudo gitlab-rake gitlab:elastic:delete_index](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/ee/lib/tasks/gitlab/elastic.rake)
+- [`sudo gitlab-rake gitlab:elastic:delete_index`](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/ee/lib/tasks/gitlab/elastic.rake)
   - This removes the GitLab index on the Elasticsearch instance.
-- [sudo gitlab-rake gitlab:elastic:recreate_index](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/ee/lib/tasks/gitlab/elastic.rake)
+- [`sudo gitlab-rake gitlab:elastic:recreate_index`](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/ee/lib/tasks/gitlab/elastic.rake)
   - Does the same thing as `sudo gitlab-rake gitlab:elastic:create_empty_index`
-- [sudo gitlab-rake gitlab:elastic:index_snippets](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/ee/lib/tasks/gitlab/elastic.rake)
+- [`sudo gitlab-rake gitlab:elastic:index_snippets`](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/ee/lib/tasks/gitlab/elastic.rake)
   - Performs an Elasticsearch import that indexes the snippets data.
-- [sudo gitlab-rake gitlab:elastic:projects_not_indexed](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/ee/lib/tasks/gitlab/elastic.rake)
+- [`sudo gitlab-rake gitlab:elastic:projects_not_indexed`](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/ee/lib/tasks/gitlab/elastic.rake)
   - Displays which projects are not indexed.
 
 ### Environment Variables

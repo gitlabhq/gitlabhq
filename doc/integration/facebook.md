@@ -49,7 +49,7 @@ To enable the Facebook OmniAuth provider you must register your application with
 
 1. On your GitLab server, open the configuration file.
 
-   For omnibus package:
+   For Omnibus package:
 
    ```sh
    sudo editor /etc/gitlab/gitlab.rb
@@ -67,7 +67,7 @@ To enable the Facebook OmniAuth provider you must register your application with
 
 1. Add the provider configuration:
 
-   For omnibus package:
+   For Omnibus package:
 
    ```ruby
    gitlab_rails['omniauth_providers'] = [

@@ -94,7 +94,7 @@ docker exec -t <container name> gitlab-backup create
 
 If you are using the [GitLab helm chart](https://gitlab.com/charts/gitlab) on a
 Kubernetes cluster, you can run the backup task using `backup-utility` script on
-the gitlab task runner pod via `kubectl`. Refer to [backing up a GitLab installation](https://gitlab.com/charts/gitlab/blob/master/doc/backup-restore/backup.md#backing-up-a-gitlab-installation) for more details:
+the GitLab task runner pod via `kubectl`. Refer to [backing up a GitLab installation](https://gitlab.com/charts/gitlab/blob/master/doc/backup-restore/backup.md#backing-up-a-gitlab-installation) for more details:
 
 ```sh
 kubectl exec -it <gitlab task-runner pod> backup-utility
@@ -458,7 +458,7 @@ You may also send backups to a mounted share (`NFS` / `CIFS` / `SMB` / etc.) by
 using the Fog [`Local`](https://github.com/fog/fog-local#usage) storage provider.
 The directory pointed to by the `local_root` key **must** be owned by the `git`
 user **when mounted** (mounting with the `uid=` of the `git` user for `CIFS` and
-`SMB`) or the user that you are executing the backup tasks under (for omnibus
+`SMB`) or the user that you are executing the backup tasks under (for Omnibus
 packages, this is the `git` user).
 
 The `backup_upload_remote_directory` **must** be set in addition to the
@@ -507,7 +507,7 @@ For installations from source:
 ### Backup archive permissions
 
 The backup archives created by GitLab (`1393513186_2014_02_27_gitlab_backup.tar`)
-will have owner/group git:git and 0600 permissions by default.
+will have owner/group `git`/`git` and 0600 permissions by default.
 This is meant to avoid other system users reading GitLab's data.
 If you need the backup archives to have different permissions you can use the 'archive_permissions' setting.
 
@@ -614,7 +614,7 @@ GitLab that you created it on, for example CE 9.1.0.
 
 You need to have a working GitLab installation before you can perform
 a restore. This is mainly because the system user performing the
-restore actions ('git') is usually not allowed to create or delete
+restore actions (`git`) is usually not allowed to create or delete
 the SQL database it needs to import data into ('gitlabhq_production').
 All existing data will be either erased (SQL) or moved to a separate
 directory (repositories, uploads).
@@ -773,14 +773,14 @@ In this case you can consider using filesystem snapshots as part of your backup 
 
 Example: Amazon EBS
 
-> A GitLab server using omnibus-gitlab hosted on Amazon AWS.
+> A GitLab server using Omnibus GitLab hosted on Amazon AWS.
 > An EBS drive containing an ext4 filesystem is mounted at `/var/opt/gitlab`.
 > In this case you could make an application backup by taking an EBS snapshot.
 > The backup includes all repositories, uploads and Postgres data.
 
 Example: LVM snapshots + rsync
 
-> A GitLab server using omnibus-gitlab, with an LVM logical volume mounted at `/var/opt/gitlab`.
+> A GitLab server using Omnibus GitLab, with an LVM logical volume mounted at `/var/opt/gitlab`.
 > Replicating the `/var/opt/gitlab` directory using rsync would not be reliable because too many files would change while rsync is running.
 > Instead of rsync-ing `/var/opt/gitlab`, we create a temporary LVM snapshot, which we mount as a read-only filesystem at `/mnt/gitlab_backup`.
 > Now we can have a longer running rsync job which will create a consistent replica on the remote server.
@@ -804,7 +804,7 @@ will have all your repositories, but not any other data.
 
 ## Troubleshooting
 
-### Restoring database backup using omnibus packages outputs warnings
+### Restoring database backup using Omnibus packages outputs warnings
 
 If you are using backup restore procedures you might encounter the following warnings:
 

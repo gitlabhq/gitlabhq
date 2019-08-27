@@ -69,7 +69,7 @@ that are in common for all providers that we need to consider.
 
 To change these settings:
 
-- **For omnibus package**
+- **For Omnibus package**
 
   Open the configuration file:
 

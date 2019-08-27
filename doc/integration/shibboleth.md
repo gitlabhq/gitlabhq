@@ -1,18 +1,18 @@
 # Shibboleth OmniAuth Provider
 
-This documentation is for enabling shibboleth with omnibus-gitlab package.
+This documentation is for enabling Shibboleth with the Omnibus GitLab package.
 
-In order to enable Shibboleth support in gitlab we need to use Apache instead of Nginx (It may be possible to use Nginx, however this is difficult to configure using the bundled Nginx provided in the omnibus-gitlab package). Apache uses mod_shib2 module for shibboleth authentication and can pass attributes as headers to omniauth-shibboleth provider.
+In order to enable Shibboleth support in GitLab we need to use Apache instead of Nginx (It may be possible to use Nginx, however this is difficult to configure using the bundled Nginx provided in the Omnibus GitLab package). Apache uses mod_shib2 module for Shibboleth authentication and can pass attributes as headers to Omniauth Shibboleth provider.
 
-To enable the Shibboleth OmniAuth provider you must configure Apache shibboleth module.
+To enable the Shibboleth OmniAuth provider you must configure Apache Shibboleth module.
 The installation and configuration of the module itself is out of the scope of this document.
 Check <https://wiki.shibboleth.net/confluence/display/SP3/Apache> for more info.
 
-You can find Apache config in gitlab-recipes (<https://gitlab.com/gitlab-org/gitlab-recipes/tree/master/web-server/apache>).
+You can find Apache config in [GitLab Recipes](https://gitlab.com/gitlab-org/gitlab-recipes/tree/master/web-server/apache).
 
 The following changes are needed to enable Shibboleth:
 
-1. Protect omniauth-shibboleth callback URL:
+1. Protect Omniauth Shibboleth callback URL:
 
    ```
    <Location /users/auth/shibboleth/callback>
@@ -32,7 +32,7 @@ The following changes are needed to enable Shibboleth:
    </Location>
    ```
 
-1. Exclude shibboleth URLs from rewriting. Add `RewriteCond %{REQUEST_URI} !/Shibboleth.sso` and `RewriteCond %{REQUEST_URI} !/shibboleth-sp`. Config should look like this:
+1. Exclude Shibboleth URLs from rewriting. Add `RewriteCond %{REQUEST_URI} !/Shibboleth.sso` and `RewriteCond %{REQUEST_URI} !/shibboleth-sp`. Config should look like this:
 
    ```
    # Apache equivalent of Nginx try files
@@ -50,7 +50,7 @@ The following changes are needed to enable Shibboleth:
    attribute mapping. Therefore the values of the `args` hash
    should be in the form of `"HTTP_ATTRIBUTE"`. The keys in the hash are arguments
    to the [OmniAuth::Strategies::Shibboleth class](https://github.com/toyokazu/omniauth-shibboleth/blob/master/lib/omniauth/strategies/shibboleth.rb)
-   and are documented by the [omniauth-shibboleth gem](https://github.com/toyokazu/omniauth-shibboleth)
+   and are documented by the [`omniauth-shibboleth` gem](https://github.com/toyokazu/omniauth-shibboleth)
    (take care to note the version of the gem packaged with GitLab). If some of
    your users appear to be authenticated by Shibboleth and Apache, but GitLab
    rejects their account with a URI that contains "e-mail is invalid" then your
@@ -94,7 +94,7 @@ On the sign in page, there should now be a "Sign in with: Shibboleth" icon below
 ## Apache 2.4 / GitLab 8.6 update
 
 The order of the first 2 Location directives is important. If they are reversed,
-you will not get a shibboleth session!
+you will not get a Shibboleth session!
 
 ```
 <Location />
