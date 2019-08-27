@@ -34,6 +34,10 @@ module QA
             element :dropdown_filter_input
           end
 
+          view 'app/assets/javascripts/ide/components/commit_sidebar/actions.vue' do
+            element :commit_to_current_branch_radio
+          end
+
           view 'app/assets/javascripts/ide/components/commit_sidebar/form.vue' do
             element :begin_commit_button
             element :commit_button
@@ -104,7 +108,7 @@ module QA
             # animation is still in process even when the buttons have the
             # expected visibility.
             commit_success_msg_shown = retry_until do
-              uncheck_element :start_new_mr_checkbox
+              click_element :commit_to_current_branch_radio
               click_element :commit_button
 
               wait(reload: false) do
