@@ -27,19 +27,15 @@ module Gitlab
       SafeRequestStore.active?
     end
 
-    def self.peek_enabled?
-      SafeRequestStore[:peek_enabled]
-    end
-
     def self.add_call_details(details)
-      return unless peek_enabled?
+      return unless Gitlab::PerformanceBar.enabled_for_request?
 
       Gitlab::SafeRequestStore[:rugged_call_details] ||= []
       Gitlab::SafeRequestStore[:rugged_call_details] << details
     end
 
     def self.list_call_details
-      return [] unless peek_enabled?
+      return [] unless Gitlab::PerformanceBar.enabled_for_request?
 
       Gitlab::SafeRequestStore[:rugged_call_details] || []
     end
