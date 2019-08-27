@@ -4,7 +4,7 @@
   %fieldset
     .form-group
       .form-check
-        = f.check_box :throttle_unauthenticated_enabled, class: 'form-check-input'
+        = f.check_box :throttle_unauthenticated_enabled, class: 'form-check-input', data: { qa_selector: 'throttle_unauthenticated_checkbox' }
         = f.label :throttle_unauthenticated_enabled, class: 'form-check-label' do
           Enable unauthenticated request rate limit
         %span.form-text.text-muted
@@ -17,7 +17,7 @@
       = f.number_field :throttle_unauthenticated_period_in_seconds, class: 'form-control'
     .form-group
       .form-check
-        = f.check_box :throttle_authenticated_api_enabled, class: 'form-check-input'
+        = f.check_box :throttle_authenticated_api_enabled, class: 'form-check-input', data: { qa_selector: 'throttle_authenticated_api_checkbox' }
         = f.label :throttle_authenticated_api_enabled, class: 'form-check-label' do
           Enable authenticated API request rate limit
         %span.form-text.text-muted
@@ -30,7 +30,7 @@
       = f.number_field :throttle_authenticated_api_period_in_seconds, class: 'form-control'
     .form-group
       .form-check
-        = f.check_box :throttle_authenticated_web_enabled, class: 'form-check-input'
+        = f.check_box :throttle_authenticated_web_enabled, class: 'form-check-input', data: { qa_selector: 'throttle_authenticated_web_checkbox' }
         = f.label :throttle_authenticated_web_enabled, class: 'form-check-label' do
           Enable authenticated web request rate limit
         %span.form-text.text-muted
@@ -42,4 +42,4 @@
       = f.label :throttle_authenticated_web_period_in_seconds, 'Rate limit period in seconds', class: 'label-bold'
       = f.number_field :throttle_authenticated_web_period_in_seconds, class: 'form-control'
 
-  = f.submit 'Save changes', class: "btn btn-success"
+  = f.submit 'Save changes', class: "btn btn-success", data: { qa_selector: 'save_changes_button' }

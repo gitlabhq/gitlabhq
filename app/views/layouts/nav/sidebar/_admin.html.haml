@@ -261,7 +261,7 @@
                 %span
                   = _('Metrics and profiling')
             = nav_link(path: 'application_settings#network') do
-              = link_to network_admin_application_settings_path, title: _('Network') do
+              = link_to network_admin_application_settings_path, title: _('Network'), data: { qa_selector: 'admin_settings_network_item' } do
                 %span
                   = _('Network')
             - if template_exists?('admin/application_settings/geo')

@@ -13,7 +13,7 @@
   .settings-content
     = render 'performance'
 
-%section.settings.as-ip-limits.no-animate#js-ip-limits-settings{ class: ('expanded' if expanded_by_default?) }
+%section.settings.as-ip-limits.no-animate#js-ip-limits-settings{ class: ('expanded' if expanded_by_default?), data: { qa_selector: 'ip_limits_section' } }
   .settings-header
     %h4
       = _('User and IP Rate Limits')

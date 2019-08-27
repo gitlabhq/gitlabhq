@@ -8,11 +8,12 @@ module QA
       class Client
         attr_reader :address, :user
 
-        def initialize(address = :gitlab, personal_access_token: nil, is_new_session: true, user: nil)
+        def initialize(address = :gitlab, personal_access_token: nil, is_new_session: true, user: nil, ip_limits: false)
           @address = address
           @personal_access_token = personal_access_token
           @is_new_session = is_new_session
           @user = user
+          enable_ip_limits if ip_limits
         end
 
         def personal_access_token
@@ -25,6 +26,24 @@ module QA
         end
 
         private
+
+        def enable_ip_limits
+          Page::Main::Menu.perform(&:sign_out) if Page::Main::Menu.perform { |p| p.has_personal_area?(wait: 0) }
+
+          Runtime::Browser.visit(@address, Page::Main::Login)
+          Page::Main::Login.perform(&:sign_in_using_admin_credentials)
+          Page::Main::Menu.perform(&:click_admin_area)
+          Page::Admin::Menu.perform(&:go_to_network_settings)
+
+          Page::Admin::Settings::Network.perform do |setting|
+            setting.expand_ip_limits do |page|
+              page.enable_throttles
+              page.save_settings
+            end
+          end
+
+          Page::Main::Menu.perform(&:sign_out)
+        end
 
         def create_personal_access_token
           Page::Main::Menu.perform(&:sign_out) if @is_new_session && Page::Main::Menu.perform { |p| p.has_personal_area?(wait: 0) }
