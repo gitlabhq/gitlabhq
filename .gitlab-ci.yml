@@ -1,5 +1,15 @@
 image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.6.3-golang-1.11-git-2.22-chrome-73.0-node-12.x-yarn-1.16-postgresql-9.6-graphicsmagick-1.3.33"
 
+stages:
+  - build
+  - prepare
+  - quick-test
+  - test
+  - review
+  - qa
+  - post-test
+  - pages
+
 variables:
   RAILS_ENV: "test"
   NODE_ENV: "test"
@@ -11,24 +21,8 @@ variables:
   FLAKY_RSPEC_SUITE_REPORT_PATH: rspec_flaky/report-suite.json
   BUILD_ASSETS_IMAGE: "false"
 
-before_script:
-  - date
-  - source scripts/utils.sh
-  - source scripts/prepare_build.sh
-  - date
-
 after_script:
   - date
-
-stages:
-  - build
-  - prepare
-  - merge
-  - test
-  - review
-  - qa
-  - post-test
-  - pages
 
 include:
   - local: .gitlab/ci/global.gitlab-ci.yml

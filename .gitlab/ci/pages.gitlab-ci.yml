@@ -1,13 +1,15 @@
 pages:
-  extends: .dedicated-no-docs-no-db-pull-cache-job
-  before_script: []
+  extends:
+    - .default-tags
+    - .default-retry
+    - .default-cache
+    - .except-docs
+  only:
+    refs:
+      - master@gitlab-org/gitlab-ce
+      - master@gitlab-org/gitlab-ee
   stage: pages
-  dependencies:
-    - coverage
-    - karma
-    - gitlab:assets:compile
-    - lint:javascript:report
-    - jsdoc
+  dependencies: ["coverage", "karma", "gitlab:assets:compile", "lint:javascript:report", "jsdoc"]
   script:
     - mv public/ .public/
     - mkdir public/
@@ -21,6 +23,3 @@ pages:
   artifacts:
     paths:
       - public
-  only:
-    - master@gitlab-org/gitlab-ce
-    - master@gitlab-org/gitlab-ee
