@@ -2,10 +2,13 @@
 
 require 'spec_helper'
 
-describe Projects::OpenIssuesCountService do
-  describe '#count' do
-    let(:project) { create(:project) }
+describe Projects::OpenIssuesCountService, :use_clean_rails_memory_store_caching do
+  let(:project) { create(:project) }
+  subject { described_class.new(project) }
 
+  it_behaves_like 'a counter caching service'
+
+  describe '#count' do
     context 'when user is nil' do
       it 'does not include confidential issues in the issue count' do
         create(:issue, :opened, project: project)
@@ -53,9 +56,7 @@ describe Projects::OpenIssuesCountService do
       end
     end
 
-    context '#refresh_cache', :use_clean_rails_memory_store_caching do
-      let(:subject) { described_class.new(project) }
-
+    context '#refresh_cache' do
       before do
         create(:issue, :opened, project: project)
         create(:issue, :opened, project: project)
