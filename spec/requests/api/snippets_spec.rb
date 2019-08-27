@@ -193,17 +193,31 @@ describe API::Snippets do
       }
     end
 
-    it 'creates a new snippet' do
-      expect do
-        post api("/snippets/", user), params: params
-      end.to change { PersonalSnippet.count }.by(1)
+    shared_examples 'snippet creation' do
+      it 'creates a new snippet' do
+        expect do
+          post api("/snippets/", user), params: params
+        end.to change { PersonalSnippet.count }.by(1)
 
-      expect(response).to have_gitlab_http_status(201)
-      expect(json_response['title']).to eq(params[:title])
-      expect(json_response['description']).to eq(params[:description])
-      expect(json_response['file_name']).to eq(params[:file_name])
-      expect(json_response['visibility']).to eq(params[:visibility])
+        expect(response).to have_gitlab_http_status(201)
+        expect(json_response['title']).to eq(params[:title])
+        expect(json_response['description']).to eq(params[:description])
+        expect(json_response['file_name']).to eq(params[:file_name])
+        expect(json_response['visibility']).to eq(params[:visibility])
+      end
     end
+
+    context 'with restricted visibility settings' do
+      before do
+        stub_application_setting(restricted_visibility_levels:
+                                   [Gitlab::VisibilityLevel::INTERNAL,
+                                    Gitlab::VisibilityLevel::PRIVATE])
+      end
+
+      it_behaves_like 'snippet creation'
+    end
+
+    it_behaves_like 'snippet creation'
 
     it 'returns 400 for missing parameters' do
       params.delete(:title)
@@ -253,17 +267,32 @@ describe API::Snippets do
       create(:personal_snippet, author: user, visibility_level: visibility_level)
     end
 
-    it 'updates snippet' do
-      new_content = 'New content'
-      new_description = 'New description'
+    shared_examples 'snippet updates' do
+      it 'updates a snippet' do
+        new_content = 'New content'
+        new_description = 'New description'
 
-      put api("/snippets/#{snippet.id}", user), params: { content: new_content, description: new_description }
+        put api("/snippets/#{snippet.id}", user), params: { content: new_content, description: new_description, visibility: 'internal' }
 
-      expect(response).to have_gitlab_http_status(200)
-      snippet.reload
-      expect(snippet.content).to eq(new_content)
-      expect(snippet.description).to eq(new_description)
+        expect(response).to have_gitlab_http_status(200)
+        snippet.reload
+        expect(snippet.content).to eq(new_content)
+        expect(snippet.description).to eq(new_description)
+        expect(snippet.visibility).to eq('internal')
+      end
     end
+
+    context 'with restricted visibility settings' do
+      before do
+        stub_application_setting(restricted_visibility_levels:
+                                   [Gitlab::VisibilityLevel::PUBLIC,
+                                    Gitlab::VisibilityLevel::PRIVATE])
+      end
+
+      it_behaves_like 'snippet updates'
+    end
+
+    it_behaves_like 'snippet updates'
 
     it 'returns 404 for invalid snippet id' do
       put api("/snippets/1234", user), params: { title: 'foo' }

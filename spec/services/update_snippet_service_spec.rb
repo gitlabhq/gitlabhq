@@ -32,11 +32,24 @@ describe UpdateSnippetService do
       expect(@snippet.visibility_level).to eq(old_visibility)
     end
 
-    it 'admins should be able to update to pubic visibility' do
+    it 'admins should be able to update to public visibility' do
       old_visibility = @snippet.visibility_level
       update_snippet(@project, @admin, @snippet, @opts)
       expect(@snippet.visibility_level).not_to eq(old_visibility)
       expect(@snippet.visibility_level).to eq(Gitlab::VisibilityLevel::PUBLIC)
+    end
+
+    describe "when visibility level is passed as a string" do
+      before do
+        @opts[:visibility] = 'internal'
+        @opts.delete(:visibility_level)
+      end
+
+      it "assigns the correct visibility level" do
+        update_snippet(@project, @user, @snippet, @opts)
+        expect(@snippet.errors.any?).to be_falsey
+        expect(@snippet.visibility_level).to eq(Gitlab::VisibilityLevel::INTERNAL)
+      end
     end
   end
 
