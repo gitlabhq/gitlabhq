@@ -609,6 +609,14 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
           expect(find('.js-environment-link')['href']).to match("environments/#{environment.id}")
           expect(find('.js-job-deployment-link')['href']).to include(second_deployment.deployable.project.path, second_deployment.deployable_id.to_s)
         end
+
+        context 'when deployment does not have a deployable' do
+          let!(:second_deployment) { create(:deployment, :success, environment: environment, deployable: nil) }
+
+          it 'has an empty href' do
+            expect(find('.js-job-deployment-link')['href']).to be_empty
+          end
+        end
       end
 
       context 'job failed to deploy' do
