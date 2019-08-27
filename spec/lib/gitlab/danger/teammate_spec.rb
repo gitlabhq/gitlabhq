@@ -28,7 +28,7 @@ describe Gitlab::Danger::Teammate do
     end
 
     context 'when labels contain Create and the category is test' do
-      let(:labels) { ['Create'] }
+      let(:labels) { ['devops::create'] }
 
       context 'when role is Test Automation Engineer, Create' do
         let(:role) { 'Test Automation Engineer, Create' }
