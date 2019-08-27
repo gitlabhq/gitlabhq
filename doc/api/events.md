@@ -70,7 +70,7 @@ Parameters:
 
 Example request:
 
-```
+```bash
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/events?target_type=issue&action=created&after=2017-01-31&before=2017-03-01
 ```
 
@@ -275,7 +275,7 @@ Parameters:
 
 Example request:
 
-```
+```bash
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/:project_id/events?target_type=issue&action=created&after=2017-01-31&before=2017-03-01
 ```
 
@@ -343,8 +343,8 @@ Example response:
         "username": "root",
         "id": 1,
         "state": "active",
-        "avatar_url": "http://localhost:3000/uploads/user/avatar/1/fox_avatar.png",
-        "web_url": "http://localhost:3000/root"
+        "avatar_url": "https://gitlab.example.com/uploads/user/avatar/1/fox_avatar.png",
+        "web_url": "https://gitlab.example.com/root"
       },
       "created_at": "2015-12-04T10:33:56.698Z",
       "system": false,
@@ -357,8 +357,8 @@ Example response:
       "username": "root",
       "id": 1,
       "state": "active",
-      "avatar_url": "http://localhost:3000/uploads/user/avatar/1/fox_avatar.png",
-      "web_url": "http://localhost:3000/root"
+      "avatar_url": "https://gitlab.example.com/uploads/user/avatar/1/fox_avatar.png",
+      "web_url": "https://gitlab.example.com/root"
     },
     "author_username": "root"
   }
