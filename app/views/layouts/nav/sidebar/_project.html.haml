@@ -115,7 +115,7 @@
                   = _('List')
 
             = nav_link(controller: :boards) do
-              = link_to project_boards_path(@project), title: boards_link_text do
+              = link_to project_boards_path(@project), title: boards_link_text, data: { qa_selector: "issue_boards_link" } do
                 %span
                   = boards_link_text
 
