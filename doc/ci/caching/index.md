@@ -172,6 +172,29 @@ job:
   cache: {}
 ```
 
+### Inherit global config, but override specific settings per job
+
+You can override cache settings without overwriting the global cache by using
+[anchors](../yaml/README.md#anchors). For example, if you want to override the 
+`policy` for one job:
+
+```yaml
+cache: &global_cache
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - node_modules/
+      - public/
+      - vendor/
+    policy: pull-push
+
+job:
+  cache:
+    # inherit all global cache settings
+    <<: *global_cache
+    # override the policy
+    policy: pull
+```
+
 For more fine tuning, read also about the
 [`cache: policy`](../yaml/README.md#cachepolicy).
 
