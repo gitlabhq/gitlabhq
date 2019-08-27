@@ -51,16 +51,18 @@ module API
       params do
         requires :title, type: String, desc: 'The title of the snippet'
         requires :file_name, type: String, desc: 'The file name of the snippet'
-        requires :code, type: String, allow_blank: false, desc: 'The content of the snippet'
+        optional :code, type: String, allow_blank: false, desc: 'The content of the snippet (deprecated in favor of "content")'
+        optional :content, type: String, allow_blank: false, desc: 'The content of the snippet'
         optional :description, type: String, desc: 'The description of a snippet'
         requires :visibility, type: String,
                               values: Gitlab::VisibilityLevel.string_values,
                               desc: 'The visibility of the snippet'
+        mutually_exclusive :code, :content
       end
       post ":id/snippets" do
         authorize! :create_project_snippet, user_project
-        snippet_params = declared_params.merge(request: request, api: true)
-        snippet_params[:content] = snippet_params.delete(:code)
+        snippet_params = declared_params(include_missing: false).merge(request: request, api: true)
+        snippet_params[:content] = snippet_params.delete(:code) if snippet_params[:code].present?
 
         snippet = CreateSnippetService.new(user_project, current_user, snippet_params).execute
 
@@ -80,12 +82,14 @@ module API
         requires :snippet_id, type: Integer, desc: 'The ID of a project snippet'
         optional :title, type: String, desc: 'The title of the snippet'
         optional :file_name, type: String, desc: 'The file name of the snippet'
-        optional :code, type: String, allow_blank: false, desc: 'The content of the snippet'
+        optional :code, type: String, allow_blank: false, desc: 'The content of the snippet (deprecated in favor of "content")'
+        optional :content, type: String, allow_blank: false, desc: 'The content of the snippet'
         optional :description, type: String, desc: 'The description of a snippet'
         optional :visibility, type: String,
                               values: Gitlab::VisibilityLevel.string_values,
                               desc: 'The visibility of the snippet'
-        at_least_one_of :title, :file_name, :code, :visibility_level
+        at_least_one_of :title, :file_name, :code, :content, :visibility_level
+        mutually_exclusive :code, :content
       end
       # rubocop: disable CodeReuse/ActiveRecord
       put ":id/snippets/:snippet_id" do

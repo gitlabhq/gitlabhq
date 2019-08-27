@@ -108,6 +108,29 @@ describe API::ProjectSnippets do
       expect(snippet.visibility_level).to eq(Snippet::PUBLIC)
     end
 
+    it 'creates a new snippet with content parameter' do
+      params[:content] = params.delete(:code)
+
+      post api("/projects/#{project.id}/snippets/", admin), params: params
+
+      expect(response).to have_gitlab_http_status(201)
+      snippet = ProjectSnippet.find(json_response['id'])
+      expect(snippet.content).to eq(params[:content])
+      expect(snippet.description).to eq(params[:description])
+      expect(snippet.title).to eq(params[:title])
+      expect(snippet.file_name).to eq(params[:file_name])
+      expect(snippet.visibility_level).to eq(Snippet::PUBLIC)
+    end
+
+    it 'returns 400 when both code and content parameters specified' do
+      params[:content] = params[:code]
+
+      post api("/projects/#{project.id}/snippets/", admin), params: params
+
+      expect(response).to have_gitlab_http_status(400)
+      expect(json_response['error']).to eq('code, content are mutually exclusive')
+    end
+
     it 'returns 400 for missing parameters' do
       params.delete(:title)
 
@@ -173,6 +196,25 @@ describe API::ProjectSnippets do
       snippet.reload
       expect(snippet.content).to eq(new_content)
       expect(snippet.description).to eq(new_description)
+    end
+
+    it 'updates snippet with content parameter' do
+      new_content = 'New content'
+      new_description = 'New description'
+
+      put api("/projects/#{snippet.project.id}/snippets/#{snippet.id}/", admin), params: { content: new_content, description: new_description }
+
+      expect(response).to have_gitlab_http_status(200)
+      snippet.reload
+      expect(snippet.content).to eq(new_content)
+      expect(snippet.description).to eq(new_description)
+    end
+
+    it 'returns 400 when both code and content parameters specified' do
+      put api("/projects/#{snippet.project.id}/snippets/1234", admin), params: { code: 'some content', content: 'other content' }
+
+      expect(response).to have_gitlab_http_status(400)
+      expect(json_response['error']).to eq('code, content are mutually exclusive')
     end
 
     it 'returns 404 for invalid snippet id' do
