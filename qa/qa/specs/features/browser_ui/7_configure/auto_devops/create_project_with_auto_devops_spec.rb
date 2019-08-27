@@ -147,23 +147,31 @@ module QA
     end
 
     describe 'Auto DevOps', :smoke do
-      it 'enables AutoDevOps by default' do
+      before do
         login
 
-        project = Resource::Project.fabricate! do |p|
-          p.name = Runtime::Env.auto_devops_project_name || 'project-with-autodevops'
+        @project = Resource::Project.fabricate_via_browser_ui! do |p|
+          p.name = "project-with-autodevops-#{SecureRandom.hex(8)}"
           p.description = 'Project with AutoDevOps'
         end
 
+        Page::Project::Menu.perform(&:go_to_ci_cd_settings)
+        Page::Project::Settings::CICD.perform(&:expand_auto_devops)
+        Page::Project::Settings::AutoDevops.perform(&:enable_autodevops)
+
+        @project.visit!
+
         # Create AutoDevOps repo
         Resource::Repository::ProjectPush.fabricate! do |push|
-          push.project = project
+          push.project = @project
           push.directory = Pathname
             .new(__dir__)
             .join('../../../../../fixtures/auto_devops_rack')
           push.commit_message = 'Create AutoDevOps compatible Project'
         end
+      end
 
+      it 'runs an AutoDevOps pipeline' do
         Page::Project::Menu.perform(&:click_ci_cd_pipelines)
         Page::Project::Pipeline::Index.perform(&:click_on_latest_pipeline)
 
