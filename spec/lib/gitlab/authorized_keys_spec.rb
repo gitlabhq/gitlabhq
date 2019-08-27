@@ -7,6 +7,40 @@ describe Gitlab::AuthorizedKeys do
 
   subject { described_class.new(logger) }
 
+  describe '#accessible?' do
+    context 'authorized_keys file exists' do
+      before do
+        create_authorized_keys_fixture
+      end
+
+      after do
+        delete_authorized_keys_file
+      end
+
+      context 'can open file' do
+        it 'returns true' do
+          expect(subject.accessible?).to eq(true)
+        end
+      end
+
+      context 'cannot open file' do
+        before do
+          allow(File).to receive(:open).and_raise(Errno::EACCES)
+        end
+
+        it 'returns false' do
+          expect(subject.accessible?).to eq(false)
+        end
+      end
+    end
+
+    context 'authorized_keys file does not exist' do
+      it 'returns false' do
+        expect(subject.accessible?).to eq(false)
+      end
+    end
+  end
+
   describe '#add_key' do
     context 'authorized_keys file exists' do
       before do
