@@ -14,12 +14,12 @@ Integration includes:
 Requirements:
 
 - [Jenkins GitLab Hook plugin](https://wiki.jenkins.io/display/JENKINS/GitLab+Hook+Plugin)
-- git clone access for Jenkins from GitLab repo (via ssh key)
+- Git clone access for Jenkins from GitLab repo (via ssh key)
 
 ## Jenkins
 
 1. Install [GitLab Hook plugin](https://wiki.jenkins.io/display/JENKINS/GitLab+Hook+Plugin)
-1. Set up jenkins project
+1. Set up Jenkins project
 
 ![screen](img/jenkins_project.png)
 

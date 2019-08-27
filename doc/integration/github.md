@@ -36,7 +36,7 @@ To get the credentials (a pair of Client ID and Client Secret), you must registe
 
 1. On your GitLab server, open the configuration file.
 
-   For omnibus package:
+   For Omnibus package:
 
    ```sh
    sudo editor /etc/gitlab/gitlab.rb
@@ -54,7 +54,7 @@ To get the credentials (a pair of Client ID and Client Secret), you must registe
 
 1. Add the provider configuration:
 
-   For omnibus package:
+   For Omnibus package:
 
    For GitHub.com:
 
@@ -124,7 +124,7 @@ certificate and the imports are failing, you will need to disable SSL verificati
 It should be disabled by adding `verify_ssl` to `false` in the provider configuration
 and changing the global Git `sslVerify` option to `false` in the GitLab server.
 
-For omnibus package:
+For Omnibus package:
 
 ```ruby
 gitlab_rails['omniauth_providers'] = [

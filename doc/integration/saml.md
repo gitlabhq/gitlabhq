@@ -17,7 +17,7 @@ in your SAML IdP:
 
 1. On your GitLab server, open the configuration file.
 
-   For omnibus package:
+   For Omnibus package:
 
    ```sh
    sudo editor /etc/gitlab/gitlab.rb
@@ -34,7 +34,7 @@ in your SAML IdP:
 1. To allow your users to use SAML to sign up without having to manually create
    an account first, don't forget to add the following values to your configuration:
 
-   For omnibus package:
+   For Omnibus package:
 
    ```ruby
    gitlab_rails['omniauth_enabled'] = true
@@ -54,7 +54,7 @@ in your SAML IdP:
 1. You can also automatically link SAML users with existing GitLab users if their
    email addresses match by adding the following setting:
 
-   For omnibus package:
+   For Omnibus package:
 
    ```ruby
    gitlab_rails['omniauth_auto_link_saml_user'] = true
@@ -68,7 +68,7 @@ in your SAML IdP:
 
 1. Add the provider configuration:
 
-   For omnibus package:
+   For Omnibus package:
 
    ```ruby
    gitlab_rails['omniauth_providers'] = [
@@ -342,7 +342,7 @@ You can add this setting to your GitLab configuration to automatically redirect 
 to your SAML server for authentication, thus removing the need to click a button
 before actually signing in.
 
-For omnibus package:
+For Omnibus package:
 
 ```ruby
 gitlab_rails['omniauth_auto_sign_in_with_provider'] = 'saml'

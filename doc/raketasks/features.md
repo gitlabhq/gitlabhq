@@ -6,7 +6,7 @@ This command will enable the namespaces feature introduced in v4.0. It will move
 
 Note:
 
-- Because the **repository location will change**, you will need to **update all your git URLs** to point to the new location.
+- Because the **repository location will change**, you will need to **update all your Git URLs** to point to the new location.
 - Username can be changed at **Profile ➔ Account**.
 
 **Example:**

@@ -23,7 +23,7 @@ or instance admin (in the case of self-hosted GitLab) set up the integration,
 in order to simplify administration.
 
 TIP: **Tip:**
-Create and use a single-purpose "jira" user in GitLab, so that removing
+Create and use a single-purpose `jira` user in GitLab, so that removing
 regular users won't impact your integration.
 
 ## Requirements

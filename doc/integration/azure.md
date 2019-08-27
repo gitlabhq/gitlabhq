@@ -32,7 +32,7 @@ To enable the Microsoft Azure OAuth2 OmniAuth provider you must register your ap
 
 1. On your GitLab server, open the configuration file.
 
-   For omnibus package:
+   For Omnibus package:
 
    ```sh
    sudo editor /etc/gitlab/gitlab.rb
@@ -50,7 +50,7 @@ To enable the Microsoft Azure OAuth2 OmniAuth provider you must register your ap
 
 1. Add the provider configuration:
 
-   For omnibus package:
+   For Omnibus package:
 
    ```ruby
    gitlab_rails['omniauth_providers'] = [
