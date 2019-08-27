@@ -105,6 +105,17 @@ If you need to authenticate as a different user, you can provide the
 GITLAB_USERNAME=jsmith GITLAB_PASSWORD=password bundle exec bin/qa Test::Instance::All https://gitlab.example.com
 ```
 
+Some QA tests require logging in as an admin user. By default, the QA
+tests will use the the same `root` user seeded by the GDK.
+
+If you need to authenticate with different admin credentials, you can
+provide the `GITLAB_ADMIN_USERNAME` and `GITLAB_ADMIN_PASSWORD`
+environment variables:
+
+```
+GITLAB_ADMIN_USERNAME=admin GITLAB_ADMIN_PASSWORD=myadminpassword GITLAB_USERNAME=jsmith GITLAB_PASSWORD=password bundle exec bin/qa Test::Instance::All https://gitlab.example.com
+```
+
 If your user doesn't have permission to default sandbox group
 `gitlab-qa-sandbox`, you could also use another sandbox group by giving
 `GITLAB_SANDBOX_NAME`:
