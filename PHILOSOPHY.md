@@ -1,1 +1,4 @@
-This document is intended to communicate the product philosophy GitLab uses in creating GitLab Community Edition. The principles can be found in the [Product Section of the GitLab Handbook](https://about.gitlab.com/handbook/product/#product-at-gitlab).
+To learn about the product philosophy GitLab the company uses in creating GitLab
+the product, visit our [Product Handbook page].
+
+[Product Handbook page]: https://about.gitlab.com/handbook/product/#product-at-gitlab
