@@ -277,6 +277,7 @@ omniauth:
   sync_profile_from_provider: ['twitter', 'google_oauth2']
   sync_profile_attributes: ['email', 'location']
 ```
+
 ## Bypassing two factor authentication
 
 Starting with GitLab 12.3, this allows users to login with the specified
