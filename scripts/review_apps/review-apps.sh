@@ -36,7 +36,7 @@ function previous_deploy_failed() {
   return $status
 }
 
-function delete() {
+function delete_release() {
   if [ -z "$CI_ENVIRONMENT_SLUG" ]; then
     echoerr "No release given, aborting the delete!"
     return
@@ -193,7 +193,8 @@ function deploy() {
 
 HELM_CMD=$(cat << EOF
   helm upgrade --install \
-    --atomic \
+    --force \
+    --wait \
     --timeout 900 \
     --set releaseOverride="$CI_ENVIRONMENT_SLUG" \
     --set global.appConfig.enableUsagePing=false \

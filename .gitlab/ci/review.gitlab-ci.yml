@@ -128,8 +128,9 @@ review-stop:
     - source utils.sh
     - source review-apps.sh
   script:
-    - delete
-  artifacts: {}
+    - delete_release
+  artifacts:
+    paths: []
 
 .review-qa-base:
   extends:
