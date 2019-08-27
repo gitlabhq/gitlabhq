@@ -1,13 +1,14 @@
 # GitLab
 
-## Test coverage
-
-- [![Ruby coverage](https://gitlab.com/gitlab-org/gitlab-ce/badges/master/coverage.svg?job=coverage)](https://gitlab-org.gitlab.io/gitlab-ce/coverage-ruby) Ruby
-- [![JavaScript coverage](https://gitlab.com/gitlab-org/gitlab-ce/badges/master/coverage.svg?job=karma)](https://gitlab-org.gitlab.io/gitlab-ce/coverage-javascript) JavaScript
-
 ## Canonical source
 
 The canonical source of GitLab Community Edition is [hosted on GitLab.com](https://gitlab.com/gitlab-org/gitlab-ce/).
+
+The source of GitLab Enterprise Edition is [hosted on GitLab.com](https://gitlab.com/gitlab-org/gitlab-ee).
+
+## Free trial
+
+You can request a free trial of GitLab Ultimate [on our website](https://about.gitlab.com/free-trial/).
 
 ## Open source software to collaborate on code
 
@@ -103,7 +104,7 @@ For upgrading information please see our [update page](https://about.gitlab.com/
 
 ## Documentation
 
-All documentation can be found on [docs.gitlab.com/ce/](https://docs.gitlab.com/ce/).
+All documentation can be found on <https://docs.gitlab.com>.
 
 ## Getting help
 
