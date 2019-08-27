@@ -2,8 +2,14 @@
 .diff-file {
   margin-bottom: $gl-padding;
 
+  &.conflict {
+    border-top: 1px solid $border-color;
+  }
+
   .file-title,
   .file-title-flex-parent {
+    border-top-left-radius: $border-radius-default;
+    border-top-right-radius: $border-radius-default;
     cursor: pointer;
 
     @media (min-width: map-get($grid-breakpoints, md)) {
@@ -64,6 +70,28 @@
     svg {
       vertical-align: middle;
       top: -1px;
+    }
+  }
+
+  @media (min-width: map-get($grid-breakpoints, md)) {
+    &.conflict .file-title,
+    &.conflict .file-title-flex-parent {
+      top: $header-height;
+    }
+
+    .with-performance-bar &.conflict .file-title,
+    .with-performance-bar &.conflict .file-title-flex-parent {
+      top: $header-height + $performance-bar-height;
+    }
+
+    .with-system-header &.conflict .file-title,
+    .with-system-header &.conflict .file-title-flex-parent {
+      top: $header-height + $system-header-height;
+    }
+
+    .with-system-header.with-performance-bar &.conflict .file-title,
+    .with-system-header.with-performance-bar &.conflict .file-title-flex-parent {
+      top: $header-height + $performance-bar-height + $system-header-height;
     }
   }
 
