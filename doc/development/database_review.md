@@ -91,7 +91,7 @@ and details for a database reviewer:
     concurrent index/foreign key helpers (with transactions disabled)
   - Check consistency with `db/schema.rb` and that migrations are [reversible](migration_style_guide.md#reversibility)
   - Check queries timing (If any): Queries executed in a migration
-    need to fit comfortable within `15s` - preferably much less than that - on GitLab.com.
+    need to fit comfortably within `15s` - preferably much less than that - on GitLab.com.
 - Check [background migrations](background_migrations.md):
   - For data migrations, establish a time estimate for execution
   - They should only be used when migrating data in larger tables.
