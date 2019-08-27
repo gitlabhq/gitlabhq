@@ -787,11 +787,25 @@ describe Gitlab::Auth::OAuth::User do
     end
   end
 
-  describe '#bypass_two_factor?' do
-    subject { oauth_user.bypass_two_factor? }
+  describe "#bypass_two_factor?" do
+    it "when with allow_bypass_two_factor disabled (Default)" do
+      stub_omniauth_config(allow_bypass_two_factor: false)
+      expect(oauth_user.bypass_two_factor?).to be_falsey
+    end
 
-    it 'returns always false' do
-      is_expected.to be_falsey
+    it "when with allow_bypass_two_factor enabled" do
+      stub_omniauth_config(allow_bypass_two_factor: true)
+      expect(oauth_user.bypass_two_factor?).to be_truthy
+    end
+
+    it "when provider in allow_bypass_two_factor array" do
+      stub_omniauth_config(allow_bypass_two_factor: [provider])
+      expect(oauth_user.bypass_two_factor?).to be_truthy
+    end
+
+    it "when provider not in allow_bypass_two_factor array" do
+      stub_omniauth_config(allow_bypass_two_factor: ["foo"])
+      expect(oauth_user.bypass_two_factor?).to be_falsey
     end
   end
 end

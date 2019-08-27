@@ -55,6 +55,18 @@ describe 'OAuth Login', :js, :allow_forgery_protection do
 
           expect(current_path).to eq root_path
         end
+
+        it 'when bypass-two-factor is enabled' do
+          allow(Gitlab.config.omniauth).to receive_messages(allow_bypass_two_factor: true)
+          login_via(provider.to_s, user, uid, remember_me: false)
+          expect(current_path).to eq root_path
+        end
+
+        it 'when bypass-two-factor is disabled' do
+          allow(Gitlab.config.omniauth).to receive_messages(allow_bypass_two_factor: false)
+          login_with_provider(provider, enter_two_factor: true)
+          expect(current_path).to eq root_path
+        end
       end
 
       context 'when "remember me" is checked' do

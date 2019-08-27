@@ -1,0 +1,5 @@
+---
+title: Add option to allow OAuth providers to bypass two factor
+merge_request: 31996
+author: Dodocat
+type: added
