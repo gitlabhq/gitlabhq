@@ -161,7 +161,16 @@ the `monitoring.sidekiq_exporter` configuration option in `gitlab.yml`.
 | geo_repositories_retrying_verification_count | Gauge   | 11.2  | Number of repositories verification failures that Geo is actively trying to correct on secondary  | url
 | geo_wikis_retrying_verification_count        | Gauge   | 11.2  | Number of wikis verification failures that Geo is actively trying to correct on secondary | url
 
-### Ruby metrics
+## Database load balancing metrics **(PREMIUM ONLY)**
+
+The following metrics are available:
+
+| Metric                            | Type      | Since                                                         | Description                            |
+|:--------------------------------- |:--------- |:------------------------------------------------------------- |:-------------------------------------- |
+| `db_load_balancing_hosts`         | Gauge     | [12.3](https://gitlab.com/gitlab-org/gitlab-ee/issues/13630)  | Current number of load balancing hosts |
+| `db_load_balancing_index`         | Gauge     | [12.3](https://gitlab.com/gitlab-org/gitlab-ee/issues/13630)  | Current load balancing host index      |
+
+## Ruby metrics
 
 Some basic Ruby runtime metrics are available:
 
