@@ -1,7 +1,0 @@
-.banner-callout.compact.milestone-deprecation-message.prepend-top-20
-  .banner-graphic= image_tag 'illustrations/milestone_removing-page.svg'
-  .banner-body.prepend-left-10.append-right-10
-    %h5.banner-title.prepend-top-0
-      = _('The tabs below will be removed in a future version')
-    %p.milestone-banner-text
-      = _('Learn more about %{issue_boards_url}, to keep track of issues in multiple lists, using labels, assignees, and milestones. If you’re missing something from issue boards, please create an issue on %{gitlab_issues_url}.').html_safe % { issue_boards_url: link_to(_('issue boards'), help_page_url('user/project/issue_board'), target: '_blank', rel: 'noopener noreferrer'), gitlab_issues_url: link_to(_('GitLab’s issue tracker'), 'https://gitlab.com/gitlab-org/gitlab-ce/issues', target: '_blank', rel: 'noopener noreferrer') }
