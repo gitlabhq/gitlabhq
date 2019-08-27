@@ -30,5 +30,23 @@ describe Projects::LfsPointers::LfsLinkService do
 
       expect(subject.execute(new_oid_list.keys)).to eq linked
     end
+
+    it 'links in batches' do
+      stub_const("#{described_class}::BATCH_SIZE", 3)
+
+      expect(Gitlab::Import::Logger)
+        .to receive(:info)
+        .with(class: described_class.name,
+              project_id: project.id,
+              project_path: project.full_path,
+              lfs_objects_linked_count: 7,
+              iterations: 3)
+
+      lfs_objects = create_list(:lfs_object, 7)
+      linked = subject.execute(lfs_objects.pluck(:oid))
+
+      expect(project.all_lfs_objects.count).to eq 9
+      expect(linked.size).to eq 7
+    end
   end
 end

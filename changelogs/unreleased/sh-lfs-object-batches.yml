@@ -1,0 +1,5 @@
+---
+title: Makes LFS object linker process OIDs in batches
+merge_request: 32268
+author:
+type: performance
