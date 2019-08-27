@@ -47,4 +47,16 @@ describe AuditEventService do
       expect(details[:target_id]).to eq(1)
     end
   end
+
+  describe '#log_security_event_to_file' do
+    it 'logs security event to file' do
+      expect(service).to receive(:file_logger).and_return(logger)
+      expect(logger).to receive(:info).with(author_id: user.id,
+                                            entity_type: 'Project',
+                                            entity_id: project.id,
+                                            action: :destroy)
+
+      service.log_security_event_to_file
+    end
+  end
 end
