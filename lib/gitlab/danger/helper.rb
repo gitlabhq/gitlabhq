@@ -38,8 +38,12 @@ module Gitlab
         ENV['CI_PROJECT_NAME'] == 'gitlab-ee' || File.exist?('../../CHANGELOG-EE.md')
       end
 
+      def gitlab_helper
+        gitlab if respond_to?(:gitlab)
+      end
+
       def release_automation?
-        gitlab.mr_author == RELEASE_TOOLS_BOT
+        gitlab_helper&.mr_author == RELEASE_TOOLS_BOT
       end
 
       def project_name
