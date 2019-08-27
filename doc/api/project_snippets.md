@@ -87,7 +87,7 @@ Example request:
 curl --request POST https://gitlab.com/api/v4/projects/:id/snippets \
      --header "PRIVATE-TOKEN: <your access token>" \
      --header "Content-Type: application/json" \
-     -d @snippet.json 
+     -d @snippet.json
 ```
 
 `snippet.json` used in the above example request:
@@ -126,7 +126,7 @@ Example request:
 curl --request PUT https://gitlab.com/api/v4/projects/:id/snippets \
      --header "PRIVATE-TOKEN: <your_access_token>" \
      --header "Content-Type: application/json" \
-     -d @snippet.json 
+     -d @snippet.json
 ```
 
 `snippet.json` used in the above example request:
