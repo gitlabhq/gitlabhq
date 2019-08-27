@@ -387,7 +387,7 @@ In addition, `only` and `except` allow the use of special keywords:
 | `triggers`       | For pipelines created using a trigger token. |
 | `web`            | For pipelines created using **Run pipeline** button in GitLab UI (under your project's **Pipelines**). |
 | `merge_requests` | When a merge request is created or updated (See [pipelines for merge requests](../merge_request_pipelines/index.md)). |
-| `chats`          | For jobs created using a [GitLab ChatOps](../chatops/README.md) command. |
+| `chat`          | For jobs created using a [GitLab ChatOps](../chatops/README.md) command. |
 
 In the example below, `job` will run only for refs that start with `issue-`,
 whereas all branches will be skipped:
