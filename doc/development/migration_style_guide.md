@@ -95,9 +95,9 @@ none of the steps will be executed, leaving the database in valid state.
 Therefore, either:
 
 - Put all migrations in one single-transaction migration.
-- If necessary, put most actions in one migration and create a separate migration 
+- If necessary, put most actions in one migration and create a separate migration
   for the steps that cannot be done in a single transaction.
-   
+
 For example, if you create an empty table and need to build an index for it,
 it is recommended to use a regular single-transaction migration and the default
 rails schema statement: [`add_index`](https://api.rubyonrails.org/v5.2/classes/ActiveRecord/ConnectionAdapters/SchemaStatements.html#method-i-add_index).
@@ -192,9 +192,9 @@ always _first_ add a migration that removes any duplicates, before adding the
 unique index.
 
 When adding an index to a non-empty table make sure to use the method
-`add_concurrent_index` instead of the regular `add_index` method. 
+`add_concurrent_index` instead of the regular `add_index` method.
 The `add_concurrent_index` method automatically creates concurrent indexes
-when using PostgreSQL, removing the need for downtime. 
+when using PostgreSQL, removing the need for downtime.
 
 To use this method, you must disable single-transactions mode
 by calling the method `disable_ddl_transaction!` in the body of your migration
@@ -216,7 +216,7 @@ class MyMigration < ActiveRecord::Migration[4.2]
 end
 ```
 
-For a small table (such as an empty one or one with less than `1,000` records), 
+For a small table (such as an empty one or one with less than `1,000` records),
 it is recommended to use `add_index` in a single-transaction migration, combining it with other
 operations that don't require `disable_ddl_transaction!`.
 
