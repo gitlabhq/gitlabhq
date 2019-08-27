@@ -1,0 +1,5 @@
+---
+title: Fix file header style and position during scroll in a merge conflict resolution
+merge_request: 31991
+author:
+type: fixed
