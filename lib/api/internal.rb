@@ -256,25 +256,26 @@ module API
       post '/post_receive' do
         status 200
 
-        output = {} # Messages to gitlab-shell
+        response = Gitlab::InternalPostReceive::Response.new
         user = identify(params[:identifier])
         project = Gitlab::GlRepository.parse(params[:gl_repository]).first
         push_options = Gitlab::PushOptions.new(params[:push_options])
+
+        response.reference_counter_decreased = Gitlab::ReferenceCounter.new(params[:gl_repository]).decrease
 
         PostReceive.perform_async(params[:gl_repository], params[:identifier],
           params[:changes], push_options.as_json)
 
         mr_options = push_options.get(:merge_request)
-        output.merge!(process_mr_push_options(mr_options, project, user, params[:changes])) if mr_options.present?
+        if mr_options.present?
+          message = process_mr_push_options(mr_options, project, user, params[:changes])
+          response.add_alert_message(message)
+        end
 
         broadcast_message = BroadcastMessage.current&.last&.message
-        reference_counter_decreased = Gitlab::ReferenceCounter.new(params[:gl_repository]).decrease
+        response.add_alert_message(broadcast_message)
 
-        output.merge!(
-          broadcast_message: broadcast_message,
-          reference_counter_decreased: reference_counter_decreased,
-          merge_request_urls: merge_request_urls
-        )
+        response.add_merge_request_urls(merge_request_urls)
 
         # A user is not guaranteed to be returned; an orphaned write deploy
         # key could be used
@@ -282,11 +283,11 @@ module API
           redirect_message = Gitlab::Checks::ProjectMoved.fetch_message(user.id, project.id)
           project_created_message = Gitlab::Checks::ProjectCreated.fetch_message(user.id, project.id)
 
-          output[:redirected_message] = redirect_message if redirect_message
-          output[:project_created_message] = project_created_message if project_created_message
+          response.add_basic_message(redirect_message)
+          response.add_basic_message(project_created_message)
         end
 
-        output
+        present response, with: Entities::InternalPostReceive::Response
       end
     end
   end

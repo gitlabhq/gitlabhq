@@ -44,8 +44,6 @@ module API
       end
 
       def process_mr_push_options(push_options, project, user, changes)
-        output = {}
-
         Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/61359')
 
         service = ::MergeRequests::PushOptionsHandlerService.new(
@@ -56,15 +54,13 @@ module API
         ).execute
 
         if service.errors.present?
-          output[:warnings] = push_options_warning(service.errors.join("\n\n"))
+          push_options_warning(service.errors.join("\n\n"))
         end
-
-        output
       end
 
       def push_options_warning(warning)
         options = Array.wrap(params[:push_options]).map { |p| "'#{p}'" }.join(' ')
-        "Error encountered with push options #{options}: #{warning}"
+        "WARNINGS:\nError encountered with push options #{options}: #{warning}"
       end
 
       def redis_ping
