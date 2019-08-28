@@ -204,27 +204,29 @@ Any user can remove themselves from a group, unless they are the last Owner of
 the group. The following table depicts the various user permission levels in a
 group.
 
-| Action                                          | Guest | Reporter | Developer | Maintainer | Owner |
-|-------------------------------------------------|-------|----------|-----------|------------|-------|
-| Browse group                                    | ✓     | ✓        | ✓         | ✓          | ✓     |
-| View Insights charts **(ULTIMATE)**             | ✓     | ✓        | ✓         | ✓          | ✓     |
-| View group epic **(ULTIMATE)**                  | ✓     | ✓        | ✓         | ✓          | ✓     |
-| Create/edit group epic **(ULTIMATE)**           |       | ✓        | ✓         | ✓          | ✓     |
-| Manage group labels                             |       | ✓        | ✓         | ✓          | ✓     |
-| Create project in group                         |       |          | ✓         | ✓          | ✓     |
-| Create/edit/delete group milestones             |       |          | ✓         | ✓          | ✓     |
-| Enable/disable a dependency proxy **(PREMIUM)** |       |          | ✓         | ✓          | ✓     |
-| Use security dashboard **(ULTIMATE)**           |       |          | ✓         | ✓          | ✓     |
-| Create subgroup                                 |       |          |           | ✓ (1)      | ✓     |
-| Edit group                                      |       |          |           |            | ✓     |
-| Manage group members                            |       |          |           |            | ✓     |
-| Remove group                                    |       |          |           |            | ✓     |
-| Delete group epic **(ULTIMATE)**                |       |          |           |            | ✓     |
-| View group Audit Events                         |       |          |           |            | ✓     |
-| Disable notification emails                     |       |          |           |            | ✓     |
+| Action                                                 | Guest | Reporter | Developer | Maintainer | Owner |
+|--------------------------------------------------------|-------|----------|-----------|------------|-------|
+| Browse group                                           | ✓     | ✓        | ✓         | ✓          | ✓     |
+| View Insights charts **(ULTIMATE)**                    | ✓     | ✓        | ✓         | ✓          | ✓     |
+| View group epic **(ULTIMATE)**                         | ✓     | ✓        | ✓         | ✓          | ✓     |
+| Create/edit group epic **(ULTIMATE)**                  |       | ✓        | ✓         | ✓          | ✓     |
+| Manage group labels                                    |       | ✓        | ✓         | ✓          | ✓     |
+| Create project in group                                |       |          | ✓         | ✓          | ✓     |
+| Create/edit/delete group milestones                    |       |          | ✓         | ✓          | ✓     |
+| Enable/disable a dependency proxy **(PREMIUM)**        |       |          | ✓         | ✓          | ✓     |
+| Use security dashboard **(ULTIMATE)**                  |       |          | ✓         | ✓          | ✓     |
+| Create subgroup                                        |       |          |           | ✓ (1)      | ✓     |
+| Edit group                                             |       |          |           |            | ✓     |
+| Manage group members                                   |       |          |           |            | ✓     |
+| Remove group                                           |       |          |           |            | ✓     |
+| Delete group epic **(ULTIMATE)**                       |       |          |           |            | ✓     |
+| Edit epic comments (posted by any user) **(ULTIMATE)** |       |          |           | ✓ (2)      | ✓ (2) |
+| View group Audit Events                                |       |          |           |            | ✓     |
+| Disable notification emails                            |       |          |           |            | ✓     |
 
 - (1): Groups can be set to [allow either Owners or Owners and
   Maintainers to create subgroups](group/subgroups/index.md#creating-a-subgroup)
+- (2): Introduced in GitLab 12.2.
 
 ### Subgroup permissions
 
