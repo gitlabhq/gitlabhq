@@ -17,6 +17,10 @@ sast:
   variables:
     SAST_BRAKEMAN_LEVEL: 2
     SAST_EXCLUDED_PATHS: qa,spec,doc
+  artifacts:
+    expire_in: 7 days
+    paths:
+      - gl-sast-report.json
 
 dependency_scanning:
   extends: .reports
@@ -27,3 +31,7 @@ dast:
   dependencies: ["review-deploy"]
   before_script:
     - export DAST_WEBSITE="$(cat review_app_url.txt)"
+  artifacts:
+    expire_in: 7 days
+    paths:
+      - gl-dast-report.json
