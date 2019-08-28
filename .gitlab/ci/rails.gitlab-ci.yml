@@ -165,7 +165,9 @@ downtime_check:
       - /^[\d-]+-stable(-ee)?$/
       - /(^docs[\/-].+|.+-docs$)/
       - /(^qa[\/-].*|.*-qa$)/
+  stage: test
   dependencies: ["setup-test-env"]
+  needs: ["setup-test-env"]
 
 ee_compat_check:
   extends: .rake-exec
@@ -195,7 +197,9 @@ db:migrate:reset:
     - .default-before_script
     - .use-pg
     - .except-docs-qa
+  stage: test
   dependencies: ["setup-test-env"]
+  needs: ["setup-test-env"]
   script:
     - bundle exec rake db:migrate:reset
 
@@ -207,7 +211,9 @@ db:check-schema:
     - .default-before_script
     - .use-pg
     - .except-docs-qa
+  stage: test
   dependencies: ["setup-test-env"]
+  needs: ["setup-test-env"]
   script:
     - source scripts/schema_changed.sh
 
@@ -219,7 +225,9 @@ db:migrate-from-v11.11.0:
     - .default-before_script
     - .use-pg
     - .except-docs-qa
+  stage: test
   dependencies: ["setup-test-env"]
+  needs: ["setup-test-env"]
   variables:
     SETUP_DB: "false"
   script:
@@ -248,7 +256,9 @@ db:rollback:
     - .default-before_script
     - .use-pg
     - .except-docs-qa
+  stage: test
   dependencies: ["setup-test-env"]
+  needs: ["setup-test-env"]
   script:
     - bundle exec rake db:migrate VERSION=20180101160629
     - bundle exec rake db:migrate SKIP_SCHEMA_VERSION_CHECK=true
@@ -261,7 +271,9 @@ gitlab:setup:
     - .default-before_script
     - .use-pg
     - .except-docs-qa
+  stage: test
   dependencies: ["setup-test-env"]
+  needs: ["setup-test-env"]
   variables:
     SETUP_DB: "false"
   script:
