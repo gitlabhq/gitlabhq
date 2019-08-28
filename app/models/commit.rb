@@ -35,6 +35,7 @@ class Commit
 
   MIN_SHA_LENGTH = Gitlab::Git::Commit::MIN_SHA_LENGTH
   COMMIT_SHA_PATTERN = /\h{#{MIN_SHA_LENGTH},40}/.freeze
+  EXACT_COMMIT_SHA_PATTERN = /\A#{COMMIT_SHA_PATTERN}\z/.freeze
   # Used by GFM to match and present link extensions on node texts and hrefs.
   LINK_EXTENSION_PATTERN = /(patch)/.freeze
 
@@ -90,7 +91,7 @@ class Commit
     end
 
     def valid_hash?(key)
-      !!(/\A#{COMMIT_SHA_PATTERN}\z/ =~ key)
+      !!(EXACT_COMMIT_SHA_PATTERN =~ key)
     end
 
     def lazy(project, oid)
@@ -137,6 +138,10 @@ class Commit
 
   def self.reference_prefix
     '@'
+  end
+
+  def self.reference_valid?(reference)
+    !!(reference =~ EXACT_COMMIT_SHA_PATTERN)
   end
 
   # Pattern used to extract commit references from text

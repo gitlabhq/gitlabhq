@@ -192,6 +192,24 @@ describe Commit do
     end
   end
 
+  describe '.reference_valid?' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:ref, :result) do
+      '1234567' | true
+      '123456' | false
+      '1' | false
+      '0' * 40 | true
+      'c1acaa58bbcbc3eafe538cb8274ba387047b69f8' | true
+      'H1acaa58bbcbc3eafe538cb8274ba387047b69f8' | false
+      nil | false
+    end
+
+    with_them do
+      it { expect(described_class.reference_valid?(ref)).to eq(result) }
+    end
+  end
+
   describe '#reference_link_text' do
     let(:project) { create(:project, :repository, path: 'sample-project') }
 
