@@ -147,7 +147,7 @@
                   = _('Settings')
             %li.divider.fly-out-top-item
             = nav_link(path: 'groups#edit') do
-              = link_to edit_group_path(@group), title: _('General') do
+              = link_to edit_group_path(@group), title: _('General'), data: { qa_selector: 'general_settings_link' } do
                 %span
                   = _('General')
 

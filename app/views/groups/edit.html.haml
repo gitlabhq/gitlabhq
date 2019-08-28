@@ -14,7 +14,7 @@
   .settings-content
     = render 'groups/settings/general'
 
-%section.settings.gs-permissions.no-animate#js-permissions-settings{ class: ('expanded' if expanded) }
+%section.settings.gs-permissions.no-animate#js-permissions-settings{ class: ('expanded' if expanded), data: { qa_selector: 'permission_lfs_2fa_section' } }
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only{ role: 'button' }
       = _('Permissions, LFS, 2FA')
