@@ -50,7 +50,7 @@ module Gitlab
     def self.interceptors
       return [] unless Labkit::Tracing.enabled?
 
-      [Labkit::Tracing::GRPCInterceptor.instance]
+      [Labkit::Tracing::GRPC::ClientInterceptor.instance]
     end
     private_class_method :interceptors
 
