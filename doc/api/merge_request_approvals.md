@@ -152,8 +152,8 @@ POST /projects/:id/approval_rules
 | `id`                 | integer | yes      | The ID of a project                                       |
 | `name`               | string  | yes      | The name of the approval rule                             |
 | `approvals_required` | integer | yes      | The number of required approvals for this rule            |
-| `users`              | integer | no       | The ids of users as approvers                             |
-| `groups`             | integer | no       | The ids of groups as approvers                            |
+| `users`              | Array   | no       | The ids of users as approvers                             |
+| `groups`             | Array   | no       | The ids of groups as approvers                            |
 
 ```json
 {
@@ -231,8 +231,8 @@ PUT /projects/:id/approval_rules/:approval_rule_id
 | `approval_rule_id`   | integer | yes      | The ID of a approval rule                                 |
 | `name`               | string  | yes      | The name of the approval rule                             |
 | `approvals_required` | integer | yes      | The number of required approvals for this rule            |
-| `users`              | integer | no       | The ids of users as approvers                             |
-| `groups`             | integer | no       | The ids of groups as approvers                            |
+| `users`              | Array   | no       | The ids of users as approvers                             |
+| `groups`             | Array   | no       | The ids of groups as approvers                            |
 
 ```json
 {
@@ -701,8 +701,8 @@ POST /projects/:id/merge_requests/:merge_request_iid/approval_rules
 | `name`                     | string  | yes      | The name of the approval rule                  |
 | `approvals_required`       | integer | yes      | The number of required approvals for this rule |
 | `approval_project_rule_id` | integer | no       | The ID of a project-level approval rule        |
-| `users`                    | integer | no       | The ids of users as approvers                  |
-| `groups`                   | integer | no       | The ids of groups as approvers                 |
+| `users`                    | Array   | no       | The ids of users as approvers                  |
+| `groups`                   | Array   | no       | The ids of groups as approvers                 |
 
 **Important:** When `approval_project_rule_id` is set, the `name`, `users` and
 `groups` of project-level rule will be copied. The `approvals_required` specified
@@ -789,8 +789,8 @@ These are system generated rules.
 | `approval_rule_id`   | integer | yes      | The ID of a approval rule                      |
 | `name`               | string  | yes      | The name of the approval rule                  |
 | `approvals_required` | integer | yes      | The number of required approvals for this rule |
-| `users`              | integer | no       | The ids of users as approvers                  |
-| `groups`             | integer | no       | The ids of groups as approvers                 |
+| `users`              | Array   | no       | The ids of users as approvers                  |
+| `groups`             | Array   | no       | The ids of groups as approvers                 |
 
 ```json
 {
