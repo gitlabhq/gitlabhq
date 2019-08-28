@@ -24,22 +24,20 @@
     "ci_status": { "type": ["string", "null"] },
     "cancel_auto_merge_path": { "type": ["string", "null"] },
     "test_reports_path": { "type": ["string", "null"] },
-    "can_receive_suggestion": { "type": "boolean" },
     "create_issue_to_resolve_discussions_path": { "type": ["string", "null"] },
     "current_user": {
       "type": "object",
       "required": [
         "can_remove_source_branch",
         "can_revert_on_current_merge_request",
-        "can_cherry_pick_on_current_merge_request"
+        "can_cherry_pick_on_current_merge_request",
+        "can_create_issue"
       ],
       "properties": {
         "can_remove_source_branch": { "type": "boolean" },
         "can_revert_on_current_merge_request": { "type": ["boolean", "null"] },
         "can_cherry_pick_on_current_merge_request": { "type": ["boolean", "null"] },
-        "can_create_note": { "type": "boolean" },
-        "can_create_issue": { "type": "boolean" },
-        "can_update": { "type": "boolean" }
+        "can_create_issue": { "type": "boolean" }
       },
       "additionalProperties": false
     },
