@@ -94,7 +94,7 @@ become available, you will be able to share job templates like this
 Dependencies should be kept to the minimum. The introduction of a new
 dependency should be argued in the merge request, as per our [Approval
 Guidelines](../code_review.md#approval-guidelines). Both [License
-Management](../../user/project/merge_requests/license_management.md)
+Management](../../user/application_security/license_compliance/index.md)
 **(ULTIMATE)** and [Dependency
 Scanning](../../user/application_security/dependency_scanning/index.md)
 **(ULTIMATE)** should be activated on all projects to ensure new dependencies

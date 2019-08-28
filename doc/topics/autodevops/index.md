@@ -414,7 +414,7 @@ report is created, it's uploaded as an artifact which you can later download and
 check out.
 
 Any licenses are also shown in the merge request widget. Read more how
-[License Compliance works](../../user/application_security/license_management/index.md).
+[License Compliance works](../../user/application_security/license_compliance/index.md).
 
 ### Auto Container Scanning **(ULTIMATE)**
 

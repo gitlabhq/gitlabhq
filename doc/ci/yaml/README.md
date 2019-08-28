@@ -1699,7 +1699,7 @@ dashboards.
 
 > Introduced in GitLab 11.5. Requires GitLab Runner 11.5 and above.
 
-The `license_management` report collects [Licenses](../../user/project/merge_requests/license_management.md)
+The `license_management` report collects [Licenses](../../user/application_security/license_compliance/index.md)
 as artifacts.
 
 The collected License Compliance report will be uploaded to GitLab as an artifact and will
