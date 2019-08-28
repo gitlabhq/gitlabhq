@@ -1,5 +1,5 @@
 - Gitlab::ProjectTemplate.all.each do |template|
-  .template-option.d-flex.align-items-center
+  .template-option.d-flex.align-items-center{ data: { qa_selector: 'template_option_row' } }
     .logo.append-right-10.px-1
       = image_tag template.logo, size: 32, class: "btn-template-icon icon-#{template.name}"
     .description
@@ -13,5 +13,5 @@
         = _("Preview")
       %label.btn.btn-success.template-button.choose-template.append-bottom-0{ for: template.name }
         %input{ type: "radio", autocomplete: "off", name: "project[template_name]", id: template.name, value: template.name, data: { track_label: "template_use", track_property: template.name, track_event: "click_button", track_value: "" } }
-        %span
+        %span{ data: { qa_selector: 'use_template_button' } }
           = _("Use template")
