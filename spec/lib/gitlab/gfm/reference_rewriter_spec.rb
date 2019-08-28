@@ -102,6 +102,23 @@ describe Gitlab::Gfm::ReferenceRewriter do
       end
     end
 
+    context 'with a commit' do
+      let(:old_project) { create(:project, :repository, name: 'old-project', group: group) }
+      let(:commit) { old_project.commit }
+
+      context 'reference to an absolute URL to a commit' do
+        let(:text) { Gitlab::UrlBuilder.build(commit) }
+
+        it { is_expected.to eq(text) }
+      end
+
+      context 'reference to a commit' do
+        let(:text) { commit.id }
+
+        it { is_expected.to eq("#{old_project_ref}@#{text}") }
+      end
+    end
+
     context 'reference contains project milestone' do
       let!(:milestone) do
         create(:milestone, title: '9.0', project: old_project)

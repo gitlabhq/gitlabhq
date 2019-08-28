@@ -1,0 +1,5 @@
+---
+title: Fix moving issues API failing when text includes commit URLs
+merge_request: 32317
+author:
+type: fixed
