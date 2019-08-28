@@ -4,8 +4,7 @@ type: reference
 
 # Enforce accepting Terms of Service **(CORE ONLY)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/18570)
-> in [GitLab Core](https://about.gitlab.com/pricing/) 10.8
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/18570) in [GitLab Core](https://about.gitlab.com/pricing/) 10.8.
 
 An admin can enforce acceptance of a terms of service and privacy policy. When this option is enabled, new and existing users must accept the terms.
 

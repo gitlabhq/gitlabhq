@@ -1899,9 +1899,8 @@ job1:
 
 ### `retry`
 
-> [Introduced][ce-12909] in GitLab 9.5.
-> [Behaviour expanded](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/21758)
-> in GitLab 11.5 to control on which failures to retry.
+> - [Introduced][ce-12909] in GitLab 9.5.
+> - [Behaviour expanded](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/21758) in GitLab 11.5 to control on which failures to retry.
 
 `retry` allows you to configure how many times a job is going to be retried in
 case of a failure.
