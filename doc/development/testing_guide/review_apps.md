@@ -132,7 +132,7 @@ to prevent other pods from being scheduled on this node pool.
 This is to ensure Tiller isn't affected by "noisy" neighbors that could put
 their node under pressure.
 
-## How to:
+## How to
 
 ### Log into my Review App
 

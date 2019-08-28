@@ -96,8 +96,9 @@ corresponding Ruby code where this is happening.
 `gdb` can be another effective tool for debugging Sidekiq. It gives you a little
 more interactive way to look at each thread and see what's causing problems.
 
-> **Note:** Attaching to a process with `gdb` will suspends the normal operation
-  of the process (Sidekiq will not process jobs while `gdb` is attached).
+NOTE: **Note:**
+Attaching to a process with `gdb` will suspends the normal operation
+of the process (Sidekiq will not process jobs while `gdb` is attached).
 
 Start by attaching to the Sidekiq PID:
 
@@ -280,10 +281,10 @@ has number of drawbacks, as mentioned in [Why Ruby’s Timeout is dangerous (and
 
 > This is where the implications get interesting, and terrifying. This means that an exception can get raised:
 >
-> * during a network request (ok, as long as the surrounding code is prepared to catch Timeout::Error)
-> * during the cleanup for the network request
-> * during a rescue block
-> * while creating an object to save to the database afterwards
-> * in any of your code, regardless of whether it could have possibly raised an exception before
+> - during a network request (ok, as long as the surrounding code is prepared to catch Timeout::Error)
+> - during the cleanup for the network request
+> - during a rescue block
+> - while creating an object to save to the database afterwards
+> - in any of your code, regardless of whether it could have possibly raised an exception before
 >
 > Nobody writes code to defend against an exception being raised on literally any line. That’s not even possible. So Thread.raise is  basically like a sneak attack on your code that could result in almost anything. It would probably be okay if it were pure-functional code that did not modify any state. But this is Ruby, so that’s unlikely :)

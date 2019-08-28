@@ -1,6 +1,6 @@
 # GitHub import
 
->  [Introduced]( https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/10308) in GitLab 9.1.
+> [Introduced]( https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/10308) in GitLab 9.1.
 
 In order to retrieve and import GitHub repositories, you will need a
 [GitHub personal access token](https://github.com/settings/tokens).

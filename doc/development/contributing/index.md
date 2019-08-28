@@ -65,7 +65,7 @@ Sign up for the mailing list, answer GitLab questions on StackOverflow or
 respond in the IRC channel. You can also sign up on [CodeTriage][codetriage] to help with
 the remaining issues on the GitHub issue tracker.
 
-## I want to contribute!
+## I want to contribute
 
 If you want to contribute to GitLab,
 [issues with the `Accepting merge requests` label](issue_workflow.md#label-for-community-contributors)

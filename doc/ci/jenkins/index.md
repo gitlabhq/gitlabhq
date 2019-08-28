@@ -32,7 +32,7 @@ There are some high level differences between the products worth mentioning:
 
 ## Groovy vs. YAML
 
-Jenkins Pipelines are based on [Groovy](https://groovy-lang.org/), so the pipeline specification is written as code. 
+Jenkins Pipelines are based on [Groovy](https://groovy-lang.org/), so the pipeline specification is written as code.
 GitLab works a bit differently, we use the more highly structured [YAML](https://yaml.org/) format, which
 places scripting elements inside of `script:` blocks separate from the pipeline specification itself.
 
@@ -56,7 +56,7 @@ rspec:
     - .in-docker
   script:
     - rake rspec
-```      
+```
 
 ## Artifact publishing
 
@@ -143,7 +143,7 @@ default:
 
 GitLab CI also lets you define stages, but is a little bit more free-form to configure. The GitLab [`stages` keyword](../yaml/README.md#stages)
 is a top level setting that enumerates the list of stages, but you are not required to nest individual jobs underneath
-the `stages` section. Any job defined in the `.gitlab-ci.yml` can be made a part of any stage through use of the 
+the `stages` section. Any job defined in the `.gitlab-ci.yml` can be made a part of any stage through use of the
 [`stage:` keyword](../yaml/README.md#stage).
 
 Note that, unless otherwise specified, every pipeline is instantiated with a `build`, `test`, and `deploy` stage

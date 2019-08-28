@@ -538,7 +538,7 @@ can simply reset the existing tracking database with:
 sudo gitlab-rake geo:db:reset
 ```
 
-### Geo node has a database that is writable which is an indication it is not configured for replication with the primary node.
+### Geo node has a database that is writable which is an indication it is not configured for replication with the primary node
 
 This error refers to a problem with the database replica on a **secondary** node,
 which Geo expects to have access to. It usually means, either:
@@ -552,7 +552,7 @@ PostgreSQL instances:
 - A read-only replica of the **primary** node.
 - A regular, writable instance that holds replication metadata. That is, the Geo tracking database.
 
-### Geo node does not appear to be replicating the database from the primary node.
+### Geo node does not appear to be replicating the database from the primary node
 
 The most common problems that prevent the database from replicating correctly are:
 

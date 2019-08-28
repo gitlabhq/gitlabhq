@@ -185,7 +185,7 @@ Check the directory layout on your Gitaly server to be sure.
    ```
 
 1. Append the following to `/etc/gitlab/gitlab.rb` for each respective server:
-   
+
    For `gitaly1.internal`:
 
    ```
@@ -194,7 +194,7 @@ Check the directory layout on your Gitaly server to be sure.
      { 'name' => 'storage1' },
    ]
    ```
-   
+
    For `gitaly2.internal`:
 
    ```
@@ -226,7 +226,7 @@ Check the directory layout on your Gitaly server to be sure.
    ```
 
 1. Append the following to `/home/git/gitaly/config.toml` for each respective server:
-   
+
    For `gitaly1.internal`:
 
    ```toml
@@ -236,7 +236,7 @@ Check the directory layout on your Gitaly server to be sure.
    [[storage]]
    name = 'storage1'
    ```
-   
+
    For `gitaly2.internal`:
 
    ```toml
@@ -262,12 +262,12 @@ Additionally, you need to
 [disable Rugged if previously manually enabled](../high_availability/nfs.md#improving-nfs-performance-with-gitlab).
 
 We assume that your `gitaly1.internal` Gitaly server can be reached at
-`gitaly1.internal:8075` from your GitLab server, and that Gitaly server 
+`gitaly1.internal:8075` from your GitLab server, and that Gitaly server
 can read and write to `/mnt/gitlab/default` and `/mnt/gitlab/storage1`.
 
 We assume also that your `gitaly2.internal` Gitaly server can be reached at
-`gitaly2.internal:8075` from your GitLab server, and that Gitaly server 
-can read and write to `/mnt/gitlab/storage2`. 
+`gitaly2.internal:8075` from your GitLab server, and that Gitaly server
+can read and write to `/mnt/gitlab/storage2`.
 
 **For Omnibus GitLab**
 
@@ -540,6 +540,7 @@ gitaly['concurrency'] = [
   }
 ]
 ```
+
 This will limit the number of in-flight RPC calls for the given RPC's.
 The limit is applied per repository. In the example above, each on the
 Gitaly server can have at most 20 simultaneous PostUploadPack calls in

@@ -516,4 +516,3 @@ The API can be explored interactively using the [GraphiQL IDE](../index.md#graph
 | `username` | String! |  |
 | `avatarUrl` | String! |  |
 | `webUrl` | String! |  |
-

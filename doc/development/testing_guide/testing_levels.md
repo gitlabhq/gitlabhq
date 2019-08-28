@@ -126,7 +126,7 @@ possible).
 | ---------- | -------------- | ----- |
 | `spec/features/` | [Capybara] + [RSpec] | If your test has the `:js` metadata, the browser driver will be [Poltergeist], otherwise it's using [RackTest]. |
 
-### Consider **not** writing a system test!
+### Consider **not** writing a system test
 
 If we're confident that the low-level components work well (and we should be if
 we have enough Unit & Integration tests), we shouldn't need to duplicate their

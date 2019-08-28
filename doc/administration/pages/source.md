@@ -343,21 +343,6 @@ world. Custom domains and TLS are supported.
 1. Restart NGINX
 1. [Restart GitLab][restart]
 
-## Change storage path
-
-Follow the steps below to change the default path where GitLab Pages' contents
-are stored.
-
-1. Pages are stored by default in `/var/opt/gitlab/gitlab-rails/shared/pages`.
-   If you wish to store them in another location you must set it up in
-   `/etc/gitlab/gitlab.rb`:
-
-   ```ruby
-   gitlab_rails['pages_path'] = "/mnt/storage/pages"
-   ```
-
-1. [Reconfigure GitLab][reconfigure]
-
 ## NGINX caveats
 
 >**Note:**
@@ -468,7 +453,6 @@ than GitLab to prevent XSS attacks.
 [NGINX configs]: https://gitlab.com/gitlab-org/gitlab-ee/tree/8-5-stable-ee/lib/support/nginx
 [pages-readme]: https://gitlab.com/gitlab-org/gitlab-pages/blob/master/README.md
 [pages-userguide]: ../../user/project/pages/index.md
-[reconfigure]: ../restart_gitlab.md#omnibus-gitlab-reconfigure
 [restart]: ../restart_gitlab.md#installations-from-source
 [gitlab-pages]: https://gitlab.com/gitlab-org/gitlab-pages/tree/v0.4.0
 [gl-example]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/lib/support/init.d/gitlab.default.example

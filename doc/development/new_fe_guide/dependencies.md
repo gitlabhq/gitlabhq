@@ -1,6 +1,6 @@
 # Dependencies
 
-## Adding Dependencies.
+## Adding Dependencies
 
 GitLab uses `yarn` to manage dependencies. These dependencies are defined in
 two groups within `package.json`, `dependencies` and `devDependencies`. For

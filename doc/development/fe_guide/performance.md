@@ -81,7 +81,7 @@ bundle and included on the page.
 > can find this out by inspecting `document.body.dataset.page` within your
 > browser's developer console while on any page within gitlab.
 
-#### Important Considerations:
+#### Important Considerations
 
 - **Keep Entry Points Lite:**
   Page-specific javascript entry points should be as lite as possible.  These
