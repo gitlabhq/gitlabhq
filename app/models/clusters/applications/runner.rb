@@ -3,7 +3,7 @@
 module Clusters
   module Applications
     class Runner < ApplicationRecord
-      VERSION = '0.7.0'.freeze
+      VERSION = '0.8.0'.freeze
 
       self.table_name = 'clusters_applications_runners'
 
