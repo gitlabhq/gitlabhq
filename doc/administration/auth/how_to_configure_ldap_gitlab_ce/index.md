@@ -32,7 +32,7 @@ For example, [Active Directory](https://technet.microsoft.com/en-us/library/hh83
 
 We won't cover the installation and configuration of Windows Server or Active Directory Domain Services in this tutorial. There are a number of resources online to guide you through this process:
 
-- Install Windows Server 2012  - (_technet.microsoft.com_) - [Installing Windows Server 2012 ](https://technet.microsoft.com/en-us/library/jj134246(v=ws.11).aspx)
+- Install Windows Server 2012  - (_technet.microsoft.com_) - [Installing Windows Server 2012](https://technet.microsoft.com/en-us/library/jj134246(v=ws.11).aspx)
 
 - Install Active Directory Domain Services (AD DS) (_technet.microsoft.com_)- [Install Active Directory Domain Services](https://technet.microsoft.com/windows-server-docs/identity/ad-ds/deploy/install-active-directory-domain-services--level-100-#BKMK_PS)
 
@@ -249,7 +249,7 @@ After configuring LDAP, basic authentication will be available. Users can then l
 
 Users that are removed from the LDAP base group (e.g `OU=GitLab INT,DC=GitLab,DC=org`) will be **blocked** in GitLab. [More information](../ldap.md#security) on LDAP security.
 
-If `allow_username_or_email_login` is enabled in the LDAP configuration, GitLab will ignore everything after the first '@' in the LDAP username used on login. Example: The username `` jon.doe@example.com `` is converted to `jon.doe` when authenticating with the LDAP server. Disable this setting if you use `userPrincipalName` as the `uid`.
+If `allow_username_or_email_login` is enabled in the LDAP configuration, GitLab will ignore everything after the first '@' in the LDAP username used on login. Example: The username `jon.doe@example.com` is converted to `jon.doe` when authenticating with the LDAP server. Disable this setting if you use `userPrincipalName` as the `uid`.
 
 ## LDAP extended features on GitLab EE
 

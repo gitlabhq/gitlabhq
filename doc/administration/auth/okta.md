@@ -98,20 +98,20 @@ Now that the Okta app is configured, it's time to enable it in GitLab.
    >**Notes:**
    >
    >- Change the value for `assertion_consumer_service_url` to match the HTTPS endpoint
-      of GitLab (append `users/auth/saml/callback` to the HTTPS URL of your GitLab
-      installation to generate the correct value).
+   >  of GitLab (append `users/auth/saml/callback` to the HTTPS URL of your GitLab
+   >  installation to generate the correct value).
    >
    >- To get the `idp_cert_fingerprint` fingerprint, first download the
-      certificate from the Okta app you registered and then run:
-      `openssl x509 -in okta.cert -noout -fingerprint`. Substitute `okta.cert`
-      with the location of your certificate.
+   >  certificate from the Okta app you registered and then run:
+   >  `openssl x509 -in okta.cert -noout -fingerprint`. Substitute `okta.cert`
+   >  with the location of your certificate.
    >
    >- Change the value of `idp_sso_target_url`, with the value of the
-      **Identity Provider Single Sign-On URL** from the step when you
-      configured the Okta app.
+   >  **Identity Provider Single Sign-On URL** from the step when you
+   >  configured the Okta app.
    >
    >- Change the value of `issuer` to the value of the **Audience Restriction** from your Okta app configuration. This will identify GitLab
-      to the IdP.
+   >  to the IdP.
    >
    >- Leave `name_identifier_format` as-is.
 

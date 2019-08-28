@@ -19,8 +19,6 @@ sudo gitlab-rake gitlab:ldap:check
 sudo -u git -H bundle exec rake gitlab:ldap:check RAILS_ENV=production
 ```
 
-------
-
 By default, the task will return a sample of 100 LDAP users. Change this
 limit by passing a number to the check task:
 
@@ -134,8 +132,6 @@ bundle exec rake gitlab:ldap:rename_provider RAILS_ENV=production
 What is the old provider? Ex. 'ldapmain': ldapmain
 What is the new provider? Ex. 'ldapcustom': ldapmycompany
 ```
-
-------
 
 This tasks also accepts the `force` environment variable which will skip the
 confirmation dialog:

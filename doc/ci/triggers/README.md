@@ -58,8 +58,7 @@ Read more about the [pipelines trigger API][trigapi].
 
 #### When a pipeline depends on the artifacts of another pipeline **(PREMIUM)**
 
-> The use of `CI_JOB_TOKEN` in the artifacts download API was [introduced][ee-2346]
-  in [GitLab Premium][ee] 9.5.
+> The use of `CI_JOB_TOKEN` in the artifacts download API was [introduced][ee-2346] in [GitLab Premium][ee] 9.5.
 
 With the introduction of dependencies between different projects, one of
 them may need to access artifacts created by a previous one. This process
@@ -271,7 +270,7 @@ Old triggers, created before GitLab 9.0 will be marked as legacy.
 
 Triggers with the legacy label do not have an associated user and only have
 access to the current project. They are considered deprecated and will be
-removed with one of the future versions of GitLab. 
+removed with one of the future versions of GitLab.
 
 [ee-2017]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/2017
 [ee-2346]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/2346

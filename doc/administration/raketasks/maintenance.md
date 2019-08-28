@@ -260,7 +260,7 @@ To check the status of migrations, you can use the following rake task:
 sudo gitlab-rake db:migrate:status
 ```
 
-This will output a table with a `Status` of `up` or `down` for 
+This will output a table with a `Status` of `up` or `down` for
 each Migration ID.
 
 ```bash

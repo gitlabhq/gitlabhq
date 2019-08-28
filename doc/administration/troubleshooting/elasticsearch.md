@@ -266,9 +266,9 @@ ElasticSearch administrator.
 
 Generally speaking, ensure:
 
-* The ElasticSearch server **is not** running on the same node as GitLab.
-* The ElasticSearch server have enough RAM and CPU cores.
-* That sharding **is** being used.
+- The ElasticSearch server **is not** running on the same node as GitLab.
+- The ElasticSearch server have enough RAM and CPU cores.
+- That sharding **is** being used.
 
 Going into some more detail here, if ElasticSearch is running on the same server as GitLab, resource contention is **very** likely to occur. Ideally, ElasticSearch, which requires ample resources, should be running on its own server (maybe coupled with logstash and kibana).
 

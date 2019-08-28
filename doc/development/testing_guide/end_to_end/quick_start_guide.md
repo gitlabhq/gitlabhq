@@ -10,7 +10,7 @@ It's important to understand that end-to-end tests of isolated features, such as
 
 If you don't exactly understand what we mean by **not everything needs to happen through the GUI,** please make sure you've read the [best practices](best_practices.md) before moving on.
 
-## This document covers the following items:
+## This document covers the following items
 
 - [0.](#0-are-end-to-end-tests-needed) Identifying if end-to-end tests are really needed
 - [1.](#1-identifying-the-devops-stage) Identifying the [DevOps stage](https://about.gitlab.com/stages-devops-lifecycle/) of the feature that you are going to cover with end-to-end tests

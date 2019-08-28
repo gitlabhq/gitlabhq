@@ -92,4 +92,3 @@ To propose additions to the glossary please
 In French, the "écriture inclusive" is now over (see on [Legifrance](https://www.legifrance.gouv.fr/affichTexte.do?cidTexte=JORFTEXT000036068906&categorieLien=id)).
 So, to include both genders, write “Utilisateurs et utilisatrices” instead of “Utilisateur·rice·s”.
 When space is missing, the male gender should be used alone.
-

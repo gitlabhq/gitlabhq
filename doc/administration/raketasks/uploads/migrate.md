@@ -108,7 +108,7 @@ sudo -u git -H bundle exec rake "gitlab:uploads:migrate[FileUploader, MergeReque
 
 > Introduced in GitLab 12.3.
 
-To migrate all uploads created by legacy uploaders, run: 
+To migrate all uploads created by legacy uploaders, run:
 
 ```shell
 bundle exec rake gitlab:uploads:legacy:migrate

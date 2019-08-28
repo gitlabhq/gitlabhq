@@ -783,8 +783,6 @@ For multiple paragraphs, use the symbol `>` before every line:
 >
 > - This is a list item
 > - Second item in the list
->
-> ### This is an `h3`
 ```
 
 Which renders to:
@@ -795,9 +793,6 @@ Which renders to:
 >
 > - This is a list item
 > - Second item in the list
->
-> ### This is an `h3`
->{:.no_toc}
 
 ## Terms
 

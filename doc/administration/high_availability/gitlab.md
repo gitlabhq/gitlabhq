@@ -4,9 +4,9 @@ type: reference
 
 # Configuring GitLab for Scaling and High Availability
 
-> **Note:** There is some additional configuration near the bottom for
-  additional GitLab application servers. It's important to read and understand
-  these additional steps before proceeding with GitLab installation.
+NOTE: **Note:** There is some additional configuration near the bottom for
+additional GitLab application servers. It's important to read and understand
+these additional steps before proceeding with GitLab installation.
 
 1. If necessary, install the NFS client utility packages using the following
    commands:
@@ -82,19 +82,19 @@ type: reference
 
 1. [Enable monitoring](#enable-monitoring)
 
-   > **Note:** To maintain uniformity of links across HA clusters, the `external_url`
+   NOTE: **Note:** To maintain uniformity of links across HA clusters, the `external_url`
    on the first application server as well as the additional application
    servers should point to the external url that users will use to access GitLab.
    In a typical HA setup, this will be the url of the load balancer which will
    route traffic to all GitLab application servers in the HA cluster.
-   >
-   > **Note:** When you specify `https` in the `external_url`, as in the example
+
+   NOTE: **Note:** When you specify `https` in the `external_url`, as in the example
    above, GitLab assumes you have SSL certificates in `/etc/gitlab/ssl/`. If
    certificates are not present, Nginx will fail to start. See
    [Nginx documentation](https://docs.gitlab.com/omnibus/settings/nginx.html#enable-https)
    for more information.
-   >
-   > **Note:** It is best to set the `uid` and `gid`s prior to the initial reconfigure
+
+   NOTE: **Note:** It is best to set the `uid` and `gid`s prior to the initial reconfigure
    of GitLab. Omnibus will not recursively `chown` directories if set after the initial reconfigure.
 
 ## First GitLab application server
@@ -105,8 +105,8 @@ Do not run this on additional application servers.
 1. Initialize the database by running `sudo gitlab-rake gitlab:setup`.
 1. Run `sudo gitlab-ctl reconfigure` to compile the configuration.
 
-> **WARNING:** Only run this setup task on **NEW** GitLab instances because it
-  will wipe any existing data.
+   CAUTION: **WARNING:** Only run this setup task on **NEW** GitLab instances because it
+   will wipe any existing data.
 
 ## Extra configuration for additional GitLab application servers
 
@@ -173,9 +173,10 @@ If you enable Monitoring, it must be enabled on **all** GitLab servers.
 
 1. Run `sudo gitlab-ctl reconfigure` to compile the configuration.
 
-> **Warning:** After changing `unicorn['listen']` in `gitlab.rb`, and running `sudo gitlab-ctl reconfigure`,
-  it can take an extended period of time for unicorn to complete reloading after receiving a `HUP`.
-  For more information, see the [issue](https://gitlab.com/gitlab-org/omnibus-gitlab/issues/4401).
+   CAUTION: **Warning:**
+   After changing `unicorn['listen']` in `gitlab.rb`, and running `sudo gitlab-ctl reconfigure`,
+   it can take an extended period of time for unicorn to complete reloading after receiving a `HUP`.
+   For more information, see the [issue](https://gitlab.com/gitlab-org/omnibus-gitlab/issues/4401).
 
 ## Troubleshooting
 
