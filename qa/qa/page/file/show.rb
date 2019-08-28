@@ -32,3 +32,5 @@ module QA
     end
   end
 end
+
+QA::Page::File::Show.prepend_if_ee('QA::EE::Page::File::Show')

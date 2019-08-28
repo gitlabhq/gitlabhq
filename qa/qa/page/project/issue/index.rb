@@ -17,3 +17,5 @@ module QA
     end
   end
 end
+
+QA::Page::Project::Issue::Index.prepend_if_ee('QA::EE::Page::Project::Issue::Index')
