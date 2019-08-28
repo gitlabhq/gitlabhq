@@ -4,30 +4,7 @@ entry.
 
 ## 12.1.7
 
-### Security (21 changes)
-
-- Ensure only authorised users can create notes on Merge Requests and Issues.
-- Add :login_recaptcha_protection_enabled setting to prevent bots from brute-force attacks.
-- Speed up regexp in namespace format by failing fast after reaching maximum namespace depth.
-- Limit the size of issuable description and comments.
-- Send TODOs for comments on commits correctly.
-- Restrict MergeRequests#test_reports to authenticated users with read-access on Builds.
-- Added image proxy to mitigate potential stealing of IP addresses.
-- Filter out old system notes for epics in notes api endpoint response.
-- Avoid exposing unaccessible repo data upon GFM post processing.
-- Fix HTML injection for label description.
-- Make sure HTML text is always escaped when replacing label/milestone references.
-- Prevent DNS rebind on JIRA service integration.
-- Use admin_group authorization in Groups::RunnersController.
-- Prevent disclosure of merge request ID via email.
-- Show cross-referenced MR-id in issues' activities only to authorized users.
-- Enforce max chars and max render time in markdown math.
-- Check permissions before responding in MergeController#pipeline_status.
-- Remove EXIF from users/personal snippet uploads.
-- Fix project import restricted visibility bypass via API.
-- Fix weak session management by clearing password reset tokens after login (username/email) are updated.
-- Fix SSRF via DNS rebinding in Kubernetes Integration.
-
+- Unreleased due to QA failure.
 
 ## 12.1.6
 

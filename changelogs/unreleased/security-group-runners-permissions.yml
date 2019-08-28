@@ -1,0 +1,5 @@
+---
+title: Use admin_group authorization in Groups::RunnersController
+merge_request:
+author:
+type: security
