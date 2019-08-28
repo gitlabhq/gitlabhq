@@ -18,8 +18,11 @@ variables:
   GIT_SUBMODULE_STRATEGY: "none"
   GET_SOURCES_ATTEMPTS: "3"
   KNAPSACK_RSPEC_SUITE_REPORT_PATH: knapsack/${CI_PROJECT_NAME}/rspec_report-master.json
+  EE_KNAPSACK_RSPEC_SUITE_REPORT_PATH: knapsack/${CI_PROJECT_NAME}/rspec_report-master-ee.json
   FLAKY_RSPEC_SUITE_REPORT_PATH: rspec_flaky/report-suite.json
   BUILD_ASSETS_IMAGE: "false"
+  ES_JAVA_OPTS: "-Xms256m -Xmx256m"
+  ELASTIC_URL: "http://elastic:changeme@docker.elastic.co-elasticsearch-elasticsearch:9200"
 
 after_script:
   - date
