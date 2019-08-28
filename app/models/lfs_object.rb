@@ -2,6 +2,7 @@
 
 class LfsObject < ApplicationRecord
   include AfterCommitQueue
+  include EachBatch
   include ObjectStorage::BackgroundMove
 
   has_many :lfs_objects_projects, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
