@@ -34,11 +34,11 @@ that the `master` branch is protected by default.
 1. From the **Branch** dropdown menu, select the branch you want to protect and
    click **Protect**. In the screenshot below, we chose the `develop` branch.
 
-   ![Protected branches page](img/protected_branches_page.png)
+   ![Protected branches page](img/protected_branches_page_v12_3.png)
 
 1. Once done, the protected branch will appear in the "Protected branches" list.
 
-   ![Protected branches list](img/protected_branches_list.png)
+   ![Protected branches list](img/protected_branches_list_v12_3.png)
 
 ## Using the Allowed to merge and Allowed to push settings
 
@@ -65,7 +65,7 @@ You can set the "Allowed to push" and "Allowed to merge" options while creating
 a protected branch or afterwards by selecting the option you want from the
 dropdown list in the "Already protected" area.
 
-![Developers can push](img/protected_branches_devs_can_push.png)
+![Developers can push](img/protected_branches_devs_can_push_v12_3.png)
 
 If you don't choose any of those options while creating a protected branch,
 they are set to "Maintainers" by default.
