@@ -358,7 +358,7 @@ The following documentation relates to the DevOps **Secure** stage:
 | [Dependency Scanning](user/application_security/dependency_scanning/index.md) **(ULTIMATE)**          | Analyze your dependencies for known vulnerabilities.                   |
 | [Dynamic Application Security Testing (DAST)](user/application_security/dast/index.md) **(ULTIMATE)** | Analyze running web applications for known vulnerabilities.            |
 | [Group Security Dashboard](user/application_security/security_dashboard/index.md) **(ULTIMATE)**      | View vulnerabilities in all the projects in a group and its subgroups. |
-| [License Compliance](user/application_security/license_management/index.md) **(ULTIMATE)**            | Search your project's dependencies for their licenses.                 |
+| [License Compliance](user/application_security/license_compliance/index.md) **(ULTIMATE)**            | Search your project's dependencies for their licenses.                 |
 | [Project Security Dashboard](user/application_security/security_dashboard/index.md) **(ULTIMATE)**    | View the latest security reports for your project.                     |
 | [Static Application Security Testing (SAST)](user/application_security/sast/index.md) **(ULTIMATE)**  | Analyze source code for known vulnerabilities.                         |
 
