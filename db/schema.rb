@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_20_163320) do
+ActiveRecord::Schema.define(version: 2019_08_28_083843) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -658,6 +658,7 @@ ActiveRecord::Schema.define(version: 2019_08_20_163320) do
     t.index ["file_store"], name: "index_ci_job_artifacts_on_file_store"
     t.index ["job_id", "file_type"], name: "index_ci_job_artifacts_on_job_id_and_file_type", unique: true
     t.index ["project_id"], name: "index_ci_job_artifacts_on_project_id"
+    t.index ["project_id"], name: "index_ci_job_artifacts_on_project_id_for_security_reports", where: "(file_type = ANY (ARRAY[5, 6, 7, 8]))"
   end
 
   create_table "ci_job_variables", force: :cascade do |t|

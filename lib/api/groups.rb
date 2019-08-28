@@ -216,6 +216,7 @@ module API
 
         use :pagination
         use :with_custom_attributes
+        use :optional_projects_params
       end
       get ":id/projects" do
         projects = find_group_projects(params)

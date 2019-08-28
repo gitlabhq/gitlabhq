@@ -87,6 +87,8 @@ module Ci
 
     scope :expired, -> (limit) { where('expire_at < ?', Time.now).limit(limit) }
 
+    scope :scoped_project, -> { where('ci_job_artifacts.project_id = projects.id') }
+
     delegate :filename, :exists?, :open, to: :file
 
     enum file_type: {
