@@ -13,7 +13,7 @@ describe RuboCop::Cop::RSpec::BeSuccessMatcher do
 
   shared_examples 'cop' do |good:, bad:|
     context "using #{bad} call" do
-      it "registers an offense for `#{bad}`" do
+      it 'registers an offense' do
         inspect_source(bad, source_file)
 
         expect(cop.offenses.size).to eq(1)
@@ -21,7 +21,7 @@ describe RuboCop::Cop::RSpec::BeSuccessMatcher do
         expect(cop.highlights).to eq([bad])
       end
 
-      it "registers an offense for `#{bad}` and autocorrects it to `#{good}`" do
+      it "autocorrects it to `#{good}`" do
         autocorrected = autocorrect_source(bad, source_file)
 
         expect(autocorrected).to eql(good)
@@ -37,27 +37,27 @@ describe RuboCop::Cop::RSpec::BeSuccessMatcher do
     end
   end
 
-  it_behaves_like 'cop',
+  include_examples 'cop',
     bad: 'expect(response).to be_success',
     good: 'expect(response).to be_successful'
 
-  it_behaves_like 'cop',
+  include_examples 'cop',
     bad: 'expect(response).to_not be_success',
     good: 'expect(response).to_not be_successful'
 
-  it_behaves_like 'cop',
+  include_examples 'cop',
     bad: 'expect(response).not_to be_success',
     good: 'expect(response).not_to be_successful'
 
-  it_behaves_like 'cop',
+  include_examples 'cop',
     bad: 'is_expected.to be_success',
     good: 'is_expected.to be_successful'
 
-  it_behaves_like 'cop',
+  include_examples 'cop',
     bad: 'is_expected.to_not be_success',
     good: 'is_expected.to_not be_successful'
 
-  it_behaves_like 'cop',
+  include_examples 'cop',
     bad: 'is_expected.not_to be_success',
     good: 'is_expected.not_to be_successful'
 end
