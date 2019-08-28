@@ -1,0 +1,5 @@
+---
+title: Setting NOT NULL constraint to users.private_profile column
+merge_request: 14838
+author:
+type: other

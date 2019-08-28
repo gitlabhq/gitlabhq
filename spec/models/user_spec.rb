@@ -1176,7 +1176,7 @@ describe User do
         expect(user.can_create_group).to eq(Gitlab.config.gitlab.default_can_create_group)
         expect(user.theme_id).to eq(Gitlab.config.gitlab.default_theme)
         expect(user.external).to be_falsey
-        expect(user.private_profile).to eq false
+        expect(user.private_profile).to eq(false)
       end
     end
 
