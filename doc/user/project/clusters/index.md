@@ -199,7 +199,7 @@ To add an existing Kubernetes cluster to your project:
      kubectl cluster-info | grep 'Kubernetes master' | awk '/http/ {print $NF}'
      ```
 
-   - **CA certificate** (required) - A valid Kubernetes certificate is needed to authenticate to the EKS cluster. We will use the certificate created by default.
+   - **CA certificate** (required) - A valid Kubernetes certificate is needed to authenticate to the cluster. We will use the certificate created by default.
      - List the secrets with `kubectl get secrets`, and one should named similar to
       `default-token-xxxxx`. Copy that token name for use below.
      - Get the certificate by running this command:
