@@ -3,10 +3,6 @@
 class MergeRequestWidgetEntity < Grape::Entity
   include RequestAwareEntity
 
-  # Currently this attr is exposed to be used in app/assets/javascripts/notes/stores/getters.js
-  # in order to determine whether a noteable is an issue or an MR
-  expose :merge_params
-
   expose :source_project_full_path do |merge_request|
     merge_request.source_project&.full_path
   end
@@ -35,16 +31,8 @@ class MergeRequestWidgetEntity < Grape::Entity
     cached_widget_project_json_merge_request_path(merge_request.target_project, merge_request, format: :json)
   end
 
-  expose :create_note_path do |merge_request|
-    project_notes_path(merge_request.project, target_type: 'merge_request', target_id: merge_request.id)
-  end
-
   expose :commit_change_content_path do |merge_request|
     commit_change_content_project_merge_request_path(merge_request.project, merge_request)
-  end
-
-  expose :preview_note_path do |merge_request|
-    preview_markdown_path(merge_request.project, target_type: 'MergeRequest', target_id: merge_request.iid)
   end
 
   expose :conflicts_docs_path do |merge_request|

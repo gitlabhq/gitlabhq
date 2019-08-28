@@ -5,7 +5,6 @@
     { "$ref": "merge_request_poll_widget.json" },
     {
       "properties" : {
-        "merge_params": { "type": ["object", "null"] },
         "source_project_full_path": { "type": ["string", "null"]},
         "target_project_full_path": { "type": ["string", "null"]},
         "email_patches_path": { "type": "string" },
@@ -13,9 +12,7 @@
         "merge_request_basic_path": { "type": "string" },
         "merge_request_widget_path": { "type": "string" },
         "merge_request_cached_widget_path": { "type": "string" },
-        "create_note_path": { "type": ["string", "null"] },
         "commit_change_content_path": { "type": "string" },
-        "preview_note_path": { "type": ["string", "null"] },
         "conflicts_docs_path": { "type": ["string", "null"] },
         "merge_request_pipelines_docs_path": { "type": ["string", "null"] },
         "ci_environments_status_path": { "type": "string" },

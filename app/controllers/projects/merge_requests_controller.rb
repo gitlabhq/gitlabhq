@@ -46,6 +46,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
         @noteable = @merge_request
         @commits_count = @merge_request.commits_count
         @issuable_sidebar = serializer.represent(@merge_request, serializer: 'sidebar')
+        @current_user_data = UserSerializer.new(project: @project).represent(current_user, {}, MergeRequestUserEntity).to_json
 
         set_pipeline_variables
 

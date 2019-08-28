@@ -65,8 +65,6 @@ class MergeRequestPollWidgetEntity < IssuableEntity
     end
   end
 
-  expose :supports_suggestion?, as: :can_receive_suggestion
-
   expose :create_issue_to_resolve_discussions_path do |merge_request|
     presenter(merge_request).create_issue_to_resolve_discussions_path
   end
@@ -84,16 +82,8 @@ class MergeRequestPollWidgetEntity < IssuableEntity
       presenter(merge_request).can_cherry_pick_on_current_merge_request?
     end
 
-    expose :can_create_note do |merge_request|
-      can?(current_user, :create_note, merge_request)
-    end
-
     expose :can_create_issue do |merge_request|
       can?(current_user, :create_issue, merge_request.project)
-    end
-
-    expose :can_update do |merge_request|
-      can?(current_user, :update_merge_request, merge_request)
     end
   end
 

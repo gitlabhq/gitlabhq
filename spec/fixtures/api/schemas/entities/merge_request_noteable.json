@@ -1,0 +1,28 @@
+{
+  "type": "object",
+  "properties" : {
+    "merge_params": { "type": ["object", "null"] },
+    "state": { "type": "string" },
+    "source_branch": { "type": "string" },
+    "target_branch": { "type": "string" },
+    "diff_head_sha": { "type": "string" },
+    "create_note_path": { "type": ["string", "null"] },
+    "preview_note_path": { "type": ["string", "null"] },
+    "create_issue_to_resolve_discussions_path": { "type": ["string", "null"] },
+    "new_blob_path": { "type": ["string", "null"] },
+    "can_receive_suggestion": { "type": "boolean" },
+    "current_user": {
+      "type": "object",
+      "required": [
+        "can_create_note",
+        "can_update"
+      ],
+      "properties": {
+        "can_create_note": { "type": "boolean" },
+        "can_update": { "type": "boolean" }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

@@ -41,6 +41,14 @@ describe MergeRequestSerializer do
     end
   end
 
+  context 'noteable merge request serialization' do
+    let(:serializer) { 'noteable' }
+
+    it 'matches noteable merge request json schema' do
+      expect(json_entity).to match_schema('entities/merge_request_noteable', strict: true)
+    end
+  end
+
   context 'no serializer' do
     let(:serializer) { nil }
 

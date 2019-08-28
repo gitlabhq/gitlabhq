@@ -6,6 +6,7 @@
 - page_description @merge_request.description
 - page_card_attributes @merge_request.card_attributes
 - suggest_changes_help_path = help_page_path('user/discussions/index.md', anchor: 'suggest-changes')
+- number_of_pipelines = @pipelines.size
 
 .merge-request{ data: { mr_action: j(params[:tab].presence || 'show'), url: merge_request_path(@merge_request, format: :json), project_path: project_path(@merge_request.project), lock_version: @merge_request.lock_version } }
   = render "projects/merge_requests/mr_title"
@@ -41,11 +42,11 @@
               = tab_link_for @merge_request, :commits do
                 = _("Commits")
                 %span.badge.badge-pill= @commits_count
-          - if @pipelines.any?
+          - if number_of_pipelines.nonzero?
             %li.pipelines-tab
               = tab_link_for @merge_request, :pipelines do
                 = _("Pipelines")
-                %span.badge.badge-pill.js-pipelines-mr-count= @pipelines.size
+                %span.badge.badge-pill.js-pipelines-mr-count= number_of_pipelines
           %li.diffs-tab.qa-diffs-tab
             = tab_link_for @merge_request, :diffs do
               = _("Changes")
@@ -63,21 +64,21 @@
             %script.js-notes-data{ type: "application/json" }= initial_notes_data(true).to_json.html_safe
             .issuable-discussion.js-vue-notes-event
               #js-vue-mr-discussions{ data: { notes_data: notes_data(@merge_request).to_json,
-                noteable_data: serialize_issuable(@merge_request),
+                noteable_data: serialize_issuable(@merge_request, serializer: 'noteable'),
                 noteable_type: 'MergeRequest',
                 target_type: 'merge_request',
                 help_page_path: suggest_changes_help_path,
-                current_user_data: UserSerializer.new(project: @project).represent(current_user, {}, MergeRequestUserEntity).to_json} }
+                current_user_data: @current_user_data} }
 
       #commits.commits.tab-pane
         -# This tab is always loaded via AJAX
       #pipelines.pipelines.tab-pane
-        - if @pipelines.any?
+        - if number_of_pipelines.nonzero?
           = render 'projects/commit/pipelines_list', disable_initialization: true, endpoint: pipelines_project_merge_request_path(@project, @merge_request)
       #js-diffs-app.diffs.tab-pane{ data: { "is-locked" => @merge_request.discussion_locked?,
         endpoint: diffs_project_merge_request_path(@project, @merge_request, 'json', request.query_parameters),
         help_page_path: suggest_changes_help_path,
-        current_user_data: UserSerializer.new(project: @project).represent(current_user, {}, MergeRequestUserEntity).to_json,
+        current_user_data: @current_user_data,
         project_path: project_path(@merge_request.project),
         changes_empty_state_illustration: image_path('illustrations/merge_request_changes_empty.svg'),
         is_fluid_layout: fluid_layout.to_s,
