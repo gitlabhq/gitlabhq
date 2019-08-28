@@ -73,7 +73,7 @@ according to the markup language.
 | [Markdown](../../markdown.md) | `mdown`, `mkd`, `mkdn`, `md`, `markdown` |
 | [reStructuredText](http://docutils.sourceforge.net/rst.html) | `rst` |
 | [AsciiDoc](../../asciidoc.md) | `adoc`, `ad`, `asciidoc` |
-| [Textile](https://txstyle.org/) | `textile` |
+| [Textile](https://textile-lang.com/) | `textile` |
 | [rdoc](http://rdoc.sourceforge.net/doc/index.html)  | `rdoc` |
 | [Orgmode](https://orgmode.org/) | `org` |
 | [creole](http://www.wikicreole.org/) | `creole` |
