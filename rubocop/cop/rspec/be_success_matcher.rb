@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_relative '../../spec_helpers'
-
 module RuboCop
   module Cop
     module RSpec
@@ -24,8 +22,6 @@ module RuboCop
       #   it { is_expected.to be_successful }
       #
       class BeSuccessMatcher < RuboCop::Cop::Cop
-        include SpecHelpers
-
         MESSAGE = 'Do not use deprecated `success?` method, use `successful?` instead.'
 
         def_node_search :expect_to_be_success?, <<~PATTERN

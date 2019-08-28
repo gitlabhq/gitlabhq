@@ -2,9 +2,6 @@
 
 require 'spec_helper'
 
-require 'rubocop'
-require 'rubocop/rspec/support'
-
 require_relative '../../../../rubocop/cop/rspec/be_success_matcher'
 
 describe RuboCop::Cop::RSpec::BeSuccessMatcher do
