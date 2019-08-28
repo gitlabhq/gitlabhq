@@ -356,6 +356,8 @@ class Group < Namespace
   end
 
   def max_member_access_for_user(user)
+    return GroupMember::NO_ACCESS unless user
+
     return GroupMember::OWNER if user.admin?
 
     members_with_parents
