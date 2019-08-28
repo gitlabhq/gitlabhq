@@ -26,7 +26,9 @@ dependency_scanning:
   extends: .reports
 
 dast:
-  extends: .reports
+  extends:
+    - .reports
+    - .review-only
   stage: qa
   dependencies: ["review-deploy"]
   before_script:
