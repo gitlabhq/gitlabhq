@@ -34,7 +34,8 @@ module Gitlab
           GitConfigOptions: [],
           GitalyServer: {
             address: Gitlab::GitalyClient.address(project.repository_storage),
-            token: Gitlab::GitalyClient.token(project.repository_storage)
+            token: Gitlab::GitalyClient.token(project.repository_storage),
+            features: Feature::Gitaly.server_feature_flags
           }
         }
 
@@ -250,7 +251,8 @@ module Gitlab
       def gitaly_server_hash(repository)
         {
           address: Gitlab::GitalyClient.address(repository.project.repository_storage),
-          token: Gitlab::GitalyClient.token(repository.project.repository_storage)
+          token: Gitlab::GitalyClient.token(repository.project.repository_storage),
+          features: Feature::Gitaly.server_feature_flags
         }
       end
 

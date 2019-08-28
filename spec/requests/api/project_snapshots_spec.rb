@@ -6,6 +6,12 @@ describe API::ProjectSnapshots do
   let(:project) { create(:project) }
   let(:admin) { create(:admin) }
 
+  before do
+    allow(Feature::Gitaly).to receive(:server_feature_flags).and_return({
+      'gitaly-feature-foobar' => 'true'
+    })
+  end
+
   describe 'GET /projects/:id/snapshot' do
     def expect_snapshot_response_for(repository)
       type, params = workhorse_send_data
@@ -13,6 +19,7 @@ describe API::ProjectSnapshots do
       expect(type).to eq('git-snapshot')
       expect(params).to eq(
         'GitalyServer' => {
+          'features' => { 'gitaly-feature-foobar' => 'true' },
           'address' => Gitlab::GitalyClient.address(repository.project.repository_storage),
           'token' => Gitlab::GitalyClient.token(repository.project.repository_storage)
         },
