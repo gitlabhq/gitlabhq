@@ -964,13 +964,6 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@gitlab/csslab@^1.9.0":
-  version "1.9.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/csslab/-/csslab-1.9.0.tgz#22fca5b1a30cbd9ca46fc6f9485ecbaba4dc300c"
-  integrity sha512-Zjayzokm7E2wgxUR/pxIMocdiBB5XHt2PEemdzD8qD+aQmMpMxSyIEMQk5Jq0Wgv+Rd5WXTolTw3kmb9l8ZeJg==
-  dependencies:
-    bootstrap "^4.1.3"
-
 "@gitlab/eslint-config@^1.6.0":
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/@gitlab/eslint-config/-/eslint-config-1.6.0.tgz#1fd247d6ab477d53d4c330e05f007e3afa303689"
@@ -2268,7 +2261,7 @@ bootstrap-vue@2.0.0-rc.27:
     portal-vue "^2.1.5"
     vue-functional-data-merge "^3.1.0"
 
-bootstrap@4.3.1, bootstrap@^4.1.3, bootstrap@^4.3.1:
+bootstrap@4.3.1, bootstrap@^4.3.1:
   version "4.3.1"
   resolved "https://registry.yarnpkg.com/bootstrap/-/bootstrap-4.3.1.tgz#280ca8f610504d99d7b6b4bfc4b68cec601704ac"
   integrity sha512-rXqOmH1VilAt2DyPzluTi2blhk17bO7ef+zLLPlWvG494pDxcM234pJ8wTc/6R40UWizAIIMgxjvxZg5kmsbag==

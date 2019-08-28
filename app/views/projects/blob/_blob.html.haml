@@ -9,6 +9,6 @@
   = render "projects/blob/auxiliary_viewer", blob: blob
 
 #blob-content-holder.blob-content-holder
-  %article.file-holder{ class: ('use-csslab' if Feature.enabled?(:csslab)) }
+  %article.file-holder
     = render 'projects/blob/header', blob: blob
     = render 'projects/blob/content', blob: blob

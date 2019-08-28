@@ -6,7 +6,7 @@
 = render 'shared/snippets/header'
 
 .project-snippets
-  %article.file-holder.snippet-file-content{ class: ('use-csslab' if Feature.enabled?(:csslab)) }
+  %article.file-holder.snippet-file-content
     = render 'shared/snippets/blob'
 
   .row-content-block.top-block.content-component-block
