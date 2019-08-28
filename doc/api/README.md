@@ -396,7 +396,7 @@ GET /api/v4/projects/diaspora%2Fdiaspora
 
 NOTE: **Note:**
 A project's **path** is not necessarily the same as its **name**.  A
-project's path can found in the project's URL or in the project's settings
+project's path can be found in the project's URL or in the project's settings
 under **General > Advanced > Change path**.
 
 ## Branches and tags name encoding
@@ -422,7 +422,7 @@ We can call the API with `array` and `hash` types parameters as shown below:
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 -d "import_sources[]=github" \
 -d "import_sources[]=bitbucket" \
-"https://gitlab.example.com/api/v4/some_endpoint
+https://gitlab.example.com/api/v4/some_endpoint
 ```
 
 ### `hash`
