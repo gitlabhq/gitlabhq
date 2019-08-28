@@ -24,15 +24,15 @@ To protect a tag, you need to have at least Maintainer permission level.
 
 1. From the **Tag** dropdown menu, select the tag you want to protect or type and click **Create wildcard**. In the screenshot below, we chose to protect all tags matching `v*`:
 
-   ![Protected tags page](img/protected_tags_page.png)
+   ![Protected tags page](img/protected_tags_page_v12_3.png)
 
 1. From the **Allowed to create** dropdown, select who will have permission to create matching tags and then click **Protect**:
 
-   ![Allowed to create tags dropdown](img/protected_tags_permissions_dropdown.png)
+   ![Allowed to create tags dropdown](img/protected_tags_permissions_dropdown_v12_3.png)
 
 1. Once done, the protected tag will appear in the **Protected tags** list:
 
-   ![Protected tags list](img/protected_tags_list.png)
+   ![Protected tags list](img/protected_tags_list_v12_3.png)
 
 ## Wildcard protected tags
 
