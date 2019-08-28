@@ -88,6 +88,10 @@ describe('Release block', () => {
     vm.$destroy();
   });
 
+  it("renders the block with an id equal to the release's tag name", () => {
+    expect(vm.$el.id).toBe('18.04');
+  });
+
   it('renders release name', () => {
     expect(vm.$el.textContent).toContain(release.name);
   });
