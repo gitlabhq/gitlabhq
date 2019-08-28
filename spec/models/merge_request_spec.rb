@@ -3195,6 +3195,40 @@ describe MergeRequest do
     end
   end
 
+  describe '.merge_train_ref?' do
+    subject { described_class.merge_train_ref?(ref) }
+
+    context 'when ref is ref name of a branch' do
+      let(:ref) { 'feature' }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when ref is HEAD ref path of a branch' do
+      let(:ref) { 'refs/heads/feature' }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when ref is HEAD ref path of a merge request' do
+      let(:ref) { 'refs/merge-requests/1/head' }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when ref is merge ref path of a merge request' do
+      let(:ref) { 'refs/merge-requests/1/merge' }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when ref is train ref path of a merge request' do
+      let(:ref) { 'refs/merge-requests/1/train' }
+
+      it { is_expected.to be_truthy }
+    end
+  end
+
   describe '#cleanup_refs' do
     subject { merge_request.cleanup_refs(only: only) }
 

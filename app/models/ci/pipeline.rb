@@ -670,6 +670,7 @@ module Ci
         variables.append(key: 'CI_COMMIT_REF_PROTECTED', value: (!!protected_ref?).to_s)
 
         if merge_request_event? && merge_request
+          variables.append(key: 'CI_MERGE_REQUEST_EVENT_TYPE', value: merge_request_event_type.to_s)
           variables.append(key: 'CI_MERGE_REQUEST_SOURCE_BRANCH_SHA', value: source_sha.to_s)
           variables.append(key: 'CI_MERGE_REQUEST_TARGET_BRANCH_SHA', value: target_sha.to_s)
           variables.concat(merge_request.predefined_variables)
@@ -772,8 +773,16 @@ module Ci
       triggered_by_merge_request? && target_sha.present?
     end
 
+    def merge_train_pipeline?
+      merge_request_pipeline? && merge_train_ref?
+    end
+
     def merge_request_ref?
       MergeRequest.merge_request_ref?(ref)
+    end
+
+    def merge_train_ref?
+      MergeRequest.merge_train_ref?(ref)
     end
 
     def matches_sha_or_source_sha?(sha)
@@ -802,6 +811,20 @@ module Ci
 
     def error_messages
       errors ? errors.full_messages.to_sentence : ""
+    end
+
+    def merge_request_event_type
+      return unless merge_request_event?
+
+      strong_memoize(:merge_request_event_type) do
+        if detached_merge_request_pipeline?
+          :detached
+        elsif merge_request_pipeline?
+          :merged_result
+        elsif merge_train_pipeline?
+          :merge_train
+        end
+      end
     end
 
     private

@@ -41,7 +41,7 @@ describe PipelineEntity do
       it 'contains details' do
         expect(subject).to include :details
         expect(subject[:details])
-          .to include :duration, :finished_at
+          .to include :duration, :finished_at, :name
         expect(subject[:details][:status]).to include :icon, :favicon, :text, :label, :tooltip
       end
 
@@ -210,6 +210,10 @@ describe PipelineEntity do
       it 'exposes source sha and target sha' do
         expect(subject[:source_sha]).to be_present
         expect(subject[:target_sha]).to be_present
+      end
+
+      it 'exposes merge request event type' do
+        expect(subject[:merge_request_event_type]).to be_present
       end
     end
   end

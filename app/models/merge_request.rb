@@ -1142,6 +1142,10 @@ class MergeRequest < ApplicationRecord
     ref.start_with?("refs/#{Repository::REF_MERGE_REQUEST}/")
   end
 
+  def self.merge_train_ref?(ref)
+    %r{\Arefs/#{Repository::REF_MERGE_REQUEST}/\d+/train\z}.match?(ref)
+  end
+
   def in_locked_state
     begin
       lock_mr
