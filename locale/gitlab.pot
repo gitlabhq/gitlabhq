@@ -12115,9 +12115,6 @@ msgstr ""
 msgid "Toggles :%{name}: emoji award."
 msgstr ""
 
-msgid "Token"
-msgstr ""
-
 msgid "Tomorrow"
 msgstr ""
 

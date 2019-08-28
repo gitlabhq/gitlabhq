@@ -282,10 +282,6 @@ describe "Admin Runners" do
       visit admin_runner_path(runner)
     end
 
-    describe 'runner info' do
-      it { expect(find_field('runner_token').value).to eq runner.token }
-    end
-
     describe 'projects' do
       it 'contains project names' do
         expect(page).to have_content(@project1.full_name)

@@ -1,0 +1,5 @@
+---
+title: Remove token field from runners edit form
+merge_request: 32231
+author:
+type: fixed
