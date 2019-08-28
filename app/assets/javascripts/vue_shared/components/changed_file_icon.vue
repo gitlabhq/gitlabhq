@@ -24,7 +24,7 @@ export default {
     showStagedIcon: {
       type: Boolean,
       required: false,
-      default: false,
+      default: true,
     },
     size: {
       type: Number,
@@ -41,7 +41,7 @@ export default {
     changedIcon() {
       // False positive i18n lint: https://gitlab.com/gitlab-org/frontend/eslint-plugin-i18n/issues/26
       // eslint-disable-next-line @gitlab/i18n/no-non-i18n-strings
-      const suffix = !this.file.changed && this.file.staged && !this.showStagedIcon ? '-solid' : '';
+      const suffix = !this.file.changed && this.file.staged && this.showStagedIcon ? '-solid' : '';
 
       return `${getCommitIconMap(this.file).icon}${suffix}`;
     },

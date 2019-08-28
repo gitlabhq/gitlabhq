@@ -86,7 +86,7 @@ export default {
       v-else-if="showChangedFileIcon"
       :file="file"
       :show-tooltip="true"
-      :show-staged-icon="true"
+      :show-staged-icon="false"
     />
     <new-dropdown
       :type="file.type"

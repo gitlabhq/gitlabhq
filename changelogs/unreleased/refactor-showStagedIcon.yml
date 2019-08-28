@@ -1,0 +1,5 @@
+---
+title: Refactor showStagedIcon property to reflect the behavior its name represents.
+merge_request: 32333
+author: Arun Kumar Mohan
+type: other
