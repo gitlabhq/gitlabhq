@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
-
-require_dependency 'gitlab'
+require 'spec_helper'
 
 describe Gitlab do
+  include RailsHelpers
+
   describe '.root' do
     it 'returns the root path of the app' do
       expect(described_class.root).to eq(Pathname.new(File.expand_path('../..', __dir__)))
@@ -113,7 +113,7 @@ describe Gitlab do
 
     it 'is true when dev env' do
       allow(described_class).to receive_messages(com?: false, org?: false)
-      allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new('development'))
+      stub_rails_env('development')
 
       expect(described_class.dev_env_org_or_com?).to eq true
     end
