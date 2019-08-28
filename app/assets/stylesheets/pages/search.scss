@@ -48,6 +48,10 @@ input[type='checkbox']:hover {
       background-color ease-in-out $default-transition-duration,
       width ease-in-out $default-transition-duration;
 
+    @include media-breakpoint-up(xl) {
+      width: $search-input-xl-width;
+    }
+
     &:hover {
       box-shadow: none;
     }
@@ -116,7 +120,7 @@ input[type='checkbox']:hover {
       overflow: auto;
 
       @include media-breakpoint-up(xl) {
-        width: $search-input-active-width;
+        width: $search-input-xl-width;
       }
     }
 
@@ -130,10 +134,6 @@ input[type='checkbox']:hover {
       @extend .form-control:focus;
       border-color: $blue-300;
       box-shadow: none;
-
-      @include media-breakpoint-up(xl) {
-        width: $search-input-active-width;
-      }
 
       .search-input-wrap {
         .search-icon,
