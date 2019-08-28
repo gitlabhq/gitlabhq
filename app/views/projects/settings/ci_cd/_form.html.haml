@@ -14,14 +14,14 @@
             = f.label :build_allow_git_fetch_false, class: 'form-check-label' do
               %strong git clone
               %br
-              %span.descr
+              %span
                 = _("Slower but makes sure the project workspace is pristine as it clones the repository from scratch for every job")
           .form-check
             = f.radio_button :build_allow_git_fetch, 'true', { class: 'form-check-input' }
             = f.label :build_allow_git_fetch_true, class: 'form-check-label' do
               %strong git fetch
               %br
-              %span.descr
+              %span
                 = _("Faster as it re-uses the project workspace (falling back to clone if it doesn't exist)")
 
         %hr

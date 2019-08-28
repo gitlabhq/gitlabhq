@@ -7,14 +7,14 @@
     = form.radio_button :merge_method, :merge, class: "js-merge-method-radio form-check-input"
     = label_tag :project_merge_method_merge, class: 'form-check-label' do
       = s_('ProjectSettings|Merge commit')
-      .descr.text-secondary
+      .text-secondary
         = s_('ProjectSettings|Every merge creates a merge commit')
 
   .form-check.mb-2
     = form.radio_button :merge_method, :rebase_merge, class: "js-merge-method-radio form-check-input"
     = label_tag :project_merge_method_rebase_merge, class: 'form-check-label' do
       = s_('ProjectSettings|Merge commit with semi-linear history')
-      .descr.text-secondary
+      .text-secondary
         = s_('ProjectSettings|Every merge creates a merge commit')
         %br
         = s_('ProjectSettings|Fast-forward merges only')
@@ -25,7 +25,7 @@
     = form.radio_button :merge_method, :ff, class: "js-merge-method-radio qa-radio-button-merge-ff form-check-input"
     = label_tag :project_merge_method_ff, class: 'form-check-label' do
       = s_('ProjectSettings|Fast-forward merge')
-      .descr.text-secondary
+      .text-secondary
         = s_('ProjectSettings|No merge commits are created')
         %br
         = s_('ProjectSettings|Fast-forward merges only')
