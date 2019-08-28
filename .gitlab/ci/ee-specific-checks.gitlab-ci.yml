@@ -1,0 +1,22 @@
+.ee-specific-check:
+  extends: .default-tags
+  dependencies: []
+  only:
+    - branches@gitlab-org/gitlab-ee
+  except:
+    - master
+    - tags
+    - /[\d-]+-stable(-ee)?/
+    - /[\d-]+-auto-deploy-\d{7}/
+    - /^security-/
+    - /\bce\-to\-ee\b/
+
+ee-files-location-check:
+  extends: .ee-specific-check
+  script:
+    - scripts/ee-files-location-check
+
+ee-specific-lines-check:
+  extends: .ee-specific-check
+  script:
+    - scripts/ee-specific-lines-check
