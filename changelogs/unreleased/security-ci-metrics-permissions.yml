@@ -1,6 +1,0 @@
----
-title: Restrict MergeRequests#test_reports to authenticated users with read-access
-  on Builds
-merge_request:
-author:
-type: security
