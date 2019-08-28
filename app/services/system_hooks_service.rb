@@ -74,9 +74,11 @@ class SystemHooksService
     when ProjectMember
       return "user_add_to_team"      if event == :create
       return "user_remove_from_team" if event == :destroy
+      return "user_update_for_team"  if event == :update
     when GroupMember
       return 'user_add_to_group'      if event == :create
       return 'user_remove_from_group' if event == :destroy
+      return 'user_update_for_group'  if event == :update
     else
       "#{model.class.name.downcase}_#{event}"
     end

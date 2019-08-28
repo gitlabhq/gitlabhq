@@ -19,6 +19,7 @@ describe SystemHooksService do
     it { expect(event_data(project, :destroy)).to include(:event_name, :name, :created_at, :updated_at, :path, :project_id, :owner_name, :owner_email, :project_visibility) }
     it { expect(event_data(project_member, :create)).to include(:event_name, :created_at, :updated_at, :project_name, :project_path, :project_path_with_namespace, :project_id, :user_name, :user_username, :user_email, :user_id, :access_level, :project_visibility) }
     it { expect(event_data(project_member, :destroy)).to include(:event_name, :created_at, :updated_at, :project_name, :project_path, :project_path_with_namespace, :project_id, :user_name, :user_username, :user_email, :user_id, :access_level, :project_visibility) }
+    it { expect(event_data(project_member, :update)).to include(:event_name, :created_at, :updated_at, :project_name, :project_path, :project_path_with_namespace, :project_id, :user_name, :user_username, :user_email, :user_id, :access_level, :project_visibility) }
     it { expect(event_data(key, :create)).to include(:username, :key, :id) }
     it { expect(event_data(key, :destroy)).to include(:username, :key, :id) }
     it { expect(event_data(deploy_key, :create)).to include(:key, :id) }
@@ -65,6 +66,13 @@ describe SystemHooksService do
 
     it do
       expect(event_data(group_member, :destroy)).to include(
+        :event_name, :created_at, :updated_at, :group_name, :group_path,
+        :group_id, :user_id, :user_username, :user_name, :user_email, :group_access
+      )
+    end
+
+    it do
+      expect(event_data(group_member, :update)).to include(
         :event_name, :created_at, :updated_at, :group_name, :group_path,
         :group_id, :user_id, :user_username, :user_name, :user_email, :group_access
       )
@@ -145,6 +153,7 @@ describe SystemHooksService do
     it { expect(event_name(project, :update)).to eq "project_update" }
     it { expect(event_name(project_member, :create)).to eq "user_add_to_team" }
     it { expect(event_name(project_member, :destroy)).to eq "user_remove_from_team" }
+    it { expect(event_name(project_member, :update)).to eq "user_update_for_team" }
     it { expect(event_name(key, :create)).to eq 'key_create' }
     it { expect(event_name(key, :destroy)).to eq 'key_destroy' }
     it { expect(event_name(group, :create)).to eq 'group_create' }
@@ -152,6 +161,7 @@ describe SystemHooksService do
     it { expect(event_name(group, :rename)).to eq 'group_rename' }
     it { expect(event_name(group_member, :create)).to eq 'user_add_to_group' }
     it { expect(event_name(group_member, :destroy)).to eq 'user_remove_from_group' }
+    it { expect(event_name(group_member, :update)).to eq 'user_update_for_group' }
   end
 
   def event_data(*args)

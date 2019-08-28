@@ -13,6 +13,7 @@ Your GitLab instance can perform HTTP POST requests on the following events:
 - `project_update`
 - `user_add_to_team`
 - `user_remove_from_team`
+- `user_update_for_team`
 - `user_create`
 - `user_destroy`
 - `user_failed_login`
@@ -24,6 +25,7 @@ Your GitLab instance can perform HTTP POST requests on the following events:
 - `group_rename`
 - `user_add_to_group`
 - `user_remove_from_group`
+- `user_update_for_group`
 
 The triggers for most of these are self-explanatory, but `project_update` and `project_rename` deserve some clarification: `project_update` is fired any time an attribute of a project is changed (name, description, tags, etc.) *unless* the `path` attribute is also changed. In that case, a `project_rename` is triggered instead (so that, for instance, if all you care about is the repo URL, you can just listen for `project_rename`).
 
@@ -160,6 +162,26 @@ Please refer to `group_rename` and `user_rename` for that case.
                   "created_at": "2012-07-21T07:30:56Z",
                   "updated_at": "2012-07-21T07:38:22Z",
                   "event_name": "user_remove_from_team",
+                "access_level": "Maintainer",
+                  "project_id": 74,
+                "project_name": "StoreCloud",
+                "project_path": "storecloud",
+ "project_path_with_namespace": "jsmith/storecloud",
+                  "user_email": "johnsmith@gmail.com",
+                   "user_name": "John Smith",
+               "user_username": "johnsmith",
+                     "user_id": 41,
+          "project_visibility": "visibilitylevel|private"
+}
+```
+
+**Team Member Updated:**
+
+```json
+{
+                  "created_at": "2012-07-21T07:30:56Z",
+                  "updated_at": "2012-07-21T07:38:22Z",
+                  "event_name": "user_update_for_team",
                 "access_level": "Maintainer",
                   "project_id": 74,
                 "project_name": "StoreCloud",
@@ -338,6 +360,24 @@ If the user is blocked via LDAP, `state` will be `ldap_blocked`.
     "created_at": "2012-07-21T07:30:56Z",
     "updated_at": "2012-07-21T07:38:22Z",
     "event_name": "user_remove_from_group",
+  "group_access": "Maintainer",
+      "group_id": 78,
+    "group_name": "StoreCloud",
+    "group_path": "storecloud",
+    "user_email": "johnsmith@gmail.com",
+     "user_name": "John Smith",
+ "user_username": "johnsmith",
+       "user_id": 41
+}
+```
+
+**Group Member Updated:**
+
+```json
+{
+    "created_at": "2012-07-21T07:30:56Z",
+    "updated_at": "2012-07-21T07:38:22Z",
+    "event_name": "user_update_for_group",
   "group_access": "Maintainer",
       "group_id": 78,
     "group_name": "StoreCloud",
