@@ -45,12 +45,16 @@ module Gitlab
         def recursion_too_deep?(node_name, times_encountered)
           return if IGNORED_FIELDS.include?(node_name)
 
-          times_encountered > RECURSION_THRESHOLD
+          times_encountered > recursion_threshold
         end
 
         def skip_node?(irep_node)
           ast_node = irep_node.ast_node
           !ast_node.is_a?(GraphQL::Language::Nodes::Field) || ast_node.selections.empty?
+        end
+
+        def recursion_threshold
+          RECURSION_THRESHOLD
         end
       end
     end

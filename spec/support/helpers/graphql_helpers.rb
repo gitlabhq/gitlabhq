@@ -117,6 +117,7 @@ module GraphqlHelpers
   def all_graphql_fields_for(class_name, parent_types = Set.new)
     allow_unlimited_graphql_complexity
     allow_unlimited_graphql_depth
+    allow_high_graphql_recursion
 
     type = GitlabSchema.types[class_name.to_s]
     return "" unless type
@@ -239,6 +240,10 @@ module GraphqlHelpers
   def allow_unlimited_graphql_depth
     allow_any_instance_of(GitlabSchema).to receive(:max_depth).and_return nil
     allow(GitlabSchema).to receive(:max_query_depth).with(any_args).and_return nil
+  end
+
+  def allow_high_graphql_recursion
+    allow_any_instance_of(Gitlab::Graphql::QueryAnalyzers::RecursionAnalyzer).to receive(:recursion_threshold).and_return 1000
   end
 end
 
