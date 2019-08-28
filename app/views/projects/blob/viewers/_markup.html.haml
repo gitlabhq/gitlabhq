@@ -1,4 +1,4 @@
 - blob = viewer.blob
 - context = blob.respond_to?(:rendered_markup) ? { rendered: blob.rendered_markup } : {}
-.file-content.md.md-file{ class: ('use-csslab' if Feature.enabled?(:csslab)) }
+.file-content.md.md-file
   = markup(blob.name, blob.data, context)

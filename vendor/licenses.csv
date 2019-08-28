@@ -67,7 +67,6 @@
 @babel/template,7.1.2,MIT
 @babel/traverse,7.1.0,MIT
 @babel/types,7.1.2,MIT
-@gitlab/csslab,1.8.0,MIT
 @gitlab/svgs,1.41.0,MIT
 @gitlab/ui,1.15.0,MIT
 @sindresorhus/is,0.7.0,MIT

@@ -1,5 +1,5 @@
 - if markup?(@blob.name)
-  .file-content.md.md-file{ class: ('use-csslab' if Feature.enabled?(:csslab)) }
+  .file-content.md.md-file
     = markup(@blob.name, @content)
 - else
   .diff-file

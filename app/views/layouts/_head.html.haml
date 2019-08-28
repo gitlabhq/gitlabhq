@@ -36,7 +36,6 @@
   = stylesheet_link_tag "print", media: "print"
   = stylesheet_link_tag "test", media: "all" if Rails.env.test?
   = stylesheet_link_tag 'performance_bar' if performance_bar_enabled?
-  = stylesheet_link_tag 'csslab' if Feature.enabled?(:csslab)
 
   = stylesheet_link_tag "highlight/themes/#{user_color_scheme}", media: "all"
 

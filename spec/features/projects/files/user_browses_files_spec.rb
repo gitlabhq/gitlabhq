@@ -14,7 +14,6 @@ describe "User browses files" do
 
   before do
     stub_feature_flags(vue_file_list: false)
-    stub_feature_flags(csslab: false)
     sign_in(user)
   end
 

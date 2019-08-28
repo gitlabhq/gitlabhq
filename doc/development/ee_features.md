@@ -1047,8 +1047,6 @@ code base.  Examples of backports include the following:
 
 Here is a workflow to make sure those changes end up backported safely into CE too.
 
-(This approach does not refer to changes introduced via [csslab](https://gitlab.com/gitlab-org/csslab/).)
-
 1. **Make your changes in the EE branch.** If possible, keep a separated commit (to be squashed) to help backporting and review.
 1. **Open merge request to EE project.**
 1. **Apply the changes you made to CE files in a branch of the CE project.** (Tip: Use `patch` with the diff from your commit in EE branch)

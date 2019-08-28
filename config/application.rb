@@ -165,7 +165,6 @@ module Gitlab
     config.assets.precompile << "locale/**/app.js"
     config.assets.precompile << "emoji_sprites.css"
     config.assets.precompile << "errors.css"
-    config.assets.precompile << "csslab.css"
 
     config.assets.precompile << "highlight/themes/*.css"
 
