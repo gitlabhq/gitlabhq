@@ -62,6 +62,9 @@ Once you're on the dashboard, at the top you should see a series of filters for:
 - Report type
 - Project
 
+NOTE: **Note:**
+The dashboard only shows projects with [security reports](#supported-reports) enabled in a group. 
+
 ![dashboard with action buttons and metrics](img/group_security_dashboard.png)
 
 Selecting one or more filters will filter the results in this page.

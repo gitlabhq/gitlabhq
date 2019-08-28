@@ -28,6 +28,13 @@ module API
         use :optional_params_ce
         use :optional_params_ee
       end
+
+      params :optional_projects_params_ee do
+      end
+
+      params :optional_projects_params do
+        use :optional_projects_params_ee
+      end
     end
   end
 end

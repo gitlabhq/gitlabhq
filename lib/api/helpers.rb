@@ -416,17 +416,7 @@ module API
     # rubocop: enable CodeReuse/ActiveRecord
 
     def project_finder_params
-      finder_params = { without_deleted: true }
-      finder_params[:owned] = true if params[:owned].present?
-      finder_params[:non_public] = true if params[:membership].present?
-      finder_params[:starred] = true if params[:starred].present?
-      finder_params[:visibility_level] = Gitlab::VisibilityLevel.level_value(params[:visibility]) if params[:visibility]
-      finder_params[:archived] = archived_param unless params[:archived].nil?
-      finder_params[:search] = params[:search] if params[:search]
-      finder_params[:user] = params.delete(:user) if params[:user]
-      finder_params[:custom_attributes] = params[:custom_attributes] if params[:custom_attributes]
-      finder_params[:min_access_level] = params[:min_access_level] if params[:min_access_level]
-      finder_params
+      project_finder_params_ce.merge(project_finder_params_ee)
     end
 
     # file helpers
@@ -459,6 +449,27 @@ module API
         status :ok
         body
       end
+    end
+
+    protected
+
+    def project_finder_params_ce
+      finder_params = { without_deleted: true }
+      finder_params[:owned] = true if params[:owned].present?
+      finder_params[:non_public] = true if params[:membership].present?
+      finder_params[:starred] = true if params[:starred].present?
+      finder_params[:visibility_level] = Gitlab::VisibilityLevel.level_value(params[:visibility]) if params[:visibility]
+      finder_params[:archived] = archived_param unless params[:archived].nil?
+      finder_params[:search] = params[:search] if params[:search]
+      finder_params[:user] = params.delete(:user) if params[:user]
+      finder_params[:custom_attributes] = params[:custom_attributes] if params[:custom_attributes]
+      finder_params[:min_access_level] = params[:min_access_level] if params[:min_access_level]
+      finder_params
+    end
+
+    # Overridden in EE
+    def project_finder_params_ee
+      {}
     end
 
     private

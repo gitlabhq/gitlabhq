@@ -6,9 +6,10 @@ RSpec.shared_context 'GroupProjectsFinder context' do
   let(:group) { create(:group) }
   let(:subgroup) { create(:group, parent: group) }
   let(:current_user) { create(:user) }
+  let(:params) { {} }
   let(:options) { {} }
 
-  let(:finder) { described_class.new(group: group, current_user: current_user, options: options) }
+  let(:finder) { described_class.new(group: group, current_user: current_user, params: params, options: options) }
 
   let!(:public_project) { create(:project, :public, group: group, path: '1') }
   let!(:private_project) { create(:project, :private, group: group, path: '2') }

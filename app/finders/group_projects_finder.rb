@@ -23,8 +23,12 @@ class GroupProjectsFinder < ProjectsFinder
   attr_reader :group, :options
 
   def initialize(group:, params: {}, options: {}, current_user: nil, project_ids_relation: nil)
-    super(params: params, current_user: current_user, project_ids_relation: project_ids_relation)
-    @group   = group
+    super(
+      params: params,
+      current_user: current_user,
+      project_ids_relation: project_ids_relation
+    )
+    @group = group
     @options = options
   end
 
@@ -84,15 +88,13 @@ class GroupProjectsFinder < ProjectsFinder
     options.fetch(:include_subgroups, false)
   end
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def owned_projects
     if include_subgroups?
-      Project.where(namespace_id: group.self_and_descendants.select(:id))
+      Project.for_group_and_its_subgroups(group)
     else
       group.projects
     end
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   def shared_projects
     group.shared_projects
