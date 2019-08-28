@@ -12,8 +12,6 @@ check the [merge requests documentation](../user/project/merge_requests/index.md
 you can watch our [GitLab Flow video](https://www.youtube.com/watch?v=InKNIvky2KE) for
 a quick overview of working with merge requests.
 
----
-
 1. Before you start, you should have already [created a branch](create-branch.md)
    and [pushed your changes](start-using-git.md#send-changes-to-gitlabcom) to GitLab.
 1. Go to the project where you'd like to merge your changes and click on the
