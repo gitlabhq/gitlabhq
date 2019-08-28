@@ -1,0 +1,5 @@
+---
+title: Fix issue due notification emails not being threaded correctly
+merge_request: 32325
+author:
+type: fixed
