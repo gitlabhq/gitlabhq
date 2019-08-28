@@ -85,7 +85,7 @@ NOTE: **NOTE**
 We'd highly recommend you to use the [Environment](../../../ci/environments.md)
 feature in order to quickly assess which flag is enabled per environment.
 
-## Rollout Strategy
+## Rollout strategy
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/8240) in GitLab 12.2.
 
@@ -97,33 +97,38 @@ However, a feature will be enabled for 50% of logged-in users if the matching en
 
 ### All users
 
-Enables the feature for all users.
-
-**All users** is implemented using the Unleash [default](https://unleash.github.io/docs/activation_strategy#default) activation strategy.
+Enables the feature for all users. It is implemented using the Unleash
+[`default`](https://unleash.github.io/docs/activation_strategy#default)
+activation strategy.
 
 ### Percent rollout (logged in users)
 
-**Percent rollout (logged in users)** enables the feature for a percentage of authenticated users. Set a value of 15%, for example, to enable the feature for 15% of authenticated users.
+Enables the feature for a percentage of authenticated users. It is
+implemented using the Unleash
+[`gradualRolloutUserId`](https://unleash.github.io/docs/activation_strategy#gradualrolloutuserid)
+activation strategy.
+
+Set a value of 15%, for example, to enable the feature for 15% of authenticated users.
 
 A rollout percentage may be between 0% and 100%.
 
 CAUTION: **Caution:**
-If this strategy is selected, then the Unleash client **must** be given a user id for the feature to be enabled. See the [Ruby example](#ruby-application-example) below.
+If this strategy is selected, then the Unleash client **must** be given a user
+ID for the feature to be enabled. See the [Ruby example](#ruby-application-example) below.
 
-**Percent rollout (logged in users)** is implemented using the Unleash [gradualRolloutUserId](https://unleash.github.io/docs/activation_strategy#gradualrolloutuserid) activation strategy.
-
-## Target Users
+## Target users
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/8240) in GitLab 12.2.
 
-A feature flag may be enabled for a list of target users.
+A feature flag may be enabled for a list of target users. It is implemented
+using the Unleash [`userWithId`](https://unleash.github.io/docs/activation_strategy#userwithid)
+activation strategy.
 
 ![Feature flag target users](img/target_users_v12_2.png)
 
 CAUTION: **Caution:**
-The Unleash client **must** be given a user id for the feature to be enabled for target users. See the [Ruby example](#ruby-application-example) below.
-
-**Target users** is implemented using the Unleash [userWithId](https://unleash.github.io/docs/activation_strategy#userwithid) activation strategy.
+The Unleash client **must** be given a user ID for the feature to be enabled for
+target users. See the [Ruby example](#ruby-application-example) below.
 
 ## Integrating with your application
 
