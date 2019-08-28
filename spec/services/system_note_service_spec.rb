@@ -212,6 +212,13 @@ describe SystemNoteService do
       expect(build_note([assignee, assignee1, assignee2], [assignee, assignee1])).to eq \
         "unassigned @#{assignee2.username}"
     end
+
+    it 'builds a correct phrase when the locale is different' do
+      Gitlab::I18n.with_locale('pt-BR') do
+        expect(build_note([assignee, assignee1, assignee2], [assignee3])).to eq \
+          "assigned to @#{assignee3.username} and unassigned @#{assignee.username}, @#{assignee1.username}, and @#{assignee2.username}"
+      end
+    end
   end
 
   describe '.change_milestone' do
