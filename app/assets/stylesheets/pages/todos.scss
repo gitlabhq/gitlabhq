@@ -72,12 +72,7 @@
   @include transition(opacity);
 
   .todo-title {
-    display: flex;
-
     > .title-item {
-      flex: 0 0 auto;
-      margin: 0 2px;
-
       &:first-child {
         margin-left: 0;
       }
@@ -105,8 +100,12 @@
     font-size: 14px;
   }
 
-  .action-name {
-    font-weight: $gl-font-weight-normal;
+  .todo-label,
+  .todo-project {
+    a {
+      color: $blue-600;
+      font-weight: $gl-font-weight-normal;
+    }
   }
 
   .todo-body {
@@ -170,7 +169,7 @@
   }
 }
 
-@include media-breakpoint-down(xs) {
+@include media-breakpoint-down(sm) {
   .todo {
     .avatar {
       display: none;
@@ -179,7 +178,6 @@
 
   .todo-item {
     .todo-title {
-      flex-flow: row wrap;
       margin-bottom: 10px;
 
       .todo-label {

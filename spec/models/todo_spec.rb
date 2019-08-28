@@ -121,12 +121,12 @@ describe Todo do
       subject.target_type = 'Commit'
       subject.commit_id = commit.id
 
-      expect(subject.target_reference).to eq commit.reference_link_text(full: true)
+      expect(subject.target_reference).to eq commit.reference_link_text(full: false)
     end
 
     it 'returns full reference for issuables' do
       subject.target = issue
-      expect(subject.target_reference).to eq issue.to_reference(full: true)
+      expect(subject.target_reference).to eq issue.to_reference(full: false)
     end
   end
 

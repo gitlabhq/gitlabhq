@@ -42,33 +42,33 @@ describe 'Dashboard > User sorts todos' do
       click_link 'Last created'
 
       results_list = page.find('.todos-list')
-      expect(results_list.all('p')[0]).to have_content('merge_request_1')
-      expect(results_list.all('p')[1]).to have_content('issue_1')
-      expect(results_list.all('p')[2]).to have_content('issue_3')
-      expect(results_list.all('p')[3]).to have_content('issue_2')
-      expect(results_list.all('p')[4]).to have_content('issue_4')
+      expect(results_list.all('.todo-title')[0]).to have_content('merge_request_1')
+      expect(results_list.all('.todo-title')[1]).to have_content('issue_1')
+      expect(results_list.all('.todo-title')[2]).to have_content('issue_3')
+      expect(results_list.all('.todo-title')[3]).to have_content('issue_2')
+      expect(results_list.all('.todo-title')[4]).to have_content('issue_4')
     end
 
     it 'sorts with newest created todos first' do
       click_link 'Oldest created'
 
       results_list = page.find('.todos-list')
-      expect(results_list.all('p')[0]).to have_content('issue_4')
-      expect(results_list.all('p')[1]).to have_content('issue_2')
-      expect(results_list.all('p')[2]).to have_content('issue_3')
-      expect(results_list.all('p')[3]).to have_content('issue_1')
-      expect(results_list.all('p')[4]).to have_content('merge_request_1')
+      expect(results_list.all('.todo-title')[0]).to have_content('issue_4')
+      expect(results_list.all('.todo-title')[1]).to have_content('issue_2')
+      expect(results_list.all('.todo-title')[2]).to have_content('issue_3')
+      expect(results_list.all('.todo-title')[3]).to have_content('issue_1')
+      expect(results_list.all('.todo-title')[4]).to have_content('merge_request_1')
     end
 
     it 'sorts by label priority' do
       click_link 'Label priority'
 
       results_list = page.find('.todos-list')
-      expect(results_list.all('p')[0]).to have_content('issue_3')
-      expect(results_list.all('p')[1]).to have_content('merge_request_1')
-      expect(results_list.all('p')[2]).to have_content('issue_1')
-      expect(results_list.all('p')[3]).to have_content('issue_2')
-      expect(results_list.all('p')[4]).to have_content('issue_4')
+      expect(results_list.all('.todo-title')[0]).to have_content('issue_3')
+      expect(results_list.all('.todo-title')[1]).to have_content('merge_request_1')
+      expect(results_list.all('.todo-title')[2]).to have_content('issue_1')
+      expect(results_list.all('.todo-title')[3]).to have_content('issue_2')
+      expect(results_list.all('.todo-title')[4]).to have_content('issue_4')
     end
   end
 
@@ -93,9 +93,9 @@ describe 'Dashboard > User sorts todos' do
       click_link 'Label priority'
 
       results_list = page.find('.todos-list')
-      expect(results_list.all('p')[0]).to have_content('issue_1')
-      expect(results_list.all('p')[1]).to have_content('issue_2')
-      expect(results_list.all('p')[2]).to have_content('merge_request_1')
+      expect(results_list.all('.todo-title')[0]).to have_content('issue_1')
+      expect(results_list.all('.todo-title')[1]).to have_content('issue_2')
+      expect(results_list.all('.todo-title')[2]).to have_content('merge_request_1')
     end
   end
 end

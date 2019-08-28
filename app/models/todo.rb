@@ -186,9 +186,9 @@ class Todo < ApplicationRecord
 
   def target_reference
     if for_commit?
-      target.reference_link_text(full: true)
+      target.reference_link_text
     else
-      target.to_reference(full: true)
+      target.to_reference
     end
   end
 
