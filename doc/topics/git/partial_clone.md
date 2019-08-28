@@ -112,7 +112,7 @@ enabled on the Git server:
    git init
 
    # Add the remote
-   git remote add origin git@gitlab.com/example/jumbo-repo
+   git remote add origin <url>
 
    # Enable partial clone support for the remote
    git config --local extensions.partialClone origin
