@@ -1,7 +1,6 @@
 # PlantUML & GitLab
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/8537) in
-> GitLab 8.16.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/8537) in GitLab 8.16.
 
 When [PlantUML](http://plantuml.com) integration is enabled and configured in
 GitLab we are able to create simple diagrams in AsciiDoc and Markdown documents

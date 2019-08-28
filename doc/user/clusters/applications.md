@@ -225,8 +225,7 @@ file.
 
 ## Upgrading applications
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/24789)
-in GitLab 11.8.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/24789) in GitLab 11.8.
 
 The applications below can be upgraded.
 
