@@ -611,7 +611,7 @@ You can specify a different Git repository by providing it as an extra parameter
 sudo -u git -H bundle exec rake "gitlab:gitaly:install[/home/git/gitaly,/home/git/repositories,https://example.com/gitaly.git]" RAILS_ENV=production
 ```
 
-Next, make sure gitaly configured:
+Next, make sure that Gitaly is configured:
 
 ```sh
 # Restrict Gitaly socket access
