@@ -55,7 +55,7 @@ module Gitlab
     SUBDOMAIN_REGEX === Gitlab.config.gitlab.url
   end
 
-  def self.dev_env_or_com?
+  def self.dev_env_org_or_com?
     Rails.env.development? || org? || com?
   end
 
