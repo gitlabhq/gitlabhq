@@ -98,6 +98,33 @@ describe Gitlab do
     end
   end
 
+  describe '.dev_env_org_or_com?' do
+    it 'is true when on .com' do
+      allow(described_class).to receive_messages(com?: true, org?: false)
+
+      expect(described_class.dev_env_org_or_com?).to eq true
+    end
+
+    it 'is true when org' do
+      allow(described_class).to receive_messages(com?: false, org?: true)
+
+      expect(described_class.dev_env_org_or_com?).to eq true
+    end
+
+    it 'is true when dev env' do
+      allow(described_class).to receive_messages(com?: false, org?: false)
+      allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new('development'))
+
+      expect(described_class.dev_env_org_or_com?).to eq true
+    end
+
+    it 'is false when not dev, org or com' do
+      allow(described_class).to receive_messages(com?: false, org?: false)
+
+      expect(described_class.dev_env_org_or_com?).to eq false
+    end
+  end
+
   describe '.ee?' do
     before do
       described_class.instance_variable_set(:@is_ee, nil)
