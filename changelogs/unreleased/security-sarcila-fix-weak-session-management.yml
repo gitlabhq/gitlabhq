@@ -1,6 +1,0 @@
----
-title: Fix weak session management by clearing password reset tokens after login (username/email)
-  are updated
-merge_request:
-author:
-type: security
