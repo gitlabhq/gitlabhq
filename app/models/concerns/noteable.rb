@@ -73,6 +73,10 @@ module Noteable
       .discussions(self)
   end
 
+  def capped_notes_count(max)
+    notes.limit(max).count
+  end
+
   def grouped_diff_discussions(*args)
     # Doesn't use `discussion_notes`, because this may include commit diff notes
     # besides MR diff notes, that we do not want to display on the MR Changes tab.

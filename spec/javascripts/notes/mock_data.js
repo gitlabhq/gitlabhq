@@ -8,7 +8,7 @@ export const notesDataMock = {
   notesPath: '/gitlab-org/gitlab-ce/noteable/issue/98/notes',
   quickActionsDocsPath: '/help/user/project/quick_actions',
   registerPath: '/users/sign_in?redirect_to_referer=yes#register-pane',
-  totalNotes: 1,
+  prerenderedNotesCount: 1,
   closePath: '/twitter/flight/issues/9.json?issue%5Bstate_event%5D=close',
   reopenPath: '/twitter/flight/issues/9.json?issue%5Bstate_event%5D=reopen',
   canAwardEmoji: true,

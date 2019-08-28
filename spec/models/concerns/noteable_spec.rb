@@ -272,4 +272,22 @@ describe Noteable do
       expect(described_class.resolvable_types).to include('MergeRequest')
     end
   end
+
+  describe '#capped_notes_count' do
+    context 'notes number < 10' do
+      it 'the number of notes is returned' do
+        expect(subject.capped_notes_count(10)).to eq(9)
+      end
+    end
+
+    context 'notes number > 10' do
+      before do
+        create_list(:note, 2, project: project, noteable: subject)
+      end
+
+      it '10 is returned' do
+        expect(subject.capped_notes_count(10)).to eq(10)
+      end
+    end
+  end
 end
