@@ -189,7 +189,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   def pipeline_status
     render json: PipelineSerializer
       .new(project: @project, current_user: @current_user)
-      .represent_status(@merge_request.head_pipeline)
+      .represent_status(head_pipeline)
   end
 
   def ci_environments_status
@@ -238,6 +238,13 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   end
 
   private
+
+  def head_pipeline
+    strong_memoize(:head_pipeline) do
+      pipeline = @merge_request.head_pipeline
+      pipeline if can?(current_user, :read_pipeline, pipeline)
+    end
+  end
 
   def ci_environments_status_on_merge_result?
     params[:environment_target] == 'merge_commit'
