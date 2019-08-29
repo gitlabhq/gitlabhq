@@ -2,24 +2,7 @@
 
 module Clusters
   module Applications
-    class CheckInstallationProgressService < BaseHelmService
-      def execute
-        return unless operation_in_progress?
-
-        case installation_phase
-        when Gitlab::Kubernetes::Pod::SUCCEEDED
-          on_success
-        when Gitlab::Kubernetes::Pod::FAILED
-          on_failed
-        else
-          check_timeout
-        end
-      rescue Kubeclient::HttpError => e
-        log_error(e)
-
-        app.make_errored!("Kubernetes error: #{e.error_code}")
-      end
-
+    class CheckInstallationProgressService < CheckProgressService
       private
 
       def operation_in_progress?
@@ -30,10 +13,6 @@ module Clusters
         app.make_installed!
       ensure
         remove_installation_pod
-      end
-
-      def on_failed
-        app.make_errored!("Operation failed. Check pod logs for #{pod_name} for more details.")
       end
 
       def check_timeout
@@ -53,18 +32,6 @@ module Clusters
 
       def timed_out?
         Time.now.utc - app.updated_at.utc > ClusterWaitForAppInstallationWorker::TIMEOUT
-      end
-
-      def remove_installation_pod
-        helm_api.delete_pod!(pod_name)
-      end
-
-      def installation_phase
-        helm_api.status(pod_name)
-      end
-
-      def installation_errors
-        helm_api.log(pod_name)
       end
     end
   end
