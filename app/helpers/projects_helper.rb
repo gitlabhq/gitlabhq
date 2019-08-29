@@ -448,7 +448,7 @@ module ProjectsHelper
 
   def git_user_email
     if current_user
-      current_user.email
+      current_user.commit_email
     else
       "your@email.com"
     end
