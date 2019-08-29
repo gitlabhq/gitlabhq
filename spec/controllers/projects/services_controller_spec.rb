@@ -11,6 +11,7 @@ describe Projects::ServicesController do
   before do
     sign_in(user)
     project.add_maintainer(user)
+    allow(Gitlab::UrlBlocker).to receive(:validate!).and_return([URI.parse('http://example.com'), nil])
   end
 
   describe '#test' do
@@ -56,6 +57,8 @@ describe Projects::ServicesController do
           stub_request(:get, 'http://example.com/rest/api/2/serverInfo')
             .to_return(status: 200, body: '{}')
 
+          expect(Gitlab::HTTP).to receive(:get).with("/rest/api/2/serverInfo", any_args).and_call_original
+
           put :test, params: { namespace_id: project.namespace, project_id: project, id: service.to_param, service: service_params }
 
           expect(response.status).to eq(200)
@@ -65,6 +68,8 @@ describe Projects::ServicesController do
       it 'returns success' do
         stub_request(:get, 'http://example.com/rest/api/2/serverInfo')
           .to_return(status: 200, body: '{}')
+
+        expect(Gitlab::HTTP).to receive(:get).with("/rest/api/2/serverInfo", any_args).and_call_original
 
         put :test, params: { namespace_id: project.namespace, project_id: project, id: service.to_param, service: service_params }
 
