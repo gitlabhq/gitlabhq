@@ -44,6 +44,10 @@ class BaseService
     model.errors.add(:visibility_level, "#{level_name} has been restricted by your GitLab administrator")
   end
 
+  def visibility_level
+    params[:visibility].is_a?(String) ? Gitlab::VisibilityLevel.level_value(params[:visibility]) : params[:visibility_level]
+  end
+
   private
 
   def error(message, http_status = nil)
