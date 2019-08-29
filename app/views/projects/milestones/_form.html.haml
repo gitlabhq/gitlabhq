@@ -21,7 +21,7 @@
 
   .form-actions
     - if @milestone.new_record?
-      = f.submit _('Create milestone'), class: 'btn-create btn qa-milestone-create-button'
+      = f.submit _('Create milestone'), class: 'btn-success btn qa-milestone-create-button'
       = link_to _('Cancel'), project_milestones_path(@project), class: 'btn btn-cancel'
     - else
       = f.submit _('Save changes'), class: 'btn-success btn'
