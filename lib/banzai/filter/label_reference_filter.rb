@@ -14,24 +14,24 @@ module Banzai
         find_labels(parent_object).find(id)
       end
 
-      def self.references_in(text, pattern = Label.reference_pattern)
-        unescape_html_entities(text).gsub(pattern) do |match|
-          yield match, $~[:label_id].to_i, $~[:label_name], $~[:project], $~[:namespace], $~
-        end
-      end
-
       def references_in(text, pattern = Label.reference_pattern)
-        unescape_html_entities(text).gsub(pattern) do |match|
+        labels = {}
+        unescaped_html = unescape_html_entities(text).gsub(pattern) do |match|
           namespace, project = $~[:namespace], $~[:project]
           project_path = full_project_path(namespace, project)
           label = find_label(project_path, $~[:label_id], $~[:label_name])
 
           if label
-            yield match, label.id, project, namespace, $~
+            labels[label.id] = yield match, label.id, project, namespace, $~
+            "#{REFERENCE_PLACEHOLDER}#{label.id}"
           else
-            escape_html_entities(match)
+            match
           end
         end
+
+        return text if labels.empty?
+
+        escape_with_placeholders(unescaped_html, labels)
       end
 
       def find_label(parent_ref, label_id, label_name)

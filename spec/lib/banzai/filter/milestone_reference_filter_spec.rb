@@ -329,6 +329,10 @@ describe Banzai::Filter::MilestoneReferenceFilter do
     it_behaves_like 'cross-project / same-namespace complete reference'
     it_behaves_like 'cross project shorthand reference'
     it_behaves_like 'references with HTML entities'
+    it_behaves_like 'HTML text with references' do
+      let(:resource) { milestone }
+      let(:resource_text) { "#{resource.class.reference_prefix}#{resource.title}" }
+    end
   end
 
   shared_context 'group milestones' do
@@ -340,6 +344,10 @@ describe Banzai::Filter::MilestoneReferenceFilter do
     it_behaves_like 'String-based multi-word references in quotes'
     it_behaves_like 'referencing a milestone in a link href'
     it_behaves_like 'references with HTML entities'
+    it_behaves_like 'HTML text with references' do
+      let(:resource) { milestone }
+      let(:resource_text) { "#{resource.class.reference_prefix}#{resource.title}" }
+    end
 
     it 'does not support references by IID' do
       doc = reference_filter("See #{Milestone.reference_prefix}#{milestone.iid}")
