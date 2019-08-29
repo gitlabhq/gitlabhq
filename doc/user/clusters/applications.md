@@ -103,7 +103,7 @@ implications](../project/clusters/index.md#security-implications) before doing s
 
 NOTE: **Note:**
 The
-[runner/gitlab-runner](https://gitlab.com/charts/gitlab-runner)
+[runner/gitlab-runner](https://gitlab.com/gitlab-org/charts/gitlab-runner)
 chart is used to install this application with a
 [`values.yaml`](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/vendor/runner/values.yaml)
 file.

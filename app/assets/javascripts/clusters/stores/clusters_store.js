@@ -55,7 +55,7 @@ export default class ClusterStore {
           ...applicationInitialState,
           title: s__('ClusterIntegration|GitLab Runner'),
           version: null,
-          chartRepo: 'https://gitlab.com/charts/gitlab-runner',
+          chartRepo: 'https://gitlab.com/gitlab-org/charts/gitlab-runner',
           updateAvailable: null,
           updateSuccessful: false,
           updateFailed: false,
