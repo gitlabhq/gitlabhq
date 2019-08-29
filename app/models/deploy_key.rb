@@ -10,7 +10,7 @@ class DeployKey < Key
   scope :are_public,  -> { where(public: true) }
   scope :with_projects, -> { includes(deploy_keys_projects: { project: [:route, :namespace] }) }
 
-  self.ignored_columns = %i[can_push]
+  self.ignored_columns += %i[can_push]
 
   accepts_nested_attributes_for :deploy_keys_projects
 

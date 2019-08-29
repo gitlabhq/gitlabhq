@@ -50,7 +50,7 @@ places. This can be done by defining the columns to ignore. For example, to igno
 
 ```ruby
 class User < ApplicationRecord
-  self.ignored_columns = %i[updated_at]
+  self.ignored_columns += %i[updated_at]
 end
 ```
 

@@ -23,11 +23,11 @@ class User < ApplicationRecord
 
   DEFAULT_NOTIFICATION_LEVEL = :participating
 
-  self.ignored_columns = %i[
-                         authentication_token
-                         email_provider
-                         external_email
-                         ]
+  self.ignored_columns += %i[
+    authentication_token
+    email_provider
+    external_email
+  ]
 
   add_authentication_token_field :incoming_email_token, token_generator: -> { SecureRandom.hex.to_i(16).to_s(36) }
   add_authentication_token_field :feed_token
