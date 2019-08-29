@@ -9,6 +9,7 @@ module Gitlab
           Gitlab::SlashCommands::IssueNew,
           Gitlab::SlashCommands::IssueSearch,
           Gitlab::SlashCommands::IssueMove,
+          Gitlab::SlashCommands::IssueClose,
           Gitlab::SlashCommands::Deploy,
           Gitlab::SlashCommands::Run
         ]

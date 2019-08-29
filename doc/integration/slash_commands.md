@@ -15,6 +15,7 @@ Taking the trigger term as `project-name`, the commands are:
 | `/project-name help` | Shows all available slash commands |
 | `/project-name issue new <title> <shift+return> <description>` | Creates a new issue with title `<title>` and description `<description>` |
 | `/project-name issue show <id>` | Shows the issue with id `<id>` |
+| `/project-name issue close <id>` | Closes the issue with id `<id>` |
 | `/project-name issue search <query>` | Shows up to 5 issues matching `<query>` |
 | `/project-name issue move <id> to <project>` | Moves issue ID `<id>` to `<project>` |
 | `/project-name deploy <from> to <to>` | Deploy from the `<from>` environment to the `<to>` environment |
