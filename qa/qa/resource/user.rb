@@ -9,6 +9,7 @@ module QA
       attr_writer :username, :password
       attr_accessor :provider, :extern_uid
 
+      attribute :id
       attribute :name
       attribute :email
 
