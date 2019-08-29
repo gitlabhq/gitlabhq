@@ -591,7 +591,7 @@ POST /projects/:id/issues
 | `id`                                      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `iid`                                     | integer/string | no       | The internal ID of the project's issue (requires admin or project owner rights) |
 | `title`                                   | string         | yes      | The title of an issue |
-| `description`                             | string         | no       | The description of an issue  |
+| `description`                             | string         | no       | The description of an issue. Limited to 1 000 000 characters. |
 | `confidential`                            | boolean        | no       | Set an issue to be confidential. Default is `false`.  |
 | `assignee_ids`                            | integer array  | no       | The ID of a user to assign issue |
 | `milestone_id`                            | integer        | no       | The global ID of a milestone to assign issue  |
@@ -692,7 +692,7 @@ PUT /projects/:id/issues/:issue_iid
 | `id`           | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `issue_iid`    | integer | yes      | The internal ID of a project's issue                                                                       |
 | `title`        | string  | no       | The title of an issue                                                                                      |
-| `description`  | string  | no       | The description of an issue                                                                                |
+| `description`  | string  | no       | The description of an issue. Limited to 1 000 000 characters.        |
 | `confidential` | boolean | no       | Updates an issue to be confidential                                                                        |
 | `assignee_ids` | integer array | no | The ID of the user(s) to assign the issue to. Set to `0` or provide an empty value to unassign all assignees. |
 | `milestone_id` | integer | no       | The global ID of a milestone to assign the issue to. Set to `0` or provide an empty value to unassign a milestone.|

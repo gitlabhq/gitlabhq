@@ -113,7 +113,7 @@ Parameters:
 
 - `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding)
 - `issue_iid` (required) - The IID of an issue
-- `body` (required) - The content of a note
+- `body` (required) - The content of a note. Limited to 1 000 000 characters. 
 - `created_at` (optional) - Date time string, ISO 8601 formatted, e.g. 2016-03-11T03:45:40Z (requires admin or project/group owner rights)
 
 ```bash
@@ -133,7 +133,7 @@ Parameters:
 - `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding)
 - `issue_iid` (required) - The IID of an issue
 - `note_id` (required) - The ID of a note
-- `body` (required) - The content of a note
+- `body` (required) - The content of a note. Limited to 1 000 000 characters. 
 
 ```bash
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/issues/11/notes?body=note
@@ -231,7 +231,7 @@ Parameters:
 
 - `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding)
 - `snippet_id` (required) - The ID of a snippet
-- `body` (required) - The content of a note
+- `body` (required) - The content of a note. Limited to 1 000 000 characters. 
 - `created_at` (optional) - Date time string, ISO 8601 formatted, e.g. 2016-03-11T03:45:40Z
 
 ```bash
@@ -251,7 +251,7 @@ Parameters:
 - `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding)
 - `snippet_id` (required) - The ID of a snippet
 - `note_id` (required) - The ID of a note
-- `body` (required) - The content of a note
+- `body` (required) - The content of a note. Limited to 1 000 000 characters. 
 
 ```bash
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/snippets/11/notes?body=note
@@ -354,7 +354,7 @@ Parameters:
 
 - `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding)
 - `merge_request_iid` (required) - The IID of a merge request
-- `body` (required) - The content of a note
+- `body` (required) - The content of a note. Limited to 1 000 000 characters. 
 - `created_at` (optional) - Date time string, ISO 8601 formatted, e.g. 2016-03-11T03:45:40Z
 
 ### Modify existing merge request note
@@ -370,7 +370,7 @@ Parameters:
 - `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding)
 - `merge_request_iid` (required) - The IID of a merge request
 - `note_id` (required) - The ID of a note
-- `body` (required) - The content of a note
+- `body` (required) - The content of a note. Limited to 1 000 000 characters. 
 
 ```bash
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/merge_requests/11/notes?body=note
@@ -472,7 +472,7 @@ Parameters:
 | --------- | -------------- | -------- | ----------- |
 | `id`      | integer/string | yes | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) |
 | `epic_id` | integer | yes  | The ID of an epic |
-| `body`    | string  | yes  | The content of a note |
+| `body`    | string  | yes  | The content of a note. Limited to 1 000 000 characters. |
 
 ```bash
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/snippet/11/notes?body=note
@@ -493,7 +493,7 @@ Parameters:
 | `id`      | integer/string | yes | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) |
 | `epic_id` | integer | yes  | The ID of an epic |
 | `note_id` | integer | yes  | The ID of a note |
-| `body`    | string  | yes  | The content of a note |
+| `body`    | string  | yes  | The content of a note. Limited to 1 000 000 characters. |
 
 ```bash
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/snippet/11/notes?body=note
