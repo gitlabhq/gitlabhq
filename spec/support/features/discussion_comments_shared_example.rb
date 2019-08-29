@@ -73,7 +73,7 @@ shared_examples 'thread comments' do |resource_name|
       expect(page).not_to have_selector menu_selector
 
       find(toggle_selector).click
-      execute_script("document.querySelector('body').click()")
+      find("#{form_selector} .note-textarea").click
 
       expect(page).not_to have_selector menu_selector
     end
