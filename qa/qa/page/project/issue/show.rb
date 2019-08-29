@@ -37,6 +37,10 @@ module QA
             element :dropdown_menu_labels
           end
 
+          view 'app/views/shared/issuable/_close_reopen_button.html.haml' do
+            element :reopen_issue_button
+          end
+
           # Adds a comment to an issue
           # attachment option should be an absolute path
           def comment(text, attachment: nil, filter: :all_activities)

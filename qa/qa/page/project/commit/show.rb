@@ -9,6 +9,7 @@ module QA
             element :options_button
             element :email_patches
             element :plain_diff
+            element :commit_sha_content
           end
 
           def select_email_patches
@@ -19,6 +20,10 @@ module QA
           def select_plain_diff
             click_element :options_button
             click_element :plain_diff
+          end
+
+          def commit_sha
+            find_element(:commit_sha_content).text
           end
         end
       end

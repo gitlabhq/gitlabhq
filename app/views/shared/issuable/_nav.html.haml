@@ -17,7 +17,7 @@
         #{issuables_state_counter_text(type, :closed, display_count)}
   - else
     %li{ class: active_when(params[:state] == 'closed') }>
-      = link_to page_filter_path(state: 'closed'), id: 'state-closed', title: 'Filter by issues that are currently closed.', data: { state: 'closed' } do
+      = link_to page_filter_path(state: 'closed'), id: 'state-closed', title: 'Filter by issues that are currently closed.', data: { state: 'closed', qa_selector: 'closed_issues_link' } do
         #{issuables_state_counter_text(type, :closed, display_count)}
 
   = render 'shared/issuable/nav_links/all', page_context_word: page_context_word, counter: issuables_state_counter_text(type, :all, display_count)
