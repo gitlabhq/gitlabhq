@@ -3,11 +3,16 @@
 module Peek
   module Views
     class DetailedView < View
+      def self.thresholds
+        {}
+      end
+
       def results
         {
-          duration: formatted_duration,
+          duration: format_duration(duration),
           calls: calls,
-          details: details
+          details: details,
+          warnings: warnings
         }
       end
 
@@ -18,19 +23,11 @@ module Peek
       private
 
       def duration
-        detail_store.map { |entry| entry[:duration] }.sum # rubocop:disable CodeReuse/ActiveRecord
+        detail_store.map { |entry| entry[:duration] }.sum * 1000 # rubocop:disable CodeReuse/ActiveRecord
       end
 
       def calls
         detail_store.count
-      end
-
-      def call_details
-        detail_store
-      end
-
-      def format_call_details(call)
-        call.merge(duration: (call[:duration] * 1000).round(3))
       end
 
       def details
@@ -39,9 +36,35 @@ module Peek
           .map(&method(:format_call_details))
       end
 
-      def formatted_duration
-        ms = duration * 1000
+      def warnings
+        [
+          warning_for(calls, self.class.thresholds[:calls], label: "#{key} calls"),
+          warning_for(duration, self.class.thresholds[:duration], label: "#{key} duration")
+        ].flatten.compact
+      end
 
+      def call_details
+        detail_store
+      end
+
+      def format_call_details(call)
+        duration = (call[:duration] * 1000).round(3)
+
+        call.merge(duration: duration,
+                   warnings: warning_for(duration, self.class.thresholds[:individual_call]))
+      end
+
+      def warning_for(actual, threshold, label: nil)
+        if threshold && actual > threshold
+          prefix = "#{label}: " if label
+
+          ["#{prefix}#{actual} over #{threshold}"]
+        else
+          []
+        end
+      end
+
+      def format_duration(ms)
         if ms >= 1000
           "%.2fms" % ms
         else

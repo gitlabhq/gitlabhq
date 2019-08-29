@@ -12,7 +12,7 @@ module Peek
       private
 
       def duration
-        ::Gitlab::RuggedInstrumentation.query_time
+        ::Gitlab::RuggedInstrumentation.query_time_ms
       end
 
       def calls

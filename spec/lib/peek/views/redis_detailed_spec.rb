@@ -21,10 +21,10 @@ describe Peek::Views::RedisDetailed, :request_store do
 
       expect(subject.results[:details].count).to eq(1)
       expect(subject.results[:details].first)
-        .to eq({
-                 cmd: expected,
-                 duration: 1000
-               })
+        .to include({
+                      cmd: expected,
+                      duration: 1000
+                    })
     end
   end
 
