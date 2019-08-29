@@ -133,32 +133,31 @@ describe('note_app', () => {
       );
     });
 
-    it('should not render form when commenting is disabled', () => {
-      wrapper.destroy();
-
-      store.state.commentsDisabled = true;
-      wrapper = mountComponent();
-      return waitForDiscussionsRequest().then(() => {
-        expect(wrapper.find('.js-main-target-form').exists()).toBe(false);
-      });
-    });
-
-    it('should render discussion filter note `commentsDisabled` is true', () => {
-      wrapper.destroy();
-
-      store.state.commentsDisabled = true;
-      wrapper = mountComponent();
-      return waitForDiscussionsRequest().then(() => {
-        expect(wrapper.find('.js-discussion-filter-note').exists()).toBe(true);
-      });
-    });
-
     it('should render form comment button as disabled', () => {
       expect(wrapper.find('.js-note-new-discussion').attributes('disabled')).toEqual('disabled');
     });
 
     it('updates discussions badge', () => {
       expect(document.querySelector('.js-discussions-count').textContent).toEqual('2');
+    });
+  });
+
+  describe('render with comments disabled', () => {
+    beforeEach(() => {
+      setFixtures('<div class="js-discussions-count"></div>');
+
+      Vue.http.interceptors.push(mockData.individualNoteInterceptor);
+      store.state.commentsDisabled = true;
+      wrapper = mountComponent();
+      return waitForDiscussionsRequest();
+    });
+
+    it('should not render form when commenting is disabled', () => {
+      expect(wrapper.find('.js-main-target-form').exists()).toBe(false);
+    });
+
+    it('should render discussion filter note `commentsDisabled` is true', () => {
+      expect(wrapper.find('.js-discussion-filter-note').exists()).toBe(true);
     });
   });
 
