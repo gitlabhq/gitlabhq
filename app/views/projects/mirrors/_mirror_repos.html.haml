@@ -50,7 +50,7 @@
             - @project.remote_mirrors.each_with_index do |mirror, index|
               - next if mirror.new_record?
               %tr.qa-mirrored-repository-row.rspec-mirrored-repository-row{ class: ('bg-secondary' if mirror.disabled?) }
-                %td.qa-mirror-repository-url= mirror.safe_url
+                %td.qa-mirror-repository-url= mirror.safe_url || _('Invalid URL')
                 %td= _('Push')
                 %td
                   = mirror.last_update_started_at.present? ? time_ago_with_tooltip(mirror.last_update_started_at) : _('Never')

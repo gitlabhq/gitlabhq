@@ -6110,6 +6110,9 @@ msgstr ""
 msgid "Invalid Login or password"
 msgstr ""
 
+msgid "Invalid URL"
+msgstr ""
+
 msgid "Invalid date"
 msgstr ""
 

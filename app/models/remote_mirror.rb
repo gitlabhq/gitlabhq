@@ -200,6 +200,7 @@ class RemoteMirror < ApplicationRecord
     result.password = '*****' if result.password
     result.user = '*****' if result.user && result.user != 'git' # tokens or other data may be saved as user
     result.to_s
+  rescue URI::Error
   end
 
   def ensure_remote!
