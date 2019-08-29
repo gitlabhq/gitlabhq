@@ -14,7 +14,7 @@ describe Clusters::Applications::CheckInstallationProgressService, '#execute' do
     let(:phase) { a_phase }
 
     before do
-      expect(service).to receive(:installation_phase).once.and_return(phase)
+      expect(service).to receive(:pod_phase).once.and_return(phase)
     end
 
     context "when phase is #{a_phase}" do
@@ -44,7 +44,7 @@ describe Clusters::Applications::CheckInstallationProgressService, '#execute' do
       before do
         application.update!(cluster: cluster)
 
-        expect(service).to receive(:installation_phase).and_raise(error)
+        expect(service).to receive(:pod_phase).and_raise(error)
       end
 
       include_examples 'logs kubernetes errors' do
@@ -77,7 +77,7 @@ describe Clusters::Applications::CheckInstallationProgressService, '#execute' do
     context 'when installation POD succeeded' do
       let(:phase) { Gitlab::Kubernetes::Pod::SUCCEEDED }
       before do
-        expect(service).to receive(:installation_phase).once.and_return(phase)
+        expect(service).to receive(:pod_phase).once.and_return(phase)
       end
 
       it 'removes the installation POD' do
@@ -101,7 +101,7 @@ describe Clusters::Applications::CheckInstallationProgressService, '#execute' do
       let(:errors) { 'test installation failed' }
 
       before do
-        expect(service).to receive(:installation_phase).once.and_return(phase)
+        expect(service).to receive(:pod_phase).once.and_return(phase)
       end
 
       it 'make the application errored' do
@@ -116,7 +116,7 @@ describe Clusters::Applications::CheckInstallationProgressService, '#execute' do
       let(:application) { create(:clusters_applications_helm, :timed_out, :updating) }
 
       before do
-        expect(service).to receive(:installation_phase).once.and_return(phase)
+        expect(service).to receive(:pod_phase).once.and_return(phase)
       end
 
       it 'make the application errored' do
@@ -138,7 +138,7 @@ describe Clusters::Applications::CheckInstallationProgressService, '#execute' do
     context 'when installation POD succeeded' do
       let(:phase) { Gitlab::Kubernetes::Pod::SUCCEEDED }
       before do
-        expect(service).to receive(:installation_phase).once.and_return(phase)
+        expect(service).to receive(:pod_phase).once.and_return(phase)
       end
 
       it 'removes the installation POD' do
@@ -162,7 +162,7 @@ describe Clusters::Applications::CheckInstallationProgressService, '#execute' do
       let(:errors) { 'test installation failed' }
 
       before do
-        expect(service).to receive(:installation_phase).once.and_return(phase)
+        expect(service).to receive(:pod_phase).once.and_return(phase)
       end
 
       it 'make the application errored' do
@@ -177,7 +177,7 @@ describe Clusters::Applications::CheckInstallationProgressService, '#execute' do
       let(:application) { create(:clusters_applications_helm, :timed_out) }
 
       before do
-        expect(service).to receive(:installation_phase).once.and_return(phase)
+        expect(service).to receive(:pod_phase).once.and_return(phase)
       end
 
       it 'make the application errored' do
