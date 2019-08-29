@@ -96,6 +96,28 @@ describe API::ProjectSnippets do
       }
     end
 
+    context 'with a regular user' do
+      let(:user) { create(:user) }
+
+      before do
+        project.add_developer(user)
+        stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::PUBLIC, Gitlab::VisibilityLevel::PRIVATE])
+        params['visibility'] = 'internal'
+      end
+
+      it 'creates a new snippet' do
+        post api("/projects/#{project.id}/snippets/", user), params: params
+
+        expect(response).to have_gitlab_http_status(201)
+        snippet = ProjectSnippet.find(json_response['id'])
+        expect(snippet.content).to eq(params[:code])
+        expect(snippet.description).to eq(params[:description])
+        expect(snippet.title).to eq(params[:title])
+        expect(snippet.file_name).to eq(params[:file_name])
+        expect(snippet.visibility_level).to eq(Snippet::INTERNAL)
+      end
+    end
+
     it 'creates a new snippet' do
       post api("/projects/#{project.id}/snippets/", admin), params: params
 
@@ -167,12 +189,13 @@ describe API::ProjectSnippets do
       new_content = 'New content'
       new_description = 'New description'
 
-      put api("/projects/#{snippet.project.id}/snippets/#{snippet.id}/", admin), params: { code: new_content, description: new_description }
+      put api("/projects/#{snippet.project.id}/snippets/#{snippet.id}/", admin), params: { code: new_content, description: new_description, visibility: 'private' }
 
       expect(response).to have_gitlab_http_status(200)
       snippet.reload
       expect(snippet.content).to eq(new_content)
       expect(snippet.description).to eq(new_description)
+      expect(snippet.visibility).to eq('private')
     end
 
     it 'returns 404 for invalid snippet id' do
