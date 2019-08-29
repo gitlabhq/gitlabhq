@@ -384,8 +384,18 @@
       @extend .fa-exclamation-circle;
     }
   }
-}
 
+  .prometheus-graph-embed {
+    h3.popover-header {
+      /** Override <h3> .popover-header
+      * as embed metrics do not follow the same
+      * style as default md <h3> (which are deeply nested)
+      */
+      margin: 0;
+      font-size: $gl-font-size-small;
+    }
+  }
+}
 
 /**
  * Headers
