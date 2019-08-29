@@ -503,7 +503,7 @@ describe ProjectsHelper do
       allow(Gitlab::CurrentSettings.current_application_settings).to receive(:enabled_git_access_protocol) { 'ssh' }
       allow(Gitlab.config.gitlab_shell).to receive(:ssh_path_prefix).and_return('git@localhost:')
 
-      expect(helper.push_to_create_project_command(user)).to eq('git push --set-upstream git@localhost:john/$(git rev-parse --show-toplevel | xargs basename).git $(git rev-parse --abbrev-ref HEAD)')
+      expect(helper.push_to_create_project_command(user)).to eq("git push --set-upstream #{Gitlab.config.gitlab.user}@localhost:john/$(git rev-parse --show-toplevel | xargs basename).git $(git rev-parse --abbrev-ref HEAD)")
     end
   end
 

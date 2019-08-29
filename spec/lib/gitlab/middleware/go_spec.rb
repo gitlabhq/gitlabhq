@@ -202,7 +202,7 @@ describe Gitlab::Middleware::Go do
     def expect_response_with_path(response, protocol, path)
       repository_url = case protocol
                        when :ssh
-                         "ssh://git@#{Gitlab.config.gitlab.host}/#{path}.git"
+                         "ssh://#{Gitlab.config.gitlab.user}@#{Gitlab.config.gitlab.host}/#{path}.git"
                        when :http, nil
                          "http://#{Gitlab.config.gitlab.host}/#{path}.git"
                        end
