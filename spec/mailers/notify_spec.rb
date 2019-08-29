@@ -187,6 +187,22 @@ describe Notify do
         end
       end
 
+      describe 'that are due soon' do
+        subject { described_class.issue_due_email(recipient.id, issue.id) }
+
+        before do
+          issue.update(due_date: Date.tomorrow)
+        end
+
+        it_behaves_like 'an answer to an existing thread with reply-by-email enabled' do
+          let(:model) { issue }
+        end
+        it_behaves_like 'it should show Gmail Actions View Issue link'
+        it_behaves_like 'an unsubscribeable thread'
+        it_behaves_like 'appearance header and footer enabled'
+        it_behaves_like 'appearance header and footer not enabled'
+      end
+
       describe 'status changed' do
         let(:status) { 'closed' }
         subject { described_class.issue_status_changed_email(recipient.id, issue.id, status, current_user.id) }
