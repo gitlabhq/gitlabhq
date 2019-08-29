@@ -1705,6 +1705,18 @@ module API
     class ClusterGroup < Cluster
       expose :group, using: Entities::BasicGroupDetails
     end
+
+    module InternalPostReceive
+      class Message < Grape::Entity
+        expose :message
+        expose :type
+      end
+
+      class Response < Grape::Entity
+        expose :messages, using: Message
+        expose :reference_counter_decreased
+      end
+    end
   end
 end
 

@@ -925,19 +925,20 @@ describe API::Internal do
     it 'returns link to create new merge request' do
       post api('/internal/post_receive'), params: valid_params
 
-      expect(json_response['merge_request_urls']).to match [{
-        "branch_name" => branch_name,
-        "url" => "http://#{Gitlab.config.gitlab.host}/#{project.full_path}/merge_requests/new?merge_request%5Bsource_branch%5D=#{branch_name}",
-        "new_merge_request" => true
-      }]
+      message = <<~MESSAGE.strip
+        To create a merge request for #{branch_name}, visit:
+          http://#{Gitlab.config.gitlab.host}/#{project.full_path}/merge_requests/new?merge_request%5Bsource_branch%5D=#{branch_name}
+      MESSAGE
+
+      expect(json_response['messages']).to include(build_basic_message(message))
     end
 
-    it 'returns empty array if printing_merge_request_link_enabled is false' do
+    it 'returns no merge request messages if printing_merge_request_link_enabled is false' do
       project.update!(printing_merge_request_link_enabled: false)
 
       post api('/internal/post_receive'), params: valid_params
 
-      expect(json_response['merge_request_urls']).to eq([])
+      expect(json_response['messages']).to be_blank
     end
 
     it 'does not invoke MergeRequests::PushOptionsHandlerService' do
@@ -968,11 +969,12 @@ describe API::Internal do
       it 'links to the newly created merge request' do
         post api('/internal/post_receive'), params: valid_params
 
-        expect(json_response['merge_request_urls']).to match [{
-          'branch_name' => branch_name,
-          'url' => "http://#{Gitlab.config.gitlab.host}/#{project.full_path}/merge_requests/1",
-          'new_merge_request' => false
-        }]
+        message = <<~MESSAGE.strip
+          View merge request for #{branch_name}:
+            http://#{Gitlab.config.gitlab.host}/#{project.full_path}/merge_requests/1
+        MESSAGE
+
+        expect(json_response['messages']).to include(build_basic_message(message))
       end
 
       it 'adds errors on the service instance to warnings' do
@@ -982,7 +984,8 @@ describe API::Internal do
 
         post api('/internal/post_receive'), params: valid_params
 
-        expect(json_response['warnings']).to eq('Error encountered with push options \'merge_request.create\': my error')
+        message = "WARNINGS:\nError encountered with push options 'merge_request.create': my error"
+        expect(json_response['messages']).to include(build_alert_message(message))
       end
 
       it 'adds ActiveRecord errors on invalid MergeRequest records to warnings' do
@@ -995,38 +998,39 @@ describe API::Internal do
 
         post api('/internal/post_receive'), params: valid_params
 
-        expect(json_response['warnings']).to eq('Error encountered with push options \'merge_request.create\': my error')
+        message = "WARNINGS:\nError encountered with push options 'merge_request.create': my error"
+        expect(json_response['messages']).to include(build_alert_message(message))
       end
     end
 
     context 'broadcast message exists' do
       let!(:broadcast_message) { create(:broadcast_message, starts_at: 1.day.ago, ends_at: 1.day.from_now ) }
 
-      it 'returns one broadcast message' do
+      it 'outputs a broadcast message' do
         post api('/internal/post_receive'), params: valid_params
 
         expect(response).to have_gitlab_http_status(200)
-        expect(json_response['broadcast_message']).to eq(broadcast_message.message)
+        expect(json_response['messages']).to include(build_alert_message(broadcast_message.message))
       end
     end
 
     context 'broadcast message does not exist' do
-      it 'returns empty string' do
+      it 'does not output a broadcast message' do
         post api('/internal/post_receive'), params: valid_params
 
         expect(response).to have_gitlab_http_status(200)
-        expect(json_response['broadcast_message']).to eq(nil)
+        expect(has_alert_messages?(json_response['messages'])).to be_falsey
       end
     end
 
     context 'nil broadcast message' do
-      it 'returns empty string' do
+      it 'does not output a broadcast message' do
         allow(BroadcastMessage).to receive(:current).and_return(nil)
 
         post api('/internal/post_receive'), params: valid_params
 
         expect(response).to have_gitlab_http_status(200)
-        expect(json_response['broadcast_message']).to eq(nil)
+        expect(has_alert_messages?(json_response['messages'])).to be_falsey
       end
     end
 
@@ -1038,8 +1042,7 @@ describe API::Internal do
         post api('/internal/post_receive'), params: valid_params
 
         expect(response).to have_gitlab_http_status(200)
-        expect(json_response["redirected_message"]).to be_present
-        expect(json_response["redirected_message"]).to eq(project_moved.message)
+        expect(json_response['messages']).to include(build_basic_message(project_moved.message))
       end
     end
 
@@ -1051,8 +1054,7 @@ describe API::Internal do
         post api('/internal/post_receive'), params: valid_params
 
         expect(response).to have_gitlab_http_status(200)
-        expect(json_response["project_created_message"]).to be_present
-        expect(json_response["project_created_message"]).to eq(project_created.message)
+        expect(json_response['messages']).to include(build_basic_message(project_created.message))
       end
     end
 
@@ -1171,5 +1173,19 @@ describe API::Internal do
         project: project.full_path
       }
     )
+  end
+
+  def build_alert_message(message)
+    { 'type' => 'alert', 'message' => message }
+  end
+
+  def build_basic_message(message)
+    { 'type' => 'basic', 'message' => message }
+  end
+
+  def has_alert_messages?(messages)
+    messages.any? do |message|
+      message['type'] == 'alert'
+    end
   end
 end
