@@ -10,8 +10,8 @@ export default class Service {
     return axios.get(this.realtimeEndpoint);
   }
 
-  deleteIssuable() {
-    return axios.delete(this.endpoint);
+  deleteIssuable(payload) {
+    return axios.delete(this.endpoint, { params: payload });
   }
 
   updateIssuable(data) {

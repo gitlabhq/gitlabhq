@@ -104,7 +104,7 @@ describe('Edit Actions components', () => {
       spyOn(window, 'confirm').and.returnValue(true);
       vm.$el.querySelector('.btn-danger').click();
 
-      expect(eventHub.$emit).toHaveBeenCalledWith('delete.issuable');
+      expect(eventHub.$emit).toHaveBeenCalledWith('delete.issuable', { destroy_confirm: true });
     });
 
     it('shows loading icon after clicking delete button', done => {

@@ -1084,16 +1084,41 @@ describe Projects::IssuesController do
       end
 
       it "deletes the issue" do
-        delete :destroy, params: { namespace_id: project.namespace, project_id: project, id: issue.iid }
+        delete :destroy, params: { namespace_id: project.namespace, project_id: project, id: issue.iid, destroy_confirm: true }
 
         expect(response).to have_gitlab_http_status(302)
         expect(controller).to set_flash[:notice].to(/The issue was successfully deleted\./)
       end
 
+      it "deletes the issue" do
+        delete :destroy, params: { namespace_id: project.namespace, project_id: project, id: issue.iid, destroy_confirm: true }
+
+        expect(response).to have_gitlab_http_status(302)
+        expect(controller).to set_flash[:notice].to(/The issue was successfully deleted\./)
+      end
+
+      it "prevents deletion if destroy_confirm is not set" do
+        expect(Gitlab::Sentry).to receive(:track_acceptable_exception).and_call_original
+
+        delete :destroy, params: { namespace_id: project.namespace, project_id: project, id: issue.iid }
+
+        expect(response).to have_gitlab_http_status(302)
+        expect(controller).to set_flash[:notice].to('Destroy confirmation not provided for issue')
+      end
+
+      it "prevents deletion in JSON format if destroy_confirm is not set" do
+        expect(Gitlab::Sentry).to receive(:track_acceptable_exception).and_call_original
+
+        delete :destroy, params: { namespace_id: project.namespace, project_id: project, id: issue.iid, format: 'json' }
+
+        expect(response).to have_gitlab_http_status(422)
+        expect(json_response).to eq({ 'errors' => 'Destroy confirmation not provided for issue' })
+      end
+
       it 'delegates the update of the todos count cache to TodoService' do
         expect_any_instance_of(TodoService).to receive(:destroy_target).with(issue).once
 
-        delete :destroy, params: { namespace_id: project.namespace, project_id: project, id: issue.iid }
+        delete :destroy, params: { namespace_id: project.namespace, project_id: project, id: issue.iid, destroy_confirm: true }
       end
     end
   end

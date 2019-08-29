@@ -300,9 +300,9 @@ export default {
       this.closeRecaptcha();
     },
 
-    deleteIssuable() {
+    deleteIssuable(payload) {
       this.service
-        .deleteIssuable()
+        .deleteIssuable(payload)
         .then(res => res.data)
         .then(data => {
           // Stop the poll so we don't get 404's with the issuable not existing

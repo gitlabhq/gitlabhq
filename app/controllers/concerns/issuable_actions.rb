@@ -6,6 +6,7 @@ module IssuableActions
 
   included do
     before_action :authorize_destroy_issuable!, only: :destroy
+    before_action :check_destroy_confirmation!, only: :destroy
     before_action :authorize_admin_issuable!, only: :bulk_update
     before_action only: :show do
       push_frontend_feature_flag(:scoped_labels, default_enabled: true)
@@ -87,6 +88,33 @@ module IssuableActions
         render json: {
           web_url: index_path
         }
+      end
+    end
+  end
+
+  def check_destroy_confirmation!
+    return true if params[:destroy_confirm]
+
+    error_message = "Destroy confirmation not provided for #{issuable.human_class_name}"
+    exception = RuntimeError.new(error_message)
+    Gitlab::Sentry.track_acceptable_exception(
+      exception,
+      extra: {
+        project_path: issuable.project.full_path,
+        issuable_type: issuable.class.name,
+        issuable_id: issuable.id
+      }
+    )
+
+    index_path = polymorphic_path([parent, issuable.class])
+
+    respond_to do |format|
+      format.html do
+        flash[:notice] = error_message
+        redirect_to index_path
+      end
+      format.json do
+        render json: { errors: error_message }, status: :unprocessable_entity
       end
     end
   end
