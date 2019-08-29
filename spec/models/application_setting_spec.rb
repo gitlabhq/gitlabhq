@@ -355,6 +355,71 @@ describe ApplicationSetting do
         end
       end
     end
+
+    context 'asset proxy settings' do
+      before do
+        subject.asset_proxy_enabled = true
+      end
+
+      describe '#asset_proxy_url' do
+        it { is_expected.not_to allow_value('').for(:asset_proxy_url) }
+        it { is_expected.to allow_value(http).for(:asset_proxy_url) }
+        it { is_expected.to allow_value(https).for(:asset_proxy_url) }
+        it { is_expected.not_to allow_value(ftp).for(:asset_proxy_url) }
+
+        it 'is not required when asset proxy is disabled' do
+          subject.asset_proxy_enabled = false
+          subject.asset_proxy_url = ''
+
+          expect(subject).to be_valid
+        end
+      end
+
+      describe '#asset_proxy_secret_key' do
+        it { is_expected.not_to allow_value('').for(:asset_proxy_secret_key) }
+        it { is_expected.to allow_value('anything').for(:asset_proxy_secret_key) }
+
+        it 'is not required when asset proxy is disabled' do
+          subject.asset_proxy_enabled = false
+          subject.asset_proxy_secret_key = ''
+
+          expect(subject).to be_valid
+        end
+
+        it 'is encrypted' do
+          subject.asset_proxy_secret_key = 'shared secret'
+
+          expect(subject.encrypted_asset_proxy_secret_key).to be_present
+          expect(subject.encrypted_asset_proxy_secret_key).not_to eq(subject.asset_proxy_secret_key)
+        end
+      end
+
+      describe '#asset_proxy_whitelist' do
+        context 'when given an Array' do
+          it 'sets the domains and adds current running host' do
+            setting.asset_proxy_whitelist = ['example.com', 'assets.example.com']
+            expect(setting.asset_proxy_whitelist).to eq(['example.com', 'assets.example.com', 'localhost'])
+          end
+        end
+
+        context 'when given a String' do
+          it 'sets multiple domains with spaces' do
+            setting.asset_proxy_whitelist = 'example.com *.example.com'
+            expect(setting.asset_proxy_whitelist).to eq(['example.com', '*.example.com', 'localhost'])
+          end
+
+          it 'sets multiple domains with newlines and a space' do
+            setting.asset_proxy_whitelist = "example.com\n *.example.com"
+            expect(setting.asset_proxy_whitelist).to eq(['example.com', '*.example.com', 'localhost'])
+          end
+
+          it 'sets multiple domains with commas' do
+            setting.asset_proxy_whitelist = "example.com, *.example.com"
+            expect(setting.asset_proxy_whitelist).to eq(['example.com', '*.example.com', 'localhost'])
+          end
+        end
+      end
+    end
   end
 
   context 'restrict creating duplicates' do

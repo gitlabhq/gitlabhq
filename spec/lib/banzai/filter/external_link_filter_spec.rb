@@ -156,6 +156,18 @@ describe Banzai::Filter::ExternalLinkFilter do
         expect(doc_email.to_html).to include('http://xn--example-6p25f.com/</a>')
       end
     end
+
+    context 'autolinked image' do
+      let(:html) { %q(<a href="https://assets.example.com/6d8b/634c" data-canonical-src="http://exa%F0%9F%98%84mple.com/test.png"><img src="http://exa%F0%9F%98%84mple.com/test.png" data-canonical-src="http://exa%F0%9F%98%84mple.com/test.png"></a>) }
+      let(:doc)  { filter(html) }
+
+      it_behaves_like 'an external link with rel attribute'
+
+      it 'adds a toolip with punycode' do
+        expect(doc.to_html).to include('class="has-tooltip"')
+        expect(doc.to_html).to include('title="http://xn--example-6p25f.com/test.png"')
+      end
+    end
   end
 
   context 'for links that look malicious' do

@@ -279,6 +279,11 @@ ActiveRecord::Schema.define(version: 2019_08_16_151221) do
     t.boolean "allow_local_requests_from_system_hooks", default: true, null: false
     t.bigint "instance_administration_project_id"
     t.string "snowplow_collector_hostname"
+    t.boolean "asset_proxy_enabled", default: false, null: false
+    t.string "asset_proxy_url"
+    t.text "asset_proxy_whitelist"
+    t.text "encrypted_asset_proxy_secret_key"
+    t.string "encrypted_asset_proxy_secret_key_iv"
     t.index ["custom_project_templates_group_id"], name: "index_application_settings_on_custom_project_templates_group_id"
     t.index ["file_template_project_id"], name: "index_application_settings_on_file_template_project_id"
     t.index ["instance_administration_project_id"], name: "index_applicationsettings_on_instance_administration_project_id"
