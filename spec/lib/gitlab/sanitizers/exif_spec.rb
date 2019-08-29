@@ -7,7 +7,9 @@ describe Gitlab::Sanitizers::Exif do
 
   describe '#batch_clean' do
     context 'with image uploads' do
-      let!(:uploads) { create_list(:upload, 3, :with_file, :issuable_upload) }
+      set(:upload1) { create(:upload, :with_file, :issuable_upload) }
+      set(:upload2) { create(:upload, :with_file, :personal_snippet_upload) }
+      set(:upload3) { create(:upload, :with_file, created_at: 3.days.ago) }
 
       it 'processes all uploads if range ID is not set' do
         expect(sanitizer).to receive(:clean).exactly(3).times
@@ -18,7 +20,19 @@ describe Gitlab::Sanitizers::Exif do
       it 'processes only uploads in the selected range' do
         expect(sanitizer).to receive(:clean).once
 
-        sanitizer.batch_clean(start_id: uploads[1].id, stop_id: uploads[1].id)
+        sanitizer.batch_clean(start_id: upload1.id, stop_id: upload1.id)
+      end
+
+      it 'processes only uploads for the selected uploader' do
+        expect(sanitizer).to receive(:clean).once
+
+        sanitizer.batch_clean(uploader: 'PersonalFileUploader')
+      end
+
+      it 'processes only uploads created since specified date' do
+        expect(sanitizer).to receive(:clean).exactly(2).times
+
+        sanitizer.batch_clean(since: 2.days.ago)
       end
 
       it 'pauses if sleep_time is set' do

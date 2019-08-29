@@ -278,4 +278,14 @@ describe LabelsHelper do
       it { is_expected.to eq('Subscribe at group level') }
     end
   end
+
+  describe '#label_tooltip_title' do
+    let(:html) { '<img src="example.png">This is an image</img>' }
+    let(:label_with_html_content) { create(:label, title: 'test', description: html) }
+
+    it 'removes HTML' do
+      tooltip = label_tooltip_title(label_with_html_content)
+      expect(tooltip).to eq('This is an image')
+    end
+  end
 end

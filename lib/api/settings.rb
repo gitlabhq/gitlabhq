@@ -36,6 +36,10 @@ module API
       given akismet_enabled: ->(val) { val } do
         requires :akismet_api_key, type: String, desc: 'Generate API key at http://www.akismet.com'
       end
+      optional :asset_proxy_enabled, type: Boolean, desc: 'Enable proxying of assets'
+      optional :asset_proxy_url, type: String, desc: 'URL of the asset proxy server'
+      optional :asset_proxy_secret_key, type: String, desc: 'Shared secret with the asset proxy server'
+      optional :asset_proxy_whitelist, type: Array[String], coerce_with: Validations::Types::CommaSeparatedToArray.coerce, desc: 'Assets that match these domain(s) will NOT be proxied. Wildcards allowed. Your GitLab installation URL is automatically whitelisted.'
       optional :container_registry_token_expire_delay, type: Integer, desc: 'Authorization token duration (minutes)'
       optional :default_artifacts_expire_in, type: String, desc: "Set the default expiration time for each job's artifacts"
       optional :default_project_creation, type: Integer, values: ::Gitlab::Access.project_creation_values, desc: 'Determine if developers can create projects in the group'
@@ -104,6 +108,11 @@ module API
         requires :recaptcha_site_key, type: String, desc: 'Generate site key at http://www.google.com/recaptcha'
         requires :recaptcha_private_key, type: String, desc: 'Generate private key at http://www.google.com/recaptcha'
       end
+      optional :login_recaptcha_protection_enabled, type: Boolean, desc: 'Helps prevent brute-force attacks'
+      given login_recaptcha_protection_enabled: ->(val) { val } do
+        requires :recaptcha_site_key, type: String, desc: 'Generate site key at http://www.google.com/recaptcha'
+        requires :recaptcha_private_key, type: String, desc: 'Generate private key at http://www.google.com/recaptcha'
+      end
       optional :repository_checks_enabled, type: Boolean, desc: "GitLab will periodically run 'git fsck' in all project and wiki repositories to look for silent disk corruption issues."
       optional :repository_storages, type: Array[String], desc: 'Storage paths for new projects'
       optional :require_two_factor_authentication, type: Boolean, desc: 'Require all users to set up Two-factor authentication'
@@ -123,7 +132,7 @@ module API
       optional :terminal_max_session_time, type: Integer, desc: 'Maximum time for web terminal websocket connection (in seconds). Set to 0 for unlimited time.'
       optional :usage_ping_enabled, type: Boolean, desc: 'Every week GitLab will report license usage back to GitLab, Inc.'
       optional :instance_statistics_visibility_private, type: Boolean, desc: 'When set to `true` Instance statistics will only be available to admins'
-      optional :local_markdown_version, type: Integer, desc: "Local markdown version, increase this value when any cached markdown should be invalidated"
+      optional :local_markdown_version, type: Integer, desc: 'Local markdown version, increase this value when any cached markdown should be invalidated'
       optional :allow_local_requests_from_hooks_and_services, type: Boolean, desc: 'Deprecated: Use :allow_local_requests_from_web_hooks_and_services instead. Allow requests to the local network from hooks and services.' # support legacy names, can be removed in v5
       optional :snowplow_enabled, type: Grape::API::Boolean, desc: 'Enable Snowplow tracking'
       given snowplow_enabled: ->(val) { val } do

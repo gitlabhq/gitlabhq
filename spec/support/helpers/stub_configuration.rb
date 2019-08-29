@@ -105,6 +105,10 @@ module StubConfiguration
     allow(Gitlab.config.gitlab_shell).to receive_messages(to_settings(messages))
   end
 
+  def stub_asset_proxy_setting(messages)
+    allow(Gitlab.config.asset_proxy).to receive_messages(to_settings(messages))
+  end
+
   def stub_rack_attack_setting(messages)
     allow(Gitlab.config.rack_attack).to receive(:git_basic_auth).and_return(messages)
     allow(Gitlab.config.rack_attack.git_basic_auth).to receive_messages(to_settings(messages))

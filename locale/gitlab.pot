@@ -1104,9 +1104,6 @@ msgstr ""
 msgid "An error occurred while parsing recent searches"
 msgstr ""
 
-msgid "An error occurred while rendering KaTeX"
-msgstr ""
-
 msgid "An error occurred while rendering preview broadcast message"
 msgstr ""
 
@@ -4360,7 +4357,7 @@ msgstr ""
 msgid "Enable or disable version check and usage ping."
 msgstr ""
 
-msgid "Enable reCAPTCHA or Akismet and set IP limits."
+msgid "Enable reCAPTCHA or Akismet and set IP limits. For reCAPTCHA, we currently only support %{recaptcha_v2_link_start}v2%{recaptcha_v2_link_end}"
 msgstr ""
 
 msgid "Enable shared Runners"
@@ -5730,7 +5727,10 @@ msgstr ""
 msgid "Help page text and support page url."
 msgstr ""
 
-msgid "Helps prevent bots from creating accounts. We currently only support %{recaptcha_v2_link_start}reCAPTCHA v2%{recaptcha_v2_link_end}"
+msgid "Helps prevent bots from brute-force attacks."
+msgstr ""
+
+msgid "Helps prevent bots from creating accounts."
 msgstr ""
 
 msgid "Hide archived projects"
@@ -13797,6 +13797,12 @@ msgid "leave %{group_name}"
 msgstr ""
 
 msgid "manual"
+msgstr ""
+
+msgid "math|The math in this entry is taking too long to render and may not be displayed as expected. For performance reasons, math blocks are also limited to %{maxChars} characters. Consider splitting up large formulae, splitting math blocks among multiple entries, or using an image instead."
+msgstr ""
+
+msgid "math|There was an error rendering this math block"
 msgstr ""
 
 msgid "merge request"

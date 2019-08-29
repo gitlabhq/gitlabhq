@@ -26,10 +26,18 @@ describe Banzai::Filter::ProjectReferenceFilter do
     expect(reference_filter(act).to_html).to eq(CGI.escapeHTML(exp))
   end
 
-  it 'fails fast for long invalid string' do
-    expect do
-      Timeout.timeout(5.seconds) { reference_filter("A" * 50000).to_html }
-    end.not_to raise_error
+  context 'when invalid reference strings are very long' do
+    shared_examples_for 'fails fast' do |ref_string|
+      it 'fails fast for long strings' do
+        # took well under 1 second in CI https://dev.gitlab.org/gitlab/gitlabhq/merge_requests/3267#note_172824
+        expect do
+          Timeout.timeout(3.seconds) { reference_filter(ref_string).to_html }
+        end.not_to raise_error
+      end
+    end
+
+    it_behaves_like 'fails fast', 'A' * 50000
+    it_behaves_like 'fails fast', '/a' * 50000
   end
 
   it 'allows references with text after the > character' do

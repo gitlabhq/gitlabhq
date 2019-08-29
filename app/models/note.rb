@@ -89,6 +89,7 @@ class Note < ApplicationRecord
   delegate :title, to: :noteable, allow_nil: true
 
   validates :note, presence: true
+  validates :note, length: { maximum: Gitlab::Database::MAX_TEXT_SIZE_LIMIT }
   validates :project, presence: true, if: :for_project_noteable?
 
   # Attachments are deprecated and are handled by Markdown uploader
@@ -329,6 +330,10 @@ class Note < ApplicationRecord
 
   def cross_reference_not_visible_for?(user)
     cross_reference? && !all_referenced_mentionables_allowed?(user)
+  end
+
+  def visible_for?(user)
+    !cross_reference_not_visible_for?(user)
   end
 
   def award_emoji?

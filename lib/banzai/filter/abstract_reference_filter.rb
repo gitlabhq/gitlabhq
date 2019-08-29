@@ -7,6 +7,14 @@ module Banzai
     class AbstractReferenceFilter < ReferenceFilter
       include CrossProjectReference
 
+      # REFERENCE_PLACEHOLDER is used for re-escaping HTML text except found
+      # reference (which we replace with placeholder during re-scaping).  The
+      # random number helps ensure it's pretty close to unique. Since it's a
+      # transitory value (it never gets saved) we can initialize once, and it
+      # doesn't matter if it changes on a restart.
+      REFERENCE_PLACEHOLDER = "_reference_#{SecureRandom.hex(16)}_"
+      REFERENCE_PLACEHOLDER_PATTERN = %r{#{REFERENCE_PLACEHOLDER}(\d+)}.freeze
+
       def self.object_class
         # Implement in child class
         # Example: MergeRequest
@@ -388,6 +396,14 @@ module Banzai
 
       def escape_html_entities(text)
         CGI.escapeHTML(text.to_s)
+      end
+
+      def escape_with_placeholders(text, placeholder_data)
+        escaped = escape_html_entities(text)
+
+        escaped.gsub(REFERENCE_PLACEHOLDER_PATTERN) do |match|
+          placeholder_data[$1.to_i]
+        end
       end
     end
   end

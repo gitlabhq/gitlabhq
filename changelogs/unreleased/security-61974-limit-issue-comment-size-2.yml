@@ -1,0 +1,5 @@
+---
+title: Speed up regexp in namespace format by failing fast after reaching maximum namespace depth
+merge_request:
+author:
+type: security

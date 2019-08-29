@@ -1174,6 +1174,9 @@ module API
         attributes.delete(:performance_bar_enabled)
         attributes.delete(:allow_local_requests_from_hooks_and_services)
 
+        # let's not expose the secret key in a response
+        attributes.delete(:asset_proxy_secret_key)
+
         attributes
       end
 
