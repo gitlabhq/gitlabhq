@@ -106,6 +106,7 @@ describe('Environment item', () => {
               play_path: '/play',
             },
           ],
+          deployed_at: '2016-11-29T18:11:58.430Z',
         },
         has_stop_action: true,
         environment_path: 'root/ci-folders/environments/31',
@@ -139,9 +140,7 @@ describe('Environment item', () => {
 
       it('should render last deployment date', () => {
         const timeagoInstance = new timeago(); // eslint-disable-line
-        const formatedDate = timeagoInstance.format(
-          environment.last_deployment.deployable.created_at,
-        );
+        const formatedDate = timeagoInstance.format(environment.last_deployment.deployed_at);
 
         expect(
           component.$el.querySelector('.environment-created-date-timeago').textContent,

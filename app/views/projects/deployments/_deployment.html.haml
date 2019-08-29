@@ -22,7 +22,8 @@
 
   .table-section.section-15{ role: 'gridcell' }
     .table-mobile-header{ role: 'rowheader' }= _("Created")
-    %span.table-mobile-content= time_ago_with_tooltip(deployment.created_at)
+    - if deployment.deployed_at
+      %span.table-mobile-content= time_ago_with_tooltip(deployment.deployed_at)
 
   .table-section.section-20.table-button-footer{ role: 'gridcell' }
     .btn-group.table-action-buttons
