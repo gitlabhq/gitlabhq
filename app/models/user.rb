@@ -643,6 +643,13 @@ class User < ApplicationRecord
     end
   end
 
+  # will_save_change_to_attribute? is used by Devise to check if it is necessary
+  # to clear any existing reset_password_tokens before updating an authentication_key
+  # and login in our case is a virtual attribute to allow login by username or email.
+  def will_save_change_to_login?
+    will_save_change_to_username? || will_save_change_to_email?
+  end
+
   def unique_email
     if !emails.exists?(email: email) && Email.exists?(email: email)
       errors.add(:email, _('has already been taken'))
