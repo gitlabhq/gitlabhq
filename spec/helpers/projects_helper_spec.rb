@@ -549,6 +549,42 @@ describe ProjectsHelper do
     end
   end
 
+  describe '#git_user_email' do
+    context 'not logged-in' do
+      before do
+        allow(helper).to receive(:current_user).and_return(nil)
+      end
+
+      it 'returns your@email.com' do
+        expect(helper.send(:git_user_email)).to eq('your@email.com')
+      end
+    end
+
+    context 'user logged in' do
+      let(:user) { create(:user) }
+      before do
+        allow(helper).to receive(:current_user).and_return(user)
+      end
+
+      context 'user has no configured commit email' do
+        it 'returns the primary email' do
+          expect(helper.send(:git_user_email)).to eq(user.email)
+        end
+      end
+
+      context 'user has a configured commit email' do
+        before do
+          confirmed_email = create(:email, :confirmed, user: user)
+          user.update(commit_email: confirmed_email)
+        end
+
+        it 'returns the commit email' do
+          expect(helper.send(:git_user_email)).to eq(user.commit_email)
+        end
+      end
+    end
+  end
+
   describe 'show_xcode_link' do
     let!(:project) { create(:project) }
     let(:mac_ua) { 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.139 Safari/537.36' }
