@@ -44,7 +44,7 @@ export default {
 
 <template>
   <div class="flash-container flash-container-page" @click="clickFlash">
-    <div class="flash-alert">
+    <div class="flash-alert" data-qa-selector="flash_alert">
       <span v-html="message.text"> </span>
       <button
         v-if="message.action"

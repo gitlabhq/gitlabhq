@@ -89,7 +89,7 @@ export default {
 </script>
 
 <template>
-  <div class="multi-file-commit-panel ide-right-sidebar">
+  <div class="multi-file-commit-panel ide-right-sidebar" data-qa-selector="ide_right_sidebar">
     <resizable-panel
       v-show="isOpen"
       :collapsible="false"
@@ -120,6 +120,7 @@ export default {
             }"
             data-container="body"
             data-placement="left"
+            :data-qa-selector="`${tab.title.toLowerCase()}_tab_button`"
             class="ide-sidebar-link is-right"
             type="button"
             @click="clickTab($event, tab)"
