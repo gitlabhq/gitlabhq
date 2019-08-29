@@ -34,3 +34,5 @@ module QA
     end
   end
 end
+
+QA::Page::Profile::Menu.prepend_if_ee('QA::EE::Page::Profile::Menu')

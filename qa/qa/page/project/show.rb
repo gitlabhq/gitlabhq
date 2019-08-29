@@ -131,3 +131,5 @@ module QA
     end
   end
 end
+
+QA::Page::Project.prepend_if_ee('QA::EE::Page::Project::Show')

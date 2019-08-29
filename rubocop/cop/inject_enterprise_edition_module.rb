@@ -24,7 +24,7 @@ module RuboCop
 
         # We use `match?` here instead of RuboCop's AST matching, as this makes
         # it far easier to handle nested constants such as `EE::Foo::Bar::Baz`.
-        line.match?(/(\s|\()('|")?(::)?EE::/)
+        line.match?(/(\s|\()('|")?(::)?(QA::)?EE::/)
       end
 
       def on_send(node)

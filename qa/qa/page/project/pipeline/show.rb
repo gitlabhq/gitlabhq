@@ -60,3 +60,5 @@ module QA::Page
     end
   end
 end
+
+QA::Page::Project::Pipeline::Show.prepend_if_ee('QA::EE::Page::Project::Pipeline::Show')

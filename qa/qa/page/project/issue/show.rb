@@ -112,3 +112,5 @@ module QA
     end
   end
 end
+
+QA::Page::Project::Issue::Show.prepend_if_ee('QA::EE::Page::Project::Issue::Show')

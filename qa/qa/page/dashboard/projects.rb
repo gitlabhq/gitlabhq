@@ -29,3 +29,5 @@ module QA
     end
   end
 end
+
+QA::Page::Dashboard::Projects.prepend_if_ee('QA::EE::Page::Dashboard::Projects')

@@ -233,3 +233,5 @@ module QA
     end
   end
 end
+
+QA::Runtime::Env.extend_if_ee('QA::EE::Runtime::Env')

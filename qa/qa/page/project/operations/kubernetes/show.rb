@@ -53,3 +53,5 @@ module QA
     end
   end
 end
+
+QA::Page::Project::Operations::Kubernetes::Show.prepend_if_ee('QA::EE::Page::Project::Operations::Kubernetes::Show')
