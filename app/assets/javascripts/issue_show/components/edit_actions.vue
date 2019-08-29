@@ -55,7 +55,7 @@ export default {
       if (window.confirm(confirmMessage)) {
         this.deleteLoading = true;
 
-        eventHub.$emit('delete.issuable');
+        eventHub.$emit('delete.issuable', { destroy_confirm: true });
       }
     },
   },
