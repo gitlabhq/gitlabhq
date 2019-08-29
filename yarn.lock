@@ -996,10 +996,10 @@
   resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-1.71.0.tgz#c8e6e8f500ea91e5cbba4ac08df533fb2e622a00"
   integrity sha512-kkeNic/FFwaqKnzwio4NE7whBOZ/toRJ8cS0587DBotajAzSYhph5ij4TCY2GTjPa33zIJ5OUr/k90C0Kr71hQ==
 
-"@gitlab/ui@5.20.1":
-  version "5.20.1"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-5.20.1.tgz#a7d479f2a19988eacd90a4864183f0c49ddd310f"
-  integrity sha512-fbqs5ncnqItgmXLlK4/ZoXwW+6DGBf+/nub2agoIT4EocwYGtrmAB8V+ybEcRrJVG8YpkCGt6R4lD24VrATWTw==
+"@gitlab/ui@5.20.2":
+  version "5.20.2"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-5.20.2.tgz#a51270d5a521e71059c5fd05f86cfc835f5e28ae"
+  integrity sha512-TSaD5Cz0YXBTsRtQwsa7LbS2O5h0CL3YkdYmBKrMZkphL76xQaN08ZImkQ5Xl8cD1ZiWN2CsTvoUbF19UP2V1w==
   dependencies:
     "@babel/standalone" "^7.0.0"
     "@gitlab/vue-toasted" "^1.2.1"
@@ -1014,10 +1014,10 @@
     vue "^2.6.10"
     vue-loader "^15.4.2"
 
-"@gitlab/visual-review-tools@1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/visual-review-tools/-/visual-review-tools-1.0.0.tgz#6012e0a19797c1f5dad34ccf4dacdaf38e400a73"
-  integrity sha512-xMvz9IwrXisQ1MH+Tj6lfbQcQSiQy88nTPuQV6OTLBGuV+vIQeVwXeIkQeTKuSpd0GqZvigPdRqxyQCa3blpIg==
+"@gitlab/visual-review-tools@1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@gitlab/visual-review-tools/-/visual-review-tools-1.0.1.tgz#7e588328ed018d91560633d56865d65b72c3a11b"
+  integrity sha512-vNqpui0khtPi3crrrFtfuT+nw0SdD/nMyb+aurbJzc3RXuVJGCdgYwosvTLPcJkdMOVfTijizV5+ys75s8INBw==
 
 "@gitlab/vue-toasted@^1.2.1":
   version "1.2.1"
