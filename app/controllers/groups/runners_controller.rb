@@ -3,7 +3,7 @@
 class Groups::RunnersController < Groups::ApplicationController
   # Proper policies should be implemented per
   # https://gitlab.com/gitlab-org/gitlab-ce/issues/45894
-  before_action :authorize_admin_pipeline!
+  before_action :authorize_admin_group!
 
   before_action :runner, only: [:edit, :update, :destroy, :pause, :resume, :show]
 
@@ -48,10 +48,6 @@ class Groups::RunnersController < Groups::ApplicationController
 
   def runner
     @runner ||= @group.runners.find(params[:id])
-  end
-
-  def authorize_admin_pipeline!
-    return render_404 unless can?(current_user, :admin_pipeline, group)
   end
 
   def runner_params
