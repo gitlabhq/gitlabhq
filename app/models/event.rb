@@ -2,7 +2,6 @@
 
 class Event < ApplicationRecord
   include Sortable
-  include IgnorableColumn
   include FromUnion
   default_scope { reorder(nil) }
 

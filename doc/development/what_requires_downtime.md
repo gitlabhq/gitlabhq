@@ -45,15 +45,12 @@ rule.
 
 The first step is to ignore the column in the application code. This is
 necessary because Rails caches the columns and re-uses this cache in various
-places. This can be done by including the `IgnorableColumn` module into the
-model, followed by defining the columns to ignore. For example, to ignore
+places. This can be done by defining the columns to ignore. For example, to ignore
 `updated_at` in the User model you'd use the following:
 
 ```ruby
-class User < ActiveRecord::Base
-  include IgnorableColumn
-
-  ignore_column :updated_at
+class User < ApplicationRecord
+  self.ignored_columns = %i[updated_at]
 end
 ```
 
@@ -64,8 +61,7 @@ column. Both these changes should be submitted in the same merge request.
 
 Once the changes from step 1 have been released & deployed you can set up a
 separate merge request that removes the ignore rule. This merge request can
-simply remove the `ignore_column` line, and the `include IgnorableColumn` line
-if no other `ignore_column` calls remain.
+simply remove the `self.ignored_columns` line.
 
 ## Renaming Columns
 
