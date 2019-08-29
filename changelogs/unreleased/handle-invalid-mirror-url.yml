@@ -1,0 +1,5 @@
+---
+title: Handle invalid mirror url
+merge_request: 32353
+author: Lee Tickett
+type: fixed
