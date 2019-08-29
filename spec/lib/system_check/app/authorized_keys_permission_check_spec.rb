@@ -42,4 +42,26 @@ describe SystemCheck::App::AuthorizedKeysPermissionCheck do
       it { is_expected.to eq(false) }
     end
   end
+
+  describe '#repair!' do
+    subject { system_check.repair! }
+
+    before do
+      expect_next_instance_of(Gitlab::AuthorizedKeys) do |instance|
+        allow(instance).to receive(:create) { created }
+      end
+    end
+
+    context 'authorized_keys file created' do
+      let(:created) { true }
+
+      it { is_expected.to eq(true) }
+    end
+
+    context 'authorized_keys file is not created' do
+      let(:created) { false }
+
+      it { is_expected.to eq(false) }
+    end
+  end
 end

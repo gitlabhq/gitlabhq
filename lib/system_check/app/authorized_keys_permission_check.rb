@@ -14,6 +14,10 @@ module SystemCheck
         authorized_keys.accessible?
       end
 
+      def repair!
+        authorized_keys.create
+      end
+
       def show_error
         try_fixing_it([
           "sudo chmod 700 #{File.dirname(authorized_keys.file)}",

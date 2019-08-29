@@ -22,6 +22,15 @@ module Gitlab
       false
     end
 
+    # Creates the authorized_keys file if it doesn't exist
+    #
+    # @return [Boolean]
+    def create
+      open_authorized_keys_file(File::CREAT) { true }
+    rescue Errno::EACCES
+      false
+    end
+
     # Add id and its key to the authorized_keys file
     #
     # @param [String] id identifier of key prefixed by `key-`

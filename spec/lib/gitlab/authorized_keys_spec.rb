@@ -37,6 +37,41 @@ describe Gitlab::AuthorizedKeys do
     end
   end
 
+  describe '#create' do
+    subject { authorized_keys.create }
+
+    context 'authorized_keys file exists' do
+      before do
+        create_authorized_keys_fixture
+      end
+
+      after do
+        delete_authorized_keys_file
+      end
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'authorized_keys file does not exist' do
+      after do
+        delete_authorized_keys_file
+      end
+
+      it 'creates authorized_keys file' do
+        expect(subject).to be_truthy
+        expect(File.exist?(tmp_authorized_keys_path)).to be_truthy
+      end
+    end
+
+    context 'cannot create file' do
+      before do
+        allow(File).to receive(:open).and_raise(Errno::EACCES)
+      end
+
+      it { is_expected.to be_falsey }
+    end
+  end
+
   describe '#add_key' do
     let(:id) { 'key-741' }
 
