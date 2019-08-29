@@ -2,7 +2,7 @@
 
 > **Warning:** GitLab has [completely
 removed][deprecate-annex-issue] in GitLab 9.0 (2017/03/22).
-Read through the [migration guide from git-annex to git-lfs][guide].
+Read through the [migration guide from git-annex to Git LFS][guide].
 
 The biggest limitation of Git, compared to some older centralized version
 control systems, has been the maximum size of the repositories.
@@ -51,7 +51,7 @@ sudo yum install epel-release && sudo yum install git-annex
 
 ### Configuration for Omnibus packages
 
-For omnibus-gitlab packages, only one configuration setting is needed.
+For Omnibus GitLab packages, only one configuration setting is needed.
 The Omnibus package will internally set the correct options in all locations.
 
 1. In `/etc/gitlab/gitlab.rb` add the following line:
@@ -67,7 +67,7 @@ The Omnibus package will internally set the correct options in all locations.
 There are 2 settings to enable git-annex on your GitLab server.
 
 One is located in `config/gitlab.yml` of the GitLab repository and the other
-one is located in `config.yml` of gitlab-shell.
+one is located in `config.yml` of GitLab Shell.
 
 1. In `config/gitlab.yml` add or edit the following lines:
 
@@ -76,7 +76,7 @@ one is located in `config.yml` of gitlab-shell.
      git_annex_enabled: true
    ```
 
-1. In `config.yml` of gitlab-shell add or edit the following lines:
+1. In `config.yml` of GitLab Shell add or edit the following lines:
 
    ```yaml
    git_annex_enabled: true
@@ -184,7 +184,7 @@ access files of projects you have access to (developer, maintainer, or owner rol
 
 Internally GitLab uses [GitLab Shell] to handle SSH access and this was a great
 integration point for `git-annex`.
-There is a setting in gitlab-shell so you can disable GitLab Annex support
+There is a setting in GitLab Shell so you can disable GitLab Annex support
 if you want to.
 
 ## Troubleshooting tips
@@ -200,7 +200,7 @@ searching for your distribution.
 Although there is no general guide for `git-annex` errors, there are a few tips
 on how to go around the warnings.
 
-### git-annex-shell: Not a git-annex or gcrypt repository
+### `git-annex-shell: Not a git-annex or gcrypt repository`
 
 This warning can appear on the initial `git annex sync --content` and is caused
 by differences in `git-annex-shell`. You can read more about it

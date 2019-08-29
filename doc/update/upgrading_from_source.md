@@ -118,7 +118,7 @@ sudo ln -sf /usr/local/go/bin/{go,godoc,gofmt} /usr/local/bin/
 rm go1.11.10.linux-amd64.tar.gz
 ```
 
-### 6. Update git
+### 6. Update Git
 
 NOTE: **Note:**
 GitLab 11.11 and higher only supports Git 2.21.x and newer, and
@@ -186,7 +186,7 @@ cd /home/git/gitlab
 sudo -u git -H git checkout BRANCH-ee
 ```
 
-### 8. Update gitlab-shell
+### 8. Update GitLab Shell
 
 ```bash
 cd /home/git/gitlab-shell
@@ -196,9 +196,9 @@ sudo -u git -H git checkout v$(</home/git/gitlab/GITLAB_SHELL_VERSION)
 sudo -u git -H bin/compile
 ```
 
-### 9. Update gitlab-workhorse
+### 9. Update GitLab Workhorse
 
-Install and compile gitlab-workhorse. GitLab-Workhorse uses
+Install and compile GitLab Workhorse. GitLab Workhorse uses
 [GNU Make](https://www.gnu.org/software/make/).
 If you are not using Linux you may have to run `gmake` instead of
 `make` below.
@@ -222,11 +222,11 @@ sudo -u git -H git checkout v$(</home/git/gitlab/GITALY_SERVER_VERSION)
 sudo -u git -H make
 ```
 
-### 11. Update gitlab-pages
+### 11. Update GitLab Pages
 
 #### Only needed if you use GitLab Pages
 
-Install and compile gitlab-pages. GitLab-Pages uses
+Install and compile GitLab Pages. GitLab Pages uses
 [GNU Make](https://www.gnu.org/software/make/).
 If you are not using Linux you may have to run `gmake` instead of
 `make` below.
@@ -273,8 +273,8 @@ longer handles setting it.
 
 If you are using Apache instead of NGINX please see the updated [Apache templates].
 Also note that because Apache does not support upstreams behind Unix sockets you
-will need to let gitlab-workhorse listen on a TCP port. You can do this
-via [/etc/default/gitlab].
+will need to let GitLab Workhorse listen on a TCP port. You can do this
+via [`/etc/default/gitlab`](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/lib/support/init.d/gitlab.default.example#L38).
 
 #### SMTP configuration
 
@@ -404,4 +404,3 @@ If you have more than one backup `*.tar` file(s) please add `BACKUP=timestamp_of
 [gl-example]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/lib/support/init.d/gitlab.default.example
 [smtp_settings.rb.sample]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/config/initializers/smtp_settings.rb.sample#L13
 [Apache templates]: https://gitlab.com/gitlab-org/gitlab-recipes/tree/master/web-server/apache
-[/etc/default/gitlab]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/lib/support/init.d/gitlab.default.example#L38

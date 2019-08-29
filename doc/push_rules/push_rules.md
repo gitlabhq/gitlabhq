@@ -10,7 +10,7 @@ regular expressions to reject pushes based on commit contents, branch names or f
 ## Overview
 
 GitLab already offers [protected branches][protected-branches], but there are
-cases when you need some specific rules like preventing git tag removal or
+cases when you need some specific rules like preventing Git tag removal or
 enforcing a special format for commit messages.
 
 Push rules are essentially [pre-receive Git hooks][hooks] that are easy to
@@ -27,7 +27,7 @@ Every push rule could have its own use case, but let's consider some examples.
 Let's assume you have the following requirements for your workflow:
 
 - every commit should reference a Jira issue, for example: `Refactored css. Fixes JIRA-123.`
-- users should not be able to remove git tags with `git push`
+- users should not be able to remove Git tags with `git push`
 
 All you need to do is write a simple regular expression that requires the mention
 of a Jira issue in the commit message, like `JIRA\-\d+`.
@@ -64,7 +64,7 @@ The following options are available.
 
 | Push rule | GitLab version | Description |
 | --------- | :------------: | ----------- |
-| Removal of tags with `git push` | **Starter** 7.10 | Forbid users to remove git tags with `git push`. Tags will still be able to be deleted through the web UI. |
+| Removal of tags with `git push` | **Starter** 7.10 | Forbid users to remove Git tags with `git push`. Tags will still be able to be deleted through the web UI. |
 | Check whether author is a GitLab user | **Starter** 7.10 | Restrict commits by author (email) to existing GitLab users. |
 | Committer restriction | **Premium** 10.2 | GitLab will reject any commit that was not committed by the current authenticated user |
 | Check whether commit is signed through GPG | **Premium** 10.1 | Reject commit when it is not signed through GPG. Read [signing commits with GPG][signing-commits]. |

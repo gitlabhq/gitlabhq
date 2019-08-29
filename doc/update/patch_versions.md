@@ -64,7 +64,7 @@ sudo -u git -H bundle exec rake gettext:po_to_json RAILS_ENV=production
 sudo -u git -H bundle exec rake yarn:install gitlab:assets:clean gitlab:assets:compile cache:clear RAILS_ENV=production NODE_ENV=production NODE_OPTIONS="--max_old_space_size=4096"
 ```
 
-### 4. Update gitlab-workhorse to the corresponding version
+### 4. Update GitLab Workhorse to the corresponding version
 
 ```bash
 cd /home/git/gitlab
@@ -80,7 +80,7 @@ cd /home/git/gitlab
 sudo -u git -H bundle exec rake "gitlab:gitaly:install[/home/git/gitaly,/home/git/repositories]" RAILS_ENV=production
 ```
 
-### 6. Update gitlab-shell to the corresponding version
+### 6. Update GitLab Shell to the corresponding version
 
 ```bash
 cd /home/git/gitlab-shell
@@ -90,7 +90,7 @@ sudo -u git -H git checkout v$(</home/git/gitlab/GITLAB_SHELL_VERSION) -b v$(</h
 sudo -u git -H sh -c 'if [ -x bin/compile ]; then bin/compile; fi'
 ```
 
-### 7. Update gitlab-pages to the corresponding version (skip if not using pages)
+### 7. Update GitLab Pages to the corresponding version (skip if not using pages)
 
 ```bash
 cd /home/git/gitlab-pages

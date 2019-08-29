@@ -1148,7 +1148,7 @@ GFM will autolink almost any URL you put into your text:
 - https://google.com/
 - ftp://ftp.us.debian.org/debian/
 - smb://foo/bar/baz
-- irc://irc.freenode.net/gitlab
+- irc://irc.freenode.net/
 - http://localhost:3000
 ```
 
@@ -1156,7 +1156,7 @@ GFM will autolink almost any URL you put into your text:
 - <https://google.com/>
 - <ftp://ftp.us.debian.org/debian/>
 - <smb://foo/bar/baz>
-- <irc://irc.freenode.net/gitlab>
+- <irc://irc.freenode.net/>
 - <http://localhost:3000>
 
 ### Lists

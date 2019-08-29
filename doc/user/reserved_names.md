@@ -14,27 +14,27 @@ For a list of words that are not allowed to be used as group or project names, s
 
 It is currently not possible to create a project with the following names:
 
-- \-
-- badges
-- blame
-- blob
-- builds
-- commits
-- create
-- create_dir
-- edit
-- environments/folders
-- files
-- find_file
-- gitlab-lfs/objects
-- info/lfs/objects
-- new
-- preview
-- raw
-- refs
-- tree
-- update
-- wikis
+- `\-`
+- `badges`
+- `blame`
+- `blob`
+- `builds`
+- `commits`
+- `create`
+- `create_dir`
+- `edit`
+- `environments/folders`
+- `files`
+- `find_file`
+- `gitlab-lfs/objects`
+- `info/lfs/objects`
+- `new`
+- `preview`
+- `raw`
+- `refs`
+- `tree`
+- `update`
+- `wikis`
 
 ## Reserved group names
 

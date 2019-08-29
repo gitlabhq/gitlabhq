@@ -15,7 +15,7 @@ another project that is under their control, or onto another server.
 Therefore, it is impossible to build access controls that prevent the
 intentional sharing of source code by users that have access to the source code.
 
-This is an inherent feature of a DVCS. All git management systems have this
+This is an inherent feature of a DVCS. All Git management systems have this
 limitation.
 
 You can take steps to prevent unintentional sharing and information

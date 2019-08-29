@@ -84,4 +84,4 @@ With this option enabled, `75h` is displayed instead of `1w 4d 3h`.
 
 ## Other interesting links
 
-- [Time Tracking landing page on about.gitlab.com](https://about.gitlab.com/solutions/time-tracking/)
+- [Time Tracking landing page in the GitLab handbook](https://about.gitlab.com/solutions/time-tracking/)

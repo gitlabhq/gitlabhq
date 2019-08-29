@@ -17,7 +17,7 @@ For Omnibus installations, run `gitlab-rake time:zones:all`.
 NOTE: **Note:**
 Currently, this rake task does not list timezones in TZInfo format required by GitLab Omnibus during a reconfigure: [#58672](https://gitlab.com/gitlab-org/gitlab-ce/issues/58672).
 
-## Changing time zone in omnibus installations
+## Changing time zone in Omnibus installations
 
 GitLab defaults its time zone to UTC. It has a global timezone configuration parameter in `/etc/gitlab/gitlab.rb`.
 
