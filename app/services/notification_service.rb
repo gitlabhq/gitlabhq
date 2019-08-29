@@ -285,7 +285,7 @@ class NotificationService
 
     recipients = NotificationRecipientService.build_new_note_recipients(note)
     recipients.each do |recipient|
-      mailer.send(notify_method, recipient.user.id, note.id).deliver_later
+      mailer.send(notify_method, recipient.user.id, note.id, recipient.reason).deliver_later
     end
   end
 

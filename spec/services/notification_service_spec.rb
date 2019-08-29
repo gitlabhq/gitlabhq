@@ -278,6 +278,7 @@ describe NotificationService, :mailer do
             notification.new_note(note)
 
             should_email(note.author)
+            expect(find_email_for(note.author)).to have_header('X-GitLab-NotificationReason', 'own_activity')
           end
 
           it_behaves_like 'project emails are disabled' do
@@ -335,6 +336,9 @@ describe NotificationService, :mailer do
             should_not_email(@u_participating)
             should_not_email(@u_disabled)
             should_not_email(@u_lazy_participant)
+
+            expect(find_email_for(@u_mentioned)).to have_header('X-GitLab-NotificationReason', 'mentioned')
+            expect(find_email_for(@u_custom_global)).to have_header('X-GitLab-NotificationReason', '')
           end
         end
 
