@@ -14,7 +14,7 @@
           %span.d-block
             - group_link = link_to @group.name, group_path(@group)
             = s_('GroupSettings|Prevent sharing a project within %{group} with other groups').html_safe % { group: group_link }
-          %span.descr.text-muted= share_with_group_lock_help_text(@group)
+          %span.js-descr.text-muted= share_with_group_lock_help_text(@group)
 
     .form-group.append-bottom-default
       .form-check

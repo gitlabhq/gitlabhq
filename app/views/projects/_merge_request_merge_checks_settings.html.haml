@@ -7,7 +7,7 @@
     = form.check_box :only_allow_merge_if_pipeline_succeeds, class: 'form-check-input'
     = form.label :only_allow_merge_if_pipeline_succeeds, class: 'form-check-label' do
       = s_('ProjectSettings|Pipelines must succeed')
-      .descr.text-secondary
+      .text-secondary
         = s_('ProjectSettings|Pipelines need to be configured to enable this feature.')
         = link_to icon('question-circle'),
           help_page_path('ci/merge_request_pipelines/index.md',
