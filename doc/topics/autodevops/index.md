@@ -95,33 +95,45 @@ Auto DevOps.
 
 To make full use of Auto DevOps, you will need:
 
-- **GitLab Runner** (needed for all stages) - Your Runner needs to be
-  configured to be able to run Docker. Generally this means using the
-  [Docker](https://docs.gitlab.com/runner/executors/docker.html) or [Kubernetes
-  executor](https://docs.gitlab.com/runner/executors/kubernetes.html), with
+- **GitLab Runner** (for all stages)
+
+  Your Runner needs to be configured to be able to run Docker. Generally this
+  means using the either the [Docker](https://docs.gitlab.com/runner/executors/docker.html)
+  or [Kubernetes](https://docs.gitlab.com/runner/executors/kubernetes.html) executors, with
   [privileged mode enabled](https://docs.gitlab.com/runner/executors/docker.html#use-docker-in-docker-with-privileged-mode).
+
   The Runners do not need to be installed in the Kubernetes cluster, but the
   Kubernetes executor is easy to use and is automatically autoscaling.
   Docker-based Runners can be configured to autoscale as well, using [Docker
-  Machine](https://docs.gitlab.com/runner/install/autoscaling.html). Runners
-  should be registered as [shared Runners](../../ci/runners/README.md#registering-a-shared-runner)
+  Machine](https://docs.gitlab.com/runner/install/autoscaling.html).
+
+  Runners should be registered as [shared Runners](../../ci/runners/README.md#registering-a-shared-runner)
   for the entire GitLab instance, or [specific Runners](../../ci/runners/README.md#registering-a-specific-runner)
   that are assigned to specific projects.
-- **Base domain** (needed for Auto Review Apps and Auto Deploy) - You will need
-  a domain configured with wildcard DNS which is going to be used by all of your
-  Auto DevOps applications. [Read the specifics](#auto-devops-base-domain).
-- **Kubernetes** (needed for Auto Review Apps, Auto Deploy, and Auto Monitoring) -
-  To enable deployments, you will need Kubernetes 1.5+. You will need a [Kubernetes cluster][kubernetes-clusters]
-  for the project.
-  - **A load balancer** - You can use NGINX ingress by deploying it to your
-    Kubernetes cluster using the
-    [`nginx-ingress`](https://github.com/kubernetes/charts/tree/master/stable/nginx-ingress)
-    Helm chart.
-- **Prometheus** (needed for Auto Monitoring) - To enable Auto Monitoring, you
+- **Base domain** (for Auto Review Apps and Auto Deploy)
+
+  You will need a domain configured with wildcard DNS which is going to be used
+  by all of your Auto DevOps applications.
+
+  Read the [specifics](#auto-devops-base-domain).
+- **Kubernetes** (for Auto Review Apps, Auto Deploy, and Auto Monitoring)
+
+  To enable deployments, you will need:
+
+  - Kubernetes 1.5+.
+  - A [Kubernetes cluster][kubernetes-clusters] for the project.
+  - A load balancer. You can use NGINX ingress by deploying it to your
+    Kubernetes cluster by either:
+    - Using the [`nginx-ingress`](https://github.com/kubernetes/charts/tree/master/stable/nginx-ingress) Helm chart.
+    - Installing the Ingress [GitLab Managed App](../../user/clusters/applications.md#ingress).
+- **Prometheus** (for Auto Monitoring)
+
+  To enable Auto Monitoring, you
   will need Prometheus installed somewhere (inside or outside your cluster) and
   configured to scrape your Kubernetes cluster. To get response metrics
   (in addition to system metrics), you need to
   [configure Prometheus to monitor NGINX](../../user/project/integrations/prometheus_library/nginx_ingress.md#configuring-nginx-ingress-monitoring).
+
   The [Prometheus service](../../user/project/integrations/prometheus.md)
   integration needs to be enabled for the project, or enabled as a
   [default service template](../../user/project/integrations/services_templates.md)
