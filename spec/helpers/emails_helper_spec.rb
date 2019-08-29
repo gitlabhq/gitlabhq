@@ -6,30 +6,62 @@ describe EmailsHelper do
       let(:merge_request) { create(:merge_request) }
       let(:merge_request_presenter) { merge_request.present }
 
-      context "and format is text" do
-        it "returns plain text" do
-          expect(closure_reason_text(merge_request, format: :text)).to eq("via merge request #{merge_request.to_reference} (#{merge_request_presenter.web_url})")
+      context 'when user can read merge request' do
+        let(:user) { create(:user) }
+
+        before do
+          merge_request.project.add_developer(user)
+          self.instance_variable_set(:@recipient, user)
+          self.instance_variable_set(:@project, merge_request.project)
+        end
+
+        context "and format is text" do
+          it "returns plain text" do
+            expect(helper.closure_reason_text(merge_request, format: :text)).to eq("via merge request #{merge_request.to_reference} (#{merge_request_presenter.web_url})")
+          end
+        end
+
+        context "and format is HTML" do
+          it "returns HTML" do
+            expect(helper.closure_reason_text(merge_request, format: :html)).to eq("via merge request #{link_to(merge_request.to_reference, merge_request_presenter.web_url)}")
+          end
+        end
+
+        context "and format is unknown" do
+          it "returns plain text" do
+            expect(helper.closure_reason_text(merge_request, format: :text)).to eq("via merge request #{merge_request.to_reference} (#{merge_request_presenter.web_url})")
+          end
         end
       end
 
-      context "and format is HTML" do
-        it "returns HTML" do
-          expect(closure_reason_text(merge_request, format: :html)).to eq("via merge request #{link_to(merge_request.to_reference, merge_request_presenter.web_url)}")
-        end
-      end
-
-      context "and format is unknown" do
-        it "returns plain text" do
-          expect(closure_reason_text(merge_request, format: :text)).to eq("via merge request #{merge_request.to_reference} (#{merge_request_presenter.web_url})")
+      context 'when user cannot read merge request' do
+        it "does not have link to merge request" do
+          expect(helper.closure_reason_text(merge_request)).to be_empty
         end
       end
     end
 
     context 'when given a String' do
+      let(:user) { create(:user) }
+      let(:project) { create(:project) }
       let(:closed_via) { "5a0eb6fd7e0f133044378c662fcbbc0d0c16dbfa" }
 
-      it "returns plain text" do
-        expect(closure_reason_text(closed_via)).to eq("via #{closed_via}")
+      context 'when user can read commits' do
+        before do
+          project.add_developer(user)
+          self.instance_variable_set(:@recipient, user)
+          self.instance_variable_set(:@project, project)
+        end
+
+        it "returns plain text" do
+          expect(closure_reason_text(closed_via)).to eq("via #{closed_via}")
+        end
+      end
+
+      context 'when user cannot read commits' do
+        it "returns plain text" do
+          expect(closure_reason_text(closed_via)).to be_empty
+        end
       end
     end
 
