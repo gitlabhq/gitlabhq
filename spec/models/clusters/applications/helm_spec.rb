@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'rails_helper'
+require 'spec_helper'
 
 describe Clusters::Applications::Helm do
   include_examples 'cluster application core specs', :clusters_applications_helm

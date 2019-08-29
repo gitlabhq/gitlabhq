@@ -1,4 +1,4 @@
-require 'rails_helper'
+require 'spec_helper'
 
 describe API::ProjectSnippets do
   set(:project) { create(:project, :public) }

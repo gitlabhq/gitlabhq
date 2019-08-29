@@ -1,4 +1,4 @@
-require 'rails_helper'
+require 'spec_helper'
 
 describe Gitlab::Gpg do
   describe '.fingerprints_from_key' do

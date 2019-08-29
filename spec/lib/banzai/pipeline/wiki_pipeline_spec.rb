@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'rails_helper'
+require 'spec_helper'
 
 describe Banzai::Pipeline::WikiPipeline do
   describe 'TableOfContents' do

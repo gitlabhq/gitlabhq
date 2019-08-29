@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'rails_helper'
+require 'spec_helper'
 
 describe Clusters::Applications::Knative do
   let(:knative) { create(:clusters_applications_knative) }

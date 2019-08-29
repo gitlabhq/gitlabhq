@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'rails_helper'
+require 'spec_helper'
 
 describe 'Internal Snippets', :js do
   let(:internal_snippet) { create(:personal_snippet, :internal) }

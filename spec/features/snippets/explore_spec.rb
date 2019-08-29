@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'rails_helper'
+require 'spec_helper'
 
 describe 'Explore Snippets' do
   let!(:public_snippet) { create(:personal_snippet, :public) }

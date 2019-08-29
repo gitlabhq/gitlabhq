@@ -1,4 +1,4 @@
-require 'rails_helper'
+require 'spec_helper'
 
 RSpec.describe Gitlab::Gpg::InvalidGpgSignatureUpdater do
   describe '#run' do

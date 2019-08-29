@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'rails_helper'
+require 'spec_helper'
 
 describe Clusters::Applications::Runner do
   let(:ci_runner) { create(:ci_runner) }

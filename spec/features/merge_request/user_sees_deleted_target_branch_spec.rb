@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'rails_helper'
+require 'spec_helper'
 
 describe 'Merge request > User sees deleted target branch', :js do
   let(:merge_request) { create(:merge_request) }

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'rails_helper'
+require 'spec_helper'
 
 # These are written as feature specs because they cover more specific test scenarios
 # than the ones described on spec/services/notes/create_service_spec.rb for quick actions,

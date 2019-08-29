@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'rails_helper'
+require 'spec_helper'
 
 describe 'Merge request > User sees check out branch modal', :js do
   let(:project) { create(:project, :public, :repository) }

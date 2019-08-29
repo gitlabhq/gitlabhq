@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'rails_helper'
+require 'spec_helper'
 
 describe 'User uploads avatar to profile' do
   let!(:user) { create(:user) }

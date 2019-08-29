@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-require 'rails_helper'
+require 'spec_helper'
 
 describe Gitlab::FileTypeDetection do
   def upload_fixture(filename)

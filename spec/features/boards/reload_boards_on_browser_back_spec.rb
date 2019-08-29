@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'rails_helper'
+require 'spec_helper'
 
 describe 'Ensure Boards do not show stale data on browser back', :js do
   let(:project) {create(:project, :public)}

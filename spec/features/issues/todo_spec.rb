@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'rails_helper'
+require 'spec_helper'
 
 describe 'Manually create a todo item from issue', :js do
   let!(:project) { create(:project) }

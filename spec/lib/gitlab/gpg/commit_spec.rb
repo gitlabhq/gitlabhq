@@ -1,4 +1,4 @@
-require 'rails_helper'
+require 'spec_helper'
 
 describe Gitlab::Gpg::Commit do
   describe '#signature' do

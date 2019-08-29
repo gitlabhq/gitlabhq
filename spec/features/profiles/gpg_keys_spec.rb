@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'rails_helper'
+require 'spec_helper'
 
 describe 'Profile > GPG Keys' do
   let(:user) { create(:user, email: GpgHelpers::User2.emails.first) }

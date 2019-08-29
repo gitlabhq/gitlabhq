@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'rails_helper'
+require 'spec_helper'
 
 describe Gitlab::BackgroundMigration::PopulateMergeRequestAssigneesTable, :migration, schema: 20190315191339 do
   let(:namespaces) { table(:namespaces) }

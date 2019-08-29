@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'rails_helper'
+require 'spec_helper'
 
 describe 'Multiple Issue Boards', :js do
   set(:user) { create(:user) }
