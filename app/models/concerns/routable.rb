@@ -59,11 +59,22 @@ module Routable
     def where_full_path_in(paths)
       return none if paths.empty?
 
+      increment_full_path_in_counter
+
       wheres = paths.map do |path|
         "(LOWER(routes.path) = LOWER(#{connection.quote(path)}))"
       end
 
       joins(:route).where(wheres.join(' OR '))
+    end
+
+    # Temporary instrumentation of method calls for .where_full_path_in
+    def increment_full_path_in_counter
+      @counter ||= Gitlab::Metrics.counter(:routable_caseinsensitive_lookup_calls, 'Number of calls to Routable.where_full_path_in')
+
+      @counter.increment
+    rescue
+      # ignore the error
     end
   end
 
