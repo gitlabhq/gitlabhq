@@ -337,7 +337,7 @@ GitLab.com does not currently use these settings.
 
 In addition to the GitLab Enterprise Edition Omnibus install, GitLab.com uses
 the following applications and settings to achieve scale. All settings are
-located publicly available [chef cookbooks](https://gitlab.com/gitlab-cookbooks).
+publicly available at [chef cookbooks](https://gitlab.com/gitlab-cookbooks).
 
 ### ELK
 
