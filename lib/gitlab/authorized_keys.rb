@@ -13,6 +13,24 @@ module Gitlab
       @logger = logger
     end
 
+    # Checks if the file is accessible or not
+    #
+    # @return [Boolean]
+    def accessible?
+      open_authorized_keys_file('r') { true }
+    rescue Errno::ENOENT, Errno::EACCES
+      false
+    end
+
+    # Creates the authorized_keys file if it doesn't exist
+    #
+    # @return [Boolean]
+    def create
+      open_authorized_keys_file(File::CREAT) { true }
+    rescue Errno::EACCES
+      false
+    end
+
     # Add id and its key to the authorized_keys file
     #
     # @param [String] id identifier of key prefixed by `key-`
@@ -102,10 +120,14 @@ module Gitlab
       []
     end
 
+    def file
+      @file ||= Gitlab.config.gitlab_shell.authorized_keys_file
+    end
+
     private
 
     def lock(timeout = 10)
-      File.open("#{authorized_keys_file}.lock", "w+") do |f|
+      File.open("#{file}.lock", "w+") do |f|
         f.flock File::LOCK_EX
         Timeout.timeout(timeout) { yield }
       ensure
@@ -114,7 +136,7 @@ module Gitlab
     end
 
     def open_authorized_keys_file(mode)
-      File.open(authorized_keys_file, mode, 0o600) do |file|
+      File.open(file, mode, 0o600) do |file|
         file.chmod(0o600)
         yield file
       end
@@ -140,10 +162,6 @@ module Gitlab
 
     def strip(key)
       key.split(/[ ]+/)[0, 2].join(' ')
-    end
-
-    def authorized_keys_file
-      Gitlab.config.gitlab_shell.authorized_keys_file
     end
   end
 end

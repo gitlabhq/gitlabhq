@@ -165,16 +165,7 @@ module Gitlab
     def add_key(key_id, key_content)
       return unless self.authorized_keys_enabled?
 
-      if shell_out_for_gitlab_keys?
-        gitlab_shell_fast_execute([
-          gitlab_shell_keys_path,
-          'add-key',
-          key_id,
-          strip_key(key_content)
-        ])
-      else
-        gitlab_authorized_keys.add_key(key_id, key_content)
-      end
+      gitlab_authorized_keys.add_key(key_id, key_content)
     end
 
     # Batch-add keys to authorized_keys
@@ -184,19 +175,7 @@ module Gitlab
     def batch_add_keys(keys)
       return unless self.authorized_keys_enabled?
 
-      if shell_out_for_gitlab_keys?
-        begin
-          IO.popen("#{gitlab_shell_keys_path} batch-add-keys", 'w') do |io|
-            add_keys_to_io(keys, io)
-          end
-
-          $?.success?
-        rescue Error
-          false
-        end
-      else
-        gitlab_authorized_keys.batch_add_keys(keys)
-      end
+      gitlab_authorized_keys.batch_add_keys(keys)
     end
 
     # Remove ssh key from authorized_keys
@@ -207,11 +186,7 @@ module Gitlab
     def remove_key(id, _ = nil)
       return unless self.authorized_keys_enabled?
 
-      if shell_out_for_gitlab_keys?
-        gitlab_shell_fast_execute([gitlab_shell_keys_path, 'rm-key', id])
-      else
-        gitlab_authorized_keys.rm_key(id)
-      end
+      gitlab_authorized_keys.rm_key(id)
     end
 
     # Remove all ssh keys from gitlab shell
@@ -222,11 +197,7 @@ module Gitlab
     def remove_all_keys
       return unless self.authorized_keys_enabled?
 
-      if shell_out_for_gitlab_keys?
-        gitlab_shell_fast_execute([gitlab_shell_keys_path, 'clear'])
-      else
-        gitlab_authorized_keys.clear
-      end
+      gitlab_authorized_keys.clear
     end
 
     # Remove ssh keys from gitlab shell that are not in the DB
@@ -341,14 +312,6 @@ module Gitlab
       File.join(Gitlab.config.repositories.storages[storage].legacy_disk_path, dir_name)
     end
 
-    def gitlab_shell_projects_path
-      File.join(gitlab_shell_path, 'bin', 'gitlab-projects')
-    end
-
-    def gitlab_shell_keys_path
-      File.join(gitlab_shell_path, 'bin', 'gitlab-keys')
-    end
-
     def authorized_keys_enabled?
       # Return true if nil to ensure the authorized_keys methods work while
       # fixing the authorized_keys file during migration.
@@ -358,35 +321,6 @@ module Gitlab
     end
 
     private
-
-    def shell_out_for_gitlab_keys?
-      Gitlab.config.gitlab_shell.authorized_keys_file.blank?
-    end
-
-    def gitlab_shell_fast_execute(cmd)
-      output, status = gitlab_shell_fast_execute_helper(cmd)
-
-      return true if status.zero?
-
-      Rails.logger.error("gitlab-shell failed with error #{status}: #{output}") # rubocop:disable Gitlab/RailsLogger
-      false
-    end
-
-    def gitlab_shell_fast_execute_raise_error(cmd, vars = {})
-      output, status = gitlab_shell_fast_execute_helper(cmd, vars)
-
-      raise Error, output unless status.zero?
-
-      true
-    end
-
-    def gitlab_shell_fast_execute_helper(cmd, vars = {})
-      vars.merge!(ENV.to_h.slice(*GITLAB_SHELL_ENV_VARS))
-
-      # Don't pass along the entire parent environment to prevent gitlab-shell
-      # from wasting I/O by searching through GEM_PATH
-      Bundler.with_original_env { Popen.popen(cmd, nil, vars) }
-    end
 
     def git_timeout
       Gitlab.config.gitlab_shell.git_timeout
@@ -407,16 +341,8 @@ module Gitlab
     def batch_read_key_ids(batch_size: 100, &block)
       return unless self.authorized_keys_enabled?
 
-      if shell_out_for_gitlab_keys?
-        IO.popen("#{gitlab_shell_keys_path} list-key-ids") do |key_id_stream|
-          key_id_stream.lazy.each_slice(batch_size) do |lines|
-            yield(lines.map { |l| l.chomp.to_i })
-          end
-        end
-      else
-        gitlab_authorized_keys.list_key_ids.lazy.each_slice(batch_size) do |key_ids|
-          yield(key_ids)
-        end
+      gitlab_authorized_keys.list_key_ids.lazy.each_slice(batch_size) do |key_ids|
+        yield(key_ids)
       end
     end
 
