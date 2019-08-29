@@ -23,6 +23,37 @@ module Gitlab
         end
       end
 
+      # Caches and strongly memoizes the method as a Redis Set.
+      #
+      # This only works for methods that do not take any arguments. The method
+      # should return an Array of Strings to be cached.
+      #
+      # In addition to overriding the named method, a "name_include?" method is
+      # defined. This uses the "SISMEMBER" query to efficiently check membership
+      # without needing to load the entire set into memory.
+      #
+      # name     - The name of the method to be cached.
+      # fallback - A value to fall back to if the repository does not exist, or
+      #            in case of a Git error. Defaults to nil.
+      def cache_method_as_redis_set(name, fallback: nil)
+        uncached_name = alias_uncached_method(name)
+
+        define_method(name) do
+          cache_method_output_as_redis_set(name, fallback: fallback) do
+            __send__(uncached_name) # rubocop:disable GitlabSecurity/PublicSend
+          end
+        end
+
+        define_method("#{name}_include?") do |value|
+          # If the cache isn't populated, we can't rely on it
+          return redis_set_cache.include?(name, value) if redis_set_cache.exist?(name)
+
+          # Since we have to pull all branch names to populate the cache, use
+          # the data we already have to answer the query just this once
+          __send__(name).include?(value) # rubocop:disable GitlabSecurity/PublicSend
+        end
+      end
+
       # Caches truthy values from the method. All values are strongly memoized,
       # and cached in RequestStore.
       #
@@ -84,6 +115,11 @@ module Gitlab
       raise NotImplementedError
     end
 
+    # RepositorySetCache to be used. Should be overridden by the including class
+    def redis_set_cache
+      raise NotImplementedError
+    end
+
     # List of cached methods. Should be overridden by the including class
     def cached_methods
       raise NotImplementedError
@@ -97,6 +133,18 @@ module Gitlab
     def cache_method_output(name, fallback: nil, &block)
       memoize_method_output(name, fallback: fallback) do
         cache.fetch(name, &block)
+      end
+    end
+
+    # Caches and strongly memoizes the supplied block as a Redis Set. The result
+    # will be provided as a sorted array.
+    #
+    # name     - The name of the method to be cached.
+    # fallback - A value to fall back to if the repository does not exist, or
+    #            in case of a Git error. Defaults to nil.
+    def cache_method_output_as_redis_set(name, fallback: nil, &block)
+      memoize_method_output(name, fallback: fallback) do
+        redis_set_cache.fetch(name, &block).sort
       end
     end
 
@@ -154,6 +202,7 @@ module Gitlab
         clear_memoization(memoizable_name(name))
       end
 
+      expire_redis_set_method_caches(methods)
       expire_request_store_method_caches(methods)
     end
 
@@ -167,6 +216,10 @@ module Gitlab
       methods.each do |name|
         request_store_cache.expire(name)
       end
+    end
+
+    def expire_redis_set_method_caches(methods)
+      methods.each { |name| redis_set_cache.expire(name) }
     end
 
     # All cached repository methods depend on the existence of a Git repository,
