@@ -77,7 +77,7 @@ make
 make install
 ```
 
-This assumes you have installed GitLab into /opt/gitlab.
+This assumes you have installed GitLab into `/opt/gitlab`.
 
 To test if Slony is installed properly, run the following commands:
 

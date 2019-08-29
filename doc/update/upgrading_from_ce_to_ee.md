@@ -17,7 +17,7 @@ GitLab edition you are using (Community or Enterprise), see the
 
 This guide assumes you have a correctly configured and tested installation of
 GitLab Community Edition. If you run into any trouble or if you have any
-questions please contact us at [support@gitlab.com].
+questions please contact us at `support@gitlab.com`.
 
 In all examples, replace `EE_BRANCH` with the Enterprise Edition branch for the
 version you are using, and `CE_BRANCH` with the Community Edition branch.
@@ -131,5 +131,4 @@ Example:
 Additional instructions here.
 -->
 
-[support@gitlab.com]: mailto:support@gitlab.com
 [old-ee-upgrade-docs]: https://gitlab.com/gitlab-org/gitlab-ee/tree/11-8-stable-ee/doc/update
