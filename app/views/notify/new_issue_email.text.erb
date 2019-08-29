@@ -1,9 +1,5 @@
-<%= sanitize_name(@issue.author_name) %> <%= 'created an issue:' %>
+<%= sanitize_name(@issue.author_name) %> <%= 'created an issue:' %> <%= url_for(project_issue_url(@issue.project, @issue)) %>
 
-<% if @issue.assignees.any? -%>
-  <%= assignees_label(@issue) %>
-<% end %>
+<%= assignees_label(@issue) if @issue.assignees.any? %>
 
-<% if @issue.description -%>
-  <%= @issue.description %>
-<% end %>
+<%= @issue.description %>
