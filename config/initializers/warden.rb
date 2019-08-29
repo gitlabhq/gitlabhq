@@ -19,6 +19,7 @@ Rails.application.configure do |config|
 
   Warden::Manager.after_authentication(scope: :user) do |user, auth, opts|
     ActiveSession.cleanup(user)
+    Gitlab::AnonymousSession.new(auth.request.remote_ip, session_id: auth.request.session.id).cleanup_session_per_ip_entries
   end
 
   Warden::Manager.after_set_user(scope: :user, only: :fetch) do |user, auth, opts|

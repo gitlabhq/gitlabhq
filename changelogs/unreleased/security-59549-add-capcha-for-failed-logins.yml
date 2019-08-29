@@ -1,0 +1,5 @@
+---
+title: Add :login_recaptcha_protection_enabled setting to prevent bots from brute-force attacks.
+merge_request:
+author:
+type: security
