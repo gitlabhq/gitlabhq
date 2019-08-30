@@ -1,0 +1,5 @@
+---
+title: Fix encoding of special characters in "Find File"
+merge_request: 31311
+author: Jan Beckmann
+type: fixed
