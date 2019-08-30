@@ -33,6 +33,8 @@ module Routable
     #
     # Returns a single object, or nil.
     def find_by_full_path(path, follow_redirects: false)
+      increment_counter(:routable_find_by_full_path, 'Number of calls to Routable.find_by_full_path')
+
       if Feature.enabled?(:routable_two_step_lookup)
         # Case sensitive match first (it's cheaper and the usual case)
         # If we didn't have an exact match, we perform a case insensitive search
@@ -59,7 +61,7 @@ module Routable
     def where_full_path_in(paths)
       return none if paths.empty?
 
-      increment_full_path_in_counter
+      increment_counter(:routable_where_full_path_in, 'Number of calls to Routable.where_full_path_in')
 
       wheres = paths.map do |path|
         "(LOWER(routes.path) = LOWER(#{connection.quote(path)}))"
@@ -68,11 +70,11 @@ module Routable
       joins(:route).where(wheres.join(' OR '))
     end
 
-    # Temporary instrumentation of method calls for .where_full_path_in
-    def increment_full_path_in_counter
-      @counter ||= Gitlab::Metrics.counter(:routable_caseinsensitive_lookup_calls, 'Number of calls to Routable.where_full_path_in')
+    # Temporary instrumentation of method calls
+    def increment_counter(counter, description)
+      @counters[counter] ||= Gitlab::Metrics.counter(counter, description)
 
-      @counter.increment
+      @counters[counter].increment
     rescue
       # ignore the error
     end
