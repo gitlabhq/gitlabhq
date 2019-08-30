@@ -9,9 +9,9 @@ module Labels
       @params = params.dup.with_indifferent_access
     end
 
-    def execute(skip_authorization: false)
+    def execute(skip_authorization: false, find_only: false)
       @skip_authorization = skip_authorization
-      find_or_create_label
+      find_or_create_label(find_only: find_only)
     end
 
     private
@@ -30,8 +30,10 @@ module Labels
     # Only creates the label if current_user can do so, if the label does not exist
     # and the user can not create the label, nil is returned
     # rubocop: disable CodeReuse/ActiveRecord
-    def find_or_create_label
+    def find_or_create_label(find_only: false)
       new_label = available_labels.find_by(title: title)
+
+      return new_label if find_only
 
       if new_label.nil? && (skip_authorization || Ability.allowed?(current_user, :admin_label, parent))
         create_params = params.except(:include_ancestor_groups)

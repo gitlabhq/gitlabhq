@@ -85,7 +85,7 @@ class IssuableBaseService < BaseService
     if params[:remove_label_ids]
       params[:remove_label_ids] = labels_service.filter_labels_ids_in_param(:remove_label_ids)
     elsif params[:remove_labels]
-      params[:remove_label_ids] = labels_service.find_or_create_by_titles(:remove_labels).map(&:id)
+      params[:remove_label_ids] = labels_service.find_or_create_by_titles(:remove_labels, find_only: true).map(&:id)
     end
 
     if params[:label_ids]
