@@ -3,7 +3,8 @@
 module Clusters
   module Applications
     class CertManager < ApplicationRecord
-      VERSION = 'v0.5.2'.freeze
+      VERSION = 'v0.9.1'
+      CRD_VERSION = '0.9'
 
       self.table_name = 'clusters_applications_cert_managers'
 
@@ -21,16 +22,22 @@ module Clusters
       validates :email, presence: true
 
       def chart
-        'stable/cert-manager'
+        'certmanager/cert-manager'
+      end
+
+      def repository
+        'https://charts.jetstack.io'
       end
 
       def install_command
         Gitlab::Kubernetes::Helm::InstallCommand.new(
           name: 'certmanager',
+          repository: repository,
           version: VERSION,
           rbac: cluster.platform_kubernetes_rbac?,
           chart: chart,
           files: files.merge(cluster_issuer_file),
+          preinstall: pre_install_script,
           postinstall: post_install_script
         )
       end
@@ -46,16 +53,30 @@ module Clusters
 
       private
 
+      def pre_install_script
+        [
+          apply_file("https://raw.githubusercontent.com/jetstack/cert-manager/release-#{CRD_VERSION}/deploy/manifests/00-crds.yaml"),
+          "kubectl label --overwrite namespace #{Gitlab::Kubernetes::Helm::NAMESPACE} certmanager.k8s.io/disable-validation=true"
+        ]
+      end
+
       def post_install_script
-        ["kubectl create -f /data/helm/certmanager/config/cluster_issuer.yaml"]
+        [retry_command(apply_file('/data/helm/certmanager/config/cluster_issuer.yaml'))]
+      end
+
+      def retry_command(command)
+        "for i in $(seq 1 30); do #{command} && break; sleep 1s; echo \"Retrying ($i)...\"; done"
       end
 
       def post_delete_script
         [
           delete_private_key,
           delete_crd('certificates.certmanager.k8s.io'),
+          delete_crd('certificaterequests.certmanager.k8s.io'),
+          delete_crd('challenges.certmanager.k8s.io'),
           delete_crd('clusterissuers.certmanager.k8s.io'),
-          delete_crd('issuers.certmanager.k8s.io')
+          delete_crd('issuers.certmanager.k8s.io'),
+          delete_crd('orders.certmanager.k8s.io')
         ].compact
       end
 
@@ -73,6 +94,10 @@ module Clusters
 
       def delete_crd(definition)
         Gitlab::Kubernetes::KubectlCmd.delete("crd", definition, "--ignore-not-found")
+      end
+
+      def apply_file(filename)
+        Gitlab::Kubernetes::KubectlCmd.apply_file(filename)
       end
 
       def cluster_issuer_file

@@ -44,11 +44,18 @@ describe Clusters::Applications::CertManager do
 
     it 'is initialized with cert_manager arguments' do
       expect(subject.name).to eq('certmanager')
-      expect(subject.chart).to eq('stable/cert-manager')
-      expect(subject.version).to eq('v0.5.2')
+      expect(subject.chart).to eq('certmanager/cert-manager')
+      expect(subject.repository).to eq('https://charts.jetstack.io')
+      expect(subject.version).to eq('v0.9.1')
       expect(subject).to be_rbac
       expect(subject.files).to eq(cert_manager.files.merge(cluster_issuer_file))
-      expect(subject.postinstall).to eq(['kubectl create -f /data/helm/certmanager/config/cluster_issuer.yaml'])
+      expect(subject.preinstall).to eq([
+        'kubectl apply -f https://raw.githubusercontent.com/jetstack/cert-manager/release-0.9/deploy/manifests/00-crds.yaml',
+        'kubectl label --overwrite namespace gitlab-managed-apps certmanager.k8s.io/disable-validation=true'
+      ])
+      expect(subject.postinstall).to eq([
+        'for i in $(seq 1 30); do kubectl apply -f /data/helm/certmanager/config/cluster_issuer.yaml && break; sleep 1s; echo "Retrying ($i)..."; done'
+      ])
     end
 
     context 'for a specific user' do
@@ -75,7 +82,7 @@ describe Clusters::Applications::CertManager do
       let(:cert_manager) { create(:clusters_applications_cert_manager, :errored, version: '0.0.1') }
 
       it 'is initialized with the locked version' do
-        expect(subject.version).to eq('v0.5.2')
+        expect(subject.version).to eq('v0.9.1')
       end
     end
   end
@@ -93,10 +100,13 @@ describe Clusters::Applications::CertManager do
 
     it 'specifies a post delete command to remove custom resource definitions' do
       expect(subject.postdelete).to eq([
-        "kubectl delete secret -n gitlab-managed-apps letsencrypt-prod --ignore-not-found",
+        'kubectl delete secret -n gitlab-managed-apps letsencrypt-prod --ignore-not-found',
         'kubectl delete crd certificates.certmanager.k8s.io --ignore-not-found',
+        'kubectl delete crd certificaterequests.certmanager.k8s.io --ignore-not-found',
+        'kubectl delete crd challenges.certmanager.k8s.io --ignore-not-found',
         'kubectl delete crd clusterissuers.certmanager.k8s.io --ignore-not-found',
-        'kubectl delete crd issuers.certmanager.k8s.io --ignore-not-found'
+        'kubectl delete crd issuers.certmanager.k8s.io --ignore-not-found',
+        'kubectl delete crd orders.certmanager.k8s.io --ignore-not-found'
       ])
     end
 
@@ -111,8 +121,11 @@ describe Clusters::Applications::CertManager do
       it 'does not try and delete the secret' do
         expect(subject.postdelete).to eq([
           'kubectl delete crd certificates.certmanager.k8s.io --ignore-not-found',
+          'kubectl delete crd certificaterequests.certmanager.k8s.io --ignore-not-found',
+          'kubectl delete crd challenges.certmanager.k8s.io --ignore-not-found',
           'kubectl delete crd clusterissuers.certmanager.k8s.io --ignore-not-found',
-          'kubectl delete crd issuers.certmanager.k8s.io --ignore-not-found'
+          'kubectl delete crd issuers.certmanager.k8s.io --ignore-not-found',
+          'kubectl delete crd orders.certmanager.k8s.io --ignore-not-found'
         ])
       end
     end
