@@ -79,8 +79,15 @@ side of your screen.
 
 ![Request access button](img/request_access_button.png)
 
-Project owners & maintainers will be notified of your request and will be able to approve or
-decline it on the members page.
+Once access is requested:
+
+- Up to ten project maintainers are notified of your request via email.
+  Email is sent to the most recently active project maintainers.
+- Any project maintainer can approve or decline your request on the members page.
+
+NOTE: **Note:**
+If a project does not have any maintainers, the notification is sent to the
+most recently active owners of the project's group.
 
 ![Manage access requests](img/access_requests_management.png)
 

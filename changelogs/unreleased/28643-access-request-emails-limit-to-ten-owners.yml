@@ -1,0 +1,5 @@
+---
+title: Limit access request emails to ten most recently active owners or maintainers
+merge_request: 32141
+author:
+type: changed

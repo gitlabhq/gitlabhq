@@ -52,3 +52,47 @@ shared_examples 'group emails are disabled' do
     should_email_anyone
   end
 end
+
+shared_examples 'sends notification only to a maximum of ten, most recently active group owners' do
+  let(:owners) { create_list(:user, 12, :with_sign_ins) }
+
+  before do
+    owners.each do |owner|
+      group.add_owner(owner)
+    end
+
+    reset_delivered_emails!
+  end
+
+  context 'limit notification emails' do
+    it 'sends notification only to a maximum of ten, most recently active group owners' do
+      ten_most_recently_active_group_owners = owners.sort_by(&:last_sign_in_at).last(10)
+
+      notification_trigger
+
+      should_only_email(*ten_most_recently_active_group_owners)
+    end
+  end
+end
+
+shared_examples 'sends notification only to a maximum of ten, most recently active project maintainers' do
+  let(:maintainers) { create_list(:user, 12, :with_sign_ins) }
+
+  before do
+    maintainers.each do |maintainer|
+      project.add_maintainer(maintainer)
+    end
+
+    reset_delivered_emails!
+  end
+
+  context 'limit notification emails' do
+    it 'sends notification only to a maximum of ten, most recently active project maintainers' do
+      ten_most_recently_active_project_maintainers = maintainers.sort_by(&:last_sign_in_at).last(10)
+
+      notification_trigger
+
+      should_only_email(*ten_most_recently_active_project_maintainers)
+    end
+  end
+end
