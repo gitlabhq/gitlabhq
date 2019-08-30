@@ -8,13 +8,13 @@
           = _("Your pages are served under:")
 
       %p
-        = link_to @project.pages_url, target: :_blank, rel: 'noopener noreferrer' do
+        = link_to @project.pages_url, target: '_blank', rel: 'noopener noreferrer' do
           = @project.pages_url
           = icon('external-link')
 
       - @project.pages_domains.each do |domain|
         %p
-          = link_to domain.url, target: :_blank, rel: 'noopener noreferrer' do
+          = link_to domain.url, target: '_blank', rel: 'noopener noreferrer' do
             = domain.url
             = icon('external-link')
     .card-footer.alert-primary
