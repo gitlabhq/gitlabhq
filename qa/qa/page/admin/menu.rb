@@ -11,10 +11,19 @@ module QA
           element :admin_settings_repository_item
           element :admin_settings_general_item
           element :admin_settings_metrics_and_profiling_item
+          element :admin_settings_preferences_link
         end
 
         view 'app/views/layouts/nav/sidebar/_admin.html.haml' do
           element :integration_settings_link
+        end
+
+        def go_to_preferences_settings
+          hover_settings do
+            within_submenu do
+              click_element :admin_settings_preferences_link
+            end
+          end
         end
 
         def go_to_repository_settings
