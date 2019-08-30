@@ -45,8 +45,7 @@ input[type='checkbox']:hover {
     border: 0;
     border-radius: $border-radius-default;
     transition: border-color ease-in-out $default-transition-duration,
-      background-color ease-in-out $default-transition-duration,
-      width ease-in-out $default-transition-duration;
+      background-color ease-in-out $default-transition-duration;
 
     @include media-breakpoint-up(xl) {
       width: $search-input-xl-width;
