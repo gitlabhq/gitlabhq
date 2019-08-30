@@ -1,10 +1,10 @@
 <script>
-import Vue from 'vue';
+import axios from '~/lib/utils/axios_utils';
 import Flash from '../../../flash';
 import { __ } from '../../../locale';
 import boardsStore from '../../stores/boards_store';
 
-export default Vue.extend({
+export default {
   props: {
     issue: {
       type: Object,
@@ -35,7 +35,7 @@ export default Vue.extend({
       }
 
       // Post the remove data
-      Vue.http.patch(this.updateUrl, data).catch(() => {
+      axios.patch(this.updateUrl, data).catch(() => {
         Flash(__('Failed to remove issue from board, please try again.'));
 
         lists.forEach(list => {
@@ -71,7 +71,7 @@ export default Vue.extend({
       return req;
     },
   },
-});
+};
 </script>
 <template>
   <div class="block list">

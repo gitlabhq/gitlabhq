@@ -358,7 +358,7 @@ the group regardless of the IP restriction.
 You can restrict access to groups and their underlying projects by
 allowing only users with email addresses in particular domains to be added to the group.
 
-Add email domains you want to whitelist and users with emails from different 
+Add email domains you want to whitelist and users with emails from different
 domains won't be allowed to be added to this group.
 
 Some domains cannot be restricted. These are the most popular public email domains, such as:
@@ -417,7 +417,7 @@ You can disable all email notifications related to the group, which also include
 it's subgroups and projects.
 
 To enable this feature:
- 
+
 1. Navigate to the group's **Settings > General** page.
 1. Expand the **Permissions, LFS, 2FA** section, and select **Disable email notifications**.
 1. Click **Save changes**.

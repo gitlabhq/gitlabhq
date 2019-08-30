@@ -19,6 +19,15 @@ describe RuboCop::Cop::InjectEnterpriseEditionModule do
     SOURCE
   end
 
+  it 'flags the use of `prepend_if_ee QA::EE` in the middle of a file' do
+    expect_offense(<<~SOURCE)
+    class Foo
+      prepend_if_ee 'QA::EE::Foo'
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Injecting EE modules must be done on the last line of this file, outside of any class or module definitions
+    end
+    SOURCE
+  end
+
   it 'does not flag the use of `prepend_if_ee EEFoo` in the middle of a file' do
     expect_no_offenses(<<~SOURCE)
     class Foo
@@ -173,6 +182,16 @@ describe RuboCop::Cop::InjectEnterpriseEditionModule do
 
     Foo.prepend(EE::Foo)
     ^^^^^^^^^^^^^^^^^^^^ EE modules must be injected using `include_if_ee`, `extend_if_ee`, or `prepend_if_ee`
+    SOURCE
+  end
+
+  it 'disallows the use of prepend to inject a QA::EE module' do
+    expect_offense(<<~SOURCE)
+    class Foo
+    end
+
+    Foo.prepend(QA::EE::Foo)
+    ^^^^^^^^^^^^^^^^^^^^^^^^ EE modules must be injected using `include_if_ee`, `extend_if_ee`, or `prepend_if_ee`
     SOURCE
   end
 

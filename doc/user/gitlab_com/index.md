@@ -331,13 +331,17 @@ No response headers are provided.
 
 ### Admin Area settings
 
-GitLab.com does not currently use these settings.
+GitLab.com:
+
+- Has [rate limits on raw endpoints](../../user/admin_area/settings/rate_limits_on_raw_endpoints.md)
+  set to the default. 
+- Does not have the user and IP rate limits settings enabled.
 
 ## GitLab.com at scale
 
 In addition to the GitLab Enterprise Edition Omnibus install, GitLab.com uses
 the following applications and settings to achieve scale. All settings are
-located publicly available [chef cookbooks](https://gitlab.com/gitlab-cookbooks).
+publicly available at [chef cookbooks](https://gitlab.com/gitlab-cookbooks).
 
 ### ELK
 

@@ -65,6 +65,9 @@ describe MarkupHelper do
 
       describe 'inside a group' do
         before do
+          # Ensure the generated reference links aren't redacted
+          group.add_maintainer(user)
+
           helper.instance_variable_set(:@group, group)
           helper.instance_variable_set(:@project, nil)
         end
@@ -78,6 +81,9 @@ describe MarkupHelper do
         let(:project_in_group) { create(:project, group: group) }
 
         before do
+          # Ensure the generated reference links aren't redacted
+          project_in_group.add_maintainer(user)
+
           helper.instance_variable_set(:@group, group)
           helper.instance_variable_set(:@project, project_in_group)
         end

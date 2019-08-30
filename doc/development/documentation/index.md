@@ -88,7 +88,7 @@ in an EE MR. To pass the test, simply remove the docs changes from the EE MR, an
 ## Changing document location
 
 Changing a document's location requires specific steps to be followed to ensure that
-users can seamlessly access the new doc page, whether they are accesing content
+users can seamlessly access the new doc page, whether they are accessing content
 on a GitLab instance domain at `/help` or at docs.gitlab.com. Be sure to ping a
 GitLab technical writer if you have any questions during the process (such as
 whether the move is necessary), and ensure that a technical writer reviews this

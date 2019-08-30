@@ -23,8 +23,6 @@ type: reference
   as opposed to individual stable branches
 - Consider creating a tag for each version that gets deployed
 
-## Production branch
-
 ![inline](gitlab_flow/production_branch.png)
 
 ## Release branch
@@ -35,8 +33,6 @@ type: reference
 - Consider creating a tag for each version
 - Cherry-pick critical bug fixes to stable branch for patch release
 - Never commit bug fixes directly to stable branch
-
-## Release branch
 
 ![inline](gitlab_flow/release_branches.png)
 

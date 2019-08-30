@@ -1,0 +1,5 @@
+---
+title: Fix dropdowns closing when click is released outside the dropdown
+merge_request: 32084
+author:
+type: fixed

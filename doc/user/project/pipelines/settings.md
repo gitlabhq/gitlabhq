@@ -107,11 +107,11 @@ in the pipelines settings page.
 ### Removing color codes
 
 Some test coverage tools output with ANSI color codes that won't be
-parsed correctly by the regular expression and will cause coverage 
-parsing to fail. 
+parsed correctly by the regular expression and will cause coverage
+parsing to fail.
 
 If your coverage tool doesn't provide an option to disable color
-codes in the output, you can pipe the output of the coverage tool through a 
+codes in the output, you can pipe the output of the coverage tool through a
 small one line script that will strip the color codes off.
 
 For example:

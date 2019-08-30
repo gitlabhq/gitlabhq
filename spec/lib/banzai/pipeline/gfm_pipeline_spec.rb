@@ -142,4 +142,48 @@ describe Banzai::Pipeline::GfmPipeline do
       expect(output).to include(Gitlab::Routing.url_helpers.milestone_path(milestone))
     end
   end
+
+  describe 'asset proxy' do
+    let(:project) { create(:project, :public) }
+    let(:image)   { '![proxy](http://example.com/test.png)' }
+    let(:proxy)   { 'https://assets.example.com/08df250eeeef1a8cf2c761475ac74c5065105612/687474703a2f2f6578616d706c652e636f6d2f746573742e706e67' }
+    let(:version) { Gitlab::CurrentSettings.current_application_settings.local_markdown_version }
+
+    before do
+      stub_asset_proxy_setting(enabled: true)
+      stub_asset_proxy_setting(secret_key: 'shared-secret')
+      stub_asset_proxy_setting(url: 'https://assets.example.com')
+      stub_asset_proxy_setting(whitelist: %W(gitlab.com *.mydomain.com #{Gitlab.config.gitlab.host}))
+      stub_asset_proxy_setting(domain_regexp: Banzai::Filter::AssetProxyFilter.compile_whitelist(Gitlab.config.asset_proxy.whitelist))
+    end
+
+    it 'replaces a lazy loaded img src' do
+      output = described_class.to_html(image, project: project)
+      doc    = Nokogiri::HTML.fragment(output)
+      result = doc.css('img').first
+
+      expect(result['data-src']).to eq(proxy)
+    end
+
+    it 'autolinks images to the proxy' do
+      output = described_class.to_html(image, project: project)
+      doc    = Nokogiri::HTML.fragment(output)
+      result = doc.css('a').first
+
+      expect(result['href']).to eq(proxy)
+      expect(result['data-canonical-src']).to eq('http://example.com/test.png')
+    end
+
+    it 'properly adds tooltips to link for IDN images' do
+      image  = '![proxy](http://exa😄mple.com/test.png)'
+      proxy  = 'https://assets.example.com/6d8b634c412a23c6bfe1b2963f174febf5635ddd/687474703a2f2f6578612546302539462539382538346d706c652e636f6d2f746573742e706e67'
+      output = described_class.to_html(image, project: project)
+      doc    = Nokogiri::HTML.fragment(output)
+      result = doc.css('a').first
+
+      expect(result['href']).to eq(proxy)
+      expect(result['data-canonical-src']).to eq('http://exa%F0%9F%98%84mple.com/test.png')
+      expect(result['title']).to eq 'http://xn--example-6p25f.com/test.png'
+    end
+  end
 end

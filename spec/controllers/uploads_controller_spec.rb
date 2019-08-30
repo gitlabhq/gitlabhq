@@ -21,7 +21,19 @@ shared_examples 'content publicly cached' do
 end
 
 describe UploadsController do
+  include WorkhorseHelpers
+
   let!(:user) { create(:user, avatar: fixture_file_upload("spec/fixtures/dk.png", "image/png")) }
+
+  describe 'POST #authorize' do
+    it_behaves_like 'handle uploads authorize' do
+      let(:uploader_class) { PersonalFileUploader }
+      let(:model) { create(:personal_snippet, :public) }
+      let(:params) do
+        { model: 'personal_snippet', id: model.id }
+      end
+    end
+  end
 
   describe 'POST create' do
     let(:jpg)     { fixture_file_upload('spec/fixtures/rails_sample.jpg', 'image/jpg') }
@@ -635,5 +647,11 @@ describe UploadsController do
         end
       end
     end
+  end
+
+  def post_authorize(verified: true)
+    request.headers.merge!(workhorse_internal_api_request_header) if verified
+
+    post :authorize, params: { model: 'personal_snippet', id: model.id }, format: :json
   end
 end

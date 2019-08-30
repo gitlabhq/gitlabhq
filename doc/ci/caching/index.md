@@ -175,7 +175,7 @@ job:
 ### Inherit global config, but override specific settings per job
 
 You can override cache settings without overwriting the global cache by using
-[anchors](../yaml/README.md#anchors). For example, if you want to override the 
+[anchors](../yaml/README.md#anchors). For example, if you want to override the
 `policy` for one job:
 
 ```yaml

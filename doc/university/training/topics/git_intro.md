@@ -15,7 +15,7 @@ comments: false
 - Adapts to nearly any workflow
 - Fast, reliable and stable file format
 
-## Help!
+## Help
 
 Use the tools at your disposal when you get stuck.
 

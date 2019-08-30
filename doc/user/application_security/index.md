@@ -153,7 +153,7 @@ Clicking on this button will create a merge request to apply the solution onto t
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/9928) in [GitLab Ultimate](https://about.gitlab.com/pricing) 12.2.
 
-Merge Request Approvals can be configured to require approval from a member 
+Merge Request Approvals can be configured to require approval from a member
 of your security team when a vulnerability would be introduced by a merge request.
 
 This threshold is defined as `high`, `critical`, or `unknown`

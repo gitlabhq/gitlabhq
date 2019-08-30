@@ -61,6 +61,8 @@ class Project < ApplicationRecord
 
   delegate :feature_available?, :builds_enabled?, :wiki_enabled?,
            :merge_requests_enabled?, :issues_enabled?, :pages_enabled?, :public_pages?,
+           :merge_requests_access_level, :issues_access_level, :wiki_access_level,
+           :snippets_access_level, :builds_access_level, :repository_access_level,
            to: :project_feature, allow_nil: true
 
   delegate :base_dir, :disk_path, :ensure_storage_path_exists, to: :storage

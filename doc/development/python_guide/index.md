@@ -7,9 +7,9 @@ As of GitLab 11.10, we require Python 3.
 
 ## Installation
 
-There are several ways of installing python on your system. To be able to use the same version we use in production,
-we suggest you use [pyenv](https://github.com/pyenv/pyenv). It works and behave similar to its counterpart in the
-ruby world: [rbenv](https://github.com/rbenv/rbenv).
+There are several ways of installing Python on your system. To be able to use the same version we use in production,
+we suggest you use [pyenv](https://github.com/pyenv/pyenv). It works and behaves similarly to its counterpart in the
+Ruby world: [rbenv](https://github.com/rbenv/rbenv).
 
 ### macOS
 
@@ -67,7 +67,7 @@ Running this command will install both the required Python version as well as re
 
 ## Use instructions
 
-To run any python code under the Pipenv environment, you need to first start a `virtualenv` based on the dependencies
+To run any Python code under the Pipenv environment, you need to first start a `virtualenv` based on the dependencies
 of the application. With Pipenv, this is a simple as running:
 
 ```bash

@@ -73,3 +73,5 @@ module QA
     end
   end
 end
+
+QA::Page::Project::Settings::ProtectedBranches.prepend_if_ee('QA::EE::Page::Project::Settings::ProtectedBranches')

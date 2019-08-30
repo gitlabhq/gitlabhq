@@ -1104,9 +1104,6 @@ msgstr ""
 msgid "An error occurred while parsing recent searches"
 msgstr ""
 
-msgid "An error occurred while rendering KaTeX"
-msgstr ""
-
 msgid "An error occurred while rendering preview broadcast message"
 msgstr ""
 
@@ -1514,6 +1511,18 @@ msgid "AutoDevOps|Learn more in the %{link_to_documentation}"
 msgstr ""
 
 msgid "AutoDevOps|The Auto DevOps pipeline has been enabled and will be used if no alternative CI configuration file is found. %{more_information_link}"
+msgstr ""
+
+msgid "Autocomplete"
+msgstr ""
+
+msgid "Autocomplete description"
+msgstr ""
+
+msgid "Autocomplete hint"
+msgstr ""
+
+msgid "Autocomplete usage hint"
 msgstr ""
 
 msgid "Automatic certificate management using %{lets_encrypt_link_start}Let's Encrypt%{lets_encrypt_link_end}"
@@ -2974,6 +2983,9 @@ msgstr ""
 msgid "ComboSearch is not defined"
 msgstr ""
 
+msgid "Command"
+msgstr ""
+
 msgid "Command line instructions"
 msgstr ""
 
@@ -3611,7 +3623,13 @@ msgstr ""
 msgid "Customize how Google Code email addresses and usernames are imported into GitLab. In the next step, you'll be able to select the projects you want to import."
 msgstr ""
 
+msgid "Customize icon"
+msgstr ""
+
 msgid "Customize language and region related settings."
+msgstr ""
+
+msgid "Customize name"
 msgstr ""
 
 msgid "Customize your pipeline configuration, view your pipeline status and coverage report."
@@ -3964,6 +3982,9 @@ msgstr ""
 msgid "Description:"
 msgstr ""
 
+msgid "Descriptive label"
+msgstr ""
+
 msgid "Deselect all"
 msgstr ""
 
@@ -4075,6 +4096,9 @@ msgstr ""
 msgid "Dismiss Cycle Analytics introduction box"
 msgstr ""
 
+msgid "Display name"
+msgstr ""
+
 msgid "Do you want to customize how Google Code email addresses and usernames are imported into GitLab?"
 msgstr ""
 
@@ -4118,6 +4142,9 @@ msgid "Download codes"
 msgstr ""
 
 msgid "Download export"
+msgstr ""
+
+msgid "Download image"
 msgstr ""
 
 msgid "Download source code"
@@ -4330,7 +4357,7 @@ msgstr ""
 msgid "Enable or disable version check and usage ping."
 msgstr ""
 
-msgid "Enable reCAPTCHA or Akismet and set IP limits."
+msgid "Enable reCAPTCHA or Akismet and set IP limits. For reCAPTCHA, we currently only support %{recaptcha_v2_link_start}v2%{recaptcha_v2_link_end}"
 msgstr ""
 
 msgid "Enable shared Runners"
@@ -5700,7 +5727,10 @@ msgstr ""
 msgid "Help page text and support page url."
 msgstr ""
 
-msgid "Helps prevent bots from creating accounts. We currently only support %{recaptcha_v2_link_start}reCAPTCHA v2%{recaptcha_v2_link_end}"
+msgid "Helps prevent bots from brute-force attacks."
+msgstr ""
+
+msgid "Helps prevent bots from creating accounts."
 msgstr ""
 
 msgid "Hide archived projects"
@@ -6110,6 +6140,9 @@ msgstr ""
 msgid "Invalid Login or password"
 msgstr ""
 
+msgid "Invalid URL"
+msgstr ""
+
 msgid "Invalid date"
 msgstr ""
 
@@ -6156,6 +6189,9 @@ msgid "Invocations"
 msgstr ""
 
 msgid "IssuableStatus|Closed (%{moved_link_start}moved%{moved_link_end})"
+msgstr ""
+
+msgid "IssuableStatus|moved"
 msgstr ""
 
 msgid "Issue"
@@ -6834,6 +6870,36 @@ msgstr ""
 msgid "Marks this issue as a duplicate of %{duplicate_reference}."
 msgstr ""
 
+msgid "MattermostService|Add to Mattermost"
+msgstr ""
+
+msgid "MattermostService|Command trigger word"
+msgstr ""
+
+msgid "MattermostService|Fill in the word that works best for your team."
+msgstr ""
+
+msgid "MattermostService|Request URL"
+msgstr ""
+
+msgid "MattermostService|Request method"
+msgstr ""
+
+msgid "MattermostService|Response icon"
+msgstr ""
+
+msgid "MattermostService|Response username"
+msgstr ""
+
+msgid "MattermostService|See list of available commands in Mattermost after setting up this service, by entering"
+msgstr ""
+
+msgid "MattermostService|Suggestions:"
+msgstr ""
+
+msgid "MattermostService|This service allows users to perform common operations on this project by entering slash commands in Mattermost."
+msgstr ""
+
 msgid "Max access level"
 msgstr ""
 
@@ -7009,6 +7075,9 @@ msgid "Merges this merge request when the pipeline succeeds."
 msgstr ""
 
 msgid "Messages"
+msgstr ""
+
+msgid "Method"
 msgstr ""
 
 msgid "Metrics"
@@ -7928,6 +7997,9 @@ msgid "People without permission will never get a notification."
 msgstr ""
 
 msgid "Perform advanced options such as changing path, transferring, or removing the group."
+msgstr ""
+
+msgid "Perform common operations on GitLab project"
 msgstr ""
 
 msgid "Performance optimization"
@@ -8885,6 +8957,39 @@ msgid "ProjectSelect| or group"
 msgstr ""
 
 msgid "ProjectSelect|Search for project"
+msgstr ""
+
+msgid "ProjectService|%{service_title}: status off"
+msgstr ""
+
+msgid "ProjectService|%{service_title}: status on"
+msgstr ""
+
+msgid "ProjectService|Integrations"
+msgstr ""
+
+msgid "ProjectService|Last edit"
+msgstr ""
+
+msgid "ProjectService|Perform common operations on GitLab project: %{project_name}"
+msgstr ""
+
+msgid "ProjectService|Project services"
+msgstr ""
+
+msgid "ProjectService|Project services allow you to integrate GitLab with other applications"
+msgstr ""
+
+msgid "ProjectService|Service"
+msgstr ""
+
+msgid "ProjectService|Services"
+msgstr ""
+
+msgid "ProjectService|Settings"
+msgstr ""
+
+msgid "ProjectService|To set up this service:"
 msgstr ""
 
 msgid "ProjectSettings|Additional merge request capabilities that influence how and when merges will be performed"
@@ -10414,6 +10519,21 @@ msgstr ""
 msgid "Size and domain settings for static websites"
 msgstr ""
 
+msgid "SlackService|2. Paste the <strong>Token</strong> into the field below"
+msgstr ""
+
+msgid "SlackService|3. Select the <strong>Active</strong> checkbox, press <strong>Save changes</strong> and start using GitLab inside Slack!"
+msgstr ""
+
+msgid "SlackService|Fill in the word that works best for your team."
+msgstr ""
+
+msgid "SlackService|See list of available commands in Slack after setting up this service, by entering"
+msgstr ""
+
+msgid "SlackService|This service allows users to perform common operations on this project by entering slash commands in Slack."
+msgstr ""
+
 msgid "Slower but makes sure the project workspace is pristine as it clones the repository from scratch for every job"
 msgstr ""
 
@@ -10985,6 +11105,9 @@ msgid "SuggestedColors|Very dark lime green"
 msgstr ""
 
 msgid "SuggestedColors|Very pale orange"
+msgstr ""
+
+msgid "Suggestions:"
 msgstr ""
 
 msgid "Sunday"
@@ -12041,6 +12164,9 @@ msgid "To protect this issue's confidentiality, a private fork of this project w
 msgstr ""
 
 msgid "To see all the user's personal access tokens you must impersonate them first."
+msgstr ""
+
+msgid "To set up this service:"
 msgstr ""
 
 msgid "To specify the notification level per project of a group you belong to, you need to visit project page and change notification level there."
@@ -13674,6 +13800,12 @@ msgid "leave %{group_name}"
 msgstr ""
 
 msgid "manual"
+msgstr ""
+
+msgid "math|The math in this entry is taking too long to render and may not be displayed as expected. For performance reasons, math blocks are also limited to %{maxChars} characters. Consider splitting up large formulae, splitting math blocks among multiple entries, or using an image instead."
+msgstr ""
+
+msgid "math|There was an error rendering this math block"
 msgstr ""
 
 msgid "merge request"

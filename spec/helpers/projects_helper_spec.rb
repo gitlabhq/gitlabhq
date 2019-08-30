@@ -503,7 +503,7 @@ describe ProjectsHelper do
       allow(Gitlab::CurrentSettings.current_application_settings).to receive(:enabled_git_access_protocol) { 'ssh' }
       allow(Gitlab.config.gitlab_shell).to receive(:ssh_path_prefix).and_return('git@localhost:')
 
-      expect(helper.push_to_create_project_command(user)).to eq('git push --set-upstream git@localhost:john/$(git rev-parse --show-toplevel | xargs basename).git $(git rev-parse --abbrev-ref HEAD)')
+      expect(helper.push_to_create_project_command(user)).to eq("git push --set-upstream #{Gitlab.config.gitlab.user}@localhost:john/$(git rev-parse --show-toplevel | xargs basename).git $(git rev-parse --abbrev-ref HEAD)")
     end
   end
 
@@ -546,6 +546,42 @@ describe ProjectsHelper do
 
     it 'parses quotes in name' do
       expect(helper.send(:git_user_name)).to eq('John \"A\" Doe53')
+    end
+  end
+
+  describe '#git_user_email' do
+    context 'not logged-in' do
+      before do
+        allow(helper).to receive(:current_user).and_return(nil)
+      end
+
+      it 'returns your@email.com' do
+        expect(helper.send(:git_user_email)).to eq('your@email.com')
+      end
+    end
+
+    context 'user logged in' do
+      let(:user) { create(:user) }
+      before do
+        allow(helper).to receive(:current_user).and_return(user)
+      end
+
+      context 'user has no configured commit email' do
+        it 'returns the primary email' do
+          expect(helper.send(:git_user_email)).to eq(user.email)
+        end
+      end
+
+      context 'user has a configured commit email' do
+        before do
+          confirmed_email = create(:email, :confirmed, user: user)
+          user.update(commit_email: confirmed_email)
+        end
+
+        it 'returns the commit email' do
+          expect(helper.send(:git_user_email)).to eq(user.commit_email)
+        end
+      end
     end
   end
 

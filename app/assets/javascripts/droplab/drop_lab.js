@@ -60,7 +60,7 @@ class DropLab {
 
   addEvents() {
     this.eventWrapper.documentClicked = this.documentClicked.bind(this);
-    document.addEventListener('click', this.eventWrapper.documentClicked);
+    document.addEventListener('mousedown', this.eventWrapper.documentClicked);
   }
 
   documentClicked(e) {
@@ -74,7 +74,7 @@ class DropLab {
   }
 
   removeEvents() {
-    document.removeEventListener('click', this.eventWrapper.documentClicked);
+    document.removeEventListener('mousedown', this.eventWrapper.documentClicked);
   }
 
   changeHookList(trigger, list, plugins, config) {

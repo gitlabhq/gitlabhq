@@ -2,6 +2,7 @@
 
 > **Note:**
 > Starting from GitLab 8.5:
+>
 > - the `repository` key is deprecated in favor of the `project` key
 > - the `project.ssh_url` key is deprecated in favor of the `project.git_ssh_url` key
 > - the `project.http_url` key is deprecated in favor of the `project.git_http_url` key
@@ -12,6 +13,7 @@
 >
 > **Note:**
 > Starting from GitLab 11.2:
+>
 > - The `description` field for issues, merge requests, comments, and wiki pages
 >   is rewritten so that simple Markdown image references (like
 >   `![](/uploads/...)`) have their target URL changed to an absolute URL. See
@@ -98,11 +100,12 @@ Below are described the supported events.
 
 Triggered when you push to the repository except when pushing tags.
 
-> **Note:** When more than 20 commits are pushed at once, the `commits` webhook
-  attribute will only contain the first 20 for performance reasons. Loading
-  detailed commit data is expensive. Note that despite only 20 commits being
-  present in the `commits` attribute, the `total_commits_count` attribute will
-  contain the actual total.
+NOTE: **Note:**
+When more than 20 commits are pushed at once, the `commits` webhook
+attribute will only contain the first 20 for performance reasons. Loading
+detailed commit data is expensive. Note that despite only 20 commits being
+present in the `commits` attribute, the `total_commits_count` attribute will
+contain the actual total.
 
 **Request header**:
 
@@ -1181,20 +1184,20 @@ X-Gitlab-Event: Job Hook
 
 ```json
 {
-  "object_kind": "job",
+  "object_kind": "build",
   "ref": "gitlab-script-trigger",
   "tag": false,
   "before_sha": "2293ada6b400935a1378653304eaf6221e0fdb8f",
   "sha": "2293ada6b400935a1378653304eaf6221e0fdb8f",
-  "job_id": 1977,
-  "job_name": "test",
-  "job_stage": "test",
-  "job_status": "created",
-  "job_started_at": null,
-  "job_finished_at": null,
-  "job_duration": null,
-  "job_allow_failure": false,
-  "job_failure_reason": "script_failure",
+  "build_id": 1977,
+  "build_name": "test",
+  "build_stage": "test",
+  "build_status": "created",
+  "build_started_at": null,
+  "build_finished_at": null,
+  "build_duration": null,
+  "build_allow_failure": false,
+  "build_failure_reason": "script_failure",
   "project_id": 380,
   "project_name": "gitlab-org/gitlab-test",
   "user": {

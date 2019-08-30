@@ -83,3 +83,5 @@ module QA
     end
   end
 end
+
+QA::Page::Admin::Menu.prepend_if_ee('QA::EE::Page::Admin::Menu')

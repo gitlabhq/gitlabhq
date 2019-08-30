@@ -1989,6 +1989,7 @@ Marking a job to be run in parallel requires only a simple addition to your conf
    script: rspec
 +  parallel: 5
 ```
+
 TIP: **Tip:**
 Parallelize tests suites across parallel jobs.
 Different languages have different tools to facilitate this.

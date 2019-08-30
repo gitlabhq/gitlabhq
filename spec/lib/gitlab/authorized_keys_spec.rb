@@ -5,10 +5,81 @@ require 'spec_helper'
 describe Gitlab::AuthorizedKeys do
   let(:logger) { double('logger').as_null_object }
 
-  subject { described_class.new(logger) }
+  subject(:authorized_keys) { described_class.new(logger) }
+
+  describe '#accessible?' do
+    subject { authorized_keys.accessible? }
+
+    context 'authorized_keys file exists' do
+      before do
+        create_authorized_keys_fixture
+      end
+
+      after do
+        delete_authorized_keys_file
+      end
+
+      context 'can open file' do
+        it { is_expected.to be_truthy }
+      end
+
+      context 'cannot open file' do
+        before do
+          allow(File).to receive(:open).and_raise(Errno::EACCES)
+        end
+
+        it { is_expected.to be_falsey }
+      end
+    end
+
+    context 'authorized_keys file does not exist' do
+      it { is_expected.to be_falsey }
+    end
+  end
+
+  describe '#create' do
+    subject { authorized_keys.create }
+
+    context 'authorized_keys file exists' do
+      before do
+        create_authorized_keys_fixture
+      end
+
+      after do
+        delete_authorized_keys_file
+      end
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'authorized_keys file does not exist' do
+      after do
+        delete_authorized_keys_file
+      end
+
+      it 'creates authorized_keys file' do
+        expect(subject).to be_truthy
+        expect(File.exist?(tmp_authorized_keys_path)).to be_truthy
+      end
+    end
+
+    context 'cannot create file' do
+      before do
+        allow(File).to receive(:open).and_raise(Errno::EACCES)
+      end
+
+      it { is_expected.to be_falsey }
+    end
+  end
 
   describe '#add_key' do
+    let(:id) { 'key-741' }
+
+    subject { authorized_keys.add_key(id, key) }
+
     context 'authorized_keys file exists' do
+      let(:key) { 'ssh-rsa AAAAB3NzaDAxx2E trailing garbage' }
+
       before do
         create_authorized_keys_fixture
       end
@@ -21,19 +92,20 @@ describe Gitlab::AuthorizedKeys do
         auth_line = "command=\"#{Gitlab.config.gitlab_shell.path}/bin/gitlab-shell key-741\",no-port-forwarding,no-X11-forwarding,no-agent-forwarding,no-pty ssh-rsa AAAAB3NzaDAxx2E"
 
         expect(logger).to receive(:info).with('Adding key (key-741): ssh-rsa AAAAB3NzaDAxx2E')
-        expect(subject.add_key('key-741', 'ssh-rsa AAAAB3NzaDAxx2E trailing garbage'))
-          .to be_truthy
+        expect(subject).to be_truthy
         expect(File.read(tmp_authorized_keys_path)).to eq("existing content\n#{auth_line}\n")
       end
     end
 
     context 'authorized_keys file does not exist' do
+      let(:key) { 'ssh-rsa AAAAB3NzaDAxx2E' }
+
       before do
         delete_authorized_keys_file
       end
 
       it 'creates the file' do
-        expect(subject.add_key('key-741', 'ssh-rsa AAAAB3NzaDAxx2E')).to be_truthy
+        expect(subject).to be_truthy
         expect(File.exist?(tmp_authorized_keys_path)).to be_truthy
       end
     end
@@ -46,6 +118,8 @@ describe Gitlab::AuthorizedKeys do
         double(shell_id: 'key-123', key: 'ssh-rsa GFDGDFSGSDFG')
       ]
     end
+
+    subject { authorized_keys.batch_add_keys(keys) }
 
     context 'authorized_keys file exists' do
       before do
@@ -62,7 +136,7 @@ describe Gitlab::AuthorizedKeys do
 
         expect(logger).to receive(:info).with('Adding key (key-12): ssh-dsa ASDFASGADG')
         expect(logger).to receive(:info).with('Adding key (key-123): ssh-rsa GFDGDFSGSDFG')
-        expect(subject.batch_add_keys(keys)).to be_truthy
+        expect(subject).to be_truthy
         expect(File.read(tmp_authorized_keys_path)).to eq("existing content\n#{auth_line1}\n#{auth_line2}\n")
       end
 
@@ -70,7 +144,7 @@ describe Gitlab::AuthorizedKeys do
         let(:keys) { [double(shell_id: 'key-123', key: "ssh-rsa A\tSDFA\nSGADG")] }
 
         it "doesn't add keys" do
-          expect(subject.batch_add_keys(keys)).to be_falsey
+          expect(subject).to be_falsey
           expect(File.read(tmp_authorized_keys_path)).to eq("existing content\n")
         end
       end
@@ -82,16 +156,28 @@ describe Gitlab::AuthorizedKeys do
       end
 
       it 'creates the file' do
-        expect(subject.batch_add_keys(keys)).to be_truthy
+        expect(subject).to be_truthy
         expect(File.exist?(tmp_authorized_keys_path)).to be_truthy
       end
     end
   end
 
   describe '#rm_key' do
+    let(:key) { 'key-741' }
+
+    subject { authorized_keys.rm_key(key) }
+
     context 'authorized_keys file exists' do
+      let(:other_line) { "command=\"#{Gitlab.config.gitlab_shell.path}/bin/gitlab-shell key-742\",options ssh-rsa AAAAB3NzaDAxx2E" }
+      let(:delete_line) { "command=\"#{Gitlab.config.gitlab_shell.path}/bin/gitlab-shell key-741\",options ssh-rsa AAAAB3NzaDAxx2E" }
+
       before do
         create_authorized_keys_fixture
+
+        File.open(tmp_authorized_keys_path, 'a') do |auth_file|
+          auth_file.puts delete_line
+          auth_file.puts other_line
+        end
       end
 
       after do
@@ -99,16 +185,10 @@ describe Gitlab::AuthorizedKeys do
       end
 
       it "removes the right line" do
-        other_line = "command=\"#{Gitlab.config.gitlab_shell.path}/bin/gitlab-shell key-742\",options ssh-rsa AAAAB3NzaDAxx2E"
-        delete_line = "command=\"#{Gitlab.config.gitlab_shell.path}/bin/gitlab-shell key-741\",options ssh-rsa AAAAB3NzaDAxx2E"
         erased_line = delete_line.gsub(/./, '#')
-        File.open(tmp_authorized_keys_path, 'a') do |auth_file|
-          auth_file.puts delete_line
-          auth_file.puts other_line
-        end
 
         expect(logger).to receive(:info).with('Removing key (key-741)')
-        expect(subject.rm_key('key-741')).to be_truthy
+        expect(subject).to be_truthy
         expect(File.read(tmp_authorized_keys_path)).to eq("existing content\n#{erased_line}\n#{other_line}\n")
       end
     end
@@ -118,13 +198,13 @@ describe Gitlab::AuthorizedKeys do
         delete_authorized_keys_file
       end
 
-      it 'returns false' do
-        expect(subject.rm_key('key-741')).to be_falsey
-      end
+      it { is_expected.to be_falsey }
     end
   end
 
   describe '#clear' do
+    subject { authorized_keys.clear }
+
     context 'authorized_keys file exists' do
       before do
         create_authorized_keys_fixture
@@ -134,9 +214,7 @@ describe Gitlab::AuthorizedKeys do
         delete_authorized_keys_file
       end
 
-      it "returns true" do
-        expect(subject.clear).to be_truthy
-      end
+      it { is_expected.to be_truthy }
     end
 
     context 'authorized_keys file does not exist' do
@@ -144,13 +222,13 @@ describe Gitlab::AuthorizedKeys do
         delete_authorized_keys_file
       end
 
-      it "still returns true" do
-        expect(subject.clear).to be_truthy
-      end
+      it { is_expected.to be_truthy }
     end
   end
 
   describe '#list_key_ids' do
+    subject { authorized_keys.list_key_ids }
+
     context 'authorized_keys file exists' do
       before do
         create_authorized_keys_fixture(
@@ -163,9 +241,7 @@ describe Gitlab::AuthorizedKeys do
         delete_authorized_keys_file
       end
 
-      it 'returns array of key IDs' do
-        expect(subject.list_key_ids).to eq([1, 2, 3, 9000])
-      end
+      it { is_expected.to eq([1, 2, 3, 9000]) }
     end
 
     context 'authorized_keys file does not exist' do
@@ -173,9 +249,7 @@ describe Gitlab::AuthorizedKeys do
         delete_authorized_keys_file
       end
 
-      it 'returns an empty array' do
-        expect(subject.list_key_ids).to be_empty
-      end
+      it { is_expected.to be_empty }
     end
   end
 

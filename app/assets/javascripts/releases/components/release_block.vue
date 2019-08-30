@@ -53,7 +53,7 @@ export default {
 };
 </script>
 <template>
-  <div class="card">
+  <div :id="release.tag_name" class="card">
     <div class="card-body">
       <h2 class="card-title mt-0">
         {{ release.name }}

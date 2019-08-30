@@ -371,7 +371,7 @@ describe('Application Row', () => {
 
     it('contains a link to the chart repo if application has been updated', () => {
       const version = '0.1.45';
-      const chartRepo = 'https://gitlab.com/charts/gitlab-runner';
+      const chartRepo = 'https://gitlab.com/gitlab-org/charts/gitlab-runner';
       vm = mountComponent(ApplicationRow, {
         ...DEFAULT_APPLICATION_STATE,
         status: APPLICATION_STATUS.INSTALLED,

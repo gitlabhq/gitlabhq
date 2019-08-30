@@ -42,7 +42,7 @@ module API
           # array returned, but this is really a edge-case.
           notes = paginate(raw_notes)
           notes = prepare_notes_for_rendering(notes)
-          notes = notes.reject { |n| n.cross_reference_not_visible_for?(current_user) }
+          notes = notes.select { |note| note.visible_for?(current_user) }
           present notes, with: Entities::Note
         end
         # rubocop: enable CodeReuse/ActiveRecord

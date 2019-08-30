@@ -1,0 +1,5 @@
+---
+title: Allow project feature permissions to be overridden during import with override_params
+merge_request: 32348
+author:
+type: fixed

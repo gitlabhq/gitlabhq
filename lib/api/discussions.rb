@@ -239,7 +239,7 @@ module API
         # because notes are redacted if they point to projects that
         # cannot be accessed by the user.
         notes = prepare_notes_for_rendering(notes)
-        notes.reject { |n| n.cross_reference_not_visible_for?(current_user) }
+        notes.select { |n| n.visible_for?(current_user) }
       end
       # rubocop: enable CodeReuse/ActiveRecord
     end

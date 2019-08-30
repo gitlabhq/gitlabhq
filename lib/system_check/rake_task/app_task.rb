@@ -30,7 +30,8 @@ module SystemCheck
           SystemCheck::App::RubyVersionCheck,
           SystemCheck::App::GitVersionCheck,
           SystemCheck::App::GitUserDefaultSSHConfigCheck,
-          SystemCheck::App::ActiveUsersCheck
+          SystemCheck::App::ActiveUsersCheck,
+          SystemCheck::App::AuthorizedKeysPermissionCheck
         ]
       end
     end

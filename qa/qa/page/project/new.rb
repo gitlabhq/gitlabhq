@@ -73,3 +73,5 @@ module QA
     end
   end
 end
+
+QA::Page::Project::New.prepend_if_ee('QA::EE::Page::Project::New')

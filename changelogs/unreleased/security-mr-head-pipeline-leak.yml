@@ -1,0 +1,5 @@
+---
+title: Check permissions before responding in MergeController#pipeline_status
+merge_request:
+author:
+type: security

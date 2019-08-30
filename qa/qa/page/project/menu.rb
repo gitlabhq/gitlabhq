@@ -39,3 +39,5 @@ module QA
     end
   end
 end
+
+QA::Page::Project::Menu.prepend_if_ee('QA::EE::Page::Project::SubMenus::SecurityCompliance')

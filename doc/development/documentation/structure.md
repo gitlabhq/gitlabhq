@@ -13,7 +13,7 @@ and the section on Content in the [Style Guide](styleguide.md).
 
 ## Components of a documentation page
 
-Most pages will be dedicated to a specifig GitLab feature or to a use case that involves
+Most pages will be dedicated to a specific GitLab feature or to a use case that involves
 one or more features, potentially in conjunction with third-party tools.
 
 Every feature or use case document should include the following content in the following sequence,

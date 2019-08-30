@@ -1,8 +1,8 @@
 .row.prepend-top-default.append-bottom-default
   .col-lg-4
     %h4.prepend-top-0
-      Project services
-    %p Project services allow you to integrate GitLab with other applications
+      = s_("ProjectService|Project services")
+    %p= s_("ProjectService|Project services allow you to integrate GitLab with other applications")
   .col-lg-8
     %table.table
       %colgroup
@@ -13,12 +13,12 @@
       %thead
         %tr
           %th
-          %th Service
-          %th.d-none.d-sm-block Description
-          %th Last edit
+          %th= s_("ProjectService|Service")
+          %th.d-none.d-sm-block= _("Description")
+          %th= s_("ProjectService|Last edit")
       - @services.sort_by(&:title).each do |service|
         %tr
-          %td{ "aria-label" => "#{service.title}: status " + (service.activated? ? "on" : "off") }
+          %td{ "aria-label" => (service.activated? ? s_("ProjectService|%{service_title}: status on") : s_("ProjectService|%{service_title}: status off")) % { service_title: service.title } }
             = boolean_to_icon service.activated?
           %td
             = link_to edit_project_service_path(@project, service.to_param) do

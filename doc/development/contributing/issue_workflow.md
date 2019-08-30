@@ -106,7 +106,7 @@ Stage labels specify which [stage](https://about.gitlab.com/handbook/product/cat
 Stage labels respects the `devops::<stage_key>` naming convention.
 `<stage_key>` is the stage key as it is in the single source of truth for stages at
 <https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/stages.yml>
-with `_` replaced with ` `.
+with `_` replaced with a space.
 
 For instance, the "Manage" stage is represented by the ~"devops::manage" label in
 the `gitlab-org` group since its key under `stages` is `manage`.
@@ -132,7 +132,7 @@ Group labels respects the `group::<group_key>` naming convention and
 their color is `#A8D695`.
 `<group_key>` is the group key as it is in the single source of truth for groups at
 <https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/stages.yml>,
-with `_` replaced with ` `.
+with `_` replaced with a space.
 
 For instance, the "Continuous Integration" group is represented by the
 ~"group::continuous integration"  label in the `gitlab-org` group since its key

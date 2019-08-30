@@ -1,0 +1,5 @@
+---
+title: Make sure HTML text is always escaped when replacing label/milestone references.
+merge_request:
+author:
+type: security
