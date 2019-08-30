@@ -706,6 +706,34 @@ will build a Docker image based on the Dockerfile rather than using buildpacks.
 This can be much faster and result in smaller images, especially if your
 Dockerfile is based on [Alpine](https://hub.docker.com/_/alpine/).
 
+### Passing arguments to `docker build`
+
+Arguments can be passed to the `docker build` command using the
+`AUTO_DEVOPS_BUILD_IMAGE_EXTRA_ARGS` project variable.
+
+For example, to build a Docker image based on based on the `ruby:alpine`
+instead of the default `ruby:latest`:
+
+1. Set `AUTO_DEVOPS_BUILD_IMAGE_EXTRA_ARGS` to `--build-arg=RUBY_VERSION=alpine`.
+1. Add the following to a custom `Dockerfile`:
+
+    ```docker
+    ARG RUBY_VERSION=latest
+    FROM ruby:$RUBY_VERSION
+
+    # ... put your stuff here
+    ```
+
+NOTE: **Note:**
+Passing in complex values (newlines and spaces, for example) will likely
+cause escaping issues due to the way this argument is used in Auto DevOps. 
+Consider using Base64 encoding of such values to avoid this problem.
+
+CAUTION: **Warning:**
+Avoid passing secrets as Docker build arguments if possible, as they may be
+persisted in your image. See
+[this discussion](https://github.com/moby/moby/issues/13490) for details.
+
 ### Custom Helm Chart
 
 Auto DevOps uses [Helm](https://helm.sh/) to deploy your application to Kubernetes.
@@ -794,6 +822,7 @@ applications.
 |-----------------------------------------|------------------------------------|
 | `ADDITIONAL_HOSTS`                      | Fully qualified domain names specified as a comma-separated list that are added to the ingress hosts. |
 | `<ENVIRONMENT>_ADDITIONAL_HOSTS`        | For a specific environment, the fully qualified domain names specified as a comma-separated list that are added to the ingress hosts. This takes precedence over `ADDITIONAL_HOSTS`. |
+| `AUTO_DEVOPS_BUILD_IMAGE_EXTRA_ARGS`    | Extra arguments to be passed to the `docker build` command. Note that using quotes will not prevent word splitting. [More details](#passing-arguments-to-docker-build). |
 | `AUTO_DEVOPS_CHART`                     | Helm Chart used to deploy your apps. Defaults to the one [provided by GitLab](https://gitlab.com/gitlab-org/charts/auto-deploy-app). |
 | `AUTO_DEVOPS_CHART_REPOSITORY`          | Helm Chart repository used to search for charts. Defaults to `https://charts.gitlab.io`. |
 | `AUTO_DEVOPS_CHART_REPOSITORY_NAME`     | From Gitlab 11.11, used to set the name of the helm repository. Defaults to `gitlab`. |
