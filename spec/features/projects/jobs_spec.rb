@@ -20,6 +20,7 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
   before do
     project.add_role(user, user_access_level)
     sign_in(user)
+    stub_feature_flags(job_log_json: false)
   end
 
   describe "GET /:project/jobs" do

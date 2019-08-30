@@ -7,6 +7,10 @@ describe "Public Project Access" do
 
   set(:project) { create(:project, :public, :repository) }
 
+  before do
+    stub_feature_flags(job_log_json: false)
+  end
+
   describe "Project should be public" do
     describe '#public?' do
       subject { project.public? }

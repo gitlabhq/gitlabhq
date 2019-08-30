@@ -12,7 +12,6 @@ import createStore from '../store';
 import EmptyState from './empty_state.vue';
 import EnvironmentsBlock from './environments_block.vue';
 import ErasedBlock from './erased_block.vue';
-import Log from './job_log.vue';
 import LogTopBar from './job_log_controllers.vue';
 import StuckBlock from './stuck_block.vue';
 import UnmetPrerequisitesBlock from './unmet_prerequisites_block.vue';
@@ -30,7 +29,10 @@ export default {
     EnvironmentsBlock,
     ErasedBlock,
     Icon,
-    Log,
+    Log: () =>
+      gon && gon.features && gon.features.jobLogJson
+        ? import('./job_log_json.vue')
+        : import('./job_log.vue'),
     LogTopBar,
     StuckBlock,
     UnmetPrerequisitesBlock,

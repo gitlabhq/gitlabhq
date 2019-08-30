@@ -11,6 +11,9 @@ class Projects::JobsController < Projects::ApplicationController
   before_action :authorize_erase_build!, only: [:erase]
   before_action :authorize_use_build_terminal!, only: [:terminal, :terminal_websocket_authorize]
   before_action :verify_api_request!, only: :terminal_websocket_authorize
+  before_action only: [:trace] do
+    push_frontend_feature_flag(:job_log_json)
+  end
 
   layout 'project'
 
@@ -64,6 +67,14 @@ class Projects::JobsController < Projects::ApplicationController
   # rubocop: enable CodeReuse/ActiveRecord
 
   def trace
+    if Feature.enabled?(:job_log_json, @project)
+      json_trace
+    else
+      html_trace
+    end
+  end
+
+  def html_trace
     build.trace.read do |stream|
       respond_to do |format|
         format.json do
@@ -82,6 +93,10 @@ class Projects::JobsController < Projects::ApplicationController
         end
       end
     end
+  end
+
+  def json_trace
+    # will be implemented with https://gitlab.com/gitlab-org/gitlab-ce/issues/66454
   end
 
   def retry

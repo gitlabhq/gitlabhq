@@ -11760,6 +11760,9 @@ msgstr ""
 msgid "This domain is not verified. You will need to verify ownership before access is enabled."
 msgstr ""
 
+msgid "This feature is in development. Please disable the `job_log_json` feature flag"
+msgstr ""
+
 msgid "This feature requires local storage to be enabled"
 msgstr ""
 
