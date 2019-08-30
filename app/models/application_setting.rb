@@ -4,7 +4,6 @@ class ApplicationSetting < ApplicationRecord
   include CacheableAttributes
   include CacheMarkdownField
   include TokenAuthenticatable
-  include IgnorableColumn
   include ChronicDurationAttribute
 
   add_authentication_token_field :runners_registration_token, encrypted: -> { Feature.enabled?(:application_settings_tokens_optional_encryption, default_enabled: true) ? :optional : :required }
@@ -32,12 +31,14 @@ class ApplicationSetting < ApplicationRecord
   serialize :repository_storages # rubocop:disable Cop/ActiveRecordSerialize
   serialize :asset_proxy_whitelist, Array # rubocop:disable Cop/ActiveRecordSerialize
 
-  ignore_column :koding_url
-  ignore_column :koding_enabled
-  ignore_column :sentry_enabled
-  ignore_column :sentry_dsn
-  ignore_column :clientside_sentry_enabled
-  ignore_column :clientside_sentry_dsn
+  self.ignored_columns += %i[
+    clientside_sentry_dsn
+    clientside_sentry_enabled
+    koding_enabled
+    koding_url
+    sentry_dsn
+    sentry_enabled
+  ]
 
   cache_markdown_field :sign_in_text
   cache_markdown_field :help_page_text

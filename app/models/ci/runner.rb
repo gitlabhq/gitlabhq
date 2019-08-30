@@ -4,7 +4,6 @@ module Ci
   class Runner < ApplicationRecord
     extend Gitlab::Ci::Model
     include Gitlab::SQL::Pattern
-    include IgnorableColumn
     include RedisCacheable
     include ChronicDurationAttribute
     include FromUnion
@@ -36,7 +35,7 @@ module Ci
 
     FORM_EDITABLE = %i[description tag_list active run_untagged locked access_level maximum_timeout_human_readable].freeze
 
-    ignore_column :is_shared
+    self.ignored_columns = %i[is_shared]
 
     has_many :builds
     has_many :runner_projects, inverse_of: :runner, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent

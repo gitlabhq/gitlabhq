@@ -11,19 +11,20 @@ module Ci
     include ObjectStorage::BackgroundMove
     include Presentable
     include Importable
-    include IgnorableColumn
     include Gitlab::Utils::StrongMemoize
     include Deployable
     include HasRef
 
     BuildArchivedError = Class.new(StandardError)
 
-    ignore_column :commands
-    ignore_column :artifacts_file
-    ignore_column :artifacts_metadata
-    ignore_column :artifacts_file_store
-    ignore_column :artifacts_metadata_store
-    ignore_column :artifacts_size
+    self.ignored_columns += %i[
+      artifacts_file
+      artifacts_file_store
+      artifacts_metadata
+      artifacts_metadata_store
+      artifacts_size
+      commands
+    ]
 
     belongs_to :project, inverse_of: :builds
     belongs_to :runner

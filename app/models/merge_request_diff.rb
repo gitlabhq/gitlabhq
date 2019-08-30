@@ -4,7 +4,6 @@ class MergeRequestDiff < ApplicationRecord
   include Sortable
   include Importable
   include ManualInverseAssociation
-  include IgnorableColumn
   include EachBatch
   include Gitlab::Utils::StrongMemoize
   include ObjectStorage::BackgroundMove
