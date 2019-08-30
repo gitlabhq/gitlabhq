@@ -30,7 +30,7 @@ describe 'Database schema' do
     draft_notes: %w[discussion_id commit_id],
     emails: %w[user_id],
     events: %w[target_id],
-    epics: %w[updated_by_id last_edited_by_id start_date_sourcing_milestone_id due_date_sourcing_milestone_id],
+    epics: %w[updated_by_id last_edited_by_id start_date_sourcing_milestone_id due_date_sourcing_milestone_id state_id],
     forked_project_links: %w[forked_from_project_id],
     geo_event_log: %w[hashed_storage_attachments_event_id],
     geo_job_artifact_deleted_events: %w[job_artifact_id],
