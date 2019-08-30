@@ -113,7 +113,7 @@ export default class ProjectFindFile {
       if (searchText) {
         matches = fuzzaldrinPlus.match(filePath, searchText);
       }
-      blobItemUrl = this.options.blobUrlTemplate + '/' + filePath;
+      blobItemUrl = this.options.blobUrlTemplate + '/' + encodeURIComponent(filePath);
       html = ProjectFindFile.makeHtml(filePath, matches, blobItemUrl);
       results.push(this.element.find('.tree-table > tbody').append(html));
     }
