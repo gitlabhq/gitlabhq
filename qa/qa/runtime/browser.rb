@@ -68,7 +68,7 @@ module QA
           options = Selenium::WebDriver.const_get(QA::Runtime::Env.browser.capitalize)::Options.new
 
           if QA::Runtime::Env.browser == :chrome
-            options.add_argument("window-size=1240,1680")
+            options.add_argument("window-size=1480,2200")
 
             # Chrome won't work properly in a Docker container in sandbox mode
             options.add_argument("no-sandbox")
