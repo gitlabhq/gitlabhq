@@ -61,8 +61,4 @@ module WaitForRequests
 
     Capybara.page.evaluate_script('jQuery.active').zero?
   end
-
-  def javascript_test?
-    Capybara.current_driver == Capybara.javascript_driver
-  end
 end

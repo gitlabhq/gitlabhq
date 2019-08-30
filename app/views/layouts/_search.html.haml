@@ -47,6 +47,7 @@
       = hidden_field_tag :snippets, true
     = hidden_field_tag :repository_ref, @ref
     = hidden_field_tag :nav_source, 'navbar'
-    -# workaround for non-JS feature specs, for JS you need to use find('#search').send_keys(:enter)
-    = button_tag 'Go' if ENV['RAILS_ENV'] == 'test'
+    -# workaround for non-JS feature specs, see spec/support/helpers/search_helpers.rb
+    - if ENV['RAILS_ENV'] == 'test'
+      %noscript= button_tag 'Search'
     .search-autocomplete-opts.hide{ :'data-autocomplete-path' => search_autocomplete_path, :'data-autocomplete-project-id' => @project.try(:id), :'data-autocomplete-project-ref' => @ref }

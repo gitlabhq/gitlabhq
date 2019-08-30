@@ -42,4 +42,8 @@ module CapybaraHelpers
   def clear_browser_session
     page.driver.browser.manage.delete_cookie('_gitlab_session')
   end
+
+  def javascript_test?
+    Capybara.current_driver == Capybara.javascript_driver
+  end
 end

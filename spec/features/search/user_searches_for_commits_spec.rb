@@ -16,15 +16,13 @@ describe 'User searches for commits' do
 
   context 'when searching by SHA' do
     it 'finds a commit and redirects to its page' do
-      fill_in('search', with: sha)
-      click_button('Search')
+      submit_search(sha)
 
       expect(page).to have_current_path(project_commit_path(project, sha))
     end
 
     it 'finds a commit in uppercase and redirects to its page' do
-      fill_in('search', with: sha.upcase)
-      click_button('Search')
+      submit_search(sha.upcase)
 
       expect(page).to have_current_path(project_commit_path(project, sha))
     end
@@ -34,16 +32,14 @@ describe 'User searches for commits' do
     it 'finds a commit and holds on /search page' do
       create_commit('Message referencing another sha: "deadbeef"', project, user, 'master')
 
-      fill_in('search', with: 'deadbeef')
-      click_button('Search')
+      submit_search('deadbeef')
 
       expect(page).to have_current_path('/search', ignore_query: true)
     end
 
     it 'finds multiple commits' do
-      fill_in('search', with: 'See merge request')
-      click_button('Search')
-      click_link('Commits')
+      submit_search('See merge request')
+      select_search_scope('Commits')
 
       expect(page).to have_selector('.commit-row-description', count: 9)
     end

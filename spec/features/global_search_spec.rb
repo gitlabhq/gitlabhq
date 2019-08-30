@@ -16,8 +16,7 @@ describe 'Global search' do
   it 'increases usage ping searches counter' do
     expect(Gitlab::UsageDataCounters::SearchCounter).to receive(:increment_navbar_searches_count)
 
-    fill_in "search", with: "foobar"
-    click_button "Go"
+    submit_search('foobar')
   end
 
   describe 'I search through the issues and I see pagination' do
@@ -27,10 +26,9 @@ describe 'Global search' do
     end
 
     it "has a pagination" do
-      fill_in "search", with: "initial"
-      click_button "Go"
+      submit_search('initial')
+      select_search_scope('Issues')
 
-      select_filter("Issues")
       expect(page).to have_selector('.gl-pagination .next')
     end
   end

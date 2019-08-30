@@ -21,13 +21,11 @@ describe 'User searches for issues', :js do
     it 'finds an issue' do
       fill_in('dashboard_search', with: issue1.title)
       find('.btn-search').click
-
-      page.within('.search-filter') do
-        click_link('Issues')
-      end
+      select_search_scope('Issues')
 
       page.within('.results') do
-        expect(find(:css, '.search-results')).to have_link(issue1.title).and have_no_link(issue2.title)
+        expect(page).to have_link(issue1.title)
+        expect(page).not_to have_link(issue2.title)
       end
     end
 
@@ -41,13 +39,11 @@ describe 'User searches for issues', :js do
 
         fill_in('dashboard_search', with: issue1.title)
         find('.btn-search').click
-
-        page.within('.search-filter') do
-          click_link('Issues')
-        end
+        select_search_scope('Issues')
 
         page.within('.results') do
-          expect(find(:css, '.search-results')).to have_link(issue1.title).and have_no_link(issue2.title)
+          expect(page).to have_link(issue1.title)
+          expect(page).not_to have_link(issue2.title)
         end
       end
     end
@@ -65,13 +61,11 @@ describe 'User searches for issues', :js do
     it 'finds an issue' do
       fill_in('dashboard_search', with: issue1.title)
       find('.btn-search').click
-
-      page.within('.search-filter') do
-        click_link('Issues')
-      end
+      select_search_scope('Issues')
 
       page.within('.results') do
-        expect(find(:css, '.search-results')).to have_link(issue1.title).and have_no_link(issue2.title)
+        expect(page).to have_link(issue1.title)
+        expect(page).not_to have_link(issue2.title)
       end
     end
   end

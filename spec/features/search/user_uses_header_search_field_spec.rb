@@ -19,8 +19,7 @@ describe 'User uses header search field', :js do
     end
 
     it 'starts searching by pressing the enter key' do
-      fill_in('search', with: 'gitlab')
-      find('#search').native.send_keys(:enter)
+      submit_search('gitlab')
 
       page.within('.page-title') do
         expect(page).to have_content('Search')
@@ -101,8 +100,7 @@ describe 'User uses header search field', :js do
       before do
         create(:issue, project: project, title: 'project issue')
 
-        fill_in('search', with: 'project')
-        find('#search').send_keys(:enter)
+        submit_search('project')
       end
 
       it 'displays result counts for all categories' do

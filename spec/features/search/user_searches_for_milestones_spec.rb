@@ -20,13 +20,11 @@ describe 'User searches for milestones', :js do
   it 'finds a milestone' do
     fill_in('dashboard_search', with: milestone1.title)
     find('.btn-search').click
-
-    page.within('.search-filter') do
-      click_link('Milestones')
-    end
+    select_search_scope('Milestones')
 
     page.within('.results') do
-      expect(find(:css, '.search-results')).to have_link(milestone1.title).and have_no_link(milestone2.title)
+      expect(page).to have_link(milestone1.title)
+      expect(page).not_to have_link(milestone2.title)
     end
   end
 
@@ -40,13 +38,11 @@ describe 'User searches for milestones', :js do
 
       fill_in('dashboard_search', with: milestone1.title)
       find('.btn-search').click
-
-      page.within('.search-filter') do
-        click_link('Milestones')
-      end
+      select_search_scope('Milestones')
 
       page.within('.results') do
-        expect(find(:css, '.search-results')).to have_link(milestone1.title).and have_no_link(milestone2.title)
+        expect(page).to have_link(milestone1.title)
+        expect(page).not_to have_link(milestone2.title)
       end
     end
   end

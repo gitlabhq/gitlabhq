@@ -1,7 +1,22 @@
 # frozen_string_literal: true
 
 module SearchHelpers
-  def select_filter(name)
-    find(:xpath, "//ul[contains(@class, 'search-filter')]//a[contains(.,'#{name}')]").click
+  def submit_search(query, scope: nil)
+    page.within('.search-form, .search-page-form') do
+      field = find_field('search')
+      field.fill_in(with: query)
+
+      if javascript_test?
+        field.send_keys(:enter)
+      else
+        click_button('Search')
+      end
+    end
+  end
+
+  def select_search_scope(scope)
+    page.within '.search-filter' do
+      click_link scope
+    end
   end
 end
