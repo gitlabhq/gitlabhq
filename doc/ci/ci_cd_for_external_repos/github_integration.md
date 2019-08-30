@@ -11,35 +11,10 @@ GitLab.
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 Watch a video on [Using GitLab CI/CD pipelines with GitHub repositories](https://www.youtube.com/watch?v=qgl3F2j-1cI).
 
-## Connect with GitHub integration
-
-If the [GitHub integration](../../integration/github.md) has been enabled by your GitLab
-administrator:
-
-1. In GitLab create a **CI/CD for external repo** project and select
-   **GitHub**.
-
-   ![Create project](img/github_omniauth.png)
-
-1. Once authenticated, you will be redirected to a list of your repositories to
-   connect. Click **Connect** to select the repository.
-
-   ![Create project](img/github_repo_list.png)
-
-1. In GitHub, add a `.gitlab-ci.yml` to [configure GitLab CI/CD](../quick_start/README.md).
-
-GitLab will:
-
-1. Import the project.
-1. Enable [Pull Mirroring](../../workflow/repository_mirroring.md#pulling-from-a-remote-repository-starter).
-1. Enable [GitHub project integration](../../user/project/integrations/github.md).
-1. Create a web hook on GitHub to notify GitLab of new commits.
-
-CAUTION: **Caution:**
-Due to a 10-token limitation on the [GitHub OAuth Implementation](https://developer.github.com/apps/building-oauth-apps/authorizing-oauth-apps/#creating-multiple-tokens-for-oauth-apps),
-if you import more than 10 times, your oldest imported project's token will be
-revoked. See issue [#9147](https://gitlab.com/gitlab-org/gitlab-ee/issues/9147)
-for more information.
+NOTE: **Note:**
+Because of [GitHub limitations](https://gitlab.com/gitlab-org/gitlab-ee/issues/9147),
+[GitHub OAuth](../../integration/github.html#enabling-github-oauth)
+cannot be used to authenticate with GitHub as an external CI/CD repository.
 
 ## Connect with Personal Access Token
 
@@ -47,8 +22,7 @@ NOTE: **Note:**
 Personal access tokens can only be used to connect GitHub.com
 repositories to GitLab.
 
-If you are not using the [GitHub integration](../../integration/github.md), you can
-still perform a one-off authorization with GitHub to grant GitLab access your
+To perform a one-off authorization with GitHub to grant GitLab access your
 repositories:
 
 1. Open <https://github.com/settings/tokens/new> to create a **Personal Access
@@ -69,18 +43,19 @@ repositories:
 
 1. In GitHub, add a `.gitlab-ci.yml` to [configure GitLab CI/CD](../quick_start/README.md).
 
-GitLab will import the project, enable [Pull Mirroring](../../workflow/repository_mirroring.md#pulling-from-a-remote-repository-starter), enable
-[GitHub project integration](../../user/project/integrations/github.md), and create a web hook
-on GitHub to notify GitLab of new commits.
+GitLab will:
+
+1. Import the project.
+1. Enable [Pull Mirroring](../../workflow/repository_mirroring.md#pulling-from-a-remote-repository-starter)
+1. Enable [GitHub project integration](../../user/project/integrations/github.md)
+1. Create a web hook on GitHub to notify GitLab of new commits.
 
 ## Connect manually
 
 NOTE: **Note:**
-To use **GitHub Enterprise** with **GitLab.com** use this method.
+To use **GitHub Enterprise** with **GitLab.com**, use this method.
 
-If the [GitHub integration](../../integration/github.md) is not enabled, or is enabled
-for a different GitHub instance, you GitLab CI/CD can be manually enabled for
-your repository:
+To manually enable GitLab CI/CD for your repository:
 
 1. In GitHub open <https://github.com/settings/tokens/new> create a **Personal
    Access Token.** GitLab will use this token to access your repository and
