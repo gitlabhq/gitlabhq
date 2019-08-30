@@ -106,12 +106,14 @@ To get started with GitLab Pages, you can either:
 1. From the left sidebar, navigate to your project's **CI/CD > Pipelines**
    and click **Run pipeline** to trigger GitLab CI/CD to build and deploy your
    site to the server.
-1. Once the pipeline has finished successfully, find the link to visit your
-   website from your project's **Settings > Pages**.
+1. After the pipeline has finished successfully, wait approximately 30 minutes
+   for your website to be visible. After waiting 30 minutes, find the link to
+   visit your website from your project's **Settings > Pages**. If the link
+   leads to a 404 page, wait a few minutes and try again.
 
-Your website is then visible on your domain, and you can modify yourfiles
+Your website is then visible on your domain and you can modify your files
 as you wish. For every modification pushed to your repository, GitLab CI/CD
-will run a new pipeline to publish your changes to the server.
+will run a new pipeline to immediately publish your changes to the server.
 
 _Advanced options:_
 
