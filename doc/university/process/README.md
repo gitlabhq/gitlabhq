@@ -2,10 +2,6 @@
 comments: false
 ---
 
----
-title: University | Process
----
-
 # Suggesting improvements
 
 If you would like to teach a class or participate or help in any way please

@@ -127,7 +127,7 @@ but commented out to help encourage others to add to it in the future. -->
 GitLab administrators can force a pipeline configuration to run on every
 pipeline.
 
-The configuration applies to all pipelines for a GitLab instance and is 
+The configuration applies to all pipelines for a GitLab instance and is
 sourced from:
 
 - The [instance template repository](instance_template_repository.md).

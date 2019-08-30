@@ -192,7 +192,7 @@ You can also click the `+` to add more related issues.
 
 #### 19. Related Merge Requests
 
-Merge requests that were mentioned in that issue's description or in the issue thread 
+Merge requests that were mentioned in that issue's description or in the issue thread
 are listed as [related merge requests](crosslinking_issues.md#from-merge-requests) here.
 Also, if the current issue was mentioned as related in another merge request, that
 merge request will be listed here.

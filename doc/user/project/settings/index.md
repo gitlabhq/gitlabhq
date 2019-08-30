@@ -34,7 +34,7 @@ Issues or Merge Requests, both of which use Labels and Milestones, then you shou
 
 #### Disabling email notifications
 
-You can disable all email notifications related to the project by selecting the 
+You can disable all email notifications related to the project by selecting the
 **Disable email notifications** checkbox.  Only the project owner is allowed to change
 this setting.
 

@@ -1,6 +1,7 @@
 # Advanced Syntax Search **(STARTER ONLY)**
 
 > **Notes:**
+>
 > - Introduced in [GitLab Enterprise Starter][ee] 9.2
 > - This is the user documentation. To install and configure Elasticsearch,
 >   visit the [administrator documentation](../../integration/elasticsearch.md).
