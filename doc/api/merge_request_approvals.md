@@ -152,8 +152,8 @@ POST /projects/:id/approval_rules
 | `id`                 | integer | yes      | The ID of a project                                       |
 | `name`               | string  | yes      | The name of the approval rule                             |
 | `approvals_required` | integer | yes      | The number of required approvals for this rule            |
-| `users`              | integer | no       | The ids of users as approvers                             |
-| `groups`             | integer | no       | The ids of groups as approvers                            |
+| `user_ids`           | Array   | no       | The ids of users as approvers                             |
+| `group_ids`          | Array   | no       | The ids of groups as approvers                            |
 
 ```json
 {
@@ -231,8 +231,8 @@ PUT /projects/:id/approval_rules/:approval_rule_id
 | `approval_rule_id`   | integer | yes      | The ID of a approval rule                                 |
 | `name`               | string  | yes      | The name of the approval rule                             |
 | `approvals_required` | integer | yes      | The number of required approvals for this rule            |
-| `users`              | integer | no       | The ids of users as approvers                             |
-| `groups`             | integer | no       | The ids of groups as approvers                            |
+| `user_ids`           | Array   | no       | The ids of users as approvers                             |
+| `group_ids`          | Array   | no       | The ids of groups as approvers                            |
 
 ```json
 {
@@ -524,6 +524,270 @@ PUT /projects/:id/merge_requests/:merge_request_iid/approvers
   ]
 }
 ```
+
+### Get merge request level rules
+
+>**Note:** This API endpoint is only available on 12.3 Starter and above.
+
+You can request information about a merge request's approval rules using the following endpoint:
+
+```
+GET /projects/:id/merge_requests/:merge_request_iid/approval_rules
+```
+
+**Parameters:**
+
+| Attribute           | Type    | Required | Description         |
+|---------------------|---------|----------|---------------------|
+| `id`                | integer | yes      | The ID of a project |
+| `merge_request_iid` | integer | yes      | The IID of MR       |
+
+```json
+[
+  {
+    "id": 1,
+    "name": "security",
+    "rule_type": "regular",
+    "eligible_approvers": [
+      {
+        "id": 5,
+        "name": "John Doe",
+        "username": "jdoe",
+        "state": "active",
+        "avatar_url": "https://www.gravatar.com/avatar/0?s=80&d=identicon",
+        "web_url": "http://localhost/jdoe"
+      },
+      {
+        "id": 50,
+        "name": "Group Member 1",
+        "username": "group_member_1",
+        "state": "active",
+        "avatar_url": "https://www.gravatar.com/avatar/0?s=80&d=identicon",
+        "web_url": "http://localhost/group_member_1"
+      }
+    ],
+    "approvals_required": 3,
+    "source_rule": null,
+    "users": [
+      {
+        "id": 5,
+        "name": "John Doe",
+        "username": "jdoe",
+        "state": "active",
+        "avatar_url": "https://www.gravatar.com/avatar/0?s=80&d=identicon",
+        "web_url": "http://localhost/jdoe"
+      }
+    ],
+    "groups": [
+      {
+        "id": 5,
+        "name": "group1",
+        "path": "group1",
+        "description": "",
+        "visibility": "public",
+        "lfs_enabled": false,
+        "avatar_url": null,
+        "web_url": "http://localhost/groups/group1",
+        "request_access_enabled": false,
+        "full_name": "group1",
+        "full_path": "group1",
+        "parent_id": null,
+        "ldap_cn": null,
+        "ldap_access": null
+      }
+    ],
+    "contains_hidden_groups": false
+  }
+]
+```
+
+### Create merge request level rule
+
+>**Note:** This API endpoint is only available on 12.3 Starter and above.
+
+You can create merge request approval rules using the following endpoint:
+
+```
+POST /projects/:id/merge_requests/:merge_request_iid/approval_rules
+```
+
+**Parameters:**
+
+| Attribute                  | Type    | Required | Description                                    |
+|----------------------------|---------|----------|------------------------------------------------|
+| `id`                       | integer | yes      | The ID of a project                            |
+| `merge_request_iid`        | integer | yes      | The IID of MR                                  |
+| `name`                     | string  | yes      | The name of the approval rule                  |
+| `approvals_required`       | integer | yes      | The number of required approvals for this rule |
+| `approval_project_rule_id` | integer | no       | The ID of a project-level approval rule        |
+| `user_ids`                 | Array   | no       | The ids of users as approvers                  |
+| `group_ids`                | Array   | no       | The ids of groups as approvers                 |
+
+**Important:** When `approval_project_rule_id` is set, the `name`, `users` and
+`groups` of project-level rule will be copied. The `approvals_required` specified
+will be used.
+
+```json
+{
+  "id": 1,
+  "name": "security",
+  "rule_type": "regular",
+  "eligible_approvers": [
+    {
+      "id": 2,
+      "name": "John Doe",
+      "username": "jdoe",
+      "state": "active",
+      "avatar_url": "https://www.gravatar.com/avatar/0?s=80&d=identicon",
+      "web_url": "http://localhost/jdoe"
+    },
+    {
+      "id": 50,
+      "name": "Group Member 1",
+      "username": "group_member_1",
+      "state": "active",
+      "avatar_url": "https://www.gravatar.com/avatar/0?s=80&d=identicon",
+      "web_url": "http://localhost/group_member_1"
+    }
+  ],
+  "approvals_required": 1,
+  "source_rule": null,
+  "users": [
+    {
+      "id": 2,
+      "name": "John Doe",
+      "username": "jdoe",
+      "state": "active",
+      "avatar_url": "https://www.gravatar.com/avatar/0?s=80&d=identicon",
+      "web_url": "http://localhost/jdoe"
+    }
+  ],
+  "groups": [
+    {
+      "id": 5,
+      "name": "group1",
+      "path": "group1",
+      "description": "",
+      "visibility": "public",
+      "lfs_enabled": false,
+      "avatar_url": null,
+      "web_url": "http://localhost/groups/group1",
+      "request_access_enabled": false,
+      "full_name": "group1",
+      "full_path": "group1",
+      "parent_id": null,
+      "ldap_cn": null,
+      "ldap_access": null
+    }
+  ],
+  "contains_hidden_groups": false
+}
+```
+
+### Update merge request level rule
+
+>**Note:** This API endpoint is only available on 12.3 Starter and above.
+
+You can update merge request approval rules using the following endpoint:
+
+```
+PUT /projects/:id/merge_request/:merge_request_iid/approval_rules/:approval_rule_id
+```
+
+**Important:** Approvers and groups not in the `users`/`groups` param will be **removed**
+
+**Important:** Updating a `report_approver` or `code_owner` rule is not allowed.
+These are system generated rules.
+
+**Parameters:**
+
+| Attribute            | Type    | Required | Description                                    |
+|----------------------|---------|----------|------------------------------------------------|
+| `id`                 | integer | yes      | The ID of a project                            |
+| `merge_request_iid`  | integer | yes      | The ID of MR                                   |
+| `approval_rule_id`   | integer | yes      | The ID of a approval rule                      |
+| `name`               | string  | yes      | The name of the approval rule                  |
+| `approvals_required` | integer | yes      | The number of required approvals for this rule |
+| `user_ids`           | Array   | no       | The ids of users as approvers                  |
+| `group_ids`          | Array   | no       | The ids of groups as approvers                 |
+
+```json
+{
+  "id": 1,
+  "name": "security",
+  "rule_type": "regular",
+  "eligible_approvers": [
+    {
+      "id": 2,
+      "name": "John Doe",
+      "username": "jdoe",
+      "state": "active",
+      "avatar_url": "https://www.gravatar.com/avatar/0?s=80&d=identicon",
+      "web_url": "http://localhost/jdoe"
+    },
+    {
+      "id": 50,
+      "name": "Group Member 1",
+      "username": "group_member_1",
+      "state": "active",
+      "avatar_url": "https://www.gravatar.com/avatar/0?s=80&d=identicon",
+      "web_url": "http://localhost/group_member_1"
+    }
+  ],
+  "approvals_required": 1,
+  "source_rule": null,
+  "users": [
+    {
+      "id": 2,
+      "name": "John Doe",
+      "username": "jdoe",
+      "state": "active",
+      "avatar_url": "https://www.gravatar.com/avatar/0?s=80&d=identicon",
+      "web_url": "http://localhost/jdoe"
+    }
+  ],
+  "groups": [
+    {
+      "id": 5,
+      "name": "group1",
+      "path": "group1",
+      "description": "",
+      "visibility": "public",
+      "lfs_enabled": false,
+      "avatar_url": null,
+      "web_url": "http://localhost/groups/group1",
+      "request_access_enabled": false,
+      "full_name": "group1",
+      "full_path": "group1",
+      "parent_id": null,
+      "ldap_cn": null,
+      "ldap_access": null
+    }
+  ],
+  "contains_hidden_groups": false
+}
+```
+
+### Delete merge request level rule
+
+>**Note:** This API endpoint is only available on 12.3 Starter and above.
+
+You can delete merge request approval rules using the following endpoint:
+
+```
+DELETE /projects/:id/merge_requests/:merge_request_iid/approval_rules/:approval_rule_id
+```
+
+**Important:** Deleting a `report_approver` or `code_owner` rule is not allowed.
+These are system generated rules.
+
+**Parameters:**
+
+| Attribute           | Type    | Required | Description               |
+|---------------------|---------|----------|---------------------------|
+| `id`                | integer | yes      | The ID of a project       |
+| `merge_request_iid` | integer | yes      | The ID of MR              |
+| `approval_rule_id`  | integer | yes      | The ID of a approval rule |
 
 ## Approve Merge Request
 
