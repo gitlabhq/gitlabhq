@@ -6,7 +6,7 @@ import CommitEdit from '~/vue_merge_request_widget/components/states/commit_edit
 import CommitMessageDropdown from '~/vue_merge_request_widget/components/states/commit_message_dropdown.vue';
 import eventHub from '~/vue_merge_request_widget/event_hub';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
-import { MWPS_MERGE_STRATEGY, ATMTWPS_MERGE_STRATEGY } from '~/vue_merge_request_widget/constants';
+import { MWPS_MERGE_STRATEGY, MTWPS_MERGE_STRATEGY } from '~/vue_merge_request_widget/constants';
 
 const commitMessage = 'This is the commit message';
 const squashCommitMessage = 'This is the squash commit message';
@@ -164,7 +164,7 @@ describe('ReadyToMerge', () => {
       });
 
       it('returns info class for pending status', () => {
-        Vue.set(vm.mr, 'availableAutoMergeStrategies', [ATMTWPS_MERGE_STRATEGY]);
+        Vue.set(vm.mr, 'availableAutoMergeStrategies', [MTWPS_MERGE_STRATEGY]);
 
         expect(vm.mergeButtonClass).toEqual(inActionClass);
       });
