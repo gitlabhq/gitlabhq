@@ -1,7 +1,6 @@
 # GitLab NPM Registry **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/5934)
-  in [GitLab Premium](https://about.gitlab.com/pricing/) 11.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/5934) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.7.
 
 With the GitLab NPM Registry, every
 project can have its own space to store NPM packages.

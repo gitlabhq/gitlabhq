@@ -2,6 +2,7 @@
 
 > **Note:**
 > Starting from GitLab 8.5:
+>
 > - the `repository` key is deprecated in favor of the `project` key
 > - the `project.ssh_url` key is deprecated in favor of the `project.git_ssh_url` key
 > - the `project.http_url` key is deprecated in favor of the `project.git_http_url` key
@@ -12,6 +13,7 @@
 >
 > **Note:**
 > Starting from GitLab 11.2:
+>
 > - The `description` field for issues, merge requests, comments, and wiki pages
 >   is rewritten so that simple Markdown image references (like
 >   `![](/uploads/...)`) have their target URL changed to an absolute URL. See
@@ -98,11 +100,12 @@ Below are described the supported events.
 
 Triggered when you push to the repository except when pushing tags.
 
-> **Note:** When more than 20 commits are pushed at once, the `commits` webhook
-  attribute will only contain the first 20 for performance reasons. Loading
-  detailed commit data is expensive. Note that despite only 20 commits being
-  present in the `commits` attribute, the `total_commits_count` attribute will
-  contain the actual total.
+NOTE: **Note:**
+When more than 20 commits are pushed at once, the `commits` webhook
+attribute will only contain the first 20 for performance reasons. Loading
+detailed commit data is expensive. Note that despite only 20 commits being
+present in the `commits` attribute, the `total_commits_count` attribute will
+contain the actual total.
 
 **Request header**:
 

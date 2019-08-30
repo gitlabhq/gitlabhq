@@ -96,7 +96,7 @@ them in a YAML file named `clair-whitelist.yml`. Read more in the
 
 ## Example
 
-The following is a sample `.gitlab-ci.yml` that will build your Docker Image, push it to the container registry and run Container Scanning. 
+The following is a sample `.gitlab-ci.yml` that will build your Docker Image, push it to the container registry and run Container Scanning.
 
 ```yaml
 variables:

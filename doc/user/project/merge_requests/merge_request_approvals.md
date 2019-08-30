@@ -330,7 +330,7 @@ the dropdown) `approver` and select the user.
 Merge Request Approvals can be configured to require approval from a member
 of your security team when a vulnerability would be introduced by a merge request.
 
-For more information, see 
+For more information, see
 [Security approvals in merge requests](../../application_security/index.md#security-approvals-in-merge-requests-ultimate).
 
 <!-- ## Troubleshooting

@@ -452,7 +452,7 @@ Replying to a non-thread comment will convert the non-thread comment to a
 thread once the reply is submitted. This conversion is considered an edit
 to the original comment, so a note about when it was last edited will appear underneath it.
 
-This feature only exists for Issues, Merge requests, and Epics. Commits, Snippets and Merge request diff threads are 
+This feature only exists for Issues, Merge requests, and Epics. Commits, Snippets and Merge request diff threads are
 not supported yet.
 
 [ce-5022]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/5022

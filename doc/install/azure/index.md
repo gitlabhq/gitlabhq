@@ -179,7 +179,7 @@ to make sure your VM is configured to use a _static_ public IP address (i.e. not
 or you will have to reconfigure the DNS `A` record each time Azure reassigns your VM a new public IP
 address. Read [IP address types and allocation methods in Azure][Azure-IP-Address-Types] to learn more.
 
-## Let's open some ports!
+## Let's open some ports
 
 At this stage you should have a running and fully operational VM. However, none of the services on
 your VM (e.g. GitLab) will be publicly accessible via the internet until you have opened up the
@@ -333,6 +333,7 @@ If you're running Windows, you'll need to connect using [PuTTY] or an equivalent
 If you're running Linux or macOS, then you already have an SSH client installed.
 
 > **Note:**
+>
 > - Remember that you will need to login with the username and password you specified
 >   [when you created](#basics) your Azure VM
 > - If you need to reset your VM password, read
