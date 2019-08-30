@@ -88,7 +88,8 @@ module Banzai
           user: user,
           user_email: email,
           css_class: 'avatar-inline',
-          has_tooltip: false
+          has_tooltip: false,
+          only_path: false
         )
 
         link_href = user.nil? ? "mailto:#{email}" : urls.user_url(user)
