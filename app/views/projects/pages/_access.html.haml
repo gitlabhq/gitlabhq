@@ -8,14 +8,10 @@
           = _("Your pages are served under:")
 
       %p
-        = link_to @project.pages_url, target: '_blank', rel: 'noopener noreferrer' do
-          = @project.pages_url
-          = icon('external-link')
+        = external_link(@project.pages_url, @project.pages_url)
 
       - @project.pages_domains.each do |domain|
         %p
-          = link_to domain.url, target: '_blank', rel: 'noopener noreferrer' do
-            = domain.url
-            = icon('external-link')
+          = external_link(domain.url, domain.url)
     .card-footer.alert-primary
       = _("It may take up to 30 minutes before the site is available after the first deployment.")
