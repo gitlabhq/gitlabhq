@@ -1,0 +1,5 @@
+---
+title: Fix for missing avatar images dislpayed in commit trailers.
+merge_request: 32374
+author: Jesse Hall @jessehall3
+type: fixed

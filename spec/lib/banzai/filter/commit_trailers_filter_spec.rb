@@ -189,5 +189,26 @@ describe Banzai::Filter::CommitTrailersFilter do
       expect_to_have_user_link_with_avatar(doc, user: user, trailer: trailer)
       expect(doc.text).to include(commit_body)
     end
+
+    context 'with Gitlab-hosted avatars in commit trailers' do
+      # Because commit trailers are contained within markdown,
+      # any path-only link will automatically be prefixed
+      # with the path of its repository.
+      # See: "build_relative_path" in "lib/banzai/filter/relative_link_filter.rb"
+      let(:user_with_avatar) { create(:user, :with_avatar, username: 'foobar') }
+
+      it 'returns a full path for avatar urls' do
+        _, message_html = build_commit_message(
+          trailer: trailer,
+          name: user_with_avatar.name,
+          email: user_with_avatar.email
+        )
+
+        doc = filter(message_html)
+        expected = "#{Gitlab.config.gitlab.url}#{user_with_avatar.avatar_url}"
+
+        expect(doc.css('img')[0].attr('src')).to start_with expected
+      end
+    end
   end
 end

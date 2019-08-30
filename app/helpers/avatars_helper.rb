@@ -56,13 +56,13 @@ module AvatarsHelper
     }))
   end
 
-  def user_avatar_url_for(options = {})
+  def user_avatar_url_for(only_path: true, **options)
     if options[:url]
       options[:url]
     elsif options[:user]
-      avatar_icon_for_user(options[:user], options[:size])
+      avatar_icon_for_user(options[:user], options[:size], only_path: only_path)
     else
-      avatar_icon_for_email(options[:user_email], options[:size])
+      avatar_icon_for_email(options[:user_email], options[:size], only_path: only_path)
     end
   end
 
@@ -75,6 +75,7 @@ module AvatarsHelper
     has_tooltip = options[:has_tooltip].nil? ? true : options[:has_tooltip]
     data_attributes = options[:data] || {}
     css_class = %W[avatar s#{avatar_size}].push(*options[:css_class])
+    alt_text = user_name ? "#{user_name}'s avatar" : "default avatar"
 
     if has_tooltip
       css_class.push('has-tooltip')
@@ -88,7 +89,7 @@ module AvatarsHelper
     end
 
     image_options = {
-      alt:   "#{user_name}'s avatar",
+      alt:   alt_text,
       src:   avatar_url,
       data:  data_attributes,
       class: css_class,
