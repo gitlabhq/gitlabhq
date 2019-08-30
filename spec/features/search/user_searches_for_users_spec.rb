@@ -3,83 +3,81 @@
 require 'spec_helper'
 
 describe 'User searches for users' do
+  let(:user1) { create(:user, username: 'gob_bluth', name: 'Gob Bluth') }
+  let(:user2) { create(:user, username: 'michael_bluth', name: 'Michael Bluth') }
+  let(:user3) { create(:user, username: 'gob_2018', name: 'George Oscar Bluth') }
+
+  before do
+    sign_in(user1)
+  end
+
   context 'when on the dashboard' do
     it 'finds the user', :js do
-      create(:user, username: 'gob_bluth', name: 'Gob Bluth')
-
-      sign_in(create(:user))
-
       visit dashboard_projects_path
 
-      fill_in 'search', with: 'gob'
-      find('#search').send_keys(:enter)
+      submit_search('gob')
+      select_search_scope('Users')
 
-      expect(page).to have_content('Users 1')
-
-      click_on('Users 1')
-
-      expect(page).to have_content('Gob Bluth')
-      expect(page).to have_content('@gob_bluth')
+      page.within('.results') do
+        expect(page).to have_content('Gob Bluth')
+        expect(page).to have_content('@gob_bluth')
+      end
     end
   end
 
   context 'when on the project page' do
-    it 'finds the user belonging to the project' do
-      project = create(:project)
+    let(:project) { create(:project) }
 
-      user1 = create(:user, username: 'gob_bluth', name: 'Gob Bluth')
+    before do
       create(:project_member, :developer, user: user1, project: project)
-
-      user2 = create(:user, username: 'michael_bluth', name: 'Michael Bluth')
       create(:project_member, :developer, user: user2, project: project)
+      user3
+    end
 
-      create(:user, username: 'gob_2018', name: 'George Oscar Bluth')
+    it 'finds the user belonging to the project' do
+      visit project_path(project)
 
-      sign_in(user1)
+      submit_search('gob')
+      select_search_scope('Users')
 
-      visit projects_path(project)
+      page.within('.results') do
+        expect(page).to have_content('Gob Bluth')
+        expect(page).to have_content('@gob_bluth')
 
-      fill_in 'search', with: 'gob'
-      click_button 'Go'
+        expect(page).not_to have_content('Michael Bluth')
+        expect(page).not_to have_content('@michael_bluth')
 
-      expect(page).to have_content('Gob Bluth')
-      expect(page).to have_content('@gob_bluth')
-
-      expect(page).not_to have_content('Michael Bluth')
-      expect(page).not_to have_content('@michael_bluth')
-
-      expect(page).not_to have_content('George Oscar Bluth')
-      expect(page).not_to have_content('@gob_2018')
+        expect(page).not_to have_content('George Oscar Bluth')
+        expect(page).not_to have_content('@gob_2018')
+      end
     end
   end
 
   context 'when on the group page' do
-    it 'finds the user belonging to the group' do
-      group = create(:group)
+    let(:group) { create(:group) }
 
-      user1 = create(:user, username: 'gob_bluth', name: 'Gob Bluth')
+    before do
       create(:group_member, :developer, user: user1, group: group)
-
-      user2 = create(:user, username: 'michael_bluth', name: 'Michael Bluth')
       create(:group_member, :developer, user: user2, group: group)
+      user3
+    end
 
-      create(:user, username: 'gob_2018', name: 'George Oscar Bluth')
-
-      sign_in(user1)
-
+    it 'finds the user belonging to the group' do
       visit group_path(group)
 
-      fill_in 'search', with: 'gob'
-      click_button 'Go'
+      submit_search('gob')
+      select_search_scope('Users')
 
-      expect(page).to have_content('Gob Bluth')
-      expect(page).to have_content('@gob_bluth')
+      page.within('.results') do
+        expect(page).to have_content('Gob Bluth')
+        expect(page).to have_content('@gob_bluth')
 
-      expect(page).not_to have_content('Michael Bluth')
-      expect(page).not_to have_content('@michael_bluth')
+        expect(page).not_to have_content('Michael Bluth')
+        expect(page).not_to have_content('@michael_bluth')
 
-      expect(page).not_to have_content('George Oscar Bluth')
-      expect(page).not_to have_content('@gob_2018')
+        expect(page).not_to have_content('George Oscar Bluth')
+        expect(page).not_to have_content('@gob_2018')
+      end
     end
   end
 end

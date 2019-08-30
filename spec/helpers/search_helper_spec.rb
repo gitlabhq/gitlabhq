@@ -6,7 +6,7 @@ describe SearchHelper do
     str
   end
 
-  describe 'search_autocomplete_source' do
+  describe 'search_autocomplete_opts' do
     context "with no current user" do
       before do
         allow(self).to receive(:current_user).and_return(nil)
@@ -96,6 +96,47 @@ describe SearchHelper do
       it "includes admin sections" do
         expect(search_autocomplete_opts("admin").size).to eq(1)
       end
+    end
+  end
+
+  describe 'search_entries_info' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:scope, :label) do
+      'commits'        | 'commit'
+      'issues'         | 'issue'
+      'merge_requests' | 'merge request'
+      'milestones'     | 'milestone'
+      'projects'       | 'project'
+      'snippet_titles' | 'snippet'
+      'users'          | 'user'
+
+      'blobs'          | 'result'
+      'snippet_blobs'  | 'result'
+      'wiki_blobs'     | 'result'
+
+      'notes'          | 'comment'
+    end
+
+    with_them do
+      it 'uses the correct singular label' do
+        collection = Kaminari.paginate_array([:foo]).page(1).per(10)
+
+        expect(search_entries_info(collection, scope, 'foo')).to eq("Showing 1 #{label} for \"foo\"")
+      end
+
+      it 'uses the correct plural label' do
+        collection = Kaminari.paginate_array([:foo] * 23).page(1).per(10)
+
+        expect(search_entries_info(collection, scope, 'foo')).to eq("Showing 1 - 10 of 23 #{label.pluralize} for \"foo\"")
+      end
+    end
+
+    it 'raises an error for unrecognized scopes' do
+      expect do
+        collection = Kaminari.paginate_array([:foo]).page(1).per(10)
+        search_entries_info(collection, 'unknown', 'foo')
+      end.to raise_error(RuntimeError)
     end
   end
 

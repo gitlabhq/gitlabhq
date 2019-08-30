@@ -18,15 +18,13 @@ describe 'User searches for comments' do
       let(:comment) { create(:note_on_commit, author: user, project: project, commit_id: 12345678, note: 'Bug here') }
 
       it 'finds a commit' do
-        page.within('.search') do
-          fill_in('search', with: comment.note)
-          click_button('Go')
+        submit_search(comment.note)
+        select_search_scope('Comments')
+
+        page.within('.results') do
+          expect(page).to have_content('Commit deleted')
+          expect(page).to have_content('12345678')
         end
-
-        click_link('Comments')
-
-        expect(page).to have_text('Commit deleted')
-        expect(page).to have_text('12345678')
       end
     end
   end
@@ -36,14 +34,10 @@ describe 'User searches for comments' do
     let(:comment) { create(:note, noteable: snippet, author: user, note: 'Supercalifragilisticexpialidocious', project: project) }
 
     it 'finds a snippet' do
-      page.within('.search') do
-        fill_in('search', with: comment.note)
-        click_button('Go')
-      end
+      submit_search(comment.note)
+      select_search_scope('Comments')
 
-      click_link('Comments')
-
-      expect(page).to have_link(snippet.title)
+      expect(page).to have_selector('.results', text: snippet.title)
     end
   end
 end

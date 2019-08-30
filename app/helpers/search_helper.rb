@@ -30,7 +30,46 @@ module SearchHelper
     to = collection.offset_value + collection.to_a.size
     count = collection.total_count
 
-    s_("SearchResults|Showing %{from} - %{to} of %{count} %{scope} for \"%{term}\"") % { from: from, to: to, count: count, scope: scope.humanize(capitalize: false), term: term }
+    search_entries_info_template(collection) % {
+      from: from,
+      to: to,
+      count: count,
+      scope: search_entries_info_label(scope, count),
+      term: term
+    }
+  end
+
+  def search_entries_info_label(scope, count)
+    case scope
+    when 'blobs', 'snippet_blobs', 'wiki_blobs'
+      ns_('SearchResults|result', 'SearchResults|results', count)
+    when 'commits'
+      ns_('SearchResults|commit', 'SearchResults|commits', count)
+    when 'issues'
+      ns_('SearchResults|issue', 'SearchResults|issues', count)
+    when 'merge_requests'
+      ns_('SearchResults|merge request', 'SearchResults|merge requests', count)
+    when 'milestones'
+      ns_('SearchResults|milestone', 'SearchResults|milestones', count)
+    when 'notes'
+      ns_('SearchResults|comment', 'SearchResults|comments', count)
+    when 'projects'
+      ns_('SearchResults|project', 'SearchResults|projects', count)
+    when 'snippet_titles'
+      ns_('SearchResults|snippet', 'SearchResults|snippets', count)
+    when 'users'
+      ns_('SearchResults|user', 'SearchResults|users', count)
+    else
+      raise "Unrecognized search scope '#{scope}'"
+    end
+  end
+
+  def search_entries_info_template(collection)
+    if collection.total_pages > 1
+      s_("SearchResults|Showing %{from} - %{to} of %{count} %{scope} for \"%{term}\"")
+    else
+      s_("SearchResults|Showing %{count} %{scope} for \"%{term}\"")
+    end
   end
 
   def find_project_for_result_blob(projects, result)

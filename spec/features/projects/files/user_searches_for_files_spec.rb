@@ -18,8 +18,7 @@ describe 'Projects > Files > User searches for files' do
       end
 
       it 'does not show any result' do
-        fill_in('search', with: 'coffee')
-        click_button('Go')
+        submit_search('coffee')
 
         expect(page).to have_content("We couldn't find any")
       end
@@ -50,8 +49,7 @@ describe 'Projects > Files > User searches for files' do
     it 'shows found files' do
       expect(page).to have_selector('.tree-controls .shortcuts-find-file')
 
-      fill_in('search', with: 'coffee')
-      click_button('Go')
+      submit_search('coffee')
 
       expect(page).to have_content('coffee')
       expect(page).to have_content('CONTRIBUTING.md')

@@ -6,21 +6,6 @@ describe 'User searches for code' do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository, namespace: user.namespace) }
 
-  def submit_search(search, with_send_keys: false)
-    page.within('.search') do
-      field = find_field('search')
-      field.fill_in(with: search)
-
-      if with_send_keys
-        field.send_keys(:enter)
-      else
-        click_button("Go")
-      end
-    end
-
-    click_link('Code')
-  end
-
   context 'when signed in' do
     before do
       project.add_maintainer(user)
@@ -31,7 +16,9 @@ describe 'User searches for code' do
       visit(project_path(project))
 
       submit_search('application.js')
+      select_search_scope('Code')
 
+      expect(page).to have_selector('.results', text: 'application.js')
       expect(page).to have_selector('.file-content .code')
       expect(page).to have_selector("span.line[lang='javascript']")
     end
@@ -52,9 +39,7 @@ describe 'User searches for code' do
         fill_in('dashboard_search', with: 'rspec')
         find('.btn-search').click
 
-        page.within('.results') do
-          expect(find(:css, '.search-results')).to have_content('Update capybara, rspec-rails, poltergeist to recent versions')
-        end
+        expect(page).to have_selector('.results', text: 'Update capybara, rspec-rails, poltergeist to recent versions')
       end
 
       it 'search mutiple words with refs switching' do
@@ -64,16 +49,12 @@ describe 'User searches for code' do
         fill_in('dashboard_search', with: search)
         find('.btn-search').click
 
-        page.within('.results') do
-          expect(find('.search-results')).to have_content(expected_result)
-        end
+        expect(page).to have_selector('.results', text: expected_result)
 
         find('.js-project-refs-dropdown').click
         find('.dropdown-page-one .dropdown-content').click_link('v1.0.0')
 
-        page.within('.results') do
-          expect(find(:css, '.search-results')).to have_content(expected_result)
-        end
+        expect(page).to have_selector('.results', text: expected_result)
 
         expect(find_field('dashboard_search').value).to eq(search)
       end
@@ -84,7 +65,9 @@ describe 'User searches for code' do
 
       before do
         visit(project_tree_path(project, ref_name))
-        submit_search('gitlab-grack', with_send_keys: true)
+
+        submit_search('gitlab-grack')
+        select_search_scope('Code')
       end
 
       it 'shows ref switcher in code result summary' do
@@ -104,22 +87,27 @@ describe 'User searches for code' do
       end
 
       it 'search result changes when refs switched' do
-        expect(find('.search-results')).not_to have_content('path = gitlab-grack')
+        expect(find('.results')).not_to have_content('path = gitlab-grack')
+
         find('.js-project-refs-dropdown').click
         find('.dropdown-page-one .dropdown-content').click_link('master')
-        expect(find('.search-results')).to have_content('path = gitlab-grack')
+
+        expect(page).to have_selector('.results', text: 'path = gitlab-grack')
       end
     end
 
     it 'no ref switcher shown in issue result summary', :js do
       issue = create(:issue, title: 'test', project: project)
       visit(project_tree_path(project))
-      submit_search('test', with_send_keys: true)
+
+      submit_search('test')
+      select_search_scope('Code')
+
       expect(page).to have_selector('.js-project-refs-dropdown')
-      page.within('.search-filter') do
-        click_link('Issues')
-      end
-      expect(find(:css, '.search-results')).to have_link(issue.title)
+
+      select_search_scope('Issues')
+
+      expect(find(:css, '.results')).to have_link(issue.title)
       expect(page).not_to have_selector('.js-project-refs-dropdown')
     end
   end
@@ -133,10 +121,9 @@ describe 'User searches for code' do
 
     it 'finds code' do
       submit_search('rspec')
+      select_search_scope('Code')
 
-      page.within('.results') do
-        expect(find(:css, '.search-results')).to have_content('Update capybara, rspec-rails, poltergeist to recent versions')
-      end
+      expect(page).to have_selector('.results', text: 'Update capybara, rspec-rails, poltergeist to recent versions')
     end
   end
 end

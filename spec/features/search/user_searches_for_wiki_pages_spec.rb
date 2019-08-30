@@ -26,13 +26,10 @@ describe 'User searches for wiki pages', :js do
 
       fill_in('dashboard_search', with: search_term)
       find('.btn-search').click
-
-      page.within('.search-filter') do
-        click_link('Wiki')
-      end
+      select_search_scope('Wiki')
 
       page.within('.results') do
-        expect(find(:css, '.search-results')).to have_link(wiki_page.title, href: project_wiki_path(project, wiki_page.slug))
+        expect(page).to have_link(wiki_page.title, href: project_wiki_path(project, wiki_page.slug))
       end
     end
   end

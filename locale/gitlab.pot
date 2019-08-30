@@ -10097,8 +10097,56 @@ msgstr ""
 msgid "SearchCodeResults|of %{link_to_project}"
 msgstr ""
 
+msgid "SearchResults|Showing %{count} %{scope} for \"%{term}\""
+msgstr ""
+
 msgid "SearchResults|Showing %{from} - %{to} of %{count} %{scope} for \"%{term}\""
 msgstr ""
+
+msgid "SearchResults|comment"
+msgid_plural "SearchResults|comments"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "SearchResults|commit"
+msgid_plural "SearchResults|commits"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "SearchResults|issue"
+msgid_plural "SearchResults|issues"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "SearchResults|merge request"
+msgid_plural "SearchResults|merge requests"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "SearchResults|milestone"
+msgid_plural "SearchResults|milestones"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "SearchResults|project"
+msgid_plural "SearchResults|projects"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "SearchResults|result"
+msgid_plural "SearchResults|results"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "SearchResults|snippet"
+msgid_plural "SearchResults|snippets"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "SearchResults|user"
+msgid_plural "SearchResults|users"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Secret"
 msgstr ""

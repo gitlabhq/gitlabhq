@@ -20,8 +20,7 @@ describe 'User searches for projects' do
     it 'preserves the group being searched in' do
       visit(search_path(group_id: project.namespace.id))
 
-      fill_in('search', with: 'foo')
-      click_button('Search')
+      submit_search('foo')
 
       expect(find('#group_id', visible: false).value).to eq(project.namespace.id.to_s)
     end
@@ -29,8 +28,7 @@ describe 'User searches for projects' do
     it 'preserves the project being searched in' do
       visit(search_path(project_id: project.id))
 
-      fill_in('search', with: 'foo')
-      click_button('Search')
+      submit_search('foo')
 
       expect(find('#project_id', visible: false).value).to eq(project.id.to_s)
     end

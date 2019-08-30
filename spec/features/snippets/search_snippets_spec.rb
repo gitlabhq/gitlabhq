@@ -10,12 +10,8 @@ describe 'Search Snippets' do
     sign_in private_snippet.author
     visit dashboard_snippets_path
 
-    page.within '.search' do
-      fill_in 'search', with: 'Middle'
-      click_button 'Go'
-    end
-
-    click_link 'Titles and Filenames'
+    submit_search('Middle')
+    select_search_scope('Titles and Filenames')
 
     expect(page).to have_link(public_snippet.title)
     expect(page).to have_link(private_snippet.title)
@@ -45,11 +41,7 @@ describe 'Search Snippets' do
 
     sign_in create(:user)
     visit dashboard_snippets_path
-
-    page.within '.search' do
-      fill_in 'search', with: 'line seven'
-      click_button 'Go'
-    end
+    submit_search('line seven')
 
     expect(page).to have_content('line seven')
 
