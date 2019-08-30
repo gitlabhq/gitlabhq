@@ -23,7 +23,7 @@ class DeploymentEntity < Grape::Entity
   expose :last?
   expose :deployed_by, as: :user, using: UserEntity
 
-  expose :deployable do |deployment, opts|
+  expose :deployable, if: -> (deployment) { deployment.deployable.present? } do |deployment, opts|
     deployment.deployable.yield_self do |deployable|
       if include_details?
         JobEntity.represent(deployable, opts)

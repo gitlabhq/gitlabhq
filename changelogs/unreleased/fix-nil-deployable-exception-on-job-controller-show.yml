@@ -1,0 +1,5 @@
+---
+title: Fix users cannot access job detail page when deployable does not exist
+merge_request: 32247
+author:
+type: fixed
