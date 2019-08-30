@@ -331,7 +331,11 @@ No response headers are provided.
 
 ### Admin Area settings
 
-GitLab.com does not currently use these settings.
+GitLab.com:
+
+- Has [rate limits on raw endpoints](../../user/admin_area/settings/rate_limits_on_raw_endpoints.md)
+  set to the default. 
+- Does not have the user and IP rate limits settings enabled.
 
 ## GitLab.com at scale
 
