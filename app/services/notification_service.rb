@@ -293,10 +293,15 @@ class NotificationService
   def new_access_request(member)
     return true unless member.notifiable?(:subscription)
 
-    recipients = member.source.members.active_without_invites_and_requests.owners_and_maintainers
-    if fallback_to_group_owners_maintainers?(recipients, member)
-      recipients = member.source.group.members.active_without_invites_and_requests.owners_and_maintainers
+    source = member.source
+
+    recipients = source.access_request_approvers_to_be_notified
+
+    if fallback_to_group_access_request_approvers?(recipients, source)
+      recipients = source.group.access_request_approvers_to_be_notified
     end
+
+    return true if recipients.empty?
 
     recipients.each { |recipient| deliver_access_request_email(recipient, member) }
   end
@@ -611,9 +616,9 @@ class NotificationService
     mailer.member_access_requested_email(member.real_source_type, member.id, recipient.user.id).deliver_later
   end
 
-  def fallback_to_group_owners_maintainers?(recipients, member)
+  def fallback_to_group_access_request_approvers?(recipients, source)
     return false if recipients.present?
 
-    member.source.respond_to?(:group) && member.source.group
+    source.respond_to?(:group) && source.group
   end
 end

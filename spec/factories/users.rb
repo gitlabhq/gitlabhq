@@ -39,6 +39,14 @@ FactoryBot.define do
       avatar { fixture_file_upload('spec/fixtures/dk.png') }
     end
 
+    trait :with_sign_ins do
+      sign_in_count 3
+      current_sign_in_at { Time.now }
+      last_sign_in_at { FFaker::Time.between(10.days.ago, 1.day.ago) }
+      current_sign_in_ip '127.0.0.1'
+      last_sign_in_ip '127.0.0.1'
+    end
+
     trait :two_factor_via_otp do
       before(:create) do |user|
         user.otp_required_for_login = true

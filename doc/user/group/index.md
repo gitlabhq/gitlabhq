@@ -150,8 +150,11 @@ side of your screen.
 
 ![Request access button](img/request_access_button.png)
 
-Group owners and maintainers will be notified of your request and will be able to approve or
-decline it on the members page.
+Once access is requested:
+
+- Up to ten group owners are notified of your request via email.
+  Email is sent to the most recently active group owners.
+- Any group owner can approve or decline your request on the members page.
 
 ![Manage access requests](img/access_requests_management.png)
 

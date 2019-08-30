@@ -55,6 +55,8 @@ class Project < ApplicationRecord
   VALID_MIRROR_PORTS = [22, 80, 443].freeze
   VALID_MIRROR_PROTOCOLS = %w(http https ssh git).freeze
 
+  ACCESS_REQUEST_APPROVERS_TO_BE_NOTIFIED_LIMIT = 10
+
   SORTING_PREFERENCE_FIELD = :projects_sort
 
   cache_markdown_field :description, pipeline: :description
@@ -2191,6 +2193,10 @@ class Project < ApplicationRecord
 
   def has_pool_repository?
     pool_repository.present?
+  end
+
+  def access_request_approvers_to_be_notified
+    members.maintainers.order_recent_sign_in.limit(ACCESS_REQUEST_APPROVERS_TO_BE_NOTIFIED_LIMIT)
   end
 
   private

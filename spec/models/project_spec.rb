@@ -4991,6 +4991,26 @@ describe Project do
     end
   end
 
+  describe '#access_request_approvers_to_be_notified' do
+    it 'returns a maximum of ten, active, non_requested maintainers of the project in recent_sign_in descending order' do
+      group = create(:group, :public)
+      project = create(:project, group: group)
+
+      users = create_list(:user, 12, :with_sign_ins)
+      active_maintainers = users.map do |user|
+        create(:project_member, :maintainer, user: user)
+      end
+
+      create(:project_member, :maintainer, :blocked, project: project)
+      create(:project_member, :developer, project: project)
+      create(:project_member, :access_request, :maintainer, project: project)
+
+      active_maintainers_in_recent_sign_in_desc_order = project.members_and_requesters.where(id: active_maintainers).order_recent_sign_in.limit(10)
+
+      expect(project.access_request_approvers_to_be_notified).to eq(active_maintainers_in_recent_sign_in_desc_order)
+    end
+  end
+
   def rugged_config
     rugged_repo(project.repository).config
   end

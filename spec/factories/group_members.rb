@@ -24,5 +24,9 @@ FactoryBot.define do
     trait(:ldap) do
       ldap true
     end
+
+    trait :blocked do
+      after(:build) { |group_member, _| group_member.user.block! }
+    end
   end
 end
