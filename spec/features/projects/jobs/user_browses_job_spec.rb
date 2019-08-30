@@ -10,6 +10,8 @@ describe 'User browses a job', :js do
   let!(:build) { create(:ci_build, :success, :trace_artifact, :coverage, pipeline: pipeline) }
 
   before do
+    stub_feature_flags(job_log_json: false)
+
     project.add_maintainer(user)
     project.enable_ci
 
