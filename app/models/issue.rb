@@ -178,7 +178,7 @@ class Issue < ApplicationRecord
   end
 
   def moved?
-    !moved_to.nil?
+    !moved_to_id.nil?
   end
 
   def can_move?(user, to_project = nil)
