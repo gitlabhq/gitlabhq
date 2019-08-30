@@ -6191,6 +6191,9 @@ msgstr ""
 msgid "IssuableStatus|Closed (%{moved_link_start}moved%{moved_link_end})"
 msgstr ""
 
+msgid "IssuableStatus|moved"
+msgstr ""
+
 msgid "Issue"
 msgstr ""
 

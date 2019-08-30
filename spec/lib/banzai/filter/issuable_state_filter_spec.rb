@@ -131,6 +131,14 @@ describe Banzai::Filter::IssuableStateFilter do
 
       expect(doc.css('a').last.text).to eq("#{closed_issue.to_reference} (closed)")
     end
+
+    it 'appends state to moved issue references' do
+      moved_issue = create(:issue, :closed, project: project, moved_to: create_issue(:opened))
+      link = create_link(moved_issue.to_reference, issue: moved_issue.id, reference_type: 'issue')
+      doc = filter(link, context)
+
+      expect(doc.css('a').last.text).to eq("#{moved_issue.to_reference} (moved)")
+    end
   end
 
   context 'for merge request references' do
