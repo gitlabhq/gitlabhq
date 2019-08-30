@@ -65,16 +65,11 @@ Once you're on the dashboard, at the top you should see a series of filters for:
 NOTE: **Note:**
 The dashboard only shows projects with [security reports](#supported-reports) enabled in a group.
 
-![dashboard with action buttons and metrics](img/group_security_dashboard.png)
+![dashboard with action buttons and metrics](img/group_security_dashboard_v12_3.png)
 
 Selecting one or more filters will filter the results in this page.
-The first section is an overview of all the vulnerabilities, grouped by severity.
-Underneath this overview is a timeline chart that shows how many open
-vulnerabilities your projects had at various points in time. You can filter among 30, 60, and
-90 days, with the default being 90. Hover over the chart to get more details about
-the open vulnerabilities at a specific time.
 
-Finally, there is a list of all the vulnerabilities in the group, sorted by severity.
+The main section is a list of all the vulnerabilities in the group, sorted by severity.
 In that list, you can see the severity of the vulnerability, its name, its
 confidence (likelihood of the vulnerability to be a positive one), and the project
 it's from.
@@ -84,6 +79,11 @@ If you hover over a row, there will appear some actions you can take:
 - "More info"
 - "Create issue"
 - "Dismiss vulnerability"
+
+Next to the list is a timeline chart that shows how many open
+vulnerabilities your projects had at various points in time. You can filter among 30, 60, and
+90 days, with the default being 90. Hover over the chart to get more details about
+the open vulnerabilities at a specific time.
 
 Read more on how to [interact with the vulnerabilities](../index.md#interacting-with-the-vulnerabilities).
 
