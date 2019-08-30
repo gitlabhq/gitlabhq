@@ -2,7 +2,7 @@
 - page_title _("Preferences")
 - @content_class = "limit-container-width" unless fluid_layout
 
-%section.settings.as-email.no-animate#js-email-settings{ class: ('expanded' if expanded_by_default?) }
+%section.settings.as-email.no-animate#js-email-settings{ class: ('expanded' if expanded_by_default?), data: { qa_selector: 'email_section' } }
   .settings-header
     %h4
       = _('Email')

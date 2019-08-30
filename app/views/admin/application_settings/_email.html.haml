@@ -25,4 +25,4 @@
 
     = render_if_exists 'admin/application_settings/email_additional_text_setting', form: f
 
-  = f.submit _('Save changes'), class: "btn btn-success"
+  = f.submit _('Save changes'), class: "btn btn-success", data: { qa_selector: 'save_changes_button' }
