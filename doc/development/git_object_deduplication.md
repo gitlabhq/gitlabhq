@@ -186,7 +186,7 @@ When a pool repository record is created in SQL on a Geo primary, this
 will eventually trigger an event on the Geo secondary. The Geo secondary
 will then create the pool repository in Gitaly. This leads to an
 "eventually consistent" situation because as each pool participant gets
-synchronized, Geo will eventuall trigger garbage collection in Gitaly on
+synchronized, Geo will eventually trigger garbage collection in Gitaly on
 the secondary, at which stage Git objects will get deduplicated.
 
 > TODO How do we handle the edge case where at the time the Geo
