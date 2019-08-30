@@ -726,7 +726,7 @@ instead of the default `ruby:latest`:
 
 NOTE: **Note:**
 Passing in complex values (newlines and spaces, for example) will likely
-cause escaping issues due to the way this argument is used in Auto DevOps. 
+cause escaping issues due to the way this argument is used in Auto DevOps.
 Consider using Base64 encoding of such values to avoid this problem.
 
 CAUTION: **Warning:**
