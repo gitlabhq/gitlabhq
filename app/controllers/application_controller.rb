@@ -47,8 +47,8 @@ class ApplicationController < ActionController::Base
 
   # Adds `no-store` to the DEFAULT_CACHE_CONTROL, to prevent security
   # concerns due to caching private data.
-  DEFAULT_GITLAB_CACHE_CONTROL = "#{ActionDispatch::Http::Cache::Response::DEFAULT_CACHE_CONTROL}, no-store".freeze
-  DEFAULT_GITLAB_CONTROL_NO_CACHE = "#{DEFAULT_GITLAB_CACHE_CONTROL}, no-cache".freeze
+  DEFAULT_GITLAB_CACHE_CONTROL = "#{ActionDispatch::Http::Cache::Response::DEFAULT_CACHE_CONTROL}, no-store"
+  DEFAULT_GITLAB_CONTROL_NO_CACHE = "#{DEFAULT_GITLAB_CACHE_CONTROL}, no-cache"
 
   rescue_from Encoding::CompatibilityError do |exception|
     log_exception(exception)
@@ -143,7 +143,7 @@ class ApplicationController < ActionController::Base
       payload[:username] = logged_user.try(:username)
     end
 
-    if response.status == 422 && response.body.present? && response.content_type == 'application/json'.freeze
+    if response.status == 422 && response.body.present? && response.content_type == 'application/json'
       payload[:response] = response.body
     end
 

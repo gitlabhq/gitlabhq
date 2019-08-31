@@ -40,7 +40,7 @@ class SessionsController < Devise::SessionsController
   # token mismatch.
   protect_from_forgery with: :exception, prepend: true
 
-  CAPTCHA_HEADER = 'X-GitLab-Show-Login-Captcha'.freeze
+  CAPTCHA_HEADER = 'X-GitLab-Show-Login-Captcha'
   MAX_FAILED_LOGIN_ATTEMPTS = 5
 
   def new
@@ -111,14 +111,14 @@ class SessionsController < Devise::SessionsController
   def increment_failed_login_captcha_counter
     Gitlab::Metrics.counter(
       :failed_login_captcha_total,
-      'Number of failed CAPTCHA attempts for logins'.freeze
+      'Number of failed CAPTCHA attempts for logins'
     ).increment
   end
 
   def increment_successful_login_captcha_counter
     Gitlab::Metrics.counter(
       :successful_login_captcha_total,
-      'Number of successful CAPTCHA attempts for logins'.freeze
+      'Number of successful CAPTCHA attempts for logins'
     ).increment
   end
 

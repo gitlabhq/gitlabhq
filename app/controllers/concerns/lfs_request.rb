@@ -12,7 +12,7 @@
 module LfsRequest
   extend ActiveSupport::Concern
 
-  CONTENT_TYPE = 'application/vnd.git-lfs+json'.freeze
+  CONTENT_TYPE = 'application/vnd.git-lfs+json'
 
   included do
     before_action :require_lfs_enabled!

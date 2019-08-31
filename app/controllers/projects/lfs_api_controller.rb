@@ -3,7 +3,7 @@
 class Projects::LfsApiController < Projects::GitHttpClientController
   include LfsRequest
 
-  LFS_TRANSFER_CONTENT_TYPE = 'application/octet-stream'.freeze
+  LFS_TRANSFER_CONTENT_TYPE = 'application/octet-stream'
 
   skip_before_action :lfs_check_access!, only: [:deprecated]
   before_action :lfs_check_batch_operation!, only: [:batch]
