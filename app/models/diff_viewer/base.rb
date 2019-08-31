@@ -2,7 +2,7 @@
 
 module DiffViewer
   class Base
-    PARTIAL_PATH_PREFIX = 'projects/diffs/viewers'.freeze
+    PARTIAL_PATH_PREFIX = 'projects/diffs/viewers'
 
     class_attribute :partial_name, :type, :extensions, :file_types, :binary, :switcher_icon, :switcher_title
 

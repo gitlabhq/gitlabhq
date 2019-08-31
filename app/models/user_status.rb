@@ -5,7 +5,7 @@ class UserStatus < ApplicationRecord
 
   self.primary_key = :user_id
 
-  DEFAULT_EMOJI = 'speech_balloon'.freeze
+  DEFAULT_EMOJI = 'speech_balloon'
 
   belongs_to :user
 

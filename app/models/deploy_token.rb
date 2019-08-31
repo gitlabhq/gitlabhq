@@ -8,7 +8,7 @@ class DeployToken < ApplicationRecord
   add_authentication_token_field :token, encrypted: :optional
 
   AVAILABLE_SCOPES = %i(read_repository read_registry).freeze
-  GITLAB_DEPLOY_TOKEN_NAME = 'gitlab-deploy-token'.freeze
+  GITLAB_DEPLOY_TOKEN_NAME = 'gitlab-deploy-token'
 
   default_value_for(:expires_at) { Forever.date }
 

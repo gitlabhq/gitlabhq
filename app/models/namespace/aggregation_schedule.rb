@@ -7,7 +7,7 @@ class Namespace::AggregationSchedule < ApplicationRecord
   self.primary_key = :namespace_id
 
   DEFAULT_LEASE_TIMEOUT = 1.5.hours.to_i
-  REDIS_SHARED_KEY = 'gitlab:update_namespace_statistics_delay'.freeze
+  REDIS_SHARED_KEY = 'gitlab:update_namespace_statistics_delay'
 
   belongs_to :namespace
 

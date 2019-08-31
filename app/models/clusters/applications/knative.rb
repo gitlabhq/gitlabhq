@@ -3,9 +3,9 @@
 module Clusters
   module Applications
     class Knative < ApplicationRecord
-      VERSION = '0.6.0'.freeze
-      REPOSITORY = 'https://storage.googleapis.com/triggermesh-charts'.freeze
-      METRICS_CONFIG = 'https://storage.googleapis.com/triggermesh-charts/istio-metrics.yaml'.freeze
+      VERSION = '0.6.0'
+      REPOSITORY = 'https://storage.googleapis.com/triggermesh-charts'
+      METRICS_CONFIG = 'https://storage.googleapis.com/triggermesh-charts/istio-metrics.yaml'
       FETCH_IP_ADDRESS_DELAY = 30.seconds
       API_RESOURCES_PATH = 'config/knative/api_resources.yml'
 

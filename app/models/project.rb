@@ -37,8 +37,8 @@ class Project < ApplicationRecord
 
   BoardLimitExceeded = Class.new(StandardError)
 
-  STATISTICS_ATTRIBUTE = 'repositories_count'.freeze
-  UNKNOWN_IMPORT_URL = 'http://unknown.git'.freeze
+  STATISTICS_ATTRIBUTE = 'repositories_count'
+  UNKNOWN_IMPORT_URL = 'http://unknown.git'
   # Hashed Storage versions handle rolling out new storage to project and dependents models:
   # nil: legacy
   # 1: repository

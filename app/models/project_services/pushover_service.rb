@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class PushoverService < Service
-  BASE_URI = 'https://api.pushover.net/1'.freeze
+  BASE_URI = 'https://api.pushover.net/1'
 
   prop_accessor :api_key, :user_key, :device, :priority, :sound
   validates :api_key, :user_key, :priority, presence: true, if: :activated?

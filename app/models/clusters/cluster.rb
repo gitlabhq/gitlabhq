@@ -20,8 +20,8 @@ module Clusters
       Applications::Runner.application_name => Applications::Runner,
       Applications::Prometheus.application_name => Applications::Prometheus
     }.merge(PROJECT_ONLY_APPLICATIONS).freeze
-    DEFAULT_ENVIRONMENT = '*'.freeze
-    KUBE_INGRESS_BASE_DOMAIN = 'KUBE_INGRESS_BASE_DOMAIN'.freeze
+    DEFAULT_ENVIRONMENT = '*'
+    KUBE_INGRESS_BASE_DOMAIN = 'KUBE_INGRESS_BASE_DOMAIN'
 
     belongs_to :user
 

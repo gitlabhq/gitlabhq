@@ -4,9 +4,9 @@ module ProtectedRefAccess
   extend ActiveSupport::Concern
 
   HUMAN_ACCESS_LEVELS = {
-    Gitlab::Access::MAINTAINER => "Maintainers".freeze,
-    Gitlab::Access::DEVELOPER => "Developers + Maintainers".freeze,
-    Gitlab::Access::NO_ACCESS => "No one".freeze
+    Gitlab::Access::MAINTAINER => "Maintainers",
+    Gitlab::Access::DEVELOPER => "Developers + Maintainers",
+    Gitlab::Access::NO_ACCESS => "No one"
   }.freeze
 
   class_methods do
