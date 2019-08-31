@@ -15,7 +15,7 @@ module Gitlab
 
         attach_to :action_view
 
-        SERIES = 'views'.freeze
+        SERIES = 'views'
 
         def render_template(event)
           track(event) if current_transaction

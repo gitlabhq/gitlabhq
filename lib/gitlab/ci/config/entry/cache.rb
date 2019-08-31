@@ -12,7 +12,7 @@ module Gitlab
           include ::Gitlab::Config::Entry::Attributable
 
           ALLOWED_KEYS = %i[key untracked paths policy].freeze
-          DEFAULT_POLICY = 'pull-push'.freeze
+          DEFAULT_POLICY = 'pull-push'
 
           validations do
             validates :config, allowed_keys: ALLOWED_KEYS

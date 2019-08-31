@@ -8,8 +8,8 @@ require 'active_support/core_ext/module/delegation'
 module Gitlab
   module Redis
     class Wrapper
-      DEFAULT_REDIS_URL = 'redis://localhost:6379'.freeze
-      REDIS_CONFIG_ENV_VAR_NAME = 'GITLAB_REDIS_CONFIG_FILE'.freeze
+      DEFAULT_REDIS_URL = 'redis://localhost:6379'
+      REDIS_CONFIG_ENV_VAR_NAME = 'GITLAB_REDIS_CONFIG_FILE'
 
       class << self
         delegate :params, :url, to: :new

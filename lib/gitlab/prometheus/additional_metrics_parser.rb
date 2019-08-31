@@ -3,7 +3,7 @@
 module Gitlab
   module Prometheus
     module AdditionalMetricsParser
-      CONFIG_ROOT = 'config/prometheus'.freeze
+      CONFIG_ROOT = 'config/prometheus'
       MUTEX = Mutex.new
       extend self
 

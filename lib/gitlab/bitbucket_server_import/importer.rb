@@ -7,7 +7,7 @@ module Gitlab
       attr_reader :project, :project_key, :repository_slug, :client, :errors, :users
       attr_accessor :logger
 
-      REMOTE_NAME = 'bitbucket_server'.freeze
+      REMOTE_NAME = 'bitbucket_server'
       BATCH_SIZE = 100
 
       TempBranch = Struct.new(:name, :sha)

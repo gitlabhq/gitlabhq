@@ -12,7 +12,7 @@ module Gitlab
     # using them as if they were stored as string values. This gives you the
     # ease of use of string values, but without the storage overhead.
     class ShaAttribute < BINARY_TYPE
-      PACK_FORMAT = 'H*'.freeze
+      PACK_FORMAT = 'H*'
 
       # Casts binary data to a SHA1 in hexadecimal.
       def deserialize(value)

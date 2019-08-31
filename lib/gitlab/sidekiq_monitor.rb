@@ -4,7 +4,7 @@ module Gitlab
   class SidekiqMonitor < Daemon
     include ::Gitlab::Utils::StrongMemoize
 
-    NOTIFICATION_CHANNEL = 'sidekiq:cancel:notifications'.freeze
+    NOTIFICATION_CHANNEL = 'sidekiq:cancel:notifications'
     CANCEL_DEADLINE = 24.hours.seconds
     RECONNECT_TIME = 3.seconds
 

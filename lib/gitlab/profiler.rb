@@ -3,7 +3,7 @@
 
 module Gitlab
   module Profiler
-    FILTERED_STRING = '[FILTERED]'.freeze
+    FILTERED_STRING = '[FILTERED]'
 
     IGNORE_BACKTRACES = %w[
       lib/gitlab/i18n.rb

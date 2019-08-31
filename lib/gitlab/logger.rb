@@ -40,7 +40,7 @@ module Gitlab
     end
 
     def self.cache_key
-      'logger:'.freeze + self.full_log_path.to_s
+      'logger:' + self.full_log_path.to_s
     end
   end
 end

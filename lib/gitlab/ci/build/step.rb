@@ -4,9 +4,9 @@ module Gitlab
   module Ci
     module Build
       class Step
-        WHEN_ON_FAILURE = 'on_failure'.freeze
-        WHEN_ON_SUCCESS = 'on_success'.freeze
-        WHEN_ALWAYS = 'always'.freeze
+        WHEN_ON_FAILURE = 'on_failure'
+        WHEN_ON_SUCCESS = 'on_success'
+        WHEN_ALWAYS = 'always'
 
         attr_reader :name
         attr_accessor :script, :timeout, :when, :allow_failure

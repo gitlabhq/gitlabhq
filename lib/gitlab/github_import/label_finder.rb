@@ -6,7 +6,7 @@ module Gitlab
       attr_reader :project
 
       # The base cache key to use for storing/retrieving label IDs.
-      CACHE_KEY = 'github-import/label-finder/%{project}/%{name}'.freeze
+      CACHE_KEY = 'github-import/label-finder/%{project}/%{name}'
 
       # project - An instance of `Project`.
       def initialize(project)

@@ -16,17 +16,17 @@ module Gitlab
 
       # The base cache key to use for caching user IDs for a given GitHub user
       # ID.
-      ID_CACHE_KEY = 'github-import/user-finder/user-id/%s'.freeze
+      ID_CACHE_KEY = 'github-import/user-finder/user-id/%s'
 
       # The base cache key to use for caching user IDs for a given GitHub email
       # address.
       ID_FOR_EMAIL_CACHE_KEY =
-        'github-import/user-finder/id-for-email/%s'.freeze
+        'github-import/user-finder/id-for-email/%s'
 
       # The base cache key to use for caching the Email addresses of GitHub
       # usernames.
       EMAIL_FOR_USERNAME_CACHE_KEY =
-        'github-import/user-finder/email-for-username/%s'.freeze
+        'github-import/user-finder/email-for-username/%s'
 
       # project - An instance of `Project`
       # client - An instance of `Gitlab::GithubImport::Client`

@@ -4,7 +4,7 @@ module Gitlab
   module EtagCaching
     class Store
       EXPIRY_TIME = 20.minutes
-      SHARED_STATE_NAMESPACE = 'etag:'.freeze
+      SHARED_STATE_NAMESPACE = 'etag:'
 
       def get(key)
         Gitlab::Redis::SharedState.with { |redis| redis.get(redis_shared_state_key(key)) }

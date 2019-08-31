@@ -20,7 +20,7 @@ module Gitlab
     module UserAuthFinders
       include Gitlab::Utils::StrongMemoize
 
-      PRIVATE_TOKEN_HEADER = 'HTTP_PRIVATE_TOKEN'.freeze
+      PRIVATE_TOKEN_HEADER = 'HTTP_PRIVATE_TOKEN'
       PRIVATE_TOKEN_PARAM = :private_token
 
       # Check the Rails session for valid authentication details

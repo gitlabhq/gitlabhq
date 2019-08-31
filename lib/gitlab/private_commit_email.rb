@@ -2,7 +2,7 @@
 
 module Gitlab
   module PrivateCommitEmail
-    TOKEN = "_private".freeze
+    TOKEN = "_private"
 
     class << self
       def regex

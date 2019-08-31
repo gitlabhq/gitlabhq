@@ -10,7 +10,7 @@ module Gitlab
       attr_reader :project, :object
 
       # The base cache key to use for storing/retrieving issuable IDs.
-      CACHE_KEY = 'github-import/issuable-finder/%{project}/%{type}/%{iid}'.freeze
+      CACHE_KEY = 'github-import/issuable-finder/%{project}/%{type}/%{iid}'
 
       # project - An instance of `Project`.
       # object - The object to look up or set a database ID for.

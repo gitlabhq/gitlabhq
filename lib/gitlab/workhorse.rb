@@ -7,13 +7,13 @@ require 'uri'
 
 module Gitlab
   class Workhorse
-    SEND_DATA_HEADER = 'Gitlab-Workhorse-Send-Data'.freeze
-    VERSION_FILE = 'GITLAB_WORKHORSE_VERSION'.freeze
-    INTERNAL_API_CONTENT_TYPE = 'application/vnd.gitlab-workhorse+json'.freeze
-    INTERNAL_API_REQUEST_HEADER = 'Gitlab-Workhorse-Api-Request'.freeze
-    NOTIFICATION_CHANNEL = 'workhorse:notifications'.freeze
+    SEND_DATA_HEADER = 'Gitlab-Workhorse-Send-Data'
+    VERSION_FILE = 'GITLAB_WORKHORSE_VERSION'
+    INTERNAL_API_CONTENT_TYPE = 'application/vnd.gitlab-workhorse+json'
+    INTERNAL_API_REQUEST_HEADER = 'Gitlab-Workhorse-Api-Request'
+    NOTIFICATION_CHANNEL = 'workhorse:notifications'
     ALLOWED_GIT_HTTP_ACTIONS = %w[git_receive_pack git_upload_pack info_refs].freeze
-    DETECT_HEADER = 'Gitlab-Workhorse-Detect-Content-Type'.freeze
+    DETECT_HEADER = 'Gitlab-Workhorse-Detect-Content-Type'
 
     # Supposedly the effective key size for HMAC-SHA256 is 256 bits, i.e. 32
     # bytes https://tools.ietf.org/html/rfc4868#section-2.6
