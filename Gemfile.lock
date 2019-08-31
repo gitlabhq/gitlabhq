@@ -74,6 +74,8 @@ GEM
     asciidoctor-plantuml (0.0.9)
       asciidoctor (>= 1.5.6, < 3.0.0)
     ast (2.4.0)
+    atlassian-jwt (0.2.0)
+      jwt (~> 2.1.0)
     attr_encrypted (3.1.0)
       encryptor (~> 3.0.0)
     attr_required (1.0.1)
@@ -444,8 +446,9 @@ GEM
       opentracing (~> 0.3)
       thrift
     jaro_winkler (1.5.3)
-    jira-ruby (1.4.1)
+    jira-ruby (1.7.1)
       activesupport
+      atlassian-jwt
       multipart-post
       oauth (~> 0.5, >= 0.5.0)
     js_regex (3.1.1)
@@ -1124,7 +1127,7 @@ DEPENDENCIES
   icalendar
   influxdb (~> 0.2)
   invisible_captcha (~> 0.12.1)
-  jira-ruby (~> 1.4)
+  jira-ruby (~> 1.7)
   js_regex (~> 3.1)
   json-schema (~> 2.8.0)
   jwt (~> 2.1.0)

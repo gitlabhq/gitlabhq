@@ -606,3 +606,10 @@
     :why: https://github.com/egonSchiele/contracts.ruby/blob/master/LICENSE
     :versions: []
     :when: 2019-04-01 11:29:39.361015000 Z
+- - :license
+  - atlassian-jwt
+  - Apache 2.0
+  - :who: Takuya Noguchi
+    :why: https://bitbucket.org/atlassian/atlassian-jwt-ruby/src/master/LICENSE.txt
+    :versions: []
+    :when: 2019-08-30 05:45:35.317663000 Z
