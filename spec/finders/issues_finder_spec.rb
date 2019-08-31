@@ -42,12 +42,54 @@ describe IssuesFinder do
         end
       end
 
+      context 'filtering by projects' do
+        context 'when projects are passed in a list of ids' do
+          let(:params) { { projects: [project1.id] } }
+
+          it 'returns the issue belonging to the projects' do
+            expect(issues).to contain_exactly(issue1)
+          end
+        end
+
+        context 'when projects are passed in a subquery' do
+          let(:params) { { projects: Project.id_in(project1.id) } }
+
+          it 'returns the issue belonging to the projects' do
+            expect(issues).to contain_exactly(issue1)
+          end
+        end
+      end
+
       context 'filtering by group_id' do
         let(:params) { { group_id: group.id } }
 
         context 'when include_subgroup param not set' do
           it 'returns all group issues' do
             expect(issues).to contain_exactly(issue1)
+          end
+
+          context 'when projects outside the group are passed' do
+            let(:params) { { group_id: group.id, projects: [project2.id] } }
+
+            it 'returns no issues' do
+              expect(issues).to be_empty
+            end
+          end
+
+          context 'when projects of the group are passed' do
+            let(:params) { { group_id: group.id, projects: [project1.id] } }
+
+            it 'returns the issue within the group and projects' do
+              expect(issues).to contain_exactly(issue1)
+            end
+          end
+
+          context 'when projects of the group are passed as a subquery' do
+            let(:params) { { group_id: group.id, projects: Project.id_in(project1.id) } }
+
+            it 'returns the issue within the group and projects' do
+              expect(issues).to contain_exactly(issue1)
+            end
           end
         end
 
@@ -58,6 +100,14 @@ describe IssuesFinder do
 
           it 'returns all group and subgroup issues' do
             expect(issues).to contain_exactly(issue1, issue4)
+          end
+
+          context 'when mixed projects are passed' do
+            let(:params) { { group_id: group.id, projects: [project2.id, project3.id] } }
+
+            it 'returns the issue within the group and projects' do
+              expect(issues).to contain_exactly(issue4)
+            end
           end
         end
       end
