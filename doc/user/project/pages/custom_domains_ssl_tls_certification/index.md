@@ -24,7 +24,7 @@ and steps below.
   (`*.gitlab.io`, for GitLab.com).
 - A custom domain name `example.com` or subdomain `subdomain.example.com`.
 - Access to your domain's server control panel to set up DNS records:
-  - A DNS A or CNAME record poiting your domain to GitLab Pages server.
+  - A DNS A or CNAME record pointing your domain to GitLab Pages server.
   - A DNS TXT record to verify your domain's ownership.
 
 ### Steps
