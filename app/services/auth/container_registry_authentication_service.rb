@@ -2,7 +2,7 @@
 
 module Auth
   class ContainerRegistryAuthenticationService < BaseService
-    AUDIENCE = 'container_registry'.freeze
+    AUDIENCE = 'container_registry'
 
     def execute(authentication_abilities:)
       @authentication_abilities = authentication_abilities

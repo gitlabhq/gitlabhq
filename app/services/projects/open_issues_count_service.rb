@@ -7,8 +7,8 @@ module Projects
     include Gitlab::Utils::StrongMemoize
 
     # Cache keys used to store issues count
-    PUBLIC_COUNT_KEY = 'public_open_issues_count'.freeze
-    TOTAL_COUNT_KEY = 'total_open_issues_count'.freeze
+    PUBLIC_COUNT_KEY = 'public_open_issues_count'
+    TOTAL_COUNT_KEY = 'total_open_issues_count'
 
     def initialize(project, user = nil)
       @user = user
