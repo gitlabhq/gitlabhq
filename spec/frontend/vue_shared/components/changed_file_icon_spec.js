@@ -106,12 +106,10 @@ describe('Changed file icon', () => {
     expect(findIcon().props('size')).toBe(size);
   });
 
-  // NOTE: It looks like 'showStagedIcon' behavior is backwards to what the name suggests
-  // https://gitlab.com/gitlab-org/gitlab-ce/issues/66071
   it.each`
     showStagedIcon | iconName                 | desc
-    ${false}       | ${'file-modified-solid'} | ${'with showStagedIcon false, renders staged icon'}
-    ${true}        | ${'file-modified'}       | ${'with showStagedIcon true, renders regular icon'}
+    ${true}        | ${'file-modified-solid'} | ${'with showStagedIcon true, renders staged icon'}
+    ${false}       | ${'file-modified'}       | ${'with showStagedIcon false, renders regular icon'}
   `('$desc', ({ showStagedIcon, iconName }) => {
     factory({
       file: stagedFile(),
