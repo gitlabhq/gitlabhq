@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class PagesDomain < ApplicationRecord
-  VERIFICATION_KEY = 'gitlab-pages-verification-code'.freeze
+  VERIFICATION_KEY = 'gitlab-pages-verification-code'
   VERIFICATION_THRESHOLD = 3.days.freeze
   SSL_RENEWAL_THRESHOLD = 30.days.freeze
 

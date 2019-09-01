@@ -59,7 +59,7 @@ class User < ApplicationRecord
          :validatable, :omniauthable, :confirmable, :registerable
 
   BLOCKED_MESSAGE = "Your account has been blocked. Please contact your GitLab " \
-                    "administrator if you think this is an error.".freeze
+                    "administrator if you think this is an error."
 
   # Override Devise::Models::Trackable#update_tracked_fields!
   # to limit database writes to at most once every hour
@@ -494,7 +494,7 @@ class User < ApplicationRecord
     def by_login(login)
       return unless login
 
-      if login.include?('@'.freeze)
+      if login.include?('@')
         unscoped.iwhere(email: login).take
       else
         unscoped.iwhere(username: login).take

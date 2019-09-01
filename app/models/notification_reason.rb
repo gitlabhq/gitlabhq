@@ -3,9 +3,9 @@
 # Holds reasons for a notification to have been sent as well as a priority list to select which reason to use
 # above the rest
 class NotificationReason
-  OWN_ACTIVITY = 'own_activity'.freeze
-  ASSIGNED = 'assigned'.freeze
-  MENTIONED = 'mentioned'.freeze
+  OWN_ACTIVITY = 'own_activity'
+  ASSIGNED = 'assigned'
+  MENTIONED = 'mentioned'
 
   # Priority list for selecting which reason to return in the notification
   REASON_PRIORITY = [

@@ -445,7 +445,7 @@ module Ci
       end
     end
 
-    CI_REGISTRY_USER = 'gitlab-ci-token'.freeze
+    CI_REGISTRY_USER = 'gitlab-ci-token'
 
     def persisted_variables
       Gitlab::Ci::Variables::Collection.new.tap do |variables|

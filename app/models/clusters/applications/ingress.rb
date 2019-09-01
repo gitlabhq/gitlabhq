@@ -3,7 +3,7 @@
 module Clusters
   module Applications
     class Ingress < ApplicationRecord
-      VERSION = '1.1.2'.freeze
+      VERSION = '1.1.2'
 
       self.table_name = 'clusters_applications_ingress'
 

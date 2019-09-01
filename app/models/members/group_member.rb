@@ -3,7 +3,7 @@
 class GroupMember < Member
   include FromUnion
 
-  SOURCE_TYPE = 'Namespace'.freeze
+  SOURCE_TYPE = 'Namespace'
 
   belongs_to :group, foreign_key: 'source_id'
 

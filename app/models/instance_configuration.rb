@@ -4,8 +4,8 @@ require 'resolv'
 
 class InstanceConfiguration
   SSH_ALGORITHMS = %w(DSA ECDSA ED25519 RSA).freeze
-  SSH_ALGORITHMS_PATH = '/etc/ssh/'.freeze
-  CACHE_KEY = 'instance_configuration'.freeze
+  SSH_ALGORITHMS_PATH = '/etc/ssh/'
+  CACHE_KEY = 'instance_configuration'
   EXPIRATION_TIME = 24.hours
 
   def settings

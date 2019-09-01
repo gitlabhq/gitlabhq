@@ -3,7 +3,7 @@
 module HasStatus
   extend ActiveSupport::Concern
 
-  DEFAULT_STATUS = 'created'.freeze
+  DEFAULT_STATUS = 'created'
   BLOCKED_STATUS = %w[manual scheduled].freeze
   AVAILABLE_STATUSES = %w[created preparing pending running success failed canceled skipped manual scheduled].freeze
   STARTED_STATUSES = %w[running success failed skipped manual scheduled].freeze
