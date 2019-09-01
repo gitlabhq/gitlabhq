@@ -12,14 +12,14 @@ Paginated list of Releases, sorted by `released_at`.
 GET /projects/:id/releases
 ```
 
-| Attribute     | Type           | Required | Description                             |
-| ------------- | -------------- | -------- | --------------------------------------- |
+| Attribute     | Type           | Required | Description                                                                         |
+| ------------- | -------------- | -------- | ----------------------------------------------------------------------------------- |
 | `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](../README.md#namespaced-path-encoding). |
 
 Example request:
 
 ```sh
-curl --header "PRIVATE-TOKEN: gDybLx3yrUK_HLp3qPjS" "http://localhost:3000/api/v4/projects/24/releases"
+curl --header "PRIVATE-TOKEN: gDybLx3yrUK_HLp3qPjS" "https://gitlab.example.com/api/v4/projects/24/releases"
 ```
 
 Example response:
@@ -39,7 +39,7 @@ Example response:
          "username":"root",
          "state":"active",
          "avatar_url":"https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80\u0026d=identicon",
-         "web_url":"http://localhost:3000/root"
+         "web_url":"https://gitlab.example.com/root"
       },
       "commit":{
          "id":"079e90101242458910cccd35eab0e211dfc359c0",
@@ -62,19 +62,19 @@ Example response:
          "sources":[
             {
                "format":"zip",
-               "url":"http://localhost:3000/root/awesome-app/-/archive/v0.2/awesome-app-v0.2.zip"
+               "url":"https://gitlab.example.com/root/awesome-app/-/archive/v0.2/awesome-app-v0.2.zip"
             },
             {
                "format":"tar.gz",
-               "url":"http://localhost:3000/root/awesome-app/-/archive/v0.2/awesome-app-v0.2.tar.gz"
+               "url":"https://gitlab.example.com/root/awesome-app/-/archive/v0.2/awesome-app-v0.2.tar.gz"
             },
             {
                "format":"tar.bz2",
-               "url":"http://localhost:3000/root/awesome-app/-/archive/v0.2/awesome-app-v0.2.tar.bz2"
+               "url":"https://gitlab.example.com/root/awesome-app/-/archive/v0.2/awesome-app-v0.2.tar.bz2"
             },
             {
                "format":"tar",
-               "url":"http://localhost:3000/root/awesome-app/-/archive/v0.2/awesome-app-v0.2.tar"
+               "url":"https://gitlab.example.com/root/awesome-app/-/archive/v0.2/awesome-app-v0.2.tar"
             }
          ],
          "links":[
@@ -106,7 +106,7 @@ Example response:
          "username":"root",
          "state":"active",
          "avatar_url":"https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80\u0026d=identicon",
-         "web_url":"http://localhost:3000/root"
+         "web_url":"https://gitlab.example.com/root"
       },
       "commit":{
          "id":"f8d3d94cbd347e924aa7b715845e439d00e80ca4",
@@ -129,19 +129,19 @@ Example response:
          "sources":[
             {
                "format":"zip",
-               "url":"http://localhost:3000/root/awesome-app/-/archive/v0.1/awesome-app-v0.1.zip"
+               "url":"https://gitlab.example.com/root/awesome-app/-/archive/v0.1/awesome-app-v0.1.zip"
             },
             {
                "format":"tar.gz",
-               "url":"http://localhost:3000/root/awesome-app/-/archive/v0.1/awesome-app-v0.1.tar.gz"
+               "url":"https://gitlab.example.com/root/awesome-app/-/archive/v0.1/awesome-app-v0.1.tar.gz"
             },
             {
                "format":"tar.bz2",
-               "url":"http://localhost:3000/root/awesome-app/-/archive/v0.1/awesome-app-v0.1.tar.bz2"
+               "url":"https://gitlab.example.com/root/awesome-app/-/archive/v0.1/awesome-app-v0.1.tar.bz2"
             },
             {
                "format":"tar",
-               "url":"http://localhost:3000/root/awesome-app/-/archive/v0.1/awesome-app-v0.1.tar"
+               "url":"https://gitlab.example.com/root/awesome-app/-/archive/v0.1/awesome-app-v0.1.tar"
             }
          ],
          "links":[
@@ -160,15 +160,15 @@ Get a Release for the given tag.
 GET /projects/:id/releases/:tag_name
 ```
 
-| Attribute     | Type           | Required | Description                             |
-| ------------- | -------------- | -------- | --------------------------------------- |
+| Attribute     | Type           | Required | Description                                                                         |
+| ------------- | -------------- | -------- | ----------------------------------------------------------------------------------- |
 | `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](../README.md#namespaced-path-encoding). |
-| `tag_name`    | string         | yes      | The tag where the release will be created from. |
+| `tag_name`    | string         | yes      | The tag where the release will be created from.                                     |
 
 Example request:
 
 ```sh
-curl --header "PRIVATE-TOKEN: gDybLx3yrUK_HLp3qPjS" "http://localhost:3000/api/v4/projects/24/releases/v0.1"
+curl --header "PRIVATE-TOKEN: gDybLx3yrUK_HLp3qPjS" "https://gitlab.example.com/api/v4/projects/24/releases/v0.1"
 ```
 
 Example response:
@@ -187,7 +187,7 @@ Example response:
       "username":"root",
       "state":"active",
       "avatar_url":"https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80\u0026d=identicon",
-      "web_url":"http://localhost:3000/root"
+      "web_url":"https://gitlab.example.com/root"
    },
    "commit":{
       "id":"f8d3d94cbd347e924aa7b715845e439d00e80ca4",
@@ -210,19 +210,19 @@ Example response:
       "sources":[
          {
             "format":"zip",
-            "url":"http://localhost:3000/root/awesome-app/-/archive/v0.1/awesome-app-v0.1.zip"
+            "url":"https://gitlab.example.com/root/awesome-app/-/archive/v0.1/awesome-app-v0.1.zip"
          },
          {
             "format":"tar.gz",
-            "url":"http://localhost:3000/root/awesome-app/-/archive/v0.1/awesome-app-v0.1.tar.gz"
+            "url":"https://gitlab.example.com/root/awesome-app/-/archive/v0.1/awesome-app-v0.1.tar.gz"
          },
          {
             "format":"tar.bz2",
-            "url":"http://localhost:3000/root/awesome-app/-/archive/v0.1/awesome-app-v0.1.tar.bz2"
+            "url":"https://gitlab.example.com/root/awesome-app/-/archive/v0.1/awesome-app-v0.1.tar.bz2"
          },
          {
             "format":"tar",
-            "url":"http://localhost:3000/root/awesome-app/-/archive/v0.1/awesome-app-v0.1.tar"
+            "url":"https://gitlab.example.com/root/awesome-app/-/archive/v0.1/awesome-app-v0.1.tar"
          }
       ],
       "links":[
@@ -240,24 +240,24 @@ Create a Release. You need push access to the repository to create a Release.
 POST /projects/:id/releases
 ```
 
-| Attribute     | Type           | Required | Description                             |
-| ------------- | -------------- | -------- | --------------------------------------- |
-| `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](../README.md#namespaced-path-encoding). |
-| `name`        | string         | yes      | The release name.                       |
-| `tag_name`    | string         | yes      | The tag where the release will be created from. |
-| `description` | string         | yes      | The description of the release. You can use [markdown](../../user/markdown.md). |
-| `ref`         | string         | no       | If `tag_name` doesn't exist, the release will be created from `ref`. It can be a commit SHA, another tag name, or a branch name. |
-| `assets:links`| array of hash  | no       | An array of assets links.               |
-| `assets:links:name`| string    | no (if `assets:links` specified, it's required)    | The name of the link. |
-| `assets:links:url`| string    | no (if `assets:links` specified, it's required)    | The url of the link. |
-| `released_at` | datetime       | no       | The date when the release will be/was ready. Defaults to the current time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
+| Attribute          | Type           | Required | Description                                                                                                                      |
+| -------------------| -------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `id`               | integer/string | yes      | The ID or [URL-encoded path of the project](../README.md#namespaced-path-encoding).                                              |
+| `name`             | string         | yes      | The release name.                                                                                                                |
+| `tag_name`         | string         | yes      | The tag where the release will be created from.                                                                                  |
+| `description`      | string         | yes      | The description of the release. You can use [markdown](../../user/markdown.md).                                                  |
+| `ref`              | string         | no       | If `tag_name` doesn't exist, the release will be created from `ref`. It can be a commit SHA, another tag name, or a branch name. |
+| `assets:links`     | array of hash  | no       | An array of assets links.                                                                                                        |
+| `assets:links:name`| string         | required by: `assets:links` | The name of the link.                                                                                         |
+| `assets:links:url` | string         | required by: `assets:links` | The url of the link.                                                                                          |
+| `released_at`      | datetime       | no       | The date when the release will be/was ready. Defaults to the current time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
 
 Example request:
 
 ```sh
 curl --header 'Content-Type: application/json' --header "PRIVATE-TOKEN: gDybLx3yrUK_HLp3qPjS" \
      --data '{ "name": "New release", "tag_name": "v0.3", "description": "Super nice release", "assets": { "links": [{ "name": "hoge", "url": "https://google.com" }] } }' \
-     --request POST http://localhost:3000/api/v4/projects/24/releases
+     --request POST https://gitlab.example.com/api/v4/projects/24/releases
 ```
 
 Example response:
@@ -276,7 +276,7 @@ Example response:
       "username":"root",
       "state":"active",
       "avatar_url":"https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80\u0026d=identicon",
-      "web_url":"http://localhost:3000/root"
+      "web_url":"https://gitlab.example.com/root"
    },
    "commit":{
       "id":"079e90101242458910cccd35eab0e211dfc359c0",
@@ -299,19 +299,19 @@ Example response:
       "sources":[
          {
             "format":"zip",
-            "url":"http://localhost:3000/root/awesome-app/-/archive/v0.3/awesome-app-v0.3.zip"
+            "url":"https://gitlab.example.com/root/awesome-app/-/archive/v0.3/awesome-app-v0.3.zip"
          },
          {
             "format":"tar.gz",
-            "url":"http://localhost:3000/root/awesome-app/-/archive/v0.3/awesome-app-v0.3.tar.gz"
+            "url":"https://gitlab.example.com/root/awesome-app/-/archive/v0.3/awesome-app-v0.3.tar.gz"
          },
          {
             "format":"tar.bz2",
-            "url":"http://localhost:3000/root/awesome-app/-/archive/v0.3/awesome-app-v0.3.tar.bz2"
+            "url":"https://gitlab.example.com/root/awesome-app/-/archive/v0.3/awesome-app-v0.3.tar.bz2"
          },
          {
             "format":"tar",
-            "url":"http://localhost:3000/root/awesome-app/-/archive/v0.3/awesome-app-v0.3.tar"
+            "url":"https://gitlab.example.com/root/awesome-app/-/archive/v0.3/awesome-app-v0.3.tar"
          }
       ],
       "links":[
@@ -334,18 +334,18 @@ Update a Release.
 PUT /projects/:id/releases/:tag_name
 ```
 
-| Attribute     | Type           | Required | Description                             |
-| ------------- | -------------- | -------- | --------------------------------------- |
-| `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](../README.md#namespaced-path-encoding). |
-| `tag_name`    | string         | yes      | The tag where the release will be created from. |
-| `name`        | string         | no       | The release name.                       |
-| `description` | string         | no       | The description of the release. You can use [markdown](../../user/markdown.md). |
+| Attribute     | Type           | Required | Description                                                                                        |
+| ------------- | -------------- | -------- | -------------------------------------------------------------------------------------------------- |
+| `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](../README.md#namespaced-path-encoding).                |
+| `tag_name`    | string         | yes      | The tag where the release will be created from.                                                    |
+| `name`        | string         | no       | The release name.                                                                                  |
+| `description` | string         | no       | The description of the release. You can use [markdown](../../user/markdown.md).                    |
 | `released_at` | datetime       | no       | The date when the release will be/was ready. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
 
 Example request:
 
 ```sh
-curl --request PUT --data name="new name" --header "PRIVATE-TOKEN: gDybLx3yrUK_HLp3qPjS" "http://localhost:3000/api/v4/projects/24/releases/v0.1"
+curl --request PUT --data name="new name" --header "PRIVATE-TOKEN: gDybLx3yrUK_HLp3qPjS" "https://gitlab.example.com/api/v4/projects/24/releases/v0.1"
 ```
 
 Example response:
@@ -364,7 +364,7 @@ Example response:
       "username":"root",
       "state":"active",
       "avatar_url":"https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80\u0026d=identicon",
-      "web_url":"http://localhost:3000/root"
+      "web_url":"https://gitlab.example.com/root"
    },
    "commit":{
       "id":"f8d3d94cbd347e924aa7b715845e439d00e80ca4",
@@ -387,19 +387,19 @@ Example response:
       "sources":[
          {
             "format":"zip",
-            "url":"http://localhost:3000/root/awesome-app/-/archive/v0.1/awesome-app-v0.1.zip"
+            "url":"https://gitlab.example.com/root/awesome-app/-/archive/v0.1/awesome-app-v0.1.zip"
          },
          {
             "format":"tar.gz",
-            "url":"http://localhost:3000/root/awesome-app/-/archive/v0.1/awesome-app-v0.1.tar.gz"
+            "url":"https://gitlab.example.com/root/awesome-app/-/archive/v0.1/awesome-app-v0.1.tar.gz"
          },
          {
             "format":"tar.bz2",
-            "url":"http://localhost:3000/root/awesome-app/-/archive/v0.1/awesome-app-v0.1.tar.bz2"
+            "url":"https://gitlab.example.com/root/awesome-app/-/archive/v0.1/awesome-app-v0.1.tar.bz2"
          },
          {
             "format":"tar",
-            "url":"http://localhost:3000/root/awesome-app/-/archive/v0.1/awesome-app-v0.1.tar"
+            "url":"https://gitlab.example.com/root/awesome-app/-/archive/v0.1/awesome-app-v0.1.tar"
          }
       ],
       "links":[
@@ -417,15 +417,15 @@ Delete a Release. Deleting a Release will not delete the associated tag.
 DELETE /projects/:id/releases/:tag_name
 ```
 
-| Attribute     | Type           | Required | Description                             |
-| ------------- | -------------- | -------- | --------------------------------------- |
+| Attribute     | Type           | Required | Description                                                                         |
+| ------------- | -------------- | -------- | ----------------------------------------------------------------------------------- |
 | `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](../README.md#namespaced-path-encoding). |
-| `tag_name`    | string         | yes      | The tag where the release will be created from. |
+| `tag_name`    | string         | yes      | The tag where the release will be created from.                                     |
 
 Example request:
 
 ```sh
-curl --request DELETE --header "PRIVATE-TOKEN: gDybLx3yrUK_HLp3qPjS" "http://localhost:3000/api/v4/projects/24/releases/v0.1"
+curl --request DELETE --header "PRIVATE-TOKEN: gDybLx3yrUK_HLp3qPjS" "https://gitlab.example.com/api/v4/projects/24/releases/v0.1"
 ```
 
 Example response:
@@ -444,7 +444,7 @@ Example response:
       "username":"root",
       "state":"active",
       "avatar_url":"https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80\u0026d=identicon",
-      "web_url":"http://localhost:3000/root"
+      "web_url":"https://gitlab.example.com/root"
    },
    "commit":{
       "id":"f8d3d94cbd347e924aa7b715845e439d00e80ca4",
@@ -467,19 +467,19 @@ Example response:
       "sources":[
          {
             "format":"zip",
-            "url":"http://localhost:3000/root/awesome-app/-/archive/v0.1/awesome-app-v0.1.zip"
+            "url":"https://gitlab.example.com/root/awesome-app/-/archive/v0.1/awesome-app-v0.1.zip"
          },
          {
             "format":"tar.gz",
-            "url":"http://localhost:3000/root/awesome-app/-/archive/v0.1/awesome-app-v0.1.tar.gz"
+            "url":"https://gitlab.example.com/root/awesome-app/-/archive/v0.1/awesome-app-v0.1.tar.gz"
          },
          {
             "format":"tar.bz2",
-            "url":"http://localhost:3000/root/awesome-app/-/archive/v0.1/awesome-app-v0.1.tar.bz2"
+            "url":"https://gitlab.example.com/root/awesome-app/-/archive/v0.1/awesome-app-v0.1.tar.bz2"
          },
          {
             "format":"tar",
-            "url":"http://localhost:3000/root/awesome-app/-/archive/v0.1/awesome-app-v0.1.tar"
+            "url":"https://gitlab.example.com/root/awesome-app/-/archive/v0.1/awesome-app-v0.1.tar"
          }
       ],
       "links":[
