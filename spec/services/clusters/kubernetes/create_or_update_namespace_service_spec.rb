@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Clusters::Gcp::Kubernetes::CreateOrUpdateNamespaceService, '#execute' do
+describe Clusters::Kubernetes::CreateOrUpdateNamespaceService, '#execute' do
   include KubernetesHelpers
 
   let(:cluster) { create(:cluster, :project, :provided_by_gcp) }
@@ -35,8 +35,8 @@ describe Clusters::Gcp::Kubernetes::CreateOrUpdateNamespaceService, '#execute' d
     stub_kubeclient_create_service_account(api_url, namespace: namespace)
     stub_kubeclient_create_secret(api_url, namespace: namespace)
     stub_kubeclient_put_secret(api_url, "#{namespace}-token", namespace: namespace)
-    stub_kubeclient_put_role(api_url, Clusters::Gcp::Kubernetes::GITLAB_KNATIVE_SERVING_ROLE_NAME, namespace: namespace)
-    stub_kubeclient_put_role_binding(api_url, Clusters::Gcp::Kubernetes::GITLAB_KNATIVE_SERVING_ROLE_BINDING_NAME, namespace: namespace)
+    stub_kubeclient_put_role(api_url, Clusters::Kubernetes::GITLAB_KNATIVE_SERVING_ROLE_NAME, namespace: namespace)
+    stub_kubeclient_put_role_binding(api_url, Clusters::Kubernetes::GITLAB_KNATIVE_SERVING_ROLE_BINDING_NAME, namespace: namespace)
 
     stub_kubeclient_get_secret(
       api_url,
@@ -56,7 +56,7 @@ describe Clusters::Gcp::Kubernetes::CreateOrUpdateNamespaceService, '#execute' d
     end
 
     it 'creates project service account' do
-      expect_any_instance_of(Clusters::Gcp::Kubernetes::CreateOrUpdateServiceAccountService).to receive(:execute).once
+      expect_any_instance_of(Clusters::Kubernetes::CreateOrUpdateServiceAccountService).to receive(:execute).once
 
       subject
     end
@@ -123,7 +123,7 @@ describe Clusters::Gcp::Kubernetes::CreateOrUpdateNamespaceService, '#execute' d
       end
 
       it 'creates project service account' do
-        expect_any_instance_of(Clusters::Gcp::Kubernetes::CreateOrUpdateServiceAccountService).to receive(:execute).once
+        expect_any_instance_of(Clusters::Kubernetes::CreateOrUpdateServiceAccountService).to receive(:execute).once
 
         subject
       end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Clusters::Gcp::Kubernetes::FetchKubernetesTokenService do
+describe Clusters::Kubernetes::FetchKubernetesTokenService do
   include KubernetesHelpers
 
   describe '#execute' do
