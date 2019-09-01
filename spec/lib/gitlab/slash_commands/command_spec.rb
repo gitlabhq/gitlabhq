@@ -27,7 +27,7 @@ describe Gitlab::SlashCommands::Command do
 
       it 'displays the help message' do
         expect(subject[:response_type]).to be(:ephemeral)
-        expect(subject[:text]).to start_with('Unknown command')
+        expect(subject[:text]).to start_with('The specified command is not valid')
         expect(subject[:text]).to match('/gitlab issue show')
       end
     end
@@ -37,7 +37,7 @@ describe Gitlab::SlashCommands::Command do
 
       it 'rejects the actions' do
         expect(subject[:response_type]).to be(:ephemeral)
-        expect(subject[:text]).to start_with('Whoops! This action is not allowed')
+        expect(subject[:text]).to start_with('You are not allowed')
       end
     end
 
@@ -57,7 +57,7 @@ describe Gitlab::SlashCommands::Command do
       context 'and user can not create deployment' do
         it 'returns action' do
           expect(subject[:response_type]).to be(:ephemeral)
-          expect(subject[:text]).to start_with('Whoops! This action is not allowed')
+          expect(subject[:text]).to start_with('You are not allowed')
         end
       end
 

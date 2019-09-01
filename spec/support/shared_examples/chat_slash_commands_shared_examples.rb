@@ -103,7 +103,7 @@ RSpec.shared_examples 'chat slash commands service' do
             expect_any_instance_of(Gitlab::SlashCommands::Command).not_to receive(:execute)
 
             result = subject.trigger(params)
-            expect(result).to include(text: /^Whoops! This action is not allowed/)
+            expect(result).to include(text: /^You are not allowed/)
           end
         end
       end

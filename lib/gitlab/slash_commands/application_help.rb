@@ -3,12 +3,15 @@
 module Gitlab
   module SlashCommands
     class ApplicationHelp < BaseCommand
-      def initialize(params)
+      def initialize(project, params)
+        @project = project
         @params = params
       end
 
       def execute
-        Gitlab::SlashCommands::Presenters::Help.new(commands).present(trigger, params[:text])
+        Gitlab::SlashCommands::Presenters::Help
+          .new(project, commands)
+          .present(trigger, params[:text])
       end
 
       private
