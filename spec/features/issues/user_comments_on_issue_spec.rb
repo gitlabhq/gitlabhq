@@ -55,6 +55,23 @@ describe "User comments on issue", :js do
 
       expect(page.find('svg.mermaid')).to have_content escaped_content
     end
+
+    it 'opens autocomplete menu for quick actions and have `/label` first choice' do
+      project.add_maintainer(user)
+      create(:label, project: project, title: 'label')
+
+      page.within '.timeline-content-form' do
+        find('#note-body').native.send_keys('/l')
+      end
+
+      wait_for_requests
+
+      expect(page).to have_selector('.atwho-container')
+
+      page.within '.atwho-container #at-view-commands' do
+        expect(find('li', match: :first)).to have_content('/label')
+      end
+    end
   end
 
   context "when editing comments" do
