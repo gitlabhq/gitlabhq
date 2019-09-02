@@ -216,6 +216,7 @@ gem 'hipchat', '~> 1.5.0'
 
 # Jira integration
 gem 'jira-ruby', '~> 1.7'
+gem 'atlassian-jwt', '~> 0.2.0'
 
 # Flowdock integration
 gem 'flowdock', '~> 0.7'

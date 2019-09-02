@@ -1028,6 +1028,7 @@ DEPENDENCIES
   asciidoctor (~> 2.0.10)
   asciidoctor-include-ext (~> 0.3.1)
   asciidoctor-plantuml (= 0.0.9)
+  atlassian-jwt (~> 0.2.0)
   attr_encrypted (~> 3.1.0)
   awesome_print
   babosa (~> 1.0.2)
