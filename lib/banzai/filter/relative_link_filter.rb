@@ -19,7 +19,6 @@ module Banzai
 
       def call
         return doc if context[:system_note]
-        return doc unless visible_to_user?
 
         @uri_types = {}
         clear_memoization(:linkable_files)
@@ -50,7 +49,7 @@ module Banzai
 
         if html_attr.value.start_with?('/uploads/')
           process_link_to_upload_attr(html_attr)
-        elsif linkable_files?
+        elsif linkable_files? && repo_visible_to_user?
           process_link_to_repository_attr(html_attr)
         end
       end
@@ -168,14 +167,8 @@ module Banzai
         Gitlab.config.gitlab.relative_url_root.presence || '/'
       end
 
-      def visible_to_user?
-        if project
-          Ability.allowed?(current_user, :download_code, project)
-        elsif group
-          Ability.allowed?(current_user, :read_group, group)
-        else # Objects detached from projects or groups, e.g. Personal Snippets.
-          true
-        end
+      def repo_visible_to_user?
+        project && Ability.allowed?(current_user, :download_code, project)
       end
 
       def ref

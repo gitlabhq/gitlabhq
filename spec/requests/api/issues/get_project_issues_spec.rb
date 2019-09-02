@@ -446,6 +446,14 @@ describe API::Issues do
       expect_paginated_array_response([closed_issue.id, confidential_issue.id, issue.id])
     end
 
+    it 'exposes known attributes' do
+      get api("#{base_url}/issues", user)
+
+      expect(response).to have_gitlab_http_status(200)
+      expect(json_response.last.keys).to include(*%w(id iid project_id title description))
+      expect(json_response.last).not_to have_key('subscribed')
+    end
+
     context 'issues_statistics' do
       context 'no state is treated as all state' do
         let(:params) { {} }

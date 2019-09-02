@@ -16,3 +16,16 @@
   color: $dark-diff-match-bg;
   background: $dark-diff-match-color;
 }
+
+@mixin diff-expansion($background, $border, $link) {
+  background-color: $background;
+
+  td {
+    border-top: 1px solid $border;
+    border-bottom: 1px solid $border;
+  }
+
+  a {
+    color: $link;
+  }
+}

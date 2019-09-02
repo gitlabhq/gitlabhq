@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe 'layouts/_head' do
+  include StubConfiguration
+
   before do
     allow(view).to receive(:current_application_settings).and_return(Gitlab::CurrentSettings.current_application_settings)
   end
@@ -84,6 +86,24 @@ describe 'layouts/_head' do
       expect(rendered).to match('http://test.host/assets/snowplow/')
       expect(rendered).to match('window.snowplow')
       expect(rendered).to match('www.snow.plow')
+    end
+  end
+
+  context 'when a Piwik config is set' do
+    let(:piwik_host) { 'piwik.example.com' }
+
+    before do
+      stub_config(extra: {
+                    piwik_url: piwik_host,
+                    piwik_site_id: 12345
+                  })
+    end
+
+    it 'add a Piwik Javascript' do
+      render
+
+      expect(rendered).to match(/<script.*>.*var u="\/\/#{piwik_host}\/".*<\/script>/m)
+      expect(rendered).to match(%r(<noscript>.*<img src="//#{piwik_host}/piwik.php.*</noscript>))
     end
   end
 

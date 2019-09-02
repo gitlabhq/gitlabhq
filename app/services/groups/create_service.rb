@@ -68,9 +68,5 @@ module Groups
 
       true
     end
-
-    def visibility_level
-      params[:visibility].present? ? Gitlab::VisibilityLevel.level_value(params[:visibility]) : params[:visibility_level]
-    end
   end
 end

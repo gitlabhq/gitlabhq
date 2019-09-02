@@ -1,0 +1,5 @@
+---
+title: Fix issuable sidebar icon on notification disabled
+merge_request: 32134
+author:
+type: fixed

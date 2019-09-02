@@ -106,9 +106,9 @@ module NotificationsHelper
     end
   end
 
-  def notification_setting_icon(notification_setting)
+  def notification_setting_icon(notification_setting = nil)
     sprite_icon(
-      notification_setting.disabled? ? "notifications-off" : "notifications",
+      !notification_setting.present? || notification_setting.disabled? ? "notifications-off" : "notifications",
       css_class: "icon notifications-icon js-notifications-icon"
     )
   end
