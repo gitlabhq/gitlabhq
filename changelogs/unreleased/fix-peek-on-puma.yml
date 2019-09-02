@@ -1,0 +1,5 @@
+---
+title: Fix performance bar on Puma
+merge_request: 32213
+author:
+type: fixed

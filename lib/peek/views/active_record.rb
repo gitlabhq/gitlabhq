@@ -27,7 +27,7 @@ module Peek
         super
 
         subscribe('sql.active_record') do |_, start, finish, _, data|
-          if Gitlab::SafeRequestStore.store[:peek_enabled]
+          if Gitlab::PerformanceBar.enabled_for_request?
             unless data[:cached]
               detail_store << {
                 duration: finish - start,

@@ -16,7 +16,7 @@ module Gitlab
       private
 
       def add_call_details(duration, args)
-        return unless peek_enabled?
+        return unless Gitlab::PerformanceBar.enabled_for_request?
         # redis-rb passes an array (e.g. [:get, key])
         return unless args.length == 1
 
@@ -25,10 +25,6 @@ module Gitlab
           duration: duration,
           backtrace: ::Gitlab::Profiler.clean_backtrace(caller)
         }
-      end
-
-      def peek_enabled?
-        Gitlab::SafeRequestStore.store[:peek_enabled]
       end
 
       def detail_store

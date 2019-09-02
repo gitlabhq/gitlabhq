@@ -35,7 +35,7 @@ describe Gitlab::Git::RuggedImpl::UseRugged, :seed_helper do
     let(:args) { ['refs/heads/master', 1] }
 
     before do
-      allow(Gitlab::RuggedInstrumentation).to receive(:peek_enabled?).and_return(true)
+      allow(Gitlab::PerformanceBar).to receive(:enabled_for_request?).and_return(true)
     end
 
     it 'instruments Rugged call' do

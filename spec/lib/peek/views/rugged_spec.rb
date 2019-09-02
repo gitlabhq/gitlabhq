@@ -8,7 +8,7 @@ describe Peek::Views::Rugged, :request_store do
   let(:project) { create(:project) }
 
   before do
-    allow(Gitlab::RuggedInstrumentation).to receive(:peek_enabled?).and_return(true)
+    allow(Gitlab::PerformanceBar).to receive(:enabled_for_request?).and_return(true)
   end
 
   it 'returns no results' do
