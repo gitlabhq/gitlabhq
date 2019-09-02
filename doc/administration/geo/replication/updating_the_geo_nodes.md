@@ -27,6 +27,8 @@ everything is working correctly:
 1. Test the data replication by pushing code to the **primary** node and see if it
    is received by **secondary** nodes.
 
+If you encounter any issues, please consult the [Geo troubleshooting guide](troubleshooting.md).
+
 ## Upgrading to GitLab 12.1
 
 By default, GitLab 12.1 will attempt to automatically upgrade the embedded PostgreSQL server to 10.7 from 9.6. Please see [the omnibus documentation](https://docs.gitlab.com/omnibus/settings/database.html#upgrading-a-geo-instance) for the recommended procedure.
