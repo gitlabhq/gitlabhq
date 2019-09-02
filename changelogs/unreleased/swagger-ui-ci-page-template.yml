@@ -1,0 +1,5 @@
+---
+title: "Add SwaggerUI Pages template for .gitlab-ci.yml"
+merge_request: 31183
+author: mdhtr
+type: added

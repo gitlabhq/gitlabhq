@@ -1,0 +1,29 @@
+image: node:10-alpine
+
+# specify the location of the Open API Specification files within your project
+# and the filename of the specification that you would like to display by default
+variables:
+  DOCS_FOLDER: "api-docs"
+  SPEC_TO_DISPLAY: "my-project_specification_0.0.1.json"
+
+# These folders are cached between builds
+cache:
+  paths:
+    - ./node_modules
+
+# publishes all files from the $DOCS_FOLDER together with the static version of SwaggerUI
+# sets the specification file named in $SPEC_TO_DISPLAY to be displayed by default
+pages:
+  stage: deploy
+  before_script:
+    - npm install swagger-ui-dist@3.22.1
+  script:
+    - mkdir public
+    - cp -rp node_modules/swagger-ui-dist/* public
+    - cp -rp $DOCS_FOLDER/* public
+    - sed -i "s#https://petstore\.swagger\.io/v2/swagger\.json#$SPEC_TO_DISPLAY#g" public/index.html
+  artifacts:
+    paths:
+      - public
+  only:
+    - master
