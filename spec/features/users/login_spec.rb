@@ -624,6 +624,14 @@ describe 'Login' do
     end
   end
 
+  describe 'Client helper classes and flags' do
+    it 'adds client browser and platform classes to page body' do
+      visit root_path
+      expect(find('body')[:class]).to include('gl-browser-generic')
+      expect(find('body')[:class]).to include('gl-platform-other')
+    end
+  end
+
   context 'when terms are enforced' do
     let(:user) { create(:user) }
 
