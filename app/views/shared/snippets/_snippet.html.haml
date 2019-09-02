@@ -1,4 +1,5 @@
 - link_project = local_assigns.fetch(:link_project, false)
+- notes_count = @noteable_meta_data[snippet.id].user_notes_count
 
 %li.snippet-row
   = image_tag avatar_icon_for_user(snippet.author), class: "avatar s40 d-none d-sm-block", alt: ''
@@ -12,10 +13,9 @@
 
     %ul.controls
       %li
-        - note_count = snippet.notes.user.count
-        = link_to reliable_snippet_path(snippet, anchor: 'notes'), class: ('no-comments' if note_count.zero?) do
+        = link_to reliable_snippet_path(snippet, anchor: 'notes'), class: ('no-comments' if notes_count.zero?) do
           = icon('comments')
-          = note_count
+          = notes_count
       %li
         %span.sr-only
           = visibility_level_label(snippet.visibility_level)

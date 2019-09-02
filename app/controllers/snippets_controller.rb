@@ -7,6 +7,7 @@ class SnippetsController < ApplicationController
   include SnippetsActions
   include RendersBlob
   include PreviewMarkdown
+  include Gitlab::NoteableMetadata
 
   skip_before_action :verify_authenticity_token,
     if: -> { action_name == 'show' && js_request? }
@@ -32,7 +33,11 @@ class SnippetsController < ApplicationController
       @user = UserFinder.new(params[:username]).find_by_username!
 
       @snippets = SnippetsFinder.new(current_user, author: @user, scope: params[:scope])
-        .execute.page(params[:page])
+        .execute
+        .page(params[:page])
+        .inc_author
+
+      @noteable_meta_data = noteable_meta_data(@snippets, 'Snippet')
 
       render 'index'
     else

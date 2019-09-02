@@ -3,6 +3,10 @@
 module Noteable
   extend ActiveSupport::Concern
 
+  # This object is used to gather noteable meta data for list displays
+  # avoiding n+1 queries and improving performance.
+  NoteableMeta = Struct.new(:user_notes_count)
+
   class_methods do
     # `Noteable` class names that support replying to individual notes.
     def replyable_types
