@@ -22,7 +22,8 @@ See all the related issues linked from this [issue's description](https://gitlab
 for more information.
 
 Note: **Note:**
-Using this feature requires **2 IP addresses** to be configured to the machine.
+Using this feature requires two separate IP addresses, one for the GitLab domain
+and one GitLab Pages domain.
 
 ## Requirements
 
