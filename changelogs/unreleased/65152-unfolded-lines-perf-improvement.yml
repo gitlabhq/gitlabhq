@@ -1,0 +1,5 @@
+---
+title: Support selective highlighting of lines
+merge_request: 32514
+author:
+type: performance
