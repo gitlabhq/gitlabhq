@@ -1,0 +1,5 @@
+---
+title: Fix upload URLs in Markdown for users without access to project repository
+merge_request: 32448
+author:
+type: fixed
