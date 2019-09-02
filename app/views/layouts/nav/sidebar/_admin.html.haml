@@ -270,7 +270,7 @@
                   %span
                     = _('Geo')
             = nav_link(path: 'application_settings#preferences') do
-              = link_to preferences_admin_application_settings_path, title: _('Preferences') do
+              = link_to preferences_admin_application_settings_path, title: _('Preferences'), data: { qa_selector: 'admin_settings_preferences_link' } do
                 %span
                   = _('Preferences')
 
