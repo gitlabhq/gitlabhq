@@ -2,6 +2,23 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 12.2.4
+
+### Fixed (7 changes)
+
+- Add syntax highlighting for line expansion. !31821
+- Fix issuable sidebar icon on notification disabled. !32134
+- Upgrade Mermaid to v8.2.4. !32186
+- Fix Piwik not working. !32234
+- Fix snippets API not working with visibility level. !32286
+- Fix upload URLs in Markdown for users without access to project repository. !32448
+- Update Mermaid to v8.2.6. !32502
+
+### Performance (1 change)
+
+- Fix N+1 Gitaly calls in /api/v4/projects/:id/issues. !32171
+
+
 ## 12.2.3
 
 ### Security (22 changes)
