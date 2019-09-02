@@ -1,0 +1,5 @@
+---
+title: Add warning about initial deployment delay for GitLab Pages sites
+merge_request: 32122
+author:
+type: added

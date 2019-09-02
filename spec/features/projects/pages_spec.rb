@@ -30,6 +30,12 @@ shared_examples 'pages settings editing' do
         expect(page).to have_content('Access pages')
       end
 
+      it 'renders first deployment warning' do
+        visit project_pages_path(project)
+
+        expect(page).to have_content('It may take up to 30 minutes before the site is available after the first deployment.')
+      end
+
       context 'when support for external domains is disabled' do
         it 'renders message that support is disabled' do
           visit project_pages_path(project)
