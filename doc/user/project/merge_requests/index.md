@@ -218,7 +218,7 @@ Similarly, assignees are removed by deselecting them from the same dropdown menu
 It's also possible to manage multiple assignees:
 
 - When creating a merge request.
-- Using [quick actions](../quick_actions.md#quick-actions-for-issues-and-merge-requests).
+- Using [quick actions](../quick_actions.md#quick-actions-for-issues-merge-requests-and-epics).
 
 ## Resolve conflicts
 
