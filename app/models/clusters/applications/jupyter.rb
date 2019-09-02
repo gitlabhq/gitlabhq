@@ -85,7 +85,8 @@ module Clusters
               "clientId" => oauth_application.uid,
               "clientSecret" => oauth_application.secret,
               "callbackUrl" => callback_url,
-              "gitlabProjectIdWhitelist" => [project_id]
+              "gitlabProjectIdWhitelist" => cluster.projects.ids,
+              "gitlabGroupWhitelist" => cluster.groups.map(&:to_param)
             }
           },
           "singleuser" => {
@@ -99,10 +100,6 @@ module Clusters
 
       def crypto_key
         @crypto_key ||= SecureRandom.hex(32)
-      end
-
-      def project_id
-        cluster&.project&.id
       end
 
       def gitlab_url

@@ -147,12 +147,12 @@ describe Clusters::Applications::CreateService do
 
       using RSpec::Parameterized::TableSyntax
 
-      where(:application, :association, :allowed, :pre_create_helm) do
-        'helm'       | :application_helm       | true | false
-        'ingress'    | :application_ingress    | true | true
-        'runner'     | :application_runner     | true | true
-        'prometheus' | :application_prometheus | true | true
-        'jupyter'    | :application_jupyter    | false | true
+      where(:application, :association, :allowed, :pre_create_helm, :pre_create_ingress) do
+        'helm'       | :application_helm       | true | false | false
+        'ingress'    | :application_ingress    | true | true | false
+        'runner'     | :application_runner     | true | true | false
+        'prometheus' | :application_prometheus | true | true | false
+        'jupyter'    | :application_jupyter    | true | true | true
       end
 
       with_them do
@@ -160,6 +160,7 @@ describe Clusters::Applications::CreateService do
           klass = "Clusters::Applications::#{application.titleize}"
           allow_any_instance_of(klass.constantize).to receive(:make_scheduled!).and_call_original
           create(:clusters_applications_helm, :installed, cluster: cluster) if pre_create_helm
+          create(:clusters_applications_ingress, :installed, cluster: cluster, external_hostname: 'example.com') if pre_create_ingress
         end
 
         let(:params) { { application: application } }

@@ -81,27 +81,45 @@ describe Clusters::Applications::Jupyter do
   end
 
   describe '#files' do
-    let(:application) { create(:clusters_applications_jupyter) }
+    let(:cluster) { create(:cluster, :with_installed_helm, :provided_by_gcp, :project) }
+    let(:application) { create(:clusters_applications_jupyter, cluster: cluster) }
     let(:values) { subject[:'values.yaml'] }
 
     subject { application.files }
 
-    it 'includes valid values' do
-      expect(values).to include('ingress')
-      expect(values).to include('hub')
-      expect(values).to include('rbac')
-      expect(values).to include('proxy')
-      expect(values).to include('auth')
-      expect(values).to include('singleuser')
-      expect(values).to match(/clientId: '?#{application.oauth_application.uid}/)
-      expect(values).to match(/callbackUrl: '?#{application.callback_url}/)
-      expect(values).to include("gitlabProjectIdWhitelist:\n    - #{application.cluster.project.id}")
-      expect(values).to include("c.GitLabOAuthenticator.scope = ['api read_repository write_repository']")
-      expect(values).to match(/GITLAB_HOST: '?#{Gitlab.config.gitlab.host}/)
+    context 'when cluster belongs to a project' do
+      it 'includes valid values' do
+        expect(values).to include('ingress')
+        expect(values).to include('hub')
+        expect(values).to include('rbac')
+        expect(values).to include('proxy')
+        expect(values).to include('auth')
+        expect(values).to include('singleuser')
+        expect(values).to match(/clientId: '?#{application.oauth_application.uid}/)
+        expect(values).to match(/callbackUrl: '?#{application.callback_url}/)
+        expect(values).to include("gitlabProjectIdWhitelist:\n    - #{application.cluster.project.id}")
+        expect(values).to include("c.GitLabOAuthenticator.scope = ['api read_repository write_repository']")
+        expect(values).to match(/GITLAB_HOST: '?#{Gitlab.config.gitlab.host}/)
+        expect(values).to match(/GITLAB_CLUSTER_ID: '?#{application.cluster.id}/)
+      end
     end
 
-    context 'when cluster belongs to a project' do
-      it 'sets GitLab project id' do
+    context 'when cluster belongs to a group' do
+      let(:group) { create(:group) }
+      let(:cluster) { create(:cluster, :with_installed_helm, :provided_by_gcp, :group, groups: [group]) }
+
+      it 'includes valid values' do
+        expect(values).to include('ingress')
+        expect(values).to include('hub')
+        expect(values).to include('rbac')
+        expect(values).to include('proxy')
+        expect(values).to include('auth')
+        expect(values).to include('singleuser')
+        expect(values).to match(/clientId: '?#{application.oauth_application.uid}/)
+        expect(values).to match(/callbackUrl: '?#{application.callback_url}/)
+        expect(values).to include("gitlabGroupWhitelist:\n    - #{group.to_param}")
+        expect(values).to include("c.GitLabOAuthenticator.scope = ['api read_repository write_repository']")
+        expect(values).to match(/GITLAB_HOST: '?#{Gitlab.config.gitlab.host}/)
         expect(values).to match(/GITLAB_CLUSTER_ID: '?#{application.cluster.id}/)
       end
     end
