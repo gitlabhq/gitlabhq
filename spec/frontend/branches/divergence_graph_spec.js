@@ -25,12 +25,24 @@ describe('Divergence graph', () => {
     mock.restore();
   });
 
-  it('calls axos get with list of branch names', () =>
+  it('calls axios get with list of branch names', () =>
     init('/-/diverging_counts').then(() => {
       expect(axios.get).toHaveBeenCalledWith('/-/diverging_counts', {
         params: { names: ['master', 'test/hello-world'] },
       });
     }));
+
+  describe('no branches listed', () => {
+    beforeEach(() => {
+      document.body.innerHTML = `<div></div>`;
+    });
+
+    it('avoids requesting diverging commit counts', () => {
+      expect(axios.get).not.toHaveBeenCalledWith('/-/diverging_counts');
+
+      init('/-/diverging_counts');
+    });
+  });
 
   it('creates Vue components', () =>
     init('/-/diverging_counts').then(() => {
