@@ -234,25 +234,6 @@ qa-frontend-node:latest:
   image: node:latest
   allow_failure: true
 
-lint:javascript:report:
-  extends:
-    - .default-tags
-    - .default-retry
-    - .default-cache
-    - .except-docs
-  variables:
-    SETUP_DB: "false"
-  stage: post-test
-  dependencies: []
-  script:
-    - date
-    - yarn run eslint-report || true  # ignore exit code
-  artifacts:
-    name: eslint-report
-    expire_in: 31d
-    paths:
-      - eslint-report.html
-
 jsdoc:
   extends:
     - .default-tags
