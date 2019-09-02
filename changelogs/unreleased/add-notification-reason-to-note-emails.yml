@@ -1,0 +1,5 @@
+---
+title: Add X-GitLab-NotificationReason header to note emails
+merge_request: 32422
+author:
+type: fixed
