@@ -25,8 +25,13 @@
 1. [Python](../python_guide/index.md)
 1. [Shell scripting](../shell_scripting_guide/index.md)
 
+## Checking the style and other issues
+
 This is also the style used by linting tools such as
 [RuboCop](https://github.com/rubocop-hq/rubocop) and [Hound CI](https://houndci.com).
+You can run RuboCop by hand or install a tool like [Overcommit](https://github.com/sds/overcommit) to run it for you.
+Overcommit will automatically run the configured checks (like Rubocop) on every modified file before commit. You can use the example overcommit configuration found in `.overcommit.yml.example` as a quickstart.
+This saves you time as you don't have to wait for the same errors to be detected by the CI.
 
 ---
 

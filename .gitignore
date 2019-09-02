@@ -82,3 +82,4 @@ package-lock.json
 /coverage-frontend/
 jsdoc/
 **/tmp/rubocop_cache/**
+.overcommit.yml
