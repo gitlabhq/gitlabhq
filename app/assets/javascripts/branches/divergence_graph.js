@@ -25,6 +25,11 @@ export default endpoint => {
   const names = [...document.querySelectorAll('.js-branch-item')].map(
     ({ dataset }) => dataset.name,
   );
+
+  if (names.length === 0) {
+    return true;
+  }
+
   return axios
     .get(endpoint, {
       params: { names },
