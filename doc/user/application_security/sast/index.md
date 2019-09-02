@@ -125,6 +125,21 @@ variables:
 Because the template is [evaluated before](../../../ci/yaml/README.md#include)
 the pipeline configuration, the last mention of the variable will take precedence.
 
+#### Using a variable to pass username and password to a private Maven repository
+
+If you have a private Apache Maven repository that requires login credentials,
+you can use the `MAVEN_CLI_OPTS` [environment variable](#available-variables)
+to pass a username and password. You can set it under your project's settings
+so that your credentials aren't exposed in `.gitlab-ci.yml`.
+
+If the username is `myuser` and the password is `verysecret` then you would
+set the following [variable](../../../ci/variables/README.md#via-the-ui)
+under your project's settings:
+
+| Type | Key | Value |
+| ---- | --- | ----- |
+| Variable | `MAVEN_CLI_OPTS` | `-Drepository.password=verysecret -Drepository.user=myuser` |
+
 ### Overriding the SAST template
 
 If you want to override the job definition (for example, change properties like
