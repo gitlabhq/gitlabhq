@@ -28,7 +28,7 @@ GitLab can scan and report any vulnerabilities found in your project.
 | [Dependency List](dependency_list/index.md) **(ULTIMATE)**                   | View your project's dependencies and their known vulnerabilities.      |
 | [Dependency Scanning](dependency_scanning/index.md) **(ULTIMATE)**           | Analyze your dependencies for known vulnerabilities.                   |
 | [Dynamic Application Security Testing (DAST)](dast/index.md) **(ULTIMATE)**  | Analyze running web applications for known vulnerabilities.            |
-| [License Compliance](license_management/index.md) **(ULTIMATE)**             | Search your project's dependencies for their licenses.                 |
+| [License Compliance](license_compliance/index.md) **(ULTIMATE)**             | Search your project's dependencies for their licenses.                 |
 | [Security Dashboard](security_dashboard/index.md) **(ULTIMATE)**             | View vulnerabilities in all your projects and groups.                  |
 | [Static Application Security Testing (SAST)](sast/index.md) **(ULTIMATE)**   | Analyze source code for known vulnerabilities.                         |
 

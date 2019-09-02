@@ -198,7 +198,7 @@ To approve or blacklist a license:
    **License Compliance** section.
 1. Click the **Add a license** button.
 
-   ![License Compliance Add License](img/license_compliance_add_license.png)
+   ![License Compliance Add License](img/license_compliance_add_license_v12_3.png)
 
 1. In the **License name** dropdown, either:
    - Select one of the available licenses. You can search for licenses in the field
@@ -212,13 +212,13 @@ To modify an existing license:
 
 1. In the **License Compliance** list, click the **Approved/Declined** dropdown to change it to the desired status.
 
-   ![License Compliance Settings](img/license_compliance_settings.png)
+   ![License Compliance Settings](img/license_compliance_settings_v12_3.png)
 
 Searching for Licenses:
 
 1. Use the **Search** box to search for a specific license.
 
-   ![License Compliance Search](img/license_compliance_search.png)
+   ![License Compliance Search](img/license_compliance_search_v12_3.png)
 
 ## License Compliance report under pipelines
 
@@ -228,7 +228,7 @@ From your project's left sidebar, navigate to **CI/CD > Pipelines** and click on
 pipeline ID that has a `license_management` job to see the Licenses tab with the listed
 licenses (if any).
 
-![License Compliance Pipeline Tab](img/license_compliance_pipeline_tab.png)
+![License Compliance Pipeline Tab](img/license_compliance_pipeline_tab_v12_3.png)
 
 <!-- ## Troubleshooting
 
