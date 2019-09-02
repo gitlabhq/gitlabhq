@@ -9,13 +9,12 @@ pages:
       - master@gitlab-org/gitlab-ce
       - master@gitlab-org/gitlab-ee
   stage: pages
-  dependencies: ["coverage", "karma", "gitlab:assets:compile", "lint:javascript:report", "jsdoc"]
+  dependencies: ["coverage", "karma", "gitlab:assets:compile", "jsdoc"]
   script:
     - mv public/ .public/
     - mkdir public/
     - mv coverage/ public/coverage-ruby/ || true
     - mv coverage-javascript/ public/coverage-javascript/ || true
-    - mv eslint-report.html public/ || true
     - mv webpack-report/ public/webpack-report/ || true
     - cp .public/assets/application-*.css public/application.css || true
     - cp .public/assets/application-*.css.gz public/application.css.gz || true
