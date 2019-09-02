@@ -1,15 +1,18 @@
 # Updating the Geo nodes **(PREMIUM ONLY)**
 
-Depending on which version of Geo you are updating to/from, there may be
-different steps.
+Depending on which version of Geo you are updating to/from, there may be different steps.
 
 ## General update steps
 
-In order to update the Geo nodes when a new GitLab version is released,
-all you need to do is update GitLab itself:
+NOTE: **Note:** These general update steps are not intended for [high-availability deployments](https://docs.gitlab.com/omnibus/update/README.html#multi-node--ha-deployment), and will cause downtime. If you want to avoid downtime, consider using [zero downtime updates](https://docs.gitlab.com/omnibus/update/README.html#zero-downtime-updates).
 
-1. Log into each node (**primary** and **secondary** nodes).
-1. [Update GitLab][update].
+To update the Geo nodes when a new GitLab version is released, update **primary** 
+and all **secondary** nodes:
+
+1. Log into the **primary** node.
+1. [Update GitLab on the **primary** node using Omnibus](https://docs.gitlab.com/omnibus/update/README.html).
+1. Log into each **secondary** node.
+1. [Update GitLab on each **secondary** node using Omnibus](https://docs.gitlab.com/omnibus/update/README.html).
 1. [Test](#check-status-after-updating) **primary** and **secondary** nodes, and check version in each.
 
 ### Check status after updating
