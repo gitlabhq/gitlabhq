@@ -16,12 +16,12 @@ of your Camo server.
 Once you have your Camo server up and running, you can configure GitLab to
 proxy image requests to it.  The following settings are supported:
 
-| Attribute                | Description |
-| ------------------------ | ----------- |
-| `asset_proxy_enabled`    | (**If enabled, requires:** `asset_proxy_url`) Enable proxying of assets. |
-| `asset_proxy_secret_key` | Shared secret with the asset proxy server. |
-| `asset_proxy_url`        | URL of the asset proxy server. |
-| `asset_proxy_whitelist`  | Assets that match these domain(s) will NOT be proxied. Wildcards allowed. Your GitLab installation URL is automatically whitelisted. |
+| Attribute                 | Description |
+| ------------------------- | ----------- |
+| `asset_proxy_enabled`     | (**If enabled, requires:** `asset_proxy_url`) Enable proxying of assets. |
+| `asset_proxy_secret_key`  | Shared secret with the asset proxy server. |
+| `asset_proxy_url`         | URL of the asset proxy server. |
+| `asset_proxy_whitelist`   | Assets that match these domain(s) will NOT be proxied. Wildcards allowed. Your GitLab installation URL is automatically whitelisted. |
 
 These can be set via the [Application setting API](../api/settings.md)
 

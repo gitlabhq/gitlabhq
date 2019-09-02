@@ -231,7 +231,7 @@ PUT /groups/:id/epics/:epic_iid
 | `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user                |
 | `epic_iid`          | integer/string   | yes        | The internal ID  of the epic  |
 | `title`             | string           | no         | The title of an epic |
-| `description`       | string           | no         | The description of an epic. Limited to 1 000 000 characters. |
+| `description`       | string           | no         | The description of an epic. Limited to 1 000 000 characters.  |
 | `labels`            | string           | no         | The comma separated list of labels |
 | `start_date_is_fixed` | boolean        | no         | Whether start date should be sourced from `start_date_fixed` or from milestones (since 11.3) |
 | `start_date_fixed`  | string           | no         | The fixed start date of an epic (since 11.3) |

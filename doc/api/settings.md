@@ -67,7 +67,7 @@ Example response:
    "local_markdown_version": 0,
    "allow_local_requests_from_hooks_and_services": true,
    "allow_local_requests_from_web_hooks_and_services": true,
-   "allow_local_requests_from_system_hooks": false
+   "allow_local_requests_from_system_hooks": false,
    "asset_proxy_enabled": true,
    "asset_proxy_url": "https://assets.example.com",
    "asset_proxy_whitelist": ["example.com", "*.example.com", "your-instance.com"]
