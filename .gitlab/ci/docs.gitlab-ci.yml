@@ -74,7 +74,7 @@ docs lint:
   script:
     - scripts/lint-doc.sh
     # Lint Markdown
-    - markdownlint --config .markdownlint.json doc/**/*.md
+    - markdownlint --config .markdownlint.json 'doc/**/*.md'
     # Prepare docs for build
     - mv doc/ /tmp/gitlab-docs/content/$DOCS_GITLAB_REPO_SUFFIX
     - cd /tmp/gitlab-docs

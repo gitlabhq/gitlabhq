@@ -603,7 +603,7 @@ Below is an example of how your `.gitlab-ci.yml` should look like, assuming you 
      - docker run my-docker-image /script/to/run/tests
 ```
 
-If you forget to set the service alias the `docker:19.03.1` image won't find the 
+If you forget to set the service alias the `docker:19.03.1` image won't find the
 `dind` service, and an error like the following is thrown:
 
 ```sh
