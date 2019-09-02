@@ -19,7 +19,7 @@
 
     - copy_ca_cert_btn = clipboard_button(text: platform.ca_cert, title: s_('ClusterIntegration|Copy CA Certificate'),
       class: 'input-group-text btn-default') if cluster.read_only_kubernetes_platform_fields?
-    = platform_field.text_area :ca_cert, class: 'js-select-on-focus', rows: '5',
+    = platform_field.text_area :ca_cert, class: 'js-select-on-focus', rows: '10',
     readonly: cluster.read_only_kubernetes_platform_fields?,
     placeholder: s_('ClusterIntegration|Certificate Authority bundle (PEM format)'),
     label: s_('ClusterIntegration|CA Certificate'), label_class: 'label-bold',

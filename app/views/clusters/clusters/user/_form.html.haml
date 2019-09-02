@@ -25,6 +25,7 @@
       help: '%{help_text} %{help_link}'.html_safe % { help_text: api_url_help_text, help_link: more_info_link }
 
     = platform_kubernetes_field.text_area :ca_cert,
+      rows: '10',
       placeholder: s_('ClusterIntegration|Certificate Authority bundle (PEM format)'),
       label: s_('ClusterIntegration|CA Certificate'), label_class: 'label-bold',
       help: '%{help_text} %{help_link}'.html_safe % { help_text: ca_cert_help_text, help_link: more_info_link }
