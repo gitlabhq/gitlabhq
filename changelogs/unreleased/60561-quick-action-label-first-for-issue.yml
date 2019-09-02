@@ -1,0 +1,5 @@
+---
+title: Quick action label must be first in issue comment
+merge_request: 32367
+author: Romain Maneschi
+type: fixed

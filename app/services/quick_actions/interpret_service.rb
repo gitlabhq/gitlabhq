@@ -5,8 +5,8 @@ module QuickActions
     include Gitlab::Utils::StrongMemoize
     include Gitlab::QuickActions::Dsl
     include Gitlab::QuickActions::IssueActions
-    include Gitlab::QuickActions::IssueAndMergeRequestActions
     include Gitlab::QuickActions::IssuableActions
+    include Gitlab::QuickActions::IssueAndMergeRequestActions
     include Gitlab::QuickActions::MergeRequestActions
     include Gitlab::QuickActions::CommitActions
     include Gitlab::QuickActions::CommonActions
