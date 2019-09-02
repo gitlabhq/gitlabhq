@@ -5,17 +5,25 @@
 class ChatNotificationService < Service
   include ChatMessage
 
+  SUPPORTED_EVENTS = %w[
+    push issue confidential_issue merge_request note confidential_note
+    tag_push pipeline wiki_page deployment
+  ].freeze
+
+  EVENT_CHANNEL = proc { |event| "#{event}_channel" }
+
   default_value_for :category, 'chat'
 
   prop_accessor :webhook, :username, :channel
+
+  # Custom serialized properties initialization
+  prop_accessor(*SUPPORTED_EVENTS.map { |event| EVENT_CHANNEL[event] })
+
   boolean_accessor :notify_only_broken_pipelines, :notify_only_default_branch
 
   validates :webhook, presence: true, public_url: true, if: :activated?
 
   def initialize_properties
-    # Custom serialized properties initialization
-    self.supported_events.each { |event| self.class.prop_accessor(event_channel_name(event)) }
-
     if properties.nil?
       self.properties = {}
       self.notify_only_broken_pipelines = true
@@ -32,8 +40,7 @@ class ChatNotificationService < Service
   end
 
   def self.supported_events
-    %w[push issue confidential_issue merge_request note confidential_note tag_push
-       pipeline wiki_page deployment]
+    SUPPORTED_EVENTS
   end
 
   def fields
@@ -139,7 +146,7 @@ class ChatNotificationService < Service
   end
 
   def event_channel_name(event)
-    "#{event}_channel"
+    EVENT_CHANNEL[event]
   end
 
   def project_name
