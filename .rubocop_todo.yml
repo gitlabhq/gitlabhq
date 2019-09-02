@@ -570,11 +570,6 @@ Style/EmptyMethod:
 Style/Encoding:
   Enabled: false
 
-# Offense count: 2
-Style/EvalWithLocation:
-  Exclude:
-    - 'app/models/service.rb'
-
 # Offense count: 203
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle.
