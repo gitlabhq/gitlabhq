@@ -23,7 +23,7 @@ describe ChatMessage::PushMessage do
     before do
       args[:commits] = [
         { message: 'message1', url: 'http://url1.com', id: 'abcdefghijkl', author: { name: 'author1' } },
-        { message: 'message2', url: 'http://url2.com', id: '123456789012', author: { name: 'author2' } }
+        { message: "message2\nsecondline", url: 'http://url2.com', id: '123456789012', author: { name: 'author2' } }
       ]
     end
 
@@ -34,7 +34,7 @@ describe ChatMessage::PushMessage do
             '<http://url.com|project_name> (<http://url.com/compare/before...after|Compare changes>)')
         expect(subject.attachments).to eq([{
           text: "<http://url1.com|abcdefgh>: message1 - author1\n\n"\
-            "<http://url2.com|12345678>: message2 - author2",
+            "<http://url2.com|12345678>: message2\nsecondline - author2",
           color: color
         }])
       end
@@ -49,7 +49,27 @@ describe ChatMessage::PushMessage do
         expect(subject.pretext).to eq(
           'test.user pushed to branch [master](http://url.com/commits/master) of [project_name](http://url.com) ([Compare changes](http://url.com/compare/before...after))')
         expect(subject.attachments).to eq(
-          "[abcdefgh](http://url1.com): message1 - author1\n\n[12345678](http://url2.com): message2 - author2")
+          "[abcdefgh](http://url1.com): message1 - author1\n\n[12345678](http://url2.com): message2\nsecondline - author2")
+        expect(subject.activity).to eq(
+          title: 'test.user pushed to branch [master](http://url.com/commits/master)',
+          subtitle: 'in [project_name](http://url.com)',
+          text: '[Compare changes](http://url.com/compare/before...after)',
+          image: 'http://someavatar.com'
+        )
+      end
+    end
+
+    context 'with markdown and commit message html' do
+      before do
+        args[:commit_message_html] = true
+        args[:markdown] = true
+      end
+
+      it 'returns a message regarding pushes' do
+        expect(subject.pretext).to eq(
+          'test.user pushed to branch [master](http://url.com/commits/master) of [project_name](http://url.com) ([Compare changes](http://url.com/compare/before...after))')
+        expect(subject.attachments).to eq(
+          "[abcdefgh](http://url1.com): message1 - author1<br/>\n<br/>\n[12345678](http://url2.com): message2<br/>\nsecondline - author2")
         expect(subject.activity).to eq(
           title: 'test.user pushed to branch [master](http://url.com/commits/master)',
           subtitle: 'in [project_name](http://url.com)',
