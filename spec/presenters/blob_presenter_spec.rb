@@ -39,6 +39,20 @@ describe BlobPresenter, :seed_helper do
       subject.highlight(plain: true)
     end
 
+    context '"to" param is present' do
+      before do
+        allow(git_blob)
+          .to receive(:data)
+          .and_return("line one\nline two\nline 3")
+      end
+
+      it 'returns limited highlighted content' do
+        expect(Gitlab::Highlight).to receive(:highlight).with('files/ruby/regex.rb', "line one\n", plain: nil, language: nil)
+
+        subject.highlight(to: 1)
+      end
+    end
+
     context 'gitlab-language contains a match' do
       before do
         allow(blob).to receive(:language_from_gitattributes).and_return('ruby')
