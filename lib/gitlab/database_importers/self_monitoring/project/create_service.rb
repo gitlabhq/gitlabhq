@@ -45,20 +45,20 @@ module Gitlab
           def validate_application_settings
             return success if application_settings
 
-            log_error(_('No application_settings found'))
+            log_error('No application_settings found')
             error(_('No application_settings found'))
           end
 
           def validate_project_created
             return success unless project_created?
 
-            log_error(_('Project already created'))
+            log_error('Project already created')
             error(_('Project already created'))
           end
 
           def validate_admins
             unless instance_admins.any?
-              log_error(_('No active admin user found'))
+              log_error('No active admin user found')
               return error(_('No active admin user found'))
             end
 
@@ -83,7 +83,7 @@ module Gitlab
 
           def create_project
             if project_created?
-              log_info(_('Instance administration project already exists'))
+              log_info('Instance administration project already exists')
               @project = application_settings.instance_administration_project
               return success(project: project)
             end
@@ -93,7 +93,7 @@ module Gitlab
             if project.persisted?
               success(project: project)
             else
-              log_error(_("Could not create instance administration project. Errors: %{errors}") % { errors: project.errors.full_messages })
+              log_error("Could not create instance administration project. Errors: %{errors}" % { errors: project.errors.full_messages })
               error(_('Could not create project'))
             end
           end
@@ -106,7 +106,7 @@ module Gitlab
             if result
               success
             else
-              log_error(_("Could not save instance administration project ID, errors: %{errors}") % { errors: application_settings.errors.full_messages })
+              log_error("Could not save instance administration project ID, errors: %{errors}" % { errors: application_settings.errors.full_messages })
               error(_('Could not save project ID'))
             end
           end
@@ -116,7 +116,7 @@ module Gitlab
             errors = members.flat_map { |member| member.errors.full_messages }
 
             if errors.any?
-              log_error(_('Could not add admins as members to self-monitoring project. Errors: %{errors}') % { errors: errors })
+              log_error('Could not add admins as members to self-monitoring project. Errors: %{errors}' % { errors: errors })
               error(_('Could not add admins as members'))
             else
               success
@@ -128,7 +128,7 @@ module Gitlab
             return success unless prometheus_listen_address.present?
 
             uri = parse_url(internal_prometheus_listen_address_uri)
-            return error(_('Prometheus listen_address is not a valid URI')) unless uri
+            return error(_('Prometheus listen_address in config/gitlab.yml is not a valid URI')) unless uri
 
             application_settings.add_to_outbound_local_requests_whitelist([uri.normalized_host])
             result = application_settings.save
@@ -140,7 +140,7 @@ module Gitlab
               Gitlab::CurrentSettings.expire_current_application_settings
               success
             else
-              log_error(_("Could not add prometheus URL to whitelist, errors: %{errors}") % { errors: application_settings.errors.full_messages })
+              log_error("Could not add prometheus URL to whitelist, errors: %{errors}" % { errors: application_settings.errors.full_messages })
               error(_('Could not add prometheus URL to whitelist'))
             end
           end
@@ -152,7 +152,7 @@ module Gitlab
             service = project.find_or_initialize_service('prometheus')
 
             unless service.update(prometheus_service_attributes)
-              log_error(_('Could not save prometheus manual configuration for self-monitoring project. Errors: %{errors}') % { errors: service.errors.full_messages })
+              log_error('Could not save prometheus manual configuration for self-monitoring project. Errors: %{errors}' % { errors: service.errors.full_messages })
               return error(_('Could not save prometheus manual configuration'))
             end
 
@@ -175,15 +175,15 @@ module Gitlab
           def prometheus_enabled?
             Gitlab.config.prometheus.enable if Gitlab.config.prometheus
           rescue Settingslogic::MissingSetting
-            log_error(_('prometheus.enable is not present in gitlab.yml'))
+            log_error('prometheus.enable is not present in config/gitlab.yml')
 
             false
           end
 
           def prometheus_listen_address
-            Gitlab.config.prometheus.listen_address if Gitlab.config.prometheus
+            Gitlab.config.prometheus.listen_address.to_s if Gitlab.config.prometheus
           rescue Settingslogic::MissingSetting
-            log_error(_('prometheus.listen_address is not present in gitlab.yml'))
+            log_error('Prometheus listen_address is not present in config/gitlab.yml')
 
             nil
           end
@@ -228,9 +228,21 @@ module Gitlab
           end
 
           def internal_prometheus_listen_address_uri
-            if prometheus_listen_address.starts_with?('http')
+            if prometheus_listen_address.starts_with?('0.0.0.0:')
+              # 0.0.0.0:9090
+              port = ':' + prometheus_listen_address.split(':').second
+              'http://localhost' + port
+
+            elsif prometheus_listen_address.starts_with?(':')
+              # :9090
+              'http://localhost' + prometheus_listen_address
+
+            elsif prometheus_listen_address.starts_with?('http')
+              # https://localhost:9090
               prometheus_listen_address
+
             else
+              # localhost:9090
               'http://' + prometheus_listen_address
             end
           end
