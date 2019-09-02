@@ -1,0 +1,6 @@
+---
+title: Added warning note on the project container registry setting informing users
+  that the registry is public for public projects
+merge_request: 32447
+author:
+type: other

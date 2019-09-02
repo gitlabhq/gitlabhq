@@ -7643,6 +7643,9 @@ msgstr ""
 msgid "Note: Consider asking your GitLab administrator to configure %{github_integration_link}, which will allow login via GitHub and allow importing repositories without generating a Personal Access Token."
 msgstr ""
 
+msgid "Note: the container registry is always visible when a project is public"
+msgstr ""
+
 msgid "NoteForm|Note"
 msgstr ""
 
