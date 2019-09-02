@@ -1,8 +1,9 @@
 !!! 5
 %html.devise-layout-html{ class: system_message_class }
   = render "layouts/head"
-  %body.ui-indigo.login-page.application.navless{ data: { page: body_data_page, qa_selector: 'login_page' } }
+  %body.ui-indigo.login-page.application.navless{ class: "#{client_class_list}", data: { page: body_data_page, qa_selector: 'login_page' } }
     = header_message
+    = render "layouts/init_client_detection_flags"
     .page-wrap
       = render "layouts/header/empty"
       .login-page-broadcast

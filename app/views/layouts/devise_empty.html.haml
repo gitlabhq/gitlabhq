@@ -1,8 +1,9 @@
 !!! 5
 %html{ lang: "en", class: system_message_class }
   = render "layouts/head"
-  %body.ui-indigo.login-page.application.navless
+  %body.ui-indigo.login-page.application.navless{ class: "#{client_class_list}" }
     = header_message
+    = render "layouts/init_client_detection_flags"
     = render "layouts/header/empty"
     = render "layouts/broadcast"
     .container.navless-container
