@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_28_083843) do
+ActiveRecord::Schema.define(version: 2019_09_02_131045) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -3551,7 +3551,8 @@ ActiveRecord::Schema.define(version: 2019_08_28_083843) do
     t.index ["public_email"], name: "index_users_on_public_email", where: "((public_email)::text <> ''::text)"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["state"], name: "index_users_on_state"
-    t.index ["state"], name: "index_users_on_state_and_internal", where: "((ghost <> true) AND (bot_type IS NULL))"
+    t.index ["state"], name: "index_users_on_state_and_internal", where: "(ghost IS NOT TRUE)"
+    t.index ["state"], name: "index_users_on_state_and_internal_ee", where: "((ghost IS NOT TRUE) AND (bot_type IS NULL))"
     t.index ["username"], name: "index_users_on_username"
     t.index ["username"], name: "index_users_on_username_trigram", opclass: :gin_trgm_ops, using: :gin
   end
