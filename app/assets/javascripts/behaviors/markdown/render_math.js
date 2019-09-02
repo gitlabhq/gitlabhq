@@ -102,7 +102,7 @@ class SafeMathRenderer {
           maxSize: 20,
           maxExpand: 20,
         });
-      } catch {
+      } catch (e) {
         // Don't show a flash for now because it would override an existing flash message
         el.textContent = s__('math|There was an error rendering this math block');
         // el.style.color = '#d00';
