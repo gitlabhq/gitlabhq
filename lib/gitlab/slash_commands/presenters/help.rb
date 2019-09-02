@@ -43,13 +43,15 @@ module Gitlab
         end
 
         def help_footer
-          <<~MESSAGE
-            #{project_info if @project}
-            *Documentation*
+          message = @project ? project_info : ''
+          message += <<~MESSAGE
+             *Documentation*
 
-            For more information about GitLab chatops, refer to its
-            documentation: https://docs.gitlab.com/ce/ci/chatops/README.html.
+             For more information about GitLab chatops, refer to its
+             documentation: https://docs.gitlab.com/ce/ci/chatops/README.html.
           MESSAGE
+
+          message
         end
 
         def project_info
