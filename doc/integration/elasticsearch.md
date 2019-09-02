@@ -92,10 +92,11 @@ export PKG_CONFIG_PATH="/usr/local/opt/icu4c/lib/pkgconfig:$PKG_CONFIG_PATH"
 To build and install the indexer, run:
 
 ```sh
-git clone https://gitlab.com/gitlab-org/gitlab-elasticsearch-indexer.git
-cd gitlab-elasticsearch-indexer
-make
-sudo make install
+indexer_path=/home/git/gitlab-elasticsearch-indexer
+
+# Run the installation task for gitlab-elasticsearch-indexer:
+sudo -u git -H bundle exec rake gitlab:indexer:install[$indexer_path] RAILS_ENV=production
+cd $indexer_path && sudo make install
 ```
 
 The `gitlab-elasticsearch-indexer` will be installed to `/usr/local/bin`.
