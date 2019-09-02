@@ -41,6 +41,12 @@ describe Gitlab::Ci::Config::External::File::Base do
   end
 
   describe '#valid?' do
+    context 'when location is not a string' do
+      let(:location) { %w(some/file.txt other/file.txt) }
+
+      it { is_expected.not_to be_valid }
+    end
+
     context 'when location is not a YAML file' do
       let(:location) { 'some/file.txt' }
 
