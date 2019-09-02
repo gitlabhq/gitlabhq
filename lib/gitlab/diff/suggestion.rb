@@ -46,7 +46,7 @@ module Gitlab
       private
 
       def line_break_chars(line)
-        match = /\r\n|\r|\n/.match(line)
+        match = Gitlab::Regex.breakline_regex.match(line)
         match[0] if match
       end
     end

@@ -58,6 +58,6 @@ class MicrosoftTeamsService < ChatNotificationService
   end
 
   def custom_data(data)
-    super(data).merge(markdown: true)
+    super(data).merge(markdown: true, commit_message_html: true)
   end
 end

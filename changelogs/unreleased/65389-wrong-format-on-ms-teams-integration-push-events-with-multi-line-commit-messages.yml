@@ -1,0 +1,5 @@
+---
+title: Wrong format on MS teams integration push events with multi line commit messages
+merge_request: 32180
+author: Massimeddu Cireddu
+type: fixed
