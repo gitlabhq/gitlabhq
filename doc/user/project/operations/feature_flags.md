@@ -2,10 +2,6 @@
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/11845) in GitLab 11.4.
 
-CAUTION: **Warning:**
-This an _alpha_ feature and is subject to change at any time without
-prior notice.
-
 Feature flags allow you to ship a project in different flavors by
 dynamically toggling certain functionality.
 
