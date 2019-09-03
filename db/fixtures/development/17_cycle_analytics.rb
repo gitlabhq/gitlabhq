@@ -18,6 +18,7 @@ class Gitlab::Seeder::CycleAnalytics
 
       # Milestones / Labels
       Timecop.travel 5.days.from_now
+
       if index.even?
         issue_metrics.first_associated_with_milestone_at = rand(6..12).hours.from_now
       else
@@ -146,7 +147,7 @@ class Gitlab::Seeder::CycleAnalytics
       commit_sha = issue.project.repository.create_file(@user, filename, "content", message: "Commit for #{issue.to_reference}", branch_name: branch_name)
       issue.project.repository.commit(commit_sha)
 
-      Git::BranchPushService.new(
+      ::Git::BranchPushService.new(
         issue.project,
         @user,
         oldrev: issue.project.repository.commit("master").sha,
@@ -182,7 +183,8 @@ class Gitlab::Seeder::CycleAnalytics
                                               ref: "refs/heads/#{merge_request.source_branch}")
       pipeline = service.execute(:push, ignore_skip_ci: true, save_on_errors: false)
 
-      pipeline.builds.map(&:run!)
+      pipeline.builds.each(&:enqueue) # make sure all pipelines in pending state
+      pipeline.builds.each(&:run!)
       pipeline.update_status
     end
   end
