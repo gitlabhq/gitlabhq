@@ -1,3 +1,14 @@
+- has_base_domain = @project.all_clusters.any? { |cluster| cluster.base_domain && !cluster.base_domain.empty? }
+
+- link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe
+- link_end = '</a>'.html_safe
+
+- kubernetes_cluster_path = help_page_path('user/project/clusters/index')
+- kubernetes_cluster_link_start = link_start % { url: kubernetes_cluster_path }
+
+- base_domain_path = help_page_path('user/project/clusters/index', anchor: 'base-domain')
+- base_domain_link_start = link_start % { url: base_domain_path }
+
 .row
   .col-lg-12
     = form_for @project, url: project_settings_ci_cd_path(@project, anchor: 'autodevops-settings') do |f|
@@ -19,9 +30,10 @@
               .card-footer.js-extra-settings{ class: auto_devops_enabled || 'hidden' }
                 - if @project.all_clusters.empty?
                   %p.settings-message.text-center
-                    - kubernetes_cluster_link = help_page_path('user/project/clusters/index')
-                    - kubernetes_cluster_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: kubernetes_cluster_link }
-                    = s_('CICD|You must add a %{kubernetes_cluster_start}Kubernetes cluster integration%{kubernetes_cluster_end} to this project with a domain in order for your deployment strategy to work correctly.').html_safe % { kubernetes_cluster_start: kubernetes_cluster_start, kubernetes_cluster_end: '</a>'.html_safe }
+                    = s_('CICD|You must add a %{kubernetes_cluster_link_start}Kubernetes cluster integration%{link_end} to this project with a domain in order for your deployment strategy to work correctly.').html_safe % { kubernetes_cluster_link_start: kubernetes_cluster_link_start, link_end: link_end }
+                - elsif !has_base_domain
+                  %p.settings-message.text-center
+                    = s_('CICD|You must add a %{base_domain_link_start}base domain%{link_end} to your %{kubernetes_cluster_link_start}Kubernetes cluster%{link_end} in order for your deployment strategy to work.').html_safe % { base_domain_link_start: base_domain_link_start, kubernetes_cluster_link_start: kubernetes_cluster_link_start, link_end: link_end }
                 %label.prepend-top-10
                   %strong= s_('CICD|Deployment strategy')
                 .form-check
