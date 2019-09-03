@@ -6,7 +6,7 @@ module Gitlab
   module Metrics
     module Samplers
       class RubySampler < BaseSampler
-        GC_REPORT_BUCKETS = [0.001, 0.002, 0.005, 0.01, 0.05, 0.1, 0.5].freeze
+        GC_REPORT_BUCKETS = [0.005, 0.01, 0.02, 0.04, 0.07, 0.1, 0.5].freeze
 
         def initialize(interval)
           GC::Profiler.clear
