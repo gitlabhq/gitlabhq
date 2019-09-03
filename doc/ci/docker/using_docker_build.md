@@ -580,9 +580,10 @@ For private and internal projects:
 If you want to use your own Docker images for docker-in-docker there are a few things you need to do in addition to the steps in the [docker-in-docker](#use-docker-in-docker-workflow-with-docker-executor) section:
 
 1. Update the `image` and `service` to point to your registry.
-1. Add a service [alias](https://docs.gitlab.com/ee/ci/yaml/#servicesalias)
+1. Add a service [alias](https://docs.gitlab.com/ee/ci/yaml/#servicesalias).
 
-Below is an example of how your `.gitlab-ci.yml` should look like, assuming you have it configured with [TLS enabled](#tls-enabled):
+Below is an example of what your `.gitlab-ci.yml` should look like,
+assuming you have it configured with [TLS enabled](#tls-enabled):
 
 ```yaml
  build:
@@ -603,7 +604,7 @@ Below is an example of how your `.gitlab-ci.yml` should look like, assuming you 
      - docker run my-docker-image /script/to/run/tests
 ```
 
-If you forget to set the service alias the `docker:19.03.1` image won't find the
+If you forget to set the service alias, the `docker:19.03.1` image won't find the
 `dind` service, and an error like the following is thrown:
 
 ```sh
