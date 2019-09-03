@@ -22,7 +22,9 @@
     - source scripts/utils.sh
 
 .review-docker:
-  extends: .review-base
+  extends:
+    - .default-tags
+    - .default-retry
   image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-qa-alpine
   services:
     - docker:19.03.0-dind
@@ -36,7 +38,13 @@
     QA_IMAGE: "${CI_REGISTRY}/${CI_PROJECT_PATH}/gitlab/${CI_PROJECT_NAME}-qa:${CI_COMMIT_REF_SLUG}"
 
 build-qa-image:
-  extends: .review-docker
+  extends:
+    - .review-docker
+    - .except-docs-qa
+  only:
+    refs:
+      - branches@gitlab-org/gitlab-ce
+      - branches@gitlab-org/gitlab-ee
   stage: test
   script:
     - time docker build --cache-from ${LATEST_QA_IMAGE} --tag ${QA_IMAGE} --file ./qa/Dockerfile ./
@@ -124,7 +132,9 @@ review-stop:
   artifacts: {}
 
 .review-qa-base:
-  extends: .review-docker
+  extends:
+    - .review-docker
+    - .review-only
   retry: 2
   stage: qa
   variables:

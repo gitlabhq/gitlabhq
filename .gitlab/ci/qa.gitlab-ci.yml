@@ -21,10 +21,6 @@ package-and-qa-manual:
     - .package-and-qa-base
     - .except-docs-qa
   when: manual
-  except:
-    - master
-    - /(^docs[\/-].+|.+-docs$)/
-    - /(^qa[\/-].*|.*-qa$)
 
 package-and-qa:
   extends: .package-and-qa-base
