@@ -34,7 +34,7 @@ more than one approval, the last maintainer to review and approve it will also m
 
 ### Reviewer roulette
 
-The `danger-review` CI job will randomly pick a reviewer and a maintainer for
+The [Danger bot](dangerbot.md) randomly picks a reviewer and a maintainer for
 each area of the codebase that your merge request seems to touch. It only makes
 recommendations - feel free to override it if you think someone else is a better
 fit!
