@@ -277,6 +277,10 @@ module Issuable
     end
   end
 
+  def resource_parent
+    project
+  end
+
   def milestone_available?
     project_id == milestone&.project_id || project.ancestors_upto.compact.include?(milestone&.group)
   end

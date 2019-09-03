@@ -95,15 +95,22 @@ class EventCreateService
   private
 
   def create_record_event(record, current_user, status)
-    create_event(record.project, current_user, status, target_id: record.id, target_type: record.class.name)
+    create_event(record.resource_parent, current_user, status, target_id: record.id, target_type: record.class.name)
   end
 
-  def create_event(project, current_user, status, attributes = {})
+  def create_event(resource_parent, current_user, status, attributes = {})
     attributes.reverse_merge!(
-      project: project,
       action: status,
       author_id: current_user.id
     )
+
+    resource_parent_attr = case resource_parent
+                           when Project
+                             :project
+                           when Group
+                             :group
+                           end
+    attributes[resource_parent_attr] = resource_parent if resource_parent_attr
 
     Event.create!(attributes)
   end

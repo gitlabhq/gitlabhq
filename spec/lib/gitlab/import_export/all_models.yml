@@ -26,6 +26,7 @@ issues:
 events:
 - author
 - project
+- group
 - target
 - push_event_payload
 notes:
