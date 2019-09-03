@@ -1,4 +1,4 @@
-require 'rails_helper'
+require 'spec_helper'
 
 describe 'help/instance_configuration' do
   describe 'General Sections:' do

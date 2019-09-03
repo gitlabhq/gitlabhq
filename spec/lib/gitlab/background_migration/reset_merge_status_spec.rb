@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'rails_helper'
+require 'spec_helper'
 
 describe Gitlab::BackgroundMigration::ResetMergeStatus, :migration, schema: 20190528180441 do
   let(:namespaces) { table(:namespaces) }

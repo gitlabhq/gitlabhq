@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'rails_helper'
+require 'spec_helper'
 
 describe 'Merge requests > User merges immediately', :js do
   let(:project) { create(:project, :public, :repository) }

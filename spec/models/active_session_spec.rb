@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'rails_helper'
+require 'spec_helper'
 
 RSpec.describe ActiveSession, :clean_gitlab_redis_shared_state do
   let(:user) do

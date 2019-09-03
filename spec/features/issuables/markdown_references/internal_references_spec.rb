@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "rails_helper"
+require 'spec_helper'
 
 describe "Internal references", :js do
   include Spec::Support::Helpers::Features::NotesHelpers

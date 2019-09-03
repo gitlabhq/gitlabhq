@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'rails_helper'
+require 'spec_helper'
 
 describe Clusters::Applications::Ingress do
   let(:ingress) { create(:clusters_applications_ingress) }

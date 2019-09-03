@@ -1,4 +1,4 @@
-require 'rails_helper'
+require 'spec_helper'
 
 describe AbuseReportMailer do
   include EmailSpec::Matchers

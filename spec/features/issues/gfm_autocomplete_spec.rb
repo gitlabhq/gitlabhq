@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'rails_helper'
+require 'spec_helper'
 
 describe 'GFM autocomplete', :js do
   let(:issue_xss_title) { 'This will execute alert<img src=x onerror=alert(2)&lt;img src=x onerror=alert(1)&gt;' }

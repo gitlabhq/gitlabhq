@@ -1,4 +1,4 @@
-require 'rails_helper'
+require 'spec_helper'
 
 RSpec.describe Gitlab::Favicon, :request_store do
   describe '.main' do

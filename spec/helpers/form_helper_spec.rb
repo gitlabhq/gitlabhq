@@ -1,4 +1,4 @@
-require 'rails_helper'
+require 'spec_helper'
 
 describe FormHelper do
   describe 'form_errors' do

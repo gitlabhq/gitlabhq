@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'rails_helper'
+require 'spec_helper'
 
 describe 'User can display performance bar', :js do
   shared_examples 'performance bar cannot be displayed' do

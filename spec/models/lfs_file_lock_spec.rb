@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'rails_helper'
+require 'spec_helper'
 
 describe LfsFileLock do
   set(:lfs_file_lock) { create(:lfs_file_lock) }

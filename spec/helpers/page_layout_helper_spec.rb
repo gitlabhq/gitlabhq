@@ -1,4 +1,4 @@
-require 'rails_helper'
+require 'spec_helper'
 
 describe PageLayoutHelper do
   describe 'page_description' do

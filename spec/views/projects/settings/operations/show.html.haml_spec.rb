@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require 'rails_helper'
 
 describe 'projects/settings/operations/show' do
   let(:project) { create(:project) }
