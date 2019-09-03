@@ -168,8 +168,12 @@ describe Gitlab::Danger::Helper do
       'Gemfile.lock'   | :backend
       'Procfile'       | :backend
       'Rakefile'       | :backend
-      '.gitlab-ci.yml' | :backend
       'FOO_VERSION'    | :backend
+
+      '.gitlab-ci.yml'                                        | :engineering_productivity
+      '.gitlab/ci/cng.gitlab-ci.yml'                          | :engineering_productivity
+      '.gitlab/ci/ee-specific-checks.gitlab-ci.yml'           | :engineering_productivity
+      'lib/gitlab/ci/templates/Security/SAST.gitlab-ci.yml'   | :backend
 
       'ee/FOO_VERSION' | :unknown
 

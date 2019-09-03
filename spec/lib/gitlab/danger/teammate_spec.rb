@@ -65,6 +65,18 @@ describe Gitlab::Danger::Teammate do
           expect(subject.reviewer?(project, :test, labels)).to be_falsey
         end
       end
+
+      context 'when role is Backend Engineer, Engineering Productivity' do
+        let(:role) { 'Backend Engineer, Engineering Productivity' }
+
+        it '#reviewer? returns true' do
+          expect(subject.reviewer?(project, :engineering_productivity, labels)).to be_truthy
+        end
+
+        it '#maintainer? returns false' do
+          expect(subject.maintainer?(project, :engineering_productivity, labels)).to be_falsey
+        end
+      end
     end
   end
 
