@@ -5,6 +5,8 @@ shared_examples 'languages and percentages JSON response' do
   let(:expected_languages) { project.repository.languages.map { |language| language.values_at(:label, :value)}.to_h }
 
   before do
+    allow(DetectRepositoryLanguagesWorker).to receive(:perform_async).and_call_original
+
     allow(project.repository).to receive(:languages).and_return(
       [{ value: 66.69, label: "Ruby", color: "#701516", highlight: "#701516" },
        { value: 22.98, label: "JavaScript", color: "#f1e05a", highlight: "#f1e05a" },

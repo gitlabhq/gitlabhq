@@ -148,6 +148,12 @@ RSpec.configure do |config|
       .with(:force_autodevops_on_by_default, anything)
       .and_return(false)
 
+    # Stub this call due to being an expensive operation
+    # It can be reenabled for specific tests via:
+    #
+    # allow(DetectRepositoryLanguagesWorker).to receive(:perform_async).and_call_original
+    allow(DetectRepositoryLanguagesWorker).to receive(:perform_async).and_return(true)
+
     Gitlab::ThreadMemoryCache.cache_backend.clear
   end
 

@@ -45,7 +45,7 @@ module ProjectForksHelper
       # not reset the @exists variable of this forked_project.repository
       # so we have to explicitly call this method to clear the @exists variable.
       # of the instance we're returning here.
-      forked_project.repository.after_import
+      forked_project.repository.expire_content_cache
     end
 
     forked_project

@@ -456,6 +456,10 @@ class Repository
   def after_import
     expire_content_cache
 
+    # This call is stubbed in tests due to being an expensive operation
+    # It can be reenabled for specific tests via:
+    #
+    # allow(DetectRepositoryLanguagesWorker).to receive(:perform_async).and_call_original
     DetectRepositoryLanguagesWorker.perform_async(project.id)
   end
 
