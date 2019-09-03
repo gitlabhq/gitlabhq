@@ -5,15 +5,15 @@ module Peek
     class Gitaly < DetailedView
       DEFAULT_THRESHOLDS = {
         calls: 30,
-        duration: 1,
-        individual_call: 0.5
+        duration: 1000,
+        individual_call: 500
       }.freeze
 
       THRESHOLDS = {
         production: {
           calls: 30,
-          duration: 1,
-          individual_call: 0.5
+          duration: 1000,
+          individual_call: 500
         }
       }.freeze
 
@@ -24,7 +24,7 @@ module Peek
       private
 
       def duration
-        ::Gitlab::GitalyClient.query_time
+        ::Gitlab::GitalyClient.query_time * 1000
       end
 
       def calls
