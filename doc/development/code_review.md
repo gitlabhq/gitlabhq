@@ -116,8 +116,13 @@ warrant a comment could be:
 - Any benchmarking performed to complement the change
 - Potentially insecure code
 
-Do not add these comments directly to the source code, unless the
-reviewer requires you to do so.
+Avoid:
+
+- Adding comments (referenced above, or TODO items) directly to the source code unless the reviewer requires you to do so. If the comments are added due to an actionable task,
+a link to an issue must be included.
+- Assigning merge requests with failed tests to maintainers. If the tests are failing and you have to assign, ensure you leave a comment with an explanation.
+- Excessively mentioning maintainers through email or Slack (if the maintainer is reachable
+through Slack). If you can't assign a merge request, `@` mentioning a maintainer in a comment is acceptable and in all other cases assigning the merge request is sufficient.
 
 This
 [saves reviewers time and helps authors catch mistakes earlier](https://www.ibm.com/developerworks/rational/library/11-proven-practices-for-peer-review/index.html#__RefHeading__97_174136755).
