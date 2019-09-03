@@ -1801,7 +1801,8 @@ and bring back the old behavior.
 
 ### `needs`
 
-> Introduced in GitLab 12.2.
+> - Introduced in GitLab 12.2.
+> - In GitLab 12.3, maximum number of jobs in `needs` array raised from five to 50.
 
 The `needs:` keyword enables executing jobs out-of-order, allowing you to implement
 a [directed acyclic graph](../directed_acyclic_graph/index.md) in your `.gitlab-ci.yml`.
@@ -1852,30 +1853,26 @@ This example creates three paths of execution:
 
 #### Requirements and limitations
 
-1. If `needs:` is set to point to a job that is not instantiated
-   because of `only/except` rules or otherwise does not exist, the
-   job will fail.
-1. Note that on day one of the launch, we are temporarily limiting the
-   maximum number of jobs that a single job can need in the `needs:` array. Track
-   our [infrastructure issue](https://gitlab.com/gitlab-com/gl-infra/infrastructure/issues/7541)
-   for details on the current limit.
-1. If you use `dependencies:` with `needs:`, it's important that you
-   do not mark a job as having a dependency on something that won't
-   have been run at the time it needs it. It's better to use both
-   keywords in this case so that GitLab handles the ordering appropriately.
-1. It is impossible for now to have `needs: []` (empty needs),
-   the job always needs to depend on something, unless this is the job
-   in the first stage (see [gitlab-ce#65504](https://gitlab.com/gitlab-org/gitlab-ce/issues/65504)).
-1. If `needs:` refers to a job that is marked as `parallel:`.
-   the current job will depend on all parallel jobs created.
-1. `needs:` is similar to `dependencies:` in that it needs to use jobs from
-   prior stages, meaning it is impossible to create circular
-   dependencies or depend on jobs in the current stage (see [gitlab-ce#65505](https://gitlab.com/gitlab-org/gitlab-ce/issues/65505)).
-1. Related to the above, stages must be explicitly defined for all jobs
-   that have the keyword `needs:` or are referred to by one.
-1. For self-managed users, the feature must be turned on using the `ci_dag_support`
-   feature flag. The `ci_dag_limit_needs` option, if set, will limit the number of
-   jobs that a single job can need to `50`. If unset, the limit is `5`.
+- If `needs:` is set to point to a job that is not instantiated
+  because of `only/except` rules or otherwise does not exist, the
+  pipeline will be created with YAML error.
+- We are temporarily limiting the maximum number of jobs that a single job can
+  need in the `needs:` array:
+  - For GitLab.com, the limit is five. For more information, see our
+    [infrastructure issue](https://gitlab.com/gitlab-com/gl-infra/infrastructure/issues/7541).
+  - For self-managed instances, the limit is:
+    - Five by default (`ci_dag_limit_needs` feature flag is enabled).
+    - 50 if the `ci_dag_limit_needs` feature flag is disabled.
+- It is impossible for now to have `needs: []` (empty needs),
+  the job always needs to depend on something, unless this is the job
+  in the first stage (see [gitlab-ce#65504](https://gitlab.com/gitlab-org/gitlab-ce/issues/65504)).
+- If `needs:` refers to a job that is marked as `parallel:`.
+  the current job will depend on all parallel jobs created.
+- `needs:` is similar to `dependencies:` in that it needs to use jobs from
+  prior stages, meaning it is impossible to create circular
+  dependencies or depend on jobs in the current stage (see [gitlab-ce#65505](https://gitlab.com/gitlab-org/gitlab-ce/issues/65505)).
+- Related to the above, stages must be explicitly defined for all jobs
+  that have the keyword `needs:` or are referred to by one.
 
 ### `coverage`
 
