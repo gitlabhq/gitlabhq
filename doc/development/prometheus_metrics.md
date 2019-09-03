@@ -44,3 +44,26 @@ class ImportCommonMetrics < ActiveRecord::Migration[4.2]
   end
 end
 ```
+
+## GitLab Prometheus metrics
+
+GitLab provides [Prometheus metrics](../administration/monitoring/prometheus/gitlab_metrics.md)
+to monitor itself.
+
+### Adding a new metric
+
+This section describes how to add new metrics for self-monitoring
+([example](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/15440)).
+
+1. Select the [type of metric](https://gitlab.com/gitlab-org/prometheus-client-mmap#metrics):
+
+   - `Gitlab::Metrics.counter`
+   - `Gitlab::Metrics.gauge`
+   - `Gitlab::Metrics.histogram`
+   - `Gitlab::Metrics.summary`
+
+1. Select the appropriate name for your metric. Refer to the guidelines
+   for [Prometheus metric names](https://prometheus.io/docs/practices/naming/#metric-names).
+1. Update the list of [GitLab Prometheus metrics](../administration/monitoring/prometheus/gitlab_metrics.md).
+1. Trigger the relevant page/code that will record the new metric.
+1. Check that the new metric appears at `/-/metrics`.
