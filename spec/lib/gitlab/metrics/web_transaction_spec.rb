@@ -253,11 +253,11 @@ describe Gitlab::Metrics::WebTransaction do
     end
 
     it 'allows tracking of custom tags' do
-      transaction.add_event(:meow, animal: 'cat')
+      transaction.add_event(:bau, animal: 'dog')
 
       metric = transaction.metrics[0]
 
-      expect(metric.tags).to eq(event: :meow, animal: 'cat')
+      expect(metric.tags).to eq(event: :bau, animal: 'dog')
     end
   end
 end

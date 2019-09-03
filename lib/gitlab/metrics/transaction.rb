@@ -78,7 +78,7 @@ module Gitlab
       # tags - A set of tags to attach to the event.
       def add_event(event_name, tags = {})
         filtered_tags = filter_tags(tags)
-        self.class.transaction_metric(event_name, :counter, prefix: 'event_', use_feature_flag: true, tags: filtered_tags).increment(filtered_tags.merge(labels))
+        self.class.transaction_metric(event_name, :counter, prefix: 'event_', tags: filtered_tags).increment(filtered_tags.merge(labels))
         @metrics << Metric.new(EVENT_SERIES, { count: 1 }, filtered_tags.merge(event: event_name), :event)
       end
 
@@ -155,12 +155,11 @@ module Gitlab
         with_feature :prometheus_metrics_transaction_allocated_memory
       end
 
-      def self.transaction_metric(name, type, prefix: nil, use_feature_flag: false, tags: {})
+      def self.transaction_metric(name, type, prefix: nil, tags: {})
         metric_name = "gitlab_transaction_#{prefix}#{name}_total".to_sym
         fetch_metric(type, metric_name) do
           docstring "Transaction #{prefix}#{name} #{type}"
           base_labels tags.merge(BASE_LABELS)
-          with_feature "prometheus_transaction_#{prefix}#{name}_total".to_sym if use_feature_flag
 
           if type == :gauge
             multiprocess_mode :livesum
