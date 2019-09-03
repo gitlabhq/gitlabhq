@@ -1,167 +1,165 @@
-- @no_container = true
 - breadcrumb_title "Dashboard"
 
-%div{ class: container_class }
-  = render_if_exists 'admin/licenses/breakdown', license: @license
+= render_if_exists 'admin/licenses/breakdown', license: @license
 
-  .admin-dashboard.prepend-top-default
-    .row
-      .col-sm-4
-        .info-well.dark-well
-          .well-segment.well-centered
-            = link_to admin_projects_path do
-              %h3.text-center
-                Projects:
-                = approximate_count_with_delimiters(@counts, Project)
-            %hr
-            = link_to('New project', new_project_path, class: "btn btn-success")
-      .col-sm-4
-        .info-well.dark-well
-          .well-segment.well-centered
-            = link_to admin_users_path do
-              %h3.text-center
-                Users:
-                = approximate_count_with_delimiters(@counts, User)
-            %hr
-            .btn-group.d-flex{ role: 'group' }
-              = link_to 'New user', new_admin_user_path, class: "btn btn-success"
-              = render_if_exists 'admin/dashboard/users_statistics'
-      .col-sm-4
-        .info-well.dark-well
-          .well-segment.well-centered
-            = link_to admin_groups_path do
-              %h3.text-center
-                Groups:
-                = approximate_count_with_delimiters(@counts, Group)
-            %hr
-            = link_to 'New group', new_admin_group_path, class: "btn btn-success"
-    .row
-      .col-md-4
-        .info-well
-          .well-segment.admin-well.admin-well-statistics
-            %h4 Statistics
-            %p
-              Forks
-              %span.light.float-right
-                = approximate_fork_count_with_delimiters(@counts)
-            %p
-              Issues
-              %span.light.float-right
-                = approximate_count_with_delimiters(@counts, Issue)
-            %p
-              Merge Requests
-              %span.light.float-right
-                = approximate_count_with_delimiters(@counts, MergeRequest)
-            %p
-              Notes
-              %span.light.float-right
-                = approximate_count_with_delimiters(@counts, Note)
-            %p
-              Snippets
-              %span.light.float-right
-                = approximate_count_with_delimiters(@counts, Snippet)
-            %p
-              SSH Keys
-              %span.light.float-right
-                = approximate_count_with_delimiters(@counts, Key)
-            %p
-              Milestones
-              %span.light.float-right
-                = approximate_count_with_delimiters(@counts, Milestone)
-            %p
-              Active Users
-              %span.light.float-right
-                = number_with_delimiter(User.active.count)
-      .col-md-4
-        .info-well
-          .well-segment.admin-well.admin-well-features
-            %h4 Features
-            = feature_entry(_('Sign up'), href: admin_application_settings_path(anchor: 'js-signup-settings'))
-            = feature_entry(_('LDAP'), enabled: Gitlab.config.ldap.enabled)
-            = feature_entry(_('Gravatar'), href: admin_application_settings_path(anchor: 'js-account-settings'), enabled: gravatar_enabled?)
-            = feature_entry(_('OmniAuth'), href: admin_application_settings_path(anchor: 'js-signin-settings'), enabled: Gitlab::Auth.omniauth_enabled?)
-            = feature_entry(_('Reply by email'), enabled: Gitlab::IncomingEmail.enabled?)
+.admin-dashboard.prepend-top-default
+  .row
+    .col-sm-4
+      .info-well.dark-well
+        .well-segment.well-centered
+          = link_to admin_projects_path do
+            %h3.text-center
+              Projects:
+              = approximate_count_with_delimiters(@counts, Project)
+          %hr
+          = link_to('New project', new_project_path, class: "btn btn-success")
+    .col-sm-4
+      .info-well.dark-well
+        .well-segment.well-centered
+          = link_to admin_users_path do
+            %h3.text-center
+              Users:
+              = approximate_count_with_delimiters(@counts, User)
+          %hr
+          .btn-group.d-flex{ role: 'group' }
+            = link_to 'New user', new_admin_user_path, class: "btn btn-success"
+            = render_if_exists 'admin/dashboard/users_statistics'
+    .col-sm-4
+      .info-well.dark-well
+        .well-segment.well-centered
+          = link_to admin_groups_path do
+            %h3.text-center
+              Groups:
+              = approximate_count_with_delimiters(@counts, Group)
+          %hr
+          = link_to 'New group', new_admin_group_path, class: "btn btn-success"
+  .row
+    .col-md-4
+      .info-well
+        .well-segment.admin-well.admin-well-statistics
+          %h4 Statistics
+          %p
+            Forks
+            %span.light.float-right
+              = approximate_fork_count_with_delimiters(@counts)
+          %p
+            Issues
+            %span.light.float-right
+              = approximate_count_with_delimiters(@counts, Issue)
+          %p
+            Merge Requests
+            %span.light.float-right
+              = approximate_count_with_delimiters(@counts, MergeRequest)
+          %p
+            Notes
+            %span.light.float-right
+              = approximate_count_with_delimiters(@counts, Note)
+          %p
+            Snippets
+            %span.light.float-right
+              = approximate_count_with_delimiters(@counts, Snippet)
+          %p
+            SSH Keys
+            %span.light.float-right
+              = approximate_count_with_delimiters(@counts, Key)
+          %p
+            Milestones
+            %span.light.float-right
+              = approximate_count_with_delimiters(@counts, Milestone)
+          %p
+            Active Users
+            %span.light.float-right
+              = number_with_delimiter(User.active.count)
+    .col-md-4
+      .info-well
+        .well-segment.admin-well.admin-well-features
+          %h4 Features
+          = feature_entry(_('Sign up'), href: admin_application_settings_path(anchor: 'js-signup-settings'))
+          = feature_entry(_('LDAP'), enabled: Gitlab.config.ldap.enabled)
+          = feature_entry(_('Gravatar'), href: admin_application_settings_path(anchor: 'js-account-settings'), enabled: gravatar_enabled?)
+          = feature_entry(_('OmniAuth'), href: admin_application_settings_path(anchor: 'js-signin-settings'), enabled: Gitlab::Auth.omniauth_enabled?)
+          = feature_entry(_('Reply by email'), enabled: Gitlab::IncomingEmail.enabled?)
 
-            = render_if_exists 'admin/dashboard/elastic_and_geo'
+          = render_if_exists 'admin/dashboard/elastic_and_geo'
 
-            = feature_entry(_('Container Registry'), href: ci_cd_admin_application_settings_path(anchor: 'js-registry-settings'), enabled: Gitlab.config.registry.enabled)
-            = feature_entry(_('Gitlab Pages'), href: help_instance_configuration_url, enabled: Gitlab.config.pages.enabled)
-            = feature_entry(_('Shared Runners'), href: admin_runners_path, enabled: Gitlab.config.gitlab_ci.shared_runners_enabled)
-      .col-md-4
-        .info-well
-          .well-segment.admin-well
-            %h4
-              Components
-              - if Gitlab::CurrentSettings.version_check_enabled
-                .float-right
-                  = version_status_badge
+          = feature_entry(_('Container Registry'), href: ci_cd_admin_application_settings_path(anchor: 'js-registry-settings'), enabled: Gitlab.config.registry.enabled)
+          = feature_entry(_('Gitlab Pages'), href: help_instance_configuration_url, enabled: Gitlab.config.pages.enabled)
+          = feature_entry(_('Shared Runners'), href: admin_runners_path, enabled: Gitlab.config.gitlab_ci.shared_runners_enabled)
+    .col-md-4
+      .info-well
+        .well-segment.admin-well
+          %h4
+            Components
+            - if Gitlab::CurrentSettings.version_check_enabled
+              .float-right
+                = version_status_badge
+          %p
+            %a{ href: admin_application_settings_path }
+              GitLab
+            %span.float-right
+              = Gitlab::VERSION
+              = "(#{Gitlab.revision})"
+          %p
+            GitLab Shell
+            %span.float-right
+              = Gitlab::Shell.new.version
+          %p
+            GitLab Workhorse
+            %span.float-right
+              = gitlab_workhorse_version
+          %p
+            GitLab API
+            %span.float-right
+              = API::API::version
+          - if Gitlab.config.pages.enabled
             %p
-              %a{ href: admin_application_settings_path }
-                GitLab
+              GitLab Pages
               %span.float-right
-                = Gitlab::VERSION
-                = "(#{Gitlab.revision})"
-            %p
-              GitLab Shell
-              %span.float-right
-                = Gitlab::Shell.new.version
-            %p
-              GitLab Workhorse
-              %span.float-right
-                = gitlab_workhorse_version
-            %p
-              GitLab API
-              %span.float-right
-                = API::API::version
-            - if Gitlab.config.pages.enabled
-              %p
-                GitLab Pages
-                %span.float-right
-                  = Gitlab::Pages::VERSION
+                = Gitlab::Pages::VERSION
 
-            = render_if_exists 'admin/dashboard/geo'
+          = render_if_exists 'admin/dashboard/geo'
 
+          %p
+            Ruby
+            %span.float-right
+              #{RUBY_VERSION}p#{RUBY_PATCHLEVEL}
+          %p
+            Rails
+            %span.float-right
+              #{Rails::VERSION::STRING}
+          %p
+            = Gitlab::Database.human_adapter_name
+            %span.float-right
+              = Gitlab::Database.version
+          %p
+            = link_to "Gitaly Servers", admin_gitaly_servers_path
+  .row
+    .col-md-4
+      .info-well
+        .well-segment.admin-well
+          %h4 Latest projects
+          - @projects.each do |project|
             %p
-              Ruby
-              %span.float-right
-                #{RUBY_VERSION}p#{RUBY_PATCHLEVEL}
+              = link_to project.full_name, admin_project_path(project), class: 'str-truncated-60'
+              %span.light.float-right
+                #{time_ago_with_tooltip(project.created_at)}
+    .col-md-4
+      .info-well
+        .well-segment.admin-well
+          %h4 Latest users
+          - @users.each do |user|
             %p
-              Rails
-              %span.float-right
-                #{Rails::VERSION::STRING}
+              = link_to [:admin, user], class: 'str-truncated-60' do
+                = user.name
+              %span.light.float-right
+                #{time_ago_with_tooltip(user.created_at)}
+    .col-md-4
+      .info-well
+        .well-segment.admin-well
+          %h4 Latest groups
+          - @groups.each do |group|
             %p
-              = Gitlab::Database.human_adapter_name
-              %span.float-right
-                = Gitlab::Database.version
-            %p
-              = link_to "Gitaly Servers", admin_gitaly_servers_path
-    .row
-      .col-md-4
-        .info-well
-          .well-segment.admin-well
-            %h4 Latest projects
-            - @projects.each do |project|
-              %p
-                = link_to project.full_name, admin_project_path(project), class: 'str-truncated-60'
-                %span.light.float-right
-                  #{time_ago_with_tooltip(project.created_at)}
-      .col-md-4
-        .info-well
-          .well-segment.admin-well
-            %h4 Latest users
-            - @users.each do |user|
-              %p
-                = link_to [:admin, user], class: 'str-truncated-60' do
-                  = user.name
-                %span.light.float-right
-                  #{time_ago_with_tooltip(user.created_at)}
-      .col-md-4
-        .info-well
-          .well-segment.admin-well
-            %h4 Latest groups
-            - @groups.each do |group|
-              %p
-                = link_to [:admin, group], class: 'str-truncated-60' do
-                  = group.full_name
-                %span.light.float-right
-                  #{time_ago_with_tooltip(group.created_at)}
+              = link_to [:admin, group], class: 'str-truncated-60' do
+                = group.full_name
+              %span.light.float-right
+                #{time_ago_with_tooltip(group.created_at)}

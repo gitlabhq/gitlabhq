@@ -1,7 +1,6 @@
-- @no_container = true
 - page_title _('Contributors')
 
-.js-graphs-show{ class: container_class, 'data-project-graph-path': project_graph_path(@project, current_ref, format: :json) }
+.js-graphs-show{ 'data-project-graph-path': project_graph_path(@project, current_ref, format: :json) }
   .sub-header-block
     .tree-ref-holder.inline.vertical-align-middle
       = render 'shared/ref_switcher', destination: 'graphs'

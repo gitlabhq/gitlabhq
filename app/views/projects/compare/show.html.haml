@@ -1,25 +1,23 @@
-- @no_container = true
 - add_to_breadcrumbs _("Compare Revisions"), project_compare_index_path(@project)
 - page_title "#{params[:from]}...#{params[:to]}"
 
-%div{ class: container_class }
-  .sub-header-block.no-bottom-space
-    = render "form"
+.sub-header-block.no-bottom-space
+  = render "form"
 
-  - if @commits.present?
-    = render "projects/commits/commit_list"
-    = render "projects/diffs/diffs", diffs: @diffs, environment: @environment, diff_page_context: "is-compare"
-  - else
-    .card.bg-light
-      .center
-        %h4
-          = s_("CompareBranches|There isn't anything to compare.")
-        %p.slead
-          - if params[:to] == params[:from]
-            - source_branch = capture do
-              %span.ref-name= params[:from]
-            - target_branch = capture do
-              %span.ref-name= params[:to]
-            = (s_("CompareBranches|%{source_branch} and %{target_branch} are the same.") % { source_branch: source_branch, target_branch: target_branch }).html_safe
-          - else
-            = _("You'll need to use different branch names to get a valid comparison.")
+- if @commits.present?
+  = render "projects/commits/commit_list"
+  = render "projects/diffs/diffs", diffs: @diffs, environment: @environment, diff_page_context: "is-compare"
+- else
+  .card.bg-light
+    .center
+      %h4
+        = s_("CompareBranches|There isn't anything to compare.")
+      %p.slead
+        - if params[:to] == params[:from]
+          - source_branch = capture do
+            %span.ref-name= params[:from]
+          - target_branch = capture do
+            %span.ref-name= params[:to]
+          = (s_("CompareBranches|%{source_branch} and %{target_branch} are the same.") % { source_branch: source_branch, target_branch: target_branch }).html_safe
+        - else
+          = _("You'll need to use different branch names to get a valid comparison.")

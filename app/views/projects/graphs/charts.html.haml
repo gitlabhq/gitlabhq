@@ -1,7 +1,6 @@
-- @no_container = true
 - page_title _("Contribution Charts")
 
-.repo-charts{ class: container_class }
+.repo-charts
   %h4.sub-header
     = _("Programming languages used in this repository")
 
@@ -20,7 +19,7 @@
     .col-md-8
       %canvas#languages-chart{ height: 400 }
 
-.repo-charts{ class: container_class }
+.repo-charts
   .sub-header-block.border-top
 
   .row.tree-ref-header

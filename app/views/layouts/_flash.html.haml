@@ -1,10 +1,8 @@
-- extra_flash_class = local_assigns.fetch(:extra_flash_class, nil)
-
-.flash-container.flash-container-page
+.flash-container.flash-container-page.sticky
   -# We currently only support `alert`, `notice`, `success`
   - flash.each do |key, value|
     -# Don't show a flash message if the message is nil
     - if value
-      %div{ class: "flash-#{key}" }
-        %div{ class: "#{(container_class unless fluid_layout)} #{(extra_flash_class unless @no_container)} #{@content_class}" }
-          %span= value
+      %div{ class: "flash-content flash-#{key} rounded" }
+        %span= value
+        = sprite_icon('close', size: 16, css_class: 'close-icon')

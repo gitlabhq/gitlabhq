@@ -1,10 +1,9 @@
-- @no_container = true
 - @sort ||= sort_value_recently_updated
 - page_title s_('TagsPage|Tags')
 = content_for :meta_tags do
   = auto_discovery_link_tag(:atom, project_tags_url(@project, rss_url_options), title: "#{@project.name} tags")
 
-.flex-list{ class: container_class }
+.flex-list
   .top-area.adjust
     .nav-text.row-main-content
       = s_('TagsPage|Tags give the ability to mark specific points in history as being important')

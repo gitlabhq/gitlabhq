@@ -1,37 +1,35 @@
-- @no_container = true
 - page_title "System Info"
 
-%div{ class: container_class }
-  .prepend-top-default
-  .row
-    .col-sm-4
-      .card.bg-light.light-well
-        %h4 CPU
-        .data
-          - if @cpus
-            %h1 #{@cpus.length} cores
-          - else
-            = icon('warning', class: 'text-warning')
-            Unable to collect CPU info
-    .col-sm-4
-      .card.bg-light.light-well
-        %h4 Memory Usage
-        .data
-          - if @memory
-            %h1 #{number_to_human_size(@memory.active_bytes)} / #{number_to_human_size(@memory.total_bytes)}
-          - else
-            = icon('warning', class: 'text-warning')
-            Unable to collect memory info
-    .col-sm-4
-      .card.bg-light.light-well
-        %h4 Disk Usage
-        .data
-          - @disks.each do |disk|
-            %h1 #{number_to_human_size(disk[:bytes_used])} / #{number_to_human_size(disk[:bytes_total])}
-            %p= disk[:disk_name]
-            %p= disk[:mount_path]
-    .col-sm-4
-      .card.bg-light.light-well
-        %h4 Uptime
-        .data
-          %h1= distance_of_time_in_words_to_now(Rails.application.config.booted_at)
+.prepend-top-default
+.row
+  .col-sm-4
+    .card.bg-light.light-well
+      %h4 CPU
+      .data
+        - if @cpus
+          %h1 #{@cpus.length} cores
+        - else
+          = icon('warning', class: 'text-warning')
+          Unable to collect CPU info
+  .col-sm-4
+    .card.bg-light.light-well
+      %h4 Memory Usage
+      .data
+        - if @memory
+          %h1 #{number_to_human_size(@memory.active_bytes)} / #{number_to_human_size(@memory.total_bytes)}
+        - else
+          = icon('warning', class: 'text-warning')
+          Unable to collect memory info
+  .col-sm-4
+    .card.bg-light.light-well
+      %h4 Disk Usage
+      .data
+        - @disks.each do |disk|
+          %h1 #{number_to_human_size(disk[:bytes_used])} / #{number_to_human_size(disk[:bytes_total])}
+          %p= disk[:disk_name]
+          %p= disk[:mount_path]
+  .col-sm-4
+    .card.bg-light.light-well
+      %h4 Uptime
+      .data
+        %h1= distance_of_time_in_words_to_now(Rails.application.config.booted_at)

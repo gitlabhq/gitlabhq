@@ -1,4 +1,3 @@
-- @no_container = true
 - page_title 'Labels'
 - can_admin_label = can?(current_user, :admin_label, @group)
 - search = params[:search]
@@ -7,24 +6,23 @@
 
 - if labels_or_filters
   #promote-label-modal
-  %div{ class: container_class }
-    = render 'shared/labels/nav', labels_or_filters: labels_or_filters, can_admin_label: can_admin_label
+  = render 'shared/labels/nav', labels_or_filters: labels_or_filters, can_admin_label: can_admin_label
 
-    .labels-container.prepend-top-5
-      - if @labels.any?
-        .text-muted
-          = _('Labels can be applied to %{features}. Group labels are available for any project within the group.') % { features: issuable_types.to_sentence }
-        .other-labels
-          %h5= _('Labels')
-          %ul.content-list.manage-labels-list.js-other-labels
-            = render partial: 'shared/label', collection: @labels, as: :label, locals: { use_label_priority: false, subject: @group }
-            = paginate @labels, theme: 'gitlab'
-      - elsif search.present?
-        .nothing-here-block
-          = _('No labels with such name or description')
-      - elsif subscribed.present?
-        .nothing-here-block
-          = _('You do not have any subscriptions yet')
+  .labels-container.prepend-top-5
+    - if @labels.any?
+      .text-muted
+        = _('Labels can be applied to %{features}. Group labels are available for any project within the group.') % { features: issuable_types.to_sentence }
+      .other-labels
+        %h5= _('Labels')
+        %ul.content-list.manage-labels-list.js-other-labels
+          = render partial: 'shared/label', collection: @labels, as: :label, locals: { use_label_priority: false, subject: @group }
+          = paginate @labels, theme: 'gitlab'
+    - elsif search.present?
+      .nothing-here-block
+        = _('No labels with such name or description')
+    - elsif subscribed.present?
+      .nothing-here-block
+        = _('You do not have any subscriptions yet')
 - else
   = render 'shared/empty_states/labels'
 

@@ -1,4 +1,3 @@
-- @no_container = true
 - breadcrumb_title _("Repository")
 - @content_class = "limit-container-width" unless fluid_layout
 - signatures_path = namespace_project_signatures_path(namespace_id: @project.namespace.full_path, project_id: @project.path, id: @last_commit)
@@ -9,6 +8,5 @@
 
 .js-signature-container{ data: { 'signatures-path': signatures_path } }
 
-%div{ class: [(container_class), ("limit-container-width" unless fluid_layout)] }
-  = render 'projects/last_push'
-  = render 'projects/files', commit: @last_commit, project: @project, ref: @ref, content_url: project_tree_path(@project, @id)
+= render 'projects/last_push'
+= render 'projects/files', commit: @last_commit, project: @project, ref: @ref, content_url: project_tree_path(@project, @id)

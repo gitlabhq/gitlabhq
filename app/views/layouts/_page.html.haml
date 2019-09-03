@@ -13,8 +13,8 @@
       = render "shared/ping_consent"
       - unless @hide_breadcrumbs
         = render "layouts/nav/breadcrumbs"
-      = render "layouts/flash", extra_flash_class: 'limit-container-width'
       .d-flex
     %div{ class: "#{(container_class unless @no_container)} #{@content_class}" }
       .content{ id: "content-body" }
+        = render "layouts/flash", extra_flash_class: 'limit-container-width'
         = yield

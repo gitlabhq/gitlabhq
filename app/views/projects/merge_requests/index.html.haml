@@ -1,4 +1,3 @@
-- @no_container = true
 - @can_bulk_update = can?(current_user, :admin_merge_request, @project)
 - merge_project = merge_request_source_project_for_project(@project)
 - new_merge_request_path = project_new_merge_request_path(merge_project) if merge_project
@@ -6,24 +5,22 @@
 - page_title "Merge Requests"
 - new_merge_request_email = @project.new_issuable_address(current_user, 'merge_request')
 
-%div{ class: container_class }
-  = render 'projects/last_push'
+= render 'projects/last_push'
 
 - if @project.merge_requests.exists?
-  %div{ class: container_class }
-    .top-area
-      = render 'shared/issuable/nav', type: :merge_requests
-      .nav-controls
-        = render "projects/merge_requests/nav_btns", merge_project: merge_project, new_merge_request_path: new_merge_request_path
+  .top-area
+    = render 'shared/issuable/nav', type: :merge_requests
+    .nav-controls
+      = render "projects/merge_requests/nav_btns", merge_project: merge_project, new_merge_request_path: new_merge_request_path
 
-    = render 'shared/issuable/search_bar', type: :merge_requests
+  = render 'shared/issuable/search_bar', type: :merge_requests
 
-    - if @can_bulk_update
-      = render 'shared/issuable/bulk_update_sidebar', type: :merge_requests
+  - if @can_bulk_update
+    = render 'shared/issuable/bulk_update_sidebar', type: :merge_requests
 
-    .merge-requests-holder
-      = render 'merge_requests'
-      - if new_merge_request_email
-        = render 'projects/issuable_by_email', email: new_merge_request_email, issuable_type: 'merge_request'
+  .merge-requests-holder
+    = render 'merge_requests'
+    - if new_merge_request_email
+      = render 'projects/issuable_by_email', email: new_merge_request_email, issuable_type: 'merge_request'
 - else
   = render 'shared/empty_states/merge_requests', button_path: new_merge_request_path

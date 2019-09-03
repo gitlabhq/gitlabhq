@@ -1,18 +1,16 @@
-- @no_container = true
 - page_title "Jobs"
 
-%div{ class: container_class }
-  .top-area
-    - build_path_proc = ->(scope) { project_jobs_path(@project, scope: scope) }
-    = render "shared/builds/tabs", build_path_proc: build_path_proc, all_builds: @all_builds, scope: @scope
+.top-area
+  - build_path_proc = ->(scope) { project_jobs_path(@project, scope: scope) }
+  = render "shared/builds/tabs", build_path_proc: build_path_proc, all_builds: @all_builds, scope: @scope
 
-    .nav-controls
-      - if can?(current_user, :update_build, @project)
-        - unless @repository.gitlab_ci_yml
-          = link_to 'Get started with Pipelines', help_page_path('ci/quick_start/README'), class: 'btn btn-info'
+  .nav-controls
+    - if can?(current_user, :update_build, @project)
+      - unless @repository.gitlab_ci_yml
+        = link_to 'Get started with Pipelines', help_page_path('ci/quick_start/README'), class: 'btn btn-info'
 
-        = link_to project_ci_lint_path(@project), class: 'btn btn-default' do
-          %span CI lint
+      = link_to project_ci_lint_path(@project), class: 'btn btn-default' do
+        %span CI lint
 
-  .content-list.builds-content-list
-    = render "table", builds: @builds, project: @project
+.content-list.builds-content-list
+  = render "table", builds: @builds, project: @project

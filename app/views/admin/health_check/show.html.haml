@@ -1,41 +1,39 @@
-- @no_container = true
 - page_title _('Health Check')
 - no_errors = @errors.blank?
 
-%div{ class: container_class }
-  %h3.page-title= page_title
-  .bs-callout.clearfix
-    .float-left
-      %p
-    #{ s_('HealthCheck|Access token is') }
-    %code#health-check-token= Gitlab::CurrentSettings.health_check_access_token
-    .prepend-top-10
-      = button_to _("Reset health check access token"), reset_health_check_token_admin_application_settings_path,
-        method: :put, class: 'btn btn-default',
-        data: { confirm: _('Are you sure you want to reset the health check token?') }
-  %p.light
-    #{ _('Health information can be retrieved from the following endpoints. More information is available') }
-    = link_to s_('More information is available|here'), help_page_path('user/admin_area/monitoring/health_check')
-    %ul
-      %li
-        %code= readiness_url(token: Gitlab::CurrentSettings.health_check_access_token)
-      %li
-        %code= liveness_url(token: Gitlab::CurrentSettings.health_check_access_token)
-      %li
-        %code= metrics_url(token: Gitlab::CurrentSettings.health_check_access_token)
-      = render_if_exists 'admin/health_check/health_check_url'
-  %hr
-  .card
-    .card-header
-      Current Status:
-      - if no_errors
-        = icon('circle', class: 'cgreen')
-        #{ s_('HealthCheck|Healthy') }
-      - else
-        = icon('warning', class: 'cred')
-        #{ s_('HealthCheck|Unhealthy') }
-    .card-body
-      - if no_errors
-        #{ s_('HealthCheck|No Health Problems Detected') }
-      - else
-        = @errors
+%h3.page-title= page_title
+.bs-callout.clearfix
+  .float-left
+    %p
+  #{ s_('HealthCheck|Access token is') }
+  %code#health-check-token= Gitlab::CurrentSettings.health_check_access_token
+  .prepend-top-10
+    = button_to _("Reset health check access token"), reset_health_check_token_admin_application_settings_path,
+      method: :put, class: 'btn btn-default',
+      data: { confirm: _('Are you sure you want to reset the health check token?') }
+%p.light
+  #{ _('Health information can be retrieved from the following endpoints. More information is available') }
+  = link_to s_('More information is available|here'), help_page_path('user/admin_area/monitoring/health_check')
+  %ul
+    %li
+      %code= readiness_url(token: Gitlab::CurrentSettings.health_check_access_token)
+    %li
+      %code= liveness_url(token: Gitlab::CurrentSettings.health_check_access_token)
+    %li
+      %code= metrics_url(token: Gitlab::CurrentSettings.health_check_access_token)
+    = render_if_exists 'admin/health_check/health_check_url'
+%hr
+.card
+  .card-header
+    Current Status:
+    - if no_errors
+      = icon('circle', class: 'cgreen')
+      #{ s_('HealthCheck|Healthy') }
+    - else
+      = icon('warning', class: 'cred')
+      #{ s_('HealthCheck|Unhealthy') }
+  .card-body
+    - if no_errors
+      #{ s_('HealthCheck|No Health Problems Detected') }
+    - else
+      = @errors

@@ -1,18 +1,15 @@
 - @hide_top_links = true
-- @no_container = true
 
 = content_for :meta_tags do
   = auto_discovery_link_tag(:atom, dashboard_projects_url(rss_url_options), title: "All activity")
-
 
 = render_dashboard_gold_trial(current_user)
 
 - page_title    "Activity"
 - header_title  "Activity", activity_dashboard_path
 
-%div{ class: container_class }
-  = render "projects/last_push"
-  = render 'dashboard/activity_head'
+= render "projects/last_push"
+= render 'dashboard/activity_head'
 
-  %section.activities
-    = render 'activities'
+%section.activities
+  = render 'activities'

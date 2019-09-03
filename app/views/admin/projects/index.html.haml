@@ -1,44 +1,41 @@
-- @no_container = true
 - page_title "Projects"
 - params[:visibility_level] ||= []
 
+.top-area.scrolling-tabs-container.inner-page-scroll-tabs
+  .prepend-top-default
+    .search-holder
+      = render 'shared/projects/search_form', autofocus: true, icon: true, admin_view: true
+      .dropdown
+        - toggle_text = 'Namespace'
+        - if params[:namespace_id].present?
+          = hidden_field_tag :namespace_id, params[:namespace_id]
+          - namespace = Namespace.find(params[:namespace_id])
+          - toggle_text = "#{namespace.kind}: #{namespace.full_path}"
+        = dropdown_toggle(toggle_text, { toggle: 'dropdown', is_filter: 'true' }, { toggle_class: 'js-namespace-select large' })
+        .dropdown-menu.dropdown-select.dropdown-menu-right
+          = dropdown_title('Namespaces')
+          = dropdown_filter("Search for Namespace")
+          = dropdown_content
+          = dropdown_loading
+      = render 'shared/projects/dropdown'
+      = link_to new_project_path, class: 'btn btn-success' do
+        New Project
+      = button_tag "Search", class: "btn btn-primary btn-search hide"
 
-%div{ class: container_class }
-  .top-area.scrolling-tabs-container.inner-page-scroll-tabs
-    .prepend-top-default
-      .search-holder
-        = render 'shared/projects/search_form', autofocus: true, icon: true, admin_view: true
-        .dropdown
-          - toggle_text = 'Namespace'
-          - if params[:namespace_id].present?
-            = hidden_field_tag :namespace_id, params[:namespace_id]
-            - namespace = Namespace.find(params[:namespace_id])
-            - toggle_text = "#{namespace.kind}: #{namespace.full_path}"
-          = dropdown_toggle(toggle_text, { toggle: 'dropdown', is_filter: 'true' }, { toggle_class: 'js-namespace-select large' })
-          .dropdown-menu.dropdown-select.dropdown-menu-right
-            = dropdown_title('Namespaces')
-            = dropdown_filter("Search for Namespace")
-            = dropdown_content
-            = dropdown_loading
-        = render 'shared/projects/dropdown'
-        = link_to new_project_path, class: 'btn btn-success' do
-          New Project
-        = button_tag "Search", class: "btn btn-primary btn-search hide"
+  %ul.nav-links.nav.nav-tabs
+    - opts = params[:visibility_level].present? ? {} : { page: admin_projects_path }
+    = nav_link(opts) do
+      = link_to admin_projects_path do
+        All
 
-    %ul.nav-links.nav.nav-tabs
-      - opts = params[:visibility_level].present? ? {} : { page: admin_projects_path }
-      = nav_link(opts) do
-        = link_to admin_projects_path do
-          All
+    = nav_link(html_options: { class: active_when(params[:visibility_level] == Gitlab::VisibilityLevel::PRIVATE.to_s) }) do
+      = link_to admin_projects_path(visibility_level: Gitlab::VisibilityLevel::PRIVATE) do
+        Private
+    = nav_link(html_options: { class: active_when(params[:visibility_level] == Gitlab::VisibilityLevel::INTERNAL.to_s) }) do
+      = link_to admin_projects_path(visibility_level: Gitlab::VisibilityLevel::INTERNAL) do
+        Internal
+    = nav_link(html_options: { class: active_when(params[:visibility_level] == Gitlab::VisibilityLevel::PUBLIC.to_s) }) do
+      = link_to admin_projects_path(visibility_level: Gitlab::VisibilityLevel::PUBLIC) do
+        Public
 
-      = nav_link(html_options: { class: active_when(params[:visibility_level] == Gitlab::VisibilityLevel::PRIVATE.to_s) }) do
-        = link_to admin_projects_path(visibility_level: Gitlab::VisibilityLevel::PRIVATE) do
-          Private
-      = nav_link(html_options: { class: active_when(params[:visibility_level] == Gitlab::VisibilityLevel::INTERNAL.to_s) }) do
-        = link_to admin_projects_path(visibility_level: Gitlab::VisibilityLevel::INTERNAL) do
-          Internal
-      = nav_link(html_options: { class: active_when(params[:visibility_level] == Gitlab::VisibilityLevel::PUBLIC.to_s) }) do
-        = link_to admin_projects_path(visibility_level: Gitlab::VisibilityLevel::PUBLIC) do
-          Public
-
-  = render 'projects'
+= render 'projects'

@@ -1,9 +1,6 @@
-- @no_container = true
+.row-content-block.second-block.content-component-block
+  .tree-ref-holder
+    = render partial: 'shared/ref_switcher', locals: {destination: 'graph'}
 
-%div{ class: container_class }
-  .row-content-block.second-block.content-component-block
-    .tree-ref-holder
-      = render partial: 'shared/ref_switcher', locals: {destination: 'graph'}
-
-    .oneline
-      = _("You can move around the graph by using the arrow keys.")
+  .oneline
+    = _("You can move around the graph by using the arrow keys.")

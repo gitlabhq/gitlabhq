@@ -1,96 +1,87 @@
 - breadcrumb_title _('Runners')
-- @no_container = true
 
-%div{ class: container_class }
-  .row
-    .col-sm-6
-      .bs-callout
-        %p
-          = (_"A 'Runner' is a process which runs a job. You can set up as many Runners as you need.")
-          %br
-          = _('Runners can be placed on separate users, servers, even on your local machine.')
-          %br
+.row
+  .col-sm-6
+    .bs-callout
+      %p
+        = (_"A 'Runner' is a process which runs a job. You can set up as many Runners as you need.")
+        %br
+        = _('Runners can be placed on separate users, servers, even on your local machine.')
+        %br
 
-        %div
-          %span= _('Each Runner can be in one of the following states:')
-          %ul
-            %li
-              %span.badge.badge-success shared
-              \-
-              = _('Runner runs jobs from all unassigned projects')
-            %li
-              %span.badge.badge-success group
-              \-
-              = _('Runner runs jobs from all unassigned projects in its group')
-            %li
-              %span.badge.badge-info specific
-              \-
-              = _('Runner runs jobs from assigned projects')
-            %li
-              %span.badge.badge-warning locked
-              \-
-              = _('Runner cannot be assigned to other projects')
-            %li
-              %span.badge.badge-danger paused
-              \-
-              = _('Runner will not receive any new jobs')
+      %div
+        %span= _('Each Runner can be in one of the following states:')
+        %ul
+          %li
+            %span.badge.badge-success shared
+            \-
+            = _('Runner runs jobs from all unassigned projects')
+          %li
+            %span.badge.badge-success group
+            \-
+            = _('Runner runs jobs from all unassigned projects in its group')
+          %li
+            %span.badge.badge-info specific
+            \-
+            = _('Runner runs jobs from assigned projects')
+          %li
+            %span.badge.badge-warning locked
+            \-
+            = _('Runner cannot be assigned to other projects')
+          %li
+            %span.badge.badge-danger paused
+            \-
+            = _('Runner will not receive any new jobs')
 
-    .col-sm-6
-      .bs-callout
-        = render partial: 'ci/runner/how_to_setup_runner',
-                 locals: { registration_token: Gitlab::CurrentSettings.runners_registration_token,
-                           type: 'shared',
-                           reset_token_url: reset_registration_token_admin_application_settings_path }
+  .col-sm-6
+    .bs-callout
+      = render partial: 'ci/runner/how_to_setup_runner',
+                locals: { registration_token: Gitlab::CurrentSettings.runners_registration_token,
+                          type: 'shared',
+                          reset_token_url: reset_registration_token_admin_application_settings_path }
 
-  .row
-    .col-sm-9
-      = form_tag admin_runners_path, id: 'runners-search', method: :get, class: 'filter-form js-filter-form' do
-        .filtered-search-wrapper
-          .filtered-search-box
-            = dropdown_tag(custom_icon('icon_history'),
-              options: { wrapper_class: 'filtered-search-history-dropdown-wrapper',
-              toggle_class: 'filtered-search-history-dropdown-toggle-button',
-              dropdown_class: 'filtered-search-history-dropdown',
-              content_class: 'filtered-search-history-dropdown-content',
-              title: _('Recent searches') }) do
-              .js-filtered-search-history-dropdown{ data: { full_path: admin_runners_path } }
-            .filtered-search-box-input-container.droplab-dropdown
-              .scroll-container
-                %ul.tokens-container.list-unstyled
-                  %li.input-token
-                    %input.form-control.filtered-search{ search_filter_input_options('runners') }
-              #js-dropdown-hint.filtered-search-input-dropdown-menu.dropdown-menu.hint-dropdown
-                %ul{ data: { dropdown: true } }
-                  %li.filter-dropdown-item{ data: { action: 'submit' } }
+.row
+  .col-sm-9
+    = form_tag admin_runners_path, id: 'runners-search', method: :get, class: 'filter-form js-filter-form' do
+      .filtered-search-wrapper
+        .filtered-search-box
+          = dropdown_tag(custom_icon('icon_history'),
+            options: { wrapper_class: 'filtered-search-history-dropdown-wrapper',
+            toggle_class: 'filtered-search-history-dropdown-toggle-button',
+            dropdown_class: 'filtered-search-history-dropdown',
+            content_class: 'filtered-search-history-dropdown-content',
+            title: _('Recent searches') }) do
+            .js-filtered-search-history-dropdown{ data: { full_path: admin_runners_path } }
+          .filtered-search-box-input-container.droplab-dropdown
+            .scroll-container
+              %ul.tokens-container.list-unstyled
+                %li.input-token
+                  %input.form-control.filtered-search{ search_filter_input_options('runners') }
+            #js-dropdown-hint.filtered-search-input-dropdown-menu.dropdown-menu.hint-dropdown
+              %ul{ data: { dropdown: true } }
+                %li.filter-dropdown-item{ data: { action: 'submit' } }
+                  = button_tag class: %w[btn btn-link] do
+                    = sprite_icon('search')
+                    %span
+                      = _('Press Enter or click to search')
+              %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
+                %li.filter-dropdown-item
+                  = button_tag class: %w[btn btn-link] do
+                    -# Encapsulate static class name `{{icon}}` inside #{} to bypass
+                    -# haml lint's ClassAttributeWithStaticValue
+                    %svg
+                      %use{ 'xlink:href': "#{'{{icon}}'}" }
+                    %span.js-filter-hint
+                      {{hint}}
+                    %span.js-filter-tag.dropdown-light-content
+                      {{tag}}
+
+            #js-dropdown-admin-runner-status.filtered-search-input-dropdown-menu.dropdown-menu
+              %ul{ data: { dropdown: true } }
+                - Ci::Runner::AVAILABLE_STATUSES.each do |status|
+                  %li.filter-dropdown-item{ data: { value: status } }
                     = button_tag class: %w[btn btn-link] do
-                      = sprite_icon('search')
-                      %span
-                        = _('Press Enter or click to search')
-                %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
-                  %li.filter-dropdown-item
-                    = button_tag class: %w[btn btn-link] do
-                      -# Encapsulate static class name `{{icon}}` inside #{} to bypass
-                      -# haml lint's ClassAttributeWithStaticValue
-                      %svg
-                        %use{ 'xlink:href': "#{'{{icon}}'}" }
-                      %span.js-filter-hint
-                        {{hint}}
-                      %span.js-filter-tag.dropdown-light-content
-                        {{tag}}
-
-              #js-dropdown-admin-runner-status.filtered-search-input-dropdown-menu.dropdown-menu
-                %ul{ data: { dropdown: true } }
-                  - Ci::Runner::AVAILABLE_STATUSES.each do |status|
-                    %li.filter-dropdown-item{ data: { value: status } }
-                      = button_tag class: %w[btn btn-link] do
-                        = status.titleize
-
-              #js-dropdown-admin-runner-type.filtered-search-input-dropdown-menu.dropdown-menu
-                %ul{ data: { dropdown: true } }
-                  - Ci::Runner::AVAILABLE_TYPES.each do |runner_type|
-                    %li.filter-dropdown-item{ data: { value: runner_type } }
-                      = button_tag class: %w[btn btn-link] do
-                        = runner_type.titleize
+                      = status.titleize
 
             #js-dropdown-admin-runner-type.filtered-search-input-dropdown-menu.dropdown-menu
               %ul{ data: { dropdown: true } }
@@ -99,43 +90,50 @@
                     = button_tag class: %w[btn btn-link] do
                       = runner_type.titleize
 
-            #js-dropdown-runner-tag.filtered-search-input-dropdown-menu.dropdown-menu
-              %ul{ data: { dropdown: true } }
-                %li.filter-dropdown-item{ data: { value: 'none' } }
-                  %button.btn.btn-link
-                    = _('No Tag')
-                %li.divider.droplab-item-ignore
-              %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
-                %li.filter-dropdown-item
-                  %button.btn.btn-link.js-data-value
-                    %span.dropdown-light-content
-                      {{name}}
+          #js-dropdown-admin-runner-type.filtered-search-input-dropdown-menu.dropdown-menu
+            %ul{ data: { dropdown: true } }
+              - Ci::Runner::AVAILABLE_TYPES.each do |runner_type|
+                %li.filter-dropdown-item{ data: { value: runner_type } }
+                  = button_tag class: %w[btn btn-link] do
+                    = runner_type.titleize
 
-            = button_tag class: %w[clear-search hidden] do
-              = icon('times')
-          .filter-dropdown-container
-            = render 'sort_dropdown'
+          #js-dropdown-runner-tag.filtered-search-input-dropdown-menu.dropdown-menu
+            %ul{ data: { dropdown: true } }
+              %li.filter-dropdown-item{ data: { value: 'none' } }
+                %button.btn.btn-link
+                  = _('No Tag')
+              %li.divider.droplab-item-ignore
+            %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
+              %li.filter-dropdown-item
+                %button.btn.btn-link.js-data-value
+                  %span.dropdown-light-content
+                    {{name}}
 
-    .col-sm-3.text-right-lg
-      = _('Runners currently online: %{active_runners_count}') % { active_runners_count: @active_runners_count }
+          = button_tag class: %w[clear-search hidden] do
+            = icon('times')
+        .filter-dropdown-container
+          = render 'sort_dropdown'
 
-  - if @runners.any?
-    .runners-content.content-list
-      .table-holder
-        .gl-responsive-table-row.table-row-header{ role: 'row' }
-          .table-section.section-10{ role: 'rowheader' }= _('Type')
-          .table-section.section-10{ role: 'rowheader' }= _('Runner token')
-          .table-section.section-20{ role: 'rowheader' }= _('Description')
-          .table-section.section-10{ role: 'rowheader' }= _('Version')
-          .table-section.section-10{ role: 'rowheader' }= _('IP Address')
-          .table-section.section-5{ role: 'rowheader' }= _('Projects')
-          .table-section.section-5{ role: 'rowheader' }= _('Jobs')
-          .table-section.section-10{ role: 'rowheader' }= _('Tags')
-          .table-section.section-10{ role: 'rowheader' }= _('Last contact')
-          .table-section.section-10{ role: 'rowheader' }
+  .col-sm-3.text-right-lg
+    = _('Runners currently online: %{active_runners_count}') % { active_runners_count: @active_runners_count }
 
-        - @runners.each do |runner|
-          = render 'admin/runners/runner', runner: runner
-      = paginate @runners, theme: 'gitlab'
-  - else
-    .nothing-here-block= _('No runners found')
+- if @runners.any?
+  .runners-content.content-list
+    .table-holder
+      .gl-responsive-table-row.table-row-header{ role: 'row' }
+        .table-section.section-10{ role: 'rowheader' }= _('Type')
+        .table-section.section-10{ role: 'rowheader' }= _('Runner token')
+        .table-section.section-20{ role: 'rowheader' }= _('Description')
+        .table-section.section-10{ role: 'rowheader' }= _('Version')
+        .table-section.section-10{ role: 'rowheader' }= _('IP Address')
+        .table-section.section-5{ role: 'rowheader' }= _('Projects')
+        .table-section.section-5{ role: 'rowheader' }= _('Jobs')
+        .table-section.section-10{ role: 'rowheader' }= _('Tags')
+        .table-section.section-10{ role: 'rowheader' }= _('Last contact')
+        .table-section.section-10{ role: 'rowheader' }
+
+      - @runners.each do |runner|
+        = render 'admin/runners/runner', runner: runner
+    = paginate @runners, theme: 'gitlab'
+- else
+  .nothing-here-block= _('No runners found')

@@ -1,23 +1,21 @@
-- @no_container = true
 - page_title _("Terminal for environment"), @environment.name
 
 - content_for :page_specific_javascripts do
   = stylesheet_link_tag "xterm.css"
 
-%div{ class: container_class }
-  .top-area
-    .row
-      .col-sm-6
-        %h3.page-title
-          = _("Terminal for environment")
-          = @environment.name
+.top-area
+  .row
+    .col-sm-6
+      %h3.page-title
+        = _("Terminal for environment")
+        = @environment.name
 
-      .col-sm-6
-        .nav-controls
-          - if @environment.external_url.present?
-            = link_to @environment.external_url, class: 'btn btn-default', target: '_blank', rel: 'noopener noreferrer nofollow' do
-              = sprite_icon('external-link')
-          = render 'projects/deployments/actions', deployment: @environment.last_deployment
+    .col-sm-6
+      .nav-controls
+        - if @environment.external_url.present?
+          = link_to @environment.external_url, class: 'btn btn-default', target: '_blank', rel: 'noopener noreferrer nofollow' do
+            = sprite_icon('external-link')
+        = render 'projects/deployments/actions', deployment: @environment.last_deployment
 
 .terminal-container{ class: container_class }
   #terminal{ data: { project_path: "#{terminal_project_environment_path(@project, @environment)}.ws" } }
