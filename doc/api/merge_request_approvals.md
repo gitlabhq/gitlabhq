@@ -538,8 +538,8 @@ GET /projects/:id/merge_requests/:merge_request_iid/approval_state
 The `approval_rules_overwritten` will be `true` if the merge request level rules
 are created for the merge request. If there's none, it'll be `false`.
 
-This includes additional information about the users  who already approved
-(`approved_by`) and if a rule is already approved (`approved`).
+This includes additional information about the users who have already approved
+(`approved_by`) and whether a rule is already approved (`approved`).
 
 **Parameters:**
 
