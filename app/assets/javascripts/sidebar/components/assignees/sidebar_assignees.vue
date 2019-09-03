@@ -67,14 +67,18 @@ export default {
     saveAssignees() {
       this.loading = true;
 
+      function setLoadingFalse() {
+        this.loading = false;
+      }
+
       this.mediator
         .saveAssignees(this.field)
+        .then(setLoadingFalse.bind(this))
         .then(() => {
-          this.loading = false;
           refreshUserMergeRequestCounts();
         })
         .catch(() => {
-          this.loading = false;
+          setLoadingFalse();
           return new Flash(__('Error occurred when saving assignees'));
         });
     },

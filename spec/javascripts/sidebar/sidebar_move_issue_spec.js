@@ -1,6 +1,6 @@
 import $ from 'jquery';
-import MockAdapter from 'axios-mock-adapter';
-import axios from '~/lib/utils/axios_utils';
+import _ from 'underscore';
+import Vue from 'vue';
 import SidebarMediator from '~/sidebar/sidebar_mediator';
 import SidebarStore from '~/sidebar/stores/sidebar_store';
 import SidebarService from '~/sidebar/services/sidebar_service';
@@ -8,12 +8,8 @@ import SidebarMoveIssue from '~/sidebar/lib/sidebar_move_issue';
 import Mock from './mock_data';
 
 describe('SidebarMoveIssue', function() {
-  let mock;
-
   beforeEach(() => {
-    mock = new MockAdapter(axios);
-    const mockData = Mock.responseMap.GET['/autocomplete/projects?project_id=15'];
-    mock.onGet('/autocomplete/projects?project_id=15').reply(200, mockData);
+    Vue.http.interceptors.push(Mock.sidebarMockInterceptor);
     this.mediator = new SidebarMediator(Mock.mediator);
     this.$content = $(`
       <div class="dropdown">
@@ -41,7 +37,8 @@ describe('SidebarMoveIssue', function() {
     SidebarMediator.singleton = null;
 
     this.sidebarMoveIssue.destroy();
-    mock.restore();
+
+    Vue.http.interceptors = _.without(Vue.http.interceptors, Mock.sidebarMockInterceptor);
   });
 
   describe('init', () => {

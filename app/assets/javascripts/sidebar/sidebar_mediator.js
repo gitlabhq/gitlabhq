@@ -32,10 +32,7 @@ export default class SidebarMediator {
 
     // If there are no ids, that means we have to unassign (which is id = 0)
     // And it only accepts an array, hence [0]
-    const assignees = selected.length === 0 ? [0] : selected;
-    const data = { assignee_ids: assignees };
-
-    return this.service.update(field, data);
+    return this.service.update(field, selected.length === 0 ? [0] : selected);
   }
 
   setMoveToProjectId(projectId) {
@@ -45,7 +42,8 @@ export default class SidebarMediator {
   fetch() {
     return this.service
       .get()
-      .then(({ data }) => {
+      .then(response => response.json())
+      .then(data => {
         this.processFetchedData(data);
       })
       .catch(() => new Flash(__('Error occurred when fetching sidebar data')));
@@ -73,17 +71,23 @@ export default class SidebarMediator {
   }
 
   fetchAutocompleteProjects(searchTerm) {
-    return this.service.getProjectsAutocomplete(searchTerm).then(({ data }) => {
-      this.store.setAutocompleteProjects(data);
-      return this.store.autocompleteProjects;
-    });
+    return this.service
+      .getProjectsAutocomplete(searchTerm)
+      .then(response => response.json())
+      .then(data => {
+        this.store.setAutocompleteProjects(data);
+        return this.store.autocompleteProjects;
+      });
   }
 
   moveIssue() {
-    return this.service.moveIssue(this.store.moveToProjectId).then(({ data }) => {
-      if (window.location.pathname !== data.web_url) {
-        visitUrl(data.web_url);
-      }
-    });
+    return this.service
+      .moveIssue(this.store.moveToProjectId)
+      .then(response => response.json())
+      .then(data => {
+        if (window.location.pathname !== data.web_url) {
+          visitUrl(data.web_url);
+        }
+      });
   }
 }
