@@ -244,7 +244,6 @@ module TestEnv
     FileUtils.mkdir_p(target_repo_path)
     FileUtils.cp_r("#{File.expand_path(bare_repo)}/.", target_repo_path)
     FileUtils.chmod_R 0755, target_repo_path
-    set_repo_refs(target_repo_path, refs)
   end
 
   def create_bare_repository(path)
