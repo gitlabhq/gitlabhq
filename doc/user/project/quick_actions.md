@@ -14,8 +14,11 @@ on a separate line in order to be properly detected and executed. Once executed,
 
 ## Quick Actions for issues, merge requests and epics
 
-The following quick actions are applicable to descriptions, discussions and threads
-in issues and merge requests, as well as epics.**(ULTIMATE)**
+The following quick actions are applicable to descriptions, discussions and threads in:
+
+- Issues
+- Merge requests
+- Epics **(ULTIMATE)**
 
 | Command                               | Issue | Merge request | Epic | Action |
 |:--------------------------------------|:------|:--------------|:-----|:------ |
