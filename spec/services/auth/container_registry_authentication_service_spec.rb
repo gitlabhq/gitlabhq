@@ -476,7 +476,7 @@ describe Auth::ContainerRegistryAuthenticationService do
     let(:current_user) { create(:user) }
 
     let(:authentication_abilities) do
-      [:build_read_container_image, :build_create_container_image]
+      [:build_read_container_image, :build_create_container_image, :build_destroy_container_image]
     end
 
     before do
@@ -507,19 +507,19 @@ describe Auth::ContainerRegistryAuthenticationService do
       end
     end
 
-    context 'disallow to delete images' do
+    context 'allow to delete images since registry 2.7' do
       let(:current_params) do
-        { scopes: ["repository:#{current_project.full_path}:*"] }
+        { scopes: ["repository:#{current_project.full_path}:delete"] }
       end
 
-      it_behaves_like 'an inaccessible' do
+      it_behaves_like 'a deletable since registry 2.7' do
         let(:project) { current_project }
       end
     end
 
-    context 'disallow to delete images since registry 2.7' do
+    context 'disallow to delete images' do
       let(:current_params) do
-        { scopes: ["repository:#{current_project.full_path}:delete"] }
+        { scopes: ["repository:#{current_project.full_path}:*"] }
       end
 
       it_behaves_like 'an inaccessible' do

@@ -1,0 +1,5 @@
+---
+title: Allow $CI_REGISTRY_USER to delete tags
+merge_request: 31796
+author:
+type: added
