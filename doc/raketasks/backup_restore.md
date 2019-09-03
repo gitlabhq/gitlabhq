@@ -92,9 +92,9 @@ If you are running GitLab within a Docker container, you can run the backup from
 docker exec -t <container name> gitlab-backup create
 ```
 
-If you are using the [GitLab helm chart](https://gitlab.com/charts/gitlab) on a
+If you are using the [GitLab helm chart](https://gitlab.com/gitlab-org/charts/gitlab) on a
 Kubernetes cluster, you can run the backup task using `backup-utility` script on
-the GitLab task runner pod via `kubectl`. Refer to [backing up a GitLab installation](https://gitlab.com/charts/gitlab/blob/master/doc/backup-restore/backup.md#backing-up-a-gitlab-installation) for more details:
+the GitLab task runner pod via `kubectl`. Refer to [backing up a GitLab installation](https://gitlab.com/gitlab-org/charts/gitlab/blob/master/doc/backup-restore/backup.md#backing-up-a-gitlab-installation) for more details:
 
 ```sh
 kubectl exec -it <gitlab task-runner pod> backup-utility
@@ -764,7 +764,7 @@ docker exec -it <name of container> gitlab-backup restore
 ```
 
 The GitLab helm chart uses a different process, documented in
-[restoring a GitLab helm chart installation](https://gitlab.com/charts/gitlab/blob/master/doc/backup-restore/restore.md).
+[restoring a GitLab helm chart installation](https://gitlab.com/gitlab-org/charts/gitlab/blob/master/doc/backup-restore/restore.md).
 
 ## Alternative backup strategies
 

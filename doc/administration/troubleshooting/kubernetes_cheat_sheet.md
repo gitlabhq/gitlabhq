@@ -75,7 +75,7 @@ and they will assist you with any issues you are having.
 ## GitLab-specific kubernetes information
 
 - Minimal config that can be used to test a Kubernetes helm chart can be found
-  [here](https://gitlab.com/charts/gitlab/issues/620).
+  [here](https://gitlab.com/gitlab-org/charts/gitlab/issues/620).
 
 - Tailing logs of a separate pod. An example for a unicorn pod:
 
@@ -176,7 +176,7 @@ and they will assist you with any issues you are having.
   helm upgrade <release name> <chart path> -f gitlab.yaml
   ```
 
-  After <https://canary.gitlab.com/charts/gitlab/issues/780> is fixed, it should
+  After <https://gitlab.com/gitlab-org/charts/gitlab/issues/780> is fixed, it should
   be possible to use [Updating GitLab using the Helm Chart](https://docs.gitlab.com/ee/install/kubernetes/gitlab_chart.html#updating-gitlab-using-the-helm-chart)
   for upgrades.
 
@@ -191,8 +191,8 @@ and they will assist you with any issues you are having.
 
 ## Installation of minimal GitLab config via Minukube on macOS
 
-This section is based on [Developing for Kubernetes with Minikube](https://gitlab.com/charts/gitlab/blob/master/doc/minikube/index.md)
-and [Helm](https://gitlab.com/charts/gitlab/blob/master/doc/helm/index.md). Refer
+This section is based on [Developing for Kubernetes with Minikube](https://gitlab.com/gitlab-org/charts/gitlab/blob/master/doc/minikube/index.md)
+and [Helm](https://gitlab.com/gitlab-org/charts/gitlab/blob/master/doc/helm/index.md). Refer
 to those documents for details.
 
 - Install Kubectl via Homebrew:
@@ -223,7 +223,7 @@ to those documents for details.
   helm init --service-account tiller
   ```
 
-- Copy the file <https://gitlab.com/charts/gitlab/raw/master/examples/values-minikube-minimum.yaml>
+- Copy the file <https://gitlab.com/gitlab-org/charts/gitlab/raw/master/examples/values-minikube-minimum.yaml>
   to your workstation.
 
 - Find the IP address in the output of `minikube ip` and update the yaml file with
