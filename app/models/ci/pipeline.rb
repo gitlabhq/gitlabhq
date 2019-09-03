@@ -460,8 +460,8 @@ module Ci
       canceled? && auto_canceled_by_id?
     end
 
-    def cancel_running
-      retry_optimistic_lock(cancelable_statuses) do |cancelable|
+    def cancel_running(retries: nil)
+      retry_optimistic_lock(cancelable_statuses, retries) do |cancelable|
         cancelable.find_each do |job|
           yield(job) if block_given?
           job.cancel
@@ -469,10 +469,10 @@ module Ci
       end
     end
 
-    def auto_cancel_running(pipeline)
+    def auto_cancel_running(pipeline, retries: nil)
       update(auto_canceled_by: pipeline)
 
-      cancel_running do |job|
+      cancel_running(retries: retries) do |job|
         job.auto_canceled_by = pipeline
       end
     end
