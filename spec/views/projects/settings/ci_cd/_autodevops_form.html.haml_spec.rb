@@ -17,10 +17,16 @@ describe 'projects/settings/ci_cd/_autodevops_form' do
   context 'when the project has an available kubernetes cluster' do
     let!(:cluster) { create(:cluster, cluster_type: :project_type, projects: [project]) }
 
-    it 'does not show a warning message' do
+    it 'does not show a warning message about Kubernetes cluster' do
       render
 
       expect(rendered).not_to have_text('You must add a Kubernetes cluster')
+    end
+
+    it 'shows a warning message about base domain' do
+      render
+
+      expect(rendered).to have_text('You must add a base domain to your Kubernetes cluster in order for your deployment strategy to work.')
     end
   end
 end
