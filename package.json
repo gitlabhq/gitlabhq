@@ -1,7 +1,7 @@
 {
   "private": true,
   "scripts": {
-    "check-dependencies": "yarn check --integrity",
+    "check-dependencies": "scripts/frontend/check_dependencies.sh",
     "clean": "rm -rf public/assets tmp/cache/*-loader",
     "dev-server": "NODE_OPTIONS=\"--max-old-space-size=3584\" nodemon -w 'config/webpack.config.js' --exec 'webpack-dev-server --config config/webpack.config.js'",
     "eslint": "eslint --max-warnings 0 --report-unused-disable-directives --ext .js,.vue .",
