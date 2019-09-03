@@ -118,7 +118,7 @@ module API
     mount ::API::GroupContainerRepositories
     mount ::API::GroupVariables
     mount ::API::ImportGithub
-    mount ::API::Internal
+    mount ::API::Internal::Base
     mount ::API::Issues
     mount ::API::JobArtifacts
     mount ::API::Jobs
