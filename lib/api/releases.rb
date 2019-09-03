@@ -4,7 +4,7 @@ module API
   class Releases < Grape::API
     include PaginationParams
 
-    RELEASE_ENDPOINT_REQUIREMETS = API::NAMESPACE_OR_PROJECT_REQUIREMENTS
+    RELEASE_ENDPOINT_REQUIREMENTS = API::NAMESPACE_OR_PROJECT_REQUIREMENTS
       .merge(tag_name: API::NO_SLASH_URL_PART_REGEX)
 
     before { authorize_read_releases! }
@@ -33,7 +33,7 @@ module API
       params do
         requires :tag_name, type: String, desc: 'The name of the tag', as: :tag
       end
-      get ':id/releases/:tag_name', requirements: RELEASE_ENDPOINT_REQUIREMETS do
+      get ':id/releases/:tag_name', requirements: RELEASE_ENDPOINT_REQUIREMENTS do
         authorize_download_code!
 
         present release, with: Entities::Release, current_user: current_user
@@ -82,7 +82,7 @@ module API
         optional :released_at, type: DateTime, desc: 'The date when the release will be/was ready.'
         optional :milestone,   type: String, desc: 'The title of the related milestone'
       end
-      put ':id/releases/:tag_name', requirements: RELEASE_ENDPOINT_REQUIREMETS do
+      put ':id/releases/:tag_name', requirements: RELEASE_ENDPOINT_REQUIREMENTS do
         authorize_update_release!
 
         result = ::Releases::UpdateService
@@ -103,7 +103,7 @@ module API
       params do
         requires :tag_name, type: String, desc: 'The name of the tag', as: :tag
       end
-      delete ':id/releases/:tag_name', requirements: RELEASE_ENDPOINT_REQUIREMETS do
+      delete ':id/releases/:tag_name', requirements: RELEASE_ENDPOINT_REQUIREMENTS do
         authorize_destroy_release!
 
         result = ::Releases::DestroyService

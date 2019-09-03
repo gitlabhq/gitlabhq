@@ -5,7 +5,7 @@ module API
     class Links < Grape::API
       include PaginationParams
 
-      RELEASE_ENDPOINT_REQUIREMETS = API::NAMESPACE_OR_PROJECT_REQUIREMENTS
+      RELEASE_ENDPOINT_REQUIREMENTS = API::NAMESPACE_OR_PROJECT_REQUIREMENTS
         .merge(tag_name: API::NO_SLASH_URL_PART_REGEX)
 
       before { authorize! :read_release, user_project }
@@ -17,7 +17,7 @@ module API
         params do
           requires :tag_name, type: String, desc: 'The name of the tag', as: :tag
         end
-        resource 'releases/:tag_name', requirements: RELEASE_ENDPOINT_REQUIREMETS do
+        resource 'releases/:tag_name', requirements: RELEASE_ENDPOINT_REQUIREMENTS do
           resource :assets do
             desc 'Get a list of links of a release' do
               detail 'This feature was introduced in GitLab 11.7.'
