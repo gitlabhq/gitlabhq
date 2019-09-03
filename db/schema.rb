@@ -2158,6 +2158,13 @@ ActiveRecord::Schema.define(version: 2019_09_02_131045) do
     t.index ["user_id"], name: "index_merge_trains_on_user_id"
   end
 
+  create_table "milestone_releases", force: :cascade do |t|
+    t.bigint "milestone_id", null: false
+    t.bigint "release_id", null: false
+    t.index ["milestone_id", "release_id"], name: "index_miletone_releases_on_milestone_and_release", unique: true
+    t.index ["release_id"], name: "index_milestone_releases_on_release_id"
+  end
+
   create_table "milestones", id: :serial, force: :cascade do |t|
     t.string "title", null: false
     t.integer "project_id"
@@ -3932,6 +3939,8 @@ ActiveRecord::Schema.define(version: 2019_09_02_131045) do
   add_foreign_key "merge_trains", "merge_requests", on_delete: :cascade
   add_foreign_key "merge_trains", "projects", column: "target_project_id", on_delete: :cascade
   add_foreign_key "merge_trains", "users", on_delete: :cascade
+  add_foreign_key "milestone_releases", "milestones", on_delete: :cascade
+  add_foreign_key "milestone_releases", "releases", on_delete: :cascade
   add_foreign_key "milestones", "namespaces", column: "group_id", name: "fk_95650a40d4", on_delete: :cascade
   add_foreign_key "milestones", "projects", name: "fk_9bd0a0c791", on_delete: :cascade
   add_foreign_key "namespace_aggregation_schedules", "namespaces", on_delete: :cascade

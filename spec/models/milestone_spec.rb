@@ -54,11 +54,31 @@ describe Milestone do
         expect(milestone.errors[:due_date]).to include("date must not be after 9999-12-31")
       end
     end
+
+    describe 'milestone_release' do
+      let(:milestone) { build(:milestone, project: project) }
+
+      context 'when it is tied to a release for another project' do
+        it 'creates a validation error' do
+          other_project = create(:project)
+          milestone.release = build(:release, project: other_project)
+          expect(milestone).not_to be_valid
+        end
+      end
+
+      context 'when it is tied to a release for the same project' do
+        it 'is valid' do
+          milestone.release = build(:release, project: project)
+          expect(milestone).to be_valid
+        end
+      end
+    end
   end
 
   describe "Associations" do
     it { is_expected.to belong_to(:project) }
     it { is_expected.to have_many(:issues) }
+    it { is_expected.to have_one(:release) }
   end
 
   let(:project) { create(:project, :public) }

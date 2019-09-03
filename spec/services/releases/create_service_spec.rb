@@ -72,6 +72,15 @@ describe Releases::CreateService do
         expect(project.releases.find_by(tag: tag_name).description).to eq(description)
       end
     end
+
+    context 'when a passed-in milestone does not exist for this project' do
+      it 'raises an error saying the milestone is inexistent' do
+        service = described_class.new(project, user, params.merge!({ milestone: 'v111.0' }))
+        result = service.execute
+        expect(result[:status]).to eq(:error)
+        expect(result[:message]).to eq('Milestone does not exist')
+      end
+    end
   end
 
   describe '#find_or_build_release' do
@@ -79,6 +88,59 @@ describe Releases::CreateService do
       service.find_or_build_release
 
       expect(project.releases.count).to eq(0)
+    end
+
+    context 'when existing milestone is passed in' do
+      let(:title) { 'v1.0' }
+      let(:milestone) { create(:milestone, :active, project: project, title: title) }
+      let(:params_with_milestone) { params.merge!({ milestone: title }) }
+
+      it 'creates a release and ties this milestone to it' do
+        service = described_class.new(milestone.project, user, params_with_milestone)
+        result = service.execute
+
+        expect(project.releases.count).to eq(1)
+        expect(result[:status]).to eq(:success)
+
+        release = project.releases.last
+
+        expect(release.milestone).to eq(milestone)
+      end
+
+      context 'when another release was previously created with that same milestone linked' do
+        it 'also creates another release tied to that same milestone' do
+          other_release = create(:release, milestone: milestone, project: project, tag: 'v1.0')
+          service = described_class.new(milestone.project, user, params_with_milestone)
+          service.execute
+          release = project.releases.last
+
+          expect(release.milestone).to eq(milestone)
+          expect(other_release.milestone).to eq(milestone)
+          expect(release.id).not_to eq(other_release.id)
+        end
+      end
+    end
+
+    context 'when no milestone is passed in' do
+      it 'creates a release without a milestone tied to it' do
+        expect(params.key? :milestone).to be_falsey
+        service.execute
+        release = project.releases.last
+        expect(release.milestone).to be_nil
+      end
+
+      it 'does not create any new MilestoneRelease object' do
+        expect { service.execute }.not_to change { MilestoneRelease.count }
+      end
+    end
+
+    context 'when an empty value is passed as a milestone' do
+      it 'creates a release without a milestone tied to it' do
+        service = described_class.new(project, user, params.merge!({ milestone: '' }))
+        service.execute
+        release = project.releases.last
+        expect(release.milestone).to be_nil
+      end
     end
   end
 end
