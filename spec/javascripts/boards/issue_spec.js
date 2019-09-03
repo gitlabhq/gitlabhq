@@ -1,6 +1,6 @@
 /* global ListIssue */
 
-import Vue from 'vue';
+import axios from '~/lib/utils/axios_utils';
 import '~/boards/models/label';
 import '~/boards/models/assignee';
 import '~/boards/models/issue';
@@ -175,7 +175,7 @@ describe('Issue model', () => {
 
   describe('update', () => {
     it('passes assignee ids when there are assignees', done => {
-      spyOn(Vue.http, 'patch').and.callFake((url, data) => {
+      spyOn(axios, 'patch').and.callFake((url, data) => {
         expect(data.issue.assignee_ids).toEqual([1]);
         done();
         return Promise.resolve();
@@ -185,7 +185,7 @@ describe('Issue model', () => {
     });
 
     it('passes assignee ids of [0] when there are no assignees', done => {
-      spyOn(Vue.http, 'patch').and.callFake((url, data) => {
+      spyOn(axios, 'patch').and.callFake((url, data) => {
         expect(data.issue.assignee_ids).toEqual([0]);
         done();
         return Promise.resolve();

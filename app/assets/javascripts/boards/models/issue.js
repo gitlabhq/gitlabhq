@@ -3,7 +3,7 @@
 /* global ListMilestone */
 /* global ListAssignee */
 
-import Vue from 'vue';
+import axios from '~/lib/utils/axios_utils';
 import './label';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import IssueProject from './project';
@@ -133,7 +133,7 @@ class ListIssue {
     }
 
     const projectPath = this.project ? this.project.path : '';
-    return Vue.http.patch(`${this.path}.json`, data).then(({ body = {} } = {}) => {
+    return axios.patch(`${this.path}.json`, data).then(({ data: body = {} } = {}) => {
       /**
        * Since post implementation of Scoped labels, server can reject
        * same key-ed labels. To keep the UI and server Model consistent,
