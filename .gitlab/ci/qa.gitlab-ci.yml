@@ -1,7 +1,6 @@
 .package-and-qa-base:
   image: ruby:2.6-alpine
   stage: qa
-  needs: ["build-qa-image", "gitlab:assets:compile pull-cache"]
   dependencies: []
   variables:
     GIT_DEPTH: "1"
@@ -20,10 +19,24 @@ package-and-qa-manual:
   extends:
     - .package-and-qa-base
     - .except-docs-qa
+  except:
+    refs:
+      - master
+  needs: ["build-qa-image", "gitlab:assets:compile pull-cache"]
+  when: manual
+
+package-and-qa-manual:master:
+  extends:
+    - .package-and-qa-base
+  needs: ["build-qa-image", "gitlab:assets:compile"]
+  only:
+    refs:
+      - master
   when: manual
 
 package-and-qa:
   extends: .package-and-qa-base
+  needs: ["build-qa-image", "gitlab:assets:compile pull-cache"]
   allow_failure: true
   only:
     - /(^qa[\/-].*|.*-qa$)/@gitlab-org/gitlab-ce
