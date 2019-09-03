@@ -65,5 +65,19 @@ describe Milestones::DestroyService do
         expect { service.execute(group_milestone) }.not_to change { Event.count }
       end
     end
+
+    context 'when a release is tied to a milestone' do
+      it 'destroys the milestone but not the associated release' do
+        release = create(
+          :release,
+          tag: 'v1.0',
+          project: project,
+          milestone: milestone
+        )
+
+        expect { service.execute(milestone) }.not_to change { Release.count }
+        expect(release.reload).to be_persisted
+      end
+    end
   end
 end

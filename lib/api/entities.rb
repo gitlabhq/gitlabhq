@@ -1229,6 +1229,7 @@ module API
       expose :author, using: Entities::UserBasic, if: -> (release, _) { release.author.present? }
       expose :commit, using: Entities::Commit, if: lambda { |_, _| can_download_code? }
       expose :upcoming_release?, as: :upcoming_release
+      expose :milestone, using: Entities::Milestone, if: -> (release, _) { release.milestone.present? }
 
       expose :assets do
         expose :assets_count, as: :count do |release, _|

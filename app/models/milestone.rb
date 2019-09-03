@@ -24,6 +24,12 @@ class Milestone < ApplicationRecord
   belongs_to :project
   belongs_to :group
 
+  # A one-to-one relationship is set up here as part of a MVC: https://gitlab.com/gitlab-org/gitlab-ce/issues/62402
+  # However, on the long term, we will want a many-to-many relationship between Release and Milestone.
+  # The "has_one through" allows us today to set up this one-to-one relationship while setting up the architecture for the long-term (ie intermediate table).
+  has_one :milestone_release
+  has_one :release, through: :milestone_release
+
   has_internal_id :iid, scope: :project, init: ->(s) { s&.project&.milestones&.maximum(:iid) }
   has_internal_id :iid, scope: :group, init: ->(s) { s&.group&.milestones&.maximum(:iid) }
 
@@ -59,6 +65,7 @@ class Milestone < ApplicationRecord
   validate :milestone_type_check
   validate :start_date_should_be_less_than_due_date, if: proc { |m| m.start_date.present? && m.due_date.present? }
   validate :dates_within_4_digits
+  validates_associated :milestone_release, message: -> (_, obj) { obj[:value].errors.full_messages.join(",") }
 
   strip_attributes :title
 

@@ -57,6 +57,19 @@ Example response:
          "committer_email":"admin@example.com",
          "committed_date":"2019-01-03T01:55:38.000Z"
       },
+      "milestone":{
+         "id":51,
+         "iid":1,
+         "project_id":24,
+         "title":"v1.0-rc",
+         "description":"Voluptate fugiat possimus quis quod aliquam expedita.",
+         "state":"closed",
+         "created_at":"2019-07-12T19:45:44.256Z",
+         "updated_at":"2019-07-12T19:45:44.256Z",
+         "due_date":"2019-08-16T11:00:00.256Z",
+         "start_date":"2019-07-30T12:00:00.256Z",
+         "web_url":"http://localhost:3000/root/awesome-app/-/milestones/1"
+      },
       "assets":{
          "count":6,
          "sources":[
@@ -205,6 +218,19 @@ Example response:
       "committer_email":"admin@example.com",
       "committed_date":"2019-01-03T01:53:28.000Z"
    },
+   "milestone":{
+      "id":51,
+      "iid":1,
+      "project_id":24,
+      "title":"v1.0-rc",
+      "description":"Voluptate fugiat possimus quis quod aliquam expedita.",
+      "state":"closed",
+      "created_at":"2019-07-12T19:45:44.256Z",
+      "updated_at":"2019-07-12T19:45:44.256Z",
+      "due_date":"2019-08-16T11:00:00.256Z",
+      "start_date":"2019-07-30T12:00:00.256Z",
+      "web_url":"http://localhost:3000/root/awesome-app/-/milestones/1"
+   },
    "assets":{
       "count":4,
       "sources":[
@@ -240,23 +266,24 @@ Create a Release. You need push access to the repository to create a Release.
 POST /projects/:id/releases
 ```
 
-| Attribute          | Type           | Required | Description                                                                                                                      |
-| -------------------| -------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| `id`               | integer/string | yes      | The ID or [URL-encoded path of the project](../README.md#namespaced-path-encoding).                                              |
-| `name`             | string         | yes      | The release name.                                                                                                                |
-| `tag_name`         | string         | yes      | The tag where the release will be created from.                                                                                  |
-| `description`      | string         | yes      | The description of the release. You can use [markdown](../../user/markdown.md).                                                  |
-| `ref`              | string         | no       | If `tag_name` doesn't exist, the release will be created from `ref`. It can be a commit SHA, another tag name, or a branch name. |
-| `assets:links`     | array of hash  | no       | An array of assets links.                                                                                                        |
-| `assets:links:name`| string         | required by: `assets:links` | The name of the link.                                                                                         |
-| `assets:links:url` | string         | required by: `assets:links` | The url of the link.                                                                                          |
-| `released_at`      | datetime       | no       | The date when the release will be/was ready. Defaults to the current time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
+| Attribute          | Type            | Required | Description                                                                                                                      |
+| -------------------| --------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `id`               | integer/string  | yes      | The ID or [URL-encoded path of the project](../README.md#namespaced-path-encoding).                                              |
+| `name`             | string          | yes      | The release name.                                                                                                                |
+| `tag_name`         | string          | yes      | The tag where the release will be created from.                                                                                  |
+| `description`      | string          | yes      | The description of the release. You can use [markdown](../../user/markdown.md).                                                  |
+| `ref`              | string          | no       | If `tag_name` doesn't exist, the release will be created from `ref`. It can be a commit SHA, another tag name, or a branch name. |
+| `milestone`        | string          | no       | The title of the milestone the release is associated with.                                                                       |
+| `assets:links`     | array of hash   | no       | An array of assets links.                                                                                                        |
+| `assets:links:name`| string          | required by: `assets:links` | The name of the link.                                                                                         |
+| `assets:links:url` | string          | required by: `assets:links` | The url of the link.                                                                                          |
+| `released_at`      | datetime        | no       | The date when the release will be/was ready. Defaults to the current time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
 
 Example request:
 
 ```sh
 curl --header 'Content-Type: application/json' --header "PRIVATE-TOKEN: gDybLx3yrUK_HLp3qPjS" \
-     --data '{ "name": "New release", "tag_name": "v0.3", "description": "Super nice release", "assets": { "links": [{ "name": "hoge", "url": "https://google.com" }] } }' \
+     --data '{ "name": "New release", "tag_name": "v0.3", "description": "Super nice release", "milestone": "v1.0-rc", "assets": { "links": [{ "name": "hoge", "url": "https://google.com" }] } }' \
      --request POST https://gitlab.example.com/api/v4/projects/24/releases
 ```
 
@@ -293,6 +320,19 @@ Example response:
       "committer_name":"Administrator",
       "committer_email":"admin@example.com",
       "committed_date":"2019-01-03T01:55:38.000Z"
+   },
+   "milestone":{
+      "id":51,
+      "iid":1,
+      "project_id":24,
+      "title":"v1.0-rc",
+      "description":"Voluptate fugiat possimus quis quod aliquam expedita.",
+      "state":"active",
+      "created_at":"2019-07-12T19:45:44.256Z",
+      "updated_at":"2019-07-12T19:45:44.256Z",
+      "due_date":"2019-08-16T11:00:00.256Z",
+      "start_date":"2019-07-30T12:00:00.256Z",
+      "web_url":"http://localhost:3000/root/awesome-app/-/milestones/1"
    },
    "assets":{
       "count":5,
@@ -334,18 +374,19 @@ Update a Release.
 PUT /projects/:id/releases/:tag_name
 ```
 
-| Attribute     | Type           | Required | Description                                                                                        |
-| ------------- | -------------- | -------- | -------------------------------------------------------------------------------------------------- |
-| `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](../README.md#namespaced-path-encoding).                |
-| `tag_name`    | string         | yes      | The tag where the release will be created from.                                                    |
-| `name`        | string         | no       | The release name.                                                                                  |
-| `description` | string         | no       | The description of the release. You can use [markdown](../../user/markdown.md).                    |
-| `released_at` | datetime       | no       | The date when the release will be/was ready. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
+| Attribute     | Type           | Required | Description                                                                                               |
+| ------------- | -------------- | -------- | --------------------------------------------------------------------------------------------------------- |
+| `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](../README.md#namespaced-path-encoding).                       |
+| `tag_name`    | string         | yes      | The tag where the release will be created from.                                                           |
+| `name`        | string         | no       | The release name.                                                                                         |
+| `description` | string         | no       | The description of the release. You can use [markdown](../../user/markdown.md).                           |
+| `milestone`   | string         | no       | The title of the milestone to associate with the release (`""` to remove the milestone from the release). |
+| `released_at` | datetime       | no       | The date when the release will be/was ready. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`).        |
 
 Example request:
 
 ```sh
-curl --request PUT --data name="new name" --header "PRIVATE-TOKEN: gDybLx3yrUK_HLp3qPjS" "https://gitlab.example.com/api/v4/projects/24/releases/v0.1"
+curl --header 'Content-Type: application/json' --request PUT --data '{"name": "new name", "milestone": "v1.0"}' --header "PRIVATE-TOKEN: gDybLx3yrUK_HLp3qPjS" "https://gitlab.example.com/api/v4/projects/24/releases/v0.1"
 ```
 
 Example response:
@@ -381,6 +422,19 @@ Example response:
       "committer_name":"Administrator",
       "committer_email":"admin@example.com",
       "committed_date":"2019-01-03T01:53:28.000Z"
+   },
+   "milestone":{
+      "id":53,
+      "iid":2,
+      "project_id":24,
+      "title":"v1.0",
+      "description":"Voluptate fugiat possimus quis quod aliquam expedita.",
+      "state":"active",
+      "created_at":"2019-09-01T13:00:00.256Z",
+      "updated_at":"2019-09-01T13:00:00.256Z",
+      "due_date":"2019-09-20T13:00:00.256Z",
+      "start_date":"2019-09-05T12:00:00.256Z",
+      "web_url":"http://localhost:3000/root/awesome-app/-/milestones/3"
    },
    "assets":{
       "count":4,

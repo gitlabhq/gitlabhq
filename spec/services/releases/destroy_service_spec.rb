@@ -57,5 +57,15 @@ describe Releases::DestroyService do
                                http_status: 403)
       end
     end
+
+    context 'when a milestone is tied to the release' do
+      let!(:milestone) { create(:milestone, :active, project: project, title: 'v1.0') }
+      let!(:release) { create(:release, milestone: milestone, project: project, tag: tag) }
+
+      it 'destroys the release but leave the milestone intact' do
+        expect { subject }.not_to change { Milestone.count }
+        expect(milestone.reload).to be_persisted
+      end
+    end
   end
 end
