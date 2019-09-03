@@ -78,4 +78,13 @@ describe ClusterablePresenter do
       it_behaves_like 'appropriate member permissions'
     end
   end
+
+  describe '#environments_cluster_path' do
+    subject { described_class.new(clusterable).environments_cluster_path(cluster) }
+
+    let(:clusterable) { create(:group) }
+    let(:cluster) { create(:cluster_for_group, groups: [clusterable]) }
+
+    it { is_expected.to be_nil }
+  end
 end

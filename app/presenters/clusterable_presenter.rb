@@ -53,6 +53,11 @@ class ClusterablePresenter < Gitlab::View::Presenter::Delegated
     raise NotImplementedError
   end
 
+  # Will be overidden in EE
+  def environments_cluster_path(cluster)
+    nil
+  end
+
   def empty_state_help_text
     nil
   end
