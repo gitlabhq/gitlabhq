@@ -2869,8 +2869,8 @@ ActiveRecord::Schema.define(version: 2019_09_02_131045) do
     t.integer "project_id"
     t.string "title", null: false
     t.string "query", null: false
-    t.string "y_label"
-    t.string "unit"
+    t.string "y_label", null: false
+    t.string "unit", null: false
     t.string "legend"
     t.integer "group", null: false
     t.datetime_with_timezone "created_at", null: false
