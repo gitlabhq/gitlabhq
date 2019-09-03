@@ -2,6 +2,9 @@
 
 class PipelineEntity < Grape::Entity
   include RequestAwareEntity
+  include Gitlab::Utils::StrongMemoize
+
+  delegate :name, :failure_reason, to: :presented_pipeline
 
   expose :id
   expose :user, using: UserEntity
@@ -36,6 +39,7 @@ class PipelineEntity < Grape::Entity
     expose :ordered_stages, as: :stages, using: StageEntity
     expose :duration
     expose :finished_at
+    expose :name
   end
 
   expose :merge_request, if: -> (*) { has_presentable_merge_request? }, with: MergeRequestForPipelineEntity do |pipeline|
@@ -59,13 +63,11 @@ class PipelineEntity < Grape::Entity
   end
 
   expose :commit, using: CommitEntity
+  expose :merge_request_event_type, if: -> (pipeline, _) { pipeline.merge_request_event? }
   expose :source_sha, if: -> (pipeline, _) { pipeline.merge_request_pipeline? }
   expose :target_sha, if: -> (pipeline, _) { pipeline.merge_request_pipeline? }
   expose :yaml_errors, if: -> (pipeline, _) { pipeline.has_yaml_errors? }
-
-  expose :failure_reason, if: -> (pipeline, _) { pipeline.failure_reason? } do |pipeline|
-    pipeline.present.failure_reason
-  end
+  expose :failure_reason, if: -> (pipeline, _) { pipeline.failure_reason? }
 
   expose :retry_path, if: -> (*) { can_retry? } do |pipeline|
     retry_project_pipeline_path(pipeline.project, pipeline)
@@ -96,5 +98,11 @@ class PipelineEntity < Grape::Entity
 
   def detailed_status
     pipeline.detailed_status(request.current_user)
+  end
+
+  def presented_pipeline
+    strong_memoize(:presented_pipeline) do
+      pipeline.present
+    end
   end
 end

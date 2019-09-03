@@ -8182,6 +8182,9 @@ msgstr ""
 msgid "Pipeline|Coverage"
 msgstr ""
 
+msgid "Pipeline|Detached merge request pipeline"
+msgstr ""
+
 msgid "Pipeline|Duration"
 msgstr ""
 
@@ -8189,6 +8192,12 @@ msgid "Pipeline|Existing branch name or tag"
 msgstr ""
 
 msgid "Pipeline|Key"
+msgstr ""
+
+msgid "Pipeline|Merge train pipeline"
+msgstr ""
+
+msgid "Pipeline|Merged result pipeline"
 msgstr ""
 
 msgid "Pipeline|Pipeline"

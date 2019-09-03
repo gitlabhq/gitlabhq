@@ -77,6 +77,40 @@ describe Ci::PipelinePresenter do
     end
   end
 
+  describe '#name' do
+    subject { presenter.name }
+
+    context 'when pipeline is detached merge request pipeline' do
+      let(:merge_request) { create(:merge_request, :with_detached_merge_request_pipeline) }
+      let(:pipeline) { merge_request.all_pipelines.last }
+
+      it { is_expected.to eq('Detached merge request pipeline') }
+    end
+
+    context 'when pipeline is merge request pipeline' do
+      let(:merge_request) { create(:merge_request, :with_merge_request_pipeline) }
+      let(:pipeline) { merge_request.all_pipelines.last }
+
+      it { is_expected.to eq('Merged result pipeline') }
+    end
+
+    context 'when pipeline is merge train pipeline' do
+      let(:pipeline) { create(:ci_pipeline, project: project) }
+
+      before do
+        allow(pipeline).to receive(:merge_request_event_type) { :merge_train }
+      end
+
+      it { is_expected.to eq('Merge train pipeline') }
+    end
+
+    context 'when pipeline is branch pipeline' do
+      let(:pipeline) { create(:ci_pipeline, project: project) }
+
+      it { is_expected.to eq('Pipeline') }
+    end
+  end
+
   describe '#ref_text' do
     subject { presenter.ref_text }
 
