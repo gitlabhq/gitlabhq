@@ -200,57 +200,6 @@ describe Gitlab::Workhorse do
     end
   end
 
-  describe ".secret" do
-    subject { described_class.secret }
-
-    before do
-      described_class.instance_variable_set(:@secret, nil)
-      described_class.write_secret
-    end
-
-    it 'returns 32 bytes' do
-      expect(subject).to be_a(String)
-      expect(subject.length).to eq(32)
-      expect(subject.encoding).to eq(Encoding::ASCII_8BIT)
-    end
-
-    it 'accepts a trailing newline' do
-      File.open(described_class.secret_path, 'a') { |f| f.write "\n" }
-      expect(subject.length).to eq(32)
-    end
-
-    it 'raises an exception if the secret file cannot be read' do
-      File.delete(described_class.secret_path)
-      expect { subject }.to raise_exception(Errno::ENOENT)
-    end
-
-    it 'raises an exception if the secret file contains the wrong number of bytes' do
-      File.truncate(described_class.secret_path, 0)
-      expect { subject }.to raise_exception(RuntimeError)
-    end
-  end
-
-  describe ".write_secret" do
-    let(:secret_path) { described_class.secret_path }
-    before do
-      begin
-        File.delete(secret_path)
-      rescue Errno::ENOENT
-      end
-
-      described_class.write_secret
-    end
-
-    it 'uses mode 0600' do
-      expect(File.stat(secret_path).mode & 0777).to eq(0600)
-    end
-
-    it 'writes base64 data' do
-      bytes = Base64.strict_decode64(File.read(secret_path))
-      expect(bytes).not_to be_empty
-    end
-  end
-
   describe '#verify_api_request!' do
     let(:header_key) { described_class::INTERNAL_API_REQUEST_HEADER }
     let(:payload) { { 'iss' => 'gitlab-workhorse' } }
