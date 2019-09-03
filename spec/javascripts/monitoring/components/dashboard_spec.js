@@ -378,7 +378,9 @@ describe('Dashboard', () => {
     });
   });
 
-  describe('link to chart', () => {
+  // https://gitlab.com/gitlab-org/gitlab-ce/issues/66922
+  // eslint-disable-next-line jasmine/no-disabled-tests
+  xdescribe('link to chart', () => {
     let wrapper;
     const currentDashboard = 'TEST_DASHBOARD';
     localVue.use(GlToast);
