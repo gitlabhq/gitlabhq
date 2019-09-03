@@ -148,7 +148,7 @@ Check the directory layout on your Gitaly server to be sure.
 
    <!--
    updates to following example must also be made at
-   https://gitlab.com/charts/gitlab/blob/master/doc/advanced/external-gitaly/external-omnibus-gitaly.md#configure-omnibus-gitlab
+   https://gitlab.com/gitlab-org/charts/gitlab/blob/master/doc/advanced/external-gitaly/external-omnibus-gitaly.md#configure-omnibus-gitlab
    -->
 
    ```ruby

@@ -118,7 +118,7 @@ Helm chart][helm-chart], itself deployed with custom
 
 See [Review Apps][review-apps] for more details about Review Apps.
 
-[helm-chart]: https://gitlab.com/charts/gitlab/
+[helm-chart]: https://gitlab.com/gitlab-org/charts/gitlab/
 [cng]: https://gitlab.com/gitlab-org/build/CNG
 
 ## How do I run the tests?

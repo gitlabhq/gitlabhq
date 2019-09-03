@@ -164,7 +164,7 @@ function create_application_secret() {
 function download_chart() {
   echoinfo "Downloading the GitLab chart..." true
 
-  curl -o gitlab.tar.bz2 "https://gitlab.com/charts/gitlab/-/archive/${GITLAB_HELM_CHART_REF}/gitlab-${GITLAB_HELM_CHART_REF}.tar.bz2"
+  curl -o gitlab.tar.bz2 "https://gitlab.com/gitlab-org/charts/gitlab/-/archive/${GITLAB_HELM_CHART_REF}/gitlab-${GITLAB_HELM_CHART_REF}.tar.bz2"
   tar -xjf gitlab.tar.bz2
   cd "gitlab-${GITLAB_HELM_CHART_REF}"
 

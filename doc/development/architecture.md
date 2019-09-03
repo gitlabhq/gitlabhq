@@ -651,7 +651,7 @@ We've also detailed [our architecture of GitLab.com](https://about.gitlab.com/ha
 [shell-charts]: https://docs.gitlab.com/charts/charts/gitlab/gitlab-shell/
 [shell-source]: ../install/installation.md#install-gitlab-shell
 [pages-omnibus]: ../administration/pages/index.md
-[pages-charts]: https://gitlab.com/charts/gitlab/issues/37
+[pages-charts]: https://gitlab.com/gitlab-org/charts/gitlab/issues/37
 [pages-source]: ../install/installation.md#install-gitlab-pages
 [pages-gdk]: https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/pages.md
 [registry-omnibus]: ../administration/container_registry.md#container-registry-domain-configuration
@@ -673,9 +673,9 @@ We've also detailed [our architecture of GitLab.com](https://about.gitlab.com/ha
 [grafana-omnibus]: ../administration/monitoring/performance/grafana_configuration.md
 [grafana-charts]: https://github.com/helm/charts/tree/master/stable/grafana
 [sentry-omnibus]: https://docs.gitlab.com/omnibus/settings/configuration.html#error-reporting-and-logging-with-sentry
-[sentry-charts]: https://gitlab.com/charts/gitlab/issues/1319
+[sentry-charts]: https://gitlab.com/gitlab-org/charts/gitlab/issues/1319
 [jaeger-omnibus]: https://gitlab.com/gitlab-org/omnibus-gitlab/issues/4104
-[jaeger-charts]: https://gitlab.com/charts/gitlab/issues/1320
+[jaeger-charts]: https://gitlab.com/gitlab-org/charts/gitlab/issues/1320
 [jaeger-source]: ../development/distributed_tracing.md#enabling-distributed-tracing
 [jaeger-gdk]: ../development/distributed_tracing.html#using-jaeger-in-the-gitlab-development-kit
 [redis-exporter-omnibus]: ../administration/monitoring/prometheus/redis_exporter.md
@@ -687,7 +687,7 @@ We've also detailed [our architecture of GitLab.com](https://about.gitlab.com/ha
 [gitlab-monitor-omnibus]: ../administration/monitoring/prometheus/gitlab_monitor_exporter.md
 [gitlab-monitor-charts]: https://docs.gitlab.com/charts/charts/gitlab/gitlab-monitor/index.html
 [node-exporter-omnibus]: ../administration/monitoring/prometheus/node_exporter.md
-[node-exporter-charts]: https://gitlab.com/charts/gitlab/issues/1332
+[node-exporter-charts]: https://gitlab.com/gitlab-org/charts/gitlab/issues/1332
 [mattermost-omnibus]: https://docs.gitlab.com/omnibus/gitlab-mattermost/
 [mattermost-charts]: https://docs.mattermost.com/install/install-mmte-helm-gitlab-helm.html
 [minio-omnibus]: https://min.io/download
@@ -705,7 +705,7 @@ We've also detailed [our architecture of GitLab.com](https://about.gitlab.com/ha
 [certificate-management-source]: ../install/installation.md#using-https
 [certificate-management-gdk]: https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/https.md
 [geo-omnibus]: ../administration/geo/replication/index.md#setup-instructions
-[geo-charts]: https://gitlab.com/charts/gitlab/issues/8
+[geo-charts]: https://gitlab.com/gitlab-org/charts/gitlab/issues/8
 [geo-gdk]: https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/geo.md
 [ldap-omnibus]: ../administration/auth/ldap.md
 [ldap-charts]: https://docs.gitlab.com/charts/charts/globals.html#ldap

@@ -267,7 +267,7 @@ find a way to limit it to only us.**
 
 - [Review Apps integration for CE/EE (presentation)](https://docs.google.com/presentation/d/1QPLr6FO4LduROU8pQIPkX1yfGvD13GEJIBOenqoKxR8/edit?usp=sharing)
 
-[charts-1068]: https://gitlab.com/charts/gitlab/issues/1068
+[charts-1068]: https://gitlab.com/gitlab-org/charts/gitlab/issues/1068
 [gitlab-pipeline]: https://gitlab.com/gitlab-org/gitlab-ce/pipelines/44362587
 [gitlab:assets:compile]: https://gitlab.com/gitlab-org/gitlab-ce/-/jobs/149511610
 [review-build-cng]: https://gitlab.com/gitlab-org/gitlab-ce/-/jobs/149511623
@@ -276,7 +276,7 @@ find a way to limit it to only us.**
 [cng]: https://gitlab.com/gitlab-org/build/CNG
 [cng-mirror-pipeline]: https://gitlab.com/gitlab-org/build/CNG-mirror/pipelines/44364657
 [cng-mirror-registry]: https://gitlab.com/gitlab-org/build/CNG-mirror/container_registry
-[helm-chart]: https://gitlab.com/charts/gitlab/
+[helm-chart]: https://gitlab.com/gitlab-org/charts/gitlab/
 [review-apps-ce]: https://console.cloud.google.com/kubernetes/clusters/details/us-central1-a/review-apps-ce?project=gitlab-review-apps
 [review-apps-ee]: https://console.cloud.google.com/kubernetes/clusters/details/us-central1-b/review-apps-ee?project=gitlab-review-apps
 [review-apps.sh]: https://gitlab.com/gitlab-org/gitlab-ee/blob/master/scripts/review_apps/review-apps.sh
