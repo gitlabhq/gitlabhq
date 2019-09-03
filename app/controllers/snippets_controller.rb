@@ -7,6 +7,7 @@ class SnippetsController < ApplicationController
   include SnippetsActions
   include RendersBlob
   include PreviewMarkdown
+  include PaginatedCollection
   include Gitlab::NoteableMetadata
 
   skip_before_action :verify_authenticity_token,
@@ -36,6 +37,8 @@ class SnippetsController < ApplicationController
         .execute
         .page(params[:page])
         .inc_author
+
+      return if redirect_out_of_range(@snippets)
 
       @noteable_meta_data = noteable_meta_data(@snippets, 'Snippet')
 

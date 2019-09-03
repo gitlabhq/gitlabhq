@@ -82,33 +82,13 @@ describe Dashboard::TodosController do
       end
     end
 
-    context 'when using pagination' do
-      let(:last_page) { user.todos.page.total_pages }
+    it_behaves_like 'paginated collection' do
       let!(:issues) { create_list(:issue, 3, project: project, assignees: [user]) }
+      let(:collection) { user.todos }
 
       before do
         issues.each { |issue| todo_service.new_issue(issue, user) }
         allow(Kaminari.config).to receive(:default_per_page).and_return(2)
-      end
-
-      it 'redirects to last_page if page number is larger than number of pages' do
-        get :index, params: { page: (last_page + 1).to_param }
-
-        expect(response).to redirect_to(dashboard_todos_path(page: last_page))
-      end
-
-      it 'goes to the correct page' do
-        get :index, params: { page: last_page }
-
-        expect(assigns(:todos).current_page).to eq(last_page)
-        expect(response).to have_gitlab_http_status(200)
-      end
-
-      it 'does not redirect to external sites when provided a host field' do
-        external_host = "www.example.com"
-        get :index, params: { page: (last_page + 1).to_param, host: external_host }
-
-        expect(response).to redirect_to(dashboard_todos_path(page: last_page))
       end
 
       context 'when providing no filters' do

@@ -71,9 +71,16 @@ describe Projects::IssuesController do
       end
     end
 
-    context 'with page param' do
-      let(:last_page) { project.issues.page.total_pages }
+    it_behaves_like 'paginated collection' do
       let!(:issue_list) { create_list(:issue, 2, project: project) }
+      let(:collection) { project.issues }
+      let(:params) do
+        {
+          namespace_id: project.namespace.to_param,
+          project_id: project,
+          state: 'opened'
+        }
+      end
 
       before do
         sign_in(user)
@@ -81,51 +88,10 @@ describe Projects::IssuesController do
         allow(Kaminari.config).to receive(:default_per_page).and_return(1)
       end
 
-      it 'redirects to last_page if page number is larger than number of pages' do
-        get :index,
-          params: {
-            namespace_id: project.namespace.to_param,
-            project_id: project,
-            page: (last_page + 1).to_param
-          }
-
-        expect(response).to redirect_to(namespace_project_issues_path(page: last_page, state: controller.params[:state], scope: controller.params[:scope]))
-      end
-
-      it 'redirects to specified page' do
-        get :index,
-          params: {
-            namespace_id: project.namespace.to_param,
-            project_id: project,
-            page: last_page.to_param
-          }
-
-        expect(assigns(:issues).current_page).to eq(last_page)
-        expect(response).to have_gitlab_http_status(200)
-      end
-
-      it 'does not redirect to external sites when provided a host field' do
-        external_host = "www.example.com"
-        get :index,
-          params: {
-            namespace_id: project.namespace.to_param,
-            project_id: project,
-            page: (last_page + 1).to_param,
-            host: external_host
-          }
-
-        expect(response).to redirect_to(namespace_project_issues_path(page: last_page, state: controller.params[:state], scope: controller.params[:scope]))
-      end
-
       it 'does not use pagination if disabled' do
         allow(controller).to receive(:pagination_disabled?).and_return(true)
 
-        get :index,
-          params: {
-            namespace_id: project.namespace.to_param,
-            project_id: project,
-            page: (last_page + 1).to_param
-          }
+        get :index, params: params.merge(page: last_page + 1)
 
         expect(response).to have_gitlab_http_status(200)
         expect(assigns(:issues).size).to eq(2)

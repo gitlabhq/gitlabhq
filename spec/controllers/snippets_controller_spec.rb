@@ -9,6 +9,15 @@ describe SnippetsController do
     let(:user) { create(:user) }
 
     context 'when username parameter is present' do
+      it_behaves_like 'paginated collection' do
+        let(:collection) { Snippet.all }
+        let(:params) { { username: user.username } }
+
+        before do
+          create(:personal_snippet, :public, author: user)
+        end
+      end
+
       it 'renders snippets of a user when username is present' do
         get :index, params: { username: user.username }
 

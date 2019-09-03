@@ -2,6 +2,7 @@
 
 class Dashboard::TodosController < Dashboard::ApplicationController
   include ActionView::Helpers::NumberHelper
+  include PaginatedCollection
 
   before_action :authorize_read_project!, only: :index
   before_action :authorize_read_group!, only: :index
@@ -12,7 +13,7 @@ class Dashboard::TodosController < Dashboard::ApplicationController
     @todos = @todos.page(params[:page])
     @todos = @todos.with_entity_associations
 
-    return if redirect_out_of_range(@todos)
+    return if redirect_out_of_range(@todos, todos_page_count(@todos))
   end
 
   def destroy
@@ -82,28 +83,15 @@ class Dashboard::TodosController < Dashboard::ApplicationController
     }
   end
 
+  def todos_page_count(todos)
+    if todo_params.except(:sort, :page).empty? # rubocop: disable CodeReuse/ActiveRecord
+      (current_user.todos_pending_count.to_f / todos.limit_value).ceil
+    else
+      todos.total_pages
+    end
+  end
+
   def todo_params
     params.permit(:action_id, :author_id, :project_id, :type, :sort, :state, :group_id)
   end
-
-  # rubocop: disable CodeReuse/ActiveRecord
-  def redirect_out_of_range(todos)
-    total_pages =
-      if todo_params.except(:sort, :page).empty?
-        (current_user.todos_pending_count.to_f / todos.limit_value).ceil
-      else
-        todos.total_pages
-      end
-
-    return false if total_pages.zero?
-
-    out_of_range = todos.current_page > total_pages
-
-    if out_of_range
-      redirect_to url_for(safe_params.merge(page: total_pages, only_path: true))
-    end
-
-    out_of_range
-  end
-  # rubocop: enable CodeReuse/ActiveRecord
 end
