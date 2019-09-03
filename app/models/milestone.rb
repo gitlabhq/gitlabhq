@@ -260,6 +260,7 @@ class Milestone < ApplicationRecord
   def parent
     group || project
   end
+  alias_method :resource_parent, :parent
 
   def group_milestone?
     group_id.present?
