@@ -1,20 +1,18 @@
-- @no_container = true
 - page_title _("Groups")
 
-%div{ class: container_class }
-  .top-area
-    .prepend-top-default.append-bottom-default
-      = form_tag admin_groups_path, method: :get, class: 'js-search-form' do |f|
-        = hidden_field_tag :sort, @sort
-        .search-holder
-          - project_name = params[:name].present? ? params[:name] : nil
-          .search-field-holder
-            = search_field_tag :name, project_name, class: "form-control search-text-input js-search-input", autofocus: true, spellcheck: false, placeholder: 'Search by name'
-            = icon("search", class: "search-icon")
-          = render "shared/groups/dropdown", options_hash: admin_groups_sort_options_hash
-          = link_to new_admin_group_path, class: "btn btn-success" do
-            = _('New group')
-  %ul.content-list
-    = render @groups
+.top-area
+  .prepend-top-default.append-bottom-default
+    = form_tag admin_groups_path, method: :get, class: 'js-search-form' do |f|
+      = hidden_field_tag :sort, @sort
+      .search-holder
+        - project_name = params[:name].present? ? params[:name] : nil
+        .search-field-holder
+          = search_field_tag :name, project_name, class: "form-control search-text-input js-search-input", autofocus: true, spellcheck: false, placeholder: 'Search by name'
+          = icon("search", class: "search-icon")
+        = render "shared/groups/dropdown", options_hash: admin_groups_sort_options_hash
+        = link_to new_admin_group_path, class: "btn btn-success" do
+          = _('New group')
+%ul.content-list
+  = render @groups
 
-  = paginate @groups, theme: "gitlab"
+= paginate @groups, theme: "gitlab"

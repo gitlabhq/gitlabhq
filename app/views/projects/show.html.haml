@@ -1,4 +1,3 @@
-- @no_container = true
 - breadcrumb_title _("Details")
 - @content_class = "limit-container-width" unless fluid_layout
 
@@ -11,7 +10,7 @@
   - signatures_path = project_signatures_path(@project, @project.default_branch)
   .js-signature-container{ data: { 'signatures-path': signatures_path } }
 
-%div{ class: [container_class, ("limit-container-width" unless fluid_layout)] }
+%div{ class: [("limit-container-width" unless fluid_layout)] }
   = render "projects/last_push"
 
   = render "home_panel"

@@ -1,45 +1,43 @@
-- @no_container = true
 - add_to_breadcrumbs s_('TagsPage|Tags'), project_tags_path(@project)
 - breadcrumb_title @tag.name
 - page_title @tag.name, s_('TagsPage|Tags')
 
-%div{ class: container_class }
-  .top-area.multi-line.flex-wrap
-    .nav-text
-      .title
-        %span.item-title.ref-name
-          = icon('tag')
-          = @tag.name
-        - if protected_tag?(@project, @tag)
-          %span.badge.badge-success
-            = s_('TagsPage|protected')
-      - if @commit
-        = render 'projects/branches/commit', commit: @commit, project: @project
-      - else
-        = s_("TagsPage|Can't find HEAD commit for this tag")
-
-    .nav-controls
-      - if can?(current_user, :admin_tag, @project)
-        = link_to edit_project_tag_release_path(@project, @tag.name), class: 'btn btn-edit controls-item has-tooltip', title: s_('TagsPage|Edit release notes') do
-          = icon("pencil")
-      = link_to project_tree_path(@project, @tag.name), class: 'btn controls-item has-tooltip', title: s_('TagsPage|Browse files') do
-        = sprite_icon('folder-open')
-      = link_to project_commits_path(@project, @tag.name), class: 'btn controls-item has-tooltip', title: s_('TagsPage|Browse commits') do
-        = icon('history')
-      .btn-container.controls-item
-        = render 'projects/buttons/download', project: @project, ref: @tag.name
-      - if can?(current_user, :admin_tag, @project)
-        .btn-container.controls-item-full
-          = link_to project_tag_path(@project, @tag.name), class: "btn btn-remove remove-row has-tooltip #{protected_tag?(@project, @tag) ? 'disabled' : ''}", title: s_('TagsPage|Delete tag'), method: :delete, data: { confirm: s_('TagsPage|Deleting the %{tag_name} tag cannot be undone. Are you sure?') % { tag_name: @tag.name } } do
-            %i.fa.fa-trash-o
-
-    - if @tag.message.present?
-      %pre.wrap
-        = strip_gpg_signature(@tag.message)
-
-  .append-bottom-default.prepend-top-default
-    - if @release.description.present?
-      .description.md
-        = markdown_field(@release, :description)
+.top-area.multi-line.flex-wrap
+  .nav-text
+    .title
+      %span.item-title.ref-name
+        = icon('tag')
+        = @tag.name
+      - if protected_tag?(@project, @tag)
+        %span.badge.badge-success
+          = s_('TagsPage|protected')
+    - if @commit
+      = render 'projects/branches/commit', commit: @commit, project: @project
     - else
-      = s_('TagsPage|This tag has no release notes.')
+      = s_("TagsPage|Can't find HEAD commit for this tag")
+
+  .nav-controls
+    - if can?(current_user, :admin_tag, @project)
+      = link_to edit_project_tag_release_path(@project, @tag.name), class: 'btn btn-edit controls-item has-tooltip', title: s_('TagsPage|Edit release notes') do
+        = icon("pencil")
+    = link_to project_tree_path(@project, @tag.name), class: 'btn controls-item has-tooltip', title: s_('TagsPage|Browse files') do
+      = sprite_icon('folder-open')
+    = link_to project_commits_path(@project, @tag.name), class: 'btn controls-item has-tooltip', title: s_('TagsPage|Browse commits') do
+      = icon('history')
+    .btn-container.controls-item
+      = render 'projects/buttons/download', project: @project, ref: @tag.name
+    - if can?(current_user, :admin_tag, @project)
+      .btn-container.controls-item-full
+        = link_to project_tag_path(@project, @tag.name), class: "btn btn-remove remove-row has-tooltip #{protected_tag?(@project, @tag) ? 'disabled' : ''}", title: s_('TagsPage|Delete tag'), method: :delete, data: { confirm: s_('TagsPage|Deleting the %{tag_name} tag cannot be undone. Are you sure?') % { tag_name: @tag.name } } do
+          %i.fa.fa-trash-o
+
+  - if @tag.message.present?
+    %pre.wrap
+      = strip_gpg_signature(@tag.message)
+
+.append-bottom-default.prepend-top-default
+  - if @release.description.present?
+    .description.md
+      = markdown_field(@release, :description)
+  - else
+    = s_('TagsPage|This tag has no release notes.')

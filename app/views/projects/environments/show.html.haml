@@ -1,4 +1,3 @@
-- @no_container = true
 - add_to_breadcrumbs _("Environments"), project_environments_path(@project)
 - breadcrumb_title @environment.name
 - page_title _("Environments")
@@ -6,67 +5,66 @@
 - content_for :page_specific_javascripts do
   = stylesheet_link_tag 'page_bundles/xterm'
 
-%div{ class: container_class }
-  - if can?(current_user, :stop_environment, @environment)
-    #stop-environment-modal.modal.fade{ tabindex: -1 }
-      .modal-dialog
-        .modal-content
-          .modal-header
-            %h4.modal-title.d-flex.mw-100
-              = s_("Environments|Stopping")
-              %span.has-tooltip.text-truncate.ml-1.mr-1.flex-fill{ title: @environment.name, data: { container: '#stop-environment-modal' } }
-                = @environment.name
-              ?
-          .modal-body
-            %p= s_('Environments|Are you sure you want to stop this environment?')
-            - unless @environment.stop_action_available?
-              .warning_message
-                %p= s_('Environments|Note that this action will stop the environment, but it will %{emphasis_start}not%{emphasis_end} have an effect on any existing deployment due to no “stop environment action” being defined in the %{ci_config_link_start}.gitlab-ci.yml%{ci_config_link_end} file.').html_safe % { emphasis_start: '<strong>'.html_safe,
-                  emphasis_end: '</strong>'.html_safe,
-                  ci_config_link_start: '<a href="https://docs.gitlab.com/ee/ci/yaml/" target="_blank" rel="noopener noreferrer">'.html_safe,
-                  ci_config_link_end: '</a>'.html_safe }
-                %a{ href: 'https://docs.gitlab.com/ee/ci/environments.html#stopping-an-environment',
-                  target: '_blank',
-                  rel: 'noopener noreferrer' }
-                  = s_('Environments|Learn more about stopping environments')
-          .modal-footer
-            = button_tag _('Cancel'), type: 'button', class: 'btn btn-cancel', data: { dismiss: 'modal' }
-            = button_to stop_project_environment_path(@project, @environment), class: 'btn btn-danger has-tooltip', method: :post do
-              = s_('Environments|Stop environment')
+- if can?(current_user, :stop_environment, @environment)
+  #stop-environment-modal.modal.fade{ tabindex: -1 }
+    .modal-dialog
+      .modal-content
+        .modal-header
+          %h4.modal-title.d-flex.mw-100
+            = s_("Environments|Stopping")
+            %span.has-tooltip.text-truncate.ml-1.mr-1.flex-fill{ title: @environment.name, data: { container: '#stop-environment-modal' } }
+              = @environment.name
+            ?
+        .modal-body
+          %p= s_('Environments|Are you sure you want to stop this environment?')
+          - unless @environment.stop_action_available?
+            .warning_message
+              %p= s_('Environments|Note that this action will stop the environment, but it will %{emphasis_start}not%{emphasis_end} have an effect on any existing deployment due to no “stop environment action” being defined in the %{ci_config_link_start}.gitlab-ci.yml%{ci_config_link_end} file.').html_safe % { emphasis_start: '<strong>'.html_safe,
+                emphasis_end: '</strong>'.html_safe,
+                ci_config_link_start: '<a href="https://docs.gitlab.com/ee/ci/yaml/" target="_blank" rel="noopener noreferrer">'.html_safe,
+                ci_config_link_end: '</a>'.html_safe }
+              %a{ href: 'https://docs.gitlab.com/ee/ci/environments.html#stopping-an-environment',
+                target: '_blank',
+                rel: 'noopener noreferrer' }
+                = s_('Environments|Learn more about stopping environments')
+        .modal-footer
+          = button_tag _('Cancel'), type: 'button', class: 'btn btn-cancel', data: { dismiss: 'modal' }
+          = button_to stop_project_environment_path(@project, @environment), class: 'btn btn-danger has-tooltip', method: :post do
+            = s_('Environments|Stop environment')
 
-  .top-area
-    %h3.page-title= @environment.name
-    .nav-controls.ml-auto.my-2
-      = render 'projects/environments/terminal_button', environment: @environment
-      = render 'projects/environments/external_url', environment: @environment
-      = render 'projects/environments/metrics_button', environment: @environment
-      - if can?(current_user, :update_environment, @environment)
-        = link_to _('Edit'), edit_project_environment_path(@project, @environment), class: 'btn'
-      - if can?(current_user, :stop_environment, @environment)
-        = button_tag class: 'btn btn-danger', type: 'button', data: { toggle: 'modal',
-          target: '#stop-environment-modal' } do
-          = sprite_icon('stop')
-          = s_('Environments|Stop')
+.top-area
+  %h3.page-title= @environment.name
+  .nav-controls.ml-auto.my-2
+    = render 'projects/environments/terminal_button', environment: @environment
+    = render 'projects/environments/external_url', environment: @environment
+    = render 'projects/environments/metrics_button', environment: @environment
+    - if can?(current_user, :update_environment, @environment)
+      = link_to _('Edit'), edit_project_environment_path(@project, @environment), class: 'btn'
+    - if can?(current_user, :stop_environment, @environment)
+      = button_tag class: 'btn btn-danger', type: 'button', data: { toggle: 'modal',
+        target: '#stop-environment-modal' } do
+        = sprite_icon('stop')
+        = s_('Environments|Stop')
 
-  .environments-container
-    - if @deployments.blank?
-      .empty-state
-        .text-content
-          %h4.state-title
-            = _("You don't have any deployments right now.")
-          %p.blank-state-text
-            = _("Define environments in the deploy stage(s) in <code>.gitlab-ci.yml</code> to track deployments here.").html_safe
-          .text-center
-            = link_to _("Read more"), help_page_path("ci/environments"), class: "btn btn-success"
-    - else
-      .table-holder
-        .ci-table.environments{ role: 'grid' }
-          .gl-responsive-table-row.table-row-header{ role: 'row' }
-            .table-section.section-10{ role: 'columnheader' }= _('ID')
-            .table-section.section-30{ role: 'columnheader' }= _('Commit')
-            .table-section.section-25{ role: 'columnheader' }= _('Job')
-            .table-section.section-15{ role: 'columnheader' }= _('Created')
+.environments-container
+  - if @deployments.blank?
+    .empty-state
+      .text-content
+        %h4.state-title
+          = _("You don't have any deployments right now.")
+        %p.blank-state-text
+          = _("Define environments in the deploy stage(s) in <code>.gitlab-ci.yml</code> to track deployments here.").html_safe
+        .text-center
+          = link_to _("Read more"), help_page_path("ci/environments"), class: "btn btn-success"
+  - else
+    .table-holder
+      .ci-table.environments{ role: 'grid' }
+        .gl-responsive-table-row.table-row-header{ role: 'row' }
+          .table-section.section-10{ role: 'columnheader' }= _('ID')
+          .table-section.section-30{ role: 'columnheader' }= _('Commit')
+          .table-section.section-25{ role: 'columnheader' }= _('Job')
+          .table-section.section-15{ role: 'columnheader' }= _('Created')
 
-          = render @deployments
+        = render @deployments
 
-      = paginate @deployments, theme: 'gitlab'
+    = paginate @deployments, theme: 'gitlab'

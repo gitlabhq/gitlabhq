@@ -1,16 +1,14 @@
 - breadcrumb_title _("Cohorts")
-- @no_container = true
 
-%div{ class: container_class }
-  - if @cohorts
-    = render 'cohorts_table'
-  - else
-    .bs-callout.bs-callout-warning.clearfix
-      %p
-        - usage_ping_path = help_page_path('user/admin_area/settings/usage_statistics', anchor: 'usage-ping')
-        - usage_ping_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: usage_ping_path }
-        = s_('User Cohorts are only shown when the %{usage_ping_link_start}usage ping%{usage_ping_link_end} is enabled.').html_safe % { usage_ping_link_start: usage_ping_link_start, usage_ping_link_end: '</a>'.html_safe }
-        - if current_user.admin?
-          - application_settings_path = admin_application_settings_path(anchor: 'usage-statistics')
-          - application_settings_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: application_settings_path }
-          = s_('To enable it and see User Cohorts, visit %{application_settings_link_start}application settings%{application_settings_link_end}.').html_safe % { application_settings_link_start: application_settings_link_start, application_settings_link_end: '</a>'.html_safe }
+- if @cohorts
+  = render 'cohorts_table'
+- else
+  .bs-callout.bs-callout-warning.clearfix
+    %p
+      - usage_ping_path = help_page_path('user/admin_area/settings/usage_statistics', anchor: 'usage-ping')
+      - usage_ping_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: usage_ping_path }
+      = s_('User Cohorts are only shown when the %{usage_ping_link_start}usage ping%{usage_ping_link_end} is enabled.').html_safe % { usage_ping_link_start: usage_ping_link_start, usage_ping_link_end: '</a>'.html_safe }
+      - if current_user.admin?
+        - application_settings_path = admin_application_settings_path(anchor: 'usage-statistics')
+        - application_settings_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: application_settings_path }
+        = s_('To enable it and see User Cohorts, visit %{application_settings_link_start}application settings%{application_settings_link_end}.').html_safe % { application_settings_link_start: application_settings_link_start, application_settings_link_end: '</a>'.html_safe }

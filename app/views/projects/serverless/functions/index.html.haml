@@ -1,4 +1,3 @@
-- @no_container = true
 - @content_class = "limit-container-width" unless fluid_layout
 - breadcrumb_title 'Serverless'
 - page_title 'Serverless'
@@ -10,7 +9,7 @@
   clusters_path: clusters_path,
   help_path: help_page_path('user/project/clusters/serverless/index') } }
 
-%div{ class: [container_class, ('limit-container-width' unless fluid_layout)] }
+%div{ class: [('limit-container-width' unless fluid_layout)] }
   .js-serverless-functions-notice
     .flash-container
 

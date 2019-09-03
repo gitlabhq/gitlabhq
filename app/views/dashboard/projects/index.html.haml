@@ -1,4 +1,3 @@
-- @no_container = true
 - @hide_top_links = true
 
 = content_for :meta_tags do
@@ -9,11 +8,10 @@
 - page_title    "Projects"
 - header_title  "Projects", dashboard_projects_path
 
-%div{ class: container_class }
-  = render "projects/last_push"
-  - if show_projects?(@projects, params)
-    = render 'dashboard/projects_head'
-    = render 'nav' unless Feature.enabled?(:project_list_filter_bar)
-    = render 'projects'
-  - else
-    = render "zero_authorized_projects"
+= render "projects/last_push"
+- if show_projects?(@projects, params)
+  = render 'dashboard/projects_head'
+  = render 'nav' unless Feature.enabled?(:project_list_filter_bar)
+  = render 'projects'
+- else
+  = render "zero_authorized_projects"

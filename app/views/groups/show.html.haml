@@ -1,11 +1,10 @@
-- @no_container = true
 - breadcrumb_title _("Details")
 - @content_class = "limit-container-width" unless fluid_layout
 
 = content_for :meta_tags do
   = auto_discovery_link_tag(:atom, group_url(@group, rss_url_options), title: "#{@group.name} activity")
 
-%div{ class: [container_class, ("limit-container-width" unless fluid_layout)] }
+%div{ class: [("limit-container-width" unless fluid_layout)] }
   = render 'groups/home_panel'
 
   .groups-listing{ data: { endpoints: { default: group_children_path(@group, format: :json), shared: group_shared_projects_path(@group, format: :json) } } }

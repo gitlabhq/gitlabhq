@@ -1,7 +1,6 @@
-- @no_container = true
 - page_title "Cycle Analytics"
 
-#cycle-analytics{ class: container_class, "v-cloak" => "true", data: { request_path: project_cycle_analytics_path(@project) } }
+#cycle-analytics{ "v-cloak" => "true", data: { request_path: project_cycle_analytics_path(@project) } }
   - if @cycle_analytics_no_data
     %banner{ "v-if" => "!isOverviewDialogDismissed",
       "documentation-link": help_page_path('user/project/cycle_analytics'),

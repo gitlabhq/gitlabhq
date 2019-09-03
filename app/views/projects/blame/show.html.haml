@@ -1,44 +1,42 @@
-- @no_container = true
 - project_duration = age_map_duration(@blame_groups, @project)
 - page_title "Blame", @blob.path, @ref
 
-%div{ class: container_class }
-  #blob-content-holder.tree-holder
-    = render "projects/blob/breadcrumb", blob: @blob, blame: true
+#blob-content-holder.tree-holder
+  = render "projects/blob/breadcrumb", blob: @blob, blame: true
 
-    .file-holder
-      = render "projects/blob/header", blob: @blob, blame: true
-      .file-blame-legend
-        = render 'age_map_legend'
-      .table-responsive.file-content.blame.code.js-syntax-highlight
-        %table
-          - current_line = 1
-          - @blame_groups.each do |blame_group|
-            %tr
-              - commit = blame_group[:commit]
-              %td.blame-commit{ class: age_map_class(commit.committed_date, project_duration) }
-                .commit
-                  = author_avatar(commit, size: 36, has_tooltip: false)
-                  .commit-row-title
-                    %span.item-title.str-truncated-100
-                      = link_to_markdown commit.title, project_commit_path(@project, commit.id), class: "cdark", title: commit.title
-                    .float-right
-                      = link_to commit.short_id, project_commit_path(@project, commit), class: "commit-sha"
-                    &nbsp;
-                  .light
-                    = commit_author_link(commit, avatar: false)
-                    committed
-                    #{time_ago_with_tooltip(commit.committed_date)}
-              %td.line-numbers
-                - line_count = blame_group[:lines].count
-                - (current_line...(current_line + line_count)).each do |i|
-                  %a.diff-line-num{ href: "#L#{i}", id: "L#{i}", 'data-line-number' => i }
-                    = icon("link")
-                    = i
-                  \
-                - current_line += line_count
-              %td.lines
-                %pre.code.highlight
-                  %code
-                    - blame_group[:lines].each do |line|
-                      #{line}
+  .file-holder
+    = render "projects/blob/header", blob: @blob, blame: true
+    .file-blame-legend
+      = render 'age_map_legend'
+    .table-responsive.file-content.blame.code.js-syntax-highlight
+      %table
+        - current_line = 1
+        - @blame_groups.each do |blame_group|
+          %tr
+            - commit = blame_group[:commit]
+            %td.blame-commit{ class: age_map_class(commit.committed_date, project_duration) }
+              .commit
+                = author_avatar(commit, size: 36, has_tooltip: false)
+                .commit-row-title
+                  %span.item-title.str-truncated-100
+                    = link_to_markdown commit.title, project_commit_path(@project, commit.id), class: "cdark", title: commit.title
+                  .float-right
+                    = link_to commit.short_id, project_commit_path(@project, commit), class: "commit-sha"
+                  &nbsp;
+                .light
+                  = commit_author_link(commit, avatar: false)
+                  committed
+                  #{time_ago_with_tooltip(commit.committed_date)}
+            %td.line-numbers
+              - line_count = blame_group[:lines].count
+              - (current_line...(current_line + line_count)).each do |i|
+                %a.diff-line-num{ href: "#L#{i}", id: "L#{i}", 'data-line-number' => i }
+                  = icon("link")
+                  = i
+                \
+              - current_line += line_count
+            %td.lines
+              %pre.code.highlight
+                %code
+                  - blame_group[:lines].each do |line|
+                    #{line}

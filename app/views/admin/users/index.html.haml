@@ -1,79 +1,77 @@
-- @no_container = true
 - page_title "Users"
 
-%div{ class: container_class }
-  .top-area.scrolling-tabs-container.inner-page-scroll-tabs
-    .fade-left
-      = icon('angle-left')
-    .fade-right
-      = icon('angle-right')
-    %ul.nav-links.nav.nav-tabs.scrolling-tabs
-      = nav_link(html_options: { class: active_when(params[:filter].nil?) }) do
-        = link_to admin_users_path do
-          = s_('AdminUsers|Active')
-          %small.badge.badge-pill= limited_counter_with_delimiter(User.active)
-      = nav_link(html_options: { class: active_when(params[:filter] == 'admins') }) do
-        = link_to admin_users_path(filter: "admins") do
-          = s_('AdminUsers|Admins')
-          %small.badge.badge-pill= limited_counter_with_delimiter(User.admins)
-      = nav_link(html_options: { class: "#{active_when(params[:filter] == 'two_factor_enabled')} filter-two-factor-enabled" }) do
-        = link_to admin_users_path(filter: 'two_factor_enabled') do
-          = s_('AdminUsers|2FA Enabled')
-          %small.badge.badge-pill= limited_counter_with_delimiter(User.with_two_factor)
-      = nav_link(html_options: { class: "#{active_when(params[:filter] == 'two_factor_disabled')} filter-two-factor-disabled" }) do
-        = link_to admin_users_path(filter: 'two_factor_disabled') do
-          = s_('AdminUsers|2FA Disabled')
-          %small.badge.badge-pill= limited_counter_with_delimiter(User.without_two_factor)
-      = nav_link(html_options: { class: active_when(params[:filter] == 'external') }) do
-        = link_to admin_users_path(filter: 'external') do
-          = s_('AdminUsers|External')
-          %small.badge.badge-pill= limited_counter_with_delimiter(User.external)
-      = nav_link(html_options: { class: active_when(params[:filter] == 'blocked') }) do
-        = link_to admin_users_path(filter: "blocked") do
-          = s_('AdminUsers|Blocked')
-          %small.badge.badge-pill= limited_counter_with_delimiter(User.blocked)
-      = nav_link(html_options: { class: active_when(params[:filter] == 'wop') }) do
-        = link_to admin_users_path(filter: "wop") do
-          = s_('AdminUsers|Without projects')
-          %small.badge.badge-pill= limited_counter_with_delimiter(User.without_projects)
-    .nav-controls
-      = render_if_exists 'admin/users/admin_email_users'
-      = link_to s_('AdminUsers|New user'), new_admin_user_path, class: 'btn btn-success btn-search float-right'
+.top-area.scrolling-tabs-container.inner-page-scroll-tabs
+  .fade-left
+    = icon('angle-left')
+  .fade-right
+    = icon('angle-right')
+  %ul.nav-links.nav.nav-tabs.scrolling-tabs
+    = nav_link(html_options: { class: active_when(params[:filter].nil?) }) do
+      = link_to admin_users_path do
+        = s_('AdminUsers|Active')
+        %small.badge.badge-pill= limited_counter_with_delimiter(User.active)
+    = nav_link(html_options: { class: active_when(params[:filter] == 'admins') }) do
+      = link_to admin_users_path(filter: "admins") do
+        = s_('AdminUsers|Admins')
+        %small.badge.badge-pill= limited_counter_with_delimiter(User.admins)
+    = nav_link(html_options: { class: "#{active_when(params[:filter] == 'two_factor_enabled')} filter-two-factor-enabled" }) do
+      = link_to admin_users_path(filter: 'two_factor_enabled') do
+        = s_('AdminUsers|2FA Enabled')
+        %small.badge.badge-pill= limited_counter_with_delimiter(User.with_two_factor)
+    = nav_link(html_options: { class: "#{active_when(params[:filter] == 'two_factor_disabled')} filter-two-factor-disabled" }) do
+      = link_to admin_users_path(filter: 'two_factor_disabled') do
+        = s_('AdminUsers|2FA Disabled')
+        %small.badge.badge-pill= limited_counter_with_delimiter(User.without_two_factor)
+    = nav_link(html_options: { class: active_when(params[:filter] == 'external') }) do
+      = link_to admin_users_path(filter: 'external') do
+        = s_('AdminUsers|External')
+        %small.badge.badge-pill= limited_counter_with_delimiter(User.external)
+    = nav_link(html_options: { class: active_when(params[:filter] == 'blocked') }) do
+      = link_to admin_users_path(filter: "blocked") do
+        = s_('AdminUsers|Blocked')
+        %small.badge.badge-pill= limited_counter_with_delimiter(User.blocked)
+    = nav_link(html_options: { class: active_when(params[:filter] == 'wop') }) do
+      = link_to admin_users_path(filter: "wop") do
+        = s_('AdminUsers|Without projects')
+        %small.badge.badge-pill= limited_counter_with_delimiter(User.without_projects)
+  .nav-controls
+    = render_if_exists 'admin/users/admin_email_users'
+    = link_to s_('AdminUsers|New user'), new_admin_user_path, class: 'btn btn-success btn-search float-right'
 
-  .filtered-search-block.row-content-block.border-top-0
-    = form_tag admin_users_path, method: :get do
-      - if params[:filter].present?
-        = hidden_field_tag "filter", h(params[:filter])
-      .search-holder
-        .search-field-holder
-          = search_field_tag :search_query, params[:search_query], placeholder: s_('AdminUsers|Search by name, email or username'), class: 'form-control search-text-input js-search-input', spellcheck: false
-          - if @sort.present?
-            = hidden_field_tag :sort, @sort
-          = icon("search", class: "search-icon")
-          = button_tag s_('AdminUsers|Search users') if Rails.env.test?
-        .dropdown.user-sort-dropdown
-          - toggle_text = @sort.present? ? users_sort_options_hash[@sort] : sort_title_name
-          = dropdown_toggle(toggle_text, { toggle: 'dropdown' })
-          %ul.dropdown-menu.dropdown-menu-right
-            %li.dropdown-header
-              = s_('AdminUsers|Sort by')
-            %li
-              - users_sort_options_hash.each do |value, title|
-                = link_to admin_users_path(sort: value, filter: params[:filter], search_query: params[:search_query]) do
-                  = title
+.filtered-search-block.row-content-block.border-top-0
+  = form_tag admin_users_path, method: :get do
+    - if params[:filter].present?
+      = hidden_field_tag "filter", h(params[:filter])
+    .search-holder
+      .search-field-holder
+        = search_field_tag :search_query, params[:search_query], placeholder: s_('AdminUsers|Search by name, email or username'), class: 'form-control search-text-input js-search-input', spellcheck: false
+        - if @sort.present?
+          = hidden_field_tag :sort, @sort
+        = icon("search", class: "search-icon")
+        = button_tag s_('AdminUsers|Search users') if Rails.env.test?
+      .dropdown.user-sort-dropdown
+        - toggle_text = @sort.present? ? users_sort_options_hash[@sort] : sort_title_name
+        = dropdown_toggle(toggle_text, { toggle: 'dropdown' })
+        %ul.dropdown-menu.dropdown-menu-right
+          %li.dropdown-header
+            = s_('AdminUsers|Sort by')
+          %li
+            - users_sort_options_hash.each do |value, title|
+              = link_to admin_users_path(sort: value, filter: params[:filter], search_query: params[:search_query]) do
+                = title
 
-  - if @users.empty?
-    .nothing-here-block.border-top-0
-      = s_('AdminUsers|No users found')
-  - else
-    .table-holder
-      .thead-white.text-nowrap.gl-responsive-table-row.table-row-header{ role: 'row' }
-        .table-section.section-40{ role: 'rowheader' }= _('Name')
-        .table-section.section-25{ role: 'rowheader' }= _('Created on')
-        .table-section.section-15{ role: 'rowheader' }= _('Last activity')
+- if @users.empty?
+  .nothing-here-block.border-top-0
+    = s_('AdminUsers|No users found')
+- else
+  .table-holder
+    .thead-white.text-nowrap.gl-responsive-table-row.table-row-header{ role: 'row' }
+      .table-section.section-40{ role: 'rowheader' }= _('Name')
+      .table-section.section-25{ role: 'rowheader' }= _('Created on')
+      .table-section.section-15{ role: 'rowheader' }= _('Last activity')
 
-      = render partial: 'admin/users/user', collection: @users
+    = render partial: 'admin/users/user', collection: @users
 
-  = paginate @users, theme: "gitlab"
+= paginate @users, theme: "gitlab"
 
 #delete-user-modal

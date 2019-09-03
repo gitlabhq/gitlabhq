@@ -1,12 +1,10 @@
-- @no_container = true
 - add_to_breadcrumbs _("Milestones"), group_milestones_path(@group)
 - breadcrumb_title _("New")
 - page_title _("Milestones"), @milestone.name, _("Milestones")
 
-%div{ class: container_class }
-  %h3.page-title
-    New Milestone
+%h3.page-title
+  New Milestone
 
-  %hr
+%hr
 
-  = render "form"
+= render "form"

@@ -1,4 +1,3 @@
-- @no_container = true
 - page_title "Labels"
 - can_admin_label = can?(current_user, :admin_label, @project)
 - search = params[:search]
@@ -7,48 +6,47 @@
 
 - if labels_or_filters
   #promote-label-modal
-  %div{ class: container_class }
-    = render 'shared/labels/nav', labels_or_filters: labels_or_filters, can_admin_label: can_admin_label
+  = render 'shared/labels/nav', labels_or_filters: labels_or_filters, can_admin_label: can_admin_label
 
-    .labels-container.prepend-top-10
-      - if can_admin_label && search.blank?
-        %p.text-muted
-          = _('Labels can be applied to issues and merge requests.')
-          %br
-          = _('Star a label to make it a priority label. Order the prioritized labels to change their relative priority, by dragging.')
+  .labels-container.prepend-top-10
+    - if can_admin_label && search.blank?
+      %p.text-muted
+        = _('Labels can be applied to issues and merge requests.')
+        %br
+        = _('Star a label to make it a priority label. Order the prioritized labels to change their relative priority, by dragging.')
 
-      -# Only show it in the first page
-      - hide = @available_labels.empty? || (params[:page].present? && params[:page] != '1')
-      .prioritized-labels{ class: [('hide' if hide), ('is-not-draggable' unless can_admin_label)] }
-        %h5.prepend-top-10= _('Prioritized Labels')
-        .content-list.manage-labels-list.js-prioritized-labels{ data: { url: set_priorities_project_labels_path(@project), sortable: can_admin_label } }
-          #js-priority-labels-empty-state.priority-labels-empty-state{ class: "#{'hidden' unless @prioritized_labels.empty? && search.blank?}" }
-            = render 'shared/empty_states/priority_labels'
-          - if @prioritized_labels.present?
-            = render partial: 'shared/label', collection: @prioritized_labels, as: :label, locals: { force_priority: true, subject: @project }
-          - elsif search.present?
-            .nothing-here-block
-              = _('No prioritised labels with such name or description')
+    -# Only show it in the first page
+    - hide = @available_labels.empty? || (params[:page].present? && params[:page] != '1')
+    .prioritized-labels{ class: [('hide' if hide), ('is-not-draggable' unless can_admin_label)] }
+      %h5.prepend-top-10= _('Prioritized Labels')
+      .content-list.manage-labels-list.js-prioritized-labels{ data: { url: set_priorities_project_labels_path(@project), sortable: can_admin_label } }
+        #js-priority-labels-empty-state.priority-labels-empty-state{ class: "#{'hidden' unless @prioritized_labels.empty? && search.blank?}" }
+          = render 'shared/empty_states/priority_labels'
+        - if @prioritized_labels.present?
+          = render partial: 'shared/label', collection: @prioritized_labels, as: :label, locals: { force_priority: true, subject: @project }
+        - elsif search.present?
+          .nothing-here-block
+            = _('No prioritised labels with such name or description')
 
-      - if @labels.present?
-        .other-labels
-          %h5{ class: ('hide' if hide) }= _('Other Labels')
-          .content-list.manage-labels-list.js-other-labels
-            = render partial: 'shared/label', collection: @labels, as: :label, locals: { subject: @project }
-            = paginate @labels, theme: 'gitlab'
-      - elsif search.present?
-        .other-labels
-          - if @available_labels.any?
-            %h5
-              = _('Other Labels')
-            .nothing-here-block
-              = _('No other labels with such name or description')
-          - else
-            .nothing-here-block
-              = _('No labels with such name or description')
-      - elsif subscribed.present?
-        .nothing-here-block
-          = _('You do not have any subscriptions yet')
+    - if @labels.present?
+      .other-labels
+        %h5{ class: ('hide' if hide) }= _('Other Labels')
+        .content-list.manage-labels-list.js-other-labels
+          = render partial: 'shared/label', collection: @labels, as: :label, locals: { subject: @project }
+          = paginate @labels, theme: 'gitlab'
+    - elsif search.present?
+      .other-labels
+        - if @available_labels.any?
+          %h5
+            = _('Other Labels')
+          .nothing-here-block
+            = _('No other labels with such name or description')
+        - else
+          .nothing-here-block
+            = _('No labels with such name or description')
+    - elsif subscribed.present?
+      .nothing-here-block
+        = _('You do not have any subscriptions yet')
 
 - else
   = render 'shared/empty_states/labels'

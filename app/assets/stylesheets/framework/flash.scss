@@ -1,3 +1,5 @@
+$notification-box-shadow-color: rgba(0, 0, 0, 0.25);
+
 .flash-container {
   cursor: pointer;
   margin: 0;
@@ -6,12 +8,32 @@
   position: relative;
   z-index: 1;
 
+  &.sticky {
+    position: sticky;
+    position: -webkit-sticky;
+    top: $flash-container-top;
+    z-index: 200;
+
+    .flash-content {
+      box-shadow: 0 2px 4px 0 $notification-box-shadow-color;
+    }
+  }
+
+  .close-icon {
+    width: 16px;
+    height: 16px;
+    position: absolute;
+    right: $gl-padding;
+    top: $gl-padding;
+  }
+
   .flash-notice,
   .flash-alert,
   .flash-success,
   .flash-warning {
     border-radius: $border-radius-default;
     color: $white-light;
+    padding-right: $gl-padding * 2;
 
     .container-fluid,
     .container-fluid.container-limited {
@@ -95,5 +117,30 @@
     .flash-container.timeline-content {
       margin-left: 0;
     }
+  }
+}
+
+.gl-browser-ie .flash-container {
+  position: fixed;
+  max-width: $limited-layout-width;
+  left: 50%;
+
+  .flash-alert {
+    position: relative;
+    left: -50%;
+  }
+}
+
+.with-system-header .flash-container {
+  top: $flash-container-top + $system-header-height;
+}
+
+.with-performance-bar {
+  .flash-container {
+    top: $flash-container-top + $performance-bar-height;
+  }
+
+  &.with-system-header .flash-container {
+    top: $flash-container-top + $performance-bar-height + $system-header-height;
   }
 }

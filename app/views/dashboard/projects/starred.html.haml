@@ -1,16 +1,14 @@
 - @hide_top_links = true
-- @no_container = true
 - breadcrumb_title _("Projects")
 - page_title _("Starred Projects")
 - header_title _("Projects"), dashboard_projects_path
 
 = render_dashboard_gold_trial(current_user)
 
-%div{ class: container_class }
-  = render "projects/last_push"
-  = render 'dashboard/projects_head', project_tab_filter: :starred
+= render "projects/last_push"
+= render 'dashboard/projects_head', project_tab_filter: :starred
 
-  - if params[:filter_projects] || any_projects?(@projects)
-    = render 'projects'
-  - else
-    = render 'starred_empty_state'
+- if params[:filter_projects] || any_projects?(@projects)
+  = render 'projects'
+- else
+  = render 'starred_empty_state'

@@ -1,10 +1,8 @@
-- @no_container = true
 - add_to_breadcrumbs "Labels", project_labels_path(@project)
 - breadcrumb_title "Edit"
 - page_title "Edit", @label.name, "Labels"
 
-%div{ class: container_class }
-  %h3.page-title
-    Edit Label
-  %hr
-  = render 'shared/labels/form', url: project_label_path(@project, @label), back_path: project_labels_path(@project)
+%h3.page-title
+  Edit Label
+%hr
+= render 'shared/labels/form', url: project_label_path(@project, @label), back_path: project_labels_path(@project)

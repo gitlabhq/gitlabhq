@@ -1,14 +1,10 @@
-- @no_container = true
 - breadcrumb_title _('Edit')
 - add_to_breadcrumbs _('Milestones'), project_milestones_path(@project)
 - page_title _('Edit'), @milestone.title, _('Milestones')
 
+%h3.page-title
+  = _('Edit Milestone')
 
-%div{ class: container_class }
+%hr
 
-  %h3.page-title
-    = _('Edit Milestone')
-
-  %hr
-
-  = render 'form'
+= render 'form'

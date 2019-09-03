@@ -25,14 +25,6 @@ describe('Flash', () => {
         '<script>alert("a");</script>',
       );
     });
-
-    it('adds container classes when inside content wrapper', () => {
-      el.innerHTML = createFlashEl('testing', 'alert', true);
-
-      expect(el.querySelector('.flash-text').classList.contains('container-fluid')).toBeTruthy();
-
-      expect(el.querySelector('.flash-text').classList.contains('container-limited')).toBeTruthy();
-    });
   });
 
   describe('hideFlash', () => {
@@ -171,9 +163,7 @@ describe('Flash', () => {
       it('adds container classes when inside content-wrapper', () => {
         flash('test');
 
-        expect(document.querySelector('.flash-text').className).toBe(
-          'flash-text container-fluid container-limited limit-container-width',
-        );
+        expect(document.querySelector('.flash-text').className).toBe('flash-text');
       });
 
       it('does not add container when outside of content-wrapper', () => {

@@ -29,6 +29,15 @@ body {
   }
 }
 
+.container-fluid {
+  &.limit-container-width {
+    .flash-container.sticky {
+      max-width: $limited-layout-width;
+      margin: 0 auto;
+    }
+  }
+}
+
 .content-wrapper {
   margin-top: $header-height;
   padding-bottom: 100px;

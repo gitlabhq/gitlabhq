@@ -1,4 +1,5 @@
 import _ from 'underscore';
+import { spriteIcon } from './lib/utils/common_utils';
 
 const hideFlash = (flashEl, fadeTransition = true) => {
   if (fadeTransition) {
@@ -35,16 +36,11 @@ const createAction = config => `
   </a>
 `;
 
-const createFlashEl = (message, type, isFixedLayout = false) => `
-  <div
-    class="flash-${type}"
-  >
-    <div
-      class="flash-text ${
-        isFixedLayout ? 'container-fluid container-limited limit-container-width' : ''
-      }"
-    >
+const createFlashEl = (message, type) => `
+  <div class="flash-content flash-${type} rounded">
+    <div class="flash-text">
       ${_.escape(message)}
+      ${spriteIcon('close', 'close-icon')}
     </div>
   </div>
 `;
@@ -76,15 +72,10 @@ const createFlash = function createFlash(
   addBodyClass = false,
 ) {
   const flashContainer = parent.querySelector('.flash-container');
-  const navigation = parent.querySelector('.content');
 
   if (!flashContainer) return null;
 
-  const isFixedLayout = navigation
-    ? navigation.parentNode.classList.contains('container-limited')
-    : true;
-
-  flashContainer.innerHTML = createFlashEl(message, type, isFixedLayout);
+  flashContainer.innerHTML = createFlashEl(message, type);
 
   const flashEl = flashContainer.querySelector(`.flash-${type}`);
   removeFlashClickListener(flashEl, fadeTransition);

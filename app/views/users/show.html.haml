@@ -1,9 +1,9 @@
 - @hide_top_links = true
 - @hide_breadcrumbs = true
+- @no_container = true
 - page_title       @user.name
 - page_description @user.bio
 - header_title     @user.name, user_path(@user)
-- @no_container = true
 
 = content_for :meta_tags do
   = auto_discovery_link_tag(:atom, user_url(@user, format: :atom), title: "#{@user.name} activity")

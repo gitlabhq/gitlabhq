@@ -1,26 +1,24 @@
-- @no_container = true
 - page_title 'Requests Profiles'
 
-%div{ class: container_class }
-  %h3.page-title
-    = page_title
+%h3.page-title
+  = page_title
 
-  .bs-callout.clearfix
-    Pass the header
-    %code X-Profile-Token: #{@profile_token}
-    to profile the request
+.bs-callout.clearfix
+  Pass the header
+  %code X-Profile-Token: #{@profile_token}
+  to profile the request
 
-  - if @profiles.present?
-    .prepend-top-default
-      - @profiles.each do |path, profiles|
-        .card.card-small
-          .card-header
-            %code= path
-          %ul.content-list
-            - profiles.each do |profile|
-              %li
-                = link_to profile.time.to_s(:long) + ' ' + profile.profile_mode.capitalize,
-                  admin_requests_profile_path(profile)
-  - else
-    %p
-      No profiles found
+- if @profiles.present?
+  .prepend-top-default
+    - @profiles.each do |path, profiles|
+      .card.card-small
+        .card-header
+          %code= path
+        %ul.content-list
+          - profiles.each do |profile|
+            %li
+              = link_to profile.time.to_s(:long) + ' ' + profile.profile_mode.capitalize,
+                admin_requests_profile_path(profile)
+- else
+  %p
+    No profiles found
