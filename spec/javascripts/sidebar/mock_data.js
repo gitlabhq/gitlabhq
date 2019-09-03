@@ -210,4 +210,14 @@ const mockData = {
   },
 };
 
+mockData.sidebarMockInterceptor = function(request, next) {
+  const body = this.responseMap[request.method.toUpperCase()][request.url];
+
+  next(
+    request.respondWith(JSON.stringify(body), {
+      status: 200,
+    }),
+  );
+}.bind(mockData);
+
 export default mockData;
