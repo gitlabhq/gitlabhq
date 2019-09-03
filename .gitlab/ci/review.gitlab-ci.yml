@@ -40,7 +40,7 @@
 build-qa-image:
   extends:
     - .review-docker
-    - .except-docs-qa
+    - .except-docs
   only:
     refs:
       - branches@gitlab-org/gitlab-ce

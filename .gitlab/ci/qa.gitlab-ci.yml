@@ -10,34 +10,31 @@
     - install_gitlab_gem
     - ./scripts/trigger-build omnibus
   only:
-    - branches@gitlab-org/gitlab-ce
-    - branches@gitlab-org/gitlab-ee
-  except:
-    - master
+    refs:
+      - branches@gitlab-org/gitlab-ce
+      - branches@gitlab-org/gitlab-ee
 
 package-and-qa-manual:
-  extends:
-    - .package-and-qa-base
-    - .except-docs-qa
+  extends: .package-and-qa-base
   except:
     refs:
       - master
-  needs: ["build-qa-image", "gitlab:assets:compile pull-cache"]
   when: manual
+  needs: ["build-qa-image", "gitlab:assets:compile pull-cache"]
 
 package-and-qa-manual:master:
-  extends:
-    - .package-and-qa-base
-  needs: ["build-qa-image", "gitlab:assets:compile"]
+  extends: .package-and-qa-base
   only:
     refs:
       - master
   when: manual
+  needs: ["build-qa-image", "gitlab:assets:compile"]
 
 package-and-qa:
   extends: .package-and-qa-base
+  only:
+    refs:
+      - /(^qa[\/-].*|.*-qa$)/@gitlab-org/gitlab-ce
+      - /(^qa[\/-].*|.*-qa$)/@gitlab-org/gitlab-ee
   needs: ["build-qa-image", "gitlab:assets:compile pull-cache"]
   allow_failure: true
-  only:
-    - /(^qa[\/-].*|.*-qa$)/@gitlab-org/gitlab-ce
-    - /(^qa[\/-].*|.*-qa$)/@gitlab-org/gitlab-ee
