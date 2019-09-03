@@ -100,7 +100,7 @@ The following table lists available parameters for jobs:
 | [`stage`](#stage)                                  | Defines a job stage (default: `test`).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
 | [`only`](#onlyexcept-basic)                        | Limit when jobs are created. Also available: [`only:refs`, `only:kubernetes`, `only:variables`, and `only:changes`](#onlyexcept-advanced).                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | [`except`](#onlyexcept-basic)                      | Limit when jobs are not created. Also available: [`except:refs`, `except:kubernetes`, `except:variables`, and `except:changes`](#onlyexcept-advanced).                                                                                                                                                                                                                                                                                                                                                                                                                                  |
-| [`rules`](#rules)                                  | List of conditions to evaluate and determine selected attributes of a build and whether or not it is created. May not be used alongside `only`/`except`.
+| [`rules`](#rules)                                  | List of conditions to evaluate and determine selected attributes of a job, and whether or not it is created. May not be used alongside `only`/`except`.                                                                                                                                                                                                                                                                                                                                                                                                                                |
 | [`tags`](#tags)                                    | List of tags which are used to select Runner.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 | [`allow_failure`](#allow_failure)                  | Allow job to fail. Failed job doesn't contribute to commit status.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
 | [`when`](#when)                                    | When to run job. Also available: `when:manual` and `when:delayed`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
@@ -113,7 +113,7 @@ The following table lists available parameters for jobs:
 | [`parallel`](#parallel)                            | How many instances of a job should be run in parallel.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
 | [`trigger`](#trigger-premium)                      | Defines a downstream pipeline trigger.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
 | [`include`](#include)                              | Allows this job to include external YAML files. Also available: `include:local`, `include:file`, `include:template`, and `include:remote`.                                                                                                                                                                                                                                                                                                                                                                                                                                              |
-| [`extends`](#extends)                              | Configuration entries that this job is going to inherit from.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| [`extends`](#extends)                              | Configuration entries that this job is going to inherit from.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 | [`pages`](#pages)                                  | Upload the result of a job to use with GitLab Pages.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
 | [`variables`](#variables)                          | Define job variables on a job level.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
 
@@ -693,31 +693,41 @@ and triggers the `docker build service one` job.
 
 ### `rules`
 
-Using `rules` allows for a list of individual rule objects to be evaluated
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/29011) in GitLab 12.3.
+
+`rules` allows for a list of individual rule objects to be evaluated
 *in order*, until one matches and dynamically provides attributes to the job.
 
 Available rule clauses include:
 
-- `if` (similar to [`only:variables`](#onlyvariablesexceptvariables)).
-- `changes` (same as [`only:changes`](#onlychangesexceptchanges)).
+- [`if`](#rulesif)
+  (similar to [`only:variables`](#onlyvariablesexceptvariables)).
+- [`changes`](#ruleschanges)
+  (same as [`only:changes`](#onlychangesexceptchanges)).
 
-For example, using `if`:
+For example, using `if`. This configuration specifies that `job` should be built
+and run for every pipeline on merge requests targeting `master`, regardless of
+the status of other builds:
 
 ```yaml
 job:
   script: "echo Hello, Rules!"
   rules:
-    - if: '$CI_MERGE_REQUEST_TARGET_BRANCH == "master"' # This rule will be evaluated
+    - if: '$CI_MERGE_REQUEST_TARGET_BRANCH == "master"'
       when: always
-    - if: '$VAR =~ /pattern/' # This rule will only be evaluated if the first does not match
+    - if: '$VAR =~ /pattern/'
       when: manual
-    - when: on_success # A Rule entry with no conditional clauses evaluates to true. If neither of the first two Rules match, this one will and set job:when to "on_success"
+    - when: on_success
 ```
 
-If the first rule does not match, further rules will be evaluated sequentially
-until a match is found. The above configuration will specify that `job` should
-be built and run for every pipeline on merge requests targeting `master`,
-regardless of the status of other builds.
+In this example, if the first rule:
+
+- Matches, the job will be given the `when:always` attribute.
+- Does not match, the second and third rules will be evaluated sequentially
+  until a match is found. That is, the job will be given either the:
+  - `when: manual` attribute if the second rule matches.
+  - `when: on_success` attribute if the second rule does not match. The third
+    rule will always match when reached because it has no conditional clauses.
 
 #### `rules:if`
 
@@ -744,10 +754,9 @@ at all, the behavior defaults to `job:when`, which continues to default to
 #### `rules:changes`
 
 `changes` works exactly the same way as [`only`/`except`](#onlychangesexceptchanges),
-accepting an array of paths. The following configuration configures a job to be
-run manually if `Dockerfile` has changed OR `$VAR == "string value"`. Otherwise
-it is set to `when:on_success` by the last rule, where 0 clauses evaluate as
-vacuously true.
+accepting an array of paths.
+
+For example:
 
 ```yaml
 docker build:
@@ -762,12 +771,20 @@ docker build:
 
 ```
 
-#### Complex Rule Clauses
+In this example, a job either set to:
+
+- Run manually if `Dockerfile` has changed OR `$VAR == "string value"`.
+- `when:on_success` by the last rule, where no earlier clauses evaluate to true.
+
+#### Complex rule clauses
 
 To conjoin `if` and `changes` clauses with an AND, use them in the same rule.
-Here we run the job manually if `Dockerfile` or any file in `docker/scripts/`
-has changed AND `$VAR == "string value"`. Otherwise, the job will not be
-included in the pipeline.
+
+In the following example:
+
+- We run the job manually if `Dockerfile` or any file in `docker/scripts/`
+  has changed AND `$VAR == "string value"`.
+- Otherwise, the job will not be included in the pipeline.
 
 ```yaml
 docker build:
@@ -781,18 +798,27 @@ docker build:
   # - when: never would be redundant here, this is implied any time rules are listed.
 ```
 
-The only clauses currently available are `if` and `changes`. Keywords such as
-`branches` or `refs` that are currently available for `only`/`except` are not
-yet available in `rules` as they are being individually considered for their
-usage and behavior in the newer context.
+The only clauses currently available are:
+
+- `if`
+- `changes`
+
+Keywords such as `branches` or `refs` that are currently available for
+`only`/`except` are not yet available in `rules` as they are being individually
+considered for their usage and behavior in this context.
 
 #### Permitted attributes
 
-The only job attributes currently set by `rules` are `when` and `start_in`, if
-`when` is set to `delayed`. A job will be included in a pipeline if `when` is
-evaluated to any value except `never`.
+The only job attributes currently set by `rules` are:
 
-Delayed jobs require a `start_in` value, so rule objects do as well. For example:
+- `when`.
+- `start_in`, if `when` is set to `delayed`.
+
+A job will be included in a pipeline if `when` is evaluated to any value
+except `never`.
+
+Delayed jobs require a `start_in` value, so rule objects do as well. For
+example:
 
 ```yaml
 docker build:
@@ -806,9 +832,9 @@ docker build:
 
 ```
 
-Additional Job configuration may be added to rules in the future, if something
-useful isn't available, please open an issue on
-[Gitlab CE](https://www.gitlab.com/gitlab-org/gitlab-ce/issues).
+Additional job configuration may be added to rules in the future. If something
+useful isn't available, please
+[open an issue](https://www.gitlab.com/gitlab-org/gitlab-ce/issues).
 
 ### `tags`
 
@@ -1801,7 +1827,7 @@ and bring back the old behavior.
 
 ### `needs`
 
-> - Introduced in GitLab 12.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/47063) in GitLab 12.2.
 > - In GitLab 12.3, maximum number of jobs in `needs` array raised from five to 50.
 
 The `needs:` keyword enables executing jobs out-of-order, allowing you to implement
