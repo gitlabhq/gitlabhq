@@ -1,10 +1,7 @@
-import Vue from 'vue';
-import VueResource from 'vue-resource';
+import axios from '~/lib/utils/axios_utils';
 
 import GroupsService from '~/groups/service/groups_service';
 import { mockEndpoint, mockParentGroupItem } from '../mock_data';
-
-Vue.use(VueResource);
 
 describe('GroupsService', () => {
   let service;
@@ -15,8 +12,8 @@ describe('GroupsService', () => {
 
   describe('getGroups', () => {
     it('should return promise for `GET` request on provided endpoint', () => {
-      spyOn(service.groups, 'get').and.stub();
-      const queryParams = {
+      spyOn(axios, 'get').and.stub();
+      const params = {
         page: 2,
         filter: 'git',
         sort: 'created_asc',
@@ -25,21 +22,21 @@ describe('GroupsService', () => {
 
       service.getGroups(55, 2, 'git', 'created_asc', true);
 
-      expect(service.groups.get).toHaveBeenCalledWith({ parent_id: 55 });
+      expect(axios.get).toHaveBeenCalledWith(mockEndpoint, { params: { parent_id: 55 } });
 
       service.getGroups(null, 2, 'git', 'created_asc', true);
 
-      expect(service.groups.get).toHaveBeenCalledWith(queryParams);
+      expect(axios.get).toHaveBeenCalledWith(mockEndpoint, { params });
     });
   });
 
   describe('leaveGroup', () => {
     it('should return promise for `DELETE` request on provided endpoint', () => {
-      spyOn(Vue.http, 'delete').and.stub();
+      spyOn(axios, 'delete').and.stub();
 
       service.leaveGroup(mockParentGroupItem.leavePath);
 
-      expect(Vue.http.delete).toHaveBeenCalledWith(mockParentGroupItem.leavePath);
+      expect(axios.delete).toHaveBeenCalledWith(mockParentGroupItem.leavePath);
     });
   });
 });

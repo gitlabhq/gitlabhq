@@ -1,40 +1,39 @@
-import Vue from 'vue';
-import '../../vue_shared/vue_resource_interceptor';
+import axios from '~/lib/utils/axios_utils';
 
 export default class GroupsService {
   constructor(endpoint) {
-    this.groups = Vue.resource(endpoint);
+    this.endpoint = endpoint;
   }
 
   getGroups(parentId, page, filterGroups, sort, archived) {
-    const data = {};
+    const params = {};
 
     if (parentId) {
-      data.parent_id = parentId;
+      params.parent_id = parentId;
     } else {
       // Do not send the following param for sub groups
       if (page) {
-        data.page = page;
+        params.page = page;
       }
 
       if (filterGroups) {
-        data.filter = filterGroups;
+        params.filter = filterGroups;
       }
 
       if (sort) {
-        data.sort = sort;
+        params.sort = sort;
       }
 
       if (archived) {
-        data.archived = archived;
+        params.archived = archived;
       }
     }
 
-    return this.groups.get(data);
+    return axios.get(this.endpoint, { params });
   }
 
   // eslint-disable-next-line class-methods-use-this
   leaveGroup(endpoint) {
-    return Vue.http.delete(endpoint);
+    return axios.delete(endpoint);
   }
 }
