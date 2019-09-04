@@ -1,0 +1,5 @@
+---
+title: Persist `needs:` validation as config error
+merge_request:
+author:
+type: fixed

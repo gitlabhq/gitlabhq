@@ -26,7 +26,7 @@ module Gitlab
             # Gather all runtime build/stage errors
             #
             if seeds_errors = pipeline.stage_seeds.flat_map(&:errors).compact.presence
-              return error(seeds_errors.join("\n"))
+              return error(seeds_errors.join("\n"), config_error: true)
             end
 
             ##
