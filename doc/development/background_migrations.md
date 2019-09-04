@@ -61,8 +61,8 @@ migration classes must be defined in the namespace
 
 ## Scheduling
 
-Scheduling a migration can be done in either a regular migration or a
-post-deployment migration. To do so, simply use the following code while
+Scheduling a background migration should be done in a post-deployment migration.
+To do so, simply use the following code while
 replacing the class name and arguments with whatever values are necessary for
 your migration:
 
@@ -283,10 +283,13 @@ the `services.properties` column.
 
 ## Testing
 
-It is required to write tests for background migrations' scheduling migration
-(either a regular migration or a post deployment migration), background
-migration itself and a cleanup migration. You can use the `:migration` RSpec
-tag when testing a regular / post deployment migration.
+It is required to write tests for:
+
+- The background migrations' scheduling migration.
+- The background migration itself.
+- A cleanup migration.
+
+You can use the `:migration` RSpec tag when testing the migrations.
 See [README][migrations-readme].
 
 When you do that, keep in mind that `before` and `after` RSpec hooks are going
