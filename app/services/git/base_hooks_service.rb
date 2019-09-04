@@ -57,7 +57,9 @@ module Git
 
       Ci::CreatePipelineService
         .new(project, current_user, pipeline_params)
-        .execute(:push, pipeline_options)
+        .execute!(:push, pipeline_options)
+    rescue Ci::CreatePipelineService::CreateError => ex
+      log_pipeline_errors(ex)
     end
 
     def execute_project_hooks
@@ -124,6 +126,30 @@ module Git
 
       project.mark_stuck_remote_mirrors_as_failed!
       project.update_remote_mirrors
+    end
+
+    def log_pipeline_errors(exception)
+      data = {
+        class: self.class.name,
+        correlation_id: Labkit::Correlation::CorrelationId.current_id.to_s,
+        project_id: project.id,
+        project_path: project.full_path,
+        message: "Error creating pipeline",
+        errors: exception.to_s,
+        pipeline_params: pipeline_params
+      }
+
+      logger.warn(data)
+    end
+
+    def logger
+      if Sidekiq.server?
+        Sidekiq.logger
+      else
+        # This service runs in Sidekiq, so this shouldn't ever be
+        # called, but this is included just in case.
+        Gitlab::ProjectServiceLogger
+      end
     end
   end
 end
