@@ -61,8 +61,8 @@ graph TB
   Unicorn --> PgBouncer[PgBouncer]
   Unicorn --> Redis
   Unicorn --> Gitaly
-  Redis --> Sidekiq
-  Sidekiq["Sidekiq (GitLab Rails, ES Indexer)"] --> PgBouncer
+  Sidekiq --> Redis
+  Sidekiq --> PgBouncer
   GitLabWorkhorse[GitLab Workhorse] --> Unicorn
   GitLabWorkhorse --> Redis
   GitLabWorkhorse --> Gitaly
