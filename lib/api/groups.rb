@@ -75,6 +75,7 @@ module API
         ).execute
         projects = projects.with_issues_available_for_user(current_user) if params[:with_issues_enabled]
         projects = projects.with_merge_requests_enabled if params[:with_merge_requests_enabled]
+        projects = projects.visible_to_user_and_access_level(current_user, params[:min_access_level]) if params[:min_access_level]
         projects = reorder_projects(projects)
         paginate(projects)
       end
@@ -213,6 +214,7 @@ module API
         optional :with_merge_requests_enabled, type: Boolean, default: false, desc: 'Limit by enabled merge requests feature'
         optional :with_shared, type: Boolean, default: true, desc: 'Include projects shared to this group'
         optional :include_subgroups, type: Boolean, default: false, desc: 'Includes projects in subgroups of this group'
+        optional :min_access_level, type: Integer, values: Gitlab::Access.all_values, desc: 'Limit by minimum access level of authenticated user on projects'
 
         use :pagination
         use :with_custom_attributes

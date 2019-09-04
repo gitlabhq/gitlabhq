@@ -156,7 +156,8 @@ Parameters:
 | `with_issues_enabled`         | boolean        | no       | Limit by projects with issues feature enabled. Default is `false` |
 | `with_merge_requests_enabled` | boolean        | no       | Limit by projects with merge requests feature enabled. Default is `false` |
 | `with_shared`                 | boolean        | no       | Include projects shared to this group. Default is `true` |
-| `include_subgroups`           | boolean        | no       | Include projects in subgroups of this group. Default is `false` |
+| `include_subgroups`           | boolean        | no       | Include projects in subgroups of this group. Default is `false`   |
+| `min_access_level`            | integer        | no       | Limit to projects where current user has at least this [access level](members.md) |
 | `with_custom_attributes`      | boolean        | no       | Include [custom attributes](custom_attributes.md) in response (admins only) |
 | `with_security_reports`       | boolean        | no       | **(ULTIMATE)** Return only projects that have security reports artifacts present in any of their builds. This means "projects with security reports enabled". Default is `false` |
 

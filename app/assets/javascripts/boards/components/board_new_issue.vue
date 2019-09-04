@@ -114,7 +114,7 @@ export default {
           name="issue_title"
           autocomplete="off"
         />
-        <project-select v-if="groupId" :group-id="groupId" />
+        <project-select v-if="groupId" :group-id="groupId" :list="list" />
         <div class="clearfix prepend-top-10">
           <gl-button
             ref="submit-button"
