@@ -47,11 +47,15 @@ describe Clusters::Applications::CheckUninstallProgressService do
     context 'when installation POD succeeded' do
       let(:phase) { Gitlab::Kubernetes::Pod::SUCCEEDED }
       before do
+        expect_any_instance_of(Gitlab::Kubernetes::Helm::Api)
+            .to receive(:delete_pod!)
+            .with(kind_of(String))
+            .once
         expect(service).to receive(:pod_phase).once.and_return(phase)
       end
 
       it 'removes the installation POD' do
-        expect(service).to receive(:remove_installation_pod).once
+        expect(service).to receive(:remove_uninstallation_pod).and_call_original
 
         service.execute
       end
@@ -76,7 +80,7 @@ describe Clusters::Applications::CheckUninstallProgressService do
         end
 
         it 'still removes the installation POD' do
-          expect(service).to receive(:remove_installation_pod).once
+          expect(service).to receive(:remove_uninstallation_pod).and_call_original
 
           service.execute
         end

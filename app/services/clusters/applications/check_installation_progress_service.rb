@@ -33,6 +33,10 @@ module Clusters
       def timed_out?
         Time.now.utc - app.updated_at.utc > ClusterWaitForAppInstallationWorker::TIMEOUT
       end
+
+      def remove_installation_pod
+        helm_api.delete_pod!(pod_name)
+      end
     end
   end
 end
