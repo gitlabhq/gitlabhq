@@ -102,6 +102,7 @@
   - [create_github_webhook, 2]
   - [geo, 1]
   - [repository_update_mirror, 1]
+  - [repository_push_audit_event, 1]
   - [new_epic, 2]
   - [project_import_schedule, 1]
   - [project_update_repository_storage, 1]
