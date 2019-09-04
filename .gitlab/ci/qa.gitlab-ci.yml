@@ -19,6 +19,8 @@ package-and-qa-manual:
   except:
     refs:
       - master
+      - /(^docs[\/-].+|.+-docs$)/
+      - /(^qa[\/-].*|.*-qa$)/
   when: manual
   needs: ["build-qa-image", "gitlab:assets:compile pull-cache"]
 
