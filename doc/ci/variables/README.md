@@ -401,7 +401,7 @@ Once you set them, they will be available for all subsequent pipelines.
 You can limit the environment scope of a variable by
 [defining which environments][envs] it can be available for.
 
-To learn more about about scoping environments, see [Scoping environments with specs](../environments.md#scoping-environments-with-specs-premium).
+To learn more about about scoping environments, see [Scoping environments with specs](../environments.md#scoping-environments-with-specs).
 
 ### Deployment environment variables
 

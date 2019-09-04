@@ -675,9 +675,10 @@ fetch line:
 fetch = +refs/environments/*:refs/remotes/origin/environments/*
 ```
 
-### Scoping environments with specs **(PREMIUM)**
+### Scoping environments with specs
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/2112) in [GitLab Premium](https://about.gitlab.com/pricing/) 9.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/2112) in [GitLab Premium](https://about.gitlab.com/pricing/) 9.4.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/30779) to Core in Gitlab 12.2.
 
 You can limit the environment scope of a variable by
 defining which environments it can be available for.
