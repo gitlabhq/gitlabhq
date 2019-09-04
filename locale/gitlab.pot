@@ -4147,6 +4147,9 @@ msgstr ""
 msgid "Email"
 msgstr ""
 
+msgid "Email not verified. Please verify your email in Salesforce."
+msgstr ""
+
 msgid "Email patch"
 msgstr ""
 
