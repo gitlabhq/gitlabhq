@@ -24,38 +24,19 @@
   help_path: help_page_path('user/project/clusters/index.md', anchor: 'installing-applications'),
   ingress_help_path: help_page_path('user/project/clusters/index.md', anchor: 'getting-the-external-endpoint'),
   ingress_dns_help_path: help_page_path('user/project/clusters/index.md', anchor: 'manually-determining-the-external-endpoint'),
+  environments_help_path: help_page_path('ci/environments', anchor: 'defining-environments'),
+  clusters_help_path: help_page_path('user/project/clusters/index.md', anchor: 'deploying-to-a-kubernetes-cluster'),
+  deploy_boards_help_path: help_page_path('user/project/deploy_boards.html', anchor: 'enabling-deploy-boards'),
   manage_prometheus_path: manage_prometheus_path,
   cluster_id: @cluster.id } }
 
   .js-cluster-application-notice
     .flash-container
 
-  %section#cluster-integration
-    %h4= @cluster.name
-    = render 'banner'
+  %h4= @cluster.name
+  = render 'banner'
 
-    - unless @cluster.status_name.in? %i/scheduled creating/
-      = render 'form'
+  = render_if_exists 'clusters/clusters/group_cluster_environments', expanded: expanded
 
-  - unless @cluster.status_name.in? %i/scheduled creating/
-    = render_if_exists 'projects/clusters/prometheus_graphs'
-
-    .cluster-applications-table#js-cluster-applications
-
-    %section.settings#js-cluster-details{ class: ('expanded' if expanded) }
-      .settings-header
-        %h4= s_('ClusterIntegration|Kubernetes cluster details')
-        %button.btn.js-settings-toggle{ type: 'button' }
-          = expanded ? _('Collapse') : _('Expand')
-        %p= s_('ClusterIntegration|See and edit the details for your Kubernetes cluster')
-      .settings-content
-        = render 'clusters/platforms/kubernetes/form', cluster: @cluster, platform: @cluster.platform_kubernetes, update_cluster_url_path: clusterable.cluster_path(@cluster)
-
-    %section.settings.no-animate#js-cluster-advanced-settings{ class: ('expanded' if expanded) }
-      .settings-header
-        %h4= _('Advanced settings')
-        %button.btn.js-settings-toggle{ type: 'button' }
-          = expanded ? _('Collapse') : _('Expand')
-        %p= s_("ClusterIntegration|Advanced options on this Kubernetes cluster's integration")
-      .settings-content#advanced-settings-section
-        = render 'advanced_settings'
+  - unless Gitlab.ee?
+    = render 'configure', expanded: expanded

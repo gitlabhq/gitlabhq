@@ -154,3 +154,12 @@
     }
   }
 }
+
+.cluster-deployments-warning {
+  color: $orange-600;
+}
+
+.badge.pods-badge {
+  color: $black;
+  font-weight: $gl-font-weight-bold;
+}
