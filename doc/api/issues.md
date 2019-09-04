@@ -573,6 +573,18 @@ the `weight` parameter:
 }
 ```
 
+Users on GitLab [Ultimate](https://about.gitlab.com/pricing/) will additionally see
+the `epic_iid` property:
+
+```json
+{
+   "project_id" : 4,
+   "description" : "Omnis vero earum sunt corporis dolor et placeat.",
+   "epic_iid" : 42,
+   ...
+}
+```
+
 **Note**: `assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
 
 **Note**: The `closed_by` attribute was [introduced in GitLab 10.6][ce-17042]. This value will only be present for issues which were closed after GitLab 10.6 and when the user account that closed the issue still exists.
