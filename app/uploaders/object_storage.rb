@@ -23,7 +23,7 @@ module ObjectStorage
     end
   end
 
-  TMP_UPLOAD_PATH = 'tmp/uploads'.freeze
+  TMP_UPLOAD_PATH = 'tmp/uploads'
 
   module Store
     LOCAL = 1
