@@ -40,11 +40,11 @@ class IssuableFinder
   requires_cross_project_access unless: -> { project? }
 
   # This is used as a common filter for None / Any
-  FILTER_NONE = 'none'.freeze
-  FILTER_ANY = 'any'.freeze
+  FILTER_NONE = 'none'
+  FILTER_ANY = 'any'
 
   # This is used in unassigning users
-  NONE = '0'.freeze
+  NONE = '0'
 
   attr_accessor :current_user, :params
 
