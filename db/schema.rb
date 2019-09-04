@@ -605,6 +605,7 @@ ActiveRecord::Schema.define(version: 2019_09_02_131045) do
     t.index ["scheduled_at"], name: "partial_index_ci_builds_on_scheduled_at_with_scheduled_jobs", where: "((scheduled_at IS NOT NULL) AND ((type)::text = 'Ci::Build'::text) AND ((status)::text = 'scheduled'::text))"
     t.index ["stage_id", "stage_idx"], name: "tmp_build_stage_position_index", where: "(stage_idx IS NOT NULL)"
     t.index ["stage_id"], name: "index_ci_builds_on_stage_id"
+    t.index ["status", "created_at", "project_id"], name: "ci_builds_gitlab_monitor_metrics", where: "((type)::text = 'Ci::Build'::text)"
     t.index ["status", "type", "runner_id"], name: "index_ci_builds_on_status_and_type_and_runner_id"
     t.index ["token"], name: "index_ci_builds_on_token", unique: true
     t.index ["token_encrypted"], name: "index_ci_builds_on_token_encrypted", unique: true, where: "(token_encrypted IS NOT NULL)"
