@@ -25,8 +25,10 @@ module Resolvers
 
     # rubocop: disable CodeReuse/ActiveRecord
     def batch_load(iid)
-      BatchLoader.for(iid.to_s).batch(key: project) do |iids, loader, args|
-        args[:key].merge_requests.where(iid: iids).each do |mr|
+      BatchLoader::GraphQL.for(iid.to_s).batch(key: project) do |iids, loader, args|
+        arg_key = args[:key].respond_to?(:sync) ? args[:key].sync : args[:key]
+
+        arg_key.merge_requests.where(iid: iids).each do |mr|
           loader.call(mr.iid.to_s, mr)
         end
       end

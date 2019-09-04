@@ -11,7 +11,7 @@ module Gitlab
         end
 
         def find
-          BatchLoader.for(namespace_id).batch do |namespace_ids, loader|
+          BatchLoader::GraphQL.for(namespace_id).batch do |namespace_ids, loader|
             Namespace::RootStorageStatistics.for_namespace_ids(namespace_ids).each do |statistics|
               loader.call(statistics.namespace_id, statistics)
             end

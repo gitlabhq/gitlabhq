@@ -129,7 +129,7 @@ describe GitlabSchema do
 
         result = described_class.object_from_id(user.to_global_id.to_s)
 
-        expect(result.__sync).to eq(user)
+        expect(result.sync).to eq(user)
       end
 
       it 'batchloads the queries' do
@@ -138,7 +138,7 @@ describe GitlabSchema do
 
         expect do
           [described_class.object_from_id(user1.to_global_id),
-           described_class.object_from_id(user2.to_global_id)].map(&:__sync)
+           described_class.object_from_id(user2.to_global_id)].map(&:sync)
         end.not_to exceed_query_limit(1)
       end
     end
@@ -149,7 +149,7 @@ describe GitlabSchema do
 
         result = described_class.object_from_id(note.to_global_id)
 
-        expect(result.__sync).to eq(note)
+        expect(result.sync).to eq(note)
       end
 
       it 'batchloads the queries' do
@@ -158,7 +158,7 @@ describe GitlabSchema do
 
         expect do
           [described_class.object_from_id(note1.to_global_id),
-           described_class.object_from_id(note2.to_global_id)].map(&:__sync)
+           described_class.object_from_id(note2.to_global_id)].map(&:sync)
         end.not_to exceed_query_limit(1)
       end
     end

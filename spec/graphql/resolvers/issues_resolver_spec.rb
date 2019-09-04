@@ -110,7 +110,7 @@ describe Resolvers::IssuesResolver do
 
   context "when passing a non existent, batch loaded project" do
     let(:project) do
-      BatchLoader.for("non-existent-path").batch do |_fake_paths, loader, _|
+      BatchLoader::GraphQL.for("non-existent-path").batch do |_fake_paths, loader, _|
         loader.call("non-existent-path", nil)
       end
     end

@@ -46,9 +46,9 @@ describe Gitlab::Graphql::Authorize::AuthorizeResource do
       end
     end
 
-    describe '#authorized?' do
+    describe '#authorized_resource?' do
       it 'is true' do
-        expect(loading_resource.authorized?(project)).to be(true)
+        expect(loading_resource.authorized_resource?(project)).to be(true)
       end
     end
   end
@@ -72,9 +72,9 @@ describe Gitlab::Graphql::Authorize::AuthorizeResource do
       end
     end
 
-    describe '#authorized?' do
+    describe '#authorized_resource?' do
       it 'is false' do
-        expect(loading_resource.authorized?(project)).to be(false)
+        expect(loading_resource.authorized_resource?(project)).to be(false)
       end
     end
   end
@@ -121,9 +121,9 @@ describe Gitlab::Graphql::Authorize::AuthorizeResource do
       end
     end
 
-    describe '#authorized?' do
+    describe '#authorized_resource?' do
       it 'raises a comprehensive error message' do
-        expect { loading_resource.authorized?(project) }.to raise_error(error)
+        expect { loading_resource.authorized_resource?(project) }.to raise_error(error)
       end
     end
   end

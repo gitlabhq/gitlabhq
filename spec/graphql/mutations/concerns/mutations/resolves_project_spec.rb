@@ -14,6 +14,6 @@ describe Mutations::ResolvesProject do
     project = create(:project)
 
     expect(Resolvers::ProjectResolver).to receive(:new).with(object: nil, context: context).and_call_original
-    expect(mutation.resolve_project(full_path: project.full_path)).to eq(project)
+    expect(mutation.resolve_project(full_path: project.full_path).sync).to eq(project)
   end
 end

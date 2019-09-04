@@ -17,7 +17,7 @@ describe Resolvers::MergeRequestsResolver do
 
   describe '#resolve' do
     it 'batch-resolves by target project full path and individual IID' do
-      result = batch(max_queries: 2) do
+      result = batch_sync(max_queries: 2) do
         resolve_mr(project, iid: iid_1) + resolve_mr(project, iid: iid_2)
       end
 
@@ -25,7 +25,7 @@ describe Resolvers::MergeRequestsResolver do
     end
 
     it 'batch-resolves by target project full path and IIDS' do
-      result = batch(max_queries: 2) do
+      result = batch_sync(max_queries: 2) do
         resolve_mr(project, iids: [iid_1, iid_2])
       end
 
@@ -33,7 +33,7 @@ describe Resolvers::MergeRequestsResolver do
     end
 
     it 'can batch-resolve merge requests from different projects' do
-      result = batch(max_queries: 3) do
+      result = batch_sync(max_queries: 3) do
         resolve_mr(project, iid: iid_1) +
           resolve_mr(project, iid: iid_2) +
           resolve_mr(other_project, iid: other_iid)
@@ -43,13 +43,13 @@ describe Resolvers::MergeRequestsResolver do
     end
 
     it 'resolves an unknown iid to be empty' do
-      result = batch { resolve_mr(project, iid: -1) }
+      result = batch_sync { resolve_mr(project, iid: -1) }
 
-      expect(result).to be_empty
+      expect(result.compact).to be_empty
     end
 
     it 'resolves empty iids to be empty' do
-      result = batch { resolve_mr(project, iids: []) }
+      result = batch_sync { resolve_mr(project, iids: []) }
 
       expect(result).to be_empty
     end

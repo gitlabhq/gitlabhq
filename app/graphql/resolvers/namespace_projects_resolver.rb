@@ -9,13 +9,11 @@ module Resolvers
 
     type Types::ProjectType, null: true
 
-    alias_method :namespace, :object
-
     def resolve(include_subgroups:)
       # The namespace could have been loaded in batch by `BatchLoader`.
       # At this point we need the `id` or the `full_path` of the namespace
       # to query for projects, so make sure it's loaded and not `nil` before continuing.
-      namespace.sync if namespace.respond_to?(:sync)
+      namespace = object.respond_to?(:sync) ? object.sync : object
       return Project.none if namespace.nil?
 
       if include_subgroups
