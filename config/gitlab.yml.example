@@ -158,6 +158,7 @@ production: &base
 
     # The email address including the `%{key}` placeholder that will be replaced to reference the item being replied to.
     # The placeholder can be omitted but if present, it must appear in the "user" part of the address (before the `@`).
+    # Please be aware that a placeholder is required for the Service Desk feature to work.
     address: "gitlab-incoming+%{key}@gmail.com"
 
     # Email account username
