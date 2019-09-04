@@ -9,7 +9,7 @@ pages:
       - master@gitlab-org/gitlab-ce
       - master@gitlab-org/gitlab-ee
   stage: pages
-  dependencies: ["coverage", "karma", "gitlab:assets:compile", "jsdoc"]
+  dependencies: ["coverage", "karma", "gitlab:assets:compile"]
   script:
     - mv public/ .public/
     - mkdir public/
@@ -18,7 +18,6 @@ pages:
     - mv webpack-report/ public/webpack-report/ || true
     - cp .public/assets/application-*.css public/application.css || true
     - cp .public/assets/application-*.css.gz public/application.css.gz || true
-    - mv jsdoc/ public/jsdoc/ || true
   artifacts:
     paths:
       - public

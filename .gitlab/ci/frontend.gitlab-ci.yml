@@ -233,22 +233,3 @@ qa-frontend-node:latest:
   extends: .qa-frontend-node
   image: node:latest
   allow_failure: true
-
-jsdoc:
-  extends:
-    - .default-tags
-    - .default-retry
-    - .default-cache
-    - .except-docs
-  variables:
-    SETUP_DB: "false"
-  stage: post-test
-  dependencies: ["compile-assets", "compile-assets pull-cache"]
-  script:
-    - date
-    - yarn run jsdoc || true  # ignore exit code
-  artifacts:
-    name: jsdoc
-    expire_in: 31d
-    paths:
-      - jsdoc/
