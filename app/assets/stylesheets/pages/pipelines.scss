@@ -476,10 +476,6 @@
     display: inline-block;
     vertical-align: top;
 
-    &:not(:last-child) {
-      margin-right: 44px;
-    }
-
     &.left-margin {
       &:not(:first-child) {
         margin-left: 44px;
