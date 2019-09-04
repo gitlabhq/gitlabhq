@@ -314,7 +314,7 @@ the report JSON unless stated otherwise. Presence of optional fields depends on 
 ## Security Dashboard
 
 The Security Dashboard is a good place to get an overview of all the security
-vulnerabilities in your groups and projects. Read more about the
+vulnerabilities in your groups, projects and pipelines. Read more about the
 [Security Dashboard](../security_dashboard/index.md).
 
 ## Interacting with the vulnerabilities
