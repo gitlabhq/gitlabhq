@@ -67,7 +67,7 @@ Rails.application.routes.draw do
   get 'health_check(/:checks)' => 'health_check#index', as: :health_check
 
   scope path: '-' do
-    # '/-/health' implemented by BasicHealthMiddleware
+    # '/-/health' implemented by BasicHealthCheck middleware
     get 'liveness' => 'health#liveness'
     get 'readiness' => 'health#readiness'
     resources :metrics, only: [:index]
