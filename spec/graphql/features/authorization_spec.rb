@@ -8,10 +8,10 @@ describe 'Gitlab::Graphql::Authorization' do
   let(:permission_single) { :foo }
   let(:permission_collection) { [:foo, :bar] }
   let(:test_object) { double(name: 'My name') }
-  let(:query_string) { '{ object() { name } }' }
+  let(:query_string) { '{ item() { name } }' }
   let(:result) { execute_query(query_type)['data'] }
 
-  subject { result['object'] }
+  subject { result['item'] }
 
   shared_examples 'authorization with a single permission' do
     it 'returns the protected field when user has permission' do
@@ -54,7 +54,7 @@ describe 'Gitlab::Graphql::Authorization' do
     describe 'with a single permission' do
       let(:query_type) do
         query_factory do |query|
-          query.field :object, type, null: true, resolve: ->(obj, args, ctx) { test_object }, authorize: permission_single
+          query.field :item, type, null: true, resolve: ->(obj, args, ctx) { test_object }, authorize: permission_single
         end
       end
 
@@ -65,7 +65,7 @@ describe 'Gitlab::Graphql::Authorization' do
       let(:query_type) do
         permissions = permission_collection
         query_factory do |qt|
-          qt.field :object, type, null: true, resolve: ->(obj, args, ctx) { test_object } do
+          qt.field :item, type, null: true, resolve: ->(obj, args, ctx) { test_object } do
             authorize permissions
           end
         end
@@ -78,7 +78,7 @@ describe 'Gitlab::Graphql::Authorization' do
   describe 'Field authorizations when field is a built in type' do
     let(:query_type) do
       query_factory do |query|
-        query.field :object, type, null: true, resolve: ->(obj, args, ctx) { test_object }
+        query.field :item, type, null: true, resolve: ->(obj, args, ctx) { test_object }
       end
     end
 
@@ -131,7 +131,7 @@ describe 'Gitlab::Graphql::Authorization' do
   describe 'Type authorizations' do
     let(:query_type) do
       query_factory do |query|
-        query.field :object, type, null: true, resolve: ->(obj, args, ctx) { test_object }
+        query.field :item, type, null: true, resolve: ->(obj, args, ctx) { test_object }
       end
     end
 
@@ -168,7 +168,7 @@ describe 'Gitlab::Graphql::Authorization' do
 
     let(:query_type) do
       query_factory do |query|
-        query.field :object, type, null: true, resolve: ->(obj, args, ctx) { test_object }, authorize: permission_2
+        query.field :item, type, null: true, resolve: ->(obj, args, ctx) { test_object }, authorize: permission_2
       end
     end
 
@@ -176,7 +176,7 @@ describe 'Gitlab::Graphql::Authorization' do
   end
 
   describe 'type authorizations when applied to a relay connection' do
-    let(:query_string) { '{ object() { edges { node { name } } } }' }
+    let(:query_string) { '{ item() { edges { node { name } } } }' }
     let(:second_test_object) { double(name: 'Second thing') }
 
     let(:type) do
@@ -187,11 +187,11 @@ describe 'Gitlab::Graphql::Authorization' do
 
     let(:query_type) do
       query_factory do |query|
-        query.field :object, type.connection_type, null: true, resolve: ->(obj, args, ctx) { [test_object, second_test_object] }
+        query.field :item, type.connection_type, null: true, resolve: ->(obj, args, ctx) { [test_object, second_test_object] }
       end
     end
 
-    subject { result.dig('object', 'edges') }
+    subject { result.dig('item', 'edges') }
 
     it 'returns only the elements visible to the user' do
       permit(permission_single)
@@ -207,13 +207,13 @@ describe 'Gitlab::Graphql::Authorization' do
     describe 'limiting connections with multiple objects' do
       let(:query_type) do
         query_factory do |query|
-          query.field :object, type.connection_type, null: true, resolve: ->(obj, args, ctx) do
+          query.field :item, type.connection_type, null: true, resolve: ->(obj, args, ctx) do
             [test_object, second_test_object]
           end
         end
       end
 
-      let(:query_string) { '{ object(first: 1) { edges { node { name } } } }' }
+      let(:query_string) { '{ item(first: 1) { edges { node { name } } } }' }
 
       it 'only checks permissions for the first object' do
         expect(Ability).to receive(:allowed?).with(user, permission_single, test_object) { true }
@@ -233,11 +233,11 @@ describe 'Gitlab::Graphql::Authorization' do
 
     let(:query_type) do
       query_factory do |query|
-        query.field :object, [type], null: true, resolve: ->(obj, args, ctx) { [test_object] }
+        query.field :item, [type], null: true, resolve: ->(obj, args, ctx) { [test_object] }
       end
     end
 
-    subject { result['object'].first }
+    subject { result['item'].first }
 
     include_examples 'authorization with a single permission'
   end

@@ -74,9 +74,9 @@ module Gitlab
             # Authorizing fields representing scalars, or a simple field with an object
             resolved_type if allowed_access?(current_user, authorizing_object)
           elsif @field.connection?
-            # A connection with pagination, modify the visible nodes in on the
+            # A connection with pagination, modify the visible nodes on the
             # connection type in place
-            resolved_type.edge_nodes.to_a.keep_if { |node| allowed_access?(current_user, node) }
+            resolved_type.object.edge_nodes.to_a.keep_if { |node| allowed_access?(current_user, node) }
             resolved_type
           elsif resolved_type.is_a? Array
             # A simple list of rendered types  each object being an object to authorize
