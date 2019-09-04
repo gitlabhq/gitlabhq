@@ -218,7 +218,7 @@ Lint/UriEscapeUnescape:
     - 'app/models/project_services/drone_ci_service.rb'
     - 'spec/lib/google_api/auth_spec.rb'
     - 'spec/requests/api/files_spec.rb'
-    - 'spec/requests/api/internal_spec.rb'
+    - 'spec/requests/api/internal/base_spec.rb'
 
 # Offense count: 1
 # Configuration parameters: CheckForMethodsWithNoSideEffects.
