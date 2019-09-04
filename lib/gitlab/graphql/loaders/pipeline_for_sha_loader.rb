@@ -11,7 +11,7 @@ module Gitlab
         end
 
         def find_last
-          BatchLoader.for(sha).batch(key: project) do |shas, loader, args|
+          BatchLoader::GraphQL.for(sha).batch(key: project) do |shas, loader, args|
             pipelines = args[:key].ci_pipelines.latest_for_shas(shas)
 
             pipelines.each do |pipeline|

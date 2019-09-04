@@ -10,7 +10,7 @@ describe Gitlab::Graphql::Loaders::PipelineForShaLoader do
       pipeline2 = create(:ci_pipeline, project: project, ref: project.default_branch, sha: project.commit.sha)
       pipeline3 = create(:ci_pipeline, project: project, ref: 'improve/awesome', sha: project.commit('improve/awesome').sha)
 
-      result = batch(max_queries: 1) do
+      result = batch_sync(max_queries: 1) do
         [pipeline1.sha, pipeline3.sha].map { |sha| described_class.new(project, sha).find_last }
       end
 

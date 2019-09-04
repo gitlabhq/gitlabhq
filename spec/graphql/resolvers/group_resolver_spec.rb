@@ -12,7 +12,7 @@ describe Resolvers::GroupResolver do
     it 'batch-resolves groups by full path' do
       paths = [group1.full_path, group2.full_path]
 
-      result = batch(max_queries: 1) do
+      result = batch_sync(max_queries: 1) do
         paths.map { |path| resolve_group(path) }
       end
 
@@ -20,7 +20,7 @@ describe Resolvers::GroupResolver do
     end
 
     it 'resolves an unknown full_path to nil' do
-      result = batch { resolve_group('unknown/project') }
+      result = batch_sync { resolve_group('unknown/project') }
 
       expect(result).to be_nil
     end

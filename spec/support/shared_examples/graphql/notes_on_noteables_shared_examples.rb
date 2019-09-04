@@ -46,7 +46,7 @@ shared_context 'exposing regular notes on a noteable in GraphQL' do
       discussions {
         edges {
           node {
-            #{all_graphql_fields_for('Discussion')}
+            #{all_graphql_fields_for('Discussion', max_depth: 4)}
           }
         }
       }

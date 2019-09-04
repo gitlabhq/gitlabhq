@@ -12,7 +12,7 @@ describe Resolvers::ProjectResolver do
     it 'batch-resolves projects by full path' do
       paths = [project1.full_path, project2.full_path]
 
-      result = batch(max_queries: 1) do
+      result = batch_sync(max_queries: 1) do
         paths.map { |path| resolve_project(path) }
       end
 
@@ -20,7 +20,7 @@ describe Resolvers::ProjectResolver do
     end
 
     it 'resolves an unknown full_path to nil' do
-      result = batch { resolve_project('unknown/project') }
+      result = batch_sync { resolve_project('unknown/project') }
 
       expect(result).to be_nil
     end

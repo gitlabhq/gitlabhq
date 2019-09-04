@@ -9,8 +9,8 @@ describe Gitlab::Graphql::Loaders::BatchModelLoader do
       issue_result = described_class.new(Issue, issue.id).find
       user_result = described_class.new(User, user.id).find
 
-      expect(issue_result.__sync).to eq(issue)
-      expect(user_result.__sync).to eq(user)
+      expect(issue_result.sync).to eq(issue)
+      expect(user_result.sync).to eq(user)
     end
 
     it 'only queries once per model' do
@@ -21,7 +21,7 @@ describe Gitlab::Graphql::Loaders::BatchModelLoader do
       expect do
         [described_class.new(User, other_user.id).find,
          described_class.new(User, user.id).find,
-         described_class.new(Issue, issue.id).find].map(&:__sync)
+         described_class.new(Issue, issue.id).find].map(&:sync)
       end.not_to exceed_query_limit(2)
     end
   end

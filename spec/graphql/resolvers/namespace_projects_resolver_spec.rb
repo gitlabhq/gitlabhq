@@ -46,7 +46,7 @@ describe Resolvers::NamespaceProjectsResolver do
 
   context "when passing a non existent, batch loaded namespace" do
     let(:namespace) do
-      BatchLoader.for("non-existent-path").batch do |_fake_paths, loader, _|
+      BatchLoader::GraphQL.for("non-existent-path").batch do |_fake_paths, loader, _|
         loader.call("non-existent-path", nil)
       end
     end

@@ -12,7 +12,7 @@ describe Gitlab::Graphql::Loaders::BatchLfsOidLoader do
     it 'batch-resolves LFS blob IDs' do
       expect(Gitlab::Git::Blob).to receive(:batch_lfs_pointers).once.and_call_original
 
-      result = batch do
+      result = batch_sync do
         [blob, otherblob].map { |b| described_class.new(repository, b.id).find }
       end
 

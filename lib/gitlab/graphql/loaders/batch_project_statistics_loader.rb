@@ -11,7 +11,7 @@ module Gitlab
         end
 
         def find
-          BatchLoader.for(project_id).batch do |project_ids, loader|
+          BatchLoader::GraphQL.for(project_id).batch do |project_ids, loader|
             ProjectStatistics.for_project_ids(project_ids).each do |statistics|
               loader.call(statistics.project_id, statistics)
             end
