@@ -259,10 +259,21 @@ describe Projects::TransferService do
   end
 
   context 'missing group labels applied to issues or merge requests' do
-    it 'delegates tranfer to Labels::TransferService' do
+    it 'delegates transfer to Labels::TransferService' do
       group.add_owner(user)
 
       expect_any_instance_of(Labels::TransferService).to receive(:execute).once.and_call_original
+
+      transfer_project(project, user, group)
+    end
+  end
+
+  context 'missing group milestones applied to issues or merge requests' do
+    it 'delegates transfer to Milestones::TransferService' do
+      group.add_owner(user)
+
+      expect(Milestones::TransferService).to receive(:new).with(user, project.group, project).and_call_original
+      expect_any_instance_of(Milestones::TransferService).to receive(:execute).once
 
       transfer_project(project, user, group)
     end
