@@ -2,7 +2,7 @@
 
 module MergeRequests
   class RebaseService < MergeRequests::WorkingCopyBaseService
-    REBASE_ERROR = 'Rebase failed. Please rebase locally'.freeze
+    REBASE_ERROR = 'Rebase failed. Please rebase locally'
 
     def execute(merge_request)
       @merge_request = merge_request

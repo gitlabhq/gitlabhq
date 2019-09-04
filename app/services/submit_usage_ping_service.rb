@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class SubmitUsagePingService
-  URL = 'https://version.gitlab.com/usage_data'.freeze
+  URL = 'https://version.gitlab.com/usage_data'
 
   METRICS = %w[leader_issues instance_issues percentage_issues leader_notes instance_notes
                percentage_notes leader_milestones instance_milestones percentage_milestones

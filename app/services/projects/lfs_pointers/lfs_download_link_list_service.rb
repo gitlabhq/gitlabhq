@@ -5,7 +5,7 @@
 module Projects
   module LfsPointers
     class LfsDownloadLinkListService < BaseService
-      DOWNLOAD_ACTION = 'download'.freeze
+      DOWNLOAD_ACTION = 'download'
 
       DownloadLinksError = Class.new(StandardError)
       DownloadLinkNotFound = Class.new(StandardError)
