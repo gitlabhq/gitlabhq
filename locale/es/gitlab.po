@@ -16581,7 +16581,7 @@ msgid "mrWidget|This merge request failed to be merged automatically"
 msgstr "Esta merge request no se realizó automáticamente"
 
 msgid "mrWidget|This merge request is in the process of being merged"
-msgstr "Este mergre request está en proceso de ser realizado"
+msgstr "Este merge request está en proceso de ser realizado"
 
 msgid "mrWidget|This project is archived, write access has been disabled"
 msgstr "Este proyecto está archivado, se ha deshabilitado el acceso de escritura"
