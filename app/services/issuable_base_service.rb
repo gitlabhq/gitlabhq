@@ -221,6 +221,7 @@ class IssuableBaseService < BaseService
       # We have to perform this check before saving the issuable as Rails resets
       # the changed fields upon calling #save.
       update_project_counters = issuable.project && update_project_counter_caches?(issuable)
+      ensure_milestone_available(issuable)
 
       if issuable.with_transaction_returning_status { issuable.save(touch: should_touch) }
         # We do not touch as it will affect a update on updated_at field

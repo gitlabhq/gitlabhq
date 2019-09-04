@@ -16,6 +16,7 @@ class Milestone < ApplicationRecord
   include Referable
   include StripAttribute
   include Milestoneish
+  include FromUnion
   include Gitlab::SQL::Pattern
 
   cache_markdown_field :title, pipeline: :single_line
