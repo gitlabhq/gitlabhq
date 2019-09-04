@@ -1,4 +1,6 @@
 .text-center
   .svg-content.qa-label-svg
     = image_tag 'illustrations/priority_labels.svg'
-  %p Star labels to start sorting by priority
+  - if can?(current_user, :admin_label, @project)
+    %p
+      = _("Star labels to start sorting by priority")
