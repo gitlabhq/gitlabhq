@@ -84,7 +84,7 @@ Fork workflow from GitLab Runner's perspective is stored as a separate repositor
 with separate worktree. That means that GitLab Runner cannot optimize the usage
 of worktrees and you might have to instruct GitLab Runner to use that.
 
-In such cases, ideally you want to make the GitLab Runner executor be used only used only
+In such cases, ideally you want to make the GitLab Runner executor be used only
 for the given project and not shared across different projects to make this
 process more efficient.
 
