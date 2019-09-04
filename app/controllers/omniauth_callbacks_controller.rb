@@ -73,6 +73,14 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     end
   end
 
+  def salesforce
+    if oauth.dig('extra', 'email_verified')
+      handle_omniauth
+    else
+      fail_salesforce_login
+    end
+  end
+
   private
 
   def omniauth_flow(auth_module, identity_linker: nil)
@@ -173,7 +181,15 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   end
 
   def fail_auth0_login
-    flash[:alert] = _('Wrong extern UID provided. Make sure Auth0 is configured correctly.')
+    fail_login_with_message(_('Wrong extern UID provided. Make sure Auth0 is configured correctly.'))
+  end
+
+  def fail_salesforce_login
+    fail_login_with_message(_('Email not verified. Please verify your email in Salesforce.'))
+  end
+
+  def fail_login_with_message(message)
+    flash[:alert] = message
 
     redirect_to new_user_session_path
   end
