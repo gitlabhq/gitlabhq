@@ -48,14 +48,14 @@
 
       - if group_sidebar_link?(:issues)
         = nav_link(path: group_issues_sub_menu_items) do
-          = link_to issues_group_path(@group) do
+          = link_to issues_group_path(@group), data: { qa_selector: 'group_issues_item' } do
             .nav-icon-container
               = sprite_icon('issues')
             %span.nav-item-name
               = _('Issues')
             %span.badge.badge-pill.count= number_with_delimiter(issues_count)
 
-          %ul.sidebar-sub-level-items
+          %ul.sidebar-sub-level-items{ data: { qa_selector: 'group_issues_sidebar_submenu'} }
             = nav_link(path: ['groups#issues', 'labels#index', 'milestones#index'], html_options: { class: "fly-out-top-item" } ) do
               = link_to issues_group_path(@group) do
                 %strong.fly-out-top-item-name
@@ -70,7 +70,7 @@
 
             - if group_sidebar_link?(:boards)
               = nav_link(path: ['boards#index', 'boards#show']) do
-                = link_to group_boards_path(@group), title: boards_link_text do
+                = link_to group_boards_path(@group), title: boards_link_text, data: { qa_selector: 'group_issue_boards_link' } do
                   %span
                     = boards_link_text
 
