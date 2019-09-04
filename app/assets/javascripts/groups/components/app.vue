@@ -95,10 +95,8 @@ export default {
           if (updatePagination) {
             this.updatePagination(res.headers);
           }
-
-          return res;
+          return res.data;
         })
-        .then(res => res.json())
         .catch(() => {
           this.isLoading = false;
           $.scrollTo(0);
@@ -190,11 +188,10 @@ export default {
       this.targetGroup.isBeingRemoved = true;
       this.service
         .leaveGroup(this.targetGroup.leavePath)
-        .then(res => res.json())
         .then(res => {
           $.scrollTo(0);
           this.store.removeGroup(this.targetGroup, this.targetParentGroup);
-          Flash(res.notice, 'notice');
+          Flash(res.data.notice, 'notice');
         })
         .catch(err => {
           let message = COMMON_STR.FAILURE;
