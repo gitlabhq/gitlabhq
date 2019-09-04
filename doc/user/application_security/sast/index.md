@@ -333,20 +333,10 @@ CI/CD configuration file to turn it on. Results are available in the SAST report
 
 GitLab currently includes [Gitleaks](https://github.com/zricethezav/gitleaks) and [TruffleHog](https://github.com/dxa4481/truffleHog) checks.
 
-## Security report under pipelines
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/3776)
-in [GitLab Ultimate](https://about.gitlab.com/pricing) 10.6.
-
-Visit any pipeline page which has a `sast` job and you will be able to see
-the security report tab with the listed vulnerabilities (if any).
-
-![Security Report](img/security_report.png)
-
 ## Security Dashboard
 
 The Security Dashboard is a good place to get an overview of all the security
-vulnerabilities in your groups and projects. Read more about the
+vulnerabilities in your groups, projects and pipelines. Read more about the
 [Security Dashboard](../security_dashboard/index.md).
 
 ## Interacting with the vulnerabilities
