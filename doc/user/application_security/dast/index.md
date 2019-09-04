@@ -84,6 +84,8 @@ There are two ways to define the URL to be scanned by DAST:
 - Set the `DAST_WEBSITE` [variable](../../../ci/yaml/README.md#variables).
 - Add it in an `environment_url.txt` file at the root of your project.
 
+If both values are set, the `DAST_WEBSITE` value will take precedence.  
+
 The included template will create a `dast` job in your CI/CD pipeline and scan
 your project's source code for possible vulnerabilities.
 
