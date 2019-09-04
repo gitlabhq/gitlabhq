@@ -14,6 +14,8 @@ import ClustersStore from './stores/clusters_store';
 import Applications from './components/applications.vue';
 import setupToggleButtons from '../toggle_buttons';
 
+const Environments = () => import('ee_component/clusters/components/environments.vue');
+
 Vue.use(GlToast);
 
 /**
@@ -44,6 +46,9 @@ export default class Clusters {
       helpPath,
       ingressHelpPath,
       ingressDnsHelpPath,
+      environmentsHelpPath,
+      clustersHelpPath,
+      deployBoardsHelpPath,
       clusterId,
     } = document.querySelector('.js-edit-cluster-form').dataset;
 
@@ -52,7 +57,14 @@ export default class Clusters {
     this.clusterBannerDismissedKey = `cluster_${this.clusterId}_banner_dismissed`;
 
     this.store = new ClustersStore();
-    this.store.setHelpPaths(helpPath, ingressHelpPath, ingressDnsHelpPath);
+    this.store.setHelpPaths(
+      helpPath,
+      ingressHelpPath,
+      ingressDnsHelpPath,
+      environmentsHelpPath,
+      clustersHelpPath,
+      deployBoardsHelpPath,
+    );
     this.store.setManagePrometheusPath(managePrometheusPath);
     this.store.updateStatus(clusterStatus);
     this.store.updateStatusReason(clusterStatusReason);
@@ -95,11 +107,12 @@ export default class Clusters {
       setupToggleButtons(toggleButtonsContainer);
     }
     this.initApplications(clusterType);
+    this.initEnvironments();
 
     this.updateContainer(null, this.store.state.status, this.store.state.statusReason);
 
     this.addListeners();
-    if (statusPath) {
+    if (statusPath && !this.environments) {
       this.initPolling();
     }
   }
@@ -125,6 +138,34 @@ export default class Clusters {
             managePrometheusPath: this.state.managePrometheusPath,
             ingressDnsHelpPath: this.state.ingressDnsHelpPath,
             rbac: this.state.rbac,
+          },
+        });
+      },
+    });
+  }
+
+  initEnvironments() {
+    const { store } = this;
+    const el = document.querySelector('#js-cluster-environments');
+
+    if (!el) {
+      return;
+    }
+
+    this.environments = new Vue({
+      el,
+      data() {
+        return {
+          state: store.state,
+        };
+      },
+      render(createElement) {
+        return createElement(Environments, {
+          props: {
+            environments: this.state.environments,
+            environmentsHelpPath: this.state.environmentsHelpPath,
+            clustersHelpPath: this.state.clustersHelpPath,
+            deployBoardsHelpPath: this.state.deployBoardsHelpPath,
           },
         });
       },
@@ -388,6 +429,10 @@ export default class Clusters {
 
     if (this.poll) {
       this.poll.stop();
+    }
+
+    if (this.environments) {
+      this.environments.$destroy();
     }
 
     this.applications.$destroy();

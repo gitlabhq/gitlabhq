@@ -51,6 +51,9 @@ describe('Clusters Store', () => {
       expect(store.state).toEqual({
         helpPath: null,
         ingressHelpPath: null,
+        environmentsHelpPath: null,
+        clustersHelpPath: null,
+        deployBoardsHelpPath: null,
         status: mockResponseData.status,
         statusReason: mockResponseData.status_reason,
         rbac: false,
@@ -148,6 +151,7 @@ describe('Clusters Store', () => {
             uninstallFailed: false,
           },
         },
+        environments: [],
       });
     });
 
