@@ -40,7 +40,7 @@ describe BoardsHelper do
       assign(:project, project)
 
       allow(helper).to receive(:current_user) { user }
-      allow(helper).to receive(:can?).with(user, :admin_list, project).and_return(true)
+      allow(helper).to receive(:can?).with(user, :create_non_backlog_issues, board).and_return(true)
     end
 
     it 'returns a board_lists_path as lists_endpoint' do

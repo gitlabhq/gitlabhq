@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class BoardPolicy < BasePolicy
+  include FindGroupProjects
+
   delegate { @subject.parent }
 
   condition(:is_group_board) { @subject.group_board? }
@@ -12,5 +14,21 @@ class BoardPolicy < BasePolicy
     enable :read_parent
     enable :read_milestone
     enable :read_issue
+  end
+
+  condition(:reporter_of_group_projects) do
+    next unless @user
+
+    group_projects_for(user: @user, group: @subject.parent)
+      .visible_to_user_and_access_level(@user, ::Gitlab::Access::REPORTER)
+      .exists?
+  end
+
+  rule { is_group_board & reporter_of_group_projects }.policy do
+    enable :create_non_backlog_issues
+  end
+
+  rule { is_project_board & can?(:admin_issue) }.policy do
+    enable :create_non_backlog_issues
   end
 end

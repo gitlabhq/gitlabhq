@@ -483,6 +483,22 @@ describe API::Groups do
 
   describe "GET /groups/:id/projects" do
     context "when authenticated as user" do
+      context 'with min access level' do
+        it 'returns projects with min access level or higher' do
+          group_guest = create(:user)
+          group1.add_guest(group_guest)
+          project4 = create(:project, group: group1)
+          project1.add_guest(group_guest)
+          project3.add_reporter(group_guest)
+          project4.add_developer(group_guest)
+
+          get api("/groups/#{group1.id}/projects", group_guest), params: { min_access_level: Gitlab::Access::REPORTER }
+
+          project_ids = json_response.map { |proj| proj['id'] }
+          expect(project_ids).to match_array([project3.id, project4.id])
+        end
+      end
+
       it "returns the group's projects" do
         get api("/groups/#{group1.id}/projects", user1)
 

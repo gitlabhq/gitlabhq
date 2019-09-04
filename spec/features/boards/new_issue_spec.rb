@@ -127,4 +127,44 @@ describe 'Issue Boards new issue', :js do
       end
     end
   end
+
+  context 'group boards' do
+    set(:group) { create(:group, :public) }
+    set(:project) { create(:project, namespace: group) }
+    set(:group_board) { create(:board, group: group) }
+    set(:list) { create(:list, board: group_board, position: 0) }
+
+    context 'for unauthorized users' do
+      before do
+        sign_in(user)
+        visit group_board_path(group, group_board)
+        wait_for_requests
+      end
+
+      it 'displays new issue button in open list' do
+        expect(first('.board')).to have_selector('.issue-count-badge-add-button', count: 1)
+      end
+
+      it 'does not display new issue button in label list' do
+        page.within('.board.is-draggable') do
+          expect(page).not_to have_selector('.issue-count-badge-add-button')
+        end
+      end
+    end
+
+    context 'for authorized users' do
+      it 'display new issue button in label list' do
+        project = create(:project, namespace: group)
+        project.add_reporter(user)
+
+        sign_in(user)
+        visit group_board_path(group, group_board)
+        wait_for_requests
+
+        page.within('.board.is-draggable') do
+          expect(page).to have_selector('.issue-count-badge-add-button')
+        end
+      end
+    end
+  end
 end

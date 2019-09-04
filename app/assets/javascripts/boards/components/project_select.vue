@@ -6,6 +6,7 @@ import Icon from '~/vue_shared/components/icon.vue';
 import { GlLoadingIcon } from '@gitlab/ui';
 import eventHub from '../eventhub';
 import Api from '../../api';
+import { featureAccessLevel } from '~/pages/projects/shared/permissions/constants';
 
 export default {
   name: 'BoardProjectSelect',
@@ -18,6 +19,10 @@ export default {
       type: Number,
       required: true,
       default: 0,
+    },
+    list: {
+      type: Object,
+      required: true,
     },
   },
   data() {
@@ -49,6 +54,12 @@ export default {
       selectable: true,
       data: (term, callback) => {
         this.loading = true;
+        const additionalAttrs = {};
+
+        if (this.list.type && this.list.type !== 'backlog') {
+          additionalAttrs.min_access_level = featureAccessLevel.EVERYONE;
+        }
+
         return Api.groupProjects(
           this.groupId,
           term,
@@ -56,6 +67,7 @@ export default {
             with_issues_enabled: true,
             with_shared: false,
             include_subgroups: true,
+            ...additionalAttrs,
           },
           projects => {
             this.loading = false;
