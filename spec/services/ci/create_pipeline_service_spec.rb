@@ -1140,10 +1140,26 @@ describe Ci::CreatePipelineService do
       context 'when pipeline on feature is created' do
         let(:ref_name) { 'refs/heads/feature' }
 
-        it 'does not create a pipeline as test_a depends on build_a' do
-          expect(pipeline).not_to be_persisted
-          expect(pipeline.builds).to be_empty
-          expect(pipeline.errors[:base]).to contain_exactly("test_a: needs 'build_a'")
+        context 'when save_on_errors is enabled' do
+          let(:pipeline) { execute_service(save_on_errors: true) }
+
+          it 'does create a pipeline as test_a depends on build_a' do
+            expect(pipeline).to be_persisted
+            expect(pipeline.builds).to be_empty
+            expect(pipeline.yaml_errors).to eq("test_a: needs 'build_a'")
+            expect(pipeline.errors[:base]).to contain_exactly("test_a: needs 'build_a'")
+          end
+        end
+
+        context 'when save_on_errors is disabled' do
+          let(:pipeline) { execute_service(save_on_errors: false) }
+
+          it 'does not create a pipeline as test_a depends on build_a' do
+            expect(pipeline).not_to be_persisted
+            expect(pipeline.builds).to be_empty
+            expect(pipeline.yaml_errors).to be_nil
+            expect(pipeline.errors[:base]).to contain_exactly("test_a: needs 'build_a'")
+          end
         end
       end
 
