@@ -20,8 +20,8 @@ describe 'OAuth Login', :js, :allow_forgery_protection do
     with_omniauth_full_host { example.run }
   end
 
-  def login_with_provider(provider, enter_two_factor: false)
-    login_via(provider.to_s, user, uid, remember_me: remember_me)
+  def login_with_provider(provider, enter_two_factor: false, additional_info: {})
+    login_via(provider.to_s, user, uid, remember_me: remember_me, additional_info: additional_info)
     enter_code(user.current_otp) if enter_two_factor
   end
 
@@ -31,6 +31,7 @@ describe 'OAuth Login', :js, :allow_forgery_protection do
       let(:remember_me) { false }
       let(:user) { create(:omniauth_user, extern_uid: uid, provider: provider.to_s) }
       let(:two_factor_user) { create(:omniauth_user, :two_factor, extern_uid: uid, provider: provider.to_s) }
+      provider == :salesforce ? let(:additional_info) { { extra: { email_verified: true } } } : let(:additional_info) { {} }
 
       before do
         stub_omniauth_config(provider)
@@ -38,7 +39,7 @@ describe 'OAuth Login', :js, :allow_forgery_protection do
 
       context 'when two-factor authentication is disabled' do
         it 'logs the user in' do
-          login_with_provider(provider)
+          login_with_provider(provider, additional_info: additional_info)
 
           expect(current_path).to eq root_path
         end
@@ -48,7 +49,7 @@ describe 'OAuth Login', :js, :allow_forgery_protection do
         let(:user) { two_factor_user }
 
         it 'logs the user in' do
-          login_with_provider(provider, enter_two_factor: true)
+          login_with_provider(provider, additional_info: additional_info, enter_two_factor: true)
 
           expect(current_path).to eq root_path
         end
@@ -59,7 +60,7 @@ describe 'OAuth Login', :js, :allow_forgery_protection do
 
         context 'when two-factor authentication is disabled' do
           it 'remembers the user after a browser restart' do
-            login_with_provider(provider)
+            login_with_provider(provider, additional_info: additional_info)
 
             clear_browser_session
 
@@ -72,7 +73,7 @@ describe 'OAuth Login', :js, :allow_forgery_protection do
           let(:user) { two_factor_user }
 
           it 'remembers the user after a browser restart' do
-            login_with_provider(provider, enter_two_factor: true)
+            login_with_provider(provider, enter_two_factor: true, additional_info: additional_info)
 
             clear_browser_session
 
@@ -85,7 +86,7 @@ describe 'OAuth Login', :js, :allow_forgery_protection do
       context 'when "remember me" is not checked' do
         context 'when two-factor authentication is disabled' do
           it 'does not remember the user after a browser restart' do
-            login_with_provider(provider)
+            login_with_provider(provider, additional_info: additional_info)
 
             clear_browser_session
 
@@ -98,7 +99,7 @@ describe 'OAuth Login', :js, :allow_forgery_protection do
           let(:user) { two_factor_user }
 
           it 'does not remember the user after a browser restart' do
-            login_with_provider(provider, enter_two_factor: true)
+            login_with_provider(provider, enter_two_factor: true, additional_info: additional_info)
 
             clear_browser_session
 
