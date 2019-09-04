@@ -15,7 +15,7 @@ module Clusters
       rescue StandardError => e
         app.make_errored!(_('Application uninstalled but failed to destroy: %{error_message}') % { error_message: e.message })
       ensure
-        remove_installation_pod
+        remove_uninstallation_pod
       end
 
       def check_timeout
@@ -32,6 +32,10 @@ module Clusters
 
       def timed_out?
         Time.now.utc - app.updated_at.utc > WaitForUninstallAppWorker::TIMEOUT
+      end
+
+      def remove_uninstallation_pod
+        helm_api.delete_pod!(pod_name)
       end
     end
   end
