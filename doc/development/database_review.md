@@ -38,6 +38,7 @@ A Merge Request author's role is to:
 - If database review is needed, add the ~database label.
 - Use the [database changes](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/.gitlab/merge_request_templates/Database%20changes.md)
   merge request template, or include the appropriate items in the MR description.
+- [Prepare the merge request for a database review](#how-to-prepare-the-merge-request-for-a-database-review).
 
 A database **reviewer**'s role is to:
 
@@ -68,7 +69,7 @@ make sure you have applied the ~database label and rerun the
 `danger-review` CI job, or pick someone from the
 [`@gl-database` team](https://gitlab.com/groups/gl-database/-/group_members).
 
-### How to prepare for speedy database reviews
+### How to prepare the merge request for a database review
 
 In order to make reviewing easier and therefore faster, please consider preparing a comment
 and details for a database reviewer:
