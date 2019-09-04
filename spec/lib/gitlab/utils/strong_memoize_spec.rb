@@ -52,6 +52,22 @@ describe Gitlab::Utils::StrongMemoize do
     end
   end
 
+  describe '#strong_memoized?' do
+    let(:value) { :anything }
+
+    subject { object.strong_memoized?(:method_name) }
+
+    it 'returns false if the value is uncached' do
+      is_expected.to be(false)
+    end
+
+    it 'returns true if the value is cached' do
+      object.method_name
+
+      is_expected.to be(true)
+    end
+  end
+
   describe '#clear_memoization' do
     let(:value) { 'mepmep' }
 
