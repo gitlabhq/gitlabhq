@@ -4,6 +4,8 @@ module Gitlab
   module Graphql
     module Representation
       class SubmoduleTreeEntry < SimpleDelegator
+        include GlobalID::Identification
+
         class << self
           def decorate(submodules, tree)
             repository = tree.repository

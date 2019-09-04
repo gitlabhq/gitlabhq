@@ -4,6 +4,8 @@ module Gitlab
   module Graphql
     module Representation
       class TreeEntry < SimpleDelegator
+        include GlobalID::Identification
+
         class << self
           def decorate(entries, repository)
             return if entries.nil?
