@@ -978,7 +978,9 @@ module API
       expose :created_at
 
       def todo_target_class(target_type)
-        ::API::Entities.const_get(target_type)
+        # false as second argument prevents looking up in module hierarchy
+        # see also https://gitlab.com/gitlab-org/gitlab-ce/issues/59719
+        ::API::Entities.const_get(target_type, false)
       end
     end
 
@@ -1731,6 +1733,7 @@ API::Entities.prepend_if_ee('EE::API::Entities::Entities')
 ::API::Entities::Group.prepend_if_ee('EE::API::Entities::Group', with_descendants: true)
 ::API::Entities::GroupDetail.prepend_if_ee('EE::API::Entities::GroupDetail')
 ::API::Entities::IssueBasic.prepend_if_ee('EE::API::Entities::IssueBasic', with_descendants: true)
+::API::Entities::Issue.prepend_if_ee('EE::API::Entities::Issue')
 ::API::Entities::List.prepend_if_ee('EE::API::Entities::List')
 ::API::Entities::MergeRequestBasic.prepend_if_ee('EE::API::Entities::MergeRequestBasic', with_descendants: true)
 ::API::Entities::Namespace.prepend_if_ee('EE::API::Entities::Namespace')
