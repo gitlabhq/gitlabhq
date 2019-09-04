@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Favicon, :request_store do
-  include RailsHelpers
-
   describe '.main' do
     it 'defaults to favicon.png' do
       stub_rails_env('production')

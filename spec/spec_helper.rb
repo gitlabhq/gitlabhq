@@ -109,6 +109,7 @@ RSpec.configure do |config|
   config.include PolicyHelpers, type: :policy
   config.include MemoryUsageHelper
   config.include ExpectRequestWithStatus, type: :request
+  config.include RailsHelpers
 
   if ENV['CI']
     # This includes the first try, i.e. tests will be run 4 times before failing.

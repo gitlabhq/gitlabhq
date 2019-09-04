@@ -57,7 +57,7 @@ describe 'gitlab:gitaly namespace rake task' do
         stub_env('CI', false)
         FileUtils.mkdir_p(clone_path)
         expect(Dir).to receive(:chdir).with(clone_path).and_call_original
-        allow(Rails.env).to receive(:test?).and_return(false)
+        stub_rails_env('development')
       end
 
       context 'gmake is available' do
@@ -93,7 +93,7 @@ describe 'gitlab:gitaly namespace rake task' do
           end
 
           before do
-            allow(Rails.env).to receive(:test?).and_return(true)
+            stub_rails_env('test')
           end
 
           it 'calls make in the gitaly directory with --no-deployment flag for bundle' do
