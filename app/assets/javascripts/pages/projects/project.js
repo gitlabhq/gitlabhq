@@ -73,13 +73,6 @@ export default class Project {
         .remove();
       return e.preventDefault();
     });
-    $('.hide-shared-runner-limit-message').on('click', function(e) {
-      var $alert = $(this).parents('.shared-runner-quota-message');
-      var scope = $alert.data('scope');
-      Cookies.set('hide_shared_runner_quota_message', 'false', { path: scope });
-      $alert.remove();
-      e.preventDefault();
-    });
     $('.hide-auto-devops-implicitly-enabled-banner').on('click', function(e) {
       const projectId = $(this).data('project-id');
       const cookieKey = `hide_auto_devops_implicitly_enabled_banner_${projectId}`;
