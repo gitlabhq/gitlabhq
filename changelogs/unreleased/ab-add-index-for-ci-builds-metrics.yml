@@ -1,0 +1,5 @@
+---
+title: Create partial index for gitlab-monitor CI metrics
+merge_request: 32546
+author:
+type: performance
