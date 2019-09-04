@@ -443,6 +443,12 @@ A group owner can check the aggregated storage usage for all the project in a gr
 
 ![Group storage usage quota](img/group_storage_usage_quota.png)
 
+The total usage of the storage is updated if any relevant event that
+will affect its value is triggered (e.g., a commit push).
+For performance reasons, we may delay the update up to 1 hour and 30 minutes.
+
+If your namespace shows `N/A` as the total storage usage, you can trigger a recalculation by pushing a commit to any project in that namespace.
+
 ## User contribution analysis **(STARTER)**
 
 With [GitLab Contribution Analytics](contribution_analytics/index.md),
