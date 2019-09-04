@@ -970,34 +970,6 @@ describe QuickActions::InterpretService do
       let(:issuable) { merge_request }
     end
 
-    it_behaves_like 'due command' do
-      let(:content) { '/due 2016-08-28' }
-      let(:issuable) { issue }
-    end
-
-    it_behaves_like 'due command' do
-      let(:content) { '/due tomorrow' }
-      let(:issuable) { issue }
-      let(:expected_date) { Date.tomorrow }
-    end
-
-    it_behaves_like 'due command' do
-      let(:content) { '/due 5 days from now' }
-      let(:issuable) { issue }
-      let(:expected_date) { 5.days.from_now.to_date }
-    end
-
-    it_behaves_like 'due command' do
-      let(:content) { '/due in 2 days' }
-      let(:issuable) { issue }
-      let(:expected_date) { 2.days.from_now.to_date }
-    end
-
-    it_behaves_like 'empty command' do
-      let(:content) { '/due foo bar' }
-      let(:issuable) { issue }
-    end
-
     it_behaves_like 'empty command' do
       let(:content) { '/due 2016-08-28' }
       let(:issuable) { merge_request }
@@ -1128,6 +1100,39 @@ describe QuickActions::InterpretService do
         it_behaves_like 'empty command' do
           let(:issuable) { commit }
         end
+      end
+    end
+
+    context '/due command' do
+      it 'returns invalid date format message when the due date is invalid' do
+        issue = build(:issue, project: project)
+
+        _, _, message = service.execute('/due invalid date', issue)
+
+        expect(message).to eq('Failed to set due date because the date format is invalid.')
+      end
+
+      it_behaves_like 'due command' do
+        let(:content) { '/due 2016-08-28' }
+        let(:issuable) { issue }
+      end
+
+      it_behaves_like 'due command' do
+        let(:content) { '/due tomorrow' }
+        let(:issuable) { issue }
+        let(:expected_date) { Date.tomorrow }
+      end
+
+      it_behaves_like 'due command' do
+        let(:content) { '/due 5 days from now' }
+        let(:issuable) { issue }
+        let(:expected_date) { 5.days.from_now.to_date }
+      end
+
+      it_behaves_like 'due command' do
+        let(:content) { '/due in 2 days' }
+        let(:issuable) { issue }
+        let(:expected_date) { 2.days.from_now.to_date }
       end
     end
 

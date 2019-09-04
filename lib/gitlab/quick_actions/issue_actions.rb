@@ -25,7 +25,11 @@ module Gitlab
           Chronic.parse(due_date_param).try(:to_date)
         end
         command :due do |due_date|
-          @updates[:due_date] = due_date if due_date
+          if due_date
+            @updates[:due_date] = due_date
+          else
+            @execution_message[:due] = _('Failed to set due date because the date format is invalid.')
+          end
         end
 
         desc _('Remove due date')
