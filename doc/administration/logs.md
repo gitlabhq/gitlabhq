@@ -341,9 +341,10 @@ installations from source.
 
 ## `database_load_balancing.log`
 
-Introduced in GitLab 12.3 for observability of [Database Load
-Balancing](https://docs.gitlab.com/ee/administration/database_load_balancing.html)
-when enabled. This file lives in
-`/var/log/gitlab/gitlab-rails/database_load_balancing.log` for Omnibus GitLab
-packages or in `/home/git/gitlab/log/database_load_balancing.log` for
-installations from source.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/15442) in GitLab 12.3.
+
+This log is used for observability of [Database Load Balancing](database_load_balancing.md).
+It is stored at:
+
+- `/var/log/gitlab/gitlab-rails/database_load_balancing.log` for Omnibus GitLab packages.
+- `/home/git/gitlab/log/database_load_balancing.log` for installations from source.
