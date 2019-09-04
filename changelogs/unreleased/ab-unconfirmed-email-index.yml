@@ -1,0 +1,5 @@
+---
+title: Create index for users.unconfirmed_email
+merge_request: 32664
+author:
+type: performance
