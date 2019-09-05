@@ -14,9 +14,10 @@ export default () => {
     render(createElement) {
       const domEl = document.querySelector(this.$options.el);
       const { indexPath, enableErrorTrackingLink, illustrationPath } = domEl.dataset;
-      let { errorTrackingEnabled } = domEl.dataset;
+      let { errorTrackingEnabled, userCanEnableErrorTracking } = domEl.dataset;
 
       errorTrackingEnabled = parseBoolean(errorTrackingEnabled);
+      userCanEnableErrorTracking = parseBoolean(userCanEnableErrorTracking);
 
       return createElement('error-tracking-list', {
         props: {
@@ -24,6 +25,7 @@ export default () => {
           enableErrorTrackingLink,
           errorTrackingEnabled,
           illustrationPath,
+          userCanEnableErrorTracking,
         },
       });
     },

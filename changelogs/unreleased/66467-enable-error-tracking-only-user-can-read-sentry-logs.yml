@@ -1,0 +1,5 @@
+---
+title: Display `more information` docs link on error tracking page when users do not have permissions to enable that feature
+merge_request: 32365
+author: Romain Maneschi
+type: fixed
