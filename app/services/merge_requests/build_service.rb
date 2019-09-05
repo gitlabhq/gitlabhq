@@ -21,7 +21,8 @@ module MergeRequests
       merge_request.assign_attributes(params.to_h.compact)
 
       merge_request.compare_commits = []
-      merge_request.target_branch = find_target_branch
+      set_merge_request_target_branch
+
       merge_request.can_be_created = projects_and_branches_valid?
 
       # compare branches only if branches are valid, otherwise
@@ -81,8 +82,12 @@ module MergeRequests
       project_from_params
     end
 
-    def find_target_branch
-      target_branch || target_project.default_branch
+    def set_merge_request_target_branch
+      if source_branch_default? && !target_branch_specified?
+        merge_request.target_branch = nil
+      else
+        merge_request.target_branch ||= target_project.default_branch
+      end
     end
 
     def source_branch_specified?
@@ -137,7 +142,15 @@ module MergeRequests
     end
 
     def same_source_and_target?
-      source_project == target_project && target_branch == source_branch
+      same_source_and_target_project? && target_branch == source_branch
+    end
+
+    def source_branch_default?
+      same_source_and_target_project? && source_branch == target_project.default_branch
+    end
+
+    def same_source_and_target_project?
+      source_project == target_project
     end
 
     def source_branch_exists?
