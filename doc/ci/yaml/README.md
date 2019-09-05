@@ -116,6 +116,7 @@ The following table lists available parameters for jobs:
 | [`extends`](#extends)                              | Configuration entries that this job is going to inherit from.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 | [`pages`](#pages)                                  | Upload the result of a job to use with GitLab Pages.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
 | [`variables`](#variables)                          | Define job variables on a job level.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| [interruptible](#interruptible)                    | Defines if a job can be canceled when made redundant by a newer run                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
 
 NOTE: **Note:**
 Parameters `types` and `type` are [deprecated](#deprecated-parameters).
@@ -2082,6 +2083,46 @@ staging:
     project: my/deployment
     branch: stable
 ```
+
+### `interruptible`
+
+`interruptible` is used to indicate that a job should be canceled if made redundant by a newer run of the same job. Defaults to `false` if there is an environment defined and `true` otherwise.
+This value will only be used if the [automatic cancellation of redundant pipelines feature](https://docs.gitlab.com/ee/user/project/pipelines/settings.html#auto-cancel-pending-pipelines)
+is enabled.
+
+When enabled, a pipeline on the same branch will be canceled when:
+
+- It is made redundant by a newer pipeline run.
+- Either all jobs are set as interruptible, or any uninterruptible jobs are not yet pending.
+
+Pending jobs are always considered interruptible.
+
+TIP: **Tip:**
+Set jobs as uninterruptible that should behave atomically and should never be canceled once started.
+
+Here is a simple example:
+
+```yaml
+stages:
+  - stage1
+  - stage2
+
+step-1:
+  stage: stage1
+  script:
+    - echo "Can be canceled"
+  
+step-2:
+  stage: stage2
+  script:
+    - echo "Can not be canceled"
+  interruptible: false
+```
+
+In the example above, a new pipeline run will cause an existing running pipeline to be:
+
+- Canceled, if only `step-1` is running or pending.
+- Not canceled, once `step-2` becomes pending.
 
 ### `include`
 

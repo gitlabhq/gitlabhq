@@ -329,6 +329,7 @@ CommitStatus:
 - failure_reason
 - scheduled_at
 - upstream_pipeline_id
+- interruptible
 Ci::Variable:
 - id
 - project_id

@@ -41,6 +41,7 @@ module Gitlab
           coverage_regex: job[:coverage],
           yaml_variables: yaml_variables(name),
           needs_attributes: job[:needs]&.map { |need| { name: need } },
+          interruptible: job[:interruptible],
           options: {
             image: job[:image],
             services: job[:services],

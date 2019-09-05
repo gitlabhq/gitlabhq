@@ -225,6 +225,14 @@ module Ci
       where('EXISTS (?)', ::Ci::Build.latest.with_reports(reports_scope).where('ci_pipelines.id=ci_builds.commit_id').select(1))
     end
 
+    scope :without_interruptible_builds, -> do
+      where('NOT EXISTS (?)',
+        Ci::Build.where('ci_builds.commit_id = ci_pipelines.id')
+                 .with_status(:running, :success, :failed)
+                 .not_interruptible
+      )
+    end
+
     # Returns the pipelines in descending order (= newest first), optionally
     # limited to a number of references.
     #
