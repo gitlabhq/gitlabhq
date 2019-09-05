@@ -7,7 +7,7 @@ module Gitlab
 
       # The base cache key to use for tracking already imported objects.
       ALREADY_IMPORTED_CACHE_KEY =
-        'github-importer/already-imported/%{project}/%{collection}'.freeze
+        'github-importer/already-imported/%{project}/%{collection}'
 
       # project - An instance of `Project`.
       # client - An instance of `Gitlab::GithubImport::Client`.

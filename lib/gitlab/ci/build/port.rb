@@ -4,8 +4,8 @@ module Gitlab
   module Ci
     module Build
       class Port
-        DEFAULT_PORT_NAME = 'default_port'.freeze
-        DEFAULT_PORT_PROTOCOL = 'http'.freeze
+        DEFAULT_PORT_NAME = 'default_port'
+        DEFAULT_PORT_PROTOCOL = 'http'
 
         attr_reader :number, :protocol, :name
 

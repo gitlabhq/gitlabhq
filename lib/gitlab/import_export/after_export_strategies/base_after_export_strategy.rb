@@ -10,7 +10,7 @@ module Gitlab
 
         StrategyError = Class.new(StandardError)
 
-        AFTER_EXPORT_LOCK_FILE_NAME = '.after_export_action'.freeze
+        AFTER_EXPORT_LOCK_FILE_NAME = '.after_export_action'
 
         private
 

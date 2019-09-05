@@ -5,8 +5,8 @@ module Gitlab
     # Middleware for reporting (or raising) when a request performs more than a
     # certain amount of database queries.
     class Middleware
-      CONTROLLER_KEY = 'action_controller.instance'.freeze
-      ENDPOINT_KEY = 'api.endpoint'.freeze
+      CONTROLLER_KEY = 'action_controller.instance'
+      ENDPOINT_KEY = 'api.endpoint'
 
       def initialize(app)
         @app = app

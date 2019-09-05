@@ -2,7 +2,7 @@
 
 module Gitlab
   class UrlHelpers
-    WSS_PROTOCOL = "wss".freeze
+    WSS_PROTOCOL = "wss"
     def self.as_wss(url)
       return unless url.present?
 

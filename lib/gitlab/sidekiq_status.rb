@@ -18,7 +18,7 @@ module Gitlab
   # expire after a certain period of time to prevent storing too many keys in
   # Redis.
   module SidekiqStatus
-    STATUS_KEY = 'gitlab-sidekiq-status:%s'.freeze
+    STATUS_KEY = 'gitlab-sidekiq-status:%s'
 
     # The default time (in seconds) after which a status key is expired
     # automatically. The default of 30 minutes should be more than sufficient

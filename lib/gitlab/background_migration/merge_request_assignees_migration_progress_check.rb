@@ -7,7 +7,7 @@ module Gitlab
       include Gitlab::Utils::StrongMemoize
 
       RESCHEDULE_DELAY = 3.hours
-      WORKER = 'PopulateMergeRequestAssigneesTable'.freeze
+      WORKER = 'PopulateMergeRequestAssigneesTable'
       DeadJobsError = Class.new(StandardError)
 
       def perform

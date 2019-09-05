@@ -17,7 +17,7 @@ module Gitlab
   # push to that array when done. Once the waiter has popped `count` items, it
   # knows all the jobs are done.
   class JobWaiter
-    KEY_PREFIX = "gitlab:job_waiter".freeze
+    KEY_PREFIX = "gitlab:job_waiter"
 
     def self.notify(key, jid)
       Gitlab::Redis::SharedState.with { |redis| redis.lpush(key, jid) }

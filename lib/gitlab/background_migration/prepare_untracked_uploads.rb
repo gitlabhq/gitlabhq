@@ -10,15 +10,15 @@ module Gitlab
       include ::Gitlab::Utils::StrongMemoize
 
       FIND_BATCH_SIZE = 500
-      RELATIVE_UPLOAD_DIR = "uploads".freeze
+      RELATIVE_UPLOAD_DIR = "uploads"
       ABSOLUTE_UPLOAD_DIR = File.join(
         Gitlab.config.uploads.storage_path,
         RELATIVE_UPLOAD_DIR
       )
-      FOLLOW_UP_MIGRATION = 'PopulateUntrackedUploads'.freeze
+      FOLLOW_UP_MIGRATION = 'PopulateUntrackedUploads'
       START_WITH_ROOT_REGEX = %r{\A#{Gitlab.config.uploads.storage_path}/}.freeze
-      EXCLUDED_HASHED_UPLOADS_PATH = "#{ABSOLUTE_UPLOAD_DIR}/@hashed/*".freeze
-      EXCLUDED_TMP_UPLOADS_PATH = "#{ABSOLUTE_UPLOAD_DIR}/tmp/*".freeze
+      EXCLUDED_HASHED_UPLOADS_PATH = "#{ABSOLUTE_UPLOAD_DIR}/@hashed/*"
+      EXCLUDED_TMP_UPLOADS_PATH = "#{ABSOLUTE_UPLOAD_DIR}/tmp/*"
 
       # This class is used to iterate over batches of
       # `untracked_files_for_uploads` rows.

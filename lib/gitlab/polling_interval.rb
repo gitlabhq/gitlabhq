@@ -2,7 +2,7 @@
 
 module Gitlab
   class PollingInterval
-    HEADER_NAME = 'Poll-Interval'.freeze
+    HEADER_NAME = 'Poll-Interval'
 
     def self.set_header(response, interval:)
       if polling_enabled?

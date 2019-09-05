@@ -5,8 +5,8 @@ module Gitlab
     class Message
       attr_reader :path, :offline
 
-      OFFLINE = "\e[31moffline\e[0m".freeze
-      ONLINE = "\e[32monline\e[0m".freeze
+      OFFLINE = "\e[31moffline\e[0m"
+      ONLINE = "\e[32monline\e[0m"
 
       # path - The file path of the migration.
       # offline - When set to `true` the migration will require downtime.

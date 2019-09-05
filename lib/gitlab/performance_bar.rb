@@ -2,7 +2,7 @@
 
 module Gitlab
   module PerformanceBar
-    ALLOWED_USER_IDS_KEY = 'performance_bar_allowed_user_ids:v2'.freeze
+    ALLOWED_USER_IDS_KEY = 'performance_bar_allowed_user_ids:v2'
     EXPIRY_TIME_L1_CACHE = 1.minute
     EXPIRY_TIME_L2_CACHE = 5.minutes
 

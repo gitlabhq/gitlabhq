@@ -6,12 +6,12 @@ require_relative 'wrapper' unless defined?(::Gitlab::Redis::Wrapper)
 module Gitlab
   module Redis
     class SharedState < ::Gitlab::Redis::Wrapper
-      SESSION_NAMESPACE = 'session:gitlab'.freeze
-      USER_SESSIONS_NAMESPACE = 'session:user:gitlab'.freeze
-      USER_SESSIONS_LOOKUP_NAMESPACE = 'session:lookup:user:gitlab'.freeze
-      IP_SESSIONS_LOOKUP_NAMESPACE = 'session:lookup:ip:gitlab'.freeze
-      DEFAULT_REDIS_SHARED_STATE_URL = 'redis://localhost:6382'.freeze
-      REDIS_SHARED_STATE_CONFIG_ENV_VAR_NAME = 'GITLAB_REDIS_SHARED_STATE_CONFIG_FILE'.freeze
+      SESSION_NAMESPACE = 'session:gitlab'
+      USER_SESSIONS_NAMESPACE = 'session:user:gitlab'
+      USER_SESSIONS_LOOKUP_NAMESPACE = 'session:lookup:user:gitlab'
+      IP_SESSIONS_LOOKUP_NAMESPACE = 'session:lookup:ip:gitlab'
+      DEFAULT_REDIS_SHARED_STATE_URL = 'redis://localhost:6382'
+      REDIS_SHARED_STATE_CONFIG_ENV_VAR_NAME = 'GITLAB_REDIS_SHARED_STATE_CONFIG_FILE'
 
       class << self
         def default_url

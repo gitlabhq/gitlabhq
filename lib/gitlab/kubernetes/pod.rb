@@ -3,11 +3,11 @@
 module Gitlab
   module Kubernetes
     module Pod
-      PENDING   = 'Pending'.freeze
-      RUNNING   = 'Running'.freeze
-      SUCCEEDED = 'Succeeded'.freeze
-      FAILED    = 'Failed'.freeze
-      UNKNOWN   = 'Unknown'.freeze
+      PENDING   = 'Pending'
+      RUNNING   = 'Running'
+      SUCCEEDED = 'Succeeded'
+      FAILED    = 'Failed'
+      UNKNOWN   = 'Unknown'
       PHASES    = [PENDING, RUNNING, SUCCEEDED, FAILED, UNKNOWN].freeze
     end
   end

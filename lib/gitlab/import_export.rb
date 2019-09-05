@@ -7,7 +7,7 @@ module Gitlab
     # For every version update the version history in these docs must be kept up to date:
     # - development/import_export.md
     # - user/project/settings/import_export.md
-    VERSION = '0.2.4'.freeze
+    VERSION = '0.2.4'
     FILENAME_LIMIT = 50
 
     def export_path(relative_path:)

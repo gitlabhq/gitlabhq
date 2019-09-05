@@ -2,7 +2,7 @@
 
 module Gitlab
   class ShardHealthCache
-    HEALTHY_SHARDS_KEY = 'gitlab-healthy-shards'.freeze
+    HEALTHY_SHARDS_KEY = 'gitlab-healthy-shards'
     HEALTHY_SHARDS_TIMEOUT = 300
 
     # Clears the Redis set storing the list of healthy shards

@@ -2,9 +2,9 @@
 
 module Gitlab
   module IncomingEmail
-    UNSUBSCRIBE_SUFFIX        = '-unsubscribe'.freeze
-    UNSUBSCRIBE_SUFFIX_LEGACY = '+unsubscribe'.freeze
-    WILDCARD_PLACEHOLDER      = '%{key}'.freeze
+    UNSUBSCRIBE_SUFFIX        = '-unsubscribe'
+    UNSUBSCRIBE_SUFFIX_LEGACY = '+unsubscribe'
+    WILDCARD_PLACEHOLDER      = '%{key}'
 
     class << self
       def enabled?

@@ -5,9 +5,9 @@ module Gitlab
     class ProjectUploadFileFinder
       FIND_BATCH_SIZE = 500
       ABSOLUTE_UPLOAD_DIR = FileUploader.root.freeze
-      EXCLUDED_SYSTEM_UPLOADS_PATH = "#{ABSOLUTE_UPLOAD_DIR}/-/*".freeze
-      EXCLUDED_HASHED_UPLOADS_PATH = "#{ABSOLUTE_UPLOAD_DIR}/@hashed/*".freeze
-      EXCLUDED_TMP_UPLOADS_PATH = "#{ABSOLUTE_UPLOAD_DIR}/tmp/*".freeze
+      EXCLUDED_SYSTEM_UPLOADS_PATH = "#{ABSOLUTE_UPLOAD_DIR}/-/*"
+      EXCLUDED_HASHED_UPLOADS_PATH = "#{ABSOLUTE_UPLOAD_DIR}/@hashed/*"
+      EXCLUDED_TMP_UPLOADS_PATH = "#{ABSOLUTE_UPLOAD_DIR}/tmp/*"
 
       # Paths are relative to the upload directory
       def each_file_batch(batch_size: FIND_BATCH_SIZE, &block)

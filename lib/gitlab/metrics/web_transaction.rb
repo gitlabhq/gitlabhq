@@ -3,8 +3,8 @@
 module Gitlab
   module Metrics
     class WebTransaction < Transaction
-      CONTROLLER_KEY = 'action_controller.instance'.freeze
-      ENDPOINT_KEY = 'api.endpoint'.freeze
+      CONTROLLER_KEY = 'action_controller.instance'
+      ENDPOINT_KEY = 'api.endpoint'
       ALLOWED_SUFFIXES = Set.new(%w[json js atom rss xml zip])
 
       def initialize(env)

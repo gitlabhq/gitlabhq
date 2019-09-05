@@ -4,10 +4,10 @@ module Gitlab
   module Ci
     module Reports
       class TestCase
-        STATUS_SUCCESS = 'success'.freeze
-        STATUS_FAILED = 'failed'.freeze
-        STATUS_SKIPPED = 'skipped'.freeze
-        STATUS_ERROR = 'error'.freeze
+        STATUS_SUCCESS = 'success'
+        STATUS_FAILED = 'failed'
+        STATUS_SKIPPED = 'skipped'
+        STATUS_ERROR = 'error'
         STATUS_TYPES = [STATUS_SUCCESS, STATUS_FAILED, STATUS_SKIPPED, STATUS_ERROR].freeze
 
         attr_reader :name, :classname, :execution_time, :status, :file, :system_output, :stack_trace, :key
