@@ -1,3 +1,5 @@
+import EventEmitter from 'events';
+
 const axios = jest.requireActual('~/lib/utils/axios_utils').default;
 
 axios.isMock = true;
@@ -12,5 +14,65 @@ axios.defaults.adapter = config => {
   global.fail(error);
   throw error;
 };
+
+// Count active requests and provide a way to wait for them
+let activeRequests = 0;
+const events = new EventEmitter();
+const onRequest = () => {
+  activeRequests += 1;
+};
+
+// Use setImmediate to alloow the response interceptor to finish
+const onResponse = config => {
+  activeRequests -= 1;
+  setImmediate(() => {
+    events.emit('response', config);
+  });
+};
+
+const subscribeToResponse = (predicate = () => true) =>
+  new Promise(resolve => {
+    const listener = (config = {}) => {
+      if (predicate(config)) {
+        events.off('response', listener);
+        resolve(config);
+      }
+    };
+
+    events.on('response', listener);
+
+    // If a request has been made synchronously, setImmediate waits for it to be
+    // processed and the counter incremented.
+    setImmediate(listener);
+  });
+
+/**
+ * Registers a callback function to be run after a request to the given URL finishes.
+ */
+axios.waitFor = url => subscribeToResponse(({ url: configUrl }) => configUrl === url);
+
+/**
+ * Registers a callback function to be run after all requests have finished. If there are no requests waiting, the callback is executed immediately.
+ */
+axios.waitForAll = () => subscribeToResponse(() => activeRequests === 0);
+
+axios.countActiveRequests = () => activeRequests;
+
+axios.interceptors.request.use(config => {
+  onRequest();
+  return config;
+});
+
+// Remove the global counter
+axios.interceptors.response.use(
+  response => {
+    onResponse(response.config);
+    return response;
+  },
+  err => {
+    onResponse(err.config);
+    return Promise.reject(err);
+  },
+);
 
 export default axios;
