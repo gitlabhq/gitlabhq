@@ -52,7 +52,7 @@ At the project level, the Security Dashboard displays the latest security report
 for your project. Use it to find and fix vulnerabilities affecting the
 [default branch](../../project/repository/branches/index.md#default-branch).
 
-![Project Security Dashboard](img/project_security_dashboard.png)
+![Project Security Dashboard](img/project_security_dashboard_v12_3.png)
 
 ## Group Security Dashboard
 
@@ -71,12 +71,15 @@ Once you're on the dashboard, at the top you should see a series of filters for:
 - Report type
 - Project
 
+To the right of the filters, you should see a **Hide dismissed** toggle button.
+
 NOTE: **Note:**
 The dashboard only shows projects with [security reports](#supported-reports) enabled in a group.
 
 ![dashboard with action buttons and metrics](img/group_security_dashboard_v12_3.png)
 
-Selecting one or more filters will filter the results in this page.
+Selecting one or more filters will filter the results in this page. Disabling the **Hide dismissed**
+toggle button will let you also see vulnerabilities that have been dismissed.
 
 The main section is a list of all the vulnerabilities in the group, sorted by severity.
 In that list, you can see the severity of the vulnerability, its name, its
