@@ -467,6 +467,7 @@ ProtectedBranch:
 - name
 - created_at
 - updated_at
+- code_owner_approval_required
 ProtectedTag:
 - id
 - project_id

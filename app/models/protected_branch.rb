@@ -3,6 +3,9 @@
 class ProtectedBranch < ApplicationRecord
   include ProtectedRef
 
+  scope :requiring_code_owner_approval,
+        -> { where(code_owner_approval_required: true) }
+
   protected_ref_access_levels :merge, :push
 
   def self.protected_ref_accessible_to?(ref, user, project:, action:, protected_refs: nil)
