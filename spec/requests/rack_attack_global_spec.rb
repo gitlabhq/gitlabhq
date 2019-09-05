@@ -20,11 +20,6 @@ describe 'Rack Attack global throttles' do
   let(:period_in_seconds) { 10000 }
   let(:period) { period_in_seconds.seconds }
 
-  let(:url_that_does_not_require_authentication) { '/users/sign_in' }
-  let(:url_that_requires_authentication) { '/dashboard/snippets' }
-  let(:url_api_internal) { '/api/v4/internal/check' }
-  let(:api_partial_url) { '/todos' }
-
   around do |example|
     # Instead of test environment's :null_store so the throttles can increment
     Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new
@@ -35,112 +30,10 @@ describe 'Rack Attack global throttles' do
     Rack::Attack.cache.store = Rails.cache
   end
 
-  # Requires let variables:
-  # * throttle_setting_prefix (e.g. "throttle_authenticated_api" or "throttle_authenticated_web")
-  # * get_args
-  # * other_user_get_args
-  shared_examples_for 'rate-limited token-authenticated requests' do
-    before do
-      # Set low limits
-      settings_to_set[:"#{throttle_setting_prefix}_requests_per_period"] = requests_per_period
-      settings_to_set[:"#{throttle_setting_prefix}_period_in_seconds"] = period_in_seconds
-    end
-
-    context 'when the throttle is enabled' do
-      before do
-        settings_to_set[:"#{throttle_setting_prefix}_enabled"] = true
-        stub_application_setting(settings_to_set)
-      end
-
-      it 'rejects requests over the rate limit' do
-        # At first, allow requests under the rate limit.
-        requests_per_period.times do
-          get(*get_args)
-          expect(response).to have_http_status 200
-        end
-
-        # the last straw
-        expect_rejection { get(*get_args) }
-      end
-
-      it 'allows requests after throttling and then waiting for the next period' do
-        requests_per_period.times do
-          get(*get_args)
-          expect(response).to have_http_status 200
-        end
-
-        expect_rejection { get(*get_args) }
-
-        Timecop.travel(period.from_now) do
-          requests_per_period.times do
-            get(*get_args)
-            expect(response).to have_http_status 200
-          end
-
-          expect_rejection { get(*get_args) }
-        end
-      end
-
-      it 'counts requests from different users separately, even from the same IP' do
-        requests_per_period.times do
-          get(*get_args)
-          expect(response).to have_http_status 200
-        end
-
-        # would be over the limit if this wasn't a different user
-        get(*other_user_get_args)
-        expect(response).to have_http_status 200
-      end
-
-      it 'counts all requests from the same user, even via different IPs' do
-        requests_per_period.times do
-          get(*get_args)
-          expect(response).to have_http_status 200
-        end
-
-        expect_any_instance_of(Rack::Attack::Request).to receive(:ip).and_return('1.2.3.4')
-
-        expect_rejection { get(*get_args) }
-      end
-
-      it 'logs RackAttack info into structured logs' do
-        requests_per_period.times do
-          get(*get_args)
-          expect(response).to have_http_status 200
-        end
-
-        arguments = {
-          message: 'Rack_Attack',
-          env: :throttle,
-          remote_ip: '127.0.0.1',
-          request_method: 'GET',
-          path: get_args.first,
-          user_id: user.id,
-          username: user.username
-        }
-
-        expect(Gitlab::AuthLogger).to receive(:error).with(arguments).once
-
-        expect_rejection { get(*get_args) }
-      end
-    end
-
-    context 'when the throttle is disabled' do
-      before do
-        settings_to_set[:"#{throttle_setting_prefix}_enabled"] = false
-        stub_application_setting(settings_to_set)
-      end
-
-      it 'allows requests over the rate limit' do
-        (1 + requests_per_period).times do
-          get(*get_args)
-          expect(response).to have_http_status 200
-        end
-      end
-    end
-  end
-
   describe 'unauthenticated requests' do
+    let(:url_that_does_not_require_authentication) { '/users/sign_in' }
+    let(:url_api_internal) { '/api/v4/internal/check' }
+
     before do
       # Set low limits
       settings_to_set[:throttle_unauthenticated_requests_per_period] = requests_per_period
@@ -245,6 +138,7 @@ describe 'Rack Attack global throttles' do
     let(:other_user) { create(:user) }
     let(:other_user_token) { create(:personal_access_token, user: other_user) }
     let(:throttle_setting_prefix) { 'throttle_authenticated_api' }
+    let(:api_partial_url) { '/todos' }
 
     context 'with the token in the query string' do
       let(:get_args) { [api(api_partial_url, personal_access_token: token)] }
@@ -265,10 +159,13 @@ describe 'Rack Attack global throttles' do
     let(:user) { create(:user) }
     let(:application) { Doorkeeper::Application.create!(name: "MyApp", redirect_uri: "https://app.com", owner: user) }
     let(:token) { Doorkeeper::AccessToken.create!(application_id: application.id, resource_owner_id: user.id, scopes: "api") }
+
     let(:other_user) { create(:user) }
     let(:other_user_application) { Doorkeeper::Application.create!(name: "MyApp", redirect_uri: "https://app.com", owner: other_user) }
     let(:other_user_token) { Doorkeeper::AccessToken.create!(application_id: application.id, resource_owner_id: other_user.id, scopes: "api") }
+
     let(:throttle_setting_prefix) { 'throttle_authenticated_api' }
+    let(:api_partial_url) { '/todos' }
 
     context 'with the token in the query string' do
       let(:get_args) { [api(api_partial_url, oauth_access_token: token)] }
@@ -299,110 +196,11 @@ describe 'Rack Attack global throttles' do
   end
 
   describe 'web requests authenticated with regular login' do
+    let(:throttle_setting_prefix) { 'throttle_authenticated_web' }
     let(:user) { create(:user) }
+    let(:url_that_requires_authentication) { '/dashboard/snippets' }
 
-    before do
-      login_as(user)
-
-      # Set low limits
-      settings_to_set[:throttle_authenticated_web_requests_per_period] = requests_per_period
-      settings_to_set[:throttle_authenticated_web_period_in_seconds] = period_in_seconds
-    end
-
-    context 'when the throttle is enabled' do
-      before do
-        settings_to_set[:throttle_authenticated_web_enabled] = true
-        stub_application_setting(settings_to_set)
-      end
-
-      it 'rejects requests over the rate limit' do
-        # At first, allow requests under the rate limit.
-        requests_per_period.times do
-          get url_that_requires_authentication
-          expect(response).to have_http_status 200
-        end
-
-        # the last straw
-        expect_rejection { get url_that_requires_authentication }
-      end
-
-      it 'allows requests after throttling and then waiting for the next period' do
-        requests_per_period.times do
-          get url_that_requires_authentication
-          expect(response).to have_http_status 200
-        end
-
-        expect_rejection { get url_that_requires_authentication }
-
-        Timecop.travel(period.from_now) do
-          requests_per_period.times do
-            get url_that_requires_authentication
-            expect(response).to have_http_status 200
-          end
-
-          expect_rejection { get url_that_requires_authentication }
-        end
-      end
-
-      it 'counts requests from different users separately, even from the same IP' do
-        requests_per_period.times do
-          get url_that_requires_authentication
-          expect(response).to have_http_status 200
-        end
-
-        # would be over the limit if this wasn't a different user
-        login_as(create(:user))
-
-        get url_that_requires_authentication
-        expect(response).to have_http_status 200
-      end
-
-      it 'counts all requests from the same user, even via different IPs' do
-        requests_per_period.times do
-          get url_that_requires_authentication
-          expect(response).to have_http_status 200
-        end
-
-        expect_any_instance_of(Rack::Attack::Request).to receive(:ip).and_return('1.2.3.4')
-
-        expect_rejection { get url_that_requires_authentication }
-      end
-
-      it 'logs RackAttack info into structured logs' do
-        requests_per_period.times do
-          get url_that_requires_authentication
-          expect(response).to have_http_status 200
-        end
-
-        arguments = {
-          message: 'Rack_Attack',
-          env: :throttle,
-          remote_ip: '127.0.0.1',
-          request_method: 'GET',
-          path: '/dashboard/snippets',
-          user_id: user.id,
-          username: user.username
-        }
-
-        expect(Gitlab::AuthLogger).to receive(:error).with(arguments).once
-
-        get url_that_requires_authentication
-      end
-    end
-
-    context 'when the throttle is disabled' do
-      before do
-        settings_to_set[:throttle_authenticated_web_enabled] = false
-        stub_application_setting(settings_to_set)
-      end
-
-      it 'allows requests over the rate limit' do
-        (1 + requests_per_period).times do
-          get url_that_requires_authentication
-          expect(response).to have_http_status 200
-        end
-      end
-    end
+    it_behaves_like 'rate-limited web authenticated requests'
   end
 
   def api_get_args_with_token_headers(partial_url, token_headers)
