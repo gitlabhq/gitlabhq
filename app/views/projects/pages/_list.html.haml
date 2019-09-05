@@ -12,9 +12,7 @@
             .domain-status.ci-status-icon.has-tooltip{ class: "ci-status-icon-#{status}", title: tooltip }
               = sprite_icon("status_#{status}", size: 16 )
           .domain-name
-            = link_to domain.url do
-              = domain.url
-              = icon('external-link')
+            = external_link(domain.url, domain.url)
             - if domain.subject
               %div
                 %span.badge.badge-gray Certificate: #{domain.subject}
