@@ -2,13 +2,24 @@
 
 module QA
   module Resource
-    class Branch < Base
-      attr_accessor :project, :branch_name,
-                    :allow_to_push, :allow_to_merge, :protected
+    class ProtectedBranch < Base
+      attr_accessor :branch_name, :allow_to_push, :allow_to_merge, :protected
 
       attribute :project do
-        Project.fabricate! do |resource|
+        Project.fabricate_via_api! do |resource|
           resource.name = 'protected-branch-project'
+          resource.initialize_with_readme = true
+        end
+      end
+
+      attribute :branch do
+        Repository::ProjectPush.fabricate! do |project_push|
+          project_push.project = project
+          project_push.file_name = 'new_file.md'
+          project_push.commit_message = 'Add new file'
+          project_push.branch_name = branch_name
+          project_push.new_branch = true
+          project_push.remote_branch = @branch_name
         end
       end
 
@@ -20,32 +31,16 @@ module QA
       end
 
       def fabricate!
-        project.visit!
+        populate(:branch)
 
-        Repository::ProjectPush.fabricate! do |resource|
-          resource.project = project
-          resource.file_name = 'kick-off.txt'
-          resource.commit_message = 'First commit'
-        end
-
-        branch = Repository::ProjectPush.fabricate! do |resource|
-          resource.project = project
-          resource.file_name = 'README.md'
-          resource.commit_message = 'Add readme'
-          resource.branch_name = 'master'
-          resource.new_branch = false
-          resource.remote_branch = @branch_name
-        end
-
-        Page::Project::Show.perform do |page|
-          page.wait { page.has_content?(branch_name) }
-        end
+        project.wait_for_push_new_branch @branch_name
 
         # The upcoming process will make it access the Protected Branches page,
         # select the already created branch and protect it according
         # to `allow_to_push` variable.
         return branch unless @protected
 
+        project.visit!
         Page::Project::Menu.perform(&:go_to_repository_settings)
 
         Page::Project::Settings::Repository.perform do |setting|

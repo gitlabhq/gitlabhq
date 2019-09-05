@@ -33,7 +33,6 @@ module QA
         def fabricate!
           super
           project.wait_for_push @commit_message if @wait_for_push
-          project.visit!
         end
       end
     end
