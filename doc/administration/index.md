@@ -187,13 +187,29 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 - [Debugging tips](troubleshooting/debug.md): Tips to debug problems when things go wrong
 - [Log system](logs.md): Where to look for logs.
 - [Sidekiq Troubleshooting](troubleshooting/sidekiq.md): Debug when Sidekiq appears hung and is not processing jobs.
-- Useful [diagnostics tools](troubleshooting/diagnostics_tools.md) that are sometimes used by the GitLab
-  Support team.
-- [Troubleshooting ElasticSearch](troubleshooting/elasticsearch.md): Tips to troubleshoot ElasticSearch.
-- [Kubernetes troubleshooting](troubleshooting/kubernetes_cheat_sheet.md): Commands and tips useful
-  for troubleshooting Kubernetes-related issues.
-- Useful links from the Support Team:
-  - [GitLab Developer Docs](https://docs.gitlab.com/ee/development/README.html).
-  - [Repairing and recovering broken Git repositories](https://git.seveas.net/repairing-and-recovering-broken-git-repositories.html).
-  - [Testing with OpenSSL](https://www.feistyduck.com/library/openssl-cookbook/online/ch-testing-with-openssl.html).
-  - [Strace zine](https://wizardzines.com/zines/strace/).
+- [Troubleshooting ElasticSearch](troubleshooting/elasticsearch.md)
+
+### Support Team Docs
+
+The GitLab Support Team has collected a lot of information about troubleshooting GitLab
+instances. These documents are normally used by the Support Team itself, or by customers
+with direct guidance from a Support Team member. GitLab administrators may find the
+information useful for troubleshooting, but if you are experiencing trouble with your
+GitLab instance, you should check your [support options](https://about.gitlab.com/support/)
+before referring to these documents.
+
+CAUTION: **Warning:**
+Using the commands listed in the documentation below could result in data loss or
+other damage to a GitLab instance, and should only be used by experienced administrators
+who are aware of the risks.
+
+- [Useful diagnostics tools](troubleshooting/diagnostics_tools.md)
+- [Useful Linux commands](troubleshooting/linux_cheat_sheet.md)
+- [Troubleshooting Kubernetes](troubleshooting/kubernetes_cheat_sheet.md)
+- [Guide to test environments](troubleshooting/test_environments.md) (for Support Engineers)
+- [GitLab rails console commands](troubleshooting/gitlab_rails_cheat_sheet.md) (for Support Engineers)
+- Useful links:
+  - [GitLab Developer Docs](../development/README.md)
+  - [Repairing and recovering broken Git repositories](https://git.seveas.net/repairing-and-recovering-broken-git-repositories.html)
+  - [Testing with OpenSSL](https://www.feistyduck.com/library/openssl-cookbook/online/ch-testing-with-openssl.html)
+  - [Strace zine](https://wizardzines.com/zines/strace/)
