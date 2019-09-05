@@ -3,7 +3,7 @@ require 'spec_helper'
 describe VersionCheckHelper do
   describe '#version_status_badge' do
     it 'returns nil if not dev environment and not enabled' do
-      allow(Rails.env).to receive(:production?) { false }
+      stub_rails_env('development')
       allow(Gitlab::CurrentSettings.current_application_settings).to receive(:version_check_enabled) { false }
 
       expect(helper.version_status_badge).to be(nil)
@@ -11,7 +11,7 @@ describe VersionCheckHelper do
 
     context 'when production and enabled' do
       before do
-        allow(Rails.env).to receive(:production?) { true }
+        stub_rails_env('production')
         allow(Gitlab::CurrentSettings.current_application_settings).to receive(:version_check_enabled) { true }
         allow(VersionCheck).to receive(:url) { 'https://version.host.com/check.svg?gitlab_info=xxx' }
       end

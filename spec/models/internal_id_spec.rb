@@ -106,7 +106,8 @@ describe InternalId do
       end
 
       it 'always attempts to generate internal IDs in production mode' do
-        allow(Rails.env).to receive(:test?).and_return(false)
+        stub_rails_env('production')
+
         val = rand(1..100)
         generator = double(generate: val)
         expect(InternalId::InternalIdGenerator).to receive(:new).and_return(generator)

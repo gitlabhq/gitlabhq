@@ -37,7 +37,7 @@ describe 'User can display performance bar', :js do
 
   shared_examples 'performance bar is enabled by default in development' do
     before do
-      allow(Rails.env).to receive(:development?).and_return(true)
+      stub_rails_env('development')
     end
 
     it 'shows the performance bar by default' do
