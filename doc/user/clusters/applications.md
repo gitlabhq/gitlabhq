@@ -127,7 +127,8 @@ file.
 
 ### JupyterHub
 
-> Available for project-level clusters since GitLab 11.0.
+> - Available for project-level clusters since GitLab 11.0.
+> - Available for group-level clusters since GitLab 12.3.
 
 [JupyterHub](https://jupyterhub.readthedocs.io/en/stable/) is a
 multi-user service for managing notebooks across a team. [Jupyter
@@ -136,8 +137,9 @@ web-based interactive programming environment used for data analysis,
 visualization, and machine learning.
 
 Authentication will be enabled only for [project
-members](../project/members/index.md) with [Developer or
-higher](../permissions.md) access to the project.
+members](../project/members/index.md) for project-level clusters and group
+members for group-level clusters with [Developer or
+higher](../permissions.md) access to the associated project or group.
 
 We use a [custom Jupyter
 image](https://gitlab.com/gitlab-org/jupyterhub-user-image/blob/master/Dockerfile)
