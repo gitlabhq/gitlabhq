@@ -1238,9 +1238,9 @@ class MergeRequest < ApplicationRecord
     compare_reports(Ci::CompareTestReportsService)
   end
 
-  def compare_reports(service_class)
+  def compare_reports(service_class, current_user = nil)
     with_reactive_cache(service_class.name) do |data|
-      unless service_class.new(project)
+      unless service_class.new(project, current_user)
         .latest?(base_pipeline, actual_head_pipeline, data)
         raise InvalidateReactiveCache
       end
