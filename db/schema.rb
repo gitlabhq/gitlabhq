@@ -2932,6 +2932,8 @@ ActiveRecord::Schema.define(version: 2019_09_04_173203) do
     t.string "name", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean "code_owner_approval_required", default: false, null: false
+    t.index ["project_id", "code_owner_approval_required"], name: "code_owner_approval_required", where: "(code_owner_approval_required = true)"
     t.index ["project_id"], name: "index_protected_branches_on_project_id"
   end
 
