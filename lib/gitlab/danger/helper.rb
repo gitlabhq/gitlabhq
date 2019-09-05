@@ -110,7 +110,8 @@ module Gitlab
           karma\.config\.js |
           webpack\.config\.js |
           package\.json |
-          yarn\.lock
+          yarn\.lock |
+          \.gitlab/ci/frontend\.gitlab-ci\.yml
         )\z}x => :frontend,
 
         %r{\A(ee/)?db/(?!fixtures)[^/]+} => :database,
