@@ -13,7 +13,9 @@
     - .default-before_script
     - .except-docs
   image: dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.6.3-git-2.22-chrome-73.0-node-12.x-yarn-1.16-graphicsmagick-1.3.33-docker-18.06.1
+  stage: test
   dependencies: ["setup-test-env"]
+  needs: ["setup-test-env"]
   services:
     - docker:19.03.0-dind
   variables:
@@ -42,10 +44,6 @@
     - time scripts/build_assets_image
     - scripts/clean-old-cached-assets
     - rm -f /etc/apt/sources.list.d/google*.list  # We don't need to update Chrome here
-    # Play dependent manual jobs
-    - install_api_client_dependencies_with_apt
-    - play_job "review-build-cng" || true  # this job might not exist so ignore the failure if it cannot be played
-    - play_job "schedule:review-build-cng" || true  # this job might not exist so ignore the failure if it cannot be played
   only:
     - /.+/@gitlab-org/gitlab-ce
     - /.+/@gitlab-org/gitlab-ee
@@ -186,7 +184,8 @@ jest:
     - .default-retry
     - .default-cache
     - .except-docs
-  dependencies: ["setup-test-env"]
+  dependencies: []
+  stage: test
   variables:
     SETUP_DB: "false"
   before_script:

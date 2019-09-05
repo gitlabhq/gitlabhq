@@ -5,6 +5,7 @@ stages:
   - prepare
   - quick-test
   - test
+  - review-prepare
   - review
   - qa
   - post-test

@@ -7,7 +7,9 @@ cache gems:
     - .default-cache
     - .default-before_script
     - .except-docs
+  stage: test
   dependencies: ["setup-test-env"]
+  needs: ["setup-test-env"]
   variables:
     SETUP_DB: "false"
   script:
