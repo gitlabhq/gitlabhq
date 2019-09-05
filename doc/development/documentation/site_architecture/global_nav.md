@@ -4,30 +4,74 @@ description: "Learn how GitLab docs' global navigation works and how to add new 
 
 # Global navigation
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-docs/merge_requests/362)
-in GitLab 11.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-docs/merge_requests/362) in GitLab 11.6.
 > - [Updated](https://gitlab.com/gitlab-org/gitlab-docs/merge_requests/482) in GitLab 12.1.
+> - [Per-project](https://gitlab.com/gitlab-org/gitlab-docs/merge_requests/498) navigation added in GitLab 12.2.
 
-The global nav adds to the left sidebar the ability to
-navigate and explore the contents of GitLab's documentation.
+Global navigation (the left-most pane in our three pane documentation) provides:
 
-The global nav should be maintained consistent through time to allow the
-users to locate their most-visited links easily to facilitate navigation.
-Therefore, any updates must be carefully considered by the technical writers.
+- A high-level grouped view of product features.
+- The ability to discover new features by browsing the menu structure.
+- A way to allow the reader to focus on product areas.
+- The ability to refine landing pages, so they don't have to do all the work of surfacing
+  every page contained within the documentation.
 
-## Adding new items to the global nav
+## Adding new items
 
-To add a new doc to the nav, first and foremost, check with the technical writing team:
+All new pages need a new navigation item. Without a navigation, the page becomes "orphaned". That
+is:
 
-- If it's applicable
-- What's the exact position the doc will be added to the nav
+- The navigation shuts when the page is opened, and the reader loses their place.
+- The page doesn't belong in a group with other pages.
 
-Once you get their approval and their guidance in regards to the position on the nav,
-read trhough this page to understand how it works, and submit a merge request to the
-docs site, adding the doc you wish to include in the nav into the
-[global nav data file](https://gitlab.com/gitlab-org/gitlab-docs/blob/master/content/_data/global-nav.yaml).
+This means the decision to create a new page is a decision to create new navigation item and vice
+versa.
 
-Don't forget to ask a technical writer to review your changes before merging.
+### Where to add
+
+Documentation pages can be said to belong in the following groups:
+
+- GitLab users. This is documentation for day-to-day use of GitLab for users with any level
+  of permissions, from Reporter to Owner.
+- GitLab administrators. This tends to be documentation for self-managed instances that requires
+  access to the underlying infrastructure hosting GitLab.
+- Other documentation. This includes documentation for customers outside their day-to-day use of
+  GitLab and for contributors. Documentation that doesn't fit in the other groups belongs here.
+
+With these groups in mind, the following are general rules for where new items should be added.
+
+- User documentation for:
+  - Group-level features belongs under **Groups**.
+  - Project-level features belongs under **Projects**.
+  - Features outside a group or project level (sometimes called "instance-level") can be placed at
+    the top-level, but care must be taken not to overwhelm that top-level space. If possible, such
+    features could be grouped in some way.
+  - Outside the above, most other miscellaneous user documentation belongs under **User**.
+- Administration documentation belongs under **Administrator**.
+- Other documentation belongs at the top-level, but care must be taken to not create an enormously
+  long top-level navigation, which defeats the purpose of it.
+
+NOTE: **Note:**
+Making all documentation and navigation items adhere to these principles is being progressively
+rolled out.
+
+### What to add
+
+Having decided where to add a navigation element, the next step is deciding what to add. The
+mechanics of what is required is [documented below](#data-file) but, in principle:
+
+- Navigation item text (that which the reader sees) should:
+  - Be as short as possible.
+  - Be contextual. It's rare to need to repeat text from a parent item.
+  - Avoid jargon or terms of art, unless ubiquitous. For example, **CI** is an acceptable
+    substitution for **Continuous Integration**.
+- Navigation links must follow the rules documented in the [data file](#data-file).
+- EE badging is subject to the following:
+  - Required when linking to an EE-only page.
+  - Not required when linking to a page that is a mix of CE and EE-only content.
+  - Required when all sub-items are EE-only. In this case, no sub-items are EE badged.
+  - Not required when sub-items are a mix of CE and EE-only items. In this case, each item is
+    badged appropriately.
 
 ## How it works
 
@@ -55,7 +99,7 @@ To see the improvements planned, check the
 [global nav epic](https://gitlab.com/groups/gitlab-com/-/epics/21).
 
 CAUTION: **Attention!**
-**Do not** [add items](#adding-new-items-to-the-global-nav) to the global nav without
+**Do not** [add items](#adding-new-items) to the global nav without
 the consent of one of the technical writers.
 
 ## Composition
@@ -70,8 +114,13 @@ the data among the nav in containers properly [styled](#css-classes).
 
 ### Data file
 
-The [data file](https://gitlab.com/gitlab-org/gitlab-docs/blob/master/content/_data/global-nav.yaml)
-is structured in three components: sections, categories, and docs.
+The data file describes the structure of the navigation for the applicable project. All data files
+are stored at <https://gitlab.com/gitlab-org/gitlab-docs/blob/master/content/_data/> and comprise
+three components:
+
+- Sections
+- Categories
+- Docs
 
 #### Sections
 
