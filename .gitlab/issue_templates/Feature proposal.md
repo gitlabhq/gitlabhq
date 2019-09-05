@@ -17,12 +17,13 @@ Personas can be found at https://about.gitlab.com/handbook/marketing/product-mar
 
 ### Permissions and Security
 
-<!-- What permissions are required to perform the described actions? Are they consistent with the existing permissions as documented for users, groups, and projects as appropriate? Is the proposed behavior consistent between the UI, API, and other access methods (e.g. email replies)? -->
+<!-- What permissions are required to perform the described actions? Are they consistent with the existing permissions as documented for users, groups, and projects as appropriate? Is the proposed behavior consistent between the UI, API, and other access methods (e.g. email replies)?-->
 
 ### Documentation
 
 <!-- See the Feature Change Documentation Workflow https://docs.gitlab.com/ee/development/documentation/feature-change-workflow.html
-Add all known Documentation Requirements here, per https://docs.gitlab.com/ee/development/documentation/feature-change-workflow.html#documentation-requirements -->
+Add all known Documentation Requirements here, per https://docs.gitlab.com/ee/development/documentation/feature-change-workflow.html#documentation-requirements
+If this feature requires changing permissions, this document https://docs.gitlab.com/ee/user/permissions.html must be updated accordingly. -->
 
 ### Testing
 
