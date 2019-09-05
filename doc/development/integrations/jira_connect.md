@@ -10,8 +10,10 @@ The following are required to install and test the app:
 
    For the app to work, Jira Cloud should be able to connect to the GitLab instance through the internet.
 
-   To easily expose your local development environment, you can use tools like [serveo](https://serveo.net) or [ngrok](https://ngrok.com).
-   These also take care of SSL for you because Jira requires all connections to the app host to be over SSL.
+   To easily expose your local development environment, you can use tools like
+   [serveo](https://medium.com/@osanda.deshan/how-to-forward-my-local-port-to-public-using-serveo-4979f352a3bf)
+   or [ngrok](https://ngrok.com). These also take care of SSL for you because Jira
+   requires all connections to the app host to be over SSL.
 
 > This feature is currently behind the `:jira_connect_app` feature flag
 
