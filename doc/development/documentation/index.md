@@ -463,7 +463,7 @@ The current tests are:
    to [check locally](#previewing-the-changes-live) before pushing to GitLab by executing the command
    `bundle exec nanoc check internal_links` on your local
    [`gitlab-docs`](https://gitlab.com/gitlab-org/gitlab-docs) directory. In addition,
-   `docs-lint` also runs [markdownlint](styleguide.md#markdown-rules) to ensure the
+   `docs-lint` also runs [`markdownlint`](#markdownlint) to ensure the
    markdown is consistent across all documentation.
 1. [`ee_compat_check`](../automatic_ce_ee_merge.md#avoiding-ce-ee-merge-conflicts-beforehand) (runs on CE only):
    When you submit a merge request to GitLab Community Edition (CE),
@@ -488,7 +488,7 @@ help you catch common issues before raising merge requests for review of documen
 The following are some suggested linters you can install locally and sample configuration:
 
 - [`proselint`](#proselint)
-- [`markdownlint`](#markdownlint)
+- [`markdownlint`](#markdownlint), which is the same as the test run in [`docs-lint`](#testing)
 
 NOTE: **Note:**
 This list does not limit what other linters you can add to your local documentation writing toolchain.
@@ -534,76 +534,56 @@ A file with `proselint` configuration must be placed in a
 
 #### `markdownlint`
 
-`markdownlint` checks that certain rules ([example](https://github.com/DavidAnson/markdownlint/blob/master/README.md#rules--aliases))
-are followed for Markdown syntax. Our [Documentation Style Guide](styleguide.md) and
-[Markdown Guide](https://about.gitlab.com/handbook/product/technical-writing/markdown-guide/)
+[`markdownlint`](https://github.com/DavidAnson/markdownlint) checks that markdown
+syntax follows [certain rules](https://github.com/DavidAnson/markdownlint/blob/master/doc/Rules.md#rules),
+and is used by the [`docs-lint` test](#testing) with a [configuration file](#markdownlint-configuration).
+Our [Documentation Style Guide](styleguide.md#markdown) and [Markdown Guide](https://about.gitlab.com/handbook/product/technical-writing/markdown-guide/)
 elaborate on which choices must be made when selecting Markdown syntax for GitLab
-documentation. This tool helps catch deviations from those guidelines, and matches the
-tests run on the documentation by [`docs-lint`](#testing).
+documentation. This tool helps catch deviations from those guidelines.
 
 `markdownlint` can be used [on the command line](https://github.com/igorshubovych/markdownlint-cli#markdownlint-cli--),
 either on a single Markdown file or on all Markdown files in a project. For example, to run
 `markdownlint` on all documentation in the [`gitlab-ce` project](https://gitlab.com/gitlab-org/gitlab-ce),
-run the following commands from within the `gitlab-ce` project:
+run the following commands from within your `gitlab-ce` project root directory, which will
+automatically detect the [`.markdownlint.json`](#markdownlint-configuration) config
+file in the root of the project, and test all files in `/doc` and its subdirectories:
 
 ```sh
-cd doc
-markdownlint **/*.md
+markdownlint 'doc/**/*.md'
 ```
 
-`markdownlint` can also be run from within editors using plugins. For example, the following plugins
- are available:
+If you wish to use a different config file, use the `-c` flag:
+
+```sh
+markdownlint -c <config-file-name> 'doc/**/*.md'
+```
+
+`markdownlint` can also be run from within text editors using [plugins/extensions](https://github.com/DavidAnson/markdownlint#related),
+such as:
 
 - [Sublime Text](https://packagecontrol.io/packages/SublimeLinter-contrib-markdownlint)
 - [Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=DavidAnson.vscode-markdownlint)
-- [Others](https://github.com/DavidAnson/markdownlint#related)
+- [Atom](https://atom.io/packages/linter-node-markdownlint)
 
-##### Sample `markdownlint` configuration
+It is best to use the [same configuration file](#markdownlint-configuration) as what
+is in use in the four repos that are the sources for <https://docs.gitlab.com>. Each
+plugin/extension has different requirements regarding the configuration file, which
+is explained in each editor's docs.
 
-The following sample `markdownlint` configuration modifies the available default rules to:
+##### `markdownlint` configuration
 
-- Adhere to the [Documentation Style Guide](styleguide.md).
-- Apply conventions found in the GitLab documentation.
-- Allow the flexibility of using some inline HTML.
+Each formatting issue that `markdownlint` checks has an associated
+[rule](https://github.com/DavidAnson/markdownlint/blob/master/doc/Rules.md#rules).
+These rules are configured in the `.markdownlint.json` files located in the root of
+four repos that are the sources for <https://docs.gitlab.com>:
 
-```json
-{
-  "default": true,
-  "header-style": { "style": "atx" },
-  "ul-style": { "style": "dash" },
-  "line-length": false,
-  "no-trailing-punctuation": false,
-  "ol-prefix": { "style": "one" },
-  "blanks-around-fences": true,
-  "no-inline-html": {
-    "allowed_elements": [
-      "table",
-      "tbody",
-      "tr",
-      "td",
-      "ul",
-      "ol",
-      "li",
-      "br",
-      "img",
-      "a",
-      "strong",
-      "i",
-      "div",
-      "b"
-    ]
-  },
-  "hr-style": { "style": "---" },
-  "code-block-style": { "style": "fenced" },
-  "fenced-code-language": false,
-  "no-duplicate-header": { "allow_different_nesting": true },
-  "commands-show-output": false
-}
-```
+- <https://gitlab.com/gitlab-org/gitlab-ce/blob/master/.markdownlint.json>
+- <https://gitlab.com/gitlab-org/gitlab-runner/blob/master/.markdownlint.json>
+- <https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/.markdownlint.json>
+- <https://gitlab.com/charts/gitlab/blob/master/.markdownlint.json>
 
-For [`markdownlint`](https://github.com/DavidAnson/markdownlint/), this configuration must be
-placed in a [valid location](https://github.com/igorshubovych/markdownlint-cli#configuration). For
-example, `~/.markdownlintrc`.
+By default all rules are enabled, so the configuration file is used to disable unwanted
+rules, and also to configure optional parameters for enabled rules as needed.
 
 ## Danger Bot
 
