@@ -1,5 +1,7 @@
 # Best practices when writing end-to-end tests
 
+## Avoid using a GUI when it's not required
+
 The majority of the end-to-end tests require some state to be built in the application for the tests to happen.
 
 A good example is a user being logged in as a pre-condition for testing the feature.
@@ -36,3 +38,18 @@ Finally, interacting with the application only by its GUI generates a higher rat
 - When depending only on the GUI to create the application's state and tests fail due to front-end issues, we can't rely on the test failures rate, and we generate a higher rate of test flakiness.
 
 Now that we are aware of all of it, [let's go create some tests](quick_start_guide.md).
+
+## Prefer to split tests across multiple files
+
+Our framework includes a couple of parallelization mechanisms that work by executing spec files in parallel.
+
+However, because tests are parallelized by spec *file* and not by test/example, we can't achieve greater parallelization if a new test is added to an existing file.
+
+Nonetheless, there could be other reasons to add a new test to an existing file.
+
+For example, if tests share state that is expensive to set up it might be more efficient to perform that setup once even if it means the tests that use the setup can't be parallelized.
+
+In summary:
+
+- **Do**: Split tests across separate files, unless the tests share expensive setup.
+- **Don't**: Put new tests in an existing file without considering the impact on parallelization.
