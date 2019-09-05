@@ -1,0 +1,5 @@
+---
+title: Avoid checking dns rebind protection when validating
+merge_request: 32577
+author:
+type: fixed
