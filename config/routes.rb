@@ -107,6 +107,7 @@ Rails.application.routes.draw do
     draw :instance_statistics
 
     Gitlab.ee do
+      draw :security
       draw :smartcard
       draw :jira_connect
       draw :username
