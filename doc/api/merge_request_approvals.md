@@ -525,11 +525,11 @@ PUT /projects/:id/merge_requests/:merge_request_iid/approvers
 }
 ```
 
-### Get approval state of merge request
+### Get the approval state of merge requests
 
->**Note:** This API endpoint is only available on 12.3 Starter and above.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/13712) in [GitLab Starter](https://about.gitlab.com/pricing/) 12.3.
 
-You can request information about a merge request's approval state using the following endpoint:
+You can request information about a merge request's approval state by using the following endpoint:
 
 ```
 GET /projects/:id/merge_requests/:merge_request_iid/approval_state
