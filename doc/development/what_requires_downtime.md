@@ -88,7 +88,7 @@ class RenameUsersUpdatedAtToUpdatedAtTimestamp < ActiveRecord::Migration[4.2]
   end
 
   def down
-    cleanup_concurrent_column_rename :users, :updated_at_timestamp, :updated_at
+    undo_rename_column_concurrently :users, :updated_at, :updated_at_timestamp
   end
 end
 ```
@@ -118,7 +118,7 @@ class CleanupUsersUpdatedAtRename < ActiveRecord::Migration[4.2]
   end
 
   def down
-    rename_column_concurrently :users, :updated_at_timestamp, :updated_at
+    undo_cleanup_concurrent_column_rename :users, :updated_at, :updated_at_timestamp
   end
 end
 ```

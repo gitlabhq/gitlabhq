@@ -459,29 +459,19 @@ module Gitlab
 
         check_trigger_permissions!(table)
 
-        old_col = column_for(table, old)
-        new_type = type || old_col.type
-
-        add_column(table, new, new_type,
-                   limit: old_col.limit,
-                   precision: old_col.precision,
-                   scale: old_col.scale)
-
-        # We set the default value _after_ adding the column so we don't end up
-        # updating any existing data with the default value. This isn't
-        # necessary since we copy over old values further down.
-        change_column_default(table, new, old_col.default) unless old_col.default.nil?
+        create_column_from(table, old, new, type: type)
 
         install_rename_triggers(table, old, new)
-
-        update_column_in_batches(table, new, Arel::Table.new(table)[old])
-
-        change_column_null(table, new, false) unless old_col.null
-
-        copy_indexes(table, old, new)
-        copy_foreign_keys(table, old, new)
       end
 
+      # Reverses operations performed by rename_column_concurrently.
+      #
+      # This method takes care of removing previously installed triggers as well
+      # as removing the new column.
+      #
+      # table - The name of the database table.
+      # old - The name of the old column.
+      # new - The name of the new column.
       def undo_rename_column_concurrently(table, old, new)
         trigger_name = rename_trigger_name(table, old, new)
 
@@ -557,6 +547,18 @@ module Gitlab
         remove_column(table, old)
       end
 
+      # Reverses the operations performed by cleanup_concurrent_column_rename.
+      #
+      # This method adds back the old_column removed
+      # by cleanup_concurrent_column_rename.
+      # It also adds back the (old_column > new_column) trigger that is removed
+      # by cleanup_concurrent_column_rename.
+      #
+      # table - The name of the database table containing the column.
+      # old - The old column name.
+      # new - The new column name.
+      # type - The type of the old column. If no type is given the new column's
+      #        type is used.
       def undo_cleanup_concurrent_column_rename(table, old, new, type: nil)
         if transaction_open?
           raise 'undo_cleanup_concurrent_column_rename can not be run inside a transaction'
@@ -564,26 +566,9 @@ module Gitlab
 
         check_trigger_permissions!(table)
 
-        new_column = column_for(table, new)
-
-        add_column(table, old, type || new_column.type,
-                   limit: new_column.limit,
-                   precision: new_column.precision,
-                   scale: new_column.scale)
-
-        # We set the default value _after_ adding the column so we don't end up
-        # updating any existing data with the default value. This isn't
-        # necessary since we copy over old values further down.
-        change_column_default(table, old, new_column.default) unless new_column.default.nil?
+        create_column_from(table, new, old, type: type)
 
         install_rename_triggers(table, old, new)
-
-        update_column_in_batches(table, old, Arel::Table.new(table)[new])
-
-        change_column_null(table, old, false) unless new_column.null
-
-        copy_indexes(table, new, old)
-        copy_foreign_keys(table, new, old)
       end
 
       # Changes the column type of a table using a background migration.
@@ -1075,6 +1060,28 @@ into similar problems in the future (e.g. when new tables are created).
       end
 
       private
+
+      def create_column_from(table, old, new, type: nil)
+        old_col = column_for(table, old)
+        new_type = type || old_col.type
+
+        add_column(table, new, new_type,
+                   limit: old_col.limit,
+                   precision: old_col.precision,
+                   scale: old_col.scale)
+
+        # We set the default value _after_ adding the column so we don't end up
+        # updating any existing data with the default value. This isn't
+        # necessary since we copy over old values further down.
+        change_column_default(table, new, old_col.default) unless old_col.default.nil?
+
+        update_column_in_batches(table, new, Arel::Table.new(table)[old])
+
+        change_column_null(table, new, false) unless old_col.null
+
+        copy_indexes(table, old, new)
+        copy_foreign_keys(table, old, new)
+      end
 
       def validate_timestamp_column_name!(column_name)
         return if PERMITTED_TIMESTAMP_COLUMNS.member?(column_name)
