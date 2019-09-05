@@ -27,6 +27,7 @@
       %ul
         %li
           = _('The repository must be accessible over <code>http://</code>, <code>https://</code> or <code>git://</code>.').html_safe
+        %li= _('When using the <code>http://</code> or <code>https://</code> protocols, please provide the exact URL to the repository. HTTP redirects will not be followed.').html_safe
         %li
           = _('If your HTTP repository is not publicly accessible, add your credentials.')
         %li
