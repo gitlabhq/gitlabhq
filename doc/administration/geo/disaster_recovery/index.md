@@ -315,7 +315,7 @@ section to resolve the error. Otherwise, the secret is lost and you'll need to
 [geo-limitations]: ../replication/index.md#current-limitations
 [planned-failover]: planned_failover.md
 [setup-geo]: ../replication/index.md#setup-instructions
-[updating-geo]: ../replication/updating_the_geo_nodes.md#upgrading-to-gitlab-105
+[updating-geo]: ../replication/version_specific_updates.md#updating-to-gitlab-105
 [sec-tfa]: ../../../security/two_factor_authentication.md#disabling-2fa-for-everyone
 [gitlab-org/omnibus-gitlab#3058]: https://gitlab.com/gitlab-org/omnibus-gitlab/issues/3058
 [gitlab-org/gitlab-ee#4284]: https://gitlab.com/gitlab-org/gitlab-ee/issues/4284
