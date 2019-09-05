@@ -61,11 +61,9 @@ eslint-report.html
 /shared/artifacts/
 /rails_best_practices_output.html
 /tags
-/tmp/*
 /vendor/bundle/*
 /vendor/gitaly-ruby
 /builds*
-/shared/*
 /.gitlab_workhorse_secret
 /webpack-report/
 /knapsack/
@@ -73,7 +71,6 @@ eslint-report.html
 /locale/**/LC_MESSAGES
 /locale/**/*.time_stamp
 /.rspec
-/plugins/*
 /.gitlab_pages_secret
 /.gitlab_smime_key
 /.gitlab_smime_cert
