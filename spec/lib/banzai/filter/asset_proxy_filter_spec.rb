@@ -36,6 +36,17 @@ describe Banzai::Filter::AssetProxyFilter do
       expect(Gitlab.config.asset_proxy.whitelist).to eq %w(gitlab.com *.mydomain.com)
       expect(Gitlab.config.asset_proxy.domain_regexp).to eq /^(gitlab\.com|.*?\.mydomain\.com)$/i
     end
+
+    context 'when whitelist is empty' do
+      it 'defaults to the install domain' do
+        stub_application_setting(asset_proxy_enabled: true)
+        stub_application_setting(asset_proxy_whitelist: [])
+
+        described_class.initialize_settings
+
+        expect(Gitlab.config.asset_proxy.whitelist).to eq [Gitlab.config.gitlab.host]
+      end
+    end
   end
 
   context 'when properly configured' do

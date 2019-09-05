@@ -1,0 +1,5 @@
+---
+title: Default the asset proxy whitelist to the installation domain
+merge_request: 32703
+author:
+type: fixed
