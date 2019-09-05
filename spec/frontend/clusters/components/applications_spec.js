@@ -85,7 +85,44 @@ describe('Applications', () => {
     });
 
     it('renders a row for Jupyter', () => {
-      expect(vm.$el.querySelector('.js-cluster-application-row-jupyter')).toBeNull();
+      expect(vm.$el.querySelector('.js-cluster-application-row-jupyter')).not.toBeNull();
+    });
+
+    it('renders a row for Knative', () => {
+      expect(vm.$el.querySelector('.js-cluster-application-row-knative')).toBeNull();
+    });
+  });
+
+  describe('Instance cluster applications', () => {
+    beforeEach(() => {
+      vm = mountComponent(Applications, {
+        type: CLUSTER_TYPE.INSTANCE,
+        applications: APPLICATIONS_MOCK_STATE,
+      });
+    });
+
+    it('renders a row for Helm Tiller', () => {
+      expect(vm.$el.querySelector('.js-cluster-application-row-helm')).not.toBeNull();
+    });
+
+    it('renders a row for Ingress', () => {
+      expect(vm.$el.querySelector('.js-cluster-application-row-ingress')).not.toBeNull();
+    });
+
+    it('renders a row for Cert-Manager', () => {
+      expect(vm.$el.querySelector('.js-cluster-application-row-cert_manager')).not.toBeNull();
+    });
+
+    it('renders a row for Prometheus', () => {
+      expect(vm.$el.querySelector('.js-cluster-application-row-prometheus')).not.toBeNull();
+    });
+
+    it('renders a row for GitLab Runner', () => {
+      expect(vm.$el.querySelector('.js-cluster-application-row-runner')).not.toBeNull();
+    });
+
+    it('renders a row for Jupyter', () => {
+      expect(vm.$el.querySelector('.js-cluster-application-row-jupyter')).not.toBeNull();
     });
 
     it('renders a row for Knative', () => {

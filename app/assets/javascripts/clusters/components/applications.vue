@@ -397,7 +397,6 @@ export default {
         </div>
       </application-row>
       <application-row
-        v-if="isProjectCluster"
         id="jupyter"
         :logo-url="jupyterhubLogo"
         :title="applications.jupyter.title"
