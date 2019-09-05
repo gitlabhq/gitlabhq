@@ -15,7 +15,7 @@ By default, a protected branch does four simple things:
 
 - It prevents its creation, if not already created, from everybody except users
   with Maintainer permission.
-- It prevents pushes from everybody except users with Maintainer permission.
+- It prevents pushes from everybody except users with **Allowed** permission.
 - It prevents **anyone** from force pushing to the branch.
 - It prevents **anyone** from deleting the branch.
 
