@@ -1,0 +1,5 @@
+---
+title: Allow not resolvable urls when dns rebind protection is disabled
+merge_request: 32523
+author:
+type: fixed

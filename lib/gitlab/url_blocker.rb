@@ -49,7 +49,7 @@ module Gitlab
         hostname = uri.hostname
         port = get_port(uri)
 
-        address_info = get_address_info(hostname, port)
+        address_info = get_address_info(hostname, port, dns_rebind_protection)
         return [uri, nil] unless address_info
 
         ip_address = ip_address(address_info)
@@ -110,11 +110,15 @@ module Gitlab
         validate_unicode_restriction(uri) if ascii_only
       end
 
-      def get_address_info(hostname, port)
+      def get_address_info(hostname, port, dns_rebind_protection)
         Addrinfo.getaddrinfo(hostname, port, nil, :STREAM).map do |addr|
           addr.ipv6_v4mapped? ? addr.ipv6_to_ipv4 : addr
         end
       rescue SocketError
+        # If the dns rebinding protection is not enabled, we allow
+        # urls that can't be resolved at this point.
+        return unless dns_rebind_protection
+
         # In the test suite we use a lot of mocked urls that are either invalid or
         # don't exist. In order to avoid modifying a ton of tests and factories
         # we allow invalid urls unless the environment variable RSPEC_ALLOW_INVALID_URLS
