@@ -92,6 +92,15 @@ describe AddressableUrlValidator do
       expect(badge.errors).to be_empty
       expect(badge.link_url).to eq('https://127.0.0.1')
     end
+
+    it 'allows urls that cannot be resolved' do
+      stub_env('RSPEC_ALLOW_INVALID_URLS', 'false')
+      badge.link_url = 'http://foobar.x'
+
+      subject
+
+      expect(badge.errors).to be_empty
+    end
   end
 
   context 'when message is set' do
@@ -308,6 +317,34 @@ describe AddressableUrlValidator do
 
         subject
 
+        expect(badge.errors).to be_empty
+      end
+    end
+  end
+
+  context 'when dns_rebind_protection is' do
+    let(:not_resolvable_url) { 'http://foobar.x' }
+    let(:validator) { described_class.new(attributes: [:link_url], dns_rebind_protection: dns_value) }
+
+    before do
+      stub_env('RSPEC_ALLOW_INVALID_URLS', 'false')
+      badge.link_url = not_resolvable_url
+
+      subject
+    end
+
+    context 'true' do
+      let(:dns_value) { true }
+
+      it 'raises error' do
+        expect(badge.errors).to be_present
+      end
+    end
+
+    context 'false' do
+      let(:dns_value) { false }
+
+      it 'allows urls that cannot be resolved' do
         expect(badge.errors).to be_empty
       end
     end

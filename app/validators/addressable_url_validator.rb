@@ -42,6 +42,11 @@
 class AddressableUrlValidator < ActiveModel::EachValidator
   attr_reader :record
 
+  # By default, we avoid checking the dns rebinding protection
+  # when saving/updating a record. Sometimes, the url
+  # is not resolvable at that point, and some automated
+  # tasks that uses that url won't work.
+  # See https://gitlab.com/gitlab-org/gitlab-ce/issues/66723
   BLOCKER_VALIDATE_OPTIONS = {
     schemes: %w(http https),
     ports: [],
@@ -49,7 +54,8 @@ class AddressableUrlValidator < ActiveModel::EachValidator
     allow_local_network: true,
     ascii_only: false,
     enforce_user: false,
-    enforce_sanitization: false
+    enforce_sanitization: false,
+    dns_rebind_protection: false
   }.freeze
 
   DEFAULT_OPTIONS = BLOCKER_VALIDATE_OPTIONS.merge({
