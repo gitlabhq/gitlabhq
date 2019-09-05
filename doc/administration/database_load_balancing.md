@@ -212,28 +212,25 @@ without it immediately leading to errors being presented to the users.
 
 ## Logging
 
-The load balancer logs various messages, such as:
+The load balancer logs various events in
+[`database_load_balancing.log`](logs.md#database_load_balancinglog-premium-only), such as
 
 - When a host is marked as offline
 - When a host comes back online
 - When all secondaries are offline
+- When a read is retried on a different host due to a query conflict
 
-Each log message contains the tag `[DB-LB]` to make searching/filtering of such
-log entries easier. For example:
+The log is structured with each entry a JSON object containing at least:
 
-```
-[DB-LB] Host 10.123.2.5 came back online
-[DB-LB] Marking host 10.123.2.7 as offline
-[DB-LB] Marking host 10.123.2.7 as offline
-[DB-LB] Marking host 10.123.2.7 as offline
-[DB-LB] Marking host 10.123.2.7 as offline
-[DB-LB] Marking host 10.123.2.7 as offline
-[DB-LB] Host 10.123.2.6 came back online
-[DB-LB] Marking host 10.123.2.7 as offline
-[DB-LB] Marking host 10.123.2.7 as offline
-[DB-LB] Marking host 10.123.2.7 as offline
-[DB-LB] Host 10.123.2.7 came back online
-[DB-LB] Host 10.123.2.7 came back online
+- An `event` field useful for filtering.
+- A human-readable `message` field.
+- Some event-specific metadata. For example, `db_host`
+- Contextual information that is always logged. For example, `severity` and `time`.
+
+For example:
+
+```json
+{"severity":"INFO","time":"2019-09-02T12:12:01.728Z","correlation_id":"abcdefg","event":"host_online","message":"Host came back online","db_host":"111.222.333.444","db_port":null,"tag":"rails.database_load_balancing","environment":"production","hostname":"web-example-1","fqdn":"gitlab.example.com","path":null,"params":null}
 ```
 
 ## Handling Stale Reads
