@@ -294,6 +294,7 @@ class ProjectPolicy < BasePolicy
     enable :destroy_release
     enable :destroy_artifacts
     enable :daily_statistics
+    enable :admin_operations
   end
 
   rule { (mirror_available & can?(:admin_project)) | admin }.enable :admin_remote_mirror

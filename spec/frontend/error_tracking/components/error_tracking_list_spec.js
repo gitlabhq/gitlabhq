@@ -11,19 +11,24 @@ describe('ErrorTrackingList', () => {
   let wrapper;
   let actions;
 
-  function mountComponent({ errorTrackingEnabled = true } = {}) {
+  function mountComponent({
+    errorTrackingEnabled = true,
+    userCanEnableErrorTracking = true,
+    stubs = {
+      'gl-link': GlLink,
+    },
+  } = {}) {
     wrapper = shallowMount(ErrorTrackingList, {
       localVue,
       store,
       propsData: {
         indexPath: '/path',
         enableErrorTrackingLink: '/link',
+        userCanEnableErrorTracking,
         errorTrackingEnabled,
         illustrationPath: 'illustration/path',
       },
-      stubs: {
-        'gl-link': GlLink,
-      },
+      stubs,
     });
   }
 
@@ -113,6 +118,25 @@ describe('ErrorTrackingList', () => {
       expect(wrapper.find(GlLoadingIcon).exists()).toBeFalsy();
       expect(wrapper.find(GlTable).exists()).toBeFalsy();
       expect(wrapper.find(GlButton).exists()).toBeFalsy();
+    });
+  });
+
+  describe('When error tracking is disabled and user is not allowed to enable it', () => {
+    beforeEach(() => {
+      mountComponent({
+        errorTrackingEnabled: false,
+        userCanEnableErrorTracking: false,
+        stubs: {
+          'gl-link': GlLink,
+          'gl-empty-state': GlEmptyState,
+        },
+      });
+    });
+
+    it('shows empty state', () => {
+      expect(wrapper.find('a').attributes('href')).toBe(
+        '/help/user/project/operations/error_tracking.html',
+      );
     });
   });
 });

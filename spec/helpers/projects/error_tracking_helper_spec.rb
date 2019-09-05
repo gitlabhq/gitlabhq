@@ -6,21 +6,31 @@ describe Projects::ErrorTrackingHelper do
   include Gitlab::Routing.url_helpers
 
   set(:project) { create(:project) }
+  set(:current_user) { create(:user) }
 
   describe '#error_tracking_data' do
+    let(:can_enable_error_tracking) { true }
     let(:setting_path) { project_settings_operations_path(project) }
 
     let(:index_path) do
       project_error_tracking_index_path(project, format: :json)
     end
 
+    before do
+      allow(helper)
+        .to receive(:can?)
+        .with(current_user, :admin_operations, project)
+        .and_return(can_enable_error_tracking)
+    end
+
     context 'without error_tracking_setting' do
       it 'returns frontend configuration' do
-        expect(error_tracking_data(project)).to eq(
+        expect(helper.error_tracking_data(current_user, project)).to match(
           'index-path' => index_path,
+          'user-can-enable-error-tracking' => 'true',
           'enable-error-tracking-link' => setting_path,
           'error-tracking-enabled' => 'false',
-          "illustration-path" => "/images/illustrations/cluster_popover.svg"
+          'illustration-path' => match_asset_path('/assets/illustrations/cluster_popover.svg')
         )
       end
     end
@@ -36,7 +46,7 @@ describe Projects::ErrorTrackingHelper do
         end
 
         it 'show error tracking enabled' do
-          expect(error_tracking_data(project)).to include(
+          expect(helper.error_tracking_data(current_user, project)).to include(
             'error-tracking-enabled' => 'true'
           )
         end
@@ -48,10 +58,20 @@ describe Projects::ErrorTrackingHelper do
         end
 
         it 'show error tracking not enabled' do
-          expect(error_tracking_data(project)).to include(
+          expect(helper.error_tracking_data(current_user, project)).to include(
             'error-tracking-enabled' => 'false'
           )
         end
+      end
+    end
+
+    context 'when user is not maintainer' do
+      let(:can_enable_error_tracking) { false }
+
+      it 'shows error tracking enablement as disabled' do
+        expect(helper.error_tracking_data(current_user, project)).to include(
+          'user-can-enable-error-tracking' => 'false'
+        )
       end
     end
   end
