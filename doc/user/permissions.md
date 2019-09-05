@@ -37,6 +37,8 @@ usernames. A GitLab administrator can configure the GitLab instance to
 NOTE: **Note:**
 In GitLab 11.0, the Master role was renamed to Maintainer.
 
+While Maintainer is the highest project-level role, some actions can only be performed by a personal namespace or group owner.
+
 The following table depicts the various user permission levels in a project.
 
 | Action                                            | Guest   | Reporter   | Developer   |Maintainer| Owner  |
@@ -74,7 +76,7 @@ The following table depicts the various user permission levels in a project.
 | View project statistics                           |         | ✓          | ✓           | ✓        | ✓      |
 | View Error Tracking list                          |         | ✓          | ✓           | ✓        | ✓      |
 | Pull from [Maven repository](project/packages/maven_repository.md) or [NPM registry](project/packages/npm_registry.md) **(PREMIUM)** |         | ✓          | ✓           | ✓        | ✓      |
-| Publish to [Maven repository](project/packages/maven_repository.md) or [NPM registry](project/packages/npm_registry.md) **(PREMIUM)** |         |            | ✓           | ✓        | ✓      ||
+| Publish to [Maven repository](project/packages/maven_repository.md) or [NPM registry](project/packages/npm_registry.md) **(PREMIUM)** |         |            | ✓           | ✓        | ✓      |
 | Upload [Design Management](project/issues/design_management.md) files **(PREMIUM)** |         |            | ✓           | ✓        | ✓      |
 | Create new branches                               |         |            | ✓           | ✓        | ✓      |
 | Push to non-protected branches                    |         |            | ✓           | ✓        | ✓      |
