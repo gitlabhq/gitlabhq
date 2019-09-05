@@ -18,7 +18,10 @@ module Gitlab
       def save
         mkdir_p(@shared.export_path)
 
-        File.write(full_path, project_json_tree)
+        project_tree = serialize_project_tree
+        fix_project_tree(project_tree)
+        File.write(full_path, project_tree.to_json)
+
         true
       rescue => e
         @shared.error(e)
@@ -27,27 +30,25 @@ module Gitlab
 
       private
 
-      def project_json_tree
+      def fix_project_tree(project_tree)
         if @params[:description].present?
-          project_json['description'] = @params[:description]
+          project_tree['description'] = @params[:description]
         end
 
-        project_json['project_members'] += group_members_json
+        project_tree['project_members'] += group_members_array
 
-        RelationRenameService.add_new_associations(project_json)
-
-        project_json.to_json
+        RelationRenameService.add_new_associations(project_tree)
       end
 
-      def project_json
-        @project_json ||= @project.as_json(reader.project_tree)
+      def serialize_project_tree
+        @project.as_json(reader.project_tree)
       end
 
       def reader
         @reader ||= Gitlab::ImportExport::Reader.new(shared: @shared)
       end
 
-      def group_members_json
+      def group_members_array
         group_members.as_json(reader.group_members_tree).each do |group_member|
           group_member['source_type'] = 'Project' # Make group members project members of the future import
         end

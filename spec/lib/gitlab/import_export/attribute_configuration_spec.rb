@@ -12,7 +12,7 @@ describe 'Import/Export attribute configuration' do
 
   let(:config_hash) { Gitlab::ImportExport::Config.new.to_h.deep_stringify_keys }
   let(:relation_names) do
-    names = names_from_tree(config_hash['project_tree'])
+    names = names_from_tree(config_hash.dig('tree', 'project'))
 
     # Remove duplicated or add missing models
     # - project is not part of the tree, so it has to be added manually.

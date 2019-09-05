@@ -12,7 +12,7 @@ describe Gitlab::ImportExport::RelationRenameService do
 
   let(:user) { create(:admin) }
   let(:group) { create(:group, :nested) }
-  let!(:project) { create(:project, :builds_disabled, :issues_disabled, name: 'project', path: 'project') }
+  let!(:project) { create(:project, :builds_disabled, :issues_disabled, group: group, name: 'project', path: 'project') }
   let(:shared) { project.import_export_shared }
 
   before do
@@ -24,7 +24,6 @@ describe Gitlab::ImportExport::RelationRenameService do
     let(:import_path) { 'spec/lib/gitlab/import_export' }
     let(:file_content) { IO.read("#{import_path}/project.json") }
     let!(:json_file) { ActiveSupport::JSON.decode(file_content) }
-    let(:tree_hash) { project_tree_restorer.instance_variable_get(:@tree_hash) }
 
     before do
       allow(shared).to receive(:export_path).and_return(import_path)
@@ -92,21 +91,25 @@ describe Gitlab::ImportExport::RelationRenameService do
   end
 
   context 'when exporting' do
-    let(:project_tree_saver) { Gitlab::ImportExport::ProjectTreeSaver.new(project: project, current_user: user, shared: shared) }
-    let(:project_tree) { project_tree_saver.send(:project_json) }
+    let(:export_content_path) { project_tree_saver.full_path }
+    let(:export_content_hash) { ActiveSupport::JSON.decode(File.read(export_content_path)) }
+    let(:injected_hash) { renames.values.product([{}]).to_h }
+
+    let(:project_tree_saver) do
+      Gitlab::ImportExport::ProjectTreeSaver.new(
+        project: project, current_user: user, shared: shared)
+    end
 
     it 'adds old relationships to the exported file' do
-      project_tree.merge!(renames.values.map { |new_name| [new_name, []] }.to_h)
-
-      allow(project_tree_saver).to receive(:save) do |arg|
-        project_tree_saver.send(:project_json_tree)
+      # we inject relations with new names that should be rewritten
+      expect(project_tree_saver).to receive(:serialize_project_tree).and_wrap_original do |method, *args|
+        method.call(*args).merge(injected_hash)
       end
 
-      result = project_tree_saver.save
+      expect(project_tree_saver.save).to eq(true)
 
-      saved_data = ActiveSupport::JSON.decode(result)
-
-      expect(saved_data.keys).to include(*(renames.keys + renames.values))
+      expect(export_content_hash.keys).to include(*renames.keys)
+      expect(export_content_hash.keys).to include(*renames.values)
     end
   end
 end
