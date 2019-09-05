@@ -204,17 +204,17 @@ describe Gitlab::Metrics::Transaction do
     end
 
     it 'allows tracking of custom tags' do
-      transaction.add_event(:meow, animal: 'cat')
+      transaction.add_event(:bau, animal: 'dog')
 
-      expect(metric.tags).to eq(event: :meow, animal: 'cat')
+      expect(metric.tags).to eq(event: :bau, animal: 'dog')
     end
 
     context 'with sensitive tags' do
       before do
-        transaction.add_event(:meow, **sensitive_tags.merge(sane: 'yes'))
+        transaction.add_event(:baubau, **sensitive_tags.merge(sane: 'yes'))
       end
 
-      it_behaves_like 'tag filter', event: :meow, sane: 'yes'
+      it_behaves_like 'tag filter', event: :baubau, sane: 'yes'
     end
   end
 

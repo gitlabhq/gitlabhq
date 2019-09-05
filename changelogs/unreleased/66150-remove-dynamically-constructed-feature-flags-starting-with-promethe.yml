@@ -1,0 +1,5 @@
+---
+title: Remove dynamically constructed feature flags starting with prometheus_transaction_
+merge_request: 32395
+author: Jacopo Beschi @jacopo-beschi
+type: changed
