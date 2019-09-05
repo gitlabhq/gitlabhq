@@ -50,6 +50,32 @@ module Gitlab
           end
         end
 
+        describe 'interruptible entry' do
+          describe 'interruptible job' do
+            let(:config) do
+              YAML.dump(rspec: { script: 'rspec', interruptible: true })
+            end
+
+            it { expect(subject[:interruptible]).to be_truthy }
+          end
+
+          describe 'interruptible job with default value' do
+            let(:config) do
+              YAML.dump(rspec: { script: 'rspec' })
+            end
+
+            it { expect(subject).not_to have_key(:interruptible) }
+          end
+
+          describe 'uninterruptible job' do
+            let(:config) do
+              YAML.dump(rspec: { script: 'rspec', interruptible: false })
+            end
+
+            it { expect(subject[:interruptible]).to be_falsy }
+          end
+        end
+
         describe 'retry entry' do
           context 'when retry count is specified' do
             let(:config) do

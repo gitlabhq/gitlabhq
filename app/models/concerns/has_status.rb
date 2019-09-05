@@ -102,6 +102,7 @@ module HasStatus
     scope :manual, -> { with_status(:manual) }
     scope :scheduled, -> { with_status(:scheduled) }
     scope :alive, -> { with_status(:created, :preparing, :pending, :running) }
+    scope :alive_or_scheduled, -> { with_status(:created, :preparing, :pending, :running, :scheduled) }
     scope :created_or_pending, -> { with_status(:created, :pending) }
     scope :running_or_pending, -> { with_status(:running, :pending) }
     scope :finished, -> { with_status(:success, :failed, :canceled) }

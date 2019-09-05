@@ -91,11 +91,21 @@ module Ci
 
     # rubocop: disable CodeReuse/ActiveRecord
     def auto_cancelable_pipelines
-      project.ci_pipelines
-        .where(ref: pipeline.ref)
-        .where.not(id: pipeline.id)
-        .where.not(sha: project.commit(pipeline.ref).try(:id))
-        .created_or_pending
+      # TODO: Introduced by https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/23464
+      if Feature.enabled?(:ci_support_interruptible_pipelines, project, default_enabled: true)
+        project.ci_pipelines
+          .where(ref: pipeline.ref)
+          .where.not(id: pipeline.id)
+          .where.not(sha: project.commit(pipeline.ref).try(:id))
+          .alive_or_scheduled
+          .without_interruptible_builds
+      else
+        project.ci_pipelines
+          .where(ref: pipeline.ref)
+          .where.not(id: pipeline.id)
+          .where.not(sha: project.commit(pipeline.ref).try(:id))
+          .created_or_pending
+      end
     end
     # rubocop: enable CodeReuse/ActiveRecord
 

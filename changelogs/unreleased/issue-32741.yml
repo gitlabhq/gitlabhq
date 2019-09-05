@@ -1,0 +1,5 @@
+---
+title: New interruptible attribute for CI/CD jobs
+merge_request: 23464
+author: Cédric Tabin
+type: added
