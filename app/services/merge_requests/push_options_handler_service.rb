@@ -100,7 +100,8 @@ module MergeRequests
         merge_request = ::MergeRequests::CreateService.new(
           project,
           current_user,
-          merge_request.attributes.merge(assignees: merge_request.assignees)
+          merge_request.attributes.merge(assignees: merge_request.assignees,
+                                        label_ids: merge_request.label_ids)
         ).execute
       end
 
@@ -122,7 +123,9 @@ module MergeRequests
         title: push_options[:title],
         description: push_options[:description],
         target_branch: push_options[:target],
-        force_remove_source_branch: push_options[:remove_source_branch]
+        force_remove_source_branch: push_options[:remove_source_branch],
+        label: push_options[:label],
+        unlabel: push_options[:unlabel]
       }
 
       params.compact!
@@ -133,6 +136,9 @@ module MergeRequests
           merge_user: current_user
         )
       end
+
+      params[:add_labels] = params.delete(:label).keys if params.has_key?(:label)
+      params[:remove_labels] = params.delete(:unlabel).keys if params.has_key?(:unlabel)
 
       params
     end

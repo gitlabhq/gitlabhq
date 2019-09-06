@@ -9,8 +9,8 @@ module Labels
       @params = params
     end
 
-    def find_or_create_by_titles
-      labels = params.delete(:labels)
+    def find_or_create_by_titles(key = :labels, find_only: false)
+      labels = params.delete(key)
 
       return [] unless labels
 
@@ -23,7 +23,7 @@ module Labels
           include_ancestor_groups: true,
           title: label_name.strip,
           available_labels: available_labels
-        ).execute
+        ).execute(find_only: find_only)
 
         label
       end.compact

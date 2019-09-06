@@ -7,16 +7,23 @@ module Gitlab
         keys: [
           :create,
           :description,
+          :label,
           :merge_when_pipeline_succeeds,
           :remove_source_branch,
           :target,
-          :title
+          :title,
+          :unlabel
         ]
       },
       ci: {
         keys: [:skip]
       }
     }).freeze
+
+    MULTI_VALUE_OPTIONS = [
+      %w[merge_request label],
+      %w[merge_request unlabel]
+    ].freeze
 
     NAMESPACE_ALIASES = HashWithIndifferentAccess.new({
       mr: :merge_request
@@ -50,10 +57,20 @@ module Gitlab
         next if [namespace, key].any?(&:nil?)
 
         options[namespace] ||= HashWithIndifferentAccess.new
-        options[namespace][key] = value
+
+        if option_multi_value?(namespace, key)
+          options[namespace][key] ||= HashWithIndifferentAccess.new(0)
+          options[namespace][key][value] += 1
+        else
+          options[namespace][key] = value
+        end
       end
 
       options
+    end
+
+    def option_multi_value?(namespace, key)
+      MULTI_VALUE_OPTIONS.any? { |arr| arr == [namespace, key] }
     end
 
     def parse_option(option)
