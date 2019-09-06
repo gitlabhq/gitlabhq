@@ -191,6 +191,51 @@ end
   policies at once. The fields for these will all have be non-nullable
   booleans with a default description.
 
+## Enums
+
+GitLab GraphQL enums are defined in `app/graphql/types`. When defining new enums, the
+following rules apply:
+
+- Values must be uppercase.
+- Class names must end with the string `Enum`.
+- The `graphql_name` must not contain the string `Enum`.
+
+For example:
+
+```ruby
+module Types
+  class TrafficLightStateEnum < BaseEnum
+    graphql_name 'TrafficLightState'
+    description 'State of a traffic light'
+
+    value 'RED', description: 'Drivers must stop'
+    value 'YELLOW', description: 'Drivers must stop when it is safe to'
+    value 'GREEN', description: 'Drivers can start or keep driving'
+  end
+end
+```
+
+If the enum will be used for a class property in Ruby that is not an uppercase string,
+you can provide a `value:` option that will adapt the uppercase value.
+
+In the following example:
+
+- GraphQL inputs of `OPENED` will be converted to `'opened'`.
+- Ruby values of `'opened'` will be converted to `"OPENED"` in GraphQL responses.
+
+```ruby
+module Types
+  class EpicStateEnum < BaseEnum
+    graphql_name 'EpicState'
+    description 'State of a GitLab epic'
+
+    value 'OPENED', value: 'opened', description: 'An open Epic'
+    value 'CLOSED', value: 'closed', description: 'An closed Epic'
+  end
+end
+
+```
+
 ## Authorization
 
 Authorizations can be applied to both types and fields using the same
