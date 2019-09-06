@@ -107,7 +107,7 @@ module Gitlab
 
       def project_params
         @project_params ||= begin
-          attrs = json_params.merge(override_params).merge(visibility_level)
+          attrs = json_params.merge(override_params).merge(visibility_level, external_label)
 
           # Cleaning all imported and overridden params
           Gitlab::ImportExport::AttributeCleaner.clean(relation_hash: attrs,
@@ -133,6 +133,13 @@ module Gitlab
         level = Gitlab::VisibilityLevel::PRIVATE if level == Gitlab::VisibilityLevel::INTERNAL && Gitlab::CurrentSettings.restricted_visibility_levels.include?(level)
 
         { 'visibility_level' => level }
+      end
+
+      def external_label
+        label = override_params['external_authorization_classification_label'].presence ||
+          json_params['external_authorization_classification_label'].presence
+
+        { 'external_authorization_classification_label' => label }
       end
 
       # Given a relation hash containing one or more models and its relationships,
