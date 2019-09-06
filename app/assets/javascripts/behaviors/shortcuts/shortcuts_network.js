@@ -11,7 +11,5 @@ export default class ShortcutsNetwork extends ShortcutsNavigation {
     Mousetrap.bind(['down', 'j'], graph.scrollDown);
     Mousetrap.bind(['shift+up', 'shift+k'], graph.scrollTop);
     Mousetrap.bind(['shift+down', 'shift+j'], graph.scrollBottom);
-
-    this.enabledHelp.push('.hidden-shortcut.network');
   }
 }

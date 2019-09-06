@@ -6,8 +6,6 @@ export default class ShortcutsWiki extends ShortcutsNavigation {
   constructor() {
     super();
     Mousetrap.bind('e', ShortcutsWiki.editWiki);
-
-    this.enabledHelp.push('.hidden-shortcut.wiki');
   }
 
   static editWiki() {
