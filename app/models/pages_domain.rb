@@ -185,6 +185,10 @@ class PagesDomain < ApplicationRecord
     self.certificate_source = 'gitlab_provided' if key_changed?
   end
 
+  def pages_virtual_domain
+    Pages::VirtualDomain.new([project], domain: self)
+  end
+
   private
 
   def set_verification_code

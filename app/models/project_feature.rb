@@ -129,6 +129,10 @@ class ProjectFeature < ApplicationRecord
     pages_access_level == PUBLIC || pages_access_level == ENABLED && project.public?
   end
 
+  def private_pages?
+    !public_pages?
+  end
+
   private
 
   # Validates builds and merge requests access level

@@ -1,0 +1,16 @@
+{
+  "type": "object",
+  "required": [
+    "lookup_paths"
+  ],
+  "optional": [
+    "certificate",
+    "key"
+  ],
+  "properties": {
+    "certificate": { "type": ["string", "null"] },
+    "key": { "type": ["string", "null"] },
+    "lookup_paths": { "type": "array", "items": { "$ref": "lookup_path.json" } }
+  },
+  "additionalProperties": false
+}

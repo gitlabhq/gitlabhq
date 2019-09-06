@@ -18,7 +18,12 @@ module API
       namespace 'internal' do
         namespace 'pages' do
           get "/" do
-            status :ok
+            host = PagesDomain.find_by_domain(params[:host])
+            not_found! unless host
+
+            virtual_domain = host.pages_virtual_domain
+
+            present virtual_domain, with: Entities::Internal::Pages::VirtualDomain
           end
         end
       end
