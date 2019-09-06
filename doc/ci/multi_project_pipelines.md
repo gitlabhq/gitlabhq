@@ -178,6 +178,8 @@ the ones defined in the upstream project will take precedence.
 
 ### Mirroring status from triggered pipeline
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/11238) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.3.
+
 You can mirror the pipeline status from the triggered pipeline to the source
 bridge job by using `strategy: depend`. For example:
 
