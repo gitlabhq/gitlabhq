@@ -512,6 +512,24 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
         expect(Milestone.find_by_title('Group-level milestone').iid).to eq(2)
       end
     end
+
+    context 'with external authorization classification labels' do
+      it 'converts empty external classification authorization labels to nil' do
+        project.create_import_data(data: { override_params: { external_authorization_classification_label: "" } })
+
+        restored_project_json
+
+        expect(project.external_authorization_classification_label).to be_nil
+      end
+
+      it 'preserves valid external classification authorization labels' do
+        project.create_import_data(data: { override_params: { external_authorization_classification_label: "foobar" } })
+
+        restored_project_json
+
+        expect(project.external_authorization_classification_label).to eq("foobar")
+      end
+    end
   end
 
   describe '#restored_project' do

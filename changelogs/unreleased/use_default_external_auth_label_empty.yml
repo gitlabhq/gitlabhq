@@ -1,0 +1,6 @@
+---
+title: Prevent empty external authorization classification labels from overriding
+  the default label
+merge_request: 32517
+author: Will Chandler
+type: fixed
