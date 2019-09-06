@@ -18,7 +18,8 @@ module Ci
                 Gitlab::Ci::Pipeline::Chain::Limit::Activity,
                 Gitlab::Ci::Pipeline::Chain::Limit::JobActivity].freeze
 
-    def execute(source, ignore_skip_ci: false, save_on_errors: true, trigger_request: nil, schedule: nil, merge_request: nil, **options, &block)
+    # rubocop: disable Metrics/ParameterLists
+    def execute(source, ignore_skip_ci: false, save_on_errors: true, trigger_request: nil, schedule: nil, merge_request: nil, external_pull_request: nil, **options, &block)
       @pipeline = Ci::Pipeline.new
 
       command = Gitlab::Ci::Pipeline::Chain::Command.new(
@@ -32,6 +33,7 @@ module Ci
         trigger_request: trigger_request,
         schedule: schedule,
         merge_request: merge_request,
+        external_pull_request: external_pull_request,
         ignore_skip_ci: ignore_skip_ci,
         save_incompleted: save_on_errors,
         seeds_block: block,
@@ -62,6 +64,7 @@ module Ci
 
       pipeline
     end
+    # rubocop: enable Metrics/ParameterLists
 
     def execute!(*args, &block)
       execute(*args, &block).tap do |pipeline|

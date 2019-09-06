@@ -160,6 +160,7 @@
 - repository_import
 - repository_remove_remote
 - system_hook_push
+- update_external_pull_requests
 - update_merge_requests
 - update_project_statistics
 - upload_checksum

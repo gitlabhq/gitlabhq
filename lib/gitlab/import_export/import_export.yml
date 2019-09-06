@@ -64,6 +64,8 @@ project_tree:
         - :push_event_payload
     - stages:
       - :statuses
+    - :external_pull_request
+  - :external_pull_requests
   - :auto_devops
   - :triggers
   - :pipeline_schedules

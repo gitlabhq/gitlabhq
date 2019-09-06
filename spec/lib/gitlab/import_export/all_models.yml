@@ -127,6 +127,8 @@ merge_requests:
 - blocks_as_blockee
 - blocking_merge_requests
 - blocked_merge_requests
+external_pull_requests:
+- project
 merge_request_diff:
 - merge_request
 - merge_request_diff_commits
@@ -156,6 +158,7 @@ ci_pipelines:
 - pipeline_schedule
 - merge_requests_as_head_pipeline
 - merge_request
+- external_pull_request
 - deployments
 - environments
 - chat_data
@@ -403,6 +406,7 @@ project:
 - merge_trains
 - designs
 - project_aliases
+- external_pull_requests
 award_emoji:
 - awardable
 - user

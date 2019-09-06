@@ -128,4 +128,38 @@ describe Gitlab::Ci::Pipeline::Chain::Build do
       expect(pipeline.target_sha).to eq(merge_request.target_branch_sha)
     end
   end
+
+  context 'when pipeline is running for an external pull request' do
+    let(:command) do
+      Gitlab::Ci::Pipeline::Chain::Command.new(
+        source: :external_pull_request_event,
+        origin_ref: 'feature',
+        checkout_sha: project.commit.id,
+        after_sha: nil,
+        before_sha: nil,
+        source_sha: external_pull_request.source_sha,
+        target_sha: external_pull_request.target_sha,
+        trigger_request: nil,
+        schedule: nil,
+        external_pull_request: external_pull_request,
+        project: project,
+        current_user: user)
+    end
+
+    let(:external_pull_request) { build(:external_pull_request, project: project) }
+
+    before do
+      step.perform!
+    end
+
+    it 'correctly indicated that this is an external pull request pipeline' do
+      expect(pipeline).to be_external_pull_request_event
+      expect(pipeline.external_pull_request).to eq(external_pull_request)
+    end
+
+    it 'correctly sets source sha and target sha to pipeline' do
+      expect(pipeline.source_sha).to eq(external_pull_request.source_sha)
+      expect(pipeline.target_sha).to eq(external_pull_request.target_sha)
+    end
+  end
 end

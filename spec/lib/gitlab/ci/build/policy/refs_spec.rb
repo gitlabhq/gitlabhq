@@ -84,6 +84,20 @@ describe Gitlab::Ci::Build::Policy::Refs do
             .not_to be_satisfied_by(pipeline)
         end
       end
+
+      context 'when source is external_pull_request_event' do
+        let(:pipeline) { build_stubbed(:ci_pipeline, source: :external_pull_request_event) }
+
+        it 'is satisfied with only: external_pull_request' do
+          expect(described_class.new(%w[external_pull_requests]))
+            .to be_satisfied_by(pipeline)
+        end
+
+        it 'is not satisfied with only: external_pull_request_event' do
+          expect(described_class.new(%w[external_pull_request_events]))
+            .not_to be_satisfied_by(pipeline)
+        end
+      end
     end
 
     context 'when matching a ref by a regular expression' do
