@@ -1,8 +1,4 @@
 export default () => ({
-  serviceCredentials: {
-    accessKeyId: '',
-    secretAccessKey: '',
-  },
   isValidatingCredentials: false,
   validCredentials: false,
 
