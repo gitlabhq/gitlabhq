@@ -16,11 +16,13 @@ if files_to_fix.any?
   warn 'This merge request adds files that do not enforce frozen string literal. ' \
     'See https://gitlab.com/gitlab-org/gitlab-ce/issues/47424 for more information.'
 
-  markdown(<<~MARKDOWN)
-    ## Enable Frozen String Literal
+  if GitlabDanger.new(helper.gitlab_helper).ci?
+    markdown(<<~MARKDOWN)
+      ## Enable Frozen String Literal
 
-    The following files should have `#{MAGIC_COMMENT}` on the first line:
+      The following files should have `#{MAGIC_COMMENT}` on the first line:
 
-    * #{files_to_fix.map { |path| "`#{path}`" }.join("\n* ")}
-  MARKDOWN
+      * #{files_to_fix.map { |path| "`#{path}`" }.join("\n* ")}
+    MARKDOWN
+  end
 end

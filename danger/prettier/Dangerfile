@@ -19,21 +19,23 @@ return if unpretty.empty?
 
 warn 'This merge request changed frontend files without pretty printing them.'
 
-markdown(<<~MARKDOWN)
-  ## Pretty print Frontend files
+if GitlabDanger.new(helper.gitlab_helper).ci?
+  markdown(<<~MARKDOWN)
+    ## Pretty print Frontend files
 
-  The following files should have been pretty printed with `prettier`:
+    The following files should have been pretty printed with `prettier`:
 
-  * #{unpretty.map { |path| "`#{path}`" }.join("\n* ")}
+    * #{unpretty.map { |path| "`#{path}`" }.join("\n* ")}
 
-  Please run
+    Please run
 
-  ```
-  node_modules/.bin/prettier --write \\
-  #{unpretty.map { |path| "  '#{path}'" }.join(" \\\n")}
-  ```
+    ```
+    node_modules/.bin/prettier --write \\
+    #{unpretty.map { |path| "  '#{path}'" }.join(" \\\n")}
+    ```
 
-  Also consider auto-formatting [on-save].
+    Also consider auto-formatting [on-save].
 
-  [on-save]: https://docs.gitlab.com/ee/development/new_fe_guide/style/prettier.html
-MARKDOWN
+    [on-save]: https://docs.gitlab.com/ee/development/new_fe_guide/style/prettier.html
+  MARKDOWN
+end
