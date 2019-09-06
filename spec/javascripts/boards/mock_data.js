@@ -12,6 +12,7 @@ export const listObj = {
   position: 0,
   title: 'Test',
   list_type: 'label',
+  weight: 3,
   label: {
     id: 5000,
     title: 'Testing',
@@ -26,6 +27,7 @@ export const listObjDuplicate = {
   position: 1,
   title: 'Test',
   list_type: 'label',
+  weight: 3,
   label: {
     id: listObj.label.id,
     title: 'Testing',

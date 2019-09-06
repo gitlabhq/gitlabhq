@@ -171,6 +171,32 @@ describe('Issue boards new issue form', () => {
         .then(done)
         .catch(done.fail);
     });
+
+    it('sets detail weight after submit', done => {
+      boardsStore.weightFeatureAvailable = true;
+      vm.title = 'submit issue';
+
+      Vue.nextTick()
+        .then(submitIssue)
+        .then(() => {
+          expect(boardsStore.detail.list.weight).toBe(list.weight);
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+
+    it('does not set detail weight after submit', done => {
+      boardsStore.weightFeatureAvailable = false;
+      vm.title = 'submit issue';
+
+      Vue.nextTick()
+        .then(submitIssue)
+        .then(() => {
+          expect(boardsStore.detail.list.weight).toBe(list.weight);
+        })
+        .then(done)
+        .catch(done.fail);
+    });
   });
 
   describe('submit error', () => {

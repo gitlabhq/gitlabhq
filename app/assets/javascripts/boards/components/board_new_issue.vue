@@ -2,9 +2,9 @@
 import $ from 'jquery';
 import { GlButton } from '@gitlab/ui';
 import { getMilestone } from 'ee_else_ce/boards/boards_util';
+import ListIssue from 'ee_else_ce/boards/models/issue';
 import eventHub from '../eventhub';
 import ProjectSelect from './project_select.vue';
-import ListIssue from '../models/issue';
 import boardsStore from '../stores/boards_store';
 
 export default {
@@ -54,6 +54,9 @@ export default {
       const assignees = this.list.assignee ? [this.list.assignee] : [];
       const milestone = getMilestone(this.list);
 
+      const { weightFeatureAvailable } = boardsStore;
+      const { weight } = weightFeatureAvailable ? boardsStore.state.currentBoard : {};
+
       const issue = new ListIssue({
         title: this.title,
         labels,
@@ -61,6 +64,7 @@ export default {
         assignees,
         milestone,
         project_id: this.selectedProject.id,
+        weight,
       });
 
       eventHub.$emit(`scroll-board-list-${this.list.id}`);
