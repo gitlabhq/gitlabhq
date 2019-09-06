@@ -7209,9 +7209,6 @@ msgstr ""
 msgid "Monday"
 msgstr ""
 
-msgid "Monitor your errors by integrating with Sentry"
-msgstr ""
-
 msgid "Monitor your errors by integrating with Sentry."
 msgstr ""
 
