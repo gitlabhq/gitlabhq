@@ -398,6 +398,8 @@ You can also use this push option in addition to the
 
 ### Add or remove labels using git push options
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/31831) in GitLab 12.3.
+
 You can add or remove labels from merge requests using push options.
 
 For example, to add two labels to an existing merge request, use the
