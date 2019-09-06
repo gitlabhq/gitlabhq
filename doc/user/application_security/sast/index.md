@@ -205,6 +205,7 @@ Some analyzers can be customized with environment variables.
 | `GRADLE_PATH`           | spotbugs | Path to the `gradle` executable. |
 | `JAVA_OPTS`             | spotbugs | Additional arguments for the `java` executable. |
 | `JAVA_PATH`             | spotbugs | Path to the `java` executable. |
+| `SAST_JAVA_VERSION`     | spotbugs | Which Java version to use. Supported versions are `8` and `11`. Defaults to `8`. |
 | `MAVEN_CLI_OPTS`        | spotbugs | Additional arguments for the `mvn` or `mvnw` executable. |
 | `MAVEN_PATH`            | spotbugs | Path to the `mvn` executable. |
 | `MAVEN_REPO_PATH`       | spotbugs | Path to the Maven local repository (shortcut for the `maven.repo.local` property). |
