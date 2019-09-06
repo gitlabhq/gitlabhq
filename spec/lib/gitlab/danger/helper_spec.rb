@@ -11,16 +11,62 @@ describe Gitlab::Danger::Helper do
   class FakeDanger
     include Gitlab::Danger::Helper
 
-    attr_reader :git
+    attr_reader :git, :gitlab
 
-    def initialize(git:)
+    def initialize(git:, gitlab:)
       @git = git
+      @gitlab = gitlab
     end
   end
 
   let(:fake_git) { double('fake-git') }
 
-  subject(:helper) { FakeDanger.new(git: fake_git) }
+  let(:mr_author) { nil }
+  let(:fake_gitlab) { double('fake-gitlab', mr_author: mr_author) }
+
+  subject(:helper) { FakeDanger.new(git: fake_git, gitlab: fake_gitlab) }
+
+  describe '#gitlab_helper' do
+    context 'when gitlab helper is not available' do
+      let(:fake_gitlab) { nil }
+
+      it 'returns nil' do
+        expect(helper.gitlab_helper).to be_nil
+      end
+    end
+
+    context 'when gitlab helper is available' do
+      it 'returns the gitlab helper' do
+        expect(helper.gitlab_helper).to eq(fake_gitlab)
+      end
+    end
+  end
+
+  describe '#release_automation?' do
+    context 'when gitlab helper is not available' do
+      it 'returns false' do
+        expect(helper.release_automation?).to be_falsey
+      end
+    end
+
+    context 'when gitlab helper is available' do
+      context "but the MR author isn't the RELEASE_TOOLS_BOT" do
+        let(:mr_author) { 'johnmarston' }
+
+        it 'returns false' do
+          expect(helper.release_automation?).to be_falsey
+        end
+      end
+
+      context 'and the MR author is the RELEASE_TOOLS_BOT' do
+        let(:mr_author) { described_class::RELEASE_TOOLS_BOT }
+
+        it 'returns true' do
+          expect(helper.release_automation?).to be_truthy
+        end
+      end
+    end
+  end
 
   describe '#all_changed_files' do
     subject { helper.all_changed_files }
