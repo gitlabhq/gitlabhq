@@ -40,5 +40,15 @@ export default {
     refreshPipelineGraph() {
       this.$emit('refreshPipelineGraph');
     },
+    /**
+     * CSS class is applied:
+     *  - if pipeline graph contains only one stage column component
+     *
+     * @param {number} index
+     * @returns {boolean}
+     */
+    shouldAddRightMargin(index) {
+      return !(index === this.graph.length - 1);
+    },
   },
 };
