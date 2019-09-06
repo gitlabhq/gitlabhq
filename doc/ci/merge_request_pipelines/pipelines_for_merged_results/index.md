@@ -61,6 +61,20 @@ CAUTION: **Warning:**
 Make sure your `gitlab-ci.yml` file is [configured properly for pipelines for merge requests](../index.md#configuring-pipelines-for-merge-requests),
 otherwise pipelines for merged results won't run and your merge requests will be stuck in an unresolved state.
 
+## Automatic pipeline cancelation
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/12996) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.3.
+
+GitLab CI can detect the presence of redundant pipelines,
+and will cancel them automatically in order to conserve CI resources.
+
+When a user merges a merge request immediately within an ongoing merge
+train, the train will be reconstructed, as it will recreate the expected
+post-merge commit and pipeline. In this case, the merge train may already
+have pipelines running against the previous expected post-merge commit.
+These pipelines are considered redundant and will be automatically
+canceled.
+
 ## Troubleshooting
 
 ### Pipelines for merged results not created even with new change pushed to merge request
