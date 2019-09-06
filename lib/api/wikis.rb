@@ -4,11 +4,21 @@ module API
   class Wikis < Grape::API
     helpers do
       def commit_params(attrs)
-        {
-          file_name: attrs[:file][:filename],
-          file_content: attrs[:file][:tempfile].read,
-          branch_name: attrs[:branch]
-        }
+        # In order to avoid service disruption this can work with an old workhorse without the acceleration
+        # the first branch of this if must be removed when we drop support for non accelerated uploads
+        if attrs[:file].is_a?(Hash)
+          {
+            file_name: attrs[:file][:filename],
+            file_content: attrs[:file][:tempfile].read,
+            branch_name: attrs[:branch]
+          }
+        else
+          {
+            file_name: attrs[:file].original_filename,
+            file_content: attrs[:file].read,
+            branch_name: attrs[:branch]
+          }
+        end
       end
 
       params :common_wiki_page_params do
@@ -106,7 +116,7 @@ module API
         success Entities::WikiAttachment
       end
       params do
-        requires :file, type: ::API::Validations::Types::SafeFile, desc: 'The attachment file to be uploaded'
+        requires :file, types: [::API::Validations::Types::SafeFile, ::API::Validations::Types::WorkhorseFile], desc: 'The attachment file to be uploaded'
         optional :branch, type: String, desc: 'The name of the branch'
       end
       post ":id/wikis/attachments" do

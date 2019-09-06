@@ -32,7 +32,7 @@ module Gitlab
 
       class Handler
         def initialize(env, message)
-          @request = ActionDispatch::Request.new(env)
+          @request = Rack::Request.new(env)
           @rewritten_fields = message['rewritten_fields']
           @open_files = []
         end
@@ -50,7 +50,7 @@ module Gitlab
               value = decorate_params_value(value, @request.params[key])
             end
 
-            @request.update_param(key, value)
+            update_param(key, value)
           end
 
           yield
@@ -91,6 +91,20 @@ module Gitlab
           ]
 
           ::UploadedFile.from_params(params, key, allowed_paths)
+        end
+
+        # update_params ensures that both rails controllers and rack middleware can find
+        # workhorse accelerate files in the request
+        def update_param(key, value)
+          # we make sure we have key in POST otherwise update_params will add it in GET
+          @request.POST[key] ||= value
+
+          # this will force Rack::Request to properly update env keys
+          @request.update_param(key, value)
+
+          # ActionDispatch::Request is based on Rack::Request but it caches params
+          # inside other env keys, here we ensure everything is updated correctly
+          ActionDispatch::Request.new(@request.env).update_param(key, value)
         end
       end
 
