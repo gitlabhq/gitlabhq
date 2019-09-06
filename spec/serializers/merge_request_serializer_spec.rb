@@ -1,8 +1,9 @@
 require 'spec_helper'
 
 describe MergeRequestSerializer do
-  let(:user) { create(:user) }
-  let(:resource) { create(:merge_request) }
+  set(:user) { create(:user) }
+  set(:resource) { create(:merge_request, description: "Description") }
+
   let(:json_entity) do
     described_class.new(current_user: user)
       .represent(resource, serializer: serializer)
