@@ -1,6 +1,10 @@
 {
   "type": "object",
   "properties" : {
+    "id": { "type": "integer" },
+    "iid": { "type": "integer" },
+    "title": { "type": "string" },
+    "description": { "type": "string" },
     "merge_params": { "type": ["object", "null"] },
     "state": { "type": "string" },
     "source_branch": { "type": "string" },

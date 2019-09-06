@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class MergeRequestNoteableEntity < Grape::Entity
+class MergeRequestNoteableEntity < IssuableEntity
   include RequestAwareEntity
 
   # Currently this attr is exposed to be used in app/assets/javascripts/notes/stores/getters.js
