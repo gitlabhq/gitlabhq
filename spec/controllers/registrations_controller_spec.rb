@@ -83,6 +83,13 @@ describe RegistrationsController do
         stub_application_setting(recaptcha_enabled: true)
       end
 
+      after do
+        # Avoid test ordering issue and ensure `verify_recaptcha` returns true
+        unless Recaptcha.configuration.skip_verify_env.include?('test')
+          Recaptcha.configuration.skip_verify_env << 'test'
+        end
+      end
+
       it 'displays an error when the reCAPTCHA is not solved' do
         fail_recaptcha
 
@@ -93,11 +100,6 @@ describe RegistrationsController do
       end
 
       it 'redirects to the dashboard when the recaptcha is solved' do
-        # Avoid test ordering issue and ensure `verify_recaptcha` returns true
-        unless Recaptcha.configuration.skip_verify_env.include?('test')
-          Recaptcha.configuration.skip_verify_env << 'test'
-        end
-
         post(:create, params: user_params)
 
         expect(flash[:notice]).to include 'Welcome! You have signed up successfully.'
