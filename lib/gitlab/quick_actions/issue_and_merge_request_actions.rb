@@ -122,7 +122,7 @@ module Gitlab
         params '#issue | !merge_request'
         types Issue, MergeRequest
         condition do
-          current_user.can?(:"update_#{quick_action_target.to_ability_name}", quick_action_target)
+          current_user.can?(:"admin_#{quick_action_target.to_ability_name}", quick_action_target)
         end
         parse_params do |issuable_param|
           extract_references(issuable_param, :issue).first ||

@@ -1,0 +1,5 @@
+---
+title: Only show /copy_metadata quick action when usable
+merge_request: 31735
+author: Lee Tickett
+type: fixed
