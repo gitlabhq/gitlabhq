@@ -6,7 +6,7 @@ import { CopyAsGFM } from '../markdown/copy_as_gfm';
 import { getSelectedFragment } from '~/lib/utils/common_utils';
 
 export default class ShortcutsIssuable extends Shortcuts {
-  constructor(isMergeRequest) {
+  constructor() {
     super();
 
     Mousetrap.bind('a', () => ShortcutsIssuable.openSidebarDropdown('assignee'));
@@ -14,12 +14,6 @@ export default class ShortcutsIssuable extends Shortcuts {
     Mousetrap.bind('l', () => ShortcutsIssuable.openSidebarDropdown('labels'));
     Mousetrap.bind('r', ShortcutsIssuable.replyWithSelectedText);
     Mousetrap.bind('e', ShortcutsIssuable.editIssue);
-
-    if (isMergeRequest) {
-      this.enabledHelp.push('.hidden-shortcut.merge_requests');
-    } else {
-      this.enabledHelp.push('.hidden-shortcut.issues');
-    }
   }
 
   static replyWithSelectedText() {
