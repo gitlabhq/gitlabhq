@@ -56,17 +56,21 @@ module Gitlab
 
         next if [namespace, key].any?(&:nil?)
 
-        options[namespace] ||= HashWithIndifferentAccess.new
-
-        if option_multi_value?(namespace, key)
-          options[namespace][key] ||= HashWithIndifferentAccess.new(0)
-          options[namespace][key][value] += 1
-        else
-          options[namespace][key] = value
-        end
+        store_option_info(options, namespace, key, value)
       end
 
       options
+    end
+
+    def store_option_info(options, namespace, key, value)
+      options[namespace] ||= HashWithIndifferentAccess.new
+
+      if option_multi_value?(namespace, key)
+        options[namespace][key] ||= HashWithIndifferentAccess.new(0)
+        options[namespace][key][value] += 1
+      else
+        options[namespace][key] = value
+      end
     end
 
     def option_multi_value?(namespace, key)
