@@ -197,6 +197,7 @@
     "stylelint": "^10.1.0",
     "stylelint-config-recommended": "^2.2.0",
     "stylelint-scss": "^3.9.2",
+    "timezone-mock": "^1.0.8",
     "vue-jest": "^4.0.0-beta.2",
     "webpack-dev-server": "^3.1.14",
     "yarn-deduplicate": "^1.1.1"
