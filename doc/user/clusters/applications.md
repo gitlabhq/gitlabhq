@@ -85,7 +85,7 @@ The
 [jetstack/cert-manager](https://github.com/jetstack/cert-manager)
 chart is used to install this application with a
 [`values.yaml`](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/vendor/cert_manager/values.yaml)
-file. Prior to GitLab 12.3, 
+file. Prior to GitLab 12.3,
 the [stable/cert-manager](https://github.com/helm/charts/tree/master/stable/cert-manager)
 chart was used.
 
