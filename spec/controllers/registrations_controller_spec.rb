@@ -74,17 +74,12 @@ describe RegistrationsController do
     end
 
     context 'when reCAPTCHA is enabled' do
-      def fail_recaptcha
-        # Without this, `verify_recaptcha` arbitrarily returns true in test env
-        Recaptcha.configuration.skip_verify_env.delete('test')
-      end
-
       before do
         stub_application_setting(recaptcha_enabled: true)
       end
 
       it 'displays an error when the reCAPTCHA is not solved' do
-        fail_recaptcha
+        allow_any_instance_of(described_class).to receive(:verify_recaptcha).and_return(false)
 
         post(:create, params: user_params)
 
@@ -105,7 +100,6 @@ describe RegistrationsController do
 
       it 'does not require reCAPTCHA if disabled by feature flag' do
         stub_feature_flags(registrations_recaptcha: false)
-        fail_recaptcha
 
         post(:create, params: user_params)
 
