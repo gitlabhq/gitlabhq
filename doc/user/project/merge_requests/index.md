@@ -164,6 +164,26 @@ you hide threads that are no longer relevant.
 
 [Read more about resolving threads in merge requests reviews.](../../discussions/index.md)
 
+## View changes between file versions
+
+The **Changes** tab of a merge request shows the changes to files between branches or
+commits. This view of changes to a file is also known as a **diff**. By default, the diff view
+compares the file in the merge request branch and the file in the target branch.
+
+The diff view includes the following:
+
+- The file's name and path.
+- The number of lines added and deleted.
+- Buttons for the following options:
+  - Toggle comments for this file; useful for inline reviews.
+  - Edit the file in the merge request's branch.
+  - Show full file, in case you want to look at the changes in context with the rest of the file.
+  - View file at the current commit.
+  - Preview the changes with [Review Apps](../../../ci/review_apps/index.md).
+- The changed lines, with the specific changes highlighted.
+
+![Example screenshot of a source code diff](img/merge_request_diff_v12_2.png)
+
 ## Commenting on any file line in merge requests
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/13950) in GitLab 11.5.
