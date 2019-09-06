@@ -525,6 +525,77 @@ PUT /projects/:id/merge_requests/:merge_request_iid/approvers
 }
 ```
 
+### Get the approval state of merge requests
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/13712) in [GitLab Starter](https://about.gitlab.com/pricing/) 12.3.
+
+You can request information about a merge request's approval state by using the following endpoint:
+
+```
+GET /projects/:id/merge_requests/:merge_request_iid/approval_state
+```
+
+The `approval_rules_overwritten` will be `true` if the merge request level rules
+are created for the merge request. If there's none, it'll be `false`.
+
+This includes additional information about the users who have already approved
+(`approved_by`) and whether a rule is already approved (`approved`).
+
+**Parameters:**
+
+| Attribute            | Type    | Required | Description         |
+|----------------------|---------|----------|---------------------|
+| `id`                 | integer | yes      | The ID of a project |
+| `merge_request_iid`  | integer | yes      | The IID of MR       |
+
+```json
+{
+  "approval_rules_overwritten": true,
+  "rules": [
+    {
+      "id": 1,
+      "name": "Ruby",
+      "rule_type": "regular",
+      "eligible_approvers": [
+        {
+          "id": 4,
+          "name": "John Doe",
+          "username": "jdoe",
+          "state": "active",
+          "avatar_url": "https://www.gravatar.com/avatar/0?s=80&d=identicon",
+          "web_url": "http://localhost/jdoe"
+        }
+      ],
+      "approvals_required": 2,
+      "users": [
+        {
+          "id": 4,
+          "name": "John Doe",
+          "username": "jdoe",
+          "state": "active",
+          "avatar_url": "https://www.gravatar.com/avatar/0?s=80&d=identicon",
+          "web_url": "http://localhost/jdoe"
+        }
+      ],
+      "groups": [],
+      "contains_hidden_groups": false,
+      "approved_by": [
+        {
+          "id": 4,
+          "name": "John Doe",
+          "username": "jdoe",
+          "state": "active",
+          "avatar_url": "https://www.gravatar.com/avatar/0?s=80&d=identicon",
+          "web_url": "http://localhost/jdoe"
+        }
+      ],
+      "source_rule": null,
+      "approved": true
+    }
+  ]
+}
+```
+
 ### Get merge request level rules
 
 >**Note:** This API endpoint is only available on 12.3 Starter and above.
