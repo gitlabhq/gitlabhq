@@ -2086,6 +2086,8 @@ staging:
 
 ### `interruptible`
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/23464) in GitLab 12.3.
+
 `interruptible` is used to indicate that a job should be canceled if made redundant by a newer run of the same job. Defaults to `false` if there is an environment defined and `true` otherwise.
 This value will only be used if the [automatic cancellation of redundant pipelines feature](https://docs.gitlab.com/ee/user/project/pipelines/settings.html#auto-cancel-pending-pipelines)
 is enabled.
