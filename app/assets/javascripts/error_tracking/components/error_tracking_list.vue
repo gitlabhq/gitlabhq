@@ -118,7 +118,7 @@ export default {
     <div v-else-if="userCanEnableErrorTracking">
       <gl-empty-state
         :title="__('Get started with error tracking')"
-        :description="__('Monitor your errors by integrating with Sentry')"
+        :description="__('Monitor your errors by integrating with Sentry.')"
         :primary-button-text="__('Enable error tracking')"
         :primary-button-link="enableErrorTrackingLink"
         :svg-path="illustrationPath"
