@@ -193,13 +193,28 @@ class IssuableFinder
     projects =
       if current_user && params[:authorized_only].presence && !current_user_related?
         current_user.authorized_projects(min_access_level)
-      elsif group
-        find_group_projects
       else
-        Project.public_or_visible_to_user(current_user, min_access_level)
+        projects_public_or_visible_to_user
       end
 
     @projects = projects.with_feature_available_for_user(klass, current_user).reorder(nil) # rubocop: disable CodeReuse/ActiveRecord
+  end
+
+  def projects_public_or_visible_to_user
+    projects =
+      if group
+        if params[:projects]
+          find_group_projects.id_in(params[:projects])
+        else
+          find_group_projects
+        end
+      elsif params[:projects]
+        Project.id_in(params[:projects])
+      else
+        Project
+      end
+
+    projects.public_or_visible_to_user(current_user, min_access_level)
   end
 
   def find_group_projects
@@ -209,7 +224,7 @@ class IssuableFinder
       Project.where(namespace_id: group.self_and_descendants) # rubocop: disable CodeReuse/ActiveRecord
     else
       group.projects
-    end.public_or_visible_to_user(current_user, min_access_level)
+    end
   end
 
   def search
