@@ -245,6 +245,7 @@ export default {
         <div
           v-if="!loading"
           ref="content"
+          data-qa-selector="boards_dropdown_content"
           class="dropdown-content flex-fill"
           @scroll.passive="throttledSetScrollFade"
         >
