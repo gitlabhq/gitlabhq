@@ -99,6 +99,20 @@ describe Git::BranchPushService, services: true do
       expect(pipeline).to be_push
       expect(Gitlab::Git::BRANCH_REF_PREFIX + pipeline.ref).to eq(ref)
     end
+
+    context 'when pipeline has errors' do
+      before do
+        config = YAML.dump({ test: { script: 'ls', only: ['feature'] } })
+        stub_ci_pipeline_yaml_file(config)
+      end
+
+      it 'reports an error' do
+        allow(Sidekiq).to receive(:server?).and_return(true)
+        expect(Sidekiq.logger).to receive(:warn)
+
+        expect { subject }.not_to change { Ci::Pipeline.count }
+      end
+    end
   end
 
   describe "Updates merge requests" do
