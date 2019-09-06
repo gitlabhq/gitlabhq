@@ -13,19 +13,17 @@ return if eslint_candidates.empty?
 
 warn 'This merge request changed files with disabled eslint rules. Please consider fixing them.'
 
-if GitlabDanger.new(helper.gitlab_helper).ci?
-  markdown(<<~MARKDOWN)
-    ## Disabled eslint rules
+markdown(<<~MARKDOWN)
+  ## Disabled eslint rules
 
-    The following files have disabled `eslint` rules. Please consider fixing them:
+  The following files have disabled `eslint` rules. Please consider fixing them:
 
-    * #{eslint_candidates.map { |path| "`#{path}`" }.join("\n* ")}
+  * #{eslint_candidates.map { |path| "`#{path}`" }.join("\n* ")}
 
-    Run the following command for more details
+  Run the following command for more details
 
-    ```
-    node_modules/.bin/eslint --report-unused-disable-directives --no-inline-config \\
-    #{eslint_candidates.map { |path| "  '#{path}'" }.join(" \\\n")}
-    ```
-  MARKDOWN
-end
+  ```
+  node_modules/.bin/eslint --report-unused-disable-directives --no-inline-config \\
+  #{eslint_candidates.map { |path| "  '#{path}'" }.join(" \\\n")}
+  ```
+MARKDOWN

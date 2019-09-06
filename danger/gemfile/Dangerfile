@@ -1,9 +1,5 @@
-GEMFILE_LOCK_NOT_UPDATED_MESSAGE_SHORT = <<~MSG.freeze
-%<gemfile>s was updated but %<gemfile_lock>s wasn't updated.
-MSG
-
-GEMFILE_LOCK_NOT_UPDATED_MESSAGE_FULL = <<~MSG.freeze
-**#{GEMFILE_LOCK_NOT_UPDATED_MESSAGE_SHORT}**
+GEMFILE_LOCK_NOT_UPDATED_MESSAGE = <<~MSG.freeze
+**%<gemfile>s was updated but %<gemfile_lock>s wasn't updated.**
 
 Usually, when %<gemfile>s is updated, you should run
 ```
@@ -23,14 +19,5 @@ gemfile_modified = git.modified_files.include?("Gemfile")
 gemfile_lock_modified = git.modified_files.include?("Gemfile.lock")
 
 if gemfile_modified && !gemfile_lock_modified
-  gitlab_danger = GitlabDanger.new(helper.gitlab_helper)
-
-  format_str = gitlab_danger.ci? ? GEMFILE_LOCK_NOT_UPDATED_MESSAGE_FULL : GEMFILE_LOCK_NOT_UPDATED_MESSAGE_SHORT
-
-  message = format(format_str,
-    gemfile: gitlab_danger.html_link("Gemfile"),
-    gemfile_lock: gitlab_danger.html_link("Gemfile.lock")
-  )
-
-  warn(message)
+  warn format(GEMFILE_LOCK_NOT_UPDATED_MESSAGE, gemfile: gitlab.html_link("Gemfile"), gemfile_lock: gitlab.html_link("Gemfile.lock"))
 end

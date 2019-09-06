@@ -1,13 +1,7 @@
 # frozen_string_literal: true
 
-gitlab_danger = GitlabDanger.new(helper.gitlab_helper)
-
-SCHEMA_NOT_UPDATED_MESSAGE_SHORT = <<~MSG
-New %<migrations>s added but %<schema>s wasn't updated.
-MSG
-
-SCHEMA_NOT_UPDATED_MESSAGE_FULL = <<~MSG
-**#{SCHEMA_NOT_UPDATED_MESSAGE_SHORT}**
+SCHEMA_NOT_UPDATED_MESSAGE = <<~MSG
+**New %<migrations>s added but %<schema>s wasn't updated.**
 
 Usually, when adding new %<migrations>s, %<schema>s should be
 updated too (unless the migration isn't changing the DB schema
@@ -35,17 +29,13 @@ geo_db_schema_updated = !git.modified_files.grep(%r{\Aee/db/geo/schema\.rb}).emp
 non_geo_migration_created = !git.added_files.grep(%r{\A(db/(post_)?migrate)/}).empty?
 geo_migration_created = !git.added_files.grep(%r{\Aee/db/geo/(post_)?migrate/}).empty?
 
-format_str = gitlab_danger.ci? ? SCHEMA_NOT_UPDATED_MESSAGE_FULL : SCHEMA_NOT_UPDATED_MESSAGE_SHORT
-
 if non_geo_migration_created && !non_geo_db_schema_updated
-  warn format(format_str, migrations: 'migrations', schema: gitlab_danger.html_link("db/schema.rb"))
+  warn format(SCHEMA_NOT_UPDATED_MESSAGE, migrations: 'migrations', schema: gitlab.html_link("db/schema.rb"))
 end
 
 if geo_migration_created && !geo_db_schema_updated
-  warn format(format_str, migrations: 'Geo migrations', schema: gitlab_danger.html_link("ee/db/geo/schema.rb"))
+  warn format(SCHEMA_NOT_UPDATED_MESSAGE, migrations: 'Geo migrations', schema: gitlab.html_link("ee/db/geo/schema.rb"))
 end
-
-return unless gitlab_danger.ci?
 
 db_paths_to_review = helper.changes_by_category[:database]
 

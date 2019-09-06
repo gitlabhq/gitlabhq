@@ -6,22 +6,20 @@ unless docs_paths_to_review.empty?
   message 'This merge request adds or changes files that require a review ' \
     'from the Technical Writing team.'
 
-  if GitlabDanger.new(helper.gitlab_helper).ci?
-    markdown(<<~MARKDOWN)
-      ## Documentation review
+  markdown(<<~MARKDOWN)
+## Documentation review
 
-      The following files require a review from a technical writer:
+The following files require a review from a technical writer:
 
-      * #{docs_paths_to_review.map { |path| "`#{path}`" }.join("\n* ")}
+* #{docs_paths_to_review.map { |path| "`#{path}`" }.join("\n* ")}
 
-      The review does not need to block merging this merge request. See the:
+The review does not need to block merging this merge request. See the:
 
-      - [DevOps stages](https://about.gitlab.com/handbook/product/categories/#devops-stages) for the appropriate technical writer for this review.
-      - [Documentation workflows](https://docs.gitlab.com/ee/development/documentation/workflow.html) for information on when to assign a merge request for review.
-    MARKDOWN
+- [DevOps stages](https://about.gitlab.com/handbook/product/categories/#devops-stages) for the appropriate technical writer for this review.
+- [Documentation workflows](https://docs.gitlab.com/ee/development/documentation/workflow.html) for information on when to assign a merge request for review.
+  MARKDOWN
 
-    unless gitlab.mr_labels.include?('Documentation')
-      warn 'This merge request is missing the ~Documentation label.'
-    end
+  unless gitlab.mr_labels.include?('Documentation')
+    warn 'This merge request is missing the ~Documentation label.'
   end
 end
