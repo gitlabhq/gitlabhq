@@ -318,6 +318,7 @@ end
 group :development do
   gem 'foreman', '~> 0.84.0'
   gem 'brakeman', '~> 4.2', require: false
+  gem 'danger', '~> 6.0', require: false
 
   gem 'letter_opener_web', '~> 1.3.4'
   gem 'rblineprof', '~> 0.3.6', platform: :mri, require: false
