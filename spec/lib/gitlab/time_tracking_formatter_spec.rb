@@ -17,6 +17,14 @@ describe Gitlab::TimeTrackingFormatter do
 
       it { expect(subject).to eq(-12_000) }
     end
+
+    context 'durations with months' do
+      let(:duration_string) { '1mo' }
+
+      it 'uses our custom conversions' do
+        expect(subject).to eq(576_000)
+      end
+    end
   end
 
   describe '#output' do
