@@ -37,7 +37,8 @@ The following are some possible use cases for repository mirroring:
 
 ## Pushing to a remote repository **(CORE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/249) in GitLab Enterprise Edition 8.7. [Moved to GitLab Core](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/18715) in 10.8.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/249) in GitLab Enterprise Edition 8.7.
+> - [Moved to GitLab Core](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/18715) in 10.8.
 
 For an existing project, you can set up push mirroring as follows:
 
@@ -66,7 +67,8 @@ section.
 
 ### Push only protected branches **(CORE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/3350) in [GitLab Starter](https://about.gitlab.com/pricing/) 10.3. [Moved to GitLab Core](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/18715) in 10.8.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/3350) in [GitLab Starter](https://about.gitlab.com/pricing/) 10.3.
+> - [Moved to GitLab Core](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/18715) in 10.8.
 
 You can choose to only push your protected branches from GitLab to your remote repository.
 
@@ -96,7 +98,8 @@ The repository will push soon. To force a push, click the appropriate button.
 
 ## Pulling from a remote repository **(STARTER)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/51) in GitLab Enterprise Edition 8.2. [Added Git LFS support](https://gitlab.com/gitlab-org/gitlab-ee/issues/10871) in [GitLab Starter](https://about.gitlab.com/pricing/) 11.11.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/51) in GitLab Enterprise Edition 8.2.
+> - [Added Git LFS support](https://gitlab.com/gitlab-org/gitlab-ee/issues/10871) in [GitLab Starter](https://about.gitlab.com/pricing/) 11.11.
 
 NOTE: **Note:** This feature [is available for free](https://gitlab.com/gitlab-org/gitlab-ee/issues/10361) to
 GitLab.com users until September 22nd, 2019.
@@ -154,7 +157,8 @@ Repository mirrors are updated as Sidekiq becomes available to process them. If 
 
 ### SSH authentication
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/2551) for Pull mirroring in [GitLab Starter](https://about.gitlab.com/pricing/) 9.5. [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/22982) for Push mirroring in [GitLab Core](https://about.gitlab.com/pricing/) 11.6
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/2551) for Pull mirroring in [GitLab Starter](https://about.gitlab.com/pricing/) 9.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/22982) for Push mirroring in [GitLab Core](https://about.gitlab.com/pricing/) 11.6
 
 SSH authentication is mutual:
 

@@ -62,9 +62,8 @@ git commit -am "Added Debian iso"     # commit the file meta data
 git push origin master                # sync the git repo and large file to the GitLab server
 ```
 
-NOTE: **Note:**
 **Make sure** that `.gitattributes` is tracked by Git. Otherwise Git
-LFS will not be working properly for people cloning the project.
+LFS will not be working properly for people cloning the project:
 
 ```bash
 git add .gitattributes
