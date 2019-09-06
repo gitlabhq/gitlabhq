@@ -73,6 +73,9 @@ expect.extend(customMatchers);
 // Tech debt issue TBD
 testUtilsConfig.logModifiedComponents = false;
 
+// Stub for URL.createObjectURL
+window.URL.createObjectURL = function createObjectURL() {};
+
 // Basic stub for MutationObserver
 global.MutationObserver = () => ({
   disconnect: () => {},

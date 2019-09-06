@@ -40,6 +40,7 @@ class CustomEnvironment extends JSDOMEnvironment {
 
     this.global.fixturesBasePath = `${ROOT_PATH}/tmp/tests/frontend/fixtures${IS_EE ? '-ee' : ''}`;
     this.global.staticFixturesBasePath = `${ROOT_PATH}/spec/frontend/fixtures`;
+    this.global.IS_EE = IS_EE;
 
     // Not yet supported by JSDOM: https://github.com/jsdom/jsdom/issues/317
     this.global.document.createRange = () => ({
