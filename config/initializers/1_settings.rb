@@ -292,6 +292,7 @@ Settings.pages['artifacts_server']  ||= Settings.pages['enabled'] if Settings.pa
 
 Settings.pages['admin'] ||= Settingslogic.new({})
 Settings.pages.admin['certificate'] ||= ''
+Settings.pages['secret_file'] ||= Rails.root.join('.gitlab_pages_shared_secret')
 
 #
 # Geo
