@@ -20,6 +20,7 @@ class RegistrationsController < Devise::RegistrationsController
 
     super do |new_user|
       persist_accepted_terms_if_required(new_user)
+      yield new_user if block_given?
     end
   rescue Gitlab::Access::AccessDeniedError
     redirect_to(new_user_session_path)
