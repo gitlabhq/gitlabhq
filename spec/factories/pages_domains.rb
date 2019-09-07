@@ -271,5 +271,88 @@ ZDXgrA==
       auto_ssl_enabled { true }
       certificate_source { :gitlab_provided }
     end
+
+    trait :explicit_ecdsa do
+      certificate '-----BEGIN CERTIFICATE-----
+MIID1zCCAzkCCQDatOIwBlktwjAKBggqhkjOPQQDAjBPMQswCQYDVQQGEwJVUzEL
+MAkGA1UECAwCTlkxCzAJBgNVBAcMAk5ZMQswCQYDVQQLDAJJVDEZMBcGA1UEAwwQ
+dGVzdC1jZXJ0aWZpY2F0ZTAeFw0xOTA4MjkxMTE1NDBaFw0yMTA4MjgxMTE1NDBa
+ME8xCzAJBgNVBAYTAlVTMQswCQYDVQQIDAJOWTELMAkGA1UEBwwCTlkxCzAJBgNV
+BAsMAklUMRkwFwYDVQQDDBB0ZXN0LWNlcnRpZmljYXRlMIICXDCCAc8GByqGSM49
+AgEwggHCAgEBME0GByqGSM49AQECQgH/////////////////////////////////
+/////////////////////////////////////////////////////zCBngRCAf//
+////////////////////////////////////////////////////////////////
+///////////////////8BEFRlT65YY4cmh+SmiGgtoVA7qLacluZsxXzuLSJkY7x
+CeFWGTlR7H6TexZSwL07sb8HNXPfiD0sNPHvRR/Ua1A/AAMVANCeiAApHLhTlsxn
+FzkyhKqg2mS6BIGFBADGhY4GtwQE6c2ePstmI5W0QpxkgTkFP7Uh+CivYGtNPbqh
+S1537+dZKP4dwSei/6jeM0izwYVqQpv5fn4xwuW9ZgEYOSlqeJo7wARcil+0LH0b
+2Zj1RElXm0RoF6+9Fyc+ZiyX7nKZXvQmQMVQuQE/rQdhNTxwhqJywkCIvpR2n9Fm
+UAJCAf//////////////////////////////////////////+lGGh4O/L5Zrf8wB
+SPcJpdA7tcm4iZxHrrtvtx6ROGQJAgEBA4GGAAQBVG/4c/hgl36toHj+eGL4pqv7
+l7M+ZKQJ4vz0Y9E6xIx+gvfVaZ58krmbBAP53ikwneQbFdcvw3L/ACPEib/qWjkB
+ogykguy3OwHtKLYNnDWIsfiLumEjElhcBMZVXiXhb5txf11uXAWn5n6Qhey5YKPM
+NjLLqDqaG19efCLCd21A0TcwCgYIKoZIzj0EAwIDgYsAMIGHAkEm68kYFVnN1c2N
+OjSJpIDdFWGVYJHyMDI5WgQyhm4hAioXJ0T22Zab8Wmq+hBYRJNcHoaV894blfqR
+V3ZJgam8EQJCAcnPpJQ0IqoT1pAQkaL3+Ka8ZaaCd6/8RnoDtGvWljisuyH65SRu
+kmYv87bZe1KqOZDoaDBdfVsoxcGbik19lBPV
+-----END CERTIFICATE-----'
+
+      key '-----BEGIN EC PARAMETERS-----
+MIIBwgIBATBNBgcqhkjOPQEBAkIB////////////////////////////////////
+//////////////////////////////////////////////////8wgZ4EQgH/////
+////////////////////////////////////////////////////////////////
+/////////////////ARBUZU+uWGOHJofkpohoLaFQO6i2nJbmbMV87i0iZGO8Qnh
+Vhk5Uex+k3sWUsC9O7G/BzVz34g9LDTx70Uf1GtQPwADFQDQnogAKRy4U5bMZxc5
+MoSqoNpkugSBhQQAxoWOBrcEBOnNnj7LZiOVtEKcZIE5BT+1Ifgor2BrTT26oUte
+d+/nWSj+HcEnov+o3jNIs8GFakKb+X5+McLlvWYBGDkpaniaO8AEXIpftCx9G9mY
+9URJV5tEaBevvRcnPmYsl+5ymV70JkDFULkBP60HYTU8cIaicsJAiL6Udp/RZlAC
+QgH///////////////////////////////////////////pRhoeDvy+Wa3/MAUj3
+CaXQO7XJuImcR667b7cekThkCQIBAQ==
+-----END EC PARAMETERS-----
+-----BEGIN EC PRIVATE KEY-----
+MIICnQIBAQRCAZZRG4FJO+OK29ygycrNzjxQDB+dp+QPo1Pk6RAl5PcraohyhFnI
+MGUL4ba1efZUxCbAWxjVRSi7QEUNYCCdUPAtoIIBxjCCAcICAQEwTQYHKoZIzj0B
+AQJCAf//////////////////////////////////////////////////////////
+////////////////////////////MIGeBEIB////////////////////////////
+//////////////////////////////////////////////////////////wEQVGV
+PrlhjhyaH5KaIaC2hUDuotpyW5mzFfO4tImRjvEJ4VYZOVHsfpN7FlLAvTuxvwc1
+c9+IPSw08e9FH9RrUD8AAxUA0J6IACkcuFOWzGcXOTKEqqDaZLoEgYUEAMaFjga3
+BATpzZ4+y2YjlbRCnGSBOQU/tSH4KK9ga009uqFLXnfv51ko/h3BJ6L/qN4zSLPB
+hWpCm/l+fjHC5b1mARg5KWp4mjvABFyKX7QsfRvZmPVESVebRGgXr70XJz5mLJfu
+cple9CZAxVC5AT+tB2E1PHCGonLCQIi+lHaf0WZQAkIB////////////////////
+///////////////////////6UYaHg78vlmt/zAFI9wml0Du1ybiJnEeuu2+3HpE4
+ZAkCAQGhgYkDgYYABAFUb/hz+GCXfq2geP54Yvimq/uXsz5kpAni/PRj0TrEjH6C
+99VpnnySuZsEA/neKTCd5BsV1y/Dcv8AI8SJv+paOQGiDKSC7Lc7Ae0otg2cNYix
++Iu6YSMSWFwExlVeJeFvm3F/XW5cBafmfpCF7Llgo8w2MsuoOpobX158IsJ3bUDR
+Nw==
+-----END EC PRIVATE KEY-----'
+    end
+
+    trait :ecdsa do
+      certificate '-----BEGIN CERTIFICATE-----
+MIIB8zCCAVUCCQCGKuPQ6SBxUTAKBggqhkjOPQQDAjA+MQswCQYDVQQGEwJVUzEL
+MAkGA1UECAwCVVMxCzAJBgNVBAcMAlVTMRUwEwYDVQQDDAxzaHVzaGxpbi5kZXYw
+HhcNMTkwOTAyMDkyMDUxWhcNMjEwOTAxMDkyMDUxWjA+MQswCQYDVQQGEwJVUzEL
+MAkGA1UECAwCVVMxCzAJBgNVBAcMAlVTMRUwEwYDVQQDDAxzaHVzaGxpbi5kZXYw
+gZswEAYHKoZIzj0CAQYFK4EEACMDgYYABAH9Jd7ZWnTasgltZRbIMreihycOh/G4
+TXpkp8tTtEsuD+sh8au3Jywsi89RSZ6vgVoCY7//DQ2vamYnyBZqbL+cTQBsQ7wD
+UEaSyP0R3P4b6Ox347pYzXwSdSOra9Cm4TMQe+prVMesxulqIm7G7CTI+9J8LHlJ
+z0wUDQz/o+tUSYwv6zAKBggqhkjOPQQDAgOBiwAwgYcCQUOlTnn2QP/uYSh1dUSl
+R9WYUg5+PQMg7kS+4K/5+5gonWCvaMcP+2P7hltUcvq41l3uMKKCZRU/x60/FMHc
+1ZXdAkIBuVtm9RJXziNOKS4TcpH9os/FuREW8YQlpec58LDZdlivcHnikHZ4LCri
+T7zu3VY6Rq+V/IKpsQwQjmoTJ0IpCM8=
+-----END CERTIFICATE-----'
+
+      key '-----BEGIN EC PARAMETERS-----
+BgUrgQQAIw==
+-----END EC PARAMETERS-----
+-----BEGIN EC PRIVATE KEY-----
+MIHbAgEBBEFa72+eREW25IHbke0TiWFdW1R1ad9Nyqaz7CDtv5Kqdgd6Kcl8V2az
+Lr6z1PS+JSERWzRP+fps7kdFRrtqy/ECpKAHBgUrgQQAI6GBiQOBhgAEAf0l3tla
+dNqyCW1lFsgyt6KHJw6H8bhNemSny1O0Sy4P6yHxq7cnLCyLz1FJnq+BWgJjv/8N
+Da9qZifIFmpsv5xNAGxDvANQRpLI/RHc/hvo7HfjuljNfBJ1I6tr0KbhMxB76mtU
+x6zG6WoibsbsJMj70nwseUnPTBQNDP+j61RJjC/r
+-----END EC PRIVATE KEY-----'
+    end
   end
 end
