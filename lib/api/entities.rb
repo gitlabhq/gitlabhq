@@ -1267,7 +1267,6 @@ module API
       expose :protected do |repo_tag, options|
         ::ProtectedTag.protected?(options[:project], repo_tag.name)
       end
-
     end
 
     class Runner < Grape::Entity
