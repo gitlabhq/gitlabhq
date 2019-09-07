@@ -1,0 +1,5 @@
+---
+title: Allow ECDSA certificates for pages domains
+merge_request: 32393
+author:
+type: added

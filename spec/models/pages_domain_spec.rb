@@ -151,6 +151,24 @@ describe PagesDomain do
         end
       end
     end
+
+    context 'with ecdsa certificate' do
+      it "is valid" do
+        domain = build(:pages_domain, :ecdsa)
+
+        expect(domain).to be_valid
+      end
+
+      context 'when curve is set explicitly by parameters' do
+        it 'adds errors to private key' do
+          domain = build(:pages_domain, :explicit_ecdsa)
+
+          expect(domain).to be_invalid
+
+          expect(domain.errors[:key]).not_to be_empty
+        end
+      end
+    end
   end
 
   describe 'validations' do
