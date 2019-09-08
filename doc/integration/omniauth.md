@@ -298,3 +298,33 @@ gitlab_rails['omniauth_allow_bypass_two_factor'] = ['twitter', 'google_oauth2']
 omniauth:
   allow_bypass_two_factor: ['twitter', 'google_oauth2']
 ```
+
+## Automatically sign in with provider
+
+You can add the `auto_sign_in_with_provider` setting to your
+GitLab configuration to automatically redirect login requests
+to your OmniAuth provider for authentication, thus removing the need to click a button
+before actually signing in.
+
+For example, when using the Azure integration, you would set the following
+to enable auto sign in.
+
+For Omnibus package:
+
+```ruby
+gitlab_rails['omniauth_auto_sign_in_with_provider'] = 'azure_oauth2'
+```
+
+For installations from source:
+
+```yaml
+omniauth:
+  auto_sign_in_with_provider: azure_oauth2
+```
+
+Please keep in mind that every sign in attempt will be redirected to the OmniAuth provider,
+so you will not be able to sign in using local credentials. Make sure that at least one
+of the OmniAuth users has admin permissions.
+
+You may also bypass the auto signin feature by browsing to
+`https://gitlab.example.com/users/sign_in?auto_sign_in=false`.
