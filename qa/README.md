@@ -36,7 +36,7 @@ using `package-and-qa-manual` manual action, to test if everything works fine.
 
 You can use GitLab QA to exercise tests on any live instance! If you don't
 have an instance available you can follow the instructions below to use
-the [GitLab Development Kit (GDK)][GDK].
+the [GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit).
 This is the recommended option if you would like to contribute to the tests.
 
 Note: GitLab QA uses [Selenium WebDriver](https://www.seleniumhq.org/) via
@@ -145,8 +145,6 @@ directory** (one level up from this directory):
 ```sh
 docker build -t gitlab/gitlab-ce-qa:nightly --file ./qa/Dockerfile ./
 ```
-
-[GDK]: https://gitlab.com/gitlab-org/gitlab-development-kit/
 
 ### Quarantined tests
 
