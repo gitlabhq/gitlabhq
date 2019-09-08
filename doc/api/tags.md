@@ -46,7 +46,8 @@ Parameters:
     },
     "name": "v1.0.0",
     "target": "2695effb5807a22ff3d138d593fd856244e155e7",
-    "message": null
+    "message": null,
+    "protected": true
   }
 ]
 ```
@@ -94,7 +95,8 @@ Example Response:
     "committer_email": "contact@arthurverschaeve.be",
     "committed_date": "2015-02-01T21:56:31.000+01:00"
   },
-  "release": null
+  "release": null,
+  "protected": false
 }
 ```
 
@@ -138,7 +140,8 @@ Parameters:
   },
   "name": "v1.0.0",
   "target": "2695effb5807a22ff3d138d593fd856244e155e7",
-  "message": null
+  "message": null,
+  "protected": false
 }
 ```
 
