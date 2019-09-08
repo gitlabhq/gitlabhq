@@ -1,163 +1,159 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require 'rspec-parameterized'
 
 describe Gitlab::ImportExport::Config do
   let(:yaml_file) { described_class.new }
 
   describe '#to_h' do
-    context 'when using CE' do
-      before do
-        allow(yaml_file)
-          .to receive(:merge?)
-          .and_return(false)
+    subject { yaml_file.to_h }
+
+    context 'when using default config' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:ee) do
+        [true, false]
       end
 
-      it 'just returns the parsed Hash without the EE section' do
-        expected = YAML.load_file(Gitlab::ImportExport.config_file)
-        expected.delete('ee')
+      with_them do
+        before do
+          allow(Gitlab).to receive(:ee?) { ee }
+        end
 
-        expect(yaml_file.to_h).to eq(expected)
+        it 'parses default config' do
+          expect { subject }.not_to raise_error
+          expect(subject).to be_a(Hash)
+          expect(subject.keys).to contain_exactly(
+            :tree, :excluded_attributes, :included_attributes, :methods)
+        end
       end
     end
 
-    context 'when using EE' do
+    context 'when using custom config' do
+      let(:config) do
+        <<-EOF.strip_heredoc
+          tree:
+            project:
+              - labels:
+                - :priorities
+              - milestones:
+                - events:
+                  - :push_event_payload
+
+          included_attributes:
+            user:
+              - :id
+
+          excluded_attributes:
+            project:
+              - :name
+
+          methods:
+            labels:
+              - :type
+            events:
+              - :action
+
+          ee:
+            tree:
+              project:
+                protected_branches:
+                  - :unprotect_access_levels
+            included_attributes:
+              user:
+                - :name_ee
+            excluded_attributes:
+              project:
+                - :name_without_ee
+            methods:
+              labels:
+                - :type_ee
+              events_ee:
+                - :action_ee
+        EOF
+      end
+
+      let(:config_hash) { YAML.safe_load(config, [Symbol]) }
+
       before do
-        allow(yaml_file)
-          .to receive(:merge?)
-          .and_return(true)
+        allow_any_instance_of(described_class).to receive(:parse_yaml) do
+          config_hash.deep_dup
+        end
       end
 
-      it 'merges the EE project tree into the CE project tree' do
-        allow(yaml_file)
-          .to receive(:parse_yaml)
-          .and_return({
-            'project_tree' => [
-              {
-                'issues' => [
-                  :id,
-                  :title,
-                  { 'notes' => [:id, :note, { 'author' => [:name] }] }
-                ]
-              }
-            ],
-            'ee' => {
-              'project_tree' => [
-                {
-                  'issues' => [
-                    :description,
-                    { 'notes' => [:date, { 'author' => [:email] }] }
-                  ]
-                },
-                { 'foo' => [{ 'bar' => %i[baz] }] }
-              ]
-            }
-          })
+      context 'when using CE' do
+        before do
+          allow(Gitlab).to receive(:ee?) { false }
+        end
 
-        expect(yaml_file.to_h).to eq({
-          'project_tree' => [
+        it 'just returns the normalized Hash' do
+          is_expected.to eq(
             {
-              'issues' => [
-                :id,
-                :title,
-                {
-                  'notes' => [
-                    :id,
-                    :note,
-                    { 'author' => [:name, :email] },
-                    :date
-                  ]
-                },
-                :description
-              ]
-            },
-            { 'foo' => [{ 'bar' => %i[baz] }] }
-          ]
-        })
-      end
-
-      it 'merges the excluded attributes list' do
-        allow(yaml_file)
-          .to receive(:parse_yaml)
-          .and_return({
-            'project_tree' => [],
-            'excluded_attributes' => {
-              'project' => %i[id title],
-              'notes' => %i[id]
-            },
-            'ee' => {
-              'project_tree' => [],
-              'excluded_attributes' => {
-                'project' => %i[date],
-                'foo' => %i[bar baz]
+              tree: {
+                project: {
+                  labels: {
+                    priorities: {}
+                  },
+                  milestones: {
+                    events: {
+                      push_event_payload: {}
+                    }
+                  }
+                }
+              },
+              included_attributes: {
+                user: [:id]
+              },
+              excluded_attributes: {
+                project: [:name]
+              },
+              methods: {
+                labels: [:type],
+                events: [:action]
               }
             }
-          })
-
-        expect(yaml_file.to_h).to eq({
-          'project_tree' => [],
-          'excluded_attributes' => {
-            'project' => %i[id title date],
-            'notes' => %i[id],
-            'foo' => %i[bar baz]
-          }
-        })
+          )
+        end
       end
 
-      it 'merges the included attributes list' do
-        allow(yaml_file)
-          .to receive(:parse_yaml)
-          .and_return({
-            'project_tree' => [],
-            'included_attributes' => {
-              'project' => %i[id title],
-              'notes' => %i[id]
-            },
-            'ee' => {
-              'project_tree' => [],
-              'included_attributes' => {
-                'project' => %i[date],
-                'foo' => %i[bar baz]
+      context 'when using EE' do
+        before do
+          allow(Gitlab).to receive(:ee?) { true }
+        end
+
+        it 'just returns the normalized Hash' do
+          is_expected.to eq(
+            {
+              tree: {
+                project: {
+                  labels: {
+                    priorities: {}
+                  },
+                  milestones: {
+                    events: {
+                      push_event_payload: {}
+                    }
+                  },
+                  protected_branches: {
+                    unprotect_access_levels: {}
+                  }
+                }
+              },
+              included_attributes: {
+                user: [:id, :name_ee]
+              },
+              excluded_attributes: {
+                project: [:name, :name_without_ee]
+              },
+              methods: {
+                labels: [:type, :type_ee],
+                events: [:action],
+                events_ee: [:action_ee]
               }
             }
-          })
-
-        expect(yaml_file.to_h).to eq({
-          'project_tree' => [],
-          'included_attributes' => {
-            'project' => %i[id title date],
-            'notes' => %i[id],
-            'foo' => %i[bar baz]
-          }
-        })
-      end
-
-      it 'merges the methods list' do
-        allow(yaml_file)
-          .to receive(:parse_yaml)
-          .and_return({
-            'project_tree' => [],
-            'methods' => {
-              'project' => %i[id title],
-              'notes' => %i[id]
-            },
-            'ee' => {
-              'project_tree' => [],
-              'methods' => {
-                'project' => %i[date],
-                'foo' => %i[bar baz]
-              }
-            }
-          })
-
-        expect(yaml_file.to_h).to eq({
-          'project_tree' => [],
-          'methods' => {
-            'project' => %i[id title date],
-            'notes' => %i[id],
-            'foo' => %i[bar baz]
-          }
-        })
+          )
+        end
       end
     end
   end
