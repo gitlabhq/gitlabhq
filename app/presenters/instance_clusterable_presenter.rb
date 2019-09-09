@@ -18,8 +18,8 @@ class InstanceClusterablePresenter < ClusterablePresenter
   end
 
   override :new_path
-  def new_path
-    new_admin_cluster_path
+  def new_path(options = {})
+    new_admin_cluster_path(options)
   end
 
   override :cluster_status_cluster_path
