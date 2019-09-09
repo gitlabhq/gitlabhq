@@ -148,9 +148,9 @@ The following options can be set:
 If `record_type` is set to `SRV`, GitLab will continue to use a round-robin algorithm
 and will ignore the `weight` and `priority` in the record. Since SRV records usually
 return hostnames instead of IPs, GitLab will look for the IPs of returned hostnames
-in the additional section of the SRV response. If no IP is found for a hostname, Gitlab
-will query the configured `nameserver` for ANY record for each such hostname looking for A or AAAA records, eventually
-dropping this hostname from rotation if it can't resolve its IP.
+in the additional section of the SRV response. If no IP is found for a hostname, GitLab
+will query the configured `nameserver` for ANY record for each such hostname looking for A or AAAA
+records, eventually dropping this hostname from rotation if it can't resolve its IP.
 
 The `interval` value specifies the _minimum_ time between checks. If the A
 record has a TTL greater than this value, then service discovery will honor said
