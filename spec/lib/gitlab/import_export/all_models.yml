@@ -376,6 +376,7 @@ project:
 - index_status
 - feature_usage
 - approval_rules
+- approval_merge_request_rules
 - approvers
 - approver_users
 - pages_domains
