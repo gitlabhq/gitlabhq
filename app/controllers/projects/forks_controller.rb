@@ -16,7 +16,7 @@ class Projects::ForksController < Projects::ApplicationController
     @internal_forks_count = @total_forks_count - @public_forks_count - @private_forks_count
 
     @forks = ForkProjectsFinder.new(project, params: params.merge(search: params[:filter_projects]), current_user: current_user).execute
-    @forks = @forks.eager_load_namespace_and_owner.includes(:creator).with_route.page(params[:page])
+    @forks = @forks.eager_load_namespace_and_owner.inc_creator.with_route.page(params[:page])
 
     respond_to do |format|
       format.html
