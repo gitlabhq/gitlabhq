@@ -28,7 +28,8 @@ package-and-qa-manual:master:
   extends: .package-and-qa-base
   only:
     refs:
-      - master
+      - master@gitlab-org/gitlab-ce
+      - master@gitlab-org/gitlab-ee
   when: manual
   needs: ["build-qa-image", "gitlab:assets:compile"]
 
