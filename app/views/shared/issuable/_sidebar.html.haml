@@ -41,7 +41,7 @@
             = link_to _('Edit'), '#', class: 'js-sidebar-dropdown-toggle edit-link float-right', data: { track_label: "right_sidebar", track_property: "milestone", track_event: "click_edit_button", track_value: "" }
         .value.hide-collapsed
           - if milestone.present?
-            = link_to milestone[:title], milestone[:web_url], class: "bold has-tooltip", title: sidebar_milestone_remaining_days(milestone), data: { container: "body", html: 'true', boundary: 'viewport' }
+            = link_to milestone[:title], milestone[:web_url], class: "bold has-tooltip", title: sidebar_milestone_remaining_days(milestone), data: { container: "body", html: 'true', boundary: 'viewport', qa_selector: 'milestone_link' }
           - else
             %span.no-value
               = _('None')
