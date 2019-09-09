@@ -252,5 +252,43 @@ describe API::Settings, 'Settings' do
         expect(json_response['asset_proxy_whitelist']).to eq(['example.com', '*.example.com', 'localhost'])
       end
     end
+
+    context 'domain_blacklist settings' do
+      it 'rejects domain_blacklist_enabled when domain_blacklist is empty' do
+        put api('/application/settings', admin),
+          params: {
+            domain_blacklist_enabled: true,
+            domain_blacklist: []
+          }
+
+        expect(response).to have_gitlab_http_status(400)
+        message = json_response["message"]
+        expect(message["domain_blacklist"]).to eq(["Domain blacklist cannot be empty if Blacklist is enabled."])
+      end
+
+      it 'allows array for domain_blacklist' do
+        put api('/application/settings', admin),
+          params: {
+            domain_blacklist_enabled: true,
+            domain_blacklist: ['domain1.com', 'domain2.com']
+          }
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response['domain_blacklist_enabled']).to be(true)
+        expect(json_response['domain_blacklist']).to eq(['domain1.com', 'domain2.com'])
+      end
+
+      it 'allows a string for domain_blacklist' do
+        put api('/application/settings', admin),
+          params: {
+            domain_blacklist_enabled: true,
+            domain_blacklist: 'domain3.com, *.domain4.com'
+          }
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response['domain_blacklist_enabled']).to be(true)
+        expect(json_response['domain_blacklist']).to eq(['domain3.com', '*.domain4.com'])
+      end
+    end
   end
 end
