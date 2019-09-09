@@ -145,7 +145,7 @@ module Gitlab
 
           def rules_attributes
             strong_memoize(:rules_attributes) do
-              @using_rules ? @rules.evaluate(@pipeline, self).to_h.compact : {}
+              @using_rules ? @rules.evaluate(@pipeline, self).build_attributes : {}
             end
           end
         end

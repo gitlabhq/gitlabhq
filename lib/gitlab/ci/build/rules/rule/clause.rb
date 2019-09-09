@@ -13,9 +13,7 @@ module Gitlab
         UnknownClauseError = Class.new(StandardError)
 
         def self.fabricate(type, value)
-          type = type.to_s.camelize
-
-          self.const_get(type).new(value) if self.const_defined?(type)
+          "#{self}::#{type.to_s.camelize}".safe_constantize&.new(value)
         end
 
         def initialize(spec)

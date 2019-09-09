@@ -122,7 +122,7 @@ module Gitlab
 
           helpers :before_script, :script, :stage, :type, :after_script,
                   :cache, :image, :services, :only, :except, :variables,
-                  :artifacts, :environment, :coverage, :retry,
+                  :artifacts, :environment, :coverage, :retry, :rules,
                   :parallel, :needs, :interruptible
 
           attributes :script, :tags, :allow_failure, :when, :dependencies,
@@ -145,6 +145,13 @@ module Gitlab
               end
 
               @entries.delete(:type)
+
+              # This is something of a hack, see issue for details:
+              # https://gitlab.com/gitlab-org/gitlab-ce/issues/67150
+              if !only_defined? && has_rules?
+                @entries.delete(:only)
+                @entries.delete(:except)
+              end
             end
 
             inherit!(deps)
@@ -203,6 +210,7 @@ module Gitlab
               cache: cache_value,
               only: only_value,
               except: except_value,
+              rules: has_rules? ? rules_value : nil,
               variables: variables_defined? ? variables_value : {},
               environment: environment_defined? ? environment_value : nil,
               environment_name: environment_defined? ? environment_value[:name] : nil,

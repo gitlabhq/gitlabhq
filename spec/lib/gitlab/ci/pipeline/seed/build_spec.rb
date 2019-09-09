@@ -46,7 +46,7 @@ describe Gitlab::Ci::Pipeline::Seed::Build do
       context 'is matched' do
         let(:attributes) { { name: 'rspec', ref: 'master', rules: [{ if: '$VAR == null', when: 'delayed', start_in: '3 hours' }] } }
 
-        it { is_expected.to include(when: 'delayed', start_in: '3 hours') }
+        it { is_expected.to include(when: 'delayed', options: { start_in: '3 hours' }) }
       end
 
       context 'is not matched' do
@@ -541,7 +541,7 @@ describe Gitlab::Ci::Pipeline::Seed::Build do
             it { is_expected.to be_included }
 
             it 'correctly populates when:' do
-              expect(seed_build.attributes).to include(when: 'delayed', start_in: '1 day')
+              expect(seed_build.attributes).to include(when: 'delayed', options: { start_in: '1 day' })
             end
           end
         end

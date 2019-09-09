@@ -26,6 +26,10 @@ module Gitlab
               end
             end
           end
+
+          def value
+            @config
+          end
         end
       end
     end
