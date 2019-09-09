@@ -57,8 +57,8 @@ you can change these defaults by editing the `/etc/tomcat7/server.xml` file.
 ### Making local PlantUML accessible using custom GitLab setup
 
 The PlantUML server runs locally on your server, so it is not accessible
-externally. As such, it is necessary to catch external PlantUML calls and 
-redirect them to the local server. 
+externally. As such, it is necessary to catch external PlantUML calls and
+redirect them to the local server.
 
 The idea is to redirect each call to `https://gitlab.example.com/-/plantuml/`
 to the local PlantUML server `http://localhost:8080/plantuml`.
