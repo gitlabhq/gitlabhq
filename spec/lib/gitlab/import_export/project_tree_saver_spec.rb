@@ -23,12 +23,65 @@ describe Gitlab::ImportExport::ProjectTreeSaver do
       expect(project_tree_saver.save).to be true
     end
 
+    context ':export_fast_serialize feature flag checks' do
+      before do
+        expect(Gitlab::ImportExport::Reader).to receive(:new).with(shared: shared).and_return(reader)
+        expect(reader).to receive(:project_tree).and_return(project_tree)
+      end
+
+      let(:serializer) { instance_double('Gitlab::ImportExport::FastHashSerializer') }
+      let(:reader) { instance_double('Gitlab::ImportExport::Reader') }
+      let(:project_tree) do
+        {
+          include: [{ issues: { include: [] } }],
+          preload: { issues: nil }
+        }
+      end
+
+      context 'when :export_fast_serialize feature is enabled' do
+        before do
+          stub_feature_flags(export_fast_serialize: true)
+        end
+
+        it 'uses FastHashSerializer' do
+          expect(Gitlab::ImportExport::FastHashSerializer)
+            .to receive(:new)
+            .with(project, project_tree)
+            .and_return(serializer)
+
+          expect(serializer).to receive(:execute)
+
+          project_tree_saver.save
+        end
+      end
+
+      context 'when :export_fast_serialize feature is disabled' do
+        before do
+          stub_feature_flags(export_fast_serialize: false)
+        end
+
+        it 'is serialized via built-in `as_json`' do
+          expect(project).to receive(:as_json).with(project_tree)
+
+          project_tree_saver.save
+        end
+      end
+    end
+
+    # It is mostly duplicated in
+    # `spec/lib/gitlab/import_export/fast_hash_serializer_spec.rb`
+    # except:
+    # context 'with description override' do
+    # context 'group members' do
+    # ^ These are specific for the ProjectTreeSaver
     context 'JSON' do
       let(:saved_project_json) do
         project_tree_saver.save
         project_json(project_tree_saver.full_path)
       end
 
+      # It is not duplicated in
+      # `spec/lib/gitlab/import_export/fast_hash_serializer_spec.rb`
       context 'with description override' do
         let(:params) { { description: 'Foo Bar' } }
         let(:project_tree_saver) { described_class.new(project: project, current_user: user, shared: shared, params: params) }

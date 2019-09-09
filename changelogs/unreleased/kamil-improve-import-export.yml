@@ -1,0 +1,5 @@
+---
+title: Reduce N+1 when doing project export
+merge_request: 32423
+author:
+type: performance
