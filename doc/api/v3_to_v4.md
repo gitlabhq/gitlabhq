@@ -23,8 +23,8 @@ Below are the changes made between V3 and V4.
 - Status 409 returned for `POST /projects/:id/members` when a member already exists [!9093](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9093)
 - Moved `DELETE /projects/:id/star` to `POST /projects/:id/unstar` [!9328](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9328)
 - Removed the following deprecated Templates endpoints (these are still accessible with `/templates` prefix) [!8853](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/8853)
-  - `/licences`
-  - `/licences/:key`
+  - `/licenses`
+  - `/licenses/:key`
   - `/gitignores`
   - `/gitlab_ci_ymls`
   - `/dockerfiles`
