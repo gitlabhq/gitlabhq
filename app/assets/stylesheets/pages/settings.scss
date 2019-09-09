@@ -24,12 +24,16 @@
 
 .settings {
   // border-top for each item except the top one
-  + .settings {
-    border-top: 1px solid $border-color;
-  }
+  border-top: 1px solid $border-color;
 
   &:first-of-type {
     margin-top: 10px;
+    border: 0;
+  }
+
+  + div .settings:first-of-type {
+    margin-top: 0;
+    border-top: 1px solid $border-color;
   }
 
   &.animating {
