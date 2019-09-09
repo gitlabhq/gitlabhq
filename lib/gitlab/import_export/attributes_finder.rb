@@ -8,6 +8,7 @@ module Gitlab
         @included_attributes = config[:included_attributes] || {}
         @excluded_attributes = config[:excluded_attributes] || {}
         @methods = config[:methods] || {}
+        @preloads = config[:preloads] || {}
       end
 
       def find_root(model_key)
@@ -29,8 +30,24 @@ module Gitlab
           only: @included_attributes[model_key],
           except: @excluded_attributes[model_key],
           methods: @methods[model_key],
-          include: resolve_model_tree(model_tree)
+          include: resolve_model_tree(model_tree),
+          preload: resolve_preloads(model_key, model_tree)
         }.compact
+      end
+
+      def resolve_preloads(model_key, model_tree)
+        model_tree
+          .map { |submodel_key, submodel_tree| resolve_preload(model_key, submodel_key, submodel_tree) }
+          .compact
+          .to_h
+          .deep_merge(@preloads[model_key].to_h)
+          .presence
+      end
+
+      def resolve_preload(parent_model_key, model_key, model_tree)
+        return if @methods[parent_model_key]&.include?(model_key)
+
+        [model_key, resolve_preloads(model_key, model_tree)]
       end
 
       def resolve_model_tree(model_tree)

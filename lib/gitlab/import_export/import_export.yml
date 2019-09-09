@@ -231,6 +231,16 @@ methods:
   ci_pipelines:
     - :notes
 
+preloads:
+  statuses:
+    # TODO: We cannot preload tags, as they are not part of `GenericCommitStatus`
+    # tags: # needed by tag_list
+    project: # deprecated: needed by coverage_regex of Ci::Build
+  merge_requests:
+    source_project: # needed by source_branch_sha and diff_head_sha
+    target_project: # needed by target_branch_sha
+    assignees: # needed by assigne_id that is implemented by DeprecatedAssignee
+
 # EE specific relationships and settings to include. All of this will be merged
 # into the previous structures if EE is used.
 ee:

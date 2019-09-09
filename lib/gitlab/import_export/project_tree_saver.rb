@@ -41,7 +41,13 @@ module Gitlab
       end
 
       def serialize_project_tree
-        @project.as_json(reader.project_tree)
+        if Feature.enabled?(:export_fast_serialize, default_enabled: true)
+          Gitlab::ImportExport::FastHashSerializer
+            .new(@project, reader.project_tree)
+            .execute
+        else
+          @project.as_json(reader.project_tree)
+        end
       end
 
       def reader
