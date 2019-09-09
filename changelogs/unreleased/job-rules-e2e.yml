@@ -1,0 +1,5 @@
+---
+title: Passing job rules downstream and E2E specs for job:rules configuration
+merge_request: 32609
+author:
+type: fixed

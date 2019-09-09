@@ -16,7 +16,10 @@ module Gitlab
           let(:config) do
             YAML.dump(
               before_script: ['pwd'],
-              rspec: { script: 'rspec' }
+              rspec: {
+                script: 'rspec',
+                interruptible: true
+              }
             )
           end
 
@@ -29,8 +32,39 @@ module Gitlab
                 before_script: ["pwd"],
                 script: ["rspec"]
               },
+              interruptible: true,
               allow_failure: false,
               when: "on_success",
+              yaml_variables: []
+            })
+          end
+        end
+
+        context 'with job rules' do
+          let(:config) do
+            YAML.dump(
+              rspec: {
+                script: 'rspec',
+                rules: [
+                  { if: '$CI_COMMIT_REF_NAME == "master"' },
+                  { changes: %w[README.md] }
+                ]
+              }
+            )
+          end
+
+          it 'returns valid build attributes' do
+            expect(subject).to eq({
+              stage: 'test',
+              stage_idx: 1,
+              name: 'rspec',
+              options: { script: ['rspec'] },
+              rules: [
+                { if: '$CI_COMMIT_REF_NAME == "master"' },
+                { changes: %w[README.md] }
+              ],
+              allow_failure: false,
+              when: 'on_success',
               yaml_variables: []
             })
           end
@@ -1252,7 +1286,7 @@ module Gitlab
         end
       end
 
-      describe 'rules' do
+      context 'with when/rules conflict' do
         subject { Gitlab::Ci::YamlProcessor.new(YAML.dump(config)) }
 
         let(:config) do

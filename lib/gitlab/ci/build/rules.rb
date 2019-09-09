@@ -6,7 +6,14 @@ module Gitlab
       class Rules
         include ::Gitlab::Utils::StrongMemoize
 
-        Result = Struct.new(:when, :start_in)
+        Result = Struct.new(:when, :start_in) do
+          def build_attributes
+            {
+              when: self.when,
+              options: { start_in: start_in }.compact
+            }.compact
+          end
+        end
 
         def initialize(rule_hashes, default_when = 'on_success')
           @rule_list    = Rule.fabricate_list(rule_hashes)
