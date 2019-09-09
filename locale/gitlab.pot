@@ -2530,6 +2530,9 @@ msgstr ""
 msgid "ClusterIntegration|Alternatively"
 msgstr ""
 
+msgid "ClusterIntegration|Amazon EKS"
+msgstr ""
+
 msgid "ClusterIntegration|An error occurred when trying to contact the Google Cloud API. Please try again later."
 msgstr ""
 
@@ -2608,6 +2611,9 @@ msgstr ""
 msgid "ClusterIntegration|Create Kubernetes cluster"
 msgstr ""
 
+msgid "ClusterIntegration|Create cluster on"
+msgstr ""
+
 msgid "ClusterIntegration|Did you know?"
 msgstr ""
 
@@ -2657,6 +2663,9 @@ msgid "ClusterIntegration|GitLab-managed cluster"
 msgstr ""
 
 msgid "ClusterIntegration|Google Cloud Platform project"
+msgstr ""
+
+msgid "ClusterIntegration|Google GKE"
 msgstr ""
 
 msgid "ClusterIntegration|Google Kubernetes Engine"
@@ -2987,9 +2996,6 @@ msgid "ClusterIntegration|meets the requirements"
 msgstr ""
 
 msgid "ClusterIntegration|pricing"
-msgstr ""
-
-msgid "ClusterIntegration|properly configured"
 msgstr ""
 
 msgid "ClusterIntegration|sign up"
@@ -5518,7 +5524,7 @@ msgstr ""
 msgid "Google Takeout"
 msgstr ""
 
-msgid "Google authentication is not %{link_to_documentation}. Ask your GitLab administrator if you want to use this service."
+msgid "Google authentication is not %{link_start}property configured%{link_end}. Ask your GitLab administrator if you want to use this service."
 msgstr ""
 
 msgid "Got it"
@@ -10565,6 +10571,9 @@ msgstr ""
 msgid "Sign in via 2FA code"
 msgstr ""
 
+msgid "Sign in with Google"
+msgstr ""
+
 msgid "Sign out"
 msgstr ""
 
@@ -14180,7 +14189,7 @@ msgstr ""
 msgid "nounSeries|%{item}, and %{lastItem}"
 msgstr ""
 
-msgid "or"
+msgid "or %{link_start}create a new Google account%{link_end}"
 msgstr ""
 
 msgid "out of %d total test"

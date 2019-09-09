@@ -35,6 +35,12 @@ class Clusters::ClustersController < Clusters::BaseController
   end
 
   def new
+    return unless Feature.enabled?(:create_eks_clusters)
+
+    @gke_selected = params[:provider] == 'gke'
+    @eks_selected = params[:provider] == 'eks'
+
+    return redirect_to @authorize_url if @gke_selected && @authorize_url && !@valid_gcp_token
   end
 
   # Overridding ActionController::Metal#status is NOT a good idea
@@ -99,7 +105,7 @@ class Clusters::ClustersController < Clusters::BaseController
       validate_gcp_token
       user_cluster
 
-      render :new, locals: { active_tab: 'gcp' }
+      render :new, locals: { active_tab: 'create' }
     end
   end
 
@@ -116,7 +122,7 @@ class Clusters::ClustersController < Clusters::BaseController
       validate_gcp_token
       gcp_cluster
 
-      render :new, locals: { active_tab: 'user' }
+      render :new, locals: { active_tab: 'add' }
     end
   end
 
@@ -189,7 +195,8 @@ class Clusters::ClustersController < Clusters::BaseController
   end
 
   def generate_gcp_authorize_url
-    state = generate_session_key_redirect(clusterable.new_path.to_s)
+    params = Feature.enabled?(:create_eks_clusters) ? { provider: :gke } : {}
+    state = generate_session_key_redirect(clusterable.new_path(params).to_s)
 
     @authorize_url = GoogleApi::CloudPlatform::Client.new(
       nil, callback_google_api_auth_url,

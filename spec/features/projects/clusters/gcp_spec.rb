@@ -18,6 +18,8 @@ describe 'Gcp Cluster', :js do
     let(:project_id) { 'test-project-1234' }
 
     before do
+      stub_feature_flags(create_eks_clusters: false)
+
       allow_any_instance_of(Projects::ClustersController)
         .to receive(:token_in_session).and_return('token')
       allow_any_instance_of(Projects::ClustersController)
@@ -147,6 +149,7 @@ describe 'Gcp Cluster', :js do
 
   context 'when user has not signed with Google' do
     before do
+      stub_feature_flags(create_eks_clusters: false)
       visit project_clusters_path(project)
 
       click_link 'Add Kubernetes cluster'

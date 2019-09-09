@@ -73,8 +73,8 @@ describe Admin::ClustersController do
   end
 
   describe 'GET #new' do
-    def get_new
-      get :new
+    def get_new(provider: 'gke')
+      get :new, params: { provider: provider }
     end
 
     describe 'functionality for new cluster' do
@@ -85,6 +85,7 @@ describe Admin::ClustersController do
         end
 
         before do
+          stub_feature_flags(create_eks_clusters: false)
           allow(SecureRandom).to receive(:hex).and_return(key)
         end
 
@@ -93,6 +94,20 @@ describe Admin::ClustersController do
 
           expect(assigns(:authorize_url)).to include(key)
           expect(session[session_key_for_redirect_uri]).to eq(new_admin_cluster_path)
+        end
+
+        context 'when create_eks_clusters feature flag is enabled' do
+          before do
+            stub_feature_flags(create_eks_clusters: true)
+          end
+
+          context 'when selected provider is gke and no valid gcp token exists' do
+            it 'redirects to gcp authorize_url' do
+              get_new
+
+              expect(response).to redirect_to(assigns(:authorize_url))
+            end
+          end
         end
       end
 
