@@ -196,7 +196,7 @@ If approvals are [set at the project level](#editing-approvals), the
 default configuration (number of required approvals and approvers) can be
 overridden for each merge request in that project.
 
-One possible scenario would be to to assign a group of approvers at the project
+One possible scenario would be to assign a group of approvers at the project
 level and change them later when creating or editing the merge request.
 
 First, you have to enable this option in the project's settings:
