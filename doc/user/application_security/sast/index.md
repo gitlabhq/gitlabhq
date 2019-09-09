@@ -51,6 +51,10 @@ To run a SAST job, you need GitLab Runner with the
 executor running in privileged mode. If you're using the shared Runners on GitLab.com,
 this is enabled by default.
 
+CAUTION: **Caution:**
+If you use your own Runners, make sure that the Docker version you have installed
+is **not** `19.03.00`. See [troubleshooting information](#error-response-from-daemon-error-processing-tar-file-docker-tar-relocation-error) for details.
+
 ## Supported languages and frameworks
 
 The following table shows which languages, package managers and frameworks are supported and which tools are used.
@@ -350,14 +354,11 @@ Once a vulnerability is found, you can interact with it. Read more on how to
 For more information about the vulnerabilities database update, check the
 [maintenance table](../index.md#maintenance-and-update-of-the-vulnerabilities-database).
 
-<!-- ## Troubleshooting
+## Troubleshooting
 
-Include any troubleshooting steps that you can foresee. If you know beforehand what issues
-one might have when setting this up, or when something is changed, or on upgrading, it's
-important to describe those, too. Think of things that may go wrong and include them here.
-This is important to minimize requests for support, and to avoid doc comments with
-questions that you know someone might ask.
+### Error response from daemon: error processing tar file: docker-tar: relocation error
 
-Each scenario can be a third-level heading, e.g. `### Getting error message X`.
-If you have none to add when creating a doc, leave this section in place
-but commented out to help encourage others to add to it in the future. -->
+This error occurs when the Docker version used to run the SAST job is `19.03.00`.
+You are advised to update to Docker `19.03.01` or greater. Older versions are not
+affected. Read more in
+[this issue](https://gitlab.com/gitlab-org/gitlab-ee/issues/13830#note_211354992 "Current SAST container fails").
