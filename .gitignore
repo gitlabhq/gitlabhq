@@ -65,6 +65,7 @@ eslint-report.html
 /vendor/gitaly-ruby
 /builds*
 /.gitlab_workhorse_secret
+/.gitlab_pages_shared_secret
 /webpack-report/
 /knapsack/
 /rspec_flaky/
