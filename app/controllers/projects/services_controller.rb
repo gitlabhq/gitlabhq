@@ -18,10 +18,23 @@ class Projects::ServicesController < Projects::ApplicationController
   def update
     @service.attributes = service_params[:service]
 
-    if @service.save(context: :manual_change)
-      redirect_to(project_settings_integrations_path(@project), notice: success_message)
-    else
-      render 'edit'
+    saved = @service.save(context: :manual_change)
+
+    respond_to do |format|
+      format.html do
+        if saved
+          redirect_to project_settings_integrations_path(@project),
+            notice: success_message
+        else
+          render 'edit'
+        end
+      end
+
+      format.json do
+        status = saved ? :ok : :unprocessable_entity
+
+        render json: serialize_as_json, status: status
+      end
     end
   end
 
@@ -66,5 +79,11 @@ class Projects::ServicesController < Projects::ApplicationController
 
   def ensure_service_enabled
     render_404 unless service
+  end
+
+  def serialize_as_json
+    @service
+      .as_json(only: @service.json_fields)
+      .merge(errors: @service.errors.as_json)
   end
 end
