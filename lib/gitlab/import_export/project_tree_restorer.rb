@@ -58,11 +58,13 @@ module Gitlab
       # the configuration yaml file too.
       # Finally, it updates each attribute in the newly imported project.
       def create_relations
-        default_relation_list.each do |relation|
-          if relation.is_a?(Hash)
-            create_sub_relations(relation, @tree_hash)
-          elsif @tree_hash[relation.to_s].present?
-            save_relation_hash(@tree_hash[relation.to_s], relation)
+        project_relations_without_project_members.each do |relation_key, relation_definition|
+          relation_key_s = relation_key.to_s
+
+          if relation_definition.present?
+            create_sub_relations(relation_key_s, relation_definition, @tree_hash)
+          elsif @tree_hash[relation_key_s].present?
+            save_relation_hash(relation_key_s, @tree_hash[relation_key_s])
           end
         end
 
@@ -71,7 +73,7 @@ module Gitlab
         @saved
       end
 
-      def save_relation_hash(relation_hash_batch, relation_key)
+      def save_relation_hash(relation_key, relation_hash_batch)
         relation_hash = create_relation(relation_key, relation_hash_batch)
 
         remove_group_models(relation_hash) if relation_hash.is_a?(Array)
@@ -91,10 +93,13 @@ module Gitlab
         end
       end
 
-      def default_relation_list
-        reader.tree.reject do |model|
-          model.is_a?(Hash) && model[:project_members]
-        end
+      def project_relations_without_project_members
+        # We remove `project_members` as they are deserialized separately
+        project_relations.except(:project_members)
+      end
+
+      def project_relations
+        reader.attributes_finder.find_relations_tree(:project)
       end
 
       def restore_project
@@ -107,7 +112,7 @@ module Gitlab
 
       def project_params
         @project_params ||= begin
-          attrs = json_params.merge(override_params).merge(visibility_level)
+          attrs = json_params.merge(override_params).merge(visibility_level, external_label)
 
           # Cleaning all imported and overridden params
           Gitlab::ImportExport::AttributeCleaner.clean(relation_hash: attrs,
@@ -135,6 +140,13 @@ module Gitlab
         { 'visibility_level' => level }
       end
 
+      def external_label
+        label = override_params['external_authorization_classification_label'].presence ||
+          json_params['external_authorization_classification_label'].presence
+
+        { 'external_authorization_classification_label' => label }
+      end
+
       # Given a relation hash containing one or more models and its relationships,
       # loops through each model and each object from a model type and
       # and assigns its correspondent attributes hash from +tree_hash+
@@ -143,8 +155,7 @@ module Gitlab
       # issue, finds any subrelations such as notes, creates them and assign them back to the hash
       #
       # Recursively calls this method if the sub-relation is a hash containing more sub-relations
-      def create_sub_relations(relation, tree_hash, save: true)
-        relation_key = relation.keys.first.to_s
+      def create_sub_relations(relation_key, relation_definition, tree_hash, save: true)
         return if tree_hash[relation_key].blank?
 
         tree_array = [tree_hash[relation_key]].flatten
@@ -164,13 +175,13 @@ module Gitlab
           # But we can't have it in the upper level or GC won't get rid of the AR objects
           # after we save the batch.
           Project.transaction do
-            process_sub_relation(relation, relation_item)
+            process_sub_relation(relation_key, relation_definition, relation_item)
 
             # For every subrelation that hangs from Project, save the associated records altogether
             # This effectively batches all records per subrelation item, only keeping those in memory
             # We have to keep in mind that more batch granularity << Memory, but >> Slowness
             if save
-              save_relation_hash([relation_item], relation_key)
+              save_relation_hash(relation_key, [relation_item])
               tree_hash[relation_key].delete(relation_item)
             end
           end
@@ -179,37 +190,35 @@ module Gitlab
         tree_hash.delete(relation_key) if save
       end
 
-      def process_sub_relation(relation, relation_item)
-        relation.values.flatten.each do |sub_relation|
+      def process_sub_relation(relation_key, relation_definition, relation_item)
+        relation_definition.each do |sub_relation_key, sub_relation_definition|
           # We just use author to get the user ID, do not attempt to create an instance.
-          next if sub_relation == :author
+          next if sub_relation_key == :author
 
-          create_sub_relations(sub_relation, relation_item, save: false) if sub_relation.is_a?(Hash)
+          sub_relation_key_s = sub_relation_key.to_s
 
-          relation_hash, sub_relation = assign_relation_hash(relation_item, sub_relation)
-          relation_item[sub_relation.to_s] = create_relation(sub_relation, relation_hash) unless relation_hash.blank?
+          # create dependent relations if present
+          if sub_relation_definition.present?
+            create_sub_relations(sub_relation_key_s, sub_relation_definition, relation_item, save: false)
+          end
+
+          # transform relation hash to actual object
+          sub_relation_hash = relation_item[sub_relation_key_s]
+          if sub_relation_hash.present?
+            relation_item[sub_relation_key_s] = create_relation(sub_relation_key, sub_relation_hash)
+          end
         end
       end
 
-      def assign_relation_hash(relation_item, sub_relation)
-        if sub_relation.is_a?(Hash)
-          relation_hash = relation_item[sub_relation.keys.first.to_s]
-          sub_relation = sub_relation.keys.first
-        else
-          relation_hash = relation_item[sub_relation.to_s]
-        end
-
-        [relation_hash, sub_relation]
-      end
-
-      def create_relation(relation, relation_hash_list)
+      def create_relation(relation_key, relation_hash_list)
         relation_array = [relation_hash_list].flatten.map do |relation_hash|
-          Gitlab::ImportExport::RelationFactory.create(relation_sym: relation.to_sym,
-                                                       relation_hash: relation_hash,
-                                                       members_mapper: members_mapper,
-                                                       user: @user,
-                                                       project: @restored_project,
-                                                       excluded_keys: excluded_keys_for_relation(relation))
+          Gitlab::ImportExport::RelationFactory.create(
+            relation_sym: relation_key.to_sym,
+            relation_hash: relation_hash,
+            members_mapper: members_mapper,
+            user: @user,
+            project: @restored_project,
+            excluded_keys: excluded_keys_for_relation(relation_key))
         end.compact
 
         relation_hash_list.is_a?(Array) ? relation_array : relation_array.first

@@ -810,6 +810,9 @@ msgstr ""
 msgid "AdminArea|You’re about to stop all jobs.This will halt all current jobs that are running."
 msgstr ""
 
+msgid "AdminDashboard|Error loading the statistics. Please try again"
+msgstr ""
+
 msgid "AdminProjects| You’re about to permanently delete the project %{projectName}, its repository, and all related resources including issues, merge requests, etc..  Once you confirm and press %{strong_start}Delete project%{strong_end}, it cannot be undone or recovered."
 msgstr ""
 
@@ -835,6 +838,30 @@ msgid "AdminSettings|Specify a domain to use by default for every project's Auto
 msgstr ""
 
 msgid "AdminSettings|When creating a new environment variable it will be protected by default."
+msgstr ""
+
+msgid "AdminStatistics|Active Users"
+msgstr ""
+
+msgid "AdminStatistics|Forks"
+msgstr ""
+
+msgid "AdminStatistics|Issues"
+msgstr ""
+
+msgid "AdminStatistics|Merge Requests"
+msgstr ""
+
+msgid "AdminStatistics|Milestones"
+msgstr ""
+
+msgid "AdminStatistics|Notes"
+msgstr ""
+
+msgid "AdminStatistics|SSH Keys"
+msgstr ""
+
+msgid "AdminStatistics|Snippets"
 msgstr ""
 
 msgid "AdminUsers|2FA Disabled"
@@ -2035,10 +2062,10 @@ msgstr ""
 msgid "Certificate (PEM)"
 msgstr ""
 
-msgid "Change Label"
+msgid "Change assignee"
 msgstr ""
 
-msgid "Change assignee"
+msgid "Change label"
 msgstr ""
 
 msgid "Change milestone"
@@ -2503,6 +2530,9 @@ msgstr ""
 msgid "ClusterIntegration|Alternatively"
 msgstr ""
 
+msgid "ClusterIntegration|Amazon EKS"
+msgstr ""
+
 msgid "ClusterIntegration|An error occurred when trying to contact the Google Cloud API. Please try again later."
 msgstr ""
 
@@ -2581,6 +2611,9 @@ msgstr ""
 msgid "ClusterIntegration|Create Kubernetes cluster"
 msgstr ""
 
+msgid "ClusterIntegration|Create cluster on"
+msgstr ""
+
 msgid "ClusterIntegration|Did you know?"
 msgstr ""
 
@@ -2630,6 +2663,9 @@ msgid "ClusterIntegration|GitLab-managed cluster"
 msgstr ""
 
 msgid "ClusterIntegration|Google Cloud Platform project"
+msgstr ""
+
+msgid "ClusterIntegration|Google GKE"
 msgstr ""
 
 msgid "ClusterIntegration|Google Kubernetes Engine"
@@ -2962,9 +2998,6 @@ msgstr ""
 msgid "ClusterIntegration|pricing"
 msgstr ""
 
-msgid "ClusterIntegration|properly configured"
-msgstr ""
-
 msgid "ClusterIntegration|sign up"
 msgstr ""
 
@@ -3017,6 +3050,9 @@ msgid "Comment form position"
 msgstr ""
 
 msgid "Comment is being updated"
+msgstr ""
+
+msgid "Comment/Reply (quoting selected text)"
 msgstr ""
 
 msgid "Comments"
@@ -4189,7 +4225,13 @@ msgstr ""
 msgid "Edit comment"
 msgstr ""
 
+msgid "Edit description"
+msgstr ""
+
 msgid "Edit environment"
+msgstr ""
+
+msgid "Edit epic description"
 msgstr ""
 
 msgid "Edit file"
@@ -4204,16 +4246,7 @@ msgstr ""
 msgid "Edit identity for %{user_name}"
 msgstr ""
 
-msgid "Edit issue"
-msgstr ""
-
 msgid "Edit issues"
-msgstr ""
-
-msgid "Edit last comment (when focused on an empty textarea)"
-msgstr ""
-
-msgid "Edit merge request"
 msgstr ""
 
 msgid "Edit public deploy key"
@@ -4223,6 +4256,12 @@ msgid "Edit stage"
 msgstr ""
 
 msgid "Edit wiki page"
+msgstr ""
+
+msgid "Edit your most recent comment in a thread (from an empty textarea)"
+msgstr ""
+
+msgid "Editing"
 msgstr ""
 
 msgid "Email"
@@ -4541,6 +4580,9 @@ msgid "Environments|protected"
 msgstr ""
 
 msgid "Epic"
+msgstr ""
+
+msgid "Epics (Ultimate / Gold license only)"
 msgstr ""
 
 msgid "Error"
@@ -5100,9 +5142,6 @@ msgstr ""
 msgid "Find the newly extracted <code>Takeout/Google Code Project Hosting/GoogleCodeProjectHosting.json</code> file."
 msgstr ""
 
-msgid "Finding Project File"
-msgstr ""
-
 msgid "Fingerprint"
 msgstr ""
 
@@ -5125,12 +5164,6 @@ msgid "FlowdockService|Flowdock Git source token"
 msgstr ""
 
 msgid "FlowdockService|Flowdock is a collaboration web app for technical teams."
-msgstr ""
-
-msgid "Focus Filter"
-msgstr ""
-
-msgid "Focus Search"
 msgstr ""
 
 msgid "FogBugz Email"
@@ -5376,6 +5409,9 @@ msgstr ""
 msgid "Go back"
 msgstr ""
 
+msgid "Go back (while searching for files"
+msgstr ""
+
 msgid "Go back to %{startTag}Open issues%{endTag} and select some issues to add to your board."
 msgstr ""
 
@@ -5397,16 +5433,17 @@ msgstr ""
 msgid "Go to file"
 msgstr ""
 
-msgid "Go to file permalink"
+msgid "Go to file (MRs only)"
+msgstr ""
+
+
+msgid "Go to file permalink (while viewing a file)"
 msgstr ""
 
 msgid "Go to files"
 msgstr ""
 
-msgid "Go to finding file"
-msgstr ""
-
-msgid "Go to groups"
+msgid "Go to find file"
 msgstr ""
 
 msgid "Go to issue boards"
@@ -5427,22 +5464,19 @@ msgstr ""
 msgid "Go to metrics"
 msgstr ""
 
-msgid "Go to milestones"
-msgstr ""
-
-msgid "Go to network graph"
-msgstr ""
-
 msgid "Go to parent"
 msgstr ""
 
 msgid "Go to project"
 msgstr ""
 
-msgid "Go to projects"
+msgid "Go to releases"
 msgstr ""
 
 msgid "Go to repository charts"
+msgstr ""
+
+msgid "Go to repository graph"
 msgstr ""
 
 msgid "Go to snippets"
@@ -5451,19 +5485,37 @@ msgstr ""
 msgid "Go to the activity feed"
 msgstr ""
 
+msgid "Go to the milestone list"
+msgstr ""
+
 msgid "Go to the project's activity feed"
 msgstr ""
 
 msgid "Go to the project's overview page"
 msgstr ""
 
-msgid "Go to todos"
-msgstr ""
-
 msgid "Go to wiki"
 msgstr ""
 
+msgid "Go to your To-Do list"
+msgstr ""
+
 msgid "Go to your fork"
+msgstr ""
+
+msgid "Go to your groups"
+msgstr ""
+
+msgid "Go to your issues"
+msgstr ""
+
+msgid "Go to your merge requests"
+msgstr ""
+
+msgid "Go to your projects"
+msgstr ""
+
+msgid "Go to your snippets"
 msgstr ""
 
 msgid "Google Code import"
@@ -5472,7 +5524,7 @@ msgstr ""
 msgid "Google Takeout"
 msgstr ""
 
-msgid "Google authentication is not %{link_to_documentation}. Ask your GitLab administrator if you want to use this service."
+msgid "Google authentication is not %{link_start}property configured%{link_end}. Ask your GitLab administrator if you want to use this service."
 msgstr ""
 
 msgid "Got it"
@@ -6231,6 +6283,9 @@ msgid "IssueTracker|YouTrack issue tracker"
 msgstr ""
 
 msgid "Issues"
+msgstr ""
+
+msgid "Issues / Merge Requests"
 msgstr ""
 
 msgid "Issues can be bugs, tasks or ideas to be discussed. Also, issues are searchable and filterable."
@@ -7254,18 +7309,6 @@ msgstr ""
 msgid "Move this issue to another project."
 msgstr ""
 
-msgid "Move to next file"
-msgstr ""
-
-msgid "Move to next unresolved discussion"
-msgstr ""
-
-msgid "Move to previous file"
-msgstr ""
-
-msgid "Move to previous unresolved discussion"
-msgstr ""
-
 msgid "MoveIssue|Cannot move issue due to insufficient permissions!"
 msgstr ""
 
@@ -7324,9 +7367,6 @@ msgid "Nav|Sign out and sign in with a different account"
 msgstr ""
 
 msgid "Network"
-msgstr ""
-
-msgid "Network Graph"
 msgstr ""
 
 msgid "Never"
@@ -7449,6 +7489,12 @@ msgid "Newly registered users will by default be external"
 msgstr ""
 
 msgid "Next"
+msgstr ""
+
+msgid "Next file in diff (MRs only)"
+msgstr ""
+
+msgid "Next unresolved discussion (MRs only)"
 msgstr ""
 
 msgid "Nickname"
@@ -8446,6 +8492,12 @@ msgstr ""
 msgid "Previous Artifacts"
 msgstr ""
 
+msgid "Previous file in diff (MRs only)"
+msgstr ""
+
+msgid "Previous unresolved discussion (MRs only)"
+msgstr ""
+
 msgid "Prioritize"
 msgstr ""
 
@@ -8824,10 +8876,7 @@ msgstr ""
 msgid "Project Badges"
 msgstr ""
 
-msgid "Project File"
-msgstr ""
-
-msgid "Project Files browsing"
+msgid "Project Files"
 msgstr ""
 
 msgid "Project ID"
@@ -9621,9 +9670,6 @@ msgstr ""
 msgid "Replaced all labels with %{label_references} %{label_text}."
 msgstr ""
 
-msgid "Reply (quoting selected text)"
-msgstr ""
-
 msgid "Reply by email"
 msgstr ""
 
@@ -9670,6 +9716,9 @@ msgid "Reports|no changed test results"
 msgstr ""
 
 msgid "Repository"
+msgstr ""
+
+msgid "Repository Graph"
 msgstr ""
 
 msgid "Repository Settings"
@@ -10499,9 +10548,6 @@ msgstr ""
 msgid "Show whitespace changes"
 msgstr ""
 
-msgid "Show/hide this dialog"
-msgstr ""
-
 msgid "Showing %d event"
 msgid_plural "Showing %d events"
 msgstr[0] ""
@@ -10523,6 +10569,9 @@ msgid "Sign in / Register"
 msgstr ""
 
 msgid "Sign in via 2FA code"
+msgstr ""
+
+msgid "Sign in with Google"
 msgstr ""
 
 msgid "Sign out"
@@ -10936,6 +10985,9 @@ msgstr ""
 msgid "Start date"
 msgstr ""
 
+msgid "Start search"
+msgstr ""
+
 msgid "Start the Runner!"
 msgstr ""
 
@@ -10964,6 +11016,9 @@ msgid "Starts at (UTC)"
 msgstr ""
 
 msgid "State your message to activate"
+msgstr ""
+
+msgid "Statistics"
 msgstr ""
 
 msgid "Status"
@@ -12272,6 +12327,9 @@ msgid "Toggle sidebar"
 msgstr ""
 
 msgid "Toggle the Performance Bar"
+msgstr ""
+
+msgid "Toggle this dialog"
 msgstr ""
 
 msgid "Toggle thread"
@@ -14131,7 +14189,7 @@ msgstr ""
 msgid "nounSeries|%{item}, and %{lastItem}"
 msgstr ""
 
-msgid "or"
+msgid "or %{link_start}create a new Google account%{link_end}"
 msgstr ""
 
 msgid "out of %d total test"

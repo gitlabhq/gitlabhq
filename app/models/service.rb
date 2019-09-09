@@ -107,6 +107,13 @@ class Service < ApplicationRecord
     []
   end
 
+  # Expose a list of fields in the JSON endpoint.
+  #
+  # This list is used in `Service#as_json(only: json_fields)`.
+  def json_fields
+    %w(active)
+  end
+
   def test_data(project, user)
     Gitlab::DataBuilder::Push.build_sample(project, user)
   end

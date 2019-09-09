@@ -89,7 +89,7 @@ describe('Applications', () => {
     });
 
     it('renders a row for Knative', () => {
-      expect(vm.$el.querySelector('.js-cluster-application-row-knative')).toBeNull();
+      expect(vm.$el.querySelector('.js-cluster-application-row-knative')).not.toBeNull();
     });
   });
 
@@ -126,7 +126,7 @@ describe('Applications', () => {
     });
 
     it('renders a row for Knative', () => {
-      expect(vm.$el.querySelector('.js-cluster-application-row-knative')).toBeNull();
+      expect(vm.$el.querySelector('.js-cluster-application-row-knative')).not.toBeNull();
     });
   });
 

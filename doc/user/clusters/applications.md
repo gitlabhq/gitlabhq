@@ -19,13 +19,11 @@ This namespace:
 - Is created once.
 - Has a non-configurable name.
 
-To see a list of available applications to install:
+To see a list of available applications to install. For a:
 
-1. For a:
-   - [Project-level cluster](../project/clusters/index.md),
-     navigate to your project's **Operations > Kubernetes**.
-   - [Group-level cluster](../group/clusters/index.md),
-     navigate to your group's **Kubernetes** page.
+- [Project-level cluster](../project/clusters/index.md), navigate to your project's
+  **Operations > Kubernetes**.
+- [Group-level cluster](../group/clusters/index.md), navigate to your group's **Kubernetes** page.
 
 Install Helm first as it's used to install other applications.
 
@@ -61,8 +59,8 @@ can lead to confusion during deployments.
 
 ### Helm
 
-> - Available for project-level clusters since GitLab 10.2.
-> - Available for group-level clusters since GitLab 11.6.
+> - Introduced in GitLab 10.2 for project-level clusters.
+> - Introduced in GitLab 11.6 for group-level clusters.
 
 [Helm](https://docs.helm.sh/) is a package manager for Kubernetes and is
 required to install all the other applications. It is installed in its
@@ -71,8 +69,7 @@ environment.
 
 ### Cert-Manager
 
-> - Available for project-level clusters since GitLab 11.6.
-> - Available for group-level clusters since GitLab 11.6.
+> Introduced in GitLab 11.6 for project- and group-level clusters.
 
 [Cert-Manager](https://docs.cert-manager.io/en/latest/) is a native
 Kubernetes certificate management controller that helps with issuing
@@ -91,8 +88,8 @@ chart was used.
 
 ### GitLab Runner
 
-> - Available for project-level clusters since GitLab 10.6.
-> - Available for group-level clusters since GitLab 11.10.
+> - Introduced in GitLab 10.6 for project-level clusters.
+> - Introduced in GitLab 11.10 for group-level clusters.
 
 [GitLab Runner](https://docs.gitlab.com/runner/) is the open source
 project that is used to run your jobs and send the results back to
@@ -112,8 +109,8 @@ file.
 
 ### Ingress
 
-> - Available for project-level clusters since GitLab 10.2.
-> - Available for group-level clusters since GitLab 11.6.
+> - Introduced in GitLab 10.2 for project-level clusters.
+> - Introduced in GitLab 11.6 for group-level clusters.
 
 [Ingress](https://kubernetes.github.io/ingress-nginx/) can provide load
 balancing, SSL termination, and name-based virtual hosting. It acts as a
@@ -129,7 +126,8 @@ file.
 
 ### JupyterHub
 
-> Available for project-level clusters since GitLab 11.0.
+> - Introduced in GitLab 11.0 for project-level clusters.
+> - Introduced in GitLab 12.3 for group-level clusters.
 
 [JupyterHub](https://jupyterhub.readthedocs.io/en/stable/) is a
 multi-user service for managing notebooks across a team. [Jupyter
@@ -138,8 +136,9 @@ web-based interactive programming environment used for data analysis,
 visualization, and machine learning.
 
 Authentication will be enabled only for [project
-members](../project/members/index.md) with [Developer or
-higher](../permissions.md) access to the project.
+members](../project/members/index.md) for project-level clusters and group
+members for group-level clusters with [Developer or
+higher](../permissions.md) access to the associated project or group.
 
 We use a [custom Jupyter
 image](https://gitlab.com/gitlab-org/jupyterhub-user-image/blob/master/Dockerfile)
@@ -161,7 +160,7 @@ file.
 
 #### Jupyter Git Integration
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/28783) in GitLab 12 for project-level clusters.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/28783) in GitLab 12.0 for project-level clusters.
 
 When installing JupyterHub onto your Kubernetes cluster, [JupyterLab's Git extension](https://github.com/jupyterlab/jupyterlab-git)
 is automatically provisioned and configured using the authenticated user's:
@@ -188,7 +187,8 @@ You can clone repositories from the files tab in Jupyter:
 
 ### Knative
 
-> Available for project-level clusters since GitLab 11.5.
+> - Introduced in GitLab 11.5 for project-level clusters.
+> - Introduced in GitLab 12.3 for group- and instance-level clusters.
 
 [Knative](https://cloud.google.com/knative) provides a platform to
 create, deploy, and manage serverless workloads from a Kubernetes
@@ -211,8 +211,8 @@ chart is used to install this application.
 
 ### Prometheus
 
-> - Available for project-level clusters since GitLab 10.4.
-> - Available for group-level clusters since GitLab 11.11.
+> - Introduced in GitLab 10.4 for project-level clusters.
+> - Introduced in GitLab 11.11 for group-level clusters.
 
 [Prometheus](https://prometheus.io/docs/introduction/overview/) is an
 open-source monitoring and alerting system useful to supervise your
@@ -252,8 +252,7 @@ chart plus the values set by
 
 ## Uninstalling applications
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/60665) in
-> GitLab 11.11.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/60665) in GitLab 11.11.
 
 The applications below can be uninstalled.
 

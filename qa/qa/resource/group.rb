@@ -10,6 +10,7 @@ module QA
       end
 
       attribute :id
+      attribute :name
 
       def initialize
         @path = Runtime::Namespace.name
@@ -45,6 +46,11 @@ module QA
         resource_web_url(api_get)
       rescue ResourceNotFoundError
         super
+      end
+
+      def add_member(user, access_level = '30')
+        # 30 = developer access
+        post Runtime::API::Request.new(api_client, api_members_path).url, { user_id: user.id, access_level: access_level }
       end
 
       def api_get_path

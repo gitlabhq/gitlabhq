@@ -6,14 +6,15 @@ your self-hosted GitLab instance.
 ## Overview
 
 NOTE: **Note:**
-While these instructions will always work for users on GitLab.com, if you are an
-administrator of a self-hosted GitLab instance, you will need to enable the
-[GitHub integration][gh-import] in order for users to follow the preferred
-import method described on this page. If this is not enabled, users can alternatively import their
-GitHub repositories using a [personal access token](#using-a-github-token) from GitHub,
-but this method will not be able to associate all user activity (such as issues and pull requests)
-with matching GitLab users. As an administrator of a self-hosted GitLab instance, you can also use
-the [GitHub rake task](../../../administration/raketasks/github_import.md) to import projects from
+These instructions work for users on GitLab.com, but if you are an
+administrator of a self-hosted GitLab instance or if you are importing from GitHub Enterprise,
+you must enable [GitHub integration][gh-import]. GitHub integration is the only method for
+importing from GitHub Enterprise. If you are using GitLab.com, you can alternatively import
+GitHub repositories using a [personal access token](#using-a-github-token),
+but this method is not recommended because it cannot associate all user activity
+(such as issues and pull requests) with matching GitLab users.
+If you are an administrator of a self-hosted GitLab instance, you can also use the
+[GitHub rake task](../../../administration/raketasks/github_import.md) to import projects from
 GitHub without the constraints of a Sidekiq worker.
 
 The following aspects of a project are imported:
@@ -76,7 +77,7 @@ User-matching attempts occur in that order, and if a user is not identified eith
 the user account that is performing the import.
 
 NOTE: **Note:**
-If you are using a self-hosted GitLab instance, this process requires that you have configured the
+If you are using a self-hosted GitLab instance or if you are importing from GitHub Enterprise, this process requires that you have configured
 [GitHub integration][gh-import].
 
 1. From the top navigation bar, click **+** and select **New project**.
@@ -88,9 +89,13 @@ If you are using a self-hosted GitLab instance, this process requires that you h
 ### Using a GitHub token
 
 NOTE: **Note:**
-For a proper author/assignee mapping for issues and pull requests, the [GitHub integration method (above)](#using-the-github-integration)
-should be used instead of the personal access token. If you are using GitLab.com or a self-hosted GitLab instance with the GitHub
-integration enabled, that should be the preferred method to import your repositories. Read more in the [How it works](#how-it-works) section.
+Using a personal access token to import projects is not recommended. If you are a GitLab.com user,
+you can use a personal access token to import your project from GitHub, but this method cannot
+associate all user activity (such as issues and pull requests) with matching GitLab users.
+If you are an administrator of a self-hosted GitLab instance or if you are importing from
+GitHub Enterprise, you cannot use a personal access token.
+The [GitHub integration method (above)](#using-the-github-integration) is recommended for all users.
+Read more in the [How it works](#how-it-works) section.
 
 If you are not using the GitHub integration, you can still perform an authorization with GitHub to grant GitLab access your repositories:
 

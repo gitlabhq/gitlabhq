@@ -42,6 +42,7 @@ module Gitlab
           yaml_variables: yaml_variables(name),
           needs_attributes: job[:needs]&.map { |need| { name: need } },
           interruptible: job[:interruptible],
+          rules: job[:rules],
           options: {
             image: job[:image],
             services: job[:services],

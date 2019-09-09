@@ -1,6 +1,8 @@
 - breadcrumb_title _('Kubernetes')
 - page_title _('Kubernetes Cluster')
-- active_tab = local_assigns.fetch(:active_tab, 'gcp')
+- create_eks_enabled = Feature.enabled?(:create_eks_clusters)
+- active_tab = local_assigns.fetch(:active_tab, 'create')
+- link_end = '<a/>'.html_safe
 = javascript_include_tag 'https://apis.google.com/js/api.js'
 
 = render_gcp_signup_offer
@@ -11,26 +13,36 @@
   .col-md-9.js-toggle-container
     %ul.nav-links.nav-tabs.gitlab-tabs.nav{ role: 'tablist' }
       %li.nav-item{ role: 'presentation' }
-        %a.nav-link{ href: '#create-gcp-cluster-pane', id: 'create-gcp-cluster-tab', class: active_when(active_tab == 'gcp'), data: { toggle: 'tab' }, role: 'tab' }
+        %a.nav-link{ href: '#create-cluster-pane', id: 'create-cluster-tab', class: active_when(active_tab == 'create'), data: { toggle: 'tab' }, role: 'tab' }
           %span Create new Cluster on GKE
       %li.nav-item{ role: 'presentation' }
-        %a.nav-link{ href: '#add-user-cluster-pane', id: 'add-user-cluster-tab', class: active_when(active_tab == 'user'), data: { toggle: 'tab' }, role: 'tab' }
+        %a.nav-link{ href: '#add-cluster-pane', id: 'add-cluster-tab', class: active_when(active_tab == 'add'), data: { toggle: 'tab' }, role: 'tab' }
           %span Add existing cluster
 
     .tab-content.gitlab-tab-content
-      .tab-pane{ id: 'create-gcp-cluster-pane', class: active_when(active_tab == 'gcp'), role: 'tabpanel' }
-        = render 'clusters/clusters/gcp/header'
-        - if @valid_gcp_token
-          = render 'clusters/clusters/gcp/form'
-        - elsif @authorize_url
-          .signin-with-google
-            = link_to(image_tag('auth_buttons/signin_with_google.png', width: '191px'), @authorize_url)
-            = _('or')
-            = link_to('create a new Google account', 'https://accounts.google.com/SignUpWithoutGmail?service=cloudconsole&continue=https%3A%2F%2Fconsole.cloud.google.com%2Ffreetrial%3Futm_campaign%3D2018_cpanel%26utm_source%3Dgitlab%26utm_medium%3Dreferral', target: '_blank', rel: 'noopener noreferrer')
-        - else
-          - link = link_to(s_('ClusterIntegration|properly configured'), help_page_path("integration/google"), target: '_blank', rel: 'noopener noreferrer')
-          = s_('Google authentication is not %{link_to_documentation}. Ask your GitLab administrator if you want to use this service.').html_safe % { link_to_documentation: link }
+      - if create_eks_enabled
+        .tab-pane{ id: 'create-cluster-pane', class: active_when(active_tab == 'create'), role: 'tabpanel' }
+          - if @gke_selected && @valid_gcp_token
+            = render 'clusters/clusters/gcp/header'
+            = render 'clusters/clusters/gcp/form'
+          - elsif @eks_selected
+            = render 'clusters/clusters/eks/index'
+          - else
+            = render 'clusters/clusters/cloud_providers/cloud_provider_selector'
+      - else
+        .tab-pane{ id: 'create-cluster-pane', class: active_when(active_tab == 'create'), role: 'tabpanel' }
+          = render 'clusters/clusters/gcp/header'
+          - if @valid_gcp_token
+            = render 'clusters/clusters/gcp/form'
+          - elsif @authorize_url
+            .signin-with-google
+              - create_account_link = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: 'https://accounts.google.com/SignUpWithoutGmail?service=cloudconsole&continue=https%3A%2F%2Fconsole.cloud.google.com%2Ffreetrial%3Futm_campaign%3D2018_cpanel%26utm_source%3Dgitlab%26utm_medium%3Dreferral' }
+              = link_to(image_tag('auth_buttons/signin_with_google.png', width: '191px', alt: _('Sign in with Google')), @authorize_url)
+              = s_('or %{link_start}create a new Google account%{link_end}').html_safe % { link_start: create_account_link, link_end: link_end }
+          - else
+            - documentation_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path("integration/google") }
+            = s_('Google authentication is not %{link_start}property configured%{link_end}. Ask your GitLab administrator if you want to use this service.').html_safe % { link_start: documentation_link_start, link_end: link_end }
 
-      .tab-pane{ id: 'add-user-cluster-pane', class: active_when(active_tab == 'user'), role: 'tabpanel' }
+      .tab-pane{ id: 'add-cluster-pane', class: active_when(active_tab == 'add'), role: 'tabpanel' }
         = render 'clusters/clusters/user/header'
         = render 'clusters/clusters/user/form'

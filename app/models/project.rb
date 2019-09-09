@@ -291,6 +291,8 @@ class Project < ApplicationRecord
   has_many :remote_mirrors, inverse_of: :project
   has_many :cycle_analytics_stages, class_name: 'Analytics::CycleAnalytics::ProjectStage'
 
+  has_many :external_pull_requests, inverse_of: :project
+
   accepts_nested_attributes_for :variables, allow_destroy: true
   accepts_nested_attributes_for :project_feature, update_only: true
   accepts_nested_attributes_for :import_data

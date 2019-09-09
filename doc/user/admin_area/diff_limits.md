@@ -6,6 +6,8 @@ type: reference
 
 You can set a maximum size for display of diff files (patches).
 
+For details about diff files, [View changes between files](../project/merge_requests/index.md#view-changes-between-file-versions).
+
 ## Maximum diff patch size
 
 Diff files which exceed this value will be presented as 'too large' and won't

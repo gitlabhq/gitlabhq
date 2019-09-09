@@ -61,6 +61,10 @@ module QA
           end
         end
 
+        def sign_out_if_signed_in
+          sign_out if has_personal_area?(wait: 0)
+        end
+
         def click_settings_link
           retry_until(reload: false) do
             within_user_menu do

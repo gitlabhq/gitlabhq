@@ -23,6 +23,7 @@ describe Ci::CreatePipelineService do
       trigger_request: nil,
       variables_attributes: nil,
       merge_request: nil,
+      external_pull_request: nil,
       push_options: nil,
       source_sha: nil,
       target_sha: nil,
@@ -36,8 +37,11 @@ describe Ci::CreatePipelineService do
                  source_sha: source_sha,
                  target_sha: target_sha }
 
-      described_class.new(project, user, params).execute(
-        source, save_on_errors: save_on_errors, trigger_request: trigger_request, merge_request: merge_request)
+      described_class.new(project, user, params).execute(source,
+        save_on_errors: save_on_errors,
+        trigger_request: trigger_request,
+        merge_request: merge_request,
+        external_pull_request: external_pull_request)
     end
     # rubocop:enable Metrics/ParameterLists
 
@@ -756,33 +760,32 @@ describe Ci::CreatePipelineService do
     end
 
     context 'when builds with auto-retries are configured' do
+      let(:pipeline)  { execute_service }
+      let(:rspec_job) { pipeline.builds.find_by(name: 'rspec') }
+
+      before do
+        stub_ci_pipeline_yaml_file(YAML.dump({
+          rspec: { script: 'rspec', retry: retry_value }
+        }))
+      end
+
       context 'as an integer' do
-        before do
-          config = YAML.dump(rspec: { script: 'rspec', retry: 2 })
-          stub_ci_pipeline_yaml_file(config)
-        end
+        let(:retry_value) { 2 }
 
         it 'correctly creates builds with auto-retry value configured' do
-          pipeline = execute_service
-
           expect(pipeline).to be_persisted
-          expect(pipeline.builds.find_by(name: 'rspec').retries_max).to eq 2
-          expect(pipeline.builds.find_by(name: 'rspec').retry_when).to eq ['always']
+          expect(rspec_job.retries_max).to eq 2
+          expect(rspec_job.retry_when).to eq ['always']
         end
       end
 
       context 'as hash' do
-        before do
-          config = YAML.dump(rspec: { script: 'rspec', retry: { max: 2, when: 'runner_system_failure' } })
-          stub_ci_pipeline_yaml_file(config)
-        end
+        let(:retry_value) { { max: 2, when: 'runner_system_failure' } }
 
         it 'correctly creates builds with auto-retry value configured' do
-          pipeline = execute_service
-
           expect(pipeline).to be_persisted
-          expect(pipeline.builds.find_by(name: 'rspec').retries_max).to eq 2
-          expect(pipeline.builds.find_by(name: 'rspec').retry_when).to eq ['runner_system_failure']
+          expect(rspec_job.retries_max).to eq 2
+          expect(rspec_job.retry_when).to eq ['runner_system_failure']
         end
       end
     end
@@ -969,6 +972,152 @@ describe Ci::CreatePipelineService do
       end
     end
 
+    describe 'Pipeline for external pull requests' do
+      let(:pipeline) do
+        execute_service(source: source,
+                        external_pull_request: pull_request,
+                        ref: ref_name,
+                        source_sha: source_sha,
+                        target_sha: target_sha)
+      end
+
+      before do
+        stub_ci_pipeline_yaml_file(YAML.dump(config))
+      end
+
+      let(:ref_name) { 'refs/heads/feature' }
+      let(:source_sha) { project.commit(ref_name).id }
+      let(:target_sha) { nil }
+
+      context 'when source is external pull request' do
+        let(:source) { :external_pull_request_event }
+
+        context 'when config has external_pull_requests keywords' do
+          let(:config) do
+            {
+              build: {
+                stage: 'build',
+                script: 'echo'
+              },
+              test: {
+                stage: 'test',
+                script: 'echo',
+                only: ['external_pull_requests']
+              },
+              pages: {
+                stage: 'deploy',
+                script: 'echo',
+                except: ['external_pull_requests']
+              }
+            }
+          end
+
+          context 'when external pull request is specified' do
+            let(:pull_request) { create(:external_pull_request, project: project, source_branch: 'feature', target_branch: 'master') }
+            let(:ref_name) { pull_request.source_ref }
+
+            it 'creates an external pull request pipeline' do
+              expect(pipeline).to be_persisted
+              expect(pipeline).to be_external_pull_request_event
+              expect(pipeline.external_pull_request).to eq(pull_request)
+              expect(pipeline.source_sha).to eq(source_sha)
+              expect(pipeline.builds.order(:stage_id)
+                .map(&:name))
+                .to eq(%w[build test])
+            end
+
+            context 'when ref is tag' do
+              let(:ref_name) { 'refs/tags/v1.1.0' }
+
+              it 'does not create an extrnal pull request pipeline' do
+                expect(pipeline).not_to be_persisted
+                expect(pipeline.errors[:tag]).to eq(["is not included in the list"])
+              end
+            end
+
+            context 'when pull request is created from fork' do
+              it 'does not create an external pull request pipeline'
+            end
+
+            context "when there are no matched jobs" do
+              let(:config) do
+                {
+                  test: {
+                    stage: 'test',
+                    script: 'echo',
+                    except: ['external_pull_requests']
+                  }
+                }
+              end
+
+              it 'does not create a detached merge request pipeline' do
+                expect(pipeline).not_to be_persisted
+                expect(pipeline.errors[:base]).to eq(["No stages / jobs for this pipeline."])
+              end
+            end
+          end
+
+          context 'when external pull request is not specified' do
+            let(:pull_request) { nil }
+
+            it 'does not create an external pull request pipeline' do
+              expect(pipeline).not_to be_persisted
+              expect(pipeline.errors[:external_pull_request]).to eq(["can't be blank"])
+            end
+          end
+        end
+
+        context "when config does not have external_pull_requests keywords" do
+          let(:config) do
+            {
+              build: {
+                stage: 'build',
+                script: 'echo'
+              },
+              test: {
+                stage: 'test',
+                script: 'echo'
+              },
+              pages: {
+                stage: 'deploy',
+                script: 'echo'
+              }
+            }
+          end
+
+          context 'when external pull request is specified' do
+            let(:pull_request) do
+              create(:external_pull_request,
+                project: project,
+                source_branch: Gitlab::Git.ref_name(ref_name),
+                target_branch: 'master')
+            end
+
+            it 'creates an external pull request pipeline' do
+              expect(pipeline).to be_persisted
+              expect(pipeline).to be_external_pull_request_event
+              expect(pipeline.external_pull_request).to eq(pull_request)
+              expect(pipeline.source_sha).to eq(source_sha)
+              expect(pipeline.builds.order(:stage_id)
+                .map(&:name))
+                .to eq(%w[build test pages])
+            end
+          end
+
+          context 'when external pull request is not specified' do
+            let(:pull_request) { nil }
+
+            it 'does not create an external pull request pipeline' do
+              expect(pipeline).not_to be_persisted
+
+              expect(pipeline.errors[:base])
+                .to eq(['Failed to build the pipeline!'])
+            end
+          end
+        end
+      end
+    end
+
     describe 'Pipelines for merge requests' do
       let(:pipeline) do
         execute_service(source: source,
@@ -1024,7 +1173,7 @@ describe Ci::CreatePipelineService do
               expect(pipeline).to be_persisted
               expect(pipeline).to be_merge_request_event
               expect(pipeline.merge_request).to eq(merge_request)
-              expect(pipeline.builds.order(:stage_id).map(&:name)).to eq(%w[test])
+              expect(pipeline.builds.order(:stage_id).pluck(:name)).to eq(%w[test])
             end
 
             it 'persists the specified source sha' do
@@ -1289,7 +1438,7 @@ describe Ci::CreatePipelineService do
               expect(pipeline).to be_persisted
               expect(pipeline).to be_web
               expect(pipeline.merge_request).to be_nil
-              expect(pipeline.builds.order(:stage_id).map(&:name)).to eq(%w[build pages])
+              expect(pipeline.builds.order(:stage_id).pluck(:name)).to eq(%w[build pages])
             end
           end
         end
@@ -1329,7 +1478,7 @@ describe Ci::CreatePipelineService do
 
         it 'creates a pipeline with build_a and test_a' do
           expect(pipeline).to be_persisted
-          expect(pipeline.builds.map(&:name)).to contain_exactly("build_a", "test_a")
+          expect(pipeline.builds.pluck(:name)).to contain_exactly("build_a", "test_a")
         end
       end
 
@@ -1364,7 +1513,303 @@ describe Ci::CreatePipelineService do
 
         it 'does create a pipeline only with deploy' do
           expect(pipeline).to be_persisted
-          expect(pipeline.builds.map(&:name)).to contain_exactly("deploy")
+          expect(pipeline.builds.pluck(:name)).to contain_exactly("deploy")
+        end
+      end
+    end
+
+    context 'when rules are used' do
+      let(:ref_name)    { 'refs/heads/master' }
+      let(:pipeline)    { execute_service }
+      let(:build_names) { pipeline.builds.pluck(:name) }
+      let(:regular_job) { pipeline.builds.find_by(name: 'regular-job') }
+      let(:rules_job)   { pipeline.builds.find_by(name: 'rules-job') }
+      let(:delayed_job) { pipeline.builds.find_by(name: 'delayed-job') }
+
+      shared_examples 'rules jobs are excluded' do
+        it 'only persists the job without rules' do
+          expect(pipeline).to be_persisted
+          expect(regular_job).to be_persisted
+          expect(rules_job).to be_nil
+          expect(delayed_job).to be_nil
+        end
+      end
+
+      before do
+        stub_ci_pipeline_yaml_file(config)
+        allow_any_instance_of(Ci::BuildScheduleWorker).to receive(:perform).and_return(true)
+      end
+
+      context 'with simple if: clauses' do
+        let(:config) do
+          <<-EOY
+            regular-job:
+              script: 'echo Hello, World!'
+
+            master-job:
+              script: "echo hello world, $CI_COMMIT_REF_NAME"
+              rules:
+                - if: $CI_COMMIT_REF_NAME == "nonexistant-branch"
+                  when: never
+                - if: $CI_COMMIT_REF_NAME =~ /master/
+                  when: manual
+
+            delayed-job:
+              script: "echo See you later, World!"
+              rules:
+                - if: $CI_COMMIT_REF_NAME =~ /master/
+                  when: delayed
+                  start_in: 1 hour
+
+            never-job:
+              script: "echo Goodbye, World!"
+              rules:
+                - if: $CI_COMMIT_REF_NAME
+                  when: never
+          EOY
+        end
+
+        context 'with matches' do
+          it 'creates a pipeline with the vanilla and manual jobs' do
+            expect(pipeline).to be_persisted
+            expect(build_names).to contain_exactly('regular-job', 'delayed-job', 'master-job')
+          end
+
+          it 'assigns job:when values to the builds' do
+            expect(pipeline.builds.pluck(:when)).to contain_exactly('on_success', 'delayed', 'manual')
+          end
+
+          it 'assigns start_in for delayed jobs' do
+            expect(delayed_job.options[:start_in]).to eq('1 hour')
+          end
+        end
+
+        context 'with no matches' do
+          let(:ref_name) { 'refs/heads/feature' }
+
+          it_behaves_like 'rules jobs are excluded'
+        end
+      end
+
+      context 'with complex if: clauses' do
+        let(:config) do
+          <<-EOY
+            regular-job:
+              script: 'echo Hello, World!'
+              rules:
+                - if: $VAR == 'present' && $OTHER || $CI_COMMIT_REF_NAME
+                  when: manual
+          EOY
+        end
+
+        it 'matches the first rule' do
+          expect(pipeline).to be_persisted
+          expect(build_names).to contain_exactly('regular-job')
+          expect(regular_job.when).to eq('manual')
+        end
+      end
+
+      context 'with changes:' do
+        let(:config) do
+          <<-EOY
+            regular-job:
+              script: 'echo Hello, World!'
+
+            rules-job:
+              script: "echo hello world, $CI_COMMIT_REF_NAME"
+              rules:
+                - changes:
+                  - README.md
+                  when: manual
+                - changes:
+                  - app.rb
+                  when: on_success
+
+            delayed-job:
+              script: "echo See you later, World!"
+              rules:
+                - changes:
+                  - README.md
+                  when: delayed
+                  start_in: 4 hours
+          EOY
+        end
+
+        context 'and matches' do
+          before do
+            allow_any_instance_of(Ci::Pipeline)
+              .to receive(:modified_paths).and_return(%w[README.md])
+          end
+
+          it 'creates two jobs' do
+            expect(pipeline).to be_persisted
+            expect(build_names)
+              .to contain_exactly('regular-job', 'rules-job', 'delayed-job')
+          end
+
+          it 'sets when: for all jobs' do
+            expect(regular_job.when).to eq('on_success')
+            expect(rules_job.when).to eq('manual')
+            expect(delayed_job.when).to eq('delayed')
+            expect(delayed_job.options[:start_in]).to eq('4 hours')
+          end
+        end
+
+        context 'and matches the second rule' do
+          before do
+            allow_any_instance_of(Ci::Pipeline)
+              .to receive(:modified_paths).and_return(%w[app.rb])
+          end
+
+          it 'includes both jobs' do
+            expect(pipeline).to be_persisted
+            expect(build_names).to contain_exactly('regular-job', 'rules-job')
+          end
+
+          it 'sets when: for the created rules job based on the second clause' do
+            expect(regular_job.when).to eq('on_success')
+            expect(rules_job.when).to eq('on_success')
+          end
+        end
+
+        context 'and does not match' do
+          before do
+            allow_any_instance_of(Ci::Pipeline)
+              .to receive(:modified_paths).and_return(%w[useless_script.rb])
+          end
+
+          it_behaves_like 'rules jobs are excluded'
+
+          it 'sets when: for the created job' do
+            expect(regular_job.when).to eq('on_success')
+          end
+        end
+      end
+
+      context 'with mixed if: and changes: rules' do
+        let(:config) do
+          <<-EOY
+            regular-job:
+              script: 'echo Hello, World!'
+
+            rules-job:
+              script: "echo hello world, $CI_COMMIT_REF_NAME"
+              rules:
+                - changes:
+                  - README.md
+                  when: manual
+                - if: $CI_COMMIT_REF_NAME == "master"
+                  when: on_success
+
+            delayed-job:
+              script: "echo See you later, World!"
+              rules:
+                - changes:
+                  - README.md
+                  when: delayed
+                  start_in: 4 hours
+                - if: $CI_COMMIT_REF_NAME == "master"
+                  when: delayed
+                  start_in: 1 hour
+          EOY
+        end
+
+        context 'and changes: matches before if' do
+          before do
+            allow_any_instance_of(Ci::Pipeline)
+              .to receive(:modified_paths).and_return(%w[README.md])
+          end
+
+          it 'creates two jobs' do
+            expect(pipeline).to be_persisted
+            expect(build_names)
+              .to contain_exactly('regular-job', 'rules-job', 'delayed-job')
+          end
+
+          it 'sets when: for all jobs' do
+            expect(regular_job.when).to eq('on_success')
+            expect(rules_job.when).to eq('manual')
+            expect(delayed_job.when).to eq('delayed')
+            expect(delayed_job.options[:start_in]).to eq('4 hours')
+          end
+        end
+
+        context 'and if: matches after changes' do
+          it 'includes both jobs' do
+            expect(pipeline).to be_persisted
+            expect(build_names).to contain_exactly('regular-job', 'rules-job', 'delayed-job')
+          end
+
+          it 'sets when: for the created rules job based on the second clause' do
+            expect(regular_job.when).to eq('on_success')
+            expect(rules_job.when).to eq('on_success')
+            expect(delayed_job.when).to eq('delayed')
+            expect(delayed_job.options[:start_in]).to eq('1 hour')
+          end
+        end
+
+        context 'and does not match' do
+          let(:ref_name) { 'refs/heads/wip' }
+
+          it_behaves_like 'rules jobs are excluded'
+
+          it 'sets when: for the created job' do
+            expect(regular_job.when).to eq('on_success')
+          end
+        end
+      end
+
+      context 'with mixed if: and changes: clauses' do
+        let(:config) do
+          <<-EOY
+            regular-job:
+              script: 'echo Hello, World!'
+
+            rules-job:
+              script: "echo hello world, $CI_COMMIT_REF_NAME"
+              rules:
+                - if: $CI_COMMIT_REF_NAME =~ /master/
+                  changes: [README.md]
+                  when: on_success
+                - if: $CI_COMMIT_REF_NAME =~ /master/
+                  changes: [app.rb]
+                  when: manual
+          EOY
+        end
+
+        context 'with if matches and changes matches' do
+          before do
+            allow_any_instance_of(Ci::Pipeline)
+              .to receive(:modified_paths).and_return(%w[app.rb])
+          end
+
+          it 'persists all jobs' do
+            expect(pipeline).to be_persisted
+            expect(regular_job).to be_persisted
+            expect(rules_job).to be_persisted
+            expect(rules_job.when).to eq('manual')
+          end
+        end
+
+        context 'with if matches and no change matches' do
+          it_behaves_like 'rules jobs are excluded'
+        end
+
+        context 'with change matches and no if matches' do
+          let(:ref_name) { 'refs/heads/feature' }
+
+          before do
+            allow_any_instance_of(Ci::Pipeline)
+              .to receive(:modified_paths).and_return(%w[README.md])
+          end
+
+          it_behaves_like 'rules jobs are excluded'
+        end
+
+        context 'and no matches' do
+          let(:ref_name) { 'refs/heads/feature' }
+
+          it_behaves_like 'rules jobs are excluded'
         end
       end
     end

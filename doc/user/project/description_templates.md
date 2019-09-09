@@ -87,7 +87,7 @@ pre-filled with the text you entered in the template(s).
 We make use of Description Templates for Issues and Merge Requests within the GitLab Community Edition project. Please refer to the [`.gitlab` folder][gitlab-ce-templates] for some examples.
 
 > **Tip:**
-It is possible to use [quick actions](quick_actions.md) within description templates to quickly add labels, assignees, and milestones. The quick actions will only be executed if the user submitting the Issue or Merge Request has the permissions perform the relevant actions.
+It is possible to use [quick actions](quick_actions.md) within description templates to quickly add labels, assignees, and milestones. The quick actions will only be executed if the user submitting the Issue or Merge Request has the permissions to perform the relevant actions.
 
 Here is an example for a Bug report template:
 

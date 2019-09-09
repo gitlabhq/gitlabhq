@@ -13,7 +13,7 @@ NOTE: **Note:**
 Support for MySQL was removed in GitLab 12.1. This procedure should be performed
 **before** installing GitLab 12.1.
 
-[pgloader](https://pgloader.io/) 3.4.1+ is required.
+[pgloader](https://pgloader.io/) 3.4.1+ is required, confirm with `pgloader -V`.
 
 You can install it directly from your distribution, for example in
 Debian/Ubuntu:
@@ -125,6 +125,10 @@ new PostgreSQL one:
         create no indexes, preserve index names, no foreign keys,
         data only
 
+   SET MySQL PARAMETERS
+   net_read_timeout = '90',
+   net_write_timeout = '180'
+
    ALTER SCHEMA 'gitlabhq_production' RENAME TO 'public'
 
    ;
@@ -221,6 +225,10 @@ new PostgreSQL one:
    WITH include no drop, truncate, disable triggers, create no tables,
         create no indexes, preserve index names, no foreign keys,
         data only
+
+   SET MySQL PARAMETERS
+   net_read_timeout = '90',
+   net_write_timeout = '180'
 
    ALTER SCHEMA 'gitlabhq_production' RENAME TO 'public'
 

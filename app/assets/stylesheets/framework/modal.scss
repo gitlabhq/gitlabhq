@@ -2,6 +2,12 @@
   max-width: 98%;
 }
 
+.modal-1040 {
+  @include media-breakpoint-up(xl) {
+    max-width: 1040px;
+  }
+}
+
 .modal-header {
   background-color: $modal-body-bg;
 

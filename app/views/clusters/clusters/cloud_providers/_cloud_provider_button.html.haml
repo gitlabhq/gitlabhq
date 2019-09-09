@@ -1,0 +1,8 @@
+- provider = local_assigns.fetch(:provider)
+- logo_path = local_assigns.fetch(:logo_path)
+- label = local_assigns.fetch(:label)
+
+= link_to clusterable.new_path(provider: provider), class: 'btn gl-button btn-outline flex-fill d-inline-flex flex-column mr-3 justify-content-center align-items-center' do
+  = image_tag logo_path, alt: label, class: 'gl-w-13 gl-h-13'
+  %span
+    = label

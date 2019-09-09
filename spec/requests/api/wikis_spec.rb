@@ -11,6 +11,8 @@ require 'spec_helper'
 # because they are 3 edge cases of using wiki pages.
 
 describe API::Wikis do
+  include WorkhorseHelpers
+
   let(:user) { create(:user) }
   let(:group) { create(:group).tap { |g| g.add_owner(user) } }
   let(:project_wiki) { create(:project_wiki, project: project, user: user) }
@@ -155,7 +157,7 @@ describe API::Wikis do
     it 'pushes attachment to the wiki repository' do
       allow(SecureRandom).to receive(:hex).and_return('fixed_hex')
 
-      post(api(url, user), params: payload)
+      workhorse_post_with_file(api(url, user), file_key: :file, params: payload)
 
       expect(response).to have_gitlab_http_status(201)
       expect(json_response).to eq result_hash.deep_stringify_keys
@@ -179,6 +181,15 @@ describe API::Wikis do
       expect(response).to have_gitlab_http_status(400)
       expect(json_response.size).to eq(1)
       expect(json_response['error']).to eq('file is invalid')
+    end
+
+    it 'is backward compatible with regular multipart uploads' do
+      allow(SecureRandom).to receive(:hex).and_return('fixed_hex')
+
+      post(api(url, user), params: payload)
+
+      expect(response).to have_gitlab_http_status(201)
+      expect(json_response).to eq result_hash.deep_stringify_keys
     end
   end
 

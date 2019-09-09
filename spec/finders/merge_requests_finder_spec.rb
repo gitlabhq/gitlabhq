@@ -13,12 +13,20 @@ describe MergeRequestsFinder do
         expect(merge_requests).to contain_exactly(merge_request1, merge_request4, merge_request5)
       end
 
-      it 'filters by project' do
+      it 'filters by project_id' do
         params = { project_id: project1.id, scope: 'authored', state: 'opened' }
 
         merge_requests = described_class.new(user, params).execute
 
         expect(merge_requests).to contain_exactly(merge_request1)
+      end
+
+      it 'filters by projects' do
+        params = { projects: [project2.id, project3.id] }
+
+        merge_requests = described_class.new(user, params).execute
+
+        expect(merge_requests).to contain_exactly(merge_request3, merge_request4)
       end
 
       it 'filters by commit sha' do
@@ -48,6 +56,16 @@ describe MergeRequestsFinder do
           merge_requests = described_class.new(user, params).execute
 
           expect(merge_requests).to contain_exactly(merge_request1, merge_request2, merge_request5)
+        end
+
+        it 'filters by group projects including subgroups' do
+          # project3 is not in the group, so it should not return merge_request4
+          projects = [project3.id, project4.id]
+          params = { group_id: group.id, include_subgroups: true, projects: projects }
+
+          merge_requests = described_class.new(user, params).execute
+
+          expect(merge_requests).to contain_exactly(merge_request5)
         end
       end
 

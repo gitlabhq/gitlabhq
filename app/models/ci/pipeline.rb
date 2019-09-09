@@ -23,6 +23,7 @@ module Ci
     belongs_to :auto_canceled_by, class_name: 'Ci::Pipeline'
     belongs_to :pipeline_schedule, class_name: 'Ci::PipelineSchedule'
     belongs_to :merge_request, class_name: 'MergeRequest'
+    belongs_to :external_pull_request
 
     has_internal_id :iid, scope: :project, presence: false, init: ->(s) do
       s&.project&.all_pipelines&.maximum(:iid) || s&.project&.all_pipelines&.count
@@ -64,6 +65,11 @@ module Ci
     validates :merge_request, presence: { if: :merge_request_event? }
     validates :merge_request, absence: { unless: :merge_request_event? }
     validates :tag, inclusion: { in: [false], if: :merge_request_event? }
+
+    validates :external_pull_request, presence: { if: :external_pull_request_event? }
+    validates :external_pull_request, absence: { unless: :external_pull_request_event? }
+    validates :tag, inclusion: { in: [false], if: :external_pull_request_event? }
+
     validates :status, presence: { unless: :importing? }
     validate :valid_commit_sha, unless: :importing?
     validates :source, exclusion: { in: %w(unknown), unless: :importing? }, on: :create
@@ -682,6 +688,10 @@ module Ci
           variables.append(key: 'CI_MERGE_REQUEST_SOURCE_BRANCH_SHA', value: source_sha.to_s)
           variables.append(key: 'CI_MERGE_REQUEST_TARGET_BRANCH_SHA', value: target_sha.to_s)
           variables.concat(merge_request.predefined_variables)
+        end
+
+        if external_pull_request_event? && external_pull_request
+          variables.concat(external_pull_request.predefined_variables)
         end
       end
     end

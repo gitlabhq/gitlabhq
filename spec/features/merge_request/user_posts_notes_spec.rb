@@ -5,7 +5,8 @@ require 'spec_helper'
 describe 'Merge request > User posts notes', :js do
   include NoteInteractionHelpers
 
-  let(:project) { create(:project, :repository) }
+  set(:project) { create(:project, :repository) }
+
   let(:user) { project.creator }
   let(:merge_request) do
     create(:merge_request, source_project: project, target_project: project)
@@ -33,17 +34,21 @@ describe 'Merge request > User posts notes', :js do
     end
 
     describe 'with text' do
+      let(:text) { 'This is awesome' }
+
       before do
         page.within('.js-main-target-form') do
-          fill_in 'note[note]', with: 'This is awesome'
+          fill_in 'note[note]', with: text
         end
       end
 
-      it 'has enable submit button and preview button' do
+      it 'has enable submit button, preview button and saves content to local storage' do
         page.within('.js-main-target-form') do
           expect(page).not_to have_css('.js-comment-button[disabled]')
           expect(page).to have_css('.js-md-preview-button', visible: true)
         end
+
+        expect(page.evaluate_script("localStorage['autosave/Note/MergeRequest/#{merge_request.id}']")).to eq(text)
       end
     end
   end

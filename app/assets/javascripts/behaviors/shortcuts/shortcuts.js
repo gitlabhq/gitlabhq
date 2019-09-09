@@ -46,7 +46,6 @@ export default class Shortcuts {
 
     $(document).on('click.more_help', '.js-more-help-button', function clickMoreHelp(e) {
       $(this).remove();
-      $('.hidden-shortcut').show();
       e.preventDefault();
     });
   }
@@ -104,7 +103,6 @@ export default class Shortcuts {
           return results;
         }
 
-        $('.hidden-shortcut').show();
         return $('.js-more-help-button').remove();
       });
   }

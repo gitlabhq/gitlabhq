@@ -13,12 +13,13 @@
         %pre.dark#merge-info-1
           - if @merge_request.for_fork?
             :preserve
-              git fetch #{h default_url_to_repo(@merge_request.source_project)} #{h @merge_request.source_branch}
-              git checkout -b #{h @merge_request.source_project_path}-#{h @merge_request.source_branch} FETCH_HEAD
+              -# All repo/branch refs have been quoted to allow support for special characters (such as #my-branch)
+              git fetch "#{h default_url_to_repo(@merge_request.source_project)}" "#{h @merge_request.source_branch}"
+              git checkout -b "#{h @merge_request.source_project_path}-#{h @merge_request.source_branch}" FETCH_HEAD
           - else
             :preserve
               git fetch origin
-              git checkout -b #{h @merge_request.source_branch} origin/#{h @merge_request.source_branch}
+              git checkout -b "#{h @merge_request.source_branch}" "origin/#{h @merge_request.source_branch}"
         %p
           %strong Step 2.
           Review the changes locally
@@ -31,20 +32,20 @@
           - if @merge_request.for_fork?
             :preserve
               git fetch origin
-              git checkout origin/#{h @merge_request.target_branch}
-              git merge --no-ff #{h @merge_request.source_project_path}-#{h @merge_request.source_branch}
+              git checkout "origin/#{h @merge_request.target_branch}"
+              git merge --no-ff "#{h @merge_request.source_project_path}-#{h @merge_request.source_branch}"
           - else
             :preserve
               git fetch origin
-              git checkout origin/#{h @merge_request.target_branch}
-              git merge --no-ff #{h @merge_request.source_branch}
+              git checkout "origin/#{h @merge_request.target_branch}"
+              git merge --no-ff "#{h @merge_request.source_branch}"
         %p
           %strong Step 4.
           Push the result of the merge to GitLab
         = clipboard_button(target: "pre#merge-info-4", title: "Copy commands to clipboard")
         %pre.dark#merge-info-4
           :preserve
-            git push origin #{h @merge_request.target_branch}
+            git push origin "#{h @merge_request.target_branch}"
         - unless @merge_request.can_be_merged_by?(current_user)
           %p
             Note that pushing to GitLab requires write access to this repository.

@@ -1140,6 +1140,19 @@ describe QuickActions::InterpretService do
       let(:todo_label) { create(:label, project: project, title: 'To Do') }
       let(:inreview_label) { create(:label, project: project, title: 'In Review') }
 
+      it 'is available when the user is a developer' do
+        expect(service.available_commands(issue)).to include(a_hash_including(name: :copy_metadata))
+      end
+
+      context 'when the user does not have permission' do
+        let(:guest) { create(:user) }
+        let(:service) { described_class.new(project, guest) }
+
+        it 'is not available' do
+          expect(service.available_commands(issue)).not_to include(a_hash_including(name: :copy_metadata))
+        end
+      end
+
       it_behaves_like 'empty command' do
         let(:content) { '/copy_metadata' }
         let(:issuable) { issue }

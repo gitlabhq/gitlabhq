@@ -37,8 +37,8 @@
     "@babel/plugin-syntax-dynamic-import": "^7.2.0",
     "@babel/plugin-syntax-import-meta": "^7.2.0",
     "@babel/preset-env": "^7.5.5",
-    "@gitlab/svgs": "^1.71.0",
-    "@gitlab/ui": "5.21.0",
+    "@gitlab/svgs": "^1.72.0",
+    "@gitlab/ui": "5.21.1",
     "@gitlab/visual-review-tools": "1.0.1",
     "apollo-cache-inmemory": "^1.5.1",
     "apollo-client": "^2.5.1",
@@ -197,6 +197,7 @@
     "stylelint": "^10.1.0",
     "stylelint-config-recommended": "^2.2.0",
     "stylelint-scss": "^3.9.2",
+    "timezone-mock": "^1.0.8",
     "vue-jest": "^4.0.0-beta.2",
     "webpack-dev-server": "^3.1.14",
     "yarn-deduplicate": "^1.1.1"

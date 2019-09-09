@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'admin visits dashboard' do
+describe 'admin visits dashboard', :js do
   include ProjectForksHelper
 
   before do

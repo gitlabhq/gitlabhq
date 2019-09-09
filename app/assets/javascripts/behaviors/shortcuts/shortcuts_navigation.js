@@ -23,7 +23,5 @@ export default class ShortcutsNavigation extends Shortcuts {
     Mousetrap.bind('g e', () => findAndFollowLink('.shortcuts-environments'));
     Mousetrap.bind('g l', () => findAndFollowLink('.shortcuts-metrics'));
     Mousetrap.bind('i', () => findAndFollowLink('.shortcuts-new-issue'));
-
-    this.enabledHelp.push('.hidden-shortcut.project');
   }
 }

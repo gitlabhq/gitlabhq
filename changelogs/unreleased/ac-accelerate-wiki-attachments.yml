@@ -1,0 +1,5 @@
+---
+title: Preprocess wiki attachments with GitLab-Workhorse
+merge_request: 32663
+author:
+type: performance

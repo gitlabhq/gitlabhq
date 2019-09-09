@@ -8,6 +8,7 @@ module Clusters
       enable :create_cluster
       enable :update_cluster
       enable :admin_cluster
+      enable :read_prometheus
     end
   end
 end

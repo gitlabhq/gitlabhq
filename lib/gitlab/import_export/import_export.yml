@@ -3,87 +3,92 @@
 # This list _must_ only contain relationships that are available to both CE and
 # EE. EE specific relationships must be defined in the `ee` section further
 # down below.
-project_tree:
-  - labels:
-    - :priorities
-  - milestones:
-    - events:
-      - :push_event_payload
-  - issues:
-    - events:
-      - :push_event_payload
-    - :timelogs
-    - notes:
-      - :author
+tree:
+  project:
+    - labels:
+      - :priorities
+    - milestones:
       - events:
         - :push_event_payload
-    - label_links:
-      - label:
-        - :priorities
-    - milestone:
+    - issues:
       - events:
         - :push_event_payload
-    - resource_label_events:
-      - label:
-        - :priorities
-    - :issue_assignees
-  - snippets:
-    - :award_emoji
-    - notes:
-      - :author
-  - releases:
-    - :links
-  - project_members:
+      - :timelogs
+      - notes:
+        - :author
+        - events:
+          - :push_event_payload
+      - label_links:
+        - label:
+          - :priorities
+      - milestone:
+        - events:
+          - :push_event_payload
+      - resource_label_events:
+        - label:
+          - :priorities
+      - :issue_assignees
+    - snippets:
+      - :award_emoji
+      - notes:
+        - :author
+    - releases:
+      - :links
+    - project_members:
+      - :user
+    - merge_requests:
+      - :metrics
+      - notes:
+        - :author
+        - events:
+          - :push_event_payload
+        - :suggestions
+      - merge_request_diff:
+        - :merge_request_diff_commits
+        - :merge_request_diff_files
+      - events:
+        - :push_event_payload
+      - :timelogs
+      - label_links:
+        - label:
+          - :priorities
+      - milestone:
+        - events:
+          - :push_event_payload
+      - resource_label_events:
+        - label:
+          - :priorities
+    - ci_pipelines:
+      - notes:
+        - :author
+        - events:
+          - :push_event_payload
+      - stages:
+        - :statuses
+      - :external_pull_request
+    - :external_pull_requests
+    - :auto_devops
+    - :triggers
+    - :pipeline_schedules
+    - :services
+    - protected_branches:
+      - :merge_access_levels
+      - :push_access_levels
+    - protected_tags:
+      - :create_access_levels
+    - :project_feature
+    - :custom_attributes
+    - :prometheus_metrics
+    - :project_badges
+    - :ci_cd_settings
+    - :error_tracking_setting
+    - :metrics_setting
+    - boards:
+      - lists:
+        - label:
+          - :priorities
+  group_members:
     - :user
-  - merge_requests:
-    - :metrics
-    - notes:
-      - :author
-      - events:
-        - :push_event_payload
-      - :suggestions
-    - merge_request_diff:
-      - :merge_request_diff_commits
-      - :merge_request_diff_files
-    - events:
-      - :push_event_payload
-    - :timelogs
-    - label_links:
-      - label:
-        - :priorities
-    - milestone:
-      - events:
-        - :push_event_payload
-    - resource_label_events:
-      - label:
-        - :priorities
-  - ci_pipelines:
-    - notes:
-      - :author
-      - events:
-        - :push_event_payload
-    - stages:
-      - :statuses
-  - :auto_devops
-  - :triggers
-  - :pipeline_schedules
-  - :services
-  - protected_branches:
-    - :merge_access_levels
-    - :push_access_levels
-  - protected_tags:
-    - :create_access_levels
-  - :project_feature
-  - :custom_attributes
-  - :prometheus_metrics
-  - :project_badges
-  - :ci_cd_settings
-  - :error_tracking_setting
-  - :metrics_setting
-  - boards:
-    - lists:
-      - label:
-        - :priorities
 
 # Only include the following attributes for the models specified.
 included_attributes:
@@ -223,12 +228,25 @@ methods:
     - :type
   lists:
     - :list_type
+  ci_pipelines:
+    - :notes
+
+preloads:
+  statuses:
+    # TODO: We cannot preload tags, as they are not part of `GenericCommitStatus`
+    # tags: # needed by tag_list
+    project: # deprecated: needed by coverage_regex of Ci::Build
+  merge_requests:
+    source_project: # needed by source_branch_sha and diff_head_sha
+    target_project: # needed by target_branch_sha
+    assignees: # needed by assigne_id that is implemented by DeprecatedAssignee
 
 # EE specific relationships and settings to include. All of this will be merged
 # into the previous structures if EE is used.
 ee:
-  project_tree:
-    - protected_branches:
-      - :unprotect_access_levels
-    - protected_environments:
-      - :deploy_access_levels
+  tree:
+    project:
+      protected_branches:
+        - :unprotect_access_levels
+      protected_environments:
+        - :deploy_access_levels

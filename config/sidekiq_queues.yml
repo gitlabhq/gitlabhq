@@ -115,3 +115,4 @@
   - [export_csv, 1]
   - [incident_management, 2]
   - [jira_connect, 1]
+  - [update_external_pull_requests, 3]

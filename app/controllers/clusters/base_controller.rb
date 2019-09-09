@@ -31,6 +31,10 @@ class Clusters::BaseController < ApplicationController
     access_denied! unless can?(current_user, :create_cluster, clusterable)
   end
 
+  def authorize_read_prometheus!
+    access_denied! unless can?(current_user, :read_prometheus, clusterable)
+  end
+
   def clusterable
     raise NotImplementedError
   end

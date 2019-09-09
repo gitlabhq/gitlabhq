@@ -190,7 +190,7 @@ it` may occur, and will cause the backup process to fail. To combat this, 8.17
 introduces a new backup strategy called `copy`. The strategy copies data files
 to a temporary location before calling `tar` and `gzip`, avoiding the error.
 
-A side-effect is that the backup process with take up to an additional 1X disk
+A side-effect is that the backup process will take up to an additional 1X disk
 space. The process does its best to clean up the temporary files at each stage
 so the problem doesn't compound, but it could be a considerable change for large
 installations. This is why the `copy` strategy is not the default in 8.17.
