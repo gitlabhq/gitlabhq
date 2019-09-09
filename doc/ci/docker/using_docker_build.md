@@ -721,6 +721,13 @@ deploy:
     - master
 ```
 
+NOTE: **Note:**
+This example explicitly calls `docker pull`. If you prefer to implicitly pull the
+built image using `image:`, and use either the [Docker](https://docs.gitlab.com/runner/executors/docker.html)
+or [Kubernetes](https://docs.gitlab.com/runner/executors/kubernetes.html) executor,
+make sure that [`pull_policy`](https://docs.gitlab.com/runner/executors/docker.html#how-pull-policies-work)
+is set to `always`.
+
 [docker-in-docker]: https://blog.docker.com/2013/09/docker-can-now-run-within-docker/
 [docker-cap]: https://docs.docker.com/engine/reference/run/#runtime-privilege-and-linux-capabilities
 [2fa]: ../../user/profile/account/two_factor_authentication.md
