@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 describe Gitlab::SnippetSearchResults do
+  include SearchHelpers
+
   let!(:snippet) { create(:snippet, content: 'foo', file_name: 'foo') }
 
   let(:results) { described_class.new(Snippet.all, 'foo') }
@@ -25,7 +27,7 @@ describe Gitlab::SnippetSearchResults do
     where(:scope, :count_method, :expected) do
       'snippet_titles' | :snippet_titles_count   | '1234'
       'snippet_blobs'  | :snippet_blobs_count    | '1234'
-      'projects'       | :limited_projects_count | '1000+'
+      'projects'       | :limited_projects_count | max_limited_count
       'unknown'        | nil                     | nil
     end
 

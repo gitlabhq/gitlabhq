@@ -19,4 +19,8 @@ module SearchHelpers
       click_link scope
     end
   end
+
+  def max_limited_count
+    Gitlab::SearchResults::COUNT_LIMIT_MESSAGE
+  end
 end

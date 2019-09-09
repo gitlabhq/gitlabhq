@@ -4,6 +4,8 @@
 require 'spec_helper'
 
 describe Gitlab::ProjectSearchResults do
+  include SearchHelpers
+
   let(:user) { create(:user) }
   let(:project) { create(:project) }
   let(:query) { 'hello world' }
@@ -31,10 +33,10 @@ describe Gitlab::ProjectSearchResults do
 
     where(:scope, :count_method, :expected) do
       'blobs'      | :blobs_count            | '1234'
-      'notes'      | :limited_notes_count    | '1000+'
+      'notes'      | :limited_notes_count    | max_limited_count
       'wiki_blobs' | :wiki_blobs_count       | '1234'
       'commits'    | :commits_count          | '1234'
-      'projects'   | :limited_projects_count | '1000+'
+      'projects'   | :limited_projects_count | max_limited_count
       'unknown'    | nil                     | nil
     end
 

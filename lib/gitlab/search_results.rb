@@ -2,7 +2,8 @@
 
 module Gitlab
   class SearchResults
-    COUNT_LIMIT = 1001
+    COUNT_LIMIT = 101
+    COUNT_LIMIT_MESSAGE = "#{COUNT_LIMIT - 1}+"
 
     attr_reader :current_user, :query, :per_page
 
@@ -60,7 +61,7 @@ module Gitlab
 
     def formatted_limited_count(count)
       if count >= COUNT_LIMIT
-        "#{COUNT_LIMIT - 1}+"
+        COUNT_LIMIT_MESSAGE
       else
         count.to_s
       end
