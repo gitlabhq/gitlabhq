@@ -194,7 +194,7 @@ terminal:
 Once the terminal has started, the console will be displayed and we could access
 the project repository files.
 
-**Important**. The terminal job is branch dependant. This means that the
+**Important**. The terminal job is branch dependent. This means that the
 configuration file used to trigger and configure the terminal will be the one in
 the selected branch of the Web IDE.
 
