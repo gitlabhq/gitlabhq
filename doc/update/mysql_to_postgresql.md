@@ -225,10 +225,10 @@ new PostgreSQL one:
    WITH include no drop, truncate, disable triggers, create no tables,
         create no indexes, preserve index names, no foreign keys,
         data only
-        
+
    SET MySQL PARAMETERS
    net_read_timeout = '90',
-   net_write_timeout = '180'        
+   net_write_timeout = '180'
 
    ALTER SCHEMA 'gitlabhq_production' RENAME TO 'public'
 
