@@ -77,7 +77,7 @@ complex logic related to that task.
 
 Danger code is just Ruby code. It should adhere to our coding standards, and
 needs tests, like any other piece of Ruby in our codebase. However, we aren't
-able to test a `Dangerfile` directly! So, to maximise test coverage, try to
+able to test a `Dangerfile` directly! So, to maximize test coverage, try to
 minimize the number of lines of code in `danger/`. A non-trivial `Dangerfile`
 should mostly call plugin code with arguments derived from the methods provided
 by Danger. The plugin code itself should have unit tests.
