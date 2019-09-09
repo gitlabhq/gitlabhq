@@ -8,7 +8,7 @@
       - else
         - can_create_fork = current_user.can?(:create_fork)
         = link_to new_project_fork_path(@project),
-            class: "btn btn-default has-tooltip count-badge-button d-flex align-items-center fork-btn #{'has-tooltip disabled' unless can_create_fork}",
+            class: "btn btn-default btn-xs has-tooltip count-badge-button d-flex align-items-center fork-btn #{'has-tooltip disabled' unless can_create_fork}",
             title: (s_('ProjectOverview|You have reached your project limit') unless can_create_fork) do
           = sprite_icon('fork', { css_class: 'icon' })
           %span= s_('ProjectOverview|Fork')

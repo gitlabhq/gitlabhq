@@ -17,14 +17,14 @@
       .js-notification-toggle-btns
         %div{ class: ("btn-group" if notification_setting.custom?) }
           - if notification_setting.custom?
-            %button.dropdown-new.btn.btn-default.has-tooltip.notifications-btn.text-left#notifications-button{ type: "button", title: button_title, class: "#{btn_class}", "aria-label" => aria_label, data: { container: "body", toggle: "modal", target: "#" + notifications_menu_identifier("modal", notification_setting), display: 'static' } }
+            %button.dropdown-new.btn.btn-default.btn-xs.has-tooltip.notifications-btn.text-left#notifications-button{ type: "button", title: button_title, class: "#{btn_class}", "aria-label" => aria_label, data: { container: "body", toggle: "modal", target: "#" + notifications_menu_identifier("modal", notification_setting), display: 'static' } }
               = icon("bell", class: "js-notification-loading")
               = notification_title(notification_setting.level)
             %button.btn.dropdown-toggle{ data: { toggle: "dropdown", target: notifications_menu_identifier("dropdown", notification_setting), flip: "false" } }
               = icon('caret-down')
               .sr-only Toggle dropdown
           - else
-            %button.dropdown-new.btn.btn-default.has-tooltip.notifications-btn#notifications-button{ type: "button", title: button_title, class: "#{btn_class}", "aria-label" => aria_label, data: { container: "body", toggle: "dropdown", target: notifications_menu_identifier("dropdown", notification_setting), flip: "false" } }
+            %button.dropdown-new.btn.btn-default.btn-xs.has-tooltip.notifications-btn#notifications-button{ type: "button", title: button_title, class: "#{btn_class}", "aria-label" => aria_label, data: { container: "body", toggle: "dropdown", target: notifications_menu_identifier("dropdown", notification_setting), flip: "false" } }
               .float-left
                 = icon("bell", class: "js-notification-loading")
                 = notification_title(notification_setting.level)
