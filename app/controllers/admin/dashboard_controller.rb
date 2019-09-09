@@ -3,8 +3,7 @@
 class Admin::DashboardController < Admin::ApplicationController
   include CountHelper
 
-  COUNTED_ITEMS = [Project, User, Group, ForkNetworkMember, ForkNetwork, Issue,
-                   MergeRequest, Note, Snippet, Key, Milestone].freeze
+  COUNTED_ITEMS = [Project, User, Group].freeze
 
   # rubocop: disable CodeReuse/ActiveRecord
   def index

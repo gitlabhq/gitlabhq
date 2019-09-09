@@ -35,41 +35,7 @@
           = link_to 'New group', new_admin_group_path, class: "btn btn-success"
   .row
     .col-md-4
-      .info-well
-        .well-segment.admin-well.admin-well-statistics
-          %h4 Statistics
-          %p
-            Forks
-            %span.light.float-right
-              = approximate_fork_count_with_delimiters(@counts)
-          %p
-            Issues
-            %span.light.float-right
-              = approximate_count_with_delimiters(@counts, Issue)
-          %p
-            Merge Requests
-            %span.light.float-right
-              = approximate_count_with_delimiters(@counts, MergeRequest)
-          %p
-            Notes
-            %span.light.float-right
-              = approximate_count_with_delimiters(@counts, Note)
-          %p
-            Snippets
-            %span.light.float-right
-              = approximate_count_with_delimiters(@counts, Snippet)
-          %p
-            SSH Keys
-            %span.light.float-right
-              = approximate_count_with_delimiters(@counts, Key)
-          %p
-            Milestones
-            %span.light.float-right
-              = approximate_count_with_delimiters(@counts, Milestone)
-          %p
-            Active Users
-            %span.light.float-right
-              = number_with_delimiter(User.active.count)
+      #js-admin-statistics-container
     .col-md-4
       .info-well
         .well-segment.admin-well.admin-well-features

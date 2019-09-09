@@ -810,6 +810,9 @@ msgstr ""
 msgid "AdminArea|You’re about to stop all jobs.This will halt all current jobs that are running."
 msgstr ""
 
+msgid "AdminDashboard|Error loading the statistics. Please try again"
+msgstr ""
+
 msgid "AdminProjects| You’re about to permanently delete the project %{projectName}, its repository, and all related resources including issues, merge requests, etc..  Once you confirm and press %{strong_start}Delete project%{strong_end}, it cannot be undone or recovered."
 msgstr ""
 
@@ -835,6 +838,30 @@ msgid "AdminSettings|Specify a domain to use by default for every project's Auto
 msgstr ""
 
 msgid "AdminSettings|When creating a new environment variable it will be protected by default."
+msgstr ""
+
+msgid "AdminStatistics|Active Users"
+msgstr ""
+
+msgid "AdminStatistics|Forks"
+msgstr ""
+
+msgid "AdminStatistics|Issues"
+msgstr ""
+
+msgid "AdminStatistics|Merge Requests"
+msgstr ""
+
+msgid "AdminStatistics|Milestones"
+msgstr ""
+
+msgid "AdminStatistics|Notes"
+msgstr ""
+
+msgid "AdminStatistics|SSH Keys"
+msgstr ""
+
+msgid "AdminStatistics|Snippets"
 msgstr ""
 
 msgid "AdminUsers|2FA Disabled"
@@ -10980,6 +11007,9 @@ msgid "Starts at (UTC)"
 msgstr ""
 
 msgid "State your message to activate"
+msgstr ""
+
+msgid "Statistics"
 msgstr ""
 
 msgid "Status"
