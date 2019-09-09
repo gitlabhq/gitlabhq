@@ -49,6 +49,26 @@ function delete_release() {
   helm delete --purge "$name"
 }
 
+function delete_failed_release() {
+  if [ -z "$CI_ENVIRONMENT_SLUG" ]; then
+    echoerr "No release given, aborting the delete!"
+    return
+  fi
+
+  if ! deploy_exists "${KUBE_NAMESPACE}" "${CI_ENVIRONMENT_SLUG}"; then
+    echoinfo "No Review App with ${CI_ENVIRONMENT_SLUG} is currently deployed."
+  else
+    # Cleanup and previous installs, as FAILED and PENDING_UPGRADE will cause errors with `upgrade`
+    if previous_deploy_failed "$CI_ENVIRONMENT_SLUG" ; then
+      echoinfo "Review App deployment in bad state, cleaning up $CI_ENVIRONMENT_SLUG"
+      delete_release
+    else
+      echoinfo "Review App deployment in good state"
+    fi
+  fi
+}
+
+
 function get_pod() {
   local app_name="${1}"
   local status="${2-Running}"
@@ -193,7 +213,6 @@ function deploy() {
 
 HELM_CMD=$(cat << EOF
   helm upgrade --install \
-    --force \
     --wait \
     --timeout 900 \
     --set releaseOverride="$CI_ENVIRONMENT_SLUG" \
