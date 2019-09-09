@@ -4,6 +4,7 @@ require 'spec_helper'
 
 describe Gitlab::SearchResults do
   include ProjectForksHelper
+  include SearchHelpers
 
   let(:user) { create(:user) }
   let!(:project) { create(:project, name: 'foo') }
@@ -35,11 +36,11 @@ describe Gitlab::SearchResults do
       using RSpec::Parameterized::TableSyntax
 
       where(:scope, :count_method, :expected) do
-        'projects'       | :limited_projects_count       | '1000+'
-        'issues'         | :limited_issues_count         | '1000+'
-        'merge_requests' | :limited_merge_requests_count | '1000+'
-        'milestones'     | :limited_milestones_count     | '1000+'
-        'users'          | :limited_users_count          | '1000+'
+        'projects'       | :limited_projects_count       | max_limited_count
+        'issues'         | :limited_issues_count         | max_limited_count
+        'merge_requests' | :limited_merge_requests_count | max_limited_count
+        'milestones'     | :limited_milestones_count     | max_limited_count
+        'users'          | :limited_users_count          | max_limited_count
         'unknown'        | nil                           | nil
       end
 
@@ -56,9 +57,9 @@ describe Gitlab::SearchResults do
 
       where(:count, :expected) do
         23   | '23'
-        1000 | '1000'
-        1001 | '1000+'
-        1234 | '1000+'
+        100  | '100'
+        101  | max_limited_count
+        1234 | max_limited_count
       end
 
       with_them do
