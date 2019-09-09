@@ -85,7 +85,7 @@ The more we reflexively add useful information to the docs, the more (and more s
 
 If you have questions when considering, authoring, or editing docs, ask the Technical Writing team on Slack in `#docs` or in GitLab by mentioning the writer for the applicable [DevOps stage](https://about.gitlab.com/handbook/product/categories/#devops-stages). Otherwise, forge ahead with your best effort. It does not need to be perfect; the team is happy to review and improve upon your content. Please review the [Documentation guidelines](index.md) before you begin your first documentation MR.
 
-Having a knowledge base is any form that is separate from the documentation would be against the docs-first methodology because the content would overlap with the documentation.
+Having a knowledge base in any form that is separate from the documentation would be against the docs-first methodology because the content would overlap with the documentation.
 
 ## Markdown
 
