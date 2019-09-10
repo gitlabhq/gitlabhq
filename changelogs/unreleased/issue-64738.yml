@@ -1,0 +1,5 @@
+---
+title: Prevent archived projects from showing up in global search
+merge_request: 31498
+author: David Palubin
+type: fixed

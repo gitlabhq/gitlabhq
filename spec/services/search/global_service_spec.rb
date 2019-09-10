@@ -42,6 +42,14 @@ describe Search::GlobalService do
 
         expect(results.objects('projects')).to match_array [found_project]
       end
+
+      it 'does not return archived projects' do
+        archived_project = create(:project, :public, archived: true, name: 'archived_project')
+
+        results = described_class.new(user, search: "archived").execute
+
+        expect(results.objects('projects')).not_to include(archived_project)
+      end
     end
   end
 end
