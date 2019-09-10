@@ -170,13 +170,13 @@ module Gitlab
       end
 
       def translate_plural(entry)
-        used_variables = entry.plural_id.scan(VARIABLE_REGEX)
-        variables = fill_in_variables(used_variables)
-
         numbers_covering_all_plurals.map do |number|
           translation = FastGettext::Translation.n_(entry.msgid, entry.plural_id, number)
+          index = index_for_pluralization(number)
+          used_variables = index == 0 ? entry.msgid.scan(VARIABLE_REGEX) : entry.plural_id.scan(VARIABLE_REGEX)
+          variables = fill_in_variables(used_variables)
 
-          translation % variables if used_variables.any?
+          translation % variables if variables.any?
         end
       end
 
