@@ -85,6 +85,8 @@ module QA
       end
 
       def add_file(name, contents)
+        FileUtils.mkdir_p(::File.dirname(name))
+
         ::File.write(name, contents)
 
         if use_lfs?

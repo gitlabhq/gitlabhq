@@ -44,3 +44,5 @@ module QA
     end
   end
 end
+
+QA::Page::Project::SubMenus::Repository.prepend_if_ee('QA::EE::Page::Project::SubMenus::Repository')
