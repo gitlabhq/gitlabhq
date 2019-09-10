@@ -1,0 +1,5 @@
+---
+title: Fix encoding error in MR diffs when using external diffs
+merge_request: 32862
+author: Hiroyuki Sato
+type: fixed

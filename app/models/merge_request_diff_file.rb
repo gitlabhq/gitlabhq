@@ -17,7 +17,7 @@ class MergeRequestDiffFile < ApplicationRecord
       if merge_request_diff&.stored_externally?
         merge_request_diff.opening_external_diff do |file|
           file.seek(external_diff_offset)
-          file.read(external_diff_size)
+          force_encode_utf8(file.read(external_diff_size))
         end
       else
         super
