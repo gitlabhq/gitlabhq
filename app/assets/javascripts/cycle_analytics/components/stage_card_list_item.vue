@@ -23,7 +23,10 @@ export default {
 </script>
 
 <template>
-  <div :class="{ active: isActive }" class="stage-nav-item d-flex pl-4 pr-4 m-0 mb-1 ml-2 rounded">
+  <div
+    :class="{ active: isActive }"
+    class="stage-nav-item d-flex pl-4 pr-4 m-0 mb-1 ml-2 rounded border-color-default border-style-solid border-width-1px"
+  >
     <slot></slot>
     <div v-if="canEdit" class="dropdown">
       <gl-button
