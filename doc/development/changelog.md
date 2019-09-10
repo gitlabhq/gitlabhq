@@ -99,7 +99,7 @@ automatically.
 Its simplest usage is to provide the value for `title`:
 
 ```text
-$ bin/changelog 'Hey DZ, I added a feature to GitLab!'
+bin/changelog 'Hey DZ, I added a feature to GitLab!'
 ```
 
 At this point the script would ask you to select the category of the change (mapped to the `type` field in the entry):

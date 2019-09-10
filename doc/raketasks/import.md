@@ -42,17 +42,17 @@ If you are using an installation from source, replace `/var/opt/gitlab/` with `/
 
 #### Omnibus Installation
 
-```
-$ sudo gitlab-rake gitlab:import:repos['/var/opt/gitlab/git-data/repository-import-<date>']
+```sh
+sudo gitlab-rake gitlab:import:repos['/var/opt/gitlab/git-data/repository-import-<date>']
 ```
 
 #### Installation from source
 
 Before running this command you need to change the directory to where your GitLab installation is located:
 
-```
-$ cd /home/git/gitlab
-$ sudo -u git -H bundle exec rake gitlab:import:repos['/var/opt/gitlab/git-data/repository-import-<date>'] RAILS_ENV=production
+```sh
+cd /home/git/gitlab
+sudo -u git -H bundle exec rake gitlab:import:repos['/var/opt/gitlab/git-data/repository-import-<date>'] RAILS_ENV=production
 ```
 
 #### Example output

@@ -27,7 +27,7 @@ no overhead at all.
 To enable `GITLAB_TRACING`, a valid _"configuration-string"_ value should be set, with a URL-like
 form:
 
-```console
+```sh
 GITLAB_TRACING=opentracing://<driver>?<param_name>=<param_value>&<param_name_2>=<param_value_2>
 ```
 
@@ -90,7 +90,7 @@ documentation](https://www.jaegertracing.io/docs/1.9/getting-started/).
 If you have Docker available, the easier approach to running the Jaeger all-in-one is through
 Docker, using the following command:
 
-```console
+```sh
 $ docker run \
   --rm \
   -e COLLECTOR_ZIPKIN_HTTP_PORT=9411  \
@@ -121,8 +121,8 @@ appropriate configuration string.
 
 **TL;DR:** If you are running everything on the same host, use the following value:
 
-```console
-$ export GITLAB_TRACING="opentracing://jaeger?http_endpoint=http%3A%2F%2Flocalhost%3A14268%2Fapi%2Ftraces&sampler=const&sampler_param=1"
+```sh
+export GITLAB_TRACING="opentracing://jaeger?http_endpoint=http%3A%2F%2Flocalhost%3A14268%2Fapi%2Ftraces&sampler=const&sampler_param=1"
 ```
 
 This configuration string uses the Jaeger driver `opentracing://jaeger` with the following options:
@@ -152,7 +152,7 @@ application.
 
 When `GITLAB_TRACING` is configured properly, the application will log this on startup:
 
-```console
+```sh
 13:41:53 gitlab-workhorse.1      | 2019/02/12 13:41:53 Tracing enabled
 ...
 13:41:54 gitaly.1                | 2019/02/12 13:41:54 Tracing enabled
@@ -161,7 +161,7 @@ When `GITLAB_TRACING` is configured properly, the application will log this on s
 
 If `GITLAB_TRACING` is not configured correctly, this will also be logged:
 
-```console
+```sh
 13:43:45 gitaly.1                | 2019/02/12 13:43:45 skipping tracing configuration step: tracer: unable to load driver mytracer
 ```
 
