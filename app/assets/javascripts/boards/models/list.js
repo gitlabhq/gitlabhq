@@ -1,9 +1,9 @@
 /* eslint-disable no-underscore-dangle, class-methods-use-this, consistent-return, no-shadow, no-param-reassign */
-/* global ListIssue */
 
 import { __ } from '~/locale';
 import ListLabel from './label';
 import ListAssignee from './assignee';
+import ListIssue from './issue';
 import { urlParamsToObject } from '~/lib/utils/common_utils';
 import boardsStore from '../stores/boards_store';
 import ListMilestone from './milestone';
