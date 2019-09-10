@@ -13,7 +13,7 @@ module Gitlab
     end
 
     def cache_key(type)
-      [type, namespace, 'set'].join(':')
+      "#{type}:#{namespace}:set"
     end
 
     def expire(key)
@@ -37,7 +37,7 @@ module Gitlab
 
           # Splitting into groups of 1000 prevents us from creating a too-long
           # Redis command
-          value.in_groups_of(1000, false) { |subset| redis.sadd(full_key, subset) }
+          value.each_slice(1000) { |subset| redis.sadd(full_key, subset) }
 
           redis.expire(full_key, expires_in)
         end

@@ -35,6 +35,11 @@ module Gitlab
       # name     - The name of the method to be cached.
       # fallback - A value to fall back to if the repository does not exist, or
       #            in case of a Git error. Defaults to nil.
+      #
+      # It is not safe to use this method prior to the release of 12.3, since
+      # 12.2 does not correctly invalidate the redis set cache value. A mixed
+      # code environment containing both 12.2 and 12.3 nodes breaks, while a
+      # mixed code environment containing both 12.3 and 12.4 nodes will work.
       def cache_method_as_redis_set(name, fallback: nil)
         uncached_name = alias_uncached_method(name)
 
@@ -44,13 +49,20 @@ module Gitlab
           end
         end
 
+        # Attempt to determine whether a value is in the set of values being
+        # cached, by performing a redis SISMEMBERS query if appropriate.
+        #
+        # If the full list is already in-memory, we're better using it directly.
+        #
+        # If the cache is not yet populated, querying it directly will give the
+        # wrong answer. We handle that by querying the full list - which fills
+        # the cache - and using it directly to answer the question.
         define_method("#{name}_include?") do |value|
-          # If the cache isn't populated, we can't rely on it
-          return redis_set_cache.include?(name, value) if redis_set_cache.exist?(name)
+          if strong_memoized?(name) || !redis_set_cache.exist?(name)
+            return __send__(name).include?(value) # rubocop:disable GitlabSecurity/PublicSend
+          end
 
-          # Since we have to pull all branch names to populate the cache, use
-          # the data we already have to answer the query just this once
-          __send__(name).include?(value) # rubocop:disable GitlabSecurity/PublicSend
+          redis_set_cache.include?(name, value)
         end
       end
 
