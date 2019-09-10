@@ -18,7 +18,7 @@ module Search
     end
 
     def projects
-      @projects ||= ProjectsFinder.new(current_user: current_user).execute
+      @projects ||= ProjectsFinder.new(params: { non_archived: true }, current_user: current_user).execute
     end
 
     def allowed_scopes
