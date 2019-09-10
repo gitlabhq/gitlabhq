@@ -13,7 +13,7 @@ _Note:_ The action itself will not update the state, only a mutation should upda
 
 ## File structure
 
-When using Vuex at GitLab, separate this concerns into different files to improve readability:
+When using Vuex at GitLab, separate these concerns into different files to improve readability:
 
 ```
 └── store
