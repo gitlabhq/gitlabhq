@@ -146,7 +146,7 @@ Dependency Scanning can be [configured](#customizing-the-dependency-scanning-set
 using environment variables.
 
 | Environment variable                    | Description | Example usage |
-|--------------------------------         |-------------| |
+| --------------------------------------- | ----------- | ------------- |
 | `DS_ANALYZER_IMAGES`                    | Comma separated list of custom images. The official default images are still enabled. Read more about [customizing analyzers](analyzers.md). | |
 | `DS_ANALYZER_IMAGE_PREFIX`              | Override the name of the Docker registry providing the official default images (proxy). Read more about [customizing analyzers](analyzers.md). | |
 | `DS_ANALYZER_IMAGE_TAG`                 | Override the Docker tag of the official default images. Read more about [customizing analyzers](analyzers.md). | |
