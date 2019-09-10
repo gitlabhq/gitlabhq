@@ -2,9 +2,9 @@ import $ from 'jquery';
 import dropzoneInput from '~/dropzone_input';
 import { TEST_HOST } from 'spec/test_constants';
 
-const TEST_FILE = {
-  upload: {},
-};
+const TEST_FILE = new File([], 'somefile.jpg');
+TEST_FILE.upload = {};
+
 const TEST_UPLOAD_PATH = `${TEST_HOST}/upload/file`;
 const TEST_ERROR_MESSAGE = 'A big error occurred!';
 const TEMPLATE = `<form class="gfm-form" data-uploads-path="${TEST_UPLOAD_PATH}">
