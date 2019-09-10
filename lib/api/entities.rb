@@ -1312,6 +1312,10 @@ module API
         options[:project].releases.find_by(tag: repo_tag.name)
       end
       # rubocop: enable CodeReuse/ActiveRecord
+
+      expose :protected do |repo_tag, options|
+        ::ProtectedTag.protected?(options[:project], repo_tag.name)
+      end
     end
 
     class Runner < Grape::Entity

@@ -16,7 +16,8 @@
         { "type": "null" },
         { "$ref": "release/tag_release.json" }
       ]
-    }
+    },
+    "protected": { "type": "boolean" }
   },
   "additionalProperties": false
 }
