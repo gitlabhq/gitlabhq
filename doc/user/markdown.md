@@ -997,16 +997,18 @@ These details <em>will</em> remain <strong>hidden</strong> until expanded.
 Markdown inside these tags is supported as well, as long as you have a blank line
 after the `</summary>` tag and before the `</details>` tag, as shown in the example:
 
-```html
+````html
 <details>
 <summary>Click me to collapse/fold.</summary>
 
 These details _will_ remain **hidden** until expanded.
 
+```
 PASTE LOGS HERE
+```
 
 </details>
-```
+````
 
 <!-- Note: The example below uses HTML to force correct rendering on docs.gitlab.com, markdown will be fine in GitLab -->
 
@@ -1015,7 +1017,7 @@ PASTE LOGS HERE
 
 These details <em>will</em> remain <b>hidden</b> until expanded.
 
-PASTE LOGS HERE
+<pre><code>PASTE LOGS HERE</code></pre>
 
 </details>
 
@@ -1161,15 +1163,14 @@ GFM will autolink almost any URL you put into your text:
 
 ### Lists
 
-Ordered and unordered lists can be easily created. Add the number you want the list
+Ordered and unordered lists can be easily created.
+
+For an ordered list, add the number you want the list
 to start with, like `1.`, followed by a space, at the start of each line for ordered lists.
 After the first number, it does not matter what number you use, ordered lists will be
 numbered automatically by vertical order, so repeating `1.` for all items in the
 same list is common. If you start with a number other than `1.`, it will use that as the first
 number, and count up from there.
-
-Add a `*`, `-` or `+`, followed by a space, at the start of each line for unordered lists, but
-you should not use a mix of them.
 
 Examples:
 
@@ -1181,15 +1182,10 @@ Examples:
    1. Ordered sub-list
    1. Next ordered sub-list item
 4. And another item.
-
-* Unordered lists can use asterisks
-
-- Or minuses
-
-+ Or pluses
 ```
 
-<!-- The "2." and "4." in the example above are changed to "1." below, only to match the standards on docs.gitlab.com -->
+<!-- The "2." and "4." in the example above are changed to "1." below, to match the style standards on docs.gitlab.com -->
+<!-- See https://docs.gitlab.com/ee/development/documentation/styleguide.html#lists -->
 
 1. First ordered list item
 1. Another item
@@ -1199,11 +1195,43 @@ Examples:
    1. Next ordered sub-list item
 1. And another item.
 
-- Unordered lists can use asterisks
+For an unordered list, add a `-`, `*` or `+`, followed by a space, at the start of
+each line for unordered lists, but you should not use a mix of them.
 
-- Or minuses
+```md
+Unordered lists can:
 
-- Or pluses
+- use
+- minuses
+
+They can also:
+
+* use
+* asterisks
+
+They can even:
+
++ use
++ pluses
+```
+
+<!-- The "*" and "+" in the example above are changed to "-" below, to match the style standards on docs.gitlab.com -->
+<!-- See https://docs.gitlab.com/ee/development/documentation/styleguide.html#lists -->
+
+Unordered lists can:
+
+- use
+- minuses
+
+They can also:
+
+- use
+- asterisks
+
+They can even:
+
+- use
+- pluses
 
 ---
 
