@@ -10,6 +10,16 @@ describe Admin::ApplicationsController do
     sign_in(admin)
   end
 
+  describe 'GET #index' do
+    render_views
+
+    it 'renders the application form' do
+      get :index
+
+      expect(response).to have_http_status(200)
+    end
+  end
+
   describe 'GET #new' do
     it 'renders the application form' do
       get :new

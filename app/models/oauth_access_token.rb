@@ -6,6 +6,8 @@ class OauthAccessToken < Doorkeeper::AccessToken
 
   alias_attribute :user, :resource_owner
 
+  scope :distinct_resource_owner_counts, ->(applications) { where(application: applications).distinct.group(:application_id).count(:resource_owner_id) }
+
   def scopes=(value)
     if value.is_a?(Array)
       super(Doorkeeper::OAuth::Scopes.from_array(value).to_s)
