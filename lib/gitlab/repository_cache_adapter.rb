@@ -23,6 +23,49 @@ module Gitlab
         end
       end
 
+      # Caches and strongly memoizes the method as a Redis Set.
+      #
+      # This only works for methods that do not take any arguments. The method
+      # should return an Array of Strings to be cached.
+      #
+      # In addition to overriding the named method, a "name_include?" method is
+      # defined. This uses the "SISMEMBER" query to efficiently check membership
+      # without needing to load the entire set into memory.
+      #
+      # name     - The name of the method to be cached.
+      # fallback - A value to fall back to if the repository does not exist, or
+      #            in case of a Git error. Defaults to nil.
+      #
+      # It is not safe to use this method prior to the release of 12.3, since
+      # 12.2 does not correctly invalidate the redis set cache value. A mixed
+      # code environment containing both 12.2 and 12.3 nodes breaks, while a
+      # mixed code environment containing both 12.3 and 12.4 nodes will work.
+      def cache_method_as_redis_set(name, fallback: nil)
+        uncached_name = alias_uncached_method(name)
+
+        define_method(name) do
+          cache_method_output_as_redis_set(name, fallback: fallback) do
+            __send__(uncached_name) # rubocop:disable GitlabSecurity/PublicSend
+          end
+        end
+
+        # Attempt to determine whether a value is in the set of values being
+        # cached, by performing a redis SISMEMBERS query if appropriate.
+        #
+        # If the full list is already in-memory, we're better using it directly.
+        #
+        # If the cache is not yet populated, querying it directly will give the
+        # wrong answer. We handle that by querying the full list - which fills
+        # the cache - and using it directly to answer the question.
+        define_method("#{name}_include?") do |value|
+          if strong_memoized?(name) || !redis_set_cache.exist?(name)
+            return __send__(name).include?(value) # rubocop:disable GitlabSecurity/PublicSend
+          end
+
+          redis_set_cache.include?(name, value)
+        end
+      end
+
       # Caches truthy values from the method. All values are strongly memoized,
       # and cached in RequestStore.
       #
@@ -84,6 +127,11 @@ module Gitlab
       raise NotImplementedError
     end
 
+    # RepositorySetCache to be used. Should be overridden by the including class
+    def redis_set_cache
+      raise NotImplementedError
+    end
+
     # List of cached methods. Should be overridden by the including class
     def cached_methods
       raise NotImplementedError
@@ -97,6 +145,18 @@ module Gitlab
     def cache_method_output(name, fallback: nil, &block)
       memoize_method_output(name, fallback: fallback) do
         cache.fetch(name, &block)
+      end
+    end
+
+    # Caches and strongly memoizes the supplied block as a Redis Set. The result
+    # will be provided as a sorted array.
+    #
+    # name     - The name of the method to be cached.
+    # fallback - A value to fall back to if the repository does not exist, or
+    #            in case of a Git error. Defaults to nil.
+    def cache_method_output_as_redis_set(name, fallback: nil, &block)
+      memoize_method_output(name, fallback: fallback) do
+        redis_set_cache.fetch(name, &block).sort
       end
     end
 
@@ -154,6 +214,7 @@ module Gitlab
         clear_memoization(memoizable_name(name))
       end
 
+      expire_redis_set_method_caches(methods)
       expire_request_store_method_caches(methods)
     end
 
@@ -167,6 +228,10 @@ module Gitlab
       methods.each do |name|
         request_store_cache.expire(name)
       end
+    end
+
+    def expire_redis_set_method_caches(methods)
+      methods.each { |name| redis_set_cache.expire(name) }
     end
 
     # All cached repository methods depend on the existence of a Git repository,
