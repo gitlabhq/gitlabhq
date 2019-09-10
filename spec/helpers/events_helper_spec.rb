@@ -27,7 +27,7 @@ describe EventsHelper do
   end
 
   describe '#event_feed_url' do
-    let(:event) { create(:event) }
+    let(:event) { create(:event).present }
     let(:project) { create(:project, :public, :repository) }
 
     context 'issue' do

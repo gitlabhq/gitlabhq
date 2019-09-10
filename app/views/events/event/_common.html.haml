@@ -8,7 +8,7 @@
     %span.event-type.d-inline-block.append-right-4{ class: event.action_name }
       = event.action_name
     %span.event-target-type.append-right-4= event.target_type.titleize.downcase
-    = link_to [event.project.namespace.becomes(Namespace), event.project, event.target], class: 'has-tooltip event-target-link append-right-4', title: event.target_title do
+    = link_to event.target_link_options, class: 'has-tooltip event-target-link append-right-4', title: event.target_title do
       = event.target.reference_link_text
     - unless event.milestone?
       %span.event-target-title.append-right-4{ dir: "auto" }
@@ -17,4 +17,4 @@
     %span.event-type.d-inline-block.append-right-4{ class: event.action_name }
       = event_action_name(event)
 
-  = render "events/event_scope", event: event
+  = render "events/event_scope", event: event if event.resource_parent.present?

@@ -3,6 +3,8 @@
 class Event < ApplicationRecord
   include Sortable
   include FromUnion
+  include Presentable
+
   default_scope { reorder(nil) }
 
   CREATED   = 1
@@ -135,6 +137,10 @@ class Event < ApplicationRecord
     end
   end
 
+  def present
+    super(presenter_class: ::EventPresenter)
+  end
+
   # rubocop:disable Metrics/CyclomaticComplexity
   # rubocop:disable Metrics/PerceivedComplexity
   def visible_to_user?(user = nil)
@@ -161,12 +167,8 @@ class Event < ApplicationRecord
   # rubocop:enable Metrics/PerceivedComplexity
   # rubocop:enable Metrics/CyclomaticComplexity
 
-  def project_name
-    if project
-      project.full_name
-    else
-      "(deleted project)"
-    end
+  def resource_parent
+    project || group
   end
 
   def target_title
