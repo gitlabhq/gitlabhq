@@ -1223,66 +1223,36 @@ describe Repository do
   end
 
   describe '#branch_exists?' do
-    let(:branch) { repository.root_ref }
+    it 'uses branch_names' do
+      allow(repository).to receive(:branch_names).and_return(['foobar'])
 
-    subject { repository.branch_exists?(branch) }
-
-    it 'delegates to branch_names when the cache is empty' do
-      repository.expire_branches_cache
-
-      expect(repository).to receive(:branch_names).and_call_original
-      is_expected.to eq(true)
-    end
-
-    it 'uses redis set caching when the cache is filled' do
-      repository.branch_names # ensure the branch name cache is filled
-
-      expect(repository)
-        .to receive(:branch_names_include?)
-        .with(branch)
-        .and_call_original
-
-      is_expected.to eq(true)
+      expect(repository.branch_exists?('foobar')).to eq(true)
+      expect(repository.branch_exists?('master')).to eq(false)
     end
   end
 
   describe '#tag_exists?' do
-    let(:tag) { repository.tags.first.name }
+    it 'uses tag_names' do
+      allow(repository).to receive(:tag_names).and_return(['foobar'])
 
-    subject { repository.tag_exists?(tag) }
-
-    it 'delegates to tag_names when the cache is empty' do
-      repository.expire_tags_cache
-
-      expect(repository).to receive(:tag_names).and_call_original
-      is_expected.to eq(true)
-    end
-
-    it 'uses redis set caching when the cache is filled' do
-      repository.tag_names # ensure the tag name cache is filled
-
-      expect(repository)
-        .to receive(:tag_names_include?)
-        .with(tag)
-        .and_call_original
-
-      is_expected.to eq(true)
+      expect(repository.tag_exists?('foobar')).to eq(true)
+      expect(repository.tag_exists?('master')).to eq(false)
     end
   end
 
-  describe '#branch_names', :clean_gitlab_redis_cache do
+  describe '#branch_names', :use_clean_rails_memory_store_caching do
     let(:fake_branch_names) { ['foobar'] }
 
     it 'gets cached across Repository instances' do
       allow(repository.raw_repository).to receive(:branch_names).once.and_return(fake_branch_names)
 
-      expect(repository.branch_names).to match_array(fake_branch_names)
+      expect(repository.branch_names).to eq(fake_branch_names)
 
       fresh_repository = Project.find(project.id).repository
       expect(fresh_repository.object_id).not_to eq(repository.object_id)
 
       expect(fresh_repository.raw_repository).not_to receive(:branch_names)
-      expect(fresh_repository.branch_names).to match_array(fake_branch_names)
+      expect(fresh_repository.branch_names).to eq(fake_branch_names)
     end
   end
 
