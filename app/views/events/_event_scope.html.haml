@@ -2,6 +2,5 @@
   = event_preposition(event)
   - if event.project
     = link_to_project(event.project)
-  - else
-    = event.project_name
-
+  - elsif event.group
+    = link_to event.resource_parent_name, group_path(event.group)
