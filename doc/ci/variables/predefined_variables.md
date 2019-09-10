@@ -100,6 +100,7 @@ future GitLab releases.**
 | `CI_RUNNER_REVISION`                    | all    | 10.6   | GitLab Runner revision that is executing the current job |
 | `CI_RUNNER_TAGS`                        | 8.10   | 0.5    | The defined runner tags |
 | `CI_RUNNER_VERSION`                     | all    | 10.6   | GitLab Runner version that is executing the current job |
+| `CI_RUNNER_SHORT_TOKEN`                 | all    | 12.3   | First eight characters of GitLab Runner's token used to authenticate new job requests. Used as Runner's unique ID |
 | `CI_SERVER`                             | all    | all    | Mark that job is executed in CI environment |
 | `CI_SERVER_HOST`                        | 12.1   | all    | Host component of the GitLab instance URL, without protocol and port (like gitlab.example.com) |
 | `CI_SERVER_NAME`                        | all    | all    | The name of CI server that is used to coordinate jobs |
