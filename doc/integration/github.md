@@ -158,7 +158,7 @@ For installation from source:
 You will also need to disable Git SSL verification on the server hosting GitLab.
 
 ```
-$ git config --global http.sslVerify false
+git config --global http.sslVerify false
 ```
 
 For the changes to take effect, [reconfigure GitLab] if you installed
