@@ -2,6 +2,7 @@
 
 class Projects::ForksController < Projects::ApplicationController
   include ContinueParams
+  include RendersMemberAccess
 
   # Authorize
   before_action :whitelist_query_limiting, only: [:create]
@@ -9,6 +10,7 @@ class Projects::ForksController < Projects::ApplicationController
   before_action :authorize_download_code!
   before_action :authenticate_user!, only: [:new, :create]
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def index
     @total_forks_count    = project.forks.size
     @public_forks_count   = project.forks.public_only.size
@@ -16,7 +18,10 @@ class Projects::ForksController < Projects::ApplicationController
     @internal_forks_count = @total_forks_count - @public_forks_count - @private_forks_count
 
     @forks = ForkProjectsFinder.new(project, params: params.merge(search: params[:filter_projects]), current_user: current_user).execute
-    @forks = @forks.eager_load_namespace_and_owner.inc_creator.with_route.page(params[:page])
+    @forks = @forks.includes(:route, :creator, :group, namespace: [:route, :owner])
+                   .page(params[:page])
+
+    prepare_projects_for_rendering(@forks)
 
     respond_to do |format|
       format.html
@@ -28,6 +33,7 @@ class Projects::ForksController < Projects::ApplicationController
       end
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def new
     @namespaces = current_user.manageable_namespaces
