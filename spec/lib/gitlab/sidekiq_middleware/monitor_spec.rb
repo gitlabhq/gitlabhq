@@ -10,8 +10,8 @@ describe Gitlab::SidekiqMiddleware::Monitor do
     let(:job) { { 'jid' => 'job-id' } }
     let(:queue) { 'my-queue' }
 
-    it 'calls SidekiqMonitor' do
-      expect(Gitlab::SidekiqMonitor.instance).to receive(:within_job)
+    it 'calls Gitlab::SidekiqDaemon::Monitor' do
+      expect(Gitlab::SidekiqDaemon::Monitor.instance).to receive(:within_job)
         .with('job-id', 'my-queue')
         .and_call_original
 
@@ -29,7 +29,7 @@ describe Gitlab::SidekiqMiddleware::Monitor do
     context 'when cancel happens' do
       subject do
         monitor.call(worker, job, queue) do
-          raise Gitlab::SidekiqMonitor::CancelledError
+          raise Gitlab::SidekiqDaemon::Monitor::CancelledError
         end
       end
 

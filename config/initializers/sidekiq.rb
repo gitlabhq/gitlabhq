@@ -60,7 +60,7 @@ Sidekiq.configure_server do |config|
     # Sidekiq (e.g. in an initializer).
     ActiveRecord::Base.clear_all_connections!
 
-    Gitlab::SidekiqMonitor.instance.start if enable_sidekiq_monitor
+    Gitlab::SidekiqDaemon::Monitor.instance.start if enable_sidekiq_monitor
   end
 
   if enable_reliable_fetch?
