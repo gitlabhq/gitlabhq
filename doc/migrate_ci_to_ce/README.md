@@ -77,6 +77,9 @@ sudo -u git -H bundle exec rake gitlab:backup:create RAILS_ENV=production SKIP=r
 If this fails you need to fix it before upgrading to 8.0. Also see
 <https://about.gitlab.com/get-help/>
 
+NOTE: **Note**
+For GitLab 12.1 and earlier, use `gitlab-rake gitlab:backup:create`.
+
 ### 2. Check source and target database types
 
 Check what databases you use on your GitLab server and your CI server.
