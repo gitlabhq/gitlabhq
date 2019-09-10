@@ -49,6 +49,22 @@ describe MergeRequests::BuildService do
     allow(project).to receive(:commit).and_return(commit_2)
   end
 
+  shared_examples 'allows the merge request to be created' do
+    it do
+      expect(merge_request.can_be_created).to eq(true)
+    end
+  end
+
+  shared_examples 'forbids the merge request from being created' do
+    it 'returns that the merge request cannot be created' do
+      expect(merge_request.can_be_created).to eq(false)
+    end
+
+    it 'adds an error message to the merge request' do
+      expect(merge_request.errors).to contain_exactly(*Array(error_message))
+    end
+  end
+
   describe '#execute' do
     it 'calls the compare service with the correct arguments' do
       allow_any_instance_of(described_class).to receive(:projects_and_branches_valid?).and_return(true)
@@ -79,12 +95,8 @@ describe MergeRequests::BuildService do
     context 'missing source branch' do
       let(:source_branch) { '' }
 
-      it 'forbids the merge request from being created' do
-        expect(merge_request.can_be_created).to eq(false)
-      end
-
-      it 'adds an error message to the merge request' do
-        expect(merge_request.errors).to contain_exactly('You must select source and target branch')
+      it_behaves_like 'forbids the merge request from being created' do
+        let(:error_message) { 'You must select source and target branch' }
       end
     end
 
@@ -96,25 +108,44 @@ describe MergeRequests::BuildService do
         stub_compare
       end
 
-      it 'creates compare object with target branch as default branch' do
-        expect(merge_request.compare).to be_present
-        expect(merge_request.target_branch).to eq(project.default_branch)
-      end
+      context 'when source branch' do
+        context 'is not the repository default branch' do
+          it 'creates compare object with target branch as default branch' do
+            expect(merge_request.compare).to be_present
+            expect(merge_request.target_branch).to eq(project.default_branch)
+          end
 
-      it 'allows the merge request to be created' do
-        expect(merge_request.can_be_created).to eq(true)
+          it_behaves_like 'allows the merge request to be created'
+        end
+
+        context 'the repository default branch' do
+          let(:source_branch) { 'master' }
+
+          it_behaves_like 'forbids the merge request from being created' do
+            let(:error_message) { 'You must select source and target branch' }
+          end
+
+          context 'when source project is different from the target project' do
+            let(:target_project) { create(:project, :public, :repository) }
+            let!(:project) { fork_project(target_project, user, namespace: user.namespace, repository: true) }
+            let(:source_project) { project }
+
+            it 'creates compare object with target branch as default branch' do
+              expect(merge_request.compare).to be_present
+              expect(merge_request.target_branch).to eq(project.default_branch)
+            end
+
+            it_behaves_like 'allows the merge request to be created'
+          end
+        end
       end
     end
 
     context 'same source and target branch' do
       let(:source_branch) { 'master' }
 
-      it 'forbids the merge request from being created' do
-        expect(merge_request.can_be_created).to eq(false)
-      end
-
-      it 'adds an error message to the merge request' do
-        expect(merge_request.errors).to contain_exactly('You must select different branches')
+      it_behaves_like 'forbids the merge request from being created' do
+        let(:error_message) { 'You must select different branches' }
       end
     end
 
@@ -125,9 +156,7 @@ describe MergeRequests::BuildService do
         stub_compare
       end
 
-      it 'allows the merge request to be created' do
-        expect(merge_request.can_be_created).to eq(true)
-      end
+      it_behaves_like 'allows the merge request to be created'
 
       it 'adds a WIP prefix to the merge request title' do
         expect(merge_request.title).to eq('WIP: Feature branch')
@@ -142,9 +171,7 @@ describe MergeRequests::BuildService do
         stub_compare
       end
 
-      it 'allows the merge request to be created' do
-        expect(merge_request.can_be_created).to eq(true)
-      end
+      it_behaves_like 'allows the merge request to be created'
 
       it 'uses the title of the commit as the title of the merge request' do
         expect(merge_request.title).to eq(commit_1.safe_message.split("\n").first)
@@ -254,9 +281,7 @@ describe MergeRequests::BuildService do
         stub_compare
       end
 
-      it 'allows the merge request to be created' do
-        expect(merge_request.can_be_created).to eq(true)
-      end
+      it_behaves_like 'allows the merge request to be created'
 
       it 'uses the title of the branch as the merge request title' do
         expect(merge_request.title).to eq('Feature branch')
@@ -340,12 +365,8 @@ describe MergeRequests::BuildService do
         allow(project).to receive(:commit).with(target_branch).and_return(commit_1)
       end
 
-      it 'forbids the merge request from being created' do
-        expect(merge_request.can_be_created).to eq(false)
-      end
-
-      it 'adds an error message to the merge request' do
-        expect(merge_request.errors).to contain_exactly('Source branch "feature-branch" does not exist')
+      it_behaves_like 'forbids the merge request from being created' do
+        let(:error_message) { 'Source branch "feature-branch" does not exist' }
       end
     end
 
@@ -355,12 +376,8 @@ describe MergeRequests::BuildService do
         allow(project).to receive(:commit).with(target_branch).and_return(nil)
       end
 
-      it 'forbids the merge request from being created' do
-        expect(merge_request.can_be_created).to eq(false)
-      end
-
-      it 'adds an error message to the merge request' do
-        expect(merge_request.errors).to contain_exactly('Target branch "master" does not exist')
+      it_behaves_like 'forbids the merge request from being created' do
+        let(:error_message) { 'Target branch "master" does not exist' }
       end
     end
 
@@ -369,15 +386,10 @@ describe MergeRequests::BuildService do
         allow(project).to receive(:commit).and_return(nil)
       end
 
-      it 'forbids the merge request from being created' do
-        expect(merge_request.can_be_created).to eq(false)
-      end
-
-      it 'adds both error messages to the merge request' do
-        expect(merge_request.errors).to contain_exactly(
-          'Source branch "feature-branch" does not exist',
-          'Target branch "master" does not exist'
-        )
+      it_behaves_like 'forbids the merge request from being created' do
+        let(:error_message) do
+          ['Source branch "feature-branch" does not exist', 'Target branch "master" does not exist']
+        end
       end
     end
 
