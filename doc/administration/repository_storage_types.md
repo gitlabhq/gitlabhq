@@ -10,7 +10,7 @@ that can be:
 
 - Mounted to the local disk
 - Exposed as an NFS shared volume
-- Acessed via [gitaly] on its own machine.
+- Accessed via [gitaly] on its own machine.
 
 In GitLab, this is configured in `/etc/gitlab/gitlab.rb` by the `git_data_dirs({})`
 configuration hash. The storage layouts discussed here will apply to any shard

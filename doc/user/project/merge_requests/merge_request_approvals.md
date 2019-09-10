@@ -184,6 +184,10 @@ the merge request. To enable this feature:
 When this feature is enabled, all merge requests will need approval
 from one code owner per matched rule before it can be merged.
 
+NOTE: **Note:** Only the `CODEOWNERS` file on the default branch is evaluated for
+Merge Request approvals. If `CODEOWNERS` is changed on a non-default branch, those
+changes will not affect approvals until merged to the default branch.
+
 ## Overriding the merge request approvals default settings
 
 > Introduced in GitLab Enterprise Edition 9.4.
@@ -196,7 +200,7 @@ If approvals are [set at the project level](#editing-approvals), the
 default configuration (number of required approvals and approvers) can be
 overridden for each merge request in that project.
 
-One possible scenario would be to to assign a group of approvers at the project
+One possible scenario would be to assign a group of approvers at the project
 level and change them later when creating or editing the merge request.
 
 First, you have to enable this option in the project's settings:

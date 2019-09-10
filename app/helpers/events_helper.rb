@@ -103,7 +103,7 @@ module EventsHelper
       words << "at"
     end
 
-    words << event.project_name
+    words << event.resource_parent_name
 
     words.join(" ")
   end
@@ -223,3 +223,5 @@ module EventsHelper
     end
   end
 end
+
+EventsHelper.prepend_if_ee('EE::EventsHelper')

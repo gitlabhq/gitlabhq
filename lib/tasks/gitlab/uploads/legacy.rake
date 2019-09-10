@@ -11,7 +11,7 @@ namespace :gitlab do
           include ::EachBatch
         end
 
-        migration = 'LegacyUploadsMigrator'.freeze
+        migration = 'LegacyUploadsMigrator'
         batch_size = 5000
         delay_interval = 5.minutes.to_i
 

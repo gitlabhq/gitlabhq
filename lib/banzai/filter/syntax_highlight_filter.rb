@@ -10,8 +10,8 @@ module Banzai
     class SyntaxHighlightFilter < HTML::Pipeline::Filter
       include OutputSafety
 
-      PARAMS_DELIMITER = ':'.freeze
-      LANG_PARAMS_ATTR = 'data-lang-params'.freeze
+      PARAMS_DELIMITER = ':'
+      LANG_PARAMS_ATTR = 'data-lang-params'
 
       def call
         doc.search('pre:not([data-math-style]) > code').each do |node|

@@ -270,7 +270,7 @@ is interrupted mid-execution and it is not guaranteed
 that proper rollback of transactions is implemented.
 
 ```ruby
-Gitlab::SidekiqMonitor.cancel_job('job-id')
+Gitlab::SidekiqDaemon::Monitor.cancel_job('job-id')
 ```
 
 > This requires the Sidekiq to be run with `SIDEKIQ_MONITOR_WORKER=1`

@@ -1,0 +1,5 @@
+---
+title: Avoid prefilling target branch when source branch is the default one
+merge_request: 32701
+author:
+type: other

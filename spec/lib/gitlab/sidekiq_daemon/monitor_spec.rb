@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Gitlab::SidekiqMonitor do
+describe Gitlab::SidekiqDaemon::Monitor do
   let(:monitor) { described_class.new }
 
   describe '#within_job' do
@@ -43,7 +43,7 @@ describe Gitlab::SidekiqMonitor do
     before do
       # we want to run at most once cycle
       # we toggle `enabled?` flag after the first call
-      stub_const('Gitlab::SidekiqMonitor::RECONNECT_TIME', 0)
+      stub_const('Gitlab::SidekiqDaemon::Monitor::RECONNECT_TIME', 0)
       allow(monitor).to receive(:enabled?).and_return(true, false)
 
       allow(Sidekiq.logger).to receive(:info)

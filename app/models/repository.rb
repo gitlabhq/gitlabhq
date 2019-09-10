@@ -1134,6 +1134,10 @@ class Repository
     @cache ||= Gitlab::RepositoryCache.new(self)
   end
 
+  def redis_set_cache
+    @redis_set_cache ||= Gitlab::RepositorySetCache.new(self)
+  end
+
   def request_store_cache
     @request_store_cache ||= Gitlab::RepositoryCache.new(self, backend: Gitlab::SafeRequestStore)
   end

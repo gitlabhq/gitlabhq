@@ -88,9 +88,36 @@ def lint_commit(commit) # rubocop:disable Metrics/AbcSize
   # We ignore revert commits as they are well structured by Git already
   return false if commit.message.start_with?('Revert "')
 
+  is_squash = gitlab.mr_json['squash']
+  is_wip = gitlab.mr_json['work_in_progress']
+  is_fixup = commit.message.start_with?('fixup!', 'squash!')
+
+  if is_fixup
+    # The MR is set to squash - Danger adds an informative notice
+    # The MR is not set to squash - Danger fails. if also WIP warn only, not error
+    if is_squash
+      return false
+    end
+
+    if is_wip
+      warn_commit(
+        commit,
+        'Squash or Fixup commits must be squashed before merge, or enable squash merge option'
+      )
+    else
+      fail_commit(
+        commit,
+        'Squash or Fixup commits must be squashed before merge, or enable squash merge option'
+      )
+    end
+
+    # Makes no sense to process other rules for fixup commits, they trigger just more noise
+    return false
+  end
+
   # Fail if a suggestion commit is used and squash is not enabled
   if commit.message.start_with?('Apply suggestion to')
-    if gitlab.mr_json['squash']
+    if is_squash
       return false
     else
       fail_commit(

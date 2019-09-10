@@ -17,8 +17,8 @@ module Banzai
     #
     class FootnoteFilter < HTML::Pipeline::Filter
       INTEGER_PATTERN                 = /\A\d+\z/.freeze
-      FOOTNOTE_ID_PREFIX              = 'fn'.freeze
-      FOOTNOTE_LINK_ID_PREFIX         = 'fnref'.freeze
+      FOOTNOTE_ID_PREFIX              = 'fn'
+      FOOTNOTE_LINK_ID_PREFIX         = 'fnref'
       FOOTNOTE_LI_REFERENCE_PATTERN   = /\A#{FOOTNOTE_ID_PREFIX}\d+\z/.freeze
       FOOTNOTE_LINK_REFERENCE_PATTERN = /\A#{FOOTNOTE_LINK_ID_PREFIX}\d+\z/.freeze
       FOOTNOTE_START_NUMBER           = 1

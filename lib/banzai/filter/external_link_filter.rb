@@ -5,8 +5,8 @@ module Banzai
     # HTML Filter to modify the attributes of external links
     class ExternalLinkFilter < HTML::Pipeline::Filter
       SCHEMES      = ['http', 'https', nil].freeze
-      RTLO         = "\u202E".freeze
-      ENCODED_RTLO = '%E2%80%AE'.freeze
+      RTLO         = "\u202E"
+      ENCODED_RTLO = '%E2%80%AE'
 
       def call
         links.each do |node|

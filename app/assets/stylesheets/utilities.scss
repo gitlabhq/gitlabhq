@@ -15,3 +15,9 @@
     font-size: $size;
   }
 }
+
+.border-width-1px { border-width: 1px; }
+.border-style-dashed { border-style: dashed; }
+.border-style-solid { border-style: solid; }
+.border-color-blue-300 { border-color: $blue-300; }
+.border-color-default { border-color: $border-color; }

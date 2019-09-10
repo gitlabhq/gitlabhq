@@ -8,9 +8,9 @@ require 'google/apis/cloudresourcemanager_v1'
 module GoogleApi
   module CloudPlatform
     class Client < GoogleApi::Auth
-      SCOPE = 'https://www.googleapis.com/auth/cloud-platform'.freeze
+      SCOPE = 'https://www.googleapis.com/auth/cloud-platform'
       LEAST_TOKEN_LIFE_TIME = 10.minutes
-      CLUSTER_MASTER_AUTH_USERNAME = 'admin'.freeze
+      CLUSTER_MASTER_AUTH_USERNAME = 'admin'
 
       class << self
         def session_key_for_token

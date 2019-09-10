@@ -40,7 +40,7 @@ describe Ci::RetryBuildService do
        user_id auto_canceled_by_id retried failure_reason
        sourced_pipelines artifacts_file_store artifacts_metadata_store
        metadata runner_session trace_chunks upstream_pipeline_id
-       artifacts_file artifacts_metadata artifacts_size].freeze
+       artifacts_file artifacts_metadata artifacts_size commands].freeze
 
   shared_examples 'build duplication' do
     let(:another_pipeline) { create(:ci_empty_pipeline, project: project) }

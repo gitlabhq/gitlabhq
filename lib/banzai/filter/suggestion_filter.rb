@@ -5,7 +5,7 @@ module Banzai
   module Filter
     class SuggestionFilter < HTML::Pipeline::Filter
       # Class used for tagging elements that should be rendered
-      TAG_CLASS = 'js-render-suggestion'.freeze
+      TAG_CLASS = 'js-render-suggestion'
 
       def call
         return doc unless suggestions_filter_enabled?

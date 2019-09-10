@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 shared_examples_for 'multiple issue boards' do
-  dropdown_selector = '.js-boards-selector .dropdown-menu'
-
   context 'authorized user' do
     before do
       parent.add_maintainer(user)
@@ -20,18 +18,14 @@ shared_examples_for 'multiple issue boards' do
     end
 
     it 'shows a list of boards' do
-      click_button board.name
-
-      page.within(dropdown_selector) do
+      in_boards_switcher_dropdown do
         expect(page).to have_content(board.name)
         expect(page).to have_content(board2.name)
       end
     end
 
     it 'switches current board' do
-      click_button board.name
-
-      page.within(dropdown_selector) do
+      in_boards_switcher_dropdown do
         click_link board2.name
       end
 
@@ -43,9 +37,7 @@ shared_examples_for 'multiple issue boards' do
     end
 
     it 'creates new board without detailed configuration' do
-      click_button board.name
-
-      page.within(dropdown_selector) do
+      in_boards_switcher_dropdown do
         click_button 'Create new board'
       end
 
@@ -57,28 +49,23 @@ shared_examples_for 'multiple issue boards' do
     end
 
     it 'deletes board' do
-      click_button board.name
-
-      wait_for_requests
-
-      page.within(dropdown_selector) do
+      in_boards_switcher_dropdown do
         click_button 'Delete board'
       end
 
       expect(page).to have_content('Are you sure you want to delete this board?')
       click_button 'Delete'
 
-      click_button board2.name
-      page.within(dropdown_selector) do
+      wait_for_requests
+
+      in_boards_switcher_dropdown do
         expect(page).not_to have_content(board.name)
         expect(page).to have_content(board2.name)
       end
     end
 
     it 'adds a list to the none default board' do
-      click_button board.name
-
-      page.within(dropdown_selector) do
+      in_boards_switcher_dropdown do
         click_link board2.name
       end
 
@@ -100,9 +87,7 @@ shared_examples_for 'multiple issue boards' do
 
       expect(page).to have_selector('.board', count: 3)
 
-      click_button board2.name
-
-      page.within(dropdown_selector) do
+      in_boards_switcher_dropdown do
         click_link board.name
       end
 
@@ -114,9 +99,9 @@ shared_examples_for 'multiple issue boards' do
     it 'maintains sidebar state over board switch' do
       assert_boards_nav_active
 
-      find('.boards-switcher').click
-      wait_for_requests
-      click_link board2.name
+      in_boards_switcher_dropdown do
+        click_link board2.name
+      end
 
       assert_boards_nav_active
     end
@@ -129,12 +114,21 @@ shared_examples_for 'multiple issue boards' do
     end
 
     it 'does not show action links' do
-      click_button board.name
-
-      page.within(dropdown_selector) do
+      in_boards_switcher_dropdown do
         expect(page).not_to have_content('Create new board')
         expect(page).not_to have_content('Delete board')
       end
+    end
+  end
+
+  def in_boards_switcher_dropdown
+    find('.boards-switcher').click
+
+    wait_for_requests
+
+    dropdown_selector = '.js-boards-selector .dropdown-menu'
+    page.within(dropdown_selector) do
+      yield
     end
   end
 

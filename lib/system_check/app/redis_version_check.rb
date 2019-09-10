@@ -3,7 +3,7 @@
 module SystemCheck
   module App
     class RedisVersionCheck < SystemCheck::BaseCheck
-      MIN_REDIS_VERSION = '2.8.0'.freeze
+      MIN_REDIS_VERSION = '2.8.0'
       set_name "Redis version >= #{MIN_REDIS_VERSION}?"
 
       def check?

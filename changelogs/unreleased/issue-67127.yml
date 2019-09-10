@@ -1,0 +1,5 @@
+---
+title: Expose 'protected' field for Tag API endpoint.
+merge_request: 32790
+author: Andrea Leone
+type: added

@@ -80,6 +80,9 @@ Use this command if you've installed GitLab with the Omnibus package:
 sudo gitlab-backup create
 ```
 
+NOTE: **Note**
+For GitLab 12.1 and earlier, use `gitlab-rake gitlab:backup:create`.
+
 Use this if you've installed GitLab from source:
 
 ```sh
@@ -91,6 +94,9 @@ If you are running GitLab within a Docker container, you can run the backup from
 ```sh
 docker exec -t <container name> gitlab-backup create
 ```
+
+NOTE: **Note**
+For GitLab 12.1 and earlier, use `gitlab-rake gitlab:backup:create`.
 
 If you are using the [GitLab helm chart](https://gitlab.com/gitlab-org/charts/gitlab) on a
 Kubernetes cluster, you can run the backup task using `backup-utility` script on
@@ -202,6 +208,9 @@ To use the `copy` strategy instead of the default streaming strategy, specify
 sudo gitlab-backup create STRATEGY=copy
 ```
 
+NOTE: **Note**
+For GitLab 12.1 and earlier, use `gitlab-rake gitlab:backup:create`.
+
 ### Backup filename
 
 By default a backup file is created according to the specification in [the Backup timestamp](#backup-timestamp) section above. You can however override the `[TIMESTAMP]` part of the filename by setting the `BACKUP` environment variable. For example:
@@ -209,6 +218,9 @@ By default a backup file is created according to the specification in [the Backu
 ```sh
 sudo gitlab-backup create BACKUP=dump
 ```
+
+NOTE: **Note**
+For GitLab 12.1 and earlier, use `gitlab-rake gitlab:backup:create`.
 
 The resulting file will then be `dump_gitlab_backup.tar`. This is useful for systems that make use of rsync and incremental backups, and will result in considerably faster transfer speeds.
 
@@ -221,6 +233,9 @@ Note that the `--rsyncable` option in `gzip` is not guaranteed to be available o
 ```sh
 sudo gitlab-backup create BACKUP=dump GZIP_RSYNCABLE=yes
 ```
+
+NOTE: **Note**
+For GitLab 12.1 and earlier, use `gitlab-rake gitlab:backup:create`.
 
 ### Excluding specific directories from the backup
 
@@ -246,6 +261,9 @@ For Omnibus GitLab packages:
 ```sh
 sudo gitlab-backup create SKIP=db,uploads
 ```
+
+NOTE: **Note**
+For GitLab 12.1 and earlier, use `gitlab-rake gitlab:backup:create`.
 
 For installations from source:
 
@@ -452,6 +470,9 @@ sudo gitlab-backup create DIRECTORY=daily
 sudo gitlab-backup create DIRECTORY=weekly
 ```
 
+NOTE: **Note**
+For GitLab 12.1 and earlier, use `gitlab-rake gitlab:backup:create`.
+
 ### Uploading to locally mounted shares
 
 You may also send backups to a mounted share (`NFS` / `CIFS` / `SMB` / etc.) by
@@ -568,6 +589,9 @@ There, add the following line to schedule the backup for everyday at 2 AM:
 ```
 0 2 * * * /opt/gitlab/bin/gitlab-backup create CRON=1
 ```
+
+NOTE: **Note**
+For GitLab 12.1 and earlier, use `gitlab-rake gitlab:backup:create`.
 
 You may also want to set a limited lifetime for backups to prevent regular
 backups using all your disk space.
@@ -729,6 +753,14 @@ restore:
 sudo gitlab-backup restore BACKUP=1493107454_2018_04_25_10.6.4-ce
 ```
 
+NOTE: **Note**
+For GitLab 12.1 and earlier, use `gitlab-rake gitlab:backup:restore`.
+
+CAUTION: **Warning:**
+`gitlab-rake gitlab:backup:restore` does not set the right file system permissions on your Registry directory.
+This is a [known issue](https://gitlab.com/gitlab-org/gitlab-ce/issues/62759). On GitLab 12.2 or newer, you can
+use `gitlab-backup restore` to avoid this issue.
+
 Next, restore `/etc/gitlab/gitlab-secrets.json` if necessary as mentioned above.
 
 Reconfigure, restart and check GitLab:
@@ -762,6 +794,14 @@ For docker installations, the restore task can be run from host:
 ```sh
 docker exec -it <name of container> gitlab-backup restore
 ```
+
+NOTE: **Note**
+For GitLab 12.1 and earlier, use `gitlab-rake gitlab:backup:restore`.
+
+CAUTION: **Warning:**
+`gitlab-rake gitlab:backup:restore` does not set the right file system permissions on your Registry directory.
+This is a [known issue](https://gitlab.com/gitlab-org/gitlab-ce/issues/62759). On GitLab 12.2 or newer, you can
+use `gitlab-backup restore` to avoid this issue.
 
 The GitLab helm chart uses a different process, documented in
 [restoring a GitLab helm chart installation](https://gitlab.com/gitlab-org/charts/gitlab/blob/master/doc/backup-restore/restore.md).
@@ -978,7 +1018,7 @@ sudo chown -R registry:registry /var/opt/gitlab/gitlab-rails/shared/registry/doc
 
 NOTE: **Note:**
 If you have changed the default filesystem location for the registry, you will
-want to run the chown against your custom location instead of
+want to run the `chown` against your custom location instead of
 `/var/opt/gitlab/gitlab-rails/shared/registry/docker`.
 
 [reconfigure GitLab]: ../administration/restart_gitlab.md#omnibus-gitlab-reconfigure
@@ -990,6 +1030,7 @@ While running the backup, you may receive a gzip error:
 
 ```sh
 sudo /opt/gitlab/bin/gitlab-backup create
+...
 Dumping ...
 ...
 gzip: stdout: Input/output error
@@ -999,5 +1040,5 @@ Backup failed
 
 If this happens, check the following:
 
-1. Confirm there is sufficent diskspace for the gzip operation.
-1. If NFS is being used, check if the mount option `timeo` is set. The default is `600`, and changing this to smaller values have resulted in this error.
+1. Confirm there is sufficient disk space for the gzip operation.
+1. If NFS is being used, check if the mount option `timeout` is set. The default is `600`, and changing this to smaller values have resulted in this error.

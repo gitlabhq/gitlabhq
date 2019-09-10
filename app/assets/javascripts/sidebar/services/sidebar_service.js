@@ -1,7 +1,4 @@
-import Vue from 'vue';
-import VueResource from 'vue-resource';
-
-Vue.use(VueResource);
+import axios from '~/lib/utils/axios_utils';
 
 export default class SidebarService {
   constructor(endpointMap) {
@@ -18,23 +15,15 @@ export default class SidebarService {
   }
 
   get() {
-    return Vue.http.get(this.endpoint);
+    return axios.get(this.endpoint);
   }
 
   update(key, data) {
-    return Vue.http.put(
-      this.endpoint,
-      {
-        [key]: data,
-      },
-      {
-        emulateJSON: true,
-      },
-    );
+    return axios.put(this.endpoint, { [key]: data });
   }
 
   getProjectsAutocomplete(searchTerm) {
-    return Vue.http.get(this.projectsAutocompleteEndpoint, {
+    return axios.get(this.projectsAutocompleteEndpoint, {
       params: {
         search: searchTerm,
       },
@@ -42,11 +31,11 @@ export default class SidebarService {
   }
 
   toggleSubscription() {
-    return Vue.http.post(this.toggleSubscriptionEndpoint);
+    return axios.post(this.toggleSubscriptionEndpoint);
   }
 
   moveIssue(moveToProjectId) {
-    return Vue.http.post(this.moveIssueEndpoint, {
+    return axios.post(this.moveIssueEndpoint, {
       move_to_project_id: moveToProjectId,
     });
   }

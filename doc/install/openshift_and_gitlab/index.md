@@ -225,7 +225,7 @@ First, we will create a new project to host our application. You can do this
 either by running the CLI client:
 
 ```bash
-$ oc new-project gitlab
+oc new-project gitlab
 ```
 
 or by using the web interface:

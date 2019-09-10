@@ -33,8 +33,6 @@ class Note < ApplicationRecord
     end
   end
 
-  self.ignored_columns += %i[original_discussion_id]
-
   cache_markdown_field :note, pipeline: :note, issuable_state_filter_enabled: true
 
   redact_field :note

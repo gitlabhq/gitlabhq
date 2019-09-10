@@ -20,9 +20,18 @@ We have started to migrate frontend tests to the [Jest](https://jestjs.io) testi
 
 Jest tests can be found in `/spec/frontend` and `/ee/spec/frontend` in EE.
 
-It is not yet a requirement to use Jest. You can view the
-[epic](https://gitlab.com/groups/gitlab-org/-/epics/873) of issues
-we need to solve before being able to use Jest for all our needs.
+### When should I use Jest over Karma?
+
+If you need to update an existing Karma test file (found in `spec/javascripts`), you do not
+need to migrate the whole spec to Jest. Simply updating the Karma spec to test your change
+is fine. It is probably more appropriate to migrate to Jest in a separate merge request.
+
+If you need to create a new test file, we strongly recommend creating one in Jest. This will
+help support our migration and we think you'll love using Jest.
+
+As always, please use discretion. Jest solves a lot of issues we experienced in Karma and
+provides a better developer experience, however there are potentially unexpected issues
+which could arise (especially with testing against browser specific features).
 
 ### Differences to Karma
 

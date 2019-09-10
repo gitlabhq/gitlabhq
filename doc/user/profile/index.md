@@ -8,6 +8,10 @@ Each GitLab account has a user profile, and settings. Your [profile](#user-profi
 contains information about you, and your GitLab activity. Your [settings](#profile-settings)
 allow you to customize some aspects of GitLab to suit yourself.
 
+## Creating users
+
+There are several ways to create users on GitLab. See the [creating users documentation](account/create_accounts.md) for more details.
+
 ## Signing in
 
 There are several ways to sign into your GitLab account.

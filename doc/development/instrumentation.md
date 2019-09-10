@@ -81,9 +81,7 @@ If you're using Pry you can use the `$` command to display the source code of a
 method (along with its source location), this is easier than running the above
 Ruby code. In case of the above snippet you'd run the following:
 
-```
-$ Banzai::Renderer.render
-```
+- `$ Banzai::Renderer.render`
 
 This will print out something along the lines of:
 

@@ -262,7 +262,7 @@ table_display_block: true
 ## Punctuation
 
 Check the general punctuation rules for the GitLab documentation on the table below.
-Check specific punctuation rules for [list items](#list-items) below.
+Check specific punctuation rules for [lists](#lists) below.
 
 | Rule | Example |
 | ---- | ------- |
@@ -274,37 +274,44 @@ Check specific punctuation rules for [list items](#list-items) below.
 | Always add a space before and after dashes when using it in a sentence (for replacing a comma, for example). | _You should try this - or not._ |
 | Always use lowercase after a colon. | _Related Issues: a way to create a relationship between issues._ |
 
-## List items
+## Lists
 
 - Always start list items with a capital letter, unless they are parameters or commands
   that are in backticks, or similar.
 - Always leave a blank line before and after a list.
 - Begin a line with spaces (not tabs) to denote a [nested subitem](#nesting-inside-a-list-item).
-- Only use ordered lists when their items describe a sequence of steps to follow:
 
-  Do:
+### Ordered vs. unordered lists
 
-  These are the steps to do something:
+Only use ordered lists when their items describe a sequence of steps to follow.
 
-  1. First, do step 1
-  1. Then, do step 2
-  1. Finally, do step 3
+Do:
 
-  Don't:
+```md
+These are the steps to do something:
 
-  This is a list of different features:
+1. First, do the first step.
+1. Then, do the next step.
+1. Finally, do the last step.
+```
 
-  1. Feature 1
-  1. Feature 2
-  1. Feature 3
+Don't:
 
-**Markup:**
+```md
+This is a list of available features:
+
+1. Feature 1
+1. Feature 2
+1. Feature 3
+```
+
+### Markup
 
 - Use dashes (`-`) for unordered lists instead of asterisks (`*`).
-- Prefix `1.` to each item in an ordered list.
+- Prefix `1.` to every item in an ordered list.
   When rendered, the list items will appear with sequential numbering automatically.
 
-**Punctuation:**
+### Punctuation
 
 - Do not add commas (`,`) or semicolons (`;`) to the end of list items.
 - Only add periods to the end of a list item if the item consists of a complete sentence.
@@ -343,7 +350,7 @@ Do:
 - Let's say this is also a complete sentence.
 - Not a complete sentence.
 
-Don't (third item should have a `.` to match the first and second items):
+Don't (vary use of periods; majority rules):
 
 - Let's say this is a complete sentence.
 - Let's say this is also a complete sentence.

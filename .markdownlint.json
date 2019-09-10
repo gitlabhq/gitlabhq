@@ -8,7 +8,6 @@
     "style": "dash"
   },
   "line-length": false,
-  "commands-show-output": false,
   "no-duplicate-header": {
     "allow_different_nesting": true
   },

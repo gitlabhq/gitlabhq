@@ -1,5 +1,7 @@
 return unless event.visible_to_user?(current_user)
 
+event = event.present
+
 xml.entry do
   xml.id      "tag:#{request.host},#{event.created_at.strftime("%Y-%m-%d")}:#{event.id}"
   xml.link    href: event_feed_url(event)

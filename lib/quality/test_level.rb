@@ -53,7 +53,7 @@ module Quality
     end
 
     def pattern(level)
-      @patterns[level] ||= "#{prefix}spec/{#{TEST_LEVEL_FOLDERS.fetch(level).join(',')}}{,/**/}*_spec.rb".freeze
+      @patterns[level] ||= "#{prefix}spec/{#{TEST_LEVEL_FOLDERS.fetch(level).join(',')}}{,/**/}*_spec.rb"
     end
 
     def regexp(level)

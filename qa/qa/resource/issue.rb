@@ -3,7 +3,7 @@
 module QA
   module Resource
     class Issue < Base
-      attr_writer :description, :milestone
+      attr_writer :description, :milestone, :weight
 
       attribute :project do
         Project.fabricate! do |resource|
@@ -46,6 +46,7 @@ module QA
           title: title
         }.tap do |hash|
           hash[:milestone_id] = @milestone.id if @milestone
+          hash[:weight] = @weight if @weight
         end
       end
     end

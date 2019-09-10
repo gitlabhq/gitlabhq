@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class NotificationSetting < ApplicationRecord
-  self.ignored_columns += %i[events]
-
   enum level: { global: 3, watch: 2, participating: 1, mention: 4, disabled: 0, custom: 5 }
 
   default_value_for :level, NotificationSetting.levels[:global]

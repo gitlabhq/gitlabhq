@@ -478,7 +478,8 @@ module API
 
       desc 'Upload a file'
       params do
-        requires :file, type: File, desc: 'The file to be uploaded'
+        # TODO: remove rubocop disable - https://gitlab.com/gitlab-org/gitlab-ee/issues/14960
+        requires :file, type: File, desc: 'The file to be uploaded' # rubocop:disable Scalability/FileUploads
       end
       post ":id/uploads" do
         UploadService.new(user_project, params[:file]).execute.to_h
