@@ -27,7 +27,8 @@ module API
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       params do
         requires :path, type: String, desc: 'The new project path and name'
-        requires :file, type: File, desc: 'The project export file to be imported'
+        # TODO: remove rubocop disable - https://gitlab.com/gitlab-org/gitlab-ee/issues/14960
+        requires :file, type: File, desc: 'The project export file to be imported' # rubocop:disable Scalability/FileUploads
         optional :namespace, type: String, desc: "The ID or name of the namespace that the project will be imported into. Defaults to the current user's namespace."
         optional :overwrite, type: Boolean, default: false, desc: 'If there is a project in the same namespace and with the same name overwrite it'
         optional :override_params,
