@@ -3,7 +3,7 @@
 module API
   module Helpers
     module Runner
-      JOB_TOKEN_HEADER = 'HTTP_JOB_TOKEN'.freeze
+      JOB_TOKEN_HEADER = 'HTTP_JOB_TOKEN'
       JOB_TOKEN_PARAM = :token
 
       def runner_registration_token_valid?

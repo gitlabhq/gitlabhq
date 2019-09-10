@@ -4,7 +4,7 @@ module Backup
   class Manager
     ARCHIVES_TO_BACKUP = %w[uploads builds artifacts pages lfs registry].freeze
     FOLDERS_TO_BACKUP = %w[repositories db].freeze
-    FILE_NAME_SUFFIX = '_gitlab_backup.tar'.freeze
+    FILE_NAME_SUFFIX = '_gitlab_backup.tar'
 
     attr_reader :progress
 
