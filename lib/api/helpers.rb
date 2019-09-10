@@ -5,10 +5,10 @@ module API
     include Gitlab::Utils
     include Helpers::Pagination
 
-    SUDO_HEADER = "HTTP_SUDO".freeze
-    GITLAB_SHARED_SECRET_HEADER = "Gitlab-Shared-Secret".freeze
+    SUDO_HEADER = "HTTP_SUDO"
+    GITLAB_SHARED_SECRET_HEADER = "Gitlab-Shared-Secret"
     SUDO_PARAM = :sudo
-    API_USER_ENV = 'gitlab.api.user'.freeze
+    API_USER_ENV = 'gitlab.api.user'
 
     def declared_params(options = {})
       options = { include_parent_namespaces: false }.merge(options)

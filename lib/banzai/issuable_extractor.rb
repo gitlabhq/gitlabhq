@@ -11,8 +11,8 @@ module Banzai
   class IssuableExtractor
     attr_reader :context
 
-    ISSUE_REFERENCE_TYPE = '@data-reference-type="issue"'.freeze
-    MERGE_REQUEST_REFERENCE_TYPE = '@data-reference-type="merge_request"'.freeze
+    ISSUE_REFERENCE_TYPE = '@data-reference-type="issue"'
+    MERGE_REQUEST_REFERENCE_TYPE = '@data-reference-type="merge_request"'
 
     # context - An instance of Banzai::RenderContext.
     def initialize(context)

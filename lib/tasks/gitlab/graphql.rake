@@ -3,8 +3,8 @@
 return if Rails.env.production?
 
 namespace :gitlab do
-  OUTPUT_DIR = Rails.root.join("doc/api/graphql/reference").freeze
-  TEMPLATES_DIR = 'lib/gitlab/graphql/docs/templates/'.freeze
+  OUTPUT_DIR = Rails.root.join("doc/api/graphql/reference")
+  TEMPLATES_DIR = 'lib/gitlab/graphql/docs/templates/'
 
   namespace :graphql do
     desc 'GitLab | Generate GraphQL docs'
