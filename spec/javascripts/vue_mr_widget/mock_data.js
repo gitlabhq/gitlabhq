@@ -259,6 +259,8 @@ export const mockStore = {
         tooltip: 'passed',
       },
     },
+    flags: {},
+    ref: {},
   },
   mergePipeline: {
     id: 1,
@@ -276,6 +278,8 @@ export const mockStore = {
         tooltip: 'passed',
       },
     },
+    flags: {},
+    ref: {},
   },
   targetBranch: 'target-branch',
   sourceBranch: 'source-branch',

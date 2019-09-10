@@ -835,12 +835,12 @@ module Ci
       return unless merge_request_event?
 
       strong_memoize(:merge_request_event_type) do
-        if detached_merge_request_pipeline?
-          :detached
+        if merge_train_pipeline?
+          :merge_train
         elsif merge_request_pipeline?
           :merged_result
-        elsif merge_train_pipeline?
-          :merge_train
+        elsif detached_merge_request_pipeline?
+          :detached
         end
       end
     end

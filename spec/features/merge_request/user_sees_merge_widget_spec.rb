@@ -189,26 +189,20 @@ describe 'Merge request > User sees merge widget', :js do
       visit project_merge_request_path(project, merge_request)
     end
 
-    it 'shows head pipeline information' do
-      within '.ci-widget-content' do
-        expect(page).to have_content("Pipeline ##{pipeline.id} pending " \
-                                     "for #{pipeline.short_sha} " \
-                                     "on #{merge_request.to_reference} " \
-                                     "with #{merge_request.source_branch}")
+    shared_examples 'pipeline widget' do
+      it 'shows head pipeline information' do
+        within '.ci-widget-content' do
+          expect(page).to have_content("Detached merge request pipeline ##{pipeline.id} pending for #{pipeline.short_sha}")
+        end
       end
     end
+
+    include_examples 'pipeline widget'
 
     context 'when source project is a forked project' do
       let(:source_project) { fork_project(project, user, repository: true) }
 
-      it 'shows head pipeline information' do
-        within '.ci-widget-content' do
-          expect(page).to have_content("Pipeline ##{pipeline.id} pending " \
-                                       "for #{pipeline.short_sha} " \
-                                       "on #{merge_request.to_reference} " \
-                                       "with #{merge_request.source_branch}")
-        end
-      end
+      include_examples 'pipeline widget'
     end
   end
 
@@ -234,29 +228,21 @@ describe 'Merge request > User sees merge widget', :js do
       visit project_merge_request_path(project, merge_request)
     end
 
-    it 'shows head pipeline information' do
-      within '.ci-widget-content' do
-        expect(page).to have_content("Pipeline ##{pipeline.id} pending " \
-                                     "for #{pipeline.short_sha} " \
-                                     "on #{merge_request.to_reference} " \
-                                     "with #{merge_request.source_branch} " \
-                                     "into #{merge_request.target_branch}")
+    shared_examples 'pipeline widget' do
+      it 'shows head pipeline information' do
+        within '.ci-widget-content' do
+          expect(page).to have_content("Merged result pipeline ##{pipeline.id} pending for #{pipeline.short_sha}")
+        end
       end
     end
+
+    include_examples 'pipeline widget'
 
     context 'when source project is a forked project' do
       let(:source_project) { fork_project(project, user, repository: true) }
       let(:merge_sha) { source_project.commit.sha }
 
-      it 'shows head pipeline information' do
-        within '.ci-widget-content' do
-          expect(page).to have_content("Pipeline ##{pipeline.id} pending " \
-                                       "for #{pipeline.short_sha} " \
-                                       "on #{merge_request.to_reference} " \
-                                       "with #{merge_request.source_branch} " \
-                                       "into #{merge_request.target_branch}")
-        end
-      end
+      include_examples 'pipeline widget'
     end
   end
 
