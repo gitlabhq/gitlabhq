@@ -32,6 +32,8 @@ links will be missing from the sidebar UI.
 You can still access them with direct links if you can access Merge Requests. This is deliberate, if you can see
 Issues or Merge Requests, both of which use Labels and Milestones, then you shouldn't be denied access to Labels and Milestones pages.
 
+Project [Snippets](../../snippets.md) are enabled by default.
+
 #### Disabling email notifications
 
 You can disable all email notifications related to the project by selecting the
