@@ -630,10 +630,7 @@ troubleshooting steps.
 
 ### Merge request cannot retrieve the pipeline status
 
-This can occur for one of two reasons:
-
-- Sidekiq doesn't pick up the changes fast enough
-- Because of the bug described in [#41545](https://gitlab.com/gitlab-org/gitlab-ce/issues/41545)
+This can occur if Sidekiq doesn't pick up the changes fast enough.
 
 #### Sidekiq
 
