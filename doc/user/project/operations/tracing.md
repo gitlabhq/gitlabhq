@@ -26,7 +26,7 @@ and [OpenShift](https://github.com/jaegertracing/jaeger-openshift).
 
 GitLab provides an easy way to open the Jaeger UI from within your project:
 
-1. [Set up Jaeger](#deploying-jaeger) and configure your application using one of the
+1. [Set up Jaeger](https://www.jaegertracing.io) and configure your application using one of the
    [client libraries](https://www.jaegertracing.io/docs/latest/client-libraries/).
 1. Navigate to your project's **Settings > Operations** and provide the Jaeger URL.
 1. Click **Save changes** for the changes to take effect.
