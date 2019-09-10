@@ -2,7 +2,7 @@
 
 > [Introduced][ee-1659] in [GitLab Premium][eep] 9.1.
 
-A popular [Continuous Integration](https://en.wikipedia.org/wiki/Continuous_integration)
+A popular [Continuous Deployment](https://en.wikipedia.org/wiki/Continuous_deployment)
 strategy, where a small portion of the fleet is updated to the new version of
 your application.
 
