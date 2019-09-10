@@ -1,4 +1,3 @@
-import _ from 'underscore';
 import Vue from 'vue';
 import SidebarAssignees from '~/sidebar/components/assignees/sidebar_assignees.vue';
 import SidebarMediator from '~/sidebar/sidebar_mediator';
@@ -14,8 +13,6 @@ describe('sidebar assignees', () => {
   preloadFixtures('issues/open-issue.html');
 
   beforeEach(() => {
-    Vue.http.interceptors.push(Mock.sidebarMockInterceptor);
-
     loadFixtures('issues/open-issue.html');
 
     mediator = new SidebarMediator(Mock.mediator);
@@ -38,7 +35,6 @@ describe('sidebar assignees', () => {
     SidebarService.singleton = null;
     SidebarStore.singleton = null;
     SidebarMediator.singleton = null;
-    Vue.http.interceptors = _.without(Vue.http.interceptors, Mock.sidebarMockInterceptor);
   });
 
   it('calls the mediator when saves the assignees', () => {
