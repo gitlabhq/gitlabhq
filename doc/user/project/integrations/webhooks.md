@@ -1327,3 +1327,6 @@ console:
 example.com - - [14/May/2014:07:45:26 EDT] "POST / HTTP/1.1" 200 0
 - -> /
 ```
+
+NOTE: **Note:**
+You may need to [allow requests to the local network](../../../security/webhooks.md) for this receiver to be added.
