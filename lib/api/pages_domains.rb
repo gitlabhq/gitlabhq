@@ -90,8 +90,11 @@ module API
       end
       params do
         requires :domain, type: String, desc: 'The domain'
+        # rubocop:disable Scalability/FileUploads
+        # TODO: remove rubocop disable - https://gitlab.com/gitlab-org/gitlab-ee/issues/14960
         optional :certificate, allow_blank: false, types: [File, String], desc: 'The certificate', as: :user_provided_certificate
         optional :key, allow_blank: false, types: [File, String], desc: 'The key', as: :user_provided_key
+        # rubocop:enable Scalability/FileUploads
         all_or_none_of :user_provided_certificate, :user_provided_key
       end
       post ":id/pages/domains" do
@@ -111,8 +114,11 @@ module API
       desc 'Updates a pages domain'
       params do
         requires :domain, type: String, desc: 'The domain'
+        # rubocop:disable Scalability/FileUploads
+        # TODO: remove rubocop disable - https://gitlab.com/gitlab-org/gitlab-ee/issues/14960
         optional :certificate, allow_blank: false, types: [File, String], desc: 'The certificate', as: :user_provided_certificate
         optional :key, allow_blank: false, types: [File, String], desc: 'The key', as: :user_provided_key
+        # rubocop:enable Scalability/FileUploads
       end
       put ":id/pages/domains/:domain", requirements: PAGES_DOMAINS_ENDPOINT_REQUIREMENTS do
         authorize! :update_pages, user_project
