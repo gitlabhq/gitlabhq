@@ -31,6 +31,17 @@ module QA
           end
         end
 
+        def repository_ssh_uri
+          @repository_ssh_uri ||= begin
+            wiki.visit!
+            Page::Project::Wiki::Show.act do
+              click_clone_repository
+              choose_repository_clone_ssh
+              repository_location.uri
+            end
+          end
+        end
+
         def fabricate!
           super
           wiki.visit!
