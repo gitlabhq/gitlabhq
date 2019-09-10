@@ -208,6 +208,35 @@ describe SentNotificationsController do
             .to redirect_to(project_merge_request_path(project, merge_request))
         end
       end
+
+      context 'when project is private' do
+        context 'and user does not have access' do
+          let(:noteable) { issue }
+          let(:target_project) { private_project }
+
+          before do
+            get(:unsubscribe, params: { id: sent_notification.reply_key })
+          end
+
+          it 'unsubscribes user and redirects to root path' do
+            expect(response).to redirect_to(root_path)
+          end
+        end
+
+        context 'and user has access' do
+          let(:noteable) { issue }
+          let(:target_project) { private_project }
+
+          before do
+            private_project.add_developer(user)
+            get(:unsubscribe, params: { id: sent_notification.reply_key })
+          end
+
+          it 'unsubscribes user and redirects to issue path' do
+            expect(response).to redirect_to(project_issue_path(private_project, issue))
+          end
+        end
+      end
     end
   end
 end
