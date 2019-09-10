@@ -47,6 +47,18 @@ module QA
         end
       end
 
+      def self.remove_via_api!(*args, &prepare_block)
+        options = args.extract_options!
+        resource = options.fetch(:resource) { new }
+        parents = options.fetch(:parents) { [] }
+
+        resource.eager_load_api_client!
+
+        do_fabricate!(resource: resource, prepare_block: prepare_block, parents: parents) do
+          log_fabrication(:api, resource, parents, args) { resource.remove_via_api! }
+        end
+      end
+
       def fabricate!(*_args)
         raise NotImplementedError
       end

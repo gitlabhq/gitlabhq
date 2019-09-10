@@ -66,6 +66,7 @@ module QA
     autoload :Fork, 'qa/resource/fork'
     autoload :SSHKey, 'qa/resource/ssh_key'
     autoload :Snippet, 'qa/resource/snippet'
+    autoload :ProjectMember, 'qa/resource/project_member'
 
     module Events
       autoload :Base, 'qa/resource/events/base'

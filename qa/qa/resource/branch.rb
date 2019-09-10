@@ -72,6 +72,18 @@ module QA
           end
         end
       end
+
+      def self.unprotect_via_api!(&block)
+        self.remove_via_api!(&block)
+      end
+
+      def api_get_path
+        "/projects/#{@project.api_resource[:id]}/protected_branches/#{@branch_name}"
+      end
+
+      def api_delete_path
+        "/projects/#{@project.api_resource[:id]}/protected_branches/#{@branch_name}"
+      end
     end
   end
 end

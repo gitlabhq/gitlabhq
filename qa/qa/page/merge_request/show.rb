@@ -119,7 +119,7 @@ module QA
           has_element?(:description, text: description)
         end
 
-        def merge!
+        def try_to_merge!
           # The merge button is disabled on load
           wait do
             has_element?(:merge_button)
@@ -131,6 +131,10 @@ module QA
           end
 
           merge_immediately
+        end
+
+        def merge!
+          try_to_merge!
 
           success = wait do
             has_text?('The changes were merged into')

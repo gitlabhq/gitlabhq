@@ -148,6 +148,12 @@ module QA
           click_element :saml_login_button
         end
 
+        def sign_out_and_sign_in_as(user:)
+          Menu.perform(&:sign_out)
+          has_sign_in_tab?
+          sign_in_using_credentials(user)
+        end
+
         private
 
         def sign_in_using_gitlab_credentials(user)

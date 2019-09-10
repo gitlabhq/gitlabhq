@@ -11,6 +11,7 @@ module QA
       ResourceNotFoundError = Class.new(RuntimeError)
       ResourceFabricationFailedError = Class.new(RuntimeError)
       ResourceURLMissingError = Class.new(RuntimeError)
+      ResourceNotDeletedError = Class.new(RuntimeError)
 
       attr_reader :api_resource, :api_response
       attr_writer :api_client
@@ -28,6 +29,10 @@ module QA
         end
 
         resource_web_url(api_post)
+      end
+
+      def remove_via_api!
+        api_delete
       end
 
       def eager_load_api_client!
@@ -77,6 +82,17 @@ module QA
         end
 
         process_api_response(parse_body(response))
+      end
+
+      def api_delete
+        url = Runtime::API::Request.new(api_client, api_delete_path).url
+        response = delete(url)
+
+        unless response.code == HTTP_STATUS_NO_CONTENT
+          raise ResourceNotDeletedError, "Resource at #{url} could not be deleted (#{response.code}): `#{response}`."
+        end
+
+        response
       end
 
       def api_client

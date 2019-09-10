@@ -17,6 +17,7 @@ module QA
                     :labels,
                     :file_name,
                     :file_content
+      attr_writer :no_preparation
 
       attribute :project do
         Project.fabricate! do |resource|
@@ -58,6 +59,7 @@ module QA
         @file_name = "added_file.txt"
         @file_content = "File Added"
         @target_new_branch = true
+        @no_preparation = false
       end
 
       def fabricate!
@@ -80,7 +82,7 @@ module QA
       end
 
       def fabricate_via_api!
-        populate(:target, :source)
+        populate(:target, :source) unless @no_preparation
         super
       end
 

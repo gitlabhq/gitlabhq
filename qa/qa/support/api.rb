@@ -5,6 +5,7 @@ module QA
     module Api
       HTTP_STATUS_OK = 200
       HTTP_STATUS_CREATED = 201
+      HTTP_STATUS_NO_CONTENT = 204
 
       def post(url, payload)
         RestClient::Request.execute(
