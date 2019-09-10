@@ -4,8 +4,11 @@ type: reference, howto
 
 # Dependency Scanning **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/5105)
-in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/5105) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.7.
+
+Dependency Scanning helps to automatically find security vulnerabilities in your dependencies
+while you are developing and testing your applications, for example when your
+application is using an external (open source) library which is known to be vulnerable.
 
 ## Overview
 
@@ -18,7 +21,7 @@ in your existing `.gitlab-ci.yml` file or by implicitly using
 that is provided by [Auto DevOps](../../../topics/autodevops/index.md).
 
 GitLab checks the Dependency Scanning report, compares the found vulnerabilities
-between the source and target branches, and shows the information right on the
+between the source and target branches, and shows the information on the
 merge request.
 
 ![Dependency Scanning Widget](img/dependency_scanning.png)
@@ -31,12 +34,6 @@ The results are sorted by the severity of the vulnerability:
 1. Low
 1. Unknown
 1. Everything else
-
-## Use cases
-
-It helps to automatically find security vulnerabilities in your dependencies
-while you are developing and testing your applications. For example when your
-application is using an external (open source) library which is known to be vulnerable.
 
 ## Requirements
 
@@ -162,10 +159,39 @@ using environment variables.
 | `PIP_INDEX_URL`                         | Base URL of Python Package Index (default `https://pypi.org/simple`). | |
 | `PIP_EXTRA_INDEX_URL`                   | Array of [extra URLs](https://pip.pypa.io/en/stable/reference/pip_install/#cmdoption-extra-index-url) of package indexes to use in addition to `PIP_INDEX_URL`. Comma separated. | |
 
+## Interacting with the vulnerabilities
+
+Once a vulnerability is found, you can interact with it. Read more on how to
+[interact with the vulnerabilities](../index.md#interacting-with-the-vulnerabilities).
+
+## Solutions for vulnerabilities (auto-remediation)
+
+Some vulnerabilities can be fixed by applying the solution that GitLab
+automatically generates.
+
+Read more about the [solutions for vulnerabilities](../index.md#solutions-for-vulnerabilities-auto-remediation).
+
+## Security Dashboard
+
+The Security Dashboard is a good place to get an overview of all the security
+vulnerabilities in your groups, projects and pipelines. Read more about the
+[Security Dashboard](../security_dashboard/index.md).
+
+## Vulnerabilities database update
+
+For more information about the vulnerabilities database update, check the
+[maintenance table](../index.md#maintenance-and-update-of-the-vulnerabilities-database).
+
+## Dependency List
+
+An additional benefit of Dependency Scanning is the ability to view your
+project's dependencies and their known vulnerabilities. Read more about
+the [Dependency List](../dependency_list/index.md).
+
 ## Reports JSON format
 
 CAUTION: **Caution:**
-The JSON report artifacts are not a public API of Dependency Scanning and their format may change in future.
+The JSON report artifacts are not a public API of Dependency Scanning and their format may change in the future.
 
 The Dependency Scanning tool emits a JSON report file. Here is an example of the report structure with all important parts of
 it highlighted:
@@ -314,28 +340,6 @@ the report JSON unless stated otherwise. Presence of optional fields depends on 
 | `remediations[].fixes[].cve`                         | A string value that describes a fixed vulnerability occurrence in the same format as `vulnerabilities[].cve`. |
 | `remediations[].summary`                             | Overview of how the vulnerabilities have been fixed. |
 | `remediations[].diff`                                | base64-encoded remediation code diff, compatible with [`git apply`](https://git-scm.com/docs/git-format-patch#_discussion). |
-
-## Security Dashboard
-
-The Security Dashboard is a good place to get an overview of all the security
-vulnerabilities in your groups, projects and pipelines. Read more about the
-[Security Dashboard](../security_dashboard/index.md).
-
-## Interacting with the vulnerabilities
-
-Once a vulnerability is found, you can interact with it. Read more on how to
-[interact with the vulnerabilities](../index.md#interacting-with-the-vulnerabilities).
-
-## Vulnerabilities database update
-
-For more information about the vulnerabilities database update, check the
-[maintenance table](../index.md#maintenance-and-update-of-the-vulnerabilities-database).
-
-## Dependency List **(ULTIMATE)**
-
-An additional benefit of Dependency Scanning is the ability to view your
-project's dependencies and their known vulnerabilities. Read more about
-the [Dependency List](../dependency_list/index.md).
 
 ## Versioning and release process
 
