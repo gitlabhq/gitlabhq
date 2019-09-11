@@ -3,6 +3,8 @@ import Vuex from 'vuex';
 import component from '~/reports/components/modal_open_name.vue';
 import { mountComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 
+Vue.use(Vuex);
+
 describe('Modal open name', () => {
   const Component = Vue.extend(component);
   let vm;
