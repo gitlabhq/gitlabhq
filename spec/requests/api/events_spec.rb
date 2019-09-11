@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 describe API::Events do
-  include ApiHelpers
-
   let(:user) { create(:user) }
   let(:non_member) { create(:user) }
   let(:private_project) { create(:project, :private, creator_id: user.id, namespace: user.namespace) }

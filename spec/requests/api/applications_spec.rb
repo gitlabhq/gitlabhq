@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 describe API::Applications, :api do
-  include ApiHelpers
-
   let(:admin_user) { create(:user, admin: true) }
   let(:user) { create(:user, admin: false) }
   let!(:application) { create(:application, name: 'another_application', redirect_uri: 'http://other_application.url', scopes: '') }
