@@ -23,7 +23,7 @@ but contributions are welcome.
 
 ### GitLab
 
-Please see [our Docker test environment docs](https://docs.gitlab.com/ee/install/digitaloceandocker.html#create-new-gitlab-container)
+Please see [our Docker test environment docs](../../install/digitaloceandocker.md#create-new-gitlab-container)
 for how to run GitLab on Docker. When spinning this up with `docker-machine`, ensure
 you change a few things:
 
@@ -59,7 +59,7 @@ docker run --name gitlab_saml -p 8080:8080 -p 8443:8443 \
 -d jamedjo/test-saml-idp
 ```
 
-The following will also need to go in your `/etc/gitlab/gitlab.rb`. See [our SAML docs](https://docs.gitlab.com/ee/integration/saml.html)
+The following will also need to go in your `/etc/gitlab/gitlab.rb`. See [our SAML docs](../../integration/saml.md)
 for more, as well as the list of [default usernames, passwords, and emails](https://hub.docker.com/r/jamedjo/test-saml-idp/#usage).
 
 ```ruby

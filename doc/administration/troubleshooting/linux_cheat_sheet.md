@@ -259,7 +259,7 @@ then compare summaries of both results and dive into the differences.
 Rough numbers for calls to `open` and `openat` (used to access files) on various configurations.
 Slow storage can cause the dreaded `DeadlineExceeded` error in Gitaly.
 
-Also [see this entry](https://docs.gitlab.com/ee/administration/operations/filesystem_benchmarking.html)
+Also [see this entry](../operations/filesystem_benchmarking.md)
 in the handbook for quick tests customers can perform to check their filesystem performance.
 
 Keep in mind that timing information from `strace` is often somewhat inaccurate, so

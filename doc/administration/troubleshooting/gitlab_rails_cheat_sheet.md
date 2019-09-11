@@ -64,7 +64,7 @@ Array.methods.grep(/sing/)
 
 ## Find method source
 
-Works for [non-instrumented methods](https://docs.gitlab.com/ce/development/instrumentation.html#checking-instrumented-methods):
+Works for [non-instrumented methods](../../development/instrumentation.md#checking-instrumented-methods):
 
 ```ruby
 instance_of_object.method(:foo).source_location
@@ -474,7 +474,7 @@ User.active.count
 ```
 
 ```bash
-# Using curl and jq (up to a max 100, see [pagination](https://docs.gitlab.com/ee/api/#pagination)
+# Using curl and jq (up to a max 100, see pagination docs https://docs.gitlab.com/ee/api/#pagination
 curl --silent --header "Private-Token: ********************" "https://gitlab.example.com/api/v4/users?per_page=100&active" | jq --compact-output '.[] | [.id,.name,.username]'
 ```
 
@@ -744,7 +744,7 @@ build.dependencies.each do |d| { puts "status: #{d.status}, finished at: #{d.fin
 
 ### Disable strict artifact checking (Introduced in GitLab 10.3.0)
 
-See <https://docs.gitlab.com/ee/administration/job_artifacts.html#validation-for-dependencies>.
+See [job artifacts documentation](../job_artifacts.md#validation-for-dependencies).
 
 ```ruby
 Feature.enable('ci_disable_validates_dependencies')

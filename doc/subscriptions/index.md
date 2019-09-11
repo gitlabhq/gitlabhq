@@ -115,7 +115,7 @@ To subscribe to GitLab through a self-managed installation:
 
 1. [Install](https://about.gitlab.com/install/) GitLab.
 1. Complete the installation with
-   [administration tasks](https://docs.gitlab.com/ee/administration/).
+   [administration tasks](../administration/index.md).
 1. Select the **Starter**, **Premium**, or **Ultimate** self-managed plan
    through the [GitLab Subscription Manager](https://customers.gitlab.com/).
 1. Apply your license file. After purchase, a license file is sent to the email

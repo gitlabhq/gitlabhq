@@ -177,7 +177,7 @@ and they will assist you with any issues you are having.
   ```
 
   After <https://gitlab.com/gitlab-org/charts/gitlab/issues/780> is fixed, it should
-  be possible to use [Updating GitLab using the Helm Chart](https://docs.gitlab.com/ee/install/kubernetes/gitlab_chart.html#updating-gitlab-using-the-helm-chart)
+  be possible to use [Updating GitLab using the Helm Chart](https://docs.gitlab.com/charts/index.html#updating-gitlab-using-the-helm-chart)
   for upgrades.
 
 - How to apply changes to GitLab config:
@@ -244,7 +244,7 @@ to those documents for details.
   on your workstation.
 
 - When all the pods show either a `Running` or `Completed` status, get the GitLab password as
-  described in [Initial login](https://docs.gitlab.com/ee/install/kubernetes/gitlab_chart.html#initial-login),
+  described in [Initial login](https://docs.gitlab.com/charts/installation/deployment.html#initial-login),
   and log in to GitLab via the UI. It will be accessible via `https://gitlab.domain`
   where `domain` is the value provided in the yaml file.
 
