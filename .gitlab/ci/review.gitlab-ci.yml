@@ -74,11 +74,10 @@ schedule:review-build-cng:
     - .review-schedules-only
   needs: ["gitlab:assets:compile"]
 
-review-deploy:
+.review-deploy-base:
   extends: .review-base
   allow_failure: true
   stage: review
-  needs: ["review-build-cng"]
   variables:
     HOST_SUFFIX: "${CI_ENVIRONMENT_SLUG}"
     DOMAIN: "-${CI_ENVIRONMENT_SLUG}.${REVIEW_APPS_DOMAIN}"
@@ -108,10 +107,16 @@ review-deploy:
     expire_in: 2 days
     when: always
 
+review-deploy:
+  extends:
+    - .review-deploy-base
+  needs: ["review-build-cng"]
+
 schedule:review-deploy:
   extends:
-    - review-deploy
+    - .review-deploy-base
     - .review-schedules-only
+  needs: ["schedule:review-build-cng"]
 
 review-stop:
   extends: review-deploy
