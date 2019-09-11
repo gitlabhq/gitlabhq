@@ -10,6 +10,7 @@
 # - ./INSTALLATION_TYPE
 # - ./VERSION
 
+/.git/
 /app/
 /bin/
 /builds/
@@ -69,6 +70,7 @@
 /locale/
 /log/
 /modules/
+/node_modules/
 /plugins/
 /public/
 /rubocop/
