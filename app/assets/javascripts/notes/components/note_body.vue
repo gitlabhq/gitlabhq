@@ -1,6 +1,7 @@
 <script>
 import { mapActions } from 'vuex';
 import $ from 'jquery';
+import '~/behaviors/markdown/render_gfm';
 import getDiscussion from 'ee_else_ce/notes/mixins/get_discussion';
 import noteEditedText from './note_edited_text.vue';
 import noteAwardsList from './note_awards_list.vue';
