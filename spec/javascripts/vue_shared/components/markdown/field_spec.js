@@ -1,6 +1,10 @@
 import $ from 'jquery';
+import '~/behaviors/markdown/render_gfm';
 import Vue from 'vue';
+import AxiosMockAdapter from 'axios-mock-adapter';
+import axios from '~/lib/utils/axios_utils';
 import fieldComponent from '~/vue_shared/components/markdown/field.vue';
+import { TEST_HOST } from 'spec/test_constants';
 
 function assertMarkdownTabs(isWrite, writeLink, previewLink, vm) {
   expect(writeLink.parentNode.classList.contains('active')).toEqual(isWrite);
@@ -9,9 +13,13 @@ function assertMarkdownTabs(isWrite, writeLink, previewLink, vm) {
 }
 
 describe('Markdown field component', () => {
+  const markdownPreviewPath = `${TEST_HOST}/preview`;
+  const markdownDocsPath = `${TEST_HOST}/docs`;
+  let axiosMock;
   let vm;
 
   beforeEach(done => {
+    axiosMock = new AxiosMockAdapter(axios);
     vm = new Vue({
       components: {
         fieldComponent,
@@ -23,8 +31,8 @@ describe('Markdown field component', () => {
       },
       template: `
         <field-component
-          markdown-preview-path="/preview"
-          markdown-docs-path="/docs"
+          markdown-preview-path="${markdownPreviewPath}"
+          markdown-docs-path="${markdownDocsPath}"
         >
           <textarea
             slot="textarea"
@@ -37,7 +45,13 @@ describe('Markdown field component', () => {
     Vue.nextTick(done);
   });
 
+  afterEach(() => {
+    axiosMock.restore();
+  });
+
   describe('mounted', () => {
+    const previewHTML = '<p>markdown preview</p>';
+
     it('renders textarea inside backdrop', () => {
       expect(vm.$el.querySelector('.zen-backdrop textarea')).not.toBeNull();
     });
@@ -47,20 +61,7 @@ describe('Markdown field component', () => {
       let writeLink;
 
       beforeEach(() => {
-        spyOn(Vue.http, 'post').and.callFake(
-          () =>
-            new Promise(resolve => {
-              setTimeout(() => {
-                resolve({
-                  json() {
-                    return {
-                      body: '<p>markdown preview</p>',
-                    };
-                  },
-                });
-              });
-            }),
-        );
+        axiosMock.onPost(markdownPreviewPath).replyOnce(200, { body: previewHTML });
 
         previewLink = vm.$el.querySelector('.nav-links .js-preview-link');
         writeLink = vm.$el.querySelector('.nav-links .js-write-link');
@@ -92,9 +93,7 @@ describe('Markdown field component', () => {
         previewLink.click();
 
         setTimeout(() => {
-          expect(vm.$el.querySelector('.md-preview-holder').innerHTML).toContain(
-            '<p>markdown preview</p>',
-          );
+          expect(vm.$el.querySelector('.md-preview-holder').innerHTML).toContain(previewHTML);
 
           done();
         });
