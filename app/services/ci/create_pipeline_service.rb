@@ -101,7 +101,7 @@ module Ci
           .where.not(id: pipeline.id)
           .where.not(sha: project.commit(pipeline.ref).try(:id))
           .alive_or_scheduled
-          .without_interruptible_builds
+          .with_only_interruptible_builds
       else
         project.ci_pipelines
           .where(ref: pipeline.ref)
