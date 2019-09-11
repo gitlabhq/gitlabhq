@@ -1,0 +1,18 @@
+= form_for @application_setting, url: repository_admin_application_settings_path(anchor: 'js-repository-static-objects-settings'), html: { class: 'fieldset-form' } do |f|
+  = form_errors(@application_setting)
+
+  %fieldset
+    .form-group
+      = f.label :static_objects_external_storage_url, class: 'label-bold' do
+        = _('External storage URL')
+      = f.text_field :static_objects_external_storage_url, class: 'form-control'
+      %span.form-text.text-muted#static_objects_external_storage_url_help_block
+        = _('URL of the external storage that will serve the repository static objects (e.g. archives, blobs, ...).')
+    .form-group
+      = f.label :static_objects_external_storage_auth_token, class: 'label-bold' do
+        = _('External storage authentication token')
+      = f.text_field :static_objects_external_storage_auth_token, class: 'form-control'
+      %span.form-text.text-muted#static_objects_external_storage_auth_token_help_block
+        = _('A secure token that identifies an external storage request.')
+
+  = f.submit _('Save changes'), class: "btn btn-success"

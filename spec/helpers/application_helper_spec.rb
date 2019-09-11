@@ -195,4 +195,41 @@ describe ApplicationHelper do
       end
     end
   end
+
+  describe '#external_storage_url_or_path' do
+    let(:project) { create(:project) }
+
+    context 'when external storage is disabled' do
+      it 'returns the passed path' do
+        expect(helper.external_storage_url_or_path('/foo/bar', project)).to eq('/foo/bar')
+      end
+    end
+
+    context 'when external storage is enabled' do
+      let(:user) { create(:user, static_object_token: 'hunter1') }
+
+      before do
+        allow_any_instance_of(ApplicationSetting).to receive(:static_objects_external_storage_url).and_return('https://cdn.gitlab.com')
+        allow(helper).to receive(:current_user).and_return(user)
+      end
+
+      it 'returns the external storage URL prepended to the path' do
+        expect(helper.external_storage_url_or_path('/foo/bar', project)).to eq("https://cdn.gitlab.com/foo/bar?token=#{user.static_object_token}")
+      end
+
+      it 'preserves the path query parameters' do
+        url = helper.external_storage_url_or_path('/foo/bar?unicode=1', project)
+
+        expect(url).to eq("https://cdn.gitlab.com/foo/bar?token=#{user.static_object_token}&unicode=1")
+      end
+
+      context 'when project is public' do
+        let(:project) { create(:project, :public) }
+
+        it 'returns does not append a token parameter' do
+          expect(helper.external_storage_url_or_path('/foo/bar', project)).to eq('https://cdn.gitlab.com/foo/bar')
+        end
+      end
+    end
+  end
 end

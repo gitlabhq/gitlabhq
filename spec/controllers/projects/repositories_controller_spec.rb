@@ -125,5 +125,59 @@ describe Projects::RepositoriesController do
         end
       end
     end
+
+    context 'as a sessionless user' do
+      let(:user) { create(:user) }
+
+      before do
+        project.add_developer(user)
+      end
+
+      context 'when no token is provided' do
+        it 'redirects to sign in page' do
+          get :archive, params: { namespace_id: project.namespace, project_id: project, id: 'master' }, format: 'zip'
+
+          expect(response).to have_gitlab_http_status(302)
+        end
+      end
+
+      context 'when a token param is present' do
+        context 'when token is correct' do
+          it 'calls the action normally' do
+            get :archive, params: { namespace_id: project.namespace, project_id: project, id: 'master', token: user.static_object_token }, format: 'zip'
+
+            expect(response).to have_gitlab_http_status(200)
+          end
+        end
+
+        context 'when token is incorrect' do
+          it 'redirects to sign in page' do
+            get :archive, params: { namespace_id: project.namespace, project_id: project, id: 'master', token: 'foobar' }, format: 'zip'
+
+            expect(response).to have_gitlab_http_status(302)
+          end
+        end
+      end
+
+      context 'when a token header is present' do
+        context 'when token is correct' do
+          it 'calls the action normally' do
+            request.headers['X-Gitlab-Static-Object-Token'] = user.static_object_token
+            get :archive, params: { namespace_id: project.namespace, project_id: project, id: 'master' }, format: 'zip'
+
+            expect(response).to have_gitlab_http_status(200)
+          end
+        end
+
+        context 'when token is incorrect' do
+          it 'redirects to sign in page' do
+            request.headers['X-Gitlab-Static-Object-Token'] = 'foobar'
+            get :archive, params: { namespace_id: project.namespace, project_id: project, id: 'master' }, format: 'zip'
+
+            expect(response).to have_gitlab_http_status(302)
+          end
+        end
+      end
+    end
   end
 end

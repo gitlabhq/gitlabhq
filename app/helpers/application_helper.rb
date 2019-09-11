@@ -169,6 +169,25 @@ module ApplicationHelper
     Gitlab::CurrentSettings.current_application_settings.help_page_support_url.presence || promo_url + '/getting-help/'
   end
 
+  def static_objects_external_storage_enabled?
+    Gitlab::CurrentSettings.static_objects_external_storage_enabled?
+  end
+
+  def external_storage_url_or_path(path, project = @project)
+    return path unless static_objects_external_storage_enabled?
+
+    uri = URI(Gitlab::CurrentSettings.static_objects_external_storage_url)
+    path = URI(path) # `path` could have query parameters, so we need to split query and path apart
+
+    query = Rack::Utils.parse_nested_query(path.query)
+    query['token'] = current_user.static_object_token unless project.public?
+
+    uri.path = path.path
+    uri.query = query.to_query unless query.empty?
+
+    uri.to_s
+  end
+
   def page_filter_path(options = {})
     without = options.delete(:without)
 

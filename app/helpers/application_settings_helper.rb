@@ -168,6 +168,8 @@ module ApplicationSettingsHelper
       :asset_proxy_secret_key,
       :asset_proxy_url,
       :asset_proxy_whitelist,
+      :static_objects_external_storage_auth_token,
+      :static_objects_external_storage_url,
       :authorized_keys_enabled,
       :auto_devops_enabled,
       :auto_devops_domain,

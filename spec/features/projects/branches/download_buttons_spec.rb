@@ -29,6 +29,11 @@ describe 'Download buttons in branches page' do
   end
 
   describe 'when checking branches' do
+    it_behaves_like 'archive download buttons' do
+      let(:ref) { 'binary-encoding' }
+      let(:path_to_visit) { project_branches_filtered_path(project, state: 'all', search: ref) }
+    end
+
     context 'with artifacts' do
       before do
         visit project_branches_filtered_path(project, state: 'all', search: 'binary-encoding')

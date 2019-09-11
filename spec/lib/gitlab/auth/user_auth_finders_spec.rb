@@ -115,6 +115,60 @@ describe Gitlab::Auth::UserAuthFinders do
     end
   end
 
+  describe '#find_user_from_static_object_token' do
+    context 'when request format is archive' do
+      before do
+        env['SCRIPT_NAME'] = 'project/-/archive/master.zip'
+      end
+
+      context 'when token header param is present' do
+        context 'when token is correct' do
+          it 'returns the user' do
+            request.headers['X-Gitlab-Static-Object-Token'] = user.static_object_token
+
+            expect(find_user_from_static_object_token(:archive)).to eq(user)
+          end
+        end
+
+        context 'when token is incorrect' do
+          it 'returns the user' do
+            request.headers['X-Gitlab-Static-Object-Token'] = 'foobar'
+
+            expect { find_user_from_static_object_token(:archive) }.to raise_error(Gitlab::Auth::UnauthorizedError)
+          end
+        end
+      end
+
+      context 'when token query param is present' do
+        context 'when token is correct' do
+          it 'returns the user' do
+            set_param(:token, user.static_object_token)
+
+            expect(find_user_from_static_object_token(:archive)).to eq(user)
+          end
+        end
+
+        context 'when token is incorrect' do
+          it 'returns the user' do
+            set_param(:token, 'foobar')
+
+            expect { find_user_from_static_object_token(:archive) }.to raise_error(Gitlab::Auth::UnauthorizedError)
+          end
+        end
+      end
+    end
+
+    context 'when request format is not archive' do
+      before do
+        env['script_name'] = 'url'
+      end
+
+      it 'returns nil' do
+        expect(find_user_from_static_object_token(:foo)).to be_nil
+      end
+    end
+  end
+
   describe '#find_user_from_access_token' do
     let(:personal_access_token) { create(:personal_access_token, user: user) }
 
