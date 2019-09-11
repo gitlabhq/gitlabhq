@@ -28,12 +28,14 @@ describe Gitlab::DataBuilder::Pipeline do
       expect(attributes[:sha]).to eq(pipeline.sha)
       expect(attributes[:tag]).to eq(pipeline.tag)
       expect(attributes[:id]).to eq(pipeline.id)
+      expect(attributes[:source]).to eq(pipeline.source)
       expect(attributes[:status]).to eq(pipeline.status)
       expect(attributes[:detailed_status]).to eq('passed')
       expect(build_data).to be_a(Hash)
       expect(build_data[:id]).to eq(build.id)
       expect(build_data[:status]).to eq(build.status)
       expect(project_data).to eq(project.hook_attrs(backward: false))
+      expect(data[:merge_request]).to be_nil
     end
 
     context 'pipeline without variables' do
@@ -59,6 +61,22 @@ describe Gitlab::DataBuilder::Pipeline do
 
       it 'returns a source ref' do
         expect(attributes[:ref]).to eq(merge_request.source_branch)
+      end
+
+      it 'returns merge request' do
+        merge_request_attrs = data[:merge_request]
+
+        expect(merge_request_attrs).to be_a(Hash)
+        expect(merge_request_attrs[:id]).to eq(merge_request.id)
+        expect(merge_request_attrs[:iid]).to eq(merge_request.iid)
+        expect(merge_request_attrs[:title]).to eq(merge_request.title)
+        expect(merge_request_attrs[:source_branch]).to eq(merge_request.source_branch)
+        expect(merge_request_attrs[:source_project_id]).to eq(merge_request.source_project_id)
+        expect(merge_request_attrs[:target_branch]).to eq(merge_request.target_branch)
+        expect(merge_request_attrs[:target_project_id]).to eq(merge_request.target_project_id)
+        expect(merge_request_attrs[:state]).to eq(merge_request.state)
+        expect(merge_request_attrs[:merge_status]).to eq(merge_request.merge_status)
+        expect(merge_request_attrs[:url]).to eq("http://localhost/#{merge_request.target_project.full_path}/merge_requests/#{merge_request.iid}")
       end
     end
   end
