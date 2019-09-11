@@ -58,7 +58,7 @@ module QA
                 paths:
                 - my-artifacts/
           EOF
-        end
+        end.project.visit!
 
         expect(page).to have_content('Add .gitlab-ci.yml')
 

@@ -8,6 +8,7 @@ module QA
       let(:project) do
         Resource::Project.fabricate! do |resource|
           resource.name = 'protected-branch-project'
+          resource.initialize_with_readme = true
         end
       end
 
@@ -42,7 +43,7 @@ module QA
       end
 
       def create_protected_branch(allow_to_push:)
-        Resource::Branch.fabricate! do |resource|
+        Resource::ProtectedBranch.fabricate! do |resource|
           resource.branch_name = branch_name
           resource.project = project
           resource.allow_to_push = allow_to_push
