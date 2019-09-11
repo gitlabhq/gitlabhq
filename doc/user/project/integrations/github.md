@@ -30,19 +30,18 @@ with `repo:status` access granted:
 1. Select the "Active" checkbox.
 1. Paste the token you've generated on GitHub
 1. Enter the path to your project on GitHub, such as `https://github.com/username/repository`
-1. Optionally check "Static status check names" checkbox to enable static status check names.
+1. Optionally uncheck **Static status check names** checkbox to disable static status check names.
 1. Save or optionally click "Test Settings".
 
 #### Static / dynamic status check names
 
-Since GitLab 11.5 it is possible to opt-in to using static status check names.
+> - Introduced in GitLab 11.5: using static status check names as opt-in option.
+> - [In GitLab 12.4](https://gitlab.com/gitlab-org/gitlab-ee/issues/9931), static status check names is default behavior for new projects.
 
 This makes it possible to mark these status checks as _Required_ on GitHub.
-If you check "Static status check names" checkbox on the integration page, your
+With **Static status check names** enabled on the integration page, your
 GitLab instance host name is going to be appended to a status check name,
 whereas in case of dynamic status check names, a branch name is going to be
 appended.
-
-Dynamic status check name is a default behavior.
 
 ![Configure GitHub Project Integration](img/github_configuration.png)
