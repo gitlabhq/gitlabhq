@@ -7,7 +7,9 @@ class Admin::ApplicationsController < Admin::ApplicationController
   before_action :load_scopes, only: [:new, :create, :edit, :update]
 
   def index
-    @applications = ApplicationsFinder.new.execute
+    applications = ApplicationsFinder.new.execute
+    @applications = Kaminari.paginate_array(applications).page(params[:page])
+    @application_counts = OauthAccessToken.distinct_resource_owner_counts(@applications)
   end
 
   def show

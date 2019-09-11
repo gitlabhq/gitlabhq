@@ -19,7 +19,8 @@
       %tr{ :id => "application_#{application.id}" }
         %td= link_to application.name, admin_application_path(application)
         %td= application.redirect_uri
-        %td= application.access_tokens.map(&:resource_owner_id).uniq.count
+        %td= @application_counts[application.id].to_i
         %td= application.trusted? ? 'Y': 'N'
         %td= link_to 'Edit', edit_admin_application_path(application), class: 'btn btn-link'
         %td= render 'delete_form', application: application
+= paginate @applications, theme: 'gitlab'

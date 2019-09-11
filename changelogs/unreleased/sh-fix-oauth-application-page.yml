@@ -1,0 +1,5 @@
+---
+title: Optimize /admin/applications so that it does not timeout
+merge_request: 32852
+author:
+type: performance
