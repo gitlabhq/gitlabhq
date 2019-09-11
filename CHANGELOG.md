@@ -2,6 +2,13 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 12.1.9
+
+### Security (1 change)
+
+- Upgrade pages to 1.7.2.
+
+
 ## 12.1.8
 
 ### Security (21 changes)
