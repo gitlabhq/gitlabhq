@@ -17,7 +17,7 @@ sidebar.
 
 ## Viewing dependencies
 
-![Dependency List](img/dependency_list_v12_2.png)
+![Dependency List](img/dependency_list_v12_3.png)
 
 Dependencies are displayed with the following information:
 
@@ -28,6 +28,7 @@ Dependencies are displayed with the following information:
 | Version   | The exact locked version of the dependency your project uses |
 | Packager  | The packager used to install the depedency |
 | Location  | A link to the packager-specific lockfile in your project that declared the dependency |
+| License   | Links to dependency's software licenses |
 
 Dependencies shown are initially sorted by their names. They can also be sorted
 by the packager they were installed by, or by the severity of their known
@@ -42,6 +43,13 @@ disabled.
 If a dependency has known vulnerabilities, they can be viewed by clicking on the
 `Status` cell of that dependency. The severity and description of each
 vulnerability will then be displayed below it.
+
+## Licenses
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/10536) in GitLab Ultimate 12.3.
+
+If the [License Compliance](../license_compliance/index.md) CI job is configured,
+the [discovered licenses](../license_compliance/index.md#supported-languages-and-package-managers) will be displayed on this page.
 
 ## Downloading the Dependency List
 
