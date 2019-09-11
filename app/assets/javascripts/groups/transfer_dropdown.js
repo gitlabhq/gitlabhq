@@ -14,7 +14,7 @@ export default class TransferDropdown {
   }
 
   buildDropdown() {
-    const extraOptions = [{ id: '', text: __('No parent group') }, 'divider'];
+    const extraOptions = [{ id: '-1', text: __('No parent group') }, 'divider'];
 
     this.groupDropdown.glDropdown({
       selectable: true,
@@ -33,5 +33,6 @@ export default class TransferDropdown {
 
   assignSelected(selected) {
     this.parentInput.val(selected.id);
+    this.parentInput.change();
   }
 }

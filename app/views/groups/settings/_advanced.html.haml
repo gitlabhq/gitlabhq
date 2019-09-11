@@ -25,7 +25,7 @@
 
 .sub-section
   %h4.warning-title Transfer group
-  = form_for @group, url: transfer_group_path(@group), method: :put do |f|
+  = form_for @group, url: transfer_group_path(@group), method: :put, html: { class: 'js-group-transfer-form' } do |f|
     .form-group
       = dropdown_tag('Select parent group', options: { toggle_class: 'js-groups-dropdown', title: 'Parent Group', filter: true, dropdown_class: 'dropdown-open-top dropdown-group-transfer', placeholder: 'Search groups', data: { data: parent_group_options(@group) } })
       = hidden_field_tag 'new_parent_group_id'
