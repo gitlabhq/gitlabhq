@@ -1239,7 +1239,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def compare_reports(service_class, current_user = nil)
-    with_reactive_cache(service_class.name) do |data|
+    with_reactive_cache(service_class.name, current_user&.id) do |data|
       unless service_class.new(project, current_user)
         .latest?(base_pipeline, actual_head_pipeline, data)
         raise InvalidateReactiveCache
@@ -1249,12 +1249,13 @@ class MergeRequest < ApplicationRecord
     end || { status: :parsing }
   end
 
-  def calculate_reactive_cache(identifier, *args)
+  def calculate_reactive_cache(identifier, current_user_id = nil, *args)
     service_class = identifier.constantize
 
     raise NameError, service_class unless service_class < Ci::CompareReportsBaseService
 
-    service_class.new(project).execute(base_pipeline, actual_head_pipeline)
+    current_user = User.find_by(id: current_user_id)
+    service_class.new(project, current_user).execute(base_pipeline, actual_head_pipeline)
   end
 
   def all_commits

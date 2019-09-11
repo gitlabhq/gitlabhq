@@ -41,7 +41,7 @@ module Ci
     end
 
     def serializer_params
-      { project: project }
+      { project: project, current_user: current_user }
     end
 
     def get_report(pipeline)
