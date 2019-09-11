@@ -13,31 +13,17 @@ describe Projects::SnippetsController do
   end
 
   describe 'GET #index' do
-    context 'when page param' do
-      let(:last_page) { project.snippets.page.total_pages }
-      let!(:project_snippet) { create(:project_snippet, :public, project: project, author: user) }
-
-      it 'redirects to last_page if page number is larger than number of pages' do
-        get :index,
-          params: {
-            namespace_id: project.namespace,
-            project_id: project,
-            page: (last_page + 1).to_param
-          }
-
-        expect(response).to redirect_to(namespace_project_snippets_path(page: last_page))
+    it_behaves_like 'paginated collection' do
+      let(:collection) { project.snippets }
+      let(:params) do
+        {
+          namespace_id: project.namespace,
+          project_id: project
+        }
       end
 
-      it 'redirects to specified page' do
-        get :index,
-          params: {
-            namespace_id: project.namespace,
-            project_id: project,
-            page: last_page.to_param
-          }
-
-        expect(assigns(:snippets).current_page).to eq(last_page)
-        expect(response).to have_gitlab_http_status(200)
+      before do
+        create(:project_snippet, :public, project: project, author: user)
       end
     end
 

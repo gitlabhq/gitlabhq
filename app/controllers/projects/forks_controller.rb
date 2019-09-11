@@ -2,6 +2,7 @@
 
 class Projects::ForksController < Projects::ApplicationController
   include ContinueParams
+  include RendersMemberAccess
 
   # Authorize
   before_action :whitelist_query_limiting, only: [:create]
@@ -11,14 +12,16 @@ class Projects::ForksController < Projects::ApplicationController
 
   # rubocop: disable CodeReuse/ActiveRecord
   def index
-    base_query = project.forks.includes(:creator)
+    @total_forks_count    = project.forks.size
+    @public_forks_count   = project.forks.public_only.size
+    @private_forks_count  = @total_forks_count - project.forks.public_and_internal_only.size
+    @internal_forks_count = @total_forks_count - @public_forks_count - @private_forks_count
 
-    forks                = ForkProjectsFinder.new(project, params: params.merge(search: params[:filter_projects]), current_user: current_user).execute
-    @total_forks_count   = base_query.size
-    @private_forks_count = @total_forks_count - forks.size
-    @public_forks_count  = @total_forks_count - @private_forks_count
+    @forks = ForkProjectsFinder.new(project, params: params.merge(search: params[:filter_projects]), current_user: current_user).execute
+    @forks = @forks.includes(:route, :creator, :group, namespace: [:route, :owner])
+                   .page(params[:page])
 
-    @forks = forks.page(params[:page])
+    prepare_projects_for_rendering(@forks)
 
     respond_to do |format|
       format.html

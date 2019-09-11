@@ -19,7 +19,7 @@ module Gitlab
 
       return {} if issuable_ids.empty?
 
-      issuable_note_count = ::Note.count_for_collection(issuable_ids, collection_type)
+      issuable_notes_count = ::Note.count_for_collection(issuable_ids, collection_type)
       issuable_votes_count = ::AwardEmoji.votes_for_collection(issuable_ids, collection_type)
       issuable_merge_requests_count =
         if collection_type == 'Issue'
@@ -31,7 +31,7 @@ module Gitlab
       issuable_ids.each_with_object({}) do |id, issuable_meta|
         downvotes = issuable_votes_count.find { |votes| votes.awardable_id == id && votes.downvote? }
         upvotes = issuable_votes_count.find { |votes| votes.awardable_id == id && votes.upvote? }
-        notes = issuable_note_count.find { |notes| notes.noteable_id == id }
+        notes = issuable_notes_count.find { |notes| notes.noteable_id == id }
         merge_requests = issuable_merge_requests_count.find { |mr| mr.first == id }
 
         issuable_meta[id] = ::Issuable::IssuableMeta.new(

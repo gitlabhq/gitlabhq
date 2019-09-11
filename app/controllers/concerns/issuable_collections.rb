@@ -2,6 +2,7 @@
 
 module IssuableCollections
   extend ActiveSupport::Concern
+  include PaginatedCollection
   include SortingHelper
   include SortingPreference
   include Gitlab::IssuableMetadata
@@ -17,8 +18,11 @@ module IssuableCollections
   def set_issuables_index
     @issuables = issuables_collection
 
-    set_pagination
-    return if redirect_out_of_range(@total_pages)
+    unless pagination_disabled?
+      set_pagination
+
+      return if redirect_out_of_range(@issuables, @total_pages)
+    end
 
     if params[:label_name].present? && @project
       labels_params = { project_id: @project.id, title: params[:label_name] }
@@ -38,12 +42,10 @@ module IssuableCollections
   end
 
   def set_pagination
-    return if pagination_disabled?
-
     @issuables          = @issuables.page(params[:page])
     @issuables          = per_page_for_relative_position if params[:sort] == 'relative_position'
     @issuable_meta_data = issuable_meta_data(@issuables, collection_type, current_user)
-    @total_pages        = issuable_page_count
+    @total_pages        = issuable_page_count(@issuables)
   end
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
@@ -57,20 +59,8 @@ module IssuableCollections
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
-  def redirect_out_of_range(total_pages)
-    return false if total_pages.nil? || total_pages.zero?
-
-    out_of_range = @issuables.current_page > total_pages # rubocop:disable Gitlab/ModuleWithInstanceVariables
-
-    if out_of_range
-      redirect_to(url_for(safe_params.merge(page: total_pages, only_path: true)))
-    end
-
-    out_of_range
-  end
-
-  def issuable_page_count
-    page_count_for_relation(@issuables, finder.row_count) # rubocop:disable Gitlab/ModuleWithInstanceVariables
+  def issuable_page_count(relation)
+    page_count_for_relation(relation, finder.row_count)
   end
 
   def page_count_for_relation(relation, row_count)

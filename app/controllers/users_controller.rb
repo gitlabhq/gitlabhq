@@ -4,6 +4,7 @@ class UsersController < ApplicationController
   include RoutableActions
   include RendersMemberAccess
   include ControllerWithCrossProjectAccessCheck
+  include Gitlab::NoteableMetadata
 
   requires_cross_project_access show: false,
                                 groups: false,
@@ -165,11 +166,12 @@ class UsersController < ApplicationController
   end
 
   def load_snippets
-    @snippets = SnippetsFinder.new(
-      current_user,
-      author: user,
-      scope: params[:scope]
-    ).execute.page(params[:page])
+    @snippets = SnippetsFinder.new(current_user, author: user, scope: params[:scope])
+      .execute
+      .page(params[:page])
+      .inc_author
+
+    @noteable_meta_data = noteable_meta_data(@snippets, 'Snippet')
   end
 
   def build_canonical_path(user)
