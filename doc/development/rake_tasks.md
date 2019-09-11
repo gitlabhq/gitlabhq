@@ -216,3 +216,13 @@ bundle exec rake routes
 
 Since these take some time to create, it's often helpful to save the output to
 a file for quick reference.
+
+## Show obsolete `ignored_columns`
+
+To see a list of all obsolete `ignored_columns` run:
+
+```
+bundle exec rake db:obsolete_ignored_columns
+```
+
+Feel free to remove their definitions from their `ignored_columns` definitions.
