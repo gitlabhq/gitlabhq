@@ -398,7 +398,7 @@ GEM
       rake (~> 12)
     grape_logging (1.7.0)
       grape
-    graphiql-rails (1.4.10)
+    graphiql-rails (1.7.0)
       railties
       sprockets-rails
     graphql (1.9.11)
@@ -1142,7 +1142,7 @@ DEPENDENCIES
   grape-entity (~> 0.7.1)
   grape-path-helpers (~> 1.1)
   grape_logging (~> 1.7)
-  graphiql-rails (~> 1.4.10)
+  graphiql-rails (~> 1.7.0)
   graphql (~> 1.9.11)
   graphql-docs (~> 1.6.0)
   grpc (~> 1.19.0)

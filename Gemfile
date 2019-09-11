@@ -84,7 +84,9 @@ gem 'rack-cors', '~> 1.0.0', require: 'rack/cors'
 
 # GraphQL API
 gem 'graphql', '~> 1.9.11'
-gem 'graphiql-rails', '~> 1.4.10'
+# TODO: remove app/views/graphiql/rails/editors/show.html.erb when https://github.com/rmosolgo/graphiql-rails/pull/71 will be released
+# https://gitlab.com/gitlab-org/gitlab-ce/issues/67263
+gem 'graphiql-rails', '~> 1.7.0'
 gem 'apollo_upload_server', '~> 2.0.0.beta3'
 gem 'graphql-docs', '~> 1.6.0', group: [:development, :test]
 

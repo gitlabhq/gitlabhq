@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= GraphiQL::Rails.config.title || 'GraphiQL' %></title>
+
+    <%= stylesheet_link_tag("graphiql/rails/application") %>
+    <%= javascript_include_tag("graphiql/rails/application", nonce: true) %>
+  </head>
+  <body>
+    <%= content_tag :div, 'Loading...', id: 'graphiql-container', data: {
+      graphql_endpoint_path: graphql_endpoint_path,
+      initial_query: GraphiQL::Rails.config.initial_query,
+      logo: GraphiQL::Rails.config.logo,
+      headers: GraphiQL::Rails.config.resolve_headers(self),
+      query_params: GraphiQL::Rails.config.query_params
+    } %>
+  </body>
+</html>
