@@ -36,6 +36,9 @@ Thread resolution helps keep track of progress during planning or code review.
 Every standard comment or thread in merge requests, commits, commit diffs, and
 snippets is initially displayed as unresolved. They can then be individually resolved by anyone
 with at least Developer access to the project or by the author of the change being reviewed.
+If the thread has been resolved and a non-member unresolves their own response,
+this will also unresolve the discussion thread.
+If the non-member then resolves this same response, this will resolve the discussion thread.
 
 The need to resolve all standard comments or threads prevents you from forgetting
 to address feedback and lets you hide threads that are no longer relevant.
