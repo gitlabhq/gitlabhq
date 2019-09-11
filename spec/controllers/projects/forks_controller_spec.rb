@@ -5,7 +5,7 @@ require 'spec_helper'
 describe Projects::ForksController do
   let(:user) { create(:user) }
   let(:project) { create(:project, :public, :repository) }
-  let(:forked_project) { Projects::ForkService.new(project, user).execute }
+  let(:forked_project) { Projects::ForkService.new(project, user, name: 'Some name').execute }
   let(:group) { create(:group) }
 
   before do
@@ -13,11 +13,12 @@ describe Projects::ForksController do
   end
 
   describe 'GET index' do
-    def get_forks
+    def get_forks(search: nil)
       get :index,
         params: {
           namespace_id: project.namespace,
-          project_id: project
+          project_id: project,
+          search: search
         }
     end
 
@@ -31,6 +32,41 @@ describe Projects::ForksController do
 
         expect(assigns[:forks]).to be_present
       end
+
+      it 'forks counts are correct' do
+        get_forks
+
+        expect(assigns[:total_forks_count]).to eq(1)
+        expect(assigns[:public_forks_count]).to eq(1)
+        expect(assigns[:internal_forks_count]).to eq(0)
+        expect(assigns[:private_forks_count]).to eq(0)
+      end
+
+      context 'after search' do
+        it 'forks counts are correct' do
+          get_forks(search: 'Non-matching query')
+
+          expect(assigns[:total_forks_count]).to eq(1)
+          expect(assigns[:public_forks_count]).to eq(1)
+          expect(assigns[:internal_forks_count]).to eq(0)
+          expect(assigns[:private_forks_count]).to eq(0)
+        end
+      end
+    end
+
+    context 'when fork is internal' do
+      before do
+        forked_project.update(visibility_level: Project::INTERNAL, group: group)
+      end
+
+      it 'forks counts are correct' do
+        get_forks
+
+        expect(assigns[:total_forks_count]).to eq(1)
+        expect(assigns[:public_forks_count]).to eq(0)
+        expect(assigns[:internal_forks_count]).to eq(1)
+        expect(assigns[:private_forks_count]).to eq(0)
+      end
     end
 
     context 'when fork is private' do
@@ -38,11 +74,24 @@ describe Projects::ForksController do
         forked_project.update(visibility_level: Project::PRIVATE, group: group)
       end
 
-      it 'is not be visible for non logged in users' do
+      shared_examples 'forks counts' do
+        it 'forks counts are correct' do
+          get_forks
+
+          expect(assigns[:total_forks_count]).to eq(1)
+          expect(assigns[:public_forks_count]).to eq(0)
+          expect(assigns[:internal_forks_count]).to eq(0)
+          expect(assigns[:private_forks_count]).to eq(1)
+        end
+      end
+
+      it 'is not visible for non logged in users' do
         get_forks
 
         expect(assigns[:forks]).to be_blank
       end
+
+      include_examples 'forks counts'
 
       context 'when user is logged in' do
         before do
@@ -67,6 +116,8 @@ describe Projects::ForksController do
 
             expect(assigns[:forks]).to be_present
           end
+
+          include_examples 'forks counts'
         end
 
         context 'when user is a member of the Group' do
@@ -79,6 +130,8 @@ describe Projects::ForksController do
 
             expect(assigns[:forks]).to be_present
           end
+
+          include_examples 'forks counts'
         end
       end
     end
