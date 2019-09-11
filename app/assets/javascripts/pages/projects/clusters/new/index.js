@@ -1,5 +1,7 @@
-import initCreateEKSCluster from '~/create_cluster/eks_cluster';
-
 document.addEventListener('DOMContentLoaded', () => {
-  initCreateEKSCluster();
+  if (gon.features.createEksClusters) {
+    import(/* webpackChunkName: 'eks_cluster' */ '~/create_cluster/eks_cluster')
+      .then(({ default: initCreateEKSCluster }) => initCreateEKSCluster())
+      .catch(() => {});
+  }
 });
