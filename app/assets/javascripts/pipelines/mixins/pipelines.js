@@ -1,7 +1,7 @@
 import Visibility from 'visibilityjs';
 import { GlLoadingIcon } from '@gitlab/ui';
 import { __ } from '../../locale';
-import Flash from '../../flash';
+import createFlash from '../../flash';
 import Poll from '../../lib/utils/poll';
 import EmptyState from '../components/empty_state.vue';
 import SvgBlankState from '../components/blank_state.vue';
@@ -62,6 +62,7 @@ export default {
     eventHub.$on('clickedDropdown', this.updateTable);
     eventHub.$on('updateTable', this.updateTable);
     eventHub.$on('refreshPipelinesTable', this.fetchPipelines);
+    eventHub.$on('runMergeRequestPipeline', this.runMergeRequestPipeline);
   },
   beforeDestroy() {
     eventHub.$off('postAction', this.postAction);
@@ -69,6 +70,7 @@ export default {
     eventHub.$off('clickedDropdown', this.updateTable);
     eventHub.$off('updateTable', this.updateTable);
     eventHub.$off('refreshPipelinesTable', this.fetchPipelines);
+    eventHub.$off('runMergeRequestPipeline', this.runMergeRequestPipeline);
   },
   destroyed() {
     this.poll.stop();
@@ -110,7 +112,7 @@ export default {
       // Stop polling
       this.poll.stop();
       // Restarting the poll also makes an initial request
-      this.poll.restart();
+      return this.poll.restart();
     },
     fetchPipelines() {
       if (!this.isMakingRequest) {
@@ -156,7 +158,31 @@ export default {
       this.service
         .postAction(endpoint)
         .then(() => this.updateTable())
-        .catch(() => Flash(__('An error occurred while making the request.')));
+        .catch(() => createFlash(__('An error occurred while making the request.')));
+    },
+
+    /**
+     * When the user clicks on the run pipeline button
+     * we toggle the state of the button to be disabled
+     *
+     * Once the post request has finished, we fetch the
+     * pipelines again to show the most recent data
+     *
+     * Once the pipeline has been updated, we toggle back the
+     * loading state and re-enable the run pipeline button
+     */
+    runMergeRequestPipeline(options) {
+      this.store.toggleIsRunningPipeline(true);
+
+      this.service
+        .runMRPipeline(options)
+        .then(() => this.updateTable())
+        .catch(() => {
+          createFlash(
+            __('An error occurred while trying to run a new pipeline for this Merge Request.'),
+          );
+        })
+        .finally(() => this.store.toggleIsRunningPipeline(false));
     },
   },
 };

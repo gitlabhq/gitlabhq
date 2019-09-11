@@ -36,6 +36,7 @@ const Api = {
   branchSinglePath: '/api/:version/projects/:id/repository/branches/:branch',
   createBranchPath: '/api/:version/projects/:id/repository/branches',
   releasesPath: '/api/:version/projects/:id/releases',
+  mergeRequestsPipeline: '/api/:version/projects/:id/merge_requests/:merge_request_iid/pipelines',
   adminStatisticsPath: 'api/:version/application/statistics',
 
   group(groupId, callback) {
@@ -369,6 +370,14 @@ const Api = {
       emoji,
       message,
     });
+  },
+
+  postMergeRequestPipeline(id, { mergeRequestId }) {
+    const url = Api.buildUrl(this.mergeRequestsPipeline)
+      .replace(':id', encodeURIComponent(id))
+      .replace(':merge_request_iid', mergeRequestId);
+
+    return axios.post(url);
   },
 
   releases(id) {

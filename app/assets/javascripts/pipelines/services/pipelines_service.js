@@ -1,4 +1,5 @@
 import axios from '../../lib/utils/axios_utils';
+import Api from '~/api';
 
 export default class PipelinesService {
   /**
@@ -38,5 +39,10 @@ export default class PipelinesService {
   // eslint-disable-next-line class-methods-use-this
   postAction(endpoint) {
     return axios.post(`${endpoint}.json`);
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  runMRPipeline({ projectId, mergeRequestId }) {
+    return Api.postMergeRequestPipeline(projectId, { mergeRequestId });
   }
 }

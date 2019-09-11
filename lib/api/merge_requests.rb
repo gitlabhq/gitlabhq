@@ -317,6 +317,26 @@ module API
         present paginate(pipelines), with: Entities::PipelineBasic
       end
 
+      desc 'Create a pipeline for merge request' do
+        success Entities::Pipeline
+      end
+      post ':id/merge_requests/:merge_request_iid/pipelines' do
+        authorize! :create_pipeline, user_project
+
+        pipeline = ::MergeRequests::CreatePipelineService
+          .new(user_project, current_user, allow_duplicate: true)
+          .execute(find_merge_request_with_access(params[:merge_request_iid]))
+
+        if pipeline.nil?
+          not_allowed!
+        elsif pipeline.persisted?
+          status :ok
+          present pipeline, with: Entities::Pipeline
+        else
+          render_validation_error!(pipeline)
+        end
+      end
+
       desc 'Update a merge request' do
         success Entities::MergeRequest
       end

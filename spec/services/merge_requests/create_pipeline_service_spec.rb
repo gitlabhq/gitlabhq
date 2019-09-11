@@ -38,6 +38,10 @@ describe MergeRequests::CreatePipelineService do
       expect(subject).to be_detached_merge_request_pipeline
     end
 
+    it 'defaults to merge_request_event' do
+      expect(subject.source).to eq('merge_request_event')
+    end
+
     context 'when service is called multiple times' do
       it 'creates a pipeline once' do
         expect do

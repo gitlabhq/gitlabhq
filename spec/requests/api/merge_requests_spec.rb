@@ -1033,6 +1033,70 @@ describe API::MergeRequests do
     end
   end
 
+  describe 'POST /projects/:id/merge_requests/:merge_request_iid/pipelines' do
+    before do
+      allow_any_instance_of(Ci::Pipeline)
+        .to receive(:ci_yaml_file)
+        .and_return(YAML.dump({
+          rspec: {
+            script: 'ls',
+            only: ['merge_requests']
+          }
+        }))
+    end
+
+    let(:project) do
+      create(:project, :private, :repository,
+        creator: user,
+        namespace: user.namespace,
+        only_allow_merge_if_pipeline_succeeds: false)
+    end
+
+    let(:merge_request) do
+      create(:merge_request, :with_detached_merge_request_pipeline,
+        milestone: milestone1,
+        author: user,
+        assignees: [user],
+        source_project: project,
+        target_project: project,
+        title: 'Test',
+        created_at: base_time)
+    end
+
+    let(:merge_request_iid)  { merge_request.iid }
+    let(:authenticated_user) { user }
+
+    let(:request) do
+      post api("/projects/#{project.id}/merge_requests/#{merge_request_iid}/pipelines", authenticated_user)
+    end
+
+    context 'when authorized' do
+      it 'creates and returns the new Pipeline' do
+        expect { request }.to change(Ci::Pipeline, :count).by(1)
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response).to be_a Hash
+      end
+    end
+
+    context 'when unauthorized' do
+      let(:authenticated_user) { create(:user) }
+
+      it 'responds with a blank 404' do
+        expect { request }.not_to change(Ci::Pipeline, :count)
+        expect(response).to have_gitlab_http_status(404)
+      end
+    end
+
+    context 'when the merge request does not exist' do
+      let(:merge_request_iid) { 777 }
+
+      it 'responds with a blank 404' do
+        expect { request }.not_to change(Ci::Pipeline, :count)
+        expect(response).to have_gitlab_http_status(404)
+      end
+    end
+  end
+
   describe 'POST /projects/:id/merge_requests' do
     context 'support for deprecated assignee_id' do
       let(:params) do

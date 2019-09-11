@@ -45,6 +45,38 @@ describe 'Merge request > User sees pipelines', :js do
 
         expect(page.find('.ci-widget')).to have_text("Could not retrieve the pipeline status. For troubleshooting steps, read the documentation.")
       end
+
+      context 'with a detached merge request pipeline' do
+        let(:merge_request) { create(:merge_request, :with_detached_merge_request_pipeline) }
+
+        it 'displays the Run Pipeline button' do
+          visit project_merge_request_path(project, merge_request)
+
+          page.within('.merge-request-tabs') do
+            click_link('Pipelines')
+          end
+
+          wait_for_requests
+
+          expect(page.find('.js-run-mr-pipeline')).to have_text('Run Pipeline')
+        end
+      end
+
+      context 'with a merged results pipeline' do
+        let(:merge_request) { create(:merge_request, :with_merge_request_pipeline) }
+
+        it 'displays the Run Pipeline button' do
+          visit project_merge_request_path(project, merge_request)
+
+          page.within('.merge-request-tabs') do
+            click_link('Pipelines')
+          end
+
+          wait_for_requests
+
+          expect(page.find('.js-run-mr-pipeline')).to have_text('Run Pipeline')
+        end
+      end
     end
 
     context 'without pipelines' do
