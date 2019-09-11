@@ -17,7 +17,7 @@
       = render "snippets/actions"
 
 .snippet-header.limited-header-width
-  %h2.snippet-title.prepend-top-0.append-bottom-0.qa-snippet-title
+  %h2.snippet-title.prepend-top-0.mb-3.qa-snippet-title
     = markdown_field(@snippet, :title)
 
   - if @snippet.description.present?
