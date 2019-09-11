@@ -232,3 +232,17 @@ qa-frontend-node:latest:
   extends: .qa-frontend-node
   image: node:latest
   allow_failure: true
+
+webpack-dev-server:
+  extends:
+    - .default-tags
+    - .default-retry
+    - .default-cache
+    - .except-docs-qa
+  dependencies: ["compile-assets", "compile-assets pull-cache", "setup-test-env"]
+  variables:
+    SETUP_DB: "false"
+    WEBPACK_MEMORY_TEST: "true"
+  script:
+    - node --version
+    - node --expose-gc node_modules/.bin/webpack-dev-server --config config/webpack.config.js

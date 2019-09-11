@@ -17,6 +17,7 @@ const DEV_SERVER_HOST = process.env.DEV_SERVER_HOST || 'localhost';
 const DEV_SERVER_PORT = parseInt(process.env.DEV_SERVER_PORT, 10) || 3808;
 const DEV_SERVER_LIVERELOAD = IS_DEV_SERVER && process.env.DEV_SERVER_LIVERELOAD !== 'false';
 const WEBPACK_REPORT = process.env.WEBPACK_REPORT;
+const WEBPACK_MEMORY_TEST = process.env.WEBPACK_MEMORY_TEST;
 const NO_COMPRESSION = process.env.NO_COMPRESSION;
 const NO_SOURCEMAPS = process.env.NO_SOURCEMAPS;
 
@@ -333,6 +334,30 @@ module.exports = {
           );
 
           callback();
+        });
+      },
+    },
+
+    // output the in-memory heap size upon compilation and exit
+    WEBPACK_MEMORY_TEST && {
+      apply(compiler) {
+        compiler.hooks.emit.tapAsync('ReportMemoryConsumptionPlugin', (compilation, callback) => {
+          console.log('Assets compiled...');
+          if (global.gc) {
+            console.log('Running garbage collection...');
+            global.gc();
+          } else {
+            console.error(
+              "WARNING: you must use the --expose-gc node option to accurately measure webpack's heap size",
+            );
+          }
+          const memoryUsage = process.memoryUsage().heapUsed;
+          const toMB = bytes => Math.floor(bytes / 1024 / 1024);
+
+          console.log(`Webpack heap size: ${toMB(memoryUsage)} MB`);
+
+          // exit in case we're running webpack-dev-server
+          IS_DEV_SERVER && process.exit();
         });
       },
     },
