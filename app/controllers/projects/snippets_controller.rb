@@ -6,6 +6,8 @@ class Projects::SnippetsController < Projects::ApplicationController
   include SpammableActions
   include SnippetsActions
   include RendersBlob
+  include PaginatedCollection
+  include Gitlab::NoteableMetadata
 
   skip_before_action :verify_authenticity_token,
     if: -> { action_name == 'show' && js_request? }
@@ -28,15 +30,14 @@ class Projects::SnippetsController < Projects::ApplicationController
   respond_to :html
 
   def index
-    @snippets = SnippetsFinder.new(
-      current_user,
-      project: @project,
-      scope: params[:scope]
-    ).execute
-    @snippets = @snippets.page(params[:page])
-    if @snippets.out_of_range? && @snippets.total_pages != 0
-      redirect_to project_snippets_path(@project, page: @snippets.total_pages)
-    end
+    @snippets = SnippetsFinder.new(current_user, project: @project, scope: params[:scope])
+      .execute
+      .page(params[:page])
+      .inc_author
+
+    return if redirect_out_of_range(@snippets)
+
+    @noteable_meta_data = noteable_meta_data(@snippets, 'Snippet')
   end
 
   def new
