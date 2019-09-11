@@ -579,14 +579,22 @@ describe Ci::Pipeline, :mailer do
   end
 
   describe 'Validations for merge request pipelines' do
-    let(:pipeline) { build(:ci_pipeline, source: source, merge_request: merge_request) }
+    let(:pipeline) do
+      build(:ci_pipeline, source: source, merge_request: merge_request)
+    end
+
+    let(:merge_request) do
+      create(:merge_request,
+        source_project: project,
+        source_branch:  'feature',
+        target_project: project,
+        target_branch:  'master')
+    end
 
     context 'when source is merge request' do
       let(:source) { :merge_request_event }
 
       context 'when merge request is specified' do
-        let(:merge_request) { create(:merge_request, source_project: project, source_branch: 'feature', target_project: project, target_branch: 'master') }
-
         it { expect(pipeline).to be_valid }
       end
 
@@ -601,8 +609,6 @@ describe Ci::Pipeline, :mailer do
       let(:source) { :web }
 
       context 'when merge request is specified' do
-        let(:merge_request) { create(:merge_request, source_project: project, source_branch: 'feature', target_project: project, target_branch: 'master') }
-
         it { expect(pipeline).not_to be_valid }
       end
 

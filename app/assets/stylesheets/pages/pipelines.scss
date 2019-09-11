@@ -26,6 +26,10 @@
 }
 
 .pipelines {
+  .negative-margin-top {
+    margin-top: -$pipelines-table-header-height;
+  }
+
   .stage {
     max-width: 90px;
     width: 90px;

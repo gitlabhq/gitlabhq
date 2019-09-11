@@ -821,6 +821,66 @@ Parameters:
 ]
 ```
 
+## Create MR Pipeline
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/31722) in Gitlab 12.3.
+
+Create a new [pipeline for a merge request](../ci/merge_request_pipelines/index.md). A pipeline created via this endpoint will not run a regular branch/tag pipeline, it requires `.gitlab-ci.yml` to be configured with `only: [merge_requests]` to create jobs.
+
+The new pipeline can be:
+
+- A detached merge request pipeline.
+- A [pipeline for merged results](../ci/merge_request_pipelines/pipelines_for_merged_results/index.md)
+  if the [project setting is enabled](../ci/merge_request_pipelines/pipelines_for_merged_results/index.md#enabling-pipelines-for-merged-results).
+
+```
+POST /projects/:id/merge_requests/:merge_request_iid/pipelines
+```
+
+Parameters:
+
+- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding)
+- `merge_request_iid` (required) - The internal ID of the merge request
+
+```json
+{
+  "id": 2,
+  "sha": "b83d6e391c22777fca1ed3012fce84f633d7fed0",
+  "ref": "refs/merge-requests/1/head",
+  "status": "pending",
+  "web_url": "http://localhost/user1/project1/pipelines/2",
+  "before_sha": "0000000000000000000000000000000000000000",
+  "tag": false,
+  "yaml_errors": null,
+  "user": {
+    "id": 1,
+    "name": "John Doe1",
+    "username": "user1",
+    "state": "active",
+    "avatar_url": "https://www.gravatar.com/avatar/c922747a93b40d1ea88262bf1aebee62?s=80&d=identicon",
+    "web_url": "http://example.com"
+  },
+  "created_at": "2019-09-04T19:20:18.267Z",
+  "updated_at": "2019-09-04T19:20:18.459Z",
+  "started_at": null,
+  "finished_at": null,
+  "committed_at": null,
+  "duration": null,
+  "coverage": null,
+  "detailed_status": {
+    "icon": "status_pending",
+    "text": "pending",
+    "label": "pending",
+    "group": "pending",
+    "tooltip": "pending",
+    "has_details": false,
+    "details_path": "/user1/project1/pipelines/2",
+    "illustration": null,
+    "favicon": "/assets/ci_favicons/favicon_status_pending-5bdf338420e5221ca24353b6bff1c9367189588750632e9a871b7af09ff6a2ae.png"
+  }
+}
+```
+
 ## Create MR
 
 Creates a new merge request.
