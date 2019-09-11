@@ -4,36 +4,37 @@ module Gitlab
   module TimeTrackingFormatter
     extend self
 
-    def parse(string)
-      with_custom_config do
-        string = string.sub(/\A-/, '')
+    # We may want to configure it through project settings in a future version.
+    CUSTOM_DAY_AND_WEEK_LENGTH = { hours_per_day: 8, days_per_month: 20 }.freeze
 
-        seconds = ChronicDuration.parse(string, default_unit: 'hours') rescue nil
-        seconds *= -1 if seconds && Regexp.last_match
-        seconds
-      end
+    def parse(string)
+      string = string.sub(/\A-/, '')
+
+      seconds =
+        begin
+          ChronicDuration.parse(
+            string,
+            CUSTOM_DAY_AND_WEEK_LENGTH.merge(default_unit: 'hours'))
+        rescue
+          nil
+        end
+
+      seconds *= -1 if seconds && Regexp.last_match
+      seconds
     end
 
     def output(seconds)
-      with_custom_config do
-        ChronicDuration.output(seconds, format: :short, limit_to_hours: limit_to_hours_setting, weeks: true) rescue nil
-      end
+      ChronicDuration.output(
+        seconds,
+        CUSTOM_DAY_AND_WEEK_LENGTH.merge(
+          format: :short,
+          limit_to_hours: limit_to_hours_setting,
+          weeks: true))
+    rescue
+      nil
     end
 
     private
-
-    def with_custom_config
-      # We may want to configure it through project settings in a future version.
-      ChronicDuration.hours_per_day = 8
-      ChronicDuration.days_per_week = 5
-
-      result = yield
-
-      ChronicDuration.hours_per_day = 24
-      ChronicDuration.days_per_week = 7
-
-      result
-    end
 
     def limit_to_hours_setting
       Gitlab::CurrentSettings.time_tracking_limit_to_hours

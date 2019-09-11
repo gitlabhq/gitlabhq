@@ -1,5 +1,5 @@
 require 'fast_spec_helper'
-require 'chronic_duration'
+require 'gitlab_chronic_duration'
 require 'support/helpers/stub_feature_flags'
 require_dependency 'active_model'
 

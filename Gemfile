@@ -265,7 +265,7 @@ gem 'fast_blank'
 
 # Parse time & duration
 gem 'chronic', '~> 0.10.2'
-gem 'chronic_duration', '~> 0.10.6'
+gem 'gitlab_chronic_duration', '~> 0.10.6.1'
 
 gem 'webpack-rails', '~> 0.9.10'
 gem 'rack-proxy', '~> 0.6.0'
