@@ -1,0 +1,25 @@
+{
+  "type": "object",
+  "required": [
+    "project_id",
+    "https_only",
+    "access_control",
+    "source",
+    "prefix"
+  ],
+  "properties": {
+    "project_id": { "type": "integer" },
+    "https_only": { "type": "boolean" },
+    "access_control": { "type": "boolean" },
+    "source": { "type": "object",
+      "required": ["type", "path"],
+      "properties" : {
+        "type": { "type": "string", "enum": ["file"] },
+        "path": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "prefix": { "type": "string" }
+  },
+  "additionalProperties": false
+}

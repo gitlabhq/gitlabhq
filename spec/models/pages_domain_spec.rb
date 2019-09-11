@@ -556,4 +556,16 @@ describe PagesDomain do
       )
     end
   end
+
+  describe '.pages_virtual_domain' do
+    let(:project) { build(:project) }
+
+    subject(:pages_domain) { build(:pages_domain, project: project) }
+
+    it 'returns instance of Pages::VirtualDomain' do
+      expect(Pages::VirtualDomain).to receive(:new).with([project], domain: pages_domain).and_call_original
+
+      expect(pages_domain.pages_virtual_domain).to be_a(Pages::VirtualDomain)
+    end
+  end
 end

@@ -61,11 +61,11 @@ class Project < ApplicationRecord
 
   cache_markdown_field :description, pipeline: :description
 
-  delegate :feature_available?, :builds_enabled?, :wiki_enabled?,
-           :merge_requests_enabled?, :issues_enabled?, :pages_enabled?, :public_pages?,
-           :merge_requests_access_level, :issues_access_level, :wiki_access_level,
-           :snippets_access_level, :builds_access_level, :repository_access_level,
-           to: :project_feature, allow_nil: true
+  delegate :feature_available?, :builds_enabled?, :wiki_enabled?, :merge_requests_enabled?,
+    :issues_enabled?, :pages_enabled?, :public_pages?, :private_pages?,
+    :merge_requests_access_level, :issues_access_level, :wiki_access_level,
+    :snippets_access_level, :builds_access_level, :repository_access_level,
+    to: :project_feature, allow_nil: true
 
   delegate :base_dir, :disk_path, :ensure_storage_path_exists, to: :storage
 
@@ -2199,6 +2199,10 @@ class Project < ApplicationRecord
 
   def access_request_approvers_to_be_notified
     members.maintainers.order_recent_sign_in.limit(ACCESS_REQUEST_APPROVERS_TO_BE_NOTIFIED_LIMIT)
+  end
+
+  def pages_lookup_path(domain: nil)
+    Pages::LookupPath.new(self, domain: domain)
   end
 
   private
