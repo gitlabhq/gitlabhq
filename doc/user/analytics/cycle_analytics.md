@@ -1,7 +1,10 @@
 # Cycle Analytics
 
 > - Introduced prior to GitLab 12.2 at the project level.
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/12077) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.2 at the group level (enabled by feature flag `analytics`).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/12077) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.2 at the group level.
+
+NOTE: **Note:**
+As of GitLab 12.3 this feature is enabled by the `cycle_analytics` feature flag.
 
 Cycle Analytics measures the time spent to go from an [idea to production] - also known
 as cycle time - for each of your projects. Cycle Analytics displays the median time for an idea to
@@ -23,9 +26,6 @@ Cycle Analytics is available:
 
   In the future, multiple groups will be selectable which will effectively make this an
   instance-level feature.
-
-  NOTE: **Note:**
-  Requires the [analytics workspace](index.md) to be enabled.
 
 - At the project level via **Project > Cycle Analytics**.
 
