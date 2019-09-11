@@ -1,6 +1,5 @@
 ---
 type: reference, howto
-disqus_identifier: 'https://docs.gitlab.com/ee/user/project/merge_requests/code_quality_diff.html'
 ---
 
 # Code Quality **(STARTER)**
@@ -18,7 +17,7 @@ Code Quality:
 - Runs in [pipelines](../../../ci/pipelines.md) using an Docker image built in
   [GitLab Code
   Quality](https://gitlab.com/gitlab-org/security-products/codequality) project.
-- Can make use of a [template](#template-and-examples).
+- Can make use of a [template](#example-configuration).
 - Is available with [Auto
   DevOps](../../../topics/autodevops/index.md#auto-code-quality-starter).
 
@@ -42,14 +41,112 @@ For instance, consider the following workflow:
 1. You approve the merge request and authorize its deployment to staging.
 1. Once verified, their changes are deployed to production.
 
-## Template and examples
+## Example configuration
 
-For most GitLab instances, the supplied template is the preferred method of
-implementing Code Quality. See
-[Analyze your project's Code Quality](../../../ci/examples/code_quality.md) for:
+CAUTION: **Caution:**
+The job definition shown below is supported on GitLab 11.11 and later versions. It
+also requires the GitLab Runner 11.5 or later. For earlier versions, use the
+[previous job definitions](#previous-job-definitions).
 
-- Information on the builtin GitLab Code Quality template.
-- Examples of manual GitLab configuration for earlier GitLab versions.
+This example shows how to run Code Quality on your code by using GitLab CI/CD and Docker.
+
+First, you need GitLab Runner with
+[docker-in-docker executor](../../../ci/docker/using_docker_build.md#use-docker-in-docker-workflow-with-docker-executor).
+
+Once you set up the Runner, include the CodeQuality template in your CI config:
+
+```yaml
+include:
+  - template: Code-Quality.gitlab-ci.yml
+```
+
+The above example will create a `code_quality` job in your CI/CD pipeline which
+will scan your source code for code quality issues. The report will be saved as a
+[Code Quality report artifact](../../../ci/yaml/README.md#artifactsreportscodequality-starter)
+that you can later download and analyze. Due to implementation limitations we always
+take the latest Code Quality artifact available.
+
+TIP: **Tip:**
+This information will be automatically extracted and shown right in the merge request widget.
+
+CAUTION: **Caution:**
+On self-managed instances, if a malicious actor compromises the Code Quality job
+definition they will be able to execute privileged docker commands on the Runner
+host. Having proper access control policies mitigates this attack vector by
+allowing access only to trusted actors.
+
+### Previous job definitions
+
+CAUTION: **Caution:**
+Before GitLab 11.5, Code Quality job and artifact had to be named specifically to
+automatically extract report data and show it in the merge request widget. While these
+old job definitions are still maintained they have been deprecated and may be removed
+in the next major release, GitLab 12.0. You are advised to update your current `.gitlab-ci.yml`
+configuration to reflect that change.
+
+For GitLab 11.5 and earlier, the job should look like:
+
+```yaml
+code_quality:
+  image: docker:stable
+  variables:
+    DOCKER_DRIVER: overlay2
+  allow_failure: true
+  services:
+    - docker:stable-dind
+  script:
+    - export SP_VERSION=$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')
+    - docker run
+        --env SOURCE_CODE="$PWD"
+        --volume "$PWD":/code
+        --volume /var/run/docker.sock:/var/run/docker.sock
+        "registry.gitlab.com/gitlab-org/security-products/codequality:$SP_VERSION" /code
+  artifacts:
+    reports:
+      codequality: gl-code-quality-report.json
+```
+
+For GitLab 11.4 and earlier, the job should look like:
+
+```yaml
+code_quality:
+  image: docker:stable
+  variables:
+    DOCKER_DRIVER: overlay2
+  allow_failure: true
+  services:
+    - docker:stable-dind
+  script:
+    - export SP_VERSION=$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')
+    - docker run
+        --env SOURCE_CODE="$PWD"
+        --volume "$PWD":/code
+        --volume /var/run/docker.sock:/var/run/docker.sock
+        "registry.gitlab.com/gitlab-org/security-products/codequality:$SP_VERSION" /code
+  artifacts:
+      paths: [gl-code-quality-report.json]
+```
+
+Alternatively the job name could be `codeclimate` or `codequality` and the artifact
+name could be `codeclimate.json`. These names have been deprecated with GitLab 11.0
+and may be removed in the next major release, GitLab 12.0.
+
+For GitLab 10.3 and earlier, the job should look like:
+
+```yaml
+codequality:
+  image: docker:latest
+  variables:
+    DOCKER_DRIVER: overlay
+  services:
+    - docker:dind
+  script:
+    - docker pull codeclimate/codeclimate:0.69.0
+    - docker run --env CODECLIMATE_CODE="$PWD" --volume "$PWD":/code --volume /var/run/docker.sock:/var/run/docker.sock --volume /tmp/cc:/tmp/cc codeclimate/codeclimate:0.69.0 init
+    - docker run --env CODECLIMATE_CODE="$PWD" --volume "$PWD":/code --volume /var/run/docker.sock:/var/run/docker.sock --volume /tmp/cc:/tmp/cc codeclimate/codeclimate:0.69.0 analyze -f json > codeclimate.json || true
+  artifacts:
+    paths: [codeclimate.json]
+```
 
 ## Configuring jobs using variables
 
