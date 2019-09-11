@@ -1,4 +1,3 @@
-
 # Introduction to GitLab Flow
 
 ![GitLab Flow](img/gitlab_flow.png)
@@ -60,7 +59,7 @@ For example, many projects do releases but don't need to do hotfixes.
 In reaction to Git flow, GitHub created a simpler alternative.
 [GitHub flow](https://guides.github.com/introduction/flow/index.html) has only feature branches and a `master` branch.
 This flow is clean and straightforward, and many organizations have adopted it with great success.
-Atlassian recommends [a similar strategy](https://www.atlassian.com/blog/archives/simple-git-workflow-simple), although they rebase feature branches.
+Atlassian recommends [a similar strategy](https://www.atlassian.com/blog/git/simple-git-workflow-is-simple), although they rebase feature branches.
 Merging everything into the `master` branch and frequently deploying means you minimize the amount of unreleased code, which is in line with lean and continuous delivery best practices.
 However, this flow still leaves a lot of questions unanswered regarding deployments, environments, releases, and integrations with issues.
 With GitLab flow, we offer additional guidance for these questions.
