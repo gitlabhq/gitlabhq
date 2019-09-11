@@ -613,3 +613,10 @@
     :why: https://bitbucket.org/atlassian/atlassian-jwt-ruby/src/master/LICENSE.txt
     :versions: []
     :when: 2019-08-30 05:45:35.317663000 Z
+- - :license
+  - unicode_utils
+  - MIT
+  - :who: Aishwarya Subramanain
+    :why: https://github.com/hexorx/countries/blob/master/LICENSE
+    :versions: []
+    :when: 2019-09-11 13:08:28.431132000 Z
