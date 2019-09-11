@@ -580,7 +580,7 @@ For private and internal projects:
 If you want to use your own Docker images for docker-in-docker there are a few things you need to do in addition to the steps in the [docker-in-docker](#use-docker-in-docker-workflow-with-docker-executor) section:
 
 1. Update the `image` and `service` to point to your registry.
-1. Add a service [alias](https://docs.gitlab.com/ee/ci/yaml/#servicesalias).
+1. Add a service [alias](../yaml/README.md#servicesalias).
 
 Below is an example of what your `.gitlab-ci.yml` should look like,
 assuming you have it configured with [TLS enabled](#tls-enabled):
