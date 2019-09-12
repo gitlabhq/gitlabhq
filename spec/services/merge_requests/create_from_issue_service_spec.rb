@@ -112,6 +112,22 @@ describe MergeRequests::CreateFromIssueService do
           expect(subject[:merge_request].target_branch).to eq('feature')
         end
 
+        context 'when the ref is a tag' do
+          subject { described_class.new(project, user, ref: 'v1.0.0', **service_params).execute }
+
+          it 'sets the merge request source branch to the new issue branch' do
+            expect(subject[:merge_request].source_branch).to eq(issue.to_branch_name)
+          end
+
+          it 'creates a merge request' do
+            expect { subject }.to change(target_project.merge_requests, :count).by(1)
+          end
+
+          it 'sets the merge request target branch to the project default branch' do
+            expect(subject[:merge_request].target_branch).to eq(target_project.default_branch)
+          end
+        end
+
         context 'when ref branch does not exist' do
           subject { described_class.new(project, user, ref: 'no-such-branch', **service_params).execute }
 
