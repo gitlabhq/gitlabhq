@@ -29,15 +29,17 @@ describe('MergeRequest', function() {
       mock.restore();
     });
 
-    it('modifies the Markdown field', function() {
+    it('modifies the Markdown field', done => {
       spyOn($, 'ajax').and.stub();
       const changeEvent = document.createEvent('HTMLEvents');
       changeEvent.initEvent('change', true, true);
       $('input[type=checkbox]')
         .attr('checked', true)[0]
         .dispatchEvent(changeEvent);
-
-      expect($('.js-task-list-field').val()).toBe('- [x] Task List Item');
+      setTimeout(() => {
+        expect($('.js-task-list-field').val()).toBe('- [x] Task List Item');
+        done();
+      });
     });
 
     describe('tasklist', () => {
