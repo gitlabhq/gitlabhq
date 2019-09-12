@@ -88,15 +88,19 @@ major differences:
 Therefore, we will set up the HA components one-by-one, and include deviations
 from the normal HA setup.
 
-### Step 1: Configure the Redis and NFS services on the **secondary** node
+### Step 1: Configure the Redis and Gitaly services on the **secondary** node
 
 Configure the following services, again using the non-Geo high availability
 documentation:
 
 - [Configuring Redis for GitLab HA](../../high_availability/redis.md) for high
   availability.
-- [NFS](../../high_availability/nfs.md) which will store data that is
+- [Gitaly](../../high_availability/gitaly.md), which will store data that is
   synchronized from the **primary** node.
+
+NOTE: **Note:**
+[NFS](../../high_availability/nfs.md) can be used in place of Gitaly but is not
+recommended.
 
 ### Step 2: Configure the main read-only replica PostgreSQL database on the **secondary** node
 
