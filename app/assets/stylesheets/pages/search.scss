@@ -207,8 +207,7 @@ input[type='checkbox']:hover {
     pointer-events: none;
   }
 
-  .search-text-input,
-  .project-filter-form-field {
+  .search-text-input {
     padding-left: $gl-padding + 15px;
     padding-right: $gl-padding + 15px;
   }
