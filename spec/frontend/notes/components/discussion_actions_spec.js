@@ -65,6 +65,15 @@ describe('DiscussionActions', () => {
 
       expect(wrapper.find(JumpToNextDiscussionButton).exists()).toBe(false);
     });
+
+    it('does not renders discussion button for non-member', () => {
+      const discussion = JSON.parse(JSON.stringify(discussionMock));
+      discussion.notes[1].current_user.can_resolve = false;
+      createComponent({ discussion });
+
+      expect(wrapper.find(ResolveDiscussionButton).exists()).toBe(false);
+      expect(wrapper.find(ResolveWithIssueButton).exists()).toBe(false);
+    });
   });
 
   describe('events handling', () => {
