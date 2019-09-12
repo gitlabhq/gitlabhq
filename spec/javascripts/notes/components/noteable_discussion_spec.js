@@ -255,6 +255,10 @@ describe('noteable_discussion component', () => {
       discussion.notes = discussion.notes.map(note => ({
         ...note,
         resolved: false,
+        current_user: {
+          ...note.current_user,
+          can_resolve: true,
+        },
       }));
 
       wrapper.setProps({ discussion });

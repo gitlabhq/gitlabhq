@@ -200,6 +200,7 @@ export const discussionMock = {
       current_user: {
         can_edit: true,
         can_award_emoji: true,
+        can_resolve: true,
       },
       discussion_id: '9e3bd2f71a01de45fd166e6719eb380ad9f270b1',
       emoji_awardable: true,
@@ -246,6 +247,7 @@ export const discussionMock = {
       current_user: {
         can_edit: true,
         can_award_emoji: true,
+        can_resolve: true,
       },
       discussion_id: '9e3bd2f71a01de45fd166e6719eb380ad9f270b1',
       emoji_awardable: true,
@@ -292,6 +294,7 @@ export const discussionMock = {
       current_user: {
         can_edit: true,
         can_award_emoji: true,
+        can_resolve: true,
       },
       discussion_id: '9e3bd2f71a01de45fd166e6719eb380ad9f270b1',
       emoji_awardable: true,
