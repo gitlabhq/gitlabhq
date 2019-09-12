@@ -10,7 +10,7 @@
     <div id="graphiql-container">
       Loading...
     </div>
-    <script>
+    <%= javascript_tag nonce: true do -%>
     var parameters = {};
 
     <% if GraphiQL::Rails.config.query_params %>
@@ -94,6 +94,6 @@
       }),
       document.getElementById("graphiql-container")
     );
-    </script>
+    <% end -%>
   </body>
 </html>
