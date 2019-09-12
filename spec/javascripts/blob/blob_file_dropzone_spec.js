@@ -24,10 +24,7 @@ describe('BlobFileDropzone', function() {
     it('is disabled while uploading', () => {
       spyOn(window, 'alert');
 
-      const file = {
-        name: 'some-file.jpg',
-        type: 'jpg',
-      };
+      const file = new File([], 'some-file.jpg');
       const fakeEvent = $.Event('drop', {
         dataTransfer: { files: [file] },
       });
