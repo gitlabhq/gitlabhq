@@ -28,6 +28,11 @@ Two things need to be configured for the interactive web terminal to work:
 - If you are using a reverse proxy with your GitLab instance, web terminals need to be
   [enabled](../../administration/integration/terminal.md#enabling-and-disabling-terminal-support)
 
+NOTE: **Note:**
+Interactive web terminals are not yet supported by
+[`gitlab-runner` helm chart](https://docs.gitlab.com/charts/charts/gitlab/gitlab-runner/index.html),
+but support [is planned](https://gitlab.com/gitlab-org/charts/gitlab-runner/issues/79).
+
 ## Debugging a running job
 
 NOTE: **Note:** Not all executors are
