@@ -14,6 +14,10 @@ module QA
           element :delete_key_button
         end
 
+        view 'app/views/profiles/keys/_key_table.html.haml' do
+          element :ssh_keys_list
+        end
+
         def add_key(public_key, title)
           fill_element :key_public_key_field, public_key
           fill_element :key_title_field, title
@@ -27,6 +31,10 @@ module QA
           accept_alert do
             click_element :delete_key_button
           end
+        end
+
+        def keys_list
+          find_element(:ssh_keys_list).text
         end
       end
     end
