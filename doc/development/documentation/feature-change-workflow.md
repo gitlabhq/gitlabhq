@@ -92,8 +92,7 @@ do the following:
 
 #### Authoring
 
-As a developer, you should ship the documentation with the code of the feature that
-you are creating or updating. The documentation is an essential part of the product.
+As a developer, if a ~feature issue also contains the ~Documentation label, you must ship the new or updated documentation with the code of the feature. The documentation is an essential part of the product.
 Technical writers are happy to help, as requested and planned on an issue-by-issue basis.
 
 Follow the process below unless otherwise agreed with the product manager and technical writer for a given issue:
