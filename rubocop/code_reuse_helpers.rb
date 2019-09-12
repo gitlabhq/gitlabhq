@@ -25,7 +25,7 @@ module RuboCop
 
     # Returns the name of a constant node.
     #
-    # Given the AST node `(const nil :Foo)`, this method will return `:Foo`.
+    # Given the AST node `(const nil? :Foo)`, this method will return `:Foo`.
     def name_of_constant(node)
       node.children[1]
     end
@@ -87,7 +87,7 @@ module RuboCop
 
     # Returns the receiver name of a send node.
     #
-    # For the AST node `(send (const nil :Foo) ...)` this would return
+    # For the AST node `(send (const nil? :Foo) ...)` this would return
     # `'Foo'`.
     def name_of_receiver(node)
       name_of_constant(node.children.first).to_s
