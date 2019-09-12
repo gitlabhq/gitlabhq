@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_10_000130) do
+ActiveRecord::Schema.define(version: 2019_09_12_061145) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -1997,6 +1997,7 @@ ActiveRecord::Schema.define(version: 2019_09_10_000130) do
     t.boolean "ldap", default: false, null: false
     t.boolean "override", default: false, null: false
     t.index ["access_level"], name: "index_members_on_access_level"
+    t.index ["expires_at"], name: "index_members_on_expires_at"
     t.index ["invite_email"], name: "index_members_on_invite_email"
     t.index ["invite_token"], name: "index_members_on_invite_token", unique: true
     t.index ["requested_at"], name: "index_members_on_requested_at"
