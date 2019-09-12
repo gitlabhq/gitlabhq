@@ -53,7 +53,14 @@ module QA
             Page::Main::Login.perform { |login| login.sign_in_using_credentials(@user) }
           end
 
-          Resource::PersonalAccessToken.fabricate!.access_token
+          token = Resource::PersonalAccessToken.fabricate!.access_token
+
+          # If this is a new session, that tests that follow could fail if they
+          # try to sign in without starting a new session
+          # Sign out so the tests can successfully sign in
+          Page::Main::Menu.perform(&:sign_out) if @is_new_session
+
+          token
         end
       end
     end
