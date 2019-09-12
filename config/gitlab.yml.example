@@ -718,6 +718,10 @@ production: &base
     # Browser session with smartcard sign-in is required for Git access
     # required_for_git_access: false
 
+    # Use X.509 SAN extensions certificates to identify GitLab users
+    # Add a subjectAltName to your certificates like: email:user
+    # san_extensions: true
+
   ## Kerberos settings
   kerberos:
     # Allow the HTTP Negotiate authentication method for Git clients

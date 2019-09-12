@@ -39,6 +39,45 @@ Certificate:
         Subject: CN=Gitlab User, emailAddress=gitlab-user@example.com
 ```
 
+### Authentication against a local database with X.509 certificates and SAN extensions **(PREMIUM ONLY)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/8605) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.3.
+
+Smartcards with X.509 certificates using SAN extensions can be used to authenticate
+with GitLab.
+
+NOTE: **Note:**
+This is an experimental feature. Smartcard authentication against local databases may
+change or be removed completely in future releases.
+
+To use a smartcard with an X.509 certificate to authenticate against a local
+database with GitLab, at least one of the `subjectAltName` (SAN) extensions
+need to define the user identity (`email`) within the GitLab instance (`URI`).
+
+`URI`: needs to match `Gitlab.config.host.gitlab`.
+
+For example:
+
+```text
+Certificate:
+    Data:
+        Version: 1 (0x0)
+        Serial Number: 12856475246677808609 (0xb26b601ecdd555e1)
+    Signature Algorithm: sha256WithRSAEncryption
+        Issuer: O=Random Corp Ltd, CN=Random Corp
+        Validity
+            Not Before: Oct 30 12:00:00 2018 GMT
+            Not After : Oct 30 12:00:00 2019 GMT
+        ...
+        X509v3 extensions:
+            X509v3 Key Usage:
+                Key Encipherment, Data Encipherment
+            X509v3 Extended Key Usage:
+                TLS Web Server Authentication
+            X509v3 Subject Alternative Name:
+                email:gitlab-user@example.com, URI:http://gitlab.example.com/
+```
+
 ### Authentication against an LDAP server
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/7693) in
@@ -147,6 +186,36 @@ attribute. As a prerequisite, you must use an LDAP server that:
 
      # Port where the client side certificate is requested by NGINX
      client_certificate_required_port: 3444
+   ```
+
+1. Save the file and [restart](../restart_gitlab.md#installations-from-source)
+   GitLab for the changes to take effect.
+
+### Additional steps when using SAN extensions
+
+**For Omnibus installations**
+
+1. Add to `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   gitlab_rails['smartcard_san_extensions'] = true
+   ```
+
+1. Save the file and [reconfigure](../restart_gitlab.md#omnibus-gitlab-reconfigure)
+   GitLab for the changes to take effect.
+
+**For installations from source**
+
+1. Add the `san_extensions` line to config/gitlab.yml` within the smartcard section:
+
+   ```yaml
+   smartcard:
+      enabled: true
+      ca_file: '/etc/ssl/certs/CA.pem'
+      client_certificate_required_port: 3444
+
+      # Enable the use of SAN extensions to match users with certificates
+      san_extensions: true
    ```
 
 1. Save the file and [restart](../restart_gitlab.md#installations-from-source)
