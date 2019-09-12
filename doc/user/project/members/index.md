@@ -68,22 +68,26 @@ invitation, change their access level, or even delete them.
 Once the user accepts the invitation, they will be prompted to create a new
 GitLab account using the same e-mail address the invitation was sent to.
 
-## Request access to a project
+## Project membership and requesting access
 
-As a project owner you can enable or disable non members to request access to
-your project. Go to the project settings and click on **Allow users to request access**.
+Project owners can :
 
-As a user, you can request to be a member of a project. Go to the project you'd
-like to be a member of, and click the **Request Access** button on the right
+- Allow non-members to request access to the project.
+- Prevent non-members from requesting access.
+
+To configure this, go to the project settings and click on **Allow users to request access**.
+
+GitLab users can request to become a member of a project. Go to the project you'd
+like to be a member of and click the **Request Access** button on the right
 side of your screen.
 
 ![Request access button](img/request_access_button.png)
 
-Once access is requested:
+After access is requested:
 
-- Up to ten project maintainers are notified of your request via email.
+- Up to ten project maintainers are notified of the request via email.
   Email is sent to the most recently active project maintainers.
-- Any project maintainer can approve or decline your request on the members page.
+- Any project maintainer can approve or decline the request on the members page.
 
 NOTE: **Note:**
 If a project does not have any maintainers, the notification is sent to the
