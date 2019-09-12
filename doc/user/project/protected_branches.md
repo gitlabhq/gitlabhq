@@ -5,9 +5,8 @@ type: reference, howto
 # Protected Branches
 
 [Permissions](../permissions.md) in GitLab are fundamentally defined around the
-idea of having read or write permission to the repository and branches. To
-prevent people from messing with history or pushing code without review, we've
-created protected branches.
+idea of having read or write permission to the repository and branches. To impose
+further restrictions on certain branches, they can be protected.
 
 ## Overview
 
