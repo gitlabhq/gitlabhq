@@ -1,4 +1,6 @@
+import Vue from 'vue';
 import * as types from './mutation_types';
+import { logLinesParser, updateIncrementalTrace, isNewJobLogActive } from './utils';
 
 export default {
   [types.SET_JOB_ENDPOINT](state, endpoint) {
@@ -23,14 +25,24 @@ export default {
     }
 
     if (log.append) {
-      state.trace += log.html;
+      if (isNewJobLogActive()) {
+        state.originalTrace = state.originalTrace.concat(log.trace);
+        state.trace = updateIncrementalTrace(state.originalTrace, state.trace, log.lines);
+      } else {
+        state.trace += log.html;
+      }
       state.traceSize += log.size;
     } else {
       // When the job still does not have a trace
       // the trace response will not have a defined
       // html or size. We keep the old value otherwise these
       // will be set to `undefined`
-      state.trace = log.html || state.trace;
+      if (isNewJobLogActive()) {
+        state.originalTrace = log.lines || state.trace;
+        state.trace = logLinesParser(log.lines) || state.trace;
+      } else {
+        state.trace = log.html || state.trace;
+      }
       state.traceSize = log.size || state.traceSize;
     }
 
@@ -55,6 +67,18 @@ export default {
    */
   [types.RECEIVE_TRACE_ERROR](state) {
     state.isTraceComplete = true;
+  },
+
+  /**
+   * Instead of filtering the array of lines to find the one that must be updated
+   * we use Vue.set to make this process more performant
+   *
+   * https://vuex.vuejs.org/guide/mutations.html#mutations-follow-vue-s-reactivity-rules
+   * @param {Object} state
+   * @param {Object} section
+   */
+  [types.TOGGLE_COLLAPSIBLE_LINE](state, section) {
+    Vue.set(section, 'isClosed', !section.isClosed);
   },
 
   [types.REQUEST_JOB](state) {

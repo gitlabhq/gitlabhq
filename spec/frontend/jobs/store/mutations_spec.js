@@ -97,6 +97,14 @@ describe('Jobs Store Mutations', () => {
     });
   });
 
+  describe('TOGGLE_COLLAPSIBLE_LINE', () => {
+    it('toggles the `isClosed` property of the provided object', () => {
+      const section = { isClosed: true };
+      mutations[types.TOGGLE_COLLAPSIBLE_LINE](stateCopy, section);
+      expect(section.isClosed).toEqual(false);
+    });
+  });
+
   describe('REQUEST_JOB', () => {
     it('sets isLoading to true', () => {
       mutations[types.REQUEST_JOB](stateCopy);
