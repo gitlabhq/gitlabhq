@@ -21,7 +21,6 @@ module QA
           user_info[:api_client] = Runtime::API::Client.new(:gitlab, user: user_info[:user])
           user_info[:api_client].personal_access_token
           user_info[:project] = create_project(user_info[:user], user_info[:api_client], @project_name)
-          Page::Main::Menu.perform(&:sign_out)
         end
       end
 
@@ -43,7 +42,7 @@ module QA
       end
 
       def create_project(user, api_client, project_name)
-        project = Resource::Project.fabricate! do |project|
+        project = Resource::Project.fabricate_via_api! do |project|
           project.standalone = true
           project.add_name_uuid = false
           project.name = project_name
