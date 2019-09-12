@@ -231,7 +231,7 @@ module Ci
       where('EXISTS (?)', ::Ci::Build.latest.with_reports(reports_scope).where('ci_pipelines.id=ci_builds.commit_id').select(1))
     end
 
-    scope :without_interruptible_builds, -> do
+    scope :with_only_interruptible_builds, -> do
       where('NOT EXISTS (?)',
         Ci::Build.where('ci_builds.commit_id = ci_pipelines.id')
                  .with_status(:running, :success, :failed)
