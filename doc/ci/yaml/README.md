@@ -2018,7 +2018,7 @@ TIP: **Tip:**
 Parallelize tests suites across parallel jobs.
 Different languages have different tools to facilitate this.
 
-A simple example using [Sempahore Test Boosters](https://github.com/renderedtext/test-boosters) and RSpec to run some Ruby tests:
+A simple example using [Semaphore Test Boosters](https://github.com/renderedtext/test-boosters) and RSpec to run some Ruby tests:
 
 ```ruby
 # Gemfile
