@@ -21,9 +21,10 @@ such as [#64870](https://gitlab.com/gitlab-org/gitlab-ce/issues/64870).
 See all the related issues linked from this [issue's description](https://gitlab.com/gitlab-org/gitlab-ce/issues/28996)
 for more information.
 
-Note: **Note:**
-Using this feature requires two separate IP addresses, one for the GitLab domain
-and one GitLab Pages domain.
+CAUTION: **Caution:**
+This feature covers only certificates for **custom domains**,
+not the wildcard certificate required to run [Pages daemon](../../../../administration/pages/index.md) **(CORE ONLY)**.
+Wildcard certificate generation is tracked in [this issue](https://gitlab.com/gitlab-org/omnibus-gitlab/issues/3342).
 
 ## Requirements
 
