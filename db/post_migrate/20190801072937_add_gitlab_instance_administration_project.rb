@@ -3,8 +3,10 @@
 class AddGitlabInstanceAdministrationProject < ActiveRecord::Migration[5.2]
   DOWNTIME = false
 
+  disable_ddl_transaction!
+
   def up
-    Gitlab::DatabaseImporters::SelfMonitoring::Project::CreateService.new.execute!
+    BackgroundMigrationWorker.perform_async('AddGitlabInstanceAdministrationProject', [])
   end
 
   def down
