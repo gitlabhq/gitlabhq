@@ -57,26 +57,12 @@ export default {
       required: true,
     },
   },
-  data() {
-    return {
-      blobForkSuggestion: null,
-    };
-  },
   computed: {
     ...mapGetters('diffs', ['diffHasExpandedDiscussions', 'diffHasDiscussions']),
-    hasExpandedDiscussions() {
-      return this.diffHasExpandedDiscussions(this.diffFile);
-    },
     diffContentIDSelector() {
       return `#diff-content-${this.diffFile.file_hash}`;
     },
-    icon() {
-      if (this.diffFile.submodule) {
-        return 'archive';
-      }
 
-      return this.diffFile.blob.icon;
-    },
     titleLink() {
       if (this.diffFile.submodule) {
         return this.diffFile.submodule_tree_url || this.diffFile.submodule_link;
@@ -98,9 +84,6 @@ export default {
       }
 
       return this.diffFile.file_path;
-    },
-    titleTag() {
-      return this.diffFile.file_hash ? 'a' : 'span';
     },
     isUsingLfs() {
       return this.diffFile.stored_externally && this.diffFile.external_storage === 'lfs';
@@ -135,9 +118,6 @@ export default {
     isModeChanged() {
       return this.diffFile.viewer.name === diffViewerModes.mode_changed;
     },
-    showExpandDiffToFullFileEnabled() {
-      return gon.features.expandDiffFullFile && !this.diffFile.is_fully_expanded;
-    },
     expandDiffToFullFileTitle() {
       if (this.diffFile.isShowingFullFile) {
         return s__('MRDiff|Show changes only');
@@ -156,20 +136,11 @@ export default {
       'toggleFileDiscussionWrappers',
       'toggleFullDiff',
     ]),
-    handleToggleFile(e, checkTarget) {
-      if (
-        !checkTarget ||
-        e.target === this.$refs.header ||
-        (e.target.classList && e.target.classList.contains('diff-toggle-caret'))
-      ) {
-        this.$emit('toggleFile');
-      }
+    handleToggleFile() {
+      this.$emit('toggleFile');
     },
     showForkMessage() {
       this.$emit('showForkMessage');
-    },
-    handleToggleDiscussions() {
-      this.toggleFileDiscussionWrappers(this.diffFile);
     },
     handleFileNameClick(e) {
       const isLinkToOtherPage =
@@ -178,7 +149,6 @@ export default {
       if (!isLinkToOtherPage) {
         e.preventDefault();
         const selector = this.diffContentIDSelector;
-
         scrollToElement(document.querySelector(selector));
         window.location.hash = selector;
       }
@@ -191,22 +161,23 @@ export default {
   <div
     ref="header"
     class="js-file-title file-title file-title-flex-parent"
-    @click="handleToggleFile($event, true)"
+    @click.self="handleToggleFile"
   >
     <div class="file-header-content">
       <icon
         v-if="collapsible"
+        ref="collapseIcon"
         :name="collapseIcon"
         :size="16"
         aria-hidden="true"
         class="diff-toggle-caret append-right-5"
-        @click.stop="handleToggle"
+        @click.stop="handleToggleFile"
       />
       <a
         v-once
         id="diffFile.file_path"
         ref="titleWrapper"
-        class="append-right-4 js-title-wrapper"
+        class="append-right-4"
         :href="titleLink"
         @click="handleFileNameClick"
       >
@@ -214,7 +185,7 @@ export default {
           :file-name="filePath"
           :size="18"
           aria-hidden="true"
-          css-classes="js-file-icon append-right-5"
+          css-classes="append-right-5"
         />
         <span v-if="isFileRenamed">
           <strong
@@ -260,12 +231,13 @@ export default {
         <template v-if="diffFile.blob && diffFile.blob.readable_text">
           <span v-gl-tooltip.hover :title="s__('MergeRequests|Toggle comments for this file')">
             <gl-button
+              ref="toggleDiscussionsButton"
               :disabled="!diffHasDiscussions(diffFile)"
-              :class="{ active: hasExpandedDiscussions }"
+              :class="{ active: diffHasExpandedDiscussions(diffFile) }"
               class="js-btn-vue-toggle-comments btn"
               data-qa-selector="toggle_comments_button"
               type="button"
-              @click="handleToggleDiscussions"
+              @click="toggleFileDiscussionWrappers(diffFile)"
             >
               <icon name="comment" />
             </gl-button>
@@ -282,8 +254,9 @@ export default {
 
         <a
           v-if="diffFile.replaced_view_path"
+          ref="replacedFileButton"
           :href="diffFile.replaced_view_path"
-          class="btn view-file js-view-replaced-file"
+          class="btn view-file"
           v-html="viewReplacedFileButtonText"
         >
         </a>
@@ -292,7 +265,7 @@ export default {
           ref="expandDiffToFullFileButton"
           v-gl-tooltip.hover
           :title="expandDiffToFullFileTitle"
-          class="expand-file js-expand-file"
+          class="expand-file"
           @click="toggleFullDiff(diffFile.file_path)"
         >
           <gl-loading-icon v-if="diffFile.isLoadingFullFile" color="dark" inline />
@@ -304,7 +277,7 @@ export default {
           v-gl-tooltip.hover
           :href="diffFile.view_path"
           target="blank"
-          class="view-file js-view-file-button"
+          class="view-file"
           :title="viewFileButtonText"
         >
           <icon name="doc-text" />
@@ -312,12 +285,13 @@ export default {
 
         <a
           v-if="diffFile.external_url"
+          ref="externalLink"
           v-gl-tooltip.hover
           :href="diffFile.external_url"
           :title="`View on ${diffFile.formatted_external_url}`"
           target="_blank"
           rel="noopener noreferrer"
-          class="btn btn-file-option js-external-url"
+          class="btn btn-file-option"
         >
           <icon name="external-link" />
         </a>
