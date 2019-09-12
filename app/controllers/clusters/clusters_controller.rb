@@ -12,6 +12,9 @@ class Clusters::ClustersController < Clusters::BaseController
   before_action :authorize_update_cluster!, only: [:update]
   before_action :authorize_admin_cluster!, only: [:destroy]
   before_action :update_applications_status, only: [:cluster_status]
+  before_action only: [:new, :create_gcp] do
+    push_frontend_feature_flag(:create_eks_clusters)
+  end
 
   helper_method :token_in_session
 
