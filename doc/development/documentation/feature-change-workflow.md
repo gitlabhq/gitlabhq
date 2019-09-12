@@ -110,8 +110,8 @@ For feature issues requiring documentation, follow the process below unless othe
   idea or outline, or request any other help, ping the Technical Writer for the relevant
   [DevOps stage](https://about.gitlab.com/handbook/product/categories/#devops-stages)
   in your issue or MR, or write within `#docs` on the GitLab Slack.
-- The docs should be merged with the code **by the feature freeze date**, otherwise
-  the feature should not be included with the release. The PM can decide if a feature can ship without documentation.  A policy for documenting feature-flagged
+- If you are working on documentation in a separate MR, ensure that if the code is merged by the 17th, the docs are as well, per the [Engineering Workflow](https://about.gitlab.com/handbook/engineering/workflow/). If the docs are not ready, the PM can approve merging the code if the engineer and tech writer commit to get documentation merged by the 21st. Otherwise the feature is not considered complete, and should not be merged.
+- A policy for documenting feature-flagged
   issues is forthcoming and you are welcome to join the [discussion](https://gitlab.com/gitlab-org/gitlab-ce/issues/56813).
 
 #### Reviews and merging
