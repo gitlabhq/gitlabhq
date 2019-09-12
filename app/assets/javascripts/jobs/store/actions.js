@@ -177,6 +177,14 @@ export const receiveTraceError = ({ commit }) => {
   clearTimeout(traceTimeout);
   flash(__('An error occurred while fetching the job log.'));
 };
+/**
+ * When the user clicks a collpasible line in the job
+ * log, we commit a mutation to update the state
+ *
+ * @param {Object} section
+ */
+export const toggleCollapsibleLine = ({ commit }, section) =>
+  commit(types.TOGGLE_COLLAPSIBLE_LINE, section);
 
 /**
  * Jobs list on sidebar - depend on stages dropdown

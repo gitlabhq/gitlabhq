@@ -18,6 +18,7 @@ import UnmetPrerequisitesBlock from './unmet_prerequisites_block.vue';
 import Sidebar from './sidebar.vue';
 import { sprintf } from '~/locale';
 import delayedJobMixin from '../mixins/delayed_job_mixin';
+import { isNewJobLogActive } from '../store/utils';
 
 export default {
   name: 'JobPageApp',
@@ -29,10 +30,7 @@ export default {
     EnvironmentsBlock,
     ErasedBlock,
     Icon,
-    Log: () =>
-      gon && gon.features && gon.features.jobLogJson
-        ? import('./job_log_json.vue')
-        : import('./job_log.vue'),
+    Log: () => (isNewJobLogActive() ? import('./job_log_json.vue') : import('./job_log.vue')),
     LogTopBar,
     StuckBlock,
     UnmetPrerequisitesBlock,

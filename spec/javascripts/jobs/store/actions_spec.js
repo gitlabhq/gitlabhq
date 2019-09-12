@@ -16,6 +16,7 @@ import {
   stopPollingTrace,
   receiveTraceSuccess,
   receiveTraceError,
+  toggleCollapsibleLine,
   requestJobsForStage,
   fetchJobsForStage,
   receiveJobsForStageSuccess,
@@ -297,6 +298,19 @@ describe('Job State actions', () => {
         null,
         mockedState,
         [{ type: types.RECEIVE_TRACE_ERROR }],
+        [],
+        done,
+      );
+    });
+  });
+
+  describe('toggleCollapsibleLine', () => {
+    it('should commit TOGGLE_COLLAPSIBLE_LINE mutation ', done => {
+      testAction(
+        toggleCollapsibleLine,
+        { isClosed: true },
+        mockedState,
+        [{ type: types.TOGGLE_COLLAPSIBLE_LINE, payload: { isClosed: true } }],
         [],
         done,
       );
