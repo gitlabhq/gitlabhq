@@ -95,7 +95,7 @@ do the following:
 As a developer, if a ~feature issue also contains the ~Documentation label, you must ship the new or updated documentation with the code of the feature. The documentation is an essential part of the product.
 Technical writers are happy to help, as requested and planned on an issue-by-issue basis.
 
-Follow the process below unless otherwise agreed with the product manager and technical writer for a given issue:
+For feature issues requiring documentation, follow the process below unless otherwise agreed with the product manager and technical writer for a given issue:
 
 - Include any new and edited docs in the MR introducing the code.
 - Use the Documentation requirements confirmed by the Product Manager in the
