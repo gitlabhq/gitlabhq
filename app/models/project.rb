@@ -482,7 +482,7 @@ class Project < ApplicationRecord
   # the feature is either public, enabled, or internal with permission for the user.
   # Note: this scope doesn't enforce that the user has access to the projects, it just checks
   # that the user has access to the feature. It's important to use this scope with others
-  # that checks project authorizations first.
+  # that checks project authorizations first (e.g. `filter_by_feature_visibility`).
   #
   # This method uses an optimised version of `with_feature_access_level` for
   # logged in users to more efficiently get private projects with the given
@@ -508,6 +508,11 @@ class Project < ApplicationRecord
       visible << nil
       with_feature_access_level(feature, visible)
     end
+  end
+
+  # This scope returns projects where user has access to both the project and the feature.
+  def self.filter_by_feature_visibility(feature, user)
+    with_feature_available_for_user(feature, user).public_or_visible_to_user(user)
   end
 
   scope :active, -> { joins(:issues, :notes, :merge_requests).order('issues.created_at, notes.created_at, merge_requests.created_at DESC') }
