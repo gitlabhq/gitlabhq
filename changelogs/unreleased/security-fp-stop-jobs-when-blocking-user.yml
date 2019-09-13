@@ -1,0 +1,5 @@
+---
+title: Cancel all running CI jobs triggered by the user who is just blocked
+merge_request:
+author:
+type: security
