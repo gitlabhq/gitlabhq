@@ -22,6 +22,10 @@ module API
           # easily.
           project.http_url_to_repo
         end
+
+        def ee_post_receive_response_hook(response)
+          # Hook for EE to add messages
+        end
       end
 
       namespace 'internal' do
@@ -264,6 +268,8 @@ module API
             response.add_basic_message(redirect_message)
             response.add_basic_message(project_created_message)
           end
+
+          ee_post_receive_response_hook(response)
 
           present response, with: Entities::InternalPostReceive::Response
         end

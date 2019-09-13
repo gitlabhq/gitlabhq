@@ -1,5 +1,11 @@
 resources :projects, only: [:index, :new, :create]
 
+Gitlab.ee do
+  scope "/-/push_from_secondary/:geo_node_id" do
+    draw :git_http
+  end
+end
+
 draw :git_http
 
 get '/projects/:id' => 'projects#resolve'
