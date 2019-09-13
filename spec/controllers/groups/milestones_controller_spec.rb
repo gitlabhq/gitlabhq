@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 describe Groups::MilestonesController do
-  let(:group) { create(:group) }
-  let!(:project) { create(:project, group: group) }
+  let(:group) { create(:group, :public) }
+  let!(:project) { create(:project, :public, group: group) }
   let!(:project2) { create(:project, group: group) }
   let(:user)    { create(:user) }
   let(:title) { '肯定不是中文的问题' }
@@ -62,6 +62,73 @@ describe Groups::MilestonesController do
 
         expect(response.body).to include(group_milestone.title)
         expect(response.body).not_to include(milestone.title)
+      end
+
+      context 'when anonymous user' do
+        before do
+          sign_out(user)
+        end
+
+        it 'shows group milestones page' do
+          milestone
+
+          get :index, params: { group_id: group.to_param }
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(response.body).to include(milestone.title)
+        end
+      end
+
+      context 'when issues and merge requests are disabled in public project' do
+        shared_examples 'milestone not accessible' do
+          it 'does not return milestone' do
+            get :index, params: { group_id: public_group.to_param }
+
+            expect(response).to have_gitlab_http_status(200)
+            expect(response.body).not_to include(private_milestone.title)
+          end
+        end
+
+        let!(:public_group) { create(:group, :public) }
+
+        let!(:public_project_with_private_issues_and_mrs) do
+          create(:project, :public, :issues_private, :merge_requests_private, group: public_group)
+        end
+        let!(:private_milestone) { create(:milestone, project: public_project_with_private_issues_and_mrs, title: 'project milestone') }
+
+        context 'when anonymous user' do
+          before do
+            sign_out(user)
+          end
+
+          it_behaves_like 'milestone not accessible'
+        end
+
+        context 'when non project or group member user' do
+          let(:non_member) { create(:user) }
+
+          before do
+            sign_in(non_member)
+          end
+
+          it_behaves_like 'milestone not accessible'
+        end
+
+        context 'when group member user' do
+          let(:member) { create(:user) }
+
+          before do
+            sign_in(member)
+            public_group.add_guest(member)
+          end
+
+          it 'returns the milestone' do
+            get :index, params: { group_id: public_group.to_param }
+
+            expect(response).to have_gitlab_http_status(200)
+            expect(response.body).to include(private_milestone.title)
+          end
+        end
       end
     end
 
