@@ -9,13 +9,13 @@ module Types
 
       expose_permissions Types::PermissionTypes::Ci::Pipeline
 
-      field :id, GraphQL::ID_TYPE, null: false
-      field :iid, GraphQL::STRING_TYPE, null: false
+      field :id, GraphQL::ID_TYPE, null: false # rubocop:disable Graphql/Descriptions
+      field :iid, GraphQL::STRING_TYPE, null: false # rubocop:disable Graphql/Descriptions
 
-      field :sha, GraphQL::STRING_TYPE, null: false
-      field :before_sha, GraphQL::STRING_TYPE, null: true
-      field :status, PipelineStatusEnum, null: false
-      field :detailed_status,
+      field :sha, GraphQL::STRING_TYPE, null: false # rubocop:disable Graphql/Descriptions
+      field :before_sha, GraphQL::STRING_TYPE, null: true # rubocop:disable Graphql/Descriptions
+      field :status, PipelineStatusEnum, null: false # rubocop:disable Graphql/Descriptions
+      field :detailed_status, # rubocop:disable Graphql/Descriptions
             Types::Ci::DetailedStatusType,
             null: false,
             resolve: -> (obj, _args, ctx) { obj.detailed_status(ctx[:current_user]) }
@@ -27,11 +27,11 @@ module Types
             GraphQL::FLOAT_TYPE,
             null: true,
             description: "Coverage percentage"
-      field :created_at, Types::TimeType, null: false
-      field :updated_at, Types::TimeType, null: false
-      field :started_at, Types::TimeType, null: true
-      field :finished_at, Types::TimeType, null: true
-      field :committed_at, Types::TimeType, null: true
+      field :created_at, Types::TimeType, null: false # rubocop:disable Graphql/Descriptions
+      field :updated_at, Types::TimeType, null: false # rubocop:disable Graphql/Descriptions
+      field :started_at, Types::TimeType, null: true # rubocop:disable Graphql/Descriptions
+      field :finished_at, Types::TimeType, null: true # rubocop:disable Graphql/Descriptions
+      field :committed_at, Types::TimeType, null: true # rubocop:disable Graphql/Descriptions
 
       # TODO: Add triggering user as a type
     end

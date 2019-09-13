@@ -88,3 +88,5 @@ module NamespacesHelper
     [group_label.camelize, elements]
   end
 end
+
+NamespacesHelper.include_if_ee('EE::NamespacesHelper')

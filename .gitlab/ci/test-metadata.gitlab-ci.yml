@@ -26,6 +26,8 @@ retrieve-tests-metadata:
     - mkdir -p rspec_profiling/
     - wget -O $FLAKY_RSPEC_SUITE_REPORT_PATH http://${TESTS_METADATA_S3_BUCKET}.s3.amazonaws.com/$FLAKY_RSPEC_SUITE_REPORT_PATH || rm $FLAKY_RSPEC_SUITE_REPORT_PATH
     - '[[ -f $FLAKY_RSPEC_SUITE_REPORT_PATH ]] || echo "{}" > ${FLAKY_RSPEC_SUITE_REPORT_PATH}'
+    - wget -O $EE_KNAPSACK_RSPEC_SUITE_REPORT_PATH http://${TESTS_METADATA_S3_BUCKET}.s3.amazonaws.com/$EE_KNAPSACK_RSPEC_SUITE_REPORT_PATH || rm $EE_KNAPSACK_RSPEC_SUITE_REPORT_PATH
+    - '[[ -f $EE_KNAPSACK_RSPEC_SUITE_REPORT_PATH ]] || echo "{}" > ${EE_KNAPSACK_RSPEC_SUITE_REPORT_PATH}'
 
 update-tests-metadata:
   extends: .tests-metadata-state
@@ -41,6 +43,9 @@ update-tests-metadata:
     - echo "{}" > ${KNAPSACK_RSPEC_SUITE_REPORT_PATH}
     - scripts/merge-reports ${KNAPSACK_RSPEC_SUITE_REPORT_PATH} knapsack/${CI_PROJECT_NAME}/rspec_*_pg_node_*.json
     - '[[ -z ${TESTS_METADATA_S3_BUCKET} ]] || scripts/sync-reports put $TESTS_METADATA_S3_BUCKET $KNAPSACK_RSPEC_SUITE_REPORT_PATH'
+    - echo "{}" > ${EE_KNAPSACK_RSPEC_SUITE_REPORT_PATH}
+    - scripts/merge-reports ${EE_KNAPSACK_RSPEC_SUITE_REPORT_PATH} knapsack/${CI_PROJECT_NAME}/rspec_*_pg_ee_*node_*.json
+    - '[[ -z ${TESTS_METADATA_S3_BUCKET} ]] || scripts/sync-reports put $TESTS_METADATA_S3_BUCKET $EE_KNAPSACK_RSPEC_SUITE_REPORT_PATH'
     - rm -f knapsack/${CI_PROJECT_NAME}/*_node_*.json
     - scripts/merge-reports ${FLAKY_RSPEC_SUITE_REPORT_PATH} rspec_flaky/all_*_*.json
     - FLAKY_RSPEC_GENERATE_REPORT=1 scripts/prune-old-flaky-specs ${FLAKY_RSPEC_SUITE_REPORT_PATH}

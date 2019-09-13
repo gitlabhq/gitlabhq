@@ -26,3 +26,5 @@ module Projects
     end
   end
 end
+
+Projects::CreateFromTemplateService.prepend_if_ee('EE::Projects::CreateFromTemplateService')

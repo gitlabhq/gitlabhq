@@ -9,7 +9,7 @@ module Types
 
       expose_permissions Types::PermissionTypes::Note
 
-      field :id, GraphQL::ID_TYPE, null: false
+      field :id, GraphQL::ID_TYPE, null: false # rubocop:disable Graphql/Descriptions
 
       field :project, Types::ProjectType,
             null: true,
@@ -37,10 +37,10 @@ module Types
 
       markdown_field :body_html, null: true, method: :note
 
-      field :created_at, Types::TimeType, null: false
-      field :updated_at, Types::TimeType, null: false
+      field :created_at, Types::TimeType, null: false # rubocop:disable Graphql/Descriptions
+      field :updated_at, Types::TimeType, null: false # rubocop:disable Graphql/Descriptions
       field :discussion, Types::Notes::DiscussionType, null: true, description: "The discussion this note is a part of"
-      field :resolvable, GraphQL::BOOLEAN_TYPE, null: false, method: :resolvable?
+      field :resolvable, GraphQL::BOOLEAN_TYPE, null: false, method: :resolvable? # rubocop:disable Graphql/Descriptions
       field :resolved_at, Types::TimeType, null: true, description: "The time the discussion was resolved"
       field :position, Types::Notes::DiffPositionType, null: true, description: "The position of this note on a diff"
     end

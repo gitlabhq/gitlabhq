@@ -187,3 +187,5 @@ module API
     end
   end
 end
+
+API::Settings.prepend_if_ee('EE::API::Settings')

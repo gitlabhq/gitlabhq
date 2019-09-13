@@ -47,3 +47,5 @@ module Projects
     end
   end
 end
+
+Projects::Operations::UpdateService.prepend_if_ee('::EE::Projects::Operations::UpdateService')

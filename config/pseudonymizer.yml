@@ -98,6 +98,7 @@ tables:
     - weight
     - due_date
     - moved_to_id
+    - duplicated_to_id
     - lock_version
     - time_estimate
     - last_edited_at

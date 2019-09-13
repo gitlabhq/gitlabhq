@@ -18,3 +18,5 @@ module CycleAnalyticsParams
     end
   end
 end
+
+CycleAnalyticsParams.prepend_if_ee('EE::CycleAnalyticsParams')

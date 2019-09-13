@@ -5,3 +5,5 @@ module RecaptchaExperimentHelper
     !!Gitlab::Recaptcha.enabled?
   end
 end
+
+RecaptchaExperimentHelper.prepend_if_ee('EE::RecaptchaExperimentHelper')

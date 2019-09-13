@@ -7,6 +7,10 @@ describe Issue do
 
   describe "Associations" do
     it { is_expected.to belong_to(:milestone) }
+    it { is_expected.to belong_to(:project) }
+    it { is_expected.to belong_to(:moved_to).class_name('Issue') }
+    it { is_expected.to belong_to(:duplicated_to).class_name('Issue') }
+    it { is_expected.to belong_to(:closed_by).class_name('User') }
     it { is_expected.to have_many(:assignees) }
   end
 
@@ -305,6 +309,22 @@ describe Issue do
     context 'issue already moved' do
       let(:moved_to_issue) { create(:issue) }
       let(:issue) { create(:issue, moved_to: moved_to_issue) }
+
+      it { is_expected.to eq true }
+    end
+  end
+
+  describe '#duplicated?' do
+    let(:issue) { create(:issue) }
+    subject { issue.duplicated? }
+
+    context 'issue not duplicated' do
+      it { is_expected.to eq false }
+    end
+
+    context 'issue already duplicated' do
+      let(:duplicated_to_issue) { create(:issue) }
+      let(:issue) { create(:issue, duplicated_to: duplicated_to_issue) }
 
       it { is_expected.to eq true }
     end

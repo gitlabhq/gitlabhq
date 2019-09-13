@@ -207,3 +207,5 @@ class Todo < ApplicationRecord
     project.repository.keep_around(self.commit_id)
   end
 end
+
+Todo.prepend_if_ee('EE::Todo')

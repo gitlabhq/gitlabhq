@@ -217,3 +217,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::UsageData.prepend_if_ee('EE::Gitlab::UsageData')

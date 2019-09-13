@@ -201,3 +201,5 @@ module Clusters
     end
   end
 end
+
+Clusters::Platforms::Kubernetes.prepend_if_ee('EE::Clusters::Platforms::Kubernetes')

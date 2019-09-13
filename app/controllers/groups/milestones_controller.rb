@@ -118,3 +118,5 @@ class Groups::MilestonesController < Groups::ApplicationController
     params.permit(:state, :search_title).merge(group_ids: group.id)
   end
 end
+
+Groups::MilestonesController.prepend_if_ee('EE::Groups::MilestonesController')

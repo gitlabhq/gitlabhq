@@ -68,3 +68,5 @@ class Rack::Attack
     end
   end
 end
+
+::Rack::Attack::Request.prepend_if_ee('::EE::Gitlab::Rack::Attack::Request')

@@ -7,19 +7,21 @@ module Types
       graphql_name 'Tree'
 
       # Complexity 10 as it triggers a Gitaly call on each render
-      field :last_commit, Types::CommitType, null: true, complexity: 10, calls_gitaly: true, resolve: -> (tree, args, ctx) do
+      field :last_commit, Types::CommitType, null: true, complexity: 10, calls_gitaly: true, resolve: -> (tree, args, ctx) do # rubocop:disable Graphql/Descriptions
         tree.repository.last_commit_for_path(tree.sha, tree.path)
       end
 
-      field :trees, Types::Tree::TreeEntryType.connection_type, null: false, resolve: -> (obj, args, ctx) do
+      field :trees, Types::Tree::TreeEntryType.connection_type, null: false, resolve: -> (obj, args, ctx) do # rubocop:disable Graphql/Descriptions
         Gitlab::Graphql::Representation::TreeEntry.decorate(obj.trees, obj.repository)
       end
 
+      # rubocop:disable Graphql/Descriptions
       field :submodules, Types::Tree::SubmoduleType.connection_type, null: false, calls_gitaly: true, resolve: -> (obj, args, ctx) do
         Gitlab::Graphql::Representation::SubmoduleTreeEntry.decorate(obj.submodules, obj)
       end
+      # rubocop:enable Graphql/Descriptions
 
-      field :blobs, Types::Tree::BlobType.connection_type, null: false, calls_gitaly: true, resolve: -> (obj, args, ctx) do
+      field :blobs, Types::Tree::BlobType.connection_type, null: false, calls_gitaly: true, resolve: -> (obj, args, ctx) do # rubocop:disable Graphql/Descriptions
         Gitlab::Graphql::Representation::TreeEntry.decorate(obj.blobs, obj.repository)
       end
       # rubocop: enable Graphql/AuthorizeTypes

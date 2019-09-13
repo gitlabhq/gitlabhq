@@ -39,9 +39,9 @@ module Gitlab
 
         raise UnknownIncomingEmail unless handler
 
-        Gitlab::Metrics.add_event(:receive_email, handler.metrics_params)
-
-        handler.execute
+        handler.execute.tap do
+          Gitlab::Metrics.add_event(handler.metrics_event, handler.metrics_params)
+        end
       end
 
       private

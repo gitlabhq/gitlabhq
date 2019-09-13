@@ -272,3 +272,5 @@ class Label < ApplicationRecord
     %w(color title).each { |attr| self[attr] = self[attr]&.strip }
   end
 end
+
+Label.prepend_if_ee('EE::Label')

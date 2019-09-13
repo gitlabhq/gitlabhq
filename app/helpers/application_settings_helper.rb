@@ -309,3 +309,9 @@ module ApplicationSettingsHelper
     can?(current_user, :read_cluster, Clusters::Instance.new)
   end
 end
+
+ApplicationSettingsHelper.prepend_if_ee('EE::ApplicationSettingsHelper') # rubocop: disable Cop/InjectEnterpriseEditionModule
+
+# The methods in `EE::ApplicationSettingsHelper` should be available as both
+# instance and class methods.
+ApplicationSettingsHelper.extend_if_ee('EE::ApplicationSettingsHelper')

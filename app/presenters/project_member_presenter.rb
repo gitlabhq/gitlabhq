@@ -15,3 +15,5 @@ class ProjectMemberPresenter < MemberPresenter
     :destroy_project_member
   end
 end
+
+ProjectMemberPresenter.prepend_if_ee('EE::ProjectMemberPresenter')

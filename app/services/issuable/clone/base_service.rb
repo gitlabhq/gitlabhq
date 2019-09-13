@@ -58,3 +58,5 @@ module Issuable
     end
   end
 end
+
+Issuable::Clone::BaseService.prepend_if_ee('EE::Issuable::Clone::BaseService')

@@ -16,3 +16,5 @@ module AwardEmojiHelper
     end
   end
 end
+
+AwardEmojiHelper.prepend_if_ee('EE::AwardEmojiHelper')

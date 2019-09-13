@@ -150,3 +150,5 @@ class SystemHooksService
     }
   end
 end
+
+SystemHooksService.prepend_if_ee('EE::SystemHooksService')

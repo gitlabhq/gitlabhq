@@ -32,3 +32,5 @@ class SystemNoteMetadata < ApplicationRecord
     TYPES_WITH_CROSS_REFERENCES
   end
 end
+
+SystemNoteMetadata.prepend_if_ee('EE::SystemNoteMetadata')

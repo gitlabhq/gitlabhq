@@ -138,3 +138,5 @@ class GroupPolicy < BasePolicy
     @subject.max_member_access_for_user(@user)
   end
 end
+
+GroupPolicy.prepend_if_ee('EE::GroupPolicy')

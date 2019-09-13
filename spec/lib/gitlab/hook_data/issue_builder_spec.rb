@@ -23,6 +23,7 @@ describe Gitlab::HookData::IssueBuilder do
         last_edited_by_id
         milestone_id
         moved_to_id
+        duplicated_to_id
         project_id
         relative_position
         state

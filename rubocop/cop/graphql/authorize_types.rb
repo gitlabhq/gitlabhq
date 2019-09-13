@@ -30,7 +30,7 @@ module RuboCop
         def in_type?(node)
           path = node.location.expression.source_buffer.name
 
-          path.include?(TYPES_DIR)
+          path.include? TYPES_DIR
         end
 
         def whitelisted?(class_node)
@@ -44,7 +44,7 @@ module RuboCop
         end
 
         def superclass_constant(class_node)
-          # First one is the class name itself, second is it's superclass
+          # First one is the class name itself, second is its superclass
           _class_constant, *others = class_node.descendants
 
           others.find { |node| node.const_type? && node&.const_name != 'Types' }

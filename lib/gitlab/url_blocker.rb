@@ -45,21 +45,18 @@ module Gitlab
           ascii_only: ascii_only
         )
 
-        normalized_hostname = uri.normalized_host
-        hostname = uri.hostname
-        port = get_port(uri)
-
-        address_info = get_address_info(hostname, port, dns_rebind_protection)
+        address_info = get_address_info(uri, dns_rebind_protection)
         return [uri, nil] unless address_info
 
         ip_address = ip_address(address_info)
-        protected_uri_with_hostname = enforce_uri_hostname(ip_address, uri, hostname, dns_rebind_protection)
+        return [uri, nil] if domain_whitelisted?(uri) || ip_whitelisted?(ip_address)
+
+        protected_uri_with_hostname = enforce_uri_hostname(ip_address, uri, dns_rebind_protection)
 
         # Allow url from the GitLab instance itself but only for the configured hostname and ports
         return protected_uri_with_hostname if internal?(uri)
 
         validate_local_request(
-          normalized_hostname: normalized_hostname,
           address_info: address_info,
           allow_localhost: allow_localhost,
           allow_local_network: allow_local_network
@@ -86,12 +83,12 @@ module Gitlab
       #
       # The original hostname is used to validate the SSL, given in that scenario
       # we'll be making the request to the IP address, instead of using the hostname.
-      def enforce_uri_hostname(ip_address, uri, hostname, dns_rebind_protection)
-        return [uri, nil] unless dns_rebind_protection && ip_address && ip_address != hostname
+      def enforce_uri_hostname(ip_address, uri, dns_rebind_protection)
+        return [uri, nil] unless dns_rebind_protection && ip_address && ip_address != uri.hostname
 
-        uri = uri.dup
-        uri.hostname = ip_address
-        [uri, hostname]
+        new_uri = uri.dup
+        new_uri.hostname = ip_address
+        [new_uri, uri.hostname]
       end
 
       def ip_address(address_info)
@@ -110,14 +107,14 @@ module Gitlab
         validate_unicode_restriction(uri) if ascii_only
       end
 
-      def get_address_info(hostname, port, dns_rebind_protection)
-        Addrinfo.getaddrinfo(hostname, port, nil, :STREAM).map do |addr|
+      def get_address_info(uri, dns_rebind_protection)
+        Addrinfo.getaddrinfo(uri.hostname, get_port(uri), nil, :STREAM).map do |addr|
           addr.ipv6_v4mapped? ? addr.ipv6_to_ipv4 : addr
         end
       rescue SocketError
-        # If the dns rebinding protection is not enabled, we allow
-        # urls that can't be resolved at this point.
-        return unless dns_rebind_protection
+        # If the dns rebinding protection is not enabled or the domain
+        # is whitelisted we avoid the dns rebinding checks
+        return if domain_whitelisted?(uri) || !dns_rebind_protection
 
         # In the test suite we use a lot of mocked urls that are either invalid or
         # don't exist. In order to avoid modifying a ton of tests and factories
@@ -131,17 +128,10 @@ module Gitlab
       end
 
       def validate_local_request(
-        normalized_hostname:,
         address_info:,
         allow_localhost:,
         allow_local_network:)
         return if allow_local_network && allow_localhost
-
-        ip_whitelist, domain_whitelist =
-          Gitlab::CurrentSettings.outbound_local_requests_whitelist_arrays
-
-        return if local_domain_whitelisted?(domain_whitelist, normalized_hostname) ||
-          local_ip_whitelisted?(ip_whitelist, ip_address(address_info))
 
         unless allow_localhost
           validate_localhost(address_info)
@@ -258,14 +248,12 @@ module Gitlab
           (uri.port.blank? || uri.port == config.gitlab_shell.ssh_port)
       end
 
-      def local_ip_whitelisted?(ip_whitelist, ip_string)
-        ip_obj = Gitlab::Utils.string_to_ip_object(ip_string)
-
-        ip_whitelist.any? { |ip| ip.include?(ip_obj) }
+      def domain_whitelisted?(uri)
+        Gitlab::UrlBlockers::UrlWhitelist.domain_whitelisted?(uri.normalized_host)
       end
 
-      def local_domain_whitelisted?(domain_whitelist, domain_string)
-        domain_whitelist.include?(domain_string)
+      def ip_whitelisted?(ip_address)
+        Gitlab::UrlBlockers::UrlWhitelist.ip_whitelisted?(ip_address)
       end
 
       def config

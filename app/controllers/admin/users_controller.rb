@@ -241,3 +241,5 @@ class Admin::UsersController < Admin::ApplicationController
     Gitlab::AppLogger.info(_("User %{current_user_username} has started impersonating %{username}") % { current_user_username: current_user.username, username: user.username })
   end
 end
+
+Admin::UsersController.prepend_if_ee('EE::Admin::UsersController')

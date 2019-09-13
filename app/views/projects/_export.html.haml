@@ -26,9 +26,9 @@
   %p= _('Once the exported file is ready, you will receive a notification email with a download link, or you can download it from this page.')
   - if project.export_status == :finished
     = link_to _('Download export'), download_export_project_path(project),
-            rel: 'nofollow', download: '', method: :get, class: "btn btn-default"
+            rel: 'nofollow', download: '', method: :get, class: "btn btn-default", data: { qa_selector: 'download_export_link' }
     = link_to _('Generate new export'), generate_new_export_project_path(project),
             method: :post, class: "btn btn-default"
   - else
     = link_to _('Export project'), export_project_path(project),
-            method: :post, class: "btn btn-default"
+            method: :post, class: "btn btn-default", data: { qa_selector: 'export_project_link' }

@@ -28,6 +28,8 @@
     "created_at": { "type": "string", "format": "date-time" },
     "updated_at": { "type": "string", "format": "date-time" },
     "can_stop": { "type": "boolean" },
+    "cluster_type": { "type": "types/nullable_string.json" },
+    "terminal_path": { "type": "types/nullable_string.json" },
     "last_deployment": {
       "oneOf": [
         { "type": "null" },

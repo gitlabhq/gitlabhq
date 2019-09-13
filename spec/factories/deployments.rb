@@ -17,6 +17,10 @@ FactoryBot.define do
       unless deployment.project.repository_exists?
         allow(deployment.project.repository).to receive(:create_ref)
       end
+
+      if deployment.cluster && deployment.cluster.project_type? && deployment.cluster.project.nil?
+        deployment.cluster.projects << deployment.project
+      end
     end
 
     trait :review_app do

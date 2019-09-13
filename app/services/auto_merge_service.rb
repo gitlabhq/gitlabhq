@@ -60,3 +60,5 @@ class AutoMergeService < BaseService
     self.class.get_service_class(strategy)&.new(project, current_user, params)
   end
 end
+
+AutoMergeService.prepend_if_ee('EE::AutoMergeService')

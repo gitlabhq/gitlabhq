@@ -231,3 +231,5 @@ class Projects::JobsController < Projects::ApplicationController
     'attachment'
   end
 end
+
+Projects::JobsController.prepend_if_ee('EE::Projects::JobsController')

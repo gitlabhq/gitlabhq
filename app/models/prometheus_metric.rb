@@ -67,3 +67,5 @@ class PrometheusMetric < ApplicationRecord
     PrometheusMetricEnums.group_details.fetch(group.to_sym)
   end
 end
+
+PrometheusMetric.prepend_if_ee('EE::PrometheusMetric')

@@ -51,3 +51,5 @@ class Projects::ProjectMembersController < Projects::ApplicationController
   # MembershipActions concern
   alias_method :membershipable, :project
 end
+
+Projects::ProjectMembersController.prepend_if_ee('EE::Projects::ProjectMembersController')

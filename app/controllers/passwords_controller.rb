@@ -64,3 +64,5 @@ class PasswordsController < Devise::PasswordsController
       notice: I18n.t('devise.passwords.send_paranoid_instructions')
   end
 end
+
+PasswordsController.prepend_if_ee('EE::PasswordsController')

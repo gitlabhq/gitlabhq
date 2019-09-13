@@ -17,3 +17,5 @@ module WikiPages
     end
   end
 end
+
+WikiPages::BaseService.prepend_if_ee('EE::WikiPages::BaseService')

@@ -38,3 +38,5 @@ class Groups::ApplicationController < ApplicationController
     url_for(safe_params)
   end
 end
+
+Groups::ApplicationController.prepend_if_ee('EE::Groups::ApplicationController')

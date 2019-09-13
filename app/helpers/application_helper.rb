@@ -325,3 +325,5 @@ module ApplicationHelper
     ::Appearance.current
   end
 end
+
+ApplicationHelper.prepend_if_ee('EE::ApplicationHelper')

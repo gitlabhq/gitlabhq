@@ -26,3 +26,5 @@ module Projects
     end
   end
 end
+
+Projects::EnableDeployKeyService.prepend_if_ee('EE::Projects::EnableDeployKeyService')

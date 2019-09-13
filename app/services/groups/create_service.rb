@@ -70,3 +70,5 @@ module Groups
     end
   end
 end
+
+Groups::CreateService.prepend_if_ee('EE::Groups::CreateService')

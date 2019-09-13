@@ -100,3 +100,5 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
     Project::SORTING_PREFERENCE_FIELD
   end
 end
+
+Dashboard::ProjectsController.prepend_if_ee('EE::Dashboard::ProjectsController')

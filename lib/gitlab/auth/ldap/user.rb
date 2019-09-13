@@ -11,6 +11,7 @@ module Gitlab
     module LDAP
       class User < Gitlab::Auth::OAuth::User
         extend ::Gitlab::Utils::Override
+        prepend_if_ee('::EE::Gitlab::Auth::LDAP::User') # rubocop: disable Cop/InjectEnterpriseEditionModule
 
         class << self
           # rubocop: disable CodeReuse/ActiveRecord

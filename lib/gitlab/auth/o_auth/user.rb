@@ -9,6 +9,8 @@ module Gitlab
   module Auth
     module OAuth
       class User
+        prepend_if_ee('::EE::Gitlab::Auth::OAuth::User') # rubocop: disable Cop/InjectEnterpriseEditionModule
+
         SignupDisabledError = Class.new(StandardError)
         SigninDisabledForProviderError = Class.new(StandardError)
 

@@ -49,3 +49,5 @@ module Issues
     end
   end
 end
+
+Issues::CreateService.prepend_if_ee('EE::Issues::CreateService')

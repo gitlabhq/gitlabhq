@@ -11,6 +11,23 @@ describe RuboCop::Cop::Graphql::AuthorizeTypes do
 
   subject(:cop) { described_class.new }
 
+  context 'when NOT in a type folder' do
+    before do
+      allow(cop).to receive(:in_type?).and_return(false)
+    end
+
+    it 'does not add an offense even though there is no authorize call' do
+      expect_no_offenses(<<~TYPE.strip)
+        module Types
+          class AType < BaseObject
+            field :a_thing
+            field :another_thing
+          end
+        end
+      TYPE
+    end
+  end
+
   context 'when in a type folder' do
     before do
       allow(cop).to receive(:in_type?).and_return(true)

@@ -706,3 +706,5 @@ module SystemNoteService
     ActionController::Base.helpers.content_tag(*args)
   end
 end
+
+SystemNoteService.prepend_if_ee('EE::SystemNoteService')

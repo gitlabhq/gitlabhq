@@ -125,3 +125,5 @@ class ResourceLabelEvent < ApplicationRecord
     [self.class.name, created_at, user_id]
   end
 end
+
+ResourceLabelEvent.prepend_if_ee('EE::ResourceLabelEvent')

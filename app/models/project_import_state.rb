@@ -99,3 +99,5 @@ class ProjectImportState < ApplicationRecord
     Gitlab::SidekiqStatus.set(jid, StuckImportJobsWorker::IMPORT_JOBS_EXPIRATION)
   end
 end
+
+ProjectImportState.prepend_if_ee('EE::ProjectImportState')

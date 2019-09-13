@@ -30,3 +30,5 @@ module API
     end
   end
 end
+
+API::Validations::CheckAssigneesCount.prepend_if_ee('EE::API::Validations::CheckAssigneesCount')

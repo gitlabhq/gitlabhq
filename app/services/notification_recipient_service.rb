@@ -400,3 +400,6 @@ module NotificationRecipientService
     end
   end
 end
+
+NotificationRecipientService::Builder::Default.prepend_if_ee('EE::NotificationRecipientBuilders::Default') # rubocop: disable Cop/InjectEnterpriseEditionModule
+NotificationRecipientService.prepend_if_ee('EE::NotificationRecipientService')

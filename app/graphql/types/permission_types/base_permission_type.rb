@@ -28,7 +28,7 @@ module Types
           description: "Whether or not a user can perform `#{name}` on this resource",
           null: false)
 
-        field(**kword_args)
+        field(**kword_args) # rubocop:disable Graphql/Descriptions
       end
 
       def self.resolving_keywords?(arguments)

@@ -81,3 +81,5 @@ class ClusterablePresenter < Gitlab::View::Presenter::Delegated
     clusterable.clusters.empty?
   end
 end
+
+ClusterablePresenter.prepend_if_ee('EE::ClusterablePresenter')

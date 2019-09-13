@@ -23,6 +23,8 @@ class MergeRequest < ApplicationRecord
 
   SORTING_PREFERENCE_FIELD = :merge_requests_sort
 
+  prepend_if_ee('::EE::MergeRequest') # rubocop: disable Cop/InjectEnterpriseEditionModule
+
   belongs_to :target_project, class_name: "Project"
   belongs_to :source_project, class_name: "Project"
   belongs_to :merge_user, class_name: "User"

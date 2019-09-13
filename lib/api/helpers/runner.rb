@@ -3,6 +3,8 @@
 module API
   module Helpers
     module Runner
+      prepend_if_ee('EE::API::Helpers::Runner') # rubocop: disable Cop/InjectEnterpriseEditionModule
+
       JOB_TOKEN_HEADER = 'HTTP_JOB_TOKEN'
       JOB_TOKEN_PARAM = :token
 

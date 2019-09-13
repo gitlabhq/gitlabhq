@@ -447,3 +447,5 @@ module IssuablesHelper
     @project || @group
   end
 end
+
+IssuablesHelper.prepend_if_ee('EE::IssuablesHelper')

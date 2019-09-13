@@ -215,6 +215,7 @@ export default {
               :disabled="!canChangeVisibilityLevel"
               name="project[visibility_level]"
               class="form-control select-control"
+              data-qa-selector="project_visibility_dropdown"
             >
               <option
                 :value="visibilityOptions.PRIVATE"

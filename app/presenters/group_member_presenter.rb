@@ -15,3 +15,5 @@ class GroupMemberPresenter < MemberPresenter
     :destroy_group_member
   end
 end
+
+GroupMemberPresenter.prepend_if_ee('EE::GroupMemberPresenter')

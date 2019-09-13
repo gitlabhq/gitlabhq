@@ -75,3 +75,5 @@ class GlobalPolicy < BasePolicy
     enable :update_custom_attribute
   end
 end
+
+GlobalPolicy.prepend_if_ee('EE::GlobalPolicy')

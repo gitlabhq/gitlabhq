@@ -140,3 +140,5 @@ class Key < ApplicationRecord
     "type is forbidden. Must be #{allowed_types}"
   end
 end
+
+Key.prepend_if_ee('EE::Key')

@@ -145,3 +145,5 @@ class RegistrationsController < Devise::RegistrationsController
     stored_location_for(user) || dashboard_projects_path
   end
 end
+
+RegistrationsController.prepend_if_ee('EE::RegistrationsController')

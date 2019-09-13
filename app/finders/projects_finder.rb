@@ -24,6 +24,8 @@
 class ProjectsFinder < UnionFinder
   include CustomAttributesFilter
 
+  prepend_if_ee('::EE::ProjectsFinder') # rubocop: disable Cop/InjectEnterpriseEditionModule
+
   attr_accessor :params
   attr_reader :current_user, :project_ids_relation
 

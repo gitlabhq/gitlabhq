@@ -1,13 +1,9 @@
-## Developer Certificate of Origin + License
+## Contributor license agreement
 
-By contributing to GitLab B.V., You accept and agree to the following terms and
-conditions for Your present and future Contributions submitted to GitLab B.V.
-Except for the license granted herein to GitLab B.V. and recipients of software
-distributed by GitLab B.V., You reserve all right, title, and interest in and to
-Your Contributions. All Contributions are subject to the following DCO + License
-terms.
-
-[DCO + License](https://gitlab.com/gitlab-org/dco/blob/master/README.md)
+By submitting code as an individual you agree to the
+[individual contributor license agreement](doc/legal/individual_contributor_license_agreement.md).
+By submitting code as an entity you agree to the
+[corporate contributor license agreement](doc/legal/corporate_contributor_license_agreement.md).
 
 All Documentation content that resides under the [doc/ directory](/doc) of this
 repository is licensed under Creative Commons:

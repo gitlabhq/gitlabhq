@@ -199,3 +199,5 @@ module Projects
     end
   end
 end
+
+Projects::CreateService.prepend_if_ee('EE::Projects::CreateService')

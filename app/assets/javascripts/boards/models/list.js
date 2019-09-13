@@ -3,7 +3,7 @@
 import { __ } from '~/locale';
 import ListLabel from './label';
 import ListAssignee from './assignee';
-import ListIssue from './issue';
+import ListIssue from 'ee_else_ce/boards/models/issue';
 import { urlParamsToObject } from '~/lib/utils/common_utils';
 import boardsStore from '../stores/boards_store';
 import ListMilestone from './milestone';

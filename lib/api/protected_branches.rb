@@ -59,6 +59,7 @@ module API
       # rubocop: disable CodeReuse/ActiveRecord
       post ':id/protected_branches' do
         protected_branch = user_project.protected_branches.find_by(name: params[:name])
+
         if protected_branch
           conflict!("Protected branch '#{params[:name]}' already exists")
         end

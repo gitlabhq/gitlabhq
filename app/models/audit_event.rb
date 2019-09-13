@@ -19,3 +19,5 @@ class AuditEvent < ApplicationRecord
     self.user.name
   end
 end
+
+AuditEvent.prepend_if_ee('EE::AuditEvent')

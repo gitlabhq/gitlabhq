@@ -45,3 +45,5 @@ module Lfs
     # rubocop: enable CodeReuse/ActiveRecord
   end
 end
+
+Lfs::UnlockFileService.prepend_if_ee('EE::Lfs::UnlockFileService')

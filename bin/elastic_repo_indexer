@@ -1,0 +1,101 @@
+#!/usr/bin/env ruby
+
+require 'rubygems'
+require 'bundler/setup'
+require 'json'
+require 'active_model'
+require 'active_support'
+require 'active_support/core_ext'
+require 'benchmark'
+require 'charlock_holmes'
+
+$: << File.expand_path('../lib', __dir__)
+$: << File.expand_path('../ee/lib', __dir__)
+
+require 'open3'
+require 'rugged'
+
+require 'gitlab/blob_helper'
+require 'gitlab/elastic/client'
+require 'elasticsearch/model'
+require 'elasticsearch/git'
+require 'elasticsearch/git/encoder_helper'
+require 'elasticsearch/git/lite_blob'
+require 'elasticsearch/git/model'
+require 'elasticsearch/git/repository'
+
+Thread.abort_on_exception = true
+
+path_to_log_file = File.expand_path('../log/es-indexer.log', __dir__)
+LOGGER = Logger.new(path_to_log_file)
+
+PROJECT_ID = ARGV.shift
+REPO_PATH = ARGV.shift
+FROM_SHA = ENV['FROM_SHA']
+TO_SHA = ENV['TO_SHA']
+RAILS_ENV = ENV['RAILS_ENV']
+
+# Symbols get stringified when passed through JSON
+elastic = {}
+JSON.parse(ENV['ELASTIC_CONNECTION_INFO']).each { |k, v| elastic[k.to_sym] = v }
+ELASTIC_CONFIG = elastic
+
+LOGGER.info("Has been scheduled for project #{REPO_PATH} with SHA range #{FROM_SHA}:#{TO_SHA}")
+
+class Repository
+  include Elasticsearch::Git::Repository
+
+  index_name ['gitlab', RAILS_ENV].compact.join('-')
+
+  def initialize
+    self.__elasticsearch__.client = ::Gitlab::Elastic::Client.build(ELASTIC_CONFIG)
+  end
+
+  def client_for_indexing
+    self.__elasticsearch__.client
+  end
+
+  def repository_id
+    PROJECT_ID
+  end
+
+  def project_id
+    PROJECT_ID
+  end
+
+  def path_to_repo
+    REPO_PATH
+  end
+end
+
+repo = Repository.new
+
+params = { from_rev: FROM_SHA, to_rev: TO_SHA }.compact
+
+commit_thr = Thread.new do
+  LOGGER.info("Indexing commits started")
+
+  timings = Benchmark.measure do
+    indexed = 0
+    repo.index_commits(params) do |batch, total_count|
+      indexed += batch.length
+      LOGGER.info("Indexed #{indexed}/#{total_count} commits")
+    end
+  end
+
+  LOGGER.info("Commits for #{REPO_PATH} are indexed. Time elapsed: #{timings.real}")
+end
+
+LOGGER.info("Indexing blobs started")
+
+timings = Benchmark.measure do
+  indexed = 0
+  repo.index_blobs(params) do |batch, total_count|
+    indexed += batch.length
+    LOGGER.info("Indexed #{indexed}/#{total_count} blobs")
+  end
+end
+
+LOGGER.info("Blobs for #{REPO_PATH} are indexed. Time elapsed: #{timings.real}")
+
+commit_thr.join

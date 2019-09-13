@@ -5,7 +5,7 @@
 
 -# Note this is just for groups. For individual members please see shared/members/_member
 
-%li.member.group_member.py-2.px-3.d-flex.flex-column.flex-md-row{ id: dom_id }
+%li.member.group_member.py-2.px-3.d-flex.flex-column.flex-md-row{ id: dom_id, data: { qa_selector: 'group_row' } }
   %span.list-item-name.mb-2.m-md-0
     = group_icon(group, class: "avatar s40 flex-shrink-0 flex-grow-0", alt: '')
     .user-info
@@ -41,7 +41,7 @@
     - if can_admin_member
       = link_to project_group_link_path(@project, group_link),
         method: :delete,
-        data: { confirm: _("Are you sure you want to remove %{group_name}?") % { group_name: group.name } },
+        data: { confirm: _("Are you sure you want to remove %{group_name}?") % { group_name: group.name }, qa_selector: 'delete_group_access_link' },
         class: 'btn btn-remove m-0 ml-sm-2 align-self-center' do
         %span.d-block.d-sm-none
           = _("Delete")

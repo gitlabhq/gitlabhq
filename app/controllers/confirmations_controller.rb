@@ -31,3 +31,5 @@ class ConfirmationsController < Devise::ConfirmationsController
     after_sign_in_path_for(resource)
   end
 end
+
+ConfirmationsController.prepend_if_ee('EE::ConfirmationsController')

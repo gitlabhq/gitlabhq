@@ -110,3 +110,5 @@ module ContainerRegistry
     end
   end
 end
+
+ContainerRegistry::Client.prepend_if_ee('EE::ContainerRegistry::Client')

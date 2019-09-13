@@ -8,6 +8,11 @@
       - master@gitlab/gitlabhq
       - master@gitlab/gitlab-ee
 
+.only-gitlab-ee:
+  only:
+    - branches@gitlab-org/gitlab-ee
+    - tags@gitlab-org/gitlab-ee
+
 .rake-exec:
   extends:
     - .default-tags
@@ -231,7 +236,7 @@ db:migrate-from-v11.11.0:
   variables:
     SETUP_DB: "false"
   script:
-    - git fetch https://gitlab.com/gitlab-org/gitlab-ce.git v11.11.0
+    - git fetch https://gitlab.com/gitlab-org/gitlab-ee.git v11.11.0-ee
     - git checkout -f FETCH_HEAD
     - sed -i "s/gem 'oj', '~> 2.17.4'//" Gemfile
     - sed -i "s/gem 'bootsnap', '~> 1.0.0'/gem 'bootsnap'/" Gemfile
@@ -314,3 +319,135 @@ coverage:
       - coverage/index.html
       - coverage/assets/
       - tmp/memory_test/
+
+## EE-specific content
+.rspec-base-ee:
+  extends:
+    - .rspec-base
+    - .only-gitlab-ee
+  script:
+    - JOB_NAME=( $CI_JOB_NAME )
+    - TEST_TOOL=${JOB_NAME[0]}
+    - TEST_LEVEL=${JOB_NAME[1]}
+    - DATABASE=${JOB_NAME[2]}
+    - export KNAPSACK_REPORT_PATH=knapsack/${CI_PROJECT_NAME}/${TEST_TOOL}_${TEST_LEVEL}_${DATABASE}_ee_node_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json
+    - export KNAPSACK_GENERATE_REPORT=true KNAPSACK_LOG_LEVEL=debug KNAPSACK_TEST_DIR=spec
+    - export CACHE_CLASSES=true
+    - cp ${EE_KNAPSACK_RSPEC_SUITE_REPORT_PATH} ${KNAPSACK_REPORT_PATH}
+    - scripts/gitaly-test-spawn
+    - date
+    - 'export KNAPSACK_TEST_FILE_PATTERN=$(ruby -r./lib/quality/test_level.rb -e "puts Quality::TestLevel.new(%(ee/)).pattern(:${TEST_LEVEL})")'
+    - mkdir -p tmp/memory_test
+    - export MEMORY_TEST_PATH="tmp/memory_test/ee_${TEST_TOOL}_${TEST_LEVEL}_${DATABASE}_node_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_memory.csv"
+    - knapsack rspec "--color --format documentation --format RspecJunitFormatter --out junit_rspec.xml --tag level:${TEST_LEVEL} --tag ~geo"
+    - date
+
+.rspec-base-pg-ee:
+  extends: .rspec-base-ee
+  services:
+    - name: postgres:9.6
+      command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
+    - name: redis:alpine
+    - name: docker.elastic.co/elasticsearch/elasticsearch:5.6.12
+
+rspec unit pg ee:
+  extends: .rspec-base-pg-ee
+  parallel: 7
+
+rspec integration pg ee:
+  extends: .rspec-base-pg-ee
+  parallel: 3
+
+rspec system pg ee:
+  extends: .rspec-base-pg-ee
+  parallel: 5
+
+.rspec-base-pg-geo:
+  extends:
+    - .rspec-base
+    - .only-gitlab-ee
+  script:
+    - JOB_NAME=( $CI_JOB_NAME )
+    - TEST_TOOL=${JOB_NAME[0]}
+    - TEST_LEVEL=${JOB_NAME[1]}
+    - DATABASE=${JOB_NAME[2]}
+    - export KNAPSACK_TEST_FILE_PATTERN="ee/spec/**{,/*/**}/*_spec.rb" KNAPSACK_GENERATE_REPORT=true CACHE_CLASSES=true
+    - export KNAPSACK_REPORT_PATH=knapsack/${CI_PROJECT_NAME}/${TEST_TOOL}_node_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json
+    - cp ${EE_KNAPSACK_RSPEC_SUITE_REPORT_PATH} ${KNAPSACK_REPORT_PATH}
+    - source scripts/prepare_postgres_fdw.sh
+    - scripts/gitaly-test-spawn
+    - mkdir -p tmp/memory_test
+    - export MEMORY_TEST_PATH="tmp/memory_test/ee_${TEST_TOOL}_${TEST_LEVEL}_${DATABASE}_node_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_memory.csv"
+    - knapsack rspec "-Ispec --color --format documentation --format RspecJunitFormatter --out junit_rspec.xml --tag geo"
+
+rspec geo pg ee:
+  extends:
+    - .rspec-base-pg-geo
+    - .use-pg
+    - .except-docs-qa-geo
+  parallel: 3
+
+rspec geo pg-10 ee:
+  extends:
+    - .rspec-base-pg-geo
+    - .use-pg-10
+    - .except-docs-qa-geo
+  parallel: 3
+
+quick-rspec geo pg ee:
+  extends:
+    - .rspec-base-pg-geo
+    - .use-pg
+  stage: quick-test
+  only:
+    - /(^geo[\/-].*|.*-geo$)/
+
+quick-rspec geo pg-10 ee:
+  extends:
+    - .rspec-base-pg-geo
+    - .use-pg-10
+  stage: quick-test
+  only:
+    - /(^geo[\/-].*|.*-geo$)/
+
+rspec quarantine pg ee:
+  extends: rspec quarantine pg
+  script:
+    - export NO_KNAPSACK=1 CACHE_CLASSES=true
+    - scripts/gitaly-test-spawn
+    - bin/rspec --color --format documentation --format RspecJunitFormatter --out junit_rspec.xml --tag quarantine -- ee/spec/
+
+migration:upgrade-pg-ce-to-ee:
+  extends:
+    - .default-tags
+    - .default-retry
+    - .default-cache
+    - .default-before_script
+    - .use-pg
+    - .except-docs-qa
+  dependencies: ["setup-test-env"]
+  variables:
+    SETUP_DB: "false"
+  script:
+    - ruby -r./scripts/ee_specific_check/ee_specific_check -e'EESpecificCheck.fetch_remote_ce_branch'
+    - git checkout -f FETCH_HEAD
+    - . scripts/utils.sh
+    - . scripts/prepare_build.sh
+    - date
+    - setup_db
+    - date
+    - git checkout -f $CI_COMMIT_SHA
+    - date
+    - . scripts/prepare_build.sh
+    - date
+    - bundle exec rake db:migrate
+
+db:rollback geo:
+  extends:
+    - db:rollback
+    - .only-gitlab-ee
+  script:
+    - bundle exec rake geo:db:migrate VERSION=20170627195211
+    - bundle exec rake geo:db:migrate
+
+## END of EE-specific content

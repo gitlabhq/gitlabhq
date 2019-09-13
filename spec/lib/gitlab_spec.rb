@@ -21,23 +21,23 @@ describe Gitlab do
     context 'when a REVISION file exists' do
       before do
         expect(File).to receive(:exist?)
-          .with(described_class.root.join('REVISION'))
-          .and_return(true)
+                          .with(described_class.root.join('REVISION'))
+                          .and_return(true)
       end
 
       it 'returns the actual Git revision' do
         expect(File).to receive(:read)
-          .with(described_class.root.join('REVISION'))
-          .and_return("abc123\n")
+                          .with(described_class.root.join('REVISION'))
+                          .and_return("abc123\n")
 
         expect(described_class.revision).to eq('abc123')
       end
 
       it 'memoizes the revision' do
         expect(File).to receive(:read)
-          .once
-          .with(described_class.root.join('REVISION'))
-          .and_return("abc123\n")
+                          .once
+                          .with(described_class.root.join('REVISION'))
+                          .and_return("abc123\n")
 
         2.times { described_class.revision }
       end
@@ -47,8 +47,8 @@ describe Gitlab do
       context 'when the Git command succeeds' do
         before do
           expect(Gitlab::Popen).to receive(:popen_with_detail)
-          .with(cmd)
-          .and_return(Gitlab::Popen::Result.new(cmd, 'abc123', '', double(success?: true)))
+                                     .with(cmd)
+                                     .and_return(Gitlab::Popen::Result.new(cmd, 'abc123', '', double(success?: true)))
         end
 
         it 'returns the actual Git revision' do
@@ -59,8 +59,8 @@ describe Gitlab do
       context 'when the Git command fails' do
         before do
           expect(Gitlab::Popen).to receive(:popen_with_detail)
-          .with(cmd)
-          .and_return(Gitlab::Popen::Result.new(cmd, '', 'fatal: Not a git repository', double('Process::Status', success?: false)))
+                                     .with(cmd)
+                                     .and_return(Gitlab::Popen::Result.new(cmd, '', 'fatal: Not a git repository', double('Process::Status', success?: false)))
         end
 
         it 'returns "Unknown"' do
@@ -123,6 +123,27 @@ describe Gitlab do
     end
   end
 
+  describe '.dev_env_or_com?' do
+    it 'is true when on .com' do
+      allow(described_class).to receive(:com?).and_return(true)
+
+      expect(described_class.dev_env_or_com?).to eq true
+    end
+
+    it 'is true when dev env' do
+      allow(described_class).to receive(:com?).and_return(false)
+      allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new('development'))
+
+      expect(described_class.dev_env_or_com?).to eq true
+    end
+
+    it 'is false when not dev or com' do
+      allow(described_class).to receive(:com?).and_return(false)
+
+      expect(described_class.dev_env_or_com?).to eq false
+    end
+  end
+
   describe '.ee?' do
     before do
       described_class.instance_variable_set(:@is_ee, nil)
@@ -138,12 +159,12 @@ describe Gitlab do
 
       allow(described_class)
         .to receive(:root)
-        .and_return(root)
+              .and_return(root)
 
       allow(root)
         .to receive(:join)
-        .with('ee/app/models/license.rb')
-        .and_return(license_path)
+              .with('ee/app/models/license.rb')
+              .and_return(license_path)
 
       expect(described_class.ee?).to eq(true)
     end
@@ -154,12 +175,12 @@ describe Gitlab do
 
       allow(described_class)
         .to receive(:root)
-        .and_return(Pathname.new('dummy'))
+              .and_return(Pathname.new('dummy'))
 
       allow(root)
         .to receive(:join)
-        .with('ee/app/models/license.rb')
-        .and_return(license_path)
+              .with('ee/app/models/license.rb')
+              .and_return(license_path)
 
       expect(described_class.ee?).to eq(false)
     end

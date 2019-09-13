@@ -41,3 +41,5 @@ module Lfs
     end
   end
 end
+
+Lfs::LockFileService.prepend_if_ee('EE::Lfs::LockFileService')

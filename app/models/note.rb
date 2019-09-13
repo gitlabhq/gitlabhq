@@ -520,3 +520,5 @@ class Note < ApplicationRecord
     system_note_metadata&.cross_reference_types&.include?(system_note_metadata&.action)
   end
 end
+
+Note.prepend_if_ee('EE::Note')

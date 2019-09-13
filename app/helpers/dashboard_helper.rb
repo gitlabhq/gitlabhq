@@ -52,3 +52,5 @@ module DashboardHelper
     links
   end
 end
+
+DashboardHelper.prepend_if_ee('EE::DashboardHelper')

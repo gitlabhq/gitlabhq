@@ -139,3 +139,5 @@ module StubGitlabCalls
     JSON.parse f
   end
 end
+
+StubGitlabCalls.prepend_if_ee('EE::StubGitlabCalls')

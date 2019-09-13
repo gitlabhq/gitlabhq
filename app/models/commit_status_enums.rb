@@ -19,3 +19,5 @@ module CommitStatusEnums
     }
   end
 end
+
+CommitStatusEnums.prepend_if_ee('EE::CommitStatusEnums')

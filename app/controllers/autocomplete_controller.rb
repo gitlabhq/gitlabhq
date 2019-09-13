@@ -46,3 +46,5 @@ class AutocompleteController < ApplicationController
     render json: target_branches.map { |target_branch| { title: target_branch } }
   end
 end
+
+AutocompleteController.prepend_if_ee('EE::AutocompleteController')

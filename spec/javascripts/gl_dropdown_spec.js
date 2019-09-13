@@ -243,14 +243,23 @@ describe('glDropdown', function describeDropdown() {
   });
 
   describe('renderItem', () => {
+    function dropdownWithOptions(options) {
+      const $dropdownDiv = $('<div />');
+
+      $dropdownDiv.glDropdown(options);
+
+      return $dropdownDiv.data('glDropdown');
+    }
+
+    function basicDropdown() {
+      return dropdownWithOptions({});
+    }
+
     describe('without selected value', () => {
       let dropdown;
 
       beforeEach(() => {
-        const dropdownOptions = {};
-        const $dropdownDiv = $('<div />');
-        $dropdownDiv.glDropdown(dropdownOptions);
-        dropdown = $dropdownDiv.data('glDropdown');
+        dropdown = basicDropdown();
       });
 
       it('marks items without ID as active', () => {
@@ -274,6 +283,35 @@ describe('glDropdown', function describeDropdown() {
 
         expect(link).not.toHaveClass('is-active');
       });
+    });
+
+    it('should return an empty .separator li when when appropriate', () => {
+      const dropdown = basicDropdown();
+      const sep = { type: 'separator' };
+      const li = dropdown.renderItem(sep);
+
+      expect(li).toHaveClass('separator');
+      expect(li.childNodes.length).toEqual(0);
+    });
+
+    it('should return an empty .divider li when when appropriate', () => {
+      const dropdown = basicDropdown();
+      const div = { type: 'divider' };
+      const li = dropdown.renderItem(div);
+
+      expect(li).toHaveClass('divider');
+      expect(li.childNodes.length).toEqual(0);
+    });
+
+    it('should return a .dropdown-header li with the correct content when when appropriate', () => {
+      const dropdown = basicDropdown();
+      const text = 'My Header';
+      const header = { type: 'header', content: text };
+      const li = dropdown.renderItem(header);
+
+      expect(li).toHaveClass('dropdown-header');
+      expect(li.childNodes.length).toEqual(1);
+      expect(li.textContent).toEqual(text);
     });
   });
 

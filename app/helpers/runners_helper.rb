@@ -39,3 +39,5 @@ module RunnersHelper
     end
   end
 end
+
+RunnersHelper.prepend_if_ee('EE::RunnersHelper')

@@ -162,6 +162,12 @@ module QA
     module Group
       autoload :New, 'qa/page/group/new'
       autoload :Show, 'qa/page/group/show'
+      autoload :Menu, 'qa/page/group/menu'
+
+      module SubMenus
+        autoload :Common, 'qa/page/group/sub_menus/common'
+        autoload :Members, 'qa/page/group/sub_menus/members'
+      end
 
       module Settings
         autoload :General, 'qa/page/group/settings/general'
@@ -222,6 +228,7 @@ module QA
         autoload :MergeRequest, 'qa/page/project/settings/merge_request'
         autoload :Members, 'qa/page/project/settings/members'
         autoload :MirroringRepositories, 'qa/page/project/settings/mirroring_repositories'
+        autoload :VisibilityFeaturesPermissions, 'qa/page/project/settings/visibility_features_permissions'
       end
 
       module SubMenus
@@ -278,6 +285,7 @@ module QA
       autoload :Menu, 'qa/page/profile/menu'
       autoload :PersonalAccessTokens, 'qa/page/profile/personal_access_tokens'
       autoload :SSHKeys, 'qa/page/profile/ssh_keys'
+      autoload :TwoFactorAuth, 'qa/page/profile/two_factor_auth'
     end
 
     module Issuable

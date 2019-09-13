@@ -17,3 +17,5 @@ module Types
     mount_mutation Mutations::Notes::Destroy
   end
 end
+
+::Types::MutationType.prepend_if_ee('::EE::Types::MutationType')

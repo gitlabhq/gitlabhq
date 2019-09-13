@@ -95,3 +95,5 @@ class UsersFinder
     end
   end
 end
+
+UsersFinder.prepend_if_ee('EE::UsersFinder')

@@ -246,3 +246,5 @@ class Environment < ApplicationRecord
     self.slug = Gitlab::Slug::Environment.new(name).generate
   end
 end
+
+Environment.prepend_if_ee('EE::Environment')

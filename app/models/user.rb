@@ -1668,3 +1668,5 @@ class User < ApplicationRecord
                   project_creation_level: project_creation_levels)
   end
 end
+
+User.prepend_if_ee('EE::User')

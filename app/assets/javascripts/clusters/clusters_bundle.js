@@ -39,6 +39,7 @@ export default class Clusters {
       updateKnativePath,
       installPrometheusPath,
       managePrometheusPath,
+      clusterEnvironmentsPath,
       hasRbac,
       clusterType,
       clusterStatus,
@@ -79,6 +80,7 @@ export default class Clusters {
       installJupyterEndpoint: installJupyterPath,
       installKnativeEndpoint: installKnativePath,
       updateKnativeEndpoint: updateKnativePath,
+      clusterEnvironmentsEndpoint: clusterEnvironmentsPath,
     });
 
     this.installApplication = this.installApplication.bind(this);
@@ -108,6 +110,10 @@ export default class Clusters {
     }
     this.initApplications(clusterType);
     this.initEnvironments();
+
+    if (clusterEnvironmentsPath) {
+      this.fetchEnvironments();
+    }
 
     this.updateContainer(null, this.store.state.status, this.store.state.statusReason);
 
@@ -162,6 +168,7 @@ export default class Clusters {
       render(createElement) {
         return createElement(Environments, {
           props: {
+            isFetching: this.state.fetchingEnvironments,
             environments: this.state.environments,
             environmentsHelpPath: this.state.environmentsHelpPath,
             clustersHelpPath: this.state.clustersHelpPath,
@@ -170,6 +177,18 @@ export default class Clusters {
         });
       },
     });
+  }
+
+  fetchEnvironments() {
+    this.store.toggleFetchEnvironments(true);
+
+    this.service
+      .fetchClusterEnvironments()
+      .then(data => {
+        this.store.toggleFetchEnvironments(false);
+        this.store.updateEnvironments(data.data);
+      })
+      .catch(() => Clusters.handleError());
   }
 
   static initDismissableCallout() {

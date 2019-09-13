@@ -12,6 +12,13 @@ module QA
             element :project_path_field
             element :change_path_button
             element :transfer_button
+            element :archive_project_link
+            element :unarchive_project_link
+          end
+
+          view 'app/views/projects/_export.html.haml' do
+            element :export_project_link
+            element :download_export_link
           end
 
           def update_project_path_to(path)
@@ -37,6 +44,26 @@ module QA
             click_element(:transfer_button)
             fill_confirmation_text(project_name)
             click_confirm_button
+          end
+
+          def click_export_project_link
+            click_element :export_project_link
+          end
+
+          def click_download_export_link
+            click_element :download_export_link
+          end
+
+          def archive_project
+            page.accept_alert("Are you sure that you want to archive this project?") do
+              click_element :archive_project_link
+            end
+          end
+
+          def unarchive_project
+            page.accept_alert("Are you sure that you want to unarchive this project?") do
+              click_element :unarchive_project_link
+            end
           end
         end
       end

@@ -3,6 +3,8 @@
 class List < ApplicationRecord
   include Importable
 
+  prepend_if_ee('::EE::List') # rubocop: disable Cop/InjectEnterpriseEditionModule
+
   belongs_to :board
   belongs_to :label
   has_many :list_user_preferences

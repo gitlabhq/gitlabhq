@@ -7,3 +7,5 @@ module Boards
     end
   end
 end
+
+Boards::UpdateService.prepend_if_ee('EE::Boards::UpdateService')

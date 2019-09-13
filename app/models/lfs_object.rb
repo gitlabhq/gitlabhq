@@ -42,3 +42,5 @@ class LfsObject < ApplicationRecord
     Digest::SHA256.file(path).hexdigest
   end
 end
+
+LfsObject.prepend_if_ee('EE::LfsObject')

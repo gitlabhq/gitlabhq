@@ -464,3 +464,5 @@ class ProjectsController < Projects::ApplicationController
     @project = @project.present(current_user: current_user)
   end
 end
+
+ProjectsController.prepend_if_ee('EE::ProjectsController')

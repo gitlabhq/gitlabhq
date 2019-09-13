@@ -125,3 +125,5 @@ module Users
     end
   end
 end
+
+Users::BuildService.prepend_if_ee('EE::Users::BuildService')

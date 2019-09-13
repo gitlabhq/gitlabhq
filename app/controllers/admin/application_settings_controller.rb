@@ -149,3 +149,5 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
     render action
   end
 end
+
+Admin::ApplicationSettingsController.prepend_if_ee('EE::Admin::ApplicationSettingsController')

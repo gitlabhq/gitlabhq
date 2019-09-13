@@ -18,3 +18,5 @@ module UserCalloutEnums
     }
   end
 end
+
+UserCalloutEnums.prepend_if_ee('EE::UserCalloutEnums')

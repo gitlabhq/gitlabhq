@@ -109,3 +109,5 @@ class IssuableSidebarBasicEntity < Grape::Entity
     request.current_user
   end
 end
+
+IssuableSidebarBasicEntity.prepend_if_ee('EE::IssuableSidebarBasicEntity')

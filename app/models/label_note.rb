@@ -103,3 +103,5 @@ class LabelNote < Note
     events.select { |e| e.action == action }.map(&field)
   end
 end
+
+LabelNote.prepend_if_ee('EE::LabelNote')

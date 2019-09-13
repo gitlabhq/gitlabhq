@@ -119,3 +119,5 @@ class Projects::GitHttpClientController < Projects::ApplicationController
     Gitlab::ProtocolAccess.allowed?('http')
   end
 end
+
+Projects::GitHttpClientController.prepend_if_ee('EE::Projects::GitHttpClientController')

@@ -19,6 +19,8 @@ class Milestone < ApplicationRecord
   include FromUnion
   include Gitlab::SQL::Pattern
 
+  prepend_if_ee('::EE::Milestone') # rubocop: disable Cop/InjectEnterpriseEditionModule
+
   cache_markdown_field :title, pipeline: :single_line
   cache_markdown_field :description
 

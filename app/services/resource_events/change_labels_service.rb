@@ -40,3 +40,5 @@ module ResourceEvents
     end
   end
 end
+
+ResourceEvents::ChangeLabelsService.prepend_if_ee('EE::ResourceEvents::ChangeLabelsService')

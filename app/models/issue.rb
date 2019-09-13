@@ -27,6 +27,7 @@ class Issue < ApplicationRecord
 
   belongs_to :project
   belongs_to :moved_to, class_name: 'Issue'
+  belongs_to :duplicated_to, class_name: 'Issue'
   belongs_to :closed_by, class_name: 'User'
 
   has_internal_id :iid, scope: :project, init: ->(s) { s&.project&.issues&.maximum(:iid) }
@@ -181,6 +182,10 @@ class Issue < ApplicationRecord
     !moved_to_id.nil?
   end
 
+  def duplicated?
+    !duplicated_to_id.nil?
+  end
+
   def can_move?(user, to_project = nil)
     if to_project
       return false unless user.can?(:admin_issue, to_project)
@@ -293,3 +298,5 @@ class Issue < ApplicationRecord
     Gitlab::EtagCaching::Store.new.touch(key)
   end
 end
+
+Issue.prepend_if_ee('EE::Issue')

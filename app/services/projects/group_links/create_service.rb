@@ -21,3 +21,5 @@ module Projects
     end
   end
 end
+
+Projects::GroupLinks::CreateService.prepend_if_ee('EE::Projects::GroupLinks::CreateService')

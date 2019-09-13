@@ -9,3 +9,5 @@ class ProtectedBranchPolicy < BasePolicy
     enable :destroy_protected_branch
   end
 end
+
+ProtectedBranchPolicy.prepend_if_ee('EE::ProtectedBranchPolicy')

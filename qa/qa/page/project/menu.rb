@@ -40,4 +40,4 @@ module QA
   end
 end
 
-QA::Page::Project::Menu.prepend_if_ee('QA::EE::Page::Project::SubMenus::SecurityCompliance')
+QA::Page::Project::Menu.prepend_if_ee('QA::EE::Page::Project::Menu')

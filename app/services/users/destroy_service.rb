@@ -64,3 +64,5 @@ module Users
     end
   end
 end
+
+Users::DestroyService.prepend_if_ee('EE::Users::DestroyService')

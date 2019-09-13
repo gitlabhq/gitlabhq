@@ -30,3 +30,5 @@ class Profiles::AccountsController < Profiles::ApplicationController
     {}
   end
 end
+
+Profiles::AccountsController.prepend_if_ee('EE::Profiles::AccountsController')

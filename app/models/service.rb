@@ -352,3 +352,5 @@ class Service < ApplicationRecord
     activated? && !importing?
   end
 end
+
+Service.prepend_if_ee('EE::Service')

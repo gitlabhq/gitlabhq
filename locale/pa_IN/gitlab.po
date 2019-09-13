@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: pa-IN\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2019-06-14 19:52\n"
+"PO-Revision-Date: 2019-06-18 11:34\n"
 
 msgid " Please sign in."
 msgstr ""

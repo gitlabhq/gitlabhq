@@ -1,0 +1,47 @@
+# Cluster Environments **(PREMIUM)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/13392) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.3.
+
+Cluster environments provide a consolidated view of which CI [environments](../../ci/environments.md) are
+deployed to the Kubernetes cluster and it:
+
+- Shows the project and the relevant environment related to the deployment.
+- Displays the status of the pods for that environment.
+
+## Overview
+
+NOTE: **Note:**
+Cluster environments are only available for
+[group-level clusters](../group/clusters/index.md).
+Support for [instance-level](../instance/clusters/index.md) clusters is
+[planned](https://gitlab.com/gitlab-org/gitlab-ce/issues/63985).
+
+With cluster environments, you can gain insight into:
+
+- Which projects are deployed to the cluster.
+- How many pods are in use for each project's environment.
+- The CI job that was used to deploy to that environment.
+
+![Cluster environments page](img/cluster_environments_table_v12_3.png)
+
+Access to cluster environments is restricted to [group maintainers and
+owners](../permissions.md#group-members-permissions)
+
+## Usage
+
+In order to:
+
+- Track environments for the cluster, you must
+  [deploy to a Kubernetes cluster](../project/clusters/index.md#deploying-to-a-kubernetes-cluster)
+  successfully.
+- Show pod usage correctly, you must
+  [enable Deploy Boards](../project/deploy_boards.md#enabling-deploy-boards).
+
+Once you have successful deployments to your group-level cluster:
+
+1. Navigate to your group's **Kubernetes** page.
+1. Click on the **Environments** tab.
+
+NOTE: **Note:**
+Only successful deployments to the cluster is included in this page.
+Non-cluster environments will not be included.

@@ -47,3 +47,5 @@ module ShaAttribute
     end
   end
 end
+
+ShaAttribute::ClassMethods.prepend_if_ee('EE::ShaAttribute')

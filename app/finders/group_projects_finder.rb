@@ -100,3 +100,5 @@ class GroupProjectsFinder < ProjectsFinder
     group.shared_projects
   end
 end
+
+GroupProjectsFinder.prepend_if_ee('EE::GroupProjectsFinder')

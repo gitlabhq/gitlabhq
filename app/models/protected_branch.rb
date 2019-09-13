@@ -41,3 +41,5 @@ class ProtectedBranch < ApplicationRecord
     project.protected_branches.select(:name)
   end
 end
+
+ProtectedBranch.prepend_if_ee('EE::ProtectedBranch')

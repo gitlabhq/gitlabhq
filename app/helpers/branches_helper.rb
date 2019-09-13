@@ -9,3 +9,5 @@ module BranchesHelper
     ProtectedBranch.protected?(project, branch.name)
   end
 end
+
+BranchesHelper.prepend_if_ee('EE::BranchesHelper')

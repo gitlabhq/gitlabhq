@@ -46,3 +46,5 @@ module Import
     end
   end
 end
+
+Import::GithubService.prepend_if_ee('EE::Import::GithubService')

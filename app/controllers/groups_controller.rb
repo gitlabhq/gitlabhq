@@ -133,7 +133,7 @@ class GroupsController < Groups::ApplicationController
   protected
 
   def render_show_html
-    render 'groups/show'
+    render 'groups/show', locals: { trial: params[:trial] }
   end
 
   def render_details_html
@@ -229,3 +229,5 @@ class GroupsController < Groups::ApplicationController
     url_for(safe_params)
   end
 end
+
+GroupsController.prepend_if_ee('EE::GroupsController')

@@ -459,3 +459,5 @@ class Member < ApplicationRecord
     end
   end
 end
+
+Member.prepend_if_ee('EE::Member')

@@ -77,3 +77,5 @@ module Issues
     end
   end
 end
+
+Issues::BuildService.prepend_if_ee('EE::Issues::BuildService')

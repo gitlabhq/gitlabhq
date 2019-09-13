@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class BuildDetailsEntity < JobEntity
+  prepend_if_ee('::EE::BuildDetailEntity') # rubocop: disable Cop/InjectEnterpriseEditionModule
+
   expose :coverage, :erased_at, :duration
   expose :tag_list, as: :tags
   expose :has_trace?, as: :has_trace

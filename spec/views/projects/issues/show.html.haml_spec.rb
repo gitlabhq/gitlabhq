@@ -56,7 +56,41 @@ describe 'projects/issues/show' do
       end
     end
 
-    it 'shows "Closed" if an issue has not been moved' do
+    context 'when the issue was duplicated' do
+      let(:new_issue) { create(:issue, project: project, author: user) }
+
+      before do
+        issue.duplicated_to = new_issue
+      end
+
+      context 'when user can see the duplicated issue' do
+        before do
+          project.add_developer(user)
+        end
+
+        it 'shows "Closed (duplicated)" if an issue has been duplicated' do
+          render
+
+          expect(rendered).to have_selector('.status-box-issue-closed:not(.hidden)', text: 'Closed (duplicated)')
+        end
+
+        it 'links "duplicated" to the new issue the original issue was duplicated to' do
+          render
+
+          expect(rendered).to have_selector("a[href=\"#{issue_path(new_issue)}\"]", text: 'duplicated')
+        end
+      end
+
+      context 'when user cannot see duplicated issue' do
+        it 'does not show duplicated issue link' do
+          render
+
+          expect(rendered).not_to have_selector("a[href=\"#{issue_path(new_issue)}\"]", text: 'duplicated')
+        end
+      end
+    end
+
+    it 'shows "Closed" if an issue has not been moved or duplicated' do
       render
 
       expect(rendered).to have_selector('.status-box-issue-closed:not(.hidden)', text: 'Closed')

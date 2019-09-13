@@ -7,3 +7,5 @@ module Git
     end
   end
 end
+
+Git::WikiPushService.prepend_if_ee('EE::Git::WikiPushService')

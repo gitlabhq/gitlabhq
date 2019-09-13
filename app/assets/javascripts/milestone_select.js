@@ -100,7 +100,7 @@ export default class MilestoneSelect {
               });
             }
             if (extraOptions.length) {
-              extraOptions.push('divider');
+              extraOptions.push({ type: 'divider' });
             }
 
             callback(extraOptions.concat(data));

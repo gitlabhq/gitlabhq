@@ -48,3 +48,5 @@ class BaseCountService
     Rails.cache.write(key, block_given? ? yield : uncached_count, raw: raw?)
   end
 end
+
+BaseCountService.prepend_if_ee('EE::BaseCountService')

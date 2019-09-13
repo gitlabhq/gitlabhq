@@ -3,6 +3,8 @@
 module Gitlab
   module EtagCaching
     class Router
+      prepend_if_ee('EE::Gitlab::EtagCaching::Router') # rubocop: disable Cop/InjectEnterpriseEditionModule
+
       Route = Struct.new(:regexp, :name)
       # We enable an ETag for every request matching the regex.
       # To match a regex the path needs to match the following:

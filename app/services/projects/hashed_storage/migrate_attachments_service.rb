@@ -37,3 +37,5 @@ module Projects
     end
   end
 end
+
+Projects::HashedStorage::MigrateAttachmentsService.prepend_if_ee('EE::Projects::HashedStorage::MigrateAttachmentsService')

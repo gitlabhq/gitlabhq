@@ -77,6 +77,12 @@ describe Issues::DuplicateService do
 
         subject.execute(duplicate_issue, canonical_issue)
       end
+
+      it 'updates duplicate issue with canonical issue id' do
+        subject.execute(duplicate_issue, canonical_issue)
+
+        expect(duplicate_issue.reload.duplicated_to).to eq(canonical_issue)
+      end
     end
   end
 end

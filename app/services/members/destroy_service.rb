@@ -66,3 +66,5 @@ module Members
     end
   end
 end
+
+Members::DestroyService.prepend_if_ee('EE::Members::DestroyService')

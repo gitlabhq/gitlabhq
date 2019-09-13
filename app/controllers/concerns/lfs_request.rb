@@ -128,3 +128,5 @@ module LfsRequest
     false
   end
 end
+
+LfsRequest.prepend_if_ee('EE::LfsRequest')

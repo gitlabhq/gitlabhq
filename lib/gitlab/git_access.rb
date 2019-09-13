@@ -408,3 +408,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::GitAccess.prepend_if_ee('EE::Gitlab::GitAccess')

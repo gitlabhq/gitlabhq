@@ -97,3 +97,5 @@ class ProjectStatistics < ApplicationRecord
     end
   end
 end
+
+ProjectStatistics.prepend_if_ee('EE::ProjectStatistics')

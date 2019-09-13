@@ -78,3 +78,5 @@ module AppearancesHelper
     style.join
   end
 end
+
+AppearancesHelper.prepend_if_ee('EE::AppearancesHelper')

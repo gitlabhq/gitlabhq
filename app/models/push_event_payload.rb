@@ -22,3 +22,5 @@ class PushEventPayload < ApplicationRecord
     tag: 1
   }
 end
+
+PushEventPayload.prepend_if_ee('EE::PushEventPayload')

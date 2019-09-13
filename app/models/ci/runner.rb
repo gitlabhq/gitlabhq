@@ -35,7 +35,7 @@ module Ci
 
     FORM_EDITABLE = %i[description tag_list active run_untagged locked access_level maximum_timeout_human_readable].freeze
 
-    self.ignored_columns = %i[is_shared]
+    self.ignored_columns += %i[is_shared]
 
     has_many :builds
     has_many :runner_projects, inverse_of: :runner, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
@@ -335,3 +335,5 @@ module Ci
     end
   end
 end
+
+Ci::Runner.prepend_if_ee('EE::Ci::Runner')

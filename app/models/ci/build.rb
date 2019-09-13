@@ -868,3 +868,5 @@ module Ci
     end
   end
 end
+
+Ci::Build.prepend_if_ee('EE::Ci::Build')

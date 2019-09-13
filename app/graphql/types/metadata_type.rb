@@ -6,7 +6,7 @@ module Types
 
     authorize :read_instance_metadata
 
-    field :version, GraphQL::STRING_TYPE, null: false
-    field :revision, GraphQL::STRING_TYPE, null: false
+    field :version, GraphQL::STRING_TYPE, null: false # rubocop:disable Graphql/Descriptions
+    field :revision, GraphQL::STRING_TYPE, null: false # rubocop:disable Graphql/Descriptions
   end
 end

@@ -34,3 +34,5 @@ module PolicyActor
     false
   end
 end
+
+PolicyActor.prepend_if_ee('EE::PolicyActor')

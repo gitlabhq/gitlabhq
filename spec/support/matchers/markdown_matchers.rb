@@ -230,3 +230,5 @@ module RSpec::Matchers::DSL::Macros
     end
   end
 end
+
+MarkdownMatchers.prepend_if_ee('EE::MarkdownMatchers')

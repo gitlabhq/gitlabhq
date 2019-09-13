@@ -117,3 +117,5 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
     @notes
   end
 end
+
+Projects::MergeRequests::DiffsController.prepend_if_ee('EE::Projects::MergeRequests::DiffsController')

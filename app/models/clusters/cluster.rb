@@ -268,3 +268,5 @@ module Clusters
     end
   end
 end
+
+Clusters::Cluster.prepend_if_ee('EE::Clusters::Cluster')

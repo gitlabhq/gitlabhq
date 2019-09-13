@@ -19,3 +19,5 @@ class ProjectHook < WebHook
   belongs_to :project
   validates :project, presence: true
 end
+
+ProjectHook.prepend_if_ee('EE::ProjectHook')

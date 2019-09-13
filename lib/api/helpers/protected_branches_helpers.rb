@@ -11,3 +11,5 @@ module API
     end
   end
 end
+
+API::Helpers::ProtectedBranchesHelpers.prepend_if_ee('EE::API::Helpers::ProtectedBranchesHelpers')

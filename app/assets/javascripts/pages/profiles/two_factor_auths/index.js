@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const skippable = parseBoolean(twoFactorNode.dataset.twoFactorSkippable);
 
   if (skippable) {
-    const button = `<a class="btn btn-sm btn-warning float-right" data-method="patch" href="${twoFactorNode.dataset.two_factor_skip_url}">Configure it later</a>`;
+    const button = `<a class="btn btn-sm btn-warning float-right" data-qa-selector="configure_it_later_button" data-method="patch" href="${twoFactorNode.dataset.two_factor_skip_url}">Configure it later</a>`;
     const flashAlert = document.querySelector('.flash-alert');
     if (flashAlert) flashAlert.insertAdjacentHTML('beforeend', button);
   }

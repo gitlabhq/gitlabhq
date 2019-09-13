@@ -7,7 +7,7 @@ module Types
     class DiffPositionType < BaseObject
       graphql_name 'DiffPosition'
 
-      field :diff_refs, Types::DiffRefsType, null: false
+      field :diff_refs, Types::DiffRefsType, null: false # rubocop:disable Graphql/Descriptions
 
       field :file_path, GraphQL::STRING_TYPE, null: false,
             description: "The path of the file that was changed"
@@ -15,7 +15,7 @@ module Types
             description: "The path of the file on the start sha."
       field :new_path, GraphQL::STRING_TYPE, null: true,
             description: "The path of the file on the head sha."
-      field :position_type, Types::Notes::PositionTypeEnum, null: false
+      field :position_type, Types::Notes::PositionTypeEnum, null: false # rubocop:disable Graphql/Descriptions
 
       # Fields for text positions
       field :old_line, GraphQL::INT_TYPE, null: true,

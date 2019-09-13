@@ -9,3 +9,5 @@ class Identity < ApplicationRecord
     end
   end
 end
+
+Identity::UniquenessScopes.prepend_if_ee('EE::Identity::UniquenessScopes')

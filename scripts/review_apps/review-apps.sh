@@ -255,6 +255,8 @@ EOF
 }
 
 function display_deployment_debug() {
+  kubectl get pods -n "$KUBE_NAMESPACE" -lrelease=${CI_ENVIRONMENT_SLUG}
+
   migrations_pod=$(get_pod "migrations");
   if [ -z "${migrations_pod}" ]; then
     echoerr "Migrations pod not found."

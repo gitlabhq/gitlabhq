@@ -17,3 +17,5 @@ module API
     end
   end
 end
+
+API::Helpers::SettingsHelpers.prepend_if_ee('EE::API::Helpers::SettingsHelpers')

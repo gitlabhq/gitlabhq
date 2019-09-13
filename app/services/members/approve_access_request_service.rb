@@ -20,3 +20,5 @@ module Members
     end
   end
 end
+
+Members::ApproveAccessRequestService.prepend_if_ee('EE::Members::ApproveAccessRequestService')

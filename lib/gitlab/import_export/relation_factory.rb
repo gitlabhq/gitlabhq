@@ -3,6 +3,8 @@
 module Gitlab
   module ImportExport
     class RelationFactory
+      prepend_if_ee('::EE::Gitlab::ImportExport::RelationFactory') # rubocop: disable Cop/InjectEnterpriseEditionModule
+
       OVERRIDES = { snippets: :project_snippets,
                     ci_pipelines: 'Ci::Pipeline',
                     pipelines: 'Ci::Pipeline',

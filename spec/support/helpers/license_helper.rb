@@ -6,3 +6,5 @@ module LicenseHelpers
     # do nothing
   end
 end
+
+LicenseHelpers.prepend_if_ee('EE::LicenseHelpers')

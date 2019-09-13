@@ -90,3 +90,5 @@ module NavHelper
     links
   end
 end
+
+NavHelper.prepend_if_ee('EE::NavHelper')

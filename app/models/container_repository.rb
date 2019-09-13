@@ -96,3 +96,5 @@ class ContainerRepository < ApplicationRecord
                   name: path.repository_name)
   end
 end
+
+ContainerRepository.prepend_if_ee('EE::ContainerRepository')

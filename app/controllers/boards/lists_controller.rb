@@ -87,3 +87,5 @@ module Boards
     end
   end
 end
+
+Boards::ListsController.prepend_if_ee('EE::Boards::ListsController')

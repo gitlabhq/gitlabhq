@@ -52,3 +52,5 @@ module Ci
     end
   end
 end
+
+Ci::PipelineTriggerService.prepend_if_ee('EE::Ci::PipelineTriggerService')

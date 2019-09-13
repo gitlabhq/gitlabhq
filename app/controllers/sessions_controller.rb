@@ -288,3 +288,5 @@ class SessionsController < Devise::SessionsController
     end
   end
 end
+
+SessionsController.prepend_if_ee('EE::SessionsController')

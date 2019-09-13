@@ -79,3 +79,5 @@ class MergeRequestWidgetEntity < Grape::Entity
     @presenters[merge_request] ||= MergeRequestPresenter.new(merge_request, current_user: current_user) # rubocop: disable CodeReuse/Presenter
   end
 end
+
+MergeRequestWidgetEntity.prepend_if_ee('EE::MergeRequestWidgetEntity')

@@ -534,8 +534,31 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
         end
 
         it 'shows deployment message' do
-          expect(page).to have_content 'This job is the most recent deployment'
+          expect(page).to have_content 'This job is the most recent deployment to production'
           expect(find('.js-environment-link')['href']).to match("environments/#{environment.id}")
+        end
+
+        context 'when there is a cluster used for the deployment' do
+          let(:cluster) { create(:cluster, name: 'the-cluster') }
+          let(:deployment) { create(:deployment, :success, cluster: cluster, environment: environment, project: environment.project) }
+          let(:user_access_level) { :maintainer }
+
+          it 'shows a link to the cluster' do
+            expect(page).to have_link 'the-cluster'
+          end
+
+          it 'shows the name of the cluster' do
+            expect(page).to have_content 'Cluster the-cluster was used'
+          end
+
+          context 'when the user is not able to view the cluster' do
+            let(:user_access_level) { :developer }
+
+            it 'includes only the name of the cluster without a link' do
+              expect(page).to have_content 'Cluster the-cluster was used'
+              expect(page).not_to have_link 'the-cluster'
+            end
+          end
         end
       end
 

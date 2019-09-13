@@ -56,3 +56,5 @@ module Ci
     end
   end
 end
+
+::Ci::Bridge.prepend_if_ee('::EE::Ci::Bridge')

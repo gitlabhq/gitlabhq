@@ -59,3 +59,5 @@ class Projects::MergeRequests::ApplicationController < Projects::ApplicationCont
     @merge_request.close
   end
 end
+
+Projects::MergeRequests::ApplicationController.prepend_if_ee('EE::Projects::MergeRequests::ApplicationController')

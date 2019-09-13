@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-
 class CommitStatusPresenter < Gitlab::View::Presenter::Delegated
   CALLOUT_FAILURE_MESSAGES = {
     unknown_failure: 'There is an unknown failure, please try again',
@@ -18,6 +17,8 @@ class CommitStatusPresenter < Gitlab::View::Presenter::Delegated
   private_constant :CALLOUT_FAILURE_MESSAGES
 
   presents :build
+
+  prepend_if_ee('::EE::CommitStatusPresenter') # rubocop: disable Cop/InjectEnterpriseEditionModule
 
   def self.callout_failure_messages
     CALLOUT_FAILURE_MESSAGES

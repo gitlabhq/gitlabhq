@@ -19,3 +19,5 @@ class MergeRequestMetricsService
     update!(latest_closed_by_id: nil, latest_closed_at: nil)
   end
 end
+
+MergeRequestMetricsService.prepend_if_ee('EE::MergeRequestMetricsService')

@@ -57,3 +57,5 @@ module Emails
     end
   end
 end
+
+Emails::Projects.prepend_if_ee('EE::Emails::Projects')

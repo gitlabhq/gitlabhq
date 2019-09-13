@@ -30,8 +30,12 @@ describe Gitlab::UrlBlocker do
     context 'when URI is internal' do
       let(:import_url) { 'http://localhost' }
 
+      before do
+        stub_dns(import_url, ip_address: '127.0.0.1')
+      end
+
       it_behaves_like 'validates URI and hostname' do
-        let(:expected_uri) { 'http://[::1]' }
+        let(:expected_uri) { 'http://127.0.0.1' }
         let(:expected_hostname) { 'localhost' }
       end
     end
@@ -347,6 +351,7 @@ describe Gitlab::UrlBlocker do
           end
 
           before do
+            allow(ApplicationSetting).to receive(:current).and_return(ApplicationSetting.new)
             stub_application_setting(outbound_local_requests_whitelist: whitelist)
           end
 
@@ -384,9 +389,15 @@ describe Gitlab::UrlBlocker do
             it_behaves_like 'allows local requests', { allow_localhost: false, allow_local_network: false }
 
             it 'whitelists IP when dns_rebind_protection is disabled' do
-              stub_domain_resolv('example.com', '192.168.1.1') do
-                expect(described_class).not_to be_blocked_url("http://example.com",
-                  url_blocker_attributes.merge(dns_rebind_protection: false))
+              url = "http://example.com"
+              attrs = url_blocker_attributes.merge(dns_rebind_protection: false)
+
+              stub_domain_resolv('example.com', '192.168.1.2') do
+                expect(described_class).not_to be_blocked_url(url, attrs)
+              end
+
+              stub_domain_resolv('example.com', '192.168.1.3') do
+                expect(described_class).to be_blocked_url(url, attrs)
               end
             end
           end
@@ -436,6 +447,51 @@ describe Gitlab::UrlBlocker do
                 expect(described_class).not_to be_blocked_url("http://#{idna_encoded_domain}",
                   url_blocker_attributes)
               end
+            end
+
+            shared_examples 'dns rebinding checks' do
+              shared_examples 'whitelists the domain' do
+                let(:whitelist) { [domain] }
+                let(:url) { "http://#{domain}" }
+
+                before do
+                  stub_env('RSPEC_ALLOW_INVALID_URLS', 'false')
+                end
+
+                it do
+                  expect(described_class).not_to be_blocked_url(url, dns_rebind_protection: dns_rebind_value)
+                end
+              end
+
+              context 'when dns_rebinding_setting is' do
+                context 'enabled' do
+                  let(:dns_rebind_value) { true }
+
+                  it_behaves_like 'whitelists the domain'
+                end
+
+                context 'disabled' do
+                  let(:dns_rebind_value) { false }
+
+                  it_behaves_like 'whitelists the domain'
+                end
+              end
+            end
+
+            context 'when the domain cannot be resolved' do
+              let(:domain) { 'foobar.x' }
+
+              it_behaves_like 'dns rebinding checks'
+            end
+
+            context 'when the domain can be resolved' do
+              let(:domain) { 'example.com' }
+
+              before do
+                stub_dns(url, ip_address: '93.184.216.34')
+              end
+
+              it_behaves_like 'dns rebinding checks'
             end
           end
 

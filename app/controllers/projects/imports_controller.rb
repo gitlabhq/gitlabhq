@@ -73,3 +73,5 @@ class Projects::ImportsController < Projects::ApplicationController
       .merge(import_url_params)
   end
 end
+
+Projects::ImportsController.prepend_if_ee('EE::Projects::ImportsController')

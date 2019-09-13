@@ -4,6 +4,8 @@ require 'flipper/adapters/active_record'
 require 'flipper/adapters/active_support_cache_store'
 
 class Feature
+  prepend_if_ee('EE::Feature') # rubocop: disable Cop/InjectEnterpriseEditionModule
+
   # Classes to override flipper table names
   class FlipperFeature < Flipper::Adapters::ActiveRecord::Feature
     # Using `self.table_name` won't work. ActiveRecord bug?

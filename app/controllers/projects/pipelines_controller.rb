@@ -220,3 +220,5 @@ class Projects::PipelinesController < Projects::ApplicationController
     view_context.limited_counter_with_delimiter(finder.execute)
   end
 end
+
+Projects::PipelinesController.prepend_if_ee('EE::Projects::PipelinesController')

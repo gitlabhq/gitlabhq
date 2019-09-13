@@ -69,3 +69,5 @@ module Projects
     end
   end
 end
+
+Projects::Settings::OperationsController.prepend_if_ee('::EE::Projects::Settings::OperationsController')

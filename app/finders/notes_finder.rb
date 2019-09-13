@@ -171,3 +171,5 @@ class NotesFinder
     @params[:notes_filter].present?
   end
 end
+
+NotesFinder.prepend_if_ee('EE::NotesFinder')

@@ -204,3 +204,5 @@ module TodosHelper
     groups.unshift({ id: '', text: 'Any Group' }).to_json
   end
 end
+
+TodosHelper.prepend_if_ee('EE::NotesHelper'); TodosHelper.prepend_if_ee('EE::TodosHelper') # rubocop: disable Style/Semicolon

@@ -354,3 +354,5 @@ class Namespace < ApplicationRecord
     end
   end
 end
+
+Namespace.prepend_if_ee('EE::Namespace')

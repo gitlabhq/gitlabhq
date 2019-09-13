@@ -77,12 +77,11 @@ export default {
 </script>
 
 <template>
-  <div class="block sidebar-grouped-item">
+  <div class="block sidebar-grouped-item gl-cursor-pointer" role="button" @click="toggleSidebar">
     <collapsed-calendar-icon
       v-if="showMinDateBlock"
       :container-class="iconClass"
       :tooltip-text="tooltipText('min')"
-      @click="toggleSidebar"
     >
       <span class="sidebar-collapsed-value">
         <span v-if="showFromText">{{ __('From') }}</span> <span>{{ dateText('min') }}</span>
@@ -93,7 +92,6 @@ export default {
       v-if="maxDate"
       :container-class="iconClass"
       :tooltip-text="tooltipText('max')"
-      @click="toggleSidebar"
     >
       <span class="sidebar-collapsed-value">
         <span v-if="!minDate">{{ __('Until') }}</span> <span>{{ dateText('max') }}</span>

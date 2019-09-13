@@ -333,7 +333,7 @@ function UsersSelect(currentUser, els, options = {}) {
               }
 
               if (showDivider) {
-                users.splice(showDivider, 0, 'divider');
+                users.splice(showDivider, 0, { type: 'divider' });
               }
 
               if ($dropdown.hasClass('js-multiselect')) {
@@ -343,7 +343,8 @@ function UsersSelect(currentUser, els, options = {}) {
                   if ($dropdown.data('dropdownHeader')) {
                     showDivider += 1;
                     users.splice(showDivider, 0, {
-                      header: $dropdown.data('dropdownHeader'),
+                      type: 'header',
+                      content: $dropdown.data('dropdownHeader'),
                     });
                   }
 
@@ -358,7 +359,7 @@ function UsersSelect(currentUser, els, options = {}) {
                     users.splice(showDivider, 0, selectedUser);
                   });
 
-                  users.splice(showDivider + 1, 0, 'divider');
+                  users.splice(showDivider + 1, 0, { type: 'divider' });
                 }
               }
             }

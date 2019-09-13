@@ -182,3 +182,5 @@ class UsersController < ApplicationController
     access_denied! unless can?(current_user, :read_user_profile, user)
   end
 end
+
+UsersController.prepend_if_ee('EE::UsersController')

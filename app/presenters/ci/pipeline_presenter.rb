@@ -91,3 +91,5 @@ module Ci
     end
   end
 end
+
+Ci::PipelinePresenter.prepend_if_ee('EE::Ci::PipelinePresenter')

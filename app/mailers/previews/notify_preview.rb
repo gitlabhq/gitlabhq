@@ -210,3 +210,5 @@ class NotifyPreview < ActionMailer::Preview
     email
   end
 end
+
+NotifyPreview.prepend_if_ee('EE::Preview::NotifyPreview')

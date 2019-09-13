@@ -16,6 +16,7 @@
   install_jupyter_path: clusterable.install_applications_cluster_path(@cluster, :jupyter),
   install_knative_path: clusterable.install_applications_cluster_path(@cluster, :knative),
   update_knative_path: clusterable.update_applications_cluster_path(@cluster, :knative),
+  cluster_environments_path: clusterable.environments_cluster_path(@cluster),
   toggle_status: @cluster.enabled? ? 'true': 'false',
   has_rbac: has_rbac_enabled?(@cluster) ? 'true': 'false',
   cluster_type: @cluster.cluster_type,

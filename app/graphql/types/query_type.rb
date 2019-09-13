@@ -24,6 +24,6 @@ module Types
           resolver: Resolvers::MetadataResolver,
           description: 'Metadata about GitLab'
 
-    field :echo, GraphQL::STRING_TYPE, null: false, resolver: Resolvers::EchoResolver
+    field :echo, GraphQL::STRING_TYPE, null: false, resolver: Resolvers::EchoResolver # rubocop:disable Graphql/Descriptions
   end
 end

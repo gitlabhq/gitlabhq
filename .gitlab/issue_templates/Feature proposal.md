@@ -43,6 +43,10 @@ If this feature requires changing permissions, this document https://docs.gitlab
 
 <!-- Define both the success metrics and acceptance criteria. Note that success metrics indicate the desired business outcomes, while acceptance criteria indicate when the solution is working correctly. If there is no way to measure success, link to an issue that will implement a way to measure this. -->
 
+### What is the type of buyer? 
+
+<!-- Which leads to: in which enterprise tier should this feature go? See https://about.gitlab.com/handbook/product/pricing/#four-tiers -->
+
 ### Links / references
 
 /label ~feature

@@ -48,3 +48,5 @@ module ProtectedBranches
     end
   end
 end
+
+ProtectedBranches::LegacyApiUpdateService.prepend_if_ee('EE::ProtectedBranches::LegacyApiUpdateService')

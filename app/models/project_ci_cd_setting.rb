@@ -36,3 +36,5 @@ class ProjectCiCdSetting < ApplicationRecord
     self.default_git_depth ||= DEFAULT_GIT_DEPTH
   end
 end
+
+ProjectCiCdSetting.prepend_if_ee('EE::ProjectCiCdSetting')

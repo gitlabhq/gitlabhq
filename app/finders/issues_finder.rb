@@ -145,3 +145,5 @@ class IssuesFinder < IssuableFinder
     current_user.blank?
   end
 end
+
+IssuesFinder.prepend_if_ee('EE::IssuesFinder')

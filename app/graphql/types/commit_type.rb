@@ -8,16 +8,16 @@ module Types
 
     present_using CommitPresenter
 
-    field :id, type: GraphQL::ID_TYPE, null: false
-    field :sha, type: GraphQL::STRING_TYPE, null: false
-    field :title, type: GraphQL::STRING_TYPE, null: true
-    field :description, type: GraphQL::STRING_TYPE, null: true
-    field :message, type: GraphQL::STRING_TYPE, null: true
-    field :authored_date, type: Types::TimeType, null: true
-    field :web_url, type: GraphQL::STRING_TYPE, null: false
+    field :id, type: GraphQL::ID_TYPE, null: false # rubocop:disable Graphql/Descriptions
+    field :sha, type: GraphQL::STRING_TYPE, null: false # rubocop:disable Graphql/Descriptions
+    field :title, type: GraphQL::STRING_TYPE, null: true # rubocop:disable Graphql/Descriptions
+    field :description, type: GraphQL::STRING_TYPE, null: true # rubocop:disable Graphql/Descriptions
+    field :message, type: GraphQL::STRING_TYPE, null: true # rubocop:disable Graphql/Descriptions
+    field :authored_date, type: Types::TimeType, null: true # rubocop:disable Graphql/Descriptions
+    field :web_url, type: GraphQL::STRING_TYPE, null: false # rubocop:disable Graphql/Descriptions
 
     # models/commit lazy loads the author by email
-    field :author, type: Types::UserType, null: true
+    field :author, type: Types::UserType, null: true # rubocop:disable Graphql/Descriptions
 
     field :latest_pipeline,
           type: Types::Ci::PipelineType,

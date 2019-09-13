@@ -228,3 +228,5 @@ class Notify < BaseMailer
     @unsubscribe_url = unsubscribe_sent_notification_url(@sent_notification)
   end
 end
+
+Notify.prepend_if_ee('EE::Notify')

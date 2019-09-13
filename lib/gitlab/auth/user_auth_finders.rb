@@ -18,6 +18,8 @@ module Gitlab
     end
 
     module UserAuthFinders
+      prepend_if_ee('::EE::Gitlab::Auth::UserAuthFinders') # rubocop: disable Cop/InjectEnterpriseEditionModule
+
       include Gitlab::Utils::StrongMemoize
 
       PRIVATE_TOKEN_HEADER = 'HTTP_PRIVATE_TOKEN'

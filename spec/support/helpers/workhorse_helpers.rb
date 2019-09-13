@@ -29,7 +29,8 @@ module WorkhorseHelpers
 
     post(url,
          params: workhorse_params,
-         headers: workhorse_rewritten_fields_header('file' => file.path)
+         headers: workhorse_rewritten_fields_header(file_key => file.path),
+         env: { 'CONTENT_TYPE' => 'multipart/form-data' }
         )
   end
 

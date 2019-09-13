@@ -264,3 +264,5 @@ module MergeRequests
     end
   end
 end
+
+MergeRequests::BuildService.prepend_if_ee('EE::MergeRequests::BuildService')

@@ -64,3 +64,5 @@ module Issues
     end
   end
 end
+
+Issues::MoveService.prepend_if_ee('EE::Issues::MoveService')

@@ -115,3 +115,5 @@ class EventCreateService
     Event.create!(attributes)
   end
 end
+
+EventCreateService.prepend_if_ee('EE::EventCreateService')

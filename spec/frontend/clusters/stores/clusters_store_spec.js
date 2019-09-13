@@ -152,6 +152,7 @@ describe('Clusters Store', () => {
           },
         },
         environments: [],
+        fetchingEnvironments: false,
       });
     });
 

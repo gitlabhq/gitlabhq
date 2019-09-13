@@ -24,3 +24,5 @@ module Boards
     end
   end
 end
+
+Boards::CreateService.prepend_if_ee('EE::Boards::CreateService')

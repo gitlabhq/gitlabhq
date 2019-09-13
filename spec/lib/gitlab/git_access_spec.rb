@@ -943,7 +943,7 @@ describe Gitlab::GitAccess do
         changes = ['6f6d7e7ed 570e7b2ab refs/heads/master', '6f6d7e7ed 570e7b2ab refs/heads/feature']
 
         # There is still an N+1 query with protected branches
-        expect { access.check('git-receive-pack', changes) }.not_to exceed_query_limit(control_count).with_threshold(1)
+        expect { access.check('git-receive-pack', changes) }.not_to exceed_query_limit(control_count).with_threshold(2)
       end
 
       it 'raises TimeoutError when #check_single_change_access raises a timeout error' do

@@ -165,3 +165,5 @@ module Git
     end
   end
 end
+
+Git::BranchHooksService.prepend_if_ee('::EE::Git::BranchHooksService')

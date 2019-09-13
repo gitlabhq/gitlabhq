@@ -36,6 +36,10 @@ module Gitlab
           noteable.unsubscribe(sent_notification.recipient)
         end
 
+        def metrics_event
+          :receive_email_unsubscribe
+        end
+
         private
 
         attr_reader :reply_token

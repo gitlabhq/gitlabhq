@@ -309,3 +309,5 @@ class HipchatService < Service
     end
   end
 end
+
+HipchatService.prepend_if_ee('EE::HipchatService')

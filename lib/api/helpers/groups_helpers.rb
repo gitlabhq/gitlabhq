@@ -38,3 +38,5 @@ module API
     end
   end
 end
+
+API::Helpers::GroupsHelpers.prepend_if_ee('EE::API::Helpers::GroupsHelpers')

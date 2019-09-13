@@ -33,9 +33,9 @@ module Resolvers
     argument :closed_after, Types::TimeType,
               required: false,
               description: "Issues closed after this date"
-    argument :search, GraphQL::STRING_TYPE,
+    argument :search, GraphQL::STRING_TYPE, # rubocop:disable Graphql/Descriptions
               required: false
-    argument :sort, Types::Sort,
+    argument :sort, Types::Sort, # rubocop:disable Graphql/Descriptions
               required: false,
               default_value: 'created_desc'
 

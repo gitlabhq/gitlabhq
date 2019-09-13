@@ -89,3 +89,5 @@ module Projects
     end
   end
 end
+
+Projects::CleanupService.prepend_if_ee('EE::Projects::CleanupService')

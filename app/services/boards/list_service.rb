@@ -18,3 +18,5 @@ module Boards
     end
   end
 end
+
+Boards::ListService.prepend_if_ee('EE::Boards::ListService')

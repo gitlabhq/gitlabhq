@@ -84,6 +84,7 @@ export default class ClusterStore {
         },
       },
       environments: [],
+      fetchingEnvironments: false,
     };
   }
 
@@ -206,6 +207,10 @@ export default class ClusterStore {
     });
   }
 
+  toggleFetchEnvironments(isFetching) {
+    this.state.fetchingEnvironments = isFetching;
+  }
+
   updateEnvironments(environments = []) {
     this.state.environments = environments.map(environment => ({
       name: environment.name,
@@ -215,7 +220,7 @@ export default class ClusterStore {
       rolloutStatus: {
         instances: environment.rollout_status ? environment.rollout_status.instances : [],
       },
-      updatedAt: environment.updatedAt,
+      updatedAt: environment.updated_at,
     }));
   }
 }

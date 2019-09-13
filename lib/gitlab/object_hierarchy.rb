@@ -198,3 +198,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::ObjectHierarchy.prepend_if_ee('EE::Gitlab::ObjectHierarchy')

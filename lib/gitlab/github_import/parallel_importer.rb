@@ -5,6 +5,8 @@ module Gitlab
     # The ParallelImporter schedules the importing of a GitHub project using
     # Sidekiq.
     class ParallelImporter
+      prepend_if_ee('::EE::Gitlab::GithubImport::ParallelImporter') # rubocop: disable Cop/InjectEnterpriseEditionModule
+
       attr_reader :project
 
       def self.async?

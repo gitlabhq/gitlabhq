@@ -38,6 +38,8 @@ class DeploymentEntity < Grape::Entity
   expose :manual_actions, using: JobEntity, if: -> (*) { include_details? && can_create_deployment? }
   expose :scheduled_actions, using: JobEntity, if: -> (*) { include_details? && can_create_deployment? }
 
+  expose :cluster, using: ClusterBasicEntity
+
   private
 
   def include_details?

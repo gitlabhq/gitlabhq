@@ -34,3 +34,5 @@ module Groups
     # rubocop: enable CodeReuse/ActiveRecord
   end
 end
+
+Groups::DestroyService.prepend_if_ee('EE::Groups::DestroyService')

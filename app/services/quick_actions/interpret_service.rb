@@ -177,3 +177,5 @@ module QuickActions
     # rubocop: enable CodeReuse/ActiveRecord
   end
 end
+
+QuickActions::InterpretService.prepend_if_ee('EE::QuickActions::InterpretService')

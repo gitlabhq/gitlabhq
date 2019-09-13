@@ -46,3 +46,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::Metrics::Dashboard::Processor.prepend_if_ee('EE::Gitlab::Metrics::Dashboard::Processor')

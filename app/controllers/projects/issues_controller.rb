@@ -280,3 +280,5 @@ class Projects::IssuesController < Projects::ApplicationController
     Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42422')
   end
 end
+
+Projects::IssuesController.prepend_if_ee('EE::Projects::IssuesController')

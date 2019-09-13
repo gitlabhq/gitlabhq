@@ -22,3 +22,5 @@ module VersionCheckHelper
     'gitlab-ce'
   end
 end
+
+VersionCheckHelper.prepend_if_ee('EE::VersionCheckHelper')

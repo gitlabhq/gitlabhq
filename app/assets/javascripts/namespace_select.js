@@ -34,7 +34,7 @@ export default class NamespaceSelect {
               id: null,
             };
             namespaces.unshift(anyNamespace);
-            namespaces.splice(1, 0, 'divider');
+            namespaces.splice(1, 0, { type: 'divider' });
           }
           return dataCallback(namespaces);
         });

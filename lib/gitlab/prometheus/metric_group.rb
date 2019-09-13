@@ -3,6 +3,7 @@
 module Gitlab
   module Prometheus
     class MetricGroup
+      prepend_if_ee('EE::Gitlab::Prometheus::MetricGroup') # rubocop: disable Cop/InjectEnterpriseEditionModule
       include ActiveModel::Model
 
       attr_accessor :name, :priority, :metrics

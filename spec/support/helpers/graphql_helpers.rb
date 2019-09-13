@@ -172,6 +172,31 @@ module GraphqlHelpers
     post_graphql(mutation.query, current_user: current_user, variables: mutation.variables)
   end
 
+  # this implements GraphQL multipart request v2
+  # https://github.com/jaydenseric/graphql-multipart-request-spec/tree/v2.0.0-alpha.2
+  # this is simplified and do not support file deduplication
+  def mutation_to_apollo_uploads_param(mutation, files: [])
+    operations = { 'query' => mutation.query, 'variables' => mutation.variables }
+    map = {}
+    extracted_files = {}
+
+    files.each_with_index do |file_path, idx|
+      apollo_idx = (idx + 1).to_s
+      parent_dig_path = file_path[0..-2]
+      file_key = file_path[-1]
+
+      parent = operations['variables']
+      parent = parent.dig(*parent_dig_path) unless parent_dig_path.empty?
+
+      extracted_files[apollo_idx] = parent[file_key]
+      parent[file_key] = nil
+
+      map[apollo_idx] = ["variables.#{file_path.join('.')}"]
+    end
+
+    { operations: operations.to_json, map: map.to_json }.merge(extracted_files)
+  end
+
   # Raises an error if no data is found
   def graphql_data
     json_response['data'] || (raise NoData, graphql_errors)

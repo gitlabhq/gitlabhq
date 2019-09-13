@@ -142,7 +142,7 @@ describe IssuesHelper do
         expect(link_to_discussions_to_resolve(merge_request, nil)).to include(expected_path)
       end
 
-      it "containst the reference to the merge request" do
+      it "contains the reference to the merge request" do
         expect(link_to_discussions_to_resolve(merge_request, nil)).to include(merge_request.to_reference)
       end
     end
@@ -183,6 +183,81 @@ describe IssuesHelper do
 
       expect(helper).to receive(:can?).with(project.owner, :create_issue, project).and_return(true)
       expect(helper.show_new_issue_link?(project)).to be_truthy
+    end
+  end
+
+  describe '#issue_closed_link' do
+    let(:new_issue) { create(:issue, project: project) }
+    let(:guest)     { create(:user) }
+
+    before do
+      allow(helper).to receive(:can?) do |*args|
+        Ability.allowed?(*args)
+      end
+    end
+
+    shared_examples 'successfully displays link to issue and with css class' do |action|
+      it 'returns link' do
+        link = "<a class=\"#{css_class}\" href=\"/#{new_issue.project.full_path}/issues/#{new_issue.iid}\">(#{action})</a>"
+
+        expect(helper.issue_closed_link(issue, user, css_class: css_class)).to match(link)
+      end
+    end
+
+    shared_examples 'does not display link' do
+      it 'returns nil' do
+        expect(helper.issue_closed_link(issue, user)).to be_nil
+      end
+    end
+
+    context 'with linked issue' do
+      context 'with moved issue' do
+        before do
+          issue.update(moved_to: new_issue)
+        end
+
+        context 'when user has permission to see new issue' do
+          let(:user)      { project.owner }
+          let(:css_class) { 'text-white text-underline' }
+
+          it_behaves_like 'successfully displays link to issue and with css class', 'moved'
+        end
+
+        context 'when user has no permission to see new issue' do
+          let(:user) { guest }
+
+          it_behaves_like 'does not display link'
+        end
+      end
+
+      context 'with duplicated issue' do
+        before do
+          issue.update(duplicated_to: new_issue)
+        end
+
+        context 'when user has permission to see new issue' do
+          let(:user)      { project.owner }
+          let(:css_class) { 'text-white text-underline' }
+
+          it_behaves_like 'successfully displays link to issue and with css class', 'duplicated'
+        end
+
+        context 'when user has no permission to see new issue' do
+          let(:user) { guest }
+
+          it_behaves_like 'does not display link'
+        end
+      end
+    end
+
+    context 'without linked issue' do
+      let(:user) { project.owner }
+
+      before do
+        issue.update(moved_to: nil, duplicated_to: nil)
+      end
+
+      it_behaves_like 'does not display link'
     end
   end
 end

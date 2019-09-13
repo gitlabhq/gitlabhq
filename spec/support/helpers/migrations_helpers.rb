@@ -133,3 +133,5 @@ module MigrationsHelpers
     end
   end
 end
+
+MigrationsHelpers.prepend_if_ee('EE::MigrationsHelpers')

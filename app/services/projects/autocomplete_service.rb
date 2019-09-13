@@ -38,3 +38,5 @@ module Projects
     end
   end
 end
+
+Projects::AutocompleteService.prepend_if_ee('EE::Projects::AutocompleteService')

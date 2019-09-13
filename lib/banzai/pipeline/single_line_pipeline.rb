@@ -3,6 +3,8 @@
 module Banzai
   module Pipeline
     class SingleLinePipeline < GfmPipeline
+      prepend_if_ee('EE::Banzai::Pipeline::SingleLinePipeline') # rubocop: disable Cop/InjectEnterpriseEditionModule
+
       def self.filters
         @filters ||= FilterArray[
           Filter::HtmlEntityFilter,

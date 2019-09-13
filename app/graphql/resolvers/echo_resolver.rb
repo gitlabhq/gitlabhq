@@ -2,7 +2,7 @@
 
 module Resolvers
   class EchoResolver < BaseResolver
-    argument    :text, GraphQL::STRING_TYPE, required: true
+    argument    :text, GraphQL::STRING_TYPE, required: true # rubocop:disable Graphql/Descriptions
     description 'Testing endpoint to validate the API with'
 
     def resolve(**args)

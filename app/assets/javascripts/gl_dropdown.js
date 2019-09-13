@@ -7,6 +7,7 @@ import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import axios from './lib/utils/axios_utils';
 import { visitUrl } from './lib/utils/url_utility';
 import { isObject } from './lib/utils/type_utility';
+import renderItem from './gl_dropdown/render';
 
 var GitLabDropdown, GitLabDropdownFilter, GitLabDropdownRemote, GitLabDropdownInput;
 
@@ -521,8 +522,8 @@ GitLabDropdown = (function() {
           html.push(
             this.renderItem(
               {
-                header: name,
-                // Add header for each group
+                content: name,
+                type: 'header',
               },
               name,
             ),
@@ -542,16 +543,7 @@ GitLabDropdown = (function() {
   };
 
   GitLabDropdown.prototype.renderData = function(data, group) {
-    if (group == null) {
-      group = false;
-    }
-    return data.map(
-      (function(_this) {
-        return function(obj, index) {
-          return _this.renderItem(obj, group, index);
-        };
-      })(this),
-    );
+    return data.map((obj, index) => this.renderItem(obj, group || false, index));
   };
 
   GitLabDropdown.prototype.shouldPropagate = function(e) {
@@ -688,104 +680,25 @@ GitLabDropdown = (function() {
   };
 
   GitLabDropdown.prototype.renderItem = function(data, group, index) {
-    var field, html, selected, text, url, value, rowHidden;
+    let parent;
 
-    if (!this.options.renderRow) {
-      value = this.options.id ? this.options.id(data) : data.id;
-
-      if (value) {
-        value = value.toString().replace(/'/g, "\\'");
-      }
+    if (this.dropdown && this.dropdown[0]) {
+      parent = this.dropdown[0].parentNode;
     }
 
-    // Hide element
-    if (this.options.hideRow && this.options.hideRow(value)) {
-      rowHidden = true;
-    }
-    if (group == null) {
-      group = false;
-    }
-    if (index == null) {
-      // Render the row
-      index = false;
-    }
-    html = document.createElement('li');
-
-    if (rowHidden) {
-      html.style.display = 'none';
-    }
-
-    if (data === 'divider' || data === 'separator') {
-      html.className = data;
-      return html;
-    }
-    // Header
-    if (data.header != null) {
-      html.className = 'dropdown-header';
-      html.innerHTML = data.header;
-      return html;
-    }
-    if (this.options.renderRow) {
-      // Call the render function
-      html = this.options.renderRow.call(this.options, data, this);
-    } else {
-      if (!selected) {
-        const { fieldName } = this.options;
-
-        if (value) {
-          field = this.dropdown.parent().find(`input[name='${fieldName}'][value='${value}']`);
-          if (field.length) {
-            selected = true;
-          }
-        } else {
-          field = this.dropdown.parent().find(`input[name='${fieldName}']`);
-          selected = !field.length;
-        }
-      }
-      // Set URL
-      if (this.options.url != null) {
-        url = this.options.url(data);
-      } else {
-        url = data.url != null ? data.url : '#';
-      }
-      // Set Text
-      if (this.options.text != null) {
-        text = this.options.text(data);
-      } else {
-        text = data.text != null ? data.text : '';
-      }
-      if (this.highlight) {
-        text = data.template
-          ? this.highlightTemplate(text, data.template)
-          : this.highlightTextMatches(text, this.filterInput.val());
-      }
-      // Create the list item & the link
-      var link = document.createElement('a');
-
-      link.href = url;
-
-      if (this.icon) {
-        text = `<span>${text}</span>`;
-        link.classList.add('d-flex', 'align-items-center');
-        link.innerHTML = data.icon ? data.icon + text : text;
-      } else if (this.highlight) {
-        link.innerHTML = text;
-      } else {
-        link.textContent = text;
-      }
-
-      if (selected) {
-        link.classList.add('is-active');
-      }
-
-      if (group) {
-        link.dataset.group = group;
-        link.dataset.index = index;
-      }
-
-      html.appendChild(link);
-    }
-    return html;
+    return renderItem({
+      instance: this,
+      options: Object.assign({}, this.options, {
+        icon: this.icon,
+        highlight: this.highlight,
+        highlightText: text => this.highlightTextMatches(text, this.filterInput.val()),
+        highlightTemplate: this.highlightTemplate.bind(this),
+        parent,
+      }),
+      data,
+      group,
+      index,
+    });
   };
 
   GitLabDropdown.prototype.highlightTemplate = function(text, template) {
@@ -809,7 +722,6 @@ GitLabDropdown = (function() {
   };
 
   GitLabDropdown.prototype.noResults = function() {
-    var html;
     return '<li class="dropdown-menu-empty-item"><a>No matching results</a></li>';
   };
 

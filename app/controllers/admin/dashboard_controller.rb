@@ -14,3 +14,5 @@ class Admin::DashboardController < Admin::ApplicationController
   end
   # rubocop: enable CodeReuse/ActiveRecord
 end
+
+Admin::DashboardController.prepend_if_ee('EE::Admin::DashboardController')

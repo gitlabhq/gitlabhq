@@ -67,3 +67,5 @@ module MergeRequests
     end
   end
 end
+
+MergeRequests::CreateService.include_if_ee('EE::MergeRequests::CreateService')

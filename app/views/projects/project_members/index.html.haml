@@ -19,7 +19,7 @@
             %li.nav-tab{ role: 'presentation' }
               %a.nav-link.active{ href: '#invite-member-pane', id: 'invite-member-tab', data: { toggle: 'tab' }, role: 'tab' }= _("Invite member")
             %li.nav-tab{ role: 'presentation', class: ('active' if membership_locked?) }
-              %a.nav-link{ href: '#invite-group-pane', id: 'invite-group-tab', data: { toggle: 'tab' }, role: 'tab' }= _("Invite group")
+              %a.nav-link{ href: '#invite-group-pane', id: 'invite-group-tab', data: { toggle: 'tab', qa_selector: 'invite_group_tab' }, role: 'tab' }= _("Invite group")
 
           .tab-content.gitlab-tab-content
             .tab-pane.active{ id: 'invite-member-pane', role: 'tabpanel' }

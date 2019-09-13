@@ -86,3 +86,5 @@ module BoardsResponses
     BoardSerializer.new
   end
 end
+
+BoardsResponses.prepend_if_ee('EE::BoardsResponses')

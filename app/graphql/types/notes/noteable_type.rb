@@ -23,3 +23,5 @@ module Types
     end
   end
 end
+
+Types::Notes::NoteableType.extend_if_ee('::EE::Types::Notes::NoteableType')

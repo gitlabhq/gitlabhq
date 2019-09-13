@@ -7,3 +7,5 @@ module DeployKeys
     end
   end
 end
+
+DeployKeys::CreateService.prepend_if_ee('::EE::DeployKeys::CreateService')

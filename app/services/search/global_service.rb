@@ -35,3 +35,5 @@ module Search
     end
   end
 end
+
+Search::GlobalService.prepend_if_ee('EE::Search::GlobalService')

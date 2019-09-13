@@ -50,3 +50,5 @@ class Profiles::PreferencesController < Profiles::ApplicationController
     ]
   end
 end
+
+Profiles::PreferencesController.prepend_if_ee('::EE::Profiles::PreferencesController')

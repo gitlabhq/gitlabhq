@@ -80,3 +80,5 @@ class NotificationSetting < ApplicationRecord
     respond_to?(event) && !!public_send(event) # rubocop:disable GitlabSecurity/PublicSend
   end
 end
+
+NotificationSetting.prepend_if_ee('EE::NotificationSetting')

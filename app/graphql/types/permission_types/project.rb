@@ -20,3 +20,5 @@ module Types
     end
   end
 end
+
+Types::PermissionTypes::Project.prepend_if_ee('EE::Types::PermissionTypes::Project')

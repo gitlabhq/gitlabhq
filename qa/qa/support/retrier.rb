@@ -24,7 +24,7 @@ module QA
         end
       end
 
-      def retry_until(max_attempts: 3, reload_page: nil, sleep_interval: 0)
+      def retry_until(max_attempts: 3, reload_page: nil, sleep_interval: 0, exit_on_failure: false)
         QA::Runtime::Logger.debug("with retry_until: max_attempts #{max_attempts}; sleep_interval #{sleep_interval}; reload_page:#{reload_page}")
         attempts = 0
 
@@ -38,6 +38,11 @@ module QA
           reload_page.refresh if reload_page
 
           attempts += 1
+        end
+
+        if exit_on_failure
+          QA::Runtime::Logger.debug("Raising exception after #{max_attempts} attempts")
+          raise
         end
 
         false

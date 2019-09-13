@@ -79,7 +79,9 @@ export default {
         default:
           break;
       }
-      return environmentText;
+      return environmentText && this.hasCluster
+        ? `${environmentText} ${this.clusterText}`
+        : environmentText;
     },
     environmentLink() {
       if (this.hasEnvironment) {
@@ -107,6 +109,37 @@ export default {
     lastDeploymentPath() {
       return !_.isEmpty(this.lastDeployment.deployable)
         ? this.lastDeployment.deployable.build_path
+        : '';
+    },
+    hasCluster() {
+      return this.hasLastDeployment && this.lastDeployment.cluster;
+    },
+    clusterNameOrLink() {
+      if (!this.hasCluster) {
+        return '';
+      }
+
+      const { name, path } = this.lastDeployment.cluster;
+      const escapedName = _.escape(name);
+      const escapedPath = _.escape(path);
+
+      if (!escapedPath) {
+        return escapedName;
+      }
+
+      return sprintf(
+        '%{startLink}%{name}%{endLink}',
+        {
+          startLink: `<a href="${escapedPath}" class="js-job-cluster-link">`,
+          name: escapedName,
+          endLink: '</a>',
+        },
+        false,
+      );
+    },
+    clusterText() {
+      return this.hasCluster
+        ? sprintf(__('Cluster %{cluster} was used.'), { cluster: this.clusterNameOrLink }, false)
         : '';
     },
   },

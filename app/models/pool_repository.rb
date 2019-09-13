@@ -114,3 +114,5 @@ class PoolRepository < ApplicationRecord
       .new(self, prefix: Storage::HashedProject::POOL_PATH_PREFIX)
   end
 end
+
+PoolRepository.prepend_if_ee('EE::PoolRepository')

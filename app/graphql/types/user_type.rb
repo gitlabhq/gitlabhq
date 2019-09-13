@@ -8,9 +8,9 @@ module Types
 
     present_using UserPresenter
 
-    field :name, GraphQL::STRING_TYPE, null: false
-    field :username, GraphQL::STRING_TYPE, null: false
-    field :avatar_url, GraphQL::STRING_TYPE, null: false
-    field :web_url, GraphQL::STRING_TYPE, null: false
+    field :name, GraphQL::STRING_TYPE, null: false # rubocop:disable Graphql/Descriptions
+    field :username, GraphQL::STRING_TYPE, null: false # rubocop:disable Graphql/Descriptions
+    field :avatar_url, GraphQL::STRING_TYPE, null: false # rubocop:disable Graphql/Descriptions
+    field :web_url, GraphQL::STRING_TYPE, null: false # rubocop:disable Graphql/Descriptions
   end
 end

@@ -414,3 +414,5 @@ class IssuableBaseService < BaseService
     issuable.changes.keys != ["relative_position"]
   end
 end
+
+IssuableBaseService.prepend_if_ee('EE::IssuableBaseService')

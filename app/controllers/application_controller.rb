@@ -534,3 +534,5 @@ class ApplicationController < ActionController::Base
     end
   end
 end
+
+ApplicationController.prepend_if_ee('EE::ApplicationController')

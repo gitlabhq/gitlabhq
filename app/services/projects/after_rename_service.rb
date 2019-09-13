@@ -139,3 +139,5 @@ module Projects
     end
   end
 end
+
+Projects::AfterRenameService.prepend_if_ee('EE::Projects::AfterRenameService')

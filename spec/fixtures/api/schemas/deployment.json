@@ -47,6 +47,12 @@
         { "$ref": "job/job.json" }
       ]
     },
+    "cluster": {
+      "oneOf": [
+        { "type": "null" },
+        { "$ref": "cluster_basic.json" }
+      ]
+    },
     "manual_actions": {
       "type": "array",
       "items": { "$ref": "job/job.json" }

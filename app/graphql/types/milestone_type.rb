@@ -6,14 +6,14 @@ module Types
 
     authorize :read_milestone
 
-    field :description, GraphQL::STRING_TYPE, null: true
-    field :title, GraphQL::STRING_TYPE, null: false
-    field :state, GraphQL::STRING_TYPE, null: false
+    field :description, GraphQL::STRING_TYPE, null: true # rubocop:disable Graphql/Descriptions
+    field :title, GraphQL::STRING_TYPE, null: false # rubocop:disable Graphql/Descriptions
+    field :state, GraphQL::STRING_TYPE, null: false # rubocop:disable Graphql/Descriptions
 
-    field :due_date, Types::TimeType, null: true
-    field :start_date, Types::TimeType, null: true
+    field :due_date, Types::TimeType, null: true # rubocop:disable Graphql/Descriptions
+    field :start_date, Types::TimeType, null: true # rubocop:disable Graphql/Descriptions
 
-    field :created_at, Types::TimeType, null: false
-    field :updated_at, Types::TimeType, null: false
+    field :created_at, Types::TimeType, null: false # rubocop:disable Graphql/Descriptions
+    field :updated_at, Types::TimeType, null: false # rubocop:disable Graphql/Descriptions
   end
 end

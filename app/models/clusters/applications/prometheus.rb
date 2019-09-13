@@ -117,3 +117,5 @@ module Clusters
     end
   end
 end
+
+Clusters::Applications::Prometheus.prepend_if_ee('EE::Clusters::Applications::Prometheus')

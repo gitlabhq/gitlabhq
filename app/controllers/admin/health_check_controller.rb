@@ -11,3 +11,5 @@ class Admin::HealthCheckController < Admin::ApplicationController
     ['standard']
   end
 end
+
+Admin::HealthCheckController.prepend_if_ee('EE::Admin::HealthCheckController')

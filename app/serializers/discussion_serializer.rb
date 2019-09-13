@@ -17,3 +17,5 @@ class DiscussionSerializer < BaseSerializer
     opts.merge(additional_opts)
   end
 end
+
+DiscussionSerializer.prepend_if_ee('EE::DiscussionSerializer')

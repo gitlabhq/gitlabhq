@@ -54,6 +54,10 @@ module Gitlab
           super.merge(includes_patches: patch_attachments.any?)
         end
 
+        def metrics_event
+          :receive_email_create_merge_request
+        end
+
         private
 
         def build_merge_request

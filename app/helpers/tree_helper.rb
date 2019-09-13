@@ -187,3 +187,5 @@ module TreeHelper
     attrs
   end
 end
+
+TreeHelper.prepend_if_ee('::EE::TreeHelper')

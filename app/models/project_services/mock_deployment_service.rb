@@ -32,3 +32,5 @@ class MockDeploymentService < Service
     false
   end
 end
+
+MockDeploymentService.prepend_if_ee('EE::MockDeploymentService')

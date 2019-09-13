@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: uk\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2019-06-14 21:26\n"
+"PO-Revision-Date: 2019-06-18 12:05\n"
 
 msgid " Please sign in."
 msgstr " Будь ласка, увійдіть."
@@ -6513,7 +6513,7 @@ msgid "Google authentication is not %{link_to_documentation}. Ask your GitLab ad
 msgstr "Автентифікація Google не %{link_to_documentation}. Попросіть свого адміністратора GitLab, якщо ви хочете скористатися цим сервісом."
 
 msgid "Got it"
-msgstr ""
+msgstr "Зрозуміло"
 
 msgid "Got it!"
 msgstr "Зрозуміло!"
@@ -7604,7 +7604,7 @@ msgid "Job|with"
 msgstr ""
 
 msgid "Join Zoom meeting"
-msgstr ""
+msgstr "Приєднатися до зустрічі в Zoom"
 
 msgid "Jul"
 msgstr "лип."
@@ -9393,16 +9393,16 @@ msgid "Pages getting started guide"
 msgstr ""
 
 msgid "Pagination|Go to first page"
-msgstr ""
+msgstr "Перейти до першої сторінки"
 
 msgid "Pagination|Go to last page"
-msgstr ""
+msgstr "Перейти до останньої сторінки"
 
 msgid "Pagination|Go to next page"
-msgstr ""
+msgstr "Перейти до наступної сторінки"
 
 msgid "Pagination|Go to previous page"
-msgstr ""
+msgstr "Перейти до попередньої сторінки"
 
 msgid "Pagination|Last »"
 msgstr "Остання »"

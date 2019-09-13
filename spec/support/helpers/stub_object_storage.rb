@@ -78,3 +78,5 @@ end
 
 require_relative '../../../ee/spec/support/helpers/ee/stub_object_storage' if
   Dir.exist?("#{__dir__}/../../../ee")
+
+StubObjectStorage.prepend_if_ee('EE::StubObjectStorage')

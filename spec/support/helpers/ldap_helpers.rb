@@ -70,3 +70,5 @@ module LdapHelpers
       .to receive(:ldap_search).and_raise(Gitlab::Auth::LDAP::LDAPConnectionError)
   end
 end
+
+LdapHelpers.include_if_ee('EE::LdapHelpers')

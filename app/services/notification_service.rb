@@ -622,3 +622,5 @@ class NotificationService
     source.respond_to?(:group) && source.group
   end
 end
+
+NotificationService.prepend_if_ee('EE::NotificationService')

@@ -408,3 +408,5 @@ module Banzai
     end
   end
 end
+
+Banzai::Filter::AbstractReferenceFilter.prepend_if_ee('EE::Banzai::Filter::AbstractReferenceFilter')

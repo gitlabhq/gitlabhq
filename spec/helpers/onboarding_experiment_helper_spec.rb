@@ -4,17 +4,17 @@ require 'spec_helper'
 
 describe OnboardingExperimentHelper, type: :helper do
   describe '.allow_access_to_onboarding?' do
-    context "when we're not gitlab.com" do
+    context "when we're not gitlab.com or dev env" do
       it 'returns false' do
-        allow(::Gitlab).to receive(:com?).and_return(false)
+        allow(::Gitlab).to receive(:dev_env_or_com?).and_return(false)
 
         expect(helper.allow_access_to_onboarding?).to be(false)
       end
     end
 
-    context "when we're gitlab.com" do
+    context "when we're gitlab.com or dev env" do
       before do
-        allow(::Gitlab).to receive(:com?).and_return(true)
+        allow(::Gitlab).to receive(:dev_env_or_com?).and_return(true)
       end
 
       context 'and the :user_onboarding feature is not enabled' do

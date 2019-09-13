@@ -198,3 +198,5 @@ module Ci
     end
   end
 end
+
+Ci::JobArtifact.prepend_if_ee('EE::Ci::JobArtifact')

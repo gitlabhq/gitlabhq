@@ -271,3 +271,5 @@ module SearchHelper
     end
   end
 end
+
+SearchHelper.prepend_if_ee('EE::SearchHelper')

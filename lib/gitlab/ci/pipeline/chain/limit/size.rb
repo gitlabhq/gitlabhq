@@ -19,3 +19,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::Ci::Pipeline::Chain::Limit::Size.prepend_if_ee('EE::Gitlab::Ci::Pipeline::Chain::Limit::Size')

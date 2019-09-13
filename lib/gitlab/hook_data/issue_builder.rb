@@ -24,6 +24,7 @@ module Gitlab
           last_edited_by_id
           milestone_id
           moved_to_id
+          duplicated_to_id
           project_id
           relative_position
           state
@@ -54,3 +55,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::HookData::IssueBuilder.prepend_if_ee('EE::Gitlab::HookData::IssueBuilder')

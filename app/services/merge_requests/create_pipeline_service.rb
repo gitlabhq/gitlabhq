@@ -35,3 +35,5 @@ module MergeRequests
     end
   end
 end
+
+MergeRequests::CreatePipelineService.prepend_if_ee('EE::MergeRequests::CreatePipelineService')

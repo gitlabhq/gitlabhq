@@ -10,7 +10,7 @@
     %p= _('Update your project name, topics, description and avatar.')
   .settings-content= render 'projects/settings/general'
 
-%section.settings.sharing-permissions.no-animate#js-shared-permissions{ class: ('expanded' if expanded) }
+%section.settings.sharing-permissions.no-animate#js-shared-permissions{ class: ('expanded' if expanded), data: { qa_selector: 'visibility_features_permissions_content' } }
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only= _('Visibility, project features, permissions')
     %button.btn.btn-default.js-settings-toggle{ type: 'button' }= expanded ? _('Collapse') : _('Expand')
@@ -21,7 +21,7 @@
       %input{ name: 'update_section', type: 'hidden', value: 'js-shared-permissions' }
       %template.js-project-permissions-form-data{ type: "application/json" }= project_permissions_panel_data_json(@project)
       .js-project-permissions-form
-      = f.submit _('Save changes'), class: "btn btn-success"
+      = f.submit _('Save changes'), class: "btn btn-success", data: { qa_selector: 'visibility_features_permissions_save_button' }
 
 %section.qa-merge-request-settings.rspec-merge-request-settings.settings.merge-requests-feature.no-animate#js-merge-request-settings{ class: [('expanded' if expanded), ('hidden' if @project.project_feature.send(:merge_requests_access_level) == 0)] }
   .settings-header
@@ -81,12 +81,12 @@
         - if @project.archived?
           %p= _("Unarchiving the project will restore people's ability to make changes to it. The repository can be committed to, and issues, comments and other entities can be created. <strong>Once active this project shows up in the search and on the dashboard.</strong>").html_safe
           = link_to _('Unarchive project'), unarchive_project_path(@project),
-              data: { confirm: _("Are you sure that you want to unarchive this project?") },
+              data: { confirm: _("Are you sure that you want to unarchive this project?"), qa_selector: 'unarchive_project_link' },
               method: :post, class: "btn btn-success"
         - else
           %p= _("Archiving the project will make it entirely read-only. It is hidden from the dashboard and doesn't show up in searches. <strong>The repository cannot be committed to, and no issues, comments or other entities can be created.</strong>").html_safe
           = link_to _('Archive project'), archive_project_path(@project),
-              data: { confirm: _("Are you sure that you want to archive this project?") },
+              data: { confirm: _("Are you sure that you want to archive this project?"), qa_selector: 'archive_project_link' },
               method: :post, class: "btn btn-warning"
     .sub-section.rename-repository
       %h4.warning-title= _('Change path')

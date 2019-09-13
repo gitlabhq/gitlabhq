@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: pt-BR\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2019-06-14 19:54\n"
+"PO-Revision-Date: 2019-06-18 11:37\n"
 
 msgid " Please sign in."
 msgstr " Por favor, entre usando sua conta."
@@ -6413,7 +6413,7 @@ msgid "Google authentication is not %{link_to_documentation}. Ask your GitLab ad
 msgstr "Autenticação do Google não está %{link_to_documentation}. Peça ao administrador do Gitlab se você deseja usar esse serviço."
 
 msgid "Got it"
-msgstr ""
+msgstr "Entendi"
 
 msgid "Got it!"
 msgstr "Entendi!"
@@ -8260,7 +8260,7 @@ msgid "MergeRequest| %{paragraphStart}changed the description %{descriptionChang
 msgstr "%{paragraphStart}alterou a descrição %{descriptionChangedTimes} vezes %{timeDifferenceMinutes}%{paragraphEnd}"
 
 msgid "MergeRequest|Error dismissing suggestion popover. Please try again."
-msgstr ""
+msgstr "Erro ao dispensar popover de sugestão. Por favor, tente novamente."
 
 msgid "MergeRequest|Error loading full diff. Please try again."
 msgstr "Erro ao carregar o diff completo. Por favor, tente novamente."
@@ -8739,7 +8739,7 @@ msgid "New users set to external"
 msgstr ""
 
 msgid "New! Suggest changes directly"
-msgstr ""
+msgstr "Novo! Sugira alterações diretamente"
 
 msgid "New..."
 msgstr "Novo..."
@@ -9281,16 +9281,16 @@ msgid "Pages getting started guide"
 msgstr "Guia de primeiros passos a Páginas"
 
 msgid "Pagination|Go to first page"
-msgstr ""
+msgstr "Ir para primeira página"
 
 msgid "Pagination|Go to last page"
-msgstr ""
+msgstr "Ir para a última página"
 
 msgid "Pagination|Go to next page"
-msgstr ""
+msgstr "Ir para a próxima página"
 
 msgid "Pagination|Go to previous page"
-msgstr ""
+msgstr "Ir para a página anterior"
 
 msgid "Pagination|Last »"
 msgstr "Último >>"
@@ -12780,7 +12780,7 @@ msgid "Successfully unlocked"
 msgstr ""
 
 msgid "Suggest code changes which are immediately applied. Try it out!"
-msgstr ""
+msgstr "Sugira alterações de código que são aplicadas imediatamente. Experimente!"
 
 msgid "Suggested change"
 msgstr ""

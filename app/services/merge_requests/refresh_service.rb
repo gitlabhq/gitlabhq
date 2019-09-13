@@ -257,3 +257,5 @@ module MergeRequests
     end
   end
 end
+
+MergeRequests::RefreshService.prepend_if_ee('EE::MergeRequests::RefreshService')

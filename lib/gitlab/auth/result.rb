@@ -3,6 +3,8 @@
 module Gitlab
   module Auth
     Result = Struct.new(:actor, :project, :type, :authentication_abilities) do
+      prepend_if_ee('::EE::Gitlab::Auth::Result') # rubocop: disable Cop/InjectEnterpriseEditionModule
+
       def ci?(for_project)
         type == :ci &&
           project &&

@@ -259,3 +259,5 @@ module MilestonesHelper
     end
   end
 end
+
+MilestonesHelper.prepend_if_ee('EE::MilestonesHelper')

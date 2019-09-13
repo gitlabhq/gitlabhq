@@ -109,3 +109,5 @@ module UsersHelper
     items
   end
 end
+
+UsersHelper.prepend_if_ee('EE::UsersHelper')

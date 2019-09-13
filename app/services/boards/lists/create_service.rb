@@ -48,3 +48,5 @@ module Boards
     end
   end
 end
+
+Boards::Lists::CreateService.prepend_if_ee('EE::Boards::Lists::CreateService')

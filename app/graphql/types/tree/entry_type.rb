@@ -4,11 +4,11 @@ module Types
     module EntryType
       include Types::BaseInterface
 
-      field :id, GraphQL::ID_TYPE, null: false
-      field :name, GraphQL::STRING_TYPE, null: false
-      field :type, Tree::TypeEnum, null: false
-      field :path, GraphQL::STRING_TYPE, null: false
-      field :flat_path, GraphQL::STRING_TYPE, null: false
+      field :id, GraphQL::ID_TYPE, null: false # rubocop:disable Graphql/Descriptions
+      field :name, GraphQL::STRING_TYPE, null: false # rubocop:disable Graphql/Descriptions
+      field :type, Tree::TypeEnum, null: false # rubocop:disable Graphql/Descriptions
+      field :path, GraphQL::STRING_TYPE, null: false # rubocop:disable Graphql/Descriptions
+      field :flat_path, GraphQL::STRING_TYPE, null: false # rubocop:disable Graphql/Descriptions
     end
   end
 end

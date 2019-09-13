@@ -15,3 +15,5 @@ class Epic < ApplicationRecord
     '&amp;'
   end
 end
+
+Epic.prepend_if_ee('EE::Epic')

@@ -465,3 +465,5 @@ class Group < Namespace
     errors.add(:visibility_level, "#{visibility} is not allowed since there are sub-groups with higher visibility.")
   end
 end
+
+Group.prepend_if_ee('EE::Group')

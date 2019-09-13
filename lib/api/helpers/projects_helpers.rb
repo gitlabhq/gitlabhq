@@ -111,3 +111,5 @@ module API
     end
   end
 end
+
+API::Helpers::ProjectsHelpers.prepend_if_ee('EE::API::Helpers::ProjectsHelpers')

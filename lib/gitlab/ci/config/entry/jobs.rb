@@ -77,3 +77,5 @@ module Gitlab
     end
   end
 end
+
+::Gitlab::Ci::Config::Entry::Jobs.prepend_if_ee('::EE::Gitlab::Ci::Config::Entry::Jobs')

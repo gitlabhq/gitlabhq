@@ -33,6 +33,8 @@ module API
       ]
     end
 
+    prepend_if_ee('EE::API::MergeRequests') # rubocop: disable Cop/InjectEnterpriseEditionModule
+
     helpers do
       # rubocop: disable CodeReuse/ActiveRecord
       def find_merge_requests(args = {})

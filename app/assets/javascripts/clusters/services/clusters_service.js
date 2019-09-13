@@ -33,6 +33,10 @@ export default class ClusterService {
     return axios.delete(this.appInstallEndpointMap[appId], params);
   }
 
+  fetchClusterEnvironments() {
+    return axios.get(this.options.clusterEnvironmentsEndpoint);
+  }
+
   static updateCluster(endpoint, data) {
     return axios.put(endpoint, data);
   }

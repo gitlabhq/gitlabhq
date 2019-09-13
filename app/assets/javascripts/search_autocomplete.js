@@ -191,13 +191,14 @@ export class SearchAutocomplete {
           // Add group header before list each group
           if (lastCategory !== suggestion.category) {
             if (!firstCategory) {
-              data.push('separator');
+              data.push({ type: 'separator' });
             }
             if (firstCategory) {
               firstCategory = false;
             }
             data.push({
-              header: suggestion.category,
+              type: 'header',
+              content: suggestion.category,
             });
             lastCategory = suggestion.category;
           }
@@ -221,7 +222,7 @@ export class SearchAutocomplete {
             template = s__('SearchAutocomplete|in this group');
           }
 
-          data.unshift('separator');
+          data.unshift({ type: 'separator' });
           data.unshift({
             icon,
             text: term,
@@ -271,7 +272,8 @@ export class SearchAutocomplete {
 
     if (name) {
       baseItems.push({
-        header: `${name}`,
+        type: 'header',
+        content: `${name}`,
       });
     }
 

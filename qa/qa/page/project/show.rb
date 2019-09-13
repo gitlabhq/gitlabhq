@@ -56,6 +56,10 @@ module QA
           element :spinner
         end
 
+        view 'app/views/projects/buttons/_download.html.haml' do
+          element :download_source_code_button
+        end
+
         def wait_for_viewers_to_load
           wait(reload: false) do
             has_no_element?(:spinner)

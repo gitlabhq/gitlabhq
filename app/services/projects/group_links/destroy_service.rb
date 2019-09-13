@@ -11,3 +11,5 @@ module Projects
     end
   end
 end
+
+Projects::GroupLinks::DestroyService.prepend_if_ee('EE::Projects::GroupLinks::DestroyService')

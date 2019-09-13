@@ -14,6 +14,7 @@ issues:
 - todos
 - user_agent_detail
 - moved_to
+- duplicated_to
 - events
 - merge_requests_closing_issues
 - metrics

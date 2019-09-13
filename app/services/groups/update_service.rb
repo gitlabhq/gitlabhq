@@ -66,3 +66,5 @@ module Groups
     end
   end
 end
+
+Groups::UpdateService.prepend_if_ee('EE::Groups::UpdateService')

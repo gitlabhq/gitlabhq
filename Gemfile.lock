@@ -80,6 +80,14 @@ GEM
       encryptor (~> 3.0.0)
     attr_required (1.0.1)
     awesome_print (1.8.0)
+    aws-sdk (2.9.32)
+      aws-sdk-resources (= 2.9.32)
+    aws-sdk-core (2.9.32)
+      aws-sigv4 (~> 1.0)
+      jmespath (~> 1.0)
+    aws-sdk-resources (2.9.32)
+      aws-sdk-core (= 2.9.32)
+    aws-sigv4 (1.0.0)
     axiom-types (0.1.1)
       descendants_tracker (~> 0.0.4)
       ice_nine (~> 0.11.0)
@@ -226,6 +234,19 @@ GEM
       doorkeeper (~> 4.3)
       json-jwt (~> 1.6)
     ed25519 (1.2.4)
+    elasticsearch (5.0.3)
+      elasticsearch-api (= 5.0.3)
+      elasticsearch-transport (= 5.0.3)
+    elasticsearch-api (5.0.3)
+      multi_json
+    elasticsearch-model (0.1.9)
+      activesupport (> 3)
+      elasticsearch (> 0.4)
+      hashie
+    elasticsearch-rails (0.1.9)
+    elasticsearch-transport (5.0.3)
+      faraday
+      multi_json
     email_reply_trimmer (0.1.6)
     email_spec (2.2.0)
       htmlentities (~> 4.3.3)
@@ -254,6 +275,9 @@ GEM
       faraday (~> 0.8)
     faraday_middleware (0.12.2)
       faraday (>= 0.7.4, < 1.0)
+    faraday_middleware-aws-signers-v4 (0.1.7)
+      aws-sdk-resources (~> 2)
+      faraday (~> 0.9)
     faraday_middleware-multi_json (0.0.6)
       faraday_middleware
       multi_json
@@ -344,6 +368,7 @@ GEM
       jaeger-client (~> 0.10)
       opentracing (~> 0.4)
       redis (> 3.0.0, < 5.0.0)
+    gitlab-license (1.0.0)
     gitlab-markup (1.7.0)
     gitlab-peek (0.0.1)
       railties (>= 4.0.0)
@@ -417,6 +442,8 @@ GEM
     grpc (1.19.0)
       google-protobuf (~> 3.1)
       googleapis-common-protos-types (~> 1.0.0)
+    gssapi (1.2.0)
+      ffi (>= 1.0.1)
     haml (5.0.4)
       temple (>= 0.8.0)
       tilt
@@ -480,6 +507,7 @@ GEM
       atlassian-jwt
       multipart-post
       oauth (~> 0.5, >= 0.5.0)
+    jmespath (1.3.1)
     js_regex (3.1.1)
       character_set (~> 1.1)
       regexp_parser (~> 1.1)
@@ -568,7 +596,9 @@ GEM
       mustermann (~> 1.0.0)
     nakayoshi_fork (0.0.4)
     nap (1.1.0)
+    net-dns (0.9.0)
     net-ldap (0.16.0)
+    net-ntp (2.1.3)
     net-ssh (5.2.0)
     netrc (0.11.0)
     nio4r (2.3.1)
@@ -961,7 +991,7 @@ GEM
     sys-filesystem (1.1.6)
       ffi
     sysexits (1.2.0)
-    temple (0.8.0)
+    temple (0.8.1)
     terminal-table (1.8.0)
       unicode-display_width (~> 1.1, >= 1.1.1)
     test-prof (0.2.5)
@@ -973,7 +1003,7 @@ GEM
     thor (0.19.4)
     thread_safe (0.3.6)
     thrift (0.11.0.0)
-    tilt (2.0.8)
+    tilt (2.0.9)
     timecop (0.8.1)
     timfel-krb5-auth (0.8.3)
     toml (0.2.0)
@@ -1070,6 +1100,7 @@ DEPENDENCIES
   atlassian-jwt (~> 0.2.0)
   attr_encrypted (~> 3.1.0)
   awesome_print
+  aws-sdk
   babosa (~> 1.0.2)
   base32 (~> 0.3.0)
   batch-loader (~> 1.4.0)
@@ -1107,11 +1138,15 @@ DEPENDENCIES
   doorkeeper (~> 4.3)
   doorkeeper-openid_connect (~> 1.5)
   ed25519 (~> 1.2)
+  elasticsearch-api (= 5.0.3)
+  elasticsearch-model (~> 0.1.9)
+  elasticsearch-rails (~> 0.1.9)
   email_reply_trimmer (~> 0.1)
   email_spec (~> 2.2.0)
   escape_utils (~> 1.1)
   factory_bot_rails (~> 4.8.2)
   faraday (~> 0.12)
+  faraday_middleware-aws-signers-v4
   fast_blank
   ffaker (~> 2.10)
   flipper (~> 0.13.0)
@@ -1136,6 +1171,7 @@ DEPENDENCIES
   gitaly (~> 1.58.0)
   github-markup (~> 1.7.0)
   gitlab-labkit (~> 0.5)
+  gitlab-license (~> 1.0)
   gitlab-markup (~> 1.7.0)
   gitlab-peek (~> 0.0.1)
   gitlab-sidekiq-fetcher (= 0.5.2)
@@ -1154,6 +1190,7 @@ DEPENDENCIES
   graphql (~> 1.9.11)
   graphql-docs (~> 1.6.0)
   grpc (~> 1.19.0)
+  gssapi
   haml_lint (~> 0.31.0)
   hamlit (~> 2.8.8)
   hangouts-chat (~> 0.0.5)
@@ -1185,7 +1222,9 @@ DEPENDENCIES
   mini_magick
   minitest (~> 5.11.0)
   nakayoshi_fork (~> 0.0.4)
+  net-dns (~> 0.9.0)
   net-ldap
+  net-ntp
   net-ssh (~> 5.2)
   nokogiri (~> 1.10.4)
   oauth2 (~> 1.4)

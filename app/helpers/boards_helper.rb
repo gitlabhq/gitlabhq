@@ -107,3 +107,5 @@ module BoardsHelper
     serializer.represent(board).as_json
   end
 end
+
+BoardsHelper.prepend_if_ee('EE::BoardsHelper')

@@ -24,6 +24,14 @@ module Gitlab
         def metrics_params
           { handler: self.class.name }
         end
+
+        # Each handler should use it's own metric event.  Otherwise there
+        # is a possibility that within the same Sidekiq process, that same
+        # event with different metrics_params will cause Prometheus to
+        # throw an error
+        def metrics_event
+          raise NotImplementedError
+        end
       end
     end
   end

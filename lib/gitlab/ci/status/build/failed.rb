@@ -21,6 +21,8 @@ module Gitlab
 
           private_constant :REASONS
 
+          prepend_if_ee('::EE::Gitlab::Ci::Status::Build::Failed') # rubocop: disable Cop/InjectEnterpriseEditionModule
+
           def status_tooltip
             base_message
           end

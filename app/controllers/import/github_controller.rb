@@ -186,3 +186,5 @@ class Import::GithubController < Import::BaseController
     {}
   end
 end
+
+Import::GithubController.prepend_if_ee('EE::Import::GithubController')

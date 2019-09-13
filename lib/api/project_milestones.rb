@@ -116,3 +116,5 @@ module API
     end
   end
 end
+
+API::ProjectMilestones.prepend_if_ee('EE::API::ProjectMilestones')

@@ -15,3 +15,5 @@ class BlobEntity < Grape::Entity
     project_blob_path(request.project, File.join(request.ref, blob.path))
   end
 end
+
+BlobEntity.prepend_if_ee('EE::BlobEntity')

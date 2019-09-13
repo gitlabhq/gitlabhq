@@ -32,6 +32,10 @@ module Gitlab
             record_name: 'comment')
         end
 
+        def metrics_event
+          :receive_email_create_note
+        end
+
         private
 
         def author

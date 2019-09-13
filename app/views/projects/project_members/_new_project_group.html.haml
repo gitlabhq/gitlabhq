@@ -3,7 +3,7 @@
     = form_tag project_group_links_path(@project), class: 'js-requires-input', method: :post do
       .form-group
         = label_tag :link_group_id, _("Select a group to invite"), class: "label-bold"
-        = groups_select_tag(:link_group_id, data: { skip_groups: @skip_groups }, class: "input-clamp", required: true)
+        = groups_select_tag(:link_group_id, data: { skip_groups: @skip_groups }, class: "input-clamp qa-group-select-field", required: true)
       .form-group
         = label_tag :link_group_access, _("Max access level"), class: "label-bold"
         .select-wrapper
@@ -18,4 +18,4 @@
         .clearable-input
           = text_field_tag :expires_at, nil, class: 'form-control js-access-expiration-date-groups', placeholder: _('Expiration date'), id: 'expires_at_groups'
           %i.clear-icon.js-clear-input
-      = submit_tag _("Invite"), class: "btn btn-success"
+      = submit_tag _("Invite"), class: "btn btn-success", data: { qa_selector: 'invite_group_button' }

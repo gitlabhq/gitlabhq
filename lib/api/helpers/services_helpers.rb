@@ -739,3 +739,5 @@ module API
     end
   end
 end
+
+API::Helpers::ServicesHelpers.prepend_if_ee('EE::API::Helpers::ServicesHelpers')

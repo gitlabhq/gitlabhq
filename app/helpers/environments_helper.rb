@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module EnvironmentsHelper
+  prepend_if_ee('::EE::EnvironmentsHelper') # rubocop: disable Cop/InjectEnterpriseEditionModule
+
   def environments_list_data
     {
       endpoint: project_environments_path(@project, format: :json)

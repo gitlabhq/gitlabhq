@@ -76,3 +76,5 @@ module PrometheusMetricEnums
     }.freeze
   end
 end
+
+PrometheusMetricEnums.prepend_if_ee('EE::PrometheusMetricEnums')

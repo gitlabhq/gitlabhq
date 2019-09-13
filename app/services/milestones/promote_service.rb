@@ -89,3 +89,5 @@ module Milestones
     end
   end
 end
+
+Milestones::PromoteService.prepend_if_ee('EE::Milestones::PromoteService')

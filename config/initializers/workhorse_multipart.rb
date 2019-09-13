@@ -1,5 +1,6 @@
 Rails.application.configure do |config|
-  config.middleware.use(Gitlab::Middleware::Multipart)
+  # ApolloUploadServer::Middleware expects to find uploaded files ready to use
+  config.middleware.insert_before(ApolloUploadServer::Middleware, Gitlab::Middleware::Multipart)
 end
 
 # The Gitlab::Middleware::Multipart middleware inserts instances of our

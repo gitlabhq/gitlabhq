@@ -19,6 +19,7 @@ Issue:
 - closed_by_id
 - due_date
 - moved_to_id
+- duplicated_to_id
 - lock_version
 - milestone_id
 - weight

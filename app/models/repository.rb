@@ -1172,3 +1172,5 @@ class Repository
                                 project.full_path)
   end
 end
+
+Repository.prepend_if_ee('EE::Repository')

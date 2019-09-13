@@ -89,3 +89,5 @@ module SelectsHelper
     }
   end
 end
+
+SelectsHelper.prepend_if_ee('EE::SelectsHelper')

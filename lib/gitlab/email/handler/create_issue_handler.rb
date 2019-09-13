@@ -48,6 +48,10 @@ module Gitlab
         end
         # rubocop: enable CodeReuse/ActiveRecord
 
+        def metrics_event
+          :receive_email_create_issue
+        end
+
         private
 
         def create_issue

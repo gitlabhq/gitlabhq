@@ -17,6 +17,8 @@ module API
       end
     end
 
+    prepend_if_ee('EE::API::Namespaces') # rubocop: disable Cop/InjectEnterpriseEditionModule
+
     resource :namespaces do
       desc 'Get a namespaces list' do
         success Entities::Namespace

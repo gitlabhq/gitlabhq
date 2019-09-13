@@ -51,3 +51,5 @@ class MemberPresenter < Gitlab::View::Presenter::Delegated
     raise NotImplementedError
   end
 end
+
+MemberPresenter.prepend_if_ee('EE::MemberPresenter')

@@ -2,6 +2,8 @@
 
 module RepositoryCheck
   class BatchWorker
+    prepend_if_ee('::EE::RepositoryCheck::BatchWorker') # rubocop: disable Cop/InjectEnterpriseEditionModule
+
     include ApplicationWorker
     include RepositoryCheckQueue
     include ExclusiveLeaseGuard
