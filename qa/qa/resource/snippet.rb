@@ -16,7 +16,7 @@ module QA
       def fabricate!
         Page::Dashboard::Snippet::Index.perform(&:go_to_new_snippet_page)
 
-        Page::Dashboard::Snippet::New.perform do |page|
+        Page::Dashboard::Snippet::New.perform do |page| # rubocop:disable QA/AmbiguousPageObjectName
           page.fill_title(@title)
           page.fill_description(@description)
           page.set_visibility(@visibility)

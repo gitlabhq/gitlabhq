@@ -42,7 +42,7 @@ class DiscordService < ChatNotificationService
     [
       { type: "text", name: "webhook", placeholder: "e.g. https://discordapp.com/api/webhooks/…" },
       { type: "checkbox", name: "notify_only_broken_pipelines" },
-      { type: "checkbox", name: "notify_only_default_branch" }
+      { type: 'select', name: 'branches_to_be_notified', choices: BRANCH_CHOICES }
     ]
   end
 

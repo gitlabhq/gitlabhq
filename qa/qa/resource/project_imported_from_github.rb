@@ -17,15 +17,15 @@ module QA
 
         Page::Group::Show.perform(&:go_to_new_project)
 
-        Page::Project::New.perform do |page|
+        Page::Project::New.perform do |page| # rubocop:disable QA/AmbiguousPageObjectName
           page.click_import_project
         end
 
-        Page::Project::New.perform do |page|
+        Page::Project::New.perform do |page| # rubocop:disable QA/AmbiguousPageObjectName
           page.click_github_link
         end
 
-        Page::Project::Import::Github.perform do |page|
+        Page::Project::Import::Github.perform do |page| # rubocop:disable QA/AmbiguousPageObjectName
           page.add_personal_access_token(@personal_access_token)
           page.list_repos
           page.import!(@github_repository_path, @name)

@@ -15,7 +15,7 @@ module QA
         project.visit!
 
         Page::Project::Menu.perform(&:go_to_members_settings)
-        Page::Project::Settings::Members.perform do |page|
+        Page::Project::Settings::Members.perform do |page| # rubocop:disable QA/AmbiguousPageObjectName
           page.add_member(user.username)
         end
 

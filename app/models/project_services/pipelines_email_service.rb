@@ -1,12 +1,27 @@
 # frozen_string_literal: true
 
 class PipelinesEmailService < Service
-  prop_accessor :recipients
+  include NotificationBranchSelection
+
+  prop_accessor :recipients, :branches_to_be_notified
   boolean_accessor :notify_only_broken_pipelines, :notify_only_default_branch
   validates :recipients, presence: true, if: :valid_recipients?
 
   def initialize_properties
-    self.properties ||= { notify_only_broken_pipelines: true, notify_only_default_branch: false }
+    if properties.nil?
+      self.properties = {}
+      self.notify_only_broken_pipelines = true
+      self.branches_to_be_notified = "default"
+    elsif !self.notify_only_default_branch.nil?
+      # In older versions, there was only a boolean property named
+      # `notify_only_default_branch`. Now we have a string property named
+      # `branches_to_be_notified`. Instead of doing a background migration, we
+      # opted to set a value for the new property based on the old one, if
+      # users hasn't specified one already. When users edit the service and
+      # selects a value for this new property, it will override everything.
+
+      self.branches_to_be_notified ||= notify_only_default_branch? ? "default" : "all"
+    end
   end
 
   def title
@@ -55,8 +70,9 @@ class PipelinesEmailService < Service
         required: true },
       { type: 'checkbox',
         name: 'notify_only_broken_pipelines' },
-      { type: 'checkbox',
-        name: 'notify_only_default_branch' }
+      { type: 'select',
+        name: 'branches_to_be_notified',
+        choices: BRANCH_CHOICES }
     ]
   end
 
@@ -69,13 +85,7 @@ class PipelinesEmailService < Service
   end
 
   def should_pipeline_be_notified?(data)
-    notify_for_pipeline_branch?(data) && notify_for_pipeline?(data)
-  end
-
-  def notify_for_pipeline_branch?(data)
-    return true unless notify_only_default_branch?
-
-    data[:object_attributes][:ref] == data[:project][:default_branch]
+    notify_for_branch?(data) && notify_for_pipeline?(data)
   end
 
   def notify_for_pipeline?(data)

@@ -49,11 +49,27 @@ shared_examples_for "chat service" do |service_name|
       WebMock.stub_request(:post, webhook_url)
     end
 
-    shared_examples "#{service_name} service" do
+    shared_examples "triggered #{service_name} service" do |branches_to_be_notified: nil|
+      before do
+        subject.branches_to_be_notified = branches_to_be_notified if branches_to_be_notified
+      end
+
       it "calls #{service_name} API" do
         subject.execute(sample_data)
 
         expect(WebMock).to have_requested(:post, webhook_url).with { |req| req.body =~ /\A{"#{content_key}":.+}\Z/ }.once
+      end
+    end
+
+    shared_examples "untriggered #{service_name} service" do |branches_to_be_notified: nil|
+      before do
+        subject.branches_to_be_notified = branches_to_be_notified if branches_to_be_notified
+      end
+
+      it "does not call #{service_name} API" do
+        result = subject.execute(sample_data)
+
+        expect(result).to be_falsy
       end
     end
 
@@ -62,7 +78,7 @@ shared_examples_for "chat service" do |service_name|
         Gitlab::DataBuilder::Push.build_sample(project, user)
       end
 
-      it_behaves_like "#{service_name} service"
+      it_behaves_like "triggered #{service_name} service"
 
       it "specifies the webhook when it is configured" do
         expect(client).to receive(:new).with(client_arguments).and_return(double(:chat_service).as_null_object)
@@ -70,29 +86,73 @@ shared_examples_for "chat service" do |service_name|
         subject.execute(sample_data)
       end
 
-      context "with not default branch" do
+      context "with default branch" do
         let(:sample_data) do
-          Gitlab::DataBuilder::Push.build(project: project, user: user, ref: "not-the-default-branch")
+          Gitlab::DataBuilder::Push.build(project: project, user: user, ref: project.default_branch)
         end
 
-        context "when notify_only_default_branch enabled" do
-          before do
-            subject.notify_only_default_branch = true
-          end
-
-          it "does not call the Discord Webhooks API" do
-            result = subject.execute(sample_data)
-
-            expect(result).to be_falsy
-          end
+        context "when only default branch are to be notified" do
+          it_behaves_like "triggered #{service_name} service", branches_to_be_notified: "default"
         end
 
-        context "when notify_only_default_branch disabled" do
-          before do
-            subject.notify_only_default_branch = false
-          end
+        context "when only protected branches are to be notified" do
+          it_behaves_like "untriggered #{service_name} service", branches_to_be_notified: "protected"
+        end
 
-          it_behaves_like "#{service_name} service"
+        context "when default and protected branches are to be notified" do
+          it_behaves_like "triggered #{service_name} service", branches_to_be_notified: "default_and_protected"
+        end
+
+        context "when all branches are to be notified" do
+          it_behaves_like "triggered #{service_name} service", branches_to_be_notified: "all"
+        end
+      end
+
+      context "with protected branch" do
+        before do
+          create(:protected_branch, project: project, name: "a-protected-branch")
+        end
+
+        let(:sample_data) do
+          Gitlab::DataBuilder::Push.build(project: project, user: user, ref: "a-protected-branch")
+        end
+
+        context "when only default branch are to be notified" do
+          it_behaves_like "untriggered #{service_name} service", branches_to_be_notified: "default"
+        end
+
+        context "when only protected branches are to be notified" do
+          it_behaves_like "triggered #{service_name} service", branches_to_be_notified: "protected"
+        end
+
+        context "when default and protected branches are to be notified" do
+          it_behaves_like "triggered #{service_name} service", branches_to_be_notified: "default_and_protected"
+        end
+
+        context "when all branches are to be notified" do
+          it_behaves_like "triggered #{service_name} service", branches_to_be_notified: "all"
+        end
+      end
+
+      context "with neither default nor protected branch" do
+        let(:sample_data) do
+          Gitlab::DataBuilder::Push.build(project: project, user: user, ref: "a-random-branch")
+        end
+
+        context "when only default branch are to be notified" do
+          it_behaves_like "untriggered #{service_name} service", branches_to_be_notified: "default"
+        end
+
+        context "when only protected branches are to be notified" do
+          it_behaves_like "untriggered #{service_name} service", branches_to_be_notified: "protected"
+        end
+
+        context "when default and protected branches are to be notified" do
+          it_behaves_like "untriggered #{service_name} service", branches_to_be_notified: "default_and_protected"
+        end
+
+        context "when all branches are to be notified" do
+          it_behaves_like "triggered #{service_name} service", branches_to_be_notified: "all"
         end
       end
     end
@@ -105,7 +165,7 @@ shared_examples_for "chat service" do |service_name|
         service.hook_data(issue, "open")
       end
 
-      it_behaves_like "#{service_name} service"
+      it_behaves_like "triggered #{service_name} service"
     end
 
     context "with merge events" do
@@ -128,7 +188,7 @@ shared_examples_for "chat service" do |service_name|
         project.add_developer(user)
       end
 
-      it_behaves_like "#{service_name} service"
+      it_behaves_like "triggered #{service_name} service"
     end
 
     context "with wiki page events" do
@@ -143,7 +203,7 @@ shared_examples_for "chat service" do |service_name|
       let(:wiki_page) { create(:wiki_page, wiki: project.wiki, attrs: opts) }
       let(:sample_data) { Gitlab::DataBuilder::WikiPage.build(wiki_page, user, "create") }
 
-      it_behaves_like "#{service_name} service"
+      it_behaves_like "triggered #{service_name} service"
     end
 
     context "with note events" do
@@ -158,7 +218,7 @@ shared_examples_for "chat service" do |service_name|
                  note: "a comment on a commit")
         end
 
-        it_behaves_like "#{service_name} service"
+        it_behaves_like "triggered #{service_name} service"
       end
 
       context "with merge request comment" do
@@ -166,7 +226,7 @@ shared_examples_for "chat service" do |service_name|
           create(:note_on_merge_request, project: project, note: "merge request note")
         end
 
-        it_behaves_like "#{service_name} service"
+        it_behaves_like "triggered #{service_name} service"
       end
 
       context "with issue comment" do
@@ -174,7 +234,7 @@ shared_examples_for "chat service" do |service_name|
           create(:note_on_issue, project: project, note: "issue note")
         end
 
-        it_behaves_like "#{service_name} service"
+        it_behaves_like "triggered #{service_name} service"
       end
 
       context "with snippet comment" do
@@ -182,7 +242,7 @@ shared_examples_for "chat service" do |service_name|
           create(:note_on_project_snippet, project: project, note: "snippet note")
         end
 
-        it_behaves_like "#{service_name} service"
+        it_behaves_like "triggered #{service_name} service"
       end
     end
 
@@ -197,14 +257,14 @@ shared_examples_for "chat service" do |service_name|
       context "with failed pipeline" do
         let(:status) { "failed" }
 
-        it_behaves_like "#{service_name} service"
+        it_behaves_like "triggered #{service_name} service"
       end
 
       context "with succeeded pipeline" do
         let(:status) { "success" }
 
         context "with default notify_only_broken_pipelines" do
-          it "does not call Discord Webhooks API" do
+          it "does not call #{service_name} API" do
             result = subject.execute(sample_data)
 
             expect(result).to be_falsy
@@ -216,34 +276,77 @@ shared_examples_for "chat service" do |service_name|
             subject.notify_only_broken_pipelines = false
           end
 
-          it_behaves_like "#{service_name} service"
+          it_behaves_like "triggered #{service_name} service"
         end
       end
 
-      context "with not default branch" do
-        let(:pipeline) do
-          create(:ci_pipeline, :failed, project: project,
-                 sha: project.commit.sha, ref: "not-the-default-branch")
+      context "with default branch" do
+        let(:sample_data) do
+          Gitlab::DataBuilder::Push.build(project: project, user: user, ref: project.default_branch)
         end
 
-        context "when notify_only_default_branch enabled" do
-          before do
-            subject.notify_only_default_branch = true
-          end
-
-          it "does not call the Discord Webhooks API" do
-            result = subject.execute(sample_data)
-
-            expect(result).to be_falsy
-          end
+        context "when only default branch are to be notified" do
+          it_behaves_like "triggered #{service_name} service", branches_to_be_notified: "default"
         end
 
-        context "when notify_only_default_branch disabled" do
-          before do
-            subject.notify_only_default_branch = false
-          end
+        context "when only protected branches are to be notified" do
+          it_behaves_like "untriggered #{service_name} service", branches_to_be_notified: "protected"
+        end
 
-          it_behaves_like "#{service_name} service"
+        context "when default and protected branches are to be notified" do
+          it_behaves_like "triggered #{service_name} service", branches_to_be_notified: "default_and_protected"
+        end
+
+        context "when all branches are to be notified" do
+          it_behaves_like "triggered #{service_name} service", branches_to_be_notified: "all"
+        end
+      end
+
+      context "with protected branch" do
+        before do
+          create(:protected_branch, project: project, name: "a-protected-branch")
+        end
+
+        let(:sample_data) do
+          Gitlab::DataBuilder::Push.build(project: project, user: user, ref: "a-protected-branch")
+        end
+
+        context "when only default branch are to be notified" do
+          it_behaves_like "untriggered #{service_name} service", branches_to_be_notified: "default"
+        end
+
+        context "when only protected branches are to be notified" do
+          it_behaves_like "triggered #{service_name} service", branches_to_be_notified: "protected"
+        end
+
+        context "when default and protected branches are to be notified" do
+          it_behaves_like "triggered #{service_name} service", branches_to_be_notified: "default_and_protected"
+        end
+
+        context "when all branches are to be notified" do
+          it_behaves_like "triggered #{service_name} service", branches_to_be_notified: "all"
+        end
+      end
+
+      context "with neither default nor protected branch" do
+        let(:sample_data) do
+          Gitlab::DataBuilder::Push.build(project: project, user: user, ref: "a-random-branch")
+        end
+
+        context "when only default branch are to be notified" do
+          it_behaves_like "untriggered #{service_name} service", branches_to_be_notified: "default"
+        end
+
+        context "when only protected branches are to be notified" do
+          it_behaves_like "untriggered #{service_name} service", branches_to_be_notified: "protected"
+        end
+
+        context "when default and protected branches are to be notified" do
+          it_behaves_like "untriggered #{service_name} service", branches_to_be_notified: "default_and_protected"
+        end
+
+        context "when all branches are to be notified" do
+          it_behaves_like "triggered #{service_name} service", branches_to_be_notified: "all"
         end
       end
     end

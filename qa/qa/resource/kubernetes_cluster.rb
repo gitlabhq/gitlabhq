@@ -24,7 +24,7 @@ module QA
         Page::Project::Operations::Kubernetes::Add.perform(
           &:add_existing_cluster)
 
-        Page::Project::Operations::Kubernetes::AddExisting.perform do |page|
+        Page::Project::Operations::Kubernetes::AddExisting.perform do |page| # rubocop:disable QA/AmbiguousPageObjectName
           page.set_cluster_name(@cluster.cluster_name)
           page.set_api_url(@cluster.api_url)
           page.set_ca_certificate(@cluster.ca_certificate)
@@ -34,7 +34,7 @@ module QA
         end
 
         if @install_helm_tiller
-          Page::Project::Operations::Kubernetes::Show.perform do |page|
+          Page::Project::Operations::Kubernetes::Show.perform do |page| # rubocop:disable QA/AmbiguousPageObjectName
             # We must wait a few seconds for permissions to be set up correctly for new cluster
             sleep 10
 

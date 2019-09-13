@@ -8,7 +8,7 @@ module QA
         Page::Main::Login.perform(&:sign_in_using_credentials)
         Page::Main::Menu.perform(&:go_to_groups)
 
-        Page::Dashboard::Groups.perform do |page|
+        Page::Dashboard::Groups.perform do |page| # rubocop:disable QA/AmbiguousPageObjectName
           page.click_new_group
 
           expect(page).to have_content(

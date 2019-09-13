@@ -30,13 +30,13 @@ module QA
       end
 
       attribute :repository_ssh_location do
-        Page::Project::Show.perform do |page|
+        Page::Project::Show.perform do |page| # rubocop:disable QA/AmbiguousPageObjectName
           page.repository_clone_ssh_location
         end
       end
 
       attribute :repository_http_location do
-        Page::Project::Show.perform do |page|
+        Page::Project::Show.perform do |page| # rubocop:disable QA/AmbiguousPageObjectName
           page.repository_clone_http_location
         end
       end
@@ -59,7 +59,7 @@ module QA
           Page::Group::Show.perform(&:go_to_new_project)
         end
 
-        Page::Project::New.perform do |page|
+        Page::Project::New.perform do |page| # rubocop:disable QA/AmbiguousPageObjectName
           page.choose_test_namespace
           page.choose_name(@name)
           page.add_description(@description)

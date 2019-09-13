@@ -226,9 +226,10 @@ describe MicrosoftTeamsService do
       )
     end
 
-    shared_examples 'call Microsoft Teams API' do
+    shared_examples 'call Microsoft Teams API' do |branches_to_be_notified: nil|
       before do
         WebMock.stub_request(:post, webhook_url)
+        chat_service.branches_to_be_notified = branches_to_be_notified if branches_to_be_notified
       end
 
       it 'calls Microsoft Teams API for pipeline events' do
@@ -242,6 +243,18 @@ describe MicrosoftTeamsService do
         expect(WebMock).to have_requested(:post, webhook_url)
           .with(body: hash_including({ summary: message.summary }))
           .once
+      end
+    end
+
+    shared_examples 'does not call Microsoft Teams API' do |branches_to_be_notified: nil|
+      before do
+        chat_service.branches_to_be_notified = branches_to_be_notified if branches_to_be_notified
+      end
+      it 'does not call Microsoft Teams API for pipeline events' do
+        data = Gitlab::DataBuilder::Pipeline.build(pipeline)
+        result = chat_service.execute(data)
+
+        expect(result).to be_falsy
       end
     end
 
@@ -272,35 +285,73 @@ describe MicrosoftTeamsService do
       end
     end
 
-    context 'only notify for the default branch' do
-      context 'when enabled' do
-        let(:pipeline) do
-          create(:ci_pipeline, project: project, status: 'failed', ref: 'not-the-default-branch')
-        end
-
-        before do
-          chat_service.notify_only_default_branch = true
-        end
-
-        it 'does not call the Microsoft Teams API for pipeline events' do
-          data = Gitlab::DataBuilder::Pipeline.build(pipeline)
-          result = chat_service.execute(data)
-
-          expect(result).to be_falsy
-        end
+    context 'with default branch' do
+      let(:pipeline) do
+        create(:ci_pipeline, project: project, status: 'failed', sha: project.commit.sha, ref: project.default_branch)
       end
 
-      context 'when disabled' do
-        let(:pipeline) do
-          create(:ci_pipeline, :failed, project: project,
-                 sha: project.commit.sha, ref: 'not-the-default-branch')
-        end
+      context 'only notify for the default branch' do
+        it_behaves_like 'call Microsoft Teams API', branches_to_be_notified: "default"
+      end
 
-        before do
-          chat_service.notify_only_default_branch = false
-        end
+      context 'notify for only protected branches' do
+        it_behaves_like 'does not call Microsoft Teams API', branches_to_be_notified: "protected"
+      end
 
-        it_behaves_like 'call Microsoft Teams API'
+      context 'notify for only default and protected branches' do
+        it_behaves_like 'call Microsoft Teams API', branches_to_be_notified: "default_and_protected"
+      end
+
+      context 'notify for all branches' do
+        it_behaves_like 'call Microsoft Teams API', branches_to_be_notified: "all"
+      end
+    end
+
+    context 'with protected branch' do
+      before do
+        create(:protected_branch, project: project, name: 'a-protected-branch')
+      end
+
+      let(:pipeline) do
+        create(:ci_pipeline, project: project, status: 'failed', sha: project.commit.sha, ref: 'a-protected-branch')
+      end
+
+      context 'only notify for the default branch' do
+        it_behaves_like 'does not call Microsoft Teams API', branches_to_be_notified: "default"
+      end
+
+      context 'notify for only protected branches' do
+        it_behaves_like 'call Microsoft Teams API', branches_to_be_notified: "protected"
+      end
+
+      context 'notify for only default and protected branches' do
+        it_behaves_like 'call Microsoft Teams API', branches_to_be_notified: "default_and_protected"
+      end
+
+      context 'notify for all branches' do
+        it_behaves_like 'call Microsoft Teams API', branches_to_be_notified: "all"
+      end
+    end
+
+    context 'with neither protected nor default branch' do
+      let(:pipeline) do
+        create(:ci_pipeline, project: project, status: 'failed', sha: project.commit.sha, ref: 'a-random-branch')
+      end
+
+      context 'only notify for the default branch' do
+        it_behaves_like 'does not call Microsoft Teams API', branches_to_be_notified: "default"
+      end
+
+      context 'notify for only protected branches' do
+        it_behaves_like 'does not call Microsoft Teams API', branches_to_be_notified: "protected"
+      end
+
+      context 'notify for only default and protected branches' do
+        it_behaves_like 'does not call Microsoft Teams API', branches_to_be_notified: "default_and_protected"
+      end
+
+      context 'notify for all branches' do
+        it_behaves_like 'call Microsoft Teams API', branches_to_be_notified: "all"
       end
     end
   end

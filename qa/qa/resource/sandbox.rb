@@ -18,11 +18,11 @@ module QA
       def fabricate!
         Page::Main::Menu.perform(&:go_to_groups)
 
-        Page::Dashboard::Groups.perform do |page|
-          if page.has_group?(path)
-            page.click_group(path)
+        Page::Dashboard::Groups.perform do |groups_page|
+          if groups_page.has_group?(path)
+            groups_page.click_group(path)
           else
-            page.click_new_group
+            groups_page.click_new_group
 
             Page::Group::New.perform do |group|
               group.set_path(path)

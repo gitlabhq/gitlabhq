@@ -88,6 +88,7 @@ future GitLab releases.**
 | `CI_PROJECT_PATH_SLUG`                  | 9.3    | all    | `$CI_PROJECT_PATH` lowercased and with everything except `0-9` and `a-z` replaced with `-`. Use in URLs and domain names. |
 | `CI_PROJECT_URL`                        | 8.10   | 0.5    | The HTTP(S) address to access project |
 | `CI_PROJECT_VISIBILITY`                 | 10.3   | all    | The project visibility (internal, private, public) |
+| `CI_PROJECT_REPOSITORY_LANGUAGES`       | 12.3   | all    | Comma-separated, lowercased list of the languages used in the repository (e.g. `ruby,javascript,html,css`) |
 | `CI_COMMIT_REF_PROTECTED`                      | 11.11  | all    | If the job is running on a protected branch |
 | `CI_REGISTRY`                           | 8.10   | 0.5    | If the Container Registry is enabled it returns the address of GitLab's Container Registry |
 | `CI_REGISTRY_IMAGE`                     | 8.10   | 0.5    | If the Container Registry is enabled for the project it returns the address of the registry tied to the specific project |

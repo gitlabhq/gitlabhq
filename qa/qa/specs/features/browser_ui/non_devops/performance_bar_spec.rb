@@ -23,7 +23,7 @@ module QA
           issue.title = 'Performance bar test'
         end
 
-        Page::Layout::PerformanceBar.perform do |page|
+        Page::Layout::PerformanceBar.perform do |page| # rubocop:disable QA/AmbiguousPageObjectName
           expect(page).to have_performance_bar
           expect(page).to have_detailed_metrics
           expect(page).to have_request_for('realtime_changes') # Always requested on issue pages

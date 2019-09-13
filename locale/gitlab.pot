@@ -1228,6 +1228,9 @@ msgstr ""
 msgid "All Members"
 msgstr ""
 
+msgid "All branches"
+msgstr ""
+
 msgid "All changes are committed"
 msgstr ""
 
@@ -4648,6 +4651,12 @@ msgid "Default Branch"
 msgstr ""
 
 msgid "Default artifacts expiration"
+msgstr ""
+
+msgid "Default branch"
+msgstr ""
+
+msgid "Default branch and protected branches"
 msgstr ""
 
 msgid "Default classification label"
@@ -12341,6 +12350,9 @@ msgid "Protected Environments"
 msgstr ""
 
 msgid "Protected Tag"
+msgstr ""
+
+msgid "Protected branches"
 msgstr ""
 
 msgid "ProtectedEnvironment|%{environment_name} will be writable for developers. Are you sure?"

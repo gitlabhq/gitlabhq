@@ -18,7 +18,7 @@ module QA
       def fabricate!
         project.visit!
 
-        Page::Project::Menu.perform do |page|
+        Page::Project::Menu.perform do |page| # rubocop:disable QA/AmbiguousPageObjectName
           page.click_issues
           page.click_milestones
         end

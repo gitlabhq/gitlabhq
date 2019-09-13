@@ -216,7 +216,7 @@ describe 'Admin updates settings' do
       fill_in 'Username', with: 'test_user'
       fill_in 'service_push_channel', with: '#test_channel'
       page.check('Notify only broken pipelines')
-      page.check('Notify only default branch')
+      page.select 'All branches', from: 'Branches to be notified'
 
       check_all_events
       click_on 'Save'

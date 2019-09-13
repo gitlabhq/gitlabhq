@@ -25,7 +25,7 @@ module QA
 
         Page::Project::Show.perform(&:go_to_new_issue)
 
-        Page::Project::Issue::New.perform do |page|
+        Page::Project::Issue::New.perform do |page| # rubocop:disable QA/AmbiguousPageObjectName
           page.add_title(@title)
           page.add_description(@description)
           page.create_new_issue

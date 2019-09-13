@@ -6,7 +6,7 @@ module QA
       attr_accessor :name, :expires_at
 
       attribute :username do
-        Page::Project::Settings::Repository.perform do |page|
+        Page::Project::Settings::Repository.perform do |page| # rubocop:disable QA/AmbiguousPageObjectName
           page.expand_deploy_tokens do |token|
             token.token_username
           end
@@ -14,7 +14,7 @@ module QA
       end
 
       attribute :password do
-        Page::Project::Settings::Repository.perform do |page|
+        Page::Project::Settings::Repository.perform do |page| # rubocop:disable QA/AmbiguousPageObjectName
           page.expand_deploy_tokens do |token|
             token.token_password
           end

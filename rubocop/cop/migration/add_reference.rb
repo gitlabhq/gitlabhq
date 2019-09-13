@@ -4,22 +4,62 @@ require_relative '../../migration_helpers'
 module RuboCop
   module Cop
     module Migration
-      # Cop that checks if a foreign key constraint is added and require a index for it
+      # add_reference can only be used with newly created tables.
+      # Additionally, the cop here checks that we create an index for the foreign key, too.
       class AddReference < RuboCop::Cop::Cop
         include MigrationHelpers
 
-        MSG = '`add_reference` requires `index: true` or `index: { options... }`'
+        MSG = '`add_reference` requires downtime for existing tables, use `add_concurrent_foreign_key` instead. When used for new tables, `index: true` or `index: { options... } is required.`'
 
-        def on_send(node)
+        def on_def(node)
           return unless in_migration?(node)
 
-          name = node.children[1]
+          new_tables = []
 
-          return unless name == :add_reference
+          node.each_descendant(:send) do |send_node|
+            first_arg = first_argument(send_node)
 
+            # The first argument of "create_table" / "add_reference" is the table
+            # name.
+            new_tables << first_arg if create_table?(send_node)
+
+            next if method_name(send_node) != :add_reference
+
+            # Using "add_reference" is fine for newly created tables as there's no
+            # data in these tables yet.
+            if existing_table?(new_tables, first_arg)
+              add_offense(send_node, location: :selector)
+            end
+
+            # We require an index on the foreign key column.
+            if index_missing?(node)
+              add_offense(send_node, location: :selector)
+            end
+          end
+        end
+
+        private
+
+        def existing_table?(new_tables, table)
+          !new_tables.include?(table)
+        end
+
+        def create_table?(node)
+          method_name(node) == :create_table
+        end
+
+        def method_name(node)
+          node.children[1]
+        end
+
+        def first_argument(node)
+          node.children[2]
+        end
+
+        def index_missing?(node)
           opts = node.children.last
 
-          add_offense(node, location: :selector) unless opts && opts.type == :hash
+          return true if opts && opts.type == :hash
 
           index_present = false
 
@@ -27,10 +67,8 @@ module RuboCop
             index_present ||= index_enabled?(pair)
           end
 
-          add_offense(node, location: :selector) unless index_present
+          !index_present
         end
-
-        private
 
         def index_enabled?(pair)
           return unless hash_key_type(pair) == :sym

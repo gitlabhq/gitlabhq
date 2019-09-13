@@ -57,7 +57,7 @@ module QA
           @project.visit!
 
           Page::Project::Show.perform(&:create_new_file!)
-          Page::File::Form.perform do |page|
+          Page::File::Form.perform do |page| # rubocop:disable QA/AmbiguousPageObjectName
             page.select_template template[:file_name], template[:name]
           end
 

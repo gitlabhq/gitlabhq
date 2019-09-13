@@ -35,7 +35,7 @@ module QA
 
       def view_commit
         @project.visit!
-        Page::Project::Show.perform do |page|
+        Page::Project::Show.perform do |page| # rubocop:disable QA/AmbiguousPageObjectName
           page.click_commit(@commit_message)
         end
       end

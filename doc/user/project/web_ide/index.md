@@ -49,10 +49,14 @@ After making your changes, click the **Commit** button in the bottom left to
 review the list of changed files. Click on each file to review the changes and
 click the tick icon to stage the file.
 
-Once you have staged some changes, you can add a commit message and commit the
-staged changes. Unstaged changes will not be committed.
+![Review changes](img/review_changes_v12_3.png)
 
-![Commit changes](img/commit_changes.png)
+Once you have staged some changes, you can add a commit message, commit the
+staged changes and directly create a merge request. In case you don't have write
+access to the selected branch, you will see a warning, but still be able to create
+a new branch and start a merge request.
+
+![Commit changes](img/commit_changes_v12_3.png)
 
 ## Reviewing changes
 

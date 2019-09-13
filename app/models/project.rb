@@ -1811,6 +1811,7 @@ class Project < ApplicationRecord
       .append(key: 'CI_PROJECT_NAMESPACE', value: namespace.full_path)
       .append(key: 'CI_PROJECT_URL', value: web_url)
       .append(key: 'CI_PROJECT_VISIBILITY', value: visibility)
+      .append(key: 'CI_PROJECT_REPOSITORY_LANGUAGES', value: repository_languages.map(&:name).join(',').downcase)
       .concat(pages_variables)
       .concat(container_registry_variables)
       .concat(auto_devops_variables)

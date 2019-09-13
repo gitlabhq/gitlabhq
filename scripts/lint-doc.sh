@@ -35,30 +35,16 @@ fi
 
 # Do not use 'README.md', instead use 'index.md'
 # Number of 'README.md's as of 2018-03-26
-NUMBER_READMES_CE=46
-NUMBER_READMES_EE=46
+NUMBER_READMES=46
 FIND_READMES=$(find doc/ -name "README.md" | wc -l)
 echo '=> Checking for new README.md files...'
-if [ "${CI_PROJECT_NAME}" == 'gitlab-ce' ]
+if [ ${FIND_READMES} -ne $NUMBER_READMES ]
 then
-  if [ ${FIND_READMES} -ne ${NUMBER_READMES_CE} ]
-  then
-    echo
-    echo '  ✖ ERROR: New README.md file(s) detected, prefer index.md over README.md.' >&2
-    echo '  https://docs.gitlab.com/ee/development/documentation/styleguide.html#working-with-directories-and-files'
-    echo
-    exit 1
-  fi
-elif [ "${CI_PROJECT_NAME}" == 'gitlab-ee' ]
-then
-  if [ ${FIND_READMES} -ne $NUMBER_READMES_EE ]
-  then
-    echo
-    echo '  ✖ ERROR: New README.md file(s) detected, prefer index.md over README.md.' >&2
-    echo '  https://docs.gitlab.com/ee/development/documentation/styleguide.html#working-with-directories-and-files'
-    echo
-    exit 1
-  fi
+  echo
+  echo '  ✖ ERROR: New README.md file(s) detected, prefer index.md over README.md.' >&2
+  echo '  https://docs.gitlab.com/ee/development/documentation/styleguide.html#working-with-directories-and-files'
+  echo
+  exit 1
 fi
 
 echo "✔ Linting passed"
