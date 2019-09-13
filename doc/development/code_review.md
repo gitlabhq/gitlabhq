@@ -87,9 +87,9 @@ Before assigning a merge request to a maintainer for approval and merge, they
 should be confident that it actually solves the problem it was meant to solve,
 that it does so in the most appropriate way, that it satisfies all requirements,
 and that there are no remaining bugs, logical problems, uncovered edge cases,
-or known vulnerabilities. The merge request should also have a completed task
-list in its description and a passing CI pipeline to avoid unnecessary back and
-forth.
+or known vulnerabilities. The best way to do this, and to avoid unnecessary
+back-and-forth with reviewers, is to perform a self-review of your own merge
+request, following the [Code Review](#reviewing-code) guidelines.
 
 To reach the required level of confidence in their solution, an author is expected
 to involve other people in the investigation and implementation processes as
@@ -126,6 +126,17 @@ through Slack). If you can't assign a merge request, `@` mentioning a maintainer
 
 This
 [saves reviewers time and helps authors catch mistakes earlier](https://www.ibm.com/developerworks/rational/library/11-proven-practices-for-peer-review/index.html#__RefHeading__97_174136755).
+
+### The responsibility of the reviewer
+
+[Review the merge request](#reviewing-code) thoroughly. When you are confident
+that it meets all requirements, you should:
+
+- Click the Approve button.
+- Advise the author their merge request has been reviewed and approved.
+- Assign the merge request to a maintainer. [Reviewer roulette](#reviewer-roulette)
+should have made a suggestion, but feel free to override if someone else is a
+better choice.
 
 ### The responsibility of the maintainer
 
@@ -284,6 +295,14 @@ experience, refactors the existing code). Then:
 - Assign the merge request to the author if changes are required following your
   review.
 - Set the milestone before merging a merge request.
+- Ensure the target branch is not too far behind master. If
+[master is red](https://about.gitlab.com/handbook/engineering/workflow/#broken-master),
+it should be no more than 100 commits behind.
+- Consider warnings and errors from danger bot, codequality, and other reports.
+Unless a strong case can be made for the violation, these should be resolved
+before merge.
+- Ensure a passing CI pipeline or if [master is broken](https://about.gitlab.com/handbook/engineering/workflow/#broken-master), post a comment mentioning the failure happens in master with a
+link to the ~"master:broken" issue.
 - Avoid accepting a merge request before the job succeeds. Of course, "Merge
   When Pipeline Succeeds" (MWPS) is fine.
 - If you set the MR to "Merge When Pipeline Succeeds", you should take over

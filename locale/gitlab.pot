@@ -1321,9 +1321,6 @@ msgstr ""
 msgid "Alternate support URL for help page and help dropdown"
 msgstr ""
 
-msgid "Alternatively, you can use a %{personal_access_token_link}. When you create your Personal Access Token, you will need to select the <code>repo</code> scope, so we can display a list of your public and private repositories which are available to connect."
-msgstr ""
-
 msgid "Amount of time (in hours) that users are allowed to skip forced configuration of two-factor authentication"
 msgstr ""
 
