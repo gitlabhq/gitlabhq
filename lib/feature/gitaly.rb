@@ -7,7 +7,6 @@ class Feature
     # Server feature flags should use '_' to separate words.
     SERVER_FEATURE_FLAGS =
       %w[
-        get_commit_signatures
         cache_invalidator
         inforef_uploadpack_cache
         get_all_lfs_pointers_go
