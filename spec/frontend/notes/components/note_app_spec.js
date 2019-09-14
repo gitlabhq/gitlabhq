@@ -1,4 +1,6 @@
 import $ from 'helpers/jquery';
+import AxiosMockAdapter from 'axios-mock-adapter';
+import axios from '~/lib/utils/axios_utils';
 import Vue from 'vue';
 import { mount, createLocalVue } from '@vue/test-utils';
 import NotesApp from '~/notes/components/notes_app.vue';
@@ -9,19 +11,10 @@ import { setTestTimeout } from 'helpers/timeout';
 // TODO: use generated fixture (https://gitlab.com/gitlab-org/gitlab-ce/issues/62491)
 import * as mockData from '../../../javascripts/notes/mock_data';
 
-const originalInterceptors = [...Vue.http.interceptors];
-
-const emptyResponseInterceptor = (request, next) => {
-  next(
-    request.respondWith(JSON.stringify([]), {
-      status: 200,
-    }),
-  );
-};
-
 setTestTimeout(1000);
 
 describe('note_app', () => {
+  let axiosMock;
   let mountComponent;
   let wrapper;
   let store;
@@ -44,6 +37,8 @@ describe('note_app', () => {
 
   beforeEach(() => {
     $('body').attr('data-page', 'projects:merge_requests:show');
+
+    axiosMock = new AxiosMockAdapter(axios);
 
     store = createStore();
     mountComponent = data => {
@@ -74,12 +69,12 @@ describe('note_app', () => {
 
   afterEach(() => {
     wrapper.destroy();
-    Vue.http.interceptors = [...originalInterceptors];
+    axiosMock.restore();
   });
 
   describe('set data', () => {
     beforeEach(() => {
-      Vue.http.interceptors.push(emptyResponseInterceptor);
+      axiosMock.onAny().reply(200, []);
       wrapper = mountComponent();
       return waitForDiscussionsRequest();
     });
@@ -105,7 +100,7 @@ describe('note_app', () => {
     beforeEach(() => {
       setFixtures('<div class="js-discussions-count"></div>');
 
-      Vue.http.interceptors.push(mockData.individualNoteInterceptor);
+      axiosMock.onAny().reply(mockData.getIndividualNoteResponse);
       wrapper = mountComponent();
       return waitForDiscussionsRequest();
     });
@@ -146,7 +141,7 @@ describe('note_app', () => {
     beforeEach(() => {
       setFixtures('<div class="js-discussions-count"></div>');
 
-      Vue.http.interceptors.push(mockData.individualNoteInterceptor);
+      axiosMock.onAny().reply(mockData.getIndividualNoteResponse);
       store.state.commentsDisabled = true;
       wrapper = mountComponent();
       return waitForDiscussionsRequest();
@@ -163,7 +158,7 @@ describe('note_app', () => {
 
   describe('while fetching data', () => {
     beforeEach(() => {
-      Vue.http.interceptors.push(emptyResponseInterceptor);
+      axiosMock.onAny().reply(200, []);
       wrapper = mountComponent();
     });
 
@@ -184,7 +179,7 @@ describe('note_app', () => {
   describe('update note', () => {
     describe('individual note', () => {
       beforeEach(() => {
-        Vue.http.interceptors.push(mockData.individualNoteInterceptor);
+        axiosMock.onAny().reply(mockData.getIndividualNoteResponse);
         jest.spyOn(service, 'updateNote');
         wrapper = mountComponent();
         return waitForDiscussionsRequest().then(() => {
@@ -206,7 +201,7 @@ describe('note_app', () => {
 
     describe('discussion note', () => {
       beforeEach(() => {
-        Vue.http.interceptors.push(mockData.discussionNoteInterceptor);
+        axiosMock.onAny().reply(mockData.getDiscussionNoteResponse);
         jest.spyOn(service, 'updateNote');
         wrapper = mountComponent();
         return waitForDiscussionsRequest().then(() => {
@@ -229,7 +224,7 @@ describe('note_app', () => {
 
   describe('new note form', () => {
     beforeEach(() => {
-      Vue.http.interceptors.push(mockData.individualNoteInterceptor);
+      axiosMock.onAny().reply(mockData.getIndividualNoteResponse);
       wrapper = mountComponent();
       return waitForDiscussionsRequest();
     });
@@ -259,7 +254,7 @@ describe('note_app', () => {
 
   describe('edit form', () => {
     beforeEach(() => {
-      Vue.http.interceptors.push(mockData.individualNoteInterceptor);
+      axiosMock.onAny().reply(mockData.getIndividualNoteResponse);
       wrapper = mountComponent();
       return waitForDiscussionsRequest();
     });
@@ -287,7 +282,7 @@ describe('note_app', () => {
 
   describe('emoji awards', () => {
     beforeEach(() => {
-      Vue.http.interceptors.push(emptyResponseInterceptor);
+      axiosMock.onAny().reply(200, []);
       wrapper = mountComponent();
       return waitForDiscussionsRequest();
     });

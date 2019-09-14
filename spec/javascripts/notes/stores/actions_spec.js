@@ -1,9 +1,6 @@
-import Vue from 'vue';
 import $ from 'jquery';
-import _ from 'underscore';
 import Api from '~/api';
 import { TEST_HOST } from 'spec/test_constants';
-import { headersInterceptor } from 'spec/helpers/vue_resource_helper';
 import actionsModule, * as actions from '~/notes/stores/actions';
 import * as mutationTypes from '~/notes/stores/mutation_types';
 import * as notesConstants from '~/notes/constants';
@@ -29,6 +26,7 @@ describe('Actions Notes Store', () => {
   let state;
   let store;
   let flashSpy;
+  let axiosMock;
 
   beforeEach(() => {
     store = createStore();
@@ -36,10 +34,12 @@ describe('Actions Notes Store', () => {
     dispatch = jasmine.createSpy('dispatch');
     state = {};
     flashSpy = spyOnDependency(actionsModule, 'Flash');
+    axiosMock = new AxiosMockAdapter(axios);
   });
 
   afterEach(() => {
     resetStore(store);
+    axiosMock.restore();
   });
 
   describe('setNotesData', () => {
@@ -160,20 +160,8 @@ describe('Actions Notes Store', () => {
   });
 
   describe('async methods', () => {
-    const interceptor = (request, next) => {
-      next(
-        request.respondWith(JSON.stringify({}), {
-          status: 200,
-        }),
-      );
-    };
-
     beforeEach(() => {
-      Vue.http.interceptors.push(interceptor);
-    });
-
-    afterEach(() => {
-      Vue.http.interceptors = _.without(Vue.http.interceptors, interceptor);
+      axiosMock.onAny().reply(200, {});
     });
 
     describe('closeIssue', () => {
@@ -259,7 +247,7 @@ describe('Actions Notes Store', () => {
     beforeEach(done => {
       jasmine.clock().install();
 
-      spyOn(Vue.http, 'get').and.callThrough();
+      spyOn(axios, 'get').and.callThrough();
 
       store
         .dispatch('setNotesData', notesDataMock)
@@ -272,31 +260,15 @@ describe('Actions Notes Store', () => {
     });
 
     it('calls service with last fetched state', done => {
-      const interceptor = (request, next) => {
-        next(
-          request.respondWith(
-            JSON.stringify({
-              notes: [],
-              last_fetched_at: '123456',
-            }),
-            {
-              status: 200,
-              headers: {
-                'poll-interval': '1000',
-              },
-            },
-          ),
-        );
-      };
-
-      Vue.http.interceptors.push(interceptor);
-      Vue.http.interceptors.push(headersInterceptor);
+      axiosMock
+        .onAny()
+        .reply(200, { notes: [], last_fetched_at: '123456' }, { 'poll-interval': '1000' });
 
       store
         .dispatch('poll')
         .then(() => new Promise(resolve => requestAnimationFrame(resolve)))
         .then(() => {
-          expect(Vue.http.get).toHaveBeenCalled();
+          expect(axios.get).toHaveBeenCalled();
           expect(store.state.lastFetchedAt).toBe('123456');
 
           jasmine.clock().tick(1500);
@@ -308,16 +280,12 @@ describe('Actions Notes Store', () => {
             }),
         )
         .then(() => {
-          expect(Vue.http.get.calls.count()).toBe(2);
-          expect(Vue.http.get.calls.mostRecent().args[1].headers).toEqual({
+          expect(axios.get.calls.count()).toBe(2);
+          expect(axios.get.calls.mostRecent().args[1].headers).toEqual({
             'X-Last-Fetched-At': '123456',
           });
         })
         .then(() => store.dispatch('stopPolling'))
-        .then(() => {
-          Vue.http.interceptors = _.without(Vue.http.interceptors, interceptor);
-          Vue.http.interceptors = _.without(Vue.http.interceptors, headersInterceptor);
-        })
         .then(done)
         .catch(done.fail);
     });
@@ -338,10 +306,8 @@ describe('Actions Notes Store', () => {
 
   describe('removeNote', () => {
     const endpoint = `${TEST_HOST}/note`;
-    let axiosMock;
 
     beforeEach(() => {
-      axiosMock = new AxiosMockAdapter(axios);
       axiosMock.onDelete(endpoint).replyOnce(200, {});
 
       $('body').attr('data-page', '');
@@ -411,10 +377,8 @@ describe('Actions Notes Store', () => {
 
   describe('deleteNote', () => {
     const endpoint = `${TEST_HOST}/note`;
-    let axiosMock;
 
     beforeEach(() => {
-      axiosMock = new AxiosMockAdapter(axios);
       axiosMock.onDelete(endpoint).replyOnce(200, {});
 
       $('body').attr('data-page', '');
@@ -454,20 +418,9 @@ describe('Actions Notes Store', () => {
         id: 1,
         valid: true,
       };
-      const interceptor = (request, next) => {
-        next(
-          request.respondWith(JSON.stringify(res), {
-            status: 200,
-          }),
-        );
-      };
 
       beforeEach(() => {
-        Vue.http.interceptors.push(interceptor);
-      });
-
-      afterEach(() => {
-        Vue.http.interceptors = _.without(Vue.http.interceptors, interceptor);
+        axiosMock.onAny().reply(200, res);
       });
 
       it('commits ADD_NEW_NOTE and dispatches updateMergeRequestWidget', done => {
@@ -501,20 +454,9 @@ describe('Actions Notes Store', () => {
       const res = {
         errors: ['error'],
       };
-      const interceptor = (request, next) => {
-        next(
-          request.respondWith(JSON.stringify(res), {
-            status: 200,
-          }),
-        );
-      };
 
       beforeEach(() => {
-        Vue.http.interceptors.push(interceptor);
-      });
-
-      afterEach(() => {
-        Vue.http.interceptors = _.without(Vue.http.interceptors, interceptor);
+        axiosMock.onAny().replyOnce(200, res);
       });
 
       it('does not commit ADD_NEW_NOTE or dispatch updateMergeRequestWidget', done => {
@@ -534,20 +476,9 @@ describe('Actions Notes Store', () => {
     const res = {
       resolved: true,
     };
-    const interceptor = (request, next) => {
-      next(
-        request.respondWith(JSON.stringify(res), {
-          status: 200,
-        }),
-      );
-    };
 
     beforeEach(() => {
-      Vue.http.interceptors.push(interceptor);
-    });
-
-    afterEach(() => {
-      Vue.http.interceptors = _.without(Vue.http.interceptors, interceptor);
+      axiosMock.onAny().reply(200, res);
     });
 
     describe('as note', () => {
@@ -720,32 +651,19 @@ describe('Actions Notes Store', () => {
   });
 
   describe('replyToDiscussion', () => {
-    let res = { discussion: { notes: [] } };
     const payload = { endpoint: TEST_HOST, data: {} };
-    const interceptor = (request, next) => {
-      next(
-        request.respondWith(JSON.stringify(res), {
-          status: 200,
-        }),
-      );
-    };
-
-    beforeEach(() => {
-      Vue.http.interceptors.push(interceptor);
-    });
-
-    afterEach(() => {
-      Vue.http.interceptors = _.without(Vue.http.interceptors, interceptor);
-    });
 
     it('updates discussion if response contains disussion', done => {
+      const discussion = { notes: [] };
+      axiosMock.onAny().reply(200, { discussion });
+
       testAction(
         actions.replyToDiscussion,
         payload,
         {
           notesById: {},
         },
-        [{ type: mutationTypes.UPDATE_DISCUSSION, payload: res.discussion }],
+        [{ type: mutationTypes.UPDATE_DISCUSSION, payload: discussion }],
         [
           { type: 'updateMergeRequestWidget' },
           { type: 'startTaskList' },
@@ -756,7 +674,8 @@ describe('Actions Notes Store', () => {
     });
 
     it('adds a reply to a discussion', done => {
-      res = {};
+      const res = {};
+      axiosMock.onAny().reply(200, res);
 
       testAction(
         actions.replyToDiscussion,

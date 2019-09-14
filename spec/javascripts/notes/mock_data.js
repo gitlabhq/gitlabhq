@@ -647,24 +647,12 @@ export const DISCUSSION_NOTE_RESPONSE_MAP = {
   },
 };
 
-export function individualNoteInterceptor(request, next) {
-  const body = INDIVIDUAL_NOTE_RESPONSE_MAP[request.method.toUpperCase()][request.url];
-
-  next(
-    request.respondWith(JSON.stringify(body), {
-      status: 200,
-    }),
-  );
+export function getIndividualNoteResponse(config) {
+  return [200, INDIVIDUAL_NOTE_RESPONSE_MAP[config.method.toUpperCase()][config.url]];
 }
 
-export function discussionNoteInterceptor(request, next) {
-  const body = DISCUSSION_NOTE_RESPONSE_MAP[request.method.toUpperCase()][request.url];
-
-  next(
-    request.respondWith(JSON.stringify(body), {
-      status: 200,
-    }),
-  );
+export function getDiscussionNoteResponse(config) {
+  return [200, DISCUSSION_NOTE_RESPONSE_MAP[config.method.toUpperCase()][config.url]];
 }
 
 export const notesWithDescriptionChanges = [

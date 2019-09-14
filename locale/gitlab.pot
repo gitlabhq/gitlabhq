@@ -836,6 +836,9 @@ msgstr ""
 msgid "Add README"
 msgstr ""
 
+msgid "Add Zoom meeting"
+msgstr ""
+
 msgid "Add a %{type} token"
 msgstr ""
 
@@ -1005,6 +1008,9 @@ msgid "Adds %{labels} %{label_text}."
 msgstr ""
 
 msgid "Adds a To Do."
+msgstr ""
+
+msgid "Adds a Zoom meeting"
 msgstr ""
 
 msgid "Adds an issue to an epic."
@@ -6268,6 +6274,9 @@ msgstr ""
 msgid "Failed create wiki"
 msgstr ""
 
+msgid "Failed to add a Zoom meeting"
+msgstr ""
+
 msgid "Failed to apply commands."
 msgstr ""
 
@@ -6338,6 +6347,9 @@ msgid "Failed to protect the branch"
 msgstr ""
 
 msgid "Failed to protect the environment"
+msgstr ""
+
+msgid "Failed to remove a Zoom meeting"
 msgstr ""
 
 msgid "Failed to remove issue from board, please try again."
@@ -12672,6 +12684,9 @@ msgstr ""
 msgid "Remove Runner"
 msgstr ""
 
+msgid "Remove Zoom meeting"
+msgstr ""
+
 msgid "Remove all approvals in a merge request when new commits are pushed to its source branch"
 msgstr ""
 
@@ -18116,6 +18131,12 @@ msgid "Your projects"
 msgstr ""
 
 msgid "Your request for access has been queued for review."
+msgstr ""
+
+msgid "Zoom meeting added"
+msgstr ""
+
+msgid "Zoom meeting removed"
 msgstr ""
 
 msgid "a deleted user"

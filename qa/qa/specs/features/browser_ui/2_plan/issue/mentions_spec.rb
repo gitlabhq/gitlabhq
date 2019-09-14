@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Plan' do
+  context 'Plan', :smoke do
     describe 'mention' do
       let(:user) do
         Resource::User.fabricate_via_api! do |user|

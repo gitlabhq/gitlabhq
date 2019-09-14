@@ -1,8 +1,5 @@
-import Vue from 'vue';
-import VueResource from 'vue-resource';
+import axios from '~/lib/utils/axios_utils';
 import * as constants from '../constants';
-
-Vue.use(VueResource);
 
 export default {
   fetchDiscussions(endpoint, filter, persistFilter = true) {
@@ -10,22 +7,22 @@ export default {
       filter !== undefined
         ? { params: { notes_filter: filter, persist_filter: persistFilter } }
         : null;
-    return Vue.http.get(endpoint, config);
+    return axios.get(endpoint, config);
   },
   replyToDiscussion(endpoint, data) {
-    return Vue.http.post(endpoint, data, { emulateJSON: true });
+    return axios.post(endpoint, data);
   },
   updateNote(endpoint, data) {
-    return Vue.http.put(endpoint, data, { emulateJSON: true });
+    return axios.put(endpoint, data);
   },
   createNewNote(endpoint, data) {
-    return Vue.http.post(endpoint, data, { emulateJSON: true });
+    return axios.post(endpoint, data);
   },
   toggleResolveNote(endpoint, isResolved) {
     const { RESOLVE_NOTE_METHOD_NAME, UNRESOLVE_NOTE_METHOD_NAME } = constants;
     const method = isResolved ? UNRESOLVE_NOTE_METHOD_NAME : RESOLVE_NOTE_METHOD_NAME;
 
-    return Vue.http[method](endpoint);
+    return axios[method](endpoint);
   },
   poll(data = {}) {
     const endpoint = data.notesData.notesPath;
@@ -36,9 +33,9 @@ export default {
       },
     };
 
-    return Vue.http.get(endpoint, options);
+    return axios.get(endpoint, options);
   },
   toggleIssueState(endpoint, data) {
-    return Vue.http.put(endpoint, data);
+    return axios.put(endpoint, data);
   },
 };

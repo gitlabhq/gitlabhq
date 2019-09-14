@@ -31,6 +31,9 @@ module.exports = {
   moduleNameMapper: {
     '^~(/.*)$': '<rootDir>/app/assets/javascripts$1',
     '^ee(/.*)$': '<rootDir>/ee/app/assets/javascripts$1',
+    '^ee_component(/.*)$': IS_EE
+      ? '<rootDir>/ee/app/assets/javascripts$1'
+      : '<rootDir>/app/assets/javascripts/vue_shared/components/empty_component.js',
     '^ee_else_ce(/.*)$': IS_EE
       ? '<rootDir>/ee/app/assets/javascripts$1'
       : '<rootDir>/app/assets/javascripts$1',
