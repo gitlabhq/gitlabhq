@@ -53,8 +53,8 @@
 .review-only:
   only:
     refs:
-      - branches@gitlab-org/gitlab-ce
-      - branches@gitlab-org/gitlab-ee
+      - branches@gitlab-org/gitlab-foss
+      - branches@gitlab-org/gitlab
     kubernetes: active
   except:
     refs:

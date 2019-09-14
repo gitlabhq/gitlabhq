@@ -54,8 +54,8 @@ update-tests-metadata:
     - scripts/insert-rspec-profiling-data
   only:
     refs:
-      - master@gitlab-org/gitlab-ce
-      - master@gitlab-org/gitlab-ee
+      - master@gitlab-org/gitlab-foss
+      - master@gitlab-org/gitlab
       - master@gitlab/gitlabhq
       - master@gitlab/gitlab-ee
 

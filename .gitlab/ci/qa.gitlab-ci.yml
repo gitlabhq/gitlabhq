@@ -11,8 +11,8 @@
     - ./scripts/trigger-build omnibus
   only:
     refs:
-      - branches@gitlab-org/gitlab-ce
-      - branches@gitlab-org/gitlab-ee
+      - branches@gitlab-org/gitlab-foss
+      - branches@gitlab-org/gitlab
 
 package-and-qa-manual:
   extends: .package-and-qa-base
@@ -28,8 +28,8 @@ package-and-qa-manual:master:
   extends: .package-and-qa-base
   only:
     refs:
-      - master@gitlab-org/gitlab-ce
-      - master@gitlab-org/gitlab-ee
+      - master@gitlab-org/gitlab-foss
+      - master@gitlab-org/gitlab
   when: manual
   needs: ["build-qa-image", "gitlab:assets:compile"]
 
@@ -37,7 +37,7 @@ package-and-qa:
   extends: .package-and-qa-base
   only:
     refs:
-      - /(^qa[\/-].*|.*-qa$)/@gitlab-org/gitlab-ce
-      - /(^qa[\/-].*|.*-qa$)/@gitlab-org/gitlab-ee
+      - /(^qa[\/-].*|.*-qa$)/@gitlab-org/gitlab-foss
+      - /(^qa[\/-].*|.*-qa$)/@gitlab-org/gitlab
   needs: ["build-qa-image", "gitlab:assets:compile pull-cache"]
   allow_failure: true

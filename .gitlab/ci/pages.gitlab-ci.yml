@@ -6,8 +6,8 @@ pages:
     - .except-docs
   only:
     refs:
-      - master@gitlab-org/gitlab-ce
-      - master@gitlab-org/gitlab-ee
+      - master@gitlab-org/gitlab-foss
+      - master@gitlab-org/gitlab
   stage: pages
   dependencies: ["coverage", "karma", "gitlab:assets:compile"]
   script:

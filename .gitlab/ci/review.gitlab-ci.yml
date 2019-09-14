@@ -1,8 +1,8 @@
 .review-schedules-only:
   only:
     refs:
-      - schedules@gitlab-org/gitlab-ce
-      - schedules@gitlab-org/gitlab-ee
+      - schedules@gitlab-org/gitlab-foss
+      - schedules@gitlab-org/gitlab
     kubernetes: active
     variables:
       - $REVIEW_APP_CLEANUP
@@ -43,8 +43,8 @@ build-qa-image:
     - .except-docs
   only:
     refs:
-      - branches@gitlab-org/gitlab-ce
-      - branches@gitlab-org/gitlab-ee
+      - branches@gitlab-org/gitlab-foss
+      - branches@gitlab-org/gitlab
   stage: test
   script:
     - time docker build --cache-from ${LATEST_QA_IMAGE} --tag ${QA_IMAGE} --file ./qa/Dockerfile ./

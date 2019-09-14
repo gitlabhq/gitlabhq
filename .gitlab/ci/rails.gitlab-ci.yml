@@ -1,17 +1,17 @@
 .only-schedules-master:
   only:
     refs:
-      - schedules@gitlab-org/gitlab-ce
-      - schedules@gitlab-org/gitlab-ee
-      - master@gitlab-org/gitlab-ce
-      - master@gitlab-org/gitlab-ee
+      - schedules@gitlab-org/gitlab-foss
+      - schedules@gitlab-org/gitlab
+      - master@gitlab-org/gitlab-foss
+      - master@gitlab-org/gitlab
       - master@gitlab/gitlabhq
       - master@gitlab/gitlab-ee
 
 .only-gitlab-ee:
   only:
-    - branches@gitlab-org/gitlab-ee
-    - tags@gitlab-org/gitlab-ee
+    - branches@gitlab-org/gitlab
+    - tags@gitlab-org/gitlab
 
 .rake-exec:
   extends:
@@ -181,7 +181,7 @@ ee_compat_check:
     refs:
       - master
       - tags
-      - branches@gitlab-org/gitlab-ee
+      - branches@gitlab-org/gitlab
       - branches@gitlab/gitlab-ee
       - /^[\d-]+-stable(-ee)?$/
       - /(^docs[\/-].+|.+-docs$)/
@@ -236,7 +236,7 @@ db:migrate-from-v11.11.0:
   variables:
     SETUP_DB: "false"
   script:
-    - git fetch https://gitlab.com/gitlab-org/gitlab-ee.git v11.11.0-ee
+    - git fetch https://gitlab.com/gitlab-org/gitlab.git v11.11.0-ee
     - git checkout -f FETCH_HEAD
     - sed -i "s/gem 'oj', '~> 2.17.4'//" Gemfile
     - sed -i "s/gem 'bootsnap', '~> 1.0.0'/gem 'bootsnap'/" Gemfile

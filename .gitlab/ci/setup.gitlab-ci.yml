@@ -19,8 +19,8 @@ cache gems:
       - vendor/cache
   only:
     refs:
-      - master@gitlab-org/gitlab-ce
-      - master@gitlab-org/gitlab-ee
+      - master@gitlab-org/gitlab-foss
+      - master@gitlab-org/gitlab
       - tags
 
 .minimal-job:
@@ -41,4 +41,4 @@ no_ee_check:
     - scripts/no-ee-check
   only:
     refs:
-      - branches@gitlab-org/gitlab-ce
+      - branches@gitlab-org/gitlab-foss
