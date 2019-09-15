@@ -43,7 +43,7 @@ So in brief, the steps needed to have a working CI can be summed up to:
 1. Configure a Runner
 
 From there on, on every push to your Git repository, the Runner will
-automagically start the pipeline and the pipeline will appear under the
+automatically start the pipeline and the pipeline will appear under the
 project's **Pipelines** page.
 
 ---
