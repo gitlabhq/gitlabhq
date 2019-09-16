@@ -519,7 +519,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           get :discussions, format: :json
 
           Gitlab.ee do
-            get 'designs(/*vueroute)', to: 'issues#show', as: :designs, format: false
+            get 'designs(/*vueroute)', to: 'issues#designs', as: :designs, format: false
           end
         end
 

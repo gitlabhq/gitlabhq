@@ -74,6 +74,7 @@ export default function initDiffsApp(store) {
         isFluidLayout: parseBoolean(dataset.isFluidLayout),
         dismissEndpoint: dataset.dismissEndpoint,
         showSuggestPopover: parseBoolean(dataset.showSuggestPopover),
+        showWhitespaceDefault: parseBoolean(dataset.showWhitespaceDefault),
       };
     },
     computed: {
@@ -82,11 +83,15 @@ export default function initDiffsApp(store) {
       }),
     },
     created() {
+      let hideWhitespace = getParameterValues('w')[0];
       const treeListStored = localStorage.getItem(TREE_LIST_STORAGE_KEY);
       const renderTreeList = treeListStored !== null ? parseBoolean(treeListStored) : true;
 
       this.setRenderTreeList(renderTreeList);
-      this.setShowWhitespace({ showWhitespace: getParameterValues('w')[0] !== '1' });
+      if (!hideWhitespace) {
+        hideWhitespace = this.showWhitespaceDefault ? '0' : '1';
+      }
+      this.setShowWhitespace({ showWhitespace: hideWhitespace !== '1' });
     },
     methods: {
       ...mapActions('diffs', ['setRenderTreeList', 'setShowWhitespace']),
@@ -103,6 +108,7 @@ export default function initDiffsApp(store) {
           isFluidLayout: this.isFluidLayout,
           dismissEndpoint: this.dismissEndpoint,
           showSuggestPopover: this.showSuggestPopover,
+          showWhitespaceDefault: this.showWhitespaceDefault,
         },
       });
     },

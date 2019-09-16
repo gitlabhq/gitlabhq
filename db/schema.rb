@@ -3478,6 +3478,7 @@ ActiveRecord::Schema.define(version: 2019_09_12_061145) do
     t.boolean "time_display_relative"
     t.boolean "time_format_in_24h"
     t.string "projects_sort", limit: 64
+    t.boolean "show_whitespace_in_diffs", default: true, null: false
     t.index ["user_id"], name: "index_user_preferences_on_user_id", unique: true
   end
 

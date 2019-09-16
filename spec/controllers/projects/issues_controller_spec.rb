@@ -36,6 +36,31 @@ describe Projects::IssuesController do
           expect(response).to render_template(:index)
         end
       end
+
+      context 'when project has moved' do
+        let(:new_project) { create(:project) }
+        let(:issue) { create(:issue, project: new_project) }
+
+        before do
+          project.route.destroy
+          new_project.redirect_routes.create!(path: project.full_path)
+          new_project.add_developer(user)
+        end
+
+        it 'redirects to the new issue tracker from the old one' do
+          get :index, params: { namespace_id: project.namespace, project_id: project }
+
+          expect(response).to redirect_to(project_issues_path(new_project))
+          expect(response).to have_gitlab_http_status(302)
+        end
+
+        it 'redirects from an old issue correctly' do
+          get :show, params: { namespace_id: project.namespace, project_id: project, id: issue }
+
+          expect(response).to redirect_to(project_issue_path(new_project, issue))
+          expect(response).to have_gitlab_http_status(302)
+        end
+      end
     end
 
     context 'internal issue tracker' do

@@ -83,7 +83,8 @@
         changes_empty_state_illustration: image_path('illustrations/merge_request_changes_empty.svg'),
         is_fluid_layout: fluid_layout.to_s,
         dismiss_endpoint: user_callouts_path,
-        show_suggest_popover: show_suggest_popover?.to_s } }
+        show_suggest_popover: show_suggest_popover?.to_s,
+        show_whitespace_default: @show_whitespace_default.to_s } }
 
     .mr-loading-status
       = spinner

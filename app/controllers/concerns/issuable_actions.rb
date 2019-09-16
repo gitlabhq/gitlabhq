@@ -30,6 +30,7 @@ module IssuableActions
     respond_to do |format|
       format.html do
         @issuable_sidebar = serializer.represent(issuable, serializer: 'sidebar') # rubocop:disable Gitlab/ModuleWithInstanceVariables
+        render 'show'
       end
 
       format.json do

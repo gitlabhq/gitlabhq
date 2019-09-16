@@ -235,6 +235,7 @@ class User < ApplicationRecord
   delegate :timezone, :timezone=, to: :user_preference
   delegate :time_display_relative, :time_display_relative=, to: :user_preference
   delegate :time_format_in_24h, :time_format_in_24h=, to: :user_preference
+  delegate :show_whitespace_in_diffs, :show_whitespace_in_diffs=, to: :user_preference
 
   accepts_nested_attributes_for :user_preference, update_only: true
 

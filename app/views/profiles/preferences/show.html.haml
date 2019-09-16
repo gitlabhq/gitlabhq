@@ -61,6 +61,10 @@
       = f.select :project_view, project_view_choices, {}, class: 'select2'
       .form-text.text-muted
         = s_('Preferences|Choose what content you want to see on a project’s overview page.')
+    .form-group.form-check
+      = f.check_box :show_whitespace_in_diffs, class: 'form-check-input'
+      = f.label :show_whitespace_in_diffs, class: 'form-check-label' do
+        = s_('Preferences|Show whitespace in diffs')
 
   .col-sm-12
     %hr

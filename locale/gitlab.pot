@@ -11329,6 +11329,9 @@ msgstr ""
 msgid "Preferences|Project overview content"
 msgstr ""
 
+msgid "Preferences|Show whitespace in diffs"
+msgstr ""
+
 msgid "Preferences|Syntax highlighting theme"
 msgstr ""
 
@@ -18572,9 +18575,6 @@ msgid "entries cannot be nil"
 msgstr ""
 
 msgid "entries cannot contain HTML tags"
-msgstr ""
-
-msgid "epic"
 msgstr ""
 
 msgid "error"
