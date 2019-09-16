@@ -78,6 +78,40 @@ describe Projects::MergeRequestsController do
           expect(response).to be_successful
         end
       end
+
+      context 'when project has moved' do
+        let(:new_project) { create(:project) }
+
+        before do
+          project.route.destroy
+          new_project.redirect_routes.create!(path: project.full_path)
+          new_project.add_developer(user)
+        end
+
+        it 'redirects from an old merge request correctly' do
+          get :show,
+              params: {
+                namespace_id: project.namespace,
+                project_id: project,
+                id: merge_request
+              }
+
+          expect(response).to redirect_to(project_merge_request_path(new_project, merge_request))
+          expect(response).to have_gitlab_http_status(302)
+        end
+
+        it 'redirects from an old merge request commits correctly' do
+          get :commits,
+              params: {
+                namespace_id: project.namespace,
+                project_id: project,
+                id: merge_request
+              }
+
+          expect(response).to redirect_to(commits_project_merge_request_path(new_project, merge_request))
+          expect(response).to have_gitlab_http_status(302)
+        end
+      end
     end
 
     context 'when user is setting notes filters' do

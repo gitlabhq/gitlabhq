@@ -239,8 +239,9 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
       end
 
-      resources :merge_requests, concerns: :awardable, except: [:new, :create], constraints: { id: /\d+/ } do
+      resources :merge_requests, concerns: :awardable, except: [:new, :create, :show], constraints: { id: /\d+/ } do
         member do
+          get :show # Insert this first to ensure redirections using merge_requests#show match this route
           get :commit_change_content
           post :merge
           post :cancel_auto_merge
