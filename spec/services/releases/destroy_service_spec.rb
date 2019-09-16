@@ -60,7 +60,7 @@ describe Releases::DestroyService do
 
     context 'when a milestone is tied to the release' do
       let!(:milestone) { create(:milestone, :active, project: project, title: 'v1.0') }
-      let!(:release) { create(:release, milestone: milestone, project: project, tag: tag) }
+      let!(:release) { create(:release, milestones: [milestone], project: project, tag: tag) }
 
       it 'destroys the release but leave the milestone intact' do
         expect { subject }.not_to change { Milestone.count }

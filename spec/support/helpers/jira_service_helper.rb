@@ -5,16 +5,16 @@ module JiraServiceHelper
   JIRA_API = JIRA_URL + "/rest/api/2"
 
   def jira_service_settings
-    properties = {
-      title: "Jira tracker",
-      url: JIRA_URL,
-      username: 'jira-user',
-      password: 'my-secret-password',
-      project_key: "JIRA",
-      jira_issue_transition_id: '1'
-    }
+    title = "Jira tracker"
+    url = JIRA_URL
+    username = 'jira-user'
+    password = 'my-secret-password'
+    jira_issue_transition_id = '1'
 
-    jira_tracker.update(properties: properties, active: true)
+    jira_tracker.update(
+      title: title, url: url, username: username, password: password,
+      jira_issue_transition_id: jira_issue_transition_id, active: true
+    )
   end
 
   def jira_issue_comments

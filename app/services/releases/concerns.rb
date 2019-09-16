@@ -48,25 +48,29 @@ module Releases
         end
       end
 
-      def milestone
-        return unless params[:milestone]
+      def milestones
+        return [] unless param_for_milestone_titles_provided?
 
-        strong_memoize(:milestone) do
+        strong_memoize(:milestones) do
           MilestonesFinder.new(
             project: project,
             current_user: current_user,
             project_ids: Array(project.id),
-            title: params[:milestone]
-          ).execute.first
+            state: 'all',
+            title: params[:milestones]
+          ).execute
         end
       end
 
-      def inexistent_milestone?
-        params[:milestone] && !params[:milestone].empty? && !milestone
+      def inexistent_milestones
+        return [] unless param_for_milestone_titles_provided?
+
+        existing_milestone_titles = milestones.map(&:title)
+        Array(params[:milestones]) - existing_milestone_titles
       end
 
-      def param_for_milestone_title_provided?
-        params[:milestone].present? || params[:milestone]&.empty?
+      def param_for_milestone_titles_provided?
+        params.key?(:milestones)
       end
     end
   end

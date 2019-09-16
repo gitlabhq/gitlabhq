@@ -48,7 +48,7 @@ describe BugzillaService do
         create(:bugzilla_service, :without_properties_callback, properties: properties)
       end
 
-      include_examples 'issue tracker fields'
+      it_behaves_like 'issue tracker fields'
     end
 
     context 'when data are stored in separated fields' do
@@ -56,7 +56,7 @@ describe BugzillaService do
         create(:bugzilla_service, title: title, description: description, properties: access_params)
       end
 
-      include_examples 'issue tracker fields'
+      it_behaves_like 'issue tracker fields'
     end
 
     context 'when data are stored in both properties and separated fields' do
@@ -65,7 +65,7 @@ describe BugzillaService do
         create(:bugzilla_service, :without_properties_callback, title: title, description: description, properties: properties)
       end
 
-      include_examples 'issue tracker fields'
+      it_behaves_like 'issue tracker fields'
     end
 
     context 'when no title & description are set' do

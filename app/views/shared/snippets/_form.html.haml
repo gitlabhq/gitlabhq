@@ -22,7 +22,7 @@
           = f.label :file_name, "File"
         .col-sm-10
           .file-holder.snippet
-            .js-file-title.file-title
+            .js-file-title.file-title-flex-parent
               = f.text_field :file_name, placeholder: "Optionally name this file to add code highlighting, e.g. example.rb for Ruby.", class: 'form-control snippet-file-name qa-snippet-file-name'
             .file-content.code
               %pre#editor= @snippet.content

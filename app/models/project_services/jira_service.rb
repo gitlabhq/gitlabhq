@@ -17,7 +17,10 @@ class JiraService < IssueTrackerService
   # Jira Cloud version is deprecating authentication via username and password.
   # We should use username/password for Jira Server and email/api_token for Jira Cloud,
   # for more information check: https://gitlab.com/gitlab-org/gitlab-ce/issues/49936.
-  prop_accessor :username, :password, :url, :api_url, :jira_issue_transition_id
+
+  # TODO: we can probably just delegate as part of
+  # https://gitlab.com/gitlab-org/gitlab-ce/issues/63084
+  data_field :username, :password, :url, :api_url, :jira_issue_transition_id
 
   before_update :reset_password
 
@@ -35,24 +38,34 @@ class JiraService < IssueTrackerService
   end
 
   def initialize_properties
-    super do
-      self.properties = {
-        url: issues_tracker['url'],
-        api_url: issues_tracker['api_url']
-      }
-    end
+    {}
+  end
+
+  def data_fields
+    jira_tracker_data || self.build_jira_tracker_data
   end
 
   def reset_password
-    self.password = nil if reset_password?
+    data_fields.password = nil if reset_password?
+  end
+
+  def set_default_data
+    return unless issues_tracker.present?
+
+    self.title ||= issues_tracker['title']
+
+    return if url
+
+    data_fields.url ||= issues_tracker['url']
+    data_fields.api_url ||= issues_tracker['api_url']
   end
 
   def options
     url = URI.parse(client_url)
 
     {
-      username: self.username,
-      password: self.password,
+      username: username,
+      password: password,
       site: URI.join(url, '/').to_s, # Intended to find the root
       context_path: url.path,
       auth_type: :basic,

@@ -211,7 +211,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   end
 
   def discussions
-    merge_request.preload_discussions_diff_highlight
+    merge_request.discussions_diffs.load_highlight
 
     super
   end

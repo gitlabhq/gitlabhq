@@ -12,11 +12,8 @@ class Release < ApplicationRecord
 
   has_many :links, class_name: 'Releases::Link'
 
-  # A one-to-one relationship is set up here as part of a MVC: https://gitlab.com/gitlab-org/gitlab-ce/issues/62402
-  # However, on the long term, we will want a many-to-many relationship between Release and Milestone.
-  # The "has_one through" allows us today to set up this one-to-one relationship while setting up the architecture for the long-term (ie intermediate table).
-  has_one :milestone_release
-  has_one :milestone, through: :milestone_release
+  has_many :milestone_releases
+  has_many :milestones, through: :milestone_releases
 
   default_value_for :released_at, allows_nil: false do
     Time.zone.now
@@ -26,7 +23,7 @@ class Release < ApplicationRecord
 
   validates :description, :project, :tag, presence: true
   validates :name, presence: true, on: :create
-  validates_associated :milestone_release, message: -> (_, obj) { obj[:value].errors.full_messages.join(",") }
+  validates_associated :milestone_releases, message: -> (_, obj) { obj[:value].map(&:errors).map(&:full_messages).join(",") }
 
   scope :sorted, -> { order(released_at: :desc) }
 

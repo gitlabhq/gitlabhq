@@ -3,6 +3,7 @@
 module Gitlab
   class UsageData
     APPROXIMATE_COUNT_MODELS = [Label, MergeRequest, Note, Todo].freeze
+    BATCH_SIZE = 100
 
     class << self
       def data(force_refresh: false)
@@ -13,10 +14,10 @@ module Gitlab
 
       def uncached_data
         license_usage_data.merge(system_usage_data)
-                          .merge(features_usage_data)
-                          .merge(components_usage_data)
-                          .merge(cycle_analytics_usage_data)
-                          .merge(usage_counters)
+          .merge(features_usage_data)
+          .merge(components_usage_data)
+          .merge(cycle_analytics_usage_data)
+          .merge(usage_counters)
       end
 
       def to_json(force_refresh: false)
@@ -96,9 +97,8 @@ module Gitlab
             todos: count(Todo),
             uploads: count(Upload),
             web_hooks: count(WebHook)
-          }
-          .merge(services_usage)
-          .merge(approximate_counts)
+          }.merge(services_usage)
+            .merge(approximate_counts)
         }.tap do |data|
           data[:counts][:user_preferences] = user_preferences_usage
         end
@@ -173,17 +173,34 @@ module Gitlab
       def jira_usage
         # Jira Cloud does not support custom domains as per https://jira.atlassian.com/browse/CLOUD-6999
         # so we can just check for subdomains of atlassian.net
-        services = count(
-          Service.unscoped.where(type: :JiraService, active: true)
-            .group("CASE WHEN properties LIKE '%.atlassian.net%' THEN 'cloud' ELSE 'server' END"),
-          fallback: Hash.new(-1)
-        )
 
-        {
-          projects_jira_server_active: services['server'] || 0,
-          projects_jira_cloud_active: services['cloud'] || 0,
-          projects_jira_active: services['server'] == -1 ? -1 : services.values.sum
+        results = {
+          projects_jira_server_active: 0,
+          projects_jira_cloud_active: 0,
+          projects_jira_active: -1
         }
+
+        Service.unscoped
+          .where(type: :JiraService, active: true)
+          .includes(:jira_tracker_data)
+          .find_in_batches(batch_size: BATCH_SIZE) do |services|
+
+          counts = services.group_by do |service|
+            # TODO: Simplify as part of https://gitlab.com/gitlab-org/gitlab-ce/issues/63084
+            service_url = service.data_fields&.url || (service.properties && service.properties['url'])
+            service_url&.include?('.atlassian.net') ? :cloud : :server
+          end
+
+          results[:projects_jira_server_active] += counts[:server].count if counts[:server]
+          results[:projects_jira_cloud_active] += counts[:cloud].count if counts[:cloud]
+          if results[:projects_jira_active] == -1
+            results[:projects_jira_active] = count(services)
+          else
+            results[:projects_jira_active] += count(services)
+          end
+        end
+
+        results
       end
 
       def user_preferences_usage

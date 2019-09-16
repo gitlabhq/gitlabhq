@@ -81,6 +81,18 @@ ActiveRecord::Schema.define(version: 2019_09_12_061145) do
     t.index ["start_event_label_id"], name: "index_analytics_ca_project_stages_on_start_event_label_id"
   end
 
+  create_table "analytics_language_trend_repository_languages", id: false, force: :cascade do |t|
+    t.integer "file_count", default: 0, null: false
+    t.bigint "programming_language_id", null: false
+    t.bigint "project_id", null: false
+    t.integer "loc", default: 0, null: false
+    t.integer "bytes", default: 0, null: false
+    t.integer "percentage", limit: 2, default: 0, null: false
+    t.date "snapshot_date", null: false
+    t.index ["programming_language_id", "project_id", "snapshot_date"], name: "analytics_repository_languages_unique_index", unique: true
+    t.index ["project_id"], name: "analytics_repository_languages_on_project_id"
+  end
+
   create_table "appearances", id: :serial, force: :cascade do |t|
     t.string "title", null: false
     t.text "description", null: false
@@ -2196,7 +2208,7 @@ ActiveRecord::Schema.define(version: 2019_09_12_061145) do
     t.index ["user_id"], name: "index_merge_trains_on_user_id"
   end
 
-  create_table "milestone_releases", force: :cascade do |t|
+  create_table "milestone_releases", id: false, force: :cascade do |t|
     t.bigint "milestone_id", null: false
     t.bigint "release_id", null: false
     t.index ["milestone_id", "release_id"], name: "index_miletone_releases_on_milestone_and_release", unique: true
@@ -3762,6 +3774,8 @@ ActiveRecord::Schema.define(version: 2019_09_12_061145) do
   add_foreign_key "analytics_cycle_analytics_project_stages", "labels", column: "end_event_label_id", on_delete: :cascade
   add_foreign_key "analytics_cycle_analytics_project_stages", "labels", column: "start_event_label_id", on_delete: :cascade
   add_foreign_key "analytics_cycle_analytics_project_stages", "projects", on_delete: :cascade
+  add_foreign_key "analytics_language_trend_repository_languages", "programming_languages", on_delete: :cascade
+  add_foreign_key "analytics_language_trend_repository_languages", "projects", on_delete: :cascade
   add_foreign_key "application_settings", "namespaces", column: "custom_project_templates_group_id", on_delete: :nullify
   add_foreign_key "application_settings", "projects", column: "file_template_project_id", name: "fk_ec757bd087", on_delete: :nullify
   add_foreign_key "application_settings", "projects", column: "instance_administration_project_id", on_delete: :nullify

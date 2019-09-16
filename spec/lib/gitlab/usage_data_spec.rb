@@ -3,14 +3,16 @@
 require 'spec_helper'
 
 describe Gitlab::UsageData do
-  let(:projects) { create_list(:project, 3) }
+  let(:projects) { create_list(:project, 4) }
   let!(:board) { create(:board, project: projects[0]) }
 
   describe '#data' do
     before do
       create(:jira_service, project: projects[0])
-      create(:jira_service, project: projects[1])
+      create(:jira_service, :without_properties_callback, project: projects[1])
       create(:jira_service, :jira_cloud_service, project: projects[2])
+      create(:jira_service, :without_properties_callback, project: projects[3],
+             properties: { url: 'https://mysite.atlassian.net' })
       create(:prometheus_service, project: projects[1])
       create(:service, project: projects[0], type: 'SlackSlashCommandsService', active: true)
       create(:service, project: projects[1], type: 'SlackService', active: true)
@@ -156,7 +158,7 @@ describe Gitlab::UsageData do
       count_data = subject[:counts]
 
       expect(count_data[:boards]).to eq(1)
-      expect(count_data[:projects]).to eq(3)
+      expect(count_data[:projects]).to eq(4)
       expect(count_data.keys).to include(*expected_keys)
       expect(expected_keys - count_data.keys).to be_empty
     end
@@ -164,14 +166,14 @@ describe Gitlab::UsageData do
     it 'gathers projects data correctly' do
       count_data = subject[:counts]
 
-      expect(count_data[:projects]).to eq(3)
+      expect(count_data[:projects]).to eq(4)
       expect(count_data[:projects_prometheus_active]).to eq(1)
-      expect(count_data[:projects_jira_active]).to eq(3)
+      expect(count_data[:projects_jira_active]).to eq(4)
       expect(count_data[:projects_jira_server_active]).to eq(2)
-      expect(count_data[:projects_jira_cloud_active]).to eq(1)
+      expect(count_data[:projects_jira_cloud_active]).to eq(2)
       expect(count_data[:projects_slack_notifications_active]).to eq(2)
       expect(count_data[:projects_slack_slash_active]).to eq(1)
-      expect(count_data[:projects_with_repositories_enabled]).to eq(2)
+      expect(count_data[:projects_with_repositories_enabled]).to eq(3)
       expect(count_data[:projects_with_error_tracking_enabled]).to eq(1)
 
       expect(count_data[:clusters_enabled]).to eq(7)

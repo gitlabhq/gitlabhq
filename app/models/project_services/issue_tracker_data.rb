@@ -6,9 +6,6 @@ class IssueTrackerData < ApplicationRecord
   delegate :activated?, to: :service, allow_nil: true
 
   validates :service, presence: true
-  validates :project_url, presence: true, public_url: { enforce_sanitization: true }, if: :activated?
-  validates :issues_url, presence: true, public_url: { enforce_sanitization: true }, if: :activated?
-  validates :new_issue_url, public_url: { enforce_sanitization: true }, if: :activated?
 
   def self.encryption_options
     {

@@ -54,7 +54,7 @@ module API
             requires :url, type: String
           end
         end
-        optional :milestone, type: String, desc: 'The title of the related milestone'
+        optional :milestones, type: Array, desc: 'The titles of the related milestones', default: []
         optional :released_at, type: DateTime, desc: 'The date when the release will be/was ready. Defaults to the current time.'
       end
       post ':id/releases' do
@@ -80,7 +80,7 @@ module API
         optional :name,        type: String, desc: 'The name of the release'
         optional :description, type: String, desc: 'Release notes with markdown support'
         optional :released_at, type: DateTime, desc: 'The date when the release will be/was ready.'
-        optional :milestone,   type: String, desc: 'The title of the related milestone'
+        optional :milestones,  type: Array, desc: 'The titles of the related milestones'
       end
       put ':id/releases/:tag_name', requirements: RELEASE_ENDPOINT_REQUIREMENTS do
         authorize_update_release!

@@ -3,8 +3,6 @@
 class RedmineService < IssueTrackerService
   validates :project_url, :issues_url, :new_issue_url, presence: true, public_url: true, if: :activated?
 
-  prop_accessor :project_url, :issues_url, :new_issue_url
-
   def default_title
     'Redmine'
   end

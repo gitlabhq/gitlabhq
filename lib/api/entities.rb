@@ -1044,7 +1044,12 @@ module API
       expose :job_events
       # Expose serialized properties
       expose :properties do |service, options|
-        service.properties.slice(*service.api_field_names)
+        # TODO: Simplify as part of https://gitlab.com/gitlab-org/gitlab-ce/issues/63084
+        if service.data_fields_present?
+          service.data_fields.as_json.slice(*service.api_field_names)
+        else
+          service.properties.slice(*service.api_field_names)
+        end
       end
     end
 
@@ -1280,7 +1285,7 @@ module API
       expose :author, using: Entities::UserBasic, if: -> (release, _) { release.author.present? }
       expose :commit, using: Entities::Commit, if: lambda { |_, _| can_download_code? }
       expose :upcoming_release?, as: :upcoming_release
-      expose :milestone, using: Entities::Milestone, if: -> (release, _) { release.milestone.present? }
+      expose :milestones, using: Entities::Milestone, if: -> (release, _) { release.milestones.present? }
 
       expose :assets do
         expose :assets_count, as: :count do |release, _|

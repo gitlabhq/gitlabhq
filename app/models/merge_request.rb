@@ -454,22 +454,15 @@ class MergeRequest < ApplicationRecord
     true
   end
 
-  def preload_discussions_diff_highlight
-    preloadable_files = note_diff_files.for_commit_or_unresolved
-
-    discussions_diffs.load_highlight(preloadable_files.pluck(:id))
-  end
-
   def discussions_diffs
     strong_memoize(:discussions_diffs) do
+      note_diff_files = NoteDiffFile
+        .joins(:diff_note)
+        .merge(notes.or(commit_notes))
+        .includes(diff_note: :project)
+
       Gitlab::DiscussionsDiff::FileCollection.new(note_diff_files.to_a)
     end
-  end
-
-  def note_diff_files
-    NoteDiffFile
-      .where(diff_note: discussion_notes)
-      .includes(diff_note: :project)
   end
 
   def diff_size

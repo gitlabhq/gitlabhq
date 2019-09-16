@@ -257,8 +257,8 @@ describe Service do
       expect(service.title).to eq('random title')
     end
 
-    it 'creates the properties' do
-      expect(service.properties).to eq({ "project_url" => "http://gitlab.example.com" })
+    it 'sets data correctly' do
+      expect(service.data_fields.project_url).to eq('http://gitlab.example.com')
     end
   end
 

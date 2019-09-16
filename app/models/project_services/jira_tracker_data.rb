@@ -6,13 +6,6 @@ class JiraTrackerData < ApplicationRecord
   delegate :activated?, to: :service, allow_nil: true
 
   validates :service, presence: true
-  validates :url, public_url: { enforce_sanitization: true }, presence: true, if: :activated?
-  validates :api_url, public_url: { enforce_sanitization: true }, allow_blank: true
-  validates :username, presence: true, if: :activated?
-  validates :password, presence: true, if: :activated?
-  validates :jira_issue_transition_id,
-            format: { with: Gitlab::Regex.jira_transition_id_regex, message: s_("JiraService|transition ids can have only numbers which can be split with , or ;") },
-            allow_blank: true
 
   def self.encryption_options
     {

@@ -9,9 +9,9 @@ module Releases
       return error('Release does not exist', 404) unless release
       return error('Access Denied', 403) unless allowed?
       return error('params is empty', 400) if empty_params?
-      return error('Milestone does not exist', 400) if inexistent_milestone?
+      return error("Milestone(s) not found: #{inexistent_milestones.join(', ')}", 400) if inexistent_milestones.any?
 
-      params[:milestone] = milestone if param_for_milestone_title_provided?
+      params[:milestones] = milestones if param_for_milestone_titles_provided?
 
       if release.update(params)
         success(tag: existing_tag, release: release)

@@ -4,8 +4,10 @@ class MilestoneRelease < ApplicationRecord
   belongs_to :milestone
   belongs_to :release
 
-  validates :milestone_id, uniqueness: { scope: [:release_id] }
   validate :same_project_between_milestone_and_release
+
+  # Keep until 2019-11-29
+  self.ignored_columns += %i[id]
 
   private
 

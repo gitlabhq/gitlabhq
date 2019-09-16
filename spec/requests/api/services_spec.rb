@@ -100,9 +100,15 @@ describe API::Services do
         expect(json_response['properties'].keys).to match_array(service_instance.api_field_names)
       end
 
-      it "returns empty hash if properties are empty" do
+      it "returns empty hash if properties and data fields are empty" do
         # deprecated services are not valid for update
         initialized_service.update_attribute(:properties, {})
+
+        if initialized_service.data_fields_present?
+          initialized_service.data_fields.destroy
+          initialized_service.reload
+        end
+
         get api("/projects/#{project.id}/services/#{dashed_service}", user)
 
         expect(response).to have_gitlab_http_status(200)

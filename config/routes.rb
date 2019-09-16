@@ -117,7 +117,7 @@ Rails.application.routes.draw do
     end
 
     Gitlab.ee do
-      constraints(::Constraints::FeatureConstrainer.new(:analytics)) do
+      constraints(-> (*) { Gitlab::Analytics.any_features_enabled? }) do
         draw :analytics
       end
     end
