@@ -58,6 +58,7 @@ class Project < ApplicationRecord
   ACCESS_REQUEST_APPROVERS_TO_BE_NOTIFIED_LIMIT = 10
 
   SORTING_PREFERENCE_FIELD = :projects_sort
+  MAX_BUILD_TIMEOUT = 1.month
 
   cache_markdown_field :description, pipeline: :description
 
@@ -430,7 +431,7 @@ class Project < ApplicationRecord
 
   validates :build_timeout, allow_nil: true,
                             numericality: { greater_than_or_equal_to: 10.minutes,
-                                            less_than: 1.month,
+                                            less_than: MAX_BUILD_TIMEOUT,
                                             only_integer: true,
                                             message: _('needs to be between 10 minutes and 1 month') }
 

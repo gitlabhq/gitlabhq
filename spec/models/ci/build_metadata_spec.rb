@@ -22,42 +22,72 @@ describe Ci::BuildMetadata do
   describe '#update_timeout_state' do
     subject { metadata }
 
-    context 'when runner is not assigned to the job' do
-      it "doesn't change timeout value" do
-        expect { subject.update_timeout_state }.not_to change { subject.reload.timeout }
+    shared_examples 'sets timeout' do |source, timeout|
+      it 'sets project_timeout_source' do
+        expect { subject.update_timeout_state }.to change { subject.reload.timeout_source }.to(source)
       end
 
-      it "doesn't change timeout_source value" do
-        expect { subject.update_timeout_state }.not_to change { subject.reload.timeout_source }
+      it 'sets project timeout' do
+        expect { subject.update_timeout_state }.to change { subject.reload.timeout }.to(timeout)
       end
     end
 
-    context 'when runner is assigned to the job' do
-      before do
-        build.update(runner: runner)
+    context 'when project timeout is set' do
+      context 'when runner is assigned to the job' do
+        before do
+          build.update!(runner: runner)
+        end
+
+        context 'when runner timeout is not set' do
+          let(:runner) { create(:ci_runner, maximum_timeout: nil) }
+
+          it_behaves_like 'sets timeout', 'project_timeout_source', 2000
+        end
+
+        context 'when runner timeout is lower than project timeout' do
+          let(:runner) { create(:ci_runner, maximum_timeout: 1900) }
+
+          it_behaves_like 'sets timeout', 'runner_timeout_source', 1900
+        end
+
+        context 'when runner timeout is higher than project timeout' do
+          let(:runner) { create(:ci_runner, maximum_timeout: 2100) }
+
+          it_behaves_like 'sets timeout', 'project_timeout_source', 2000
+        end
       end
 
-      context 'when runner timeout is lower than project timeout' do
-        let(:runner) { create(:ci_runner, maximum_timeout: 1900) }
+      context 'when job timeout is set' do
+        context 'when job timeout is higher than project timeout' do
+          let(:build) { create(:ci_build, pipeline: pipeline, options: { job_timeout: 3000 }) }
 
-        it 'sets runner timeout' do
-          expect { subject.update_timeout_state }.to change { subject.reload.timeout }.to(1900)
+          it_behaves_like 'sets timeout', 'job_timeout_source', 3000
         end
 
-        it 'sets runner_timeout_source' do
-          expect { subject.update_timeout_state }.to change { subject.reload.timeout_source }.to('runner_timeout_source')
+        context 'when job timeout is lower than project timeout' do
+          let(:build) { create(:ci_build, pipeline: pipeline, options: { job_timeout: 1000 }) }
+
+          it_behaves_like 'sets timeout', 'job_timeout_source', 1000
         end
       end
 
-      context 'when runner timeout is higher than project timeout' do
-        let(:runner) { create(:ci_runner, maximum_timeout: 2100) }
-
-        it 'sets project timeout' do
-          expect { subject.update_timeout_state }.to change { subject.reload.timeout }.to(2000)
+      context 'when both runner and job timeouts are set' do
+        before do
+          build.update(runner: runner)
         end
 
-        it 'sets project_timeout_source' do
-          expect { subject.update_timeout_state }.to change { subject.reload.timeout_source }.to('project_timeout_source')
+        context 'when job timeout is higher than runner timeout' do
+          let(:build) { create(:ci_build, pipeline: pipeline, options: { job_timeout: 3000 }) }
+          let(:runner) { create(:ci_runner, maximum_timeout: 2100) }
+
+          it_behaves_like 'sets timeout', 'runner_timeout_source', 2100
+        end
+
+        context 'when job timeout is lower than runner timeout' do
+          let(:build) { create(:ci_build, pipeline: pipeline, options: { job_timeout: 1900 }) }
+          let(:runner) { create(:ci_runner, maximum_timeout: 2100) }
+
+          it_behaves_like 'sets timeout', 'job_timeout_source', 1900
         end
       end
     end

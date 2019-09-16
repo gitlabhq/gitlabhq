@@ -2,57 +2,26 @@
 
 container_scanning:
   stage: test
-  image: docker:stable
+  image:
+    name: registry.gitlab.com/gitlab-org/security-products/analyzers/klar:$CI_SERVER_VERSION_MAJOR-$CI_SERVER_VERSION_MINOR-stable
+    entrypoint: []
   variables:
-    DOCKER_DRIVER: overlay2
-    DOCKER_TLS_CERTDIR: ""
-    # Defining two new variables based on GitLab's CI/CD predefined variables
-    # https://docs.gitlab.com/ee/ci/variables/#predefined-environment-variables
-    CI_APPLICATION_REPOSITORY: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG
-    CI_APPLICATION_TAG: $CI_COMMIT_SHA
-    # Prior to this, you need to have the Container Registry running for your project and setup a build job
-    # with at least the following steps:
-    #
-    # docker build -t $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG .
-    # docker push $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG:$CI_COMMIT_SHA
-    #
-    # Container Scanning deals with Docker images only so no need to import the project's Git repository:
+    # By default, use the latest clair vulnerabilities database, however, allow it to be overridden here
+    # with a specific version to provide consistency for integration testing purposes
+    CLAIR_DB_IMAGE_TAG: latest
+    # Override this variable in your `.gitlab-ci.yml` file and set it to `fetch` if you want to provide a `clair-whitelist.yaml` file.
+    # See https://docs.gitlab.com/ee/user/application_security/container_scanning/index.html#overriding-the-container-scanning-template
+    # for details
     GIT_STRATEGY: none
-    # Services and containers running in the same Kubernetes pod are all sharing the same localhost address
-    # https://docs.gitlab.com/runner/executors/kubernetes.html
-    DOCKER_SERVICE: docker
-    DOCKER_HOST: tcp://${DOCKER_SERVICE}:2375/
-    # https://hub.docker.com/r/arminc/clair-local-scan/tags
-    CLAIR_LOCAL_SCAN_VERSION: v2.0.8_0ed98e9ead65a51ba53f7cc53fa5e80c92169207
-    CLAIR_EXECUTABLE_VERSION: v12
-    CLAIR_EXECUTABLE_SHA: 44f2a3fdd7b0d102c98510e7586f6956edc89ab72c6943980f92f4979f7f4081
-    ## Disable the proxy for clair-local-scan, otherwise Container Scanning will
-    ## fail when a proxy is used.
-    NO_PROXY: ${DOCKER_SERVICE},localhost
   allow_failure: true
   services:
-    - docker:stable-dind
+    - name: arminc/clair-db:$CLAIR_DB_IMAGE_TAG
+      alias: clair-vulnerabilities-db
   script:
-    - if [[ -n "$KUBERNETES_PORT" ]]; then { export DOCKER_SERVICE="localhost" ; export DOCKER_HOST="tcp://${DOCKER_SERVICE}:2375" ; } fi
-    - |
-      if [[ -n "$CI_REGISTRY_USER" ]]; then
-        echo "Logging to GitLab Container Registry with CI credentials..."
-        docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
-        echo ""
-      fi
-    - docker run -d --name db arminc/clair-db:latest
-    - docker run -p 6060:6060 --link db:postgres -d --name clair --restart on-failure arminc/clair-local-scan:${CLAIR_LOCAL_SCAN_VERSION}
-    - apk add -U wget ca-certificates
-    - docker pull ${CI_APPLICATION_REPOSITORY}:${CI_APPLICATION_TAG}
-    - wget https://github.com/arminc/clair-scanner/releases/download/${CLAIR_EXECUTABLE_VERSION}/clair-scanner_linux_amd64
-    - echo "${CLAIR_EXECUTABLE_SHA}  clair-scanner_linux_amd64" | sha256sum -c
-    - mv clair-scanner_linux_amd64 clair-scanner
-    - chmod +x clair-scanner
-    - touch clair-whitelist.yml
-    - retries=0
-    - echo "Waiting for clair daemon to start"
-    - while( ! wget -T 10 -q -O /dev/null http://${DOCKER_SERVICE}:6060/v1/namespaces ) ; do sleep 1 ; echo -n "." ; if [ $retries -eq 10 ] ; then echo " Timeout, aborting." ; exit 1 ; fi ; retries=$(($retries+1)) ; done
-    - ./clair-scanner -c http://${DOCKER_SERVICE}:6060 --ip $(hostname -i) -r gl-container-scanning-report.json -l clair.log -w clair-whitelist.yml ${CI_APPLICATION_REPOSITORY}:${CI_APPLICATION_TAG} || true
+    # the kubernetes executor currently ignores the Docker image entrypoint value, so the start.sh script must
+    # be explicitly executed here in order for this to work with both the kubernetes and docker executors
+    # see this issue for more details https://gitlab.com/gitlab-org/gitlab-runner/issues/4125
+    - /container-scanner/start.sh
   artifacts:
     reports:
       container_scanning: gl-container-scanning-report.json

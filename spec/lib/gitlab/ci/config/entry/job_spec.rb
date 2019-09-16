@@ -417,6 +417,37 @@ describe Gitlab::Ci::Config::Entry::Job do
           end
         end
       end
+
+      context 'when timeout value is not correct' do
+        context 'when it is higher than instance wide timeout' do
+          let(:config) { { timeout: '3 months' } }
+
+          it 'returns error about value too high' do
+            expect(entry).not_to be_valid
+            expect(entry.errors)
+              .to include "job timeout should not exceed the limit"
+          end
+        end
+
+        context 'when it is not a duration' do
+          let(:config) { { timeout: 100 } }
+
+          it 'returns error about wrong value' do
+            expect(entry).not_to be_valid
+            expect(entry.errors).to include 'job timeout should be a duration'
+          end
+        end
+      end
+
+      context 'when timeout value is correct' do
+        let(:config) { { script: 'echo', timeout: '1m 1s' } }
+
+        it 'returns correct timeout' do
+          expect(entry).to be_valid
+          expect(entry.errors).to be_empty
+          expect(entry.timeout).to eq('1m 1s')
+        end
+      end
     end
   end
 

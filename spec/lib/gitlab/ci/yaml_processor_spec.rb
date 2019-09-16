@@ -1134,6 +1134,48 @@ module Gitlab
         end
       end
 
+      describe "Timeout" do
+        let(:config) do
+          {
+            deploy_to_production: {
+              stage:  'deploy',
+              script: 'test'
+            }
+          }
+        end
+
+        let(:processor) { Gitlab::Ci::YamlProcessor.new(YAML.dump(config)) }
+        let(:builds) { processor.stage_builds_attributes('deploy') }
+
+        context 'when no timeout was provided' do
+          it 'does not include job_timeout' do
+            expect(builds.size).to eq(1)
+            expect(builds.first[:options]).not_to include(:job_timeout)
+          end
+        end
+
+        context 'when an invalid timeout was provided' do
+          before do
+            config[:deploy_to_production][:timeout] = 'not-a-number'
+          end
+
+          it 'raises an error for invalid number' do
+            expect { builds }.to raise_error('jobs:deploy_to_production timeout should be a duration')
+          end
+        end
+
+        context 'when some valid timeout was provided' do
+          before do
+            config[:deploy_to_production][:timeout] = '1m 3s'
+          end
+
+          it 'returns provided timeout value' do
+            expect(builds.size).to eq(1)
+            expect(builds.first[:options]).to include(job_timeout: 63)
+          end
+        end
+      end
+
       describe "Dependencies" do
         let(:config) do
           {

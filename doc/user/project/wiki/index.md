@@ -30,10 +30,12 @@ Requires Developer [permissions](../../permissions.md).
 Create a new page by clicking the **New page** button that can be found
 in all wiki pages.
 
-You will be asked to fill in a title for your new wiki page. Wiki titles
-also determine the path to the wiki page. You can specify a full path
-(using "`/`" for subdirectories) for the new title and any missing
-directories will be created automatically.
+You will be asked to fill in a title for your new wiki page.
+
+You can specify a full path for the wiki page by using '/' in the
+title to indicate subdirectories. Any missing directories will be created
+automatically. For example, a title of `docs/my-page` will create a wiki
+page with a path `/wikis/docs/my-page`.
 
 Once you enter the page name, it's time to fill in its content. GitLab wikis
 support Markdown, RDoc and AsciiDoc. For Markdown based pages, all the

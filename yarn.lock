@@ -991,19 +991,18 @@
   dependencies:
     vue-eslint-parser "^6.0.4"
 
-"@gitlab/svgs@^1.72.0":
-  version "1.72.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-1.72.0.tgz#78a29fd383a5a2b31ef91670068a6fea05ba234e"
-  integrity sha512-EVKRqrXsCY6tUiVAh+lpFMJAyNXZwfEqv5NeKH5ginhALMlOunRkY5rsDllyNvgZ0DWHJS1KEKJj2oVU1ouwAg==
+"@gitlab/svgs@^1.73.0":
+  version "1.73.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-1.73.0.tgz#e44b347e4be77b94474c80cf5c2ee26ca0325c2f"
+  integrity sha512-4on+l5CS8Ae8OOcrnxwkO5s2zq1kHl/YjnOrHaX7megr6jsTYsVzKGaEMe0ViMSIPXA2+QnGD6vElKMkeD2+YQ==
 
-"@gitlab/ui@5.21.1":
-  version "5.21.1"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-5.21.1.tgz#8215ab3eae4296845596d5b3a987d5460b030569"
-  integrity sha512-TjPVhex9sQGUVwebaJK5XuopDHWx4+Sh9N7yH5u8eXSFWa8vk11voR4qYVt7DZB7powAO/+iiXxYMLLNtXmC/g==
+"@gitlab/ui@5.25.2":
+  version "5.25.2"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-5.25.2.tgz#599954fefcc228d31a398dbe3c1e2287a0fcdb3e"
+  integrity sha512-mwwvEhVTomnZQjG0dADD+9Kg1UHZXAIb4s5QwQxwpgTkemILYIb1r96oKWfmPe8Pl/xrzAoMUtGEPT3XbxDqYQ==
   dependencies:
     "@babel/standalone" "^7.0.0"
     "@gitlab/vue-toasted" "^1.2.1"
-    bootstrap "4.3.1"
     bootstrap-vue "2.0.0-rc.27"
     copy-to-clipboard "^3.0.8"
     echarts "^4.2.1"

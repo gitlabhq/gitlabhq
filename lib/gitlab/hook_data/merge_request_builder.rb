@@ -34,6 +34,7 @@ module Gitlab
       end
 
       SAFE_HOOK_RELATIONS = %i[
+        assignees
         labels
         total_time_spent
       ].freeze

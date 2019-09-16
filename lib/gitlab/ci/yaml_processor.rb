@@ -49,6 +49,7 @@ module Gitlab
             artifacts: job[:artifacts],
             cache: job[:cache],
             dependencies: job[:dependencies],
+            job_timeout: job[:timeout],
             before_script: job[:before_script],
             script: job[:script],
             after_script: job[:after_script],
