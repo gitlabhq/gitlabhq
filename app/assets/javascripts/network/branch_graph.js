@@ -1,9 +1,8 @@
-/* eslint-disable func-names, no-var, one-var, no-loop-func, consistent-return, no-unused-vars, prefer-template, prefer-arrow-callback, camelcase */
+/* eslint-disable func-names, no-var, one-var, no-loop-func, consistent-return, prefer-template, prefer-arrow-callback, camelcase */
 
 import $ from 'jquery';
 import { __ } from '../locale';
 import axios from '../lib/utils/axios_utils';
-import flash from '../flash';
 import Raphael from './raphael';
 
 export default (function() {
@@ -104,7 +103,7 @@ export default (function() {
   };
 
   BranchGraph.prototype.buildGraph = function() {
-    var cuday, cumonth, day, j, len, mm, ref;
+    var cuday, cumonth, day, len, mm, ref;
     const { r } = this;
     cuday = 0;
     cumonth = '';
@@ -178,7 +177,7 @@ export default (function() {
 
     return $(element).scroll(
       (function(_this) {
-        return function(event) {
+        return function() {
           return _this.renderPartialGraph();
         };
       })(this),
@@ -214,7 +213,7 @@ export default (function() {
   };
 
   BranchGraph.prototype.appendLabel = function(x, y, commit) {
-    var label, rect, shortrefs, text, textbox, triangle;
+    var label, rect, shortrefs, text, textbox;
 
     if (!commit.refs) {
       return;
@@ -239,7 +238,8 @@ export default (function() {
       'fill-opacity': 0.5,
       stroke: 'none',
     });
-    triangle = r.path(['M', x - 5, y, 'L', x - 15, y - 4, 'L', x - 15, y + 4, 'Z']).attr({
+    // Generate the triangle right of the tag box
+    r.path(['M', x - 5, y, 'L', x - 15, y - 4, 'L', x - 15, y + 4, 'Z']).attr({
       fill: '#000',
       'fill-opacity': 0.5,
       stroke: 'none',

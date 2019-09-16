@@ -59,7 +59,7 @@ Additionally, if you need large repos or multiple forks for testing, please cons
 
 ## How does it work?
 
-The Elasticsearch integration depends on an external indexer. We ship a [ruby indexer](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/bin/elastic_repo_indexer) by default but are also working on an [indexer written in Go](https://gitlab.com/gitlab-org/gitlab-elasticsearch-indexer). The user must trigger the initial indexing via a rake task, but after this is done GitLab itself will trigger reindexing when required via `after_` callbacks on create, update, and destroy that are inherited from [/ee/app/models/concerns/elastic/application_search.rb](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/ee/app/models/concerns/elastic/application_search.rb).
+The Elasticsearch integration depends on an external indexer. We ship an [indexer written in Go](https://gitlab.com/gitlab-org/gitlab-elasticsearch-indexer). The user must trigger the initial indexing via a rake task but, after this is done, GitLab itself will trigger reindexing when required via `after_` callbacks on create, update, and destroy that are inherited from [/ee/app/models/concerns/elastic/application_search.rb](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/ee/app/models/concerns/elastic/application_search.rb).
 
 All indexing after the initial one is done via `ElasticIndexerWorker` (sidekiq jobs).
 

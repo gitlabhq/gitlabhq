@@ -1,4 +1,4 @@
-/* eslint-disable func-names, prefer-arrow-callback, no-unused-vars, consistent-return, camelcase, class-methods-use-this */
+/* eslint-disable func-names, prefer-arrow-callback, consistent-return, camelcase, class-methods-use-this */
 
 // Zen Mode (full screen) textarea
 //
@@ -62,7 +62,7 @@ export default class ZenMode {
     $(document).on(
       'zen_mode:leave',
       (function(_this) {
-        return function(e) {
+        return function() {
           return _this.exit();
         };
       })(this),

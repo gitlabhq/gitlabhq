@@ -1,10 +1,10 @@
-/* eslint-disable no-useless-escape, no-var, no-underscore-dangle, func-names, no-unused-vars, no-return-assign, object-shorthand, one-var, consistent-return, class-methods-use-this */
+/* eslint-disable no-useless-escape, no-var, no-underscore-dangle, func-names, no-return-assign, object-shorthand, one-var, consistent-return, class-methods-use-this */
 
 import $ from 'jquery';
 import 'cropper';
 import _ from 'underscore';
 
-(global => {
+(() => {
   // Matches everything but the file name
   const FILENAMEREGEX = /^.*[\\\/]/;
 
@@ -69,7 +69,7 @@ import _ from 'underscore';
       this.modalCrop.on('shown.bs.modal', this.onModalShow);
       this.modalCrop.on('hidden.bs.modal', this.onModalHide);
       this.uploadImageBtn.on('click', this.onUploadImageBtnClick);
-      this.cropActionsBtn.on('click', function(e) {
+      this.cropActionsBtn.on('click', function() {
         var btn;
         btn = this;
         return _this.onActionBtnClick(btn);
@@ -128,10 +128,10 @@ import _ from 'underscore';
     }
 
     onActionBtnClick(btn) {
-      var data, result;
+      var data;
       data = $(btn).data();
       if (this.modalCropImg.data('cropper') && data.method) {
-        return (result = this.modalCropImg.cropper(data.method, data.option));
+        return this.modalCropImg.cropper(data.method, data.option);
       }
     }
 
@@ -151,12 +151,11 @@ import _ from 'underscore';
     }
 
     dataURLtoBlob(dataURL) {
-      var array, binary, i, len, v;
+      var array, binary, i, len;
       binary = atob(dataURL.split(',')[1]);
       array = [];
 
       for (i = 0, len = binary.length; i < len; i += 1) {
-        v = binary[i];
         array.push(binary.charCodeAt(i));
       }
       return new Blob([new Uint8Array(array)], {

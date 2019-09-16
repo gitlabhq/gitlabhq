@@ -6,6 +6,7 @@ module QA
   module Resource
     class Project < Base
       include Events::Project
+      include Members
 
       attr_writer :initialize_with_readme
       attr_writer :visibility
@@ -75,11 +76,6 @@ module QA
         super
       end
 
-      def add_member(user, access_level = '30')
-        # 30 = developer access
-        post Runtime::API::Request.new(api_client, api_members_path).url, { user_id: user.id, access_level: access_level }
-      end
-
       def api_get_path
         "/projects/#{CGI.escape(path_with_namespace)}"
       end
@@ -110,6 +106,10 @@ module QA
         end
 
         post_body
+      end
+
+      def share_with_group(invitee, access_level = Resource::Members::AccessLevel::DEVELOPER)
+        post Runtime::API::Request.new(api_client, "/projects/#{id}/share").url, { group_id: invitee.id, group_access: access_level }
       end
 
       private

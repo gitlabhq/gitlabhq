@@ -61,6 +61,7 @@ module QA
     autoload :KubernetesCluster, 'qa/resource/kubernetes_cluster'
     autoload :User, 'qa/resource/user'
     autoload :ProjectMilestone, 'qa/resource/project_milestone'
+    autoload :Members, 'qa/resource/members'
     autoload :Wiki, 'qa/resource/wiki'
     autoload :File, 'qa/resource/file'
     autoload :Fork, 'qa/resource/fork'

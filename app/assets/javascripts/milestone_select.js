@@ -1,4 +1,4 @@
-/* eslint-disable one-var, no-unused-vars, object-shorthand, no-else-return, no-self-compare, consistent-return, no-param-reassign, no-shadow */
+/* eslint-disable one-var, object-shorthand, no-else-return, no-self-compare, consistent-return, no-param-reassign, no-shadow */
 /* global Issuable */
 /* global ListMilestone */
 
@@ -37,7 +37,6 @@ export default class MilestoneSelect {
         selectedMilestone,
         selectedMilestoneDefault;
       const $dropdown = $(dropdown);
-      const projectId = $dropdown.data('projectId');
       const milestonesUrl = $dropdown.data('milestones');
       const issueUpdateURL = $dropdown.data('issueUpdate');
       const showNo = $dropdown.data('showNo');
@@ -48,7 +47,6 @@ export default class MilestoneSelect {
       const useId = $dropdown.data('useId');
       const defaultLabel = $dropdown.data('defaultLabel');
       const defaultNo = $dropdown.data('defaultNo');
-      const issuableId = $dropdown.data('issuableId');
       const abilityName = $dropdown.data('abilityName');
       const $selectBox = $dropdown.closest('.selectbox');
       const $block = $selectBox.closest('.block');
@@ -121,7 +119,7 @@ export default class MilestoneSelect {
           fields: ['title'],
         },
         selectable: true,
-        toggleLabel: (selected, el, e) => {
+        toggleLabel: (selected, el) => {
           if (selected && 'id' in selected && $(el).hasClass('is-active')) {
             return selected.title;
           } else {
@@ -153,7 +151,7 @@ export default class MilestoneSelect {
         },
         vue: $dropdown.hasClass('js-issue-board-sidebar'),
         clicked: clickEvent => {
-          const { $el, e } = clickEvent;
+          const { e } = clickEvent;
           let selected = clickEvent.selectedObj;
 
           let data, modalStoreFilter;

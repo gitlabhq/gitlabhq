@@ -44,7 +44,7 @@ module QA
 
         def sign_in_using_credentials(user = nil)
           # Don't try to log-in if we're already logged-in
-          return if Page::Main::Menu.perform { |menu| menu.has_personal_area?(wait: 0) }
+          return if Page::Main::Menu.perform(&:signed_in?)
 
           using_wait_time 0 do
             set_initial_password_if_present
@@ -75,10 +75,7 @@ module QA
         end
 
         def sign_in_using_ldap_credentials(user)
-          # Log out if already logged in
-          Page::Main::Menu.perform do |menu|
-            menu.sign_out if menu.has_personal_area?(wait: 0)
-          end
+          Page::Main::Menu.perform(&:sign_out_if_signed_in)
 
           using_wait_time 0 do
             set_initial_password_if_present
@@ -149,7 +146,7 @@ module QA
         end
 
         def sign_out_and_sign_in_as(user:)
-          Menu.perform(&:sign_out)
+          Menu.perform(&:sign_out_if_signed_in)
           has_sign_in_tab?
           sign_in_using_credentials(user)
         end

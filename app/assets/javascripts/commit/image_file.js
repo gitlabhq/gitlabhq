@@ -1,4 +1,4 @@
-/* eslint-disable func-names, no-var, prefer-arrow-callback, no-else-return, consistent-return, prefer-template, one-var, no-unused-vars, no-return-assign, no-unused-expressions, no-sequences */
+/* eslint-disable func-names, no-var, prefer-arrow-callback, no-else-return, consistent-return, prefer-template, one-var, no-return-assign, no-unused-expressions, no-sequences */
 
 import $ from 'jquery';
 
@@ -12,11 +12,8 @@ export default class ImageFile {
     this.requestImageInfo(
       $('.two-up.view .frame.deleted img', this.file),
       (function(_this) {
-        return function(deletedWidth, deletedHeight) {
-          return _this.requestImageInfo($('.two-up.view .frame.added img', _this.file), function(
-            width,
-            height,
-          ) {
+        return function() {
+          return _this.requestImageInfo($('.two-up.view .frame.added img', _this.file), function() {
             _this.initViewModes();
 
             // Load two-up view after images are loaded
@@ -112,7 +109,7 @@ export default class ImageFile {
     maxHeight = 0;
     $('.frame', view)
       .each(
-        (function(_this) {
+        (function() {
           return function(index, frame) {
             var height, width;
             width = $(frame).width();
@@ -196,13 +193,7 @@ export default class ImageFile {
       return $('.onion-skin.view', this.file).each(
         (function(_this) {
           return function(index, view) {
-            var $frame,
-              $track,
-              $dragger,
-              $frameAdded,
-              framePadding,
-              ref,
-              dragging = false;
+            var $frame, $track, $dragger, $frameAdded, framePadding, ref;
             (ref = _this.prepareFrames(view)), ([maxWidth, maxHeight] = ref);
             $frame = $('.onion-skin-frame', view);
             $frameAdded = $('.frame.added', view);

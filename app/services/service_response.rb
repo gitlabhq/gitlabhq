@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 class ServiceResponse
-  def self.success(message: nil, payload: {})
-    new(status: :success, message: message, payload: payload)
+  def self.success(message: nil, payload: {}, http_status: :ok)
+    new(status: :success, message: message, payload: payload, http_status: http_status)
   end
 
   def self.error(message:, payload: {}, http_status: nil)

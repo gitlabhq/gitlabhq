@@ -1,10 +1,9 @@
-/* eslint-disable no-var, one-var, no-unused-vars, consistent-return */
+/* eslint-disable no-var, one-var, consistent-return */
 
 import $ from 'jquery';
 import axios from './lib/utils/axios_utils';
 import { addDelimiter } from './lib/utils/text_utility';
 import flash from './flash';
-import TaskList from './task_list';
 import CreateMergeRequestDropdown from './create_merge_request_dropdown';
 import IssuablesHelper from './helpers/issuables_helper';
 import { __ } from './locale';

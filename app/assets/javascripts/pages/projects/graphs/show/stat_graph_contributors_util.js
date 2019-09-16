@@ -1,4 +1,4 @@
-/* eslint-disable func-names, object-shorthand, no-var, one-var, camelcase, no-param-reassign, no-return-assign, prefer-arrow-callback, consistent-return, no-unused-vars, no-cond-assign, no-else-return */
+/* eslint-disable func-names, object-shorthand, no-var, one-var, camelcase, no-param-reassign, no-return-assign, prefer-arrow-callback, consistent-return, no-cond-assign, no-else-return */
 import _ from 'underscore';
 
 export default {
@@ -126,7 +126,7 @@ export default {
     _.each(
       _.omit(log_entry, 'author_name', 'author_email'),
       (function(_this) {
-        return function(value, key) {
+        return function(value) {
           if (_this.in_range(value.date, date_range)) {
             parsed_entry.dates[value.date] = value[field];
             parsed_entry.commits += value.commits;

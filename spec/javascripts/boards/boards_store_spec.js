@@ -1,7 +1,5 @@
-/* eslint-disable no-unused-vars */
 /* global ListIssue */
 
-import Vue from 'vue';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import Cookies from 'js-cookie';
@@ -190,7 +188,7 @@ describe('Store', () => {
 
     it('moves the position of lists', () => {
       const listOne = boardsStore.addList(listObj);
-      const listTwo = boardsStore.addList(listObjDuplicate);
+      boardsStore.addList(listObjDuplicate);
 
       expect(boardsStore.state.lists.length).toBe(2);
 

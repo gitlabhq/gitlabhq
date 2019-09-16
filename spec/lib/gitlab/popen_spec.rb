@@ -87,4 +87,12 @@ describe Gitlab::Popen do
     it { expect(@status).to be_zero }
     it { expect(@output).to eq('hello') }
   end
+
+  context 'when binary is absent' do
+    it 'raises error' do
+      expect do
+        @klass.new.popen(%w[foobar])
+      end.to raise_error
+    end
+  end
 end

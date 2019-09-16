@@ -37,6 +37,10 @@ class EmojiChecker
   end
 end
 
+def gitlab_danger
+  @gitlab_danger ||= GitlabDanger.new(helper.gitlab_helper)
+end
+
 def fail_commit(commit, message)
   fail("#{commit.sha}: #{message}")
 end
@@ -56,6 +60,8 @@ def subject_starts_with_capital?(subject)
 end
 
 def ce_upstream?
+  return unless gitlab_danger.ci?
+
   gitlab.mr_labels.any? { |label| label == 'CE upstream' }
 end
 
@@ -88,8 +94,8 @@ def lint_commit(commit) # rubocop:disable Metrics/AbcSize
   # We ignore revert commits as they are well structured by Git already
   return false if commit.message.start_with?('Revert "')
 
-  is_squash = gitlab.mr_json['squash']
-  is_wip = gitlab.mr_json['work_in_progress']
+  is_squash = gitlab_danger.ci? ? gitlab.mr_json['squash'] : false
+  is_wip = gitlab_danger.ci? ? gitlab.mr_json['work_in_progress'] : false
   is_fixup = commit.message.start_with?('fixup!', 'squash!')
 
   if is_fixup

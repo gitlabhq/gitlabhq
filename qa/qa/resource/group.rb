@@ -3,6 +3,8 @@
 module QA
   module Resource
     class Group < Base
+      include Members
+
       attr_accessor :path, :description
 
       attribute :sandbox do
@@ -48,17 +50,8 @@ module QA
         super
       end
 
-      def add_member(user, access_level = '30')
-        # 30 = developer access
-        post Runtime::API::Request.new(api_client, api_members_path).url, { user_id: user.id, access_level: access_level }
-      end
-
       def api_get_path
         "/groups/#{CGI.escape("#{sandbox.path}/#{path}")}"
-      end
-
-      def api_members_path
-        "#{api_get_path}/members"
       end
 
       def api_post_path

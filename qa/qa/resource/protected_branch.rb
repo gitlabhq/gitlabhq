@@ -3,7 +3,7 @@
 module QA
   module Resource
     class ProtectedBranch < Base
-      attr_accessor :branch_name, :allow_to_push, :allow_to_merge, :protected
+      attr_accessor :branch_name, :allowed_to_push, :allowed_to_merge, :protected
 
       attribute :project do
         Project.fabricate_via_api! do |resource|
@@ -25,8 +25,12 @@ module QA
 
       def initialize
         @branch_name = 'test/branch'
-        @allow_to_push = true
-        @allow_to_merge = true
+        @allowed_to_push = {
+          roles: Resource::ProtectedBranch::Roles::DEVS_AND_MAINTAINERS
+        }
+        @allowed_to_merge = {
+          roles: Resource::ProtectedBranch::Roles::DEVS_AND_MAINTAINERS
+        }
         @protected = false
       end
 
@@ -35,29 +39,14 @@ module QA
 
         project.wait_for_push_new_branch @branch_name
 
-        # The upcoming process will make it access the Protected Branches page,
-        # select the already created branch and protect it according
-        # to `allow_to_push` variable.
-        return branch unless @protected
-
         project.visit!
         Page::Project::Menu.perform(&:go_to_repository_settings)
 
         Page::Project::Settings::Repository.perform do |setting|
           setting.expand_protected_branches do |page|
             page.select_branch(branch_name)
-
-            if allow_to_push
-              page.allow_devs_and_maintainers_to_push
-            else
-              page.allow_no_one_to_push
-            end
-
-            if allow_to_merge
-              page.allow_devs_and_maintainers_to_merge
-            else
-              page.allow_no_one_to_merge
-            end
+            page.select_allowed_to_merge(allowed_to_merge)
+            page.select_allowed_to_push(allowed_to_push)
 
             page.wait(reload: false) do
               !page.first('.btn-success').disabled?
@@ -78,6 +67,12 @@ module QA
 
       def api_delete_path
         "/projects/#{@project.api_resource[:id]}/protected_branches/#{@branch_name}"
+      end
+
+      class Roles
+        NO_ONE = 'No one'
+        DEVS_AND_MAINTAINERS = 'Developers + Maintainers'
+        MAINTAINERS = 'Maintainers'
       end
     end
   end

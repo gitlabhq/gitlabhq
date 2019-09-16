@@ -317,7 +317,12 @@ describe Ci::CreatePipelineService do
 
         context 'interruptible builds' do
           before do
+            Feature.enable(:ci_support_interruptible_pipelines)
             stub_ci_pipeline_yaml_file(YAML.dump(config))
+          end
+
+          after do
+            Feature.disable(:ci_support_interruptible_pipelines)
           end
 
           let(:config) do

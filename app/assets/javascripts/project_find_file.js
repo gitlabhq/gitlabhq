@@ -1,4 +1,4 @@
-/* eslint-disable func-names, no-var, consistent-return, one-var, no-cond-assign, prefer-template, no-unused-vars, no-return-assign */
+/* eslint-disable func-names, no-var, consistent-return, one-var, no-cond-assign, prefer-template, no-return-assign */
 
 import $ from 'jquery';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
@@ -8,9 +8,8 @@ import { __ } from '~/locale';
 
 // highlight text(awefwbwgtc -> <b>a</b>wefw<b>b</b>wgt<b>c</b> )
 const highlighter = function(element, text, matches) {
-  var highlightText, j, lastIndex, len, matchIndex, matchedChars, unmatched;
+  var j, lastIndex, len, matchIndex, matchedChars, unmatched;
   lastIndex = 0;
-  highlightText = '';
   matchedChars = [];
   for (j = 0, len = matches.length; j < len; j += 1) {
     matchIndex = matches[j];

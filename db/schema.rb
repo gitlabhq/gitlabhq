@@ -319,8 +319,9 @@ ActiveRecord::Schema.define(version: 2019_09_12_061145) do
     t.integer "report_type", limit: 2
     t.index ["merge_request_id", "code_owner", "name"], name: "approval_rule_name_index_for_code_owners", unique: true, where: "(code_owner = true)"
     t.index ["merge_request_id", "code_owner"], name: "index_approval_merge_request_rules_1"
-    t.index ["merge_request_id", "rule_type", "name"], name: "index_approval_rule_name_for_code_owners_rule_type", unique: true, where: "(rule_type = 2)"
-    t.index ["merge_request_id", "rule_type"], name: "index_approval_rules_code_owners_rule_type", where: "(rule_type = 2)"
+    t.index ["merge_request_id", "name"], name: "index_approval_rule_name_for_code_owners_rule_type", unique: true, where: "(rule_type = 2)"
+    t.index ["merge_request_id", "rule_type"], name: "any_approver_merge_request_rule_type_unique_index", unique: true, where: "(rule_type = 4)"
+    t.index ["merge_request_id"], name: "index_approval_rules_code_owners_rule_type", where: "(rule_type = 2)"
   end
 
   create_table "approval_merge_request_rules_approved_approvers", force: :cascade do |t|
@@ -351,6 +352,7 @@ ActiveRecord::Schema.define(version: 2019_09_12_061145) do
     t.integer "approvals_required", limit: 2, default: 0, null: false
     t.string "name", null: false
     t.integer "rule_type", limit: 2, default: 0, null: false
+    t.index ["project_id"], name: "any_approver_project_rule_type_unique_index", unique: true, where: "(rule_type = 3)"
     t.index ["project_id"], name: "index_approval_project_rules_on_project_id"
     t.index ["rule_type"], name: "index_approval_project_rules_on_rule_type"
   end

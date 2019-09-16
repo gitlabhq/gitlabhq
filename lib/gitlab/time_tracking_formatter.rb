@@ -5,7 +5,7 @@ module Gitlab
     extend self
 
     # We may want to configure it through project settings in a future version.
-    CUSTOM_DAY_AND_WEEK_LENGTH = { hours_per_day: 8, days_per_month: 20 }.freeze
+    CUSTOM_DAY_AND_MONTH_LENGTH = { hours_per_day: 8, days_per_month: 20 }.freeze
 
     def parse(string)
       string = string.sub(/\A-/, '')
@@ -14,7 +14,7 @@ module Gitlab
         begin
           ChronicDuration.parse(
             string,
-            CUSTOM_DAY_AND_WEEK_LENGTH.merge(default_unit: 'hours'))
+            CUSTOM_DAY_AND_MONTH_LENGTH.merge(default_unit: 'hours'))
         rescue
           nil
         end
@@ -26,7 +26,7 @@ module Gitlab
     def output(seconds)
       ChronicDuration.output(
         seconds,
-        CUSTOM_DAY_AND_WEEK_LENGTH.merge(
+        CUSTOM_DAY_AND_MONTH_LENGTH.merge(
           format: :short,
           limit_to_hours: limit_to_hours_setting,
           weeks: true))

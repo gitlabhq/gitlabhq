@@ -23,6 +23,20 @@ describe ServiceResponse do
       expect(response).to be_success
       expect(response.payload).to eq(good: 'orange')
     end
+
+    it 'creates a successful response with default HTTP status' do
+      response = described_class.success
+
+      expect(response).to be_success
+      expect(response.http_status).to eq(:ok)
+    end
+
+    it 'creates a successful response with custom HTTP status' do
+      response = described_class.success(http_status: 204)
+
+      expect(response).to be_success
+      expect(response.http_status).to eq(204)
+    end
   end
 
   describe '.error' do

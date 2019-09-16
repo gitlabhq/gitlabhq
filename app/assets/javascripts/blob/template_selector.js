@@ -1,4 +1,4 @@
-/* eslint-disable class-methods-use-this, no-unused-vars */
+/* eslint-disable class-methods-use-this */
 
 import $ from 'jquery';
 
@@ -61,7 +61,7 @@ export default class TemplateSelector {
     return this.requestFile(item);
   }
 
-  requestFile(item) {
+  requestFile() {
     // This `requestFile` method is an abstract method that should
     // be added by all subclasses.
   }

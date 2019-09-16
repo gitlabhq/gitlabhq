@@ -1,4 +1,4 @@
-/* eslint-disable func-names, one-var, no-var, prefer-rest-params, vars-on-top, prefer-arrow-callback, consistent-return, object-shorthand, no-shadow, no-unused-vars, no-else-return, no-self-compare, prefer-template, no-unused-expressions, yoda, prefer-spread, camelcase, no-param-reassign */
+/* eslint-disable func-names, one-var, no-var, prefer-rest-params, vars-on-top, prefer-arrow-callback, consistent-return, object-shorthand, no-shadow, no-else-return, no-self-compare, prefer-template, no-unused-expressions, yoda, prefer-spread, camelcase, no-param-reassign */
 /* global Issuable */
 /* global emitSidebarEvent */
 
@@ -405,7 +405,7 @@ function UsersSelect(currentUser, els, options = {}) {
             }
           },
           defaultLabel: defaultLabel,
-          hidden: function(e) {
+          hidden: function() {
             if ($dropdown.hasClass('js-multiselect')) {
               emitSidebarEvent('sidebar.saveAssignees');
             }
@@ -442,7 +442,6 @@ function UsersSelect(currentUser, els, options = {}) {
               if (user.beforeDivider && user.name.toLowerCase() === 'unassigned') {
                 // Unassigned selected
                 previouslySelected.each((index, element) => {
-                  const id = parseInt(element.value, 10);
                   element.remove();
                 });
                 emitSidebarEvent('sidebar.removeAllAssignees');
@@ -548,7 +547,7 @@ function UsersSelect(currentUser, els, options = {}) {
           },
           updateLabel: $dropdown.data('dropdownTitle'),
           renderRow: function(user) {
-            var avatar, img, listClosingTags, listWithName, listWithUserName, username;
+            var avatar, img, username;
             username = user.username ? '@' + user.username : '';
             avatar = user.avatar_url ? user.avatar_url : gon.default_avatar_url;
 

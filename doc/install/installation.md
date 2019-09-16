@@ -585,6 +585,25 @@ You can specify a different Git repository by providing it as an extra parameter
 sudo -u git -H bundle exec rake "gitlab:workhorse:install[/home/git/gitlab-workhorse,https://example.com/gitlab-workhorse.git]" RAILS_ENV=production
 ```
 
+### Install gitlab-elasticsearch-indexer
+
+GitLab-Elasticsearch-Indexer uses [GNU Make](https://www.gnu.org/software/make/). The
+following command-line will install GitLab-Elasticsearch-Indexer in `/home/git/gitlab-elasticsearch-indexer`
+which is the recommended location.
+
+```sh
+sudo -u git -H bundle exec rake "gitlab:indexer:install[/home/git/gitlab-elasticsearch-indexer]" RAILS_ENV=production
+```
+
+You can specify a different Git repository by providing it as an extra parameter:
+
+```sh
+sudo -u git -H bundle exec rake "gitlab:indexer:install[/home/git/gitlab-elasticsearch-indexer,https://example.com/gitlab-elasticsearch-indexer.git]" RAILS_ENV=production
+```
+
+The source code will first be fetched to the path specified by the first parameter. Then a binary will be built under its `bin` directory.
+You will then need to update `gitlab.yml`'s `production -> elasticsearch -> indexer_path` setting to point to that binary.
+
 ### Install GitLab Pages
 
 GitLab Pages uses [GNU Make](https://www.gnu.org/software/make/). This step is optional and only needed if you wish to host static sites from within GitLab. The following commands will install GitLab Pages in `/home/git/gitlab-pages`. For additional setup steps, consult the [administration guide](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/administration/pages/source.md) for your version of GitLab as the GitLab Pages daemon can be run several different ways.

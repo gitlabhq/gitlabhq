@@ -2,10 +2,9 @@
 no-unused-expressions, one-var, default-case,
 prefer-template, consistent-return, no-alert, no-return-assign,
 no-param-reassign, prefer-arrow-callback, no-else-return, vars-on-top,
-no-unused-vars, no-shadow, no-useless-escape, class-methods-use-this */
+no-shadow, no-useless-escape, class-methods-use-this */
 
 /* global ResolveService */
-/* global mrRefreshWidgetUrl */
 
 /*
 old_notes_spec.js is the spec for the legacy, jQuery notes application. It has nothing to do with the new, fancy Vue notes app.
@@ -37,7 +36,6 @@ import {
   isMetaKey,
   isInMRPage,
 } from './lib/utils/common_utils';
-import imageDiffHelper from './image_diff/helpers/index';
 import { localTimeAgo } from './lib/utils/datetime_utility';
 import { sprintf, s__, __ } from './locale';
 
@@ -683,7 +681,7 @@ export default class Notes {
     );
   }
 
-  updateNoteError($parentTimeline) {
+  updateNoteError() {
     // eslint-disable-next-line no-new
     new Flash(
       __('Your comment could not be updated! Please check your network connection and try again.'),
@@ -697,7 +695,6 @@ export default class Notes {
    */
   addDiscussionNote($form, note, isNewDiffComment) {
     if ($form.attr('data-resolve-all') != null) {
-      var projectPath = $form.data('projectPath');
       var discussionId = $form.data('discussionId');
       var mergeRequestId = $form.data('noteableIid');
 
@@ -746,7 +743,6 @@ export default class Notes {
     if (currentContent === initialContent) {
       this.removeNoteEditForm($el);
     } else {
-      var $buttons = $el.find('.note-form-actions');
       var isWidgetVisible = isInViewport($el.get(0));
 
       if (!isWidgetVisible) {
@@ -766,7 +762,7 @@ export default class Notes {
    * Replaces the note text with the note edit form
    * Adds a data attribute to the form with the original content of the note for cancellations
    */
-  showEditForm(e, scrollTo, myLastNote) {
+  showEditForm(e) {
     e.preventDefault();
 
     var $target = $(e.target);
@@ -850,16 +846,11 @@ export default class Notes {
    * Removes the whole discussion if the last note is being removed.
    */
   removeNote(e) {
-    var noteElId, noteId, dataNoteId, $note, lineHolder;
+    var noteElId, $note;
     $note = $(e.currentTarget).closest('.note');
     noteElId = $note.attr('id');
-    noteId = $note.attr('data-note-id');
-    lineHolder = $(e.currentTarget)
-      .closest('.notes[data-discussion-id]')
-      .closest('.notes_holder')
-      .prev('.line_holder');
     $(`.note[id="${noteElId}"]`).each(
-      (function(_this) {
+      (function() {
         // A same note appears in the "Discussion" and in the "Changes" tab, we have
         // to remove all. Using $('.note[id='noteId']') ensure we get all the notes,
         // where $('#noteId') would return only one.
@@ -1064,25 +1055,8 @@ export default class Notes {
     this.setupDiscussionNoteForm($link, newForm);
   }
 
-  toggleDiffNote({
-    target,
-    lineType,
-    forceShow,
-    showReplyInput = false,
-    currentUsername,
-    currentUserAvatar,
-    currentUserFullname,
-  }) {
-    var $link,
-      addForm,
-      hasNotes,
-      newForm,
-      noteForm,
-      replyButton,
-      row,
-      rowCssToAdd,
-      targetContent,
-      isDiffCommentAvatar;
+  toggleDiffNote({ target, lineType, forceShow, showReplyInput = false }) {
+    var $link, addForm, hasNotes, newForm, noteForm, replyButton, row, rowCssToAdd;
     $link = $(target);
     row = $link.closest('tr');
     const nextRow = row.next();
@@ -1515,7 +1489,7 @@ export default class Notes {
     let tempFormContent;
 
     // Identify executed quick actions from `formContent`
-    const executedCommands = availableQuickActions.filter((command, index) => {
+    const executedCommands = availableQuickActions.filter(command => {
       const commandRegex = new RegExp(`/${command.name}`);
       return commandRegex.test(formContent);
     });
@@ -1840,8 +1814,6 @@ export default class Notes {
     const $noteBody = $editingNote.find('.js-task-list-container');
     const $noteBodyText = $noteBody.find('.note-text');
     const { formData, formContent, formAction } = this.getFormData($form);
-    const $diffFile = $form.closest('.diff-file');
-    const $notesContainer = $form.closest('.notes');
 
     // Cache original comment content
     const cachedNoteBodyText = $noteBodyText.html();

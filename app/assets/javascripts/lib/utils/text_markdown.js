@@ -1,4 +1,4 @@
-/* eslint-disable func-names, no-var, no-param-reassign, one-var, operator-assignment, no-else-return, prefer-template, prefer-arrow-callback, consistent-return, no-unused-vars */
+/* eslint-disable func-names, no-var, no-param-reassign, one-var, operator-assignment, no-else-return, prefer-template, prefer-arrow-callback, consistent-return */
 import $ from 'jquery';
 import { insertText } from '~/lib/utils/common_utils';
 
@@ -157,7 +157,7 @@ export function insertMarkdownText({
   if (tag === LINK_TAG_PATTERN) {
     if (URL) {
       try {
-        const ignoredUrl = new URL(selected);
+        new URL(selected); // eslint-disable-line no-new
         // valid url
         tag = '[text]({text})';
         select = 'text';
