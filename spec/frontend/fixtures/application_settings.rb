@@ -26,7 +26,7 @@ describe Admin::ApplicationSettingsController, '(JavaScript fixtures)', type: :c
   it 'application_settings/accounts_and_limit.html' do
     stub_application_setting(user_default_external: false)
 
-    get :show
+    get :general
 
     expect(response).to be_successful
   end

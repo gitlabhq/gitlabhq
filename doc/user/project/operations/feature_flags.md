@@ -120,6 +120,8 @@ A feature flag may be enabled for a list of target users. It is implemented
 using the Unleash [`userWithId`](https://unleash.github.io/docs/activation_strategy#userwithid)
 activation strategy.
 
+The feature will always be enabled for all users in the list across all environments even if the matching environment spec **Status** is disabled.
+
 ![Feature flag target users](img/target_users_v12_2.png)
 
 CAUTION: **Caution:**

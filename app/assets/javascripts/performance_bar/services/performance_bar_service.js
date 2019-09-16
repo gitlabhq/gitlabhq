@@ -1,9 +1,5 @@
-import Vue from 'vue';
-import _ from 'underscore';
 import axios from '../../lib/utils/axios_utils';
 import { parseBoolean } from '~/lib/utils/common_utils';
-
-let vueResourceInterceptor;
 
 export default class PerformanceBarService {
   static fetchRequestDetails(peekUrl, requestId) {
@@ -24,16 +20,11 @@ export default class PerformanceBarService {
       return response;
     };
 
-    vueResourceInterceptor = (request, next) => next(interceptor);
-
-    Vue.http.interceptors.push(vueResourceInterceptor);
-
     return axios.interceptors.response.use(interceptor);
   }
 
   static removeInterceptor(interceptor) {
     axios.interceptors.response.eject(interceptor);
-    Vue.http.interceptors = _.without(Vue.http.interceptors, vueResourceInterceptor);
   }
 
   static callbackParams(response, peekUrl) {

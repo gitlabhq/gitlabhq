@@ -110,7 +110,7 @@ namespace :admin do
     put :reset_registration_token
     put :reset_health_check_token
     put :clear_repository_check_states
-    match :integrations, :repository, :templates, :ci_cd, :reporting, :metrics_and_profiling, :network, :geo, :preferences, via: [:get, :patch]
+    match :general, :integrations, :repository, :templates, :ci_cd, :reporting, :metrics_and_profiling, :network, :geo, :preferences, via: [:get, :patch]
     get :lets_encrypt_terms_of_service
   end
 

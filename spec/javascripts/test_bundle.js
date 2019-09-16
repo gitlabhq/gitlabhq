@@ -210,7 +210,7 @@ if (process.env.BABEL_ENV === 'coverage') {
     './terminal/terminal_bundle.js',
     './users/users_bundle.js',
     './issue_show/index.js',
-    './pages/admin/application_settings/show/index.js',
+    './pages/admin/application_settings/general/index.js',
   ];
 
   describe('Uncovered files', function() {

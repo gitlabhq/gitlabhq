@@ -11,7 +11,7 @@ in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.4.
 
 If you are using [GitLab CI/CD](../../../ci/README.md), you can check your Docker
 images (or more precisely the containers) for known vulnerabilities by using
-[Clair](https://github.com/coreos/clair) and [clair-scanner](https://github.com/arminc/clair-scanner),
+[Clair](https://github.com/coreos/clair) and [klar](https://github.com/optiopay/klar),
 two open source tools for Vulnerability Static Analysis for containers.
 
 You can take advantage of Container Scanning by either [including the CI job](#configuration) in
@@ -90,10 +90,6 @@ artifact available. Behind the scenes, the
 [GitLab Container Scanning analyzer](https://gitlab.com/gitlab-org/security-products/container-scanning)
 is used and runs the scans.
 
-If you want to whitelist some specific vulnerabilities, you can do so by defining
-them in a YAML file named `clair-whitelist.yml`. Read more in the
-[Clair documentation](https://github.com/arminc/clair-scanner/blob/master/README.md#example-whitelist-yaml-file).
-
 ## Example
 
 The following is a sample `.gitlab-ci.yml` that will build your Docker Image, push it to the container registry and run Container Scanning.
@@ -122,6 +118,31 @@ build:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     - docker build -t $IMAGE .
     - docker push $IMAGE
+```
+
+## Vulnerability Whitelisting
+
+If you want to whitelist specific vulnerabilities, you'll need to:
+
+   1. Set `GIT_STRATEGY: fetch` in your `.gitlab-ci.yml` file by following the instructions described in the
+   [overriding the Container Scanning template](#overriding-the-container-scanning-template) section of this document.
+   1. Define the whitelisted vulnerabilities in a YAML file named `clair-whitelist.yml` which must use the format described
+   in the [following whitelist example file](https://github.com/arminc/clair-scanner/blob/v12/example-whitelist.yaml).
+   1. Add the `clair-whitelist.yml` file to the git repository of your project
+
+### Overriding the Container Scanning template
+
+If you want to override the job definition (for example, change properties like
+`variables`), you need to declare a `container_scanning` job after the
+template inclusion and specify any additional keys under it. For example:
+
+```yaml
+include:
+  - template: Container-Scanning.gitlab-ci.yml
+
+container_scanning:
+  variables:
+    GIT_STRATEGY: fetch
 ```
 
 ## Security Dashboard

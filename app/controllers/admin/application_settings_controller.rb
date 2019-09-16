@@ -6,15 +6,16 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
   before_action :set_application_setting
   before_action :whitelist_query_limiting, only: [:usage_data]
 
-  VALID_SETTING_PANELS = %w(show integrations repository templates
+  VALID_SETTING_PANELS = %w(general integrations repository templates
                             ci_cd reporting metrics_and_profiling
                             network geo preferences).freeze
 
-  def show
+  VALID_SETTING_PANELS.each do |action|
+    define_method(action) { perform_update if submitted? }
   end
 
-  (VALID_SETTING_PANELS - %w(show)).each do |action|
-    define_method(action) { perform_update if submitted? }
+  def show
+    render :general
   end
 
   def update
@@ -144,7 +145,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
   end
 
   def render_update_error
-    action = VALID_SETTING_PANELS.include?(action_name) ? action_name : :show
+    action = VALID_SETTING_PANELS.include?(action_name) ? action_name : :general
 
     render action
   end

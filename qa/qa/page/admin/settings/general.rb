@@ -7,7 +7,7 @@ module QA
         class General < Page::Base
           include QA::Page::Settings::Common
 
-          view 'app/views/admin/application_settings/show.html.haml' do
+          view 'app/views/admin/application_settings/general.html.haml' do
             element :account_and_limit_settings
           end
 

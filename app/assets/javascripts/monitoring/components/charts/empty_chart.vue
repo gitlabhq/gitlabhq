@@ -27,7 +27,7 @@ export default {
 };
 </script>
 <template>
-  <div class="prometheus-graph col-12 col-lg-6 d-flex flex-column justify-content-center">
+  <div class="prometheus-graph d-flex flex-column justify-content-center">
     <div class="prometheus-graph-header">
       <h5 ref="graphTitle" class="prometheus-graph-title">{{ graphTitle }}</h5>
     </div>

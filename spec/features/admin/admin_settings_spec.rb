@@ -15,7 +15,7 @@ describe 'Admin updates settings' do
 
   context 'General page' do
     before do
-      visit admin_application_settings_path
+      visit general_admin_application_settings_path
     end
 
     it 'Change visibility settings' do

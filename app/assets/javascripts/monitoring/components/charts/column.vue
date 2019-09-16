@@ -100,7 +100,7 @@ export default {
 };
 </script>
 <template>
-  <div class="prometheus-graph col-12 col-lg-6">
+  <div class="prometheus-graph">
     <div class="prometheus-graph-header">
       <h5 ref="graphTitle" class="prometheus-graph-title">{{ graphData.title }}</h5>
       <div ref="graphWidgets" class="prometheus-graph-widgets"><slot></slot></div>

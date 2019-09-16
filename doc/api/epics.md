@@ -49,6 +49,8 @@ GET /groups/:id/epics?state=opened
 | `created_before`    | datetime         | no         | Return epics created on or before the given time                                                                            |
 | `updated_after`     | datetime         | no         | Return epics updated on or after the given time                                                                             |
 | `updated_before`    | datetime         | no         | Return epics updated on or before the given time                                                                            |
+| `include_ancestor_groups` | boolean    | no         | Include epics from the requested group's ancestors. Default is `false`                                                      |
+| `include_descendant_groups` | boolean  | no         | Include epics from the requested group's descendants. Default is `true`                                                     |
 
 ```bash
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/1/epics

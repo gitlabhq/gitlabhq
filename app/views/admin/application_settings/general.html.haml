@@ -1,5 +1,5 @@
-- breadcrumb_title _("Settings")
-- page_title _("Settings")
+- breadcrumb_title _("General")
+- page_title _("General")
 - @content_class = "limit-container-width" unless fluid_layout
 
 %section.settings.as-visibility-access.no-animate#js-visibility-settings{ class: ('expanded' if expanded_by_default?) }
@@ -90,7 +90,7 @@
     %p
       = _('Manage Web IDE features')
   .settings-content
-    = form_for @application_setting, url: admin_application_settings_path(anchor: "#js-web-ide-settings"), html: { class: 'fieldset-form' } do |f|
+    = form_for @application_setting, url: general_admin_application_settings_path(anchor: "#js-web-ide-settings"), html: { class: 'fieldset-form' } do |f|
       = form_errors(@application_setting)
 
       %fieldset
