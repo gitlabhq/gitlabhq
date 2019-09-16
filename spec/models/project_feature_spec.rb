@@ -228,4 +228,28 @@ describe ProjectFeature do
       end
     end
   end
+
+  describe '.required_minimum_access_level' do
+    it 'handles reporter level' do
+      expect(described_class.required_minimum_access_level(:merge_requests)).to eq(Gitlab::Access::REPORTER)
+    end
+
+    it 'handles guest level' do
+      expect(described_class.required_minimum_access_level(:issues)).to eq(Gitlab::Access::GUEST)
+    end
+
+    it 'accepts ActiveModel' do
+      expect(described_class.required_minimum_access_level(MergeRequest)).to eq(Gitlab::Access::REPORTER)
+    end
+
+    it 'accepts string' do
+      expect(described_class.required_minimum_access_level('merge_requests')).to eq(Gitlab::Access::REPORTER)
+    end
+
+    it 'raises error if feature is invalid' do
+      expect do
+        described_class.required_minimum_access_level(:foos)
+      end.to raise_error
+    end
+  end
 end
