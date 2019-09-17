@@ -285,7 +285,7 @@ To change your group path:
 
 CAUTION: **Caution:**
 It is currently not possible to rename a namespace if it contains a
-project with [Container Registry](../project/container_registry.md) tags,
+project with [Container Registry](../packages/container_registry/index.md) tags,
 because the project cannot be moved.
 
 TIP: **TIP:**
@@ -461,7 +461,7 @@ With [GitLab Issues Analytics](issues_analytics/index.md), you can see a bar cha
 
 ## Dependency Proxy **(PREMIUM)**
 
-Use GitLab as a [dependency proxy](dependency_proxy/index.md) for upstream Docker images.
+Use GitLab as a [dependency proxy](../packages/dependency_proxy/index.md) for upstream Docker images.
 
 <!-- ## Troubleshooting
 

@@ -345,7 +345,7 @@ GitLab supports LDAP groups that use member attributes:
 - `memberuid`.
 
 This means group sync supports, at least, LDAP groups with object class:
-`groupOfNames`, `posixGroup`, and `groupOfUniqueName`.
+`groupOfNames`, `posixGroup`, and `groupOfUniqueNames`.
 
 Other object classes should work fine as long as members
 are defined as one of the mentioned attributes. This also means GitLab supports

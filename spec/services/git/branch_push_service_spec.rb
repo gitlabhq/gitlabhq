@@ -197,7 +197,7 @@ describe Git::BranchPushService, services: true do
         create(:protected_branch, :no_one_can_push, :developers_can_merge, project: project, name: 'master')
         expect(project).to receive(:execute_hooks)
         expect(project.default_branch).to eq("master")
-        expect_any_instance_of(ProtectedBranches::CreateService).not_to receive(:execute)
+        expect(ProtectedBranches::CreateService).not_to receive(:new)
 
         execute_service(project, user, blankrev, 'newrev', ref)
 

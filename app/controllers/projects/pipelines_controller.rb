@@ -199,12 +199,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def latest_pipeline
-    ref = params['ref'].presence || @project.default_branch
-    sha = @project.commit(ref)&.sha
-
-    @project.ci_pipelines
-            .newest_first(ref: ref, sha: sha)
-            .first
+    @project.latest_pipeline_for_ref(params['ref'])
             &.present(current_user: current_user)
   end
 

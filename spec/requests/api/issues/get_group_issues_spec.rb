@@ -437,17 +437,21 @@ describe API::Issues do
       end
 
       context 'with labeled issues' do
+        let(:group_issue2) { create :issue, project: group_project }
         let(:label_b) { create(:label, title: 'foo', project: group_project) }
         let(:label_c) { create(:label, title: 'bar', project: group_project) }
 
         before do
+          create(:label_link, label: group_label, target: group_issue2)
           create(:label_link, label: label_b, target: group_issue)
+          create(:label_link, label: label_b, target: group_issue2)
           create(:label_link, label: label_c, target: group_issue)
 
           get api(base_url, user), params: params
         end
 
         let(:issue) { group_issue }
+        let(:issue2) { group_issue2 }
         let(:label) { group_label }
 
         it_behaves_like 'labeled issues with labels and label_name params'

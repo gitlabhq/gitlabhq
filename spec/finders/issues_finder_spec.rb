@@ -21,15 +21,28 @@ describe IssuesFinder do
           let(:expected_issuables) { [issue1, issue2] }
         end
 
-        it_behaves_like 'assignee username filter' do
+        it_behaves_like 'assignee NOT ID filter' do
+          let(:params) { { not: { assignee_id: user.id } } }
+          let(:expected_issuables) { [issue3, issue4] }
+        end
+
+        context 'filter by username' do
+          set(:user3) { create(:user) }
+
           before do
             project2.add_developer(user3)
             issue3.assignees = [user2, user3]
           end
 
-          set(:user3) { create(:user) }
-          let(:params) { { assignee_username: [user2.username, user3.username] } }
-          let(:expected_issuables) { [issue3] }
+          it_behaves_like 'assignee username filter' do
+            let(:params) { { assignee_username: [user2.username, user3.username] } }
+            let(:expected_issuables) { [issue3] }
+          end
+
+          it_behaves_like 'assignee NOT username filter' do
+            let(:params) { { not: { assignee_username: [user2.username, user3.username] } } }
+            let(:expected_issuables) { [issue1, issue2, issue4] }
+          end
         end
 
         it_behaves_like 'no assignee filter' do
@@ -112,6 +125,26 @@ describe IssuesFinder do
         end
       end
 
+      context 'filtering by NOT group_id' do
+        let(:params) { { not: { group_id: group.id } } }
+
+        context 'when include_subgroup param not set' do
+          it 'returns all other group issues' do
+            expect(issues).to contain_exactly(issue2, issue3, issue4)
+          end
+        end
+
+        context 'when include_subgroup param is true', :nested_groups do
+          before do
+            params[:include_subgroups] = true
+          end
+
+          it 'returns all other group and subgroup issues' do
+            expect(issues).to contain_exactly(issue2, issue3)
+          end
+        end
+      end
+
       context 'filtering by author ID' do
         let(:params) { { author_id: user2.id } }
 
@@ -120,11 +153,27 @@ describe IssuesFinder do
         end
       end
 
+      context 'filtering by not author ID' do
+        let(:params) { { not: { author_id: user2.id } } }
+
+        it 'returns issues not created by that user' do
+          expect(issues).to contain_exactly(issue1, issue2, issue4)
+        end
+      end
+
       context 'filtering by milestone' do
         let(:params) { { milestone_title: milestone.title } }
 
         it 'returns issues assigned to that milestone' do
           expect(issues).to contain_exactly(issue1)
+        end
+      end
+
+      context 'filtering by not milestone' do
+        let(:params) { { not: { milestone_title: milestone.title } } }
+
+        it 'returns issues not assigned to that milestone' do
+          expect(issues).to contain_exactly(issue2, issue3, issue4)
         end
       end
 
@@ -142,6 +191,14 @@ describe IssuesFinder do
 
         it 'returns issues assigned to that group milestone' do
           expect(issues).to contain_exactly(issue2, issue3)
+        end
+
+        context 'using NOT' do
+          let(:params) { { not: { milestone_title: group_milestone.title } } }
+
+          it 'returns issues not assigned to that group milestone' do
+            expect(issues).to contain_exactly(issue1, issue4)
+          end
         end
       end
 
@@ -184,10 +241,10 @@ describe IssuesFinder do
         let(:project_next_8_8) { create(:project, :public) }
         let(:project_in_group) { create(:project, :public, namespace: group) }
 
-        let(:yesterday) { Date.today - 1.day }
-        let(:tomorrow) { Date.today + 1.day }
-        let(:two_days_from_now) { Date.today + 2.days }
-        let(:ten_days_from_now) { Date.today + 10.days }
+        let(:yesterday) { Date.current - 1.day }
+        let(:tomorrow) { Date.current + 1.day }
+        let(:two_days_from_now) { Date.current + 2.days }
+        let(:ten_days_from_now) { Date.current + 10.days }
 
         let(:milestones) do
           [
@@ -201,7 +258,7 @@ describe IssuesFinder do
         end
 
         before do
-          milestones.each do |milestone|
+          @created_issues = milestones.map do |milestone|
             create(:issue, project: milestone.project || project_in_group, milestone: milestone, author: user, assignees: [user])
           end
         end
@@ -209,6 +266,18 @@ describe IssuesFinder do
         it 'returns issues in the upcoming milestone for each project or group' do
           expect(issues.map { |issue| issue.milestone.title }).to contain_exactly('1.1', '8.8', '9.9')
           expect(issues.map { |issue| issue.milestone.due_date }).to contain_exactly(tomorrow, two_days_from_now, tomorrow)
+        end
+
+        context 'using NOT' do
+          let(:params) { { not: { milestone_title: Milestone::Upcoming.name } } }
+
+          it 'returns issues not in upcoming milestones for each project or group' do
+            target_issues = @created_issues.reject do |issue|
+              issue.milestone&.due_date && issue.milestone.due_date > Date.current
+            end + @created_issues.select { |issue| issue.milestone&.title == '8.9' }
+
+            expect(issues).to contain_exactly(issue1, issue2, issue3, issue4, *target_issues)
+          end
         end
       end
 
@@ -219,10 +288,10 @@ describe IssuesFinder do
         let(:project_started_1_and_2) { create(:project, :public) }
         let(:project_started_8) { create(:project, :public) }
 
-        let(:yesterday) { Date.today - 1.day }
-        let(:tomorrow) { Date.today + 1.day }
-        let(:two_days_ago) { Date.today - 2.days }
-        let(:three_days_ago) { Date.today - 3.days }
+        let(:yesterday) { Date.current - 1.day }
+        let(:tomorrow) { Date.current + 1.day }
+        let(:two_days_ago) { Date.current - 2.days }
+        let(:three_days_ago) { Date.current - 3.days }
 
         let(:milestones) do
           [
@@ -248,6 +317,16 @@ describe IssuesFinder do
           expect(issues.map { |issue| issue.milestone.title }).to contain_exactly('1.0', '2.0', '8.0')
           expect(issues.map { |issue| issue.milestone.start_date }).to contain_exactly(two_days_ago, yesterday, yesterday)
         end
+
+        context 'using NOT' do
+          let(:params) { { not: { milestone_title: Milestone::Started.name } } }
+
+          it 'returns issues not in the started milestones for each project' do
+            target_issues = Issue.where.not(milestone: Milestone.started)
+
+            expect(issues).to contain_exactly(issue2, issue3, issue4, *target_issues)
+          end
+        end
       end
 
       context 'filtering by label' do
@@ -255,6 +334,33 @@ describe IssuesFinder do
 
         it 'returns issues with that label' do
           expect(issues).to contain_exactly(issue2)
+        end
+
+        context 'using NOT' do
+          let(:params) { { not: { label_name: label.title } } }
+
+          it 'returns issues that do not have that label' do
+            expect(issues).to contain_exactly(issue1, issue3, issue4)
+          end
+
+          # IssuableFinder first filters using the outer params (the ones not inside the `not` key.)
+          # Afterwards, it applies the `not` params to that resultset. This means that things inside the `not` param
+          # do not take precedence over the outer params with the same name.
+          context 'shadowing the same outside param' do
+            let(:params) { { label_name: label2.title, not: { label_name: label.title } } }
+
+            it 'does not take precedence over labels outside NOT' do
+              expect(issues).to contain_exactly(issue3)
+            end
+          end
+
+          context 'further filtering outside params' do
+            let(:params) { { label_name: label2.title, not: { assignee_username: user2.username } } }
+
+            it 'further filters on the returned resultset' do
+              expect(issues).to be_empty
+            end
+          end
         end
       end
 
@@ -269,6 +375,14 @@ describe IssuesFinder do
         it 'returns the unique issues with all those labels' do
           expect(issues).to contain_exactly(issue2)
         end
+
+        context 'using NOT' do
+          let(:params) { { not: { label_name: [label.title, label2.title].join(',') } } }
+
+          it 'returns issues that do not have ALL labels provided' do
+            expect(issues).to contain_exactly(issue1, issue3, issue4)
+          end
+        end
       end
 
       context 'filtering by a label that includes any or none in the title' do
@@ -276,10 +390,20 @@ describe IssuesFinder do
         let(:label) { create(:label, title: 'any foo', project: project2) }
         let(:label2) { create(:label, title: 'bar none', project: project2) }
 
-        it 'returns the unique issues with all those labels' do
+        before do
           create(:label_link, label: label2, target: issue2)
+        end
 
+        it 'returns the unique issues with all those labels' do
           expect(issues).to contain_exactly(issue2)
+        end
+
+        context 'using NOT' do
+          let(:params) { { not: { label_name: [label.title, label2.title].join(',') } } }
+
+          it 'returns issues that do not have ALL labels provided' do
+            expect(issues).to contain_exactly(issue1, issue3, issue4)
+          end
         end
       end
 
@@ -287,7 +411,7 @@ describe IssuesFinder do
         let(:params) { { label_name: described_class::FILTER_NONE } }
 
         it 'returns issues with no labels' do
-          expect(issues).to contain_exactly(issue1, issue3, issue4)
+          expect(issues).to contain_exactly(issue1, issue4)
         end
       end
 
@@ -309,6 +433,14 @@ describe IssuesFinder do
         it 'returns issues with title and description match for search term' do
           expect(issues).to contain_exactly(issue1, issue2)
         end
+
+        context 'using NOT' do
+          let(:params) { { not: { search: 'git' } } }
+
+          it 'returns issues with no title and description match for search term' do
+            expect(issues).to contain_exactly(issue3, issue4)
+          end
+        end
       end
 
       context 'filtering by issue term in title' do
@@ -317,6 +449,14 @@ describe IssuesFinder do
         it 'returns issues with title match for search term' do
           expect(issues).to contain_exactly(issue1)
         end
+
+        context 'using NOT' do
+          let(:params) { { not: { search: 'git', in: 'title' } } }
+
+          it 'returns issues with no title match for search term' do
+            expect(issues).to contain_exactly(issue2, issue3, issue4)
+          end
+        end
       end
 
       context 'filtering by issues iids' do
@@ -324,6 +464,14 @@ describe IssuesFinder do
 
         it 'returns issues with iids match' do
           expect(issues).to contain_exactly(issue3)
+        end
+
+        context 'using NOT' do
+          let(:params) { { not: { iids: issue3.iid } } }
+
+          it 'returns issues with no iids match' do
+            expect(issues).to contain_exactly(issue1, issue2, issue4)
+          end
         end
       end
 
@@ -466,6 +614,14 @@ describe IssuesFinder do
           it 'returns issues that the user thumbsup to' do
             expect(issues).to contain_exactly(issue1)
           end
+
+          context 'using NOT' do
+            let(:params) { { not: { my_reaction_emoji: 'thumbsup' } } }
+
+            it 'returns issues that the user did not thumbsup to' do
+              expect(issues).to contain_exactly(issue2, issue3, issue4)
+            end
+          end
         end
 
         context 'user2 searches by "thumbsup" reaction' do
@@ -476,6 +632,14 @@ describe IssuesFinder do
           it 'returns issues that the user2 thumbsup to' do
             expect(issues).to contain_exactly(issue2)
           end
+
+          context 'using NOT' do
+            let(:params) { { not: { my_reaction_emoji: 'thumbsup' } } }
+
+            it 'returns issues that the user2 thumbsup to' do
+              expect(issues).to contain_exactly(issue3)
+            end
+          end
         end
 
         context 'user searches by "thumbsdown" reaction' do
@@ -483,6 +647,14 @@ describe IssuesFinder do
 
           it 'returns issues that the user thumbsdown to' do
             expect(issues).to contain_exactly(issue3)
+          end
+
+          context 'using NOT' do
+            let(:params) { { not: { my_reaction_emoji: 'thumbsdown' } } }
+
+            it 'returns issues that the user thumbsdown to' do
+              expect(issues).to contain_exactly(issue1, issue2, issue4)
+            end
           end
         end
       end

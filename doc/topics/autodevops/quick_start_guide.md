@@ -152,7 +152,7 @@ The pipeline is split into 4 stages, each running a couple of jobs.
 ![Pipeline stages](img/guide_pipeline_stages.png)
 
 In the **build** stage, the application is built into a Docker image and then
-uploaded to your project's [Container Registry](../../user/project/container_registry.md) ([Auto Build](index.md#auto-build)).
+uploaded to your project's [Container Registry](../../user/packages/container_registry/index.md) ([Auto Build](index.md#auto-build)).
 
 In the **test** stage, GitLab runs various checks on the application:
 

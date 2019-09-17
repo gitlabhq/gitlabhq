@@ -2027,6 +2027,43 @@ describe Project do
     end
   end
 
+  describe '#latest_pipeline_for_ref' do
+    let(:project) { create(:project, :repository) }
+    let(:second_branch) { project.repository.branches[2] }
+
+    let!(:pipeline_for_default_branch) do
+      create(:ci_empty_pipeline, project: project, sha: project.commit.id,
+                                 ref: project.default_branch)
+    end
+    let!(:pipeline_for_second_branch) do
+      create(:ci_empty_pipeline, project: project, sha: second_branch.target,
+                                 ref: second_branch.name)
+    end
+
+    before do
+      create(:ci_empty_pipeline, project: project, sha: project.commit.parent.id,
+                                 ref: project.default_branch)
+    end
+
+    context 'default repository branch' do
+      subject { project.latest_pipeline_for_ref(project.default_branch) }
+
+      it { is_expected.to eq(pipeline_for_default_branch) }
+    end
+
+    context 'provided ref' do
+      subject { project.latest_pipeline_for_ref(second_branch.name) }
+
+      it { is_expected.to eq(pipeline_for_second_branch) }
+    end
+
+    context 'bad ref' do
+      subject { project.latest_pipeline_for_ref(SecureRandom.uuid) }
+
+      it { is_expected.to be_nil }
+    end
+  end
+
   describe '#latest_successful_build_for_sha' do
     let(:project) { create(:project, :repository) }
     let(:pipeline) { create_pipeline(project) }

@@ -69,6 +69,19 @@ module API
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
+      desc 'Gets a the latest pipeline for the project branch' do
+        detail 'This feature was introduced in GitLab 12.3'
+        success Entities::Pipeline
+      end
+      params do
+        optional :ref, type: String, desc: 'branch ref of pipeline'
+      end
+      get ':id/pipelines/latest' do
+        authorize! :read_pipeline, latest_pipeline
+
+        present latest_pipeline, with: Entities::Pipeline
+      end
+
       desc 'Gets a specific pipeline for the project' do
         detail 'This feature was introduced in GitLab 8.11'
         success Entities::Pipeline
@@ -144,7 +157,15 @@ module API
 
     helpers do
       def pipeline
-        @pipeline ||= user_project.ci_pipelines.find(params[:pipeline_id])
+        strong_memoize(:pipeline) do
+          user_project.ci_pipelines.find(params[:pipeline_id])
+        end
+      end
+
+      def latest_pipeline
+        strong_memoize(:latest_pipeline) do
+          user_project.latest_pipeline_for_ref(params[:ref])
+        end
       end
     end
   end

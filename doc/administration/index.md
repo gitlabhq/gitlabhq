@@ -128,13 +128,17 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 
 ## Project settings
 
-- [Container Registry](container_registry.md): Configure Container Registry with GitLab.
 - [Issue closing pattern](issue_closing_pattern.md): Customize how to close an issue from commit messages.
 - [Gitaly](gitaly/index.md): Configuring Gitaly, GitLab's Git repository storage service.
 - [Default labels](../user/admin_area/labels.md): Create labels that will be automatically added to every new project.
 - [Restrict the use of public or internal projects](../public_access/public_access.md#restricting-the-use-of-public-or-internal-projects): Restrict the use of visibility levels for users when they create a project or a snippet.
 - [Custom project templates](../user/admin_area/custom_project_templates.md): Configure a set of projects to be used as custom templates when creating a new project. **(PREMIUM ONLY)**
-- [Packages](packages.md): Enable GitLab to act as a Maven repository or NPM registry. **(PREMIUM ONLY)**
+
+## Package Registry administration
+
+- [Container Registry](packages/container_registry.md): Configure Container Registry with GitLab.
+- [Package Registry](packages/index.md): Enable GitLab to act as an NPM Registry and a Maven Repository. **(PREMIUM ONLY)**
+- [Dependency Proxy](packages/dependency_proxy.md): Configure the Dependency Proxy, a local proxy for frequently used upstream images/packages. **(PREMIUM ONLY)**
 
 ### Repository settings
 

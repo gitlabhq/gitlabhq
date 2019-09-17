@@ -6,8 +6,20 @@ shared_examples 'assignee ID filter' do
   end
 end
 
+shared_examples 'assignee NOT ID filter' do
+  it 'returns issuables not assigned to that user' do
+    expect(issuables).to contain_exactly(*expected_issuables)
+  end
+end
+
 shared_examples 'assignee username filter' do
   it 'returns issuables assigned to those users' do
+    expect(issuables).to contain_exactly(*expected_issuables)
+  end
+end
+
+shared_examples 'assignee NOT username filter' do
+  it 'returns issuables not assigned to those users' do
     expect(issuables).to contain_exactly(*expected_issuables)
   end
 end

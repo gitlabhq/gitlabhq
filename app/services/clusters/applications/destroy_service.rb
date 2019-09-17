@@ -16,7 +16,7 @@ module Clusters
       private
 
       def builder
-        cluster.public_send(:"application_#{application_name}") # rubocop:disable GitlabSecurity/PublicSend
+        cluster.public_send(application_class.association_name) # rubocop:disable GitlabSecurity/PublicSend
       end
     end
   end

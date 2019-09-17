@@ -400,6 +400,7 @@ module API
     end
 
     class GroupDetail < Group
+      expose :runners_token, if: lambda { |group, options| options[:user_can_admin_group] }
       expose :projects, using: Entities::Project do |group, options|
         projects = GroupProjectsFinder.new(
           group: group,

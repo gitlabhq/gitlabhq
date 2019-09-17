@@ -992,7 +992,7 @@ and the lost data can be manually replaced.
 
 ### Container Registry push failures after restoring from a backup
 
-If you use the [Container Registry](../user/project/container_registry.md), you
+If you use the [Container Registry](../user/packages/container_registry/index.md), you
 may see pushes to the registry fail after restoring your backup on an Omnibus
 GitLab instance after restoring the registry data.
 

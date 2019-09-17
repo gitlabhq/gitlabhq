@@ -515,7 +515,7 @@ If you're running multiple Runners you will have to modify all configuration fil
 >   login to GitLab's Container Registry.
 
 Once you've built a Docker image, you can push it up to the built-in
-[GitLab Container Registry](../../user/project/container_registry.md).
+[GitLab Container Registry](../../user/packages/container_registry/index.md).
 Some things you should be aware of:
 
 - You must [log in to the container registry](#authenticating-to-the-container-registry)

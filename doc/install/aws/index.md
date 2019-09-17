@@ -540,7 +540,7 @@ which would otherwise take much space.
 In particular, you can store in S3:
 
 - [The Git LFS objects](../../workflow/lfs/lfs_administration.md#s3-for-omnibus-installations) ((Omnibus GitLab installations))
-- [The Container Registry images](../../administration/container_registry.md#container-registry-storage-driver) (Omnibus GitLab installations)
+- [The Container Registry images](../../administration/packages/container_registry.md#container-registry-storage-driver) (Omnibus GitLab installations)
 - [The GitLab CI/CD job artifacts](../../administration/job_artifacts.md#using-object-storage) (Omnibus GitLab installations)
 
 ### Setting up a domain name

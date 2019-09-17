@@ -2,7 +2,7 @@
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/55978) in GitLab 11.8.
 
-This is the API docs of the [GitLab Container Registry](../user/project/container_registry.md).
+This is the API docs of the [GitLab Container Registry](../user/packages/container_registry/index.md).
 
 ## List registry repositories
 

@@ -1,5 +1,5 @@
 ---
-last_updated: 2019-02-04
+last_updated: 2019-09-16
 ---
 
 # Audit Events **(STARTER)**
@@ -77,6 +77,7 @@ From there, you can see the following actions:
 - Project repository was downloaded
 - Project was archived
 - Project was unarchived
+- Added/removed/updated protected branches
 
 ### Instance events **(PREMIUM ONLY)**
 

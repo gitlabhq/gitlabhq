@@ -22,7 +22,7 @@ The project description also partially supports [standard markdown](../../markdo
 
 ### Sharing and permissions
 
-Set up your project's access, [visibility](../../../public_access/public_access.md), and enable [Container Registry](../container_registry.md) for your projects:
+Set up your project's access, [visibility](../../../public_access/public_access.md), and enable [Container Registry](../../packages/container_registry/index.md) for your projects:
 
 ![projects sharing permissions](img/sharing_and_permissions_settings.png)
 

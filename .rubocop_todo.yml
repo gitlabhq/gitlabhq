@@ -565,11 +565,6 @@ Style/EmptyLiteral:
 Style/EmptyMethod:
   Enabled: false
 
-# Offense count: 40
-# Cop supports --auto-correct.
-Style/Encoding:
-  Enabled: false
-
 # Offense count: 203
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle.

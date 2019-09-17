@@ -208,7 +208,7 @@ Example response:
 ## Details of a group
 
 Get all details of a group. This endpoint can be accessed without authentication
-if the group is publicly accessible.
+if the group is publicly accessible. In case the user that requests is admin of the group, it will return the `runners_token` for the group too.
 
 ```
 GET /groups/:id
@@ -240,6 +240,7 @@ Example response:
   "request_access_enabled": false,
   "full_name": "Twitter",
   "full_path": "twitter",
+  "runners_token": "ba324ca7b1c77fc20bb9",
   "file_template_project_id": 1,
   "parent_id": null,
   "projects": [

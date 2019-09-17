@@ -48,7 +48,7 @@ To enable Container Scanning in your pipeline, you need:
   running. If you're using the shared Runners on GitLab.com, this is already
   the case.
 - To [build and push](../../../ci/docker/using_docker_build.md#container-registry-examples)
-  your Docker image to your project's [Container Registry](../../project/container_registry.md).
+  your Docker image to your project's [Container Registry](../../packages/container_registry/index.md).
   The name of the Docker image should match the following scheme:
 
   ```text
@@ -79,7 +79,7 @@ The included template will:
 
 1. Create a `container_scanning` job in your CI/CD pipeline.
 1. Pull the already built Docker image from your project's
-   [Container Registry](../../project/container_registry.md) (see [requirements](#requirements))
+   [Container Registry](../../packages/container_registry/index.md) (see [requirements](#requirements))
    and scan it for possible vulnerabilities.
 
 The results will be saved as a

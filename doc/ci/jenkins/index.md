@@ -27,7 +27,7 @@ There are some high level differences between the products worth mentioning:
 - The `.gitlab-ci.yml` file is checked in to the root of your repository, much like a Jenkinsfile, but
   is in the YAML format (see [complete reference](../yaml/README.md)) instead of a Groovy DSL. It's most
   analagous to the declarative Jenkinsfile format.
-- GitLab comes with a [container registry](../../user/project/container_registry.md), and we recommend using
+- GitLab comes with a [container registry](../../user/packages/container_registry/index.md), and we recommend using
   container images to set up your build environment.
 
 ## Groovy vs. YAML
@@ -209,7 +209,7 @@ Because GitLab is integrated tightly with git, SCM polling options for triggers 
 
 GitLab does not support a separate `tools` directive. Our best-practice reccomendation is to use pre-built
 container images, which can be cached, and can be built to already contain the tools you need for your pipelines. Pipelines can
-be set up to automatically build these images as needed and deploy them to the [container registry](../../user/project/container_registry.md).
+be set up to automatically build these images as needed and deploy them to the [container registry](../../user/packages/container_registry/index.md).
 
 If you're not using container images with Docker/Kubernetes, for example on Mac or FreeBSD, then the `shell` executor does require you to
 set up your environment either in advance or as part of the jobs. You could create a `before_script`

@@ -36,7 +36,7 @@ Have a look at some of our most popular documentation resources:
 |:----------------------------------------------------------------|:-----------------------------------------------------------------|
 | [Configuring `.gitlab-ci.yml`](ci/yaml/README.md)               | Complete syntax documentation for configuring your CI pipelines. |
 | [GitLab CI/CD examples](ci/examples/README.md)                  | Get up to speed quickly with common CI/CD scenarios.             |
-| [GitLab Container Registry](user/project/container_registry.md) | Host containers within GitLab.                                   |
+| [GitLab Container Registry](user/packages/container_registry/index.md) | Host Docker images within GitLab.                         |
 | [GitLab Pages](user/project/pages/index.md)                     | Host static websites for your projects with GitLab.              |
 | [GitLab.com settings](user/gitlab_com/index.md)                 | Settings for GitLab.com.                                         |
 | [Kubernetes integration](user/project/clusters/index.md)        | Use GitLab with Kubernetes.                                      |
@@ -248,16 +248,18 @@ The following documentation relates to the DevOps **Verify** stage:
 
 ### Package
 
-GitLab Container Registry gives you the enhanced security and access controls of
-custom Docker images without 3rd party add-ons. Easily upload and download images
-from GitLab CI/CD with full Git repository management integration.
+GitLab Packages allows organizations to utilize GitLab as a private repository
+for a variety of common package managers. Users are able to build and publish
+packages, which can be easily consumed as a dependency in downstream projects.
 
 The following documentation relates to the DevOps **Package** stage:
 
 | Package Topics                                                  | Description                                            |
 |:----------------------------------------------------------------|:-------------------------------------------------------|
-| [GitLab Container Registry](user/project/container_registry.md) | Learn how to use GitLab's built-in Container Registry. |
-| [GitLab Packages](administration/packages.md) **(PREMIUM)**     | Use GitLab as an NPM registry or Maven repository.     |
+| [Container Registry](user/packages/container_registry/index.md)   | The GitLab Container Registry enables every project in GitLab to have its own space to store [Docker](https://www.docker.com/) images. |
+| [Dependency Proxy](user/packages/dependency_proxy/index.md) **(PREMIUM)** | The GitLab Dependency Proxy sets up a local proxy for frequently used upstream images/packages. |
+| [Maven Repository](user/packages/maven_repository/index.md) **(PREMIUM)** | The GitLab Maven Repository enables every project in GitLab to have its own space to store [Maven](https://maven.apache.org/) packages. |
+| [NPM Registry](user/packages/npm_registry/index.md) **(PREMIUM)**  | The GitLab NPM Registry enables every project in GitLab to have its own space to store [NPM](https://www.npmjs.com/) packages. |
 
 <div align="right">
   <a type="button" class="btn btn-default" href="#overview">

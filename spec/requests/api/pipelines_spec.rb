@@ -459,6 +459,54 @@ describe API::Pipelines do
     end
   end
 
+  describe 'GET /projects/:id/pipelines/latest' do
+    context 'authorized user' do
+      let(:second_branch) { project.repository.branches[2] }
+
+      let!(:second_pipeline) do
+        create(:ci_empty_pipeline, project: project, sha: second_branch.target,
+                                   ref: second_branch.name, user: user)
+      end
+
+      before do
+        create(:ci_empty_pipeline, project: project, sha: project.commit.parent.id,
+                                   ref: project.default_branch, user: user)
+      end
+
+      context 'default repository branch' do
+        it 'gets the latest pipleine' do
+          get api("/projects/#{project.id}/pipelines/latest", user)
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(response).to match_response_schema('public_api/v4/pipeline/detail')
+          expect(json_response['ref']).to eq(project.default_branch)
+          expect(json_response['sha']).to eq(project.commit.id)
+        end
+      end
+
+      context 'ref parameter' do
+        it 'gets the latest pipleine' do
+          get api("/projects/#{project.id}/pipelines/latest", user), params: { ref: second_branch.name }
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(response).to match_response_schema('public_api/v4/pipeline/detail')
+          expect(json_response['ref']).to eq(second_branch.name)
+          expect(json_response['sha']).to eq(second_branch.target)
+        end
+      end
+    end
+
+    context 'unauthorized user' do
+      it 'does not return a project pipeline' do
+        get api("/projects/#{project.id}/pipelines/#{pipeline.id}", non_member)
+
+        expect(response).to have_gitlab_http_status(404)
+        expect(json_response['message']).to eq '404 Project Not Found'
+        expect(json_response['id']).to be nil
+      end
+    end
+  end
+
   describe 'GET /projects/:id/pipelines/:pipeline_id/variables' do
     subject { get api("/projects/#{project.id}/pipelines/#{pipeline.id}/variables", api_user) }
 

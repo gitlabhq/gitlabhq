@@ -44,7 +44,7 @@ GitLab is a Git-based platform that integrates a great number of essential tools
   branch with [Review Apps](../ci/review_apps/index.md).
 - Building, testing, and deploying with built-in [Continuous Integration](../ci/README.md).
 - Deploying personal and professional static websites with [GitLab Pages](project/pages/index.md).
-- Integrating with Docker by using [GitLab Container Registry](project/container_registry.md).
+- Integrating with Docker by using [GitLab Container Registry](packages/container_registry/index.md).
 - Tracking the development lifecycle by using [GitLab Cycle Analytics](project/cycle_analytics.md).
 
 With GitLab Enterprise Edition, you can also:
@@ -92,7 +92,7 @@ directly from GitLab. No third-party integrations needed.
 - [Review Apps](../ci/review_apps/index.md): Live-preview the changes introduced by a merge request with Review Apps.
 - [GitLab Pages](project/pages/index.md): Publish your static site directly from
   GitLab with GitLab Pages. You can build, test, and deploy any Static Site Generator with Pages.
-- [GitLab Container Registry](project/container_registry.md): Build and deploy Docker
+- [GitLab Container Registry](packages/container_registry/index.md): Build and deploy Docker
   images with Container Registry.
 
 ## Account

@@ -97,4 +97,4 @@ docker login -u $CI_DEPLOY_USER -p $CI_DEPLOY_PASSWORD $CI_REGISTRY
 [ce-17894]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/17894
 [ce-11845]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/11845
 [ce-18414]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/18414
-[container registry]: ../container_registry.md
+[container registry]: ../../packages/container_registry/index.md

@@ -59,6 +59,16 @@ describe API::Groups do
           .to satisfy_one { |group| group['name'] == group1.name }
       end
 
+      it "does not include runners_token information" do
+        get api("/groups", user1)
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(json_response.length).to eq(1)
+        expect(json_response.first).not_to include('runners_token')
+      end
+
       it "does not include statistics" do
         get api("/groups", user1), params: { statistics: true }
 
@@ -77,6 +87,16 @@ describe API::Groups do
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(2)
+      end
+
+      it "does not include runners_token information" do
+        get api("/groups", admin)
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(json_response.length).to eq(2)
+        expect(json_response.first).not_to include('runners_token')
       end
 
       it "does not include statistics by default" do
@@ -292,6 +312,7 @@ describe API::Groups do
         get api("/groups/#{group1.id}")
 
         expect(response).to have_gitlab_http_status(200)
+        expect(json_response).not_to include('runners_token')
       end
 
       it 'returns only public projects in the group' do
@@ -350,6 +371,22 @@ describe API::Groups do
         expect(response).to have_gitlab_http_status(200)
         expect(json_response['projects']).to be_nil
         expect(json_response['shared_projects']).to be_nil
+        expect(json_response).not_to include('runners_token')
+      end
+
+      it "doesn't return runners_token if the user is not the owner of the group" do
+        get api("/groups/#{group1.id}", user3)
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response).not_to include('runners_token')
+      end
+
+      it "returns runners_token if the user is the owner of the group" do
+        group1.add_owner(user3)
+        get api("/groups/#{group1.id}", user3)
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response).to include('runners_token')
       end
 
       it "does not return a non existing group" do
@@ -405,6 +442,13 @@ describe API::Groups do
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response['name']).to eq(group2.name)
+      end
+
+      it "returns information of the runners_token for the group" do
+        get api("/groups/#{group2.id}", admin)
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response).to include('runners_token')
       end
 
       it "does not return a non existing group" do

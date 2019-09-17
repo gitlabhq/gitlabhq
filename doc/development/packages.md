@@ -1,8 +1,8 @@
 # Packages **(PREMIUM)**
 
-This document will guide you through adding another [package management system](../administration/packages.md) support to GitLab.
+This document will guide you through adding another [package management system](../administration/packages/index.md) support to GitLab.
 
-See already supported package types in [Packages documentation](../administration/packages.md)
+See already supported package types in [Packages documentation](../administration/packages/index.md)
 
 Since GitLab packages' UI is pretty generic, it is possible to add new
 package system support by solely backend changes. This guide is superficial and does
@@ -46,7 +46,7 @@ Group-level and instance-level endpoints are good to have but are optional.
 
 NOTE: **Note:**
 To avoid name conflict for instance-level endpoints we use
-[the package naming convention](../user/project/packages/npm_registry.md#package-naming-convention)
+[the package naming convention](../user/packages/npm_registry/index.md#package-naming-convention)
 
 ## Configuration
 

@@ -134,7 +134,7 @@ Component statuses are linked to configuration documentation for each component.
 | [GitLab Workhorse](#gitlab-workhorse) | Smart reverse proxy, handles large HTTP requests | [✅][workhorse-omnibus] | [✅][workhorse-charts] | [✅][workhorse-charts] | [✅](https://about.gitlab.com/handbook/engineering/infrastructure/production-architecture/#service-architecture) | [⚙][workhorse-source] | ✅ | CE & EE |
 | [GitLab Shell](#gitlab-shell) | Handles `git` over SSH sessions | [✅][shell-omnibus] | [✅][shell-charts] | [✅][shell-charts] | [✅](https://about.gitlab.com/handbook/engineering/infrastructure/production-architecture/#service-architecture) | [⚙][shell-source] | [✅][gitlab-yml] | CE & EE |
 | [GitLab Pages](#gitlab-pages) | Hosts static websites | [⚙][pages-omnibus] | [❌][pages-charts] | [❌][pages-charts] | [✅](../user/gitlab_com/index.md#gitlab-pages) | [⚙][pages-source] | [⚙][pages-gdk] | CE & EE  |
-| [Registry](#registry) | Container registry, allows pushing and pulling of images | [⚙][registry-omnibus] | [✅][registry-charts] | [✅][registry-charts] | [✅](../user/project/container_registry.md#build-and-push-images) | [⤓][registry-source] | [⚙][registry-gdk] | CE & EE  |
+| [Registry](#registry) | Container registry, allows pushing and pulling of images | [⚙][registry-omnibus] | [✅][registry-charts] | [✅][registry-charts] | [✅](../user/packages/container_registry/index.md#build-and-push-images) | [⤓][registry-source] | [⚙][registry-gdk] | CE & EE  |
 | [Redis](#redis) | Caching service | [✅][redis-omnibus] | [✅][redis-omnibus] | [✅][redis-charts] | [✅](https://about.gitlab.com/handbook/engineering/infrastructure/production-architecture/#service-architecture) | [⤓][redis-source] | ✅ | CE & EE |
 | [PostgreSQL](#postgresql) | Database | [✅][postgres-omnibus] | [✅][postgres-charts] | [✅][postgres-charts] | [✅](../user/gitlab_com/index.md#postgresql) | [⤓][postgres-source] | ✅ | CE & EE |
 | [PgBouncer](#pgbouncer) | Database connection pooling, failover | [⚙][pgbouncer-omnibus] | [❌][pgbouncer-charts] | [❌][pgbouncer-charts] | [✅](https://about.gitlab.com/handbook/engineering/infrastructure/production-architecture/#database-architecture) | ❌ | ❌ | EE Only |
@@ -654,9 +654,9 @@ We've also detailed [our architecture of GitLab.com](https://about.gitlab.com/ha
 [pages-charts]: https://gitlab.com/gitlab-org/charts/gitlab/issues/37
 [pages-source]: ../install/installation.md#install-gitlab-pages
 [pages-gdk]: https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/pages.md
-[registry-omnibus]: ../administration/container_registry.md#container-registry-domain-configuration
+[registry-omnibus]: ../administration/packages/container_registry.md#container-registry-domain-configuration
 [registry-charts]: https://docs.gitlab.com/charts/charts/registry/
-[registry-source]: ../administration/container_registry.md#enable-the-container-registry
+[registry-source]: ../administration/packages/container_registry.md#enable-the-container-registry
 [registry-gdk]: https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/registry.md
 [redis-omnibus]: https://docs.gitlab.com/omnibus/settings/redis.html
 [redis-charts]: https://docs.gitlab.com/charts/charts/redis/

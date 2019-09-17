@@ -1,5 +1,3 @@
-# encoding: utf-8
-
 require "spec_helper"
 
 describe Gitlab::Git::Blob, :seed_helper do

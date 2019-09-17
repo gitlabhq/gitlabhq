@@ -60,7 +60,7 @@ When you create a project in GitLab, you'll have access to a large number of
 **GitLab CI/CD:**
 
 - [GitLab CI/CD](../../ci/README.md): GitLab's built-in [Continuous Integration, Delivery, and Deployment](https://about.gitlab.com/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/) tool
-  - [Container Registry](container_registry.md): Build and push Docker
+  - [Container Registry](../packages/container_registry/index.md): Build and push Docker
   images out-of-the-box
   - [Auto Deploy](../../ci/autodeploy/index.md): Configure GitLab CI/CD
   to automatically set up your app's deployment
@@ -95,8 +95,8 @@ When you create a project in GitLab, you'll have access to a large number of
 - [Releases](releases/index.md): a way to track deliverables in your project as snapshot in time of
   the source, build output, and other metadata or artifacts
   associated with a released version of your code.
-- [Maven packages](packages/maven_repository.md): your private Maven repository in GitLab. **(PREMIUM)**
-- [NPM packages](packages/npm_registry.md): your private NPM package registry in GitLab. **(PREMIUM)**
+- [Maven packages](../packages/maven_repository/index.md): your private Maven repository in GitLab. **(PREMIUM)**
+- [NPM packages](../packages/npm_registry/index.md): your private NPM package registry in GitLab. **(PREMIUM)**
 - [Code owners](code_owners.md): specify code owners for certain files **(STARTER)**
 - [License Compliance](../application_security/license_compliance/index.md): approve and blacklist licenses for projects. **(ULTIMATE)**
 - [Dependency List](../application_security/dependency_list/index.md): view project dependencies. **(ULTIMATE)**

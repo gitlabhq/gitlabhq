@@ -274,9 +274,9 @@ You can keep track of the progress to include the missing items in:
 | [Server-side Git Hooks](../../custom_hooks.md) | No | No |
 | [Elasticsearch integration](../../../integration/elasticsearch.md) | No | No |
 | [GitLab Pages](../../pages/index.md) | No | No |
-| [Container Registry](../../container_registry.md) | Yes | No |
-| [NPM Registry](../../npm_registry.md) | No | No |
-| [Maven Packages](../../maven_packages.md) | No | No |
+| [Container Registry](../../packages/container_registry.md) | Yes | No |
+| [NPM Registry](../../../user/packages/npm_registry/index.md) | No | No |
+| [Maven Packages](../../../user/packages/maven_repository/index.md) | No | No |
 | [External merge request diffs](../../merge_request_diffs.md) | No, if they are on-disk | No |
 | Content in object storage ([track progress](https://gitlab.com/groups/gitlab-org/-/epics/1526)) | No | No |
 

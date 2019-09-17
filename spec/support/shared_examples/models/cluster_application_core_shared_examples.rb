@@ -21,4 +21,8 @@ shared_examples 'cluster application core specs' do |application_name|
       expect(Clusters::Cluster::APPLICATIONS[subject.name]).to eq(described_class)
     end
   end
+
+  describe '.association_name' do
+    it { expect(described_class.association_name).to eq(:"application_#{subject.name}") }
+  end
 end

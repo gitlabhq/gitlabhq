@@ -53,7 +53,7 @@ the following table.
 [2fa]: ../account/two_factor_authentication.md
 [api]: ../../api/README.md
 [ce-3749]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/3749
-[container registry]: ../project/container_registry.md
+[container registry]: ../packages/container_registry/index.md
 [users]: ../../api/users.md
 [usage]: ../../api/README.md#personal-access-tokens
 

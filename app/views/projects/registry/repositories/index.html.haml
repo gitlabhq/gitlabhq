@@ -2,7 +2,7 @@
   .row.registry-placeholder.prepend-bottom-10
     .col-12
       #js-vue-registry-images{ data: { endpoint: project_container_registry_index_path(@project, format: :json),
-        "help_page_path" => help_page_path('user/project/container_registry'),
+        "help_page_path" => help_page_path('user/packages/container_registry/index'),
         "no_containers_image" => image_path('illustrations/docker-empty-state.svg'),
         "containers_error_image" => image_path('illustrations/docker-error-state.svg'),
         "repository_url" => escape_once(@project.container_registry_url),

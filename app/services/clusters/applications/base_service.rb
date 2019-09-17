@@ -77,6 +77,10 @@ module Clusters
         params[:application]
       end
 
+      def application_class
+        Clusters::Cluster::APPLICATIONS[application_name]
+      end
+
       def create_oauth_application(application, request)
         oauth_application_params = {
           name: params[:application],
