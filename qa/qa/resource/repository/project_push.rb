@@ -4,11 +4,12 @@ module QA
   module Resource
     module Repository
       class ProjectPush < Repository::Push
+        attr_accessor :project_name
         attr_writer :wait_for_push
 
         attribute :project do
           Project.fabricate! do |resource|
-            resource.name = 'project-with-code'
+            resource.name = project_name
             resource.description = 'Project with repository'
           end
         end
@@ -19,6 +20,7 @@ module QA
           @commit_message = "This is a test commit"
           @branch_name = 'master'
           @new_branch = true
+          @project_name = 'project-with-code'
           @wait_for_push = true
         end
 

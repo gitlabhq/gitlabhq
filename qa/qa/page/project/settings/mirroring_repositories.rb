@@ -13,8 +13,8 @@ module QA
           view 'app/views/projects/mirrors/_mirror_repos.html.haml' do
             element :mirror_repository_url_input
             element :mirror_repository_button
-            element :mirror_repository_url
-            element :mirror_last_update_at
+            element :mirror_repository_url_cell
+            element :mirror_last_update_at_cell
             element :mirrored_repository_row
           end
 
@@ -64,21 +64,21 @@ module QA
 
             wait(interval: 1) do
               within_element_by_index(:mirrored_repository_row, row_index) do
-                last_update = find_element(:mirror_last_update_at, wait: 0)
+                last_update = find_element(:mirror_last_update_at_cell, wait: 0)
                 last_update.has_text?('just now') || last_update.has_text?('seconds')
               end
             end
 
             # Fail early if the page still shows that there has been no update
             within_element_by_index(:mirrored_repository_row, row_index) do
-              find_element(:mirror_last_update_at, wait: 0).assert_no_text('Never')
+              find_element(:mirror_last_update_at_cell, wait: 0).assert_no_text('Never')
             end
           end
 
           private
 
           def find_repository_row_index(target_url)
-            all_elements(:mirror_repository_url).index do |url|
+            all_elements(:mirror_repository_url_cell).index do |url|
               # The url might be a sanitized url but the target_url won't be so
               # we compare just the paths instead of the full url
               URI.parse(url.text).path == target_url.path

@@ -49,12 +49,12 @@
             = render_if_exists 'projects/mirrors/table_pull_row'
             - @project.remote_mirrors.each_with_index do |mirror, index|
               - next if mirror.new_record?
-              %tr.qa-mirrored-repository-row.rspec-mirrored-repository-row{ class: ('bg-secondary' if mirror.disabled?) }
-                %td.qa-mirror-repository-url= mirror.safe_url || _('Invalid URL')
+              %tr.rspec-mirrored-repository-row{ class: ('bg-secondary' if mirror.disabled?), data: { qa_selector: 'mirrored_repository_row' } }
+                %td{ data: { qa_selector: 'mirror_repository_url_cell' } }= mirror.safe_url || _('Invalid URL')
                 %td= _('Push')
                 %td
                   = mirror.last_update_started_at.present? ? time_ago_with_tooltip(mirror.last_update_started_at) : _('Never')
-                %td.qa-mirror-last-update-at= mirror.last_update_at.present? ? time_ago_with_tooltip(mirror.last_update_at) : _('Never')
+                %td{ data: { qa_selector: 'mirror_last_update_at_cell' } }= mirror.last_update_at.present? ? time_ago_with_tooltip(mirror.last_update_at) : _('Never')
                 %td
                   - if mirror.disabled?
                     = render 'projects/mirrors/disabled_mirror_badge'

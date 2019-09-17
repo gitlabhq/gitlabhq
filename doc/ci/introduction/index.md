@@ -174,7 +174,7 @@ If we take a deeper look into the basic workflow, we can see
 the features available in GitLab at each stage of the DevOps
 lifecycle, as shown on the illustration below.
 
-![Deeper look into the basic CI/CD workflow](img/gitlab_workflow_example_extended_11_11.png)
+![Deeper look into the basic CI/CD workflow](img/gitlab_workflow_example_extended_v12_3.png)
 
 If you look at the image from the left to the right,
 you'll see some of the features available in GitLab

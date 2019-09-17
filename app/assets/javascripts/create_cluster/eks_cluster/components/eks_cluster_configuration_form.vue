@@ -14,5 +14,12 @@ export default {
 };
 </script>
 <template>
-  <form name="eks-cluster-configuration-form"></form>
+  <form name="eks-cluster-configuration-form">
+    <div class="form-group">
+      <label class="label-bold" name="role" for="eks-role">
+        {{ s__('ClusterIntegration|Role name') }}
+      </label>
+      <role-name-dropdown />
+    </div>
+  </form>
 </template>

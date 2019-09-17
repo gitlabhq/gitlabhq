@@ -163,7 +163,6 @@
     "eslint": "~5.9.0",
     "eslint-import-resolver-jest": "^2.1.1",
     "eslint-import-resolver-webpack": "^0.10.1",
-    "eslint-plugin-html": "5.0.0",
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-jasmine": "^2.10.1",
     "eslint-plugin-jest": "^22.3.0",
