@@ -1,6 +1,8 @@
 # Shibboleth OmniAuth Provider
 
-This documentation is for enabling Shibboleth with the Omnibus GitLab package.
+NOTE: **Note:**
+The preferred approach for integrating a Shibboleth authentication system
+with Gitlab 10 or newer is to use [GitLab's SAML integration](saml.md). This documentation is for Omnibus GitLab 9.x installs or older.
 
 In order to enable Shibboleth support in GitLab we need to use Apache instead of Nginx (It may be possible to use Nginx, however this is difficult to configure using the bundled Nginx provided in the Omnibus GitLab package). Apache uses mod_shib2 module for Shibboleth authentication and can pass attributes as headers to Omniauth Shibboleth provider.
 

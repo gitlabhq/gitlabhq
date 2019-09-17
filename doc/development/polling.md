@@ -11,7 +11,9 @@ Instead you should use polling mechanism with ETag caching in Redis.
 ## How to use it
 
 1. Add the path of the endpoint which you want to poll to
-   `Gitlab::EtagCaching::Middleware`.
+   `Gitlab::EtagCaching::Router`.
+1. Set the polling interval header for the response with
+   `Gitlab::PollingInterval.set_header`.
 1. Implement cache invalidation for the path of your endpoint using
    `Gitlab::EtagCaching::Store`. Whenever a resource changes you
    have to invalidate the ETag for the path that depends on this
