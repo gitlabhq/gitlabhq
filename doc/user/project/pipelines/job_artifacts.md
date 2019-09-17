@@ -9,11 +9,11 @@ type: reference, howto
 > - In GitLab 8.17, builds were renamed to jobs.
 > - The artifacts browser will be available only for new artifacts that are sent to GitLab using GitLab Runner version 1.0 and up. It will not be possible to browse old artifacts already uploaded to GitLab.
 
-Artifacts are a list of files and directories which created by a job
+Job artifacts are a list of files and directories created by a job
 once it finishes. This feature is [enabled by default](../../../administration/job_artifacts.md) in all
 GitLab installations.
 
-Job artifacts that are created by GitLab Runner are uploaded to GitLab and are downloadable as a single archive using the GitLab UI.
+Job artifacts created by GitLab Runner are uploaded to GitLab and are downloadable as a single archive using the GitLab UI or the [GitLab API](../../../api/jobs.md#get-job-artifacts).
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an overview, watch the video [GitLab CI Pipeline, Artifacts, and Environments](https://www.youtube.com/watch?v=PCKDICEe10s).
@@ -78,7 +78,7 @@ one HTML file that you can view directly online when
 ## Downloading artifacts
 
 If you need to download the whole archive, there are buttons in various places
-inside GitLab that make that possible.
+in the GitLab UI to do this:
 
 1. While on the pipelines page, you can see the download icon for each job's
    artifacts archive in the right corner:

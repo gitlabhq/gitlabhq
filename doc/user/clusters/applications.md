@@ -67,6 +67,11 @@ required to install all the other applications. It is installed in its
 own pod inside the cluster which can run the `helm` CLI in a safe
 environment.
 
+NOTE: **Note:**
+Installing Helm as a GitLab-managed App behind a proxy is not supported,
+but a [workaround](../../topics/autodevops/index.md#installing-helm-behind-a-proxy)
+is available.
+
 ### Cert-Manager
 
 > Introduced in GitLab 11.6 for project- and group-level clusters.
