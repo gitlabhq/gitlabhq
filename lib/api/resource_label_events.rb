@@ -24,14 +24,14 @@ module API
           use :pagination
         end
 
-        # rubocop: disable CodeReuse/ActiveRecord
         get ":id/#{eventables_str}/:eventable_id/resource_label_events" do
           eventable = find_noteable(parent_type, params[:id], eventable_type, params[:eventable_id])
-          events = eventable.resource_label_events.includes(:label, :user)
+
+          opts = { page: params[:page], per_page: params[:per_page] }
+          events = ResourceLabelEventFinder.new(current_user, eventable, opts).execute
 
           present paginate(events), with: Entities::ResourceLabelEvent
         end
-        # rubocop: enable CodeReuse/ActiveRecord
 
         desc "Get a single #{eventable_type.to_s.downcase} resource label event" do
           success Entities::ResourceLabelEvent
@@ -44,6 +44,8 @@ module API
         get ":id/#{eventables_str}/:eventable_id/resource_label_events/:event_id" do
           eventable = find_noteable(parent_type, params[:id], eventable_type, params[:eventable_id])
           event = eventable.resource_label_events.find(params[:event_id])
+
+          not_found!('ResourceLabelEvent') unless can?(current_user, :read_resource_label_event, event)
 
           present event, with: Entities::ResourceLabelEvent
         end
