@@ -25,7 +25,7 @@ describe Projects::CreateFromTemplateService do
     subject.execute
   end
 
-  it 'returns the project thats created' do
+  it 'returns the project that is created' do
     project = subject.execute
 
     expect(project).to be_saved
@@ -37,7 +37,7 @@ describe Projects::CreateFromTemplateService do
     let(:project) { subject.execute }
 
     before do
-      expect(project).to be_saved
+      expect(project).not_to be_saved
     end
 
     it 'does not set import set import type' do

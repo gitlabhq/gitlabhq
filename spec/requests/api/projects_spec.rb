@@ -631,6 +631,33 @@ describe API::Projects do
       expect(project.project_feature.wiki_access_level).to eq(ProjectFeature::DISABLED)
     end
 
+    it 'creates a project using a template' do
+      expect { post api('/projects', user), params: { template_name: 'rails', name: 'rails-test' } }
+        .to change { Project.count }.by(1)
+
+      expect(response).to have_gitlab_http_status(201)
+
+      project = Project.find(json_response['id'])
+      expect(project).to be_saved
+      expect(project.import_type).to eq('gitlab_project')
+    end
+
+    it 'returns 400 for an invalid template' do
+      expect { post api('/projects', user), params: { template_name: 'unknown', name: 'rails-test' } }
+        .not_to change { Project.count }
+
+      expect(response).to have_gitlab_http_status(400)
+      expect(json_response['message']['template_name']).to eq(["'unknown' is unknown or invalid"])
+    end
+
+    it 'disallows creating a project with an import_url and template' do
+      project_params = { import_url: 'http://example.com', template_name: 'rails', name: 'rails-test' }
+      expect { post api('/projects', user), params: project_params }
+        .not_to change {  Project.count }
+
+      expect(response).to have_gitlab_http_status(400)
+    end
+
     it 'sets a project as public' do
       project = attributes_for(:project, visibility: 'public')
 
@@ -867,7 +894,7 @@ describe API::Projects do
       expect { post api("/projects/user/#{user.id}", admin), params: { name: 'Foo Project' } }.to change { Project.count }.by(1)
       expect(response).to have_gitlab_http_status(201)
 
-      project = Project.last
+      project = Project.find(json_response['id'])
 
       expect(project.name).to eq('Foo Project')
       expect(project.path).to eq('foo-project')
@@ -878,7 +905,7 @@ describe API::Projects do
         .to change { Project.count }.by(1)
       expect(response).to have_gitlab_http_status(201)
 
-      project = Project.last
+      project = Project.find(json_response['id'])
 
       expect(project.name).to eq('Foo Project')
       expect(project.path).to eq('path-project-Foo')

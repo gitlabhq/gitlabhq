@@ -8,6 +8,9 @@ class Projects::PipelinesController < Projects::ApplicationController
   before_action :authorize_read_build!, only: [:index]
   before_action :authorize_create_pipeline!, only: [:new, :create]
   before_action :authorize_update_pipeline!, only: [:retry, :cancel]
+  before_action do
+    push_frontend_feature_flag(:hide_dismissed_vulnerabilities)
+  end
 
   around_action :allow_gitaly_ref_name_caching, only: [:index, :show]
 

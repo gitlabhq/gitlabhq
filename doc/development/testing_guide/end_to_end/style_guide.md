@@ -101,43 +101,59 @@ end
 
 ## Block argument naming
 
-To have a standard on how we call pages when using the `.perform` method, we use the name of page object being called, all lowercased, and separated by underscore, if needed (see good and bad examples below.) This also applies to resources. We chose not to simply use `page` because that would shadow the Capybara DSL, potentially leading to confusion and bugs.
+To have a standard on what we call pages and resources when using the `.perform` method,
+we use the name of the page object in [snake_case](https://en.wikipedia.org/wiki/Snake_case)
+(all lowercase, with words separated by an underscore). See good and bad examples below.
+
+While we prefer to follow the standard in most cases, it is also acceptable to
+use common abbreviations (e.g., mr) or other alternatives, as long as
+the name is not ambiguous. This can include appending `_page` if it helps to
+avoid confusion or make the code more readable. For example, if a page object is
+named `New`, it could be confusing to name the block argument `new` because that
+is used to instantiate objects, so `new_page` would be acceptable.
+
+We chose not to simply use `page` because that would shadow the
+Capybara DSL, potentially leading to confusion and bugs.
 
 ### Examples
 
 **Good**
 
 ```ruby
-# qa/specs/features/browser_ui/1_manage/project/add_project_member_spec.rb
-
 Page::Project::Settings::Members.perform do |members|
   members.do_something
 end
 ```
 
 ```ruby
-# qa/specs/features/ee/browser_ui/3_create/merge_request/add_batch_comments_in_merge_request_spec.rb
-
 Resource::MergeRequest.fabricate! do |merge_request|
   merge_request.do_something_else
+end
+```
+
+```ruby
+Resource::MergeRequest.fabricate! do |mr|
+  mr.do_something_else
+end
+```
+
+```ruby
+Page::Project::New.peform do |new_page|
+  new_page.do_something
 end
 ```
 
 **Bad**
 
 ```ruby
-# qa/specs/features/browser_ui/1_manage/project/add_project_member_spec.rb
-
 Page::Project::Settings::Members.perform do |project_settings_members_page|
   project_settings_members_page.do_something
 end
 ```
 
 ```ruby
-# qa/specs/features/ee/browser_ui/3_create/merge_request/add_batch_comments_in_merge_request_spec.rb
-
-Resource::MergeRequest.fabricate! do |merge_request_page|
-  merge_request_page.do_something_else
+Page::Project::New.peform do |page|
+  page.do_something
 end
 ```
 

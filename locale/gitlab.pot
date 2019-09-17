@@ -391,6 +391,9 @@ msgstr ""
 msgid "'%{source}' is not a import source"
 msgstr ""
 
+msgid "'%{template_name}' is unknown or invalid"
+msgstr ""
+
 msgid "(%d closed)"
 msgid_plural "(%d closed)"
 msgstr[0] ""
