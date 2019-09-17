@@ -11,5 +11,6 @@ cloud-native-image:
     - CNG_PROJECT_PATH="gitlab-org/build/CNG" BUILD_TRIGGER_TOKEN=$CI_JOB_TOKEN ./scripts/trigger-build cng
   only:
     refs:
-      - tags@gitlab-org/gitlab-foss
-      - tags@gitlab-org/gitlab
+      - tags
+    variables:
+      - $CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org"

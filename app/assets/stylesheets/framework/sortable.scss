@@ -90,3 +90,21 @@
     padding: 0;
   }
 }
+
+.is-dragging {
+  // Important because plugin sets inline CSS
+  opacity: 1 !important;
+
+  * {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    // !important to make sure no style can override this when dragging
+    cursor: grabbing !important;
+  }
+
+  &.no-drop * {
+    cursor: no-drop !important;
+  }
+}

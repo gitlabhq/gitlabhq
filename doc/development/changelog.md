@@ -102,6 +102,13 @@ Its simplest usage is to provide the value for `title`:
 bin/changelog 'Hey DZ, I added a feature to GitLab!'
 ```
 
+If you want to generate a changelog entry for GitLab EE, you will need to pass
+the `--ee` option:
+
+```text
+bin/changelog --ee 'Hey DZ, I added a feature to GitLab!'
+```
+
 At this point the script would ask you to select the category of the change (mapped to the `type` field in the entry):
 
 ```text
@@ -130,9 +137,6 @@ merge_request:
 author:
 type:
 ```
-
-If you're working on the GitLab EE repository, the entry will be added to
-`ee/changelogs/unreleased/` instead.
 
 ### Arguments
 

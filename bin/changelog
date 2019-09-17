@@ -15,7 +15,8 @@ Options = Struct.new(
   :force,
   :merge_request,
   :title,
-  :type
+  :type,
+  :ee
 )
 INVALID_TYPE = -1
 
@@ -83,6 +84,10 @@ class ChangelogOptionParser
 
         opts.on('-t', '--type [string]', String, "The category of the change, valid options are: #{TYPES.map(&:name).join(', ')}") do |value|
           options.type = parse_type(value)
+        end
+
+        opts.on('-e', '--ee', 'Generate a changelog entry for GitLab EE') do |value|
+          options.ee = value
         end
 
         opts.on('-h', '--help', 'Print help message') do
@@ -249,7 +254,7 @@ class ChangelogEntry
   end
 
   def ee?
-    @ee ||= File.exist?(File.expand_path('../CHANGELOG-EE.md', __dir__))
+    options.ee
   end
 
   def branch_name

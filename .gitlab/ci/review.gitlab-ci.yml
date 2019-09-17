@@ -1,21 +1,10 @@
-.review-schedules-only:
-  only:
-    refs:
-      - schedules@gitlab-org/gitlab-foss
-      - schedules@gitlab-org/gitlab
-    kubernetes: active
-    variables:
-      - $REVIEW_APP_CLEANUP
-  except:
-    refs:
-      - tags
-      - /(^docs[\/-].+|.+-docs$)/
-
 .review-base:
   extends:
     - .default-tags
     - .default-retry
-    - .review-only
+    - .default-only
+    - .only-review
+    - .only-code-qa-changes
   image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-charts-build-base
   dependencies: []
   before_script:
@@ -25,6 +14,7 @@
   extends:
     - .default-tags
     - .default-retry
+    - .default-only
   image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-qa-alpine
   services:
     - docker:19.03.0-dind
@@ -39,12 +29,11 @@
 build-qa-image:
   extends:
     - .review-docker
-    - .except-docs
+    - .only-code-qa-changes
   only:
-    refs:
-      - branches@gitlab-org/gitlab-foss
-      - branches@gitlab-org/gitlab
-  stage: test
+    variables:
+      - $CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org"
+  stage: prepare
   script:
     - '[[ ! -d "ee/" ]] || export GITLAB_EDITION="ee"'
     - export QA_IMAGE="${CI_REGISTRY}/${CI_PROJECT_PATH}/gitlab/gitlab-${GITLAB_EDITION}-qa:${CI_COMMIT_REF_SLUG}"
@@ -53,6 +42,9 @@ build-qa-image:
     - time docker push ${QA_IMAGE}
 
 .review-build-cng-base:
+  extends:
+    - .default-only
+    - .only-code-qa-changes
   image: ruby:2.6-alpine
   stage: review-prepare
   before_script:
@@ -66,13 +58,13 @@ build-qa-image:
 review-build-cng:
   extends:
     - .review-build-cng-base
-    - .review-only
+    - .only-review
   needs: ["gitlab:assets:compile pull-cache"]
 
 schedule:review-build-cng:
   extends:
     - .review-build-cng-base
-    - .review-schedules-only
+    - .only-review-schedules
   needs: ["gitlab:assets:compile"]
 
 .review-deploy-base:
@@ -118,7 +110,7 @@ review-deploy:
 schedule:review-deploy:
   extends:
     - .review-deploy-base
-    - .review-schedules-only
+    - .only-review-schedules
   needs: ["schedule:review-build-cng"]
 
 review-stop:
@@ -153,7 +145,8 @@ review-cleanup-failed-deployment:
 .review-qa-base:
   extends:
     - .review-docker
-    - .review-only
+    - .only-review
+    - .only-code-qa-changes
   stage: qa
   variables:
     QA_ARTIFACTS_DIR: "${CI_PROJECT_DIR}/qa"
@@ -200,7 +193,9 @@ review-qa-all:
 parallel-spec-reports:
   extends:
     - .default-tags
-    - .except-docs
+    - .default-only
+    - .only-code-qa-changes
+    - .only-review
   image: ruby:2.6-alpine
   stage: post-test
   dependencies: ["review-qa-all"]
@@ -247,14 +242,14 @@ review-performance:
 schedule:review-performance:
   extends:
     - review-performance
-    - .review-schedules-only
+    - .only-review-schedules
   dependencies: ["schedule:review-deploy"]
 
 schedule:review-cleanup:
   extends:
     - .review-base
-    - .review-schedules-only
-  stage: build
+    - .only-review-schedules
+  stage: prepare
   allow_failure: true
   environment:
     name: review/auto-cleanup
@@ -270,6 +265,7 @@ danger-review:
     - .default-tags
     - .default-retry
     - .default-cache
+    - .default-only
   image: registry.gitlab.com/gitlab-org/gitlab-build-images:danger
   stage: test
   dependencies: []
@@ -279,10 +275,9 @@ danger-review:
   except:
     refs:
       - master
-      - /^\d+-\d+-auto-deploy-\d+$/
-      - /^[\d-]+-stable(-ee)?$/
-      - /^ce-to-ee-.*/
-      - /.*-stable(-ee)?-prepare-.*/
+    variables:
+      - $CI_COMMIT_REF_NAME =~ /^\d+-\d+-auto-deploy-\d+$/
+      - $CI_COMMIT_REF_NAME =~ /^[\d-]+-stable(-ee)?$/
   script:
     - git version
     - node --version

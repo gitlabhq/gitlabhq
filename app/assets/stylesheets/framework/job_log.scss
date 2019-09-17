@@ -1,0 +1,49 @@
+.job-log {
+  font-family: $monospace-font;
+  padding: $gl-padding-8 $input-horizontal-padding;
+  margin: 0 0 $gl-padding-8;
+  font-size: 13px;
+  word-break: break-all;
+  word-wrap: break-word;
+  color: $gl-text-color-inverted;
+  border-radius: $border-radius-small;
+  min-height: 42px;
+  background-color: $builds-trace-bg;
+}
+
+.line {
+  padding: 1px $gl-padding 1px $job-log-line-padding;
+}
+
+.line-number {
+  color: $gl-text-color-inverted;
+  padding: 0 $gl-padding-8;
+  min-width: $job-line-number-width;
+  margin-left: -$job-line-number-width;
+  padding-right: 1em;
+
+  &:hover,
+  &:active,
+  &:visited {
+    text-decoration: underline;
+    color: $gl-text-color-inverted;
+  }
+}
+
+.collapsible-line {
+  &:hover {
+    background-color: rgba($white-light, 0.2);
+  }
+
+  .arrow {
+    margin-left: -$job-arrow-margin;
+  }
+}
+
+.duration {
+  background: $gl-gray-400;
+}
+
+.loader-animation {
+  @include build-loader-animation;
+}

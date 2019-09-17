@@ -46,7 +46,10 @@ export default {
 };
 </script>
 <template>
-  <gl-link :id="lineNumberId" class="line-number" :href="buildLineNumber">{{
-    parsedLineNumber
-  }}</gl-link>
+  <gl-link
+    :id="lineNumberId"
+    class="d-inline-block text-right position-absolute line-number"
+    :href="buildLineNumber"
+    >{{ parsedLineNumber }}</gl-link
+  >
 </template>

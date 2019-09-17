@@ -1,6 +1,7 @@
 import { mount } from '@vue/test-utils';
 import LineHeader from '~/jobs/components/log/line_header.vue';
 import LineNumber from '~/jobs/components/log/line_number.vue';
+import DurationBadge from '~/jobs/components/log/duration_badge.vue';
 
 describe('Job Log Header Line', () => {
   let wrapper;
@@ -79,6 +80,16 @@ describe('Job Log Header Line', () => {
       wrapper.trigger('click');
 
       expect(wrapper.emitted().toggleLine.length).toBe(1);
+    });
+  });
+
+  describe('with duration', () => {
+    beforeEach(() => {
+      createComponent(Object.assign({}, data, { duration: '00:10' }));
+    });
+
+    it('renders the duration badge', () => {
+      expect(wrapper.contains(DurationBadge)).toBe(true);
     });
   });
 });

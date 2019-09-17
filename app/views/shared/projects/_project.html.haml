@@ -60,6 +60,11 @@
 
       .controls.d-flex.flex-sm-column.align-items-center.align-items-sm-end.flex-wrap.flex-shrink-0.text-secondary{ class: css_controls_class }
         .icon-container.d-flex.align-items-center
+          - if pipeline_status && can?(current_user, :read_cross_project) && project.pipeline_status.has_status? && can?(current_user, :read_build, project)
+            - pipeline_path = pipelines_project_commit_path(project.pipeline_status.project, project.pipeline_status.sha, ref: project.pipeline_status.ref)
+            %span.icon-wrapper.pipeline-status
+              = render 'ci/status/icon', status: project.commit.last_pipeline.detailed_status(current_user), tooltip_placement: 'top', path: pipeline_path
+
           - if project.archived
             %span.d-flex.icon-wrapper.badge.badge-warning archived
           - if stars
@@ -86,10 +91,6 @@
                 title: _('Issues'), data: { container: 'body', placement: 'top' } do
               = sprite_icon('issues', size: 14, css_class: 'append-right-4')
               = number_with_delimiter(project.open_issues_count)
-          - if pipeline_status && can?(current_user, :read_cross_project) && project.pipeline_status.has_status? && can?(current_user, :read_build, project)
-            - pipeline_path = pipelines_project_commit_path(project.pipeline_status.project, project.pipeline_status.sha, ref: project.pipeline_status.ref)
-            %span.icon-wrapper.pipeline-status
-              = render 'ci/status/icon', status: project.commit.last_pipeline.detailed_status(current_user), tooltip_placement: 'top', path: pipeline_path
         .updated-note
           %span
             = _('Updated')

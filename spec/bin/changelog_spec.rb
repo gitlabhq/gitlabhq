@@ -69,6 +69,14 @@ describe 'bin/changelog' do
         end
       end
 
+      it 'parses --ee and -e' do
+        %w[--ee -e].each do |flag|
+          options = described_class.parse(%W[foo #{flag} security])
+
+          expect(options.ee).to eq true
+        end
+      end
+
       it 'parses -h' do
         expect do
           expect { described_class.parse(%w[foo -h bar]) }.to output.to_stdout

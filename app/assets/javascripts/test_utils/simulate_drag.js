@@ -2,8 +2,8 @@ function simulateEvent(el, type, options = {}) {
   let event;
   if (!el) return null;
 
-  if (/^mouse/.test(type)) {
-    event = el.ownerDocument.createEvent('MouseEvents');
+  if (/^(pointer|mouse)/.test(type)) {
+    event = el.ownerDocument.createEvent('MouseEvent');
     event.initMouseEvent(
       type,
       true,
@@ -125,7 +125,7 @@ export default function simulateDrag(options) {
   const startTime = new Date().getTime();
   const duration = options.duration || 1000;
 
-  simulateEvent(fromEl, 'mousedown', {
+  simulateEvent(fromEl, 'pointerdown', {
     button: 0,
     clientX: fromRect.cx,
     clientY: fromRect.cy,
@@ -146,7 +146,7 @@ export default function simulateDrag(options) {
     const y = fromRect.cy + (toRect.cy - fromRect.cy) * progress;
     const overEl = fromEl.ownerDocument.elementFromPoint(x, y);
 
-    simulateEvent(overEl, 'mousemove', {
+    simulateEvent(overEl, 'pointermove', {
       clientX: x,
       clientY: y,
     });

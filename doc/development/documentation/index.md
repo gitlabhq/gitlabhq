@@ -152,20 +152,6 @@ disqus_identifier: 'https://docs.gitlab.com/my-old-location/README.html'
 Note: it is necessary to include the file name in the `disqus_identifier` URL,
 even if it's `index.html` or `README.html`.
 
-## Branch naming
-
-If your contribution contains **only** documentation changes, you can speed up
-the CI process by following these branch naming conventions:
-
-| Branch name           | Valid example                |
-|:----------------------|:-----------------------------|
-| Starting with `docs/` | `docs/update-api-issues`     |
-| Starting with `docs-` | `docs-update-api-issues`     |
-| Ending in `-docs`     | `123-update-api-issues-docs` |
-
-If your branch name matches any of the above, it will run only the docs
-tests. If not, the whole application test suite will run (including docs tests).
-
 ## Merge requests for GitLab documentation
 
 Before getting started, make sure you read the introductory section
@@ -173,7 +159,6 @@ Before getting started, make sure you read the introductory section
 [documentation workflow](workflow.md).
 
 - Use the current [merge request description template](https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab/merge_request_templates/Documentation.md)
-- Use the correct [branch name](#branch-naming)
 - Label the MR `Documentation`
 - Assign the correct milestone (see note below)
 
@@ -283,10 +268,6 @@ Several [rspec tests](https://gitlab.com/gitlab-org/gitlab/blob/master/spec/feat
 are run to ensure GitLab documentation renders and works correctly. In particular, that [main docs landing page](../../README.md) will work correctly from `/help`.
 For example, [GitLab.com's `/help`](https://gitlab.com/help).
 
-CAUTION: **Caution:**
-Because the rspec tests only run in a full pipeline, and not a special [docs-only pipeline](#branch-naming), it is possible
-to merge changes that will break `master` from a merge request with a successful docs-only pipeline run.
-
 ## Docs site architecture
 
 See the [Docs site architecture](site_architecture/index.md) page to learn
@@ -309,14 +290,9 @@ The live preview is currently enabled for the following projects:
 - <https://gitlab.com/gitlab-org/gitlab>
 - <https://gitlab.com/gitlab-org/gitlab-runner>
 
-If your branch contains only documentation changes, you can use
-[special branch names](#branch-naming) to avoid long-running pipelines.
-
-For [docs-only changes](#branch-naming), the review app is run automatically.
-For all other branches, you can use the manual `review-docs-deploy-manual` job
-in your merge request. You will need at least Maintainer permissions to be able
-to run it. In the mini pipeline graph, you should see a `>>` icon. Clicking it will
-reveal the `review-docs-deploy-manual` job. Click the play button to start the job.
+If your merge request has docs changes, you can use the manual `review-docs-deploy` job
+to deploy the docs review app for your merge request.
+You will need at least Maintainer permissions to be able to run it.
 
 ![Manual trigger a docs build](img/manual_build_docs.png)
 

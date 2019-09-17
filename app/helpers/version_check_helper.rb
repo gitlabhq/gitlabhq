@@ -19,7 +19,7 @@ module VersionCheckHelper
   end
 
   def source_code_project
-    'gitlab-ce'
+    'gitlab-foss'
   end
 end
 

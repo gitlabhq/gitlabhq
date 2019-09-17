@@ -12,6 +12,12 @@ You can create one with:
 bin/changelog -m %<mr_iid>s "%<mr_title>s"
 ```
 
+If you want to create a changelog entry for GitLab EE, run the following instead:
+
+```
+bin/changelog --ee -m %<mr_iid>s "%<mr_title>s"
+```
+
 Note: Merge requests with %<labels>s do not trigger this check.
 MSG
 

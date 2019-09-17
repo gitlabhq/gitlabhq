@@ -4656,9 +4656,6 @@ msgstr ""
 msgid "Days"
 msgstr ""
 
-msgid "Days to merge"
-msgstr ""
-
 msgid "Debug"
 msgstr ""
 
@@ -5845,6 +5842,9 @@ msgstr ""
 msgid "Epics Roadmap"
 msgstr ""
 
+msgid "Epics and Issues"
+msgstr ""
+
 msgid "Epics let you manage your portfolio of projects more efficiently and with less effort"
 msgstr ""
 
@@ -5894,6 +5894,9 @@ msgid "Epics|Something went wrong while fetching child epics."
 msgstr ""
 
 msgid "Epics|Something went wrong while fetching group epics."
+msgstr ""
+
+msgid "Epics|Something went wrong while ordering item."
 msgstr ""
 
 msgid "Epics|Something went wrong while removing issue from epic."
@@ -11461,6 +11464,9 @@ msgstr ""
 msgid "ProductivityAnalytics|Ascending"
 msgstr ""
 
+msgid "ProductivityAnalytics|Days to merge"
+msgstr ""
+
 msgid "ProductivityAnalytics|Descending"
 msgstr ""
 
@@ -16374,9 +16380,6 @@ msgid "TransferProject|Project with same name or path in target namespace alread
 msgstr ""
 
 msgid "TransferProject|Transfer failed, please contact an admin."
-msgstr ""
-
-msgid "Tree"
 msgstr ""
 
 msgid "Tree view"

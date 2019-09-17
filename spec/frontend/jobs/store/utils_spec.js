@@ -28,6 +28,12 @@ describe('Jobs Store Utils', () => {
         content: [{ text: 'Pulling docker image postgres:9.6.14 ...', style: 'term-fg-l-green' }],
         sections: ['prepare-executor'],
       },
+      {
+        offset: 1005,
+        content: [],
+        sections: ['prepare-executor'],
+        section_duration: '10:00',
+      },
     ];
 
     let result;
@@ -56,6 +62,16 @@ describe('Jobs Store Utils', () => {
         expect(result[1].lines.length).toEqual(2);
         expect(result[1].lines[0].content).toEqual(mockData[2].content);
         expect(result[1].lines[1].content).toEqual(mockData[3].content);
+      });
+    });
+
+    describe('section duration', () => {
+      it('adds the section information to the header section', () => {
+        expect(result[1].section_duration).toEqual(mockData[4].section_duration);
+      });
+
+      it('does not add section duration as a line', () => {
+        expect(result[1].lines.includes(mockData[4])).toEqual(false);
       });
     });
   });

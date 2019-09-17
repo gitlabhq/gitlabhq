@@ -1,10 +1,14 @@
-memory-static:
+.only-code-memory-job-base:
   extends:
     - .default-tags
     - .default-retry
     - .default-cache
+    - .default-only
     - .default-before_script
-    - .except-docs
+    - .only-code-changes
+
+memory-static:
+  extends: .only-code-memory-job-base
   variables:
     SETUP_DB: "false"
   script:
@@ -31,12 +35,8 @@ memory-static:
 # All tests are run without a webserver (directly using Rack::Mock by default).
 memory-on-boot:
   extends:
-    - .default-tags
-    - .default-retry
-    - .default-cache
-    - .default-before_script
+    - .only-code-memory-job-base
     - .use-pg-10
-    - .except-docs-qa
   variables:
     NODE_ENV: "production"
     RAILS_ENV: "production"

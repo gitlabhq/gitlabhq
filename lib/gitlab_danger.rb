@@ -21,7 +21,6 @@ class GitlabDanger
     single_codebase
     gitlab_ui_wg
     ce_ee_vue_templates
-    only_documentation
   ].freeze
 
   MESSAGE_PREFIX = '==>'.freeze

@@ -1,39 +1,236 @@
-include:
-  - template: Code-Quality.gitlab-ci.yml
-  - template: Security/SAST.gitlab-ci.yml
-  - template: Security/Dependency-Scanning.gitlab-ci.yml
-  - template: Security/DAST.gitlab-ci.yml
+# include:
+#   - template: Code-Quality.gitlab-ci.yml
+#   - template: Security/SAST.gitlab-ci.yml
+#   - template: Security/Dependency-Scanning.gitlab-ci.yml
+#   - template: Security/DAST.gitlab-ci.yml
 
-.reports:
+# We need to duplicate this job's definition because it seems it's impossible to
+# override an included `only.refs`.
+# See https://gitlab.com/gitlab-org/gitlab/issues/31371.
+code_quality:
   extends:
     - .default-retry
-    - .except-docs
-
-code_quality:
-  extends: .reports
-
-sast:
-  extends: .reports
+    - .default-only
+    - .only-code-changes
+  stage: test
+  image: docker:stable
+  allow_failure: true
+  services:
+    - docker:stable-dind
   variables:
+    DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: ""
+  script:
+    - |
+      if ! docker info &>/dev/null; then
+        if [ -z "$DOCKER_HOST" -a "$KUBERNETES_PORT" ]; then
+          export DOCKER_HOST='tcp://localhost:2375'
+        fi
+      fi
+    - docker run
+        --env SOURCE_CODE="$PWD"
+        --volume "$PWD":/code
+        --volume /var/run/docker.sock:/var/run/docker.sock
+        "registry.gitlab.com/gitlab-org/security-products/codequality:12-0-stable" /code
+  artifacts:
+    reports:
+      codequality: gl-code-quality-report.json
+    expire_in: 1 week
+  dependencies: []
+  except:
+    variables:
+      - $CODE_QUALITY_DISABLED
+
+# We need to duplicate this job's definition because it seems it's impossible to
+# override an included `only.refs`.
+# See https://gitlab.com/gitlab-org/gitlab/issues/31371.
+sast:
+  extends:
+    - .default-retry
+    - .default-only
+    - .only-code-changes
+  stage: test
+  image: docker:stable
+  variables:
+    DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: ""
     SAST_BRAKEMAN_LEVEL: 2
-    SAST_EXCLUDED_PATHS: qa,spec,doc
+    SAST_EXCLUDED_PATHS: qa,spec,doc,ee/spec
+  allow_failure: true
+  services:
+    - docker:stable-dind
+  script:
+    - export SAST_VERSION=${SP_VERSION:-$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')}
+    - |
+      if ! docker info &>/dev/null; then
+        if [ -z "$DOCKER_HOST" -a "$KUBERNETES_PORT" ]; then
+          export DOCKER_HOST='tcp://localhost:2375'
+        fi
+      fi
+    - | # this is required to avoid undesirable reset of Docker image ENV variables being set on build stage
+      function propagate_env_vars() {
+        CURRENT_ENV=$(printenv)
+
+        for VAR_NAME; do
+          echo $CURRENT_ENV | grep "${VAR_NAME}=" > /dev/null && echo "--env $VAR_NAME "
+        done
+      }
+    - |
+      docker run \
+        $(propagate_env_vars \
+          SAST_BANDIT_EXCLUDED_PATHS \
+          SAST_ANALYZER_IMAGES \
+          SAST_ANALYZER_IMAGE_PREFIX \
+          SAST_ANALYZER_IMAGE_TAG \
+          SAST_DEFAULT_ANALYZERS \
+          SAST_PULL_ANALYZER_IMAGES \
+          SAST_BRAKEMAN_LEVEL \
+          SAST_FLAWFINDER_LEVEL \
+          SAST_GITLEAKS_ENTROPY_LEVEL \
+          SAST_GOSEC_LEVEL \
+          SAST_EXCLUDED_PATHS \
+          SAST_DOCKER_CLIENT_NEGOTIATION_TIMEOUT \
+          SAST_PULL_ANALYZER_IMAGE_TIMEOUT \
+          SAST_RUN_ANALYZER_TIMEOUT \
+          SAST_JAVA_VERSION \
+          ANT_HOME \
+          ANT_PATH \
+          GRADLE_PATH \
+          JAVA_OPTS \
+          JAVA_PATH \
+          JAVA_8_VERSION \
+          JAVA_11_VERSION \
+          MAVEN_CLI_OPTS \
+          MAVEN_PATH \
+          MAVEN_REPO_PATH \
+          SBT_PATH \
+          FAIL_NEVER \
+        ) \
+        --volume "$PWD:/code" \
+        --volume /var/run/docker.sock:/var/run/docker.sock \
+        "registry.gitlab.com/gitlab-org/security-products/sast:$SAST_VERSION" /app/bin/run /code
   artifacts:
     expire_in: 7 days
     paths:
       - gl-sast-report.json
+    reports:
+      sast: gl-sast-report.json
+  dependencies: []
+  only:
+    variables:
+      - $GITLAB_FEATURES =~ /\bsast\b/
+  except:
+    variables:
+      - $SAST_DISABLED
 
+# We need to duplicate this job's definition because it seems it's impossible to
+# override an included `only.refs`.
+# See https://gitlab.com/gitlab-org/gitlab/issues/31371.
 dependency_scanning:
-  extends: .reports
+  extends:
+    - .default-retry
+    - .default-only
+    - .only-code-changes
+  stage: test
+  image: docker:stable
+  variables:
+    DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: ""
+  allow_failure: true
+  services:
+    - docker:stable-dind
+  script:
+    - export DS_VERSION=${SP_VERSION:-$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')}
+    - |
+      if ! docker info &>/dev/null; then
+        if [ -z "$DOCKER_HOST" -a "$KUBERNETES_PORT" ]; then
+          export DOCKER_HOST='tcp://localhost:2375'
+        fi
+      fi
+    - | # this is required to avoid undesirable reset of Docker image ENV variables being set on build stage
+      function propagate_env_vars() {
+        CURRENT_ENV=$(printenv)
 
+        for VAR_NAME; do
+          echo $CURRENT_ENV | grep "${VAR_NAME}=" > /dev/null && echo "--env $VAR_NAME "
+        done
+      }
+    - |
+      docker run \
+        $(propagate_env_vars \
+          DS_ANALYZER_IMAGES \
+          DS_ANALYZER_IMAGE_PREFIX \
+          DS_ANALYZER_IMAGE_TAG \
+          DS_DEFAULT_ANALYZERS \
+          DS_EXCLUDED_PATHS \
+          DEP_SCAN_DISABLE_REMOTE_CHECKS \
+          DS_DOCKER_CLIENT_NEGOTIATION_TIMEOUT \
+          DS_PULL_ANALYZER_IMAGE_TIMEOUT \
+          DS_RUN_ANALYZER_TIMEOUT \
+          DS_PYTHON_VERSION \
+          DS_PIP_DEPENDENCY_PATH \
+          PIP_INDEX_URL \
+          PIP_EXTRA_INDEX_URL \
+        ) \
+        --volume "$PWD:/code" \
+        --volume /var/run/docker.sock:/var/run/docker.sock \
+        "registry.gitlab.com/gitlab-org/security-products/dependency-scanning:$DS_VERSION" /code
+  artifacts:
+    reports:
+      dependency_scanning: gl-dependency-scanning-report.json
+  dependencies: []
+  only:
+    variables:
+      - $GITLAB_FEATURES =~ /\bdependency_scanning\b/
+  except:
+    variables:
+      - $DEPENDENCY_SCANNING_DISABLED
+
+# We need to duplicate this job's definition because it seems it's impossible to
+# override an included `only.refs`.
+# See https://gitlab.com/gitlab-org/gitlab/issues/31371.
 dast:
   extends:
-    - .reports
-    - .review-only
+    - .default-retry
+    - .default-only
+    - .only-code-qa-changes
+    - .only-review
   stage: qa
   dependencies: ["review-deploy"]
   before_script:
     - export DAST_WEBSITE="$(cat review_app_url.txt)"
+  image:
+    name: "registry.gitlab.com/gitlab-org/security-products/dast:$CI_SERVER_VERSION_MAJOR-$CI_SERVER_VERSION_MINOR-stable"
+  variables:
+  # URL to scan:
+  # DAST_WEBSITE: https://example.com/
+  #
+  # Time limit for target availability (scan is attempted even when timeout):
+  # DAST_TARGET_AVAILABILITY_TIMEOUT: 60
+  #
+  # Set these variables to scan with an authenticated user:
+  # DAST_AUTH_URL: https://example.com/sign-in
+  # DAST_USERNAME: john.doe@example.com
+  # DAST_PASSWORD: john-doe-password
+  # DAST_USERNAME_FIELD: session[user] # the name of username field at the sign-in HTML form
+  # DAST_PASSWORD_FIELD: session[password] # the name of password field at the sign-in HTML form
+  # DAST_AUTH_EXCLUDE_URLS: http://example.com/sign-out,http://example.com/sign-out-2 # optional: URLs to skip during the authenticated scan; comma-separated, no spaces in between
+  #
+  # Perform ZAP Full Scan, which includes both passive and active scanning:
+  # DAST_FULL_SCAN_ENABLED: "true"
+  allow_failure: true
+  script:
+    - export DAST_WEBSITE=${DAST_WEBSITE:-$(cat environment_url.txt)}
+    - /analyze -t $DAST_WEBSITE
   artifacts:
     expire_in: 7 days
     paths:
       - gl-dast-report.json
+    reports:
+      dast: gl-dast-report.json
+  only:
+    variables:
+      - $GITLAB_FEATURES =~ /\bdast\b/
+  except:
+    variables:
+      - $DAST_DISABLED
