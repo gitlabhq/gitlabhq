@@ -5,7 +5,7 @@ module RuboCop
     # Cop that blacklists the use of `reload`.
     class ActiveRecordAssociationReload < RuboCop::Cop::Cop
       MSG = 'Use reset instead of reload. ' \
-        'For more details check the https://gitlab.com/gitlab-org/gitlab-ce/issues/60218.'
+        'For more details check the https://gitlab.com/gitlab-org/gitlab-foss/issues/60218.'
 
       def_node_matcher :reload?, <<~PATTERN
         (send _ :reload ...)

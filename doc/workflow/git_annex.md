@@ -229,7 +229,7 @@ push origin
 ```
 
 [annex-upgrade]: https://git-annex.branchable.com/upgrades/
-[deprecate-annex-issue]: https://gitlab.com/gitlab-org/gitlab-ee/issues/1648
+[deprecate-annex-issue]: https://gitlab.com/gitlab-org/gitlab/issues/1648
 [git-annex]: https://git-annex.branchable.com/ "git-annex website"
 [gitlab shell]: https://gitlab.com/gitlab-org/gitlab-shell "GitLab Shell repository"
 [guide]: lfs/migrate_from_git_annex_to_git_lfs.html

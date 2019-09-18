@@ -69,7 +69,7 @@ To follow a consistent workflow every month, documentation changes
 involve the Product Managers, the developer who shipped the feature,
 and the technical writer for the DevOps stage. Each role is described below.
 
-The Documentation items in the GitLab CE/EE [Feature Proposal issue template](https://gitlab.com/gitlab-org/gitlab-ce/raw/master/.gitlab/issue_templates/Feature%20proposal.md)
+The Documentation items in the GitLab CE/EE [Feature Proposal issue template](https://gitlab.com/gitlab-org/gitlab/raw/master/.gitlab/issue_templates/Feature%20proposal.md)
 and default merge request template will assist you with following this process.
 
 ### Product Manager role
@@ -112,7 +112,7 @@ For feature issues requiring documentation, follow the process below unless othe
   in your issue or MR, or write within `#docs` on the GitLab Slack.
 - If you are working on documentation in a separate MR, ensure that if the code is merged by the 17th, the docs are as well, per the [Engineering Workflow](https://about.gitlab.com/handbook/engineering/workflow/). If the docs are not ready, the PM can approve merging the code if the engineer and tech writer commit to get documentation merged by the 21st. Otherwise the feature is not considered complete, and should not be merged.
 - A policy for documenting feature-flagged
-  issues is forthcoming and you are welcome to join the [discussion](https://gitlab.com/gitlab-org/gitlab-ce/issues/56813).
+  issues is forthcoming and you are welcome to join the [discussion](https://gitlab.com/gitlab-org/gitlab-foss/issues/56813).
 
 #### Reviews and merging
 
@@ -131,10 +131,10 @@ All reviewers can help ensure accuracy, clarity, completeness, and adherence to 
        the maintainer can merge the current doc changes (if complete) and create a follow-up doc review issue.
      - The technical writer can also help decide what docs to merge before the freeze and whether to work on further changes in a follow up MR.
      - **To request a pre-merge technical writer review**, assign the writer listed for the applicable [DevOps stage](https://about.gitlab.com/handbook/product/categories/#devops-stages).
-     - **To request a post-merge technical writer review**, [create an issue for one using the Doc Review template](https://gitlab.com/gitlab-org/gitlab-ce/issues/new?issuable_template=Doc%20Review) and link it from the MR that makes the doc change.
+     - **To request a post-merge technical writer review**, [create an issue for one using the Doc Review template](https://gitlab.com/gitlab-org/gitlab-foss/issues/new?issuable_template=Doc%20Review) and link it from the MR that makes the doc change.
   1. **The maintainer** who is assigned to merge the MR, to verify clarity, completeness, and quality, to the best of their ability.
 
-- Upon merging, if a technical writer review has not been performed and there is not yet a linked issue for a follow-up review, the maintainer should [create an issue using the Doc Review template](https://gitlab.com/gitlab-org/gitlab-ce/issues/new?issuable_template=Doc%20Review), link it from the MR, and
+- Upon merging, if a technical writer review has not been performed and there is not yet a linked issue for a follow-up review, the maintainer should [create an issue using the Doc Review template](https://gitlab.com/gitlab-org/gitlab-foss/issues/new?issuable_template=Doc%20Review), link it from the MR, and
   mention the original MR author in the new issue. Alternatively, the maintainer can ask the MR author to create and link this issue before the MR is merged.
 
 - After merging, documentation changes are reviewed by:

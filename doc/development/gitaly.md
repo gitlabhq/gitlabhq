@@ -81,7 +81,7 @@ While Gitaly can handle all Git access, many of GitLab customers still
 run Gitaly atop NFS. The legacy Rugged implementation for Git calls may
 be faster than the Gitaly RPC due to N+1 Gitaly calls and other
 reasons. See [the
-issue](https://gitlab.com/gitlab-org/gitlab-ce/issues/57317) for more
+issue](https://gitlab.com/gitlab-org/gitlab-foss/issues/57317) for more
 details.
 
 Until GitLab has eliminated most of these inefficiencies or the use of

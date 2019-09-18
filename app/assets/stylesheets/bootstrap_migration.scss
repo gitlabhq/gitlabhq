@@ -342,7 +342,7 @@ input[type=color].form-control {
 /*
  Bootstrap 4.1.2 introduced a new default vertical alignment which breaks our icons,
  so we need to reset the vertical alignment to the default value. See:
- - https://gitlab.com/gitlab-org/gitlab-ce/issues/51362
+ - https://gitlab.com/gitlab-org/gitlab-foss/issues/51362
  */
 svg {
   vertical-align: baseline;

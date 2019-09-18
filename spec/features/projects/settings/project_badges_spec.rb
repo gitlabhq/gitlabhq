@@ -8,8 +8,8 @@ describe 'Project Badges' do
   let(:user) { create(:user) }
   let(:group) { create(:group) }
   let(:project) { create(:project, namespace: group) }
-  let(:badge_link_url) { 'https://gitlab.com/gitlab-org/gitlab-ee/commits/master'}
-  let(:badge_image_url) { 'https://gitlab.com/gitlab-org/gitlab-ee/badges/master/build.svg'}
+  let(:badge_link_url) { 'https://gitlab.com/gitlab-org/gitlab/commits/master'}
+  let(:badge_image_url) { 'https://gitlab.com/gitlab-org/gitlab/badges/master/build.svg'}
   let!(:project_badge) { create(:project_badge, project: project) }
   let!(:group_badge) { create(:group_badge, group: group) }
 

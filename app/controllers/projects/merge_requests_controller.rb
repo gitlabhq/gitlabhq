@@ -276,7 +276,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     if auto_merge_requested?
       if merge_request.auto_merge_enabled?
         # TODO: We should have a dedicated endpoint for updating merge params.
-        #       See https://gitlab.com/gitlab-org/gitlab-ce/issues/63130.
+        #       See https://gitlab.com/gitlab-org/gitlab-foss/issues/63130.
         AutoMergeService.new(project, current_user, merge_params).update(merge_request)
       else
         AutoMergeService.new(project, current_user, merge_params)
@@ -328,8 +328,8 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   end
 
   def whitelist_query_limiting
-    # Also see https://gitlab.com/gitlab-org/gitlab-ce/issues/42441
-    Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42438')
+    # Also see https://gitlab.com/gitlab-org/gitlab-foss/issues/42441
+    Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-foss/issues/42438')
   end
 
   def reports_response(report_comparison)

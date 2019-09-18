@@ -4,7 +4,7 @@ type: reference
 
 # JUnit test reports
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/45318) in GitLab 11.2.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/45318) in GitLab 11.2.
 Requires GitLab Runner 11.2 and above.
 
 ## Overview
@@ -177,4 +177,4 @@ Currently, the following tools might not work because their XML formats are unsu
 
 |Case|Tool|Issue|
 |---|---|---|
-|`<testcase>` does not have `classname` attribute|ESlint, sass-lint|<https://gitlab.com/gitlab-org/gitlab-ce/issues/50964>|
+|`<testcase>` does not have `classname` attribute|ESlint, sass-lint|<https://gitlab.com/gitlab-org/gitlab-foss/issues/50964>|

@@ -5,9 +5,20 @@
 CAUTION: **Caution:**
 Serverless is currently in [alpha](https://about.gitlab.com/handbook/product/#alpha).
 
-Run serverless workloads on Kubernetes using [Knative](https://cloud.google.com/knative/).
-
 ## Overview
+
+Serverless architectures offer Operators and Developers the ability write highly scalable applications without provisioning a single server.
+
+Gitlab supports several ways deploy Serverless applications in both Kubernetes Environments and also major cloud FAAS environments.
+
+Currently we support:
+
+- [Knative](#knative): Build Knative applications with Knative and gitlabktl on GKE
+- [AWS Lambda](aws.md): Create serverless applications via the Serverless Framework and gitlab-ci
+
+## Knative
+
+Run serverless workloads on Kubernetes using [Knative](https://cloud.google.com/knative/).
 
 Knative extends Kubernetes to provide a set of middleware components that are useful to build modern, source-centric, container-based applications. Knative brings some significant benefits out of the box through its main components:
 
@@ -84,7 +95,7 @@ on a given project but not both. The current implementation makes use of a `serv
 
 ## Using an existing installation of Knative
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/58941) in GitLab 12.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/58941) in GitLab 12.0.
 
 NOTE: **Note:**
 The "invocations" monitoring feature of GitLab serverless will not work when
@@ -102,7 +113,7 @@ You must do the following:
 1. Ensure GitLab can manage Knative:
    - For a non-GitLab managed cluster, ensure that the service account for the token
      provided can manage resources in the `serving.knative.dev` API group.
-   - For a GitLab managed cluster, if you added the cluster in [GitLab 12.1 or later](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/30235),
+   - For a GitLab managed cluster, if you added the cluster in [GitLab 12.1 or later](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/30235),
      then GitLab will already have the required access and you can proceed to the next step.
 
      Otherwise, you need to manually grant GitLab's service account the ability to manage

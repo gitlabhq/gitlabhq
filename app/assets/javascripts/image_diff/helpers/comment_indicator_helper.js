@@ -1,3 +1,5 @@
+import { spriteIcon } from '~/lib/utils/common_utils';
+
 export function addCommentIndicator(containerEl, { x, y }) {
   const buttonEl = document.createElement('button');
   buttonEl.classList.add('btn-transparent');
@@ -6,7 +8,7 @@ export function addCommentIndicator(containerEl, { x, y }) {
   buttonEl.style.left = `${x}px`;
   buttonEl.style.top = `${y}px`;
 
-  buttonEl.innerHTML = gl.utils.spriteIcon('image-comment-dark');
+  buttonEl.innerHTML = spriteIcon('image-comment-dark');
 
   containerEl.appendChild(buttonEl);
 }

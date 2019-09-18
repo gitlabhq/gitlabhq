@@ -80,7 +80,7 @@ You can improve the existing built-in templates or contribute new ones in the
 
 #### Custom project templates **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/6860) in
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/6860) in
 [GitLab Premium](https://about.gitlab.com/pricing) 11.2.
 
 Creating new projects based on custom project templates is a convenient option to
@@ -101,7 +101,7 @@ To use a custom project template on the **New project** page:
 
 ## Push to create a new project
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/26388) in GitLab 10.5.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/26388) in GitLab 10.5.
 
 When you create a new repository locally, instead of going to GitLab to manually
 create a new project and then [clone the repo](start-using-git.md#clone-a-repository)

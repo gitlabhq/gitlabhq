@@ -4,7 +4,7 @@ type: reference
 
 # Interactive Web Terminals
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/50144) in GitLab 11.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/50144) in GitLab 11.3.
 
 Interactive web terminals give the user access to a terminal in GitLab for
 running one-off commands for their CI pipeline. Since this is giving the user
@@ -15,7 +15,7 @@ taken to protect the users.
 NOTE: **Note:**
 [Shared runners on GitLab.com](../quick_start/README.md#shared-runners) do not
 provide an interactive web terminal. Follow [this
-issue](https://gitlab.com/gitlab-org/gitlab-ce/issues/52611) for progress on
+issue](https://gitlab.com/gitlab-org/gitlab-foss/issues/52611) for progress on
 adding support. For groups and projects hosted on GitLab.com, interactive web
 terminals are available when using your own group or project runner.
 

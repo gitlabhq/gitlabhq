@@ -1081,4 +1081,4 @@ Example response:
 ]
 ```
 
-[ce-41763]: https://gitlab.com/gitlab-org/gitlab-ce/issues/41763
+[ce-41763]: https://gitlab.com/gitlab-org/gitlab-foss/issues/41763

@@ -26,10 +26,8 @@ module Releases
       Ability.allowed?(current_user, :update_release, release)
     end
 
-    # rubocop: disable CodeReuse/ActiveRecord
     def empty_params?
       params.except(:tag).empty?
     end
-    # rubocop: enable CodeReuse/ActiveRecord
   end
 end

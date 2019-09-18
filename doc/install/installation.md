@@ -21,7 +21,7 @@ they changed the location of directories or run services as the wrong user.
 
 If you find a bug/error in this guide, **submit a merge request**
 following the
-[contributing guide](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md).
+[contributing guide](https://gitlab.com/gitlab-org/gitlab/blob/master/CONTRIBUTING.md).
 
 ## Consider the Omnibus package installation
 
@@ -37,7 +37,7 @@ can't be terminated and its memory usage will grow over time.
 
 ## Select version to install
 
-Make sure you view [this installation guide](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/install/installation.md) from the branch (version) of GitLab you would like to install (e.g., `11-7-stable`).
+Make sure you view [this installation guide](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/install/installation.md) from the branch (version) of GitLab you would like to install (e.g., `11-7-stable`).
 You can select the branch in the version dropdown in the top left corner of GitLab (below the menu bar).
 
 If the highest number stable branch is unclear, check the [GitLab blog](https://about.gitlab.com/blog/) for installation guide links by version.
@@ -190,7 +190,7 @@ needs to be installed.
 sudo apt-get install -y graphicsmagick
 ```
 
-**Note:** In order to receive mail notifications, make sure to install a mail server. By default, Debian is shipped with exim4 but this [has problems](https://gitlab.com/gitlab-org/gitlab-ce/issues/12754) while Ubuntu does not ship with one. The recommended mail server is postfix and you can install it with:
+**Note:** In order to receive mail notifications, make sure to install a mail server. By default, Debian is shipped with exim4 but this [has problems](https://gitlab.com/gitlab-org/gitlab-foss/issues/12754) while Ubuntu does not ship with one. The recommended mail server is postfix and you can install it with:
 
 ```sh
 sudo apt-get install -y postfix
@@ -405,7 +405,7 @@ cd /home/git
 
 ```sh
 # Clone GitLab repository
-sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b X-Y-stable gitlab
+sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-foss.git -b X-Y-stable gitlab
 ```
 
 Make sure to replace `X-Y-stable` with the stable branch that matches the
@@ -606,7 +606,7 @@ You will then need to update `gitlab.yml`'s `production -> elasticsearch -> inde
 
 ### Install GitLab Pages
 
-GitLab Pages uses [GNU Make](https://www.gnu.org/software/make/). This step is optional and only needed if you wish to host static sites from within GitLab. The following commands will install GitLab Pages in `/home/git/gitlab-pages`. For additional setup steps, consult the [administration guide](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/administration/pages/source.md) for your version of GitLab as the GitLab Pages daemon can be run several different ways.
+GitLab Pages uses [GNU Make](https://www.gnu.org/software/make/). This step is optional and only needed if you wish to host static sites from within GitLab. The following commands will install GitLab Pages in `/home/git/gitlab-pages`. For additional setup steps, consult the [administration guide](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/administration/pages/source.md) for your version of GitLab as the GitLab Pages daemon can be run several different ways.
 
 ```sh
 cd /home/git

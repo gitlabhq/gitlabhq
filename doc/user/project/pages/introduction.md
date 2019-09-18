@@ -69,7 +69,7 @@ don't have to create and edit HTML files manually. For example, Jekyll has the
 
 ## GitLab Pages Access Control **(CORE ONLY)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/33422) in GitLab 11.5.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/33422) in GitLab 11.5.
 
 NOTE: **Note:**
 GitLab Pages access control is not activated on GitLab.com. You can check its
@@ -335,7 +335,7 @@ For a list of known issues, visit GitLab's [public issue tracker].
 [staticgen]: https://www.staticgen.com/
 [pages-jekyll]: https://gitlab.com/pages/jekyll
 [metarefresh]: https://en.wikipedia.org/wiki/Meta_refresh
-[public issue tracker]: https://gitlab.com/gitlab-org/gitlab-ce/issues?label_name=pages
+[public issue tracker]: https://gitlab.com/gitlab-org/gitlab-foss/issues?label_name=pages
 [quick start guide]: ../../../ci/quick_start/README.md
 [pages-index-guide]: index.md
 [pages-quick]: getting_started_part_one.md

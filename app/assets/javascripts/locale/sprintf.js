@@ -9,7 +9,7 @@ import _ from 'underscore';
   @returns {String} the text with parameters replaces (e.g. '5 users use us')
 
   @see https://ruby-doc.org/core-2.3.3/Kernel.html#method-i-sprintf
-  @see https://gitlab.com/gitlab-org/gitlab-ce/issues/37992
+  @see https://gitlab.com/gitlab-org/gitlab-foss/issues/37992
 */
 export default (input, parameters, escapeParameters = true) => {
   let output = input;

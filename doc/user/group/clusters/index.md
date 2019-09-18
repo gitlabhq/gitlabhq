@@ -4,7 +4,7 @@ type: reference
 
 # Group-level Kubernetes clusters
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/34758) in GitLab 11.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/34758) in GitLab 11.6.
 
 ## Overview
 
@@ -29,9 +29,9 @@ in the project namespace.
 
 NOTE: **Note:**
 RBAC support was introduced in
-[GitLab 11.4](https://gitlab.com/gitlab-org/gitlab-ce/issues/29398), and
+[GitLab 11.4](https://gitlab.com/gitlab-org/gitlab-foss/issues/29398), and
 Project namespace restriction was introduced in
-[GitLab 11.5](https://gitlab.com/gitlab-org/gitlab-ce/issues/51716).
+[GitLab 11.5](https://gitlab.com/gitlab-org/gitlab-foss/issues/51716).
 
 ## Cluster precedence
 
@@ -53,8 +53,8 @@ differentiate the new cluster from the rest.
 
 ## GitLab-managed clusters
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/22011) in GitLab 11.5.
-> Became [optional](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/26565) in GitLab 11.11.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/22011) in GitLab 11.5.
+> Became [optional](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/26565) in GitLab 11.11.
 
 You can choose to allow GitLab to manage your cluster for you. If your cluster is
 managed by GitLab, resources for your projects will be automatically created. See the
@@ -72,7 +72,7 @@ the resources required to run these even if you have chosen to manage your own c
 
 ## Base domain
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/24580) in GitLab 11.8.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/24580) in GitLab 11.8.
 
 Domains at the cluster level permit support for multiple domains
 per [multiple Kubernetes clusters](#multiple-kubernetes-clusters-premium). When specifying a domain,
@@ -136,6 +136,10 @@ The result will then be:
 - The Project cluster will be used for the `test` job.
 - The Staging cluster will be used for the `deploy to staging` job.
 - The Production cluster will be used for the `deploy to production` job.
+
+## Cluster environments **(PREMIUM)**
+
+Please see the documentation for [cluster environments](../../clusters/environments.md).
 
 ## Security of Runners
 

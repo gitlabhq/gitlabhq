@@ -45,7 +45,6 @@ export default {
   computed: {
     ...mapState({
       projectPath: state => state.diffs.projectPath,
-      endpoint: state => state.diffs.endpoint,
     }),
     ...mapGetters('diffs', ['isInlineView', 'isParallelView']),
     ...mapGetters('diffs', ['getCommentFormForDiffFile']),

@@ -23,7 +23,7 @@ describe('Commit component', () => {
         ref_url: 'http://localhost/namespace2/gitlabhq/tree/master',
       },
       commitUrl:
-        'https://gitlab.com/gitlab-org/gitlab-ce/commit/b7836eddf62d663c665769e1b0960197fd215067',
+        'https://gitlab.com/gitlab-org/gitlab-foss/commit/b7836eddf62d663c665769e1b0960197fd215067',
       shortSha: 'b7836edd',
       title: 'Commit message',
       author: {
@@ -46,7 +46,7 @@ describe('Commit component', () => {
           ref_url: 'http://localhost/namespace2/gitlabhq/tree/master',
         },
         commitUrl:
-          'https://gitlab.com/gitlab-org/gitlab-ce/commit/b7836eddf62d663c665769e1b0960197fd215067',
+          'https://gitlab.com/gitlab-org/gitlab-foss/commit/b7836eddf62d663c665769e1b0960197fd215067',
         shortSha: 'b7836edd',
         title: 'Commit message',
         author: {
@@ -130,7 +130,7 @@ describe('Commit component', () => {
           ref_url: 'http://localhost/namespace2/gitlabhq/tree/master',
         },
         commitUrl:
-          'https://gitlab.com/gitlab-org/gitlab-ce/commit/b7836eddf62d663c665769e1b0960197fd215067',
+          'https://gitlab.com/gitlab-org/gitlab-foss/commit/b7836eddf62d663c665769e1b0960197fd215067',
         shortSha: 'b7836edd',
         title: null,
         author: {},
@@ -153,7 +153,7 @@ describe('Commit component', () => {
           ref_url: 'http://localhost/namespace2/gitlabhq/tree/master',
         },
         commitUrl:
-          'https://gitlab.com/gitlab-org/gitlab-ce/commit/b7836eddf62d663c665769e1b0960197fd215067',
+          'https://gitlab.com/gitlab-org/gitlab-foss/commit/b7836eddf62d663c665769e1b0960197fd215067',
         shortSha: 'b7836edd',
         title: null,
         author: {},
@@ -181,7 +181,7 @@ describe('Commit component', () => {
           ref_url: 'http://localhost/namespace2/gitlabhq/tree/master',
         },
         commitUrl:
-          'https://gitlab.com/gitlab-org/gitlab-ce/commit/b7836eddf62d663c665769e1b0960197fd215067',
+          'https://gitlab.com/gitlab-org/gitlab-foss/commit/b7836eddf62d663c665769e1b0960197fd215067',
         mergeRequestRef: {
           iid: 1234,
           path: 'https://example.com/path/to/mr',
@@ -214,7 +214,7 @@ describe('Commit component', () => {
           ref_url: 'http://localhost/namespace2/gitlabhq/tree/master',
         },
         commitUrl:
-          'https://gitlab.com/gitlab-org/gitlab-ce/commit/b7836eddf62d663c665769e1b0960197fd215067',
+          'https://gitlab.com/gitlab-org/gitlab-foss/commit/b7836eddf62d663c665769e1b0960197fd215067',
         mergeRequestRef: {
           iid: 1234,
           path: '/path/to/mr',

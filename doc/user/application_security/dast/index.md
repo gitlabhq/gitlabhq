@@ -4,7 +4,7 @@ type: reference, howto
 
 # Dynamic Application Security Testing (DAST) **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/4348)
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/4348)
 in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.4.
 
 NOTE: **4 of the top 6 attacks were application based.**
@@ -64,7 +64,7 @@ To run a DAST job, you need GitLab Runner with the
 
 For GitLab 11.9 and later, to enable DAST, you must
 [include](../../../ci/yaml/README.md#includetemplate) the
-[`DAST.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/lib/gitlab/ci/templates/Security/DAST.gitlab-ci.yml)
+[`DAST.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/DAST.gitlab-ci.yml)
 that's provided as a part of your GitLab installation.
 For GitLab versions earlier than 11.9, you can copy and use the job as defined
 in that template.

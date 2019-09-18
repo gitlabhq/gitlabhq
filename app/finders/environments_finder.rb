@@ -51,7 +51,7 @@ class EnvironmentsFinder
   # efficient way to get relevant environment entries.
   # Currently, `#execute` method has a serious technical debt and
   # we will likely rework on it in the future.
-  # See more https://gitlab.com/gitlab-org/gitlab-ce/issues/63381
+  # See more https://gitlab.com/gitlab-org/gitlab-foss/issues/63381
   def find
     environments = project.environments
     environments = by_name(environments)

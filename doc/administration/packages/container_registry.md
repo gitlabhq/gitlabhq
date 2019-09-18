@@ -1,6 +1,6 @@
 # GitLab Container Registry administration
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/4040) in GitLab 8.8.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/4040) in GitLab 8.8.
 > - Container Registry manifest `v1` support was added in GitLab 8.9 to support
 >   Docker versions earlier than 1.10.
 
@@ -37,7 +37,7 @@ If you have installed GitLab from source:
 1. After the installation is complete, you will have to configure the Registry's
    settings in `gitlab.yml` in order to enable it.
 1. Use the sample NGINX configuration file that is found under
-   [`lib/support/nginx/registry-ssl`](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/lib/support/nginx/registry-ssl) and edit it to match the
+   [`lib/support/nginx/registry-ssl`](https://gitlab.com/gitlab-org/gitlab-foss/blob/master/lib/support/nginx/registry-ssl) and edit it to match the
    `host`, `port` and TLS certs paths.
 
 The contents of `gitlab.yml` are:
@@ -615,7 +615,7 @@ mounting the docker-daemon and setting `privileged = false` in the Runner's
     volumes = ["/var/run/docker.sock:/var/run/docker.sock", "/cache"]
 ```
 
-Additional information about this: [issue 18239](https://gitlab.com/gitlab-org/gitlab-ce/issues/18239).
+Additional information about this: [issue 18239](https://gitlab.com/gitlab-org/gitlab-foss/issues/18239).
 
 ### AWS S3 with the GitLab registry error when pushing large images
 

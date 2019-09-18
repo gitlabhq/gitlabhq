@@ -1,5 +1,5 @@
 -# WAIT! Before adding more items to the nav bar, please see
--# https://gitlab.com/gitlab-org/gitlab-ce/issues/49713 for more information.
+-# https://gitlab.com/gitlab-org/gitlab-foss/issues/49713 for more information.
 %ul.list-unstyled.navbar-sub-nav
   - if dashboard_nav_link?(:projects)
     = nav_link(path: ['root#index', 'projects#trending', 'projects#starred', 'dashboard/projects#index'], html_options: { id: 'nav-projects-dropdown', class: "home dropdown header-projects qa-projects-dropdown", data: { track_label: "projects_dropdown", track_event: "click_dropdown", track_value: "" } }) do

@@ -4,7 +4,7 @@ type: reference
 
 # Issues Analytics **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/7478) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.5.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/7478) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.5.
 
 Issues Analytics is a bar graph which illustrates the number of issues created each month.
 The default timespan is 13 months, which includes the current month, and the 12 months

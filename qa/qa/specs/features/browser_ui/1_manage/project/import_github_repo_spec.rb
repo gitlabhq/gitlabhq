@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  # https://gitlab.com/gitlab-org/gitlab-ce/issues/58158
+  # https://gitlab.com/gitlab-org/gitlab-foss/issues/58158
   context 'Manage', :github, :quarantine do
     describe 'Project import from GitHub' do
       let(:imported_project) do
@@ -98,12 +98,12 @@ module QA
       end
 
       def verify_labels_import
-        # TODO: Waiting on https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/19228
+        # TODO: Waiting on https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/19228
         # to build upon it.
       end
 
       def verify_milestones_import
-        # TODO: Waiting on https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/18727
+        # TODO: Waiting on https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/18727
         # to build upon it.
       end
 

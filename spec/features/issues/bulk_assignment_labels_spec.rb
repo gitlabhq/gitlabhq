@@ -306,7 +306,7 @@ describe 'Issues > Labels bulk assignment' do
       end
     end
 
-    # Special case https://gitlab.com/gitlab-org/gitlab-ce/issues/24877
+    # Special case https://gitlab.com/gitlab-org/gitlab-foss/issues/24877
     context 'unmarking common label' do
       before do
         issue1.labels << bug

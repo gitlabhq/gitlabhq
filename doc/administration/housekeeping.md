@@ -33,6 +33,6 @@ You can find this option under your project's **Settings > General > Advanced**.
 
 ![Housekeeping settings](img/housekeeping_settings.png)
 
-[ce-2371]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/2371 "Housekeeping merge request"
+[ce-2371]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/2371 "Housekeeping merge request"
 [man-gc]: https://www.kernel.org/pub/software/scm/git/docs/git-gc.html "git gc man page"
 [man-repack]: https://www.kernel.org/pub/software/scm/git/docs/git-repack.html

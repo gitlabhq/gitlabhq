@@ -102,7 +102,7 @@ module EmailsHelper
       end
     when String
       # Technically speaking this should be Commit but per
-      # https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/15610#note_163812339
+      # https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/15610#note_163812339
       # we can't deserialize Commit without custom serializer for ActiveJob
       return "" unless Ability.allowed?(@recipient, :download_code, @project)
 

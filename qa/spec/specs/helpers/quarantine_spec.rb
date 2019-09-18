@@ -36,7 +36,7 @@ RSpec.configure do |c|
       # that is removed when the RSpec configuration is sandboxed.
       # If this needs to be changed (e.g., to load other libraries as well), see
       # this discussion for alternative solutions:
-      # https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/25223#note_143392053
+      # https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/25223#note_143392053
       load 'airborne.rb'
 
       ex.run

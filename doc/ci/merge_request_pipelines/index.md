@@ -5,7 +5,7 @@ last_update: 2019-07-03
 
 # Pipelines for Merge Requests
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/15310) in GitLab 11.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/15310) in GitLab 11.6.
 
 Usually, when you create a new merge request, a pipeline runs with the
 new change and checks if it's qualified to be merged into a target branch. This
@@ -24,7 +24,7 @@ Pipelines for merge requests have the following requirements and limitations:
 
 - As of GitLab 11.10, pipelines for merge requests require GitLab Runner 11.9
   or higher due to the
-  [recent refspecs changes](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/25504).
+  [recent refspecs changes](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/25504).
 - Pipelines for merge requests are incompatible with
   [CI/CD for external repositories](../ci_cd_for_external_repos/index.md).
 
@@ -158,7 +158,7 @@ External users could steal secret variables from the parent project by modifying
 
 We're discussing a secure solution of running pipelines for merge requests
 that submitted from forked projects,
-see [the issue about the permission extension](https://gitlab.com/gitlab-org/gitlab-ce/issues/23902).
+see [the issue about the permission extension](https://gitlab.com/gitlab-org/gitlab-foss/issues/23902).
 
 ## Additional predefined variables
 

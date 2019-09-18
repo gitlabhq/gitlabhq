@@ -77,11 +77,11 @@ Marked stuck import jobs as failed. JIDs: xyz
 
 | Problem | Possible solutions |
 | -------- | -------- |
-| [Slow JSON](https://gitlab.com/gitlab-org/gitlab-ce/issues/54084) loading/dumping models from the database | [split the worker](https://gitlab.com/gitlab-org/gitlab-ce/issues/54085) |
+| [Slow JSON](https://gitlab.com/gitlab-org/gitlab-foss/issues/54084) loading/dumping models from the database | [split the worker](https://gitlab.com/gitlab-org/gitlab-foss/issues/54085) |
 | | Batch export
 | | Optimize SQL
 | | Move away from `ActiveRecord` callbacks (difficult)
-| High memory usage (see also some [analysis](https://gitlab.com/gitlab-org/gitlab-ce/issues/35389) | DB Commit sweet spot that uses less memory |
+| High memory usage (see also some [analysis](https://gitlab.com/gitlab-org/gitlab-foss/issues/35389) | DB Commit sweet spot that uses less memory |
 | | [Netflix Fast JSON API](https://github.com/Netflix/fast_jsonapi) may help |
 | | Batch reading/writing to disk and any SQL
 
@@ -96,7 +96,7 @@ importing big projects, using a foreground import:
 ## Security
 
 The Import/Export feature is constantly updated (adding new things to export), however
-the code hasn't been refactored in a long time. We should perform a [code audit](https://gitlab.com/gitlab-org/gitlab-ce/issues/42135)
+the code hasn't been refactored in a long time. We should perform a [code audit](https://gitlab.com/gitlab-org/gitlab-foss/issues/42135)
 to make sure its dynamic nature does not increase the number of security concerns.
 
 ### Security in the code

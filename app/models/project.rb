@@ -784,7 +784,7 @@ class Project < ApplicationRecord
       if forked?
         RepositoryForkWorker.perform_async(id)
       elsif gitlab_project_import?
-        # Do not retry on Import/Export until https://gitlab.com/gitlab-org/gitlab-ce/issues/26189 is solved.
+        # Do not retry on Import/Export until https://gitlab.com/gitlab-org/gitlab-foss/issues/26189 is solved.
         RepositoryImportWorker.set(retry: false).perform_async(self.id)
       else
         RepositoryImportWorker.perform_async(self.id)
@@ -1316,7 +1316,7 @@ class Project < ApplicationRecord
       result = self
 
       # TODO: Make this go to the fork_network root immeadiatly
-      # dependant on the discussion in: https://gitlab.com/gitlab-org/gitlab-ce/issues/39769
+      # dependant on the discussion in: https://gitlab.com/gitlab-org/gitlab-foss/issues/39769
       result = result.fork_source while result&.forked?
 
       result || self
@@ -1328,7 +1328,7 @@ class Project < ApplicationRecord
   # network, or it is the base of the fork network.
   #
   # TODO: refactor this to get the correct lfs objects when implementing
-  #       https://gitlab.com/gitlab-org/gitlab-ce/issues/39769
+  #       https://gitlab.com/gitlab-org/gitlab-foss/issues/39769
   def all_lfs_objects
     lfs_storage_project.lfs_objects
   end
@@ -2329,7 +2329,7 @@ class Project < ApplicationRecord
     Gitlab::SafeRequestStore.fetch("project-#{id}:branch-#{branch_name}:user-#{user.id}:branch_allows_collaboration") do
       next false if empty_repo?
 
-      # Issue for N+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/49322
+      # Issue for N+1: https://gitlab.com/gitlab-org/gitlab-foss/issues/49322
       Gitlab::GitalyClient.allow_n_plus_1_calls do
         merge_requests_allowing_collaboration(branch_name).any? do |merge_request|
           merge_request.can_be_merged_by?(user)

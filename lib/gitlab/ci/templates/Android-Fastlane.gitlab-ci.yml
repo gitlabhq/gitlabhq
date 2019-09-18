@@ -37,7 +37,7 @@ ensureContainer:
     - "mkdir -p ~/.docker && echo '{\"experimental\": \"enabled\"}' > ~/.docker/config.json"
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     # Skip update container `script` if the container already exists
-    # via https://gitlab.com/gitlab-org/gitlab-ce/issues/26866#note_97609397 -> https://stackoverflow.com/a/52077071/796832
+    # via https://gitlab.com/gitlab-org/gitlab-foss/issues/26866#note_97609397 -> https://stackoverflow.com/a/52077071/796832
     - docker manifest inspect $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG > /dev/null && exit || true
 
 

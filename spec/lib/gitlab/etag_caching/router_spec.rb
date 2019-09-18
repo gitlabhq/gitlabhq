@@ -92,6 +92,15 @@ describe Gitlab::EtagCaching::Router do
     expect(result).to be_blank
   end
 
+  it 'matches the cluster environments path' do
+    result = described_class.match(
+      '/my-group/my-project/-/clusters/47/environments'
+    )
+
+    expect(result).to be_present
+    expect(result.name).to eq 'cluster_environments'
+  end
+
   it 'matches the environments path' do
     result = described_class.match(
       '/my-group/my-project/environments.json'

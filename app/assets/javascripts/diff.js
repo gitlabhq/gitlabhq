@@ -5,7 +5,7 @@ import { __ } from '~/locale';
 import { getLocationHash } from './lib/utils/url_utility';
 import FilesCommentButton from './files_comment_button';
 import SingleFileDiff from './single_file_diff';
-import imageDiffHelper from './image_diff/helpers/index';
+import initImageDiffHelper from './image_diff/helpers/init_image_diff';
 
 const UNFOLD_COUNT = 20;
 let isBound = false;
@@ -28,7 +28,7 @@ export default class Diff {
       .first()
       .get(0);
     const canCreateNote = firstFile && firstFile.hasAttribute('data-can-create-note');
-    $diffFile.each((index, file) => imageDiffHelper.initImageDiff(file, canCreateNote));
+    $diffFile.each((index, file) => initImageDiffHelper.initImageDiff(file, canCreateNote));
 
     if (!isBound) {
       $(document)

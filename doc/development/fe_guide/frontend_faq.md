@@ -17,6 +17,8 @@
 
 ### How do I find the Rails route for a page?
 
+#### Check the 'page' data attribute
+
 The easiest way is to type the following in the browser while on the page in
 question:
 
@@ -24,7 +26,16 @@ question:
 document.body.dataset.page
 ```
 
-Find here the [source code setting the attribute](https://gitlab.com/gitlab-org/gitlab-ce/blob/cc5095edfce2b4d4083a4fb1cdc7c0a1898b9921/app/views/layouts/application.html.haml#L4).
+Find here the [source code setting the attribute](https://gitlab.com/gitlab-org/gitlab-foss/blob/cc5095edfce2b4d4083a4fb1cdc7c0a1898b9921/app/views/layouts/application.html.haml#L4).
+
+#### Rails routes
+
+The `rake routes` command can be used to list all the routes available in the application, piping the output into `grep`, we can perform a search through the list of available routes.
+The output includes the request types available, route parameters and the relevant controller.
+
+```sh
+bundle exec rake routes | grep "issues"
+```
 
 ### `modal_copy_button` vs `clipboard_button`
 

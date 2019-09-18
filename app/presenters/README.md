@@ -24,7 +24,7 @@ Presenters should be used for:
 
 - Data and logic methods that can be pulled & combined into single methods from
   view. This can include loops extracted from views too. A good example is
-  https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7073/diffs.
+  https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/7073/diffs.
 - Data and logic methods that can be pulled from models.
 - Simple text output methods: it's ok if the method returns a string, but not a
   whole DOM element for which we'd need HAML, a view context, helpers etc.

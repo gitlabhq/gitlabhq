@@ -27,7 +27,7 @@ module Namespaces
     #
     # The migration and specs fails since NamespaceAggregationSchedule table
     # does not exist at that point.
-    # https://gitlab.com/gitlab-org/gitlab-ce/issues/50712
+    # https://gitlab.com/gitlab-org/gitlab-foss/issues/50712
     def aggregation_schedules_table_exists?
       return true unless Rails.env.test?
 

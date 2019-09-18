@@ -142,7 +142,7 @@ describe PipelineSerializer do
       before do
         # Since RequestStore.active? is true we have to allow the
         # gitaly calls in this block
-        # Issue: https://gitlab.com/gitlab-org/gitlab-ce/issues/37772
+        # Issue: https://gitlab.com/gitlab-org/gitlab-foss/issues/37772
         Gitlab::GitalyClient.allow_n_plus_1_calls do
           Ci::Pipeline::COMPLETED_STATUSES.each do |status|
             create_pipeline(status)
@@ -176,7 +176,7 @@ describe PipelineSerializer do
           # For each ref there is a permission check if maintainer can update
           # pipeline. With the same ref this check is cached but if refs are
           # different then there is an extra query per ref
-          # https://gitlab.com/gitlab-org/gitlab-ce/issues/46368
+          # https://gitlab.com/gitlab-org/gitlab-foss/issues/46368
           expected_queries = Gitlab.ee? ? 44 : 38
           expect(recorded.count).to be_within(2).of(expected_queries)
           expect(recorded.cached_count).to eq(0)

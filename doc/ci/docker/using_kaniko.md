@@ -4,7 +4,7 @@ type: howto
 
 # Building images with kaniko and GitLab CI/CD
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/45512) in GitLab 11.2.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/45512) in GitLab 11.2.
 Requires GitLab Runner 11.2 and above.
 
 [kaniko](https://github.com/GoogleContainerTools/kaniko) is a tool to build

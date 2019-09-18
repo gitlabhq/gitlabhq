@@ -2040,55 +2040,6 @@ describe Repository do
     end
   end
 
-  describe "#keep_around" do
-    it "does not fail if we attempt to reference bad commit" do
-      expect(repository.kept_around?('abc1234')).to be_falsey
-    end
-
-    it "stores a reference to the specified commit sha so it isn't garbage collected" do
-      repository.keep_around(sample_commit.id)
-
-      expect(repository.kept_around?(sample_commit.id)).to be_truthy
-    end
-
-    it "attempting to call keep_around on truncated ref does not fail" do
-      repository.keep_around(sample_commit.id)
-      ref = repository.send(:keep_around_ref_name, sample_commit.id)
-
-      path = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-        File.join(repository.path, ref)
-      end
-      # Corrupt the reference
-      File.truncate(path, 0)
-
-      expect(repository.kept_around?(sample_commit.id)).to be_falsey
-
-      repository.keep_around(sample_commit.id)
-
-      expect(repository.kept_around?(sample_commit.id)).to be_falsey
-
-      File.delete(path)
-    end
-
-    context 'for multiple SHAs' do
-      it 'skips non-existent SHAs' do
-        repository.keep_around('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', sample_commit.id)
-
-        expect(repository.kept_around?(sample_commit.id)).to be_truthy
-      end
-
-      it 'skips already-kept-around SHAs' do
-        repository.keep_around(sample_commit.id)
-
-        expect(repository.raw_repository).to receive(:write_ref).exactly(1).and_call_original
-
-        repository.keep_around(sample_commit.id, another_sample_commit.id)
-
-        expect(repository.kept_around?(another_sample_commit.id)).to be_truthy
-      end
-    end
-  end
-
   describe '#contribution_guide', :use_clean_rails_memory_store_caching do
     it 'returns and caches the output' do
       expect(repository).to receive(:file_on_head)

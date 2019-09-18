@@ -111,7 +111,7 @@ describe Gitlab::EncodingHelper do
         "Rüby ist eine Programmiersprache. Wir verlängern den text damit ICU die Sprache erkennen kann.".encode("UTF-8")
       ],
       [
-        # Test case from https://gitlab.com/gitlab-org/gitlab-ce/issues/39227
+        # Test case from https://gitlab.com/gitlab-org/gitlab-foss/issues/39227
         "Equifax branch name",
         "refs/heads/Equifax".encode("UTF-8"),
         "refs/heads/Equifax".encode("UTF-8")

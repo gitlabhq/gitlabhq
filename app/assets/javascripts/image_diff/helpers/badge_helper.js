@@ -1,3 +1,5 @@
+import { spriteIcon } from '~/lib/utils/common_utils';
+
 export function createImageBadge(noteId, { x, y }, classNames = []) {
   const buttonEl = document.createElement('button');
   const classList = classNames.concat(['js-image-badge']);
@@ -20,7 +22,7 @@ export function addImageBadge(containerEl, { coordinate, badgeText, noteId }) {
 
 export function addImageCommentBadge(containerEl, { coordinate, noteId }) {
   const buttonEl = createImageBadge(noteId, coordinate, ['image-comment-badge']);
-  buttonEl.innerHTML = gl.utils.spriteIcon('image-comment-dark');
+  buttonEl.innerHTML = spriteIcon('image-comment-dark');
 
   containerEl.appendChild(buttonEl);
 }

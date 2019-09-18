@@ -1,5 +1,7 @@
 /* global List */
+/* global ListAssignee */
 /* global ListIssue */
+/* global ListLabel */
 
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
@@ -174,18 +176,29 @@ describe('List model', () => {
         Promise.resolve({
           data: {
             id: 42,
+            subscribed: false,
+            assignable_labels_endpoint: '/issue/42/labels',
+            toggle_subscription_endpoint: '/issue/42/subscriptions',
+            issue_sidebar_endpoint: '/issue/42/sidebar_info',
           },
         }),
       );
     });
 
     it('adds new issue to top of list', done => {
+      const user = new ListAssignee({
+        id: 1,
+        name: 'testing 123',
+        username: 'test',
+        avatar: 'test_image',
+      });
+
       list.issues.push(
         new ListIssue({
           title: 'Testing',
           id: _.random(10000),
           confidential: false,
-          labels: [list.label],
+          labels: [new ListLabel(list.label)],
           assignees: [],
         }),
       );
@@ -193,8 +206,9 @@ describe('List model', () => {
         title: 'new issue',
         id: _.random(10000),
         confidential: false,
-        labels: [list.label],
-        assignees: [],
+        labels: [new ListLabel(list.label)],
+        assignees: [user],
+        subscribed: false,
       });
 
       list
@@ -202,6 +216,12 @@ describe('List model', () => {
         .then(() => {
           expect(list.issues.length).toBe(2);
           expect(list.issues[0]).toBe(dummyIssue);
+          expect(list.issues[0].subscribed).toBe(false);
+          expect(list.issues[0].assignableLabelsEndpoint).toBe('/issue/42/labels');
+          expect(list.issues[0].toggleSubscriptionEndpoint).toBe('/issue/42/subscriptions');
+          expect(list.issues[0].sidebarInfoEndpoint).toBe('/issue/42/sidebar_info');
+          expect(list.issues[0].labels).toBe(dummyIssue.labels);
+          expect(list.issues[0].assignees).toBe(dummyIssue.assignees);
         })
         .then(done)
         .catch(done.fail);

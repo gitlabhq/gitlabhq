@@ -4,7 +4,7 @@ type: reference, concepts
 
 # Cross-project Merge Request dependencies **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/9688) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.2.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/9688) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.2.
 
 Cross-project merge request dependencies allows a required order of merging
 between merge requests in different projects to be expressed. If a
@@ -97,9 +97,9 @@ merge.
 
 ## Limitations
 
-- API support: [gitlab-ee#12551](https://gitlab.com/gitlab-org/gitlab-ee/issues/12551)
-- Dependencies are not preserved across project export/import: [gitlab-ee#12549](https://gitlab.com/gitlab-org/gitlab-ee/issues/12549)
-- Complex merge order dependencies are not supported: [gitlab-ee#11393](https://gitlab.com/gitlab-org/gitlab-ee/issues/11393)
+- API support: [gitlab-ee#12551](https://gitlab.com/gitlab-org/gitlab/issues/12551)
+- Dependencies are not preserved across project export/import: [gitlab-ee#12549](https://gitlab.com/gitlab-org/gitlab/issues/12549)
+- Complex merge order dependencies are not supported: [gitlab-ee#11393](https://gitlab.com/gitlab-org/gitlab/issues/11393)
 
 The last item merits a little more explanation. Dependencies between merge
 requests can be described as a graph of relationships. The simplest possible

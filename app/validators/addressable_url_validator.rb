@@ -46,7 +46,7 @@ class AddressableUrlValidator < ActiveModel::EachValidator
   # when saving/updating a record. Sometimes, the url
   # is not resolvable at that point, and some automated
   # tasks that uses that url won't work.
-  # See https://gitlab.com/gitlab-org/gitlab-ce/issues/66723
+  # See https://gitlab.com/gitlab-org/gitlab-foss/issues/66723
   BLOCKER_VALIDATE_OPTIONS = {
     schemes: %w(http https),
     ports: [],
@@ -112,7 +112,7 @@ class AddressableUrlValidator < ActiveModel::EachValidator
     # when Gitlab::CurrentSettings creates an ApplicationSetting which then
     # calls this validator.
     #
-    # See https://gitlab.com/gitlab-org/gitlab-ee/issues/9833
+    # See https://gitlab.com/gitlab-org/gitlab/issues/9833
     ApplicationSetting.current&.allow_local_requests_from_web_hooks_and_services?
   end
 end

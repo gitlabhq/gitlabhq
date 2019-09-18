@@ -1,4 +1,4 @@
-/* eslint-disable object-shorthand, func-names, no-else-return, no-lonely-if */
+/* eslint-disable no-else-return, no-lonely-if */
 /* global CommentsStore */
 
 import $ from 'jquery';
@@ -19,17 +19,17 @@ const CommentAndResolveBtn = Vue.extend({
     };
   },
   computed: {
-    showButton: function() {
+    showButton() {
       if (this.discussion) {
         return this.discussion.isResolvable();
       } else {
         return false;
       }
     },
-    isDiscussionResolved: function() {
+    isDiscussionResolved() {
       return this.discussion.isResolved();
     },
-    buttonText: function() {
+    buttonText() {
       if (this.isDiscussionResolved) {
         if (this.textareaIsEmpty) {
           return __('Unresolve thread');
@@ -50,7 +50,7 @@ const CommentAndResolveBtn = Vue.extend({
       this.discussion = CommentsStore.state[this.discussionId];
     }
   },
-  mounted: function() {
+  mounted() {
     if (!this.discussionId) return;
 
     const $textarea = $(
@@ -62,7 +62,7 @@ const CommentAndResolveBtn = Vue.extend({
       this.textareaIsEmpty = $textarea.val() === '';
     });
   },
-  destroyed: function() {
+  destroyed() {
     if (!this.discussionId) return;
 
     $(`.js-discussion-note-form[data-discussion-id=${this.discussionId}] .note-textarea`).off(

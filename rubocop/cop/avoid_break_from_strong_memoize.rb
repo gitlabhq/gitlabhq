@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     # Checks for break inside strong_memoize blocks.
-    # For more information see: https://gitlab.com/gitlab-org/gitlab-ce/issues/42889
+    # For more information see: https://gitlab.com/gitlab-org/gitlab-foss/issues/42889
     #
     # @example
     #   # bad

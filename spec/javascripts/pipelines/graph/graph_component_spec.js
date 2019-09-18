@@ -7,6 +7,12 @@ describe('graph component', () => {
   const GraphComponent = Vue.extend(graphComponent);
   let component;
 
+  beforeEach(() => {
+    setFixtures(`
+      <div class="layout-page"></div>
+    `);
+  });
+
   afterEach(() => {
     component.$destroy();
   });

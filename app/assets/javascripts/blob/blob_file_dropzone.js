@@ -1,4 +1,4 @@
-/* eslint-disable func-names, object-shorthand, prefer-arrow-callback */
+/* eslint-disable func-names, prefer-arrow-callback */
 
 import $ from 'jquery';
 import Dropzone from 'dropzone';
@@ -32,7 +32,7 @@ export default class BlobFileDropzone {
       url: form.attr('action'),
       // Rails uses a hidden input field for PUT
       // http://stackoverflow.com/questions/21056482/how-to-set-method-put-in-form-tag-in-rails
-      method: method,
+      method,
       clickable: true,
       uploadMultiple: false,
       paramName: 'file',
@@ -42,7 +42,7 @@ export default class BlobFileDropzone {
       addRemoveLinks: true,
       previewsContainer: '.dropzone-previews',
       headers: csrf.headers,
-      init: function() {
+      init() {
         this.on('addedfile', function() {
           toggleLoading(submitButton, submitButtonLoadingIcon, false);
           dropzoneMessage.addClass(HIDDEN_CLASS);
@@ -69,7 +69,7 @@ export default class BlobFileDropzone {
         });
       },
       // Override behavior of adding error underneath preview
-      error: function(file, errorMessage) {
+      error(file, errorMessage) {
         const stripped = $('<div/>')
           .html(errorMessage)
           .text();

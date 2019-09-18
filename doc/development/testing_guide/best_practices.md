@@ -148,7 +148,7 @@ Add `screenshot_and_open_image` in a `:js` spec to screenshot what Capybara
 
 The HTML dumps created by this are missing CSS.
 This results in them looking very different from the actual application.
-There is a [small hack](https://gitlab.com/gitlab-org/gitlab-ce/snippets/1718469) to add CSS which makes debugging easier.
+There is a [small hack](https://gitlab.com/gitlab-org/gitlab-foss/snippets/1718469) to add CSS which makes debugging easier.
 
 ### Fast unit tests
 
@@ -538,7 +538,7 @@ GitLab uses [factory_bot] as a test fixture replacement.
 - When instantiating from a factory, don't supply attributes that aren't
   required by the test.
 - Factories don't have to be limited to `ActiveRecord` objects.
-  [See example](https://gitlab.com/gitlab-org/gitlab-ce/commit/0b8cefd3b2385a21cfed779bd659978c0402766d).
+  [See example](https://gitlab.com/gitlab-org/gitlab-foss/commit/0b8cefd3b2385a21cfed779bd659978c0402766d).
 
 [factory_bot]: https://github.com/thoughtbot/factory_bot
 [traits]: http://www.rubydoc.info/gems/factory_bot/file/GETTING_STARTED.md#Traits

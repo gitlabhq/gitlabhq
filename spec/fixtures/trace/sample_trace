@@ -34,7 +34,7 @@ Removing log/test_json.log
 Removing tmp/tests/
 Removing vendor/ruby/
 HEAD is now at b7cbff3d Add `direct_upload` setting for artifacts
-From https://gitlab.com/gitlab-org/gitlab-ce
+From https://gitlab.com/gitlab-org/gitlab-foss
    2dbcb9cb..641bb13b  master     -> origin/master
 [32;1mChecking out 21488c74 as master...[0;m
 [32;1mSkipping Git submodules setup[0;m

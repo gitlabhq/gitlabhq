@@ -23,7 +23,6 @@ describe('Time series component', () => {
     store = createStore();
     store.commit(`monitoringDashboard/${types.RECEIVE_METRICS_DATA_SUCCESS}`, MonitoringMock.data);
     store.commit(`monitoringDashboard/${types.RECEIVE_DEPLOYMENTS_DATA_SUCCESS}`, deploymentData);
-    store.dispatch('monitoringDashboard/setFeatureFlags', { exportMetricsToCsvEnabled: true });
     [mockGraphData] = store.state.monitoringDashboard.groups[0].metrics;
 
     makeTimeSeriesChart = (graphData, type) =>
@@ -59,19 +58,6 @@ describe('Time series component', () => {
 
     it('contains graph widgets from slot', () => {
       expect(timeSeriesChart.find('.js-graph-widgets').text()).toBe(mockWidgets);
-    });
-
-    describe('when exportMetricsToCsvEnabled is disabled', () => {
-      beforeEach(() => {
-        store.dispatch('monitoringDashboard/setFeatureFlags', { exportMetricsToCsvEnabled: false });
-      });
-
-      it('does not render the Download CSV button', done => {
-        timeSeriesChart.vm.$nextTick(() => {
-          expect(timeSeriesChart.contains('glbutton-stub')).toBe(false);
-          done();
-        });
-      });
     });
 
     describe('methods', () => {
@@ -232,24 +218,6 @@ describe('Time series component', () => {
       describe('yAxisLabel', () => {
         it('constructs a label for the chart y-axis', () => {
           expect(timeSeriesChart.vm.yAxisLabel).toBe('CPU');
-        });
-      });
-
-      describe('csvText', () => {
-        it('converts data from json to csv', () => {
-          const header = `timestamp,${mockGraphData.y_label}`;
-          const data = mockGraphData.queries[0].result[0].values;
-          const firstRow = `${data[0][0]},${data[0][1]}`;
-
-          expect(timeSeriesChart.vm.csvText).toMatch(`^${header}\r\n${firstRow}`);
-        });
-      });
-
-      describe('downloadLink', () => {
-        it('produces a link to download metrics as csv', () => {
-          const link = timeSeriesChart.vm.downloadLink;
-
-          expect(link).toContain('blob:');
         });
       });
     });

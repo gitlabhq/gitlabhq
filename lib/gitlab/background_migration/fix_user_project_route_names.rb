@@ -4,7 +4,7 @@ module Gitlab
   module BackgroundMigration
     # This migration fixes the routes.name for all user-projects that have names
     # that don't start with the users name.
-    # For more info see https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/23272
+    # For more info see https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/23272
     class FixUserProjectRouteNames
       def perform(from_id, to_id)
         ActiveRecord::Base.connection.execute <<~ROUTES_UPDATE

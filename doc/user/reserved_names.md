@@ -88,4 +88,4 @@ These group names are unavailable as subgroup names:
 
 - \-
 
-[reserved]:  https://gitlab.com/gitlab-org/gitlab-ce/blob/master/lib/gitlab/path_regex.rb
+[reserved]:  https://gitlab.com/gitlab-org/gitlab-foss/blob/master/lib/gitlab/path_regex.rb

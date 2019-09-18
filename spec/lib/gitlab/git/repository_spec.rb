@@ -132,7 +132,7 @@ describe Gitlab::Git::Repository, :seed_helper do
 
     it 'sets ArchivePath to the expected globally-unique path' do
       # This is really important from a security perspective. Think carefully
-      # before changing it: https://gitlab.com/gitlab-org/gitlab-ce/issues/45689
+      # before changing it: https://gitlab.com/gitlab-org/gitlab-foss/issues/45689
       expect(expected_path).to include(File.join(repository.gl_repository, SeedRepo::LastCommit::ID))
 
       expect(metadata['ArchivePath']).to eq(expected_path)

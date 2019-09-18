@@ -64,7 +64,7 @@ module Ci
     # `ci_builds` creation. We can look up a relevant `environment` through
     # `deployment` relation today. This is much more efficient than expanding
     # environment name with variables.
-    # (See more https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/22380)
+    # (See more https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/22380)
     #
     # However, we have to still expand environment name if it's a stop action,
     # because `deployment` persists information for start action only.

@@ -492,7 +492,7 @@ $note-form-margin-left: 72px;
         vertical-align: top;
         white-space: normal;
 
-        // Fixes subpixel rounding issue https://gitlab.com/gitlab-org/gitlab-ce/issues/53973
+        // Fixes subpixel rounding issue https://gitlab.com/gitlab-org/gitlab-foss/issues/53973
         // background-color is needed for dark code preference
         padding-bottom: 1px;
         background-color: $white-light;
@@ -980,7 +980,7 @@ $note-form-margin-left: 72px;
 }
 
 //This needs to be deleted when Snippet/Commit comments are convered to Vue
-// See https://gitlab.com/gitlab-org/gitlab-ce/issues/53918#note_117038785
+// See https://gitlab.com/gitlab-org/gitlab-foss/issues/53918#note_117038785
 .unstyled-comments {
   .discussion-header {
     padding: $gl-padding;

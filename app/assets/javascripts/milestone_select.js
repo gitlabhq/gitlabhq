@@ -1,4 +1,4 @@
-/* eslint-disable one-var, object-shorthand, no-else-return, no-self-compare, consistent-return, no-param-reassign, no-shadow */
+/* eslint-disable one-var, no-else-return, no-self-compare, consistent-return, no-param-reassign, no-shadow */
 /* global Issuable */
 /* global ListMilestone */
 
@@ -65,7 +65,7 @@ export default class MilestoneSelect {
         milestoneLinkNoneTemplate = `<span class="no-value">${__('None')}</span>`;
       }
       return $dropdown.glDropdown({
-        showMenuAbove: showMenuAbove,
+        showMenuAbove,
         data: (term, callback) =>
           axios.get(milestonesUrl).then(({ data }) => {
             const extraOptions = [];
@@ -126,7 +126,7 @@ export default class MilestoneSelect {
             return defaultLabel;
           }
         },
-        defaultLabel: defaultLabel,
+        defaultLabel,
         fieldName: $dropdown.data('fieldName'),
         text: milestone => _.escape(milestone.title),
         id: milestone => {

@@ -73,7 +73,7 @@ module Gitlab
 
         # For performance purposes maximum 20 latest commits
         # will be passed as post receive hook data.
-        # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/38259
+        # n+1: https://gitlab.com/gitlab-org/gitlab-foss/issues/38259
         commit_attrs = Gitlab::GitalyClient.allow_n_plus_1_calls do
           commits_limited.map do |commit|
             commit.hook_attrs(with_changed_files: with_changed_files)

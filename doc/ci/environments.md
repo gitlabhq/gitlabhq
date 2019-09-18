@@ -564,7 +564,7 @@ You can read more in the [`.gitlab-ci.yml` reference](yaml/README.md#environment
 
 ### Grouping similar environments
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7015) in GitLab 8.14.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/7015) in GitLab 8.14.
 
 As documented in [Configuring dynamic environments](#configuring-dynamic-environments), you can
 prepend environment name with a word, followed by a `/`, and finally the branch
@@ -678,8 +678,8 @@ fetch = +refs/environments/*:refs/remotes/origin/environments/*
 
 ### Scoping environments with specs
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/2112) in [GitLab Premium](https://about.gitlab.com/pricing/) 9.4.
-> - [Scoping for environment variables was moved to Core](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/30779) in GitLab 12.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/2112) in [GitLab Premium](https://about.gitlab.com/pricing/) 9.4.
+> - [Scoping for environment variables was moved to Core](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/30779) to Core in Gitlab 12.2.
 
 You can limit the environment scope of a variable by
 defining which environments it can be available for.

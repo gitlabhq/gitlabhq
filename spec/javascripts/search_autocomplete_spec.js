@@ -1,4 +1,4 @@
-/* eslint-disable no-var, one-var, no-unused-expressions, consistent-return, no-param-reassign, default-case, no-return-assign, object-shorthand, vars-on-top */
+/* eslint-disable no-var, one-var, no-unused-expressions, consistent-return, no-param-reassign, default-case, no-return-assign, vars-on-top */
 
 import $ from 'jquery';
 import '~/gl_dropdown';
@@ -30,9 +30,9 @@ describe('Search autocomplete dropdown', () => {
 
   dashboardMRsPath = '/dashboard/merge_requests';
 
-  projectIssuesPath = '/gitlab-org/gitlab-ce/issues';
+  projectIssuesPath = '/gitlab-org/gitlab-foss/issues';
 
-  projectMRsPath = '/gitlab-org/gitlab-ce/merge_requests';
+  projectMRsPath = '/gitlab-org/gitlab-foss/merge_requests';
 
   groupIssuesPath = '/groups/gitlab-org/issues';
 
@@ -91,7 +91,7 @@ describe('Search autocomplete dropdown', () => {
       'gitlab-ce': {
         issuesPath: projectIssuesPath,
         mrPath: projectMRsPath,
-        projectName: projectName,
+        projectName,
       },
     });
   };

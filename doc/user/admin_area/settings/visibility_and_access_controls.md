@@ -11,7 +11,7 @@ GitLab allows administrators to:
 - Select the protocols permitted to access GitLab.
 - Enable or disable repository mirroring.
 - Prevent non-administrators from deleting projects
-  ([introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/5615) in GitLab 12.0).
+  ([introduced](https://gitlab.com/gitlab-org/gitlab/issues/5615) in GitLab 12.0).
   **(PREMIUM ONLY)**
 
 To access the visibility and access control options:
@@ -87,6 +87,6 @@ Each scenario can be a third-level heading, e.g. `### Getting error message X`.
 If you have none to add when creating a doc, leave this section in place
 but commented out to help encourage others to add to it in the future. -->
 
-[ce-4696]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/4696
-[ce-18021]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/18021
-[ee-3586]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/3586
+[ce-4696]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/4696
+[ce-18021]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/18021
+[ee-3586]: https://gitlab.com/gitlab-org/gitlab/merge_requests/3586

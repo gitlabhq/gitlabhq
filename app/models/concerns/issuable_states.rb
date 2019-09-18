@@ -6,7 +6,7 @@ module IssuableStates
   # The state:string column is being migrated to state_id:integer column
   # This is a temporary hook to populate state_id column with new values
   # and should be removed after the state column is removed.
-  # Check https://gitlab.com/gitlab-org/gitlab-ce/issues/51789 for more information
+  # Check https://gitlab.com/gitlab-org/gitlab-foss/issues/51789 for more information
   included do
     before_save :set_state_id
   end

@@ -1,7 +1,9 @@
-/* eslint-disable func-names, no-new, promise/catch-or-return */
+/* eslint-disable func-names, no-new */
 
 import $ from 'jquery';
+import { __ } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
+import flash from '~/flash';
 import CreateLabelDropdown from '../../create_label';
 import boardsStore from '../stores/boards_store';
 
@@ -26,18 +28,23 @@ $(document)
 
 export default function initNewListDropdown() {
   $('.js-new-board-list').each(function() {
-    const $this = $(this);
+    const $dropdownToggle = $(this);
+    const $dropdown = $dropdownToggle.closest('.dropdown');
     new CreateLabelDropdown(
-      $this.closest('.dropdown').find('.dropdown-new-label'),
-      $this.data('namespacePath'),
-      $this.data('projectPath'),
+      $dropdown.find('.dropdown-new-label'),
+      $dropdownToggle.data('namespacePath'),
+      $dropdownToggle.data('projectPath'),
     );
 
-    $this.glDropdown({
+    $dropdownToggle.glDropdown({
       data(term, callback) {
-        axios.get($this.attr('data-list-labels-path')).then(({ data }) => {
-          callback(data);
-        });
+        axios
+          .get($dropdownToggle.attr('data-list-labels-path'))
+          .then(({ data }) => callback(data))
+          .catch(() => {
+            $dropdownToggle.data('bs.dropdown').hide();
+            flash(__('Error fetching labels.'));
+          });
       },
       renderRow(label) {
         const active = boardsStore.findListByLabelId(label.id);

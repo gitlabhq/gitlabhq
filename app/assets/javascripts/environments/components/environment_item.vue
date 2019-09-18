@@ -278,7 +278,7 @@ export default {
      */
     isLastDeployment() {
       // name: 'last?' is a false positive: https://gitlab.com/gitlab-org/frontend/eslint-plugin-i18n/issues/26#possible-false-positives
-      // Vue i18n ESLint rules issue: https://gitlab.com/gitlab-org/gitlab-ce/issues/63560
+      // Vue i18n ESLint rules issue: https://gitlab.com/gitlab-org/gitlab-foss/issues/63560
       // eslint-disable-next-line @gitlab/i18n/no-non-i18n-strings
       return this.model && this.model.last_deployment && this.model.last_deployment['last?'];
     },

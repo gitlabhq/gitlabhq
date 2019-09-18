@@ -41,10 +41,10 @@ Capybara.register_driver :chrome do |app|
   # Run headless by default unless CHROME_HEADLESS specified
   options.add_argument("headless") unless ENV['CHROME_HEADLESS'] =~ /^(false|no|0)$/i
 
-  # Disable /dev/shm use in CI. See https://gitlab.com/gitlab-org/gitlab-ee/issues/4252
+  # Disable /dev/shm use in CI. See https://gitlab.com/gitlab-org/gitlab/issues/4252
   options.add_argument("disable-dev-shm-usage") if ENV['CI'] || ENV['CI_SERVER']
 
-  # Explicitly set user-data-dir to prevent crashes. See https://gitlab.com/gitlab-org/gitlab-ce/issues/58882#note_179811508
+  # Explicitly set user-data-dir to prevent crashes. See https://gitlab.com/gitlab-org/gitlab-foss/issues/58882#note_179811508
   options.add_argument("user-data-dir=/tmp/chrome") if ENV['CI'] || ENV['CI_SERVER']
 
   # Chrome 75 defaults to W3C mode which doesn't allow console log access

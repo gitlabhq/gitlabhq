@@ -33,10 +33,10 @@ module Gitlab
         private
 
         # This method can be delete once we upgrade Helm to > 12.13.0
-        # https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/27096#note_159695900
+        # https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/27096#note_159695900
         #
         # Tracking this method to be removed here:
-        # https://gitlab.com/gitlab-org/gitlab-ce/issues/52791#note_199374155
+        # https://gitlab.com/gitlab-org/gitlab-foss/issues/52791#note_199374155
         def delete_tiller_replicaset
           delete_args = %w[replicaset -n gitlab-managed-apps -l name=tiller]
 

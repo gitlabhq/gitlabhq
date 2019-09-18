@@ -117,6 +117,6 @@ on adding these events into GitLab:
 - [Group settings and activity](https://gitlab.com/groups/gitlab-org/-/epics/475)
 - [Instance-level settings and activity](https://gitlab.com/groups/gitlab-org/-/epics/476)
 
-[ee-2336]: https://gitlab.com/gitlab-org/gitlab-ee/issues/2336
+[ee-2336]: https://gitlab.com/gitlab-org/gitlab/issues/2336
 [ee]: https://about.gitlab.com/pricing/
 [permissions]: ../user/permissions.md

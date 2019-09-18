@@ -1,6 +1,6 @@
 # Export Issues to CSV **(STARTER)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/1126) in [GitLab Starter 9.0](https://about.gitlab.com/2017/03/22/gitlab-9-0-released/#export-issues-ees-eep).
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/1126) in [GitLab Starter 9.0](https://about.gitlab.com/2017/03/22/gitlab-9-0-released/#export-issues-ees-eep).
 
 Issues can be exported as CSV from GitLab and are sent to your default notification email as an attachment.
 
@@ -42,9 +42,9 @@ Exported issues are always sorted by `Issue ID`.
 
 ## Format
 
-> **Time Estimate** and **Time Spent** columns were [introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/2627) in GitLab Starter 10.0.
+> **Time Estimate** and **Time Spent** columns were [introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/2627) in GitLab Starter 10.0.
 >
-> **Weight** and **Locked** columns were [introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/5300) in GitLab Starter 10.8.
+> **Weight** and **Locked** columns were [introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/5300) in GitLab Starter 10.8.
 
 Data will be encoded with a comma as the column delimiter, with `"` used to quote fields if needed, and newlines to separate rows. The first row will be the headers, which are listed in the following table along with a description of the values:
 

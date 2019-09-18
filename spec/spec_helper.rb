@@ -151,11 +151,13 @@ RSpec.configure do |config|
       .with(:force_autodevops_on_by_default, anything)
       .and_return(false)
 
-    # Stub this call due to being an expensive operation
+    # Stub these calls due to being expensive operations
     # It can be reenabled for specific tests via:
     #
     # allow(DetectRepositoryLanguagesWorker).to receive(:perform_async).and_call_original
+    # allow(Gitlab::Git::KeepAround).to receive(:execute).and_call_original
     allow(DetectRepositoryLanguagesWorker).to receive(:perform_async).and_return(true)
+    allow(Gitlab::Git::KeepAround).to receive(:execute)
 
     Gitlab::ThreadMemoryCache.cache_backend.clear
   end

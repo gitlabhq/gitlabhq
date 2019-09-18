@@ -141,5 +141,5 @@ If you are using other init systems, like systemd, you can check the
 [install]: ../install/installation.md "Documentation to install GitLab from source"
 [mailroom]: reply_by_email.md "Used for replying by email in GitLab issues and merge requests"
 [chef]: https://www.chef.io/products/chef-infra/ "Chef official website"
-[src-service]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/lib/support/init.d/gitlab "GitLab init service file"
+[src-service]: https://gitlab.com/gitlab-org/gitlab-foss/blob/master/lib/support/init.d/gitlab "GitLab init service file"
 [gl-recipes]: https://gitlab.com/gitlab-org/gitlab-recipes/tree/master/init "GitLab Recipes repository"

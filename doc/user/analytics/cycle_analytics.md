@@ -1,27 +1,27 @@
 # Cycle Analytics
 
-> - Introduced prior to GitLab 12.2 at the project level.
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/12077) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.2 at the group level.
-
-NOTE: **Note:**
-As of GitLab 12.3 this feature is enabled by the `cycle_analytics` feature flag.
+> - Introduced prior to GitLab 12.3 at the project level.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/12077) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.3 at the group level.
 
 Cycle Analytics measures the time spent to go from an [idea to production] - also known
 as cycle time - for each of your projects. Cycle Analytics displays the median time for an idea to
 reach production, along with the time typically spent in each DevOps stage along the way.
 
+NOTE: **Note:**
+Use the `cycle_analytics` feature flag to enable at the group level.
+
 Cycle Analytics is useful in order to quickly determine the velocity of a given
 project. It points to bottlenecks in the development process, enabling management
 to uncover, triage, and identify the root cause of slowdowns in the software development life cycle.
 
-Cycle Analytics is tightly coupled with the [GitLab flow] and
-calculates a separate median for each stage.
+Cycle Analytics is tightly coupled with the [GitLab flow] and calculates a separate median for each
+stage.
 
 ## Overview
 
 Cycle Analytics is available:
 
-- From GitLab 12.2, at the group level in the analytics workspace at
+- From GitLab 12.3, at the group level in the analytics workspace (top navigation bar) at
   **Analytics > Cycle Analytics**. **(PREMIUM)**
 
   In the future, multiple groups will be selectable which will effectively make this an
@@ -147,19 +147,19 @@ A few notes:
 
 The current permissions on the Project Cycle Analytics dashboard are:
 
-- Public projects - anyone can access
-- Internal projects - any authenticated user can access
-- Private projects - any member Guest and above can access
+- Public projects - anyone can access.
+- Internal projects - any authenticated user can access.
+- Private projects - any member Guest and above can access.
 
 You can [read more about permissions][permissions] in general.
 
 NOTE: **Note:**
-As of GitLab 12.2, the project-level page is deprecated. You should access
+As of GitLab 12.3, the project-level page is deprecated. You should access
 project-level Cycle Analytics from **Analytics > Cycle Analytics** in the top
 navigation bar. We will ensure that the same project-level functionality is available
 to CE users in the new analytics space.
 
-For Cycle Analytics functionality introduced in GitLab 12.2 and later:
+For Cycle Analytics functionality introduced in GitLab 12.3 and later:
 
 - Users must have Reporter access or above.
 - Features are available only on
@@ -173,8 +173,8 @@ Learn more about Cycle Analytics in the following resources:
 - [Cycle Analytics feature preview](https://about.gitlab.com/2016/09/16/feature-preview-introducing-cycle-analytics/)
 - [Cycle Analytics feature highlight](https://about.gitlab.com/2016/09/21/cycle-analytics-feature-highlight/)
 
-[ce-5986]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/5986
-[ce-20975]: https://gitlab.com/gitlab-org/gitlab-ce/issues/20975
+[ce-5986]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/5986
+[ce-20975]: https://gitlab.com/gitlab-org/gitlab-foss/issues/20975
 [environment]: ../../ci/yaml/README.md#environment
 [GitLab flow]: ../../workflow/gitlab_flow.md
 [idea to production]: https://about.gitlab.com/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/#from-idea-to-production-with-gitlab

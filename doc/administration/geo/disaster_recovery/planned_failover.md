@@ -215,11 +215,11 @@ in the loss of any data uploaded to the new primary in the meantime.
 Don't forget to remove the broadcast message after failover is complete.
 
 [bring-primary-back]: bring_primary_back.md
-[ce-19739]: https://gitlab.com/gitlab-org/gitlab-ce/issues/19739
+[ce-19739]: https://gitlab.com/gitlab-org/gitlab-foss/issues/19739
 [container-registry]: ../replication/container_registry.md
 [disaster-recovery]: index.md
-[ee-4930]: https://gitlab.com/gitlab-org/gitlab-ee/issues/4930
-[ee-5064]: https://gitlab.com/gitlab-org/gitlab-ee/issues/5064
+[ee-4930]: https://gitlab.com/gitlab-org/gitlab/issues/4930
+[ee-5064]: https://gitlab.com/gitlab-org/gitlab/issues/5064
 [foreground-verification]: ../../raketasks/check.md
 [background-verification]: background_verification.md
 [limitations]: ../replication/index.md#current-limitations

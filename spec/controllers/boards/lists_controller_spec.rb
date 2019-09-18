@@ -185,6 +185,24 @@ describe Boards::ListsController do
       end
     end
 
+    context 'with a list_type other than :label' do
+      let!(:closed) { create(:closed_list, board: board, position: 2) }
+
+      it 'saves collapsed preference for user' do
+        save_setting user: user, board: board, list: closed, setting: { collapsed: true }
+
+        expect(closed.preferences_for(user).collapsed).to eq(true)
+        expect(response).to have_gitlab_http_status(200)
+      end
+
+      it 'saves not collapsed preference for user' do
+        save_setting user: user, board: board, list: closed, setting: { collapsed: false }
+
+        expect(closed.preferences_for(user).collapsed).to eq(false)
+        expect(response).to have_gitlab_http_status(200)
+      end
+    end
+
     def move(user:, board:, list:, position:)
       sign_in(user)
 

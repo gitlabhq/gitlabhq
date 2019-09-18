@@ -13,7 +13,7 @@ please submit a merge request to add an upcoming class, assign to
 
 ## Adding classes
 
-1. All training materials of any kind should be added to [GitLab CE](https://gitlab.com/gitlab-org/gitlab-ce/)
+1. All training materials of any kind should be added to [GitLab CE](https://gitlab.com/gitlab-org/gitlab-foss/)
    to ensure they are available to a broad audience (don't use any other repo or
    storage for training materials).
 1. Don't make materials that are needlessly specific to one group of people, try

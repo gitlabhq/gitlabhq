@@ -34,6 +34,7 @@ Click on the service links to see further configuration instructions and details
 | [Emails on push](emails_on_push.md) | Email the commits and diff of each push to a list of recipients |
 | External Wiki | Replaces the link to the internal wiki with a link to an external wiki |
 | Flowdock | Flowdock is a collaboration web app for technical teams |
+| [Generic alerts](generic_alerts.md) **(ULTIMATE)** | Receive alerts on GitLab from any source |
 | [GitHub](github.md) **(PREMIUM)** | Sends pipeline notifications to GitHub |
 | [Hangouts Chat](hangouts_chat.md) | Receive events notifications in Google Hangouts Chat |
 | [HipChat](hipchat.md) | Private group chat and IM |
@@ -73,5 +74,5 @@ For an overview of what projects services are available, please see the
 
 Contributions are welcome!
 
-[projects-code]: https://gitlab.com/gitlab-org/gitlab-ce/tree/master/app/models/project_services
+[projects-code]: https://gitlab.com/gitlab-org/gitlab-foss/tree/master/app/models/project_services
 [permissions]: ../../permissions.md

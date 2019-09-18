@@ -32,7 +32,7 @@ module API
         use :filter_params
       end
       get ':id/repository/branches' do
-        Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42329')
+        Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-foss/issues/42329')
 
         repository = user_project.repository
 

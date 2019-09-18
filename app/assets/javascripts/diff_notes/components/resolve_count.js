@@ -1,4 +1,3 @@
-/* eslint-disable object-shorthand, func-names */
 /* global CommentsStore */
 
 import Vue from 'vue';
@@ -13,13 +12,13 @@ window.ResolveCount = Vue.extend({
       required: true,
     },
   },
-  data: function() {
+  data() {
     return {
       discussions: CommentsStore.state,
     };
   },
   computed: {
-    allResolved: function() {
+    allResolved() {
       return this.resolvedDiscussionCount === this.discussionCount;
     },
     resolvedCountText() {

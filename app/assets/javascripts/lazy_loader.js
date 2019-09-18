@@ -92,7 +92,7 @@ export default class LazyLoader {
   onIntersection = entries => {
     entries.forEach(entry => {
       // We are using `intersectionRatio > 0` over `isIntersecting`, as some browsers did not ship the latter
-      // See: https://gitlab.com/gitlab-org/gitlab-ce/issues/54407
+      // See: https://gitlab.com/gitlab-org/gitlab-foss/issues/54407
       if (entry.intersectionRatio > 0) {
         this.intersectionObserver.unobserve(entry.target);
         this.lazyImages.push(entry.target);

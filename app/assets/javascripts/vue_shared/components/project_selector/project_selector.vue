@@ -1,6 +1,6 @@
 <script>
 import _ from 'underscore';
-import { GlLoadingIcon } from '@gitlab/ui';
+import { GlLoadingIcon, GlSearchBoxByType } from '@gitlab/ui';
 import ProjectListItem from './project_list_item.vue';
 
 const SEARCH_INPUT_TIMEOUT_MS = 500;
@@ -9,6 +9,7 @@ export default {
   name: 'ProjectSelector',
   components: {
     GlLoadingIcon,
+    GlSearchBoxByType,
     ProjectListItem,
   },
   props: {
@@ -53,9 +54,6 @@ export default {
     isSelected(project) {
       return Boolean(_.findWhere(this.selectedProjects, { id: project.id }));
     },
-    focusSearchInput() {
-      this.$refs.searchInput.focus();
-    },
     onInput: _.debounce(function debouncedOnInput() {
       this.$emit('searched', this.searchQuery);
     }, SEARCH_INPUT_TIMEOUT_MS),
@@ -64,12 +62,11 @@ export default {
 </script>
 <template>
   <div>
-    <input
-      ref="searchInput"
+    <gl-search-box-by-type
       v-model="searchQuery"
       :placeholder="__('Search your projects')"
       type="search"
-      class="form-control mb-3 js-project-selector-input"
+      class="mb-3"
       autofocus
       @input="onInput"
     />

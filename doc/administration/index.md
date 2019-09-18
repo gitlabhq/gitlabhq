@@ -8,8 +8,8 @@ Learn how to administer your self-managed GitLab instance.
 
 GitLab has two product distributions available through [different subscriptions](https://about.gitlab.com/pricing/):
 
-- The open source [GitLab Community Edition (CE)](https://gitlab.com/gitlab-org/gitlab-ce).
-- The open core [GitLab Enterprise Edition (EE)](https://gitlab.com/gitlab-org/gitlab-ee).
+- The open source [GitLab Community Edition (CE)](https://gitlab.com/gitlab-org/gitlab-foss).
+- The open core [GitLab Enterprise Edition (EE)](https://gitlab.com/gitlab-org/gitlab).
 
 You can [install either GitLab CE or GitLab EE](https://about.gitlab.com/install/ce-or-ee/).
 However, the features you'll have access to depend on the subscription you choose

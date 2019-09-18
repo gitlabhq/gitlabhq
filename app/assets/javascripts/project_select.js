@@ -1,4 +1,4 @@
-/* eslint-disable func-names, no-var, object-shorthand, one-var, no-else-return */
+/* eslint-disable func-names, no-var, one-var, no-else-return */
 
 import $ from 'jquery';
 import Api from './api';
@@ -28,7 +28,7 @@ export default function projectSelect() {
         }
 
         $(select).select2({
-          placeholder: placeholder,
+          placeholder,
           minimumInputLength: 0,
           query: (function(_this) {
             return function(query) {
@@ -79,18 +79,18 @@ export default function projectSelect() {
               }
             };
           })(this),
-          id: function(project) {
+          id(project) {
             if (simpleFilter) return project.id;
             return JSON.stringify({
               name: project.name,
               url: project.web_url,
             });
           },
-          text: function(project) {
+          text(project) {
             return project.name_with_namespace || project.name;
           },
 
-          initSelection: function(el, callback) {
+          initSelection(el, callback) {
             return Api.project(el.val()).then(({ data }) => callback(data));
           },
 

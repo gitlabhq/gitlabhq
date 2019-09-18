@@ -91,7 +91,7 @@ Read the documentation on how to [migrate an existing Git repo with Git LFS](../
 
 ## File Locking
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/35856) in GitLab 10.5.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/35856) in GitLab 10.5.
 
 The first thing to do before using File Locking is to tell Git LFS which
 kind of files are lockable. The following command will store PNG files

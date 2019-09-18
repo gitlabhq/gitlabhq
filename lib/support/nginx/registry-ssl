@@ -16,7 +16,7 @@ server {
 }
 
 server {
-  # If a different port is specified in https://gitlab.com/gitlab-org/gitlab-ce/blob/8-8-stable/config/gitlab.yml.example#L182,
+  # If a different port is specified in https://gitlab.com/gitlab-org/gitlab-foss/blob/8-8-stable/config/gitlab.yml.example#L182,
   # it should be declared here as well
   listen *:443 ssl http2;
   server_name  registry.gitlab.example.com;

@@ -5,7 +5,7 @@ last_update: 2019-07-03
 
 # Merge Trains **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/9186) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/9186) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.0.
 
 [Pipelines for merged results](../index.md#pipelines-for-merged-results-premium) introduces
 running a build on the result of the merged code prior to merging, as a way to keep master green.
@@ -119,7 +119,7 @@ To check the reason:
 is unavailable when
 [Pipelines for Merged Results is enabled](../index.md#enabling-pipelines-for-merged-results).
 
-Follow [this issue](https://gitlab.com/gitlab-org/gitlab-ee/issues/12267) to
+Follow [this issue](https://gitlab.com/gitlab-org/gitlab/issues/12267) to
 track progress on this issue.
 
 ### Merge Train disturbs your workflow

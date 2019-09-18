@@ -42,7 +42,7 @@ module QA
             # of the second branch, and when the second branch is merged to master it will
             # show the 'merged' badge on it.
             # Refer to the below issue note:
-            # https://gitlab.com/gitlab-org/gitlab-ce/issues/55524#note_126100848
+            # https://gitlab.com/gitlab-org/gitlab-foss/issues/55524#note_126100848
             commit_file(file_2_master, 'Other test file content', second_commit_message_of_master_branch)
             push_changes
             merge(second_branch)

@@ -4,7 +4,7 @@ class ScheduleSyncIssuablesStateIdWhereNil < ActiveRecord::Migration[5.1]
   # Issues and MergeRequests imported by GitHub are being created with
   # state_id = null, this fixes them.
   #
-  # Part of a bigger plan: https://gitlab.com/gitlab-org/gitlab-ce/issues/51789
+  # Part of a bigger plan: https://gitlab.com/gitlab-org/gitlab-foss/issues/51789
 
   include Gitlab::Database::MigrationHelpers
 

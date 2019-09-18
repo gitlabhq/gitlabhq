@@ -30,7 +30,7 @@ module Gitlab
         # Gitlab::CurrentSettings creates an ApplicationSetting which then
         # calls this method.
         #
-        # See https://gitlab.com/gitlab-org/gitlab-ee/issues/9833
+        # See https://gitlab.com/gitlab-org/gitlab/issues/9833
         def outbound_local_requests_whitelist_arrays
           return [[], []] unless ApplicationSetting.current
 

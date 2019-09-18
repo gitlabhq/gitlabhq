@@ -105,7 +105,7 @@ repository for more information on this process.
 
 ## Integration with GitLab UI
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/61005) in GitLab 12.1.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/61005) in GitLab 12.1.
 
 If you have set up Grafana, you can enable a link to access it easily from the sidebar:
 

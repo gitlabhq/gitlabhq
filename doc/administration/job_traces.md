@@ -202,6 +202,6 @@ Also, it could pressure the database replication lag. `INSERT`s are generated to
 indicate that we have trace chunk. `UPDATE`s with 128KB of data is issued once we
 receive multiple chunks.
 
-[ce-18169]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/18169
-[ce-21193]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/21193
-[ce-46097]: https://gitlab.com/gitlab-org/gitlab-ce/issues/46097
+[ce-18169]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/18169
+[ce-21193]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/21193
+[ce-46097]: https://gitlab.com/gitlab-org/gitlab-foss/issues/46097

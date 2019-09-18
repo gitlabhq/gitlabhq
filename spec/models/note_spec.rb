@@ -73,6 +73,10 @@ describe Note do
   end
 
   describe "Commit notes" do
+    before do
+      allow(Gitlab::Git::KeepAround).to receive(:execute).and_call_original
+    end
+
     let!(:note) { create(:note_on_commit, note: "+1 from me") }
     let!(:commit) { note.noteable }
 
@@ -92,7 +96,9 @@ describe Note do
     end
 
     it "keeps the commit around" do
-      expect(note.project.repository.kept_around?(commit.id)).to be_truthy
+      repo = note.project.repository
+
+      expect(repo.ref_exists?("refs/keep-around/#{commit.id}")).to be_truthy
     end
 
     it 'does not generate N+1 queries for participants', :request_store do

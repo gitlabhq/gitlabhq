@@ -10,7 +10,7 @@ module RuboCop
         include CodeReuseHelpers
 
         MSG = 'This method can only be used inside an ActiveRecord model: ' \
-        'https://gitlab.com/gitlab-org/gitlab-ce/issues/49653'
+        'https://gitlab.com/gitlab-org/gitlab-foss/issues/49653'
 
         # Various methods from ActiveRecord::Querying that are blacklisted. We
         # exclude some generic ones such as `any?` and `first`, as these may
@@ -27,7 +27,6 @@ module RuboCop
           create_with: true,
           distinct: false,
           eager_load: true,
-          except: true,
           exists?: true,
           find_by: true,
           find_by!: true,

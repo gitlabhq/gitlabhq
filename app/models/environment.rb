@@ -54,7 +54,7 @@ class Environment < ApplicationRecord
   # Search environments which have names like the given query.
   # Do not set a large limit unless you've confirmed that it works on gitlab.com scale.
   scope :for_name_like, -> (query, limit: 5) do
-    where('name LIKE ?', "#{sanitize_sql_like(query)}%").limit(limit)
+    where(arel_table[:name].matches("#{sanitize_sql_like query}%")).limit(limit)
   end
 
   scope :for_project, -> (project) { where(project_id: project) }

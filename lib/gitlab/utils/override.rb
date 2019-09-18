@@ -115,7 +115,7 @@ module Gitlab
       #     end
       #
       # This would make sure we're overriding something. See:
-      # https://gitlab.com/gitlab-org/gitlab-ee/issues/1819
+      # https://gitlab.com/gitlab-org/gitlab/issues/1819
       def override(method_name)
         return unless ENV['STATIC_VERIFICATION']
 

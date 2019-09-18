@@ -12,7 +12,7 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
   before_action :build_merge_request, except: [:create]
 
   def new
-    # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/40934
+    # n+1: https://gitlab.com/gitlab-org/gitlab-foss/issues/40934
     Gitlab::GitalyClient.allow_n_plus_1_calls do
       define_new_vars
     end
@@ -92,7 +92,7 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
   def build_merge_request
     params[:merge_request] ||= ActionController::Parameters.new(source_project: @project)
 
-    # Gitaly N+1 issue: https://gitlab.com/gitlab-org/gitlab-ce/issues/58096
+    # Gitaly N+1 issue: https://gitlab.com/gitlab-org/gitlab-foss/issues/58096
     Gitlab::GitalyClient.allow_n_plus_1_calls do
       @merge_request = ::MergeRequests::BuildService.new(project, current_user, merge_request_params.merge(diff_options: diff_options)).execute
     end
@@ -135,7 +135,7 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
   # rubocop: enable CodeReuse/ActiveRecord
 
   def whitelist_query_limiting
-    Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42384')
+    Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-foss/issues/42384')
   end
 
   def incr_count_webide_merge_request

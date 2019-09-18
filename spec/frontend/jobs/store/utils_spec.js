@@ -1,45 +1,21 @@
 import { logLinesParser, updateIncrementalTrace } from '~/jobs/store/utils';
+import {
+  utilsMockData,
+  originalTrace,
+  regularIncremental,
+  regularIncrementalRepeated,
+  headerTrace,
+  headerTraceIncremental,
+  collapsibleTrace,
+  collapsibleTraceIncremental,
+} from '../components/log/mock_data';
 
 describe('Jobs Store Utils', () => {
   describe('logLinesParser', () => {
-    const mockData = [
-      {
-        offset: 1001,
-        content: [{ text: ' on docker-auto-scale-com 8a6210b8' }],
-      },
-      {
-        offset: 1002,
-        content: [
-          {
-            text:
-              'Using Docker executor with image dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.6.3-golang-1.11-git-2.22-chrome-73.0-node-12.x-yarn-1.16-postgresql-9.6-graphicsmagick-1.3.33',
-          },
-        ],
-        sections: ['prepare-executor'],
-        section_header: true,
-      },
-      {
-        offset: 1003,
-        content: [{ text: 'Starting service postgres:9.6.14 ...' }],
-        sections: ['prepare-executor'],
-      },
-      {
-        offset: 1004,
-        content: [{ text: 'Pulling docker image postgres:9.6.14 ...', style: 'term-fg-l-green' }],
-        sections: ['prepare-executor'],
-      },
-      {
-        offset: 1005,
-        content: [],
-        sections: ['prepare-executor'],
-        section_duration: '10:00',
-      },
-    ];
-
     let result;
 
     beforeEach(() => {
-      result = logLinesParser(mockData);
+      result = logLinesParser(utilsMockData);
     });
 
     describe('regular line', () => {
@@ -60,48 +36,27 @@ describe('Jobs Store Utils', () => {
 
       it('creates a lines array property with the content of the collpasible section', () => {
         expect(result[1].lines.length).toEqual(2);
-        expect(result[1].lines[0].content).toEqual(mockData[2].content);
-        expect(result[1].lines[1].content).toEqual(mockData[3].content);
+        expect(result[1].lines[0].content).toEqual(utilsMockData[2].content);
+        expect(result[1].lines[1].content).toEqual(utilsMockData[3].content);
       });
     });
 
     describe('section duration', () => {
       it('adds the section information to the header section', () => {
-        expect(result[1].section_duration).toEqual(mockData[4].section_duration);
+        expect(result[1].section_duration).toEqual(utilsMockData[4].section_duration);
       });
 
       it('does not add section duration as a line', () => {
-        expect(result[1].lines.includes(mockData[4])).toEqual(false);
+        expect(result[1].lines.includes(utilsMockData[4])).toEqual(false);
       });
     });
   });
 
   describe('updateIncrementalTrace', () => {
-    const originalTrace = [
-      {
-        offset: 1,
-        content: [
-          {
-            text: 'Downloading',
-          },
-        ],
-      },
-    ];
-
     describe('without repeated section', () => {
       it('concats and parses both arrays', () => {
         const oldLog = logLinesParser(originalTrace);
-        const newLog = [
-          {
-            offset: 2,
-            content: [
-              {
-                text: 'log line',
-              },
-            ],
-          },
-        ];
-        const result = updateIncrementalTrace(originalTrace, oldLog, newLog);
+        const result = updateIncrementalTrace(originalTrace, oldLog, regularIncremental);
 
         expect(result).toEqual([
           {
@@ -129,17 +84,7 @@ describe('Jobs Store Utils', () => {
     describe('with regular line repeated offset', () => {
       it('updates the last line and formats with the incremental part', () => {
         const oldLog = logLinesParser(originalTrace);
-        const newLog = [
-          {
-            offset: 1,
-            content: [
-              {
-                text: 'log line',
-              },
-            ],
-          },
-        ];
-        const result = updateIncrementalTrace(originalTrace, oldLog, newLog);
+        const result = updateIncrementalTrace(originalTrace, oldLog, regularIncrementalRepeated);
 
         expect(result).toEqual([
           {
@@ -157,32 +102,8 @@ describe('Jobs Store Utils', () => {
 
     describe('with header line repeated', () => {
       it('updates the header line and formats with the incremental part', () => {
-        const headerTrace = [
-          {
-            offset: 1,
-            section_header: true,
-            content: [
-              {
-                text: 'log line',
-              },
-            ],
-            sections: ['section'],
-          },
-        ];
         const oldLog = logLinesParser(headerTrace);
-        const newLog = [
-          {
-            offset: 1,
-            section_header: true,
-            content: [
-              {
-                text: 'updated log line',
-              },
-            ],
-            sections: ['section'],
-          },
-        ];
-        const result = updateIncrementalTrace(headerTrace, oldLog, newLog);
+        const result = updateIncrementalTrace(headerTrace, oldLog, headerTraceIncremental);
 
         expect(result).toEqual([
           {
@@ -207,40 +128,12 @@ describe('Jobs Store Utils', () => {
 
     describe('with collapsible line repeated', () => {
       it('updates the collapsible line and formats with the incremental part', () => {
-        const collapsibleTrace = [
-          {
-            offset: 1,
-            section_header: true,
-            content: [
-              {
-                text: 'log line',
-              },
-            ],
-            sections: ['section'],
-          },
-          {
-            offset: 2,
-            content: [
-              {
-                text: 'log line',
-              },
-            ],
-            sections: ['section'],
-          },
-        ];
         const oldLog = logLinesParser(collapsibleTrace);
-        const newLog = [
-          {
-            offset: 2,
-            content: [
-              {
-                text: 'updated log line',
-              },
-            ],
-            sections: ['section'],
-          },
-        ];
-        const result = updateIncrementalTrace(collapsibleTrace, oldLog, newLog);
+        const result = updateIncrementalTrace(
+          collapsibleTrace,
+          oldLog,
+          collapsibleTraceIncremental,
+        );
 
         expect(result).toEqual([
           {

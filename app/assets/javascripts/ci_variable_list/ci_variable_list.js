@@ -54,7 +54,7 @@ export default class VariableList {
       environment_scope: {
         // We can't use a `.js-` class here because
         // gl_dropdown replaces the <input> and doesn't copy over the class
-        // See https://gitlab.com/gitlab-org/gitlab-ce/issues/42458
+        // See https://gitlab.com/gitlab-org/gitlab-foss/issues/42458
         selector: `input[name="${this.formField}[variables_attributes][][environment_scope]"]`,
         default: '*',
       },

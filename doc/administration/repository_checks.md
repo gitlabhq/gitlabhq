@@ -42,5 +42,5 @@ clicking "Clear all repository checks" on the **Settings** page of the
 admin panel (`/admin/application_settings`).
 
 ---
-[ce-3232]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/3232 "Auto git fsck"
+[ce-3232]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/3232 "Auto git fsck"
 [git-fsck]: https://git-scm.com/docs/git-fsck "git fsck documentation"

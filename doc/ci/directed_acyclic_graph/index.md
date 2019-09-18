@@ -4,7 +4,7 @@ type: reference
 
 # Directed Acyclic Graph
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/47063) in GitLab 12.2 (enabled by `ci_dag_support` feature flag).
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/47063) in GitLab 12.2 (enabled by `ci_dag_support` feature flag).
 
 A [directed acyclic graph](https://www.techopedia.com/definition/5739/directed-acyclic-graph-dag) can be
 used in the context of a CI/CD pipeline to build relationships between jobs such that

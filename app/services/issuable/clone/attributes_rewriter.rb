@@ -45,11 +45,9 @@ module Issuable
         original_entity.resource_label_events.find_in_batches do |batch|
           events = batch.map do |event|
             entity_key = new_entity.is_a?(Issue) ? 'issue_id' : 'epic_id'
-            # rubocop: disable CodeReuse/ActiveRecord
             event.attributes
               .except('id', 'reference', 'reference_html')
               .merge(entity_key => new_entity.id, 'action' => ResourceLabelEvent.actions[event.action])
-            # rubocop: enable CodeReuse/ActiveRecord
           end
 
           Gitlab::Database.bulk_insert(ResourceLabelEvent.table_name, events)

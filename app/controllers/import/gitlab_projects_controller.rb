@@ -49,6 +49,6 @@ class Import::GitlabProjectsController < Import::BaseController
   end
 
   def whitelist_query_limiting
-    Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42437')
+    Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-foss/issues/42437')
   end
 end

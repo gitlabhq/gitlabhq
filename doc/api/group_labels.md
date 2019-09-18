@@ -1,6 +1,6 @@
 # Group Labels API
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/21368) in GitLab 11.8.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/21368) in GitLab 11.8.
 
 This API supports managing of [group labels](../user/project/labels.md#project-labels-and-group-labels). It allows to list, create, update, and delete group labels. Furthermore, users can subscribe and unsubscribe to and from group labels.
 
@@ -15,7 +15,7 @@ GET /groups/:id/labels
 | Attribute     | Type           | Required | Description                                                                                                                                                                  |
 | ---------     | ----           | -------- | -----------                                                                                                                                                                  |
 | `id`          | integer/string | yes      | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user.                                                               |
-| `with_counts` | boolean        | no       | Whether or not to include issue and merge request counts. Defaults to `false`. _([Introduced in GitLab 12.2](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/31543))_ |
+| `with_counts` | boolean        | no       | Whether or not to include issue and merge request counts. Defaults to `false`. _([Introduced in GitLab 12.2](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/31543))_ |
 
 ```bash
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/5/labels?with_counts=true

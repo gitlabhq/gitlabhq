@@ -53,7 +53,7 @@ Omnibus:
    gitlab_rails['auto_migrate'] = false
    alertmanager['enable'] = false
    gitaly['enable'] = false
-   gitlab_monitor['enable'] = false
+   gitlab_exporter['enable'] = false
    gitlab_workhorse['enable'] = false
    nginx['enable'] = true
    postgres_exporter['enable'] = false

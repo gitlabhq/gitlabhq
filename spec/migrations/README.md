@@ -45,7 +45,7 @@ the migrations, and we need to know where to start.
 
 ### Example
 
-This spec tests the [`db/post_migrate/20170526185842_migrate_pipeline_stages.rb`](https://gitlab.com/gitlab-org/gitlab-ce/blob/v11.6.5/db/post_migrate/20170526185842_migrate_pipeline_stages.rb) migration. You can find the complete spec on [`spec/migrations/migrate_pipeline_stages_spec.rb`](https://gitlab.com/gitlab-org/gitlab-ce/blob/v11.6.5/spec/migrations/migrate_pipeline_stages_spec.rb).
+This spec tests the [`db/post_migrate/20170526185842_migrate_pipeline_stages.rb`](https://gitlab.com/gitlab-org/gitlab-foss/blob/v11.6.5/db/post_migrate/20170526185842_migrate_pipeline_stages.rb) migration. You can find the complete spec on [`spec/migrations/migrate_pipeline_stages_spec.rb`](https://gitlab.com/gitlab-org/gitlab-foss/blob/v11.6.5/spec/migrations/migrate_pipeline_stages_spec.rb).
 
 ```ruby
 require 'spec_helper'
@@ -90,9 +90,9 @@ Example: `describe SomeClass, :migration, schema: 20170608152748`.
 
 ### Example
 
-This spec tests the [`lib/gitlab/background_migration/archive_legacy_traces.rb`](https://gitlab.com/gitlab-org/gitlab-ce/blob/v11.6.5/lib/gitlab/background_migration/archive_legacy_traces.rb)
+This spec tests the [`lib/gitlab/background_migration/archive_legacy_traces.rb`](https://gitlab.com/gitlab-org/gitlab-foss/blob/v11.6.5/lib/gitlab/background_migration/archive_legacy_traces.rb)
 background migration. You can find the complete spec on 
-[`spec/lib/gitlab/background_migration/archive_legacy_traces_spec.rb`](https://gitlab.com/gitlab-org/gitlab-ce/blob/v11.6.5/spec/lib/gitlab/background_migration/archive_legacy_traces_spec.rb)
+[`spec/lib/gitlab/background_migration/archive_legacy_traces_spec.rb`](https://gitlab.com/gitlab-org/gitlab-foss/blob/v11.6.5/spec/lib/gitlab/background_migration/archive_legacy_traces_spec.rb)
 
 ```ruby
 require 'spec_helper'

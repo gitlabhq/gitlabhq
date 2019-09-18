@@ -12,6 +12,7 @@ Currently, our suite consists of this basic functionality coverage:
 - Project simple creation
 - Project creation with Auto-DevOps enabled
 - Issue creation
+- Issue user mentions
 - Merge Request creation
 - Snippet creation
 

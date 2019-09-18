@@ -1055,7 +1055,7 @@ describe Projects::MergeRequestsController do
       end
 
       # we're trying to reduce the overall number of queries for this method.
-      # set a hard limit for now. https://gitlab.com/gitlab-org/gitlab-ce/issues/52287
+      # set a hard limit for now. https://gitlab.com/gitlab-org/gitlab-foss/issues/52287
       it 'keeps queries in check' do
         control_count = ActiveRecord::QueryRecorder.new { get_ci_environments_status }.count
 
@@ -1072,7 +1072,7 @@ describe Projects::MergeRequestsController do
         create(:deployment, :succeed, environment: environment2, sha: sha, ref: 'master', deployable: build)
 
         # TODO address the last 5 queries
-        # See https://gitlab.com/gitlab-org/gitlab-ce/issues/63952 (5 queries)
+        # See https://gitlab.com/gitlab-org/gitlab-foss/issues/63952 (5 queries)
         leeway = 5
         expect { get_ci_environments_status }.not_to exceed_all_query_limit(control_count + leeway)
       end

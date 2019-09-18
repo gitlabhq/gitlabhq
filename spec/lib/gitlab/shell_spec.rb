@@ -370,7 +370,7 @@ describe Gitlab::Shell do
     end
 
     describe '#import_repository' do
-      let(:import_url) { 'https://gitlab.com/gitlab-org/gitlab-ce.git' }
+      let(:import_url) { 'https://gitlab.com/gitlab-org/gitlab-foss.git' }
 
       context 'with gitaly' do
         it 'returns true when the command succeeds' do

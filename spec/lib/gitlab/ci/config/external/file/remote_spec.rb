@@ -8,7 +8,7 @@ describe Gitlab::Ci::Config::External::File::Remote do
   let(:context) { described_class::Context.new(nil, '12345', nil, Set.new) }
   let(:params) { { remote: location } }
   let(:remote_file) { described_class.new(params, context) }
-  let(:location) { 'https://gitlab.com/gitlab-org/gitlab-ce/blob/1234/.gitlab-ci-1.yml' }
+  let(:location) { 'https://gitlab.com/gitlab-org/gitlab-foss/blob/1234/.gitlab-ci-1.yml' }
   let(:remote_file_content) do
     <<~HEREDOC
       before_script:
@@ -57,7 +57,7 @@ describe Gitlab::Ci::Config::External::File::Remote do
     end
 
     context 'with an irregular url' do
-      let(:location) { 'not-valid://gitlab.com/gitlab-org/gitlab-ce/blob/1234/.gitlab-ci-1.yml' }
+      let(:location) { 'not-valid://gitlab.com/gitlab-org/gitlab-foss/blob/1234/.gitlab-ci-1.yml' }
 
       it 'returns false' do
         expect(remote_file.valid?).to be_falsy
@@ -137,7 +137,7 @@ describe Gitlab::Ci::Config::External::File::Remote do
     subject { remote_file.error_message }
 
     context 'when remote file location is not valid' do
-      let(:location) { 'not-valid://gitlab.com/gitlab-org/gitlab-ce/blob/1234/.gitlab-ci-1.yml' }
+      let(:location) { 'not-valid://gitlab.com/gitlab-org/gitlab-foss/blob/1234/.gitlab-ci-1.yml' }
 
       it 'returns an error message describing invalid address' do
         expect(subject).to match /does not have a valid address!/

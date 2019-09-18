@@ -30,26 +30,26 @@ describe 'Admin::RequestsProfilesController' do
       let(:profiles) do
         [
           {
-            request_path: '/gitlab-org/gitlab-ce',
-            name: "|gitlab-org|gitlab-ce_#{time1.to_i}_execution.html",
+            request_path: '/gitlab-org/gitlab-foss',
+            name: "|gitlab-org|gitlab-foss_#{time1.to_i}_execution.html",
             created: time1,
             profile_mode: 'Execution'
           },
           {
-            request_path: '/gitlab-org/gitlab-ce',
-            name: "|gitlab-org|gitlab-ce_#{time2.to_i}_execution.html",
+            request_path: '/gitlab-org/gitlab-foss',
+            name: "|gitlab-org|gitlab-foss_#{time2.to_i}_execution.html",
             created: time2,
             profile_mode: 'Execution'
           },
           {
-            request_path: '/gitlab-org/gitlab-ce',
-            name: "|gitlab-org|gitlab-ce_#{time1.to_i}_memory.html",
+            request_path: '/gitlab-org/gitlab-foss',
+            name: "|gitlab-org|gitlab-foss_#{time1.to_i}_memory.html",
             created: time1,
             profile_mode: 'Memory'
           },
           {
-            request_path: '/gitlab-org/gitlab-ce',
-            name: "|gitlab-org|gitlab-ce_#{time2.to_i}_memory.html",
+            request_path: '/gitlab-org/gitlab-foss',
+            name: "|gitlab-org|gitlab-foss_#{time2.to_i}_memory.html",
             created: time2,
             profile_mode: 'Memory'
           },

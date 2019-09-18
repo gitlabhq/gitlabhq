@@ -97,9 +97,9 @@ To use an external Prometheus server:
 1. Set each bundled service's [exporter](#bundled-software-metrics) to listen on a network address, for example:
 
    ```ruby
-   gitlab_monitor['listen_address'] = '0.0.0.0'
+   gitlab_exporter['listen_address'] = '0.0.0.0'
    sidekiq['listen_address'] = '0.0.0.0'
-   gitlab_monitor['listen_port'] = '9168'
+   gitlab_exporter['listen_port'] = '9168'
    node_exporter['listen_address'] = '0.0.0.0:9100'
    redis_exporter['listen_address'] = '0.0.0.0:9121'
    postgres_exporter['listen_address'] = '0.0.0.0:9187'
@@ -163,17 +163,17 @@ To use an external Prometheus server:
      static_configs:
      - targets:
        - 1.1.1.1:8082
-   - job_name: gitlab_monitor_database
+   - job_name: gitlab_exporter_database
      metrics_path: "/database"
      static_configs:
      - targets:
        - 1.1.1.1:9168
-   - job_name: gitlab_monitor_sidekiq
+   - job_name: gitlab_exporter_sidekiq
      metrics_path: "/sidekiq"
      static_configs:
      - targets:
        - 1.1.1.1:9168
-   - job_name: gitlab_monitor_process
+   - job_name: gitlab_exporter_process
      metrics_path: "/process"
      static_configs:
      - targets:
@@ -263,11 +263,11 @@ The PgBouncer exporter allows you to measure various PgBouncer metrics.
 
 [➔ Read more about the PgBouncer exporter.](pgbouncer_exporter.md)
 
-### GitLab monitor exporter
+### GitLab exporter
 
-The GitLab monitor exporter allows you to measure various GitLab metrics, pulled from Redis and the database.
+The GitLab exporter allows you to measure various GitLab metrics, pulled from Redis and the database.
 
-[➔ Read more about the GitLab monitor exporter.](gitlab_monitor_exporter.md)
+[➔ Read more about the GitLab exporter.](gitlab_exporter.md)
 
 ## Configuring Prometheus to monitor Kubernetes
 

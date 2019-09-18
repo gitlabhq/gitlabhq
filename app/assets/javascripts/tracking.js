@@ -10,12 +10,8 @@ const DEFAULT_SNOWPLOW_OPTIONS = {
   forceSecureTracker: true,
   eventMethod: 'post',
   contexts: { webPage: true },
-  // Page tracking tracks a single event when the page loads.
-  pageTrackingEnabled: false,
-  // Activity tracking tracks when a user is still interacting with the page.
-  // Events like scrolling and mouse movements are used to determine if the
-  // user has the tab active and is still actively engaging.
-  activityTrackingEnabled: false,
+  formTracking: false,
+  linkClickTracking: false,
 };
 
 const extractData = (el, opts = {}) => {
@@ -96,6 +92,9 @@ export function initUserTracking() {
   const opts = Object.assign({}, DEFAULT_SNOWPLOW_OPTIONS, window.snowplowOptions);
   window.snowplow('newTracker', opts.namespace, opts.hostname, opts);
 
-  if (opts.activityTrackingEnabled) window.snowplow('enableActivityTracking', 30, 30);
-  if (opts.pageTrackingEnabled) window.snowplow('trackPageView'); // must be after enableActivityTracking
+  window.snowplow('enableActivityTracking', 30, 30);
+  window.snowplow('trackPageView'); // must be after enableActivityTracking
+
+  if (opts.formTracking) window.snowplow('enableFormTracking');
+  if (opts.linkClickTracking) window.snowplow('enableLinkClickTracking');
 }

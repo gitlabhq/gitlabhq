@@ -1,6 +1,6 @@
 # Service Desk **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/149) in [GitLab Premium 9.1](https://about.gitlab.com/2017/04/22/gitlab-9-1-released/#service-desk-eep).
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/149) in [GitLab Premium 9.1](https://about.gitlab.com/2017/04/22/gitlab-9-1-released/#service-desk-eep).
 
 ## Overview
 
@@ -115,7 +115,10 @@ you can read and write comments as you normally do:
 
 ![Service Desk issue thread](img/service_desk_thread.png)
 
-> Note that the project's visibility (private, internal, public) does not affect Service Desk.
+Note that:
+
+- The project's visibility (private, internal, public) does not affect Service Desk.
+- The path to the project, including its group or namespace, will be shown on emails.
 
 ### Support Bot user
 

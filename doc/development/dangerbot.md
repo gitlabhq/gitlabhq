@@ -15,9 +15,9 @@ to the existing rules, then this is the document for you.
 
 ## Operation
 
-On startup, Danger reads a [`Dangerfile`](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/Dangerfile)
+On startup, Danger reads a [`Dangerfile`](https://gitlab.com/gitlab-org/gitlab-foss/blob/master/Dangerfile)
 from the project root. GitLab's Danger code is decomposed into a set of helpers
-and plugins, all within the [`danger/`](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/danger/)
+and plugins, all within the [`danger/`](https://gitlab.com/gitlab-org/gitlab-foss/tree/master/danger/)
 subdirectory, so ours just tells Danger to load it all. Danger will then run
 each plugin against the merge request, collecting the output from each. A plugin
 may output notifications, warnings, or errors, all of which are copied to the

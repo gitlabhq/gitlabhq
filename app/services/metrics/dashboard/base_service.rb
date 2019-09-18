@@ -7,6 +7,13 @@ module Metrics
     class BaseService < ::BaseService
       include Gitlab::Metrics::Dashboard::Errors
 
+      STAGES = ::Gitlab::Metrics::Dashboard::Stages
+      SEQUENCE = [
+        STAGES::CommonMetricsInserter,
+        STAGES::EndpointInserter,
+        STAGES::Sorter
+      ].freeze
+
       def get_dashboard
         return error('Insufficient permissions.', :unauthorized) unless allowed?
 
@@ -31,14 +38,20 @@ module Metrics
       # Determines whether users should be able to view
       # dashboards at all.
       def allowed?
-        Ability.allowed?(current_user, :read_environment, project)
+        if params[:environment]
+          Ability.allowed?(current_user, :read_environment, project)
+        elsif params[:cluster]
+          true # Authorization handled at controller level
+        else
+          false
+        end
       end
 
       # Returns a new dashboard Hash, supplemented with DB info
       def process_dashboard
-        Gitlab::Metrics::Dashboard::Processor
-          .new(project, params[:environment], raw_dashboard)
-          .process(insert_project_metrics: insert_project_metrics?)
+        ::Gitlab::Metrics::Dashboard::Processor
+          .new(project, raw_dashboard, sequence, params)
+          .process
       end
 
       # @return [String] Relative filepath of the dashboard yml
@@ -56,12 +69,11 @@ module Metrics
         raise NotImplementedError
       end
 
-      # Determines whether custom metrics should be included
-      # in the processed output.
-      # @return [Boolean]
-      def insert_project_metrics?
-        false
+      def sequence
+        SEQUENCE
       end
     end
   end
 end
+
+Metrics::Dashboard::BaseService.prepend_if_ee('EE::Metrics::Dashboard::BaseService')

@@ -209,8 +209,8 @@ This is the more advanced acceleration technique we have in place.
 Workhorse asks rails for temporary pre-signed object storage URLs and directly uploads to object storage.
 
 In this setup an extra rails route needs to be implemented in order to handle authorization,
-you can see an example of this in [`Projects::LfsStorageController`](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/app/controllers/projects/lfs_storage_controller.rb)
-and [its routes](https://gitlab.com/gitlab-org/gitlab-ce/blob/v12.2.0/config/routes/git_http.rb#L31-32).
+you can see an example of this in [`Projects::LfsStorageController`](https://gitlab.com/gitlab-org/gitlab-foss/blob/master/app/controllers/projects/lfs_storage_controller.rb)
+and [its routes](https://gitlab.com/gitlab-org/gitlab-foss/blob/v12.2.0/config/routes/git_http.rb#L31-32).
 
 **note:** this will fallback to _Workhorse disk acceleration_ when object storage is not enabled in the gitlab instance. The answer to the `/authorize` call will only contain a file system path.
 

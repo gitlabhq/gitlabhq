@@ -44,7 +44,7 @@ records should use stubs/doubles as much as possible.
 | `config/routes.rb`, `config/routes/` | `spec/routing/` | RSpec | |
 | `config/puma.example.development.rb`, `config/unicorn.rb.example` | `spec/rack_servers/` | RSpec | |
 | `db/` | `spec/db/` | RSpec | |
-| `db/{post_,}migrate/` | `spec/migrations/` | RSpec | More details at [`spec/migrations/README.md`](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/spec/migrations/README.md). |
+| `db/{post_,}migrate/` | `spec/migrations/` | RSpec | More details at [`spec/migrations/README.md`](https://gitlab.com/gitlab-org/gitlab/blob/master/spec/migrations/README.md). |
 | `Gemfile` | `spec/dependencies/`, `spec/sidekiq/` | RSpec | |
 | `lib/` | `spec/lib/` | RSpec | |
 | `lib/tasks/` | `spec/tasks/` | RSpec | |
@@ -81,7 +81,7 @@ controller.instance_variable_set(:@user, user)
 
 and use methods which are deprecated in Rails 5 ([#23768]).
 
-[#23768]: https://gitlab.com/gitlab-org/gitlab-ce/issues/23768
+[#23768]: https://gitlab.com/gitlab-org/gitlab-foss/issues/23768
 
 ### About Karma
 
@@ -190,8 +190,8 @@ confused with the application's [unit tests](#unit-tests) or
 [GitLab Pages]: https://gitlab.com/gitlab-org/gitlab-pages
 [GitLab Runner]: https://gitlab.com/gitlab-org/gitlab-runner
 [GitLab Omnibus]: https://gitlab.com/gitlab-org/omnibus-gitlab
-[part of GitLab Rails]: https://gitlab.com/gitlab-org/gitlab-ce/tree/master/qa
-[test plan]: https://gitlab.com/gitlab-org/gitlab-ce/tree/master/.gitlab/issue_templates/Test%20plan.md
+[part of GitLab Rails]: https://gitlab.com/gitlab-org/gitlab-foss/tree/master/qa
+[test plan]: https://gitlab.com/gitlab-org/gitlab/tree/master/.gitlab/issue_templates/Test%20plan.md
 [Product category]: https://about.gitlab.com/handbook/product/categories/
 
 ### Smoke tests

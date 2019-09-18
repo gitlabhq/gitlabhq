@@ -11,7 +11,7 @@ import CommitItem from './commit_item.vue';
  *
  * This Component was cloned from a HAML view. For the time being,
  * they coexist, but there is an issue to remove the duplication.
- * https://gitlab.com/gitlab-org/gitlab-ce/issues/51613
+ * https://gitlab.com/gitlab-org/gitlab-foss/issues/51613
  *
  */
 export default {

@@ -66,13 +66,13 @@ suitable to your workflow:
 
 ## Editing approvals **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/1979) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.8.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/1979) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.8.
 
 CAUTION: **Caution:**
-There was a [regression affecting this feature in 11.8](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/9648). We recommend upgrading _at least_ to version 11.8.2. to avoid any issues.
+There was a [regression affecting this feature in 11.8](https://gitlab.com/gitlab-org/gitlab/merge_requests/9648). We recommend upgrading _at least_ to version 11.8.2. to avoid any issues.
 
 NOTE: **Note:**
-In 11.8 this feature does not work in [private groups](https://gitlab.com/gitlab-org/gitlab-ee/issues/10356).
+In 11.8 this feature does not work in [private groups](https://gitlab.com/gitlab-org/gitlab/issues/10356).
 
 For GitLab Premium, [multiple approver rules](#multiple-approval-rules-premium) can be configured. To configure the merge
 request approval rules:
@@ -87,7 +87,7 @@ request approval rules:
 
 ## Multiple approval rules **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/1979) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.8.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/1979) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.8.
 
 For GitLab Premium, a merge request's overall approval status is determined by a set of rules. Each rule contains:
 
@@ -107,7 +107,7 @@ any [eligible approver](#eligible-approvers) may approve.
 The following can approve merge requests:
 
 - Users being added as approvers at project or merge request level.
-- [Code owners](../code_owners.md) related to the merge request ([introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/7933) in [GitLab Starter](https://about.gitlab.com/pricing/) 11.5).
+- [Code owners](../code_owners.md) related to the merge request ([introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/7933) in [GitLab Starter](https://about.gitlab.com/pricing/) 11.5).
 
 An individual user can be added as an approver for a project if they are a member of:
 
@@ -115,7 +115,7 @@ An individual user can be added as an approver for a project if they are a membe
 - The project's immediate parent group.
 - A group that has access to the project via a [share](../members/share_project_with_groups.md).
 
-A group can also be added as an approver. [In the future](https://gitlab.com/gitlab-org/gitlab-ee/issues/2048),
+A group can also be added as an approver. [In the future](https://gitlab.com/gitlab-org/gitlab/issues/2048),
 group approvers will be restricted.
 
 If a user is added as an individual approver and is also part of a group approver,
@@ -170,7 +170,7 @@ or a [failed CI/CD pipeline](merge_when_pipeline_succeeds.md).
 
 ## Code Owners approvals **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/4418) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.9.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/4418) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.9.
 
 It is possible to require at least one approval for each entry in the
 [`CODEOWNERS` file](../code_owners.md) that matches a file changed in
@@ -269,7 +269,7 @@ turn this setting to off by unchecking the box and saving the changes.
 
 ## Allowing merge request authors to approve their own merge requests
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/3349) in [GitLab Starter](https://about.gitlab.com/pricing/) 11.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/3349) in [GitLab Starter](https://about.gitlab.com/pricing/) 11.3.
 
 You can allow merge request authors to self-approve merge requests by
 enabling it [at the project level](#editing-approvals). Authors
@@ -282,7 +282,7 @@ approve their merge request.
 
 ## Prevent approval of merge requests by their committers
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/10441) in [GitLab Starter](https://about.gitlab.com/pricing/) 11.10.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/10441) in [GitLab Starter](https://about.gitlab.com/pricing/) 11.10.
 
 You can prevent users that have committed to a merge request from approving it by
 enabling [**Prevent approval of merge requests by their committers**](#prevent-approval-of-merge-requests-by-their-committers).
@@ -293,7 +293,7 @@ enabling [**Prevent approval of merge requests by their committers**](#prevent-a
 
 ## Require authentication when approving a merge request **(STARTER)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/5981) in [GitLab Starter](https://about.gitlab.com/pricing/) 12.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/5981) in [GitLab Starter](https://about.gitlab.com/pricing/) 12.0.
 
 You can force the approver to enter a password in order to authenticate who is approving the merge request by
 enabling **Require user password to approve**. This enables an Electronic Signature
@@ -320,7 +320,7 @@ Approvers are suggested for merge requests based on the previous authors of the 
 
 ## Filtering merge requests by approvers
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/9468) in [GitLab Starter](https://about.gitlab.com/pricing/) 11.9.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/9468) in [GitLab Starter](https://about.gitlab.com/pricing/) 11.9.
 
 To filter merge requests by an individual approver, you can type (or select from
 the dropdown) `approver` and select the user.

@@ -4,7 +4,7 @@ type: reference, howto
 
 # Container Scanning **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/3672)
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/3672)
 in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.4.
 
 ## Overview
@@ -63,7 +63,7 @@ To enable Container Scanning in your pipeline, you need:
 
 For GitLab 11.9 and later, to enable Container Scanning, you must
 [include](../../../ci/yaml/README.md#includetemplate) the
-[`Container-Scanning.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/lib/gitlab/ci/templates/Security/Container-Scanning.gitlab-ci.yml)
+[`Container-Scanning.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/Container-Scanning.gitlab-ci.yml)
 that's provided as a part of your GitLab installation.
 For GitLab versions earlier than 11.9, you can copy and use the job as defined
 in that template.
@@ -176,4 +176,4 @@ docker: Error response from daemon: failed to copy xattrs: failed to set xattr "
 This is a result of a bug in Docker which is now [fixed](https://github.com/containerd/continuity/pull/138 "fs: add WithAllowXAttrErrors CopyOpt").
 To prevent the error, ensure the Docker version that the Runner is using is
 `18.09.03` or higher. For more information, see
-[issue #10241](https://gitlab.com/gitlab-org/gitlab-ee/issues/10241 "Investigate why Container Scanning is not working with NFS mounts").
+[issue #10241](https://gitlab.com/gitlab-org/gitlab/issues/10241 "Investigate why Container Scanning is not working with NFS mounts").

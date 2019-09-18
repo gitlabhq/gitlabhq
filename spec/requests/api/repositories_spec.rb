@@ -457,7 +457,7 @@ describe API::Repositories do
       end
     end
 
-    # Regression: https://gitlab.com/gitlab-org/gitlab-ce/issues/45363
+    # Regression: https://gitlab.com/gitlab-org/gitlab-foss/issues/45363
     describe 'Links header contains working URLs when no `order_by` nor `sort` is given' do
       let(:project) { create(:project, :public, :repository) }
       let(:current_user) { nil }

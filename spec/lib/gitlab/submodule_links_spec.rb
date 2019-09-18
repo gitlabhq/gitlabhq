@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe Gitlab::SubmoduleLinks do
-  let(:submodule_item) { double(id: 'hash', path: 'gitlab-ce') }
+  let(:submodule_item) { double(id: 'hash', path: 'gitlab-foss') }
   let(:repo) { double }
   let(:links) { described_class.new(repo) }
 
@@ -32,11 +32,11 @@ describe Gitlab::SubmoduleLinks do
 
     context 'when the submodule is known' do
       before do
-        stub_urls({ 'gitlab-ce' => 'git@gitlab.com:gitlab-org/gitlab-ce.git' })
+        stub_urls({ 'gitlab-foss' => 'git@gitlab.com:gitlab-org/gitlab-foss.git' })
       end
 
       it 'returns links' do
-        expect(subject).to eq(['https://gitlab.com/gitlab-org/gitlab-ce', 'https://gitlab.com/gitlab-org/gitlab-ce/tree/hash'])
+        expect(subject).to eq(['https://gitlab.com/gitlab-org/gitlab-foss', 'https://gitlab.com/gitlab-org/gitlab-foss/tree/hash'])
       end
     end
   end

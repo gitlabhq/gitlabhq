@@ -9,7 +9,7 @@ describe Gitlab::Ci::Config::External::Mapper do
   set(:user) { create(:user) }
 
   let(:local_file) { '/lib/gitlab/ci/templates/non-existent-file.yml' }
-  let(:remote_url) { 'https://gitlab.com/gitlab-org/gitlab-ce/blob/1234/.gitlab-ci-1.yml' }
+  let(:remote_url) { 'https://gitlab.com/gitlab-org/gitlab-foss/blob/1234/.gitlab-ci-1.yml' }
   let(:template_file) { 'Auto-DevOps.gitlab-ci.yml' }
   let(:expandset) { Set.new }
 

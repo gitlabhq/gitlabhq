@@ -4,7 +4,7 @@
 
 GitLab 8.12 has a completely redesigned [job permissions] system. You can find
 all discussion and all our concerns when choosing the current approach in issue
-[#18994](https://gitlab.com/gitlab-org/gitlab-ce/issues/18994).
+[#18994](https://gitlab.com/gitlab-org/gitlab-foss/issues/18994).
 
 Jobs permissions should be tightly integrated with the permissions of a user
 who is triggering a job.
@@ -68,7 +68,7 @@ Let's consider the following scenario:
 A unique job token is generated for each job and provides the user read
 access all projects that would be normally accessible to the user creating that
 job. The unique job token does not have any write permissions, but there
-is a [proposal to add support](https://gitlab.com/gitlab-org/gitlab-ce/issues/18106).
+is a [proposal to add support](https://gitlab.com/gitlab-org/gitlab-foss/issues/18106).
 
 We try to make sure that this token doesn't leak by:
 
@@ -102,7 +102,7 @@ allowing pulling and pushing Docker images from within the CI job.
 GitLab would create a special checkout URL like:
 
 ```
-https://gitlab-ci-token:<project-runners-token>/gitlab.com/gitlab-org/gitlab-ce.git
+https://gitlab-ci-token:<project-runners-token>/gitlab.com/gitlab-org/gitlab-foss.git
 ```
 
 And then the users could also use it in their CI jobs all Docker related
@@ -229,15 +229,15 @@ to projects and their project permissions.
 
 ### API
 
-GitLab API cannot be used via `CI_JOB_TOKEN` but there is a [proposal](https://gitlab.com/gitlab-org/gitlab-ce/issues/29566)
+GitLab API cannot be used via `CI_JOB_TOKEN` but there is a [proposal](https://gitlab.com/gitlab-org/gitlab-foss/issues/29566)
 to support it.
 
 [job permissions]: ../permissions.md#job-permissions
-[comment]: https://gitlab.com/gitlab-org/gitlab-ce/issues/22484#note_16648302
+[comment]: https://gitlab.com/gitlab-org/gitlab-foss/issues/22484#note_16648302
 [gitsub]: ../../ci/git_submodules.md
 [https]: ../admin_area/settings/visibility_and_access_controls.md#enabled-git-access-protocols
 [triggers]: ../../ci/triggers/README.md#ci-job-token
-[update-docs]: https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/update
+[update-docs]: https://gitlab.com/gitlab-org/gitlab-foss/tree/master/doc/update
 [workhorse]: https://gitlab.com/gitlab-org/gitlab-workhorse
 [jobenv]: ../../ci/variables/README.md#predefined-environment-variables
 [2fa]: ../profile/account/two_factor_authentication.md

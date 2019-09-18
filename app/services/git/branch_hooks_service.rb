@@ -115,7 +115,7 @@ module Git
 
     # It's not sufficient to just check for a blank SHA as it's possible for the
     # branch to be pushed, but for the `post-receive` hook to never run:
-    # https://gitlab.com/gitlab-org/gitlab-ce/issues/59257
+    # https://gitlab.com/gitlab-org/gitlab-foss/issues/59257
     def creating_branch?
       strong_memoize(:creating_branch) do
         Gitlab::Git.blank_ref?(params[:oldrev]) ||

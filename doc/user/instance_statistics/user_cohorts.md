@@ -1,6 +1,6 @@
 # Cohorts
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/23361)
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/23361)
 in GitLab 9.1.
 
 As a benefit of having the [usage ping active](../admin_area/settings/usage_statistics.md),
@@ -25,4 +25,4 @@ How do we measure the activity of users? GitLab considers a user active if:
 
 - The user signs in.
 - The user has Git activity (whether push or pull).
-- The user visits pages related to Dashboards, Projects, Issues and Merge Requests ([introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/54947) in GitLab 11.8).
+- The user visits pages related to Dashboards, Projects, Issues and Merge Requests ([introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/54947) in GitLab 11.8).

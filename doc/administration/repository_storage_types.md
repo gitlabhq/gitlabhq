@@ -195,7 +195,7 @@ LFS Objects implements a similar storage pattern using 2 chars, 2 level folders,
 They are also S3 compatible since **10.0** (GitLab Premium), and available in GitLab Core since **10.7**.
 
 [ce-2821]: https://gitlab.com/gitlab-com/infrastructure/issues/2821
-[ce-28283]: https://gitlab.com/gitlab-org/gitlab-ce/issues/28283
+[ce-28283]: https://gitlab.com/gitlab-org/gitlab-foss/issues/28283
 [rake/migrate-to-hashed]: raketasks/storage.md#migrate-existing-projects-to-hashed-storage
 [storage-paths]: repository_storage_types.md
 [gitaly]: gitaly/index.md

@@ -10,7 +10,7 @@ You can enter these commands while creating a new issue or merge request, or
 in comments of issues, epics, merge requests, and commits. Each command should be
 on a separate line in order to be properly detected and executed. Once executed,
 
-> From [GitLab 12.1](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/26672), an alert is displayed when a quick action is successfully applied.
+> From [GitLab 12.1](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/26672), an alert is displayed when a quick action is successfully applied.
 
 ## Quick Actions for issues, merge requests and epics
 
@@ -70,10 +70,10 @@ The following quick actions are applicable to descriptions, discussions and thre
 | `/wip`                                |       | ✓             |      | Toggle the Work In Progress status |
 | `/approve`                            |       | ✓             |      | Approve the merge request |
 | `/merge`                              |       | ✓             |      | Merge (when pipeline succeeds) |
-| `/child_epic <epic>`                  |       |               | ✓    | Add child epic to `<epic>`. The `<epic>` value should be in the format of `&epic`, `group&epic`, or a URL to an epic. ([Introduced in GitLab 12.0](https://gitlab.com/gitlab-org/gitlab-ee/issues/7330)) **(ULTIMATE)** |
-| `/remove_child_epic <epic>`           |       |               | ✓    | Remove child epic from `<epic>`. The `<epic>` value should be in the format of `&epic`, `group&epic`, or a URL to an epic. ([Introduced in GitLab 12.0](https://gitlab.com/gitlab-org/gitlab-ee/issues/7330)) **(ULTIMATE)** |
-| `/parent_epic <epic>`                 |       |               | ✓    | Set parent epic to `<epic>`. The `<epic>` value should be in the format of `&epic`, `group&epic`, or a URL to an epic. ([introduced in GitLab 12.1](https://gitlab.com/gitlab-org/gitlab-ee/issues/10556)) **(ULTIMATE)** |
-| `/remove_parent_epic`                 |       |               | ✓    | Remove parent epic from epic ([introduced in GitLab 12.1](https://gitlab.com/gitlab-org/gitlab-ee/issues/10556)) **(ULTIMATE)** |
+| `/child_epic <epic>`                  |       |               | ✓    | Add child epic to `<epic>`. The `<epic>` value should be in the format of `&epic`, `group&epic`, or a URL to an epic. ([Introduced in GitLab 12.0](https://gitlab.com/gitlab-org/gitlab/issues/7330)) **(ULTIMATE)** |
+| `/remove_child_epic <epic>`           |       |               | ✓    | Remove child epic from `<epic>`. The `<epic>` value should be in the format of `&epic`, `group&epic`, or a URL to an epic. ([Introduced in GitLab 12.0](https://gitlab.com/gitlab-org/gitlab/issues/7330)) **(ULTIMATE)** |
+| `/parent_epic <epic>`                 |       |               | ✓    | Set parent epic to `<epic>`. The `<epic>` value should be in the format of `&epic`, `group&epic`, or a URL to an epic. ([introduced in GitLab 12.1](https://gitlab.com/gitlab-org/gitlab/issues/10556)) **(ULTIMATE)** |
+| `/remove_parent_epic`                 |       |               | ✓    | Remove parent epic from epic ([introduced in GitLab 12.1](https://gitlab.com/gitlab-org/gitlab/issues/10556)) **(ULTIMATE)** |
 
 ## Autocomplete characters
 

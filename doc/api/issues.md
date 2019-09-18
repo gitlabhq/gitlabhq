@@ -1564,7 +1564,7 @@ Example response:
 }
 ```
 
-[ce-13004]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/13004
-[ce-14016]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/14016
-[ce-17042]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/17042
-[ce-18935]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/18935
+[ce-13004]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/13004
+[ce-14016]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/14016
+[ce-17042]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/17042
+[ce-18935]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/18935

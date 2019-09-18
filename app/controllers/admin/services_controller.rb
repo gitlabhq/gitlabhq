@@ -46,6 +46,6 @@ class Admin::ServicesController < Admin::ApplicationController
   # rubocop: enable CodeReuse/ActiveRecord
 
   def whitelist_query_limiting
-    Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42430')
+    Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-foss/issues/42430')
   end
 end

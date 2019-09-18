@@ -29,7 +29,7 @@ class Import::GithubController < Import::BaseController
 
   def status
     # Request repos to display error page if provider token is invalid
-    # Improving in https://gitlab.com/gitlab-org/gitlab-ce/issues/55585
+    # Improving in https://gitlab.com/gitlab-org/gitlab-foss/issues/55585
     client_repos
 
     respond_to do |format|

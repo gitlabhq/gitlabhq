@@ -235,7 +235,6 @@ module ProjectsHelper
   #
   # If no limit is applied we'll just issue a COUNT since the result set could
   # be too large to load into memory.
-  # rubocop: disable CodeReuse/ActiveRecord
   def any_projects?(projects)
     return projects.any? if projects.is_a?(Array)
 
@@ -245,10 +244,9 @@ module ProjectsHelper
       projects.except(:offset).any?
     end
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   # TODO: Remove this method when removing the feature flag
-  # https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/11209#note_162234863
+  # https://gitlab.com/gitlab-org/gitlab/merge_requests/11209#note_162234863
   # make sure to remove from the EE specific controller as well: ee/app/controllers/ee/dashboard/projects_controller.rb
   def show_projects?(projects, params)
     Feature.enabled?(:project_list_filter_bar) || !!(params[:personal] || params[:name] || any_projects?(projects))

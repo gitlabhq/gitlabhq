@@ -367,4 +367,4 @@ Example response:
 }
 ```
 
-[ee-6448]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/6448
+[ee-6448]: https://gitlab.com/gitlab-org/gitlab/merge_requests/6448

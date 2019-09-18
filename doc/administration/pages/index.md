@@ -8,7 +8,7 @@ description: 'Learn how to administer GitLab Pages.'
 > - Custom CNAMEs with TLS support were [introduced][ee-173] in GitLab EE 8.5.
 > - GitLab Pages [was ported][ce-14605] to Community Edition in GitLab 8.17.
 > - Support for subgroup project's websites was
->   [introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/30548) in GitLab 11.8.
+>   [introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/30548) in GitLab 11.8.
 
 GitLab Pages allows for hosting of static sites. It must be configured by an
 administrator. Separate [user documentation][pages-userguide] is available.
@@ -267,7 +267,7 @@ This setting is enabled by default.
 
 ### Let's Encrypt integration
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/28996) in GitLab 12.1.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/28996) in GitLab 12.1.
 
 [GitLab Pages' Let's Encrypt integration](../../user/project/pages/custom_domains_ssl_tls_certification/lets_encrypt_integration.md)
 allows users to add Let's Encrypt SSL certificates for GitLab Pages
@@ -284,7 +284,7 @@ To enable it, you'll need to:
 
 ### Access control
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/33422) in GitLab 11.5.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/33422) in GitLab 11.5.
 
 GitLab Pages access control can be configured per-project, and allows access to a Pages
 site to be controlled based on a user's membership to that project.
@@ -443,12 +443,12 @@ latest previous version.
 
 ---
 
-**GitLab 8.17 ([documentation](https://gitlab.com/gitlab-org/gitlab-ce/blob/8-17-stable/doc/administration/pages/index.md))**
+**GitLab 8.17 ([documentation](https://gitlab.com/gitlab-org/gitlab-foss/blob/8-17-stable/doc/administration/pages/index.md))**
 
 - GitLab Pages were ported to Community Edition in GitLab 8.17.
 - Documentation was refactored to be more modular and easy to follow.
 
-**GitLab 8.5 ([documentation](https://gitlab.com/gitlab-org/gitlab-ee/blob/8-5-stable-ee/doc/pages/administration.md))**
+**GitLab 8.5 ([documentation](https://gitlab.com/gitlab-org/gitlab/blob/8-5-stable-ee/doc/pages/administration.md))**
 
 - In GitLab 8.5 we introduced the [gitlab-pages][] daemon which is now the
   recommended way to set up GitLab Pages.
@@ -457,16 +457,16 @@ latest previous version.
 - Custom CNAME and TLS certificates support.
 - Documentation was moved to one place.
 
-**GitLab 8.3 ([documentation](https://gitlab.com/gitlab-org/gitlab-ee/blob/8-3-stable-ee/doc/pages/administration.md))**
+**GitLab 8.3 ([documentation](https://gitlab.com/gitlab-org/gitlab/blob/8-3-stable-ee/doc/pages/administration.md))**
 
 - GitLab Pages feature was introduced.
 
 [backup]: ../../raketasks/backup_restore.md
-[ce-14605]: https://gitlab.com/gitlab-org/gitlab-ce/issues/14605
-[ee-80]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/80
-[ee-173]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/173
+[ce-14605]: https://gitlab.com/gitlab-org/gitlab-foss/issues/14605
+[ee-80]: https://gitlab.com/gitlab-org/gitlab/merge_requests/80
+[ee-173]: https://gitlab.com/gitlab-org/gitlab/merge_requests/173
 [gitlab pages daemon]: https://gitlab.com/gitlab-org/gitlab-pages
-[NGINX configs]: https://gitlab.com/gitlab-org/gitlab-ee/tree/8-5-stable-ee/lib/support/nginx
+[NGINX configs]: https://gitlab.com/gitlab-org/gitlab/tree/8-5-stable-ee/lib/support/nginx
 [pages-readme]: https://gitlab.com/gitlab-org/gitlab-pages/blob/master/README.md
 [pages-userguide]: ../../user/project/pages/index.md
 [reconfigure]: ../restart_gitlab.md#omnibus-gitlab-reconfigure

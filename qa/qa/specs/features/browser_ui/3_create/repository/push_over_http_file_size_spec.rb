@@ -70,7 +70,7 @@ module QA
       # attempt to push if it fails. Most of the time the setting is updated in
       # under a minute, i.e., in fewer than 6 attempts with a 10 second sleep
       # between attempts.
-      # See https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/30233#note_188616863
+      # See https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/30233#note_188616863
       def retry_on_fail
         Support::Retrier.retry_on_exception(max_attempts: 6, reload_page: nil, sleep_interval: 10) do
           yield

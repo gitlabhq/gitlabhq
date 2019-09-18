@@ -14,7 +14,7 @@ module RuboCop
       # A developer might otherwise mistakenly assume that a value in
       # `ApplicationSetting.defaults` is sufficient.
       #
-      # See https://gitlab.com/gitlab-org/gitlab-ee/issues/2750 for more
+      # See https://gitlab.com/gitlab-org/gitlab/issues/2750 for more
       # information.
       class SaferBooleanColumn < RuboCop::Cop::Cop
         include MigrationHelpers

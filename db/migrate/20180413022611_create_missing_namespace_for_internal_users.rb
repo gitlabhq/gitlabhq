@@ -6,7 +6,7 @@ class CreateMissingNamespaceForInternalUsers < ActiveRecord::Migration[4.2]
       create_namespace(id, username)
       # When testing locally I've noticed that these internal users are missing
       # the notification email, for more details visit the below link:
-      # https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/18357#note_68327560
+      # https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/18357#note_68327560
       set_notification_email(id)
     end
   end

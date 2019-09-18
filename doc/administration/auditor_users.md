@@ -83,6 +83,6 @@ instance, with the following permissions/restrictions:
   - Cannot merge a merge request
   - Cannot create project snippets
 
-[ee-998]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/998
+[ee-998]: https://gitlab.com/gitlab-org/gitlab/merge_requests/998
 [eep]: https://about.gitlab.com/pricing/
 [permissions]: ../user/permissions.md

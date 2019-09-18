@@ -31,5 +31,5 @@ sudo gitlab-rake gitlab:import_export:data
 bundle exec rake gitlab:import_export:data RAILS_ENV=production
 ```
 
-[ce-3050]: https://gitlab.com/gitlab-org/gitlab-ce/issues/3050
+[ce-3050]: https://gitlab.com/gitlab-org/gitlab-foss/issues/3050
 [tmp]: ../../development/shared_files.md

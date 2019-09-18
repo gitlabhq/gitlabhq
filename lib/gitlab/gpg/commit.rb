@@ -80,7 +80,7 @@ module Gitlab
 
       def gpgme_signature
         GPGME::Crypto.new.verify(signature_text, signed_text: signed_text) do |verified_signature|
-          # Return the first signature for now: https://gitlab.com/gitlab-org/gitlab-ce/issues/54932
+          # Return the first signature for now: https://gitlab.com/gitlab-org/gitlab-foss/issues/54932
           break verified_signature
         end
       rescue GPGME::Error

@@ -277,10 +277,10 @@ class Projects::IssuesController < Projects::ApplicationController
   def whitelist_query_limiting
     # Also see the following issues:
     #
-    # 1. https://gitlab.com/gitlab-org/gitlab-ce/issues/42423
-    # 2. https://gitlab.com/gitlab-org/gitlab-ce/issues/42424
-    # 3. https://gitlab.com/gitlab-org/gitlab-ce/issues/42426
-    Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42422')
+    # 1. https://gitlab.com/gitlab-org/gitlab-foss/issues/42423
+    # 2. https://gitlab.com/gitlab-org/gitlab-foss/issues/42424
+    # 3. https://gitlab.com/gitlab-org/gitlab-foss/issues/42426
+    Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-foss/issues/42422')
   end
 end
 

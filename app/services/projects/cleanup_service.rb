@@ -68,7 +68,7 @@ module Projects
       # TODO: ensure the highlight cache is removed immediately. It's too hard
       # to calculate the Redis keys at present.
       #
-      # https://gitlab.com/gitlab-org/gitlab-ce/issues/61115
+      # https://gitlab.com/gitlab-org/gitlab-foss/issues/61115
     end
 
     def cleanup_note_diff_files(old_commit_shas)

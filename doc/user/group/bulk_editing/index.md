@@ -1,8 +1,8 @@
 # Bulk editing issues, merge requests, and epics at the group level **(PREMIUM)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/7249) for issues in [GitLab Premium](https://about.gitlab.com/pricing/) 12.1.
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/12719) for merge requests in [GitLab Premium](https://about.gitlab.com/pricing/) 12.2.
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/7250) for epics in [GitLab Premium](https://about.gitlab.com/pricing/) 12.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/7249) for issues in [GitLab Premium](https://about.gitlab.com/pricing/) 12.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/12719) for merge requests in [GitLab Premium](https://about.gitlab.com/pricing/) 12.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/7250) for epics in [GitLab Premium](https://about.gitlab.com/pricing/) 12.2.
 
 ## Editing milestones and labels
 

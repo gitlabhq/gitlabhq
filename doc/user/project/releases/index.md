@@ -4,7 +4,7 @@ type: reference, howto
 
 # Releases
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/41766) in GitLab 11.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/41766) in GitLab 11.7.
 
 It's typical to create a [Git tag](../../../university/training/topics/tags.md) at
 the moment of release to introduce a checkpoint in your source code

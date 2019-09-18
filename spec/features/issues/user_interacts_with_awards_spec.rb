@@ -243,7 +243,7 @@ describe 'User interacts with awards' do
           wait_for_requests
         end
 
-        # Regression test: https://gitlab.com/gitlab-org/gitlab-ce/issues/29529
+        # Regression test: https://gitlab.com/gitlab-org/gitlab-foss/issues/29529
         it 'does not shows a 500 page', :js do
           expect(page).to have_text(issue.title)
         end

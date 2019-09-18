@@ -46,7 +46,7 @@ module Gitlab
         # this was named `#authorized?`, however it conflicts with the native
         # graphql gem version
         # TODO consider adopting the gem's built in authorization system
-        # https://gitlab.com/gitlab-org/gitlab-ee/issues/13984
+        # https://gitlab.com/gitlab-org/gitlab/issues/13984
         def authorized_resource?(object)
           # Sanity check. We don't want to accidentally allow a developer to authorize
           # without first adding permissions to authorize against

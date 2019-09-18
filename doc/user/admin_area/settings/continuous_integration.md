@@ -56,7 +56,7 @@ To disable the expiration, set it to `0`. The default unit is in seconds.
 
 ## Shared Runners pipeline minutes quota **(STARTER ONLY)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/1078)
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/1078)
 in GitLab Starter 8.16.
 
 If you have enabled shared Runners for your GitLab instance, you can limit their

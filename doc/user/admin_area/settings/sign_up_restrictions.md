@@ -66,5 +66,5 @@ Each scenario can be a third-level heading, e.g. `### Getting error message X`.
 If you have none to add when creating a doc, leave this section in place
 but commented out to help encourage others to add to it in the future. -->
 
-[ce-5259]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/5259
-[ce-598]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/598
+[ce-5259]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/5259
+[ce-598]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/598

@@ -177,7 +177,7 @@ module Auth
     # We still support legacy pipeline triggers which do not have associated
     # actor. New permissions model and new triggers are always associated with
     # an actor. So this should be improved once
-    # https://gitlab.com/gitlab-org/gitlab-ce/issues/37452 is resolved.
+    # https://gitlab.com/gitlab-org/gitlab-foss/issues/37452 is resolved.
     #
     def build_can_push?(requested_project)
       # Build can push only to the project from which it originates

@@ -47,14 +47,14 @@ Sometimes we need to upgrade customers from old versions of GitLab to latest, so
 
 - [Installation Methods](https://about.gitlab.com/install/):
   - [Omnibus](https://gitlab.com/gitlab-org/omnibus-gitlab/)
-  - [Docker](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/docker)
-  - [Source](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/install/installation.md)
+  - [Docker](https://gitlab.com/gitlab-org/gitlab-foss/tree/master/docker)
+  - [Source](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/install/installation.md)
 - Get yourself a Digital Ocean droplet, where you can install and maintain your own instance of GitLab
   - Ask in #infrastructure about this
   - Populate with some test data
   - Keep this up-to-date as patch and version releases become available, just like our customers would
 - Try out the following installation path
-  - [Install GitLab 4.2 from source](https://gitlab.com/gitlab-org/gitlab-ce/blob/d67117b5a185cfb15a1d7e749588ff981ffbf779/doc/install/installation.md)
+  - [Install GitLab 4.2 from source](https://gitlab.com/gitlab-org/gitlab-foss/blob/d67117b5a185cfb15a1d7e749588ff981ffbf779/doc/install/installation.md)
     - External MySQL database
     - External NGINX
   - Create some test data
@@ -63,10 +63,10 @@ Sometimes we need to upgrade customers from old versions of GitLab to latest, so
     - Groups
     - Projects
   - [Backup using our Backup rake task](../../raketasks/backup_restore.md#creating-a-backup-of-the-gitlab-system)
-  - [Upgrade to 5.0 source using our Upgrade documentation](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/doc/update/4.2-to-5.0.md)
-  - [Upgrade to 5.1 source](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/doc/update/5.0-to-5.1.md)
-  - [Upgrade to 6.0 source](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/doc/update/5.1-to-6.0.md)
-  - [Upgrade to 7.14 source](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/doc/update/6.x-or-7.x-to-7.14.md)
+  - [Upgrade to 5.0 source using our Upgrade documentation](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/update/4.2-to-5.0.md)
+  - [Upgrade to 5.1 source](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/update/5.0-to-5.1.md)
+  - [Upgrade to 6.0 source](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/update/5.1-to-6.0.md)
+  - [Upgrade to 7.14 source](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/update/6.x-or-7.x-to-7.14.md)
   - [Perform the MySQL to PostgreSQL migration to convert your backup](../../update/mysql_to_postgresql.md)
   - [Upgrade to Omnibus 7.14](https://docs.gitlab.com/omnibus/update/README.html#upgrading-from-a-non-omnibus-installation-to-an-omnibus-installation)
   - [Restore backup using our Restore rake task](../../raketasks/backup_restore.md#restore)
@@ -152,10 +152,10 @@ Some tickets need specific knowledge or a deep understanding of a particular com
 ### Learn about raising issues and fielding feature proposals
 
 - Understand what's in the pipeline and proposed features at GitLab: [Direction Page](https://about.gitlab.com/direction/)
-- Practice searching issues and filtering using [labels](https://gitlab.com/gitlab-org/gitlab-ce/labels) to find existing feature proposals and bugs
+- Practice searching issues and filtering using [labels](https://gitlab.com/gitlab-org/gitlab-foss/labels) to find existing feature proposals and bugs
 - If raising a new issue always provide a relevant label and a link to the relevant ticket in Zendesk
-- Add [customer labels](https://gitlab.com/gitlab-org/gitlab-ce/issues?label_name%5B%5D=customer) for those issues relevant to our subscribers
-- Take a look at the [existing issue templates](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md#issue-tracker) to see what is expected
+- Add [customer labels](https://gitlab.com/gitlab-org/gitlab-foss/issues?label_name%5B%5D=customer) for those issues relevant to our subscribers
+- Take a look at the [existing issue templates](https://gitlab.com/gitlab-org/gitlab/blob/master/CONTRIBUTING.md#issue-tracker) to see what is expected
 - Raise issues for bugs in a manner that would make the issue easily reproducible. A Developer or a contributor may work on your issue
 
 ### Goals
@@ -176,8 +176,8 @@ Move on to understanding some of GitLab's more advanced features. You can make u
 - Set up [GitLab CI](../../ci/quick_start/README.md)
 - Create your first [GitLab Page](../../administration/pages/index.md)
 - Get to know the GitLab Codebase by reading through the source code:
-  - Find the differences between the [EE codebase](https://gitlab.com/gitlab-org/gitlab-ce)
-     and the [CE codebase](https://gitlab.com/gitlab-org/gitlab-ce)
+  - Find the differences between the [EE codebase](https://gitlab.com/gitlab-org/gitlab-foss)
+     and the [CE codebase](https://gitlab.com/gitlab-org/gitlab-foss)
 - Ask as many questions as you can think of on the `#support` chat channel
 
 ### Get initiated for on-call duty

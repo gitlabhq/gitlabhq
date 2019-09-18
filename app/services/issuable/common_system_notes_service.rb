@@ -41,7 +41,7 @@ module Issuable
           create_task_status_note
         else
           # TODO: Show this note if non-task content was modified.
-          # https://gitlab.com/gitlab-org/gitlab-ce/issues/33577
+          # https://gitlab.com/gitlab-org/gitlab-foss/issues/33577
           create_description_change_note
         end
       end

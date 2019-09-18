@@ -13,7 +13,7 @@ module Gitlab
     #
     # We can solve this differently, see tech debt issue:
     #
-    # https://gitlab.com/gitlab-org/gitlab-ce/issues/54328
+    # https://gitlab.com/gitlab-org/gitlab-foss/issues/54328
     #
     class EncryptRunnersTokens < EncryptColumns
       def perform(model, from, to)

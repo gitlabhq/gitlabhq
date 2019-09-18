@@ -15,8 +15,8 @@ to be marked as `Accepting Merge Requests`. Please include screenshots or
 wireframes of the proposed feature if it will also change the UI.
 
 Merge requests should be submitted to the appropriate project at GitLab.com, for example
-[GitLab CE](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests),
-[GitLab EE](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests),
+[GitLab CE](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests),
+[GitLab EE](https://gitlab.com/gitlab-org/gitlab/merge_requests),
 [GitLab Runner](https://gitlab.com/gitlab-org/gitlab-runner/merge_requests),
 [GitLab Omnibus](https://gitlab.com/gitlab-org/omnibus-gitlab/merge_requests), etc.
 
@@ -140,7 +140,7 @@ When writing commit messages, please follow the guidelines below:
 - The merge request must not contain more than 10 commit messages.
 
 If the guidelines are not met, the MR will not pass the
-[Danger checks](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/danger/commit_messages/Dangerfile).
+[Danger checks](https://gitlab.com/gitlab-org/gitlab-foss/blob/master/danger/commit_messages/Dangerfile).
 For more information see [How to Write a Git Commit Message](https://chris.beams.io/posts/git-commit/).
 
 Example commit message template that can be used on your machine that embodies the above (guide for [how to apply template](https://codeinthehole.com/tips/a-useful-template-for-commit-messages/)):
@@ -244,5 +244,5 @@ request:
 1. [The upgrade guide](../../update/upgrading_from_source.md).
 1. The [GitLab Installation Guide](../../install/installation.md#1-packages-and-dependencies).
 1. The [GitLab Development Kit](https://gitlab.com/gitlab-org/gitlab-development-kit).
-1. The [CI environment preparation](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/scripts/prepare_build.sh).
+1. The [CI environment preparation](https://gitlab.com/gitlab-org/gitlab-foss/blob/master/scripts/prepare_build.sh).
 1. The [Omnibus package creator](https://gitlab.com/gitlab-org/omnibus-gitlab).

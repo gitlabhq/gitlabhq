@@ -164,7 +164,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
       result = dashboard_finder.find(
         project,
         current_user,
-        environment,
+        environment: environment,
         dashboard_path: params[:dashboard],
         **dashboard_params.to_h.symbolize_keys
       )
@@ -172,13 +172,13 @@ class Projects::EnvironmentsController < Projects::ApplicationController
       result = dashboard_finder.find(
         project,
         current_user,
-        environment,
+        environment: environment,
         dashboard_path: params[:dashboard]
       )
 
       result[:all_dashboards] = dashboard_finder.find_all_paths(project)
     else
-      result = dashboard_finder.find(project, current_user, environment)
+      result = dashboard_finder.find(project, current_user, environment: environment)
     end
 
     respond_to do |format|

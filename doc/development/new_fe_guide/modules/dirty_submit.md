@@ -1,6 +1,6 @@
 # Dirty Submit
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/21115) in GitLab 11.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/21115) in GitLab 11.3.
 
 ## Summary
 
@@ -8,7 +8,7 @@ Prevent submitting forms with no changes.
 
 Currently handles `input`, `textarea` and `select` elements.
 
-Also, see [the code](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/app/assets/javascripts/dirty_submit/)
+Also, see [the code](https://gitlab.com/gitlab-org/gitlab-foss/blob/master/app/assets/javascripts/dirty_submit/)
 within the GitLab project.
 
 ## Usage

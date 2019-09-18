@@ -54,9 +54,16 @@ absolutely no way to use the feature until it is enabled.
 In order to build a final release and present the feature for self-hosted
 users, the feature flag should be at least defaulted to **on**. If the feature
 is deemed stable and there is confidence that removing the feature flag is safe,
-consider removing the feature flag altogether. Take into consideration that such
-action can make the feature available on GitLab.com shortly after the change to
-the feature flag is merged.
+consider removing the feature flag altogether.
+
+The process for enabling features that are disabled by default can take 5-6 days
+from when the merge request is first reviewed to when the change is deployed to
+GitLab.com. However, it is recommended to allow 10-14 days for this activity to
+account for unforeseen problems.
+
+NOTE: **Note:**
+Take into consideration that such action can make the feature available on
+GitLab.com shortly after the change to the feature flag is merged.
 
 Changing the default state or removing the feature flag has to be done before
 the 22nd of the month, _at least_ 2 working days before, in order for the change

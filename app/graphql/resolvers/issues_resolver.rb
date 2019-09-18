@@ -50,7 +50,7 @@ module Resolvers
       return Issue.none if project.nil?
 
       # Will need to be be made group & namespace aware with
-      # https://gitlab.com/gitlab-org/gitlab-ce/issues/54520
+      # https://gitlab.com/gitlab-org/gitlab-foss/issues/54520
       args[:project_id] = project.id
       args[:iids] ||= [args[:iid]].compact
 

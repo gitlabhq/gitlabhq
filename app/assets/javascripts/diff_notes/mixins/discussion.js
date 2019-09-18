@@ -1,11 +1,11 @@
-/* eslint-disable object-shorthand, func-names, guard-for-in, no-restricted-syntax, */
+/* eslint-disable guard-for-in, no-restricted-syntax, */
 
 const DiscussionMixins = {
   computed: {
-    discussionCount: function() {
+    discussionCount() {
       return Object.keys(this.discussions).length;
     },
-    resolvedDiscussionCount: function() {
+    resolvedDiscussionCount() {
       let resolvedCount = 0;
 
       for (const discussionId in this.discussions) {
@@ -18,7 +18,7 @@ const DiscussionMixins = {
 
       return resolvedCount;
     },
-    unresolvedDiscussionCount: function() {
+    unresolvedDiscussionCount() {
       let unresolvedCount = 0;
 
       for (const discussionId in this.discussions) {

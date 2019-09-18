@@ -122,7 +122,7 @@ Bare repositories are **not** importable by GitLab 10.4 and later when all the f
 - Its ancestor namespaces were not renamed or transferred in GitLab 10.4 and later.
 
 There is an [open issue to add a migration to make all bare repositories
-importable](https://gitlab.com/gitlab-org/gitlab-ce/issues/41776).
+importable](https://gitlab.com/gitlab-org/gitlab-foss/issues/41776).
 
 Until then, you may wish to manually migrate repositories yourself. You can use
 [Rails console](https://docs.gitlab.com/omnibus/maintenance/#starting-a-rails-console-session)

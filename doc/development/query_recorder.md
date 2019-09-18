@@ -2,7 +2,7 @@
 
 QueryRecorder is a tool for detecting the [N+1 queries problem](https://guides.rubyonrails.org/active_record_querying.html#eager-loading-associations) from tests.
 
-> Implemented in [spec/support/query_recorder.rb](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/spec/support/helpers/query_recorder.rb) via [9c623e3e](https://gitlab.com/gitlab-org/gitlab-ce/commit/9c623e3e5d7434f2e30f7c389d13e5af4ede770a)
+> Implemented in [spec/support/query_recorder.rb](https://gitlab.com/gitlab-org/gitlab-foss/blob/master/spec/support/helpers/query_recorder.rb) via [9c623e3e](https://gitlab.com/gitlab-org/gitlab-foss/commit/9c623e3e5d7434f2e30f7c389d13e5af4ede770a)
 
 As a rule, merge requests [should not increase query counts](merge_request_performance_guidelines.md#query-counts). If you find yourself adding something like `.includes(:author, :assignee)` to avoid having `N+1` queries, consider using QueryRecorder to enforce this with a test. Without this, a new feature which causes an additional model to be accessed will silently reintroduce the problem.
 
@@ -38,7 +38,7 @@ end
 
 ## Use request specs instead of controller specs
 
-Use a [request spec](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/spec/requests) when writing a N+1 test on the controller level.
+Use a [request spec](https://gitlab.com/gitlab-org/gitlab-foss/tree/master/spec/requests) when writing a N+1 test on the controller level.
 
 Controller specs should not be used to write N+1 tests as the controller is only initialized once per example.
 This could lead to false successes where subsequent "requests" could have queries reduced (e.g. because of memoization).

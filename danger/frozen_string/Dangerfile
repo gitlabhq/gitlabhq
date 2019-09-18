@@ -14,7 +14,7 @@ files_to_fix = get_files_with_no_magic_comment(git.added_files)
 
 if files_to_fix.any?
   warn 'This merge request adds files that do not enforce frozen string literal. ' \
-    'See https://gitlab.com/gitlab-org/gitlab-ce/issues/47424 for more information.'
+    'See https://gitlab.com/gitlab-org/gitlab-foss/issues/47424 for more information.'
 
   if GitlabDanger.new(helper.gitlab_helper).ci?
     markdown(<<~MARKDOWN)

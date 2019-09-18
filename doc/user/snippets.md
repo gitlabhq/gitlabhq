@@ -41,7 +41,7 @@ different visibility level from the dropdown menu.
 
 ## Snippet comments
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/12910) in GitLab 9.2.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/12910) in GitLab 9.2.
 
 With GitLab Snippets you engage in a conversation about that piece of code,
 facilitating the collaboration among users.
@@ -82,7 +82,7 @@ Here's how an example code looks like:
 
 Here's how an embedded snippet looks like:
 
-<script src="https://gitlab.com/gitlab-org/gitlab-ce/snippets/1717978.js"></script>
+<script src="https://gitlab.com/gitlab-org/gitlab-foss/snippets/1717978.js"></script>
 
 Embedded snippets are displayed with a header that shows the file name if defined,
 the snippet size, a link to GitLab, and the actual snippet content. Actions in

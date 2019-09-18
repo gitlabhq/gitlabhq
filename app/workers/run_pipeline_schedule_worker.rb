@@ -39,7 +39,7 @@ class RunPipelineScheduleWorker
 
     Gitlab::Sentry
       .track_exception(error,
-                       issue_url: 'https://gitlab.com/gitlab-org/gitlab-ce/issues/41231',
+                       issue_url: 'https://gitlab.com/gitlab-org/gitlab-foss/issues/41231',
                        extra: { schedule_id: schedule.id })
   end
   # rubocop:enable Gitlab/RailsLogger

@@ -14,18 +14,18 @@ storage consumed by a group, and allow easy management.
 ## Problem
 
 In GitLab, we update the project storage statistics through a
-[callback](https://gitlab.com/gitlab-org/gitlab-ce/blob/v12.2.0.pre/app/models/project.rb#L90)
+[callback](https://gitlab.com/gitlab-org/gitlab-foss/blob/v12.2.0.pre/app/models/project.rb#L90)
 every time the project is saved.
 
 The summary of those statistics per namespace is then retrieved
-by [`Namespaces#with_statistics`](https://gitlab.com/gitlab-org/gitlab-ce/blob/v12.2.0.pre/app/models/namespace.rb#L70) scope. Analyzing this query we noticed that:
+by [`Namespaces#with_statistics`](https://gitlab.com/gitlab-org/gitlab-foss/blob/v12.2.0.pre/app/models/namespace.rb#L70) scope. Analyzing this query we noticed that:
 
 - It takes up to `1.2` seconds for namespaces with over `15k` projects.
 - It can't be analyzed with [ChatOps](chatops_on_gitlabcom.md), as it times out.
 
 Additionally, the pattern that is currently used to update the project statistics
 (the callback) doesn't scale adequately. It is currently one of the largest
-[database queries transactions on production](https://gitlab.com/gitlab-org/gitlab-ce/issues/62488)
+[database queries transactions on production](https://gitlab.com/gitlab-org/gitlab-foss/issues/62488)
 that takes the most time overall.  We can't add one more query to it as
 it will increase the transaction's length.
 
@@ -131,7 +131,7 @@ WHERE namespace_id IN (
 
 Even though this approach would make aggregating much easier, it has some major downsides:
 
-- We'd have to migrate **all namespaces** by adding and filling a new column. Because of the size of the table, dealing with time/cost will not be great. The background migration will take approximately `153h`, see <https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/29772>.
+- We'd have to migrate **all namespaces** by adding and filling a new column. Because of the size of the table, dealing with time/cost will not be great. The background migration will take approximately `153h`, see <https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/29772>.
 - Background migration has to be shipped one release before, delaying the functionality by another milestone.
 
 ### Attempt E (final): Update the namespace storage statistics in async way
@@ -142,7 +142,7 @@ but we refresh them through Sidekiq jobs and in different transactions:
 1. Create a second table (`namespace_aggregation_schedules`) with two columns `id` and `namespace_id`.
 1. Whenever the statistics of a project changes, insert a row into `namespace_aggregation_schedules`
    - We don't insert a new row if there's already one related to the root namespace.
-   - Keeping in mind the length of the transaction that involves updating `project_statistics`(<https://gitlab.com/gitlab-org/gitlab-ce/issues/62488>), the insertion should be done in a different transaction and through a Sidekiq Job.
+   - Keeping in mind the length of the transaction that involves updating `project_statistics`(<https://gitlab.com/gitlab-org/gitlab-foss/issues/62488>), the insertion should be done in a different transaction and through a Sidekiq Job.
 1. After inserting the row, we schedule another worker to be executed async at two different moments:
    - One enqueued for immediate execution and another one scheduled in `1.5h` hours.
    - We only schedule the jobs, if we can obtain a `1.5h` lease on Redis on a key based on the root namespace ID.
@@ -162,7 +162,7 @@ This implementation has the following benefits:
 
 The only downside of this approach is that namespaces' statistics are updated up to `1.5` hours after the change is done,
 which means there's a time window in which the statistics are inaccurate. Because we're still not
-[enforcing storage limits](https://gitlab.com/gitlab-org/gitlab-ce/issues/30421), this is not a major problem.
+[enforcing storage limits](https://gitlab.com/gitlab-org/gitlab-foss/issues/30421), this is not a major problem.
 
 ## Conclusion
 
@@ -171,8 +171,8 @@ performant approach of aggregating the root namespaces.
 
 All the details regarding this use case can be found on:
 
-- <https://gitlab.com/gitlab-org/gitlab-ce/issues/62214>
-- Merge Request with the implementation: <https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/28996>
+- <https://gitlab.com/gitlab-org/gitlab-foss/issues/62214>
+- Merge Request with the implementation: <https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/28996>
 
 Performance of the namespace storage statistics were measured in staging and production (GitLab.com). All results were posted
-on <https://gitlab.com/gitlab-org/gitlab-ce/issues/64092>: No problem has been reported so far.
+on <https://gitlab.com/gitlab-org/gitlab-foss/issues/64092>: No problem has been reported so far.

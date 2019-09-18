@@ -16,71 +16,71 @@ describe SubmoduleHelper do
       it 'detects ssh on standard port' do
         allow(Gitlab.config.gitlab_shell).to receive(:ssh_port).and_return(22) # set this just to be sure
         allow(Gitlab.config.gitlab_shell).to receive(:ssh_path_prefix).and_return(Settings.send(:build_gitlab_shell_ssh_path_prefix))
-        stub_url([config.user, '@', config.host, ':gitlab-org/gitlab-ce.git'].join(''))
-        expect(subject).to eq([namespace_project_path('gitlab-org', 'gitlab-ce'), namespace_project_tree_path('gitlab-org', 'gitlab-ce', 'hash')])
+        stub_url([config.user, '@', config.host, ':gitlab-org/gitlab-foss.git'].join(''))
+        expect(subject).to eq([namespace_project_path('gitlab-org', 'gitlab-foss'), namespace_project_tree_path('gitlab-org', 'gitlab-foss', 'hash')])
       end
 
       it 'detects ssh on non-standard port' do
         allow(Gitlab.config.gitlab_shell).to receive(:ssh_port).and_return(2222)
         allow(Gitlab.config.gitlab_shell).to receive(:ssh_path_prefix).and_return(Settings.send(:build_gitlab_shell_ssh_path_prefix))
-        stub_url(['ssh://', config.user, '@', config.host, ':2222/gitlab-org/gitlab-ce.git'].join(''))
-        expect(subject).to eq([namespace_project_path('gitlab-org', 'gitlab-ce'), namespace_project_tree_path('gitlab-org', 'gitlab-ce', 'hash')])
+        stub_url(['ssh://', config.user, '@', config.host, ':2222/gitlab-org/gitlab-foss.git'].join(''))
+        expect(subject).to eq([namespace_project_path('gitlab-org', 'gitlab-foss'), namespace_project_tree_path('gitlab-org', 'gitlab-foss', 'hash')])
       end
 
       it 'detects http on standard port' do
         allow(Gitlab.config.gitlab).to receive(:port).and_return(80)
         allow(Gitlab.config.gitlab).to receive(:url).and_return(Settings.send(:build_gitlab_url))
-        stub_url(['http://', config.host, '/gitlab-org/gitlab-ce.git'].join(''))
-        expect(subject).to eq([namespace_project_path('gitlab-org', 'gitlab-ce'), namespace_project_tree_path('gitlab-org', 'gitlab-ce', 'hash')])
+        stub_url(['http://', config.host, '/gitlab-org/gitlab-foss.git'].join(''))
+        expect(subject).to eq([namespace_project_path('gitlab-org', 'gitlab-foss'), namespace_project_tree_path('gitlab-org', 'gitlab-foss', 'hash')])
       end
 
       it 'detects http on non-standard port' do
         allow(Gitlab.config.gitlab).to receive(:port).and_return(3000)
         allow(Gitlab.config.gitlab).to receive(:url).and_return(Settings.send(:build_gitlab_url))
-        stub_url(['http://', config.host, ':3000/gitlab-org/gitlab-ce.git'].join(''))
-        expect(subject).to eq([namespace_project_path('gitlab-org', 'gitlab-ce'), namespace_project_tree_path('gitlab-org', 'gitlab-ce', 'hash')])
+        stub_url(['http://', config.host, ':3000/gitlab-org/gitlab-foss.git'].join(''))
+        expect(subject).to eq([namespace_project_path('gitlab-org', 'gitlab-foss'), namespace_project_tree_path('gitlab-org', 'gitlab-foss', 'hash')])
       end
 
       it 'works with relative_url_root' do
         allow(Gitlab.config.gitlab).to receive(:port).and_return(80) # set this just to be sure
         allow(Gitlab.config.gitlab).to receive(:relative_url_root).and_return('/gitlab/root')
         allow(Gitlab.config.gitlab).to receive(:url).and_return(Settings.send(:build_gitlab_url))
-        stub_url(['http://', config.host, '/gitlab/root/gitlab-org/gitlab-ce.git'].join(''))
-        expect(subject).to eq([namespace_project_path('gitlab-org', 'gitlab-ce'), namespace_project_tree_path('gitlab-org', 'gitlab-ce', 'hash')])
+        stub_url(['http://', config.host, '/gitlab/root/gitlab-org/gitlab-foss.git'].join(''))
+        expect(subject).to eq([namespace_project_path('gitlab-org', 'gitlab-foss'), namespace_project_tree_path('gitlab-org', 'gitlab-foss', 'hash')])
       end
 
       it 'works with subgroups' do
         allow(Gitlab.config.gitlab).to receive(:port).and_return(80) # set this just to be sure
         allow(Gitlab.config.gitlab).to receive(:relative_url_root).and_return('/gitlab/root')
         allow(Gitlab.config.gitlab).to receive(:url).and_return(Settings.send(:build_gitlab_url))
-        stub_url(['http://', config.host, '/gitlab/root/gitlab-org/sub/gitlab-ce.git'].join(''))
-        expect(subject).to eq([namespace_project_path('gitlab-org/sub', 'gitlab-ce'), namespace_project_tree_path('gitlab-org/sub', 'gitlab-ce', 'hash')])
+        stub_url(['http://', config.host, '/gitlab/root/gitlab-org/sub/gitlab-foss.git'].join(''))
+        expect(subject).to eq([namespace_project_path('gitlab-org/sub', 'gitlab-foss'), namespace_project_tree_path('gitlab-org/sub', 'gitlab-foss', 'hash')])
       end
     end
 
     context 'submodule on github.com' do
       it 'detects ssh' do
-        stub_url('git@github.com:gitlab-org/gitlab-ce.git')
-        expect(subject).to eq(['https://github.com/gitlab-org/gitlab-ce', 'https://github.com/gitlab-org/gitlab-ce/tree/hash'])
+        stub_url('git@github.com:gitlab-org/gitlab-foss.git')
+        expect(subject).to eq(['https://github.com/gitlab-org/gitlab-foss', 'https://github.com/gitlab-org/gitlab-foss/tree/hash'])
       end
 
       it 'detects http' do
-        stub_url('http://github.com/gitlab-org/gitlab-ce.git')
-        expect(subject).to eq(['https://github.com/gitlab-org/gitlab-ce', 'https://github.com/gitlab-org/gitlab-ce/tree/hash'])
+        stub_url('http://github.com/gitlab-org/gitlab-foss.git')
+        expect(subject).to eq(['https://github.com/gitlab-org/gitlab-foss', 'https://github.com/gitlab-org/gitlab-foss/tree/hash'])
       end
 
       it 'detects https' do
-        stub_url('https://github.com/gitlab-org/gitlab-ce.git')
-        expect(subject).to eq(['https://github.com/gitlab-org/gitlab-ce', 'https://github.com/gitlab-org/gitlab-ce/tree/hash'])
+        stub_url('https://github.com/gitlab-org/gitlab-foss.git')
+        expect(subject).to eq(['https://github.com/gitlab-org/gitlab-foss', 'https://github.com/gitlab-org/gitlab-foss/tree/hash'])
       end
 
       it 'handles urls with no .git on the end' do
-        stub_url('http://github.com/gitlab-org/gitlab-ce')
-        expect(subject).to eq(['https://github.com/gitlab-org/gitlab-ce', 'https://github.com/gitlab-org/gitlab-ce/tree/hash'])
+        stub_url('http://github.com/gitlab-org/gitlab-foss')
+        expect(subject).to eq(['https://github.com/gitlab-org/gitlab-foss', 'https://github.com/gitlab-org/gitlab-foss/tree/hash'])
       end
 
       it 'returns original with non-standard url' do
-        stub_url('http://github.com/another/gitlab-org/gitlab-ce.git')
+        stub_url('http://github.com/another/gitlab-org/gitlab-foss.git')
         expect(subject).to eq([repo.submodule_url_for, nil])
       end
     end
@@ -99,32 +99,32 @@ describe SubmoduleHelper do
 
     context 'submodule on gitlab.com' do
       it 'detects ssh' do
-        stub_url('git@gitlab.com:gitlab-org/gitlab-ce.git')
-        expect(subject).to eq(['https://gitlab.com/gitlab-org/gitlab-ce', 'https://gitlab.com/gitlab-org/gitlab-ce/tree/hash'])
+        stub_url('git@gitlab.com:gitlab-org/gitlab-foss.git')
+        expect(subject).to eq(['https://gitlab.com/gitlab-org/gitlab-foss', 'https://gitlab.com/gitlab-org/gitlab-foss/tree/hash'])
       end
 
       it 'detects http' do
-        stub_url('http://gitlab.com/gitlab-org/gitlab-ce.git')
-        expect(subject).to eq(['https://gitlab.com/gitlab-org/gitlab-ce', 'https://gitlab.com/gitlab-org/gitlab-ce/tree/hash'])
+        stub_url('http://gitlab.com/gitlab-org/gitlab-foss.git')
+        expect(subject).to eq(['https://gitlab.com/gitlab-org/gitlab-foss', 'https://gitlab.com/gitlab-org/gitlab-foss/tree/hash'])
       end
 
       it 'detects https' do
-        stub_url('https://gitlab.com/gitlab-org/gitlab-ce.git')
-        expect(subject).to eq(['https://gitlab.com/gitlab-org/gitlab-ce', 'https://gitlab.com/gitlab-org/gitlab-ce/tree/hash'])
+        stub_url('https://gitlab.com/gitlab-org/gitlab-foss.git')
+        expect(subject).to eq(['https://gitlab.com/gitlab-org/gitlab-foss', 'https://gitlab.com/gitlab-org/gitlab-foss/tree/hash'])
       end
 
       it 'handles urls with no .git on the end' do
-        stub_url('http://gitlab.com/gitlab-org/gitlab-ce')
-        expect(subject).to eq(['https://gitlab.com/gitlab-org/gitlab-ce', 'https://gitlab.com/gitlab-org/gitlab-ce/tree/hash'])
+        stub_url('http://gitlab.com/gitlab-org/gitlab-foss')
+        expect(subject).to eq(['https://gitlab.com/gitlab-org/gitlab-foss', 'https://gitlab.com/gitlab-org/gitlab-foss/tree/hash'])
       end
 
       it 'handles urls with trailing whitespace' do
-        stub_url('http://gitlab.com/gitlab-org/gitlab-ce.git  ')
-        expect(subject).to eq(['https://gitlab.com/gitlab-org/gitlab-ce', 'https://gitlab.com/gitlab-org/gitlab-ce/tree/hash'])
+        stub_url('http://gitlab.com/gitlab-org/gitlab-foss.git  ')
+        expect(subject).to eq(['https://gitlab.com/gitlab-org/gitlab-foss', 'https://gitlab.com/gitlab-org/gitlab-foss/tree/hash'])
       end
 
       it 'returns original with non-standard url' do
-        stub_url('http://gitlab.com/another/gitlab-org/gitlab-ce.git')
+        stub_url('http://gitlab.com/another/gitlab-org/gitlab-foss.git')
         expect(subject).to eq([repo.submodule_url_for, nil])
       end
     end
@@ -149,7 +149,7 @@ describe SubmoduleHelper do
       end
 
       it 'returns original' do
-        stub_url('http://mygitserver.com/gitlab-org/gitlab-ce')
+        stub_url('http://mygitserver.com/gitlab-org/gitlab-foss')
 
         expect(subject).to eq([repo.submodule_url_for, nil])
       end

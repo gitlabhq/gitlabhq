@@ -4,7 +4,7 @@
 # ActiveRecord connection used in tests
 # https://github.com/rails/rails/issues/36587
 
-# To be removed with https://gitlab.com/gitlab-org/gitlab-ce/issues/64413
+# To be removed with https://gitlab.com/gitlab-org/gitlab-foss/issues/64413
 
 module Gitlab
   module Patch

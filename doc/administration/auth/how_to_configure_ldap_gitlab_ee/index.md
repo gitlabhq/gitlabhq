@@ -12,7 +12,7 @@ This article expands on [How to Configure LDAP with GitLab CE](../how_to_configu
 
 - [Administrator Sync](../ldap-ee.md#administrator-sync): As an extension of group sync, you can automatically manage your global GitLab administrators. Specify a group CN for `admin_group` and all members of the LDAP group will be given administrator privileges.
 - [Group Sync](#group-sync): This allows GitLab group membership to be automatically updated based on LDAP group members.
-- [Multiple LDAP servers](#multiple-ldap-servers): The ability to configure multiple LDAP servers. This is useful if an organization has different LDAP servers within departments. This is not designed for failover. We're working on [supporting LDAP failover](https://gitlab.com/gitlab-org/gitlab-ee/issues/139) in GitLab.
+- [Multiple LDAP servers](#multiple-ldap-servers): The ability to configure multiple LDAP servers. This is useful if an organization has different LDAP servers within departments. This is not designed for failover. We're working on [supporting LDAP failover](https://gitlab.com/gitlab-org/gitlab/issues/139) in GitLab.
 
 - Daily user synchronization: Once a day, GitLab will run a synchronization to check and update GitLab users against LDAP. This process updates all user details automatically.
 
@@ -59,7 +59,7 @@ Using this permission structure in our example allows only UK staff access to se
 
 ### Updating user permissions - new feature
 
-Since GitLab [v8.15](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/822) LDAP user permissions can now be manually overridden by an admin user. To override a user's permissions visit the groups **Members** page and select **Edit permissions**.
+Since GitLab [v8.15](https://gitlab.com/gitlab-org/gitlab/merge_requests/822) LDAP user permissions can now be manually overridden by an admin user. To override a user's permissions visit the groups **Members** page and select **Edit permissions**.
 
 ![Setting manual permissions](img/manual_permissions.gif)
 

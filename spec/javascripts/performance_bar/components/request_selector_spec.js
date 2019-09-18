@@ -7,11 +7,11 @@ describe('request selector', () => {
     { id: '123', url: 'https://gitlab.com/' },
     {
       id: '456',
-      url: 'https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/1',
+      url: 'https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/1',
     },
     {
       id: '789',
-      url: 'https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/1.json?serializer=widget',
+      url: 'https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/1.json?serializer=widget',
     },
   ];
 

@@ -1,4 +1,4 @@
-/* eslint-disable no-var, object-shorthand */
+/* eslint-disable no-var */
 import $ from 'jquery';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
@@ -28,7 +28,7 @@ describe('MergeRequestTabs', function() {
 
   beforeEach(function() {
     mrPageMock = initMrPage();
-    this.class = new MergeRequestTabs({ stubLocation: stubLocation });
+    this.class = new MergeRequestTabs({ stubLocation });
     setLocation();
 
     this.spies = {
@@ -57,10 +57,10 @@ describe('MergeRequestTabs', function() {
         metaKey: false,
         ctrlKey: false,
         which: 1,
-        stopImmediatePropagation: function() {},
-        preventDefault: function() {},
+        stopImmediatePropagation() {},
+        preventDefault() {},
         currentTarget: {
-          getAttribute: function(attr) {
+          getAttribute(attr) {
             return attr === 'href' ? tabUrl : null;
           },
         },

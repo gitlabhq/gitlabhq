@@ -530,9 +530,9 @@ describe Milestone do
   describe '.link_reference_pattern' do
     subject { described_class.link_reference_pattern }
 
-    it { is_expected.to match("#{Gitlab.config.gitlab.url}/gitlab-org/gitlab-ce/milestones/123") }
-    it { is_expected.to match("#{Gitlab.config.gitlab.url}/gitlab-org/gitlab-ce/-/milestones/123") }
-    it { is_expected.not_to match("#{Gitlab.config.gitlab.url}/gitlab-org/gitlab-ce/issues/123") }
+    it { is_expected.to match("#{Gitlab.config.gitlab.url}/gitlab-org/gitlab-foss/milestones/123") }
+    it { is_expected.to match("#{Gitlab.config.gitlab.url}/gitlab-org/gitlab-foss/-/milestones/123") }
+    it { is_expected.not_to match("#{Gitlab.config.gitlab.url}/gitlab-org/gitlab-foss/issues/123") }
     it { is_expected.not_to match("gitlab-org/gitlab-ce/milestones/123") }
   end
 end

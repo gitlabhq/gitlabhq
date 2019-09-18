@@ -14,7 +14,7 @@ Always use an [Entity] to present the endpoint's payload.
 ## Methods and parameters description
 
 Every method must be described using the [Grape DSL](https://github.com/ruby-grape/grape#describing-methods)
-(see <https://gitlab.com/gitlab-org/gitlab-ce/blob/master/lib/api/environments.rb>
+(see <https://gitlab.com/gitlab-org/gitlab-foss/blob/master/lib/api/environments.rb>
 for a good example):
 
 - `desc` for the method summary. You should pass it a block for additional
@@ -104,6 +104,6 @@ For instance:
 - endpoint = expose_path(api_v4_projects_issues_related_merge_requests_path(id: @project.id, issue_iid: @issue.iid))
 ```
 
-[Entity]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/lib/api/entities.rb
+[Entity]: https://gitlab.com/gitlab-org/gitlab-foss/blob/master/lib/api/entities.rb
 [validation, and coercion of the parameters]: https://github.com/ruby-grape/grape#parameter-validation-and-coercion
 [installing GitLab under a relative URL]: https://docs.gitlab.com/ee/install/relative_url.html

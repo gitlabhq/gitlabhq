@@ -37,7 +37,7 @@ export default {
           ),
           { jobName: action.name },
         );
-        // https://gitlab.com/gitlab-org/gitlab-ce/issues/52156
+        // https://gitlab.com/gitlab-org/gitlab-foss/issues/52156
         // eslint-disable-next-line no-alert
         if (!window.confirm(confirmationMessage)) {
           return;

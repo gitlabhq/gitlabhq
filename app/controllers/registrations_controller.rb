@@ -124,7 +124,7 @@ class RegistrationsController < Devise::RegistrationsController
   end
 
   def whitelist_query_limiting
-    Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42380')
+    Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-foss/issues/42380')
   end
 
   def ensure_terms_accepted

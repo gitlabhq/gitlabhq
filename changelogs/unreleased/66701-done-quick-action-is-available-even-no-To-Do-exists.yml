@@ -1,0 +1,5 @@
+---
+title: Changed todo/done quick actions to work not only for first usage
+merge_request: 16837
+author: Marc Schwede
+type: fixed

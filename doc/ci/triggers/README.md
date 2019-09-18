@@ -272,8 +272,8 @@ Triggers with the legacy label do not have an associated user and only have
 access to the current project. They are considered deprecated and will be
 removed with one of the future versions of GitLab.
 
-[ee-2017]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/2017
-[ee-2346]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/2346
+[ee-2017]: https://gitlab.com/gitlab-org/gitlab/merge_requests/2017
+[ee-2346]: https://gitlab.com/gitlab-org/gitlab/merge_requests/2346
 [ee]: https://about.gitlab.com/pricing/
 [variables]: ../variables/README.md
 [predef]: ../variables/README.md#predefined-environment-variables

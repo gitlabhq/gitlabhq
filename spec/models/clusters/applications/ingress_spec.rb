@@ -131,4 +131,41 @@ describe Clusters::Applications::Ingress do
       expect(values).to include('podAnnotations')
     end
   end
+
+  describe '#values' do
+    let(:project) { build(:project) }
+    let(:cluster) { build(:cluster, projects: [project]) }
+
+    context 'when ingress_modsecurity is enabled' do
+      before do
+        stub_feature_flags(ingress_modsecurity: true)
+
+        allow(subject).to receive(:cluster).and_return(cluster)
+      end
+
+      it 'includes modsecurity module enablement' do
+        expect(subject.values).to include("enable-modsecurity: 'true'")
+      end
+
+      it 'includes modsecurity core ruleset enablement' do
+        expect(subject.values).to include("enable-owasp-modsecurity-crs: 'true'")
+      end
+    end
+
+    context 'when ingress_modsecurity is disabled' do
+      before do
+        stub_feature_flags(ingress_modsecurity: false)
+
+        allow(subject).to receive(:cluster).and_return(cluster)
+      end
+
+      it 'excludes modsecurity module enablement' do
+        expect(subject.values).not_to include('enable-modsecurity')
+      end
+
+      it 'excludes modsecurity core ruleset enablement' do
+        expect(subject.values).not_to include('enable-owasp-modsecurity-crs')
+      end
+    end
+  end
 end

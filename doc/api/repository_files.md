@@ -12,7 +12,7 @@ in the following table.
 | `read_repository` | Allows read-access to the repository files. |
 | `api` | Allows read-write access to the repository files. |
 
-> `read_repository` scope was [introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/23534) in GitLab 11.6.
+> `read_repository` scope was [introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/23534) in GitLab 11.6.
 
 ## Get file from repository
 

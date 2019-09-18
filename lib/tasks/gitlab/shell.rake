@@ -135,7 +135,7 @@ namespace :gitlab do
       then you may have been affected by the 9.3.0 bug in which the new setting
       was disabled by default.
 
-      https://gitlab.com/gitlab-org/gitlab-ee/issues/2738
+      https://gitlab.com/gitlab-org/gitlab/issues/2738
 
       It was reverted in 9.3.1 and fixed in 9.3.3, however, if Settings were
       saved while the setting was unchecked, then it is still disabled.

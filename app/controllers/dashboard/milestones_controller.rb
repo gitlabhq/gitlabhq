@@ -28,7 +28,7 @@ class Dashboard::MilestonesController < Dashboard::ApplicationController
     DashboardGroupMilestone.build_collection(groups, params)
   end
 
-  # See [#39545](https://gitlab.com/gitlab-org/gitlab-ce/issues/39545) for info about the deprecation of dynamic milestones
+  # See [#39545](https://gitlab.com/gitlab-org/gitlab-foss/issues/39545) for info about the deprecation of dynamic milestones
   def dynamic_milestones
     DashboardMilestone.build_collection(@projects, params)
   end

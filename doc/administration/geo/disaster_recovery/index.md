@@ -318,6 +318,5 @@ section to resolve the error. Otherwise, the secret is lost and you'll need to
 [updating-geo]: ../replication/version_specific_updates.md#updating-to-gitlab-105
 [sec-tfa]: ../../../security/two_factor_authentication.md#disabling-2fa-for-everyone
 [gitlab-org/omnibus-gitlab#3058]: https://gitlab.com/gitlab-org/omnibus-gitlab/issues/3058
-[gitlab-org/gitlab-ee#4284]: https://gitlab.com/gitlab-org/gitlab-ee/issues/4284
 [initiate-the-replication-process]: ../replication/database.html#step-3-initiate-the-replication-process
 [configure-the-primary-server]: ../replication/database.html#step-1-configure-the-primary-server

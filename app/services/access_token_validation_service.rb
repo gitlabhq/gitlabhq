@@ -43,7 +43,7 @@ class AccessTokenValidationService
       # We're comparing each required_scope against all token scopes, which would
       # take quadratic time. This consideration is irrelevant here because of the
       # small number of records involved.
-      # https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/12300/#note_33689006
+      # https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/12300/#note_33689006
       token_scopes = token.scopes.map(&:to_sym)
 
       required_scopes.any? do |scope|

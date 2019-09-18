@@ -14,7 +14,7 @@ def configure_sentry
       # Sanitize authentication headers
       config.sanitize_http_headers = %w[Authorization Private-Token]
       config.tags = { program: Gitlab.process_name }
-      # Debugging for https://gitlab.com/gitlab-org/gitlab-ce/issues/57727
+      # Debugging for https://gitlab.com/gitlab-org/gitlab-foss/issues/57727
       config.before_send = lambda do |event, hint|
         if ActiveModel::MissingAttributeError === hint[:exception]
           columns_hash = ActiveRecord::Base

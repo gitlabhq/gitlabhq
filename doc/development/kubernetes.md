@@ -21,7 +21,7 @@ are created within the `gitlab-managed-apps` namespace.
 
 In terms of code organization, we generally add objects that represent
 Kubernetes resources in
-[`lib/gitlab/kubernetes`](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/lib/gitlab/kubernetes).
+[`lib/gitlab/kubernetes`](https://gitlab.com/gitlab-org/gitlab-foss/tree/master/lib/gitlab/kubernetes).
 
 ### Client library
 
@@ -29,12 +29,12 @@ We use the [`kubeclient`](https://rubygems.org/gems/kubeclient) gem to
 perform Kubernetes API calls. As the `kubeclient` gem does not support
 different API Groups (e.g. `apis/rbac.authorization.k8s.io`) from a
 single client, we have created a wrapper class,
-[`Gitlab::Kubernetes::KubeClient`](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/lib/gitlab/kubernetes/kube_client.rb)
+[`Gitlab::Kubernetes::KubeClient`](https://gitlab.com/gitlab-org/gitlab-foss/blob/master/lib/gitlab/kubernetes/kube_client.rb)
 that will enable you to achieve this.
 
 Selected Kubernetes API groups are currently supported. Do add support
 for new API groups or methods to
-[`Gitlab::Kubernetes::KubeClient`](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/lib/gitlab/kubernetes/kube_client.rb)
+[`Gitlab::Kubernetes::KubeClient`](https://gitlab.com/gitlab-org/gitlab-foss/blob/master/lib/gitlab/kubernetes/kube_client.rb)
 if you need to use them. New API groups or API group versions can be
 added to `SUPPORTED_API_GROUPS` - internally, this will create an
 internal client for that group. New methods can be added as a delegation
@@ -54,7 +54,7 @@ worker](sidekiq_style_guide.md).
 There are instances where you would like to make calls to Kubernetes and
 return the response and as such a background worker does not seem to be
 a good fit. For such cases you should make use of [reactive
-caching](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/app/models/concerns/reactive_caching.rb).
+caching](https://gitlab.com/gitlab-org/gitlab-foss/blob/master/app/models/concerns/reactive_caching.rb).
 For example:
 
 ```ruby
@@ -72,7 +72,7 @@ For example:
 ### Testing
 
 We have some Webmock stubs in
-[`KubernetesHelpers`](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/spec/support/helpers/kubernetes_helpers.rb)
+[`KubernetesHelpers`](https://gitlab.com/gitlab-org/gitlab-foss/blob/master/spec/support/helpers/kubernetes_helpers.rb)
 which can help with mocking out calls to Kubernetes API in your tests.
 
 ## Security
@@ -87,7 +87,7 @@ a cluster.
 Mitigation strategies include:
 
 1. Not allowing redirects to attacker controller resources:
-   [`Kubeclient::KubeClient`](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/lib/gitlab/kubernetes/kube_client.rb#)
+   [`Kubeclient::KubeClient`](https://gitlab.com/gitlab-org/gitlab-foss/blob/master/lib/gitlab/kubernetes/kube_client.rb#)
    can be configured to disallow any redirects by passing in
    `http_max_redirects: 0` as an option.
 1. Not exposing error messages: by doing so, we
@@ -111,7 +111,7 @@ Logs related to the Kubernetes integration can be found in
 GDK install, this will be present in `log/kubernetes.log`.
 
 Some services such as
-[`Clusters::Applications::InstallService`](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/app/services/clusters/applications/install_service.rb#L18)
+[`Clusters::Applications::InstallService`](https://gitlab.com/gitlab-org/gitlab-foss/blob/master/app/services/clusters/applications/install_service.rb#L18)
 rescues `StandardError` which can make it harder to debug issues in an
 development environment. The current workaround is to temporarily
 comment out the `rescue` in your local development source.

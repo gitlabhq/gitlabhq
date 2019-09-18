@@ -17,7 +17,7 @@ export default class ClusterService {
     };
   }
 
-  fetchData() {
+  fetchClusterStatus() {
     return axios.get(this.options.endpoint);
   }
 

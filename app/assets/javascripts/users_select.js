@@ -1,4 +1,4 @@
-/* eslint-disable func-names, one-var, no-var, prefer-rest-params, vars-on-top, prefer-arrow-callback, consistent-return, object-shorthand, no-shadow, no-else-return, no-self-compare, prefer-template, no-unused-expressions, yoda, prefer-spread, camelcase, no-param-reassign */
+/* eslint-disable func-names, one-var, no-var, prefer-rest-params, vars-on-top, prefer-arrow-callback, consistent-return, no-shadow, no-else-return, no-self-compare, prefer-template, no-unused-expressions, yoda, prefer-spread, camelcase, no-param-reassign */
 /* global Issuable */
 /* global emitSidebarEvent */
 
@@ -248,8 +248,8 @@ function UsersSelect(currentUser, els, options = {}) {
           })}</span> <% } %>`,
         );
         return $dropdown.glDropdown({
-          showMenuAbove: showMenuAbove,
-          data: function(term, callback) {
+          showMenuAbove,
+          data(term, callback) {
             return _this.users(
               term,
               options,
@@ -261,7 +261,7 @@ function UsersSelect(currentUser, els, options = {}) {
               }.bind(this),
             );
           },
-          processData: function(term, data, callback) {
+          processData(term, data, callback) {
             let users = data;
 
             // Only show assigned user list when there is no search term
@@ -326,7 +326,7 @@ function UsersSelect(currentUser, els, options = {}) {
                 }
                 anyUser = {
                   beforeDivider: true,
-                  name: name,
+                  name,
                   id: null,
                 };
                 users.unshift(anyUser);
@@ -376,7 +376,7 @@ function UsersSelect(currentUser, els, options = {}) {
           },
           selectable: true,
           fieldName: $dropdown.data('fieldName'),
-          toggleLabel: function(selected, el, glDropdown) {
+          toggleLabel(selected, el, glDropdown) {
             const inputValue = glDropdown.filterInput.val();
 
             if (this.multiSelect && inputValue === '') {
@@ -404,8 +404,8 @@ function UsersSelect(currentUser, els, options = {}) {
               return defaultLabel;
             }
           },
-          defaultLabel: defaultLabel,
-          hidden: function() {
+          defaultLabel,
+          hidden() {
             if ($dropdown.hasClass('js-multiselect')) {
               emitSidebarEvent('sidebar.saveAssignees');
             }
@@ -422,7 +422,7 @@ function UsersSelect(currentUser, els, options = {}) {
           },
           multiSelect: $dropdown.hasClass('js-multiselect'),
           inputMeta: $dropdown.data('inputMeta'),
-          clicked: function(options) {
+          clicked(options) {
             const { $el, e, isMarking } = options;
             const user = options.selectedObj;
 
@@ -522,10 +522,10 @@ function UsersSelect(currentUser, els, options = {}) {
               $dropdown.dropdown('toggle');
             }
           },
-          id: function(user) {
+          id(user) {
             return user.id;
           },
-          opened: function(e) {
+          opened(e) {
             const $el = $(e.currentTarget);
             const selected = getSelected();
             if ($dropdown.hasClass('js-issue-board-sidebar') && selected.length === 0) {
@@ -546,7 +546,7 @@ function UsersSelect(currentUser, els, options = {}) {
             }
           },
           updateLabel: $dropdown.data('dropdownTitle'),
-          renderRow: function(user) {
+          renderRow(user) {
             var avatar, img, username;
             username = user.username ? '@' + user.username : '';
             avatar = user.avatar_url ? user.avatar_url : gon.default_avatar_url;
@@ -605,7 +605,7 @@ function UsersSelect(currentUser, els, options = {}) {
               placeholder: __('Search for a user'),
               multiple: $(select).hasClass('multiselect'),
               minimumInputLength: 0,
-              query: function(query) {
+              query(query) {
                 return _this.users(query.term, options, function(users) {
                   var anyUser, data, emailUser, index, len, name, nullUser, obj, ref;
                   data = {
@@ -638,7 +638,7 @@ function UsersSelect(currentUser, els, options = {}) {
                         name = s__('UsersSelect|Any User');
                       }
                       anyUser = {
-                        name: name,
+                        name,
                         id: null,
                       };
                       data.results.unshift(anyUser);
@@ -661,24 +661,24 @@ function UsersSelect(currentUser, els, options = {}) {
                   return query.callback(data);
                 });
               },
-              initSelection: function() {
+              initSelection() {
                 var args;
                 args = 1 <= arguments.length ? [].slice.call(arguments, 0) : [];
                 return _this.initSelection.apply(_this, args);
               },
-              formatResult: function() {
+              formatResult() {
                 var args;
                 args = 1 <= arguments.length ? [].slice.call(arguments, 0) : [];
                 return _this.formatResult.apply(_this, args);
               },
-              formatSelection: function() {
+              formatSelection() {
                 var args;
                 args = 1 <= arguments.length ? [].slice.call(arguments, 0) : [];
                 return _this.formatSelection.apply(_this, args);
               },
               dropdownCssClass: 'ajax-users-dropdown',
               // we do not want to escape markup since we are displaying html in results
-              escapeMarkup: function(m) {
+              escapeMarkup(m) {
                 return m;
               },
             });

@@ -2,7 +2,7 @@
 
 class Groups::RunnersController < Groups::ApplicationController
   # Proper policies should be implemented per
-  # https://gitlab.com/gitlab-org/gitlab-ce/issues/45894
+  # https://gitlab.com/gitlab-org/gitlab-foss/issues/45894
   before_action :authorize_admin_group!
 
   before_action :runner, only: [:edit, :update, :destroy, :pause, :resume, :show]

@@ -48,3 +48,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::Metrics::Dashboard::ServiceSelector.prepend_if_ee('EE::Gitlab::Metrics::Dashboard::ServiceSelector')

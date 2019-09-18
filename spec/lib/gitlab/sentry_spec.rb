@@ -38,7 +38,7 @@ describe Gitlab::Sentry do
       it 'logs the exception with all attributes passed' do
         expected_extras = {
           some_other_info: 'info',
-          issue_url: 'http://gitlab.com/gitlab-org/gitlab-ce/issues/1'
+          issue_url: 'http://gitlab.com/gitlab-org/gitlab-foss/issues/1'
         }
 
         expected_tags = {
@@ -52,7 +52,7 @@ describe Gitlab::Sentry do
 
         described_class.track_exception(
           exception,
-          issue_url: 'http://gitlab.com/gitlab-org/gitlab-ce/issues/1',
+          issue_url: 'http://gitlab.com/gitlab-org/gitlab-foss/issues/1',
           extra: { some_other_info: 'info' }
         )
       end
@@ -67,7 +67,7 @@ describe Gitlab::Sentry do
 
   context '.track_acceptable_exception' do
     let(:exception) { RuntimeError.new('boom') }
-    let(:issue_url) { 'http://gitlab.com/gitlab-org/gitlab-ce/issues/1' }
+    let(:issue_url) { 'http://gitlab.com/gitlab-org/gitlab-foss/issues/1' }
 
     before do
       allow(described_class).to receive(:enabled?).and_return(true)

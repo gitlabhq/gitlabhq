@@ -195,6 +195,12 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           defaults: { format: 'json' },
           constraints: { key: %r{[^/]+}, template_type: %r{issue|merge_request}, format: 'json' }
 
+      get '/description_templates/names/:template_type',
+          to: 'templates#names',
+          as: :template_names,
+          defaults: { format: 'json' },
+          constraints: { template_type: %r{issue|merge_request}, format: 'json' }
+
       resources :commit, only: [:show], constraints: { id: /\h{7,40}/ } do
         member do
           get :branches

@@ -19,7 +19,7 @@ module Projects
       # We're using `limit` to optimize `auto_devops pipeline` query,
       # since we only care about the first element, and using only `.count`
       # is an expensive operation. See
-      # https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/21172#note_99037378
+      # https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/21172#note_99037378
       # for more context.
       # rubocop: disable CodeReuse/ActiveRecord
       def first_pipeline_failure?

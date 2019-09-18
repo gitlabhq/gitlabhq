@@ -196,4 +196,4 @@ If the status is `failed`, it will include the import error message under `impor
 }
 ```
 
-[ce-41899]: https://gitlab.com/gitlab-org/gitlab-ce/issues/41899
+[ce-41899]: https://gitlab.com/gitlab-org/gitlab-foss/issues/41899

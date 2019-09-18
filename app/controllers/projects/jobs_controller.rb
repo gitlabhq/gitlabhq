@@ -96,7 +96,7 @@ class Projects::JobsController < Projects::ApplicationController
   end
 
   def json_trace
-    # will be implemented with https://gitlab.com/gitlab-org/gitlab-ce/issues/66454
+    # will be implemented with https://gitlab.com/gitlab-org/gitlab-foss/issues/66454
   end
 
   def retry

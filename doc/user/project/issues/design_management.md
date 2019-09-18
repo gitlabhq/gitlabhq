@@ -36,15 +36,15 @@ to be enabled:
 ## Limitations
 
 - Files uploaded must have a file extension of either `png`, `jpg`, `jpeg`, `gif`, `bmp`, `tiff` or `ico`.
-  The [`svg` extension is not yet supported](https://gitlab.com/gitlab-org/gitlab-ee/issues/12771).
+  The [`svg` extension is not yet supported](https://gitlab.com/gitlab-org/gitlab/issues/12771).
 - Design uploads are limited to 10 files at a time.
-- [Designs cannot yet be deleted](https://gitlab.com/gitlab-org/gitlab-ee/issues/11089).
+- [Designs cannot yet be deleted](https://gitlab.com/gitlab-org/gitlab/issues/11089).
 - Design Management is
-  [not yet supported in the project export](https://gitlab.com/gitlab-org/gitlab-ee/issues/11090).
+  [not yet supported in the project export](https://gitlab.com/gitlab-org/gitlab/issues/11090).
 - Design Management data
-  [isn't deleted when a project is destroyed](https://gitlab.com/gitlab-org/gitlab-ee/issues/13429) yet.
-- Design Management data [won't be moved](https://gitlab.com/gitlab-org/gitlab-ee/issues/13426)
-  when an issue is moved, nor [deleted](https://gitlab.com/gitlab-org/gitlab-ee/issues/13427)
+  [isn't deleted when a project is destroyed](https://gitlab.com/gitlab-org/gitlab/issues/13429) yet.
+- Design Management data [won't be moved](https://gitlab.com/gitlab-org/gitlab/issues/13426)
+  when an issue is moved, nor [deleted](https://gitlab.com/gitlab-org/gitlab/issues/13427)
   when an issue is deleted.
 - Design Management
   [isn't supported by Geo](https://gitlab.com/groups/gitlab-org/-/epics/1633) yet.
@@ -53,7 +53,7 @@ to be enabled:
 
 Navigate to the **Design Management** page from any issue by clicking the **Designs** tab:
 
-![Designs tab](img/design_management_v12_2.png)
+![Designs tab](img/design_management_v12_3.png)
 
 ## Adding designs
 
@@ -64,7 +64,19 @@ of the design, and will replace the previous version.
 
 ## Viewing designs
 
-Images on the Design Management page can be enlarged by clicking on them.
+Images on the Design Management page can be enlarged by clicking on them.  
+
+The number of comments on a design — if any — is listed to the right
+of the design filename. Clicking on this number enlarges the design
+just like clicking anywhere else on the design.
+When a design is added or modified, an icon is displayed on the item
+to help summarize changes between versions.  
+
+| Indicator | Example |
+| --------- | ------- |
+| Comments | ![Comments Icon](img/design_comments_v12_3.png) |
+| Modified (in the selected version) | ![Design Modified](img/design_modified_v12_3.png) |
+| Added (in the selected version) | ![Design Added](img/design_added_v12_3.png) |
 
 ## Adding annotations to designs
 

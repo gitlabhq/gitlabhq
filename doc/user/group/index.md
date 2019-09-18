@@ -17,7 +17,7 @@ Find your groups by clicking **Groups > Your Groups** in the top navigation.
 
 ![GitLab Groups](img/groups.png)
 
-> The **Groups** dropdown in the top navigation was [introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/36234) in [GitLab 11.1](https://about.gitlab.com/2018/07/22/gitlab-11-1-released/#groups-dropdown-in-navigation).
+> The **Groups** dropdown in the top navigation was [introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/36234) in [GitLab 11.1](https://about.gitlab.com/2018/07/22/gitlab-11-1-released/#groups-dropdown-in-navigation).
 
 The **Groups** page displays:
 
@@ -180,7 +180,7 @@ There are two different ways to add a new project to a group:
 
 > [Introduced][ee-2534] in [GitLab Premium][ee] 10.5.
 > Brought to [GitLab Starter][ee] in 10.7.
-> [Moved](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/25975) to [GitLab Core](https://about.gitlab.com/pricing/) in 11.10.
+> [Moved](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/25975) to [GitLab Core](https://about.gitlab.com/pricing/) in 11.10.
 
 Group owners and administrators can allow users with the
 Developer role to create projects under groups.
@@ -336,7 +336,7 @@ request to add a new user to a project through API will not be possible.
 
 #### IP access restriction **(ULTIMATE ONLY)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/1985) in
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/1985) in
 [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.0.
 
 To make sure only people from within your organization can access particular
@@ -355,7 +355,7 @@ the group regardless of the IP restriction.
 
 #### Allowed domain restriction **(PREMIUM ONLY)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/7297) in
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/7297) in
 [GitLab Premium](https://about.gitlab.com/pricing/) 12.2.
 
 You can restrict access to groups and their underlying projects by
@@ -437,7 +437,7 @@ To enable this feature:
 
 #### Storage usage quota **(STARTER)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/13294) in [GitLab Starter](https://about.gitlab.com/pricing/) 12.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/13294) in [GitLab Starter](https://about.gitlab.com/pricing/) 12.0.
 
 A group owner can check the aggregated storage usage for all the project in a group, sub-groups included, in the **Storage** tab of the **Usage Quotas** page available to the group page settings list.
 
@@ -476,4 +476,4 @@ If you have none to add when creating a doc, leave this section in place
 but commented out to help encourage others to add to it in the future. -->
 
 [ee]: https://about.gitlab.com/pricing/
-[ee-2534]: https://gitlab.com/gitlab-org/gitlab-ee/issues/2534
+[ee-2534]: https://gitlab.com/gitlab-org/gitlab/issues/2534

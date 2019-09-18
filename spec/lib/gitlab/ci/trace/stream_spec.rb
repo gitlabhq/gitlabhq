@@ -58,7 +58,7 @@ describe Gitlab::Ci::Trace::Stream, :clean_gitlab_redis_cache do
           expect(result.encoding).to eq(Encoding.default_external)
         end
 
-        # See https://gitlab.com/gitlab-org/gitlab-ce/issues/30796
+        # See https://gitlab.com/gitlab-org/gitlab-foss/issues/30796
         it 'reads in binary, output as Encoding.default_external' do
           stream.limit(52)
 

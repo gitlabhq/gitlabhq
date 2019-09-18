@@ -186,7 +186,7 @@ The diff view includes the following:
 
 ## Commenting on any file line in merge requests
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/13950) in GitLab 11.5.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/13950) in GitLab 11.5.
 
 GitLab provides a way of leaving comments in any part of the file being changed
 in a Merge Request. To do so, click the **...** button in the gutter of the Merge Request diff UI to expand the diff lines and leave a comment, just as you would for a changed line.
@@ -210,7 +210,7 @@ commit when merging, to allow for a neater commit history.
 
 ## Suggest changes
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/18008) in GitLab 11.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/18008) in GitLab 11.6.
 
 As a reviewer, you can add suggestions to change the content in
 merge request threads, and users with appropriate [permission](../../permissions.md)
@@ -220,7 +220,7 @@ to learn more.
 
 ## Multiple assignees **(STARTER)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/2004)
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/2004)
 in [GitLab Starter 11.11](https://about.gitlab.com/pricing).
 
 Multiple people often review merge requests at the same time. GitLab allows you to have multiple assignees for merge requests to indicate everyone that is reviewing or accountable for it.
@@ -275,7 +275,7 @@ or contacts to continue working._
 
 ### Adding patches when creating a merge request via e-mail
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/22723) in GitLab 11.5.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/22723) in GitLab 11.5.
 
 You can add commits to the merge request being created by adding
 patches as attachments to the email. All attachments with a filename
@@ -292,7 +292,7 @@ branch already exists, the patches will be applied on top of it.
 
 ## Git push options
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/26752) in GitLab 11.10.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/26752) in GitLab 11.10.
 
 NOTE: **Note:**
 Git push options are only available with Git 2.10 or newer. With Git older than 2.18
@@ -355,7 +355,7 @@ git push -o merge_request.create -o merge_request.merge_when_pipeline_succeeds
 
 ### Set removing the source branch using git push options
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/64320) in GitLab 12.2.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/64320) in GitLab 12.2.
 
 To set an existing merge request to remove the source branch when the
 merge request is merged, the
@@ -370,7 +370,7 @@ You can also use this push option in addition to the
 
 ### Set merge request title using git push options
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/64320) in GitLab 12.2.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/64320) in GitLab 12.2.
 
 To set the title of an existing merge request, use
 the `merge_request.title` push option:
@@ -384,7 +384,7 @@ You can also use this push option in addition to the
 
 ### Set merge request description using git push options
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/64320) in GitLab 12.2.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/64320) in GitLab 12.2.
 
 To set the description of an existing merge request, use
 the `merge_request.description` push option:
@@ -398,7 +398,7 @@ You can also use this push option in addition to the
 
 ### Add or remove labels using git push options
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/31831) in GitLab 12.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/31831) in GitLab 12.3.
 
 You can add or remove labels from merge requests using push options.
 
@@ -427,7 +427,7 @@ git push -o merge_request.create -o merge_request.label="label1" -o merge_reques
 
 ## Find the merge request that introduced a change
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/2383) in GitLab 10.5.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/2383) in GitLab 10.5.
 
 When viewing the commit details page, GitLab will link to the merge request (or
 merge requests, if it's in more than one) containing that commit.
@@ -490,7 +490,7 @@ can show the Code Climate report right in the merge request widget area.
 
 ## Metrics Reports **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/9788) in [GitLab Premium][products] 11.10.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/9788) in [GitLab Premium][products] 11.10.
 Requires GitLab Runner 11.10 and above.
 
 If you are using [GitLab CI][ci], you can configure your job to output custom
@@ -693,7 +693,7 @@ like this:
 
 ```
 [remote "origin"]
-  url = https://gitlab.com/gitlab-org/gitlab-ce.git
+  url = https://gitlab.com/gitlab-org/gitlab-foss.git
   fetch = +refs/heads/*:refs/remotes/origin/*
 ```
 
@@ -713,7 +713,7 @@ In the end, it should look like this:
 
 ```
 [remote "origin"]
-  url = https://gitlab.com/gitlab-org/gitlab-ce.git
+  url = https://gitlab.com/gitlab-org/gitlab-foss.git
   fetch = +refs/heads/*:refs/remotes/origin/*
   fetch = +refs/merge-requests/*/head:refs/remotes/origin/merge-requests/*
 ```
@@ -724,7 +724,7 @@ Now you can fetch all the merge requests:
 git fetch origin
 
 ...
-From https://gitlab.com/gitlab-org/gitlab-ce.git
+From https://gitlab.com/gitlab-org/gitlab-foss.git
  * [new ref]         refs/merge-requests/1/head -> origin/merge-requests/1
  * [new ref]         refs/merge-requests/2/head -> origin/merge-requests/2
 ...

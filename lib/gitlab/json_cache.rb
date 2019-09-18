@@ -79,7 +79,7 @@ module Gitlab
       # is being applied on ActiveRecord::Associations::CollectionAssociation#scope
       # when the new_record? method incorrectly returns false.
       #
-      # See https://gitlab.com/gitlab-org/gitlab-ee/issues/9903#note_145329964
+      # See https://gitlab.com/gitlab-org/gitlab/issues/9903#note_145329964
       klass
         .allocate
         .init_with(

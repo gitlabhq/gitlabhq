@@ -43,7 +43,7 @@ it's built and tested automatically and continuously, ensuring the
 introduced changes pass all tests, guidelines, and code compliance
 standards you established for your app.
 
-[GitLab itself](https://gitlab.com/gitlab-org/gitlab-ce) is an
+[GitLab itself](https://gitlab.com/gitlab-org/gitlab-foss) is an
 example of using Continuous Integration as a software
 development method. For every push to the project, there's a set
 of scripts the code is checked against.

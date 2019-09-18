@@ -4,7 +4,7 @@ type: reference
 
 # Review Apps
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/21971) in GitLab 8.12. Further additions were made in GitLab 8.13 and 8.14.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/21971) in GitLab 8.12. Further additions were made in GitLab 8.13 and 8.14.
 > - Inspired by [Heroku's Review Apps](https://devcenter.heroku.com/articles/github-integration-review-apps), which itself was inspired by [Fourchette](https://github.com/rainforestapp/fourchette).
 
 Review Apps is a collaboration tool that takes the hard work out of providing an environment to showcase product changes.
@@ -155,7 +155,7 @@ Once you have the route mapping set up, it will take effect in the following loc
 
 ## Visual Reviews **(STARTER)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/10761) in GitLab Starter 12.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/10761) in GitLab Starter 12.0.
 
 With Visual Reviews, you can provide a feedback form to your Review Apps so
 that reviewers can post comments directly from the app back to the merge request
@@ -218,7 +218,7 @@ Then, when your app is deployed via GitLab CI/CD, those variables should get
 replaced with their real values.
 
 NOTE: **Note:**
-Future enhancements [are planned](https://gitlab.com/gitlab-org/gitlab-ee/issues/11322)
+Future enhancements [are planned](https://gitlab.com/gitlab-org/gitlab/issues/11322)
 to make this process even easier.
 
 ### Using Visual Reviews

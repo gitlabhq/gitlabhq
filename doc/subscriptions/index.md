@@ -275,7 +275,7 @@ However, depending on the tier and feature, your data may become inaccessible.
 
 Please note that some features may not behave as expected if a graceful
 fallback is not currently implemented. For example,
-[environment specific variables not being passed](https://gitlab.com/gitlab-org/gitlab-ce/issues/52825).
+[environment specific variables not being passed](https://gitlab.com/gitlab-org/gitlab-foss/issues/52825).
 
 If you renew or upgrade, your data will again be accessible.
 
@@ -296,9 +296,9 @@ topics covering the use and administration of GitLab.
 We also encourage all users to search our project trackers for known issues and
 existing feature requests in:
 
-- [GitLab CE](https://gitlab.com/gitlab-org/gitlab-ce/issues/) for features
+- [GitLab CE](https://gitlab.com/gitlab-org/gitlab-foss/issues/) for features
   included in all tiers.
-- [GitLab EE](https://gitlab.com/gitlab-org/gitlab-ee/issues/) for paid-tier
+- [GitLab EE](https://gitlab.com/gitlab-org/gitlab/issues/) for paid-tier
   features.
 
 These issues are the best avenue for getting updates on specific product plans

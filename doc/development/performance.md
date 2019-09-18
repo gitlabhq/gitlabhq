@@ -425,8 +425,8 @@ might find using these gems more convenient:
 ### Examples
 
 You may find some useful examples in this snippet:
-<https://gitlab.com/gitlab-org/gitlab-ce/snippets/33946>
+<https://gitlab.com/gitlab-org/gitlab-foss/snippets/33946>
 
-[#15607]: https://gitlab.com/gitlab-org/gitlab-ce/issues/15607
+[#15607]: https://gitlab.com/gitlab-org/gitlab-foss/issues/15607
 [yorickpeterse]: https://gitlab.com/yorickpeterse
 [anti-pattern]: https://en.wikipedia.org/wiki/Anti-pattern

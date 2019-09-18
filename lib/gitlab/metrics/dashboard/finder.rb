@@ -28,9 +28,9 @@ module Gitlab
           # @param options - y_label [String] Y-Axis label of
           #         a panel. Used by embedded dashboards.
           # @return [Hash]
-          def find(project, user, environment, options = {})
+          def find(project, user, options = {})
             service_for(options)
-              .new(project, user, options.merge(environment: environment))
+              .new(project, user, options)
               .get_dashboard
           end
 

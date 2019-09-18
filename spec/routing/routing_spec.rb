@@ -255,7 +255,7 @@ describe "Authentication", "routing" do
   end
 
   # sign_out with GET instead of DELETE facilitates ad-hoc single-sign-out processes
-  # (https://gitlab.com/gitlab-org/gitlab-ce/issues/39708)
+  # (https://gitlab.com/gitlab-org/gitlab-foss/issues/39708)
   it "GET /users/sign_out" do
     expect(get("/users/sign_out")).to route_to('sessions#destroy')
   end

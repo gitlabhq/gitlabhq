@@ -36,7 +36,7 @@ A Merge Request author's role is to:
 
 - Decide whether a database review is needed.
 - If database review is needed, add the ~database label.
-- Use the [database changes](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/.gitlab/merge_request_templates/Database%20changes.md)
+- Use the [database changes](https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab/merge_request_templates/Database%20changes.md)
   merge request template, or include the appropriate items in the MR description.
 - [Prepare the merge request for a database review](#how-to-prepare-the-merge-request-for-a-database-review).
 
@@ -59,7 +59,7 @@ A database **maintainer**'s role is to:
 ### Distributing review workload
 
 Review workload is distributed using [reviewer roulette](code_review.md#reviewer-roulette)
-([example](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/25181#note_147551725)).
+([example](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/25181#note_147551725)).
 The MR author should then co-assign the suggested database
 **reviewer**. When they give their sign-off, they will hand over to
 the suggested database **maintainer**.

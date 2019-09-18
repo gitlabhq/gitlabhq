@@ -14,7 +14,7 @@ description: 'Learn how to contribute to GitLab.'
 
 ## Processes
 
-- [GitLab core team & GitLab Inc. contribution process](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/PROCESS.md)
+- [GitLab core team & GitLab Inc. contribution process](https://gitlab.com/gitlab-org/gitlab/blob/master/PROCESS.md)
 - [Generate a changelog entry with `bin/changelog`](changelog.md)
 - [Code review guidelines](code_review.md) for reviewing code and having code reviewed
 - [Database review guidelines](database_review.md) for reviewing database-related changes and complex SQL queries
@@ -141,6 +141,12 @@ description: 'Learn how to contribute to GitLab.'
 - [Introduction](i18n/index.md)
 - [Externalization](i18n/externalization.md)
 - [Translation](i18n/translation.md)
+
+## Event tracking guides
+
+- [Introduction](event_tracking/index.md)
+- [Frontend tracking guide](event_tracking/frontend.md)
+- [Backend tracking guide](event_tracking/backend.md)
 
 ## Build guides
 

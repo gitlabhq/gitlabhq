@@ -6,7 +6,7 @@ end
 
 # GitLab permits users to sign up in Ukraine except the Crimean Region: https://about.gitlab.com/handbook/people-operations/code-of-conduct/#trade-compliance-exportimport-control
 # This overrides the display name for Ukraine to Ukraine (except Crimean Region)
-# To be removed after https://gitlab.com/gitlab-org/gitlab-ee/issues/14784 is implemented
+# To be removed after https://gitlab.com/gitlab-org/gitlab/issues/14784 is implemented
 # Data fetched is based on https://github.com/hexorx/countries/blob/master/lib/countries/data/countries/UA.yaml
 ISO3166::Data.register(
   continent: "Europe",

@@ -1,4 +1,4 @@
-/* eslint-disable object-shorthand, func-names, no-else-return, guard-for-in, no-restricted-syntax, no-lonely-if, no-continue */
+/* eslint-disable func-names, no-else-return, guard-for-in, no-restricted-syntax, no-lonely-if, no-continue */
 /* global CommentsStore */
 
 import $ from 'jquery';
@@ -15,24 +15,24 @@ const JumpToDiscussion = Vue.extend({
       required: true,
     },
   },
-  data: function() {
+  data() {
     return {
       discussions: CommentsStore.state,
       discussion: {},
     };
   },
   computed: {
-    buttonText: function() {
+    buttonText() {
       if (this.discussionId) {
         return __('Jump to next unresolved discussion');
       } else {
         return __('Jump to first unresolved discussion');
       }
     },
-    allResolved: function() {
+    allResolved() {
       return this.unresolvedDiscussionCount === 0;
     },
-    showButton: function() {
+    showButton() {
       if (this.discussionId) {
         if (this.unresolvedDiscussionCount > 1) {
           return true;
@@ -43,7 +43,7 @@ const JumpToDiscussion = Vue.extend({
         return this.unresolvedDiscussionCount >= 1;
       }
     },
-    lastResolvedId: function() {
+    lastResolvedId() {
       let lastId;
       for (const discussionId in this.discussions) {
         const discussion = this.discussions[discussionId];
@@ -59,7 +59,7 @@ const JumpToDiscussion = Vue.extend({
     this.discussion = this.discussions[this.discussionId];
   },
   methods: {
-    jumpToNextUnresolvedDiscussion: function() {
+    jumpToNextUnresolvedDiscussion() {
       let discussionsSelector;
       let discussionIdsInScope;
       let firstUnresolvedDiscussionId;

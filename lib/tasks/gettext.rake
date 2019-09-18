@@ -13,7 +13,7 @@ namespace :gettext do
   end
 
   task :compile do
-    # See: https://gitlab.com/gitlab-org/gitlab-ce/issues/33014#note_31218998
+    # See: https://gitlab.com/gitlab-org/gitlab-foss/issues/33014#note_31218998
     FileUtils.touch(File.join(Rails.root, 'locale/gitlab.pot'))
 
     Rake::Task['gettext:po_to_json'].invoke

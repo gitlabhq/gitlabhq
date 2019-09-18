@@ -1,6 +1,6 @@
 # Instance-level Kubernetes clusters
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/39840) in GitLab 11.11.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/39840) in GitLab 11.11.
 
 ## Overview
 

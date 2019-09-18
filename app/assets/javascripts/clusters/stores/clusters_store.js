@@ -218,6 +218,7 @@ export default class ClusterStore {
       environmentPath: environment.environment_path,
       lastDeployment: environment.last_deployment,
       rolloutStatus: {
+        status: environment.rollout_status ? environment.rollout_status.status : null,
         instances: environment.rollout_status ? environment.rollout_status.instances : [],
       },
       updatedAt: environment.updated_at,

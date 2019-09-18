@@ -2,7 +2,7 @@
 
 We developed a number of utilities to ease development.
 
-## [`MergeHash`](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/lib/gitlab/utils/merge_hash.rb)
+## [`MergeHash`](https://gitlab.com/gitlab-org/gitlab-foss/blob/master/lib/gitlab/utils/merge_hash.rb)
 
 - Deep merges an array of hashes:
 
@@ -45,7 +45,7 @@ We developed a number of utilities to ease development.
   [:hello, "world", :this, :crushes, "an entire", "hash"]
   ```
 
-## [`Override`](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/lib/gitlab/utils/override.rb)
+## [`Override`](https://gitlab.com/gitlab-org/gitlab-foss/blob/master/lib/gitlab/utils/override.rb)
 
 - This utility could help us check if a particular method would override
   another method or not. It has the same idea of Java's `@Override` annotation
@@ -90,7 +90,7 @@ We developed a number of utilities to ease development.
     end
     ```
 
-## [`StrongMemoize`](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/lib/gitlab/utils/strong_memoize.rb)
+## [`StrongMemoize`](https://gitlab.com/gitlab-org/gitlab-foss/blob/master/lib/gitlab/utils/strong_memoize.rb)
 
 - Memoize the value even if it is `nil` or `false`.
 
@@ -136,7 +136,7 @@ We developed a number of utilities to ease development.
   Find.new.clear_memoization(:result)
   ```
 
-## [`RequestCache`](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/lib/gitlab/cache/request_cache.rb)
+## [`RequestCache`](https://gitlab.com/gitlab-org/gitlab-foss/blob/master/lib/gitlab/cache/request_cache.rb)
 
 This module provides a simple way to cache values in RequestStore,
 and the cache key would be based on the class name, method name,

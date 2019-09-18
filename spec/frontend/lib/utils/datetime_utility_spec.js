@@ -248,7 +248,7 @@ describe('datefix', () => {
   });
 
   describe('parsePikadayDate', () => {
-    // removed because of https://gitlab.com/gitlab-org/gitlab-ce/issues/39834
+    // removed because of https://gitlab.com/gitlab-org/gitlab-foss/issues/39834
   });
 
   describe('pikadayToString', () => {

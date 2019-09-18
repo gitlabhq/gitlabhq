@@ -75,7 +75,7 @@ module API
         render_api_error!(message, 400) unless obtain_new_cleanup_container_lease
 
         CleanupContainerRepositoryWorker.perform_async(current_user.id, repository.id,
-          declared_params.except(:repository_id)) # rubocop: disable CodeReuse/ActiveRecord
+          declared_params.except(:repository_id))
 
         status :accepted
       end

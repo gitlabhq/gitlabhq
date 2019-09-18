@@ -13,6 +13,14 @@ class Projects::TemplatesController < Projects::ApplicationController
     end
   end
 
+  def names
+    templates = @template_type.dropdown_names(project)
+
+    respond_to do |format|
+      format.json { render json: templates }
+    end
+  end
+
   private
 
   # User must have:

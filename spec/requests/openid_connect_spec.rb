@@ -156,7 +156,7 @@ describe 'OpenID Connect requests' do
     #
     # When the patch gets merged and we update Warden, these specs will need to
     # updated to check the response instead of a raised exception.
-    # https://gitlab.com/gitlab-org/gitlab-ce/issues/40218
+    # https://gitlab.com/gitlab-org/gitlab-foss/issues/40218
     context 'when user is blocked' do
       it 'returns authentication error' do
         access_grant

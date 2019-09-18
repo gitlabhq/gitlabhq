@@ -4,7 +4,7 @@ type: reference, howto
 
 # Static Application Security Testing (SAST) **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/3775)
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/3775)
 in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.3.
 
 NOTE: **4 of the top 6 attacks were application based.**
@@ -86,7 +86,7 @@ The Java analyzers can also be used for variants like the
 
 For GitLab 11.9 and later, to enable SAST, you must
 [include](../../../ci/yaml/README.md#includetemplate) the
-[`SAST.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/lib/gitlab/ci/templates/Security/SAST.gitlab-ci.yml)
+[`SAST.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/SAST.gitlab-ci.yml)
 that's provided as a part of your GitLab installation.
 For GitLab versions earlier than 11.9, you can copy and use the job as defined
 that template.
@@ -361,4 +361,4 @@ For more information about the vulnerabilities database update, check the
 This error occurs when the Docker version used to run the SAST job is `19.03.00`.
 You are advised to update to Docker `19.03.01` or greater. Older versions are not
 affected. Read more in
-[this issue](https://gitlab.com/gitlab-org/gitlab-ee/issues/13830#note_211354992 "Current SAST container fails").
+[this issue](https://gitlab.com/gitlab-org/gitlab/issues/13830#note_211354992 "Current SAST container fails").

@@ -183,7 +183,7 @@ Configure the tracking database.
    alertmanager['enable'] = false
    consul['enable'] = false
    gitaly['enable'] = false
-   gitlab_monitor['enable'] = false
+   gitlab_exporter['enable'] = false
    gitlab_workhorse['enable'] = false
    nginx['enable'] = false
    node_exporter['enable'] = false

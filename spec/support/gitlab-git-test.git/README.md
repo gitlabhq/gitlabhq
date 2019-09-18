@@ -7,7 +7,7 @@ inflate the size of the gitlab-ce repository.
 
 ## How to make changes to this repository
 
-- (if needed) clone `https://gitlab.com/gitlab-org/gitlab-ce.git` to your local machine
+- (if needed) clone `https://gitlab.com/gitlab-org/gitlab-foss.git` to your local machine
 - clone `gitlab-ce/spec/support/gitlab-git-test.git` locally (i.e. clone from your hard drive, not from the internet)
 - make changes in your local clone of gitlab-git-test
 - run `git push` which will push to your local source `gitlab-ce/spec/support/gitlab-git-test.git`

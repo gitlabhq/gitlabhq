@@ -168,8 +168,8 @@ or future versions.
   upgrading a PostgreSQL database with minimal downtime.
 
 [omnidocker]: https://docs.gitlab.com/omnibus/docker/README.html
-[old-ee-upgrade-docs]: https://gitlab.com/gitlab-org/gitlab-ee/tree/11-8-stable-ee/doc/update
-[old-ce-upgrade-docs]: https://gitlab.com/gitlab-org/gitlab-ce/tree/11-8-stable/doc/update
+[old-ee-upgrade-docs]: https://gitlab.com/gitlab-org/gitlab/tree/11-8-stable-ee/doc/update
+[old-ce-upgrade-docs]: https://gitlab.com/gitlab-org/gitlab-foss/tree/11-8-stable/doc/update
 [source-ce-to-ee]: upgrading_from_ce_to_ee.md
 [ee-ce]: ../downgrade_ee_to_ce/README.md
 [ce]: https://about.gitlab.com/features/#community

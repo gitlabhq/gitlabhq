@@ -39,4 +39,4 @@ Using fuzzy search, we start by typing letters that get us closer to the file.
 
 [gh-9889]: https://github.com/gitlabhq/gitlabhq/pull/9889 "File finder pull request"
 [fuzzy filter]: https://github.com/jeancroy/fuzzaldrin-plus "fuzzaldrin-plus on GitHub"
-[ce]: https://gitlab.com/gitlab-org/gitlab-ce/tree/master "GitLab CE repository"
+[ce]: https://gitlab.com/gitlab-org/gitlab-foss/tree/master "GitLab CE repository"

@@ -7,15 +7,12 @@ module Gitlab
         class BaseStage
           include Gitlab::Metrics::Dashboard::Defaults
 
-          DashboardProcessingError = Class.new(StandardError)
-          LayoutError = Class.new(DashboardProcessingError)
+          attr_reader :project, :dashboard, :params
 
-          attr_reader :project, :environment, :dashboard
-
-          def initialize(project, environment, dashboard)
+          def initialize(project, dashboard, params)
             @project = project
-            @environment = environment
             @dashboard = dashboard
+            @params = params
           end
 
           # Entry-point to the stage
@@ -26,15 +23,15 @@ module Gitlab
           protected
 
           def missing_panel_groups!
-            raise LayoutError.new('Top-level key :panel_groups must be an array')
+            raise Errors::LayoutError.new('Top-level key :panel_groups must be an array')
           end
 
           def missing_panels!
-            raise LayoutError.new('Each "panel_group" must define an array :panels')
+            raise Errors::LayoutError.new('Each "panel_group" must define an array :panels')
           end
 
           def missing_metrics!
-            raise LayoutError.new('Each "panel" must define an array :metrics')
+            raise Errors::LayoutError.new('Each "panel" must define an array :metrics')
           end
 
           def for_metrics

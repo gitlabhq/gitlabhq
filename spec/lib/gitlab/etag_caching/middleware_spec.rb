@@ -7,10 +7,10 @@ describe Gitlab::EtagCaching::Middleware do
   let(:middleware) { described_class.new(app) }
   let(:app_status_code) { 200 }
   let(:if_none_match) { nil }
-  let(:enabled_path) { '/gitlab-org/gitlab-ce/noteable/issue/1/notes' }
+  let(:enabled_path) { '/gitlab-org/gitlab-foss/noteable/issue/1/notes' }
 
   context 'when ETag caching is not enabled for current route' do
-    let(:path) { '/gitlab-org/gitlab-ce/tree/master/noteable/issue/1/notes' }
+    let(:path) { '/gitlab-org/gitlab-foss/tree/master/noteable/issue/1/notes' }
 
     before do
       mock_app_response

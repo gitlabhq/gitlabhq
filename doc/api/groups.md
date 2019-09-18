@@ -648,7 +648,7 @@ And to switch pages add:
 /groups?per_page=100&page=2
 ```
 
-[ce-15142]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/15142
+[ce-15142]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/15142
 
 ## Group badges
 

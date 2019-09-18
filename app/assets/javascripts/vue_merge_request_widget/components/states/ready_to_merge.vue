@@ -88,7 +88,8 @@ export default {
     mergeButtonText() {
       if (this.isMergingImmediately) {
         return __('Merge in progress');
-      } else if (this.isAutoMergeAvailable) {
+      }
+      if (this.isAutoMergeAvailable) {
         return this.autoMergeText;
       }
 
@@ -306,7 +307,7 @@ export default {
             </template>
             <template v-else>
               <span class="bold js-resolve-mr-widget-items-message">
-                {{ __('You can only merge once the items above are resolved') }}
+                {{ mergeDisabledText }}
               </span>
             </template>
           </div>

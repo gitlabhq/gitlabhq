@@ -378,7 +378,7 @@ describe('Dashboard', () => {
     });
   });
 
-  // https://gitlab.com/gitlab-org/gitlab-ce/issues/66922
+  // https://gitlab.com/gitlab-org/gitlab-foss/issues/66922
   // eslint-disable-next-line jasmine/no-disabled-tests
   xdescribe('link to chart', () => {
     let wrapper;

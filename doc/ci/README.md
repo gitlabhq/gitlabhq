@@ -57,7 +57,7 @@ If you're coming over from Jenkins, you can also check out our handy [reference]
 for converting your pipelines.
 
 You can also get started by using one of the
-[`.gitlab-ci.yml` templates](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/lib/gitlab/ci/templates)
+[`.gitlab-ci.yml` templates](https://gitlab.com/gitlab-org/gitlab-foss/tree/master/lib/gitlab/ci/templates)
 available through the UI. You can use them by creating a new file,
 choosing a template that suits your application, and adjusting it
 to your needs:

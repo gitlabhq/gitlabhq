@@ -5,7 +5,7 @@ import bp from './breakpoints';
 import { parseBoolean } from '~/lib/utils/common_utils';
 
 // NOTE: at 1200px nav sidebar should not overlap the content
-// https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/24555#note_134136110
+// https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/24555#note_134136110
 const NAV_SIDEBAR_BREAKPOINT = 1200;
 
 export const SIDEBAR_COLLAPSED_CLASS = 'js-sidebar-collapsed';

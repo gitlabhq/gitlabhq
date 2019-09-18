@@ -8,7 +8,7 @@ describe('Jobs List block', () => {
 
   const retried = {
     status: {
-      details_path: '/gitlab-org/gitlab-ce/pipelines/28029444',
+      details_path: '/gitlab-org/gitlab-foss/pipelines/28029444',
       group: 'success',
       has_details: true,
       icon: 'status_success',
@@ -24,7 +24,7 @@ describe('Jobs List block', () => {
   const active = {
     name: 'test',
     status: {
-      details_path: '/gitlab-org/gitlab-ce/pipelines/28029444',
+      details_path: '/gitlab-org/gitlab-foss/pipelines/28029444',
       group: 'success',
       has_details: true,
       icon: 'status_success',
@@ -40,7 +40,7 @@ describe('Jobs List block', () => {
   const job = {
     name: 'build',
     status: {
-      details_path: '/gitlab-org/gitlab-ce/pipelines/28029444',
+      details_path: '/gitlab-org/gitlab-foss/pipelines/28029444',
       group: 'success',
       has_details: true,
       icon: 'status_success',

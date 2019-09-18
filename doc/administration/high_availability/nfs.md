@@ -65,7 +65,7 @@ If the Rugged feature flag is explicitly set to either true or false, GitLab wil
 
 On some customer systems, we have seen NFS clients slow precipitously due to
 [excessive network traffic from numerous `TEST_STATEID` NFS
-messages](https://gitlab.com/gitlab-org/gitlab-ce/issues/52017). This is
+messages](https://gitlab.com/gitlab-org/gitlab-foss/issues/52017). This is
 likely due to a [Linux kernel
 bug](https://bugzilla.redhat.com/show_bug.cgi?id=1552203) that may be fixed in
 [more recent kernels with this

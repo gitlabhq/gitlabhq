@@ -52,7 +52,7 @@ removed from the repository.
 
 ## Using the BFG Repo-Cleaner
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/19376) in GitLab 11.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/19376) in GitLab 11.6.
 
 1. [Install BFG](https://rtyley.github.io/bfg-repo-cleaner/).
 

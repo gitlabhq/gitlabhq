@@ -36,10 +36,11 @@ export default {
     },
   },
   computed: {
+    resolvableNotes() {
+      return this.discussion.notes.filter(x => x.resolvable);
+    },
     userCanResolveDiscussion() {
-      return this.discussion.notes.every(
-        note => note.current_user && note.current_user.can_resolve,
-      );
+      return this.resolvableNotes.every(note => note.current_user && note.current_user.can_resolve);
     },
   },
 };

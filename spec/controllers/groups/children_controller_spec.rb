@@ -170,7 +170,7 @@ describe Groups::ChildrenController do
 
           # Creating the group-to-nest first so it would be loaded into the
           # relation first before it's parents, this is what would cause the
-          # crash in: https://gitlab.com/gitlab-org/gitlab-ce/issues/40785.
+          # crash in: https://gitlab.com/gitlab-org/gitlab-foss/issues/40785.
           #
           # If we create the parent groups first, those would be loaded into the
           # collection first, and the pagination would cut off the actual search

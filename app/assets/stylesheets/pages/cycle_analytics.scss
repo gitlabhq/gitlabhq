@@ -1,5 +1,5 @@
-#cycle-analytics {
-  max-width: 1000px;
+#cycle-analytics,
+.cycle-analytics {
   margin: 24px auto 0;
   position: relative;
 
@@ -41,7 +41,8 @@
       width: 20%;
     }
 
-    .fa {
+    .fa,
+    svg {
       color: $cycle-analytics-light-gray;
 
       &:hover {
@@ -233,7 +234,7 @@
 
       &.issue-title,
       &.commit-title,
-      &.merge-merquest-title {
+      &.merge-request-title {
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
@@ -266,6 +267,7 @@
       color: $gl-text-color;
     }
 
+    .mr-link,
     .issue-link,
     .commit-author-link,
     .issue-author-link {

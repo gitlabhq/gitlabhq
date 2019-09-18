@@ -8,7 +8,7 @@ module UserCalloutEnums
   # extended by EE.
   #
   # If you are going to add new items to this hash, check that you're not going
-  # to conflict with EE-only values: https://gitlab.com/gitlab-org/gitlab-ee/blob/master/ee/app/models/ee/user_callout_enums.rb
+  # to conflict with EE-only values: https://gitlab.com/gitlab-org/gitlab/blob/master/ee/app/models/ee/user_callout_enums.rb
   def self.feature_names
     {
       gke_cluster_integration: 1,

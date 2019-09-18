@@ -29,24 +29,26 @@ describe('Tracking', () => {
         forceSecureTracker: true,
         eventMethod: 'post',
         contexts: { webPage: true },
-        activityTrackingEnabled: false,
-        pageTrackingEnabled: false,
+        formTracking: false,
+        linkClickTracking: false,
       });
     });
 
     it('should activate features based on what has been enabled', () => {
       initUserTracking();
-      expect(snowplowSpy).not.toHaveBeenCalledWith('enableActivityTracking', 30, 30);
-      expect(snowplowSpy).not.toHaveBeenCalledWith('trackPageView');
+      expect(snowplowSpy).toHaveBeenCalledWith('enableActivityTracking', 30, 30);
+      expect(snowplowSpy).toHaveBeenCalledWith('trackPageView');
+      expect(snowplowSpy).not.toHaveBeenCalledWith('enableFormTracking');
+      expect(snowplowSpy).not.toHaveBeenCalledWith('enableLinkClickTracking');
 
       window.snowplowOptions = Object.assign({}, window.snowplowOptions, {
-        activityTrackingEnabled: true,
-        pageTrackingEnabled: true,
+        formTracking: true,
+        linkClickTracking: true,
       });
 
       initUserTracking();
-      expect(snowplowSpy).toHaveBeenCalledWith('enableActivityTracking', 30, 30);
-      expect(snowplowSpy).toHaveBeenCalledWith('trackPageView');
+      expect(snowplowSpy).toHaveBeenCalledWith('enableFormTracking');
+      expect(snowplowSpy).toHaveBeenCalledWith('enableLinkClickTracking');
     });
   });
 

@@ -348,7 +348,7 @@ describe Projects::CreateService, '#execute' do
 
   context 'when a bad service template is created' do
     it 'sets service to be inactive' do
-      opts[:import_url] = 'http://www.gitlab.com/gitlab-org/gitlab-ce'
+      opts[:import_url] = 'http://www.gitlab.com/gitlab-org/gitlab-foss'
       create(:service, type: 'DroneCiService', project: nil, template: true, active: true)
 
       project = create_project(user, opts)

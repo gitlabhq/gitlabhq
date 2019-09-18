@@ -527,7 +527,7 @@ PUT /projects/:id/merge_requests/:merge_request_iid/approvers
 
 ### Get the approval state of merge requests
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/13712) in [GitLab Starter](https://about.gitlab.com/pricing/) 12.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/13712) in [GitLab Starter](https://about.gitlab.com/pricing/) 12.3.
 
 You can request information about a merge request's approval state by using the following endpoint:
 

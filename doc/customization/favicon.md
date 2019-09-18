@@ -6,7 +6,7 @@ type: howto
 
 > [Introduced][ce-14497] in GitLab 11.0.
 
-[ce-14497]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/14497
+[ce-14497]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/14497
 
 You can customize the favicon (the icon displayed in your web browser's
 address bar and web page tabs) for your GitLab server.

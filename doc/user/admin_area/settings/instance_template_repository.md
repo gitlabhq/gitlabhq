@@ -4,7 +4,7 @@ type: reference
 
 # Instance template repository **(PREMIUM ONLY)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/5986) in
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/5986) in
 > [GitLab Premium](https://about.gitlab.com/pricing/) 11.3.
 
 ## Overview

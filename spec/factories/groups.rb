@@ -11,7 +11,7 @@ FactoryBot.define do
     after(:create) do |group|
       if group.owner
         # We could remove this after we have proper constraint:
-        # https://gitlab.com/gitlab-org/gitlab-ce/issues/43292
+        # https://gitlab.com/gitlab-org/gitlab-foss/issues/43292
         raise "Don't set owner for groups, use `group.add_owner(user)` instead"
       end
     end

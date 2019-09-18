@@ -50,7 +50,7 @@ module GroupDescendant
         child: child.inspect,
         preloaded: preloaded.map(&:full_path)
       }
-      issue_url = 'https://gitlab.com/gitlab-org/gitlab-ce/issues/49404'
+      issue_url = 'https://gitlab.com/gitlab-org/gitlab-foss/issues/49404'
 
       Gitlab::Sentry.track_exception(exception, issue_url: issue_url, extra: extras)
     end

@@ -97,7 +97,7 @@ describe 'Users > Terms' do
         end
       end
 
-      # Disabled until https://gitlab.com/gitlab-org/gitlab-ce/issues/37162 is solved properly
+      # Disabled until https://gitlab.com/gitlab-org/gitlab-foss/issues/37162 is solved properly
       xit 'redirects back to the page the user was trying to save' do
         visit new_project_issue_path(project)
 

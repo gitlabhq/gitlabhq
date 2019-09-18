@@ -15,7 +15,7 @@ module Ci
         ensure
           ##
           # This is the temporary solution for avoiding the memory bloat.
-          # See more https://gitlab.com/gitlab-org/gitlab-ce/issues/61955
+          # See more https://gitlab.com/gitlab-org/gitlab-foss/issues/61955
           GC.start if Feature.enabled?(:ci_pipeline_schedule_force_gc, default_enabled: true)
         end
       end

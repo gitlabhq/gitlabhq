@@ -158,7 +158,7 @@ as other environment [variables](../../ci/variables/README.md#priority-of-enviro
 
 NOTE: **Note**
 `AUTO_DEVOPS_DOMAIN` environment variable is deprecated and
-[is scheduled to be removed](https://gitlab.com/gitlab-org/gitlab-ce/issues/56959).
+[is scheduled to be removed](https://gitlab.com/gitlab-org/gitlab-foss/issues/56959).
 
 A wildcard DNS A record matching the base domain(s) is required, for example,
 given a base domain of `example.com`, you'd need a DNS entry like:
@@ -182,7 +182,7 @@ them to the Kubernetes pods that run your application(s).
 NOTE: **Note:**
 From GitLab 11.8, `KUBE_INGRESS_BASE_DOMAIN` replaces `AUTO_DEVOPS_DOMAIN`.
 Support for `AUTO_DEVOPS_DOMAIN` was [removed in GitLab
-12.0](https://gitlab.com/gitlab-org/gitlab-ce/issues/56959).
+12.0](https://gitlab.com/gitlab-org/gitlab-foss/issues/56959).
 
 ## Using multiple Kubernetes clusters **(PREMIUM)**
 
@@ -252,7 +252,7 @@ Auto DevOps at the group and project level, respectively.
 
 ### At the group level
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/52447) in GitLab 11.10.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/52447) in GitLab 11.10.
 
 Only administrators and group owners can enable or disable Auto DevOps at the group level.
 
@@ -289,7 +289,7 @@ This can be enabled from the console with the following, which uses the example 
 
 ### Deployment strategy
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/38542) in GitLab 11.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/38542) in GitLab 11.0.
 
 You can change the deployment strategy used by Auto DevOps by going to your
 project's **Settings > CI/CD > Auto DevOps**.
@@ -472,7 +472,7 @@ namespace](../../user/project/clusters/index.md#deployment-variables)
 for the environment.
 
 Since GitLab 11.4, a [local
-Tiller](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/22036) is
+Tiller](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/22036) is
 used. Previous versions of GitLab had a Tiller installed in the project
 namespace.
 
@@ -538,7 +538,7 @@ namespace](../../user/project/clusters/index.md#deployment-variables)
 for the environment.
 
 Since GitLab 11.4, a [local
-Tiller](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/22036) is
+Tiller](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/22036) is
 used. Previous versions of GitLab had a Tiller installed in the project
 namespace.
 
@@ -930,7 +930,7 @@ The following table lists variables used to disable jobs.
 
 #### Application secret variables
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/49056) in GitLab 11.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/49056) in GitLab 11.7.
 
 Some applications need to define secret variables that are
 accessible by the deployed application. Auto DevOps detects variables where the key starts with
@@ -1075,7 +1075,7 @@ If `CANARY_ENABLED` is defined in your project (e.g., set `CANARY_ENABLED` to
 
 #### Incremental rollout to production **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/5415) in GitLab 10.8.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/5415) in GitLab 10.8.
 
 TIP: **Tip:**
 You can also set this inside your [project's settings](#deployment-strategy).
@@ -1133,7 +1133,7 @@ This configuration is deprecated and will be removed in the future.
 
 #### Timed incremental rollout to production **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/7545) in GitLab 11.4.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/7545) in GitLab 11.4.
 
 TIP: **Tip:**
 You can also set this inside your [project's settings](#deployment-strategy).
@@ -1259,16 +1259,16 @@ Or through the HTTP API with an admin access token:
 curl --data "value=true" --header "PRIVATE-TOKEN: personal_access_token" https://gitlab.example.com/api/v4/features/auto_devops_banner_disabled
 ```
 
-[ce-37115]: https://gitlab.com/gitlab-org/gitlab-ce/issues/37115
+[ce-37115]: https://gitlab.com/gitlab-org/gitlab-foss/issues/37115
 [kubernetes-clusters]: ../../user/project/clusters/index.md
 [docker-in-docker]: ../../docker/using_docker_build.md#use-docker-in-docker-executor
 [review-app]: ../../ci/review_apps/index.md
 [container-registry]: ../../user/packages/container_registry/index.md
 [postgresql]: https://www.postgresql.org/
-[Auto DevOps template]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml
+[Auto DevOps template]: https://gitlab.com/gitlab-org/gitlab-foss/blob/master/lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml
 [ee]: https://about.gitlab.com/pricing/
-[ce-21955]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/21955
-[ce-19507]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/19507
+[ce-21955]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/21955
+[ce-19507]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/19507
 
 ## Development guides
 

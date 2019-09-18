@@ -30,7 +30,7 @@ in `.gitlab-ci.yml`.
 
 ## Git shallow clone
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/28919) in GitLab 12.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/28919) in GitLab 12.0.
 
 NOTE: **Note**:
 As of GitLab 12.0, newly created projects will automatically have a default
@@ -55,14 +55,14 @@ if the job surpasses the threshold, it is marked as failed.
 
 ### Timeout overriding on Runner level
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/17221) in GitLab 10.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/17221) in GitLab 10.7.
 
 Project defined timeout (either specific timeout set by user or the default
 60 minutes timeout) may be [overridden on Runner level](../../../ci/runners/README.html#setting-maximum-job-timeout-for-a-runner).
 
 ## Custom CI config path
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/12509) in GitLab 9.4.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/12509) in GitLab 9.4.
 
 By default we look for the `.gitlab-ci.yml` file in the project's root
 directory. If you require a different location **within** the repository,
@@ -149,7 +149,7 @@ If **Public pipelines** is disabled:
 
 ## Auto-cancel pending pipelines
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/9362) in GitLab 9.1.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/9362) in GitLab 9.1.
 
 If you want to auto-cancel all pending non-HEAD pipelines on branch, when
 new pipeline will be created (after your git push or manually from UI),
@@ -203,7 +203,7 @@ Markdown code will embed the test coverage report badge of the `coverage` job
 into your `README.md`:
 
 ```markdown
-![coverage](https://gitlab.com/gitlab-org/gitlab-ce/badges/master/coverage.svg?job=coverage)
+![coverage](https://gitlab.com/gitlab-org/gitlab-foss/badges/master/coverage.svg?job=coverage)
 ```
 
 ### Badge styles
@@ -216,17 +216,17 @@ Pipeline badges can be rendered in different styles by adding the `style=style_n
 https://example.gitlab.com/<namespace>/<project>/badges/<branch>/coverage.svg?style=flat
 ```
 
-![Badge flat style](https://gitlab.com/gitlab-org/gitlab-ce/badges/master/coverage.svg?job=coverage&style=flat)
+![Badge flat style](https://gitlab.com/gitlab-org/gitlab-foss/badges/master/coverage.svg?job=coverage&style=flat)
 
 #### Flat square
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/30120) in GitLab 11.8.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/30120) in GitLab 11.8.
 
 ```text
 https://example.gitlab.com/<namespace>/<project>/badges/<branch>/coverage.svg?style=flat-square
 ```
 
-![Badge flat square style](https://gitlab.com/gitlab-org/gitlab-ce/badges/master/coverage.svg?job=coverage&style=flat-square)
+![Badge flat square style](https://gitlab.com/gitlab-org/gitlab-foss/badges/master/coverage.svg?job=coverage&style=flat-square)
 
 ## Environment Variables
 

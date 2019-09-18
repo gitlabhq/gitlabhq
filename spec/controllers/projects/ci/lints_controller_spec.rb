@@ -45,7 +45,7 @@ describe Projects::Ci::LintsController do
   end
 
   describe 'POST #create' do
-    let(:remote_file_path) { 'https://gitlab.com/gitlab-org/gitlab-ce/blob/1234/.gitlab-ci-1.yml' }
+    let(:remote_file_path) { 'https://gitlab.com/gitlab-org/gitlab-foss/blob/1234/.gitlab-ci-1.yml' }
 
     let(:remote_file_content) do
       <<~HEREDOC

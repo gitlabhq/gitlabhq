@@ -1288,7 +1288,7 @@ module Gitlab
               options: {
                 script: ["test"],
                 # This does not make sense, there is a follow-up:
-                # https://gitlab.com/gitlab-org/gitlab-ce/issues/65569
+                # https://gitlab.com/gitlab-org/gitlab-foss/issues/65569
                 bridge_needs: %w[build1 build2]
               },
               needs_attributes: [

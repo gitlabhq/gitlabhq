@@ -4,13 +4,13 @@ import $ from 'jquery';
 import Translate from '~/vue_shared/translate';
 import { config as testUtilsConfig } from '@vue/test-utils';
 import { initializeTestTimeout } from './helpers/timeout';
-import { loadHTMLFixture, setHTMLFixture } from './helpers/fixtures';
+import { getJSONFixture, loadHTMLFixture, setHTMLFixture } from './helpers/fixtures';
 import { setupManualMocks } from './mocks/mocks_helper';
 import customMatchers from './matchers';
 
 // Expose jQuery so specs using jQuery plugins can be imported nicely.
 // Here is an issue to explore better alternatives:
-// https://gitlab.com/gitlab-org/gitlab-ee/issues/12448
+// https://gitlab.com/gitlab-org/gitlab/issues/12448
 window.jQuery = $;
 
 process.on('unhandledRejection', global.promiseRejectionHandler);
@@ -43,6 +43,7 @@ Object.defineProperty(global.Element.prototype, 'innerText', {
 
 // convenience wrapper for migration from Karma
 Object.assign(global, {
+  getJSONFixture,
   loadFixtures: loadHTMLFixture,
   setFixtures: setHTMLFixture,
 

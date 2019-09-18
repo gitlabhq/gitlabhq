@@ -1,6 +1,6 @@
 # Pseudonymizer **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/5532) in [GitLab Ultimate][ee] 11.1.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/5532) in [GitLab Ultimate][ee] 11.1.
 
 As GitLab's database hosts sensitive information, using it unfiltered for analytics
 implies high security requirements. To help alleviate this constraint, the Pseudonymizer
@@ -21,7 +21,7 @@ be textually exported. This ensures that:
 To configure the pseudonymizer, you need to:
 
 - Provide a manifest file that describes which fields should be included or
-  pseudonymized ([example `manifest.yml` file](https://gitlab.com/gitlab-org/gitlab-ee/tree/master/config/pseudonymizer.yml)).
+  pseudonymized ([example `manifest.yml` file](https://gitlab.com/gitlab-org/gitlab/tree/master/config/pseudonymizer.yml)).
   A default manifest is provided with the GitLab installation. Using a relative file path will be resolved from the Rails root.
   Alternatively, you can use an absolute file path.
 - Use an object storage and specify the connection parameters in the `pseudonymizer.upload.connection` configuration option.

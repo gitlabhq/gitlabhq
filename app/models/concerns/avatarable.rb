@@ -19,7 +19,7 @@ module Avatarable
   module ShadowMethods
     def avatar_url(**args)
       # We use avatar_path instead of overriding avatar_url because of carrierwave.
-      # See https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/11001/diffs#note_28659864
+      # See https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/11001/diffs#note_28659864
 
       avatar_path(only_path: args.fetch(:only_path, true), size: args[:size]) || super
     end

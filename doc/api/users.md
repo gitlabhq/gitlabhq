@@ -350,7 +350,7 @@ over `password`. In addition, `reset_password` and
 `force_random_password` can be used together.
 
 NOTE: **Note:**
-From [GitLab 12.1](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/29888/), `private_profile` will default to `false`.
+From [GitLab 12.1](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/29888/), `private_profile` will default to `false`.
 
 ```
 POST /users
@@ -1320,7 +1320,7 @@ The activities that update the timestamp are:
 
 - Git HTTP/SSH activities (such as clone, push)
 - User logging in into GitLab
-- User visiting pages related to Dashboards, Projects, Issues and Merge Requests ([introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/54947) in GitLab 11.8)
+- User visiting pages related to Dashboards, Projects, Issues and Merge Requests ([introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/54947) in GitLab 11.8)
 
 By default, it shows the activity for all users in the last 6 months, but this can be
 amended by using the `from` parameter.

@@ -5,20 +5,15 @@ import { mockBoardService } from '../mock_data';
 
 describe('Board component', () => {
   let vm;
-  let el;
 
-  beforeEach(done => {
-    loadFixtures('boards/show.html');
-
-    el = document.createElement('div');
+  const createComponent = ({ gon = {}, collapsed = false, listType = 'backlog' } = {}) => {
+    if (Object.prototype.hasOwnProperty.call(gon, 'current_user_id')) {
+      window.gon = gon;
+    } else {
+      window.gon = {};
+    }
+    const el = document.createElement('div');
     document.body.appendChild(el);
-
-    gl.boardService = mockBoardService({
-      boardsEndpoint: '/',
-      listsEndpoint: '/',
-      bulkUpdatePath: '/',
-      boardId: 1,
-    });
 
     vm = new Board({
       propsData: {
@@ -30,94 +25,244 @@ describe('Board component', () => {
           id: 1,
           position: 0,
           title: 'test',
-          list_type: 'backlog',
+          list_type: listType,
+          collapsed,
         }),
       },
     }).$mount(el);
+  };
+
+  const setUpTests = (done, opts = {}) => {
+    loadFixtures('boards/show.html');
+
+    gl.boardService = mockBoardService({
+      boardsEndpoint: '/',
+      listsEndpoint: '/',
+      bulkUpdatePath: '/',
+      boardId: 1,
+    });
+
+    createComponent(opts);
 
     Vue.nextTick(done);
-  });
+  };
 
-  afterEach(() => {
+  const cleanUpTests = spy => {
+    if (spy) {
+      spy.calls.reset();
+    }
+
     vm.$destroy();
 
     // remove the component from the DOM
     document.querySelector('.board').remove();
 
-    localStorage.removeItem(`boards.${vm.boardId}.${vm.list.type}.expanded`);
-  });
+    localStorage.removeItem(`${vm.uniqueKey}.expanded`);
+  };
 
-  it('board is expandable when list type is backlog', () => {
-    expect(vm.$el.classList.contains('is-expandable')).toBe(true);
-  });
+  describe('List', () => {
+    beforeEach(() => {
+      gl.boardService = mockBoardService({
+        boardsEndpoint: '/',
+        listsEndpoint: '/',
+        bulkUpdatePath: '/',
+        boardId: 1,
+      });
+    });
 
-  it('board is expandable when list type is closed', () => {
-    expect(new List({ id: 1, list_type: 'closed' }).isExpandable).toBe(true);
-  });
+    it('board is expandable when list type is closed', () => {
+      expect(new List({ id: 1, list_type: 'closed' }).isExpandable).toBe(true);
+    });
 
-  it('board is expandable when list type is label', () => {
-    expect(new List({ id: 1, list_type: 'closed' }).isExpandable).toBe(true);
-  });
+    it('board is expandable when list type is label', () => {
+      expect(new List({ id: 1, list_type: 'closed' }).isExpandable).toBe(true);
+    });
 
-  it('board is not expandable when list type is blank', () => {
-    expect(new List({ id: 1, list_type: 'blank' }).isExpandable).toBe(false);
-  });
-
-  it('does not collapse when clicking header', done => {
-    vm.list.isExpanded = true;
-    vm.$el.querySelector('.board-header').click();
-
-    Vue.nextTick(() => {
-      expect(vm.$el.classList.contains('is-collapsed')).toBe(false);
-
-      done();
+    it('board is not expandable when list type is blank', () => {
+      expect(new List({ id: 1, list_type: 'blank' }).isExpandable).toBe(false);
     });
   });
 
-  it('collapses when clicking the collapse icon', done => {
-    vm.list.isExpanded = true;
+  describe('when clicking the header', () => {
+    beforeEach(done => {
+      setUpTests(done);
+    });
 
-    Vue.nextTick()
-      .then(() => {
-        vm.$el.querySelector('.board-title-caret').click();
-      })
-      .then(() => {
-        expect(vm.$el.classList.contains('is-collapsed')).toBe(true);
+    afterEach(() => {
+      cleanUpTests();
+    });
+
+    it('does not collapse', done => {
+      vm.list.isExpanded = true;
+      vm.$el.querySelector('.board-header').click();
+
+      Vue.nextTick()
+        .then(() => {
+          expect(vm.$el.classList.contains('is-collapsed')).toBe(false);
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+  });
+
+  describe('when clicking the collapse icon', () => {
+    beforeEach(done => {
+      setUpTests(done);
+    });
+
+    afterEach(() => {
+      cleanUpTests();
+    });
+
+    it('collapses', done => {
+      Vue.nextTick()
+        .then(() => {
+          vm.$el.querySelector('.board-title-caret').click();
+        })
+        .then(() => {
+          expect(vm.$el.classList.contains('is-collapsed')).toBe(true);
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+  });
+
+  describe('when clicking the expand icon', () => {
+    beforeEach(done => {
+      setUpTests(done);
+    });
+
+    afterEach(() => {
+      cleanUpTests();
+    });
+
+    it('expands', done => {
+      vm.list.isExpanded = false;
+
+      Vue.nextTick()
+        .then(() => {
+          vm.$el.querySelector('.board-title-caret').click();
+        })
+        .then(() => {
+          expect(vm.$el.classList.contains('is-collapsed')).toBe(false);
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+  });
+
+  describe('when collapsed is false', () => {
+    beforeEach(done => {
+      setUpTests(done);
+    });
+
+    afterEach(() => {
+      cleanUpTests();
+    });
+
+    it('is expanded when collapsed is false', () => {
+      expect(vm.list.isExpanded).toBe(true);
+      expect(vm.$el.classList.contains('is-collapsed')).toBe(false);
+    });
+  });
+
+  describe('when list type is blank', () => {
+    beforeEach(done => {
+      setUpTests(done, { listType: 'blank' });
+    });
+
+    afterEach(() => {
+      cleanUpTests();
+    });
+
+    it('does not render add issue button when list type is blank', done => {
+      Vue.nextTick(() => {
+        expect(vm.$el.querySelector('.issue-count-badge-add-button')).toBeNull();
+
         done();
-      })
-      .catch(done.fail);
+      });
+    });
   });
 
-  it('expands when clicking the expand icon', done => {
-    vm.list.isExpanded = false;
+  describe('when list type is backlog', () => {
+    beforeEach(done => {
+      setUpTests(done);
+    });
 
-    Vue.nextTick()
-      .then(() => {
-        vm.$el.querySelector('.board-title-caret').click();
-      })
-      .then(() => {
-        expect(vm.$el.classList.contains('is-collapsed')).toBe(false);
-        done();
-      })
-      .catch(done.fail);
+    afterEach(() => {
+      cleanUpTests();
+    });
+
+    it('board is expandable', () => {
+      expect(vm.$el.classList.contains('is-expandable')).toBe(true);
+    });
   });
 
-  it('is expanded when created', () => {
-    expect(vm.list.isExpanded).toBe(true);
-    expect(vm.$el.classList.contains('is-collapsed')).toBe(false);
+  describe('when logged in', () => {
+    let spy;
+
+    beforeEach(done => {
+      spy = spyOn(List.prototype, 'update');
+      setUpTests(done, { gon: { current_user_id: 1 } });
+    });
+
+    afterEach(() => {
+      cleanUpTests(spy);
+    });
+
+    it('calls list update', done => {
+      Vue.nextTick()
+        .then(() => {
+          vm.$el.querySelector('.board-title-caret').click();
+        })
+        .then(() => {
+          expect(vm.list.update).toHaveBeenCalledTimes(1);
+        })
+        .then(done)
+        .catch(done.fail);
+    });
   });
 
-  it('does render add issue button', () => {
-    expect(vm.$el.querySelector('.issue-count-badge-add-button')).not.toBeNull();
-  });
+  describe('when logged out', () => {
+    let spy;
+    beforeEach(done => {
+      spy = spyOn(List.prototype, 'update');
+      setUpTests(done, { collapsed: false });
+    });
 
-  it('does not render add issue button when list type is blank', done => {
-    vm.list.type = 'blank';
+    afterEach(() => {
+      cleanUpTests(spy);
+    });
 
-    Vue.nextTick(() => {
-      expect(vm.$el.querySelector('.issue-count-badge-add-button')).toBeNull();
+    // can only be one or the other cant toggle window.gon.current_user_id states.
+    it('clicking on the caret does not call list update', done => {
+      Vue.nextTick()
+        .then(() => {
+          vm.$el.querySelector('.board-title-caret').click();
+        })
+        .then(() => {
+          expect(vm.list.update).toHaveBeenCalledTimes(0);
+        })
+        .then(done)
+        .catch(done.fail);
+    });
 
-      done();
+    it('sets expanded to be the opposite of its value when toggleExpanded is called', done => {
+      const expanded = true;
+      vm.list.isExpanded = expanded;
+      vm.toggleExpanded();
+
+      Vue.nextTick()
+        .then(() => {
+          expect(vm.list.isExpanded).toBe(!expanded);
+          expect(localStorage.getItem(`${vm.uniqueKey}.expanded`)).toBe(String(!expanded));
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+
+    it('does render add issue button', () => {
+      expect(vm.$el.querySelector('.issue-count-badge-add-button')).not.toBeNull();
     });
   });
 });

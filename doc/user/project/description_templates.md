@@ -84,7 +84,7 @@ pre-filled with the text you entered in the template(s).
 
 ## Description template example
 
-We make use of Description Templates for Issues and Merge Requests within the GitLab Community Edition project. Please refer to the [`.gitlab` folder][gitlab-ce-templates] for some examples.
+We make use of Description Templates for Issues and Merge Requests within the GitLab Community Edition project. Please refer to the [`.gitlab` folder][gitlab-templates] for some examples.
 
 > **Tip:**
 It is possible to use [quick actions](quick_actions.md) within description templates to quickly add labels, assignees, and milestones. The quick actions will only be executed if the user submitting the Issue or Merge Request has the permissions to perform the relevant actions.
@@ -134,8 +134,8 @@ Possible fixes
 /assign @qa-tester
 ```
 
-[ce-4981]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/4981
-[gitlab-ce-templates]: https://gitlab.com/gitlab-org/gitlab-ce/tree/master/.gitlab
-[ee-28]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/28 "Merge Request for adding issues template"
-[ee-7478ece]: https://gitlab.com/gitlab-org/gitlab-ee/commit/7478ece8b48e80782b5465b96c79f85cc91d391b "Commit that introduced merge requests templates"
+[ce-4981]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/4981
+[gitlab-templates]: https://gitlab.com/gitlab-org/gitlab/tree/master/.gitlab
+[ee-28]: https://gitlab.com/gitlab-org/gitlab/merge_requests/28 "Merge Request for adding issues template"
+[ee-7478ece]: https://gitlab.com/gitlab-org/gitlab/commit/7478ece8b48e80782b5465b96c79f85cc91d391b "Commit that introduced merge requests templates"
 [products]: https://about.gitlab.com/pricing/

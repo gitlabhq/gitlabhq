@@ -131,16 +131,16 @@ $notification-box-shadow-color: rgba(0, 0, 0, 0.25);
   }
 }
 
-.with-system-header .flash-container {
+.with-system-header .flash-container.sticky {
   top: $flash-container-top + $system-header-height;
 }
 
 .with-performance-bar {
-  .flash-container {
+  .flash-container.sticky {
     top: $flash-container-top + $performance-bar-height;
   }
 
-  &.with-system-header .flash-container {
+  &.with-system-header .flash-container.sticky {
     top: $flash-container-top + $performance-bar-height + $system-header-height;
   }
 }

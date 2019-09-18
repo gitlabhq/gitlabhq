@@ -233,7 +233,7 @@ class MergeRequest < ApplicationRecord
 
   # Use this method whenever you need to make sure the head_pipeline is synced with the
   # branch head commit, for example checking if a merge request can be merged.
-  # For more information check: https://gitlab.com/gitlab-org/gitlab-ce/issues/40004
+  # For more information check: https://gitlab.com/gitlab-org/gitlab-foss/issues/40004
   def actual_head_pipeline
     head_pipeline&.matches_sha_or_source_sha?(diff_head_sha) ? head_pipeline : nil
   end
@@ -691,7 +691,7 @@ class MergeRequest < ApplicationRecord
   def create_merge_request_diff
     fetch_ref!
 
-    # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/37435
+    # n+1: https://gitlab.com/gitlab-org/gitlab-foss/issues/37435
     Gitlab::GitalyClient.allow_n_plus_1_calls do
       merge_request_diffs.create!
       reload_merge_request_diff
@@ -1389,7 +1389,7 @@ class MergeRequest < ApplicationRecord
   end
 
   # TODO: remove once production database rename completes
-  # https://gitlab.com/gitlab-org/gitlab-ce/issues/47592
+  # https://gitlab.com/gitlab-org/gitlab-foss/issues/47592
   alias_attribute :allow_collaboration, :allow_maintainer_to_push
 
   def allow_collaboration

@@ -66,7 +66,7 @@ describe('Job Log', () => {
 
     describe('on click header section', () => {
       it('calls toggleCollapsibleLine', () => {
-        spyOn(wrapper.vm, 'toggleCollapsibleLine').and.callThrough();
+        jest.spyOn(wrapper.vm, 'toggleCollapsibleLine');
 
         wrapper.find('.collapsible-line').trigger('click');
 

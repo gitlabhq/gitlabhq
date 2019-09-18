@@ -577,3 +577,8 @@ This error means the Geo Tracking Database doesn't have the FDW server and crede
 configured.
 
 See ["Foreign Data Wrapper (FDW) is not configured" error?](#foreign-data-wrapper-fdw-is-not-configured-error).
+
+### GitLab indicates that more than 100% of repositories were synced
+
+This can be caused by orphaned records in the project registry. You can clear them
+[using a Rake task](../../../administration/raketasks/geo.md#remove-orphaned-project-registries).

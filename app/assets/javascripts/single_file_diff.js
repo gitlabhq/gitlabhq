@@ -5,7 +5,7 @@ import { __ } from './locale';
 import axios from './lib/utils/axios_utils';
 import createFlash from './flash';
 import FilesCommentButton from './files_comment_button';
-import imageDiffHelper from './image_diff/helpers/index';
+import initImageDiffHelper from './image_diff/helpers/init_image_diff';
 import syntaxHighlight from './syntax_highlight';
 
 const WRAPPER = '<div class="diff-content"></div>';
@@ -101,7 +101,7 @@ export default class SingleFileDiff {
         FilesCommentButton.init($file);
 
         const canCreateNote = $file.closest('.files').is('[data-can-create-note]');
-        imageDiffHelper.initImageDiff($file[0], canCreateNote);
+        initImageDiffHelper.initImageDiff($file[0], canCreateNote);
 
         if (cb) cb();
       })

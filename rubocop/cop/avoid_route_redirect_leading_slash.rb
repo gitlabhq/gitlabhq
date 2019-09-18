@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     # Checks for a leading '/' in route redirects
-    # For more information see: https://gitlab.com/gitlab-org/gitlab-ce/issues/50645
+    # For more information see: https://gitlab.com/gitlab-org/gitlab-foss/issues/50645
     #
     # @example
     #   # bad

@@ -192,14 +192,14 @@ password <personal_access_token>
 
 ## Access project page with project ID
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/53671) in GitLab 11.8.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/53671) in GitLab 11.8.
 
 To quickly access a project from the GitLab UI using the project ID,
 visit the `/projects/:id` URL in your browser or other tool accessing the project.
 
 ## Project aliases **(PREMIUM ONLY)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/3264) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.1.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/3264) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.1.
 
 When migrating repositories to GitLab and they are being accessed by other systems,
 it's very useful to be able to access them using the same name especially when
@@ -215,7 +215,7 @@ Follow the [Project Aliases API documentation](../../api/project_aliases.md) for
 more details.
 
 Once an alias has been created for a project (e.g., an alias `gitlab-ce` for the
-project `https://gitlab.com/gitlab-org/gitlab-ce`), the repository can be cloned
+project `https://gitlab.com/gitlab-org/gitlab-foss`), the repository can be cloned
 using the alias (e.g `git clone git@gitlab.com:gitlab-ce.git` instead of
 `git clone git@gitlab.com:gitlab-org/gitlab-ce.git`).
 

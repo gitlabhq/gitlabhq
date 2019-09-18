@@ -1,6 +1,6 @@
 # File Locking **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/440) in [GitLab Premium](https://about.gitlab.com/pricing/) 8.9.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/440) in [GitLab Premium](https://about.gitlab.com/pricing/) 8.9.
 
 File Locking helps you avoid merge conflicts and better manage your binary files.
 Lock any file or directory, make your changes, and then unlock it so another
@@ -88,9 +88,9 @@ Compressing objects: 100% (3/3), done.
 Writing objects: 100% (3/3), 320 bytes | 0 bytes/s, done.
 Total 3 (delta 1), reused 0 (delta 0)
 remote: GitLab: The path '.gitignore' is locked by Administrator
-To https://example.com/gitlab-org/gitlab-ce.git
+To https://example.com/gitlab-org/gitlab-foss.git
  ! [remote rejected] master -> master (pre-receive hook declined)
- error: failed to push some refs to 'https://example.com/gitlab-org/gitlab-ce.git'
+ error: failed to push some refs to 'https://example.com/gitlab-org/gitlab-foss.git'
 ```
 
 Similarly, when a user that is not the author of the locked state of a file

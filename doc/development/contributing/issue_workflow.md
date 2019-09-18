@@ -2,12 +2,12 @@
 
 ## Issue tracker guidelines
 
-**[Search the issue tracker](https://gitlab.com/gitlab-org/gitlab-ce/issues)** for similar entries before
+**[Search the issue tracker](https://gitlab.com/gitlab-org/gitlab-foss/issues)** for similar entries before
 submitting your own, there's a good chance somebody else had the same issue or
 feature proposal. Show your support with an award emoji and/or join the
 discussion.
 
-Please submit bugs using the ['Bug' issue template](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/.gitlab/issue_templates/Bug.md) provided on the issue tracker.
+Please submit bugs using the ['Bug' issue template](https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab/issue_templates/Bug.md) provided on the issue tracker.
 The text in the parenthesis is there to help you with what to include. Omit it
 when submitting the actual issue. You can copy-paste it and then edit as you
 see fit.
@@ -16,7 +16,7 @@ see fit.
 
 Our issue triage policies are [described in our handbook](https://about.gitlab.com/handbook/engineering/issue-triage/).
 You are very welcome to help the GitLab team triage issues.
-We also organize [issue bash events](https://gitlab.com/gitlab-org/gitlab-ce/issues/17815)
+We also organize [issue bash events](https://gitlab.com/gitlab-org/gitlab-foss/issues/17815)
 once every quarter.
 
 The most important thing is making sure valid issues receive feedback from the
@@ -34,7 +34,7 @@ running on [quality/triage-ops](https://gitlab.com/gitlab-org/quality/triage-ops
 ## Labels
 
 To allow for asynchronous issue handling, we use [milestones](https://gitlab.com/groups/gitlab-org/-/milestones)
-and [labels](https://gitlab.com/gitlab-org/gitlab-ce/-/labels). Leads and product managers handle most of the
+and [labels](https://gitlab.com/gitlab-org/gitlab-foss/-/labels). Leads and product managers handle most of the
 scheduling into milestones. Labelling is a task for everyone.
 
 Most issues will have labels for at least one of the following:
@@ -52,7 +52,7 @@ Most issues will have labels for at least one of the following:
 - Severity: ~S1, ~S2, ~S3, ~S4
 
 All labels, their meaning and priority are defined on the
-[labels page](https://gitlab.com/gitlab-org/gitlab-ce/-/labels).
+[labels page](https://gitlab.com/gitlab-org/gitlab-foss/-/labels).
 
 If you come across an issue that has none of these, and you're allowed to set
 labels, you can _always_ add the team and type, and often also the subject.
@@ -360,18 +360,18 @@ features from GitLab EE to GitLab CE, related issues would be labelled with
 ~"stewardship".
 
 A recent example of this was the issue for
-[bringing the time tracking API to GitLab CE](https://gitlab.com/gitlab-org/gitlab-ce/issues/25517#note_20019084).
+[bringing the time tracking API to GitLab CE](https://gitlab.com/gitlab-org/gitlab-foss/issues/25517#note_20019084).
 
 ## Feature proposals
 
 To create a feature proposal for CE, open an issue on the
-[issue tracker of CE](https://gitlab.com/gitlab-org/gitlab-ce/issues).
+[issue tracker of CE](https://gitlab.com/gitlab-org/gitlab-foss/issues).
 
 For feature proposals for EE, open an issue on the
-[issue tracker of EE](https://gitlab.com/gitlab-org/gitlab-ee/issues).
+[issue tracker of EE](https://gitlab.com/gitlab-org/gitlab/issues).
 
 In order to help track the feature proposals, we have created a
-[`feature`](https://gitlab.com/gitlab-org/gitlab-ce/issues?label_name=feature) label. For the time being, users that are not members
+[`feature`](https://gitlab.com/gitlab-org/gitlab-foss/issues?label_name=feature) label. For the time being, users that are not members
 of the project cannot add labels. You can instead ask one of the [core team](https://about.gitlab.com/community/core-team/)
 members to add the label ~feature to the issue or add the following
 code snippet right after your description in a new line: `~feature`.
@@ -379,7 +379,7 @@ code snippet right after your description in a new line: `~feature`.
 Please keep feature proposals as small and simple as possible, complex ones
 might be edited to make them small and simple.
 
-Please submit Feature Proposals using the ['Feature Proposal' issue template](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/.gitlab/issue_templates/Feature%20proposal.md) provided on the issue tracker.
+Please submit Feature Proposals using the ['Feature Proposal' issue template](https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab/issue_templates/Feature%20proposal.md) provided on the issue tracker.
 
 For changes in the interface, it is helpful to include a mockup. Issues that add to, or change, the interface should
 be given the ~"UX" label. This will allow the UX team to provide input and guidance. You may
@@ -427,13 +427,13 @@ and the merge request.
 The release manager will [update the notes] in the regression issue as fixes are
 addressed.
 
-[8.3 Regressions]: https://gitlab.com/gitlab-org/gitlab-ce/issues/4127
+[8.3 Regressions]: https://gitlab.com/gitlab-org/gitlab-foss/issues/4127
 [update the notes]: https://gitlab.com/gitlab-org/release-tools/blob/master/doc/pro-tips.md#update-the-regression-issue
 
 ## Technical and UX debt
 
 In order to track things that can be improved in GitLab's codebase,
-we use the ~"technical debt" label in [GitLab's issue tracker](https://gitlab.com/gitlab-org/gitlab-ce/issues).
+we use the ~"technical debt" label in [GitLab's issue tracker](https://gitlab.com/gitlab-org/gitlab-foss/issues).
 For missed user experience requirements, we use the ~"UX debt" label.
 
 These labels should be added to issues that describe things that can be improved,

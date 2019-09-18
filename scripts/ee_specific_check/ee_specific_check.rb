@@ -43,8 +43,8 @@ module EESpecificCheck
 
   def setup_canonical_remotes
     run_git_command(
-      "remote add canonical-ee https://gitlab.com/gitlab-org/gitlab-ee.git",
-      "remote add canonical-ce https://gitlab.com/gitlab-org/gitlab-ce.git",
+      "remote add canonical-ee https://gitlab.com/gitlab-org/gitlab.git",
+      "remote add canonical-ce https://gitlab.com/gitlab-org/gitlab-foss.git",
       "fetch canonical-ee master --quiet --depth=9999",
       "fetch canonical-ce master --quiet --depth=9999")
   end
@@ -67,7 +67,7 @@ module EESpecificCheck
     say <<~MESSAGE
       💥 Unfortunately we cannot find the merge-base for #{left} and #{right},
       💥 and we'll try to fix that in:
-          https://gitlab.com/gitlab-org/gitlab-ee/issues/9120
+          https://gitlab.com/gitlab-org/gitlab/issues/9120
 
       💥 Before that, please run this job locally as a workaround:
 
@@ -193,7 +193,7 @@ module EESpecificCheck
           💥 Please rebase #{target_head} with CE master.
           💥
           💥 For more details, please read:
-          💥   https://gitlab.com/gitlab-org/gitlab-ee/issues/6038#note_86862115
+          💥   https://gitlab.com/gitlab-org/gitlab/issues/6038#note_86862115
           💥
           💥 Git diff:
 
@@ -237,8 +237,8 @@ module EESpecificCheck
     # Instead of waiting that populate over all the branches, we could
     # just remove untracked files anyway, only on CI of course in case
     # we're wiping people's data!
-    # See https://gitlab.com/gitlab-org/gitlab-ee/issues/5912
-    # Also see https://gitlab.com/gitlab-org/gitlab-ee/-/jobs/68194333
+    # See https://gitlab.com/gitlab-org/gitlab/issues/5912
+    # Also see https://gitlab.com/gitlab-org/gitlab/-/jobs/68194333
     run_git_command('clean -fd') if ENV['CI']
   end
 
@@ -276,9 +276,9 @@ module EESpecificCheck
   def ce_repo_url
     @ce_repo_url ||=
       begin
-        repo_url = ENV.fetch('CI_REPOSITORY_URL', 'https://gitlab.com/gitlab-org/gitlab-ce.git')
+        repo_url = ENV.fetch('CI_REPOSITORY_URL', 'https://gitlab.com/gitlab-org/gitlab-foss.git')
         # This workaround can be removed once we rename the dev CE project
-        # https://gitlab.com/gitlab-org/gitlab-ce/issues/59107
+        # https://gitlab.com/gitlab-org/gitlab-foss/issues/59107
         project_name = repo_url =~ /dev\.gitlab\.org/ ? 'gitlabhq' : 'gitlab-ce'
 
         repo_url.sub('gitlab-ee', project_name)

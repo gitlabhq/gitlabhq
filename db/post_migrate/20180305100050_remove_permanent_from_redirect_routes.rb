@@ -13,7 +13,7 @@ class RemovePermanentFromRedirectRoutes < ActiveRecord::Migration[4.2]
   def up
     # These indexes were created on Postgres only in:
     # ReworkRedirectRoutesIndexes:
-    # https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/16211
+    # https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/16211
     if Gitlab::Database.postgresql?
       disable_statement_timeout do
         execute "DROP INDEX CONCURRENTLY IF EXISTS #{INDEX_NAME_PERM};"

@@ -8,6 +8,13 @@ module Metrics
       SYSTEM_DASHBOARD_PATH = 'config/prometheus/common_metrics.yml'
       SYSTEM_DASHBOARD_NAME = 'Default'
 
+      SEQUENCE = [
+        STAGES::CommonMetricsInserter,
+        STAGES::ProjectMetricsInserter,
+        STAGES::EndpointInserter,
+        STAGES::Sorter
+      ].freeze
+
       class << self
         def all_dashboard_paths(_project)
           [{
@@ -24,6 +31,10 @@ module Metrics
 
       private
 
+      def cache_key
+        "metrics_dashboard_#{dashboard_path}"
+      end
+
       def dashboard_path
         SYSTEM_DASHBOARD_PATH
       end
@@ -35,13 +46,11 @@ module Metrics
         YAML.safe_load(yml)
       end
 
-      def cache_key
-        "metrics_dashboard_#{dashboard_path}"
-      end
-
-      def insert_project_metrics?
-        true
+      def sequence
+        SEQUENCE
       end
     end
   end
 end
+
+Metrics::Dashboard::SystemDashboardService.prepend_if_ee('EE::Metrics::Dashboard::SystemDashboardService')

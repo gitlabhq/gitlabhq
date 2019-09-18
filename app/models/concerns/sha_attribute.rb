@@ -14,7 +14,7 @@ module ShaAttribute
 
     # This only gets executed in non-production environments as an additional check to ensure
     # the column is the correct type.  In production it should behave like any other attribute.
-    # See https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/5502 for more discussion
+    # See https://gitlab.com/gitlab-org/gitlab/merge_requests/5502 for more discussion
     def validate_binary_column_exists!(name)
       return unless database_exists?
 

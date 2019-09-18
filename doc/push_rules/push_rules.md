@@ -167,7 +167,7 @@ but commented out to help encourage others to add to it in the future. -->
 
 [protected-branches]: ../user/project/protected_branches.md
 [signing-commits]: ../user/project/repository/gpg_signed_commits/index.md
-[ee-385]: https://gitlab.com/gitlab-org/gitlab-ee/issues/385
-[list]: https://gitlab.com/gitlab-org/gitlab-ee/blob/master/ee/lib/gitlab/checks/files_blacklist.yml
+[ee-385]: https://gitlab.com/gitlab-org/gitlab/issues/385
+[list]: https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/gitlab/checks/files_blacklist.yml
 [hooks]: https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks
 [ee]: https://about.gitlab.com/pricing/

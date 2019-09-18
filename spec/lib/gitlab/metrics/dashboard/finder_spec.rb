@@ -15,7 +15,7 @@ describe Gitlab::Metrics::Dashboard::Finder, :use_clean_rails_memory_store_cachi
 
   describe '.find' do
     let(:dashboard_path) { '.gitlab/dashboards/test.yml' }
-    let(:service_call) { described_class.find(project, user, environment, dashboard_path: dashboard_path) }
+    let(:service_call) { described_class.find(project, user, environment: environment, dashboard_path: dashboard_path) }
 
     it_behaves_like 'misconfigured dashboard service response', :not_found
 
@@ -45,19 +45,19 @@ describe Gitlab::Metrics::Dashboard::Finder, :use_clean_rails_memory_store_cachi
     end
 
     context 'when no dashboard is specified' do
-      let(:service_call) { described_class.find(project, user, environment) }
+      let(:service_call) { described_class.find(project, user, environment: environment) }
 
       it_behaves_like 'valid dashboard service response'
     end
 
     context 'when the dashboard is expected to be embedded' do
-      let(:service_call) { described_class.find(project, user, environment, **params) }
-      let(:params) { { embedded: true } }
+      let(:service_call) { described_class.find(project, user, **params) }
+      let(:params) { { environment: environment, embedded: true } }
 
       it_behaves_like 'valid embedded dashboard service response'
 
       context 'when params are incomplete' do
-        let(:params) { { embedded: true, dashboard_path: system_dashboard_path } }
+        let(:params) { { environment: environment, embedded: true, dashboard_path: system_dashboard_path } }
 
         it_behaves_like 'valid embedded dashboard service response'
       end
@@ -65,11 +65,14 @@ describe Gitlab::Metrics::Dashboard::Finder, :use_clean_rails_memory_store_cachi
       context 'when the panel is specified' do
         context 'as a custom metric' do
           let(:params) do
-            { embedded: true,
+            {
+              environment: environment,
+              embedded: true,
               dashboard_path: system_dashboard_path,
               group: business_metric_title,
               title: 'title',
-              y_label: 'y_label' }
+              y_label: 'y_label'
+            }
           end
 
           it_behaves_like 'misconfigured dashboard service response', :not_found
@@ -86,11 +89,14 @@ describe Gitlab::Metrics::Dashboard::Finder, :use_clean_rails_memory_store_cachi
         context 'as a project-defined panel' do
           let(:dashboard_path) { '.gitlab/dashboard/test.yml' }
           let(:params) do
-            { embedded: true,
+            {
+              environment: environment,
+              embedded: true,
               dashboard_path: dashboard_path,
               group: 'Group A',
               title: 'Super Chart A1',
-              y_label: 'y_label' }
+              y_label: 'y_label'
+            }
           end
 
           it_behaves_like 'misconfigured dashboard service response', :not_found

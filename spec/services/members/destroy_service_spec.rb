@@ -223,7 +223,7 @@ describe Members::DestroyService do
         group.add_owner(current_user)
       end
 
-      # Regression spec for issue: https://gitlab.com/gitlab-org/gitlab-ce/issues/32504
+      # Regression spec for issue: https://gitlab.com/gitlab-org/gitlab-foss/issues/32504
       it_behaves_like 'a service destroying a member' do
         let(:member) { project_invited_member }
       end

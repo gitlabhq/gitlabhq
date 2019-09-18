@@ -1,4 +1,4 @@
-/* eslint-disable no-useless-computed-key, object-shorthand, no-param-reassign */
+/* eslint-disable no-param-reassign */
 /* global ace */
 
 import Vue from 'vue';
@@ -42,7 +42,7 @@ import getModeByFileExtension from '~/lib/utils/ace_utils';
       },
     },
     watch: {
-      ['file.showEditor'](val) {
+      'file.showEditor': function showEditorWatcher(val) {
         this.resetEditorContent();
 
         if (!val || this.fileLoaded || this.loading) {

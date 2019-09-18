@@ -11,7 +11,7 @@ comes with the Omnibus packages.
 Note also that you may elect to override all references to
 `/home/git/gitlab/config/resque.yml` in accordance with the advanced Redis
 settings outlined in
-[Configuration Files Documentation](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/config/README.md).
+[Configuration Files Documentation](https://gitlab.com/gitlab-org/gitlab/blob/master/config/README.md).
 
 We cannot stress enough the importance of reading the
 [Overview section](redis.md#overview) of the Omnibus Redis HA as it provides
@@ -373,5 +373,5 @@ When in doubt, please read [Redis Sentinel documentation](https://redis.io/topic
 [gh-531]: https://github.com/redis/redis-rb/issues/531
 [downloads]: https://about.gitlab.com/downloads
 [restart]: ../restart_gitlab.md#installations-from-source
-[it]: https://gitlab.com/gitlab-org/gitlab-ce/uploads/c4cc8cd353604bd80315f9384035ff9e/The_Internet_IT_Crowd.png
-[resque]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/config/resque.yml.example
+[it]: https://gitlab.com/gitlab-org/gitlab-foss/uploads/c4cc8cd353604bd80315f9384035ff9e/The_Internet_IT_Crowd.png
+[resque]: https://gitlab.com/gitlab-org/gitlab-foss/blob/master/config/resque.yml.example

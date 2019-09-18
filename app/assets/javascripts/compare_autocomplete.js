@@ -1,4 +1,4 @@
-/* eslint-disable func-names, one-var, no-var, object-shorthand, no-else-return */
+/* eslint-disable func-names, one-var, no-var, no-else-return */
 
 import $ from 'jquery';
 import { __ } from './locale';
@@ -15,7 +15,7 @@ export default function initCompareAutocomplete(limitTo = null, clickHandler = (
     const $fieldInput = $(`input[name="${$dropdown.data('fieldName')}"]`, $dropdownContainer);
     const $filterInput = $('input[type="search"]', $dropdownContainer);
     $dropdown.glDropdown({
-      data: function(term, callback) {
+      data(term, callback) {
         const params = {
           ref: $dropdown.data('ref'),
           search: term,
@@ -43,7 +43,7 @@ export default function initCompareAutocomplete(limitTo = null, clickHandler = (
       filterRemote: Boolean($dropdown.data('refsUrl')),
       fieldName: $dropdown.data('fieldName'),
       filterInput: 'input[type="search"]',
-      renderRow: function(ref) {
+      renderRow(ref) {
         var link;
         if (ref.header != null) {
           return $('<li />')
@@ -58,10 +58,10 @@ export default function initCompareAutocomplete(limitTo = null, clickHandler = (
           return $('<li />').append(link);
         }
       },
-      id: function(obj, $el) {
+      id(obj, $el) {
         return $el.attr('data-ref');
       },
-      toggleLabel: function(obj, $el) {
+      toggleLabel(obj, $el) {
         return $el.text().trim();
       },
       clicked: () => clickHandler($dropdown),

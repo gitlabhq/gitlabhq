@@ -245,17 +245,17 @@ $ sudo gitlab-rails console            # Login to rails console
 > end
 ```
 
-See more information in [!19581](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/19581)
+See more information in [!19581](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/19581)
 
 ## Known limitations
 
 - Support for removing unreferenced LFS objects was added in 8.14 onwards.
 - LFS authentications via SSH was added with GitLab 8.12.
-- Only compatible with the GitLFS client versions 1.1.0 and up, or 1.0.2.
+- Only compatible with the Git LFS client versions 1.1.0 and up, or 1.0.2.
 - The storage statistics currently count each LFS object multiple times for
   every project linking to it.
 
 [reconfigure gitlab]: ../../administration/restart_gitlab.md#omnibus-gitlab-reconfigure "How to reconfigure Omnibus GitLab"
 [restart gitlab]: ../../administration/restart_gitlab.md#installations-from-source "How to restart GitLab"
 [eep]: https://about.gitlab.com/pricing/ "GitLab Premium"
-[ee-2760]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/2760
+[ee-2760]: https://gitlab.com/gitlab-org/gitlab/merge_requests/2760

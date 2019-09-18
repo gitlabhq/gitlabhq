@@ -22,7 +22,7 @@ For a video introduction to Geo, see [Introduction to GitLab Geo - GitLab Featur
 CAUTION: **Caution:**
 Geo undergoes significant changes from release to release. Upgrades **are** supported and [documented](#updating-geo), but you should ensure that you're using the right version of the documentation for your installation.
 
-To make sure you're using the right version of the documentation, navigate to [the source version of this page on GitLab.com](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/doc/administration/geo/replication/index.md) and choose the appropriate release from the **Switch branch/tag** dropdown. For example, [`v11.2.3-ee`](https://gitlab.com/gitlab-org/gitlab-ee/blob/v11.2.3-ee/doc/administration/geo/replication/index.md).
+To make sure you're using the right version of the documentation, navigate to [the source version of this page on GitLab.com](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/administration/geo/replication/index.md) and choose the appropriate release from the **Switch branch/tag** dropdown. For example, [`v11.2.3-ee`](https://gitlab.com/gitlab-org/gitlab/blob/v11.2.3-ee/doc/administration/geo/replication/index.md).
 
 ## Use cases
 
@@ -238,7 +238,7 @@ For more information on removing a Geo node, see [Removing **secondary** Geo nod
 CAUTION: **Caution:**
 This list of limitations only reflects the latest version of GitLab. If you are using an older version, extra limitations may be in place.
 
-- Pushing directly to a **secondary** node redirects (for HTTP) or proxies (for SSH) the request to the **primary** node instead of [handling it directly](https://gitlab.com/gitlab-org/gitlab-ee/issues/1381), except when using Git over HTTP with credentials embedded within the URI. For example, `https://user:password@secondary.tld`.
+- Pushing directly to a **secondary** node redirects (for HTTP) or proxies (for SSH) the request to the **primary** node instead of [handling it directly](https://gitlab.com/gitlab-org/gitlab/issues/1381), except when using Git over HTTP with credentials embedded within the URI. For example, `https://user:password@secondary.tld`.
 - The **primary** node has to be online for OAuth login to happen. Existing sessions and Git are not affected.
 - The installation takes multiple manual steps that together can take about an hour depending on circumstances. We are working on improving this experience. See [gitlab-org/omnibus-gitlab#2978](https://gitlab.com/gitlab-org/omnibus-gitlab/issues/2978) for details.
 - Real-time updates of issues/merge requests (for example, via long polling) doesn't work on the **secondary** node.
@@ -267,9 +267,9 @@ You can keep track of the progress to include the missing items in:
 | CI job artifacts (other than traces) | Yes | No, only manually (1) |
 | Archived traces | Yes | Yes, only on transfer, or manually (1) |
 | Personal snippets | Yes | Yes |
-| Version-controlled personal snippets ([unsupported](https://gitlab.com/gitlab-org/gitlab-ce/issues/13426)) | No | No |
+| Version-controlled personal snippets ([unsupported](https://gitlab.com/gitlab-org/gitlab-foss/issues/13426)) | No | No |
 | Project snippets | Yes | Yes |
-| Version-controlled project snippets ([unsupported](https://gitlab.com/gitlab-org/gitlab-ce/issues/13426)) | No | No |
+| Version-controlled project snippets ([unsupported](https://gitlab.com/gitlab-org/gitlab-foss/issues/13426)) | No | No |
 | Object pools for forked project deduplication | No | No |
 | [Server-side Git Hooks](../../custom_hooks.md) | No | No |
 | [Elasticsearch integration](../../../integration/elasticsearch.md) | No | No |

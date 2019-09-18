@@ -18,7 +18,7 @@ In GitLab, you can create project and group labels:
 
 ## Scoped labels **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/9175) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.10.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/9175) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.10.
 
 Scoped labels allow teams to use the simple and familiar label feature to
 annotate their issues, merge requests, and epics to achieve custom fields and
@@ -223,7 +223,7 @@ that the label has been assigned to an issue or merge request.
 >**Notes:**
 >
 > - Introduced in GitLab 8.9.
-> - Priority sorting is based on the highest priority label only. [This discussion](https://gitlab.com/gitlab-org/gitlab-ce/issues/18554) considers changing this.
+> - Priority sorting is based on the highest priority label only. [This discussion](https://gitlab.com/gitlab-org/gitlab-foss/issues/18554) considers changing this.
 
 Labels can have relative priorities, which are used in the "Label priority" and
 "Priority" sort orders of the issue and merge request list pages.
@@ -252,7 +252,7 @@ If you sort by `Label priority`, GitLab considers this sort comparison order:
 - Object without a prioritized label.
 
 Ties are broken arbitrarily. Note that we _only_ consider the highest prioritized label
-in an object, and not any of the lower prioritized labels. [This discussion](https://gitlab.com/gitlab-org/gitlab-ce/issues/18554)
+in an object, and not any of the lower prioritized labels. [This discussion](https://gitlab.com/gitlab-org/gitlab-foss/issues/18554)
 considers changing this.
 
 ![Labels sort label priority](img/labels_sort_label_priority.png)

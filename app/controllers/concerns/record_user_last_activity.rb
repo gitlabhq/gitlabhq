@@ -6,7 +6,7 @@
 # for any authenticated GET request. The DB update will only happen once per day.
 #
 # In order to determine if you should include this concern or not, please check the
-# description and discussion on this issue: https://gitlab.com/gitlab-org/gitlab-ce/issues/54947
+# description and discussion on this issue: https://gitlab.com/gitlab-org/gitlab-foss/issues/54947
 module RecordUserLastActivity
   include CookiesHelper
   extend ActiveSupport::Concern

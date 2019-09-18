@@ -73,7 +73,7 @@ describe('Multi-file store tree actions', () => {
           .dispatch('getFiles', basicCallParameters)
           .then(() => {
             // The populating of the tree is deferred for performance reasons.
-            // See this merge request for details: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/25700
+            // See this merge request for details: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/25700
             jasmine.clock().tick(1);
           })
           .then(() => {

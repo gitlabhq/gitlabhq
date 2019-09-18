@@ -215,8 +215,8 @@ class Milestone < ApplicationRecord
   #
   #   Milestone.first.to_reference                           # => "%1"
   #   Milestone.first.to_reference(format: :name)            # => "%\"goal\""
-  #   Milestone.first.to_reference(cross_namespace_project)  # => "gitlab-org/gitlab-ce%1"
-  #   Milestone.first.to_reference(same_namespace_project)   # => "gitlab-ce%1"
+  #   Milestone.first.to_reference(cross_namespace_project)  # => "gitlab-org/gitlab-foss%1"
+  #   Milestone.first.to_reference(same_namespace_project)   # => "gitlab-foss%1"
   #
   def to_reference(from = nil, format: :name, full: false)
     format_reference = milestone_format_reference(format)

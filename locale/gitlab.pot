@@ -992,6 +992,9 @@ msgstr ""
 msgid "Added at"
 msgstr ""
 
+msgid "Added in this version"
+msgstr ""
+
 msgid "Adding new applications is disabled in your GitLab instance. Please contact your GitLab administrator to get the permission"
 msgstr ""
 
@@ -1448,6 +1451,9 @@ msgid "An error occurred while fetching the releases. Please try again."
 msgstr ""
 
 msgid "An error occurred while fetching this tab."
+msgstr ""
+
+msgid "An error occurred while generating a username. Please try again."
 msgstr ""
 
 msgid "An error occurred while getting projects"
@@ -4782,6 +4788,9 @@ msgstr ""
 msgid "Deleted chat nickname: %{chat_name}!"
 msgstr ""
 
+msgid "Deleted in this version"
+msgstr ""
+
 msgid "Deleting the license failed."
 msgstr ""
 
@@ -6729,6 +6738,9 @@ msgstr ""
 msgid "First day of the week"
 msgstr ""
 
+msgid "First name"
+msgstr ""
+
 msgid "Fixed date"
 msgstr ""
 
@@ -7917,9 +7929,6 @@ msgstr ""
 msgid "HealthCheck|Unhealthy"
 msgstr ""
 
-msgid "Hello World!"
-msgstr ""
-
 msgid "Hello there"
 msgstr ""
 
@@ -8015,6 +8024,9 @@ msgstr ""
 msgid "However, you are already a member of this %{member_source}. Sign in using a different account to accept the invitation."
 msgstr ""
 
+msgid "I accept the %{terms_link_start}Terms of Service and Privacy Policy%{terms_link_end}"
+msgstr ""
+
 msgid "I accept the %{terms_link}"
 msgstr ""
 
@@ -8025,6 +8037,9 @@ msgid "I forgot my password"
 msgstr ""
 
 msgid "I have read and agree to the Let's Encrypt %{link_start}Terms of Service%{link_end}"
+msgstr ""
+
+msgid "I'd like to receive updates via email about GitLab"
 msgstr ""
 
 msgid "ID"
@@ -8913,6 +8928,9 @@ msgstr ""
 msgid "Last edited by %{name}"
 msgstr ""
 
+msgid "Last name"
+msgstr ""
+
 msgid "Last reply by"
 msgstr ""
 
@@ -9534,6 +9552,9 @@ msgstr ""
 msgid "Merge request"
 msgstr ""
 
+msgid "Merge request %{iid} authored by %{authorName}"
+msgstr ""
+
 msgid "Merge request approvals"
 msgstr ""
 
@@ -9897,6 +9918,9 @@ msgstr ""
 msgid "Modal|Close"
 msgstr ""
 
+msgid "Modified in this version"
+msgstr ""
+
 msgid "Modify commit message"
 msgstr ""
 
@@ -10205,6 +10229,9 @@ msgstr ""
 msgid "No application_settings found"
 msgstr ""
 
+msgid "No authentication methods configured."
+msgstr ""
+
 msgid "No available namespaces to fork the project."
 msgstr ""
 
@@ -10356,6 +10383,9 @@ msgid "Nodes"
 msgstr ""
 
 msgid "None"
+msgstr ""
+
+msgid "Not all data has been processed yet, the accuracy of the chart for the selected timeframe is limited."
 msgstr ""
 
 msgid "Not available"
@@ -10730,6 +10760,9 @@ msgid "Other merge requests block this MR"
 msgstr ""
 
 msgid "Other visibility settings have been disabled by the administrator."
+msgstr ""
+
+msgid "Our Privacy Policy has changed, please visit %{privacy_policy_link} to review these changes."
 msgstr ""
 
 msgid "Outbound requests"
@@ -12699,6 +12732,9 @@ msgstr ""
 msgid "Releases mark specific points in a project's development history, communicate information about the type of change, and deliver on prepared, often compiled, versions of the software to be reused elsewhere. Currently, releases can only be created through the API."
 msgstr ""
 
+msgid "Remember me"
+msgstr ""
+
 msgid "Remind later"
 msgstr ""
 
@@ -13039,6 +13075,9 @@ msgid "Require user password to approve"
 msgstr ""
 
 msgid "Require users to prove ownership of custom domains"
+msgstr ""
+
+msgid "Required argument 'targetElement' is missing"
 msgstr ""
 
 msgid "Requires approval from %{names}."
@@ -14198,6 +14237,12 @@ msgstr ""
 msgid "Sign-up restrictions"
 msgstr ""
 
+msgid "SignUp|First Name is too long (maximum is %{max_length} characters)."
+msgstr ""
+
+msgid "SignUp|Last Name is too long (maximum is %{max_length} characters)."
+msgstr ""
+
 msgid "SignUp|Name is too long (maximum is %{max_length} characters)."
 msgstr ""
 
@@ -14640,6 +14685,9 @@ msgid "Start Web Terminal"
 msgstr ""
 
 msgid "Start a %{new_merge_request} with these changes"
+msgstr ""
+
+msgid "Start a Free Trial"
 msgstr ""
 
 msgid "Start a new discussion..."
@@ -15223,6 +15271,9 @@ msgid_plural "The %{type} contains the following errors:"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "The API path was not specified."
+msgstr ""
+
 msgid "The Advanced Global Search in GitLab is a powerful search service that saves you time. Instead of creating duplicate code and wasting time, you can now search for code within other teams that can help your own project."
 msgstr ""
 
@@ -15454,6 +15505,9 @@ msgstr ""
 msgid "The staging stage shows the time between merging the MR and deploying code to the production environment. The data will be automatically added once you deploy to production for the first time."
 msgstr ""
 
+msgid "The target element is missing."
+msgstr ""
+
 msgid "The testing stage shows the time GitLab CI takes to run every pipeline for the related merge request. The data will automatically be added after your first pipeline finishes running."
 msgstr ""
 
@@ -15545,6 +15599,12 @@ msgid "There are no unstaged changes"
 msgstr ""
 
 msgid "There is already a repository with that name on disk"
+msgstr ""
+
+msgid "There is no data available. Please change your selection."
+msgstr ""
+
+msgid "There is no data for the selected metric. Please change your selection."
 msgstr ""
 
 msgid "There was a problem communicating with your device."
@@ -16209,6 +16269,12 @@ msgid "To receive alerts from manually configured Prometheus services, add the f
 msgstr ""
 
 msgid "To see all the user's personal access tokens you must impersonate them first."
+msgstr ""
+
+msgid "To see this project's operational details, %{linkStart}upgrade its group plan to Silver%{linkEnd}. You can also remove the project from the dashboard."
+msgstr ""
+
+msgid "To see this project's operational details, contact an owner of group %{groupName} to upgrade the plan. You can also remove the project from the dashboard."
 msgstr ""
 
 msgid "To set up SAML authentication for your group through an identity provider like Azure, Okta, Onelogin, Ping Identity, or your custom SAML 2.0 provider:"
@@ -17812,7 +17878,10 @@ msgstr ""
 msgid "You can only edit files when you are on a branch"
 msgstr ""
 
-msgid "You can only merge once the items above are resolved"
+msgid "You can only merge once the items above are resolved."
+msgstr ""
+
+msgid "You can only merge once this merge request is approved."
 msgstr ""
 
 msgid "You can only transfer the project to namespaces you manage."

@@ -58,7 +58,7 @@ module MigrationsHelpers
     # super: no superclass method `elasticsearch_indexing' for #<ApplicationSetting:0x00007f85628508d8>
     # attr_encrypted also expects ActiveRecord attribute methods to be
     # defined, or it will override the accessors:
-    # https://gitlab.com/gitlab-org/gitlab-ee/issues/8234#note_113976421
+    # https://gitlab.com/gitlab-org/gitlab/issues/8234#note_113976421
     [ApplicationSetting, SystemHook].each do |model|
       model.define_attribute_methods
     end

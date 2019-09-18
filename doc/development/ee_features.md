@@ -20,11 +20,11 @@ should be added for EE. Licensed features can be stubbed using the
 spec helper `stub_licensed_features` in `EE::LicenseHelpers`.
 
 You can force Webpack to act as CE by either deleting the `ee/` directory or by
-setting the [`IS_GITLAB_EE` environment variable](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/config/helpers/is_ee_env.js)
+setting the [`IS_GITLAB_EE` environment variable](https://gitlab.com/gitlab-org/gitlab/blob/master/config/helpers/is_ee_env.js)
 to something that evaluates as `false`. The same works for running tests
 (for example `IS_GITLAB_EE=0 yarn jest`).
 
-[ee-as-ce]: https://gitlab.com/gitlab-org/gitlab-ee/issues/2500
+[ee-as-ce]: https://gitlab.com/gitlab-org/gitlab/issues/2500
 
 ## Separation of EE code
 
@@ -36,7 +36,7 @@ implement EE features.
 Instead, all EE code should be put inside the `ee/` top-level directory. The
 rest of the code should be as close to the CE files as possible.
 
-[single code base]: https://gitlab.com/gitlab-org/gitlab-ee/issues/2952#note_41016454
+[single code base]: https://gitlab.com/gitlab-org/gitlab/issues/2952#note_41016454
 
 ### EE-specific comments
 
@@ -93,7 +93,7 @@ For instance, it was decided that moving EE-only files from `qa/` to `ee/qa/`
 would make it difficult to build the `gitLab-{ce,ee}-qa` Docker images and it
 was [not worth the complexity].
 
-[not worth the complexity]: https://gitlab.com/gitlab-org/gitlab-ee/issues/4997#note_59764702
+[not worth the complexity]: https://gitlab.com/gitlab-org/gitlab/issues/4997#note_59764702
 
 ### EE-only features
 
@@ -120,7 +120,7 @@ This works because for every path that are present in CE's eager-load/auto-load
 paths, we add the same `ee/`-prepended path in [`config/application.rb`].
 This also applies to views.
 
-[`config/application.rb`]: https://gitlab.com/gitlab-org/gitlab-ee/blob/925d3d4ebc7a2c72964ce97623ae41b8af12538d/config/application.rb#L42-52
+[`config/application.rb`]: https://gitlab.com/gitlab-org/gitlab/blob/925d3d4ebc7a2c72964ce97623ae41b8af12538d/config/application.rb#L42-52
 
 ### EE features based on CE features
 
@@ -170,7 +170,7 @@ still having access the class's implementation with `super`.
 
 There are a few gotchas with it:
 
-- you should always [`extend ::Gitlab::Utils::Override`](utilities.md#overridehttpsgitlabcomgitlab-orggitlab-ceblobmasterlibgitlabutilsoverriderb) and use `override` to
+- you should always [`extend ::Gitlab::Utils::Override`](utilities.md#overridehttpsgitlabcomgitlab-orggitlab-fossblobmasterlibgitlabutilsoverriderb) and use `override` to
   guard the "overrider" method to ensure that if the method gets renamed in
   CE, the EE override won't be silently forgotten.
 - when the "overrider" would add a line in the middle of the CE
@@ -347,8 +347,8 @@ end
 See [CE MR][ce-mr-full-private] and [EE MR][ee-mr-full-private] for
 full implementation details.
 
-[ce-mr-full-private]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/12373
-[ee-mr-full-private]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/2199
+[ce-mr-full-private]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/12373
+[ee-mr-full-private]: https://gitlab.com/gitlab-org/gitlab/merge_requests/2199
 
 ### Code in `config/routes`
 
@@ -958,7 +958,7 @@ import mixin from 'ee_else_ce/path/mixin';
 - Computed Properties/methods and getters only used in the child import still need a counterpart in CE
 
 - For store modules, we will need a CE counterpart too.
-- You can see an MR with an example [here](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/9762)
+- You can see an MR with an example [here](https://gitlab.com/gitlab-org/gitlab/merge_requests/9762)
 
 #### `template` tag
 

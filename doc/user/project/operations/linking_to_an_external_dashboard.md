@@ -1,6 +1,6 @@
 # Linking to an external dashboard
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/57171) in GitLab 12.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/57171) in GitLab 12.0.
 
 You can add a button to the Monitoring dashboard linking directly to your existing external dashboards.
 

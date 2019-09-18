@@ -191,7 +191,7 @@ class TodoService
   end
 
   def todo_exist?(issuable, current_user)
-    TodosFinder.new(current_user).any_for_target?(issuable)
+    TodosFinder.new(current_user).any_for_target?(issuable, :pending)
   end
 
   private

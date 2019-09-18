@@ -24,7 +24,7 @@ If you don't exactly understand what we mean by **not everything needs to happen
 
 ### 0. Are end-to-end tests needed?
 
-At GitLab we respect the [test pyramid](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/development/testing_guide/testing_levels.md), and so, we recommend you check the code coverage of a specific feature before writing end-to-end tests, for both [CE](https://gitlab-org.gitlab.io/gitlab-ce/coverage-ruby/#_AllFiles) and [EE](https://gitlab-org.gitlab.io/gitlab-ee/coverage-ruby/#_AllFiles) projects.
+At GitLab we respect the [test pyramid](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/development/testing_guide/testing_levels.md), and so, we recommend you check the code coverage of a specific feature before writing end-to-end tests, for both [CE](https://gitlab-org.gitlab.io/gitlab-ce/coverage-ruby/#_AllFiles) and [EE](https://gitlab-org.gitlab.io/gitlab-ee/coverage-ruby/#_AllFiles) projects.
 
 Sometimes you may notice that there is already good coverage in other test levels, and we can stay confident that if we break a feature, we will still have quick feedback about it, even without having end-to-end tests.
 
@@ -32,7 +32,7 @@ If after this analysis you still think that end-to-end tests are needed, keep re
 
 ### 1. Identifying the DevOps stage
 
-The GitLab QA end-to-end tests are organized by the different [stages in the DevOps lifecycle](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/qa/qa/specs/features/browser_ui), and so, if you are creating tests for issue creation, for instance, you would locate the spec files under the `qa/qa/specs/features/browser_ui/2_plan/` directory since issue creation is part of the Plan stage.
+The GitLab QA end-to-end tests are organized by the different [stages in the DevOps lifecycle](https://gitlab.com/gitlab-org/gitlab-foss/tree/master/qa/qa/specs/features/browser_ui), and so, if you are creating tests for issue creation, for instance, you would locate the spec files under the `qa/qa/specs/features/browser_ui/2_plan/` directory since issue creation is part of the Plan stage.
 
  In another case of a test for listing merged merge requests (MRs), the test should go under the `qa/qa/specs/features/browser_ui/3_create/` directory since merge requests are a feature from the Create stage.
 
@@ -40,9 +40,9 @@ The GitLab QA end-to-end tests are organized by the different [stages in the Dev
 
 Now, let's say we want to create tests for the [scoped labels](https://about.gitlab.com/2019/04/22/gitlab-11-10-released/#scoped-labels) feature, available on GitLab EE Premium (this feature is part of the Plan stage.)
 
-> Because these tests are for a feature available only on GitLab EE, we need to create them in the [EE repository](https://gitlab.com/gitlab-org/gitlab-ee).
+> Because these tests are for a feature available only on GitLab EE, we need to create them in the [EE repository](https://gitlab.com/gitlab-org/gitlab).
 
-Since [there is no specific directory for this feature](https://gitlab.com/gitlab-org/gitlab-ee/tree/master/qa/qa/specs/features/browser_ui/2_plan), we should create a sub-directory for it.
+Since [there is no specific directory for this feature](https://gitlab.com/gitlab-org/gitlab/tree/master/qa/qa/specs/features/browser_ui/2_plan), we should create a sub-directory for it.
 
 Under `.../browser_ui/2_plan/`, let's create a sub-directory called `ee_scoped_labels/`.
 
@@ -222,7 +222,7 @@ As the pre-conditions for our test suite, the things that needs to happen before
 - A project being created with an issue and labels already set;
 - The issue page being opened with only one scoped label applied to it.
 
-> When running end-to-end tests as part of the GitLab's continuous integration process [a license is already set as an environment variable](https://gitlab.com/gitlab-org/gitlab-ee/blob/1a60d926740db10e3b5724713285780a4f470531/qa/qa/ee/strategy.rb#L20). For running tests locally you can set up such license by following the document [what tests can be run?](https://gitlab.com/gitlab-org/gitlab-qa/blob/master/docs/what_tests_can_be_run.md), based on the [supported GitLab environment variables](https://gitlab.com/gitlab-org/gitlab-qa/blob/master/docs/what_tests_can_be_run.md#supported-gitlab-environment-variables).
+> When running end-to-end tests as part of the GitLab's continuous integration process [a license is already set as an environment variable](https://gitlab.com/gitlab-org/gitlab/blob/1a60d926740db10e3b5724713285780a4f470531/qa/qa/ee/strategy.rb#L20). For running tests locally you can set up such license by following the document [what tests can be run?](https://gitlab.com/gitlab-org/gitlab-qa/blob/master/docs/what_tests_can_be_run.md), based on the [supported GitLab environment variables](https://gitlab.com/gitlab-org/gitlab-qa/blob/master/docs/what_tests_can_be_run.md#supported-gitlab-environment-variables).
 
 #### Implementation
 
@@ -357,15 +357,15 @@ In the following we describe the changes needed in each of the resource files me
 
 Now, let's make it possible to create an issue resource through the API.
 
-First, in the [issue resource](https://gitlab.com/gitlab-org/gitlab-ee/blob/d3584e80b4236acdf393d815d604801573af72cc/qa/qa/resource/issue.rb), let's expose its id and labels attributes.
+First, in the [issue resource](https://gitlab.com/gitlab-org/gitlab/blob/d3584e80b4236acdf393d815d604801573af72cc/qa/qa/resource/issue.rb), let's expose its id and labels attributes.
 
-Add the following `attribute :id` and `attribute :labels` right above the [`attribute :title`](https://gitlab.com/gitlab-org/gitlab-ee/blob/d3584e80b4236acdf393d815d604801573af72cc/qa/qa/resource/issue.rb#L15).
+Add the following `attribute :id` and `attribute :labels` right above the [`attribute :title`](https://gitlab.com/gitlab-org/gitlab/blob/d3584e80b4236acdf393d815d604801573af72cc/qa/qa/resource/issue.rb#L15).
 
 > This line is needed to allow for the issue fabrication, and for labels to be automatically added to the issue when fabricating it via API.
 >
 > We add the attributes above the existing attribute to keep them alphabetically organized.
 
-Then, let's initialize an instance variable for labels to allow an empty array as default value when such information is not passed during the resource fabrication, since this optional. [Between the attributes and the `fabricate!` method](https://gitlab.com/gitlab-org/gitlab-ee/blob/1a1f1408728f19b2aa15887cd20bddab7e70c8bd/qa/qa/resource/issue.rb#L18), add the following:
+Then, let's initialize an instance variable for labels to allow an empty array as default value when such information is not passed during the resource fabrication, since this optional. [Between the attributes and the `fabricate!` method](https://gitlab.com/gitlab-org/gitlab/blob/1a1f1408728f19b2aa15887cd20bddab7e70c8bd/qa/qa/resource/issue.rb#L18), add the following:
 
 ```ruby
 def initialize
@@ -373,7 +373,7 @@ def initialize
 end
 ```
 
-Next, add the following code right below the [`fabricate!`](https://gitlab.com/gitlab-org/gitlab-ee/blob/d3584e80b4236acdf393d815d604801573af72cc/qa/qa/resource/issue.rb#L27) method.
+Next, add the following code right below the [`fabricate!`](https://gitlab.com/gitlab-org/gitlab/blob/d3584e80b4236acdf393d815d604801573af72cc/qa/qa/resource/issue.rb#L27) method.
 
 ```ruby
 def api_get_path
@@ -392,15 +392,15 @@ def api_post_body
 end
 ```
 
-By defining the `api_get_path` method, we allow the [`ApiFabricator`](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/qa/qa/resource/api_fabricator.rb) module to know which path to use to get a single issue.
+By defining the `api_get_path` method, we allow the [`ApiFabricator`](https://gitlab.com/gitlab-org/gitlab/blob/master/qa/qa/resource/api_fabricator.rb) module to know which path to use to get a single issue.
 
 > This `GET` path can be found in the [public API documentation](../../../api/issues.md#single-issue).
 
-By defining the `api_post_path` method, we allow the [`ApiFabricator`](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/qa/qa/resource/api_fabricator.rb) module to know which path to use to create a new issue in a specific project.
+By defining the `api_post_path` method, we allow the [`ApiFabricator`](https://gitlab.com/gitlab-org/gitlab/blob/master/qa/qa/resource/api_fabricator.rb) module to know which path to use to create a new issue in a specific project.
 
 > This `POST` path can be found in the [public API documentation](../../../api/issues.md#new-issue).
 
-By defining the `api_post_body` method, we allow the [`ApiFabricator.api_post`](https://gitlab.com/gitlab-org/gitlab-ee/blob/a9177ca1812bac57e2b2fa4560e1d5dd8ffac38b/qa/qa/resource/api_fabricator.rb#L68) method to know which data to send when making the `POST` request.
+By defining the `api_post_body` method, we allow the [`ApiFabricator.api_post`](https://gitlab.com/gitlab-org/gitlab/blob/a9177ca1812bac57e2b2fa4560e1d5dd8ffac38b/qa/qa/resource/api_fabricator.rb#L68) method to know which data to send when making the `POST` request.
 
 > Notice that we pass both `labels` and `title` attributes in the `api_post_body`, where `labels` receives an array of labels, and [`title` is required](../../../api/issues.md#new-issue). Also, notice that we keep them alphabetically organized.
 
@@ -408,7 +408,7 @@ By defining the `api_post_body` method, we allow the [`ApiFabricator.api_post`](
 
 Finally, let's make it possible to create label resources through the API.
 
-Add the following code right below the [`fabricate!`](https://gitlab.com/gitlab-org/gitlab-ee/blob/a9177ca1812bac57e2b2fa4560e1d5dd8ffac38b/qa/qa/resource/label.rb#L36) method.
+Add the following code right below the [`fabricate!`](https://gitlab.com/gitlab-org/gitlab/blob/a9177ca1812bac57e2b2fa4560e1d5dd8ffac38b/qa/qa/resource/label.rb#L36) method.
 
 ```ruby
 def resource_web_url(resource)
@@ -433,13 +433,13 @@ def api_post_body
 end
 ```
 
-By defining the `resource_web_url(resource)` method, we override the one from the [`ApiFabricator`](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/qa/qa/resource/api_fabricator.rb#L44) module. We do that to avoid failing the test due to this particular resource not exposing a `web_url` property.
+By defining the `resource_web_url(resource)` method, we override the one from the [`ApiFabricator`](https://gitlab.com/gitlab-org/gitlab/blob/master/qa/qa/resource/api_fabricator.rb#L44) module. We do that to avoid failing the test due to this particular resource not exposing a `web_url` property.
 
-By defining the `api_get_path` method, we **would** allow for the [`ApiFabricator`](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/qa/qa/resource/api_fabricator.rb) module to know which path to use to get a single label, but since there's no path available for that in the publich API, we raise a `NotImplementedError` instead.
+By defining the `api_get_path` method, we **would** allow for the [`ApiFabricator`](https://gitlab.com/gitlab-org/gitlab/blob/master/qa/qa/resource/api_fabricator.rb) module to know which path to use to get a single label, but since there's no path available for that in the publich API, we raise a `NotImplementedError` instead.
 
-By defining the `api_post_path` method, we allow for the [`ApiFabricator`](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/qa/qa/resource/api_fabricator.rb) module to know which path to use to create a new label in a specific project.
+By defining the `api_post_path` method, we allow for the [`ApiFabricator`](https://gitlab.com/gitlab-org/gitlab/blob/master/qa/qa/resource/api_fabricator.rb) module to know which path to use to create a new label in a specific project.
 
-By defining the `api_post_body` method, we we allow for the [`ApiFabricator.api_post`](https://gitlab.com/gitlab-org/gitlab-ee/blob/a9177ca1812bac57e2b2fa4560e1d5dd8ffac38b/qa/qa/resource/api_fabricator.rb#L68) method to know which data to send when making the `POST` request.
+By defining the `api_post_body` method, we we allow for the [`ApiFabricator.api_post`](https://gitlab.com/gitlab-org/gitlab/blob/a9177ca1812bac57e2b2fa4560e1d5dd8ffac38b/qa/qa/resource/api_fabricator.rb#L68) method to know which data to send when making the `POST` request.
 
 > Notice that we pass both `color` and `name` attributes in the `api_post_body` since [those are required](../../../api/labels.md#create-a-new-label). Also, notice that we keep them alphabetically organized.
 
@@ -447,7 +447,7 @@ By defining the `api_post_body` method, we we allow for the [`ApiFabricator.api_
 
 Page Objects are used in end-to-end tests for maintenance reasons, where a page's elements and methods are defined to be reused in any test.
 
-> Page Objects are auto-loaded in the [`qa/qa.rb`](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/qa/qa.rb) file and available in all the test files (`*_spec.rb`).
+> Page Objects are auto-loaded in the [`qa/qa.rb`](https://gitlab.com/gitlab-org/gitlab/blob/master/qa/qa.rb) file and available in all the test files (`*_spec.rb`).
 
 Take a look at the [Page Objects] documentation.
 
@@ -495,7 +495,7 @@ Let's now update the Issue Page Object.
 
 > Page Objects are located in the `qa/qa/page/` directory, and its sub-directories.
 
-The file we will have to change is the [Issue Page Object](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/qa/qa/page/project/issue/show.rb).
+The file we will have to change is the [Issue Page Object](https://gitlab.com/gitlab-org/gitlab/blob/master/qa/qa/page/project/issue/show.rb).
 
 First, add the following code right below the definition of an already implemented view (keep in mind that view's definitions and their elements should be alphabetically ordered):
 
@@ -554,7 +554,7 @@ The `text_of_labels_block` method is a simple method that returns the `:labels_b
 
 Now let's change the view and the `dropdowns_helper` files to add the selectors that relate to the [Page Objects].
 
-In  [`app/views/shared/issuable/_sidebar.html.haml:105`](https://gitlab.com/gitlab-org/gitlab-ee/blob/7ca12defc7a965987b162a6ebef302f95dc8867f/app/views/shared/issuable/_sidebar.html.haml#L105), add a `data: { qa_selector: 'edit_link_labels' }` data attribute.
+In  [`app/views/shared/issuable/_sidebar.html.haml:105`](https://gitlab.com/gitlab-org/gitlab/blob/7ca12defc7a965987b162a6ebef302f95dc8867f/app/views/shared/issuable/_sidebar.html.haml#L105), add a `data: { qa_selector: 'edit_link_labels' }` data attribute.
 
 The code should look like this:
 
@@ -562,7 +562,7 @@ The code should look like this:
 = link_to _('Edit'), '#', class: 'js-sidebar-dropdown-toggle edit-link float-right', data: { qa_selector: 'edit_link_labels' }
 ```
 
-In the same file, on [line 121](https://gitlab.com/gitlab-org/gitlab-ee/blob/7ca12defc7a965987b162a6ebef302f95dc8867f/app/views/shared/issuable/_sidebar.html.haml#L121), add a `data: { qa_selector: 'dropdown_menu_labels' }` data attribute.
+In the same file, on [line 121](https://gitlab.com/gitlab-org/gitlab/blob/7ca12defc7a965987b162a6ebef302f95dc8867f/app/views/shared/issuable/_sidebar.html.haml#L121), add a `data: { qa_selector: 'dropdown_menu_labels' }` data attribute.
 
 The code should look like this:
 
@@ -570,7 +570,7 @@ The code should look like this:
 .dropdown-menu.dropdown-select.dropdown-menu-paging.dropdown-menu-labels.dropdown-menu-selectable.dropdown-extended-height{ data: { qa_selector: 'dropdown_menu_labels' } }
 ```
 
-In [`app/helpers/dropdowns_helper.rb:94`](https://gitlab.com/gitlab-org/gitlab-ee/blob/7ca12defc7a965987b162a6ebef302f95dc8867f/app/helpers/dropdowns_helper.rb#L94), add a `data: { qa_selector: 'dropdown_input_field' }` data attribute.
+In [`app/helpers/dropdowns_helper.rb:94`](https://gitlab.com/gitlab-org/gitlab/blob/7ca12defc7a965987b162a6ebef302f95dc8867f/app/helpers/dropdowns_helper.rb#L94), add a `data: { qa_selector: 'dropdown_input_field' }` data attribute.
 
 The code should look like this:
 
@@ -581,7 +581,7 @@ filter_output = search_field_tag search_id, nil, class: "dropdown-input-field", 
 > `data-qa-*` data attributes and CSS classes starting with `qa-` are used solely for the purpose of QA and testing.
 > By defining these, we add **testability** to the application.
 >
-> When defining a data attribute like: `qa_selector: 'labels_block'`, it should match the element definition: `element :labels_block`. We use a [sanity test](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/qa/qa/page#how-did-we-solve-fragile-tests-problem) to check that defined elements have their respective selectors in the specified views.
+> When defining a data attribute like: `qa_selector: 'labels_block'`, it should match the element definition: `element :labels_block`. We use a [sanity test](https://gitlab.com/gitlab-org/gitlab-foss/tree/master/qa/qa/page#how-did-we-solve-fragile-tests-problem) to check that defined elements have their respective selectors in the specified views.
 
 #### Updates in the `QA::Page::Base` class
 

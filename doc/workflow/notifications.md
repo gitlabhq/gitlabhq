@@ -168,4 +168,4 @@ reason `assigned` will have this sentence in the footer:
 
 NOTE: **Note:**
 Only reasons listed above have been implemented so far.
-Further implementation is [being discussed](https://gitlab.com/gitlab-org/gitlab-ce/issues/42062).
+Further implementation is [being discussed](https://gitlab.com/gitlab-org/gitlab-foss/issues/42062).

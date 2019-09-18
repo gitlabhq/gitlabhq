@@ -299,7 +299,7 @@ See the [troubleshooting document](troubleshooting.md).
 [setup-geo-omnibus]: index.md#using-omnibus-gitlab
 [Hashed Storage]: ../../repository_storage_types.md
 [Disaster Recovery]: ../disaster_recovery/index.md
-[gitlab-org/gitlab-ee#3789]: https://gitlab.com/gitlab-org/gitlab-ee/issues/3789
+[gitlab-org/gitlab-ee#3789]: https://gitlab.com/gitlab-org/gitlab/issues/3789
 [gitlab-com/infrastructure#2821]: https://gitlab.com/gitlab-com/infrastructure/issues/2821
 [omnibus-ssl]: https://docs.gitlab.com/omnibus/settings/ssl.html
 [using-geo]: using_a_geo_server.md

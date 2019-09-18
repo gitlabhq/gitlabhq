@@ -823,7 +823,7 @@ Parameters:
 
 ## Create MR Pipeline
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/31722) in Gitlab 12.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/31722) in Gitlab 12.3.
 
 Create a new [pipeline for a merge request](../ci/merge_request_pipelines/index.md). A pipeline created via this endpoint will not run a regular branch/tag pipeline, it requires `.gitlab-ci.yml` to be configured with `only: [merge_requests]` to create jobs.
 
@@ -2318,10 +2318,10 @@ Example response:
 }
 ```
 
-[ce-13060]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/13060
-[ce-14016]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/14016
-[ce-15454]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/15454
-[ce-18935]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/18935
+[ce-13060]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/13060
+[ce-14016]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/14016
+[ce-15454]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/15454
+[ce-18935]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/18935
 
 ## Approvals **(STARTER)**
 

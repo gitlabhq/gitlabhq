@@ -249,7 +249,7 @@ module API
         optional :name, type: String, desc: 'The name that will be assigned to the fork'
       end
       post ':id/fork' do
-        Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42284')
+        Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-foss/issues/42284')
 
         fork_params = declared_params(include_missing: false)
         namespace_id = fork_params[:namespace]
@@ -480,7 +480,7 @@ module API
 
       desc 'Upload a file'
       params do
-        # TODO: remove rubocop disable - https://gitlab.com/gitlab-org/gitlab-ee/issues/14960
+        # TODO: remove rubocop disable - https://gitlab.com/gitlab-org/gitlab/issues/14960
         requires :file, type: File, desc: 'The file to be uploaded' # rubocop:disable Scalability/FileUploads
       end
       post ":id/uploads" do

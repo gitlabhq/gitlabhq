@@ -317,9 +317,9 @@ MyObjectSerializer.new.represent(object.present)
 [grape-entity-readme]: https://github.com/ruby-grape/grape-entity/blob/master/README.md
 [grape-entity-class]: https://github.com/ruby-grape/grape-entity/blob/master/lib/grape_entity/entity.rb
 [grape-entity-only]: https://github.com/ruby-grape/grape-entity/blob/master/README.md#returning-only-the-fields-you-want
-[presenters-readme]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/app/presenters/README.md
+[presenters-readme]: https://gitlab.com/gitlab-org/gitlab-foss/blob/master/app/presenters/README.md
 [fluent-interface]: https://en.wikipedia.org/wiki/Fluent_interface
 [json-schema-gem]: https://github.com/ruby-json-schema/json-schema
-[issue-20045]: https://gitlab.com/gitlab-org/gitlab-ce/issues/20045
-[issue-30898]: https://gitlab.com/gitlab-org/gitlab-ce/issues/30898
-[issue-27569]: https://gitlab.com/gitlab-org/gitlab-ce/issues/27569
+[issue-20045]: https://gitlab.com/gitlab-org/gitlab-foss/issues/20045
+[issue-30898]: https://gitlab.com/gitlab-org/gitlab-foss/issues/30898
+[issue-27569]: https://gitlab.com/gitlab-org/gitlab-foss/issues/27569

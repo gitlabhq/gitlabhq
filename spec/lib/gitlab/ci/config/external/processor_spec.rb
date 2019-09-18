@@ -56,7 +56,7 @@ describe Gitlab::Ci::Config::External::Processor do
     end
 
     context 'with a valid remote external file is defined' do
-      let(:remote_file) { 'https://gitlab.com/gitlab-org/gitlab-ce/blob/1234/.gitlab-ci-1.yml' }
+      let(:remote_file) { 'https://gitlab.com/gitlab-org/gitlab-foss/blob/1234/.gitlab-ci-1.yml' }
       let(:values) { { include: remote_file, image: 'ruby:2.2' } }
       let(:external_file_content) do
         <<-HEREDOC
@@ -118,7 +118,7 @@ describe Gitlab::Ci::Config::External::Processor do
     end
 
     context 'with multiple external files are defined' do
-      let(:remote_file) { 'https://gitlab.com/gitlab-org/gitlab-ce/blob/1234/.gitlab-ci-1.yml' }
+      let(:remote_file) { 'https://gitlab.com/gitlab-org/gitlab-foss/blob/1234/.gitlab-ci-1.yml' }
       let(:external_files) do
         [
           '/spec/fixtures/gitlab/ci/external_files/.gitlab-ci-template-1.yml',
@@ -178,7 +178,7 @@ describe Gitlab::Ci::Config::External::Processor do
     end
 
     context "when both external files and values defined the same key" do
-      let(:remote_file) { 'https://gitlab.com/gitlab-org/gitlab-ce/blob/1234/.gitlab-ci-1.yml' }
+      let(:remote_file) { 'https://gitlab.com/gitlab-org/gitlab-foss/blob/1234/.gitlab-ci-1.yml' }
       let(:values) do
         {
           include: remote_file,

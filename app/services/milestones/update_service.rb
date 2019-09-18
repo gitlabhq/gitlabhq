@@ -2,7 +2,6 @@
 
 module Milestones
   class UpdateService < Milestones::BaseService
-    # rubocop: disable CodeReuse/ActiveRecord
     def execute(milestone)
       state = params[:state_event]
 
@@ -19,7 +18,6 @@ module Milestones
 
       milestone
     end
-    # rubocop: enable CodeReuse/ActiveRecord
   end
 end
 

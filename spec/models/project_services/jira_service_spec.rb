@@ -278,7 +278,7 @@ describe JiraService do
       end
     end
 
-    # this  will be removed as part of https://gitlab.com/gitlab-org/gitlab-ce/issues/63084
+    # this  will be removed as part of https://gitlab.com/gitlab-org/gitlab-foss/issues/63084
     context 'when data are stored in properties' do
       let(:properties) { data_params.merge(title: title, description: description) }
       let!(:service) do
@@ -650,7 +650,7 @@ describe JiraService do
     end
   end
 
-  describe 'favicon urls', :request_store do
+  describe 'favicon urls' do
     it 'includes the standard favicon' do
       props = described_class.new.send(:build_remote_link_props, url: 'http://example.com', title: 'title')
       expect(props[:object][:icon][:url16x16]).to match %r{^http://localhost/assets/favicon(?:-\h+).png$}

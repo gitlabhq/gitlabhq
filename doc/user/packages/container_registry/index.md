@@ -1,6 +1,6 @@
 # GitLab Container Registry
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/4040) in GitLab 8.8.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/4040) in GitLab 8.8.
 > - Docker Registry manifest `v1` support was added in GitLab 8.9 to support Docker
 >   versions earlier than 1.10.
 > - Starting from GitLab 8.12, if you have 2FA enabled in your account, you need
@@ -118,8 +118,8 @@ Alternatively, you can [build images with Kaniko](../../../ci/docker/using_kanik
 
 ## Using with private projects
 
-> Personal Access tokens were [introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/11845) in GitLab 9.3.
-> Project Deploy Tokens were [introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/17894) in GitLab 10.7
+> Personal Access tokens were [introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/11845) in GitLab 9.3.
+> Project Deploy Tokens were [introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/17894) in GitLab 10.7
 
 If a project is private, credentials will need to be provided for authorization.
 There are two ways to do this:

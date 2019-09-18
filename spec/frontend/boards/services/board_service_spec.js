@@ -97,8 +97,9 @@ describe('BoardService', () => {
   describe('updateList', () => {
     const id = 'David Webb';
     const position = 'unknown';
+    const collapsed = false;
     const expectedRequest = expect.objectContaining({
-      data: JSON.stringify({ list: { position } }),
+      data: JSON.stringify({ list: { position, collapsed } }),
     });
 
     let requestSpy;
@@ -112,7 +113,7 @@ describe('BoardService', () => {
       requestSpy.mockReturnValue([200, dummyResponse]);
       const expectedResponse = expect.objectContaining({ data: dummyResponse });
 
-      return expect(service.updateList(id, position))
+      return expect(service.updateList(id, position, collapsed))
         .resolves.toEqual(expectedResponse)
         .then(() => {
           expect(requestSpy).toHaveBeenCalledWith(expectedRequest);
@@ -122,7 +123,7 @@ describe('BoardService', () => {
     it('fails for error response', () => {
       requestSpy.mockReturnValue([500]);
 
-      return expect(service.updateList(id, position))
+      return expect(service.updateList(id, position, collapsed))
         .rejects.toThrow()
         .then(() => {
           expect(requestSpy).toHaveBeenCalledWith(expectedRequest);

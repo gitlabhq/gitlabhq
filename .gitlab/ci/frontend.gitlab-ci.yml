@@ -230,6 +230,7 @@ webpack-dev-server:
     - .default-tags
     - .default-retry
     - .default-cache
+    - .default-only
     - .only-code-changes
   dependencies: ["setup-test-env", "compile-assets", "compile-assets pull-cache"]
   variables:

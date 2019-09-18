@@ -101,7 +101,7 @@ Running SubGit in a mirror mode requires a
 source, academic and startup projects.
 
 We're currently working on deeper GitLab/SubGit integration. You may track our
-progress at [this issue](https://gitlab.com/gitlab-org/gitlab-ee/issues/990).
+progress at [this issue](https://gitlab.com/gitlab-org/gitlab/issues/990).
 
 ### SubGit support
 

@@ -4,7 +4,7 @@
 // avoid all descendant selectors (`table td`). This is because the CSS inlining
 // we use performs dramatically worse on descendant selectors than the
 // alternatives.
-// <https://gitlab.com/gitlab-org/gitlab-ee/issues/490#note_12283632>
+// <https://gitlab.com/gitlab-org/gitlab/issues/490#note_12283632>
 //
 // DO NOT ADD ANY DESCENDANT SELECTORS TO THIS FILE. Instead, use (in order of
 // preference): plain class selectors, type (element name) selectors, or

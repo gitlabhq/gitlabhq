@@ -1,4 +1,4 @@
-/* eslint-disable no-return-assign, one-var, no-var, consistent-return, object-shorthand, prefer-template, class-methods-use-this, no-lonely-if, vars-on-top */
+/* eslint-disable no-return-assign, one-var, no-var, consistent-return, prefer-template, class-methods-use-this, no-lonely-if, vars-on-top */
 
 import $ from 'jquery';
 import { escape, throttle } from 'underscore';
@@ -171,7 +171,7 @@ export class SearchAutocomplete {
         params: {
           project_id: this.projectId,
           project_ref: this.projectRef,
-          term: term,
+          term,
         },
       })
       .then(response => {

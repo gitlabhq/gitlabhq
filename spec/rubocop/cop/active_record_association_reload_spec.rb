@@ -14,7 +14,7 @@ describe RuboCop::Cop::ActiveRecordAssociationReload do
       expect_offense(<<~PATTERN.strip_indent)
         users = User.all
         users.reload
-              ^^^^^^ Use reset instead of reload. For more details check the https://gitlab.com/gitlab-org/gitlab-ce/issues/60218.
+              ^^^^^^ Use reset instead of reload. For more details check the https://gitlab.com/gitlab-org/gitlab-foss/issues/60218.
         PATTERN
     end
 
@@ -31,7 +31,7 @@ describe RuboCop::Cop::ActiveRecordAssociationReload do
       expect_offense(<<~PATTERN.strip_indent)
         user = User.new
         user.reload
-             ^^^^^^ Use reset instead of reload. For more details check the https://gitlab.com/gitlab-org/gitlab-ce/issues/60218.
+             ^^^^^^ Use reset instead of reload. For more details check the https://gitlab.com/gitlab-org/gitlab-foss/issues/60218.
       PATTERN
     end
 
@@ -47,7 +47,7 @@ describe RuboCop::Cop::ActiveRecordAssociationReload do
     it 'registers an offense on reload usage' do
       expect_offense(<<~PATTERN.strip_indent)
         reload
-        ^^^^^^ Use reset instead of reload. For more details check the https://gitlab.com/gitlab-org/gitlab-ce/issues/60218.
+        ^^^^^^ Use reset instead of reload. For more details check the https://gitlab.com/gitlab-org/gitlab-foss/issues/60218.
       PATTERN
     end
 

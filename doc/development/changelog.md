@@ -27,8 +27,8 @@ valid options are: added, fixed, changed, deprecated, removed, security, perform
 Community contributors and core team members are encouraged to add their name to
 the `author` field. GitLab team members **should not**.
 
-[changelog.md]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md
-[unreleased]: https://gitlab.com/gitlab-org/gitlab-ce/tree/master/changelogs/
+[changelog.md]: https://gitlab.com/gitlab-org/gitlab/blob/master/CHANGELOG.md
+[unreleased]: https://gitlab.com/gitlab-org/gitlab-foss/tree/master/changelogs/
 [YAML]: https://en.wikipedia.org/wiki/YAML
 
 ## What warrants a changelog entry?
@@ -284,7 +284,7 @@ and then compiling the entries into the overall `CHANGELOG.md` file during the
 
 [boring solution]: https://about.gitlab.com/handbook/values/#boring-solutions
 [release managers]: https://gitlab.com/gitlab-org/release/docs/blob/master/quickstart/release-manager.md
-[started brainstorming]: https://gitlab.com/gitlab-org/gitlab-ce/issues/17826
+[started brainstorming]: https://gitlab.com/gitlab-org/gitlab-foss/issues/17826
 [release process]: https://gitlab.com/gitlab-org/release-tools
 
 ---

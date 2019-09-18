@@ -63,7 +63,7 @@ describe Gitlab::Config::Loader::Yaml do
     end
   end
 
-  # Prevent Billion Laughs attack: https://gitlab.com/gitlab-org/gitlab-ce/issues/56018
+  # Prevent Billion Laughs attack: https://gitlab.com/gitlab-org/gitlab-foss/issues/56018
   context 'when yaml size is too large' do
     let(:yml) do
       <<~YAML
@@ -101,7 +101,7 @@ describe Gitlab::Config::Loader::Yaml do
     end
   end
 
-  # Prevent Billion Laughs attack: https://gitlab.com/gitlab-org/gitlab-ce/issues/56018
+  # Prevent Billion Laughs attack: https://gitlab.com/gitlab-org/gitlab-foss/issues/56018
   context 'when yaml has cyclic data structure' do
     let(:yml) do
       <<~YAML

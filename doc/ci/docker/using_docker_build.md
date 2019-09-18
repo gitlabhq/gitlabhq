@@ -125,7 +125,7 @@ not without its own challenges:
   child containers. For example, if you have files you want to share with a
   child container, you may create a subdirectory under `/builds/$CI_PROJECT_PATH`
   and use it as your mount point (for a more thorough explanation, check [issue
-  #41227](https://gitlab.com/gitlab-org/gitlab-ce/issues/41227)):
+  #41227](https://gitlab.com/gitlab-org/gitlab-foss/issues/41227)):
 
     ```yaml
     variables:

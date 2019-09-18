@@ -132,12 +132,12 @@ module Gitlab
             return unless @config.is_a?(Hash)
 
             @jobs_config = @config
-              .except(*self.class.reserved_nodes_names)  # rubocop: disable CodeReuse/ActiveRecord
+              .except(*self.class.reserved_nodes_names)
               .select do |name, config|
               Entry::Jobs.find_type(name, config).present?
             end
 
-            @config = @config.except(*@jobs_config.keys) # rubocop: disable CodeReuse/ActiveRecord
+            @config = @config.except(*@jobs_config.keys)
           end
         end
       end

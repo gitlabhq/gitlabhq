@@ -99,7 +99,7 @@ Some things to note about precedence:
 
 ### Jupyter Notebook files
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/2508) in GitLab 9.1
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/2508) in GitLab 9.1
 
 [Jupyter](https://jupyter.org) Notebook (previously IPython Notebook) files are used for
 interactive computing in many fields and contain a complete record of the
@@ -202,7 +202,7 @@ You can access your repos via [repository API](../../../api/repositories.md).
 
 ## Clone in Apple Xcode
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/45820) in GitLab 11.0
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/45820) in GitLab 11.0
 
 Projects that contain a `.xcodeproj` or `.xcworkspace` directory can now be cloned
 in Xcode using the new **Open in Xcode** button, located next to the Git URL
@@ -210,7 +210,7 @@ used for cloning your project. The button is only shown on macOS.
 
 ## Download Source Code
 
-> Support for directory download was [introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/24704) in GitLab 11.11.
+> Support for directory download was [introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/24704) in GitLab 11.11.
 
 The source code stored in a repository can be downloaded from the UI.
 By clicking the download icon, a dropdown will open with links to download the following:

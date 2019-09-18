@@ -11,6 +11,8 @@ import { loadHTMLFixture } from 'helpers/fixtures';
 import { setTestTimeout } from 'helpers/timeout';
 import $ from 'jquery';
 
+jest.mock('~/lib/utils/poll');
+
 const { INSTALLING, INSTALLABLE, INSTALLED, UNINSTALLING } = APPLICATION_STATUS;
 
 describe('Clusters', () => {
@@ -42,6 +44,17 @@ describe('Clusters', () => {
   afterEach(() => {
     cluster.destroy();
     mock.restore();
+  });
+
+  describe('class constructor', () => {
+    beforeEach(() => {
+      jest.spyOn(Clusters.prototype, 'initPolling');
+      cluster = new Clusters();
+    });
+
+    it('should call initPolling on construct', () => {
+      expect(cluster.initPolling).toHaveBeenCalled();
+    });
   });
 
   describe('toggle', () => {
@@ -327,14 +340,31 @@ describe('Clusters', () => {
     });
   });
 
-  describe('handleSuccess', () => {
+  describe('fetch cluster environments success', () => {
+    beforeEach(() => {
+      jest.spyOn(cluster.store, 'toggleFetchEnvironments').mockReturnThis();
+      jest.spyOn(cluster.store, 'updateEnvironments').mockReturnThis();
+
+      cluster.handleClusterEnvironmentsSuccess({ data: {} });
+    });
+
+    it('toggles the cluster environments loading icon', () => {
+      expect(cluster.store.toggleFetchEnvironments).toHaveBeenCalled();
+    });
+
+    it('updates the store when cluster environments is retrieved', () => {
+      expect(cluster.store.updateEnvironments).toHaveBeenCalled();
+    });
+  });
+
+  describe('handleClusterStatusSuccess', () => {
     beforeEach(() => {
       jest.spyOn(cluster.store, 'updateStateFromServer').mockReturnThis();
       jest.spyOn(cluster, 'toggleIngressDomainHelpText').mockReturnThis();
       jest.spyOn(cluster, 'checkForNewInstalls').mockReturnThis();
       jest.spyOn(cluster, 'updateContainer').mockReturnThis();
 
-      cluster.handleSuccess({ data: {} });
+      cluster.handleClusterStatusSuccess({ data: {} });
     });
 
     it('updates clusters store', () => {

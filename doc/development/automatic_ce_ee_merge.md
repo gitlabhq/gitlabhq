@@ -174,9 +174,9 @@ Now, every time you create an MR for CE and EE:
 ## How we run the Automatic CE->EE merge at GitLab
 
 At GitLab, we use the [Merge Train](https://gitlab.com/gitlab-org/merge-train)
-project to keep our [GitLab EE](https://gitlab.com/gitlab-org/gitlab-ee)
+project to keep our [GitLab EE](https://gitlab.com/gitlab-org/gitlab)
 repository updated with commits from
-[GitLab CE](https://gitlab.com/gitlab-org/gitlab-ce).
+[GitLab CE](https://gitlab.com/gitlab-org/gitlab-foss).
 
 We have a mirror of the [Merge Train](https://gitlab.com/gitlab-org/merge-train)
 project [configured](https://ops.gitlab.net/gitlab-org/merge-train) to run an

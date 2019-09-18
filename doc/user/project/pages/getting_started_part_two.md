@@ -35,7 +35,7 @@ same way you do for the other ones. To get started with GitLab Pages, you have t
 
 ### Use one of the popular Pages templates bundled with GitLab
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/47857)
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/47857)
 in GitLab 11.8.
 
 The simplest way to create a GitLab Pages site is to

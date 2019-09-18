@@ -1,4 +1,4 @@
-/* eslint-disable func-names, no-var, consistent-return, prefer-arrow-callback, no-return-assign, object-shorthand */
+/* eslint-disable func-names, no-var, consistent-return, prefer-arrow-callback, no-return-assign */
 
 function notificationGranted(message, opts, onclick) {
   var notification;
@@ -21,8 +21,8 @@ function notifyPermissions() {
 function notifyMe(message, body, icon, onclick) {
   var opts;
   opts = {
-    body: body,
-    icon: icon,
+    body,
+    icon,
   };
   // Let's check if the browser supports notifications
   /* eslint-disable-next-line @gitlab/i18n/no-non-i18n-strings */

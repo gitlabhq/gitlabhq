@@ -55,7 +55,7 @@ module EntityDateHelper
       is_upcoming = (due_date - Date.today).to_i > 0
       time_ago = distance_of_time_in_words(due_date, Date.today)
 
-      # https://gitlab.com/gitlab-org/gitlab-ce/issues/49440
+      # https://gitlab.com/gitlab-org/gitlab-foss/issues/49440
       #
       # Need to improve the i18n here and do a full translation
       # of the string instead of piecewise translations.

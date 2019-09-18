@@ -32,7 +32,7 @@ describe('note_awards_list component', () => {
         noteAuthorId: 2,
         noteId: '545',
         canAwardEmoji: true,
-        toggleAwardPath: '/gitlab-org/gitlab-ce/notes/545/toggle_award_emoji',
+        toggleAwardPath: '/gitlab-org/gitlab-foss/notes/545/toggle_award_emoji',
       },
     }).$mount();
   });
@@ -72,7 +72,7 @@ describe('note_awards_list component', () => {
           noteAuthorId: 2,
           noteId: '545',
           canAwardEmoji: false,
-          toggleAwardPath: '/gitlab-org/gitlab-ce/notes/545/toggle_award_emoji',
+          toggleAwardPath: '/gitlab-org/gitlab-foss/notes/545/toggle_award_emoji',
         },
       }).$mount();
     });

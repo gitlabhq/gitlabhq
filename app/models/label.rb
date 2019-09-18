@@ -215,8 +215,8 @@ class Label < ApplicationRecord
   #
   #   Label.first.to_reference                                     # => "~1"
   #   Label.first.to_reference(format: :name)                      # => "~\"bug\""
-  #   Label.first.to_reference(project, target_project: same_namespace_project)    # => "gitlab-ce~1"
-  #   Label.first.to_reference(project, target_project: another_namespace_project) # => "gitlab-org/gitlab-ce~1"
+  #   Label.first.to_reference(project, target_project: same_namespace_project)    # => "gitlab-foss~1"
+  #   Label.first.to_reference(project, target_project: another_namespace_project) # => "gitlab-org/gitlab-foss~1"
   #
   # Returns a String
   #

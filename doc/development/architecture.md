@@ -6,7 +6,7 @@ table_display_block: true
 
 ## Software delivery
 
-There are two software distributions of GitLab: the open source [Community Edition](https://gitlab.com/gitlab-org/gitlab-ce/) (CE), and the open core [Enterprise Edition](https://gitlab.com/gitlab-org/gitlab-ee/) (EE). GitLab is available under [different subscriptions](https://about.gitlab.com/pricing/).
+There are two software distributions of GitLab: the open source [Community Edition](https://gitlab.com/gitlab-org/gitlab-foss/) (CE), and the open core [Enterprise Edition](https://gitlab.com/gitlab-org/gitlab/) (EE). GitLab is available under [different subscriptions](https://about.gitlab.com/pricing/).
 
 New versions of GitLab are released in stable branches and the master branch is for bleeding edge development.
 
@@ -16,7 +16,7 @@ Both EE and CE require some add-on components called GitLab Shell and Gitaly. Th
 
 ## Components
 
-A typical install of GitLab will be on GNU/Linux. It uses Nginx or Apache as a web front end to proxypass the Unicorn web server. By default, communication between Unicorn and the front end is via a Unix domain socket but forwarding requests via TCP is also supported. The web front end accesses `/home/git/gitlab/public` bypassing the Unicorn server to serve static pages, uploads (e.g. avatar images or attachments), and precompiled assets. GitLab serves web pages and a [GitLab API](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/api) using the Unicorn web server. It uses Sidekiq as a job queue which, in turn, uses redis as a non-persistent database backend for job information, meta data, and incoming jobs.
+A typical install of GitLab will be on GNU/Linux. It uses Nginx or Apache as a web front end to proxypass the Unicorn web server. By default, communication between Unicorn and the front end is via a Unix domain socket but forwarding requests via TCP is also supported. The web front end accesses `/home/git/gitlab/public` bypassing the Unicorn server to serve static pages, uploads (e.g. avatar images or attachments), and precompiled assets. GitLab serves web pages and a [GitLab API](https://gitlab.com/gitlab-org/gitlab-foss/tree/master/doc/api) using the Unicorn web server. It uses Sidekiq as a job queue which, in turn, uses redis as a non-persistent database backend for job information, meta data, and incoming jobs.
 
 We also support deploying GitLab on Kubernetes using our [GitLab Helm chart](https://docs.gitlab.com/charts/).
 
@@ -78,11 +78,11 @@ graph TB
   PgBouncerExporter[PgBouncer Exporter] --> PgBouncer
   Prometheus -- TCP 9187 --> PostgreSQLExporter
   Prometheus -- TCP 9100 --> NodeExporter[Node Exporter]
-  Prometheus -- TCP 9168 --> GitLabMonitor[GitLab Monitor]
+  Prometheus -- TCP 9168 --> GitLabExporter[GitLab Exporter]
   Prometheus -- TCP 9127 --> PgBouncerExporter
-  GitLabMonitor --> PostgreSQL
-  GitLabMonitor --> GitLabShell
-  GitLabMonitor --> Sidekiq
+  GitLabExporter --> PostgreSQL
+  GitLabExporter --> GitLabShell
+  GitLabExporter --> Sidekiq
   PgBouncer --> Consul
   PostgreSQL --> Consul
   PgBouncer --> PostgreSQL
@@ -147,7 +147,7 @@ Component statuses are linked to configuration documentation for each component.
 | [Redis Exporter](#redis-exporter) | Prometheus endpoint with Redis metrics | [✅][redis-exporter-omnibus] | [✅][redis-exporter-charts] | [✅][redis-exporter-charts] | [✅](https://about.gitlab.com/handbook/engineering/monitoring/) | ❌ | ❌ | CE & EE |
 | [Postgres Exporter](#postgres-exporter) | Prometheus endpoint with PostgreSQL metrics | [✅][postgres-exporter-omnibus] | [✅][postgres-exporter-charts] | [✅][postgres-exporter-charts] | [✅](https://about.gitlab.com/handbook/engineering/monitoring/) | ❌ | ❌ | CE & EE |
 | [PgBouncer Exporter](#pgbouncer-exporter) | Prometheus endpoint with PgBouncer metrics | [⚙][pgbouncer-exporter-omnibus] | [❌][pgbouncer-exporter-charts] | [❌][pgbouncer-exporter-charts] | [✅](https://about.gitlab.com/handbook/engineering/monitoring/) | ❌ | ❌ | CE & EE |
-| [GitLab Monitor](#gitlab-monitor) | Generates a variety of GitLab metrics | [✅][gitlab-monitor-omnibus] | [✅][gitlab-monitor-charts] | [✅][gitlab-monitor-charts] | [✅](https://about.gitlab.com/handbook/engineering/monitoring/) | ❌ | ❌ | CE & EE |
+| [GitLab Exporter](#gitlab-exporter) | Generates a variety of GitLab metrics | [✅][gitlab-exporter-omnibus] | [✅][gitlab-exporter-charts] | [✅][gitlab-exporter-charts] | [✅](https://about.gitlab.com/handbook/engineering/monitoring/) | ❌ | ❌ | CE & EE |
 | [Node Exporter](#node-exporter) | Prometheus endpoint with system metrics | [✅][node-exporter-omnibus] | [❌][node-exporter-charts] | [❌][node-exporter-charts] | [✅](https://about.gitlab.com/handbook/engineering/monitoring/) | ❌ | ❌ | CE & EE |
 | [Mattermost](#mattermost) | Open-source Slack alternative | [⚙][mattermost-omnibus] | [⤓][mattermost-charts] | [⤓][mattermost-charts] | [⤓](../user/project/integrations/mattermost.md) | ❌ | ❌ | CE & EE |
 | [MinIO](#minio) | Object storage service | [⤓][minio-omnibus] | [✅][minio-charts] | [✅][minio-charts] | [✅](https://about.gitlab.com/handbook/engineering/infrastructure/production-architecture/#storage-architecture) | ❌ | [⚙][minio-gdk] | CE & EE |
@@ -185,7 +185,7 @@ GitLab can be considered to have two layers from a process perspective:
 - Layer: Monitoring
 - Process: `alertmanager`
 
-[Alert manager](https://prometheus.io/docs/alerting/alertmanager/) is a tool provided by Prometheus that _"handles alerts sent by client applications such as the Prometheus server. It takes care of deduplicating, grouping, and routing them to the correct receiver integration such as email, PagerDuty, or OpsGenie. It also takes care of silencing and inhibition of alerts."_ You can read more in [issue #45740](https://gitlab.com/gitlab-org/gitlab-ce/issues/45740) about what we will be alerting on.
+[Alert manager](https://prometheus.io/docs/alerting/alertmanager/) is a tool provided by Prometheus that _"handles alerts sent by client applications such as the Prometheus server. It takes care of deduplicating, grouping, and routing them to the correct receiver integration such as email, PagerDuty, or OpsGenie. It also takes care of silencing and inhibition of alerts."_ You can read more in [issue #45740](https://gitlab.com/gitlab-org/gitlab-foss/issues/45740) about what we will be alerting on.
 
 #### Certificate management
 
@@ -228,14 +228,14 @@ Gitaly is a service designed by GitLab to remove our need for NFS for Git storag
 - Configuration: [Omnibus][geo-omnibus], [Charts][geo-charts], [GDK][geo-gdk]
 - Layer: Core Service (Processor)
 
-#### GitLab Monitor
+#### Gitlab Exporter
 
-- [Project page](https://gitlab.com/gitlab-org/gitlab-monitor)
-- Configuration: [Omnibus][gitlab-monitor-omnibus], [Charts][gitlab-monitor-charts]
+- [Project page](https://gitlab.com/gitlab-org/gitlab-exporter)
+- Configuration: [Omnibus][gitlab-exporter-omnibus], [Charts][gitlab-exporter-charts]
 - Layer: Monitoring
-- Process: `gitlab-monitor`
+- Process: `gitlab-exporter`
 
-GitLab Monitor is a process designed in house that allows us to export metrics about GitLab application internals to Prometheus. You can read more [in the project's readme](https://gitlab.com/gitlab-org/gitlab-monitor).
+GitLab Exporter is a process designed in house that allows us to export metrics about GitLab application internals to Prometheus. You can read more [in the project's readme](https://gitlab.com/gitlab-org/gitlab-exporter).
 
 #### GitLab Pages
 
@@ -432,7 +432,7 @@ Sidekiq is a Ruby background job processor that pulls jobs from the redis queue 
 
 #### Unicorn
 
-- [Project page](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/README.md)
+- [Project page](https://gitlab.com/gitlab-org/gitlab/blob/master/README.md)
 - Configuration: [Omnibus][unicorn-omnibus], [Charts][unicorn-charts], [Source][unicorn-source], [GDK][gitlab-yml]
 - Layer: Core Service (Processor)
 - Process: `unicorn`
@@ -614,7 +614,7 @@ GitLab Shell has a configuration file at `/home/git/gitlab-shell/config.yml`.
 
 ### Maintenance Tasks
 
-[GitLab](https://gitlab.com/gitlab-org/gitlab-ce/tree/master) provides rake tasks with which you see version information and run a quick check on your configuration to ensure it is configured properly within the application. See [maintenance rake tasks](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/raketasks/maintenance.md).
+[GitLab](https://gitlab.com/gitlab-org/gitlab/tree/master) provides rake tasks with which you see version information and run a quick check on your configuration to ensure it is configured properly within the application. See [maintenance rake tasks](https://gitlab.com/gitlab-org/gitlab-foss/blob/master/doc/raketasks/maintenance.md).
 In a nutshell, do the following:
 
 ```
@@ -638,7 +638,7 @@ We've also detailed [our architecture of GitLab.com](https://about.gitlab.com/ha
 [unicorn-omnibus]: https://docs.gitlab.com/omnibus/settings/unicorn.html
 [unicorn-charts]: https://docs.gitlab.com/charts/charts/gitlab/unicorn/
 [unicorn-source]: ../install/installation.md#configure-it
-[gitlab-yml]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/config/gitlab.yml.example
+[gitlab-yml]: https://gitlab.com/gitlab-org/gitlab-foss/blob/master/config/gitlab.yml.example
 [sidekiq-omnibus]: https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/files/gitlab-config-template/gitlab.rb.template
 [sidekiq-charts]: https://docs.gitlab.com/charts/charts/gitlab/sidekiq/
 [gitaly-omnibus]: ../administration/gitaly/index.md
@@ -684,8 +684,8 @@ We've also detailed [our architecture of GitLab.com](https://about.gitlab.com/ha
 [postgres-exporter-charts]: https://github.com/helm/charts/tree/master/stable/postgresql
 [pgbouncer-exporter-omnibus]: ../administration/monitoring/prometheus/pgbouncer_exporter.md
 [pgbouncer-exporter-charts]: https://docs.gitlab.com/charts/installation/deployment.html#postgresql
-[gitlab-monitor-omnibus]: ../administration/monitoring/prometheus/gitlab_monitor_exporter.md
-[gitlab-monitor-charts]: https://docs.gitlab.com/charts/charts/gitlab/gitlab-monitor/index.html
+[gitlab-exporter-omnibus]: ../administration/monitoring/prometheus/gitlab_exporter.md
+[gitlab-exporter-charts]: https://docs.gitlab.com/charts/charts/gitlab/gitlab-exporter/index.html
 [node-exporter-omnibus]: ../administration/monitoring/prometheus/node_exporter.md
 [node-exporter-charts]: https://gitlab.com/gitlab-org/charts/gitlab/issues/1332
 [mattermost-omnibus]: https://docs.gitlab.com/omnibus/gitlab-mattermost/

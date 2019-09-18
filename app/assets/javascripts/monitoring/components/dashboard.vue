@@ -262,7 +262,7 @@ export default {
       return window.URL.createObjectURL(data);
     },
     // TODO: BEGIN, Duplicated code with panel_type until feature flag is removed
-    // Issue number: https://gitlab.com/gitlab-org/gitlab-ce/issues/63845
+    // Issue number: https://gitlab.com/gitlab-org/gitlab-foss/issues/63845
     getGraphAlerts(queries) {
       if (!this.allAlerts) return {};
       const metricIdsForChart = queries.map(q => q.metricId);

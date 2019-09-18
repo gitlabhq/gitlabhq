@@ -6,7 +6,7 @@ import Icon from '../../vue_shared/components/icon.vue';
  *
  * Receives status object containing:
  * status: {
- *   details_path: "/gitlab-org/gitlab-ce/pipelines/8150156" // url
+ *   details_path: "/gitlab-org/gitlab-foss/pipelines/8150156" // url
  *   group:"running" // used for CSS class
  *   icon: "icon_status_running" // used to render the icon
  *   label:"running" // used for potential tooltip

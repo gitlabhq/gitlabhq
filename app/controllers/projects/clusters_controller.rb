@@ -24,3 +24,5 @@ class Projects::ClustersController < Clusters::ClustersController
     @repository ||= project.repository
   end
 end
+
+Projects::ClustersController.prepend_if_ee('EE::Projects::ClustersController')

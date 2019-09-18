@@ -80,7 +80,7 @@ class MergeRequestPollCachedWidgetEntity < IssuableEntity
 
   # Once SchedulePopulateMergeRequestMetricsWithEventsData fully runs,
   # we can remove this method and just serialize MergeRequest#metrics
-  # instead. See https://gitlab.com/gitlab-org/gitlab-ce/issues/41587
+  # instead. See https://gitlab.com/gitlab-org/gitlab-foss/issues/41587
   def build_metrics(merge_request)
     # There's no need to query and serialize metrics data for merge requests that are not
     # merged or closed.

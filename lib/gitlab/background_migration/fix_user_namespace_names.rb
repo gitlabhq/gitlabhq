@@ -5,7 +5,7 @@ module Gitlab
     # This migration fixes the namespaces.name for all user-namespaces that have names
     # that aren't equal to the users name.
     # Then it uses the updated names of the namespaces to update the associated routes
-    # For more info see https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/23272
+    # For more info see https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/23272
     class FixUserNamespaceNames
       def perform(from_id, to_id)
         fix_namespace_names(from_id, to_id)

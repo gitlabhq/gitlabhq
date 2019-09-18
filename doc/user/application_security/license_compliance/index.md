@@ -4,7 +4,7 @@ type: reference, howto
 
 # License Compliance **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/5483) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/5483) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.0.
 
 ## Overview
 
@@ -72,7 +72,7 @@ To run a License Compliance scanning job, you need GitLab Runner with the
 
 For GitLab 11.9 and later, to enable License Compliance, you must
 [include](../../../ci/yaml/README.md#includetemplate) the
-[`License-Management.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/lib/gitlab/ci/templates/Security/License-Management.gitlab-ci.yml)
+[`License-Management.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/License-Management.gitlab-ci.yml)
 that's provided as a part of your GitLab installation.
 For GitLab versions earlier than 11.9, you can copy and use the job as defined
 that template.
@@ -184,7 +184,7 @@ license_management:
 
 ## Project policies for License Compliance
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/5940) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.4.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/5940) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.4.
 
 From the project's settings:
 
@@ -222,7 +222,7 @@ Searching for Licenses:
 
 ## License Compliance report under pipelines
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/5491) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.2.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/5491) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.2.
 
 From your project's left sidebar, navigate to **CI/CD > Pipelines** and click on the
 pipeline ID that has a `license_management` job to see the Licenses tab with the listed

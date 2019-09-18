@@ -18,9 +18,9 @@ describe('Artifacts block', () => {
   };
 
   const nonExpiredArtifact = {
-    download_path: '/gitlab-org/gitlab-ce/-/jobs/98314558/artifacts/download',
-    browse_path: '/gitlab-org/gitlab-ce/-/jobs/98314558/artifacts/browse',
-    keep_path: '/gitlab-org/gitlab-ce/-/jobs/98314558/artifacts/keep',
+    download_path: '/gitlab-org/gitlab-foss/-/jobs/98314558/artifacts/download',
+    browse_path: '/gitlab-org/gitlab-foss/-/jobs/98314558/artifacts/browse',
+    keep_path: '/gitlab-org/gitlab-foss/-/jobs/98314558/artifacts/keep',
     expire_at: expireAt,
     expired: false,
   };

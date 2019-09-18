@@ -129,14 +129,14 @@ Click the links to see your GitLab repository data.
 
 ### 11.10
 
-- [Instance admins can now setup integration for all namespaces](https://gitlab.com/gitlab-org/gitlab-ee/issues/8902)
+- [Instance admins can now setup integration for all namespaces](https://gitlab.com/gitlab-org/gitlab/issues/8902)
 
 ### 11.1
 
-- [Support GitLab subgroups in Jira development panel](https://gitlab.com/gitlab-org/gitlab-ee/issues/3561)
+- [Support GitLab subgroups in Jira development panel](https://gitlab.com/gitlab-org/gitlab/issues/3561)
 
 [existing-jira]: ../user/project/integrations/jira.md
 [jira-development-panel]: https://confluence.atlassian.com/adminjiraserver070/integrating-with-development-tools-776637096.html#Integratingwithdevelopmenttools-Developmentpanelonissues
 [eep]: https://about.gitlab.com/pricing/
-[ee-2381]: https://gitlab.com/gitlab-org/gitlab-ee/issues/2381
+[ee-2381]: https://gitlab.com/gitlab-org/gitlab/issues/2381
 [relative-url]: https://docs.gitlab.com/omnibus/settings/configuration.html#configuring-a-relative-url-for-gitlab

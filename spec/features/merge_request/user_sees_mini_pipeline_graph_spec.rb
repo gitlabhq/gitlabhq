@@ -34,7 +34,7 @@ describe 'Merge request < User sees mini pipeline graph', :js do
       create(:ci_build, :manual, pipeline: pipeline, when: 'manual')
     end
 
-    # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/48034
+    # TODO: https://gitlab.com/gitlab-org/gitlab-foss/issues/48034
     xit 'avoids repeated database queries' do
       before = ActiveRecord::QueryRecorder.new { visit_merge_request(format: :json, serializer: 'widget') }
 
@@ -56,7 +56,7 @@ describe 'Merge request < User sees mini pipeline graph', :js do
     end
 
     # Status icon button styles should update as described in
-    # https://gitlab.com/gitlab-org/gitlab-ce/issues/42769
+    # https://gitlab.com/gitlab-org/gitlab-foss/issues/42769
     it 'has unique styles for default, :hover, :active, and :focus states' do
       find('.mini-pipeline-graph-dropdown-toggle')
       default_background_color = evaluate_script("$('.mini-pipeline-graph-dropdown-toggle:visible').css('background-color');")

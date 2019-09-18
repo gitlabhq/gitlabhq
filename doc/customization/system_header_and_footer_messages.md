@@ -1,7 +1,7 @@
 # Adding a system message to every page
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/5023) in [GitLab Premium](https://about.gitlab.com/pricing/) 10.7.
-> [Added](https://gitlab.com/gitlab-org/gitlab-ce/issues/55057) to [GitLab Core](https://about.gitlab.com/pricing/) in 11.9.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/5023) in [GitLab Premium](https://about.gitlab.com/pricing/) 10.7.
+> [Added](https://gitlab.com/gitlab-org/gitlab-foss/issues/55057) to [GitLab Core](https://about.gitlab.com/pricing/) in 11.9.
 
 Navigate to the **Admin** area and go to the **Appearance** page.
 

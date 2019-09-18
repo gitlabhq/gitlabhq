@@ -94,7 +94,7 @@ module Ci
 
     # rubocop: disable CodeReuse/ActiveRecord
     def auto_cancelable_pipelines
-      # TODO: Introduced by https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/23464
+      # TODO: Introduced by https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/23464
       if Feature.enabled?(:ci_support_interruptible_pipelines, project, default_enabled: true)
         project.ci_pipelines
           .where(ref: pipeline.ref)

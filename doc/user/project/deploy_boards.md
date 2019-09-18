@@ -68,7 +68,7 @@ To display the Deploy Boards for a specific [environment] you should:
    instead of `DeploymentConfiguration`, otherwise the Deploy Boards won't render
    correctly. For more information, read the
    [OpenShift docs](https://docs.openshift.com/container-platform/3.7/dev_guide/deployments/kubernetes_deployments.html#kubernetes-deployments-vs-deployment-configurations)
-   and [GitLab issue #4584](https://gitlab.com/gitlab-org/gitlab-ee/issues/4584).
+   and [GitLab issue #4584](https://gitlab.com/gitlab-org/gitlab/issues/4584).
 
 1. [Configure GitLab Runner][runners] with the [Docker][docker-exec] or
    [Kubernetes][kube-exec] executor.
@@ -89,7 +89,7 @@ To display the Deploy Boards for a specific [environment] you should:
 
    NOTE: **Note:**
    Matching based on the Kubernetes `app` label was removed in [GitLab
-   12.1](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/14020).
+   12.1](https://gitlab.com/gitlab-org/gitlab/merge_requests/14020).
    To migrate, please apply the required annotations (see above) and
    re-deploy your application.
 
@@ -115,7 +115,7 @@ version of your application.
 - [Environments and deployments][environment]
 - [Kubernetes deploy example][kube-deploy]
 
-[ee-1589]: https://gitlab.com/gitlab-org/gitlab-ee/issues/1589 "Deploy Boards initial issue"
+[ee-1589]: https://gitlab.com/gitlab-org/gitlab/issues/1589 "Deploy Boards initial issue"
 [ee]: https://about.gitlab.com/pricing/ "GitLab Enterprise Edition landing page"
 [kube-deploy]: https://gitlab.com/gitlab-examples/kubernetes-deploy "Kubernetes deploy example project"
 [kubernetes]: https://kubernetes.io "Kubernetes website"

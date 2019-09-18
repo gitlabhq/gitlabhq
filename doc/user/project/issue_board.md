@@ -160,7 +160,7 @@ For a collection of [features per tier](#summary-of-features-per-tier), check th
 
 ### Multiple Issue Boards
 
-> - Multiple Issue Boards per project [moved](https://gitlab.com/gitlab-org/gitlab-ce/issues/53811) to [GitLab Core](https://about.gitlab.com/pricing/) in GitLab 12.1.
+> - Multiple Issue Boards per project [moved](https://gitlab.com/gitlab-org/gitlab-foss/issues/53811) to [GitLab Core](https://about.gitlab.com/pricing/) in GitLab 12.1.
 > - Multiple Issue Boards per group is available in [GitLab Premium Edition](https://about.gitlab.com/pricing/).
 
 Multiple Issue Boards, as the name suggests, allow for more than one Issue Board
@@ -234,7 +234,7 @@ one group issue board per group was made available in GitLab 10.6 Core.
 
 ### Assignee lists **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/5784) in GitLab 11.0 Premium.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/5784) in GitLab 11.0 Premium.
 
 Like a regular list that shows all issues that have the list label, you can add
 an assignee list that shows all issues assigned to the given user.
@@ -253,7 +253,7 @@ To remove an assignee list, just as with a label list, click the trash icon.
 
 ### Milestone lists **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/6469) in GitLab 11.2 Premium.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/6469) in GitLab 11.2 Premium.
 
 As of 11.2, you're also able to create lists of a milestone. As the name states,
 these are lists that filter issues by the assigned milestone, giving you more
@@ -451,6 +451,6 @@ A few things to remember:
   by default. If you have more than 20 issues start scrolling down and the next
   20 will appear.
 
-[ce-5554]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/5554
+[ce-5554]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/5554
 [scrum]: https://en.wikipedia.org/wiki/Scrum_(software_development)
 [kanban]: https://en.wikipedia.org/wiki/Kanban_(development)

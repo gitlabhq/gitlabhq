@@ -70,7 +70,6 @@ module Projects
       )
     end
 
-    # rubocop: disable CodeReuse/ActiveRecord
     def service_hash
       @service_hash ||=
         begin
@@ -84,7 +83,6 @@ module Projects
           end
         end
     end
-    # rubocop: enable CodeReuse/ActiveRecord
 
     # rubocop: disable CodeReuse/ActiveRecord
     def run_callbacks(batch)

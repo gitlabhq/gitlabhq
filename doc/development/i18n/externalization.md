@@ -1,6 +1,6 @@
 # Internationalization for GitLab
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/10669) in GitLab 9.2.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/10669) in GitLab 9.2.
 
 For working with internationalization (i18n),
 [GNU gettext](https://www.gnu.org/software/gettext/) is used given it's the most
@@ -9,7 +9,7 @@ work with it.
 
 ## Setting up GitLab Development Kit (GDK)
 
-In order to be able to work on the [GitLab Community Edition](https://gitlab.com/gitlab-org/gitlab-ce)
+In order to be able to work on the [GitLab Community Edition](https://gitlab.com/gitlab-org/gitlab-foss)
 project you must download and configure it through [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/set-up-gdk.md).
 
 Once you have the GitLab project ready, you can start working on the translation.
@@ -236,11 +236,11 @@ This makes use of [`Intl.DateTimeFormat`].
 - In Ruby/HAML, we have two ways of adding format to dates and times:
 
   1. **Through the `l` helper**, i.e. `l(active_session.created_at, format: :short)`. We have some predefined formats for
-     [dates](https://gitlab.com/gitlab-org/gitlab-ce/blob/v11.7.0/config/locales/en.yml#L54) and [times](https://gitlab.com/gitlab-org/gitlab-ce/blob/v11.7.0/config/locales/en.yml#L261).
+     [dates](https://gitlab.com/gitlab-org/gitlab-foss/blob/v11.7.0/config/locales/en.yml#L54) and [times](https://gitlab.com/gitlab-org/gitlab-foss/blob/v11.7.0/config/locales/en.yml#L261).
      If you need to add a new format, because other parts of the code could benefit from it,
-     you'll need to add it to [en.yml](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/config/locales/en.yml) file.
+     you'll need to add it to [en.yml](https://gitlab.com/gitlab-org/gitlab-foss/blob/master/config/locales/en.yml) file.
   1. **Through `strftime`**, i.e. `milestone.start_date.strftime('%b %-d')`. We use `strftime` in case none of the formats
-     defined on [en.yml](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/config/locales/en.yml) matches the date/time
+     defined on [en.yml](https://gitlab.com/gitlab-org/gitlab-foss/blob/master/config/locales/en.yml) matches the date/time
      specifications we need, and if there is no need to add it as a new format because is very particular (i.e. it's only used in a single view).
 
 ## Best practices

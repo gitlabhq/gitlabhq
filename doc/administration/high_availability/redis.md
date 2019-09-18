@@ -64,7 +64,7 @@ Omnibus:
    prometheus['enable'] = false
    alertmanager['enable'] = false
    pgbouncer_exporter['enable'] = false
-   gitlab_monitor['enable'] = false
+   gitlab_exporter['enable'] = false
    gitaly['enable'] = false
 
    redis['bind'] = '0.0.0.0'
@@ -1016,7 +1016,7 @@ Read more on High Availability:
 1. [Configure the GitLab application servers](gitlab.md)
 1. [Configure the load balancers](load_balancer.md)
 
-[ce-1877]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/1877
+[ce-1877]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/1877
 [restart]: ../restart_gitlab.md#installations-from-source
 [reconfigure]: ../restart_gitlab.md#omnibus-gitlab-reconfigure
 [gh-531]: https://github.com/redis/redis-rb/issues/531
@@ -1027,4 +1027,4 @@ Read more on High Availability:
 [source]: ../../install/installation.md
 [ce]: https://about.gitlab.com/downloads
 [ee]: https://about.gitlab.com/downloads-ee
-[it]: https://gitlab.com/gitlab-org/gitlab-ce/uploads/c4cc8cd353604bd80315f9384035ff9e/The_Internet_IT_Crowd.png
+[it]: https://gitlab.com/gitlab-org/gitlab-foss/uploads/c4cc8cd353604bd80315f9384035ff9e/The_Internet_IT_Crowd.png

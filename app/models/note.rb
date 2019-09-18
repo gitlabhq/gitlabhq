@@ -38,7 +38,7 @@ class Note < ApplicationRecord
   redact_field :note
 
   # Aliases to make application_helper#edited_time_ago_with_tooltip helper work properly with notes.
-  # See https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/10392/diffs#note_28719102
+  # See https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/10392/diffs#note_28719102
   alias_attribute :last_edited_at, :updated_at
   alias_attribute :last_edited_by, :updated_by
 

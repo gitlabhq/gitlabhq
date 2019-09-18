@@ -1,4 +1,4 @@
-/* eslint-disable no-useless-escape, no-var, no-underscore-dangle, func-names, no-return-assign, object-shorthand, one-var, consistent-return, class-methods-use-this */
+/* eslint-disable no-useless-escape, no-var, no-underscore-dangle, func-names, no-return-assign, one-var, consistent-return, class-methods-use-this */
 
 import $ from 'jquery';
 import 'cropper';
@@ -100,7 +100,7 @@ import _ from 'underscore';
         cropBoxMovable: false,
         cropBoxResizable: false,
         toggleDragModeOnDblclick: false,
-        built: function() {
+        built() {
           const $image = $(this);
           const container = $image.cropper('getContainerData');
           const { cropBoxWidth, cropBoxHeight } = _this;

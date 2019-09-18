@@ -1,6 +1,6 @@
 # Instance statistics
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/41416)
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/41416)
 in GitLab 11.2.
 
 Instance statistics gives users or admins access to instance-wide analytics.

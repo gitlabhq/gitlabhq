@@ -62,7 +62,7 @@ describe Ci::ArchiveTraceService, '#execute' do
       expect(Gitlab::Sentry)
         .to receive(:track_exception)
         .with(::Gitlab::Ci::Trace::ArchiveError,
-              issue_url: 'https://gitlab.com/gitlab-org/gitlab-ce/issues/51502',
+              issue_url: 'https://gitlab.com/gitlab-org/gitlab-foss/issues/51502',
               extra: { job_id: job.id } ).once
 
       expect(Sidekiq.logger).to receive(:warn).with(

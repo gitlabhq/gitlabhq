@@ -9,9 +9,9 @@ package system support by solely backend changes. This guide is superficial and 
 not cover the way the code should be written. However, you can find a good example
 by looking at existing merge requests with Maven and NPM support:
 
-- [NPM registry support](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/8673).
-- [Maven repository](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/6607).
-- [Instance level endpoint for Maven repository](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/8757)
+- [NPM registry support](https://gitlab.com/gitlab-org/gitlab/merge_requests/8673).
+- [Maven repository](https://gitlab.com/gitlab-org/gitlab/merge_requests/6607).
+- [Instance level endpoint for Maven repository](https://gitlab.com/gitlab-org/gitlab/merge_requests/8757)
 
 ## General information
 

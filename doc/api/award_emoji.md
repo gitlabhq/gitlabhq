@@ -1,6 +1,6 @@
 # Award Emoji API
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/4575) in GitLab 8.9. Snippet support added in 8.12.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/4575) in GitLab 8.9. Snippet support added in 8.12.
 
 An [awarded emoji](../user/award_emojis.md) tells a thousand words.
 

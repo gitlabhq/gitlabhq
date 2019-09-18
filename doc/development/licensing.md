@@ -1,6 +1,6 @@
 # GitLab Licensing and Compatibility
 
-[GitLab Community Edition](https://gitlab.com/gitlab-org/gitlab-ce/) (CE) is licensed [under the terms of the MIT License][CE]. [GitLab Enterprise Edition](https://gitlab.com/gitlab-org/gitlab-ee/) (EE) is licensed under "[The GitLab Enterprise Edition (EE) license][EE]" wherein there are more restrictions.
+[GitLab Community Edition](https://gitlab.com/gitlab-org/gitlab-foss/) (CE) is licensed [under the terms of the MIT License][CE]. [GitLab Enterprise Edition](https://gitlab.com/gitlab-org/gitlab/) (EE) is licensed under "[The GitLab Enterprise Edition (EE) license][EE]" wherein there are more restrictions.
 
 ## Automated Testing
 
@@ -106,8 +106,8 @@ Dependencies which are only used in development or test environment are exempt f
 
 **NOTE:** This document is **not** legal advice, nor is it comprehensive. It should not be taken as such.
 
-[CE]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/LICENSE
-[EE]: https://gitlab.com/gitlab-org/gitlab-ee/blob/master/LICENSE
+[CE]: https://gitlab.com/gitlab-org/gitlab-foss/blob/master/LICENSE
+[EE]: https://gitlab.com/gitlab-org/gitlab/blob/master/LICENSE
 [license_finder]: https://github.com/pivotal/LicenseFinder
 [MIT]: http://choosealicense.com/licenses/mit/
 [LGPL]: http://choosealicense.com/licenses/lgpl-3.0/

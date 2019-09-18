@@ -291,7 +291,7 @@ Additionally, locked issues and merge requests can not be reopened.
 
 ## Merge Request Reviews **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/4213) in GitLab 11.4.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/4213) in GitLab 11.4.
 
 When looking at a Merge Request diff, you are able to start a review.
 This allows you to create comments inside a Merge Request that are **only visible to you** until published,
@@ -360,7 +360,7 @@ Replying to this email will, consequentially, create a new comment on the associ
 
 ## Filtering notes
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/26723) in GitLab 11.5.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/26723) in GitLab 11.5.
 
 For issues with many comments like activity notes and user comments, sometimes
 finding useful information can be hard. There is a way to filter comments from single notes and threads for merge requests and issues.
@@ -380,7 +380,7 @@ from any device you're logged into.
 
 ## Suggest Changes
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/18008) in GitLab 11.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/18008) in GitLab 11.6.
 
 As a reviewer, you're able to suggest code changes with a simple
 markdown syntax in Merge Request Diff threads. Then, the
@@ -413,11 +413,11 @@ directly into the codebase in the merge request's branch.
 
 > **Note:**
 Custom commit messages will be introduced by
-[#54404](https://gitlab.com/gitlab-org/gitlab-ce/issues/54404).
+[#54404](https://gitlab.com/gitlab-org/gitlab-foss/issues/54404).
 
 ### Multi-line suggestions
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/53310) in GitLab 11.10.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/53310) in GitLab 11.10.
 
 Reviewers can also suggest changes to multiple lines with a single suggestion
 within Merge Request diff threads by adjusting the range offsets. The
@@ -439,7 +439,7 @@ suggestion.
 
 ## Start a thread by replying to a standard comment
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/30299) in GitLab 11.9
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/30299) in GitLab 11.9
 
 To reply to a standard (non-thread) comment, you can use the **Reply to comment** button.
 
@@ -458,15 +458,15 @@ to the original comment, so a note about when it was last edited will appear und
 This feature only exists for Issues, Merge requests, and Epics. Commits, Snippets and Merge request diff threads are
 not supported yet.
 
-[ce-5022]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/5022
-[ce-7125]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7125
-[ce-7527]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7527
-[ce-7180]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7180
-[ce-8266]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/8266
-[ce-14053]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/14053
-[ce-14061]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/14061
-[ce-14531]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/14531
-[ce-31847]: https://gitlab.com/gitlab-org/gitlab-ce/issues/31847
+[ce-5022]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/5022
+[ce-7125]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/7125
+[ce-7527]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/7527
+[ce-7180]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/7180
+[ce-8266]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/8266
+[ce-14053]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/14053
+[ce-14061]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/14061
+[ce-14531]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/14531
+[ce-31847]: https://gitlab.com/gitlab-org/gitlab-foss/issues/31847
 [resolve-discussion-button]: img/resolve_discussion_button.png
 [resolve-comment-button]: img/resolve_comment_button.png
 [discussion-view]: img/discussion_view.png

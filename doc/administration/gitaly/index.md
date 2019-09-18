@@ -10,11 +10,15 @@ In the rest of this page, Gitaly server is referred to the standalone node that
 only runs Gitaly, and Gitaly client to the GitLab Rails node that runs all other
 processes except Gitaly.
 
+## Architecture
+
+Here's a high-level architecture overview of how Gitaly is used.
+
+![Gitaly architecture diagram](img/architecture_v12_4.png)
+
 ## Configuring Gitaly
 
-The Gitaly service itself is configured via a TOML configuration file.
-This file is documented [in the Gitaly
-repository](https://gitlab.com/gitlab-org/gitaly/blob/master/doc/configuration/README.md).
+The Gitaly service itself is configured via a [TOML configuration file](reference.md).
 
 In case you want to change some of its settings:
 
@@ -362,7 +366,7 @@ To disable Gitaly on a client node:
 
 ## TLS support
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/22602) in GitLab 11.8.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/22602) in GitLab 11.8.
 
 Gitaly supports TLS encryption. To be able to communicate
 with a Gitaly instance that listens for secure connections you will need to use `tls://` url
@@ -562,6 +566,29 @@ and this mechanism (the concurrency limiter) will do nothing.
 
 ## Troubleshooting Gitaly
 
+### `gitaly-debug`
+
+The `gitaly-debug` command provides "production debugging" tools for Gitaly and Git
+performance. It is intended to help production engineers and support
+engineers investigate Gitaly performance problems.
+
+If you're using GitLab 11.6 or newer, this tool should be installed on
+your GitLab / Gitaly server already at `/opt/gitlab/embedded/bin/gitaly-debug`.
+If you're investigating an older GitLab version you can compile this
+tool offline and copy the executable to your server:
+
+```sh
+git clone https://gitlab.com/gitlab-org/gitaly.git
+cd cmd/gitaly-debug
+GOOS=linux GOARCH=amd64 go build -o gitaly-debug
+```
+
+To see the help page of `gitaly-debug` for a list of supported sub-commands, run:
+
+```sh
+gitaly-debug -h
+```
+
 ### Commits, pushes, and clones return a 401
 
 ```
@@ -570,17 +597,6 @@ remote: GitLab: 401 Unauthorized
 
 You will need to sync your `gitlab-secrets.json` file with your GitLab
 app nodes.
-
-### `gitaly-debug`
-
-Since GitLab 11.6, Gitaly comes with a command-line tool called
-`gitaly-debug` that can be run on a Gitaly server to aid in
-troubleshooting. In GitLab 11.6 its only sub-command is
-`simulate-http-clone` which allows you to measure the maximum possible
-Git clone speed for a specific repository on the server.
-
-For an up to date list of sub-commands see [the gitaly-debug
-README](https://gitlab.com/gitlab-org/gitaly/blob/master/cmd/gitaly-debug/README.md).
 
 ### Client side GRPC logs
 

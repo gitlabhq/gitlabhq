@@ -296,11 +296,11 @@ This log records:
 - Requests over the [Rate Limit] on raw endpoints.
 
 NOTE: **Note:**
-From [%12.1](https://gitlab.com/gitlab-org/gitlab-ce/issues/62756), user id and username are available on this log.
+From [%12.1](https://gitlab.com/gitlab-org/gitlab-foss/issues/62756), user id and username are available on this log.
 
 ## `graphql_json.log`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/59587) in GitLab 12.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/59587) in GitLab 12.0.
 
 This file lives in `/var/log/gitlab/gitlab-rails/graphql_json.log` for
 Omnibus GitLab packages or in `/home/git/gitlab/log/graphql_json.log` for
@@ -341,7 +341,7 @@ installations from source.
 
 ## `database_load_balancing.log` **(PREMIUM ONLY)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/15442) in GitLab 12.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/15442) in GitLab 12.3.
 
 Contains details of GitLab's [Database Load Balancing](database_load_balancing.md).
 It is stored at:

@@ -112,7 +112,7 @@ all matching branches:
 
 ## Creating a protected branch
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/53361) in GitLab 11.9.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/53361) in GitLab 11.9.
 
 When a protected branch or wildcard protected branches are set to
 [**No one** is **Allowed to push**](#using-the-allowed-to-merge-and-allowed-to-push-settings),
@@ -162,7 +162,7 @@ for details about the pipelines security model.
 
 **11.9**
 
-- [Allow protected branches to be created](https://gitlab.com/gitlab-org/gitlab-ce/issues/53361) by Developers (and users with higher permission levels) through the API and the user interface.
+- [Allow protected branches to be created](https://gitlab.com/gitlab-org/gitlab-foss/issues/53361) by Developers (and users with higher permission levels) through the API and the user interface.
 
 **9.2**
 
@@ -177,10 +177,10 @@ for details about the pipelines security model.
 - Allow developers to merge into a protected branch without having push access [gitlab-org/gitlab-ce!4892][ce-4892]
 - Allow specifying protected branches using wildcards [gitlab-org/gitlab-ce!4665][ce-4665]
 
-[ce-4665]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/4665 "Allow specifying protected branches using wildcards"
-[ce-4892]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/4892 "Allow developers to merge into a protected branch without having push access"
-[ce-5081]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/5081 "Allow creating protected branches that can't be pushed to"
-[ce-21393]: https://gitlab.com/gitlab-org/gitlab-ce/issues/21393
+[ce-4665]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/4665 "Allow specifying protected branches using wildcards"
+[ce-4892]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/4892 "Allow developers to merge into a protected branch without having push access"
+[ce-5081]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/5081 "Allow creating protected branches that can't be pushed to"
+[ce-21393]: https://gitlab.com/gitlab-org/gitlab-foss/issues/21393
 [perm]: ../permissions.md
 [ee]: https://about.gitlab.com/pricing/
 

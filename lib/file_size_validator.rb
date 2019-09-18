@@ -34,7 +34,6 @@ class FileSizeValidator < ActiveModel::EachValidator
     end
   end
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def validate_each(record, attribute, value)
     raise(ArgumentError, "A CarrierWave::Uploader::Base object was expected") unless value.is_a? CarrierWave::Uploader::Base
 
@@ -65,7 +64,6 @@ class FileSizeValidator < ActiveModel::EachValidator
       record.errors.add(attribute, MESSAGES[key], errors_options)
     end
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   def help
     Helper.instance

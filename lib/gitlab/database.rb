@@ -14,7 +14,7 @@ module Gitlab
     MAX_TIMESTAMP_VALUE = Time.at((1 << 31) - 1).freeze
 
     # The maximum number of characters for text fields, to avoid DoS attacks via parsing huge text fields
-    # https://gitlab.com/gitlab-org/gitlab-ce/issues/61974
+    # https://gitlab.com/gitlab-org/gitlab-foss/issues/61974
     MAX_TEXT_SIZE_LIMIT = 1_000_000
 
     # Minimum schema version from which migrations are supported

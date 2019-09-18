@@ -9,7 +9,7 @@ To use the checklist, create a new merge request and click on the "Choose a
 template" dropdown, then click "Database changes".
 
 An example of this checklist can be found at
-<https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/12463>.
+<https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/12463>.
 
 The source code of the checklist can be found in at
-<https://gitlab.com/gitlab-org/gitlab-ce/blob/master/.gitlab/merge_request_templates/Database%20changes.md>
+<https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab/merge_request_templates/Database%20changes.md>

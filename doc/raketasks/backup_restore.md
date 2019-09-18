@@ -185,7 +185,7 @@ The command line tool GitLab provides to backup your instance can take more opti
 
 ### Backup strategy option
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/8728) in GitLab 8.17.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/8728) in GitLab 8.17.
 
 The default backup strategy is to essentially stream data from the respective
 data locations to the backup using the Linux command `tar` and `gzip`. This works
@@ -277,7 +277,7 @@ Starting with GitLab 7.4 you can let the backup script upload the '.tar' file it
 It uses the [Fog library](http://fog.io/) to perform the upload.
 In the example below we use Amazon S3 for storage, but Fog also lets you use
 [other storage providers](http://fog.io/storage/). GitLab
-[imports cloud drivers](https://gitlab.com/gitlab-org/gitlab-ce/blob/30f5b9a5b711b46f1065baf755e413ceced5646b/Gemfile#L88)
+[imports cloud drivers](https://gitlab.com/gitlab-org/gitlab-foss/blob/30f5b9a5b711b46f1065baf755e413ceced5646b/Gemfile#L88)
 for AWS, Google, OpenStack Swift, Rackspace and Aliyun as well. A local driver is
 [also available](#uploading-to-locally-mounted-shares).
 
@@ -758,7 +758,7 @@ For GitLab 12.1 and earlier, use `gitlab-rake gitlab:backup:restore`.
 
 CAUTION: **Warning:**
 `gitlab-rake gitlab:backup:restore` does not set the right file system permissions on your Registry directory.
-This is a [known issue](https://gitlab.com/gitlab-org/gitlab-ce/issues/62759). On GitLab 12.2 or newer, you can
+This is a [known issue](https://gitlab.com/gitlab-org/gitlab-foss/issues/62759). On GitLab 12.2 or newer, you can
 use `gitlab-backup restore` to avoid this issue.
 
 Next, restore `/etc/gitlab/gitlab-secrets.json` if necessary as mentioned above.
@@ -800,7 +800,7 @@ For GitLab 12.1 and earlier, use `gitlab-rake gitlab:backup:restore`.
 
 CAUTION: **Warning:**
 `gitlab-rake gitlab:backup:restore` does not set the right file system permissions on your Registry directory.
-This is a [known issue](https://gitlab.com/gitlab-org/gitlab-ce/issues/62759). On GitLab 12.2 or newer, you can
+This is a [known issue](https://gitlab.com/gitlab-org/gitlab-foss/issues/62759). On GitLab 12.2 or newer, you can
 use `gitlab-backup restore` to avoid this issue.
 
 The GitLab helm chart uses a different process, documented in
@@ -1008,7 +1008,7 @@ err.message="unknown error"
 
 This is caused by the restore being run as the unprivileged user `git` which was
 unable to assign the correct ownership to the registry files during the restore
-([issue 62759](https://gitlab.com/gitlab-org/gitlab-ce/issues/62759 "Incorrect permissions on registry filesystem after restore")).
+([issue 62759](https://gitlab.com/gitlab-org/gitlab-foss/issues/62759 "Incorrect permissions on registry filesystem after restore")).
 
 To get your registry working again:
 

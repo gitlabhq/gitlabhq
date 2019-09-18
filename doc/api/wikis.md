@@ -153,7 +153,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 
 On success the HTTP status code is `204` and no JSON response is expected.
 
-[ce-13372]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/13372
+[ce-13372]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/13372
 
 ## Upload an attachment to the wiki repository
 

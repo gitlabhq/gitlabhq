@@ -63,7 +63,7 @@ de:
     - :month
     - :year
   datetime:
-    # used in a custom scope that has been created to fix https://gitlab.com/gitlab-org/gitlab-ce/issues/32747
+    # used in a custom scope that has been created to fix https://gitlab.com/gitlab-org/gitlab-foss/issues/32747
     time_ago_in_words:
       half_a_minute: vor einer halben Minute
       less_than_x_seconds:

@@ -174,14 +174,14 @@ describe 'Merge request > User posts notes', :js do
         find('.js-note-edit').click
       end
 
-      # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/48034
+      # TODO: https://gitlab.com/gitlab-org/gitlab-foss/issues/48034
       xit 'shows the delete link' do
         page.within('.note-attachment') do
           is_expected.to have_css('.js-note-attachment-delete')
         end
       end
 
-      # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/48034
+      # TODO: https://gitlab.com/gitlab-org/gitlab-foss/issues/48034
       xit 'removes the attachment div and resets the edit form' do
         accept_confirm { find('.js-note-attachment-delete').click }
         is_expected.not_to have_css('.note-attachment')

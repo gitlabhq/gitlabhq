@@ -10,7 +10,7 @@ describe Gitlab::ExternalAuthorization, :request_store do
     it 'is always true when the feature is disabled' do
       # Not using `stub_application_setting` because the method is prepended in
       # `EE::ApplicationSetting` which breaks when using `any_instance`
-      # https://gitlab.com/gitlab-org/gitlab-ce/issues/33587
+      # https://gitlab.com/gitlab-org/gitlab-foss/issues/33587
       expect(::Gitlab::CurrentSettings.current_application_settings)
         .to receive(:external_authorization_service_enabled) { false }
 

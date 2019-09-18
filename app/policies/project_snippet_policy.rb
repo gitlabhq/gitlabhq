@@ -12,7 +12,7 @@ class ProjectSnippetPolicy < BasePolicy
   condition(:is_author) { @user && @subject.author == @user }
 
   # We have to check both project feature visibility and a snippet visibility and take the stricter one
-  # This will be simplified - check https://gitlab.com/gitlab-org/gitlab-ce/issues/27573
+  # This will be simplified - check https://gitlab.com/gitlab-org/gitlab-foss/issues/27573
   rule { ~can?(:read_project) }.policy do
     prevent :read_project_snippet
     prevent :update_project_snippet

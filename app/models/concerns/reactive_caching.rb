@@ -173,11 +173,7 @@ module ReactiveCaching
     end
 
     def within_reactive_cache_lifetime?(*args)
-      if Feature.enabled?(:reactive_caching_check_key_exists, default_enabled: true)
-        Rails.cache.exist?(alive_reactive_cache_key(*args))
-      else
-        !!Rails.cache.read(alive_reactive_cache_key(*args))
-      end
+      Rails.cache.exist?(alive_reactive_cache_key(*args))
     end
 
     def enqueuing_update(*args)

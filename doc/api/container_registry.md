@@ -1,6 +1,6 @@
 # Container Registry API
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/55978) in GitLab 11.8.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/55978) in GitLab 11.8.
 
 This is the API docs of the [GitLab Container Registry](../user/packages/container_registry/index.md).
 
@@ -252,7 +252,7 @@ This action does not delete blobs. In order to delete them and recycle disk spac
 [run the garbage collection](https://docs.gitlab.com/omnibus/maintenance/README.html#removing-unused-layers-not-referenced-by-manifests).
 
 NOTE: **Note:**
-Due to a [Docker Distribution deficiency](https://gitlab.com/gitlab-org/gitlab-ce/issues/21405),
+Due to a [Docker Distribution deficiency](https://gitlab.com/gitlab-org/gitlab-foss/issues/21405),
 it doesn't remove tags whose manifest is shared by multiple tags.
 
 Examples:

@@ -17,7 +17,7 @@ NOTE: **Note:**
 From July 2019, the `Internal` visibility setting is disabled for new projects, groups,
 and snippets on GitLab.com. Existing projects, groups, and snippets using the `Internal`
 visibility setting keep this setting. You can read more about the change in the
-[relevant issue](https://gitlab.com/gitlab-org/gitlab-ee/issues/12388).
+[relevant issue](https://gitlab.com/gitlab-org/gitlab/issues/12388).
 
 ## List snippets
 
@@ -212,4 +212,4 @@ Example response:
 }
 ```
 
-[ce-29508]: https://gitlab.com/gitlab-org/gitlab-ce/issues/29508
+[ce-29508]: https://gitlab.com/gitlab-org/gitlab-foss/issues/29508

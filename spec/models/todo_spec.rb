@@ -273,6 +273,22 @@ describe Todo do
       expect(described_class.any_for_target?(todo.target)).to eq(true)
     end
 
+    it 'returns true if there is at least one todo for a given target with state pending' do
+      issue = create(:issue)
+      create(:todo, state: :done, target: issue)
+      create(:todo, state: :pending, target: issue)
+
+      expect(described_class.any_for_target?(issue)).to eq(true)
+    end
+
+    it 'returns false if there are only todos for a given target with state done while searching for pending' do
+      issue = create(:issue)
+      create(:todo, state: :done, target: issue)
+      create(:todo, state: :done, target: issue)
+
+      expect(described_class.any_for_target?(issue, :pending)).to eq(false)
+    end
+
     it 'returns false if there are no todos for a given target' do
       issue = create(:issue)
 

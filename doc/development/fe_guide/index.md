@@ -69,10 +69,6 @@ How we use SVG for our Icons and Illustrations.
 
 How we use UI components.
 
-## [Event Tracking](event_tracking.md)
-
-How we use Snowplow to track custom events.
-
 ## Frontend FAQ
 
 Read the [frontend's FAQ](frontend_faq.md) for common small pieces of helpful information.

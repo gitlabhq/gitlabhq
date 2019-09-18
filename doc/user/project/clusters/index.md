@@ -1,9 +1,9 @@
 # Kubernetes clusters
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/35954) in GitLab 10.1 for projects.
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/34758) in
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/35954) in GitLab 10.1 for projects.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/34758) in
 >   GitLab 11.6 for [groups](../../group/clusters/index.md).
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/39840) in
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/39840) in
 >   GitLab 11.11 for [instances](../../instance/clusters/index.md).
 
 GitLab provides many features with a Kubernetes integration. Kubernetes can be
@@ -164,17 +164,17 @@ NOTE: **Note:**
 GitLab requires basic authentication enabled and a client certificate issued for
 the cluster in order to setup an [initial service
 account](#access-controls). Starting from [GitLab
-11.10](https://gitlab.com/gitlab-org/gitlab-ce/issues/58208), the cluster
+11.10](https://gitlab.com/gitlab-org/gitlab-foss/issues/58208), the cluster
 creation process will explicitly request that basic authentication and
 client certificate is enabled.
 
 NOTE: **Note:**
-Starting from [GitLab 12.1](https://gitlab.com/gitlab-org/gitlab-ce/issues/55902), all GKE clusters created by GitLab are RBAC enabled. Take a look at the [RBAC section](#rbac-cluster-resources) for more information.
+Starting from [GitLab 12.1](https://gitlab.com/gitlab-org/gitlab-foss/issues/55902), all GKE clusters created by GitLab are RBAC enabled. Take a look at the [RBAC section](#rbac-cluster-resources) for more information.
 
 ### Add existing Kubernetes cluster
 
 NOTE: **Note:**
-Kubernetes integration is not supported for arm64 clusters. See the issue [Helm Tiller fails to install on arm64 cluster](https://gitlab.com/gitlab-org/gitlab-ce/issues/64044) for details.
+Kubernetes integration is not supported for arm64 clusters. See the issue [Helm Tiller fails to install on arm64 cluster](https://gitlab.com/gitlab-org/gitlab-foss/issues/64044) for details.
 
 To add an existing Kubernetes cluster to your project:
 
@@ -341,8 +341,8 @@ applications running on the cluster.
 
 ### GitLab-managed clusters
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/22011) in GitLab 11.5.
-> Became [optional](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/26565) in GitLab 11.11.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/22011) in GitLab 11.5.
+> Became [optional](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/26565) in GitLab 11.11.
 
 You can choose to allow GitLab to manage your cluster for you. If your cluster is
 managed by GitLab, resources for your projects will be automatically created. See the
@@ -360,7 +360,7 @@ the resources required to run these even if you have chosen to manage your own c
 
 ### Base domain
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/24580) in GitLab 11.8.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/24580) in GitLab 11.8.
 
 NOTE: **Note:**
 You do not need to specify a base domain on cluster settings when using GitLab Serverless. The domain in that case
@@ -392,7 +392,7 @@ a `gitlab` service account with `cluster-admin` privileges is created in the `de
 to manage the newly created cluster.
 
   NOTE: **Note:**
-  Restricted service account for deployment was [introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/51716) in GitLab 11.5.
+  Restricted service account for deployment was [introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/51716) in GitLab 11.5.
 
 When you install Helm into your cluster, the `tiller` service account
 is created with `cluster-admin` privileges in the `gitlab-managed-apps`
@@ -553,7 +553,7 @@ address or a hostname associated with your load balancer.
 
 #### Automatically determining the external endpoint
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/17052) in GitLab 10.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/17052) in GitLab 10.6.
 
 After you install [Ingress or Knative](#installing-applications), Gitlab attempts to determine the external endpoint
 and it should be available within a few minutes. If the endpoint doesn't appear
@@ -690,7 +690,7 @@ namespaces and service accounts yourself.
 
 ## Monitoring your Kubernetes cluster **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/4701) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/4701) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.6.
 
 When [Prometheus is deployed](#installing-applications), GitLab will automatically monitor the cluster's health. At the top of the cluster settings page, CPU and Memory utilization is displayed, along with the total amount available. Keeping an eye on cluster resources can be important, if the cluster runs out of memory pods may be shutdown or fail to start.
 

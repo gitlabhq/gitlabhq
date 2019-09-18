@@ -1,6 +1,6 @@
 # GitLab instance administration project
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/56883) in GitLab 12.2.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/56883) in GitLab 12.2.
 
 GitLab has been adding the ability for administrators to see insights into the health of
 their GitLab instance. In order to surface this experience in a native way, similar to how

@@ -1,4 +1,4 @@
-/* eslint-disable object-shorthand, no-param-reassign, camelcase, no-nested-ternary, no-continue */
+/* eslint-disable no-param-reassign, camelcase, no-nested-ternary, no-continue */
 
 import $ from 'jquery';
 import Vue from 'vue';
@@ -31,7 +31,7 @@ import { s__ } from '~/locale';
       hasError: false,
       isSubmitting: false,
       isParallel: diffViewType === VIEW_TYPES.PARALLEL,
-      diffViewType: diffViewType,
+      diffViewType,
       conflictsData: {},
     },
 
@@ -188,7 +188,7 @@ import { s__ } from '~/locale';
 
     getHeadHeaderLine(id) {
       return {
-        id: id,
+        id,
         richText: HEAD_HEADER_TEXT,
         buttonTitle: HEAD_BUTTON_TITLE,
         type: 'new',
@@ -233,7 +233,7 @@ import { s__ } from '~/locale';
 
     getOriginHeaderLine(id) {
       return {
-        id: id,
+        id,
         richText: ORIGIN_HEADER_TEXT,
         buttonTitle: ORIGIN_BUTTON_TITLE,
         type: 'old',

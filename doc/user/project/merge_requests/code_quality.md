@@ -4,7 +4,7 @@ type: reference, howto
 
 # Code Quality **(STARTER)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/1984) in [GitLab Starter](https://about.gitlab.com/pricing/) 9.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/1984) in [GitLab Starter](https://about.gitlab.com/pricing/) 9.3.
 
 With the help of [GitLab CI/CD](../../../ci/README.md), you can analyze your
 source code quality using GitLab Code Quality.

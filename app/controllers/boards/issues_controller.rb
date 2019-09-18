@@ -130,8 +130,8 @@ module Boards
     end
 
     def whitelist_query_limiting
-      # Also see https://gitlab.com/gitlab-org/gitlab-ce/issues/42439
-      Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42428')
+      # Also see https://gitlab.com/gitlab-org/gitlab-foss/issues/42439
+      Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-foss/issues/42428')
     end
 
     def validate_id_list

@@ -281,7 +281,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: k5ESFgWY2Qf5xEvDcFxZ" "https://gi
 
 ## Pipeline schedule variables
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/34518) in GitLab 10.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/34518) in GitLab 10.0.
 
 ## Create a new pipeline schedule variable
 

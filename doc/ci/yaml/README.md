@@ -20,7 +20,7 @@ We have complete examples of configuring pipelines:
 
 - For a quick introduction to GitLab CI, follow our [quick start guide](../quick_start/README.md).
 - For a collection of examples, see [GitLab CI/CD Examples](../examples/README.md).
-- To see a large `.gitlab-ci.yml` file used in an enterprise, see the [`.gitlab-ci.yml` file for `gitlab-ce`](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/.gitlab-ci.yml).
+- To see a large `.gitlab-ci.yml` file used in an enterprise, see the [`.gitlab-ci.yml` file for `gitlab-ce`](https://gitlab.com/gitlab-org/gitlab-foss/blob/master/.gitlab-ci.yml).
 
 NOTE: **Note:**
 If you have a [mirrored repository where GitLab pulls from](../../workflow/repository_mirroring.md#pulling-from-a-remote-repository-starter),
@@ -696,7 +696,7 @@ and triggers the `docker build service one` job.
 
 ### `rules`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/29011) in GitLab 12.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/29011) in GitLab 12.3.
 
 `rules` allows for a list of individual rule objects to be evaluated
 *in order*, until one matches and dynamically provides attributes to the job.
@@ -837,7 +837,7 @@ docker build:
 
 Additional job configuration may be added to rules in the future. If something
 useful isn't available, please
-[open an issue](https://www.gitlab.com/gitlab-org/gitlab-ce/issues).
+[open an issue](https://www.gitlab.com/gitlab-org/gitlab-foss/issues).
 
 ### `tags`
 
@@ -1015,7 +1015,7 @@ have the ability to merge to this branch.
 
 #### `when:delayed`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/21767) in GitLab 11.4.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/21767) in GitLab 11.4.
 
 Delayed job are for executing scripts after a certain period.
 This is useful if you want to avoid jobs entering `pending` state immediately.
@@ -1620,7 +1620,7 @@ job:
 
 #### `artifacts:reports`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/20390) in
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/20390) in
 GitLab 11.2. Requires GitLab Runner 11.2 and above.
 
 The `reports` keyword is used for collecting test reports from jobs and
@@ -1638,7 +1638,7 @@ If you also want the ability to browse the report output files, include the
 
 ##### `artifacts:reports:junit`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/20390) in
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/20390) in
 GitLab 11.2. Requires GitLab Runner 11.2 and above.
 
 The `junit` report collects [JUnit XML files](https://www.ibm.com/support/knowledgecenter/en/SSQ2R2_14.1.0/com.ibm.rsar.analysis.codereview.cobol.doc/topics/cac_useresults_junit.html)
@@ -1830,7 +1830,7 @@ and bring back the old behavior.
 
 ### `needs`
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/47063) in GitLab 12.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/47063) in GitLab 12.2.
 > - In GitLab 12.3, maximum number of jobs in `needs` array raised from five to 50.
 
 The `needs:` keyword enables executing jobs out-of-order, allowing you to implement
@@ -1894,12 +1894,12 @@ This example creates three paths of execution:
     - 50 if the `ci_dag_limit_needs` feature flag is disabled.
 - It is impossible for now to have `needs: []` (empty needs),
   the job always needs to depend on something, unless this is the job
-  in the first stage (see [gitlab-ce#65504](https://gitlab.com/gitlab-org/gitlab-ce/issues/65504)).
+  in the first stage (see [gitlab-ce#65504](https://gitlab.com/gitlab-org/gitlab-foss/issues/65504)).
 - If `needs:` refers to a job that is marked as `parallel:`.
   the current job will depend on all parallel jobs created.
 - `needs:` is similar to `dependencies:` in that it needs to use jobs from
   prior stages, meaning it is impossible to create circular
-  dependencies or depend on jobs in the current stage (see [gitlab-ce#65505](https://gitlab.com/gitlab-org/gitlab-ce/issues/65505)).
+  dependencies or depend on jobs in the current stage (see [gitlab-ce#65505](https://gitlab.com/gitlab-org/gitlab-foss/issues/65505)).
 - Related to the above, stages must be explicitly defined for all jobs
   that have the keyword `needs:` or are referred to by one.
 
@@ -1926,7 +1926,7 @@ job1:
 ### `retry`
 
 > - [Introduced][ce-12909] in GitLab 9.5.
-> - [Behaviour expanded](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/21758) in GitLab 11.5 to control on which failures to retry.
+> - [Behaviour expanded](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/21758) in GitLab 11.5 to control on which failures to retry.
 
 `retry` allows you to configure how many times a job is going to be retried in
 case of a failure.
@@ -2012,7 +2012,7 @@ test:
 
 ### `parallel`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/22631) in GitLab 11.5.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/22631) in GitLab 11.5.
 
 `parallel` allows you to configure how many instances of a job to run in
 parallel. This value has to be greater than or equal to two (2) and less than or equal to 50.
@@ -2060,7 +2060,7 @@ job split into three separate jobs.
 
 ### `trigger` **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/8997) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.8.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/8997) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.8.
 
 `trigger` allows you to define downstream pipeline trigger. When a job created
 from `trigger` definition is started by GitLab, a downstream pipeline gets
@@ -2102,7 +2102,7 @@ staging:
 
 ### `interruptible`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/23464) in GitLab 12.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/23464) in GitLab 12.3.
 
 `interruptible` is used to indicate that a job should be canceled if made redundant by a newer run of the same job. Defaults to `false`.
 This value will only be used if the [automatic cancellation of redundant pipelines feature](../../user/project/pipelines/settings.md#auto-cancel-pending-pipelines)
@@ -2146,7 +2146,7 @@ In the example above, a new pipeline run will cause an existing running pipeline
 
 > - Introduced in [GitLab Premium](https://about.gitlab.com/pricing/) 10.5.
 > - Available for Starter, Premium and Ultimate since 10.6.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/21603) to GitLab Core in 11.4.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/21603) to GitLab Core in 11.4.
 
 Using the `include` keyword, you can allow the inclusion of external YAML files.
 `include` requires the external YAML file to have the extensions `.yml` or `.yaml`,
@@ -2205,7 +2205,7 @@ include:
 
 #### `include:file`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/53903) in GitLab 11.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/53903) in GitLab 11.7.
 
 To include files from another private project under the same GitLab instance,
 use `include:file`. This file is referenced using full  paths relative to the
@@ -2240,10 +2240,10 @@ or template includes.
 
 #### `include:template`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/53445) in GitLab 11.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/53445) in GitLab 11.7.
 
 `include:template` can be used to include `.gitlab-ci.yml` templates that are
-[shipped with GitLab](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/lib/gitlab/ci/templates).
+[shipped with GitLab](https://gitlab.com/gitlab-org/gitlab-foss/tree/master/lib/gitlab/ci/templates).
 
 For example:
 
@@ -2281,7 +2281,7 @@ or public project, or template is allowed.
 
 #### Nested includes
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/56836) in GitLab 11.9.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/56836) in GitLab 11.9.
 
 Nested includes allow you to compose a set of includes.
 A total of 50 includes is allowed.
@@ -3225,12 +3225,12 @@ Each scenario can be a third-level heading, e.g. `### Getting error message X`.
 If you have none to add when creating a doc, leave this section in place
 but commented out to help encourage others to add to it in the future. -->
 
-[ce-6323]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/6323
-[ce-6669]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/6669
-[ce-7983]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7983
-[ce-7447]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7447
-[ce-12909]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/12909
-[ce-19232]: https://gitlab.com/gitlab-org/gitlab-ce/issues/19232
+[ce-6323]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/6323
+[ce-6669]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/6669
+[ce-7983]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/7983
+[ce-7447]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/7447
+[ce-12909]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/12909
+[ce-19232]: https://gitlab.com/gitlab-org/gitlab-foss/issues/19232
 [environment]: ../environments.md "CI/CD environments"
 [schedules]: ../../user/project/pipelines/schedules.md "Pipelines schedules"
 [variables]: ../variables/README.md "CI/CD variables"

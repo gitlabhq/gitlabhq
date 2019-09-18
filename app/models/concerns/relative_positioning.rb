@@ -225,7 +225,7 @@ module RelativePositioning
   def calculate_relative_position(calculation)
     # When calculating across projects, this is much more efficient than
     # MAX(relative_position) without the GROUP BY, due to index usage:
-    # https://gitlab.com/gitlab-org/gitlab-ce/issues/54276#note_119340977
+    # https://gitlab.com/gitlab-org/gitlab-foss/issues/54276#note_119340977
     relation = scoped_items
                  .order(Gitlab::Database.nulls_last_order('position', 'DESC'))
                  .group(self.class.relative_positioning_parent_column)

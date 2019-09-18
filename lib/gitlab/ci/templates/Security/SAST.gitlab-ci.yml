@@ -4,13 +4,28 @@
 # List of the variables: https://gitlab.com/gitlab-org/security-products/sast#settings
 # How to set: https://docs.gitlab.com/ee/ci/yaml/#variables
 
-sast:
+.sast:
   stage: test
+  allow_failure: true
+  artifacts:
+    reports:
+      sast: gl-sast-report.json
+  only:
+    refs:
+      - branches
+    variables:
+      - $GITLAB_FEATURES =~ /\bsast\b/
+
+variables:
+  SAST_ANALYZER_IMAGE_PREFIX: "registry.gitlab.com/gitlab-org/security-products/analyzers"
+  SAST_DISABLE_DIND: "false"
+
+sast:
+  extends: .sast
   image: docker:stable
   variables:
     DOCKER_DRIVER: overlay2
     DOCKER_TLS_CERTDIR: ""
-  allow_failure: true
   services:
     - docker:stable-dind
   script:
@@ -63,15 +78,116 @@ sast:
         --volume "$PWD:/code" \
         --volume /var/run/docker.sock:/var/run/docker.sock \
         "registry.gitlab.com/gitlab-org/security-products/sast:$SAST_VERSION" /app/bin/run /code
-  artifacts:
-    reports:
-      sast: gl-sast-report.json
-  dependencies: []
-  only:
-    refs:
-      - branches
-    variables:
-      - $GITLAB_FEATURES =~ /\bsast\b/
   except:
     variables:
       - $SAST_DISABLED
+      - $SAST_DISABLE_DIND == 'true'
+
+.analyzer:
+  extends: .sast
+  except:
+    variables:
+      - $SAST_DISABLE_DIND == 'false'
+  script:
+    - /analyzer run
+
+bandit-sast:
+  extends: .analyzer
+  image:
+    name: "$SAST_ANALYZER_IMAGE_PREFIX/bandit"
+  only:
+    variables:
+      - '$CI_PROJECT_REPOSITORY_LANGUAGES =~ /python/'
+
+brakeman-sast:
+  extends: .analyzer
+  image:
+    name: "$SAST_ANALYZER_IMAGE_PREFIX/brakeman"
+  only:
+    variables:
+      - '$CI_PROJECT_REPOSITORY_LANGUAGES =~ /ruby/'
+
+eslint-sast:
+  extends: .analyzer
+  image:
+    name: "$SAST_ANALYZER_IMAGE_PREFIX/eslint"
+  only:
+    variables:
+      - '$CI_PROJECT_REPOSITORY_LANGUAGES =~ /javascript/'
+
+flawfinder-sast:
+  extends: .analyzer
+  image:
+    name: "$SAST_ANALYZER_IMAGE_PREFIX/flawfinder"
+  only:
+    variables:
+      - '$CI_PROJECT_REPOSITORY_LANGUAGES =~ /\b(c\+\+|c\b)/'
+
+gosec-sast:
+  extends: .analyzer
+  image:
+    name: "$SAST_ANALYZER_IMAGE_PREFIX/gosec"
+  only:
+    variables:
+      - '$CI_PROJECT_REPOSITORY_LANGUAGES =~ /go/'
+
+nodejs-scan-sast:
+  extends: .analyzer
+  image:
+    name: "$SAST_ANALYZER_IMAGE_PREFIX/nodejs-scan"
+  only:
+    variables:
+      - '$CI_PROJECT_REPOSITORY_LANGUAGES =~ /javascript/'
+
+phpcs-security-audit-sast:
+  extends: .analyzer
+  image:
+    name: "$SAST_ANALYZER_IMAGE_PREFIX/phpcs-security-audit"
+  only:
+    variables:
+      - '$CI_PROJECT_REPOSITORY_LANGUAGES =~ /php/'
+
+pmd-apex-sast:
+  extends: .analyzer
+  image:
+    name: "$SAST_ANALYZER_IMAGE_PREFIX/pmd-apex"
+  only:
+    variables:
+      - '$CI_PROJECT_REPOSITORY_LANGUAGES =~ /apex/'
+
+secrets-sast:
+  extends: .analyzer
+  image:
+    name: "$SAST_ANALYZER_IMAGE_PREFIX/secrets"
+
+security-code-scan-sast:
+  extends: .analyzer
+  image:
+    name: "$SAST_ANALYZER_IMAGE_PREFIX/security-code-scan"
+  only:
+    variables:
+      - '$CI_PROJECT_REPOSITORY_LANGUAGES =~ /c\#/ || $CI_PROJECT_REPOSITORY_LANGUAGES =~ /visual basic/'
+
+sobelow-sast:
+  extends: .analyzer
+  image:
+    name: "$SAST_ANALYZER_IMAGE_PREFIX/sobelow"
+  only:
+    variables:
+      - '$CI_PROJECT_REPOSITORY_LANGUAGES =~ /elixir/'
+
+spotbugs-sast:
+  extends: .analyzer
+  image:
+    name: "$SAST_ANALYZER_IMAGE_PREFIX/spotbugs"
+  only:
+    variables:
+      - '$CI_PROJECT_REPOSITORY_LANGUAGES =~ /java\b/'
+
+tslint-sast:
+  extends: .analyzer
+  image:
+    name: "$SAST_ANALYZER_IMAGE_PREFIX/tslint"
+  only:
+    variables:
+      - '$CI_PROJECT_REPOSITORY_LANGUAGES =~ /typescript/'

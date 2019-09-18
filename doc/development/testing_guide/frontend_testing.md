@@ -35,10 +35,10 @@ which could arise (especially with testing against browser specific features).
 
 ### Differences to Karma
 
-- Jest runs in a Node.js environment, not in a browser. Support for running Jest tests in a browser [is planned](https://gitlab.com/gitlab-org/gitlab-ce/issues/58205).
+- Jest runs in a Node.js environment, not in a browser. Support for running Jest tests in a browser [is planned](https://gitlab.com/gitlab-org/gitlab-foss/issues/58205).
 - Because Jest runs in a Node.js environment, it uses [jsdom](https://github.com/jsdom/jsdom) by default. See also its [limitations](#limitations-of-jsdom) below.
 - Jest does not have access to Webpack loaders or aliases.
-  The aliases used by Jest are defined in its [own config](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/jest.config.js).
+  The aliases used by Jest are defined in its [own config](https://gitlab.com/gitlab-org/gitlab-foss/blob/master/jest.config.js).
 - All calls to `setTimeout` and `setInterval` are mocked away. See also [Jest Timer Mocks](https://jestjs.io/docs/en/timer-mocks).
 - `rewire` is not required because Jest supports mocking modules. See also [Manual Mocks](https://jestjs.io/docs/en/manual-mocks).
 - No [context object](https://jasmine.github.io/tutorials/your_first_suite#section-The_%3Ccode%3Ethis%3C/code%3E_keyword) is passed to tests in Jest.
@@ -58,7 +58,7 @@ This comes with a number of limitations, namely:
 - [No element sizes or positions](https://github.com/jsdom/jsdom/blob/15.1.1/lib/jsdom/living/nodes/Element-impl.js#L334-L371)
 - [No layout engine](https://github.com/jsdom/jsdom/issues/1322) in general
 
-See also the issue for [support running Jest tests in browsers](https://gitlab.com/gitlab-org/gitlab-ce/issues/58205).
+See also the issue for [support running Jest tests in browsers](https://gitlab.com/gitlab-org/gitlab-foss/issues/58205).
 
 ### Debugging Jest tests
 
@@ -67,13 +67,13 @@ Running `yarn jest-debug` will run Jest in debug mode, allowing you to debug/ins
 ### Timeout error
 
 The default timeout for Jest is set in
-[`/spec/frontend/test_setup.js`](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/spec/frontend/test_setup.js).
+[`/spec/frontend/test_setup.js`](https://gitlab.com/gitlab-org/gitlab-foss/blob/master/spec/frontend/test_setup.js).
 
 If your test exceeds that time, it will fail.
 
 If you cannot improve the performance of the tests, you can increase the timeout
 for a specific test using
-[`setTestTimeout`](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/spec/frontend/helpers/timeout.js).
+[`setTestTimeout`](https://gitlab.com/gitlab-org/gitlab-foss/blob/master/spec/frontend/helpers/timeout.js).
 
 ```javascript
 import { setTestTimeout } from 'helpers/timeout';
@@ -321,8 +321,7 @@ it('waits for an Ajax call', done => {
 });
 ```
 
-If you are not able to register handlers to the `Promise`—for example because it is executed in a synchronous Vue life
-cycle hook—you can flush all pending `Promise`s:
+If you are not able to register handlers to the `Promise`, for example because it is executed in a synchronous Vue life cycle hook, please take a look at the [waitFor](#wait-until-axios-requests-finish) helpers or you can flush all pending `Promise`s:
 
 **in Jest:**
 
@@ -389,7 +388,7 @@ it('renders something', done => {
 ##### `setTimeout()` / `setInterval()` in application
 
 If the application itself is waiting for some time, mock await the waiting. In Jest this is already
-[done by default](https://gitlab.com/gitlab-org/gitlab-ce/blob/a2128edfee799e49a8732bfa235e2c5e14949c68/jest.config.js#L47)
+[done by default](https://gitlab.com/gitlab-org/gitlab-foss/blob/a2128edfee799e49a8732bfa235e2c5e14949c68/jest.config.js#L47)
 (see also [Jest Timer Mocks](https://jestjs.io/docs/en/timer-mocks)). In Karma you can use the
 [Jasmine mock clock](https://jasmine.github.io/api/2.9/Clock.html).
 
@@ -617,10 +616,10 @@ Tests relevant for frontend development can be found at the following places:
 - `spec/features/` which are run by RSpec and contain
   - [feature tests](#feature-tests)
 
-All tests in `spec/javascripts/` will eventually be migrated to `spec/frontend/` (see also [#52483](https://gitlab.com/gitlab-org/gitlab-ce/issues/52483)).
+All tests in `spec/javascripts/` will eventually be migrated to `spec/frontend/` (see also [#52483](https://gitlab.com/gitlab-org/gitlab-foss/issues/52483)).
 
 In addition, there used to be feature tests in `features/`, run by Spinach.
-These were removed from the codebase in May 2018 ([#23036](https://gitlab.com/gitlab-org/gitlab-ce/issues/23036)).
+These were removed from the codebase in May 2018 ([#23036](https://gitlab.com/gitlab-org/gitlab-foss/issues/23036)).
 
 See also [Notes on testing Vue components](../fe_guide/vue.html#testing-vue-components).
 
@@ -1049,7 +1048,7 @@ testAction(
 );
 ```
 
-Check an example in [spec/javascripts/ide/stores/actions_spec.jsspec/javascripts/ide/stores/actions_spec.js](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/spec/javascripts/ide/stores/actions_spec.js).
+Check an example in [spec/javascripts/ide/stores/actions_spec.jsspec/javascripts/ide/stores/actions_spec.js](https://gitlab.com/gitlab-org/gitlab-foss/blob/master/spec/javascripts/ide/stores/actions_spec.js).
 
 ### Vue Helper: `mountComponent`
 
@@ -1087,6 +1086,16 @@ afterEach(() => {
   vm.$destroy();
 });
 ```
+
+### Wait until axios requests finish
+
+The axios utils mock module located in `spec/frontend/mocks/ce/lib/utils/axios_utils.js` contains two helper methods for Jest tests that spawn HTTP requests.
+These are very useful if you don't have a handle to the request's Promise, for example when a Vue component does a request as part of its life cycle.
+
+- `waitFor(url, callback)`: Runs `callback` after a request to `url` finishes (either successfully or unsuccessfully).
+- `waitForAll(callback)`: Runs `callback` once all pending requests have finished. If no requests are pending, runs `callback` on the next tick.
+
+Both functions run `callback` on the next tick after the requests finish (using `setImmediate()`), to allow any `.then()` or `.catch()` handlers to run.
 
 ## Testing with older browsers
 

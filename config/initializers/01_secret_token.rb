@@ -5,7 +5,7 @@
 # because Rails doesn't have write access.
 #
 # As an example:
-# * https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/27581
+# * https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/27581
 # * https://gitlab.com/gitlab-org/omnibus-gitlab/merge_requests/3267
 #
 #

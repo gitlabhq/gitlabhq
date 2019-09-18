@@ -2,7 +2,7 @@
 
 module QA
   # Git protocol v2 is temporarily disabled
-  # https://gitlab.com/gitlab-org/gitlab-ce/issues/55769 (confidential)
+  # https://gitlab.com/gitlab-org/gitlab-foss/issues/55769 (confidential)
   context 'Create', :quarantine do
     describe 'Push over SSH using Git protocol version 2', :requires_git_protocol_v2 do
       # Note: If you run this test against GDK make sure you've enabled sshd and

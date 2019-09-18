@@ -426,7 +426,7 @@ user.skip_reconfirmation!
 ### Get an admin token
 
 ```ruby
-# Get the first admin's first access token (no longer works on 11.9+. see: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/22743)
+# Get the first admin's first access token (no longer works on 11.9+. see: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/22743)
 User.where(admin:true).first.personal_access_tokens.first.token
 
 # Get the first admin's private token (no longer works on 10.2+)
@@ -605,7 +605,7 @@ adapter = Gitlab::Auth::LDAP::Adapter.new('ldapmain') # If `main` is the LDAP pr
 user = Gitlab::Auth::LDAP::Person.find_by_uid('<username>',adapter)
 
 # Query the LDAP server directly (10.6+)
-## For an example, see https://gitlab.com/gitlab-org/gitlab-ee/blob/master/ee/lib/ee/gitlab/auth/ldap/adapter.rb
+## For an example, see https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/ee/gitlab/auth/ldap/adapter.rb
 adapter = Gitlab::Auth::LDAP::Adapter.new('ldapmain')
 options = {
     # the :base is required
@@ -652,7 +652,7 @@ LdapSyncWorker.new.perform
 
 ### Remove redirecting routes
 
-See <https://gitlab.com/gitlab-org/gitlab-ce/issues/41758#note_54828133>.
+See <https://gitlab.com/gitlab-org/gitlab-foss/issues/41758#note_54828133>.
 
 ```ruby
 path = 'foo'
@@ -731,7 +731,7 @@ end
 
 ### Find reason failure (for when build trace is empty) (Introduced in 10.3.0)
 
-See <https://gitlab.com/gitlab-org/gitlab-ce/issues/41111>.
+See <https://gitlab.com/gitlab-org/gitlab-foss/issues/41111>.
 
 ```ruby
 build = Ci::Build.find(78420)
@@ -784,7 +784,7 @@ License.current.plan
 
 ### Check if a project feature is available on the instance
 
-Features listed in <https://gitlab.com/gitlab-org/gitlab-ee/blob/master/ee/app/models/license.rb>.
+Features listed in <https://gitlab.com/gitlab-org/gitlab/blob/master/ee/app/models/license.rb>.
 
 ```ruby
 License.current.feature_available?(:jira_dev_panel_integration)
@@ -792,7 +792,7 @@ License.current.feature_available?(:jira_dev_panel_integration)
 
 ### Check if a project feature is available in a project
 
-Features listed in <https://gitlab.com/gitlab-org/gitlab-ee/blob/master/ee/app/models/license.rb>.
+Features listed in <https://gitlab.com/gitlab-org/gitlab/blob/master/ee/app/models/license.rb>.
 
 ```ruby
 p = Project.find_by_full_path('<group>/<project>')

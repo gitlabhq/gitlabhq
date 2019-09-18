@@ -12,7 +12,7 @@ module Gitlab
 
           # TODO: Reformat the description with attachments, escaping accidental
           # links and add attachments
-          # https://gitlab.com/gitlab-org/gitlab-ce/issues/60603
+          # https://gitlab.com/gitlab-org/gitlab-foss/issues/60603
           issue.assign_attributes(task.issue_attributes)
 
           save!

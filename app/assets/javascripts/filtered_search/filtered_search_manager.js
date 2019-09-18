@@ -474,7 +474,7 @@ export default class FilteredSearchManager {
         }
       })
       .catch(() => {
-        // https://gitlab.com/gitlab-org/gitlab-ce/issues/30821
+        // https://gitlab.com/gitlab-org/gitlab-foss/issues/30821
       });
   }
 

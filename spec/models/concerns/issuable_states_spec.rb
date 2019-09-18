@@ -4,7 +4,7 @@ require 'spec_helper'
 
 # This spec checks if state_id column of issues and merge requests
 # are being synced on every save.
-# It can be removed in the next release. Check https://gitlab.com/gitlab-org/gitlab-ce/issues/51789  for more information.
+# It can be removed in the next release. Check https://gitlab.com/gitlab-org/gitlab-foss/issues/51789  for more information.
 describe IssuableStates do
   [Issue, MergeRequest].each do |klass|
     it "syncs state_id column when #{klass.model_name.human} gets created" do

@@ -12,8 +12,8 @@ workers, no matter the number of jobs that need to be processed.
 
 For a list of the existing Sidekiq queues, check the following files:
 
-- [Queues for both GitLab Community and Enterprise Editions](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/app/workers/all_queues.yml)
-- [Queues for GitLab Enterprise Editions only](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/ee/app/workers/all_queues.yml)
+- [Queues for both GitLab Community and Enterprise Editions](https://gitlab.com/gitlab-org/gitlab/blob/master/app/workers/all_queues.yml)
+- [Queues for GitLab Enterprise Editions only](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/app/workers/all_queues.yml)
 
 Each entry in the above files represents a queue on which extra Sidekiq processes
 can be started.

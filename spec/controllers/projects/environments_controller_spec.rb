@@ -701,6 +701,16 @@ describe Projects::EnvironmentsController do
         expect(response).to have_gitlab_http_status(:no_content)
       end
     end
+
+    context 'when query matches case insensitively' do
+      let(:query) { 'Prod' }
+
+      it 'returns matched results' do
+        get :search, params: environment_params(format: :json, query: query)
+
+        expect(json_response).to contain_exactly('production')
+      end
+    end
   end
 
   def environment_params(opts = {})

@@ -11,7 +11,7 @@ GET /projects/:id/labels
 | Attribute     | Type           | Required | Description                                                                                                                                                                  |
 | ---------     | -------        | -------- | ---------------------                                                                                                                                                        |
 | `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user                                                              |
-| `with_counts` | boolean        | no       | Whether or not to include issue and merge request counts. Defaults to `false`. _([Introduced in GitLab 12.2](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/31543))_ |
+| `with_counts` | boolean        | no       | Whether or not to include issue and merge request counts. Defaults to `false`. _([Introduced in GitLab 12.2](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/31543))_ |
 
 ```bash
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/1/labels?with_counts=true
@@ -188,7 +188,7 @@ Example response:
 
 ## Promote a project label to a group label
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/25218) in GitLab 12.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/25218) in GitLab 12.3.
 
 Promotes a project label to a group label.
 

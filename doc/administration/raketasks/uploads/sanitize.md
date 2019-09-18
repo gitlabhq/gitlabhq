@@ -60,5 +60,5 @@ Because the output of commands will be probably long, the output is written also
 
 If sanitization fails for an upload, an error message should be in the output of the rake task (typical reasons may
 be that the file is missing in the storage or it's not a valid image). Please
-[report](https://gitlab.com/gitlab-org/gitlab-ce/issues/new) any issues at `gitlab.com` and use
+[report](https://gitlab.com/gitlab-org/gitlab-foss/issues/new) any issues at `gitlab.com` and use
 prefix 'EXIF' in issue title with the error output and (if possible) the image.

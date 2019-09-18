@@ -12,6 +12,6 @@ class CleanupApplicationSettingsSnowplowCollectorUriRename < ActiveRecord::Migra
   end
 
   def down
-    rename_column_concurrently :application_settings, :snowplow_collector_hostname, :snowplow_collector_uri
+    undo_cleanup_concurrent_column_rename :application_settings, :snowplow_collector_uri, :snowplow_collector_hostname
   end
 end

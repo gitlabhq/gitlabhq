@@ -216,7 +216,7 @@ module API
         # Preloading tags, should be done with using only `:tags`,
         # as `:tags` are defined as: `has_many :tags, through: :taggings`
         # N+1 is solved then by using `subject.tags.map(&:name)`
-        # MR describing the solution: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/20555
+        # MR describing the solution: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/20555
         projects_relation.preload(:project_feature, :route)
                          .preload(:import_state, :tags)
                          .preload(:auto_devops)
@@ -322,7 +322,7 @@ module API
         # Preloading tags, should be done with using only `:tags`,
         # as `:tags` are defined as: `has_many :tags, through: :taggings`
         # N+1 is solved then by using `subject.tags.map(&:name)`
-        # MR describing the solution: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/20555
+        # MR describing the solution: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/20555
         super(projects_relation).preload(:group)
                                 .preload(:ci_cd_settings)
                                 .preload(:auto_devops)
@@ -738,7 +738,7 @@ module API
 
       # Ideally we should deprecate `MergeRequest#merge_status` exposure and
       # use `MergeRequest#mergeable?` instead (boolean).
-      # See https://gitlab.com/gitlab-org/gitlab-ce/issues/42344 for more
+      # See https://gitlab.com/gitlab-org/gitlab-foss/issues/42344 for more
       # information.
       expose :merge_status do |merge_request|
         merge_request.check_mergeability
@@ -980,7 +980,7 @@ module API
 
       def todo_target_class(target_type)
         # false as second argument prevents looking up in module hierarchy
-        # see also https://gitlab.com/gitlab-org/gitlab-ce/issues/59719
+        # see also https://gitlab.com/gitlab-org/gitlab-foss/issues/59719
         ::API::Entities.const_get(target_type, false)
       end
     end

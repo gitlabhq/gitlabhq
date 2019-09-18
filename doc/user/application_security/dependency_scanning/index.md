@@ -4,7 +4,7 @@ type: reference, howto
 
 # Dependency Scanning **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/5105) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/5105) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.7.
 
 Dependency Scanning helps to automatically find security vulnerabilities in your dependencies
 while you are developing and testing your applications, for example when your
@@ -53,14 +53,14 @@ The following languages and dependency managers are supported.
 
 | Language (package managers)  | Supported | Scan tool(s) |
 |----------------------------- | --------- | ------------ |
-| Java ([Gradle](https://gradle.org/)) | not currently ([issue](https://gitlab.com/gitlab-org/gitlab-ee/issues/13075 "Dependency Scanning for Gradle" )) | not available |
+| Java ([Gradle](https://gradle.org/)) | not currently ([issue](https://gitlab.com/gitlab-org/gitlab/issues/13075 "Dependency Scanning for Gradle" )) | not available |
 | Java ([Maven](https://maven.apache.org/)) | yes | [gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium) |
 | JavaScript ([npm](https://www.npmjs.com/), [yarn](https://yarnpkg.com/en/)) | yes | [gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium), [Retire.js](https://retirejs.github.io/retire.js)         |
-| Go ([Golang](https://golang.org/)) | not currently ([issue](https://gitlab.com/gitlab-org/gitlab-ee/issues/7132 "Dependency Scanning for Go")) | not available |
+| Go ([Golang](https://golang.org/)) | not currently ([issue](https://gitlab.com/gitlab-org/gitlab/issues/7132 "Dependency Scanning for Go")) | not available |
 | PHP ([Composer](https://getcomposer.org/))  | yes | [gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium) |
 | Python ([pip](https://pip.pypa.io/en/stable/)) | yes | [gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium) |
-| Python ([Pipfile](https://docs.pipenv.org/en/latest/basics/)) | not currently ([issue](https://gitlab.com/gitlab-org/gitlab-ee/issues/11756 "Pipfile.lock support for Dependency Scanning"))| not available |
-| Python ([poetry](https://poetry.eustace.io/)) | not currently ([issue](https://gitlab.com/gitlab-org/gitlab-ee/issues/7006 "Support Poetry in Dependency Scanning")) | not available |
+| Python ([Pipfile](https://docs.pipenv.org/en/latest/basics/)) | not currently ([issue](https://gitlab.com/gitlab-org/gitlab/issues/11756 "Pipfile.lock support for Dependency Scanning"))| not available |
+| Python ([poetry](https://poetry.eustace.io/)) | not currently ([issue](https://gitlab.com/gitlab-org/gitlab/issues/7006 "Support Poetry in Dependency Scanning")) | not available |
 | Ruby ([gem](https://rubygems.org/)) | yes | [gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium), [bundler-audit](https://github.com/rubysec/bundler-audit) |
 
 ## Remote checks
@@ -84,7 +84,7 @@ the `DS_DISABLE_REMOTE_CHECKS` environment variable and setting it to `"true"`.
 
 For GitLab 11.9 and later, to enable Dependency Scanning, you must
 [include](../../../ci/yaml/README.md#includetemplate) the
-[`Dependency-Scanning.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/lib/gitlab/ci/templates/Security/Dependency-Scanning.gitlab-ci.yml)
+[`Dependency-Scanning.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/Dependency-Scanning.gitlab-ci.yml)
 that's provided as a part of your GitLab installation.
 For GitLab versions earlier than 11.9, you can copy and use the job as defined
 that template.
@@ -147,8 +147,8 @@ using environment variables.
 | `DS_ANALYZER_IMAGES`                    | Comma separated list of custom images. The official default images are still enabled. Read more about [customizing analyzers](analyzers.md). | |
 | `DS_ANALYZER_IMAGE_PREFIX`              | Override the name of the Docker registry providing the official default images (proxy). Read more about [customizing analyzers](analyzers.md). | |
 | `DS_ANALYZER_IMAGE_TAG`                 | Override the Docker tag of the official default images. Read more about [customizing analyzers](analyzers.md). | |
-| `DS_PYTHON_VERSION`                     | Version of Python. If set to 2, dependencies are installed using Python 2.7 instead of Python 3.6. ([Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/12296) in GitLab 12.1)| |
-| `DS_PIP_DEPENDENCY_PATH`                | Path to load Python pip dependencies from. ([Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/12412) in GitLab 12.2) | |
+| `DS_PYTHON_VERSION`                     | Version of Python. If set to 2, dependencies are installed using Python 2.7 instead of Python 3.6. ([Introduced](https://gitlab.com/gitlab-org/gitlab/issues/12296) in GitLab 12.1)| |
+| `DS_PIP_DEPENDENCY_PATH`                | Path to load Python pip dependencies from. ([Introduced](https://gitlab.com/gitlab-org/gitlab/issues/12412) in GitLab 12.2) | |
 | `DS_DEFAULT_ANALYZERS`                  | Override the names of the official default images. Read more about [customizing analyzers](analyzers.md). | |
 | `DS_DISABLE_REMOTE_CHECKS`              | Do not send any data to GitLab. Used in the [Gemnasium analyzer](#remote-checks). | |
 | `DS_PULL_ANALYZER_IMAGES`               | Pull the images from the Docker registry (set to `0` to disable). | |
@@ -358,4 +358,4 @@ You can also [submit new vulnerabilities](https://gitlab.com/gitlab-org/security
 This error occurs when the Docker version used to run the SAST job is `19.03.00`.
 You are advised to update to Docker `19.03.01` or greater. Older versions are not
 affected. Read more in
-[this issue](https://gitlab.com/gitlab-org/gitlab-ee/issues/13830#note_211354992 "Current SAST container fails").
+[this issue](https://gitlab.com/gitlab-org/gitlab/issues/13830#note_211354992 "Current SAST container fails").

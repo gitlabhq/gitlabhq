@@ -124,8 +124,8 @@ Because we want documentation to be a SSOT, we should [organize by topic, not by
 
 ### Folder structure overview
 
-The documentation is separated by top-level audience folders [`user`](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/user),
-[`administration`](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/administration), and [`development`](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/development) (contributing) folders.
+The documentation is separated by top-level audience folders [`user`](https://gitlab.com/gitlab-org/gitlab-foss/tree/master/doc/user),
+[`administration`](https://gitlab.com/gitlab-org/gitlab-foss/tree/master/doc/administration), and [`development`](https://gitlab.com/gitlab-org/gitlab-foss/tree/master/doc/development) (contributing) folders.
 
 Beyond that, we primarily follow the structure of the GitLab user interface or API.
 
@@ -503,7 +503,7 @@ Instead:
 Example:
 
 ```md
-For more information, see the [confidential issue](../../user/project/issues/confidential_issues.md) `https://gitlab.com/gitlab-org/gitlab-ce/issues/<issue_number>`.
+For more information, see the [confidential issue](../../user/project/issues/confidential_issues.md) `https://gitlab.com/gitlab-org/gitlab-foss/issues/<issue_number>`.
 ```
 
 ## Navigation
@@ -526,7 +526,7 @@ To indicate the steps of navigation through the UI:
   number corresponding to the release milestone the image was added to,
   or corresponding to the release the screenshot was taken from, using the
   format `image_name_vX_Y.png`.
-  ([Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/61027) in GitLab 12.1.)
+  ([Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/61027) in GitLab 12.1.)
 - For example, for a screenshot taken from the pipelines page of
   GitLab 11.1, a valid name is `pipelines_v11_1.png`. If you're
   adding an illustration that does not include parts of the UI,
@@ -1175,5 +1175,5 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --data "domain_
 [cURL]: http://curl.haxx.se/ "cURL website"
 [single spaces]: http://www.slate.com/articles/technology/technology/2011/01/space_invaders.html
 [gfm]: ../../user/markdown.md#newlines "GitLab flavored markdown documentation"
-[ce-1242]: https://gitlab.com/gitlab-org/gitlab-ce/issues/1242
+[ce-1242]: https://gitlab.com/gitlab-org/gitlab-foss/issues/1242
 [doc-restart]: ../../administration/restart_gitlab.md "GitLab restart documentation"

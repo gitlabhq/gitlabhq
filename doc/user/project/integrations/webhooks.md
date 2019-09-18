@@ -86,7 +86,7 @@ You can turn this off in the webhook settings in your GitLab projects.
 
 ## Branch filtering
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/20338) in GitLab 11.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/20338) in GitLab 11.3.
 
 Push events can be filtered by branch using a branch name or wildcard pattern
 to limit which push events are sent to your webhook endpoint. By default the

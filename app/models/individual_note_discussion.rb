@@ -20,7 +20,7 @@ class IndividualNoteDiscussion < Discussion
   def convert_to_discussion!(save: false)
     first_note.becomes!(Discussion.note_class).to_discussion.tap do
       # Save needs to be called on first_note instead of the transformed note
-      # because of https://gitlab.com/gitlab-org/gitlab-ce/issues/57324
+      # because of https://gitlab.com/gitlab-org/gitlab-foss/issues/57324
       first_note.save if save
     end
   end

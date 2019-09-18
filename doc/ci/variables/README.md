@@ -57,7 +57,7 @@ the need to specify the value itself.
 
 #### Variable types
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/46806) in GitLab 11.11.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/46806) in GitLab 11.11.
 
 There are two types of variables supported by GitLab:
 
@@ -87,7 +87,7 @@ Variable types can be set via the [UI](#via-the-ui) or the [API](../../api/proje
 
 #### Masked variables
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/13784) in GitLab 11.10
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/13784) in GitLab 11.10
 
 Variables can be created as masked variables.
 This means that the value of the variable will be hidden in job logs,
@@ -96,7 +96,7 @@ though it must match certain requirements to do so:
 - The value must be in a single line.
 - The value must only consist of characters from the Base64 alphabet (RFC4648).
 
-  [In GitLab 12.2](https://gitlab.com/gitlab-org/gitlab-ce/issues/63043)
+  [In GitLab 12.2](https://gitlab.com/gitlab-org/gitlab-foss/issues/63043)
   and newer, `@` and `:` are also valid values.
 - The value must be at least 8 characters long.
 - The value must not use variables.
@@ -253,7 +253,7 @@ export CI_JOB_ID="50"
 export CI_COMMIT_SHA="1ecfd275763eff1d6b4844ea3168962458c9f27a"
 export CI_COMMIT_SHORT_SHA="1ecfd275"
 export CI_COMMIT_REF_NAME="master"
-export CI_REPOSITORY_URL="https://gitlab-ci-token:abcde-1234ABCD5678ef@example.com/gitlab-org/gitlab-ce.git"
+export CI_REPOSITORY_URL="https://gitlab-ci-token:abcde-1234ABCD5678ef@example.com/gitlab-org/gitlab-foss.git"
 export CI_COMMIT_TAG="1.0.0"
 export CI_JOB_NAME="spec:other"
 export CI_JOB_STAGE="test"
@@ -265,13 +265,13 @@ export CI_PIPELINE_IID="10"
 export CI_PAGES_DOMAIN="gitlab.io"
 export CI_PAGES_URL="https://gitlab-org.gitlab.io/gitlab-ce"
 export CI_PROJECT_ID="34"
-export CI_PROJECT_DIR="/builds/gitlab-org/gitlab-ce"
+export CI_PROJECT_DIR="/builds/gitlab-org/gitlab-foss"
 export CI_PROJECT_NAME="gitlab-ce"
 export CI_PROJECT_NAMESPACE="gitlab-org"
 export CI_PROJECT_PATH="gitlab-org/gitlab-ce"
-export CI_PROJECT_URL="https://example.com/gitlab-org/gitlab-ce"
+export CI_PROJECT_URL="https://example.com/gitlab-org/gitlab-foss"
 export CI_REGISTRY="registry.example.com"
-export CI_REGISTRY_IMAGE="registry.example.com/gitlab-org/gitlab-ce"
+export CI_REGISTRY_IMAGE="registry.example.com/gitlab-org/gitlab-foss"
 export CI_RUNNER_ID="10"
 export CI_RUNNER_DESCRIPTION="my runner"
 export CI_RUNNER_TAGS="docker, linux"
@@ -418,7 +418,7 @@ An example project service that defines deployment variables is the
 
 ### Auto DevOps environment variables
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/49056) in GitLab 11.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/49056) in GitLab 11.7.
 
 You can configure [Auto DevOps](../../topics/autodevops/index.md) to
 pass CI variables to the running application by prefixing the key of the
@@ -435,7 +435,7 @@ limitations with the current Auto DevOps scripting environment.
 
 ### Environment variables triggered manually
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/44059) in GitLab 10.8.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/44059) in GitLab 10.8.
 
 [Manually triggered pipelines](../pipelines.md#manually-executing-pipelines) allow you to override the value of a current variable.
 
@@ -555,7 +555,7 @@ Below you can find supported syntax reference:
    Pattern matching is case-sensitive by default. Use `i` flag modifier, like
    `/pattern/i` to make a pattern case-insensitive.
 
-1. Conjunction / Disjunction ([introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/27925) in GitLab 12.0)
+1. Conjunction / Disjunction ([introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/27925) in GitLab 12.0)
 
    Examples:
 
@@ -741,7 +741,7 @@ MIIFQzCCBCugAwIBAgIRAL/ElDjuf15xwja1ZnCocWAwDQYJKoZIhvcNAQELBQAw'
 ...
 ```
 
-[ce-13784]: https://gitlab.com/gitlab-org/gitlab-ce/issues/13784 "Simple protection of CI variables"
+[ce-13784]: https://gitlab.com/gitlab-org/gitlab-foss/issues/13784 "Simple protection of CI variables"
 [envs]: ../environments.md
 [protected branches]: ../../user/project/protected_branches.md
 [protected tags]: ../../user/project/protected_tags.md

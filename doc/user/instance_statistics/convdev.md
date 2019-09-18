@@ -1,6 +1,6 @@
 # Conversational Development Index
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/30469) in GitLab 9.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/30469) in GitLab 9.3.
 
 NOTE: **Note:**
 Your GitLab instance's [usage ping](../admin_area/settings/usage_statistics.md#usage-ping-core-only) must be activated in order to use this feature.

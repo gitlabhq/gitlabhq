@@ -1,5 +1,6 @@
 .tests-metadata-state:
-  extends: .default-only
+  extends:
+    - .default-only
   variables:
     TESTS_METADATA_S3_BUCKET: "gitlab-ce-cache"
   before_script:
@@ -31,7 +32,9 @@ retrieve-tests-metadata:
     - '[[ ! -d "ee/" ]] || [[ -f $EE_KNAPSACK_RSPEC_SUITE_REPORT_PATH ]] || echo "{}" > ${EE_KNAPSACK_RSPEC_SUITE_REPORT_PATH}'
 
 update-tests-metadata:
-  extends: .tests-metadata-state
+  extends:
+    - .tests-metadata-state
+    - .only-code-changes
   stage: post-test
   cache:
     key: tests_metadata

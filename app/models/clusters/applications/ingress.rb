@@ -35,6 +35,10 @@ module Clusters
         'stable/nginx-ingress'
       end
 
+      def values
+        content_values.to_yaml
+      end
+
       def allowed_to_uninstall?
         external_ip_or_hostname? && application_jupyter_nil_or_installable?
       end
@@ -66,6 +70,23 @@ module Clusters
       end
 
       private
+
+      def specification
+        return {} unless Feature.enabled?(:ingress_modsecurity)
+
+        {
+          "controller" => {
+            "config" => {
+              "enable-modsecurity" => "true",
+              "enable-owasp-modsecurity-crs" => "true"
+            }
+          }
+        }
+      end
+
+      def content_values
+        YAML.load_file(chart_values_file).deep_merge!(specification)
+      end
 
       def application_jupyter_nil_or_installable?
         cluster.application_jupyter.nil? || cluster.application_jupyter&.installable?

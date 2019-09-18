@@ -47,7 +47,7 @@ set up by administrators. However, you can turn this off by disabling the
 
 ## Whitelist for local requests
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/44496) in GitLab 12.2
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/44496) in GitLab 12.2
 
 You can allow certain domains and IP addresses to be accessible to both *system hooks*
 and *webhooks* even when local requests are not allowed by adding them to the

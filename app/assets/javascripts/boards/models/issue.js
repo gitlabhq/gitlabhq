@@ -11,11 +11,6 @@ import boardsStore from '../stores/boards_store';
 
 class ListIssue {
   constructor(obj, defaultAvatar) {
-    this.id = obj.id;
-    this.iid = obj.iid;
-    this.title = obj.title;
-    this.confidential = obj.confidential;
-    this.dueDate = obj.due_date;
     this.subscribed = obj.subscribed;
     this.labels = [];
     this.assignees = [];
@@ -25,6 +20,16 @@ class ListIssue {
       subscriptions: true,
     };
     this.isLoading = {};
+
+    this.refreshData(obj, defaultAvatar);
+  }
+
+  refreshData(obj, defaultAvatar) {
+    this.id = obj.id;
+    this.iid = obj.iid;
+    this.title = obj.title;
+    this.confidential = obj.confidential;
+    this.dueDate = obj.due_date;
     this.sidebarInfoEndpoint = obj.issue_sidebar_endpoint;
     this.referencePath = obj.reference_path;
     this.path = obj.real_path;
@@ -42,11 +47,13 @@ class ListIssue {
       this.milestone_id = obj.milestone.id;
     }
 
-    obj.labels.forEach(label => {
-      this.labels.push(new ListLabel(label));
-    });
+    if (obj.labels) {
+      this.labels = obj.labels.map(label => new ListLabel(label));
+    }
 
-    this.assignees = obj.assignees.map(a => new ListAssignee(a, defaultAvatar));
+    if (obj.assignees) {
+      this.assignees = obj.assignees.map(a => new ListAssignee(a, defaultAvatar));
+    }
   }
 
   addLabel(label) {

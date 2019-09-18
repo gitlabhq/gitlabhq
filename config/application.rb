@@ -194,7 +194,7 @@ module Gitlab
     config.assets.precompile << "snowplow/sp.js"
 
     # This path must come last to avoid confusing sprockets
-    # See https://gitlab.com/gitlab-org/gitlab-ce/issues/64091#note_194512508
+    # See https://gitlab.com/gitlab-org/gitlab-foss/issues/64091#note_194512508
     config.assets.paths << "#{config.root}/node_modules"
 
     # Compile non-JS/CSS assets in the ee/app/assets folder by default

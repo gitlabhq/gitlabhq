@@ -53,7 +53,7 @@ the issue or the epic is automatically removed from the previous epic.
 
 ## Multi-level child epics
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/8333) in GitLab Ultimate 11.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/8333) in GitLab Ultimate 11.7.
 
 Much like adding issues to an epic, an epic can have multiple child epics with
 the maximum depth being 5. To add a child epic:
@@ -85,7 +85,7 @@ the re-calculation will happen immediately to set a new dynamic date.
 
 ## Roadmap in epics
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/7327) in [GitLab Ultimate](https://about.gitlab.com/pricing) 11.10.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/7327) in [GitLab Ultimate](https://about.gitlab.com/pricing) 11.10.
 
 If your epic contains one or more [child epics](#multi-level-child-epics) which
 have a [start or due date](#start-date-and-due-date), then you can see a
@@ -150,7 +150,7 @@ link in the issue sidebar.
 
 ## Promoting an issue to an epic
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/3777) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/3777) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.6.
 
 If you have [permissions](../../permissions.md) to close an issue and create an
 epic in the parent group, you can promote an issue to an epic with the `/promote`

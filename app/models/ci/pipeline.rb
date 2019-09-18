@@ -373,7 +373,7 @@ module Ci
 
     ##
     # TODO We do not completely switch to persisted stages because of
-    # race conditions with setting statuses gitlab-ce#23257.
+    # race conditions with setting statuses gitlab-foss#23257.
     #
     def ordered_stages
       return legacy_stages unless complete?
@@ -386,7 +386,7 @@ module Ci
     end
 
     def legacy_stages
-      # TODO, this needs refactoring, see gitlab-ce#26481.
+      # TODO, this needs refactoring, see gitlab-foss#26481.
 
       stages_query = statuses
         .group('stage').select(:stage).order('max(stage_idx)')

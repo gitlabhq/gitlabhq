@@ -45,7 +45,7 @@ describe RunPipelineScheduleWorker do
         expect(Gitlab::Sentry)
           .to receive(:track_exception)
           .with(ActiveRecord::StatementInvalid,
-                issue_url: 'https://gitlab.com/gitlab-org/gitlab-ce/issues/41231',
+                issue_url: 'https://gitlab.com/gitlab-org/gitlab-foss/issues/41231',
                 extra: { schedule_id: pipeline_schedule.id } ).once
       end
 

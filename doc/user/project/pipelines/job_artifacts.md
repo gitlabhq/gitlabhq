@@ -127,14 +127,14 @@ the `master` branch of the `gitlab-ce` project that belongs to the `gitlab-org`
 namespace, the URL would be:
 
 ```
-https://gitlab.com/gitlab-org/gitlab-ce/-/jobs/artifacts/master/download?job=coverage
+https://gitlab.com/gitlab-org/gitlab-foss/-/jobs/artifacts/master/download?job=coverage
 ```
 
 To download the file `coverage/index.html` from the same
 artifacts use the following URL:
 
 ```
-https://gitlab.com/gitlab-org/gitlab-ce/-/jobs/artifacts/master/raw/coverage/index.html?job=coverage
+https://gitlab.com/gitlab-org/gitlab-foss/-/jobs/artifacts/master/raw/coverage/index.html?job=coverage
 ```
 
 There is also a URL to browse the latest job artifacts:
@@ -146,7 +146,7 @@ https://example.com/<namespace>/<project>/-/jobs/artifacts/<ref>/browse?job=<job
 For example:
 
 ```
-https://gitlab.com/gitlab-org/gitlab-ce/-/jobs/artifacts/master/browse?job=coverage
+https://gitlab.com/gitlab-org/gitlab-foss/-/jobs/artifacts/master/browse?job=coverage
 ```
 
 There is also a URL to specific files, including html files that
@@ -160,7 +160,7 @@ For example, when a job `coverage` creates the artifact `htmlcov/index.html`,
 you can access it at:
 
 ```
-https://gitlab.com/gitlab-org/gitlab-ce/-/jobs/artifacts/master/file/htmlcov/index.html?job=coverage
+https://gitlab.com/gitlab-org/gitlab-foss/-/jobs/artifacts/master/file/htmlcov/index.html?job=coverage
 ```
 
 The latest builds are also exposed in the UI in various places. Specifically,
@@ -197,7 +197,7 @@ To erase a job:
 In order to retrieve a job artifact of a different project, you might need to use a private token in order to [authenticate and download](../../../api/jobs.md#get-job-artifacts) the artifacts.
 
 [expiry date]: ../../../ci/yaml/README.md#artifactsexpire_in
-[ce-14399]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/14399
+[ce-14399]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/14399
 
 <!-- ## Troubleshooting
 

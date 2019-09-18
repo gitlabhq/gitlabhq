@@ -53,6 +53,10 @@ module Gitlab
           'project_build'
         ),
         Gitlab::EtagCaching::Router::Route.new(
+          %r(#{RESERVED_WORDS_PREFIX}/clusters/\d+/environments\z),
+          'cluster_environments'
+        ),
+        Gitlab::EtagCaching::Router::Route.new(
           %r(#{RESERVED_WORDS_PREFIX}/environments\.json\z),
           'environments'
         ),

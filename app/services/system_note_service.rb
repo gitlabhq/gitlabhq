@@ -242,7 +242,7 @@ module SystemNoteService
 
     ##
     # TODO: Abort message should be sent by the system, not a particular user.
-    # See https://gitlab.com/gitlab-org/gitlab-ce/issues/63187.
+    # See https://gitlab.com/gitlab-org/gitlab-foss/issues/63187.
     create_note(NoteSummary.new(noteable, project, author, body, action: 'merge'))
   end
 

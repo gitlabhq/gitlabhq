@@ -50,7 +50,7 @@ module Gitlab
         # with a single `lfs_objects_projects` relation.
         #
         # This allows us backwards-compatibility without version bumping.
-        # See https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/30830#note_192608870
+        # See https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/30830#note_192608870
         return ['project'] unless has_lfs_json?
 
         lfs_json[oid]

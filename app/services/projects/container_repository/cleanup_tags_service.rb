@@ -33,7 +33,7 @@ module Projects
       end
 
       def delete_tag_digest(digest, tags, other_tags)
-        # Issue: https://gitlab.com/gitlab-org/gitlab-ce/issues/21405
+        # Issue: https://gitlab.com/gitlab-org/gitlab-foss/issues/21405
         # we have to remove all tags due
         # to Docker Distribution bug unable
         # to delete single tag

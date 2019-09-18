@@ -4,7 +4,7 @@ type: reference, howto
 
 # Browser Performance Testing **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/3507) in [GitLab Premium](https://about.gitlab.com/pricing/) 10.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/3507) in [GitLab Premium](https://about.gitlab.com/pricing/) 10.3.
 
 If your application offers a web interface and you are using
 [GitLab CI/CD](../../../ci/README.md), you can quickly determine the performance
@@ -20,7 +20,7 @@ outputs the performance score for each page that is analyzed.
 
 The [Sitespeed.io performance score](https://examples.sitespeed.io/6.0/2017-11-23-23-43-35/help.html)
 is a composite value based on best practices, and we will be expanding support
-for [additional metrics](https://gitlab.com/gitlab-org/gitlab-ee/issues/4370)
+for [additional metrics](https://gitlab.com/gitlab-org/gitlab/issues/4370)
 in a future release.
 
 Going a step further, GitLab can show the Performance report right
@@ -175,7 +175,7 @@ performance:
       performance: performance.json
 ```
 
-A complete example can be found in our [Auto DevOps CI YML](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml).
+A complete example can be found in our [Auto DevOps CI YML](https://gitlab.com/gitlab-org/gitlab-foss/blob/master/lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml).
 
 ### Previous job definitions
 

@@ -1,6 +1,6 @@
 # GitLab NPM Registry **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/5934) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/5934) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.7.
 
 With the GitLab NPM Registry, every
 project can have its own space to store NPM packages.
@@ -39,8 +39,8 @@ it is not possible due to a naming collision. For example:
 | `foo/bar`              | `@foo/bar`              | Yes       |
 | `foo/bar/baz`          | `@foo/baz`              | Yes       |
 | `foo/bar/buz`          | `@foo/anything`         | Yes       |
-| `gitlab-org/gitlab-ce` | `@gitlab-org/gitlab-ce` | Yes       |
-| `gitlab-org/gitlab-ce` | `@foo/bar`              | No        |
+| `gitlab-org/gitlab`    | `@gitlab-org/gitlab`    | Yes       |
+| `gitlab-org/gitlab`    | `@foo/bar`              | No        |
 
 Now, you can configure your project to authenticate with the GitLab NPM
 Registry.

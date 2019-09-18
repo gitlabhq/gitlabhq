@@ -57,7 +57,7 @@ module Users
         params.reject! { |key, _| read_only.include?(key.to_sym) }
       end
 
-      @user.assign_attributes(params.except(*identity_attributes)) unless params.empty? # rubocop: disable CodeReuse/ActiveRecord
+      @user.assign_attributes(params.except(*identity_attributes)) unless params.empty?
     end
 
     def assign_identity

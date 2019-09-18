@@ -74,7 +74,7 @@ describe 'Merge request > User sees threads', :js do
       visit project_merge_request_path(project, merge_request)
     end
 
-    # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/48034
+    # TODO: https://gitlab.com/gitlab-org/gitlab-foss/issues/48034
     # context 'a regular commit comment' do
     #   let(:note) { create(:note_on_commit, project: project) }
     #

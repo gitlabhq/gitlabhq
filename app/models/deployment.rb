@@ -165,7 +165,7 @@ class Deployment < ApplicationRecord
   def deployed_by
     # We use deployable's user if available because Ci::PlayBuildService
     # does not update the deployment's user, just the one for the deployable.
-    # TODO: use deployment's user once https://gitlab.com/gitlab-org/gitlab-ce/issues/66442
+    # TODO: use deployment's user once https://gitlab.com/gitlab-org/gitlab-foss/issues/66442
     # is completed.
     deployable&.user || user
   end

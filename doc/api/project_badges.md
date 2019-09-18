@@ -1,6 +1,6 @@
 # Project badges API
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/17082)
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/17082)
 in GitLab 10.6.
 
 ## Placeholder tokens
@@ -96,7 +96,7 @@ POST /projects/:id/badges
 | `image_url` | string | yes | URL of the badge image |
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --data "link_url=https://gitlab.com/gitlab-org/gitlab-ce/commits/master&image_url=https://shields.io/my/badge1&position=0" https://gitlab.example.com/api/v4/projects/:id/badges
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --data "link_url=https://gitlab.com/gitlab-org/gitlab-foss/commits/master&image_url=https://shields.io/my/badge1&position=0" https://gitlab.example.com/api/v4/projects/:id/badges
 ```
 
 Example response:
@@ -104,9 +104,9 @@ Example response:
 ```json
 {
   "id": 1,
-  "link_url": "https://gitlab.com/gitlab-org/gitlab-ce/commits/master",
+  "link_url": "https://gitlab.com/gitlab-org/gitlab-foss/commits/master",
   "image_url": "https://shields.io/my/badge1",
-  "rendered_link_url": "https://gitlab.com/gitlab-org/gitlab-ce/commits/master",
+  "rendered_link_url": "https://gitlab.com/gitlab-org/gitlab-foss/commits/master",
   "rendered_image_url": "https://shields.io/my/badge1",
   "kind": "project"
 }
@@ -136,9 +136,9 @@ Example response:
 ```json
 {
   "id": 1,
-  "link_url": "https://gitlab.com/gitlab-org/gitlab-ce/commits/master",
+  "link_url": "https://gitlab.com/gitlab-org/gitlab-foss/commits/master",
   "image_url": "https://shields.io/my/badge",
-  "rendered_link_url": "https://gitlab.com/gitlab-org/gitlab-ce/commits/master",
+  "rendered_link_url": "https://gitlab.com/gitlab-org/gitlab-foss/commits/master",
   "rendered_image_url": "https://shields.io/my/badge",
   "kind": "project"
 }

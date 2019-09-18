@@ -75,7 +75,7 @@ export const mockProject = {
   id: 1,
   name: 'GitLab Community Edition',
   namespace: 'gitlab-org / gitlab-ce',
-  webUrl: `${gl.TEST_HOST}/gitlab-org/gitlab-ce`,
+  webUrl: `${gl.TEST_HOST}/gitlab-org/gitlab-foss`,
   avatarUrl: null,
 };
 
@@ -83,7 +83,7 @@ export const mockRawProject = {
   id: 1,
   name: 'GitLab Community Edition',
   name_with_namespace: 'gitlab-org / gitlab-ce',
-  web_url: `${gl.TEST_HOST}/gitlab-org/gitlab-ce`,
+  web_url: `${gl.TEST_HOST}/gitlab-org/gitlab-foss`,
   avatar_url: null,
 };
 
@@ -92,7 +92,7 @@ export const mockFrequentProjects = [
     id: 1,
     name: 'GitLab Community Edition',
     namespace: 'gitlab-org / gitlab-ce',
-    webUrl: `${gl.TEST_HOST}/gitlab-org/gitlab-ce`,
+    webUrl: `${gl.TEST_HOST}/gitlab-org/gitlab-foss`,
     avatarUrl: null,
     frequency: 1,
     lastAccessedOn: Date.now(),

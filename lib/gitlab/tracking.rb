@@ -24,8 +24,8 @@ module Gitlab
           hostname: Gitlab::CurrentSettings.snowplow_collector_hostname,
           cookie_domain: Gitlab::CurrentSettings.snowplow_cookie_domain,
           app_id: Gitlab::CurrentSettings.snowplow_site_id,
-          page_tracking_enabled: additional_features,
-          activity_tracking_enabled: additional_features
+          form_tracking: additional_features,
+          link_click_tracking: additional_features
         }.transform_keys! { |key| key.to_s.camelize(:lower).to_sym }
       end
 

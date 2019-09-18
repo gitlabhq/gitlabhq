@@ -9,6 +9,7 @@ tasks such as:
 
 - Configuring feature flags.
 - Running `EXPLAIN` queries against the GitLab.com production replica.
+- Get deployment status of all of our environments or for a specific commit: `/chatops run auto_deploy status [commit_sha]`
 
 To request access to Chatops on GitLab.com:
 

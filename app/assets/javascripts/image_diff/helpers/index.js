@@ -21,5 +21,4 @@ export default {
   resizeCoordinatesToImageElement: utilsHelper.resizeCoordinatesToImageElement,
   generateBadgeFromDiscussionDOM: utilsHelper.generateBadgeFromDiscussionDOM,
   getTargetSelection: utilsHelper.getTargetSelection,
-  initImageDiff: utilsHelper.initImageDiff,
 };

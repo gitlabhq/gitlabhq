@@ -91,7 +91,7 @@ module API
       params do
         requires :domain, type: String, desc: 'The domain'
         # rubocop:disable Scalability/FileUploads
-        # TODO: remove rubocop disable - https://gitlab.com/gitlab-org/gitlab-ee/issues/14960
+        # TODO: remove rubocop disable - https://gitlab.com/gitlab-org/gitlab/issues/14960
         optional :certificate, allow_blank: false, types: [File, String], desc: 'The certificate', as: :user_provided_certificate
         optional :key, allow_blank: false, types: [File, String], desc: 'The key', as: :user_provided_key
         # rubocop:enable Scalability/FileUploads
@@ -115,7 +115,7 @@ module API
       params do
         requires :domain, type: String, desc: 'The domain'
         # rubocop:disable Scalability/FileUploads
-        # TODO: remove rubocop disable - https://gitlab.com/gitlab-org/gitlab-ee/issues/14960
+        # TODO: remove rubocop disable - https://gitlab.com/gitlab-org/gitlab/issues/14960
         optional :certificate, allow_blank: false, types: [File, String], desc: 'The certificate', as: :user_provided_certificate
         optional :key, allow_blank: false, types: [File, String], desc: 'The key', as: :user_provided_key
         # rubocop:enable Scalability/FileUploads

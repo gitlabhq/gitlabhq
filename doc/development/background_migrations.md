@@ -315,7 +315,7 @@ for more details.
    more pressure on DB than you expect (measure on staging,
    or ask someone to measure on production).
 
-[migrations-readme]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/spec/migrations/README.md
-[issue-rspec-hooks]: https://gitlab.com/gitlab-org/gitlab-ce/issues/35351
-[reliable-sidekiq]: https://gitlab.com/gitlab-org/gitlab-ce/issues/36791
+[migrations-readme]: https://gitlab.com/gitlab-org/gitlab/blob/master/spec/migrations/README.md
+[issue-rspec-hooks]: https://gitlab.com/gitlab-org/gitlab-foss/issues/35351
+[reliable-sidekiq]: https://gitlab.com/gitlab-org/gitlab-foss/issues/36791
 [import-export]: ../user/project/settings/import_export.md

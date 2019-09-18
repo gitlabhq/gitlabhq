@@ -50,7 +50,7 @@ sudo service gitlab stop
 
 ```sh
 cd /home/git/gitlab
-sudo -u git -H git remote add -f ee https://gitlab.com/gitlab-org/gitlab-ee.git
+sudo -u git -H git remote add -f ee https://gitlab.com/gitlab-org/gitlab.git
 sudo -u git -H git checkout EE_BRANCH
 ```
 
@@ -131,4 +131,4 @@ Example:
 Additional instructions here.
 -->
 
-[old-ee-upgrade-docs]: https://gitlab.com/gitlab-org/gitlab-ee/tree/11-8-stable-ee/doc/update
+[old-ee-upgrade-docs]: https://gitlab.com/gitlab-org/gitlab/tree/11-8-stable-ee/doc/update

@@ -16,7 +16,7 @@ class RemoveRedundantPipelineStages < ActiveRecord::Migration[4.2]
       Failed to add an unique index to ci_stages, despite retrying the
       migration 100 times.
 
-      See https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/16580.
+      See https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/16580.
     EOS
   end
 

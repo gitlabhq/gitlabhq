@@ -19,7 +19,7 @@ Once enabled, GitLab will automatically detect metrics from known services in th
 
 ### Managed Prometheus on Kubernetes
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/28916) in GitLab 10.5.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/28916) in GitLab 10.5.
 
 GitLab can seamlessly deploy and manage Prometheus on a [connected Kubernetes cluster](../clusters/index.md), making monitoring of your apps easy.
 
@@ -113,7 +113,7 @@ You can view the performance dashboard for an environment by [clicking on the mo
 
 ### Adding additional metrics **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/3799) in [GitLab Premium](https://about.gitlab.com/pricing/) 10.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/3799) in [GitLab Premium](https://about.gitlab.com/pricing/) 10.6.
 
 Custom metrics can be monitored by adding them on the Prometheus integration page. Once saved, they will be displayed on the environment performance dashboard provided that either:
 
@@ -143,7 +143,7 @@ To specify a variable in a query, enclose it in curly braces with a leading perc
 
 ### Defining custom dashboards per project
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/59974) in GitLab 12.1.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/59974) in GitLab 12.1.
 
 By default, all projects include a GitLab-defined Prometheus dashboard, which
 includes a few key metrics, but you can also define your own custom dashboards.
@@ -221,7 +221,7 @@ The following tables outline the details of expected properties.
 
 | Property | Type | Required | Description |
 | ------ | ------ | ------ | ------ |
-| `id` | string | no | Used for associating dashboard metrics with database records. Must be unique across dashboard configuration files. Required for [alerting](#setting-up-alerts-for-prometheus-metrics-ultimate) (support not yet enabled, see [relevant issue](https://gitlab.com/gitlab-org/gitlab-ce/issues/60319)). |
+| `id` | string | no | Used for associating dashboard metrics with database records. Must be unique across dashboard configuration files. Required for [alerting](#setting-up-alerts-for-prometheus-metrics-ultimate) (support not yet enabled, see [relevant issue](https://gitlab.com/gitlab-org/gitlab-foss/issues/60319)). |
 | `unit` | string | yes | Defines the unit of the query's return data. |
 | `label` | string | no, but highly encouraged | Defines the legend-label for the query. Should be unique within the panel's metrics. |
 | `query` | string | yes if `query_range` is not defined | Defines the Prometheus query to be used to populate the chart/panel. If defined, the `query` endpoint of the [Prometheus API](https://prometheus.io/docs/prometheus/latest/querying/api/) will be utilized. |
@@ -296,7 +296,7 @@ Data from Prometheus charts on the metrics dashboard can be downloaded as CSV.
 
 #### Managed Prometheus instances
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/6590) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.2 for [custom metrics](#adding-additional-metrics-premium), and 11.3 for [library metrics](prometheus_library/metrics.md).
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/6590) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.2 for [custom metrics](#adding-additional-metrics-premium), and 11.3 for [library metrics](prometheus_library/metrics.md).
 
 For managed Prometheus instances using auto configuration, alerts for metrics [can be configured](#adding-additional-metrics-premium) directly in the performance dashboard.
 
@@ -309,7 +309,7 @@ To remove the alert, click back on the alert icon for the desired metric, and cl
 
 #### External Prometheus instances
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/9258) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.8.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/9258) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.8.
 
 For manually configured Prometheus servers, a notify endpoint is provided to use with Prometheus webhooks. If you have manual configuration enabled, an **Alerts** section is added to **Settings > Integrations > Prometheus**. This contains the *URL* and *Authorization Key*. The **Reset Key** button will invalidate the key and generate a new one.
 
@@ -330,7 +330,7 @@ receivers:
 
 ### Taking action on incidents **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/4925) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.11.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/4925) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.11.
 
 Alerts can be used to trigger actions, like open an issue automatically (enabled by default since `12.1`). To configure the actions:
 
@@ -353,14 +353,14 @@ Once enabled, an issue will be opened automatically when an alert is triggered w
 
 To further customize the issue, you can add labels, mentions, or any other supported [quick action](../quick_actions.md) in the selected issue template, which will apply to all incidents. To limit quick actions or other information to only specific types of alerts, use the `annotations/gitlab_incident_markdown` field.
 
-Since [version 12.2](https://gitlab.com/gitlab-org/gitlab-ce/issues/63373), GitLab will tag each incident issue with the `incident` label automatically. If the label does not yet exist, it will be created automatically as well.
+Since [version 12.2](https://gitlab.com/gitlab-org/gitlab-foss/issues/63373), GitLab will tag each incident issue with the `incident` label automatically. If the label does not yet exist, it will be created automatically as well.
 
 If the metric exceeds the threshold of the alert for over 5 minutes, an email will be sent to all [Maintainers and Owners](../../permissions.md#project-members-permissions) of the project.
 
 ## Determining the performance impact of a merge
 
 > - [Introduced][ce-10408] in GitLab 9.2.
-> - GitLab 9.3 added the [numeric comparison](https://gitlab.com/gitlab-org/gitlab-ce/issues/27439) of the 30 minute averages.
+> - GitLab 9.3 added the [numeric comparison](https://gitlab.com/gitlab-org/gitlab-foss/issues/27439) of the 30 minute averages.
 
 Developers can view the performance impact of their changes within the merge
 request workflow.
@@ -451,7 +451,7 @@ If the "No data found" screen continues to appear, it could be due to:
 [prometheus-yml]:samples/prometheus.yml
 [gitlab.com-ip-range]: https://gitlab.com/gitlab-com/infrastructure/issues/434
 [ci-environment-slug]: ../../../ci/variables/#predefined-environment-variables
-[ce-8935]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/8935
-[ce-10408]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/10408
-[ce-29691]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/29691
+[ce-8935]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/8935
+[ce-10408]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/10408
+[ce-29691]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/29691
 [promgldocs]: ../../../administration/monitoring/prometheus/index.md

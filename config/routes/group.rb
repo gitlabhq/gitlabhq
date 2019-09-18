@@ -17,7 +17,7 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
       get :details, as: :details_group
       get :activity, as: :activity_group
       put :transfer, as: :transfer_group
-      # TODO: Remove as part of refactor in https://gitlab.com/gitlab-org/gitlab-ce/issues/49693
+      # TODO: Remove as part of refactor in https://gitlab.com/gitlab-org/gitlab-foss/issues/49693
       get 'shared', action: :show, as: :group_shared
       get 'archived', action: :show, as: :group_archived
     end

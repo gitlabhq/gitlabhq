@@ -25,7 +25,7 @@ module Boards
     end
 
     def update
-      list = board.lists.movable.find(params[:id])
+      list = board.lists.find(params[:id])
       service = Boards::Lists::UpdateService.new(board_parent, current_user, update_list_params)
       result = service.execute(list)
 

@@ -33,7 +33,7 @@ Gitlab::Seeder.quiet do
         MergeRequests::CreateService.new(project, developer, params).execute
       rescue Repository::AmbiguousRefError
         # Ignore pipelines creation errors for now, we can doing that after
-        # https://gitlab.com/gitlab-org/gitlab-ce/issues/55966. will be resolved.
+        # https://gitlab.com/gitlab-org/gitlab-foss/issues/55966. will be resolved.
       end
       print '.'
     end

@@ -15,7 +15,7 @@ GitLab supports two authentication methods:
 
 ### Authentication against a local database with X.509 certificates
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/726) in
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/726) in
 [GitLab Premium](https://about.gitlab.com/pricing/) 11.6 as an experimental
 feature. Smartcard authentication against local databases may change or be
 removed completely in future releases.
@@ -41,7 +41,7 @@ Certificate:
 
 ### Authentication against a local database with X.509 certificates and SAN extensions **(PREMIUM ONLY)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/8605) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/8605) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.3.
 
 Smartcards with X.509 certificates using SAN extensions can be used to authenticate
 with GitLab.
@@ -80,7 +80,7 @@ Certificate:
 
 ### Authentication against an LDAP server
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/7693) in
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/7693) in
 [GitLab Premium](https://about.gitlab.com/pricing/) 11.8 as an experimental
 feature. Smartcard authentication against an LDAP server may change or be
 removed completely in future releases.

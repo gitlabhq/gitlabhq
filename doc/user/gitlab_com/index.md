@@ -398,4 +398,4 @@ On GitLab.com, projects, groups, and snippets created
 after July 2019 have the `Internal` visibility setting disabled.
 
 You can read more about the change in the
-[relevant issue](https://gitlab.com/gitlab-org/gitlab-ee/issues/12388).
+[relevant issue](https://gitlab.com/gitlab-org/gitlab/issues/12388).

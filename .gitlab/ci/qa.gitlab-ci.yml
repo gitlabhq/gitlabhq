@@ -25,7 +25,9 @@ package-and-qa-manual:
   needs: ["build-qa-image", "gitlab:assets:compile pull-cache"]
 
 package-and-qa-manual:master:
-  extends: .package-and-qa-base
+  extends:
+    - .package-and-qa-base
+    - .only-code-qa-changes
   only:
     refs:
       - master@gitlab-org/gitlab-foss

@@ -4,8 +4,8 @@
 module Gitlab
   # Checks if a set of migrations requires downtime or not.
   class EeCompatCheck
-    CANONICAL_CE_PROJECT_URL = 'https://gitlab.com/gitlab-org/gitlab-ce'
-    CANONICAL_EE_REPO_URL = 'https://gitlab.com/gitlab-org/gitlab-ee.git'
+    CANONICAL_CE_PROJECT_URL = 'https://gitlab.com/gitlab-org/gitlab-foss'
+    CANONICAL_EE_REPO_URL = 'https://gitlab.com/gitlab-org/gitlab.git'
     CHECK_DIR = Rails.root.join('ee_compat_check')
     IGNORED_FILES_REGEX = /VERSION|CHANGELOG\.md|doc\/.+/i.freeze
     PLEASE_READ_THIS_BANNER = %Q{

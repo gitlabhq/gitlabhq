@@ -1,4 +1,4 @@
-/* eslint-disable object-shorthand, func-names, no-else-return */
+/* eslint-disable no-else-return */
 /* global CommentsStore */
 /* global ResolveService */
 
@@ -20,34 +20,34 @@ const ResolveDiscussionBtn = Vue.extend({
       required: true,
     },
   },
-  data: function() {
+  data() {
     return {
       discussion: {},
     };
   },
   computed: {
-    showButton: function() {
+    showButton() {
       if (this.discussion) {
         return this.discussion.isResolvable();
       } else {
         return false;
       }
     },
-    isDiscussionResolved: function() {
+    isDiscussionResolved() {
       if (this.discussion) {
         return this.discussion.isResolved();
       } else {
         return false;
       }
     },
-    buttonText: function() {
+    buttonText() {
       if (this.isDiscussionResolved) {
         return __('Unresolve discussion');
       } else {
         return __('Resolve discussion');
       }
     },
-    loading: function() {
+    loading() {
       if (this.discussion) {
         return this.discussion.loading;
       } else {
@@ -55,13 +55,13 @@ const ResolveDiscussionBtn = Vue.extend({
       }
     },
   },
-  created: function() {
+  created() {
     CommentsStore.createDiscussion(this.discussionId, this.canResolve);
 
     this.discussion = CommentsStore.state[this.discussionId];
   },
   methods: {
-    resolve: function() {
+    resolve() {
       ResolveService.toggleResolveForDiscussion(this.mergeRequestId, this.discussionId);
     },
   },

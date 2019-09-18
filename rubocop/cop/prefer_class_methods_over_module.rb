@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     # Enforces the use of 'class_methods' instead of 'module ClassMethods' for activesupport concerns.
-    # For more information see: https://gitlab.com/gitlab-org/gitlab-ce/issues/50414
+    # For more information see: https://gitlab.com/gitlab-org/gitlab-foss/issues/50414
     #
     # @example
     #   # bad

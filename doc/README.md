@@ -450,8 +450,8 @@ There are many ways to integrate with GitLab, including:
 
 ## Contributing to GitLab
 
-GitLab Community Edition is [open source](https://gitlab.com/gitlab-org/gitlab-ce/)
-and GitLab Enterprise Edition is [open-core](https://gitlab.com/gitlab-org/gitlab-ee/).
+GitLab Community Edition is [open source](https://gitlab.com/gitlab-org/gitlab-foss/)
+and GitLab Enterprise Edition is [open-core](https://gitlab.com/gitlab-org/gitlab/).
 
 Learn how to contribute to GitLab with the following resources:
 

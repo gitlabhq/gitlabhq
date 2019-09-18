@@ -11,7 +11,7 @@ describe RspecFlaky::FlakyExample, :aggregate_failures do
       description: 'hello world',
       first_flaky_at: 1234,
       last_flaky_at: 2345,
-      last_flaky_job: 'https://gitlab.com/gitlab-org/gitlab-ce/-/jobs/12',
+      last_flaky_job: 'https://gitlab.com/gitlab-org/gitlab-foss/-/jobs/12',
       last_attempts_count: 2,
       flaky_reports: 1
     }
@@ -107,14 +107,14 @@ describe RspecFlaky::FlakyExample, :aggregate_failures do
 
       context 'when run on the CI' do
         before do
-          stub_env('CI_PROJECT_URL', 'https://gitlab.com/gitlab-org/gitlab-ce')
+          stub_env('CI_PROJECT_URL', 'https://gitlab.com/gitlab-org/gitlab-foss')
           stub_env('CI_JOB_ID', 42)
         end
 
         it 'updates the last_flaky_job' do
           flaky_example.update_flakiness!
 
-          expect(flaky_example.last_flaky_job).to eq('https://gitlab.com/gitlab-org/gitlab-ce/-/jobs/42')
+          expect(flaky_example.last_flaky_job).to eq('https://gitlab.com/gitlab-org/gitlab-foss/-/jobs/42')
         end
       end
     end

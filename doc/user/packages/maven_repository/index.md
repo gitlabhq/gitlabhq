@@ -1,6 +1,6 @@
 # GitLab Maven Repository **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/5811) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/5811) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.3.
 
 With the GitLab [Maven](https://maven.apache.org) Repository, every
 project can have its own space to store its Maven artifacts.
@@ -149,7 +149,7 @@ project's ID can be used for uploading.
 
 ### Group level Maven endpoint
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/8798) in GitLab Premium 11.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/8798) in GitLab Premium 11.7.
 
 If you rely on many packages, it might be inefficient to include the `repository` section
 with a unique URL for each package. Instead, you can use the group level endpoint for
@@ -201,7 +201,7 @@ For retrieving artifacts, you can use either the
 
 ### Instance level Maven endpoint
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/8274) in GitLab Premium 11.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/8274) in GitLab Premium 11.7.
 
 If you rely on many packages, it might be inefficient to include the `repository` section
 with a unique URL for each package. Instead, you can use the instance level endpoint for
@@ -213,9 +213,9 @@ the instance level endpoint.
 
 | Project | Package | Instance level endpoint available |
 | ------- | ------- | --------------------------------- |
-| `foo/bar`              | `foo/bar/1.0-SNAPSHOT`              | Yes |
-| `gitlab-org/gitlab-ce` | `foo/bar/1.0-SNAPSHOT`              | No  |
-| `gitlab-org/gitlab-ce` | `gitlab-org/gitlab-ce/1.0-SNAPSHOT` | Yes |
+| `foo/bar`           | `foo/bar/1.0-SNAPSHOT`           | Yes |
+| `gitlab-org/gitlab` | `foo/bar/1.0-SNAPSHOT`           | No  |
+| `gitlab-org/gitlab` | `gitlab-org/gitlab/1.0-SNAPSHOT` | Yes |
 
 The example below shows how the relevant `repository` section of your `pom.xml`
 would look like. You still need a project specific URL for uploading a package in

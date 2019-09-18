@@ -7,7 +7,7 @@ module Notes
 
       note = Notes::BuildService.new(project, current_user, params).execute
 
-      # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/37440
+      # n+1: https://gitlab.com/gitlab-org/gitlab-foss/issues/37440
       note_valid = Gitlab::GitalyClient.allow_n_plus_1_calls do
         note.valid?
       end

@@ -18,7 +18,7 @@ pre-written code blocks or database queries against a given environment.
 
 ## Executable Runbooks
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/45912) in GitLab 11.4.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/45912) in GitLab 11.4.
 
 The JupyterHub app offered via GitLab’s Kubernetes integration now ships
 with Nurtch’s Rubix library, providing a simple way to create DevOps

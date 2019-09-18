@@ -7,6 +7,18 @@ import ResolveDiscussionButton from '~/notes/components/discussion_resolve_butto
 import ResolveWithIssueButton from '~/notes/components/discussion_resolve_with_issue_button.vue';
 import JumpToNextDiscussionButton from '~/notes/components/discussion_jump_to_next_button.vue';
 
+// NOTE: clone mock_data so that it is not accidentally mutated
+const createDiscussionMock = (props = {}) =>
+  Object.assign(JSON.parse(JSON.stringify(discussionMock)), props);
+const createNoteMock = (props = {}) =>
+  Object.assign(JSON.parse(JSON.stringify(discussionMock.notes[0])), props);
+const createResolvableNote = () =>
+  createNoteMock({ resolvable: true, current_user: { can_resolve: true } });
+const createUnresolvableNote = () =>
+  createNoteMock({ resolvable: false, current_user: { can_resolve: false } });
+const createUnallowedNote = () =>
+  createNoteMock({ resolvable: true, current_user: { can_resolve: false } });
+
 describe('DiscussionActions', () => {
   let wrapper;
   const createComponentFactory = (shallow = true) => props => {
@@ -66,13 +78,23 @@ describe('DiscussionActions', () => {
       expect(wrapper.find(JumpToNextDiscussionButton).exists()).toBe(false);
     });
 
-    it('does not renders discussion button for non-member', () => {
-      const discussion = JSON.parse(JSON.stringify(discussionMock));
-      discussion.notes[1].current_user.can_resolve = false;
-      createComponent({ discussion });
+    describe.each`
+      desc                         | notes                                                 | shouldRender
+      ${'with no notes'}           | ${[]}                                                 | ${true}
+      ${'with resolvable notes'}   | ${[createResolvableNote(), createResolvableNote()]}   | ${true}
+      ${'with unresolvable notes'} | ${[createResolvableNote(), createUnresolvableNote()]} | ${true}
+      ${'with unallowed note'}     | ${[createResolvableNote(), createUnallowedNote()]}    | ${false}
+    `('$desc', ({ notes, shouldRender }) => {
+      beforeEach(() => {
+        createComponent({
+          discussion: createDiscussionMock({ notes }),
+        });
+      });
 
-      expect(wrapper.find(ResolveDiscussionButton).exists()).toBe(false);
-      expect(wrapper.find(ResolveWithIssueButton).exists()).toBe(false);
+      it(shouldRender ? 'renders resolve buttons' : 'does not render resolve buttons', () => {
+        expect(wrapper.find(ResolveDiscussionButton).exists()).toBe(shouldRender);
+        expect(wrapper.find(ResolveWithIssueButton).exists()).toBe(shouldRender);
+      });
     });
   });
 

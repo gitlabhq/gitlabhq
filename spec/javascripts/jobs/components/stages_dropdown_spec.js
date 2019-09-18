@@ -11,7 +11,7 @@ describe('Stages Dropdown', () => {
     id: 28029444,
     details: {
       status: {
-        details_path: '/gitlab-org/gitlab-ce/pipelines/28029444',
+        details_path: '/gitlab-org/gitlab-foss/pipelines/28029444',
         group: 'success',
         has_details: true,
         icon: 'status_success',

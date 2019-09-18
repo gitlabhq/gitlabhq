@@ -308,7 +308,7 @@ describe API::Runners do
 
   describe 'PUT /runners/:id' do
     context 'admin user' do
-      # see https://gitlab.com/gitlab-org/gitlab-ce/issues/48625
+      # see https://gitlab.com/gitlab-org/gitlab-foss/issues/48625
       context 'single parameter update' do
         it 'runner description' do
           description = shared_runner.description

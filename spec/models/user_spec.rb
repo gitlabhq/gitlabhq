@@ -616,7 +616,7 @@ describe User do
     end
 
     describe '#update_notification_email' do
-      # Regression: https://gitlab.com/gitlab-org/gitlab-ce/issues/22846
+      # Regression: https://gitlab.com/gitlab-org/gitlab-foss/issues/22846
       context 'when changing :email' do
         let(:user) { create(:user) }
         let(:new_email) { 'new-email@example.com' }

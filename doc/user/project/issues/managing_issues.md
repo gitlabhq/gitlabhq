@@ -99,9 +99,9 @@ in the same URL (since a description template also populates the description fie
 Follow these examples to form your new issue URL with prefilled fields.
 
 - For a new issue in the GitLab Community Edition project with a pre-filled title
-  and a pre-filled description, the URL would be `https://gitlab.com/gitlab-org/gitlab-ce/issues/new?issue[title]=Validate%20new%20concept&issue[description]=Research%20idea`
+  and a pre-filled description, the URL would be `https://gitlab.com/gitlab-org/gitlab-foss/issues/new?issue[title]=Validate%20new%20concept&issue[description]=Research%20idea`
 - For a new issue in the GitLab Community Edition project with a pre-filled title
-  and a pre-filled description template, the URL would be `https://gitlab.com/gitlab-org/gitlab-ce/issues/new?issue[title]=Validate%20new%20concept&issuable_template=Research%20proposal`
+  and a pre-filled description template, the URL would be `https://gitlab.com/gitlab-org/gitlab-foss/issues/new?issue[title]=Validate%20new%20concept&issuable_template=Research%20proposal`
 
 ## Moving Issues
 
@@ -219,7 +219,7 @@ of your installation.
 
 ## Deleting Issues
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/2982) in GitLab 8.6
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/2982) in GitLab 8.6
 
 Users with [project owner permission](../../permissions.md) can delete an issue by
 editing it and clicking on the delete button.

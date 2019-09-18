@@ -2,7 +2,7 @@
 
 >**Notes:**
 >
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/3050) in GitLab 8.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/3050) in GitLab 8.9.
 > - Importing will not be possible if the import instance version differs from
 >   that of the exporter.
 > - For GitLab admins, please read through
@@ -81,7 +81,7 @@ The following items will NOT be exported:
 
 NOTE: **Note:**
 For more details on the specific data persisted in a project export, see the
-[`import_export.yml`](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/lib/gitlab/import_export/import_export.yml) file.
+[`import_export.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/import_export/import_export.yml) file.
 
 ## Exporting a project and its data
 

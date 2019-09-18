@@ -1,6 +1,6 @@
 # Project clusters API
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/23922)
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/23922)
 in GitLab 11.7.
 
 NOTE: **Note:**

@@ -1,4 +1,4 @@
-/* eslint-disable no-useless-return, func-names, no-var, no-underscore-dangle, prefer-arrow-callback, one-var, prefer-template, no-new, consistent-return, object-shorthand, no-shadow, no-param-reassign, vars-on-top, no-lonely-if, no-else-return, dot-notation, no-empty */
+/* eslint-disable no-useless-return, func-names, no-var, no-underscore-dangle, prefer-arrow-callback, one-var, prefer-template, no-new, consistent-return, no-shadow, no-param-reassign, vars-on-top, no-lonely-if, no-else-return, dot-notation, no-empty */
 /* global Issuable */
 /* global ListLabel */
 
@@ -197,8 +197,8 @@ export default class LabelsSelect {
           .catch(() => flash(__('Error saving label update.')));
       };
       $dropdown.glDropdown({
-        showMenuAbove: showMenuAbove,
-        data: function(term, callback) {
+        showMenuAbove,
+        data(term, callback) {
           labelUrl = $dropdown.attr('data-labels');
           axios
             .get(labelUrl)
@@ -231,7 +231,7 @@ export default class LabelsSelect {
             })
             .catch(() => flash(__('Error fetching labels.')));
         },
-        renderRow: function(label) {
+        renderRow(label) {
           var linkEl,
             listItemEl,
             colorEl,
@@ -316,7 +316,7 @@ export default class LabelsSelect {
         selectable: true,
         filterable: true,
         selected: $dropdown.data('selected') || [],
-        toggleLabel: function(selected, el) {
+        toggleLabel(selected, el) {
           var $dropdownParent = $dropdown.parent();
           var $dropdownInputField = $dropdownParent.find('.dropdown-input-field');
           var isSelected = el !== null ? el.hasClass('is-active') : false;
@@ -350,7 +350,7 @@ export default class LabelsSelect {
           }
         },
         fieldName: $dropdown.data('fieldName'),
-        id: function(label) {
+        id(label) {
           if (label.id <= 0) return label.title;
 
           if ($dropdown.hasClass('js-issuable-form-dropdown')) {
@@ -363,7 +363,7 @@ export default class LabelsSelect {
             return label.id;
           }
         },
-        hidden: function() {
+        hidden() {
           var isIssueIndex, isMRIndex, page;
           page = $('body').attr('data-page');
           isIssueIndex = page === 'projects:issues:index';
@@ -394,7 +394,7 @@ export default class LabelsSelect {
         },
         multiSelect: $dropdown.hasClass('js-multiselect'),
         vue: $dropdown.hasClass('js-issue-board-sidebar'),
-        clicked: function(clickEvent) {
+        clicked(clickEvent) {
           const { $el, e, isMarking } = clickEvent;
           const label = clickEvent.selectedObj;
 
@@ -478,7 +478,7 @@ export default class LabelsSelect {
             }
           }
         },
-        opened: function() {
+        opened() {
           if ($dropdown.hasClass('js-issue-board-sidebar')) {
             const previousSelection = $dropdown.attr('data-selected');
             this.selected = previousSelection ? previousSelection.split(',') : [];

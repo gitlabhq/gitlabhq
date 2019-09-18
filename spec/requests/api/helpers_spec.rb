@@ -256,7 +256,7 @@ describe API::Helpers do
     context 'with a personal access token given' do
       let(:token) { create(:personal_access_token, scopes: ['api'], user: user) }
 
-      # Regression test for https://gitlab.com/gitlab-org/gitlab-ce/issues/38571
+      # Regression test for https://gitlab.com/gitlab-org/gitlab-foss/issues/38571
       it 'does not raise an additional exception because of missing `request`' do
         # We need to stub at a lower level than #sentry_enabled? otherwise
         # Sentry is not enabled when the request below is made, and the test

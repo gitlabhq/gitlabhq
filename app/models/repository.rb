@@ -260,28 +260,8 @@ class Repository
     raw_repository.languages(root_ref)
   end
 
-  # Makes sure a commit is kept around when Git garbage collection runs.
-  # Git GC will delete commits from the repository that are no longer in any
-  # branches or tags, but we want to keep some of these commits around, for
-  # example if they have comments or CI builds.
-  #
-  # For Geo's sake, pass in multiple shas rather than calling it multiple times,
-  # to avoid unnecessary syncing.
   def keep_around(*shas)
-    shas.each do |sha|
-      next unless sha.present? && commit_by(oid: sha)
-
-      next if kept_around?(sha)
-
-      # This will still fail if the file is corrupted (e.g. 0 bytes)
-      raw_repository.write_ref(keep_around_ref_name(sha), sha)
-    rescue Gitlab::Git::CommandError => ex
-      Rails.logger.error "Unable to create keep-around reference for repository #{disk_path}: #{ex}" # rubocop:disable Gitlab/RailsLogger
-    end
-  end
-
-  def kept_around?(sha)
-    ref_exists?(keep_around_ref_name(sha))
+    Gitlab::Git::KeepAround.execute(self, shas)
   end
 
   def archive_metadata(ref, storage_path, format = "tar.gz", append_sha:, path: nil)
@@ -580,7 +560,7 @@ class Repository
   cache_method :has_visible_content?, fallback: false
 
   def avatar
-    # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/38327
+    # n+1: https://gitlab.com/gitlab-org/gitlab-foss/issues/38327
     Gitlab::GitalyClient.allow_n_plus_1_calls do
       if tree = file_on_head(:avatar)
         tree.path
@@ -1119,7 +1099,7 @@ class Repository
   private
 
   # TODO Generice finder, later split this on finders by Ref or Oid
-  # gitlab-org/gitlab-ce#39239
+  # https://gitlab.com/gitlab-org/gitlab-foss/issues/39239
   def find_commit(oid_or_ref)
     commit = if oid_or_ref.is_a?(Gitlab::Git::Commit)
                oid_or_ref
@@ -1155,10 +1135,6 @@ class Repository
         Time.now
       end
     end
-  end
-
-  def keep_around_ref_name(sha)
-    "refs/#{REF_KEEP_AROUND}/#{sha}"
   end
 
   def repository_event(event, tags = {})

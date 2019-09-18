@@ -1,4 +1,4 @@
-/* eslint-disable func-names, no-var, object-shorthand, prefer-arrow-callback */
+/* eslint-disable func-names, no-var, prefer-arrow-callback */
 
 import $ from 'jquery';
 import axios from '~/lib/utils/axios_utils';
@@ -82,7 +82,7 @@ MarkdownPreview.prototype.fetchMarkdownPreview = function(text, url, success) {
     })
     .then(({ data }) => {
       this.ajaxCache = {
-        text: text,
+        text,
         response: data,
       };
       success(data);

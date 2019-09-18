@@ -1,8 +1,8 @@
-/* eslint-disable func-names, object-shorthand, no-var, one-var, camelcase, no-param-reassign, no-return-assign, prefer-arrow-callback, consistent-return, no-cond-assign, no-else-return */
+/* eslint-disable func-names, no-var, one-var, camelcase, no-param-reassign, no-return-assign, prefer-arrow-callback, consistent-return, no-cond-assign, no-else-return */
 import _ from 'underscore';
 
 export default {
-  parse_log: function(log) {
+  parse_log(log) {
     var by_author, by_email, data, entry, i, len, total, normalized_email;
     total = {};
     by_author = {};
@@ -25,15 +25,15 @@ export default {
     total = _.toArray(total);
     by_author = _.toArray(by_author);
     return {
-      total: total,
-      by_author: by_author,
+      total,
+      by_author,
     };
   },
-  add_date: function(date, collection) {
+  add_date(date, collection) {
     collection[date] = {};
     return (collection[date].date = date);
   },
-  add_author: function(author, by_author, by_email) {
+  add_author(author, by_author, by_email) {
     var data, normalized_email;
     data = {};
     data.author_name = author.author_name;
@@ -43,36 +43,36 @@ export default {
     by_email[normalized_email] = data;
     return data;
   },
-  store_data: function(entry, total, by_author) {
+  store_data(entry, total, by_author) {
     this.store_commits(total, by_author);
     this.store_additions(entry, total, by_author);
     return this.store_deletions(entry, total, by_author);
   },
-  store_commits: function(total, by_author) {
+  store_commits(total, by_author) {
     this.add(total, 'commits', 1);
     return this.add(by_author, 'commits', 1);
   },
-  add: function(collection, field, value) {
+  add(collection, field, value) {
     if (collection[field] == null) {
       collection[field] = 0;
     }
     return (collection[field] += value);
   },
-  store_additions: function(entry, total, by_author) {
+  store_additions(entry, total, by_author) {
     if (entry.additions == null) {
       entry.additions = 0;
     }
     this.add(total, 'additions', entry.additions);
     return this.add(by_author, 'additions', entry.additions);
   },
-  store_deletions: function(entry, total, by_author) {
+  store_deletions(entry, total, by_author) {
     if (entry.deletions == null) {
       entry.deletions = 0;
     }
     this.add(total, 'deletions', entry.deletions);
     return this.add(by_author, 'deletions', entry.deletions);
   },
-  get_total_data: function(parsed_log, field) {
+  get_total_data(parsed_log, field) {
     var log, total_data;
     log = parsed_log.total;
     total_data = this.pick_field(log, field);
@@ -80,7 +80,7 @@ export default {
       return d.date;
     });
   },
-  pick_field: function(log, field) {
+  pick_field(log, field) {
     var total_data;
     total_data = [];
     _.each(log, function(d) {
@@ -88,7 +88,7 @@ export default {
     });
     return total_data;
   },
-  get_author_data: function(parsed_log, field, date_range) {
+  get_author_data(parsed_log, field, date_range) {
     var author_data, log;
     if (date_range == null) {
       date_range = null;
@@ -111,7 +111,7 @@ export default {
       return d[field];
     }).reverse();
   },
-  parse_log_entry: function(log_entry, field, date_range) {
+  parse_log_entry(log_entry, field, date_range) {
     var parsed_entry;
     parsed_entry = {};
 
@@ -138,7 +138,7 @@ export default {
     );
     return parsed_entry;
   },
-  in_range: function(date, date_range) {
+  in_range(date, date_range) {
     var ref;
     if (date_range === null || (date_range[0] <= (ref = new Date(date)) && ref <= date_range[1])) {
       return true;

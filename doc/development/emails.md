@@ -19,7 +19,7 @@ The previews live in [`app/mailers/previews`][previews] and can be viewed at
 
 See the [Rails guides] for more info.
 
-[previews]: https://gitlab.com/gitlab-org/gitlab-ce/tree/master/app/mailers/previews
+[previews]: https://gitlab.com/gitlab-org/gitlab-foss/tree/master/app/mailers/previews
 [Rails guides]: http://guides.rubyonrails.org/action_mailer_basics.html#previewing-emails
 
 ## Incoming email

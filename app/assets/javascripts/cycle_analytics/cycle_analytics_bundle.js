@@ -74,7 +74,7 @@ export default () => {
       // after a group is selected the cycle analyitcs data will be fetched). Once the
       // old (current) page has been removed this entire created method as well as the
       // variable itself can be completely removed.
-      // Follow up issue: https://gitlab.com/gitlab-org/gitlab-ce/issues/64490
+      // Follow up issue: https://gitlab.com/gitlab-org/gitlab-foss/issues/64490
       if (cycleAnalyticsEl.dataset.requestPath) this.fetchCycleAnalyticsData();
     },
     methods: {

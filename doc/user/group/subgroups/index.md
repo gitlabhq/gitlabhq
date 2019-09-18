@@ -5,7 +5,7 @@ type: reference, howto, concepts
 # Subgroups
 
 NOTE: **Note:**
-[Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/2772) in GitLab 9.0.
+[Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/2772) in GitLab 9.0.
 
 Subgroups, also known as nested groups or hierarchical groups, allow you to have up to 20
 levels of groups.
@@ -181,10 +181,10 @@ Here's a list of what you can't do with subgroups:
   with `group`, but can be shared with `group/subgroup02` or
   `group/subgroup01/subgroup03`.
 
-[ce-2772]: https://gitlab.com/gitlab-org/gitlab-ce/issues/2772
+[ce-2772]: https://gitlab.com/gitlab-org/gitlab-foss/issues/2772
 [permissions]: ../../permissions.md#group-members-permissions
 [reserved]:  ../../reserved_names.md
-[issue]: https://gitlab.com/gitlab-org/gitlab-ce/issues/30472#note_27747600
+[issue]: https://gitlab.com/gitlab-org/gitlab-foss/issues/30472#note_27747600
 
 <!-- ## Troubleshooting
 
