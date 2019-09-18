@@ -66,10 +66,14 @@ From there, you can see the import statuses of your Gitea repositories.
 - whereas those that are not yet imported will have an **Import** button on the
   right side of the table.
 
-If you want, you can import all your Gitea projects in one go by hitting
-**Import all projects** in the upper left corner.
+You also can:
 
-![Gitea importer page](img/import_projects_from_github_importer.png)
+- Import all your Gitea projects in one go by hitting **Import all projects** in
+  the upper left corner
+- Filter projects by name. If filter is applied, hitting **Import all projects**
+  will only import matched projects
+
+![Gitea importer page](img/import_projects_from_gitea_importer_v12_3.png)
 
 ---
 

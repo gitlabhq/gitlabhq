@@ -5,6 +5,7 @@ import Poll from '~/lib/utils/poll';
 import createFlash from '~/flash';
 import { s__, sprintf } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
+import { jobsPathWithFilter, reposPathWithFilter } from './getters';
 
 let eTagPoll;
 
@@ -19,16 +20,20 @@ export const restartJobsPolling = () => {
 };
 
 export const setInitialData = ({ commit }, data) => commit(types.SET_INITIAL_DATA, data);
+export const setFilter = ({ commit }, filter) => commit(types.SET_FILTER, filter);
 
 export const requestRepos = ({ commit }, repos) => commit(types.REQUEST_REPOS, repos);
 export const receiveReposSuccess = ({ commit }, repos) =>
   commit(types.RECEIVE_REPOS_SUCCESS, repos);
 export const receiveReposError = ({ commit }) => commit(types.RECEIVE_REPOS_ERROR);
 export const fetchRepos = ({ state, dispatch }) => {
+  dispatch('stopJobsPolling');
   dispatch('requestRepos');
 
+  const { provider } = state;
+
   return axios
-    .get(state.reposPath)
+    .get(reposPathWithFilter(state))
     .then(({ data }) =>
       dispatch('receiveReposSuccess', convertObjectPropsToCamelCase(data, { deep: true })),
     )
@@ -36,7 +41,7 @@ export const fetchRepos = ({ state, dispatch }) => {
     .catch(() => {
       createFlash(
         sprintf(s__('ImportProjects|Requesting your %{provider} repositories failed'), {
-          provider: state.provider,
+          provider,
         }),
       );
 
@@ -77,16 +82,23 @@ export const fetchImport = ({ state, dispatch }, { newName, targetNamespace, rep
 export const receiveJobsSuccess = ({ commit }, updatedProjects) =>
   commit(types.RECEIVE_JOBS_SUCCESS, updatedProjects);
 export const fetchJobs = ({ state, dispatch }) => {
-  if (eTagPoll) return;
+  const { filter } = state;
+
+  if (eTagPoll) {
+    stopJobsPolling();
+    clearJobsEtagPoll();
+  }
 
   eTagPoll = new Poll({
     resource: {
-      fetchJobs: () => axios.get(state.jobsPath),
+      fetchJobs: () => axios.get(jobsPathWithFilter(state)),
     },
     method: 'fetchJobs',
     successCallback: ({ data }) =>
       dispatch('receiveJobsSuccess', convertObjectPropsToCamelCase(data, { deep: true })),
-    errorCallback: () => createFlash(s__('ImportProjects|Updating the imported projects failed')),
+    errorCallback: () =>
+      createFlash(s__('ImportProjects|Update of imported projects with realtime changes failed')),
+    data: { filter },
   });
 
   if (!Visibility.hidden()) {

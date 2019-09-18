@@ -4,26 +4,26 @@ module Gitlab
   module Analytics
     module CycleAnalytics
       module StageEvents
-        class MergeRequestLastBuildFinished < SimpleStageEvent
+        class ProductionStageEnd < SimpleStageEvent
           def self.name
-            s_("CycleAnalyticsEvent|Merge request last build finish time")
+            PlanStageStart.name
           end
 
           def self.identifier
-            :merge_request_last_build_finished
+            :production_stage_end
           end
 
           def object_type
-            MergeRequest
+            Issue
           end
 
           def timestamp_projection
-            mr_metrics_table[:latest_build_finished_at]
+            mr_metrics_table[:first_deployed_to_production_at]
           end
 
           # rubocop: disable CodeReuse/ActiveRecord
           def apply_query_customization(query)
-            query.joins(:metrics)
+            query.joins(merge_requests_closing_issues: { merge_request: [:metrics] }).where(mr_metrics_table[:first_deployed_to_production_at].gteq(mr_table[:created_at]))
           end
           # rubocop: enable CodeReuse/ActiveRecord
         end

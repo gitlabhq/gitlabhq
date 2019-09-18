@@ -8261,7 +8261,7 @@ msgstr ""
 msgid "ImportProjects|The repository could not be created."
 msgstr ""
 
-msgid "ImportProjects|Updating the imported projects failed"
+msgid "ImportProjects|Update of imported projects with realtime changes failed"
 msgstr ""
 
 msgid "Improve Issue boards"
@@ -10205,7 +10205,7 @@ msgstr ""
 msgid "No %{header} for this request."
 msgstr ""
 
-msgid "No %{providerTitle} repositories available to import"
+msgid "No %{providerTitle} repositories found"
 msgstr ""
 
 msgid "No Epic"

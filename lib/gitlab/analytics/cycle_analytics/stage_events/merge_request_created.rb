@@ -16,6 +16,10 @@ module Gitlab
           def object_type
             MergeRequest
           end
+
+          def timestamp_projection
+            mr_table[:created_at]
+          end
         end
       end
     end

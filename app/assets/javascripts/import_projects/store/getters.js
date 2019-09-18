@@ -20,3 +20,8 @@ export const isImportingAnyRepo = state => state.reposBeingImported.length > 0;
 export const hasProviderRepos = state => state.providerRepos.length > 0;
 
 export const hasImportedProjects = state => state.importedProjects.length > 0;
+
+export const reposPathWithFilter = ({ reposPath, filter = '' }) =>
+  filter ? `${reposPath}?filter=${filter}` : reposPath;
+export const jobsPathWithFilter = ({ jobsPath, filter = '' }) =>
+  filter ? `${jobsPath}?filter=${filter}` : jobsPath;

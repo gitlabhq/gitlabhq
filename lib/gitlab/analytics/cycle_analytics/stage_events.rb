@@ -18,7 +18,8 @@ module Gitlab
           StageEvents::MergeRequestMerged => 104,
           StageEvents::CodeStageStart => 1_000,
           StageEvents::IssueStageEnd => 1_001,
-          StageEvents::PlanStageStart => 1_002
+          StageEvents::PlanStageStart => 1_002,
+          StageEvents::ProductionStageEnd => 1_003
         }.freeze
 
         EVENTS = ENUM_MAPPING.keys.freeze
@@ -32,7 +33,8 @@ module Gitlab
             StageEvents::MergeRequestCreated
           ],
           StageEvents::IssueCreated => [
-            StageEvents::IssueStageEnd
+            StageEvents::IssueStageEnd,
+            StageEvents::ProductionStageEnd
           ],
           StageEvents::MergeRequestCreated => [
             StageEvents::MergeRequestMerged

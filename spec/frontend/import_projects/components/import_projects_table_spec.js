@@ -93,7 +93,7 @@ describe('ImportProjectsTable', () => {
     return vm.$nextTick().then(() => {
       expect(vm.$el.querySelector('.js-loading-button-icon')).toBeNull();
       expect(vm.$el.querySelector('.table')).toBeNull();
-      expect(vm.$el.innerText).toMatch(`No ${providerTitle} repositories available to import`);
+      expect(vm.$el.innerText).toMatch(`No ${providerTitle} repositories found`);
     });
   });
 
@@ -181,5 +181,11 @@ describe('ImportProjectsTable', () => {
 
         expect(vm.$el.querySelector(`.ic-status_${statusObject.icon}`)).not.toBeNull();
       });
+  });
+
+  it('renders filtering input field', () => {
+    expect(
+      vm.$el.querySelector('input[data-qa-selector="githubish_import_filter_field"]'),
+    ).not.toBeNull();
   });
 });

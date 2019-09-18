@@ -16,6 +16,10 @@ module Gitlab
           def object_type
             Issue
           end
+
+          def timestamp_projection
+            issue_table[:created_at]
+          end
         end
       end
     end

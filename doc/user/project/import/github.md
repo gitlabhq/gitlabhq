@@ -115,10 +115,13 @@ your GitHub repositories are listed.
 
 1. By default, the proposed repository namespaces match the names as they exist in GitHub, but based on your permissions,
    you can choose to edit these names before you proceed to import any of them.
-1. Select the **Import** button next to any number of repositories, or select **Import all repositories**.
+1. Select the **Import** button next to any number of repositories, or select **Import all repositories**. Additionally,
+   you can filter projects by name. If filter is applied, **Import all repositories** only imports matched repositories.
 1. The **Status** column shows the import status of each repository. You can choose to leave the page open and it will
    update in realtime or you can return to it later.
 1. Once a repository has been imported, click its GitLab path to open its GitLab URL.
+
+![Github importer page](img/import_projects_from_github_importer_v12_3.png)
 
 ## Mirroring and pipeline status sharing
 
