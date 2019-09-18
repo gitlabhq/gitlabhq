@@ -119,6 +119,6 @@ Read more about the [Apollo] client in the [Apollo documentation](https://www.ap
 [Apollo]: https://www.apollographql.com/
 [vue-apollo]: https://github.com/Akryum/vue-apollo/
 [feature-flags]: ../feature_flags.md
-[default-client]: https://gitlab.com/gitlab-org/gitlab-foss/blob/master/app/assets/javascripts/lib/graphql.js
+[default-client]: https://gitlab.com/gitlab-org/gitlab/blob/master/app/assets/javascripts/lib/graphql.js
 [vue-test-utils]: https://vue-test-utils.vuejs.org/
 [apollo-link-state]: https://www.apollographql.com/docs/link/links/state.html

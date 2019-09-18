@@ -44,6 +44,8 @@ code_quality:
 # We need to duplicate this job's definition because it seems it's impossible to
 # override an included `only.refs`.
 # See https://gitlab.com/gitlab-org/gitlab/issues/31371.
+# Once https://gitlab.com/gitlab-org/gitlab/merge_requests/16487 will be deployed
+# to GitLab.com, we should be able to use the template and set SAST_DISABLE_DIND: "true".
 sast:
   extends:
     - .default-retry

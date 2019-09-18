@@ -102,7 +102,7 @@
     refs:
       - schedules
     variables:
-      - $REVIEW_APP_CLEANUP && $CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org"
+      - $CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org"
     kubernetes: active
 
 .use-pg:

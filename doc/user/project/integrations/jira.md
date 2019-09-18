@@ -205,4 +205,4 @@ authenticate with the Jira site. You will need to log in to your Jira instance
 and complete the CAPTCHA.
 
 [services-templates]: services_templates.md
-[jira-repo-old-docs]: https://gitlab.com/gitlab-org/gitlab-foss/blob/8-13-stable/doc/project_services/jira.md
+[jira-repo-old-docs]: https://gitlab.com/gitlab-org/gitlab/blob/8-13-stable/doc/project_services/jira.md

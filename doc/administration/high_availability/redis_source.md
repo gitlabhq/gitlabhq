@@ -374,4 +374,4 @@ When in doubt, please read [Redis Sentinel documentation](https://redis.io/topic
 [downloads]: https://about.gitlab.com/downloads
 [restart]: ../restart_gitlab.md#installations-from-source
 [it]: https://gitlab.com/gitlab-org/gitlab-foss/uploads/c4cc8cd353604bd80315f9384035ff9e/The_Internet_IT_Crowd.png
-[resque]: https://gitlab.com/gitlab-org/gitlab-foss/blob/master/config/resque.yml.example
+[resque]: https://gitlab.com/gitlab-org/gitlab/blob/master/config/resque.yml.example

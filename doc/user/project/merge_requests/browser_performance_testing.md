@@ -175,7 +175,7 @@ performance:
       performance: performance.json
 ```
 
-A complete example can be found in our [Auto DevOps CI YML](https://gitlab.com/gitlab-org/gitlab-foss/blob/master/lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml).
+A complete example can be found in our [Auto DevOps CI YML](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml).
 
 ### Previous job definitions
 

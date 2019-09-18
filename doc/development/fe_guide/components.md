@@ -44,7 +44,7 @@ See also the [corresponding UX guide](https://design.gitlab.com/#/components/dro
 
 See also the [corresponding UX guide](https://design.gitlab.com/#/components/modals).
 
-We have a reusable Vue component for modals: [vue_shared/components/gl_modal.vue](https://gitlab.com/gitlab-org/gitlab-foss/blob/master/app/assets/javascripts/vue_shared/components/gl_modal.vue)
+We have a reusable Vue component for modals: [vue_shared/components/gl_modal.vue](https://gitlab.com/gitlab-org/gitlab/blob/master/app/assets/javascripts/vue_shared/components/gl_modal.vue)
 
 Here is an example of how to use it:
 

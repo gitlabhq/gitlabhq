@@ -13,10 +13,6 @@ description: 'Learn how to administer GitLab Pages.'
 GitLab Pages allows for hosting of static sites. It must be configured by an
 administrator. Separate [user documentation][pages-userguide] is available.
 
-Read the [changelog](#changelog) if you are upgrading to a new GitLab
-version as it may include new features and changes needed to be made in your
-configuration.
-
 NOTE: **Note:**
 This guide is for Omnibus GitLab installations. If you have installed
 GitLab from source, see
@@ -432,34 +428,6 @@ Pages are part of the [regular backup][backup] so there is nothing to configure.
 
 You should strongly consider running GitLab pages under a different hostname
 than GitLab to prevent XSS attacks.
-
-## Changelog
-
-GitLab Pages were first introduced in GitLab EE 8.3. Since then, many features
-where added, like custom CNAME and TLS support, and many more are likely to
-come. Below is a brief changelog. If no changes were introduced or a version is
-missing from the changelog, assume that the documentation is the same as the
-latest previous version.
-
----
-
-**GitLab 8.17 ([documentation](https://gitlab.com/gitlab-org/gitlab-foss/blob/8-17-stable/doc/administration/pages/index.md))**
-
-- GitLab Pages were ported to Community Edition in GitLab 8.17.
-- Documentation was refactored to be more modular and easy to follow.
-
-**GitLab 8.5 ([documentation](https://gitlab.com/gitlab-org/gitlab/blob/8-5-stable-ee/doc/pages/administration.md))**
-
-- In GitLab 8.5 we introduced the [gitlab-pages][] daemon which is now the
-  recommended way to set up GitLab Pages.
-- The [NGINX configs][] have changed to reflect this change. So make sure to
-  update them.
-- Custom CNAME and TLS certificates support.
-- Documentation was moved to one place.
-
-**GitLab 8.3 ([documentation](https://gitlab.com/gitlab-org/gitlab/blob/8-3-stable-ee/doc/pages/administration.md))**
-
-- GitLab Pages feature was introduced.
 
 [backup]: ../../raketasks/backup_restore.md
 [ce-14605]: https://gitlab.com/gitlab-org/gitlab-foss/issues/14605

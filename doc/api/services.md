@@ -1189,7 +1189,7 @@ GET /projects/:id/services/jenkins-deprecated
 ```
 
 [jira-doc]: ../user/project/integrations/jira.md
-[old-jira-api]: https://gitlab.com/gitlab-org/gitlab-foss/blob/8-13-stable/doc/api/services.md#jira
+[old-jira-api]: https://gitlab.com/gitlab-org/gitlab/blob/8-13-stable/doc/api/services.md#jira
 
 ## MockCI
 

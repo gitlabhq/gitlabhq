@@ -123,18 +123,18 @@ https://example.com/<namespace>/<project>/-/jobs/artifacts/<ref>/raw/<path_to_fi
 ```
 
 For example, to download the latest artifacts of the job named `coverage` of
-the `master` branch of the `gitlab-ce` project that belongs to the `gitlab-org`
+the `master` branch of the `gitlab` project that belongs to the `gitlab-org`
 namespace, the URL would be:
 
 ```
-https://gitlab.com/gitlab-org/gitlab-foss/-/jobs/artifacts/master/download?job=coverage
+https://gitlab.com/gitlab-org/gitlab/-/jobs/artifacts/master/download?job=coverage
 ```
 
 To download the file `coverage/index.html` from the same
 artifacts use the following URL:
 
 ```
-https://gitlab.com/gitlab-org/gitlab-foss/-/jobs/artifacts/master/raw/coverage/index.html?job=coverage
+https://gitlab.com/gitlab-org/gitlab/-/jobs/artifacts/master/raw/coverage/index.html?job=coverage
 ```
 
 There is also a URL to browse the latest job artifacts:
@@ -146,7 +146,7 @@ https://example.com/<namespace>/<project>/-/jobs/artifacts/<ref>/browse?job=<job
 For example:
 
 ```
-https://gitlab.com/gitlab-org/gitlab-foss/-/jobs/artifacts/master/browse?job=coverage
+https://gitlab.com/gitlab-org/gitlab/-/jobs/artifacts/master/browse?job=coverage
 ```
 
 There is also a URL to specific files, including html files that
@@ -160,7 +160,7 @@ For example, when a job `coverage` creates the artifact `htmlcov/index.html`,
 you can access it at:
 
 ```
-https://gitlab.com/gitlab-org/gitlab-foss/-/jobs/artifacts/master/file/htmlcov/index.html?job=coverage
+https://gitlab.com/gitlab-org/gitlab/-/jobs/artifacts/master/file/htmlcov/index.html?job=coverage
 ```
 
 The latest builds are also exposed in the UI in various places. Specifically,

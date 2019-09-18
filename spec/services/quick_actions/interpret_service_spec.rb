@@ -586,6 +586,22 @@ describe QuickActions::InterpretService do
 
         expect(message).to eq('Made this issue confidential.')
       end
+
+      context 'when issuable is already confidential' do
+        before do
+          issuable.update(confidential: true)
+        end
+
+        it 'does not return the success message' do
+          _, _, message = service.execute(content, issuable)
+
+          expect(message).to be_empty
+        end
+
+        it 'is not part of the available commands' do
+          expect(service.available_commands(issuable)).not_to include(a_hash_including(name: :confidential))
+        end
+      end
     end
 
     shared_examples 'shrug command' do

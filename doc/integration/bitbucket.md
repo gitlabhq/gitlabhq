@@ -137,7 +137,7 @@ you can [disable Sign-Ins in the admin panel](omniauth.md#enable-or-disable-sign
 
 [init-oauth]: omniauth.md#initial-omniauth-configuration
 [bb-import]: ../workflow/importing/import_projects_from_bitbucket.md
-[bb-old]: https://gitlab.com/gitlab-org/gitlab-foss/blob/8-14-stable/doc/integration/bitbucket.md
+[bb-old]: https://gitlab.com/gitlab-org/gitlab/blob/8-14-stable/doc/integration/bitbucket.md
 [bitbucket-docs]: https://confluence.atlassian.com/bitbucket/use-the-ssh-protocol-with-bitbucket-cloud-221449711.html#UsetheSSHprotocolwithBitbucketCloud-KnownhostorBitbucket%27spublickeyfingerprints
 [reconfigure GitLab]: ../administration/restart_gitlab.md#omnibus-gitlab-reconfigure
 [restart]: ../administration/restart_gitlab.md#installations-from-source

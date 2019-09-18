@@ -13,10 +13,12 @@ module QA
       end
 
       attribute :id
+      attribute :assignee_ids
       attribute :labels
       attribute :title
 
       def initialize
+        @assignee_ids = []
         @labels = []
       end
 
@@ -42,6 +44,7 @@ module QA
 
       def api_post_body
         {
+          assignee_ids: assignee_ids,
           labels: labels,
           title: title
         }.tap do |hash|

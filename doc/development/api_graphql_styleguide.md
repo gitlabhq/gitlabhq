@@ -526,7 +526,7 @@ Using these helpers, we can build specs like this:
 let(:mutation) do
   graphql_mutation(
     :merge_request_set_wip,
-    project_path: 'gitlab-org/gitlab-ce',
+    project_path: 'gitlab-org/gitlab-foss',
     iid: '1',
     wip: true
   )

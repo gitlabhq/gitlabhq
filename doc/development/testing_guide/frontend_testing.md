@@ -38,7 +38,7 @@ which could arise (especially with testing against browser specific features).
 - Jest runs in a Node.js environment, not in a browser. Support for running Jest tests in a browser [is planned](https://gitlab.com/gitlab-org/gitlab-foss/issues/58205).
 - Because Jest runs in a Node.js environment, it uses [jsdom](https://github.com/jsdom/jsdom) by default. See also its [limitations](#limitations-of-jsdom) below.
 - Jest does not have access to Webpack loaders or aliases.
-  The aliases used by Jest are defined in its [own config](https://gitlab.com/gitlab-org/gitlab-foss/blob/master/jest.config.js).
+  The aliases used by Jest are defined in its [own config](https://gitlab.com/gitlab-org/gitlab/blob/master/jest.config.js).
 - All calls to `setTimeout` and `setInterval` are mocked away. See also [Jest Timer Mocks](https://jestjs.io/docs/en/timer-mocks).
 - `rewire` is not required because Jest supports mocking modules. See also [Manual Mocks](https://jestjs.io/docs/en/manual-mocks).
 - No [context object](https://jasmine.github.io/tutorials/your_first_suite#section-The_%3Ccode%3Ethis%3C/code%3E_keyword) is passed to tests in Jest.
@@ -67,13 +67,13 @@ Running `yarn jest-debug` will run Jest in debug mode, allowing you to debug/ins
 ### Timeout error
 
 The default timeout for Jest is set in
-[`/spec/frontend/test_setup.js`](https://gitlab.com/gitlab-org/gitlab-foss/blob/master/spec/frontend/test_setup.js).
+[`/spec/frontend/test_setup.js`](https://gitlab.com/gitlab-org/gitlab/blob/master/spec/frontend/test_setup.js).
 
 If your test exceeds that time, it will fail.
 
 If you cannot improve the performance of the tests, you can increase the timeout
 for a specific test using
-[`setTestTimeout`](https://gitlab.com/gitlab-org/gitlab-foss/blob/master/spec/frontend/helpers/timeout.js).
+[`setTestTimeout`](https://gitlab.com/gitlab-org/gitlab/blob/master/spec/frontend/helpers/timeout.js).
 
 ```javascript
 import { setTestTimeout } from 'helpers/timeout';
@@ -388,7 +388,7 @@ it('renders something', done => {
 ##### `setTimeout()` / `setInterval()` in application
 
 If the application itself is waiting for some time, mock await the waiting. In Jest this is already
-[done by default](https://gitlab.com/gitlab-org/gitlab-foss/blob/a2128edfee799e49a8732bfa235e2c5e14949c68/jest.config.js#L47)
+[done by default](https://gitlab.com/gitlab-org/gitlab/blob/a2128edfee799e49a8732bfa235e2c5e14949c68/jest.config.js#L47)
 (see also [Jest Timer Mocks](https://jestjs.io/docs/en/timer-mocks)). In Karma you can use the
 [Jasmine mock clock](https://jasmine.github.io/api/2.9/Clock.html).
 
@@ -1048,7 +1048,7 @@ testAction(
 );
 ```
 
-Check an example in [spec/javascripts/ide/stores/actions_spec.jsspec/javascripts/ide/stores/actions_spec.js](https://gitlab.com/gitlab-org/gitlab-foss/blob/master/spec/javascripts/ide/stores/actions_spec.js).
+Check an example in [spec/javascripts/ide/stores/actions_spec.jsspec/javascripts/ide/stores/actions_spec.js](https://gitlab.com/gitlab-org/gitlab/blob/master/spec/javascripts/ide/stores/actions_spec.js).
 
 ### Vue Helper: `mountComponent`
 

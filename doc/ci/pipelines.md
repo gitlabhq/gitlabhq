@@ -204,7 +204,7 @@ the following (you can even use them interchangeably):
 - A colon (`:`).
 
 NOTE: **Note:**
-More specifically, it uses [this](https://gitlab.com/gitlab-org/gitlab-foss/blob/2f3dc314f42dbd79813e6251792853bc231e69dd/app/models/commit_status.rb#L99) regular expression: `\d+[\s:\/\\]+\d+\s*`.
+More specifically, it uses [this](https://gitlab.com/gitlab-org/gitlab/blob/2f3dc314f42dbd79813e6251792853bc231e69dd/app/models/commit_status.rb#L99) regular expression: `\d+[\s:\/\\]+\d+\s*`.
 
 #### How grouping works
 

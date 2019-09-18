@@ -177,11 +177,15 @@ sentry_dsn = "X"
 GitLab.com runs [Sidekiq][sidekiq] with arguments `--timeout=4 --concurrency=4`
 and the following environment variables:
 
-| Setting                                 | GitLab.com | Default   |
-|--------                                 |----------- |--------   |
-| `SIDEKIQ_MEMORY_KILLER_MAX_RSS`         | `1000000`  | `2000000` |
-| `SIDEKIQ_MEMORY_KILLER_SHUTDOWN_SIGNAL` | `SIGKILL`  | -         |
-| `SIDEKIQ_LOG_ARGUMENTS`                 | `1`        | -         |
+| Setting                                    | GitLab.com | Default   |
+|--------                                    |----------- |--------   |
+| `SIDEKIQ_DAEMON_MEMORY_KILLER`             | -          | -         |
+| `SIDEKIQ_MEMORY_KILLER_MAX_RSS`            | `16000000` | `2000000` |
+| `SIDEKIQ_MEMORY_KILLER_HARD_LIMIT_RSS`     | -          | -         |
+| `SIDEKIQ_MEMORY_KILLER_CHECK_INTERVAL`     | -          | `3`       |
+| `SIDEKIQ_MEMORY_KILLER_GRACE_TIME`         | -          | `900`     |
+| `SIDEKIQ_MEMORY_KILLER_SHUTDOWN_WAIT`      | -          | `30`      |
+| `SIDEKIQ_LOG_ARGUMENTS`                    | `1`        | -         |
 
 ## Cron jobs
 

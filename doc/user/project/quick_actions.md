@@ -64,8 +64,8 @@ The following quick actions are applicable to descriptions, discussions and thre
 | `/create_merge_request <branch name>` | ✓     |               |      | Create a new merge request starting from the current issue |
 | `/relate #issue1 #issue2`             | ✓     |               |      | Mark issues as related **(STARTER)** |
 | `/move <path/to/project>`             | ✓     |               |      | Move this issue to another project |
-| `/zoom <Zoom URL>`                    | ✓     |               |      | Add Zoom meeting to this issue. ([Introduced in GitLab 12.3](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/16609) enabled by feature flag `issue_zoom_integration`) |
-| `/remove_zoom`                        | ✓     |               |      | Remove Zoom meeting from this issue. ([Introduced in GitLab 12.3](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/16609) enabled by feature flag `issue_zoom_integration`) |
+| `/zoom <Zoom URL>`                    | ✓     |               |      | Add Zoom meeting to this issue. ([Introduced in GitLab 12.3](https://gitlab.com/gitlab-org/gitlab/merge_requests/16609) enabled by feature flag `issue_zoom_integration`) |
+| `/remove_zoom`                        | ✓     |               |      | Remove Zoom meeting from this issue. ([Introduced in GitLab 12.3](https://gitlab.com/gitlab-org/gitlab/merge_requests/16609) enabled by feature flag `issue_zoom_integration`) |
 | `/target_branch <local branch name>`  |       | ✓             |      | Set target branch |
 | `/wip`                                |       | ✓             |      | Toggle the Work In Progress status |
 | `/approve`                            |       | ✓             |      | Approve the merge request |

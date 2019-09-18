@@ -9,7 +9,7 @@ that will create:
 - A deb package for Ubuntu 16.04, available as a build artifact, and
 - A docker image, which is pushed to [Omnibus GitLab's container
   registry](https://gitlab.com/gitlab-org/omnibus-gitlab/container_registry)
-  (images titled `gitlab-ce` and `gitlab-ee` respectively and image tag is the
+  (images titled `gitlab-foss` and `gitlab-ee` respectively and image tag is the
   commit which triggered the pipeline).
 
 When you push a commit to either the GitLab CE or GitLab EE project, the

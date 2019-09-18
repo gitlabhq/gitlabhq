@@ -170,7 +170,7 @@ still having access the class's implementation with `super`.
 
 There are a few gotchas with it:
 
-- you should always [`extend ::Gitlab::Utils::Override`](utilities.md#overridehttpsgitlabcomgitlab-orggitlab-fossblobmasterlibgitlabutilsoverriderb) and use `override` to
+- you should always [`extend ::Gitlab::Utils::Override`](utilities.md#override) and use `override` to
   guard the "overrider" method to ensure that if the method gets renamed in
   CE, the EE override won't be silently forgotten.
 - when the "overrider" would add a line in the middle of the CE

@@ -99,7 +99,7 @@ Formal definitions:
 - <https://en.wikipedia.org/wiki/White-box_testing>
 
 These kind of tests ensure the GitLab *Rails* application (i.e.
-`gitlab-ce`/`gitlab-ee`) works as expected from a *browser* point of view.
+`gitlab-foss`/`gitlab`) works as expected from a *browser* point of view.
 
 Note that:
 

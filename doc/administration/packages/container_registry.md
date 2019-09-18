@@ -37,7 +37,7 @@ If you have installed GitLab from source:
 1. After the installation is complete, you will have to configure the Registry's
    settings in `gitlab.yml` in order to enable it.
 1. Use the sample NGINX configuration file that is found under
-   [`lib/support/nginx/registry-ssl`](https://gitlab.com/gitlab-org/gitlab-foss/blob/master/lib/support/nginx/registry-ssl) and edit it to match the
+   [`lib/support/nginx/registry-ssl`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/support/nginx/registry-ssl) and edit it to match the
    `host`, `port` and TLS certs paths.
 
 The contents of `gitlab.yml` are:

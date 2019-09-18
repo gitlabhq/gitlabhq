@@ -4,6 +4,7 @@ import $ from 'jquery';
 import { visitUrl } from '~/lib/utils/url_utility';
 import UsersSelect from '~/users_select';
 import { isMetaClick } from '~/lib/utils/common_utils';
+import { addDelimiter } from '~/lib/utils/text_utility';
 import { __ } from '~/locale';
 import flash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
@@ -145,8 +146,8 @@ export default class Todos {
 
   updateBadges(data) {
     $(document).trigger('todo:toggle', data.count);
-    document.querySelector('.todos-pending .badge').innerHTML = data.count;
-    document.querySelector('.todos-done .badge').innerHTML = data.done_count;
+    document.querySelector('.todos-pending .badge').innerHTML = addDelimiter(data.count);
+    document.querySelector('.todos-done .badge').innerHTML = addDelimiter(data.done_count);
   }
 
   goToTodoUrl(e) {

@@ -1,15 +1,3 @@
-.review-base:
-  extends:
-    - .default-tags
-    - .default-retry
-    - .default-only
-    - .only-review
-    - .only-code-qa-changes
-  image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-charts-build-base
-  dependencies: []
-  before_script:
-    - source scripts/utils.sh
-
 .review-docker:
   extends:
     - .default-tags
@@ -41,6 +29,25 @@ build-qa-image:
     - echo "${CI_JOB_TOKEN}" | docker login --username gitlab-ci-token --password-stdin ${CI_REGISTRY}
     - time docker push ${QA_IMAGE}
 
+schedule:review-cleanup:
+  extends:
+    - .default-tags
+    - .default-retry
+    - .default-only
+    - .only-code-qa-changes
+    - .only-review-schedules
+  stage: prepare
+  image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-charts-build-base
+  allow_failure: true
+  environment:
+    name: review/auto-cleanup
+    action: stop
+  before_script:
+    - source scripts/utils.sh
+    - install_gitlab_gem
+  script:
+    - ruby -rrubygems scripts/review_apps/automated_cleanup.rb
+
 .review-build-cng-base:
   extends:
     - .default-only
@@ -68,9 +75,15 @@ schedule:review-build-cng:
   needs: ["gitlab:assets:compile"]
 
 .review-deploy-base:
-  extends: .review-base
-  allow_failure: true
+  extends:
+    - .default-tags
+    - .default-retry
+    - .default-only
+    - .only-code-qa-changes
   stage: review
+  image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-charts-build-base
+  dependencies: []
+  allow_failure: true
   variables:
     HOST_SUFFIX: "${CI_ENVIRONMENT_SLUG}"
     DOMAIN: "-${CI_ENVIRONMENT_SLUG}.${REVIEW_APPS_DOMAIN}"
@@ -105,6 +118,7 @@ schedule:review-build-cng:
 review-deploy:
   extends:
     - .review-deploy-base
+    - .only-review
   needs: ["review-build-cng"]
 
 schedule:review-deploy:
@@ -148,6 +162,7 @@ review-cleanup-failed-deployment:
     - .only-review
     - .only-code-qa-changes
   stage: qa
+  allow_failure: true
   variables:
     QA_ARTIFACTS_DIR: "${CI_PROJECT_DIR}/qa"
     QA_CAN_TEST_GIT_PROTOCOL_V2: "false"
@@ -176,19 +191,65 @@ review-cleanup-failed-deployment:
 
 review-qa-smoke:
   extends: .review-qa-base
-  allow_failure: true
   script:
     - gitlab-qa Test::Instance::Smoke "${QA_IMAGE}" "${CI_ENVIRONMENT_URL}"
 
 review-qa-all:
   extends: .review-qa-base
-  allow_failure: true
   when: manual
   parallel: 5
   script:
     - export KNAPSACK_REPORT_PATH=knapsack/${CI_PROJECT_NAME}/review-qa-all_master_report.json
     - export KNAPSACK_TEST_FILE_PATTERN=qa/specs/features/**/*_spec.rb
     - gitlab-qa Test::Instance::Any "${QA_IMAGE}" "${CI_ENVIRONMENT_URL}" -- --format RspecJunitFormatter --out tmp/rspec-${CI_JOB_ID}.xml --format html --out tmp/rspec.htm --color --format documentation
+
+.review-performance-base:
+  extends:
+    - .review-docker
+    - .only-code-qa-changes
+  stage: qa
+  allow_failure: true
+  before_script:
+    - export CI_ENVIRONMENT_URL="$(cat review_app_url.txt)"
+    - echo "${CI_ENVIRONMENT_URL}"
+    - mkdir -p gitlab-exporter
+    - wget -O ./gitlab-exporter/index.js https://gitlab.com/gitlab-org/gl-performance/raw/master/index.js
+    - mkdir -p sitespeed-results
+  script:
+    - docker run --shm-size=1g --rm -v "$(pwd)":/sitespeed.io sitespeedio/sitespeed.io:6.3.1 --plugins.add ./gitlab-exporter --outputFolder sitespeed-results "${CI_ENVIRONMENT_URL}"
+  after_script:
+    - mv sitespeed-results/data/performance.json performance.json
+  artifacts:
+    paths:
+      - sitespeed-results/
+    reports:
+      performance: performance.json
+
+review-performance:
+  extends:
+    - .review-performance-base
+    - .only-review
+  before_script:
+    - export CI_ENVIRONMENT_URL="$(cat review_app_url.txt)"
+    - echo "${CI_ENVIRONMENT_URL}"
+    - mkdir -p gitlab-exporter
+    - wget -O ./gitlab-exporter/index.js https://gitlab.com/gitlab-org/gl-performance/raw/master/index.js
+    - mkdir -p sitespeed-results
+  script:
+    - docker run --shm-size=1g --rm -v "$(pwd)":/sitespeed.io sitespeedio/sitespeed.io:6.3.1 --plugins.add ./gitlab-exporter --outputFolder sitespeed-results "${CI_ENVIRONMENT_URL}"
+  after_script:
+    - mv sitespeed-results/data/performance.json performance.json
+  artifacts:
+    paths:
+      - sitespeed-results/
+    reports:
+      performance: performance.json
+
+schedule:review-performance:
+  extends:
+    - .review-performance-base
+    - .only-review-schedules
+  dependencies: ["schedule:review-deploy"]
 
 parallel-spec-reports:
   extends:
@@ -219,46 +280,6 @@ parallel-spec-reports:
     - cd -
     - '[[ -f $NEW_PARALLEL_SPECS_REPORT ]] || echo "{}" > ${NEW_PARALLEL_SPECS_REPORT}'
     - scripts/merge-html-reports ${NEW_PARALLEL_SPECS_REPORT} ${BASE_ARTIFACT_URL}${ARTIFACT_DIRS} qa/gitlab-qa-run-*/**/rspec.htm
-
-review-performance:
-  extends: .review-qa-base
-  allow_failure: true
-  before_script:
-    - export CI_ENVIRONMENT_URL="$(cat review_app_url.txt)"
-    - echo "${CI_ENVIRONMENT_URL}"
-    - mkdir -p gitlab-exporter
-    - wget -O ./gitlab-exporter/index.js https://gitlab.com/gitlab-org/gl-performance/raw/master/index.js
-    - mkdir -p sitespeed-results
-  script:
-    - docker run --shm-size=1g --rm -v "$(pwd)":/sitespeed.io sitespeedio/sitespeed.io:6.3.1 --plugins.add ./gitlab-exporter --outputFolder sitespeed-results "${CI_ENVIRONMENT_URL}"
-  after_script:
-    - mv sitespeed-results/data/performance.json performance.json
-  artifacts:
-    paths:
-      - sitespeed-results/
-    reports:
-      performance: performance.json
-
-schedule:review-performance:
-  extends:
-    - review-performance
-    - .only-review-schedules
-  dependencies: ["schedule:review-deploy"]
-
-schedule:review-cleanup:
-  extends:
-    - .review-base
-    - .only-review-schedules
-  stage: prepare
-  allow_failure: true
-  environment:
-    name: review/auto-cleanup
-    action: stop
-  before_script:
-    - source scripts/utils.sh
-    - install_gitlab_gem
-  script:
-    - ruby -rrubygems scripts/review_apps/automated_cleanup.rb
 
 danger-review:
   extends:

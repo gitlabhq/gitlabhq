@@ -77,4 +77,4 @@ new Foo({ container: '.my-element' });
 
 You can find an example of the above in this [class][container-class-example];
 
-[container-class-example]: https://gitlab.com/gitlab-org/gitlab-foss/blob/master/app/assets/javascripts/mini_pipeline_graph_dropdown.js
+[container-class-example]: https://gitlab.com/gitlab-org/gitlab/blob/master/app/assets/javascripts/mini_pipeline_graph_dropdown.js

@@ -16,23 +16,23 @@ graph TD
     review-build-cng -->|once the `review-build-cng` job is done| review-deploy
     review-deploy -->|once the `review-deploy` job is done| review-qa-smoke
 
-subgraph "1. gitlab-ce/ee `prepare` stage"
+subgraph "1. gitlab-foss/gitlab `prepare` stage"
     build-qa-image
     end
 
-subgraph "2. gitlab-ce/ee `test` stage"
+subgraph "2. gitlab-foss/gitlab `test` stage"
     gitlab:assets:compile
     end
 
-subgraph "3. gitlab-ce/ee `review-prepare` stage"
+subgraph "3. gitlab-foss/gitlab `review-prepare` stage"
     review-build-cng
     end
 
-subgraph "4. gitlab-ce/ee `review` stage"
+subgraph "4. gitlab-foss/gitlab `review` stage"
     review-deploy["review-deploy<br><br>Helm deploys the Review App using the Cloud<br/>Native images built by the CNG-mirror pipeline.<br><br>Cloud Native images are deployed to the `review-apps-ce` or `review-apps-ee`<br>Kubernetes (GKE) cluster, in the GCP `gitlab-review-apps` project."]
     end
 
-subgraph "5. gitlab-ce/ee `qa` stage"
+subgraph "5. gitlab-foss/gitlab `qa` stage"
     review-qa-smoke[review-qa-smoke<br><br>gitlab-qa runs the smoke suite against the Review App.]
     end
 
@@ -193,7 +193,7 @@ The following items may help diagnose this:
 - [Instance Group size in GCP](https://console.cloud.google.com/compute/instanceGroups/details/us-central1-b/gke-review-apps-ee-preemp-n1-standard-8affc0f5-grp?project=gitlab-review-apps&tab=monitoring&graph=GCE_SIZE&duration=P30D) - aids in identifying load spikes on the cluster. Kubernetes will add nodes up to 220 based on total resource requests.
 - `kubectl top nodes --sort-by=cpu` - can identify if node spikes are common or load on specific nodes which may get rebalanced by the Kubernetes scheduler.
 - `kubectl top pods --sort-by=cpu` -
-- [K9s] - K9s is a powerful command line dashboard which allows you to filter by labels. This can help identify trends with apps exceeding the [review-app resource requests](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/scripts/review_apps/base-config.yaml). Kubernetes will schedule pods to nodes based on resource requests and allow for CPU usage up to the limits.
+- [K9s] - K9s is a powerful command line dashboard which allows you to filter by labels. This can help identify trends with apps exceeding the [review-app resource requests](https://gitlab.com/gitlab-org/gitlab/blob/master/scripts/review_apps/base-config.yaml). Kubernetes will schedule pods to nodes based on resource requests and allow for CPU usage up to the limits.
   - In K9s you can sort or add filters by typing the `/` character
     - `-lrelease=<review-app-slug>` - filters down to all pods for a release. This aids in determining what is having issues in a single deployment
     - `-lapp=<app>` - filters down to all pods for a specific app. This aids in determining resource usage by app.
@@ -311,8 +311,8 @@ find a way to limit it to only us.**
 [review-apps-ee]: https://console.cloud.google.com/kubernetes/clusters/details/us-central1-b/review-apps-ee?project=gitlab-review-apps
 [review-apps.sh]: https://gitlab.com/gitlab-org/gitlab/blob/master/scripts/review_apps/review-apps.sh
 [automated_cleanup.rb]: https://gitlab.com/gitlab-org/gitlab/blob/master/scripts/review_apps/automated_cleanup.rb
-[Auto-DevOps.gitlab-ci.yml]: https://gitlab.com/gitlab-org/gitlab-foss/blob/master/lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml
-[gitlab-ci-yml]: https://gitlab.com/gitlab-org/gitlab-foss/blob/master/.gitlab-ci.yml
+[Auto-DevOps.gitlab-ci.yml]: https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml
+[gitlab-ci-yml]: https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab-ci.yml
 [gitlab-k8s-integration]: ../../user/project/clusters/index.md
 [K9s]: https://github.com/derailed/k9s
 [password-bug]: https://gitlab.com/gitlab-org/gitlab-foss/issues/53621

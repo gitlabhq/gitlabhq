@@ -455,5 +455,5 @@ than GitLab to prevent XSS attacks.
 [pages-userguide]: ../../user/project/pages/index.md
 [restart]: ../restart_gitlab.md#installations-from-source
 [gitlab-pages]: https://gitlab.com/gitlab-org/gitlab-pages/tree/v0.4.0
-[gl-example]: https://gitlab.com/gitlab-org/gitlab-foss/blob/master/lib/support/init.d/gitlab.default.example
+[gl-example]: https://gitlab.com/gitlab-org/gitlab/blob/master/lib/support/init.d/gitlab.default.example
 [shared runners]: ../../ci/runners/README.md

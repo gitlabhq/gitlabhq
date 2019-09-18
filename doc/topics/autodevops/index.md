@@ -1265,7 +1265,7 @@ curl --data "value=true" --header "PRIVATE-TOKEN: personal_access_token" https:/
 [review-app]: ../../ci/review_apps/index.md
 [container-registry]: ../../user/packages/container_registry/index.md
 [postgresql]: https://www.postgresql.org/
-[Auto DevOps template]: https://gitlab.com/gitlab-org/gitlab-foss/blob/master/lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml
+[Auto DevOps template]: https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml
 [ee]: https://about.gitlab.com/pricing/
 [ce-21955]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/21955
 [ce-19507]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/19507

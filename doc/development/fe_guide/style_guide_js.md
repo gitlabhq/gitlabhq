@@ -7,7 +7,7 @@ See the relevant style guides for our guidelines and for information on linting:
 We defer to [Airbnb][airbnb-js-style-guide] on most style-related
 conventions and enforce them with eslint.
 
-See [our current .eslintrc](https://gitlab.com/gitlab-org/gitlab-foss/blob/master/.eslintrc.yml) for specific rules and patterns.
+See [our current .eslintrc](https://gitlab.com/gitlab-org/gitlab/blob/master/.eslintrc.yml) for specific rules and patterns.
 
 ### Common
 
@@ -713,7 +713,7 @@ The goal of this accord is to make sure we are all on the same page.
 - [SCSS](style_guide_scss.md)
 
 [airbnb-js-style-guide]: https://github.com/airbnb/javascript
-[eslintrc]: https://gitlab.com/gitlab-org/gitlab-foss/blob/master/.eslintrc
+[eslintrc]: https://gitlab.com/gitlab-org/gitlab/blob/master/.eslintrc
 [eslint-plugin-vue]: https://github.com/vuejs/eslint-plugin-vue
 [eslint-plugin-vue-rules]: https://github.com/vuejs/eslint-plugin-vue#bulb-rules
 [vue-order]: https://github.com/vuejs/eslint-plugin-vue/blob/master/docs/rules/order-in-components.md

@@ -1,6 +1,6 @@
 # Productivity Analytics **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/12079) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.3 (enabled by feature flags `productivity_analytics`).
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/12079) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.3 (enabled by feature flags `productivity_analytics`).
 
 Track development velocity with Productivity Analytics.
 

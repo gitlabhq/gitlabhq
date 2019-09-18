@@ -25,7 +25,7 @@ Any change that requires access to the **Admin Area** needs to be done in the
 
 GitLab stores a number of secret values in the `/etc/gitlab/gitlab-secrets.json`
 file which *must* be the same on all nodes. Until there is
-a means of automatically replicating these between nodes (see issue [gitlab-org/gitlab-ee#3789]),
+a means of automatically replicating these between nodes (see issue [gitlab-org/gitlab#3789]),
 they must be manually replicated to the **secondary** node.
 
 1. SSH into the **primary** node, and execute the command below:
@@ -299,7 +299,7 @@ See the [troubleshooting document](troubleshooting.md).
 [setup-geo-omnibus]: index.md#using-omnibus-gitlab
 [Hashed Storage]: ../../repository_storage_types.md
 [Disaster Recovery]: ../disaster_recovery/index.md
-[gitlab-org/gitlab-ee#3789]: https://gitlab.com/gitlab-org/gitlab/issues/3789
+[gitlab-org/gitlab#3789]: https://gitlab.com/gitlab-org/gitlab/issues/3789
 [gitlab-com/infrastructure#2821]: https://gitlab.com/gitlab-com/infrastructure/issues/2821
 [omnibus-ssl]: https://docs.gitlab.com/omnibus/settings/ssl.html
 [using-geo]: using_a_geo_server.md

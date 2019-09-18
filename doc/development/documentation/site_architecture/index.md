@@ -18,8 +18,8 @@ from where content is sourced, the `gitlab-docs` project, and the published outp
 
 ```mermaid
   graph LR
-    A[gitlab-ce/doc]
-    B[gitlab-ee/doc]
+    A[gitlab-foss/doc]
+    B[gitlab/doc]
     C[gitlab-runner/docs]
     D[omnibus-gitlab/doc]
     E[charts/doc]

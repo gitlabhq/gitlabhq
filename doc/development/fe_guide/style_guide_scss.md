@@ -13,12 +13,12 @@ led by the [GitLab UI WG](https://gitlab.com/gitlab-com/www-gitlab-com/merge_req
 #### Where are utility classes defined?
 
 - [Bootstrap's Utility Classes](https://getbootstrap.com/docs/4.3/utilities/)
-- [`common.scss`](https://gitlab.com/gitlab-org/gitlab-foss/blob/master/app/assets/stylesheets/framework/common.scss) (old)
-- [`utilities.scss`](https://gitlab.com/gitlab-org/gitlab-foss/blob/master/app/assets/stylesheets/utilities.scss) (new)
+- [`common.scss`](https://gitlab.com/gitlab-org/gitlab/blob/master/app/assets/stylesheets/framework/common.scss) (old)
+- [`utilities.scss`](https://gitlab.com/gitlab-org/gitlab/blob/master/app/assets/stylesheets/utilities.scss) (new)
 
 #### Where should I put new utility classes?
 
-New utility classes should be added to [`utilities.scss`](https://gitlab.com/gitlab-org/gitlab-foss/blob/master/app/assets/stylesheets/utilities.scss). Existing classes include:
+New utility classes should be added to [`utilities.scss`](https://gitlab.com/gitlab-org/gitlab/blob/master/app/assets/stylesheets/utilities.scss). Existing classes include:
 
 | Name | Pattern | Example |
 |------|---------|---------|
@@ -41,8 +41,8 @@ This encourages an organic growth of component classes and prevents the creation
 
 Examples of component classes that were created using "utility-first" include:
 
-- [`.circle-icon-container`](https://gitlab.com/gitlab-org/gitlab-foss/blob/579fa8b8ec7eb38d40c96521f517c9dab8c3b97a/app/assets/stylesheets/framework/icons.scss#L85)
-- [`.d-flex-center`](https://gitlab.com/gitlab-org/gitlab-foss/blob/900083d89cd6af391d26ab7922b3f64fa2839bef/app/assets/stylesheets/framework/common.scss#L425)
+- [`.circle-icon-container`](https://gitlab.com/gitlab-org/gitlab/blob/579fa8b8ec7eb38d40c96521f517c9dab8c3b97a/app/assets/stylesheets/framework/icons.scss#L85)
+- [`.d-flex-center`](https://gitlab.com/gitlab-org/gitlab/blob/900083d89cd6af391d26ab7922b3f64fa2839bef/app/assets/stylesheets/framework/common.scss#L425)
 
 Inspiration:
 

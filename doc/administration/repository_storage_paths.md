@@ -118,6 +118,6 @@ randomly placed on one of the selected paths.
 [restart-gitlab]: restart_gitlab.md#installations-from-source
 [reconfigure-gitlab]: restart_gitlab.md#omnibus-gitlab-reconfigure
 [backups]: ../raketasks/backup_restore.md
-[raketask]: https://gitlab.com/gitlab-org/gitlab-foss/blob/033e5423a2594e08a7ebcd2379bd2331f4c39032/lib/backup/repository.rb#L54-56
-[repospath]: https://gitlab.com/gitlab-org/gitlab-foss/blob/8-9-stable/config/gitlab.yml.example#L457
+[raketask]: https://gitlab.com/gitlab-org/gitlab/blob/033e5423a2594e08a7ebcd2379bd2331f4c39032/lib/backup/repository.rb#L54-56
+[repospath]: https://gitlab.com/gitlab-org/gitlab/blob/8-9-stable/config/gitlab.yml.example#L457
 [ce-11449]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/11449

@@ -1049,7 +1049,7 @@ If you're running into an issue with a component not outlined here, be sure to c
 ## Configure using Omnibus
 
 **Note**: We recommend that you follow the instructions here for a full [PostgreSQL cluster](#high-availability-with-gitlab-omnibus-premium-only).
-If you are reading this section due to an old bookmark, you can find that old documentation [in the repository](https://gitlab.com/gitlab-org/gitlab-foss/blob/v10.1.4/doc/administration/high_availability/database.md#configure-using-omnibus).
+If you are reading this section due to an old bookmark, you can find that old documentation [in the repository](https://gitlab.com/gitlab-org/gitlab/blob/v10.1.4/doc/administration/high_availability/database.md#configure-using-omnibus).
 
 Read more on high-availability configuration:
 

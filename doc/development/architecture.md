@@ -614,7 +614,7 @@ GitLab Shell has a configuration file at `/home/git/gitlab-shell/config.yml`.
 
 ### Maintenance Tasks
 
-[GitLab](https://gitlab.com/gitlab-org/gitlab/tree/master) provides rake tasks with which you see version information and run a quick check on your configuration to ensure it is configured properly within the application. See [maintenance rake tasks](https://gitlab.com/gitlab-org/gitlab-foss/blob/master/doc/raketasks/maintenance.md).
+[GitLab](https://gitlab.com/gitlab-org/gitlab/tree/master) provides rake tasks with which you see version information and run a quick check on your configuration to ensure it is configured properly within the application. See [maintenance rake tasks](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/raketasks/maintenance.md).
 In a nutshell, do the following:
 
 ```
@@ -638,7 +638,7 @@ We've also detailed [our architecture of GitLab.com](https://about.gitlab.com/ha
 [unicorn-omnibus]: https://docs.gitlab.com/omnibus/settings/unicorn.html
 [unicorn-charts]: https://docs.gitlab.com/charts/charts/gitlab/unicorn/
 [unicorn-source]: ../install/installation.md#configure-it
-[gitlab-yml]: https://gitlab.com/gitlab-org/gitlab-foss/blob/master/config/gitlab.yml.example
+[gitlab-yml]: https://gitlab.com/gitlab-org/gitlab/blob/master/config/gitlab.yml.example
 [sidekiq-omnibus]: https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/files/gitlab-config-template/gitlab.rb.template
 [sidekiq-charts]: https://docs.gitlab.com/charts/charts/gitlab/sidekiq/
 [gitaly-omnibus]: ../administration/gitaly/index.md

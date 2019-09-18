@@ -31,7 +31,9 @@ Read through the current performance problems using the Import/Export below.
 Out of memory (OOM) errors are normally caused by the [Sidekiq Memory Killer](../administration/operations/sidekiq_memory_killer.md):
 
 ```bash
-SIDEKIQ_MEMORY_KILLER_MAX_RSS = 2GB in GitLab.com
+SIDEKIQ_MEMORY_KILLER_MAX_RSS = 2000000
+SIDEKIQ_MEMORY_KILLER_HARD_LIMIT_RSS = 3000000
+SIDEKIQ_MEMORY_KILLER_GRACE_TIME = 900
 ```
 
 An import status `started`, and the following sidekiq logs will signal a memory issue:

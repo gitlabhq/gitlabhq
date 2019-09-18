@@ -85,14 +85,14 @@ for CE and EE. If the `ee-compat-check` job fails, this process is required.
 This method only requires that you have cloned both CE and EE into your computer.
 If you don't have them yet, please go ahead and clone them:
 
-- Clone CE repo: `git clone git@gitlab.com:gitlab-org/gitlab-ce.git`
-- Clone EE repo: `git clone git@gitlab.com:gitlab-org/gitlab-ee.git`
+- Clone CE repo: `git clone git@gitlab.com:gitlab-org/gitlab-foss.git`
+- Clone EE repo: `git clone git@gitlab.com:gitlab-org/gitlab.git`
 
 And the only additional setup we need is to add CE as remote of EE and vice-versa:
 
 - Open two terminal windows, one in CE, and another one in EE:
-  - In EE: `git remote add ce git@gitlab.com:gitlab-org/gitlab-ce.git`
-  - In CE: `git remote add ee git@gitlab.com:gitlab-org/gitlab-ee.git`
+  - In EE: `git remote add ce git@gitlab.com:gitlab-org/gitlab-foss.git`
+  - In CE: `git remote add ee git@gitlab.com:gitlab-org/gitlab.git`
 
 That's all setup we need, so that we can cherry-pick a commit from CE to EE, and
 from EE to CE.

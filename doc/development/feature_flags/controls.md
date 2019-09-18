@@ -91,11 +91,11 @@ sure it is clearly communicated to your team, and the Production team if you
 anticipate any potential problems.
 
 Feature gates can also be actor based, for example a feature could first be
-enabled for only the `gitlab-ce` project. The project is passed by supplying a
+enabled for only the `gitlab` project. The project is passed by supplying a
 `--project` flag:
 
 ```
-/chatops run feature set --project=gitlab-org/gitlab-ce some_feature true
+/chatops run feature set --project=gitlab-org/gitlab some_feature true
 ```
 
 For groups the `--group` flag is available:

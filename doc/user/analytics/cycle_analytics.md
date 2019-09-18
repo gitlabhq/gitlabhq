@@ -1,7 +1,7 @@
 # Cycle Analytics
 
 > - Introduced prior to GitLab 12.3 at the project level.
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/12077) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.3 at the group level.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/12077) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.3 at the group level.
 
 Cycle Analytics measures the time spent to go from an [idea to production] - also known
 as cycle time - for each of your projects. Cycle Analytics displays the median time for an idea to

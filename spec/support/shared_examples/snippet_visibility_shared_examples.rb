@@ -11,13 +11,21 @@ RSpec.shared_examples 'snippet visibility' do
   set(:author) { create(:user) }
   set(:member) { create(:user) }
   set(:external) { create(:user, :external) }
+  set(:non_member) { create(:user) }
+
+  set(:project) do
+    create(:project).tap do |project|
+      project.add_developer(author)
+      project.add_developer(member)
+    end
+  end
 
   context "For project snippets" do
     let!(:users) do
       {
         unauthenticated: nil,
         external: external,
-        non_member: create(:user),
+        non_member: non_member,
         member: member,
         author: author
       }
@@ -211,14 +219,18 @@ RSpec.shared_examples 'snippet visibility' do
     end
 
     with_them do
-      let!(:project) { create(:project, visibility_level: Gitlab::VisibilityLevel.level_value(project_type.to_s)) }
+      let!(:project_visibility) { project.update_column(:visibility_level, Gitlab::VisibilityLevel.level_value(project_type.to_s)) }
       let!(:project_feature) { project.project_feature.update_column(:snippets_access_level, feature_visibility) }
       let!(:user) { users[user_type] }
       let!(:snippet) { create(:project_snippet, visibility_level: snippet_type, project: project, author: author) }
-      let!(:members) do
-        project.add_developer(author)
-        project.add_developer(member)
-        project.add_developer(external) if project.private?
+      let!(:external_member) do
+        member = project.project_member(external)
+
+        if project.private?
+          project.add_developer(external) unless member
+        else
+          member.delete if member
+        end
       end
 
       context "For #{params[:project_type]} project and #{params[:user_type]} users" do
@@ -256,7 +268,7 @@ RSpec.shared_examples 'snippet visibility' do
       {
         unauthenticated: nil,
         external: external,
-        non_member: create(:user),
+        non_member: non_member,
         author: author
       }
     end

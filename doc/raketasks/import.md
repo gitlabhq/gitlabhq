@@ -100,7 +100,7 @@ the Git repository's config file. This section is formatted as follows:
 
 ```
 [gitlab]
-  fullpath = gitlab-org/gitlab-ce
+  fullpath = gitlab-org/gitlab
 ```
 
 However, existing repositories were not migrated to include this path.
@@ -129,7 +129,7 @@ Until then, you may wish to manually migrate repositories yourself. You can use
 to do so. In a Rails console session, run the following to migrate a project:
 
 ```
-project = Project.find_by_full_path('gitlab-org/gitlab-ce')
+project = Project.find_by_full_path('gitlab-org/gitlab')
 project.write_repository_config
 ```
 

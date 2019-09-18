@@ -51,7 +51,7 @@ is detected in any other branch (`flaky-examples-check` job). In the future, the
 This was originally implemented in: <https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/13021>.
 
 [rspec-retry]: https://github.com/NoRedInk/rspec-retry
-[`spec/spec_helper.rb`]: https://gitlab.com/gitlab-org/gitlab-foss/blob/master/spec/spec_helper.rb
+[`spec/spec_helper.rb`]: https://gitlab.com/gitlab-org/gitlab/blob/master/spec/spec_helper.rb
 
 ## Problems we had in the past at GitLab
 

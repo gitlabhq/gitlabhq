@@ -90,7 +90,7 @@ your GitLab installation with the Community Edition's remote, fetch the latest
 changes, and checkout the latest stable branch:
 
 ```sh
-git remote set-url origin git@gitlab.com:gitlab-org/gitlab-ce.git
+git remote set-url origin git@gitlab.com:gitlab-org/gitlab-foss.git
 git fetch --all
 git checkout 8-x-stable
 ```

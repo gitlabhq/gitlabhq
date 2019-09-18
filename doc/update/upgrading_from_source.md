@@ -274,7 +274,7 @@ longer handles setting it.
 If you are using Apache instead of NGINX please see the updated [Apache templates].
 Also note that because Apache does not support upstreams behind Unix sockets you
 will need to let GitLab Workhorse listen on a TCP port. You can do this
-via [`/etc/default/gitlab`](https://gitlab.com/gitlab-org/gitlab-foss/blob/master/lib/support/init.d/gitlab.default.example#L38).
+via [`/etc/default/gitlab`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/support/init.d/gitlab.default.example#L38).
 
 #### SMTP configuration
 
@@ -400,7 +400,7 @@ sudo -u git -H bundle exec rake gitlab:backup:restore RAILS_ENV=production
 
 If you have more than one backup `*.tar` file(s) please add `BACKUP=timestamp_of_backup` to the command above.
 
-[yaml]: https://gitlab.com/gitlab-org/gitlab-foss/blob/master/config/gitlab.yml.example
-[gl-example]: https://gitlab.com/gitlab-org/gitlab-foss/blob/master/lib/support/init.d/gitlab.default.example
-[smtp_settings.rb.sample]: https://gitlab.com/gitlab-org/gitlab-foss/blob/master/config/initializers/smtp_settings.rb.sample#L13
+[yaml]: https://gitlab.com/gitlab-org/gitlab/blob/master/config/gitlab.yml.example
+[gl-example]: https://gitlab.com/gitlab-org/gitlab/blob/master/lib/support/init.d/gitlab.default.example
+[smtp_settings.rb.sample]: https://gitlab.com/gitlab-org/gitlab/blob/master/config/initializers/smtp_settings.rb.sample#L13
 [Apache templates]: https://gitlab.com/gitlab-org/gitlab-recipes/tree/master/web-server/apache

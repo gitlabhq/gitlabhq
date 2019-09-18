@@ -24,7 +24,7 @@ If you don't exactly understand what we mean by **not everything needs to happen
 
 ### 0. Are end-to-end tests needed?
 
-At GitLab we respect the [test pyramid](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/development/testing_guide/testing_levels.md), and so, we recommend you check the code coverage of a specific feature before writing end-to-end tests, for both [CE](https://gitlab-org.gitlab.io/gitlab-ce/coverage-ruby/#_AllFiles) and [EE](https://gitlab-org.gitlab.io/gitlab-ee/coverage-ruby/#_AllFiles) projects.
+At GitLab we respect the [test pyramid](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/development/testing_guide/testing_levels.md), and so, we recommend you check the code coverage of a specific feature before writing end-to-end tests, for both [CE](https://gitlab-org.gitlab.io/gitlab-foss/coverage-ruby/#_AllFiles) and [EE](https://gitlab-org.gitlab.io/gitlab/coverage-ruby/#_AllFiles) projects.
 
 Sometimes you may notice that there is already good coverage in other test levels, and we can stay confident that if we break a feature, we will still have quick feedback about it, even without having end-to-end tests.
 

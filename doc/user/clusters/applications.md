@@ -86,7 +86,7 @@ NOTE: **Note:**
 The
 [jetstack/cert-manager](https://github.com/jetstack/cert-manager)
 chart is used to install this application with a
-[`values.yaml`](https://gitlab.com/gitlab-org/gitlab-foss/blob/master/vendor/cert_manager/values.yaml)
+[`values.yaml`](https://gitlab.com/gitlab-org/gitlab/blob/master/vendor/cert_manager/values.yaml)
 file. Prior to GitLab 12.3,
 the [stable/cert-manager](https://github.com/helm/charts/tree/master/stable/cert-manager)
 chart was used.
@@ -109,7 +109,7 @@ NOTE: **Note:**
 The
 [runner/gitlab-runner](https://gitlab.com/gitlab-org/charts/gitlab-runner)
 chart is used to install this application with a
-[`values.yaml`](https://gitlab.com/gitlab-org/gitlab-foss/blob/master/vendor/runner/values.yaml)
+[`values.yaml`](https://gitlab.com/gitlab-org/gitlab/blob/master/vendor/runner/values.yaml)
 file.
 
 ### Ingress
@@ -126,7 +126,7 @@ NOTE: **Note:**
 The
 [stable/nginx-ingress](https://github.com/helm/charts/tree/master/stable/nginx-ingress)
 chart is used to install this application with a
-[`values.yaml`](https://gitlab.com/gitlab-org/gitlab-foss/blob/master/vendor/ingress/values.yaml)
+[`values.yaml`](https://gitlab.com/gitlab-org/gitlab/blob/master/vendor/ingress/values.yaml)
 file.
 
 #### Modsecurity Application Firewall
@@ -188,7 +188,7 @@ NOTE: **Note:**
 The
 [jupyter/jupyterhub](https://jupyterhub.github.io/helm-chart/)
 chart is used to install this application with a
-[`values.yaml`](https://gitlab.com/gitlab-org/gitlab-foss/blob/master/vendor/jupyter/values.yaml)
+[`values.yaml`](https://gitlab.com/gitlab-org/gitlab/blob/master/vendor/jupyter/values.yaml)
 file.
 
 #### Jupyter Git Integration
@@ -255,7 +255,7 @@ NOTE: **Note:**
 The
 [stable/prometheus](https://github.com/helm/charts/tree/master/stable/prometheus)
 chart is used to install this application with a
-[`values.yaml`](https://gitlab.com/gitlab-org/gitlab-foss/blob/master/vendor/prometheus/values.yaml)
+[`values.yaml`](https://gitlab.com/gitlab-org/gitlab/blob/master/vendor/prometheus/values.yaml)
 file.
 
 ## Upgrading applications
@@ -281,7 +281,7 @@ To upgrade an application:
 NOTE: **Note:**
 Upgrades will reset values back to the values built into the `runner`
 chart plus the values set by
-[`values.yaml`](https://gitlab.com/gitlab-org/gitlab-foss/blob/master/vendor/runner/values.yaml)
+[`values.yaml`](https://gitlab.com/gitlab-org/gitlab/blob/master/vendor/runner/values.yaml)
 
 ## Uninstalling applications
 

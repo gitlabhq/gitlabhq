@@ -57,9 +57,9 @@ client or other software requires something different.
 Examples:
 
 ```
-gitlab-org/gitlab-ce/-/activity
-gitlab-org/gitlab-ce/-/jobs/123
-gitlab-org/gitlab-ce/-/settings/repository
+gitlab-org/gitlab/-/activity
+gitlab-org/gitlab/-/jobs/123
+gitlab-org/gitlab/-/settings/repository
 gitlab-org/serverless/runtimes/-/settings/repository
 ```
 

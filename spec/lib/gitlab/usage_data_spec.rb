@@ -55,6 +55,7 @@ describe Gitlab::UsageData do
         omniauth_enabled
         reply_by_email_enabled
         container_registry_enabled
+        dependency_proxy_enabled
         gitlab_shared_runners_enabled
         gitlab_pages
         git
@@ -234,6 +235,7 @@ describe Gitlab::UsageData do
       expect(subject[:omniauth_enabled]).to eq(Gitlab::Auth.omniauth_enabled?)
       expect(subject[:reply_by_email_enabled]).to eq(Gitlab::IncomingEmail.enabled?)
       expect(subject[:container_registry_enabled]).to eq(Gitlab.config.registry.enabled)
+      expect(subject[:dependency_proxy_enabled]).to eq(Gitlab.config.dependency_proxy.enabled)
       expect(subject[:gitlab_shared_runners_enabled]).to eq(Gitlab.config.gitlab_ci.shared_runners_enabled)
     end
   end

@@ -15,7 +15,7 @@ to the existing rules, then this is the document for you.
 
 ## Operation
 
-On startup, Danger reads a [`Dangerfile`](https://gitlab.com/gitlab-org/gitlab-foss/blob/master/Dangerfile)
+On startup, Danger reads a [`Dangerfile`](https://gitlab.com/gitlab-org/gitlab/blob/master/Dangerfile)
 from the project root. GitLab's Danger code is decomposed into a set of helpers
 and plugins, all within the [`danger/`](https://gitlab.com/gitlab-org/gitlab-foss/tree/master/danger/)
 subdirectory, so ours just tells Danger to load it all. Danger will then run

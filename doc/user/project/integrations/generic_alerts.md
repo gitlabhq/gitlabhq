@@ -1,6 +1,6 @@
 # Generic alerts integration **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/13203) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/13203) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.3.
 
 GitLab can accept alerts from any source via a generic webhook receiver.
 When you set up the generic alerts integration, a unique endpoint will

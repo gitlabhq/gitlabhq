@@ -8,7 +8,8 @@ fi
 
 # Generate the image name based on the project this is being run in
 ASSETS_IMAGE_NAME="gitlab-assets-ce"
-if [[ "${CI_PROJECT_NAME}" == "gitlab" ]]
+# `dev.gitlab-org` still has gitlab-ee.
+if [[ "${CI_PROJECT_NAME}" == "gitlab" ]] || [[ "${CI_PROJECT_NAME}" == "gitlab-ee" ]]
 then
   ASSETS_IMAGE_NAME="gitlab-assets-ee"
 fi

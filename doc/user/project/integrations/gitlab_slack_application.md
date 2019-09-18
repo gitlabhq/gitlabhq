@@ -53,11 +53,11 @@ The only difference with the [manually configurable Slack slash commands][slack-
 is that all the commands should be prefixed with the `/gitlab` keyword.
 We are working on making this configurable in the future.
 
-For example, to show the issue number `1001` under the `gitlab-org/gitlab-ce`
+For example, to show the issue number `1001` under the `gitlab-org/gitlab`
 project, you would do:
 
 ```
-/gitlab gitlab-org/gitlab-ce issue show 1001
+/gitlab gitlab-org/gitlab issue show 1001
 ```
 
 [slack-docs]: https://get.slack.help/hc/en-us/articles/202035138-Adding-apps-to-your-team

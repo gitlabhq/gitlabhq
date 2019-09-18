@@ -166,16 +166,16 @@ for details about the pipelines security model.
 
 **9.2**
 
-- Allow deletion of protected branches via the web interface [gitlab-org/gitlab-ce#21393][ce-21393]
+- Allow deletion of protected branches via the web interface [gitlab-org/gitlab-foss#21393][ce-21393]
 
 **8.11**
 
-- Allow creating protected branches that can't be pushed to [gitlab-org/gitlab-ce!5081][ce-5081]
+- Allow creating protected branches that can't be pushed to [gitlab-org/gitlab-foss!5081][ce-5081]
 
 **8.10**
 
-- Allow developers to merge into a protected branch without having push access [gitlab-org/gitlab-ce!4892][ce-4892]
-- Allow specifying protected branches using wildcards [gitlab-org/gitlab-ce!4665][ce-4665]
+- Allow developers to merge into a protected branch without having push access [gitlab-org/gitlab-foss!4892][ce-4892]
+- Allow specifying protected branches using wildcards [gitlab-org/gitlab-foss!4665][ce-4665]
 
 [ce-4665]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/4665 "Allow specifying protected branches using wildcards"
 [ce-4892]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/4892 "Allow developers to merge into a protected branch without having push access"

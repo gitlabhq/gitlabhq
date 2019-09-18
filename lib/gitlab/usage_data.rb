@@ -116,6 +116,7 @@ module Gitlab
       def features_usage_data_ce
         {
           container_registry_enabled: Gitlab.config.registry.enabled,
+          dependency_proxy_enabled: Gitlab.config.try(:dependency_proxy)&.enabled,
           gitlab_shared_runners_enabled: Gitlab.config.gitlab_ci.shared_runners_enabled,
           gravatar_enabled: Gitlab::CurrentSettings.gravatar_enabled?,
           influxdb_metrics_enabled: Gitlab::Metrics.influx_metrics_enabled?,

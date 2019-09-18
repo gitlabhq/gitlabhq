@@ -43,7 +43,10 @@
 
       .issuable-meta
         %ul.controls
-          - if issue.closed?
+          - if issue.moved?
+            %li.issuable-status
+              = _('CLOSED (MOVED)')
+          - elsif issue.closed?
             %li.issuable-status
               = _('CLOSED')
           - if issue.assignees.any?

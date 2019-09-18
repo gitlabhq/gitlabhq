@@ -214,10 +214,10 @@ A project alias can be only created via API and only by GitLab administrators.
 Follow the [Project Aliases API documentation](../../api/project_aliases.md) for
 more details.
 
-Once an alias has been created for a project (e.g., an alias `gitlab-ce` for the
-project `https://gitlab.com/gitlab-org/gitlab-foss`), the repository can be cloned
-using the alias (e.g `git clone git@gitlab.com:gitlab-ce.git` instead of
-`git clone git@gitlab.com:gitlab-org/gitlab-ce.git`).
+Once an alias has been created for a project (e.g., an alias `gitlab` for the
+project `https://gitlab.com/gitlab-org/gitlab`), the repository can be cloned
+using the alias (e.g `git clone git@gitlab.com:gitlab.git` instead of
+`git clone git@gitlab.com:gitlab-org/gitlab.git`).
 
 ## Project APIs
 
