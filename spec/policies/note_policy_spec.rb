@@ -152,6 +152,89 @@ describe NotePolicy do
           it_behaves_like 'a discussion with a private noteable'
         end
       end
+
+      context 'when it is a system note' do
+        let(:developer) { create(:user) }
+        let(:any_user) { create(:user) }
+
+        shared_examples_for 'user can read the note' do
+          it 'allows the user to read the note' do
+            expect(policy).to be_allowed(:read_note)
+          end
+        end
+
+        shared_examples_for 'user can act on the note' do
+          it 'allows the user to read the note' do
+            expect(policy).not_to be_allowed(:admin_note)
+            expect(policy).to be_allowed(:resolve_note)
+            expect(policy).to be_allowed(:award_emoji)
+          end
+        end
+
+        shared_examples_for 'user cannot read or act on the note' do
+          it 'allows user to read the note' do
+            expect(policy).not_to be_allowed(:admin_note)
+            expect(policy).not_to be_allowed(:resolve_note)
+            expect(policy).not_to be_allowed(:read_note)
+            expect(policy).not_to be_allowed(:award_emoji)
+          end
+        end
+
+        context 'when noteable is a public issue' do
+          let(:note) { create(:note, system: true, noteable: noteable, author: user, project: project) }
+
+          before do
+            project.add_developer(developer)
+          end
+
+          context 'when user is project member' do
+            let(:policy) { described_class.new(developer, note) }
+
+            it_behaves_like 'user can read the note'
+            it_behaves_like 'user can act on the note'
+          end
+
+          context 'when user is not project member' do
+            let(:policy) { described_class.new(any_user, note) }
+
+            it_behaves_like 'user can read the note'
+          end
+
+          context 'when user is anonymous' do
+            let(:policy) { described_class.new(nil, note) }
+
+            it_behaves_like 'user can read the note'
+          end
+        end
+
+        context 'when it is a system note referencing a confidential issue' do
+          let(:confidential_issue) { create(:issue, :confidential, project: project) }
+          let(:note) { create(:note, system: true, noteable: issue, author: user, project: project, note: "mentioned in issue #{confidential_issue.to_reference(project)}") }
+
+          before do
+            project.add_developer(developer)
+          end
+
+          context 'when user is project member' do
+            let(:policy) { described_class.new(developer, note) }
+
+            it_behaves_like 'user can read the note'
+            it_behaves_like 'user can act on the note'
+          end
+
+          context 'when user is not project member' do
+            let(:policy) { described_class.new(any_user, note) }
+
+            it_behaves_like 'user cannot read or act on the note'
+          end
+
+          context 'when user is anonymous' do
+            let(:policy) { described_class.new(nil, note) }
+
+            it_behaves_like 'user cannot read or act on the note'
+          end
+        end
+      end
     end
   end
 end
