@@ -171,7 +171,7 @@
       position: absolute;
       top: $gl-padding;
       bottom: $gl-padding;
-      left: map-get($spacers, 2) - 1px;
+      left: map-get($spacers, 2) - px-to-rem(1px);
     }
 
     &-row {
@@ -187,7 +187,7 @@
       * 2px extra is to give a little more height than needed
       * to hide timeline line before/after the element starts/ends
       */
-      height: map-get($spacers, 4) + 2px;
+      height: map-get($spacers, 4) + px-to-rem(2px);
       z-index: 1;
       position: relative;
       top: -3px;

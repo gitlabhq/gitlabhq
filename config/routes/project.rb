@@ -37,6 +37,8 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
       scope '-' do
         get 'archive/*id', constraints: { format: Gitlab::PathRegex.archive_formats_regex, id: /.+?/ }, to: 'repositories#archive', as: 'archive'
 
+        resources :artifacts, only: [:index, :destroy]
+
         resources :jobs, only: [:index, :show], constraints: { id: /\d+/ } do
           collection do
             resources :artifacts, only: [] do

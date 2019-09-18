@@ -991,15 +991,15 @@
   dependencies:
     vue-eslint-parser "^6.0.4"
 
-"@gitlab/svgs@^1.73.0":
-  version "1.73.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-1.73.0.tgz#e44b347e4be77b94474c80cf5c2ee26ca0325c2f"
-  integrity sha512-4on+l5CS8Ae8OOcrnxwkO5s2zq1kHl/YjnOrHaX7megr6jsTYsVzKGaEMe0ViMSIPXA2+QnGD6vElKMkeD2+YQ==
+"@gitlab/svgs@^1.74.0":
+  version "1.74.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-1.74.0.tgz#2883c47c476a08e8c9c3621117a544204f4c13a3"
+  integrity sha512-L/Jga3EzGgOWF1rdQrH8wNm4dBFXcAVPZnFOEvBoe5OoWZgR3Ac/5Bgz4fYXYyPEKYUSorO7eyE6OVSvjKoM7g==
 
-"@gitlab/ui@5.25.2":
-  version "5.25.2"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-5.25.2.tgz#599954fefcc228d31a398dbe3c1e2287a0fcdb3e"
-  integrity sha512-mwwvEhVTomnZQjG0dADD+9Kg1UHZXAIb4s5QwQxwpgTkemILYIb1r96oKWfmPe8Pl/xrzAoMUtGEPT3XbxDqYQ==
+"@gitlab/ui@5.26.0":
+  version "5.26.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-5.26.0.tgz#303dcb339947b04bd04378828bd6b6ee1509ea9e"
+  integrity sha512-F8zjN6oiXUy787/4xD+vApuqRxiNe5ZhWg96gT23cUk5SL1Oj4NyMETpAh0v9R9J/i70ETmBYW011EGogjlAVA==
   dependencies:
     "@babel/standalone" "^7.0.0"
     "@gitlab/vue-toasted" "^1.2.1"
@@ -1013,10 +1013,10 @@
     vue "^2.6.10"
     vue-loader "^15.4.2"
 
-"@gitlab/visual-review-tools@1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@gitlab/visual-review-tools/-/visual-review-tools-1.0.1.tgz#7e588328ed018d91560633d56865d65b72c3a11b"
-  integrity sha512-vNqpui0khtPi3crrrFtfuT+nw0SdD/nMyb+aurbJzc3RXuVJGCdgYwosvTLPcJkdMOVfTijizV5+ys75s8INBw==
+"@gitlab/visual-review-tools@1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@gitlab/visual-review-tools/-/visual-review-tools-1.0.2.tgz#d7b410d962cf32e6b6159207917134f7e6a90c68"
+  integrity sha512-U6cw/y/Hf9gYhpV9zBPv4SoIXf1hKye2Xrynj+1Yt2ZmJJG/+QnJfvS6MEuFcNcJRL42p1VDG98uzYMp3rJ7ww==
 
 "@gitlab/vue-toasted@^1.2.1":
   version "1.2.1"
@@ -11122,15 +11122,10 @@ sort-keys@^2.0.0:
   dependencies:
     is-plain-obj "^1.0.0"
 
-sortablejs@^1.10.0:
+sortablejs@^1.10.0, sortablejs@^1.9.0:
   version "1.10.0"
   resolved "https://registry.yarnpkg.com/sortablejs/-/sortablejs-1.10.0.tgz#0ebc054acff2486569194a2f975b2b145dd5e7d6"
   integrity sha512-+e0YakK1BxgEZpf9l9UiFaiQ8ZOBn1p/4qkkXr8QDVmYyCrUDTyDRRGm0AgW4E4cD0wtgxJ6yzIRkSPUwqhuhg==
-
-sortablejs@^1.9.0:
-  version "1.9.0"
-  resolved "https://registry.yarnpkg.com/sortablejs/-/sortablejs-1.9.0.tgz#2d1e74ae6bac2cb4ad0622908f340848969eb88d"
-  integrity sha512-Ot6bYJ6PoqPmpsqQYXjn1+RKrY2NWQvQt/o4jfd/UYwVWndyO5EPO8YHbnm5HIykf8ENsm4JUrdAvolPT86yYA==
 
 source-list-map@^2.0.0:
   version "2.0.0"

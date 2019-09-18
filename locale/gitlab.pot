@@ -1860,6 +1860,12 @@ msgstr ""
 msgid "Artifact ID"
 msgstr ""
 
+msgid "Artifact could not be deleted."
+msgstr ""
+
+msgid "Artifact was successfully deleted."
+msgstr ""
+
 msgid "Artifacts"
 msgstr ""
 
@@ -14483,6 +14489,9 @@ msgstr ""
 msgid "SortOptions|Due soon"
 msgstr ""
 
+msgid "SortOptions|Expired date"
+msgstr ""
+
 msgid "SortOptions|Label priority"
 msgstr ""
 
@@ -14571,6 +14580,9 @@ msgid "SortOptions|Recent sign in"
 msgstr ""
 
 msgid "SortOptions|Recently starred"
+msgstr ""
+
+msgid "SortOptions|Size"
 msgstr ""
 
 msgid "SortOptions|Sort direction"
@@ -17962,7 +17974,7 @@ msgstr ""
 msgid "You don't have any recent searches"
 msgstr ""
 
-msgid "You don’t have acces to Productivity Analaytics in this group"
+msgid "You don’t have access to Productivity Analytics in this group"
 msgstr ""
 
 msgid "You have been granted %{access_level} access to the %{source_link} %{source_type}."

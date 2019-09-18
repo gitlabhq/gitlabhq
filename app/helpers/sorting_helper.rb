@@ -28,7 +28,9 @@ module SortingHelper
       sort_value_priority          => sort_title_priority,
       sort_value_upvotes           => sort_title_upvotes,
       sort_value_contacted_date    => sort_title_contacted_date,
-      sort_value_relative_position => sort_title_relative_position
+      sort_value_relative_position => sort_title_relative_position,
+      sort_value_size              => sort_title_size,
+      sort_value_expire_date       => sort_title_expire_date
     }
   end
 
@@ -406,6 +408,14 @@ module SortingHelper
     s_('SortOptions|Manual')
   end
 
+  def sort_title_size
+    s_('SortOptions|Size')
+  end
+
+  def sort_title_expire_date
+    s_('SortOptions|Expired date')
+  end
+
   # Values.
   def sort_value_access_level_asc
     'access_level_asc'
@@ -557,5 +567,13 @@ module SortingHelper
 
   def sort_value_relative_position
     'relative_position'
+  end
+
+  def sort_value_size
+    'size_desc'
+  end
+
+  def sort_value_expire_date
+    'expired_asc'
   end
 end

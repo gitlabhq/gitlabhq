@@ -5,6 +5,7 @@ module Ci
     include AfterCommitQueue
     include ObjectStorage::BackgroundMove
     include UpdateProjectStatistics
+    include Sortable
     extend Gitlab::Ci::Model
 
     NotSupportedAdapterError = Class.new(StandardError)
@@ -141,6 +142,10 @@ module Ci
       # The file.object_store is set during `uploader.store!`
       # which happens after object is inserted/updated
       self.update_column(:file_store, file.object_store)
+    end
+
+    def self.total_size
+      self.sum(:size)
     end
 
     def self.artifacts_size_for(project)
