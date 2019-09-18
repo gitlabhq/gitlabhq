@@ -18,6 +18,7 @@ class Discussion
             :for_merge_request?,
             :to_ability_name,
             :editable?,
+            :visible_for?,
 
             to: :first_note
 
