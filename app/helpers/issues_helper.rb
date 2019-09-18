@@ -64,6 +64,15 @@ module IssuesHelper
     end
   end
 
+  def issue_status_visibility(issue, status_box:)
+    case status_box
+    when :open
+      'hidden' if issue.closed?
+    when :closed
+      'hidden' unless issue.closed?
+    end
+  end
+
   def issue_button_visibility(issue, closed)
     return 'hidden' if issue_button_hidden?(issue, closed)
   end

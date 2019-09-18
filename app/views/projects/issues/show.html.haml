@@ -12,11 +12,11 @@
 
 .detail-page-header
   .detail-page-header-body
-    .issuable-status-box.status-box.status-box-issue-closed{ class: issue_button_visibility(@issue, false) }
+    .issuable-status-box.status-box.status-box-issue-closed{ class: issue_status_visibility(@issue, status_box: :closed) }
       = sprite_icon('mobile-issue-close', size: 16, css_class: 'd-block d-sm-none')
       .d-none.d-sm-block
         = issue_closed_text(@issue, current_user)
-    .issuable-status-box.status-box.status-box-open{ class: issue_button_visibility(@issue, true) }
+    .issuable-status-box.status-box.status-box-open{ class: issue_status_visibility(@issue, status_box: :open) }
       = sprite_icon('issue-open-m', size: 16, css_class: 'd-block d-sm-none')
       %span.d-none.d-sm-block Open
 

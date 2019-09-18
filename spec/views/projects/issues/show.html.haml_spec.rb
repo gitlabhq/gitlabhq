@@ -40,6 +40,13 @@ describe 'projects/issues/show' do
           expect(rendered).to have_selector('.status-box-issue-closed:not(.hidden)', text: 'Closed (moved)')
         end
 
+        it 'shows "Closed (moved)" if an issue has been moved and discussion is locked' do
+          allow(issue).to receive(:discussion_locked).and_return(true)
+          render
+
+          expect(rendered).to have_selector('.status-box-issue-closed:not(.hidden)', text: 'Closed (moved)')
+        end
+
         it 'links "moved" to the new issue the original issue was moved to' do
           render
 
@@ -95,15 +102,29 @@ describe 'projects/issues/show' do
 
       expect(rendered).to have_selector('.status-box-issue-closed:not(.hidden)', text: 'Closed')
     end
+
+    it 'shows "Closed" if discussion is locked' do
+      allow(issue).to receive(:discussion_locked).and_return(true)
+      render
+
+      expect(rendered).to have_selector('.status-box-issue-closed:not(.hidden)', text: 'Closed')
+    end
   end
 
   context 'when the issue is open' do
     before do
       allow(issue).to receive(:closed?).and_return(false)
-      allow(issue).to receive(:disscussion_locked).and_return(false)
+      allow(issue).to receive(:discussion_locked).and_return(false)
     end
 
     it 'shows "Open" if an issue has been moved' do
+      render
+
+      expect(rendered).to have_selector('.status-box-open:not(.hidden)', text: 'Open')
+    end
+
+    it 'shows "Open" if discussion is locked' do
+      allow(issue).to receive(:discussion_locked).and_return(true)
       render
 
       expect(rendered).to have_selector('.status-box-open:not(.hidden)', text: 'Open')
