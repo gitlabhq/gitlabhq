@@ -9,6 +9,7 @@ class Project < ApplicationRecord
   include AccessRequestable
   include Avatarable
   include CacheMarkdownField
+  include IgnorableColumn
   include Referable
   include Sortable
   include AfterCommitQueue
@@ -54,6 +55,8 @@ class Project < ApplicationRecord
 
   VALID_MIRROR_PORTS = [22, 80, 443].freeze
   VALID_MIRROR_PROTOCOLS = %w(http https ssh git).freeze
+
+  ignore_column :import_status, :import_jid, :import_error
 
   cache_markdown_field :description, pipeline: :description
 
