@@ -47,3 +47,5 @@ module QA
     end
   end
 end
+
+QA::Page::Project::Settings::Repository.prepend_if_ee('QA::EE::Page::Project::Settings::Repository')

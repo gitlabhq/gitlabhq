@@ -272,6 +272,12 @@ describe 'Runners' do
 
         expect(page).to have_content 'This group does not provide any group Runners yet'
       end
+
+      it 'user can see a link to install runners on kubernetes clusters' do
+        visit group_settings_ci_cd_path(group)
+
+        expect(page).to have_link('Install Runner on Kubernetes', href: group_clusters_path(group))
+      end
     end
 
     context 'group with a runner' do

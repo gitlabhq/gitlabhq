@@ -23,6 +23,7 @@ module QA
     autoload :Feature, 'qa/runtime/feature'
     autoload :Fixtures, 'qa/runtime/fixtures'
     autoload :Logger, 'qa/runtime/logger'
+    autoload :GPG, 'qa/runtime/gpg'
 
     module API
       autoload :Client, 'qa/runtime/api/client'
@@ -67,7 +68,9 @@ module QA
     autoload :Fork, 'qa/resource/fork'
     autoload :SSHKey, 'qa/resource/ssh_key'
     autoload :Snippet, 'qa/resource/snippet'
+    autoload :Tag, 'qa/resource/tag'
     autoload :ProjectMember, 'qa/resource/project_member'
+    autoload :UserGPG, 'qa/resource/user_gpg'
 
     module Events
       autoload :Base, 'qa/resource/events/base'

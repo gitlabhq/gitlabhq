@@ -13557,6 +13557,14 @@ msgstr ""
 msgid "SearchResults|Showing %{from} - %{to} of %{count} %{scope} for \"%{term}\""
 msgstr ""
 
+msgid "SearchResults|We couldn't find any %{scope} matching %{term}"
+msgstr ""
+
+msgid "SearchResults|code result"
+msgid_plural "SearchResults|code results"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "SearchResults|comment"
 msgid_plural "SearchResults|comments"
 msgstr[0] ""
@@ -13587,18 +13595,23 @@ msgid_plural "SearchResults|projects"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "SearchResults|result"
-msgid_plural "SearchResults|results"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "SearchResults|snippet"
 msgid_plural "SearchResults|snippets"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "SearchResults|snippet result"
+msgid_plural "SearchResults|snippet results"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "SearchResults|user"
 msgid_plural "SearchResults|users"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "SearchResults|wiki result"
+msgid_plural "SearchResults|wiki results"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -14031,10 +14044,10 @@ msgstr ""
 msgid "Set up CI/CD"
 msgstr ""
 
-msgid "Set up a %{type} Runner manually"
+msgid "Set up a %{type} Runner automatically"
 msgstr ""
 
-msgid "Set up a specific Runner automatically"
+msgid "Set up a %{type} Runner manually"
 msgstr ""
 
 msgid "Set up assertions/attributes/claims (email, first_name, last_name) and NameID according to %{docsLinkStart}the documentation %{icon}%{docsLinkEnd}"
@@ -17517,9 +17530,6 @@ msgid "We could not determine the path to remove the epic"
 msgstr ""
 
 msgid "We could not determine the path to remove the issue"
-msgstr ""
-
-msgid "We couldn't find any results matching"
 msgstr ""
 
 msgid "We created a short guided tour that will help you learn the basics of GitLab and how it will help you be better at your job. It should only take a couple of minutes. You will be guided by two types of helpers, best recognized by their color."

@@ -393,20 +393,21 @@ PUT /users/:id
 
 Parameters:
 
-- `email`                          - Email
-- `username`                       - Username
-- `name`                           - Name
-- `password`                       - Password
-- `skype`                          - Skype ID
-- `linkedin`                       - LinkedIn
-- `twitter`                        - Twitter account
-- `website_url`                    - Website URL
-- `organization`                   - Organization name
-- `projects_limit`                 - Limit projects each user can create
-- `extern_uid`                     - External UID
-- `provider`                       - External provider name
+- `id` (required)                  - The ID of the user
+- `email` (optional)               - Email
+- `username` (optional)            - Username
+- `name` (optional)                - Name
+- `password` (optional)            - Password
+- `skype` (optional)               - Skype ID
+- `linkedin` (optional)            - LinkedIn
+- `twitter` (optional)             - Twitter account
+- `website_url` (optional)         - Website URL
+- `organization` (optional)        - Organization name
+- `projects_limit` (optional)      - Limit projects each user can create
+- `extern_uid` (optional)          - External UID
+- `provider` (optional)            - External provider name
 - `group_id_for_saml` (optional)   - ID of group where SAML has been configured
-- `bio`                            - User's biography
+- `bio` (optional)                 - User's biography
 - `location` (optional)            - User's location
 - `public_email` (optional)        - The public email of the user
 - `admin` (optional)               - User is admin - true or false (default)
@@ -419,7 +420,7 @@ Parameters:
 - `private_profile` (optional)     - User's profile is private - true or false (default)
 - `shared_runners_minutes_limit` (optional)       - Pipeline minutes quota for this user **(STARTER)**
 - `extra_shared_runners_minutes_limit` (optional) - Extra pipeline minutes quota for this user **(STARTER)**
-- `note` (optional) - Admin notes for this user **(STARTER)**
+- `note` (optional)                - Admin notes for this user **(STARTER)**
 
 On password update, user will be forced to change it upon next login.
 Note, at the moment this method does only return a `404` error,

@@ -28,7 +28,7 @@ to accomplish their work with GitLab.
 1. Follow GitLab's [Merge Request Guidelines](../contributing/merge_request_workflow.md#merge-request-guidelines).
 
 If you need any help to choose the correct place for a doc, discuss a documentation
-idea or outline, or request any other help, ping the Technical Writer for the relevant
+idea or outline, or request any other help, ping the technical writer for the relevant
 [DevOps stage](https://about.gitlab.com/handbook/product/categories/#devops-stages)
 in your issue or MR, or write within `#docs` if you are a member of GitLab's Slack workspace.
 
@@ -39,7 +39,7 @@ This person must make a good-faith effort to ensure that the content is clear
 (sufficiently easy for the intended audience to navigate and understand) and
 that it meets the [Documentation Guidelines](index.md) and [Style Guide](styleguide.md).
 
-If the author or reviewer has any questions, or would like a techncial writer's review
+If the author or reviewer has any questions, or would like a technical writer's review
 before merging, mention the writer who is assigned to the relevant [DevOps stage](https://about.gitlab.com/handbook/product/categories/#devops-stages).
 
 The process can involve the following parties/phases, and is replicated in the `Documentation` MR template for GitLab CE and EE, to help with following the process.

@@ -34,15 +34,15 @@ module SearchHelper
       from: from,
       to: to,
       count: count,
-      scope: search_entries_info_label(scope, count),
+      scope: search_entries_scope_label(scope, count),
       term: term
     }
   end
 
-  def search_entries_info_label(scope, count)
+  def search_entries_scope_label(scope, count)
     case scope
-    when 'blobs', 'snippet_blobs', 'wiki_blobs'
-      ns_('SearchResults|result', 'SearchResults|results', count)
+    when 'blobs'
+      ns_('SearchResults|code result', 'SearchResults|code results', count)
     when 'commits'
       ns_('SearchResults|commit', 'SearchResults|commits', count)
     when 'issues'
@@ -55,10 +55,14 @@ module SearchHelper
       ns_('SearchResults|comment', 'SearchResults|comments', count)
     when 'projects'
       ns_('SearchResults|project', 'SearchResults|projects', count)
+    when 'snippet_blobs'
+      ns_('SearchResults|snippet result', 'SearchResults|snippet results', count)
     when 'snippet_titles'
       ns_('SearchResults|snippet', 'SearchResults|snippets', count)
     when 'users'
       ns_('SearchResults|user', 'SearchResults|users', count)
+    when 'wiki_blobs'
+      ns_('SearchResults|wiki result', 'SearchResults|wiki results', count)
     else
       raise "Unrecognized search scope '#{scope}'"
     end
@@ -70,6 +74,13 @@ module SearchHelper
     else
       s_("SearchResults|Showing %{count} %{scope} for \"%{term}\"")
     end
+  end
+
+  def search_entries_empty_message(scope, term)
+    (s_("SearchResults|We couldn't find any %{scope} matching %{term}") % {
+      scope: search_entries_scope_label(scope, 0),
+      term: "<code>#{term}</code>"
+    }).html_safe
   end
 
   def find_project_for_result_blob(projects, result)

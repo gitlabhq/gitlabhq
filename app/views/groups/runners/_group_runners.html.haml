@@ -10,6 +10,10 @@
 -# Proper policies should be implemented per
 -# https://gitlab.com/gitlab-org/gitlab-foss/issues/45894
 - if can?(current_user, :admin_pipeline, @group)
+  = render partial: 'ci/runner/how_to_setup_runner_automatically',
+           locals: { type: 'group',
+                     clusters_path: group_clusters_path(@group) }
+  %hr
   = render partial: 'ci/runner/how_to_setup_runner',
            locals: { registration_token: @group.runners_token,
                      type: 'group',
