@@ -97,6 +97,8 @@ Once you've set up your identity provider to work with GitLab, you'll need to co
 
 ## Providers
 
+NOTE: **Note:** GitLab is unable to provide support for IdPs that are not listed here.
+
 | Provider | Documentation |
 |----------|---------------|
 | ADFS (Active Directory Federation Services) | [Create a Relying Party Trust](https://docs.microsoft.com/en-us/windows-server/identity/ad-fs/operations/create-a-relying-party-trust) |

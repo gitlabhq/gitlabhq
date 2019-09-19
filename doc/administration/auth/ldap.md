@@ -563,3 +563,15 @@ If you are getting 'Connection Refused' errors when trying to connect to the
 LDAP server please double-check the LDAP `port` and `encryption` settings used by
 GitLab. Common combinations are `encryption: 'plain'` and `port: 389`, OR
 `encryption: 'simple_tls'` and `port: 636`.
+
+### Connection times out
+
+If GitLab cannot reach your LDAP endpoint, you will see a message like this:
+
+```
+Could not authenticate you from Ldapmain because "Connection timed out - user specified timeout".
+```
+
+If your configured LDAP provider and/or endpoint is offline or otherwise unreachable by GitLab, no LDAP user will be able to authenticate and log in. GitLab does not cache or store credentials for LDAP users to provide authentication during an LDAP outage.
+
+Contact your LDAP provider or administrator if you are seeing this error.
