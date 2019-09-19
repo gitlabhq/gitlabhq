@@ -12,6 +12,8 @@ Software Development Life Cycle (SDLC) process, Productivity Analytics provides 
 
 Productivity can slow down for many reasons ranging from degrading code base to quickly growing teams. In order to investigate, department or team leaders can start by visualizing the time it takes for merge requests to be merged.
 
+By default, a data migration job covering three months of historical data will kick off when deploying Productivity Analytics for the first time.
+
 ## Supported features
 
 Productivity Analytics allows GitLab users to:
@@ -19,7 +21,6 @@ Productivity Analytics allows GitLab users to:
 - Visualize typical merge request (MR) lifetime and statistics. Use a histogram that shows the distribution of the time elapsed between creating and merging merge requests.
 - Drill down into the most time consuming merge requests, select a number of outliers, and filter down all subsequent charts to investigate potential causes.
 - Filter by group, project, author, label, milestone, or a specific date range. Filter down, for example, to the merge requests of a specific author in a group or project during a milestone or specific date range.
-- Measure velocity over time. Visualize the trends of each metric from the charts above over time in order to observe progress. Zoom in on a particular date range if you notice outliers.
 
 ## Accessing metrics and visualizations
 
@@ -39,9 +40,7 @@ The following metrics and visualizations are available on a project or group lev
   - Number of commits per merge request.
   - Number of lines of code per commit.
   - Number of files touched.
-- Scatterplot showing all MRs merged on a certain date, together with the days it took to complete the action and a 30 day rolling median.
-  - Users can zoom in and out on specific days of interest.
-- Table showing list of merge requests with their respective times and size metrics.
+- Table showing the list of merge requests with their respective time duration metrics.
   - Users can sort by any of the above metrics.
 
 ## Permissions

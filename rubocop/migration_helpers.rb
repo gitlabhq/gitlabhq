@@ -3,15 +3,17 @@ module RuboCop
   module MigrationHelpers
     # Returns true if the given node originated from the db/migrate directory.
     def in_migration?(node)
-      dirname = File.dirname(node.location.expression.source_buffer.name)
-
-      dirname.end_with?('db/migrate', 'db/post_migrate')
+      dirname(node).end_with?('db/migrate', 'db/geo/migrate') || in_post_deployment_migration?(node)
     end
 
     def in_post_deployment_migration?(node)
-      dirname = File.dirname(node.location.expression.source_buffer.name)
+      dirname(node).end_with?('db/post_migrate', 'db/geo/post_migrate')
+    end
 
-      dirname.end_with?('db/post_migrate')
+    private
+
+    def dirname(node)
+      File.dirname(node.location.expression.source_buffer.name)
     end
   end
 end
