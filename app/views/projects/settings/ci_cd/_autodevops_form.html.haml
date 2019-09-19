@@ -46,12 +46,12 @@
                   = form.radio_button :deploy_strategy, 'timed_incremental', class: 'form-check-input'
                   = form.label :deploy_strategy_timed_incremental, class: 'form-check-label' do
                     = s_('CICD|Continuous deployment to production using timed incremental rollout')
-                    = link_to icon('question-circle'), help_page_path('topics/autodevops/index.md', anchor: 'timed-incremental-rollout-to-production'), target: '_blank'
+                    = link_to icon('question-circle'), help_page_path('topics/autodevops/index.md', anchor: 'timed-incremental-rollout-to-production-premium'), target: '_blank'
 
                 .form-check
                   = form.radio_button :deploy_strategy, 'manual', class: 'form-check-input'
                   = form.label :deploy_strategy_manual, class: 'form-check-label' do
                     = s_('CICD|Automatic deployment to staging, manual deployment to production')
-                    = link_to icon('question-circle'), help_page_path('topics/autodevops/index.md', anchor: 'incremental-rollout-to-production'), target: '_blank'
+                    = link_to icon('question-circle'), help_page_path('topics/autodevops/index.md', anchor: 'incremental-rollout-to-production-premium'), target: '_blank'
 
           = f.submit _('Save changes'), class: "btn btn-success prepend-top-15", data: { qa_selector: 'save_changes_button' }

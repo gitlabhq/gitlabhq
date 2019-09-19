@@ -33,6 +33,7 @@
       - master
       - /^[\d-]+-stable(-ee)?$/
       - /^\d+-\d+-auto-deploy-\d+$/
+      - /^security\//
       - merge_requests
       - tags
 

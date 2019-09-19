@@ -17,6 +17,9 @@ module Gitlab
       CHECK_INTERVAL_SECONDS = [ENV.fetch('SIDEKIQ_MEMORY_KILLER_CHECK_INTERVAL', 3).to_i, 2].max
       # Give Sidekiq up to 30 seconds to allow existing jobs to finish after exceeding the limit
       SHUTDOWN_TIMEOUT_SECONDS = ENV.fetch('SIDEKIQ_MEMORY_KILLER_SHUTDOWN_WAIT', 30).to_i
+      # Developer/admin should always set `memory_killer_max_memory_growth_kb` explicitly
+      # In case not set, default to 300M. This is for extra-safe.
+      DEFAULT_MAX_MEMORY_GROWTH_KB = 300_000
 
       def initialize
         super
@@ -90,7 +93,7 @@ module Gitlab
 
       def rss_within_range?
         current_rss = nil
-        deadline = Time.now + GRACE_BALLOON_SECONDS.seconds
+        deadline = Gitlab::Metrics::System.monotonic_time + GRACE_BALLOON_SECONDS.seconds
         loop do
           return true unless enabled?
 
@@ -103,7 +106,7 @@ module Gitlab
           return true if current_rss < soft_limit_rss
 
           # RSS did not go below the soft limit within deadline, restart
-          break if Time.now > deadline
+          break if Gitlab::Metrics::System.monotonic_time > deadline
 
           sleep(CHECK_INTERVAL_SECONDS)
         end
@@ -159,11 +162,11 @@ module Gitlab
         )
         Process.kill(signal, pid)
 
-        deadline = Time.now + time
+        deadline = Gitlab::Metrics::System.monotonic_time + time
 
         # we try to finish as early as all jobs finished
         # so we retest that in loop
-        sleep(CHECK_INTERVAL_SECONDS) while enabled? && any_jobs? && Time.now < deadline
+        sleep(CHECK_INTERVAL_SECONDS) while enabled? && any_jobs? && Gitlab::Metrics::System.monotonic_time < deadline
       end
 
       def signal_pgroup(signal, explanation)
@@ -192,11 +195,11 @@ module Gitlab
 
       def rss_increase_by_job(job)
         memory_growth_kb = get_job_options(job, 'memory_killer_memory_growth_kb', 0).to_i
-        max_memory_growth_kb = get_job_options(job, 'memory_killer_max_memory_growth_kb', MAX_MEMORY_KB).to_i
+        max_memory_growth_kb = get_job_options(job, 'memory_killer_max_memory_growth_kb', DEFAULT_MAX_MEMORY_GROWTH_KB).to_i
 
         return 0 if memory_growth_kb.zero?
 
-        time_elapsed = Time.now.to_i - job[:started_at]
+        time_elapsed = [Gitlab::Metrics::System.monotonic_time - job[:started_at], 0].max
         [memory_growth_kb * time_elapsed, max_memory_growth_kb].min
       end
 

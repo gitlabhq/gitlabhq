@@ -26,7 +26,7 @@ module Gitlab
 
       def within_job(worker_class, jid, queue)
         jobs_mutex.synchronize do
-          jobs[jid] = { worker_class: worker_class, thread: Thread.current, started_at: Time.now.to_i }
+          jobs[jid] = { worker_class: worker_class, thread: Thread.current, started_at: Gitlab::Metrics::System.monotonic_time }
         end
 
         if cancelled?(jid)

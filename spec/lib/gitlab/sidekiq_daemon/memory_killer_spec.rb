@@ -75,12 +75,6 @@ describe Gitlab::SidekiqDaemon::MemoryKiller do
       end
     end
 
-    it 'invoke rss_within_range? twice' do
-      expect(memory_killer).to receive(:rss_within_range?).twice
-
-      subject
-    end
-
     it 'not invoke restart_sidekiq when rss in range' do
       expect(memory_killer).to receive(:rss_within_range?).twice.and_return(true)
 
@@ -128,7 +122,7 @@ describe Gitlab::SidekiqDaemon::MemoryKiller do
       expect(memory_killer).to receive(:soft_limit_rss).and_return(200)
       expect(memory_killer).to receive(:hard_limit_rss).and_return(300)
 
-      expect(Time).to receive(:now).and_call_original
+      expect(Gitlab::Metrics::System).to receive(:monotonic_time).and_call_original
       expect(memory_killer).not_to receive(:log_rss_out_of_range)
 
       expect(subject).to be true
@@ -139,7 +133,7 @@ describe Gitlab::SidekiqDaemon::MemoryKiller do
       expect(memory_killer).to receive(:soft_limit_rss).at_least(:once).and_return(200)
       expect(memory_killer).to receive(:hard_limit_rss).at_least(:once).and_return(300)
 
-      expect(Time).to receive(:now).and_call_original
+      expect(Gitlab::Metrics::System).to receive(:monotonic_time).and_call_original
 
       expect(memory_killer).to receive(:log_rss_out_of_range).with(400, 300, 200)
 
@@ -151,7 +145,7 @@ describe Gitlab::SidekiqDaemon::MemoryKiller do
       expect(memory_killer).to receive(:soft_limit_rss).at_least(:once).and_return(200)
       expect(memory_killer).to receive(:hard_limit_rss).at_least(:once).and_return(300)
 
-      expect(Time).to receive(:now).twice.and_call_original
+      expect(Gitlab::Metrics::System).to receive(:monotonic_time).twice.and_call_original
       expect(memory_killer).to receive(:sleep).with(check_interval_seconds)
 
       expect(memory_killer).to receive(:log_rss_out_of_range).with(400, 300, 200)
@@ -164,7 +158,7 @@ describe Gitlab::SidekiqDaemon::MemoryKiller do
       expect(memory_killer).to receive(:soft_limit_rss).and_return(200, 200)
       expect(memory_killer).to receive(:hard_limit_rss).and_return(300, 300)
 
-      expect(Time).to receive(:now).twice.and_call_original
+      expect(Gitlab::Metrics::System).to receive(:monotonic_time).twice.and_call_original
       expect(memory_killer).to receive(:sleep).with(check_interval_seconds)
 
       expect(memory_killer).not_to receive(:log_rss_out_of_range)
@@ -177,7 +171,7 @@ describe Gitlab::SidekiqDaemon::MemoryKiller do
       expect(memory_killer).to receive(:soft_limit_rss).exactly(5).times.and_return(200)
       expect(memory_killer).to receive(:hard_limit_rss).exactly(5).times.and_return(300)
 
-      expect(Time).to receive(:now).exactly(5).times.and_call_original
+      expect(Gitlab::Metrics::System).to receive(:monotonic_time).exactly(5).times.and_call_original
       expect(memory_killer).to receive(:sleep).exactly(3).times.with(check_interval_seconds).and_call_original
 
       expect(memory_killer).to receive(:log_rss_out_of_range).with(250, 300, 200)
@@ -219,7 +213,7 @@ describe Gitlab::SidekiqDaemon::MemoryKiller do
 
     it 'send signal and return when all jobs finished' do
       expect(Process).to receive(:kill).with(signal, pid).ordered
-      expect(Time).to receive(:now).and_call_original
+      expect(Gitlab::Metrics::System).to receive(:monotonic_time).and_call_original
 
       expect(memory_killer).to receive(:enabled?).and_return(true)
       expect(memory_killer).to receive(:any_jobs?).and_return(false)
@@ -231,7 +225,7 @@ describe Gitlab::SidekiqDaemon::MemoryKiller do
 
     it 'send signal and wait till deadline if any job not finished' do
       expect(Process).to receive(:kill).with(signal, pid).ordered
-      expect(Time).to receive(:now).and_call_original.at_least(:once)
+      expect(Gitlab::Metrics::System).to receive(:monotonic_time).and_call_original.at_least(:once)
 
       expect(memory_killer).to receive(:enabled?).and_return(true).at_least(:once)
       expect(memory_killer).to receive(:any_jobs?).and_return(true).at_least(:once)
@@ -351,7 +345,7 @@ describe Gitlab::SidekiqDaemon::MemoryKiller do
     subject { memory_killer.send(:rss_increase_by_job, job) }
 
     before do
-      stub_const("#{described_class}::MAX_MEMORY_KB", max_memory_kb)
+      stub_const("#{described_class}::DEFAULT_MAX_MEMORY_GROWTH_KB", max_memory_kb)
     end
 
     it 'return 0 if memory_growth_kb return 0' do
@@ -366,7 +360,7 @@ describe Gitlab::SidekiqDaemon::MemoryKiller do
       expect(memory_killer).to receive(:get_job_options).with(job, 'memory_killer_memory_growth_kb', 0).and_return(10)
       expect(memory_killer).to receive(:get_job_options).with(job, 'memory_killer_max_memory_growth_kb', max_memory_kb).and_return(100)
 
-      expect(Time).to receive(:now).and_return(323)
+      expect(Gitlab::Metrics::System).to receive(:monotonic_time).and_return(323)
       expect(subject).to eq(20)
     end
 
@@ -374,7 +368,7 @@ describe Gitlab::SidekiqDaemon::MemoryKiller do
       expect(memory_killer).to receive(:get_job_options).with(job, 'memory_killer_memory_growth_kb', 0).and_return(10)
       expect(memory_killer).to receive(:get_job_options).with(job, 'memory_killer_max_memory_growth_kb', max_memory_kb).and_return(100)
 
-      expect(Time).to receive(:now).and_return(332)
+      expect(Gitlab::Metrics::System).to receive(:monotonic_time).and_return(332)
       expect(subject).to eq(100)
     end
   end

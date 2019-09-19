@@ -11,14 +11,14 @@ module Gitlab
       def list_directories(depth: 1)
         request = Gitaly::ListDirectoriesRequest.new(storage_name: @storage, depth: depth)
 
-        GitalyClient.call(@storage, :storage_service, :list_directories, request)
+        GitalyClient.call(@storage, :storage_service, :list_directories, request, timeout: GitalyClient.medium_timeout)
           .flat_map(&:paths)
       end
 
       # Delete all repositories in the storage. This is a slow and VERY DESTRUCTIVE operation.
       def delete_all_repositories
         request = Gitaly::DeleteAllRepositoriesRequest.new(storage_name: @storage)
-        GitalyClient.call(@storage, :storage_service, :delete_all_repositories, request)
+        GitalyClient.call(@storage, :storage_service, :delete_all_repositories, request, timeout: GitalyClient.long_timeout)
       end
     end
   end

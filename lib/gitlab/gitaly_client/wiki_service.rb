@@ -34,7 +34,7 @@ module Gitlab
           end
         end
 
-        response = GitalyClient.call(@repository.storage, :wiki_service, :wiki_write_page, enum)
+        response = GitalyClient.call(@repository.storage, :wiki_service, :wiki_write_page, enum, timeout: GitalyClient.medium_timeout)
         if error = response.duplicate_error.presence
           raise Gitlab::Git::Wiki::DuplicatePageError, error
         end
@@ -61,7 +61,7 @@ module Gitlab
           end
         end
 
-        GitalyClient.call(@repository.storage, :wiki_service, :wiki_update_page, enum)
+        GitalyClient.call(@repository.storage, :wiki_service, :wiki_update_page, enum, timeout: GitalyClient.medium_timeout)
       end
 
       def delete_page(page_path, commit_details)
@@ -187,7 +187,7 @@ module Gitlab
           directory: encode_binary(dir)
         )
 
-        response = GitalyClient.call(@repository.storage, :wiki_service, :wiki_get_formatted_data, request)
+        response = GitalyClient.call(@repository.storage, :wiki_service, :wiki_get_formatted_data, request, timeout: GitalyClient.medium_timeout)
         response.reduce([]) { |memo, msg| memo << msg.data }.join
       end
 

@@ -20,7 +20,7 @@ module Gitlab
           our_commit_oid: @our_commit_oid,
           their_commit_oid: @their_commit_oid
         )
-        response = GitalyClient.call(@repository.storage, :conflicts_service, :list_conflict_files, request)
+        response = GitalyClient.call(@repository.storage, :conflicts_service, :list_conflict_files, request, timeout: GitalyClient.long_timeout)
 
         GitalyClient::ConflictFilesStitcher.new(response)
       end

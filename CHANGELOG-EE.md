@@ -252,6 +252,10 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Fix alignment of activity dropdown in epic tabs; add counter to discussion tab.
 
 
+## 12.1.10
+
+- No changes.
+
 ## 12.1.5
 
 - No changes.

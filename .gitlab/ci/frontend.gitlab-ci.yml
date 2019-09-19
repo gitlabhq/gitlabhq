@@ -47,7 +47,7 @@
     - rm -f /etc/apt/sources.list.d/google*.list  # We don't need to update Chrome here
   only:
     variables:
-      - $CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org"
+      - $CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE =~ /^gitlab-org($|\/)/  # Matches the gitlab-org group and its subgroups
       - $CI_SERVER_HOST == "dev.gitlab.org"
   tags:
     - gitlab-org

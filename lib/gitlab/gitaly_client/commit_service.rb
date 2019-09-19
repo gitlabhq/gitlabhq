@@ -254,7 +254,7 @@ module Gitlab
 
       def languages(ref = nil)
         request = Gitaly::CommitLanguagesRequest.new(repository: @gitaly_repo, revision: ref || '')
-        response = GitalyClient.call(@repository.storage, :commit_service, :commit_languages, request)
+        response = GitalyClient.call(@repository.storage, :commit_service, :commit_languages, request, timeout: GitalyClient.long_timeout)
 
         response.languages.map { |l| { value: l.share.round(2), label: l.name, color: l.color, highlight: l.color } }
       end
@@ -360,7 +360,7 @@ module Gitlab
 
       def extract_signature(commit_id)
         request = Gitaly::ExtractCommitSignatureRequest.new(repository: @gitaly_repo, commit_id: commit_id)
-        response = GitalyClient.call(@repository.storage, :commit_service, :extract_commit_signature, request)
+        response = GitalyClient.call(@repository.storage, :commit_service, :extract_commit_signature, request, timeout: GitalyClient.fast_timeout)
 
         signature = +''.b
         signed_text = +''.b

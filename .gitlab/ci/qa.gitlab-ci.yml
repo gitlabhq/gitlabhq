@@ -12,7 +12,7 @@
     - ./scripts/trigger-build omnibus
   only:
     variables:
-      - $CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org"
+      - $CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE =~ /^gitlab-org($|\/)/  # Matches the gitlab-org group or its subgroups
 
 package-and-qa-manual:
   extends:
