@@ -24,14 +24,22 @@ describe Gitlab::ImportExport::AfterExportStrategies::BaseAfterExportStrategy do
 
       service.execute(user, project)
 
-      expect(lock_path_exist?).to be_truthy
+      expect(service.locks_present?).to be_truthy
     end
 
     context 'when the method succeeds' do
       it 'removes the lock file' do
         service.execute(user, project)
 
-        expect(lock_path_exist?).to be_falsey
+        expect(service.locks_present?).to be_falsey
+      end
+
+      it 'removes the archive path' do
+        FileUtils.mkdir_p(shared.archive_path)
+
+        service.execute(user, project)
+
+        expect(File.exist?(shared.archive_path)).to be_falsey
       end
     end
 
@@ -62,13 +70,21 @@ describe Gitlab::ImportExport::AfterExportStrategies::BaseAfterExportStrategy do
 
           service.execute(user, project)
         end
+
+        it 'removes the archive path' do
+          FileUtils.mkdir_p(shared.archive_path)
+
+          service.execute(user, project)
+
+          expect(File.exist?(shared.archive_path)).to be_falsey
+        end
       end
 
       context 'when an exception is raised' do
         it 'removes the lock' do
           expect { service.execute(user, project) }.to raise_error(NotImplementedError)
 
-          expect(lock_path_exist?).to be_falsey
+          expect(service.locks_present?).to be_falsey
         end
       end
     end
@@ -96,9 +112,5 @@ describe Gitlab::ImportExport::AfterExportStrategies::BaseAfterExportStrategy do
 
       expect(described_class.new(params).to_json).to eq result
     end
-  end
-
-  def lock_path_exist?
-    File.exist?(described_class.lock_file_path(project))
   end
 end

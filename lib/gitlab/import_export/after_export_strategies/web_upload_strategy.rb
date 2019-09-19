@@ -24,8 +24,6 @@ module Gitlab
 
         def strategy_execute
           handle_response_error(send_file)
-
-          project.remove_exports
         end
 
         def handle_response_error(response)
