@@ -11,12 +11,13 @@ GET /projects/:id/repository/commits
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `id`      | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
-| `ref_name` | string | no | The name of a repository branch or tag or if not given the default branch |
+| `ref_name` | string | no | The name of a repository branch, tag or revision range, or if not given the default branch |
 | `since` | string | no | Only commits after or on this date will be returned in ISO 8601 format YYYY-MM-DDTHH:MM:SSZ |
 | `until` | string | no | Only commits before or on this date will be returned in ISO 8601 format YYYY-MM-DDTHH:MM:SSZ |
 | `path` | string | no | The file path |
 | `all` | boolean | no | Retrieve every commit from the repository |
 | `with_stats` | boolean | no | Stats about each commit will be added to the response |
+| `first_parent` | boolean | no | Follow only the first parent commit upon seeing a merge commit |
 
 ```bash
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/repository/commits"

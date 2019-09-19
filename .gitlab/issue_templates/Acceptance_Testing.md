@@ -25,7 +25,7 @@ Then leave running while monitoring and performing some testing through web, api
 
 - [ ] [Monitor Using Grafana](https://dashboards.gitlab.net)
 - [ ] [Inspect logs in ELK](https://log.gitlab.net/app/kibana)
-- [ ] [Check for errors in GitLab Dev Sentry](https://sentry.gitlap.com/gitlab/devgitlaborg/?query=is%3Aunresolved)
+- [ ] [Check for errors in GitLab Dev Sentry](https://sentry.gitlab.net/gitlab/devgitlaborg/?query=is%3Aunresolved)
 
 ## 2. Staging Trial
 
@@ -41,7 +41,7 @@ Then leave running while monitoring for at least **15 minutes** while performing
 
 - [ ] [Monitor Using Grafana](https://dashboards.gitlab.net)
 - [ ] [Inspect logs in ELK](https://log.gitlab.net/app/kibana)
-- [ ] [Check for errors in GitLab Sentry](https://sentry.gitlap.com/gitlab/gitlabcom/?query=is%3Aunresolved)
+- [ ] [Check for errors in GitLab Sentry](https://sentry.gitlab.net/gitlab/gitlabcom/?query=is%3Aunresolved)
 
 ## 4. Production Server Version Check
 
@@ -57,7 +57,7 @@ Then leave running while monitoring for at least **15 minutes** while performing
 
 - [ ] [Monitor Using Grafana](https://dashboards.gitlab.net)
 - [ ] [Inspect logs in ELK](https://log.gitlab.net/app/kibana)
-- [ ] [Check for errors in GitLab Sentry](https://sentry.gitlap.com/gitlab/gitlabcom/?query=is%3Aunresolved)
+- [ ] [Check for errors in GitLab Sentry](https://sentry.gitlab.net/gitlab/gitlabcom/?query=is%3Aunresolved)
 
 ## 6. Low Impact Check
 
@@ -69,7 +69,7 @@ Then leave running while monitoring for at least **30 minutes** while performing
 
 - [ ] [Monitor Using Grafana](https://dashboards.gitlab.net)
 - [ ] [Inspect logs in ELK](https://log.gitlab.net/app/kibana)
-- [ ] [Check for errors in GitLab Sentry](https://sentry.gitlap.com/gitlab/gitlabcom/?query=is%3Aunresolved)
+- [ ] [Check for errors in GitLab Sentry](https://sentry.gitlab.net/gitlab/gitlabcom/?query=is%3Aunresolved)
 
 ## 7. Mid Impact Trial
 
@@ -81,7 +81,7 @@ Then leave running while monitoring for at least **12 hours** while performing s
 
 - [ ] [Monitor Using Grafana](https://dashboards.gitlab.net)
 - [ ] [Inspect logs in ELK](https://log.gitlab.net/app/kibana)
-- [ ] [Check for errors in GitLab Sentry](https://sentry.gitlap.com/gitlab/gitlabcom/?query=is%3Aunresolved)
+- [ ] [Check for errors in GitLab Sentry](https://sentry.gitlab.net/gitlab/gitlabcom/?query=is%3Aunresolved)
 
 ## 8. Full Impact Trial
 
@@ -93,7 +93,7 @@ Then leave running while monitoring for at least **1 week**.
 
 - [ ] [Monitor Using Grafana](https://dashboards.gitlab.net)
 - [ ] [Inspect logs in ELK](https://log.gitlab.net/app/kibana)
-- [ ] [Check for errors in GitLab Dev Sentry](https://sentry.gitlap.com/gitlab/devgitlaborg/?query=is%3Aunresolved)
+- [ ] [Check for errors in GitLab Dev Sentry](https://sentry.gitlab.net/gitlab/devgitlaborg/?query=is%3Aunresolved)
 
 #### Success?
 

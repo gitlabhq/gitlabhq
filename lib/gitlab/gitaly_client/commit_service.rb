@@ -140,7 +140,8 @@ module Gitlab
         request = Gitaly::CountCommitsRequest.new(
           repository: @gitaly_repo,
           revision: encode_binary(ref),
-          all: !!options[:all]
+          all: !!options[:all],
+          first_parent: !!options[:first_parent]
         )
         request.after = Google::Protobuf::Timestamp.new(seconds: options[:after].to_i) if options[:after].present?
         request.before = Google::Protobuf::Timestamp.new(seconds: options[:before].to_i) if options[:before].present?
@@ -325,6 +326,7 @@ module Gitlab
           follow:       options[:follow],
           skip_merges:  options[:skip_merges],
           all:          !!options[:all],
+          first_parent: !!options[:first_parent],
           disable_walk: true # This option is deprecated. The 'walk' implementation is being removed.
         )
         request.after    = GitalyClient.timestamp(options[:after]) if options[:after]

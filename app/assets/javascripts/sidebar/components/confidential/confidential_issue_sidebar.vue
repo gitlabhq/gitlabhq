@@ -5,7 +5,6 @@ import tooltip from '~/vue_shared/directives/tooltip';
 import Icon from '~/vue_shared/components/icon.vue';
 import eventHub from '~/sidebar/event_hub';
 import editForm from './edit_form.vue';
-import { trackEvent } from 'ee_else_ce/event_tracking/issue_sidebar';
 
 export default {
   components: {
@@ -52,11 +51,6 @@ export default {
     toggleForm() {
       this.edit = !this.edit;
     },
-    onEditClick() {
-      this.toggleForm();
-
-      trackEvent('click_edit_button', 'confidentiality');
-    },
     updateConfidentialAttribute(confidential) {
       this.service
         .update('issue', { confidential })
@@ -88,7 +82,10 @@ export default {
         v-if="isEditable"
         class="float-right confidential-edit"
         href="#"
-        @click.prevent="onEditClick"
+        data-track-event="click_edit_button"
+        data-track-label="right_sidebar"
+        data-track-property="confidentiality"
+        @click.prevent="toggleForm"
       >
         {{ __('Edit') }}
       </a>

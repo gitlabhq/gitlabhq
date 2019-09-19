@@ -1461,6 +1461,7 @@ export default class Notes {
   getFormData($form) {
     const content = $form.find('.js-note-text').val();
     return {
+      // eslint-disable-next-line no-jquery/no-serialize
       formData: $form.serialize(),
       formContent: _.escape(content),
       formAction: $form.attr('action'),

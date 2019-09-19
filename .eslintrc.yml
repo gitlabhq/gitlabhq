@@ -10,6 +10,7 @@ plugins:
   - import
   - "@gitlab/i18n"
   - "@gitlab/vue-i18n"
+  - no-jquery
 settings:
   import/resolver:
     webpack:
@@ -36,6 +37,11 @@ rules:
   vue/no-use-v-if-with-v-for: off
   vue/no-v-html: off
   vue/use-v-on-exact: off
+  no-jquery/no-ajax: error
+  no-jquery/no-ajax-events: error
+  no-jquery/no-load: error
+  no-jquery/no-load-shorthand: error
+  no-jquery/no-serialize: error
 overrides:
   files:
     - '**/spec/**/*'

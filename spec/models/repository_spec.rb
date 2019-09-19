@@ -279,7 +279,7 @@ describe Repository do
   describe '#commits' do
     context 'when neither the all flag nor a ref are specified' do
       it 'returns every commit from default branch' do
-        expect(repository.commits(limit: 60).size).to eq(37)
+        expect(repository.commits(nil, limit: 60).size).to eq(37)
       end
     end
 
@@ -320,7 +320,7 @@ describe Repository do
 
     context "when 'all' flag is set" do
       it 'returns every commit from the repository' do
-        expect(repository.commits(all: true, limit: 60).size).to eq(60)
+        expect(repository.commits(nil, all: true, limit: 60).size).to eq(60)
       end
     end
   end

@@ -1,5 +1,4 @@
 import Vue from 'vue';
-import initNoteStats from 'ee_else_ce/event_tracking/notes';
 import notesApp from './components/notes_app.vue';
 import initDiscussionFilters from './discussion_filters';
 import createStore from './stores';
@@ -38,9 +37,6 @@ document.addEventListener('DOMContentLoaded', () => {
         currentUserData,
         notesData: JSON.parse(notesDataset.notesData),
       };
-    },
-    mounted() {
-      initNoteStats();
     },
     render(createElement) {
       return createElement('notes-app', {

@@ -1,10 +1,9 @@
-import $ from 'jquery';
 import { setHTMLFixture } from './helpers/fixtures';
-
 import Tracking, { initUserTracking } from '~/tracking';
 
 describe('Tracking', () => {
   let snowplowSpy;
+  let bindDocumentSpy;
 
   beforeEach(() => {
     window.snowplow = window.snowplow || (() => {});
@@ -17,6 +16,10 @@ describe('Tracking', () => {
   });
 
   describe('initUserTracking', () => {
+    beforeEach(() => {
+      bindDocumentSpy = jest.spyOn(Tracking, 'bindDocument').mockImplementation(() => null);
+    });
+
     it('calls through to get a new tracker with the expected options', () => {
       initUserTracking();
       expect(snowplowSpy).toHaveBeenCalledWith('newTracker', '_namespace_', 'app.gitfoo.com', {
@@ -50,6 +53,11 @@ describe('Tracking', () => {
       expect(snowplowSpy).toHaveBeenCalledWith('enableFormTracking');
       expect(snowplowSpy).toHaveBeenCalledWith('enableLinkClickTracking');
     });
+
+    it('binds the document event handling', () => {
+      initUserTracking();
+      expect(bindDocumentSpy).toHaveBeenCalled();
+    });
   });
 
   describe('.event', () => {
@@ -62,11 +70,15 @@ describe('Tracking', () => {
     it('tracks to snowplow (our current tracking system)', () => {
       Tracking.event('_category_', '_eventName_', { label: '_label_' });
 
-      expect(snowplowSpy).toHaveBeenCalledWith('trackStructEvent', '_category_', '_eventName_', {
-        label: '_label_',
-        property: '',
-        value: '',
-      });
+      expect(snowplowSpy).toHaveBeenCalledWith(
+        'trackStructEvent',
+        '_category_',
+        '_eventName_',
+        '_label_',
+        undefined,
+        undefined,
+        undefined,
+      );
     });
 
     it('skips tracking if snowplow is unavailable', () => {
@@ -99,83 +111,70 @@ describe('Tracking', () => {
   });
 
   describe('tracking interface events', () => {
-    let eventSpy = null;
-    let subject = null;
+    let eventSpy;
+
+    const trigger = (selector, eventName = 'click') => {
+      const event = new Event(eventName, { bubbles: true });
+      document.querySelector(selector).dispatchEvent(event);
+    };
 
     beforeEach(() => {
       eventSpy = jest.spyOn(Tracking, 'event');
-      subject = new Tracking('_category_');
+      Tracking.bindDocument('_category_'); // only happens once
       setHTMLFixture(`
         <input data-track-event="click_input1" data-track-label="_label_" value="_value_"/>
         <input data-track-event="click_input2" data-track-value="_value_override_" value="_value_"/>
         <input type="checkbox" data-track-event="toggle_checkbox" value="_value_" checked/>
         <input class="dropdown" data-track-event="toggle_dropdown"/>
-        <div class="js-projects-list-holder"></div>
+        <div data-track-event="nested_event"><span class="nested"></span></div>
       `);
     });
 
     it('binds to clicks on elements matching [data-track-event]', () => {
-      subject.bind(document);
-      $('[data-track-event="click_input1"]').click();
+      trigger('[data-track-event="click_input1"]');
 
       expect(eventSpy).toHaveBeenCalledWith('_category_', 'click_input1', {
         label: '_label_',
         value: '_value_',
-        property: '',
       });
     });
 
     it('allows value override with the data-track-value attribute', () => {
-      subject.bind(document);
-      $('[data-track-event="click_input2"]').click();
+      trigger('[data-track-event="click_input2"]');
 
       expect(eventSpy).toHaveBeenCalledWith('_category_', 'click_input2', {
-        label: '',
         value: '_value_override_',
-        property: '',
       });
     });
 
     it('handles checkbox values correctly', () => {
-      subject.bind(document);
-      const $checkbox = $('[data-track-event="toggle_checkbox"]');
-
-      $checkbox.click(); // unchecking
+      trigger('[data-track-event="toggle_checkbox"]'); // checking
 
       expect(eventSpy).toHaveBeenCalledWith('_category_', 'toggle_checkbox', {
-        label: '',
-        property: '',
         value: false,
       });
 
-      $checkbox.click(); // checking
+      trigger('[data-track-event="toggle_checkbox"]'); // unchecking
 
       expect(eventSpy).toHaveBeenCalledWith('_category_', 'toggle_checkbox', {
-        label: '',
-        property: '',
         value: '_value_',
       });
     });
 
     it('handles bootstrap dropdowns', () => {
-      new Tracking('_category_').bind(document);
-      const $dropdown = $('[data-track-event="toggle_dropdown"]');
+      trigger('[data-track-event="toggle_dropdown"]', 'show.bs.dropdown'); // showing
 
-      $dropdown.trigger('show.bs.dropdown'); // showing
+      expect(eventSpy).toHaveBeenCalledWith('_category_', 'toggle_dropdown_show', {});
 
-      expect(eventSpy).toHaveBeenCalledWith('_category_', 'toggle_dropdown_show', {
-        label: '',
-        property: '',
-        value: '',
-      });
+      trigger('[data-track-event="toggle_dropdown"]', 'hide.bs.dropdown'); // hiding
 
-      $dropdown.trigger('hide.bs.dropdown'); // hiding
+      expect(eventSpy).toHaveBeenCalledWith('_category_', 'toggle_dropdown_hide', {});
+    });
 
-      expect(eventSpy).toHaveBeenCalledWith('_category_', 'toggle_dropdown_hide', {
-        label: '',
-        property: '',
-        value: '',
-      });
+    it('handles nested elements inside an element with tracking', () => {
+      trigger('span.nested', 'click');
+
+      expect(eventSpy).toHaveBeenCalledWith('_category_', 'nested_event', {});
     });
   });
 });
