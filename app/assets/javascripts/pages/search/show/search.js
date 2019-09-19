@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import '~/gl_dropdown';
 import Flash from '~/flash';
 import Api from '~/api';
 import { __ } from '~/locale';

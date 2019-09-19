@@ -1,6 +1,7 @@
 /* eslint-disable func-names, no-else-return, prefer-template, prefer-arrow-callback */
 
 import $ from 'jquery';
+import '~/gl_dropdown';
 import Api from './api';
 import { mergeUrlParams } from './lib/utils/url_utility';
 import { parseBoolean } from '~/lib/utils/common_utils';

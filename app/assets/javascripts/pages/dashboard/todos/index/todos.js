@@ -1,6 +1,7 @@
 /* eslint-disable class-methods-use-this, no-unneeded-ternary */
 
 import $ from 'jquery';
+import '~/gl_dropdown';
 import { visitUrl } from '~/lib/utils/url_utility';
 import UsersSelect from '~/users_select';
 import { isMetaClick } from '~/lib/utils/common_utils';

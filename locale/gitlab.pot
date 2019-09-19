@@ -10627,6 +10627,9 @@ msgstr ""
 msgid "One or more of your dependency files are not supported, and the dependency list may be incomplete. Below is a list of supported file types."
 msgstr ""
 
+msgid "Only 'Reporter' roles and above on tiers Premium / Silver and above can see Cycle Analytics."
+msgstr ""
+
 msgid "Only Project Members"
 msgstr ""
 
@@ -17982,6 +17985,9 @@ msgid "You don't have any projects available."
 msgstr ""
 
 msgid "You don't have any recent searches"
+msgstr ""
+
+msgid "You don’t have access to Cycle Analytics for this group"
 msgstr ""
 
 msgid "You don’t have access to Productivity Analytics in this group"

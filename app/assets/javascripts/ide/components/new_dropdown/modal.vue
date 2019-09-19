@@ -3,12 +3,12 @@ import $ from 'jquery';
 import flash from '~/flash';
 import { __, sprintf, s__ } from '~/locale';
 import { mapActions, mapState, mapGetters } from 'vuex';
-import GlModal from '~/vue_shared/components/gl_modal.vue';
+import DeprecatedModal2 from '~/vue_shared/components/deprecated_modal_2.vue';
 import { modalTypes } from '../../constants';
 
 export default {
   components: {
-    GlModal,
+    GlModal: DeprecatedModal2,
   },
   data() {
     return {

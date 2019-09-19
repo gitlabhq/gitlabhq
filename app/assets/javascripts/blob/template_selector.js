@@ -1,6 +1,7 @@
 /* eslint-disable class-methods-use-this */
 
 import $ from 'jquery';
+import '~/gl_dropdown';
 
 export default class TemplateSelector {
   constructor({ dropdown, data, pattern, wrapper, editor, $input } = {}) {

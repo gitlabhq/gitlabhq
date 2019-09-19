@@ -3,7 +3,6 @@
 ## Contents
 
 - [Dropdowns](#dropdowns)
-- [Modals](#modals)
 
 ## Dropdowns
 
@@ -39,25 +38,3 @@ See also the [corresponding UX guide](https://design.gitlab.com/#/components/dro
    ```
 
 [bootstrap-dropdowns]: https://getbootstrap.com/docs/3.3/javascript/#dropdowns
-
-## Modals
-
-See also the [corresponding UX guide](https://design.gitlab.com/#/components/modals).
-
-We have a reusable Vue component for modals: [vue_shared/components/gl_modal.vue](https://gitlab.com/gitlab-org/gitlab/blob/master/app/assets/javascripts/vue_shared/components/gl_modal.vue)
-
-Here is an example of how to use it:
-
-```html
-  <gl-modal
-    id="dogs-out-modal"
-    :header-title-text="s__('ModalExample|Let the dogs out?')"
-    footer-primary-button-variant="danger"
-    :footer-primary-button-text="s__('ModalExample|Let them out')"
-    @submit="letOut(theDogs)"
-  >
-    {{ s__('ModalExample|You’re about to let the dogs out.') }}
-  </gl-modal>
-```
-
-![example modal](img/gl-modal.png)
