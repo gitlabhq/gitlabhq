@@ -320,6 +320,10 @@ entry.
 - Update Packer.gitlab-ci.yml to use latest image. (Kelly Hair)
 
 
+## 12.1.11
+
+- No changes.
+
 ## 12.1.10
 
 - No changes.
