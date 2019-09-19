@@ -2,6 +2,10 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 12.1.11
+
+- No changes.
+
 ## 12.1.10
 
 - No changes.
