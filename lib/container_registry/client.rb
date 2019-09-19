@@ -2,6 +2,7 @@
 
 require 'faraday'
 require 'faraday_middleware'
+require 'digest'
 
 module ContainerRegistry
   class Client
@@ -9,6 +10,8 @@ module ContainerRegistry
 
     DOCKER_DISTRIBUTION_MANIFEST_V2_TYPE = 'application/vnd.docker.distribution.manifest.v2+json'
     OCI_MANIFEST_V1_TYPE = 'application/vnd.oci.image.manifest.v1+json'
+    CONTAINER_IMAGE_V1_TYPE = 'application/vnd.docker.container.image.v1+json'
+
     ACCEPTED_TYPES = [DOCKER_DISTRIBUTION_MANIFEST_V2_TYPE, OCI_MANIFEST_V1_TYPE].freeze
 
     # Taken from: FaradayMiddleware::FollowRedirects
@@ -36,6 +39,45 @@ module ContainerRegistry
       faraday.delete("/v2/#{name}/manifests/#{reference}").success?
     end
 
+    def upload_raw_blob(path, blob)
+      digest = "sha256:#{Digest::SHA256.hexdigest(blob)}"
+
+      if upload_blob(path, blob, digest).success?
+        [blob, digest]
+      end
+    end
+
+    def upload_blob(name, content, digest)
+      upload = faraday.post("/v2/#{name}/blobs/uploads/")
+      return unless upload.success?
+
+      location = URI(upload.headers['location'])
+
+      faraday.put("#{location.path}?#{location.query}") do |req|
+        req.params['digest'] = digest
+        req.headers['Content-Type'] = 'application/octet-stream'
+        req.body = content
+      end
+    end
+
+    def generate_empty_manifest(path)
+      image = {
+        config: {}
+      }
+      image, image_digest = upload_raw_blob(path, JSON.pretty_generate(image))
+      return unless image
+
+      {
+        schemaVersion: 2,
+        mediaType: DOCKER_DISTRIBUTION_MANIFEST_V2_TYPE,
+        config: {
+          mediaType: CONTAINER_IMAGE_V1_TYPE,
+          size: image.size,
+          digest: image_digest
+        }
+      }
+    end
+
     def blob(name, digest, type = nil)
       type ||= 'application/octet-stream'
       response_body faraday_blob.get("/v2/#{name}/blobs/#{digest}", nil, 'Accept' => type), allow_redirect: true
@@ -43,6 +85,15 @@ module ContainerRegistry
 
     def delete_blob(name, digest)
       faraday.delete("/v2/#{name}/blobs/#{digest}").success?
+    end
+
+    def put_tag(name, reference, manifest)
+      response = faraday.put("/v2/#{name}/manifests/#{reference}") do |req|
+        req.headers['Content-Type'] = DOCKER_DISTRIBUTION_MANIFEST_V2_TYPE
+        req.body = JSON.pretty_generate(manifest)
+      end
+
+      response.headers['docker-content-digest'] if response.success?
     end
 
     private

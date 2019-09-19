@@ -253,13 +253,13 @@ table_display_block: true
 ---
 ```
 
-## Emphasis
+### Emphasis
 
 - Use double asterisks (`**`) to mark a word or text in bold (`**bold**`).
 - Use underscore (`_`) for text in italics (`_italic_`).
 - Use greater than (`>`) for blockquotes.
 
-## Punctuation
+### Punctuation
 
 Check the general punctuation rules for the GitLab documentation on the table below.
 Check specific punctuation rules for [lists](#lists) below.
@@ -273,6 +273,20 @@ Check specific punctuation rules for [lists](#lists) below.
 | Use serial commas ("Oxford commas") before the final 'and/or' in a list. | _You can create new issues, merge requests, and milestones._ |
 | Always add a space before and after dashes when using it in a sentence (for replacing a comma, for example). | _You should try this - or not._ |
 | Always use lowercase after a colon. | _Related Issues: a way to create a relationship between issues._ |
+
+### Placeholder text
+
+Often in examples, a writer will provide a command or configuration that is complete apart from
+a value specific to the reader.
+
+In these cases, use [`<` and `>`](https://en.wikipedia.org/wiki/Usage_message#Pattern) to call out
+where a reader must replace text with their own value.
+
+For example:
+
+```sh
+cp <your_source_directory> <your_destination_directory>
+```
 
 ## Lists
 

@@ -22,7 +22,6 @@ import Board from 'ee_else_ce/boards/components/board';
 import BoardSidebar from 'ee_else_ce/boards/components/board_sidebar';
 import initNewListDropdown from 'ee_else_ce/boards/components/new_list_dropdown';
 import BoardAddIssuesModal from '~/boards/components/modal/index.vue';
-import '~/vue_shared/vue_resource_interceptor';
 import {
   NavigationType,
   convertObjectPropsToCamelCase,

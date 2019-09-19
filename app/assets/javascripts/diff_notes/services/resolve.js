@@ -2,7 +2,6 @@
 
 import Vue from 'vue';
 import Flash from '../../flash';
-import '../../vue_shared/vue_resource_interceptor';
 import { __ } from '~/locale';
 
 window.gl = window.gl || {};

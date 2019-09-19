@@ -37,10 +37,6 @@ tasks = [
   %w[scripts/lint-rugged]
 ]
 
-if Gitlab.ee?
-  tasks.unshift(%w[ruby -rbundler/setup scripts/ee_specific_check/ee_specific_check.rb])
-end
-
 static_analysis = Gitlab::Popen::Runner.new
 
 static_analysis.run(tasks) do |cmd, &run|

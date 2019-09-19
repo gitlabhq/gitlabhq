@@ -252,8 +252,8 @@ This action does not delete blobs. In order to delete them and recycle disk spac
 [run the garbage collection](https://docs.gitlab.com/omnibus/maintenance/README.html#removing-unused-layers-not-referenced-by-manifests).
 
 NOTE: **Note:**
-Due to a [Docker Distribution deficiency](https://gitlab.com/gitlab-org/gitlab-foss/issues/21405),
-it doesn't remove tags whose manifest is shared by multiple tags.
+Since GitLab 12.4, individual tags are deleted.
+For more details, see the [discussion](https://gitlab.com/gitlab-org/gitlab/issues/15737).
 
 Examples:
 

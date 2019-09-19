@@ -53,7 +53,9 @@ describe 'Container Registry', :js do
       find('.js-toggle-repo').click
       wait_for_requests
 
-      expect_any_instance_of(ContainerRegistry::Tag).to receive(:delete).and_return(true)
+      service = double('service')
+      expect(service).to receive(:execute).with(container_repository) { { status: :success } }
+      expect(Projects::ContainerRepository::DeleteTagsService).to receive(:new).with(container_repository.project, user, tags: ['latest']) { service }
 
       click_on(class: 'js-delete-registry-row', visible: false)
       expect(find('.modal .modal-title')).to have_content 'Remove image'

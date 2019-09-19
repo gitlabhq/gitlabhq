@@ -7,7 +7,6 @@ import 'core-js/features/set-immediate';
 import 'vendor/jasmine-jquery';
 import '~/commons';
 import Vue from 'vue';
-import VueResource from 'vue-resource';
 import Translate from '~/vue_shared/translate';
 import jasmineDiff from 'jasmine-diff';
 import { config as testUtilsConfig } from '@vue/test-utils';
@@ -46,7 +45,6 @@ Vue.config.errorHandler = function(err) {
   fail(err);
 };
 
-Vue.use(VueResource);
 Vue.use(Translate);
 
 // enable test fixtures
@@ -101,13 +99,6 @@ afterEach(__rewire_reset_all__); // eslint-disable-line
 // The downside is that it creates a minor performance penalty in the time it takes
 // to run our unit tests.
 beforeEach(done => done());
-
-const builtinVueHttpInterceptors = Vue.http.interceptors.slice();
-
-beforeEach(() => {
-  // restore interceptors so we have no remaining ones from previous tests
-  Vue.http.interceptors = builtinVueHttpInterceptors.slice();
-});
 
 let longRunningTestTimeoutHandle;
 

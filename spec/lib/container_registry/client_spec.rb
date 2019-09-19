@@ -73,4 +73,69 @@ describe ContainerRegistry::Client do
       expect(response).to eq('Successfully redirected')
     end
   end
+
+  def stub_upload(path, content, digest, status = 200)
+    stub_request(:post, "http://container-registry/v2/#{path}/blobs/uploads/")
+      .to_return(status: status, body: "", headers: { 'location' => 'http://container-registry/next_upload?id=someid' })
+
+    stub_request(:put, "http://container-registry/next_upload?digest=#{digest}&id=someid")
+      .with(body: content)
+      .to_return(status: status, body: "", headers: {})
+  end
+
+  describe '#upload_blob' do
+    subject { client.upload_blob('path', 'content', 'sha256:123') }
+
+    context 'with successful uploads' do
+      it 'starts the upload and posts the blob' do
+        stub_upload('path', 'content', 'sha256:123')
+
+        expect(subject).to be_success
+      end
+    end
+
+    context 'with a failed upload' do
+      before do
+        stub_upload('path', 'content', 'sha256:123', 400)
+      end
+
+      it 'returns nil' do
+        expect(subject).to be nil
+      end
+    end
+  end
+
+  describe '#generate_empty_manifest' do
+    subject { client.generate_empty_manifest('path') }
+
+    let(:result_manifest) do
+      {
+        schemaVersion: 2,
+        mediaType: 'application/vnd.docker.distribution.manifest.v2+json',
+        config: {
+          mediaType: 'application/vnd.docker.container.image.v1+json',
+          size: 21,
+          digest: 'sha256:4435000728ee66e6a80e55637fc22725c256b61de344a2ecdeaac6bdb36e8bc3'
+        }
+      }
+    end
+
+    it 'uploads a random image and returns the manifest' do
+      stub_upload('path', "{\n  \"config\": {\n  }\n}", 'sha256:4435000728ee66e6a80e55637fc22725c256b61de344a2ecdeaac6bdb36e8bc3')
+
+      expect(subject).to eq(result_manifest)
+    end
+  end
+
+  describe '#put_tag' do
+    subject { client.put_tag('path', 'tagA', { foo: :bar }) }
+
+    it 'uploads the manifest and returns the digest' do
+      stub_request(:put, "http://container-registry/v2/path/manifests/tagA")
+        .with(body: "{\n  \"foo\": \"bar\"\n}")
+        .to_return(status: 200, body: "", headers: { 'docker-content-digest' => 'sha256:123' })
+
+      expect(subject).to eq 'sha256:123'
+    end
+  end
 end

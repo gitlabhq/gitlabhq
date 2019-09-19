@@ -1131,7 +1131,6 @@ vue-apollo,3.0.0-beta.25,ISC
 vue-functional-data-merge,2.0.6,MIT
 vue-hot-reload-api,2.3.0,MIT
 vue-loader,15.4.2,MIT
-vue-resource,1.5.0,MIT
 vue-router,3.0.1,MIT
 vue-style-loader,4.1.0,MIT
 vue-template-compiler,2.5.17,MIT

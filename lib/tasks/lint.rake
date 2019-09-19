@@ -28,14 +28,23 @@ unless Rails.env.production?
     task :all do
       status = 0
 
-      %w[
+      tasks = %w[
         config_lint
         lint:haml
         scss_lint
         gettext:lint
-        gettext:updated_check
         lint:static_verification
-      ].each do |task|
+      ]
+
+      if Gitlab.ee?
+        # This task will fail on CE installations (e.g. gitlab-org/gitlab-foss)
+        # since it will detect strings in the locale files that do not exist in
+        # the source files. To work around this we will only enable this task on
+        # EE installations.
+        tasks << 'gettext:updated_check'
+      end
+
+      tasks.each do |task|
         pid = Process.fork do
           puts "*** Running rake task: #{task} ***"
 

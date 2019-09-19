@@ -179,7 +179,7 @@ describe ContainerRegistry::Tag do
       end
     end
 
-    describe '#delete' do
+    describe '#unsafe_delete' do
       before do
         stub_request(:delete, 'http://registry.gitlab/v2/group/test/manifests/sha256:digest')
           .with(headers: headers)
@@ -187,7 +187,7 @@ describe ContainerRegistry::Tag do
       end
 
       it 'correctly deletes the tag' do
-        expect(tag.delete).to be_truthy
+        expect(tag.unsafe_delete).to be_truthy
       end
     end
   end

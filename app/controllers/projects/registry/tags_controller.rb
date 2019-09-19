@@ -19,14 +19,12 @@ module Projects
       end
 
       def destroy
-        if tag.delete
-          respond_to do |format|
-            format.json { head :no_content }
-          end
-        else
-          respond_to do |format|
-            format.json { head :bad_request }
-          end
+        result = Projects::ContainerRepository::DeleteTagsService
+          .new(image.project, current_user, tags: [params[:id]])
+          .execute(image)
+
+        respond_to do |format|
+          format.json { head(result[:status] == :success ? :ok : bad_request) }
         end
       end
 
@@ -42,21 +40,12 @@ module Projects
           return
         end
 
-        @tags = tag_names.map { |tag_name| image.tag(tag_name) }
-        unless @tags.all? { |tag| tag.valid_name? }
-          head :bad_request
-          return
-        end
-
-        success_count = 0
-        @tags.each do |tag|
-          if tag.delete
-            success_count += 1
-          end
-        end
+        result = Projects::ContainerRepository::DeleteTagsService
+          .new(image.project, current_user, tags: tag_names)
+          .execute(image)
 
         respond_to do |format|
-          format.json { head(success_count == @tags.size ? :no_content : :bad_request) }
+          format.json { head(result[:status] == :success ? :no_content : :bad_request) }
         end
       end
 
@@ -69,10 +58,6 @@ module Projects
       def image
         @image ||= project.container_repositories
           .find(params[:repository_id])
-      end
-
-      def tag
-        @tag ||= image.tag(params[:id])
       end
     end
   end
