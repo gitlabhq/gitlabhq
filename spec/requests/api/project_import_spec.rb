@@ -33,6 +33,53 @@ describe API::ProjectImport do
       expect(response).to have_gitlab_http_status(201)
     end
 
+    context 'when a name is explicitly set' do
+      let(:expected_name) { 'test project import' }
+
+      it 'schedules an import using a namespace and a different name' do
+        stub_import(namespace)
+
+        post api('/projects/import', user), params: { path: 'test-import', file: fixture_file_upload(file), namespace: namespace.id, name: expected_name }
+
+        expect(response).to have_gitlab_http_status(201)
+      end
+
+      it 'schedules an import using the namespace path and a different name' do
+        stub_import(namespace)
+
+        post api('/projects/import', user), params: { path: 'test-import', file: fixture_file_upload(file), namespace: namespace.full_path, name: expected_name }
+
+        expect(response).to have_gitlab_http_status(201)
+      end
+
+      it 'sets name correctly' do
+        stub_import(namespace)
+
+        post api('/projects/import', user), params: { path: 'test-import', file: fixture_file_upload(file), namespace: namespace.full_path, name: expected_name }
+
+        project = Project.find(json_response['id'])
+        expect(project.name).to eq(expected_name)
+      end
+
+      it 'sets name correctly with an overwrite' do
+        stub_import(namespace)
+
+        post api('/projects/import', user), params: { path: 'test-import', file: fixture_file_upload(file), namespace: namespace.full_path, name: 'new project name', overwrite: true }
+
+        project = Project.find(json_response['id'])
+        expect(project.name).to eq('new project name')
+      end
+
+      it 'schedules an import using the path and name explicitly set to nil' do
+        stub_import(namespace)
+
+        post api('/projects/import', user), params: { path: 'test-import', file: fixture_file_upload(file), namespace: namespace.full_path, name: nil }
+
+        project = Project.find(json_response['id'])
+        expect(project.name).to eq('test-import')
+      end
+    end
+
     it 'schedules an import at the user namespace level' do
       stub_import(user.namespace)
 

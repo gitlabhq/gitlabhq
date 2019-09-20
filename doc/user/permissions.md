@@ -236,7 +236,7 @@ nested groups if you have membership in one of its parents.
 To learn more, read through the documentation on
 [subgroups memberships](group/subgroups/index.md#membership).
 
-## Guest User
+## Free Guest users **(ULTIMATE)**
 
 When a user is given `Guest` permissions on a project and/or group, and holds no
 higher permission level on any other project or group on the instance, the user
@@ -245,8 +245,9 @@ There is no other specific "guest" designation for newly created users.
 
 If the user is assigned a higher role on any projects or groups, the user will
 take a license seat. If a user creates a project, the user becomes a `Maintainer`
-on the project, resulting in the use of a license seat. To prevent a guest user
-from creating projects, you can edit the user profile to mark the user as
+on the project, resulting in the use of a license seat.
+
+To prevent a guest user from creating projects, you can edit the user profile to mark the user as
 [External](#external-users-permissions).
 
 ## External users permissions
