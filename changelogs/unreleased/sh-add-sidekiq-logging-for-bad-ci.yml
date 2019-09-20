@@ -1,5 +1,0 @@
----
-title: Log errors for failed pipeline creation in PostReceive
-merge_request: 32633
-author:
-type: other

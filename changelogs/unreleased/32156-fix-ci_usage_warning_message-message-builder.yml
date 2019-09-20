@@ -1,5 +1,0 @@
----
-title: Prevent the user from seeing an invalid "Purchase more minutes" prompt.
-merge_request: 16979
-author:
-type: fixed

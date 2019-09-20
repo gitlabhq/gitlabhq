@@ -1,5 +1,0 @@
----
-title: Avoid dns rebinding checks when the domain is whitelisted
-merge_request: 32603
-author:
-type: changed

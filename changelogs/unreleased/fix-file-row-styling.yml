@@ -1,5 +1,0 @@
----
-title: Fix loading icon causing text to jump in file row of Web IDE
-merge_request: 31884
-author:
-type: fixed

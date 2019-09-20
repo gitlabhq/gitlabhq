@@ -1,5 +1,0 @@
----
-title: Bump markdown cache version to fix any incorrect links from asset proxy defaults
-merge_request:
-author:
-type: fixed

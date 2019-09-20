@@ -1,5 +1,0 @@
----
-title: Add optional label_id parameter to label API for PUT and DELETE
-merge_request: 31804
-author:
-type: changed

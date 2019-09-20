@@ -1,5 +1,0 @@
----
-title: Update docs to reflect the rename of gitlab-monitor to gitlab-exporter
-merge_request: 31901
-author:
-type: other

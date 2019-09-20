@@ -1,5 +1,0 @@
----
-title: Disable "Transfer group" button when no group is selected
-merge_request: 31387
-author: Jan Beckmann
-type: fixed

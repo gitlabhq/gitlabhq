@@ -1,5 +1,0 @@
----
-title: Replaced vue resource to axios in the  Markdown field preview component
-merge_request: 32386
-author: Prakash Chokalingam @prakash_Chokalingam
-type: fixed

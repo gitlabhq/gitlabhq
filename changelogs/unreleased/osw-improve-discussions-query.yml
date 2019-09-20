@@ -1,5 +1,0 @@
----
-title: Considerably improve the query performance for MR discussions load
-merge_request: 16635
-author:
-type: performance

@@ -1,5 +1,0 @@
----
-title: Replace indexes for counting active users
-merge_request: 32538
-author:
-type: performance
