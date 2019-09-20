@@ -110,8 +110,8 @@ and paste in your command line.
 
 As an example, consider this repository path:
 
-- HTTPS: `https://gitlab.com/gitlab-org/gitlab.git`
-- SSH: `git@gitlab.com:gitlab-org/gitlab.git`
+- HTTPS: `https://gitlab.com/gitlab-org/gitlab-foss.git`
+- SSH: `git@gitlab.com:gitlab-org/gitlab-ce.git`
 
 To get started, open a terminal window in the directory you wish to clone the repository
 files into, and run one of the following commands.
@@ -119,13 +119,13 @@ files into, and run one of the following commands.
 Clone via HTTPS:
 
 ```bash
-git clone https://gitlab.com/gitlab-org/gitlab.git
+git clone https://gitlab.com/gitlab-org/gitlab-foss.git
 ```
 
 Clone via SSH:
 
 ```bash
-git clone git@gitlab.com:gitlab-org/gitlab.git
+git clone git@gitlab.com:gitlab-org/gitlab-ce.git
 ```
 
 Both commands will download a copy of the files in a folder named after the project's

@@ -15,10 +15,6 @@ module QA
 
       def_delegators :evaluator, :view, :views
 
-      def assert_no_element(name)
-        assert_no_selector(element_selector_css(name))
-      end
-
       def refresh
         page.refresh
       end
@@ -94,8 +90,8 @@ module QA
       end
 
       # replace with (..., page = self.class)
-      def click_element(name, page = nil, text: nil)
-        find_element(name, text: nil).click
+      def click_element(name, page = nil)
+        find_element(name).click
         page.validate_elements_present! if page
       end
 
@@ -106,9 +102,9 @@ module QA
       def select_element(name, value)
         element = find_element(name)
 
-        return if element.text == value
+        return if element.text.downcase.to_s == value.to_s
 
-        element.select value
+        element.select value.to_s.capitalize
       end
 
       def has_element?(name, text: nil, wait: Capybara.default_max_wait_time)

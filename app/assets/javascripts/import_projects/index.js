@@ -38,7 +38,7 @@ export default function mountImportProjectsTable(mountElement) {
     },
 
     methods: {
-      ...mapActions(['setInitialData', 'setFilter']),
+      ...mapActions(['setInitialData']),
     },
 
     render(createElement) {

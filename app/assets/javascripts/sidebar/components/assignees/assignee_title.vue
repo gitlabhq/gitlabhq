@@ -1,5 +1,6 @@
 <script>
 import { n__ } from '~/locale';
+import { trackEvent } from 'ee_else_ce/event_tracking/issue_sidebar';
 
 export default {
   name: 'AssigneeTitle',
@@ -29,6 +30,11 @@ export default {
       return n__('Assignee', `%d Assignees`, assignees);
     },
   },
+  methods: {
+    trackEdit() {
+      trackEvent('click_edit_button', 'assignee');
+    },
+  },
 };
 </script>
 <template>
@@ -39,9 +45,7 @@ export default {
       v-if="editable"
       class="js-sidebar-dropdown-toggle edit-link float-right"
       href="#"
-      data-track-event="click_edit_button"
-      data-track-label="right_sidebar"
-      data-track-property="assignee"
+      @click.prevent="trackEdit"
     >
       {{ __('Edit') }}
     </a>

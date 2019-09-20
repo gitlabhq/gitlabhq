@@ -37,7 +37,6 @@ module API
         optional :path, type: String, desc: 'The file path'
         optional :all, type: Boolean, desc: 'Every commit will be returned'
         optional :with_stats, type: Boolean, desc: 'Stats about each commit will be added to the response'
-        optional :first_parent, type: Boolean, desc: 'Only include the first parent of merges'
         use :pagination
       end
       get ':id/repository/commits' do
@@ -48,7 +47,6 @@ module API
         offset = (params[:page] - 1) * params[:per_page]
         all = params[:all]
         with_stats = params[:with_stats]
-        first_parent = params[:first_parent]
 
         commits = user_project.repository.commits(ref,
                                                   path: path,
@@ -56,12 +54,11 @@ module API
                                                   offset: offset,
                                                   before: before,
                                                   after: after,
-                                                  all: all,
-                                                  first_parent: first_parent)
+                                                  all: all)
 
         commit_count =
-          if all || path || before || after || first_parent
-            user_project.repository.count_commits(ref: ref, path: path, before: before, after: after, all: all, first_parent: first_parent)
+          if all || path || before || after
+            user_project.repository.count_commits(ref: ref, path: path, before: before, after: after, all: all)
           else
             # Cacheable commit count.
             user_project.repository.commit_count_for_ref(ref)

@@ -20,7 +20,7 @@ We have complete examples of configuring pipelines:
 
 - For a quick introduction to GitLab CI, follow our [quick start guide](../quick_start/README.md).
 - For a collection of examples, see [GitLab CI/CD Examples](../examples/README.md).
-- To see a large `.gitlab-ci.yml` file used in an enterprise, see the [`.gitlab-ci.yml` file for `gitlab`](https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab-ci.yml).
+- To see a large `.gitlab-ci.yml` file used in an enterprise, see the [`.gitlab-ci.yml` file for `gitlab-ce`](https://gitlab.com/gitlab-org/gitlab-foss/blob/master/.gitlab-ci.yml).
 
 NOTE: **Note:**
 If you have a [mirrored repository where GitLab pulls from](../../workflow/repository_mirroring.md#pulling-from-a-remote-repository-starter),
@@ -110,7 +110,7 @@ The following table lists available parameters for jobs:
 | [`dependencies`](#dependencies)                    | Other jobs that a job depends on so that you can pass artifacts between them.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 | [`coverage`](#coverage)                            | Code coverage settings for a given job.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | [`retry`](#retry)                                  | When and how many times a job can be auto-retried in case of a failure.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
-| [`timeout`](#timeout)                              | Define a custom job-level timeout that takes precedence over the project-wide setting.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| [`timeout`](#timeout)                              | Define a custom timeout that would take precedence over the project-wide one.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 | [`parallel`](#parallel)                            | How many instances of a job should be run in parallel.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
 | [`trigger`](#trigger-premium)                      | Defines a downstream pipeline trigger.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
 | [`include`](#include)                              | Allows this job to include external YAML files. Also available: `include:local`, `include:file`, `include:template`, and `include:remote`.                                                                                                                                                                                                                                                                                                                                                                                                                                              |
@@ -436,13 +436,13 @@ repository and not forks:
 ```yaml
 job:
   only:
-    - branches@gitlab-org/gitlab
+    - branches@gitlab-org/gitlab-ce
   except:
-    - master@gitlab-org/gitlab
-    - /^release/.*$/@gitlab-org/gitlab
+    - master@gitlab-org/gitlab-ce
+    - /^release/.*$/@gitlab-org/gitlab-ce
 ```
 
-The above example will run `job` for all branches on `gitlab-org/gitlab`,
+The above example will run `job` for all branches on `gitlab-org/gitlab-ce`,
 except `master` and those with names prefixed with `release/`.
 
 If a job does not have an `only` rule, `only: ['branches', 'tags']` is set by
@@ -837,7 +837,7 @@ docker build:
 
 Additional job configuration may be added to rules in the future. If something
 useful isn't available, please
-[open an issue](https://www.gitlab.com/gitlab-org/gitlab/issues).
+[open an issue](https://www.gitlab.com/gitlab-org/gitlab-foss/issues).
 
 ### `tags`
 
@@ -1894,12 +1894,12 @@ This example creates three paths of execution:
     - 50 if the `ci_dag_limit_needs` feature flag is disabled.
 - It is impossible for now to have `needs: []` (empty needs),
   the job always needs to depend on something, unless this is the job
-  in the first stage (see [gitlab-foss#65504](https://gitlab.com/gitlab-org/gitlab-foss/issues/65504)).
+  in the first stage (see [gitlab-ce#65504](https://gitlab.com/gitlab-org/gitlab-foss/issues/65504)).
 - If `needs:` refers to a job that is marked as `parallel:`.
   the current job will depend on all parallel jobs created.
 - `needs:` is similar to `dependencies:` in that it needs to use jobs from
   prior stages, meaning it is impossible to create circular
-  dependencies or depend on jobs in the current stage (see [gitlab-foss#65505](https://gitlab.com/gitlab-org/gitlab-foss/issues/65505)).
+  dependencies or depend on jobs in the current stage (see [gitlab-ce#65505](https://gitlab.com/gitlab-org/gitlab-foss/issues/65505)).
 - Related to the above, stages must be explicitly defined for all jobs
   that have the keyword `needs:` or are referred to by one.
 
@@ -1996,11 +1996,9 @@ Possible values for `when` are:
 - `missing_dependency_failure`: Retry if a dependency was missing.
 - `runner_unsupported`: Retry if the runner was unsupported.
 
-### `timeout`
+### timeout
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/14887) in GitLab 12.3.
-
-`timeout` allows you to configure a timeout for a specific job. For example:
+`timeout` allows you to configure a timeout for a specific job:
 
 ```yaml
 build:
@@ -2131,7 +2129,7 @@ step-1:
   stage: stage1
   script:
     - echo "Can be canceled"
-
+  
 step-2:
   stage: stage2
   script:
@@ -2245,7 +2243,7 @@ or template includes.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/53445) in GitLab 11.7.
 
 `include:template` can be used to include `.gitlab-ci.yml` templates that are
-[shipped with GitLab](https://gitlab.com/gitlab-org/gitlab/tree/master/lib/gitlab/ci/templates).
+[shipped with GitLab](https://gitlab.com/gitlab-org/gitlab-foss/tree/master/lib/gitlab/ci/templates).
 
 For example:
 

@@ -1,13 +1,13 @@
 <script>
 import _ from 'underscore';
 import axios from '~/lib/utils/axios_utils';
-import DeprecatedModal2 from '~/vue_shared/components/deprecated_modal_2.vue';
+import GlModal from '~/vue_shared/components/gl_modal.vue';
 import { s__, sprintf } from '~/locale';
 import Flash from '~/flash';
 
 export default {
   components: {
-    GlModal: DeprecatedModal2,
+    GlModal,
   },
   props: {
     actionUrl: {

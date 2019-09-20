@@ -23,12 +23,12 @@ Example response:
   {
     "id": 1,
     "project_id": 1,
-    "name": "gitlab-foss"
+    "name": "gitlab-ce"
   },
   {
     "id": 2,
     "project_id": 2,
-    "name": "gitlab"
+    "name": "gitlab-ee"
   }
 ]
 ```
@@ -46,7 +46,7 @@ GET /project_aliases/:name
 | `name`    | string | yes      | The name of the alias |
 
 ```
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/project_aliases/gitlab"
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/project_aliases/gitlab-ee"
 ```
 
 Example response:
@@ -55,7 +55,7 @@ Example response:
 {
   "id": 1,
   "project_id": 1,
-  "name": "gitlab"
+  "name": "gitlab-ee"
 }
 ```
 
@@ -74,13 +74,13 @@ POST /project_aliases
 | `name`       | string         | yes      | The name of the alias. Must be unique. |
 
 ```
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/project_aliases" --form "project_id=1" --form "name=gitlab"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/project_aliases" --form "project_id=1" --form "name=gitlab-ee"
 ```
 
 or
 
 ```
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/project_aliases" --form "project_id=gitlab-org/gitlab" --form "name=gitlab"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/project_aliases" --form "project_id=gitlab-org/gitlab-ee" --form "name=gitlab-ee"
 ```
 
 Example response:
@@ -89,7 +89,7 @@ Example response:
 {
   "id": 1,
   "project_id": 1,
-  "name": "gitlab"
+  "name": "gitlab-ee"
 }
 ```
 
@@ -107,5 +107,5 @@ DELETE /project_aliases/:name
 | `name`    | string | yes      | The name of the alias |
 
 ```
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/project_aliases/gitlab"
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/project_aliases/gitlab-ee"
 ```

@@ -103,17 +103,19 @@ describe SearchHelper do
     using RSpec::Parameterized::TableSyntax
 
     where(:scope, :label) do
-      'blobs'          | 'code result'
       'commits'        | 'commit'
       'issues'         | 'issue'
       'merge_requests' | 'merge request'
       'milestones'     | 'milestone'
-      'notes'          | 'comment'
       'projects'       | 'project'
-      'snippet_blobs'  | 'snippet result'
       'snippet_titles' | 'snippet'
       'users'          | 'user'
-      'wiki_blobs'     | 'wiki result'
+
+      'blobs'          | 'result'
+      'snippet_blobs'  | 'result'
+      'wiki_blobs'     | 'result'
+
+      'notes'          | 'comment'
     end
 
     with_them do
@@ -135,15 +137,6 @@ describe SearchHelper do
         collection = Kaminari.paginate_array([:foo]).page(1).per(10)
         search_entries_info(collection, 'unknown', 'foo')
       end.to raise_error(RuntimeError)
-    end
-  end
-
-  describe 'search_entries_empty_message' do
-    it 'returns the formatted entry message' do
-      message = search_entries_empty_message('projects', 'foo')
-
-      expect(message).to eq("We couldn't find any projects matching <code>foo</code>")
-      expect(message).to be_html_safe
     end
   end
 

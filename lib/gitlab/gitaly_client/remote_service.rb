@@ -38,7 +38,9 @@ module Gitlab
       def remove_remote(name)
         request = Gitaly::RemoveRemoteRequest.new(repository: @gitaly_repo, name: name)
 
-        GitalyClient.call(@storage, :remote_service, :remove_remote, request, timeout: GitalyClient.long_timeout).result
+        response = GitalyClient.call(@storage, :remote_service, :remove_remote, request)
+
+        response.result
       end
 
       def fetch_internal_remote(repository)
@@ -49,7 +51,6 @@ module Gitlab
 
         response = GitalyClient.call(@storage, :remote_service,
                                      :fetch_internal_remote, request,
-                                     timeout: GitalyClient.medium_timeout,
                                      remote_storage: repository.storage)
 
         response.result
@@ -62,7 +63,7 @@ module Gitlab
         )
 
         response = GitalyClient.call(@storage, :remote_service,
-                                     :find_remote_root_ref, request, timeout: GitalyClient.medium_timeout)
+                                     :find_remote_root_ref, request)
 
         encode_utf8(response.ref)
       end
@@ -94,7 +95,7 @@ module Gitlab
           end
         end
 
-        GitalyClient.call(@storage, :remote_service, :update_remote_mirror, req_enum, timeout: GitalyClient.long_timeout)
+        GitalyClient.call(@storage, :remote_service, :update_remote_mirror, req_enum)
       end
     end
   end

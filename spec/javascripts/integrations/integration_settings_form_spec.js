@@ -126,7 +126,6 @@ describe('IntegrationSettingsForm', () => {
       spyOn(axios, 'put').and.callThrough();
 
       integrationSettingsForm = new IntegrationSettingsForm('.js-integration-settings-form');
-      // eslint-disable-next-line no-jquery/no-serialize
       formData = integrationSettingsForm.$form.serialize();
     });
 

@@ -1,5 +1,4 @@
 <script>
-import _ from 'underscore';
 import { mapActions, mapState, mapGetters } from 'vuex';
 import { GlLoadingIcon } from '@gitlab/ui';
 import LoadingButton from '~/vue_shared/components/loading_button.vue';
@@ -7,8 +6,6 @@ import { __, sprintf } from '~/locale';
 import ImportedProjectTableRow from './imported_project_table_row.vue';
 import ProviderRepoTableRow from './provider_repo_table_row.vue';
 import eventHub from '../event_hub';
-
-const reposFetchThrottleDelay = 1000;
 
 export default {
   name: 'ImportProjectsTable',
@@ -26,11 +23,11 @@ export default {
   },
 
   computed: {
-    ...mapState(['importedProjects', 'providerRepos', 'isLoadingRepos', 'filter']),
+    ...mapState(['importedProjects', 'providerRepos', 'isLoadingRepos']),
     ...mapGetters(['isImportingAnyRepo', 'hasProviderRepos', 'hasImportedProjects']),
 
     emptyStateText() {
-      return sprintf(__('No %{providerTitle} repositories found'), {
+      return sprintf(__('No %{providerTitle} repositories available to import'), {
         providerTitle: this.providerTitle,
       });
     },
@@ -50,38 +47,21 @@ export default {
   },
 
   methods: {
-    ...mapActions([
-      'fetchRepos',
-      'fetchReposFiltered',
-      'fetchJobs',
-      'stopJobsPolling',
-      'clearJobsEtagPoll',
-      'setFilter',
-    ]),
+    ...mapActions(['fetchRepos', 'fetchJobs', 'stopJobsPolling', 'clearJobsEtagPoll']),
 
     importAll() {
       eventHub.$emit('importAll');
     },
-
-    handleFilterInput({ target }) {
-      this.setFilter(target.value);
-    },
-
-    throttledFetchRepos: _.throttle(function fetch() {
-      eventHub.$off('importAll');
-      this.fetchRepos();
-    }, reposFetchThrottleDelay),
   },
 };
 </script>
 
 <template>
   <div>
-    <p class="light text-nowrap mt-2">
-      {{ s__('ImportProjects|Select the projects you want to import') }}
-    </p>
-
     <div class="d-flex justify-content-between align-items-end flex-wrap mb-3">
+      <p class="light text-nowrap mt-2 my-sm-0">
+        {{ s__('ImportProjects|Select the projects you want to import') }}
+      </p>
       <loading-button
         container-class="btn btn-success js-import-all"
         :loading="isImportingAnyRepo"
@@ -90,19 +70,6 @@ export default {
         type="button"
         @click="importAll"
       />
-      <form novalidate @submit.prevent>
-        <input
-          :value="filter"
-          data-qa-selector="githubish_import_filter_field"
-          class="form-control"
-          name="filter"
-          :placeholder="__('Filter your projects by name')"
-          autofocus
-          size="40"
-          @input="handleFilterInput($event)"
-          @keyup.enter="throttledFetchRepos"
-        />
-      </form>
     </div>
     <gl-loading-icon
       v-if="isLoadingRepos"

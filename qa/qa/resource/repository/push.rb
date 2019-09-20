@@ -8,9 +8,9 @@ module QA
       class Push < Base
         attr_accessor :file_name, :file_content, :commit_message,
                       :branch_name, :new_branch, :output, :repository_http_uri,
-                      :repository_ssh_uri, :ssh_key, :user, :use_lfs, :tag_name
+                      :repository_ssh_uri, :ssh_key, :user, :use_lfs
 
-        attr_writer :remote_branch, :gpg_key_id
+        attr_writer :remote_branch
 
         def initialize
           @file_name = 'file.txt'
@@ -21,8 +21,6 @@ module QA
           @repository_http_uri = ""
           @ssh_key = nil
           @use_lfs = false
-          @tag_name = nil
-          @gpg_key_id = nil
         end
 
         def remote_branch
@@ -69,42 +67,28 @@ module QA
               email = user.email
             end
 
-            unless @gpg_key_id.nil?
-              repository.gpg_key_id = @gpg_key_id
-            end
-
             @output += repository.clone
             repository.configure_identity(username, email)
 
             @output += repository.checkout(branch_name, new_branch: new_branch)
 
-            if @tag_name
-              @output += repository.delete_tag(@tag_name)
-            else
-              if @directory
-                @directory.each_child do |f|
-                  @output += repository.add_file(f.basename, f.read) if f.file?
-                end
-              elsif @files
-                @files.each do |f|
-                  repository.add_file(f[:name], f[:content])
-                end
-              else
-                @output += repository.add_file(file_name, file_content)
+            if @directory
+              @directory.each_child do |f|
+                @output += repository.add_file(f.basename, f.read) if f.file?
               end
-
-              @output += commit_to repository
-              @output += repository.push_changes("#{branch_name}:#{remote_branch}")
+            elsif @files
+              @files.each do |f|
+                repository.add_file(f[:name], f[:content])
+              end
+            else
+              @output += repository.add_file(file_name, file_content)
             end
+
+            @output += repository.commit(commit_message)
+            @output += repository.push_changes("#{branch_name}:#{remote_branch}")
 
             repository.delete_ssh_key
           end
-        end
-
-        private
-
-        def commit_to(repository)
-          @gpg_key_id.nil? ? repository.commit(@commit_message) : repository.commit_with_gpg(@commit_message)
         end
       end
     end

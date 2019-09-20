@@ -62,8 +62,8 @@ file and ask your manager to review and merge.
 
 ```yaml
 projects:
-  gitlab: reviewer go
-  gitlab-foss: reviewer go
+  gitlab-ee: reviewer go
+  gitlab-ce: reviewer go
 ```
 
 ## Code style and format

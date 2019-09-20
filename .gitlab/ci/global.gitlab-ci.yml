@@ -33,7 +33,6 @@
       - master
       - /^[\d-]+-stable(-ee)?$/
       - /^\d+-\d+-auto-deploy-\d+$/
-      - /^security\//
       - merge_requests
       - tags
 
@@ -103,7 +102,7 @@
     refs:
       - schedules
     variables:
-      - $CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org"
+      - $REVIEW_APP_CLEANUP && $CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org"
     kubernetes: active
 
 .use-pg:

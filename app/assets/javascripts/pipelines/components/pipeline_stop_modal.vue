@@ -1,6 +1,6 @@
 <script>
 import _ from 'underscore';
-import DeprecatedModal2 from '~/vue_shared/components/deprecated_modal_2.vue';
+import GlModal from '~/vue_shared/components/gl_modal.vue';
 import { GlLink } from '@gitlab/ui';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
@@ -13,7 +13,7 @@ import { s__, sprintf } from '~/locale';
  */
 export default {
   components: {
-    GlModal: DeprecatedModal2,
+    GlModal,
     GlLink,
     ClipboardButton,
     CiIcon,

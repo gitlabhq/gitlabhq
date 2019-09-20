@@ -4,7 +4,8 @@ type: reference, howto, concepts
 
 # Subgroups
 
->[Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/2772) in GitLab 9.0.
+NOTE: **Note:**
+[Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/2772) in GitLab 9.0.
 
 Subgroups, also known as nested groups or hierarchical groups, allow you to have up to 20
 levels of groups.
@@ -67,9 +68,9 @@ Another example of GitLab as a company would be the following:
 The maximum subgroups a group can have, including the first one in the
 hierarchy, is 21.
 
-When performing actions such as transferring or importing a project between
-subgroups, the behavior is the same as when performing these actions at the
-`group/project` level.
+Actions such as transferring or importing a project inside subgroups, work like
+when performing these actions the traditional way with the `group/project`
+structure.
 
 ## Creating a subgroup
 
@@ -115,10 +116,6 @@ Follow the same process to create any subsequent groups.
 When you add a member to a subgroup, they inherit the membership and permission
 level from the parent group. This model allows access to nested groups if you
 have membership in one of its parents.
-
-Jobs for pipelines in subgroups can use [Runners](../../../ci/runners/README.md) registered to the parent group. This means secrets configured for the parent group are available to subgroup jobs.
-
-In addition, maintainers of projects that belong to subgroups can see the details of Runners registered to parent groups.
 
 The group permissions for a member can be changed only by Owners, and only on
 the **Members** page of the group the member was added.

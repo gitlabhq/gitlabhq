@@ -14,19 +14,19 @@ module Gitlab
       # that should not be caught by application
       CancelledError = Class.new(Exception) # rubocop:disable Lint/InheritException
 
-      attr_reader :jobs
+      attr_reader :jobs_thread
       attr_reader :jobs_mutex
 
       def initialize
         super
 
-        @jobs = {}
+        @jobs_thread = {}
         @jobs_mutex = Mutex.new
       end
 
-      def within_job(worker_class, jid, queue)
+      def within_job(jid, queue)
         jobs_mutex.synchronize do
-          jobs[jid] = { worker_class: worker_class, thread: Thread.current, started_at: Gitlab::Metrics::System.monotonic_time }
+          jobs_thread[jid] = Thread.current
         end
 
         if cancelled?(jid)
@@ -43,7 +43,7 @@ module Gitlab
         yield
       ensure
         jobs_mutex.synchronize do
-          jobs.delete(jid)
+          jobs_thread.delete(jid)
         end
       end
 
@@ -62,27 +62,23 @@ module Gitlab
       private
 
       def start_working
-        return unless notification_channel_enabled?
+        Sidekiq.logger.info(
+          class: self.class.to_s,
+          action: 'start',
+          message: 'Starting Monitor Daemon'
+        )
 
-        begin
-          Sidekiq.logger.info(
-            class: self.class.to_s,
-            action: 'start',
-            message: 'Starting Monitor Daemon'
-          )
-
-          while enabled?
-            process_messages
-            sleep(RECONNECT_TIME)
-          end
-
-        ensure
-          Sidekiq.logger.warn(
-            class: self.class.to_s,
-            action: 'stop',
-            message: 'Stopping Monitor Daemon'
-          )
+        while enabled?
+          process_messages
+          sleep(RECONNECT_TIME)
         end
+
+      ensure
+        Sidekiq.logger.warn(
+          class: self.class.to_s,
+          action: 'stop',
+          message: 'Stopping Monitor Daemon'
+        )
       end
 
       def stop_working
@@ -160,7 +156,7 @@ module Gitlab
       # This is why it passes thread in block,
       # to ensure that we do process this thread
       def find_thread_unsafe(jid)
-        jobs.dig(jid, :thread)
+        jobs_thread[jid]
       end
 
       def find_thread_with_lock(jid)
@@ -182,10 +178,6 @@ module Gitlab
 
       def self.cancel_job_key(jid)
         "sidekiq:cancel:#{jid}"
-      end
-
-      def notification_channel_enabled?
-        ENV.fetch("SIDEKIQ_MONITOR_WORKER", 0).to_i.nonzero?
       end
     end
   end

@@ -2,9 +2,9 @@
 
 ## Canonical source
 
-The canonical source of GitLab where development takes place is [hosted on GitLab.com](https://gitlab.com/gitlab-org/gitlab).
+The canonical source of GitLab Community Edition is [hosted on GitLab.com](https://gitlab.com/gitlab-org/gitlab-ce/).
 
-A FOSS source of GitLab is hosted on a [mirrored, read-only project on GitLab.com](https://gitlab.com/gitlab-org/gitlab-foss/).
+The source of GitLab Enterprise Edition is [hosted on GitLab.com](https://gitlab.com/gitlab-org/gitlab-ee).
 
 ## Free trial
 

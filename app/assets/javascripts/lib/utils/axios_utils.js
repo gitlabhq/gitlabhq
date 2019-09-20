@@ -8,19 +8,19 @@ axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 // Maintain a global counter for active requests
 // see: spec/support/wait_for_requests.rb
 axios.interceptors.request.use(config => {
-  window.pendingRequests = window.pendingRequests || 0;
-  window.pendingRequests += 1;
+  window.activeVueResources = window.activeVueResources || 0;
+  window.activeVueResources += 1;
   return config;
 });
 
 // Remove the global counter
 axios.interceptors.response.use(
   response => {
-    window.pendingRequests -= 1;
+    window.activeVueResources -= 1;
     return response;
   },
   err => {
-    window.pendingRequests -= 1;
+    window.activeVueResources -= 1;
     return Promise.reject(err);
   },
 );

@@ -51,8 +51,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
       new_file_anchor_data,
       readme_anchor_data,
       changelog_anchor_data,
-      contribution_guide_anchor_data,
-      gitlab_ci_anchor_data
+      contribution_guide_anchor_data
     ].compact.reject { |item| item.is_link }
   end
 

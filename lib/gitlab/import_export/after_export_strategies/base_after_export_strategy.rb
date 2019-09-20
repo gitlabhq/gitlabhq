@@ -10,9 +10,11 @@ module Gitlab
 
         StrategyError = Class.new(StandardError)
 
+        AFTER_EXPORT_LOCK_FILE_NAME = '.after_export_action'
+
         private
 
-        attr_reader :project, :current_user, :lock_file
+        attr_reader :project, :current_user
 
         public
 
@@ -27,9 +29,8 @@ module Gitlab
         def execute(current_user, project)
           @project = project
 
-          ensure_export_ready!
-          ensure_lock_files_path!
-          @lock_file = File.join(lock_files_path, SecureRandom.hex)
+          return unless @project.export_status == :finished
+
           @current_user = current_user
 
           if invalid?
@@ -47,32 +48,19 @@ module Gitlab
           false
         ensure
           delete_after_export_lock
-          delete_export_file
-          delete_archive_path
         end
 
         def to_json(options = {})
           @options.to_h.merge!(klass: self.class.name).to_json
         end
 
-        def ensure_export_ready!
-          raise StrategyError unless project.export_file_exists?
-        end
+        def self.lock_file_path(project)
+          return unless project.export_path || export_file_exists?
 
-        def ensure_lock_files_path!
-          FileUtils.mkdir_p(lock_files_path) unless Dir.exist?(lock_files_path)
-        end
+          lock_path = project.import_export_shared.archive_path
 
-        def lock_files_path
-          project.import_export_shared.lock_files_path
-        end
-
-        def archive_path
-          project.import_export_shared.archive_path
-        end
-
-        def locks_present?
-          project.import_export_shared.locks_present?
+          mkdir_p(lock_path)
+          File.join(lock_path, AFTER_EXPORT_LOCK_FILE_NAME)
         end
 
         protected
@@ -81,32 +69,24 @@ module Gitlab
           raise NotImplementedError
         end
 
-        def delete_export?
-          true
-        end
-
         private
 
-        def delete_export_file
-          return if locks_present? || !delete_export?
-
-          project.remove_exports
-        end
-
-        def delete_archive_path
-          FileUtils.rm_rf(archive_path) if File.directory?(archive_path)
-        end
-
         def create_or_update_after_export_lock
-          FileUtils.touch(lock_file)
+          FileUtils.touch(self.class.lock_file_path(project))
         end
 
         def delete_after_export_lock
+          lock_file = self.class.lock_file_path(project)
+
           FileUtils.rm(lock_file) if lock_file.present? && File.exist?(lock_file)
         end
 
         def log_validation_errors
           errors.full_messages.each { |msg| project.import_export_shared.add_error_message(msg) }
+        end
+
+        def export_file_exists?
+          project.export_file_exists?
         end
       end
     end

@@ -25,10 +25,6 @@ module QA
         Runtime::Env.user_password || default_password
       end
 
-      def email
-        default_email
-      end
-
       def ldap_user?
         Runtime::Env.ldap_username && Runtime::Env.ldap_password
       end

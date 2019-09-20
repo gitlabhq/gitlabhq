@@ -470,6 +470,9 @@ describe 'Issues' do
             expect(page).to have_content 'None'
           end
 
+          # wait_for_requests does not work with vue-resource at the moment
+          sleep 1
+
           expect(issue.reload.assignees).to be_empty
         end
 

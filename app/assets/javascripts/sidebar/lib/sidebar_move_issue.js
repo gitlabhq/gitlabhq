@@ -1,5 +1,4 @@
 import $ from 'jquery';
-import '~/gl_dropdown';
 import _ from 'underscore';
 import { __ } from '~/locale';
 

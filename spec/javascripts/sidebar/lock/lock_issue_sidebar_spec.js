@@ -1,12 +1,13 @@
 import Vue from 'vue';
 import lockIssueSidebar from '~/sidebar/components/lock/lock_issue_sidebar.vue';
-import { mockTracking, triggerEvent } from 'spec/helpers/tracking_helper';
 
 describe('LockIssueSidebar', () => {
   let vm1;
   let vm2;
+  let statsSpy;
 
   beforeEach(() => {
+    statsSpy = spyOnDependency(lockIssueSidebar, 'trackEvent');
     const Component = Vue.extend(lockIssueSidebar);
 
     const mediator = {
@@ -60,14 +61,10 @@ describe('LockIssueSidebar', () => {
     });
   });
 
-  it('tracks an event when "Edit" is clicked', () => {
-    const spy = mockTracking('_category_', vm1.$el, spyOn);
-    triggerEvent('.lock-edit');
+  it('calls trackEvent when "Edit" is clicked', () => {
+    vm1.$el.querySelector('.lock-edit').click();
 
-    expect(spy).toHaveBeenCalledWith('_category_', 'click_edit_button', {
-      label: 'right_sidebar',
-      property: 'lock_issue',
-    });
+    expect(statsSpy).toHaveBeenCalled();
   });
 
   it('displays the edit form when opened from collapsed state', done => {

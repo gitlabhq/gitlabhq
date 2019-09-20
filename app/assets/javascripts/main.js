@@ -37,7 +37,6 @@ import GlFieldErrors from './gl_field_errors';
 import initUserPopovers from './user_popovers';
 import { initUserTracking } from './tracking';
 import { __ } from './locale';
-import initPrivacyPolicyUpdateCallout from './privacy_policy_update_callout';
 
 import 'ee_else_ce/main_ee';
 
@@ -97,7 +96,6 @@ function deferredInitialisation() {
   initUsagePingConsent();
   initUserPopovers();
   initUserTracking();
-  initPrivacyPolicyUpdateCallout();
 
   if (document.querySelector('.search')) initSearchAutocomplete();
 
@@ -314,7 +312,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const action = `${this.action}${link.search === '' ? '?' : '&'}`;
 
     event.preventDefault();
-    // eslint-disable-next-line no-jquery/no-serialize
     visitUrl(`${action}${$(this).serialize()}`);
   });
 

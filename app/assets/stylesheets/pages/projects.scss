@@ -877,16 +877,11 @@ pre.light-well {
   flex-direction: column;
 
   // Disable Flexbox for admin page
-  &.admin-projects,
-  &.group-settings-projects {
+  &.admin-projects {
     display: block;
 
     .project-row {
       display: block;
-
-      .description > p {
-        margin-bottom: 0;
-      }
     }
   }
 

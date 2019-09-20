@@ -1,4 +1,4 @@
-import _ from 'underscore';
+import $ from 'jquery';
 
 const DEFAULT_SNOWPLOW_OPTIONS = {
   namespace: 'gl',
@@ -14,31 +14,18 @@ const DEFAULT_SNOWPLOW_OPTIONS = {
   linkClickTracking: false,
 };
 
-const eventHandler = (e, func, opts = {}) => {
-  const el = e.target.closest('[data-track-event]');
-  const action = el && el.dataset.trackEvent;
-  if (!action) return;
-
-  let value = el.dataset.trackValue || el.value || undefined;
-  if (el.type === 'checkbox' && !el.checked) value = false;
-
-  const data = {
-    label: el.dataset.trackLabel,
-    property: el.dataset.trackProperty,
-    value,
-    context: el.dataset.trackContext,
-  };
-
-  func(opts.category, action + (opts.suffix || ''), _.omit(data, _.isUndefined));
-};
-
-const eventHandlers = (category, func) => {
-  const handler = opts => e => eventHandler(e, func, { ...{ category }, ...opts });
-  const handlers = [];
-  handlers.push({ name: 'click', func: handler() });
-  handlers.push({ name: 'show.bs.dropdown', func: handler({ suffix: '_show' }) });
-  handlers.push({ name: 'hide.bs.dropdown', func: handler({ suffix: '_hide' }) });
-  return handlers;
+const extractData = (el, opts = {}) => {
+  const { trackEvent, trackLabel = '', trackProperty = '' } = el.dataset;
+  let trackValue = el.dataset.trackValue || el.value || '';
+  if (el.type === 'checkbox' && !el.checked) trackValue = false;
+  return [
+    trackEvent + (opts.suffix || ''),
+    {
+      label: trackLabel,
+      property: trackProperty,
+      value: trackValue,
+    },
+  ];
 };
 
 export default class Tracking {
@@ -52,43 +39,49 @@ export default class Tracking {
     return typeof window.snowplow === 'function' && this.trackable();
   }
 
-  static event(category = document.body.dataset.page, action = 'generic', data = {}) {
+  static event(category = document.body.dataset.page, event = 'generic', data = {}) {
     if (!this.enabled()) return false;
     // eslint-disable-next-line @gitlab/i18n/no-non-i18n-strings
     if (!category) throw new Error('Tracking: no category provided for tracking.');
 
-    const { label, property, value, context } = data;
-    const contexts = context ? [context] : undefined;
-    return window.snowplow('trackStructEvent', category, action, label, property, value, contexts);
+    return window.snowplow(
+      'trackStructEvent',
+      category,
+      event,
+      Object.assign({}, { label: '', property: '', value: '' }, data),
+    );
   }
 
-  static bindDocument(category = document.body.dataset.page, documentOverride = null) {
-    const el = documentOverride || document;
-    if (!this.enabled() || el.trackingBound) return [];
-
-    el.trackingBound = true;
-
-    const handlers = eventHandlers(category, (...args) => this.event(...args));
-    handlers.forEach(event => el.addEventListener(event.name, event.func));
-    return handlers;
+  constructor(category = document.body.dataset.page) {
+    this.category = category;
   }
 
-  static mixin(opts) {
-    return {
-      data() {
-        return {
-          tracking: {
-            // eslint-disable-next-line no-underscore-dangle
-            category: this.$options.name || this.$options._componentTag,
-          },
-        };
-      },
-      methods: {
-        track(action, data) {
-          const category = opts.category || data.category || this.tracking.category;
-          Tracking.event(category || 'unspecified', action, { ...opts, ...this.tracking, ...data });
-        },
-      },
+  bind(container = document) {
+    if (!this.constructor.enabled()) return;
+    container.querySelectorAll(`[data-track-event]`).forEach(el => {
+      if (this.customHandlingFor(el)) return;
+      // jquery is required for select2, so we use it always
+      // see: https://github.com/select2/select2/issues/4686
+      $(el).on('click', this.eventHandler(this.category));
+    });
+  }
+
+  customHandlingFor(el) {
+    const classes = el.classList;
+
+    // bootstrap dropdowns
+    if (classes.contains('dropdown')) {
+      $(el).on('show.bs.dropdown', this.eventHandler(this.category, { suffix: '_show' }));
+      $(el).on('hide.bs.dropdown', this.eventHandler(this.category, { suffix: '_hide' }));
+      return true;
+    }
+
+    return false;
+  }
+
+  eventHandler(category = null, opts = {}) {
+    return e => {
+      this.constructor.event(category || this.category, ...extractData(e.currentTarget, opts));
     };
   }
 }
@@ -96,7 +89,7 @@ export default class Tracking {
 export function initUserTracking() {
   if (!Tracking.enabled()) return;
 
-  const opts = { ...DEFAULT_SNOWPLOW_OPTIONS, ...window.snowplowOptions };
+  const opts = Object.assign({}, DEFAULT_SNOWPLOW_OPTIONS, window.snowplowOptions);
   window.snowplow('newTracker', opts.namespace, opts.hostname, opts);
 
   window.snowplow('enableActivityTracking', 30, 30);
@@ -104,6 +97,4 @@ export function initUserTracking() {
 
   if (opts.formTracking) window.snowplow('enableFormTracking');
   if (opts.linkClickTracking) window.snowplow('enableLinkClickTracking');
-
-  Tracking.bindDocument();
 }

@@ -1,7 +1,7 @@
 <script>
 /* eslint-disable @gitlab/vue-i18n/no-bare-strings */
 import { GlTooltipDirective } from '@gitlab/ui';
-import DeprecatedModal2 from '~/vue_shared/components/deprecated_modal_2.vue';
+import GlModal from '~/vue_shared/components/gl_modal.vue';
 import { s__, sprintf } from '~/locale';
 import LoadingButton from '~/vue_shared/components/loading_button.vue';
 import eventHub from '../event_hub';
@@ -11,7 +11,7 @@ export default {
   name: 'StopEnvironmentModal',
 
   components: {
-    GlModal: DeprecatedModal2,
+    GlModal,
     LoadingButton,
   },
 

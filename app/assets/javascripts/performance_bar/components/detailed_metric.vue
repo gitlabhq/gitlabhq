@@ -1,10 +1,10 @@
 <script>
-import DeprecatedModal2 from '~/vue_shared/components/deprecated_modal_2.vue';
+import GlModal from '~/vue_shared/components/gl_modal.vue';
 import Icon from '~/vue_shared/components/icon.vue';
 
 export default {
   components: {
-    GlModal: DeprecatedModal2,
+    GlModal,
     Icon,
   },
   props: {

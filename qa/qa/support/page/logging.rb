@@ -4,12 +4,6 @@ module QA
   module Support
     module Page
       module Logging
-        def assert_no_element(name)
-          log("asserting no element :#{name}")
-
-          super
-        end
-
         def refresh
           log("refreshing #{current_url}")
 
@@ -59,10 +53,9 @@ module QA
           elements
         end
 
-        def click_element(name, page = nil, **kwargs)
+        def click_element(name, page = nil)
           msg = ["clicking :#{name}"]
           msg << ", expecting to be at #{page.class}" if page
-          msg << "with args #{kwargs}"
 
           log(msg.compact.join(' '))
 

@@ -22,7 +22,6 @@ export default class FilterableList {
 
   getPagePath() {
     const action = this.filterForm.getAttribute('action');
-    // eslint-disable-next-line no-jquery/no-serialize
     const params = $(this.filterForm).serialize();
     return `${action}${action.indexOf('?') > 0 ? '&' : '?'}${params}`;
   }

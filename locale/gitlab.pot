@@ -1453,9 +1453,6 @@ msgstr ""
 msgid "An error occurred while fetching this tab."
 msgstr ""
 
-msgid "An error occurred while generating a username. Please try again."
-msgstr ""
-
 msgid "An error occurred while getting projects"
 msgstr ""
 
@@ -1858,12 +1855,6 @@ msgid "Are you sure? This will invalidate your registered applications and U2F d
 msgstr ""
 
 msgid "Artifact ID"
-msgstr ""
-
-msgid "Artifact could not be deleted."
-msgstr ""
-
-msgid "Artifact was successfully deleted."
 msgstr ""
 
 msgid "Artifacts"
@@ -2663,9 +2654,6 @@ msgid "CICD|instance enabled"
 msgstr ""
 
 msgid "CLOSED"
-msgstr ""
-
-msgid "CLOSED (MOVED)"
 msgstr ""
 
 msgid "CONTRIBUTING"
@@ -6747,9 +6735,6 @@ msgstr ""
 msgid "First day of the week"
 msgstr ""
 
-msgid "First name"
-msgstr ""
-
 msgid "Fixed date"
 msgstr ""
 
@@ -8033,9 +8018,6 @@ msgstr ""
 msgid "However, you are already a member of this %{member_source}. Sign in using a different account to accept the invitation."
 msgstr ""
 
-msgid "I accept the %{terms_link_start}Terms of Service and Privacy Policy%{terms_link_end}"
-msgstr ""
-
 msgid "I accept the %{terms_link}"
 msgstr ""
 
@@ -8046,9 +8028,6 @@ msgid "I forgot my password"
 msgstr ""
 
 msgid "I have read and agree to the Let's Encrypt %{link_start}Terms of Service%{link_end}"
-msgstr ""
-
-msgid "I'd like to receive updates via email about GitLab"
 msgstr ""
 
 msgid "ID"
@@ -8270,7 +8249,7 @@ msgstr ""
 msgid "ImportProjects|The repository could not be created."
 msgstr ""
 
-msgid "ImportProjects|Update of imported projects with realtime changes failed"
+msgid "ImportProjects|Updating the imported projects failed"
 msgstr ""
 
 msgid "Improve Issue boards"
@@ -8935,9 +8914,6 @@ msgid "Last edited %{date}"
 msgstr ""
 
 msgid "Last edited by %{name}"
-msgstr ""
-
-msgid "Last name"
 msgstr ""
 
 msgid "Last reply by"
@@ -10214,7 +10190,7 @@ msgstr ""
 msgid "No %{header} for this request."
 msgstr ""
 
-msgid "No %{providerTitle} repositories found"
+msgid "No %{providerTitle} repositories available to import"
 msgstr ""
 
 msgid "No Epic"
@@ -10236,9 +10212,6 @@ msgid "No activities found"
 msgstr ""
 
 msgid "No application_settings found"
-msgstr ""
-
-msgid "No authentication methods configured."
 msgstr ""
 
 msgid "No available namespaces to fork the project."
@@ -10627,9 +10600,6 @@ msgstr ""
 msgid "One or more of your dependency files are not supported, and the dependency list may be incomplete. Below is a list of supported file types."
 msgstr ""
 
-msgid "Only 'Reporter' roles and above on tiers Premium / Silver and above can see Cycle Analytics."
-msgstr ""
-
 msgid "Only Project Members"
 msgstr ""
 
@@ -10772,9 +10742,6 @@ msgid "Other merge requests block this MR"
 msgstr ""
 
 msgid "Other visibility settings have been disabled by the administrator."
-msgstr ""
-
-msgid "Our Privacy Policy has changed, please visit %{privacy_policy_link} to review these changes."
 msgstr ""
 
 msgid "Outbound requests"
@@ -12744,9 +12711,6 @@ msgstr ""
 msgid "Releases mark specific points in a project's development history, communicate information about the type of change, and deliver on prepared, often compiled, versions of the software to be reused elsewhere. Currently, releases can only be created through the API."
 msgstr ""
 
-msgid "Remember me"
-msgstr ""
-
 msgid "Remind later"
 msgstr ""
 
@@ -13087,9 +13051,6 @@ msgid "Require user password to approve"
 msgstr ""
 
 msgid "Require users to prove ownership of custom domains"
-msgstr ""
-
-msgid "Required argument 'targetElement' is missing"
 msgstr ""
 
 msgid "Requires approval from %{names}."
@@ -13560,14 +13521,6 @@ msgstr ""
 msgid "SearchResults|Showing %{from} - %{to} of %{count} %{scope} for \"%{term}\""
 msgstr ""
 
-msgid "SearchResults|We couldn't find any %{scope} matching %{term}"
-msgstr ""
-
-msgid "SearchResults|code result"
-msgid_plural "SearchResults|code results"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "SearchResults|comment"
 msgid_plural "SearchResults|comments"
 msgstr[0] ""
@@ -13598,23 +13551,18 @@ msgid_plural "SearchResults|projects"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "SearchResults|result"
+msgid_plural "SearchResults|results"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "SearchResults|snippet"
 msgid_plural "SearchResults|snippets"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "SearchResults|snippet result"
-msgid_plural "SearchResults|snippet results"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "SearchResults|user"
 msgid_plural "SearchResults|users"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "SearchResults|wiki result"
-msgid_plural "SearchResults|wiki results"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -14047,10 +13995,10 @@ msgstr ""
 msgid "Set up CI/CD"
 msgstr ""
 
-msgid "Set up a %{type} Runner automatically"
+msgid "Set up a %{type} Runner manually"
 msgstr ""
 
-msgid "Set up a %{type} Runner manually"
+msgid "Set up a specific Runner automatically"
 msgstr ""
 
 msgid "Set up assertions/attributes/claims (email, first_name, last_name) and NameID according to %{docsLinkStart}the documentation %{icon}%{docsLinkEnd}"
@@ -14260,12 +14208,6 @@ msgid "Sign-in restrictions"
 msgstr ""
 
 msgid "Sign-up restrictions"
-msgstr ""
-
-msgid "SignUp|First Name is too long (maximum is %{max_length} characters)."
-msgstr ""
-
-msgid "SignUp|Last Name is too long (maximum is %{max_length} characters)."
 msgstr ""
 
 msgid "SignUp|Name is too long (maximum is %{max_length} characters)."
@@ -14505,9 +14447,6 @@ msgstr ""
 msgid "SortOptions|Due soon"
 msgstr ""
 
-msgid "SortOptions|Expired date"
-msgstr ""
-
 msgid "SortOptions|Label priority"
 msgstr ""
 
@@ -14596,9 +14535,6 @@ msgid "SortOptions|Recent sign in"
 msgstr ""
 
 msgid "SortOptions|Recently starred"
-msgstr ""
-
-msgid "SortOptions|Size"
 msgstr ""
 
 msgid "SortOptions|Sort direction"
@@ -14718,9 +14654,6 @@ msgstr ""
 msgid "Start a %{new_merge_request} with these changes"
 msgstr ""
 
-msgid "Start a Free Trial"
-msgstr ""
-
 msgid "Start a new discussion..."
 msgstr ""
 
@@ -14736,7 +14669,7 @@ msgstr ""
 msgid "Start by choosing a group to see how your team is spending time. You can then drill down to the project level."
 msgstr ""
 
-msgid "Start by choosing a group to start exploring the merge requests in that group. You can then proceed to filter by projects, labels, milestones and authors."
+msgid "Start by choosing a group to start exploring the merge requests in that group. You can then proceed to filter by projects, labels, milestones, authors and assignees."
 msgstr ""
 
 msgid "Start cleanup"
@@ -15302,9 +15235,6 @@ msgid_plural "The %{type} contains the following errors:"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "The API path was not specified."
-msgstr ""
-
 msgid "The Advanced Global Search in GitLab is a powerful search service that saves you time. Instead of creating duplicate code and wasting time, you can now search for code within other teams that can help your own project."
 msgstr ""
 
@@ -15534,9 +15464,6 @@ msgid "The snippet is visible to any logged in user."
 msgstr ""
 
 msgid "The staging stage shows the time between merging the MR and deploying code to the production environment. The data will be automatically added once you deploy to production for the first time."
-msgstr ""
-
-msgid "The target element is missing."
 msgstr ""
 
 msgid "The testing stage shows the time GitLab CI takes to run every pipeline for the related merge request. The data will automatically be added after your first pipeline finishes running."
@@ -17535,6 +17462,9 @@ msgstr ""
 msgid "We could not determine the path to remove the issue"
 msgstr ""
 
+msgid "We couldn't find any results matching"
+msgstr ""
+
 msgid "We created a short guided tour that will help you learn the basics of GitLab and how it will help you be better at your job. It should only take a couple of minutes. You will be guided by two types of helpers, best recognized by their color."
 msgstr ""
 
@@ -17987,10 +17917,7 @@ msgstr ""
 msgid "You don't have any recent searches"
 msgstr ""
 
-msgid "You don’t have access to Cycle Analytics for this group"
-msgstr ""
-
-msgid "You don’t have access to Productivity Analytics in this group"
+msgid "You don’t have acces to Productivity Analaytics in this group"
 msgstr ""
 
 msgid "You have been granted %{access_level} access to the %{source_link} %{source_type}."

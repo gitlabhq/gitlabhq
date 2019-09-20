@@ -2,7 +2,7 @@
 import { mapState, mapActions } from 'vuex';
 import createFlash from '~/flash';
 import { s__ } from '~/locale';
-import DeprecatedModal2 from '~/vue_shared/components/deprecated_modal_2.vue';
+import GlModal from '~/vue_shared/components/gl_modal.vue';
 import Badge from './badge.vue';
 import BadgeForm from './badge_form.vue';
 import BadgeList from './badge_list.vue';
@@ -13,7 +13,7 @@ export default {
     Badge,
     BadgeForm,
     BadgeList,
-    GlModal: DeprecatedModal2,
+    GlModal,
   },
   computed: {
     ...mapState(['badgeInModal', 'isEditing']),

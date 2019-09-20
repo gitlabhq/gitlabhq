@@ -11,7 +11,6 @@ module QA
 
         project = Resource::Project.fabricate_via_api! do |resource|
           resource.name = 'project-to-test-mention'
-          resource.visibility = 'private'
         end
         project.visit!
 

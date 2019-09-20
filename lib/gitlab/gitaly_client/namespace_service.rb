@@ -22,7 +22,7 @@ module Gitlab
       def remove(name)
         request = Gitaly::RemoveNamespaceRequest.new(storage_name: @storage, name: name)
 
-        gitaly_client_call(:remove_namespace, request, timeout: GitalyClient.long_timeout)
+        gitaly_client_call(:remove_namespace, request, timeout: nil)
       end
 
       def rename(from, to)

@@ -650,7 +650,7 @@ describe JiraService do
     end
   end
 
-  describe 'favicon urls' do
+  describe 'favicon urls', :request_store do
     it 'includes the standard favicon' do
       props = described_class.new.send(:build_remote_link_props, url: 'http://example.com', title: 'title')
       expect(props[:object][:icon][:url16x16]).to match %r{^http://localhost/assets/favicon(?:-\h+).png$}

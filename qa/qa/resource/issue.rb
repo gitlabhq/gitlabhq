@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'securerandom'
-
 module QA
   module Resource
     class Issue < Base
@@ -15,14 +13,11 @@ module QA
       end
 
       attribute :id
-      attribute :assignee_ids
       attribute :labels
       attribute :title
 
       def initialize
-        @assignee_ids = []
         @labels = []
-        @title = "Issue title #{SecureRandom.hex(8)}"
       end
 
       def fabricate!
@@ -30,10 +25,10 @@ module QA
 
         Page::Project::Show.perform(&:go_to_new_issue)
 
-        Page::Project::Issue::New.perform do |new_page|
-          new_page.add_title(@title)
-          new_page.add_description(@description)
-          new_page.create_new_issue
+        Page::Project::Issue::New.perform do |page| # rubocop:disable QA/AmbiguousPageObjectName
+          page.add_title(@title)
+          page.add_description(@description)
+          page.create_new_issue
         end
       end
 
@@ -47,7 +42,6 @@ module QA
 
       def api_post_body
         {
-          assignee_ids: assignee_ids,
           labels: labels,
           title: title
         }.tap do |hash|

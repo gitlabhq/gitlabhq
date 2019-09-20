@@ -1,11 +1,11 @@
 import $ from 'jquery';
 import Vue from 'vue';
-import DeprecatedModal2 from '~/vue_shared/components/deprecated_modal_2.vue';
+import GlModal from '~/vue_shared/components/gl_modal.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
-const modalComponent = Vue.extend(DeprecatedModal2);
+const modalComponent = Vue.extend(GlModal);
 
-describe('DeprecatedModal2', () => {
+describe('GlModal', () => {
   let vm;
 
   afterEach(() => {
@@ -153,17 +153,17 @@ describe('DeprecatedModal2', () => {
       let template;
       if (slotName) {
         template = `
-          <deprecated-modal-2>
+          <gl-modal>
             <template slot="${slotName}">${slotContent}</template>
-          </deprecated-modal-2>
+          </gl-modal>
         `;
       } else {
-        template = `<deprecated-modal-2>${slotContent}</deprecated-modal-2>`;
+        template = `<gl-modal>${slotContent}</gl-modal>`;
       }
 
       return Vue.extend({
         components: {
-          DeprecatedModal2,
+          GlModal,
         },
         template,
       });

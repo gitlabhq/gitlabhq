@@ -1,13 +1,13 @@
 <script>
 import axios from '~/lib/utils/axios_utils';
 import createFlash from '~/flash';
-import DeprecatedModal2 from '~/vue_shared/components/deprecated_modal_2.vue';
+import GlModal from '~/vue_shared/components/gl_modal.vue';
 import { redirectTo } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
 
 export default {
   components: {
-    GlModal: DeprecatedModal2,
+    GlModal,
   },
   props: {
     url: {

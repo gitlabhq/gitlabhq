@@ -10,8 +10,6 @@ describe Projects::Registry::TagsController do
     create(:container_repository, name: 'image', project: project)
   end
 
-  let(:service) { double('service') }
-
   before do
     sign_in(user)
     stub_container_registry_config(enabled: true)
@@ -86,17 +84,17 @@ describe Projects::Registry::TagsController do
 
       context 'when there is matching tag present' do
         before do
-          stub_container_registry_tags(repository: repository.path, tags: %w[rc1], with_manifest: true)
+          stub_container_registry_tags(repository: repository.path, tags: %w[rc1 test.])
         end
 
         it 'makes it possible to delete regular tag' do
-          expect_delete_tags(%w[rc1])
+          expect_any_instance_of(ContainerRegistry::Tag).to receive(:delete)
 
           destroy_tag('rc1')
         end
 
         it 'makes it possible to delete a tag that ends with a dot' do
-          expect_delete_tags(%w[test.])
+          expect_any_instance_of(ContainerRegistry::Tag).to receive(:delete)
 
           destroy_tag('test.')
         end
@@ -127,12 +125,11 @@ describe Projects::Registry::TagsController do
           stub_container_registry_tags(repository: repository.path, tags: %w[rc1 test.])
         end
 
-        let(:tags) { %w[tc1 test.] }
-
         it 'makes it possible to delete tags in bulk' do
-          expect_delete_tags(tags)
+          allow_any_instance_of(ContainerRegistry::Tag).to receive(:delete) { |*args| ContainerRegistry::Tag.delete(*args) }
+          expect(ContainerRegistry::Tag).to receive(:delete).exactly(2).times
 
-          bulk_destroy_tags(tags)
+          bulk_destroy_tags(['rc1', 'test.'])
         end
       end
     end
@@ -148,10 +145,5 @@ describe Projects::Registry::TagsController do
                      },
                      format: :json
     end
-  end
-
-  def expect_delete_tags(tags, status = :success)
-    expect(service).to receive(:execute).with(repository) { { status: status } }
-    expect(Projects::ContainerRepository::DeleteTagsService).to receive(:new).with(repository.project, user, tags: tags) { service }
   end
 end

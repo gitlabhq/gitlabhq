@@ -81,7 +81,7 @@ export default class ProjectFindFile {
     // find file
   }
 
-  // files paths load
+  // files pathes load
   load(url) {
     axios
       .get(url)

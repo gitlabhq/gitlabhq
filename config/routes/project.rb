@@ -37,8 +37,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
       scope '-' do
         get 'archive/*id', constraints: { format: Gitlab::PathRegex.archive_formats_regex, id: /.+?/ }, to: 'repositories#archive', as: 'archive'
 
-        resources :artifacts, only: [:index, :destroy]
-
         resources :jobs, only: [:index, :show], constraints: { id: /\d+/ } do
           collection do
             resources :artifacts, only: [] do
@@ -196,12 +194,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           as: :template,
           defaults: { format: 'json' },
           constraints: { key: %r{[^/]+}, template_type: %r{issue|merge_request}, format: 'json' }
-
-      get '/description_templates/names/:template_type',
-          to: 'templates#names',
-          as: :template_names,
-          defaults: { format: 'json' },
-          constraints: { template_type: %r{issue|merge_request}, format: 'json' }
 
       resources :commit, only: [:show], constraints: { id: /\h{7,40}/ } do
         member do

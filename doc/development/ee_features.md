@@ -19,7 +19,7 @@ CE specs should remain untouched as much as possible and extra specs
 should be added for EE. Licensed features can be stubbed using the
 spec helper `stub_licensed_features` in `EE::LicenseHelpers`.
 
-You can force GitLab to act as CE by either deleting the `ee/` directory or by
+You can force Webpack to act as CE by either deleting the `ee/` directory or by
 setting the [`IS_GITLAB_EE` environment variable](https://gitlab.com/gitlab-org/gitlab/blob/master/config/helpers/is_ee_env.js)
 to something that evaluates as `false`. The same works for running tests
 (for example `IS_GITLAB_EE=0 yarn jest`).
@@ -170,7 +170,7 @@ still having access the class's implementation with `super`.
 
 There are a few gotchas with it:
 
-- you should always [`extend ::Gitlab::Utils::Override`](utilities.md#override) and use `override` to
+- you should always [`extend ::Gitlab::Utils::Override`](utilities.md#overridehttpsgitlabcomgitlab-orggitlab-fossblobmasterlibgitlabutilsoverriderb) and use `override` to
   guard the "overrider" method to ensure that if the method gets renamed in
   CE, the EE override won't be silently forgotten.
 - when the "overrider" would add a line in the middle of the CE

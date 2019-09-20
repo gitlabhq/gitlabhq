@@ -111,7 +111,6 @@ POST /projects/import
 | Attribute | Type           | Required | Description                              |
 | --------- | -------------- | -------- | ---------------------------------------- |
 | `namespace` | integer/string | no | The ID or path of the namespace that the project will be imported to. Defaults to the current user's namespace |
-| `name` | string | no | The name of the project to be imported. Defaults to the path of the project if not provided |
 | `file` | string | yes | The file to be uploaded |
 | `path` | string | yes | Name and path for new project |
 | `overwrite` | boolean | no | If there is a project with the same path the import will overwrite it. Default to false |
@@ -132,12 +131,14 @@ cURL doesn't support posting a file from a remote server. Importing a project fr
 
 ```python
 import requests
-from io import BytesIO
+import urllib
+import json
+import sys
 
-s3_file = requests.get(presigned_url)
+s3_file = urllib.urlopen(presigned_url)
 
 url =  'https://gitlab.example.com/api/v4/projects/import'
-files = {'file': ('file.tar.gz', BytesIO(s3_file.content))}
+files = {'file': s3_file}
 data = {
     "path": "example-project",
     "namespace": "example-group"

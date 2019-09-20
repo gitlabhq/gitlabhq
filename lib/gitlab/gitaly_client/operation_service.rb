@@ -19,7 +19,7 @@ module Gitlab
           user: Gitlab::Git::User.from_gitlab(user).to_gitaly
         )
 
-        response = GitalyClient.call(@repository.storage, :operation_service, :user_delete_tag, request, timeout: GitalyClient.long_timeout)
+        response = GitalyClient.call(@repository.storage, :operation_service, :user_delete_tag, request, timeout: GitalyClient.medium_timeout)
 
         if pre_receive_error = response.pre_receive_error.presence
           raise Gitlab::Git::PreReceiveError, pre_receive_error
@@ -35,7 +35,7 @@ module Gitlab
           message: encode_binary(message.to_s)
         )
 
-        response = GitalyClient.call(@repository.storage, :operation_service, :user_create_tag, request, timeout: GitalyClient.long_timeout)
+        response = GitalyClient.call(@repository.storage, :operation_service, :user_create_tag, request, timeout: GitalyClient.medium_timeout)
         if pre_receive_error = response.pre_receive_error.presence
           raise Gitlab::Git::PreReceiveError, pre_receive_error
         elsif response.exists
@@ -55,7 +55,7 @@ module Gitlab
           start_point: encode_binary(start_point)
         )
         response = GitalyClient.call(@repository.storage, :operation_service,
-                                     :user_create_branch, request, timeout: GitalyClient.long_timeout)
+          :user_create_branch, request)
 
         if response.pre_receive_error.present?
           raise Gitlab::Git::PreReceiveError.new(response.pre_receive_error)
@@ -79,8 +79,7 @@ module Gitlab
           oldrev: encode_binary(oldrev)
         )
 
-        response = GitalyClient.call(@repository.storage, :operation_service,
-                                     :user_update_branch, request, timeout: GitalyClient.long_timeout)
+        response = GitalyClient.call(@repository.storage, :operation_service, :user_update_branch, request)
 
         if pre_receive_error = response.pre_receive_error.presence
           raise Gitlab::Git::PreReceiveError, pre_receive_error
@@ -94,8 +93,7 @@ module Gitlab
           user: Gitlab::Git::User.from_gitlab(user).to_gitaly
         )
 
-        response = GitalyClient.call(@repository.storage, :operation_service,
-                                     :user_delete_branch, request, timeout: GitalyClient.long_timeout)
+        response = GitalyClient.call(@repository.storage, :operation_service, :user_delete_branch, request)
 
         if pre_receive_error = response.pre_receive_error.presence
           raise Gitlab::Git::PreReceiveError, pre_receive_error
@@ -113,8 +111,7 @@ module Gitlab
           first_parent_ref: encode_binary(first_parent_ref)
         )
 
-        response = GitalyClient.call(@repository.storage, :operation_service,
-                                     :user_merge_to_ref, request, timeout: GitalyClient.long_timeout)
+        response = GitalyClient.call(@repository.storage, :operation_service, :user_merge_to_ref, request)
 
         if pre_receive_error = response.pre_receive_error.presence
           raise Gitlab::Git::PreReceiveError, pre_receive_error
@@ -129,8 +126,7 @@ module Gitlab
           @repository.storage,
           :operation_service,
           :user_merge_branch,
-          request_enum.each,
-          timeout: GitalyClient.long_timeout
+          request_enum.each
         )
 
         request_enum.push(
@@ -174,8 +170,7 @@ module Gitlab
           @repository.storage,
           :operation_service,
           :user_ff_branch,
-          request,
-          timeout: GitalyClient.long_timeout
+          request
         )
 
         Gitlab::Git::OperationService::BranchUpdate.from_gitaly(response.branch_update)
@@ -220,7 +215,6 @@ module Gitlab
           :operation_service,
           :user_rebase,
           request,
-          timeout: GitalyClient.long_timeout,
           remote_storage: remote_repository.storage
         )
 
@@ -242,7 +236,6 @@ module Gitlab
           :operation_service,
           :user_rebase_confirmable,
           request_enum.each,
-          timeout: GitalyClient.long_timeout,
           remote_storage: remote_repository.storage
         )
 
@@ -293,8 +286,7 @@ module Gitlab
           @repository.storage,
           :operation_service,
           :user_squash,
-          request,
-          timeout: GitalyClient.long_timeout
+          request
         )
 
         if response.git_error.presence
@@ -318,8 +310,7 @@ module Gitlab
           @repository.storage,
           :operation_service,
           :user_update_submodule,
-          request,
-          timeout: GitalyClient.long_timeout
+          request
         )
 
         if response.pre_receive_error.present?
@@ -361,8 +352,7 @@ module Gitlab
         end
 
         response = GitalyClient.call(@repository.storage, :operation_service,
-                                     :user_commit_files, req_enum, timeout: GitalyClient.long_timeout,
-                                     remote_storage: start_repository.storage)
+          :user_commit_files, req_enum, remote_storage: start_repository.storage)
 
         if (pre_receive_error = response.pre_receive_error.presence)
           raise Gitlab::Git::PreReceiveError, pre_receive_error
@@ -394,8 +384,7 @@ module Gitlab
           end
         end
 
-        response = GitalyClient.call(@repository.storage, :operation_service,
-                                     :user_apply_patch, chunks, timeout: GitalyClient.long_timeout)
+        response = GitalyClient.call(@repository.storage, :operation_service, :user_apply_patch, chunks)
 
         Gitlab::Git::OperationService::BranchUpdate.from_gitaly(response.branch_update)
       end
@@ -435,7 +424,7 @@ module Gitlab
           :"user_#{rpc}",
           request,
           remote_storage: start_repository.storage,
-          timeout: GitalyClient.long_timeout
+          timeout: GitalyClient.medium_timeout
         )
 
         handle_cherry_pick_or_revert_response(response)

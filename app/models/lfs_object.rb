@@ -9,7 +9,6 @@ class LfsObject < ApplicationRecord
   has_many :projects, -> { distinct }, through: :lfs_objects_projects
 
   scope :with_files_stored_locally, -> { where(file_store: LfsObjectUploader::Store::LOCAL) }
-  scope :with_files_stored_remotely, -> { where(file_store: LfsObjectUploader::Store::REMOTE) }
 
   validates :oid, presence: true, uniqueness: true
 
