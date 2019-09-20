@@ -92,7 +92,7 @@ Use an object storage option like AWS S3 to store job artifacts.
 DANGER: **Danger:**
 If you're enabling S3 in [GitLab HA](high_availability/README.md), you will need to have an [NFS mount set up for CI traces and artifacts](high_availability/nfs.md#a-single-nfs-mount) or enable [live tracing](job_traces.md#new-live-trace-architecture). If these settings are not set, you will risk job traces disappearing or not being saved.
 
-### Object Storage Settings
+#### Object Storage Settings
 
 For source installations the following settings are nested under `artifacts:` and then `object_store:`. On Omnibus GitLab installs they are prefixed by `artifacts_object_store_`.
 
@@ -105,7 +105,7 @@ For source installations the following settings are nested under `artifacts:` an
 | `proxy_download` | Set to true to enable proxying all files served. Option allows to reduce egress traffic as this allows clients to download directly from remote storage instead of proxying all data | `false` |
 | `connection` | Various connection options described below | |
 
-#### S3 compatible connection settings
+##### S3 compatible connection settings
 
 The connection settings match those provided by [Fog](https://github.com/fog), and are as follows:
 
@@ -187,6 +187,14 @@ _The artifacts are stored by default in
    ```bash
    sudo -u git -H bundle exec rake gitlab:artifacts:migrate RAILS_ENV=production
    ```
+
+### Migrating from object storage to local storage
+
+In order to migrate back to local storage:
+
+1. Set both `direct_upload` and `background_upload` to false under the artifacts object storage settings. Don't forget to restart GitLab.
+1. Run `rake gitlab:artifacts:migrate_to_local` on your console.
+1. Disable `object_storage` for artifacts in `gitlab.rb`. Remember to restart GitLab afterwards.
 
 ## Expiring artifacts
 

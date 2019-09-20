@@ -218,6 +218,14 @@ For source installations the settings are nested under `lfs:` and then
    will be forwarded to object storage unless `background_upload` is set to
    false.
 
+### Migrating back to local storage
+
+In order to migrate back to local storage:
+
+1. Set both `direct_upload` and `background_upload` to false under the LFS object storage settings. Don't forget to restart GitLab.
+1. Run `rake gitlab:lfs:migrate_to_local` on your console.
+1. Disable `object_storage` for LFS objects in `gitlab.rb`. Remember to restart GitLab afterwards.
+
 ## Storage statistics
 
 You can see the total storage used for LFS objects on groups and projects

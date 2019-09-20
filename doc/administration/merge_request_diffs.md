@@ -61,6 +61,9 @@ To enable external storage of merge request diffs, follow the instructions below
 
 ## Using object storage
 
+CAUTION: **WARNING:**
+  Currently migrating to object storage is **non-reversible**
+
 Instead of storing the external diffs on disk, we recommended the use of an object
 store like AWS S3 instead. This configuration relies on valid AWS credentials to
 be configured already.

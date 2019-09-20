@@ -32,10 +32,11 @@ module Gitlab
 
         def build(release)
           {
+            name: release.name,
             tag: release.tag_name,
             description: description_for(release),
             created_at: release.created_at,
-            updated_at: release.updated_at,
+            updated_at: release.created_at,
             released_at: release.published_at,
             project_id: project.id
           }

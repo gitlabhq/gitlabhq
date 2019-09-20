@@ -38,6 +38,15 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
 
   it { is_expected.to respond_to :project }
 
+  describe 'applications have inverse_of: :cluster option' do
+    let(:cluster) { create(:cluster) }
+    let!(:helm) { create(:clusters_applications_helm, cluster: cluster) }
+
+    it 'does not do a third query when referencing cluster again' do
+      expect { cluster.application_helm.cluster }.not_to exceed_query_limit(2)
+    end
+  end
+
   describe '.enabled' do
     subject { described_class.enabled }
 

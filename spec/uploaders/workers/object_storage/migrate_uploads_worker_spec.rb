@@ -11,8 +11,8 @@ describe ObjectStorage::MigrateUploadsWorker, :sidekiq do
   let(:uploads) { Upload.all }
   let(:to_store) { ObjectStorage::Store::REMOTE }
 
-  def perform(uploads)
-    described_class.new.perform(uploads.ids, model_class.to_s, mounted_as, to_store)
+  def perform(uploads, store = nil)
+    described_class.new.perform(uploads.ids, model_class.to_s, mounted_as, store || to_store)
   rescue ObjectStorage::MigrateUploadsWorker::Report::MigrationFailures
     # swallow
   end
@@ -97,10 +97,26 @@ describe ObjectStorage::MigrateUploadsWorker, :sidekiq do
 
       it_behaves_like 'outputs correctly', success: 10
 
-      it 'migrates files' do
+      it 'migrates files to remote storage' do
         perform(uploads)
 
         expect(Upload.where(store: ObjectStorage::Store::LOCAL).count).to eq(0)
+      end
+
+      context 'reversed' do
+        let(:to_store) { ObjectStorage::Store::LOCAL }
+
+        before do
+          perform(uploads, ObjectStorage::Store::REMOTE)
+        end
+
+        it 'migrates files to local storage' do
+          expect(Upload.where(store: ObjectStorage::Store::REMOTE).count).to eq(10)
+
+          perform(uploads)
+
+          expect(Upload.where(store: ObjectStorage::Store::LOCAL).count).to eq(10)
+        end
       end
 
       context 'migration is unsuccessful' do

@@ -3,19 +3,7 @@ namespace :gitlab do
     namespace :migrate do
       desc "GitLab | Uploads | Migrate all uploaded files to object storage"
       task all: :environment do
-        categories = [%w(AvatarUploader Project :avatar),
-                      %w(AvatarUploader Group :avatar),
-                      %w(AvatarUploader User :avatar),
-                      %w(AttachmentUploader Note :attachment),
-                      %w(AttachmentUploader Appearance :logo),
-                      %w(AttachmentUploader Appearance :header_logo),
-                      %w(FaviconUploader Appearance :favicon),
-                      %w(FileUploader Project),
-                      %w(PersonalFileUploader Snippet),
-                      %w(NamespaceFileUploader Snippet),
-                      %w(FileUploader MergeRequest)]
-
-        categories.each do |args|
+        Gitlab::Uploads::MigrationHelper::CATEGORIES.each do |args|
           Rake::Task["gitlab:uploads:migrate"].invoke(*args)
           Rake::Task["gitlab:uploads:migrate"].reenable
         end
@@ -25,34 +13,23 @@ namespace :gitlab do
     # The following is the actual rake task that migrates uploads of specified
     # category to object storage
     desc 'GitLab | Uploads | Migrate the uploaded files of specified type to object storage'
-    task :migrate, [:uploader_class, :model_class, :mounted_as] => :environment do |task, args|
-      batch_size     = ENV.fetch('BATCH', 200).to_i
-      @to_store      = ObjectStorage::Store::REMOTE
-      @mounted_as    = args.mounted_as&.gsub(':', '')&.to_sym
-      @uploader_class = args.uploader_class.constantize
-      @model_class    = args.model_class.constantize
-
-      uploads.each_batch(of: batch_size, &method(:enqueue_batch))
+    task :migrate, [:uploader_class, :model_class, :mounted_as] => :environment do |_t, args|
+      Gitlab::Uploads::MigrationHelper.new(args, Logger.new(STDOUT)).migrate_to_remote_storage
     end
 
-    def enqueue_batch(batch, index)
-      job = ObjectStorage::MigrateUploadsWorker.enqueue!(batch,
-                                                         @model_class,
-                                                         @mounted_as,
-                                                         @to_store)
-      puts "Enqueued job ##{index}: #{job}"
-    rescue ObjectStorage::MigrateUploadsWorker::SanityCheckError => e
-      # continue for the next batch
-      puts "Could not enqueue batch (#{batch.ids}) #{e.message}".color(:red)
+    namespace :migrate_to_local do
+      desc "GitLab | Uploads | Migrate all uploaded files to local storage"
+      task all: :environment do
+        Gitlab::Uploads::MigrationHelper::CATEGORIES.each do |args|
+          Rake::Task["gitlab:uploads:migrate_to_local"].invoke(*args)
+          Rake::Task["gitlab:uploads:migrate_to_local"].reenable
+        end
+      end
     end
 
-    def uploads
-      Upload.class_eval { include EachBatch } unless Upload < EachBatch
-
-      Upload
-        .where(store: [nil, ObjectStorage::Store::LOCAL],
-               uploader: @uploader_class.to_s,
-               model_type: @model_class.base_class.sti_name)
+    desc 'GitLab | Uploads | Migrate the uploaded files of specified type to local storage'
+    task :migrate_to_local, [:uploader_class, :model_class, :mounted_as] => :environment do |_t, args|
+      Gitlab::Uploads::MigrationHelper.new(args, Logger.new(STDOUT)).migrate_to_local_storage
     end
   end
 end

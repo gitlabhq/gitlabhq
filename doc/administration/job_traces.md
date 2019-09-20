@@ -59,46 +59,6 @@ job traces are automatically migrated to it along with the other job artifacts.
 
 See "Phase 4: uploading" in [Data flow](#data-flow) to learn about the process.
 
-## How to archive legacy job trace files
-
-Legacy job traces, which were created before GitLab 10.5, were not archived regularly.
-It's the same state with the "2: overwriting" in the above [Data flow](#data-flow).
-To archive those legacy job traces, please follow the instruction below.
-
-1. Execute the following command
-
-   ```bash
-   gitlab-rake gitlab:traces:archive
-   ```
-
-   After you executed this task, GitLab instance queues up Sidekiq jobs (asynchronous processes)
-   for migrating job trace files from local storage to object storage.
-   It could take time to complete the all migration jobs. You can check the progress by the following command
-
-   ```bash
-   sudo gitlab-rails console
-   ```
-
-   ```bash
-   [1] pry(main)> Sidekiq::Stats.new.queues['pipeline_background:archive_trace']
-   => 100
-   ```
-
-   If the count becomes zero, the archiving processes are done
-
-## How to migrate archived job traces to object storage
-
-> [Introduced][ce-21193] in GitLab 11.3.
-
-If job traces have already been archived into local storage, and you want to migrate those traces to object storage, please follow the instruction below.
-
-1. Ensure [Object storage integration for Job Artifacts](job_artifacts.md#object-storage-settings) is enabled
-1. Execute the following command
-
-   ```bash
-   gitlab-rake gitlab:traces:migrate
-   ```
-
 ## How to remove job traces
 
 There isn't a way to automatically expire old job logs, but it's safe to remove
