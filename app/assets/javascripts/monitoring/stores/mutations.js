@@ -1,6 +1,8 @@
 import Vue from 'vue';
 import * as types from './mutation_types';
-import { normalizeMetrics, sortMetrics, normalizeQueryResult } from './utils';
+import { normalizeMetrics, sortMetrics, normalizeMetric, normalizeQueryResult } from './utils';
+
+const normalizePanel = panel => panel.metrics.map(normalizeMetric);
 
 export default {
   [types.REQUEST_METRICS_DATA](state) {
@@ -9,13 +11,19 @@ export default {
   },
   [types.RECEIVE_METRICS_DATA_SUCCESS](state, groupData) {
     state.groups = groupData.map(group => {
-      let { metrics } = group;
+      let { metrics = [], panels = [] } = group;
+
+      // each panel has metric information that needs to be normalized
+      panels = panels.map(panel => ({
+        ...panel,
+        metrics: normalizePanel(panel),
+      }));
 
       // for backwards compatibility, and to limit Vue template changes:
       // for each group alias panels to metrics
       // for each panel alias metrics to queries
       if (state.useDashboardEndpoint) {
-        metrics = group.panels.map(panel => ({
+        metrics = panels.map(panel => ({
           ...panel,
           queries: panel.metrics,
         }));
@@ -23,6 +31,7 @@ export default {
 
       return {
         ...group,
+        panels,
         metrics: normalizeMetrics(sortMetrics(metrics)),
       };
     });
