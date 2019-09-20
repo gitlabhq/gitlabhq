@@ -1,0 +1,5 @@
+---
+title: Show the "Set up CI/CD" prompt in empty repositories when applicable.
+merge_request: 17274
+author: Ben McCormick
+type: changed

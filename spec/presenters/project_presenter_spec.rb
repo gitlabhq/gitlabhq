@@ -430,4 +430,26 @@ describe ProjectPresenter do
       )
     end
   end
+
+  describe '#empty_repo_statistics_buttons' do
+    let(:project) { create(:project, :repository) }
+    let(:presenter) { described_class.new(project, current_user: user) }
+
+    subject(:empty_repo_statistics_buttons) { presenter.empty_repo_statistics_buttons }
+
+    before do
+      project.add_developer(user)
+      allow(project).to receive(:auto_devops_enabled?).and_return(false)
+    end
+
+    it 'orders the items correctly in an empty project' do
+      expect(empty_repo_statistics_buttons.map(&:label)).to start_with(
+        a_string_including('New'),
+        a_string_including('README'),
+        a_string_including('CHANGELOG'),
+        a_string_including('CONTRIBUTING'),
+        a_string_including('CI/CD')
+      )
+    end
+  end
 end

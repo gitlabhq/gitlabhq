@@ -1,5 +1,7 @@
 import sqljs from 'sql.js';
 import { template as _template } from 'underscore';
+import axios from '~/lib/utils/axios_utils';
+import { successCodes } from '~/lib/utils/http_status';
 
 const PREVIEW_TEMPLATE = _template(`
   <div class="card">
@@ -16,30 +18,25 @@ class BalsamiqViewer {
   }
 
   loadFile(endpoint) {
-    return new Promise((resolve, reject) => {
-      const xhr = new XMLHttpRequest();
-
-      xhr.open('GET', endpoint, true);
-      xhr.responseType = 'arraybuffer';
-      xhr.onload = loadEvent => this.fileLoaded(loadEvent, resolve, reject);
-      xhr.onerror = reject;
-
-      xhr.send();
-    });
+    return axios
+      .get(endpoint, {
+        responseType: 'arraybuffer',
+        validateStatus(status) {
+          return status !== successCodes.OK;
+        },
+      })
+      .then(({ data }) => {
+        this.renderFile(data);
+      })
+      .catch(e => {
+        throw new Error(e);
+      });
   }
 
-  fileLoaded(loadEvent, resolve, reject) {
-    if (loadEvent.target.status !== 200) return reject();
-
-    this.renderFile(loadEvent);
-
-    return resolve();
-  }
-
-  renderFile(loadEvent) {
+  renderFile(fileBuffer) {
     const container = document.createElement('ul');
 
-    this.initDatabase(loadEvent.target.response);
+    this.initDatabase(fileBuffer);
 
     const previews = this.getPreviews();
     previews.forEach(preview => {

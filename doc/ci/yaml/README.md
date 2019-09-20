@@ -110,7 +110,7 @@ The following table lists available parameters for jobs:
 | [`dependencies`](#dependencies)                    | Other jobs that a job depends on so that you can pass artifacts between them.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 | [`coverage`](#coverage)                            | Code coverage settings for a given job.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | [`retry`](#retry)                                  | When and how many times a job can be auto-retried in case of a failure.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
-| [`timeout`](#timeout)                              | Define a custom timeout that would take precedence over the project-wide one.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| [`timeout`](#timeout)                              | Define a custom job-level timeout that takes precedence over the project-wide setting.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
 | [`parallel`](#parallel)                            | How many instances of a job should be run in parallel.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
 | [`trigger`](#trigger-premium)                      | Defines a downstream pipeline trigger.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
 | [`include`](#include)                              | Allows this job to include external YAML files. Also available: `include:local`, `include:file`, `include:template`, and `include:remote`.                                                                                                                                                                                                                                                                                                                                                                                                                                              |
@@ -1996,9 +1996,11 @@ Possible values for `when` are:
 - `missing_dependency_failure`: Retry if a dependency was missing.
 - `runner_unsupported`: Retry if the runner was unsupported.
 
-### timeout
+### `timeout`
 
-`timeout` allows you to configure a timeout for a specific job:
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/14887) in GitLab 12.3.
+
+`timeout` allows you to configure a timeout for a specific job. For example:
 
 ```yaml
 build:
@@ -2129,7 +2131,7 @@ step-1:
   stage: stage1
   script:
     - echo "Can be canceled"
-  
+
 step-2:
   stage: stage2
   script:
