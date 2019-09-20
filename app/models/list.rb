@@ -23,7 +23,6 @@ class List < ApplicationRecord
 
   scope :preload_associations, -> (user) do
     preload(:board, label: :priorities)
-      .with_preferences_for(user)
   end
 
   scope :ordered, -> { order(:list_type, :position) }

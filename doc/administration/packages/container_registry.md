@@ -5,8 +5,8 @@
 >   Docker versions earlier than 1.10.
 
 NOTE: **Note:**
-This document is about the admin guide. To learn how to use GitLab Container
-Registry [user documentation](../../user/packages/container_registry/index.md).
+This document is the administrator's guide. To learn how to use GitLab Container
+Registry, see the [user documentation](../../user/packages/container_registry/index.md).
 
 With the Container Registry integrated into GitLab, every project can have its
 own space to store its Docker images.

@@ -137,7 +137,7 @@ from io import BytesIO
 s3_file = requests.get(presigned_url)
 
 url =  'https://gitlab.example.com/api/v4/projects/import'
-files = {'file': BytesIO(s3_file.content)}
+files = {'file': ('file.tar.gz', BytesIO(s3_file.content))}
 data = {
     "path": "example-project",
     "namespace": "example-group"

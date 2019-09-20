@@ -94,8 +94,8 @@ module QA
       end
 
       # replace with (..., page = self.class)
-      def click_element(name, page = nil)
-        find_element(name).click
+      def click_element(name, page = nil, text: nil)
+        find_element(name, text: nil).click
         page.validate_elements_present! if page
       end
 

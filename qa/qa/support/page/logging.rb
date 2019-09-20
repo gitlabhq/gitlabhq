@@ -59,9 +59,10 @@ module QA
           elements
         end
 
-        def click_element(name, page = nil)
+        def click_element(name, page = nil, **kwargs)
           msg = ["clicking :#{name}"]
           msg << ", expecting to be at #{page.class}" if page
+          msg << "with args #{kwargs}"
 
           log(msg.compact.join(' '))
 
