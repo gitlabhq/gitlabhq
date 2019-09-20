@@ -71,6 +71,7 @@ describe Ci::CreatePipelineService do
         expect(Gitlab::Metrics).to receive(:counter)
           .with(:pipelines_created_total, "Counter of pipelines created")
           .and_call_original
+        allow(Gitlab::Metrics).to receive(:counter).and_call_original # allow other counters
 
         pipeline
       end
