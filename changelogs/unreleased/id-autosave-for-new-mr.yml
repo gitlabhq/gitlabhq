@@ -1,5 +1,0 @@
----
-title: Fix sharing localStorage with all MRs
-merge_request: 32699
-author:
-type: fixed

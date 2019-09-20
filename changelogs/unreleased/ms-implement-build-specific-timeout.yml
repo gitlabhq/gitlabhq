@@ -1,5 +1,0 @@
----
-title: Allow specifying timeout per-job in .gitlab-ci.yml
-merge_request: 16777
-author: Michał Siwek
-type: added

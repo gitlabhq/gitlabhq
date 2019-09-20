@@ -1,5 +1,0 @@
----
-title: Adds the runners_token of the group if the user that requests the group info is admin of it
-merge_request: 16831
-author: Ignacio Lorenzo Subirá Otal nachootal@gmail.com
-type: changed

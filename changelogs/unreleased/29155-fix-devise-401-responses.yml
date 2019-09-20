@@ -1,5 +1,0 @@
----
-title: Avoid Devise "401 Unauthorized" responses
-merge_request: 16519
-author:
-type: fixed

@@ -1,5 +1,0 @@
----
-title: Fix create MR from issue using a tag as ref
-merge_request: 32392
-author: Jacopo Beschi @jacopo-beschi
-type: fixed

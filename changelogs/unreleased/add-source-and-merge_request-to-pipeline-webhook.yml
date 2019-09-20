@@ -1,5 +1,0 @@
----
-title: Add source and merge_request fields to pipeline event webhook
-merge_request: 32373
-author: Bian Jiaping
-type: added

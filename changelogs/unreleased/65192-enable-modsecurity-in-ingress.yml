@@ -1,5 +1,0 @@
----
-title: Enable modsecurity in nginx-ingress apps
-merge_request: 15774
-author:
-type: added

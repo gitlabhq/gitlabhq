@@ -1,5 +1,0 @@
----
-title: Fix ref switcher separators from conflicting with branch names
-merge_request: 32198
-author:
-type: fixed

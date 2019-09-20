@@ -1,5 +1,0 @@
----
-title: Use `ChronicDuration` in a thread-safe way
-merge_request: 32817
-author:
-type: fixed

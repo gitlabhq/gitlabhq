@@ -1,5 +1,0 @@
----
-title: Fix parsing of months in time tracking commands
-merge_request: 32165
-author:
-type: fixed

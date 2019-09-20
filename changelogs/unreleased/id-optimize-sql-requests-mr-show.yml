@@ -1,5 +1,0 @@
----
-title: Reduce the number of SQL requests on MR-show
-merge_request: 32192
-author:
-type: performance

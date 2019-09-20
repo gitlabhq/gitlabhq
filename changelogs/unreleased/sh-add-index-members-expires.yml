@@ -1,5 +1,0 @@
----
-title: Fix member expiration not always working
-merge_request: 32951
-author:
-type: performance

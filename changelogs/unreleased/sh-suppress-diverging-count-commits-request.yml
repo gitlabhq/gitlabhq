@@ -1,5 +1,0 @@
----
-title: Skip requesting diverging commit counts if no branches are listed
-merge_request: 32496
-author:
-type: performance

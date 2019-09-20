@@ -1,5 +1,0 @@
----
-title: Fix project import restricted visibility bypass via API
-merge_request:
-author:
-type: security
