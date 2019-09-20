@@ -4,6 +4,12 @@ module QA
   module Support
     module Page
       module Logging
+        def assert_no_element(name)
+          log("asserting no element :#{name}")
+
+          super
+        end
+
         def refresh
           log("refreshing #{current_url}")
 
