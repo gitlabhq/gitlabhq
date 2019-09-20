@@ -103,6 +103,13 @@ describe Gitlab::Middleware::ReadOnly do
         expect(subject).not_to disallow_request
       end
 
+      it 'expects a graphql request to be allowed' do
+        response = request.post("/api/graphql")
+
+        expect(response).not_to be_redirect
+        expect(subject).not_to disallow_request
+      end
+
       context 'sidekiq admin requests' do
         where(:mounted_at) do
           [

@@ -9705,6 +9705,12 @@ msgstr ""
 msgid "Metric was successfully updated."
 msgstr ""
 
+msgid "MetricChart|Please select a metric"
+msgstr ""
+
+msgid "MetricChart|Selected"
+msgstr ""
+
 msgid "Metrics"
 msgstr ""
 

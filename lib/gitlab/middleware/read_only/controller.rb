@@ -20,6 +20,8 @@ module Gitlab
           'projects/lfs_locks_api' => %w{verify create unlock}
         }.freeze
 
+        GRAPHQL_URL = '/api/graphql'
+
         def initialize(app, env)
           @app = app
           @env = env
@@ -79,7 +81,7 @@ module Gitlab
 
         # Overridden in EE module
         def whitelisted_routes
-          grack_route? || internal_route? || lfs_route? || sidekiq_route?
+          grack_route? || internal_route? || lfs_route? || sidekiq_route? || graphql_query?
         end
 
         def grack_route?
@@ -107,6 +109,10 @@ module Gitlab
 
         def sidekiq_route?
           request.path.start_with?("#{relative_url}/admin/sidekiq")
+        end
+
+        def graphql_query?
+          request.post? && request.path.start_with?(GRAPHQL_URL)
         end
       end
     end
