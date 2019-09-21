@@ -86,8 +86,8 @@ describe Gitlab::Danger::Helper do
   describe '#ee?' do
     subject { helper.ee? }
 
-    it 'returns true if CI_PROJECT_NAME if set to gitlab-ee' do
-      stub_env('CI_PROJECT_NAME', 'gitlab-ee')
+    it 'returns true if CI_PROJECT_NAME if set to gitlab' do
+      stub_env('CI_PROJECT_NAME', 'gitlab')
       expect(File).not_to receive(:exist?)
 
       is_expected.to be_truthy
@@ -118,16 +118,16 @@ describe Gitlab::Danger::Helper do
   describe '#project_name' do
     subject { helper.project_name }
 
-    it 'returns gitlab-ee if ee? returns true' do
+    it 'returns gitlab if ee? returns true' do
       expect(helper).to receive(:ee?) { true }
 
-      is_expected.to eq('gitlab-ee')
+      is_expected.to eq('gitlab')
     end
 
     it 'returns gitlab-ce if ee? returns false' do
       expect(helper).to receive(:ee?) { false }
 
-      is_expected.to eq('gitlab-ce')
+      is_expected.to eq('gitlab-foss')
     end
   end
 
