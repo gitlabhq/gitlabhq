@@ -64,7 +64,7 @@
               %strong.fly-out-top-item-name
                 = _('Access Tokens')
       = nav_link(controller: :emails) do
-        = link_to profile_emails_path do
+        = link_to profile_emails_path, data: { qa_selector: 'profile_emails_link' } do
           .nav-icon-container
             = sprite_icon('mail')
           %span.nav-item-name
@@ -76,7 +76,7 @@
                 = _('Emails')
       - if current_user.allow_password_authentication?
         = nav_link(controller: :passwords) do
-          = link_to edit_profile_password_path do
+          = link_to edit_profile_password_path , data: { qa_selector: 'profile_password_link' } do
             .nav-icon-container
               = sprite_icon('lock')
             %span.nav-item-name

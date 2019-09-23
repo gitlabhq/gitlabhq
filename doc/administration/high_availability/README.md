@@ -42,7 +42,7 @@ complexity.
 - Sidekiq - Asynchronous/Background jobs
 - PostgreSQL - Database
   - Consul - Database service discovery and health checks/failover
-  - PGBouncer - Database pool manager
+  - PgBouncer - Database pool manager
 - Redis - Key/Value store (User sessions, cache, queue for Sidekiq)
   - Sentinel - Redis health check/failover manager
 - Gitaly - Provides high-level RPC access to Git repositories
@@ -138,7 +138,7 @@ the contention.
 - 3 PostgreSQL nodes
 - 2 Redis nodes
 - 3 Consul/Sentinel nodes
-- 2 or more GitLab application nodes (Unicorn, Workhorse, Sidekiq, PGBouncer)
+- 2 or more GitLab application nodes (Unicorn, Workhorse, Sidekiq, PgBouncer)
 - 1 NFS/Gitaly server
 - 1 Monitoring node (Prometheus, Grafana)
 
@@ -165,7 +165,7 @@ contention due to certain workloads.
 #### Reference Architecture
 
 - **Supported Users (approximate):** 10,000
-- **Known Issues:** While validating the reference architecture, slow endpoints were discovered and are being investigated. [gitlab-org/gitlab-foss/issues/64335](https://gitlab.com/gitlab-org/gitlab-foss/issues/64335)
+- **Known Issues:** While validating the reference architecture, slow endpoints were discovered and are being investigated. [See issue #64335](https://gitlab.com/gitlab-org/gitlab-foss/issues/64335)
 
 The Support and Quality teams built, performance tested, and validated an
 environment that supports about 10,000 users. The specifications below are a

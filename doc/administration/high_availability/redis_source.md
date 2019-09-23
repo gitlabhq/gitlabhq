@@ -341,7 +341,7 @@ to [this upstream issue][gh-531].
 You must make sure that `resque.yml` and `sentinel.conf` are configured correctly,
 otherwise `redis-rb` will not work properly.
 
-The `master-group-name` ('gitlab-redis') defined in (`sentinel.conf`)
+The `master-group-name` (`gitlab-redis`) defined in (`sentinel.conf`)
 **must** be used as the hostname in GitLab (`resque.yml`):
 
 ```conf

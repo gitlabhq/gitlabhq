@@ -8,7 +8,7 @@ described, it is possible to adapt these instructions to your needs.
 
 ![Geo HA Diagram](../../high_availability/img/geo-ha-diagram.png)
 
-_[diagram source - gitlab employees only][diagram-source]_
+_[diagram source - GitLab employees only][diagram-source]_
 
 The topology above assumes that the **primary** and **secondary** Geo clusters
 are located in two separate locations, on their own virtual network
@@ -274,15 +274,15 @@ After making these changes [Reconfigure GitLab][gitlab-reconfigure] so the chang
 
 On the secondary the following GitLab frontend services will be enabled:
 
-- geo-logcursor
-- gitlab-pages
-- gitlab-workhorse
-- logrotate
-- nginx
-- registry
-- remote-syslog
-- sidekiq
-- unicorn
+- `geo-logcursor`
+- `gitlab-pages`
+- `gitlab-workhorse`
+- `logrotate`
+- `nginx`
+- `registry`
+- `remote-syslog`
+- `sidekiq`
+- `unicorn`
 
 Verify these services by running `sudo gitlab-ctl status` on the frontend
 application servers.

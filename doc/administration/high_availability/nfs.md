@@ -109,7 +109,7 @@ For more details on another person's experience with EFS, see
 ## Avoid using CephFS and GlusterFS
 
 GitLab strongly recommends against using CephFS and GlusterFS.
-These distributed file systems are not well-suited for GitLab's input/output access patterns because git uses many small files and access times and file locking times to propagate will make git activity very slow.
+These distributed file systems are not well-suited for GitLab's input/output access patterns because Git uses many small files and access times and file locking times to propagate will make Git activity very slow.
 
 ## Avoid using PostgreSQL with NFS
 
@@ -147,7 +147,7 @@ Note there are several options that you should consider using:
 
 ## A single NFS mount
 
-It's recommended to nest all gitlab data dirs within a mount, that allows automatic
+It's recommended to nest all GitLab data dirs within a mount, that allows automatic
 restore of backups without manually moving existing data.
 
 ```

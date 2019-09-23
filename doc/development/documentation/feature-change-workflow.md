@@ -77,7 +77,7 @@ and default merge request template will assist you with following this process.
 For issues requiring any new or updated documentation, the Product Manager (PM)
 must:
 
-- Add the `Documentation` label.
+- Add the ~documentation label.
 - Confirm or add the [documentation requirements](#documentation-requirements-in-feature-issues).
 - Ensure the issue contains any new or updated feature name, overview/description,
   and use cases, as required per the [documentation structure and template](structure.md), when applicable.
@@ -92,7 +92,7 @@ do the following:
 
 #### Authoring
 
-As a developer, if a ~feature issue also contains the ~Documentation label, you must ship the new or updated documentation with the code of the feature. The documentation is an essential part of the product.
+As a developer, if a ~feature issue also contains the ~documentation label, you must ship the new or updated documentation with the code of the feature. The documentation is an essential part of the product.
 Technical writers are happy to help, as requested and planned on an issue-by-issue basis.
 
 For feature issues requiring documentation, follow the process below unless otherwise agreed with the product manager and technical writer for a given issue:

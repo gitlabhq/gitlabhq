@@ -2,29 +2,29 @@
 type: reference
 ---
 
-# Working with the bundle Pgbouncer service
+# Working with the bundle PgBouncer service
 
-As part of its High Availability stack, GitLab Premium includes a bundled version of [Pgbouncer](https://pgbouncer.github.io/) that can be managed through `/etc/gitlab/gitlab.rb`.
+As part of its High Availability stack, GitLab Premium includes a bundled version of [PgBouncer](https://pgbouncer.github.io/) that can be managed through `/etc/gitlab/gitlab.rb`.
 
-In a High Availability setup, Pgbouncer is used to seamlessly migrate database connections between servers in a failover scenario.
+In a High Availability setup, PgBouncer is used to seamlessly migrate database connections between servers in a failover scenario.
 
 Additionally, it can be used in a non-HA setup to pool connections, speeding up response time while reducing resource usage.
 
-It is recommended to run pgbouncer alongside the `gitlab-rails` service, or on its own dedicated node in a cluster.
+It is recommended to run PgBouncer alongside the `gitlab-rails` service, or on its own dedicated node in a cluster.
 
 ## Operations
 
-### Running Pgbouncer as part of an HA GitLab installation
+### Running PgBouncer as part of an HA GitLab installation
 
 1. Make sure you collect [`CONSUL_SERVER_NODES`](database.md#consul-information), [`CONSUL_PASSWORD_HASH`](database.md#consul-information), and [`PGBOUNCER_PASSWORD_HASH`](database.md#pgbouncer-information) before executing the next step.
 
 1. Edit `/etc/gitlab/gitlab.rb` replacing values noted in the `# START user configuration` section:
 
    ```ruby
-   # Disable all components except Pgbouncer and Consul agent
+   # Disable all components except PgBouncer and Consul agent
    roles ['pgbouncer_role']
 
-   # Configure Pgbouncer
+   # Configure PgBouncer
    pgbouncer['admin_users'] = %w(pgbouncer gitlab-consul)
 
    # Configure Consul agent
@@ -59,13 +59,13 @@ It is recommended to run pgbouncer alongside the `gitlab-rails` service, or on i
 1. Run `gitlab-ctl reconfigure`
 
 1. Create a `.pgpass` file so Consul is able to
-   reload pgbouncer. Enter the `PGBOUNCER_PASSWORD` twice when asked:
+   reload PgBouncer. Enter the `PGBOUNCER_PASSWORD` twice when asked:
 
    ```sh
    gitlab-ctl write-pgpass --host 127.0.0.1 --database pgbouncer --user pgbouncer --hostuser gitlab-consul
    ```
 
-#### PGBouncer Checkpoint
+#### PgBouncer Checkpoint
 
 1. Ensure the node is talking to the current master:
 
@@ -100,7 +100,7 @@ It is recommended to run pgbouncer alongside the `gitlab-rails` service, or on i
    (2 rows)
    ```
 
-### Running Pgbouncer as part of a non-HA GitLab installation
+### Running PgBouncer as part of a non-HA GitLab installation
 
 1. Generate PGBOUNCER_USER_PASSWORD_HASH with the command `gitlab-ctl pg-password-md5 pgbouncer`
 
@@ -119,7 +119,7 @@ It is recommended to run pgbouncer alongside the `gitlab-rails` service, or on i
 
    **Note:** If the database was already running, it will need to be restarted after reconfigure by running `gitlab-ctl restart postgresql`.
 
-1. On the node you are running pgbouncer on, make sure the following is set in `/etc/gitlab/gitlab.rb`
+1. On the node you are running PgBouncer on, make sure the following is set in `/etc/gitlab/gitlab.rb`
 
    ```ruby
    pgbouncer['enable'] = true
@@ -134,7 +134,7 @@ It is recommended to run pgbouncer alongside the `gitlab-rails` service, or on i
 
 1. Run `gitlab-ctl reconfigure`
 
-1. On the node running unicorn, make sure the following is set in `/etc/gitlab/gitlab.rb`
+1. On the node running Unicorn, make sure the following is set in `/etc/gitlab/gitlab.rb`
 
    ```ruby
    gitlab_rails['db_host'] = 'PGBOUNCER_HOST'
@@ -144,13 +144,13 @@ It is recommended to run pgbouncer alongside the `gitlab-rails` service, or on i
 
 1. Run `gitlab-ctl reconfigure`
 
-1. At this point, your instance should connect to the database through pgbouncer. If you are having issues, see the [Troubleshooting](#troubleshooting) section
+1. At this point, your instance should connect to the database through PgBouncer. If you are having issues, see the [Troubleshooting](#troubleshooting) section
 
 ## Enable Monitoring
 
 > [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/issues/3786) in GitLab 12.0.
 
-If you enable Monitoring, it must be enabled on **all** pgbouncer servers.
+If you enable Monitoring, it must be enabled on **all** PgBouncer servers.
 
 1. Create/edit `/etc/gitlab/gitlab.rb` and add the following configuration:
 
@@ -173,11 +173,11 @@ If you enable Monitoring, it must be enabled on **all** pgbouncer servers.
 
 1. Run `sudo gitlab-ctl reconfigure` to compile the configuration.
 
-### Interacting with pgbouncer
+### Interacting with PgBouncer
 
 #### Administrative console
 
-As part of omnibus-gitlab, we provide a command `gitlab-ctl pgb-console` to automatically connect to the pgbouncer administrative console. Please see the [pgbouncer documentation](https://pgbouncer.github.io/usage.html#admin-console) for detailed instructions on how to interact with the console.
+As part of Omnibus GitLab, we provide a command `gitlab-ctl pgb-console` to automatically connect to the PgBouncer administrative console. Please see the [PgBouncer documentation](https://pgbouncer.github.io/usage.html#admin-console) for detailed instructions on how to interact with the console.
 
 To start a session, run
 
@@ -235,7 +235,7 @@ ote_pid | tls
 
 ## Troubleshooting
 
-In case you are experiencing any issues connecting through pgbouncer, the first place to check is always the logs:
+In case you are experiencing any issues connecting through PgBouncer, the first place to check is always the logs:
 
 ```shell
 # gitlab-ctl tail pgbouncer

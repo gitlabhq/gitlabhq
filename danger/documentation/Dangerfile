@@ -20,8 +20,8 @@ unless docs_paths_to_review.empty?
       - [Documentation workflows](https://docs.gitlab.com/ee/development/documentation/workflow.html) for information on when to assign a merge request for review.
     MARKDOWN
 
-    unless gitlab.mr_labels.include?('Documentation')
-      warn 'This merge request is missing the ~Documentation label.'
+    unless gitlab.mr_labels.include?('documentation')
+      warn 'This merge request is missing the ~documentation label.'
     end
   end
 end

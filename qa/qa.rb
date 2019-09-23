@@ -290,6 +290,8 @@ module QA
       autoload :Menu, 'qa/page/profile/menu'
       autoload :PersonalAccessTokens, 'qa/page/profile/personal_access_tokens'
       autoload :SSHKeys, 'qa/page/profile/ssh_keys'
+      autoload :Emails, 'qa/page/profile/emails'
+      autoload :Password, 'qa/page/profile/password'
       autoload :TwoFactorAuth, 'qa/page/profile/two_factor_auth'
     end
 
@@ -330,6 +332,13 @@ module QA
           autoload :RepositoryStorage, 'qa/page/admin/settings/component/repository_storage'
           autoload :AccountAndLimit, 'qa/page/admin/settings/component/account_and_limit'
           autoload :PerformanceBar, 'qa/page/admin/settings/component/performance_bar'
+        end
+      end
+
+      module Overview
+        module Users
+          autoload :Index, 'qa/page/admin/overview/users/index'
+          autoload :Show, 'qa/page/admin/overview/users/show'
         end
       end
     end

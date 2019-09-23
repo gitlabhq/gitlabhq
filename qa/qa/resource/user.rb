@@ -53,7 +53,7 @@ module QA
 
         if credentials_given?
           Page::Main::Login.perform do |login|
-            login.sign_in_using_credentials(self)
+            login.sign_in_using_credentials(user: self)
           end
         else
           Page::Main::Login.perform do |login|

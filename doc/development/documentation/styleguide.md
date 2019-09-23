@@ -239,20 +239,6 @@ Do not include the same information in multiple places. [Link to a SSOT instead.
   - List item 2
   ```
 
-### Tables overlapping the TOC
-
-By default, all tables have a width of 100% on docs.gitlab.com.
-In a few cases, the table will overlap the table of contents (ToC).
-For these cases, add an entry to the document's frontmatter to
-render them displaying block. This will make sure the table
-is displayed behind the ToC, scrolling horizontally:
-
-```md
----
-table_display_block: true
----
-```
-
 ### Emphasis
 
 - Use double asterisks (`**`) to mark a word or text in bold (`**bold**`).

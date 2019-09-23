@@ -13,6 +13,7 @@ module QA
           element :navbar, required: true
           element :user_avatar, required: true
           element :user_menu, required: true
+          element :stop_impersonation_link
         end
 
         view 'app/views/layouts/nav/_dashboard.html.haml' do
@@ -93,6 +94,10 @@ module QA
 
         def has_admin_area_link?(wait: Capybara.default_max_wait_time)
           has_element?(:admin_area_link, wait: wait)
+        end
+
+        def click_stop_impersonation_link
+          click_element(:stop_impersonation_link)
         end
 
         private

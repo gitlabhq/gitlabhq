@@ -49,9 +49,9 @@ questions from [owasp.org](https://www.owasp.org).
 ### How do the end‐users interact with the application?
 
 - **Secondary** nodes provide all the interfaces a **primary** node does
-  (notably a HTTP/HTTPS web application, and HTTP/HTTPS or SSH git repository
+  (notably a HTTP/HTTPS web application, and HTTP/HTTPS or SSH Git repository
   access), but is constrained to read-only activities. The principal use case is
-  envisioned to be cloning git repositories from the **secondary** node in favor of the
+  envisioned to be cloning Git repositories from the **secondary** node in favor of the
   **primary** node, but end-users may use the GitLab web interface to view projects,
   issues, merge requests, snippets, etc.
 
@@ -229,7 +229,7 @@ questions from [owasp.org](https://www.owasp.org).
 - A static secret shared across all hosts in a GitLab deployment.
 - In transit, data should be encrypted, although the application does permit
   communication to proceed unencrypted. The two main transits are the **secondary** node’s
-  replication process for PostgreSQL, and for git repositories/files. Both should
+  replication process for PostgreSQL, and for Git repositories/files. Both should
   be protected using TLS, with the keys for that managed via Omnibus per existing
   configuration for end-user access to GitLab.
 

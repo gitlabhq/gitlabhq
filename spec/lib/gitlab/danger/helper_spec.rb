@@ -273,7 +273,7 @@ describe Gitlab::Danger::Helper do
     where(:category, :expected_label) do
       :backend   | '~backend'
       :database  | '~database'
-      :docs      | '~Documentation'
+      :docs      | '~documentation'
       :foo       | '~foo'
       :frontend  | '~frontend'
       :none      | ''

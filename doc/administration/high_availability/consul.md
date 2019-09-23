@@ -6,7 +6,7 @@ type: reference
 
 As part of its High Availability stack, GitLab Premium includes a bundled version of [Consul](https://www.consul.io/) that can be managed through `/etc/gitlab/gitlab.rb`.
 
-A Consul cluster consists of multiple server agents, as well as client agents that run on other nodes which need to talk to the consul cluster.
+A Consul cluster consists of multiple server agents, as well as client agents that run on other nodes which need to talk to the Consul cluster.
 
 ## Prerequisites
 
@@ -96,7 +96,7 @@ Ideally all nodes will have a `Status` of `alive`.
 
 **Note**: This section only applies to server agents. It is safe to restart client agents whenever needed.
 
-If it is necessary to restart the server cluster, it is important to do this in a controlled fashion in order to maintain quorum. If quorum is lost, you will need to follow the consul [outage recovery](#outage-recovery) process to recover the cluster.
+If it is necessary to restart the server cluster, it is important to do this in a controlled fashion in order to maintain quorum. If quorum is lost, you will need to follow the Consul [outage recovery](#outage-recovery) process to recover the cluster.
 
 To be safe, we recommend you only restart one server agent at a time to ensure the cluster remains intact.
 
@@ -129,7 +129,7 @@ To fix this:
 
 1. Run `gitlab-ctl reconfigure`
 
-If you still see the errors, you may have to [erase the consul database and reinitialize](#recreate-from-scratch) on the affected node.
+If you still see the errors, you may have to [erase the Consul database and reinitialize](#recreate-from-scratch) on the affected node.
 
 ### Consul agents do not start - Multiple private IPs
 
@@ -162,7 +162,7 @@ If you lost enough server agents in the cluster to break quorum, then the cluste
 
 #### Recreate from scratch
 
-By default, GitLab does not store anything in the consul cluster that cannot be recreated. To erase the consul database and reinitialize
+By default, GitLab does not store anything in the Consul cluster that cannot be recreated. To erase the Consul database and reinitialize
 
 ```
 # gitlab-ctl stop consul
@@ -174,4 +174,4 @@ After this, the cluster should start back up, and the server agents rejoin. Shor
 
 #### Recover a failed cluster
 
-If you have taken advantage of consul to store other data, and want to restore the failed cluster, please follow the [Consul guide](https://www.consul.io/docs/guides/outage.html) to recover a failed cluster.
+If you have taken advantage of Consul to store other data, and want to restore the failed cluster, please follow the [Consul guide](https://www.consul.io/docs/guides/outage.html) to recover a failed cluster.

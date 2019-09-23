@@ -1,7 +1,3 @@
----
-table_display_block: true
----
-
 # Application settings API
 
 These API calls allow you to read and modify GitLab instance

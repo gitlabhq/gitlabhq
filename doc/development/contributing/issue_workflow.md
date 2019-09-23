@@ -45,8 +45,8 @@ Most issues will have labels for at least one of the following:
 - Category: ~"Category:Code Analytics", ~"Category:DevOps Score", ~"Category:Templates", etc.
 - Feature: ~wiki, ~ldap, ~api, ~issues, ~"merge requests", etc.
 - Department: ~UX, ~Quality
-- Team: ~Documentation, ~Delivery
-- Specialization: ~frontend, ~backend
+- Team: ~"Technical Writing", ~Delivery
+- Specialization: ~frontend, ~backend, ~documentation
 - Release Scoping: ~Deliverable, ~Stretch, ~"Next Patch Release"
 - Priority: ~P1, ~P2, ~P3, ~P4
 - Severity: ~S1, ~S2, ~S3, ~S4
@@ -228,7 +228,7 @@ people.
 The current team labels are:
 
 - ~Delivery
-- ~Documentation
+- ~"Technical Writing"
 
 #### Naming and color convention
 
@@ -241,6 +241,7 @@ These labels narrow the [specialization](https://about.gitlab.com/company/team/s
 
 - ~frontend
 - ~backend
+- ~documentation
 
 ### Release scoping labels
 

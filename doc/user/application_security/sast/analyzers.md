@@ -1,7 +1,3 @@
----
-table_display_block: true
----
-
 # SAST Analyzers **(ULTIMATE)**
 
 SAST relies on underlying third party tools that are wrapped into what we call

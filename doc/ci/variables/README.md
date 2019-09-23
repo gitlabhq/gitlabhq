@@ -1,5 +1,4 @@
 ---
-table_display_block: true
 type: reference
 ---
 

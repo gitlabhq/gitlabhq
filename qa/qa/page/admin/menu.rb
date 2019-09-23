@@ -6,12 +6,16 @@ module QA
       class Menu < Page::Base
         view 'app/views/layouts/nav/sidebar/_admin.html.haml' do
           element :admin_sidebar
-          element :admin_sidebar_submenu
+          element :admin_sidebar_settings_submenu
           element :admin_settings_item
           element :admin_settings_repository_item
           element :admin_settings_general_item
           element :admin_settings_metrics_and_profiling_item
           element :admin_settings_preferences_link
+          element :admin_monitoring_link
+          element :admin_sidebar_monitoring_submenu_content
+          element :admin_sidebar_overview_submenu_content
+          element :users_overview_link
         end
 
         view 'app/views/layouts/nav/sidebar/_admin.html.haml' do
@@ -19,59 +23,65 @@ module QA
         end
 
         def go_to_preferences_settings
-          hover_settings do
-            within_submenu do
+          hover_element(:admin_settings_item) do
+            within_submenu(:admin_sidebar_settings_submenu) do
               click_element :admin_settings_preferences_link
             end
           end
         end
 
         def go_to_repository_settings
-          hover_settings do
-            within_submenu do
+          hover_element(:admin_settings_item) do
+            within_submenu(:admin_sidebar_settings_submenu) do
               click_element :admin_settings_repository_item
             end
           end
         end
 
         def go_to_integration_settings
-          hover_settings do
-            within_submenu do
+          hover_element(:admin_settings_item) do
+            within_submenu(:admin_sidebar_settings_submenu) do
               click_element :integration_settings_link
             end
           end
         end
 
         def go_to_general_settings
-          hover_settings do
-            within_submenu do
+          hover_element(:admin_settings_item) do
+            within_submenu(:admin_sidebar_settings_submenu) do
               click_element :admin_settings_general_item
             end
           end
         end
 
         def go_to_metrics_and_profiling_settings
-          hover_settings do
-            within_submenu do
+          hover_element(:admin_settings_item) do
+            within_submenu(:admin_sidebar_settings_submenu) do
               click_element :admin_settings_metrics_and_profiling_item
             end
           end
         end
 
         def go_to_network_settings
-          hover_settings do
-            within_submenu do
+          hover_element(:admin_settings_item) do
+            within_submenu(:admin_sidebar_settings_submenu) do
               click_element :admin_settings_network_item
             end
           end
         end
 
+        def go_to_users_overview
+          within_submenu(:admin_sidebar_overview_submenu_content) do
+            click_element :users_overview_link
+          end
+        end
+
         private
 
-        def hover_settings
+        def hover_element(element)
           within_sidebar do
-            scroll_to_element(:admin_settings_item)
-            find_element(:admin_settings_item).hover
+            scroll_to_element(element)
+            find_element(element).hover
 
             yield
           end
@@ -83,8 +93,8 @@ module QA
           end
         end
 
-        def within_submenu
-          within_element(:admin_sidebar_submenu) do
+        def within_submenu(element)
+          within_element(element) do
             yield
           end
         end

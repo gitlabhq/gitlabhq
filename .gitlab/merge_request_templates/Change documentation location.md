@@ -10,12 +10,12 @@
 
 <!-- Mention the issue(s) this MR closes or is related to -->
 
-Closes 
+Closes
 
 ## Moving docs to a new location?
 
 Read the guidelines:
-https://docs.gitlab.com/ce/development/documentation/index.html#changing-document-location
+https://docs.gitlab.com/ee/development/documentation/index.html#changing-document-location
 
 - [ ] Make sure the old link is not removed and has its contents replaced with
       a link to the new location.
@@ -29,4 +29,4 @@ https://docs.gitlab.com/ce/development/documentation/index.html#changing-documen
       with the changes as well (https://docs.gitlab.com/ce/development/documentation/index.html#cherry-picking-from-ce-to-ee).
 - [ ] Ping one of the technical writers for review.
 
-/label ~Documentation
+/label ~documentation

@@ -180,12 +180,16 @@ and the following environment variables:
 | Setting                                    | GitLab.com | Default   |
 |--------                                    |----------- |--------   |
 | `SIDEKIQ_DAEMON_MEMORY_KILLER`             | -          | -         |
-| `SIDEKIQ_MEMORY_KILLER_MAX_RSS`            | `16000000` | `2000000` |
+| `SIDEKIQ_MEMORY_KILLER_MAX_RSS`            | `2000000`  | `2000000` |
 | `SIDEKIQ_MEMORY_KILLER_HARD_LIMIT_RSS`     | -          | -         |
 | `SIDEKIQ_MEMORY_KILLER_CHECK_INTERVAL`     | -          | `3`       |
 | `SIDEKIQ_MEMORY_KILLER_GRACE_TIME`         | -          | `900`     |
 | `SIDEKIQ_MEMORY_KILLER_SHUTDOWN_WAIT`      | -          | `30`      |
 | `SIDEKIQ_LOG_ARGUMENTS`                    | `1`        | -         |
+
+NOTE: **Note:**
+The `SIDEKIQ_MEMORY_KILLER_MAX_RSS` setting is `16000000` on Sidekiq import
+nodes and Sidekiq export nodes.
 
 ## Cron jobs
 

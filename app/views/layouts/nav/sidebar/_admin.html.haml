@@ -6,7 +6,7 @@
           = sprite_icon('admin', size: 24)
         .sidebar-context-title
           = _('Admin Area')
-    %ul.sidebar-top-level-items
+    %ul.sidebar-top-level-items{ data: { qa_selector: 'admin_sidebar_overview_submenu_content' } }
       = nav_link(controller: %w(dashboard admin admin/projects users groups jobs runners gitaly_servers), html_options: {class: 'home'}) do
         = link_to admin_root_path, class: 'shortcuts-tree' do
           .nav-icon-container
@@ -28,7 +28,7 @@
               %span
                 = _('Projects')
           = nav_link(controller: :users) do
-            = link_to admin_users_path, title: _('Users') do
+            = link_to admin_users_path, title: _('Users') , data: { qa_selector: 'users_overview_link' } do
               %span
                 = _('Users')
           = nav_link(controller: :groups) do
@@ -49,13 +49,13 @@
                 = _('Gitaly Servers')
 
       = nav_link(controller: admin_monitoring_nav_links) do
-        = link_to admin_system_info_path do
+        = link_to admin_system_info_path, data: { qa_selector: 'admin_monitoring_link' } do
           .nav-icon-container
             = sprite_icon('monitor')
           %span.nav-item-name
             = _('Monitoring')
 
-        %ul.sidebar-sub-level-items
+        %ul.sidebar-sub-level-items{ data: { qa_selector: 'admin_sidebar_monitoring_submenu_content' } }
           = nav_link(controller: %w(system_info background_jobs logs health_check requests_profiles), html_options: { class: "fly-out-top-item" } ) do
             = link_to admin_system_info_path do
               %strong.fly-out-top-item-name
@@ -225,7 +225,7 @@
           %span.nav-item-name.qa-admin-settings-item
             = _('Settings')
 
-        %ul.sidebar-sub-level-items.qa-admin-sidebar-submenu
+        %ul.sidebar-sub-level-items.qa-admin-sidebar-settings-submenu
           = nav_link(controller: :application_settings, html_options: { class: "fly-out-top-item" } ) do
             = link_to admin_application_settings_path do
               %strong.fly-out-top-item-name

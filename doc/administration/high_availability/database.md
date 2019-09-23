@@ -153,9 +153,9 @@ Database nodes run two services with PostgreSQL:
   - Instructing remaining servers to follow the new master node.
 
   On failure, the old master node is automatically evicted from the cluster, and should be rejoined manually once recovered.
-- Consul. Monitors the status of each node in the database cluster and tracks its health in a service definition on the consul cluster.
+- Consul. Monitors the status of each node in the database cluster and tracks its health in a service definition on the Consul cluster.
 
-Alongside pgbouncer, there is a consul agent that watches the status of the PostgreSQL service. If that status changes, consul runs a script which updates the configuration and reloads pgbouncer
+Alongside PgBouncer, there is a Consul agent that watches the status of the PostgreSQL service. If that status changes, Consul runs a script which updates the configuration and reloads PgBouncer
 
 ##### Connection flow
 
@@ -198,7 +198,7 @@ When using default setup, minimum configuration requires:
 
 - `CONSUL_USERNAME`. Defaults to `gitlab-consul`
 - `CONSUL_DATABASE_PASSWORD`. Password for the database user.
-- `CONSUL_PASSWORD_HASH`. This is a hash generated out of consul username/password pair.
+- `CONSUL_PASSWORD_HASH`. This is a hash generated out of Consul username/password pair.
    Can be generated with:
 
    ```sh
@@ -248,26 +248,26 @@ We will need the following password information for the application's database u
   sudo gitlab-ctl pg-password-md5 POSTGRESQL_USERNAME
   ```
 
-##### Pgbouncer information
+##### PgBouncer information
 
 When using default setup, minimum configuration requires:
 
 - `PGBOUNCER_USERNAME`. Defaults to `pgbouncer`
-- `PGBOUNCER_PASSWORD`. This is a password for pgbouncer service.
-- `PGBOUNCER_PASSWORD_HASH`. This is a hash generated out of pgbouncer username/password pair.
+- `PGBOUNCER_PASSWORD`. This is a password for PgBouncer service.
+- `PGBOUNCER_PASSWORD_HASH`. This is a hash generated out of PgBouncer username/password pair.
   Can be generated with:
 
   ```sh
   sudo gitlab-ctl pg-password-md5 PGBOUNCER_USERNAME
   ```
 
-- `PGBOUNCER_NODE`, is the IP address or a FQDN of the node running Pgbouncer.
+- `PGBOUNCER_NODE`, is the IP address or a FQDN of the node running PgBouncer.
 
 Few notes on the service itself:
 
 - The service runs as the same system account as the database
   - In the package, this is by default `gitlab-psql`
-- If you use a non-default user account for Pgbouncer service (by default `pgbouncer`), you will have to specify this username. We will refer to this requirement with `PGBOUNCER_USERNAME`.
+- If you use a non-default user account for PgBouncer service (by default `pgbouncer`), you will have to specify this username. We will refer to this requirement with `PGBOUNCER_USERNAME`.
 - The service will have a regular database user account generated for it
   - This defaults to `repmgr`
 - Passwords will be stored in the following locations:
@@ -315,7 +315,7 @@ When installing the GitLab package, do not supply `EXTERNAL_URL` value.
    # Disable automatic database migrations
    gitlab_rails['auto_migrate'] = false
 
-   # Configure the consul agent
+   # Configure the Consul agent
    consul['services'] = %w(postgresql)
 
    # START user configuration
@@ -348,7 +348,7 @@ When installing the GitLab package, do not supply `EXTERNAL_URL` value.
 
 1. On secondary nodes, add all the configuration specified above for primary node
    to `/etc/gitlab/gitlab.rb`. In addition, append the following configuration
-   to inform gitlab-ctl that they are standby nodes initially and it need not
+   to inform `gitlab-ctl` that they are standby nodes initially and it need not
    attempt to register them as primary node
 
    ```
@@ -363,7 +363,7 @@ When installing the GitLab package, do not supply `EXTERNAL_URL` value.
 >
 > - If you want your database to listen on a specific interface, change the config:
 >   `postgresql['listen_address'] = '0.0.0.0'`.
-> - If your Pgbouncer service runs under a different user account,
+> - If your PgBouncer service runs under a different user account,
 >   you also need to specify: `postgresql['pgbouncer_user'] = PGBOUNCER_USERNAME` in
 >   your configuration.
 
@@ -484,9 +484,9 @@ or secondary. The most important thing here is that this command does not produc
 If there are errors it's most likely due to incorrect `gitlab-consul` database user permissions.
 Check the [Troubleshooting section](#troubleshooting) before proceeding.
 
-#### Configuring the Pgbouncer node
+#### Configuring the PgBouncer node
 
-See our [documentation for Pgbouncer](pgbouncer.md) for information on running Pgbouncer as part of an HA setup.
+See our [documentation for PgBouncer](pgbouncer.md) for information on running PgBouncer as part of an HA setup.
 
 #### Configuring the Application nodes
 
@@ -515,10 +515,10 @@ Ensure that all migrations ran:
 gitlab-rake gitlab:db:configure
 ```
 
-> **Note**: If you encounter a `rake aborted!` error stating that PGBouncer is failing to connect to
-PostgreSQL it may be that your PGBouncer node's IP address is missing from
+> **Note**: If you encounter a `rake aborted!` error stating that PgBouncer is failing to connect to
+PostgreSQL it may be that your PgBouncer node's IP address is missing from
 PostgreSQL's `trust_auth_cidr_addresses` in `gitlab.rb` on your database nodes. See
-[PGBouncer error `ERROR:  pgbouncer cannot connect to server`](#pgbouncer-error-error-pgbouncer-cannot-connect-to-server)
+[PgBouncer error `ERROR:  pgbouncer cannot connect to server`](#pgbouncer-error-error-pgbouncer-cannot-connect-to-server)
 in the Troubleshooting section before proceeding.
 
 ##### Ensure GitLab is running
@@ -533,7 +533,7 @@ Here we'll show you some fully expanded example configurations.
 
 ##### Example recommended setup
 
-This example uses 3 consul servers, 3 postgresql servers, and 1 application node.
+This example uses 3 Consul servers, 3 PostgreSQL servers, and 1 application node.
 
 We start with all servers on the same 10.6.0.0/16 private network range, they
 can connect to each freely other on those addresses.
@@ -589,7 +589,7 @@ postgresql['shared_preload_libraries'] = 'repmgr_funcs'
 # Disable automatic database migrations
 gitlab_rails['auto_migrate'] = false
 
-# Configure the consul agent
+# Configure the Consul agent
 consul['services'] = %w(postgresql)
 
 postgresql['pgbouncer_user_password'] = '771a8625958a529132abe6f1a4acb19c'
@@ -635,7 +635,7 @@ postgresql['enable'] = false
 pgbouncer['enable'] = true
 consul['enable'] = true
 
-# Configure Pgbouncer
+# Configure PgBouncer
 pgbouncer['admin_users'] = %w(pgbouncer gitlab-consul)
 
 # Configure Consul agent
@@ -691,7 +691,7 @@ After deploying the configuration follow these steps:
 
 1. On `10.6.0.31`, our application server
 
-   Set gitlab-consul's pgbouncer password to `toomanysecrets`
+   Set `gitlab-consul` user's PgBouncer password to `toomanysecrets`
 
    ```sh
    gitlab-ctl write-pgpass --host 127.0.0.1 --database pgbouncer --user pgbouncer --hostuser gitlab-consul
@@ -705,10 +705,10 @@ After deploying the configuration follow these steps:
 
 #### Example minimal setup
 
-This example uses 3 postgresql servers, and 1 application node.
+This example uses 3 PostgreSQL servers, and 1 application node.
 
-It differs from the [recommended setup](#example-recommended-setup) by moving the consul servers into the same servers we use for PostgreSQL.
-The trade-off is between reducing server counts, against the increased operational complexity of needing to deal with postgres [failover](#failover-procedure) and [restore](#restore-procedure) procedures in addition to [consul outage recovery](consul.md#outage-recovery) on the same set of machines.
+It differs from the [recommended setup](#example-recommended-setup) by moving the Consul servers into the same servers we use for PostgreSQL.
+The trade-off is between reducing server counts, against the increased operational complexity of needing to deal with postgres [failover](#failover-procedure) and [restore](#restore-procedure) procedures in addition to [Consul outage recovery](consul.md#outage-recovery) on the same set of machines.
 
 In this example we start with all servers on the same 10.6.0.0/16 private network range, they can connect to each freely other on those addresses.
 
@@ -744,7 +744,7 @@ postgresql['shared_preload_libraries'] = 'repmgr_funcs'
 # Disable automatic database migrations
 gitlab_rails['auto_migrate'] = false
 
-# Configure the consul agent
+# Configure the Consul agent
 consul['services'] = %w(postgresql)
 
 postgresql['pgbouncer_user_password'] = '771a8625958a529132abe6f1a4acb19c'
@@ -788,7 +788,7 @@ postgresql['enable'] = false
 pgbouncer['enable'] = true
 consul['enable'] = true
 
-# Configure Pgbouncer
+# Configure PgBouncer
 pgbouncer['admin_users'] = %w(pgbouncer gitlab-consul)
 
 # Configure Consul agent
@@ -817,7 +817,7 @@ The manual steps for this configuration are the same as for the [example recomme
 #### Failover procedure
 
 By default, if the master database fails, `repmgrd` should promote one of the
-standby nodes to master automatically, and consul will update pgbouncer with
+standby nodes to master automatically, and Consul will update PgBouncer with
 the new master.
 
 If you need to failover manually, you have two options:
@@ -907,7 +907,7 @@ can require md5 authentication.
 
 ##### Trust specific addresses
 
-If you know the IP address, or FQDN of all database and pgbouncer nodes in the
+If you know the IP address, or FQDN of all database and PgBouncer nodes in the
 cluster, you can trust only those nodes.
 
 In `/etc/gitlab/gitlab.rb` on all of the database nodes, set
@@ -950,7 +950,7 @@ the previous section:
       1. Set `postgresql['md5_auth_cidr_addresses']` to the desired value
       1. Set `postgresql['sql_replication_user'] = 'gitlab_repmgr'`
       1. Reconfigure with `gitlab-ctl reconfigure`
-      1. Restart postgresql with `gitlab-ctl restart postgresql`
+      1. Restart PostgreSQL with `gitlab-ctl restart postgresql`
 
    1. Create a `.pgpass` file. Enter the `gitlab_repmgr` password twice to
       when asked:
@@ -959,7 +959,7 @@ the previous section:
       gitlab-ctl write-pgpass --user gitlab_repmgr --hostuser gitlab-psql --database '*'
       ```
 
-1. On each pgbouncer node, edit `/etc/gitlab/gitlab.rb`:
+1. On each PgBouncer node, edit `/etc/gitlab/gitlab.rb`:
    1. Ensure `gitlab_rails['db_password']` is set to the plaintext password for
       the `gitlab` database user
    1. [Reconfigure GitLab] for the changes to take effect
@@ -993,7 +993,7 @@ To restart either service, run `gitlab-ctl restart SERVICE`
 
 For PostgreSQL, it is usually safe to restart the master node by default. Automatic failover defaults to a 1 minute timeout. Provided the database returns before then, nothing else needs to be done. To be safe, you can stop `repmgrd` on the standby nodes first with `gitlab-ctl stop repmgrd`, then start afterwards with `gitlab-ctl start repmgrd`.
 
-On the consul server nodes, it is important to restart the consul service in a controlled fashion. Read our [consul documentation](consul.md#restarting-the-server-cluster) for instructions on how to restart the service.
+On the Consul server nodes, it is important to restart the Consul service in a controlled fashion. Read our [Consul documentation](consul.md#restarting-the-server-cluster) for instructions on how to restart the service.
 
 ### `gitlab-ctl repmgr-check-master` command produces errors
 
@@ -1010,16 +1010,16 @@ steps to fix the problem:
 
 Now there should not be errors. If errors still occur then there is another problem.
 
-### PGBouncer error `ERROR: pgbouncer cannot connect to server`
+### PgBouncer error `ERROR: pgbouncer cannot connect to server`
 
 You may get this error when running `gitlab-rake gitlab:db:configure` or you
-may see the error in the PGBouncer log file.
+may see the error in the PgBouncer log file.
 
 ```
 PG::ConnectionBad: ERROR:  pgbouncer cannot connect to server
 ```
 
-The problem may be that your PGBouncer node's IP address is not included in the
+The problem may be that your PgBouncer node's IP address is not included in the
 `trust_auth_cidr_addresses` setting in `/etc/gitlab/gitlab.rb` on the database nodes.
 
 You can confirm that this is the issue by checking the PostgreSQL log on the master

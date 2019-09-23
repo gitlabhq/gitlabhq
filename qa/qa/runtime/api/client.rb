@@ -50,7 +50,7 @@ module QA
 
           unless Page::Main::Menu.perform { |p| p.has_personal_area?(wait: 0) }
             Runtime::Browser.visit(@address, Page::Main::Login)
-            Page::Main::Login.perform { |login| login.sign_in_using_credentials(@user) }
+            Page::Main::Login.perform { |login| login.sign_in_using_credentials(user: @user) }
           end
 
           token = Resource::PersonalAccessToken.fabricate!.access_token

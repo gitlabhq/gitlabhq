@@ -252,7 +252,7 @@ to start again from scratch, there are a few steps that can help you:
    gitlab-ctl stop geo-logcursor
    ```
 
-   You can watch sidekiq logs to know when sidekiq jobs processing have finished:
+   You can watch Sidekiq logs to know when Sidekiq jobs processing have finished:
 
    ```sh
    gitlab-ctl tail sidekiq
@@ -280,8 +280,8 @@ to start again from scratch, there are a few steps that can help you:
    Any uploaded content like file attachments, avatars or LFS objects are stored in a
    subfolder in one of the two paths below:
 
-   - /var/opt/gitlab/gitlab-rails/shared
-   - /var/opt/gitlab/gitlab-rails/uploads
+   - `/var/opt/gitlab/gitlab-rails/shared`
+   - `/var/opt/gitlab/gitlab-rails/uploads`
 
    To rename all of them:
 

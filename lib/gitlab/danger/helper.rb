@@ -89,7 +89,7 @@ module Gitlab
       end
 
       CATEGORY_LABELS = {
-        docs: "~Documentation", # Docs are reviewed along DevOps stages, so don't need roulette for now.
+        docs: "~documentation", # Docs are reviewed along DevOps stages, so don't need roulette for now.
         none: "",
         qa: "~QA",
         test: "~test for `spec/features/*`",
