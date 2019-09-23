@@ -130,6 +130,26 @@ describe Gitlab::Diff::Position do
           expect(diff_file.new_path).to eq(subject.new_path)
           expect(diff_file.diff_refs).to eq(subject.diff_refs)
         end
+
+        context 'different folded positions in the same diff file' do
+          def diff_file(args = {})
+            described_class
+              .new(args_for_text.merge(args))
+              .diff_file(project.repository)
+          end
+
+          it 'expands the diff file', :request_store do
+            expect_any_instance_of(Gitlab::Diff::File)
+              .to receive(:unfold_diff_lines).and_call_original
+
+            diff_file(old_line: 1, new_line: 1, diff_refs: commit.diff_refs)
+
+            expect_any_instance_of(Gitlab::Diff::File)
+              .to receive(:unfold_diff_lines).and_call_original
+
+            diff_file(old_line: 5, new_line: 5, diff_refs: commit.diff_refs)
+          end
+        end
       end
 
       describe "#diff_line" do

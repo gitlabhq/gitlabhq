@@ -17,7 +17,6 @@ module Gitlab
           .merge(features_usage_data)
           .merge(components_usage_data)
           .merge(cycle_analytics_usage_data)
-          .merge(usage_counters)
       end
 
       def to_json(force_refresh: false)
@@ -99,6 +98,7 @@ module Gitlab
             web_hooks: count(WebHook)
           }.merge(services_usage)
             .merge(approximate_counts)
+            .merge(usage_counters)
         }.tap do |data|
           data[:counts][:user_preferences] = user_preferences_usage
         end

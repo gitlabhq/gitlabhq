@@ -127,7 +127,7 @@ module Backup
         end
 
         tar_file = if ENV['BACKUP'].present?
-                     "#{ENV['BACKUP']}#{FILE_NAME_SUFFIX}"
+                     File.basename(ENV['BACKUP']) + FILE_NAME_SUFFIX
                    else
                      backup_file_list.first
                    end
@@ -235,8 +235,8 @@ module Backup
     end
 
     def tar_file
-      @tar_file ||= if ENV['BACKUP']
-                      ENV['BACKUP'] + "#{FILE_NAME_SUFFIX}"
+      @tar_file ||= if ENV['BACKUP'].present?
+                      File.basename(ENV['BACKUP']) + FILE_NAME_SUFFIX
                     else
                       "#{backup_information[:backup_created_at].strftime('%s_%Y_%m_%d_')}#{backup_information[:gitlab_version]}#{FILE_NAME_SUFFIX}"
                     end

@@ -64,31 +64,29 @@ describe Gitlab::UsageData do
         avg_cycle_analytics
         influxdb_metrics_enabled
         prometheus_metrics_enabled
-        cycle_analytics_views
-        productivity_analytics_views
       ))
-
-      expect(subject).to include(
-        snippet_create: a_kind_of(Integer),
-        snippet_update: a_kind_of(Integer),
-        snippet_comment: a_kind_of(Integer),
-        merge_request_comment: a_kind_of(Integer),
-        merge_request_create: a_kind_of(Integer),
-        commit_comment: a_kind_of(Integer),
-        wiki_pages_create: a_kind_of(Integer),
-        wiki_pages_update: a_kind_of(Integer),
-        wiki_pages_delete: a_kind_of(Integer),
-        web_ide_views: a_kind_of(Integer),
-        web_ide_commits: a_kind_of(Integer),
-        web_ide_merge_requests: a_kind_of(Integer),
-        navbar_searches: a_kind_of(Integer),
-        cycle_analytics_views: a_kind_of(Integer),
-        productivity_analytics_views: a_kind_of(Integer),
-        source_code_pushes: a_kind_of(Integer)
-      )
     end
 
     it 'gathers usage counts' do
+      smau_keys = %i(
+        snippet_create
+        snippet_update
+        snippet_comment
+        merge_request_comment
+        merge_request_create
+        commit_comment
+        wiki_pages_create
+        wiki_pages_update
+        wiki_pages_delete
+        web_ide_views
+        web_ide_commits
+        web_ide_merge_requests
+        navbar_searches
+        cycle_analytics_views
+        productivity_analytics_views
+        source_code_pushes
+      )
+
       expected_keys = %i(
         assignee_lists
         boards
@@ -154,12 +152,13 @@ describe Gitlab::UsageData do
         uploads
         web_hooks
         user_preferences
-      )
+      ).push(*smau_keys)
 
       count_data = subject[:counts]
 
       expect(count_data[:boards]).to eq(1)
       expect(count_data[:projects]).to eq(4)
+      expect(count_data.values_at(*smau_keys)).to all(be_an(Integer))
       expect(count_data.keys).to include(*expected_keys)
       expect(expected_keys - count_data.keys).to be_empty
     end

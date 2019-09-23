@@ -375,6 +375,7 @@ timestamps with timezones:
 
 - `add_timestamps_with_timezone`
 - `timestamps_with_timezone`
+- `datetime_with_timezone`
 
 This ensures all timestamps have a time zone specified. This, in turn, means
 existing timestamps won't suddenly use a different timezone when the system's

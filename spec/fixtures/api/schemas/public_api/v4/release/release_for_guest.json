@@ -8,6 +8,12 @@
     "created_at": { "type": "date" },
     "released_at": { "type": "date" },
     "upcoming_release": { "type": "boolean" },
+    "milestones": {
+      "type": "array",
+      "items": { "$ref": "../milestone.json" }
+    },
+    "commit_path": { "type": "string" },
+    "tag_path": { "type": "string" },
     "author": {
       "oneOf": [{ "type": "null" }, { "$ref": "../user/basic.json" }]
     },

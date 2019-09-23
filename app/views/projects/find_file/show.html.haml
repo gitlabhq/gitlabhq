@@ -15,4 +15,12 @@
     .table-holder
       %table.table.files-slider{ class: "table_#{@hex_path} tree-table" }
         %tbody
+        .col-12.empty-state.hidden
+          .svg-250.svg-content
+            = image_tag('illustrations/profile-page/personal-projects.svg', alt: 'No files svg', lazy: true)
+          .text-center
+            %h4
+              = _('There are no matching files')
+            %p.text-secondary
+              = _('Try using a different search term to find the file you are looking for.')
       = spinner nil, true

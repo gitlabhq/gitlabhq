@@ -41,7 +41,6 @@ class Suggestion < ApplicationRecord
     !applied? &&
       noteable.opened? &&
       !outdated?(cached: cached) &&
-      note.supports_suggestion? &&
       different_content? &&
       note.active?
   end

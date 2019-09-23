@@ -10,7 +10,7 @@ module Gitlab
       return unless name = markdown_name
 
       markdown = "[#{name.gsub(']', '\\]')}](#{secure_url})"
-      markdown = "!#{markdown}" if image_or_video? || dangerous?
+      markdown = "!#{markdown}" if image_or_video? || dangerous_image_or_video?
       markdown
     end
 

@@ -1,0 +1,5 @@
+---
+title: Move SMAU usage counters to the UsageData count field
+merge_request: 17074
+author:
+type: fixed

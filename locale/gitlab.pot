@@ -15647,6 +15647,9 @@ msgstr ""
 msgid "There are no labels yet"
 msgstr ""
 
+msgid "There are no matching files"
+msgstr ""
+
 msgid "There are no open issues"
 msgstr ""
 
@@ -16567,6 +16570,9 @@ msgid "Try all GitLab has to offer for 30 days."
 msgstr ""
 
 msgid "Try to fork again"
+msgstr ""
+
+msgid "Try using a different search term to find the file you are looking for."
 msgstr ""
 
 msgid "Trying to communicate with your device. Plug it in (if you haven't already) and press the button on the device now."

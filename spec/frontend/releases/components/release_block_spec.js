@@ -12,7 +12,6 @@ describe('Release block', () => {
       propsData: {
         release: releaseProp,
       },
-      sync: false,
     });
   };
 
@@ -37,10 +36,16 @@ describe('Release block', () => {
 
     it('renders commit sha', () => {
       expect(wrapper.text()).toContain(release.commit.short_id);
+
+      wrapper.setProps({ release: { ...release, commit_path: '/commit/example' } });
+      expect(wrapper.find('a[href="/commit/example"]').exists()).toBe(true);
     });
 
     it('renders tag name', () => {
       expect(wrapper.text()).toContain(release.tag_name);
+
+      wrapper.setProps({ release: { ...release, tag_path: '/tag/example' } });
+      expect(wrapper.find('a[href="/tag/example"]').exists()).toBe(true);
     });
 
     it('renders release date', () => {

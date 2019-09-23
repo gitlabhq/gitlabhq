@@ -1276,7 +1276,7 @@ module API
 
     class Release < Grape::Entity
       expose :name
-      expose :tag, as: :tag_name, if: lambda { |_, _| can_download_code? }
+      expose :tag, as: :tag_name, if: ->(_, _) { can_download_code? }
       expose :description
       expose :description_html do |entity|
         MarkupHelper.markdown_field(entity, :description)
@@ -1284,16 +1284,17 @@ module API
       expose :created_at
       expose :released_at
       expose :author, using: Entities::UserBasic, if: -> (release, _) { release.author.present? }
-      expose :commit, using: Entities::Commit, if: lambda { |_, _| can_download_code? }
+      expose :commit, using: Entities::Commit, if: ->(_, _) { can_download_code? }
       expose :upcoming_release?, as: :upcoming_release
       expose :milestones, using: Entities::Milestone, if: -> (release, _) { release.milestones.present? }
-
+      expose :commit_path, if: ->(_, _) { can_download_code? }
+      expose :tag_path, if: ->(_, _) { can_download_code? }
       expose :assets do
         expose :assets_count, as: :count do |release, _|
           assets_to_exclude = can_download_code? ? [] : [:sources]
           release.assets_count(except: assets_to_exclude)
         end
-        expose :sources, using: Entities::Releases::Source, if: lambda { |_, _| can_download_code? }
+        expose :sources, using: Entities::Releases::Source, if: ->(_, _) { can_download_code? }
         expose :links, using: Entities::Releases::Link do |release, options|
           release.links.sorted
         end
@@ -1303,6 +1304,16 @@ module API
 
       def can_download_code?
         Ability.allowed?(options[:current_user], :download_code, object.project)
+      end
+
+      def commit_path
+        return unless object.commit
+
+        Gitlab::Routing.url_helpers.project_commit_path(object.project, object.commit.id)
+      end
+
+      def tag_path
+        Gitlab::Routing.url_helpers.project_tag_path(object.project, object.tag)
       end
     end
 

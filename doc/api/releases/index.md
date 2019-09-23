@@ -85,6 +85,8 @@ Example response:
             "web_url":"https://gitlab.example.com/root/awesome-app/-/milestones/2"
          }
       ],
+      "commit_path":"/root/awesome-app/commit/588440f66559714280628a4f9799f0c4eb880a4a",
+      "tag_path":"/root/awesome-app/-/tags/v0.11.1",
       "assets":{
          "count":6,
          "sources":[
@@ -261,6 +263,8 @@ Example response:
          "web_url":"https://gitlab.example.com/root/awesome-app/-/milestones/2"
        }
    ],
+   "commit_path":"/root/awesome-app/commit/588440f66559714280628a4f9799f0c4eb880a4a",
+   "tag_path":"/root/awesome-app/-/tags/v0.11.1",
    "assets":{
       "count":4,
       "sources":[
@@ -379,6 +383,8 @@ Example response:
          "web_url":"https://gitlab.example.com/root/awesome-app/-/milestones/2"
        }
    ],
+   "commit_path":"/root/awesome-app/commit/588440f66559714280628a4f9799f0c4eb880a4a",
+   "tag_path":"/root/awesome-app/-/tags/v0.11.1",
    "assets":{
       "count":5,
       "sources":[
@@ -483,6 +489,8 @@ Example response:
          "web_url":"https://gitlab.example.com/root/awesome-app/-/milestones/3"
       }
    ],
+   "commit_path":"/root/awesome-app/commit/588440f66559714280628a4f9799f0c4eb880a4a",
+   "tag_path":"/root/awesome-app/-/tags/v0.11.1",
    "assets":{
       "count":4,
       "sources":[
@@ -563,6 +571,8 @@ Example response:
       "committer_email":"admin@example.com",
       "committed_date":"2019-01-03T01:53:28.000Z"
    },
+   "commit_path":"/root/awesome-app/commit/588440f66559714280628a4f9799f0c4eb880a4a",
+   "tag_path":"/root/awesome-app/-/tags/v0.11.1",
    "assets":{
       "count":4,
       "sources":[

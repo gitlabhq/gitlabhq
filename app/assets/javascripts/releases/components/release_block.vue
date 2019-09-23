@@ -42,6 +42,12 @@ export default {
     commit() {
       return this.release.commit || {};
     },
+    commitUrl() {
+      return this.release.commit_path;
+    },
+    tagUrl() {
+      return this.release.tag_path;
+    },
     assets() {
       return this.release.assets || {};
     },
@@ -81,12 +87,18 @@ export default {
       <div class="card-subtitle d-flex flex-wrap text-secondary">
         <div class="append-right-8">
           <icon name="commit" class="align-middle" />
-          <span v-gl-tooltip.bottom :title="commit.title">{{ commit.short_id }}</span>
+          <gl-link v-if="commitUrl" v-gl-tooltip.bottom :title="commit.title" :href="commitUrl">
+            {{ commit.short_id }}
+          </gl-link>
+          <span v-else v-gl-tooltip.bottom :title="commit.title">{{ commit.short_id }}</span>
         </div>
 
         <div class="append-right-8">
           <icon name="tag" class="align-middle" />
-          <span v-gl-tooltip.bottom :title="__('Tag')">{{ release.tag_name }}</span>
+          <gl-link v-if="tagUrl" v-gl-tooltip.bottom :title="__('Tag')" :href="tagUrl">
+            {{ release.tag_name }}
+          </gl-link>
+          <span v-else v-gl-tooltip.bottom :title="__('Tag')">{{ release.tag_name }}</span>
         </div>
 
         <milestone-list

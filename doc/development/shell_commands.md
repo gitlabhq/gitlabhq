@@ -87,7 +87,7 @@ $ cat -- -l
 hello
 ```
 
-In the GitLab codebase, we avoid the option/argument ambiguity by _always_ using `--`.
+In the GitLab codebase, we avoid the option/argument ambiguity by _always_ using `--` for commands that support it.
 
 ```ruby
 # Wrong

@@ -21,6 +21,49 @@ describe Backup::Manager do
     $progress = @old_progress # rubocop:disable Style/GlobalVars
   end
 
+  describe '#pack' do
+    let(:backup_contents) { ['backup_contents'] }
+    let(:tar_system_options) { { out: [tar_file, 'w', Gitlab.config.backup.archive_permissions] } }
+    let(:tar_cmdline) { ['tar', '-cf', '-', *backup_contents, tar_system_options] }
+
+    let(:backup_information) do
+      {
+        backup_created_at: Time.zone.parse('2019-01-01'),
+        gitlab_version: '12.3'
+      }
+    end
+
+    before do
+      allow(ActiveRecord::Base.connection).to receive(:reconnect!)
+      allow(Kernel).to receive(:system).and_return(true)
+
+      allow(subject).to receive(:backup_contents).and_return(backup_contents)
+      allow(subject).to receive(:backup_information).and_return(backup_information)
+      allow(subject).to receive(:upload)
+    end
+
+    context 'when BACKUP is not set' do
+      let(:tar_file) { '1546300800_2019_01_01_12.3_gitlab_backup.tar' }
+
+      it 'uses the default tar file name' do
+        subject.pack
+
+        expect(Kernel).to have_received(:system).with(*tar_cmdline)
+      end
+    end
+
+    context 'when BACKUP is set' do
+      let(:tar_file) { 'custom_gitlab_backup.tar' }
+
+      it 'uses the given value as tar file name' do
+        stub_env('BACKUP', '/ignored/path/custom')
+        subject.pack
+
+        expect(Kernel).to have_received(:system).with(*tar_cmdline)
+      end
+    end
+  end
+
   describe '#remove_old' do
     let(:files) do
       [
@@ -238,7 +281,7 @@ describe Backup::Manager do
         allow(Kernel).to receive(:system).and_return(true)
         allow(YAML).to receive(:load_file).and_return(gitlab_version: Gitlab::VERSION)
 
-        stub_env('BACKUP', '1451606400_2016_01_01_1.2.3')
+        stub_env('BACKUP', '/ignored/path/1451606400_2016_01_01_1.2.3')
       end
 
       it 'unpacks the file' do

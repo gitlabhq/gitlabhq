@@ -19,13 +19,13 @@ module Banzai
 
       def query
         @query ||= begin
-          src_query = UploaderHelper::VIDEO_EXT.map do |ext|
+          src_query = UploaderHelper::SAFE_VIDEO_EXT.map do |ext|
             "'.#{ext}' = substring(@src, string-length(@src) - #{ext.size})"
           end
 
           if context[:asset_proxy_enabled].present?
             src_query.concat(
-              UploaderHelper::VIDEO_EXT.map do |ext|
+              UploaderHelper::SAFE_VIDEO_EXT.map do |ext|
                 "'.#{ext}' = substring(@data-canonical-src, string-length(@data-canonical-src) - #{ext.size})"
               end
             )

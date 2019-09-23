@@ -176,7 +176,7 @@ class Blob < SimpleDelegator
   end
 
   def video?
-    UploaderHelper::VIDEO_EXT.include?(extension)
+    UploaderHelper::SAFE_VIDEO_EXT.include?(extension)
   end
 
   def readable_text?

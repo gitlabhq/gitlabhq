@@ -54,6 +54,15 @@ describe API::Releases do
 
         expect(response).to match_response_schema('public_api/v4/releases')
       end
+
+      it 'returns rendered helper paths' do
+        get api("/projects/#{project.id}/releases", maintainer)
+
+        expect(json_response.first['commit_path']).to eq("/#{release_2.project.full_path}/commit/#{release_2.commit.id}")
+        expect(json_response.first['tag_path']).to eq("/#{release_2.project.full_path}/-/tags/#{release_2.tag}")
+        expect(json_response.second['commit_path']).to eq("/#{release_1.project.full_path}/commit/#{release_1.commit.id}")
+        expect(json_response.second['tag_path']).to eq("/#{release_1.project.full_path}/-/tags/#{release_1.tag}")
+      end
     end
 
     it 'returns an upcoming_release status for a future release' do
@@ -103,11 +112,13 @@ describe API::Releases do
         expect(response).to have_gitlab_http_status(:ok)
       end
 
-      it "does not expose tag, commit and source code" do
+      it "does not expose tag, commit, source code or helper paths" do
         get api("/projects/#{project.id}/releases", guest)
 
         expect(response).to match_response_schema('public_api/v4/release/releases_for_guest')
         expect(json_response[0]['assets']['count']).to eq(release.links.count)
+        expect(json_response[0]['commit_path']).to be_nil
+        expect(json_response[0]['tag_path']).to be_nil
       end
 
       context 'when project is public' do
@@ -119,11 +130,13 @@ describe API::Releases do
           expect(response).to have_gitlab_http_status(:ok)
         end
 
-        it "exposes tag, commit and source code" do
+        it "exposes tag, commit, source code and helper paths" do
           get api("/projects/#{project.id}/releases", guest)
 
           expect(response).to match_response_schema('public_api/v4/releases')
-          expect(json_response[0]['assets']['count']).to eq(release.links.count + release.sources.count)
+          expect(json_response.first['assets']['count']).to eq(release.links.count + release.sources.count)
+          expect(json_response.first['commit_path']).to eq("/#{release.project.full_path}/commit/#{release.commit.id}")
+          expect(json_response.first['tag_path']).to eq("/#{release.project.full_path}/-/tags/#{release.tag}")
         end
       end
     end
@@ -172,6 +185,8 @@ describe API::Releases do
         expect(json_response['author']['name']).to eq(maintainer.name)
         expect(json_response['commit']['id']).to eq(commit.id)
         expect(json_response['assets']['count']).to eq(4)
+        expect(json_response['commit_path']).to eq("/#{release.project.full_path}/commit/#{release.commit.id}")
+        expect(json_response['tag_path']).to eq("/#{release.project.full_path}/-/tags/#{release.tag}")
       end
 
       it 'matches response schema' do

@@ -18,7 +18,7 @@ describe Banzai::Filter::VideoLinkFilter do
   let(:project) { create(:project, :repository) }
 
   context 'when the element src has a video extension' do
-    UploaderHelper::VIDEO_EXT.each do |ext|
+    UploaderHelper::SAFE_VIDEO_EXT.each do |ext|
       it "replaces the image tag 'path/video.#{ext}' with a video tag" do
         container = filter(link_to_image("/path/video.#{ext}")).children.first
 

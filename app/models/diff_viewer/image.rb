@@ -6,7 +6,7 @@ module DiffViewer
     include ClientSide
 
     self.partial_name = 'image'
-    self.extensions = UploaderHelper::IMAGE_EXT
+    self.extensions = UploaderHelper::SAFE_IMAGE_EXT
     self.binary = true
     self.switcher_icon = 'picture-o'
     self.switcher_title = _('image diff')
