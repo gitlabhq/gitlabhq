@@ -180,7 +180,7 @@ PUT /projects/:id/environments/:environments_id
 | Attribute       | Type    | Required                          | Description                      |
 | --------------- | ------- | --------------------------------- | -------------------------------  |
 | `id`            | integer/string | yes                               | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user            |
-| `environment_id` | integer | yes | The ID of the environment  | The ID of the environment        |
+| `environment_id` | integer | yes | The ID of the environment  |
 | `name`          | string  | no                                | The new name of the environment  |
 | `external_url`  | string  | no                                | The new external_url             |
 

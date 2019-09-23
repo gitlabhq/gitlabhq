@@ -526,7 +526,7 @@ Some things you should be aware of:
   longer, but means you don’t get stuck without security patches to base images.
 - Doing an explicit `docker pull` before each `docker run` fetches
   the latest image that was just built. This is especially important if you are
-  using multiple runners that cache images locally. Using the git SHA in your
+  using multiple runners that cache images locally. Using the Git SHA in your
   image tag makes this less necessary since each job will be unique and you
   shouldn't ever have a stale image. However, it's still possible to have a
   stale image if you re-build a given commit after a dependency has changed.

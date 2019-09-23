@@ -113,7 +113,7 @@ Its feature set is listed on the table below according to DevOps stages.
 | [Browser Performance Testing](../user/project/merge_requests/browser_performance_testing.md) | Quickly determine the performance impact of pending code changes. |
 | [CI services](services/README.md) | Link Docker containers with your base image.|
 | [Code Quality](../user/project/merge_requests/code_quality.md) **(STARTER)** | Analyze your source code quality. |
-| [GitLab CI/CD for external repositories](ci_cd_for_external_repos/index.md) **(PREMIUM)** | Get the benefits of GitLab CI/CD combined with repositories in GitHub and BitBucket Cloud. |
+| [GitLab CI/CD for external repositories](ci_cd_for_external_repos/index.md) **(PREMIUM)** | Get the benefits of GitLab CI/CD combined with repositories in GitHub and Bitbucket Cloud. |
 | [Interactive Web Terminals](interactive_web_terminal/index.md) **(CORE ONLY)** | Open an interactive web terminal to debug the running jobs. |
 | [JUnit tests](junit_test_reports.md) | Identify script failures directly on merge requests. |
 | [Using Docker images](docker/using_docker_images.md) | Use GitLab and GitLab Runner with Docker to build and test applications. |

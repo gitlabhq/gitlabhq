@@ -86,6 +86,6 @@ gitlab-runner register \
   --docker-postgres latest
 ```
 
-With the command above, you create a runner that uses the [python:3.5](https://hub.docker.com/r/_/python/) image and uses a [postgres](https://hub.docker.com/r/_/postgres/) database.
+With the command above, you create a runner that uses the [`python:3.5`](https://hub.docker.com/r/_/python/) image and uses a [PostgreSQL](https://hub.docker.com/r/_/postgres/) database.
 
 To access the PostgreSQL database, connect to `host: postgres` as user `postgres` with no password.

@@ -202,7 +202,7 @@ For more fine tuning, read also about the
 
 The most common use case of cache is to preserve contents between subsequent
 runs of jobs for things like dependencies and commonly used libraries
-(Nodejs packages, PHP packages, rubygems, python libraries, etc.),
+(Nodejs packages, PHP packages, rubygems, Python libraries, etc.),
 so they don't have to be re-fetched from the public internet.
 
 NOTE: **Note:**
@@ -268,7 +268,7 @@ test:
 ### Caching Python dependencies
 
 Assuming your project is using [pip](https://pip.pypa.io/en/stable/) to install
-the python dependencies, the following example defines `cache` globally so that
+the Python dependencies, the following example defines `cache` globally so that
 all jobs inherit it. Python libraries are installed in a virtualenv under `venv/`,
 pip's cache is defined under `.cache/pip/` and both are cached per-branch:
 

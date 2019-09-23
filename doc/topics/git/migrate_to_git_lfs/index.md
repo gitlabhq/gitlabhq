@@ -133,7 +133,7 @@ Consider an example upstream project, `git@gitlab.com:gitlab-tests/test-git-lfs-
    # You may need to reset your local copy with upstream's `master` after force-pushing from the mirror:
    git reset --hard origin/master
    # Track the files with LFS:
-   git lfs track "*.gif" "*.png" "*.jpg" "*.psd" "*.mp4" ".gitattributes" "img/"
+   git lfs track "*.gif" "*.png" "*.jpg" "*.psd" "*.mp4" "img/"
    ```
 
    Now all existing the files you converted, as well as the new

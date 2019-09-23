@@ -334,10 +334,10 @@ This will disable the option for all users who previously had permissions to
 operate project memberships, so no new users can be added. Furthermore, any
 request to add a new user to a project through API will not be possible.
 
-#### IP access restriction **(ULTIMATE ONLY)**
+#### IP access restriction **(ULTIMATE)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/1985) in
-[GitLab Ultimate](https://about.gitlab.com/pricing/) 12.0.
+[GitLab Ultimate and Gold](https://about.gitlab.com/pricing/) 12.0.
 
 To make sure only people from within your organization can access particular
 resources, you have the option to restrict access to groups and their
@@ -353,10 +353,10 @@ Restriction currently applies to UI and API access, Git actions via ssh are not 
 To avoid accidental lock-out, admins and group owners are are able to access
 the group regardless of the IP restriction.
 
-#### Allowed domain restriction **(PREMIUM ONLY)**
+#### Allowed domain restriction **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/7297) in
-[GitLab Premium](https://about.gitlab.com/pricing/) 12.2.
+[GitLab Premium and Silver](https://about.gitlab.com/pricing/) 12.2.
 
 You can restrict access to groups and their underlying projects by
 allowing only users with email addresses in particular domains to be added to the group.

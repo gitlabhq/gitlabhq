@@ -28,7 +28,7 @@ layers of your application, from the frontend to the database.
 In this article, we will discuss how
 to write such end-to-end tests, and how to set up GitLab CI/CD to automatically run these tests
 against your new code, on a branch-by-branch basis. For the scope of this article, we will walk you
-through the process of setting up GitLab CI/CD for end-to-end testing Javascript-based applications
+through the process of setting up GitLab CI/CD for end-to-end testing JavaScript-based applications
 with WebdriverIO, but the general strategy should carry over to other languages.
 We assume you are familiar with GitLab, [GitLab CI/CD](../../README.md), [Review Apps](../../review_apps/index.md), and running your app locally, e.g., on `localhost:8000`.
 
@@ -47,7 +47,7 @@ infrastructure is up and running, and that your units of code work well together
 [Selenium](http://www.seleniumhq.org/) is a piece of software that can control web browsers, e.g., to make them
 visit a specific URL or interact with elements on the page. It can be programmatically controlled
 from a variety of programming languages. In this article we're going to be using the
-[WebdriverIO](http://webdriver.io/) Javascript bindings, but the general concept should carry over
+[WebdriverIO](http://webdriver.io/) JavaScript bindings, but the general concept should carry over
 pretty well to
 [other programming languages supported by Selenium](http://docs.seleniumhq.org/about/platforms.jsp#programming-languages).
 

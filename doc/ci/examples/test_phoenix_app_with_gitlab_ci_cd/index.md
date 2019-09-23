@@ -205,7 +205,7 @@ when running our Phoenix in our `localhost`.
 
   As our project is still fresh, we don't have any data on our database, so, the `migrations`
   directory will be empty.
-  Without `.gitkeep`, git will not upload this empty directory and we'll got an error when running our
+  Without `.gitkeep`, Git will not upload this empty directory and we'll got an error when running our
   test on GitLab.
 
   > **Note:** If we add a folder via the GitLab UI, GitLab itself will add the `.gitkeep` to that new dir.

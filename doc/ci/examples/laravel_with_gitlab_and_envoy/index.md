@@ -82,7 +82,7 @@ git push -u origin master
 ## Configure the production server
 
 Before we begin setting up Envoy and GitLab CI/CD, let's quickly make sure the production server is ready for deployment.
-We have installed LEMP stack which stands for Linux, Nginx, MySQL and PHP on our Ubuntu 16.04.
+We have installed LEMP stack which stands for Linux, NGINX, MySQL and PHP on our Ubuntu 16.04.
 
 ### Create a new user
 
@@ -151,11 +151,11 @@ git clone git@gitlab.example.com:<USERNAME>/laravel-sample.git
 Answer **yes** if asked `Are you sure you want to continue connecting (yes/no)?`.
 It adds GitLab.com to the known hosts.
 
-### Configuring Nginx
+### Configuring NGINX
 
 Now, let's make sure our web server configuration points to the `current/public` rather than `public`.
 
-Open the default Nginx server block configuration file by typing:
+Open the default NGINX server block configuration file by typing:
 
 ```bash
 sudo nano /etc/nginx/sites-available/default

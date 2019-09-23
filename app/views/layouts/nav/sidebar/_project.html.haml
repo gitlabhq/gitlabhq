@@ -182,10 +182,16 @@
                     = _('Pipelines')
 
             - if project_nav_tab? :builds
-              = nav_link(controller: [:jobs, :artifacts]) do
+              = nav_link(controller: :jobs) do
                 = link_to project_jobs_path(@project), title: _('Jobs'), class: 'shortcuts-builds' do
                   %span
                     = _('Jobs')
+
+              - if Feature.enabled?(:artifacts_management_page, @project)
+                = nav_link(controller: :artifacts, action: :index) do
+                  = link_to project_artifacts_path(@project), title: _('Artifacts'), class: 'shortcuts-builds' do
+                    %span
+                      = _('Artifacts')
 
             - if project_nav_tab? :pipelines
               = nav_link(controller: :pipeline_schedules) do

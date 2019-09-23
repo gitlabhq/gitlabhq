@@ -46,7 +46,7 @@ staging:
   - dpl --provider=heroku --app=my-app-staging --api-key=$HEROKU_STAGING_API_KEY
 ```
 
-In the above example we use Dpl to deploy `my-app-staging` to Heroku server with api-key stored in `HEROKU_STAGING_API_KEY` secure variable.
+In the above example we use Dpl to deploy `my-app-staging` to Heroku server with API key stored in `HEROKU_STAGING_API_KEY` secure variable.
 
 To use different provider take a look at long list of [Supported Providers](https://github.com/travis-ci/dpl#supported-providers).
 

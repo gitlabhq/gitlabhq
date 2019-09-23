@@ -111,7 +111,7 @@ machines, and have an existing worktree that you can re-use for builds.
 
 For exact parameters accepted by
 [`GIT_CLEAN_FLAGS`](../yaml/README.md#git-clean-flags), see the documentation
-for [git clean](https://git-scm.com/docs/git-clean). The available parameters
+for [`git clean`](https://git-scm.com/docs/git-clean). The available parameters
 are dependent on Git version.
 
 ## Fork-based workflow

@@ -56,7 +56,7 @@ Jobs are picked up by [Runners](../runners/README.md) and executed within the
 environment of the Runner. What is important, is that each job is run
 independently from each other.
 
-### Validate the .gitlab-ci.yml
+### Validate the `.gitlab-ci.yml`
 
 Each instance of GitLab CI has an embedded debug tool called Lint, which validates the
 content of your `.gitlab-ci.yml` files. You can find the Lint under the page `ci/lint` of your
@@ -187,7 +187,7 @@ Used to specify [a Docker image](../docker/using_docker_images.md#what-is-an-ima
 
 For:
 
-- Simple definition examples, see [Define `image` and `services` from .gitlab-ci.yml](../docker/using_docker_images.md#define-image-and-services-from-gitlab-ciyml).
+- Simple definition examples, see [Define `image` and `services` from `.gitlab-ci.yml`](../docker/using_docker_images.md#define-image-and-services-from-gitlab-ciyml).
 - Detailed usage information, refer to [Docker integration](../docker/README.md) documentation.
 
 #### `image:name`
@@ -208,7 +208,7 @@ Used to specify a [service Docker image](../docker/using_docker_images.md#what-i
 
 For:
 
-- Simple definition examples, see [Define `image` and `services` from .gitlab-ci.yml](../docker/using_docker_images.md#define-image-and-services-from-gitlab-ciyml).
+- Simple definition examples, see [Define `image` and `services` from `.gitlab-ci.yml`](../docker/using_docker_images.md#define-image-and-services-from-gitlab-ciyml).
 - Detailed usage information, refer to [Docker integration](../docker/README.md) documentation.
 - For example services, see [GitLab CI Services](../services/README.md).
 
@@ -379,8 +379,8 @@ In addition, `only` and `except` allow the use of special keywords:
 
 | **Value** |  **Description**  |
 | --------- |  ---------------- |
-| `branches`       | When a git reference of a pipeline is a branch.  |
-| `tags`           | When a git reference of a pipeline is a tag.  |
+| `branches`       | When a Git reference of a pipeline is a branch.  |
+| `tags`           | When a Git reference of a pipeline is a tag.  |
 | `api`            | When pipeline has been triggered by a second pipelines API (not triggers API).  |
 | `external`       | When using CI services other than GitLab. |
 | `pipelines`      | For multi-project triggers, created using the API with `CI_JOB_TOKEN`. |
@@ -530,15 +530,15 @@ single conjoined expression. That is:
 
 With `only`, individual keys are logically joined by an AND:
 
-> (any of refs) AND (any of variables) AND (any of changes) AND (if kubernetes is active)
+> (any of refs) AND (any of variables) AND (any of changes) AND (if Kubernetes is active)
 
 `except` is implemented as a negation of this complete expression:
 
-> NOT((any of refs) AND (any of variables) AND (any of changes) AND (if kubernetes is active))
+> NOT((any of refs) AND (any of variables) AND (any of changes) AND (if Kubernetes is active))
 
 This, more intuitively, means the keys join by an OR. A functionally equivalent expression:
 
-> (any of refs) OR (any of variables) OR (any of changes) OR (if kubernetes is active)
+> (any of refs) OR (any of variables) OR (any of changes) OR (if Kubernetes is active)
 
 #### `only:refs`/`except:refs`
 
@@ -612,7 +612,7 @@ Learn more about [variables expressions](../variables/README.md#environment-vari
 > `changes` policy [introduced][ce-19232] in GitLab 11.4.
 
 Using the `changes` keyword with `only` or `except` makes it possible to define if
-a job should be created based on files modified by a git push event.
+a job should be created based on files modified by a Git push event.
 
 For example:
 
@@ -1047,7 +1047,7 @@ You can stop the active timer of a delayed job by clicking the **Unschedule** bu
 This job will never be executed in the future unless you execute the job manually.
 
 You can start a delayed job immediately by clicking the **Play** button.
-GitLab runner will pick your job soon and start the job.
+GitLab Runner will pick your job soon and start the job.
 
 ### `environment`
 
@@ -1894,12 +1894,12 @@ This example creates three paths of execution:
     - 50 if the `ci_dag_limit_needs` feature flag is disabled.
 - It is impossible for now to have `needs: []` (empty needs),
   the job always needs to depend on something, unless this is the job
-  in the first stage (see [gitlab-foss#65504](https://gitlab.com/gitlab-org/gitlab-foss/issues/65504)).
+  in the first stage (see [issue #65504](https://gitlab.com/gitlab-org/gitlab-foss/issues/65504)).
 - If `needs:` refers to a job that is marked as `parallel:`.
   the current job will depend on all parallel jobs created.
 - `needs:` is similar to `dependencies:` in that it needs to use jobs from
   prior stages, meaning it is impossible to create circular
-  dependencies or depend on jobs in the current stage (see [gitlab-foss#65505](https://gitlab.com/gitlab-org/gitlab-foss/issues/65505)).
+  dependencies or depend on jobs in the current stage (see [issue #65505](https://gitlab.com/gitlab-org/gitlab-foss/issues/65505)).
 - Related to the above, stages must be explicitly defined for all jobs
   that have the keyword `needs:` or are referred to by one.
 
@@ -2831,7 +2831,7 @@ The `GIT_CLEAN_FLAGS` variable is used to control the default behavior of
 `git clean` after checking out the sources. You can set it globally or per-job in the
 [`variables`](#variables) section.
 
-`GIT_CLEAN_FLAGS` accepts all possible options of the [git clean](https://git-scm.com/docs/git-clean)
+`GIT_CLEAN_FLAGS` accepts all possible options of the [`git clean`](https://git-scm.com/docs/git-clean)
 command.
 
 `git clean` is disabled if `GIT_CHECKOUT: "false"` is specified.
@@ -2946,7 +2946,7 @@ default:
 
 ## Custom build directories
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/merge_requests/1267) in Gitlab Runner 11.10
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/merge_requests/1267) in GitLab Runner 11.10
 
 NOTE: **Note:**
 This can only be used when `custom_build_dir` is enabled in the [Runner's
