@@ -9,5 +9,7 @@ export default {
 };
 </script>
 <template>
-  <div class="duration rounded align-self-start px-2 ml-2 flex-shrink-0">{{ duration }}</div>
+  <div class="log-duration-badge rounded align-self-start px-2 ml-2 flex-shrink-0">
+    {{ duration }}
+  </div>
 </template>

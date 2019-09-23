@@ -1,0 +1,5 @@
+---
+title: Fix stylelint errors in epics.scss
+merge_request: 17243
+author:
+type: fixed

@@ -40,6 +40,9 @@ gitlab:
       limits:
         cpu: 140m
         memory: 40M
+    maxReplicas: 3
+    hpa:
+      targetAverageValue: 130m
   sidekiq:
     resources:
       requests:

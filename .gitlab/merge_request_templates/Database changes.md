@@ -37,7 +37,7 @@ When adding foreign keys to existing tables:
 
 When adding tables:
 
-- [ ] Ordered columns based on the [Ordering Table Columns](https://docs.gitlab.com/ee/development/ordering_table_columns.html#ordering-table-columns) guidelines
+- [ ] Ordered columns based on the [Ordering Table Columns](https://docs.gitlab.com/ee/development/ordering_table_columns.html) guidelines
 - [ ] Added foreign keys to any columns pointing to data in other tables
 - [ ] Added indexes for fields that are used in statements such as `WHERE`, `ORDER BY`, `GROUP BY`, and `JOIN`s
 

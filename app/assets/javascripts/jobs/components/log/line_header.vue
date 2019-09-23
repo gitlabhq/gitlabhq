@@ -43,7 +43,7 @@ export default {
 
 <template>
   <div
-    class="line collapsible-line d-flex justify-content-between"
+    class="log-line collapsible-line d-flex justify-content-between"
     role="button"
     @click="handleOnClick"
   >
