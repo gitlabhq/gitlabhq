@@ -51,7 +51,7 @@ class LabelsFinder < UnionFinder
       end
 
       label_ids << Label.where(group_id: projects.group_ids)
-      label_ids << Label.where(project_id: projects.select(:id)) unless only_group_labels?
+      label_ids << Label.where(project_id: ids_user_can_read_labels(projects)) unless only_group_labels?
     end
 
     label_ids
@@ -188,4 +188,10 @@ class LabelsFinder < UnionFinder
       groups.select { |group| authorized_to_read_labels?(group) }
     end
   end
+
+  # rubocop: disable CodeReuse/ActiveRecord
+  def ids_user_can_read_labels(projects)
+    Project.where(id: projects.select(:id)).ids_with_issuables_available_for(current_user)
+  end
+  # rubocop: enable CodeReuse/ActiveRecord
 end
