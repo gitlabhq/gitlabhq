@@ -4,10 +4,10 @@ module Boards
   module Lists
     class UpdateService < Boards::BaseService
       def execute(list)
-        return not_authorized if preferences? && !can_read?(list)
-        return not_authorized if position? && !can_admin?(list)
+        update_preferences_result = update_preferences(list) if can_read?(list)
+        update_position_result = update_position(list) if can_admin?(list)
 
-        if update_preferences(list) || update_position(list)
+        if update_preferences_result || update_position_result
           success(list: list)
         else
           error(list.errors.messages, 422)
@@ -30,10 +30,6 @@ module Boards
 
       def preferences
         { collapsed: Gitlab::Utils.to_boolean(params[:collapsed]) }
-      end
-
-      def not_authorized
-        error("Not authorized", 403)
       end
 
       def preferences?

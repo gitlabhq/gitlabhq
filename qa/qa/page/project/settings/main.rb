@@ -11,6 +11,7 @@ module QA
 
           view 'app/views/projects/edit.html.haml' do
             element :advanced_settings
+            element :merge_request_settings
           end
 
           view 'app/views/projects/settings/_general.html.haml' do
@@ -38,6 +39,12 @@ module QA
           def expand_advanced_settings(&block)
             expand_section(:advanced_settings) do
               Advanced.perform(&block)
+            end
+          end
+
+          def expand_merge_requests_settings(&block)
+            expand_section(:merge_request_settings) do
+              MergeRequest.perform(&block)
             end
           end
 

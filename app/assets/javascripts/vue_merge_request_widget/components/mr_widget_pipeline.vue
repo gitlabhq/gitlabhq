@@ -110,7 +110,10 @@ export default {
       <div class="ci-widget-container d-flex">
         <div class="ci-widget-content">
           <div class="media-body">
-            <div class="font-weight-bold js-pipeline-info-container">
+            <div
+              class="font-weight-bold js-pipeline-info-container"
+              data-qa-selector="merge_request_pipeline_info_content"
+            >
               {{ pipeline.details.name }}
               <gl-link :href="pipeline.path" class="pipeline-id font-weight-normal pipeline-number"
                 >#{{ pipeline.id }}</gl-link

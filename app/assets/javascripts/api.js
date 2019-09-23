@@ -74,6 +74,11 @@ const Api = {
       });
   },
 
+  groupLabels(namespace) {
+    const url = Api.buildUrl(Api.groupLabelsPath).replace(':namespace_path', namespace);
+    return axios.get(url).then(({ data }) => data);
+  },
+
   // Return namespaces list. Filtered by query
   namespaces(query, callback) {
     const url = Api.buildUrl(Api.namespacesPath);

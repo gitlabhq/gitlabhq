@@ -48,6 +48,8 @@ export default () => {
         import('ee_component/analytics/cycle_analytics/components/custom_stage_form.vue'),
       AddStageButton: () =>
         import('ee_component/analytics/cycle_analytics/components/add_stage_button.vue'),
+      CustomStageFormContainer: () =>
+        import('ee_component/analytics/cycle_analytics/components/custom_stage_form_container.vue'),
     },
     mixins: [filterMixins, addStageMixin],
     data() {

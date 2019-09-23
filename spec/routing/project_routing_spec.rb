@@ -276,6 +276,11 @@ describe 'project routing' do
       expect(get('/gitlab/gitlabhq/refs/feature%2B45/logs_tree/foo/bar/baz')).to route_to('projects/refs#logs_tree', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'feature+45', path: 'foo/bar/baz')
       expect(get('/gitlab/gitlabhq/refs/feature@45/logs_tree/foo/bar/baz')).to route_to('projects/refs#logs_tree', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'feature@45', path: 'foo/bar/baz')
       expect(get('/gitlab/gitlabhq/refs/stable/logs_tree/files.scss')).to route_to('projects/refs#logs_tree', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'stable', path: 'files.scss')
+      assert_routing({ path: "/gitlab/gitlabhq/refs/stable/logs_tree/new%0A%0Aline.txt",
+                       method: :get },
+                     { controller: 'projects/refs', action: 'logs_tree',
+                       namespace_id: 'gitlab', project_id: 'gitlabhq',
+                       id: "stable", path: "new\n\nline.txt" })
     end
   end
 

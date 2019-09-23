@@ -83,8 +83,8 @@ describe('Issuable Time Tracker', () => {
           initTimeTrackingComponent({
             timeEstimate: 100000, // 1d 3h
             timeSpent: 5000, // 1h 23m
-            timeEstimateHumanReadable: '',
-            timeSpentHumanReadable: '',
+            timeEstimateHumanReadable: '1d 3h',
+            timeSpentHumanReadable: '1h 23m',
           });
         });
 
@@ -94,6 +94,16 @@ describe('Issuable Time Tracker', () => {
             const $comparisonPane = vm.$el.querySelector('.time-tracking-comparison-pane');
 
             expect($comparisonPane).toBeVisible();
+            done();
+          });
+        });
+
+        it('should show full times when the sidebar is collapsed', done => {
+          Vue.nextTick(() => {
+            const timeTrackingText = vm.$el.querySelector('.time-tracking-collapsed-summary span')
+              .innerText;
+
+            expect(timeTrackingText).toBe('1h 23m / 1d 3h');
             done();
           });
         });

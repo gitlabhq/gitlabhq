@@ -1,5 +1,6 @@
 <script>
 import DeprecatedModal from './deprecated_modal.vue';
+import { eventHub } from './recaptcha_eventhub';
 
 export default {
   name: 'RecaptchaModal',
@@ -30,14 +31,11 @@ export default {
   },
 
   mounted() {
-    if (window.recaptchaDialogCallback) {
-      throw new Error('recaptchaDialogCallback is already defined!');
-    }
-    window.recaptchaDialogCallback = this.submit.bind(this);
+    eventHub.$on('submit', this.submit);
   },
 
   beforeDestroy() {
-    window.recaptchaDialogCallback = null;
+    eventHub.$off('submit', this.submit);
   },
 
   methods: {

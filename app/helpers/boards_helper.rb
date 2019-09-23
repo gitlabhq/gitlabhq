@@ -88,7 +88,7 @@ module BoardsHelper
   end
 
   def boards_link_text
-    if multiple_boards_available?
+    if current_board_parent.multiple_issue_boards_available?
       s_("IssueBoards|Boards")
     else
       s_("IssueBoards|Board")

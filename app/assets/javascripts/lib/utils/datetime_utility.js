@@ -537,13 +537,6 @@ export const stringifyTime = (timeObject, fullNameFormat = false) => {
 };
 
 /**
- * Accepts a time string of any size (e.g. '1w 2d 3h 5m' or '1w 2d') and returns
- *  the first non-zero unit/value pair.
- */
-export const abbreviateTime = timeStr =>
-  timeStr.split(' ').filter(unitStr => unitStr.charAt(0) !== '0')[0];
-
-/**
  * Calculates the milliseconds between now and a given date string.
  * The result cannot become negative.
  *

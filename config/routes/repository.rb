@@ -34,7 +34,7 @@ scope format: false do
       # ref regex used in constraints. Regex verification now done in controller.
       get 'logs_tree/*path', action: :logs_tree, as: :logs_file, format: false, constraints: {
         id: /.*/,
-        path: /.*/
+        path: /[^\0]*/
       }
     end
   end
