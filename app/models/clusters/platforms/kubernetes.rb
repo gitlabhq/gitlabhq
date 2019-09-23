@@ -105,19 +105,11 @@ module Clusters
 
       private
 
-      ##
-      # Environment slug can be predicted given an environment
-      # name, so even if the environment isn't persisted yet we
-      # still know what to look for.
-      def environment_slug(name)
-        Gitlab::Slug::Environment.new(name).generate
-      end
-
       def find_persisted_namespace(project, environment_name:)
         Clusters::KubernetesNamespaceFinder.new(
           cluster,
           project: project,
-          environment_slug: environment_slug(environment_name)
+          environment_name: environment_name
         ).execute
       end
 

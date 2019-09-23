@@ -172,7 +172,7 @@ module Clusters
       persisted_namespace = Clusters::KubernetesNamespaceFinder.new(
         self,
         project: project,
-        environment_slug: environment.slug
+        environment_name: environment.name
       ).execute
 
       persisted_namespace&.namespace || Gitlab::Kubernetes::DefaultNamespace.new(self, project: project).from_environment_slug(environment.slug)

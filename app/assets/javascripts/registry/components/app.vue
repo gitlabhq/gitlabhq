@@ -47,7 +47,7 @@ export default {
     dockerConnectionErrorText() {
       return sprintf(
         s__(`ContainerRegistry|We are having trouble connecting to Docker, which could be due to an
-            issue with your project name or path. 
+            issue with your project name or path.
             %{docLinkStart}More Information%{docLinkEnd}`),
         {
           docLinkStart: `<a href="${this.helpPagePath}#docker-connection-error" target="_blank">`,
@@ -58,8 +58,8 @@ export default {
     },
     introText() {
       return sprintf(
-        s__(`ContainerRegistry|With the Docker Container Registry integrated into GitLab, every 
-            project can have its own space to store its Docker images. 
+        s__(`ContainerRegistry|With the Docker Container Registry integrated into GitLab, every
+            project can have its own space to store its Docker images.
             %{docLinkStart}More Information%{docLinkEnd}`),
         {
           docLinkStart: `<a href="${this.helpPagePath}" target="_blank">`,
@@ -109,7 +109,7 @@ export default {
       :svg-path="containersErrorImage"
     >
       <template #description>
-        <p v-html="dockerConnectionErrorText"></p>
+        <p class="js-character-error-text" v-html="dockerConnectionErrorText"></p>
       </template>
     </gl-empty-state>
 

@@ -198,8 +198,9 @@ export default {
               :title="s__('ContainerRegistry|Remove selected images')"
               :aria-label="s__('ContainerRegistry|Remove selected images')"
               @click="deleteMultipleItems()"
-              ><icon name="remove"
-            /></gl-button>
+            >
+              <icon name="remove" />
+            </gl-button>
           </th>
         </tr>
       </thead>
@@ -223,9 +224,9 @@ export default {
             />
           </td>
           <td>
-            <span v-gl-tooltip.bottom class="monospace" :title="item.revision">
-              {{ item.shortRevision }}
-            </span>
+            <span v-gl-tooltip.bottom class="monospace" :title="item.revision">{{
+              item.shortRevision
+            }}</span>
           </td>
           <td>
             {{ formatSize(item.size) }}
@@ -236,9 +237,9 @@ export default {
           </td>
 
           <td>
-            <span v-gl-tooltip.bottom :title="tooltipTitle(item.createdAt)">
-              {{ timeFormated(item.createdAt) }}
-            </span>
+            <span v-gl-tooltip.bottom :title="tooltipTitle(item.createdAt)">{{
+              timeFormated(item.createdAt)
+            }}</span>
           </td>
 
           <td class="content action-buttons">
@@ -262,6 +263,7 @@ export default {
       v-if="shouldRenderPagination"
       :change="onPageChange"
       :page-info="repo.pagination"
+      class="js-registry-pagination"
     />
 
     <gl-modal ref="deleteModal" :modal-id="modalId" ok-variant="danger">

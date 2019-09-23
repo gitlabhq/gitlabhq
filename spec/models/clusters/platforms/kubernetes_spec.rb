@@ -218,7 +218,7 @@ describe Clusters::Platforms::Kubernetes do
 
     before do
       allow(Clusters::KubernetesNamespaceFinder).to receive(:new)
-        .with(cluster, project: project, environment_slug: environment_slug)
+        .with(cluster, project: project, environment_name: environment_name)
         .and_return(double(execute: persisted_namespace))
     end
 

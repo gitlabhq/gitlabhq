@@ -546,7 +546,7 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
 
     before do
       expect(Clusters::KubernetesNamespaceFinder).to receive(:new)
-        .with(cluster, project: environment.project, environment_slug: environment.slug)
+        .with(cluster, project: environment.project, environment_name: environment.name)
         .and_return(double(execute: persisted_namespace))
     end
 

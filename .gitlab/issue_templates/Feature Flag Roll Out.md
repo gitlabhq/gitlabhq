@@ -24,7 +24,7 @@ Remove the `:feature_name` feature flag ...
 
 If applicable, any groups/projects that are happy to have this feature turned on early. Some organizations may wish to test big changes they are interested in with a small subset of users ahead of time for example.
 
-- `gitlab-org/gitlab-ce`/`gitlab-org/gitlab-ee` projects
+- `gitlab-org/gitlab` project
 - `gitlab-org`/`gitlab-com` groups
 - ...
 

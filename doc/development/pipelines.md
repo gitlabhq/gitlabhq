@@ -134,7 +134,7 @@ graph RL;
   M[coverage];
   N[pages];
   O[static-analysis];
-  P["package-and-qa-manual:master<br/>(master schedule only)"];
+  P["schedule:package-and-qa<br/>(master schedule only)"];
   Q[package-and-qa];
   R[package-and-qa-manual];
 
