@@ -756,4 +756,26 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
       end
     end
   end
+
+  describe '#knative_pre_installed?' do
+    subject { cluster.knative_pre_installed? }
+
+    context 'with a GCP provider without cloud_run' do
+      let(:cluster) { create(:cluster, :provided_by_gcp) }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'with a GCP provider with cloud_run' do
+      let(:cluster) { create(:cluster, :provided_by_gcp, :cloud_run_enabled) }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'with a user provider' do
+      let(:cluster) { create(:cluster, :provided_by_user) }
+
+      it { is_expected.to be_falsey }
+    end
+  end
 end

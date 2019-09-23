@@ -58,6 +58,10 @@ FactoryBot.define do
       platform_kubernetes factory: [:cluster_platform_kubernetes, :configured, :rbac_disabled]
     end
 
+    trait :cloud_run_enabled do
+      provider_gcp factory: [:cluster_provider_gcp, :created, :cloud_run_enabled]
+    end
+
     trait :disabled do
       enabled false
     end

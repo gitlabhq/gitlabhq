@@ -35,7 +35,10 @@ export default class ClusterStore {
       environmentsHelpPath: null,
       clustersHelpPath: null,
       deployBoardsHelpPath: null,
+      cloudRunHelpPath: null,
       status: null,
+      providerType: null,
+      preInstalledKnative: false,
       rbac: false,
       statusReason: null,
       applications: {
@@ -95,6 +98,7 @@ export default class ClusterStore {
     environmentsHelpPath,
     clustersHelpPath,
     deployBoardsHelpPath,
+    cloudRunHelpPath,
   ) {
     this.state.helpPath = helpPath;
     this.state.ingressHelpPath = ingressHelpPath;
@@ -102,6 +106,7 @@ export default class ClusterStore {
     this.state.environmentsHelpPath = environmentsHelpPath;
     this.state.clustersHelpPath = clustersHelpPath;
     this.state.deployBoardsHelpPath = deployBoardsHelpPath;
+    this.state.cloudRunHelpPath = cloudRunHelpPath;
   }
 
   setManagePrometheusPath(managePrometheusPath) {
@@ -110,6 +115,14 @@ export default class ClusterStore {
 
   updateStatus(status) {
     this.state.status = status;
+  }
+
+  updateProviderType(providerType) {
+    this.state.providerType = providerType;
+  }
+
+  updatePreInstalledKnative(preInstalledKnative) {
+    this.state.preInstalledKnative = parseBoolean(preInstalledKnative);
   }
 
   updateRbac(rbac) {

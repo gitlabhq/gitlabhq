@@ -27,7 +27,7 @@ module Clusters
       def set_initial_status
         return unless not_installable?
 
-        self.status = 'installable' if cluster&.platform_kubernetes_active?
+        self.status = status_states[:installable] if cluster&.platform_kubernetes_active?
       end
 
       # It can only be uninstalled if there are no other applications installed

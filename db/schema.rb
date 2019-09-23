@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_18_104222) do
+ActiveRecord::Schema.define(version: 2019_09_19_162036) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -965,6 +965,8 @@ ActiveRecord::Schema.define(version: 2019_09_18_104222) do
     t.text "encrypted_access_token"
     t.string "encrypted_access_token_iv"
     t.boolean "legacy_abac", default: false, null: false
+    t.boolean "cloud_run", default: false, null: false
+    t.index ["cloud_run"], name: "index_cluster_providers_gcp_on_cloud_run"
     t.index ["cluster_id"], name: "index_cluster_providers_gcp_on_cluster_id", unique: true
   end
 

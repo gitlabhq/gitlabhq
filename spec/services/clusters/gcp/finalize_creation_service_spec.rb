@@ -107,6 +107,9 @@ describe Clusters::Gcp::FinalizeCreationService, '#execute' do
           namespace: 'default'
         }
       )
+
+      stub_kubeclient_get_cluster_role_binding_error(api_url, 'gitlab-admin')
+      stub_kubeclient_create_cluster_role_binding(api_url)
     end
   end
 
@@ -133,9 +136,6 @@ describe Clusters::Gcp::FinalizeCreationService, '#execute' do
   context 'With an RBAC cluster' do
     before do
       provider.legacy_abac = false
-
-      stub_kubeclient_get_cluster_role_binding_error(api_url, 'gitlab-admin')
-      stub_kubeclient_create_cluster_role_binding(api_url)
     end
 
     include_context 'kubernetes information successfully fetched'
@@ -151,5 +151,23 @@ describe Clusters::Gcp::FinalizeCreationService, '#execute' do
     end
 
     it_behaves_like 'kubernetes information not successfully fetched'
+  end
+
+  context 'With a Cloud Run cluster' do
+    before do
+      provider.cloud_run = true
+    end
+
+    include_context 'kubernetes information successfully fetched'
+
+    it_behaves_like 'success'
+
+    it 'has knative pre-installed' do
+      subject
+      cluster.reload
+
+      expect(cluster.application_knative).to be_present
+      expect(cluster.application_knative).to be_pre_installed
+    end
   end
 end

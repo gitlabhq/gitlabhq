@@ -194,6 +194,10 @@ module Clusters
       end
     end
 
+    def knative_pre_installed?
+      provider&.knative_pre_installed?
+    end
+
     private
 
     def instance_domain

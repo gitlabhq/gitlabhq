@@ -34,5 +34,9 @@ FactoryBot.define do
     trait :abac_enabled do
       legacy_abac true
     end
+
+    trait :cloud_run_enabled do
+      cloud_run true
+    end
   end
 end

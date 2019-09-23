@@ -154,6 +154,7 @@ new Kubernetes cluster to your project:
    - **Number of nodes** - Enter the number of nodes you wish the cluster to have.
    - **Machine type** - The [machine type](https://cloud.google.com/compute/docs/machine-types)
      of the Virtual Machine instance that the cluster will be based on.
+   - **Enable Cloud Run on GKE (beta)** - Check this if you want to use Cloud Run on GKE for this cluster. See the [Cloud Run on GKE section](#cloud-run-on-gke) for more information.
    - **GitLab-managed cluster** - Leave this checked if you want GitLab to manage namespaces and service accounts for this cluster. See the [Managed clusters section](#gitlab-managed-clusters) for more information.
 1. Finally, click the **Create Kubernetes cluster** button.
 
@@ -338,6 +339,15 @@ The default cluster configuration grants access to a wide set of
 functionalities needed to successfully build and deploy a containerized
 application. Bear in mind that the same credentials are used for all the
 applications running on the cluster.
+
+### Cloud Run on GKE
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/16566) in GitLab 12.4.
+
+You can choose to use Cloud Run on GKE in place of installing Knative and Istio
+separately after the cluster has been created. This means that Cloud Run
+(Knative), Istio, and HTTP Load Balancing will be enabled on the cluster at
+create time and cannot be [installed or uninstalled](../../clusters/applications.md) separately.
 
 ### GitLab-managed clusters
 

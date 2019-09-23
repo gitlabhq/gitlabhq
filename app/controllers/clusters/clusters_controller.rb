@@ -170,6 +170,7 @@ class Clusters::ClustersController < Clusters::BaseController
         :zone,
         :num_nodes,
         :machine_type,
+        :cloud_run,
         :legacy_abac
       ]).merge(
         provider_type: :gcp,

@@ -23,12 +23,15 @@
   cluster_type: @cluster.cluster_type,
   cluster_status: @cluster.status_name,
   cluster_status_reason: @cluster.status_reason,
+  provider_type: @cluster.provider_type,
+  pre_installed_knative: @cluster.knative_pre_installed? ? 'true': 'false',
   help_path: help_page_path('user/project/clusters/index.md', anchor: 'installing-applications'),
   ingress_help_path: help_page_path('user/project/clusters/index.md', anchor: 'getting-the-external-endpoint'),
   ingress_dns_help_path: help_page_path('user/project/clusters/index.md', anchor: 'manually-determining-the-external-endpoint'),
   environments_help_path: help_page_path('ci/environments', anchor: 'defining-environments'),
   clusters_help_path: help_page_path('user/project/clusters/index.md', anchor: 'deploying-to-a-kubernetes-cluster'),
   deploy_boards_help_path: help_page_path('user/project/deploy_boards.html', anchor: 'enabling-deploy-boards'),
+  cloud_run_help_path: help_page_path('user/project/clusters/index.md', anchor: 'cloud-run-on-gke'),
   manage_prometheus_path: manage_prometheus_path,
   cluster_id: @cluster.id } }
 

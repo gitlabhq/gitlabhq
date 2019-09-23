@@ -3325,6 +3325,9 @@ msgstr ""
 msgid "ClusterIntegration|Choose which of your environments will use this cluster."
 msgstr ""
 
+msgid "ClusterIntegration|Cloud Run"
+msgstr ""
+
 msgid "ClusterIntegration|Cluster health"
 msgstr ""
 
@@ -3362,6 +3365,9 @@ msgid "ClusterIntegration|Create cluster on"
 msgstr ""
 
 msgid "ClusterIntegration|Did you know?"
+msgstr ""
+
+msgid "ClusterIntegration|Enable Cloud Run on GKE (beta)"
 msgstr ""
 
 msgid "ClusterIntegration|Enable or disable GitLab's connection to your Kubernetes cluster."
@@ -3724,6 +3730,9 @@ msgstr ""
 msgid "ClusterIntegration|Update failed. Please check the logs and try again."
 msgstr ""
 
+msgid "ClusterIntegration|Uses the Cloud Run, Istio, and HTTP Load Balancing addons for this cluster."
+msgstr ""
+
 msgid "ClusterIntegration|Validating project billing status"
 msgstr ""
 
@@ -3758,6 +3767,9 @@ msgid "ClusterIntegration|documentation"
 msgstr ""
 
 msgid "ClusterIntegration|help page"
+msgstr ""
+
+msgid "ClusterIntegration|installed via %{installed_via}"
 msgstr ""
 
 msgid "ClusterIntegration|meets the requirements"

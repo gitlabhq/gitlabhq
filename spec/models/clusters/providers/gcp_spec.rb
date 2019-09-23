@@ -166,6 +166,22 @@ describe Clusters::Providers::Gcp do
     end
   end
 
+  describe '#knative_pre_installed?' do
+    subject { gcp.knative_pre_installed? }
+
+    context 'when cluster is cloud_run' do
+      let(:gcp) { create(:cluster_provider_gcp) }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when cluster is not cloud_run' do
+      let(:gcp) { create(:cluster_provider_gcp, :cloud_run_enabled) }
+
+      it { is_expected.to be_truthy }
+    end
+  end
+
   describe '#api_client' do
     subject { gcp.api_client }
 

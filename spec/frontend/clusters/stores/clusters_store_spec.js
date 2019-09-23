@@ -54,8 +54,11 @@ describe('Clusters Store', () => {
         environmentsHelpPath: null,
         clustersHelpPath: null,
         deployBoardsHelpPath: null,
+        cloudRunHelpPath: null,
         status: mockResponseData.status,
         statusReason: mockResponseData.status_reason,
+        providerType: null,
+        preInstalledKnative: false,
         rbac: false,
         applications: {
           helm: {

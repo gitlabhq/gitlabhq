@@ -11,6 +11,20 @@ shared_examples 'cluster application status specs' do |application_name|
     end
   end
 
+  describe '#status_states' do
+    let(:cluster) { create(:cluster, :provided_by_gcp) }
+
+    subject { described_class.new(cluster: cluster) }
+
+    it 'returns a hash of state values' do
+      expect(subject.status_states).to include(:installed)
+    end
+
+    it 'returns an integer for installed state value' do
+      expect(subject.status_states[:installed]).to eq(3)
+    end
+  end
+
   describe '.available' do
     subject { described_class.available }
 
