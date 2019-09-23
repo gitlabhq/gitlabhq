@@ -124,6 +124,8 @@ class GroupPolicy < BasePolicy
   rule { developer & developer_maintainer_access }.enable :create_projects
   rule { create_projects_disabled }.prevent :create_projects
 
+  rule { maintainer & can?(:create_projects) }.enable :transfer_projects
+
   def access_level
     return GroupMember::NO_ACCESS if @user.nil?
 
