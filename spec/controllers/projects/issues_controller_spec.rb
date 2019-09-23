@@ -1386,7 +1386,7 @@ describe Projects::IssuesController do
   context 'private project with token authentication' do
     let(:private_project) { create(:project, :private) }
 
-    it_behaves_like 'authenticates sessionless user', :index, :atom do
+    it_behaves_like 'authenticates sessionless user', :index, :atom, ignore_incrementing: true do
       before do
         default_params.merge!(project_id: private_project, namespace_id: private_project.namespace)
 
@@ -1394,7 +1394,7 @@ describe Projects::IssuesController do
       end
     end
 
-    it_behaves_like 'authenticates sessionless user', :calendar, :ics do
+    it_behaves_like 'authenticates sessionless user', :calendar, :ics, ignore_incrementing: true do
       before do
         default_params.merge!(project_id: private_project, namespace_id: private_project.namespace)
 
