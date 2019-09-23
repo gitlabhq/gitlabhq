@@ -142,7 +142,7 @@ describe Projects::CommitsController do
 
   context 'token authentication' do
     context 'public project' do
-      it_behaves_like 'authenticates sessionless user', :show, :atom, public: true do
+      it_behaves_like 'authenticates sessionless user', :show, :atom, { public: true, ignore_incrementing: true } do
         before do
           public_project = create(:project, :repository, :public)
 
@@ -152,7 +152,7 @@ describe Projects::CommitsController do
     end
 
     context 'private project' do
-      it_behaves_like 'authenticates sessionless user', :show, :atom, public: false do
+      it_behaves_like 'authenticates sessionless user', :show, :atom, { public: false, ignore_incrementing: true } do
         before do
           private_project = create(:project, :repository, :private)
           private_project.add_maintainer(user)

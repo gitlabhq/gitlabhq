@@ -1149,7 +1149,7 @@ describe ProjectsController do
   context 'private project with token authentication' do
     let(:private_project) { create(:project, :private) }
 
-    it_behaves_like 'authenticates sessionless user', :show, :atom do
+    it_behaves_like 'authenticates sessionless user', :show, :atom, ignore_incrementing: true do
       before do
         default_params.merge!(id: private_project, namespace_id: private_project.namespace)
 
