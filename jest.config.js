@@ -19,7 +19,8 @@ let testMatch = ['<rootDir>/spec/frontend/**/*_spec.js', '<rootDir>/ee/spec/fron
 
 // workaround for eslint-import-resolver-jest only resolving in test files
 // see https://github.com/JoinColony/eslint-import-resolver-jest#note
-const isESLint = module.parent.filename.includes('/eslint-import-resolver-jest/');
+const { filename: parentModuleName } = module.parent;
+const isESLint = parentModuleName && parentModuleName.includes('/eslint-import-resolver-jest/');
 if (isESLint) {
   testMatch = testMatch.map(path => path.replace('_spec.js', ''));
 }

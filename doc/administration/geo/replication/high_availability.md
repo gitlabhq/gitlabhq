@@ -71,8 +71,16 @@ high availability configuration documentation for
 [PostgreSQL](../../high_availability/database.md#configuring-the-application-nodes)
 and [Redis](../../high_availability/redis.md#example-configuration-for-the-gitlab-application).
 
-The **primary** database will require modification later, as part of
-[step 2](#step-2-configure-the-main-read-only-replica-postgresql-database-on-the-secondary-node).
+### Step 2: Configure the **primary** database
+
+1. Edit `/etc/gitlab/gitlab.rb` and add the following:
+
+   ```ruby
+   ##
+   ## Configure the Geo primary role and the PostgreSQL role
+   ##
+   roles ['geo_primary_role', 'postgres_role']
+   ```
 
 ## Configure a **secondary** node
 
@@ -115,9 +123,9 @@ the **primary** database. Use the following as a guide.
 
    ```ruby
    ##
-   ## Configure the PostgreSQL role
+   ## Configure the Geo secondary role and the PostgreSQL role
    ##
-   roles ['postgres_role']
+   roles ['geo_secondary_role', 'postgres_role']
 
    ##
    ## Secondary address

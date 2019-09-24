@@ -38,6 +38,10 @@ module Gitlab
         gon.current_user_fullname = current_user.name
         gon.current_user_avatar_url = current_user.avatar_url
       end
+
+      # Initialize gon.features with any flags that should be
+      # made globally available to the frontend
+      push_frontend_feature_flag(:suppress_ajax_navigation_errors, default_enabled: true)
     end
 
     # Exposes the state of a feature flag to the frontend code.
