@@ -12,7 +12,6 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   before_action :expire_etag_cache, only: [:index]
   before_action only: [:metrics, :additional_metrics, :metrics_dashboard] do
     push_frontend_feature_flag(:environment_metrics_use_prometheus_endpoint, default_enabled: true)
-    push_frontend_feature_flag(:environment_metrics_show_multiple_dashboards)
     push_frontend_feature_flag(:environment_metrics_additional_panel_types)
     push_frontend_feature_flag(:prometheus_computed_alerts)
   end
@@ -168,7 +167,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
         dashboard_path: params[:dashboard],
         **dashboard_params.to_h.symbolize_keys
       )
-    elsif Feature.enabled?(:environment_metrics_show_multiple_dashboards, project)
+    else
       result = dashboard_finder.find(
         project,
         current_user,
@@ -177,8 +176,6 @@ class Projects::EnvironmentsController < Projects::ApplicationController
       )
 
       result[:all_dashboards] = dashboard_finder.find_all_paths(project)
-    else
-      result = dashboard_finder.find(project, current_user, environment: environment)
     end
 
     respond_to do |format|

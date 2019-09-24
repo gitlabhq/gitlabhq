@@ -1,5 +1,7 @@
 <script>
 import $ from 'jquery';
+import { __ } from '~/locale';
+import createFlash from '~/flash';
 import statusIcon from '../mr_widget_status_icon.vue';
 import tooltip from '../../../vue_shared/directives/tooltip';
 import eventHub from '../../event_hub';
@@ -29,12 +31,12 @@ export default {
         .then(res => res.data)
         .then(data => {
           eventHub.$emit('UpdateWidgetData', data);
-          new window.Flash('The merge request can now be merged.', 'notice'); // eslint-disable-line
+          createFlash(__('The merge request can now be merged.'), 'notice');
           $('.merge-request .detail-page-description .title').text(this.mr.title);
         })
         .catch(() => {
           this.isMakingRequest = false;
-          new window.Flash('Something went wrong. Please try again.'); // eslint-disable-line
+          createFlash(__('Something went wrong. Please try again.'));
         });
     },
   },

@@ -1,8 +1,15 @@
+.except-deploys:
+  except:
+    refs:
+      - /^[\d-]+-stable(-ee)?$/
+      - /^\d+-\d+-auto-deploy-\d+$/
+
 .review-docker:
   extends:
     - .default-tags
     - .default-retry
     - .default-only
+    - .except-deploys
   image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-qa-alpine
   services:
     - docker:19.03.0-dind
@@ -36,6 +43,7 @@ schedule:review-cleanup:
     - .default-only
     - .only-code-qa-changes
     - .only-review-schedules
+    - .except-deploys
   stage: prepare
   image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-charts-build-base
   allow_failure: true
@@ -52,6 +60,7 @@ schedule:review-cleanup:
   extends:
     - .default-only
     - .only-code-qa-changes
+    - .except-deploys
   image: ruby:2.6-alpine
   stage: review-prepare
   before_script:
@@ -80,6 +89,7 @@ schedule:review-build-cng:
     - .default-retry
     - .default-only
     - .only-code-qa-changes
+    - .except-deploys
   stage: review
   image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-charts-build-base
   dependencies: []
@@ -257,6 +267,7 @@ parallel-spec-reports:
     - .default-only
     - .only-code-qa-changes
     - .only-review
+    - .except-deploys
   image: ruby:2.6-alpine
   stage: post-test
   dependencies: ["review-qa-all"]

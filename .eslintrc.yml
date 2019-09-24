@@ -1,5 +1,6 @@
 extends:
   - '@gitlab'
+  - plugin:promise/recommended
 globals:
   __webpack_public_path__: true
   gl: false
@@ -42,6 +43,11 @@ rules:
   no-jquery/no-load: error
   no-jquery/no-load-shorthand: error
   no-jquery/no-serialize: error
+  promise/always-return: off
+  promise/no-callback-in-promise: off
+  promise/no-nesting: off
+  promise/param-names: off
+  promise/valid-params: off
 overrides:
   files:
     - '**/spec/**/*'

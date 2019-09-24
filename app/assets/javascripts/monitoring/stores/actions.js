@@ -37,10 +37,9 @@ export const setEndpoints = ({ commit }, endpoints) => {
 
 export const setFeatureFlags = (
   { commit },
-  { prometheusEndpointEnabled, multipleDashboardsEnabled, additionalPanelTypesEnabled },
+  { prometheusEndpointEnabled, additionalPanelTypesEnabled },
 ) => {
   commit(types.SET_DASHBOARD_ENABLED, prometheusEndpointEnabled);
-  commit(types.SET_MULTIPLE_DASHBOARDS_ENABLED, multipleDashboardsEnabled);
   commit(types.SET_ADDITIONAL_PANEL_TYPES_ENABLED, additionalPanelTypesEnabled);
 };
 
@@ -51,13 +50,8 @@ export const setShowErrorBanner = ({ commit }, enabled) => {
 export const requestMetricsDashboard = ({ commit }) => {
   commit(types.REQUEST_METRICS_DATA);
 };
-export const receiveMetricsDashboardSuccess = (
-  { state, commit, dispatch },
-  { response, params },
-) => {
-  if (state.multipleDashboardsEnabled) {
-    commit(types.SET_ALL_DASHBOARDS, response.all_dashboards);
-  }
+export const receiveMetricsDashboardSuccess = ({ commit, dispatch }, { response, params }) => {
+  commit(types.SET_ALL_DASHBOARDS, response.all_dashboards);
   commit(types.RECEIVE_METRICS_DATA_SUCCESS, response.dashboard.panel_groups);
   dispatch('fetchPrometheusMetrics', params);
 };

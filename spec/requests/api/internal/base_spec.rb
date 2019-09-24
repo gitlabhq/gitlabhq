@@ -403,12 +403,30 @@ describe API::Internal::Base do
         end
 
         context 'when receive_max_input_size has been updated' do
-          it 'returns custom git config' do
+          before do
             allow(Gitlab::CurrentSettings).to receive(:receive_max_input_size) { 1 }
+          end
 
+          it 'returns custom git config' do
             push(key, project)
 
             expect(json_response["git_config_options"]).to be_present
+            expect(json_response["git_config_options"]).to include("uploadpack.allowFilter=true")
+            expect(json_response["git_config_options"]).to include("uploadpack.allowAnySHA1InWant=true")
+          end
+
+          context 'when gitaly_upload_pack_filter feature flag is disabled' do
+            before do
+              stub_feature_flags(gitaly_upload_pack_filter: { enabled: false, thing: project })
+            end
+
+            it 'does not include allowFilter and allowAnySha1InWant in the git config options' do
+              push(key, project)
+
+              expect(json_response["git_config_options"]).to be_present
+              expect(json_response["git_config_options"]).not_to include("uploadpack.allowFilter=true")
+              expect(json_response["git_config_options"]).not_to include("uploadpack.allowAnySHA1InWant=true")
+            end
           end
         end
 

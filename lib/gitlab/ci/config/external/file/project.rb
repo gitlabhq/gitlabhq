@@ -6,11 +6,12 @@ module Gitlab
       module External
         module File
           class Project < Base
+            extend ::Gitlab::Utils::Override
             include Gitlab::Utils::StrongMemoize
 
             attr_reader :project_name, :ref_name
 
-            def initialize(params, context = {})
+            def initialize(params, context)
               @location = params[:file]
               @project_name = params[:project]
               @ref_name = params[:ref] || 'HEAD'
@@ -65,11 +66,13 @@ module Gitlab
               end
             end
 
-            def expand_context
-              super.merge(
+            override :expand_context_attrs
+            def expand_context_attrs
+              {
                 project: project,
                 sha: sha,
-                user: context.user)
+                user: context.user
+              }
             end
           end
         end

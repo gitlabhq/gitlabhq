@@ -1,13 +1,14 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'spec_helper'
 
 describe Gitlab::Ci::Config::External::File::Base do
-  let(:context) { described_class::Context.new(nil, 'HEAD', nil, Set.new) }
+  let(:context_params) { { sha: 'HEAD' } }
+  let(:context) { Gitlab::Ci::Config::External::Context.new(**context_params) }
 
   let(:test_class) do
     Class.new(described_class) do
-      def initialize(params, context = {})
+      def initialize(params, context)
         @location = params
 
         super
@@ -20,6 +21,9 @@ describe Gitlab::Ci::Config::External::File::Base do
   before do
     allow_any_instance_of(test_class)
       .to receive(:content).and_return('key: value')
+
+    allow_any_instance_of(Gitlab::Ci::Config::External::Context)
+      .to receive(:check_execution_time!)
   end
 
   describe '#matching?' do

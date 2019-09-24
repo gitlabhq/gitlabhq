@@ -483,10 +483,8 @@ describe Projects::EnvironmentsController do
     end
 
     shared_examples_for 'the default dashboard' do
-      all_dashboards = Feature.enabled?(:environment_metrics_show_multiple_dashboards)
-
       it_behaves_like '200 response'
-      it_behaves_like 'includes all dashboards' if all_dashboards
+      it_behaves_like 'includes all dashboards'
 
       it 'is the default dashboard' do
         get :metrics_dashboard, params: environment_params(dashboard_params)
@@ -618,16 +616,6 @@ describe Projects::EnvironmentsController do
     it_behaves_like 'the default dashboard'
     it_behaves_like 'dashboard can be specified'
     it_behaves_like 'dashboard can be embedded'
-
-    context 'when multiple dashboards is disabled' do
-      before do
-        stub_feature_flags(environment_metrics_show_multiple_dashboards: false)
-      end
-
-      it_behaves_like 'the default dashboard'
-      it_behaves_like 'dashboard cannot be specified'
-      it_behaves_like 'dashboard can be embedded'
-    end
   end
 
   describe 'GET #search' do

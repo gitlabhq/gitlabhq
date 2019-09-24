@@ -5,7 +5,8 @@ require 'spec_helper'
 describe Gitlab::Ci::Config::External::File::Remote do
   include StubRequests
 
-  let(:context) { described_class::Context.new(nil, '12345', nil, Set.new) }
+  let(:context_params) { { sha: '12345' } }
+  let(:context) { Gitlab::Ci::Config::External::Context.new(**context_params) }
   let(:params) { { remote: location } }
   let(:remote_file) { described_class.new(params, context) }
   let(:location) { 'https://gitlab.com/gitlab-org/gitlab-foss/blob/1234/.gitlab-ci-1.yml' }
@@ -17,6 +18,11 @@ describe Gitlab::Ci::Config::External::File::Remote do
         - which ruby
         - bundle install --jobs $(nproc)  "${FLAGS[@]}"
     HEREDOC
+  end
+
+  before do
+    allow_any_instance_of(Gitlab::Ci::Config::External::Context)
+      .to receive(:check_execution_time!)
   end
 
   describe '#matching?' do
@@ -187,10 +193,10 @@ describe Gitlab::Ci::Config::External::File::Remote do
   describe '#expand_context' do
     let(:params) { { remote: 'http://remote' } }
 
-    subject { remote_file.send(:expand_context) }
+    subject { remote_file.send(:expand_context_attrs) }
 
     it 'drops all parameters' do
-      is_expected.to include(user: nil, project: nil, sha: nil)
+      is_expected.to be_empty
     end
   end
 end

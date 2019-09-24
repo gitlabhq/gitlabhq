@@ -372,6 +372,12 @@ module IssuablesHelper
     finder.class.scalar_params.any? { |p| params[p].present? }
   end
 
+  def assignee_sidebar_data(assignee, merge_request: nil)
+    { avatar_url: assignee.avatar_url, name: assignee.name, username: assignee.username }.tap do |data|
+      data[:can_merge] = merge_request.can_be_merged_by?(assignee) if merge_request
+    end
+  end
+
   private
 
   def sidebar_gutter_collapsed?

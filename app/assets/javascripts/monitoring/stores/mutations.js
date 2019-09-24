@@ -89,9 +89,6 @@ export default {
   [types.SET_DASHBOARD_ENABLED](state, enabled) {
     state.useDashboardEndpoint = enabled;
   },
-  [types.SET_MULTIPLE_DASHBOARDS_ENABLED](state, enabled) {
-    state.multipleDashboardsEnabled = enabled;
-  },
   [types.SET_GETTING_STARTED_EMPTY_STATE](state) {
     state.emptyState = 'gettingStarted';
   },

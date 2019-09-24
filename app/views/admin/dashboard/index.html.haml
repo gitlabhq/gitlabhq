@@ -40,7 +40,7 @@
       .info-well
         .well-segment.admin-well.admin-well-features
           %h4 Features
-          = feature_entry(_('Sign up'), href: admin_application_settings_path(anchor: 'js-signup-settings'))
+          = feature_entry(_('Sign up'), href: admin_application_settings_path(anchor: 'js-signup-settings'), enabled: allow_signup?)
           = feature_entry(_('LDAP'), enabled: Gitlab.config.ldap.enabled)
           = feature_entry(_('Gravatar'), href: admin_application_settings_path(anchor: 'js-account-settings'), enabled: gravatar_enabled?)
           = feature_entry(_('OmniAuth'), href: admin_application_settings_path(anchor: 'js-signin-settings'), enabled: Gitlab::Auth.omniauth_enabled?)

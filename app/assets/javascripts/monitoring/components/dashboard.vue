@@ -175,7 +175,6 @@ export default {
       'metricsWithData',
       'useDashboardEndpoint',
       'allDashboards',
-      'multipleDashboardsEnabled',
       'additionalPanelTypesEnabled',
     ]),
     firstDashboard() {
@@ -318,7 +317,6 @@ export default {
       <div class="row">
         <template v-if="environmentsEndpoint">
           <gl-form-group
-            v-if="multipleDashboardsEnabled"
             :label="__('Dashboard')"
             label-size="sm"
             label-for="monitor-dashboards-dropdown"

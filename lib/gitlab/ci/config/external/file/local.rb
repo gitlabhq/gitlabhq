@@ -6,6 +6,7 @@ module Gitlab
       module External
         module File
           class Local < Base
+            extend ::Gitlab::Utils::Override
             include Gitlab::Utils::StrongMemoize
 
             def initialize(params, context)
@@ -34,11 +35,13 @@ module Gitlab
               context.project.repository.blob_data_at(context.sha, location)
             end
 
-            def expand_context
-              super.merge(
+            override :expand_context_attrs
+            def expand_context_attrs
+              {
                 project: context.project,
                 sha: context.sha,
-                user: context.user)
+                user: context.user
+              }
             end
           end
         end

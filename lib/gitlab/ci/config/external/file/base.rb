@@ -12,8 +12,6 @@ module Gitlab
 
             YAML_WHITELIST_EXTENSION = /.+\.(yml|yaml)$/i.freeze
 
-            Context = Struct.new(:project, :sha, :user, :expandset)
-
             def initialize(params, context)
               @params = params
               @context = context
@@ -69,9 +67,14 @@ module Gitlab
             end
 
             def validate!
+              validate_execution_time!
               validate_location!
               validate_content! if errors.none?
               validate_hash! if errors.none?
+            end
+
+            def validate_execution_time!
+              context.check_execution_time!
             end
 
             def validate_location!
@@ -95,11 +98,11 @@ module Gitlab
             end
 
             def expand_includes(hash)
-              External::Processor.new(hash, **expand_context).perform
+              External::Processor.new(hash, context.mutate(expand_context_attrs)).perform
             end
 
-            def expand_context
-              { project: nil, sha: nil, user: nil, expandset: context.expandset }
+            def expand_context_attrs
+              {}
             end
           end
         end

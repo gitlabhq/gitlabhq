@@ -2289,6 +2289,10 @@ Nested includes allow you to compose a set of includes.
 A total of 50 includes is allowed.
 Duplicate includes are considered a configuration error.
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/28212) in GitLab 12.4.
+
+A hard limit of 30 seconds was set for resolving all files.
+
 #### `include` examples
 
 Here are a few more `include` examples.

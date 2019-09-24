@@ -7,6 +7,11 @@ describe Gitlab::Ci::Config do
 
   set(:user) { create(:user) }
 
+  before do
+    allow_any_instance_of(Gitlab::Ci::Config::External::Context)
+      .to receive(:check_execution_time!)
+  end
+
   let(:config) do
     described_class.new(yml, project: nil, sha: nil, user: nil)
   end
@@ -300,6 +305,49 @@ describe Gitlab::Ci::Config do
           described_class::ConfigError,
           'Include `{"remote":"http://url","local":"/local/file.yml"}` needs to match exactly one accessor!'
         )
+      end
+    end
+
+    context "when it takes too long to evaluate includes" do
+      before do
+        allow_any_instance_of(Gitlab::Ci::Config::External::Context)
+          .to receive(:check_execution_time!)
+          .and_call_original
+
+        allow_any_instance_of(Gitlab::Ci::Config::External::Context)
+          .to receive(:set_deadline)
+          .with(described_class::TIMEOUT_SECONDS)
+          .and_call_original
+
+        allow_any_instance_of(Gitlab::Ci::Config::External::Context)
+          .to receive(:execution_expired?)
+          .and_return(true)
+      end
+
+      it 'raises error TimeoutError' do
+        expect(Gitlab::Sentry).to receive(:track_exception)
+
+        expect { config }.to raise_error(
+          described_class::ConfigError,
+          'Resolving config took longer than expected'
+        )
+      end
+    end
+
+    context 'when context expansion timeout is disabled' do
+      before do
+        allow_any_instance_of(Gitlab::Ci::Config::External::Context)
+          .to receive(:check_execution_time!)
+          .and_call_original
+
+        allow(Feature)
+          .to receive(:enabled?)
+          .with(:ci_limit_yaml_expansion, project, default_enabled: true)
+          .and_return(false)
+      end
+
+      it 'does not raises errors' do
+        expect { config }.not_to raise_error
       end
     end
 
