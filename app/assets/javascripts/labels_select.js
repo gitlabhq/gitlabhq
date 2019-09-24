@@ -1,4 +1,4 @@
-/* eslint-disable no-useless-return, func-names, no-var, no-underscore-dangle, one-var, prefer-template, no-new, consistent-return, no-shadow, no-param-reassign, vars-on-top, no-lonely-if, no-else-return, dot-notation, no-empty */
+/* eslint-disable no-useless-return, func-names, no-var, no-underscore-dangle, one-var, no-new, consistent-return, no-shadow, no-param-reassign, vars-on-top, no-lonely-if, no-else-return, dot-notation, no-empty */
 /* global Issuable */
 /* global ListLabel */
 
@@ -70,7 +70,7 @@ export default class LabelsSelect {
       $loading = $block.find('.block-loading').fadeOut();
       fieldName = $dropdown.data('fieldName');
       initialSelected = $selectbox
-        .find('input[name="' + $dropdown.data('fieldName') + '"]')
+        .find(`input[name="${$dropdown.data('fieldName')}"]`)
         .map(function() {
           return this.value;
         })
@@ -92,7 +92,7 @@ export default class LabelsSelect {
         var data, selected;
         selected = $dropdown
           .closest('.selectbox')
-          .find("input[name='" + fieldName + "']")
+          .find(`input[name='${fieldName}']`)
           .map(function() {
             return this.value;
           })
@@ -267,11 +267,7 @@ export default class LabelsSelect {
 
               if (
                 $form.find(
-                  "input[type='hidden'][name='" +
-                    this.fieldName +
-                    "'][value='" +
-                    dropdownValue +
-                    "']",
+                  `input[type='hidden'][name='${this.fieldName}'][value='${dropdownValue}']`,
                 ).length
               ) {
                 selectedClass.push('is-active');
@@ -284,8 +280,7 @@ export default class LabelsSelect {
           }
 
           if (label.color) {
-            colorEl =
-              "<span class='dropdown-label-box' style='background: " + label.color + "'></span>";
+            colorEl = `<span class='dropdown-label-box' style='background: ${label.color}'></span>`;
           } else {
             colorEl = '';
           }

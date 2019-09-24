@@ -1,4 +1,4 @@
-/* eslint-disable no-param-reassign, prefer-template, no-void, consistent-return */
+/* eslint-disable no-param-reassign, no-void, consistent-return */
 
 import AccessorUtilities from './lib/utils/accessor';
 
@@ -10,7 +10,7 @@ export default class Autosave {
     if (key.join != null) {
       key = key.join('/');
     }
-    this.key = 'autosave/' + key;
+    this.key = `autosave/${key}`;
     this.field.data('autosave', this);
     this.restore();
     this.field.on('input', () => this.save());

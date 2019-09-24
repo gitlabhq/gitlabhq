@@ -1,4 +1,4 @@
-/* eslint-disable func-names, no-var, one-var, consistent-return, no-return-assign, prefer-template, no-shadow, no-else-return, @gitlab/i18n/no-non-i18n-strings */
+/* eslint-disable func-names, no-var, one-var, consistent-return, no-return-assign, no-shadow, no-else-return, @gitlab/i18n/no-non-i18n-strings */
 
 import $ from 'jquery';
 import RefSelectDropdown from './ref_select_dropdown';
@@ -70,10 +70,10 @@ export default class NewBranchForm {
           case !/\/{2,}/g.test(value):
             return 'consecutive slashes';
           default:
-            return "'" + value + "'";
+            return `'${value}'`;
         }
       });
-      return restriction.prefix + ' ' + formatted.join(restriction.conjunction);
+      return `${restriction.prefix} ${formatted.join(restriction.conjunction)}`;
     };
     validator = (function(_this) {
       return function(errors, restriction) {

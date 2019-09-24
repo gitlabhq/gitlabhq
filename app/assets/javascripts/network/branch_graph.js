@@ -1,4 +1,4 @@
-/* eslint-disable func-names, no-var, one-var, no-loop-func, consistent-return, prefer-template, camelcase */
+/* eslint-disable func-names, no-var, one-var, no-loop-func, consistent-return, camelcase */
 
 import $ from 'jquery';
 import { __ } from '../locale';
@@ -223,7 +223,7 @@ export default (function() {
     shortrefs = commit.refs;
     // Truncate if longer than 15 chars
     if (shortrefs.length > 17) {
-      shortrefs = shortrefs.substr(0, 15) + '…';
+      shortrefs = `${shortrefs.substr(0, 15)}…`;
     }
     text = r.text(x + 4, y, shortrefs).attr({
       'text-anchor': 'start',

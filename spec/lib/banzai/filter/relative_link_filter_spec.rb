@@ -3,6 +3,9 @@
 require 'spec_helper'
 
 describe Banzai::Filter::RelativeLinkFilter do
+  include GitHelpers
+  include RepoHelpers
+
   def filter(doc, contexts = {})
     contexts.reverse_merge!({
       commit:         commit,
@@ -34,6 +37,12 @@ describe Banzai::Filter::RelativeLinkFilter do
     %(<div>#{element}</div>)
   end
 
+  def allow_gitaly_n_plus_1
+    Gitlab::GitalyClient.allow_n_plus_1_calls do
+      yield
+    end
+  end
+
   let(:project)        { create(:project, :repository, :public) }
   let(:user)           { create(:user) }
   let(:group)          { nil }
@@ -43,6 +52,19 @@ describe Banzai::Filter::RelativeLinkFilter do
   let(:project_wiki)   { nil }
   let(:requested_path) { '/' }
   let(:only_path)      { true }
+
+  it 'does not trigger a gitaly n+1', :request_store do
+    raw_doc = ""
+
+    allow_gitaly_n_plus_1 do
+      30.times do |i|
+        create_file_in_repo(project, ref, ref, "new_file_#{i}", "x" )
+        raw_doc += link("new_file_#{i}")
+      end
+    end
+
+    expect { filter(raw_doc) }.to change { Gitlab::GitalyClient.get_request_count }.by(2)
+  end
 
   shared_examples :preserve_unchanged do
     it 'does not modify any relative URL in anchor' do
@@ -244,7 +266,8 @@ describe Banzai::Filter::RelativeLinkFilter do
     end
 
     context 'when ref name contains special chars' do
-      let(:ref) {'mark#\'@],+;-._/#@!$&()+down'}
+      let(:ref) { 'mark#\'@],+;-._/#@!$&()+down' }
+      let(:path) { 'files/images/logo-black.png' }
 
       it 'correctly escapes the ref' do
         # Addressable won't escape the '#', so we do this manually
@@ -252,8 +275,9 @@ describe Banzai::Filter::RelativeLinkFilter do
 
         # Stub this method so the branch doesn't actually need to be in the repo
         allow_any_instance_of(described_class).to receive(:uri_type).and_return(:raw)
+        allow_any_instance_of(described_class).to receive(:get_uri_types).and_return({ path: :tree })
 
-        doc = filter(link('files/images/logo-black.png'))
+        doc = filter(link(path))
 
         expect(doc.at_css('a')['href'])
           .to eq "/#{project_path}/raw/#{ref_escaped}/files/images/logo-black.png"

@@ -76,6 +76,30 @@ module Gitlab
         GitalyClient::BlobsStitcher.new(response)
       end
 
+      def get_blob_types(revision_paths, limit = -1)
+        return {} if revision_paths.empty?
+
+        request_revision_paths = revision_paths.map do |rev, path|
+          Gitaly::GetBlobsRequest::RevisionPath.new(revision: rev, path: encode_binary(path))
+        end
+
+        request = Gitaly::GetBlobsRequest.new(
+          repository: @gitaly_repo,
+          revision_paths: request_revision_paths,
+          limit: limit
+        )
+
+        response = GitalyClient.call(
+          @gitaly_repo.storage_name,
+          :blob_service,
+          :get_blobs,
+          request,
+          timeout: GitalyClient.fast_timeout
+        )
+
+        map_blob_types(response)
+      end
+
       def get_new_lfs_pointers(revision, limit, not_in, dynamic_timeout = nil)
         request = Gitaly::GetNewLFSPointersRequest.new(
           repository: @gitaly_repo,
@@ -131,6 +155,16 @@ module Gitlab
             )
           end
         end
+      end
+
+      def map_blob_types(response)
+        types = {}
+
+        response.each do |msg|
+          types[msg.path.dup.force_encoding('utf-8')] = msg.type.downcase
+        end
+
+        types
       end
     end
   end

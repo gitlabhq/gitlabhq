@@ -1,4 +1,4 @@
-/* eslint-disable func-names, no-var, no-else-return, consistent-return, prefer-template, one-var, no-return-assign, no-unused-expressions, no-sequences */
+/* eslint-disable func-names, no-var, no-else-return, consistent-return, one-var, no-return-assign, no-unused-expressions, no-sequences */
 
 import $ from 'jquery';
 
@@ -49,13 +49,13 @@ export default class ImageFile {
   activateViewMode(viewMode) {
     $('.view-modes-menu li', this.file)
       .removeClass('active')
-      .filter('.' + viewMode)
+      .filter(`.${viewMode}`)
       .addClass('active');
-    return $('.view:visible:not(.' + viewMode + ')', this.file).fadeOut(
+    return $(`.view:visible:not(.${viewMode})`, this.file).fadeOut(
       200,
       (function(_this) {
         return function() {
-          $('.view.' + viewMode, _this.file).fadeIn(200);
+          $(`.view.${viewMode}`, _this.file).fadeIn(200);
           return _this.initView(viewMode);
         };
       })(this),
@@ -139,8 +139,8 @@ export default class ImageFile {
               }
             });
             return _this.requestImageInfo($('img', wrap), (width, height) => {
-              $('.image-info .meta-width', wrap).text(width + 'px');
-              $('.image-info .meta-height', wrap).text(height + 'px');
+              $('.image-info .meta-width', wrap).text(`${width}px`);
+              $('.image-info .meta-height', wrap).text(`${height}px`);
               return $('.image-info', wrap).removeClass('hide');
             });
           };

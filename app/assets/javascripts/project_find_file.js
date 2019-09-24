@@ -1,4 +1,4 @@
-/* eslint-disable func-names, no-var, consistent-return, one-var, no-cond-assign, prefer-template, no-return-assign */
+/* eslint-disable func-names, no-var, consistent-return, one-var, no-cond-assign, no-return-assign */
 
 import $ from 'jquery';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
@@ -112,7 +112,7 @@ export default class ProjectFindFile {
       if (searchText) {
         matches = fuzzaldrinPlus.match(filePath, searchText);
       }
-      blobItemUrl = this.options.blobUrlTemplate + '/' + encodeURIComponent(filePath);
+      blobItemUrl = `${this.options.blobUrlTemplate}/${encodeURIComponent(filePath)}`;
       html = ProjectFindFile.makeHtml(filePath, matches, blobItemUrl);
       results.push(this.element.find('.tree-table > tbody').append(html));
     }

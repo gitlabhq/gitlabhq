@@ -1,4 +1,4 @@
-/* eslint-disable func-names, no-underscore-dangle, no-var, one-var, vars-on-top, no-shadow, no-cond-assign, no-return-assign, no-else-return, camelcase, no-lonely-if, guard-for-in, no-restricted-syntax, consistent-return, prefer-template, no-param-reassign, no-loop-func */
+/* eslint-disable func-names, no-underscore-dangle, no-var, one-var, vars-on-top, no-shadow, no-cond-assign, no-return-assign, no-else-return, camelcase, no-lonely-if, guard-for-in, no-restricted-syntax, consistent-return, no-param-reassign, no-loop-func */
 
 import $ from 'jquery';
 import _ from 'underscore';
@@ -272,7 +272,7 @@ GitLabDropdown = (function() {
 
   NON_SELECTABLE_CLASSES = '.divider, .separator, .dropdown-header, .dropdown-menu-empty-item';
 
-  SELECTABLE_CLASSES = '.dropdown-content li:not(' + NON_SELECTABLE_CLASSES + ', .option-hidden)';
+  SELECTABLE_CLASSES = `.dropdown-content li:not(${NON_SELECTABLE_CLASSES}, .option-hidden)`;
 
   CURSOR_SELECT_SCROLL_PADDING = 5;
 
@@ -359,9 +359,9 @@ GitLabDropdown = (function() {
         instance: this,
         elements: (function(_this) {
           return function() {
-            selector = '.dropdown-content li:not(' + NON_SELECTABLE_CLASSES + ')';
+            selector = `.dropdown-content li:not(${NON_SELECTABLE_CLASSES})`;
             if (_this.dropdown.find('.dropdown-toggle-page').length) {
-              selector = '.dropdown-page-one ' + selector;
+              selector = `.dropdown-page-one ${selector}`;
             }
             return $(selector, this.instance.dropdown);
           };
@@ -377,7 +377,7 @@ GitLabDropdown = (function() {
             if (_this.filterInput.val() !== '') {
               selector = SELECTABLE_CLASSES;
               if (_this.dropdown.find('.dropdown-toggle-page').length) {
-                selector = '.dropdown-page-one ' + selector;
+                selector = `.dropdown-page-one ${selector}`;
               }
               if ($(_this.el).is('input')) {
                 currentIndex = -1;
@@ -693,7 +693,7 @@ GitLabDropdown = (function() {
       .split('')
       .map((character, i) => {
         if (indexOf.call(occurrences, i) !== -1) {
-          return '<b>' + character + '</b>';
+          return `<b>${character}</b>`;
         } else {
           return character;
         }
@@ -738,9 +738,7 @@ GitLabDropdown = (function() {
     } else if (value != null) {
       field = this.dropdown
         .parent()
-        .find(
-          "input[name='" + fieldName + "'][value='" + value.toString().replace(/'/g, "\\'") + "']",
-        );
+        .find(`input[name='${fieldName}'][value='${value.toString().replace(/'/g, "\\'")}']`);
     }
 
     if (this.options.isSelectable && !this.options.isSelectable(selectedObject, el)) {
@@ -766,11 +764,11 @@ GitLabDropdown = (function() {
     } else {
       isMarking = true;
       if (!this.options.multiSelect || el.hasClass('dropdown-clear-active')) {
-        this.dropdown.find('.' + ACTIVE_CLASS).removeClass(ACTIVE_CLASS);
+        this.dropdown.find(`.${ACTIVE_CLASS}`).removeClass(ACTIVE_CLASS);
         if (!isInput) {
           this.dropdown
             .parent()
-            .find("input[name='" + fieldName + "']")
+            .find(`input[name='${fieldName}']`)
             .remove();
         }
       }
@@ -809,7 +807,7 @@ GitLabDropdown = (function() {
     var $input;
     // Create hidden input for form
     if (single) {
-      $('input[name="' + fieldName + '"]').remove();
+      $(`input[name="${fieldName}"]`).remove();
     }
 
     $input = $('<input>')
@@ -837,12 +835,12 @@ GitLabDropdown = (function() {
     var $el, selector;
     // If we pass an option index
     if (typeof index !== 'undefined') {
-      selector = SELECTABLE_CLASSES + ':eq(' + index + ') a';
+      selector = `${SELECTABLE_CLASSES}:eq(${index}) a`;
     } else {
       selector = '.dropdown-content .is-focused';
     }
     if (this.dropdown.find('.dropdown-toggle-page').length) {
-      selector = '.dropdown-page-one ' + selector;
+      selector = `.dropdown-page-one ${selector}`;
     }
     // simulate a click on the first link
     $el = $(selector, this.dropdown);
@@ -861,7 +859,7 @@ GitLabDropdown = (function() {
     ARROW_KEY_CODES = [38, 40];
     selector = SELECTABLE_CLASSES;
     if (this.dropdown.find('.dropdown-toggle-page').length) {
-      selector = '.dropdown-page-one ' + selector;
+      selector = `.dropdown-page-one ${selector}`;
     }
     return $('body').on(
       'keydown',

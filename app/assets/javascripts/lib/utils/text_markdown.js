@@ -1,4 +1,4 @@
-/* eslint-disable func-names, no-var, no-param-reassign, one-var, operator-assignment, no-else-return, prefer-template, consistent-return */
+/* eslint-disable func-names, no-var, no-param-reassign, one-var, operator-assignment, no-else-return, consistent-return */
 import $ from 'jquery';
 import { insertText } from '~/lib/utils/common_utils';
 
@@ -237,7 +237,7 @@ export function insertMarkdownText({
   }
 
   if (removedFirstNewLine) {
-    textToInsert = '\n' + textToInsert;
+    textToInsert = `\n${textToInsert}`;
   }
 
   if (removedLastNewLine) {

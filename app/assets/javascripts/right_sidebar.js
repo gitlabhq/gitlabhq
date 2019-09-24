@@ -1,4 +1,4 @@
-/* eslint-disable func-names, no-var, consistent-return, one-var, prefer-template, no-else-return, no-param-reassign */
+/* eslint-disable func-names, no-var, consistent-return, one-var, no-else-return, no-param-reassign */
 
 import $ from 'jquery';
 import _ from 'underscore';
@@ -247,7 +247,7 @@ Sidebar.prototype.isOpen = function() {
 };
 
 Sidebar.prototype.getBlock = function(name) {
-  return this.sidebar.find('.block.' + name);
+  return this.sidebar.find(`.block.${name}`);
 };
 
 export default Sidebar;

@@ -26,7 +26,7 @@ $.fn.requiresInput = function requiresInput() {
     const values = _.map($(fieldSelector, $form), field => field.value);
 
     // Disable the button if any required fields are empty
-    if (values.length && _.any(values, _.isEmpty)) {
+    if (values.length && _.some(values, _.isEmpty)) {
       $button.disable();
     } else {
       $button.enable();

@@ -1,4 +1,4 @@
-/* eslint-disable func-names, no-restricted-syntax, no-use-before-define, no-param-reassign, new-cap, no-underscore-dangle, no-return-assign, prefer-template, no-else-return, no-shadow */
+/* eslint-disable func-names, no-restricted-syntax, no-use-before-define, no-param-reassign, new-cap, no-underscore-dangle, no-return-assign, no-else-return, no-shadow */
 
 import $ from 'jquery';
 import _ from 'underscore';
@@ -118,14 +118,11 @@ export const ContributorsGraph = (function() {
   };
 
   ContributorsGraph.prototype.draw_x_axis = function() {
-    return (
-      this.svg
-        .append('g')
-        .attr('class', 'x axis')
-        /* eslint-disable-next-line @gitlab/i18n/no-non-i18n-strings */
-        .attr('transform', 'translate(0, ' + this.height + ')')
-        .call(this.x_axis)
-    );
+    return this.svg
+      .append('g')
+      .attr('class', 'x axis')
+      .attr('transform', `translate(0, ${this.height})`)
+      .call(this.x_axis);
   };
 
   ContributorsGraph.prototype.draw_y_axis = function() {
@@ -200,8 +197,7 @@ export const ContributorsMasterGraph = (function(superClass) {
       .attr('height', this.height + this.MARGIN.top + this.MARGIN.bottom)
       .attr('class', 'tint-box')
       .append('g')
-      /* eslint-disable-next-line @gitlab/i18n/no-non-i18n-strings */
-      .attr('transform', 'translate(' + this.MARGIN.left + ',' + this.MARGIN.top + ')');
+      .attr('transform', `translate(${this.MARGIN.left},${this.MARGIN.top})`);
     return this.svg;
   };
 
@@ -348,8 +344,7 @@ export const ContributorsAuthorGraph = (function(superClass) {
       .attr('height', this.height + this.MARGIN.top + this.MARGIN.bottom)
       .attr('class', 'spark')
       .append('g')
-      /* eslint-disable-next-line @gitlab/i18n/no-non-i18n-strings */
-      .attr('transform', 'translate(' + this.MARGIN.left + ',' + this.MARGIN.top + ')');
+      .attr('transform', `translate(${this.MARGIN.left},${this.MARGIN.top})`);
     return this.svg;
   };
 

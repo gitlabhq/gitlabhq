@@ -1,4 +1,4 @@
-/* eslint-disable func-names, no-var, prefer-template */
+/* eslint-disable func-names, no-var */
 
 import $ from 'jquery';
 import BranchGraph from '../../../network/branch_graph';
@@ -14,7 +14,7 @@ export default (function() {
     this.branch_graph = new BranchGraph($('.network-graph'), opts);
     vph = $(window).height() - 250;
     $('.network-graph').css({
-      height: vph + 'px',
+      height: `${vph}px`,
     });
   }
 

@@ -234,6 +234,12 @@ describe 'Issue Boards', :js do
 
         expect(find('.board:nth-child(2)')).to have_content(development.title)
         expect(find('.board:nth-child(2)')).to have_content(planning.title)
+
+        # Make sure list positions are preserved after a reload
+        visit project_board_path(project, board)
+
+        expect(find('.board:nth-child(2)')).to have_content(development.title)
+        expect(find('.board:nth-child(2)')).to have_content(planning.title)
       end
 
       it 'dragging does not duplicate list' do

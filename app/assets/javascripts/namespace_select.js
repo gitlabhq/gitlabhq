@@ -1,4 +1,4 @@
-/* eslint-disable no-else-return, prefer-template */
+/* eslint-disable no-else-return */
 
 import $ from 'jquery';
 import '~/gl_dropdown';
@@ -24,7 +24,7 @@ export default class NamespaceSelect {
         if (selected.id == null) {
           return selected.text;
         } else {
-          return selected.kind + ': ' + selected.full_path;
+          return `${selected.kind}: ${selected.full_path}`;
         }
       },
       data(term, dataCallback) {
@@ -44,7 +44,7 @@ export default class NamespaceSelect {
         if (namespace.id == null) {
           return namespace.text;
         } else {
-          return namespace.kind + ': ' + namespace.full_path;
+          return `${namespace.kind}: ${namespace.full_path}`;
         }
       },
       renderRow: this.renderRow,

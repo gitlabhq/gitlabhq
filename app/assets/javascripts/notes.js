@@ -1,6 +1,6 @@
 /* eslint-disable no-restricted-properties, func-names, no-var, camelcase,
 no-unused-expressions, one-var, default-case,
-prefer-template, consistent-return, no-alert, no-return-assign,
+consistent-return, no-alert, no-return-assign,
 no-param-reassign, no-else-return, vars-on-top,
 no-shadow, no-useless-escape, class-methods-use-this */
 
@@ -490,7 +490,7 @@ export default class Notes {
     diffAvatarContainer = row
       .prevAll('.line_holder')
       .first()
-      .find('.js-avatar-container.' + lineType + '_line');
+      .find(`.js-avatar-container.${lineType}_line`);
     // is this the first note of discussion?
     discussionContainer = $(`.notes[data-discussion-id="${noteEntity.discussion_id}"]`);
     if (!discussionContainer.length) {
@@ -506,16 +506,14 @@ export default class Notes {
         } else {
           // Merge new discussion HTML in
           var $notes = $discussion.find(`.notes[data-discussion-id="${noteEntity.discussion_id}"]`);
-          var contentContainerClass =
-            '.' +
-            $notes
-              .closest('.notes-content')
-              .attr('class')
-              .split(' ')
-              .join('.');
+          var contentContainerClass = $notes
+            .closest('.notes-content')
+            .attr('class')
+            .split(' ')
+            .join('.');
 
           row
-            .find(contentContainerClass + ' .content')
+            .find(`.${contentContainerClass} .content`)
             .append($notes.closest('.content').children());
         }
       } else {
@@ -722,7 +720,7 @@ export default class Notes {
     this.revertNoteEditForm($targetNote);
     $noteEntityEl.renderGFM();
     // Find the note's `li` element by ID and replace it with the updated HTML
-    $note_li = $('.note-row-' + noteEntity.id);
+    $note_li = $(`.note-row-${noteEntity.id}`);
 
     $note_li.replaceWith($noteEntityEl);
     this.setupNewNote($noteEntityEl);
