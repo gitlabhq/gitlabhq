@@ -11,10 +11,6 @@ shared_examples_for 'multiple issue boards' do
       wait_for_requests
     end
 
-    it 'shows board switcher' do
-      expect(page).to have_css('.boards-switcher')
-    end
-
     it 'shows current board name' do
       page.within('.boards-switcher') do
         expect(page).to have_content(board.name)

@@ -162,10 +162,10 @@ describe Boards::ListsController do
     end
 
     context 'with unauthorized user' do
-      it 'returns a forbidden 403 response' do
+      it 'returns a 422 unprocessable entity response' do
         move user: guest, board: board, list: planning, position: 6
 
-        expect(response).to have_gitlab_http_status(403)
+        expect(response).to have_gitlab_http_status(422)
       end
     end
 

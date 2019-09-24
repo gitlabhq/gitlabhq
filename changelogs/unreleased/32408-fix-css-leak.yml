@@ -1,0 +1,5 @@
+---
+title: Fix CSS leak in job log
+merge_request:
+author:
+type: fixed

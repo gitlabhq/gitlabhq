@@ -3,6 +3,7 @@
 - breadcrumb_title @cluster.name
 - page_title _('Kubernetes Cluster')
 - manage_prometheus_path = edit_project_service_path(@cluster.project, 'prometheus') if @project
+- cluster_environments_path = clusterable.environments_cluster_path(@cluster)
 
 - expanded = expanded_by_default?
 
@@ -16,7 +17,7 @@
   install_jupyter_path: clusterable.install_applications_cluster_path(@cluster, :jupyter),
   install_knative_path: clusterable.install_applications_cluster_path(@cluster, :knative),
   update_knative_path: clusterable.update_applications_cluster_path(@cluster, :knative),
-  cluster_environments_path: clusterable.environments_cluster_path(@cluster),
+  cluster_environments_path: cluster_environments_path,
   toggle_status: @cluster.enabled? ? 'true': 'false',
   has_rbac: has_rbac_enabled?(@cluster) ? 'true': 'false',
   cluster_type: @cluster.cluster_type,
@@ -37,7 +38,7 @@
   %h4= @cluster.name
   = render 'banner'
 
-  = render_if_exists 'clusters/clusters/group_cluster_environments', expanded: expanded
-
-  - unless Gitlab.ee?
+  - if cluster_environments_path.present?
+    = render_if_exists 'clusters/clusters/group_cluster_environments', expanded: expanded
+  - else
     = render 'configure', expanded: expanded

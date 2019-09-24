@@ -6,7 +6,7 @@
 
 .issues-filters{ class: ("w-100" if type == :boards_modal) }
   .issues-details-filters.filtered-search-block.d-flex.flex-column.flex-md-row{ class: block_css_class, "v-pre" => type == :boards_modal }
-    - if type == :boards && (multiple_boards_available? || current_board_parent.boards.size > 1)
+    - if type == :boards
       = render "shared/boards/switcher", board: board
     = form_tag page_filter_path, method: :get, class: 'filter-form js-filter-form w-100' do
       - if params[:search].present?
