@@ -50,6 +50,10 @@ Sidekiq.configure_server do |config|
   if enable_json_logs
     Sidekiq.logger.formatter = Gitlab::SidekiqLogging::JSONFormatter.new
     config.options[:job_logger] = Gitlab::SidekiqLogging::StructuredLogger
+
+    # Remove the default-provided handler
+    config.error_handlers.reject! { |handler| handler.is_a?(Sidekiq::ExceptionHandler::Logger) }
+    config.error_handlers << Gitlab::SidekiqLogging::ExceptionHandler.new
   end
 
   config.client_middleware do |chain|

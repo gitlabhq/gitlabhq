@@ -1,4 +1,4 @@
-/* eslint-disable func-names, no-var, one-var, camelcase, no-param-reassign, no-return-assign, prefer-arrow-callback, consistent-return, no-cond-assign, no-else-return */
+/* eslint-disable func-names, no-var, one-var, camelcase, no-param-reassign, no-return-assign, consistent-return, no-cond-assign, no-else-return */
 import _ from 'underscore';
 
 export default {
@@ -76,16 +76,12 @@ export default {
     var log, total_data;
     log = parsed_log.total;
     total_data = this.pick_field(log, field);
-    return _.sortBy(total_data, function(d) {
-      return d.date;
-    });
+    return _.sortBy(total_data, d => d.date);
   },
   pick_field(log, field) {
     var total_data;
     total_data = [];
-    _.each(log, function(d) {
-      return total_data.push(_.pick(d, [field, 'date']));
-    });
+    _.each(log, d => total_data.push(_.pick(d, [field, 'date'])));
     return total_data;
   },
   get_author_data(parsed_log, field, date_range) {
@@ -107,9 +103,7 @@ export default {
         };
       })(this),
     );
-    return _.sortBy(author_data, function(d) {
-      return d[field];
-    }).reverse();
+    return _.sortBy(author_data, d => d[field]).reverse();
   },
   parse_log_entry(log_entry, field, date_range) {
     var parsed_entry;

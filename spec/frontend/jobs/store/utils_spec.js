@@ -1,4 +1,9 @@
-import { logLinesParser, updateIncrementalTrace } from '~/jobs/store/utils';
+import {
+  logLinesParser,
+  updateIncrementalTrace,
+  parseHeaderLine,
+  parseLine,
+} from '~/jobs/store/utils';
 import {
   utilsMockData,
   originalTrace,
@@ -11,6 +16,32 @@ import {
 } from '../components/log/mock_data';
 
 describe('Jobs Store Utils', () => {
+  describe('parseHeaderLine', () => {
+    it('returns a new object with the header keys and the provided line parsed', () => {
+      const headerLine = { content: [{ text: 'foo' }] };
+      const parsedHeaderLine = parseHeaderLine(headerLine, 2);
+
+      expect(parsedHeaderLine).toEqual({
+        isClosed: true,
+        isHeader: true,
+        line: {
+          ...headerLine,
+          lineNumber: 2,
+        },
+        lines: [],
+      });
+    });
+  });
+
+  describe('parseLine', () => {
+    it('returns a new object with the lineNumber key added to the provided line object', () => {
+      const line = { content: [{ text: 'foo' }] };
+      const parsed = parseLine(line, 1);
+      expect(parsed.content).toEqual(line.content);
+      expect(parsed.lineNumber).toEqual(1);
+    });
+  });
+
   describe('logLinesParser', () => {
     let result;
 
@@ -117,7 +148,7 @@ describe('Jobs Store Utils', () => {
                   text: 'updated log line',
                 },
               ],
-              sections: ['section'],
+              section: 'section',
               lineNumber: 0,
             },
             lines: [],
@@ -147,7 +178,7 @@ describe('Jobs Store Utils', () => {
                   text: 'log line',
                 },
               ],
-              sections: ['section'],
+              section: 'section',
               lineNumber: 0,
             },
             lines: [
@@ -158,7 +189,7 @@ describe('Jobs Store Utils', () => {
                     text: 'updated log line',
                   },
                 ],
-                sections: ['section'],
+                section: 'section',
                 lineNumber: 1,
               },
             ],

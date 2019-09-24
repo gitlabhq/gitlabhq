@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils';
 import CollpasibleSection from '~/jobs/components/log/collapsible_section.vue';
-import { nestedSectionOpened, nestedSectionClosed } from './mock_data';
+import { collapsibleSectionClosed, collapsibleSectionOpened } from './mock_data';
 
 describe('Job Log Collapsible Section', () => {
   let wrapper;
@@ -8,6 +8,7 @@ describe('Job Log Collapsible Section', () => {
   const traceEndpoint = 'jobs/335';
 
   const findCollapsibleLine = () => wrapper.find('.collapsible-line');
+  const findCollapsibleLineSvg = () => wrapper.find('.collapsible-line svg');
 
   const createComponent = (props = {}) => {
     wrapper = mount(CollpasibleSection, {
@@ -22,10 +23,10 @@ describe('Job Log Collapsible Section', () => {
     wrapper.destroy();
   });
 
-  describe('with closed nested section', () => {
+  describe('with closed section', () => {
     beforeEach(() => {
       createComponent({
-        section: nestedSectionClosed,
+        section: collapsibleSectionClosed,
         traceEndpoint,
       });
     });
@@ -33,24 +34,36 @@ describe('Job Log Collapsible Section', () => {
     it('renders clickable header line', () => {
       expect(findCollapsibleLine().attributes('role')).toBe('button');
     });
+
+    it('renders an icon with the closed state', () => {
+      expect(findCollapsibleLineSvg().classes()).toContain('ic-angle-right');
+    });
   });
 
-  describe('with opened nested section', () => {
+  describe('with opened section', () => {
     beforeEach(() => {
       createComponent({
-        section: nestedSectionOpened,
+        section: collapsibleSectionOpened,
         traceEndpoint,
       });
     });
 
-    it('renders all sections opened', () => {
-      expect(wrapper.findAll('.collapsible-line').length).toBe(2);
+    it('renders clickable header line', () => {
+      expect(findCollapsibleLine().attributes('role')).toBe('button');
+    });
+
+    it('renders an icon with the open state', () => {
+      expect(findCollapsibleLineSvg().classes()).toContain('ic-angle-down');
+    });
+
+    it('renders collapsible lines content', () => {
+      expect(wrapper.findAll('.js-line').length).toEqual(collapsibleSectionOpened.lines.length);
     });
   });
 
   it('emits onClickCollapsibleLine on click', () => {
     createComponent({
-      section: nestedSectionOpened,
+      section: collapsibleSectionOpened,
       traceEndpoint,
     });
 

@@ -58,8 +58,7 @@ module Gitlab
           payload['message'] = "#{message}: fail: #{payload['duration']} sec"
           payload['job_status'] = 'fail'
           payload['error_message'] = job_exception.message
-          payload['error'] = job_exception.class
-          payload['error_backtrace'] = backtrace_cleaner.clean(job_exception.backtrace)
+          payload['error_class'] = job_exception.class.name
         else
           payload['message'] = "#{message}: done: #{payload['duration']} sec"
           payload['job_status'] = 'done'
@@ -125,10 +124,6 @@ module Gitlab
 
       def current_time
         Gitlab::Metrics::System.monotonic_time
-      end
-
-      def backtrace_cleaner
-        @backtrace_cleaner ||= ActiveSupport::BacktraceCleaner.new
       end
 
       def format_time(timestamp)

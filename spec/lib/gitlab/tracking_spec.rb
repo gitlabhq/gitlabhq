@@ -49,8 +49,8 @@ describe Gitlab::Tracking do
     it 'can track events' do
       tracker = double
 
-      expect(SnowplowTracker::Emitter).to receive(:new).with(
-        'gitfoo.com'
+      expect(SnowplowTracker::AsyncEmitter).to receive(:new).with(
+        'gitfoo.com', { protocol: 'https' }
       ).and_return('_emitter_')
 
       expect(SnowplowTracker::Tracker).to receive(:new).with(

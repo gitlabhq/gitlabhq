@@ -1,4 +1,4 @@
-/* eslint-disable func-names, no-var, one-var, no-loop-func, consistent-return, prefer-template, prefer-arrow-callback, camelcase */
+/* eslint-disable func-names, no-var, one-var, no-loop-func, consistent-return, prefer-template, camelcase */
 
 import $ from 'jquery';
 import { __ } from '../locale';
@@ -259,9 +259,7 @@ export default (function() {
         opacity: 0,
         cursor: 'pointer',
       })
-      .click(function() {
-        return window.open(options.commit_url.replace('%s', commit.id), '_blank');
-      })
+      .click(() => window.open(options.commit_url.replace('%s', commit.id), '_blank'))
       .hover(
         function() {
           this.tooltip = r.commitTooltip(x + 5, y, commit);

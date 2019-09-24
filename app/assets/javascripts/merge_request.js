@@ -1,4 +1,4 @@
-/* eslint-disable func-names, no-var, no-underscore-dangle, one-var, consistent-return, prefer-arrow-callback */
+/* eslint-disable func-names, no-var, no-underscore-dangle, one-var, consistent-return */
 
 import $ from 'jquery';
 import { __ } from '~/locale';
@@ -105,7 +105,7 @@ MergeRequest.prototype.submitNoteForm = function(form, $button) {
 };
 
 MergeRequest.prototype.initCommitMessageListeners = function() {
-  $(document).on('click', 'a.js-with-description-link', function(e) {
+  $(document).on('click', 'a.js-with-description-link', e => {
     var textarea = $('textarea.js-commit-message');
     e.preventDefault();
 
@@ -114,7 +114,7 @@ MergeRequest.prototype.initCommitMessageListeners = function() {
     $('.js-without-description-hint').show();
   });
 
-  $(document).on('click', 'a.js-without-description-link', function(e) {
+  $(document).on('click', 'a.js-without-description-link', e => {
     var textarea = $('textarea.js-commit-message');
     e.preventDefault();
 

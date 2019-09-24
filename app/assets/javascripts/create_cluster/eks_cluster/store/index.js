@@ -9,7 +9,7 @@ const createStore = () =>
     actions,
     getters,
     mutations,
-    state,
+    state: state(),
   });
 
 export default createStore;

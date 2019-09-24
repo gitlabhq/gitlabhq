@@ -13,6 +13,7 @@
 
 .log-line {
   padding: 1px $gl-padding 1px $job-log-line-padding;
+  min-height: $gl-line-height-20;
 }
 
 .line-number {

@@ -1,4 +1,4 @@
-/* eslint-disable func-names, no-var, one-var, consistent-return, no-return-assign, prefer-arrow-callback, prefer-template, no-shadow, no-else-return, @gitlab/i18n/no-non-i18n-strings */
+/* eslint-disable func-names, no-var, one-var, consistent-return, no-return-assign, prefer-template, no-shadow, no-else-return, @gitlab/i18n/no-non-i18n-strings */
 
 import $ from 'jquery';
 import RefSelectDropdown from './ref_select_dropdown';
@@ -63,7 +63,7 @@ export default class NewBranchForm {
     };
     formatter = function(values, restriction) {
       var formatted;
-      formatted = values.map(function(value) {
+      formatted = values.map(value => {
         switch (false) {
           case !/\s/.test(value):
             return 'spaces';

@@ -9,6 +9,21 @@ export const parseLine = (line = {}, lineNumber) => ({
 });
 
 /**
+ * When a line has `section_header` set to true, we create a new
+ * structure to allow to nest the lines that belong to the
+ * collpasible section
+ *
+ * @param Object line
+ * @param Number lineNumber
+ */
+export const parseHeaderLine = (line = {}, lineNumber) => ({
+  isClosed: true,
+  isHeader: true,
+  line: parseLine(line, lineNumber),
+  lines: [],
+});
+
+/**
  * Parses the job log content into a structure usable by the template
  *
  * For collaspible lines (section_header = true):
@@ -28,12 +43,7 @@ export const logLinesParser = (lines = [], lineNumberStart) =>
     const last = acc[acc.length - 1];
 
     if (line.section_header) {
-      acc.push({
-        isClosed: true,
-        isHeader: true,
-        line: parseLine(line, lineNumber),
-        lines: [],
-      });
+      acc.push(parseHeaderLine(line, lineNumber));
     } else if (acc.length && last.isHeader && !line.section_duration && line.content.length) {
       last.lines.push(parseLine(line, lineNumber));
     } else if (acc.length && last.isHeader && line.section_duration) {

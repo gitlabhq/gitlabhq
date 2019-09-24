@@ -1,4 +1,4 @@
-/* eslint-disable func-names, consistent-return, no-var, one-var, no-else-return, prefer-arrow-callback, class-methods-use-this */
+/* eslint-disable func-names, consistent-return, no-var, one-var, no-else-return, class-methods-use-this */
 
 import $ from 'jquery';
 import { visitUrl } from './lib/utils/url_utility';
@@ -29,7 +29,7 @@ export default class TreeView {
     var li, liSelected;
     li = $('tr.tree-item');
     liSelected = null;
-    return $('body').keydown(function(e) {
+    return $('body').keydown(e => {
       var next, path;
       if ($('input:focus').length > 0 && (e.which === 38 || e.which === 40)) {
         return false;

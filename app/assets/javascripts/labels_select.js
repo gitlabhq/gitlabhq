@@ -1,4 +1,4 @@
-/* eslint-disable no-useless-return, func-names, no-var, no-underscore-dangle, prefer-arrow-callback, one-var, prefer-template, no-new, consistent-return, no-shadow, no-param-reassign, vars-on-top, no-lonely-if, no-else-return, dot-notation, no-empty */
+/* eslint-disable no-useless-return, func-names, no-var, no-underscore-dangle, one-var, prefer-template, no-new, consistent-return, no-shadow, no-param-reassign, vars-on-top, no-lonely-if, no-else-return, dot-notation, no-empty */
 /* global Issuable */
 /* global ListLabel */
 
@@ -24,7 +24,7 @@ export default class LabelsSelect {
       $els = $('.js-label-select');
     }
 
-    $els.each(function(i, dropdown) {
+    $els.each((i, dropdown) => {
       var $block,
         $dropdown,
         $form,
@@ -172,9 +172,7 @@ export default class LabelsSelect {
             $sidebarCollapsedValue.text(labelCount);
 
             if (data.labels.length) {
-              labelTitles = data.labels.map(function(label) {
-                return label.title;
-              });
+              labelTitles = data.labels.map(label => label.title);
 
               if (labelTitles.length > 5) {
                 labelTitles = labelTitles.slice(0, 5);
@@ -456,9 +454,7 @@ export default class LabelsSelect {
               );
             } else {
               var { labels } = boardsStore.detail.issue;
-              labels = labels.filter(function(selectedLabel) {
-                return selectedLabel.id !== label.id;
-              });
+              labels = labels.filter(selectedLabel => selectedLabel.id !== label.id);
               boardsStore.detail.issue.labels = labels;
             }
 

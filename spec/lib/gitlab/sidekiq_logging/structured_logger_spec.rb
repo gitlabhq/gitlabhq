@@ -47,7 +47,7 @@ describe Gitlab::SidekiqLogging::StructuredLogger do
       end_payload.merge(
         'message' => 'TestWorker JID-da883554ee4fe414012f5f42: fail: 0.0 sec',
         'job_status' => 'fail',
-        'error' => ArgumentError,
+        'error_class' => 'ArgumentError',
         'error_message' => 'some exception'
       )
     end
@@ -86,7 +86,6 @@ describe Gitlab::SidekiqLogging::StructuredLogger do
       it 'logs an exception in job' do
         Timecop.freeze(timestamp) do
           expect(logger).to receive(:info).with(start_payload)
-          # This excludes the exception_backtrace
           expect(logger).to receive(:warn).with(hash_including(exception_payload))
           expect(subject).to receive(:log_job_start).and_call_original
           expect(subject).to receive(:log_job_done).and_call_original

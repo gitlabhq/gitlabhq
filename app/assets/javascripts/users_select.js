@@ -1,4 +1,4 @@
-/* eslint-disable func-names, one-var, no-var, prefer-rest-params, vars-on-top, prefer-arrow-callback, consistent-return, no-shadow, no-else-return, no-self-compare, prefer-template, no-unused-expressions, yoda, prefer-spread, camelcase, no-param-reassign */
+/* eslint-disable func-names, one-var, no-var, prefer-rest-params, vars-on-top, consistent-return, no-shadow, no-else-return, no-self-compare, prefer-template, no-unused-expressions, yoda, prefer-spread, camelcase, no-param-reassign */
 /* global Issuable */
 /* global emitSidebarEvent */
 
@@ -250,16 +250,12 @@ function UsersSelect(currentUser, els, options = {}) {
         return $dropdown.glDropdown({
           showMenuAbove,
           data(term, callback) {
-            return _this.users(
-              term,
-              options,
-              function(users) {
-                // GitLabDropdownFilter returns this.instance
-                // GitLabDropdownRemote returns this.options.instance
-                const glDropdown = this.instance || this.options.instance;
-                glDropdown.options.processData(term, users, callback);
-              }.bind(this),
-            );
+            return _this.users(term, options, users => {
+              // GitLabDropdownFilter returns this.instance
+              // GitLabDropdownRemote returns this.options.instance
+              const glDropdown = this.instance || this.options.instance;
+              glDropdown.options.processData(term, users, callback);
+            });
           },
           processData(term, data, callback) {
             let users = data;
@@ -606,7 +602,7 @@ function UsersSelect(currentUser, els, options = {}) {
               multiple: $(select).hasClass('multiselect'),
               minimumInputLength: 0,
               query(query) {
-                return _this.users(query.term, options, function(users) {
+                return _this.users(query.term, options, users => {
                   var anyUser, data, emailUser, index, len, name, nullUser, obj, ref;
                   data = {
                     results: users,

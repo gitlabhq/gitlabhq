@@ -14,13 +14,13 @@ export const jobLog = [
         text: 'Using Docker executor with image dev.gitlab.org3',
       },
     ],
-    sections: ['prepare-executor'],
+    section: 'prepare-executor',
     section_header: true,
   },
   {
     offset: 1003,
     content: [{ text: 'Starting service postgres:9.6.14 ...', style: 'text-green' }],
-    sections: ['prepare-executor'],
+    section: 'prepare-executor',
   },
 ];
 
@@ -37,23 +37,23 @@ export const utilsMockData = [
           'Using Docker executor with image dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.6.3-golang-1.11-git-2.22-chrome-73.0-node-12.x-yarn-1.16-postgresql-9.6-graphicsmagick-1.3.33',
       },
     ],
-    sections: ['prepare-executor'],
+    section: 'prepare-executor',
     section_header: true,
   },
   {
     offset: 1003,
     content: [{ text: 'Starting service postgres:9.6.14 ...' }],
-    sections: ['prepare-executor'],
+    section: 'prepare-executor',
   },
   {
     offset: 1004,
     content: [{ text: 'Pulling docker image postgres:9.6.14 ...', style: 'term-fg-l-green' }],
-    sections: ['prepare-executor'],
+    section: 'prepare-executor',
   },
   {
     offset: 1005,
     content: [],
-    sections: ['prepare-executor'],
+    section: 'prepare-executor',
     section_duration: '10:00',
   },
 ];
@@ -100,7 +100,7 @@ export const headerTrace = [
         text: 'log line',
       },
     ],
-    sections: ['section'],
+    section: 'section',
   },
 ];
 
@@ -113,7 +113,7 @@ export const headerTraceIncremental = [
         text: 'updated log line',
       },
     ],
-    sections: ['section'],
+    section: 'section',
   },
 ];
 
@@ -126,7 +126,7 @@ export const collapsibleTrace = [
         text: 'log line',
       },
     ],
-    sections: ['section'],
+    section: 'section',
   },
   {
     offset: 2,
@@ -135,7 +135,7 @@ export const collapsibleTrace = [
         text: 'log line',
       },
     ],
-    sections: ['section'],
+    section: 'section',
   },
 ];
 
@@ -147,76 +147,48 @@ export const collapsibleTraceIncremental = [
         text: 'updated log line',
       },
     ],
-    sections: ['section'],
+    section: 'section',
   },
 ];
 
-export const nestedSectionClosed = {
+export const collapsibleSectionClosed = {
   offset: 5,
   section_header: true,
   isHeader: true,
   isClosed: true,
   line: {
     content: [{ text: 'foo' }],
-    sections: ['prepare-script'],
+    section: 'prepare-script',
     lineNumber: 1,
   },
   section_duration: '00:03',
   lines: [
     {
-      section_header: true,
-      section_duration: '00:02',
-      isHeader: true,
-      isClosed: true,
-      line: {
-        offset: 52,
-        content: [{ text: 'bar' }],
-        sections: ['prepare-script', 'prepare-script-nested'],
-        lineNumber: 2,
-      },
-      lines: [
-        {
-          offset: 80,
-          content: [{ text: 'this is a collapsible nested section' }],
-          sections: ['prepare-script', 'prepare-script-nested'],
-          lineNumber: 3,
-        },
-      ],
+      offset: 80,
+      content: [{ text: 'this is a collapsible nested section' }],
+      section: 'prepare-script',
+      lineNumber: 3,
     },
   ],
 };
 
-export const nestedSectionOpened = {
+export const collapsibleSectionOpened = {
   offset: 5,
   section_header: true,
   isHeader: true,
   isClosed: false,
   line: {
     content: [{ text: 'foo' }],
-    sections: ['prepare-script'],
+    section: 'prepare-script',
     lineNumber: 1,
   },
   section_duration: '00:03',
   lines: [
     {
-      section_header: true,
-      section_duration: '00:02',
-      isHeader: true,
-      isClosed: false,
-      line: {
-        offset: 52,
-        content: [{ text: 'bar' }],
-        sections: ['prepare-script', 'prepare-script-nested'],
-        lineNumber: 2,
-      },
-      lines: [
-        {
-          offset: 80,
-          content: [{ text: 'this is a collapsible nested section' }],
-          sections: ['prepare-script', 'prepare-script-nested'],
-          lineNumber: 3,
-        },
-      ],
+      offset: 80,
+      content: [{ text: 'this is a collapsible nested section' }],
+      section: 'prepare-script',
+      lineNumber: 3,
     },
   ],
 };

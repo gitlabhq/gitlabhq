@@ -1,4 +1,4 @@
-/* eslint-disable func-names, no-underscore-dangle, no-var, one-var, vars-on-top, no-shadow, no-cond-assign, prefer-arrow-callback, no-return-assign, no-else-return, camelcase, no-lonely-if, guard-for-in, no-restricted-syntax, consistent-return, prefer-template, no-param-reassign, no-loop-func */
+/* eslint-disable func-names, no-underscore-dangle, no-var, one-var, vars-on-top, no-shadow, no-cond-assign, no-return-assign, no-else-return, camelcase, no-lonely-if, guard-for-in, no-restricted-syntax, consistent-return, prefer-template, no-param-reassign, no-loop-func */
 
 import $ from 'jquery';
 import _ from 'underscore';
@@ -35,13 +35,13 @@ GitLabDropdownInput = (function() {
     );
 
     this.input
-      .on('keydown', function(e) {
+      .on('keydown', e => {
         var keyCode = e.which;
         if (keyCode === 13 && !options.elIsInput) {
           e.preventDefault();
         }
       })
-      .on('input', function(e) {
+      .on('input', e => {
         var val = e.currentTarget.value || _this.options.inputFieldName;
         val = val
           .split(' ')
@@ -95,42 +95,33 @@ GitLabDropdownFilter = (function() {
     // Key events
     timeout = '';
     this.input
-      .on('keydown', function(e) {
+      .on('keydown', e => {
         var keyCode = e.which;
         if (keyCode === 13 && !options.elIsInput) {
           e.preventDefault();
         }
       })
-      .on(
-        'input',
-        function() {
-          if (this.input.val() !== '' && !$inputContainer.hasClass(HAS_VALUE_CLASS)) {
-            $inputContainer.addClass(HAS_VALUE_CLASS);
-          } else if (this.input.val() === '' && $inputContainer.hasClass(HAS_VALUE_CLASS)) {
-            $inputContainer.removeClass(HAS_VALUE_CLASS);
-          }
-          // Only filter asynchronously only if option remote is set
-          if (this.options.remote) {
-            clearTimeout(timeout);
-            return (timeout = setTimeout(
-              function() {
-                $inputContainer.parent().addClass('is-loading');
+      .on('input', () => {
+        if (this.input.val() !== '' && !$inputContainer.hasClass(HAS_VALUE_CLASS)) {
+          $inputContainer.addClass(HAS_VALUE_CLASS);
+        } else if (this.input.val() === '' && $inputContainer.hasClass(HAS_VALUE_CLASS)) {
+          $inputContainer.removeClass(HAS_VALUE_CLASS);
+        }
+        // Only filter asynchronously only if option remote is set
+        if (this.options.remote) {
+          clearTimeout(timeout);
+          return (timeout = setTimeout(() => {
+            $inputContainer.parent().addClass('is-loading');
 
-                return this.options.query(
-                  this.input.val(),
-                  function(data) {
-                    $inputContainer.parent().removeClass('is-loading');
-                    return this.options.callback(data);
-                  }.bind(this),
-                );
-              }.bind(this),
-              250,
-            ));
-          } else {
-            return this.filter(this.input.val());
-          }
-        }.bind(this),
-      );
+            return this.options.query(this.input.val(), data => {
+              $inputContainer.parent().removeClass('is-loading');
+              return this.options.callback(data);
+            });
+          }, 250));
+        } else {
+          return this.filter(this.input.val());
+        }
+      });
   }
 
   GitLabDropdownFilter.prototype.shouldBlur = function(keyCode) {
@@ -175,9 +166,7 @@ GitLabDropdownFilter = (function() {
                 key: this.options.keys,
               });
               if (tmp.length) {
-                results[key] = tmp.map(function(item) {
-                  return item;
-                });
+                results[key] = tmp.map(item => item);
               }
             }
           }
@@ -453,32 +442,28 @@ GitLabDropdown = (function() {
       if (this.dropdown.find('.dropdown-toggle-page').length) {
         selector = '.dropdown-page-one .dropdown-content a';
       }
-      this.dropdown.on(
-        'click',
-        selector,
-        function(e) {
-          var $el, selected, selectedObj, isMarking;
-          $el = $(e.currentTarget);
-          selected = self.rowClicked($el);
-          selectedObj = selected ? selected[0] : null;
-          isMarking = selected ? selected[1] : null;
-          if (this.options.clicked) {
-            this.options.clicked.call(this, {
-              selectedObj,
-              $el,
-              e,
-              isMarking,
-            });
-          }
+      this.dropdown.on('click', selector, e => {
+        var $el, selected, selectedObj, isMarking;
+        $el = $(e.currentTarget);
+        selected = self.rowClicked($el);
+        selectedObj = selected ? selected[0] : null;
+        isMarking = selected ? selected[1] : null;
+        if (this.options.clicked) {
+          this.options.clicked.call(this, {
+            selectedObj,
+            $el,
+            e,
+            isMarking,
+          });
+        }
 
-          // Update label right after all modifications in dropdown has been done
-          if (this.options.toggleLabel) {
-            this.updateLabel(selectedObj, $el, this);
-          }
+        // Update label right after all modifications in dropdown has been done
+        if (this.options.toggleLabel) {
+          this.updateLabel(selectedObj, $el, this);
+        }
 
-          $el.trigger('blur');
-        }.bind(this),
-      );
+        $el.trigger('blur');
+      });
     }
   }
 
@@ -525,9 +510,7 @@ GitLabDropdown = (function() {
               name,
             ),
           );
-          this.renderData(groupData, name).map(function(item) {
-            return html.push(item);
-          });
+          this.renderData(groupData, name).map(item => html.push(item));
         }
       } else {
         // Render each row
@@ -708,7 +691,7 @@ GitLabDropdown = (function() {
 
     return text
       .split('')
-      .map(function(character, i) {
+      .map((character, i) => {
         if (indexOf.call(occurrences, i) !== -1) {
           return '<b>' + character + '</b>';
         } else {

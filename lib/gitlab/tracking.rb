@@ -33,7 +33,7 @@ module Gitlab
 
       def snowplow
         @snowplow ||= SnowplowTracker::Tracker.new(
-          SnowplowTracker::Emitter.new(Gitlab::CurrentSettings.snowplow_collector_hostname),
+          SnowplowTracker::AsyncEmitter.new(Gitlab::CurrentSettings.snowplow_collector_hostname, protocol: 'https'),
           SnowplowTracker::Subject.new,
           SNOWPLOW_NAMESPACE,
           Gitlab::CurrentSettings.snowplow_site_id

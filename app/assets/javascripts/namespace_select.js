@@ -1,4 +1,4 @@
-/* eslint-disable func-names, no-else-return, prefer-template, prefer-arrow-callback */
+/* eslint-disable no-else-return, prefer-template */
 
 import $ from 'jquery';
 import '~/gl_dropdown';
@@ -28,7 +28,7 @@ export default class NamespaceSelect {
         }
       },
       data(term, dataCallback) {
-        return Api.namespaces(term, function(namespaces) {
+        return Api.namespaces(term, namespaces => {
           if (isFilter) {
             const anyNamespace = {
               text: __('Any namespace'),

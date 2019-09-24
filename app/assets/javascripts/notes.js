@@ -1,7 +1,7 @@
 /* eslint-disable no-restricted-properties, func-names, no-var, camelcase,
 no-unused-expressions, one-var, default-case,
 prefer-template, consistent-return, no-alert, no-return-assign,
-no-param-reassign, prefer-arrow-callback, no-else-return, vars-on-top,
+no-param-reassign, no-else-return, vars-on-top,
 no-shadow, no-useless-escape, class-methods-use-this */
 
 /* global ResolveService */
@@ -1370,7 +1370,7 @@ export default class Notes {
       .find('li.system-note')
       .has('ul');
 
-    $.each(systemNotes, function(index, systemNote) {
+    $.each(systemNotes, (index, systemNote) => {
       const $systemNote = $(systemNote);
       const headerMessage = $systemNote
         .find('.note-text')
