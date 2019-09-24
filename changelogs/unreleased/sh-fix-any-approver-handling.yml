@@ -1,5 +1,0 @@
----
-title: Fix bug that caused a merge to show an error message
-merge_request: 17466
-author:
-type: fixed

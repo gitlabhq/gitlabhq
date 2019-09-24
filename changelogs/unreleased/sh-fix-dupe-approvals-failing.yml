@@ -1,5 +1,0 @@
----
-title: Fix error when duplicate users are merged in approvers list
-merge_request: 17406
-author:
-type: fixed

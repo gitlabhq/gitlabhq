@@ -1,5 +1,0 @@
----
-title: Fix ordering of issue board lists not being persisted
-merge_request: 17356
-author:
-type: fixed

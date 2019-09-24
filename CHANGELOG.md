@@ -2,6 +2,16 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 12.3.1
+
+### Fixed (4 changes)
+
+- Fix ordering of issue board lists not being persisted. !17356
+- Fix error when duplicate users are merged in approvers list. !17406
+- Fix bug that caused a merge to show an error message. !17466
+- Fix CSS leak in job log.
+
+
 ## 12.3.0
 
 ### Security (23 changes)
