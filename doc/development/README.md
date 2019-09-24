@@ -94,6 +94,7 @@ description: 'Learn how to contribute to GitLab.'
 - [What requires downtime?](what_requires_downtime.md)
 - [SQL guidelines](sql.md) for working with SQL queries
 - [Migrations style guide](migration_style_guide.md) for creating safe SQL migrations
+- [Testing Rails migrations](testing_guide/testing_migrations_guide.md) guide
 - [Post deployment migrations](post_deployment_migrations.md)
 - [Background migrations](background_migrations.md)
 - [Swapping tables](swapping_tables.md)

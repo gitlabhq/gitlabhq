@@ -407,10 +407,7 @@ end
 
 ## Testing
 
-Make sure that your migration works for databases with data. An
-empty database does not guarantee that your migration is correct.
-
-Make sure your migration can be reversed.
+See the [Testing Rails migrations](testing_guide/testing_migrations_guide.md) style guide.
 
 ## Data migration
 

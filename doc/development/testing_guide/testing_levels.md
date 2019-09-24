@@ -44,7 +44,7 @@ records should use stubs/doubles as much as possible.
 | `config/routes.rb`, `config/routes/` | `spec/routing/` | RSpec | |
 | `config/puma.example.development.rb`, `config/unicorn.rb.example` | `spec/rack_servers/` | RSpec | |
 | `db/` | `spec/db/` | RSpec | |
-| `db/{post_,}migrate/` | `spec/migrations/` | RSpec | More details at [`spec/migrations/README.md`](https://gitlab.com/gitlab-org/gitlab/blob/master/spec/migrations/README.md). |
+| `db/{post_,}migrate/` | `spec/migrations/` | RSpec | More details in the [Testing Rails migrations guide](testing_migrations_guide.md). |
 | `Gemfile` | `spec/dependencies/`, `spec/sidekiq/` | RSpec | |
 | `lib/` | `spec/lib/` | RSpec | |
 | `lib/tasks/` | `spec/tasks/` | RSpec | |
