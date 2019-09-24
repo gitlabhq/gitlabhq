@@ -134,4 +134,14 @@ describe Clusters::Applications::Helm do
       end
     end
   end
+
+  describe '#post_uninstall' do
+    let(:helm) { create(:clusters_applications_helm, :installed) }
+
+    it do
+      expect(helm.cluster.kubeclient).to receive(:delete_namespace).with('gitlab-managed-apps')
+
+      helm.post_uninstall
+    end
+  end
 end

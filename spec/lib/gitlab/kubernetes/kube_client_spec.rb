@@ -162,6 +162,7 @@ describe Gitlab::Kubernetes::KubeClient do
       :get_secret,
       :get_service,
       :get_service_account,
+      :delete_namespace,
       :delete_pod,
       :create_config_map,
       :create_namespace,

@@ -18,7 +18,8 @@ module Gitlab
         def generate_script
           super + [
             reset_helm_command,
-            delete_tiller_replicaset
+            delete_tiller_replicaset,
+            delete_tiller_clusterrolebinding
           ].join("\n")
         end
 
@@ -39,6 +40,12 @@ module Gitlab
         # https://gitlab.com/gitlab-org/gitlab-foss/issues/52791#note_199374155
         def delete_tiller_replicaset
           delete_args = %w[replicaset -n gitlab-managed-apps -l name=tiller]
+
+          Gitlab::Kubernetes::KubectlCmd.delete(*delete_args)
+        end
+
+        def delete_tiller_clusterrolebinding
+          delete_args = %w[clusterrolebinding tiller-admin]
 
           Gitlab::Kubernetes::KubectlCmd.delete(*delete_args)
         end

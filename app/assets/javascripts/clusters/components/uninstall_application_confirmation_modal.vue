@@ -5,8 +5,14 @@ import trackUninstallButtonClickMixin from 'ee_else_ce/clusters/mixins/track_uni
 import { HELM, INGRESS, CERT_MANAGER, PROMETHEUS, RUNNER, KNATIVE, JUPYTER } from '../constants';
 
 const CUSTOM_APP_WARNING_TEXT = {
-  [HELM]: s__(
-    'ClusterIntegration|The associated Tiller pod will be deleted and cannot be restored.',
+  [HELM]: sprintf(
+    s__(
+      'ClusterIntegration|The associated Tiller pod, the %{gitlabManagedAppsNamespace} namespace, and all of its resources will be deleted and cannot be restored.',
+    ),
+    {
+      gitlabManagedAppsNamespace: '<code>gitlab-managed-apps</code>',
+    },
+    false,
   ),
   [INGRESS]: s__(
     'ClusterIntegration|The associated load balancer and IP will be deleted and cannot be restored.',
@@ -76,6 +82,7 @@ export default {
     :modal-id="modalId"
     :title="title"
     @ok="confirmUninstall()"
-    >{{ warningText }} {{ customAppWarningText }}</gl-modal
   >
+    {{ warningText }} <span v-html="customAppWarningText"></span>
+  </gl-modal>
 </template>

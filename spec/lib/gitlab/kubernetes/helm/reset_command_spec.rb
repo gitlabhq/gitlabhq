@@ -15,6 +15,7 @@ describe Gitlab::Kubernetes::Helm::ResetCommand do
       <<~EOS
       helm reset
       kubectl delete replicaset -n gitlab-managed-apps -l name\\=tiller
+      kubectl delete clusterrolebinding tiller-admin
       EOS
     end
   end
@@ -32,6 +33,7 @@ describe Gitlab::Kubernetes::Helm::ResetCommand do
         --tls-key /data/helm/helm/config/key.pem
         EOS1
           kubectl delete replicaset -n gitlab-managed-apps -l name\\=tiller
+          kubectl delete clusterrolebinding tiller-admin
         EOS2
       end
     end

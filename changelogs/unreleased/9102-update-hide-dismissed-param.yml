@@ -1,0 +1,5 @@
+---
+title: Use scope param instead of hide_dismissed
+merge_request: 16834
+author:
+type: changed

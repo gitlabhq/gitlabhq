@@ -247,6 +247,9 @@ In order to purchase additional minutes, you should follow these steps:
 
    ![Additional minutes](img/additional_minutes.png)
 
+   The **Additional minutes** displayed now includes the purchased additional CI minutes, plus any
+   minutes rolled over from last month.
+
 Be aware that:
 
 1. If you have purchased extra CI minutes before the purchase of a paid plan,
