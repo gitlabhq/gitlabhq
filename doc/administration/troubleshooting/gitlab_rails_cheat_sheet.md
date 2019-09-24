@@ -715,13 +715,15 @@ Namespace.find_by_full_path("user/proj").namespace_statistics.update(shared_runn
 project = Project.find_by_full_path('')
 builds_with_artifacts =  project.builds.with_artifacts_archive
 
-# Prior to 10.6 the above line would be:
-# builds_with_artifacts = project.builds.with_artifacts
-
 # Instance-wide:
-builds_with_artifacts = Ci::Build.with_artifacts
+builds_with_artifacts = Ci::Build.with_artifacts_archive
+
+# Prior to 10.6 the above lines would be:
+# builds_with_artifacts =  project.builds.with_artifacts
+# builds_with_artifacts = Ci::Build.with_artifacts
 
 ### CLEAR THEM OUT
+# Note that this will also erase artifacts that developers marked to "Keep"
 builds_to_clear = builds_with_artifacts.where("finished_at < ?", 1.week.ago)
 builds_to_clear.each do |build|
   build.artifacts_expire_at = Time.now

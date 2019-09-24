@@ -94,14 +94,24 @@ describe ApplicationController do
           request.path = '/-/peek'
         end
 
-        it_behaves_like 'not setting gon variables'
+        # TODO:
+        # remove line below once `privacy_policy_update_callout`
+        # feature flag is removed and `gon` reverts back to
+        # to not setting any variables.
+        it_behaves_like 'setting gon variables'
+        # it_behaves_like 'not setting gon variables'
       end
     end
 
     context 'with json format' do
       let(:format) { :json }
 
-      it_behaves_like 'not setting gon variables'
+      # TODO:
+      # remove line below once `privacy_policy_update_callout`
+      # feature flag is removed and `gon` reverts back to
+      # to not setting any variables.
+      it_behaves_like 'setting gon variables'
+      # it_behaves_like 'not setting gon variables'
     end
   end
 

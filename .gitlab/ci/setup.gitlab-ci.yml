@@ -43,5 +43,6 @@ no_ee_check:
     - scripts/no-ee-check
   only:
     variables:
-      - $CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAME == "gitlab-foss"
-      - $CI_SERVER_HOST == "dev.gitlab.org" && $CI_PROJECT_NAME == "gitlabhq"
+      - $CI_PROJECT_NAME == "gitlab-foss"
+      - $CI_PROJECT_NAME == "gitlab-ce"  # Support former project name for forks/mirrors
+      - $CI_PROJECT_NAME == "gitlabhq"  # Support former project name for dev

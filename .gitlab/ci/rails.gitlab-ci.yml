@@ -95,6 +95,8 @@ setup-test-env:
       - tmp/tests
       - config/secrets.yml
       - vendor/gitaly-ruby
+  cache:
+    policy: pull-push
 
 rspec unit pg:
   extends: .rspec-base-pg

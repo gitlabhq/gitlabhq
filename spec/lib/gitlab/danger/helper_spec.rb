@@ -88,28 +88,28 @@ describe Gitlab::Danger::Helper do
 
     it 'returns true if CI_PROJECT_NAME if set to gitlab' do
       stub_env('CI_PROJECT_NAME', 'gitlab')
-      expect(File).not_to receive(:exist?)
+      expect(Dir).not_to receive(:exist?)
 
       is_expected.to be_truthy
     end
 
     it 'delegates to CHANGELOG-EE.md existence if CI_PROJECT_NAME is set to something else' do
       stub_env('CI_PROJECT_NAME', 'something else')
-      expect(File).to receive(:exist?).with('../../CHANGELOG-EE.md') { true }
+      expect(Dir).to receive(:exist?).with('../../ee') { true }
 
       is_expected.to be_truthy
     end
 
-    it 'returns true if CHANGELOG-EE.md exists' do
+    it 'returns true if ee exists' do
       stub_env('CI_PROJECT_NAME', nil)
-      expect(File).to receive(:exist?).with('../../CHANGELOG-EE.md') { true }
+      expect(Dir).to receive(:exist?).with('../../ee') { true }
 
       is_expected.to be_truthy
     end
 
-    it "returns false if CHANGELOG-EE.md doesn't exist" do
+    it "returns false if ee doesn't exist" do
       stub_env('CI_PROJECT_NAME', nil)
-      expect(File).to receive(:exist?).with('../../CHANGELOG-EE.md') { false }
+      expect(Dir).to receive(:exist?).with('../../ee') { false }
 
       is_expected.to be_falsy
     end

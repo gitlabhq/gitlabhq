@@ -564,6 +564,109 @@ concurrency limiter, not a rate limiter. If a client makes 1000 requests
 in a row in a very short timespan, the concurrency will not exceed 1,
 and this mechanism (the concurrency limiter) will do nothing.
 
+## Rotating a Gitaly authentication token
+
+Rotating credentials in a production environment often either requires
+downtime, or causes outages, or both. If you are careful, though, you
+*can* rotate Gitaly credentials without a service interruption.
+
+This procedure also works if you are running GitLab on a single server.
+In that case, "Gitaly servers" and "Gitaly clients" refers to the same
+machine.
+
+### 1. Monitor current authentication behavior
+
+Use prometheus to see what the current authentication behavior of your
+GitLab installation is.
+
+```
+sum(rate(gitaly_authentications_total[5m])) by (enforced, status)
+```
+
+In a system where authentication is configured correctly, and where you
+have live traffic, you will see something like this:
+
+```
+{enforced="true",status="ok"}  4424.985419441742
+```
+
+There may also be other numbers with rate 0. We only care about the
+non-zero numbers.
+
+The only non-zero number should have `enforced="true",status="ok"`. If
+you have other non-zero numbers, something is wrong in your
+configuration.
+
+The 'status="ok"' number reflects your current request rate. In the example
+above, Gitaly is handling about 4000 requests per second.
+
+Now you have established that you can monitor the Gitaly authentication
+behavior of your GitLab installation.
+
+### 2. Reconfigure all Gitaly servers to be in "auth transitioning" mode
+
+The second step is to temporarily disable authentication on the Gitaly servers.
+
+```ruby
+# in /etc/gitlab/gitlab.rb
+gitaly['auth_transitioning'] = true
+```
+
+After you have applied this, your prometheus query should return
+something like this:
+
+```
+{enforced="false",status="would be ok"}  4424.985419441742
+```
+
+Because `enforced="false"`, it will be safe to start rolling out the new
+token.
+
+### 3. Update Gitaly token on all clients and servers
+
+```ruby
+# in /etc/gitlab/gitlab.rb
+
+gitaly['auth_token'] = 'my new secret token'
+```
+
+Remember to apply this on both your Gitaly clients *and* servers. If you
+check your prometheus query while this change is being rolled out, you
+will see non-zero values for the `enforced="false",status="denied"` counter.
+
+### 4. Use prometheus to ensure there are no authentication failures
+
+After you applied the Gitaly token change everywhere, and all services
+involved have been restarted, you should will temporarily see a mix of
+`status="would be ok"` and `status="denied"`.
+
+After the new token has been picked up by all Gitaly clients and
+servers, the **only non-zero rate** should be
+`enforced="false",status="would be ok"`.
+
+### 5. Disable "auth transitioning" Mode
+
+Now we turn off the 'auth transitioning' mode. These final steps are
+important: without them, you have **no authentication**.
+
+Update the configuration on your Gitaly servers:
+
+```ruby
+# in /etc/gitlab/gitlab.rb
+gitaly['auth_transitioning'] = false
+```
+
+### 6. Verify that authentication is enforced again
+
+Refresh your prometheus query. You should now see the same kind of
+result as you did in the beginning:
+
+```
+{enforced="true",status="ok"}  4424.985419441742
+```
+
+Note that `enforced="true"`, meaning that authentication is being enforced.
+
 ## Troubleshooting Gitaly
 
 ### `gitaly-debug`

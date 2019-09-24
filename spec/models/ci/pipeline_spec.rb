@@ -1755,6 +1755,30 @@ describe Ci::Pipeline, :mailer do
     end
   end
 
+  describe '#all_worktree_paths' do
+    let(:files) { { 'main.go' => '', 'mocks/mocks.go' => '' } }
+    let(:project) { create(:project, :custom_repo, files: files) }
+    let(:pipeline) { build(:ci_pipeline, project: project, sha: project.repository.head_commit.sha) }
+
+    it 'returns all file paths cached' do
+      expect(project.repository).to receive(:ls_files).with(pipeline.sha).once.and_call_original
+      expect(pipeline.all_worktree_paths).to eq(files.keys)
+      expect(pipeline.all_worktree_paths).to eq(files.keys)
+    end
+  end
+
+  describe '#top_level_worktree_paths' do
+    let(:files) { { 'main.go' => '', 'mocks/mocks.go' => '' } }
+    let(:project) { create(:project, :custom_repo, files: files) }
+    let(:pipeline) { build(:ci_pipeline, project: project, sha: project.repository.head_commit.sha) }
+
+    it 'returns top-level file paths cached' do
+      expect(project.repository).to receive(:tree).with(pipeline.sha).once.and_call_original
+      expect(pipeline.top_level_worktree_paths).to eq(['main.go'])
+      expect(pipeline.top_level_worktree_paths).to eq(['main.go'])
+    end
+  end
+
   describe '#has_kubernetes_active?' do
     context 'when kubernetes is active' do
       context 'when user configured kubernetes from CI/CD > Clusters' do

@@ -13,6 +13,8 @@
 .default-before_script:
   before_script:
     - date
+    - export GOPATH=$CI_PROJECT_DIR/.go
+    - mkdir -p $GOPATH
     - source scripts/utils.sh
     - source scripts/prepare_build.sh
     - date
@@ -22,6 +24,7 @@
   cache:
     key: "debian-stretch-ruby-2.6.3-node-12.x"
     paths:
+      - .go/pkg/mod
       - vendor/ruby
       - .yarn-cache/
       - vendor/gitaly-ruby
@@ -52,7 +55,7 @@
       - "{babel.config,jest.config}.js"
       - "config.ru"
       - "{package.json,yarn.lock}"
-      - "{app,bin,config,danger,db,ee,fixtures,haml_lint,lib,public,rubocop,scripts,spec,symbol,vendor}/**/*"
+      - "{app,bin,config,danger,db,ee,fixtures,haml_lint,lib,locale,public,rubocop,scripts,spec,symbol,vendor}/**/*"
       - "doc/README.md"  # Some RSpec test rely on this file
 
 .only-qa-changes:
@@ -83,7 +86,7 @@
       - "{babel.config,jest.config}.js"
       - "config.ru"
       - "{package.json,yarn.lock}"
-      - "{app,bin,config,danger,db,ee,fixtures,haml_lint,lib,public,rubocop,scripts,spec,symbol,vendor}/**/*"
+      - "{app,bin,config,danger,db,ee,fixtures,haml_lint,lib,locale,public,rubocop,scripts,spec,symbol,vendor}/**/*"
       - "doc/README.md"  # Some RSpec test rely on this file
       - ".dockerignore"
       - "qa/**/*"
@@ -123,3 +126,4 @@
   only:
     variables:
       - $CI_PROJECT_NAME == "gitlab"
+      - $CI_PROJECT_NAME == "gitlab-ee"  # Support former project name for forks/mirrors

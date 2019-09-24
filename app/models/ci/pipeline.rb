@@ -771,6 +771,18 @@ module Ci
       end
     end
 
+    def all_worktree_paths
+      strong_memoize(:all_worktree_paths) do
+        project.repository.ls_files(sha)
+      end
+    end
+
+    def top_level_worktree_paths
+      strong_memoize(:top_level_worktree_paths) do
+        project.repository.tree(sha).blobs.map(&:path)
+      end
+    end
+
     def default_branch?
       ref == project.default_branch
     end

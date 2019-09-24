@@ -2,11 +2,11 @@
   .section-container.section-welcome{ class: "#{ 'section-admin-welcome' if current_user.admin? }" }
     .container.section-body
       .row
-        .blank-state-welcome
+        .blank-state-welcome.w-100
           %h2.blank-state-welcome-title
-            Welcome to GitLab
+            = _('Welcome to GitLab')
           %p.blank-state-text
-            Code, test, and deploy together
+            = _('Faster releases. Better code. Less pain.')
         .blank-state-row
           %div{ class: ('column-large' if has_start_trial?) }
             - if current_user.admin?

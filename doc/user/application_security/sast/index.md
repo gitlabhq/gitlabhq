@@ -45,11 +45,14 @@ The results are sorted by the priority of the vulnerability:
 
 ## Requirements
 
-To run a SAST job, you need GitLab Runner with the
+To run a SAST job, by default, you need GitLab Runner with the
 [`docker`](https://docs.gitlab.com/runner/executors/docker.html#use-docker-in-docker-with-privileged-mode) or
 [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes.html#running-privileged-containers-for-the-runners)
 executor running in privileged mode. If you're using the shared Runners on GitLab.com,
 this is enabled by default.
+
+Privileged mode is not necessary if you've [disabled Docker in Docker
+for SAST](#disabling-docker-in-docker-for-sast)
 
 CAUTION: **Caution:**
 If you use your own Runners, make sure that the Docker version you have installed
@@ -144,6 +147,21 @@ under your project's settings:
 | ---- | --- | ----- |
 | Variable | `MAVEN_CLI_OPTS` | `-Drepository.password=verysecret -Drepository.user=myuser` |
 
+### Disabling Docker in Docker for SAST
+
+You can avoid the need for Docker in Docker by running the individual analyzers.
+This does not require running the executor in privileged mode. For example:
+
+```yaml
+include:
+  template: SAST.gitlab-ci.yml
+
+variables:
+  SAST_DISABLE_DIND: "true"
+```
+
+This will create individual `<analyzer-name>-sast` jobs for each analyzer that runs in your CI/CD pipeline.
+
 ### Overriding the SAST template
 
 If you want to override the job definition (for example, change properties like
@@ -173,6 +191,7 @@ The following are Docker image-related variables.
 | `SAST_ANALYZER_IMAGE_PREFIX`  | Override the name of the Docker registry providing the default images (proxy). Read more about [customizing analyzers](analyzers.md). |
 | `SAST_ANALYZER_IMAGE_TAG`     | Override the Docker tag of the default images. Read more about [customizing analyzers](analyzers.md).                                 |
 | `SAST_DEFAULT_ANALYZERS`      | Override the names of default images. Read more about [customizing analyzers](analyzers.md).                                          |
+| `SAST_DISABLE_DIND`           | Disable Docker in Docker and run analyzers [individually](#disabling-docker-in-docker-for-sast).                                      |
 | `SAST_PULL_ANALYZER_IMAGES`   | Pull the images from the Docker registry (set to 0 to disable). Read more about [customizing analyzers](analyzers.md).                 |
 
 ### Vulnerability filters

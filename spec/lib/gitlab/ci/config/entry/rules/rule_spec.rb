@@ -103,6 +103,52 @@ describe Gitlab::Ci::Config::Entry::Rules::Rule do
       end
     end
 
+    context 'when using a long list as an invalid changes: clause' do
+      let(:config) { { changes: ['app/'] * 51 } }
+
+      it { is_expected.not_to be_valid }
+
+      it 'returns errors' do
+        expect(subject.errors).to include(/changes is too long \(maximum is 50 characters\)/)
+      end
+    end
+
+    context 'when using a exists: clause' do
+      let(:config) { { exists: %w[app/ lib/ spec/ other/* paths/**/*.rb] } }
+
+      it { is_expected.to be_valid }
+    end
+
+    context 'when using a string as an invalid exists: clause' do
+      let(:config) { { exists: 'a regular string' } }
+
+      it { is_expected.not_to be_valid }
+
+      it 'reports an error about invalid policy' do
+        expect(subject.errors).to include(/should be an array of strings/)
+      end
+    end
+
+    context 'when using a list as an invalid exists: clause' do
+      let(:config) { { exists: [1, 2] } }
+
+      it { is_expected.not_to be_valid }
+
+      it 'returns errors' do
+        expect(subject.errors).to include(/exists should be an array of strings/)
+      end
+    end
+
+    context 'when using a long list as an invalid exists: clause' do
+      let(:config) { { exists: ['app/'] * 51 } }
+
+      it { is_expected.not_to be_valid }
+
+      it 'returns errors' do
+        expect(subject.errors).to include(/exists is too long \(maximum is 50 characters\)/)
+      end
+    end
+
     context 'specifying a delayed job' do
       let(:config) { { if: '$THIS || $THAT', when: 'delayed', start_in: '15 minutes' } }
 
@@ -197,6 +243,12 @@ describe Gitlab::Ci::Config::Entry::Rules::Rule do
       it 'does not add to provided configuration' do
         expect(entry.value).to eq(config)
       end
+    end
+
+    context 'when using a exists: clause' do
+      let(:config) { { exists: %w[app/ lib/ spec/ other/* paths/**/*.rb] } }
+
+      it { is_expected.to eq(config) }
     end
   end
 

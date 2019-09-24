@@ -6550,6 +6550,9 @@ msgstr ""
 msgid "Faster as it re-uses the project workspace (falling back to clone if it doesn't exist)"
 msgstr ""
 
+msgid "Faster releases. Better code. Less pain."
+msgstr ""
+
 msgid "Favicon was successfully removed."
 msgstr ""
 
@@ -17680,6 +17683,9 @@ msgid "Weight"
 msgstr ""
 
 msgid "Weight %{weight}"
+msgstr ""
+
+msgid "Welcome to GitLab"
 msgstr ""
 
 msgid "Welcome to the Guided GitLab Tour"

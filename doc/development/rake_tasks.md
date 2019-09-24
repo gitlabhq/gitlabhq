@@ -143,12 +143,6 @@ This will compile and minify all JavaScript and CSS assets and copy them along
 with all other frontend assets (images, fonts, etc) into `/public/assets` where
 they can be easily inspected.
 
-## Generate API documentation for project services (e.g. Slack)
-
-```
-bundle exec rake services:doc
-```
-
 ## Updating Emoji Aliases
 
 To update the Emoji aliases file (used for Emoji autocomplete) you must run the
