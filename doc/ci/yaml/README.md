@@ -986,6 +986,10 @@ The above script will:
 > - Blocking manual actions were introduced in GitLab 9.0.
 > - Protected actions were introduced in GitLab 9.2.
 
+NOTE: **Note:**
+Using `when:manual` and `trigger` together will result in the error `jobs:#{job-name} when should be on_success, on_failure or always`.
+This is because `when:manual` will prevent any trigger from being used.
+
 Manual actions are a special type of job that are not executed automatically,
 they need to be explicitly started by a user. An example usage of manual actions
 would be a deployment to a production environment. Manual actions can be started
@@ -2063,6 +2067,10 @@ job split into three separate jobs.
 ### `trigger` **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/8997) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.8.
+
+NOTE: **Note:**
+Using a `trigger` with `when:manual` together it will result in the error `jobs:#{job-name} when should be on_success, on_failure or always`.
+This is because `when:manual` will prevent any trigger from being used.
 
 `trigger` allows you to define downstream pipeline trigger. When a job created
 from `trigger` definition is started by GitLab, a downstream pipeline gets

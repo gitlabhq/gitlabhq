@@ -216,11 +216,18 @@ Do not include the same information in multiple places. [Link to a SSOT instead.
 - Be clear, concise, and stick to the goal of the doc.
 - Write in US English.
 - Capitalize "G" and "L" in GitLab.
-- Use title case when referring to [features](https://about.gitlab.com/features/) or
-  [products](https://about.gitlab.com/pricing/) (e.g., GitLab Runner, Geo,
-  Issue Boards, GitLab Core, Git, Prometheus, Kubernetes, etc), and methods or methodologies
-  (e.g., Continuous Integration, Continuous Deployment, Scrum, Agile, etc). Note that
-  some features are also objects (e.g. "GitLab's Merge Requests support X." and "Create a new merge request for Z.").
+- Use title case when referring to:
+  - [GitLab Features](https://about.gitlab.com/features/). For example, Issue Board,
+    Geo, and Runner.
+  - GitLab [product tiers](https://about.gitlab.com/pricing/). For example, GitLab Core
+    and GitLab Ultimate.
+  - Third-party products. For example, Prometheus, Kubernetes, and Git.
+  - Methods or methodologies. For example, Continuous Integration, Continuous
+    Deployment, Scrum, and Agile.
+
+NOTE: **Note:**
+Some features are also objects. For example, "GitLab's Merge Requests support X." and
+"Create a new merge request for Z.".
 
 ## Text
 
