@@ -132,6 +132,13 @@ describe Project do
         expect(project.ci_cd_settings).to be_an_instance_of(ProjectCiCdSetting)
         expect(project.ci_cd_settings).to be_persisted
       end
+
+      it 'automatically creates a Pages metadata row' do
+        project = create(:project)
+
+        expect(project.pages_metadatum).to be_an_instance_of(ProjectPagesMetadatum)
+        expect(project.pages_metadatum).to be_persisted
+      end
     end
 
     context 'updating cd_cd_settings' do
@@ -3526,7 +3533,8 @@ describe Project do
   end
 
   describe '#remove_pages' do
-    let(:project) { create(:project) }
+    let(:project) { create(:project).tap { |project| project.mark_pages_as_deployed } }
+    let(:pages_metadatum) { project.pages_metadatum }
     let(:namespace) { project.namespace }
     let(:pages_path) { project.pages_path }
 
@@ -3539,12 +3547,12 @@ describe Project do
       end
     end
 
-    it 'removes the pages directory' do
+    it 'removes the pages directory and marks the project as not having pages deployed' do
       expect_any_instance_of(Projects::UpdatePagesConfigurationService).to receive(:execute)
       expect_any_instance_of(Gitlab::PagesTransfer).to receive(:rename_project).and_return(true)
       expect(PagesWorker).to receive(:perform_in).with(5.minutes, :remove, namespace.full_path, anything)
 
-      project.remove_pages
+      expect { project.remove_pages }.to change { pages_metadatum.reload.deployed }.from(true).to(false)
     end
 
     it 'is a no-op when there is no namespace' do
@@ -3554,13 +3562,13 @@ describe Project do
       expect_any_instance_of(Projects::UpdatePagesConfigurationService).not_to receive(:execute)
       expect_any_instance_of(Gitlab::PagesTransfer).not_to receive(:rename_project)
 
-      project.remove_pages
+      expect { project.remove_pages }.not_to change { pages_metadatum.reload.deployed }
     end
 
     it 'is run when the project is destroyed' do
       expect(project).to receive(:remove_pages).and_call_original
 
-      project.destroy
+      expect { project.destroy }.not_to raise_error
     end
   end
 
@@ -5014,6 +5022,35 @@ describe Project do
     end
   end
 
+  context 'pages deployed' do
+    let(:project) { create(:project) }
+
+    {
+      mark_pages_as_deployed: true,
+      mark_pages_as_not_deployed: false
+    }.each do |method_name, flag|
+      describe method_name do
+        it "creates new record and sets deployed to #{flag} if none exists yet" do
+          project.pages_metadatum.destroy!
+          project.reload
+
+          project.send(method_name)
+
+          expect(project.pages_metadatum.reload.deployed).to eq(flag)
+        end
+
+        it "updates the existing record and sets deployed to #{flag}" do
+          pages_metadatum = project.pages_metadatum
+          pages_metadatum.update!(deployed: !flag)
+
+          expect { project.send(method_name) }.to change {
+            pages_metadatum.reload.deployed
+          }.from(!flag).to(flag)
+        end
+      end
+    end
+  end
+
   describe '#has_pool_repsitory?' do
     it 'returns false when it does not have a pool repository' do
       subject = create(:project, :repository)
@@ -5054,9 +5091,34 @@ describe Project do
     let(:project) { build(:project) }
 
     it 'returns instance of Pages::LookupPath' do
-      expect(Pages::LookupPath).to receive(:new).with(project, domain: pages_domain).and_call_original
+      expect(Pages::LookupPath).to receive(:new).with(project, domain: pages_domain, trim_prefix: 'mygroup').and_call_original
 
-      expect(project.pages_lookup_path(domain: pages_domain)).to be_a(Pages::LookupPath)
+      expect(project.pages_lookup_path(domain: pages_domain, trim_prefix: 'mygroup')).to be_a(Pages::LookupPath)
+    end
+  end
+
+  describe '.with_pages_deployed' do
+    it 'returns only projects that have pages deployed' do
+      _project_without_pages = create(:project)
+      project_with_pages = create(:project)
+      project_with_pages.mark_pages_as_deployed
+
+      expect(described_class.with_pages_deployed).to contain_exactly(project_with_pages)
+    end
+  end
+
+  describe '#pages_group_root?' do
+    it 'returns returns true if pages_url is same as pages_group_url' do
+      project = build(:project)
+      expect(project).to receive(:pages_url).and_return(project.pages_group_url)
+
+      expect(project.pages_group_root?).to eq(true)
+    end
+
+    it 'returns returns false if pages_url is different than pages_group_url' do
+      project = build(:project)
+
+      expect(project.pages_group_root?).to eq(false)
     end
   end
 

@@ -96,6 +96,10 @@ module QA
           has_element?(:admin_area_link, wait: wait)
         end
 
+        def has_no_admin_area_link?(wait: Capybara.default_max_wait_time)
+          has_no_element?(:admin_area_link, wait: wait)
+        end
+
         def click_stop_impersonation_link
           click_element(:stop_impersonation_link)
         end

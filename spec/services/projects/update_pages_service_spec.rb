@@ -40,6 +40,7 @@ describe Projects::UpdatePagesService do
         it "doesn't delete artifacts after deploying" do
           expect(execute).to eq(:success)
 
+          expect(project.pages_metadatum).to be_deployed
           expect(build.artifacts?).to eq(true)
         end
       end
@@ -47,6 +48,7 @@ describe Projects::UpdatePagesService do
       it 'succeeds' do
         expect(project.pages_deployed?).to be_falsey
         expect(execute).to eq(:success)
+        expect(project.pages_metadatum).to be_deployed
         expect(project.pages_deployed?).to be_truthy
 
         # Check that all expected files are extracted
@@ -63,16 +65,23 @@ describe Projects::UpdatePagesService do
       it 'removes pages after destroy' do
         expect(PagesWorker).to receive(:perform_in)
         expect(project.pages_deployed?).to be_falsey
+
         expect(execute).to eq(:success)
+
+        expect(project.pages_metadatum).to be_deployed
         expect(project.pages_deployed?).to be_truthy
+
         project.destroy
+
         expect(project.pages_deployed?).to be_falsey
+        expect(ProjectPagesMetadatum.find_by_project_id(project)).to be_nil
       end
 
       it 'fails if sha on branch is not latest' do
         build.update(ref: 'feature')
 
         expect(execute).not_to eq(:success)
+        expect(project.pages_metadatum).not_to be_deployed
       end
 
       context 'when using empty file' do
@@ -94,6 +103,7 @@ describe Projects::UpdatePagesService do
 
           it 'succeeds to extract' do
             expect(execute).to eq(:success)
+            expect(project.pages_metadatum).to be_deployed
           end
         end
       end
@@ -109,6 +119,7 @@ describe Projects::UpdatePagesService do
 
           build.reload
           expect(deploy_status).to be_failed
+          expect(project.pages_metadatum).not_to be_deployed
         end
       end
 
@@ -125,6 +136,7 @@ describe Projects::UpdatePagesService do
 
           build.reload
           expect(deploy_status).to be_failed
+          expect(project.pages_metadatum).not_to be_deployed
         end
       end
 
@@ -138,6 +150,7 @@ describe Projects::UpdatePagesService do
 
           build.reload
           expect(deploy_status).to be_failed
+          expect(project.pages_metadatum).not_to be_deployed
         end
       end
     end
@@ -179,6 +192,7 @@ describe Projects::UpdatePagesService do
         expect(deploy_status.description)
           .to match(/artifacts for pages are too large/)
         expect(deploy_status).to be_script_failure
+        expect(project.pages_metadatum).not_to be_deployed
       end
     end
 
@@ -196,6 +210,7 @@ describe Projects::UpdatePagesService do
           subject.execute
 
           expect(deploy_status.description).not_to be_present
+          expect(project.pages_metadatum).to be_deployed
         end
       end
 

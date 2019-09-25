@@ -8,6 +8,14 @@ describe QA::Scenario::Test::Integration::LDAPNoTLS do
   end
 end
 
+describe QA::Scenario::Test::Integration::LDAPNoServer do
+  context '#perform' do
+    it_behaves_like 'a QA scenario class' do
+      let(:tags) { [:ldap_no_server] }
+    end
+  end
+end
+
 describe QA::Scenario::Test::Integration::LDAPTLS do
   context '#perform' do
     it_behaves_like 'a QA scenario class' do

@@ -965,13 +965,7 @@ module API
       end
 
       expose :target_url do |todo, options|
-        target_type   = todo.target_type.underscore
-        target_url    = "#{todo.parent.class.to_s.underscore}_#{target_type}_url"
-        target_anchor = "note_#{todo.note_id}" if todo.note_id?
-
-        Gitlab::Routing
-          .url_helpers
-          .public_send(target_url, todo.parent, todo.target, anchor: target_anchor) # rubocop:disable GitlabSecurity/PublicSend
+        todo_target_url(todo)
       end
 
       expose :body
@@ -982,6 +976,19 @@ module API
         # false as second argument prevents looking up in module hierarchy
         # see also https://gitlab.com/gitlab-org/gitlab-foss/issues/59719
         ::API::Entities.const_get(target_type, false)
+      end
+
+      def todo_target_url(todo)
+        target_type = todo.target_type.underscore
+        target_url = "#{todo.parent.class.to_s.underscore}_#{target_type}_url"
+
+        Gitlab::Routing
+          .url_helpers
+          .public_send(target_url, todo.parent, todo.target, anchor: todo_target_anchor(todo)) # rubocop:disable GitlabSecurity/PublicSend
+      end
+
+      def todo_target_anchor(todo)
+        "note_#{todo.note_id}" if todo.note_id?
       end
     end
 

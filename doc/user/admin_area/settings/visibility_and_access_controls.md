@@ -58,7 +58,7 @@ not selected.
 
 CAUTION: **Important:**
 Starting with [GitLab 10.7][ce-18021], HTTP(s) protocol will be allowed for
-git clone/fetch requests done by GitLab Runner from CI/CD Jobs, even if
+Git clone/fetch requests done by GitLab Runner from CI/CD Jobs, even if
 _Only SSH_ was selected.
 
 > **Note:** Please keep in mind that disabling an access protocol does not actually

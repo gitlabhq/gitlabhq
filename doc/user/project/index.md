@@ -129,7 +129,7 @@ Read through the documentation on [project settings](settings/index.md).
 
 - [Import a project](import/index.md) from:
   - [GitHub to GitLab](import/github.md)
-  - [BitBucket to GitLab](import/bitbucket.md)
+  - [Bitbucket to GitLab](import/bitbucket.md)
   - [Gitea to GitLab](import/gitea.md)
   - [FogBugz to GitLab](import/fogbugz.md)
 - [Export a project from GitLab](settings/import_export.md#exporting-a-project-and-its-data)

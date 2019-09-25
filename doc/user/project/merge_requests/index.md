@@ -311,7 +311,7 @@ as pushing changes:
 - Set the description of the merge request to a particular description.
 - Add or remove labels from the merge request.
 
-### Create a new merge request using git push options
+### Create a new merge request using Git push options
 
 To create a new merge request for a branch, use the
 `merge_request.create` push option:
@@ -320,7 +320,7 @@ To create a new merge request for a branch, use the
 git push -o merge_request.create
 ```
 
-### Set the target branch of a merge request using git push options
+### Set the target branch of a merge request using Git push options
 
 To update an existing merge request's target branch, use the
 `merge_request.target=<branch_name>` push option:
@@ -336,7 +336,7 @@ same time using a `-o` flag per push option:
 git push -o merge_request.create -o merge_request.target=branch_name
 ```
 
-### Set merge when pipeline succeeds using git push options
+### Set merge when pipeline succeeds using Git push options
 
 To set an existing merge request to
 [merge when its pipeline succeeds](merge_when_pipeline_succeeds.md), use
@@ -353,7 +353,7 @@ pipeline succeeds at the same time using a `-o` flag per push option:
 git push -o merge_request.create -o merge_request.merge_when_pipeline_succeeds
 ```
 
-### Set removing the source branch using git push options
+### Set removing the source branch using Git push options
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/64320) in GitLab 12.2.
 
@@ -368,7 +368,7 @@ git push -o merge_request.remove_source_branch
 You can also use this push option in addition to the
 `merge_request.create` push option.
 
-### Set merge request title using git push options
+### Set merge request title using Git push options
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/64320) in GitLab 12.2.
 
@@ -382,7 +382,7 @@ git push -o merge_request.title="The title I want"
 You can also use this push option in addition to the
 `merge_request.create` push option.
 
-### Set merge request description using git push options
+### Set merge request description using Git push options
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/64320) in GitLab 12.2.
 
@@ -396,7 +396,7 @@ git push -o merge_request.description="The description I want"
 You can also use this push option in addition to the
 `merge_request.create` push option.
 
-### Add or remove labels using git push options
+### Add or remove labels using Git push options
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/31831) in GitLab 12.3.
 
@@ -666,7 +666,7 @@ tricks to checkout a merge request locally.
 Please note that you can checkout a merge request locally even if the source
 project is a fork (even a private fork) of the target project.
 
-#### Checkout locally by adding a git alias
+#### Checkout locally by adding a Git alias
 
 Add the following alias to your `~/.gitconfig`:
 
@@ -736,9 +736,8 @@ And to check out a particular merge request:
 git checkout origin/merge-requests/1
 ```
 
-all the above can be done with [git-mr] script.
+All the above can be done with the [`git-mr`](https://gitlab.com/glensc/git-mr) script.
 
-[git-mr]: https://gitlab.com/glensc/git-mr
 [products]: https://about.gitlab.com/products/ "GitLab products page"
 [protected branches]: ../protected_branches.md
 [ci]: ../../../ci/README.md

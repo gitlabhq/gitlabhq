@@ -32,9 +32,9 @@ For example, [Active Directory](https://technet.microsoft.com/en-us/library/hh83
 
 We won't cover the installation and configuration of Windows Server or Active Directory Domain Services in this tutorial. There are a number of resources online to guide you through this process:
 
-- Install Windows Server 2012  - (_technet.microsoft.com_) - [Installing Windows Server 2012](https://technet.microsoft.com/en-us/library/jj134246(v=ws.11).aspx)
+- Install Windows Server 2012  - (`technet.microsoft.com`) - [Installing Windows Server 2012](https://technet.microsoft.com/en-us/library/jj134246(v=ws.11).aspx)
 
-- Install Active Directory Domain Services (AD DS) (_technet.microsoft.com_)- [Install Active Directory Domain Services](https://technet.microsoft.com/windows-server-docs/identity/ad-ds/deploy/install-active-directory-domain-services--level-100-#BKMK_PS)
+- Install Active Directory Domain Services (AD DS) (`technet.microsoft.com`)- [Install Active Directory Domain Services](https://technet.microsoft.com/windows-server-docs/identity/ad-ds/deploy/install-active-directory-domain-services--level-100-#BKMK_PS)
 
 > **Shortcut:** You can quickly install AD DS via PowerShell using
 `Install-WindowsFeature AD-Domain-Services -IncludeManagementTools`

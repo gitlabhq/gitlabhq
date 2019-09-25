@@ -410,6 +410,7 @@ project:
 - designs
 - project_aliases
 - external_pull_requests
+- pages_metadatum
 award_emoji:
 - awardable
 - user

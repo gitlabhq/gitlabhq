@@ -1,0 +1,16 @@
+# 1. Human Resources
+
+dn: cn=Human Resources,ou=Global Groups,dc=example,dc=org
+objectClass: groupofnames
+cn: Human Resources
+description: Human Resources
+member: uid=hruser1,ou=People,ou=Global Groups,dc=example,dc=org
+
+# 2. Admin
+
+dn: cn=AdminGroup,ou=Global Groups,dc=example,dc=org
+objectClass: groupofnames
+cn: AdminGroup
+description: Human Resources
+member: uid=adminuser1,ou=People,ou=Global Groups,dc=example,dc=org
+member: uid=adminuser2,ou=People,ou=Global Groups,dc=example,dc=org

@@ -547,3 +547,13 @@ export const calculateRemainingMilliseconds = endDate => {
   const remainingMilliseconds = new Date(endDate).getTime() - Date.now();
   return Math.max(remainingMilliseconds, 0);
 };
+
+/**
+ * Subtracts a given number of days from a given date and returns the new date.
+ *
+ * @param {Date} date the date that we will substract days from
+ * @param {number} daysInPast number of days that are subtracted from a given date
+ * @returns {String} Date string in ISO format
+ */
+export const getDateInPast = (date, daysInPast) =>
+  new Date(date.setTime(date.getTime() - daysInPast * 24 * 60 * 60 * 1000)).toISOString();

@@ -6,6 +6,7 @@ import {
   numberToHumanSize,
   sum,
   isOdd,
+  median,
 } from '~/lib/utils/number_utils';
 
 describe('Number Utils', () => {
@@ -107,6 +108,18 @@ describe('Number Utils', () => {
 
     it('should return 1 with a odd number', () => {
       expect(isOdd(1)).toEqual(1);
+    });
+  });
+
+  describe('median', () => {
+    it('computes the median for a given array with odd length', () => {
+      const items = [10, 27, 20, 5, 19];
+      expect(median(items)).toBe(19);
+    });
+
+    it('computes the median for a given array with even length', () => {
+      const items = [10, 27, 20, 5, 19, 4];
+      expect(median(items)).toBe(14.5);
     });
   });
 });

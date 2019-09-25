@@ -87,7 +87,7 @@ module QA
             click_element :sign_in_button
           end
 
-          Page::Main::Menu.perform(&:has_personal_area?)
+          Page::Main::Menu.perform(&:signed_in?)
         end
 
         def self.path

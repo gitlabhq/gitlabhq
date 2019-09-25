@@ -59,7 +59,7 @@ GitLab OK
 
 ## Readiness
 
-The readiness probe checks whether the Gitlab instance is ready to use. It checks the dependent services (Database, Redis, Gitaly etc.) and gives a status for each.
+The readiness probe checks whether the GitLab instance is ready to use. It checks the dependent services (Database, Redis, Gitaly etc.) and gives a status for each.
 
 ```text
 GET /-/readiness

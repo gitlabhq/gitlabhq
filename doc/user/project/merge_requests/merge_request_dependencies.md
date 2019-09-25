@@ -97,9 +97,9 @@ merge.
 
 ## Limitations
 
-- API support: [gitlab#12551](https://gitlab.com/gitlab-org/gitlab/issues/12551)
-- Dependencies are not preserved across project export/import: [gitlab#12549](https://gitlab.com/gitlab-org/gitlab/issues/12549)
-- Complex merge order dependencies are not supported: [gitlab#11393](https://gitlab.com/gitlab-org/gitlab/issues/11393)
+- API support: [issue #12551](https://gitlab.com/gitlab-org/gitlab/issues/12551)
+- Dependencies are not preserved across project export/import: [issue #12549](https://gitlab.com/gitlab-org/gitlab/issues/12549)
+- Complex merge order dependencies are not supported: [issue #11393](https://gitlab.com/gitlab-org/gitlab/issues/11393)
 
 The last item merits a little more explanation. Dependencies between merge
 requests can be described as a graph of relationships. The simplest possible

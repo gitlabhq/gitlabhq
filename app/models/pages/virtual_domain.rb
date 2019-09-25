@@ -2,8 +2,9 @@
 
 module Pages
   class VirtualDomain
-    def initialize(projects, domain: nil)
+    def initialize(projects, trim_prefix: nil, domain: nil)
       @projects = projects
+      @trim_prefix = trim_prefix
       @domain = domain
     end
 
@@ -17,12 +18,12 @@ module Pages
 
     def lookup_paths
       projects.map do |project|
-        project.pages_lookup_path(domain: domain)
+        project.pages_lookup_path(trim_prefix: trim_prefix, domain: domain)
       end.sort_by(&:prefix).reverse
     end
 
     private
 
-    attr_reader :projects, :domain
+    attr_reader :projects, :trim_prefix, :domain
   end
 end

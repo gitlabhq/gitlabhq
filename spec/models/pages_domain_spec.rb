@@ -557,15 +557,27 @@ describe PagesDomain do
     end
   end
 
-  describe '.pages_virtual_domain' do
-    let(:project) { build(:project) }
+  describe '#pages_virtual_domain' do
+    let(:project) { create(:project) }
+    let(:pages_domain) { create(:pages_domain, project: project) }
 
-    subject(:pages_domain) { build(:pages_domain, project: project) }
+    context 'when there are no pages deployed for the project' do
+      it 'returns nil' do
+        expect(pages_domain.pages_virtual_domain).to be_nil
+      end
+    end
 
-    it 'returns instance of Pages::VirtualDomain' do
-      expect(Pages::VirtualDomain).to receive(:new).with([project], domain: pages_domain).and_call_original
+    context 'when there are pages deployed for the project' do
+      before do
+        project.mark_pages_as_deployed
+        project.reload
+      end
 
-      expect(pages_domain.pages_virtual_domain).to be_a(Pages::VirtualDomain)
+      it 'returns the virual domain' do
+        expect(Pages::VirtualDomain).to receive(:new).with([project], domain: pages_domain).and_call_original
+
+        expect(pages_domain.pages_virtual_domain).to be_an_instance_of(Pages::VirtualDomain)
+      end
     end
   end
 end

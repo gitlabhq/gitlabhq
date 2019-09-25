@@ -81,3 +81,5 @@ module Gitlab
     end
   end
 end
+
+::Gitlab::UrlBuilder.prepend_if_ee('EE::Gitlab::UrlBuilder')

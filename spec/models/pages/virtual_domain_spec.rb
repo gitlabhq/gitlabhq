@@ -25,19 +25,33 @@ describe Pages::VirtualDomain do
   end
 
   describe '#lookup_paths' do
-    let(:domain) { instance_double(PagesDomain) }
     let(:project_a) { instance_double(Project) }
     let(:project_z) { instance_double(Project) }
     let(:pages_lookup_path_a) { instance_double(Pages::LookupPath, prefix: 'aaa') }
     let(:pages_lookup_path_z) { instance_double(Pages::LookupPath, prefix: 'zzz') }
 
-    subject(:virtual_domain) { described_class.new([project_a, project_z], domain: domain) }
+    context 'when there is pages domain provided' do
+      let(:domain) { instance_double(PagesDomain) }
 
-    it 'returns collection of projects pages lookup paths sorted by prefix in reverse' do
-      expect(project_a).to receive(:pages_lookup_path).with(domain: domain).and_return(pages_lookup_path_a)
-      expect(project_z).to receive(:pages_lookup_path).with(domain: domain).and_return(pages_lookup_path_z)
+      subject(:virtual_domain) { described_class.new([project_a, project_z], domain: domain) }
 
-      expect(virtual_domain.lookup_paths).to eq([pages_lookup_path_z, pages_lookup_path_a])
+      it 'returns collection of projects pages lookup paths sorted by prefix in reverse' do
+        expect(project_a).to receive(:pages_lookup_path).with(domain: domain, trim_prefix: nil).and_return(pages_lookup_path_a)
+        expect(project_z).to receive(:pages_lookup_path).with(domain: domain, trim_prefix: nil).and_return(pages_lookup_path_z)
+
+        expect(virtual_domain.lookup_paths).to eq([pages_lookup_path_z, pages_lookup_path_a])
+      end
+    end
+
+    context 'when there is trim_prefix provided' do
+      subject(:virtual_domain) { described_class.new([project_a, project_z], trim_prefix: 'group/') }
+
+      it 'returns collection of projects pages lookup paths sorted by prefix in reverse' do
+        expect(project_a).to receive(:pages_lookup_path).with(trim_prefix: 'group/', domain: nil).and_return(pages_lookup_path_a)
+        expect(project_z).to receive(:pages_lookup_path).with(trim_prefix: 'group/', domain: nil).and_return(pages_lookup_path_z)
+
+        expect(virtual_domain.lookup_paths).to eq([pages_lookup_path_z, pages_lookup_path_a])
+      end
     end
   end
 end

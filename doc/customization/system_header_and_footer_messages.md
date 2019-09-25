@@ -14,7 +14,7 @@ Note that color settings will only be applied within the app interface and not t
 
 ![appearance](system_header_and_footer_messages/appearance.png)
 
-After saving, all GitLab pages will contain the custom system header and/or footer messages:
+After saving, all pages within GitLab will contain the custom system header and/or footer messages:
 
 ![custom_header_footer](system_header_and_footer_messages/custom_header_footer.png)
 

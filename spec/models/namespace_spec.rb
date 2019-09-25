@@ -191,6 +191,16 @@ describe Namespace do
     end
   end
 
+  describe '.find_by_pages_host' do
+    it 'finds namespace by GitLab Pages host and is case-insensitive' do
+      namespace = create(:namespace, name: 'topnamespace')
+      create(:namespace, name: 'annother_namespace')
+      host = "TopNamespace.#{Settings.pages.host.upcase}"
+
+      expect(described_class.find_by_pages_host(host)).to eq(namespace)
+    end
+  end
+
   describe '#ancestors_upto' do
     let(:parent) { create(:group) }
     let(:child) { create(:group, parent: parent) }
@@ -910,6 +920,20 @@ describe Namespace do
 
           expect(group.emails_disabled?).to be_falsey
         end
+      end
+    end
+  end
+
+  describe '#pages_virtual_domain' do
+    let(:project) { create(:project, namespace: namespace) }
+
+    context 'when there are pages deployed for the project' do
+      before do
+        project.mark_pages_as_deployed
+      end
+
+      it 'returns the virual domain' do
+        expect(namespace.pages_virtual_domain).to be_an_instance_of(Pages::VirtualDomain)
       end
     end
   end

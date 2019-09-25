@@ -114,6 +114,7 @@ module QA
       module Integration
         autoload :Github, 'qa/scenario/test/integration/github'
         autoload :LDAPNoTLS, 'qa/scenario/test/integration/ldap_no_tls'
+        autoload :LDAPNoServer, 'qa/scenario/test/integration/ldap_no_server'
         autoload :LDAPTLS, 'qa/scenario/test/integration/ldap_tls'
         autoload :InstanceSAML, 'qa/scenario/test/integration/instance_saml'
         autoload :OAuth, 'qa/scenario/test/integration/oauth'
@@ -394,6 +395,7 @@ module QA
     autoload :KubernetesCluster, 'qa/service/kubernetes_cluster'
     autoload :Omnibus, 'qa/service/omnibus'
     autoload :Runner, 'qa/service/runner'
+    autoload :LDAP, 'qa/service/ldap'
 
     module ClusterProvider
       autoload :Base, 'qa/service/cluster_provider/base'

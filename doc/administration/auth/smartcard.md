@@ -206,7 +206,7 @@ attribute. As a prerequisite, you must use an LDAP server that:
 
 **For installations from source**
 
-1. Add the `san_extensions` line to config/gitlab.yml` within the smartcard section:
+1. Add the `san_extensions` line to `config/gitlab.yml` within the smartcard section:
 
    ```yaml
    smartcard:

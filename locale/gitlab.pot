@@ -4752,6 +4752,9 @@ msgstr ""
 msgid "Days"
 msgstr ""
 
+msgid "Days to merge"
+msgstr ""
+
 msgid "Debug"
 msgstr ""
 
@@ -8094,9 +8097,6 @@ msgid "Hook was successfully created."
 msgstr ""
 
 msgid "Hook was successfully updated."
-msgstr ""
-
-msgid "Hours"
 msgstr ""
 
 msgid "Housekeeping"
@@ -11599,13 +11599,40 @@ msgstr ""
 msgid "Productivity analytics can help identify the problems that are delaying your team"
 msgstr ""
 
+msgid "ProductivityAanalytics|Merge requests"
+msgstr ""
+
 msgid "ProductivityAnalytics|Ascending"
+msgstr ""
+
+msgid "ProductivityAnalytics|Days"
 msgstr ""
 
 msgid "ProductivityAnalytics|Days to merge"
 msgstr ""
 
 msgid "ProductivityAnalytics|Descending"
+msgstr ""
+
+msgid "ProductivityAnalytics|Hours"
+msgstr ""
+
+msgid "ProductivityAnalytics|List"
+msgstr ""
+
+msgid "ProductivityAnalytics|Merge Requests"
+msgstr ""
+
+msgid "ProductivityAnalytics|Merge date"
+msgstr ""
+
+msgid "ProductivityAnalytics|Merge requests"
+msgstr ""
+
+msgid "ProductivityAnalytics|Time to merge"
+msgstr ""
+
+msgid "ProductivityAnalytics|Trendline"
 msgstr ""
 
 msgid "Profile"

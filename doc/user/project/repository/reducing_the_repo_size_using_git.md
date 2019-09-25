@@ -99,7 +99,7 @@ removed from the repository.
    ![Repository settings cleanup form](img/repository_cleanup.png)
 
    Upload the `object-id-map.old-new.txt` file and press **Start cleanup**.
-   This will remove any internal git references to the old commits, and run
+   This will remove any internal Git references to the old commits, and run
    `git gc` against the repository. You will receive an email once it has
    completed.
 

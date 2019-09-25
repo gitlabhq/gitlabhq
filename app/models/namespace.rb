@@ -120,6 +120,13 @@ class Namespace < ApplicationRecord
       uniquify = Uniquify.new
       uniquify.string(path) { |s| Namespace.find_by_path_or_name(s) }
     end
+
+    def find_by_pages_host(host)
+      gitlab_host = "." + Settings.pages.host.downcase
+      name = host.downcase.delete_suffix(gitlab_host)
+
+      Namespace.find_by_full_path(name)
+    end
   end
 
   def visibility_level_field
@@ -305,7 +312,15 @@ class Namespace < ApplicationRecord
     aggregation_schedule.present?
   end
 
+  def pages_virtual_domain
+    Pages::VirtualDomain.new(all_projects_with_pages, trim_prefix: full_path)
+  end
+
   private
+
+  def all_projects_with_pages
+    all_projects.with_pages_deployed
+  end
 
   def parent_changed?
     parent_id_changed?
