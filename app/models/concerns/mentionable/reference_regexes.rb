@@ -13,7 +13,9 @@ module Mentionable
     def self.other_patterns
       [
         Commit.reference_pattern,
-        MergeRequest.reference_pattern
+        MergeRequest.reference_pattern,
+        Label.reference_pattern,
+        Milestone.reference_pattern
       ]
     end
 
