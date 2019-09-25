@@ -4,7 +4,13 @@
 # List of the variables: https://gitlab.com/gitlab-org/security-products/sast#settings
 # How to set: https://docs.gitlab.com/ee/ci/yaml/#variables
 
-.sast:
+variables:
+  SAST_ANALYZER_IMAGE_PREFIX: "registry.gitlab.com/gitlab-org/security-products/analyzers"
+  SAST_DEFAULT_ANALYZERS: "bandit, brakeman, gosec, spotbugs, flawfinder, phpcs-security-audit, security-code-scan, nodejs-scan, eslint, tslint, secrets, sobelow, pmd-apex"
+  SAST_MAJOR_VERSION: 2
+  SAST_DISABLE_DIND: "false"
+
+sast:
   stage: test
   allow_failure: true
   artifacts:
@@ -15,13 +21,6 @@
       - branches
     variables:
       - $GITLAB_FEATURES =~ /\bsast\b/
-
-variables:
-  SAST_ANALYZER_IMAGE_PREFIX: "registry.gitlab.com/gitlab-org/security-products/analyzers"
-  SAST_DISABLE_DIND: "false"
-
-sast:
-  extends: .sast
   image: docker:stable
   variables:
     DOCKER_DRIVER: overlay2
@@ -84,7 +83,8 @@ sast:
       - $SAST_DISABLE_DIND == 'true'
 
 .analyzer:
-  extends: .sast
+  extends: sast
+  services: []
   except:
     variables:
       - $SAST_DISABLE_DIND == 'false'
@@ -94,100 +94,128 @@ sast:
 bandit-sast:
   extends: .analyzer
   image:
-    name: "$SAST_ANALYZER_IMAGE_PREFIX/bandit"
+    name: "$SAST_ANALYZER_IMAGE_PREFIX/bandit:$SAST_MAJOR_VERSION"
   only:
     variables:
-      - '$CI_PROJECT_REPOSITORY_LANGUAGES =~ /python/'
+      - $GITLAB_FEATURES =~ /\bsast\b/ &&
+          $SAST_DEFAULT_ANALYZERS =~ /bandit/&&
+          $CI_PROJECT_REPOSITORY_LANGUAGES =~ /python/
 
 brakeman-sast:
   extends: .analyzer
   image:
-    name: "$SAST_ANALYZER_IMAGE_PREFIX/brakeman"
+    name: "$SAST_ANALYZER_IMAGE_PREFIX/brakeman:$SAST_MAJOR_VERSION"
   only:
     variables:
-      - '$CI_PROJECT_REPOSITORY_LANGUAGES =~ /ruby/'
+      - $GITLAB_FEATURES =~ /\bsast\b/ &&
+          $SAST_DEFAULT_ANALYZERS =~ /brakeman/ &&
+          $CI_PROJECT_REPOSITORY_LANGUAGES =~ /ruby/
 
 eslint-sast:
   extends: .analyzer
   image:
-    name: "$SAST_ANALYZER_IMAGE_PREFIX/eslint"
+    name: "$SAST_ANALYZER_IMAGE_PREFIX/eslint:$SAST_MAJOR_VERSION"
   only:
     variables:
-      - '$CI_PROJECT_REPOSITORY_LANGUAGES =~ /javascript/'
+      - $GITLAB_FEATURES =~ /\bsast\b/ &&
+          $SAST_DEFAULT_ANALYZERS =~ /eslint/ &&
+          $CI_PROJECT_REPOSITORY_LANGUAGES =~ /javascript/
 
 flawfinder-sast:
   extends: .analyzer
   image:
-    name: "$SAST_ANALYZER_IMAGE_PREFIX/flawfinder"
+    name: "$SAST_ANALYZER_IMAGE_PREFIX/flawfinder:$SAST_MAJOR_VERSION"
   only:
     variables:
-      - '$CI_PROJECT_REPOSITORY_LANGUAGES =~ /\b(c\+\+|c\b)/'
+      - $GITLAB_FEATURES =~ /\bsast\b/ &&
+          $SAST_DEFAULT_ANALYZERS =~ /flawfinder/ &&
+          $CI_PROJECT_REPOSITORY_LANGUAGES =~ /\b(c\+\+|c)\b/
 
 gosec-sast:
   extends: .analyzer
   image:
-    name: "$SAST_ANALYZER_IMAGE_PREFIX/gosec"
+    name: "$SAST_ANALYZER_IMAGE_PREFIX/gosec:$SAST_MAJOR_VERSION"
   only:
     variables:
-      - '$CI_PROJECT_REPOSITORY_LANGUAGES =~ /go/'
+      - $GITLAB_FEATURES =~ /\bsast\b/ &&
+          $SAST_DEFAULT_ANALYZERS =~ /gosec/ &&
+          $CI_PROJECT_REPOSITORY_LANGUAGES =~ /\bgo\b/
 
 nodejs-scan-sast:
   extends: .analyzer
   image:
-    name: "$SAST_ANALYZER_IMAGE_PREFIX/nodejs-scan"
+    name: "$SAST_ANALYZER_IMAGE_PREFIX/nodejs-scan:$SAST_MAJOR_VERSION"
   only:
     variables:
-      - '$CI_PROJECT_REPOSITORY_LANGUAGES =~ /javascript/'
+      - $GITLAB_FEATURES =~ /\bsast\b/ &&
+          $SAST_DEFAULT_ANALYZERS =~ /nodejs-scan/ &&
+          $CI_PROJECT_REPOSITORY_LANGUAGES =~ /javascript/
 
 phpcs-security-audit-sast:
   extends: .analyzer
   image:
-    name: "$SAST_ANALYZER_IMAGE_PREFIX/phpcs-security-audit"
+    name: "$SAST_ANALYZER_IMAGE_PREFIX/phpcs-security-audit:$SAST_MAJOR_VERSION"
   only:
     variables:
-      - '$CI_PROJECT_REPOSITORY_LANGUAGES =~ /php/'
+      - $GITLAB_FEATURES =~ /\bsast\b/ &&
+          $SAST_DEFAULT_ANALYZERS =~ /phpcs-security-audit/ &&
+          $CI_PROJECT_REPOSITORY_LANGUAGES =~ /php/
 
 pmd-apex-sast:
   extends: .analyzer
   image:
-    name: "$SAST_ANALYZER_IMAGE_PREFIX/pmd-apex"
+    name: "$SAST_ANALYZER_IMAGE_PREFIX/pmd-apex:$SAST_MAJOR_VERSION"
   only:
     variables:
-      - '$CI_PROJECT_REPOSITORY_LANGUAGES =~ /apex/'
+      - $GITLAB_FEATURES =~ /\bsast\b/ &&
+          $SAST_DEFAULT_ANALYZERS =~ /pmd-apex/ &&
+          $CI_PROJECT_REPOSITORY_LANGUAGES =~ /apex/
 
 secrets-sast:
   extends: .analyzer
   image:
-    name: "$SAST_ANALYZER_IMAGE_PREFIX/secrets"
+    name: "$SAST_ANALYZER_IMAGE_PREFIX/secrets:$SAST_MAJOR_VERSION"
+  only:
+    variables:
+      - $GITLAB_FEATURES =~ /\bsast\b/ &&
+          $SAST_DEFAULT_ANALYZERS =~ /secrets/
 
 security-code-scan-sast:
   extends: .analyzer
   image:
-    name: "$SAST_ANALYZER_IMAGE_PREFIX/security-code-scan"
+    name: "$SAST_ANALYZER_IMAGE_PREFIX/security-code-scan:$SAST_MAJOR_VERSION"
   only:
     variables:
-      - '$CI_PROJECT_REPOSITORY_LANGUAGES =~ /c\#/ || $CI_PROJECT_REPOSITORY_LANGUAGES =~ /visual basic/'
+      - $GITLAB_FEATURES =~ /\bsast\b/ &&
+          $SAST_DEFAULT_ANALYZERS =~ /security-code-scan/ &&
+          $CI_PROJECT_REPOSITORY_LANGUAGES =~ /\b(c\#|visual basic\b)/
 
 sobelow-sast:
   extends: .analyzer
   image:
-    name: "$SAST_ANALYZER_IMAGE_PREFIX/sobelow"
+    name: "$SAST_ANALYZER_IMAGE_PREFIX/sobelow:$SAST_MAJOR_VERSION"
   only:
     variables:
-      - '$CI_PROJECT_REPOSITORY_LANGUAGES =~ /elixir/'
+      - $GITLAB_FEATURES =~ /\bsast\b/ &&
+          $SAST_DEFAULT_ANALYZERS =~ /sobelow/ &&
+          $CI_PROJECT_REPOSITORY_LANGUAGES =~ /elixir/
 
 spotbugs-sast:
   extends: .analyzer
   image:
-    name: "$SAST_ANALYZER_IMAGE_PREFIX/spotbugs"
+    name: "$SAST_ANALYZER_IMAGE_PREFIX/spotbugs:$SAST_MAJOR_VERSION"
   only:
     variables:
-      - '$CI_PROJECT_REPOSITORY_LANGUAGES =~ /java\b/'
+      - $GITLAB_FEATURES =~ /\bsast\b/ &&
+          $SAST_DEFAULT_ANALYZERS =~ /spotbugs/ &&
+          $CI_PROJECT_REPOSITORY_LANGUAGES =~ /java\b/
 
 tslint-sast:
   extends: .analyzer
   image:
-    name: "$SAST_ANALYZER_IMAGE_PREFIX/tslint"
+    name: "$SAST_ANALYZER_IMAGE_PREFIX/tslint:$SAST_MAJOR_VERSION"
   only:
     variables:
-      - '$CI_PROJECT_REPOSITORY_LANGUAGES =~ /typescript/'
+      - $GITLAB_FEATURES =~ /\bsast\b/ &&
+          $SAST_DEFAULT_ANALYZERS =~ /tslint/ &&
+          $CI_PROJECT_REPOSITORY_LANGUAGES =~ /typescript/

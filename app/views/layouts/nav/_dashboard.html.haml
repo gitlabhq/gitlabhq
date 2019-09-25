@@ -59,7 +59,7 @@
           = render_if_exists 'layouts/nav/sidebar/analytics_more_link'
 
           %li.dropdown.d-lg-none
-            = render_if_exists 'dashboard/operations/nav_link_list'
+            = render_if_exists 'dashboard/nav_link_list'
           - if can?(current_user, :read_instance_statistics)
             = nav_link(controller: [:conversational_development_index, :cohorts], html_options: { class: 'd-lg-none' }) do
               = link_to instance_statistics_root_path do
@@ -86,7 +86,7 @@
           = _('Web IDE')
 
   %li.dropdown{ class: 'd-none d-lg-block' }
-    = render_if_exists 'dashboard/operations/nav_link'
+    = render_if_exists 'dashboard/nav_link'
   - if can?(current_user, :read_instance_statistics)
     = nav_link(controller: [:conversational_development_index, :cohorts], html_options: { class: "d-none d-lg-block d-xl-block"}) do
       = link_to instance_statistics_root_path, title: _('Instance Statistics'), aria: { label: _('Instance Statistics') }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do

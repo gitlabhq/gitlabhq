@@ -1,0 +1,36 @@
+{
+  "app/*.rb": {
+    "alternate": "spec/{}_spec.rb",
+    "type": "source"
+  },
+  "spec/*_spec.rb": {
+    "alternate": "app/{}.rb",
+    "type": "test"
+  },
+  "lib/*.rb": {
+    "alternate": "spec/lib/{}_spec.rb",
+    "type": "source"
+  },
+  "spec/lib/*_spec.rb": {
+    "alternate": "lib/{}.rb",
+    "type": "test"
+  },
+  "ee/app/*.rb": {
+    "alternate": "ee/spec/{}_spec.rb",
+    "type": "source"
+  },
+  "ee/spec/*_spec.rb": {
+    "alternate": "ee/app/{}.rb",
+    "type": "test"
+  },
+  "ee/lib/*.rb": {
+    "alternate": "ee/spec/lib/{}_spec.rb",
+    "type": "source"
+  },
+  "ee/spec/lib/*_spec.rb": {
+    "alternate": "ee/lib/{}.rb",
+    "type": "test"
+  },
+  "*.rb": {"dispatch": "bundle exec rubocop {file}"},
+  "*_spec.rb": {"dispatch": "bundle exec rspec {file}"}
+}

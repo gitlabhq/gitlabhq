@@ -165,6 +165,10 @@ description: 'Learn how to contribute to GitLab.'
 
 - [Shell scripting standards and style guidelines](shell_scripting_guide/index.md)
 
+## Other Development guides
+
+- [Defining relations between files using projections](projections.md)
+
 ## Other GitLab Development Kit (GDK) guides
 
 - [Run full Auto DevOps cycle in a GDK instance](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/auto_devops.md)

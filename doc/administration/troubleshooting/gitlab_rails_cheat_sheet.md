@@ -556,6 +556,14 @@ parent.members_with_descendants.count
 GroupDestroyWorker.perform_async(group_id, user_id)
 ```
 
+### Modify group project creation
+
+```ruby
+# Project creation levels: 0 - No one, 1 - Maintainers, 2 - Developers + Maintainers
+group = Group.find_by_path_or_name('group-name')
+group.project_creation_level=0
+```
+
 ## LDAP
 
 ### LDAP commands in the rails console

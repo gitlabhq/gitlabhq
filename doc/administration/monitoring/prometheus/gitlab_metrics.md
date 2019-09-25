@@ -140,8 +140,7 @@ The following metrics are available:
 
 | Metric                            | Type      | Since                                                         | Description                            |
 |:--------------------------------- |:--------- |:------------------------------------------------------------- |:-------------------------------------- |
-| `db_load_balancing_hosts`         | Gauge     | [12.3](https://gitlab.com/gitlab-org/gitlab/issues/13630)  | Current number of load balancing hosts |
-| `db_load_balancing_index`         | Gauge     | [12.3](https://gitlab.com/gitlab-org/gitlab/issues/13630)  | Current load balancing host index      |
+| `db_load_balancing_hosts`         | Gauge     | [12.3](https://gitlab.com/gitlab-org/gitlab/issues/13630)     | Current number of load balancing hosts |
 
 ## Ruby metrics
 
