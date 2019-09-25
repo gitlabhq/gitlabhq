@@ -23,6 +23,14 @@ describe('Issuable output', () => {
   beforeEach(done => {
     setFixtures(`
       <div>
+        <div class="detail-page-description content-block">
+        <details open>
+          <summary>One</summary>
+        </details>
+        <details>
+          <summary>Two</summary>
+        </details>
+      </div>
         <div class="flash-container"></div>
         <span id="task_status"></span>
       </div>

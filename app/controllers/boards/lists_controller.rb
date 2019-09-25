@@ -64,12 +64,16 @@ module Boards
       %i[label_id]
     end
 
+    def list_update_attrs
+      %i[collapsed position]
+    end
+
     def create_list_params
       params.require(:list).permit(list_creation_attrs)
     end
 
     def update_list_params
-      params.require(:list).permit(:collapsed, :position)
+      params.require(:list).permit(list_update_attrs)
     end
 
     def serialize_as_json(resource)

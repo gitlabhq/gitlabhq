@@ -140,6 +140,16 @@ describe('Time series component', () => {
             expect(timeSeriesChart.vm.svgs[mockSvgName]).toBe(`path://${mockSvgPathContent}`);
           });
         });
+
+        it('contains an svg object within an array to properly render icon', () => {
+          timeSeriesChart.vm.$nextTick(() => {
+            expect(timeSeriesChart.vm.chartOptions.dataZoom).toEqual([
+              {
+                handleIcon: `path://${mockSvgPathContent}`,
+              },
+            ]);
+          });
+        });
       });
 
       describe('onResize', () => {

@@ -11176,7 +11176,7 @@ msgstr ""
 msgid "Pipelines for last year"
 msgstr ""
 
-msgid "Pipelines for merge requests are configured. A detached pipeline runs in the context of the merge request, and not against the merged result. Learn more on the documentation for Pipelines for Merged Results."
+msgid "Pipelines for merge requests are configured. A detached pipeline runs in the context of the merge request, and not against the merged result. Learn more in the documentation for Pipelines for Merged Results."
 msgstr ""
 
 msgid "Pipelines settings for '%{project_name}' were successfully updated."

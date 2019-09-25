@@ -717,6 +717,7 @@ List:
 - updated_at
 - milestone_id
 - user_id
+- max_issue_count
 ExternalPullRequest:
 - id
 - created_at

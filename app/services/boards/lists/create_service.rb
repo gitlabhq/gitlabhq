@@ -43,7 +43,11 @@ module Boards
       end
 
       def create_list(board, type, target, position)
-        board.lists.create(type => target, list_type: type, position: position)
+        board.lists.create(create_list_attributes(type, target, position))
+      end
+
+      def create_list_attributes(type, target, position)
+        { type => target, list_type: type, position: position }
       end
     end
   end
