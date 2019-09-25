@@ -1,0 +1,5 @@
+---
+title: Fix css selector for details in issue description
+merge_request: 17557
+author:
+type: fixed

@@ -20,7 +20,6 @@ module NavHelper
 
   def page_gutter_class
     if page_has_markdown?
-
       if cookies[:collapsed_gutter] == 'true'
         %w[page-gutter right-sidebar-collapsed]
       else

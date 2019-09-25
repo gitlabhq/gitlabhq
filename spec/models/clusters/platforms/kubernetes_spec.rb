@@ -19,12 +19,21 @@ describe Clusters::Platforms::Kubernetes do
   it_behaves_like 'having unique enum values'
 
   describe 'before_validation' do
+    let(:kubernetes) { create(:cluster_platform_kubernetes, :configured, namespace: namespace) }
+
     context 'when namespace includes upper case' do
-      let(:kubernetes) { create(:cluster_platform_kubernetes, :configured, namespace: namespace) }
       let(:namespace) { 'ABC' }
 
       it 'converts to lower case' do
         expect(kubernetes.namespace).to eq('abc')
+      end
+    end
+
+    context 'when namespace is blank' do
+      let(:namespace) { '' }
+
+      it 'nullifies the namespace' do
+        expect(kubernetes.namespace).to be_nil
       end
     end
   end
@@ -35,8 +44,8 @@ describe Clusters::Platforms::Kubernetes do
     context 'when validates namespace' do
       let(:kubernetes) { build(:cluster_platform_kubernetes, :configured, namespace: namespace) }
 
-      context 'when namespace is blank' do
-        let(:namespace) { '' }
+      context 'when namespace is nil' do
+        let(:namespace) { nil }
 
         it { is_expected.to be_truthy }
       end

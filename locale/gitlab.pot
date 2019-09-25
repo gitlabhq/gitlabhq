@@ -1234,6 +1234,9 @@ msgstr ""
 msgid "Alerts"
 msgstr ""
 
+msgid "Alerts endpoint"
+msgstr ""
+
 msgid "All"
 msgstr ""
 
@@ -12758,6 +12761,9 @@ msgid "Rebase in progress"
 msgstr ""
 
 msgid "Receive alerts from manually configured Prometheus servers."
+msgstr ""
+
+msgid "Receive alerts on GitLab from any source"
 msgstr ""
 
 msgid "Receive notifications about your own activity"

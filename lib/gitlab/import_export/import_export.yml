@@ -143,6 +143,8 @@ excluded_attributes:
     - :mirror_last_update_at
     - :mirror_last_successful_update_at
     - :emails_disabled
+    - :max_pages_size
+    - :max_artifacts_size
   namespaces:
     - :runners_token
     - :runners_token_encrypted

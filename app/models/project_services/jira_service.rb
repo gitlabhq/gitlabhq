@@ -137,10 +137,9 @@ class JiraService < IssueTrackerService
 
     return if issue.nil? || has_resolution?(issue) || !jira_issue_transition_id.present?
 
-    commit_id = if entity.is_a?(Commit)
-                  entity.id
-                elsif entity.is_a?(MergeRequest)
-                  entity.diff_head_sha
+    commit_id = case entity
+                when Commit then entity.id
+                when MergeRequest then entity.diff_head_sha
                 end
 
     commit_url = build_entity_url(:commit, commit_id)
@@ -331,7 +330,6 @@ class JiraService < IssueTrackerService
   # Handle errors when doing Jira API calls
   def jira_request
     yield
-
   rescue Timeout::Error, Errno::EINVAL, Errno::ECONNRESET, Errno::ECONNREFUSED, URI::InvalidURIError, JIRA::HTTPError, OpenSSL::SSL::SSLError => e
     @error = e.message
     log_error("Error sending message", client_url: client_url, error: @error)

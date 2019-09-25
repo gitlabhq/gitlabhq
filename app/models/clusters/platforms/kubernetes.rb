@@ -23,11 +23,12 @@ module Clusters
         key: Settings.attr_encrypted_db_key_base_truncated,
         algorithm: 'aes-256-cbc'
 
+      before_validation :nullify_blank_namespace
       before_validation :enforce_namespace_to_lower_case
       before_validation :enforce_ca_whitespace_trimming
 
       validates :namespace,
-        allow_blank: true,
+        allow_nil: true,
         length: 1..63,
         format: {
           with: Gitlab::Regex.kubernetes_namespace_regex,
@@ -189,6 +190,10 @@ module Clusters
         end
 
         true
+      end
+
+      def nullify_blank_namespace
+        self.namespace = nil if namespace.blank?
       end
     end
   end

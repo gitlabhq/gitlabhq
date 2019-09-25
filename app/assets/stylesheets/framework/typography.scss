@@ -73,10 +73,6 @@
     summary {
       margin-bottom: $gl-padding;
     }
-
-    *:first-child:not(summary) {
-      margin-top: $gl-padding;
-    }
   }
 
   // Single code lines should wrap

@@ -411,6 +411,7 @@ project:
 - project_aliases
 - external_pull_requests
 - pages_metadatum
+- alerts_service
 award_emoji:
 - awardable
 - user

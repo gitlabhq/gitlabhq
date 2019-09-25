@@ -218,6 +218,12 @@ ActiveRecordAssociationReload:
     - 'spec/**/*'
     - 'ee/spec/**/*'
 
+Naming/PredicateName:
+  Enabled: true
+  Exclude:
+    - 'spec/**/*'
+    - 'ee/spec/**/*'
+
 RSpec/FactoriesInMigrationSpecs:
   Enabled: true
   Include:
