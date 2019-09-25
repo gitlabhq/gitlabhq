@@ -24,6 +24,8 @@ module MergeRequests
           merge_request.source_project.remove_source_branch_after_merge?
         end
 
+      self.params = assign_allowed_merge_params(merge_request, params)
+
       filter_params(merge_request)
 
       # merge_request.assign_attributes(...) below is a Rails

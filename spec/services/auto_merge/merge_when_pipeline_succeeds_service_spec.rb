@@ -59,8 +59,9 @@ describe AutoMerge::MergeWhenPipelineSucceedsService do
       it 'sets the params, merge_user, and flag' do
         expect(merge_request).to be_valid
         expect(merge_request.merge_when_pipeline_succeeds).to be_truthy
-        expect(merge_request.merge_params).to include commit_message: 'Awesome message'
+        expect(merge_request.merge_params).to include 'commit_message' => 'Awesome message'
         expect(merge_request.merge_user).to be user
+        expect(merge_request.auto_merge_strategy).to eq AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS
       end
 
       it 'creates a system note' do
@@ -73,7 +74,7 @@ describe AutoMerge::MergeWhenPipelineSucceedsService do
     end
 
     context 'already approved' do
-      let(:service) { described_class.new(project, user, new_key: true) }
+      let(:service) { described_class.new(project, user, should_remove_source_branch: true) }
       let(:build)   { create(:ci_build, ref: mr_merge_if_green_enabled.source_branch) }
 
       before do
@@ -90,7 +91,7 @@ describe AutoMerge::MergeWhenPipelineSucceedsService do
         expect(SystemNoteService).not_to receive(:merge_when_pipeline_succeeds)
 
         service.execute(mr_merge_if_green_enabled)
-        expect(mr_merge_if_green_enabled.merge_params).to have_key(:new_key)
+        expect(mr_merge_if_green_enabled.merge_params).to have_key('should_remove_source_branch')
       end
     end
   end
