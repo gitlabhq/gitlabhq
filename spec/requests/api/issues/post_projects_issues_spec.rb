@@ -374,9 +374,17 @@ describe API::Issues do
   end
 
   describe 'POST /projects/:id/issues with spam filtering' do
+    def post_issue
+      post api("/projects/#{project.id}/issues", user), params: params
+    end
+
     before do
-      allow_any_instance_of(SpamService).to receive(:check_for_spam?).and_return(true)
-      allow_any_instance_of(AkismetService).to receive_messages(spam?: true)
+      expect_next_instance_of(SpamService) do |spam_service|
+        expect(spam_service).to receive_messages(check_for_spam?: true)
+      end
+      expect_next_instance_of(AkismetService) do |akismet_service|
+        expect(akismet_service).to receive_messages(spam?: true)
+      end
     end
 
     let(:params) do
@@ -387,17 +395,43 @@ describe API::Issues do
       }
     end
 
-    it 'does not create a new project issue' do
-      expect { post api("/projects/#{project.id}/issues", user), params: params }.not_to change(Issue, :count)
-      expect(response).to have_gitlab_http_status(400)
-      expect(json_response['message']).to eq({ 'error' => 'Spam detected' })
+    context 'when allow_possible_spam feature flag is false' do
+      before do
+        stub_feature_flags(allow_possible_spam: false)
+      end
 
-      spam_logs = SpamLog.all
-      expect(spam_logs.count).to eq(1)
-      expect(spam_logs[0].title).to eq('new issue')
-      expect(spam_logs[0].description).to eq('content here')
-      expect(spam_logs[0].user).to eq(user)
-      expect(spam_logs[0].noteable_type).to eq('Issue')
+      it 'does not create a new project issue' do
+        expect { post_issue }.not_to change(Issue, :count)
+      end
+
+      it 'returns correct status and message' do
+        post_issue
+
+        expect(response).to have_gitlab_http_status(400)
+        expect(json_response['message']).to eq({ 'error' => 'Spam detected' })
+      end
+
+      it 'creates a new spam log entry' do
+        expect { post_issue }
+          .to log_spam(title: 'new issue', description: 'content here', user_id: user.id, noteable_type: 'Issue')
+      end
+    end
+
+    context 'when allow_possible_spam feature flag is true' do
+      it 'does creates a new project issue' do
+        expect { post_issue }.to change(Issue, :count).by(1)
+      end
+
+      it 'returns correct status' do
+        post_issue
+
+        expect(response).to have_gitlab_http_status(201)
+      end
+
+      it 'creates a new spam log entry' do
+        expect { post_issue }
+          .to log_spam(title: 'new issue', description: 'content here', user_id: user.id, noteable_type: 'Issue')
+      end
     end
   end
 

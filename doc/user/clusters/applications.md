@@ -293,7 +293,7 @@ The applications below can be uninstalled.
 | ----------- | -------------- | ----- |
 | Cert-Manager | 12.2+         | The associated private key will be deleted and cannot be restored. Deployed applications will continue to use HTTPS, but certificates will not be renewed. Before uninstalling, you may wish to [back up your configuration](https://docs.cert-manager.io/en/latest/tasks/backup-restore-crds.html) or [revoke your certificates](https://letsencrypt.org/docs/revoking/) |
 | GitLab Runner  | 12.2+         | Any running pipelines will be canceled. |
-| Helm  | 12.2+         | The associated Tiller pod will be deleted and cannot be restored. |
+| Helm  | 12.2+         | The associated Tiller pod, the `gitlab-managed-apps` namespace, and all of its resources will be deleted and cannot be restored. |
 | Ingress  | 12.1+         | The associated load balancer and IP will be deleted and cannot be restored. Furthermore, it can only be uninstalled if JupyterHub is not installed. |
 | JupyterHub  | 12.1+         | All data not committed to GitLab will be deleted and cannot be restored. |
 | Knative  | 12.1+         | The associated IP will be deleted and cannot be restored. |

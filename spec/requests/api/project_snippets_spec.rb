@@ -198,7 +198,7 @@ describe API::ProjectSnippets do
 
         it 'creates a spam log' do
           expect { create_snippet(project, visibility: 'public') }
-            .to change { SpamLog.count }.by(1)
+            .to log_spam(title: 'Test Title', user_id: user.id, noteable_type: 'ProjectSnippet')
         end
       end
     end
@@ -289,7 +289,7 @@ describe API::ProjectSnippets do
 
         it 'creates a spam log' do
           expect { update_snippet(title: 'Foo') }
-            .to change { SpamLog.count }.by(1)
+            .to log_spam(title: 'Foo', user_id: admin.id, noteable_type: 'ProjectSnippet')
         end
       end
 
@@ -306,7 +306,7 @@ describe API::ProjectSnippets do
 
         it 'creates a spam log' do
           expect { update_snippet(title: 'Foo', visibility: 'public') }
-            .to change { SpamLog.count }.by(1)
+            .to log_spam(title: 'Foo', user_id: admin.id, noteable_type: 'ProjectSnippet')
         end
       end
     end

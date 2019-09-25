@@ -22,8 +22,33 @@ module QA
             element :noteable_note_item
           end
 
+          view 'app/assets/javascripts/sidebar/components/assignees/assignee_avatar.vue' do
+            element :avatar_image
+          end
+
+          view 'app/assets/javascripts/sidebar/components/assignees/assignee_title.vue' do
+            element :assignee_edit_link
+            element :assignee_title
+          end
+
+          view 'app/assets/javascripts/sidebar/components/assignees/uncollapsed_assignee_list.vue' do
+            element :more_assignees_link
+          end
+
           view 'app/helpers/dropdowns_helper.rb' do
             element :dropdown_input_field
+          end
+
+          view 'app/views/shared/issuable/_close_reopen_button.html.haml' do
+            element :reopen_issue_button
+          end
+
+          view 'app/views/shared/issuable/_sidebar.html.haml' do
+            element :assignee_block
+            element :labels_block
+            element :edit_link_labels
+            element :dropdown_menu_labels
+            element :milestone_link
           end
 
           view 'app/views/shared/notes/_form.html.haml' do
@@ -31,15 +56,20 @@ module QA
             element :new_note_form, 'attr: :note' # rubocop:disable QA/ElementWithPattern
           end
 
-          view 'app/views/shared/issuable/_sidebar.html.haml' do
-            element :labels_block
-            element :edit_link_labels
-            element :dropdown_menu_labels
-            element :milestone_link
+          def assign(user)
+            click_element(:assignee_edit_link)
+            select_user(user.username)
+            click_body
           end
 
-          view 'app/views/shared/issuable/_close_reopen_button.html.haml' do
-            element :reopen_issue_button
+          def assignee_title
+            find_element(:assignee_title)
+          end
+
+          def avatar_image_count
+            wait_assignees_block_finish_loading do
+              all_elements(:avatar_image).count
+            end
           end
 
           def click_milestone_link
@@ -64,6 +94,10 @@ module QA
             wait(reload: false) do
               has_element?(:noteable_note_item, text: comment_text)
             end
+          end
+
+          def more_assignees_link
+            find_element(:more_assignees_link)
           end
 
           def select_all_activities_filter
@@ -103,6 +137,10 @@ module QA
             find_element(:labels_block)
           end
 
+          def toggle_more_assignees_link
+            click_element(:more_assignees_link)
+          end
+
           private
 
           def select_filter_with_text(text)
@@ -110,6 +148,20 @@ module QA
               click_body
               click_element :discussion_filter
               find_element(:filter_options, text: text).click
+            end
+          end
+
+          def select_user(username)
+            find("#{element_selector_css(:assignee_block)} input").set(username)
+            find('.dropdown-menu-user-link', text: "@#{username}").click
+          end
+
+          def wait_assignees_block_finish_loading
+            within_element(:assignee_block) do
+              wait(reload: false, max: 10, interval: 1) do
+                finished_loading_block?
+                yield
+              end
             end
           end
         end

@@ -42,6 +42,7 @@ export default {
       :width="imgSize"
       :class="`s${imgSize}`"
       class="avatar avatar-inline m-0"
+      data-qa-selector="avatar_image"
     />
     <i v-if="hasMergeIcon" aria-hidden="true" class="fa fa-exclamation-triangle merge-icon"></i>
   </span>

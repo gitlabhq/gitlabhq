@@ -80,4 +80,9 @@ module Spammable
   def check_for_spam?
     true
   end
+
+  # Override in Spammable if differs
+  def allow_possible_spam?
+    Feature.enabled?(:allow_possible_spam, project)
+  end
 end

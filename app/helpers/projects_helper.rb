@@ -76,7 +76,7 @@ module ProjectsHelper
       link_to(author_html, user_path(author), class: "author-link js-user-link #{"#{opts[:extra_class]}" if opts[:extra_class]} #{"#{opts[:mobile_classes]}" if opts[:mobile_classes]}", data: data_attrs).html_safe
     else
       title = opts[:title].sub(":name", sanitize(author.name))
-      link_to(author_html, user_path(author), class: "author-link has-tooltip", title: title, data: { container: 'body' }).html_safe
+      link_to(author_html, user_path(author), class: "author-link has-tooltip", title: title, data: { container: 'body', qa_selector: 'assignee_link' }).html_safe
     end
   end
 

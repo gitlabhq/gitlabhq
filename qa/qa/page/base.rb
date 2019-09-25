@@ -131,6 +131,10 @@ module QA
         has_no_css?('.fa-spinner', wait: Capybara.default_max_wait_time)
       end
 
+      def finished_loading_block?
+        has_no_css?('.fa-spinner.block-loading', wait: Capybara.default_max_wait_time)
+      end
+
       def wait_for_animated_element(name)
         # It would be ideal if we could detect when the animation is complete
         # but in some cases there's nothing we can easily access via capybara

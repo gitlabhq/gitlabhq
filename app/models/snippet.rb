@@ -14,6 +14,7 @@ class Snippet < ApplicationRecord
   include Editable
   include Gitlab::SQL::Pattern
   include FromUnion
+  extend ::Gitlab::Utils::Override
 
   cache_markdown_field :title, pipeline: :single_line
   cache_markdown_field :description
@@ -189,6 +190,12 @@ class Snippet < ApplicationRecord
   def check_for_spam?
     visibility_level_changed?(to: Snippet::PUBLIC) ||
       (public? && (title_changed? || content_changed?))
+  end
+
+  # snippers are the biggest sources of spam
+  override :allow_possible_spam?
+  def allow_possible_spam?
+    false
   end
 
   def spammable_entity_type

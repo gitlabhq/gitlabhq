@@ -44,30 +44,50 @@ describe SpamService do
         end
 
         context 'when indicated as spam by akismet' do
+          shared_examples 'akismet spam' do
+            it 'doesnt check as spam when request is missing' do
+              check_spam(issue, nil, false)
+
+              expect(issue).not_to be_spam
+            end
+
+            it 'creates a spam log' do
+              expect { check_spam(issue, request, false) }
+                .to log_spam(title: issue.title, description: issue.description, noteable_type: 'Issue')
+            end
+
+            it 'does not yield to the block' do
+              expect(check_spam(issue, request, false))
+                .to eql(SpamLog.last)
+            end
+          end
+
           before do
             allow(AkismetService).to receive(:new).and_return(double(spam?: true))
           end
 
-          it 'doesnt check as spam when request is missing' do
-            check_spam(issue, nil, false)
+          context 'when allow_possible_spam feature flag is false' do
+            before do
+              stub_feature_flags(allow_possible_spam: false)
+            end
 
-            expect(issue.spam).to be_falsey
+            it_behaves_like 'akismet spam'
+
+            it 'checks as spam' do
+              check_spam(issue, request, false)
+
+              expect(issue.spam).to be_truthy
+            end
           end
 
-          it 'checks as spam' do
-            check_spam(issue, request, false)
+          context 'when allow_possible_spam feature flag is true' do
+            it_behaves_like 'akismet spam'
 
-            expect(issue.spam).to be_truthy
-          end
+            it 'does not check as spam' do
+              check_spam(issue, request, false)
 
-          it 'creates a spam log' do
-            expect { check_spam(issue, request, false) }
-              .to change { SpamLog.count }.from(0).to(1)
-          end
-
-          it 'doesnt yield block' do
-            expect(check_spam(issue, request, false))
-              .to eql(SpamLog.last)
+              expect(issue.spam).to be_nil
+            end
           end
         end
 

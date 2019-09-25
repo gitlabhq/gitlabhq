@@ -313,17 +313,22 @@ Developer documentation][mdn].
 
 ## Updating the PO files with the new content
 
-Now that the new content is marked for translation, we need to update the PO
-files with the following command:
+Now that the new content is marked for translation, we need to update
+`locale/gitlab.pot` files with the following command:
 
 ```sh
 bin/rake gettext:regenerate
 ```
 
-This command will update the `locale/gitlab.pot` file with the newly externalized
+This command will update `locale/gitlab.pot` file with the newly externalized
 strings and remove any strings that aren't used anymore. You should check this
 file in. Once the changes are on master, they will be picked up by
-[Crowdin](http://translate.gitlab.com) and be presented for translation.
+[Crowdin](http://translate.gitlab.com) and be presented for
+translation.
+
+We don't need to check in any changes to the
+`locale/[language]/gitlab.po` files. Those will be updated in a [when
+translations from Crowdin are merged](merging_translations.md).
 
 If there are merge conflicts in the `gitlab.pot` file, you can delete the file
 and regenerate it using the same command.
