@@ -2,6 +2,22 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 12.2.6
+
+### Security (10 changes)
+
+- Add a policy check for system notes that may not be visible due to cross references to private items.
+- Display only participants that user has permission to see on milestone page.
+- Do not disclose project milestones on group milestones page when project milestones access is disabled in project settings.
+- Fix new project path being disclosed through unsubscribe link of issue/merge requests.
+- Prevent bypassing email verification using Salesforce.
+- Do not show resource label events referencing not accessible labels.
+- Cancel all running CI jobs triggered by the user who is just blocked.
+- Fix Gitaly SearchBlobs flag RPC injection [Gitaly v1.59.3].
+- Only render fixed number of mermaid blocks.
+- Prevent GitLab accounts takeover if SAML is configured.
+
+
 ## 12.2.5
 
 ### Security (1 change)
