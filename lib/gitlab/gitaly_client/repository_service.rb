@@ -123,7 +123,7 @@ module Gitlab
           :create_fork,
           request,
           remote_storage: source_repository.storage,
-          timeout: GitalyClient.default_timeout
+          timeout: GitalyClient.long_timeout
         )
       end
 
@@ -138,7 +138,7 @@ module Gitlab
           :repository_service,
           :create_repository_from_url,
           request,
-          timeout: GitalyClient.default_timeout
+          timeout: GitalyClient.long_timeout
         )
       end
 
@@ -189,7 +189,7 @@ module Gitlab
           :repository_service,
           :fetch_source_branch,
           request,
-          timeout: GitalyClient.default_timeout,
+          timeout: GitalyClient.long_timeout,
           remote_storage: source_repository.storage
         )
 
