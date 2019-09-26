@@ -1,5 +1,0 @@
----
-title: Upgrade mermaid to prevent XSS
-merge_request:
-author:
-type: security
