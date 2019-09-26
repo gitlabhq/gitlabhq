@@ -295,4 +295,26 @@ describe ApplicationSettings::UpdateService do
       expect(application_settings.raw_blob_request_limit).to eq(600)
     end
   end
+
+  context 'when protected path settings are passed' do
+    let(:params) do
+      {
+        throttle_protected_paths_enabled: 1,
+        throttle_protected_paths_period_in_seconds: 600,
+        throttle_protected_paths_requests_per_period: 100,
+        protected_paths_raw: "/users/password\r\n/users/sign_in\r\n"
+      }
+    end
+
+    it 'updates protected path settings' do
+      subject.execute
+
+      application_settings.reload
+
+      expect(application_settings.throttle_protected_paths_enabled).to be_truthy
+      expect(application_settings.throttle_protected_paths_period_in_seconds).to eq(600)
+      expect(application_settings.throttle_protected_paths_requests_per_period).to eq(100)
+      expect(application_settings.protected_paths).to eq(['/users/password', '/users/sign_in'])
+    end
+  end
 end

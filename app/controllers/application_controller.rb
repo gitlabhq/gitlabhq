@@ -13,6 +13,7 @@ class ApplicationController < ActionController::Base
   include WithPerformanceBar
   include SessionlessAuthentication
   include ConfirmEmailWarning
+  include Gitlab::Tracking::ControllerConcern
 
   before_action :authenticate_user!
   before_action :enforce_terms!, if: :should_enforce_terms?
