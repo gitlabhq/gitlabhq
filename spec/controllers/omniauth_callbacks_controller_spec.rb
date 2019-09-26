@@ -7,9 +7,10 @@ describe OmniauthCallbacksController, type: :controller do
 
   describe 'omniauth' do
     let(:user) { create(:omniauth_user, extern_uid: extern_uid, provider: provider) }
+    let(:additional_info) { {} }
 
     before do
-      @original_env_config_omniauth_auth = mock_auth_hash(provider.to_s, +extern_uid, user.email)
+      @original_env_config_omniauth_auth = mock_auth_hash(provider.to_s, extern_uid, user.email, additional_info: additional_info )
       stub_omniauth_provider(provider, context: request)
     end
 
@@ -109,6 +110,14 @@ describe OmniauthCallbacksController, type: :controller do
     end
 
     context 'strategies' do
+      shared_context 'sign_up' do
+        let(:user) { double(email: 'new@example.com') }
+
+        before do
+          stub_omniauth_setting(block_auto_created_users: false)
+        end
+      end
+
       context 'github' do
         let(:extern_uid) { 'my-uid' }
         let(:provider) { :github }
@@ -143,14 +152,6 @@ describe OmniauthCallbacksController, type: :controller do
 
               expect(response).to have_gitlab_http_status(403)
             end
-          end
-        end
-
-        shared_context 'sign_up' do
-          let(:user) { double(email: +'new@example.com') }
-
-          before do
-            stub_omniauth_setting(block_auto_created_users: false)
           end
         end
 
@@ -213,6 +214,33 @@ describe OmniauthCallbacksController, type: :controller do
           expect(request.env['warden']).not_to be_authenticated
           expect(response.status).to eq(302)
           expect(controller).to set_flash[:alert].to('Wrong extern UID provided. Make sure Auth0 is configured correctly.')
+        end
+      end
+
+      context 'salesforce' do
+        let(:extern_uid) { 'my-uid' }
+        let(:provider) { :salesforce }
+        let(:additional_info) { { extra: { email_verified: false } } }
+
+        context 'without verified email' do
+          it 'does not allow sign in' do
+            post 'salesforce'
+
+            expect(request.env['warden']).not_to be_authenticated
+            expect(response.status).to eq(302)
+            expect(controller).to set_flash[:alert].to('Email not verified. Please verify your email in Salesforce.')
+          end
+        end
+
+        context 'with verified email' do
+          include_context 'sign_up'
+          let(:additional_info) { { extra: { email_verified: true } } }
+
+          it 'allows sign in' do
+            post 'salesforce'
+
+            expect(request.env['warden']).to be_authenticated
+          end
         end
       end
     end
