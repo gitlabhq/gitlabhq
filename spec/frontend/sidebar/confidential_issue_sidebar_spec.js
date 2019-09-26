@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import confidentialIssueSidebar from '~/sidebar/components/confidential/confidential_issue_sidebar.vue';
-import { mockTracking, triggerEvent } from 'spec/helpers/tracking_helper';
+import { mockTracking, triggerEvent } from 'helpers/tracking_helper';
 
 describe('Confidential Issue Sidebar Block', () => {
   let vm1;
@@ -37,40 +37,36 @@ describe('Confidential Issue Sidebar Block', () => {
     expect(vm2.$el.innerHTML.includes('Not confidential')).toBe(true);
   });
 
-  it('displays the edit form when editable', done => {
+  it('displays the edit form when editable', () => {
     expect(vm1.edit).toBe(false);
 
     vm1.$el.querySelector('.confidential-edit').click();
 
     expect(vm1.edit).toBe(true);
 
-    setTimeout(() => {
+    return Vue.nextTick().then(() => {
       expect(vm1.$el.innerHTML.includes('You are going to turn off the confidentiality.')).toBe(
         true,
       );
-
-      done();
     });
   });
 
-  it('displays the edit form when opened from collapsed state', done => {
+  it('displays the edit form when opened from collapsed state', () => {
     expect(vm1.edit).toBe(false);
 
     vm1.$el.querySelector('.sidebar-collapsed-icon').click();
 
     expect(vm1.edit).toBe(true);
 
-    setTimeout(() => {
+    return Vue.nextTick().then(() => {
       expect(vm1.$el.innerHTML.includes('You are going to turn off the confidentiality.')).toBe(
         true,
       );
-
-      done();
     });
   });
 
   it('tracks the event when "Edit" is clicked', () => {
-    const spy = mockTracking('_category_', vm1.$el, spyOn);
+    const spy = mockTracking('_category_', vm1.$el, jest.spyOn);
     triggerEvent('.confidential-edit');
 
     expect(spy).toHaveBeenCalledWith('_category_', 'click_edit_button', {

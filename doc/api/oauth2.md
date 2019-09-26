@@ -102,7 +102,7 @@ CAUTION: **Important:**
 Avoid using this flow for applications that store data outside of the GitLab
 instance. If you do, make sure to verify `application id` associated with the
 access token before granting access to the data
-(see [/oauth/token/info](https://github.com/doorkeeper-gem/doorkeeper/wiki/API-endpoint-descriptions-and-examples#get----oauthtokeninfo)).
+(see [`/oauth/token/info`](https://github.com/doorkeeper-gem/doorkeeper/wiki/API-endpoint-descriptions-and-examples#get----oauthtokeninfo)).
 
 Unlike the web flow, the client receives an `access token` immediately as a
 result of the authorization request. The flow does not use the client secret

@@ -459,7 +459,7 @@ The API can be explored interactively using the [GraphiQL IDE](../index.md#graph
 | Name  | Type  | Description |
 | ---   |  ---- | ----------  |
 | `storageSize` | Int! | The total storage in Bytes |
-| `repositorySize` | Int! | The git repository size in Bytes |
+| `repositorySize` | Int! | The Git repository size in Bytes |
 | `lfsObjectsSize` | Int! | The LFS objects size in Bytes |
 | `buildArtifactsSize` | Int! | The CI artifacts size in Bytes |
 | `packagesSize` | Int! | The packages size in Bytes |

@@ -58,9 +58,9 @@ For example, here's a single definition for Insights that will display one page 
 
 ```yaml
 bugsCharts:
-  title: 'Charts for Bugs'
+  title: "Charts for bugs"
   charts:
-    - title: Monthly Bugs Created (bar)
+    - title: "Monthly bugs created"
       type: bar
       query:
         issuable_type: issue
@@ -76,7 +76,7 @@ Each chart definition is made up of a hash composed of key-value pairs.
 For example, here's single chart definition:
 
 ```yaml
-- title: Monthly Bugs Created (bar)
+- title: "Monthly bugs created"
   type: bar
   query:
     issuable_type: issue
@@ -111,7 +111,7 @@ For example:
 
 ```yaml
 monthlyBugsCreated:
-  title: Monthly Bugs Created (bar)
+  title: "Monthly bugs created"
 ```
 
 ### `type`
@@ -122,7 +122,7 @@ For example:
 
 ```yaml
 monthlyBugsCreated:
-  title: Monthly Bugs Created (bar)
+  title: "Monthly bugs created"
   type: bar
 ```
 
@@ -145,7 +145,7 @@ Example:
 
 ```yaml
 monthlyBugsCreated:
-  title: Monthly Bugs Created (bar)
+  title: "Monthly bugs created"
   type: bar
   query:
     issuable_type: issue
@@ -174,7 +174,7 @@ Supported values are:
 
 Filter by the state of the queried "issuable".
 
-If you omit it, the `opened` state filter will be applied.
+By default, the `opened` state filter will be applied.
 
 Supported values are:
 
@@ -188,14 +188,14 @@ Supported values are:
 
 Filter by labels applied to the queried "issuable".
 
-If you omit it, no labels filter will be applied. All the defined labels must be
+By default, no labels filter will be applied. All the defined labels must be
 applied to the "issuable" in order for it to be selected.
 
 Example:
 
 ```yaml
 monthlyBugsCreated:
-  title: Monthly regressions Created (bar)
+  title: "Monthly regressions created"
   type: bar
   query:
     issuable_type: issue
@@ -209,14 +209,14 @@ monthlyBugsCreated:
 
 Group "issuable" by the configured labels.
 
-If you omit it, no grouping will be done. When using this keyword, you need to
+By default, no grouping will be done. When using this keyword, you need to
 set `type` to either `line` or `stacked-bar`.
 
 Example:
 
 ```yaml
 weeklyBugsBySeverity:
-  title: Weekly Bugs By Severity (stacked bar)
+  title: "Weekly bugs by severity"
   type: stacked-bar
   query:
     issuable_type: issue
@@ -248,7 +248,7 @@ The unit is related to the `query.group_by` you defined. For instance if you
 defined `query.group_by: 'day'`  then `query.period_limit: 365` would mean
 "Gather and display data for the last 365 days".
 
-If you omit it, default values will be applied depending on the `query.group_by`
+By default, default values will be applied depending on the `query.group_by`
 you defined.
 
 | `query.group_by` | Default value |
@@ -257,14 +257,63 @@ you defined.
 | `week`           | 4             |
 | `month`          | 12            |
 
+### `projects`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/10904) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.4.
+
+You can limit where the "issuables" can be queried from:
+
+- If `.gitlab/insights.yml` is used for a [group's insights](../../group/insights/index.md#configure-your-insights), with `projects`, you can limit the projects to be queried. By default, all projects under the group will be used.
+- If `.gitlab/insights.yml` is used for a project's insights, specifying any other projects will yield no results. By default, the project itself will be used.
+
+#### `projects.only`
+
+The `projects.only` option specifies the projects which the "issuables"
+should be queried from.
+
+Projects listed here will be ignored when:
+
+- They don't exist.
+- The current user doesn't have sufficient permissions to read them.
+- They are outside of the group.
+
+In the following `insights.yml` example, we specify the projects
+the queries will be used on. This example is useful when setting
+a group's insights:
+
+```yaml
+monthlyBugsCreated:
+  title: "Monthly bugs created"
+  type: bar
+  query:
+    issuable_type: issue
+    issuable_state: opened
+    filter_labels:
+      - bug
+  projects:
+    only:
+      - 3                         # You can use the project ID
+      - groupA/projectA           # Or full project path
+      - groupA/subgroupB/projectC # Projects in subgroups can be included
+      - groupB/project            # Projects outside the group will be ignored
+```
+
 ## Complete example
 
 ```yaml
+.projectsOnly: &projectsOnly
+  projects:
+    only:
+      - 3
+      - groupA/projectA
+      - groupA/subgroupB/projectC
+
 bugsCharts:
-  title: 'Charts for Bugs'
+  title: "Charts for bugs"
   charts:
-    - title: Monthly Bugs Created (bar)
+    - title: "Monthly bugs created"
       type: bar
+      <<: *projectsOnly
       query:
         issuable_type: issue
         issuable_state: opened
@@ -272,8 +321,10 @@ bugsCharts:
           - bug
         group_by: month
         period_limit: 24
-    - title: Weekly Bugs By Severity (stacked bar)
+
+    - title: "Weekly bugs by severity"
       type: stacked-bar
+      <<: *projectsOnly
       query:
         issuable_type: issue
         issuable_state: opened
@@ -286,8 +337,10 @@ bugsCharts:
           - S4
         group_by: week
         period_limit: 104
-    - title: Monthly Bugs By Team (line)
+
+    - title: "Monthly bugs by team"
       type: line
+      <<: *projectsOnly
       query:
         issuable_type: merge_request
         issuable_state: opened

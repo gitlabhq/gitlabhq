@@ -233,7 +233,7 @@ This file lives in `/var/log/gitlab/gitlab-shell/gitlab-shell.log` for
 Omnibus GitLab packages or in `/home/git/gitlab-shell/gitlab-shell.log` for
 installations from source.
 
-GitLab shell is used by GitLab for executing Git commands and provide
+GitLab Shell is used by GitLab for executing Git commands and provide
 SSH access to Git repositories. For example:
 
 ```
@@ -241,7 +241,7 @@ I, [2015-02-13T06:17:00.671315 #9291]  INFO -- : Adding project root/example.git
 I, [2015-02-13T06:17:00.679433 #9291]  INFO -- : Moving existing hooks directory and symlinking global hooks directory for /var/opt/gitlab/git-data/repositories/root/example.git.
 ```
 
-User clone/fetch activity using ssh transport appears in this log as `executing git command <gitaly-upload-pack...`.
+User clone/fetch activity using SSH transport appears in this log as `executing git command <gitaly-upload-pack...`.
 
 ## `unicorn_stderr.log`
 
@@ -252,7 +252,7 @@ installations from source.
 Unicorn is a high-performance forking Web server which is used for
 serving the GitLab application. You can look at this log if, for
 example, your application does not respond. This log contains all
-information about the state of unicorn processes at any given time.
+information about the state of Unicorn processes at any given time.
 
 ```
 I, [2015-02-13T06:14:46.680381 #9047]  INFO -- : Refreshing Gem list

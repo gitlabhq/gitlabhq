@@ -114,7 +114,7 @@ To use an external Prometheus server:
     gitlab_rails['monitoring_whitelist'] = ['127.0.0.0/8', '192.168.0.1']
     ```
 
-1. To scrape nginx metrics, you'll also need to configure nginx to allow the Prometheus server
+1. To scrape NGINX metrics, you'll also need to configure NGINX to allow the Prometheus server
    IP. For example:
 
    ```ruby

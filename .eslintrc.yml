@@ -46,7 +46,6 @@ rules:
   promise/always-return: off
   promise/no-callback-in-promise: off
   promise/no-nesting: off
-  promise/param-names: off
   promise/valid-params: off
 overrides:
   files:

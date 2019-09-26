@@ -95,18 +95,18 @@ describe('IDE error message component', () => {
     });
 
     it('shows loading icon when loading', () => {
-      let resolve;
+      let resolveAction;
       actionMock.mockImplementation(
         () =>
-          new Promise(ok => {
-            resolve = ok;
+          new Promise(resolve => {
+            resolveAction = resolve;
           }),
       );
       wrapper.find('button').trigger('click');
 
       return wrapper.vm.$nextTick(() => {
         expect(wrapper.find(GlLoadingIcon).isVisible()).toBe(true);
-        resolve();
+        resolveAction();
       });
     });
 

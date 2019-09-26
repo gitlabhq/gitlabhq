@@ -3,7 +3,7 @@
 [Gitaly](https://gitlab.com/gitlab-org/gitaly) is the service that
 provides high-level RPC access to Git repositories. Without it, no other
 components can read or write Git data. GitLab components that access Git
-repositories (gitlab-rails, gitlab-shell, gitlab-workhorse, etc.) act as clients
+repositories (GitLab Rails, GitLab Shell, GitLab Workhorse, etc.) act as clients
 to Gitaly. End users do not have direct access to Gitaly.
 
 In the rest of this page, Gitaly server is referred to the standalone node that
@@ -47,8 +47,8 @@ But since 11.8 the indexer uses Gitaly for data access as well. NFS can still
 be leveraged for redudancy on block level of the Git data. But only has to
 be mounted on the Gitaly server.
 
-Starting with GitLab 11.8, it is possible to use ElasticSearch in conjunction with
-a Gitaly setup that isn't utilising NFS. In order to use ElasticSearch in this
+Starting with GitLab 11.8, it is possible to use Elasticsearch in conjunction with
+a Gitaly setup that isn't utilising NFS. In order to use Elasticsearch in this
 scenario, the [new repository indexer](../../integration/elasticsearch.md#elasticsearch-repository-indexer-beta)
 needs to be enabled in your GitLab configuration.
 
@@ -71,8 +71,8 @@ The following list depicts what the network architecture of Gitaly is:
 - A GitLab server can use one or more Gitaly servers.
 - Gitaly addresses must be specified in such a way that they resolve
   correctly for ALL Gitaly clients.
-- Gitaly clients are: Unicorn, Sidekiq, gitlab-workhorse,
-  gitlab-shell, Elasticsearch Indexer, and Gitaly itself.
+- Gitaly clients are: Unicorn, Sidekiq, GitLab Workhorse,
+  GitLab Shell, Elasticsearch Indexer, and Gitaly itself.
 - A Gitaly server must be able to make RPC calls **to itself** via its own
   `(Gitaly address, Gitaly token)` pair as specified in `/config/gitlab.yml`.
 - Gitaly servers must not be exposed to the public internet as Gitaly's network
@@ -576,7 +576,7 @@ machine.
 
 ### 1. Monitor current authentication behavior
 
-Use prometheus to see what the current authentication behavior of your
+Use Prometheus to see what the current authentication behavior of your
 GitLab installation is.
 
 ```
@@ -612,7 +612,7 @@ The second step is to temporarily disable authentication on the Gitaly servers.
 gitaly['auth_transitioning'] = true
 ```
 
-After you have applied this, your prometheus query should return
+After you have applied this, your Prometheus query should return
 something like this:
 
 ```
@@ -631,10 +631,10 @@ gitaly['auth_token'] = 'my new secret token'
 ```
 
 Remember to apply this on both your Gitaly clients *and* servers. If you
-check your prometheus query while this change is being rolled out, you
+check your Prometheus query while this change is being rolled out, you
 will see non-zero values for the `enforced="false",status="denied"` counter.
 
-### 4. Use prometheus to ensure there are no authentication failures
+### 4. Use Prometheus to ensure there are no authentication failures
 
 After you applied the Gitaly token change everywhere, and all services
 involved have been restarted, you should will temporarily see a mix of
@@ -658,7 +658,7 @@ gitaly['auth_transitioning'] = false
 
 ### 6. Verify that authentication is enforced again
 
-Refresh your prometheus query. You should now see the same kind of
+Refresh your Prometheus query. You should now see the same kind of
 result as you did in the beginning:
 
 ```

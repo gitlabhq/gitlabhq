@@ -360,9 +360,9 @@ The different supported drivers are:
 | Driver     | Description                         |
 |------------|-------------------------------------|
 | filesystem | Uses a path on the local filesystem |
-| azure      | Microsoft Azure Blob Storage        |
+| Azure      | Microsoft Azure Blob Storage        |
 | gcs        | Google Cloud Storage                |
-| s3         | Amazon Simple Storage Service. Be sure to configure your storage bucket with the correct [S3 Permission Scopes](https://docs.docker.com/registry/storage-drivers/s3/#s3-permission-scopes).       |
+| s3         | Amazon Simple Storage Service. Be sure to configure your storage bucket with the correct [S3 Permission Scopes](https://docs.docker.com/registry/storage-drivers/s3/#s3-permission-scopes). |
 | swift      | OpenStack Swift Object Storage      |
 | oss        | Aliyun OSS                          |
 
@@ -374,7 +374,7 @@ filesystem. Remember to enable backups with your object storage provider if
 desired.
 
 NOTE: **Note:**
-`regionendpoint` is only required when configuring an S3 compatible service such as Minio. It takes a URL such as `http://127.0.0.1:9000`.
+`regionendpoint` is only required when configuring an S3 compatible service such as MinIO. It takes a URL such as `http://127.0.0.1:9000`.
 
 **Omnibus GitLab installations**
 

@@ -66,7 +66,13 @@ to the local PlantUML server `http://localhost:8080/plantuml`.
 To enable the redirection, add the following line in `/etc/gitlab/gitlab.rb`:
 
 ```ruby
-nginx['custom_gitlab_server_config'] = "location /-/plantuml { \n    proxy_cache off; \n    proxy_pass  http://127.0.0.1:8080; \n}\n"
+nginx['custom_gitlab_server_config'] = "location /-/plantuml/ { \n    proxy_cache off; \n    proxy_pass  http://127.0.0.1:8080/plantuml/; \n}\n"
+```
+
+To activate the changes, run the following command:
+
+```sh
+sudo gitlab-ctl reconfigure
 ```
 
 ## GitLab
