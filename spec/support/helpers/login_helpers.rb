@@ -77,8 +77,8 @@ module LoginHelpers
     click_button "Sign in"
   end
 
-  def login_via(provider, user, uid, remember_me: false)
-    mock_auth_hash(provider, uid, user.email)
+  def login_via(provider, user, uid, remember_me: false, additional_info: {})
+    mock_auth_hash(provider, uid, user.email, additional_info: additional_info)
     visit new_user_session_path
     expect(page).to have_content('Sign in with')
 
@@ -97,9 +97,10 @@ module LoginHelpers
     mock_auth_hash(provider, uid, email, response_object: response_object)
   end
 
-  def configure_mock_auth(provider, uid, email, response_object: nil)
+  def configure_mock_auth(provider, uid, email, response_object: nil, additional_info: {})
     # The mock_auth configuration allows you to set per-provider (or default)
     # authentication hashes to return during integration testing.
+
     OmniAuth.config.mock_auth[provider.to_sym] = OmniAuth::AuthHash.new({
       provider: provider,
       uid: uid,
@@ -122,11 +123,11 @@ module LoginHelpers
         },
         response_object: response_object
       }
-    })
+    }).merge(additional_info) { |_, old_hash, new_hash| old_hash.merge(new_hash) }
   end
 
-  def mock_auth_hash(provider, uid, email, response_object: nil)
-    configure_mock_auth(provider, uid, email, response_object: response_object)
+  def mock_auth_hash(provider, uid, email, additional_info: {}, response_object: nil)
+    configure_mock_auth(provider, uid, email, additional_info: additional_info, response_object: response_object)
 
     original_env_config_omniauth_auth = Rails.application.env_config['omniauth.auth']
     Rails.application.env_config['omniauth.auth'] = OmniAuth.config.mock_auth[provider.to_sym]
