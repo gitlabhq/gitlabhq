@@ -244,4 +244,45 @@ describe Projects::MilestonesController do
       end
     end
   end
+
+  context '#participants' do
+    render_views
+
+    context "when guest user" do
+      let(:issue_assignee) { create(:user) }
+      let(:guest_user) { create(:user) }
+
+      before do
+        project.add_guest(guest_user)
+        sign_in(guest_user)
+        issue.update(assignee_ids: issue_assignee.id)
+      end
+
+      context "when issue is not confidential" do
+        it 'shows milestone participants' do
+          params = { namespace_id: project.namespace.id, project_id: project.id, id: milestone.iid, format: :json }
+          get :participants, params: params
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(response.content_type).to eq 'application/json'
+          expect(json_response['html']).to include(issue_assignee.name)
+        end
+      end
+
+      context "when issue is confidential" do
+        before do
+          issue.update(confidential: true)
+        end
+
+        it 'shows no milestone participants' do
+          params = { namespace_id: project.namespace.id, project_id: project.id, id: milestone.iid, format: :json }
+          get :participants, params: params
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(response.content_type).to eq 'application/json'
+          expect(json_response['html']).not_to include(issue_assignee.name)
+        end
+      end
+    end
+  end
 end

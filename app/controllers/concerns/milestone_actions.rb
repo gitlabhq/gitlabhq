@@ -20,7 +20,7 @@ module MilestoneActions
       format.html { redirect_to milestone_redirect_path }
       format.json do
         render json: tabs_json("shared/milestones/_participants_tab", {
-          users: @milestone.participants # rubocop:disable Gitlab/ModuleWithInstanceVariables
+          users: @milestone.issue_participants_visible_by_user(current_user) # rubocop:disable Gitlab/ModuleWithInstanceVariables
         })
       end
     end
