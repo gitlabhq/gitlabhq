@@ -256,6 +256,52 @@ describe API::Labels do
                                                    'is_project_label' => true)
       end
     end
+
+    context 'when the include_ancestor_groups parameter is not set' do
+      let(:group) { create(:group) }
+      let!(:group_label) { create(:group_label, title: 'feature', group: group) }
+      let(:subgroup) { create(:group, parent: group) }
+      let!(:subgroup_label) { create(:group_label, title: 'support', group: subgroup) }
+
+      before do
+        subgroup.add_owner(user)
+        project.update!(group: subgroup)
+      end
+
+      it 'returns all available labels for the project, parent group and ancestor groups' do
+        get api("/projects/#{project.id}/labels", user)
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(json_response).to all(match_schema('public_api/v4/labels/label'))
+        expect(json_response.size).to eq(4)
+        expect(json_response.map {|r| r['name'] }).to contain_exactly(group_label.name, subgroup_label.name, priority_label.name, label1.name)
+      end
+    end
+
+    context 'when the include_ancestor_groups parameter is set to false' do
+      let(:group) { create(:group) }
+      let!(:group_label) { create(:group_label, title: 'feature', group: group) }
+      let(:subgroup) { create(:group, parent: group) }
+      let!(:subgroup_label) { create(:group_label, title: 'support', group: subgroup) }
+
+      before do
+        subgroup.add_owner(user)
+        project.update!(group: subgroup)
+      end
+
+      it 'returns all available labels for the project and the parent group only' do
+        get api("/projects/#{project.id}/labels", user), params: { include_ancestor_groups: false }
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(json_response).to all(match_schema('public_api/v4/labels/label'))
+        expect(json_response.size).to eq(3)
+        expect(json_response.map {|r| r['name'] }).to contain_exactly(subgroup_label.name, priority_label.name, label1.name)
+      end
+    end
   end
 
   describe 'POST /projects/:id/labels' do

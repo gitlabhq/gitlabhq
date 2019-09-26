@@ -6795,6 +6795,9 @@ msgstr ""
 msgid "Filter by two-factor authentication"
 msgstr ""
 
+msgid "Filter projects"
+msgstr ""
+
 msgid "Filter results by group"
 msgstr ""
 
@@ -13600,6 +13603,9 @@ msgid "Scroll up"
 msgstr ""
 
 msgid "Search"
+msgstr ""
+
+msgid "Search Button"
 msgstr ""
 
 msgid "Search an environment spec"

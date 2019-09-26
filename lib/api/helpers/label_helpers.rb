@@ -18,8 +18,8 @@ module API
         label || not_found!('Label')
       end
 
-      def get_labels(parent, entity)
-        present paginate(available_labels_for(parent)),
+      def get_labels(parent, entity, include_ancestor_groups: true)
+        present paginate(available_labels_for(parent, include_ancestor_groups: include_ancestor_groups)),
                 with: entity,
                 current_user: current_user,
                 parent: parent,

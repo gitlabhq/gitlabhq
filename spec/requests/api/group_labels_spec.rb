@@ -5,9 +5,11 @@ require 'spec_helper'
 describe API::GroupLabels do
   let(:user) { create(:user) }
   let(:group) { create(:group) }
+  let(:subgroup) { create(:group, parent: group) }
   let!(:group_member) { create(:group_member, group: group, user: user) }
-  let!(:label1) { create(:group_label, title: 'feature', group: group) }
-  let!(:label2) { create(:group_label, title: 'bug', group: group) }
+  let!(:group_label1) { create(:group_label, title: 'feature', group: group) }
+  let!(:group_label2) { create(:group_label, title: 'bug', group: group) }
+  let!(:subgroup_label) { create(:group_label, title: 'support', group: subgroup) }
 
   describe 'GET :id/labels' do
     it 'returns all available labels for the group' do
@@ -31,6 +33,34 @@ describe API::GroupLabels do
         expect(json_response).to all(match_schema('public_api/v4/labels/label_with_counts'))
         expect(json_response.size).to eq(2)
         expect(json_response.map { |r| r['open_issues_count'] }).to contain_exactly(0, 0)
+      end
+    end
+  end
+
+  describe 'GET :subgroup_id/labels' do
+    context 'when the include_ancestor_groups parameter is not set' do
+      it 'returns all available labels for the group and ancestor groups' do
+        get api("/groups/#{subgroup.id}/labels", user)
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(json_response).to all(match_schema('public_api/v4/labels/label'))
+        expect(json_response.size).to eq(3)
+        expect(json_response.map {|r| r['name'] }).to contain_exactly('feature', 'bug', 'support')
+      end
+    end
+
+    context 'when the include_ancestor_groups parameter is set to false' do
+      it 'returns all available labels for the group but not for ancestor groups' do
+        get api("/groups/#{subgroup.id}/labels", user), params: { include_ancestor_groups: false }
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(json_response).to all(match_schema('public_api/v4/labels/label'))
+        expect(json_response.size).to eq(1)
+        expect(json_response.map {|r| r['name'] }).to contain_exactly('support')
       end
     end
   end
@@ -78,7 +108,7 @@ describe API::GroupLabels do
     it 'returns 409 if label already exists' do
       post api("/groups/#{group.id}/labels", user),
            params: {
-             name: label1.name,
+             name: group_label1.name,
              color: '#FFAABB'
            }
 
@@ -89,13 +119,13 @@ describe API::GroupLabels do
 
   describe 'DELETE /groups/:id/labels' do
     it 'returns 204 for existing label' do
-      delete api("/groups/#{group.id}/labels", user), params: { name: label1.name }
+      delete api("/groups/#{group.id}/labels", user), params: { name: group_label1.name }
 
       expect(response).to have_gitlab_http_status(204)
     end
 
     it 'returns 404 for non existing label' do
-      delete api("/groups/#{group.id}/labels", user), params: { name: 'label2' }
+      delete api("/groups/#{group.id}/labels", user), params: { name: 'not_exists' }
 
       expect(response).to have_gitlab_http_status(404)
       expect(json_response['message']).to eq('404 Label Not Found')
@@ -115,12 +145,12 @@ describe API::GroupLabels do
 
       expect(response).to have_gitlab_http_status(204)
       expect(subgroup.labels.size).to eq(0)
-      expect(group.labels).to include(label1)
+      expect(group.labels).to include(group_label1)
     end
 
     it_behaves_like '412 response' do
       let(:request) { api("/groups/#{group.id}/labels", user) }
-      let(:params) { { name: label1.name } }
+      let(:params) { { name: group_label1.name } }
     end
   end
 
@@ -128,7 +158,7 @@ describe API::GroupLabels do
     it 'returns 200 if name and colors and description are changed' do
       put api("/groups/#{group.id}/labels", user),
           params: {
-            name: label1.name,
+            name: group_label1.name,
             new_name: 'New Label',
             color: '#FFFFFF',
             description: 'test'
@@ -152,13 +182,13 @@ describe API::GroupLabels do
 
       expect(response).to have_gitlab_http_status(200)
       expect(subgroup.labels[0].name).to eq('New Label')
-      expect(label1.name).to eq('feature')
+      expect(group_label1.name).to eq('feature')
     end
 
     it 'returns 404 if label does not exist' do
       put api("/groups/#{group.id}/labels", user),
           params: {
-            name: 'label2',
+            name: 'not_exists',
             new_name: 'label3'
           }
 
@@ -166,14 +196,14 @@ describe API::GroupLabels do
     end
 
     it 'returns 400 if no label name given' do
-      put api("/groups/#{group.id}/labels", user), params: { new_name: label1.name }
+      put api("/groups/#{group.id}/labels", user), params: { new_name: group_label1.name }
 
       expect(response).to have_gitlab_http_status(400)
       expect(json_response['error']).to eq('name is missing')
     end
 
     it 'returns 400 if no new parameters given' do
-      put api("/groups/#{group.id}/labels", user), params: { name: label1.name }
+      put api("/groups/#{group.id}/labels", user), params: { name: group_label1.name }
 
       expect(response).to have_gitlab_http_status(400)
       expect(json_response['error']).to eq('new_name, color, description are missing, '\
@@ -184,31 +214,31 @@ describe API::GroupLabels do
   describe 'POST /groups/:id/labels/:label_id/subscribe' do
     context 'when label_id is a label title' do
       it 'subscribes to the label' do
-        post api("/groups/#{group.id}/labels/#{label1.title}/subscribe", user)
+        post api("/groups/#{group.id}/labels/#{group_label1.title}/subscribe", user)
 
         expect(response).to have_gitlab_http_status(201)
-        expect(json_response['name']).to eq(label1.title)
+        expect(json_response['name']).to eq(group_label1.title)
         expect(json_response['subscribed']).to be_truthy
       end
     end
 
     context 'when label_id is a label ID' do
       it 'subscribes to the label' do
-        post api("/groups/#{group.id}/labels/#{label1.id}/subscribe", user)
+        post api("/groups/#{group.id}/labels/#{group_label1.id}/subscribe", user)
 
         expect(response).to have_gitlab_http_status(201)
-        expect(json_response['name']).to eq(label1.title)
+        expect(json_response['name']).to eq(group_label1.title)
         expect(json_response['subscribed']).to be_truthy
       end
     end
 
     context 'when user is already subscribed to label' do
       before do
-        label1.subscribe(user)
+        group_label1.subscribe(user)
       end
 
       it 'returns 304' do
-        post api("/groups/#{group.id}/labels/#{label1.id}/subscribe", user)
+        post api("/groups/#{group.id}/labels/#{group_label1.id}/subscribe", user)
 
         expect(response).to have_gitlab_http_status(304)
       end
@@ -225,36 +255,36 @@ describe API::GroupLabels do
 
   describe 'POST /groups/:id/labels/:label_id/unsubscribe' do
     before do
-      label1.subscribe(user)
+      group_label1.subscribe(user)
     end
 
     context 'when label_id is a label title' do
       it 'unsubscribes from the label' do
-        post api("/groups/#{group.id}/labels/#{label1.title}/unsubscribe", user)
+        post api("/groups/#{group.id}/labels/#{group_label1.title}/unsubscribe", user)
 
         expect(response).to have_gitlab_http_status(201)
-        expect(json_response['name']).to eq(label1.title)
+        expect(json_response['name']).to eq(group_label1.title)
         expect(json_response['subscribed']).to be_falsey
       end
     end
 
     context 'when label_id is a label ID' do
       it 'unsubscribes from the label' do
-        post api("/groups/#{group.id}/labels/#{label1.id}/unsubscribe", user)
+        post api("/groups/#{group.id}/labels/#{group_label1.id}/unsubscribe", user)
 
         expect(response).to have_gitlab_http_status(201)
-        expect(json_response['name']).to eq(label1.title)
+        expect(json_response['name']).to eq(group_label1.title)
         expect(json_response['subscribed']).to be_falsey
       end
     end
 
     context 'when user is already unsubscribed from label' do
       before do
-        label1.unsubscribe(user)
+        group_label1.unsubscribe(user)
       end
 
       it 'returns 304' do
-        post api("/groups/#{group.id}/labels/#{label1.id}/unsubscribe", user)
+        post api("/groups/#{group.id}/labels/#{group_label1.id}/unsubscribe", user)
 
         expect(response).to have_gitlab_http_status(304)
       end

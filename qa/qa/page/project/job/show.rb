@@ -26,8 +26,16 @@ module QA::Page
       end
 
       # Reminder: You may wish to wait for a particular job status before checking output
-      def output
-        find_element(:build_trace).text
+      def output(wait: 5)
+        result = ''
+
+        wait(reload: false, max: wait, interval: 1) do
+          result = find_element(:build_trace).text
+
+          !result.empty?
+        end
+
+        result
       end
 
       private

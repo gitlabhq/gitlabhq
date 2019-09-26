@@ -17,7 +17,7 @@
 - [ ] Follow the [Documentation Guidelines](https://docs.gitlab.com/ee/development/documentation/) and [Style Guide](https://docs.gitlab.com/ee/development/documentation/styleguide.html).
 - [ ] If applicable, update the [permissions table](https://docs.gitlab.com/ee/user/permissions.html).
 - [ ] Link docs to and from the higher-level index page, plus other related docs where helpful.
-- [ ] Apply the ~Documentation label.
+- [ ] Apply the ~documentation label.
 
 ## Review checklist
 

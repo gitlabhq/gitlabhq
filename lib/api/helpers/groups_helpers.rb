@@ -10,8 +10,6 @@ module API
         optional :description, type: String, desc: 'The description of the group'
         optional :visibility, type: String,
                  values: Gitlab::VisibilityLevel.string_values,
-                 default: Gitlab::VisibilityLevel.string_level(
-                   Gitlab::CurrentSettings.current_application_settings.default_group_visibility),
                  desc: 'The visibility of the group'
         optional :lfs_enabled, type: Boolean, desc: 'Enable/disable LFS for the projects in this group'
         optional :request_access_enabled, type: Boolean, desc: 'Allow users to request member access'

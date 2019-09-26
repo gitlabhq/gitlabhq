@@ -80,6 +80,21 @@ describe Import::BitbucketController do
       expect(assigns(:already_added_projects)).to eq([@project])
       expect(assigns(:repos)).to eq([])
     end
+
+    context 'when filtering' do
+      let(:filter) { '<html>test</html>' }
+      let(:expected_filter) { 'test' }
+
+      subject { get :status, params: { filter: filter }, as: :json }
+
+      it 'passes sanitized filter param to bitbucket client' do
+        expect_next_instance_of(Bitbucket::Client) do |client|
+          expect(client).to receive(:repos).with(filter: expected_filter).and_return([@repo])
+        end
+
+        subject
+      end
+    end
   end
 
   describe "POST create" do

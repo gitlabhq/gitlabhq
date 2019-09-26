@@ -120,7 +120,7 @@ export default class LabelsSelect {
             labelCount = 0;
             if (data.labels.length && issueUpdateURL) {
               template = LabelsSelect.getLabelTemplate({
-                labels: data.labels,
+                labels: _.sortBy(data.labels, 'title'),
                 issueUpdateURL,
                 enableScopedLabels: scopedLabels,
                 scopedLabelsDocumentationLink,

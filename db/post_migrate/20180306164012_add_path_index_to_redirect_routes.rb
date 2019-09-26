@@ -14,9 +14,7 @@ class AddPathIndexToRedirectRoutes < ActiveRecord::Migration[4.2]
   # RedirectRoute.matching_path_and_descendants
   #
   # This same index is also added in the `ReworkRedirectRoutesIndexes` so this
-  # is a no-op in most cases. But this migration is also called from the
-  # `setup_postgresql.rake` task when setting up a new database, in which case
-  # we want to create the index.
+  # is a no-op in most cases.
   def up
     return unless Gitlab::Database.postgresql?
 
@@ -31,8 +29,5 @@ class AddPathIndexToRedirectRoutes < ActiveRecord::Migration[4.2]
     # Do nothing in the DOWN. Since the index above is originally created in the
     # `ReworkRedirectRoutesIndexes`. This migration wouldn't have actually
     # created any new index.
-    #
-    # This migration is only here to be called form `setup_postgresql.rake` so
-    # any newly created database would have this index.
   end
 end

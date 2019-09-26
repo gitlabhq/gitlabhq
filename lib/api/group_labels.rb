@@ -18,10 +18,12 @@ module API
       params do
         optional :with_counts, type: Boolean, default: false,
                  desc: 'Include issue and merge request counts'
+        optional :include_ancestor_groups, type: Boolean, default: true,
+                 desc: 'Include ancestor groups'
         use :pagination
       end
       get ':id/labels' do
-        get_labels(user_group, Entities::GroupLabel)
+        get_labels(user_group, Entities::GroupLabel, include_ancestor_groups: params[:include_ancestor_groups])
       end
 
       desc 'Create a new label' do
