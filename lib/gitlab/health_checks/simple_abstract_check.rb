@@ -14,6 +14,8 @@ module Gitlab
         else
           HealthChecks::Result.new(false, "unexpected #{human_name} check result: #{check_result}")
         end
+      rescue => e
+        HealthChecks::Result.new(false, "unexpected #{human_name} check result: #{e}")
       end
 
       def metrics

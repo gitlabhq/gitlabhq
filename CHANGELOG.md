@@ -8367,7 +8367,7 @@ entry.
 - Reinstate is_admin flag in users api when authenticated user is an admin. !12211 (rickettm)
 - Fix edit button for deploy keys available from other projects. !12301 (Alexander Randa)
 - Fix passing CI_ENVIRONMENT_NAME and CI_ENVIRONMENT_SLUG for CI_ENVIRONMENT_URL. !12344
-- Disable environment list refresh due to bug https://gitlab.com/gitlab-org/gitlab-ee/issues/2677. !12347
+- Disable environment list refresh due to bug https://gitlab.com/gitlab-org/gitlab/issues/2677. !12347
 - Standardize timeline note margins across different viewport sizes. !12364
 - Fix Ordered Task List Items. !31483 (Jared Deckard <jared.deckard@gmail.com>)
 - Upgrade dependency to Go 1.8.3. !31943

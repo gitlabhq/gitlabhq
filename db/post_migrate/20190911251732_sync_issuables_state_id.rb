@@ -2,7 +2,7 @@
 
 # Sync remaining records for issues/merge_requests tables where state_id
 # is still null.
-# For more information check: https://gitlab.com/gitlab-org/gitlab-ee/issues/26823
+# For more information check: https://gitlab.com/gitlab-org/gitlab/issues/26823
 # It creates a temporary index before performing the UPDATES to sync values.
 #
 # In 09-11-2019 we have the following numbers for records with state_id == nil:

@@ -523,6 +523,7 @@
     margin-top: 4px;
     color: $gl-text-color;
     left: auto;
+    max-height: $dropdown-max-height-lg;
 
     li.current-user {
       padding: $dropdown-item-padding-y $dropdown-item-padding-x;

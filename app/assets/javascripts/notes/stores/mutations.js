@@ -33,10 +33,11 @@ export default {
   },
 
   [types.ADD_NEW_REPLY_TO_DISCUSSION](state, note) {
-    const noteObj = utils.findNoteObjectById(state.discussions, note.discussion_id);
+    const discussion = utils.findNoteObjectById(state.discussions, note.discussion_id);
+    const existingNote = discussion && utils.findNoteObjectById(discussion.notes, note.id);
 
-    if (noteObj) {
-      noteObj.notes.push(note);
+    if (discussion && !existingNote) {
+      discussion.notes.push(note);
     }
   },
 

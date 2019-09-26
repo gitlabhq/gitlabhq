@@ -484,6 +484,9 @@ sudo -u git -H git config --global repack.writeBitmaps true
 # Enable push options
 sudo -u git -H git config --global receive.advertisePushOptions true
 
+# Enable fsyncObjectFiles to reduce risk of repository corruption if the server crashes
+sudo -u git -H git config --global core.fsyncObjectFiles true
+
 # Configure Redis connection settings
 sudo -u git -H cp config/resque.yml.example config/resque.yml
 
