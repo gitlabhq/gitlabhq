@@ -19,7 +19,11 @@ class SentNotificationsController < ApplicationController
     flash[:notice] = _("You have been unsubscribed from this thread.")
 
     if current_user
-      redirect_to noteable_path(noteable)
+      if current_user.can?(:"read_#{noteable.class.to_ability_name}", noteable)
+        redirect_to noteable_path(noteable)
+      else
+        redirect_to root_path
+      end
     else
       redirect_to new_user_session_path
     end
