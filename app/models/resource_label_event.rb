@@ -13,6 +13,7 @@ class ResourceLabelEvent < ApplicationRecord
   belongs_to :label
 
   scope :created_after, ->(time) { where('created_at > ?', time) }
+  scope :inc_relations, -> { includes(:label, :user) }
 
   validates :user, presence: { unless: :importing? }, on: :create
   validates :label, presence: { unless: :importing? }, on: :create
@@ -28,6 +29,15 @@ class ResourceLabelEvent < ApplicationRecord
 
   def self.issuable_attrs
     %i(issue merge_request).freeze
+  end
+
+  def self.preload_label_subjects(events)
+    labels = events.map(&:label).compact
+    project_labels, group_labels = labels.partition { |label| label.is_a? ProjectLabel }
+
+    preloader = ActiveRecord::Associations::Preloader.new
+    preloader.preload(project_labels, { project: :project_feature })
+    preloader.preload(group_labels, :group)
   end
 
   def issuable
