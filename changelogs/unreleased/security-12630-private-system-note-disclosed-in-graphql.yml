@@ -1,6 +1,0 @@
----
-title: Add a policy check for system notes that may not be visible due to cross references
-  to private items
-merge_request:
-author:
-type: security

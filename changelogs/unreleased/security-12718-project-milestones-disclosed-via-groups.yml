@@ -1,6 +1,0 @@
----
-title: Do not disclose project milestones on group milestones page when project milestones
-  access is disabled in project settings
-merge_request:
-author:
-type: security
