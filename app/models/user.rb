@@ -265,6 +265,16 @@ class User < ApplicationRecord
         BLOCKED_MESSAGE
       end
     end
+
+    # rubocop: disable CodeReuse/ServiceClass
+    # Ideally we should not call a service object here but user.block
+    # is also bcalled by Users::MigrateToGhostUserService which references
+    # this state transition object in order to do a rollback.
+    # For this reason the tradeoff is to disable this cop.
+    after_transition any => :blocked do |user|
+      Ci::CancelUserPipelinesService.new.execute(user)
+    end
+    # rubocop: enable CodeReuse/ServiceClass
   end
 
   # Scopes
