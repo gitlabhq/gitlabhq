@@ -1470,11 +1470,13 @@ module API
       expose :user,        using: Entities::UserBasic
       expose :environment, using: Entities::EnvironmentBasic
       expose :deployable,  using: Entities::Job
+      expose :status
     end
 
     class Environment < EnvironmentBasic
       expose :project, using: Entities::BasicProjectDetails
       expose :last_deployment, using: Entities::Deployment, if: { last_deployment: true }
+      expose :state
     end
 
     class LicenseBasic < Grape::Entity

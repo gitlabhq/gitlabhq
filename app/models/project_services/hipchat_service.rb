@@ -73,7 +73,7 @@ class HipchatService < Service
   private
 
   def gate
-    options = { api_version: api_version.present? ? api_version : 'v2' }
+    options = { api_version: api_version.presence || 'v2' }
     options[:server_url] = server unless server.blank?
     @gate ||= HipChat::Client.new(token, options)
   end

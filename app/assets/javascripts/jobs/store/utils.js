@@ -56,6 +56,37 @@ export const logLinesParser = (lines = [], lineNumberStart) =>
   }, []);
 
 /**
+ * Finds the repeated offset, removes the old one
+ *
+ * Returns a new array with the updated log without
+ * the repeated offset
+ *
+ * @param Array newLog
+ * @param Array oldParsed
+ * @returns Array
+ *
+ */
+export const findOffsetAndRemove = (newLog, oldParsed) => {
+  const cloneOldLog = [...oldParsed];
+  const lastIndex = cloneOldLog.length - 1;
+  const last = cloneOldLog[lastIndex];
+
+  const firstNew = newLog[0];
+
+  if (last.offset === firstNew.offset || (last.line && last.line.offset === firstNew.offset)) {
+    cloneOldLog.splice(lastIndex);
+  } else if (last.lines && last.lines.length) {
+    const lastNestedIndex = last.lines.length - 1;
+    const lastNested = last.lines[lastNestedIndex];
+    if (lastNested.offset === firstNew.offset) {
+      last.lines.splice(lastNestedIndex);
+    }
+  }
+
+  return cloneOldLog;
+};
+
+/**
  * When the trace is not complete, backend may send the last received line
  * in the new response.
  *

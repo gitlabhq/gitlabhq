@@ -3,6 +3,7 @@ import {
   updateIncrementalTrace,
   parseHeaderLine,
   parseLine,
+  findOffsetAndRemove,
 } from '~/jobs/store/utils';
 import {
   utilsMockData,
@@ -79,6 +80,91 @@ describe('Jobs Store Utils', () => {
 
       it('does not add section duration as a line', () => {
         expect(result[1].lines.includes(utilsMockData[4])).toEqual(false);
+      });
+    });
+  });
+
+  describe('findOffsetAndRemove', () => {
+    describe('when last item is header', () => {
+      const existingLog = [
+        {
+          isHeader: true,
+          isClosed: true,
+          line: { content: [{ text: 'bar' }], offset: 10, lineNumber: 1 },
+        },
+      ];
+
+      describe('and matches the offset', () => {
+        it('returns an array with the item removed', () => {
+          const newData = [{ offset: 10, content: [{ text: 'foobar' }] }];
+          const result = findOffsetAndRemove(newData, existingLog);
+
+          expect(result).toEqual([]);
+        });
+      });
+
+      describe('and does not match the offset', () => {
+        it('returns the provided existing log', () => {
+          const newData = [{ offset: 110, content: [{ text: 'foobar' }] }];
+          const result = findOffsetAndRemove(newData, existingLog);
+
+          expect(result).toEqual(existingLog);
+        });
+      });
+    });
+
+    describe('when last item is a regular line', () => {
+      const existingLog = [{ content: [{ text: 'bar' }], offset: 10, lineNumber: 1 }];
+
+      describe('and matches the offset', () => {
+        it('returns an array with the item removed', () => {
+          const newData = [{ offset: 10, content: [{ text: 'foobar' }] }];
+          const result = findOffsetAndRemove(newData, existingLog);
+
+          expect(result).toEqual([]);
+        });
+      });
+
+      describe('and does not match the fofset', () => {
+        it('returns the provided old log', () => {
+          const newData = [{ offset: 101, content: [{ text: 'foobar' }] }];
+          const result = findOffsetAndRemove(newData, existingLog);
+
+          expect(result).toEqual(existingLog);
+        });
+      });
+    });
+
+    describe('when last item is nested', () => {
+      const existingLog = [
+        {
+          isHeader: true,
+          isClosed: true,
+          lines: [{ offset: 101, content: [{ text: 'foobar' }], lineNumber: 2 }],
+          line: {
+            offset: 10,
+            lineNumber: 1,
+            section_duration: '10:00',
+          },
+        },
+      ];
+
+      describe('and matches the offset', () => {
+        it('returns an array with the last nested line item removed', () => {
+          const newData = [{ offset: 101, content: [{ text: 'foobar' }] }];
+
+          const result = findOffsetAndRemove(newData, existingLog);
+          expect(result[0].lines).toEqual([]);
+        });
+      });
+
+      describe('and does not match the offset', () => {
+        it('returns the provided old log', () => {
+          const newData = [{ offset: 120, content: [{ text: 'foobar' }] }];
+
+          const result = findOffsetAndRemove(newData, existingLog);
+          expect(result).toEqual(existingLog);
+        });
       });
     });
   });

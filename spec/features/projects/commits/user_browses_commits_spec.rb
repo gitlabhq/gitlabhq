@@ -93,13 +93,13 @@ describe 'User browses commits' do
   context 'when the blob does not exist' do
     let(:commit) { create(:commit, project: project) }
 
-    it 'shows a blank label' do
+    it 'renders successfully' do
       allow_any_instance_of(Gitlab::Diff::File).to receive(:blob).and_return(nil)
       allow_any_instance_of(Gitlab::Diff::File).to receive(:binary?).and_return(true)
 
       visit(project_commit_path(project, commit))
 
-      expect(find('.diff-file-changes', visible: false)).to have_content('No file name available')
+      expect(find('.diff-file-changes', visible: false)).to have_content('files/ruby/popen.rb')
     end
   end
 

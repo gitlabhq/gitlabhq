@@ -584,11 +584,7 @@ module Ci
     def ci_yaml_file_path
       return unless repository_source? || unknown_source?
 
-      if project.ci_config_path.blank?
-        '.gitlab-ci.yml'
-      else
-        project.ci_config_path
-      end
+      project.ci_config_path.presence || '.gitlab-ci.yml'
     end
 
     def ci_yaml_file

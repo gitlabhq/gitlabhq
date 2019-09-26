@@ -26,7 +26,8 @@
         { "type": "null" },
         { "$ref": "job.json" }
       ]
-    }
+    },
+    "status": { "type": "string" }
   },
   "additionalProperties": false
 }

@@ -47,11 +47,7 @@ module Gitlab
         end
 
         def description_for(release)
-          if release.body.present?
-            release.body
-          else
-            "Release for tag #{release.tag_name}"
-          end
+          release.body.presence || "Release for tag #{release.tag_name}"
         end
       end
     end

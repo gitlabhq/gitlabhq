@@ -337,7 +337,7 @@ class JiraService < IssueTrackerService
   end
 
   def client_url
-    api_url.present? ? api_url : url
+    api_url.presence || url
   end
 
   def reset_password?

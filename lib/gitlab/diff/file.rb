@@ -428,8 +428,8 @@ module Gitlab
 
       def viewer_class_from(classes)
         return unless diffable?
-        return if different_type? || external_storage_error?
         return unless new_file? || deleted_file? || content_changed?
+        return if different_type? || external_storage_error?
 
         verify_binary = !stored_externally?
 

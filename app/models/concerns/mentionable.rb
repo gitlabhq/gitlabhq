@@ -150,7 +150,7 @@ module Mentionable
   #
   # Returns a Hash.
   def detect_mentionable_changes
-    source = (changes.present? ? changes : previous_changes).dup
+    source = (changes.presence || previous_changes).dup
 
     mentionable = self.class.mentionable_attrs.map { |attr, options| attr }
 

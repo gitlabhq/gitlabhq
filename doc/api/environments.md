@@ -26,7 +26,8 @@ Example response:
     "id": 1,
     "name": "review/fix-foo",
     "slug": "review-fix-foo-dfjre3",
-    "external_url": "https://review-fix-foo-dfjre3.example.gitlab.com"
+    "external_url": "https://review-fix-foo-dfjre3.example.gitlab.com",
+    "state": "available"
   }
 ]
 ```
@@ -54,12 +55,14 @@ Example of response
   "name": "review/fix-foo",
   "slug": "review-fix-foo-dfjre3",
   "external_url": "https://review-fix-foo-dfjre3.example.gitlab.com"
+  "state": "available",
   "last_deployment": {
     "id": 100,
     "iid": 34,
     "ref": "fdroid",
     "sha": "416d8ea11849050d3d1f5104cf8cf51053e790ab",
     "created_at": "2019-03-25T18:55:13.252Z",
+    "status": "success",
     "user": {
       "id": 1,
       "name": "Administrator",
@@ -163,7 +166,8 @@ Example response:
   "id": 1,
   "name": "deploy",
   "slug": "deploy",
-  "external_url": "https://deploy.example.gitlab.com"
+  "external_url": "https://deploy.example.gitlab.com",
+  "state": "available"
 }
 ```
 
@@ -195,7 +199,8 @@ Example response:
   "id": 1,
   "name": "staging",
   "slug": "staging",
-  "external_url": "https://staging.example.gitlab.com"
+  "external_url": "https://staging.example.gitlab.com",
+  "state": "available"
 }
 ```
 
@@ -240,6 +245,7 @@ Example response:
   "id": 1,
   "name": "deploy",
   "slug": "deploy",
-  "external_url": "https://deploy.example.gitlab.com"
+  "external_url": "https://deploy.example.gitlab.com",
+  "state": "stopped"
 }
 ```

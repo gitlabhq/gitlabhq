@@ -77,11 +77,7 @@ class WikiPage
 
   # The escaped URL path of this page.
   def slug
-    if @attributes[:slug].present?
-      @attributes[:slug]
-    else
-      wiki.wiki.preview_slug(title, format)
-    end
+    @attributes[:slug].presence || wiki.wiki.preview_slug(title, format)
   end
 
   alias_method :to_param, :slug
