@@ -33,6 +33,7 @@ export default function renderMermaid($els) {
         flowchart: {
           htmlLabels: false,
         },
+        securityLevel: 'strict',
       });
 
       let renderedChars = 0;
