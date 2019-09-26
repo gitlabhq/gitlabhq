@@ -1031,6 +1031,9 @@ msgstr ""
 msgid "Admin Section"
 msgstr ""
 
+msgid "Admin mode disabled"
+msgstr ""
+
 msgid "Admin notes"
 msgstr ""
 
@@ -5734,6 +5737,9 @@ msgstr ""
 msgid "Enter a number"
 msgstr ""
 
+msgid "Enter admin mode"
+msgstr ""
+
 msgid "Enter at least three characters to search"
 msgstr ""
 
@@ -9121,6 +9127,9 @@ msgid "Learn more in the|pipeline schedules documentation"
 msgstr ""
 
 msgid "Leave"
+msgstr ""
+
+msgid "Leave admin mode"
 msgstr ""
 
 msgid "Leave edit mode? All unsaved changes will be lost."
@@ -12737,6 +12746,9 @@ msgid "Rake Tasks Help"
 msgstr ""
 
 msgid "Raw blob request rate limit per minute"
+msgstr ""
+
+msgid "Re-authentication required"
 msgstr ""
 
 msgid "Read more"

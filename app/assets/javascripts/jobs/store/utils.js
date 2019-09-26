@@ -24,6 +24,46 @@ export const parseHeaderLine = (line = {}, lineNumber) => ({
 });
 
 /**
+ * Finds the matching header section
+ * for the section_duration object and adds it to it
+ *
+ * {
+ *   isHeader: true,
+ *   line: {
+ *     content: [],
+ *     lineNumber: 0,
+ *     section_duration: "",
+ *   },
+ *   lines: []
+ * }
+ *
+ * @param Array data
+ * @param Object durationLine
+ */
+export function addDurationToHeader(data, durationLine) {
+  data.forEach(el => {
+    if (el.line && el.line.section === durationLine.section) {
+      el.line.section_duration = durationLine.section_duration;
+    }
+  });
+}
+
+/**
+ * Check is the current section belongs to a collapsible section
+ *
+ * @param Array acc
+ * @param Object last
+ * @param Object section
+ *
+ * @returns Boolean
+ */
+export const isCollapsibleSection = (acc = [], last = {}, section = {}) =>
+  acc.length > 0 &&
+  last.isHeader === true &&
+  !section.section_duration &&
+  section.section === last.line.section;
+
+/**
  * Parses the job log content into a structure usable by the template
  *
  * For collaspible lines (section_header = true):
@@ -32,28 +72,35 @@ export const parseHeaderLine = (line = {}, lineNumber) => ({
  *    - adds a isHeader property to handle template logic
  *    - adds the section_duration
  * For each line:
- *    - adds the index as  lineNumber
+ *    - adds the index as lineNumber
  *
- * @param {Array} lines
- * @returns {Array}
+ * @param Array lines
+ * @param Number lineNumberStart
+ * @param Array accumulator
+ * @returns Array parsed log lines
  */
-export const logLinesParser = (lines = [], lineNumberStart) =>
+export const logLinesParser = (lines = [], lineNumberStart, accumulator = []) =>
   lines.reduce((acc, line, index) => {
     const lineNumber = lineNumberStart ? lineNumberStart + index : index;
     const last = acc[acc.length - 1];
 
+    // If the object is an header, we parse it into another structure
     if (line.section_header) {
       acc.push(parseHeaderLine(line, lineNumber));
-    } else if (acc.length && last.isHeader && !line.section_duration && line.content.length) {
+    } else if (isCollapsibleSection(acc, last, line)) {
+      // if the object belongs to a nested section, we append it to the new `lines` array of the
+      // previously formated header
       last.lines.push(parseLine(line, lineNumber));
-    } else if (acc.length && last.isHeader && line.section_duration) {
-      last.section_duration = line.section_duration;
-    } else if (line.content.length) {
+    } else if (line.section_duration) {
+      // if the line has section_duration, we look for the correct header to add it
+      addDurationToHeader(acc, line);
+    } else {
+      // otherwise it's a regular line
       acc.push(parseLine(line, lineNumber));
     }
 
     return acc;
-  }, []);
+  }, accumulator);
 
 /**
  * Finds the repeated offset, removes the old one

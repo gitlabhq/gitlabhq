@@ -3,7 +3,7 @@ const IS_EE = require('./config/helpers/is_ee_env');
 const reporters = ['default'];
 
 // To have consistent date time parsing both in local and CI environments we set
-// the timezone of the Node process. https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/27738
+// the timezone of the Node process. https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/27738
 process.env.TZ = 'GMT';
 
 if (process.env.CI) {

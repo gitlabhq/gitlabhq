@@ -187,7 +187,7 @@ module Gitlab
           .find_in_batches(batch_size: BATCH_SIZE) do |services|
 
           counts = services.group_by do |service|
-            # TODO: Simplify as part of https://gitlab.com/gitlab-org/gitlab-ce/issues/63084
+            # TODO: Simplify as part of https://gitlab.com/gitlab-org/gitlab/issues/29404
             service_url = service.data_fields&.url || (service.properties && service.properties['url'])
             service_url&.include?('.atlassian.net') ? :cloud : :server
           end

@@ -21,6 +21,10 @@ namespace :admin do
     end
   end
 
+  resource :session, only: [:new, :create] do
+    get 'destroy', action: :destroy, as: :destroy
+  end
+
   resource :impersonation, only: :destroy
 
   resources :abuse_reports, only: [:index, :destroy]

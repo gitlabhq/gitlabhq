@@ -125,7 +125,7 @@ CAUTION: **Warning:**
    **Extended downtime is required** so no new files are created in object storage during
    the migration. A configuration setting will be added soon to allow migrating
    from object storage to local files with only a brief moment of downtime for configuration changes.
-   See issue [gitlab-org/gitlab-ce#66144](https://gitlab.com/gitlab-org/gitlab-ce/issues/66144)
+   See issue [gitlab-org/gitlab#30979](https://gitlab.com/gitlab-org/gitlab/issues/30979)
 
 ### All-in-one rake task
 

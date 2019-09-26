@@ -76,10 +76,7 @@ describe HealthController do
       it 'responds with liveness checks data' do
         subject
 
-        expect(json_response['db_check']['status']).to eq('ok')
-        expect(json_response['cache_check']['status']).to eq('ok')
-        expect(json_response['queues_check']['status']).to eq('ok')
-        expect(json_response['shared_state_check']['status']).to eq('ok')
+        expect(json_response['status']).to eq('ok')
       end
     end
 

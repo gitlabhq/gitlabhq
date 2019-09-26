@@ -3,8 +3,6 @@
   image: ruby:2.6-alpine
   stage: qa
   dependencies: []
-  variables:
-    GIT_DEPTH: "1"
   retry: 0
   script:
     - source scripts/utils.sh

@@ -1052,7 +1052,7 @@ module API
       expose :job_events
       # Expose serialized properties
       expose :properties do |service, options|
-        # TODO: Simplify as part of https://gitlab.com/gitlab-org/gitlab-ce/issues/63084
+        # TODO: Simplify as part of https://gitlab.com/gitlab-org/gitlab/issues/29404
         if service.data_fields_present?
           service.data_fields.as_json.slice(*service.api_field_names)
         else

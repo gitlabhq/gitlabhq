@@ -6,7 +6,7 @@
 # as a workaround until this is resolved.
 #
 # This can be removed once fog-google and google-api-client can be upgraded.
-# See https://gitlab.com/gitlab-org/gitlab-ce/issues/66630 for more details.
+# See https://gitlab.com/gitlab-org/gitlab/issues/31280 for more details.
 #
 
 require 'google/apis/container_v1beta1'

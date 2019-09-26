@@ -777,4 +777,48 @@ describe ApplicationController do
       end
     end
   end
+
+  describe '#current_user_mode', :do_not_mock_admin_mode do
+    include_context 'custom session'
+
+    controller(described_class) do
+      def index
+        render html: 'authenticated'
+      end
+    end
+
+    before do
+      allow(ActiveSession).to receive(:list_sessions).with(user).and_return([session])
+
+      sign_in(user)
+      get :index
+    end
+
+    context 'with a regular user' do
+      it 'admin mode is not set' do
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(Gitlab::Auth::CurrentUserMode.new(user).admin_mode?).to be(false)
+      end
+    end
+
+    context 'with an admin user' do
+      let(:user) { create(:admin) }
+
+      it 'admin mode is not set' do
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(Gitlab::Auth::CurrentUserMode.new(user).admin_mode?).to be(false)
+      end
+
+      context 'that re-authenticated' do
+        before do
+          Gitlab::Auth::CurrentUserMode.new(user).enable_admin_mode!(password: user.password)
+        end
+
+        it 'admin mode is set' do
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(Gitlab::Auth::CurrentUserMode.new(user).admin_mode?).to be(true)
+        end
+      end
+    end
+  end
 end

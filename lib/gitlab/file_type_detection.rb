@@ -12,7 +12,7 @@
 # We use Workhorse to detect the real extension when we serve files with
 # the `SendsBlob` helper methods, and ask Workhorse to set the content
 # type when it serves the file:
-# https://gitlab.com/gitlab-org/gitlab-ce/blob/33e5955/app/helpers/workhorse_helper.rb#L48.
+# https://gitlab.com/gitlab-org/gitlab/blob/33e5955/app/helpers/workhorse_helper.rb#L48.
 #
 # Because Workhorse has access to the content when it is downloaded, if
 # the type/extension doesn't match the real type, we adjust the

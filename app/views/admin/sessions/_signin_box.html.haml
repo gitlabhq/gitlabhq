@@ -1,0 +1,11 @@
+- if form_based_providers.any?
+
+  - if password_authentication_enabled_for_web?
+    .login-box.tab-pane{ id: 'login-pane', role: 'tabpanel' }
+      .login-body
+        = render 'admin/sessions/new_base'
+
+- elsif password_authentication_enabled_for_web?
+  .login-box.tab-pane.active{ id: 'login-pane', role: 'tabpanel' }
+    .login-body
+      = render 'admin/sessions/new_base'

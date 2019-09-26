@@ -116,28 +116,11 @@ curl 'https://gitlab.example.com/-/liveness'
 
 Example response:
 
-On success, the endpoint will return a valid successful HTTP status code, and a response like below.
+On success, the endpoint will return a `200` HTTP status code, and a response like below.
 
 ```json
 {
-   "db_check":{
-      "status":"ok"
-   },
-   "redis_check":{
-      "status":"ok"
-   },
-   "cache_check":{
-      "status":"ok"
-   },
-   "queues_check":{
-      "status":"ok"
-   },
-   "shared_state_check":{
-      "status":"ok"
-   },
-   "gitaly_check":{
-      "status":"ok"
-   }
+   "status": "ok"
 }
 ```
 

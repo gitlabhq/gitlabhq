@@ -4,7 +4,7 @@ type: reference, howto, concepts
 
 # Subgroups
 
->[Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/2772) in GitLab 9.0.
+>[Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/2772) in GitLab 9.0.
 
 Subgroups, also known as nested groups or hierarchical groups, allow you to have up to 20
 levels of groups.

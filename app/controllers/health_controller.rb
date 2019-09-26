@@ -20,9 +20,7 @@ class HealthController < ActionController::Base
   end
 
   def liveness
-    results = CHECKS.map { |check| [check.name, check.liveness] }
-
-    render_check_results(results)
+    render json: { status: 'ok' }, status: :ok
   end
 
   private

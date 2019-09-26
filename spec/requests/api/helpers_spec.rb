@@ -343,6 +343,8 @@ describe API::Helpers do
   end
 
   context 'sudo' do
+    include_context 'custom session'
+
     shared_examples 'successful sudo' do
       it 'sets current_user' do
         expect(current_user).to eq(user)

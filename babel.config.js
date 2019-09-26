@@ -44,7 +44,7 @@ if (isJest) {
   plugins.push('@babel/plugin-transform-modules-commonjs');
   /*
   without the following, babel-plugin-istanbul throws an error:
-  https://gitlab.com/gitlab-org/gitlab-ce/issues/58390
+  https://gitlab.com/gitlab-org/gitlab-foss/issues/58390
   */
   plugins.push('babel-plugin-dynamic-import-node');
 }

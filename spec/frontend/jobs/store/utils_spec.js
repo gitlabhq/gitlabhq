@@ -3,6 +3,8 @@ import {
   updateIncrementalTrace,
   parseHeaderLine,
   parseLine,
+  addDurationToHeader,
+  isCollapsibleSection,
   findOffsetAndRemove,
 } from '~/jobs/store/utils';
 import {
@@ -43,6 +45,127 @@ describe('Jobs Store Utils', () => {
     });
   });
 
+  describe('addDurationToHeader', () => {
+    const duration = {
+      offset: 106,
+      content: [],
+      section: 'prepare-script',
+      section_duration: '00:03',
+    };
+
+    it('adds the section duration to the correct header', () => {
+      const parsed = [
+        {
+          isClosed: true,
+          isHeader: true,
+          line: {
+            section: 'prepare-script',
+            content: [{ text: 'foo' }],
+          },
+          lines: [],
+        },
+        {
+          isClosed: true,
+          isHeader: true,
+          line: {
+            section: 'foo-bar',
+            content: [{ text: 'foo' }],
+          },
+          lines: [],
+        },
+      ];
+
+      addDurationToHeader(parsed, duration);
+
+      expect(parsed[0].line.section_duration).toEqual(duration.section_duration);
+      expect(parsed[1].line.section_duration).toEqual(undefined);
+    });
+
+    it('does not add the section duration when the headers do not match', () => {
+      const parsed = [
+        {
+          isClosed: true,
+          isHeader: true,
+          line: {
+            section: 'bar-foo',
+            content: [{ text: 'foo' }],
+          },
+          lines: [],
+        },
+        {
+          isClosed: true,
+          isHeader: true,
+          line: {
+            section: 'foo-bar',
+            content: [{ text: 'foo' }],
+          },
+          lines: [],
+        },
+      ];
+      addDurationToHeader(parsed, duration);
+
+      expect(parsed[0].line.section_duration).toEqual(undefined);
+      expect(parsed[1].line.section_duration).toEqual(undefined);
+    });
+
+    it('does not add when content has no headers', () => {
+      const parsed = [
+        {
+          section: 'bar-foo',
+          content: [{ text: 'foo' }],
+          lineNumber: 1,
+        },
+        {
+          section: 'foo-bar',
+          content: [{ text: 'foo' }],
+          lineNumber: 2,
+        },
+      ];
+
+      addDurationToHeader(parsed, duration);
+
+      expect(parsed[0].line).toEqual(undefined);
+      expect(parsed[1].line).toEqual(undefined);
+    });
+  });
+
+  describe('isCollapsibleSection', () => {
+    const header = {
+      isHeader: true,
+      line: {
+        section: 'foo',
+      },
+    };
+    const line = {
+      lineNumber: 1,
+      section: 'foo',
+      content: [],
+    };
+
+    it('returns true when line belongs to the last section', () => {
+      expect(isCollapsibleSection([header], header, { section: 'foo', content: [] })).toEqual(true);
+    });
+
+    it('returns false when last line was not an header', () => {
+      expect(isCollapsibleSection([line], line, { section: 'bar' })).toEqual(false);
+    });
+
+    it('returns false when accumulator is empty', () => {
+      expect(isCollapsibleSection([], { isHeader: true }, { section: 'bar' })).toEqual(false);
+    });
+
+    it('returns false when section_duration is defined', () => {
+      expect(isCollapsibleSection([header], header, { section_duration: '10:00' })).toEqual(false);
+    });
+
+    it('returns false when `section` is not a match', () => {
+      expect(isCollapsibleSection([header], header, { section: 'bar' })).toEqual(false);
+    });
+
+    it('returns false when no parameters are provided', () => {
+      expect(isCollapsibleSection()).toEqual(false);
+    });
+  });
   describe('logLinesParser', () => {
     let result;
 
@@ -75,7 +198,7 @@ describe('Jobs Store Utils', () => {
 
     describe('section duration', () => {
       it('adds the section information to the header section', () => {
-        expect(result[1].section_duration).toEqual(utilsMockData[4].section_duration);
+        expect(result[1].line.section_duration).toEqual(utilsMockData[4].section_duration);
       });
 
       it('does not add section duration as a line', () => {

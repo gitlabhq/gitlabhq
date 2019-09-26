@@ -5,7 +5,13 @@ require_dependency 'declarative_policy'
 class BasePolicy < DeclarativePolicy::Base
   desc "User is an instance admin"
   with_options scope: :user, score: 0
-  condition(:admin) { @user&.admin? }
+  condition(:admin) do
+    if Feature.enabled?(:user_mode_in_session)
+      Gitlab::Auth::CurrentUserMode.new(@user).admin_mode?
+    else
+      @user&.admin?
+    end
+  end
 
   desc "User is blocked"
   with_options scope: :user, score: 0

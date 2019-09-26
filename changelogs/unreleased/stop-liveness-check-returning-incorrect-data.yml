@@ -1,0 +1,5 @@
+---
+title: Changes response body of liveness check to be more accurate
+merge_request: 17655
+author:
+type: changed

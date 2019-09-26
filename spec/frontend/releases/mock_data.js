@@ -89,7 +89,7 @@ export const release = {
         id: 2,
         name: 'my second link',
         url:
-          'https://gitlab.com/gitlab-org/gitlab-ce/-/jobs/artifacts/v11.6.0-rc4/download?job=rspec-mysql+41%2F50',
+          'https://gitlab.com/gitlab-org/gitlab-foss/-/jobs/artifacts/v11.6.0-rc4/download?job=rspec-mysql+41%2F50',
         external: false,
       },
     ],

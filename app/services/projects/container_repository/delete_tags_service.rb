@@ -32,7 +32,7 @@ module Projects
       # This is a hack as the registry doesn't support deleting individual
       # tags. This code effectively pushes a dummy image and assigns the tag to it.
       # This way when the tag is deleted only the dummy image is affected.
-      # See https://gitlab.com/gitlab-org/gitlab-ce/issues/21405 for a discussion
+      # See https://gitlab.com/gitlab-org/gitlab/issues/15737 for a discussion
       def smart_delete(container_repository, tag_names)
         # generates the blobs for the dummy image
         dummy_manifest = container_repository.client.generate_empty_manifest(container_repository.path)

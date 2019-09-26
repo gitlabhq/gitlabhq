@@ -117,7 +117,7 @@ FactoryBot.define do
   end
 
   # this is for testing storing values inside properties, which is deprecated and will be removed in
-  # https://gitlab.com/gitlab-org/gitlab-ce/issues/63084
+  # https://gitlab.com/gitlab-org/gitlab/issues/29404
   trait :without_properties_callback do
     jira_tracker_data nil
     issue_tracker_data nil

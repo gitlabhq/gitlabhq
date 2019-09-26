@@ -1,0 +1,6 @@
+---
+title: Require admins to enter admin-mode by re-authenticating before performing
+  administrative operations
+merge_request: 16981
+author: Roger Rüttimann & Diego Louzán
+type: added

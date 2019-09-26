@@ -36,6 +36,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception, prepend: true
 
   helper_method :can?
+  helper_method :current_user_mode
   helper_method :import_sources_enabled?, :github_import_enabled?,
     :gitea_import_enabled?, :github_import_configured?,
     :gitlab_import_enabled?, :gitlab_import_configured?,
@@ -532,6 +533,10 @@ class ApplicationController < ActionController::Base
     ::Gitlab::GitalyClient.allow_ref_name_caching do
       yield
     end
+  end
+
+  def current_user_mode
+    @current_user_mode ||= Gitlab::Auth::CurrentUserMode.new(current_user)
   end
 end
 

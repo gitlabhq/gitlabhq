@@ -328,7 +328,7 @@ Thanks for the issue report. This issue has already been fixed in newer versions
 Due to the size of this project and our limited resources we are only able to support the
 latest stable release as outlined in our [contributing guidelines](https://docs.gitlab.com/ee/development/contributing/issue_workflow.html).
 In order to get this bug fix and enjoy many new features please
-[upgrade](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/update).
+[upgrade](https://gitlab.com/gitlab-org/gitlab/tree/master/doc/update).
 If you still experience issues at that time please open a new issue following our issue
 tracker guidelines found in the [contributing guidelines](https://docs.gitlab.com/ee/development/contributing/issue_workflow.html#issue-tracker-guidelines).
 ```
@@ -337,14 +337,14 @@ tracker guidelines found in the [contributing guidelines](https://docs.gitlab.co
 
 ```
 Thanks for your interest in improving the GitLab codebase!
-Please update your merge request according to the [contributing guidelines](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/development/contributing/merge_request_workflow.md#merge-request-guidelines).
+Please update your merge request according to the [contributing guidelines](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/development/contributing/merge_request_workflow.md#merge-request-guidelines).
 ```
 
 ### Accepting merge requests
 
 ```
 Is there an issue on the
-[issue tracker](https://gitlab.com/gitlab-org/gitlab-ce/issues) that is
+[issue tracker](https://gitlab.com/gitlab-org/gitlab/issues) that is
 similar to this? Could you please link it here?
 Please be aware that new functionality that is not marked
 [`Accepting merge requests`](https://docs.gitlab.com/ee/development/contributing/issue_workflow.html#label-for-community-contributors)

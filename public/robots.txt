@@ -8,7 +8,7 @@
 # Only some crawlers respect this setting, e.g. Googlebot does not
 # Crawl-delay: 1
 
-# Based on details in https://gitlab.com/gitlab-org/gitlab-ce/blob/master/config/routes.rb, https://gitlab.com/gitlab-org/gitlab-ce/blob/master/spec/routing, and using application
+# Based on details in https://gitlab.com/gitlab-org/gitlab/blob/master/config/routes.rb, https://gitlab.com/gitlab-org/gitlab/blob/master/spec/routing, and using application
 User-Agent: *
 Disallow: /autocomplete/users
 Disallow: /search
