@@ -133,10 +133,10 @@ The following table depicts the various user permission levels in a project.
 | Force push to protected branches (*4*)            |         |            |             |          |        |
 | Remove protected branches (*4*)                   |         |            |             |          |        |
 
-- (*1*): All users are able to perform this action on public and internal projects, but not private projects.
+- (*1*): Guest users are able to perform this action on public and internal projects, but not private projects.
 - (*2*): Guest users can only view the confidential issues they created themselves
 - (*3*): If **Public pipelines** is enabled in **Project Settings > CI/CD**
-- (*4*): Not allowed for Guest, Reporter, Developer, Maintainer, or Owner
+- (*4*): Not allowed for Guest, Reporter, Developer, Maintainer, or Owner. See [Protected Branches](./project/protected_branches.md).
 
 ## Project features permissions
 

@@ -986,10 +986,6 @@ The above script will:
 > - Blocking manual actions were introduced in GitLab 9.0.
 > - Protected actions were introduced in GitLab 9.2.
 
-NOTE: **Note:**
-Using `when:manual` and `trigger` together will result in the error `jobs:#{job-name} when should be on_success, on_failure or always`.
-This is because `when:manual` will prevent any trigger from being used.
-
 Manual actions are a special type of job that are not executed automatically,
 they need to be explicitly started by a user. An example usage of manual actions
 would be a deployment to a production environment. Manual actions can be started
@@ -1016,6 +1012,11 @@ Manual actions are considered to be write actions, so permissions for
 a user wants to trigger an action. In other words, in order to trigger a manual
 action assigned to a branch that the pipeline is running for, the user needs to
 have the ability to merge to this branch.
+
+NOTE: **Note:**
+Using `when:manual` and `trigger` together results in the error `jobs:#{job-name} when
+should be on_success, on_failure or always`, because `when:manual` prevents triggers
+being used.
 
 #### `when:delayed`
 
@@ -2068,15 +2069,16 @@ job split into three separate jobs.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/8997) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.8.
 
-NOTE: **Note:**
-Using a `trigger` with `when:manual` together it will result in the error `jobs:#{job-name} when should be on_success, on_failure or always`.
-This is because `when:manual` will prevent any trigger from being used.
-
 `trigger` allows you to define downstream pipeline trigger. When a job created
 from `trigger` definition is started by GitLab, a downstream pipeline gets
 created.
 
 Learn more about [multi-project pipelines](../multi_project_pipelines.md#creating-multi-project-pipelines-from-gitlab-ciyml).
+
+NOTE: **Note:**
+Using a `trigger` with `when:manual` together results in the error `jobs:#{job-name}
+when should be on_success, on_failure or always`, because `when:manual` prevents
+triggers being used.
 
 #### Simple `trigger` syntax
 
