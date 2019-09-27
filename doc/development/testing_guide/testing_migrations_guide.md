@@ -44,6 +44,10 @@ autoloaded with Rails. Example:
 require Rails.root.join('db', 'post_migrate', '20170526185842_migrate_pipeline_stages.rb')
 ```
 
+### Test helpers
+
+#### `table`
+
 Use the `table` helper to create a temporary `ActiveRecord::Base`-derived model
 for a table. [FactoryBot](https://docs.gitlab.com/ee/development/testing_guide/best_practices.html#factories)
 **should not** be used to create data for migration specs. For example, to
@@ -52,6 +56,8 @@ create a record in the `projects` table:
 ```ruby
 project = table(:projects).create!(id: 1, name: 'gitlab1', path: 'gitlab1')
 ```
+
+#### `migrate!`
 
 Use the `migrate!` helper to run the migration that is under test.  It will not only
 run the migration, but will also bump the schema version in the `schema_migrations`
@@ -65,6 +71,33 @@ it 'migrates successfully' do
   migrate!
 
   # ... post-migration expectations
+end
+```
+
+#### `reversible_migration`
+
+Use the `reversible_migration` helper to test migrations with either a
+`change` or both `up` and `down` hooks. This will test that the state of
+the application and its data after the migration becomes reversed is the
+same as it was before the migration ran in the first place. The helper:
+
+1. Runs the `before` expectations before the **up** migration.
+1. Migrates **up**.
+1. Runs the `after` expectations.
+1. Migrates **down**.
+1. Runs the `before` expectations a second time.
+
+Example:
+
+```ruby
+reversible_migration do |migration|
+  migration.before -> {
+    # ... pre-migration expectations
+  }
+
+  migration.after -> {
+    # ... post-migration expectations
+  }
 end
 ```
 
@@ -93,7 +126,7 @@ describe MigratePipelineStages, :migration do
     jobs.create!(id: 2, commit_id: 1, project_id: 123, stage_idx: 1, stage: 'test')
   end
 
-  # Test the up migration.
+  # Test just the up migration.
   it 'correctly migrates pipeline stages' do
     expect(stages.count).to be_zero
 
@@ -102,6 +135,22 @@ describe MigratePipelineStages, :migration do
     expect(stages.count).to eq 2
     expect(stages.all.pluck(:name)).to match_array %w[test build]
   end
+
+  # Test a reversible migration.
+  it 'correctly migrates up and down pipeline stages' do
+    reversible_migration do |migration|
+      # Expectations will run before the up migration,
+      # and then again after the down migration
+      migration.before -> {
+        expect(stages.count).to be_zero
+      }
+
+      # Expectations will run after the up migration.
+      migration.after -> {
+        expect(stages.count).to eq 2
+        expect(stages.all.pluck(:name)).to match_array %w[test build]
+      }
+    end
 end
 ```
 

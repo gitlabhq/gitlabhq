@@ -11,7 +11,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ROOT_PATH = path.resolve(__dirname, '..');
 const CACHE_PATH = process.env.WEBPACK_CACHE_PATH || path.join(ROOT_PATH, 'tmp/cache');
 const IS_PRODUCTION = process.env.NODE_ENV === 'production';
-const IS_DEV_SERVER = process.argv.join(' ').indexOf('webpack-dev-server') !== -1;
+const IS_DEV_SERVER = process.env.WEBPACK_DEV_SERVER === 'true';
 const IS_EE = require('./helpers/is_ee_env');
 const DEV_SERVER_HOST = process.env.DEV_SERVER_HOST || 'localhost';
 const DEV_SERVER_PORT = parseInt(process.env.DEV_SERVER_PORT, 10) || 3808;
@@ -209,7 +209,9 @@ module.exports = {
           {
             loader: 'css-loader',
             options: {
-              name: '[name].[hash:8].[ext]',
+              modules: {
+                localIdentName: '[name]__[local].[hash:8].[ext]',
+              },
             },
           },
         ],
@@ -373,6 +375,9 @@ module.exports = {
         openAnalyzer: false,
         reportFilename: path.join(ROOT_PATH, 'webpack-report/index.html'),
         statsFilename: path.join(ROOT_PATH, 'webpack-report/stats.json'),
+        statsOptions: {
+          source: false,
+        },
       }),
 
     new webpack.DefinePlugin({

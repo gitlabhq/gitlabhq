@@ -132,6 +132,41 @@ module MigrationsHelpers
       migration.name == described_class.name
     end
   end
+
+  class ReversibleMigrationTest
+    attr_reader :before_up, :after_up
+
+    def initialize
+      @before_up = -> {}
+      @after_up = -> {}
+    end
+
+    def before(expectations)
+      @before_up = expectations
+
+      self
+    end
+
+    def after(expectations)
+      @after_up = expectations
+
+      self
+    end
+  end
+
+  def reversible_migration(&block)
+    tests = yield(ReversibleMigrationTest.new)
+
+    tests.before_up.call
+
+    migrate!
+
+    tests.after_up.call
+
+    schema_migrate_down!
+
+    tests.before_up.call
+  end
 end
 
 MigrationsHelpers.prepend_if_ee('EE::MigrationsHelpers')

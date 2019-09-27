@@ -192,13 +192,15 @@ account:
 
 #### Change associated namespace
 
-With a linked GitLab.com account, go to the
-[**Subscriptions**](https://customers.gitlab.com/subscriptions) page to choose
-or change the namespace your subscription applies to.
+With a linked GitLab.com account:
 
-NOTE: **Note:**
-Please note that you need to be a group owner to associate a group to your
-subscription.
+1. Log in to the [GitLab Subscription Manager](https://customers.gitlab.com/customers/sign_in).
+1. Navigate to the **Manage Purchases** page.
+1. Click **Change linked group**.
+1. Select the desired group from the **This subscription is for** dropdown.
+1. Click **Proceed to checkout**.
+
+Subscription charges are calculated based on the total number of users in a group, including its subgroups and nested projects. If the total number of users exceeds the number of seats in your subscription, you will be charged for the additional users.
 
 ### Confirm or upgrade your subscription
 
