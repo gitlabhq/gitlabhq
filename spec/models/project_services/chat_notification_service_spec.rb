@@ -30,7 +30,8 @@ describe ChatNotificationService do
   end
 
   describe '#execute' do
-    let(:chat_service) { described_class.new }
+    subject(:chat_service) { described_class.new }
+
     let(:user) { create(:user) }
     let(:project) { create(:project, :repository) }
     let(:webhook_url) { 'https://example.gitlab.com/' }
@@ -53,12 +54,7 @@ describe ChatNotificationService do
         subject.project = project
         data = Gitlab::DataBuilder::Push.build_sample(project, user)
 
-        expect(Slack::Notifier).to receive(:new)
-         .with(webhook_url, {})
-         .and_return(
-           double(:slack_service).as_null_object
-         )
-
+        expect(chat_service).to receive(:notify).and_return(true)
         expect(chat_service.execute(data)).to be true
       end
     end
@@ -68,12 +64,7 @@ describe ChatNotificationService do
         subject.project = create(:project, :empty_repo)
         data = Gitlab::DataBuilder::Push.build_sample(subject.project, user)
 
-        expect(Slack::Notifier).to receive(:new)
-         .with(webhook_url, {})
-         .and_return(
-           double(:slack_service).as_null_object
-         )
-
+        expect(chat_service).to receive(:notify).and_return(true)
         expect(chat_service.execute(data)).to be true
       end
     end
