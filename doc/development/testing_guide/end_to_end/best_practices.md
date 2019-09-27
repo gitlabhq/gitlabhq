@@ -53,3 +53,15 @@ In summary:
 
 - **Do**: Split tests across separate files, unless the tests share expensive setup.
 - **Don't**: Put new tests in an existing file without considering the impact on parallelization.
+
+## Limit the use of `before(:all)` hook
+
+Limit the use of `before(:all)` to perform setup tasks with only API calls, non UI operations
+or basic UI operations such as login.
+
+We use [`capybara-screenshot`](https://github.com/mattheworiordan/capybara-screenshot) library to automatically save screenshots on failures.
+This library [saves the screenshots in the RSpec's `after` hook](https://github.com/mattheworiordan/capybara-screenshot/blob/master/lib/capybara-screenshot/rspec.rb#L97).
+[If there is a failure in `before(:all)`, the `after` hook is not called](https://github.com/rspec/rspec-core/pull/2652/files#diff-5e04af96d5156e787f28d519a8c99615R148) and so the screenshots are not saved.
+
+Given this fact, we should limit the use of `before(:all)` to only those operations where a screenshot is not
+necessary in case of failure and QA logs would be enough for debugging.

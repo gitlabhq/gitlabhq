@@ -58,7 +58,7 @@ module GitlabRoutingHelper
   end
 
   def commits_url(entity, *args)
-    project_commits_url(entity.project, entity.ref, *args)
+    project_commits_url(entity.project, entity.source_ref, *args)
   end
 
   def commit_url(entity, *args)

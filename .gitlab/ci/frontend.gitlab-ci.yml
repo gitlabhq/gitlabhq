@@ -77,7 +77,7 @@ gitlab:assets:compile pull-cache:
     - .default-before_script
     - .assets-compile-cache
     - .only-code-qa-changes
-    - .use-pg
+    - .use-pg9
   stage: prepare
   script:
     - node --version
@@ -120,7 +120,7 @@ compile-assets pull-cache:
     - .default-only
     - .default-before_script
     - .only-code-changes
-    - .use-pg
+    - .use-pg9
   dependencies: ["compile-assets", "compile-assets pull-cache", "setup-test-env"]
 
 karma:

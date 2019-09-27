@@ -149,8 +149,13 @@ You can find the groups listed in the [Product Stages, Groups, and Categories](h
 We use the term group to map down product requirements from our product stages.
 As a team needs some way to collect the work their members are planning to be assigned to, we use the `~group::` labels to do so.
 
-Normally there is a 1:1 relationship between Stage labels and Group labels. In the spirit of "Everyone can contribute",
-any issue can be picked up by any group, depending on current priorities. For example, an issue labeled ~"devops::create" may be picked up by the ~"group::access" group.
+Normally there is a 1:1 relationship between Stage labels and Group labels. In
+the spirit of "Everyone can contribute", any issue can be picked up by any group,
+depending on current priorities. When picking up an issue belonging to a different
+group, it should be relabelled. For example, if an issue labelled ~"devops::create"
+and ~"group::knowledge" is picked up by someone in the Access group of the Plan stage,
+the issue should be relabelled as ~"group::access" while keeping the original
+~"devops::create" unchanged.
 
 We also use stage and group labels to help quantify our [throughput](https://about.gitlab.com/handbook/engineering/management/throughput/).
 Please read [Stage and Group labels in Throughtput](https://about.gitlab.com/handbook/engineering/management/throughput/#stage-and-group-labels-in-throughput) for more information on how the labels are used in this context.

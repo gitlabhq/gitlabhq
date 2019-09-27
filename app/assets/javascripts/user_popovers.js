@@ -63,7 +63,7 @@ const handleUserPopoverMouseOver = event => {
       UsersCache.retrieveById(userId)
         .then(userData => {
           if (!userData) {
-            return;
+            return undefined;
           }
 
           Object.assign(user, {
@@ -76,19 +76,16 @@ const handleUserPopoverMouseOver = event => {
             loaded: true,
           });
 
-          UsersCache.retrieveStatusById(userId)
-            .then(status => {
-              if (!status) {
-                return;
-              }
+          return UsersCache.retrieveStatusById(userId);
+        })
+        .then(status => {
+          if (!status) {
+            return;
+          }
 
-              Object.assign(user, {
-                status,
-              });
-            })
-            .catch(() => {
-              throw new Error(`User status for "${userId}" could not be retrieved!`);
-            });
+          Object.assign(user, {
+            status,
+          });
         })
         .catch(() => {
           renderedPopover.$destroy();
