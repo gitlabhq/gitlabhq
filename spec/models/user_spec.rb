@@ -1097,10 +1097,26 @@ describe User do
   describe 'blocking user' do
     let(:user) { create(:user, name: 'John Smith') }
 
-    it "blocks user" do
+    it 'blocks user' do
       user.block
 
       expect(user.blocked?).to be_truthy
+    end
+
+    context 'when user has running CI pipelines' do
+      let(:service) { double }
+
+      before do
+        pipeline = create(:ci_pipeline, :running, user: user)
+        create(:ci_build, :running, pipeline: pipeline)
+      end
+
+      it 'cancels all running pipelines and related jobs' do
+        expect(Ci::CancelUserPipelinesService).to receive(:new).and_return(service)
+        expect(service).to receive(:execute).with(user)
+
+        user.block
+      end
     end
   end
 
