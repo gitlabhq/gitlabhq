@@ -13206,6 +13206,9 @@ msgstr ""
 msgid "Request Access"
 msgstr ""
 
+msgid "Request to link SAML account must be authorized"
+msgstr ""
+
 msgid "Requested %{time_ago}"
 msgstr ""
 

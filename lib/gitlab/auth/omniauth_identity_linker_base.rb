@@ -3,12 +3,13 @@
 module Gitlab
   module Auth
     class OmniauthIdentityLinkerBase
-      attr_reader :current_user, :oauth
+      attr_reader :current_user, :oauth, :session
 
-      def initialize(current_user, oauth)
+      def initialize(current_user, oauth, session = {})
         @current_user = current_user
         @oauth = oauth
         @changed = false
+        @session = session
       end
 
       def link

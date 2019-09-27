@@ -247,34 +247,70 @@ describe OmniauthCallbacksController, type: :controller do
   end
 
   describe '#saml' do
+    let(:last_request_id) { 'ONELOGIN_4fee3b046395c4e751011e97f8900b5273d56685' }
     let(:user) { create(:omniauth_user, :two_factor, extern_uid: 'my-uid', provider: 'saml') }
     let(:mock_saml_response) { File.read('spec/fixtures/authentication/saml_response.xml') }
     let(:saml_config) { mock_saml_config_with_upstream_two_factor_authn_contexts }
 
+    def stub_last_request_id(id)
+      session['last_authn_request_id'] = id
+    end
+
     before do
+      stub_last_request_id(last_request_id)
       stub_omniauth_saml_config({ enabled: true, auto_link_saml_user: true, allow_single_sign_on: ['saml'],
                                   providers: [saml_config] })
       mock_auth_hash_with_saml_xml('saml', +'my-uid', user.email, mock_saml_response)
-      request.env["devise.mapping"] = Devise.mappings[:user]
+      request.env['devise.mapping'] = Devise.mappings[:user]
       request.env['omniauth.auth'] = Rails.application.env_config['omniauth.auth']
-      post :saml, params: { SAMLResponse: mock_saml_response }
     end
 
-    context 'when worth two factors' do
-      let(:mock_saml_response) do
-        File.read('spec/fixtures/authentication/saml_response.xml')
+    context 'with GitLab initiated request' do
+      before do
+        post :saml, params: { SAMLResponse: mock_saml_response }
+      end
+
+      context 'when worth two factors' do
+        let(:mock_saml_response) do
+          File.read('spec/fixtures/authentication/saml_response.xml')
             .gsub('urn:oasis:names:tc:SAML:2.0:ac:classes:Password', 'urn:oasis:names:tc:SAML:2.0:ac:classes:SecondFactorIGTOKEN')
+        end
+
+        it 'expects user to be signed_in' do
+          expect(request.env['warden']).to be_authenticated
+        end
       end
 
-      it 'expects user to be signed_in' do
-        expect(request.env['warden']).to be_authenticated
+      context 'when not worth two factors' do
+        it 'expects user to provide second factor' do
+          expect(response).to render_template('devise/sessions/two_factor')
+          expect(request.env['warden']).not_to be_authenticated
+        end
       end
     end
 
-    context 'when not worth two factors' do
-      it 'expects user to provide second factor' do
-        expect(response).to render_template('devise/sessions/two_factor')
-        expect(request.env['warden']).not_to be_authenticated
+    context 'with IdP initiated request' do
+      let(:user) { create(:user) }
+      let(:last_request_id) { '99999' }
+
+      before do
+        sign_in user
+      end
+
+      it 'lets the user know their account isn\'t linked yet' do
+        post :saml, params: { SAMLResponse: mock_saml_response }
+
+        expect(flash[:notice]).to eq 'Request to link SAML account must be authorized'
+      end
+
+      it 'redirects to profile account page' do
+        post :saml, params: { SAMLResponse: mock_saml_response }
+
+        expect(response).to redirect_to(profile_account_path)
+      end
+
+      it 'doesn\'t link a new identity to the user' do
+        expect { post :saml, params: { SAMLResponse: mock_saml_response } }.not_to change { user.identities.count }
       end
     end
   end
