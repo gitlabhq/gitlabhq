@@ -96,6 +96,7 @@ Following is a non-exhaustive list of facet labels:
 - ~security: A security issue could describe a ~bug or a ~feature.
 - ~database: A database issue could describe a ~bug or a ~feature.
 - ~customer: This relates to an issue that was created by a customer, or that is of interest for a customer.
+- ~"UI text": Issues that add or modify any text within the UI such as user-assistance microcopy, button/menu labels, or error messages.
 
 ### Stage labels
 
