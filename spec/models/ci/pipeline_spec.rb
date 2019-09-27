@@ -1318,6 +1318,16 @@ describe Ci::Pipeline, :mailer do
     let(:build_b) { create_build('build2', queued_at: 0) }
     let(:build_c) { create_build('build3', queued_at: 0) }
 
+    %w[succeed! drop! cancel! skip!].each do |action|
+      context "when the pipeline recieved #{action} event" do
+        it 'deletes a persistent ref' do
+          expect(pipeline.persistent_ref).to receive(:delete).once
+
+          pipeline.public_send(action)
+        end
+      end
+    end
+
     describe '#duration' do
       context 'when multiple builds are finished' do
         before do

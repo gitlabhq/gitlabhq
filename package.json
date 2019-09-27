@@ -61,7 +61,7 @@
     "copy-webpack-plugin": "^5.0.4",
     "core-js": "^3.2.1",
     "cropper": "^2.3.0",
-    "css-loader": "^3.2.0",
+    "css-loader": "^1.0.0",
     "d3": "^4.13.0",
     "d3-array": "^1.2.1",
     "d3-axis": "^1.0.8",

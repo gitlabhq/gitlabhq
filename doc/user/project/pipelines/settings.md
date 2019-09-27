@@ -21,8 +21,8 @@ from GitLab in a job.
 There are two options. Using:
 
 - `git clone`, which is slower since it clones the repository from scratch
-  for every job, ensuring that the project workspace is always pristine.
-- `git fetch`, which is faster as it re-uses the project workspace (falling
+  for every job, ensuring that the local working copy is always pristine.
+- `git fetch`, which is faster as it re-uses the local working copy (falling
   back to clone if it doesn't exist).
 
 The default Git strategy can be overridden by the [GIT_STRATEGY variable](../../../ci/yaml/README.md#git-strategy)

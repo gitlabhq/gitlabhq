@@ -1,0 +1,5 @@
+---
+title: Increase the limit of includes in CI file to 100
+merge_request: 17807
+author:
+type: fixed

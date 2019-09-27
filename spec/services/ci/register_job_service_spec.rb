@@ -501,6 +501,22 @@ module Ci
           expect(pending_job).to be_archived_failure
         end
       end
+
+      context 'when an exception is raised during a persistent ref creation' do
+        before do
+          allow_any_instance_of(Ci::PersistentRef).to receive(:exist?) { false }
+          allow_any_instance_of(Ci::PersistentRef).to receive(:create_ref) { raise ArgumentError }
+        end
+
+        subject { execute(specific_runner, {}) }
+
+        it 'picks the build' do
+          expect(subject).to eq(pending_job)
+
+          pending_job.reload
+          expect(pending_job).to be_running
+        end
+      end
     end
 
     describe '#register_success' do

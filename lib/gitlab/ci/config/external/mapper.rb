@@ -7,7 +7,7 @@ module Gitlab
         class Mapper
           include Gitlab::Utils::StrongMemoize
 
-          MAX_INCLUDES = 50
+          MAX_INCLUDES = 100
 
           FILE_CLASSES = [
             External::File::Remote,

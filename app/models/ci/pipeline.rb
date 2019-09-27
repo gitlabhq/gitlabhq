@@ -174,6 +174,8 @@ module Ci
 
       after_transition any => ::Ci::Pipeline.completed_statuses do |pipeline|
         pipeline.run_after_commit do
+          pipeline.persistent_ref.delete
+
           pipeline.all_merge_requests.each do |merge_request|
             next unless merge_request.auto_merge_enabled?
 
@@ -851,6 +853,10 @@ module Ci
           :detached
         end
       end
+    end
+
+    def persistent_ref
+      @persistent_ref ||= PersistentRef.new(pipeline: self)
     end
 
     private

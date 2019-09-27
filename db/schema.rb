@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_26_041216) do
+ActiveRecord::Schema.define(version: 2019_09_27_074328) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -3319,6 +3319,7 @@ ActiveRecord::Schema.define(version: 2019_09_26_041216) do
     t.text "description"
     t.text "description_html"
     t.index ["author_id"], name: "index_snippets_on_author_id"
+    t.index ["content"], name: "index_snippets_on_content_trigram", opclass: :gin_trgm_ops, using: :gin
     t.index ["file_name"], name: "index_snippets_on_file_name_trigram", opclass: :gin_trgm_ops, using: :gin
     t.index ["project_id"], name: "index_snippets_on_project_id"
     t.index ["title"], name: "index_snippets_on_title_trigram", opclass: :gin_trgm_ops, using: :gin

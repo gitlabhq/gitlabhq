@@ -15,6 +15,8 @@ export const getPagePath = (index = 0) => {
   return page.split(':')[index];
 };
 
+export const getDashPath = (path = window.location.pathname) => path.split('/-/')[1] || null;
+
 export const isInGroupsPage = () => getPagePath() === 'groups';
 
 export const isInProjectPage = () => getPagePath() === 'projects';
