@@ -428,11 +428,16 @@ describe('newDate', () => {
 });
 
 describe('getDateInPast', () => {
-  it('returns the correct date in the past', () => {
-    const date = new Date(1563235200000); // 2019-07-16T00:00:00.00Z
-    const daysInPast = 90;
-    const dateInPast = datetimeUtility.getDateInPast(date, daysInPast);
+  const date = new Date(1563235200000); // 2019-07-16T00:00:00.000Z;
+  const daysInPast = 90;
 
+  it('returns the correct date in the past', () => {
+    const dateInPast = datetimeUtility.getDateInPast(date, daysInPast);
     expect(dateInPast).toBe('2019-04-17T00:00:00.000Z');
+  });
+
+  it('does not modifiy the original date', () => {
+    datetimeUtility.getDateInPast(date, daysInPast);
+    expect(date).toStrictEqual(new Date(1563235200000));
   });
 });
