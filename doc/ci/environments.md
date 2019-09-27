@@ -131,15 +131,27 @@ In summary, with the above `.gitlab-ci.yml` we have achieved the following:
   job will deploy our code to a staging server while the deployment
   will be recorded in an environment named `staging`.
 
-> Starting with GitLab 8.15, the environment name is exposed to the Runner in
-> two forms: `$CI_ENVIRONMENT_NAME`, and `$CI_ENVIRONMENT_SLUG`. The first is
-> the name given in `.gitlab-ci.yml` (with any variables expanded), while the
-> second is a "cleaned-up" version of the name, suitable for use in URLs, DNS,
-> etc.
->
-> Starting with GitLab 9.3, the environment URL is exposed to the Runner via
-> `$CI_ENVIRONMENT_URL`. The URL is expanded from `.gitlab-ci.yml`, or if
-> the URL was not defined there, the external URL from the environment is used.
+#### Environment variables and Runner
+
+Starting with GitLab 8.15, the environment name is exposed to the Runner in
+two forms:
+
+- `$CI_ENVIRONMENT_NAME`. The name given in `.gitlab-ci.yml` (with any variables
+  expanded).
+- `$CI_ENVIRONMENT_SLUG`. A "cleaned-up" version of the name, suitable for use in URLs,
+  DNS, etc.
+
+If you change the name of an existing environment, the:
+
+- `$CI_ENVIRONMENT_NAME` variable will be updated with the new environment name.
+- `$CI_ENVIRONMENT_SLUG` variable will remain unchanged to prevent unintended side
+  effects.
+
+Starting with GitLab 9.3, the environment URL is exposed to the Runner via
+`$CI_ENVIRONMENT_URL`. The URL is expanded from either:
+
+- `.gitlab-ci.yml`.
+- The external URL from the environment if not defined in `.gitlab-ci.yml`.
 
 ### Configuring manual deployments
 
