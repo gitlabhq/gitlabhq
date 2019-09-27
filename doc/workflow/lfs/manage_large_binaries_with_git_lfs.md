@@ -70,7 +70,7 @@ git add .gitattributes
 ```
 
 Cloning the repository works the same as before. Git automatically detects the
-LFS-tracked files and clones them via HTTP. If you performed the git clone
+LFS-tracked files and clones them via HTTP. If you performed the `git clone`
 command with a SSH URL, you have to enter your GitLab credentials for HTTP
 authentication.
 
@@ -172,7 +172,7 @@ Check if you have permissions to push to the project or fetch from the project.
 LFS object you are trying to push to the project or fetch from the project is not
 available to the project anymore. Probably the object was removed from the server.
 
-- Local git repository is using deprecated LFS API
+- Local Git repository is using deprecated LFS API
 
 ### Invalid status for `<url>` : 501
 
@@ -250,7 +250,7 @@ GitLab checks files to detect LFS pointers on push. If LFS pointers are detected
 
 Verify that LFS in installed locally and consider a manual push with `git lfs push --all`.
 
-If you are storing LFS files outside of GitLab you can disable LFS on the project by setting `lfs_enabled: false` with the [projects api](../../api/projects.md#edit-project).
+If you are storing LFS files outside of GitLab you can disable LFS on the project by setting `lfs_enabled: false` with the [projects API](../../api/projects.md#edit-project).
 
 ### Hosting LFS objects externally
 

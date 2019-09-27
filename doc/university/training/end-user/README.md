@@ -109,11 +109,11 @@ cd ~/workspace
 - GitLab is an application to code, test and deploy.
 - Provides repository management with access controls, code reviews,
   issue tracking, Merge Requests, and other features.
-- The hosted version of GitLab is gitlab.com
+- The hosted version of GitLab is <https://gitlab.com>
 
 ### New Project
 
-- Sign in into your gitlab.com account
+- Sign in into your <https://gitlab.com> account
 - Create a project
 - Choose to import from 'Any Repo by URL' and use <https://gitlab.com/gitlab-org/training-examples.git>
 - On your machine clone the `training-examples` project
@@ -126,7 +126,7 @@ cd ~/workspace
 1. Stage the file
 1. Commit
 1. Push the commit to the remote
-1. View the git log
+1. View the Git log
 
 ```shell
 # Edit `edit_this_file.rb`
@@ -271,7 +271,7 @@ This will unstage the file but maintain the modifications. To revert the file ba
 git checkout -- <file>
 ```
 
-To remove a file from disk and repo use 'git rm' and to rm a dir use the '-r' flag:
+To remove a file from disk and repo use `git rm` and to remove a directory use the `-r` flag:
 
 ```sh
 git rm '*.txt'
@@ -338,7 +338,7 @@ git pull origin master
 git push origin master
 ```
 
-### git revert vs git reset
+### `git revert` vs `git reset`
 
 Reset removes the commit while revert removes the changes but leaves the commit
 Revert is safer considering we can revert a revert

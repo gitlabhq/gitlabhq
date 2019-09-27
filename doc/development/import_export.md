@@ -98,7 +98,8 @@ importing big projects, using a foreground import:
 ## Security
 
 The Import/Export feature is constantly updated (adding new things to export), however
-the code hasn't been refactored in a long time. We should perform a [code audit](https://gitlab.com/gitlab-org/gitlab-foss/issues/42135)
+the code hasn't been refactored in a long time. We should perform a code audit (see
+[confidential issue](../user/project/issues/confidential_issues.md) `https://gitlab.com/gitlab-org/gitlab/issues/20720`).
 to make sure its dynamic nature does not increase the number of security concerns.
 
 ### Security in the code

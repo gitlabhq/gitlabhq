@@ -1107,7 +1107,7 @@ Rendered example:
 
 ### cURL Examples
 
-Below is a set of [cURL][] examples that you can use in the API documentation.
+Below is a set of [cURL](https://curl.haxx.se) examples that you can use in the API documentation.
 
 #### Simple cURL command
 
@@ -1179,7 +1179,6 @@ restrict the sign-up e-mail domains of a GitLab instance to `*.example.com` and
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --data "domain_whitelist[]=*.example.com" --data "domain_whitelist[]=example.net" https://gitlab.example.com/api/v4/application/settings
 ```
 
-[cURL]: http://curl.haxx.se/ "cURL website"
 [single spaces]: http://www.slate.com/articles/technology/technology/2011/01/space_invaders.html
 [gfm]: ../../user/markdown.md#newlines "GitLab flavored markdown documentation"
 [ce-1242]: https://gitlab.com/gitlab-org/gitlab-foss/issues/1242

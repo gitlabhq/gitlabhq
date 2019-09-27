@@ -140,7 +140,7 @@ Modified files that have been marked to go in the next commit.
 1. Stage the file.
 1. Commit.
 1. Push the commit to the remote.
-1. View the git log.
+1. View the Git log.
 
 ## Commands (committing)
 

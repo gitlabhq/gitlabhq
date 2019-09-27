@@ -5,8 +5,8 @@ across GitLab's frontend team.
 
 ## Overview
 
-GitLab is built on top of [Ruby on Rails][rails] using [Haml][haml] and also a JavaScript based Frontend with [Vue.js][vue].
-Be wary of [the limitations that come with using Hamlit][hamlit-limits]. We also use [SCSS][scss] and plain JavaScript with
+GitLab is built on top of [Ruby on Rails](https://rubyonrails.org) using [Haml][haml] and also a JavaScript based Frontend with [Vue.js](https://vuejs.org).
+Be wary of [the limitations that come with using Hamlit][hamlit-limits]. We also use [SCSS](https://sass-lang.com) and plain JavaScript with
 modern ECMAScript standards supported through [Babel][babel] and ES module support through [webpack][webpack].
 
 Working with our frontend assets requires Node (v8.10.0 or greater) and Yarn
@@ -83,7 +83,7 @@ changes.
 
 ### [SCSS Style Guide](style_guide_scss.md)
 
-Our SCSS conventions which are enforced through [scss-lint][scss-lint].
+Our SCSS conventions which are enforced through [scss-lint](https://github.com/sds/scss-lint).
 
 ## [Performance](performance.md)
 
@@ -102,17 +102,13 @@ Our accessibility standards and resources.
 Frontend internationalization support is described in [this document](../i18n/).
 The [externalization part of the guide](../i18n/externalization.md) explains the helpers/methods available.
 
-[rails]: http://rubyonrails.org/
 [haml]: http://haml.info/
 [hamlit]: https://github.com/k0kubun/hamlit
 [hamlit-limits]: https://github.com/k0kubun/hamlit/blob/master/REFERENCE.md#limitations
-[scss]: http://sass-lang.com/
 [babel]: https://babeljs.io/
 [webpack]: https://webpack.js.org/
 [jquery]: https://jquery.com/
-[vue]: http://vuejs.org/
 [axios]: https://github.com/axios/axios
 [airbnb-js-style-guide]: https://github.com/airbnb/javascript
-[scss-lint]: https://github.com/brigade/scss-lint
 [install]: ../../install/installation.md#4-node
 [requirements]: ../../install/requirements.md#supported-web-browsers

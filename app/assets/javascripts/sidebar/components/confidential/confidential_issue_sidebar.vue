@@ -66,6 +66,7 @@ export default {
 <template>
   <div class="block issuable-sidebar-item confidentiality">
     <div
+      ref="collapseIcon"
       v-tooltip
       :title="tooltipLabel"
       class="sidebar-collapsed-icon"
@@ -80,6 +81,7 @@ export default {
       {{ __('Confidentiality') }}
       <a
         v-if="isEditable"
+        ref="editLink"
         class="float-right confidential-edit"
         href="#"
         data-track-event="click_edit_button"

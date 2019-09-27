@@ -165,14 +165,12 @@ General tips:
 
 ## Additional Resources
 
-- [WebPage Test][web-page-test] for testing site loading time and size.
+- [WebPage Test](https://www.webpagetest.org) for testing site loading time and size.
 - [Google PageSpeed Insights][pagespeed-insights] grades web pages and provides feedback to improve the page.
-- [Profiling with Chrome DevTools][google-devtools-profiling]
+- [Profiling with Chrome DevTools](https://developers.google.com/web/tools/chrome-devtools/)
 - [Browser Diet][browser-diet] is a community-built guide that catalogues practical tips for improving web page performance.
 
-[web-page-test]: http://www.webpagetest.org/
 [pagespeed-insights]: https://developers.google.com/speed/pagespeed/insights/
-[google-devtools-profiling]: https://developers.google.com/web/tools/chrome-devtools/profile/?hl=en
 [browser-diet]: https://browserdiet.com/
 [high-perf-animations]: https://www.html5rocks.com/en/tutorials/speed/high-performance-animations/
 [flip]: https://aerotwist.com/blog/flip-your-animations/

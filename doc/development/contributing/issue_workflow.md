@@ -22,7 +22,7 @@ once every quarter.
 The most important thing is making sure valid issues receive feedback from the
 development team. Therefore the priority is mentioning developers that can help
 on those issues. Please select someone with relevant experience from the
-[GitLab team](https://about.gitlab.com/team/).
+[GitLab team](https://about.gitlab.com/company/team/).
 If there is nobody mentioned with that expertise look in the commit history for
 the affected files to find someone.
 
@@ -152,7 +152,7 @@ As a team needs some way to collect the work their members are planning to be as
 Normally there is a 1:1 relationship between Stage labels and Group labels. In the spirit of "Everyone can contribute",
 any issue can be picked up by any group, depending on current priorities. For example, an issue labeled ~"devops::create" may be picked up by the ~"group::access" group.
 
-We also use stage and group labels to help quantify our [throughput](https://about.gitlab.com/handbook/engineering/management/throughput).
+We also use stage and group labels to help quantify our [throughput](https://about.gitlab.com/handbook/engineering/management/throughput/).
 Please read [Stage and Group labels in Throughtput](https://about.gitlab.com/handbook/engineering/management/throughput/#stage-and-group-labels-in-throughput) for more information on how the labels are used in this context.
 
 ### Category labels
@@ -336,7 +336,7 @@ know how difficult the issue is. Additionally:
 
 - We advertise [`Accepting merge requests` issues with weight < 5](https://gitlab.com/groups/gitlab-org/-/issues?state=opened&label_name[]=Accepting+merge+requests&assignee_id=None&sort=weight)
   as suitable for people that have never contributed to GitLab before on the
-  [Up For Grabs campaign](http://up-for-grabs.net)
+  [Up For Grabs campaign](https://up-for-grabs.net/#/)
 - We encourage people that have never contributed to any open source project to
   look for [`Accepting merge requests` issues with a weight of 1](https://gitlab.com/groups/gitlab-org/-/issues?state=opened&label_name[]=Accepting+merge+requests&assignee_id=None&sort=weight&weight=1)
 

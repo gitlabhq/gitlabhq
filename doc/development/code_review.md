@@ -18,7 +18,7 @@ recommended to pick someone who knows the domain well. You can read more about t
 importance of involving reviewer(s) in the section on the responsibility of the author below.
 
 If you need some guidance (e.g. it's your first merge request), feel free to ask
-one of the [Merge request coaches][team].
+one of the [Merge request coaches](https://about.gitlab.com/company/team/).
 
 If you need assistance with security scans or comments, feel free to include the
 Security Team (`@gitlab-com/gl-security`) in the review.
@@ -66,13 +66,13 @@ from teams other than your own.
 1. If your merge request includes frontend changes [^1], it must be
    **approved by a [frontend maintainer](https://about.gitlab.com/handbook/engineering/projects/#gitlab-ce_maintainers_frontend)**.
 1. If your merge request includes UX changes [^1], it must be
-   **approved by a [UX team member][team]**.
+   **approved by a [UX team member](https://about.gitlab.com/company/team/)**.
 1. If your merge request includes adding a new JavaScript library [^1], it must be
-   **approved by a [frontend lead][team]**.
+   **approved by a [frontend lead](https://about.gitlab.com/company/team/)**.
 1. If your merge request includes adding a new UI/UX paradigm [^1], it must be
-   **approved by a [UX lead][team]**.
+   **approved by a [UX lead](https://about.gitlab.com/company/team/)**.
 1. If your merge request includes a new dependency or a filesystem change, it must be
-   **approved by a [Distribution team member][team]**. See how to work with the [Distribution team](https://about.gitlab.com/handbook/engineering/development/enablement/distribution/#how-to-work-with-distribution) for more details.
+   **approved by a [Distribution team member](https://about.gitlab.com/company/team/)**. See how to work with the [Distribution team](https://about.gitlab.com/handbook/engineering/development/enablement/distribution/#how-to-work-with-distribution) for more details.
 
 #### Security requirements
 
@@ -172,7 +172,7 @@ required approvers.
 Maintainers must check before merging if the merge request is introducing new
 vulnerabilities, by inspecting the list in the Merge Request [Security
 Widget](../user/project/merge_requests/index.md#security-reports-ultimate).
-When in doubt, a [Security Engineer][team] can be involved. The list of detected
+When in doubt, a [Security Engineer](https://about.gitlab.com/company/team/) can be involved. The list of detected
 vulnerabilities must be either empty or containing:
 
 - dismissed vulnerabilities in case of false positives
@@ -433,7 +433,6 @@ Largely based on the [thoughtbot code review guide].
 [Return to Development documentation](README.md)
 
 [projects]: https://about.gitlab.com/handbook/engineering/projects/
-[team]: https://about.gitlab.com/team/
 [build handbook]: https://about.gitlab.com/handbook/build/handbook/build#how-to-work-with-build
 [^1]: Please note that specs other than JavaScript specs are considered backend code.
 [^2]: We encourage you to seek guidance from a database maintainer if your merge request is potentially introducing expensive queries. It is most efficient to comment on the line of code in question with the SQL queries so they can give their advice.

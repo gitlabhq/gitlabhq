@@ -53,7 +53,7 @@ to offload local hard disk R/W operations, and free up disk space significantly.
 GitLab is tightly integrated with `Fog`, so you can refer to its [documentation](http://fog.io/about/provider_documentation.html)
 to check which storage services can be integrated with GitLab.
 You can also use external object storage in a private local network. For example,
-[Minio](https://min.io/) is a standalone object storage service, is easy to set up, and works well with GitLab instances.
+[MinIO](https://min.io/) is a standalone object storage service, is easy to set up, and works well with GitLab instances.
 
 GitLab provides two different options for the uploading mechanism: "Direct upload" and "Background upload".
 
@@ -93,7 +93,7 @@ Here is a configuration example with S3.
 | `enable_signature_v4_streaming` | Set to true to enable HTTP chunked transfers with [AWS v4 signatures](https://docs.aws.amazon.com/AmazonS3/latest/API/sigv4-streaming.html). Oracle Cloud S3 needs this to be false | true |
 | `region` | AWS region | us-east-1 |
 | `host` | S3 compatible host for when not using AWS, e.g. `localhost` or `storage.example.com` | s3.amazonaws.com |
-| `endpoint` | Can be used when configuring an S3 compatible service such as [Minio](https://www.minio.io), by entering a URL such as `http://127.0.0.1:9000` | (optional) |
+| `endpoint` | Can be used when configuring an S3 compatible service such as [MinIO](https://www.minio.io), by entering a URL such as `http://127.0.0.1:9000` | (optional) |
 | `path_style` | Set to true to use `host/bucket_name/object` style paths instead of `bucket_name.host/object`. Leave as false for AWS S3 | false |
 | `use_iam_profile` | Set to true to use IAM profile instead of access keys | false
 
@@ -124,7 +124,7 @@ NOTE: **Note:**
 Regardless of whether the container has public access enabled or disabled, Fog will
 use the TempURL method to grant access to LFS objects. If you see errors in logs referencing
 instantiating storage with a temp-url-key, ensure that you have set they key properly
-on the Rackspace API and in gitlab.rb. You can verify the value of the key Rackspace
+on the Rackspace API and in `gitlab.rb`. You can verify the value of the key Rackspace
 has set by sending a GET request with token header to the service access endpoint URL
 and comparing the output of the returned headers.
 
@@ -235,7 +235,7 @@ and [projects APIs](../../api/projects.md).
 ## Troubleshooting: `Google::Apis::TransmissionError: execution expired`
 
 If LFS integration is configred with Google Cloud Storage and background uploads (`background_upload: true` and `direct_upload: false`),
-sidekiq workers may encouter this error. This is because the uploading timed out with very large files.
+Sidekiq workers may encouter this error. This is because the uploading timed out with very large files.
 LFS files up to 6Gb can be uploaded without any extra steps, otherwise you need to use the following workaround.
 
 ```shell

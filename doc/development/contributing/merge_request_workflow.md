@@ -89,7 +89,7 @@ request is as follows:
 1. Write tests for more complex migrations.
 1. Merge requests **must** adhere to the [merge request performance guidelines](../merge_request_performance_guidelines.md).
 1. For tests that use Capybara, read
-   [how to write reliable, asynchronous integration tests](https://robots.thoughtbot.com/write-reliable-asynchronous-integration-tests-with-capybara).
+   [how to write reliable, asynchronous integration tests](https://thoughtbot.com/blog/write-reliable-asynchronous-integration-tests-with-capybara).
 1. If your merge request introduces changes that require additional steps when
    installing GitLab from source, add them to `doc/install/installation.md` in
    the same merge request.
@@ -101,7 +101,7 @@ request is as follows:
 
 If you would like quick feedback on your merge request feel free to mention someone
 from the [core team](https://about.gitlab.com/community/core-team/) or one of the
-[merge request coaches](https://about.gitlab.com/team/). When having your code reviewed
+[merge request coaches](https://about.gitlab.com/company/team/). When having your code reviewed
 and when reviewing merge requests, please keep the [code review guidelines](../code_review.md)
 in mind. And if your code also makes changes to the database, or does expensive queries,
 check the [database review guidelines](../database_review.md).

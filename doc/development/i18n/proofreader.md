@@ -128,10 +128,10 @@ are very appreciative of the work done by translators and proofreaders!
    have previously translated.
 
 1. Your request to become a proofreader will be considered on the merits of
-   your previous translations by [GitLab team members](https://about.gitlab.com/team/)
-   or [Core team members](https://about.gitlab.com/core-team/) who are fluent in
+   your previous translations by [GitLab team members](https://about.gitlab.com/company/team/)
+   or [Core team members](https://about.gitlab.com/community/core-team/) who are fluent in
    the language or current proofreaders.
-   - When a request is made for the first proofreader for a language and there are no [GitLab team members](https://about.gitlab.com/team/)
-   or [Core team members](https://about.gitlab.com/core-team/) who speak the language, we will request links to previous translation work in other communities or projects.
+   - When a request is made for the first proofreader for a language and there are no [GitLab team members](https://about.gitlab.com/company/team/)
+   or [Core team members](https://about.gitlab.com/community/core-team/) who speak the language, we will request links to previous translation work in other communities or projects.
 
 [proofreader-src]: https://gitlab.com/gitlab-org/gitlab/blob/master/doc/development/i18n/proofreader.md

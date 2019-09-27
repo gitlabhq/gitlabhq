@@ -78,7 +78,7 @@ Below is the table of events users can be notified of:
 | New email added              | User                | Security email, always sent. |
 | Email changed                | User                | Security email, always sent. |
 | Password changed             | User                | Security email, always sent. |
-| New user created             | User                | Sent on user creation, except for omniauth (LDAP)|
+| New user created             | User                | Sent on user creation, except for OmniAuth (LDAP)|
 | User added to project        | User                | Sent when user is added to project |
 | Project access level changed | User                | Sent when user project access level is changed |
 | User added to group          | User                | Sent when user is added to group |
@@ -150,7 +150,7 @@ Notification emails include headers that provide extra content about the notific
 | X-GitLab-Pipeline-Id        | Only in pipeline emails, the ID of the pipeline the notification is for |
 | X-GitLab-Reply-Key          | A unique token to support reply by email                                |
 | X-GitLab-NotificationReason | The reason for being notified. "mentioned", "assigned", etc             |
-| List-Id                     | The path of the project in a RFC 2919 mailing list identifier useful for email organization, for example, with GMail filters |
+| List-Id                     | The path of the project in a RFC 2919 mailing list identifier useful for email organization, for example, with Gmail filters |
 
 #### X-GitLab-NotificationReason
 

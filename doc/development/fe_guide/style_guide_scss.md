@@ -27,8 +27,8 @@ New utility classes should be added to [`utilities.scss`](https://gitlab.com/git
 | Font size | `.text-{size}` | `.text-2` |
 
 - `{variant}` is one of 'primary', 'secondary', 'success', 'warning', 'error'
-- `{shade}` is on of the shades listed on [colors](https://design.gitlab.com/foundations/colors/)
-- `{size}` is a number from 1-6 from our [Type scale](https://design.gitlab.com/foundations/typography)
+- `{shade}` is on of the shades listed on [colors](https://design.gitlab.com/product-foundations/colors/)
+- `{size}` is a number from 1-6 from our [Type scale](https://design.gitlab.com/product-foundations/typography)
 
 #### When should I create component classes?
 
@@ -46,8 +46,8 @@ Examples of component classes that were created using "utility-first" include:
 
 Inspiration:
 
-- <https://tailwindcss.com/docs/utility-first>
-- <https://tailwindcss.com/docs/extracting-components>
+- <https://tailwindcss.com/docs/utility-first/>
+- <https://tailwindcss.com/docs/extracting-components/>
 
 ### Naming
 
@@ -236,7 +236,7 @@ Before adding a new variable for a color or a size, guarantee:
 
 ## Linting
 
-We use [SCSS Lint][scss-lint] to check for style guide conformity. It uses the
+We use [SCSS Lint](https://github.com/sds/scss-lint) to check for style guide conformity. It uses the
 ruleset in `.scss-lint.yml`, which is located in the home directory of the
 project.
 
@@ -245,7 +245,7 @@ scss_lint` in the GitLab directory. SCSS Lint will also run in GitLab CI to
 catch any warnings.
 
 If the Rake task is throwing warnings you don't understand, SCSS Lint's
-documentation includes [a full list of their linters][scss-lint-documentation].
+documentation includes [a full list of their linters][scss-lint-documentation](https://github.com/sds/scss-lint/blob/master/lib/scss_lint/linter/README.md).
 
 ### Fixing issues
 
@@ -260,7 +260,7 @@ Note that this won't fix every problem, but it should fix a majority.
 ### Ignoring issues
 
 If you want a line or set of lines to be ignored by the linter, you can use
-`// scss-lint:disable RuleName` ([more info][disabling-linters]):
+`// scss-lint:disable RuleName` ([more info](https://github.com/sds/scss-lint#disabling-linters-via-source)):
 
 ```scss
 // This lint rule is disabled because it is supported only in Chrome/Safari
@@ -279,6 +279,3 @@ guide is ignored in this instance.
 [csscomb]: https://github.com/csscomb/csscomb.js
 [node]: https://github.com/nodejs/node
 [npm]: https://www.npmjs.com/
-[scss-lint]: https://github.com/brigade/scss-lint
-[scss-lint-documentation]: https://github.com/brigade/scss-lint/blob/master/lib/scss_lint/linter/README.md
-[disabling-linters]: https://github.com/brigade/scss-lint#disabling-linters-via-source

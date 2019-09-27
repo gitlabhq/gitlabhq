@@ -1,77 +1,85 @@
-import Vue from 'vue';
-import confidentialIssueSidebar from '~/sidebar/components/confidential/confidential_issue_sidebar.vue';
+import { shallowMount } from '@vue/test-utils';
+import ConfidentialIssueSidebar from '~/sidebar/components/confidential/confidential_issue_sidebar.vue';
 import { mockTracking, triggerEvent } from 'helpers/tracking_helper';
+import EditForm from '~/sidebar/components/confidential/edit_form.vue';
 
 describe('Confidential Issue Sidebar Block', () => {
-  let vm1;
-  let vm2;
+  let wrapper;
 
-  beforeEach(() => {
-    const Component = Vue.extend(confidentialIssueSidebar);
+  const createComponent = propsData => {
     const service = {
       update: () => Promise.resolve(true),
     };
 
-    vm1 = new Component({
+    wrapper = shallowMount(ConfidentialIssueSidebar, {
       propsData: {
+        service,
+        ...propsData,
+      },
+      sync: false,
+    });
+  };
+
+  it.each`
+    isConfidential | isEditable
+    ${false}       | ${false}
+    ${false}       | ${true}
+    ${true}        | ${false}
+    ${true}        | ${true}
+  `(
+    'renders for isConfidential = $isConfidential and isEditable = $isEditable',
+    ({ isConfidential, isEditable }) => {
+      createComponent({
+        isConfidential,
+        isEditable,
+      });
+
+      expect(wrapper.element).toMatchSnapshot();
+    },
+  );
+
+  afterEach(() => {
+    wrapper.destroy();
+  });
+
+  describe('if editable', () => {
+    beforeEach(() => {
+      createComponent({
         isConfidential: true,
         isEditable: true,
-        service,
-      },
-    }).$mount();
-
-    vm2 = new Component({
-      propsData: {
-        isConfidential: false,
-        isEditable: false,
-        service,
-      },
-    }).$mount();
-  });
-
-  it('shows if confidential and/or editable', () => {
-    expect(vm1.$el.innerHTML.includes('Edit')).toBe(true);
-
-    expect(vm1.$el.innerHTML.includes('This issue is confidential')).toBe(true);
-
-    expect(vm2.$el.innerHTML.includes('Not confidential')).toBe(true);
-  });
-
-  it('displays the edit form when editable', () => {
-    expect(vm1.edit).toBe(false);
-
-    vm1.$el.querySelector('.confidential-edit').click();
-
-    expect(vm1.edit).toBe(true);
-
-    return Vue.nextTick().then(() => {
-      expect(vm1.$el.innerHTML.includes('You are going to turn off the confidentiality.')).toBe(
-        true,
-      );
+      });
     });
-  });
 
-  it('displays the edit form when opened from collapsed state', () => {
-    expect(vm1.edit).toBe(false);
+    it('displays the edit form when editable', () => {
+      wrapper.setData({ edit: false });
 
-    vm1.$el.querySelector('.sidebar-collapsed-icon').click();
+      wrapper.find({ ref: 'editLink' }).trigger('click');
 
-    expect(vm1.edit).toBe(true);
-
-    return Vue.nextTick().then(() => {
-      expect(vm1.$el.innerHTML.includes('You are going to turn off the confidentiality.')).toBe(
-        true,
-      );
+      return wrapper.vm.$nextTick().then(() => {
+        expect(wrapper.find(EditForm).exists()).toBe(true);
+      });
     });
-  });
 
-  it('tracks the event when "Edit" is clicked', () => {
-    const spy = mockTracking('_category_', vm1.$el, jest.spyOn);
-    triggerEvent('.confidential-edit');
+    it('displays the edit form when opened from collapsed state', () => {
+      wrapper.setData({ edit: false });
 
-    expect(spy).toHaveBeenCalledWith('_category_', 'click_edit_button', {
-      label: 'right_sidebar',
-      property: 'confidentiality',
+      wrapper.find({ ref: 'collapseIcon' }).trigger('click');
+
+      return wrapper.vm.$nextTick().then(() => {
+        expect(wrapper.find(EditForm).exists()).toBe(true);
+      });
+    });
+
+    it('tracks the event when "Edit" is clicked', () => {
+      const spy = mockTracking('_category_', wrapper.element, jest.spyOn);
+
+      const editLink = wrapper.find({ ref: 'editLink' });
+      triggerEvent(editLink.element);
+
+      expect(spy).toHaveBeenCalledWith('_category_', 'click_edit_button', {
+        label: 'right_sidebar',
+        property: 'confidentiality',
+      });
     });
   });
 });

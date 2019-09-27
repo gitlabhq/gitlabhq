@@ -232,7 +232,7 @@ using `v232`.
 
 For the record, the debugging steps to find out this issue were:
 
-1. Switch kubectl context to review-apps-ce (we recommend using [kubectx](https://kubectx.dev/))
+1. Switch kubectl context to review-apps-ce (we recommend using [kubectx](https://github.com/ahmetb/kubectx/))
 1. `kubectl get pods | grep dns`
 1. `kubectl describe pod <pod name>` & confirm exact error message
 1. Web search for exact error message, following rabbit hole to [a relevant kubernetes bug report](https://github.com/kubernetes/kubernetes/issues/57345)
