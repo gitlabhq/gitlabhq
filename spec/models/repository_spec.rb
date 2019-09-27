@@ -1075,7 +1075,7 @@ describe Repository do
       let(:ref) { 'refs/heads/master' }
 
       it 'returns nil' do
-        is_expected.to eq(nil)
+        is_expected.to be_nil
       end
     end
 
@@ -2002,7 +2002,7 @@ describe Repository do
     it 'returns nil if repo does not exist' do
       allow(repository).to receive(:root_ref).and_raise(Gitlab::Git::Repository::NoRepository)
 
-      expect(repository.avatar).to eq(nil)
+      expect(repository.avatar).to be_nil
     end
 
     it 'returns the first avatar file found in the repository' do
@@ -2604,6 +2604,10 @@ describe Repository do
       expect { repository.create_if_not_exists }.to change { repository.exists? }.from(false).to(true)
     end
 
+    it 'returns true' do
+      expect(repository.create_if_not_exists).to eq(true)
+    end
+
     it 'calls out to the repository client to create a repo' do
       expect(repository.raw.gitaly_repository_client).to receive(:create_repository)
 
@@ -2618,6 +2622,10 @@ describe Repository do
 
         repository.create_if_not_exists
       end
+
+      it 'returns nil' do
+        expect(repository.create_if_not_exists).to be_nil
+      end
     end
 
     context 'when the repository exists but the cache is not up to date' do
@@ -2628,6 +2636,10 @@ describe Repository do
         expect(repository.raw).to receive(:create_repository).and_call_original
 
         expect { repository.create_if_not_exists }.not_to raise_error
+      end
+
+      it 'returns nil' do
+        expect(repository.create_if_not_exists).to be_nil
       end
     end
   end

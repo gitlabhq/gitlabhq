@@ -93,6 +93,10 @@ module Gitlab
         end
       end
 
+      def remove_feature_dependent_sub_relations(_relation_item)
+        # no-op
+      end
+
       def project_relations_without_project_members
         # We remove `project_members` as they are deserialized separately
         project_relations.except(:project_members)
@@ -171,6 +175,8 @@ module Gitlab
             next
           end
 
+          remove_feature_dependent_sub_relations(relation_item)
+
           # The transaction at this level is less speedy than one single transaction
           # But we can't have it in the upper level or GC won't get rid of the AR objects
           # after we save the batch.
@@ -238,3 +244,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::ImportExport::ProjectTreeRestorer.prepend_if_ee('::EE::Gitlab::ImportExport::ProjectTreeRestorer')

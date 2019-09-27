@@ -248,7 +248,16 @@ preloads:
 ee:
   tree:
     project:
-      protected_branches:
+      - issues:
+        - designs:
+          - notes:
+            - :author
+            - events:
+              - :push_event_payload
+        - design_versions:
+          - actions:
+            - :design # Duplicate export of issues.designs in order to link the record to both Issue and DesignVersion
+      - protected_branches:
         - :unprotect_access_levels
-      protected_environments:
+      - protected_environments:
         - :deploy_access_levels

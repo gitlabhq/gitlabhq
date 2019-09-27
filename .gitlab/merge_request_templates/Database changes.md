@@ -24,6 +24,7 @@ When adding migrations:
 - [ ] Added a `down` method so the migration can be reverted
 - [ ] Added the output of the migration(s) to the MR body
 - [ ] Added tests for the migration in `spec/migrations` if necessary (e.g. when migrating data)
+- [ ] Added rollback procedure. Include either a rollback procedure or description how to rollback changes 
 
 When adding or modifying queries to improve performance:
 

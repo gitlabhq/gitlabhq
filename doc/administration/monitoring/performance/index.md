@@ -31,8 +31,8 @@ including (but not limited to):
 - System statistics such as the process' memory usage and open file descriptors.
 - Ruby garbage collection statistics.
 
-Metrics data is written to [InfluxDB][influxdb] over [UDP][influxdb-udp]. Stored
-data can be visualized using [Grafana][grafana] or any other application that
+Metrics data is written to [InfluxDB](https://www.influxdata.com/products/influxdb-overview/)
+over [UDP][influxdb-udp]. Stored data can be visualized using [Grafana](https://grafana.com) or any other application that
 supports reading data from InfluxDB. Alternatively data can be queried using the
 InfluxDB CLI.
 
@@ -67,6 +67,4 @@ the actual interval can be anywhere between 7.5 and 22.5. The interval is
 re-generated for every sampling run instead of being generated once and re-used
 for the duration of the process' lifetime.
 
-[influxdb]: https://influxdata.com/time-series-platform/influxdb/
 [influxdb-udp]: https://docs.influxdata.com/influxdb/v0.9/write_protocols/udp/
-[grafana]: http://grafana.org/

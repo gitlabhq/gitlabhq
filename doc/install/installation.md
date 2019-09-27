@@ -10,7 +10,7 @@ other installation options, see the [main installation page](README.md).
 It was created for and tested on **Debian/Ubuntu** operating systems.
 Read [requirements.md](requirements.md) for hardware and operating system requirements.
 If you want to install on RHEL/CentOS, we recommend using the
-[Omnibus packages](https://about.gitlab.com/downloads/).
+[Omnibus packages](https://about.gitlab.com/install/).
 
 This guide is long because it covers many cases and includes all commands you
 need, this is [one of the few installation scripts that actually works out of the box](https://twitter.com/robinvdvleuten/status/424163226532986880).
@@ -25,7 +25,7 @@ following the
 
 ## Consider the Omnibus package installation
 
-Since an installation from source is a lot of work and error prone we strongly recommend the fast and reliable [Omnibus package installation](https://about.gitlab.com/downloads/) (deb/rpm).
+Since an installation from source is a lot of work and error prone we strongly recommend the fast and reliable [Omnibus package installation](https://about.gitlab.com/install/) (deb/rpm).
 
 One reason the Omnibus package is more reliable is its use of Runit to restart any of the GitLab processes in case one crashes.
 On heavily used GitLab instances the memory usage of the Sidekiq background worker will grow over time.
@@ -205,7 +205,7 @@ The Ruby interpreter is required to run GitLab.
 **Note:** The current supported Ruby (MRI) version is 2.6.x. GitLab 12.2
   dropped support for Ruby 2.5.x.
 
-The use of Ruby version managers such as [RVM], [rbenv] or [chruby] with GitLab
+The use of Ruby version managers such as [RVM], [rbenv](https://github.com/rbenv/rbenv) or [chruby] with GitLab
 in production, frequently leads to hard to diagnose problems. For example,
 GitLab Shell is called from OpenSSH, and having a version manager can prevent
 pushing and pulling over SSH. Version managers are not supported and we strongly
@@ -532,7 +532,7 @@ sudo -u git -H chmod o-rwx config/database.yml
 ### Install Gems
 
 NOTE: **Note:**
-As of Bundler 1.5.2, you can invoke `bundle install -jN` (where `N` is the number of your processor cores) and enjoy parallel gems installation with measurable difference in completion time (~60% faster). Check the number of your cores with `nproc`. For more information, see this [post](https://robots.thoughtbot.com/parallel-gem-installing-using-bundler).
+As of Bundler 1.5.2, you can invoke `bundle install -jN` (where `N` is the number of your processor cores) and enjoy parallel gems installation with measurable difference in completion time (~60% faster). Check the number of your cores with `nproc`. For more information, see this [post](https://thoughtbot.com/blog/parallel-gem-installing-using-bundler).
 
 Make sure you have `bundle` (run `bundle -v`):
 
@@ -1025,5 +1025,4 @@ sudo yum groupinstall 'Development Tools'
 ```
 
 [RVM]: https://rvm.io/ "RVM Homepage"
-[rbenv]: https://github.com/sstephenson/rbenv "rbenv on GitHub"
 [chruby]: https://github.com/postmodern/chruby "chruby on GitHub"

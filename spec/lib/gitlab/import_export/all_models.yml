@@ -502,3 +502,17 @@ lists:
 milestone_releases:
 - milestone
 - release
+design: &design
+- issue
+- actions
+- versions
+- notes
+designs: *design
+actions:
+- design
+- version
+versions: &version
+- issue
+- designs
+- actions
+design_versions: *version

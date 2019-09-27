@@ -877,6 +877,6 @@ The above image shows:
 - The HEAD request to the AWS bucket reported a 403 Unauthorized.
 
 What does this mean? This strongly suggests that the S3 user does not have the right
-[permissions to perform a HEAD request](http://docs.aws.amazon.com/AmazonS3/latest/API/RESTObjectHEAD.html).
+[permissions to perform a HEAD request](https://docs.aws.amazon.com/AmazonS3/latest/API/RESTObjectHEAD.html).
 The solution: check the [IAM permissions again](https://docs.docker.com/registry/storage-drivers/s3/).
 Once the right permissions were set, the error will go away.

@@ -1217,7 +1217,7 @@ ActiveRecord::Schema.define(version: 2019_09_26_041216) do
 
   create_table "design_management_designs", force: :cascade do |t|
     t.integer "project_id", null: false
-    t.integer "issue_id", null: false
+    t.integer "issue_id"
     t.string "filename", null: false
     t.index ["issue_id", "filename"], name: "index_design_management_designs_on_issue_id_and_filename", unique: true
     t.index ["project_id"], name: "index_design_management_designs_on_project_id"

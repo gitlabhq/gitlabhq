@@ -36,7 +36,7 @@ To use the group, project or pipeline security dashboard:
 
 ## Pipeline Security Dashboard
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/13496) in [GitLab Ultimate](https://about.gitlab.com/pricing) 12.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/13496) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.3.
 
 At the pipeline level, the Security Dashboard displays the vulnerabilities present in the branch of the project the pipeline was run against.
 
@@ -46,7 +46,7 @@ Visit the page for any pipeline which has run any of the [supported reports](#su
 
 ## Project Security Dashboard
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/6165) in [GitLab Ultimate](https://about.gitlab.com/pricing) 11.1.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/6165) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.1.
 
 At the project level, the Security Dashboard displays the latest security reports
 for your project. Use it to find and fix vulnerabilities affecting the
@@ -56,7 +56,7 @@ for your project. Use it to find and fix vulnerabilities affecting the
 
 ## Group Security Dashboard
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/6709) in [GitLab Ultimate](https://about.gitlab.com/pricing) 11.5.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/6709) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.5.
 
 The group Security Dashboard gives an overview of the vulnerabilities of all the
 projects in a group and its subgroups.

@@ -38,7 +38,6 @@ to be enabled:
 - Files uploaded must have a file extension of either `png`, `jpg`, `jpeg`, `gif`, `bmp`, `tiff` or `ico`.
   The [`svg` extension is not yet supported](https://gitlab.com/gitlab-org/gitlab/issues/12771).
 - Design uploads are limited to 10 files at a time.
-- [Designs cannot yet be deleted](https://gitlab.com/gitlab-org/gitlab/issues/11089).
 - Design Management is
   [not yet supported in the project export](https://gitlab.com/gitlab-org/gitlab/issues/11090).
 - Design Management data
@@ -64,13 +63,13 @@ of the design, and will replace the previous version.
 
 ## Viewing designs
 
-Images on the Design Management page can be enlarged by clicking on them.  
+Images on the Design Management page can be enlarged by clicking on them.
 
 The number of comments on a design — if any — is listed to the right
 of the design filename. Clicking on this number enlarges the design
 just like clicking anywhere else on the design.
 When a design is added or modified, an icon is displayed on the item
-to help summarize changes between versions.  
+to help summarize changes between versions.
 
 | Indicator | Example |
 | --------- | ------- |
