@@ -1519,6 +1519,10 @@ class User < ApplicationRecord
     todos.find_by(target: target, state: :pending)
   end
 
+  def password_expired?
+    !!(password_expires_at && password_expires_at < Time.now)
+  end
+
   # @deprecated
   alias_method :owned_or_masters_groups, :owned_or_maintainers_groups
 

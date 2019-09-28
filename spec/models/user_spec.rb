@@ -3616,4 +3616,34 @@ describe User do
       end
     end
   end
+
+  describe '#password_expired?' do
+    let(:user) { build(:user, password_expires_at: password_expires_at) }
+
+    subject { user.password_expired? }
+
+    context 'when password_expires_at is not set' do
+      let(:password_expires_at) {}
+
+      it 'returns false' do
+        is_expected.to be_falsey
+      end
+    end
+
+    context 'when password_expires_at is in the past' do
+      let(:password_expires_at) { 1.minute.ago }
+
+      it 'returns true' do
+        is_expected.to be_truthy
+      end
+    end
+
+    context 'when password_expires_at is in the future' do
+      let(:password_expires_at) { 1.minute.from_now }
+
+      it 'returns false' do
+        is_expected.to be_falsey
+      end
+    end
+  end
 end

@@ -286,6 +286,25 @@ describe Projects::ArtifactsController do
         expect(response).to render_template('projects/artifacts/file')
       end
     end
+
+    context 'when the project is private and pages access control is enabled' do
+      let(:private_project) { create(:project, :repository, :private) }
+      let(:pipeline) { create(:ci_pipeline, project: private_project) }
+      let(:job) { create(:ci_build, :success, :artifacts, pipeline: pipeline) }
+
+      before do
+        private_project.add_developer(user)
+
+        allow(Gitlab.config.pages).to receive(:access_control).and_return(true)
+        allow(Gitlab.config.pages).to receive(:artifacts_server).and_return(true)
+      end
+
+      it 'renders the file view' do
+        get :file, params: { namespace_id: private_project.namespace, project_id: private_project, job_id: job, path: 'ci_artifacts.txt' }
+
+        expect(response).to have_gitlab_http_status(302)
+      end
+    end
   end
 
   describe 'GET raw' do
