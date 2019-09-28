@@ -62,7 +62,7 @@ Please help other GitLab users when you can.
 The methods people will use to seek help can be found on the [getting help page](https://about.gitlab.com/get-help/).
 
 Sign up for the mailing list, answer GitLab questions on StackOverflow or
-respond in the IRC channel. 
+respond in the IRC channel.
 
 ## I want to contribute
 
