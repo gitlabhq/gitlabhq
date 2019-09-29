@@ -27,7 +27,7 @@ To install `pyenv` on Linux, you can run the command below:
 curl https://pyenv.run | bash
 ```
 
-Alternatively, you may find `pypenv` available as a system package via your distro package manager.
+Alternatively, you may find `pyenv` available as a system package via your distro package manager.
 
 You can read more about it in: <https://github.com/pyenv/pyenv-installer#prerequisites>.
 
