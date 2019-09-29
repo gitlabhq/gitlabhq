@@ -202,7 +202,7 @@ describe Gitlab::Gpg::Commit do
           end
 
           let(:gpg_key_subkey) do
-            gpg_key.subkeys.find_by(fingerprint: '0522DD29B98F167CD8421752E38FFCAF75ABD92A')
+            gpg_key.subkeys.find_by(fingerprint: GpgHelpers::User3.subkey_fingerprints.last)
           end
 
           before do
