@@ -41,6 +41,13 @@ In Google's side:
    - Cloud Resource Manager API
    - Cloud Billing API
 
+   To do so you need to:
+
+   1. Go to the [Google API Console](https://console.developers.google.com/apis/dashboard).
+   1. Click on **ENABLE APIS AND SERVICES** button at the top of the page.
+   1. Find each of the above APIs. On the page for the API, press the **ENABLE** button.
+      It may take a few minutes for the API to be fully functional.
+
 On your GitLab server:
 
 1. Open the configuration file.

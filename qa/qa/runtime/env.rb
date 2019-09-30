@@ -177,6 +177,22 @@ module QA
         ENV['GITLAB_QA_PASSWORD_6']
       end
 
+      def gitlab_qa_1p_email
+        ENV['GITLAB_QA_1P_EMAIL']
+      end
+
+      def gitlab_qa_1p_password
+        ENV['GITLAB_QA_1P_PASSWORD']
+      end
+
+      def gitlab_qa_1p_secret
+        ENV['GITLAB_QA_1P_SECRET']
+      end
+
+      def gitlab_qa_1p_github_uuid
+        ENV['GITLAB_QA_1P_GITHUB_UUID']
+      end
+
       def knapsack?
         !!(ENV['KNAPSACK_GENERATE_REPORT'] || ENV['KNAPSACK_REPORT_PATH'] || ENV['KNAPSACK_TEST_FILE_PATTERN'])
       end

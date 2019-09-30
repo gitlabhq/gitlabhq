@@ -66,6 +66,7 @@ tree:
       - stages:
         - :statuses
       - :external_pull_request
+      - :merge_request
     - :external_pull_requests
     - :auto_devops
     - :triggers
@@ -168,6 +169,12 @@ excluded_attributes:
     - :external_diff_size
   issues:
     - :milestone_id
+  merge_request:
+    - :milestone_id
+    - :ref_fetched
+    - :merge_jid
+    - :rebase_jid
+    - :latest_merge_request_diff_id
   merge_requests:
     - :milestone_id
     - :ref_fetched

@@ -306,7 +306,11 @@ export default {
 <template>
   <timeline-entry-item class="note note-discussion">
     <div class="timeline-content">
-      <div :data-discussion-id="discussion.id" class="discussion js-discussion-container">
+      <div
+        :data-discussion-id="discussion.id"
+        class="discussion js-discussion-container"
+        data-qa-selector="discussion_content"
+      >
         <div v-if="shouldRenderDiffs" class="discussion-header note-wrapper">
           <div v-once class="timeline-icon align-self-start flex-shrink-0">
             <user-avatar-link

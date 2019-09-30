@@ -63,6 +63,8 @@ function rspec_paralellized_job() {
   export KNAPSACK_LOG_LEVEL="debug"
   export KNAPSACK_REPORT_PATH="knapsack/${test_tool}_${test_level}_${database}_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json"
 
+  cp "${KNAPSACK_RSPEC_SUITE_REPORT_PATH}" "${KNAPSACK_REPORT_PATH}"
+
   if [[ -z "${KNAPSACK_TEST_FILE_PATTERN}" ]]; then
     pattern=$(ruby -r./lib/quality/test_level.rb -e "puts Quality::TestLevel.new(%(${spec_folder_prefix})).pattern(:${test_level})")
     export KNAPSACK_TEST_FILE_PATTERN="${pattern}"
@@ -76,8 +78,6 @@ function rspec_paralellized_job() {
     export SUITE_FLAKY_RSPEC_REPORT_PATH="${FLAKY_RSPEC_SUITE_REPORT_PATH}"
     export FLAKY_RSPEC_REPORT_PATH="rspec_flaky/all_${test_tool}_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json"
     export NEW_FLAKY_RSPEC_REPORT_PATH="rspec_flaky/new_${test_tool}_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json"
-
-    cp "${KNAPSACK_RSPEC_SUITE_REPORT_PATH}" "${KNAPSACK_REPORT_PATH}"
 
     if [[ ! -f $FLAKY_RSPEC_REPORT_PATH ]]; then
       echo "{}" > "${FLAKY_RSPEC_REPORT_PATH}"

@@ -6161,7 +6161,7 @@
     {
       "id": 36,
       "project_id": 5,
-      "ref": "master",
+      "ref": null,
       "sha": "sha-notes",
       "before_sha": null,
       "push_data": null,
@@ -6289,19 +6289,21 @@
     {
       "id": 37,
       "project_id": 5,
-      "ref": null,
+      "ref": "master",
       "sha": "048721d90c449b244b7b4c53a9186b04330174ec",
       "before_sha": null,
       "push_data": null,
       "created_at": "2016-03-22T15:20:35.757Z",
       "updated_at": "2016-03-22T15:20:35.757Z",
-      "tag": null,
+      "tag": false,
       "yaml_errors": null,
       "committed_at": null,
       "status": "failed",
       "started_at": null,
       "finished_at": null,
       "duration": null,
+      "source": "merge_request_event",
+      "merge_request_id": 27,
       "stages": [
         {
           "id": 21,
@@ -6372,7 +6374,32 @@
             }
           ]
         }
-      ]
+      ],
+      "merge_request": {
+        "id": 27,
+        "target_branch": "feature",
+        "source_branch": "feature_conflict",
+        "source_project_id": 999,
+        "author_id": 1,
+        "assignee_id": null,
+        "title": "MR1",
+        "created_at": "2016-06-14T15:02:36.568Z",
+        "updated_at": "2016-06-14T15:02:56.815Z",
+        "state": "opened",
+        "merge_status": "unchecked",
+        "target_project_id": 5,
+        "iid": 9,
+        "description": null,
+        "position": 0,
+        "updated_by_id": null,
+        "merge_error": null,
+        "diff_head_sha": "HEAD",
+        "source_branch_sha": "ABCD",
+        "target_branch_sha": "DCBA",
+        "merge_params": {
+          "force_remove_source_branch": null
+        }
+      }
     },
     {
       "id": 38,
