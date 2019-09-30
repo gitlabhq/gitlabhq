@@ -4,28 +4,38 @@ import Vue from 'vue';
 import EksClusterConfigurationForm from '~/create_cluster/eks_cluster/components/eks_cluster_configuration_form.vue';
 import RegionDropdown from '~/create_cluster/eks_cluster/components/region_dropdown.vue';
 
+import clusterDropdownStoreState from '~/create_cluster/eks_cluster/store/cluster_dropdown/state';
+
 const localVue = createLocalVue();
 localVue.use(Vuex);
 
 describe('EksClusterConfigurationForm', () => {
   let store;
   let actions;
-  let state;
+  let regionsState;
+  let regionsActions;
   let vm;
 
   beforeEach(() => {
     actions = {
-      fetchRegions: jest.fn(),
       setRegion: jest.fn(),
+      setVpc: jest.fn(),
     };
-    state = {
-      regions: [{ name: 'region 1' }],
-      isLoadingRegions: false,
-      loadingRegionsError: { message: '' },
+    regionsActions = {
+      fetchItems: jest.fn(),
+    };
+    regionsState = {
+      ...clusterDropdownStoreState(),
     };
     store = new Vuex.Store({
-      state,
       actions,
+      modules: {
+        regions: {
+          namespaced: true,
+          state: regionsState,
+          actions: regionsActions,
+        },
+      },
     });
   });
 
@@ -44,31 +54,35 @@ describe('EksClusterConfigurationForm', () => {
 
   describe('when mounted', () => {
     it('fetches available regions', () => {
-      expect(actions.fetchRegions).toHaveBeenCalled();
+      expect(regionsActions.fetchItems).toHaveBeenCalled();
     });
   });
 
   it('sets isLoadingRegions to RegionDropdown loading property', () => {
-    state.isLoadingRegions = true;
+    regionsState.isLoadingItems = true;
 
     return Vue.nextTick().then(() => {
-      expect(findRegionDropdown().props('loading')).toEqual(state.isLoadingRegions);
+      expect(findRegionDropdown().props('loading')).toEqual(regionsState.isLoadingItems);
     });
   });
 
   it('sets regions to RegionDropdown regions property', () => {
-    expect(findRegionDropdown().props('regions')).toEqual(state.regions);
+    expect(findRegionDropdown().props('regions')).toEqual(regionsState.items);
   });
 
   it('sets loadingRegionsError to RegionDropdown error property', () => {
-    expect(findRegionDropdown().props('error')).toEqual(state.loadingRegionsError);
+    expect(findRegionDropdown().props('error')).toEqual(regionsState.loadingItemsError);
   });
 
-  it('dispatches setRegion action when region is selected', () => {
-    const region = { region: 'us-west-2' };
+  describe('when region is selected', () => {
+    const region = { name: 'us-west-2' };
 
-    findRegionDropdown().vm.$emit('input', region);
+    beforeEach(() => {
+      findRegionDropdown().vm.$emit('input', region);
+    });
 
-    expect(actions.setRegion).toHaveBeenCalledWith(expect.anything(), { region }, undefined);
+    it('dispatches setRegion action', () => {
+      expect(actions.setRegion).toHaveBeenCalledWith(expect.anything(), { region }, undefined);
+    });
   });
 });

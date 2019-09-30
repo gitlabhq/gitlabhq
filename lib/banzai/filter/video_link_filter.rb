@@ -32,7 +32,7 @@ module Banzai
         video = doc.document.create_element(
           'video',
           src: element['src'],
-          width: '400',
+          width: '100%',
           controls: true,
           'data-setup' => '{}',
           'data-title' => element['title'] || element['alt'])
