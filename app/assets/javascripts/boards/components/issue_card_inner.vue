@@ -104,6 +104,13 @@ export default {
     helpLink() {
       return boardsStore.scopedLabels.helpLink;
     },
+    validIssueWeight() {
+      if (_.isNumber(this.issue.weight)) {
+        return this.issue.weight >= 0;
+      }
+
+      return false;
+    },
   },
   methods: {
     isIndexLessThanlimit(index) {
@@ -212,7 +219,7 @@ export default {
           <issue-due-date v-if="issue.dueDate" :date="issue.dueDate" />
           <issue-time-estimate v-if="issue.timeEstimate" :estimate="issue.timeEstimate" />
           <issue-card-weight
-            v-if="issue.weight"
+            v-if="validIssueWeight"
             :weight="issue.weight"
             @click="filterByWeight(issue.weight)"
           />

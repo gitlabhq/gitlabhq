@@ -4,16 +4,18 @@ entry.
 
 ## 12.3.2
 
-### Security (10 changes)
+### Security (12 changes)
 
 - Fix Gitaly SearchBlobs flag RPC injection.
 - Add a policy check for system notes that may not be visible due to cross references to private items.
 - Display only participants that user has permission to see on milestone page.
 - Do not disclose project milestones on group milestones page when project milestones access is disabled in project settings.
+- Check permissions before showing head pipeline blocking merge requests.
 - Fix new project path being disclosed through unsubscribe link of issue/merge requests.
 - Prevent bypassing email verification using Salesforce.
 - Do not show resource label events referencing not accessible labels.
 - Cancel all running CI jobs triggered by the user who is just blocked.
+- Fix Gitaly SearchBlobs flag RPC injection.
 - Only render fixed number of mermaid blocks.
 - Prevent GitLab accounts takeover if SAML is configured.
 
@@ -299,11 +301,12 @@ entry.
 
 ## 12.2.6
 
-### Security (10 changes)
+### Security (11 changes)
 
 - Add a policy check for system notes that may not be visible due to cross references to private items.
 - Display only participants that user has permission to see on milestone page.
 - Do not disclose project milestones on group milestones page when project milestones access is disabled in project settings.
+- Check permissions before showing head pipeline blocking merge requests.
 - Fix new project path being disclosed through unsubscribe link of issue/merge requests.
 - Prevent bypassing email verification using Salesforce.
 - Do not show resource label events referencing not accessible labels.
@@ -633,11 +636,12 @@ entry.
 
 ## 12.1.12
 
-### Security (11 changes)
+### Security (12 changes)
 
 - Add a policy check for system notes that may not be visible due to cross references to private items.
 - Display only participants that user has permission to see on milestone page.
 - Do not disclose project milestones on group milestones page when project milestones access is disabled in project settings.
+- Check permissions before showing head pipeline blocking merge requests.
 - Fix new project path being disclosed through unsubscribe link of issue/merge requests.
 - Prevent bypassing email verification using Salesforce.
 - Do not show resource label events referencing not accessible labels.

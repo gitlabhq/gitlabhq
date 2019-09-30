@@ -281,16 +281,16 @@ module Ci
       end
     end
 
-    # Returns a Hash containing the latest pipeline status for every given
+    # Returns a Hash containing the latest pipeline for every given
     # commit.
     #
-    # The keys of this Hash are the commit SHAs, the values the statuses.
+    # The keys of this Hash are the commit SHAs, the values the pipelines.
     #
-    # commits - The list of commit SHAs to get the status for.
+    # commits - The list of commit SHAs to get the pipelines for.
     # ref - The ref to scope the data to (e.g. "master"). If the ref is not
-    #       given we simply get the latest status for the commits, regardless
-    #       of what refs their pipelines belong to.
-    def self.latest_status_per_commit(commits, ref = nil)
+    #       given we simply get the latest pipelines for the commits, regardless
+    #       of what refs the pipelines belong to.
+    def self.latest_pipeline_per_commit(commits, ref = nil)
       p1 = arel_table
       p2 = arel_table.alias
 
@@ -304,15 +304,14 @@ module Ci
       cond = cond.and(p1[:ref].eq(p2[:ref])) if ref
       join = p1.join(p2, Arel::Nodes::OuterJoin).on(cond)
 
-      relation = select(:sha, :status)
-        .where(sha: commits)
+      relation = where(sha: commits)
         .where(p2[:id].eq(nil))
         .joins(join.join_sources)
 
       relation = relation.where(ref: ref) if ref
 
-      relation.each_with_object({}) do |row, hash|
-        hash[row[:sha]] = row[:status]
+      relation.each_with_object({}) do |pipeline, hash|
+        hash[pipeline.sha] = pipeline
       end
     end
 

@@ -1966,40 +1966,57 @@ describe Ci::Pipeline, :mailer do
     end
   end
 
-  describe '.latest_status_per_commit' do
+  describe '.latest_pipeline_per_commit' do
     let(:project) { create(:project) }
 
-    before do
-      pairs = [
-        %w[success ref1 123],
-        %w[manual master 123],
-        %w[failed ref 456]
-      ]
-
-      pairs.each do |(status, ref, sha)|
-        create(
-          :ci_empty_pipeline,
-          status: status,
-          ref: ref,
-          sha: sha,
-          project: project
-        )
-      end
+    let!(:commit_123_ref_master) do
+      create(
+        :ci_empty_pipeline,
+        status: 'success',
+        ref: 'master',
+        sha: '123',
+        project: project
+      )
+    end
+    let!(:commit_123_ref_develop) do
+      create(
+        :ci_empty_pipeline,
+        status: 'success',
+        ref: 'develop',
+        sha: '123',
+        project: project
+      )
+    end
+    let!(:commit_456_ref_test) do
+      create(
+        :ci_empty_pipeline,
+        status: 'success',
+        ref: 'test',
+        sha: '456',
+        project: project
+      )
     end
 
     context 'without a ref' do
-      it 'returns a Hash containing the latest status per commit for all refs' do
-        expect(described_class.latest_status_per_commit(%w[123 456]))
-          .to eq({ '123' => 'manual', '456' => 'failed' })
+      it 'returns a Hash containing the latest pipeline per commit for all refs' do
+        result = described_class.latest_pipeline_per_commit(%w[123 456])
+
+        expect(result).to match(
+          '123' => commit_123_ref_develop,
+          '456' => commit_456_ref_test
+        )
       end
 
-      it 'only includes the status of the given commit SHAs' do
-        expect(described_class.latest_status_per_commit(%w[123]))
-          .to eq({ '123' => 'manual' })
+      it 'only includes the latest pipeline of the given commit SHAs' do
+        result = described_class.latest_pipeline_per_commit(%w[123])
+
+        expect(result).to match(
+          '123' => commit_123_ref_develop
+        )
       end
 
       context 'when there are two pipelines for a ref and SHA' do
-        it 'returns the status of the latest pipeline' do
+        let!(:commit_123_ref_master_latest) do
           create(
             :ci_empty_pipeline,
             status: 'failed',
@@ -2007,17 +2024,25 @@ describe Ci::Pipeline, :mailer do
             sha: '123',
             project: project
           )
+        end
 
-          expect(described_class.latest_status_per_commit(%w[123]))
-            .to eq({ '123' => 'failed' })
+        it 'returns the latest pipeline' do
+          result = described_class.latest_pipeline_per_commit(%w[123])
+
+          expect(result).to match(
+            '123' => commit_123_ref_master_latest
+          )
         end
       end
     end
 
     context 'with a ref' do
       it 'only includes the pipelines for the given ref' do
-        expect(described_class.latest_status_per_commit(%w[123 456], 'master'))
-          .to eq({ '123' => 'manual' })
+        result = described_class.latest_pipeline_per_commit(%w[123 456], 'master')
+
+        expect(result).to match(
+          '123' => commit_123_ref_master
+        )
       end
     end
   end
