@@ -150,6 +150,11 @@ msgid_plural "%d more comments"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d request with warnings"
+msgid_plural "%d requests with warnings"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d second"
 msgid_plural "%d seconds"
 msgstr[0] ""
@@ -177,6 +182,9 @@ msgid "%{authorsName}'s thread"
 msgstr ""
 
 msgid "%{commit_author_link} authored %{commit_timeago}"
+msgstr ""
+
+msgid "%{cores} cores"
 msgstr ""
 
 msgid "%{count} LOC/commit"
@@ -2693,6 +2701,9 @@ msgid "CLOSED (MOVED)"
 msgstr ""
 
 msgid "CONTRIBUTING"
+msgstr ""
+
+msgid "CPU"
 msgstr ""
 
 msgid "Callback URL"
@@ -5345,6 +5356,9 @@ msgid "Discuss a specific suggestion or question."
 msgstr ""
 
 msgid "Discussion"
+msgstr ""
+
+msgid "Disk Usage"
 msgstr ""
 
 msgid "Dismiss"
@@ -8923,6 +8937,9 @@ msgstr ""
 msgid "Kubernetes"
 msgstr ""
 
+msgid "Kubernetes API returned status code: %{error_code}"
+msgstr ""
+
 msgid "Kubernetes Cluster"
 msgstr ""
 
@@ -9652,6 +9669,9 @@ msgid "Members with access to %{strong_start}%{group_name}%{strong_end}"
 msgstr ""
 
 msgid "Members with pending access to %{strong_start}%{group_name}%{strong_end}"
+msgstr ""
+
+msgid "Memory Usage"
 msgstr ""
 
 msgid "Merge"
@@ -11498,6 +11518,9 @@ msgid "Please wait while we connect to your repository. Refresh at will."
 msgstr ""
 
 msgid "Please wait while we import the repository for you. Refresh at will."
+msgstr ""
+
+msgid "Pod not found"
 msgstr ""
 
 msgid "Pods in use"
@@ -14565,6 +14588,9 @@ msgstr ""
 msgid "Something went wrong on our end."
 msgstr ""
 
+msgid "Something went wrong on our end. %{message}"
+msgstr ""
+
 msgid "Something went wrong on our end. Please try again!"
 msgstr ""
 
@@ -16779,6 +16805,12 @@ msgstr ""
 msgid "Unable to build Slack link."
 msgstr ""
 
+msgid "Unable to collect CPU info"
+msgstr ""
+
+msgid "Unable to collect memory info"
+msgstr ""
+
 msgid "Unable to connect to Prometheus server"
 msgstr ""
 
@@ -17053,6 +17085,9 @@ msgid "Uploads"
 msgstr ""
 
 msgid "Upstream"
+msgstr ""
+
+msgid "Uptime"
 msgstr ""
 
 msgid "Upvotes"
@@ -18835,6 +18870,9 @@ msgstr ""
 msgid "connecting"
 msgstr ""
 
+msgid "container_name cannot be larger than %{max_length} chars"
+msgstr ""
+
 msgid "could not read private key, is the passphrase correct?"
 msgstr ""
 
@@ -19403,6 +19441,9 @@ msgid "pending comment"
 msgstr ""
 
 msgid "pipeline"
+msgstr ""
+
+msgid "pod_name cannot be larger than %{max_length} chars"
 msgstr ""
 
 msgid "point"

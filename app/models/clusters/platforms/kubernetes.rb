@@ -6,6 +6,7 @@ module Clusters
       include Gitlab::Kubernetes
       include EnumWithNil
       include AfterCommitQueue
+      include ReactiveCaching
 
       RESERVED_NAMESPACES = %w(gitlab-managed-apps).freeze
 

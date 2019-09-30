@@ -3,12 +3,13 @@ export default class PerformanceBarStore {
     this.requests = [];
   }
 
-  addRequest(requestId, requestUrl, requestDetails) {
+  addRequest(requestId, requestUrl) {
     if (!this.findRequest(requestId)) {
       this.requests.push({
         id: requestId,
         url: requestUrl,
-        details: requestDetails,
+        details: {},
+        hasWarnings: false,
       });
     }
 
@@ -22,7 +23,8 @@ export default class PerformanceBarStore {
   addRequestDetails(requestId, requestDetails) {
     const request = this.findRequest(requestId);
 
-    request.details = requestDetails;
+    request.details = requestDetails.data;
+    request.hasWarnings = requestDetails.has_warnings;
 
     return request;
   }

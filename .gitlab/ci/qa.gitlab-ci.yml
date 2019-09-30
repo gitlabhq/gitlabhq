@@ -19,6 +19,7 @@ package-and-qa-manual:
   except:
     refs:
       - master
+      - /^\d+-\d+-auto-deploy-\d+$/
   when: manual
   needs: ["build-qa-image", "gitlab:assets:compile pull-cache"]
 
@@ -29,6 +30,7 @@ package-and-qa:
   except:
     refs:
       - master
+      - /^\d+-\d+-auto-deploy-\d+$/
   needs: ["build-qa-image", "gitlab:assets:compile pull-cache"]
   allow_failure: true
 

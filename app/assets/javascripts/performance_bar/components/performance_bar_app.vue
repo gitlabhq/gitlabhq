@@ -1,14 +1,14 @@
 <script>
 import { glEmojiTag } from '~/emoji';
 
-import detailedMetric from './detailed_metric.vue';
-import requestSelector from './request_selector.vue';
+import DetailedMetric from './detailed_metric.vue';
+import RequestSelector from './request_selector.vue';
 import { s__ } from '~/locale';
 
 export default {
   components: {
-    detailedMetric,
-    requestSelector,
+    DetailedMetric,
+    RequestSelector,
   },
   props: {
     store: {
