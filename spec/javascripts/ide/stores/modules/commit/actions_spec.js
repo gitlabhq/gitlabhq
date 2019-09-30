@@ -473,18 +473,16 @@ describe('IDE commit module actions', () => {
         });
 
         it('resets changed files before redirecting', done => {
+          visitUrl = visitUrl.and.callFake(() => {
+            expect(store.state.stagedFiles.length).toBe(0);
+            done();
+          });
+
           spyOn(eventHub, '$on');
 
           store.state.commit.commitAction = '3';
 
-          store
-            .dispatch('commit/commitChanges')
-            .then(() => {
-              expect(store.state.stagedFiles.length).toBe(0);
-
-              done();
-            })
-            .catch(done.fail);
+          store.dispatch('commit/commitChanges').catch(done.fail);
         });
       });
     });

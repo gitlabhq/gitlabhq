@@ -3,7 +3,6 @@ import Vue from 'vue';
 import Cookies from 'js-cookie';
 import { GlEmptyState } from '@gitlab/ui';
 import filterMixins from 'ee_else_ce/analytics/cycle_analytics/mixins/filter_mixins';
-import addStageMixin from 'ee_else_ce/analytics/cycle_analytics/mixins/add_stage_mixin';
 import Flash from '../flash';
 import { __ } from '~/locale';
 import Translate from '../vue_shared/translate';
@@ -44,14 +43,8 @@ export default () => {
       DateRangeDropdown: () =>
         import('ee_component/analytics/shared/components/date_range_dropdown.vue'),
       'stage-nav-item': stageNavItem,
-      CustomStageForm: () =>
-        import('ee_component/analytics/cycle_analytics/components/custom_stage_form.vue'),
-      AddStageButton: () =>
-        import('ee_component/analytics/cycle_analytics/components/add_stage_button.vue'),
-      CustomStageFormContainer: () =>
-        import('ee_component/analytics/cycle_analytics/components/custom_stage_form_container.vue'),
     },
-    mixins: [filterMixins, addStageMixin],
+    mixins: [filterMixins],
     data() {
       return {
         store: CycleAnalyticsStore,
@@ -131,7 +124,6 @@ export default () => {
           return;
         }
 
-        this.hideAddStageForm();
         this.isLoadingStage = true;
         this.store.setStageEvents([], stage);
         this.store.setActiveStage(stage);

@@ -60,6 +60,18 @@ describe('Time series component', () => {
       expect(timeSeriesChart.find('.js-graph-widgets').text()).toBe(mockWidgets);
     });
 
+    it('allows user to override max value label text using prop', () => {
+      timeSeriesChart.setProps({ legendMaxText: 'legendMaxText' });
+
+      expect(timeSeriesChart.props().legendMaxText).toBe('legendMaxText');
+    });
+
+    it('allows user to override average value label text using prop', () => {
+      timeSeriesChart.setProps({ legendAverageText: 'averageText' });
+
+      expect(timeSeriesChart.props().legendAverageText).toBe('averageText');
+    });
+
     describe('methods', () => {
       describe('formatTooltipText', () => {
         const mockDate = deploymentData[0].created_at;

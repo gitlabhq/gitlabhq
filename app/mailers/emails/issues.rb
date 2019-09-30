@@ -85,7 +85,7 @@ module Emails
       @project = Project.find(project_id)
       @results = results
 
-      mail(to: recipient(@user.id, @project.group), subject: subject('Imported issues')) do |format|
+      mail(to: @user.notification_email_for(@project.group), subject: subject('Imported issues')) do |format|
         format.html { render layout: 'mailer' }
         format.text { render layout: 'mailer' }
       end
@@ -105,7 +105,7 @@ module Emails
     def issue_thread_options(sender_id, recipient_id, reason)
       {
         from: sender(sender_id),
-        to: recipient(recipient_id, @project.group),
+        to: User.find(recipient_id).notification_email_for(@project.group),
         subject: subject("#{@issue.title} (##{@issue.iid})"),
         'X-GitLab-NotificationReason' => reason
       }

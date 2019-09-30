@@ -9858,6 +9858,9 @@ msgstr ""
 msgid "Metrics|Add metric"
 msgstr ""
 
+msgid "Metrics|Avg"
+msgstr ""
+
 msgid "Metrics|Check out the CI/CD documentation on deploying to an environment"
 msgstr ""
 
@@ -9886,6 +9889,9 @@ msgid "Metrics|Learn about environments"
 msgstr ""
 
 msgid "Metrics|Legend label (optional)"
+msgstr ""
+
+msgid "Metrics|Max"
 msgstr ""
 
 msgid "Metrics|Must be a valid PromQL query."
@@ -15833,7 +15839,7 @@ msgstr ""
 msgid "There was an error fetching configuration for charts"
 msgstr ""
 
-msgid "There was an error fetching the form data"
+msgid "There was an error fetching data for the form"
 msgstr ""
 
 msgid "There was an error gathering the chart data"

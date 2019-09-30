@@ -38,12 +38,6 @@ describe Issues::ZoomLinkService do
     end
   end
 
-  shared_context 'feature flag disabled' do
-    before do
-      stub_feature_flags(issue_zoom_integration: false)
-    end
-  end
-
   shared_context 'insufficient permissions' do
     before do
       project.add_guest(user)
@@ -78,11 +72,6 @@ describe Issues::ZoomLinkService do
         include_examples 'cannot add link'
       end
 
-      context 'when feature flag is disabled' do
-        include_context 'feature flag disabled'
-        include_examples 'cannot add link'
-      end
-
       context 'with insufficient permissions' do
         include_context 'insufficient permissions'
         include_examples 'cannot add link'
@@ -112,12 +101,6 @@ describe Issues::ZoomLinkService do
       include_context 'without Zoom link'
 
       it { is_expected.to eq(true) }
-
-      context 'when feature flag is disabled' do
-        include_context 'feature flag disabled'
-
-        it { is_expected.to eq(false) }
-      end
 
       context 'with insufficient permissions' do
         include_context 'insufficient permissions'
@@ -152,11 +135,6 @@ describe Issues::ZoomLinkService do
           .to eq(issue.description.delete_suffix("\n\n#{zoom_link}"))
       end
 
-      context 'when feature flag is disabled' do
-        include_context 'feature flag disabled'
-        include_examples 'cannot remove link'
-      end
-
       context 'with insufficient permissions' do
         include_context 'insufficient permissions'
         include_examples 'cannot remove link'
@@ -186,12 +164,6 @@ describe Issues::ZoomLinkService do
       include_context 'with Zoom link'
 
       it { is_expected.to eq(true) }
-
-      context 'when feature flag is disabled' do
-        include_context 'feature flag disabled'
-
-        it { is_expected.to eq(false) }
-      end
 
       context 'with insufficient permissions' do
         include_context 'insufficient permissions'

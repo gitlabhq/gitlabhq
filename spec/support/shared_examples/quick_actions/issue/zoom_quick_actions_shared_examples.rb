@@ -45,14 +45,6 @@ shared_examples 'zoom quick actions' do
         expect(page).to have_content('Failed to add a Zoom meeting')
         expect(page).not_to have_content(zoom_link)
       end
-
-      context 'when feature flag disabled' do
-        before do
-          stub_feature_flags(issue_zoom_integration: false)
-        end
-
-        include_examples 'skip silently'
-      end
     end
 
     context 'with Zoom link not at the end of the issue description' do
@@ -91,14 +83,6 @@ shared_examples 'zoom quick actions' do
 
         expect(page).to have_content('Zoom meeting removed')
         expect(issue.reload.description).to eq("Text with #{zoom_link}")
-      end
-
-      context 'when feature flag disabled' do
-        before do
-          stub_feature_flags(issue_zoom_integration: false)
-        end
-
-        include_examples 'skip silently'
       end
     end
 

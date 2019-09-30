@@ -1,4 +1,12 @@
 {
+  "qa/specs/features/ee/api/2_plan/epics_milestone_dates_spec.rb": 4.835599899291992,
+  "qa/specs/features/ee/browser_ui/2_plan/epic/epics_management_spec.rb": 69.85551619529724,
+  "qa/specs/features/ee/browser_ui/2_plan/epic/promote_issue_to_epic_spec.rb": 14.649160623550415,
+  "qa/specs/features/ee/browser_ui/2_plan/scoped_labels/editing_scoped_labels_spec.rb": 12.790381908416748,
+  "qa/specs/features/ee/browser_ui/3_create/merge_request/add_batch_comments_in_merge_request_spec.rb": 0.00018262863159179688,
+  "qa/specs/features/ee/browser_ui/3_create/repository/assign_code_owners_spec.rb": 59.73394823074341,
+  "qa/specs/features/ee/browser_ui/3_create/repository/code_owners_spec.rb": 26.39240026473999,
+  "qa/specs/features/ee/browser_ui/secure/create_project_with_secure_spec.rb": 46.76790499687195,
   "qa/specs/features/api/1_manage/users_spec.rb": 0.6089541912078857,
   "qa/specs/features/api/3_create/repository/files_spec.rb": 5.015859127044678,
   "qa/specs/features/api/3_create/repository/project_archive_compare_spec.rb": 1.0199065208435059,

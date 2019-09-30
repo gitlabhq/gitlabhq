@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe NavHelper, :do_not_mock_admin_mode do

@@ -1,5 +1,5 @@
 <script>
-import { __ } from '~/locale';
+import { s__, __ } from '~/locale';
 import { GlLink, GlButton } from '@gitlab/ui';
 import { GlAreaChart, GlLineChart, GlChartSeriesLabel } from '@gitlab/ui/dist/charts';
 import dateFormat from 'dateformat';
@@ -51,6 +51,16 @@ export default {
       type: Array,
       required: false,
       default: () => [],
+    },
+    legendAverageText: {
+      type: String,
+      required: false,
+      default: s__('Metrics|Avg'),
+    },
+    legendMaxText: {
+      type: String,
+      required: false,
+      default: s__('Metrics|Max'),
     },
   },
   data() {
@@ -260,7 +270,6 @@ export default {
         <slot></slot>
       </div>
     </div>
-
     <component
       :is="glChartComponent"
       ref="chart"
@@ -271,6 +280,8 @@ export default {
       :thresholds="thresholds"
       :width="width"
       :height="height"
+      :average-text="legendAverageText"
+      :max-text="legendMaxText"
       @updated="onChartUpdated"
     >
       <template v-if="tooltip.isDeployment">

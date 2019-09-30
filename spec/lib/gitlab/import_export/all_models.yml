@@ -250,7 +250,6 @@ project:
 - cluster
 - clusters
 - cluster_project
-- cluster_ingresses
 - creator
 - cycle_analytics_stages
 - group

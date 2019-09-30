@@ -373,6 +373,8 @@ module GpgHelpers
       KEY
     end
 
+    # passphrase for secret key is:
+    # 4a45718624c9939a043471d83d1eda7c
     def secret_key
       <<~SECRET
         -----BEGIN PGP PRIVATE KEY BLOCK-----

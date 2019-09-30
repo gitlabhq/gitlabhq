@@ -21,7 +21,7 @@
 
   - if any_dashboard_nav_link?([:groups, :milestones, :activity, :snippets])
     %li.header-more.dropdown
-      %a{ href: "#", data: { toggle: "dropdown" } }
+      %a{ href: "#", data: { toggle: "dropdown", qa_selector: 'more_dropdown' } }
         = _('More')
         = sprite_icon('angle-down', css_class: 'caret-down')
       .dropdown-menu
@@ -42,7 +42,7 @@
 
           - if dashboard_nav_link?(:snippets)
             = nav_link(controller: 'dashboard/snippets') do
-              = link_to dashboard_snippets_path, class: 'dashboard-shortcuts-snippets qa-snippets-link' do
+              = link_to dashboard_snippets_path, class: 'dashboard-shortcuts-snippets', data: { qa_selector: 'snippets_link' } do
                 = _('Snippets')
 
           = render_if_exists 'layouts/nav/sidebar/analytics_more_link'

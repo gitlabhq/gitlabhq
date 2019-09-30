@@ -67,7 +67,7 @@ Example response:
   "title": "Accusamus iste et ullam ratione voluptatem omnis debitis dolor est.",
   "description": "Molestias dolorem eos vitae expedita impedit necessitatibus quo voluptatum.",
   "state": "opened",
-  "web_edit_url": "http://localhost:3001/groups/test/-/epics/4",
+  "web_url": "http://localhost:3001/groups/test/-/epics/4",
   "reference": "&4",
   "author": {
     "id": 10,
@@ -122,7 +122,7 @@ Example response:
   "title": "Ea cupiditate dolores ut vero consequatur quasi veniam voluptatem et non.",
   "description": "Molestias dolorem eos vitae expedita impedit necessitatibus quo voluptatum.",
   "state": "opened",
-  "web_edit_url": "http://localhost:3001/groups/test/-/epics/5",
+  "web_url": "http://localhost:3001/groups/test/-/epics/5",
   "reference": "&5",
   "author":{
     "id": 7,
@@ -188,7 +188,7 @@ Example response:
   "title": "Epic",
   "description": "Epic description",
   "state": "opened",
-  "web_edit_url": "http://localhost:3001/groups/test/-/epics/6",
+  "web_url": "http://localhost:3001/groups/test/-/epics/5",
   "reference": "&6",
   "author": {
     "name" : "Alexandra Bashirian",
@@ -255,7 +255,7 @@ Example response:
   "title": "New Title",
   "description": "Epic description",
   "state": "opened",
-  "web_edit_url": "http://localhost:3001/groups/test/-/epics/6",
+  "web_url": "http://localhost:3001/groups/test/-/epics/5",
   "reference": "&6",
   "author": {
     "name" : "Alexandra Bashirian",
