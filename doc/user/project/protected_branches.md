@@ -23,6 +23,8 @@ A GitLab admin is allowed to push to the protected branches.
 
 See the [Changelog](#changelog) section for changes over time.
 
+The default branch protection level is set in the [Admin Area](../admin_area/settings/visibility_and_access_controls.md#default-branch-protection).
+
 ## Configuring protected branches
 
 To protect a branch, you need to have at least Maintainer permission level. Note

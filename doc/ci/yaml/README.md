@@ -1897,14 +1897,14 @@ This example creates three paths of execution:
   - For self-managed instances, the limit is:
     - Five by default (`ci_dag_limit_needs` feature flag is enabled).
     - 50 if the `ci_dag_limit_needs` feature flag is disabled.
-- It is impossible for now to have `needs: []` (empty needs),
-  the job always needs to depend on something, unless this is the job
-  in the first stage (see [issue #65504](https://gitlab.com/gitlab-org/gitlab-foss/issues/65504)).
+- It is impossible for now to have `needs: []` (empty needs), the job always needs to
+  depend on something, unless this is the job in the first stage. However, support for
+  an empty needs array [is planned](https://gitlab.com/gitlab-org/gitlab/issues/30631).
 - If `needs:` refers to a job that is marked as `parallel:`.
   the current job will depend on all parallel jobs created.
-- `needs:` is similar to `dependencies:` in that it needs to use jobs from
-  prior stages, meaning it is impossible to create circular
-  dependencies or depend on jobs in the current stage (see [issue #65505](https://gitlab.com/gitlab-org/gitlab-foss/issues/65505)).
+- `needs:` is similar to `dependencies:` in that it needs to use jobs from prior stages,
+  meaning it is impossible to create circular dependencies. Depending on jobs in the
+  current stage is not possible either, but support [is planned](https://gitlab.com/gitlab-org/gitlab/issues/30632).
 - Related to the above, stages must be explicitly defined for all jobs
   that have the keyword `needs:` or are referred to by one.
 

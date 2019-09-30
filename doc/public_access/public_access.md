@@ -4,7 +4,7 @@ type: reference
 
 # Public access
 
-GitLab allows [Owners](../user/permissions.md) to set a projects' visibility as **public**, **internal**
+GitLab allows [Owners](../user/permissions.md) to set a project's visibility as **public**, **internal**,
 or **private**. These visibility levels affect who can see the project in the
 public access directory (`/public` under your GitLab instance), like at <https://gitlab.com/public>
 
@@ -12,7 +12,7 @@ public access directory (`/public` under your GitLab instance), like at <https:/
 
 ### Public projects
 
-Public projects can be cloned **without any** authentication over https.
+Public projects can be cloned **without any** authentication over HTTPS.
 
 They will be listed in the public access directory (`/public`) for all users.
 
@@ -43,8 +43,8 @@ They will appear in the public access directory (`/public`) for project members 
 
 ### How to change project visibility
 
-1. Go to your project's **Settings**
-1. Change "Visibility Level" to either Public, Internal or Private
+1. Go to your project's **Settings**.
+1. Change **Visibility Level** to either Public, Internal, or Private.
 
 ## Visibility of groups
 
@@ -71,14 +71,11 @@ If the public level is restricted, user profiles are only visible to logged in u
 
 ## Restricting the use of public or internal projects
 
-In the Admin area under **Settings** (`/admin/application_settings`), you can
-restrict the use of visibility levels for users when they create a project or a
-snippet:
-
-![Restrict visibility levels](img/restrict_visibility_levels.png)
-
-This is useful to prevent people exposing their repositories to public
+You can restrict the use of visibility levels for users when they create a project or a
+snippet. This is useful to prevent users from publicly exposing their repositories
 by accident. The restricted visibility settings do not apply to admin users.
+
+For details, see [Restricted visibility levels](../user/admin_area/settings/visibility_and_access_controls.md#restricted-visibility-levels).
 
 <!-- ## Troubleshooting
 
