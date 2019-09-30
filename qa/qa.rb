@@ -435,6 +435,10 @@ module QA
         autoload :Login, 'qa/vendor/github/page/login'
       end
     end
+
+    module OnePassword
+      autoload :CLI, 'qa/vendor/one_password/cli'
+    end
   end
 
   # Classes that provide support to other parts of the framework.

@@ -56,10 +56,10 @@ namespace that started the import process.
    ![Grant access](img/bitbucket_import_grant_access.png)
 
 1. Click on the projects that you'd like to import or **Import all projects**.
-   You can also select the namespace under which each project will be
-   imported.
+   You can also filter projects by name and select the namespace under which
+   each project will be imported.
 
-   ![Import projects](img/bitbucket_import_select_project.png)
+   ![Import projects](img/bitbucket_import_select_project_v12_3.png)
 
 [bb-import]: ../../../integration/bitbucket.md
 [social sign-in]: ../../profile/account/social_sign_in.md

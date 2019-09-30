@@ -1,7 +1,7 @@
 # Migrating projects to a GitLab instance
 
-1. [From Bitbucket Cloud (aka bitbucket.org)](bitbucket.md)
-1. [From Bitbucket Server (aka Stash)](bitbucket_server.md)
+1. [From Bitbucket Cloud](bitbucket.md)
+1. [From Bitbucket Server (also known as Stash)](bitbucket_server.md)
 1. [From ClearCase](clearcase.md)
 1. [From CVS](cvs.md)
 1. [From FogBugz](fogbugz.md)
@@ -24,7 +24,7 @@ There is also the option of [connecting your external repository to get CI/CD be
 
 ## Migrating from self-hosted GitLab to GitLab.com
 
-If you only need to migrate git repos, you can [import each project by URL](repo_by_url.md), but issues and merge requests can't be imported.
+If you only need to migrate Git repos, you can [import each project by URL](repo_by_url.md), but issues and merge requests can't be imported.
 
 If you want to retain all metadata like issues and merge requests, you can use
 the [import/export feature](../settings/import_export.md) to export projects from self-hosted GitLab and import those projects into GitLab.com.
@@ -34,7 +34,7 @@ This approach assumes all users from the self-hosted instance have already been 
 If the users haven't been migrated yet, the user conducting the import
 will take the place of all references to the missing user(s).
 
-If you need to migrate all data over, you can leverage our [api](../../../api/README.md) to migrate from self-hosted to GitLab.com.
+If you need to migrate all data over, you can leverage our [API](../../../api/README.md) to migrate from self-hosted to GitLab.com.
 The order of assets to migrate from a self-hosted instance to GitLab is the following:
 
 1. [Users](../../../api/users.md)

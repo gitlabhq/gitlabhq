@@ -21,7 +21,7 @@ describe Gitlab::ImportExport::RelationRenameService do
 
   context 'when importing' do
     let(:project_tree_restorer) { Gitlab::ImportExport::ProjectTreeRestorer.new(user: user, shared: shared, project: project) }
-    let(:import_path) { 'spec/lib/gitlab/import_export' }
+    let(:import_path) { 'spec/fixtures/lib/gitlab/import_export' }
     let(:file_content) { IO.read("#{import_path}/project.json") }
     let!(:json_file) { ActiveSupport::JSON.decode(file_content) }
 

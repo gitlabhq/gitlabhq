@@ -470,6 +470,8 @@ describe 'Issues' do
             expect(page).to have_content 'None'
           end
 
+          wait_for_requests
+
           expect(issue.reload.assignees).to be_empty
         end
 

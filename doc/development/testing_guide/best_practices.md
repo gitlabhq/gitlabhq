@@ -51,7 +51,7 @@ bundle exec rspec spec/[path]/[to]/[spec].rb
   methods.
 - Use `context` to test branching logic.
 - Try to match the ordering of tests to the ordering within the class.
-- Try to follow the [Four-Phase Test][four-phase-test] pattern, using newlines
+- Try to follow the [Four-Phase Test](https://thoughtbot.com/blog/four-phase-test) pattern, using newlines
   to separate phases.
 - Use `Gitlab.config.gitlab.host` rather than hard coding `'localhost'`
 - Don't assert against the absolute value of a sequence-generated attribute (see
@@ -61,8 +61,6 @@ bundle exec rspec spec/[path]/[to]/[spec].rb
 - When using `evaluate_script("$('.js-foo').testSomething()")` (or `execute_script`) which acts on a given element,
   use a Capyabara matcher beforehand (e.g. `find('.js-foo')`) to ensure the element actually exists.
 - Use `focus: true` to isolate parts of the specs you want to run.
-
-[four-phase-test]: https://robots.thoughtbot.com/four-phase-test
 
 ### System / Feature tests
 
@@ -185,7 +183,7 @@ instead of 30+ seconds in case of a regular `spec_helper`.
 ### `let` variables
 
 GitLab's RSpec suite has made extensive use of `let`(along with it strict, non-lazy
-version `let!`) variables to reduce duplication. However, this sometimes [comes at the cost of clarity][lets-not],
+version `let!`) variables to reduce duplication. However, this sometimes [comes at the cost of clarity](https://thoughtbot.com/blog/lets-not),
 so we need to set some guidelines for their use going forward:
 
 - `let!` variables are preferable to instance variables. `let` variables
@@ -203,8 +201,6 @@ so we need to set some guidelines for their use going forward:
 - `let!` variables should be used only in case if strict evaluation with defined
   order is required, otherwise `let` will suffice. Remember that `let` is lazy and won't
   be evaluated until it is referenced.
-
-[lets-not]: https://robots.thoughtbot.com/lets-not
 
 ### `set` variables
 
@@ -532,7 +528,7 @@ GitLab uses [factory_bot] as a test fixture replacement.
 - There should be only one top-level factory definition per file.
 - FactoryBot methods are mixed in to all RSpec groups. This means you can (and
   should) call `create(...)` instead of `FactoryBot.create(...)`.
-- Make use of [traits] to clean up definitions and usages.
+- Make use of [traits](https://www.rubydoc.info/gems/factory_bot/file/GETTING_STARTED.md#Traits) to clean up definitions and usages.
 - When defining a factory, don't define attributes that are not required for the
   resulting record to pass validation.
 - When instantiating from a factory, don't supply attributes that aren't
@@ -541,7 +537,6 @@ GitLab uses [factory_bot] as a test fixture replacement.
   [See example](https://gitlab.com/gitlab-org/gitlab-foss/commit/0b8cefd3b2385a21cfed779bd659978c0402766d).
 
 [factory_bot]: https://github.com/thoughtbot/factory_bot
-[traits]: http://www.rubydoc.info/gems/factory_bot/file/GETTING_STARTED.md#Traits
 
 ### Fixtures
 

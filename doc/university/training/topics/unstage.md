@@ -16,7 +16,7 @@ comments: false
   git checkout -- <file>
   ```
 
-- To remove a file from disk and repo use 'git rm' and to rm a dir use the '-r' flag:
+- To remove a file from disk and repo use `git rm` and to remove a directory use the `-r` flag:
 
   ```sh
   git rm '*.txt'

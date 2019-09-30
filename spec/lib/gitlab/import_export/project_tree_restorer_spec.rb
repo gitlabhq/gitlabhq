@@ -2,6 +2,8 @@ require 'spec_helper'
 include ImportExport::CommonUtil
 
 describe Gitlab::ImportExport::ProjectTreeRestorer do
+  let(:shared) { project.import_export_shared }
+
   describe 'restore project tree' do
     before(:context) do
       # Using an admin for import, so we can check assignment of existing members
@@ -14,7 +16,7 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
       RSpec::Mocks.with_temporary_scope do
         @project = create(:project, :builds_enabled, :issues_disabled, name: 'project', path: 'project')
         @shared = @project.import_export_shared
-        allow(@shared).to receive(:export_path).and_return('spec/lib/gitlab/import_export/')
+        allow(@shared).to receive(:export_path).and_return('spec/fixtures/lib/gitlab/import_export/')
 
         allow_any_instance_of(Repository).to receive(:fetch_source_branch!).and_return(true)
         allow_any_instance_of(Gitlab::Git::Repository).to receive(:branch_exists?).and_return(false)
@@ -274,36 +276,6 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
     end
   end
 
-  shared_examples 'restores project successfully' do
-    it 'correctly restores project' do
-      expect(shared.errors).to be_empty
-      expect(restored_project_json).to be_truthy
-    end
-  end
-
-  shared_examples 'restores project correctly' do |**results|
-    it 'has labels' do
-      expect(project.labels.size).to eq(results.fetch(:labels, 0))
-    end
-
-    it 'has label priorities' do
-      expect(project.labels.find_by(title: 'A project label').priorities).not_to be_empty
-    end
-
-    it 'has milestones' do
-      expect(project.milestones.size).to eq(results.fetch(:milestones, 0))
-    end
-
-    it 'has issues' do
-      expect(project.issues.size).to eq(results.fetch(:issues, 0))
-    end
-
-    it 'does not set params that are excluded from import_export settings' do
-      expect(project.import_type).to be_nil
-      expect(project.creator_id).not_to eq 123
-    end
-  end
-
   shared_examples 'restores group correctly' do |**results|
     it 'has group label' do
       expect(project.group.labels.size).to eq(results.fetch(:labels, 0))
@@ -322,18 +294,17 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
 
   context 'Light JSON' do
     let(:user) { create(:user) }
-    let(:shared) { project.import_export_shared }
     let!(:project) { create(:project, :builds_disabled, :issues_disabled, name: 'project', path: 'project') }
     let(:project_tree_restorer) { described_class.new(user: user, shared: shared, project: project) }
     let(:restored_project_json) { project_tree_restorer.restore }
 
     before do
-      allow(shared).to receive(:export_path).and_return('spec/lib/gitlab/import_export/')
+      allow(shared).to receive(:export_path).and_return('spec/fixtures/lib/gitlab/import_export/')
     end
 
     context 'with a simple project' do
       before do
-        project_tree_restorer.instance_variable_set(:@path, "spec/lib/gitlab/import_export/project.light.json")
+        project_tree_restorer.instance_variable_set(:@path, "spec/fixtures/lib/gitlab/import_export/project.light.json")
 
         restored_project_json
       end
@@ -341,6 +312,7 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
       it_behaves_like 'restores project correctly',
                       issues: 1,
                       labels: 2,
+                      label_with_priorities: 'A project label',
                       milestones: 1,
                       first_issue_labels: 1,
                       services: 1
@@ -363,7 +335,12 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
           create(:ci_build, token: 'abcd')
         end
 
-        it_behaves_like 'restores project successfully'
+        it_behaves_like 'restores project correctly',
+                        issues: 1,
+                        labels: 2,
+                        label_with_priorities: 'A project label',
+                        milestones: 1,
+                        first_issue_labels: 1
       end
     end
 
@@ -430,15 +407,15 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
       end
 
       before do
-        project_tree_restorer.instance_variable_set(:@path, "spec/lib/gitlab/import_export/project.group.json")
+        project_tree_restorer.instance_variable_set(:@path, "spec/fixtures/lib/gitlab/import_export/project.group.json")
 
         restored_project_json
       end
 
-      it_behaves_like 'restores project successfully'
       it_behaves_like 'restores project correctly',
                       issues: 2,
                       labels: 2,
+                      label_with_priorities: 'A project label',
                       milestones: 2,
                       first_issue_labels: 1
 
@@ -459,7 +436,7 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
       end
 
       before do
-        project_tree_restorer.instance_variable_set(:@path, "spec/lib/gitlab/import_export/project.light.json")
+        project_tree_restorer.instance_variable_set(:@path, "spec/fixtures/lib/gitlab/import_export/project.light.json")
       end
 
       it 'does not import any templated services' do
@@ -501,7 +478,7 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
       end
 
       it 'preserves the project milestone IID' do
-        project_tree_restorer.instance_variable_set(:@path, "spec/lib/gitlab/import_export/project.milestone-iid.json")
+        project_tree_restorer.instance_variable_set(:@path, "spec/fixtures/lib/gitlab/import_export/project.milestone-iid.json")
 
         expect_any_instance_of(Gitlab::ImportExport::Shared).not_to receive(:error)
 
@@ -534,7 +511,6 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
 
   describe '#restored_project' do
     let(:project) { create(:project) }
-    let(:shared) { project.import_export_shared }
     let(:tree_hash) { { 'visibility_level' => visibility } }
     let(:restorer) { described_class.new(user: nil, shared: shared, project: project) }
 

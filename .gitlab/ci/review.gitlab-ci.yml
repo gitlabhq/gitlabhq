@@ -209,7 +209,7 @@ review-qa-all:
   when: manual
   parallel: 5
   script:
-    - export KNAPSACK_REPORT_PATH=knapsack/${CI_PROJECT_NAME}/review-qa-all_master_report.json
+    - export KNAPSACK_REPORT_PATH=knapsack/master_report.json
     - export KNAPSACK_TEST_FILE_PATTERN=qa/specs/features/**/*_spec.rb
     - gitlab-qa Test::Instance::Any "${QA_IMAGE}" "${CI_ENVIRONMENT_URL}" -- --format RspecJunitFormatter --out tmp/rspec-${CI_JOB_ID}.xml --format html --out tmp/rspec.htm --color --format documentation
 

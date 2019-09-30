@@ -9,9 +9,7 @@ module Search
     end
 
     def execute
-      snippets = SnippetsFinder.new(current_user).execute
-
-      Gitlab::SnippetSearchResults.new(snippets, params[:search])
+      Gitlab::SnippetSearchResults.new(current_user, params[:search])
     end
 
     def scope

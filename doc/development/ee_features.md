@@ -28,77 +28,13 @@ to something that evaluates as `false`. The same works for running tests
 
 ## Separation of EE code
 
-We want a [single code base][] eventually, but before we reach the goal,
-we still need to merge changes from GitLab CE to EE. To help us get there,
-we should make sure that we no longer edit CE files in place in order to
-implement EE features.
-
-Instead, all EE code should be put inside the `ee/` top-level directory. The
+All EE code should be put inside the `ee/` top-level directory. The
 rest of the code should be as close to the CE files as possible.
-
-[single code base]: https://gitlab.com/gitlab-org/gitlab/issues/2952#note_41016454
-
-### EE-specific comments
-
-When complete separation can't be achieved with the `ee/` directory, you can wrap
-code in EE specific comments to designate the difference from CE/EE and add
-some context for someone resolving a conflict.
-
-```rb
-# EE-specific start
-stub_licensed_features(variable_environment_scope: true)
-# EE specific end
-```
-
-```haml
--# EE-specific start
-= render 'ci/variables/environment_scope', form_field: form_field, variable: variable
--# EE-specific end
-```
-
-EE-specific comments should not be backported to CE.
-
-**Note:** This is only meant as a workaround, we should follow up and
-resolve this soon.
-
-### Detection of EE-only files
-
-For each commit (except on `master`), the `ee-files-location-check` CI job tries
-to detect if there are any new files that are EE-only. If any file is detected,
-the job fails with an explanation of why and what to do to make it pass.
-
-Basically, the fix is simple: `git mv <file> ee/<file>`.
-
-#### How to name your branches?
-
-For any EE branch, the job will try to detect its CE counterpart by removing any
-`ee-` prefix or `-ee` suffix from the EE branch name, and matching the last
-branch that contains it.
-
-For instance, from the EE branch `new-shiny-feature-ee` (or
-`ee-new-shiny-feature`), the job would find the corresponding CE branches:
-
-- `new-shiny-feature`
-- `ce-new-shiny-feature`
-- `new-shiny-feature-ce`
-- `my-super-new-shiny-feature-in-ce`
-
-#### Whitelist some EE-only files that cannot be moved to `ee/`
-
-The `ee-files-location-check` CI job provides a whitelist of files or folders
-that cannot or should not be moved to `ee/`. Feel free to open an issue to
-discuss adding a new file/folder to this whitelist.
-
-For instance, it was decided that moving EE-only files from `qa/` to `ee/qa/`
-would make it difficult to build the `gitLab-{ce,ee}-qa` Docker images and it
-was [not worth the complexity].
-
-[not worth the complexity]: https://gitlab.com/gitlab-org/gitlab/issues/4997#note_59764702
 
 ### EE-only features
 
 If the feature being developed is not present in any form in CE, we don't
-need to put the codes under `EE` namespace. For example, an EE model could
+need to put the code under the `EE` namespace. For example, an EE model could
 go into: `ee/app/models/awesome.rb` using `Awesome` as the class name. This
 is applied not only to models. Here's a list of other examples:
 
@@ -116,7 +52,7 @@ is applied not only to models. Here's a list of other examples:
 - `ee/app/views/foo.html.haml`
 - `ee/app/views/foo/_bar.html.haml`
 
-This works because for every path that are present in CE's eager-load/auto-load
+This works because for every path that is present in CE's eager-load/auto-load
 paths, we add the same `ee/`-prepended path in [`config/application.rb`].
 This also applies to views.
 
@@ -441,13 +377,10 @@ CE and EE.
 
 The advantages of this:
 
-- Minimal code difference between CE and EE.
-- Very clear hints about where we're extending EE views while reading CE codes.
+- Very clear hints about where we're extending EE views while reading CE code.
 
 The disadvantage of this:
 
-- Slightly more work while developing EE features, because now we need to
-  port `render_if_exists` to CE.
 - If we have typos in the partial name, it would be silently ignored.
 
 ##### Caveats
@@ -858,7 +791,7 @@ end
 ### Code in `spec/`
 
 When you're testing EE-only features, avoid adding examples to the
-existing CE specs. Also do no change existing CE examples, since they
+existing CE specs. Also do not change existing CE examples, since they
 should remain working as-is when EE is running without a license.
 
 Instead place EE specs in the `ee/spec` folder.
@@ -992,10 +925,8 @@ For regular JS files, the approach is similar.
 
 ## SCSS code in `assets/stylesheets`
 
-To separate EE-specific styles in SCSS files, if a component you're adding styles for
-is limited to only EE, it is better to have a separate SCSS file in appropriate directory
-within `app/assets/stylesheets`.
-See [backporting changes](#backporting-changes-from-ee-to-ce) for instructions on how to merge changes safely.
+If a component you're adding styles for is limited to EE, it is better to have a
+separate SCSS file in an appropriate directory within `app/assets/stylesheets`.
 
 In some cases, this is not entirely possible or creating dedicated SCSS file is an overkill,
 e.g. a text style of some component is different for EE. In such cases,
@@ -1036,24 +967,6 @@ to avoid conflicts during CE to EE merge.
 }
 // EE-specific end
 ```
-
-## Backporting changes from EE to CE
-
-Until the work completed to merge the ce and ee codebases, which is tracked on [epic &802](https://gitlab.com/groups/gitlab-org/-/epics/802), there exists times in which some changes for EE require specific changes to the CE
-code base.  Examples of backports include the following:
-
-- Features intended or originally built for EE that are later decided to move to CE
-- Sometimes some code in CE may impact the EE feature
-
-Here is a workflow to make sure those changes end up backported safely into CE too.
-
-1. **Make your changes in the EE branch.** If possible, keep a separated commit (to be squashed) to help backporting and review.
-1. **Open merge request to EE project.**
-1. **Apply the changes you made to CE files in a branch of the CE project.** (Tip: Use `patch` with the diff from your commit in EE branch)
-1. **Open merge request to CE project**, referring it's a backport of EE changes and link to MR open in EE.
-1. Once EE MR is merged, the MR towards CE can be merged. **But not before**.
-
-**Note:** regarding SCSS, make sure the files living outside `/ee/` don't diverge between CE and EE projects.
 
 ## GitLab-svgs
 

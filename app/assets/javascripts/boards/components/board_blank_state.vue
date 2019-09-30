@@ -29,25 +29,25 @@ export default {
         });
       });
 
+      const loadListIssues = listObj => {
+        const list = boardsStore.findList('title', listObj.title);
+
+        if (!list) {
+          return null;
+        }
+
+        list.id = listObj.id;
+        list.label.id = listObj.label.id;
+        return list.getIssues().catch(() => {
+          // TODO: handle request error
+        });
+      };
+
       // Save the labels
       boardsStore
         .generateDefaultLists()
         .then(res => res.data)
-        .then(data => {
-          data.forEach(listObj => {
-            const list = boardsStore.findList('title', listObj.title);
-
-            if (!list) {
-              return;
-            }
-
-            list.id = listObj.id;
-            list.label.id = listObj.label.id;
-            list.getIssues().catch(() => {
-              // TODO: handle request error
-            });
-          });
-        })
+        .then(data => Promise.all(data.map(loadListIssues)))
         .catch(() => {
           boardsStore.removeList(undefined, 'label');
           Cookies.remove('issue_board_welcome_hidden', {

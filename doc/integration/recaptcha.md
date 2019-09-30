@@ -12,7 +12,7 @@ To use reCAPTCHA, first you must create a site and private key.
 1. Fill out the form necessary to obtain reCAPTCHA v2 keys.
 1. Log in to your GitLab server, with administrator credentials.
 1. Go to Reporting Applications Settings in the Admin Area (`admin/application_settings/reporting`).
-1. Fill all recaptcha fields with keys from previous steps.
+1. Fill all reCAPTCHA fields with keys from previous steps.
 1. Check the `Enable reCAPTCHA` checkbox.
 1. Save the configuration.
 

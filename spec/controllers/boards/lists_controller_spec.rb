@@ -14,6 +14,10 @@ describe Boards::ListsController do
   end
 
   describe 'GET index' do
+    before do
+      create(:list, board: board)
+    end
+
     it 'returns a successful 200 response' do
       read_board_list user: user, board: board
 
@@ -22,27 +26,22 @@ describe Boards::ListsController do
     end
 
     it 'returns a list of board lists' do
-      create(:list, board: board)
-
       read_board_list user: user, board: board
 
       expect(response).to match_response_schema('lists')
       expect(json_response.length).to eq 3
     end
 
-    it 'avoids n+1 queries when serializing lists' do
-      list_1 = create(:list, board: board)
-      list_1.update_preferences_for(user, { collapsed: true })
+    context 'when another user has list preferences' do
+      before do
+        board.lists.first.update_preferences_for(guest, collapsed: true)
+      end
 
-      control_count = ActiveRecord::QueryRecorder.new { read_board_list user: user, board: board }.count
+      it 'returns the complete list of board lists' do
+        read_board_list user: user, board: board
 
-      list_2 = create(:list, board: board)
-      list_2.update_preferences_for(user, { collapsed: true })
-
-      list_3 = create(:list, board: board)
-      list_3.update_preferences_for(user, { collapsed: true })
-
-      expect { read_board_list user: user, board: board }.not_to exceed_query_limit(control_count)
+        expect(json_response.length).to eq 3
+      end
     end
 
     context 'with unauthorized user' do

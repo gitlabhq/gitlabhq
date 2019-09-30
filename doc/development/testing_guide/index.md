@@ -19,7 +19,7 @@ integration testing.
 Following are two great articles that everyone should read to understand what
 automated testing means, and what are its principles:
 
-- [Five Factor Testing](https://www.devmynd.com/blog/five-factor-testing): Why do we need tests?
+- [Five Factor Testing](https://madeintandem.com/blog/five-factor-testing/): Why do we need tests?
 - [Principles of Automated Testing](http://www.lihaoyi.com/post/PrinciplesofAutomatedTesting.html): Levels of testing. Prioritize tests. Cost of tests.
 
 ## [Testing levels](testing_levels.md)

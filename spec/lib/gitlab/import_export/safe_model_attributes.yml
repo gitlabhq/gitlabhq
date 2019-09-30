@@ -731,3 +731,18 @@ ExternalPullRequest:
 - target_repository
 - source_sha
 - target_sha
+DesignManagement::Design:
+- id
+- project_id
+- issue_id
+- filename
+DesignManagement::Action:
+- design_id
+- event
+- version_id
+DesignManagement::Version:
+- id
+- created_at
+- sha
+- issue_id
+- user_id

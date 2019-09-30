@@ -151,6 +151,11 @@ module QA
       end
 
       def within_element_by_index(name, index)
+        # Finding all elements can be flaky if the elements don't all load
+        # immediately. So we wait for any to appear before trying to find a
+        # specific one.
+        has_element?(name)
+
         page.within all_elements(name)[index] do
           yield
         end

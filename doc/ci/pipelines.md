@@ -405,3 +405,44 @@ branches, avoiding untrusted code to be executed on the protected runner and
 preserving deployment keys and other credentials from being unintentionally
 accessed. In order to ensure that jobs intended to be executed on protected
 runners will not use regular runners, they must be tagged accordingly.
+
+## Persistent pipeline refs
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/17043) in GitLab 12.4.
+
+Previously, you'd have encountered unexpected pipeline failures when you force-pushed
+a branch to its remote repository. To illustrate the problem, suppose you've had the current workflow:
+
+1. A user creates a feature branch named `example` and pushes it to a remote repository.
+1. A new pipeline starts running on the `example` branch.
+1. A user rebases the `example` branch on the latest `master` branch and force-pushes it to its remote repository.
+1. A new pipeline starts running on the `example` branch again, however,
+   the previous pipeline (2) fails because of `fatal: reference is not a tree:` error.
+
+This is because the previous pipeline cannot find a checkout-SHA (which associated with the pipeline record)
+from the `example` branch that the commit history has already been overwritten by the force-push.
+Similarly, [Pipelines for merged results](merge_request_pipelines/pipelines_for_merged_results/index.md)
+might have failed intermittently due to [the same reason](merge_request_pipelines/pipelines_for_merged_results/index.md#intermittently-pipelines-fail-by-fatal-reference-is-not-a-tree-error).
+
+As of GitLab 12.4, we've improved this behavior by persisting pipeline refs exclusively.
+To illustrate its life cycle:
+
+1. A pipeline is created on a feature branch named `example`.
+1. A persistent pipeline ref is created at `refs/pipelines/<pipeline-id>`,
+   which retains the checkout-SHA of the associated pipeline record.
+   This persistent ref stays intact during the pipeline execution,
+   even if the commit history of the `example` branch has been overwritten by force-push.
+1. GitLab Runner fetches the persistent pipeline ref and gets source code from the checkout-SHA.
+1. When the pipeline finished, its persistent ref is cleaned up in a background process.
+
+NOTE: **NOTE**: At this moment, this feature is off dy default and can be manually enabled
+by enabling `depend_on_persistent_pipeline_ref` feature flag, however, we'd remove this
+feature flag and make it enabled by deafult by the day we release 12.4 _if we don't find any issues_.
+If you'd be interested in manually turning on this behavior, please ask the administrator
+to execute the following commands in rails console.
+
+```shell
+> sudo gitlab-rails console                                        # Login to Rails console of GitLab instance.
+> project = Project.find_by_full_path('namespace/project-name')    # Get the project instance.
+> Feature.enable(:depend_on_persistent_pipeline_ref, project)      # Enable the feature flag.
+```

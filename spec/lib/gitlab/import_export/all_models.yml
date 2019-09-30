@@ -250,7 +250,6 @@ project:
 - cluster
 - clusters
 - cluster_project
-- cluster_ingresses
 - creator
 - cycle_analytics_stages
 - group
@@ -502,3 +501,17 @@ lists:
 milestone_releases:
 - milestone
 - release
+design: &design
+- issue
+- actions
+- versions
+- notes
+designs: *design
+actions:
+- design
+- version
+versions: &version
+- issue
+- designs
+- actions
+design_versions: *version

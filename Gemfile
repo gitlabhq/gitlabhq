@@ -311,7 +311,7 @@ gem 'gettext', '~> 3.2.2', require: false, group: :development
 gem 'batch-loader', '~> 1.4.0'
 
 # Perf bar
-# https://gitlab.com/gitlab-org/gitlab-ee/issues/13996
+# https://gitlab.com/gitlab-org/gitlab/issues/13996
 gem 'gitlab-peek', '~> 0.0.1', require: 'peek'
 
 # Snowplow events tracking

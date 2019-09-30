@@ -16,14 +16,14 @@ a black-box testing framework for the API and the UI.
 ### Testing nightly builds
 
 We run scheduled pipeline each night to test nightly builds created by Omnibus.
-You can find these nightly pipelines at [gitlab-org/quality/nightly/pipelines][quality-nightly-pipelines].
-Results are reported in the `#qa-nightly` Slack channel.
+You can find these nightly pipelines at `https://gitlab.com/gitlab-org/quality/nightly/pipelines`
+(need Developer access permissions). Results are reported in the `#qa-nightly` Slack channel.
 
 ### Testing staging
 
 We run scheduled pipeline each night to test staging.
-You can find these nightly pipelines at [gitlab-org/quality/staging/pipelines][quality-staging-pipelines].
-Results are reported in the `#qa-staging` Slack channel.
+You can find these nightly pipelines at `https://gitlab.com/gitlab-org/quality/staging/pipelines`
+(need developer access permissions). Results are reported in the `#qa-staging` Slack channel.
 
 ### Testing code in merge requests
 
@@ -141,8 +141,6 @@ you can find an issue you would like to work on in
 [omnibus-gitlab]: https://gitlab.com/gitlab-org/omnibus-gitlab
 [gitlab-qa]: https://gitlab.com/gitlab-org/gitlab-qa
 [gitlab-qa-readme]: https://gitlab.com/gitlab-org/gitlab-qa/tree/master/README.md
-[quality-nightly-pipelines]: https://gitlab.com/gitlab-org/quality/nightly/pipelines
-[quality-staging-pipelines]: https://gitlab.com/gitlab-org/quality/staging/pipelines
 [review-apps]: ../review_apps.md
 [gitlab-qa-architecture]: https://gitlab.com/gitlab-org/gitlab-qa/blob/master/docs/architecture.md
 [gitlab-qa-issues]: https://gitlab.com/gitlab-org/gitlab-qa/issues?label_name%5B%5D=new+scenario

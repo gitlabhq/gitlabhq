@@ -56,6 +56,8 @@ For more examples on artifacts, follow the [artifacts reference in
 > directly in a new tab without the need to download them when
 > [GitLab Pages](../../../administration/pages/index.md) is enabled.
 > The same holds for textual formats (currently supported extensions: `.txt`, `.json`, and `.log`).
+> With [GitLab 12.4][gitlab-16675], also artifacts in private projects can be previewed
+> when [GitLab Pages access control](../../../administration/pages/index.md#access-control) is enabled.
 
 After a job finishes, if you visit the job's specific page, there are three
 buttons. You can download the artifacts archive or browse its contents, whereas
@@ -198,6 +200,7 @@ In order to retrieve a job artifact of a different project, you might need to us
 
 [expiry date]: ../../../ci/yaml/README.md#artifactsexpire_in
 [ce-14399]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/14399
+[gitlab-16675]: https://gitlab.com/gitlab-org/gitlab/merge_requests/16675
 
 <!-- ## Troubleshooting
 

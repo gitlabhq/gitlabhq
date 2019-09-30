@@ -19,7 +19,8 @@ Unfortunately, it's not so easy and that workflow won't work. Deleting files in
 a commit doesn't actually reduce the size of the repo since the earlier commits
 and blobs are still around. What you need to do is rewrite history with Git's
 [`filter-branch` option](https://git-scm.com/book/en/v2/Git-Tools-Rewriting-History#The-Nuclear-Option:-filter-branch),
-or a tool like the [BFG Repo-Cleaner](https://rtyley.github.io/bfg-repo-cleaner/).
+or an open source community-maintained tool like the  
+[BFG](https://rtyley.github.io/bfg-repo-cleaner/).
 
 Note that even with that method, until `git gc` runs on the GitLab side, the
 "removed" commits and blobs will still be around. You also need to be able to
@@ -34,8 +35,9 @@ temporarily increase it for you, your only option is to prune all the unneeded
 stuff locally, and then create a new project on GitLab and start using that
 instead.
 
-If you can continue to use the original project, we recommend [using the
-BFG Repo-Cleaner](#using-the-bfg-repo-cleaner). It's faster and simpler than
+If you can continue to use the original project, we recommend [using
+BFG](#using-the-bfg-repo-cleaner), a tool that's built and
+maintained by the open source community. It's faster and simpler than
 `git filter-branch`, and GitLab can use its account of what has changed to clean
 up its own internal state, maximizing the space saved.
 
@@ -54,7 +56,7 @@ removed from the repository.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/19376) in GitLab 11.6.
 
-1. [Install BFG](https://rtyley.github.io/bfg-repo-cleaner/).
+1. [Install BFG](https://rtyley.github.io/bfg-repo-cleaner/) from its open source community repository.
 
 1. Navigate to your repository:
 

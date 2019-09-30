@@ -18,10 +18,24 @@ module API
       params do
         optional :with_counts, type: Boolean, default: false,
                  desc: 'Include issue and merge request counts'
+        optional :include_ancestor_groups, type: Boolean, default: true,
+                 desc: 'Include ancestor groups'
         use :pagination
       end
       get ':id/labels' do
-        get_labels(user_group, Entities::GroupLabel)
+        get_labels(user_group, Entities::GroupLabel, include_ancestor_groups: params[:include_ancestor_groups])
+      end
+
+      desc 'Get a single label' do
+        detail 'This feature was added in GitLab 12.4.'
+        success Entities::GroupLabel
+      end
+      params do
+        optional :include_ancestor_groups, type: Boolean, default: true,
+                 desc: 'Include ancestor groups'
+      end
+      get ':id/labels/:name' do
+        get_label(user_group, Entities::GroupLabel, include_ancestor_groups: params[:include_ancestor_groups])
       end
 
       desc 'Create a new label' do
@@ -36,28 +50,50 @@ module API
       end
 
       desc 'Update an existing label. At least one optional parameter is required.' do
-        detail 'This feature was added in GitLab 11.8'
+        detail 'This feature was added in GitLab 11.8 and deprecated in GitLab 12.4.'
         success Entities::GroupLabel
       end
       params do
-        requires :name, type: String, desc: 'The name of the label to be updated'
-        optional :new_name, type: String, desc: 'The new name of the label'
-        optional :color, type: String, desc: "The new color of the label given in 6-digit hex notation with leading '#' sign (e.g. #FFAABB) or one of the allowed CSS color names"
-        optional :description, type: String, desc: 'The new description of label'
-        at_least_one_of :new_name, :color, :description
+        optional :label_id, type: Integer, desc: 'The id of the label to be updated'
+        optional :name, type: String, desc: 'The name of the label to be updated'
+        use :group_label_update_params
+        exactly_one_of :label_id, :name
       end
       put ':id/labels' do
         update_label(user_group, Entities::GroupLabel)
       end
 
       desc 'Delete an existing label' do
-        detail 'This feature was added in GitLab 11.8'
+        detail 'This feature was added in GitLab 11.8 and deprecated in GitLab 12.4.'
         success Entities::GroupLabel
       end
       params do
         requires :name, type: String, desc: 'The name of the label to be deleted'
       end
       delete ':id/labels' do
+        delete_label(user_group)
+      end
+
+      desc 'Update an existing label. At least one optional parameter is required.' do
+        detail 'This feature was added in GitLab 12.4.'
+        success Entities::GroupLabel
+      end
+      params do
+        requires :name, type: String, desc: 'The name or id of the label to be updated'
+        use :group_label_update_params
+      end
+      put ':id/labels/:name' do
+        update_label(user_group, Entities::GroupLabel)
+      end
+
+      desc 'Delete an existing label' do
+        detail 'This feature was added in GitLab 12.4.'
+        success Entities::GroupLabel
+      end
+      params do
+        requires :name, type: String, desc: 'The name or id of the label to be deleted'
+      end
+      delete ':id/labels/:name' do
         delete_label(user_group)
       end
     end

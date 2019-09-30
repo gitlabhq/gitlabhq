@@ -465,7 +465,7 @@ have been marked as a **Work In Progress**.
 ## Merge Requests for Confidential Issues
 
 Create [merge requests to resolve confidential issues](../issues/confidential_issues.md#merge-requests-for-confidential-issues)
-for preventing leakage or early release of sentive data through regular merge requests.
+for preventing leakage or early release of sensitive data through regular merge requests.
 
 ## Merge request approvals **(STARTER)**
 

@@ -62,7 +62,7 @@ git push origin master
 
 ## Note
 
-- git revert vs git reset
+- `git revert` vs `git reset`
 - Reset removes the commit while revert removes the changes but leaves the commit
 - Revert is safer considering we can revert a revert
 

@@ -9,6 +9,7 @@ module Groups
 
     def execute
       remove_unallowed_params
+      set_visibility_level
 
       @group = Group.new(params)
 
@@ -67,6 +68,12 @@ module Groups
       end
 
       true
+    end
+
+    def set_visibility_level
+      return if visibility_level.present?
+
+      params[:visibility_level] = Gitlab::CurrentSettings.current_application_settings.default_group_visibility
     end
   end
 end

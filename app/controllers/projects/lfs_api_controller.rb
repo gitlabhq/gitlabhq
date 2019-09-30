@@ -2,6 +2,7 @@
 
 class Projects::LfsApiController < Projects::GitHttpClientController
   include LfsRequest
+  include Gitlab::Utils::StrongMemoize
 
   LFS_TRANSFER_CONTENT_TYPE = 'application/octet-stream'
 
@@ -81,7 +82,7 @@ class Projects::LfsApiController < Projects::GitHttpClientController
       download: {
         href: "#{project.http_url_to_repo}/gitlab-lfs/objects/#{object[:oid]}",
         header: {
-          Authorization: request.headers['Authorization']
+          Authorization: authorization_header
         }.compact
       }
     }
@@ -92,7 +93,7 @@ class Projects::LfsApiController < Projects::GitHttpClientController
       upload: {
         href: "#{project.http_url_to_repo}/gitlab-lfs/objects/#{object[:oid]}/#{object[:size]}",
         header: {
-          Authorization: request.headers['Authorization'],
+          Authorization: authorization_header,
           # git-lfs v2.5.0 sets the Content-Type based on the uploaded file. This
           # ensures that Workhorse can intercept the request.
           'Content-Type': LFS_TRANSFER_CONTENT_TYPE
@@ -121,6 +122,18 @@ class Projects::LfsApiController < Projects::GitHttpClientController
   # Overridden in EE
   def lfs_read_only_message
     _('You cannot write to this read-only GitLab instance.')
+  end
+
+  def authorization_header
+    strong_memoize(:authorization_header) do
+      lfs_auth_header || request.headers['Authorization']
+    end
+  end
+
+  def lfs_auth_header
+    return unless user.is_a?(User)
+
+    Gitlab::LfsToken.new(user).basic_encoding
   end
 end
 

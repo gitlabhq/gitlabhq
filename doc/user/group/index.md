@@ -182,14 +182,17 @@ There are two different ways to add a new project to a group:
 > Brought to [GitLab Starter][ee] in 10.7.
 > [Moved](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/25975) to [GitLab Core](https://about.gitlab.com/pricing/) in 11.10.
 
-Group owners and administrators can allow users with the
-Developer role to create projects under groups.
+By default, [Developers and Maintainers](../permissions.md#group-members-permissions) can create projects under a group.
 
-By default, [Developers and Maintainers](../permissions.md#group-members-permissions) can create projects under a group. You can change this setting for a specific group within the group settings, or
-you can set this option globally in the Admin area
-at **Settings > General > Visibility and access controls** (you must be a GitLab administrator).
+To change this setting for a specific group:
 
-Available settings are `No one`, `Maintainers`, or `Developers + Maintainers`.
+1. Go to the group's page.
+1. Go to **Settings > General**.
+1. Expand the **Permissions, LFS, 2FA** section.
+1. Select the desired option in the **Allowed to create projects** dropdown list.
+1. Click **Save changes**.
+
+To change this setting globally, see [Default project creation protection](../admin_area/settings/visibility_and_access_controls.md#default-project-creation-protection).
 
 ## Transfer projects into groups
 

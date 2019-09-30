@@ -207,5 +207,22 @@ describe Ci::BuildRunnerPresenter do
         end
       end
     end
+
+    context 'when persistent pipeline ref exists' do
+      let(:project) { create(:project, :repository) }
+      let(:sha) { project.repository.commit.sha }
+      let(:pipeline) { create(:ci_pipeline, sha: sha, project: project) }
+      let(:build) { create(:ci_build, pipeline: pipeline) }
+
+      before do
+        pipeline.persistent_ref.create
+      end
+
+      it 'exposes the persistent pipeline ref' do
+        is_expected
+          .to contain_exactly("+refs/pipelines/#{pipeline.id}:refs/pipelines/#{pipeline.id}",
+                              "+refs/heads/#{build.ref}:refs/remotes/origin/#{build.ref}")
+      end
+    end
   end
 end

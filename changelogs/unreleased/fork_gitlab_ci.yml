@@ -1,0 +1,5 @@
+---
+title: Preserve custom .gitlab-ci.yml config path when forking.
+merge_request: 17817
+author: Mathieu Parent
+type: added

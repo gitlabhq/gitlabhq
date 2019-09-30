@@ -11,6 +11,8 @@ module Boards
     def index
       lists = Boards::Lists::ListService.new(board.parent, current_user).execute(board)
 
+      List.preload_preferences_for_user(lists, current_user)
+
       render json: serialize_as_json(lists)
     end
 
@@ -51,7 +53,10 @@ module Boards
       service = Boards::Lists::GenerateService.new(board_parent, current_user)
 
       if service.execute(board)
-        lists = board.lists.movable.preload_associations(current_user)
+        lists = board.lists.movable.preload_associations
+
+        List.preload_preferences_for_user(lists, current_user)
+
         render json: serialize_as_json(lists)
       else
         head :unprocessable_entity

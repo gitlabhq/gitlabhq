@@ -13,7 +13,7 @@ REST-like manner. OIDC performs many of the same tasks as OpenID 2.0,
 but does so in a way that is API-friendly, and usable by native and
 mobile applications.
 
-On the client side, you can use [omniauth-openid-connect] for Rails
+On the client side, you can use [OmniAuth::OpenIDConnect](https://github.com/jjbohn/omniauth-openid-connect/) for Rails
 applications, or any of the other available [client implementations](https://openid.net/developers/libraries/#connect).
 
 GitLab's implementation uses the [doorkeeper-openid_connect] gem, refer
@@ -48,4 +48,3 @@ Only the `sub` and `sub_legacy` claims are included in the ID token, all other c
 
 [doorkeeper-openid_connect]: https://github.com/doorkeeper-gem/doorkeeper-openid_connect "Doorkeeper::OpenidConnect website"
 [OAuth guide]: oauth_provider.md "GitLab as OAuth2 authentication service provider"
-[omniauth-openid-connect]: https://github.com/jjbohn/omniauth-openid-connect/ "OmniAuth::OpenIDConnect website"

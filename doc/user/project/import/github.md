@@ -82,7 +82,7 @@ If you are using a self-hosted GitLab instance or if you are importing from GitH
 
 1. From the top navigation bar, click **+** and select **New project**.
 1. Select the **Import project** tab and then select **GitHub**.
-1. Select the first button to **List your GitHub repositories**. You are redirected to a page on github.com to authorize the GitLab application.
+1. Select the first button to **List your GitHub repositories**. You are redirected to a page on [GitHub](https://github.com) to authorize the GitLab application.
 1. Click **Authorize gitlabhq**. You are redirected back to GitLab's Import page and all of your GitHub repositories are listed.
 1. Continue on to [selecting which repositories to import](#selecting-which-repositories-to-import).
 

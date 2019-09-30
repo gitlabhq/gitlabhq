@@ -1,6 +1,6 @@
 # Vue
 
-To get started with Vue, read through [their documentation][vue-docs].
+To get started with Vue, read through [their documentation](https://vuejs.org/v2/guide/).
 
 ## Examples
 
@@ -290,7 +290,6 @@ One should apply to be a Vue.js expert by opening an MR when the Merge Request's
 - Vuex code follows the [documented pattern](vuex.md#actions-pattern-request-and-receive-namespaces)
 - Knowledge about the existing Vue and Vuex applications and existing reusable components
 
-[vue-docs]: http://vuejs.org/guide/index.html
 [issue-boards]: https://gitlab.com/gitlab-org/gitlab-foss/tree/master/app/assets/javascripts/boards
 [environments-table]: https://gitlab.com/gitlab-org/gitlab-foss/tree/master/app/assets/javascripts/environments
 [page_specific_javascript]: ./performance.md#page-specific-javascript
@@ -298,5 +297,5 @@ One should apply to be a Vue.js expert by opening an MR when the Merge Request's
 [state-management]: https://vuejs.org/v2/guide/state-management.html#Simple-State-Management-from-Scratch
 [one-way-data-flow]: https://vuejs.org/v2/guide/components.html#One-Way-Data-Flow
 [vue-test]: https://vuejs.org/v2/guide/unit-testing.html
-[flux]: https://facebook.github.io/flux
+[flux]: https://facebook.github.io/flux/
 [axios]: https://github.com/axios/axios

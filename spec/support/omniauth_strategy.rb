@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module StrategyHelpers
   include Rack::Test::Methods
   include ActionDispatch::Assertions::ResponseAssertions

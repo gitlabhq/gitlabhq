@@ -3,7 +3,6 @@
 require 'spec_helper'
 
 describe 'Import/Export - project import integration test', :js do
-  include Select2Helper
   include GitHelpers
 
   let(:user) { create(:user) }
@@ -31,7 +30,6 @@ describe 'Import/Export - project import integration test', :js do
       it 'user imports an exported project successfully' do
         visit new_project_path
 
-        select2(namespace.id, from: '#project_namespace_id')
         fill_in :project_name, with: project_name, visible: true
         click_import_project_tab
         click_link 'GitLab export'
@@ -78,7 +76,6 @@ describe 'Import/Export - project import integration test', :js do
 
     visit new_project_path
 
-    select2(user.namespace.id, from: '#project_namespace_id')
     fill_in :project_name, with: project.name, visible: true
     click_import_project_tab
     click_link 'GitLab export'

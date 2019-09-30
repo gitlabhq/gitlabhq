@@ -516,11 +516,6 @@ glob otherwise your shell may split it into multiple arguments:
 yarn karma -f 'spec/javascripts/ide/**/file_spec.js'
 ```
 
-## RSpec feature integration tests
-
-Information on setting up and running RSpec integration tests with
-[Capybara] can be found in the [Testing Best Practices](best_practices.md).
-
 ## Frontend test fixtures
 
 Code that is added to HAML templates (in `app/views/`) or makes Ajax requests to the backend has tests that require HTML or JSON from the backend.
@@ -598,7 +593,6 @@ end
 [karma]: http://karma-runner.github.io/
 [vue-test]: ../fe_guide/vue.md#testing-vue-components
 [rspec]: https://github.com/rspec/rspec-rails#feature-specs
-[capybara]: https://github.com/teamcapybara/capybara
 [jasmine]: https://jasmine.github.io/
 
 ## Overview of Frontend Testing Levels
@@ -955,7 +949,11 @@ graph RL
 In contrast to [frontend integration tests](#frontend-integration-tests), feature tests make requests against the real backend instead of using fixtures.
 This also implies that database queries are executed which makes this category significantly slower.
 
-See also the [RSpec testing guidelines](../testing_guide/best_practices.md#rspec).
+See also
+
+- The [RSpec testing guidelines](../testing_guide/best_practices.md#rspec).
+- System / Feature tests in the [Testing Best Practices](best_practices.md#system--feature-tests).
+- [Issue #26159](https://gitlab.com/gitlab-org/gitlab/issues/26159) which aims at combine those guidelines with this page.
 
 ```mermaid
 graph RL

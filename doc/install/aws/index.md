@@ -43,7 +43,7 @@ Below is a diagram of the recommended architecture.
 Here's a list of the AWS services we will use, with links to pricing information:
 
 - **EC2**: GitLab will deployed on shared hardware which means
-  [on-demand pricing](https://aws.amazon.com/ec2/pricing/on-demand)
+  [on-demand pricing](https://aws.amazon.com/ec2/pricing/on-demand/)
   will apply. If you want to run it on a dedicated or reserved instance,
   consult the [EC2 pricing page](https://aws.amazon.com/ec2/pricing/) for more
   information on the cost.
@@ -222,10 +222,10 @@ Now, it's time to create the database:
    1. For the size, let's select a `t2.medium` instance.
    1. Multi-AZ-deployment is recommended as redundancy, so choose "Create
       replica in different zone". Read more at
-      [High Availability (Multi-AZ)](http://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZ.html).
+      [High Availability (Multi-AZ)](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZ.html).
    1. A Provisioned IOPS (SSD) storage type is best suited for HA (though you can
       choose a General Purpose (SSD) to reduce the costs). Read more about it at
-      [Storage for Amazon RDS](http://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_Storage.html).
+      [Storage for Amazon RDS](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_Storage.html).
 
 1. The rest of the settings on this page request a DB instance identifier, username
    and a master password. We've chosen to use `gitlab-db-ha`, `gitlab` and a
@@ -668,7 +668,7 @@ to request additional material:
   about administering your GitLab instance.
 - [Upload a license](../../user/admin_area/license.md):
   Activate all GitLab Enterprise Edition functionality with a license.
-- [Pricing](https://about.gitlab.com/pricing): Pricing for the different tiers.
+- [Pricing](https://about.gitlab.com/pricing/): Pricing for the different tiers.
 
 <!-- ## Troubleshooting
 

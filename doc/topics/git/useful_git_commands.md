@@ -108,7 +108,7 @@ git reflog
 
 ### Check the Git history of a file
 
-The basic command to check the git history of a file:
+The basic command to check the Git history of a file:
 
 ```sh
 git log <file>
@@ -147,7 +147,7 @@ gitk --follow <file>
 
 ## Debugging
 
-### Use a custom SSH key for a git command
+### Use a custom SSH key for a Git command
 
 ```sh
 GIT_SSH_COMMAND="ssh -i ~/.ssh/gitlabadmin" git <command>
@@ -183,7 +183,7 @@ git rebase -i master
 git rebase --continue
 ```
 
-### Use git rerere
+### Use `git rerere`
 
 To _reuse_ recorded solutions to the same problems when repeated:
 

@@ -3079,6 +3079,12 @@ describe Ci::Build do
     rescue StateMachines::InvalidTransition
     end
 
+    it 'ensures pipeline ref existence' do
+      expect(job.pipeline.persistent_ref).to receive(:create).once
+
+      run_job_without_exception
+    end
+
     shared_examples 'saves data on transition' do
       it 'saves timeout' do
         expect { job.run! }.to change { job.reload.ensure_metadata.timeout }.from(nil).to(expected_timeout)

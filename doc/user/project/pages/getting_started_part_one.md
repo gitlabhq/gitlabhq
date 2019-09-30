@@ -5,7 +5,7 @@ type: concepts, reference
 
 # Static sites and GitLab Pages domains
 
-On this docucument, learn how to name your project for GitLab Pages
+On this document, learn how to name your project for GitLab Pages
 according to your intended website's URL.
 
 ## Static sites

@@ -42,6 +42,7 @@ describe('Issue card component', () => {
       assignees: [],
       reference_path: '#1',
       real_path: '/test/1',
+      weight: 1,
     });
 
     component = new Vue({
@@ -287,8 +288,17 @@ describe('Issue card component', () => {
   });
 
   describe('weights', () => {
-    it('not shows weight component', () => {
-      expect(component.$el.querySelector('.board-card-weight')).toBeNull();
+    it('shows weight component is greater than 0', () => {
+      expect(component.$el.querySelector('.board-card-weight')).not.toBeNull();
+    });
+
+    it('shows weight component when weight is 0', done => {
+      component.issue.weight = 0;
+
+      Vue.nextTick(() => {
+        expect(component.$el.querySelector('.board-card-weight')).not.toBeNull();
+        done();
+      });
     });
   });
 });

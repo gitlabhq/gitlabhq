@@ -69,6 +69,7 @@ export default {
       'commentsDisabled',
       'getNoteableData',
       'userCanReply',
+      'discussionTabCounter',
     ]),
     noteableType() {
       return this.noteableData.noteableType;
@@ -95,13 +96,13 @@ export default {
       }
     },
     allDiscussions() {
-      if (this.discussonsCount) {
-        this.discussonsCount.textContent = this.allDiscussions.length;
+      if (this.discussionsCount && !this.isLoading) {
+        this.discussionsCount.textContent = this.discussionTabCounter;
       }
     },
   },
   created() {
-    this.discussonsCount = document.querySelector('.js-discussions-count');
+    this.discussionsCount = document.querySelector('.js-discussions-count');
 
     this.setNotesData(this.notesData);
     this.setNoteableData(this.noteableData);

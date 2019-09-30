@@ -35,7 +35,7 @@ The OpenID Connect will provide you with a client details and secret for you to 
      { 'name' => 'openid_connect',
        'label' => '<your_oidc_label>',
        'args' => {
-         "name' => 'openid_connect',
+         'name' => 'openid_connect',
          'scope' => ['openid','profile'],
          'response_type' => 'code',
          'issuer' => '<your_oidc_url>',

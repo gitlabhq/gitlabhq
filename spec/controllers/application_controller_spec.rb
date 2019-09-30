@@ -56,6 +56,8 @@ describe ApplicationController do
     end
   end
 
+  it_behaves_like 'a Trackable Controller'
+
   describe '#add_gon_variables' do
     before do
       Gon.clear

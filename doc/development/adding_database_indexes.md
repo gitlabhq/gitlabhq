@@ -108,7 +108,7 @@ This query outputs a list containing all indexes that are never used and sorts
 them by indexes sizes in descending order.  This query can be useful to
 determine if any previously indexes are useful after all. More information on
 the meaning of the various columns can be found at
-<https://www.postgresql.org/docs/current/static/monitoring-stats.html>.
+<https://www.postgresql.org/docs/current/monitoring-stats.html>.
 
 Because the output of this query relies on the actual usage of your database it
 may be affected by factors such as (but not limited to):

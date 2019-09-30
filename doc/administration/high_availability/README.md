@@ -25,17 +25,17 @@ solution should balance the costs against the benefits.
 
 There are many options when choosing a highly-available GitLab architecture. We
 recommend engaging with GitLab Support to choose the best architecture for your
-use-case. This page contains some various options and guidelines based on
+use case. This page contains some various options and guidelines based on
 experience with GitLab.com and Enterprise Edition on-premises customers.
 
-For a detailed insight into how GitLab scales and configures GitLab.com, you can
+For detailed insight into how GitLab scales and configures GitLab.com, you can
 watch [this 1 hour Q&A](https://www.youtube.com/watch?v=uCU8jdYzpac)
 with [John Northrup](https://gitlab.com/northrup), and live questions coming in from some of our customers.
 
 ## GitLab Components
 
 The following components need to be considered for a scaled or highly-available
-environment. In many cases components can be combined on the same nodes to reduce
+environment. In many cases, components can be combined on the same nodes to reduce
 complexity.
 
 - Unicorn/Workhorse - Web-requests (UI, API, Git over HTTP)
@@ -57,12 +57,12 @@ infrastructure and maintenance costs of full high availability.
 ### Basic Scaling
 
 This is the simplest form of scaling and will work for the majority of
-cases. Backend components such as PostgreSQL, Redis and storage are offloaded
+cases. Backend components such as PostgreSQL, Redis, and storage are offloaded
 to their own nodes while the remaining GitLab components all run on 2 or more
 application nodes.
 
 This form of scaling also works well in a cloud environment when it is more
-cost-effective to deploy several small nodes rather than a single
+cost effective to deploy several small nodes rather than a single
 larger one.
 
 - 1 PostgreSQL node
@@ -85,11 +85,11 @@ you can continue with the next step.
 
 ### Full Scaling
 
-For very large installations it may be necessary to further split components
-for maximum scalability. In a fully-scaled architecture the application node
+For very large installations, it might be necessary to further split components
+for maximum scalability. In a fully-scaled architecture, the application node
 is split into separate Sidekiq and Unicorn/Workhorse nodes. One indication that
 this architecture is required is if Sidekiq queues begin to periodically increase
-in size, indicating that there is contention or not enough resources.
+in size, indicating that there is contention or there are not enough resources.
 
 - 1 PostgreSQL node
 - 1 Redis node
@@ -100,7 +100,7 @@ in size, indicating that there is contention or not enough resources.
 
 ## High Availability Architecture Examples
 
-When organizations require scaling *and* high availability the following
+When organizations require scaling *and* high availability, the following
 architectures can be utilized. As the introduction section at the top of this
 page mentions, there is a tradeoff between cost/complexity and uptime. Be sure
 this complexity is absolutely required before taking the step into full
@@ -108,11 +108,11 @@ high availability.
 
 For all examples below, we recommend running Consul and Redis Sentinel on
 dedicated nodes. If Consul is running on PostgreSQL nodes or Sentinel on
-Redis nodes there is a potential that high resource usage by PostgreSQL or
+Redis nodes, there is a potential that high resource usage by PostgreSQL or
 Redis could prevent communication between the other Consul and Sentinel nodes.
-This may lead to the other nodes believing a failure has occurred and automated
-failover is necessary. Isolating them from the services they monitor reduces
-the chances of split-brain.
+This may lead to the other nodes believing a failure has occurred and initiating
+automated failover. Isolating Redis and Consul from the services they monitor
+reduces the chances of a false positive that a failure has occurred.
 
 The examples below do not really address high availability of NFS. Some enterprises
 have access to NFS appliances that manage availability. This is the best case
@@ -131,7 +131,7 @@ trade-offs and limits.
 This architecture will work well for many GitLab customers. Larger customers
 may begin to notice certain events cause contention/high load - for example,
 cloning many large repositories with binary files, high API usage, a large
-number of enqueued Sidekiq jobs, etc. If this happens you should consider
+number of enqueued Sidekiq jobs, and so on. If this happens, you should consider
 moving to a hybrid or fully distributed architecture depending on what is causing
 the contention.
 
@@ -162,32 +162,11 @@ contention due to certain workloads.
 
 ![Hybrid architecture diagram](img/hybrid.png)
 
-#### Reference Architecture
-
-- **Supported Users (approximate):** 10,000
-- **Known Issues:** While validating the reference architecture, slow endpoints were discovered and are being investigated. [See issue #64335](https://gitlab.com/gitlab-org/gitlab-foss/issues/64335)
-
-The Support and Quality teams built, performance tested, and validated an
-environment that supports about 10,000 users. The specifications below are a
-representation of the work so far. The specifications may be adjusted in the
-future based on additional testing and iteration.
-
-NOTE: **Note:** The specifications here were performance tested against a specific coded workload. Your exact needs may be more, depending on your workload. Your workload is influenced by factors such as - but not limited to - how active your users are, how much automation you use, mirroring, and repo/change size.
-
-- 3 PostgreSQL - 4 CPU, 16GiB memory per node
-- 1 PgBouncer - 2 CPU, 4GiB memory
-- 2 Redis - 2 CPU, 8GiB memory per node
-- 3 Consul/Sentinel - 2 CPU, 2GiB memory per node
-- 4 Sidekiq - 4 CPU, 16GiB memory per node
-- 5 GitLab application nodes - 16 CPU, 64GiB memory per node
-- 1 Gitaly - 16 CPU, 64GiB memory
-- 1 Monitoring node - 2 CPU, 8GiB memory, 100GiB local storage
-
 ### Fully Distributed
 
 This architecture scales to hundreds of thousands of users and projects and is
 the basis of the GitLab.com architecture. While this scales well it also comes
-with the added complexity of many more nodes to configure, manage and monitor.
+with the added complexity of many more nodes to configure, manage, and monitor.
 
 - 3 PostgreSQL nodes
 - 4 or more Redis nodes (2 separate clusters for persistent and cache data)
@@ -214,3 +193,59 @@ separately:
 1. [Configure the GitLab application servers](gitlab.md)
 1. [Configure the load balancers](load_balancer.md)
 1. [Monitoring node (Prometheus and Grafana)](monitoring_node.md)
+
+## Reference Architecture Examples
+
+These reference architecture examples rely on the general rule that approximately 2 requests per second (RPS) of load is generated for every 100 users.
+
+### 10,000 User Configuration
+
+- **Supported Users (approximate):** 10,000
+- **RPS:** 200 requests per second
+- **Known Issues:** While validating the reference architecture, slow endpoints were discovered and are being investigated. [gitlab-org/gitlab-ce/issues/64335](https://gitlab.com/gitlab-org/gitlab-ce/issues/64335)
+
+The Support and Quality teams built, performance tested, and validated an
+environment that supports about 10,000 users. The specifications below are a
+representation of the work so far. The specifications may be adjusted in the
+future based on additional testing and iteration.
+
+NOTE: **Note:** The specifications here were performance tested against a specific coded workload. Your exact needs may be more, depending on your workload. Your workload is influenced by factors such as - but not limited to - how active your users are, how much automation you use, mirroring, and repo/change size.
+
+- 3 PostgreSQL - 4 CPU, 16GiB memory per node
+- 1 PgBouncer - 2 CPU, 4GiB memory
+- 2 Redis - 2 CPU, 8GiB memory per node
+- 3 Consul/Sentinel - 2 CPU, 2GiB memory per node
+- 4 Sidekiq - 4 CPU, 16GiB memory per node
+- 5 GitLab application nodes - 16 CPU, 64GiB memory per node
+- 1 Gitaly - 16 CPU, 64GiB memory
+- 1 Monitoring node - 2 CPU, 8GiB memory, 100GiB local storage
+
+### 25,000 User Configuration
+
+- **Supported Users (approximate):** 25,000
+- **RPS:** 500 requests per second
+- **Status:** Work-in-progress
+- **Related Issues:** [gitlab-org/quality/performance/issues/57](https://gitlab.com/gitlab-org/quality/performance/issues/57)
+
+The Support and Quality teams are in the process of building and performance testing
+an environment that will support about 25,000 users. The specifications below
+are a work-in-progress representation of the work so far. The Quality team will be
+certifying this environment in late 2019. The specifications may be adjusted
+prior to certification based on performance testing.
+
+TBD: Add specs
+
+### 50,000 User Configuration
+
+- **Supported Users (approximate):** 50,000
+- **RPS:** 1,000 requests per second
+- **Status:** Work-in-progress
+- **Related Issues:** [gitlab-org/quality/performance/issues/66](https://gitlab.com/gitlab-org/quality/performance/issues/66)
+
+The Support and Quality teams are in the process of building and performance testing
+an environment that will support about 50,000 users. The specifications below
+are a work-in-progress representation of the work so far. The Quality team will be
+certifying this environment in late 2019. The specifications may be adjusted
+prior to certification based on performance testing.
+
+TBD: Add specs

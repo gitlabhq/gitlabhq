@@ -1,0 +1,5 @@
+---
+title: Remove Postgresql specific setup tasks and move to schema.rb
+merge_request:
+author:
+type: other

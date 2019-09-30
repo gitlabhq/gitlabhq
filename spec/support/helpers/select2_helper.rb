@@ -24,7 +24,7 @@ module Select2Helper
 
     selector = options.fetch(:from)
 
-    first(selector, visible: false)
+    ensure_select2_loaded(selector)
 
     if options[:multiple]
       execute_script("$('#{selector}').select2('val', ['#{value}']).trigger('change');")
@@ -34,14 +34,24 @@ module Select2Helper
   end
 
   def open_select2(selector)
+    ensure_select2_loaded(selector)
+
     execute_script("$('#{selector}').select2('open');")
   end
 
   def close_select2(selector)
+    ensure_select2_loaded(selector)
+
     execute_script("$('#{selector}').select2('close');")
   end
 
   def scroll_select2_to_bottom(selector)
     evaluate_script "$('#{selector}').scrollTop($('#{selector}')[0].scrollHeight); $('#{selector}');"
+  end
+
+  private
+
+  def ensure_select2_loaded(selector)
+    first(selector, visible: :all).sibling('.select2-container')
   end
 end

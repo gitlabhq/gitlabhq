@@ -34,13 +34,13 @@ module Gitlab
 
       PROJECT_REFERENCES = %w[project_id source_project_id target_project_id].freeze
 
-      BUILD_MODELS = %w[Ci::Build commit_status].freeze
+      BUILD_MODELS = %i[Ci::Build commit_status].freeze
 
       IMPORTED_OBJECT_MAX_RETRIES = 5.freeze
 
-      EXISTING_OBJECT_CHECK = %i[milestone milestones label labels project_label project_labels group_label group_labels project_feature].freeze
+      EXISTING_OBJECT_CHECK = %i[milestone milestones label labels project_label project_labels group_label group_labels project_feature merge_request].freeze
 
-      TOKEN_RESET_MODELS = %w[Project Namespace Ci::Trigger Ci::Build Ci::Runner ProjectHook].freeze
+      TOKEN_RESET_MODELS = %i[Project Namespace Ci::Trigger Ci::Build Ci::Runner ProjectHook].freeze
 
       def self.create(*args)
         new(*args).create
@@ -56,7 +56,7 @@ module Gitlab
       end
 
       def initialize(relation_sym:, relation_hash:, members_mapper:, user:, project:, excluded_keys: [])
-        @relation_name = self.class.overrides[relation_sym] || relation_sym
+        @relation_name = self.class.overrides[relation_sym]&.to_sym || relation_sym
         @relation_hash = relation_hash.except('noteable_id')
         @members_mapper = members_mapper
         @user = user
@@ -92,6 +92,10 @@ module Gitlab
         OVERRIDES
       end
 
+      def self.existing_object_check
+        EXISTING_OBJECT_CHECK
+      end
+
       private
 
       def setup_models
@@ -105,7 +109,7 @@ module Gitlab
         update_group_references
         remove_duplicate_assignees
 
-        setup_pipeline if @relation_name == 'Ci::Pipeline'
+        setup_pipeline if @relation_name == :'Ci::Pipeline'
 
         reset_tokens!
         remove_encrypted_attributes!
@@ -184,14 +188,14 @@ module Gitlab
       end
 
       def update_group_references
-        return unless EXISTING_OBJECT_CHECK.include?(@relation_name)
+        return unless self.class.existing_object_check.include?(@relation_name)
         return unless @relation_hash['group_id']
 
         @relation_hash['group_id'] = @project.namespace_id
       end
 
       def reset_tokens!
-        return unless Gitlab::ImportExport.reset_tokens? && TOKEN_RESET_MODELS.include?(@relation_name.to_s)
+        return unless Gitlab::ImportExport.reset_tokens? && TOKEN_RESET_MODELS.include?(@relation_name)
 
         # If we import/export a project to the same instance, tokens will have to be reset.
         # We also have to reset them to avoid issues when the gitlab secrets file cannot be copied across.
@@ -255,7 +259,7 @@ module Gitlab
         # Only find existing records to avoid mapping tables such as milestones
         # Otherwise always create the record, skipping the extra SELECT clause.
         @existing_or_new_object ||= begin
-          if EXISTING_OBJECT_CHECK.include?(@relation_name)
+          if self.class.existing_object_check.include?(@relation_name)
             attribute_hash = attribute_hash_for(['events'])
 
             existing_object.assign_attributes(attribute_hash) if attribute_hash.any?
@@ -284,20 +288,26 @@ module Gitlab
       end
 
       def legacy_trigger?
-        @relation_name == 'Ci::Trigger' && @relation_hash['owner_id'].nil?
+        @relation_name == :'Ci::Trigger' && @relation_hash['owner_id'].nil?
       end
 
       def find_or_create_object!
         return relation_class.find_or_create_by(project_id: @project.id) if @relation_name == :project_feature
+        return find_or_create_merge_request! if @relation_name == :merge_request
 
         # Can't use IDs as validation exists calling `group` or `project` attributes
         finder_hash = parsed_relation_hash.tap do |hash|
           hash['group'] = @project.group if relation_class.attribute_method?('group_id')
-          hash['project'] = @project
+          hash['project'] = @project if relation_class.reflect_on_association(:project)
           hash.delete('project_id')
         end
 
         GroupProjectObjectBuilder.build(relation_class, finder_hash)
+      end
+
+      def find_or_create_merge_request!
+        @project.merge_requests.find_by(iid: parsed_relation_hash['iid']) ||
+          relation_class.new(parsed_relation_hash)
       end
     end
   end

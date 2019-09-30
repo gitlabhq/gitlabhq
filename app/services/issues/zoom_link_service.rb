@@ -17,7 +17,7 @@ module Issues
     end
 
     def can_add_link?
-      available? && !link_in_issue_description?
+      can? && !link_in_issue_description?
     end
 
     def remove_link
@@ -29,7 +29,7 @@ module Issues
     end
 
     def can_remove_link?
-      available? && link_in_issue_description?
+      can? && link_in_issue_description?
     end
 
     def parse_link(link)
@@ -73,14 +73,6 @@ module Issues
 
     def extract_link_from_issue_description
       issue_description[/(\S+)\z/, 1]
-    end
-
-    def available?
-      feature_enabled? && can?
-    end
-
-    def feature_enabled?
-      Feature.enabled?(:issue_zoom_integration, project)
     end
 
     def can?

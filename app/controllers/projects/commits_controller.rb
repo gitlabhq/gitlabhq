@@ -72,7 +72,7 @@ class Projects::CommitsController < Projects::ApplicationController
         @repository.commits(@ref, path: @path, limit: @limit, offset: @offset)
       end
 
-    @commits = @commits.with_pipeline_status
+    @commits = @commits.with_latest_pipeline(@ref)
     @commits = set_commits_for_rendering(@commits)
   end
 

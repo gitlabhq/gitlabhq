@@ -86,8 +86,8 @@ that builds on this to add some additional niceties, such as allowing
 configuration with a single Yaml file for multiple URLs, and uploading of the
 profile and log output to S3.
 
-For GitLab.com, you can find the latest results here:
-<http://redash.gitlab.com/dashboard/gitlab-profiler-statistics>
+For GitLab.com, you can find the latest results here (restricted to GitLab Team members only):
+`https://redash.gitlab.com/dashboard/gitlab-profiler-statistics`
 
 ## Sherlock
 

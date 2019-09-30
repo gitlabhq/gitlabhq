@@ -10,6 +10,10 @@ module QA
             element :discussion_option
           end
 
+          base.view 'app/assets/javascripts/notes/components/noteable_discussion.vue' do
+            element :discussion_content
+          end
+
           base.view 'app/assets/javascripts/notes/components/note_actions.vue' do
             element :note_edit_button
           end
@@ -21,6 +25,7 @@ module QA
 
           base.view 'app/assets/javascripts/notes/components/discussion_actions.vue' do
             element :discussion_reply_tab
+            element :resolve_discussion_button
           end
 
           base.view 'app/assets/javascripts/notes/components/toggle_replies_widget.vue' do
@@ -52,6 +57,12 @@ module QA
         def reply_to_discussion(reply_text)
           type_reply_to_discussion(reply_text)
           click_element :reply_comment_button
+        end
+
+        def resolve_discussion_at_index(index)
+          within_element_by_index(:discussion_content, index) do
+            click_element :resolve_discussion_button
+          end
         end
 
         def collapse_replies

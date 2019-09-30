@@ -43,6 +43,7 @@ module Projects
         shared_runners_enabled:    @project.shared_runners_enabled,
         namespace_id:              target_namespace.id,
         fork_network:              fork_network,
+        ci_config_path:            @project.ci_config_path,
         # We need to set ci_default_git_depth to 0 for the forked project when
         # @project.ci_default_git_depth is nil in order to keep the same behaviour
         # and not get ProjectCiCdSetting::DEFAULT_GIT_DEPTH set on create

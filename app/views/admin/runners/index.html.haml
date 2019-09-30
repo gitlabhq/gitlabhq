@@ -43,7 +43,7 @@
 .row
   .col-sm-9
     = form_tag admin_runners_path, id: 'runners-search', method: :get, class: 'filter-form js-filter-form' do
-      .filtered-search-wrapper
+      .filtered-search-wrapper.d-flex
         .filtered-search-box
           = dropdown_tag(custom_icon('icon_history'),
             options: { wrapper_class: 'filtered-search-history-dropdown-wrapper',

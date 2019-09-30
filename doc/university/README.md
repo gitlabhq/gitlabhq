@@ -52,7 +52,7 @@ The GitLab University curriculum is composed of GitLab videos, screencasts, pres
 
 ### 1.5. Migrating from other Source Control
 
-1. [Migrating from BitBucket/Stash](../user/project/import/bitbucket.md)
+1. [Migrating from Bitbucket/Stash](../user/project/import/bitbucket.md)
 1. [Migrating from GitHub](../user/project/import/github.md)
 1. [Migrating from SVN](../user/project/import/svn.md)
 1. [Migrating from Fogbugz](../user/project/import/fogbugz.md)

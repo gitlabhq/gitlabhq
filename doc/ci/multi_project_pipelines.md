@@ -115,9 +115,11 @@ staging:
     branch: stable-11-2
 ```
 
-Use a `project` keyword to specify full path to a downstream project. Use
-a `branch` keyword to specify a branch name. Variable expansion is supported in
-the `branch` property.
+Use:
+
+- The `project` keyword to specify the full path to a downstream project.
+- The `branch` keyword to specify the name of a branch in the project specified by `project`.
+  Variable expansion is supported.
 
 GitLab will use a commit that is currently on the HEAD of the branch when
 creating a downstream pipeline.

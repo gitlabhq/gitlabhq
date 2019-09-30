@@ -497,6 +497,29 @@ describe API::Groups do
 
         expect(response).to have_gitlab_http_status(404)
       end
+
+      context 'within a subgroup' do
+        let(:group3) { create(:group, visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
+        let!(:subgroup) { create(:group, parent: group3, visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
+
+        before do
+          group3.add_owner(user3)
+        end
+
+        it 'does not change visibility when not requested' do
+          put api("/groups/#{group3.id}", user3), params: { description: 'Bug #23083' }
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(json_response['visibility']).to eq('public')
+        end
+
+        it 'prevents making private a group containing public subgroups' do
+          put api("/groups/#{group3.id}", user3), params: { visibility: 'private' }
+
+          expect(response).to have_gitlab_http_status(400)
+          expect(json_response['message']['visibility_level']).to contain_exactly('private is not allowed since there are sub-groups with higher visibility.')
+        end
+      end
     end
 
     context 'when authenticated as the admin' do

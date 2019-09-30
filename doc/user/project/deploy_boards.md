@@ -91,7 +91,8 @@ To display the Deploy Boards for a specific [environment] you should:
    Matching based on the Kubernetes `app` label was removed in [GitLab
    12.1](https://gitlab.com/gitlab-org/gitlab/merge_requests/14020).
    To migrate, please apply the required annotations (see above) and
-   re-deploy your application.
+   re-deploy your application. If you are using Auto DevOps, this will
+   be done automatically and no action is necessary.
 
    ![Deploy Boards Kubernetes Label](img/deploy_boards_kubernetes_label.png)
 

@@ -14,9 +14,9 @@ locally on either macOS or Linux.
 
 ### On macOS
 
-#### Install Docker Toolbox
+#### Install Docker Desktop
 
-- <https://www.docker.com/products/docker-toolbox>
+- <https://www.docker.com/products/docker-desktop>
 
 ### On Linux
 
@@ -115,7 +115,7 @@ docker-machine ip gitlab-test-env-do
 # example output: 192.168.151.134
 ```
 
-Browse to: <http://192.168.151.134:8888/>.
+Browse to: `http://192.168.151.134:8888/`.
 
 #### Execute interactive shell/edit configuration
 

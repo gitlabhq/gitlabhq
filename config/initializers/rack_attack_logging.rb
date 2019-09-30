@@ -12,10 +12,18 @@ ActiveSupport::Notifications.subscribe('rack.attack') do |name, start, finish, r
       path: req.fullpath
     }
 
-    if %w(throttle_authenticated_api throttle_authenticated_web).include? req.env['rack.attack.matched']
+    throttles_with_user_information = [
+      :throttle_authenticated_api,
+      :throttle_authenticated_web,
+      :throttle_authenticated_protected_paths_api,
+      :throttle_authenticated_protected_paths_web
+    ]
+
+    if throttles_with_user_information.include? req.env['rack.attack.matched'].to_sym
       user_id = req.env['rack.attack.match_discriminator']
       user = User.find_by(id: user_id)
 
+      rack_attack_info[:throttle_type] = req.env['rack.attack.matched']
       rack_attack_info[:user_id] = user_id
       rack_attack_info[:username] = user.username unless user.nil?
     end

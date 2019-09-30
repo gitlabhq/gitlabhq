@@ -542,7 +542,7 @@ To indicate the steps of navigation through the UI:
   a valid name for an illustration is `devops_diagram_v11_1.png`.
 - Keep all file names in lower case.
 - Consider using PNG images instead of JPEG.
-- Compress all images with <https://tinypng.com/> or similar tool.
+- Compress all images with <https://pngquant.org/> or similar tool.
 - Compress gifs with <https://ezgif.com/optimize> or similar tool.
 - Images should be used (only when necessary) to _illustrate_ the description
   of a process, not to _replace_ it.
@@ -1107,7 +1107,7 @@ Rendered example:
 
 ### cURL Examples
 
-Below is a set of [cURL][] examples that you can use in the API documentation.
+Below is a set of [cURL](https://curl.haxx.se) examples that you can use in the API documentation.
 
 #### Simple cURL command
 
@@ -1179,7 +1179,6 @@ restrict the sign-up e-mail domains of a GitLab instance to `*.example.com` and
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --data "domain_whitelist[]=*.example.com" --data "domain_whitelist[]=example.net" https://gitlab.example.com/api/v4/application/settings
 ```
 
-[cURL]: http://curl.haxx.se/ "cURL website"
 [single spaces]: http://www.slate.com/articles/technology/technology/2011/01/space_invaders.html
 [gfm]: ../../user/markdown.md#newlines "GitLab flavored markdown documentation"
 [ce-1242]: https://gitlab.com/gitlab-org/gitlab-foss/issues/1242

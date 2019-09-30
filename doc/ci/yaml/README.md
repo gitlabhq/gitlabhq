@@ -1246,8 +1246,8 @@ Read how caching works and find out some good practices in the
 [caching dependencies documentation](../caching/index.md).
 
 `cache` is used to specify a list of files and directories which should be
-cached between jobs. You can only use paths that are within the project
-workspace.
+cached between jobs. You can only use paths that are within the local working
+copy.
 
 If `cache` is defined outside the scope of jobs, it means it is set
 globally and all jobs will use that definition.
@@ -1417,7 +1417,7 @@ be available for download in the GitLab UI.
 
 #### `artifacts:paths`
 
-You can only use paths that are within the project workspace.
+You can only use paths that are within the local working copy.
 Wildcards can be used that follow the [glob](https://en.wikipedia.org/wiki/Glob_(programming)) patterns and [filepath.Match](https://golang.org/pkg/path/filepath/#Match).
 
 To pass artifacts between different jobs, see [dependencies](#dependencies).
@@ -1897,14 +1897,14 @@ This example creates three paths of execution:
   - For self-managed instances, the limit is:
     - Five by default (`ci_dag_limit_needs` feature flag is enabled).
     - 50 if the `ci_dag_limit_needs` feature flag is disabled.
-- It is impossible for now to have `needs: []` (empty needs),
-  the job always needs to depend on something, unless this is the job
-  in the first stage (see [issue #65504](https://gitlab.com/gitlab-org/gitlab-foss/issues/65504)).
+- It is impossible for now to have `needs: []` (empty needs), the job always needs to
+  depend on something, unless this is the job in the first stage. However, support for
+  an empty needs array [is planned](https://gitlab.com/gitlab-org/gitlab/issues/30631).
 - If `needs:` refers to a job that is marked as `parallel:`.
   the current job will depend on all parallel jobs created.
-- `needs:` is similar to `dependencies:` in that it needs to use jobs from
-  prior stages, meaning it is impossible to create circular
-  dependencies or depend on jobs in the current stage (see [issue #65505](https://gitlab.com/gitlab-org/gitlab-foss/issues/65505)).
+- `needs:` is similar to `dependencies:` in that it needs to use jobs from prior stages,
+  meaning it is impossible to create circular dependencies. Depending on jobs in the
+  current stage is not possible either, but support [is planned](https://gitlab.com/gitlab-org/gitlab/issues/30632).
 - Related to the above, stages must be explicitly defined for all jobs
   that have the keyword `needs:` or are referred to by one.
 
@@ -2016,6 +2016,10 @@ test:
   script: rspec
   timeout: 3h 30m
 ```
+
+The job-level timeout can exceed the
+[project-level timeout](../../user/project/pipelines/settings.md#timeout) but can not
+exceed the Runner-specific timeout.
 
 ### `parallel`
 
@@ -2296,7 +2300,7 @@ or public project, or template is allowed.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/56836) in GitLab 11.9.
 
 Nested includes allow you to compose a set of includes.
-A total of 50 includes is allowed.
+A total of 100 includes is allowed.
 Duplicate includes are considered a configuration error.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/28212) in GitLab 12.4.
@@ -2738,14 +2742,14 @@ unspecified, the default from project settings will be used.
 There are three possible values: `clone`, `fetch`, and `none`.
 
 `clone` is the slowest option. It clones the repository from scratch for every
-job, ensuring that the project workspace is always pristine.
+job, ensuring that the local working copy is always pristine.
 
 ```yaml
 variables:
   GIT_STRATEGY: clone
 ```
 
-`fetch` is faster as it re-uses the project workspace (falling back to `clone`
+`fetch` is faster as it re-uses the local working copy (falling back to `clone`
 if it doesn't exist). `git clean` is used to undo any changes made by the last
 job, and `git fetch` is used to retrieve commits made since the last job ran.
 
@@ -2754,11 +2758,11 @@ variables:
   GIT_STRATEGY: fetch
 ```
 
-`none` also re-uses the project workspace, but skips all Git operations
+`none` also re-uses the local working copy, but skips all Git operations
 (including GitLab Runner's pre-clone script, if present). It is mostly useful
 for jobs that operate exclusively on artifacts (e.g., `deploy`). Git repository
 data may be present, but it is certain to be out of date, so you should only
-rely on files brought into the project workspace from cache or artifacts.
+rely on files brought into the local working copy from cache or artifacts.
 
 ```yaml
 variables:

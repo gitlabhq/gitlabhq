@@ -1,4 +1,2 @@
-export const REQUEST_REGIONS = 'REQUEST_REGIONS';
-export const RECEIVE_REGIONS_SUCCESS = 'REQUEST_REGIONS_SUCCESS';
-export const RECEIVE_REGIONS_ERROR = 'RECEIVE_REGIONS_ERROR';
+// eslint-disable-next-line import/prefer-default-export
 export const SET_REGION = 'SET_REGION';

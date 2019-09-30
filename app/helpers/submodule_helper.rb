@@ -81,7 +81,7 @@ module SubmoduleHelper
   end
 
   def relative_self_links(relative_path, commit, project)
-    relative_path.rstrip!
+    relative_path = relative_path.rstrip
     absolute_project_path = "/" + project.full_path
 
     # Resolve `relative_path` to target path

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_26_041216) do
+ActiveRecord::Schema.define(version: 2019_09_27_074328) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -322,6 +322,10 @@ ActiveRecord::Schema.define(version: 2019_09_26_041216) do
     t.string "encrypted_asset_proxy_secret_key_iv"
     t.string "static_objects_external_storage_url", limit: 255
     t.string "static_objects_external_storage_auth_token", limit: 255
+    t.boolean "throttle_protected_paths_enabled", default: true, null: false
+    t.integer "throttle_protected_paths_requests_per_period", default: 10, null: false
+    t.integer "throttle_protected_paths_period_in_seconds", default: 60, null: false
+    t.string "protected_paths", limit: 255, default: ["/users/password", "/users/sign_in", "/api/v3/session.json", "/api/v3/session", "/api/v4/session.json", "/api/v4/session", "/users", "/users/confirmation", "/unsubscribes/", "/import/github/personal_access_token"], array: true
     t.index ["custom_project_templates_group_id"], name: "index_application_settings_on_custom_project_templates_group_id"
     t.index ["file_template_project_id"], name: "index_application_settings_on_file_template_project_id"
     t.index ["instance_administration_project_id"], name: "index_applicationsettings_on_instance_administration_project_id"
@@ -1213,7 +1217,7 @@ ActiveRecord::Schema.define(version: 2019_09_26_041216) do
 
   create_table "design_management_designs", force: :cascade do |t|
     t.integer "project_id", null: false
-    t.integer "issue_id", null: false
+    t.integer "issue_id"
     t.string "filename", null: false
     t.index ["issue_id", "filename"], name: "index_design_management_designs_on_issue_id_and_filename", unique: true
     t.index ["project_id"], name: "index_design_management_designs_on_project_id"
@@ -2917,6 +2921,7 @@ ActiveRecord::Schema.define(version: 2019_09_26_041216) do
     t.boolean "emails_disabled"
     t.integer "max_pages_size"
     t.integer "max_artifacts_size"
+    t.index "lower((name)::text)", name: "index_projects_on_lower_name"
     t.index ["archived", "pending_delete", "merge_requests_require_code_owner_approval"], name: "projects_requiring_code_owner_approval", where: "((pending_delete = false) AND (archived = false) AND (merge_requests_require_code_owner_approval = true))"
     t.index ["created_at"], name: "index_projects_on_created_at"
     t.index ["creator_id"], name: "index_projects_on_creator_id"
@@ -3113,6 +3118,7 @@ ActiveRecord::Schema.define(version: 2019_09_26_041216) do
     t.string "path", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index "lower((path)::text) varchar_pattern_ops", name: "index_redirect_routes_on_path_unique_text_pattern_ops", unique: true
     t.index ["path"], name: "index_redirect_routes_on_path", unique: true
     t.index ["source_type", "source_id"], name: "index_redirect_routes_on_source_type_and_source_id"
   end
@@ -3131,8 +3137,8 @@ ActiveRecord::Schema.define(version: 2019_09_26_041216) do
     t.string "tag"
     t.text "description"
     t.integer "project_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.text "description_html"
     t.integer "cached_markdown_version"
     t.integer "author_id"
@@ -3313,6 +3319,7 @@ ActiveRecord::Schema.define(version: 2019_09_26_041216) do
     t.text "description"
     t.text "description_html"
     t.index ["author_id"], name: "index_snippets_on_author_id"
+    t.index ["content"], name: "index_snippets_on_content_trigram", opclass: :gin_trgm_ops, using: :gin
     t.index ["file_name"], name: "index_snippets_on_file_name_trigram", opclass: :gin_trgm_ops, using: :gin
     t.index ["project_id"], name: "index_snippets_on_project_id"
     t.index ["title"], name: "index_snippets_on_title_trigram", opclass: :gin_trgm_ops, using: :gin
@@ -3641,6 +3648,7 @@ ActiveRecord::Schema.define(version: 2019_09_26_041216) do
     t.string "first_name", limit: 255
     t.string "last_name", limit: 255
     t.string "static_object_token", limit: 255
+    t.index "lower((name)::text)", name: "index_on_users_name_lower"
     t.index ["accepted_term_id"], name: "index_users_on_accepted_term_id"
     t.index ["admin"], name: "index_users_on_admin"
     t.index ["bot_type"], name: "index_users_on_bot_type"

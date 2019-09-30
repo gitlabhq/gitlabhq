@@ -13,6 +13,7 @@ class ApplicationController < ActionController::Base
   include WithPerformanceBar
   include SessionlessAuthentication
   include ConfirmEmailWarning
+  include Gitlab::Tracking::ControllerConcern
 
   before_action :authenticate_user!
   before_action :enforce_terms!, if: :should_enforce_terms?
@@ -287,9 +288,7 @@ class ApplicationController < ActionController::Base
   def check_password_expiration
     return if session[:impersonator_id] || !current_user&.allow_password_authentication?
 
-    password_expires_at = current_user&.password_expires_at
-
-    if password_expires_at && password_expires_at < Time.now
+    if current_user&.password_expired?
       return redirect_to new_profile_password_path
     end
   end

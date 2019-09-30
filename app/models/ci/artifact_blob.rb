@@ -53,7 +53,7 @@ module Ci
       pages_config.enabled &&
         pages_config.artifacts_server &&
         EXTENSIONS_SERVED_BY_PAGES.include?(File.extname(name)) &&
-        job.project.public?
+        (pages_config.access_control || job.project.public?)
     end
 
     private

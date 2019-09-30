@@ -48,9 +48,22 @@ describe('Notes Store mutations', () => {
   });
 
   describe('ADD_NEW_REPLY_TO_DISCUSSION', () => {
+    const newReply = Object.assign({}, note, { discussion_id: discussionMock.id });
+
+    let state;
+
+    beforeEach(() => {
+      state = { discussions: [{ ...discussionMock }] };
+    });
+
     it('should add a reply to a specific discussion', () => {
-      const state = { discussions: [discussionMock] };
-      const newReply = Object.assign({}, note, { discussion_id: discussionMock.id });
+      mutations.ADD_NEW_REPLY_TO_DISCUSSION(state, newReply);
+
+      expect(state.discussions[0].notes.length).toEqual(4);
+    });
+
+    it('should not add the note if it already exists in the discussion', () => {
+      mutations.ADD_NEW_REPLY_TO_DISCUSSION(state, newReply);
       mutations.ADD_NEW_REPLY_TO_DISCUSSION(state, newReply);
 
       expect(state.discussions[0].notes.length).toEqual(4);

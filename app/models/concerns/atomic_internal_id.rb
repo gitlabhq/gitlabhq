@@ -44,14 +44,27 @@ module AtomicInternalId
         scope_attrs = { scope_value.class.table_name.singularize.to_sym => scope_value }
         usage = self.class.table_name.to_sym
 
-        if value.present?
+        if value.present? && (@iid_needs_tracking || Feature.enabled?(:iid_always_track, default_enabled: true))
+          # The value was set externally, e.g. by the user
+          # We update the InternalId record to keep track of the greatest value.
           InternalId.track_greatest(self, scope_attrs, usage, value, init)
-        else
+
+          @iid_needs_tracking = false
+        elsif !value.present?
+          # We don't have a value yet and use a InternalId record to generate
+          # the next value.
           value = InternalId.generate_next(self, scope_attrs, usage, init)
           write_attribute(column, value)
         end
 
         value
+      end
+
+      define_method("#{column}=") do |value|
+        super(value).tap do |v|
+          # Indicate the iid was set from externally
+          @iid_needs_tracking = true
+        end
       end
 
       define_method("reset_#{scope}_#{column}") do

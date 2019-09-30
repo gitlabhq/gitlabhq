@@ -38,7 +38,7 @@ test OpenShift easily:
 
 - [VirtualBox]
 - [Vagrant]
-- [OpenShift Client][oc] (`oc` for short)
+- [OpenShift Client](https://docs.okd.io/latest/cli_reference/get_started_cli.html) (`oc` for short)
 
 It is also important to mention that for the purposes of this tutorial, the
 latest Origin release is used:
@@ -92,7 +92,7 @@ Now that OpenShift is set up, let's see how the web console looks like.
 
 Once Vagrant finishes its thing with the VM, you will be presented with a
 message which has some important information. One of them is the IP address
-of the deployed OpenShift platform and in particular <https://10.2.2.2:8443/console/>.
+of the deployed OpenShift platform and in particular `https://10.2.2.2:8443/console/`.
 Open this link with your browser and accept the self-signed certificate in
 order to proceed.
 
@@ -101,7 +101,7 @@ landing page looks like:
 
 ![openshift web console](img/web-console.png)
 
-You can see that a number of [projects] are already created for testing purposes.
+You can see that a number of [projects](https://docs.okd.io/latest/dev_guide/projects.html) are already created for testing purposes.
 
 If you head over the `openshift-infra` project, a number of services with their
 respective pods are there to explore.
@@ -109,15 +109,15 @@ respective pods are there to explore.
 ![openshift web console](img/openshift-infra-project.png)
 
 We are not going to explore the whole interface, but if you want to learn about
-the key concepts of OpenShift, read the [core concepts reference][core] in the
-official documentation.
+the key concepts of OpenShift, read the [core concepts reference](https://docs.okd.io/latest/architecture/core_concepts/index.html)
+in the official documentation.
 
 ### Explore the OpenShift CLI
 
 OpenShift Client (`oc`), is a powerful CLI tool that talks to the OpenShift API
 and performs pretty much everything you can do from the web UI and much more.
 
-Assuming you have [installed][oc] it, let's explore some of its main
+Assuming you have [installed](https://docs.okd.io/latest/cli_reference/get_started_cli.html) it, let's explore some of its main
 functionalities.
 
 Let's first see the version of `oc`:
@@ -174,7 +174,7 @@ The last command should spit a bunch of information about the statuses of the
 pods and the services, which if you look closely is what we encountered in the
 second image when we explored the web console.
 
-You can always read more about `oc` in the [OpenShift CLI documentation][oc].
+You can always read more about `oc` in the [OpenShift CLI documentation](https://docs.okd.io/latest/cli_reference/get_started_cli.html).
 
 ### Troubleshooting the all-in-one VM
 
@@ -250,7 +250,7 @@ The next step is to import the OpenShift template for GitLab.
 
 ### Import the template
 
-The [template][templates] is basically a JSON file which describes a set of
+The [template](https://docs.okd.io/latest/architecture/core_concepts/templates.html) is basically a JSON file which describes a set of
 related object definitions to be created together, as well as a set of
 parameters for those objects.
 
@@ -318,7 +318,7 @@ password for PostgreSQL, it will be created automatically.
 The `gitlab.apps.10.2.2.2.nip.io` hostname that is used by default will
 resolve to the host with IP `10.2.2.2` which is the IP our VM uses. It is a
 trick to have distinct FQDNs pointing to services that are on our local network.
-Read more on how this works in <http://nip.io>.
+Read more on how this works in <https://nip.io>.
 
 Now that we configured this, let's see how to manage and scale GitLab.
 
@@ -355,7 +355,7 @@ Navigate back to the **Overview** and hopefully all pods will be up and running.
 ![GitLab running](img/gitlab-running.png)
 
 Congratulations! You can now navigate to your new shinny GitLab instance by
-visiting <http://gitlab.apps.10.2.2.2.nip.io> where you will be asked to
+visiting `http://gitlab.apps.10.2.2.2.nip.io` where you will be asked to
 change the root user password. Login using `root` as username and providing the
 password you just set, and start using GitLab!
 
@@ -366,7 +366,7 @@ of resources, you'd be happy to know that you can scale up with the push of a
 button.
 
 In the **Overview** page just click the up arrow button in the pod where
-GitLab is. The change is instant and you can see the number of [replicas] now
+GitLab is. The change is instant and you can see the number of [replicas](https://docs.okd.io/latest/architecture/core_concepts/deployments.html#replication-controllers) now
 running scaled to 2.
 
 ![GitLab scale](img/gitlab-scale.png)
@@ -384,7 +384,7 @@ scale up. If a pod is in pending state for too long, you can navigate to
 ### Scale GitLab using the `oc` CLI
 
 Using `oc` is super easy to scale up the replicas of a pod. You may want to
-skim through the [basic CLI operations][basic-cli] to get a taste how the CLI
+skim through the [basic CLI operations](https://docs.okd.io/latest/cli_reference/basic_cli_operations.html) to get a taste how the CLI
 commands are used. Pay extra attention to the object types as we will use some
 of them and their abbreviated versions below.
 
@@ -457,7 +457,7 @@ In case you were wondering whether there is an option to autoscale a pod based
 on the resources of your server, the answer is yes, of course there is.
 
 We will not expand on this matter, but feel free to read the documentation on
-OpenShift's website about [autoscaling].
+OpenShift's website about [autoscaling](https://docs.okd.io/latest/dev_guide/pod_autoscaling.html).
 
 ## Current limitations
 
@@ -472,7 +472,7 @@ bother us. In any case, it is something to keep in mind when deploying GitLab
 on a production cluster.
 
 In order to deploy GitLab on a production cluster, you will need to assign the
-GitLab service account to the `anyuid` [Security Context Constraints][scc].
+GitLab service account to the `anyuid` [Security Context Constraints](https://docs.okd.io/latest/admin_guide/manage_scc.html).
 
 For OpenShift v3.0, you will need to do this manually:
 
@@ -505,25 +505,16 @@ application and you are done. You are ready to login to your new GitLab instance
 
 And remember that in this tutorial we just scratched the surface of what Origin
 is capable of. As always, you can refer to the detailed
-[documentation][openshift-docs] to learn more about deploying your own OpenShift
+[documentation](https://docs.okd.io) to learn more about deploying your own OpenShift
 PaaS and managing your applications with the ease of containers.
 
 [RedHat]: https://www.redhat.com/en "RedHat website"
 [vm-new]: https://app.vagrantup.com/openshift/boxes/origin-all-in-one "Official OpenShift Vagrant box on Vagrant Cloud"
 [template]: https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/docker/openshift-template.json "OpenShift template for GitLab"
 [Docker]: https://www.docker.com "Docker website"
-[oc]: https://docs.openshift.org/latest/cli_reference/get_started_cli.html "Documentation - oc CLI documentation"
 [VirtualBox]: https://www.virtualbox.org/wiki/Downloads "VirtualBox downloads"
 [Vagrant]: https://www.vagrantup.com/downloads.html "Vagrant downloads"
-[projects]: https://docs.openshift.org/latest/dev_guide/projects.html "Documentation - Projects overview"
-[core]: https://docs.openshift.org/latest/architecture/core_concepts/index.html "Documentation - Core concepts of OpenShift Origin"
-[templates]: https://docs.openshift.org/latest/architecture/core_concepts/templates.html "Documentation - OpenShift templates"
 [old-post]: https://blog.openshift.com/deploy-gitlab-openshift/ "Old post - Deploy GitLab on OpenShift"
 [line]: https://gitlab.com/gitlab-org/omnibus-gitlab/blob/658c065c8d022ce858dd63eaeeadb0b2ddc8deea/docker/openshift-template.json#L239 "GitLab - OpenShift template"
 [oc-gh]: https://github.com/openshift/origin/releases/tag/v1.3.0 "OpenShift Origin 1.3.0 release on GitHub"
-[ha]: ../../administration/high_availability/gitlab.html "Documentation - GitLab High Availability"
-[replicas]: https://docs.openshift.org/latest/architecture/core_concepts/deployments.html#replication-controllers "Documentation - Replication controller"
-[autoscaling]: https://docs.openshift.org/latest/dev_guide/pod_autoscaling.html "Documentation - Autoscale"
-[basic-cli]: https://docs.openshift.org/latest/cli_reference/basic_cli_operations.html "Documentation - Basic CLI operations"
-[openshift-docs]: https://docs.openshift.org "OpenShift documentation"
-[scc]: https://docs.openshift.org/latest/admin_guide/manage_scc.html "Documentation - Managing Security Context Constraints"
+[ha]: ../../administration/high_availability/gitlab.md "Documentation - GitLab High Availability"

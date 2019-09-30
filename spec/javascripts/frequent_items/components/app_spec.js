@@ -236,8 +236,15 @@ describe('Frequent Items App Component', () => {
         .then(() => {
           expect(vm.$el.querySelector('.loading-animation')).toBeDefined();
         })
+
+        // This test waits for multiple ticks in order to allow the responses to
+        // propagate through each interceptor installed on the Axios instance.
+        // This shouldn't be necessary; this test should be refactored to avoid this.
+        // https://gitlab.com/gitlab-org/gitlab/issues/32479
         .then(vm.$nextTick)
         .then(vm.$nextTick)
+        .then(vm.$nextTick)
+
         .then(() => {
           expect(vm.$el.querySelectorAll('.frequent-items-list-container li').length).toBe(
             mockSearchedProjects.length,

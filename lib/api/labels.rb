@@ -17,10 +17,24 @@ module API
       params do
         optional :with_counts, type: Boolean, default: false,
                  desc: 'Include issue and merge request counts'
+        optional :include_ancestor_groups, type: Boolean, default: true,
+                 desc: 'Include ancestor groups'
         use :pagination
       end
       get ':id/labels' do
-        get_labels(user_project, Entities::ProjectLabel)
+        get_labels(user_project, Entities::ProjectLabel, include_ancestor_groups: params[:include_ancestor_groups])
+      end
+
+      desc 'Get a single label' do
+        detail 'This feature was added in GitLab 12.4.'
+        success Entities::ProjectLabel
+      end
+      params do
+        optional :include_ancestor_groups, type: Boolean, default: true,
+                 desc: 'Include ancestor groups'
+      end
+      get ':id/labels/:name' do
+        get_label(user_project, Entities::ProjectLabel, include_ancestor_groups: params[:include_ancestor_groups])
       end
 
       desc 'Create a new label' do
@@ -35,23 +49,21 @@ module API
       end
 
       desc 'Update an existing label. At least one optional parameter is required.' do
+        detail 'This feature was deprecated in GitLab 12.4.'
         success Entities::ProjectLabel
       end
       params do
         optional :label_id, type: Integer, desc: 'The id of the label to be updated'
         optional :name, type: String, desc: 'The name of the label to be updated'
-        optional :new_name, type: String, desc: 'The new name of the label'
-        optional :color, type: String, desc: "The new color of the label given in 6-digit hex notation with leading '#' sign (e.g. #FFAABB) or one of the allowed CSS color names"
-        optional :description, type: String, desc: 'The new description of label'
-        optional :priority, type: Integer, desc: 'The priority of the label', allow_blank: true
+        use :project_label_update_params
         exactly_one_of :label_id, :name
-        at_least_one_of :new_name, :color, :description, :priority
       end
       put ':id/labels' do
         update_label(user_project, Entities::ProjectLabel)
       end
 
       desc 'Delete an existing label' do
+        detail 'This feature was deprecated in GitLab 12.4.'
         success Entities::ProjectLabel
       end
       params do
@@ -64,28 +76,48 @@ module API
       end
 
       desc 'Promote a label to a group label' do
-        detail 'This feature was added in GitLab 12.3'
+        detail 'This feature was added in GitLab 12.3 and deprecated in GitLab 12.4.'
         success Entities::GroupLabel
       end
       params do
         requires :name, type: String, desc: 'The name of the label to be promoted'
       end
       put ':id/labels/promote' do
-        authorize! :admin_label, user_project
+        promote_label(user_project)
+      end
 
-        label = find_label(user_project, params[:name], include_ancestor_groups: false)
+      desc 'Update an existing label. At least one optional parameter is required.' do
+        detail 'This feature was added in GitLab 12.4.'
+        success Entities::ProjectLabel
+      end
+      params do
+        requires :name, type: String, desc: 'The name or id of the label to be updated'
+        use :project_label_update_params
+      end
+      put ':id/labels/:name' do
+        update_label(user_project, Entities::ProjectLabel)
+      end
 
-        begin
-          group_label = ::Labels::PromoteService.new(user_project, current_user).execute(label)
+      desc 'Delete an existing label' do
+        detail 'This feature was added in GitLab 12.4.'
+        success Entities::ProjectLabel
+      end
+      params do
+        requires :name, type: String, desc: 'The name or id of the label to be deleted'
+      end
+      delete ':id/labels/:name' do
+        delete_label(user_project)
+      end
 
-          if group_label
-            present group_label, with: Entities::GroupLabel, current_user: current_user, parent: user_project.group
-          else
-            render_api_error!('Failed to promote project label to group label', 400)
-          end
-        rescue => error
-          render_api_error!(error.to_s, 400)
-        end
+      desc 'Promote a label to a group label' do
+        detail 'This feature was added in GitLab 12.4.'
+        success Entities::GroupLabel
+      end
+      params do
+        requires :name, type: String, desc: 'The name or id of the label to be promoted'
+      end
+      put ':id/labels/:name/promote' do
+        promote_label(user_project)
       end
     end
   end

@@ -36,4 +36,6 @@ describe 'notify/pipeline_failed_email.text.erb' do
     expect(rendered).to have_content(pipeline.user.name)
     expect(rendered).to have_content("/-/jobs/#{job.id}/raw")
   end
+
+  it_behaves_like 'correct pipeline information for pipelines for merge requests'
 end

@@ -1270,6 +1270,9 @@ msgstr ""
 msgid "All merge conflicts were resolved. The merge request can now be merged."
 msgstr ""
 
+msgid "All paths are relative to the GitLab URL. Do not include %{relative_url_link_start}relative URL%{relative_url_link_end}."
+msgstr ""
+
 msgid "All projects"
 msgstr ""
 
@@ -2275,6 +2278,9 @@ msgstr ""
 msgid "BillingPlans|@%{user_name} you are currently using the %{plan_link} plan."
 msgstr ""
 
+msgid "BillingPlans|Congratulations, your new trial is activated"
+msgstr ""
+
 msgid "BillingPlans|Current plan"
 msgstr ""
 
@@ -2312,6 +2318,9 @@ msgid "BillingPlans|Your GitLab.com trial expired on %{expiration_date}. %{learn
 msgstr ""
 
 msgid "BillingPlans|Your GitLab.com trial will <strong>expire after %{expiration_date}</strong>. You can learn more about GitLab.com Gold by reading about our %{features_link}."
+msgstr ""
+
+msgid "BillingPlans|Your Gold trial will <strong>expire after %{expiration_date}</strong>. You can learn more about GitLab.com Gold by reading about our %{features_link}."
 msgstr ""
 
 msgid "BillingPlans|features"
@@ -4038,6 +4047,9 @@ msgstr ""
 msgid "Configure limits for web and API requests."
 msgstr ""
 
+msgid "Configure paths to be protected by Rack Attack. A web server restart is required after changing these settings."
+msgstr ""
+
 msgid "Configure push mirrors."
 msgstr ""
 
@@ -5173,6 +5185,9 @@ msgstr ""
 msgid "Deselect all"
 msgstr ""
 
+msgid "Design Management files and data"
+msgstr ""
+
 msgid "DesignManagement|%{current_design} of %{designs_count}"
 msgstr ""
 
@@ -5681,6 +5696,9 @@ msgid "Enable or disable the Pseudonymizer data collection."
 msgstr ""
 
 msgid "Enable or disable version check and usage ping."
+msgstr ""
+
+msgid "Enable protected paths rate limit"
 msgstr ""
 
 msgid "Enable proxy"
@@ -6796,6 +6814,9 @@ msgid "Filter by milestone name"
 msgstr ""
 
 msgid "Filter by two-factor authentication"
+msgstr ""
+
+msgid "Filter projects"
 msgstr ""
 
 msgid "Filter results by group"
@@ -8056,6 +8077,9 @@ msgid "Helps prevent bots from brute-force attacks."
 msgstr ""
 
 msgid "Helps prevent bots from creating accounts."
+msgstr ""
+
+msgid "Helps reduce request volume for protected paths"
 msgstr ""
 
 msgid "Hide archived projects"
@@ -9837,6 +9861,9 @@ msgstr ""
 msgid "Metrics|Add metric"
 msgstr ""
 
+msgid "Metrics|Avg"
+msgstr ""
+
 msgid "Metrics|Check out the CI/CD documentation on deploying to an environment"
 msgstr ""
 
@@ -9865,6 +9892,9 @@ msgid "Metrics|Learn about environments"
 msgstr ""
 
 msgid "Metrics|Legend label (optional)"
+msgstr ""
+
+msgid "Metrics|Max"
 msgstr ""
 
 msgid "Metrics|Must be a valid PromQL query."
@@ -10704,6 +10734,9 @@ msgid "Ok let's go"
 msgstr ""
 
 msgid "OmniAuth"
+msgstr ""
+
+msgid "Omnibus Protected Paths throttle is active. From 12.4, Omnibus throttle is deprecated and will be removed in a future release. Please read the %{relative_url_link_start}Migrating Protected Paths documentation%{relative_url_link_end}."
 msgstr ""
 
 msgid "Onboarding"
@@ -12571,6 +12604,9 @@ msgstr ""
 msgid "Protected Environments"
 msgstr ""
 
+msgid "Protected Paths"
+msgstr ""
+
 msgid "Protected Tag"
 msgstr ""
 
@@ -13606,6 +13642,9 @@ msgid "Scroll up"
 msgstr ""
 
 msgid "Search"
+msgstr ""
+
+msgid "Search Button"
 msgstr ""
 
 msgid "Search an environment spec"
@@ -15806,7 +15845,7 @@ msgstr ""
 msgid "There was an error fetching configuration for charts"
 msgstr ""
 
-msgid "There was an error fetching the form data"
+msgid "There was an error fetching data for the form"
 msgstr ""
 
 msgid "There was an error gathering the chart data"
@@ -18956,6 +18995,9 @@ msgid "is not a valid X509 certificate."
 msgstr ""
 
 msgid "is not an email you own"
+msgstr ""
+
+msgid "is too long (maximum is 100 entries)"
 msgstr ""
 
 msgid "is too long (maximum is 1000 entries)"

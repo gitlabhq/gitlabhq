@@ -13,7 +13,9 @@ module Emails
       @member_source_type = member_source_type
       @member_id = member_id
 
-      mail(to: recipient(recipient_id, notification_group),
+      user = User.find(recipient_id)
+
+      mail(to: user.notification_email_for(notification_group),
            subject: subject("Request to join the #{member_source.human_name} #{member_source.model_name.singular}"))
     end
 
@@ -21,7 +23,7 @@ module Emails
       @member_source_type = member_source_type
       @member_id = member_id
 
-      mail(to: recipient(member.user, notification_group),
+      mail(to: member.user.notification_email_for(notification_group),
            subject: subject("Access to the #{member_source.human_name} #{member_source.model_name.singular} was granted"))
     end
 
@@ -29,7 +31,9 @@ module Emails
       @member_source_type = member_source_type
       @member_source = member_source_class.find(source_id)
 
-      mail(to: recipient(user_id, notification_group),
+      user = User.find(user_id)
+
+      mail(to: user.notification_email_for(notification_group),
            subject: subject("Access to the #{member_source.human_name} #{member_source.model_name.singular} was denied"))
     end
 
@@ -47,7 +51,7 @@ module Emails
       @member_id = member_id
       return unless member.created_by
 
-      mail(to: recipient(member.created_by, notification_group),
+      mail(to: member.created_by.notification_email_for(notification_group),
            subject: subject('Invitation accepted'))
     end
 
@@ -58,7 +62,9 @@ module Emails
       @member_source = member_source_class.find(source_id)
       @invite_email = invite_email
 
-      mail(to: recipient(created_by_id, notification_group),
+      user = User.find(created_by_id)
+
+      mail(to: user.notification_email_for(notification_group),
            subject: subject('Invitation declined'))
     end
 

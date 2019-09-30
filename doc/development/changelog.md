@@ -33,8 +33,13 @@ the `author` field. GitLab team members **should not**.
 
 ## What warrants a changelog entry?
 
+- Any change that introduces a database migration **must** have a changelog entry.
 - Any user-facing change **should** have a changelog entry. Example: "GitLab now
   uses system fonts for all text."
+- Performance improvements **should** have a changelog entry.
+- _Any_ contribution from a community member, no matter how small, **may** have
+  a changelog entry regardless of these guidelines if the contributor wants one.
+  Example: "Fixed a typo on the search results page."
 - Any docs-only changes **should not** have a changelog entry.
 - Any change behind a feature flag **should not** have a changelog entry. The entry should be added [in the merge request removing the feature flags](feature_flags/development.md).
 - A fix for a regression introduced and then fixed in the same release (i.e.,
@@ -43,12 +48,6 @@ the `author` field. GitLab team members **should not**.
 - Any developer-facing change (e.g., refactoring, technical debt remediation,
   test suite changes) **should not** have a changelog entry. Example: "Reduce
   database records created during Cycle Analytics model spec."
-- _Any_ contribution from a community member, no matter how small, **may** have
-  a changelog entry regardless of these guidelines if the contributor wants one.
-  Example: "Fixed a typo on the search results page."
-- Performance improvements **should** have a changelog entry.
-- Any change that introduces a database migration **must** have a
-  changelog entry.
 
 ## Writing good changelog entries
 

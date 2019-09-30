@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe MarkupHelper do
@@ -408,11 +410,11 @@ describe MarkupHelper do
 
       it 'preserves a link href when link text is truncated' do
         text = 'The quick brown fox jumped over the lazy dog' # 44 chars
-        input = "#{text}#{text}#{text} " # 133 chars
         link_url = 'http://example.com/foo/bar/baz' # 30 chars
-        input << link_url
-        object = create_object(input)
+        input = "#{text}#{text}#{text} #{link_url}" # 163 chars
         expected_link_text = 'http://example...</a>'
+
+        object = create_object(input)
 
         expect(first_line_in_markdown(object, attribute, 150, project: project)).to match(link_url)
         expect(first_line_in_markdown(object, attribute, 150, project: project)).to match(expected_link_text)

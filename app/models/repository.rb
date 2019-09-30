@@ -6,6 +6,7 @@ class Repository
   REF_MERGE_REQUEST = 'merge-requests'
   REF_KEEP_AROUND = 'keep-around'
   REF_ENVIRONMENTS = 'environments'
+  REF_PIPELINES = 'pipelines'
 
   ARCHIVE_CACHE_TIME = 60 # Cache archives referred to by a (mutable) ref for 1 minute
   ARCHIVE_CACHE_TIME_IMMUTABLE = 3600 # Cache archives referred to by an immutable reference for 1 hour
@@ -16,7 +17,7 @@ class Repository
     replace
     #{REF_ENVIRONMENTS}
     #{REF_KEEP_AROUND}
-    #{REF_ENVIRONMENTS}
+    #{REF_PIPELINES}
   ].freeze
 
   include Gitlab::RepositoryCacheAdapter
@@ -1098,6 +1099,8 @@ class Repository
 
     raw.create_repository
     after_create
+
+    true
   end
 
   def blobs_metadata(paths, ref = 'HEAD')

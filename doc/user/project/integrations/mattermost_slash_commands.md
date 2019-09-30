@@ -131,12 +131,12 @@ The available slash commands are:
 
 | Command | Description | Example |
 | ------- | ----------- | ------- |
-| <kbd>/&lt;trigger&gt; issue new &lt;title&gt; <kbd>⇧ Shift</kbd>+<kbd>↵ Enter</kbd> &lt;description&gt;</kbd> | Create a new issue in the project that `<trigger>` is tied to. `<description>` is optional. | <samp>/gitlab issue new We need to change the homepage</samp> |
-| <kbd>/&lt;trigger&gt; issue show &lt;issue-number&gt;</kbd> | Show the issue with ID `<issue-number>` from the project that `<trigger>` is tied to. | <samp>/gitlab issue show 42</samp> |
-| <kbd>/&lt;trigger&gt; deploy &lt;environment&gt; to &lt;environment&gt;</kbd> | Start the CI job that deploys from one environment to another, for example `staging` to `production`. CI/CD must be [properly configured][ciyaml]. | <samp>/gitlab deploy staging to production</samp> |
+| <kbd>/&lt;trigger&gt; issue new &lt;title&gt; <kbd>⇧ Shift</kbd>+<kbd>↵ Enter</kbd> &lt;description&gt;</kbd> | Create a new issue in the project that `<trigger>` is tied to. `<description>` is optional. | `/gitlab issue new We need to change the homepage` |
+| <kbd>/&lt;trigger&gt; issue show &lt;issue-number&gt;</kbd> | Show the issue with ID `<issue-number>` from the project that `<trigger>` is tied to. | `/gitlab issue show 42` |
+| <kbd>/&lt;trigger&gt; deploy &lt;environment&gt; to &lt;environment&gt;</kbd> | Start the CI job that deploys from one environment to another, for example `staging` to `production`. CI/CD must be [properly configured][ciyaml]. | `/gitlab deploy staging to production` |
 
 To see a list of available commands to interact with GitLab, type the
-trigger word followed by <kbd>help</kbd>. Example: <samp>/gitlab help</samp>
+trigger word followed by <kbd>help</kbd>. Example: `/gitlab help`
 
 ![Mattermost bot available commands](img/mattermost_bot_available_commands.png)
 
