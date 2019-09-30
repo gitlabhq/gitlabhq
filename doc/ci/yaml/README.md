@@ -2017,6 +2017,10 @@ test:
   timeout: 3h 30m
 ```
 
+The job-level timeout can exceed the
+[project-level timeout](../../user/project/pipelines/settings.md#timeout) but can not
+exceed the Runner-specific timeout.
+
 ### `parallel`
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/22631) in GitLab 11.5.

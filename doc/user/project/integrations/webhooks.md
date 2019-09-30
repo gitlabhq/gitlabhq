@@ -1251,8 +1251,8 @@ its description:
 ```
 
 It will appear in the webhook body as the below (assuming that GitLab is
-installed at gitlab.example.com, and the project is at
-example-group/example-project):
+installed at `gitlab.example.com`, and the project is at
+`example-group/example-project`):
 
 ```markdown
 ![image](https://gitlab.example.com/example-group/example-project/uploads/$sha/image.png)

@@ -15,7 +15,7 @@ will not actually reduce the size of your repository because
 the files are still referenced by previous commits.
 
 Through the method described on this document, first migrate
-to Git LFS with [BFG](https://rtyley.github.io/bfg-repo-cleaner/)
+to Git LFS with a tool such as the open source community-maintained [BFG](https://rtyley.github.io/bfg-repo-cleaner/)
 through a mirror repo, then clean up the repository's history,
 and lastly create LFS tracking rules to prevent new binary files
 from being added.

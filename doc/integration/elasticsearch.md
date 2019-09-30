@@ -42,7 +42,7 @@ updated automatically.
 
 ## Elasticsearch repository indexer (beta)
 
-In order to improve elasticsearch indexing performance, GitLab has made available a [new indexer written in Go](https://gitlab.com/gitlab-org/gitlab-elasticsearch-indexer).
+In order to improve Elasticsearch indexing performance, GitLab has made available a [new indexer written in Go](https://gitlab.com/gitlab-org/gitlab-elasticsearch-indexer).
 This will replace the included Ruby indexer in the future but should be considered beta software for now, so there may be some bugs.
 
 The Elasticsearch Go indexer is included in Omnibus for GitLab 11.8 and newer.
@@ -110,7 +110,7 @@ Example:
 PREFIX=/usr sudo -E make install
 ```
 
-Once installed, enable it under your instance's elasticsearch settings explained [below](#enabling-elasticsearch).
+Once installed, enable it under your instance's Elasticsearch settings explained [below](#enabling-elasticsearch).
 
 ## System Requirements
 
@@ -402,7 +402,7 @@ There are several rake tasks available to you via the command line:
     - `sudo gitlab-rake gitlab:elastic:index_projects`
     - `sudo gitlab-rake gitlab:elastic:index_snippets`
 - [`sudo gitlab-rake gitlab:elastic:index_projects`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/tasks/gitlab/elastic.rake)
-  - This iterates over all projects and queues sidekiq jobs to index them in the background.
+  - This iterates over all projects and queues Sidekiq jobs to index them in the background.
 - [`sudo gitlab-rake gitlab:elastic:index_projects_status`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/tasks/gitlab/elastic.rake)
   - This determines the overall status of the indexing. It is done by counting the total number of indexed projects, dividing by a count of the total number of projects, then multiplying by 100.
 - [`sudo gitlab-rake gitlab:elastic:create_empty_index`](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/tasks/gitlab/elastic.rake)

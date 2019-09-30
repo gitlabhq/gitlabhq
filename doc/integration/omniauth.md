@@ -35,7 +35,7 @@ contains some settings that are common for all providers.
 - [JWT](../administration/auth/jwt.md)
 - [OpenID Connect](../administration/auth/oidc.md)
 - [UltraAuth](ultra_auth.md)
-- [SalesForce](salesforce.md)
+- [Salesforce](salesforce.md)
 
 ## Initial OmniAuth Configuration
 
@@ -43,7 +43,7 @@ Before configuring individual OmniAuth providers there are a few global settings
 that are in common for all providers that we need to consider.
 
 > **NOTE:**
-> Starting from GitLab 11.4, Omniauth is enabled by default. If you're using an
+> Starting from GitLab 11.4, OmniAuth is enabled by default. If you're using an
 > earlier version, you'll need to explicitly enable it.
 
 - `allow_single_sign_on` allows you to specify the providers you want to allow to
@@ -171,20 +171,20 @@ omniauth:
   external_providers: ['twitter', 'google_oauth2']
 ```
 
-## Using Custom Omniauth Providers
+## Using Custom OmniAuth Providers
 
 >**Note:**
 The following information only applies for installations from source.
 
-GitLab uses [Omniauth](https://github.com/omniauth/omniauth) for authentication and already ships
+GitLab uses [OmniAuth](https://github.com/omniauth/omniauth) for authentication and already ships
 with a few providers pre-installed (e.g. LDAP, GitHub, Twitter). But sometimes that
 is not enough and you need to integrate with other authentication solutions. For
-these cases you can use the Omniauth provider.
+these cases you can use the OmniAuth provider.
 
 ### Steps
 
 These steps are fairly general and you will need to figure out the exact details
-from the Omniauth provider's documentation.
+from the OmniAuth provider's documentation.
 
 - Stop GitLab:
 
@@ -198,7 +198,7 @@ from the Omniauth provider's documentation.
   gem "omniauth-your-auth-provider"
   ```
 
-- Install the new Omniauth provider gem by running the following command:
+- Install the new OmniAuth provider gem by running the following command:
 
   ```sh
   sudo -u git -H bundle install --without development test mysql --path vendor/bundle --no-deployment
@@ -238,13 +238,13 @@ In order to enable/disable an OmniAuth provider, go to Admin Area -> Settings ->
 
 ![Enabled OAuth Sign-In sources](img/enabled-oauth-sign-in-sources.png)
 
-## Disabling Omniauth
+## Disabling OmniAuth
 
-Starting from version 11.4 of GitLab, Omniauth is enabled by default. This only
+Starting from version 11.4 of GitLab, OmniAuth is enabled by default. This only
 has an effect if providers are configured and [enabled](#enable-or-disable-sign-in-with-an-omniauth-provider-without-disabling-import-sources).
 
-If omniauth providers are causing problems even when individually disabled, you
-can disable the entire omniauth subsystem by modifying the configuration file:
+If OmniAuth providers are causing problems even when individually disabled, you
+can disable the entire OmniAuth subsystem by modifying the configuration file:
 
 **For Omnibus installations**
 

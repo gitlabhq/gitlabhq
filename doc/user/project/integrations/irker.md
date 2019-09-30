@@ -15,7 +15,7 @@ repository on <https://gitlab.com/esr/irker>:
 git clone https://gitlab.com/esr/irker.git
 ```
 
-Once you have downloaded the code, you can run the python script named `irkerd`.
+Once you have downloaded the code, you can run the Python script named `irkerd`.
 This script is the gateway script, it acts both as an IRC client, for sending
 messages to an IRC server obviously, and as a TCP server, for receiving messages
 from the GitLab service.

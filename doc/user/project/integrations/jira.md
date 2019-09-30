@@ -45,7 +45,7 @@ In order to enable the Jira service in GitLab, you need to first configure the p
 
 #### Jira Server
 
-When connecting to **Jira Server**, which supports basic authentication, a **username and password** are required. Note that connecting to a Jira server via CAS is not possible. [Set up a user in Jira Server](jira_server_configuration.md) first and then proceed to [Configuring GitLab](#configuring-gitlab).
+When connecting to **Jira Server**, which supports basic authentication, a **username and password** are required. Note that connecting to Jira Server via CAS is not possible. [Set up a user in Jira Server](jira_server_configuration.md) first and then proceed to [Configuring GitLab](#configuring-gitlab).
 
 #### Jira Cloud
 

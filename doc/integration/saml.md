@@ -111,7 +111,7 @@ in your SAML IdP:
 1. Change the values of `idp_cert_fingerprint`, `idp_sso_target_url`,
    `name_identifier_format` to match your IdP. If a fingerprint is used it must
    be a SHA1 fingerprint; check
-   [the omniauth-saml documentation](https://github.com/omniauth/omniauth-saml)
+   [the OmniAuth SAML documentation](https://github.com/omniauth/omniauth-saml)
    for more details on these options.
 
 1. Change the value of `issuer` to a unique name, which will identify the application
@@ -133,7 +133,7 @@ https://gitlab.example.com/users/auth/saml/metadata
 At a minimum the IdP *must* provide a claim containing the user's email address, using
 claim name `email` or `mail`. The email will be used to automatically generate the GitLab
 username. GitLab will also use claims with name `name`, `first_name`, `last_name`
-(see [the omniauth-saml gem](https://github.com/omniauth/omniauth-saml/blob/master/lib/omniauth/strategies/saml.rb)
+(see [the OmniAuth SAML gem](https://github.com/omniauth/omniauth-saml/blob/master/lib/omniauth/strategies/saml.rb)
 for supported claims).
 
 On the sign in page there should now be a SAML button below the regular sign in form.
