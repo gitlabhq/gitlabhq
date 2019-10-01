@@ -578,7 +578,9 @@ describe Projects::BranchesController do
   describe 'GET diverging_commit_counts' do
     before do
       sign_in(user)
+    end
 
+    it 'returns the commit counts behind and ahead of default branch' do
       get :diverging_commit_counts,
           format: :json,
           params: {
@@ -586,14 +588,58 @@ describe Projects::BranchesController do
             project_id: project,
             names: ['fix', 'add-pdf-file', 'branch-merged']
           }
-    end
 
-    it 'returns the commit counts behind and ahead of default branch' do
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response).to eq(
         "fix" => { "behind" => 29, "ahead" => 2 },
         "branch-merged" => { "behind" => 1, "ahead" => 0 },
         "add-pdf-file" => { "behind" => 0, "ahead" => 3 }
       )
+    end
+
+    it 'returns the commits counts with no names provided' do
+      allow_any_instance_of(Repository).to receive(:branch_count).and_return(Kaminari.config.default_per_page)
+
+      get :diverging_commit_counts,
+          format: :json,
+          params: {
+            namespace_id: project.namespace,
+            project_id: project
+          }
+
+      expect(response).to have_gitlab_http_status(200)
+      expect(json_response.count).to be > 1
+    end
+
+    describe 'with many branches' do
+      before do
+        allow_any_instance_of(Repository).to receive(:branch_count).and_return(Kaminari.config.default_per_page + 1)
+      end
+
+      it 'returns 422 if no names are specified' do
+        get :diverging_commit_counts,
+            format: :json,
+            params: {
+              namespace_id: project.namespace,
+              project_id: project
+            }
+
+        expect(response).to have_gitlab_http_status(422)
+        expect(json_response['error']).to eq("Specify at least one and at most #{Kaminari.config.default_per_page} branch names")
+      end
+
+      it 'returns the list of counts' do
+        get :diverging_commit_counts,
+            format: :json,
+            params: {
+              namespace_id: project.namespace,
+              project_id: project,
+              names: ['fix', 'add-pdf-file', 'branch-merged']
+            }
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response.count).to be > 1
+      end
     end
   end
 end

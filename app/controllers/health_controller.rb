@@ -41,6 +41,10 @@ class HealthController < ActionController::Base
       info[:labels] = r.labels if r.labels
       [name, info]
     end
+
+    # disable static error pages at the gitlab-workhorse level, we want to see this error response even in production
+    headers["X-GitLab-Custom-Error"] = 1 unless success
+
     render json: response.to_h, status: success ? :ok : :service_unavailable
   end
 end

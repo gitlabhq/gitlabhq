@@ -30,6 +30,19 @@ describe HealthController do
         expect(json_response['shared_state_check']['status']).to eq('ok')
         expect(json_response['gitaly_check']['status']).to eq('ok')
       end
+
+      it 'responds with readiness checks data when a failure happens' do
+        allow(Gitlab::HealthChecks::Redis::RedisCheck).to receive(:readiness).and_return(Gitlab::HealthChecks::Result.new(false, "check error"))
+
+        subject
+
+        expect(json_response['redis_check']['status']).to eq('failed')
+        expect(json_response['redis_check']['message']).to eq('check error')
+        expect(json_response['cache_check']['status']).to eq('ok')
+
+        expect(response.status).to eq(503)
+        expect(response.headers['X-GitLab-Custom-Error']).to eq(1)
+      end
     end
 
     context 'accessed from whitelisted ip' do

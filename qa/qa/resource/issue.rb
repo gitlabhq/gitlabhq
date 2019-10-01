@@ -15,6 +15,7 @@ module QA
       end
 
       attribute :id
+      attribute :iid
       attribute :assignee_ids
       attribute :labels
       attribute :title

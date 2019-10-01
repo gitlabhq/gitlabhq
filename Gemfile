@@ -405,7 +405,7 @@ group :test do
   gem 'webmock', '~> 3.5.1'
   gem 'rails-controller-testing'
   gem 'concurrent-ruby', '~> 1.1'
-  gem 'test-prof', '~> 0.2.5'
+  gem 'test-prof', '~> 0.10.0'
   gem 'rspec_junit_formatter'
 end
 

@@ -35,6 +35,10 @@ module QA
             element :more_assignees_link
           end
 
+          view 'app/assets/javascripts/vue_shared/components/issue/related_issuable_item.vue' do
+            element :remove_issue_button
+          end
+
           view 'app/helpers/dropdowns_helper.rb' do
             element :dropdown_input_field
           end
@@ -74,6 +78,10 @@ module QA
 
           def click_milestone_link
             click_element(:milestone_link)
+          end
+
+          def click_remove_issue_button
+            click_element(:remove_issue_button)
           end
 
           # Adds a comment to an issue
