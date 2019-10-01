@@ -634,6 +634,13 @@ entry.
 - Update Packer.gitlab-ci.yml to use latest image. (Kelly Hair)
 
 
+## 12.1.13
+
+### Security (1 change)
+
+- Fix private feature Elasticsearch leak.
+
+
 ## 12.1.12
 
 ### Security (12 changes)
