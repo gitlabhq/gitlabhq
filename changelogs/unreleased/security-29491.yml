@@ -1,0 +1,5 @@
+---
+title: Fix private feature Elasticsearch leak
+merge_request:
+author:
+type: security
