@@ -1,6 +1,6 @@
 # Signing outgoing email with S/MIME
 
-Notification emails sent by Gitlab can be signed with S/MIME for improved
+Notification emails sent by GitLab can be signed with S/MIME for improved
 security.
 
 > **Note:**

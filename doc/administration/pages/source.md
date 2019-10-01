@@ -93,7 +93,7 @@ since that is needed in all configurations.
 URL scheme: `http://page.example.io`
 
 This is the minimum setup that you can use Pages with. It is the base for all
-other setups as described below. Nginx will proxy all requests to the daemon.
+other setups as described below. NGINX will proxy all requests to the daemon.
 The Pages daemon doesn't listen to the outside world.
 
 1. Install the Pages daemon:
@@ -136,7 +136,7 @@ The Pages daemon doesn't listen to the outside world.
    gitlab_pages_options="-pages-domain example.io -pages-root $app_root/shared/pages -listen-proxy 127.0.0.1:8090"
    ```
 
-1. Copy the `gitlab-pages` Nginx configuration file:
+1. Copy the `gitlab-pages` NGINX configuration file:
 
    ```bash
    sudo cp lib/support/nginx/gitlab-pages /etc/nginx/sites-available/gitlab-pages.conf
@@ -155,7 +155,7 @@ The Pages daemon doesn't listen to the outside world.
 
 URL scheme: `https://page.example.io`
 
-Nginx will proxy all requests to the daemon. Pages daemon doesn't listen to the
+NGINX will proxy all requests to the daemon. Pages daemon doesn't listen to the
 outside world.
 
 1. Install the Pages daemon:
@@ -193,7 +193,7 @@ outside world.
    gitlab_pages_options="-pages-domain example.io -pages-root $app_root/shared/pages -listen-proxy 127.0.0.1:8090 -root-cert /path/to/example.io.crt -root-key /path/to/example.io.key
    ```
 
-1. Copy the `gitlab-pages-ssl` Nginx configuration file:
+1. Copy the `gitlab-pages-ssl` NGINX configuration file:
 
    ```bash
    sudo cp lib/support/nginx/gitlab-pages-ssl /etc/nginx/sites-available/gitlab-pages-ssl.conf
@@ -219,7 +219,7 @@ that without TLS certificates.
 
 URL scheme: `http://page.example.io` and `http://domain.com`
 
-In that case, the pages daemon is running, Nginx still proxies requests to
+In that case, the pages daemon is running, NGINX still proxies requests to
 the daemon but the daemon is also able to receive requests from the outside
 world. Custom domains are supported, but no TLS.
 
@@ -261,7 +261,7 @@ world. Custom domains are supported, but no TLS.
    gitlab_pages_options="-pages-domain example.io -pages-root $app_root/shared/pages -listen-proxy 127.0.0.1:8090 -listen-http 192.0.2.2:80"
    ```
 
-1. Copy the `gitlab-pages-ssl` Nginx configuration file:
+1. Copy the `gitlab-pages-ssl` NGINX configuration file:
 
    ```bash
    sudo cp lib/support/nginx/gitlab-pages /etc/nginx/sites-available/gitlab-pages.conf
@@ -284,7 +284,7 @@ world. Custom domains are supported, but no TLS.
 
 URL scheme: `https://page.example.io` and `https://domain.com`
 
-In that case, the pages daemon is running, Nginx still proxies requests to
+In that case, the pages daemon is running, NGINX still proxies requests to
 the daemon but the daemon is also able to receive requests from the outside
 world. Custom domains and TLS are supported.
 
@@ -330,7 +330,7 @@ world. Custom domains and TLS are supported.
    gitlab_pages_options="-pages-domain example.io -pages-root $app_root/shared/pages -listen-proxy 127.0.0.1:8090 -listen-http 192.0.2.2:80 -listen-https 192.0.2.2:443 -root-cert /path/to/example.io.crt -root-key /path/to/example.io.key
    ```
 
-1. Copy the `gitlab-pages-ssl` Nginx configuration file:
+1. Copy the `gitlab-pages-ssl` NGINX configuration file:
 
    ```bash
    sudo cp lib/support/nginx/gitlab-pages-ssl /etc/nginx/sites-available/gitlab-pages-ssl.conf
@@ -351,7 +351,7 @@ The following information applies only for installations from source.
 Be extra careful when setting up the domain name in the NGINX config. You must
 not remove the backslashes.
 
-If your GitLab pages domain is `example.io`, replace:
+If your GitLab Pages domain is `example.io`, replace:
 
 ```bash
 server_name ~^.*\.YOUR_GITLAB_PAGES\.DOMAIN$;
@@ -401,7 +401,7 @@ Pages access control is disabled by default. To enable it:
 1. Create a new [system OAuth application](../../integration/oauth_provider.md#adding-an-application-through-the-profile).
    This should be called `GitLab Pages` and have a `Redirect URL` of
    `https://projects.example.io/auth`. It does not need to be a "trusted"
-   application, but it does need the "api" scope.
+   application, but it does need the `api` scope.
 1. Start the Pages daemon with the following additional arguments:
 
    ```shell
@@ -443,7 +443,7 @@ Pages are part of the [regular backup][backup] so there is nothing to configure.
 
 ## Security
 
-You should strongly consider running GitLab pages under a different hostname
+You should strongly consider running GitLab Pages under a different hostname
 than GitLab to prevent XSS attacks.
 
 [backup]: ../../raketasks/backup_restore.md

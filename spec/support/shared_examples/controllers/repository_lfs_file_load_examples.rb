@@ -25,13 +25,17 @@ shared_examples 'a controller that can serve LFS files' do |options = {}|
   context 'when lfs is enabled' do
     before do
       allow_any_instance_of(Project).to receive(:lfs_enabled?).and_return(true)
+      allow_any_instance_of(LfsObjectUploader).to receive(:exists?).and_return(true)
+      allow(controller).to receive(:send_file) { controller.head :ok }
     end
 
-    context 'when project has access' do
+    def link_project(project)
+      project.lfs_objects << lfs_object
+    end
+
+    context 'when the project is linked to the LfsObject' do
       before do
-        project.lfs_objects << lfs_object
-        allow_any_instance_of(LfsObjectUploader).to receive(:exists?).and_return(true)
-        allow(controller).to receive(:send_file) { controller.head :ok }
+        link_project(project)
       end
 
       it 'serves the file' do
@@ -76,11 +80,66 @@ shared_examples 'a controller that can serve LFS files' do |options = {}|
       end
     end
 
-    context 'when project does not have access' do
+    context 'when project is not linked to the LfsObject' do
       it 'does not serve the file' do
         subject
 
         expect(response).to have_gitlab_http_status(404)
+      end
+    end
+
+    context 'when the project is part of a fork network' do
+      shared_examples 'a controller that correctly serves lfs files within a fork network' do
+        it do
+          expect(fork_network_member).not_to eq(fork_network.root_project)
+        end
+
+        it 'does not serve the file if no members are linked to the LfsObject' do
+          subject
+
+          expect(response).to have_gitlab_http_status(404)
+        end
+
+        it 'serves the file when the fork network root is linked to the LfsObject' do
+          link_project(fork_network.root_project)
+
+          subject
+
+          expect(response).to have_gitlab_http_status(200)
+        end
+
+        it 'serves the file when the fork network member is linked to the LfsObject' do
+          link_project(fork_network_member)
+
+          subject
+
+          expect(response).to have_gitlab_http_status(200)
+        end
+      end
+
+      context 'when the project is the root of the fork network' do
+        let!(:fork_network) { create(:fork_network, root_project: project) }
+        let!(:fork_network_member) { create(:fork_network_member, fork_network: fork_network).project }
+
+        before do
+          project.reload
+        end
+
+        it_behaves_like 'a controller that correctly serves lfs files within a fork network'
+      end
+
+      context 'when the project is a downstream member of the fork network' do
+        let!(:fork_network) { create(:fork_network) }
+        let!(:fork_network_member) do
+          create(:fork_network_member, project: project, fork_network: fork_network)
+          project
+        end
+
+        before do
+          project.reload
+        end
+
+        it_behaves_like 'a controller that correctly serves lfs files within a fork network'
       end
     end
   end

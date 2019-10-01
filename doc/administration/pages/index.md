@@ -115,7 +115,7 @@ since that is needed in all configurations.
 URL scheme: `http://page.example.io`
 
 This is the minimum setup that you can use Pages with. It is the base for all
-other setups as described below. Nginx will proxy all requests to the daemon.
+other setups as described below. NGINX will proxy all requests to the daemon.
 The Pages daemon doesn't listen to the outside world.
 
 1. Set the external URL for GitLab Pages in `/etc/gitlab/gitlab.rb`:
@@ -139,7 +139,7 @@ Watch the [video tutorial][video-admin] for this configuration.
 
 URL scheme: `https://page.example.io`
 
-Nginx will proxy all requests to the daemon. Pages daemon doesn't listen to the
+NGINX will proxy all requests to the daemon. Pages daemon doesn't listen to the
 outside world.
 
 1. Place the certificate and key inside `/etc/gitlab/ssl`
@@ -196,7 +196,7 @@ you have IPv6 as well as IPv4 addresses, you can use them both.
 
 URL scheme: `http://page.example.io` and `http://domain.com`
 
-In that case, the Pages daemon is running, Nginx still proxies requests to
+In that case, the Pages daemon is running, NGINX still proxies requests to
 the daemon but the daemon is also able to receive requests from the outside
 world. Custom domains are supported, but no TLS.
 
@@ -227,7 +227,7 @@ world. Custom domains are supported, but no TLS.
 
 URL scheme: `https://page.example.io` and `https://domain.com`
 
-In that case, the Pages daemon is running, Nginx still proxies requests to
+In that case, the Pages daemon is running, NGINX still proxies requests to
 the daemon but the daemon is also able to receive requests from the outside
 world. Custom domains and TLS are supported.
 
@@ -319,7 +319,7 @@ pages:
    gitlab_pages['http_proxy'] = 'http://example:8080'
    ```
 
-1. [Reconfigure Gitlab][reconfigure] for the changes to take effect.
+1. [Reconfigure GitLab][reconfigure] for the changes to take effect.
 
 ## Activate verbose logging for daemon
 
@@ -426,7 +426,7 @@ Pages are part of the [regular backup][backup] so there is nothing to configure.
 
 ## Security
 
-You should strongly consider running GitLab pages under a different hostname
+You should strongly consider running GitLab Pages under a different hostname
 than GitLab to prevent XSS attacks.
 
 [backup]: ../../raketasks/backup_restore.md

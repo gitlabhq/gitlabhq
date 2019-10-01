@@ -355,38 +355,38 @@ publicly available at [chef cookbooks](https://gitlab.com/gitlab-cookbooks).
 
 We use Elasticsearch, logstash, and Kibana for part of our monitoring solution:
 
-- [gitlab-cookbooks / gitlab-elk · GitLab](https://gitlab.com/gitlab-cookbooks/gitlab-elk)
-- [gitlab-cookbooks / gitlab_elasticsearch · GitLab](https://gitlab.com/gitlab-cookbooks/gitlab_elasticsearch)
+- [`gitlab-cookbooks` / `gitlab-elk` · GitLab](https://gitlab.com/gitlab-cookbooks/gitlab-elk)
+- [`gitlab-cookbooks` / `gitlab_elasticsearch` · GitLab](https://gitlab.com/gitlab-cookbooks/gitlab_elasticsearch)
 
 ### Prometheus
 
 Prometheus complete our monitoring stack:
 
-- [gitlab-cookbooks / gitlab-prometheus · GitLab](https://gitlab.com/gitlab-cookbooks/gitlab-prometheus)
+- [`gitlab-cookbooks` / `gitlab-prometheus` · GitLab](https://gitlab.com/gitlab-cookbooks/gitlab-prometheus)
 
 ### Grafana
 
 For the visualization of monitoring data:
 
-- [gitlab-cookbooks / gitlab-grafana · GitLab](https://gitlab.com/gitlab-cookbooks/gitlab-grafana)
+- [`gitlab-cookbooks` / `gitlab-grafana` · GitLab](https://gitlab.com/gitlab-cookbooks/gitlab-grafana)
 
 ### Sentry
 
 Open source error tracking:
 
-- [gitlab-cookbooks / gitlab-sentry · GitLab](https://gitlab.com/gitlab-cookbooks/gitlab-sentry)
+- [`gitlab-cookbooks` / `gitlab-sentry` · GitLab](https://gitlab.com/gitlab-cookbooks/gitlab-sentry)
 
 ### Consul
 
 Service discovery:
 
-- [gitlab-cookbooks / gitlab_consul · GitLab](https://gitlab.com/gitlab-cookbooks/gitlab_consul)
+- [`gitlab-cookbooks` / `gitlab_consul` · GitLab](https://gitlab.com/gitlab-cookbooks/gitlab_consul)
 
 ### Haproxy
 
 High Performance TCP/HTTP Load Balancer:
 
-- [gitlab-cookbooks / gitlab-haproxy · GitLab](https://gitlab.com/gitlab-cookbooks/gitlab-haproxy)
+- [`gitlab-cookbooks` / `gitlab-haproxy` · GitLab](https://gitlab.com/gitlab-cookbooks/gitlab-haproxy)
 
 [autoscale mode]: https://docs.gitlab.com/runner/configuration/autoscale.html "How Autoscale works"
 [runners-post]: https://about.gitlab.com/2016/04/05/shared-runners/ "Shared Runners on GitLab.com"

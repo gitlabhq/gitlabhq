@@ -193,7 +193,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 - [Debugging tips](troubleshooting/debug.md): Tips to debug problems when things go wrong
 - [Log system](logs.md): Where to look for logs.
 - [Sidekiq Troubleshooting](troubleshooting/sidekiq.md): Debug when Sidekiq appears hung and is not processing jobs.
-- [Troubleshooting ElasticSearch](troubleshooting/elasticsearch.md)
+- [Troubleshooting Elasticsearch](troubleshooting/elasticsearch.md)
 
 ### Support Team Docs
 
@@ -213,7 +213,7 @@ who are aware of the risks.
 - [Useful Linux commands](troubleshooting/linux_cheat_sheet.md)
 - [Troubleshooting Kubernetes](troubleshooting/kubernetes_cheat_sheet.md)
 - [Guide to test environments](troubleshooting/test_environments.md) (for Support Engineers)
-- [GitLab rails console commands](troubleshooting/gitlab_rails_cheat_sheet.md) (for Support Engineers)
+- [GitLab Rails console commands](troubleshooting/gitlab_rails_cheat_sheet.md) (for Support Engineers)
 - Useful links:
   - [GitLab Developer Docs](../development/README.md)
   - [Repairing and recovering broken Git repositories](https://git.seveas.net/repairing-and-recovering-broken-git-repositories.html)

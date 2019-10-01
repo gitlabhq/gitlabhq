@@ -186,8 +186,7 @@ By default, [Developers and Maintainers](../permissions.md#group-members-permiss
 
 To change this setting for a specific group:
 
-1. Go to the group's page.
-1. Go to **Settings > General**.
+1. Go to the group's **Settings > General** page.
 1. Expand the **Permissions, LFS, 2FA** section.
 1. Select the desired option in the **Allowed to create projects** dropdown list.
 1. Click **Save changes**.

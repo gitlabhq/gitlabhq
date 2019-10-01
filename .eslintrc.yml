@@ -45,7 +45,6 @@ rules:
   no-jquery/no-serialize: error
   promise/always-return: off
   promise/no-callback-in-promise: off
-  promise/no-nesting: off
 overrides:
   files:
     - '**/spec/**/*'

@@ -49,7 +49,7 @@ gitlab/gitlab-ee:11.5.3-ee.0
 
 #### SAML for Authentication
 
-We can use the [test-saml-idp Docker image](https://hub.docker.com/r/jamedjo/test-saml-idp)
+We can use the [`test-saml-idp` Docker image](https://hub.docker.com/r/jamedjo/test-saml-idp)
 to do the work for us:
 
 ```sh
@@ -91,7 +91,7 @@ gitlab_rails['omniauth_providers'] = [
 
 See [the GDK SAML documentation](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/saml.md).
 
-### ElasticSearch
+### Elasticsearch
 
 ```sh
 docker run -d --name elasticsearch \
@@ -101,7 +101,7 @@ docker.elastic.co/elasticsearch/elasticsearch:5.5.1
 ```
 
 Then confirm it works in the browser at `curl http://<IP_ADDRESS>:9200/_cat/health`.
-ElasticSearch's default username is `elastic` and password is `changeme`.
+Elasticsearch's default username is `elastic` and password is `changeme`.
 
 ### PlantUML
 

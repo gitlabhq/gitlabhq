@@ -4,7 +4,7 @@ type: reference
 
 # GitLab Rails Console Cheat Sheet
 
-This is the GitLab Support Team's collection of information regarding the GitLab rails
+This is the GitLab Support Team's collection of information regarding the GitLab Rails
 console, for use while troubleshooting. It is listed here for transparency,
 and it may be useful for users with experience with these tools. If you are currently
 having an issue with GitLab, it is highly recommended that you check your
@@ -822,7 +822,7 @@ License.current # check to make sure it applied
 
 From [Zendesk ticket #91083](https://gitlab.zendesk.com/agent/tickets/91083) (internal)
 
-### Poll unicorn requests by seconds
+### Poll Unicorn requests by seconds
 
 ```ruby
 require 'rubygems'
@@ -898,13 +898,13 @@ See <https://github.com/mperham/sidekiq/wiki/Signals#ttin>.
 
 ## Redis
 
-### Connect to redis (omnibus)
+### Connect to Redis (omnibus)
 
 ```sh
 /opt/gitlab/embedded/bin/redis-cli -s /var/opt/gitlab/redis/redis.socket
 ```
 
-### Connect to redis (HA)
+### Connect to Redis (HA)
 
 ```sh
 /opt/gitlab/embedded/bin/redis-cli -h <host ip> -a <password>
