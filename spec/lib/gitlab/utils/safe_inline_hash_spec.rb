@@ -3,7 +3,7 @@
 require 'fast_spec_helper'
 
 describe Gitlab::Utils::SafeInlineHash do
-  context '.merge_keys!' do
+  describe '.merge_keys!' do
     let(:source) { { 'foo' => { 'bar' => 'baz' } } }
     let(:validator) { instance_double(Gitlab::Utils::DeepSize, valid?: valid) }
 

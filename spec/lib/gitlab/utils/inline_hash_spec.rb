@@ -9,9 +9,11 @@ describe Gitlab::Utils::InlineHash do
     let(:source) do
       {
         nested_param: {
-          key: 'Value'
+          key: :Value
         },
         'root_param' => 'Root',
+        unnested_symbol_key: :unnested_symbol_value,
+        12 => 22,
         'very' => {
           'deep' => {
             'nested' => {
@@ -24,15 +26,17 @@ describe Gitlab::Utils::InlineHash do
 
     it 'transforms a nested hash into a one-level hash' do
       is_expected.to eq(
-        'nested_param.key' => 'Value',
+        'nested_param.key' => :Value,
         'root_param' => 'Root',
+        :unnested_symbol_key => :unnested_symbol_value,
+        12 => 22,
         'very.deep.nested.param' => 'Deep nested value'
       )
     end
 
     it 'retains key insertion order' do
       expect(subject.keys)
-        .to eq(%w(nested_param.key root_param very.deep.nested.param))
+        .to eq(['nested_param.key', 'root_param', :unnested_symbol_key, 12, 'very.deep.nested.param'])
     end
 
     context 'with a custom connector' do
@@ -40,8 +44,10 @@ describe Gitlab::Utils::InlineHash do
 
       it 'uses the connector to merge keys' do
         is_expected.to eq(
-          'nested_param::key' => 'Value',
+          'nested_param::key' => :Value,
           'root_param' => 'Root',
+          :unnested_symbol_key => :unnested_symbol_value,
+          12 => 22,
           'very::deep::nested::param' => 'Deep nested value'
         )
       end
@@ -52,8 +58,10 @@ describe Gitlab::Utils::InlineHash do
 
       it 'prefixes all the keys' do
         is_expected.to eq(
-          'options.nested_param.key' => 'Value',
+          'options.nested_param.key' => :Value,
           'options.root_param' => 'Root',
+          'options.unnested_symbol_key' => :unnested_symbol_value,
+          'options.12' => 22,
           'options.very.deep.nested.param' => 'Deep nested value'
         )
       end
