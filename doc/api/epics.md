@@ -88,6 +88,7 @@ Example response:
   "due_date_from_milestones": "2018-07-31",
   "created_at": "2018-07-17T13:36:22.770Z",
   "updated_at": "2018-07-18T12:22:05.239Z",
+  "closed_at": "2018-08-18T12:22:05.239Z",
   "labels": [],
   "upvotes": 4,
   "downvotes": 0
@@ -143,6 +144,7 @@ Example response:
   "due_date_from_milestones": "2018-07-31",
   "created_at": "2018-07-17T13:36:22.770Z",
   "updated_at": "2018-07-18T12:22:05.239Z",
+  "closed_at": "2018-08-18T12:22:05.239Z",
   "labels": [],
   "upvotes": 4,
   "downvotes": 0
@@ -209,6 +211,7 @@ Example response:
   "due_date_from_milestones": "2018-07-31",
   "created_at": "2018-07-17T13:36:22.770Z",
   "updated_at": "2018-07-18T12:22:05.239Z",
+  "closed_at": "2018-08-18T12:22:05.239Z",
   "labels": [],
   "upvotes": 4,
   "downvotes": 0
@@ -276,6 +279,7 @@ Example response:
   "due_date_from_milestones": "2018-07-31",
   "created_at": "2018-07-17T13:36:22.770Z",
   "updated_at": "2018-07-18T12:22:05.239Z",
+  "closed_at": "2018-08-18T12:22:05.239Z",
   "labels": [],
   "upvotes": 4,
   "downvotes": 0
@@ -358,7 +362,8 @@ Example response:
     "start_date": null,
     "end_date": null,
     "created_at": "2018-01-21T06:21:13.165Z",
-    "updated_at": "2018-01-22T12:41:41.166Z"
+    "updated_at": "2018-01-22T12:41:41.166Z",
+    "closed_at": "2018-08-18T12:22:05.239Z"
   },
   "target_url": "https://gitlab.example.com/groups/epics/5",
   "body": "Vel voluptas atque dicta mollitia adipisci qui at.",

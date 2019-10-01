@@ -14,6 +14,7 @@ class ApplicationController < ActionController::Base
   include SessionlessAuthentication
   include ConfirmEmailWarning
   include Gitlab::Tracking::ControllerConcern
+  include Gitlab::Experimentation::ControllerConcern
 
   before_action :authenticate_user!
   before_action :enforce_terms!, if: :should_enforce_terms?

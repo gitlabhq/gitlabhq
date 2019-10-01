@@ -30,7 +30,7 @@ export default {
     EnvironmentsBlock,
     ErasedBlock,
     Icon,
-    Log: () => (isNewJobLogActive() ? import('./job_log_json.vue') : import('./job_log.vue')),
+    Log: () => (isNewJobLogActive() ? import('./log/log.vue') : import('./job_log.vue')),
     LogTopBar,
     StuckBlock,
     UnmetPrerequisitesBlock,
