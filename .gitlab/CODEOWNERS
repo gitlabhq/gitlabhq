@@ -6,8 +6,8 @@
 /doc/ @axil @marcia @eread @mikelewis
 
 # Frontend maintainers should see everything in `app/assets/`
-app/assets/ @ClemMakesApps @fatihacet @filipa @mikegreiling @timzallmann @kushalpandya @pslaughter
-*.scss @annabeldunstone @ClemMakesApps @fatihacet @filipa @mikegreiling @timzallmann @kushalpandya @pslaughter
+app/assets/ @ClemMakesApps @fatihacet @filipa @mikegreiling @timzallmann @kushalpandya @pslaughter @wortschi
+*.scss @annabeldunstone @ClemMakesApps @fatihacet @filipa @mikegreiling @timzallmann @kushalpandya @pslaughter @wortschi
 
 # Database maintainers should review changes in `db/`
 db/ @gitlab-org/maintainers/database

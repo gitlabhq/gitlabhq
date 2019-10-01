@@ -38,9 +38,5 @@ schedule:package-and-qa:
   extends:
     - .package-and-qa-base
     - .only-code-qa-changes
-  only:
-    refs:
-      - schedules@gitlab-org/gitlab
-      - schedules@gitlab-org/gitlab-foss
+    - .only-canonical-schedules
   needs: ["build-qa-image", "gitlab:assets:compile"]
-  allow_failure: true

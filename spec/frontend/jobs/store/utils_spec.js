@@ -6,6 +6,7 @@ import {
   addDurationToHeader,
   isCollapsibleSection,
   findOffsetAndRemove,
+  getIncrementalLineNumber,
 } from '~/jobs/store/utils';
 import {
   utilsMockData,
@@ -292,11 +293,91 @@ describe('Jobs Store Utils', () => {
     });
   });
 
+  describe('getIncrementalLineNumber', () => {
+    describe('when last line is 0', () => {
+      it('returns 1', () => {
+        const log = [
+          {
+            content: [],
+            lineNumber: 0,
+          },
+        ];
+
+        expect(getIncrementalLineNumber(log)).toEqual(1);
+      });
+    });
+
+    describe('with unnested line', () => {
+      it('returns the lineNumber of the last item in the array', () => {
+        const log = [
+          {
+            content: [],
+            lineNumber: 10,
+          },
+          {
+            content: [],
+            lineNumber: 101,
+          },
+        ];
+
+        expect(getIncrementalLineNumber(log)).toEqual(102);
+      });
+    });
+
+    describe('when last line is the header section', () => {
+      it('returns the lineNumber of the last item in the array', () => {
+        const log = [
+          {
+            content: [],
+            lineNumber: 10,
+          },
+          {
+            isHeader: true,
+            line: {
+              lineNumber: 101,
+              content: [],
+            },
+            lines: [],
+          },
+        ];
+
+        expect(getIncrementalLineNumber(log)).toEqual(102);
+      });
+    });
+
+    describe('when last line is a nested line', () => {
+      it('returns the lineNumber of the last item in the nested array', () => {
+        const log = [
+          {
+            content: [],
+            lineNumber: 10,
+          },
+          {
+            isHeader: true,
+            line: {
+              lineNumber: 101,
+              content: [],
+            },
+            lines: [
+              {
+                lineNumber: 102,
+                content: [],
+              },
+              { lineNumber: 103, content: [] },
+            ],
+          },
+        ];
+
+        expect(getIncrementalLineNumber(log)).toEqual(104);
+      });
+    });
+  });
+
   describe('updateIncrementalTrace', () => {
     describe('without repeated section', () => {
       it('concats and parses both arrays', () => {
         const oldLog = logLinesParser(originalTrace);
-        const result = updateIncrementalTrace(originalTrace, oldLog, regularIncremental);
+        const result = updateIncrementalTrace(regularIncremental, oldLog);
 
         expect(result).toEqual([
           {
@@ -324,7 +405,7 @@ describe('Jobs Store Utils', () => {
     describe('with regular line repeated offset', () => {
       it('updates the last line and formats with the incremental part', () => {
         const oldLog = logLinesParser(originalTrace);
-        const result = updateIncrementalTrace(originalTrace, oldLog, regularIncrementalRepeated);
+        const result = updateIncrementalTrace(regularIncrementalRepeated, oldLog);
 
         expect(result).toEqual([
           {
@@ -343,7 +424,7 @@ describe('Jobs Store Utils', () => {
     describe('with header line repeated', () => {
       it('updates the header line and formats with the incremental part', () => {
         const oldLog = logLinesParser(headerTrace);
-        const result = updateIncrementalTrace(headerTrace, oldLog, headerTraceIncremental);
+        const result = updateIncrementalTrace(headerTraceIncremental, oldLog);
 
         expect(result).toEqual([
           {
@@ -369,11 +450,7 @@ describe('Jobs Store Utils', () => {
     describe('with collapsible line repeated', () => {
       it('updates the collapsible line and formats with the incremental part', () => {
         const oldLog = logLinesParser(collapsibleTrace);
-        const result = updateIncrementalTrace(
-          collapsibleTrace,
-          oldLog,
-          collapsibleTraceIncremental,
-        );
+        const result = updateIncrementalTrace(collapsibleTraceIncremental, oldLog);
 
         expect(result).toEqual([
           {

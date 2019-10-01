@@ -49,6 +49,8 @@ exports[`Confidential Issue Sidebar Block renders for isConfidential = false and
     
     </div>
   </div>
+   
+  <!---->
 </div>
 `;
 
@@ -111,6 +113,8 @@ exports[`Confidential Issue Sidebar Block renders for isConfidential = false and
     
     </div>
   </div>
+   
+  <!---->
 </div>
 `;
 
@@ -163,6 +167,8 @@ exports[`Confidential Issue Sidebar Block renders for isConfidential = true and 
     
     </div>
   </div>
+   
+  <!---->
 </div>
 `;
 
@@ -225,5 +231,7 @@ exports[`Confidential Issue Sidebar Block renders for isConfidential = true and 
     
     </div>
   </div>
+   
+  <!---->
 </div>
 `;

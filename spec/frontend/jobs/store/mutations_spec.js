@@ -73,6 +73,7 @@ describe('Jobs Store Mutations', () => {
         html,
         size: 511846,
         complete: true,
+        lines: [],
       });
 
       expect(stateCopy.trace).toEqual(html);

@@ -32,6 +32,10 @@ export default {
 
   mounted() {
     eventHub.$on('submit', this.submit);
+
+    if (this.html) {
+      this.appendRecaptchaScript();
+    }
   },
 
   beforeDestroy() {

@@ -19,7 +19,6 @@ export default () => ({
   isScrolledToBottomBeforeReceivingTrace: true,
 
   trace: isNewJobLogActive() ? [] : '',
-  originalTrace: [],
   isTraceComplete: false,
   traceSize: 0,
   isTraceSizeVisible: false,

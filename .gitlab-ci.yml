@@ -8,6 +8,7 @@ stages:
   - review
   - qa
   - post-test
+  - notification
   - pages
 
 variables:
@@ -27,11 +28,12 @@ after_script:
   - date
 
 include:
-  - local: .gitlab/ci/global.gitlab-ci.yml
   - local: .gitlab/ci/cng.gitlab-ci.yml
   - local: .gitlab/ci/docs.gitlab-ci.yml
   - local: .gitlab/ci/frontend.gitlab-ci.yml
+  - local: .gitlab/ci/global.gitlab-ci.yml
   - local: .gitlab/ci/memory.gitlab-ci.yml
+  - local: .gitlab/ci/notifications.gitlab-ci.yml
   - local: .gitlab/ci/pages.gitlab-ci.yml
   - local: .gitlab/ci/qa.gitlab-ci.yml
   - local: .gitlab/ci/reports.gitlab-ci.yml

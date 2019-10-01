@@ -1,0 +1,5 @@
+---
+title: 'Geo: Invalidate cache after refreshing foreign tables'
+merge_request: 17885
+author:
+type: fixed

@@ -1,0 +1,25 @@
+{
+  "type": "object",
+  "required": [
+    "id",
+    "tag",
+    "name",
+    "description",
+    "created_at",
+    "project",
+    "milestones"
+  ],
+  "properties": {
+    "id": { "type": "integer" },
+    "tag": { "type": "string" },
+    "name": { "type": "string" },
+    "description": { "type": "string" },
+    "created_at": { "type": "date" },
+    "project": { "$ref": "project.json" },
+    "milestones": {
+      "type": "array",
+      "items": { "$ref": "milestone.json" }
+    }
+  },
+  "additionalProperties": false
+}

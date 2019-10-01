@@ -850,3 +850,8 @@ To remove the proxy setting, run the following commands (depending on which vari
 unset http_proxy
 unset https_proxy
 ```
+
+### Praefect
+
+Praefect is an experimental daemon that allows for replication of the Git data.
+It can be setup with omnibus, [as explained here](./praefect.md).

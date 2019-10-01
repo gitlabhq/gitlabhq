@@ -38,7 +38,7 @@ describe Gitlab::UsageData do
 
     subject { described_class.data }
 
-    it 'gathers usage data' do
+    it 'gathers usage data', :aggregate_failures do
       expect(subject.keys).to include(*%i(
         active_user_count
         counts
@@ -151,7 +151,8 @@ describe Gitlab::UsageData do
         todos
         uploads
         web_hooks
-        user_preferences
+        user_preferences_group_overview_details
+        user_preferences_group_overview_security_dashboard
       ).push(*smau_keys)
 
       count_data = subject[:counts]
@@ -163,7 +164,7 @@ describe Gitlab::UsageData do
       expect(expected_keys - count_data.keys).to be_empty
     end
 
-    it 'gathers projects data correctly' do
+    it 'gathers projects data correctly', :aggregate_failures do
       count_data = subject[:counts]
 
       expect(count_data[:projects]).to eq(4)
@@ -209,11 +210,8 @@ describe Gitlab::UsageData do
     describe 'the results of calling #totals on all objects in the array' do
       subject { described_class.usage_data_counters.map(&:totals) }
 
-      it do
-        is_expected
-          .to all(be_a Hash)
-          .and all(have_attributes(keys: all(be_a Symbol), values: all(be_a Integer)))
-      end
+      it { is_expected.to all(be_a Hash) }
+      it { is_expected.to all(have_attributes(keys: all(be_a Symbol), values: all(be_a Integer))) }
     end
 
     it 'does not have any conflicts' do
@@ -226,7 +224,7 @@ describe Gitlab::UsageData do
   describe '#features_usage_data_ce' do
     subject { described_class.features_usage_data_ce }
 
-    it 'gathers feature usage data' do
+    it 'gathers feature usage data', :aggregate_failures do
       expect(subject[:mattermost_enabled]).to eq(Gitlab.config.mattermost.enabled)
       expect(subject[:signup_enabled]).to eq(Gitlab::CurrentSettings.allow_signup?)
       expect(subject[:ldap_enabled]).to eq(Gitlab.config.ldap.enabled)
@@ -242,7 +240,7 @@ describe Gitlab::UsageData do
   describe '#components_usage_data' do
     subject { described_class.components_usage_data }
 
-    it 'gathers components usage data' do
+    it 'gathers components usage data', :aggregate_failures do
       expect(subject[:gitlab_pages][:enabled]).to eq(Gitlab.config.pages.enabled)
       expect(subject[:gitlab_pages][:version]).to eq(Gitlab::Pages::VERSION)
       expect(subject[:git][:version]).to eq(Gitlab::Git.version)
@@ -258,7 +256,7 @@ describe Gitlab::UsageData do
   describe '#license_usage_data' do
     subject { described_class.license_usage_data }
 
-    it 'gathers license data' do
+    it 'gathers license data', :aggregate_failures do
       expect(subject[:uuid]).to eq(Gitlab::CurrentSettings.uuid)
       expect(subject[:version]).to eq(Gitlab::VERSION)
       expect(subject[:installation_type]).to eq('gitlab-development-kit')
@@ -290,11 +288,11 @@ describe Gitlab::UsageData do
   end
 
   describe '#approximate_counts' do
-    it 'gets approximate counts for selected models' do
+    it 'gets approximate counts for selected models', :aggregate_failures do
       create(:label)
 
       expect(Gitlab::Database::Count).to receive(:approximate_counts)
-        .with(described_class::APPROXIMATE_COUNT_MODELS).once.and_call_original
+                                           .with(described_class::APPROXIMATE_COUNT_MODELS).once.and_call_original
 
       counts = described_class.approximate_counts.values
 
@@ -302,14 +300,12 @@ describe Gitlab::UsageData do
       expect(counts.any? { |count| count < 0 }).to be_falsey
     end
 
-    it 'returns default values if counts can not be retrieved' do
+    it 'returns default values if counts can not be retrieved', :aggregate_failures do
       described_class::APPROXIMATE_COUNT_MODELS.map do |model|
         model.name.underscore.pluralize.to_sym
       end
 
-      expect(Gitlab::Database::Count).to receive(:approximate_counts)
-        .and_return({})
-
+      expect(Gitlab::Database::Count).to receive(:approximate_counts).and_return({})
       expect(described_class.approximate_counts.values.uniq).to eq([-1])
     end
   end

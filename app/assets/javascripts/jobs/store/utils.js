@@ -64,6 +64,30 @@ export const isCollapsibleSection = (acc = [], last = {}, section = {}) =>
   section.section === last.line.section;
 
 /**
+ * Returns the lineNumber of the last line in
+ * a parsed log
+ *
+ * @param Array acc
+ * @returns Number
+ */
+export const getIncrementalLineNumber = acc => {
+  let lineNumberValue;
+  const lastIndex = acc.length - 1;
+  const lastElement = acc[lastIndex];
+  const nestedLines = lastElement.lines;
+
+  if (lastElement.isHeader && !nestedLines.length && lastElement.line) {
+    lineNumberValue = lastElement.line.lineNumber;
+  } else if (lastElement.isHeader && nestedLines.length) {
+    lineNumberValue = nestedLines[nestedLines.length - 1].lineNumber;
+  } else {
+    lineNumberValue = lastElement.lineNumber;
+  }
+
+  return lineNumberValue === 0 ? 1 : lineNumberValue + 1;
+};
+
+/**
  * Parses the job log content into a structure usable by the template
  *
  * For collaspible lines (section_header = true):
@@ -75,32 +99,35 @@ export const isCollapsibleSection = (acc = [], last = {}, section = {}) =>
  *    - adds the index as lineNumber
  *
  * @param Array lines
- * @param Number lineNumberStart
  * @param Array accumulator
  * @returns Array parsed log lines
  */
-export const logLinesParser = (lines = [], lineNumberStart, accumulator = []) =>
-  lines.reduce((acc, line, index) => {
-    const lineNumber = lineNumberStart ? lineNumberStart + index : index;
-    const last = acc[acc.length - 1];
+export const logLinesParser = (lines = [], accumulator = []) =>
+  lines.reduce(
+    (acc, line, index) => {
+      const lineNumber = accumulator.length > 0 ? getIncrementalLineNumber(acc) : index;
 
-    // If the object is an header, we parse it into another structure
-    if (line.section_header) {
-      acc.push(parseHeaderLine(line, lineNumber));
-    } else if (isCollapsibleSection(acc, last, line)) {
-      // if the object belongs to a nested section, we append it to the new `lines` array of the
-      // previously formated header
-      last.lines.push(parseLine(line, lineNumber));
-    } else if (line.section_duration) {
-      // if the line has section_duration, we look for the correct header to add it
-      addDurationToHeader(acc, line);
-    } else {
-      // otherwise it's a regular line
-      acc.push(parseLine(line, lineNumber));
-    }
+      const last = acc[acc.length - 1];
 
-    return acc;
-  }, accumulator);
+      // If the object is an header, we parse it into another structure
+      if (line.section_header) {
+        acc.push(parseHeaderLine(line, lineNumber));
+      } else if (isCollapsibleSection(acc, last, line)) {
+        // if the object belongs to a nested section, we append it to the new `lines` array of the
+        // previously formated header
+        last.lines.push(parseLine(line, lineNumber));
+      } else if (line.section_duration) {
+        // if the line has section_duration, we look for the correct header to add it
+        addDurationToHeader(acc, line);
+      } else {
+        // otherwise it's a regular line
+        acc.push(parseLine(line, lineNumber));
+      }
+
+      return acc;
+    },
+    [...accumulator],
+  );
 
 /**
  * Finds the repeated offset, removes the old one
@@ -113,7 +140,7 @@ export const logLinesParser = (lines = [], lineNumberStart, accumulator = []) =>
  * @returns Array
  *
  */
-export const findOffsetAndRemove = (newLog, oldParsed) => {
+export const findOffsetAndRemove = (newLog = [], oldParsed = []) => {
   const cloneOldLog = [...oldParsed];
   const lastIndex = cloneOldLog.length - 1;
   const last = cloneOldLog[lastIndex];
@@ -140,40 +167,13 @@ export const findOffsetAndRemove = (newLog, oldParsed) => {
  * We need to check if that is the case by looking for the offset property
  * before parsing the incremental part
  *
- * @param array originalTrace
  * @param array oldLog
  * @param array newLog
  */
-export const updateIncrementalTrace = (originalTrace = [], oldLog = [], newLog = []) => {
-  const firstLine = newLog[0];
-  const firstLineOffset = firstLine.offset;
+export const updateIncrementalTrace = (newLog, oldParsed = []) => {
+  const parsedLog = findOffsetAndRemove(newLog, oldParsed);
 
-  // We are going to return a new array,
-  // let's make a shallow copy to make sure we
-  // are not updating the state outside of a mutation first.
-  const cloneOldLog = [...oldLog];
-
-  const lastIndex = cloneOldLog.length - 1;
-  const lastLine = cloneOldLog[lastIndex];
-
-  // The last line may be inside a collpasible section
-  // If it is, we use the not parsed saved log, remove the last element
-  // and parse the first received part togheter with the incremental log
-  if (
-    lastLine.isHeader &&
-    (lastLine.line.offset === firstLineOffset ||
-      (lastLine.lines.length &&
-        lastLine.lines[lastLine.lines.length - 1].offset === firstLineOffset))
-  ) {
-    const cloneOriginal = [...originalTrace];
-    cloneOriginal.splice(cloneOriginal.length - 1);
-    return logLinesParser(cloneOriginal.concat(newLog));
-  } else if (lastLine.offset === firstLineOffset) {
-    cloneOldLog.splice(lastIndex);
-    return cloneOldLog.concat(logLinesParser(newLog, cloneOldLog.length));
-  }
-  // there are no matches, let's parse the new log and return them together
-  return cloneOldLog.concat(logLinesParser(newLog, cloneOldLog.length));
+  return logLinesParser(newLog, parsedLog);
 };
 
 export const isNewJobLogActive = () => gon && gon.features && gon.features.jobLogJson;

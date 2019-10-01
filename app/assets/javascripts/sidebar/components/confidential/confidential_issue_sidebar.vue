@@ -5,6 +5,7 @@ import tooltip from '~/vue_shared/directives/tooltip';
 import Icon from '~/vue_shared/components/icon.vue';
 import eventHub from '~/sidebar/event_hub';
 import editForm from './edit_form.vue';
+import recaptchaModalImplementor from '~/vue_shared/mixins/recaptcha_modal_implementor';
 
 export default {
   components: {
@@ -14,6 +15,7 @@ export default {
   directives: {
     tooltip,
   },
+  mixins: [recaptchaModalImplementor],
   props: {
     isConfidential: {
       required: true,
@@ -54,9 +56,14 @@ export default {
     updateConfidentialAttribute(confidential) {
       this.service
         .update('issue', { confidential })
+        .then(({ data }) => this.checkForSpam(data))
         .then(() => window.location.reload())
-        .catch(() => {
-          Flash(__('Something went wrong trying to change the confidentiality of this issue'));
+        .catch(error => {
+          if (error.name === 'SpamError') {
+            this.openRecaptcha();
+          } else {
+            Flash(__('Something went wrong trying to change the confidentiality of this issue'));
+          }
         });
     },
   },
@@ -112,5 +119,7 @@ export default {
         {{ __('This issue is confidential') }}
       </div>
     </div>
+
+    <recaptcha-modal v-if="showRecaptcha" :html="recaptchaHTML" @close="closeRecaptcha" />
   </div>
 </template>

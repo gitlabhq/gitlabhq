@@ -37,7 +37,7 @@ module Gitlab
         usage_data
       end
 
-      # rubocop:disable Metrics/AbcSize
+      # rubocop: disable Metrics/AbcSize
       # rubocop: disable CodeReuse/ActiveRecord
       def system_usage_data
         {
@@ -96,14 +96,16 @@ module Gitlab
             todos: count(Todo),
             uploads: count(Upload),
             web_hooks: count(WebHook)
-          }.merge(services_usage)
-            .merge(approximate_counts)
-            .merge(usage_counters)
-        }.tap do |data|
-          data[:counts][:user_preferences] = user_preferences_usage
-        end
+          }.merge(
+            services_usage,
+            approximate_counts,
+            usage_counters,
+            user_preferences_usage
+          )
+        }
       end
       # rubocop: enable CodeReuse/ActiveRecord
+      # rubocop: enable Metrics/AbcSize
 
       def cycle_analytics_usage_data
         Gitlab::CycleAnalytics::UsageData.new.to_json
@@ -137,15 +139,15 @@ module Gitlab
       # @return [Array<#totals>] An array of objects that respond to `#totals`
       def usage_data_counters
         [
-         Gitlab::UsageDataCounters::WikiPageCounter,
-         Gitlab::UsageDataCounters::WebIdeCounter,
-         Gitlab::UsageDataCounters::NoteCounter,
-         Gitlab::UsageDataCounters::SnippetCounter,
-         Gitlab::UsageDataCounters::SearchCounter,
-         Gitlab::UsageDataCounters::CycleAnalyticsCounter,
-         Gitlab::UsageDataCounters::ProductivityAnalyticsCounter,
-         Gitlab::UsageDataCounters::SourceCodeCounter,
-         Gitlab::UsageDataCounters::MergeRequestCounter
+          Gitlab::UsageDataCounters::WikiPageCounter,
+          Gitlab::UsageDataCounters::WebIdeCounter,
+          Gitlab::UsageDataCounters::NoteCounter,
+          Gitlab::UsageDataCounters::SnippetCounter,
+          Gitlab::UsageDataCounters::SearchCounter,
+          Gitlab::UsageDataCounters::CycleAnalyticsCounter,
+          Gitlab::UsageDataCounters::ProductivityAnalyticsCounter,
+          Gitlab::UsageDataCounters::SourceCodeCounter,
+          Gitlab::UsageDataCounters::MergeRequestCounter
         ]
       end
 
