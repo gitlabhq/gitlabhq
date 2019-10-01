@@ -2,7 +2,7 @@
 
 module Gitlab
   class SearchResults
-    COUNT_LIMIT = 101
+    COUNT_LIMIT = 100
     COUNT_LIMIT_MESSAGE = "#{COUNT_LIMIT - 1}+"
 
     attr_reader :current_user, :query, :per_page

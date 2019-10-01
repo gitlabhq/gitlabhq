@@ -45,12 +45,11 @@ export default {
     :data-commit-id="commitId"
     class="code diff-wrap-lines js-syntax-highlight text-file js-diff-inline-view"
   >
-    <!-- Need to insert an empty row to solve "table-layout:fixed" equal width when expansion row is the first line -->
-    <tr>
-      <td style="width: 50px;"></td>
-      <td style="width: 50px;"></td>
-      <td></td>
-    </tr>
+    <colgroup>
+      <col style="width: 50px;" />
+      <col style="width: 50px;" />
+      <col />
+    </colgroup>
     <tbody>
       <template v-for="(line, index) in diffLines">
         <inline-diff-expansion-row

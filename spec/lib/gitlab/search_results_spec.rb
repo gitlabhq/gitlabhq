@@ -57,8 +57,8 @@ describe Gitlab::SearchResults do
 
       where(:count, :expected) do
         23   | '23'
-        100  | '100'
-        101  | max_limited_count
+        99   | '99'
+        100  | max_limited_count
         1234 | max_limited_count
       end
 
