@@ -736,6 +736,8 @@ describe API::Issues do
         get_related_merge_requests(project.id, issue.iid)
 
         expect_paginated_array_response(related_mr.id)
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response.last).not_to have_key('subscribed')
       end
 
       it 'renders 404 if project is not visible' do

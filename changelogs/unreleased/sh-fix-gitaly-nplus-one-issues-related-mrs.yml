@@ -1,0 +1,5 @@
+---
+title: Fix Gitaly N+1 queries in related merge requests API
+merge_request: 17850
+author:
+type: performance

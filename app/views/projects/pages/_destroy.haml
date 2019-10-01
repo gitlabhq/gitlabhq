@@ -1,12 +1,14 @@
 - if @project.pages_deployed?
   - if can?(current_user, :remove_pages, @project)
     .card.border-danger
-      .card-header.bg-danger.text-white Remove pages
+      .card-header.bg-danger.text-white
+        = s_('GitLabPages|Remove pages')
       .errors-holder
       .card-body
         %p
-          Removing pages will prevent them from being exposed to the outside world.
+          = s_('GitLabPages|Removing pages will prevent them from being exposed to the outside world.')
         .form-actions
-          = link_to 'Remove pages', project_pages_path(@project), data: { confirm: 'Are you sure?'}, method: :delete, class: "btn btn-remove"
+          = link_to s_('GitLabPages|Remove pages'), project_pages_path(@project), data: { confirm: s_('GitLabPages|Are you sure?')}, method: :delete, class: "btn btn-remove"
   - else
-    .nothing-here-block Only project maintainers can remove pages
+    .nothing-here-block
+      = s_('GitLabPages|Only project maintainers can remove pages')

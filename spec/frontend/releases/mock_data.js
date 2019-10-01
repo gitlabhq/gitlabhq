@@ -57,7 +57,7 @@ export const release = {
     committed_date: '2019-08-26T17:47:07.000Z',
   },
   upcoming_release: false,
-  milestone: milestones[0],
+  milestones,
   assets: {
     count: 5,
     sources: [

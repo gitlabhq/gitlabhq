@@ -771,7 +771,7 @@ module API
     end
 
     class MergeRequest < MergeRequestBasic
-      expose :subscribed do |merge_request, options|
+      expose :subscribed, if: -> (_, options) { options.fetch(:include_subscribed, true) } do |merge_request, options|
         merge_request.subscribed?(options[:current_user], options[:project])
       end
 

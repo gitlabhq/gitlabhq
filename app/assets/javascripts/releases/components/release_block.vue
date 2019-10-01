@@ -5,8 +5,7 @@ import { GlTooltipDirective, GlLink, GlBadge } from '@gitlab/ui';
 import Icon from '~/vue_shared/components/icon.vue';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
-import MilestoneList from './milestone_list.vue';
-import { __, sprintf } from '../../locale';
+import { __, n__, sprintf } from '../../locale';
 
 export default {
   name: 'ReleaseBlock',
@@ -15,7 +14,6 @@ export default {
     GlBadge,
     Icon,
     UserAvatarLink,
-    MilestoneList,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -57,19 +55,11 @@ export default {
     hasAuthor() {
       return !_.isEmpty(this.author);
     },
-    milestones() {
-      // At the moment, a release can only be associated to
-      // one milestone. This will be expanded to be many-to-many
-      // in the near future, so we pass the milestone as an
-      // array here in anticipation of this change.
-      return [this.release.milestone];
-    },
     shouldRenderMilestones() {
-      // Similar to the `milestones` computed above,
-      // this check will need to be updated once
-      // the API begins sending an array of milestones
-      // instead of just a single object.
-      return Boolean(this.release.milestone);
+      return !_.isEmpty(this.release.milestones);
+    },
+    labelText() {
+      return n__('Milestone', 'Milestones', this.release.milestones.length);
     },
   },
 };
@@ -101,11 +91,27 @@ export default {
           <span v-else v-gl-tooltip.bottom :title="__('Tag')">{{ release.tag_name }}</span>
         </div>
 
-        <milestone-list
-          v-if="shouldRenderMilestones"
-          class="append-right-4 js-milestone-list"
-          :milestones="milestones"
-        />
+        <template v-if="shouldRenderMilestones">
+          <div class="js-milestone-list-label">
+            <icon name="flag" class="align-middle" />
+            <span class="js-label-text">{{ labelText }}</span>
+          </div>
+
+          <template v-for="(milestone, index) in release.milestones">
+            <gl-link
+              :key="milestone.id"
+              v-gl-tooltip
+              :title="milestone.description"
+              :href="milestone.web_url"
+              class="append-right-4 prepend-left-4 js-milestone-link"
+            >
+              {{ milestone.title }}
+            </gl-link>
+            <template v-if="index !== release.milestones.length - 1">
+              &bull;
+            </template>
+          </template>
+        </template>
 
         <div class="append-right-4">
           &bull;

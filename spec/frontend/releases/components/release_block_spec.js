@@ -3,6 +3,7 @@ import ReleaseBlock from '~/releases/components/release_block.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 import { first } from 'underscore';
 import { release } from '../mock_data';
+import Icon from '~/vue_shared/components/icon.vue';
 
 describe('Release block', () => {
   let wrapper;
@@ -15,7 +16,7 @@ describe('Release block', () => {
     });
   };
 
-  const milestoneListExists = () => wrapper.find('.js-milestone-list').exists();
+  const milestoneListLabel = () => wrapper.find('.js-milestone-list-label');
 
   afterEach(() => {
     wrapper.destroy();
@@ -98,20 +99,56 @@ describe('Release block', () => {
       });
     });
 
-    it('renders the milestone list if at least one milestone is associated to the release', () => {
-      factory(release);
+    it('renders the milestone icon', () => {
+      expect(
+        milestoneListLabel()
+          .find(Icon)
+          .exists(),
+      ).toBe(true);
+    });
 
-      expect(milestoneListExists()).toBe(true);
+    it('renders the label as "Milestones" if more than one milestone is passed in', () => {
+      expect(
+        milestoneListLabel()
+          .find('.js-label-text')
+          .text(),
+      ).toEqual('Milestones');
+    });
+
+    it('renders a link to the milestone with a tooltip', () => {
+      const milestone = first(release.milestones);
+      const milestoneLink = wrapper.find('.js-milestone-link');
+
+      expect(milestoneLink.exists()).toBe(true);
+
+      expect(milestoneLink.text()).toBe(milestone.title);
+
+      expect(milestoneLink.attributes('href')).toBe(milestone.web_url);
+
+      expect(milestoneLink.attributes('data-original-title')).toBe(milestone.description);
     });
   });
 
   it('does not render the milestone list if no milestones are associated to the release', () => {
     const releaseClone = JSON.parse(JSON.stringify(release));
-    delete releaseClone.milestone;
+    delete releaseClone.milestones;
 
     factory(releaseClone);
 
-    expect(milestoneListExists()).toBe(false);
+    expect(milestoneListLabel().exists()).toBe(false);
+  });
+
+  it('renders the label as "Milestone" if only a single milestone is passed in', () => {
+    const releaseClone = JSON.parse(JSON.stringify(release));
+    releaseClone.milestones = releaseClone.milestones.slice(0, 1);
+
+    factory(releaseClone);
+
+    expect(
+      milestoneListLabel()
+        .find('.js-label-text')
+        .text(),
+    ).toEqual('Milestone');
   });
 
   it('renders upcoming release badge', () => {
