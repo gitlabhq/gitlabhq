@@ -22,6 +22,32 @@ describe Ci::Group do
     end
   end
 
+  describe '#status' do
+    let(:jobs) do
+      [create(:ci_build, :failed)]
+    end
+
+    context 'when ci_composite_status is enabled' do
+      before do
+        stub_feature_flags(ci_composite_status: true)
+      end
+
+      it 'returns a failed status' do
+        expect(subject.status).to eq('failed')
+      end
+    end
+
+    context 'when ci_composite_status is disabled' do
+      before do
+        stub_feature_flags(ci_composite_status: false)
+      end
+
+      it 'returns a failed status' do
+        expect(subject.status).to eq('failed')
+      end
+    end
+  end
+
   describe '#detailed_status' do
     context 'when there is only one item in the group' do
       it 'calls the status from the object itself' do

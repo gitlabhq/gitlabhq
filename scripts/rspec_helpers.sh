@@ -15,14 +15,14 @@ function retrieve_tests_metadata() {
 function update_tests_metadata() {
   echo "{}" > "${KNAPSACK_RSPEC_SUITE_REPORT_PATH}"
 
-  scripts/merge-reports "${KNAPSACK_RSPEC_SUITE_REPORT_PATH}" "knapsack/rspec*_pg9_*.json"
+  scripts/merge-reports "${KNAPSACK_RSPEC_SUITE_REPORT_PATH}" knapsack/rspec*_pg9_*.json
   if [[ -n "${TESTS_METADATA_S3_BUCKET}" ]]; then
     scripts/sync-reports put "${TESTS_METADATA_S3_BUCKET}" "${KNAPSACK_RSPEC_SUITE_REPORT_PATH}"
   fi
 
-  rm -f "knapsack/rspec*.json"
+  rm -f knapsack/rspec*.json
 
-  scripts/merge-reports "${FLAKY_RSPEC_SUITE_REPORT_PATH}" "rspec_flaky/all_*.json"
+  scripts/merge-reports "${FLAKY_RSPEC_SUITE_REPORT_PATH}" rspec_flaky/all_*.json
 
   export FLAKY_RSPEC_GENERATE_REPORT="1"
   scripts/prune-old-flaky-specs "${FLAKY_RSPEC_SUITE_REPORT_PATH}"
@@ -31,7 +31,7 @@ function update_tests_metadata() {
     scripts/sync-reports put "${TESTS_METADATA_S3_BUCKET}" "${FLAKY_RSPEC_SUITE_REPORT_PATH}"
   fi
 
-  rm -f "rspec_flaky/all_*.json" "rspec_flaky/new_*.json"
+  rm -f rspec_flaky/all_*.json rspec_flaky/new_*.json
 
   scripts/insert-rspec-profiling-data
 }

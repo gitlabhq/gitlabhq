@@ -386,13 +386,12 @@ module Ci
       end
     end
 
-    def legacy_stages
+    def legacy_stages_using_sql
       # TODO, this needs refactoring, see gitlab-foss#26481.
-
       stages_query = statuses
         .group('stage').select(:stage).order('max(stage_idx)')
 
-      status_sql = statuses.latest.where('stage=sg.stage').status_sql
+      status_sql = statuses.latest.where('stage=sg.stage').legacy_status_sql
 
       warnings_sql = statuses.latest.select('COUNT(*)')
         .where('stage=sg.stage').failed_but_allowed.to_sql
@@ -402,6 +401,30 @@ module Ci
 
       stages_with_statuses.map do |stage|
         Ci::LegacyStage.new(self, Hash[%i[name status warnings].zip(stage)])
+      end
+    end
+
+    def legacy_stages_using_composite_status
+      stages = statuses.latest
+        .order(:stage_idx, :stage)
+        .group_by(&:stage)
+
+      stages.map do |stage_name, jobs|
+        composite_status = Gitlab::Ci::Status::Composite
+          .new(jobs)
+
+        Ci::LegacyStage.new(self,
+          name: stage_name,
+          status: composite_status.status,
+          warnings: composite_status.warnings?)
+      end
+    end
+
+    def legacy_stages
+      if Feature.enabled?(:ci_composite_status, default_enabled: false)
+        legacy_stages_using_composite_status
+      else
+        legacy_stages_using_sql
       end
     end
 
@@ -635,7 +658,8 @@ module Ci
 
     def update_status
       retry_optimistic_lock(self) do
-        case latest_builds_status.to_s
+        new_status = latest_builds_status.to_s
+        case new_status
         when 'created' then nil
         when 'preparing' then prepare
         when 'pending' then enqueue
@@ -648,7 +672,7 @@ module Ci
         when 'scheduled' then delay
         else
           raise HasStatus::UnknownStatusError,
-                "Unknown status `#{latest_builds_status}`"
+                "Unknown status `#{new_status}`"
         end
       end
     end
@@ -907,7 +931,7 @@ module Ci
     def latest_builds_status
       return 'failed' unless yaml_errors.blank?
 
-      statuses.latest.status || 'skipped'
+      statuses.latest.slow_composite_status || 'skipped'
     end
 
     def keep_around_commits

@@ -643,6 +643,7 @@ ActiveRecord::Schema.define(version: 2019_09_27_074328) do
     t.index ["name"], name: "index_ci_builds_on_name_for_security_products_values", where: "((name)::text = ANY (ARRAY[('container_scanning'::character varying)::text, ('dast'::character varying)::text, ('dependency_scanning'::character varying)::text, ('license_management'::character varying)::text, ('sast'::character varying)::text]))"
     t.index ["project_id", "id"], name: "index_ci_builds_on_project_id_and_id"
     t.index ["project_id", "status"], name: "index_ci_builds_project_id_and_status_for_live_jobs_partial2", where: "(((type)::text = 'Ci::Build'::text) AND ((status)::text = ANY (ARRAY[('running'::character varying)::text, ('pending'::character varying)::text, ('created'::character varying)::text])))"
+    t.index ["project_id"], name: "index_ci_builds_on_project_id_for_successfull_pages_deploy", where: "(((type)::text = 'GenericCommitStatus'::text) AND ((stage)::text = 'deploy'::text) AND ((name)::text = 'pages:deploy'::text) AND ((status)::text = 'success'::text))"
     t.index ["protected"], name: "index_ci_builds_on_protected"
     t.index ["queued_at"], name: "index_ci_builds_on_queued_at"
     t.index ["runner_id"], name: "index_ci_builds_on_runner_id"

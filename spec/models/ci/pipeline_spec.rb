@@ -1136,59 +1136,71 @@ describe Ci::Pipeline, :mailer do
       end
 
       describe '#legacy_stages' do
+        using RSpec::Parameterized::TableSyntax
+
         subject { pipeline.legacy_stages }
 
-        context 'stages list' do
-          it 'returns ordered list of stages' do
-            expect(subject.map(&:name)).to eq(%w[build test deploy])
-          end
+        where(:ci_composite_status) do
+          [false, true]
         end
 
-        context 'stages with statuses' do
-          let(:statuses) do
-            subject.map { |stage| [stage.name, stage.status] }
+        with_them do
+          before do
+            stub_feature_flags(ci_composite_status: ci_composite_status)
           end
 
-          it 'returns list of stages with correct statuses' do
-            expect(statuses).to eq([%w(build failed),
-                                    %w(test success),
-                                    %w(deploy running)])
+          context 'stages list' do
+            it 'returns ordered list of stages' do
+              expect(subject.map(&:name)).to eq(%w[build test deploy])
+            end
           end
 
-          context 'when commit status is retried' do
-            before do
-              create(:commit_status, pipeline: pipeline,
-                                     stage: 'build',
-                                     name: 'mac',
-                                     stage_idx: 0,
-                                     status: 'success')
-
-              pipeline.process!
+          context 'stages with statuses' do
+            let(:statuses) do
+              subject.map { |stage| [stage.name, stage.status] }
             end
 
-            it 'ignores the previous state' do
-              expect(statuses).to eq([%w(build success),
+            it 'returns list of stages with correct statuses' do
+              expect(statuses).to eq([%w(build failed),
                                       %w(test success),
                                       %w(deploy running)])
             end
+
+            context 'when commit status is retried' do
+              before do
+                create(:commit_status, pipeline: pipeline,
+                                      stage: 'build',
+                                      name: 'mac',
+                                      stage_idx: 0,
+                                      status: 'success')
+
+                pipeline.process!
+              end
+
+              it 'ignores the previous state' do
+                expect(statuses).to eq([%w(build success),
+                                        %w(test success),
+                                        %w(deploy running)])
+              end
+            end
           end
-        end
 
-        context 'when there is a stage with warnings' do
-          before do
-            create(:commit_status, pipeline: pipeline,
-                                   stage: 'deploy',
-                                   name: 'prod:2',
-                                   stage_idx: 2,
-                                   status: 'failed',
-                                   allow_failure: true)
-          end
+          context 'when there is a stage with warnings' do
+            before do
+              create(:commit_status, pipeline: pipeline,
+                                    stage: 'deploy',
+                                    name: 'prod:2',
+                                    stage_idx: 2,
+                                    status: 'failed',
+                                    allow_failure: true)
+            end
 
-          it 'populates stage with correct number of warnings' do
-            deploy_stage = pipeline.legacy_stages.third
+            it 'populates stage with correct number of warnings' do
+              deploy_stage = pipeline.legacy_stages.third
 
-            expect(deploy_stage).not_to receive(:statuses)
-            expect(deploy_stage).to have_warnings
+              expect(deploy_stage).not_to receive(:statuses)
+              expect(deploy_stage).to have_warnings
+            end
           end
         end
       end
@@ -2326,36 +2338,38 @@ describe Ci::Pipeline, :mailer do
   describe '#update_status' do
     context 'when pipeline is empty' do
       it 'updates does not change pipeline status' do
-        expect(pipeline.statuses.latest.status).to be_nil
+        expect(pipeline.statuses.latest.slow_composite_status).to be_nil
 
         expect { pipeline.update_status }
-          .to change { pipeline.reload.status }.to 'skipped'
+          .to change { pipeline.reload.status }
+          .from('created')
+          .to('skipped')
       end
     end
 
     context 'when updating status to pending' do
       before do
-        allow(pipeline)
-          .to receive_message_chain(:statuses, :latest, :status)
-          .and_return(:running)
+        create(:ci_build, pipeline: pipeline, status: :running)
       end
 
       it 'updates pipeline status to running' do
         expect { pipeline.update_status }
-          .to change { pipeline.reload.status }.to 'running'
+          .to change { pipeline.reload.status }
+          .from('created')
+          .to('running')
       end
     end
 
     context 'when updating status to scheduled' do
       before do
-        allow(pipeline)
-          .to receive_message_chain(:statuses, :latest, :status)
-          .and_return(:scheduled)
+        create(:ci_build, pipeline: pipeline, status: :scheduled)
       end
 
       it 'updates pipeline status to scheduled' do
         expect { pipeline.update_status }
-          .to change { pipeline.reload.status }.to 'scheduled'
+          .to change { pipeline.reload.status }
+          .from('created')
+          .to('scheduled')
       end
     end
 

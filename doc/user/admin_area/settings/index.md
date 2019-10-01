@@ -20,6 +20,7 @@ include:
 - [Visibility and access controls](visibility_and_access_controls.md)
 - [User and IP rate limits](user_and_ip_rate_limits.md)
 - [Custom templates repository](instance_template_repository.md) **(PREMIUM)**
+- [Protected paths](protected_paths.md) **(CORE ONLY)**
 
 NOTE: **Note:**
 You can change the [first day of the week](../../profile/preferences.md) for the entire GitLab instance

@@ -62,6 +62,7 @@ class IssueTrackerService < Service
     end
 
     data_values.reject! { |key| data_fields.changed.include?(key) }
+    data_values.slice!(*data_fields.attributes.keys)
     data_fields.assign_attributes(data_values) if data_values.present?
 
     self.properties = {}
@@ -69,6 +70,10 @@ class IssueTrackerService < Service
 
   def legacy_properties_data
     @legacy_properties_data ||= {}
+  end
+
+  def supports_data_fields?
+    true
   end
 
   def data_fields

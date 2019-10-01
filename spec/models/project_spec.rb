@@ -5107,6 +5107,16 @@ describe Project do
     end
   end
 
+  describe '.pages_metadata_not_migrated' do
+    it 'returns only projects that have pages deployed' do
+      _project_with_pages_metadata_migrated = create(:project)
+      project_with_pages_metadata_not_migrated = create(:project)
+      project_with_pages_metadata_not_migrated.pages_metadatum.destroy!
+
+      expect(described_class.pages_metadata_not_migrated).to contain_exactly(project_with_pages_metadata_not_migrated)
+    end
+  end
+
   describe '#pages_group_root?' do
     it 'returns returns true if pages_url is same as pages_group_url' do
       project = build(:project)

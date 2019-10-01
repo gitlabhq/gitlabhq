@@ -216,7 +216,7 @@ describe Ci::LegacyStage do
     context 'when stage has warnings' do
       context 'when using memoized warnings flag' do
         context 'when there are warnings' do
-          let(:stage) { build(:ci_stage, warnings: 2) }
+          let(:stage) { build(:ci_stage, warnings: true) }
 
           it 'returns true using memoized value' do
             expect(stage).not_to receive(:statuses)
@@ -225,19 +225,10 @@ describe Ci::LegacyStage do
         end
 
         context 'when there are no warnings' do
-          let(:stage) { build(:ci_stage, warnings: 0) }
+          let(:stage) { build(:ci_stage, warnings: false) }
 
           it 'returns false using memoized value' do
             expect(stage).not_to receive(:statuses)
-            expect(stage).not_to have_warnings
-          end
-        end
-
-        context 'when number of warnings is not a valid value' do
-          let(:stage) { build(:ci_stage, warnings: true) }
-
-          it 'calculates statuses using database queries' do
-            expect(stage).to receive(:statuses).and_call_original
             expect(stage).not_to have_warnings
           end
         end

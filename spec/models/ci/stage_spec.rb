@@ -130,7 +130,7 @@ describe Ci::Stage, :models do
     context 'when statuses status was not recognized' do
       before do
         allow(stage)
-          .to receive_message_chain(:statuses, :latest, :status)
+          .to receive(:latest_stage_status)
           .and_return(:unknown)
       end
 

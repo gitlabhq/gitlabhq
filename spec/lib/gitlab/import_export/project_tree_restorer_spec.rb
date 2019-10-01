@@ -96,6 +96,17 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
         expect(Ci::Pipeline.where(ref: nil)).not_to be_empty
       end
 
+      it 'restores pipeline for merge request' do
+        pipeline = Ci::Pipeline.find_by_sha('048721d90c449b244b7b4c53a9186b04330174ec')
+
+        expect(pipeline).to be_valid
+        expect(pipeline.tag).to be_falsey
+        expect(pipeline.source).to eq('merge_request_event')
+        expect(pipeline.merge_request.id).to be > 0
+        expect(pipeline.merge_request.target_branch).to eq('feature')
+        expect(pipeline.merge_request.source_branch).to eq('feature_conflict')
+      end
+
       it 'preserves updated_at on issues' do
         issue = Issue.where(description: 'Aliquam enim illo et possimus.').first
 

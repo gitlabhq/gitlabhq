@@ -17,32 +17,27 @@ describe Banzai::Filter::VideoLinkFilter do
 
   let(:project) { create(:project, :repository) }
 
-  shared_examples 'replaces the image tag with a video tag' do |ext|
-    it "replaces the image tag 'path/video.#{ext}' with a video tag" do
-      container = filter(link_to_image("/path/video.#{ext}")).children.first
-
-      expect(container.name).to eq 'div'
-      expect(container['class']).to eq 'video-container'
-
-      video, paragraph = container.children
-
-      expect(video.name).to eq 'video'
-      expect(video['src']).to eq "/path/video.#{ext}"
-
-      expect(paragraph.name).to eq 'p'
-
-      link = paragraph.children.first
-
-      expect(link.name).to eq 'a'
-      expect(link['href']).to eq "/path/video.#{ext}"
-      expect(link['target']).to eq '_blank'
-    end
-  end
-
   context 'when the element src has a video extension' do
     UploaderHelper::SAFE_VIDEO_EXT.each do |ext|
-      it_behaves_like 'replaces the image tag with a video tag', ext
-      it_behaves_like 'replaces the image tag with a video tag', ext.upcase
+      it "replaces the image tag 'path/video.#{ext}' with a video tag" do
+        container = filter(link_to_image("/path/video.#{ext}")).children.first
+
+        expect(container.name).to eq 'div'
+        expect(container['class']).to eq 'video-container'
+
+        video, paragraph = container.children
+
+        expect(video.name).to eq 'video'
+        expect(video['src']).to eq "/path/video.#{ext}"
+
+        expect(paragraph.name).to eq 'p'
+
+        link = paragraph.children.first
+
+        expect(link.name).to eq 'a'
+        expect(link['href']).to eq "/path/video.#{ext}"
+        expect(link['target']).to eq '_blank'
+      end
     end
   end
 

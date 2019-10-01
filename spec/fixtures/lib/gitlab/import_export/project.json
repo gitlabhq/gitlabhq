@@ -6175,6 +6175,8 @@
       "finished_at": null,
       "user_id": 9999,
       "duration": null,
+      "source": "push",
+      "merge_request_id": null,
       "notes": [
         {
           "id": 999,

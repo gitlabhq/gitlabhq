@@ -308,12 +308,8 @@
     }
 
     a {
-      display: block;
       padding: $gl-padding 10px $gl-padding 40px;
       width: 270px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
 
       &:hover {
         color: $gl-text-color;

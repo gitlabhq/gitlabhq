@@ -2,6 +2,8 @@
 
 module Ci
   class ProcessPipelineService < BaseService
+    include Gitlab::Utils::StrongMemoize
+
     attr_reader :pipeline
 
     def execute(pipeline, trigger_build_ids = nil)
@@ -33,9 +35,9 @@ module Ci
 
       return unless HasStatus::COMPLETED_STATUSES.include?(current_status)
 
-      created_processables_in_stage_without_needs(index).select do |build|
+      created_processables_in_stage_without_needs(index).find_each.select do |build|
         process_build(build, current_status)
-      end
+      end.any?
     end
 
     def process_builds_with_needs(trigger_build_ids)
@@ -92,6 +94,7 @@ module Ci
 
     def created_processables_in_stage_without_needs(index)
       created_processables_without_needs
+        .with_preloads
         .for_stage(index)
     end
 

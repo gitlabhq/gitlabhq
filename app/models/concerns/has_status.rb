@@ -10,6 +10,8 @@ module HasStatus
   ACTIVE_STATUSES = %w[preparing pending running].freeze
   COMPLETED_STATUSES = %w[success failed canceled skipped].freeze
   ORDERED_STATUSES = %w[failed preparing pending running manual scheduled canceled success skipped created].freeze
+  PASSED_WITH_WARNINGS_STATUSES = %w[failed canceled].to_set.freeze
+  EXCLUDE_IGNORED_STATUSES = %w[manual failed canceled].to_set.freeze
   STATUSES_ENUM = { created: 0, pending: 1, running: 2, success: 3,
                     failed: 4, canceled: 5, skipped: 6, manual: 7,
                     scheduled: 8, preparing: 9 }.freeze
@@ -17,7 +19,7 @@ module HasStatus
   UnknownStatusError = Class.new(StandardError)
 
   class_methods do
-    def status_sql
+    def legacy_status_sql
       scope_relevant = respond_to?(:exclude_ignored) ? exclude_ignored : all
       scope_warnings = respond_to?(:failed_but_allowed) ? failed_but_allowed : none
 
@@ -53,8 +55,22 @@ module HasStatus
       )
     end
 
-    def status
-      all.pluck(status_sql).first
+    def legacy_status
+      all.pluck(legacy_status_sql).first
+    end
+
+    # This method should not be used.
+    # This method performs expensive calculation of status:
+    # 1. By plucking all related objects,
+    # 2. Or executes expensive SQL query
+    def slow_composite_status
+      if Feature.enabled?(:ci_composite_status, default_enabled: false)
+        Gitlab::Ci::Status::Composite
+          .new(all, with_allow_failure: columns_hash.key?('allow_failure'))
+          .status
+      else
+        legacy_status
+      end
     end
 
     def started_at

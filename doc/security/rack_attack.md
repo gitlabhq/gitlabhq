@@ -36,6 +36,9 @@ will be enabled:
 
 ### Protected paths throttle
 
+NOTE: **Note:** Omnibus GitLab protected paths throttle is deprecated and is scheduled for removal in
+GitLab 13.0. Please refer to [Migrate settings from GitLab 12.3 and earlier](../user/admin_area/settings/protected_paths.md#migrate-settings-from-gitlab-123-and-earlier).
+
 GitLab responds with HTTP status code `429` to POST requests at protected paths
 that exceed 10 requests per minute per IP address.
 
@@ -123,6 +126,9 @@ The following settings can be configured:
   seconds).
 
 **Installations from source**
+
+NOTE: **Note:** Rack Attack initializer was temporarily renamed to `rack_attack_new`, to
+support backwards compatibility with the one [Omnibus initializer](https://docs.gitlab.com/omnibus/settings/configuration.html#setting-up-paths-to-be-protected-by-rack-attack). It'll be renamed back to `rack_attack.rb` once Omnibus throttle is removed. Please see the [GitLab issue](https://gitlab.com/gitlab-org/gitlab/issues/29952) for more information.
 
 These settings can be found in `config/initializers/rack_attack.rb`. If you are
 missing `config/initializers/rack_attack.rb`, the following steps need to be

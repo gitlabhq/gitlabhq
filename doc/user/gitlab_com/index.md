@@ -316,9 +316,7 @@ This header is included in responses to blocked requests:
 Retry-After: 60
 ```
 
-Source:
-
-- Search for `rate_limit_requests_per_period`, `rate_limit_period`, and `rack_attack_protected_paths` in [GitLab.com's current Rails app settings](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/files/gitlab-cookbooks/gitlab/attributes/default.rb).
+See [Protected Paths](../admin_area/settings/protected_paths.md) for more details.
 
 #### Git and container registry failed authentication ban
 

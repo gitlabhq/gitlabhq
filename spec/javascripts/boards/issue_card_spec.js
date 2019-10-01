@@ -286,19 +286,4 @@ describe('Issue card component', () => {
         .catch(done.fail);
     });
   });
-
-  describe('weights', () => {
-    it('shows weight component is greater than 0', () => {
-      expect(component.$el.querySelector('.board-card-weight')).not.toBeNull();
-    });
-
-    it('shows weight component when weight is 0', done => {
-      component.issue.weight = 0;
-
-      Vue.nextTick(() => {
-        expect(component.$el.querySelector('.board-card-weight')).not.toBeNull();
-        done();
-      });
-    });
-  });
 });

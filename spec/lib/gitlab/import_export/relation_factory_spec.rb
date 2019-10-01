@@ -3,12 +3,14 @@ require 'spec_helper'
 describe Gitlab::ImportExport::RelationFactory do
   let(:project) { create(:project) }
   let(:members_mapper) { double('members_mapper').as_null_object }
+  let(:merge_requests_mapping) { {} }
   let(:user) { create(:admin) }
   let(:excluded_keys) { [] }
   let(:created_object) do
     described_class.create(relation_sym: relation_sym,
                            relation_hash: relation_hash,
                            members_mapper: members_mapper,
+                           merge_requests_mapping: merge_requests_mapping,
                            user: user,
                            project: project,
                            excluded_keys: excluded_keys)

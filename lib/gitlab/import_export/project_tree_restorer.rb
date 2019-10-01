@@ -52,6 +52,11 @@ module Gitlab
                                                                     project: restored_project)
       end
 
+      # A Hash of the imported merge request ID -> imported ID.
+      def merge_requests_mapping
+        @merge_requests_mapping ||= {}
+      end
+
       # Loops through the tree of models defined in import_export.yml and
       # finds them in the imported JSON so they can be instantiated and saved
       # in the DB. The structure and relationships between models are guessed from
@@ -80,8 +85,24 @@ module Gitlab
 
         @saved = false unless restored_project.append_or_update_attribute(relation_key, relation_hash)
 
+        save_id_mappings(relation_key, relation_hash_batch, relation_hash)
+
         # Restore the project again, extra query that skips holding the AR objects in memory
         @restored_project = Project.find(@project_id)
+      end
+
+      # Older, serialized CI pipeline exports may only have a
+      # merge_request_id and not the full hash of the merge request. To
+      # import these pipelines, we need to preserve the mapping between
+      # the old and new the merge request ID.
+      def save_id_mappings(relation_key, relation_hash_batch, relation_hash)
+        return unless relation_key == 'merge_requests'
+
+        relation_hash = Array(relation_hash)
+
+        Array(relation_hash_batch).each_with_index do |raw_data, index|
+          merge_requests_mapping[raw_data['id']] = relation_hash[index]['id']
+        end
       end
 
       # Remove project models that became group models as we found them at group level.
@@ -222,6 +243,7 @@ module Gitlab
             relation_sym: relation_key.to_sym,
             relation_hash: relation_hash,
             members_mapper: members_mapper,
+            merge_requests_mapping: merge_requests_mapping,
             user: @user,
             project: @restored_project,
             excluded_keys: excluded_keys_for_relation(relation_key))

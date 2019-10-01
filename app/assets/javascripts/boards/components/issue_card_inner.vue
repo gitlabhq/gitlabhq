@@ -104,13 +104,6 @@ export default {
     helpLink() {
       return boardsStore.scopedLabels.helpLink;
     },
-    validIssueWeight() {
-      if (_.isNumber(this.issue.weight)) {
-        return this.issue.weight >= 0;
-      }
-
-      return false;
-    },
   },
   methods: {
     isIndexLessThanlimit(index) {

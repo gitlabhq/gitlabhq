@@ -433,6 +433,11 @@ class Project < ApplicationRecord
     joins(:pages_metadatum).merge(ProjectPagesMetadatum.deployed)
   end
 
+  scope :pages_metadata_not_migrated, -> do
+    left_outer_joins(:pages_metadatum)
+      .where(project_pages_metadata: { project_id: nil })
+  end
+
   enum auto_cancel_pending_pipelines: { disabled: 0, enabled: 1 }
 
   chronic_duration_attr :build_timeout_human_readable, :build_timeout,

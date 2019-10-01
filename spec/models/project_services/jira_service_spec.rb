@@ -282,7 +282,7 @@ describe JiraService do
     context 'when data are stored in properties' do
       let(:properties) { data_params.merge(title: title, description: description) }
       let!(:service) do
-        create(:jira_service, :without_properties_callback, properties: properties)
+        create(:jira_service, :without_properties_callback, properties: properties.merge(additional: 'something'))
       end
 
       it_behaves_like 'issue tracker fields'

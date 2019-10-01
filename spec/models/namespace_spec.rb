@@ -928,12 +928,34 @@ describe Namespace do
     let(:project) { create(:project, namespace: namespace) }
 
     context 'when there are pages deployed for the project' do
-      before do
-        project.mark_pages_as_deployed
+      context 'but pages metadata is not migrated' do
+        before do
+          generic_commit_status = create(:generic_commit_status, :success, stage: 'deploy', name: 'pages:deploy')
+          generic_commit_status.update!(project: project)
+          project.pages_metadatum.destroy!
+        end
+
+        it 'migrates pages metadata and returns the virual domain' do
+          virtual_domain = namespace.pages_virtual_domain
+
+          expect(project.reload.pages_metadatum.deployed).to eq(true)
+
+          expect(virtual_domain).to be_an_instance_of(Pages::VirtualDomain)
+          expect(virtual_domain.lookup_paths).not_to be_empty
+        end
       end
 
-      it 'returns the virual domain' do
-        expect(namespace.pages_virtual_domain).to be_an_instance_of(Pages::VirtualDomain)
+      context 'and pages metadata is migrated' do
+        before do
+          project.mark_pages_as_deployed
+        end
+
+        it 'returns the virual domain' do
+          virtual_domain = namespace.pages_virtual_domain
+
+          expect(virtual_domain).to be_an_instance_of(Pages::VirtualDomain)
+          expect(virtual_domain.lookup_paths).not_to be_empty
+        end
       end
     end
   end

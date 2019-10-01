@@ -1001,6 +1001,14 @@ pre.light-well {
       }
     }
 
+    &:not(.with-pipeline-status) {
+      .icon-wrapper:first-of-type {
+        @include media-breakpoint-up(lg) {
+          margin-left: $gl-padding-32;
+        }
+      }
+    }
+
     .ci-status-link {
       display: inline-flex;
     }

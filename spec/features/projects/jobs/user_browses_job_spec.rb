@@ -104,20 +104,20 @@ describe 'User browses a job', :js do
     it 'displays the failure reason' do
       wait_for_all_requests
       within('.builds-container') do
-        build_link = first('.build-job > a')
-        expect(build_link['data-original-title']).to eq('test - failed - (unknown failure)')
+        expect(page).to have_selector(
+          ".build-job > a[data-original-title='test - failed - (unknown failure)']")
       end
     end
   end
 
   context 'when a failed job has been retried' do
-    let!(:build) { create(:ci_build, :failed, :retried, :trace_artifact, pipeline: pipeline) }
+    let!(:build_retried) { create(:ci_build, :failed, :retried, :trace_artifact, pipeline: pipeline) }
 
     it 'displays the failure reason and retried label' do
       wait_for_all_requests
       within('.builds-container') do
-        build_link = first('.build-job > a')
-        expect(build_link['data-original-title']).to eq('test - failed - (unknown failure) (retried)')
+        expect(page).to have_selector(
+          ".build-job > a[data-original-title='test - failed - (unknown failure) (retried)']")
       end
     end
   end
