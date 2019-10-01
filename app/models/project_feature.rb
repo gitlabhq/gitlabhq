@@ -62,7 +62,8 @@ class ProjectFeature < ApplicationRecord
     private
 
     def ensure_feature!(feature)
-      feature = feature.model_name.plural.to_sym if feature.respond_to?(:model_name)
+      feature = feature.model_name.plural if feature.respond_to?(:model_name)
+      feature = feature.to_sym
       raise ArgumentError, "invalid project feature: #{feature}" unless FEATURES.include?(feature)
 
       feature
