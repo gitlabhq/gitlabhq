@@ -636,12 +636,19 @@ entry.
 
 ## 12.1.12
 
+<<<<<<< HEAD
+### Security (11 changes)
+=======
 ### Security (12 changes)
+>>>>>>> master
 
 - Add a policy check for system notes that may not be visible due to cross references to private items.
 - Display only participants that user has permission to see on milestone page.
 - Do not disclose project milestones on group milestones page when project milestones access is disabled in project settings.
+<<<<<<< HEAD
+=======
 - Check permissions before showing head pipeline blocking merge requests.
+>>>>>>> master
 - Fix new project path being disclosed through unsubscribe link of issue/merge requests.
 - Prevent bypassing email verification using Salesforce.
 - Do not show resource label events referencing not accessible labels.
