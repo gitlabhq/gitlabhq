@@ -1183,22 +1183,6 @@ As of GitLab 10.0, the supported buildpacks are:
 
 The following restrictions apply.
 
-### Private project support
-
-CAUTION: **Caution:** Private project support in Auto DevOps is experimental.
-
-When a project has been marked as private, GitLab's [Container
-Registry][container-registry] requires authentication when downloading
-containers. Auto DevOps will automatically provide the required authentication
-information to Kubernetes, allowing temporary access to the registry.
-Authentication credentials will be valid while the pipeline is running, allowing
-for a successful initial deployment.
-
-After the pipeline completes, Kubernetes will no longer be able to access the
-Container Registry. **Restarting a pod, scaling a service, or other actions which
-require on-going access to the registry may fail**. On-going secure access is
-planned for a subsequent release.
-
 ### Private registry support
 
 There is no documented way of using private container registry with Auto DevOps.
@@ -1274,4 +1258,4 @@ curl --data "value=true" --header "PRIVATE-TOKEN: personal_access_token" https:/
 
 ## Development guides
 
-Configuring [GDK for Auto DevOps](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/auto_devops.md).
+[Development guide for Auto DevOps](../../development/auto_devops.md)

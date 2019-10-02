@@ -68,6 +68,7 @@ description: 'Learn how to contribute to GitLab.'
 - [Git LFS](lfs.md)
 - [Developing against interacting components or features](interacting_components.md)
 - [File uploads](uploads.md)
+- [Auto DevOps development guide](auto_devops.md)
 
 ## Performance guides
 

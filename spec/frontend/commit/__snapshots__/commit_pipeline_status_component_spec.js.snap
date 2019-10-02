@@ -1,0 +1,39 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Commit pipeline status component when polling is not successful renders not found CI icon without loader 1`] = `
+<div
+  class="ci-status-link"
+>
+  <a>
+    <ciicon-stub
+      aria-label="Pipeline: not found"
+      cssclasses=""
+      data-container="body"
+      data-original-title="Pipeline: not found"
+      size="24"
+      status="[object Object]"
+      title=""
+    />
+  </a>
+</div>
+`;
+
+exports[`Commit pipeline status component when polling is successful renders CI icon without loader 1`] = `
+<div
+  class="ci-status-link"
+>
+  <a
+    href="/frontend-fixtures/pipelines-project/pipelines/47"
+  >
+    <ciicon-stub
+      aria-label="Pipeline: pending"
+      cssclasses=""
+      data-container="body"
+      data-original-title="Pipeline: pending"
+      size="24"
+      status="[object Object]"
+      title=""
+    />
+  </a>
+</div>
+`;

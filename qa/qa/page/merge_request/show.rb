@@ -129,17 +129,7 @@ module QA
         end
 
         def try_to_merge!
-          # The merge button is disabled on load
-          wait do
-            has_element?(:merge_button)
-          end
-
-          # The merge button is enabled via JS
-          wait(reload: false) do
-            !find_element(:merge_button).disabled?
-          end
-
-          merge_immediately
+          merge_immediately if ready_to_merge?
         end
 
         def merge!
@@ -185,6 +175,18 @@ module QA
 
         def edit!
           click_element :edit_button
+        end
+
+        def ready_to_merge?
+          # The merge button is disabled on load
+          wait do
+            has_element?(:merge_button)
+          end
+
+          # The merge button is enabled via JS
+          wait(reload: false) do
+            !find_element(:merge_button).disabled?
+          end
         end
 
         def view_email_patches
