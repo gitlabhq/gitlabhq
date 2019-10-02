@@ -2,6 +2,13 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 12.2.7
+
+### Security (1 change)
+
+- Fix private feature Elasticsearch leak.
+
+
 ## 12.2.6
 
 ### Security (10 changes)
