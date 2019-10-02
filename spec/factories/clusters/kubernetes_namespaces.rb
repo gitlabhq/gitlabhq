@@ -27,7 +27,7 @@ FactoryBot.define do
     end
 
     trait :without_token do
-      service_account_token nil
+      service_account_token { nil }
     end
   end
 end

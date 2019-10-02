@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 describe Projects::Settings::OperationsController do
-  set(:user) { create(:user) }
-  set(:project) { create(:project) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project) }
 
   before do
     sign_in(user)

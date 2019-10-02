@@ -3,14 +3,14 @@
 FactoryBot.define do
   factory :cluster_platform_kubernetes, class: Clusters::Platforms::Kubernetes do
     cluster
-    namespace nil
-    api_url 'https://kubernetes.example.com'
+    namespace { nil }
+    api_url { 'https://kubernetes.example.com' }
     token { 'a' * 40 }
 
     trait :configured do
-      api_url 'https://kubernetes.example.com'
-      username 'xxxxxx'
-      password 'xxxxxx'
+      api_url { 'https://kubernetes.example.com' }
+      username { 'xxxxxx' }
+      password { 'xxxxxx' }
 
       before(:create) do |platform_kubernetes, evaluator|
         pem_file = File.expand_path(Rails.root.join('spec/fixtures/clusters/sample_cert.pem'))
@@ -19,7 +19,7 @@ FactoryBot.define do
     end
 
     trait :rbac_disabled do
-      authorization_type :abac
+      authorization_type { :abac }
     end
   end
 end

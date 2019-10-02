@@ -2,11 +2,11 @@
 
 FactoryBot.define do
   factory :ci_empty_pipeline, class: Ci::Pipeline do
-    source :push
-    ref 'master'
-    sha '97de212e80737a608d939f648d959671fb0a0142'
-    status 'pending'
-    protected false
+    source { :push }
+    ref { 'master' }
+    sha { '97de212e80737a608d939f648d959671fb0a0142' }
+    status { 'pending' }
+    add_attribute(:protected) { false }
 
     project
 
@@ -26,7 +26,7 @@ FactoryBot.define do
 
     # Persist merge request head_pipeline_id
     # on pipeline factories to avoid circular references
-    transient { head_pipeline_of nil }
+    transient { head_pipeline_of { nil } }
 
     after(:create) do |pipeline, evaluator|
       merge_request = evaluator.head_pipeline_of
@@ -34,7 +34,7 @@ FactoryBot.define do
     end
 
     factory :ci_pipeline do
-      transient { config nil }
+      transient { config { nil } }
 
       after(:build) do |pipeline, evaluator|
         if evaluator.config
@@ -48,44 +48,47 @@ FactoryBot.define do
       end
 
       trait :invalid do
-        config(rspec: nil)
-        failure_reason :config_error
+        config do
+          { rspec: nil }
+        end
+
+        failure_reason { :config_error }
       end
 
       trait :created do
-        status :created
+        status { :created }
       end
 
       trait :preparing do
-        status :preparing
+        status { :preparing }
       end
 
       trait :blocked do
-        status :manual
+        status { :manual }
       end
 
       trait :scheduled do
-        status :scheduled
+        status { :scheduled }
       end
 
       trait :success do
-        status :success
+        status { :success }
       end
 
       trait :running do
-        status :running
+        status { :running }
       end
 
       trait :failed do
-        status :failed
+        status { :failed }
       end
 
       trait :protected do
-        protected true
+        add_attribute(:protected) { true }
       end
 
       trait :with_test_reports do
-        status :success
+        status { :success }
 
         after(:build) do |pipeline, evaluator|
           pipeline.builds << build(:ci_build, :test_reports, pipeline: pipeline, project: pipeline.project)

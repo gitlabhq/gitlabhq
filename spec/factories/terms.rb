@@ -2,6 +2,6 @@
 
 FactoryBot.define do
   factory :term, class: ApplicationSetting::Term do
-    terms "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+    terms { "Lorem ipsum dolor sit amet, consectetur adipiscing elit." }
   end
 end

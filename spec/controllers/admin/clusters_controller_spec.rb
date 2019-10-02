@@ -469,7 +469,7 @@ describe Admin::ClustersController do
     end
 
     describe 'security' do
-      set(:cluster) { create(:cluster, :provided_by_gcp, :instance) }
+      let_it_be(:cluster) { create(:cluster, :provided_by_gcp, :instance) }
 
       it { expect { put_update }.to be_allowed_for(:admin) }
       it { expect { put_update }.to be_denied_for(:user) }
@@ -531,7 +531,7 @@ describe Admin::ClustersController do
     end
 
     describe 'security' do
-      set(:cluster) { create(:cluster, :provided_by_gcp, :production_environment, :instance) }
+      let_it_be(:cluster) { create(:cluster, :provided_by_gcp, :production_environment, :instance) }
 
       it { expect { delete_destroy }.to be_allowed_for(:admin) }
       it { expect { delete_destroy }.to be_denied_for(:user) }

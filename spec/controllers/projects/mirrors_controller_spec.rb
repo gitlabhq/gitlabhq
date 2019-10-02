@@ -6,7 +6,7 @@ describe Projects::MirrorsController do
   include ReactiveCachingHelpers
 
   describe 'setting up a remote mirror' do
-    set(:project) { create(:project, :repository) }
+    let_it_be(:project) { create(:project, :repository) }
 
     context 'when the current project is not a mirror' do
       it 'allows to create a remote mirror' do

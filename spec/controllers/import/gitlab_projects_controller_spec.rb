@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 describe Import::GitlabProjectsController do
-  set(:namespace) { create(:namespace) }
-  set(:user) { namespace.owner }
+  let_it_be(:namespace) { create(:namespace) }
+  let_it_be(:user) { namespace.owner }
   let(:file) { fixture_file_upload('spec/fixtures/project_export.tar.gz', 'text/plain') }
 
   before do

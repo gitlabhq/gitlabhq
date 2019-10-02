@@ -176,7 +176,7 @@ describe('Flash', () => {
       it('removes element after clicking', () => {
         flash('test', 'alert', document, null, false, true);
 
-        document.querySelector('.flash-alert').click();
+        document.querySelector('.flash-alert .js-close-icon').click();
 
         expect(document.querySelector('.flash-alert')).toBeNull();
 
@@ -210,7 +210,13 @@ describe('Flash', () => {
 
   describe('removeFlashClickListener', () => {
     beforeEach(() => {
-      document.body.innerHTML += '<div class="flash-container"><div class="flash"></div></div>';
+      document.body.innerHTML += `
+        <div class="flash-container">
+          <div class="flash">
+            <div class="close-icon js-close-icon"></div>
+          </div>
+        </div>
+      `;
     });
 
     it('removes global flash on click', done => {
@@ -218,7 +224,7 @@ describe('Flash', () => {
 
       removeFlashClickListener(flashEl, false);
 
-      flashEl.click();
+      flashEl.querySelector('.js-close-icon').click();
 
       setTimeout(() => {
         expect(document.querySelector('.flash')).toBeNull();

@@ -25,4 +25,22 @@ describe GitlabSchema.types['Project'] do
 
     is_expected.to have_graphql_fields(*expected_fields)
   end
+
+  describe 'issue field' do
+    subject { described_class.fields['issue'] }
+
+    it 'returns issue' do
+      is_expected.to have_graphql_type(Types::ExtendedIssueType)
+      is_expected.to have_graphql_resolver(Resolvers::IssuesResolver.single)
+    end
+  end
+
+  describe 'issues field' do
+    subject { described_class.fields['issues'] }
+
+    it 'returns issue' do
+      is_expected.to have_graphql_type(Types::IssueType.connection_type)
+      is_expected.to have_graphql_resolver(Resolvers::IssuesResolver)
+    end
+  end
 end

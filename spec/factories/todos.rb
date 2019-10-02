@@ -38,11 +38,11 @@ FactoryBot.define do
     end
 
     trait :pending do
-      state :pending
+      state { :pending }
     end
 
     trait :done do
-      state :done
+      state { :done }
     end
   end
 
@@ -52,6 +52,6 @@ FactoryBot.define do
     user
     action { Todo::ASSIGNED }
     commit_id { RepoHelpers.sample_commit.id }
-    target_type "Commit"
+    target_type { "Commit" }
   end
 end

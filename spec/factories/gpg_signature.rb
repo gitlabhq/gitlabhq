@@ -6,6 +6,6 @@ FactoryBot.define do
     project
     gpg_key
     gpg_key_primary_keyid { gpg_key.keyid }
-    verification_status :verified
+    verification_status { :verified }
   end
 end

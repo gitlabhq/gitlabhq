@@ -5,17 +5,17 @@ FactoryBot.define do
     email { generate(:email) }
     name { generate(:name) }
     username { generate(:username) }
-    password "12345678"
+    password { "12345678" }
     confirmed_at { Time.now }
     confirmation_token { nil }
-    can_create_group true
+    can_create_group { true }
 
     after(:stub) do |user|
       user.notification_email = user.email
     end
 
     trait :admin do
-      admin true
+      admin { true }
     end
 
     trait :blocked do
@@ -23,7 +23,7 @@ FactoryBot.define do
     end
 
     trait :external do
-      external true
+      external { true }
     end
 
     trait :two_factor do
@@ -31,7 +31,7 @@ FactoryBot.define do
     end
 
     trait :ghost do
-      ghost true
+      ghost { true }
       after(:build) { |user, _| user.block! }
     end
 
@@ -40,11 +40,11 @@ FactoryBot.define do
     end
 
     trait :with_sign_ins do
-      sign_in_count 3
+      sign_in_count { 3 }
       current_sign_in_at { Time.now }
       last_sign_in_at { FFaker::Time.between(10.days.ago, 1.day.ago) }
-      current_sign_in_ip '127.0.0.1'
-      last_sign_in_ip '127.0.0.1'
+      current_sign_in_ip { '127.0.0.1' }
+      last_sign_in_ip { '127.0.0.1' }
     end
 
     trait :two_factor_via_otp do
@@ -57,7 +57,7 @@ FactoryBot.define do
     end
 
     trait :two_factor_via_u2f do
-      transient { registrations_count 5 }
+      transient { registrations_count { 5 } }
 
       after(:create) do |user, evaluator|
         create_list(:u2f_registration, evaluator.registrations_count, user: user)
@@ -65,7 +65,7 @@ FactoryBot.define do
     end
 
     trait :readme do
-      project_view :readme
+      project_view { :readme }
     end
 
     trait :commit_email do
@@ -77,7 +77,7 @@ FactoryBot.define do
     end
 
     transient do
-      developer_projects []
+      developer_projects { [] }
     end
 
     after(:create) do |user, evaluator|
@@ -88,8 +88,8 @@ FactoryBot.define do
 
     factory :omniauth_user do
       transient do
-        extern_uid '123456'
-        provider 'ldapmain'
+        extern_uid { '123456' }
+        provider { 'ldapmain' }
       end
 
       after(:create) do |user, evaluator|

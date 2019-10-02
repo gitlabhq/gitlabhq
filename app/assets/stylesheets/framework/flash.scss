@@ -1,7 +1,6 @@
 $notification-box-shadow-color: rgba(0, 0, 0, 0.25);
 
 .flash-container {
-  cursor: pointer;
   margin: 0;
   margin-bottom: $gl-padding;
   font-size: 14px;
@@ -19,12 +18,17 @@ $notification-box-shadow-color: rgba(0, 0, 0, 0.25);
     }
   }
 
-  .close-icon {
-    width: 16px;
-    height: 16px;
+  .close-icon-wrapper {
+    padding: ($gl-btn-padding + $gl-padding-4) $gl-padding $gl-btn-padding;
     position: absolute;
-    right: $gl-padding;
-    top: $gl-padding;
+    right: 0;
+    top: 0;
+    cursor: pointer;
+
+    .close-icon {
+      width: 16px;
+      height: 16px;
+    }
   }
 
   .flash-notice,

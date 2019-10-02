@@ -8,19 +8,19 @@ FactoryBot.define do
     updated_by { author }
 
     trait :confidential do
-      confidential true
+      confidential { true }
     end
 
     trait :opened do
-      state :opened
+      state { :opened }
     end
 
     trait :locked do
-      discussion_locked true
+      discussion_locked { true }
     end
 
     trait :closed do
-      state :closed
+      state { :closed }
       closed_at { Time.now }
     end
 
@@ -29,7 +29,7 @@ FactoryBot.define do
 
     factory :labeled_issue do
       transient do
-        labels []
+        labels { [] }
       end
 
       after(:create) do |issue, evaluator|

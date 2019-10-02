@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 describe Projects::Environments::PrometheusApiController do
-  set(:project) { create(:project) }
-  set(:environment) { create(:environment, project: project) }
-  set(:user) { create(:user) }
+  let_it_be(:project) { create(:project) }
+  let_it_be(:environment) { create(:environment, project: project) }
+  let_it_be(:user) { create(:user) }
 
   before do
     project.add_reporter(user)

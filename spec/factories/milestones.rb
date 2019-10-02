@@ -5,19 +5,19 @@ FactoryBot.define do
     title
 
     transient do
-      project nil
-      group nil
-      project_id nil
-      group_id nil
-      parent nil
+      project { nil }
+      group { nil }
+      project_id { nil }
+      group_id { nil }
+      parent { nil }
     end
 
     trait :active do
-      state "active"
+      state { "active" }
     end
 
     trait :closed do
-      state "closed"
+      state { "closed" }
     end
 
     trait :with_dates do

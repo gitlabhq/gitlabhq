@@ -202,7 +202,35 @@ so we need to set some guidelines for their use going forward:
   order is required, otherwise `let` will suffice. Remember that `let` is lazy and won't
   be evaluated until it is referenced.
 
+### `let_it_be` variables
+
+In some cases there is no need to recreate the same object for tests
+again for each example. For example, a project is needed to test issues
+on the same project, one project will do for the entire file. This can
+be achieved by using
+[`let_it_be`](https://test-prof.evilmartians.io/#/let_it_be) variables
+from the [`test-prof` gem](https://rubygems.org/gems/test-prof).
+
+Note that if you modify an object defined inside a `let_it_be` block,
+then you will need to reload the object as needed, or specify the `reload`
+option to reload for every example.
+
+```
+let_it_be(:project, reload: true) { create(:project) }
+```
+
+You can also specify the `refind` option as well to completely load a
+new object.
+
+```
+let_it_be(:project, refind: true) { create(:project) }
+```
+
 ### `set` variables
+
+NOTE: **Note:**
+We are incrementally removing `set` in favour of `let_it_be`. See the
+[removal issue](https://gitlab.com/gitlab-org/gitlab/issues/27922).
 
 In some cases there is no need to recreate the same object for tests again for
 each example. For example, a project is needed to test issues on the same

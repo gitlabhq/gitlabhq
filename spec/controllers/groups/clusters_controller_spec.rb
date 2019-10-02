@@ -6,7 +6,7 @@ describe Groups::ClustersController do
   include AccessMatchersForController
   include GoogleApi::CloudPlatformHelpers
 
-  set(:group) { create(:group) }
+  let_it_be(:group) { create(:group) }
 
   let(:user) { create(:user) }
 
@@ -536,7 +536,7 @@ describe Groups::ClustersController do
     end
 
     describe 'security' do
-      set(:cluster) { create(:cluster, :provided_by_gcp, cluster_type: :group_type, groups: [group]) }
+      let_it_be(:cluster) { create(:cluster, :provided_by_gcp, cluster_type: :group_type, groups: [group]) }
 
       it { expect { go }.to be_allowed_for(:admin) }
       it { expect { go }.to be_allowed_for(:owner).of(group) }
@@ -604,7 +604,7 @@ describe Groups::ClustersController do
     end
 
     describe 'security' do
-      set(:cluster) { create(:cluster, :provided_by_gcp, :production_environment, cluster_type: :group_type, groups: [group]) }
+      let_it_be(:cluster) { create(:cluster, :provided_by_gcp, :production_environment, cluster_type: :group_type, groups: [group]) }
 
       it { expect { go }.to be_allowed_for(:admin) }
       it { expect { go }.to be_allowed_for(:owner).of(group) }

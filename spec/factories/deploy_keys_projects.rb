@@ -6,7 +6,7 @@ FactoryBot.define do
     project
 
     trait :write_access do
-      can_push true
+      can_push { true }
     end
   end
 end

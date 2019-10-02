@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 describe Projects::WikisController do
-  set(:project) { create(:project, :public, :repository) }
-  set(:user) { project.owner }
+  let_it_be(:project) { create(:project, :public, :repository) }
+  let(:user) { project.owner }
   let(:project_wiki) { ProjectWiki.new(project, user) }
   let(:wiki) { project_wiki.wiki }
   let(:wiki_title) { 'page title test' }

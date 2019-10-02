@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :broadcast_message do
-    message "MyText"
+    message { "MyText" }
     starts_at { 1.day.ago }
     ends_at { 1.day.from_now }
 

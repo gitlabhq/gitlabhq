@@ -3,10 +3,10 @@
 require 'spec_helper'
 
 describe Projects::AutocompleteSourcesController do
-  set(:group) { create(:group) }
-  set(:project) { create(:project, namespace: group) }
-  set(:issue) { create(:issue, project: project) }
-  set(:user) { create(:user) }
+  let_it_be(:group) { create(:group) }
+  let_it_be(:project) { create(:project, namespace: group) }
+  let_it_be(:issue) { create(:issue, project: project) }
+  let_it_be(:user) { create(:user) }
 
   describe 'GET members' do
     before do

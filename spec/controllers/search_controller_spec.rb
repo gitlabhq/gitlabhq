@@ -67,7 +67,7 @@ describe SearchController do
       using RSpec::Parameterized::TableSyntax
       render_views
 
-      set(:project) { create(:project, :public, :repository, :wiki_repo) }
+      let_it_be(:project) { create(:project, :public, :repository, :wiki_repo) }
 
       before do
         expect(::Gitlab::GitalyClient).to receive(:allow_ref_name_caching).and_call_original

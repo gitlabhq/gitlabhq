@@ -6,12 +6,12 @@ FactoryBot.define do
     project
 
     transient do
-      default_access_level true
+      default_access_level { true }
     end
 
     trait :developers_can_create do
       transient do
-        default_access_level false
+        default_access_level { false }
       end
 
       after(:build) do |protected_tag|
@@ -21,7 +21,7 @@ FactoryBot.define do
 
     trait :no_one_can_create do
       transient do
-        default_access_level false
+        default_access_level { false }
       end
 
       after(:build) do |protected_tag|
@@ -31,7 +31,7 @@ FactoryBot.define do
 
     trait :maintainers_can_create do
       transient do
-        default_access_level false
+        default_access_level { false }
       end
 
       after(:build) do |protected_tag|

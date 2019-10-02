@@ -2,11 +2,11 @@
 
 FactoryBot.define do
   factory :deployment, class: Deployment do
-    sha 'b83d6e391c22777fca1ed3012fce84f633d7fed0'
-    ref 'master'
-    tag false
-    user nil
-    project nil
+    sha { 'b83d6e391c22777fca1ed3012fce84f633d7fed0' }
+    ref { 'master' }
+    tag { false }
+    user { nil }
+    project { nil }
     deployable factory: :ci_build
     environment factory: :environment
 
@@ -25,7 +25,7 @@ FactoryBot.define do
 
     trait :review_app do
       sha { TestEnv::BRANCH_SHA['pages-deploy'] }
-      ref 'pages-deploy'
+      ref { 'pages-deploy' }
     end
 
     trait :on_cluster do
@@ -33,21 +33,21 @@ FactoryBot.define do
     end
 
     trait :running do
-      status :running
+      status { :running }
     end
 
     trait :success do
-      status :success
+      status { :success }
       finished_at { Time.now }
     end
 
     trait :failed do
-      status :failed
+      status { :failed }
       finished_at { Time.now }
     end
 
     trait :canceled do
-      status :canceled
+      status { :canceled }
       finished_at { Time.now }
     end
 

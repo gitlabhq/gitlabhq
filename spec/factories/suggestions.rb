@@ -2,18 +2,18 @@
 
 FactoryBot.define do
   factory :suggestion do
-    relative_order 0
+    relative_order { 0 }
     association :note, factory: :diff_note_on_merge_request
-    from_content "    vars = {\n"
-    to_content "    vars = [\n"
+    from_content { "    vars = {\n" }
+    to_content { "    vars = [\n" }
 
     trait :unappliable do
-      from_content "foo"
-      to_content "foo"
+      from_content { "foo" }
+      to_content { "foo" }
     end
 
     trait :applied do
-      applied true
+      applied { true }
       commit_id { RepoHelpers.sample_commit.id }
     end
 

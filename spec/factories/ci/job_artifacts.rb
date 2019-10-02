@@ -5,15 +5,15 @@ include ActionDispatch::TestProcess
 FactoryBot.define do
   factory :ci_job_artifact, class: Ci::JobArtifact do
     job factory: :ci_build
-    file_type :archive
-    file_format :zip
+    file_type { :archive }
+    file_format { :zip }
 
     trait :expired do
       expire_at { Date.yesterday }
     end
 
     trait :remote_store do
-      file_store JobArtifactUploader::Store::REMOTE
+      file_store { JobArtifactUploader::Store::REMOTE}
     end
 
     after :build do |artifact|
@@ -21,7 +21,7 @@ FactoryBot.define do
     end
 
     trait :raw do
-      file_format :raw
+      file_format { :raw }
 
       after(:build) do |artifact, _|
         artifact.file = fixture_file_upload(
@@ -30,7 +30,7 @@ FactoryBot.define do
     end
 
     trait :zip do
-      file_format :zip
+      file_format { :zip }
 
       after(:build) do |artifact, _|
         artifact.file = fixture_file_upload(
@@ -39,7 +39,7 @@ FactoryBot.define do
     end
 
     trait :gzip do
-      file_format :gzip
+      file_format { :gzip }
 
       after(:build) do |artifact, _|
         artifact.file = fixture_file_upload(
@@ -48,8 +48,8 @@ FactoryBot.define do
     end
 
     trait :archive do
-      file_type :archive
-      file_format :zip
+      file_type { :archive }
+      file_format { :zip }
 
       transient do
         file { fixture_file_upload(Rails.root.join('spec/fixtures/ci_build_artifacts.zip'), 'application/zip') }
@@ -63,12 +63,12 @@ FactoryBot.define do
     trait :legacy_archive do
       archive
 
-      file_location :legacy_path
+      file_location { :legacy_path }
     end
 
     trait :metadata do
-      file_type :metadata
-      file_format :gzip
+      file_type { :metadata }
+      file_format { :gzip }
 
       transient do
         file { fixture_file_upload(Rails.root.join('spec/fixtures/ci_build_artifacts_metadata.gz'), 'application/x-gzip') }
@@ -80,8 +80,8 @@ FactoryBot.define do
     end
 
     trait :trace do
-      file_type :trace
-      file_format :raw
+      file_type { :trace }
+      file_format { :raw }
 
       after(:build) do |artifact, evaluator|
         artifact.file = fixture_file_upload(
@@ -90,8 +90,8 @@ FactoryBot.define do
     end
 
     trait :junit do
-      file_type :junit
-      file_format :gzip
+      file_type { :junit }
+      file_format { :gzip }
 
       after(:build) do |artifact, evaluator|
         artifact.file = fixture_file_upload(
@@ -100,8 +100,8 @@ FactoryBot.define do
     end
 
     trait :junit_with_ant do
-      file_type :junit
-      file_format :gzip
+      file_type { :junit }
+      file_format { :gzip }
 
       after(:build) do |artifact, evaluator|
         artifact.file = fixture_file_upload(
@@ -110,8 +110,8 @@ FactoryBot.define do
     end
 
     trait :junit_with_three_testsuites do
-      file_type :junit
-      file_format :gzip
+      file_type { :junit }
+      file_format { :gzip }
 
       after(:build) do |artifact, evaluator|
         artifact.file = fixture_file_upload(
@@ -120,8 +120,8 @@ FactoryBot.define do
     end
 
     trait :junit_with_corrupted_data do
-      file_type :junit
-      file_format :gzip
+      file_type { :junit }
+      file_format { :gzip }
 
       after(:build) do |artifact, evaluator|
         artifact.file = fixture_file_upload(
@@ -130,8 +130,8 @@ FactoryBot.define do
     end
 
     trait :codequality do
-      file_type :codequality
-      file_format :raw
+      file_type { :codequality }
+      file_format { :raw }
 
       after(:build) do |artifact, evaluator|
         artifact.file = fixture_file_upload(

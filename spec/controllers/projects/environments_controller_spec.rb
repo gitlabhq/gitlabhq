@@ -5,10 +5,10 @@ require 'spec_helper'
 describe Projects::EnvironmentsController do
   include MetricsDashboardHelpers
 
-  set(:user) { create(:user) }
-  set(:project) { create(:project) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project) }
 
-  set(:environment) do
+  let_it_be(:environment) do
     create(:environment, name: 'production', project: project)
   end
 

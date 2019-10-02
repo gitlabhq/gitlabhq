@@ -36,11 +36,19 @@ changes to be reviewed.
 ## Only allow merge requests to be merged if the pipeline succeeds
 
 You can prevent merge requests from being merged if their pipeline did not succeed
-or if there are threads to be resolved.
+or if there are threads to be resolved. This works for both:
 
-Navigate to your project's settings page and expand the **Merge requests** section.
-In the **Merge checks** subsection, select the **Pipelines must succeed** check
-box and hit **Save** for the changes to take effect.
+- GitLab CI/CD pipelines
+- Pipelines run from an [external CI integration](../integrations/project_services.md#services)
+
+As a result, [disabling GitLab CI/CD pipelines](../../../ci/enable_or_disable_ci.md)
+will not disable this feature, as it will still be possible to use pipelines from external
+CI providers with this feature. To enable it, you must:
+
+1. Navigate to your project's **Settings > General** page.
+1. Expand the **Merge requests** section.
+1. In the **Merge checks** subsection, select the **Pipelines must succeed** checkbox.
+1. Press **Save** for the changes to take effect.
 
 NOTE: **Note:** This setting also prevents merge requests from being merged if there is no pipeline.
 

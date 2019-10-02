@@ -6,11 +6,11 @@ FactoryBot.define do
     project
 
     transient do
-      tags []
+      tags { [] }
     end
 
     trait :root do
-      name ''
+      name { '' }
     end
 
     after(:build) do |repository, evaluator|

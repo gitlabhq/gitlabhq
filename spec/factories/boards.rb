@@ -3,11 +3,11 @@
 FactoryBot.define do
   factory :board do
     transient do
-      project nil
-      group nil
-      project_id nil
-      group_id nil
-      parent nil
+      project { nil }
+      group { nil }
+      project_id { nil }
+      group_id { nil }
+      parent { nil }
     end
 
     after(:build, :stub) do |board, evaluator|
