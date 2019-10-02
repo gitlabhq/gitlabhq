@@ -126,7 +126,13 @@ module Gitlab
     def mv_repository(storage, path, new_path)
       return false if path.empty? || new_path.empty?
 
-      !!mv_directory(storage, "#{path}.git", "#{new_path}.git")
+      Gitlab::Git::Repository.new(storage, "#{path}.git", nil, nil).rename("#{new_path}.git")
+
+      true
+    rescue => e
+      Gitlab::Sentry.track_acceptable_exception(e, extra: { path: path, new_path: new_path, storage: storage })
+
+      false
     end
 
     # Fork repository to new path
@@ -151,9 +157,13 @@ module Gitlab
     def remove_repository(storage, name)
       return false if name.empty?
 
-      !!rm_directory(storage, "#{name}.git")
-    rescue ArgumentError => e
+      Gitlab::Git::Repository.new(storage, "#{name}.git", nil, nil).remove
+
+      true
+    rescue => e
       Rails.logger.warn("Repository does not exist: #{e} at: #{name}.git") # rubocop:disable Gitlab/RailsLogger
+      Gitlab::Sentry.track_acceptable_exception(e, extra: { path: name, storage: storage })
+
       false
     end
 

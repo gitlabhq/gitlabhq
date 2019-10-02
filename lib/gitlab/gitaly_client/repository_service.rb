@@ -347,6 +347,18 @@ module Gitlab
         GitalyClient.call(@storage, :object_pool_service, :disconnect_git_alternates, request, timeout: GitalyClient.long_timeout)
       end
 
+      def rename(relative_path)
+        request = Gitaly::RenameRepositoryRequest.new(repository: @gitaly_repo, relative_path: relative_path)
+
+        GitalyClient.call(@storage, :repository_service, :rename_repository, request, timeout: GitalyClient.fast_timeout)
+      end
+
+      def remove
+        request = Gitaly::RemoveRepositoryRequest.new(repository: @gitaly_repo)
+
+        GitalyClient.call(@storage, :repository_service, :remove_repository, request, timeout: GitalyClient.long_timeout)
+      end
+
       private
 
       def search_results_from_response(gitaly_response)

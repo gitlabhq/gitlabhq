@@ -365,7 +365,7 @@ module Gitlab
       if Sidekiq.server?
         6.hours
       else
-        55.seconds
+        default_timeout
       end
     end
 
