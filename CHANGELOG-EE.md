@@ -195,6 +195,13 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Fixes style-lint errors and warnings for EE builds.scss file.
 
 
+## 12.2.7
+
+### Security (1 change)
+
+- Restrict access for security reports in MR widget.
+
+
 ## 12.2.6
 
 ### Security (3 changes)
