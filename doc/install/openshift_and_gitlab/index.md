@@ -14,7 +14,7 @@ for details.
 ## Introduction
 
 [OpenShift Origin](https://www.okd.io/) (**Note:** renamed to OKD in Aug 2018) is an open source container application
-platform created by [RedHat], based on [kubernetes](https://kubernetes.io/) and [Docker]. That means
+platform created by [RedHat], based on [Kubernetes](https://kubernetes.io/) and [Docker]. That means
 you can host your own PaaS for free and almost with no hassle.
 
 In this tutorial, we will see how to deploy GitLab in OpenShift using GitLab's
@@ -30,7 +30,7 @@ For a video demonstration on installing GitLab on OpenShift, check the article [
 CAUTION: **Caution:** This information is no longer up to date, as the current versions
 have changed and products have been renamed.
 
-OpenShift 3 is not yet deployed on RedHat's offered Online platform, [openshift.com](https://www.openshift.com/),
+OpenShift 3 is not yet deployed on RedHat's offered [Online platform](https://www.openshift.com/),
 so in order to test it, we will use an [all-in-one Virtualbox image](https://www.okd.io/minishift/) that is
 offered by the OpenShift developers and managed by Vagrant. If you haven't done
 already, go ahead and install the following components as they are essential to
@@ -44,8 +44,8 @@ It is also important to mention that for the purposes of this tutorial, the
 latest Origin release is used:
 
 - **oc** `v1.3.0` (must be [installed][oc-gh] locally on your computer)
-- **openshift** `v1.3.0` (is pre-installed in the [VM image][vm-new])
-- **kubernetes** `v1.3.0` (is pre-installed in the [VM image][vm-new])
+- **OpenShift** `v1.3.0` (is pre-installed in the [VM image][vm-new])
+- **Kubernetes** `v1.3.0` (is pre-installed in the [VM image][vm-new])
 
 >**Note:**
 If you intend to deploy GitLab on a production OpenShift cluster, there are some
@@ -59,7 +59,7 @@ on your computer.
 ## Getting familiar with OpenShift Origin
 
 The environment we are about to use is based on CentOS 7 which comes with all
-the tools needed pre-installed: Docker, kubernetes, OpenShift, etcd.
+the tools needed pre-installed: Docker, Kubernetes, OpenShift, etcd.
 
 ### Test OpenShift using Vagrant
 
@@ -130,7 +130,7 @@ kubernetes v1.3.0+52492b4
 ```
 
 With `oc help` you can see the top level arguments you can run with `oc` and
-interact with your cluster, kubernetes, run applications, create projects and
+interact with your cluster, Kubernetes, run applications, create projects and
 much more.
 
 Let's login to the all-in-one VM and see how to achieve the same results like
@@ -349,7 +349,7 @@ tab.
 
 ![GitLab logs](img/gitlab-logs.png)
 
-At a point you should see a _**gitlab Reconfigured!**_ message in the logs.
+At a point you should see a `gitlab Reconfigured!` message in the logs.
 Navigate back to the **Overview** and hopefully all pods will be up and running.
 
 ![GitLab running](img/gitlab-running.png)

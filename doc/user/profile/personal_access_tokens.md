@@ -47,8 +47,8 @@ the following table.
 | `api`              | [GitLab 8.15](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/5951)   | Grants complete read/write access to the API, including all groups and projects, the container registry, and the package registry. |
 | `read_registry`    | [GitLab 9.3](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/11845)   | Allows to read (pull) [container registry] images if a project is private and authorization is required. |
 | `sudo`             | [GitLab 10.2](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/14838)  | Allows performing API actions as any user in the system (if the authenticated user is an admin). |
-| `read_repository`  | [GitLab 10.7](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/17894)  | Allows read-only access (pull) to the repository through git clone. |
-| `write_repository` | [GitLab 11.11](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/26021) | Allows read-write access (pull, push) to the repository through git clone. Required for accessing Git repositories over HTTP when 2FA is enabled. |
+| `read_repository`  | [GitLab 10.7](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/17894)  | Allows read-only access (pull) to the repository through `git clone`. |
+| `write_repository` | [GitLab 11.11](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/26021) | Allows read-write access (pull, push) to the repository through `git clone`. Required for accessing Git repositories over HTTP when 2FA is enabled. |
 
 [2fa]: ../account/two_factor_authentication.md
 [api]: ../../api/README.md

@@ -151,8 +151,6 @@ describe Gitlab::UsageData do
         todos
         uploads
         web_hooks
-        user_preferences_group_overview_details
-        user_preferences_group_overview_security_dashboard
       ).push(*smau_keys)
 
       count_data = subject[:counts]

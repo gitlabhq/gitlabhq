@@ -112,12 +112,12 @@ RDS instances as well:
 
 1. Follow the same steps to create all subnets:
 
-   | Name tag | Type |Availability Zone | CIDR block |
-   | -------- | ---- | ---------------- | ---------- |
-   | gitlab-public-10.0.0.0  | public  | us-west-2a | 10.0.0.0 |
-   | gitlab-private-10.0.1.0 | private | us-west-2a | 10.0.1.0 |
-   | gitlab-public-10.0.2.0  | public  | us-west-2b | 10.0.2.0 |
-   | gitlab-private-10.0.3.0 | private | us-west-2b | 10.0.3.0 |
+   | Name tag                  | Type    | Availability Zone | CIDR block |
+   | ------------------------- | ------- | ----------------- | ---------- |
+   | `gitlab-public-10.0.0.0`  | public  | `us-west-2a`      | `10.0.0.0` |
+   | `gitlab-private-10.0.1.0` | private | `us-west-2a`      | `10.0.1.0` |
+   | `gitlab-public-10.0.2.0`  | public  | `us-west-2b`      | `10.0.2.0` |
+   | `gitlab-private-10.0.3.0` | private | `us-west-2b`      | `10.0.3.0` |
 
 ### Route Table
 
@@ -231,7 +231,7 @@ Now, it's time to create the database:
    and a master password. We've chosen to use `gitlab-db-ha`, `gitlab` and a
    very secure password respectively. Keep these in hand for later.
 1. Click **Next** to proceed to the advanced settings.
-1. Make sure to choose our gitlab VPC, our subnet group, set public accessibility to
+1. Make sure to choose our GitLab VPC, our subnet group, set public accessibility to
    **No**, and to leave it to create a new security group. The only additional
    change which will be helpful is the database name for which we can use
    `gitlabhq_production`. At the very bottom, there's an option to enable

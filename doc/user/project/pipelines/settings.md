@@ -152,7 +152,7 @@ If **Public pipelines** is disabled:
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/9362) in GitLab 9.1.
 
 If you want to auto-cancel all pending non-HEAD pipelines on branch, when
-new pipeline will be created (after your git push or manually from UI),
+new pipeline will be created (after your Git push or manually from UI),
 check **Auto-cancel pending pipelines** checkbox and save the changes.
 
 ## Pipeline Badges

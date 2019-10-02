@@ -185,11 +185,11 @@ subgraph "`qa` stage"
     R --> |needs| F;
     P --> |needs| B;
     P --> |needs| F;
-    review-qa-smoke -.-> |depends on| G;
-    review-qa-all -.-> |depends on| G;
-    review-qa-performance -.-> |depends on| G;
-    X2["schedule:review-performance<br/>(master only)"] -.-> |depends on| G2;
-    dast -.-> |depends on| G;
+    review-qa-smoke -.-> |needs and depends on| G;
+    review-qa-all -.-> |needs and depends on| G;
+    review-performance -.-> |needs and depends on| G;
+    X2["schedule:review-performance<br/>(master only)"] -.-> |needs and depends on| G2;
+    dast -.-> |needs and depends on| G;
     end
 
 subgraph "`notification` stage"

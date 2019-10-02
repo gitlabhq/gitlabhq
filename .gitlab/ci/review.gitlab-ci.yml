@@ -183,6 +183,7 @@ review-cleanup-failed-deployment:
     GITLAB_ADMIN_PASSWORD: "${REVIEW_APPS_ROOT_PASSWORD}"
     GITHUB_ACCESS_TOKEN: "${REVIEW_APPS_QA_GITHUB_ACCESS_TOKEN}"
     EE_LICENSE: "${REVIEW_APPS_EE_LICENSE}"
+  needs: ["review-deploy"]
   dependencies: ["review-deploy"]
   artifacts:
     paths:
@@ -239,6 +240,8 @@ review-performance:
   extends:
     - .review-performance-base
     - .only-review
+  needs: ["review-deploy"]
+  dependencies: ["review-deploy"]
   before_script:
     - export CI_ENVIRONMENT_URL="$(cat review_app_url.txt)"
     - echo "${CI_ENVIRONMENT_URL}"
@@ -259,6 +262,7 @@ schedule:review-performance:
   extends:
     - .review-performance-base
     - .only-review-schedules
+  needs: ["schedule:review-deploy"]
   dependencies: ["schedule:review-deploy"]
 
 parallel-spec-reports:

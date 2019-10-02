@@ -174,9 +174,9 @@ Official clients:
 
 Community contributed clients:
 
-- [stiano/unleash-client-dotnet](https://github.com/stiano/unleash-client-dotnet) (.Net Core)
-- [onybo/unleash-client-core](https://github.com/onybo/unleash-client-core) (.Net Core)
-- [aes/unleash-client-python](https://github.com/aes/unleash-client-python) (Python 3)
+- [Unleash FeatureToggle Client for .Net](https://github.com/stiano/unleash-client-dotnet)
+- [Unofficial .Net Core Unleash client](https://github.com/onybo/unleash-client-core)
+- [Unleash client for Python 3](https://github.com/aes/unleash-client-python)
 
 ### Golang application example
 

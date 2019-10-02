@@ -28,8 +28,8 @@ First, you'll need an account on Azure. There are three ways to do this:
 
 ## Working with Azure
 
-Once you have an Azure account, you can get started. Login to Azure using
-[portal.azure.com](https://portal.azure.com) and the first thing you will see is the Dashboard:
+Once you have an Azure account, you can get started. [Log in to Azure](https://portal.azure.com)
+and the first thing you will see is the Dashboard:
 
 ![Azure Dashboard](img/azure-dashboard.png)
 
@@ -64,7 +64,7 @@ The first items we need to configure are the basic settings of the underlying vi
 
 1. Enter a `Name` for the VM - e.g. **"GitLab-CE"**
 1. Select a `VM disk type` - either **HDD** _(slower, lower cost)_ or **SSD** _(faster, higher cost)_
-1. Enter a `User name` - e.g. **"gitlab-admin"**
+1. Enter a `User name` - e.g. `gitlab-admin`
 1. Select an `Authentication type`, either **SSH public key** or **Password**:
 
    > **Note:** if you're unsure which authentication type to use, select **Password**
@@ -167,7 +167,7 @@ in the `DNS name label` field:
 
 ![Azure - VM - Domain Name](img/azure-vm-domain-name.png)
 
-In the screenshot above, you'll see that we've set the `DNS name label` to **"gitlab-ce-test"**.
+In the screenshot above, you'll see that we've set the `DNS name label` to `gitlab-ce-test`.
 This will make our VM accessible at `gitlab-ce-test.centralus.cloudapp.azure.com`
 _(the full domain name of your own VM will be different, of course)_.
 
@@ -397,7 +397,7 @@ is now showing **"up-to-date"**:
 
 ## Conclusion
 
-Naturally, we believe that GitLab is a great git repository tool. However, GitLab is a whole lot
+Naturally, we believe that GitLab is a great Git repository tool. However, GitLab is a whole lot
 more than that too. GitLab unifies issues, code review, CI and CD into a single UI, helping you to
 move faster from idea to production, and in this tutorial we showed you how quick and easy it is to
 set up and run your own instance of GitLab on Azure, Microsoft's cloud service.

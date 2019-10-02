@@ -61,7 +61,7 @@ GitLab makes it easy to view the logs of running pods in connected Kubernetes cl
 ### Kubernetes monitoring
 
 Automatically detect and monitor Kubernetes metrics. Automatic monitoring of
-[NGINX ingress](../integrations/prometheus_library/nginx.md) is also supported.
+[NGINX Ingress](../integrations/prometheus_library/nginx.md) is also supported.
 
 [Read more about Kubernetes monitoring](../integrations/prometheus_library/kubernetes.md)
 
@@ -380,7 +380,7 @@ Specifying a base domain will automatically set `KUBE_INGRESS_BASE_DOMAIN` as an
 If you are using [Auto DevOps](../../../topics/autodevops/index.md), this domain will be used for the different
 stages. For example, Auto Review Apps and Auto Deploy.
 
-The domain should have a wildcard DNS configured to the Ingress IP address. After ingress has been installed (see [Installing Applications](#installing-applications)),
+The domain should have a wildcard DNS configured to the Ingress IP address. After Ingress has been installed (see [Installing Applications](#installing-applications)),
 you can either:
 
 - Create an `A` record that points to the Ingress IP address with your domain provider.
@@ -548,7 +548,7 @@ differentiate the new cluster with the rest.
 GitLab can install and manage some applications in your project-level
 cluster. For more information on installing, upgrading, uninstalling,
 and troubleshooting applications for your project cluster, see
-[Gitlab Managed Apps](../../clusters/applications.md).
+[GitLab Managed Apps](../../clusters/applications.md).
 
 ### Getting the external endpoint
 
@@ -565,7 +565,7 @@ address or a hostname associated with your load balancer.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/17052) in GitLab 10.6.
 
-After you install [Ingress or Knative](#installing-applications), Gitlab attempts to determine the external endpoint
+After you install [Ingress or Knative](#installing-applications), GitLab attempts to determine the external endpoint
 and it should be available within a few minutes. If the endpoint doesn't appear
 and your cluster runs on Google Kubernetes Engine:
 

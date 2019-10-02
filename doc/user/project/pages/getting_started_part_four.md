@@ -390,5 +390,5 @@ to understand how to go even further on your scripts.
   in parallel, or build a custom pipeline](https://about.gitlab.com/2016/07/29/the-basics-of-gitlab-ci/)
 - On this blog post, we go through the process of
   [pulling specific directories from different projects](https://about.gitlab.com/2016/12/07/building-a-new-gitlab-docs-site-with-nanoc-gitlab-ci-and-gitlab-pages/)
-  to deploy this website you're looking at, docs.gitlab.com.
+  to deploy this website you're looking at, <https://docs.gitlab.com>.
 - On this blog post, we teach you [how to use GitLab Pages to produce a code coverage report](https://about.gitlab.com/2016/11/03/publish-code-coverage-report-with-gitlab-pages/).

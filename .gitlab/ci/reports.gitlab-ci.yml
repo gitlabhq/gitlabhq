@@ -198,6 +198,7 @@ dast:
     - .only-code-qa-changes
     - .only-review
   stage: qa
+  needs: ["review-deploy"]
   dependencies: ["review-deploy"]
   before_script:
     - export DAST_WEBSITE="$(cat review_app_url.txt)"

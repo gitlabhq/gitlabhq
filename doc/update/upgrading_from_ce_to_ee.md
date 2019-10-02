@@ -74,8 +74,8 @@ sudo -u git -H bundle exec rake assets:clean assets:precompile cache:clear RAILS
 
 ### 4. Install `gitlab-elasticsearch-indexer` (optional) **(STARTER ONLY)**
 
-If you're interested in using GitLab's new [elasticsearch repository
-indexer](../integration/elasticsearch.md) (currently in beta) please follow the instructions on the
+If you're interested in using GitLab's new [Elasticsearch repository indexer](../integration/elasticsearch.md)
+(currently in beta) please follow the instructions on the
 document linked above and enable the indexer usage in the GitLab admin settings.
 
 ### 5. Start application

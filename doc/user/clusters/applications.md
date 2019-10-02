@@ -106,8 +106,7 @@ mode** by default. Make sure you read the [security
 implications](../project/clusters/index.md#security-implications) before doing so.
 
 NOTE: **Note:**
-The
-[runner/gitlab-runner](https://gitlab.com/gitlab-org/charts/gitlab-runner)
+The [`runner/gitlab-runner`](https://gitlab.com/gitlab-org/charts/gitlab-runner)
 chart is used to install this application with a
 [`values.yaml`](https://gitlab.com/gitlab-org/gitlab/blob/master/vendor/runner/values.yaml)
 file.
@@ -123,8 +122,7 @@ web proxy for your applications and is useful if you want to use [Auto
 DevOps](../../topics/autodevops/index.md) or deploy your own web apps.
 
 NOTE: **Note:**
-The
-[stable/nginx-ingress](https://github.com/helm/charts/tree/master/stable/nginx-ingress)
+The [`stable/nginx-ingress`](https://github.com/helm/charts/tree/master/stable/nginx-ingress)
 chart is used to install this application with a
 [`values.yaml`](https://gitlab.com/gitlab-org/gitlab/blob/master/vendor/ingress/values.yaml)
 file.
@@ -139,7 +137,7 @@ to check requests against [OWASP's Core Rule Set](https://www.modsecurity.org/CR
 This feature:
 
 - Runs in "Detection-only mode" unless configured otherwise.
-- Is viewable by checking your ingress controller's `modsec` log for rule violations.
+- Is viewable by checking your Ingress controller's `modsec` log for rule violations.
   For example:
 
   ```sh
@@ -185,8 +183,7 @@ Ingress must be installed and have an IP address assigned before
 JupyterHub can be installed.
 
 NOTE: **Note:**
-The
-[jupyter/jupyterhub](https://jupyterhub.github.io/helm-chart/)
+The [`jupyter/jupyterhub`](https://jupyterhub.github.io/helm-chart/)
 chart is used to install this application with a
 [`values.yaml`](https://gitlab.com/gitlab-org/gitlab/blob/master/vendor/jupyter/values.yaml)
 file.
@@ -234,12 +231,11 @@ domain where your applications will be exposed. Configure your DNS
 server to use the external IP address for that domain. For any
 application created and installed, they will be accessible as
 `<program_name>.<kubernetes_namespace>.<domain_name>`. This will require
-your kubernetes cluster to have [RBAC
+your Kubernetes cluster to have [RBAC
 enabled](../project/clusters/index.md#rbac-cluster-resources).
 
 NOTE: **Note:**
-The
-[knative/knative](https://storage.googleapis.com/triggermesh-charts)
+The [`knative/knative`](https://storage.googleapis.com/triggermesh-charts)
 chart is used to install this application.
 
 ### Prometheus
@@ -252,8 +248,7 @@ open-source monitoring and alerting system useful to supervise your
 deployed applications.
 
 NOTE: **Note:**
-The
-[stable/prometheus](https://github.com/helm/charts/tree/master/stable/prometheus)
+The [`stable/prometheus`](https://github.com/helm/charts/tree/master/stable/prometheus)
 chart is used to install this application with a
 [`values.yaml`](https://gitlab.com/gitlab-org/gitlab/blob/master/vendor/prometheus/values.yaml)
 file.

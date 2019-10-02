@@ -11,7 +11,7 @@ implement [GitLab CI/CD](../README.md) for your specific use case.
 Examples are available in several forms. As a collection of:
 
 - `.gitlab-ci.yml` [template files](https://gitlab.com/gitlab-org/gitlab-foss/tree/master/lib/gitlab/ci/templates) maintained in GitLab. When you create a new file via the UI,
-  GitLab will give you the option to choose one of these templates. This will allow you to quickly bootstrap your project for CI/CD.
+  GitLab will give you the option to choose one of these templates. This will allow you to start using CI/CD with your project quickly.
   If your favorite programming language or framework are missing, we would love your help by sending a merge request with a new `.gitlab-ci.yml` to this project.
 - Repositories with [example projects](https://gitlab.com/gitlab-examples) for various languages. You can fork and adjust them to your own needs. Projects include demonstrations of [multi-project pipelines](https://gitlab.com/gitlab-examples/multi-project-pipelines) and using [Review Apps with a static site served by NGINX](https://gitlab.com/gitlab-examples/review-apps-nginx/).
 - Examples and [other resources](#other-resources) listed below.

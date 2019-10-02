@@ -27,12 +27,12 @@ following the
 
 Since an installation from source is a lot of work and error prone we strongly recommend the fast and reliable [Omnibus package installation](https://about.gitlab.com/install/) (deb/rpm).
 
-One reason the Omnibus package is more reliable is its use of Runit to restart any of the GitLab processes in case one crashes.
+One reason the Omnibus package is more reliable is its use of runit to restart any of the GitLab processes in case one crashes.
 On heavily used GitLab instances the memory usage of the Sidekiq background worker will grow over time.
 
 Omnibus packages solve this by [letting the Sidekiq terminate gracefully](../administration/operations/sidekiq_memory_killer.md) if it uses too much memory.
-After this termination Runit will detect Sidekiq is not running and will start it.
-Since installations from source don't use Runit for process supervision, Sidekiq
+After this termination runit will detect Sidekiq is not running and will start it.
+Since installations from source don't use runit for process supervision, Sidekiq
 can't be terminated and its memory usage will grow over time.
 
 ## Select version to install
@@ -84,7 +84,7 @@ The GitLab installation consists of setting up the following components:
 1. [Database](#6-database).
 1. [Redis](#7-redis).
 1. [GitLab](#8-gitlab).
-1. [Nginx](#9-nginx).
+1. [NGINX](#9-nginx).
 
 ## 1. Packages and dependencies
 
@@ -588,7 +588,7 @@ You can specify a different Git repository by providing it as an extra parameter
 sudo -u git -H bundle exec rake "gitlab:workhorse:install[/home/git/gitlab-workhorse,https://example.com/gitlab-workhorse.git]" RAILS_ENV=production
 ```
 
-### Install gitlab-elasticsearch-indexer
+### Install GitLab-Elasticsearch-indexer`
 
 GitLab-Elasticsearch-Indexer uses [GNU Make](https://www.gnu.org/software/make/). The
 following command-line will install GitLab-Elasticsearch-Indexer in `/home/git/gitlab-elasticsearch-indexer`
@@ -646,7 +646,7 @@ sudo -u git -H editor config.toml
 ```
 
 For more information about configuring Gitaly see
-[doc/administration/gitaly](../administration/gitaly).
+[the Gitaly documentation](../administration/gitaly/index.md).
 
 ### Start Gitaly
 
@@ -749,10 +749,10 @@ sudo service gitlab start
 sudo /etc/init.d/gitlab restart
 ```
 
-## 9. Nginx
+## 9. NGINX
 
 NOTE: **Note:**
-Nginx is the officially supported web server for GitLab. If you cannot or do not want to use Nginx as your web server, see [GitLab recipes](https://gitlab.com/gitlab-org/gitlab-recipes/).
+NGINX is the officially supported web server for GitLab. If you cannot or do not want to use NGINX as your web server, see [GitLab recipes](https://gitlab.com/gitlab-org/gitlab-recipes/).
 
 ### Installation
 
@@ -784,21 +784,21 @@ Make sure to edit the config file to match your setup. Also, ensure that you mat
 sudo editor /etc/nginx/sites-available/gitlab
 ```
 
-If you intend to enable GitLab pages, there is a separate Nginx config you need
+If you intend to enable GitLab Pages, there is a separate NGINX config you need
 to use. Read all about the needed configuration at the
 [GitLab Pages administration guide](../administration/pages/index.md).
 
-**Note:** If you want to use HTTPS, replace the `gitlab` Nginx config with `gitlab-ssl`. See [Using HTTPS](#using-https) for HTTPS configuration details.
+**Note:** If you want to use HTTPS, replace the `gitlab` NGINX config with `gitlab-ssl`. See [Using HTTPS](#using-https) for HTTPS configuration details.
 
 ### Test Configuration
 
-Validate your `gitlab` or `gitlab-ssl` Nginx config file with the following command:
+Validate your `gitlab` or `gitlab-ssl` NGINX config file with the following command:
 
 ```sh
 sudo nginx -t
 ```
 
-You should receive `syntax is okay` and `test is successful` messages. If you receive errors check your `gitlab` or `gitlab-ssl` Nginx config file for typos, etc. as indicated in the error message given.
+You should receive `syntax is okay` and `test is successful` messages. If you receive errors check your `gitlab` or `gitlab-ssl` NGINX config file for typos, etc. as indicated in the error message given.
 
 NOTE: **Note:**
 Verify that the installed version is greater than 1.12.1 by running `nginx -v`. If it's lower, you may receive the error below:
@@ -858,7 +858,7 @@ To use GitLab with HTTPS:
 1. In the `config.yml` of GitLab Shell:
    1. Set `gitlab_url` option to the HTTPS endpoint of GitLab (e.g. `https://git.example.com`).
    1. Set the certificates using either the `ca_file` or `ca_path` option.
-1. Use the `gitlab-ssl` Nginx example config instead of the `gitlab` config.
+1. Use the `gitlab-ssl` NGINX example config instead of the `gitlab` config.
    1. Update `YOUR_SERVER_FQDN`.
    1. Update `ssl_certificate` and `ssl_certificate_key`.
    1. Review the configuration file and consider applying other security and performance enhancing features.
@@ -884,9 +884,9 @@ See the ["Reply by email" documentation](../administration/reply_by_email.md) fo
 
 You can configure LDAP authentication in `config/gitlab.yml`. Restart GitLab after editing this file.
 
-### Using Custom Omniauth Providers
+### Using Custom OmniAuth Providers
 
-See the [omniauth integration document](../integration/omniauth.md).
+See the [OmniAuth integration documentation](../integration/omniauth.md).
 
 ### Build your projects
 
@@ -945,7 +945,7 @@ You also need to change the corresponding options (e.g. `ssh_user`, `ssh_host`, 
 
 ### Additional Markup Styles
 
-Apart from the always supported markdown style, there are other rich text files that GitLab can display. But you might have to install a dependency to do so. See the [github-markup gem README](https://github.com/gitlabhq/markup#markups) for more information.
+Apart from the always supported Markdown style, there are other rich text files that GitLab can display. But you might have to install a dependency to do so. See the [`github-markup` gem README](https://github.com/gitlabhq/markup#markups) for more information.
 
 ### Using Puma
 
@@ -971,12 +971,12 @@ To use GitLab with Puma:
 ### "You appear to have cloned an empty repository."
 
 If you see this message when attempting to clone a repository hosted by GitLab,
-this is likely due to an outdated Nginx or Apache configuration, or a missing or
+this is likely due to an outdated NGINX or Apache configuration, or a missing or
 misconfigured GitLab Workhorse instance. Double-check that you've
 [installed Go](#3-go), [installed GitLab Workhorse](#install-gitlab-workhorse),
-and correctly [configured Nginx](#site-configuration).
+and correctly [configured NGINX](#site-configuration).
 
-### google-protobuf "LoadError: /lib/x86_64-linux-gnu/libc.so.6: version `GLIBC_2.14' not found"
+### `google-protobuf` "LoadError: /lib/x86_64-linux-gnu/libc.so.6: version `GLIBC_2.14' not found"
 
 This can happen on some platforms for some versions of the
 `google-protobuf` gem. The workaround is to install a source-only

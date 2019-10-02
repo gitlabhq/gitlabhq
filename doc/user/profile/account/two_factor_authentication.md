@@ -107,7 +107,7 @@ prompted to download a set of set recovery codes. Should you ever lose access
 to your one time password authenticator, you can use one of them to log in to
 your account. We suggest copying them, printing them, or downloading them using
 the **Download codes** button for storage in a safe place. If you choose to
-download them, the file will be called **gitlab-recovery-codes.txt**.
+download them, the file will be called `gitlab-recovery-codes.txt`.
 
 If you lose the recovery codes or just want to generate new ones, you can do so
 [using SSH](#generate-new-recovery-codes-using-ssh).
