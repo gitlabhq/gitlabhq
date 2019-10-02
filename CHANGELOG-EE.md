@@ -1,5 +1,13 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 12.3.4
+
+### Fixed (2 changes)
+
+- Fix replies to service desk emails for projects with issue access as Only Project Members. !17401
+- Geo: LFS not being synced. !17633
+
+
 ## 12.3.2
 
 ### Security (2 changes)

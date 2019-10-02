@@ -36,7 +36,7 @@ module QA
           end
 
           view 'app/assets/javascripts/vue_shared/components/issue/related_issuable_item.vue' do
-            element :remove_issue_button
+            element :remove_related_issue_button
           end
 
           view 'app/helpers/dropdowns_helper.rb' do
@@ -80,8 +80,8 @@ module QA
             click_element(:milestone_link)
           end
 
-          def click_remove_issue_button
-            click_element(:remove_issue_button)
+          def click_remove_related_issue_button
+            click_element(:remove_related_issue_button)
           end
 
           # Adds a comment to an issue

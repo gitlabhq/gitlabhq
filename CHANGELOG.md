@@ -2,6 +2,14 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 12.3.4
+
+### Fixed (2 changes)
+
+- Fix cannot merge icon showing in dropdown for users who can merge. !17306
+- Fix pipelines for merge requests in project exports. !17844
+
+
 ## 12.3.2
 
 ### Security (12 changes)

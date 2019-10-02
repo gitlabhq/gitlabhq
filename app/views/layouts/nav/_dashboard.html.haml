@@ -17,8 +17,6 @@
       .dropdown-menu.frequent-items-dropdown-menu
         = render "layouts/nav/groups_dropdown/show"
 
-  = render_if_exists 'layouts/nav/sidebar/analytics_link'
-
   - if any_dashboard_nav_link?([:groups, :milestones, :activity, :snippets])
     %li.header-more.dropdown
       %a{ href: "#", data: { toggle: "dropdown", qa_selector: 'more_dropdown' } }
@@ -45,7 +43,7 @@
               = link_to dashboard_snippets_path, class: 'dashboard-shortcuts-snippets', data: { qa_selector: 'snippets_link' } do
                 = _('Snippets')
 
-          = render_if_exists 'layouts/nav/sidebar/analytics_more_link'
+          = render_if_exists 'layouts/nav/sidebar/analytics_link'
 
           %li.dropdown
             = render_if_exists 'dashboard/nav_link_list'

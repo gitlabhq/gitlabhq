@@ -1,5 +1,0 @@
----
-title: Fix pipelines for merge requests in project exports
-merge_request: 17844
-author:
-type: fixed

@@ -177,7 +177,7 @@
       transition: padding $sidebar-transition-duration;
       display: flex;
       align-items: center;
-      padding: 12px 15px;
+      padding: 12px $gl-padding;
       color: $gl-text-color-secondary;
     }
 
@@ -341,7 +341,7 @@
       > a {
         margin-left: 4px;
         // Subtract width of left border on active element
-        padding-left: 11px;
+        padding-left: $gl-padding-12;
       }
 
       .badge.badge-pill {
