@@ -160,7 +160,7 @@ describe PagesDomain do
       end
 
       context 'when curve is set explicitly by parameters' do
-        it 'adds errors to private key' do
+        it 'adds errors to private key', :quarantine do
           domain = build(:pages_domain, :explicit_ecdsa)
 
           expect(domain).to be_invalid
