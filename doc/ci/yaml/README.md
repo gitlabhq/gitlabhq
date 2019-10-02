@@ -707,6 +707,7 @@ Available rule clauses include:
   (similar to [`only:variables`](#onlyvariablesexceptvariables)).
 - [`changes`](#ruleschanges)
   (same as [`only:changes`](#onlychangesexceptchanges)).
+- [`exists`](#rulesexists)
 
 For example, using `if`. This configuration specifies that `job` should be built
 and run for every pipeline on merge requests targeting `master`, regardless of
@@ -779,9 +780,42 @@ In this example, a job either set to:
 - Run manually if `Dockerfile` has changed OR `$VAR == "string value"`.
 - `when:on_success` by the last rule, where no earlier clauses evaluate to true.
 
+#### `rules:exists`
+
+`exists` accepts an array of paths and will match if any of these paths exist
+as files in the repository.
+
+For example:
+
+```yaml
+job:
+  script: docker build -t my-image:$CI_COMMIT_REF_SLUG .
+  rules:
+    - exists:
+      - Dockerfile
+```
+
+You can also use glob patterns to match multiple files in any directory within
+the repository.
+
+For example:
+
+```yaml
+job:
+  script: bundle exec rspec
+  rules:
+    - exists:
+      - spec/**.rb
+```
+
+NOTE: **Note:**
+For performance reasons, using `exists` with patterns is limited to 10000
+checks. After the 10000th check, rules with patterned globs will always match.
+
 #### Complex rule clauses
 
-To conjoin `if` and `changes` clauses with an AND, use them in the same rule.
+To conjoin `if`, `changes`, and `exists` clauses with an AND, use them in the
+same rule.
 
 In the following example:
 
@@ -805,6 +839,7 @@ The only clauses currently available are:
 
 - `if`
 - `changes`
+- `exists`
 
 Keywords such as `branches` or `refs` that are currently available for
 `only`/`except` are not yet available in `rules` as they are being individually

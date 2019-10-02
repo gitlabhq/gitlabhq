@@ -1427,8 +1427,16 @@ describe User do
         expect(described_class.search(user.username)).to eq([user, user2])
       end
 
+      it 'returns users with a matching username starting with a @' do
+        expect(described_class.search("@#{user.username}")).to eq([user, user2])
+      end
+
       it 'returns users with a partially matching username' do
         expect(described_class.search(user.username[0..2])).to eq([user, user2])
+      end
+
+      it 'returns users with a partially matching username starting with @' do
+        expect(described_class.search("@#{user.username[0..2]}")).to eq([user, user2])
       end
 
       it 'returns users with a matching username regardless of the casing' do

@@ -444,6 +444,7 @@ class User < ApplicationRecord
     #
     # Returns an ActiveRecord::Relation.
     def search(query)
+      query = query&.delete_prefix('@')
       return none if query.blank?
 
       query = query.downcase

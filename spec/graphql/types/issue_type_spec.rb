@@ -10,7 +10,7 @@ describe GitlabSchema.types['Issue'] do
   it { expect(described_class.interfaces).to include(Types::Notes::NoteableType.to_graphql) }
 
   it 'has specific fields' do
-    fields = %i[iid title description state reference author assignees participants labels epic milestone due_date
+    fields = %i[iid title description state reference author assignees participants labels milestone due_date
                 confidential discussion_locked upvotes downvotes user_notes_count web_path web_url relative_position
                 time_estimate total_time_spent closed_at created_at updated_at task_completion_status]
 
