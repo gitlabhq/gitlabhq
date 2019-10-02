@@ -29,6 +29,6 @@ export default {
 
 <template>
   <span v-if="file.file_lock" v-tooltip :title="lockTooltip" data-container="body">
-    <icon name="lock" css-classes="file-status-icon" />
+    <icon name="lock" class="file-status-icon" />
   </span>
 </template>

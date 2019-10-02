@@ -83,7 +83,7 @@ export default {
     :class="{ 'ml-auto': isCentered }"
     class="file-changed-icon d-inline-block"
   >
-    <icon v-if="showIcon" :name="changedIcon" :size="size" :css-classes="changedIconClass" />
+    <icon v-if="showIcon" :name="changedIcon" :size="size" :class="changedIconClass" />
   </span>
 </template>
 

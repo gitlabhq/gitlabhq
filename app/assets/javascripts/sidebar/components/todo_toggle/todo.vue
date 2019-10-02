@@ -82,11 +82,7 @@ export default {
     data-boundary="viewport"
     @click="handleButtonClick"
   >
-    <icon
-      v-show="collapsed"
-      :css-classes="collapsedButtonIconClasses"
-      :name="collapsedButtonIcon"
-    />
+    <icon v-show="collapsed" :class="collapsedButtonIconClasses" :name="collapsedButtonIcon" />
     <span v-show="!collapsed" class="issuable-todo-inner"> {{ buttonLabel }} </span>
     <gl-loading-icon v-show="isActionActive" :inline="true" />
   </button>

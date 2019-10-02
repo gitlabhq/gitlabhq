@@ -28,7 +28,7 @@ export default {
       rel="noopener noreferrer"
     >
       <span class="vertical-align-middle">{{ __('Open in file view') }}</span>
-      <icon :size="16" name="external-link" css-classes="vertical-align-middle space-right" />
+      <icon :size="16" name="external-link" class="vertical-align-middle space-right" />
     </a>
   </div>
 </template>

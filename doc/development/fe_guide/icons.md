@@ -59,8 +59,8 @@ export default {
 <template>
   <icon
     name="issues"
-    :size="72"
-    css-classes="icon-danger"
+    :size="24"
+    class="icon-danger"
   />
 </template>
 ```

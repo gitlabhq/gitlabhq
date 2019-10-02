@@ -14,7 +14,7 @@ exports[`SidebarTodo template renders component container element with proper da
   type="button"
 >
   <icon-stub
-    cssclasses="todo-undone"
+    class="todo-undone"
     name="todo-done"
     size="16"
     style="display: none;"

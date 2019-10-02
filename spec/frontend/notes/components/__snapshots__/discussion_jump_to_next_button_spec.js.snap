@@ -11,7 +11,6 @@ exports[`JumpToNextDiscussionButton matches the snapshot 1`] = `
     title=""
   >
     <icon-stub
-      cssclasses=""
       name="comment-next"
       size="16"
     />

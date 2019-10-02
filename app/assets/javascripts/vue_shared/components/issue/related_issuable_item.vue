@@ -63,7 +63,7 @@ export default {
           <icon
             v-if="hasState"
             ref="iconElementXL"
-            :css-classes="iconClass"
+            :class="iconClass"
             :name="iconName"
             :size="16"
             :title="stateTitle"
@@ -100,7 +100,7 @@ export default {
             <span ref="iconElement">
               <icon
                 v-if="hasState"
-                :css-classes="iconClass"
+                :class="iconClass"
                 :name="iconName"
                 :title="stateTitle"
                 :aria-label="state"

@@ -26,7 +26,7 @@ export default {
       :title="__('Reply to comment')"
       @click="$emit('startReplying')"
     >
-      <icon name="comment" css-classes="link-highlight" />
+      <icon name="comment" class="link-highlight" />
     </gl-button>
   </div>
 </template>

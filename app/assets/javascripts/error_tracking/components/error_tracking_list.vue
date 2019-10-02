@@ -100,7 +100,7 @@ export default {
 
           <template slot="lastSeen" slot-scope="errors">
             <div class="d-flex align-items-center">
-              <icon name="calendar" css-classes="text-secondary mr-1" />
+              <icon name="calendar" class="text-secondary mr-1" />
               <time-ago :time="errors.item.lastSeen" class="text-secondary" />
             </div>
           </template>

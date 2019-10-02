@@ -149,9 +149,9 @@ export default {
         title="Add reaction"
         data-position="right"
       >
-        <icon css-classes="link-highlight award-control-icon-neutral" name="slight-smile" />
-        <icon css-classes="link-highlight award-control-icon-positive" name="smiley" />
-        <icon css-classes="link-highlight award-control-icon-super-positive" name="smiley" />
+        <icon class="link-highlight award-control-icon-neutral" name="slight-smile" />
+        <icon class="link-highlight award-control-icon-positive" name="smiley" />
+        <icon class="link-highlight award-control-icon-super-positive" name="smiley" />
       </a>
     </div>
     <reply-button
@@ -168,7 +168,7 @@ export default {
         class="note-action-button js-note-edit btn btn-transparent qa-note-edit-button"
         @click="onEdit"
       >
-        <icon name="pencil" css-classes="link-highlight" />
+        <icon name="pencil" class="link-highlight" />
       </button>
     </div>
     <div v-if="showDeleteAction" class="note-actions-item">
@@ -191,7 +191,7 @@ export default {
         data-toggle="dropdown"
         @click="closeTooltip"
       >
-        <icon css-classes="icon" name="ellipsis_v" />
+        <icon class="icon" name="ellipsis_v" />
       </button>
       <ul class="dropdown-menu more-actions-dropdown dropdown-open-left">
         <li v-if="canReportAsAbuse">

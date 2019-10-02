@@ -75,7 +75,7 @@ export default {
     <svg v-if="!loading && !folder" :class="[iconSizeClass, cssClasses]">
       <use v-bind="{ 'xlink:href': spriteHref }" />
     </svg>
-    <icon v-if="!loading && folder" :name="folderIconName" :size="size" css-classes="folder-icon" />
+    <icon v-if="!loading && folder" :name="folderIconName" :size="size" class="folder-icon" />
     <gl-loading-icon v-if="loading" :inline="true" />
   </span>
 </template>

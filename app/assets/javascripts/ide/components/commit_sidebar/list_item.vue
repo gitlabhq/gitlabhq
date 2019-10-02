@@ -114,7 +114,7 @@ export default {
       </span>
       <div class="ml-auto d-flex align-items-center">
         <div class="d-flex align-items-center ide-commit-list-changed-icon">
-          <icon :name="iconName" :size="16" :css-classes="iconClass" />
+          <icon :name="iconName" :size="16" :class="iconClass" />
         </div>
       </div>
     </div>

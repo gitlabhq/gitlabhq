@@ -56,7 +56,7 @@ export default {
       class="leave-group btn btn-xs no-expand"
       @click.prevent="onLeaveGroup"
     >
-      <icon name="leave" css-classes="position-top-0" />
+      <icon name="leave" class="position-top-0" />
     </a>
     <a
       v-if="group.canEdit"
@@ -68,7 +68,7 @@ export default {
       data-placement="bottom"
       class="edit-group btn btn-xs no-expand"
     >
-      <icon name="settings" css-classes="position-top-0" />
+      <icon name="settings" class="position-top-0" />
     </a>
   </div>
 </template>

@@ -28,10 +28,7 @@ describe('Changed file icon', () => {
 
   const findIcon = () => wrapper.find(Icon);
   const findIconName = () => findIcon().props('name');
-  const findIconClasses = () =>
-    findIcon()
-      .props('cssClasses')
-      .split(' ');
+  const findIconClasses = () => findIcon().classes();
   const findTooltipText = () => wrapper.attributes('data-original-title');
 
   it('with isCentered true, adds center class', () => {

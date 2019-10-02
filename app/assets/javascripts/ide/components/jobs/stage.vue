@@ -77,7 +77,7 @@ export default {
       <div v-if="!stage.isLoading || stage.jobs.length" class="append-right-8 prepend-left-4">
         <span class="badge badge-pill"> {{ jobsCount }} </span>
       </div>
-      <icon :name="collapseIcon" css-classes="ide-stage-collapse-icon" />
+      <icon :name="collapseIcon" class="ide-stage-collapse-icon" />
     </div>
     <div v-show="!stage.isCollapsed" class="card-body">
       <gl-loading-icon v-if="showLoadingIcon" />

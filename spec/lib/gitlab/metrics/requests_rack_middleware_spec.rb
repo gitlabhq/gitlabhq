@@ -63,5 +63,19 @@ describe Gitlab::Metrics::RequestsRackMiddleware do
         expect { subject.call(env) }.to raise_error(StandardError)
       end
     end
+
+    describe '.initialize_http_request_duration_seconds' do
+      it "sets labels" do
+        expected_labels = []
+        described_class::HTTP_METHODS.each do |method, statuses|
+          statuses.each do |status|
+            expected_labels << { method: method, status: status }
+          end
+        end
+
+        described_class.initialize_http_request_duration_seconds
+        expect(described_class.http_request_duration_seconds.values.keys).to include(*expected_labels)
+      end
+    end
   end
 end
