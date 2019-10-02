@@ -3462,6 +3462,36 @@ describe Project do
     end
   end
 
+  describe '.filter_by_feature_visibility' do
+    include_context 'ProjectPolicyTable context'
+    include ProjectHelpers
+    using RSpec::Parameterized::TableSyntax
+
+    set(:group) { create(:group) }
+    let!(:project) { create(:project, project_level, namespace: group ) }
+    let(:user) { create_user_from_membership(project, membership) }
+
+    context 'reporter level access' do
+      let(:feature) { MergeRequest }
+
+      where(:project_level, :feature_access_level, :membership, :expected_count) do
+        permission_table_for_reporter_feature_access
+      end
+
+      with_them do
+        it "respects visibility" do
+          update_feature_access_level(project, feature_access_level)
+
+          expected_objects = expected_count == 1 ? [project] : []
+
+          expect(
+            described_class.filter_by_feature_visibility(feature, user)
+          ).to eq(expected_objects)
+        end
+      end
+    end
+  end
+
   describe '#pages_available?' do
     let(:project) { create(:project, group: group) }
 
