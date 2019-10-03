@@ -64,7 +64,10 @@ GitLab.com uses the SAML NameID to identify users. The NameID element:
 
 - Is a required field in the SAML response.
 - Must be unique to each user.
-- Must be a persistent value that will never change, such as a unique ID or username. Email could also be used as the NameID, but only if it can be guaranteed to never change.
+- Must be a persistent value that will never change, such as a randomly generated unique user ID.
+- Is case sensitive. The NameID must match exactly on subsequent login attempts, so should not rely on user input that could change between upper and lower case.
+
+We strongly recommend against using Email as the NameID as it is hard to guarantee it will never change, for example when a person's name changes. Similarly usernames should be avoided if possible.
 
 ### Assertions
 

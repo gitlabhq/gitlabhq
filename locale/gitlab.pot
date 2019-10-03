@@ -1617,9 +1617,6 @@ msgstr ""
 msgid "Analytics"
 msgstr ""
 
-msgid "Analytics|Timeframe"
-msgstr ""
-
 msgid "Ancestors"
 msgstr ""
 

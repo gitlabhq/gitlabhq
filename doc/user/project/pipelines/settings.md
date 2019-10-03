@@ -122,30 +122,33 @@ lein cloverage | perl -pe 's/\e\[?.*?[\@-~]//g'
 
 ## Visibility of pipelines
 
-Access to pipelines and job details (including output of logs and artifacts)
-is checked against your current user access level and the **Public pipelines**
-project setting under your project's **Settings > CI/CD > General pipelines settings**.
+Pipeline visibility is determined by:
+
+- Your current [user access level](../../permissions.md).
+- The **Public pipelines** project setting under your project's **Settings > CI/CD > General pipelines**.
+
+This also determines the visibility of these related features:
+
+- Job output logs
+- Job artifacts
+- The [pipeline security dashboard](../../application_security/security_dashboard/index.md#pipeline-security-dashboard) **(ULTIMATE)**
 
 If **Public pipelines** is enabled (default):
 
-- For **public** projects, anyone can view the pipelines and access the job details
-  (output logs and artifacts).
+- For **public** projects, anyone can view the pipelines and related features.
 - For **internal** projects, any logged in user can view the pipelines
-  and access the job details
-  (output logs and artifacts).
-- For **private** projects, any member (guest or higher) can view the pipelines
-  and access the job details
-  (output logs and artifacts).
+  and related features.
+- For **private** projects, any project member (guest or higher) can view the pipelines
+  and related features.
 
 If **Public pipelines** is disabled:
 
 - For **public** projects, anyone can view the pipelines, but only members
-  (reporter or higher) can access the job details (output logs and artifacts).
+  (reporter or higher) can access the related features.
 - For **internal** projects, any logged in user can view the pipelines.
-  However, only members (reporter or higher) can access the job details (output logs
-  and artifacts).
-- For **private** projects, only members (reporter or higher)
-  can view the pipelines and access the job details (output logs and artifacts).
+  However, only members (reporter or higher) can access the job related features.
+- For **private** projects, only project members (reporter or higher)
+  can view the pipelines or access the related features.
 
 ## Auto-cancel pending pipelines
 
