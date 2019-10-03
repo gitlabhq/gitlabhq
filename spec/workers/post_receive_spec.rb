@@ -43,6 +43,7 @@ describe PostReceive do
 
       before do
         allow_any_instance_of(Gitlab::GitPostReceive).to receive(:identify).and_return(empty_project.owner)
+        # Need to mock here so we can expect calls on project
         allow(Gitlab::GlRepository).to receive(:parse).and_return([empty_project, Gitlab::GlRepository::PROJECT])
       end
 
@@ -102,7 +103,7 @@ describe PostReceive do
         end
 
         it 'expires the status cache' do
-          expect(project).to receive(:empty_repo?).and_return(true)
+          expect(project.repository).to receive(:empty?).and_return(true)
           expect(project.repository).to receive(:expire_status_cache)
 
           perform
@@ -300,6 +301,11 @@ describe PostReceive do
   describe '#process_wiki_changes' do
     let(:gl_repository) { "wiki-#{project.id}" }
 
+    before do
+      # Need to mock here so we can expect calls on project
+      allow(Gitlab::GlRepository).to receive(:parse).and_return([project, Gitlab::GlRepository::WIKI])
+    end
+
     it 'updates project activity' do
       # Force Project#set_timestamps_for_create to initialize timestamps
       project
@@ -312,6 +318,28 @@ describe PostReceive do
           project.reload
         end.to change(project, :last_activity_at)
            .and change(project, :last_repository_updated_at)
+      end
+    end
+
+    context "branches" do
+      let(:changes) do
+        <<~EOF
+            123456 789012 refs/heads/tést1
+            123456 789012 refs/heads/tést2
+        EOF
+      end
+
+      it 'expires the branches cache' do
+        expect(project.wiki.repository).to receive(:expire_branches_cache).once
+
+        perform
+      end
+
+      it 'expires the status cache' do
+        expect(project.wiki.repository).to receive(:empty?).and_return(true)
+        expect(project.wiki.repository).to receive(:expire_status_cache)
+
+        perform
       end
     end
   end

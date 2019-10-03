@@ -847,6 +847,35 @@ the database are preconfigured, but can be customized by setting the associated
 postgres://user:password@postgres-host:postgres-port/postgres-database
 ```
 
+#### Using external PostgreSQL database providers
+
+While Auto DevOps provides out-of-the-box support for a PostgreSQL container for
+production environments, for some use-cases it may not be sufficiently secure or
+resilient and you may wish to use an external managed provider for PostgreSQL.
+For example, AWS Relational Database Service.
+
+You will need to define environment-scoped variables for `POSTGRES_ENABLED` and `DATABASE_URL` in your project's CI/CD settings.
+
+To achieve this:
+
+1. Disable the built-in PostgreSQL installation for the required environments using
+   scoped [environment variables](../../ci/environments.md#scoping-environments-with-specs).
+   For this use case, it's likely that only `production` will need to be added to this
+   list as the builtin PostgreSQL setup for Review Apps and staging will be sufficient
+   as a high availability setup is not required.
+
+   ![Auto Metrics](img/disable_postgres.png)
+
+1. Define the `DATABASE_URL` CI variable as a scoped environment variable that will be
+   available to your application. This should be a URL in the following format:
+
+   ```yaml
+   postgres://user:password@postgres-host:postgres-port/postgres-database
+   ```
+
+You will need to ensure that your Kubernetes cluster has network access to wherever
+PostgreSQL is hosted.
+
 ### Environment variables
 
 The following variables can be used for setting up the Auto DevOps domain,

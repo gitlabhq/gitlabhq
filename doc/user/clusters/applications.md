@@ -158,7 +158,7 @@ application for the changes to take effect.
 ### JupyterHub
 
 > - Introduced in GitLab 11.0 for project-level clusters.
-> - Introduced in GitLab 12.3 for group-level clusters.
+> - Introduced in GitLab 12.3 for group and instance-level clusters.
 
 [JupyterHub](https://jupyterhub.readthedocs.io/en/stable/) is a
 multi-user service for managing notebooks across a team. [Jupyter
@@ -191,6 +191,7 @@ file.
 #### Jupyter Git Integration
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/28783) in GitLab 12.0 for project-level clusters.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/32512) in GitLab 12.3 for group and instance-level clusters.
 
 When installing JupyterHub onto your Kubernetes cluster, [JupyterLab's Git extension](https://github.com/jupyterlab/jupyterlab-git)
 is automatically provisioned and configured using the authenticated user's:

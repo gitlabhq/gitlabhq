@@ -43,7 +43,8 @@ class PostReceive
     return false unless user
 
     # We only need to expire certain caches once per push
-    expire_caches(post_received)
+    expire_caches(post_received, post_received.project.repository)
+    enqueue_repository_cache_update(post_received)
 
     post_received.enum_for(:changes_refs).with_index do |(oldrev, newrev, ref), index|
       service_klass =
@@ -72,18 +73,14 @@ class PostReceive
     after_project_changes_hooks(post_received, user, refs.to_a, changes)
   end
 
-  # Expire the project, branch, and tag cache once per push. Schedule an
-  # update for the repository size and commit count if necessary.
-  def expire_caches(post_received)
-    project = post_received.project
-
-    project.repository.expire_status_cache if project.empty_repo?
-    project.repository.expire_branches_cache if post_received.includes_branches?
-    project.repository.expire_caches_for_tags if post_received.includes_tags?
-
-    enqueue_repository_cache_update(post_received)
+  # Expire the repository status, branch, and tag cache once per push.
+  def expire_caches(post_received, repository)
+    repository.expire_status_cache if repository.empty?
+    repository.expire_branches_cache if post_received.includes_branches?
+    repository.expire_caches_for_tags if post_received.includes_tags?
   end
 
+  # Schedule an update for the repository size and commit count if necessary.
   def enqueue_repository_cache_update(post_received)
     stats_to_invalidate = [:repository_size]
     stats_to_invalidate << :commit_count if post_received.includes_default_branch?
@@ -109,6 +106,9 @@ class PostReceive
 
     user = identify_user(post_received)
     return false unless user
+
+    # We only need to expire certain caches once per push
+    expire_caches(post_received, post_received.project.wiki.repository)
 
     ::Git::WikiPushService.new(post_received.project, user, changes: post_received.enum_for(:changes_refs)).execute
   end
