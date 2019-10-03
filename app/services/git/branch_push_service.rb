@@ -57,13 +57,6 @@ module Git
       Ci::StopEnvironmentsService.new(project, current_user).execute(branch_name)
     end
 
-    def update_remote_mirrors
-      return unless project.has_remote_mirror?
-
-      project.mark_stuck_remote_mirrors_as_failed!
-      project.update_remote_mirrors
-    end
-
     def execute_related_hooks
       BranchHooksService.new(project, current_user, params).execute
     end

@@ -34,6 +34,9 @@ Omnibus:
    prometheus['listen_address'] = '0.0.0.0:9090'
    prometheus['monitor_kubernetes'] = false
 
+   # Enable Login form
+   grafana['disable_login_form'] = false
+
    # Enable Grafana
    grafana['enable'] = true
    grafana['admin_password'] = 'toomanysecrets'
@@ -63,6 +66,7 @@ Omnibus:
    sidekiq['enable'] = false
    unicorn['enable'] = false
    node_exporter['enable'] = false
+   gitlab_exporter['enable'] = false
    ```
 
 1. Run `sudo gitlab-ctl reconfigure` to compile the configuration.

@@ -14,6 +14,7 @@ module QA
 
         view 'app/assets/javascripts/vue_merge_request_widget/components/mr_widget_pipeline.vue' do
           element :merge_request_pipeline_info_content
+          element :pipeline_link
         end
 
         view 'app/assets/javascripts/vue_merge_request_widget/components/states/ready_to_merge.vue' do
@@ -57,6 +58,18 @@ module QA
 
         view 'app/views/projects/merge_requests/_mr_title.html.haml' do
           element :edit_button
+        end
+
+        def click_discussions_tab
+          click_element :notes_tab
+        end
+
+        def click_diffs_tab
+          click_element :diffs_tab
+        end
+
+        def click_pipeline_link
+          click_element :pipeline_link
         end
 
         def fast_forward_possible?
@@ -154,14 +167,6 @@ module QA
           end
 
           click_element :squash_checkbox
-        end
-
-        def click_discussions_tab
-          click_element :notes_tab
-        end
-
-        def click_diffs_tab
-          click_element :diffs_tab
         end
 
         def add_comment_to_diff(text)

@@ -88,6 +88,10 @@ module QA
         "#{api_get_path}/members"
       end
 
+      def api_runners_path
+        "#{api_get_path}/runners"
+      end
+
       def api_post_path
         '/projects'
       end
@@ -106,6 +110,11 @@ module QA
         end
 
         post_body
+      end
+
+      def runners
+        response = get Runtime::API::Request.new(api_client, api_runners_path).url
+        parse_body(response)
       end
 
       def share_with_group(invitee, access_level = Resource::Members::AccessLevel::DEVELOPER)

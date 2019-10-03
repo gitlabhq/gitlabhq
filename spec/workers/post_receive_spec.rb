@@ -61,6 +61,16 @@ describe PostReceive do
       end
     end
 
+    shared_examples 'not updating remote mirrors' do
+      it 'does not schedule an update' do
+        expect(project).not_to receive(:has_remote_mirror?)
+        expect(project).not_to receive(:mark_stuck_remote_mirrors_as_failed!)
+        expect(project).not_to receive(:update_remote_mirrors)
+
+        perform
+      end
+    end
+
     context 'empty changes' do
       it "does not call any PushService but runs after project hooks" do
         expect(Git::BranchPushService).not_to receive(:new)
@@ -69,6 +79,8 @@ describe PostReceive do
 
         perform(changes: "")
       end
+
+      it_behaves_like 'not updating remote mirrors'
     end
 
     context 'unidentified user' do
@@ -86,6 +98,16 @@ describe PostReceive do
       before do
         allow_any_instance_of(Gitlab::GitPostReceive).to receive(:identify).and_return(project.owner)
         allow(Gitlab::GlRepository).to receive(:parse).and_return([project, Gitlab::GlRepository::PROJECT])
+      end
+
+      shared_examples 'updating remote mirrors' do
+        it 'schedules an update if the project had mirrors' do
+          expect(project).to receive(:has_remote_mirror?).and_return(true)
+          expect(project).to receive(:mark_stuck_remote_mirrors_as_failed!)
+          expect(project).to receive(:update_remote_mirrors)
+
+          perform
+        end
       end
 
       context "branches" do
@@ -125,6 +147,8 @@ describe PostReceive do
 
           perform
         end
+
+        it_behaves_like 'updating remote mirrors'
 
         context 'with a default branch' do
           let(:changes) do
@@ -191,6 +215,8 @@ describe PostReceive do
 
           perform
         end
+
+        it_behaves_like 'updating remote mirrors'
       end
 
       context "merge-requests" do
@@ -202,6 +228,8 @@ describe PostReceive do
 
           perform
         end
+
+        it_behaves_like 'not updating remote mirrors'
       end
 
       context "gitlab-ci.yml" do

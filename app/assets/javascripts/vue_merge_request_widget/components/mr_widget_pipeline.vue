@@ -115,7 +115,10 @@ export default {
               data-qa-selector="merge_request_pipeline_info_content"
             >
               {{ pipeline.details.name }}
-              <gl-link :href="pipeline.path" class="pipeline-id font-weight-normal pipeline-number"
+              <gl-link
+                :href="pipeline.path"
+                class="pipeline-id font-weight-normal pipeline-number"
+                data-qa-selector="pipeline_link"
                 >#{{ pipeline.id }}</gl-link
               >
               {{ pipeline.details.status.label }}

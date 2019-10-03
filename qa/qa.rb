@@ -357,6 +357,7 @@ module QA
     # Classes describing components that are used by several pages.
     #
     module Component
+      autoload :CiBadgeLink, 'qa/page/component/ci_badge_link'
       autoload :ClonePanel, 'qa/page/component/clone_panel'
       autoload :LazyLoader, 'qa/page/component/lazy_loader'
       autoload :LegacyClonePanel, 'qa/page/component/legacy_clone_panel'

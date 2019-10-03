@@ -20,7 +20,8 @@ module Gitlab
 
         project_tree = serialize_project_tree
         fix_project_tree(project_tree)
-        File.write(full_path, project_tree.to_json)
+        project_tree_json = JSON.generate(project_tree)
+        File.write(full_path, project_tree_json)
 
         true
       rescue => e
@@ -30,6 +31,8 @@ module Gitlab
 
       private
 
+      # Aware that the resulting hash needs to be pure-hash and
+      # does not include any AR objects anymore, only objects that run `.to_json`
       def fix_project_tree(project_tree)
         if @params[:description].present?
           project_tree['description'] = @params[:description]

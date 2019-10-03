@@ -70,6 +70,7 @@ class PostReceive
       refs << ref
     end
 
+    update_remote_mirrors(post_received)
     after_project_changes_hooks(post_received, user, refs.to_a, changes)
   end
 
@@ -91,6 +92,16 @@ class PostReceive
       stats_to_invalidate,
       true
     )
+  end
+
+  def update_remote_mirrors(post_received)
+    return unless post_received.includes_branches? || post_received.includes_tags?
+
+    project = post_received.project
+    return unless project.has_remote_mirror?
+
+    project.mark_stuck_remote_mirrors_as_failed!
+    project.update_remote_mirrors
   end
 
   def after_project_changes_hooks(post_received, user, refs, changes)
