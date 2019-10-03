@@ -47,7 +47,7 @@ With **[GitLab Enterprise Edition][ee]**, you can also:
 - Analyze your dependencies for vulnerabilities with [Dependency Scanning](../../application_security/dependency_scanning/index.md) **(ULTIMATE)**
 - Analyze your Docker images for vulnerabilities with [Container Scanning](../../application_security/container_scanning/index.md) **(ULTIMATE)**
 - Determine the performance impact of changes with [Browser Performance Testing](#browser-performance-testing-premium) **(PREMIUM)**
-- Specify merge order dependencies with [Cross-project Merge Request Dependencies](#cross-project-merge-request-dependencies-premium) **(PREMIUM)**
+- Specify merge order dependencies with [Merge Request Dependencies](#merge-request-dependencies-premium) **(PREMIUM)**
 
 ## Use cases
 
@@ -509,7 +509,7 @@ GitLab runs the [Sitespeed.io container][sitespeed-container] and displays the d
 
 [Read more about Browser Performance Testing.](browser_performance_testing.md)
 
-## Cross-project Merge Request Dependencies **(PREMIUM)**
+## Merge Request Dependencies **(PREMIUM)**
 
 > Introduced in [GitLab Premium][products] 12.2.
 
@@ -522,7 +522,7 @@ this relationship in place, the merge request cannot be merged until all of its
 dependencies have also been merged, helping to maintain the consistency of a
 single logical change.
 
-[Read more about cross-project merge request dependencies.](merge_request_dependencies.md)
+[Read more about merge request dependencies.](merge_request_dependencies.md)
 
 ## Security reports **(ULTIMATE)**
 

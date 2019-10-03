@@ -8,7 +8,7 @@ module Gitlab
     def initialize(project, identifier, changes, push_options = {})
       @project = project
       @identifier = identifier
-      @changes = deserialize_changes(changes)
+      @changes = parse_changes(changes)
       @push_options = push_options
     end
 
@@ -16,27 +16,12 @@ module Gitlab
       super(identifier)
     end
 
-    def changes_refs
-      return changes unless block_given?
-
-      changes.each do |change|
-        change.strip!
-        oldrev, newrev, ref = change.split(' ')
-
-        yield oldrev, newrev, ref
-      end
-    end
-
     def includes_branches?
-      enum_for(:changes_refs).any? do |_oldrev, _newrev, ref|
-        Gitlab::Git.branch_ref?(ref)
-      end
+      changes.includes_branches?
     end
 
     def includes_tags?
-      enum_for(:changes_refs).any? do |_oldrev, _newrev, ref|
-        Gitlab::Git.tag_ref?(ref)
-      end
+      changes.includes_tags?
     end
 
     def includes_default_branch?
@@ -44,16 +29,28 @@ module Gitlab
       # first branch pushed will be the default.
       return true unless project.default_branch.present?
 
-      enum_for(:changes_refs).any? do |_oldrev, _newrev, ref|
-        Gitlab::Git.branch_ref?(ref) &&
-          Gitlab::Git.branch_name(ref) == project.default_branch
+      changes.branch_changes.any? do |change|
+        Gitlab::Git.branch_name(change[:ref]) == project.default_branch
       end
     end
 
     private
 
-    def deserialize_changes(changes)
-      utf8_encode_changes(changes).each_line
+    def parse_changes(changes)
+      deserialized_changes = utf8_encode_changes(changes).each_line
+
+      Git::Changes.new.tap do |collection|
+        deserialized_changes.each_with_index do |raw_change, index|
+          oldrev, newrev, ref = raw_change.strip.split(' ')
+          change = { index: index, oldrev: oldrev, newrev: newrev, ref: ref }
+
+          if Git.branch_ref?(ref)
+            collection.add_branch_change(change)
+          elsif Git.tag_ref?(ref)
+            collection.add_tag_change(change)
+          end
+        end
+      end
     end
 
     def utf8_encode_changes(changes)

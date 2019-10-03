@@ -19,7 +19,7 @@ describe Git::BranchPushService, services: true do
 
   describe 'Push branches' do
     subject do
-      execute_service(project, user, oldrev, newrev, ref)
+      execute_service(project, user, oldrev: oldrev, newrev: newrev, ref: ref)
     end
 
     context 'new branch' do
@@ -70,7 +70,7 @@ describe Git::BranchPushService, services: true do
   end
 
   describe "Pipelines" do
-    subject { execute_service(project, user, oldrev, newrev, ref) }
+    subject { execute_service(project, user, oldrev: oldrev, newrev: newrev, ref: ref) }
 
     before do
       stub_ci_pipeline_to_return_yaml_file
@@ -121,7 +121,7 @@ describe Git::BranchPushService, services: true do
         .to receive(:perform_async)
         .with(project.id, user.id, blankrev, 'newrev', ref)
 
-      execute_service(project, user, blankrev, 'newrev', ref )
+      execute_service(project, user, oldrev: blankrev, newrev: 'newrev', ref: ref)
     end
   end
 
@@ -130,13 +130,13 @@ describe Git::BranchPushService, services: true do
       it "calls the copy attributes method for the first push to the default branch" do
         expect(project.repository).to receive(:copy_gitattributes).with('master')
 
-        execute_service(project, user, blankrev, 'newrev', ref)
+        execute_service(project, user, oldrev: blankrev, newrev: 'newrev', ref: ref)
       end
 
       it "calls the copy attributes method for changes to the default branch" do
         expect(project.repository).to receive(:copy_gitattributes).with(ref)
 
-        execute_service(project, user, 'oldrev', 'newrev', ref)
+        execute_service(project, user, oldrev: 'oldrev', newrev: 'newrev', ref: ref)
       end
     end
 
@@ -149,7 +149,7 @@ describe Git::BranchPushService, services: true do
       it "does not call copy attributes method" do
         expect(project.repository).not_to receive(:copy_gitattributes)
 
-        execute_service(project, user, oldrev, newrev, ref)
+        execute_service(project, user, oldrev: oldrev, newrev: newrev, ref: ref)
       end
     end
   end
@@ -163,7 +163,7 @@ describe Git::BranchPushService, services: true do
       it "when pushing a branch for the first time" do
         expect(project).to receive(:execute_hooks)
         expect(project.default_branch).to eq("master")
-        execute_service(project, user, blankrev, 'newrev', ref)
+        execute_service(project, user, oldrev: blankrev, newrev: 'newrev', ref: ref)
         expect(project.protected_branches).not_to be_empty
         expect(project.protected_branches.first.push_access_levels.map(&:access_level)).to eq([Gitlab::Access::MAINTAINER])
         expect(project.protected_branches.first.merge_access_levels.map(&:access_level)).to eq([Gitlab::Access::MAINTAINER])
@@ -174,7 +174,7 @@ describe Git::BranchPushService, services: true do
 
         expect(project).to receive(:execute_hooks)
         expect(project.default_branch).to eq("master")
-        execute_service(project, user, blankrev, 'newrev', ref)
+        execute_service(project, user, oldrev: blankrev, newrev: 'newrev', ref: ref)
         expect(project.protected_branches).to be_empty
       end
 
@@ -184,7 +184,7 @@ describe Git::BranchPushService, services: true do
         expect(project).to receive(:execute_hooks)
         expect(project.default_branch).to eq("master")
 
-        execute_service(project, user, blankrev, 'newrev', ref)
+        execute_service(project, user, oldrev: blankrev, newrev: 'newrev', ref: ref)
 
         expect(project.protected_branches).not_to be_empty
         expect(project.protected_branches.last.push_access_levels.map(&:access_level)).to eq([Gitlab::Access::DEVELOPER])
@@ -199,7 +199,7 @@ describe Git::BranchPushService, services: true do
         expect(project.default_branch).to eq("master")
         expect(ProtectedBranches::CreateService).not_to receive(:new)
 
-        execute_service(project, user, blankrev, 'newrev', ref)
+        execute_service(project, user, oldrev: blankrev, newrev: 'newrev', ref: ref)
 
         expect(project.protected_branches).not_to be_empty
         expect(project.protected_branches.last.push_access_levels.map(&:access_level)).to eq([Gitlab::Access::NO_ACCESS])
@@ -211,7 +211,7 @@ describe Git::BranchPushService, services: true do
 
         expect(project).to receive(:execute_hooks)
         expect(project.default_branch).to eq("master")
-        execute_service(project, user, blankrev, 'newrev', ref)
+        execute_service(project, user, oldrev: blankrev, newrev: 'newrev', ref: ref)
         expect(project.protected_branches).not_to be_empty
         expect(project.protected_branches.first.push_access_levels.map(&:access_level)).to eq([Gitlab::Access::MAINTAINER])
         expect(project.protected_branches.first.merge_access_levels.map(&:access_level)).to eq([Gitlab::Access::DEVELOPER])
@@ -219,7 +219,7 @@ describe Git::BranchPushService, services: true do
 
       it "when pushing new commits to existing branch" do
         expect(project).to receive(:execute_hooks)
-        execute_service(project, user, 'oldrev', 'newrev', ref)
+        execute_service(project, user, oldrev: 'oldrev', newrev: 'newrev', ref: ref)
       end
     end
   end
@@ -249,7 +249,7 @@ describe Git::BranchPushService, services: true do
     it "creates a note if a pushed commit mentions an issue" do
       expect(SystemNoteService).to receive(:cross_reference).with(issue, commit, commit_author)
 
-      execute_service(project, user, oldrev, newrev, ref)
+      execute_service(project, user, oldrev: oldrev, newrev: newrev, ref: ref)
     end
 
     it "only creates a cross-reference note if one doesn't already exist" do
@@ -257,7 +257,7 @@ describe Git::BranchPushService, services: true do
 
       expect(SystemNoteService).not_to receive(:cross_reference).with(issue, commit, commit_author)
 
-      execute_service(project, user, oldrev, newrev, ref)
+      execute_service(project, user, oldrev: oldrev, newrev: newrev, ref: ref)
     end
 
     it "defaults to the pushing user if the commit's author is not known" do
@@ -267,7 +267,7 @@ describe Git::BranchPushService, services: true do
       )
       expect(SystemNoteService).to receive(:cross_reference).with(issue, commit, user)
 
-      execute_service(project, user, oldrev, newrev, ref)
+      execute_service(project, user, oldrev: oldrev, newrev: newrev, ref: ref)
     end
 
     it "finds references in the first push to a non-default branch" do
@@ -276,7 +276,7 @@ describe Git::BranchPushService, services: true do
 
       expect(SystemNoteService).to receive(:cross_reference).with(issue, commit, commit_author)
 
-      execute_service(project, user, blankrev, newrev, 'refs/heads/other')
+      execute_service(project, user, oldrev: blankrev, newrev: newrev, ref: 'refs/heads/other')
     end
   end
 
@@ -306,14 +306,14 @@ describe Git::BranchPushService, services: true do
 
     context "while saving the 'first_mentioned_in_commit_at' metric for an issue" do
       it 'sets the metric for referenced issues' do
-        execute_service(project, user, oldrev, newrev, ref)
+        execute_service(project, user, oldrev: oldrev, newrev: newrev, ref: ref)
 
         expect(issue.reload.metrics.first_mentioned_in_commit_at).to be_like_time(commit_time)
       end
 
       it 'does not set the metric for non-referenced issues' do
         non_referenced_issue = create(:issue, project: project)
-        execute_service(project, user, oldrev, newrev, ref)
+        execute_service(project, user, oldrev: oldrev, newrev: newrev, ref: ref)
 
         expect(non_referenced_issue.reload.metrics.first_mentioned_in_commit_at).to be_nil
       end
@@ -345,18 +345,18 @@ describe Git::BranchPushService, services: true do
 
     context "to default branches" do
       it "closes issues" do
-        execute_service(project, commit_author, oldrev, newrev, ref)
+        execute_service(project, commit_author, oldrev: oldrev, newrev: newrev, ref: ref)
         expect(Issue.find(issue.id)).to be_closed
       end
 
       it "adds a note indicating that the issue is now closed" do
         expect(SystemNoteService).to receive(:change_status).with(issue, project, commit_author, "closed", closing_commit)
-        execute_service(project, commit_author, oldrev, newrev, ref)
+        execute_service(project, commit_author, oldrev: oldrev, newrev: newrev, ref: ref)
       end
 
       it "doesn't create additional cross-reference notes" do
         expect(SystemNoteService).not_to receive(:cross_reference)
-        execute_service(project, commit_author, oldrev, newrev, ref)
+        execute_service(project, commit_author, oldrev: oldrev, newrev: newrev, ref: ref)
       end
     end
 
@@ -368,11 +368,11 @@ describe Git::BranchPushService, services: true do
 
       it "creates cross-reference notes" do
         expect(SystemNoteService).to receive(:cross_reference).with(issue, closing_commit, commit_author)
-        execute_service(project, user, oldrev, newrev, ref)
+        execute_service(project, user, oldrev: oldrev, newrev: newrev, ref: ref)
       end
 
       it "doesn't close issues" do
-        execute_service(project, user, oldrev, newrev, ref)
+        execute_service(project, user, oldrev: oldrev, newrev: newrev, ref: ref)
         expect(Issue.find(issue.id)).to be_opened
       end
     end
@@ -408,7 +408,7 @@ describe Git::BranchPushService, services: true do
         let(:message) { "this is some work.\n\nrelated to JIRA-1" }
 
         it "initiates one api call to jira server to mention the issue" do
-          execute_service(project, user, oldrev, newrev, ref)
+          execute_service(project, user, oldrev: oldrev, newrev: newrev, ref: ref)
 
           expect(WebMock).to have_requested(:post, jira_api_comment_url('JIRA-1')).with(
             body: /mentioned this issue in/
@@ -436,13 +436,13 @@ describe Git::BranchPushService, services: true do
 
         context "using right markdown" do
           it "initiates one api call to jira server to close the issue" do
-            execute_service(project, commit_author, oldrev, newrev, ref)
+            execute_service(project, commit_author, oldrev: oldrev, newrev: newrev, ref: ref)
 
             expect(WebMock).to have_requested(:post, jira_api_transition_url('JIRA-1')).once
           end
 
           it "initiates one api call to jira server to comment on the issue" do
-            execute_service(project, commit_author, oldrev, newrev, ref)
+            execute_service(project, commit_author, oldrev: oldrev, newrev: newrev, ref: ref)
 
             expect(WebMock).to have_requested(:post, jira_api_comment_url('JIRA-1')).with(
               body: comment_body
@@ -459,13 +459,13 @@ describe Git::BranchPushService, services: true do
             let(:message) { "this is some work.\n\ncloses #1" }
 
             it "does not initiates one api call to jira server to close the issue" do
-              execute_service(project, commit_author, oldrev, newrev, ref)
+              execute_service(project, commit_author, oldrev: oldrev, newrev: newrev, ref: ref)
 
               expect(WebMock).not_to have_requested(:post, jira_api_transition_url('JIRA-1'))
             end
 
             it "does not initiates one api call to jira server to comment on the issue" do
-              execute_service(project, commit_author, oldrev, newrev, ref)
+              execute_service(project, commit_author, oldrev: oldrev, newrev: newrev, ref: ref)
 
               expect(WebMock).not_to have_requested(:post, jira_api_comment_url('JIRA-1')).with(
                 body: comment_body
@@ -478,13 +478,13 @@ describe Git::BranchPushService, services: true do
             let(:message) { "this is some work.\n\ncloses JIRA-1 \n\n closes #{issue.to_reference}" }
 
             it "initiates one api call to jira server to close the jira issue" do
-              execute_service(project, commit_author, oldrev, newrev, ref)
+              execute_service(project, commit_author, oldrev: oldrev, newrev: newrev, ref: ref)
 
               expect(WebMock).to have_requested(:post, jira_api_transition_url('JIRA-1')).once
             end
 
             it "initiates one api call to jira server to comment on the jira issue" do
-              execute_service(project, commit_author, oldrev, newrev, ref)
+              execute_service(project, commit_author, oldrev: oldrev, newrev: newrev, ref: ref)
 
               expect(WebMock).to have_requested(:post, jira_api_comment_url('JIRA-1')).with(
                 body: comment_body
@@ -492,14 +492,14 @@ describe Git::BranchPushService, services: true do
             end
 
             it "closes the internal issue" do
-              execute_service(project, commit_author, oldrev, newrev, ref)
+              execute_service(project, commit_author, oldrev: oldrev, newrev: newrev, ref: ref)
               expect(issue.reload).to be_closed
             end
 
             it "adds a note indicating that the issue is now closed" do
               expect(SystemNoteService).to receive(:change_status)
                 .with(issue, project, commit_author, "closed", closing_commit)
-              execute_service(project, commit_author, oldrev, newrev, ref)
+              execute_service(project, commit_author, oldrev: oldrev, newrev: newrev, ref: ref)
             end
           end
         end
@@ -517,7 +517,7 @@ describe Git::BranchPushService, services: true do
     end
 
     it 'push to first branch updates HEAD' do
-      execute_service(project, user, blankrev, newrev, new_ref)
+      execute_service(project, user, oldrev: blankrev, newrev: newrev, ref: new_ref)
     end
   end
 
@@ -542,7 +542,7 @@ describe Git::BranchPushService, services: true do
     it 'does not perform housekeeping when not needed' do
       expect(housekeeping).not_to receive(:execute)
 
-      execute_service(project, user, oldrev, newrev, ref)
+      execute_service(project, user, oldrev: oldrev, newrev: newrev, ref: ref)
     end
 
     context 'when housekeeping is needed' do
@@ -553,20 +553,20 @@ describe Git::BranchPushService, services: true do
       it 'performs housekeeping' do
         expect(housekeeping).to receive(:execute)
 
-        execute_service(project, user, oldrev, newrev, ref)
+        execute_service(project, user, oldrev: oldrev, newrev: newrev, ref: ref)
       end
 
       it 'does not raise an exception' do
         allow(housekeeping).to receive(:try_obtain_lease).and_return(false)
 
-        execute_service(project, user, oldrev, newrev, ref)
+        execute_service(project, user, oldrev: oldrev, newrev: newrev, ref: ref)
       end
     end
 
     it 'increments the push counter' do
       expect(housekeeping).to receive(:increment!)
 
-      execute_service(project, user, oldrev, newrev, ref)
+      execute_service(project, user, oldrev: oldrev, newrev: newrev, ref: ref)
     end
   end
 
@@ -577,7 +577,7 @@ describe Git::BranchPushService, services: true do
       it 'does nothing' do
         expect(::Ci::StopEnvironmentsService).not_to receive(:new)
 
-        execute_service(project, user, oldrev, newrev, ref)
+        execute_service(project, user, oldrev: oldrev, newrev: newrev, ref: ref)
       end
     end
 
@@ -585,7 +585,7 @@ describe Git::BranchPushService, services: true do
       it 'does nothing' do
         expect(::Ci::StopEnvironmentsService).not_to receive(:new)
 
-        execute_service(project, user, oldrev, newrev, ref)
+        execute_service(project, user, oldrev: oldrev, newrev: newrev, ref: ref)
       end
     end
 
@@ -599,7 +599,7 @@ describe Git::BranchPushService, services: true do
           expect(stop_service).to receive(:execute).with(branch)
         end
 
-        execute_service(project, user, oldrev, newrev, ref)
+        execute_service(project, user, oldrev: oldrev, newrev: newrev, ref: ref)
       end
     end
   end
@@ -611,15 +611,17 @@ describe Git::BranchPushService, services: true do
           expect(hooks_service.project).to eq(project)
           expect(hooks_service.current_user).to eq(user)
           expect(hooks_service.params).to include(
-            oldrev: oldrev,
-            newrev: newrev,
-            ref: ref
+            change: {
+              oldrev: oldrev,
+              newrev: newrev,
+              ref: ref
+            }
           )
 
           expect(hooks_service).to receive(:execute)
         end
 
-        execute_service(project, user, oldrev, newrev, ref)
+        execute_service(project, user, oldrev: oldrev, newrev: newrev, ref: ref)
       end
     end
 
@@ -629,13 +631,13 @@ describe Git::BranchPushService, services: true do
       it 'does nothing' do
         expect(::Git::BranchHooksService).not_to receive(:new)
 
-        execute_service(project, user, oldrev, newrev, ref)
+        execute_service(project, user, oldrev: oldrev, newrev: newrev, ref: ref)
       end
     end
   end
 
-  def execute_service(project, user, oldrev, newrev, ref)
-    service = described_class.new(project, user, oldrev: oldrev, newrev: newrev, ref: ref)
+  def execute_service(project, user, change)
+    service = described_class.new(project, user, change: change)
     service.execute
     service
   end

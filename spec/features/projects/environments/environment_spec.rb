@@ -304,9 +304,11 @@ describe 'Environment' do
     #
     def remove_branch_with_hooks(project, user, branch)
       params = {
-        oldrev: project.commit(branch).id,
-        newrev: Gitlab::Git::BLANK_SHA,
-        ref: "refs/heads/#{branch}"
+        change: {
+          oldrev: project.commit(branch).id,
+          newrev: Gitlab::Git::BLANK_SHA,
+          ref: "refs/heads/#{branch}"
+        }
       }
 
       yield

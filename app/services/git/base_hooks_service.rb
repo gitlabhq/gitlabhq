@@ -3,6 +3,7 @@
 module Git
   class BaseHooksService < ::BaseService
     include Gitlab::Utils::StrongMemoize
+    include ChangeParams
 
     # The N most recent commits to process in a single push payload.
     PROCESS_COMMIT_LIMIT = 100
@@ -77,20 +78,20 @@ module Git
 
     def pipeline_params
       {
-        before: params[:oldrev],
-        after: params[:newrev],
-        ref: params[:ref],
+        before: oldrev,
+        after: newrev,
+        ref: ref,
         push_options: params[:push_options] || {},
         checkout_sha: Gitlab::DataBuilder::Push.checkout_sha(
-          project.repository, params[:newrev], params[:ref])
+          project.repository, newrev, ref)
       }
     end
 
     def push_data_params(commits:, with_changed_files: true)
       {
-        oldrev: params[:oldrev],
-        newrev: params[:newrev],
-        ref: params[:ref],
+        oldrev: oldrev,
+        newrev: newrev,
+        ref: ref,
         project: project,
         user: current_user,
         commits: commits,

@@ -2,14 +2,13 @@
 type: reference, concepts
 ---
 
-# Cross-project Merge Request dependencies **(PREMIUM)**
+# Merge Request dependencies **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/9688) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.2.
 
-Cross-project merge request dependencies allows a required order of merging
-between merge requests in different projects to be expressed. If a
-merge request "depends on" another, then it cannot be merged until its
-dependency is itself merged.
+Merge request dependencies allows a required order of merging
+between merge requests to be expressed. If a merge request "depends on" another,
+then it cannot be merged until its dependency is itself merged.
 
 NOTE: **Note:**
 Merge requests dependencies are a **PREMIUM** feature, but this restriction is
@@ -58,20 +57,20 @@ instead.
 To continue the above example, you can configure a dependency when creating the
 new merge request in `awesome-project` (or by editing it, if it already exists).
 The dependency needs to be configured on the **dependent** merge
-request. There is a "Cross-project dependencies" section in the form:
+request. There is a **Merge request dependencies** section in the form:
 
-![Cross-project dependencies form control](img/cross_project_dependencies_edit_v12_2.png)
+![Merge request dependencies form control](img/dependencies_edit_v12_4.png)
 
 Anyone who can edit a merge request can change the list of dependencies.
 
 New dependencies can be added by reference, or by URL. To remove a dependency,
 press the **X** by its reference.
 
-As dependencies are specified across projects, it's possible that someone else
+As dependencies can be specified across projects, it's possible that someone else
 has added a dependency for a merge request in a project you don't have access to.
 These are shown as a simple count:
 
-![Cross-project dependencies form control with inaccessible merge requests](img/cross_project_dependencies_edit_inaccessible_v12_2.png)
+![Merge request dependencies form control with inaccessible merge requests](img/dependencies_edit_inaccessible_v12_4.png)
 
 If necessary, you can remove all the dependencies like this by pressing the
 **X**, just as you would for a single, visible dependency.
@@ -82,7 +81,7 @@ or **Cancel** to return without making any changes.
 The list of configured dependencies, and the status of each one, is shown in the
 merge request widget:
 
-![Cross-project dependencies in merge request widget](img/cross_project_dependencies_view_v12_2.png)
+![Dependencies in merge request widget](img/dependencies_view_v12_2.png)
 
 Until all dependencies have, themselves, been merged, the **Merge**
 button will be disabled for the dependent merge request. In

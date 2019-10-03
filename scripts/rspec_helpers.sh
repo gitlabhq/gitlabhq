@@ -44,7 +44,7 @@ function rspec_simple_job() {
 
   scripts/gitaly-test-spawn
 
-  bin/rspec --color --format documentation --format RspecJunitFormatter --out junit_rspec.xml "${rspec_opts}"
+  bin/rspec --color --format documentation --format RspecJunitFormatter --out junit_rspec.xml ${rspec_opts}
 }
 
 function rspec_paralellized_job() {

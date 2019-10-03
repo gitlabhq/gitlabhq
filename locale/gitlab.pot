@@ -1260,9 +1260,6 @@ msgstr ""
 msgid "All changes are committed"
 msgstr ""
 
-msgid "All cross-project dependencies have merged"
-msgstr ""
-
 msgid "All email addresses will be used to identify your commits."
 msgstr ""
 
@@ -1276,6 +1273,9 @@ msgid "All issues for this milestone are closed. You may close this milestone no
 msgstr ""
 
 msgid "All merge conflicts were resolved. The merge request can now be merged."
+msgstr ""
+
+msgid "All merge request dependencies have been merged"
 msgstr ""
 
 msgid "All paths are relative to the GitLab URL. Do not include %{relative_url_link_start}relative URL%{relative_url_link_end}."
@@ -4604,9 +4604,6 @@ msgid "Cron Timezone"
 msgstr ""
 
 msgid "Cron syntax"
-msgstr ""
-
-msgid "Cross-project dependencies"
 msgstr ""
 
 msgid "Current Branch"
@@ -9837,6 +9834,9 @@ msgid "Merge request approvals"
 msgstr ""
 
 msgid "Merge request approvals allow you to set the number of necessary approvals and predefine a list of approvers that will need to approve every merge request in a project."
+msgstr ""
+
+msgid "Merge request dependencies"
 msgstr ""
 
 msgid "Merge requests"
@@ -18694,9 +18694,6 @@ msgid "cannot be changed if a personal project has container registry tags."
 msgstr ""
 
 msgid "cannot be enabled unless all domains have TLS certificates"
-msgstr ""
-
-msgid "cannot be in the same project"
 msgstr ""
 
 msgid "cannot be modified"

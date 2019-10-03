@@ -29,9 +29,7 @@ module MergeRequests
       closed_issues = merge_request.visible_closing_issues_for(current_user)
 
       closed_issues.each do |issue|
-        if can?(current_user, :update_issue, issue)
-          Issues::CloseService.new(project, current_user, {}).execute(issue, commit: merge_request)
-        end
+        Issues::CloseService.new(project, current_user).execute(issue, commit: merge_request)
       end
     end
 

@@ -8,6 +8,7 @@ describe Issues::CloseService do
   let(:user2) { create(:user, email: "user2@example.com") }
   let(:guest) { create(:user) }
   let(:issue) { create(:issue, title: "My issue", project: project, assignees: [user2], author: create(:user)) }
+  let(:external_issue) { ExternalIssue.new('JIRA-123', project) }
   let(:closing_merge_request) { create(:merge_request, source_project: project) }
   let(:closing_commit) { create(:commit, project: project) }
   let!(:todo) { create(:todo, :assigned, user: user, project: project, target: issue, author: user2) }
@@ -34,6 +35,16 @@ describe Issues::CloseService do
 
       expect(service).not_to receive(:close_issue)
       expect(service.execute(issue)).to eq(issue)
+    end
+
+    it 'closes the external issue even when the user is not authorized to do so' do
+      allow(service).to receive(:can?).with(user, :update_issue, external_issue)
+        .and_return(false)
+
+      expect(service).to receive(:close_issue)
+        .with(external_issue, closed_via: nil, notifications: true, system_note: true)
+
+      service.execute(external_issue)
     end
 
     it 'closes the issue when the user is authorized to do so' do

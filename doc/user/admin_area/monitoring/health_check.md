@@ -102,6 +102,9 @@ Example response:
 
 ## Liveness
 
+DANGER: **Warning:**
+In Gitlab [12.4](https://about.gitlab.com/upcoming-releases/) the response body of the Liveness check will change to match the example below.
+
 The liveness probe checks whether the application server is alive. Unlike the [`health`](#health) check, this check hits the database.
 
 ```text

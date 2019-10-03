@@ -15,7 +15,7 @@ describe Git::TagHooksService, :service do
   let(:commit) { tag.dereferenced_target }
 
   let(:service) do
-    described_class.new(project, user, oldrev: oldrev, newrev: newrev, ref: ref)
+    described_class.new(project, user, change: { oldrev: oldrev, newrev: newrev, ref: ref })
   end
 
   describe 'System hooks' do
