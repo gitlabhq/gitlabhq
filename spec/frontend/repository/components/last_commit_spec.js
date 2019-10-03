@@ -107,4 +107,10 @@ describe('Repository last commit component', () => {
     expect(vm.find('.commit-row-description').isVisible()).toBe(true);
     expect(vm.find('.text-expander').classes('open')).toBe(true);
   });
+
+  it('renders the signature HTML as returned by the backend', () => {
+    factory(createCommitData({ signatureHtml: '<button>Verified</button>' }));
+
+    expect(vm.element).toMatchSnapshot();
+  });
 });

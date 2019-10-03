@@ -20,4 +20,15 @@ class CommitPresenter < Gitlab::View::Presenter::Delegated
   def web_url
     Gitlab::UrlBuilder.new(commit).url
   end
+
+  def signature_html
+    return unless commit.has_signature?
+
+    ApplicationController.renderer.render(
+      'projects/commit/_signature',
+      locals: { signature: commit.signature },
+      layout: false,
+      formats: [:html]
+    )
+  end
 end

@@ -246,7 +246,6 @@ describe 'Branches' do
         end
 
         expect(page).to have_content 'Commits'
-        expect(page).to have_link 'Create merge request'
       end
     end
 

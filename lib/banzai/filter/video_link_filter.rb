@@ -8,8 +8,8 @@ module Banzai
     # a "Download" link in the case the video cannot be played.
     class VideoLinkFilter < HTML::Pipeline::Filter
       def call
-        doc.xpath(query).each do |el|
-          el.replace(video_node(doc, el))
+        doc.xpath('descendant-or-self::img[not(ancestor::a)]').each do |el|
+          el.replace(video_node(doc, el)) if has_video_extension?(el)
         end
 
         doc
@@ -17,22 +17,13 @@ module Banzai
 
       private
 
-      def query
-        @query ||= begin
-          src_query = UploaderHelper::SAFE_VIDEO_EXT.map do |ext|
-            "'.#{ext}' = substring(@src, string-length(@src) - #{ext.size})"
-          end
+      def has_video_extension?(element)
+        src = element.attr('data-canonical-src').presence || element.attr('src')
 
-          if context[:asset_proxy_enabled].present?
-            src_query.concat(
-              UploaderHelper::SAFE_VIDEO_EXT.map do |ext|
-                "'.#{ext}' = substring(@data-canonical-src, string-length(@data-canonical-src) - #{ext.size})"
-              end
-            )
-          end
+        return unless src.present?
 
-          "descendant-or-self::img[not(ancestor::a) and (#{src_query.join(' or ')})]"
-        end
+        src_ext = File.extname(src).sub('.', '').downcase
+        Gitlab::FileTypeDetection::SAFE_VIDEO_EXT.include?(src_ext)
       end
 
       def video_node(doc, element)

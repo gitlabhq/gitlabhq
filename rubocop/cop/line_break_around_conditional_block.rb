@@ -117,7 +117,7 @@ module RuboCop
       end
 
       def block_start?(line)
-        line.match(/ (do|{)( \|.*?\|)?\s?$/)
+        line.match(/ (do|{)( \|.*?\|)?\s?(#.+)?\z/)
       end
 
       def end_line?(line)

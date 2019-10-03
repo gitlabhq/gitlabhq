@@ -55,4 +55,17 @@ describe CommitPresenter do
       end
     end
   end
+
+  describe '#signature_html' do
+    let(:signature) { 'signature' }
+
+    before do
+      expect(commit).to receive(:has_signature?).and_return(true)
+      allow(ApplicationController.renderer).to receive(:render).and_return(signature)
+    end
+
+    it 'renders html for displaying signature' do
+      expect(presenter.signature_html).to eq(signature)
+    end
+  end
 end

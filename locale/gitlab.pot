@@ -9224,6 +9224,9 @@ msgstr ""
 msgid "Last used on:"
 msgstr ""
 
+msgid "LastCommit|authored"
+msgstr ""
+
 msgid "LastPushEvent|You pushed to"
 msgstr ""
 
