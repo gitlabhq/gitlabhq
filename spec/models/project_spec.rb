@@ -2387,29 +2387,6 @@ describe Project do
         expect(project.emails_disabled?).to be_truthy
       end
     end
-
-    context 'when :emails_disabled feature flag is off' do
-      before do
-        stub_feature_flags(emails_disabled: false)
-      end
-
-      context 'emails disabled in group' do
-        it 'returns false' do
-          allow(project.namespace).to receive(:emails_disabled?) { true }
-
-          expect(project.emails_disabled?).to be_falsey
-        end
-      end
-
-      context 'emails enabled in group' do
-        it 'returns false' do
-          allow(project.namespace).to receive(:emails_disabled?) { false }
-          project.update_attribute(:emails_disabled, true)
-
-          expect(project.emails_disabled?).to be_falsey
-        end
-      end
-    end
   end
 
   describe '#lfs_enabled?' do
@@ -3671,14 +3648,6 @@ describe Project do
       end
     end
 
-    describe '#ensure_storage_path_exists' do
-      it 'delegates to gitlab_shell to ensure namespace is created' do
-        expect(gitlab_shell).to receive(:add_namespace).with(project.repository_storage, project.base_dir)
-
-        project.ensure_storage_path_exists
-      end
-    end
-
     describe '#legacy_storage?' do
       it 'returns true when storage_version is nil' do
         project = build(:project, storage_version: nil)
@@ -3790,16 +3759,6 @@ describe Project do
     describe '#disk_path' do
       it 'returns disk_path based on hash of project id' do
         expect(project.disk_path).to eq(hashed_path)
-      end
-    end
-
-    describe '#ensure_storage_path_exists' do
-      it 'delegates to gitlab_shell to ensure namespace is created' do
-        allow(project).to receive(:gitlab_shell).and_return(gitlab_shell)
-
-        expect(gitlab_shell).to receive(:add_namespace).with(project.repository_storage, hashed_prefix)
-
-        project.ensure_storage_path_exists
       end
     end
 

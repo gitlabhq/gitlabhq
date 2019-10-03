@@ -1704,6 +1704,16 @@ ActiveRecord::Schema.define(version: 2019_09_27_074328) do
     t.index ["project_id"], name: "index_gpg_signatures_on_project_id"
   end
 
+  create_table "grafana_integrations", force: :cascade do |t|
+    t.bigint "project_id", null: false
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+    t.string "encrypted_token", limit: 255, null: false
+    t.string "encrypted_token_iv", limit: 255, null: false
+    t.string "grafana_url", limit: 1024, null: false
+    t.index ["project_id"], name: "index_grafana_integrations_on_project_id"
+  end
+
   create_table "group_custom_attributes", id: :serial, force: :cascade do |t|
     t.datetime_with_timezone "created_at", null: false
     t.datetime_with_timezone "updated_at", null: false
@@ -3997,6 +4007,7 @@ ActiveRecord::Schema.define(version: 2019_09_27_074328) do
   add_foreign_key "gpg_signatures", "gpg_key_subkeys", on_delete: :nullify
   add_foreign_key "gpg_signatures", "gpg_keys", on_delete: :nullify
   add_foreign_key "gpg_signatures", "projects", on_delete: :cascade
+  add_foreign_key "grafana_integrations", "projects", on_delete: :cascade
   add_foreign_key "group_custom_attributes", "namespaces", column: "group_id", on_delete: :cascade
   add_foreign_key "identities", "saml_providers", name: "fk_aade90f0fc", on_delete: :cascade
   add_foreign_key "import_export_uploads", "projects", on_delete: :cascade

@@ -62,6 +62,14 @@ describe Gitlab::UrlBlocker do
           expect { subject }.to raise_error(described_class::BlockedUrlError)
         end
       end
+
+      context 'when domain is too long' do
+        let(:import_url) { 'https://example' + 'a' * 1024 + '.com' }
+
+        it 'raises an error' do
+          expect { subject }.to raise_error(described_class::BlockedUrlError)
+        end
+      end
     end
 
     context 'when the URL hostname is an IP address' do

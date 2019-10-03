@@ -30,7 +30,9 @@ describe('Reports store utils', () => {
       const data = { failed: 3, total: 10 };
       const result = utils.summaryTextBuilder(name, data);
 
-      expect(result).toBe('Test summary contained 3 failed test results out of 10 total tests');
+      expect(result).toBe(
+        'Test summary contained 3 failed/error test results out of 10 total tests',
+      );
     });
 
     it('should render text for multiple fixed results', () => {
@@ -47,7 +49,7 @@ describe('Reports store utils', () => {
       const result = utils.summaryTextBuilder(name, data);
 
       expect(result).toBe(
-        'Test summary contained 3 failed test results and 4 fixed test results out of 10 total tests',
+        'Test summary contained 3 failed/error test results and 4 fixed test results out of 10 total tests',
       );
     });
 
@@ -57,7 +59,7 @@ describe('Reports store utils', () => {
       const result = utils.summaryTextBuilder(name, data);
 
       expect(result).toBe(
-        'Test summary contained 1 failed test result and 1 fixed test result out of 10 total tests',
+        'Test summary contained 1 failed/error test result and 1 fixed test result out of 10 total tests',
       );
     });
   });
@@ -84,7 +86,7 @@ describe('Reports store utils', () => {
       const data = { failed: 3, total: 10 };
       const result = utils.reportTextBuilder(name, data);
 
-      expect(result).toBe('Rspec found 3 failed test results out of 10 total tests');
+      expect(result).toBe('Rspec found 3 failed/error test results out of 10 total tests');
     });
 
     it('should render text for multiple fixed results', () => {
@@ -101,7 +103,7 @@ describe('Reports store utils', () => {
       const result = utils.reportTextBuilder(name, data);
 
       expect(result).toBe(
-        'Rspec found 3 failed test results and 4 fixed test results out of 10 total tests',
+        'Rspec found 3 failed/error test results and 4 fixed test results out of 10 total tests',
       );
     });
 
@@ -111,7 +113,7 @@ describe('Reports store utils', () => {
       const result = utils.reportTextBuilder(name, data);
 
       expect(result).toBe(
-        'Rspec found 1 failed test result and 1 fixed test result out of 10 total tests',
+        'Rspec found 1 failed/error test result and 1 fixed test result out of 10 total tests',
       );
     });
   });

@@ -49,6 +49,12 @@ module Gitlab
             if data['failure']
               status = ::Gitlab::Ci::Reports::TestCase::STATUS_FAILED
               system_output = data['failure']
+            elsif data['error']
+              # For now, as an MVC, we are grouping error test cases together
+              # with failed ones. But we will improve this further on
+              # https://gitlab.com/gitlab-org/gitlab/issues/32046.
+              status = ::Gitlab::Ci::Reports::TestCase::STATUS_FAILED
+              system_output = data['error']
             else
               status = ::Gitlab::Ci::Reports::TestCase::STATUS_SUCCESS
               system_output = nil

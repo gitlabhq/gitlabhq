@@ -1,5 +1,5 @@
-import { getTimeDiff, graphDataValidatorForValues } from '~/monitoring/utils';
-import { timeWindows } from '~/monitoring/constants';
+import { getTimeDiff, getTimeWindow, graphDataValidatorForValues } from '~/monitoring/utils';
+import { timeWindows, timeWindowsKeyNames } from '~/monitoring/constants';
 import { graphDataPrometheusQuery, graphDataPrometheusQueryRange } from './mock_data';
 
 describe('getTimeDiff', () => {
@@ -35,6 +35,55 @@ describe('getTimeDiff', () => {
 
       // Ensure we're not returning the default
       expect(hoursBetween(params)).not.toEqual(8);
+    });
+  });
+});
+
+describe('getTimeWindow', () => {
+  [
+    {
+      args: [
+        {
+          start: '2019-10-01T18:27:47.000Z',
+          end: '2019-10-01T21:27:47.000Z',
+        },
+      ],
+      expected: timeWindowsKeyNames.threeHours,
+    },
+    {
+      args: [
+        {
+          start: '2019-10-01T28:27:47.000Z',
+          end: '2019-10-01T21:27:47.000Z',
+        },
+      ],
+      expected: timeWindowsKeyNames.eightHours,
+    },
+    {
+      args: [
+        {
+          start: '',
+          end: '',
+        },
+      ],
+      expected: timeWindowsKeyNames.eightHours,
+    },
+    {
+      args: [
+        {
+          start: null,
+          end: null,
+        },
+      ],
+      expected: timeWindowsKeyNames.eightHours,
+    },
+    {
+      args: [{}],
+      expected: timeWindowsKeyNames.eightHours,
+    },
+  ].forEach(({ args, expected }) => {
+    it(`returns "${expected}" with args=${JSON.stringify(args)}`, () => {
+      expect(getTimeWindow(...args)).toEqual(expected);
     });
   });
 });

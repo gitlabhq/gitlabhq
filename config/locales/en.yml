@@ -16,6 +16,9 @@ en:
         api_url: "Sentry API URL"
       project/metrics_setting:
         external_dashboard_url: "External dashboard URL"
+      project/grafana_integration:
+        token: "Grafana HTTP API Token"
+        grafana_url: "Grafana API URL"
   views:
     pagination:
       previous: "Prev"

@@ -113,10 +113,6 @@ module Gitlab
       success
     end
 
-    # Move repository reroutes to mv_directory which is an alias for
-    # mv_namespace. Given the underlying implementation is a move action,
-    # indescriminate of what the folders might be.
-    #
     # storage - project's storage path
     # path - project disk path
     # new_path - new project disk path
@@ -275,7 +271,6 @@ module Gitlab
 
       false
     end
-    alias_method :mv_directory, :mv_namespace # Note: ShellWorker uses this alias
 
     def url_to_repo(path)
       Gitlab.config.gitlab_shell.ssh_path_prefix + "#{path}.git"

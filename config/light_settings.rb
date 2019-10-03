@@ -22,7 +22,7 @@ class LightSettings
     end
 
     def host
-      config['gitlab']['host']
+      config.dig('gitlab', 'host') || ENV['GITLAB_HOST'] || 'localhost'
     end
 
     def gl_subdomain?

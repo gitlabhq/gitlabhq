@@ -896,32 +896,6 @@ describe Namespace do
         end
       end
     end
-
-    context 'when :emails_disabled feature flag is off' do
-      before do
-        stub_feature_flags(emails_disabled: false)
-      end
-
-      context 'when not a subgroup' do
-        it 'returns false' do
-          group = create(:group, emails_disabled: true)
-
-          expect(group.emails_disabled?).to be_falsey
-        end
-      end
-
-      context 'when a subgroup and ancestor emails are disabled' do
-        let(:grandparent) { create(:group) }
-        let(:parent)      { create(:group, parent: grandparent) }
-        let(:group)       { create(:group, parent: parent) }
-
-        it 'returns false' do
-          grandparent.update_attribute(:emails_disabled, true)
-
-          expect(group.emails_disabled?).to be_falsey
-        end
-      end
-    end
   end
 
   describe '#pages_virtual_domain' do

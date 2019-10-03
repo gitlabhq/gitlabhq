@@ -63,7 +63,9 @@ module Projects
             :api_host,
             :token,
             project: [:slug, :name, :organization_slug, :organization_name]
-          ]
+          ],
+
+          grafana_integration_attributes: [:token, :grafana_url]
         }
       end
     end

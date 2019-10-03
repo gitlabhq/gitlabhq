@@ -1,0 +1,5 @@
+---
+title: MR Test Summary now shows errors as failures.
+merge_request: 17039
+author:
+type: changed

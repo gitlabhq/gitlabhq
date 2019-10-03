@@ -95,8 +95,8 @@ msgid_plural "%d exporters"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "%d failed test result"
-msgid_plural "%d failed test results"
+msgid "%d failed/error test result"
+msgid_plural "%d failed/error test results"
 msgstr[0] ""
 msgstr[1] ""
 

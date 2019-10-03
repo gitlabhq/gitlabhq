@@ -32,8 +32,7 @@ module GroupsHelper
   end
 
   def can_disable_group_emails?(group)
-    Feature.enabled?(:emails_disabled, group, default_enabled: true) &&
-      can?(current_user, :set_emails_disabled, group) && !group.parent&.emails_disabled?
+    can?(current_user, :set_emails_disabled, group) && !group.parent&.emails_disabled?
   end
 
   def group_issues_count(state:)

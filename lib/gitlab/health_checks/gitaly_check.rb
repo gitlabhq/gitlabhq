@@ -29,7 +29,13 @@ module Gitlab
         def check(storage_name)
           serv = Gitlab::GitalyClient::HealthCheckService.new(storage_name)
           result = serv.check
-          HealthChecks::Result.new(result[:success], result[:message], shard: storage_name)
+
+          HealthChecks::Result.new(
+            name,
+            result[:success],
+            result[:message],
+            shard: storage_name
+          )
         end
 
         private

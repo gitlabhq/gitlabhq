@@ -902,4 +902,40 @@ describe ProjectsHelper do
       end
     end
   end
+
+  describe '#grafana_integration_url' do
+    let(:project) { create(:project) }
+
+    before do
+      helper.instance_variable_set(:@project, project)
+    end
+
+    subject { helper.grafana_integration_url }
+
+    it { is_expected.to eq(nil) }
+
+    context 'grafana integration exists' do
+      let!(:grafana_integration) { create(:grafana_integration, project: project) }
+
+      it { is_expected.to eq(grafana_integration.grafana_url) }
+    end
+  end
+
+  describe '#grafana_integration_token' do
+    let(:project) { create(:project) }
+
+    before do
+      helper.instance_variable_set(:@project, project)
+    end
+
+    subject { helper.grafana_integration_token }
+
+    it { is_expected.to eq(nil) }
+
+    context 'grafana integration exists' do
+      let!(:grafana_integration) { create(:grafana_integration, project: project) }
+
+      it { is_expected.to eq(grafana_integration.token) }
+    end
+  end
 end

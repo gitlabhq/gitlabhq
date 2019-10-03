@@ -160,7 +160,7 @@ module ProjectsHelper
   def can_disable_emails?(project, current_user)
     return false if project.group&.emails_disabled?
 
-    can?(current_user, :set_emails_disabled, project) && Feature.enabled?(:emails_disabled, project, default_enabled: true)
+    can?(current_user, :set_emails_disabled, project)
   end
 
   def last_push_event
@@ -352,6 +352,14 @@ module ProjectsHelper
 
   def metrics_external_dashboard_url
     @project.metrics_setting_external_dashboard_url
+  end
+
+  def grafana_integration_url
+    @project.grafana_integration&.grafana_url
+  end
+
+  def grafana_integration_token
+    @project.grafana_integration&.token
   end
 
   private

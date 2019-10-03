@@ -333,8 +333,8 @@ describe('Dashboard', () => {
     });
 
     it('shows a specific time window selected from the url params', done => {
-      const start = 1564439536;
-      const end = 1564441336;
+      const start = '2019-10-01T18:27:47.000Z';
+      const end = '2019-10-01T18:57:47.000Z';
       spyOnDependency(Dashboard, 'getTimeDiff').and.returnValue({
         start,
         end,

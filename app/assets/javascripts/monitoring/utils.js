@@ -1,19 +1,21 @@
 import { secondsIn, timeWindowsKeyNames } from './constants';
 
+const secondsToMilliseconds = seconds => seconds * 1000;
+
 export const getTimeDiff = timeWindow => {
   const end = Math.floor(Date.now() / 1000); // convert milliseconds to seconds
   const difference = secondsIn[timeWindow] || secondsIn.eightHours;
   const start = end - difference;
 
   return {
-    start: new Date(start * 1000).toISOString(),
-    end: new Date(end * 1000).toISOString(),
+    start: new Date(secondsToMilliseconds(start)).toISOString(),
+    end: new Date(secondsToMilliseconds(end)).toISOString(),
   };
 };
 
 export const getTimeWindow = ({ start, end }) =>
   Object.entries(secondsIn).reduce((acc, [timeRange, value]) => {
-    if (end - start === value) {
+    if (new Date(end) - new Date(start) === secondsToMilliseconds(value)) {
       return timeRange;
     }
     return acc;

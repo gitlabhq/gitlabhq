@@ -10,7 +10,6 @@ describe Backup::Repository do
   before do
     allow(progress).to receive(:puts)
     allow(progress).to receive(:print)
-    allow(FileUtils).to receive(:mkdir_p).and_return(true)
     allow(FileUtils).to receive(:mv).and_return(true)
 
     allow_any_instance_of(described_class).to receive(:progress).and_return(progress)

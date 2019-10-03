@@ -411,6 +411,7 @@ project:
 - external_pull_requests
 - pages_metadatum
 - alerts_service
+- grafana_integration
 award_emoji:
 - awardable
 - user

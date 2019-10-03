@@ -180,6 +180,21 @@ describe Projects::Settings::OperationsController do
     end
   end
 
+  context 'grafana integration' do
+    describe 'PATCH #update' do
+      let(:params) do
+        {
+          grafana_integration_attributes: {
+            grafana_url: 'https://grafana.gitlab.com',
+            token: 'eyJrIjoicDRlRTREdjhhOEZ5WjZPWXUzazJOSW0zZHJUejVOd3IiLCJuIjoiVGVzdCBLZXkiLCJpZCI6MX0='
+          }
+        }
+      end
+
+      it_behaves_like 'PATCHable'
+    end
+  end
+
   private
 
   def project_params(project, params = {})
