@@ -22,7 +22,7 @@ module ObjectStorage
 
     def build_uploader(subject, mount_point)
       case subject
-      when Upload then subject.build_uploader(mount_point)
+      when Upload then subject.retrieve_uploader(mount_point)
       else
         subject.send(mount_point) # rubocop:disable GitlabSecurity/PublicSend
       end

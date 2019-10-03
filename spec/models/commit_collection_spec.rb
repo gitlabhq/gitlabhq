@@ -149,6 +149,17 @@ describe CommitCollection do
 
         collection.enrich!
       end
+
+      it 'returns the original commit if the commit could not be lazy loaded' do
+        collection = described_class.new(project, [hash_commit])
+        unexisting_lazy_commit = Commit.lazy(project, Gitlab::Git::BLANK_SHA)
+
+        expect(Commit).to receive(:lazy).with(project, hash_commit.id).and_return(unexisting_lazy_commit)
+
+        collection.enrich!
+
+        expect(collection.commits).to contain_exactly(hash_commit)
+      end
     end
   end
 

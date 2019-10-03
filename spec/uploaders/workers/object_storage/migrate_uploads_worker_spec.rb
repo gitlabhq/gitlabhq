@@ -42,33 +42,23 @@ describe ObjectStorage::MigrateUploadsWorker, :sidekiq do
     end
 
     describe '.sanity_check!' do
-      shared_examples 'raises a SanityCheckError' do
+      shared_examples 'raises a SanityCheckError' do |expected_message|
         let(:mount_point) { nil }
 
         it do
           expect { described_class.sanity_check!(uploads, model_class, mount_point) }
-            .to raise_error(described_class::SanityCheckError)
+            .to raise_error(described_class::SanityCheckError).with_message(expected_message)
         end
-      end
-
-      before do
-        stub_const("WrongModel", Class.new)
       end
 
       context 'uploader types mismatch' do
         let!(:outlier) { create(:upload, uploader: 'GitlabUploader') }
 
-        include_examples 'raises a SanityCheckError'
-      end
-
-      context 'model types mismatch' do
-        let!(:outlier) { create(:upload, model_type: 'WrongModel') }
-
-        include_examples 'raises a SanityCheckError'
+        include_examples 'raises a SanityCheckError', /Multiple uploaders found/
       end
 
       context 'mount point not found' do
-        include_examples 'raises a SanityCheckError' do
+        include_examples 'raises a SanityCheckError', /Mount point [a-z:]+ not found in/ do
           let(:mount_point) { :potato }
         end
       end

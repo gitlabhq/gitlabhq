@@ -69,6 +69,16 @@ describe GitlabUploader do
     end
   end
 
+  describe '#replace_file_without_saving!' do
+    it 'allows file to be replaced without triggering any callbacks' do
+      new_file = CarrierWave::SanitizedFile.new(Tempfile.new)
+
+      expect(subject).not_to receive(:with_callbacks)
+
+      subject.replace_file_without_saving!(new_file)
+    end
+  end
+
   describe '#open' do
     context 'when trace is stored in File storage' do
       context 'when file exists' do

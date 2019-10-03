@@ -86,3 +86,5 @@ module Ci
     end
   end
 end
+
+Ci::PipelineSchedule.prepend_if_ee('EE::Ci::PipelineSchedule')

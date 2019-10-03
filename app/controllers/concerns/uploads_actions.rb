@@ -91,7 +91,7 @@ module UploadsActions
 
     upload_paths = uploader.upload_paths(params[:filename])
     upload = Upload.find_by(model: model, uploader: uploader_class.to_s, path: upload_paths)
-    upload&.build_uploader
+    upload&.retrieve_uploader
   end
   # rubocop: enable CodeReuse/ActiveRecord
 

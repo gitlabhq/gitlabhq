@@ -41,7 +41,8 @@ shared_examples_for 'model with uploads' do |supports_fileuploads|
         end
 
         it 'deletes remote files' do
-          expect_any_instance_of(Uploads::Fog).to receive(:delete_keys).with(uploads.map(&:path))
+          expected_array = array_including(*uploads.map(&:path))
+          expect_any_instance_of(Uploads::Fog).to receive(:delete_keys).with(expected_array)
 
           model_object.destroy
         end

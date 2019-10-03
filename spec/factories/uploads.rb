@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :upload do
-    model { build(:project) }
+    model { create(:project) }
     size { 100.kilobytes }
     uploader { "AvatarUploader" }
     mount_point { :avatar }
@@ -11,23 +11,27 @@ FactoryBot.define do
 
     # we should build a mount agnostic upload by default
     transient do
-      filename { 'myfile.jpg' }
+      filename { 'avatar.jpg' }
     end
 
-    # this needs to comply with RecordsUpload::Concern#upload_path
-    path { File.join("uploads/-/system", model.class.underscore, mount_point.to_s, 'avatar.jpg') }
+    path do
+      uploader_instance = Object.const_get(uploader.to_s).new(model, mount_point)
+      File.join(uploader_instance.store_dir, filename)
+    end
 
     trait :personal_snippet_upload do
-      uploader { "PersonalFileUploader" }
+      model { create(:personal_snippet) }
       path { File.join(secret, filename) }
-      model { build(:personal_snippet) }
+      uploader { "PersonalFileUploader" }
       secret { SecureRandom.hex }
+      mount_point { nil }
     end
 
     trait :issuable_upload do
       uploader { "FileUploader" }
       path { File.join(secret, filename) }
       secret { SecureRandom.hex }
+      mount_point { nil }
     end
 
     trait :with_file do
@@ -42,22 +46,23 @@ FactoryBot.define do
     end
 
     trait :namespace_upload do
-      model { build(:group) }
+      model { create(:group) }
       path { File.join(secret, filename) }
       uploader { "NamespaceFileUploader" }
       secret { SecureRandom.hex }
+      mount_point { nil }
     end
 
     trait :favicon_upload do
-      model { build(:appearance) }
-      path { File.join(secret, filename) }
+      model { create(:appearance) }
       uploader { "FaviconUploader" }
       secret { SecureRandom.hex }
+      mount_point { :favicon }
     end
 
     trait :attachment_upload do
       mount_point { :attachment }
-      model { build(:note) }
+      model { create(:note) }
       uploader { "AttachmentUploader" }
     end
   end

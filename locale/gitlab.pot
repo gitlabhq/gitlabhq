@@ -2421,6 +2421,9 @@ msgstr ""
 msgid "Branch not loaded - %{branchId}"
 msgstr ""
 
+msgid "Branch prefix"
+msgstr ""
+
 msgid "BranchSwitcherPlaceholder|Search branches"
 msgstr ""
 
@@ -3351,6 +3354,9 @@ msgstr ""
 msgid "ClusterIntegration|Choose a prefix to be used for your namespaces. Defaults to your project path."
 msgstr ""
 
+msgid "ClusterIntegration|Choose the %{startLink}subnets%{endLink} in your VPC where your worker nodes will run."
+msgstr ""
+
 msgid "ClusterIntegration|Choose which applications to install on your Kubernetes cluster. Helm Tiller is required to install any of the following applications."
 msgstr ""
 
@@ -3390,7 +3396,13 @@ msgstr ""
 msgid "ClusterIntegration|Copy Service Token"
 msgstr ""
 
+msgid "ClusterIntegration|Could not load VPCs for the selected region"
+msgstr ""
+
 msgid "ClusterIntegration|Could not load regions from your AWS account"
+msgstr ""
+
+msgid "ClusterIntegration|Could not load subnets for the selected VPC"
 msgstr ""
 
 msgid "ClusterIntegration|Create Kubernetes cluster"
@@ -3579,6 +3591,12 @@ msgstr ""
 msgid "ClusterIntegration|Loading Regions"
 msgstr ""
 
+msgid "ClusterIntegration|Loading VPCs"
+msgstr ""
+
+msgid "ClusterIntegration|Loading subnets"
+msgstr ""
+
 msgid "ClusterIntegration|Machine type"
 msgstr ""
 
@@ -3591,6 +3609,9 @@ msgstr ""
 msgid "ClusterIntegration|No IAM Roles found"
 msgstr ""
 
+msgid "ClusterIntegration|No VPCs found"
+msgstr ""
+
 msgid "ClusterIntegration|No machine types matched your search"
 msgstr ""
 
@@ -3601,6 +3622,9 @@ msgid "ClusterIntegration|No projects matched your search"
 msgstr ""
 
 msgid "ClusterIntegration|No region found"
+msgstr ""
+
+msgid "ClusterIntegration|No subnet found"
 msgstr ""
 
 msgid "ClusterIntegration|No zones matched your search"
@@ -3672,6 +3696,9 @@ msgstr ""
 msgid "ClusterIntegration|Search IAM Roles"
 msgstr ""
 
+msgid "ClusterIntegration|Search VPCs"
+msgstr ""
+
 msgid "ClusterIntegration|Search machine types"
 msgstr ""
 
@@ -3681,10 +3708,22 @@ msgstr ""
 msgid "ClusterIntegration|Search regions"
 msgstr ""
 
+msgid "ClusterIntegration|Search subnets"
+msgstr ""
+
 msgid "ClusterIntegration|Search zones"
 msgstr ""
 
 msgid "ClusterIntegration|See and edit the details for your Kubernetes cluster"
+msgstr ""
+
+msgid "ClusterIntegration|Select a VPC to choose a subnet"
+msgstr ""
+
+msgid "ClusterIntegration|Select a VPC to use for your EKS Cluster resources. To use a new VPC, first create one on %{startLink}Amazon Web Services%{endLink}."
+msgstr ""
+
+msgid "ClusterIntegration|Select a region to choose a VPC"
 msgstr ""
 
 msgid "ClusterIntegration|Select machine type"
@@ -3735,6 +3774,9 @@ msgstr ""
 msgid "ClusterIntegration|Specifying a domain will allow you to use Auto Review Apps and Auto Deploy stages for %{auto_devops_start}Auto DevOps%{auto_devops_end}. The domain should have a wildcard DNS configured matching the domain."
 msgstr ""
 
+msgid "ClusterIntegration|Subnet"
+msgstr ""
+
 msgid "ClusterIntegration|The Kubernetes certificate used to authenticate to the cluster."
 msgstr ""
 
@@ -3781,6 +3823,9 @@ msgid "ClusterIntegration|Update failed. Please check the logs and try again."
 msgstr ""
 
 msgid "ClusterIntegration|Uses the Cloud Run, Istio, and HTTP Load Balancing addons for this cluster."
+msgstr ""
+
+msgid "ClusterIntegration|VPC"
 msgstr ""
 
 msgid "ClusterIntegration|Validating project billing status"
@@ -3831,7 +3876,13 @@ msgstr ""
 msgid "ClusterIntegration|sign up"
 msgstr ""
 
+msgid "ClusterIntergation|Select a VPC"
+msgstr ""
+
 msgid "ClusterIntergation|Select a region"
+msgstr ""
+
+msgid "ClusterIntergation|Select a subnet"
 msgstr ""
 
 msgid "ClusterIntergation|Select role name"
@@ -8640,6 +8691,9 @@ msgstr ""
 msgid "Introducing Your Conversational Development Index"
 msgstr ""
 
+msgid "Invalid Git ref"
+msgstr ""
+
 msgid "Invalid Insights config file detected"
 msgstr ""
 
@@ -10118,6 +10172,9 @@ msgid "Mirror repository"
 msgstr ""
 
 msgid "Mirror user"
+msgstr ""
+
+msgid "Mirrored branches will have this prefix. If you enabled 'Only mirror protected branches' you need to include this prefix on protected branches in this project or nothing will be mirrored."
 msgstr ""
 
 msgid "Mirrored repositories"
@@ -14888,6 +14945,12 @@ msgid "SortOptions|Start later"
 msgstr ""
 
 msgid "SortOptions|Start soon"
+msgstr ""
+
+msgid "SortOptions|Type"
+msgstr ""
+
+msgid "SortOptions|Version"
 msgstr ""
 
 msgid "SortOptions|Weight"

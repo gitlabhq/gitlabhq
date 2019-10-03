@@ -68,7 +68,7 @@ module Gitlab
           yield(@project.avatar)
         else
           project_uploads_except_avatar(avatar_path).find_each(batch_size: UPLOADS_BATCH_SIZE) do |upload|
-            yield(upload.build_uploader)
+            yield(upload.retrieve_uploader)
           end
         end
       end

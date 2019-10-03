@@ -27,7 +27,7 @@ describe Gitlab::ImportExport::UploadsRestorer do
       it 'copies the uploads to the project path' do
         subject.restore
 
-        expect(project.uploads.map { |u| u.build_uploader.filename }).to include('dummy.txt')
+        expect(project.uploads.map { |u| u.retrieve_uploader.filename }).to include('dummy.txt')
       end
     end
 
@@ -43,7 +43,7 @@ describe Gitlab::ImportExport::UploadsRestorer do
       it 'copies the uploads to the project path' do
         subject.restore
 
-        expect(project.uploads.map { |u| u.build_uploader.filename }).to include('dummy.txt')
+        expect(project.uploads.map { |u| u.retrieve_uploader.filename }).to include('dummy.txt')
       end
     end
   end

@@ -64,3 +64,5 @@ module Clusters
     end
   end
 end
+
+Clusters::Concerns::ApplicationCore.prepend_if_ee('EE::Clusters::Concerns::ApplicationCore')

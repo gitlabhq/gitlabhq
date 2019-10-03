@@ -92,7 +92,7 @@ module Gitlab
 
       def legacy_file_uploader
         strong_memoize(:legacy_file_uploader) do
-          uploader = upload.build_uploader
+          uploader = upload.retrieve_uploader
           uploader.retrieve_from_store!(File.basename(upload.path))
           uploader
         end

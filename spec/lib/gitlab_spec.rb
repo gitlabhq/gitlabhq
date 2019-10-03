@@ -71,26 +71,30 @@ describe Gitlab do
   end
 
   describe '.com?' do
+    before do
+      Thread.current[:is_com] = nil
+    end
+
     it 'is true when on GitLab.com' do
-      stub_config_setting(url: 'https://gitlab.com')
+      allow(LightSettings).to receive(:host).and_return('gitlab.com')
 
       expect(described_class.com?).to eq true
     end
 
     it 'is true when on staging' do
-      stub_config_setting(url: 'https://staging.gitlab.com')
+      allow(LightSettings).to receive(:host).and_return('staging.gitlab.com')
 
       expect(described_class.com?).to eq true
     end
 
     it 'is true when on other gitlab subdomain' do
-      stub_config_setting(url: 'https://example.gitlab.com')
+      allow(LightSettings).to receive(:host).and_return('example.gitlab.com')
 
       expect(described_class.com?).to eq true
     end
 
     it 'is false when not on GitLab.com' do
-      stub_config_setting(url: 'http://example.com')
+      allow(LightSettings).to receive(:host).and_return('example.com')
 
       expect(described_class.com?).to eq false
     end

@@ -1,0 +1,5 @@
+---
+title: Fix viewing merge reqeust from a fork that's being deleted
+merge_request: 17894
+author:
+type: fixed

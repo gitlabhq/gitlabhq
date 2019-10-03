@@ -2,6 +2,7 @@ import Visibility from 'visibilityjs';
 import { GlLoadingIcon } from '@gitlab/ui';
 import Poll from '~/lib/utils/poll';
 import flash from '~/flash';
+import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import CommitPipelineStatus from '~/projects/tree/components/commit_pipeline_status_component.vue';
 import { shallowMount } from '@vue/test-utils';
 import { getJSONFixture } from '../helpers/fixtures';
@@ -35,6 +36,10 @@ describe('Commit pipeline status component', () => {
       sync: false,
     });
   };
+
+  const findLoader = () => wrapper.find(GlLoadingIcon);
+  const findLink = () => wrapper.find('a');
+  const findCiIcon = () => findLink().find(CiIcon);
 
   afterEach(() => {
     wrapper.destroy();
@@ -111,14 +116,14 @@ describe('Commit pipeline status component', () => {
 
     it('shows the loading icon at start', () => {
       createComponent();
-      expect(wrapper.find(GlLoadingIcon).exists()).toBe(true);
+      expect(findLoader().exists()).toBe(true);
 
       pollConfig.successCallback({
         data: { pipelines: [] },
       });
 
       return wrapper.vm.$nextTick().then(() => {
-        expect(wrapper.find(GlLoadingIcon).exists()).toBe(false);
+        expect(findLoader().exists()).toBe(false);
       });
     });
 
@@ -130,8 +135,17 @@ describe('Commit pipeline status component', () => {
         return wrapper.vm.$nextTick();
       });
 
-      it('renders CI icon without loader', () => {
-        expect(wrapper.element).toMatchSnapshot();
+      it('does not render loader', () => {
+        expect(findLoader().exists()).toBe(false);
+      });
+
+      it('renders link with href', () => {
+        expect(findLink().attributes('href')).toEqual(mockCiStatus.details_path);
+      });
+
+      it('renders CI icon', () => {
+        expect(findCiIcon().attributes('data-original-title')).toEqual('Pipeline: pending');
+        expect(findCiIcon().props('status')).toEqual(mockCiStatus);
       });
     });
 
@@ -140,8 +154,21 @@ describe('Commit pipeline status component', () => {
         pollConfig.errorCallback();
       });
 
-      it('renders not found CI icon without loader', () => {
-        expect(wrapper.element).toMatchSnapshot();
+      it('does not render loader', () => {
+        expect(findLoader().exists()).toBe(false);
+      });
+
+      it('renders link with href', () => {
+        expect(findLink().attributes('href')).toBeUndefined();
+      });
+
+      it('renders not found CI icon', () => {
+        expect(findCiIcon().attributes('data-original-title')).toEqual('Pipeline: not found');
+        expect(findCiIcon().props('status')).toEqual({
+          text: 'not found',
+          icon: 'status_notfound',
+          group: 'notfound',
+        });
       });
 
       it('displays flash error message', () => {

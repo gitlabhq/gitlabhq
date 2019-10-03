@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe Upload do
-  describe 'assocations' do
+  describe 'associations' do
     it { is_expected.to belong_to(:model) }
   end
 
@@ -104,6 +104,52 @@ describe Upload do
 
       expect { upload.calculate_checksum! }
         .to change { upload.checksum }.from(checksum).to(nil)
+    end
+  end
+
+  describe '#build_uploader' do
+    it 'returns a uploader object with current upload associated with it' do
+      subject = build(:upload)
+      uploader = subject.build_uploader
+
+      expect(uploader.upload).to eq(subject)
+      expect(uploader.mounted_as).to eq(subject.send(:mount_point))
+      expect(uploader.file).to be_nil
+    end
+  end
+
+  describe '#retrieve_uploader' do
+    it 'returns a uploader object with current uploader associated with and cache retrieved' do
+      subject = build(:upload)
+      uploader = subject.retrieve_uploader
+
+      expect(uploader.upload).to eq(subject)
+      expect(uploader.mounted_as).to eq(subject.send(:mount_point))
+      expect(uploader.file).not_to be_nil
+    end
+  end
+
+  describe '#needs_checksum?' do
+    context 'with local storage' do
+      it 'returns true when no checksum exists' do
+        subject = create(:upload, :with_file, checksum: nil)
+
+        expect(subject.needs_checksum?).to be_truthy
+      end
+
+      it 'returns false when checksum is already present' do
+        subject = create(:upload, :with_file, checksum: 'something')
+
+        expect(subject.needs_checksum?).to be_falsey
+      end
+    end
+
+    context 'with remote storage' do
+      subject { build(:upload, :object_storage) }
+
+      it 'returns false' do
+        expect(subject.needs_checksum?).to be_falsey
+      end
     end
   end
 
