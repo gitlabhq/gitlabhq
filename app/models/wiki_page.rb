@@ -134,6 +134,12 @@ class WikiPage
     @version ||= @page.version
   end
 
+  def path
+    return unless persisted?
+
+    @path ||= @page.path
+  end
+
   def versions(options = {})
     return [] unless persisted?
 
