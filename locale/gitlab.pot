@@ -1344,6 +1344,9 @@ msgstr ""
 msgid "Allows you to add and manage Kubernetes clusters."
 msgstr ""
 
+msgid "Almost there"
+msgstr ""
+
 msgid "Also called \"Issuer\" or \"Relying party trust identifier\""
 msgstr ""
 
@@ -4043,6 +4046,9 @@ msgstr ""
 msgid "Company"
 msgstr ""
 
+msgid "Company name"
+msgstr ""
+
 msgid "Compare"
 msgstr ""
 
@@ -4424,6 +4430,9 @@ msgid "Could not save project ID"
 msgstr ""
 
 msgid "Could not save prometheus manual configuration"
+msgstr ""
+
+msgid "Country"
 msgstr ""
 
 msgid "Coverage"
@@ -6169,6 +6178,9 @@ msgid "Error loading branches."
 msgstr ""
 
 msgid "Error loading burndown chart data"
+msgstr ""
+
+msgid "Error loading countries data."
 msgstr ""
 
 msgid "Error loading file viewer."
@@ -8293,6 +8305,9 @@ msgstr ""
 msgid "How many shards to split the Elasticsearch index over."
 msgstr ""
 
+msgid "How many users will be evaluating the trial?"
+msgstr ""
+
 msgid "However, you are already a member of this %{member_source}. Sign in using a different account to accept the invitation."
 msgstr ""
 
@@ -10378,6 +10393,9 @@ msgstr ""
 msgid "New Group"
 msgstr ""
 
+msgid "New Group Name"
+msgstr ""
+
 msgid "New Identity"
 msgstr ""
 
@@ -10864,6 +10882,9 @@ msgid "Number of LOCs per commit"
 msgstr ""
 
 msgid "Number of commits per MR"
+msgstr ""
+
+msgid "Number of employees?"
 msgstr ""
 
 msgid "Number of files touched"
@@ -11625,6 +11646,12 @@ msgid "Please provide a valid email address."
 msgstr ""
 
 msgid "Please retype the email address."
+msgstr ""
+
+msgid "Please select"
+msgstr ""
+
+msgid "Please select a country"
 msgstr ""
 
 msgid "Please select a file"
@@ -13435,9 +13462,6 @@ msgstr ""
 msgid "Require users to prove ownership of custom domains"
 msgstr ""
 
-msgid "Required argument 'targetElement' is missing"
-msgstr ""
-
 msgid "Requires approval from %{names}."
 msgid_plural "Requires %{count} more approvals from %{names}."
 msgstr[0] ""
@@ -14686,6 +14710,9 @@ msgstr ""
 msgid "Size limit per repository (MB)"
 msgstr ""
 
+msgid "Skip Trial (Continue with Free Account)"
+msgstr ""
+
 msgid "Skip this for now"
 msgstr ""
 
@@ -15160,6 +15187,9 @@ msgstr ""
 msgid "Start thread & reopen %{noteable_name}"
 msgstr ""
 
+msgid "Start your free trial"
+msgstr ""
+
 msgid "Start your trial"
 msgstr ""
 
@@ -15622,6 +15652,9 @@ msgstr ""
 msgid "Team domain"
 msgstr ""
 
+msgid "Telephone number"
+msgstr ""
+
 msgid "Template"
 msgstr ""
 
@@ -15695,9 +15728,6 @@ msgid "The %{type} contains the following error:"
 msgid_plural "The %{type} contains the following errors:"
 msgstr[0] ""
 msgstr[1] ""
-
-msgid "The API path was not specified."
-msgstr ""
 
 msgid "The Advanced Global Search in GitLab is a powerful search service that saves you time. Instead of creating duplicate code and wasting time, you can now search for code within other teams that can help your own project."
 msgstr ""
@@ -15931,9 +15961,6 @@ msgid "The snippet is visible to any logged in user."
 msgstr ""
 
 msgid "The staging stage shows the time between merging the MR and deploying code to the production environment. The data will be automatically added once you deploy to production for the first time."
-msgstr ""
-
-msgid "The target element is missing."
 msgstr ""
 
 msgid "The testing stage shows the time GitLab CI takes to run every pipeline for the related merge request. The data will automatically be added after your first pipeline finishes running."
@@ -16363,6 +16390,9 @@ msgid "This setting will override user notification preferences for all project 
 msgstr ""
 
 msgid "This setting will update the hostname that is used to generate private commit emails. %{learn_more}"
+msgstr ""
+
+msgid "This subscription is for"
 msgstr ""
 
 msgid "This timeout will take precedence when lower than project-defined timeout and accepts a human readable time input language like \"1 hour\". Values without specification represent seconds."
@@ -17959,7 +17989,13 @@ msgstr ""
 msgid "We don't have enough data to show this stage."
 msgstr ""
 
+msgid "We have found the following errors:"
+msgstr ""
+
 msgid "We heard back from your U2F device. You have been authenticated."
+msgstr ""
+
+msgid "We need some additional information to activate your free trial"
 msgstr ""
 
 msgid "We sent you an email with reset password instructions"
@@ -18288,6 +18324,9 @@ msgstr ""
 msgid "You can also upload existing files from your computer using the instructions below."
 msgstr ""
 
+msgid "You can apply your Trial to your Personal account or create a New Group."
+msgstr ""
+
 msgid "You can create files directly in GitLab using one of the following options."
 msgstr ""
 
@@ -18526,6 +18565,9 @@ msgid "You won't be able to pull or push project code via SSH until you %{add_ss
 msgstr ""
 
 msgid "You won't be able to pull or push project code via SSH until you add an SSH key to your profile"
+msgstr ""
+
+msgid "You won't get a free trial right now but you can always resume this process by clicking on your avatar and choosing 'Start a free trial'."
 msgstr ""
 
 msgid "You'll be signed out from your current account automatically."
