@@ -70,7 +70,13 @@ export default {
       return undefined;
     },
     showIcon() {
-      return this.file.changed || this.file.tempFile || this.file.staged || this.file.deleted;
+      return (
+        this.file.changed ||
+        this.file.tempFile ||
+        this.file.staged ||
+        this.file.deleted ||
+        this.file.prevPath
+      );
     },
   },
 };

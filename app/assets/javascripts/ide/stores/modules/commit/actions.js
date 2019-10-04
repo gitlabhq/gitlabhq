@@ -154,8 +154,6 @@ export const commitChanges = ({ commit, state, getters, dispatch, rootState, roo
         .then(() => {
           commit(rootTypes.CLEAR_STAGED_CHANGES, null, { root: true });
 
-          commit(rootTypes.CLEAR_REPLACED_FILES, null, { root: true });
-
           setTimeout(() => {
             commit(rootTypes.SET_LAST_COMMIT_MSG, '', { root: true });
           }, 5000);

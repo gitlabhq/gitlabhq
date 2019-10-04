@@ -5,7 +5,11 @@ require 'set'
 
 module Gitlab
   module SidekiqConfig
-    QUEUE_CONFIG_PATHS = %w[app/workers/all_queues.yml ee/app/workers/all_queues.yml].freeze
+    QUEUE_CONFIG_PATHS = begin
+      result = %w[app/workers/all_queues.yml]
+      result << 'ee/app/workers/all_queues.yml' if Gitlab.ee?
+      result
+    end.freeze
 
     # This method is called by `ee/bin/sidekiq-cluster` in EE, which runs outside
     # of bundler/Rails context, so we cannot use any gem or Rails methods.
@@ -48,9 +52,11 @@ module Gitlab
     end
 
     def self.workers
-      @workers ||=
-        find_workers(Rails.root.join('app', 'workers')) +
-        find_workers(Rails.root.join('ee', 'app', 'workers'))
+      @workers ||= begin
+        result = find_workers(Rails.root.join('app', 'workers'))
+        result.concat(find_workers(Rails.root.join('ee', 'app', 'workers'))) if Gitlab.ee?
+        result
+      end
     end
 
     def self.find_workers(root)

@@ -9,6 +9,7 @@ import { decorateFiles } from '../lib/files';
 import { stageKeys } from '../constants';
 import service from '../services';
 import router from '../ide_router';
+import eventHub from '../eventhub';
 
 export const redirectToUrl = (self, url) => visitUrl(url);
 
@@ -171,8 +172,10 @@ export const setCurrentBranchId = ({ commit }, currentBranchId) => {
 export const updateTempFlagForEntry = ({ commit, dispatch, state }, { file, tempFile }) => {
   commit(types.UPDATE_TEMP_FLAG, { path: file.path, tempFile });
 
-  if (file.parentPath) {
-    dispatch('updateTempFlagForEntry', { file: state.entries[file.parentPath], tempFile });
+  const parent = file.parentPath && state.entries[file.parentPath];
+
+  if (parent) {
+    dispatch('updateTempFlagForEntry', { file: parent, tempFile });
   }
 };
 
@@ -199,51 +202,71 @@ export const openNewEntryModal = ({ commit }, { type, path = '' }) => {
 
 export const deleteEntry = ({ commit, dispatch, state }, path) => {
   const entry = state.entries[path];
+  const { prevPath, prevName, prevParentPath } = entry;
+  const isTree = entry.type === 'tree';
 
+  if (prevPath) {
+    dispatch('renameEntry', {
+      path,
+      name: prevName,
+      parentPath: prevParentPath,
+    });
+    dispatch('deleteEntry', prevPath);
+    return;
+  }
   if (state.unusedSeal) dispatch('burstUnusedSeal');
   if (entry.opened) dispatch('closeFile', entry);
 
-  if (entry.type === 'tree') {
+  if (isTree) {
     entry.tree.forEach(f => dispatch('deleteEntry', f.path));
   }
 
   commit(types.DELETE_ENTRY, path);
-  dispatch('stageChange', path);
+
+  // Only stage if we're not a directory or a new file
+  if (!isTree && !entry.tempFile) {
+    dispatch('stageChange', path);
+  }
 
   dispatch('triggerFilesChange');
 };
 
 export const resetOpenFiles = ({ commit }) => commit(types.RESET_OPEN_FILES);
 
-export const renameEntry = (
-  { dispatch, commit, state },
-  { path, name, entryPath = null, parentPath },
-) => {
-  const entry = state.entries[entryPath || path];
+export const renameEntry = ({ dispatch, commit, state }, { path, name, parentPath }) => {
+  const entry = state.entries[path];
+  const newPath = parentPath ? `${parentPath}/${name}` : name;
 
-  commit(types.RENAME_ENTRY, { path, name, entryPath, parentPath });
+  commit(types.RENAME_ENTRY, { path, name, parentPath });
 
   if (entry.type === 'tree') {
-    const slashedParentPath = parentPath ? `${parentPath}/` : '';
-    const targetEntry = entryPath ? entryPath.split('/').pop() : name;
-    const newParentPath = `${slashedParentPath}${targetEntry}`;
-
-    state.entries[entryPath || path].tree.forEach(f => {
+    state.entries[newPath].tree.forEach(f => {
       dispatch('renameEntry', {
-        path,
-        name,
-        entryPath: f.path,
-        parentPath: newParentPath,
+        path: f.path,
+        name: f.name,
+        parentPath: newPath,
       });
     });
   } else {
-    const newPath = parentPath ? `${parentPath}/${name}` : name;
     const newEntry = state.entries[newPath];
-    commit(types.TOGGLE_FILE_CHANGED, { file: newEntry, changed: true });
+    const isRevert = newPath === entry.prevPath;
+    const isReset = isRevert && !newEntry.changed && !newEntry.tempFile;
+    const isInChanges = state.changedFiles
+      .concat(state.stagedFiles)
+      .some(({ key }) => key === newEntry.key);
 
-    if (entry.opened) {
+    if (isReset) {
+      commit(types.REMOVE_FILE_FROM_STAGED_AND_CHANGED, newEntry);
+    } else if (!isInChanges) {
+      commit(types.ADD_FILE_TO_CHANGED, newPath);
+    }
+
+    if (!newEntry.tempFile) {
+      eventHub.$emit(`editor.update.model.dispose.${entry.key}`);
+    }
+
+    if (newEntry.opened) {
       router.push(`/project${newEntry.url}`);
-      commit(types.TOGGLE_FILE_OPEN, entry.path);
     }
   }
 

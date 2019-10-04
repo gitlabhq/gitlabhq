@@ -1,7 +1,5 @@
 import { viewerInformationForPath } from '~/vue_shared/components/content_viewer/lib/viewer_utils';
-import { decorateData, sortTree } from '../stores/utils';
-
-export const escapeFileUrl = fileUrl => encodeURIComponent(fileUrl).replace(/%2F/g, '/');
+import { decorateData, sortTree, escapeFileUrl } from '../stores/utils';
 
 export const splitParent = path => {
   const idx = path.lastIndexOf('/');

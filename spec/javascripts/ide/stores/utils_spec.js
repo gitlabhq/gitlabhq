@@ -237,31 +237,6 @@ describe('Multi-file store utils', () => {
   });
 
   describe('getCommitFiles', () => {
-    it('returns list of files excluding moved files', () => {
-      const files = [
-        {
-          path: 'a',
-          type: 'blob',
-          deleted: true,
-        },
-        {
-          path: 'c',
-          type: 'blob',
-          moved: true,
-        },
-      ];
-
-      const flattendFiles = utils.getCommitFiles(files);
-
-      expect(flattendFiles).toEqual([
-        {
-          path: 'a',
-          type: 'blob',
-          deleted: true,
-        },
-      ]);
-    });
-
     it('filters out folders from the list', () => {
       const files = [
         {
@@ -420,6 +395,206 @@ describe('Multi-file store utils', () => {
 
       expect(res[1].tree[0].name).toEqual('alpha');
       expect(res[1].tree[0].opened).toEqual(true);
+    });
+  });
+
+  describe('escapeFileUrl', () => {
+    it('encodes URL excluding the slashes', () => {
+      expect(utils.escapeFileUrl('/foo-bar/file.md')).toBe('/foo-bar/file.md');
+      expect(utils.escapeFileUrl('foo bar/file.md')).toBe('foo%20bar/file.md');
+      expect(utils.escapeFileUrl('foo/bar/file.md')).toBe('foo/bar/file.md');
+    });
+  });
+
+  describe('swapInStateArray', () => {
+    let localState;
+
+    beforeEach(() => {
+      localState = [];
+    });
+
+    it('swaps existing entry with a new one', () => {
+      const file1 = {
+        ...file('old'),
+        key: 'foo',
+      };
+      const file2 = file('new');
+      const arr = [file1];
+
+      Object.assign(localState, {
+        dummyArray: arr,
+        entries: {
+          new: file2,
+        },
+      });
+
+      utils.swapInStateArray(localState, 'dummyArray', 'foo', 'new');
+
+      expect(localState.dummyArray.length).toBe(1);
+      expect(localState.dummyArray[0]).toBe(file2);
+    });
+
+    it('does not add an item if it does not exist yet in array', () => {
+      const file1 = file('file');
+      Object.assign(localState, {
+        dummyArray: [],
+        entries: {
+          file: file1,
+        },
+      });
+
+      utils.swapInStateArray(localState, 'dummyArray', 'foo', 'file');
+
+      expect(localState.dummyArray.length).toBe(0);
+    });
+  });
+
+  describe('swapInParentTreeWithSorting', () => {
+    let localState;
+    let branchInfo;
+    const currentProjectId = '123-foo';
+    const currentBranchId = 'master';
+
+    beforeEach(() => {
+      localState = {
+        currentBranchId,
+        currentProjectId,
+        trees: {
+          [`${currentProjectId}/${currentBranchId}`]: {
+            tree: [],
+          },
+        },
+        entries: {
+          oldPath: file('oldPath', 'oldPath', 'blob'),
+          newPath: file('newPath', 'newPath', 'blob'),
+          parentPath: file('parentPath', 'parentPath', 'tree'),
+        },
+      };
+      branchInfo = localState.trees[`${currentProjectId}/${currentBranchId}`];
+    });
+
+    it('does not change tree if newPath is not supplied', () => {
+      branchInfo.tree = [localState.entries.oldPath];
+
+      utils.swapInParentTreeWithSorting(localState, 'oldPath', undefined, undefined);
+
+      expect(branchInfo.tree).toEqual([localState.entries.oldPath]);
+    });
+
+    describe('oldPath to replace is not defined: simple addition to tree', () => {
+      it('adds to tree on the state if there is no parent for the entry', () => {
+        expect(branchInfo.tree.length).toBe(0);
+
+        utils.swapInParentTreeWithSorting(localState, undefined, 'oldPath', undefined);
+
+        expect(branchInfo.tree.length).toBe(1);
+        expect(branchInfo.tree[0].name).toBe('oldPath');
+
+        utils.swapInParentTreeWithSorting(localState, undefined, 'newPath', undefined);
+
+        expect(branchInfo.tree.length).toBe(2);
+        expect(branchInfo.tree).toEqual([
+          jasmine.objectContaining({ name: 'newPath' }),
+          jasmine.objectContaining({ name: 'oldPath' }),
+        ]);
+      });
+
+      it('adds to parent tree if it is supplied', () => {
+        utils.swapInParentTreeWithSorting(localState, undefined, 'newPath', 'parentPath');
+
+        expect(localState.entries.parentPath.tree.length).toBe(1);
+        expect(localState.entries.parentPath.tree).toEqual([
+          jasmine.objectContaining({ name: 'newPath' }),
+        ]);
+
+        localState.entries.parentPath.tree = [localState.entries.oldPath];
+
+        utils.swapInParentTreeWithSorting(localState, undefined, 'newPath', 'parentPath');
+
+        expect(localState.entries.parentPath.tree.length).toBe(2);
+        expect(localState.entries.parentPath.tree).toEqual([
+          jasmine.objectContaining({ name: 'newPath' }),
+          jasmine.objectContaining({ name: 'oldPath' }),
+        ]);
+      });
+    });
+
+    describe('swapping of the items', () => {
+      it('swaps entries if both paths are supplied', () => {
+        branchInfo.tree = [localState.entries.oldPath];
+
+        utils.swapInParentTreeWithSorting(localState, localState.entries.oldPath.key, 'newPath');
+
+        expect(branchInfo.tree).toEqual([jasmine.objectContaining({ name: 'newPath' })]);
+
+        utils.swapInParentTreeWithSorting(localState, localState.entries.newPath.key, 'oldPath');
+
+        expect(branchInfo.tree).toEqual([jasmine.objectContaining({ name: 'oldPath' })]);
+      });
+
+      it('sorts tree after swapping the entries', () => {
+        const alpha = file('alpha', 'alpha', 'blob');
+        const beta = file('beta', 'beta', 'blob');
+        const gamma = file('gamma', 'gamma', 'blob');
+        const theta = file('theta', 'theta', 'blob');
+        localState.entries = { alpha, beta, gamma, theta };
+
+        branchInfo.tree = [alpha, beta, gamma];
+
+        utils.swapInParentTreeWithSorting(localState, alpha.key, 'theta');
+
+        expect(branchInfo.tree).toEqual([
+          jasmine.objectContaining({ name: 'beta' }),
+          jasmine.objectContaining({ name: 'gamma' }),
+          jasmine.objectContaining({ name: 'theta' }),
+        ]);
+
+        utils.swapInParentTreeWithSorting(localState, gamma.key, 'alpha');
+
+        expect(branchInfo.tree).toEqual([
+          jasmine.objectContaining({ name: 'alpha' }),
+          jasmine.objectContaining({ name: 'beta' }),
+          jasmine.objectContaining({ name: 'theta' }),
+        ]);
+
+        utils.swapInParentTreeWithSorting(localState, beta.key, 'gamma');
+
+        expect(branchInfo.tree).toEqual([
+          jasmine.objectContaining({ name: 'alpha' }),
+          jasmine.objectContaining({ name: 'gamma' }),
+          jasmine.objectContaining({ name: 'theta' }),
+        ]);
+      });
+    });
+  });
+
+  describe('cleanTrailingSlash', () => {
+    [
+      { input: '', output: '' },
+      { input: 'abc', output: 'abc' },
+      { input: 'abc/', output: 'abc' },
+      { input: 'abc/def', output: 'abc/def' },
+      { input: 'abc/def/', output: 'abc/def' },
+    ].forEach(({ input, output }) => {
+      it(`cleans trailing slash from string "${input}"`, () => {
+        expect(utils.cleanTrailingSlash(input)).toEqual(output);
+      });
+    });
+  });
+
+  describe('pathsAreEqual', () => {
+    [
+      { args: ['abc', 'abc'], output: true },
+      { args: ['abc', 'def'], output: false },
+      { args: ['abc/', 'abc'], output: true },
+      { args: ['abc/abc', 'abc'], output: false },
+      { args: ['/', ''], output: true },
+      { args: ['', '/'], output: true },
+      { args: [false, '/'], output: true },
+    ].forEach(({ args, output }) => {
+      it(`cleans and tests equality (${JSON.stringify(args)})`, () => {
+        expect(utils.pathsAreEqual(...args)).toEqual(output);
+      });
     });
   });
 });

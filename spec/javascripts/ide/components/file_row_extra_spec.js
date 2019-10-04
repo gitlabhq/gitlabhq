@@ -139,6 +139,27 @@ describe('IDE extra file row component', () => {
         done();
       });
     });
+
+    it('shows when file is renamed', done => {
+      vm.file.prevPath = 'original-file';
+
+      vm.$nextTick(() => {
+        expect(vm.$el.querySelector('.file-changed-icon')).not.toBe(null);
+
+        done();
+      });
+    });
+
+    it('hides when file is renamed', done => {
+      vm.file.prevPath = 'original-file';
+      vm.file.type = 'tree';
+
+      vm.$nextTick(() => {
+        expect(vm.$el.querySelector('.file-changed-icon')).toBe(null);
+
+        done();
+      });
+    });
   });
 
   describe('merge request icon', () => {

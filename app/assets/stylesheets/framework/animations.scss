@@ -11,23 +11,8 @@
   @include webkit-prefix(animation-duration, 1s);
   @include webkit-prefix(animation-fill-mode, both);
 
-  &.infinite {
-    @include webkit-prefix(animation-iteration-count, infinite);
-  }
-
   &.once {
     @include webkit-prefix(animation-iteration-count, 1);
-  }
-
-  &.hinge {
-    @include webkit-prefix(animation-duration, 2s);
-  }
-
-  &.flipOutX,
-  &.flipOutY,
-  &.bounceIn,
-  &.bounceOut {
-    @include webkit-prefix(animation-duration, 0.75s);
   }
 
   &.short {

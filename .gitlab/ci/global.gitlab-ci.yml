@@ -149,3 +149,8 @@
     variables:
       - $CI_PROJECT_NAME == "gitlab"
       - $CI_PROJECT_NAME == "gitlab-ee"  # Support former project name for forks/mirrors
+
+.only-ee-as-if-foss:
+  extends: .only-ee
+  variables:
+    IS_GITLAB_EE: '0'

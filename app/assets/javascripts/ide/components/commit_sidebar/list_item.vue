@@ -110,6 +110,9 @@ export default {
     >
       <span class="multi-file-commit-list-file-path d-flex align-items-center">
         <file-icon :file-name="file.name" class="append-right-8" />
+        <template v-if="file.prevName && file.prevName !== file.name">
+          {{ file.prevName }} &#x2192;
+        </template>
         {{ file.name }}
       </span>
       <div class="ml-auto d-flex align-items-center">

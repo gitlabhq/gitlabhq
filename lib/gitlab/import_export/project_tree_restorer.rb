@@ -120,7 +120,7 @@ module Gitlab
         end
       end
 
-      def remove_feature_dependent_sub_relations(_relation_item)
+      def remove_feature_dependent_sub_relations!(_relation_item)
         # no-op
       end
 
@@ -191,7 +191,7 @@ module Gitlab
 
         # Avoid keeping a possible heavy object in memory once we are done with it
         while relation_item = tree_array.shift
-          remove_feature_dependent_sub_relations(relation_item)
+          remove_feature_dependent_sub_relations!(relation_item)
 
           # The transaction at this level is less speedy than one single transaction
           # But we can't have it in the upper level or GC won't get rid of the AR objects

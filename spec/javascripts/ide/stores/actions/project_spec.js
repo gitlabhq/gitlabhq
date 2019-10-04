@@ -6,8 +6,10 @@ import {
   createNewBranchFromDefault,
   showEmptyState,
   openBranch,
+  loadFile,
+  loadBranch,
 } from '~/ide/stores/actions';
-import store from '~/ide/stores';
+import { createStore } from '~/ide/stores';
 import service from '~/ide/services';
 import api from '~/api';
 import router from '~/ide/ide_router';
@@ -16,8 +18,10 @@ import testAction from '../../../helpers/vuex_action_helper';
 
 describe('IDE store project actions', () => {
   let mock;
+  let store;
 
   beforeEach(() => {
+    store = createStore();
     mock = new MockAdapter(axios);
 
     store.state.projects['abc/def'] = {
@@ -231,28 +235,139 @@ describe('IDE store project actions', () => {
     });
   });
 
+  describe('loadFile', () => {
+    beforeEach(() => {
+      Object.assign(store.state, {
+        entries: {
+          foo: { pending: false },
+          'foo/bar-pending': { pending: true },
+          'foo/bar': { pending: false },
+        },
+      });
+      spyOn(store, 'dispatch');
+    });
+
+    it('does nothing, if basePath is not given', () => {
+      loadFile(store, { basePath: undefined });
+
+      expect(store.dispatch).not.toHaveBeenCalled();
+    });
+
+    it('handles tree entry action, if basePath is given and the entry is not pending', () => {
+      loadFile(store, { basePath: 'foo/bar/' });
+
+      expect(store.dispatch).toHaveBeenCalledWith(
+        'handleTreeEntryAction',
+        store.state.entries['foo/bar'],
+      );
+    });
+
+    it('does not handle tree entry action, if entry is pending', () => {
+      loadFile(store, { basePath: 'foo/bar-pending/' });
+
+      expect(store.dispatch).not.toHaveBeenCalledWith('handleTreeEntryAction', jasmine.anything());
+    });
+
+    it('creates a new temp file supplied via URL if the file does not exist yet', () => {
+      loadFile(store, { basePath: 'not-existent.md' });
+
+      expect(store.dispatch.calls.count()).toBe(1);
+
+      expect(store.dispatch).not.toHaveBeenCalledWith('handleTreeEntryAction', jasmine.anything());
+
+      expect(store.dispatch).toHaveBeenCalledWith('createTempEntry', {
+        name: 'not-existent.md',
+        type: 'blob',
+      });
+    });
+  });
+
+  describe('loadBranch', () => {
+    const projectId = 'abc/def';
+    const branchId = '123-lorem';
+
+    it('fetches branch data', done => {
+      spyOn(store, 'dispatch').and.returnValue(Promise.resolve());
+
+      loadBranch(store, { projectId, branchId })
+        .then(() => {
+          expect(store.dispatch.calls.allArgs()).toEqual([
+            ['getBranchData', { projectId, branchId }],
+            ['getMergeRequestsForBranch', { projectId, branchId }],
+            ['getFiles', { projectId, branchId }],
+          ]);
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+
+    it('shows an error if branch can not be fetched', done => {
+      spyOn(store, 'dispatch').and.returnValue(Promise.reject());
+
+      loadBranch(store, { projectId, branchId })
+        .then(done.fail)
+        .catch(() => {
+          expect(store.dispatch.calls.allArgs()).toEqual([
+            ['getBranchData', { projectId, branchId }],
+            ['showBranchNotFoundError', branchId],
+          ]);
+          done();
+        });
+    });
+  });
+
   describe('openBranch', () => {
+    const projectId = 'abc/def';
+    const branchId = '123-lorem';
+
     const branch = {
-      projectId: 'abc/def',
-      branchId: '123-lorem',
+      projectId,
+      branchId,
     };
 
     beforeEach(() => {
-      store.state.entries = {
-        foo: { pending: false },
-        'foo/bar-pending': { pending: true },
-        'foo/bar': { pending: false },
-      };
+      Object.assign(store.state, {
+        entries: {
+          foo: { pending: false },
+          'foo/bar-pending': { pending: true },
+          'foo/bar': { pending: false },
+        },
+      });
+    });
+
+    it('loads file right away if the branch has already been fetched', done => {
+      spyOn(store, 'dispatch');
+
+      Object.assign(store.state, {
+        projects: {
+          [projectId]: {
+            branches: {
+              [branchId]: { foo: 'bar' },
+            },
+          },
+        },
+      });
+
+      openBranch(store, branch)
+        .then(() => {
+          expect(store.dispatch.calls.allArgs()).toEqual([['loadFile', { basePath: undefined }]]);
+        })
+        .then(done)
+        .catch(done.fail);
     });
 
     describe('empty repo', () => {
       beforeEach(() => {
         spyOn(store, 'dispatch').and.returnValue(Promise.resolve());
 
-        store.state.currentProjectId = 'abc/def';
-        store.state.projects['abc/def'] = {
-          empty_repo: true,
-        };
+        Object.assign(store.state, {
+          currentProjectId: 'abc/def',
+          projects: {
+            'abc/def': {
+              empty_repo: true,
+            },
+          },
+        });
       });
 
       afterEach(() => {
@@ -262,10 +377,7 @@ describe('IDE store project actions', () => {
       it('dispatches showEmptyState action right away', done => {
         openBranch(store, branch)
           .then(() => {
-            expect(store.dispatch.calls.allArgs()).toEqual([
-              ['setCurrentBranchId', branch.branchId],
-              ['showEmptyState', branch],
-            ]);
+            expect(store.dispatch.calls.allArgs()).toEqual([['showEmptyState', branch]]);
             done();
           })
           .catch(done.fail);
@@ -281,52 +393,10 @@ describe('IDE store project actions', () => {
         openBranch(store, branch)
           .then(() => {
             expect(store.dispatch.calls.allArgs()).toEqual([
-              ['setCurrentBranchId', branch.branchId],
-              ['getBranchData', branch],
-              ['getMergeRequestsForBranch', branch],
-              ['getFiles', branch],
+              ['setCurrentBranchId', branchId],
+              ['loadBranch', { projectId, branchId }],
+              ['loadFile', { basePath: undefined }],
             ]);
-          })
-          .then(done)
-          .catch(done.fail);
-      });
-
-      it('handles tree entry action, if basePath is given', done => {
-        openBranch(store, { ...branch, basePath: 'foo/bar/' })
-          .then(() => {
-            expect(store.dispatch).toHaveBeenCalledWith(
-              'handleTreeEntryAction',
-              store.state.entries['foo/bar'],
-            );
-          })
-          .then(done)
-          .catch(done.fail);
-      });
-
-      it('does not handle tree entry action, if entry is pending', done => {
-        openBranch(store, { ...branch, basePath: 'foo/bar-pending' })
-          .then(() => {
-            expect(store.dispatch).not.toHaveBeenCalledWith(
-              'handleTreeEntryAction',
-              jasmine.anything(),
-            );
-          })
-          .then(done)
-          .catch(done.fail);
-      });
-
-      it('creates a new file supplied via URL if the file does not exist yet', done => {
-        openBranch(store, { ...branch, basePath: 'not-existent.md' })
-          .then(() => {
-            expect(store.dispatch).not.toHaveBeenCalledWith(
-              'handleTreeEntryAction',
-              jasmine.anything(),
-            );
-
-            expect(store.dispatch).toHaveBeenCalledWith('createTempEntry', {
-              name: 'not-existent.md',
-              type: 'blob',
-            });
           })
           .then(done)
           .catch(done.fail);
@@ -342,9 +412,8 @@ describe('IDE store project actions', () => {
         openBranch(store, branch)
           .then(() => {
             expect(store.dispatch.calls.allArgs()).toEqual([
-              ['setCurrentBranchId', branch.branchId],
-              ['getBranchData', branch],
-              ['showBranchNotFoundError', branch.branchId],
+              ['setCurrentBranchId', branchId],
+              ['loadBranch', { projectId, branchId }],
             ]);
           })
           .then(done)

@@ -138,8 +138,6 @@ export default {
       content: stagedFile ? stagedFile.content : state.entries[path].raw,
       changed: false,
       deleted: false,
-      moved: false,
-      movedPath: '',
     });
 
     if (deleted) {
@@ -179,11 +177,6 @@ export default {
     });
 
     if (stagedFile) {
-      Object.assign(state, {
-        replacedFiles: state.replacedFiles.concat({
-          ...stagedFile,
-        }),
-      });
       Object.assign(stagedFile, {
         ...state.entries[path],
       });
@@ -250,6 +243,17 @@ export default {
   [types.REMOVE_PENDING_TAB](state, file) {
     Object.assign(state, {
       openFiles: state.openFiles.filter(f => f.key !== file.key),
+    });
+  },
+  [types.REMOVE_FILE_FROM_STAGED_AND_CHANGED](state, file) {
+    Object.assign(state, {
+      changedFiles: state.changedFiles.filter(f => f.key !== file.key),
+      stagedFiles: state.stagedFiles.filter(f => f.key !== file.key),
+    });
+
+    Object.assign(state.entries[file.path], {
+      changed: false,
+      staged: false,
     });
   },
 };

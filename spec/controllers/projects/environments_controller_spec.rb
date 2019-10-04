@@ -256,7 +256,7 @@ describe Projects::EnvironmentsController do
       it 'loads the terminals for the environment' do
         # In EE we have to stub EE::Environment since it overwrites the
         # "terminals" method.
-        expect_any_instance_of(defined?(EE) ? EE::Environment : Environment)
+        expect_any_instance_of(Gitlab.ee? ? EE::Environment : Environment)
           .to receive(:terminals)
 
         get :terminal, params: environment_params
@@ -282,7 +282,7 @@ describe Projects::EnvironmentsController do
         it 'returns the first terminal for the environment' do
           # In EE we have to stub EE::Environment since it overwrites the
           # "terminals" method.
-          expect_any_instance_of(defined?(EE) ? EE::Environment : Environment)
+          expect_any_instance_of(Gitlab.ee? ? EE::Environment : Environment)
             .to receive(:terminals)
             .and_return([:fake_terminal])
 

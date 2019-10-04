@@ -123,7 +123,7 @@ compile-assets pull-cache:
     - .use-pg9
   dependencies: ["compile-assets", "compile-assets pull-cache", "setup-test-env"]
 
-karma:
+.karma-base:
   extends: .only-code-frontend-job-base
   variables:
     # we override the max_old_space_size to prevent OOM errors
@@ -134,6 +134,9 @@ karma:
     - scripts/gitaly-test-spawn
     - date
     - bundle exec rake karma
+
+karma:
+  extends: .karma-base
   coverage: '/^Statements *: (\d+\.\d+%)/'
   artifacts:
     name: coverage-javascript
@@ -146,7 +149,12 @@ karma:
     reports:
       junit: junit_karma.xml
 
-jest:
+karma-foss:
+  extends:
+    - .karma-base
+    - .only-ee-as-if-foss
+
+.jest-base:
   extends: .only-code-frontend-job-base
   script:
     - scripts/gitaly-test-spawn
@@ -154,6 +162,14 @@ jest:
     - bundle exec rake frontend:fixtures
     - date
     - yarn jest --ci --coverage
+  cache:
+    key: jest
+    paths:
+      - tmp/jest/jest/
+    policy: pull-push
+
+jest:
+  extends: .jest-base
   artifacts:
     name: coverage-frontend
     expire_in: 31d
@@ -164,11 +180,13 @@ jest:
       - tmp/tests/frontend/
     reports:
       junit: junit_jest.xml
+
+jest-foss:
+  extends:
+    - .jest-base
+    - .only-ee-as-if-foss
   cache:
-    key: jest
-    paths:
-      - tmp/jest/jest/
-    policy: pull-push
+    policy: pull
 
 .qa-job-base:
   extends:

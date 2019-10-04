@@ -150,6 +150,7 @@ describe Gitlab do
 
   describe '.ee?' do
     before do
+      stub_env('IS_GITLAB_EE', nil) # Make sure the ENV is clean
       described_class.instance_variable_set(:@is_ee, nil)
     end
 

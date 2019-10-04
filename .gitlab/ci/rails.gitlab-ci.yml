@@ -74,6 +74,12 @@ setup-test-env:
     - .rspec-base
     - .use-pg9
 
+.rspec-base-pg9-foss:
+  extends:
+    - .rspec-base
+    - .use-pg9
+    - .only-ee-as-if-foss
+
 .rspec-base-pg10:
   extends:
     - .rspec-base
@@ -84,13 +90,26 @@ rspec unit pg9:
   extends: .rspec-base-pg9
   parallel: 20
 
+rspec unit pg9-foss:
+  extends: .rspec-base-pg9-foss
+  parallel: 20
+
 rspec integration pg9:
   extends: .rspec-base-pg9
+  parallel: 6
+
+rspec integration pg9-foss:
+  extends: .rspec-base-pg9-foss
   parallel: 6
 
 rspec system pg9:
   extends: .rspec-base-pg9
   parallel: 24
+
+# TODO: This requires FOSS assets
+# rspec system pg9-foss:
+#   extends: .rspec-base-pg9-foss
+#   parallel: 24
 
 rspec unit pg10:
   extends: .rspec-base-pg10

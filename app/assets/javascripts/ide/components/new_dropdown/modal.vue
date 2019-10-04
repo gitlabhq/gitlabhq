@@ -91,7 +91,6 @@ export default {
               this.renameEntry({
                 path: this.entryModal.entry.path,
                 name: entryName,
-                entryPath: null,
                 parentPath,
               }),
             )
