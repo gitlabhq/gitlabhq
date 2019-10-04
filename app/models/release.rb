@@ -67,3 +67,5 @@ class Release < ApplicationRecord
     end
   end
 end
+
+Release.prepend_if_ee('EE::Release')

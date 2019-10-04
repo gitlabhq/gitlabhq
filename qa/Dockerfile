@@ -49,13 +49,15 @@ RUN export CLOUD_SDK_REPO="cloud-sdk-$(lsb_release -c -s)" && \
 
 WORKDIR /home/gitlab/qa
 COPY ./qa/Gemfile* /home/gitlab/qa/
+COPY ./config/light_settings.rb /home/gitlab/config/light_settings.rb
 COPY ./config/initializers/0_inject_enterprise_edition_module.rb /home/gitlab/config/initializers/
-# Copy VERSION to ensure the COPY succeeds to copy at least one file since ee/app/models/license.rb isn't present in CE
+# Copy VERSION to ensure the COPY succeeds to copy at least one file since ee/app/models/license.rb isn't present in FOSS
+# The [b] part makes ./ee/app/models/license.r[b] a pattern that is allowed to return no files (which is the case in FOSS)
 COPY VERSION ./ee/app/models/license.r[b] /home/gitlab/ee/app/models/
+COPY ./config/light_settings.rb /home/gitlab/config/
 COPY ./lib/gitlab.rb /home/gitlab/lib/
-COPY ./INSTALLATION_TYPE /home/gitlab/
-COPY ./VERSION /home/gitlab/
-RUN cd /home/gitlab/qa/ && bundle install
+COPY ./INSTALLATION_TYPE ./VERSION /home/gitlab/
+RUN cd /home/gitlab/qa/ && bundle install --jobs=$(nproc) --retry=3 --quiet
 COPY ./qa /home/gitlab/qa
 
 ENTRYPOINT ["bin/test"]

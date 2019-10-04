@@ -180,3 +180,5 @@ class Deployment < ApplicationRecord
     self.created_at if success? && !read_attribute(:finished_at)
   end
 end
+
+Deployment.prepend_if_ee('EE::Deployment')
