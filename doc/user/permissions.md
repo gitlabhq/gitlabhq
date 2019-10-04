@@ -211,7 +211,7 @@ group.
 | View group epic **(ULTIMATE)**                         | ✓     | ✓        | ✓         | ✓          | ✓     |
 | Create/edit group epic **(ULTIMATE)**                  |       | ✓        | ✓         | ✓          | ✓     |
 | Manage group labels                                    |       | ✓        | ✓         | ✓          | ✓     |
-| Create project in group                                |       |          | ✓         | ✓          | ✓     |
+| Create project in group                                |       |          | ✓ (3)     | ✓ (3)      | ✓ (3) |
 | Create/edit/delete group milestones                    |       |          | ✓         | ✓          | ✓     |
 | Enable/disable a dependency proxy **(PREMIUM)**        |       |          | ✓         | ✓          | ✓     |
 | Use security dashboard **(ULTIMATE)**                  |       |          | ✓         | ✓          | ✓     |
@@ -228,6 +228,9 @@ group.
 - (1): Groups can be set to [allow either Owners or Owners and
   Maintainers to create subgroups](group/subgroups/index.md#creating-a-subgroup)
 - (2): Introduced in GitLab 12.2.
+- (3): Default project creation role can be changed at:
+  - The [instance level](admin_area/settings/visibility_and_access_controls.md#default-project-creation-protection).
+  - The [group level](group/index.html#default-project-creation-level).
 
 ### Subgroup permissions
 

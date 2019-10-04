@@ -1289,7 +1289,7 @@ globally and all jobs will use that definition.
 
 #### `cache:paths`
 
-Use the `paths` directive to choose which files or directories will be cached.
+Use the `paths` directive to choose which files or directories will be cached. You can only specify paths within your `$CI_PROJECT_DIR`.
 Wildcards can be used that follow the [glob](https://en.wikipedia.org/wiki/Glob_(programming)) patterns and [filepath.Match](https://golang.org/pkg/path/filepath/#Match).
 
 Cache all files in `binaries` that end in `.apk` and the `.config` file:
