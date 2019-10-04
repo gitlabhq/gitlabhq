@@ -312,7 +312,7 @@ module Gitlab
     class Importer
       def execute
         if import_file && check_version! && restorers.all?(&:restore) && overwrite_project
-          project_tree.restored_project
+          project
         else
           raise Projects::ImportService::Error.new(@shared.errors.join(', '))
         end

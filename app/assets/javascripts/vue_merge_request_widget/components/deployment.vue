@@ -211,7 +211,7 @@ export default {
               <template v-else>
                 <review-app-link
                   :link="deploymentExternalUrl"
-                  css-class="js-deploy-url js-deploy-url-feature-flag deploy-link btn btn-default btn-sm inline"
+                  css-class="js-deploy-url deploy-link btn btn-default btn-sm inline"
                 />
               </template>
               <visual-review-app-link

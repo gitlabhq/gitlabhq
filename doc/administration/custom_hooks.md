@@ -48,10 +48,9 @@ as appropriate.
 ## Set a global Git hook for all repositories
 
 To create a Git hook that applies to all of your repositories in
-your instance, set a global Git hook. Since all the repositories' `hooks`
-directories are symlinked to GitLab Shell's `hooks` directory, adding any hook
-to the GitLab Shell `hooks` directory will also apply it to all repositories. Follow
-the steps below to properly set up a custom hook for all repositories:
+your instance, set a global Git hook. Since GitLab will look inside the GitLab Shell
+`hooks` directory for global hooks, adding any hook there will apply it to all repositories.
+Follow the steps below to properly set up a custom hook for all repositories:
 
 1. On the GitLab server, navigate to the configured custom hook directory. The
    default is in the GitLab Shell directory. The GitLab Shell `hook` directory

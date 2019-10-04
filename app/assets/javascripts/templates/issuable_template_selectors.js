@@ -4,7 +4,7 @@ import $ from 'jquery';
 import IssuableTemplateSelector from './issuable_template_selector';
 
 export default class IssuableTemplateSelectors {
-  constructor({ $dropdowns, editor } = {}) {
+  constructor({ $dropdowns, editor, warnTemplateOverride } = {}) {
     this.$dropdowns = $dropdowns || $('.js-issuable-selector');
     this.editor = editor || this.initEditor();
 
@@ -16,6 +16,7 @@ export default class IssuableTemplateSelectors {
         wrapper: $dropdown.closest('.js-issuable-selector-wrap'),
         dropdown: $dropdown,
         editor: this.editor,
+        warnTemplateOverride,
       });
     });
   }

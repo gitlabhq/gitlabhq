@@ -55,6 +55,10 @@
   background-color: $gray-light;
 }
 
+.bg-line-target-blue {
+  background: $line-target-blue;
+}
+
 .text-break-word {
   word-break: break-all;
 }
@@ -210,18 +214,26 @@ li.note {
 @mixin message($background-color, $border-color, $text-color) {
   border-left: 4px solid $border-color;
   color: $text-color;
-  padding: 10px;
-  margin-bottom: 10px;
-  background: $background-color;
-  padding-left: 20px;
+  padding: $gl-padding $gl-padding-24;
+  margin-bottom: $gl-padding-12;
+  background-color: $background-color;
 
   &.centered {
     text-align: center;
   }
+
+  .close {
+    svg {
+      width: $gl-font-size-large;
+      height: $gl-font-size-large;
+    }
+
+    color: inherit;
+  }
 }
 
 .warning_message {
-  @include message($orange-100, $orange-200, $orange-700);
+  @include message($orange-100, $orange-200, $orange-800);
 }
 
 .danger_message {

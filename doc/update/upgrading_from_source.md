@@ -193,7 +193,7 @@ cd /home/git/gitlab-shell
 
 sudo -u git -H git fetch --all --tags --prune
 sudo -u git -H git checkout v$(</home/git/gitlab/GITLAB_SHELL_VERSION)
-sudo -u git -H bin/compile
+sudo -u git -H make build
 ```
 
 ### 9. Update GitLab Workhorse

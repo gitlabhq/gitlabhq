@@ -717,6 +717,7 @@ GitLabDropdown = (function() {
         selectedObject = this.renderedData[groupName][selectedIndex];
       } else {
         selectedIndex = el.closest('li').index();
+        this.selectedIndex = selectedIndex;
         selectedObject = this.renderedData[selectedIndex];
       }
     }

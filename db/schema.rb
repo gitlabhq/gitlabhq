@@ -2556,6 +2556,7 @@ ActiveRecord::Schema.define(version: 2019_09_27_074328) do
     t.string "name", null: false
     t.string "version"
     t.integer "package_type", limit: 2, null: false
+    t.index ["name"], name: "index_packages_packages_on_name_trigram", opclass: :gin_trgm_ops, using: :gin
     t.index ["project_id"], name: "index_packages_packages_on_project_id"
   end
 

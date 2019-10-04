@@ -15,7 +15,9 @@ export default () => {
   new IssuableForm($('.issue-form'));
   new LabelsSelect();
   new MilestoneSelect();
-  new IssuableTemplateSelectors();
+  new IssuableTemplateSelectors({
+    warnTemplateOverride: true,
+  });
 
   initSuggestions();
 };

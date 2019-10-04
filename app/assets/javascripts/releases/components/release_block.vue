@@ -6,6 +6,9 @@ import Icon from '~/vue_shared/components/icon.vue';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 import { __, n__, sprintf } from '../../locale';
+import { slugify } from '~/lib/utils/text_utility';
+import { getLocationHash } from '~/lib/utils/url_utility';
+import { scrollToElement } from '~/lib/utils/common_utils';
 
 export default {
   name: 'ReleaseBlock',
@@ -26,7 +29,15 @@ export default {
       default: () => ({}),
     },
   },
+  data() {
+    return {
+      isHighlighted: false,
+    };
+  },
   computed: {
+    id() {
+      return slugify(this.release.tag_name);
+    },
     releasedTimeAgo() {
       return sprintf(__('released %{time}'), {
         time: this.timeFormated(this.release.released_at),
@@ -62,10 +73,21 @@ export default {
       return n__('Milestone', 'Milestones', this.release.milestones.length);
     },
   },
+  mounted() {
+    const hash = getLocationHash();
+    if (hash && slugify(hash) === this.id) {
+      this.isHighlighted = true;
+      setTimeout(() => {
+        this.isHighlighted = false;
+      }, 2000);
+
+      scrollToElement(this.$el);
+    }
+  },
 };
 </script>
 <template>
-  <div :id="release.tag_name" class="card">
+  <div :id="id" :class="{ 'bg-line-target-blue': isHighlighted }" class="card release-block">
     <div class="card-body">
       <h2 class="card-title mt-0">
         {{ release.name }}

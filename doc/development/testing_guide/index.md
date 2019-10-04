@@ -60,6 +60,10 @@ Everything you should know about how to test Rake tasks.
 Everything you should know about how to run end-to-end tests using
 [GitLab QA][gitlab-qa] testing framework.
 
+## [Migrations tests](testing_migrations_guide.md)
+
+Everything you should know about how to test migrations.
+
 [Return to Development documentation](../README.md)
 
 [RSpec]: https://github.com/rspec/rspec-rails#feature-specs

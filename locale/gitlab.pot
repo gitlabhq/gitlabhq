@@ -1692,6 +1692,12 @@ msgstr ""
 msgid "Apply suggestion"
 msgstr ""
 
+msgid "Apply template"
+msgstr ""
+
+msgid "Applying a template will replace the existing issue description. Any changes you have made will be lost."
+msgstr ""
+
 msgid "Applying command"
 msgstr ""
 

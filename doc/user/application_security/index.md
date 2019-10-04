@@ -87,10 +87,12 @@ If you wish to undo this dismissal, you can click the **Undo dismiss** button.
 > Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.0.
 
 When dismissing a vulnerability, it's often helpful to provide a reason for doing so.
-If you press the comment button next to **Dismiss vulnerability** in the modal, a text box will appear, allowing you to add a comment with your dismissal.
-This comment can not currently be edited or removed, but [future versions](https://gitlab.com/gitlab-org/gitlab/issues/11721) will add this functionality.
+If you press the comment button next to **Dismiss vulnerability** in the modal,
+a text box will appear, allowing you to add a comment with your dismissal.
+Once added, you can edit it or delete it. This allows you to add and update
+context for a vulnerability as you learn more over time.
 
-![Dismissed vulnerability comment](img/dismissed_info.png)
+![Dismissed vulnerability comment](img/dismissed_info_v12_3.png)
 
 ### Creating an issue for a vulnerability
 

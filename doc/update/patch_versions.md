@@ -87,7 +87,7 @@ cd /home/git/gitlab-shell
 
 sudo -u git -H git fetch --all --tags
 sudo -u git -H git checkout v$(</home/git/gitlab/GITLAB_SHELL_VERSION) -b v$(</home/git/gitlab/GITLAB_SHELL_VERSION)
-sudo -u git -H sh -c 'if [ -x bin/compile ]; then bin/compile; fi'
+sudo -u git -H make build
 ```
 
 ### 7. Update GitLab Pages to the corresponding version (skip if not using pages)

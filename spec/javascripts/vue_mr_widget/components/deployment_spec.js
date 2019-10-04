@@ -207,7 +207,7 @@ describe('Deployment component', () => {
 
     it('renders the link to the review app without dropdown', () => {
       expect(vm.$el.querySelector('.js-mr-wigdet-deployment-dropdown')).toBeNull();
-      expect(vm.$el.querySelector('.js-deploy-url-feature-flag')).not.toBeNull();
+      expect(vm.$el.querySelector('.js-deploy-url')).not.toBeNull();
     });
   });
 
@@ -223,12 +223,12 @@ describe('Deployment component', () => {
 
     it('renders the link to the review app without dropdown', () => {
       expect(vm.$el.querySelector('.js-mr-wigdet-deployment-dropdown')).toBeNull();
-      expect(vm.$el.querySelector('.js-deploy-url-feature-flag')).not.toBeNull();
+      expect(vm.$el.querySelector('.js-deploy-url')).not.toBeNull();
     });
 
     it('renders the link to the review app linked to to the first change', () => {
       const expectedUrl = deploymentMockData.changes[0].external_url;
-      const deployUrl = vm.$el.querySelector('.js-deploy-url-feature-flag');
+      const deployUrl = vm.$el.querySelector('.js-deploy-url');
 
       expect(vm.$el.querySelector('.js-mr-wigdet-deployment-dropdown')).toBeNull();
       expect(deployUrl).not.toBeNull();

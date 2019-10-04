@@ -19,7 +19,7 @@ module Gitlab
 
       def execute
         if import_file && check_version! && restorers.all?(&:restore) && overwrite_project
-          project_tree.restored_project
+          project
         else
           raise Projects::ImportService::Error.new(shared.errors.to_sentence)
         end
@@ -55,32 +55,32 @@ module Gitlab
       end
 
       def avatar_restorer
-        Gitlab::ImportExport::AvatarRestorer.new(project: project_tree.restored_project, shared: shared)
+        Gitlab::ImportExport::AvatarRestorer.new(project: project, shared: shared)
       end
 
       def repo_restorer
         Gitlab::ImportExport::RepoRestorer.new(path_to_bundle: repo_path,
                                                shared: shared,
-                                               project: project_tree.restored_project)
+                                               project: project)
       end
 
       def wiki_restorer
         Gitlab::ImportExport::WikiRestorer.new(path_to_bundle: wiki_repo_path,
                                                shared: shared,
-                                               project: ProjectWiki.new(project_tree.restored_project),
+                                               project: ProjectWiki.new(project),
                                                wiki_enabled: project.wiki_enabled?)
       end
 
       def uploads_restorer
-        Gitlab::ImportExport::UploadsRestorer.new(project: project_tree.restored_project, shared: shared)
+        Gitlab::ImportExport::UploadsRestorer.new(project: project, shared: shared)
       end
 
       def lfs_restorer
-        Gitlab::ImportExport::LfsRestorer.new(project: project_tree.restored_project, shared: shared)
+        Gitlab::ImportExport::LfsRestorer.new(project: project, shared: shared)
       end
 
       def statistics_restorer
-        Gitlab::ImportExport::StatisticsRestorer.new(project: project_tree.restored_project, shared: shared)
+        Gitlab::ImportExport::StatisticsRestorer.new(project: project, shared: shared)
       end
 
       def path_with_namespace
@@ -105,8 +105,6 @@ module Gitlab
       end
 
       def overwrite_project
-        project = project_tree.restored_project
-
         return unless can?(current_user, :admin_namespace, project.namespace)
 
         if overwrite_project?

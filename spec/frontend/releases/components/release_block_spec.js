@@ -4,6 +4,18 @@ import timeagoMixin from '~/vue_shared/mixins/timeago';
 import { first } from 'underscore';
 import { release } from '../mock_data';
 import Icon from '~/vue_shared/components/icon.vue';
+import { scrollToElement } from '~/lib/utils/common_utils';
+
+let mockLocationHash;
+jest.mock('~/lib/utils/url_utility', () => ({
+  __esModule: true,
+  getLocationHash: jest.fn().mockImplementation(() => mockLocationHash),
+}));
+
+jest.mock('~/lib/utils/common_utils', () => ({
+  __esModule: true,
+  scrollToElement: jest.fn(),
+}));
 
 describe('Release block', () => {
   let wrapper;
@@ -158,5 +170,62 @@ describe('Release block', () => {
     factory(releaseClone);
 
     expect(wrapper.text()).toContain('Upcoming Release');
+  });
+
+  it('slugifies the tag_name before setting it as the elements ID', () => {
+    const releaseClone = JSON.parse(JSON.stringify(release));
+    releaseClone.tag_name = 'a dangerous tag name <script>alert("hello")</script>';
+
+    factory(releaseClone);
+
+    expect(wrapper.attributes().id).toBe('a-dangerous-tag-name-script-alert-hello-script-');
+  });
+
+  describe('anchor scrolling', () => {
+    beforeEach(() => {
+      scrollToElement.mockClear();
+    });
+
+    const hasTargetBlueBackground = () => wrapper.classes('bg-line-target-blue');
+
+    it('does not attempt to scroll the page if no anchor tag is included in the URL', () => {
+      mockLocationHash = '';
+      factory(release);
+
+      expect(scrollToElement).not.toHaveBeenCalled();
+    });
+
+    it("does not attempt to scroll the page if the anchor tag doesn't match the release's tag name", () => {
+      mockLocationHash = 'v0.4';
+      factory(release);
+
+      expect(scrollToElement).not.toHaveBeenCalled();
+    });
+
+    it("attempts to scroll itself into view if the anchor tag matches the release's tag name", () => {
+      mockLocationHash = release.tag_name;
+      factory(release);
+
+      expect(scrollToElement).toHaveBeenCalledTimes(1);
+      expect(scrollToElement).toHaveBeenCalledWith(wrapper.element);
+    });
+
+    it('renders with a light blue background if it is the target of the anchor', () => {
+      mockLocationHash = release.tag_name;
+      factory(release);
+
+      return wrapper.vm.$nextTick().then(() => {
+        expect(hasTargetBlueBackground()).toBe(true);
+      });
+    });
+
+    it('does not render with a light blue background if it is not the target of the anchor', () => {
+      mockLocationHash = '';
+      factory(release);
+
+      return wrapper.vm.$nextTick().then(() => {
+        expect(hasTargetBlueBackground()).toBe(false);
+      });
+    });
   });
 });
