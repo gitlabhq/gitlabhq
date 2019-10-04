@@ -414,6 +414,42 @@ Get Flowdock service settings for a project.
 GET /projects/:id/services/flowdock
 ```
 
+## GitHub **(PREMIUM)**
+
+Code collaboration software.
+
+### Create/Edit GitHub service
+
+Set GitHub service for a project.
+
+```
+PUT /projects/:id/services/github
+```
+
+Parameters:
+
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `token` | string | true | GitHub API token with `repo:status` OAuth scope |
+| `repository_url` | string | true | GitHub repository URL |
+| `static_context` | boolean | false | Append instance name instead of branch to [status check name](../user/project/integrations/github.md#static--dynamic-status-check-names) |
+
+### Delete GitHub service
+
+Delete GitHub service for a project.
+
+```
+DELETE /projects/:id/services/github
+```
+
+### Get GitHub service settings
+
+Get GitHub service settings for a project.
+
+```
+GET /projects/:id/services/github
+```
+
 ## Hangouts Chat
 
 Google GSuite team collaboration tool.

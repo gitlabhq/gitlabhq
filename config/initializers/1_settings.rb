@@ -663,7 +663,11 @@ Settings.monitoring['ruby_sampler_interval'] ||= 60
 Settings.monitoring['sidekiq_exporter'] ||= Settingslogic.new({})
 Settings.monitoring.sidekiq_exporter['enabled'] ||= false
 Settings.monitoring.sidekiq_exporter['address'] ||= 'localhost'
-Settings.monitoring.sidekiq_exporter['port'] ||= 3807
+Settings.monitoring.sidekiq_exporter['port'] ||= 8082
+Settings.monitoring['web_exporter'] ||= Settingslogic.new({})
+Settings.monitoring.web_exporter['enabled'] ||= false
+Settings.monitoring.web_exporter['address'] ||= 'localhost'
+Settings.monitoring.web_exporter['port'] ||= 8083
 
 #
 # Testing settings

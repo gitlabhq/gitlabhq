@@ -35,7 +35,7 @@ Sidekiq.configure_server do |config|
     # webserver metrics are cleaned up in config.ru: `warmup` block
     Prometheus::CleanupMultiprocDirService.new.execute
 
-    Gitlab::Metrics::SidekiqMetricsExporter.instance.start
+    Gitlab::Metrics::Exporter::SidekiqExporter.instance.start
   end
 end
 
@@ -56,5 +56,26 @@ if !Rails.env.test? && Gitlab::Metrics.prometheus_metrics_enabled?
     end
 
     Gitlab::Metrics::RequestsRackMiddleware.initialize_http_request_duration_seconds
+  end
+end
+
+if defined?(::Unicorn) || defined?(::Puma)
+  Gitlab::Cluster::LifecycleEvents.on_master_start do
+    Gitlab::Metrics::Exporter::WebExporter.instance.start
+  end
+
+  Gitlab::Cluster::LifecycleEvents.on_before_master_restart do
+    # We need to ensure that before we re-exec server
+    # we do stop the exporter
+    Gitlab::Metrics::Exporter::WebExporter.instance.stop
+  end
+
+  Gitlab::Cluster::LifecycleEvents.on_worker_start do
+    # The `#close_on_exec=` takes effect only on `execve`
+    # but this does not happen for Ruby fork
+    #
+    # This does stop server, as it is running on master.
+    # However, ensures that we close the TCPSocket.
+    Gitlab::Metrics::Exporter::WebExporter.instance.stop
   end
 end

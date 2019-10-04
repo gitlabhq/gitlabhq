@@ -40,7 +40,7 @@ module Gitlab
           (@before_fork_hooks ||= []) << block
         end
 
-        def on_master_restart(&block)
+        def on_before_master_restart(&block)
           return unless in_clustered_environment?
 
           # Defer block execution
@@ -70,11 +70,14 @@ module Gitlab
           end
         end
 
-        def do_master_restart
+        def do_before_master_restart
           @master_restart_hooks && @master_restart_hooks.each do |block|
             block.call
           end
         end
+
+        # DEPRECATED
+        alias_method :do_master_restart, :do_before_master_restart
 
         # Puma doesn't use singletons (which is good) but
         # this means we need to pass through whether the
