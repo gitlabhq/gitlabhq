@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Projects::EnvironmentsController < Projects::ApplicationController
+  include MetricsDashboard
+
   layout 'project'
   before_action :authorize_read_environment!
   before_action :authorize_create_environment!, only: [:new, :create]
@@ -158,42 +160,6 @@ class Projects::EnvironmentsController < Projects::ApplicationController
     end
   end
 
-  def metrics_dashboard
-    if params[:embedded]
-      result = dashboard_finder.find(
-        project,
-        current_user,
-        environment: environment,
-        dashboard_path: params[:dashboard],
-        **dashboard_params.to_h.symbolize_keys
-      )
-    else
-      result = dashboard_finder.find(
-        project,
-        current_user,
-        environment: environment,
-        dashboard_path: params[:dashboard]
-      )
-
-      result[:all_dashboards] = dashboard_finder.find_all_paths(project)
-    end
-
-    respond_to do |format|
-      if result[:status] == :success
-        format.json do
-          render status: :ok, json: result.slice(:all_dashboards, :dashboard, :status)
-        end
-      else
-        format.json do
-          render(
-            status: result[:http_status],
-            json: result.slice(:all_dashboards, :message, :status)
-          )
-        end
-      end
-    end
-  end
-
   def search
     respond_to do |format|
       format.json do
@@ -231,12 +197,15 @@ class Projects::EnvironmentsController < Projects::ApplicationController
     params.require([:start, :end])
   end
 
-  def dashboard_params
-    params.permit(:embedded, :group, :title, :y_label)
+  def metrics_dashboard_params
+    params
+      .permit(:embedded, :group, :title, :y_label)
+      .to_h.symbolize_keys
+      .merge(dashboard_path: params[:dashboard], environment: environment)
   end
 
-  def dashboard_finder
-    Gitlab::Metrics::Dashboard::Finder
+  def include_all_dashboards?
+    !params[:embedded]
   end
 
   def search_environment_names

@@ -22,8 +22,13 @@ To fix this issue, here are some possible solutions.
 
 ### Increase the POST buffer size in Git
 
-**If pushing over HTTP**, you can try increasing the POST buffer size in Git's
-configuration. Open a terminal and enter:
+**If you're using Git over HTTP instead of SSH**, you can try increasing the POST buffer size in Git's
+configuration.
+
+Example of an error during a clone:
+`fatal: pack has bad object at offset XXXXXXXXX: inflate returned -5`
+
+Open a terminal and enter:
 
 ```sh
 git config http.postBuffer 52428800

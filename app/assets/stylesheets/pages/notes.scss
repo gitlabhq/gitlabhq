@@ -355,10 +355,13 @@ $note-form-margin-left: 72px;
     }
   }
 
+  .timeline-icon {
+    float: left;
+  }
+
   .system-note,
   .discussion-filter-note {
     .timeline-icon {
-      float: left;
       display: flex;
       align-items: center;
       background-color: $white-light;

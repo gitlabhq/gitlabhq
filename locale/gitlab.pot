@@ -14063,13 +14063,28 @@ msgstr ""
 msgid "SecurityDashboard|%{firstProject}, %{secondProject}, and %{rest}"
 msgstr ""
 
+msgid "SecurityDashboard|Add a project to your dashboard"
+msgstr ""
+
+msgid "SecurityDashboard|Add or remove projects from your dashboard"
+msgstr ""
+
+msgid "SecurityDashboard|Add projects"
+msgstr ""
+
 msgid "SecurityDashboard|Confidence"
+msgstr ""
+
+msgid "SecurityDashboard|Edit dashboard"
 msgstr ""
 
 msgid "SecurityDashboard|Hide dismissed"
 msgstr ""
 
 msgid "SecurityDashboard|Monitor vulnerabilities in your code"
+msgstr ""
+
+msgid "SecurityDashboard|More information"
 msgstr ""
 
 msgid "SecurityDashboard|Pipeline %{pipelineLink} triggered"
@@ -14081,7 +14096,16 @@ msgstr ""
 msgid "SecurityDashboard|Report type"
 msgstr ""
 
+msgid "SecurityDashboard|Return to dashboard"
+msgstr ""
+
+msgid "SecurityDashboard|Security Dashboard"
+msgstr ""
+
 msgid "SecurityDashboard|Severity"
+msgstr ""
+
+msgid "SecurityDashboard|The security dashboard displays the latest security findings for projects you wish to monitor. Select \"Edit dashboard\" to add and remove projects."
 msgstr ""
 
 msgid "SecurityDashboard|Unable to add %{invalidProjects}"

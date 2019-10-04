@@ -1,0 +1,5 @@
+---
+title: Fix broken notes avatar rendering in Chrome 77
+merge_request: 18110
+author:
+type: fixed
