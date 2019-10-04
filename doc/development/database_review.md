@@ -95,7 +95,7 @@ and details for a database reviewer:
   - Check queries timing (If any): Queries executed in a migration
     need to fit comfortably within `15s` - preferably much less than that - on GitLab.com.
 - Check [background migrations](background_migrations.md):
-  - Establish a time estimate for execution
+  - Establish a time estimate for execution on GitLab.com.
   - They should only be used when migrating data in larger tables.
     - If a single `update` is below than `1s` the query can be placed
       directly in a regular migration (inside `db/migrate`).
@@ -106,7 +106,11 @@ and details for a database reviewer:
     that post migrations are executed post-deployment in production.
 - Check [timing guidelines for migrations](#timing-guidelines-for-migrations)
 - Check migrations are reversible and implement a `#down` method
-- Data migrations should be reversible too or come with a description of how to reverse, when possible. This applies to all types of migrations (regular, post-deploy, background).
+- Check data migrations:
+  - Establish a time estimate for execution on GitLab.com.
+  - Depending on timing, data migrations can be placed on regular, post-deploy or background migrations.
+  - Data migrations should be reversible too or come with a description of how to reverse, when possible.
+    This applies to all types of migrations (regular, post-deploy, background).
 - Query performance
   - Check for any obviously complex queries and queries the author specifically
     points out for review (if any)
