@@ -58,7 +58,7 @@ describe 'Container Registry', :js do
       expect(Projects::ContainerRepository::DeleteTagsService).to receive(:new).with(container_repository.project, user, tags: ['latest']) { service }
 
       click_on(class: 'js-delete-registry-row', visible: false)
-      expect(find('.modal .modal-title')).to have_content 'Remove image'
+      expect(find('.modal .modal-title')).to have_content 'Remove tag'
       find('.modal .modal-footer .btn-danger').click
     end
   end

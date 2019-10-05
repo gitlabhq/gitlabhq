@@ -196,7 +196,7 @@ describe('table registry', () => {
     it('should show the singular title and image name when deleting a single image', () => {
       wrapper.setData({ itemsToBeDeleted: [1] });
       wrapper.vm.setModalDescription(0);
-      expect(wrapper.vm.modalTitle).toBe('Remove image');
+      expect(wrapper.vm.modalTitle).toBe('Remove tag');
       expect(wrapper.vm.modalDescription).toContain(firstImage.tag);
     });
 
@@ -204,8 +204,8 @@ describe('table registry', () => {
       wrapper.setData({ itemsToBeDeleted: [1, 2] });
       wrapper.vm.setModalDescription();
 
-      expect(wrapper.vm.modalTitle).toBe('Remove images');
-      expect(wrapper.vm.modalDescription).toContain('<b>2</b> images');
+      expect(wrapper.vm.modalTitle).toBe('Remove tags');
+      expect(wrapper.vm.modalDescription).toContain('<b>2</b> tags');
     });
   });
 });

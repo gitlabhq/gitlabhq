@@ -4208,18 +4208,18 @@ msgstr ""
 msgid "ContainerRegistry|Quick Start"
 msgstr ""
 
-msgid "ContainerRegistry|Remove image"
-msgid_plural "ContainerRegistry|Remove images"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "ContainerRegistry|Remove image(s) and tags"
-msgstr ""
-
 msgid "ContainerRegistry|Remove repository"
 msgstr ""
 
-msgid "ContainerRegistry|Remove selected images"
+msgid "ContainerRegistry|Remove selected tags"
+msgstr ""
+
+msgid "ContainerRegistry|Remove tag"
+msgid_plural "ContainerRegistry|Remove tags"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "ContainerRegistry|Remove tag(s)"
 msgstr ""
 
 msgid "ContainerRegistry|Size"
@@ -4243,10 +4243,10 @@ msgstr ""
 msgid "ContainerRegistry|With the Docker Container Registry integrated into GitLab, every project can have its own space to store its Docker images. %{docLinkStart}More Information%{docLinkEnd}"
 msgstr ""
 
-msgid "ContainerRegistry|You are about to delete <b>%{count}</b> images. This will delete the images and all tags pointing to them."
+msgid "ContainerRegistry|You are about to remove <b>%{count}</b> tags. Are you sure?"
 msgstr ""
 
-msgid "ContainerRegistry|You are about to delete the image <b>%{title}</b>. This will delete the image and all tags pointing to this image."
+msgid "ContainerRegistry|You are about to remove <b>%{title}</b>. Are you sure?"
 msgstr ""
 
 msgid "ContainerRegistry|You are about to remove repository <b>%{title}</b>. Once you confirm, this repository will be permanently deleted."
