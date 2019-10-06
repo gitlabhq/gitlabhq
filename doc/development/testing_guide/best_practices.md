@@ -202,14 +202,29 @@ so we need to set some guidelines for their use going forward:
   order is required, otherwise `let` will suffice. Remember that `let` is lazy and won't
   be evaluated until it is referenced.
 
-### `let_it_be` variables
+### Common test setup
 
-In some cases there is no need to recreate the same object for tests
-again for each example. For example, a project is needed to test issues
-on the same project, one project will do for the entire file. This can
-be achieved by using
-[`let_it_be`](https://test-prof.evilmartians.io/#/let_it_be) variables
+In some cases, there is no need to recreate the same object for tests
+again for each example. For example, a project and a guest of that project
+is needed to test issues on the same project, one project and user will do for the entire file.
+This can be achieved by using
+[`let_it_be`](https://test-prof.evilmartians.io/#/let_it_be) variables and the
+[`before_all`](https://test-prof.evilmartians.io/#/before_all) hook
 from the [`test-prof` gem](https://rubygems.org/gems/test-prof).
+
+```
+let_it_be(:project) { create(:project) }
+let_it_be(:user) { create(:user) }
+
+before_all do
+  project.add_guest(user)
+end
+```
+
+This will result in only one `Project`, `User`, and `ProjectMember` created for this context.
+
+`let_it_be` and `before_all` are also available within nested contexts. Cleanup after the context
+is handled automatically using a transaction rollback.
 
 Note that if you modify an object defined inside a `let_it_be` block,
 then you will need to reload the object as needed, or specify the `reload`

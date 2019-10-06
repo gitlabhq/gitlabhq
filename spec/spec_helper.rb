@@ -10,7 +10,7 @@ require 'rspec/rails'
 require 'shoulda/matchers'
 require 'rspec/retry'
 require 'rspec-parameterized'
-require "test_prof/recipes/rspec/let_it_be"
+require 'test_prof/recipes/rspec/let_it_be'
 
 rspec_profiling_is_configured =
   ENV['RSPEC_PROFILING_POSTGRES_URL'].present? ||
