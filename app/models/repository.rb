@@ -568,7 +568,7 @@ class Repository
   delegate :branch_count, :tag_count, :has_visible_content?, to: :raw_repository
   cache_method :branch_count, fallback: 0
   cache_method :tag_count, fallback: 0
-  cache_method :has_visible_content?, fallback: false
+  cache_method_asymmetrically :has_visible_content?
 
   def avatar
     # n+1: https://gitlab.com/gitlab-org/gitlab-foss/issues/38327

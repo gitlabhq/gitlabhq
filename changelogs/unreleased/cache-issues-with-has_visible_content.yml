@@ -1,0 +1,5 @@
+---
+title: Use cache_method_asymmetrically with Repository#has_visible_content?
+merge_request: 17975
+author:
+type: fixed

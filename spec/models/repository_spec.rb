@@ -1193,33 +1193,21 @@ describe Repository do
   end
 
   describe '#has_visible_content?' do
-    before do
-      # If raw_repository.has_visible_content? gets called more than once then
-      # caching is broken. We don't want that.
+    it 'delegates to raw_repository when true' do
       expect(repository.raw_repository).to receive(:has_visible_content?)
-        .once
-        .and_return(result)
+        .and_return(true)
+
+      expect(repository.has_visible_content?).to eq(true)
     end
 
-    context 'when true' do
-      let(:result) { true }
+    it 'delegates to raw_repository when false' do
+      expect(repository.raw_repository).to receive(:has_visible_content?)
+        .and_return(false)
 
-      it 'returns true and caches it' do
-        expect(repository.has_visible_content?).to eq(true)
-        # Second call hits the cache
-        expect(repository.has_visible_content?).to eq(true)
-      end
+      expect(repository.has_visible_content?).to eq(false)
     end
 
-    context 'when false' do
-      let(:result) { false }
-
-      it 'returns false and caches it' do
-        expect(repository.has_visible_content?).to eq(false)
-        # Second call hits the cache
-        expect(repository.has_visible_content?).to eq(false)
-      end
-    end
+    it_behaves_like 'asymmetric cached method', :has_visible_content?
   end
 
   describe '#branch_exists?' do
