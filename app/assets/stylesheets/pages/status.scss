@@ -37,6 +37,10 @@
     }
   }
 
+  &.ci-preparing {
+    @include status-color($gray-100, $gray-500, $gray-600);
+  }
+
   &.ci-pending,
   &.ci-failed-with-warnings,
   &.ci-success-with-warnings {
@@ -44,7 +48,6 @@
   }
 
   &.ci-info,
-  &.ci-preparing,
   &.ci-running {
     @include status-color($blue-100, $blue-500, $blue-600);
   }

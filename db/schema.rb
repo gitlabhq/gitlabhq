@@ -3350,7 +3350,9 @@ ActiveRecord::Schema.define(version: 2019_09_29_180827) do
 
   create_table "software_licenses", id: :serial, force: :cascade do |t|
     t.string "name", null: false
+    t.string "spdx_identifier", limit: 255
     t.index ["name"], name: "index_software_licenses_on_name"
+    t.index ["spdx_identifier"], name: "index_software_licenses_on_spdx_identifier"
   end
 
   create_table "spam_logs", id: :serial, force: :cascade do |t|

@@ -13117,6 +13117,9 @@ msgstr ""
 msgid "Related merge requests"
 msgstr ""
 
+msgid "Release"
+msgstr ""
+
 msgid "Releases"
 msgstr ""
 

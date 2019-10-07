@@ -16,11 +16,11 @@ describe Gitlab::Ci::Status::Preparing do
   end
 
   describe '#icon' do
-    it { expect(subject.icon).to eq 'status_created' }
+    it { expect(subject.icon).to eq 'status_preparing' }
   end
 
   describe '#favicon' do
-    it { expect(subject.favicon).to eq 'favicon_status_created' }
+    it { expect(subject.favicon).to eq 'favicon_status_preparing' }
   end
 
   describe '#group' do

@@ -31,7 +31,16 @@
   }
 }
 
-.ci-status-icon-preparing,
+.ci-status-icon-preparing {
+  svg {
+    fill: $gray-500;
+  }
+
+  &.add-border {
+    @include borderless-status-icon($gray-500);
+  }
+}
+
 .ci-status-icon-running {
   svg {
     fill: $blue-400;

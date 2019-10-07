@@ -12,20 +12,12 @@ module Gitlab
           s_('CiStatusLabel|preparing')
         end
 
-        ##
-        # TODO: shared with 'created'
-        # until we get one for 'preparing'
-        #
         def icon
-          'status_created'
+          'status_preparing'
         end
 
-        ##
-        # TODO: shared with 'created'
-        # until we get one for 'preparing'
-        #
         def favicon
-          'favicon_status_created'
+          'favicon_status_preparing'
         end
       end
     end

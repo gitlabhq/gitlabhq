@@ -77,6 +77,8 @@ module CiStatusHelper
         'status_failed'
       when 'pending'
         'status_pending'
+      when 'preparing'
+        'status_preparing'
       when 'running'
         'status_running'
       when 'play'

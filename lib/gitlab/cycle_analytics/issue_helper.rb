@@ -12,14 +12,12 @@ module Gitlab
           .project(routes_table[:path].as("namespace_path"))
 
         query = limit_query(query, project_ids)
-
-        query
+        limit_query_by_date_range(query)
       end
 
       def limit_query(query, project_ids)
         query.where(issue_table[:project_id].in(project_ids))
           .where(routes_table[:source_type].eq('Namespace'))
-          .where(issue_table[:created_at].gteq(options[:from]))
           .where(issue_metrics_table[:first_added_to_board_at].not_eq(nil).or(issue_metrics_table[:first_associated_with_milestone_at].not_eq(nil)))
       end
     end

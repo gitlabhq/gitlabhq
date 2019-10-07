@@ -491,6 +491,9 @@ Gitlab.ee do
   Settings.cron_jobs['historical_data_worker'] ||= Settingslogic.new({})
   Settings.cron_jobs['historical_data_worker']['cron'] ||= '0 12 * * *'
   Settings.cron_jobs['historical_data_worker']['job_class'] = 'HistoricalDataWorker'
+  Settings.cron_jobs['import_software_licenses_worker'] ||= Settingslogic.new({})
+  Settings.cron_jobs['import_software_licenses_worker']['cron'] ||= '0 3 * * 0'
+  Settings.cron_jobs['import_software_licenses_worker']['job_class'] = 'ImportSoftwareLicensesWorker'
   Settings.cron_jobs['ldap_group_sync_worker'] ||= Settingslogic.new({})
   Settings.cron_jobs['ldap_group_sync_worker']['cron'] ||= '0 * * * *'
   Settings.cron_jobs['ldap_group_sync_worker']['job_class'] = 'LdapAllGroupsSyncWorker'

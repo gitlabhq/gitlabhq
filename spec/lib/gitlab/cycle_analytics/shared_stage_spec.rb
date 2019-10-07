@@ -32,3 +32,23 @@ shared_examples 'base stage' do
     expect(stage.events).not_to be_nil
   end
 end
+
+shared_examples 'calculate #median with date range' do
+  context 'when valid date range is given' do
+    before do
+      stage_options[:from] = 5.days.ago
+      stage_options[:to] = 5.days.from_now
+    end
+
+    it { expect(stage.project_median).to eq(ISSUES_MEDIAN) }
+  end
+
+  context 'when records are out of the date range' do
+    before do
+      stage_options[:from] = 2.years.ago
+      stage_options[:to] = 1.year.ago
+    end
+
+    it { expect(stage.project_median).to eq(nil) }
+  end
+end

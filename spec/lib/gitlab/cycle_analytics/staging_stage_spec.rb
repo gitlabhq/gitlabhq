@@ -16,7 +16,8 @@ describe Gitlab::CycleAnalytics::StagingStage do
   let(:build_1) { create(:ci_build, project: project) }
   let(:build_2) { create(:ci_build, project: project) }
 
-  let(:stage) { described_class.new(options: { from: 2.days.ago, current_user: project.creator, project: project }) }
+  let(:stage_options) { { from: 2.days.ago, current_user: project.creator, project: project } }
+  let(:stage) { described_class.new(options: stage_options) }
 
   before do
     mr_1.metrics.update!(merged_at: 80.minutes.ago, first_deployed_to_production_at: 50.minutes.ago, pipeline_id: build_1.commit_id)
@@ -38,6 +39,8 @@ describe Gitlab::CycleAnalytics::StagingStage do
     it 'counts median from issues with metrics' do
       expect(stage.project_median).to eq(ISSUES_MEDIAN)
     end
+
+    it_behaves_like 'calculate #median with date range'
   end
 
   describe '#events' do

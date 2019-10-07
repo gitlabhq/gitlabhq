@@ -17,6 +17,11 @@ describe 'Container Registry', :js do
     stub_container_registry_tags(repository: :any, tags: [])
   end
 
+  it 'has a page title set' do
+    visit_container_registry
+    expect(page).to have_title(_('Container Registry'))
+  end
+
   context 'when there are no image repositories' do
     it 'user visits container registry main page' do
       visit_container_registry

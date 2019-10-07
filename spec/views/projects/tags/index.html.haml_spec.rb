@@ -23,6 +23,11 @@ describe 'projects/tags/index' do
     expect(rendered).to have_button('Last updated')
   end
 
+  it 'renders links to the Releases page for tags associated with a release' do
+    render
+    expect(rendered).to have_link(release.name, href: project_releases_path(project, anchor: release.tag))
+  end
+
   context 'when the most recent build for a tag has artifacts' do
     let!(:build) { create(:ci_build, :success, :artifacts, pipeline: pipeline) }
 
