@@ -378,6 +378,13 @@ module API
 
     class Group < BasicGroupDetails
       expose :path, :description, :visibility
+      expose :share_with_group_lock
+      expose :require_two_factor_authentication
+      expose :two_factor_grace_period
+      expose :project_creation_level_str, as: :project_creation_level
+      expose :auto_devops_enabled
+      expose :subgroup_creation_level_str, as: :subgroup_creation_level
+      expose :emails_disabled
       expose :lfs_enabled?, as: :lfs_enabled
       expose :avatar_url do |group, options|
         group.avatar_url(only_path: false)

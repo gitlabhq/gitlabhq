@@ -4,7 +4,8 @@
   - if form_based_providers.any?
     = render 'devise/shared/tabs_ldap'
   - else
-    = render 'devise/shared/tabs_normal'
+    - unless use_experimental_separate_sign_up_flow?
+      = render 'devise/shared/tabs_normal'
   .tab-content
     - if password_authentication_enabled_for_web? || ldap_enabled? || crowd_enabled?
       = render 'devise/shared/signin_box'

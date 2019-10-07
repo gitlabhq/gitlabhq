@@ -5,7 +5,7 @@ module DataFields
 
   class_methods do
     # Provide convenient accessor methods for data fields.
-    # TODO: Simplify as part of https://gitlab.com/gitlab-org/gitlab-foss/issues/63084
+    # TODO: Simplify as part of https://gitlab.com/gitlab-org/gitlab/issues/29404
     def data_field(*args)
       args.each do |arg|
         self.class_eval <<-RUBY, __FILE__, __LINE__ + 1

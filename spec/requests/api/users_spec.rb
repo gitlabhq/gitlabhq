@@ -634,10 +634,47 @@ describe API::Users do
   end
 
   describe "GET /users/sign_up" do
-    it "redirects to sign in page" do
-      get "/users/sign_up"
-      expect(response).to have_gitlab_http_status(302)
-      expect(response).to redirect_to(new_user_session_path)
+    context 'when experimental_separate_sign_up_flow is active' do
+      before do
+        stub_feature_flags(experimental_separate_sign_up_flow: true)
+      end
+
+      context 'on gitlab.com' do
+        before do
+          allow(::Gitlab).to receive(:com?).and_return(true)
+        end
+
+        it "shows sign up page" do
+          get "/users/sign_up"
+          expect(response).to have_gitlab_http_status(200)
+          expect(response).to render_template(:new)
+        end
+      end
+
+      context 'not on gitlab.com' do
+        before do
+          allow(::Gitlab).to receive(:com?).and_return(false)
+        end
+
+        it "redirects to sign in page" do
+          get "/users/sign_up"
+          expect(response).to have_gitlab_http_status(302)
+          expect(response).to redirect_to(new_user_session_path(anchor: 'register-pane'))
+        end
+      end
+    end
+
+    context 'when experimental_separate_sign_up_flow is not active' do
+      before do
+        allow(::Gitlab).to receive(:com?).and_return(true)
+        stub_feature_flags(experimental_separate_sign_up_flow: false)
+      end
+
+      it "redirects to sign in page" do
+        get "/users/sign_up"
+        expect(response).to have_gitlab_http_status(302)
+        expect(response).to redirect_to(new_user_session_path(anchor: 'register-pane'))
+      end
     end
   end
 

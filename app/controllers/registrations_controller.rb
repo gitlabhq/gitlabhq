@@ -6,13 +6,19 @@ class RegistrationsController < Devise::RegistrationsController
   include RecaptchaExperimentHelper
   include InvisibleCaptcha
 
+  layout :choose_layout
+
   prepend_before_action :check_captcha, only: :create
   before_action :whitelist_query_limiting, only: [:destroy]
   before_action :ensure_terms_accepted,
     if: -> { action_name == 'create' && Gitlab::CurrentSettings.current_application_settings.enforce_terms? }
 
   def new
-    redirect_to(new_user_session_path)
+    if helpers.use_experimental_separate_sign_up_flow?
+      @resource = build_resource
+    else
+      redirect_to new_user_session_path(anchor: 'register-pane')
+    end
   end
 
   def create
@@ -143,6 +149,16 @@ class RegistrationsController < Devise::RegistrationsController
 
   def stored_location_or_dashboard(user)
     stored_location_for(user) || dashboard_projects_path
+  end
+
+  # Part of an experiment to build a new sign up flow. Will be resolved
+  # with https://gitlab.com/gitlab-org/growth/engineering/issues/64
+  def choose_layout
+    if helpers.use_experimental_separate_sign_up_flow?
+      'devise_experimental_separate_sign_up_flow'
+    else
+      'devise'
+    end
   end
 end
 

@@ -121,7 +121,7 @@ describe Service do
           end
         end
 
-        # this  will be removed as part of https://gitlab.com/gitlab-org/gitlab-foss/issues/63084
+        # this  will be removed as part of https://gitlab.com/gitlab-org/gitlab/issues/29404
         context 'when data are stored in properties' do
           let(:properties) { data_params.merge(title: title, description: description) }
           let!(:template) do

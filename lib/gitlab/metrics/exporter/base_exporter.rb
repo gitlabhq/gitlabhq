@@ -31,7 +31,15 @@ module Gitlab
           @server = ::WEBrick::HTTPServer.new(
             Port: settings.port, BindAddress: settings.address,
             Logger: logger, AccessLog: access_log)
-          server.mount "/", Rack::Handler::WEBrick, rack_app
+          server.mount_proc '/readiness' do |req, res|
+            render_probe(
+              ::Gitlab::HealthChecks::Probes::Readiness.new, req, res)
+          end
+          server.mount_proc '/liveness' do |req, res|
+            render_probe(
+              ::Gitlab::HealthChecks::Probes::Liveness.new, req, res)
+          end
+          server.mount '/', Rack::Handler::WEBrick, rack_app
           server.start
         end
 
@@ -50,6 +58,14 @@ module Gitlab
             use ::Prometheus::Client::Rack::Exporter if ::Gitlab::Metrics.metrics_folder_present?
             run -> (env) { [404, {}, ['']] }
           end
+        end
+
+        def render_probe(probe, req, res)
+          result = probe.execute
+
+          res.status = result.http_status
+          res.content_type = 'application/json; charset=utf-8'
+          res.body = result.json.to_json
         end
       end
     end

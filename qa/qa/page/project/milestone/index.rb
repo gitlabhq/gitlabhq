@@ -17,5 +17,3 @@ module QA
     end
   end
 end
-
-QA::Page::Project::Milestone::Index.prepend_if_ee('QA::EE::Page::Project::Milestone::Index')

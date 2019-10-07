@@ -5,23 +5,21 @@ class HealthController < ActionController::Base
   include RequiresWhitelistedMonitoringClient
 
   def readiness
-    results = checks.flat_map(&:readiness)
-    success = results.all?(&:success)
-
-    # disable static error pages at the gitlab-workhorse level, we want to see this error response even in production
-    headers["X-GitLab-Custom-Error"] = 1 unless success
-
-    response = results.map { |result| [result.name, result.payload] }.to_h
-    render json: response, status: success ? :ok : :service_unavailable
+    render_probe(::Gitlab::HealthChecks::Probes::Readiness)
   end
 
   def liveness
-    render json: { status: 'ok' }, status: :ok
+    render_probe(::Gitlab::HealthChecks::Probes::Liveness)
   end
 
   private
 
-  def checks
-    ::Gitlab::HealthChecks::CHECKS
+  def render_probe(probe_class)
+    result = probe_class.new.execute
+
+    # disable static error pages at the gitlab-workhorse level, we want to see this error response even in production
+    headers["X-GitLab-Custom-Error"] = 1 unless result.success?
+
+    render json: result.json, status: result.http_status
   end
 end

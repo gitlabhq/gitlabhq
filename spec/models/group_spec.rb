@@ -880,22 +880,6 @@ describe Group do
     end
   end
 
-  describe '#has_parent?' do
-    context 'when the group has a parent' do
-      it 'is truthy' do
-        group = create(:group, :nested)
-        expect(group.has_parent?).to be_truthy
-      end
-    end
-
-    context 'when the group has no parent' do
-      it 'is falsy' do
-        group = create(:group, parent: nil)
-        expect(group.has_parent?).to be_falsy
-      end
-    end
-  end
-
   context 'with uploads' do
     it_behaves_like 'model with uploads', true do
       let(:model_object) { create(:group, :with_avatar) }

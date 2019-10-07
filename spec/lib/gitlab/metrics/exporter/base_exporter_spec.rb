@@ -4,35 +4,42 @@ require 'spec_helper'
 
 describe Gitlab::Metrics::Exporter::BaseExporter do
   let(:exporter) { described_class.new }
-  let(:server) { double('server') }
-  let(:socket) { double('socket') }
   let(:log_filename) { File.join(Rails.root, 'log', 'sidekiq_exporter.log') }
   let(:settings) { double('settings') }
 
   before do
-    allow(::WEBrick::HTTPServer).to receive(:new).and_return(server)
-    allow(server).to receive(:mount)
-    allow(server).to receive(:start)
-    allow(server).to receive(:shutdown)
-    allow(server).to receive(:listeners) { [socket] }
-    allow(socket).to receive(:close)
     allow_any_instance_of(described_class).to receive(:log_filename).and_return(log_filename)
     allow_any_instance_of(described_class).to receive(:settings).and_return(settings)
   end
 
   describe 'when exporter is enabled' do
     before do
+      allow(::WEBrick::HTTPServer).to receive(:new).with(
+        Port: anything,
+        BindAddress: anything,
+        Logger: anything,
+        AccessLog: anything
+      ).and_wrap_original do |m, *args|
+        m.call(DoNotListen: true, Logger: args.first[:Logger])
+      end
+
+      allow_any_instance_of(::WEBrick::HTTPServer).to receive(:start)
+
       allow(settings).to receive(:enabled).and_return(true)
-      allow(settings).to receive(:port).and_return(3707)
+      allow(settings).to receive(:port).and_return(8082)
       allow(settings).to receive(:address).and_return('localhost')
+    end
+
+    after do
+      exporter.stop
     end
 
     describe 'when exporter is stopped' do
       describe '#start' do
         it 'starts the exporter' do
-          expect { exporter.start.join }.to change { exporter.thread? }.from(false).to(true)
+          expect_any_instance_of(::WEBrick::HTTPServer).to receive(:start)
 
-          expect(server).to have_received(:start)
+          expect { exporter.start.join }.to change { exporter.thread? }.from(false).to(true)
         end
 
         describe 'with custom settings' do
@@ -45,23 +52,25 @@ describe Gitlab::Metrics::Exporter::BaseExporter do
           end
 
           it 'starts server with port and address from settings' do
-            exporter.start.join
-
-            expect(::WEBrick::HTTPServer).to have_received(:new).with(
+            expect(::WEBrick::HTTPServer).to receive(:new).with(
               Port: port,
               BindAddress: address,
               Logger: anything,
               AccessLog: anything
-            )
+            ).and_wrap_original do |m, *args|
+              m.call(DoNotListen: true, Logger: args.first[:Logger])
+            end
+
+            exporter.start.join
           end
         end
       end
 
       describe '#stop' do
         it "doesn't shutdown stopped server" do
-          expect { exporter.stop }.not_to change { exporter.thread? }
+          expect_any_instance_of(::WEBrick::HTTPServer).not_to receive(:shutdown)
 
-          expect(server).not_to have_received(:shutdown)
+          expect { exporter.stop }.not_to change { exporter.thread? }
         end
       end
     end
@@ -73,19 +82,65 @@ describe Gitlab::Metrics::Exporter::BaseExporter do
 
       describe '#start' do
         it "doesn't start running server" do
-          expect { exporter.start.join }.not_to change { exporter.thread? }
+          expect_any_instance_of(::WEBrick::HTTPServer).not_to receive(:start)
 
-          expect(server).to have_received(:start).once
+          expect { exporter.start.join }.not_to change { exporter.thread? }
         end
       end
 
       describe '#stop' do
         it 'shutdowns server' do
-          expect { exporter.stop }.to change { exporter.thread? }.from(true).to(false)
+          expect_any_instance_of(::WEBrick::HTTPServer).to receive(:shutdown)
 
-          expect(socket).to have_received(:close)
-          expect(server).to have_received(:shutdown)
+          expect { exporter.stop }.to change { exporter.thread? }.from(true).to(false)
         end
+      end
+    end
+  end
+
+  describe 'request handling' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:method_class, :path, :http_status) do
+      Net::HTTP::Get | '/metrics' | 200
+      Net::HTTP::Get | '/liveness' | 200
+      Net::HTTP::Get | '/readiness' | 200
+      Net::HTTP::Get | '/' | 404
+    end
+
+    before do
+      allow(settings).to receive(:enabled).and_return(true)
+      allow(settings).to receive(:port).and_return(0)
+      allow(settings).to receive(:address).and_return('127.0.0.1')
+
+      # We want to wrap original method
+      # and run handling of requests
+      # in separate thread
+      allow_any_instance_of(::WEBrick::HTTPServer)
+        .to receive(:start).and_wrap_original do |m, *args|
+        Thread.new do
+          m.call(*args)
+        rescue IOError
+          # is raised as we close listeners
+        end
+      end
+
+      exporter.start.join
+    end
+
+    after do
+      exporter.stop
+    end
+
+    with_them do
+      let(:config) { exporter.server.config }
+      let(:request) { method_class.new(path) }
+
+      it 'responds with proper http_status' do
+        http = Net::HTTP.new(config[:BindAddress], config[:Port])
+        response = http.request(request)
+
+        expect(response.code).to eq(http_status.to_s)
       end
     end
   end
@@ -97,18 +152,18 @@ describe Gitlab::Metrics::Exporter::BaseExporter do
 
     describe '#start' do
       it "doesn't start" do
+        expect_any_instance_of(::WEBrick::HTTPServer).not_to receive(:start)
+
         expect(exporter.start).to be_nil
         expect { exporter.start }.not_to change { exporter.thread? }
-
-        expect(server).not_to have_received(:start)
       end
     end
 
     describe '#stop' do
       it "doesn't shutdown" do
-        expect { exporter.stop }.not_to change { exporter.thread? }
+        expect_any_instance_of(::WEBrick::HTTPServer).not_to receive(:shutdown)
 
-        expect(server).not_to have_received(:shutdown)
+        expect { exporter.stop }.not_to change { exporter.thread? }
       end
     end
   end

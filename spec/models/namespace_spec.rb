@@ -933,4 +933,25 @@ describe Namespace do
       end
     end
   end
+
+  describe '#has_parent?' do
+    it 'returns true when the group has a parent' do
+      group = create(:group, :nested)
+
+      expect(group.has_parent?).to be_truthy
+    end
+
+    it 'returns true when the group has an unsaved parent' do
+      parent = build(:group)
+      group = build(:group, parent: parent)
+
+      expect(group.has_parent?).to be_truthy
+    end
+
+    it 'returns false when the group has no parent' do
+      group = create(:group, parent: nil)
+
+      expect(group.has_parent?).to be_falsy
+    end
+  end
 end

@@ -5472,6 +5472,9 @@ msgstr ""
 msgid "Domain verification is an essential security measure for public GitLab sites. Users are required to demonstrate they control a domain before it is enabled"
 msgstr ""
 
+msgid "Don't have an account yet?"
+msgstr ""
+
 msgid "Don't paste the private part of the GPG key. Paste the public part which begins with '-----BEGIN PGP PUBLIC KEY BLOCK-----'."
 msgstr ""
 
@@ -13079,6 +13082,12 @@ msgid "Register and see your runners for this group."
 msgstr ""
 
 msgid "Register and see your runners for this project."
+msgstr ""
+
+msgid "Register for GitLab.com"
+msgstr ""
+
+msgid "Register now"
 msgstr ""
 
 msgid "Register with two-factor app"

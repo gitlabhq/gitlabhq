@@ -307,6 +307,13 @@ entry.
 - Updates tooltip of 'detached' label/state.
 
 
+## 12.2.8
+
+### Security (1 change)
+
+- Limit search for IID to a type to avoid leaking records with the same IID that the user does not have access to.
+
+
 ## 12.2.7
 
 ### Security (1 change)
@@ -647,6 +654,13 @@ entry.
 - Add finished_at to the internal API Deployment entity. !31808
 - Remove Security Dashboard feature flag. !31820
 - Update Packer.gitlab-ci.yml to use latest image. (Kelly Hair)
+
+
+## 12.1.14
+
+### Security (1 change)
+
+- Limit search for IID to a type to avoid leaking records with the same IID that the user does not have access to.
 
 
 ## 12.1.12

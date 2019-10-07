@@ -561,3 +561,6 @@ export const getDateInPast = (date, daysInPast) => {
     dateClone.setTime(dateClone.getTime() - daysInPast * 24 * 60 * 60 * 1000),
   ).toISOString();
 };
+
+export const beginOfDayTime = 'T00:00:00Z';
+export const endOfDayTime = 'T23:59:59Z';

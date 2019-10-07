@@ -19,7 +19,7 @@ class JiraService < IssueTrackerService
   # for more information check: https://gitlab.com/gitlab-org/gitlab-foss/issues/49936.
 
   # TODO: we can probably just delegate as part of
-  # https://gitlab.com/gitlab-org/gitlab-foss/issues/63084
+  # https://gitlab.com/gitlab-org/gitlab/issues/29404
   data_field :username, :password, :url, :api_url, :jira_issue_transition_id
 
   before_update :reset_password

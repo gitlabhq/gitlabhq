@@ -1,0 +1,25 @@
+!!! 5
+%html.devise-layout-html.navless{ class: system_message_class }
+  = render "layouts/head"
+  %body.ui-indigo.signup-page.application.navless{ class: "#{client_class_list}", data: { page: body_data_page, qa_selector: 'signup_page' } }
+    = header_message
+    = render "layouts/init_client_detection_flags"
+    .page-wrap
+      .container.signup-box-container.navless-container.mt-0
+        = render "layouts/broadcast"
+        .content
+          = render "layouts/flash"
+          .row.mb-3
+            .col-sm-8.offset-sm-2.col-md-6.offset-md-3.new-session-forms-container
+              = render_if_exists 'layouts/devise_help_text'
+              .text-center.signup-heading.mt-3.mb-3
+                = image_tag(image_url('logo.svg'), class: 'gitlab-logo', alt: 'GitLab Logo')
+                %h2= _('Register for GitLab.com')
+              = yield
+      %hr.footer-fixed
+      .footer-container
+        .container
+          .footer-links
+            = link_to _("Help"), help_path
+            = link_to _("About GitLab"), "https://about.gitlab.com/"
+      = footer_message

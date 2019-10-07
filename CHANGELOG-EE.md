@@ -203,6 +203,13 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Fixes style-lint errors and warnings for EE builds.scss file.
 
 
+## 12.2.8
+
+### Fixed (1 change)
+
+- Geo: LFS not being synced. !17633
+
+
 ## 12.2.7
 
 ### Security (1 change)
@@ -469,6 +476,13 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Remove deprecated name sast_container from licensed features. !14980
 - Remove default relative_position from epic_issues. !15008
 - Fix alignment of activity dropdown in epic tabs; add counter to discussion tab.
+
+
+## 12.1.14
+
+### Fixed (1 change)
+
+- Geo: LFS not being synced. !17633
 
 
 ## 12.1.12

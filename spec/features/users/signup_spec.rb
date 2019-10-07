@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Signup' do
+shared_examples 'Signup' do
   include TermsHelper
 
   before do
@@ -13,8 +13,7 @@ describe 'Signup' do
 
   describe 'username validation', :js do
     before do
-      visit root_path
-      click_link 'Register'
+      visit new_user_registration_path
     end
 
     it 'does not show an error border if the username is available' do
@@ -130,8 +129,7 @@ describe 'Signup' do
 
   describe 'user\'s full name validation', :js do
     before do
-      visit root_path
-      click_link 'Register'
+      visit new_user_registration_path
     end
 
     it 'does not show an error border if the user\'s fullname length is not longer than 128 characters' do
@@ -177,13 +175,17 @@ describe 'Signup' do
         end
 
         it 'creates the user account and sends a confirmation email' do
-          visit root_path
+          visit new_user_registration_path
 
-          fill_in 'new_user_name',                with: new_user.name
-          fill_in 'new_user_username',            with: new_user.username
-          fill_in 'new_user_email',               with: new_user.email
-          fill_in 'new_user_email_confirmation',  with: new_user.email
-          fill_in 'new_user_password',            with: new_user.password
+          fill_in 'new_user_name', with: new_user.name
+          fill_in 'new_user_username', with: new_user.username
+          fill_in 'new_user_email', with: new_user.email
+
+          unless Feature.enabled?(:experimental_separate_sign_up_flow)
+            fill_in 'new_user_email_confirmation', with: new_user.email
+          end
+
+          fill_in 'new_user_password', with: new_user.password
 
           expect { click_button 'Register' }.to change { User.count }.by(1)
 
@@ -198,13 +200,17 @@ describe 'Signup' do
         end
 
         it 'creates the user account and sends a confirmation email' do
-          visit root_path
+          visit new_user_registration_path
 
-          fill_in 'new_user_name',                with: new_user.name
-          fill_in 'new_user_username',            with: new_user.username
-          fill_in 'new_user_email',               with: new_user.email
-          fill_in 'new_user_email_confirmation',  with: new_user.email
-          fill_in 'new_user_password',            with: new_user.password
+          fill_in 'new_user_name', with: new_user.name
+          fill_in 'new_user_username', with: new_user.username
+          fill_in 'new_user_email', with: new_user.email
+
+          unless Feature.enabled?(:experimental_separate_sign_up_flow)
+            fill_in 'new_user_email_confirmation', with: new_user.email
+          end
+
+          fill_in 'new_user_password', with: new_user.password
 
           expect { click_button 'Register' }.to change { User.count }.by(1)
 
@@ -216,13 +222,17 @@ describe 'Signup' do
 
     context "when sigining up with different cased emails" do
       it "creates the user successfully" do
-        visit root_path
+        visit new_user_registration_path
 
-        fill_in 'new_user_name',                with: new_user.name
-        fill_in 'new_user_username',            with: new_user.username
-        fill_in 'new_user_email',               with: new_user.email
-        fill_in 'new_user_email_confirmation',  with: new_user.email.capitalize
-        fill_in 'new_user_password',            with: new_user.password
+        fill_in 'new_user_name', with: new_user.name
+        fill_in 'new_user_username', with: new_user.username
+        fill_in 'new_user_email', with: new_user.email
+
+        unless Feature.enabled?(:experimental_separate_sign_up_flow)
+          fill_in 'new_user_email_confirmation', with: new_user.email.capitalize
+        end
+
+        fill_in 'new_user_password', with: new_user.password
         click_button "Register"
 
         expect(current_path).to eq dashboard_projects_path
@@ -236,13 +246,17 @@ describe 'Signup' do
       end
 
       it 'creates the user account and goes to dashboard' do
-        visit root_path
+        visit new_user_registration_path
 
-        fill_in 'new_user_name',                with: new_user.name
-        fill_in 'new_user_username',            with: new_user.username
-        fill_in 'new_user_email',               with: new_user.email
-        fill_in 'new_user_email_confirmation',  with: new_user.email
-        fill_in 'new_user_password',            with: new_user.password
+        fill_in 'new_user_name', with: new_user.name
+        fill_in 'new_user_username', with: new_user.username
+        fill_in 'new_user_email', with: new_user.email
+
+        unless Feature.enabled?(:experimental_separate_sign_up_flow)
+          fill_in 'new_user_email_confirmation', with: new_user.email
+        end
+
+        fill_in 'new_user_password', with: new_user.password
         click_button "Register"
 
         expect(current_path).to eq dashboard_projects_path
@@ -255,28 +269,34 @@ describe 'Signup' do
     it "displays the errors" do
       existing_user = create(:user)
 
-      visit root_path
+      visit new_user_registration_path
 
-      fill_in 'new_user_name',     with: new_user.name
+      fill_in 'new_user_name', with: new_user.name
       fill_in 'new_user_username', with: new_user.username
-      fill_in 'new_user_email',    with: existing_user.email
+      fill_in 'new_user_email', with: existing_user.email
       fill_in 'new_user_password', with: new_user.password
       click_button "Register"
 
       expect(current_path).to eq user_registration_path
-      expect(page).to have_content("errors prohibited this user from being saved")
-      expect(page).to have_content("Email has already been taken")
-      expect(page).to have_content("Email confirmation doesn't match")
+
+      if Feature.enabled?(:experimental_separate_sign_up_flow)
+        expect(page).to have_content("error prohibited this user from being saved")
+        expect(page).to have_content("Email has already been taken")
+      else
+        expect(page).to have_content("errors prohibited this user from being saved")
+        expect(page).to have_content("Email has already been taken")
+        expect(page).to have_content("Email confirmation doesn't match")
+      end
     end
 
     it 'does not redisplay the password' do
       existing_user = create(:user)
 
-      visit root_path
+      visit new_user_registration_path
 
-      fill_in 'new_user_name',     with: new_user.name
+      fill_in 'new_user_name', with: new_user.name
       fill_in 'new_user_username', with: new_user.username
-      fill_in 'new_user_email',    with: existing_user.email
+      fill_in 'new_user_email', with: existing_user.email
       fill_in 'new_user_password', with: new_user.password
       click_button "Register"
 
@@ -291,13 +311,17 @@ describe 'Signup' do
     end
 
     it 'requires the user to check the checkbox' do
-      visit root_path
+      visit new_user_registration_path
 
-      fill_in 'new_user_name',                with: new_user.name
-      fill_in 'new_user_username',            with: new_user.username
-      fill_in 'new_user_email',               with: new_user.email
-      fill_in 'new_user_email_confirmation',  with: new_user.email
-      fill_in 'new_user_password',            with: new_user.password
+      fill_in 'new_user_name', with: new_user.name
+      fill_in 'new_user_username', with: new_user.username
+      fill_in 'new_user_email', with: new_user.email
+
+      unless Feature.enabled?(:experimental_separate_sign_up_flow)
+        fill_in 'new_user_email_confirmation', with: new_user.email
+      end
+
+      fill_in 'new_user_password', with: new_user.password
 
       click_button 'Register'
 
@@ -306,18 +330,39 @@ describe 'Signup' do
     end
 
     it 'asks the user to accept terms before going to the dashboard' do
-      visit root_path
+      visit new_user_registration_path
 
-      fill_in 'new_user_name',                with: new_user.name
-      fill_in 'new_user_username',            with: new_user.username
-      fill_in 'new_user_email',               with: new_user.email
-      fill_in 'new_user_email_confirmation',  with: new_user.email
-      fill_in 'new_user_password',            with: new_user.password
+      fill_in 'new_user_name', with: new_user.name
+      fill_in 'new_user_username', with: new_user.username
+      fill_in 'new_user_email', with: new_user.email
+
+      unless Feature.enabled?(:experimental_separate_sign_up_flow)
+        fill_in 'new_user_email_confirmation', with: new_user.email
+      end
+
+      fill_in 'new_user_password', with: new_user.password
       check :terms_opt_in
 
       click_button "Register"
 
       expect(current_path).to eq dashboard_projects_path
+    end
+  end
+end
+
+describe 'With original flow' do
+  it_behaves_like 'Signup' do
+    before do
+      stub_feature_flags(experimental_separate_sign_up_flow: false)
+    end
+  end
+end
+
+describe 'With experimental flow on GitLab.com' do
+  it_behaves_like 'Signup' do
+    before do
+      expect(Gitlab).to receive(:com?).and_return(true).at_least(:once)
+      stub_feature_flags(experimental_separate_sign_up_flow: true)
     end
   end
 end

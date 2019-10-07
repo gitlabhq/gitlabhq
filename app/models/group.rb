@@ -14,6 +14,7 @@ class Group < Namespace
   include TokenAuthenticatable
   include WithUploads
   include Gitlab::Utils::StrongMemoize
+  include GroupAPICompatibility
 
   ACCESS_REQUEST_APPROVERS_TO_BE_NOTIFIED_LIMIT = 10
 

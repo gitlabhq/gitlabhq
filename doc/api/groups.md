@@ -31,6 +31,13 @@ GET /groups
     "path": "foo-bar",
     "description": "An interesting group",
     "visibility": "public",
+    "share_with_group_lock": false,
+    "require_two_factor_authentication": false,
+    "two_factor_grace_period": 48,
+    "project_creation_level": "developer",
+    "auto_devops_enabled": null,
+    "subgroup_creation_level": "owner",
+    "emails_disabled": null,
     "lfs_enabled": true,
     "avatar_url": "http://localhost:3000/uploads/group/avatar/1/foo.jpg",
     "web_url": "http://localhost:3000/groups/foo-bar",
@@ -57,6 +64,13 @@ GET /groups?statistics=true
     "path": "foo-bar",
     "description": "An interesting group",
     "visibility": "public",
+    "share_with_group_lock": false,
+    "require_two_factor_authentication": false,
+    "two_factor_grace_period": 48,
+    "project_creation_level": "developer",
+    "auto_devops_enabled": null,
+    "subgroup_creation_level": "owner",
+    "emails_disabled": null,
     "lfs_enabled": true,
     "avatar_url": "http://localhost:3000/uploads/group/avatar/1/foo.jpg",
     "web_url": "http://localhost:3000/groups/foo-bar",
@@ -119,6 +133,13 @@ GET /groups/:id/subgroups
     "path": "foo-bar",
     "description": "An interesting group",
     "visibility": "public",
+    "share_with_group_lock": false,
+    "require_two_factor_authentication": false,
+    "two_factor_grace_period": 48,
+    "project_creation_level": "developer",
+    "auto_devops_enabled": null,
+    "subgroup_creation_level": "owner",
+    "emails_disabled": null,
     "lfs_enabled": true,
     "avatar_url": "http://gitlab.example.com/uploads/group/avatar/1/foo.jpg",
     "web_url": "http://gitlab.example.com/groups/foo-bar",
@@ -434,6 +455,13 @@ Parameters:
 | `path`                               | string  | yes      | The path of the group. |
 | `description`                        | string  | no       | The group's description. |
 | `visibility`                         | string  | no       | The group's visibility. Can be `private`, `internal`, or `public`. |
+| `share_with_group_lock`              | boolean | no       | Prevent sharing a project with another group within this group. |
+| `require_two_factor_authentication`  | boolean | no       | Require all users in this group to setup Two-factor authentication. |
+| `two_factor_grace_period`            | integer | no       | Time before Two-factor authentication is enforced (in hours). |
+| `project_creation_level`             | string  | no       | Determine if developers can create projects in the group. Can be `noone` (No one), `maintainer` (Maintainers), or `developer` (Developers + Maintainers). |
+| `auto_devops_enabled`                | boolean | no       | Default to Auto DevOps pipeline for all projects within this group. |
+| `subgroup_creation_level`            | integer | no       | Allowed to create subgroups. Can be `owner` (Owners), or `maintainer` (Maintainers). |
+| `emails_disabled`                    | boolean | no       | Disable email notifications |
 | `lfs_enabled`                        | boolean | no       | Enable/disable Large File Storage (LFS) for the projects in this group. |
 | `request_access_enabled`             | boolean | no       | Allow users to request member access. |
 | `parent_id`                          | integer | no       | The parent group ID for creating nested group. |
@@ -472,6 +500,13 @@ PUT /groups/:id
 | `membership_lock`                    | boolean | no       | **(STARTER)** Prevent adding new members to project membership within this group. |
 | `share_with_group_lock`              | boolean | no       | Prevent sharing a project with another group within this group. |
 | `visibility`                         | string  | no       | The visibility level of the group. Can be `private`, `internal`, or `public`. |
+| `share_with_group_lock`              | boolean | no       | Prevent sharing a project with another group within this group. |
+| `require_two_factor_authentication`  | boolean | no       | Require all users in this group to setup Two-factor authentication. |
+| `two_factor_grace_period`            | integer | no       | Time before Two-factor authentication is enforced (in hours). |
+| `project_creation_level`             | string  | no       | Determine if developers can create projects in the group. Can be `noone` (No one), `maintainer` (Maintainers), or `developer` (Developers + Maintainers). |
+| `auto_devops_enabled`                | boolean | no       | Default to Auto DevOps pipeline for all projects within this group. |
+| `subgroup_creation_level`            | integer | no       | Allowed to create subgroups. Can be `owner` (Owners), or `maintainer` (Maintainers). |
+| `emails_disabled`                    | boolean | no       | Disable email notifications |
 | `lfs_enabled` (optional)             | boolean | no       | Enable/disable Large File Storage (LFS) for the projects in this group. |
 | `request_access_enabled`             | boolean | no       | Allow users to request member access. |
 | `file_template_project_id`           | integer | no       | **(PREMIUM)** The ID of a project to load custom file templates from. |
