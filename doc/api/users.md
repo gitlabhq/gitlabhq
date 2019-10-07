@@ -596,7 +596,7 @@ PUT /user/status
 
 | Attribute | Type   | Required | Description |
 | --------- | ------ | -------- | ----------- |
-| `emoji`   | string | no     | The name of the emoji to use as status, if omitted `speech_balloon` is used. Emoji name can be one of the specified names in the [Gemojione index][gemojione-index]. |
+| `emoji`   | string | no     | The name of the emoji to use as status, if omitted `speech_balloon` is used. Emoji name can be one of the specified names in the [Gemojione index](https://github.com/bonusly/gemojione/blob/master/config/index.json). |
 | `message` | string | no     | The message to set as a status. It can also contain emoji codes. |
 
 When both parameters `emoji` and `message` are empty, the status will be cleared.
@@ -1363,5 +1363,3 @@ Example response:
 ```
 
 Please note that `last_activity_at` is deprecated, please use `last_activity_on`.
-
-[gemojione-index]: https://github.com/jonathanwiesel/gemojione/blob/master/config/index.json

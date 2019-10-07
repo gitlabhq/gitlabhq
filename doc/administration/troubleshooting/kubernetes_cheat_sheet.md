@@ -191,8 +191,8 @@ and they will assist you with any issues you are having.
 
 ## Installation of minimal GitLab config via Minukube on macOS
 
-This section is based on [Developing for Kubernetes with Minikube](https://gitlab.com/gitlab-org/charts/gitlab/blob/master/doc/minikube/index.md)
-and [Helm](https://gitlab.com/gitlab-org/charts/gitlab/blob/master/doc/helm/index.md). Refer
+This section is based on [Developing for Kubernetes with Minikube](https://docs.gitlab.com/charts/development/minikube/index.html)
+and [Helm](https://docs.gitlab.com/charts/installation/tools.html#helm). Refer
 to those documents for details.
 
 - Install Kubectl via Homebrew:

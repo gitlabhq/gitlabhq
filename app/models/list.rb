@@ -50,7 +50,7 @@ class List < ApplicationRecord
       list_ids = items.map { |i| i[:list_id] }
       user_ids = items.map { |i| i[:user_id] }
 
-      ListUserPreference.where(list_id: list_ids, user_id: user_ids).find_each do |preference|
+      ListUserPreference.where(list_id: list_ids.uniq, user_id: user_ids.uniq).find_each do |preference|
         loader.call({ list_id: preference.list_id, user_id: preference.user_id }, preference)
       end
     end

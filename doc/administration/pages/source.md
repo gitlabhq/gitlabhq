@@ -411,7 +411,7 @@ Pages access control is disabled by default. To enable it:
      -auth-server <URL of the GitLab instance>
    ```
 
-1. Users can now configure it in their [projects' settings](../../user/project/pages/introduction.md#gitlab-pages-access-control-core-only).
+1. Users can now configure it in their [projects' settings](../../user/project/pages/introduction.md#gitlab-pages-access-control-core).
 
 ## Change storage path
 

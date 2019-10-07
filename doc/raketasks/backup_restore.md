@@ -575,7 +575,7 @@ files. GitLab does not automatically prune old files stored in a third-party
 object storage (e.g., AWS S3) because the user may not have permission to list
 and delete files. We recommend that you configure the appropriate retention
 policy for your object storage. For example, you can configure [the S3 backup
-policy as described here](http://stackoverflow.com/questions/37553070/gitlab-omnibus-delete-backup-from-amazon-s3).
+policy as described here](https://stackoverflow.com/questions/37553070/gitlab-omnibus-delete-backup-from-amazon-s3).
 
 To schedule a cron job that backs up your repositories and GitLab metadata, use the root user:
 
@@ -859,7 +859,7 @@ Be advised that, backup is successfully restored in spite of these warnings.
 The rake task runs this as the `gitlab` user which does not have the superuser access to the database. When restore is initiated it will also run as `gitlab` user but it will also try to alter the objects it does not have access to.
 Those objects have no influence on the database backup/restore but they give this annoying warning.
 
-For more information see similar questions on PostgreSQL issue tracker[here](http://www.postgresql.org/message-id/201110220712.30886.adrian.klaver@gmail.com) and [here](http://www.postgresql.org/message-id/2039.1177339749@sss.pgh.pa.us) as well as [stack overflow](http://stackoverflow.com/questions/4368789/error-must-be-owner-of-language-plpgsql).
+For more information see similar questions on PostgreSQL issue tracker[here](https://www.postgresql.org/message-id/201110220712.30886.adrian.klaver@gmail.com) and [here](https://www.postgresql.org/message-id/2039.1177339749@sss.pgh.pa.us) as well as [stack overflow](https://stackoverflow.com/questions/4368789/error-must-be-owner-of-language-plpgsql).
 
 ### When the secrets file is lost
 

@@ -305,7 +305,7 @@ Pages access control is disabled by default. To enable it:
    ```
 
 1. [Reconfigure GitLab][reconfigure].
-1. Users can now configure it in their [projects' settings](../../user/project/pages/introduction.md#gitlab-pages-access-control-core-only).
+1. Users can now configure it in their [projects' settings](../../user/project/pages/introduction.md#gitlab-pages-access-control-core).
 
 ### Running behind a proxy
 

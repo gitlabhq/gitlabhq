@@ -408,7 +408,7 @@ group, you can use the following syntax:
 ```
 
 Find more information about this "LDAP_MATCHING_RULE_IN_CHAIN" filter at
-<https://docs.microsoft.com/en-us/windows/desktop/ADSI/search-filter-syntax>. Support for
+<https://docs.microsoft.com/en-us/windows/win32/adsi/search-filter-syntax>. Support for
 nested members in the user filter should not be confused with
 [group sync nested groups support](ldap-ee.md#supported-ldap-group-typesattributes). **(STARTER ONLY)**
 

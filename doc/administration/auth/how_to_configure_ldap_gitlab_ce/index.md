@@ -18,12 +18,12 @@ The main reason organizations choose to utilize a LDAP server is to keep the ent
 
 There are many commercial and open source [directory servers](https://en.wikipedia.org/wiki/Directory_service#LDAP_implementations) that support the LDAP protocol. Deciding on the right directory server highly depends on the existing IT environment in which the server will be integrated with.
 
-For example, [Active Directory](https://technet.microsoft.com/en-us/library/hh831484(v=ws.11).aspx) is generally favored in a primarily Windows environment, as this allows quick integration with existing services. Other popular directory services include:
+For example, [Active Directory](https://docs.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2012-R2-and-2012/hh831484(v=ws.11)) is generally favored in a primarily Windows environment, as this allows quick integration with existing services. Other popular directory services include:
 
-- [Oracle Internet Directory](http://www.oracle.com/technetwork/middleware/id-mgmt/overview/index-082035.html)
+- [Oracle Internet Directory](https://www.oracle.com/middleware/technologies/internet-directory.html)
 - [OpenLDAP](http://www.openldap.org/)
 - [389 Directory](http://directory.fedoraproject.org/)
-- [OpenDJ](https://forgerock.org/opendj/)
+- [OpenDJ (Renamed to Foregerock Directory Services)](https://www.forgerock.com/platform/directory-services)
 - [ApacheDS](https://directory.apache.org/)
 
 > GitLab uses the [Net::LDAP](https://rubygems.org/gems/net-ldap) library under the hood. This means it supports all [IETF](https://tools.ietf.org/html/rfc2251) compliant LDAPv3 servers.
@@ -32,9 +32,9 @@ For example, [Active Directory](https://technet.microsoft.com/en-us/library/hh83
 
 We won't cover the installation and configuration of Windows Server or Active Directory Domain Services in this tutorial. There are a number of resources online to guide you through this process:
 
-- Install Windows Server 2012  - (`technet.microsoft.com`) - [Installing Windows Server 2012](https://technet.microsoft.com/en-us/library/jj134246(v=ws.11).aspx)
+- Install Windows Server 2012  - (`technet.microsoft.com`) - [Installing Windows Server 2012](https://docs.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2012-R2-and-2012/jj134246(v=ws.11))
 
-- Install Active Directory Domain Services (AD DS) (`technet.microsoft.com`)- [Install Active Directory Domain Services](https://technet.microsoft.com/windows-server-docs/identity/ad-ds/deploy/install-active-directory-domain-services--level-100-#BKMK_PS)
+- Install Active Directory Domain Services (AD DS) (`technet.microsoft.com`)- [Install Active Directory Domain Services](https://docs.microsoft.com/en-us/windows-server/identity/ad-ds/deploy/install-active-directory-domain-services--level-100-#BKMK_PS)
 
 > **Shortcut:** You can quickly install AD DS via PowerShell using
 `Install-WindowsFeature AD-Domain-Services -IncludeManagementTools`
@@ -97,7 +97,7 @@ People Ops US     GitLab.org/GitLab INT/Global Groups/People Ops US
 Global Admins     GitLab.org/GitLab INT/Global Groups/Global Admins
 ```
 
-> See [more information](https://technet.microsoft.com/en-us/library/ff730967.aspx) on searching Active Directory with Windows PowerShell from [The Scripting Guys](https://technet.microsoft.com/en-us/scriptcenter/dd901334.aspx)
+> See [more information](https://docs.microsoft.com/en-us/previous-versions/windows/it-pro/windows-powershell-1.0/ff730967(v=technet.10)) on searching Active Directory with Windows PowerShell from [The Scripting Guys](https://devblogs.microsoft.com/scripting/)
 
 ## GitLab LDAP configuration
 

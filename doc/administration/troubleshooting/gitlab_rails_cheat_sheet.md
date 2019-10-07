@@ -701,7 +701,8 @@ MergeRequests::RebaseService.new(m.target_project, u).execute(m)
 
 ### Cancel stuck pending pipelines
 
-See <https://gitlab.com/gitlab-com/support-forum/issues/2449#note_41929707>.
+For more information, see the [confidential issue](../../user/project/issues/confidential_issues.md)
+`https://gitlab.com/gitlab-com/support-forum/issues/2449#note_41929707`.
 
 ```ruby
 Ci::Pipeline.where(project_id: p.id).where(status: 'pending').count

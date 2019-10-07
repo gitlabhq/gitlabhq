@@ -415,7 +415,7 @@ main: # 'main' is the GitLab 'provider ID' of this LDAP server
 
 [^1]: In Active Directory, a user is marked as disabled/blocked if the user
       account control attribute (`userAccountControl:1.2.840.113556.1.4.803`)
-      has bit 2 set. See <https://ctogonewild.com/2009/09/03/bitmask-searches-in-ldap/>
+      has bit 2 set. See <https://ctovswild.com/2009/09/03/bitmask-searches-in-ldap/>
       for more information.
 
 ### User DN has changed
