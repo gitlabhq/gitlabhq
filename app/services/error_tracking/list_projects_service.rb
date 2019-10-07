@@ -32,13 +32,20 @@ module ErrorTracking
           project_slug: 'proj'
         )
 
-        setting.token = params[:token]
+        setting.token = token(setting)
         setting.enabled = true
       end
     end
 
     def can_read?
       can?(current_user, :read_sentry_issue, project)
+    end
+
+    def token(setting)
+      # Use param token if not masked, otherwise use database token
+      return params[:token] unless /\A\*+\z/.match?(params[:token])
+
+      setting.token
     end
   end
 end
