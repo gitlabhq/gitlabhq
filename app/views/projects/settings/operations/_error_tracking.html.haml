@@ -17,4 +17,4 @@
         project: error_tracking_setting_project_json,
         api_host: setting.api_host,
         enabled: setting.enabled.to_json,
-        token: setting.token } }
+        token: setting.token.present? ? '*' * 12 : nil } }

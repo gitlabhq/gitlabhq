@@ -50,6 +50,19 @@ describe ErrorTracking::ListProjectsService do
         end
       end
 
+      context 'masked param token' do
+        let(:params) { ActionController::Parameters.new(token: "*********", api_host: new_api_host) }
+
+        before do
+          expect(error_tracking_setting).to receive(:list_sentry_projects)
+            .and_return({ projects: [] })
+        end
+
+        it 'uses database token' do
+          expect { subject.execute }.not_to change { error_tracking_setting.token }
+        end
+      end
+
       context 'sentry client raises exception' do
         context 'Sentry::Client::Error' do
           before do
