@@ -34,6 +34,7 @@ description: 'Learn how to contribute to GitLab.'
 ## Backend guides
 
 - [GitLab utilities](utilities.md)
+- [Issuable-like Rails models](issuable-like-models.md)
 - [Logging](logging.md)
 - [API styleguide](api_styleguide.md) Use this styleguide if you are
   contributing to the API

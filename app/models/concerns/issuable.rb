@@ -4,7 +4,7 @@
 #
 # Contains common functionality shared between Issues and MergeRequests
 #
-# Used by Issue, MergeRequest
+# Used by Issue, MergeRequest, Epic
 #
 module Issuable
   extend ActiveSupport::Concern
@@ -25,6 +25,11 @@ module Issuable
   include UpdatedAtFilterable
   include IssuableStates
   include ClosedAtFilterable
+
+  TITLE_LENGTH_MAX = 255
+  TITLE_HTML_LENGTH_MAX = 800
+  DESCRIPTION_LENGTH_MAX = 16000
+  DESCRIPTION_HTML_LENGTH_MAX = 48000
 
   # This object is used to gather issuable meta data for displaying
   # upvotes, downvotes, notes and closing merge requests count for issues and merge requests
@@ -72,9 +77,14 @@ module Issuable
              prefix: true
 
     validates :author, presence: true
-    validates :title, presence: true, length: { maximum: 255 }
-    validates :description, length: { maximum: Gitlab::Database::MAX_TEXT_SIZE_LIMIT }, allow_blank: true
+    validates :title, presence: true, length: { maximum: TITLE_LENGTH_MAX }
+    # we validate the description against DESCRIPTION_LENGTH_MAX only for Issuables being created
+    # to avoid breaking the existing Issuables which may have their descriptions longer
+    validates :description, length: { maximum: DESCRIPTION_LENGTH_MAX }, allow_blank: true, on: :create
+    validate :description_max_length_for_new_records_is_valid, on: :update
     validate :milestone_is_valid
+
+    before_validation :truncate_description_on_import!
 
     scope :authored, ->(user) { where(author_id: user) }
     scope :recent, -> { reorder(id: :desc) }
@@ -137,6 +147,16 @@ module Issuable
 
     def milestone_is_valid
       errors.add(:milestone_id, message: "is invalid") if milestone_id.present? && !milestone_available?
+    end
+
+    def description_max_length_for_new_records_is_valid
+      if new_record? && description.length > Issuable::DESCRIPTION_LENGTH_MAX
+        errors.add(:description, :too_long, count: Issuable::DESCRIPTION_LENGTH_MAX)
+      end
+    end
+
+    def truncate_description_on_import!
+      self.description = description&.slice(0, Issuable::DESCRIPTION_LENGTH_MAX) if importing?
     end
   end
 

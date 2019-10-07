@@ -172,7 +172,7 @@ ci_pipelines:
 - downstream_bridges
 - job_artifacts
 - vulnerabilities_occurrence_pipelines
-- vulnerabilities
+- vulnerability_findings
 pipeline_variables:
 - pipeline
 stages:
@@ -389,6 +389,7 @@ project:
 - sourced_pipelines
 - prometheus_metrics
 - vulnerabilities
+- vulnerability_findings
 - vulnerability_feedback
 - vulnerability_identifiers
 - vulnerability_scanners

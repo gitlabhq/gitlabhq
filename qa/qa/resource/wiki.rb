@@ -21,6 +21,15 @@ module QA
         end
       end
 
+      attribute :repository_ssh_location do
+        Page::Project::Wiki::Show.perform(&:click_clone_repository)
+
+        Page::Project::Wiki::GitAccess.perform do |git_access|
+          git_access.choose_repository_clone_ssh
+          git_access.repository_location
+        end
+      end
+
       def fabricate!
         project.visit!
 

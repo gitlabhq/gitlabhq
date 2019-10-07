@@ -46,7 +46,10 @@ describe Issuable do
       it { is_expected.to validate_presence_of(:author) }
       it { is_expected.to validate_presence_of(:title) }
       it { is_expected.to validate_length_of(:title).is_at_most(255) }
-      it { is_expected.to validate_length_of(:description).is_at_most(1_000_000) }
+      it { is_expected.to validate_length_of(:description).is_at_most(16_000).on(:create) }
+
+      it_behaves_like 'validates description length with custom validation'
+      it_behaves_like 'truncates the description to its allowed maximum length on import'
     end
 
     describe 'milestone' do
