@@ -196,6 +196,10 @@ class MergeRequest < ApplicationRecord
   scope :by_target_branch, ->(branch_name) { where(target_branch: branch_name) }
   scope :preload_source_project, -> { preload(:source_project) }
 
+  scope :with_open_merge_when_pipeline_succeeds, -> do
+    with_state(:opened).where(merge_when_pipeline_succeeds: true)
+  end
+
   after_save :keep_around_commit
 
   alias_attribute :project, :target_project
