@@ -3,69 +3,6 @@ require 'set'
 
 namespace :gitlab do
   namespace :cleanup do
-    desc "GitLab | Cleanup | Clean namespaces"
-    task dirs: :gitlab_environment do
-      namespaces = Set.new(Namespace.pluck(:path))
-      namespaces << Storage::HashedProject::REPOSITORY_PATH_PREFIX
-
-      Gitaly::Server.all.each do |server|
-        all_dirs = Gitlab::GitalyClient::StorageService
-          .new(server.storage)
-          .list_directories(depth: 0)
-          .reject { |dir| dir.ends_with?('.git') || namespaces.include?(File.basename(dir)) }
-
-        puts "Looking for directories to remove... "
-        all_dirs.each do |dir_path|
-          if remove?
-            begin
-              Gitlab::GitalyClient::NamespaceService.new(server.storage)
-                .remove(dir_path)
-
-              puts "Removed...#{dir_path}"
-            rescue StandardError => e
-              puts "Cannot remove #{dir_path}: #{e.message}".color(:red)
-            end
-          else
-            puts "Can be removed: #{dir_path}".color(:red)
-          end
-        end
-      end
-
-      unless remove?
-        puts "To cleanup this directories run this command with REMOVE=true".color(:yellow)
-      end
-    end
-
-    desc "GitLab | Cleanup | Clean repositories"
-    task repos: :gitlab_environment do
-      move_suffix = "+orphaned+#{Time.now.to_i}"
-
-      Gitaly::Server.all.each do |server|
-        Gitlab::GitalyClient::StorageService
-          .new(server.storage)
-          .list_directories
-          .each do |path|
-          repo_with_namespace = path.chomp('.git').chomp('.wiki')
-
-          # TODO ignoring hashed repositories for now.  But revisit to fully support
-          # possible orphaned hashed repos
-          next if repo_with_namespace.start_with?(Storage::HashedProject::REPOSITORY_PATH_PREFIX)
-          next if Project.find_by_full_path(repo_with_namespace)
-
-          new_path = path + move_suffix
-          puts path.inspect + ' -> ' + new_path.inspect
-
-          begin
-            Gitlab::GitalyClient::NamespaceService
-              .new(server.storage)
-              .rename(path, new_path)
-          rescue StandardError => e
-            puts "Error occurred while moving the repository: #{e.message}".color(:red)
-          end
-        end
-      end
-    end
-
     desc "GitLab | Cleanup | Block users that have been removed in LDAP"
     task block_removed_ldap_users: :gitlab_environment do
       warn_user_is_not_gitlab

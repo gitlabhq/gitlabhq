@@ -23,6 +23,10 @@ module Gitlab
           ]
         end
 
+        def self.names
+          all.map { |stage| stage[:name] }
+        end
+
         def self.params_for_issue_stage
           {
             name: 'issue',

@@ -135,10 +135,7 @@ module Gitlab
 
         data = []
 
-        # rubocop:disable Cop/InBatches
-        # If we put `rubocop:disable` inline after `do |batch|`,
-        # `Cop/LineBreakAroundConditionalBlock` will fail
-        record.in_batches(of: @batch_size) do |batch|
+        record.in_batches(of: @batch_size) do |batch| # rubocop:disable Cop/InBatches
           if Feature.enabled?(:export_fast_serialize_with_raw_json, default_enabled: true)
             data.append(JSONBatchRelation.new(batch, options, preloads[key]).tap(&:raw_json))
           else
@@ -146,7 +143,6 @@ module Gitlab
             data += batch.as_json(options)
           end
         end
-        # rubocop:enable Cop/InBatches
 
         data
       end

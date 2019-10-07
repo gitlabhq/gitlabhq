@@ -36,10 +36,11 @@ module Gitlab
         end
 
         def stop_working
-          if server # rubocop:disable Cop/LineBreakAroundConditionalBlock
+          if server
             server.shutdown
             server.listeners.each(&:close)
           end
+
           @server = nil
         end
 

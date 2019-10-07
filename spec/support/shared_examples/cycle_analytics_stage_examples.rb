@@ -46,6 +46,13 @@ shared_examples_for 'cycle analytics stage' do
       expect(stage).not_to be_valid
       expect(stage.errors.details[:end_event]).to eq([{ error: :not_allowed_for_the_given_start_event }])
     end
+
+    context 'disallows default stage names when creating custom stage' do
+      let(:invalid_params) { valid_params.merge(name: Gitlab::Analytics::CycleAnalytics::DefaultStages.names.first, custom: true) }
+      let(:stage) { described_class.new(invalid_params) }
+
+      it { expect(stage).not_to be_valid }
+    end
   end
 
   describe '#subject_model' do

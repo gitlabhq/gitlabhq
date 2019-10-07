@@ -7,6 +7,7 @@ module Analytics
 
       included do
         validates :name, presence: true
+        validates :name, exclusion: { in: Gitlab::Analytics::CycleAnalytics::DefaultStages.names }, if: :custom?
         validates :start_event_identifier, presence: true
         validates :end_event_identifier, presence: true
         validate :validate_stage_event_pairs
@@ -15,6 +16,7 @@ module Analytics
         enum end_event_identifier: Gitlab::Analytics::CycleAnalytics::StageEvents.to_enum, _prefix: :end_event_identifier
 
         alias_attribute :custom_stage?, :custom
+        scope :default_stages, -> { where(custom: false) }
       end
 
       def parent=(_)
