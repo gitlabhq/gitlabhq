@@ -6,12 +6,11 @@ module Gitlab
   module Patch
     module DrawRoute
       prepend_if_ee('EE::Gitlab::Patch::DrawRoute') # rubocop: disable Cop/InjectEnterpriseEditionModule
-      prepend_if_com('Com::Gitlab::Patch::DrawRoute')
 
       RoutesNotFound = Class.new(StandardError)
 
       def draw(routes_name)
-        drawn_any = draw_ce(routes_name) | draw_ee(routes_name) | draw_com(routes_name)
+        drawn_any = draw_ce(routes_name) | draw_ee(routes_name)
 
         drawn_any || raise(RoutesNotFound.new("Cannot find #{routes_name}"))
       end
@@ -22,10 +21,6 @@ module Gitlab
 
       def draw_ee(_)
         true
-      end
-
-      def draw_com(_)
-        false
       end
 
       def route_path(routes_name)

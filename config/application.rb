@@ -22,7 +22,6 @@ module Gitlab
     require_dependency Rails.root.join('lib/gitlab/current_settings')
     require_dependency Rails.root.join('lib/gitlab/middleware/read_only')
     require_dependency Rails.root.join('lib/gitlab/middleware/basic_health_check')
-    require_dependency Rails.root.join('config/light_settings')
 
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
@@ -61,15 +60,6 @@ module Gitlab
       # Other than Ruby modules we load EE first
       config.paths['lib/tasks'].unshift "#{config.root}/ee/lib/tasks"
       config.paths['app/views'].unshift "#{config.root}/ee/app/views"
-    end
-
-    if LightSettings.com?
-      com_paths = config.eager_load_paths.each_with_object([]) do |path, memo|
-        com_path = config.root.join('com', Pathname.new(path).relative_path_from(config.root))
-        memo << com_path.to_s
-      end
-
-      config.eager_load_paths.push(*com_paths)
     end
 
     # Rake tasks ignore the eager loading settings, so we need to set the
