@@ -132,6 +132,7 @@ export default {
               type="button"
               class="btn js-primary-button"
               data-dismiss="modal"
+              data-qa-selector="save_changes_button"
               @click="emitSubmit($event)"
             >
               {{ primaryButtonLabel }}

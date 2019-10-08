@@ -86,10 +86,8 @@ describe MembersFinder, '#execute' do
         create(:project_group_link, project: project, group: nested_linked_group, group_access: Gitlab::Access::REPORTER)
         nested_linked_group.add_developer(user1)
 
-        result = subject
-
-        expect(result).to contain_exactly(linked_group_member, nested_linked_group_member)
-        expect(result.first.access_level).to eq(Gitlab::Access::REPORTER)
+        expect(subject.map(&:user)).to contain_exactly(user1, user2)
+        expect(subject.max_by(&:access_level).access_level).to eq(Gitlab::Access::REPORTER)
       end
     end
   end
