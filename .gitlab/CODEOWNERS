@@ -26,3 +26,10 @@ lib/gitlab/github_import/ @gitlab-org/maintainers/database
 /lib/gitlab/ci/templates/Security/ @plafoucriere @gonzoyumo @twoodham @sethgitlab
 /ee/app/models/project_alias.rb @patrickbajao
 /ee/lib/api/project_aliases.rb @patrickbajao
+
+# Engineering Productivity owned files
+/.gitlab-ci.yml @gl-quality/eng-prod
+/.gitlab/ci/ @gl-quality/eng-prod
+Dangerfile @gl-quality/eng-prod
+/danger/ @gl-quality/eng-prod
+/scripts/ @gl-quality/eng-prod

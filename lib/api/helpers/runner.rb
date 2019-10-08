@@ -59,8 +59,9 @@ module API
         token && job.valid_token?(token)
       end
 
-      def max_artifacts_size
-        Gitlab::CurrentSettings.max_artifacts_size.megabytes.to_i
+      def max_artifacts_size(job)
+        max_size = job.project.closest_setting(:max_artifacts_size)
+        max_size.megabytes.to_i
       end
 
       def job_forbidden!(job, reason)

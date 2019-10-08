@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe 'projects/settings/ci_cd/_autodevops_form' do

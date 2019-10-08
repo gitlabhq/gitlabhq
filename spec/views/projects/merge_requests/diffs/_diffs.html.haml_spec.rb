@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe 'projects/merge_requests/diffs/_diffs.html.haml' do

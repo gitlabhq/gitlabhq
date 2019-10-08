@@ -221,14 +221,16 @@ module API
         job = authenticate_job!
         forbidden!('Job is not running') unless job.running?
 
+        max_size = max_artifacts_size(job)
+
         if params[:filesize]
           file_size = params[:filesize].to_i
-          file_to_large! unless file_size < max_artifacts_size
+          file_too_large! unless file_size < max_size
         end
 
         status 200
         content_type Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE
-        JobArtifactUploader.workhorse_authorize(has_length: false, maximum_size: max_artifacts_size)
+        JobArtifactUploader.workhorse_authorize(has_length: false, maximum_size: max_size)
       end
 
       desc 'Upload artifacts for job' do
@@ -268,7 +270,7 @@ module API
         metadata = UploadedFile.from_params(params, :metadata, JobArtifactUploader.workhorse_local_upload_path)
 
         bad_request!('Missing artifacts file!') unless artifacts
-        file_to_large! unless artifacts.size < max_artifacts_size
+        file_too_large! unless artifacts.size < max_artifacts_size(job)
 
         expire_in = params['expire_in'] ||
           Gitlab::CurrentSettings.current_application_settings.default_artifacts_expire_in

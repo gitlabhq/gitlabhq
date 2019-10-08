@@ -308,7 +308,9 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
   end
 
   describe '/api/v4/jobs' do
-    let(:project) { create(:project, shared_runners_enabled: false) }
+    let(:root_namespace) { create(:namespace) }
+    let(:namespace) { create(:namespace, parent: root_namespace) }
+    let(:project) { create(:project, namespace: namespace, shared_runners_enabled: false) }
     let(:pipeline) { create(:ci_pipeline_without_jobs, project: project, ref: 'master') }
     let(:runner) { create(:ci_runner, :project, projects: [project]) }
     let(:job) do
@@ -1412,12 +1414,54 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
             end
           end
 
-          it 'fails to post too large artifact' do
-            stub_application_setting(max_artifacts_size: 0)
+          context 'when artifact is too large' do
+            let(:sample_max_size) { 100 }
 
-            authorize_artifacts_with_token_in_params(filesize: 100)
+            shared_examples_for 'rejecting too large artifacts' do
+              it 'fails to post' do
+                authorize_artifacts_with_token_in_params(filesize: sample_max_size.megabytes.to_i)
 
-            expect(response).to have_gitlab_http_status(413)
+                expect(response).to have_gitlab_http_status(413)
+              end
+            end
+
+            context 'based on application setting' do
+              before do
+                stub_application_setting(max_artifacts_size: sample_max_size)
+              end
+
+              it_behaves_like 'rejecting too large artifacts'
+            end
+
+            context 'based on root namespace setting' do
+              before do
+                stub_application_setting(max_artifacts_size: 200)
+                root_namespace.update!(max_artifacts_size: sample_max_size)
+              end
+
+              it_behaves_like 'rejecting too large artifacts'
+            end
+
+            context 'based on child namespace setting' do
+              before do
+                stub_application_setting(max_artifacts_size: 200)
+                root_namespace.update!(max_artifacts_size: 200)
+                namespace.update!(max_artifacts_size: sample_max_size)
+              end
+
+              it_behaves_like 'rejecting too large artifacts'
+            end
+
+            context 'based on project setting' do
+              before do
+                stub_application_setting(max_artifacts_size: 200)
+                root_namespace.update!(max_artifacts_size: 200)
+                namespace.update!(max_artifacts_size: 200)
+                project.update!(max_artifacts_size: sample_max_size)
+              end
+
+              it_behaves_like 'rejecting too large artifacts'
+            end
           end
         end
 

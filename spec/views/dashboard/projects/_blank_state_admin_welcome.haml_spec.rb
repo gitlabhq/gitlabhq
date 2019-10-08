@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe 'dashboard/projects/_blank_state_admin_welcome.html.haml' do

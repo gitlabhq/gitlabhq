@@ -60,9 +60,14 @@ module DiffHelper
     if line.blank?
       "&nbsp;".html_safe
     else
-      # We can't use `sub` because the HTML-safeness of `line` will not survive.
-      line[0] = '' if line.start_with?('+', '-', ' ')
-      line
+      # `sub` and substring-ing would destroy HTML-safeness of `line`
+      if line.start_with?('+', '-', ' ')
+        line.dup.tap do |line|
+          line[0] = ''
+        end
+      else
+        line
+      end
     end
   end
 

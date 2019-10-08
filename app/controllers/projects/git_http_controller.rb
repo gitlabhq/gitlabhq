@@ -6,10 +6,10 @@ class Projects::GitHttpController < Projects::GitHttpClientController
   before_action :access_check
   prepend_before_action :deny_head_requests, only: [:info_refs]
 
-  rescue_from Gitlab::GitAccess::UnauthorizedError, with: :render_403
-  rescue_from Gitlab::GitAccess::NotFoundError, with: :render_404
-  rescue_from Gitlab::GitAccess::ProjectCreationError, with: :render_422
-  rescue_from Gitlab::GitAccess::TimeoutError, with: :render_503
+  rescue_from Gitlab::GitAccess::UnauthorizedError, with: :render_403_with_exception
+  rescue_from Gitlab::GitAccess::NotFoundError, with: :render_404_with_exception
+  rescue_from Gitlab::GitAccess::ProjectCreationError, with: :render_422_with_exception
+  rescue_from Gitlab::GitAccess::TimeoutError, with: :render_503_with_exception
 
   # GET /foo/bar.git/info/refs?service=git-upload-pack (git pull)
   # GET /foo/bar.git/info/refs?service=git-receive-pack (git push)
@@ -58,19 +58,19 @@ class Projects::GitHttpController < Projects::GitHttpClientController
     render json: Gitlab::Workhorse.git_http_ok(repository, repo_type, user, action_name)
   end
 
-  def render_403(exception)
+  def render_403_with_exception(exception)
     render plain: exception.message, status: :forbidden
   end
 
-  def render_404(exception)
+  def render_404_with_exception(exception)
     render plain: exception.message, status: :not_found
   end
 
-  def render_422(exception)
+  def render_422_with_exception(exception)
     render plain: exception.message, status: :unprocessable_entity
   end
 
-  def render_503(exception)
+  def render_503_with_exception(exception)
     render plain: exception.message, status: :service_unavailable
   end
 

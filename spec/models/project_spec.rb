@@ -5121,6 +5121,53 @@ describe Project do
     end
   end
 
+  describe '#closest_setting' do
+    using RSpec::Parameterized::TableSyntax
+
+    shared_examples_for 'fetching closest setting' do
+      let!(:namespace) { create(:namespace) }
+      let!(:project) { create(:project, namespace: namespace) }
+
+      let(:setting_name) { :some_setting }
+      let(:setting) { project.closest_setting(setting_name) }
+
+      before do
+        allow(project).to receive(:read_attribute).with(setting_name).and_return(project_setting)
+        allow(namespace).to receive(:closest_setting).with(setting_name).and_return(group_setting)
+        allow(Gitlab::CurrentSettings).to receive(setting_name).and_return(global_setting)
+      end
+
+      it 'returns closest non-nil value' do
+        expect(setting).to eq(result)
+      end
+    end
+
+    context 'when setting is of non-boolean type' do
+      where(:global_setting, :group_setting, :project_setting, :result) do
+        100 | 200 | 300 | 300
+        100 | 200 | nil | 200
+        100 | nil | nil | 100
+        nil | nil | nil | nil
+      end
+
+      with_them do
+        it_behaves_like 'fetching closest setting'
+      end
+    end
+
+    context 'when setting is of boolean type' do
+      where(:global_setting, :group_setting, :project_setting, :result) do
+        true | true  | false | false
+        true | false | nil   | false
+        true | nil   | nil   | true
+      end
+
+      with_them do
+        it_behaves_like 'fetching closest setting'
+      end
+    end
+  end
+
   def rugged_config
     rugged_repo(project.repository).config
   end

@@ -316,6 +316,12 @@ class Namespace < ApplicationRecord
     Pages::VirtualDomain.new(all_projects_with_pages, trim_prefix: full_path)
   end
 
+  def closest_setting(name)
+    self_and_ancestors(hierarchy_order: :asc)
+      .find { |n| !n.read_attribute(name).nil? }
+      .try(name)
+  end
+
   private
 
   def all_projects_with_pages
