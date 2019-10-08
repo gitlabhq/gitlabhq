@@ -107,7 +107,7 @@ The following table lists available parameters for jobs:
 | [`environment`](#environment)                      | Name of an environment to which the job deploys. Also available: `environment:name`, `environment:url`, `environment:on_stop`, and `environment:action`.                                                                                                                                                                                                                                                                                                                                                                                                                                |
 | [`cache`](#cache)                                  | List of files that should be cached between subsequent runs. Also available: `cache:paths`, `cache:key`, `cache:untracked`, and `cache:policy`.                                                                                                                                                                                                                                                                                                                                                                                                                                         |
 | [`artifacts`](#artifacts)                          | List of files and directories to attach to a job on success. Also available: `artifacts:paths`, `artifacts:name`, `artifacts:untracked`, `artifacts:when`, `artifacts:expire_in`, `artifacts:reports`, and `artifacts:reports:junit`.<br><br>In GitLab [Enterprise Edition](https://about.gitlab.com/pricing/), these are available: `artifacts:reports:codequality`, `artifacts:reports:sast`, `artifacts:reports:dependency_scanning`, `artifacts:reports:container_scanning`, `artifacts:reports:dast`, `artifacts:reports:license_management`, `artifacts:reports:performance` and `artifacts:reports:metrics`. |
-| [`dependencies`](#dependencies)                    | Other jobs that a job depends on so that you can pass artifacts between them.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| [`dependencies`](#dependencies)                    | Restrict which artifacts are passed to a specific job by providing a list of jobs to fetch artifacts from.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
 | [`coverage`](#coverage)                            | Code coverage settings for a given job.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | [`retry`](#retry)                                  | When and how many times a job can be auto-retried in case of a failure.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | [`timeout`](#timeout)                              | Define a custom job-level timeout that takes precedence over the project-wide setting.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
@@ -782,6 +782,8 @@ In this example, a job either set to:
 
 #### `rules:exists`
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/16574) in GitLab 12.4.
+
 `exists` accepts an array of paths and will match if any of these paths exist
 as files in the repository.
 
@@ -1455,7 +1457,7 @@ be available for download in the GitLab UI.
 You can only use paths that are within the local working copy.
 Wildcards can be used that follow the [glob](https://en.wikipedia.org/wiki/Glob_(programming)) patterns and [filepath.Match](https://golang.org/pkg/path/filepath/#Match).
 
-To pass artifacts between different jobs, see [dependencies](#dependencies).
+To restrict which jobs a specific job will fetch artifacts from, see [dependencies](#dependencies).
 
 Send all files in `binaries` and `.config`:
 
@@ -1799,10 +1801,9 @@ be automatically shown in merge requests.
 
 > Introduced in GitLab 8.6 and GitLab Runner v1.1.1.
 
-This feature should be used in conjunction with [`artifacts`](#artifacts) and
-allows you to define the artifacts to pass between different jobs.
-
-Note that `artifacts` from all previous [stages](#stages) are passed by default.
+By default, all [`artifacts`](#artifacts) from all previous [stages](#stages)
+are passed, but you can use the `dependencies` parameter to define a limited
+list of jobs (or no jobs) to fetch artifacts from.
 
 To use this feature, define `dependencies` in context of the job and pass
 a list of all previous jobs from which the artifacts should be downloaded.

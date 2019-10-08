@@ -294,9 +294,11 @@ This log records:
 
 - Information whenever [Rack Attack] registers an abusive request.
 - Requests over the [Rate Limit] on raw endpoints.
+- [Protected paths] abusive requests.
 
 NOTE: **Note:**
-From [%12.1](https://gitlab.com/gitlab-org/gitlab-foss/issues/62756), user id and username are available on this log.
+From [%12.1](https://gitlab.com/gitlab-org/gitlab-foss/issues/62756), user id and username are also
+recorded on this log, if available.
 
 ## `graphql_json.log`
 
@@ -341,10 +343,6 @@ will be generated in `/var/log/gitlab/gitlab-rails/web_exporter.log` for
 Omnibus GitLab packages or in `/home/git/gitlab/log/web_exporter.log` for
 installations from source.
 
-[repocheck]: repository_checks.md
-[Rack Attack]: ../security/rack_attack.md
-[Rate Limit]: ../user/admin_area/settings/rate_limits_on_raw_endpoints.md
-
 ## `database_load_balancing.log` **(PREMIUM ONLY)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/15442) in GitLab 12.3.
@@ -354,3 +352,8 @@ It is stored at:
 
 - `/var/log/gitlab/gitlab-rails/database_load_balancing.log` for Omnibus GitLab packages.
 - `/home/git/gitlab/log/database_load_balancing.log` for installations from source.
+
+[repocheck]: repository_checks.md
+[Rack Attack]: ../security/rack_attack.md
+[Rate Limit]: ../user/admin_area/settings/rate_limits_on_raw_endpoints.md
+[Protected paths]: ../user/admin_area/settings/protected_paths.md

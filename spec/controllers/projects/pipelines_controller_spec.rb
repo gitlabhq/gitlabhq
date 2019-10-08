@@ -398,6 +398,76 @@ describe Projects::PipelinesController do
     end
   end
 
+  describe 'GET test_report.json' do
+    subject(:get_test_report_json) do
+      post :test_report, params: {
+        namespace_id: project.namespace,
+        project_id: project,
+        id: pipeline.id
+      },
+      format: :json
+    end
+
+    context 'when feature is enabled' do
+      before do
+        stub_feature_flags(junit_pipeline_view: true)
+      end
+
+      context 'when pipeline does not have a test report' do
+        let(:pipeline) { create(:ci_pipeline, project: project) }
+
+        it 'renders an empty test report' do
+          get_test_report_json
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['total_count']).to eq(0)
+        end
+      end
+
+      context 'when pipeline has a test report' do
+        let(:pipeline) { create(:ci_pipeline, :with_test_reports, project: project) }
+
+        it 'renders the test report' do
+          get_test_report_json
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['total_count']).to eq(4)
+        end
+      end
+
+      context 'when pipeline has corrupt test reports' do
+        let(:pipeline) { create(:ci_pipeline, project: project) }
+
+        before do
+          job = create(:ci_build, pipeline: pipeline)
+          create(:ci_job_artifact, :junit_with_corrupted_data, job: job, project: project)
+        end
+
+        it 'renders the test reports' do
+          get_test_report_json
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['status']).to eq('error_parsing_report')
+        end
+      end
+    end
+
+    context 'when feature is disabled' do
+      let(:pipeline) { create(:ci_empty_pipeline, project: project) }
+
+      before do
+        stub_feature_flags(junit_pipeline_view: false)
+      end
+
+      it 'renders empty response' do
+        get_test_report_json
+
+        expect(response).to have_gitlab_http_status(:no_content)
+        expect(response.body).to be_empty
+      end
+    end
+  end
+
   describe 'GET latest' do
     let(:branch_main) { project.repository.branches[0] }
     let(:branch_secondary) { project.repository.branches[1] }

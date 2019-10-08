@@ -387,6 +387,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           get :builds
           get :failures
           get :status
+          get :test_report
 
           Gitlab.ee do
             get :security

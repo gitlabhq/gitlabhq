@@ -85,6 +85,8 @@ export default {
           v-gl-modal="modalId"
           :title="s__('ContainerRegistry|Remove repository')"
           :aria-label="s__('ContainerRegistry|Remove repository')"
+          data-track-event="click_button"
+          data-track-label="registry_repository_delete"
           class="js-remove-repo btn-inverted"
           variant="danger"
         >

@@ -7,7 +7,7 @@ description: How to add docs for new or enhanced GitLab features.
 At GitLab, developers contribute new or updated documentation along with their code, but product managers and technical writers also have essential roles in the process.
 
 - **Developers**: Author/update documentation in the same MR as their code, and
-  merge it by the feature freeze for the assigned milestone. Request technical writer
+  merge it in the assigned milestone. Request technical writer
   assistance if needed. Other developers typically act as reviewers.
 - **Product Managers** (PMs): In the issue for all new and enhanced features,
   confirm the documentation requirements, plus the mentioned feature description
@@ -40,7 +40,7 @@ interact with GitLab.
 NOTE: **Note:**
 When revamping documentation, if unrelated to the feature change, this should be submitted
 in its own MR (using the [documentation improvement workflow](improvement-workflow.md))
-so that we can ensure the more time-sensitive doc updates are merged with code by the freeze.
+so that we can ensure the more time-sensitive doc updates are merged sooner.
 
 ## Documentation requirements in feature issues
 

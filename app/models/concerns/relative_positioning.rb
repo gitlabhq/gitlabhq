@@ -127,6 +127,7 @@ module RelativePositioning
 
     if pos_after && (pos_after - pos_before) < 2
       before.move_sequence_after
+      pos_after = before.next_relative_position
     end
 
     self.relative_position = self.class.position_between(pos_before, pos_after)
@@ -138,6 +139,7 @@ module RelativePositioning
 
     if pos_before && (pos_after - pos_before) < 2
       after.move_sequence_before
+      pos_before = after.prev_relative_position
     end
 
     self.relative_position = self.class.position_between(pos_before, pos_after)

@@ -290,9 +290,6 @@ Settings.pages['url']               ||= Settings.__send__(:build_pages_url)
 Settings.pages['external_http']     ||= false unless Settings.pages['external_http'].present?
 Settings.pages['external_https']    ||= false unless Settings.pages['external_https'].present?
 Settings.pages['artifacts_server']  ||= Settings.pages['enabled'] if Settings.pages['artifacts_server'].nil?
-
-Settings.pages['admin'] ||= Settingslogic.new({})
-Settings.pages.admin['certificate'] ||= ''
 Settings.pages['secret_file'] ||= Rails.root.join('.gitlab_pages_shared_secret')
 
 #

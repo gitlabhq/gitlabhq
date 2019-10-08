@@ -223,6 +223,9 @@ msgid_plural "%{count} pending comments"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%{count} related %{pluralized_subject}: %{links}"
+msgstr ""
+
 msgid "%{duration}ms"
 msgstr ""
 

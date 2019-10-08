@@ -746,6 +746,10 @@ module Ci
         end
     end
 
+    def all_merge_requests_by_recency
+      all_merge_requests.order(id: :desc)
+    end
+
     def detailed_status(current_user)
       Gitlab::Ci::Status::Pipeline::Factory
         .new(self, current_user)

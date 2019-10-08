@@ -8,6 +8,7 @@ module Projects
 
       def index
         @images = project.container_repositories
+        track_event(:list_repositories)
 
         respond_to do |format|
           format.html
@@ -21,6 +22,7 @@ module Projects
 
       def destroy
         DeleteContainerRepositoryWorker.perform_async(current_user.id, image.id)
+        track_event(:delete_repository)
 
         respond_to do |format|
           format.json { head :no_content }

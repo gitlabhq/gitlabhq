@@ -8,6 +8,7 @@ module Projects
       LIMIT = 15
 
       def index
+        track_event(:list_tags)
         respond_to do |format|
           format.json do
             render json: ContainerTagsSerializer
@@ -22,6 +23,7 @@ module Projects
         result = Projects::ContainerRepository::DeleteTagsService
           .new(image.project, current_user, tags: [params[:id]])
           .execute(image)
+        track_event(:delete_tag)
 
         respond_to do |format|
           format.json { head(result[:status] == :success ? :ok : bad_request) }
@@ -43,6 +45,7 @@ module Projects
         result = Projects::ContainerRepository::DeleteTagsService
           .new(image.project, current_user, tags: tag_names)
           .execute(image)
+        track_event(:delete_tag_bulk)
 
         respond_to do |format|
           format.json { head(result[:status] == :success ? :no_content : :bad_request) }

@@ -48,15 +48,35 @@ module Ci
 
     def ref_text
       if pipeline.detached_merge_request_pipeline?
-        _("for %{link_to_merge_request} with %{link_to_merge_request_source_branch}").html_safe % { link_to_merge_request: link_to_merge_request, link_to_merge_request_source_branch: link_to_merge_request_source_branch }
+        _("for %{link_to_merge_request} with %{link_to_merge_request_source_branch}")
+          .html_safe % {
+            link_to_merge_request: link_to_merge_request,
+            link_to_merge_request_source_branch: link_to_merge_request_source_branch
+          }
       elsif pipeline.merge_request_pipeline?
-        _("for %{link_to_merge_request} with %{link_to_merge_request_source_branch} into %{link_to_merge_request_target_branch}").html_safe % { link_to_merge_request: link_to_merge_request, link_to_merge_request_source_branch: link_to_merge_request_source_branch, link_to_merge_request_target_branch: link_to_merge_request_target_branch }
+        _("for %{link_to_merge_request} with %{link_to_merge_request_source_branch} into %{link_to_merge_request_target_branch}")
+          .html_safe % {
+            link_to_merge_request: link_to_merge_request,
+            link_to_merge_request_source_branch: link_to_merge_request_source_branch,
+            link_to_merge_request_target_branch: link_to_merge_request_target_branch
+          }
+      elsif pipeline.ref && pipeline.ref_exists?
+        _("for %{link_to_pipeline_ref}")
+        .html_safe % { link_to_pipeline_ref: link_to_pipeline_ref }
       elsif pipeline.ref
-        if pipeline.ref_exists?
-          _("for %{link_to_pipeline_ref}").html_safe % { link_to_pipeline_ref: link_to_pipeline_ref }
-        else
-          _("for %{ref}").html_safe % { ref: content_tag(:span, pipeline.ref, class: 'ref-name') }
-        end
+        _("for %{ref}").html_safe % { ref: plain_ref_name }
+      end
+    end
+
+    def all_related_merge_request_text
+      if all_related_merge_requests.none?
+        'No related merge requests found.'
+      else
+        _("%{count} related %{pluralized_subject}: %{links}" % {
+          count: all_related_merge_requests.count,
+          pluralized_subject: 'merge request'.pluralize(all_related_merge_requests.count),
+          links: all_related_merge_request_links.join(', ')
+        }).html_safe
       end
     end
 
@@ -84,10 +104,30 @@ module Ci
 
     private
 
-    def merge_request_presenter
-      return unless pipeline.triggered_by_merge_request?
+    def plain_ref_name
+      content_tag(:span, pipeline.ref, class: 'ref-name')
+    end
 
-      @merge_request_presenter ||= pipeline.merge_request.present(current_user: current_user)
+    def merge_request_presenter
+      strong_memoize(:merge_request_presenter) do
+        if pipeline.triggered_by_merge_request?
+          pipeline.merge_request.present(current_user: current_user)
+        end
+      end
+    end
+
+    def all_related_merge_request_links
+      all_related_merge_requests.map do |merge_request|
+        mr_path = project_merge_request_path(merge_request.project, merge_request)
+
+        link_to "#{merge_request.to_reference} #{merge_request.title}", mr_path, class: 'mr-iid'
+      end
+    end
+
+    def all_related_merge_requests
+      strong_memoize(:all_related_merge_requests) do
+        pipeline.ref ? pipeline.all_merge_requests_by_recency.to_a : []
+      end
     end
   end
 end
