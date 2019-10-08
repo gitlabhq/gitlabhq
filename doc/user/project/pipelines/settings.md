@@ -92,7 +92,7 @@ job log using a regular expression. In the pipelines settings, search for the
 ![Pipelines settings test coverage](img/pipelines_settings_test_coverage.png)
 
 Leave blank if you want to disable it or enter a ruby regular expression. You
-can use <http://rubular.com> to test your regex.
+can use <https://rubular.com> to test your regex.
 
 If the pipeline succeeds, the coverage is shown in the merge request widget and
 in the jobs table.

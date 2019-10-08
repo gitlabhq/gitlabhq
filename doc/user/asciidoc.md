@@ -6,7 +6,7 @@ Consult the [Asciidoctor User Manual](https://asciidoctor.org/docs/user-manual/)
 ## Syntax
 
 Here's a brief reference of the most commonly used AsciiDoc syntax.
-You can find the full documentation for the AsciiDoc syntax at <https://asciidoctor.org/docs>.
+You can find the full documentation for the AsciiDoc syntax at <https://asciidoctor.org/docs/>.
 
 ### Paragraphs
 
@@ -44,7 +44,7 @@ monospaced font:
 An admonition paragraph grabs the reader's attention:
 
 ```asciidoc
-NOTE: This is a brief reference, please read the full documentation at https://asciidoctor.org/docs.
+NOTE: This is a brief reference, please read the full documentation at https://asciidoctor.org/docs/.
 
 TIP: Lists can be indented. Leading whitespace is not significant.
 ```

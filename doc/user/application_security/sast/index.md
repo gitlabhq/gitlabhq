@@ -113,10 +113,9 @@ is used to detect the languages/frameworks and in turn runs the matching scan to
 
 ### Customizing the SAST settings
 
-The SAST settings can be changed through environment variables by using the
+The SAST settings can be changed through [environment variables](#available-variables)
+by using the
 [`variables`](../../../ci/yaml/README.md#variables) parameter in `.gitlab-ci.yml`.
-These variables are documented in the
-[SAST tool documentation](https://gitlab.com/gitlab-org/security-products/sast#settings).
 
 In the following example, we include the SAST template and at the same time we
 set the `SAST_GOSEC_LEVEL` variable to `2`:
@@ -132,7 +131,22 @@ variables:
 Because the template is [evaluated before](../../../ci/yaml/README.md#include)
 the pipeline configuration, the last mention of the variable will take precedence.
 
-#### Using a variable to pass username and password to a private Maven repository
+### Overriding the SAST template
+
+If you want to override the job definition (for example, change properties like
+`variables` or `dependencies`), you need to declare a `sast` job after the
+template inclusion and specify any additional keys under it. For example:
+
+```yaml
+include:
+  template: SAST.gitlab-ci.yml
+
+sast:
+  variables:
+    CI_DEBUG_TRACE: "true"
+```
+
+### Using a variable to pass username and password to a private Maven repository
 
 If you have a private Apache Maven repository that requires login credentials,
 you can use the `MAVEN_CLI_OPTS` [environment variable](#available-variables)
@@ -140,7 +154,7 @@ to pass a username and password. You can set it under your project's settings
 so that your credentials aren't exposed in `.gitlab-ci.yml`.
 
 If the username is `myuser` and the password is `verysecret` then you would
-set the following [variable](../../../ci/variables/README.md#via-the-ui)
+[set the following variable](../../../ci/variables/README.md#via-the-ui)
 under your project's settings:
 
 | Type | Key | Value |
@@ -162,21 +176,6 @@ variables:
 
 This will create individual `<analyzer-name>-sast` jobs for each analyzer that runs in your CI/CD pipeline.
 
-### Overriding the SAST template
-
-If you want to override the job definition (for example, change properties like
-`variables` or `dependencies`), you need to declare a `sast` job after the
-template inclusion and specify any additional keys under it. For example:
-
-```yaml
-include:
-  template: SAST.gitlab-ci.yml
-
-sast:
-  variables:
-    CI_DEBUG_TRACE: "true"
-```
-
 ### Available variables
 
 SAST can be [configured](#customizing-the-sast-settings) using environment variables.
@@ -194,7 +193,7 @@ The following are Docker image-related variables.
 | `SAST_DISABLE_DIND`           | Disable Docker in Docker and run analyzers [individually](#disabling-docker-in-docker-for-sast).                                      |
 | `SAST_PULL_ANALYZER_IMAGES`   | Pull the images from the Docker registry (set to 0 to disable). Read more about [customizing analyzers](analyzers.md).                 |
 
-### Vulnerability filters
+#### Vulnerability filters
 
 Some analyzers make it possible to filter out vulnerabilities under a given threshold.
 
@@ -207,7 +206,7 @@ Some analyzers make it possible to filter out vulnerabilities under a given thre
 | `SAST_GOSEC_LEVEL`      |         0 | Ignore gosec vulnerabilities under given confidence level. Integer, 0=Undefined, 1=Low, 2=Medium, 3=High. | |
 | `SAST_EXCLUDED_PATHS`   |   -        | Exclude vulnerabilities from output based on the paths. This is a comma-separated list of patterns. Patterns can be globs, file or folder paths. Parent directories will also match patterns. | `SAST_EXCLUDED_PATHS=doc,spec` |
 
-### Timeouts
+#### Timeouts
 
 The following variables configure timeouts.
 
@@ -217,7 +216,7 @@ The following variables configure timeouts.
 | `SAST_PULL_ANALYZER_IMAGE_TIMEOUT`       |      5m | Time limit when pulling the image of an analyzer. Timeouts are parsed using Go's [`ParseDuration`](https://golang.org/pkg/time/#ParseDuration). Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h". For example, "300ms", "1.5h" or "2h45m". |
 | `SAST_RUN_ANALYZER_TIMEOUT`              |     20m | Time limit when running an analyzer. Timeouts are parsed using Go's [`ParseDuration`](https://golang.org/pkg/time/#ParseDuration). Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h". For example, "300ms", "1.5h" or "2h45m".|
 
-### Analyzer settings
+#### Analyzer settings
 
 Some analyzers can be customized with environment variables.
 

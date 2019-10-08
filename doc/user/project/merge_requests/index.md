@@ -221,7 +221,7 @@ to learn more.
 ## Multiple assignees **(STARTER)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/2004)
-in [GitLab Starter 11.11](https://about.gitlab.com/pricing).
+in [GitLab Starter 11.11](https://about.gitlab.com/pricing/).
 
 Multiple people often review merge requests at the same time. GitLab allows you to have multiple assignees for merge requests to indicate everyone that is reviewing or accountable for it.
 
@@ -469,7 +469,7 @@ for preventing leakage or early release of sensitive data through regular merge 
 
 ## Merge request approvals **(STARTER)**
 
-> Included in [GitLab Starter][products].
+> Included in [GitLab Starter](https://about.gitlab.com/product/).
 
 If you want to make sure every merge request is approved by one or more people,
 you can enforce this workflow by using merge request approvals. Merge request
@@ -480,7 +480,7 @@ list of approvers that will need to approve every merge request in a project.
 
 ## Code Quality **(STARTER)**
 
-> Introduced in [GitLab Starter][products] 9.3.
+> Introduced in [GitLab Starter](https://about.gitlab.com/product/) 9.3.
 
 If you are using [GitLab CI][ci], you can analyze your source code quality using
 the [Code Climate][cc] analyzer [Docker image][cd]. Going a step further, GitLab
@@ -490,7 +490,7 @@ can show the Code Climate report right in the merge request widget area.
 
 ## Metrics Reports **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/9788) in [GitLab Premium][products] 11.10.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/9788) in [GitLab Premium](https://about.gitlab.com/product/) 11.10.
 Requires GitLab Runner 11.10 and above.
 
 If you are using [GitLab CI][ci], you can configure your job to output custom
@@ -501,7 +501,7 @@ that it's fast and easy to identify changes to important metrics.
 
 ## Browser Performance Testing **(PREMIUM)**
 
-> Introduced in [GitLab Premium][products] 10.3.
+> Introduced in [GitLab Premium](https://about.gitlab.com/product/) 10.3.
 
 If your application offers a web interface and you are using [GitLab CI/CD][ci], you can quickly determine the performance impact of pending code changes. GitLab uses [Sitespeed.io][sitespeed], a free and open source tool for measuring the performance of web sites, to analyze the performance of specific pages.
 
@@ -511,7 +511,7 @@ GitLab runs the [Sitespeed.io container][sitespeed-container] and displays the d
 
 ## Merge Request Dependencies **(PREMIUM)**
 
-> Introduced in [GitLab Premium][products] 12.2.
+> Introduced in [GitLab Premium](https://about.gitlab.com/product/) 12.2.
 
 A single logical change may be split across several merge requests, across
 several projects. When this happens, the order in which MRs are merged is
@@ -570,7 +570,7 @@ whitespace changes.
 
 ## Live preview with Review Apps
 
-If you configured [Review Apps](https://about.gitlab.com/features/review-apps/) for your project,
+If you configured [Review Apps](https://about.gitlab.com/product/review-apps/) for your project,
 you can preview the changes submitted to a feature-branch through a merge request
 in a per-branch basis. No need to checkout the branch, install and preview locally;
 all your changes will be available to preview by anyone with the Review Apps link.
@@ -738,7 +738,6 @@ git checkout origin/merge-requests/1
 
 All the above can be done with the [`git-mr`](https://gitlab.com/glensc/git-mr) script.
 
-[products]: https://about.gitlab.com/products/ "GitLab products page"
 [protected branches]: ../protected_branches.md
 [ci]: ../../../ci/README.md
 [cc]: https://codeclimate.com/

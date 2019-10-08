@@ -329,7 +329,7 @@ the dropdown) `approver` and select the user.
 
 ## Security approvals in merge requests **(ULTIMATE)**
 
-> Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing) 12.2.
+> Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.2.
 
 Merge Request Approvals can be configured to require approval from a member
 of your security team when a vulnerability would be introduced by a merge request.
@@ -339,7 +339,7 @@ For more information, see
 
 ## License compliance approvals in merge requests **(ULTIMATE)**
 
-> Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing) 12.3.
+> Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.3.
 
 Merge Request Approvals can be configured to require approval from a member
 of your security team when a blacklisted software license would be introduced by a merge request.

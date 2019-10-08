@@ -370,7 +370,7 @@ This setting should only be used to map attributes that are part of the
 OmniAuth info hash schema.
 
 `attribute_statements` is used to map Attribute Names in a SAMLResponse to entries
-in the OmniAuth [info hash](https://github.com/intridea/omniauth/wiki/Auth-Hash-Schema#schema-10-and-later).
+in the OmniAuth [info hash](https://github.com/omniauth/omniauth/wiki/Auth-Hash-Schema#schema-10-and-later).
 
 For example, if your SAMLResponse contains an Attribute called 'EmailAddress',
 specify `{ email: ['EmailAddress'] }` to map the Attribute to the
@@ -414,7 +414,7 @@ args: {
 
 ### `uid_attribute`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/43806) in GitLab 10.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/17734) in GitLab 10.7.
 
 By default, the `uid` is set as the `name_id` in the SAML response. If you'd like to designate a unique attribute for the `uid`, you can set the `uid_attribute`. In the example below, the value of `uid` attribute in the SAML response is set as the `uid_attribute`.
 
@@ -458,7 +458,7 @@ installations from source. Restart Unicorn using the `sudo gitlab-ctl restart un
 command on Omnibus installations and `sudo service gitlab restart` on installations
 from source.
 
-You may also find the [SSO Tracer](https://addons.mozilla.org/en-US/firefox/addon/sso-tracer)
+You may also find the [SSO Tracer](https://addons.mozilla.org/en-US/firefox/addon/sso-tracer/)
 (Firefox) and [SAML Chrome Panel](https://chrome.google.com/webstore/detail/saml-chrome-panel/paijfdbeoenhembfhkhllainmocckace)
 (Chrome) browser extensions useful in your debugging.
 

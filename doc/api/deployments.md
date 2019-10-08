@@ -24,6 +24,7 @@ Example of response
 [
   {
     "created_at": "2016-08-11T07:36:40.222Z",
+    "updated_at": "2016-08-11T07:38:12.414Z",
     "deployable": {
       "commit": {
         "author_email": "admin@example.com",
@@ -83,6 +84,7 @@ Example of response
   },
   {
     "created_at": "2016-08-11T11:32:35.444Z",
+    "updated_at": "2016-08-11T11:34:01.123Z",
     "deployable": {
       "commit": {
         "author_email": "admin@example.com",
@@ -167,6 +169,7 @@ Example of response
   "ref": "master",
   "sha": "a91957a858320c0e17f3a0eca7cfacbff50ea29a",
   "created_at": "2016-08-11T11:32:35.444Z",
+  "updated_at": "2016-08-11T11:34:01.123Z",
   "user": {
     "name": "Administrator",
     "username": "root",

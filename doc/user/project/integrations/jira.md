@@ -25,9 +25,9 @@ Here's how the integration responds when you take the following actions in GitLa
   - GitLab's merge request page displays a note that it "Closed" the Jira issue, with a link to the issue. (Note: Before the merge, an MR will display that it "Closes" the Jira issue.)
   - The Jira issue shows the activity and the Jira issue is closed, or otherwise transitioned.
 
-You can also use [Jira's Smart Commits](https://confluence.atlassian.com/fisheye/using-smart-commits-298976812.html)
+You can also use [Jira's Smart Commits](https://confluence.atlassian.com/fisheye/using-smart-commits-960155400.html)
 directly from GitLab, as covered in the article
-[How and why to integrate GitLab with Jira](https://www.programmableweb.com/news/how-and-why-to-integrate-gitlab-Jira/how-to/2017/04/25).
+[How and why to integrate GitLab with Jira](https://www.programmableweb.com/news/how-and-why-to-integrate-gitlab-jira/how-to/2017/04/25).
 
 ## Configuration
 

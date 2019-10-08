@@ -6,6 +6,7 @@
     "ref",
     "sha",
     "created_at",
+    "updated_at",
     "user",
     "deployable"
   ],
@@ -15,6 +16,7 @@
     "ref": { "type": "string" },
     "sha": { "type": "string" },
     "created_at": { "type": "string" },
+    "updated_at": { "type": "string" },
     "user": {
       "oneOf": [
         { "type": "null" },

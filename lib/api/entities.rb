@@ -1474,7 +1474,7 @@ module API
     end
 
     class Deployment < Grape::Entity
-      expose :id, :iid, :ref, :sha, :created_at
+      expose :id, :iid, :ref, :sha, :created_at, :updated_at
       expose :user,        using: Entities::UserBasic
       expose :environment, using: Entities::EnvironmentBasic
       expose :deployable,  using: Entities::Job

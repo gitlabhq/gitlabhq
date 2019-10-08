@@ -1,0 +1,5 @@
+---
+title: Added timestamp (updated_at) to API deployments response
+merge_request: 17913
+author:
+type: added
