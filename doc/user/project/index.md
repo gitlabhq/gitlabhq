@@ -62,7 +62,7 @@ When you create a project in GitLab, you'll have access to a large number of
 - [GitLab CI/CD](../../ci/README.md): GitLab's built-in [Continuous Integration, Delivery, and Deployment](https://about.gitlab.com/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/) tool
   - [Container Registry](../packages/container_registry/index.md): Build and push Docker
   images out-of-the-box
-  - [Auto Deploy](../../ci/autodeploy/index.md): Configure GitLab CI/CD
+  - [Auto Deploy](../../topics/autodevops/index.md#auto-deploy): Configure GitLab CI/CD
   to automatically set up your app's deployment
   - [Enable and disable GitLab CI](../../ci/enable_or_disable_ci.md)
   - [Pipelines](../../ci/pipelines.md): Configure and visualize

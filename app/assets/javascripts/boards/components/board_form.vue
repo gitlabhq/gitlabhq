@@ -194,6 +194,7 @@ export default {
             ref="name"
             v-model="board.name"
             class="form-control"
+            data-qa-selector="board_name_field"
             type="text"
             :placeholder="__('Enter board name')"
             @keyup.enter="submit"

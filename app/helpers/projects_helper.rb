@@ -168,7 +168,7 @@ module ProjectsHelper
   end
 
   def link_to_autodeploy_doc
-    link_to _('About auto deploy'), help_page_path('ci/autodeploy/index'), target: '_blank'
+    link_to _('About auto deploy'), help_page_path('autodevops/index.md#auto-deploy'), target: '_blank'
   end
 
   def autodeploy_flash_notice(branch_name)

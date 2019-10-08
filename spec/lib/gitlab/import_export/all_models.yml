@@ -25,6 +25,8 @@ issues:
 - epic
 - designs
 - design_versions
+- prometheus_alerts
+- prometheus_alert_events
 events:
 - author
 - project

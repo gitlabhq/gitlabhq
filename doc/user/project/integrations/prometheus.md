@@ -445,7 +445,7 @@ If the "No data found" screen continues to appear, it could be due to:
   [run a query](prometheus_library/kubernetes.html#metrics-supported), replacing `$CI_ENVIRONMENT_SLUG`
   with the name of your environment.
 
-[autodeploy]: ../../../ci/autodeploy/index.md
+[autodeploy]: ../../../topics/autodevops/index.md#auto-deploy
 [kubernetes]: https://kubernetes.io
 [kube]: ./kubernetes.md
 [prometheus-k8s-sd]: https://prometheus.io/docs/operating/configuration/#<kubernetes_sd_config>

@@ -1877,6 +1877,15 @@ ActiveRecord::Schema.define(version: 2019_09_29_180827) do
     t.index ["updated_by_id"], name: "index_issues_on_updated_by_id", where: "(updated_by_id IS NOT NULL)"
   end
 
+  create_table "issues_prometheus_alert_events", id: false, force: :cascade do |t|
+    t.bigint "issue_id", null: false
+    t.bigint "prometheus_alert_event_id", null: false
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+    t.index ["issue_id", "prometheus_alert_event_id"], name: "issue_id_prometheus_alert_event_id_index", unique: true
+    t.index ["prometheus_alert_event_id"], name: "issue_id_issues_prometheus_alert_events_index"
+  end
+
   create_table "jira_connect_installations", force: :cascade do |t|
     t.string "client_key"
     t.string "encrypted_shared_secret"
@@ -4071,6 +4080,8 @@ ActiveRecord::Schema.define(version: 2019_09_29_180827) do
   add_foreign_key "issues", "users", column: "author_id", name: "fk_05f1e72feb", on_delete: :nullify
   add_foreign_key "issues", "users", column: "closed_by_id", name: "fk_c63cbf6c25", on_delete: :nullify
   add_foreign_key "issues", "users", column: "updated_by_id", name: "fk_ffed080f01", on_delete: :nullify
+  add_foreign_key "issues_prometheus_alert_events", "issues", on_delete: :cascade
+  add_foreign_key "issues_prometheus_alert_events", "prometheus_alert_events", on_delete: :cascade
   add_foreign_key "jira_connect_subscriptions", "jira_connect_installations", on_delete: :cascade
   add_foreign_key "jira_connect_subscriptions", "namespaces", on_delete: :cascade
   add_foreign_key "jira_tracker_data", "services", on_delete: :cascade
