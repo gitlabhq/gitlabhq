@@ -708,7 +708,7 @@ After deploying the configuration follow these steps:
 This example uses 3 PostgreSQL servers, and 1 application node.
 
 It differs from the [recommended setup](#example-recommended-setup) by moving the Consul servers into the same servers we use for PostgreSQL.
-The trade-off is between reducing server counts, against the increased operational complexity of needing to deal with postgres [failover](#failover-procedure) and [restore](#restore-procedure) procedures in addition to [Consul outage recovery](consul.md#outage-recovery) on the same set of machines.
+The trade-off is between reducing server counts, against the increased operational complexity of needing to deal with PostgreSQL [failover](#failover-procedure) and [restore](#restore-procedure) procedures in addition to [Consul outage recovery](consul.md#outage-recovery) on the same set of machines.
 
 In this example we start with all servers on the same 10.6.0.0/16 private network range, they can connect to each freely other on those addresses.
 

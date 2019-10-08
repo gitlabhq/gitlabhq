@@ -1,6 +1,6 @@
-import state from '~/releases/store/state';
-import mutations from '~/releases/store/mutations';
-import * as types from '~/releases/store/mutation_types';
+import state from '~/releases/list/store/state';
+import mutations from '~/releases/list/store/mutations';
+import * as types from '~/releases/list/store/mutation_types';
 import { releases } from '../mock_data';
 
 describe('Releases Store Mutations', () => {

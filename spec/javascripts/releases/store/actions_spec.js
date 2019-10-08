@@ -3,9 +3,9 @@ import {
   fetchReleases,
   receiveReleasesSuccess,
   receiveReleasesError,
-} from '~/releases/store/actions';
-import state from '~/releases/store/state';
-import * as types from '~/releases/store/mutation_types';
+} from '~/releases/list/store/actions';
+import state from '~/releases/list/store/state';
+import * as types from '~/releases/list/store/mutation_types';
 import api from '~/api';
 import testAction from 'spec/helpers/vuex_action_helper';
 import { releases } from '../mock_data';

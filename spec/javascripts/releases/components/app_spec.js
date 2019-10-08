@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import app from '~/releases/components/app.vue';
-import createStore from '~/releases/store';
+import app from '~/releases/list/components/app.vue';
+import createStore from '~/releases/list/store';
 import api from '~/api';
 import { mountComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import { resetStore } from '../store/helpers';

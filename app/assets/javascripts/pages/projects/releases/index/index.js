@@ -1,3 +1,3 @@
-import initReleases from '~/releases';
+import initReleases from '~/releases/list';
 
 document.addEventListener('DOMContentLoaded', initReleases);

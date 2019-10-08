@@ -202,7 +202,9 @@ These reference architecture examples rely on the general rule that approximatel
 
 - **Supported Users (approximate):** 10,000
 - **RPS:** 200 requests per second
-- **Known Issues:** While validating the reference architecture, slow endpoints were discovered and are being investigated. [gitlab-org/gitlab-ce/issues/64335](https://gitlab.com/gitlab-org/gitlab-ce/issues/64335)
+- **Known Issues:** While validating the reference architecture, slow API endpoints
+  were discovered. For details, see the related issues list in
+  [this issue](https://gitlab.com/gitlab-org/gitlab-foss/issues/64335).
 
 The Support and Quality teams built, performance tested, and validated an
 environment that supports about 10,000 users. The specifications below are a
@@ -225,7 +227,7 @@ NOTE: **Note:** The specifications here were performance tested against a specif
 - **Supported Users (approximate):** 25,000
 - **RPS:** 500 requests per second
 - **Status:** Work-in-progress
-- **Related Issues:** [gitlab-org/quality/performance/issues/57](https://gitlab.com/gitlab-org/quality/performance/issues/57)
+- **Related Issue:** See the [related issue](https://gitlab.com/gitlab-org/quality/performance/issues/57) for more information.
 
 The Support and Quality teams are in the process of building and performance testing
 an environment that will support about 25,000 users. The specifications below
@@ -240,7 +242,7 @@ TBD: Add specs
 - **Supported Users (approximate):** 50,000
 - **RPS:** 1,000 requests per second
 - **Status:** Work-in-progress
-- **Related Issues:** [gitlab-org/quality/performance/issues/66](https://gitlab.com/gitlab-org/quality/performance/issues/66)
+- **Related Issue:** See the [related issue](https://gitlab.com/gitlab-org/quality/performance/issues/66) for more information.
 
 The Support and Quality teams are in the process of building and performance testing
 an environment that will support about 50,000 users. The specifications below

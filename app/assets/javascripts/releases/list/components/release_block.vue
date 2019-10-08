@@ -5,7 +5,7 @@ import { GlTooltipDirective, GlLink, GlBadge } from '@gitlab/ui';
 import Icon from '~/vue_shared/components/icon.vue';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
-import { __, n__, sprintf } from '../../locale';
+import { __, n__, sprintf } from '~/locale';
 import { slugify } from '~/lib/utils/text_utility';
 import { getLocationHash } from '~/lib/utils/url_utility';
 import { scrollToElement } from '~/lib/utils/common_utils';

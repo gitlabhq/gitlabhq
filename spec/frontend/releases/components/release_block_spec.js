@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import ReleaseBlock from '~/releases/components/release_block.vue';
+import ReleaseBlock from '~/releases/list/components/release_block.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 import { first } from 'underscore';
 import { release } from '../mock_data';
