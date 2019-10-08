@@ -104,6 +104,11 @@ For instance:
 - endpoint = expose_path(api_v4_projects_issues_related_merge_requests_path(id: @project.id, issue_iid: @issue.iid))
 ```
 
+## Internal API
+
+The [internal API](./internal_api.md) is documented for internal use. Please keep it up to date so we know what endpoints
+different components are making use of.
+
 [Entity]: https://gitlab.com/gitlab-org/gitlab/blob/master/lib/api/entities.rb
 [validation, and coercion of the parameters]: https://github.com/ruby-grape/grape#parameter-validation-and-coercion
 [installing GitLab under a relative URL]: https://docs.gitlab.com/ee/install/relative_url.html

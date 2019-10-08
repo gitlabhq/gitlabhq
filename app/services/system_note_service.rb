@@ -33,78 +33,16 @@ module SystemNoteService
     ::SystemNotes::CommitService.new(noteable: noteable, project: project, author: author).tag_commit(tag_name)
   end
 
-  # Called when the assignee of a Noteable is changed or removed
-  #
-  # noteable - Noteable object
-  # project  - Project owning noteable
-  # author   - User performing the change
-  # assignee - User being assigned, or nil
-  #
-  # Example Note text:
-  #
-  #   "removed assignee"
-  #
-  #   "assigned to @rspeicher"
-  #
-  # Returns the created Note object
   def change_assignee(noteable, project, author, assignee)
-    body = assignee.nil? ? 'removed assignee' : "assigned to #{assignee.to_reference}"
-
-    create_note(NoteSummary.new(noteable, project, author, body, action: 'assignee'))
+    ::SystemNotes::IssuablesService.new(noteable: noteable, project: project, author: author).change_assignee(assignee)
   end
 
-  # Called when the assignees of an issuable is changed or removed
-  #
-  # issuable - Issuable object (responds to assignees)
-  # project  - Project owning noteable
-  # author   - User performing the change
-  # assignees - Users being assigned, or nil
-  #
-  # Example Note text:
-  #
-  #   "removed all assignees"
-  #
-  #   "assigned to @user1 additionally to @user2"
-  #
-  #   "assigned to @user1, @user2 and @user3 and unassigned from @user4 and @user5"
-  #
-  #   "assigned to @user1 and @user2"
-  #
-  # Returns the created Note object
   def change_issuable_assignees(issuable, project, author, old_assignees)
-    unassigned_users = old_assignees - issuable.assignees
-    added_users = issuable.assignees.to_a - old_assignees
-    text_parts = []
-
-    Gitlab::I18n.with_default_locale do
-      text_parts << "assigned to #{added_users.map(&:to_reference).to_sentence}" if added_users.any?
-      text_parts << "unassigned #{unassigned_users.map(&:to_reference).to_sentence}" if unassigned_users.any?
-    end
-
-    body = text_parts.join(' and ')
-
-    create_note(NoteSummary.new(issuable, project, author, body, action: 'assignee'))
+    ::SystemNotes::IssuablesService.new(noteable: issuable, project: project, author: author).change_issuable_assignees(old_assignees)
   end
 
-  # Called when the milestone of a Noteable is changed
-  #
-  # noteable  - Noteable object
-  # project   - Project owning noteable
-  # author    - User performing the change
-  # milestone - Milestone being assigned, or nil
-  #
-  # Example Note text:
-  #
-  #   "removed milestone"
-  #
-  #   "changed milestone to 7.11"
-  #
-  # Returns the created Note object
   def change_milestone(noteable, project, author, milestone)
-    format = milestone&.group_milestone? ? :name : :iid
-    body = milestone.nil? ? 'removed milestone' : "changed milestone to #{milestone.to_reference(project, format: format)}"
-
-    create_note(NoteSummary.new(noteable, project, author, body, action: 'milestone'))
+    ::SystemNotes::IssuablesService.new(noteable: noteable, project: project, author: author).change_milestone(milestone)
   end
 
   # Called when the due_date of a Noteable is changed
@@ -184,28 +122,8 @@ module SystemNoteService
     create_note(NoteSummary.new(noteable, project, author, body, action: 'time_tracking'))
   end
 
-  # Called when the status of a Noteable is changed
-  #
-  # noteable - Noteable object
-  # project  - Project owning noteable
-  # author   - User performing the change
-  # status   - String status
-  # source   - Mentionable performing the change, or nil
-  #
-  # Example Note text:
-  #
-  #   "merged"
-  #
-  #   "closed via bc17db76"
-  #
-  # Returns the created Note object
   def change_status(noteable, project, author, status, source = nil)
-    body = status.dup
-    body << " via #{source.gfm_reference(project)}" if source
-
-    action = status == 'reopened' ? 'opened' : status
-
-    create_note(NoteSummary.new(noteable, project, author, body, action: action))
+    ::SystemNotes::IssuablesService.new(noteable: noteable, project: project, author: author).change_status(status, source)
   end
 
   # Called when 'merge when pipeline succeeds' is executed
@@ -288,69 +206,16 @@ module SystemNoteService
     note
   end
 
-  # Called when the title of a Noteable is changed
-  #
-  # noteable  - Noteable object that responds to `title`
-  # project   - Project owning noteable
-  # author    - User performing the change
-  # old_title - Previous String title
-  #
-  # Example Note text:
-  #
-  #   "changed title from **Old** to **New**"
-  #
-  # Returns the created Note object
   def change_title(noteable, project, author, old_title)
-    new_title = noteable.title.dup
-
-    old_diffs, new_diffs = Gitlab::Diff::InlineDiff.new(old_title, new_title).inline_diffs
-
-    marked_old_title = Gitlab::Diff::InlineDiffMarkdownMarker.new(old_title).mark(old_diffs, mode: :deletion)
-    marked_new_title = Gitlab::Diff::InlineDiffMarkdownMarker.new(new_title).mark(new_diffs, mode: :addition)
-
-    body = "changed title from **#{marked_old_title}** to **#{marked_new_title}**"
-
-    create_note(NoteSummary.new(noteable, project, author, body, action: 'title'))
+    ::SystemNotes::IssuablesService.new(noteable: noteable, project: project, author: author).change_title(old_title)
   end
 
-  # Called when the description of a Noteable is changed
-  #
-  # noteable  - Noteable object that responds to `description`
-  # project   - Project owning noteable
-  # author    - User performing the change
-  #
-  # Example Note text:
-  #
-  #   "changed the description"
-  #
-  # Returns the created Note object
   def change_description(noteable, project, author)
-    body = 'changed the description'
-
-    create_note(NoteSummary.new(noteable, project, author, body, action: 'description'))
+    ::SystemNotes::IssuablesService.new(noteable: noteable, project: project, author: author).change_description
   end
 
-  # Called when the confidentiality changes
-  #
-  # issue   - Issue object
-  # project - Project owning the issue
-  # author  - User performing the change
-  #
-  # Example Note text:
-  #
-  #   "made the issue confidential"
-  #
-  # Returns the created Note object
   def change_issue_confidentiality(issue, project, author)
-    if issue.confidential
-      body = 'made the issue confidential'
-      action = 'confidential'
-    else
-      body = 'made the issue visible to everyone'
-      action = 'visible'
-    end
-
-    create_note(NoteSummary.new(issue, project, author, body, action: action))
+    ::SystemNotes::IssuablesService.new(noteable: issue, project: project, author: author).change_issue_confidentiality
   end
 
   # Called when a branch in Noteable is changed
@@ -419,159 +284,36 @@ module SystemNoteService
     create_note(NoteSummary.new(issue, project, author, body, action: 'merge'))
   end
 
-  # Called when a Mentionable references a Noteable
-  #
-  # noteable  - Noteable object being referenced
-  # mentioner - Mentionable object
-  # author    - User performing the reference
-  #
-  # Example Note text:
-  #
-  #   "mentioned in #1"
-  #
-  #   "mentioned in !2"
-  #
-  #   "mentioned in 54f7727c"
-  #
-  # See cross_reference_note_content.
-  #
-  # Returns the created Note object
   def cross_reference(noteable, mentioner, author)
-    return if cross_reference_disallowed?(noteable, mentioner)
-
-    gfm_reference = mentioner.gfm_reference(noteable.project || noteable.group)
-    body = cross_reference_note_content(gfm_reference)
-
-    if noteable.is_a?(ExternalIssue)
-      noteable.project.issues_tracker.create_cross_reference_note(noteable, mentioner, author)
-    else
-      create_note(NoteSummary.new(noteable, noteable.project, author, body, action: 'cross_reference'))
-    end
+    ::SystemNotes::IssuablesService.new(noteable: noteable, author: author).cross_reference(mentioner)
   end
 
-  # Check if a cross-reference is disallowed
-  #
-  # This method prevents adding a "mentioned in !1" note on every single commit
-  # in a merge request. Additionally, it prevents the creation of references to
-  # external issues (which would fail).
-  #
-  # noteable  - Noteable object being referenced
-  # mentioner - Mentionable object
-  #
-  # Returns Boolean
-  def cross_reference_disallowed?(noteable, mentioner)
-    return true if noteable.is_a?(ExternalIssue) && !noteable.project.jira_tracker_active?
-    return false unless mentioner.is_a?(MergeRequest)
-    return false unless noteable.is_a?(Commit)
-
-    mentioner.commits.include?(noteable)
-  end
-
-  # Check if a cross reference to a noteable from a mentioner already exists
-  #
-  # This method is used to prevent multiple notes being created for a mention
-  # when a issue is updated, for example. The method also calls notes_for_mentioner
-  # to check if the mentioner is a commit, and return matches only on commit hash
-  # instead of project + commit, to avoid repeated mentions from forks.
-  #
-  # noteable  - Noteable object being referenced
-  # mentioner - Mentionable object
-  #
-  # Returns Boolean
   def cross_reference_exists?(noteable, mentioner)
-    notes = noteable.notes.system
-    notes_for_mentioner(mentioner, noteable, notes).exists?
+    ::SystemNotes::IssuablesService.new(noteable: noteable).cross_reference_exists?(mentioner)
   end
 
-  # Called when the status of a Task has changed
-  #
-  # noteable  - Noteable object.
-  # project   - Project owning noteable
-  # author    - User performing the change
-  # new_task  - TaskList::Item object.
-  #
-  # Example Note text:
-  #
-  #   "marked the task Whatever as completed."
-  #
-  # Returns the created Note object
   def change_task_status(noteable, project, author, new_task)
-    status_label = new_task.complete? ? Taskable::COMPLETED : Taskable::INCOMPLETE
-    body = "marked the task **#{new_task.source}** as #{status_label}"
-
-    create_note(NoteSummary.new(noteable, project, author, body, action: 'task'))
+    ::SystemNotes::IssuablesService.new(noteable: noteable, project: project, author: author).change_task_status(new_task)
   end
 
-  # Called when noteable has been moved to another project
-  #
-  # direction    - symbol, :to or :from
-  # noteable     - Noteable object
-  # noteable_ref - Referenced noteable
-  # author       - User performing the move
-  #
-  # Example Note text:
-  #
-  #   "moved to some_namespace/project_new#11"
-  #
-  # Returns the created Note object
   def noteable_moved(noteable, project, noteable_ref, author, direction:)
-    unless [:to, :from].include?(direction)
-      raise ArgumentError, "Invalid direction `#{direction}`"
-    end
-
-    cross_reference = noteable_ref.to_reference(project)
-    body = "moved #{direction} #{cross_reference}"
-
-    create_note(NoteSummary.new(noteable, project, author, body, action: 'moved'))
+    ::SystemNotes::IssuablesService.new(noteable: noteable, project: project, author: author).noteable_moved(noteable_ref, direction)
   end
 
-  # Called when a Noteable has been marked as a duplicate of another Issue
-  #
-  # noteable        - Noteable object
-  # project         - Project owning noteable
-  # author          - User performing the change
-  # canonical_issue - Issue that this is a duplicate of
-  #
-  # Example Note text:
-  #
-  #   "marked this issue as a duplicate of #1234"
-  #
-  #   "marked this issue as a duplicate of other_project#5678"
-  #
-  # Returns the created Note object
   def mark_duplicate_issue(noteable, project, author, canonical_issue)
-    body = "marked this issue as a duplicate of #{canonical_issue.to_reference(project)}"
-    create_note(NoteSummary.new(noteable, project, author, body, action: 'duplicate'))
+    ::SystemNotes::IssuablesService.new(noteable: noteable, project: project, author: author).mark_duplicate_issue(canonical_issue)
   end
 
-  # Called when a Noteable has been marked as the canonical Issue of a duplicate
-  #
-  # noteable        - Noteable object
-  # project         - Project owning noteable
-  # author          - User performing the change
-  # duplicate_issue - Issue that was a duplicate of this
-  #
-  # Example Note text:
-  #
-  #   "marked #1234 as a duplicate of this issue"
-  #
-  #   "marked other_project#5678 as a duplicate of this issue"
-  #
-  # Returns the created Note object
   def mark_canonical_issue_of_duplicate(noteable, project, author, duplicate_issue)
-    body = "marked #{duplicate_issue.to_reference(project)} as a duplicate of this issue"
-    create_note(NoteSummary.new(noteable, project, author, body, action: 'duplicate'))
+    ::SystemNotes::IssuablesService.new(noteable: noteable, project: project, author: author).mark_canonical_issue_of_duplicate(duplicate_issue)
   end
 
   def discussion_lock(issuable, author)
-    action = issuable.discussion_locked? ? 'locked' : 'unlocked'
-    body = "#{action} this #{issuable.class.to_s.titleize.downcase}"
-
-    create_note(NoteSummary.new(issuable, issuable.project, author, body, action: action))
+    ::SystemNotes::IssuablesService.new(noteable: issuable, project: issuable.project, author: author).discussion_lock
   end
 
-  def cross_reference?(note_text)
-    note_text =~ /\A#{cross_reference_note_prefix}/i
+  def cross_reference_disallowed?(noteable, mentioner)
+    ::SystemNotes::IssuablesService.new(noteable: noteable).cross_reference_disallowed?(mentioner)
   end
 
   def zoom_link_added(issue, project, author)
@@ -584,32 +326,11 @@ module SystemNoteService
 
   private
 
-  # rubocop: disable CodeReuse/ActiveRecord
-  def notes_for_mentioner(mentioner, noteable, notes)
-    if mentioner.is_a?(Commit)
-      text = "#{cross_reference_note_prefix}%#{mentioner.to_reference(nil)}"
-      notes.where('(note LIKE ? OR note LIKE ?)', text, text.capitalize)
-    else
-      gfm_reference = mentioner.gfm_reference(noteable.project || noteable.group)
-      text = cross_reference_note_content(gfm_reference)
-      notes.where(note: [text, text.capitalize])
-    end
-  end
-  # rubocop: enable CodeReuse/ActiveRecord
-
   def create_note(note_summary)
     note = Note.create(note_summary.note.merge(system: true))
     note.system_note_metadata = SystemNoteMetadata.new(note_summary.metadata) if note_summary.metadata?
 
     note
-  end
-
-  def cross_reference_note_prefix
-    'mentioned in '
-  end
-
-  def cross_reference_note_content(gfm_reference)
-    "#{cross_reference_note_prefix}#{gfm_reference}"
   end
 
   def url_helpers

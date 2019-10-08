@@ -36,16 +36,18 @@ shared_examples_for 'a note with overridable created_at' do
   end
 end
 
-shared_examples_for 'a system note' do
+shared_examples_for 'a system note' do |params|
   let(:expected_noteable) { noteable }
   let(:commit_count)      { nil }
 
   it 'has the correct attributes', :aggregate_failures do
+    exclude_project = !params.nil? && params[:exclude_project]
+
     expect(subject).to be_valid
     expect(subject).to be_system
 
     expect(subject.noteable).to eq expected_noteable
-    expect(subject.project).to eq project
+    expect(subject.project).to eq project unless exclude_project
     expect(subject.author).to eq author
 
     expect(subject.system_note_metadata.action).to eq(action)

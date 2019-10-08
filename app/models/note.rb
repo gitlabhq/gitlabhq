@@ -215,7 +215,7 @@ class Note < ApplicationRecord
     if force_cross_reference_regex_check?
       matches_cross_reference_regex?
     else
-      SystemNoteService.cross_reference?(note)
+      ::SystemNotes::IssuablesService.cross_reference?(note)
     end
   end
   # rubocop: enable CodeReuse/ServiceClass

@@ -40,3 +40,5 @@ schedule:package-and-qa:
     - .only-code-qa-changes
     - .only-canonical-schedules
   needs: ["build-qa-image", "gitlab:assets:compile"]
+  # Allowed to fail until https://gitlab.com/gitlab-org/gitlab/issues/33272 is fixed.
+  allow_failure: true
