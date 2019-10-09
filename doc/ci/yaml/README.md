@@ -627,8 +627,8 @@ docker build:
       - more_scripts/*.{rb,py,sh}
 ```
 
-In the scenario above, when pushing multiple commits to GitLab to an existing
-branch, GitLab creates and triggers the `docker build` job, provided that one of the
+In the scenario above, when pushing commits to an existing branch in GitLab,
+it creates and triggers the `docker build` job, provided that one of the
 commits contains changes to any of the following:
 
 - The `Dockerfile` file.
@@ -636,7 +636,13 @@ commits contains changes to any of the following:
 - Any of the files and subdirectories inside the `dockerfiles` directory.
 - Any of the files with `rb`, `py`, `sh` extensions inside the `more_scripts` directory.
 
-You can also use glob patterns to match multiple files in either the root directory of the repo, or in _any_ directory within the repo. For example:
+CAUTION: **Warning:**
+If using `only:changes` with [only allow merge requests to be merged if the pipeline succeeds](../../user/project/merge_requests/merge_when_pipeline_succeeds.md#only-allow-merge-requests-to-be-merged-if-the-pipeline-succeeds),
+undesired behavior could result if you do not [also use `only:merge_requests`](#using-onlychanges-with-pipelines-for-merge-requests).
+
+You can also use glob patterns to match multiple files in either the root directory
+of the repo, or in _any_ directory within the repo, but they must be wrapped
+in double quotes or GitLab will fail to parse the `.gitlab-ci.yml`. For example:
 
 ```yaml
 test:
@@ -647,10 +653,8 @@ test:
       - "**/*.sql"
 ```
 
-NOTE: **Note:**
-In the example above, the expressions are wrapped double quotes because they are glob patterns. GitLab will fail to parse `.gitlab-ci.yml` files with unwrapped glob patterns.
-
-The following example will skip the CI job if a change is detected in any file in the root directory of the repo with a `.md` extension:
+The following example will skip the `build` job if a change is detected in any file
+in the root directory of the repo with a `.md` extension:
 
 ```yaml
 build:
@@ -661,21 +665,19 @@ build:
 ```
 
 CAUTION: **Warning:**
-There are some caveats when using this feature with new branches and tags. See
-the section below.
+There are some points to be aware of when
+[using this feature with new branches or tags *without* pipelines for merge requests](using-onlychanges-without-pipelines-for-merge-requests).
 
-##### Using `changes` with new branches and tags
-
-When pushing a **new** branch or a **new** tag to GitLab, the policy always
-evaluates to true and GitLab will create a job. This feature is not connected
-with merge requests yet and, because GitLab is creating pipelines before a user
-can create a merge request, it is unknown what the target branch is at this point.
-
-##### Using `changes` with `merge_requests`
+##### Using `only:changes` with pipelines for merge requests
 
 With [pipelines for merge requests](../merge_request_pipelines/index.md),
 it is possible to define a job to be created based on files modified
 in a merge request.
+
+In order to deduce the correct base SHA of the source branch, we recommend combining
+this keyword with `only: merge_requests`. This way, file differences are correctly
+calculated from any further commits, thus all changes in the merge requests are properly
+tested in pipelines.
 
 For example:
 
@@ -693,6 +695,42 @@ docker build service one:
 In the scenario above, if a merge request is created or updated that changes
 either files in `service-one` directory or the `Dockerfile`, GitLab creates
 and triggers the `docker build service one` job.
+
+Note that if [pipelines for merge requests](../merge_request_pipelines/index.md) is
+combined with `only: change`, but `only: merge_requests` is omitted, there could be
+unwanted behavior.
+
+For example:
+
+```yaml
+docker build service one:
+  script: docker build -t my-service-one-image:$CI_COMMIT_REF_SLUG .
+  only:
+    changes:
+      - Dockerfile
+      - service-one/**/*
+```
+
+In the example above, a pipeline could fail due to changes to a file in `service-one/**/*`.
+A later commit could then be pushed that does not include any changes to this file,
+but includes changes to the `Dockerfile`, and this pipeline could pass because it is only
+testing the changes to the `Dockerfile`. GitLab checks the **most recent pipeline**,
+that **passed**, and will show the merge request as mergable, despite the earlier
+failed pipeline caused by a change that was not yet corrected.
+
+With this configuration, care must be taken to check that the most recent pipeline
+properly corrected any failures from previous pipelines.
+
+##### Using `only:changes` without pipelines for merge requests
+
+Without [pipelines for merge requests](../merge_request_pipelines/index.md), pipelines
+run on branches or tags that don't have an explicit association with a merge request.
+In this case, a previous SHA is used to calculate the diff, which equivalent to `git diff HEAD~`.
+This could result in some unexpected behavior, including:
+
+- When pushing a new branch or a new tag to GitLab, the policy always evaluates to true.
+- When pushing a new commit, the changed files are calculated using the previous commit
+  as the base SHA.
 
 ### `rules`
 

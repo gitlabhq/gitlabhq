@@ -688,6 +688,15 @@ u = User.find_by_username('')
 MergeRequests::PostMergeService.new(p, u).execute(m)
 ```
 
+### Delete a merge request
+
+```ruby
+u = User.find_by_username('<username>')
+p = Project.find_by_full_path('<group>/<project>')
+m = p.merge_requests.find_by(iid: <IID>)
+Issuable::DestroyService.new(m.project, u).execute(m)
+```
+
 ### Rebase manually
 
 ```ruby
