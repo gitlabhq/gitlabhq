@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class Upload < ApplicationRecord
+  include Checksummable
   # Upper limit for foreground checksum processing
   CHECKSUM_THRESHOLD = 100.megabytes
 
@@ -20,10 +21,6 @@ class Upload < ApplicationRecord
   # as the FileUploader is not mounted, the default CarrierWave ActiveRecord
   # hooks are not executed and the file will not be deleted
   after_destroy :delete_file!, if: -> { uploader_class <= FileUploader }
-
-  def self.hexdigest(path)
-    Digest::SHA256.file(path).hexdigest
-  end
 
   class << self
     ##
@@ -55,7 +52,7 @@ class Upload < ApplicationRecord
     self.checksum = nil
     return unless needs_checksum?
 
-    self.checksum = Digest::SHA256.file(absolute_path).hexdigest
+    self.checksum = self.class.hexdigest(absolute_path)
   end
 
   # Initialize the associated Uploader class with current model

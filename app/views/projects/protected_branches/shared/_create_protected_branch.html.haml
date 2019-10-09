@@ -2,7 +2,7 @@
   %input{ type: 'hidden', name: 'update_section', value: 'js-protected-branches-settings' }
   .card
     .card-header
-      Protect a branch
+      = s_("ProtectedBranch|Protect a branch")
     .card-body
       = form_errors(@protected_branch)
       .form-group.row
@@ -11,22 +11,19 @@
         .col-md-10
           = render partial: "projects/protected_branches/shared/dropdown", locals: { f: f }
           .form-text.text-muted
-            = link_to 'Wildcards', help_page_path('user/project/protected_branches', anchor: 'wildcard-protected-branches')
-            such as
-            %code *-stable
-            or
-            %code production/*
-            are supported
+            - wildcards_url = help_page_url('user/project/protected_branches', anchor: 'wildcard-protected-branches')
+            - wildcards_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: wildcards_url }
+            = (s_("ProtectedBranch|%{wildcards_link_start}Wildcards%{wildcards_link_end} such as %{code_tag_start}*-stable%{code_tag_end} or %{code_tag_start}production/*%{code_tag_end} are supported") % { wildcards_link_start: wildcards_link_start, wildcards_link_end: '</a>', code_tag_start: '<code>', code_tag_end: '</code>' }).html_safe
       .form-group.row
         %label.col-md-2.text-right{ for: 'merge_access_levels_attributes' }
-          Allowed to merge:
+          = s_("ProtectedBranch|Allowed to merge:")
         .col-md-10
           = yield :merge_access_levels
       .form-group.row
         %label.col-md-2.text-right{ for: 'push_access_levels_attributes' }
-          Allowed to push:
+          = s_("ProtectedBranch|Allowed to push:")
         .col-md-10
           = yield :push_access_levels
-
+      = render_if_exists 'projects/protected_branches/ee/code_owner_approval_form'
     .card-footer
-      = f.submit 'Protect', class: 'btn-success btn', disabled: true, data: { qa_selector: 'protect_button' }
+      = f.submit s_('ProtectedBranch|Protect'), class: 'btn-success btn', disabled: true, data: { qa_selector: 'protect_button' }

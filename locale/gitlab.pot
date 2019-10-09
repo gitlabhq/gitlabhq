@@ -358,6 +358,9 @@ msgstr[1] ""
 msgid "%{tabname} changed"
 msgstr ""
 
+msgid "%{template_project_id} is unknown or invalid"
+msgstr ""
+
 msgid "%{text} %{files}"
 msgid_plural "%{text} %{files} files"
 msgstr[0] ""
@@ -12812,6 +12815,48 @@ msgstr ""
 msgid "Protected branches"
 msgstr ""
 
+msgid "ProtectedBranch|%{wildcards_link_start}Wildcards%{wildcards_link_end} such as %{code_tag_start}*-stable%{code_tag_end} or %{code_tag_start}production/*%{code_tag_end} are supported"
+msgstr ""
+
+msgid "ProtectedBranch|Allowed to merge"
+msgstr ""
+
+msgid "ProtectedBranch|Allowed to merge:"
+msgstr ""
+
+msgid "ProtectedBranch|Allowed to push"
+msgstr ""
+
+msgid "ProtectedBranch|Allowed to push:"
+msgstr ""
+
+msgid "ProtectedBranch|Code owner approval"
+msgstr ""
+
+msgid "ProtectedBranch|Last commit"
+msgstr ""
+
+msgid "ProtectedBranch|Protect"
+msgstr ""
+
+msgid "ProtectedBranch|Protect a branch"
+msgstr ""
+
+msgid "ProtectedBranch|Protected branch (%{protected_branches_count})"
+msgstr ""
+
+msgid "ProtectedBranch|Pushes that change filenames matched by the CODEOWNERS file will be rejected"
+msgstr ""
+
+msgid "ProtectedBranch|Require approval from code owners:"
+msgstr ""
+
+msgid "ProtectedBranch|There are currently no protected branches, protect a branch with the form above."
+msgstr ""
+
+msgid "ProtectedBranch|Toggle code owner approval"
+msgstr ""
+
 msgid "ProtectedEnvironment|%{environment_name} will be writable for developers. Are you sure?"
 msgstr ""
 
@@ -13466,9 +13511,6 @@ msgid "Require all users in this group to setup Two-factor authentication"
 msgstr ""
 
 msgid "Require all users to accept Terms of Service and Privacy Policy when they access GitLab."
-msgstr ""
-
-msgid "Require approval from code owners"
 msgstr ""
 
 msgid "Require user password to approve"

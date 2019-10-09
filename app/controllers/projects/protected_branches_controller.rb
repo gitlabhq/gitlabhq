@@ -19,9 +19,13 @@ class Projects::ProtectedBranchesController < Projects::ProtectedRefsController
     [:merge_access_levels, :push_access_levels]
   end
 
-  def protected_ref_params
-    params.require(:protected_branch).permit(:name,
-                                             merge_access_levels_attributes: access_level_attributes,
-                                             push_access_levels_attributes: access_level_attributes)
+  def protected_ref_params(*attrs)
+    attrs = ([:name,
+              merge_access_levels_attributes: access_level_attributes,
+              push_access_levels_attributes: access_level_attributes] + attrs).uniq
+
+    params.require(:protected_branch).permit(attrs)
   end
 end
+
+Projects::ProtectedBranchesController.prepend_if_ee('EE::Projects::ProtectedBranchesController')

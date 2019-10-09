@@ -21,7 +21,7 @@ Here's how the integration responds when you take the following actions in GitLa
   - GitLab hyperlinks to the Jira issue.
   - The Jira issue adds an issue link to the commit/MR in GitLab.
   - The Jira issue adds a comment reflecting the comment made in GitLab, the comment author, and a link to the commit/MR in GitLab.
-- **Mention that a commit or MR 'closes', 'resolves', or 'fixes' a Jira issue ID**. When the commit is made on master or the change is merged to master:
+- **Mention that a commit or MR 'closes', 'resolves', or 'fixes' a Jira issue ID**. When the commit is made on the project's default branch (usually master) or the change is merged to the default branch:
   - GitLab's merge request page displays a note that it "Closed" the Jira issue, with a link to the issue. (Note: Before the merge, an MR will display that it "Closes" the Jira issue.)
   - The Jira issue shows the activity and the Jira issue is closed, or otherwise transitioned.
 

@@ -2,6 +2,7 @@
 
 class LfsObject < ApplicationRecord
   include AfterCommitQueue
+  include Checksummable
   include EachBatch
   include ObjectStorage::BackgroundMove
 
@@ -46,7 +47,7 @@ class LfsObject < ApplicationRecord
   # rubocop: enable DestroyAll
 
   def self.calculate_oid(path)
-    Digest::SHA256.file(path).hexdigest
+    self.hexdigest(path)
   end
 end
 

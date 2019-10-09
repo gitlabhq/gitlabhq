@@ -156,4 +156,15 @@ describe LfsObject do
       end
     end
   end
+
+  describe ".calculate_oid" do
+    let(:lfs_object) { create(:lfs_object, :with_file) }
+
+    it 'returns SHA256 sum of the file' do
+      path = lfs_object.file.path
+      expected = Digest::SHA256.file(path).hexdigest
+
+      expect(described_class.calculate_oid(path)).to eq expected
+    end
+  end
 end

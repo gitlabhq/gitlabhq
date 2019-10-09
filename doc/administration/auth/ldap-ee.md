@@ -281,7 +281,7 @@ sync to run once every 2 hours at the top of the hour.
 > Introduced in GitLab Enterprise Edition Starter 8.9.
 
 Using the `external_groups` setting will allow you to mark all users belonging
-to these groups as [external users](../../user/permissions.md#external-users-permissions).
+to these groups as [external users](../../user/permissions.md#external-users-core-only).
 Group membership is checked periodically through the `LdapGroupSync` background
 task.
 

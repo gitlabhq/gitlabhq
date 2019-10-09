@@ -19,6 +19,8 @@
 
   = yield
 
+  = render_if_exists 'projects/protected_branches/ee/code_owner_approval_table', protected_branch: protected_branch
+
   - if can_admin_project
     %td
       = link_to 'Unprotect', [@project.namespace.becomes(Namespace), @project, protected_branch, { update_section: 'js-protected-branches-settings' }], disabled: local_assigns[:disabled], data: { confirm: 'Branch will be writable for developers. Are you sure?' }, method: :delete, class: "btn btn-warning"

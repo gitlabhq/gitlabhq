@@ -296,3 +296,21 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" 'https://git
 | --------- | ---- | -------- | ----------- |
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `name` | string | yes | The name of the branch |
+
+## Require code owner approvals for a single branch
+
+Update the "code owner approval required" option for the given protected branch protected branch.
+
+```
+PATCH /projects/:id/protected_branches/:name
+```
+
+```bash
+curl --request PATCH --header "PRIVATE-TOKEN: <your_access_token>" 'https://gitlab.example.com/api/v4/projects/5/protected_branches/feature-branch'
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `name` | string | yes | The name of the branch |
+| `code_owner_approval_required`  | boolean        | no  | **(PREMIUM)** Prevent pushes to this branch if it matches an item in the [`CODEOWNERS` file](../user/project/code_owners.md). (defaults: false)|

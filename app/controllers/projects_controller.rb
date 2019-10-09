@@ -376,6 +376,7 @@ class ProjectsController < Projects::ApplicationController
       :tag_list,
       :visibility_level,
       :template_name,
+      :template_project_id,
       :merge_method,
       :initialize_with_readme,
 
