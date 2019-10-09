@@ -144,7 +144,7 @@ export default {
             </div>
             <clipboard-button
               :text="commit.sha"
-              :title="__('Copy commit SHA to clipboard')"
+              :title="__('Copy commit SHA')"
               tooltip-placement="bottom"
             />
           </div>

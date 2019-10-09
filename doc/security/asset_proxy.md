@@ -11,12 +11,12 @@ to log the IP address of the user.
 One way to mitigate this is by proxying any external images to a server you
 control.
 
-GitLab can be configured to use an asset proxy server when requesting external images/videos in
+GitLab can be configured to use an asset proxy server when requesting external images/videos/audio in
 issues, comments, etc. This helps ensure that malicious images do not expose the user's IP address
 when they are fetched.
 
 We currently recommend using [cactus/go-camo](https://github.com/cactus/go-camo#how-it-works)
-as it supports proxying video and is more configurable.
+as it supports proxying video, audio, and is more configurable.
 
 ## Installing Camo server
 
@@ -52,7 +52,7 @@ To install a Camo server as an asset proxy:
 
 ## Using the Camo server
 
-Once the Camo server is running and you've enabled the GitLab settings, any image or video that
+Once the Camo server is running and you've enabled the GitLab settings, any image, video, or audio that
 references an external source will get proxied to the Camo server.
 
 For example, the following is a link to an image in Markdown:

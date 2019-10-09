@@ -7,7 +7,7 @@
         = custom_icon('ellipsis_v')
     %ul.dropdown-menu.more-actions-dropdown.dropdown-open-left
       %li
-        = clipboard_button(text: noteable_note_url(note), title: 'Copy reference to clipboard', button_text: 'Copy link', class: 'btn-clipboard', hide_tooltip: true, hide_button_icon: true)
+        = clipboard_button(text: noteable_note_url(note), title: _('Copy reference'), button_text: _('Copy link'), class: 'btn-clipboard', hide_tooltip: true, hide_button_icon: true)
       - unless is_current_user
         %li
           = link_to new_abuse_report_path(user_id: note.author.id, ref_url: noteable_note_url(note)) do

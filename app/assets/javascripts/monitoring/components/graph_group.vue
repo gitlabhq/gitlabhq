@@ -52,7 +52,7 @@ export default {
     <div
       v-if="collapseGroup"
       v-show="collapseGroup && showGroup"
-      class="card-body prometheus-graph-group"
+      class="card-body prometheus-graph-group p-0"
     >
       <slot></slot>
     </div>

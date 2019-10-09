@@ -10,14 +10,14 @@ module Gitlab
       return unless name = markdown_name
 
       markdown = "[#{name.gsub(']', '\\]')}](#{secure_url})"
-      markdown = "!#{markdown}" if image_or_video? || dangerous_image_or_video?
+      markdown = "!#{markdown}" if embeddable? || dangerous_embeddable?
       markdown
     end
 
     def markdown_name
       return unless filename.present?
 
-      image_or_video? ? File.basename(filename, File.extname(filename)) : filename
+      embeddable? ? File.basename(filename, File.extname(filename)) : filename
     end
   end
 end

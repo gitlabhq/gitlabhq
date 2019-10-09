@@ -101,7 +101,7 @@ describe 'Branches' do
         visit project_branches_filtered_path(project, state: 'all')
 
         expect(all('.all-branches').last).to have_selector('li', count: 20)
-        accept_confirm { find('.js-branch-add-pdf-text-binary .btn-remove').click }
+        accept_confirm { first('.js-branch-item .btn-remove').click }
 
         expect(all('.all-branches').last).to have_selector('li', count: 19)
       end

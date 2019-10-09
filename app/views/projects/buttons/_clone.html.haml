@@ -13,7 +13,7 @@
         .input-group
           = text_field_tag :ssh_project_clone, project.ssh_url_to_repo, class: "js-select-on-focus form-control qa-ssh-clone-url", readonly: true, aria: { label: 'Project clone URL' }
           .input-group-append
-            = clipboard_button(target: '#ssh_project_clone', title: _("Copy URL to clipboard"), class: "input-group-text btn-default btn-clipboard")
+            = clipboard_button(target: '#ssh_project_clone', title: _("Copy URL"), class: "input-group-text btn-default btn-clipboard")
             = render_if_exists 'projects/buttons/geo'
     - if http_enabled?
       %li.pt-2
@@ -22,7 +22,7 @@
         .input-group
           = text_field_tag :http_project_clone, project.http_url_to_repo, class: "js-select-on-focus form-control qa-http-clone-url", readonly: true, aria: { label: 'Project clone URL' }
           .input-group-append
-            = clipboard_button(target: '#http_project_clone', title: _("Copy URL to clipboard"), class: "input-group-text btn-default btn-clipboard")
+            = clipboard_button(target: '#http_project_clone', title: _("Copy URL"), class: "input-group-text btn-default btn-clipboard")
             = render_if_exists 'projects/buttons/geo'
     = render_if_exists 'projects/buttons/kerberos_clone_field'
 

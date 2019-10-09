@@ -14,7 +14,7 @@ describe('clipboard button', () => {
     beforeEach(() => {
       vm = mountComponent(Component, {
         text: 'copy me',
-        title: 'Copy this value into Clipboard!',
+        title: 'Copy this value',
         cssClass: 'btn-danger',
       });
     });
@@ -26,7 +26,7 @@ describe('clipboard button', () => {
     });
 
     it('should have a tooltip with default values', () => {
-      expect(vm.$el.getAttribute('data-original-title')).toEqual('Copy this value into Clipboard!');
+      expect(vm.$el.getAttribute('data-original-title')).toEqual('Copy this value');
     });
 
     it('should render provided classname', () => {
@@ -39,7 +39,7 @@ describe('clipboard button', () => {
       vm = mountComponent(Component, {
         text: 'copy me',
         gfm: '`path/to/file`',
-        title: 'Copy this value into Clipboard!',
+        title: 'Copy this value',
         cssClass: 'btn-danger',
       });
 

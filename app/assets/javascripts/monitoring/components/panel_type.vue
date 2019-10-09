@@ -82,7 +82,7 @@ export default {
       return this.graphData.type && this.graphData.type === type;
     },
     showToast() {
-      this.$toast.show(__('Link copied to clipboard'));
+      this.$toast.show(__('Link copied'));
     },
   },
 };

@@ -143,7 +143,7 @@ export default {
           <span class="input-group-append">
             <clipboard-button
               :text="dockerBuildCommand"
-              :title="s__('ContainerRegistry|Copy build command to clipboard')"
+              :title="s__('ContainerRegistry|Copy build command')"
               class="input-group-text"
             />
           </span>
@@ -154,7 +154,7 @@ export default {
           <span class="input-group-append">
             <clipboard-button
               :text="dockerPushCommand"
-              :title="s__('ContainerRegistry|Copy push command to clipboard')"
+              :title="s__('ContainerRegistry|Copy push command')"
               class="input-group-text"
             />
           </span>

@@ -415,7 +415,7 @@ class Commit
 
     if entry[:type] == :blob
       blob = ::Blob.decorate(Gitlab::Git::Blob.new(name: entry[:name]), @project)
-      blob.image? || blob.video? ? :raw : :blob
+      blob.image? || blob.video? || blob.audio? ? :raw : :blob
     else
       entry[:type]
     end

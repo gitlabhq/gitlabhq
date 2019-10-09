@@ -193,6 +193,17 @@ module MarkdownMatchers
     end
   end
 
+  # AudioLinkFilter
+  matcher :parse_audio_links do
+    set_default_markdown_messages
+
+    match do |actual|
+      audio = actual.at_css('audio')
+
+      expect(audio['src']).to end_with('/assets/audio/gitlab-demo.wav')
+    end
+  end
+
   # ColorFilter
   matcher :parse_colors do
     set_default_markdown_messages

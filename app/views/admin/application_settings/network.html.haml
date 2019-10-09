@@ -45,3 +45,5 @@
       = _('Configure paths to be protected by Rack Attack. A web server restart is required after changing these settings.')
   .settings-content
     = render 'protected_paths'
+
+= render_if_exists 'admin/application_settings/ee_network_settings'

@@ -29,6 +29,10 @@ describe Banzai::Filter::RelativeLinkFilter do
     %(<video src="#{path}"></video>)
   end
 
+  def audio(path)
+    %(<audio src="#{path}"></audio>)
+  end
+
   def link(path)
     %(<a href="#{path}">#{path}</a>)
   end
@@ -81,6 +85,12 @@ describe Banzai::Filter::RelativeLinkFilter do
       doc = filter(video('files/videos/intro.mp4'), commit: project.commit('video'), ref: 'video')
 
       expect(doc.at_css('video')['src']).to eq 'files/videos/intro.mp4'
+    end
+
+    it 'does not modify any relative URL in audio' do
+      doc = filter(audio('files/audio/sample.wav'), commit: project.commit('audio'), ref: 'audio')
+
+      expect(doc.at_css('audio')['src']).to eq 'files/audio/sample.wav'
     end
   end
 
@@ -216,6 +226,13 @@ describe Banzai::Filter::RelativeLinkFilter do
 
       expect(doc.at_css('video')['src'])
         .to eq "/#{project_path}/raw/video/files/videos/intro.mp4"
+    end
+
+    it 'rebuilds relative URL for audio in the repo' do
+      doc = filter(audio('files/audio/sample.wav'), commit: project.commit('audio'), ref: 'audio')
+
+      expect(doc.at_css('audio')['src'])
+        .to eq "/#{project_path}/raw/audio/files/audio/sample.wav"
     end
 
     it 'does not modify relative URL with an anchor only' do

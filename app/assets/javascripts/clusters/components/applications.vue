@@ -294,7 +294,7 @@ export default {
                 <span class="input-group-append">
                   <clipboard-button
                     :text="ingressExternalEndpoint"
-                    :title="s__('ClusterIntegration|Copy Ingress Endpoint to clipboard')"
+                    :title="s__('ClusterIntegration|Copy Ingress Endpoint')"
                     class="input-group-text js-clipboard-btn"
                   />
                 </span>
@@ -472,7 +472,7 @@ export default {
                 <span class="input-group-btn">
                   <clipboard-button
                     :text="jupyterHostname"
-                    :title="s__('ClusterIntegration|Copy Jupyter Hostname to clipboard')"
+                    :title="s__('ClusterIntegration|Copy Jupyter Hostname')"
                     class="js-clipboard-btn"
                   />
                 </span>

@@ -320,6 +320,10 @@ describe 'GitLab Markdown', :aggregate_failures do
         expect(doc).to parse_video_links
       end
 
+      aggregate_failures 'AudioLinkFilter' do
+        expect(doc).to parse_audio_links
+      end
+
       aggregate_failures 'ColorFilter' do
         expect(doc).to parse_colors
       end

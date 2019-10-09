@@ -90,7 +90,7 @@ exports[`Repository last commit component renders commit widget 1`] = `
         <clipboardbutton-stub
           cssclass="btn-default"
           text="123456789"
-          title="Copy commit SHA to clipboard"
+          title="Copy commit SHA"
           tooltipplacement="bottom"
         />
       </div>
@@ -193,7 +193,7 @@ exports[`Repository last commit component renders the signature HTML as returned
         <clipboardbutton-stub
           cssclass="btn-default"
           text="123456789"
-          title="Copy commit SHA to clipboard"
+          title="Copy commit SHA"
           tooltipplacement="bottom"
         />
       </div>

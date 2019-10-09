@@ -141,9 +141,9 @@ for the issue. This will automatically enable if you participate in the issue in
 
 #### 14. Reference
 
-- A quick "copy to clipboard" button for that issue's reference, which looks like `foo/bar#xxx`,
-  where `foo` is the `username` or `groupname`, `bar` is the `project-name`, and
-  `xxx` is the issue number.
+- A quick "copy" button for that issue's reference, which looks like
+  `foo/bar#xxx`, where `foo` is the `username` or `groupname`, `bar` is the
+  `project-name`, and `xxx` is the issue number.
 
 #### 15. Edit
 

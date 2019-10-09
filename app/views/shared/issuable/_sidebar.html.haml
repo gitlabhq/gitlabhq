@@ -148,13 +148,13 @@
       - project_ref = issuable_sidebar[:reference]
       .block.project-reference
         .sidebar-collapsed-icon.dont-change-state
-          = clipboard_button(text: project_ref, title: _('Copy reference to clipboard'), placement: "left", boundary: 'viewport')
+          = clipboard_button(text: project_ref, title: _('Copy reference'), placement: "left", boundary: 'viewport')
         .cross-project-reference.hide-collapsed
           %span
             = _('Reference:')
             %cite{ title: project_ref }
               = project_ref
-          = clipboard_button(text: project_ref, title: _('Copy reference to clipboard'), placement: "left", boundary: 'viewport')
+          = clipboard_button(text: project_ref, title: _('Copy reference'), placement: "left", boundary: 'viewport')
 
       - if issuable_sidebar.dig(:current_user, :can_move)
         .block.js-sidebar-move-issue-block

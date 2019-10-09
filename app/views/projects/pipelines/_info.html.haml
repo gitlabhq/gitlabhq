@@ -58,4 +58,4 @@
         = sprite_icon('ellipsis_h', size: 12)
     %span.js-details-content.hide
       = link_to @pipeline.sha, project_commit_path(@project, @pipeline.sha), class: "commit-sha commit-hash-full"
-    = clipboard_button(text: @pipeline.sha, title: "Copy commit SHA to clipboard")
+    = clipboard_button(text: @pipeline.sha, title: _("Copy commit SHA"))

@@ -79,7 +79,7 @@ module SearchHelper
   def search_entries_empty_message(scope, term)
     (s_("SearchResults|We couldn't find any %{scope} matching %{term}") % {
       scope: search_entries_scope_label(scope, 0),
-      term: "<code>#{term}</code>"
+      term: "<code>#{h(term)}</code>"
     }).html_safe
   end
 

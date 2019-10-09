@@ -13,7 +13,7 @@
           .input-group
             %input.label.label-monospace.monospace{ id: "application_id", type: "text", autocomplete: 'off', value: @application.uid, readonly: true }
             .input-group-append
-              = clipboard_button(target: '#application_id', title: _("Copy ID to clipboard"), class: "btn btn btn-default")
+              = clipboard_button(target: '#application_id', title: _("Copy ID"), class: "btn btn btn-default")
     %tr
       %td
         = _('Secret')
@@ -22,7 +22,7 @@
           .input-group
             %input.label.label-monospace.monospace{ id: "secret", type: "text", autocomplete: 'off', value: @application.secret, readonly: true }
             .input-group-append
-              = clipboard_button(target: '#secret', title: _("Copy secret to clipboard"), class: "btn btn btn-default")
+              = clipboard_button(target: '#secret', title: _("Copy secret"), class: "btn btn btn-default")
     %tr
       %td
         = _('Callback URL')

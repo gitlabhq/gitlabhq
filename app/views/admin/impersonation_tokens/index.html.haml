@@ -8,7 +8,7 @@
     - if @new_impersonation_token
       = render "shared/personal_access_tokens_created_container", new_token_value: @new_impersonation_token,
                                                                  container_title: 'Your New Impersonation Token',
-                                                                 clipboard_button_title: 'Copy impersonation token to clipboard'
+                                                                 clipboard_button_title: _('Copy impersonation token')
 
     = render "shared/personal_access_tokens_form", path: admin_user_impersonation_tokens_path, impersonation: true, token: @impersonation_token, scopes: @scopes
 

@@ -1889,6 +1889,9 @@ msgstr ""
 msgid "Are you sure? This will invalidate your registered applications and U2F devices."
 msgstr ""
 
+msgid "Arrange charts"
+msgstr ""
+
 msgid "Artifact ID"
 msgstr ""
 
@@ -3399,13 +3402,13 @@ msgstr ""
 msgid "ClusterIntegration|Copy CA Certificate"
 msgstr ""
 
-msgid "ClusterIntegration|Copy Ingress Endpoint to clipboard"
+msgid "ClusterIntegration|Copy Ingress Endpoint"
 msgstr ""
 
-msgid "ClusterIntegration|Copy Jupyter Hostname to clipboard"
+msgid "ClusterIntegration|Copy Jupyter Hostname"
 msgstr ""
 
-msgid "ClusterIntegration|Copy Knative Endpoint to clipboard"
+msgid "ClusterIntegration|Copy Knative Endpoint"
 msgstr ""
 
 msgid "ClusterIntegration|Copy Kubernetes cluster name"
@@ -4127,6 +4130,9 @@ msgstr ""
 msgid "Configure limits for web and API requests."
 msgstr ""
 
+msgid "Configure limits on the number of inbound alerts able to be sent to a project."
+msgstr ""
+
 msgid "Configure paths to be protected by Rack Attack. A web server restart is required after changing these settings."
 msgstr ""
 
@@ -4196,10 +4202,10 @@ msgstr ""
 msgid "ContainerRegistry|Container Registry"
 msgstr ""
 
-msgid "ContainerRegistry|Copy build command to clipboard"
+msgid "ContainerRegistry|Copy build command"
 msgstr ""
 
-msgid "ContainerRegistry|Copy push command to clipboard"
+msgid "ContainerRegistry|Copy push command"
 msgstr ""
 
 msgid "ContainerRegistry|Docker connection error"
@@ -4330,16 +4336,19 @@ msgstr ""
 msgid "Copied labels and milestone from %{source_issuable_reference}."
 msgstr ""
 
+msgid "Copy"
+msgstr ""
+
 msgid "Copy %{http_label} clone URL"
 msgstr ""
 
 msgid "Copy %{protocol} clone URL"
 msgstr ""
 
-msgid "Copy %{proxy_url} to clipboard"
+msgid "Copy %{proxy_url}"
 msgstr ""
 
-msgid "Copy ID to clipboard"
+msgid "Copy ID"
 msgstr ""
 
 msgid "Copy KRB5 clone URL"
@@ -4351,19 +4360,28 @@ msgstr ""
 msgid "Copy SSH public key"
 msgstr ""
 
-msgid "Copy URL to clipboard"
+msgid "Copy URL"
 msgstr ""
 
-msgid "Copy branch name to clipboard"
+msgid "Copy branch name"
 msgstr ""
 
-msgid "Copy command to clipboard"
+msgid "Copy command"
 msgstr ""
 
-msgid "Copy commit SHA to clipboard"
+msgid "Copy commands"
 msgstr ""
 
-msgid "Copy file path to clipboard"
+msgid "Copy commit SHA"
+msgstr ""
+
+msgid "Copy file contents"
+msgstr ""
+
+msgid "Copy file path"
+msgstr ""
+
+msgid "Copy impersonation token"
 msgstr ""
 
 msgid "Copy labels and milestone from %{source_issuable_reference}."
@@ -4375,22 +4393,19 @@ msgstr ""
 msgid "Copy link"
 msgstr ""
 
-msgid "Copy personal access token to clipboard"
+msgid "Copy personal access token"
 msgstr ""
 
-msgid "Copy reference to clipboard"
+msgid "Copy reference"
 msgstr ""
 
-msgid "Copy secret to clipboard"
+msgid "Copy secret"
 msgstr ""
 
-msgid "Copy source to clipboard"
+msgid "Copy token"
 msgstr ""
 
-msgid "Copy to clipboard"
-msgstr ""
-
-msgid "Copy token to clipboard"
+msgid "Copy trigger token"
 msgstr ""
 
 msgid "Could not add admins as members"
@@ -5166,10 +5181,10 @@ msgstr ""
 msgid "DeployTokens|Allows read-only access to the repository"
 msgstr ""
 
-msgid "DeployTokens|Copy deploy token to clipboard"
+msgid "DeployTokens|Copy deploy token"
 msgstr ""
 
-msgid "DeployTokens|Copy username to clipboard"
+msgid "DeployTokens|Copy username"
 msgstr ""
 
 msgid "DeployTokens|Create deploy token"
@@ -5734,6 +5749,9 @@ msgid "Enable Auto DevOps"
 msgstr ""
 
 msgid "Enable HTML emails"
+msgstr ""
+
+msgid "Enable Incident Management inbound alert limit"
 msgstr ""
 
 msgid "Enable Pseudonymizer data collection"
@@ -8240,6 +8258,9 @@ msgstr ""
 msgid "Helps prevent bots from creating accounts."
 msgstr ""
 
+msgid "Helps reduce alert volume (e.g. if creating too many issues)"
+msgstr ""
+
 msgid "Helps reduce request volume for protected paths"
 msgstr ""
 
@@ -8582,6 +8603,9 @@ msgid "In order to gather accurate feature usage data, it can take 1 to 2 weeks 
 msgstr ""
 
 msgid "In the next step, you'll be able to select the projects you want to import."
+msgstr ""
+
+msgid "Incident Management Limits"
 msgstr ""
 
 msgid "Incidents"
@@ -9464,7 +9488,7 @@ msgid_plural "Limited to showing %d events at most"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Link copied to clipboard"
+msgid "Link copied"
 msgstr ""
 
 msgid "Linked emails (%{email_count})"
@@ -14384,7 +14408,7 @@ msgstr ""
 msgid "ServerlessDetails|pods in use"
 msgstr ""
 
-msgid "ServerlessURL|Copy URL to clipboard"
+msgid "ServerlessURL|Copy URL"
 msgstr ""
 
 msgid "Serverless| In order to start using functions as a service, you must first install Knative on your Kubernetes cluster."
@@ -15565,7 +15589,7 @@ msgstr ""
 msgid "Switch to GitLab Next"
 msgstr ""
 
-msgid "Switch to the source to copy it to the clipboard"
+msgid "Switch to the source to copy the file contents"
 msgstr ""
 
 msgid "Sync information"
@@ -17953,10 +17977,10 @@ msgstr ""
 msgid "VisualReviewApp|%{stepStart}Step 5%{stepEnd}. Leave feedback in the Review App."
 msgstr ""
 
-msgid "VisualReviewApp|Copy merge request ID to clipboard"
+msgid "VisualReviewApp|Copy merge request ID"
 msgstr ""
 
-msgid "VisualReviewApp|Copy script to clipboard"
+msgid "VisualReviewApp|Copy script"
 msgstr ""
 
 msgid "VisualReviewApp|Enable Visual Reviews"
@@ -18022,7 +18046,7 @@ msgstr ""
 msgid "Vulnerability|Severity"
 msgstr ""
 
-msgid "Wait for the source to load to copy it to the clipboard"
+msgid "Wait for the file to load to copy its contents"
 msgstr ""
 
 msgid "Waiting for performance data"

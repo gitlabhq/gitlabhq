@@ -108,7 +108,7 @@ changing how standard markdown is used:
 | [code blocks](#code-spans-and-blocks) | [colored code and syntax highlighting](#colored-code-and-syntax-highlighting) |
 | [emphasis](#emphasis)                 | [multiple underscores in words](#multiple-underscores-in-words-and-mid-word-emphasis)
 | [headers](#headers)                   | [linkable Header IDs](#header-ids-and-links) |
-| [images](#images)                     | [embedded videos](#videos) |
+| [images](#images)                     | [embedded videos](#videos) and [audio](#audio) |
 | [linebreaks](#line-breaks)            | [more linebreak control](#newlines) |
 | [links](#links)                       | [automatically linking URLs](#url-auto-linking) |
 
@@ -898,6 +898,23 @@ Here's a sample video:
 Here's a sample video:
 
 ![Sample Video](img/markdown_video.mp4)
+
+#### Audio
+
+> If this is not rendered correctly, [view it in GitLab itself](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/user/markdown.md#audio).
+
+Similar to videos, link tags for files with an audio extension are automatically converted to
+an audio player. The valid audio extensions are `.mp3`, `.ogg`, and `.wav`:
+
+```md
+Here's a sample audio clip:
+
+![Sample Audio](img/markdown_audio.mp3)
+```
+
+Here's a sample audio clip:
+
+![Sample Audio](img/markdown_audio.mp3)
 
 ### Inline HTML
 

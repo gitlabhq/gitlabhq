@@ -142,9 +142,9 @@ describe SearchHelper do
 
   describe 'search_entries_empty_message' do
     it 'returns the formatted entry message' do
-      message = search_entries_empty_message('projects', 'foo')
+      message = search_entries_empty_message('projects', '<h1>foo</h1>')
 
-      expect(message).to eq("We couldn't find any projects matching <code>foo</code>")
+      expect(message).to eq("We couldn't find any projects matching <code>&lt;h1&gt;foo&lt;/h1&gt;</code>")
       expect(message).to be_html_safe
     end
   end

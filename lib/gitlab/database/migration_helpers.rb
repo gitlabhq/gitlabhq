@@ -1018,7 +1018,7 @@ into similar problems in the future (e.g. when new tables are created).
         end
 
         model_class.each_batch(of: batch_size) do |relation, index|
-          start_id, end_id = relation.pluck('MIN(id), MAX(id)').first
+          start_id, end_id = relation.pluck(Arel.sql('MIN(id), MAX(id)')).first
 
           # `BackgroundMigrationWorker.bulk_perform_in` schedules all jobs for
           # the same time, which is not helpful in most cases where we wish to

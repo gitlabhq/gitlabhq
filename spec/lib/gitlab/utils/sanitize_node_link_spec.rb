@@ -43,6 +43,11 @@ describe Gitlab::Utils::SanitizeNodeLink do
             doc: HTML::Pipeline.parse("<video><source src='#{scheme}alert(1);'></video>"),
             attr: "src",
             node_to_check: -> (doc) { doc.children.first.children.filter("source").first }
+          },
+          audio: {
+            doc: HTML::Pipeline.parse("<audio><source src='#{scheme}alert(1);'></audio>"),
+            attr: "src",
+            node_to_check: -> (doc) { doc.children.first.children.filter("source").first }
           }
         }
 

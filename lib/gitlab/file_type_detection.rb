@@ -26,11 +26,13 @@ module Gitlab
     # on IE >= 9.
     # http://archive.sublimevideo.info/20150912/docs.sublimevideo.net/troubleshooting.html
     SAFE_VIDEO_EXT = %w[mp4 m4v mov webm ogv].freeze
+    SAFE_AUDIO_EXT = %w[mp3 oga ogg spx wav].freeze
 
     # These extension types can contain dangerous code and should only be embedded inline with
     # proper filtering. They should always be tagged as "Content-Disposition: attachment", not "inline".
     DANGEROUS_IMAGE_EXT = %w[svg].freeze
     DANGEROUS_VIDEO_EXT = [].freeze # None, yet
+    DANGEROUS_AUDIO_EXT = [].freeze # None, yet
 
     def image?
       extension_match?(SAFE_IMAGE_EXT)
@@ -40,8 +42,12 @@ module Gitlab
       extension_match?(SAFE_VIDEO_EXT)
     end
 
-    def image_or_video?
-      image? || video?
+    def audio?
+      extension_match?(SAFE_AUDIO_EXT)
+    end
+
+    def embeddable?
+      image? || video? || audio?
     end
 
     def dangerous_image?
@@ -52,8 +58,12 @@ module Gitlab
       extension_match?(DANGEROUS_VIDEO_EXT)
     end
 
-    def dangerous_image_or_video?
-      dangerous_image? || dangerous_video?
+    def dangerous_audio?
+      extension_match?(DANGEROUS_AUDIO_EXT)
+    end
+
+    def dangerous_embeddable?
+      dangerous_image? || dangerous_video? || dangerous_audio?
     end
 
     private

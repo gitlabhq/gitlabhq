@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_29_180827) do
+ActiveRecord::Schema.define(version: 2019_09_30_025655) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -326,6 +326,9 @@ ActiveRecord::Schema.define(version: 2019_09_29_180827) do
     t.integer "throttle_protected_paths_requests_per_period", default: 10, null: false
     t.integer "throttle_protected_paths_period_in_seconds", default: 60, null: false
     t.string "protected_paths", limit: 255, default: ["/users/password", "/users/sign_in", "/api/v3/session.json", "/api/v3/session", "/api/v4/session.json", "/api/v4/session", "/users", "/users/confirmation", "/unsubscribes/", "/import/github/personal_access_token"], array: true
+    t.boolean "throttle_incident_management_notification_enabled", default: false, null: false
+    t.integer "throttle_incident_management_notification_period_in_seconds", default: 3600
+    t.integer "throttle_incident_management_notification_per_period", default: 3600
     t.index ["custom_project_templates_group_id"], name: "index_application_settings_on_custom_project_templates_group_id"
     t.index ["file_template_project_id"], name: "index_application_settings_on_file_template_project_id"
     t.index ["instance_administration_project_id"], name: "index_applicationsettings_on_instance_administration_project_id"

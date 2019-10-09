@@ -125,4 +125,5 @@ class Rack::Attack
   end
 end
 
+::Rack::Attack.extend_if_ee('::EE::Gitlab::Rack::Attack') # rubocop: disable Cop/InjectEnterpriseEditionModule
 ::Rack::Attack::Request.prepend_if_ee('::EE::Gitlab::Rack::Attack::Request')

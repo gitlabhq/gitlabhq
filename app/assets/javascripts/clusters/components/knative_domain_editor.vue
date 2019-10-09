@@ -103,7 +103,7 @@ export default {
           <span class="input-group-append">
             <clipboard-button
               :text="knativeExternalEndpoint"
-              :title="s__('ClusterIntegration|Copy Knative Endpoint to clipboard')"
+              :title="s__('ClusterIntegration|Copy Knative Endpoint')"
               class="input-group-text js-knative-endpoint-clipboard-btn"
             />
           </span>

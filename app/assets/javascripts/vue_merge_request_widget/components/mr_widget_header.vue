@@ -90,7 +90,7 @@ export default {
             v-html="mr.sourceBranchLink"
           /><clipboard-button
             :text="branchNameClipboardData"
-            :title="__('Copy branch name to clipboard')"
+            :title="__('Copy branch name')"
             css-class="btn-default btn-transparent btn-clipboard"
           />
           {{ s__('mrWidget|into') }}

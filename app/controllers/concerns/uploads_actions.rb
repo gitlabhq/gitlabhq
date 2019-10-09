@@ -37,7 +37,7 @@ module UploadsActions
       expires_in 0.seconds, must_revalidate: true, private: true
     end
 
-    disposition = uploader.image_or_video? ? 'inline' : 'attachment'
+    disposition = uploader.embeddable? ? 'inline' : 'attachment'
 
     uploaders = [uploader, *uploader.versions.values]
     uploader = uploaders.find { |version| version.filename == params[:filename] }
@@ -112,8 +112,8 @@ module UploadsActions
     uploader
   end
 
-  def image_or_video?
-    uploader && uploader.exists? && uploader.image_or_video?
+  def embeddable?
+    uploader && uploader.exists? && uploader.embeddable?
   end
 
   def find_model

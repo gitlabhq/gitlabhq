@@ -56,5 +56,5 @@
       .commit-sha-group.d-none.d-sm-flex
         .label.label-monospace.monospace
           = commit.short_id
-        = clipboard_button(text: commit.id, title: _("Copy commit SHA to clipboard"), class: "btn btn-default", container: "body")
+        = clipboard_button(text: commit.id, title: _("Copy commit SHA"), class: "btn btn-default", container: "body")
         = link_to_browse_code(project, commit)

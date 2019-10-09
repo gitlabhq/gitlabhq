@@ -37,8 +37,7 @@ module Gitlab
     # - post_data: a string of raw POST data to use. Changes the HTTP verb to
     #   POST.
     #
-    # - user: a user to authenticate as. Only works if the user has a valid
-    #   personal access token.
+    # - user: a user to authenticate as.
     #
     # - private_token: instead of providing a user instance, the token can be
     #   given as a string. Takes precedence over the user option.

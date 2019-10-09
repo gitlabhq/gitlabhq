@@ -36,6 +36,7 @@ module TestEnv
     'expand-collapse-lines'              => '238e82d',
     'pages-deploy'                       => '7897d5b',
     'pages-deploy-target'                => '7975be0',
+    'audio'                              => 'c3c21fd',
     'video'                              => '8879059',
     'add-balsamiq-file'                  => 'b89b56d',
     'crlf-diff'                          => '5938907',

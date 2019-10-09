@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe 'Rack Attack global throttles' do
+  include RackAttackSpecHelpers
+
   let(:settings) { Gitlab::CurrentSettings.current_application_settings }
 
   # Start with really high limits and override them with low limits to ensure
@@ -22,15 +24,7 @@ describe 'Rack Attack global throttles' do
   let(:period_in_seconds) { 10000 }
   let(:period) { period_in_seconds.seconds }
 
-  around do |example|
-    # Instead of test environment's :null_store so the throttles can increment
-    Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new
-
-    # Make time-dependent tests deterministic
-    Timecop.freeze { example.run }
-
-    Rack::Attack.cache.store = Rails.cache
-  end
+  include_context 'rack attack cache store'
 
   describe 'unauthenticated requests' do
     let(:url_that_does_not_require_authentication) { '/users/sign_in' }
@@ -360,31 +354,5 @@ describe 'Rack Attack global throttles' do
         end
       end
     end
-  end
-
-  def api_get_args_with_token_headers(partial_url, token_headers)
-    ["/api/#{API::API.version}#{partial_url}", params: nil, headers: token_headers]
-  end
-
-  def rss_url(user)
-    "/dashboard/projects.atom?feed_token=#{user.feed_token}"
-  end
-
-  def private_token_headers(user)
-    { 'HTTP_PRIVATE_TOKEN' => user.private_token }
-  end
-
-  def personal_access_token_headers(personal_access_token)
-    { 'HTTP_PRIVATE_TOKEN' => personal_access_token.token }
-  end
-
-  def oauth_token_headers(oauth_access_token)
-    { 'AUTHORIZATION' => "Bearer #{oauth_access_token.token}" }
-  end
-
-  def expect_rejection(&block)
-    yield
-
-    expect(response).to have_http_status(429)
   end
 end

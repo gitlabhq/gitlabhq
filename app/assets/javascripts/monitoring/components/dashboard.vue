@@ -1,4 +1,7 @@
 <script>
+import _ from 'underscore';
+import { mapActions, mapState } from 'vuex';
+import VueDraggable from 'vuedraggable';
 import {
   GlButton,
   GlDropdown,
@@ -8,8 +11,6 @@ import {
   GlModalDirective,
   GlTooltipDirective,
 } from '@gitlab/ui';
-import _ from 'underscore';
-import { mapActions, mapState } from 'vuex';
 import { __, s__ } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
 import { getParameterValues, mergeUrlParams } from '~/lib/utils/url_utility';
@@ -26,6 +27,7 @@ let sidebarMutationObserver;
 
 export default {
   components: {
+    VueDraggable,
     MonitorTimeSeriesChart,
     MonitorSingleStatChart,
     PanelType,
@@ -151,6 +153,11 @@ export default {
       required: false,
       default: false,
     },
+    rearrangePanelsAvailable: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -160,6 +167,7 @@ export default {
       selectedTimeWindowKey: '',
       formIsValid: null,
       timeWindows: {},
+      isRearrangingPanels: false,
     };
   },
   computed: {
@@ -182,6 +190,9 @@ export default {
     },
     selectedDashboardText() {
       return this.currentDashboard || this.firstDashboard.display_name;
+    },
+    showRearrangePanelsBtn() {
+      return !this.showEmptyState && this.rearrangePanelsAvailable;
     },
     addingMetricsAvailable() {
       return IS_EE && this.canAddMetrics && !this.showEmptyState;
@@ -271,9 +282,14 @@ export default {
       return Object.values(this.getGraphAlerts(queries));
     },
     showToast() {
-      this.$toast.show(__('Link copied to clipboard'));
+      this.$toast.show(__('Link copied'));
     },
     // TODO: END
+    removeGraph(metrics, graphIndex) {
+      // At present graphs will not be removed, they should removed using the vuex store
+      // See https://gitlab.com/gitlab-org/gitlab/issues/27835
+      metrics.splice(graphIndex, 1);
+    },
     generateLink(group, title, yLabel) {
       const dashboard = this.currentDashboard || this.firstDashboard.path;
       const params = _.pick({ dashboard, group, title, y_label: yLabel }, value => value != null);
@@ -286,6 +302,9 @@ export default {
       setTimeout(() => {
         this.elWidth = this.$el.clientWidth;
       }, sidebarAnimationDuration);
+    },
+    toggleRearrangingPanels() {
+      this.isRearrangingPanels = !this.isRearrangingPanels;
     },
     setFormValidity(isValid) {
       this.formIsValid = isValid;
@@ -389,15 +408,27 @@ export default {
         </template>
 
         <gl-form-group
-          v-if="addingMetricsAvailable || externalDashboardUrl.length"
+          v-if="addingMetricsAvailable || showRearrangePanelsBtn || externalDashboardUrl.length"
           label-for="prometheus-graphs-dropdown-buttons"
           class="dropdown-buttons col-lg d-lg-flex align-items-end"
         >
           <div id="prometheus-graphs-dropdown-buttons">
             <gl-button
+              v-if="showRearrangePanelsBtn"
+              :pressed="isRearrangingPanels"
+              new-style
+              variant="default"
+              class="mr-2 mt-1 js-rearrange-button"
+              @click="toggleRearrangingPanels"
+            >
+              {{ __('Arrange charts') }}
+            </gl-button>
+            <gl-button
               v-if="addingMetricsAvailable"
               v-gl-modal="$options.addMetric.modalId"
-              class="mr-2 mt-1 js-add-metric-button text-success border-success"
+              new-style
+              variant="outline-success"
+              class="mr-2 mt-1 js-add-metric-button"
             >
               {{ $options.addMetric.title }}
             </gl-button>
@@ -451,17 +482,42 @@ export default {
         :collapse-group="groupHasData(groupData)"
       >
         <template v-if="additionalPanelTypesEnabled">
-          <panel-type
-            v-for="(graphData, graphIndex) in groupData.metrics"
-            :key="`panel-type-${graphIndex}`"
-            class="col-12 col-lg-6 pb-3"
-            :clipboard-text="generateLink(groupData.group, graphData.title, graphData.y_label)"
-            :graph-data="graphData"
-            :dashboard-width="elWidth"
-            :alerts-endpoint="alertsEndpoint"
-            :prometheus-alerts-available="prometheusAlertsAvailable"
-            :index="`${index}-${graphIndex}`"
-          />
+          <vue-draggable
+            :list="groupData.metrics"
+            group="metrics-dashboard"
+            :component-data="{ attrs: { class: 'row mx-0 w-100' } }"
+            :disabled="!isRearrangingPanels"
+          >
+            <div
+              v-for="(graphData, graphIndex) in groupData.metrics"
+              :key="`panel-type-${graphIndex}`"
+              class="col-12 col-lg-6 px-2 mb-2 draggable"
+              :class="{ 'draggable-enabled': isRearrangingPanels }"
+            >
+              <div class="position-relative draggable-panel js-draggable-panel">
+                <div
+                  v-if="isRearrangingPanels"
+                  class="draggable-remove js-draggable-remove p-2 w-100 position-absolute d-flex justify-content-end"
+                  @click="removeGraph(groupData.metrics, graphIndex)"
+                >
+                  <a class="mx-2 p-2 draggable-remove-link" :aria-label="__('Remove')"
+                    ><icon name="close"
+                  /></a>
+                </div>
+
+                <panel-type
+                  :clipboard-text="
+                    generateLink(groupData.group, graphData.title, graphData.y_label)
+                  "
+                  :graph-data="graphData"
+                  :dashboard-width="elWidth"
+                  :alerts-endpoint="alertsEndpoint"
+                  :prometheus-alerts-available="prometheusAlertsAvailable"
+                  :index="`${index}-${graphIndex}`"
+                />
+              </div>
+            </div>
+          </vue-draggable>
         </template>
         <template v-else>
           <monitor-time-series-chart
