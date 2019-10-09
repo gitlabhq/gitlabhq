@@ -31,6 +31,7 @@ module Gitlab
         @limits = self.class.limits(options)
         @enforce_limits = !!options.fetch(:limits, true)
         @expanded = !!options.fetch(:expanded, true)
+        @offset_index = options.fetch(:offset_index, 0)
 
         @line_count = 0
         @byte_count = 0
@@ -128,7 +129,7 @@ module Gitlab
       def each_serialized_patch
         i = @array.length
 
-        @iterator.each do |raw|
+        @iterator.each_with_index do |raw, iterator_index|
           @empty = false
 
           if @enforce_limits && i >= max_files
@@ -154,8 +155,12 @@ module Gitlab
             break
           end
 
-          yield @array[i] = diff
-          i += 1
+          # We should not yield / memoize diffs before the offset index. Though,
+          # we still consider the limit buffers for diffs before it.
+          if iterator_index >= @offset_index
+            yield @array[i] = diff
+            i += 1
+          end
         end
       end
     end

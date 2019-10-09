@@ -297,6 +297,13 @@ class MergeRequestDiff < ApplicationRecord
     base_commit_sha? && head_commit_sha? && start_commit_sha?
   end
 
+  def diffs_in_batch(batch_page, batch_size, diff_options:)
+    Gitlab::Diff::FileCollection::MergeRequestDiffBatch.new(self,
+                                                            batch_page,
+                                                            batch_size,
+                                                            diff_options: diff_options)
+  end
+
   def diffs(diff_options = nil)
     if without_files? && comparison = diff_refs&.compare_in(project)
       # It should fetch the repository when diffs are cleaned by the system.

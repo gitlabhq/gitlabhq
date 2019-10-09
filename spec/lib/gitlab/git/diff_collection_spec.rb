@@ -537,6 +537,70 @@ describe Gitlab::Git::DiffCollection, :seed_helper do
         end
       end
     end
+
+    context 'when offset_index is given' do
+      subject do
+        Gitlab::Git::DiffCollection.new(
+          iterator,
+          max_files: max_files,
+          max_lines: max_lines,
+          limits: limits,
+          offset_index: 2,
+          expanded: expanded
+        )
+      end
+
+      def diff(raw)
+        raw['diff']
+      end
+
+      let(:iterator) do
+        [
+          fake_diff(1, 1),
+          fake_diff(2, 2),
+          fake_diff(3, 3),
+          fake_diff(4, 4)
+        ]
+      end
+
+      it 'does not yield diffs before the offset' do
+        expect(subject.to_a.map(&:diff)).to eq(
+          [
+            diff(fake_diff(3, 3)),
+            diff(fake_diff(4, 4))
+          ]
+        )
+      end
+
+      context 'when go over safe limits on bytes' do
+        let(:iterator) do
+          [
+            fake_diff(1, 10), # 10
+            fake_diff(1, 10), # 20
+            fake_diff(1, 15), # 35
+            fake_diff(1, 20), # 55
+            fake_diff(1, 45), # 100 - limit hit
+            fake_diff(1, 45),
+            fake_diff(1, 20480),
+            fake_diff(1, 1)
+          ]
+        end
+
+        before do
+          stub_const('Gitlab::Git::DiffCollection::DEFAULT_LIMITS',
+                     { max_files: max_files, max_lines: 80 })
+        end
+
+        it 'considers size of diffs before the offset for prunning' do
+          expect(subject.to_a.map(&:diff)).to eq(
+            [
+              diff(fake_diff(1, 15)),
+              diff(fake_diff(1, 20))
+            ]
+          )
+        end
+      end
+    end
   end
 
   def fake_diff(line_length, line_count)

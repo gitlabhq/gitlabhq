@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 shared_examples 'diff statistics' do |test_include_stats_flag: true|
+  subject { described_class.new(diffable, collection_default_args) }
+
   def stub_stats_find_by_path(path, stats_mock)
     expect_next_instance_of(Gitlab::Git::DiffStatsCollection) do |collection|
       allow(collection).to receive(:find_by_path).and_call_original
@@ -10,8 +12,6 @@ shared_examples 'diff statistics' do |test_include_stats_flag: true|
 
   context 'when should request diff stats' do
     it 'Repository#diff_stats is called' do
-      subject = described_class.new(diffable, collection_default_args)
-
       expect(diffable.project.repository)
         .to receive(:diff_stats)
         .with(diffable.diff_refs.base_sha, diffable.diff_refs.head_sha)
@@ -21,8 +21,6 @@ shared_examples 'diff statistics' do |test_include_stats_flag: true|
     end
 
     it 'Gitlab::Diff::File is initialized with diff stats' do
-      subject = described_class.new(diffable, collection_default_args)
-
       stats_mock = double(Gitaly::DiffStats, path: '.gitignore', additions: 758, deletions: 120)
       stub_stats_find_by_path(stub_path, stats_mock)
 
@@ -36,8 +34,6 @@ shared_examples 'diff statistics' do |test_include_stats_flag: true|
   context 'when should not request diff stats' do
     it 'Repository#diff_stats is not called' do
       collection_default_args[:diff_options][:include_stats] = false
-
-      subject = described_class.new(diffable, collection_default_args)
 
       expect(diffable.project.repository).not_to receive(:diff_stats)
 

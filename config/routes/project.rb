@@ -281,6 +281,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
             get :commits
             get :pipelines
             get :diffs, to: 'merge_requests/diffs#show'
+            get :diffs_batch, to: 'merge_requests/diffs#diffs_batch'
             get :widget, to: 'merge_requests/content#widget'
             get :cached_widget, to: 'merge_requests/content#cached_widget'
           end

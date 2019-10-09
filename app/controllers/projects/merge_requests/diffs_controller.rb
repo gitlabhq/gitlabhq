@@ -5,9 +5,9 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
   include RendersNotes
 
   before_action :apply_diff_view_cookie!
-  before_action :commit
-  before_action :define_diff_vars
-  before_action :define_diff_comment_vars
+  before_action :commit, except: :diffs_batch
+  before_action :define_diff_vars, except: :diffs_batch
+  before_action :define_diff_comment_vars, except: :diffs_batch
 
   def show
     render_diffs
@@ -17,7 +17,28 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
     render_diffs
   end
 
+  def diffs_batch
+    return render_404 unless Feature.enabled?(:diffs_batch_load, @merge_request.project)
+
+    diffable = @merge_request.merge_request_diff
+
+    return render_404 unless diffable
+
+    diffs = diffable.diffs_in_batch(params[:page], params[:per_page], diff_options: diff_options)
+
+    options = {
+      merge_request: @merge_request,
+      pagination_data: diffs.pagination_data
+    }
+
+    render json: PaginatedDiffSerializer.new(current_user: current_user).represent(diffs, options)
+  end
+
   private
+
+  def preloadable_mr_relations
+    [{ source_project: :namespace }, { target_project: :namespace }]
+  end
 
   def render_diffs
     @environment = @merge_request.environments_for(current_user).last
