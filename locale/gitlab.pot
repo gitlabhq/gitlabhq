@@ -12641,6 +12641,9 @@ msgstr ""
 msgid "Prometheus listen_address in config/gitlab.yml is not a valid URI"
 msgstr ""
 
+msgid "PrometheusAlerts|%{count} alerts applied"
+msgstr ""
+
 msgid "PrometheusAlerts|Add alert"
 msgstr ""
 
@@ -16017,6 +16020,9 @@ msgstr ""
 msgid "The snippet is visible to any logged in user."
 msgstr ""
 
+msgid "The specified tab is invalid, please select another"
+msgstr ""
+
 msgid "The staging stage shows the time between merging the MR and deploying code to the production environment. The data will be automatically added once you deploy to production for the first time."
 msgstr ""
 
@@ -16669,9 +16675,6 @@ msgid "Timeago|just now"
 msgstr ""
 
 msgid "Timeago|right now"
-msgstr ""
-
-msgid "Timeframe"
 msgstr ""
 
 msgid "Timeout"

@@ -2312,7 +2312,7 @@ class Project < ApplicationRecord
   end
 
   def repository_with_same_path_already_exists?
-    gitlab_shell.exists?(repository_storage, "#{disk_path}.git")
+    gitlab_shell.repository_exists?(repository_storage, "#{disk_path}.git")
   end
 
   def set_timestamps_for_create

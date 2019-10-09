@@ -103,7 +103,7 @@ describe Projects::TransferService do
     it 'rolls back repo location' do
       attempt_project_transfer
 
-      expect(gitlab_shell.exists?(project.repository_storage, "#{project.disk_path}.git")).to be(true)
+      expect(gitlab_shell.repository_exists?(project.repository_storage, "#{project.disk_path}.git")).to be(true)
       expect(original_path).to eq current_path
     end
 

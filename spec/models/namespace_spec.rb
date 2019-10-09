@@ -250,7 +250,7 @@ describe Namespace do
       it "moves dir if path changed" do
         namespace.update(path: namespace.full_path + '_new')
 
-        expect(gitlab_shell.exists?(project.repository_storage, "#{namespace.path}/#{project.path}.git")).to be_truthy
+        expect(gitlab_shell.repository_exists?(project.repository_storage, "#{namespace.path}/#{project.path}.git")).to be_truthy
       end
 
       context 'when #write_projects_repository_config raises an error' do
@@ -358,7 +358,7 @@ describe Namespace do
         namespace.update(path: namespace.full_path + '_new')
 
         expect(before_disk_path).to eq(project.disk_path)
-        expect(gitlab_shell.exists?(project.repository_storage, "#{project.disk_path}.git")).to be_truthy
+        expect(gitlab_shell.repository_exists?(project.repository_storage, "#{project.disk_path}.git")).to be_truthy
       end
     end
 

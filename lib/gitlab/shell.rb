@@ -297,6 +297,12 @@ module Gitlab
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
+    def repository_exists?(storage, dir_name)
+      Gitlab::Git::Repository.new(storage, dir_name, nil, nil).exists?
+    rescue GRPC::Internal
+      false
+    end
+
     def hooks_path
       File.join(gitlab_shell_path, 'hooks')
     end

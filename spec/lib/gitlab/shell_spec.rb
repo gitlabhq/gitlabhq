@@ -422,6 +422,30 @@ describe Gitlab::Shell do
       end
     end
 
+    describe '#repository_exists?' do
+      context 'when the storage path does not exist' do
+        subject { described_class.new.repository_exists?(storage, "non-existing.git") }
+
+        it { is_expected.to be_falsey }
+      end
+
+      context 'when the repository does not exist' do
+        let(:project) { create(:project, :repository, :legacy_storage) }
+
+        subject { described_class.new.repository_exists?(storage, "#{project.repository.disk_path}-some-other-repo.git") }
+
+        it { is_expected.to be_falsey }
+      end
+
+      context 'when the repository exists' do
+        let(:project) { create(:project, :repository, :legacy_storage) }
+
+        subject { described_class.new.repository_exists?(storage, "#{project.repository.disk_path}.git") }
+
+        it { is_expected.to be_truthy }
+      end
+    end
+
     describe '#remove' do
       it 'removes the namespace' do
         subject.add_namespace(storage, "mepmep")

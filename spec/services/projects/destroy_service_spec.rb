@@ -24,8 +24,8 @@ describe Projects::DestroyService do
     it 'deletes the project' do
       expect(Project.unscoped.all).not_to include(project)
 
-      expect(project.gitlab_shell.exists?(project.repository_storage, path + '.git')).to be_falsey
-      expect(project.gitlab_shell.exists?(project.repository_storage, remove_path + '.git')).to be_falsey
+      expect(project.gitlab_shell.repository_exists?(project.repository_storage, path + '.git')).to be_falsey
+      expect(project.gitlab_shell.repository_exists?(project.repository_storage, remove_path + '.git')).to be_falsey
     end
   end
 

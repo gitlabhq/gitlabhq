@@ -475,7 +475,10 @@ export default {
             :project-path="projectPath"
             group-id="monitor-time-series-chart"
           >
-            <div class="d-flex align-items-center">
+            <div
+              class="d-flex align-items-center"
+              :class="alertWidgetAvailable ? 'justify-content-between' : 'justify-content-end'"
+            >
               <alert-widget
                 v-if="alertWidgetAvailable && graphData"
                 :modal-id="`alert-modal-${index}-${graphIndex}`"
@@ -486,7 +489,7 @@ export default {
               />
               <gl-dropdown
                 v-gl-tooltip
-                class="mx-2"
+                class="ml-2 mr-3"
                 toggle-class="btn btn-transparent border-0"
                 :right="true"
                 :no-caret="true"

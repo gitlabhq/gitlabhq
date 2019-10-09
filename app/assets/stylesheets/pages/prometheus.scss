@@ -39,11 +39,14 @@
   align-items: center;
   justify-content: space-between;
   margin-bottom: $gl-padding-8;
+}
 
-  h5 {
-    font-size: $gl-font-size-large;
-    margin: 0;
-  }
+.prometheus-graph-title {
+  font-size: $gl-font-size-large;
+}
+
+.alert-current-setting {
+  max-width: 240px;
 }
 
 .prometheus-graph-cursor {

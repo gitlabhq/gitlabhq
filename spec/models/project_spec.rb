@@ -4192,13 +4192,24 @@ describe Project do
   end
 
   describe '#check_repository_path_availability' do
-    let(:project) { build(:project) }
+    let(:project) { build(:project, :repository, :legacy_storage) }
+    subject { project.check_repository_path_availability }
 
-    it 'skips gitlab-shell exists?' do
-      project.skip_disk_validation = true
+    context 'when the repository already exists' do
+      let(:project) { create(:project, :repository, :legacy_storage) }
 
-      expect(project.gitlab_shell).not_to receive(:exists?)
-      expect(project.check_repository_path_availability).to be_truthy
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when the repository does not exist' do
+      it { is_expected.to be_truthy }
+
+      it 'skips gitlab-shell exists?' do
+        project.skip_disk_validation = true
+
+        expect(project.gitlab_shell).not_to receive(:repository_exists?)
+        is_expected.to be_truthy
+      end
     end
   end
 
