@@ -12,9 +12,6 @@ nodeExporter:
 pushgateway:
   enabled: false
 
-rbac:
-  create: false
-
 server:
   fullnameOverride: "prometheus-prometheus-server"
   image:

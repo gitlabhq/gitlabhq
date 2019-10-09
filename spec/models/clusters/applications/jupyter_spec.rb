@@ -91,7 +91,6 @@ describe Clusters::Applications::Jupyter do
       it 'includes valid values' do
         expect(values).to include('ingress')
         expect(values).to include('hub')
-        expect(values).to include('rbac')
         expect(values).to include('proxy')
         expect(values).to include('auth')
         expect(values).to include('singleuser')
@@ -111,7 +110,6 @@ describe Clusters::Applications::Jupyter do
       it 'includes valid values' do
         expect(values).to include('ingress')
         expect(values).to include('hub')
-        expect(values).to include('rbac')
         expect(values).to include('proxy')
         expect(values).to include('auth')
         expect(values).to include('singleuser')

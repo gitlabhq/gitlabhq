@@ -1,6 +1,3 @@
-rbac:
-  enabled: false
-
 hub:
   extraEnv:
     JUPYTER_ENABLE_LAB: 1

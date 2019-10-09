@@ -4258,9 +4258,6 @@ msgid_plural "ContainerRegistry|Remove tags"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "ContainerRegistry|Remove tag(s)"
-msgstr ""
-
 msgid "ContainerRegistry|Size"
 msgstr ""
 
@@ -8238,6 +8235,9 @@ msgid "GroupsTree|Search by name"
 msgstr ""
 
 msgid "HTTP Basic: Access denied\\nYou must use a personal access token with 'api' scope for Git over HTTP.\\nYou can generate one at %{profile_personal_access_tokens_url}"
+msgstr ""
+
+msgid "Hashed repository storage paths"
 msgstr ""
 
 msgid "Have your users email"
@@ -14363,6 +14363,9 @@ msgstr ""
 msgid "Select the branch you want to set as the default for this project. All merge requests and commits will automatically be made against this branch unless you specify a different one."
 msgstr ""
 
+msgid "Select the configured storaged available for new projects to be placed on."
+msgstr ""
+
 msgid "Select the custom project template source group."
 msgstr ""
 
@@ -15374,6 +15377,9 @@ msgid "Stopping..."
 msgstr ""
 
 msgid "Storage"
+msgstr ""
+
+msgid "Storage nodes for new projects"
 msgstr ""
 
 msgid "Storage:"
@@ -17513,6 +17519,12 @@ msgid "Use an one time password authenticator on your mobile device or computer 
 msgstr ""
 
 msgid "Use group milestones to manage issues from multiple projects in the same milestone."
+msgstr ""
+
+msgid "Use hashed storage"
+msgstr ""
+
+msgid "Use hashed storage paths for newly created and renamed projects. Enable immutable, hash-based paths and repository names to store repositories on disk. This prevents repositories from having to be moved or renamed when the Project URL changes and may improve disk I/O performance."
 msgstr ""
 
 msgid "Use one line per URI"

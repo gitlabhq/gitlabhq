@@ -51,7 +51,7 @@ export default {
     shouldRenderPagination() {
       return this.repo.pagination.total > this.repo.pagination.perPage;
     },
-    modalTitle() {
+    modalAction() {
       return n__(
         'ContainerRegistry|Remove tag',
         'ContainerRegistry|Remove tags',
@@ -269,8 +269,8 @@ export default {
     />
 
     <gl-modal ref="deleteModal" :modal-id="modalId" ok-variant="danger">
-      <template v-slot:modal-title>{{ modalTitle }}</template>
-      <template v-slot:modal-ok>{{ s__('ContainerRegistry|Remove tag(s)') }}</template>
+      <template v-slot:modal-title>{{ modalAction }}</template>
+      <template v-slot:modal-ok>{{ modalAction }}</template>
       <p v-html="modalDescription"></p>
     </gl-modal>
   </div>
