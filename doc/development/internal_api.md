@@ -115,16 +115,6 @@ curl --request POST --header "Gitlab-Shared-Secret: <Base64 encoded token>" --da
 
 - GitLab-shell
 
-## Get merge requests for a ref [NOT USED]
-
-```
-GET /internal/merge_request_urls
-```
-
-**Deprecated**: This used to be called from GitLab shell to fetch the
-merge requests for a change to output them after a push, but this is
-now handled in the `/internal/post_receive` call.
-
 ## Authorized Keys Check
 
 This endpoint is called by the GitLab-shell authorized keys

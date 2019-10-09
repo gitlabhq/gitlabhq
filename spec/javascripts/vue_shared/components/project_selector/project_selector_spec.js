@@ -4,8 +4,10 @@ import ProjectSelector from '~/vue_shared/components/project_selector/project_se
 import ProjectListItem from '~/vue_shared/components/project_selector/project_list_item.vue';
 
 import { GlSearchBoxByType } from '@gitlab/ui';
-import { mount } from '@vue/test-utils';
+import { mount, createLocalVue } from '@vue/test-utils';
 import { trimText } from 'spec/helpers/text_helper';
+
+const localVue = createLocalVue();
 
 describe('ProjectSelector component', () => {
   let wrapper;
@@ -22,6 +24,7 @@ describe('ProjectSelector component', () => {
     jasmine.clock().install();
 
     wrapper = mount(Vue.extend(ProjectSelector), {
+      localVue,
       propsData: {
         projectSearchResults: searchResults,
         selectedProjects: selected,

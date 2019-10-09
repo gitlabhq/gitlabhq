@@ -1,4 +1,39 @@
 import EC2 from 'aws-sdk/clients/ec2';
+import IAM from 'aws-sdk/clients/iam';
+
+export const fetchRoles = () =>
+  new Promise((resolve, reject) => {
+    const iam = new IAM();
+
+    iam
+      .listRoles()
+      .on('success', ({ data: { Roles: roles } }) => {
+        const transformedRoles = roles.map(({ RoleName: name }) => ({ name }));
+
+        resolve(transformedRoles);
+      })
+      .on('error', error => {
+        reject(error);
+      })
+      .send();
+  });
+
+export const fetchKeyPairs = () =>
+  new Promise((resolve, reject) => {
+    const ec2 = new EC2();
+
+    ec2
+      .describeKeyPairs()
+      .on('success', ({ data: { KeyPairs: keyPairs } }) => {
+        const transformedKeyPairs = keyPairs.map(({ RegionName: name }) => ({ name }));
+
+        resolve(transformedKeyPairs);
+      })
+      .on('error', error => {
+        reject(error);
+      })
+      .send();
+  });
 
 export const fetchRegions = () =>
   new Promise((resolve, reject) => {

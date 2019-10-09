@@ -59,17 +59,19 @@ class SnippetsFinder < UnionFinder
   end
 
   def execute
-    base =
-      if project
-        snippets_for_a_single_project
-      else
-        snippets_for_multiple_projects
-      end
-
+    base = init_collection
     base.with_optional_visibility(visibility_from_scope).fresh
   end
 
   private
+
+  def init_collection
+    if project
+      snippets_for_a_single_project
+    else
+      snippets_for_multiple_projects
+    end
+  end
 
   # Produces a query that retrieves snippets from multiple projects.
   #
@@ -115,7 +117,7 @@ class SnippetsFinder < UnionFinder
   # This method requires that `current_user` returns a `User` instead of `nil`,
   # and is optimised for this specific scenario.
   def snippets_of_authorized_projects
-    base = author ? snippets_for_author : Snippet.all
+    base = author ? author.snippets : Snippet.all
 
     base
       .only_include_projects_with_snippets_enabled(include_private: true)
@@ -157,3 +159,5 @@ class SnippetsFinder < UnionFinder
     end
   end
 end
+
+SnippetsFinder.prepend_if_ee('EE::SnippetsFinder')

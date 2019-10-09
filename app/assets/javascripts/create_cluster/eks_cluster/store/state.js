@@ -4,6 +4,7 @@ export default () => ({
 
   selectedRegion: '',
   selectedRole: '',
+  selectedKeyPair: '',
   selectedVpc: '',
   selectedSubnet: '',
   selectedSecurityGroup: '',

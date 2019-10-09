@@ -45,7 +45,7 @@ module Gitlab
 
     # rubocop: disable CodeReuse/ActiveRecord
     def snippets
-      SnippetsFinder.new(current_user)
+      SnippetsFinder.new(current_user, finder_params)
         .execute
         .includes(:author)
         .reorder(updated_at: :desc)
@@ -67,5 +67,11 @@ module Gitlab
     def paginated_objects(relation, page)
       relation.page(page).per(per_page)
     end
+
+    def finder_params
+      {}
+    end
   end
 end
+
+Gitlab::SnippetSearchResults.prepend_if_ee('::EE::Gitlab::SnippetSearchResults')

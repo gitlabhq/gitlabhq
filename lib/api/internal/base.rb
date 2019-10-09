@@ -112,10 +112,6 @@ module API
         end
         # rubocop: enable CodeReuse/ActiveRecord
 
-        get "/merge_request_urls" do
-          merge_request_urls
-        end
-
         #
         # Get a ssh key using the fingerprint
         #

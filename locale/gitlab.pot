@@ -3417,6 +3417,12 @@ msgstr ""
 msgid "ClusterIntegration|Copy Service Token"
 msgstr ""
 
+msgid "ClusterIntegration|Could not load IAM roles"
+msgstr ""
+
+msgid "ClusterIntegration|Could not load Key Pairs"
+msgstr ""
+
 msgid "ClusterIntegration|Could not load VPCs for the selected region"
 msgstr ""
 
@@ -3549,6 +3555,9 @@ msgstr ""
 msgid "ClusterIntegration|JupyterHub, a multi-user Hub, spawns, manages, and proxies multiple instances of the single-user Jupyter notebook server. JupyterHub can be used to serve notebooks to a class of students, a corporate data science group, or a scientific research group."
 msgstr ""
 
+msgid "ClusterIntegration|Key pair name"
+msgstr ""
+
 msgid "ClusterIntegration|Knative"
 msgstr ""
 
@@ -3609,6 +3618,9 @@ msgstr ""
 msgid "ClusterIntegration|Loading IAM Roles"
 msgstr ""
 
+msgid "ClusterIntegration|Loading Key Pairs"
+msgstr ""
+
 msgid "ClusterIntegration|Loading Regions"
 msgstr ""
 
@@ -3628,6 +3640,9 @@ msgid "ClusterIntegration|Manage your Kubernetes cluster by visiting %{link_gke}
 msgstr ""
 
 msgid "ClusterIntegration|No IAM Roles found"
+msgstr ""
+
+msgid "ClusterIntegration|No Key Pairs found"
 msgstr ""
 
 msgid "ClusterIntegration|No VPCs found"
@@ -3717,6 +3732,9 @@ msgstr ""
 msgid "ClusterIntegration|Search IAM Roles"
 msgstr ""
 
+msgid "ClusterIntegration|Search Key Pairs"
+msgstr ""
+
 msgid "ClusterIntegration|Search VPCs"
 msgstr ""
 
@@ -3744,6 +3762,9 @@ msgstr ""
 msgid "ClusterIntegration|Select a VPC to use for your EKS Cluster resources. To use a new VPC, first create one on %{startLink}Amazon Web Services%{endLink}."
 msgstr ""
 
+msgid "ClusterIntegration|Select a region to choose a Key Pair"
+msgstr ""
+
 msgid "ClusterIntegration|Select a region to choose a VPC"
 msgstr ""
 
@@ -3760,6 +3781,9 @@ msgid "ClusterIntegration|Select project to choose zone"
 msgstr ""
 
 msgid "ClusterIntegration|Select the IAM Role to allow Amazon EKS and the Kubernetes control plane to manage AWS resources on your behalf. To use a new role name, first create one on %{startLink}Amazon Web Services%{endLink}."
+msgstr ""
+
+msgid "ClusterIntegration|Select the key pair name that will be used to create EC2 nodes. To use a new key pair name, first create one on %{startLink}Amazon Web Services%{endLink}."
 msgstr ""
 
 msgid "ClusterIntegration|Select zone"
@@ -3904,6 +3928,9 @@ msgid "ClusterIntergation|Select a region"
 msgstr ""
 
 msgid "ClusterIntergation|Select a subnet"
+msgstr ""
+
+msgid "ClusterIntergation|Select key pair"
 msgstr ""
 
 msgid "ClusterIntergation|Select role name"
@@ -14014,7 +14041,13 @@ msgstr ""
 msgid "SearchResults|Showing %{count} %{scope} for \"%{term}\""
 msgstr ""
 
+msgid "SearchResults|Showing %{count} %{scope} for \"%{term}\" in your personal and project snippets"
+msgstr ""
+
 msgid "SearchResults|Showing %{from} - %{to} of %{count} %{scope} for \"%{term}\""
+msgstr ""
+
+msgid "SearchResults|Showing %{from} - %{to} of %{count} %{scope} for \"%{term}\" in your personal and project snippets"
 msgstr ""
 
 msgid "SearchResults|We couldn't find any %{scope} matching %{term}"
@@ -14207,6 +14240,12 @@ msgstr ""
 msgid "SecurityDashboard|Project"
 msgstr ""
 
+msgid "SecurityDashboard|Projects added"
+msgstr ""
+
+msgid "SecurityDashboard|Remove project from dashboard"
+msgstr ""
+
 msgid "SecurityDashboard|Report type"
 msgstr ""
 
@@ -14214,6 +14253,9 @@ msgid "SecurityDashboard|Return to dashboard"
 msgstr ""
 
 msgid "SecurityDashboard|Security Dashboard"
+msgstr ""
+
+msgid "SecurityDashboard|Select a project to add by using the project search field above."
 msgstr ""
 
 msgid "SecurityDashboard|Severity"

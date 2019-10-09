@@ -19,17 +19,12 @@ export default {
   updated() {
     this.$nextTick(() => {
       this.handleScrollDown();
-      this.handleCollapsibleRows();
     });
   },
   mounted() {
     this.$nextTick(() => {
       this.handleScrollDown();
-      this.handleCollapsibleRows();
     });
-  },
-  destroyed() {
-    this.removeEventListener();
   },
   methods: {
     ...mapActions(['scrollBottom']),
@@ -46,53 +41,6 @@ export default {
           this.scrollBottom();
         }, 0);
       }
-    },
-    removeEventListener() {
-      this.$el.querySelectorAll('.js-section-start').forEach(el => {
-        const titleSection = el.nextSibling;
-        titleSection.removeEventListener(
-          'click',
-          this.handleHeaderClick.bind(this, el, el.dataset.section),
-        );
-        el.removeEventListener('click', this.handleSectionClick);
-      });
-    },
-    /**
-     * The collapsible rows are sent in HTML from the backend
-     * We need tos add a onclick handler for the divs that match `.js-section-start`
-     *
-     */
-    handleCollapsibleRows() {
-      this.$el.querySelectorAll('.js-section-start').forEach(el => {
-        const titleSection = el.nextSibling;
-        titleSection.addEventListener(
-          'click',
-          this.handleHeaderClick.bind(this, el, el.dataset.section),
-        );
-        el.addEventListener('click', this.handleSectionClick);
-      });
-    },
-
-    handleHeaderClick(arrowElement, section) {
-      this.updateToggleSection(arrowElement, section);
-    },
-
-    updateToggleSection(arrow, section) {
-      // toggle the arrow class
-      arrow.classList.toggle('fa-caret-right');
-      arrow.classList.toggle('fa-caret-down');
-
-      // hide the sections
-      const sibilings = this.$el.querySelectorAll(`.js-s-${section}:not(.js-section-header)`);
-      sibilings.forEach(row => row.classList.toggle('hidden'));
-    },
-    /**
-     * On click, we toggle the hidden class of
-     * all the rows that match the `data-section` selector
-     */
-    handleSectionClick(evt) {
-      const clickedArrow = evt.currentTarget;
-      this.updateToggleSection(clickedArrow, clickedArrow.dataset.section);
     },
   },
 };

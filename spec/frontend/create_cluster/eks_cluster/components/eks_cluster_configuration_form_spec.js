@@ -14,12 +14,16 @@ describe('EksClusterConfigurationForm', () => {
   let store;
   let actions;
   let state;
+  let rolesState;
   let regionsState;
   let vpcsState;
   let subnetsState;
+  let keyPairsState;
   let vpcsActions;
+  let rolesActions;
   let regionsActions;
   let subnetsActions;
+  let keyPairsActions;
   let vm;
 
   beforeEach(() => {
@@ -28,8 +32,13 @@ describe('EksClusterConfigurationForm', () => {
       setRegion: jest.fn(),
       setVpc: jest.fn(),
       setSubnet: jest.fn(),
+      setRole: jest.fn(),
+      setKeyPair: jest.fn(),
     };
     regionsActions = {
+      fetchItems: jest.fn(),
+    };
+    keyPairsActions = {
       fetchItems: jest.fn(),
     };
     vpcsActions = {
@@ -38,6 +47,12 @@ describe('EksClusterConfigurationForm', () => {
     subnetsActions = {
       fetchItems: jest.fn(),
     };
+    rolesActions = {
+      fetchItems: jest.fn(),
+    };
+    rolesState = {
+      ...clusterDropdownStoreState(),
+    };
     regionsState = {
       ...clusterDropdownStoreState(),
     };
@@ -45,6 +60,9 @@ describe('EksClusterConfigurationForm', () => {
       ...clusterDropdownStoreState(),
     };
     subnetsState = {
+      ...clusterDropdownStoreState(),
+    };
+    keyPairsState = {
       ...clusterDropdownStoreState(),
     };
     store = new Vuex.Store({
@@ -66,6 +84,16 @@ describe('EksClusterConfigurationForm', () => {
           state: subnetsState,
           actions: subnetsActions,
         },
+        roles: {
+          namespaced: true,
+          state: rolesState,
+          actions: rolesActions,
+        },
+        keyPairs: {
+          namespaced: true,
+          state: keyPairsState,
+          actions: keyPairsActions,
+        },
       },
     });
   });
@@ -82,13 +110,37 @@ describe('EksClusterConfigurationForm', () => {
   });
 
   const findRegionDropdown = () => vm.find(RegionDropdown);
+  const findKeyPairDropdown = () => vm.find('[field-id="eks-key-pair"]');
   const findVpcDropdown = () => vm.find('[field-id="eks-vpc"]');
   const findSubnetDropdown = () => vm.find('[field-id="eks-subnet"]');
+  const findRoleDropdown = () => vm.find('[field-id="eks-role"]');
 
   describe('when mounted', () => {
     it('fetches available regions', () => {
       expect(regionsActions.fetchItems).toHaveBeenCalled();
     });
+
+    it('fetches available roles', () => {
+      expect(rolesActions.fetchItems).toHaveBeenCalled();
+    });
+  });
+
+  it('sets isLoadingRoles to RoleDropdown loading property', () => {
+    rolesState.isLoadingItems = true;
+
+    return Vue.nextTick().then(() => {
+      expect(findRoleDropdown().props('loading')).toBe(rolesState.isLoadingItems);
+    });
+  });
+
+  it('sets roles to RoleDropdown items property', () => {
+    expect(findRoleDropdown().props('items')).toBe(rolesState.items);
+  });
+
+  it('sets RoleDropdown hasErrors to true when loading roles failed', () => {
+    rolesState.loadingItemsError = new Error();
+
+    expect(findRoleDropdown().props('hasErrors')).toEqual(true);
   });
 
   it('sets isLoadingRegions to RegionDropdown loading property', () => {
@@ -105,6 +157,36 @@ describe('EksClusterConfigurationForm', () => {
 
   it('sets loadingRegionsError to RegionDropdown error property', () => {
     expect(findRegionDropdown().props('error')).toBe(regionsState.loadingItemsError);
+  });
+
+  it('disables KeyPairDropdown when no region is selected', () => {
+    expect(findKeyPairDropdown().props('disabled')).toBe(true);
+  });
+
+  it('enables KeyPairDropdown when no region is selected', () => {
+    state.selectedRegion = { name: 'west-1 ' };
+
+    return Vue.nextTick().then(() => {
+      expect(findKeyPairDropdown().props('disabled')).toBe(false);
+    });
+  });
+
+  it('sets isLoadingKeyPairs to KeyPairDropdown loading property', () => {
+    keyPairsState.isLoadingItems = true;
+
+    return Vue.nextTick().then(() => {
+      expect(findKeyPairDropdown().props('loading')).toBe(keyPairsState.isLoadingItems);
+    });
+  });
+
+  it('sets keyPairs to KeyPairDropdown items property', () => {
+    expect(findKeyPairDropdown().props('items')).toBe(keyPairsState.items);
+  });
+
+  it('sets KeyPairDropdown hasErrors to true when loading key pairs fails', () => {
+    keyPairsState.loadingItemsError = new Error();
+
+    expect(findKeyPairDropdown().props('hasErrors')).toEqual(true);
   });
 
   it('disables VpcDropdown when no region is selected', () => {
@@ -131,8 +213,10 @@ describe('EksClusterConfigurationForm', () => {
     expect(findVpcDropdown().props('items')).toBe(vpcsState.items);
   });
 
-  it('sets loadingVpcsError to VpcDropdown hasErrors property', () => {
-    expect(findVpcDropdown().props('hasErrors')).toBe(vpcsState.loadingItemsError);
+  it('sets VpcDropdown hasErrors to true when loading vpcs fails', () => {
+    vpcsState.loadingItemsError = new Error();
+
+    expect(findVpcDropdown().props('hasErrors')).toEqual(true);
   });
 
   it('disables SubnetDropdown when no vpc is selected', () => {
@@ -159,8 +243,10 @@ describe('EksClusterConfigurationForm', () => {
     expect(findSubnetDropdown().props('items')).toBe(subnetsState.items);
   });
 
-  it('sets loadingSubnetsError to SubnetDropdown hasErrors property', () => {
-    expect(findSubnetDropdown().props('hasErrors')).toBe(subnetsState.loadingItemsError);
+  it('sets SubnetDropdown hasErrors to true when loading subnets fails', () => {
+    subnetsState.loadingItemsError = new Error();
+
+    expect(findSubnetDropdown().props('hasErrors')).toEqual(true);
   });
 
   describe('when region is selected', () => {
@@ -176,6 +262,14 @@ describe('EksClusterConfigurationForm', () => {
 
     it('fetches available vpcs', () => {
       expect(vpcsActions.fetchItems).toHaveBeenCalledWith(expect.anything(), { region }, undefined);
+    });
+
+    it('fetches available key pairs', () => {
+      expect(keyPairsActions.fetchItems).toHaveBeenCalledWith(
+        expect.anything(),
+        { region },
+        undefined,
+      );
     });
   });
 
@@ -204,6 +298,30 @@ describe('EksClusterConfigurationForm', () => {
 
     it('dispatches setSubnet action', () => {
       expect(actions.setSubnet).toHaveBeenCalledWith(expect.anything(), { subnet }, undefined);
+    });
+  });
+
+  describe('when role is selected', () => {
+    const role = { name: 'admin' };
+
+    beforeEach(() => {
+      findRoleDropdown().vm.$emit('input', role);
+    });
+
+    it('dispatches setRole action', () => {
+      expect(actions.setRole).toHaveBeenCalledWith(expect.anything(), { role }, undefined);
+    });
+  });
+
+  describe('when key pair is selected', () => {
+    const keyPair = { name: 'key pair' };
+
+    beforeEach(() => {
+      findKeyPairDropdown().vm.$emit('input', keyPair);
+    });
+
+    it('dispatches setKeyPair action', () => {
+      expect(actions.setKeyPair).toHaveBeenCalledWith(expect.anything(), { keyPair }, undefined);
     });
   });
 });

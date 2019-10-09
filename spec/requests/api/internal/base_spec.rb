@@ -770,47 +770,6 @@ describe API::Internal::Base do
     end
   end
 
-  describe 'GET /internal/merge_request_urls' do
-    let(:repo_name) { "#{project.full_path}" }
-    let(:changes) { URI.escape("#{Gitlab::Git::BLANK_SHA} 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/new_branch") }
-
-    before do
-      project.add_developer(user)
-    end
-
-    it 'returns link to create new merge request' do
-      get api("/internal/merge_request_urls?project=#{repo_name}&changes=#{changes}"), params: { secret_token: secret_token }
-
-      expect(json_response).to match [{
-        "branch_name" => "new_branch",
-        "url" => "http://#{Gitlab.config.gitlab.host}/#{project.full_path}/merge_requests/new?merge_request%5Bsource_branch%5D=new_branch",
-        "new_merge_request" => true
-      }]
-    end
-
-    it 'returns empty array if printing_merge_request_link_enabled is false' do
-      project.update!(printing_merge_request_link_enabled: false)
-
-      get api("/internal/merge_request_urls?project=#{repo_name}&changes=#{changes}"), params: { secret_token: secret_token }
-
-      expect(json_response).to eq([])
-    end
-
-    context 'with a gl_repository parameter' do
-      let(:gl_repository) { "project-#{project.id}" }
-
-      it 'returns link to create new merge request' do
-        get api("/internal/merge_request_urls?gl_repository=#{gl_repository}&changes=#{changes}"), params: { secret_token: secret_token }
-
-        expect(json_response).to match [{
-          "branch_name" => "new_branch",
-          "url" => "http://#{Gitlab.config.gitlab.host}/#{project.full_path}/merge_requests/new?merge_request%5Bsource_branch%5D=new_branch",
-          "new_merge_request" => true
-        }]
-      end
-    end
-  end
-
   # TODO: Uncomment when the end-point is reenabled
   # describe 'POST /notify_post_receive' do
   #   let(:valid_params) do
@@ -946,6 +905,19 @@ describe API::Internal::Base do
       message = <<~MESSAGE.strip
         To create a merge request for #{branch_name}, visit:
           http://#{Gitlab.config.gitlab.host}/#{project.full_path}/merge_requests/new?merge_request%5Bsource_branch%5D=#{branch_name}
+      MESSAGE
+
+      expect(json_response['messages']).to include(build_basic_message(message))
+    end
+
+    it 'returns the link to an existing merge request when it exists' do
+      merge_request = create(:merge_request, source_project: project, source_branch: branch_name, target_branch: 'master')
+
+      post api('/internal/post_receive'), params: valid_params
+
+      message = <<~MESSAGE.strip
+        View merge request for feature:
+          #{project_merge_request_url(project, merge_request)}
       MESSAGE
 
       expect(json_response['messages']).to include(build_basic_message(message))

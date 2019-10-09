@@ -150,6 +150,26 @@ describe SnippetsFinder do
 
         expect(snippets).to contain_exactly(private_project_snippet, internal_project_snippet, public_project_snippet)
       end
+
+      context 'filter by author' do
+        let!(:other_user) { create(:user) }
+        let!(:other_private_project_snippet) { create(:project_snippet, :private, project: project, author: other_user) }
+        let!(:other_internal_project_snippet) { create(:project_snippet, :internal, project: project, author: other_user) }
+        let!(:other_public_project_snippet) { create(:project_snippet, :public, project: project, author: other_user) }
+
+        it 'returns all snippets for project members' do
+          project.add_developer(user)
+
+          snippets = described_class.new(user, author: other_user).execute
+
+          expect(snippets)
+            .to contain_exactly(
+              other_private_project_snippet,
+              other_internal_project_snippet,
+              other_public_project_snippet
+            )
+        end
+      end
     end
 
     context 'when the user cannot read cross project' do

@@ -15,9 +15,17 @@ const createStore = () =>
     mutations,
     state: state(),
     modules: {
+      roles: {
+        namespaced: true,
+        ...clusterDropdownStore(awsServices.fetchRoles),
+      },
       regions: {
         namespaced: true,
         ...clusterDropdownStore(awsServices.fetchRegions),
+      },
+      keyPairs: {
+        namespaced: true,
+        ...clusterDropdownStore(awsServices.fetchKeyPairs),
       },
       vpcs: {
         namespaced: true,
