@@ -228,6 +228,12 @@ describe Banzai::Filter::RelativeLinkFilter do
       expect(doc.at_css('a')['href']).to eq 'http://example.com'
     end
 
+    it 'does not call gitaly' do
+      filter(link('http://example.com'))
+
+      expect(described_class).not_to receive(:get_blob_types)
+    end
+
     it 'supports Unicode filenames' do
       path = 'files/images/한글.png'
       escaped = Addressable::URI.escape(path)

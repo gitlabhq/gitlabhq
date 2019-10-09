@@ -21,6 +21,7 @@ module Banzai
         return doc if context[:system_note]
 
         clear_memoization(:linkable_files)
+        clear_memoization(:linkable_attributes)
 
         load_uri_types
 
@@ -35,9 +36,8 @@ module Banzai
 
       def load_uri_types
         return unless linkable_files?
+        return unless linkable_attributes.present?
         return {} unless repository
-
-        clear_memoization(:linkable_attributes)
 
         @uri_types = request_path.present? ? get_uri_types([request_path]) : {}
 

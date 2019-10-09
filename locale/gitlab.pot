@@ -17140,6 +17140,9 @@ msgstr ""
 msgid "Unknown"
 msgstr ""
 
+msgid "Unknown Error"
+msgstr ""
+
 msgid "Unknown encryption strategy: %{encrypted_strategy}!"
 msgstr ""
 
