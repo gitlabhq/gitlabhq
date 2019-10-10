@@ -4,7 +4,7 @@ import createStore from '~/releases/list/store';
 import api from '~/api';
 import { mountComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import { resetStore } from '../store/helpers';
-import { releases } from '../mock_data';
+import { releases } from '../../mock_data';
 
 describe('Releases App ', () => {
   const Component = Vue.extend(app);

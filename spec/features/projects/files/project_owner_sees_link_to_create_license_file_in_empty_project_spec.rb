@@ -37,7 +37,7 @@ describe 'Projects > Files > Project owner sees a link to create a license file 
 
   def select_template(template)
     page.within('.js-license-selector-wrap') do
-      click_button 'Apply a license template'
+      click_button 'Apply a template'
       click_link template
       wait_for_requests
     end

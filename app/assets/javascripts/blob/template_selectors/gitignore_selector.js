@@ -18,7 +18,6 @@ export default class BlobGitignoreSelector extends FileTemplateSelector {
       data: this.$dropdown.data('data'),
       filterable: true,
       selectable: true,
-      toggleLabel: item => item.name,
       search: {
         fields: ['name'],
       },

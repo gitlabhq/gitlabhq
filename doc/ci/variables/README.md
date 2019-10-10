@@ -266,6 +266,7 @@ export CI_PAGES_URL="https://gitlab-org.gitlab.io/gitlab-foss"
 export CI_PROJECT_ID="34"
 export CI_PROJECT_DIR="/builds/gitlab-org/gitlab-foss"
 export CI_PROJECT_NAME="gitlab-foss"
+export CI_PROJECT_TITLE="GitLab FOSS"
 export CI_PROJECT_NAMESPACE="gitlab-org"
 export CI_PROJECT_PATH="gitlab-org/gitlab-foss"
 export CI_PROJECT_URL="https://example.com/gitlab-org/gitlab-foss"
@@ -707,6 +708,8 @@ Running on runner-8a2f473d-project-1796893-concurrent-0 via runner-8a2f473d-mach
 ++ CI_PROJECT_ID=17893
 ++ export CI_PROJECT_NAME=ci-debug-trace
 ++ CI_PROJECT_NAME=ci-debug-trace
+++ export 'CI_PROJECT_TITLE="GitLab FOSS'
+++ CI_PROJECT_TITLE='GitLab FOSS'
 ++ export CI_PROJECT_PATH=gitlab-examples/ci-debug-trace
 ++ CI_PROJECT_PATH=gitlab-examples/ci-debug-trace
 ++ export CI_PROJECT_NAMESPACE=gitlab-examples

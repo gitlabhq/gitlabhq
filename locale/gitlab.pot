@@ -1758,6 +1758,9 @@ msgstr ""
 msgid "Apply a label"
 msgstr ""
 
+msgid "Apply a template"
+msgstr ""
+
 msgid "Apply suggestion"
 msgstr ""
 
@@ -14370,6 +14373,9 @@ msgid "Select a repository"
 msgstr ""
 
 msgid "Select a template repository"
+msgstr ""
+
+msgid "Select a template type"
 msgstr ""
 
 msgid "Select a timezone"

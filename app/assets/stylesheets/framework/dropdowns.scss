@@ -326,8 +326,9 @@
   }
 
   .dropdown-header {
-    color: $gl-text-color-secondary;
+    color: $black;
     font-size: 13px;
+    font-weight: $gl-font-weight-bold;
     line-height: $gl-line-height;
     padding: $dropdown-item-padding-y $dropdown-item-padding-x;
   }

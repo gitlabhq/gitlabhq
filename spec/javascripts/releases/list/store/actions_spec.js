@@ -8,7 +8,7 @@ import state from '~/releases/list/store/state';
 import * as types from '~/releases/list/store/mutation_types';
 import api from '~/api';
 import testAction from 'spec/helpers/vuex_action_helper';
-import { releases } from '../mock_data';
+import { releases } from '../../mock_data';
 
 describe('Releases State actions', () => {
   let mockedState;

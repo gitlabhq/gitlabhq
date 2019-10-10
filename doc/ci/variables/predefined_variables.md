@@ -87,7 +87,8 @@ future GitLab releases.**
 | `CI_PIPELINE_URL`                       | 11.1   | 0.5    | Pipeline details URL |
 | `CI_PROJECT_DIR`                        | all    | all    | The full path where the repository is cloned and where the job is run. If the GitLab Runner `builds_dir` parameter is set, this variable is set relative to the value of `builds_dir`. For more information, see [Advanced configuration](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section) for GitLab Runner. |
 | `CI_PROJECT_ID`                         | all    | all    | The unique id of the current project that GitLab CI uses internally |
-| `CI_PROJECT_NAME`                       | 8.10   | 0.5    | The project name that is currently being built (actually it is project folder name) |
+| `CI_PROJECT_NAME`                       | 8.10   | 0.5    | The name of the directory for the project that is currently being built. For example, if the project URL is `gitlab.example.com/group-name/project-1`, the `CI_PROJECT_NAME` would be `project-1`. |
+| `CI_PROJECT_TITLE`                      | 12.4   | all    | The human-readable project name as displayed in the GitLab web interface. |
 | `CI_PROJECT_NAMESPACE`                  | 8.10   | 0.5    | The project namespace (username or groupname) that is currently being built |
 | `CI_PROJECT_PATH`                       | 8.10   | 0.5    | The namespace with project name |
 | `CI_PROJECT_PATH_SLUG`                  | 9.3    | all    | `$CI_PROJECT_PATH` lowercased and with everything except `0-9` and `a-z` replaced with `-`. Use in URLs and domain names. |

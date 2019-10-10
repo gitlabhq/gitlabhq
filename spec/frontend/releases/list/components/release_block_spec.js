@@ -2,7 +2,7 @@ import { mount } from '@vue/test-utils';
 import ReleaseBlock from '~/releases/list/components/release_block.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 import { first } from 'underscore';
-import { release } from '../mock_data';
+import { release } from '../../mock_data';
 import Icon from '~/vue_shared/components/icon.vue';
 import { scrollToElement } from '~/lib/utils/common_utils';
 

@@ -5,7 +5,6 @@
 .editor-title-row
   %h3.page-title.blob-new-page-title
     New file
-  = render 'template_selectors'
 .file-editor
   = form_tag(project_create_blob_path(@project, @id), method: :post, class: 'js-edit-blob-form js-new-blob-form js-quick-submit js-requires-input', data: blob_editor_paths(@project)) do
     = render 'projects/blob/editor', ref: @ref

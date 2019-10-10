@@ -24,8 +24,9 @@ describe 'Projects > Files > Template type dropdown selector', :js do
       try_selecting_all_types
     end
 
-    it 'updates toggle value when input matches' do
+    it 'updates template type toggle value when template is chosen' do
       fill_in 'file_path', with: '.gitignore'
+      select_template('gitignore', 'Actionscript')
       check_type_selector_toggle_text('.gitignore')
     end
   end
@@ -70,6 +71,7 @@ describe 'Projects > Files > Template type dropdown selector', :js do
     end
 
     it 'toggle is set to the correct value' do
+      select_template('gitignore', 'Actionscript')
       check_type_selector_toggle_text('.gitignore')
     end
 
@@ -88,7 +90,7 @@ describe 'Projects > Files > Template type dropdown selector', :js do
     end
 
     it 'toggle is set to the proper value' do
-      check_type_selector_toggle_text('Choose type')
+      check_type_selector_toggle_text('Select a template type')
     end
 
     it 'selects every template type correctly' do
@@ -103,21 +105,25 @@ def check_type_selector_display(is_visible)
 end
 
 def try_selecting_all_types
-  try_selecting_template_type('LICENSE', 'Apply a license template')
-  try_selecting_template_type('Dockerfile', 'Apply a Dockerfile template')
-  try_selecting_template_type('.gitlab-ci.yml', 'Apply a GitLab CI Yaml template')
-  try_selecting_template_type('.gitignore', 'Apply a .gitignore template')
+  try_selecting_template_type('LICENSE', 'Apply a template')
+  try_selecting_template_type('Dockerfile', 'Apply a template')
+  try_selecting_template_type('.gitlab-ci.yml', 'Apply a template')
+  try_selecting_template_type('.gitignore', 'Apply a template')
 end
 
 def try_selecting_template_type(template_type, selector_label)
   select_template_type(template_type)
   check_template_selector_display(selector_label)
-  check_type_selector_toggle_text(template_type)
 end
 
 def select_template_type(template_type)
   find('.js-template-type-selector').click
   find('.dropdown-content li', text: template_type).click
+end
+
+def select_template(type, template)
+  find(".js-#{type}-selector-wrap").click
+  find('.dropdown-content li', text: template).click
 end
 
 def check_template_selector_display(content)

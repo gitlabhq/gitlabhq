@@ -1,5 +1,5 @@
 import Visibility from 'visibilityjs';
-import PipelineStore from 'ee_else_ce/pipelines/stores/pipeline_store';
+import PipelineStore from './stores/pipeline_store';
 import Flash from '../flash';
 import Poll from '../lib/utils/poll';
 import { __ } from '../locale';

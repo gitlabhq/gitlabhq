@@ -1,7 +1,7 @@
 import state from '~/releases/list/store/state';
 import mutations from '~/releases/list/store/mutations';
 import * as types from '~/releases/list/store/mutation_types';
-import { releases } from '../mock_data';
+import { releases } from '../../mock_data';
 
 describe('Releases Store Mutations', () => {
   let stateCopy;

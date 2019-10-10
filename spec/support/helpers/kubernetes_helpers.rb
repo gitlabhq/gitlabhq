@@ -410,8 +410,10 @@ module KubernetesHelpers
         "generation" => 2
       },
       "status" => {
-        "domain" => "#{name}.#{namespace}.#{domain}",
-        "domainInternal" => "#{name}.#{namespace}.svc.cluster.local",
+        "url" => "http://#{name}.#{namespace}.#{domain}",
+        "address" => {
+          "url" => "#{name}.#{namespace}.svc.cluster.local"
+        },
         "latestCreatedRevisionName" => "#{name}-00002",
         "latestReadyRevisionName" => "#{name}-00002",
         "observedGeneration" => 2
@@ -437,8 +439,10 @@ module KubernetesHelpers
         }
       },
       "status" => {
-        "domain" => "#{name}.#{namespace}.#{domain}",
-        "domainInternal" => "#{name}.#{namespace}.svc.cluster.local",
+        "url" => "http://#{name}.#{namespace}.#{domain}",
+        "address" => {
+          "url" => "#{name}.#{namespace}.svc.cluster.local"
+        },
         "latestCreatedRevisionName" => "#{name}-00002",
         "latestReadyRevisionName" => "#{name}-00002",
         "observedGeneration" => 2

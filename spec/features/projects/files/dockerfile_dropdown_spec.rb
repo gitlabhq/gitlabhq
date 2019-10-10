@@ -23,7 +23,7 @@ describe 'Projects > Files > User wants to add a Dockerfile file' do
 
     wait_for_requests
 
-    expect(page).to have_css('.dockerfile-selector .dropdown-toggle-text', text: 'HTTPd')
+    expect(page).to have_css('.dockerfile-selector .dropdown-toggle-text', text: 'Apply a template')
     expect(page).to have_content('COPY ./ /usr/local/apache2/htdocs/')
   end
 end

@@ -2210,6 +2210,7 @@ describe Ci::Build do
           { key: 'CI_BUILD_STAGE', value: 'test', public: true, masked: false },
           { key: 'CI_PROJECT_ID', value: project.id.to_s, public: true, masked: false },
           { key: 'CI_PROJECT_NAME', value: project.path, public: true, masked: false },
+          { key: 'CI_PROJECT_TITLE', value: project.title, public: true, masked: false },
           { key: 'CI_PROJECT_PATH', value: project.full_path, public: true, masked: false },
           { key: 'CI_PROJECT_PATH_SLUG', value: project.full_path_slug, public: true, masked: false },
           { key: 'CI_PROJECT_NAMESPACE', value: project.namespace.full_path, public: true, masked: false },
