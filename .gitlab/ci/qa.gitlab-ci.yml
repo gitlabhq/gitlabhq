@@ -1,3 +1,37 @@
+.qa-job-base:
+  extends:
+    - .default-tags
+    - .default-retry
+    - .default-only
+    - .only-code-qa-changes
+  stage: test
+  dependencies: []
+  # It's currently impossible to specify `needs: []` so we depend on `build-qa-image` which also has `.only-code-qa-changes`
+  needs: ["build-qa-image"]
+  cache:
+    key: "qa-framework-jobs:v1"
+    paths:
+      - vendor/ruby
+  before_script:
+    - cd qa/
+    - bundle install --clean --jobs=$(nproc) --path=vendor --retry=3 --quiet
+    - bundle check
+
+qa:internal:
+  extends: .qa-job-base
+  script:
+    - bundle exec rspec
+
+qa:selectors:
+  extends: .qa-job-base
+  script:
+    - bundle exec bin/qa Test::Sanity::Selectors
+
+qa:selectors-foss:
+  extends:
+    - qa:selectors
+    - .only-ee-as-if-foss
+
 .package-and-qa-base:
   extends: .default-only
   image: ruby:2.6-alpine

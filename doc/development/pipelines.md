@@ -62,7 +62,6 @@ each pipeline includes the following [variables](../ci/variables/README.md):
 - `GIT_SUBMODULE_STRATEGY: "none"`
 - `GET_SOURCES_ATTEMPTS: "3"`
 - `KNAPSACK_RSPEC_SUITE_REPORT_PATH: knapsack/${CI_PROJECT_NAME}/rspec_report-master.json`
-- `EE_KNAPSACK_RSPEC_SUITE_REPORT_PATH: knapsack/${CI_PROJECT_NAME}/rspec_report-master-ee.json`
 - `FLAKY_RSPEC_SUITE_REPORT_PATH: rspec_flaky/report-suite.json`
 - `BUILD_ASSETS_IMAGE: "false"`
 - `ES_JAVA_OPTS: "-Xms256m -Xmx256m"`
@@ -93,9 +92,17 @@ These common definitions are:
   for `master` and auto-deploy branches.
 - `.only-review-schedules`: Same as `.only-review` but also restrict a job to
   only run for [schedules](../user/project/pipelines/schedules.md).
-- `.use-pg`: Allows a job to use the `postgres:9.6.14` and `redis:alpine` services.
-- `.use-pg-10`: Allows a job to use the `postgres:10.9` and `redis:alpine` services.
+- `.only-canonical-schedules`: Only creates a job for scheduled pipelines in
+  the `gitlab-org/gitlab` and `gitlab-org/gitlab-foss` projects
+- `.use-pg9`: Allows a job to use the `postgres:9.6` and `redis:alpine` services.
+- `.use-pg10`: Allows a job to use the `postgres:10.9` and `redis:alpine` services.
+- `.use-pg9-ee`: Same as `.use-pg9` but also use the
+  `docker.elastic.co/elasticsearch/elasticsearch:5.6.12` services.
+- `.use-pg10-ee`: Same as `.use-pg10` but also use the
+  `docker.elastic.co/elasticsearch/elasticsearch:5.6.12` services.
 - `.only-ee`: Only creates a job for the `gitlab` project.
+- `.only-ee-as-if-foss`: Same as `.only-ee` but simulate the FOSS project by
+  setting the `IS_GITLAB_EE='0'` environment variable.
 
 ## Changes detection
 

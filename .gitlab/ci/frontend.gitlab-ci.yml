@@ -188,29 +188,6 @@ jest-foss:
   cache:
     policy: pull
 
-.qa-job-base:
-  extends:
-    - .default-tags
-    - .default-retry
-    - .default-cache
-    - .default-only
-    - .only-code-qa-changes
-  dependencies: []
-  stage: test
-  before_script:
-    - cd qa/
-    - bundle install
-
-qa:internal:
-  extends: .qa-job-base
-  script:
-    - bundle exec rspec
-
-qa:selectors:
-  extends: .qa-job-base
-  script:
-    - bundle exec bin/qa Test::Sanity::Selectors
-
 .qa-frontend-node:
   extends:
     - .default-tags

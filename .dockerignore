@@ -6,6 +6,7 @@
 # - ./config/initializers/0_inject_enterprise_edition_module.rb
 # - ./ee/app/models/license.rb
 # - ./lib/gitlab.rb
+# - ./lib/gitlab/utils.rb
 # - ./qa/
 # - ./INSTALLATION_TYPE
 # - ./VERSION
@@ -49,7 +50,6 @@
 /lib/flowdock/
 /lib/generators/
 /lib/gitaly/
-/lib/gitlab/
 /lib/api/
 /lib/token/
 /lib/mattermost/
