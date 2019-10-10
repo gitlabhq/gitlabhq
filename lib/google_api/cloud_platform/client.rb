@@ -96,6 +96,9 @@ module GoogleApi
             legacy_abac: {
               enabled: legacy_abac
             },
+            ip_allocation_policy: {
+              use_ip_aliases: true
+            },
             addons_config: enable_addons.each_with_object({}) do |addon, hash|
               hash[addon] = { disabled: false }
             end

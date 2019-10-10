@@ -13,4 +13,8 @@ class GrafanaIntegration < ApplicationRecord
             addressable_url: { enforce_sanitization: true, ascii_only: true }
 
   validates :token, :project, presence: true
+
+  def client
+    @client ||= ::Grafana::Client.new(api_url: grafana_url.chomp('/'), token: token)
+  end
 end

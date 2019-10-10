@@ -102,6 +102,9 @@ describe GoogleApi::CloudPlatform::Client do
           legacy_abac: {
             enabled: legacy_abac
           },
+          ip_allocation_policy: {
+            use_ip_aliases: true
+          },
           addons_config: addons_config
         }
       }

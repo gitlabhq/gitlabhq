@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Projects::Environments::PrometheusApiController < Projects::ApplicationController
+  include RenderServiceResults
+
   before_action :authorize_read_prometheus!
   before_action :environment
 
@@ -12,21 +14,10 @@ class Projects::Environments::PrometheusApiController < Projects::ApplicationCon
       proxy_params
     ).execute
 
-    if result.nil?
-      return render status: :no_content, json: {
-        status: _('processing'),
-        message: _('Not ready yet. Try again later.')
-      }
-    end
+    return continue_polling_response if result.nil?
+    return error_response(result) if result[:status] == :error
 
-    if result[:status] == :success
-      render status: result[:http_status], json: result[:body]
-    else
-      render(
-        status: result[:http_status] || :bad_request,
-        json: { status: result[:status], message: result[:message] }
-      )
-    end
+    success_response(result)
   end
 
   private

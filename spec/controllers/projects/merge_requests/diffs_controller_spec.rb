@@ -100,6 +100,136 @@ describe Projects::MergeRequests::DiffsController do
     it_behaves_like 'persisted preferred diff view cookie'
   end
 
+  describe 'GET diffs_metadata' do
+    def go(extra_params = {})
+      params = {
+        namespace_id: project.namespace.to_param,
+        project_id: project,
+        id: merge_request.iid,
+        format: 'json'
+      }
+
+      get :diffs_metadata, params: params.merge(extra_params)
+    end
+
+    context 'when not authorized' do
+      let(:another_user) { create(:user) }
+
+      before do
+        sign_in(another_user)
+      end
+
+      it 'returns 404 when not a member' do
+        go
+
+        expect(response).to have_gitlab_http_status(404)
+      end
+
+      it 'returns 404 when visibility level is not enough' do
+        project.add_guest(another_user)
+
+        go
+
+        expect(response).to have_gitlab_http_status(404)
+      end
+    end
+
+    context 'when diffable does not exists' do
+      it 'returns 404' do
+        go(diff_id: 9999)
+
+        expect(response).to have_gitlab_http_status(404)
+      end
+    end
+
+    context 'with valid diff_id' do
+      it 'returns success' do
+        go(diff_id: merge_request.merge_request_diff.id)
+
+        expect(response).to have_gitlab_http_status(200)
+      end
+
+      it 'serializes diffs metadata with expected arguments' do
+        expected_options = {
+          environment: nil,
+          merge_request: merge_request,
+          merge_request_diff: merge_request.merge_request_diff,
+          merge_request_diffs: merge_request.merge_request_diffs,
+          start_version: nil,
+          start_sha: nil,
+          commit: nil,
+          latest_diff: true
+        }
+
+        expect_next_instance_of(DiffsMetadataSerializer) do |instance|
+          expect(instance).to receive(:represent)
+            .with(an_instance_of(Gitlab::Diff::FileCollection::MergeRequestDiff), expected_options)
+            .and_call_original
+        end
+
+        go(diff_id: merge_request.merge_request_diff.id)
+      end
+    end
+
+    context 'with MR regular diff params' do
+      it 'returns success' do
+        go
+
+        expect(response).to have_gitlab_http_status(200)
+      end
+
+      it 'serializes diffs metadata with expected arguments' do
+        expected_options = {
+          environment: nil,
+          merge_request: merge_request,
+          merge_request_diff: merge_request.merge_request_diff,
+          merge_request_diffs: merge_request.merge_request_diffs,
+          start_version: nil,
+          start_sha: nil,
+          commit: nil,
+          latest_diff: true
+        }
+
+        expect_next_instance_of(DiffsMetadataSerializer) do |instance|
+          expect(instance).to receive(:represent)
+            .with(an_instance_of(Gitlab::Diff::FileCollection::MergeRequestDiff), expected_options)
+            .and_call_original
+        end
+
+        go
+      end
+    end
+
+    context 'with commit param' do
+      it 'returns success' do
+        go(commit_id: merge_request.diff_head_sha)
+
+        expect(response).to have_gitlab_http_status(200)
+      end
+
+      it 'serializes diffs metadata with expected arguments' do
+        expected_options = {
+          environment: nil,
+          merge_request: merge_request,
+          merge_request_diff: nil,
+          merge_request_diffs: merge_request.merge_request_diffs,
+          start_version: nil,
+          start_sha: nil,
+          commit: merge_request.diff_head_commit,
+          latest_diff: nil
+        }
+
+        expect_next_instance_of(DiffsMetadataSerializer) do |instance|
+          expect(instance).to receive(:represent)
+            .with(an_instance_of(Gitlab::Diff::FileCollection::Commit), expected_options)
+            .and_call_original
+        end
+
+        go(commit_id: merge_request.diff_head_sha)
+      end
+    end
+  end
+
   describe 'GET diff_for_path' do
     def diff_for_path(extra_params = {})
       params = {
