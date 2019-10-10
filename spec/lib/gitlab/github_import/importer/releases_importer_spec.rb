@@ -34,6 +34,22 @@ describe Gitlab::GithubImport::Importer::ReleasesImporter do
 
       importer.execute
     end
+
+    it 'imports draft releases' do
+      release_double = double(
+        name: 'Test',
+        body: 'This is description',
+        tag_name: '1.0',
+        description: 'This is my release',
+        created_at: created_at,
+        updated_at: created_at,
+        published_at: nil
+      )
+
+      expect(importer).to receive(:each_release).and_return([release_double])
+
+      expect { importer.execute }.to change { Release.count }.by(1)
+    end
   end
 
   describe '#build_releases' do

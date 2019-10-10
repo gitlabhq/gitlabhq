@@ -148,22 +148,6 @@ module API
           }
         end
 
-        get "/broadcast_messages" do
-          if messages = BroadcastMessage.current
-            present messages, with: Entities::BroadcastMessage
-          else
-            []
-          end
-        end
-
-        get "/broadcast_message" do
-          if message = BroadcastMessage.current&.last
-            present message, with: Entities::BroadcastMessage
-          else
-            {}
-          end
-        end
-
         # rubocop: disable CodeReuse/ActiveRecord
         post '/two_factor_recovery_codes' do
           status 200

@@ -271,26 +271,22 @@ describe SystemNoteService do
   end
 
   describe '.zoom_link_added' do
-    subject { described_class.zoom_link_added(issue, project, author) }
+    it 'calls ZoomService' do
+      expect_next_instance_of(::SystemNotes::ZoomService) do |service|
+        expect(service).to receive(:zoom_link_added)
+      end
 
-    it_behaves_like 'a system note' do
-      let(:action) { 'pinned_embed' }
-    end
-
-    it 'sets the zoom link added note text' do
-      expect(subject.note).to eq('added a Zoom call to this issue')
+      described_class.zoom_link_added(noteable, project, author)
     end
   end
 
   describe '.zoom_link_removed' do
-    subject { described_class.zoom_link_removed(issue, project, author) }
+    it 'calls ZoomService' do
+      expect_next_instance_of(::SystemNotes::ZoomService) do |service|
+        expect(service).to receive(:zoom_link_removed)
+      end
 
-    it_behaves_like 'a system note' do
-      let(:action) { 'pinned_embed' }
-    end
-
-    it 'sets the zoom link removed note text' do
-      expect(subject.note).to eq('removed a Zoom call from this issue')
+      described_class.zoom_link_removed(noteable, project, author)
     end
   end
 

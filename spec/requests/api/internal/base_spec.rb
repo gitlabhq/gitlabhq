@@ -43,61 +43,6 @@ describe API::Internal::Base do
     end
   end
 
-  describe 'GET /internal/broadcast_message' do
-    context 'broadcast message exists' do
-      let!(:broadcast_message) { create(:broadcast_message, starts_at: 1.day.ago, ends_at: 1.day.from_now ) }
-
-      it 'returns one broadcast message' do
-        get api('/internal/broadcast_message'), params: { secret_token: secret_token }
-
-        expect(response).to have_gitlab_http_status(200)
-        expect(json_response['message']).to eq(broadcast_message.message)
-      end
-    end
-
-    context 'broadcast message does not exist' do
-      it 'returns nothing' do
-        get api('/internal/broadcast_message'), params: { secret_token: secret_token }
-
-        expect(response).to have_gitlab_http_status(200)
-        expect(json_response).to be_empty
-      end
-    end
-
-    context 'nil broadcast message' do
-      it 'returns nothing' do
-        allow(BroadcastMessage).to receive(:current).and_return(nil)
-
-        get api('/internal/broadcast_message'), params: { secret_token: secret_token }
-
-        expect(response).to have_gitlab_http_status(200)
-        expect(json_response).to be_empty
-      end
-    end
-  end
-
-  describe 'GET /internal/broadcast_messages' do
-    context 'broadcast message(s) exist' do
-      let!(:broadcast_message) { create(:broadcast_message, starts_at: 1.day.ago, ends_at: 1.day.from_now ) }
-
-      it 'returns active broadcast message(s)' do
-        get api('/internal/broadcast_messages'), params: { secret_token: secret_token }
-
-        expect(response).to have_gitlab_http_status(200)
-        expect(json_response[0]['message']).to eq(broadcast_message.message)
-      end
-    end
-
-    context 'broadcast message does not exist' do
-      it 'returns nothing' do
-        get api('/internal/broadcast_messages'), params: { secret_token: secret_token }
-
-        expect(response).to have_gitlab_http_status(200)
-        expect(json_response).to be_empty
-      end
-    end
-  end
-
   describe 'GET /internal/two_factor_recovery_codes' do
     it 'returns an error message when the key does not exist' do
       post api('/internal/two_factor_recovery_codes'),

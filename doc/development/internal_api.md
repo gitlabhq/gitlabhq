@@ -215,17 +215,6 @@ Example response:
 - GitLab Geo
 - GitLab-shell's `bin/check`
 
-## Broadcast message(s) [NOT USED]
-
-```
-GET /internal/broadcast_message
-GET /internal/broadcast_messages
-```
-
-**Deprecated:** This used to be used by GitLab-shell to print out broadcast
-messages. But this is now included in the `post_receive` call. Other
-clients can use the public BroadcastMessages API.
-
 ## Get new 2FA recovery codes using an SSH key
 
 This is called from GitLab-shell and allows users to get new 2FA

@@ -379,6 +379,8 @@ This functionality is only available:
 
 ## Most Recent Pipeline
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/50499) in GitLab 12.3.
+
 There's a link to the latest pipeline for the last commit of a given branch at `/project/pipelines/[branch]/latest`. Also, `/project/pipelines/latest` will redirect you to the latest pipeline for the last commit on the project's default branch.
 
 ## Security on protected branches

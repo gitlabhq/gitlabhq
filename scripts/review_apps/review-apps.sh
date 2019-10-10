@@ -255,9 +255,9 @@ EOF
 }
 
 function display_deployment_debug() {
-  # Get all pods that are not ready (this will return completed pods for minio and migrations jobs)
-  echoinfo "Unready Pods for release ${CI_ENVIRONMENT_SLUG}"
-  kubectl get pods -n "$KUBE_NAMESPACE" -lrelease=${CI_ENVIRONMENT_SLUG} --field-selector=status.phase!=Running
+  # Get all pods for this release
+  echoinfo "Pods for release ${CI_ENVIRONMENT_SLUG}"
+  kubectl get pods -n "$KUBE_NAMESPACE" -lrelease=${CI_ENVIRONMENT_SLUG}
 
   # Get all non-completed jobs
   echoinfo "Unsuccessful Jobs for release ${CI_ENVIRONMENT_SLUG}"

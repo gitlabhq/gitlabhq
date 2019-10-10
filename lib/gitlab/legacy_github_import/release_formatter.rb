@@ -10,7 +10,8 @@ module Gitlab
           name: raw_data.name,
           description: raw_data.body,
           created_at: raw_data.created_at,
-          released_at: raw_data.published_at,
+          # Draft releases will have a null published_at
+          released_at: raw_data.published_at || Time.current,
           updated_at: raw_data.created_at
         }
       end
