@@ -50,7 +50,7 @@ To create an executable runbook, you will need:
 Nurtch is the company behind the [Rubix library](https://github.com/Nurtch/rubix). Rubix is
 an open-source Python library that makes it easy to perform common DevOps tasks inside Jupyter Notebooks.
 Tasks such as plotting Cloudwatch metrics and rolling your ECS/Kubernetes app are simplified
-down to a couple of lines of code. See the [Nurtch Documentation](http://docs.nurtch.com/en/latest)
+down to a couple of lines of code. See the [Nurtch Documentation](http://docs.nurtch.com/en/latest/)
 for more information.
 
 ## Configure an executable runbook with GitLab

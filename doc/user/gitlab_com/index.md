@@ -41,7 +41,7 @@ Host gitlab.com
 
 ## GitLab Pages
 
-Below are the settings for [GitLab Pages].
+Below are the settings for [GitLab Pages](https://about.gitlab.com/product/pages/).
 
 | Setting                     | GitLab.com        | Default       |
 | --------------------------- | ----------------  | ------------- |
@@ -103,12 +103,10 @@ Below are the shared Runners settings.
 
 | Setting                               | GitLab.com                                        | Default    |
 | -----------                           | -----------------                                 | ---------- |
-| [GitLab Runner]                       | [Runner versions dashboard][ci_version_dashboard] | -          |
+| [GitLab Runner]                       | [Runner versions dashboard](https://dashboards.gitlab.com/d/000000159/ci?from=now-1h&to=now&refresh=5m&orgId=1&panelId=12&fullscreen&theme=light) | - |
 | Executor                              | `docker+machine`                                  | -          |
 | Default Docker image                  | `ruby:2.5`                                        | -          |
 | `privileged` (run [Docker in Docker]) | `true`                                            | `false`    |
-
-[ci_version_dashboard]: https://dashboards.gitlab.com/dashboard/db/ci?from=now-1h&to=now&refresh=5m&orgId=1&panelId=12&fullscreen&theme=light
 
 ### `config.toml`
 
@@ -174,7 +172,7 @@ sentry_dsn = "X"
 
 ## Sidekiq
 
-GitLab.com runs [Sidekiq][sidekiq] with arguments `--timeout=4 --concurrency=4`
+GitLab.com runs [Sidekiq](https://sidekiq.org) with arguments `--timeout=4 --concurrency=4`
 and the following environment variables:
 
 | Setting                                    | GitLab.com | Default   |
@@ -275,7 +273,7 @@ released depending on the type of block, as described below.
 
 If you receive a `403 Forbidden` error for all requests to GitLab.com, please
 check for any automated processes that may be triggering a block. For
-assistance, contact [GitLab Support](https://support.gitlab.com)
+assistance, contact [GitLab Support](https://support.gitlab.com/hc/en-us)
 with details, such as the affected IP address.
 
 ### HAProxy API throttle
@@ -390,10 +388,8 @@ High Performance TCP/HTTP Load Balancer:
 [runners-post]: https://about.gitlab.com/2016/04/05/shared-runners/ "Shared Runners on GitLab.com"
 [GitLab Runner]: https://gitlab.com/gitlab-org/gitlab-runner
 [altssh]: https://about.gitlab.com/2016/02/18/gitlab-dot-com-now-supports-an-alternate-git-plus-ssh-port/ "GitLab.com now supports an alternate git+ssh port"
-[GitLab Pages]: https://about.gitlab.com/features/pages "GitLab Pages"
 [docker in docker]: https://hub.docker.com/_/docker/ "Docker in Docker at DockerHub"
 [mailgun]: https://www.mailgun.com/ "Mailgun website"
-[sidekiq]: http://sidekiq.org/ "Sidekiq website"
 [unicorn-worker-killer]: https://rubygems.org/gems/unicorn-worker-killer "unicorn-worker-killer"
 [4010]: https://gitlab.com/gitlab-com/infrastructure/issues/4010 "Find a good value for maximum timeout for Shared Runners"
 [4070]: https://gitlab.com/gitlab-com/infrastructure/issues/4070 "Configure per-runner timeout for shared-runners-manager-X on GitLab.com"

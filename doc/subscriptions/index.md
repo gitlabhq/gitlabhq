@@ -148,7 +148,7 @@ For more information, please see our:
 
 - [Subscription FAQ](https://about.gitlab.com/pricing/licensing-faq/).
 - [Pricing page](https://about.gitlab.com/pricing/), which includes information
-  on our [true-up pricing policy](https://about.gitlab.com/handbook/product/pricing/#true-up-pricing)
+  on our [true-up pricing policy](https://about.gitlab.com/handbook/ceo/pricing/#true-up-pricing)
   when adding more users other than at the time of purchase.
 
 NOTE: **Note:**

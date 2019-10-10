@@ -62,6 +62,18 @@ FactoryBot.define do
         )
       end
 
+      trait :folded_position do
+        position do
+          Gitlab::Diff::Position.new(
+            old_path: "files/ruby/popen.rb",
+            new_path: "files/ruby/popen.rb",
+            old_line: 1,
+            new_line: 1,
+            diff_refs: diff_refs
+          )
+        end
+      end
+
       trait :resolved do
         resolved_at { Time.now }
         resolved_by { create(:user) }

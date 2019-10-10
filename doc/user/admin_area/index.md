@@ -105,8 +105,16 @@ You can administer all users in the GitLab instance from the Admin Area's Users 
 
 To access the Users page, go to **Admin Area > Overview > Users**.
 
-Click the **Active**, **Admins**, **2FA Enabled**, or **2FA Disabled**, **External**, or
-**Without projects** tab to list only users of that criteria.
+To list users matching a specific criteria, click on one of the following tabs on the **Users** page:
+
+- **Active**
+- **Admins**
+- **2FA Enabled**
+- **2FA Disabled**
+- **External**
+- **Blocked**
+- **Deactivated**
+- **Without projects**
 
 For each user, their username, email address, are listed, also the date their account was
 created and the date of last activity. To edit a user, click the **Edit** button in that user's

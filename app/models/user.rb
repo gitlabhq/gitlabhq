@@ -59,6 +59,8 @@ class User < ApplicationRecord
   # Removed in GitLab 12.3. Keep until after 2019-09-22.
   self.ignored_columns += %i[support_bot]
 
+  MINIMUM_INACTIVE_DAYS = 14
+
   # Override Devise::Models::Trackable#update_tracked_fields!
   # to limit database writes to at most once every hour
   # rubocop: disable CodeReuse/ServiceClass
@@ -242,16 +244,23 @@ class User < ApplicationRecord
   state_machine :state, initial: :active do
     event :block do
       transition active: :blocked
+      transition deactivated: :blocked
       transition ldap_blocked: :blocked
     end
 
     event :ldap_block do
       transition active: :ldap_blocked
+      transition deactivated: :ldap_blocked
     end
 
     event :activate do
+      transition deactivated: :active
       transition blocked: :active
       transition ldap_blocked: :active
+    end
+
+    event :deactivate do
+      transition active: :deactivated
     end
 
     state :blocked, :ldap_blocked do
@@ -284,6 +293,7 @@ class User < ApplicationRecord
   scope :blocked, -> { with_states(:blocked, :ldap_blocked) }
   scope :external, -> { where(external: true) }
   scope :active, -> { with_state(:active).non_internal }
+  scope :deactivated, -> { with_state(:deactivated).non_internal }
   scope :without_projects, -> { joins('LEFT JOIN project_authorizations ON users.id = project_authorizations.user_id').where(project_authorizations: { user_id: nil }) }
   scope :order_recent_sign_in, -> { reorder(Gitlab::Database.nulls_last_order('current_sign_in_at', 'DESC')) }
   scope :order_oldest_sign_in, -> { reorder(Gitlab::Database.nulls_last_order('current_sign_in_at', 'ASC')) }
@@ -431,6 +441,8 @@ class User < ApplicationRecord
         without_projects
       when 'external'
         external
+      when 'deactivated'
+        deactivated
       else
         active
       end
@@ -521,7 +533,7 @@ class User < ApplicationRecord
 
     # Returns a user for the given SSH key.
     def find_by_ssh_key_id(key_id)
-      Key.find_by(id: key_id)&.user
+      find_by('EXISTS (?)', Key.select(1).where('keys.user_id = users.id').where(id: key_id))
     end
 
     def find_by_full_path(path, follow_redirects: false)
@@ -1534,6 +1546,17 @@ class User < ApplicationRecord
     !!(password_expires_at && password_expires_at < Time.now)
   end
 
+  def can_be_deactivated?
+    active? && no_recent_activity?
+  end
+
+  def last_active_at
+    last_activity = last_activity_on&.to_time&.in_time_zone
+    last_sign_in = current_sign_in_at
+
+    [last_activity, last_sign_in].compact.max
+  end
+
   # @deprecated
   alias_method :owned_or_masters_groups, :owned_or_maintainers_groups
 
@@ -1682,6 +1705,10 @@ class User < ApplicationRecord
     developer_groups_hierarchy = ::Gitlab::ObjectHierarchy.new(developer_groups).base_and_descendants
     ::Group.where(id: developer_groups_hierarchy.select(:id),
                   project_creation_level: project_creation_levels)
+  end
+
+  def no_recent_activity?
+    last_active_at.to_i <= MINIMUM_INACTIVE_DAYS.days.ago.to_i
   end
 end
 

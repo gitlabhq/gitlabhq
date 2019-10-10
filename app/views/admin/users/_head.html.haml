@@ -6,6 +6,8 @@
     %span.cred (Internal)
   - if @user.admin
     %span.cred (Admin)
+  - if @user.deactivated?
+    %span.cred (Deactivated)
   = render_if_exists 'admin/users/audtior_user_badge'
 
   .float-right

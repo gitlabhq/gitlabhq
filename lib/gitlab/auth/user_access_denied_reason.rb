@@ -14,6 +14,9 @@ module Gitlab
         when :terms_not_accepted
           "You (#{@user.to_reference}) must accept the Terms of Service in order to perform this action. "\
           "Please access GitLab from a web browser to accept these terms."
+        when :deactivated
+          "Your account has been deactivated by your administrator. "\
+          "Please log back in from a web browser to reactivate your account at #{Gitlab.config.gitlab.url}"
         else
           "Your account has been blocked."
         end
@@ -26,6 +29,8 @@ module Gitlab
           :internal
         elsif @user.required_terms_not_accepted?
           :terms_not_accepted
+        elsif @user.deactivated?
+          :deactivated
         else
           :blocked
         end

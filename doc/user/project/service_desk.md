@@ -50,7 +50,7 @@ users will only see the thread through email.
 
 > **Note:**
 Service Desk is enabled on GitLab.com. If you're a
-[Silver subscriber](https://about.gitlab.com/gitlab-com/),
+[Silver subscriber](https://about.gitlab.com/pricing/#gitlab-com),
 you can skip the step 1 below; you only need to enable it per project.
 
 1. [Set up incoming email](../../administration/incoming_email.md#set-it-up) for the GitLab instance. This must

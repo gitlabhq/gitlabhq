@@ -454,6 +454,15 @@ class MergeRequest < ApplicationRecord
     merge_request_diffs.where.not(id: merge_request_diff.id)
   end
 
+  # Overwritten in EE
+  def note_positions_for_paths(paths, _user = nil)
+    positions = notes.new_diff_notes.joins(:note_diff_file)
+      .where('note_diff_files.old_path IN (?) OR note_diff_files.new_path IN (?)', paths, paths)
+      .positions
+
+    Gitlab::Diff::PositionCollection.new(positions, diff_head_sha)
+  end
+
   def preloads_discussion_diff_highlighting?
     true
   end

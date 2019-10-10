@@ -13,6 +13,8 @@ namespace :admin do
       get :keys
       put :block
       put :unblock
+      put :deactivate
+      put :activate
       put :unlock
       put :confirm
       post :impersonate

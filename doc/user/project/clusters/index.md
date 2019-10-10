@@ -112,7 +112,7 @@ There are two options when adding a new cluster to your project:
 TIP: **Tip:**
 Every new Google Cloud Platform (GCP) account receives [$300 in credit upon sign up](https://console.cloud.google.com/freetrial),
 and in partnership with Google, GitLab is able to offer an additional $200 for new GCP accounts to get started with GitLab's
-Google Kubernetes Engine Integration. All you have to do is [follow this link](https://goo.gl/AaJzRW) and apply for credit.
+Google Kubernetes Engine Integration. All you have to do is [follow this link](https://cloud.google.com/partners/partnercredit/?PCN=a0n60000006Vpz4AAC) and apply for credit.
 
 NOTE: **Note:**
 The [Google authentication integration](../../../integration/google.md) must
@@ -390,8 +390,8 @@ you can either:
 
 When creating a cluster in GitLab, you will be asked if you would like to create either:
 
-- An [Attribute-based access control (ABAC)](https://kubernetes.io/docs/admin/authorization/abac/) cluster.
-- A [Role-based access control (RBAC)](https://kubernetes.io/docs/admin/authorization/rbac/) cluster.
+- An [Attribute-based access control (ABAC)](https://kubernetes.io/docs/reference/access-authn-authz/abac/) cluster.
+- A [Role-based access control (RBAC)](https://kubernetes.io/docs/reference/access-authn-authz/rbac/) cluster.
 
 NOTE: **Note:**
 [RBAC](#rbac-cluster-resources) is recommended and the GitLab default.

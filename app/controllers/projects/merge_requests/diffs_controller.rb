@@ -25,6 +25,9 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
     return render_404 unless diffable
 
     diffs = diffable.diffs_in_batch(params[:page], params[:per_page], diff_options: diff_options)
+    positions = @merge_request.note_positions_for_paths(diffs.diff_file_paths, current_user)
+
+    diffs.unfold_diff_files(positions.unfoldable)
 
     options = {
       merge_request: @merge_request,

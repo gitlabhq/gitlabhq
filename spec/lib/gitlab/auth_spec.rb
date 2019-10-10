@@ -520,6 +520,12 @@ describe Gitlab::Auth do
       end
     end
 
+    it 'finds the user in deactivated state' do
+      user.deactivate!
+
+      expect( gl_auth.find_with_user_password(username, password) ).to eql user
+    end
+
     it "does not find user in blocked state" do
       user.block
 

@@ -1,46 +1,65 @@
-import $ from 'jquery';
 import Vue from 'vue';
 
 import Translate from '~/vue_shared/translate';
+import ModalManager from './components/user_modal_manager.vue';
+import DeleteUserModal from './components/delete_user_modal.vue';
+import UserOperationConfirmationModal from './components/user_operation_confirmation_modal.vue';
 import csrf from '~/lib/utils/csrf';
 
-import deleteUserModal from './components/delete_user_modal.vue';
+const MODAL_TEXTS_CONTAINER_SELECTOR = '#modal-texts';
+const MODAL_MANAGER_SELECTOR = '#user-modal';
+const ACTION_MODALS = {
+  deactivate: UserOperationConfirmationModal,
+  block: UserOperationConfirmationModal,
+  delete: DeleteUserModal,
+  'delete-with-contributions': DeleteUserModal,
+};
+
+function loadModalsConfigurationFromHtml(modalsElement) {
+  const modalsConfiguration = {};
+
+  if (!modalsElement) {
+    /* eslint-disable-next-line @gitlab/i18n/no-non-i18n-strings */
+    throw new Error('Modals content element not found!');
+  }
+
+  Array.from(modalsElement.children).forEach(node => {
+    const { modal, ...config } = node.dataset;
+    modalsConfiguration[modal] = {
+      title: node.dataset.title,
+      ...config,
+      content: node.innerHTML,
+    };
+  });
+
+  return modalsConfiguration;
+}
 
 document.addEventListener('DOMContentLoaded', () => {
   Vue.use(Translate);
 
-  const deleteUserModalEl = document.getElementById('delete-user-modal');
+  const modalConfiguration = loadModalsConfigurationFromHtml(
+    document.querySelector(MODAL_TEXTS_CONTAINER_SELECTOR),
+  );
 
-  const deleteModal = new Vue({
-    el: deleteUserModalEl,
-    data: {
-      deleteUserUrl: '',
-      blockUserUrl: '',
-      deleteContributions: '',
-      username: '',
+  // eslint-disable-next-line no-new
+  new Vue({
+    el: MODAL_MANAGER_SELECTOR,
+    functional: true,
+    methods: {
+      show(...args) {
+        this.$refs.manager.show(...args);
+      },
     },
-    render(createElement) {
-      return createElement(deleteUserModal, {
+    render(h) {
+      return h(ModalManager, {
+        ref: 'manager',
         props: {
-          deleteUserUrl: this.deleteUserUrl,
-          blockUserUrl: this.blockUserUrl,
-          deleteContributions: this.deleteContributions,
-          username: this.username,
+          modalConfiguration,
+          actionModals: ACTION_MODALS,
           csrfToken: csrf.token,
         },
       });
     },
-  });
-
-  $(document).on('shown.bs.modal', event => {
-    if (event.relatedTarget.classList.contains('delete-user-button')) {
-      const buttonProps = event.relatedTarget.dataset;
-      deleteModal.deleteUserUrl = buttonProps.deleteUserUrl;
-      deleteModal.blockUserUrl = buttonProps.blockUserUrl;
-      deleteModal.deleteContributions = event.relatedTarget.hasAttribute(
-        'data-delete-contributions',
-      );
-      deleteModal.username = buttonProps.username;
-    }
   });
 });

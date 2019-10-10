@@ -1,37 +1,46 @@
 <script>
 import _ from 'underscore';
-import DeprecatedModal from '~/vue_shared/components/deprecated_modal.vue';
+import { GlModal, GlButton, GlFormInput } from '@gitlab/ui';
 import { s__, sprintf } from '~/locale';
 
 export default {
   components: {
-    DeprecatedModal,
+    GlModal,
+    GlButton,
+    GlFormInput,
   },
   props: {
+    title: {
+      type: String,
+      required: true,
+    },
+    content: {
+      type: String,
+      required: true,
+    },
+    action: {
+      type: String,
+      required: true,
+    },
+    secondaryAction: {
+      type: String,
+      required: true,
+    },
     deleteUserUrl: {
       type: String,
-      required: false,
-      default: '',
+      required: true,
     },
     blockUserUrl: {
       type: String,
-      required: false,
-      default: '',
-    },
-    deleteContributions: {
-      type: Boolean,
-      required: false,
-      default: false,
+      required: true,
     },
     username: {
       type: String,
-      required: false,
-      default: '',
+      required: true,
     },
     csrfToken: {
       type: String,
-      required: false,
-      default: '',
+      required: true,
     },
   },
   data() {
@@ -40,32 +49,12 @@ export default {
     };
   },
   computed: {
-    title() {
-      const keepContributionsTitle = s__('AdminUsers|Delete User %{username}?');
-      const deleteContributionsTitle = s__('AdminUsers|Delete User %{username} and contributions?');
-
-      return sprintf(
-        this.deleteContributions ? deleteContributionsTitle : keepContributionsTitle,
-        {
-          username: `'${_.escape(this.username)}'`,
-        },
-        false,
-      );
+    modalTitle() {
+      return sprintf(this.title, { username: this.username });
     },
     text() {
-      const keepContributionsText = s__(`AdminArea|
-          You are about to permanently delete the user %{username}.
-          Issues, merge requests, and groups linked to them will be transferred to a system-wide "Ghost-user".
-          To avoid data loss, consider using the %{strong_start}block user%{strong_end} feature instead.
-          Once you %{strong_start}Delete user%{strong_end}, it cannot be undone or recovered.`);
-
-      const deleteContributionsText = s__(`AdminArea|
-          You are about to permanently delete the user %{username}.
-          This will delete all of the issues, merge requests, and groups linked to them.
-          To avoid data loss, consider using the %{strong_start}block user%{strong_end} feature instead.
-          Once you %{strong_start}Delete user%{strong_end}, it cannot be undone or recovered.`);
       return sprintf(
-        this.deleteContributions ? deleteContributionsText : keepContributionsText,
+        this.content,
         {
           username: `<strong>${_.escape(this.username)}</strong>`,
           strong_start: '<strong>',
@@ -83,12 +72,7 @@ export default {
         false,
       );
     },
-    primaryButtonLabel() {
-      const keepContributionsLabel = s__('AdminUsers|Delete user');
-      const deleteContributionsLabel = s__('AdminUsers|Delete user and contributions');
 
-      return this.deleteContributions ? deleteContributionsLabel : keepContributionsLabel;
-    },
     secondaryButtonLabel() {
       return s__('AdminUsers|Block user');
     },
@@ -97,8 +81,12 @@ export default {
     },
   },
   methods: {
+    show() {
+      this.$refs.modal.show();
+    },
     onCancel() {
       this.enteredUsername = '';
+      this.$refs.modal.hide();
     },
     onSecondaryAction() {
       const { form } = this.$refs;
@@ -117,43 +105,28 @@ export default {
 </script>
 
 <template>
-  <deprecated-modal
-    id="delete-user-modal"
-    :title="title"
-    :text="text"
-    :primary-button-label="primaryButtonLabel"
-    :secondary-button-label="secondaryButtonLabel"
-    :submit-disabled="!canSubmit"
-    kind="danger"
-    @submit="onSubmit"
-    @cancel="onCancel"
-  >
-    <template slot="body" slot-scope="props">
-      <p v-html="props.text"></p>
+  <gl-modal ref="modal" modal-id="delete-user-modal" :title="modalTitle" kind="danger">
+    <template>
+      <p v-html="text"></p>
       <p v-html="confirmationTextLabel"></p>
       <form ref="form" :action="deleteUserUrl" method="post">
         <input ref="method" type="hidden" name="_method" value="delete" />
         <input :value="csrfToken" type="hidden" name="authenticity_token" />
-        <input
+        <gl-form-input
           v-model="enteredUsername"
+          autofocus
           type="text"
           name="username"
-          class="form-control"
-          aria-labelledby="input-label"
           autocomplete="off"
         />
       </form>
     </template>
-    <template slot="secondary-button">
-      <button
-        :disabled="!canSubmit"
-        type="button"
-        class="btn js-secondary-button btn-warning"
-        data-dismiss="modal"
-        @click="onSecondaryAction"
-      >
-        {{ secondaryButtonLabel }}
-      </button>
+    <template slot="modal-footer">
+      <gl-button variant="secondary" @click="onCancel">{{ s__('Cancel') }}</gl-button>
+      <gl-button :disabled="!canSubmit" variant="warning" @click="onSecondaryAction">
+        {{ secondaryAction }}
+      </gl-button>
+      <gl-button :disabled="!canSubmit" variant="danger" @click="onSubmit">{{ action }}</gl-button>
     </template>
-  </deprecated-modal>
+  </gl-modal>
 </template>

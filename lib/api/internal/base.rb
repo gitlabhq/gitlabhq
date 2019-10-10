@@ -129,20 +129,15 @@ module API
         #
         # Discover user by ssh key, user id or username
         #
-        # rubocop: disable CodeReuse/ActiveRecord
-        get "/discover" do
+        get '/discover' do
           if params[:key_id]
-            key = Key.find(params[:key_id])
-            user = key.user
-          elsif params[:user_id]
-            user = User.find_by(id: params[:user_id])
+            user = UserFinder.new(params[:key_id]).find_by_ssh_key_id
           elsif params[:username]
             user = UserFinder.new(params[:username]).find_by_username
           end
 
           present user, with: Entities::UserSafe
         end
-        # rubocop: enable CodeReuse/ActiveRecord
 
         get "/check" do
           {

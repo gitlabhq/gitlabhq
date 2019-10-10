@@ -57,8 +57,14 @@ class SessionsController < Devise::SessionsController
                         reset_password_sent_at: nil)
       end
 
-      # hide the signed-in notification
-      flash[:notice] = nil
+      if resource.deactivated?
+        resource.activate
+        flash[:notice] = _('Welcome back! Your account had been deactivated due to inactivity but is now reactivated.')
+      else
+        # hide the default signed-in notification
+        flash[:notice] = nil
+      end
+
       log_audit_event(current_user, resource, with: authentication_method)
       log_user_activity(current_user)
     end

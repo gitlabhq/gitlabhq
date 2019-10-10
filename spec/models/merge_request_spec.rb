@@ -650,6 +650,46 @@ describe MergeRequest do
     end
   end
 
+  describe '#note_positions_for_paths' do
+    let(:merge_request) { create(:merge_request, :with_diffs) }
+    let(:project) { merge_request.project }
+    let!(:diff_note) do
+      create(:diff_note_on_merge_request, project: project, noteable: merge_request)
+    end
+
+    let(:file_paths) { merge_request.diffs.diff_files.map(&:file_path) }
+
+    subject do
+      merge_request.note_positions_for_paths(file_paths)
+    end
+
+    it 'returns a Gitlab::Diff::PositionCollection' do
+      expect(subject).to be_a(Gitlab::Diff::PositionCollection)
+    end
+
+    context 'within all diff files' do
+      it 'returns correct positions' do
+        expect(subject).to match_array([diff_note.position])
+      end
+    end
+
+    context 'within specific diff file' do
+      let(:file_paths) { [diff_note.position.file_path] }
+
+      it 'returns correct positions' do
+        expect(subject).to match_array([diff_note.position])
+      end
+    end
+
+    context 'within no diff files' do
+      let(:file_paths) { [] }
+
+      it 'returns no positions' do
+        expect(subject.to_a).to be_empty
+      end
+    end
+  end
+
   describe '#discussions_diffs' do
     let(:merge_request) { create(:merge_request) }
 

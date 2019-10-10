@@ -1152,6 +1152,48 @@ Parameters:
 Will return `201 OK` on success, `404 User Not Found` is user cannot be found or
 `403 Forbidden` when trying to unblock a user blocked by LDAP synchronization.
 
+## Deactivate user
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/63921) in GitLab 12.4.
+
+Deactivates the specified user.  Available only for admin.
+
+```
+POST /users/:id/deactivate
+```
+
+Parameters:
+
+- `id` (required) - id of specified user
+
+Returns:
+
+- `201 OK` on success.
+- `404 User Not Found` if user cannot be found.
+- `403 Forbidden` when trying to deactivate a user:
+  - Blocked by admin or by LDAP synchronization.
+  - That has any activity in past 14 days. These cannot be deactivated.
+
+## Activate user
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/63921) in GitLab 12.4.
+
+Activates the specified user.  Available only for admin.
+
+```
+POST /users/:id/activate
+```
+
+Parameters:
+
+- `id` (required) - id of specified user
+
+Returns:
+
+- `201 OK` on success.
+- `404 User Not Found` if user cannot be found.
+- `403 Forbidden` when trying to activate a user blocked by admin or by LDAP synchronization.
+
 ### Get user contribution events
 
 Please refer to the [Events API documentation](events.md#get-user-contribution-events)

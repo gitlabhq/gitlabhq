@@ -1846,6 +1846,182 @@ describe API::Users do
     end
   end
 
+  context 'activate and deactivate' do
+    shared_examples '404' do
+      it 'returns 404' do
+        expect(response).to have_gitlab_http_status(404)
+        expect(json_response['message']).to eq('404 User Not Found')
+      end
+    end
+
+    describe 'POST /users/:id/activate' do
+      context 'performed by a non-admin user' do
+        it 'is not authorized to perform the action' do
+          post api("/users/#{user.id}/activate", user)
+
+          expect(response).to have_gitlab_http_status(403)
+        end
+      end
+
+      context 'performed by an admin user' do
+        context 'for a deactivated user' do
+          before do
+            user.deactivate
+
+            post api("/users/#{user.id}/activate", admin)
+          end
+
+          it 'activates a deactivated user' do
+            expect(response).to have_gitlab_http_status(201)
+            expect(user.reload.state).to eq('active')
+          end
+        end
+
+        context 'for an active user' do
+          before do
+            user.activate
+
+            post api("/users/#{user.id}/activate", admin)
+          end
+
+          it 'returns 201' do
+            expect(response).to have_gitlab_http_status(201)
+            expect(user.reload.state).to eq('active')
+          end
+        end
+
+        context 'for a blocked user' do
+          before do
+            user.block
+
+            post api("/users/#{user.id}/activate", admin)
+          end
+
+          it 'returns 403' do
+            expect(response).to have_gitlab_http_status(403)
+            expect(json_response['message']).to eq('403 Forbidden  - A blocked user must be unblocked to be activated')
+            expect(user.reload.state).to eq('blocked')
+          end
+        end
+
+        context 'for a ldap blocked user' do
+          before do
+            user.ldap_block
+
+            post api("/users/#{user.id}/activate", admin)
+          end
+
+          it 'returns 403' do
+            expect(response).to have_gitlab_http_status(403)
+            expect(json_response['message']).to eq('403 Forbidden  - A blocked user must be unblocked to be activated')
+            expect(user.reload.state).to eq('ldap_blocked')
+          end
+        end
+
+        context 'for a user that does not exist' do
+          before do
+            post api("/users/0/activate", admin)
+          end
+
+          it_behaves_like '404'
+        end
+      end
+    end
+
+    describe 'POST /users/:id/deactivate' do
+      context 'performed by a non-admin user' do
+        it 'is not authorized to perform the action' do
+          post api("/users/#{user.id}/deactivate", user)
+
+          expect(response).to have_gitlab_http_status(403)
+        end
+      end
+
+      context 'performed by an admin user' do
+        context 'for an active user' do
+          let(:activity) { {} }
+          let(:user) { create(:user, username: 'user.with.dot', **activity) }
+
+          context 'with no recent activity' do
+            let(:activity) { { last_activity_on: ::User::MINIMUM_INACTIVE_DAYS.next.days.ago } }
+
+            before do
+              post api("/users/#{user.id}/deactivate", admin)
+            end
+
+            it 'deactivates an active user' do
+              expect(response).to have_gitlab_http_status(201)
+              expect(user.reload.state).to eq('deactivated')
+            end
+          end
+
+          context 'with recent activity' do
+            let(:activity) { { last_activity_on: ::User::MINIMUM_INACTIVE_DAYS.pred.days.ago } }
+
+            before do
+              post api("/users/#{user.id}/deactivate", admin)
+            end
+
+            it 'does not deactivate an active user' do
+              expect(response).to have_gitlab_http_status(403)
+              expect(json_response['message']).to eq("403 Forbidden  - The user you are trying to deactivate has been active in the past #{::User::MINIMUM_INACTIVE_DAYS} days and cannot be deactivated")
+              expect(user.reload.state).to eq('active')
+            end
+          end
+        end
+
+        context 'for a deactivated user' do
+          before do
+            user.deactivate
+
+            post api("/users/#{user.id}/deactivate", admin)
+          end
+
+          it 'returns 201' do
+            expect(response).to have_gitlab_http_status(201)
+            expect(user.reload.state).to eq('deactivated')
+          end
+        end
+
+        context 'for a blocked user' do
+          before do
+            user.block
+
+            post api("/users/#{user.id}/deactivate", admin)
+          end
+
+          it 'returns 403' do
+            expect(response).to have_gitlab_http_status(403)
+            expect(json_response['message']).to eq('403 Forbidden  - A blocked user cannot be deactivated by the API')
+            expect(user.reload.state).to eq('blocked')
+          end
+        end
+
+        context 'for a ldap blocked user' do
+          before do
+            user.ldap_block
+
+            post api("/users/#{user.id}/deactivate", admin)
+          end
+
+          it 'returns 403' do
+            expect(response).to have_gitlab_http_status(403)
+            expect(json_response['message']).to eq('403 Forbidden  - A blocked user cannot be deactivated by the API')
+            expect(user.reload.state).to eq('ldap_blocked')
+          end
+        end
+
+        context 'for a user that does not exist' do
+          before do
+            post api("/users/0/deactivate", admin)
+          end
+
+          it_behaves_like '404'
+        end
+      end
+    end
+  end
+
   describe 'POST /users/:id/block' do
     before do
       admin
@@ -1878,6 +2054,7 @@ describe API::Users do
 
   describe 'POST /users/:id/unblock' do
     let(:blocked_user) { create(:user, state: 'blocked') }
+    let(:deactivated_user) { create(:user, state: 'deactivated') }
 
     before do
       admin
@@ -1901,7 +2078,13 @@ describe API::Users do
       expect(ldap_blocked_user.reload.state).to eq('ldap_blocked')
     end
 
-    it 'does not be available for non admin users' do
+    it 'does not unblock deactivated users' do
+      post api("/users/#{deactivated_user.id}/unblock", admin)
+      expect(response).to have_gitlab_http_status(403)
+      expect(deactivated_user.reload.state).to eq('deactivated')
+    end
+
+    it 'is not available for non admin users' do
       post api("/users/#{user.id}/unblock", user)
       expect(response).to have_gitlab_http_status(403)
       expect(user.reload.state).to eq('active')

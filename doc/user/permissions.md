@@ -24,7 +24,7 @@ For information on eligible approvers for Merge Requests, see
 
 ## Principles behind permissions
 
-See our [product handbook on permissions](https://about.gitlab.com/handbook/product#permissions-in-gitlab)
+See our [product handbook on permissions](https://about.gitlab.com/handbook/product/#permissions-in-gitlab)
 
 ## Instance-wide user permissions
 

@@ -61,6 +61,25 @@ describe SessionsController do
           expect(subject.current_user).to eq user
         end
 
+        context 'a deactivated user' do
+          before do
+            user.deactivate!
+            post(:create, params: { user: user_params })
+          end
+
+          it 'is allowed to login' do
+            expect(subject.current_user).to eq user
+          end
+
+          it 'activates the user' do
+            expect(subject.current_user.active?).to be_truthy
+          end
+
+          it 'shows reactivation flash message after logging in' do
+            expect(flash[:notice]).to eq('Welcome back! Your account had been deactivated due to inactivity but is now reactivated.')
+          end
+        end
+
         context 'with password authentication disabled' do
           before do
             stub_application_setting(password_authentication_enabled_for_web: false)

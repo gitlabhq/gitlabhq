@@ -29,9 +29,9 @@ to the latest release.
 Since Deploy Boards are tightly coupled with Kubernetes, there is some required
 knowledge. In particular you should be familiar with:
 
-- [Kubernetes pods](https://kubernetes.io/docs/user-guide/pods)
+- [Kubernetes pods](https://kubernetes.io/docs/concepts/workloads/pods/pod/)
 - [Kubernetes labels](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/)
-- [Kubernetes namespaces](https://kubernetes.io/docs/user-guide/namespaces/)
+- [Kubernetes namespaces](https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/)
 - [Kubernetes canary deployments](https://kubernetes.io/docs/concepts/cluster-administration/manage-deployment/#canary-deployments)
 
 ## Use cases

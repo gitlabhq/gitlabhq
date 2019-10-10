@@ -23,7 +23,7 @@ and go back to **Files**.
 
 ## How it works
 
-The File finder feature is powered by the [Fuzzy filter] library.
+The File finder feature is powered by the [Fuzzy filter](https://github.com/jeancroy/fuzz-aldrin-plus) library.
 
 It implements a fuzzy search with highlight, and tries to provide intuitive
 results by recognizing patterns that people use while searching.
@@ -38,5 +38,4 @@ Using fuzzy search, we start by typing letters that get us closer to the file.
 ![Find file button](img/file_finder_find_file.png)
 
 [gh-9889]: https://github.com/gitlabhq/gitlabhq/pull/9889 "File finder pull request"
-[fuzzy filter]: https://github.com/jeancroy/fuzzaldrin-plus "fuzzaldrin-plus on GitHub"
 [ce]: https://gitlab.com/gitlab-org/gitlab-foss/tree/master "GitLab CE repository"

@@ -17,6 +17,10 @@ class BasePolicy < DeclarativePolicy::Base
   with_options scope: :user, score: 0
   condition(:blocked) { @user&.blocked? }
 
+  desc "User is deactivated"
+  with_options scope: :user, score: 0
+  condition(:deactivated) { @user&.deactivated? }
+
   desc "User has access to all private groups & projects"
   with_options scope: :user, score: 0
   condition(:full_private_access) { @user&.full_private_access? }

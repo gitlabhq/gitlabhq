@@ -122,6 +122,12 @@ is unavailable when
 Follow [this issue](https://gitlab.com/gitlab-org/gitlab/issues/12267) to
 track progress on this issue.
 
+### Merge Train Pipeline cannot be retried
+
+A Merge Train pipeline cannot be retried because the merge request is dropped from the merge train upon failure. For this reason, the retry button does not appear next to the pipeline icon.
+
+In the case of pipeline failure, you should [re-enqueue](#how-to-add-a-merge-request-to-a-merge-train) the merge request to the merge train, which will then initiate a new pipeline.
+
 ### Merge Train disturbs your workflow
 
 First of all, please check if [merge immediately](#immediately-merge-a-merge-request-with-a-merge-train)

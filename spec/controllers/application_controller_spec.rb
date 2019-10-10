@@ -460,6 +460,25 @@ describe ApplicationController do
     end
   end
 
+  context 'deactivated user' do
+    controller(described_class) do
+      def index
+        render html: 'authenticated'
+      end
+    end
+
+    before do
+      sign_in user
+      user.deactivate
+    end
+
+    it 'signs out a deactivated user' do
+      get :index
+      expect(response).to redirect_to(new_user_session_path)
+      expect(flash[:alert]).to eq('Your account has been deactivated by your administrator. Please log back in to reactivate your account.')
+    end
+  end
+
   context 'terms' do
     controller(described_class) do
       def index

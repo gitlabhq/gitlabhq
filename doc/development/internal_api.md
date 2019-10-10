@@ -159,7 +159,6 @@ discovers the user associated with an SSH key.
 |:----------|:-------|:---------|:------------|
 | `key_id` | integer | no | The id of the SSH key used as found in the authorized-keys file or through the `/authorized_keys` check |
 | `username` | string | no | Username of the user being looked up, used by GitLab-shell when authenticating using a certificate |
-| `user_id` | integer | no | **Deprecated** User_id of the user being looked up |
 
 ```
 GET /internal/discover

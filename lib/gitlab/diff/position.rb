@@ -79,6 +79,10 @@ module Gitlab
         formatter.line_age
       end
 
+      def unfoldable?
+        on_text? && unchanged?
+      end
+
       def unchanged?
         type.nil?
       end

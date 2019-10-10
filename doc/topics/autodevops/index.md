@@ -77,7 +77,7 @@ As Auto DevOps relies on many different components, it's good to have a basic
 knowledge of the following:
 
 - [Kubernetes](https://kubernetes.io/docs/home/)
-- [Helm](https://docs.helm.sh/)
+- [Helm](https://helm.sh/docs/)
 - [Docker](https://docs.docker.com)
 - [GitLab Runner](https://docs.gitlab.com/runner/)
 - [Prometheus](https://prometheus.io/docs/introduction/overview/)
@@ -124,7 +124,7 @@ To make full use of Auto DevOps, you will need:
   - A [Kubernetes cluster][kubernetes-clusters] for the project.
   - A load balancer. You can use NGINX Ingress by deploying it to your
     Kubernetes cluster by either:
-    - Using the [`nginx-ingress`](https://github.com/kubernetes/charts/tree/master/stable/nginx-ingress) Helm chart.
+    - Using the [`nginx-ingress`](https://github.com/helm/charts/tree/master/stable/nginx-ingress) Helm chart.
     - Installing the Ingress [GitLab Managed App](../../user/clusters/applications.md#ingress).
 - **Prometheus** (for Auto Monitoring)
 
@@ -172,7 +172,7 @@ and `1.2.3.4` is the IP address of your load balancer; generally NGINX
 ([see requirements](#requirements)). How to set up the DNS record is beyond
 the scope of this document; you should check with your DNS provider.
 
-Alternatively you can use free public services like [nip.io](http://nip.io)
+Alternatively you can use free public services like [nip.io](https://nip.io)
 which provide automatic wildcard DNS without any configuration. Just set the
 Auto DevOps base domain to `1.2.3.4.nip.io`.
 

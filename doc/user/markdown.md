@@ -14,7 +14,7 @@ NOTE: **Note:** We encourage you to view this document as [rendered by GitLab it
 
 GitLab uses "GitLab Flavored Markdown" (GFM). It extends the [CommonMark specification](https://spec.commonmark.org/current/)
 (which is based on standard Markdown) in several ways to add additional useful functionality.
-It was inspired by [GitHub Flavored Markdown](https://help.github.com/articles/basic-writing-and-formatting-syntax/).
+It was inspired by [GitHub Flavored Markdown](https://help.github.com/en/articles/basic-writing-and-formatting-syntax).
 
 You can use GFM in the following areas:
 
@@ -352,7 +352,7 @@ However the wrapping tags cannot be mixed:
 
 > If this is not rendered correctly, [view it in GitLab itself](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/user/markdown.md#math).
 
-It is possible to have math written with LaTeX syntax rendered using [KaTeX](https://github.com/Khan/KaTeX).
+It is possible to have math written with LaTeX syntax rendered using [KaTeX](https://github.com/KaTeX/KaTeX).
 
 Math written between dollar signs `$` will be rendered inline with the text. Math written
 inside a [code block](#code-spans-and-blocks) with the language declared as `math`, will be rendered
@@ -379,7 +379,7 @@ a^2+b^2=c^2
 _Be advised that KaTeX only supports a [subset](https://katex.org/docs/supported.html) of LaTeX._
 
 NOTE: **Note:** This also works for the asciidoctor `:stem: latexmath`. For details see
-the [asciidoctor user manual](http://asciidoctor.org/docs/user-manual/#activating-stem-support).
+the [asciidoctor user manual](https://asciidoctor.org/docs/user-manual/#activating-stem-support).
 
 ### Special GitLab references
 
@@ -641,7 +641,7 @@ Tildes are OK too.
 
 GitLab uses the [Rouge Ruby library](http://rouge.jneen.net/) for more colorful syntax
 highlighting in code blocks. For a list of supported languages visit the
-[Rouge project wiki](https://github.com/jneen/rouge/wiki/List-of-supported-languages-and-lexers).
+[Rouge project wiki](https://github.com/rouge-ruby/rouge/wiki/List-of-supported-languages-and-lexers).
 Syntax highlighting is only supported in code blocks, it is not possible to highlight
 code when it is inline.
 
@@ -922,7 +922,7 @@ Here's a sample audio clip:
 
 You can also use raw HTML in your Markdown, and it'll usually work pretty well.
 
-See the documentation for HTML::Pipeline's [SanitizationFilter](http://www.rubydoc.info/gems/html-pipeline/1.11.0/HTML/Pipeline/SanitizationFilter#WHITELIST-constant)
+See the documentation for HTML::Pipeline's [SanitizationFilter](https://www.rubydoc.info/gems/html-pipeline/1.11.0/HTML/Pipeline/SanitizationFilter#WHITELIST-constant)
 class for the list of allowed HTML tags and attributes.  In addition to the default
 `SanitizationFilter` whitelist, GitLab allows `span`, `abbr`, `details` and `summary` elements.
 
@@ -1126,8 +1126,8 @@ Using references:
 
 Some text to show that the reference links can follow later.
 
-[arbitrary case-insensitive reference text]: https://www.mozilla.org
-[1]: http://slashdot.org
+[arbitrary case-insensitive reference text]: https://www.mozilla.org/en-US/
+[1]: https://slashdot.org
 [link text itself]: https://www.reddit.com
 ```
 
@@ -1149,8 +1149,8 @@ Using references:
 
 Some text to show that the reference links can follow later.
 
-[arbitrary case-insensitive reference text]: https://www.mozilla.org
-[1]: http://slashdot.org
+[arbitrary case-insensitive reference text]: https://www.mozilla.org/en-US/
+[1]: https://slashdot.org
 [link text itself]: https://www.reddit.com
 
 NOTE: **Note:** Relative links do not allow the referencing of project files in a wiki
@@ -1164,7 +1164,7 @@ GFM will autolink almost any URL you put into your text:
 
 ```markdown
 - https://www.google.com
-- https://google.com/
+- https://www.google.com
 - ftp://ftp.us.debian.org/debian/
 - smb://foo/bar/baz
 - irc://irc.freenode.net/
@@ -1172,7 +1172,7 @@ GFM will autolink almost any URL you put into your text:
 ```
 
 - <https://www.google.com>
-- <https://google.com/>
+- <https://www.google.com>
 - <ftp://ftp.us.debian.org/debian/>
 - <smb://foo/bar/baz>
 - <irc://irc.freenode.net/>

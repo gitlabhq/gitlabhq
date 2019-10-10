@@ -62,7 +62,7 @@ can lead to confusion during deployments.
 > - Introduced in GitLab 10.2 for project-level clusters.
 > - Introduced in GitLab 11.6 for group-level clusters.
 
-[Helm](https://docs.helm.sh/) is a package manager for Kubernetes and is
+[Helm](https://helm.sh/docs/) is a package manager for Kubernetes and is
 required to install all the other applications. It is installed in its
 own pod inside the cluster which can run the `helm` CLI in a safe
 environment.
@@ -174,7 +174,7 @@ higher](../permissions.md) access to the associated project or group.
 We use a [custom Jupyter
 image](https://gitlab.com/gitlab-org/jupyterhub-user-image/blob/master/Dockerfile)
 that installs additional useful packages on top of the base Jupyter. You
-will also see ready-to-use DevOps Runbooks built with Nurtch's [Rubix library](https://github.com/amit1rrr/rubix).
+will also see ready-to-use DevOps Runbooks built with Nurtch's [Rubix library](https://github.com/Nurtch/rubix).
 
 More information on
 creating executable runbooks can be found in [our Runbooks
@@ -221,7 +221,7 @@ You can clone repositories from the files tab in Jupyter:
 > - Introduced in GitLab 11.5 for project-level clusters.
 > - Introduced in GitLab 12.3 for group- and instance-level clusters.
 
-[Knative](https://cloud.google.com/knative) provides a platform to
+[Knative](https://cloud.google.com/knative/) provides a platform to
 create, deploy, and manage serverless workloads from a Kubernetes
 cluster. It is used in conjunction with, and includes
 [Istio](https://istio.io) to provide an external IP address for all

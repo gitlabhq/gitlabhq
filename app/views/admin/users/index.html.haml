@@ -30,6 +30,10 @@
       = link_to admin_users_path(filter: "blocked") do
         = s_('AdminUsers|Blocked')
         %small.badge.badge-pill= limited_counter_with_delimiter(User.blocked)
+    = nav_link(html_options: { class: active_when(params[:filter] == 'deactivated') }) do
+      = link_to admin_users_path(filter: "deactivated") do
+        = s_('AdminUsers|Deactivated')
+        %small.badge.badge-pill= limited_counter_with_delimiter(User.deactivated)
     = nav_link(html_options: { class: active_when(params[:filter] == 'wop') }) do
       = link_to admin_users_path(filter: "wop") do
         = s_('AdminUsers|Without projects')
@@ -50,6 +54,7 @@
         = icon("search", class: "search-icon")
         = button_tag s_('AdminUsers|Search users') if Rails.env.test?
       .dropdown.user-sort-dropdown
+        = label_tag 'Sort by', nil, class: 'label-bold'
         - toggle_text = @sort.present? ? users_sort_options_hash[@sort] : sort_title_name
         = dropdown_toggle(toggle_text, { toggle: 'dropdown' })
         %ul.dropdown-menu.dropdown-menu-right
@@ -74,4 +79,4 @@
 
 = paginate @users, theme: "gitlab"
 
-#delete-user-modal
+= render partial: 'admin/users/modals'

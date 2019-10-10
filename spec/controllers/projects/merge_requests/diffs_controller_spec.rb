@@ -258,5 +258,26 @@ describe Projects::MergeRequests::DiffsController do
 
     it_behaves_like 'forked project with submodules'
     it_behaves_like 'persisted preferred diff view cookie'
+
+    context 'diff unfolding' do
+      let!(:unfoldable_diff_note) do
+        create(:diff_note_on_merge_request, :folded_position, project: project, noteable: merge_request)
+      end
+
+      let!(:diff_note) do
+        create(:diff_note_on_merge_request, project: project, noteable: merge_request)
+      end
+
+      it 'unfolds correct diff file positions' do
+        expect_next_instance_of(Gitlab::Diff::FileCollection::MergeRequestDiffBatch) do |instance|
+          expect(instance)
+            .to receive(:unfold_diff_files)
+            .with([unfoldable_diff_note.position])
+            .and_call_original
+        end
+
+        go
+      end
+    end
   end
 end

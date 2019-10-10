@@ -237,14 +237,6 @@ describe API::Internal::Base do
       expect(json_response['name']).to eq(user.name)
     end
 
-    it "finds a user by user id" do
-      get(api("/internal/discover"), params: { user_id: user.id, secret_token: secret_token })
-
-      expect(response).to have_gitlab_http_status(200)
-
-      expect(json_response['name']).to eq(user.name)
-    end
-
     it "finds a user by username" do
       get(api("/internal/discover"), params: { username: user.username, secret_token: secret_token })
 

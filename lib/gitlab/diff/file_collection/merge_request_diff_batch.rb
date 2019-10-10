@@ -29,6 +29,10 @@ module Gitlab
           }
         end
 
+        def diff_file_paths
+          diff_files.map(&:file_path)
+        end
+
         override :diffs
         def diffs
           strong_memoize(:diffs) do

@@ -169,7 +169,7 @@ For Cycle Analytics functionality introduced in GitLab 12.3 and later:
 
 Learn more about Cycle Analytics in the following resources:
 
-- [Cycle Analytics feature page](https://about.gitlab.com/features/cycle-analytics/)
+- [Cycle Analytics feature page](https://about.gitlab.com/product/cycle-analytics/)
 - [Cycle Analytics feature preview](https://about.gitlab.com/2016/09/16/feature-preview-introducing-cycle-analytics/)
 - [Cycle Analytics feature highlight](https://about.gitlab.com/2016/09/21/cycle-analytics-feature-highlight/)
 

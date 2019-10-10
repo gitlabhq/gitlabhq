@@ -192,7 +192,7 @@ deployment of the other applications.
 
 Next, if you would like the deployed app to be reachable on the internet, deploy
 the Ingress. Note that this will also cause an
-[Elastic Load Balancer](https://aws.amazon.com/documentation/elastic-load-balancing/)
+[Elastic Load Balancer](https://docs.aws.amazon.com/elasticloadbalancing/)
 to be created, which will incur additional AWS costs.
 
 Once installed, you may see a `?` for "Ingress IP Address". This is because the
