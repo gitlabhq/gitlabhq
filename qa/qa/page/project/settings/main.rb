@@ -58,5 +58,3 @@ module QA
     end
   end
 end
-
-QA::Page::Project::Settings::Main.prepend_if_ee('QA::EE::Page::Project::Settings::Main')

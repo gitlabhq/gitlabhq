@@ -109,7 +109,7 @@ NOTE: **Note:**
 The [`runner/gitlab-runner`](https://gitlab.com/gitlab-org/charts/gitlab-runner)
 chart is used to install this application with a
 [`values.yaml`](https://gitlab.com/gitlab-org/gitlab/blob/master/vendor/runner/values.yaml)
-file.
+file. Customizing installation by modifying this file is not supported.
 
 ### Ingress
 

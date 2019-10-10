@@ -755,7 +755,7 @@ the status of other builds:
 job:
   script: "echo Hello, Rules!"
   rules:
-    - if: '$CI_MERGE_REQUEST_TARGET_BRANCH == "master"'
+    - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"'
       when: always
     - if: '$VAR =~ /pattern/'
       when: manual
@@ -781,11 +781,11 @@ evaluated should be conjoined into a single expression using `&&` or `||`. For e
 job:
   script: "echo Hello, Rules!"
   rules:
-    - if: '$CI_MERGE_REQUEST_SOURCE_BRANCH =~ /^feature/ && $CI_MERGE_REQUEST_TARGET_BRANCH == "master"' # This rule will be evaluated
+    - if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^feature/ && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"' # This rule will be evaluated
       when: always
-    - if: '$CI_MERGE_REQUEST_SOURCE_BRANCH =~ /^feature/' # This rule will only be evaluated if the target branch is not "master"
+    - if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^feature/' # This rule will only be evaluated if the target branch is not "master"
       when: manual
-    - if: '$CI_MERGE_REQUEST_SOURCE_BRANCH' # If neither of the first two match but the simple presence does, we set to "on_success" by default
+    - if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME' # If neither of the first two match but the simple presence does, we set to "on_success" by default
 ```
 
 If none of the provided rules match, the job will be set to `when:never`, and
