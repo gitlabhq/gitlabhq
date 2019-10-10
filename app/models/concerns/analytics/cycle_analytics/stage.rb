@@ -47,9 +47,15 @@ module Analytics
         !custom
       end
 
-      # The model that is going to be queried, Issue or MergeRequest
-      def subject_model
+      # The model class that is going to be queried, Issue or MergeRequest
+      def subject_class
         start_event.object_type
+      end
+
+      def matches_with_stage_params?(stage_params)
+        default_stage? &&
+          start_event_identifier.to_s.eql?(stage_params[:start_event_identifier].to_s) &&
+          end_event_identifier.to_s.eql?(stage_params[:end_event_identifier].to_s)
       end
 
       private

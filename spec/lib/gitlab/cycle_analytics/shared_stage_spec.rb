@@ -52,3 +52,21 @@ shared_examples 'calculate #median with date range' do
     it { expect(stage.project_median).to eq(nil) }
   end
 end
+
+shared_examples 'Gitlab::Analytics::CycleAnalytics::DataCollector backend examples' do
+  let(:stage_params) { Gitlab::Analytics::CycleAnalytics::DefaultStages.send("params_for_#{stage_name}_stage").merge(project: project) }
+  let(:stage) { Analytics::CycleAnalytics::ProjectStage.new(stage_params) }
+  let(:data_collector) { Gitlab::Analytics::CycleAnalytics::DataCollector.new(stage: stage, params: { from: stage_options[:from], current_user: project.creator }) }
+  let(:attribute_to_verify) { :title }
+
+  context 'provides the same results as the old implementation' do
+    it 'for the median' do
+      expect(data_collector.median.seconds).to eq(ISSUES_MEDIAN)
+    end
+
+    it 'for the list of event records' do
+      records = data_collector.records_fetcher.serialized_records
+      expect(records.map { |event| event[attribute_to_verify] }).to eq(expected_ordered_attribute_values)
+    end
+  end
+end

@@ -44,7 +44,7 @@ For instance, consider the following workflow:
 First of all, you need to define a job in your `.gitlab-ci.yml` file that generates the
 [Performance report artifact](../../../ci/yaml/README.md#artifactsreportsperformance-premium).
 For more information on how the Performance job should look like, check the
-example on [Testing Browser Performance](../../../ci/examples/browser_performance.md).
+example on [Configuring Browser Performance Testing](#configuring-browser-performance-testing).
 
 GitLab then checks this report, compares key performance metrics for each page
 between the source and target branches, and shows the information right on the merge request.
@@ -60,11 +60,6 @@ report will be shown properly.
 
 ## Configuring Browser Performance Testing
 
-NOTE: **Note:**
-The job definition shown below is supported in GitLab 11.5 and later versions.
-It also requires GitLab Runner 11.5 or later. For earlier versions, use the
-[previous job definitions](#previous-job-definitions).
-
 This example shows how to run the [sitespeed.io container](https://hub.docker.com/r/sitespeedio/sitespeed.io/)
 on your code by using GitLab CI/CD and [sitespeed.io](https://www.sitespeed.io)
 using Docker-in-Docker.
@@ -73,28 +68,34 @@ First, you need GitLab Runner with
 [docker-in-docker build](../../../ci/docker/using_docker_build.md#use-docker-in-docker-workflow-with-docker-executor).
 
 Once you set up the Runner, add a new job to `.gitlab-ci.yml` that generates the
-expected report:
+expected report.
+
+For GitLab 12.4 and later, to define the `performance` job, you must
+[include](../../../ci/yaml/README.md#includetemplate) the
+[`Browser-Performance.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Verify/Browser-Performance.gitlab-ci.yml)
+that's provided as a part of your GitLab installation.
+For GitLab versions earlier than 12.4, you can copy and use the job as defined
+in that template.
+
+CAUTION: **Caution:**
+The job definition provided by the template does not support Kubernetes yet. For a complete example of a more complex setup
+that works in Kubernetes, see [here](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Jobs/Browser-Performance-Testing.gitlab-ci.yml).
+
+Add the following to your `.gitlab-ci.yml` file:
 
 ```yaml
+include:
+  template: Verify/Browser-Performance.gitlab-ci.yml
+
 performance:
-  stage: performance
-  image: docker:git
   variables:
     URL: https://example.com
-  services:
-    - docker:stable-dind
-  script:
-    - mkdir gitlab-exporter
-    - wget -O ./gitlab-exporter/index.js https://gitlab.com/gitlab-org/gl-performance/raw/master/index.js
-    - mkdir sitespeed-results
-    - docker run --shm-size=1g --rm -v "$(pwd)":/sitespeed.io sitespeedio/sitespeed.io:6.3.1 --plugins.add ./gitlab-exporter --outputFolder sitespeed-results $URL
-    - mv sitespeed-results/data/performance.json performance.json
-  artifacts:
-    paths:
-      - sitespeed-results/
-    reports:
-      performance: performance.json
 ```
+
+CAUTION: **Caution:**
+The job definition provided by the template is supported in GitLab 11.5 and later versions.
+It also requires GitLab Runner 11.5 or later. For earlier versions, use the
+[previous job definitions](#previous-job-definitions).
 
 The above example will create a `performance` job in your CI/CD pipeline and will run
 sitespeed.io against the webpage you defined in `URL` to gather key metrics.
@@ -105,6 +106,20 @@ take the latest Performance artifact available.
 
 The full HTML sitespeed.io report will also be saved as an artifact, and if you have
 [GitLab Pages](../pages/index.md) enabled, it can be viewed directly in your browser.
+
+It is also possible to customize options by setting the `SITESPEED_OPTIONS` variable.
+For example, this is how to override the number of runs sitespeed.io
+will make on the given URL:
+
+```yaml
+include:
+  template: Verify/Browser-Performance.gitlab-ci.yml
+
+performance:
+  variables:
+    URL: https://example.com
+    SITESPEED_OPTIONS: -n 5
+```
 
 For further customization options for sitespeed.io, including the ability to provide a
 list of URLs to test, please see the [Sitespeed.io Configuration](https://www.sitespeed.io/documentation/sitespeed.io/configuration/)
@@ -126,8 +141,9 @@ set this up:
    as an artifact is as simple as `echo $CI_ENVIRONMENT_URL > environment_url.txt`
    in your job's `script`.
 1. In the `performance` job, read the previous artifact into an environment
-   variable, like `$CI_ENVIRONMENT_URL`, and use it to parameterize the test
-   URLs.
+   variable, in this case `$URL` because this is what our sitespeed.io command
+   uses for the URL parameter. Because Review App URLs are dynamic, we define
+   the `URL` variable through `before_script` instead of `variables`.
 1. You can now run the sitespeed.io container against the desired hostname and
    paths.
 
@@ -137,6 +153,9 @@ Your `.gitlab-ci.yml` file would look like:
 stages:
   - deploy
   - performance
+
+include:
+  template: Verify/Browser-Performance.gitlab-ci.yml
 
 review:
   stage: deploy
@@ -155,27 +174,11 @@ review:
     - master
 
 performance:
-  stage: performance
-  image: docker:git
-  services:
-    - docker:stable-dind
   dependencies:
     - review
-  script:
-    - export CI_ENVIRONMENT_URL=$(cat environment_url.txt)
-    - mkdir gitlab-exporter
-    - wget -O ./gitlab-exporter/index.js https://gitlab.com/gitlab-org/gl-performance/raw/master/index.js
-    - mkdir sitespeed-results
-    - docker run --shm-size=1g --rm -v "$(pwd)":/sitespeed.io sitespeedio/sitespeed.io:6.3.1 --plugins.add ./gitlab-exporter --outputFolder sitespeed-results "$CI_ENVIRONMENT_URL"
-    - mv sitespeed-results/data/performance.json performance.json
-  artifacts:
-    paths:
-      - sitespeed-results/
-    reports:
-      performance: performance.json
+  before_script:
+    - export URL=$(cat environment_url.txt)
 ```
-
-A complete example can be found in our [Auto DevOps CI YML](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml).
 
 ### Previous job definitions
 

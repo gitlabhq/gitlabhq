@@ -6030,6 +6030,15 @@ msgstr ""
 msgid "Environments|An error occurred while fetching the environments."
 msgstr ""
 
+msgid "Environments|An error occurred while fetching the logs"
+msgstr ""
+
+msgid "Environments|An error occurred while fetching the logs - Error: %{message}"
+msgstr ""
+
+msgid "Environments|An error occurred while fetching the logs for this environment or pod. Please try again"
+msgstr ""
+
 msgid "Environments|An error occurred while making the request."
 msgstr ""
 
@@ -6073,9 +6082,6 @@ msgid "Environments|New environment"
 msgstr ""
 
 msgid "Environments|No deployments yet"
-msgstr ""
-
-msgid "Environments|No pod name has been specified"
 msgstr ""
 
 msgid "Environments|Note that this action will stop the environment, but it will %{emphasisStart}not%{emphasisEnd} have an effect on any existing deployment due to no “stop environment action” being defined in the %{ciConfigLinkStart}.gitlab-ci.yml%{ciConfigLinkEnd} file."
@@ -14984,9 +14990,6 @@ msgid "Something went wrong on our end"
 msgstr ""
 
 msgid "Something went wrong on our end."
-msgstr ""
-
-msgid "Something went wrong on our end. %{message}"
 msgstr ""
 
 msgid "Something went wrong on our end. Please try again!"

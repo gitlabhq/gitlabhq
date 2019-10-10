@@ -591,3 +591,5 @@ class MergeRequestDiff < ApplicationRecord
     end
   end
 end
+
+MergeRequestDiff.prepend_if_ee('EE::MergeRequestDiff')

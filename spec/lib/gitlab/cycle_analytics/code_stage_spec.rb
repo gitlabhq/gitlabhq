@@ -26,6 +26,13 @@ describe Gitlab::CycleAnalytics::CodeStage do
 
   it_behaves_like 'base stage'
 
+  context 'when using the new query backend' do
+    include_examples 'Gitlab::Analytics::CycleAnalytics::DataCollector backend examples' do
+      let(:expected_record_count) { 2 }
+      let(:expected_ordered_attribute_values) { [mr_2.title, mr_1.title] }
+    end
+  end
+
   describe '#project_median' do
     around do |example|
       Timecop.freeze { example.run }
