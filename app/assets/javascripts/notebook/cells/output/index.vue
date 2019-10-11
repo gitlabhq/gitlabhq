@@ -19,6 +19,10 @@ export default {
       type: Array,
       required: true,
     },
+    metadata: {
+      type: Object,
+      default: () => ({}),
+    },
   },
   methods: {
     outputType(output) {
@@ -78,6 +82,7 @@ export default {
       :count="count"
       :index="index"
       :raw-code="rawCode(output)"
+      :metadata="metadata"
       :code-css-class="codeCssClass"
     />
   </div>

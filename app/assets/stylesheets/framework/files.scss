@@ -479,3 +479,8 @@ span.idiff {
     padding: $gl-padding;
   }
 }
+
+.jupyter-notebook-scrolled {
+  overflow-y: auto;
+  max-height: 20rem;
+}

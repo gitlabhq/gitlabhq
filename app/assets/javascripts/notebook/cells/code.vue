@@ -49,6 +49,7 @@ export default {
       v-if="hasOutput"
       :count="cell.execution_count"
       :outputs="outputs"
+      :metadata="cell.metadata"
       :code-css-class="codeCssClass"
     />
   </div>

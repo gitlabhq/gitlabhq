@@ -1,0 +1,5 @@
+---
+title: Fix erroneous "No activities found" message
+merge_request: 18434
+author:
+type: fixed

@@ -20,7 +20,7 @@ module Secpick
     end
 
     def ee?
-      File.exist?('./CHANGELOG-EE.md')
+      File.exist?('./ee/app/models/license.rb')
     end
 
     def dry_run?

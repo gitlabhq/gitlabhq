@@ -57,12 +57,10 @@ module QA
           @project.visit!
 
           Page::Project::Show.perform(&:create_new_file!)
-          Page::File::Form.perform do |page| # rubocop:disable QA/AmbiguousPageObjectName
-            page.select_template template[:file_name], template[:name]
+          Page::File::Form.perform do |form|
+            form.select_template template[:file_name], template[:name]
           end
 
-          expect(page).to have_content('Template applied')
-          expect(page).to have_button('Undo')
           expect(page).to have_content(content[0..100])
 
           Page::File::Form.perform(&:commit_changes)
