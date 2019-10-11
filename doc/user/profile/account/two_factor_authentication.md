@@ -244,6 +244,12 @@ Sign in and re-enable two-factor authentication as soon as possible.
   - The user logs out and attempts to log in via `second.host.xyz` - U2F authentication fails, because
     the U2F key has only been registered on `first.host.xyz`.
 
+## Troubleshooting
+
+If you are receiving an `invalid pin code` error, this may indicate that there is a time sync issue between the authentication application and the GitLab instance itself.
+
+Most authentication apps have a feature in the settings for syncing the time for the codes themselves. For Google Authenticator for example, go to `Settings > Time correction for codes`.
+
 <!-- ## Troubleshooting
 
 Include any troubleshooting steps that you can foresee. If you know beforehand what issues

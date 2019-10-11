@@ -288,6 +288,14 @@ describe GlobalPolicy do
       it { is_expected.not_to be_allowed(:use_slash_commands) }
     end
 
+    context 'when deactivated' do
+      before do
+        current_user.deactivate
+      end
+
+      it { is_expected.not_to be_allowed(:use_slash_commands) }
+    end
+
     context 'when access locked' do
       before do
         current_user.lock_access!

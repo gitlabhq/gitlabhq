@@ -15,7 +15,7 @@ export const listObj = {
   weight: 3,
   label: {
     id: 5000,
-    title: 'Testing',
+    title: 'Test',
     color: 'red',
     description: 'testing;',
     textColor: 'white',
@@ -30,7 +30,7 @@ export const listObjDuplicate = {
   weight: 3,
   label: {
     id: listObj.label.id,
-    title: 'Testing',
+    title: 'Test',
     color: 'red',
     description: 'testing;',
   },

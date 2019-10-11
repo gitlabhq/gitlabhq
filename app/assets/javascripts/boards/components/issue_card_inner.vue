@@ -99,7 +99,10 @@ export default {
       return !groupId ? referencePath.split('#')[0] : null;
     },
     orderedLabels() {
-      return _.sortBy(this.issue.labels, 'title');
+      return _.chain(this.issue.labels)
+        .filter(this.isNonListLabel)
+        .sortBy('title')
+        .value();
     },
     helpLink() {
       return boardsStore.scopedLabels.helpLink;
@@ -129,6 +132,9 @@ export default {
     showLabel(label) {
       if (!label.id) return false;
       return true;
+    },
+    isNonListLabel(label) {
+      return label.id && !(this.list.type === 'label' && this.list.title === label.title);
     },
     filterByLabel(label) {
       if (!this.updateFilters) return;
@@ -167,7 +173,7 @@ export default {
       </h4>
     </div>
     <div v-if="showLabelFooter" class="board-card-labels prepend-top-4 d-flex flex-wrap">
-      <template v-for="label in orderedLabels" v-if="showLabel(label)">
+      <template v-for="label in orderedLabels">
         <issue-card-inner-scoped-label
           v-if="showScopedLabel(label)"
           :key="label.id"

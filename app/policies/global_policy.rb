@@ -48,6 +48,7 @@ class GlobalPolicy < BasePolicy
     prevent :access_git
     prevent :access_api
     prevent :receive_notifications
+    prevent :use_slash_commands
   end
 
   rule { required_terms_not_accepted }.policy do

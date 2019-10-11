@@ -666,7 +666,7 @@ build:
 
 CAUTION: **Warning:**
 There are some points to be aware of when
-[using this feature with new branches or tags *without* pipelines for merge requests](using-onlychanges-without-pipelines-for-merge-requests).
+[using this feature with new branches or tags *without* pipelines for merge requests](#using-onlychanges-without-pipelines-for-merge-requests).
 
 ##### Using `only:changes` with pipelines for merge requests
 

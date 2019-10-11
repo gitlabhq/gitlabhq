@@ -94,16 +94,32 @@ RSpec.shared_examples 'chat slash commands service' do
           subject.trigger(params)
         end
 
+        shared_examples_for 'blocks command execution' do
+          it do
+            expect_any_instance_of(Gitlab::SlashCommands::Command).not_to receive(:execute)
+
+            result = subject.trigger(params)
+            expect(result[:text]).to match(error_message)
+          end
+        end
+
         context 'when user is blocked' do
           before do
             chat_name.user.block
           end
 
-          it 'blocks command execution' do
-            expect_any_instance_of(Gitlab::SlashCommands::Command).not_to receive(:execute)
+          it_behaves_like 'blocks command execution' do
+            let(:error_message) { 'you do not have access to the GitLab project' }
+          end
+        end
 
-            result = subject.trigger(params)
-            expect(result).to include(text: /^You are not allowed/)
+        context 'when user is deactivated' do
+          before do
+            chat_name.user.deactivate
+          end
+
+          it_behaves_like 'blocks command execution' do
+            let(:error_message) { 'your account has been deactivated by your administrator' }
           end
         end
       end

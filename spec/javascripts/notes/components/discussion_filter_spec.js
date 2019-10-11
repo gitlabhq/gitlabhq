@@ -160,5 +160,28 @@ describe('DiscussionFilter component', () => {
         done();
       });
     });
+
+    it('fetches discussions when there is a hash', done => {
+      window.location.hash = `note_${discussionMock.notes[0].id}`;
+      vm.currentValue = discussionFiltersMock[2].value;
+      spyOn(vm, 'selectFilter');
+      vm.handleLocationHash();
+
+      vm.$nextTick(() => {
+        expect(vm.selectFilter).toHaveBeenCalled();
+        done();
+      });
+    });
+
+    it('does not fetch discussions when there is no hash', done => {
+      window.location.hash = '';
+      spyOn(vm, 'selectFilter');
+      vm.handleLocationHash();
+
+      vm.$nextTick(() => {
+        expect(vm.selectFilter).not.toHaveBeenCalled();
+        done();
+      });
+    });
   });
 });

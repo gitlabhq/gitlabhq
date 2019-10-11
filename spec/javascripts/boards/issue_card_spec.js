@@ -32,7 +32,10 @@ describe('Issue card component', () => {
   beforeEach(() => {
     setFixtures('<div class="test-container"></div>');
 
-    list = listObj;
+    list = {
+      ...listObj,
+      type: 'label',
+    };
     issue = new ListIssue({
       title: 'Testing',
       id: 1,
@@ -241,8 +244,8 @@ describe('Issue card component', () => {
       Vue.nextTick(() => done());
     });
 
-    it('renders list label', () => {
-      expect(component.$el.querySelectorAll('.badge').length).toBe(2);
+    it('does not render list label but renders all other labels', () => {
+      expect(component.$el.querySelectorAll('.badge').length).toBe(1);
     });
 
     it('renders label', () => {
@@ -278,7 +281,7 @@ describe('Issue card component', () => {
 
       Vue.nextTick()
         .then(() => {
-          expect(component.$el.querySelectorAll('.badge').length).toBe(2);
+          expect(component.$el.querySelectorAll('.badge').length).toBe(1);
           expect(component.$el.textContent).not.toContain('closed');
 
           done();

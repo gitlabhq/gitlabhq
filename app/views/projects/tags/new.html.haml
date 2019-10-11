@@ -31,7 +31,7 @@
     .col-sm-10
       = text_area_tag :message, @message, required: false, class: 'form-control', rows: 5
       .form-text.text-muted
-        = s_('TagsPage|Optionally, add a message to the tag.')
+        = tag_description_help_text
   %hr
   .form-group.row
     = label_tag :release_description, s_('TagsPage|Release notes'), class: 'col-form-label col-sm-2'

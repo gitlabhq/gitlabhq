@@ -33,9 +33,12 @@ class SlashCommandsService < Service
     return unless valid_token?(params[:token])
 
     chat_user = find_chat_user(params)
+    user = chat_user&.user
 
-    if chat_user&.user
-      unless chat_user.user.can?(:use_slash_commands)
+    if user
+      unless user.can?(:use_slash_commands)
+        return Gitlab::SlashCommands::Presenters::Access.new.deactivated if user.deactivated?
+
         return Gitlab::SlashCommands::Presenters::Access.new.access_denied(project)
       end
 

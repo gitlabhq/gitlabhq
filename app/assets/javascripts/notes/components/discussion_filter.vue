@@ -1,13 +1,14 @@
 <script>
 import $ from 'jquery';
 import { mapGetters, mapActions } from 'vuex';
-import { getLocationHash } from '../../lib/utils/url_utility';
+import { getLocationHash, doesHashExistInUrl } from '../../lib/utils/url_utility';
 import Icon from '~/vue_shared/components/icon.vue';
 import {
   DISCUSSION_FILTERS_DEFAULT_VALUE,
   HISTORY_ONLY_FILTER_VALUE,
   DISCUSSION_TAB_LABEL,
   DISCUSSION_FILTER_TYPES,
+  NOTE_UNDERSCORE,
 } from '../constants';
 import notesEventHub from '../event_hub';
 
@@ -28,7 +29,9 @@ export default {
   },
   data() {
     return {
-      currentValue: this.selectedValue,
+      currentValue: doesHashExistInUrl(NOTE_UNDERSCORE)
+        ? DISCUSSION_FILTERS_DEFAULT_VALUE
+        : this.selectedValue,
       defaultValue: DISCUSSION_FILTERS_DEFAULT_VALUE,
       displayFilters: true,
     };
@@ -50,7 +53,6 @@ export default {
 
     notesEventHub.$on('dropdownSelect', this.selectFilter);
     window.addEventListener('hashchange', this.handleLocationHash);
-    this.handleLocationHash();
   },
   mounted() {
     this.toggleCommentsForm();
