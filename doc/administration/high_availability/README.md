@@ -211,7 +211,11 @@ environment that supports about 10,000 users. The specifications below are a
 representation of the work so far. The specifications may be adjusted in the
 future based on additional testing and iteration.
 
-NOTE: **Note:** The specifications here were performance tested against a specific coded workload. Your exact needs may be more, depending on your workload. Your workload is influenced by factors such as - but not limited to - how active your users are, how much automation you use, mirroring, and repo/change size.
+NOTE: **Note:** The specifications here were performance tested against a
+specific coded workload. Your exact needs may be more, depending on your
+workload. Your workload is influenced by factors such as - but not limited to -
+how active your users are, how much automation you use, mirroring, and
+repo/change size.
 
 - 3 PostgreSQL - 4 CPU, 16GiB memory per node
 - 1 PgBouncer - 2 CPU, 4GiB memory
@@ -229,13 +233,28 @@ NOTE: **Note:** The specifications here were performance tested against a specif
 - **Status:** Work-in-progress
 - **Related Issue:** See the [related issue](https://gitlab.com/gitlab-org/quality/performance/issues/57) for more information.
 
-The Support and Quality teams are in the process of building and performance testing
-an environment that will support about 25,000 users. The specifications below
-are a work-in-progress representation of the work so far. The Quality team will be
-certifying this environment in late 2019. The specifications may be adjusted
-prior to certification based on performance testing.
+The Support and Quality teams are in the process of building and performance
+testing an environment that will support around 25,000 users. The specifications
+below are a work-in-progress representation of the work so far. The Quality team
+will be certifying this environment in late 2019. The specifications may be
+adjusted prior to certification based on performance testing.
 
-TBD: Add specs
+| Service                       | Configuration           | GCP type       |
+| ------------------------------|-------------------------|----------------|
+| 7 GitLab Rails <br> - Puma workers on each node set to 90% of available CPUs with 16 threads | 32 vCPU, 28.8GB Memory | n1-highcpu-32 |
+| 3 PostgreSQL                  | 8 vCPU, 30GB Memory     | n1-standard-8  |
+| 1 PgBouncer                   | 2 vCPU, 1.8GB Memory    | n1-highcpu-2   |
+| 2 Gitaly <br> - Gitaly Ruby workers on each node set to 90% of available CPUs with 16 threads | 32 vCPU, 120GB Memory   | n1-standard-32 |
+| 3 Redis Cache + Sentinel <br> - Cache maxmemory set to 90% of available memory | 4 vCPU, 15GB Memory | n1-standard-4 |
+| 3 Redis Persistent + Sentinel | 4 vCPU, 15GB Memory     | n1-standard-4  |
+| 4 Sidekiq                     | 4 vCPU, 15GB Memory     | n1-standard-4  |
+| 3 Consul                      | 2 vCPU, 1.8GB Memory    | n1-highcpu-2   |
+| 1 NFS Server                  | 2 vCPU, 1.8GB Memory    | n1-highcpu-2   |
+| 1 Monitoring node             | 4 CPU, 3.6GB Memory     | n1-highcpu-4   |
+| 1 Load Balancing node         | 2 vCPU, 1.8GB Memory    | n1-highcpu-2   |
+
+NOTE: **Note:** At this time, HAProxy is the only tested and recommended load
+balancer. We may test and add additional options to this list in time.
 
 ### 50,000 User Configuration
 
@@ -244,10 +263,10 @@ TBD: Add specs
 - **Status:** Work-in-progress
 - **Related Issue:** See the [related issue](https://gitlab.com/gitlab-org/quality/performance/issues/66) for more information.
 
-The Support and Quality teams are in the process of building and performance testing
-an environment that will support about 50,000 users. The specifications below
-are a work-in-progress representation of the work so far. The Quality team will be
-certifying this environment in late 2019. The specifications may be adjusted
-prior to certification based on performance testing.
+The Support and Quality teams are in the process of building and performance
+testing an environment that will support around 50,000 users. The specifications
+below are a work-in-progress representation of the work so far. The Quality team
+will be certifying this environment in late 2019. The specifications may be
+adjusted prior to certification based on performance testing.
 
 TBD: Add specs

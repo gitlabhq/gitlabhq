@@ -70,6 +70,37 @@ describe Note do
         is_expected.to be_valid
       end
     end
+
+    describe 'max notes limit' do
+      let_it_be(:noteable) { create(:issue) }
+      let_it_be(:existing_note) { create(:note, project: noteable.project, noteable: noteable) }
+
+      before do
+        stub_const('Noteable::MAX_NOTES_LIMIT', 1)
+      end
+
+      context 'when creating a system note' do
+        subject { build(:system_note, project: noteable.project, noteable: noteable) }
+
+        it { is_expected.to be_valid }
+      end
+
+      context 'when creating a user note' do
+        subject { build(:note, project: noteable.project, noteable: noteable) }
+
+        it { is_expected.not_to be_valid }
+      end
+
+      context 'when updating an existing note on a noteable that already exceeds the limit' do
+        subject { existing_note }
+
+        before do
+          create(:system_note, project: noteable.project, noteable: noteable)
+        end
+
+        it { is_expected.to be_valid }
+      end
+    end
   end
 
   describe "Commit notes" do

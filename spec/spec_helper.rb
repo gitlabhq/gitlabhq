@@ -90,7 +90,7 @@ RSpec.configure do |config|
   config.include StubFeatureFlags
   config.include StubGitlabCalls
   config.include StubGitlabData
-  config.include ExpectNextInstanceOf
+  config.include NextInstanceOf
   config.include TestEnv
   config.include Devise::Test::ControllerHelpers, type: :controller
   config.include Devise::Test::IntegrationHelpers, type: :feature

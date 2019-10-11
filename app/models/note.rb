@@ -104,6 +104,8 @@ class Note < ApplicationRecord
     end
   end
 
+  validate :does_not_exceed_notes_limit?, on: :create, unless: [:system?, :importing?]
+
   # @deprecated attachments are handler by the MarkdownUploader
   mount_uploader :attachment, AttachmentUploader
 
@@ -524,6 +526,12 @@ class Note < ApplicationRecord
     return unless system?
 
     system_note_metadata&.cross_reference_types&.include?(system_note_metadata&.action)
+  end
+
+  def does_not_exceed_notes_limit?
+    return unless noteable
+
+    errors.add(:base, _('Maximum number of comments exceeded')) if noteable.notes.count >= Noteable::MAX_NOTES_LIMIT
   end
 end
 

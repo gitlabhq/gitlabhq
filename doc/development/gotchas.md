@@ -106,13 +106,15 @@ end
        Using `any_instance` to stub a method (elasticsearch_indexing) that has been defined on a prepended module (EE::ApplicationSetting) is not supported.
   ```
 
-### Alternative: `expect_next_instance_of`
+### Alternative: `expect_next_instance_of` or `allow_next_instance_of`
 
 Instead of writing:
 
 ```ruby
 # Don't do this:
 expect_any_instance_of(Project).to receive(:add_import_job)
+
+allow_any_instance_of(Project).to receive(:add_import_job)
 ```
 
 We could write:
@@ -122,10 +124,14 @@ We could write:
 expect_next_instance_of(Project) do |project|
   expect(project).to receive(:add_import_job)
 end
+
+allow_next_instance_of(Project) do |project|
+  allow(project).to receive(:add_import_job)
+end
 ```
 
-If we also want to expect the instance was initialized with some particular
-arguments, we could also pass it to `expect_next_instance_of` like:
+If we also want to initialized the instance with some particular arguments, we
+could also pass it like:
 
 ```ruby
 # Do this:
