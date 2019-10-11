@@ -11,7 +11,7 @@ requests within GitLab.
 
 ## Overview
 
-Time Tracking allows you:
+Time Tracking allows you to:
 
 - Record the time spent working on an issue or a merge request.
 - Add an estimate of the amount of time needed to complete an issue or a merge

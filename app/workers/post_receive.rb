@@ -3,8 +3,6 @@
 class PostReceive
   include ApplicationWorker
 
-  PIPELINE_PROCESS_LIMIT = 4
-
   def perform(gl_repository, identifier, changes, push_options = {})
     project, repo_type = Gitlab::GlRepository.parse(gl_repository)
 
@@ -49,8 +47,7 @@ class PostReceive
     expire_caches(post_received, post_received.project.repository)
     enqueue_repository_cache_update(post_received)
 
-    process_changes(Git::BranchPushService, project, user, push_options, changes.branch_changes)
-    process_changes(Git::TagPushService, project, user, push_options, changes.tag_changes)
+    process_ref_changes(project, user, push_options: push_options, changes: changes)
     update_remote_mirrors(post_received)
     after_project_changes_hooks(project, user, changes.refs, changes.repository_data)
   end
@@ -75,18 +72,10 @@ class PostReceive
     )
   end
 
-  def process_changes(service_class, project, user, push_options, changes)
-    return if changes.empty?
+  def process_ref_changes(project, user, params = {})
+    return unless params[:changes].any?
 
-    changes.each do |change|
-      service_class.new(
-        project,
-        user,
-        change: change,
-        push_options: push_options,
-        create_pipelines: change[:index] < PIPELINE_PROCESS_LIMIT || Feature.enabled?(:git_push_create_all_pipelines, project)
-      ).execute
-    end
+    Git::ProcessRefChangesService.new(project, user, params).execute
   end
 
   def update_remote_mirrors(post_received)

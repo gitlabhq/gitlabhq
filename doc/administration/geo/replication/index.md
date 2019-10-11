@@ -281,6 +281,7 @@ You can keep track of the progress to include the missing items in:
 | [Container Registry](../../packages/container_registry.md) | Yes | No |
 | [NPM Registry](../../../user/packages/npm_registry/index.md) | No | No |
 | [Maven Packages](../../../user/packages/maven_repository/index.md) | No | No |
+| [Conan Packages](../../../user/packages/conan_repository/index.md) | No | No |
 | [External merge request diffs](../../merge_request_diffs.md) | No, if they are on-disk | No |
 | Content in object storage ([track progress](https://gitlab.com/groups/gitlab-org/-/epics/1526)) | No | No |
 

@@ -60,11 +60,10 @@ module AtomicInternalId
         iid_always_track = Feature.enabled?(:iid_always_track, default_enabled: true)
         return unless @internal_id_needs_tracking || iid_always_track
 
-        @internal_id_needs_tracking = false
-
         scope_value = internal_id_read_scope(scope)
-        value = read_attribute(column)
         return unless scope_value
+
+        value = read_attribute(column)
 
         if value.present?
           # The value was set externally, e.g. by the user
@@ -75,6 +74,8 @@ module AtomicInternalId
             internal_id_scope_usage,
             value,
             init)
+
+          @internal_id_needs_tracking = false
         end
       end
 

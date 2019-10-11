@@ -95,6 +95,7 @@ When you create a project in GitLab, you'll have access to a large number of
 - [Releases](releases/index.md): a way to track deliverables in your project as snapshot in time of
   the source, build output, and other metadata or artifacts
   associated with a released version of your code.
+- [Conan packages](../packages/conan_repository/index.md): your private Conan repository in GitLab. **(PREMIUM)**
 - [Maven packages](../packages/maven_repository/index.md): your private Maven repository in GitLab. **(PREMIUM)**
 - [NPM packages](../packages/npm_registry/index.md): your private NPM package registry in GitLab. **(PREMIUM)**
 - [Code owners](code_owners.md): specify code owners for certain files **(STARTER)**

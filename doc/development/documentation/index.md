@@ -374,17 +374,29 @@ The following GitLab features are used among others:
 
 ## Testing
 
-We treat documentation as code, and so use tests to maintain the standards and quality of the docs.
-The current tests are:
+We treat documentation as code, and so use tests in our CI pipeline to maintain the
+standards and quality of the docs. The current tests, which run in CI jobs when a
+merge request with new or changed docs is submitted, are:
 
-1. `docs lint`: Check that all internal (relative) links work correctly and
-   that all cURL examples in API docs use the full switches. It's recommended
-   to [check locally](#previewing-the-changes-live) before pushing to GitLab by executing the command
-   `bundle exec nanoc check internal_links` on your local
-   [`gitlab-docs`](https://gitlab.com/gitlab-org/gitlab-docs) directory. In addition,
-   `docs-lint` also runs [`markdownlint`](#markdownlint) to ensure the
-   markdown is consistent across all documentation.
-1. In a full pipeline, tests for [`/help`](#gitlab-help-tests).
+- [`docs lint`](https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab/ci/docs.gitlab-ci.yml#L48):
+  Runs several tests on the content of the docs themselves:
+  - [`lint-doc.sh` script](https://gitlab.com/gitlab-org/gitlab/blob/master/scripts/lint-doc.sh)
+    checks that:
+    - All cURL examples use the long flags (ex: `--header`, not `-H`).
+    - The `CHANGELOG.md` does not contain duplicate versions.
+    - No files in `doc/` are executable.
+    - No new `README.md` was added.
+  - [`markdownlint`](#markdownlint).
+  - Nanoc tests, which you can [run locally](#previewing-the-changes-live) before
+    pushing to GitLab by executing the command `bundle exec nanoc check internal_links`
+    (or `internal_anchors`) on your local [`gitlab-docs`](https://gitlab.com/gitlab-org/gitlab-docs) directory:
+    - [`internal_links`](https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab/ci/docs.gitlab-ci.yml#L67)
+      checks that all internal links (ex: `[link](../index.md)`) are valid.
+    - [`internal_anchors`](https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab/ci/docs.gitlab-ci.yml#L69)
+      checks that all internal anchors (ex: `[link](../index.md#internal_anchor)`)
+      are valid.
+- If any code or the `doc/README.md` file is changed, a full pipeline will run, which
+  runs tests for [`/help`](#gitlab-help-tests).
 
 ### Linting
 
@@ -490,7 +502,10 @@ four repos that are the sources for <https://docs.gitlab.com>:
 - <https://gitlab.com/charts/gitlab/blob/master/.markdownlint.json>
 
 By default all rules are enabled, so the configuration file is used to disable unwanted
-rules, and also to configure optional parameters for enabled rules as needed.
+rules, and also to configure optional parameters for enabled rules as needed. You can
+also check [the issue](https://gitlab.com/gitlab-org/gitlab-foss/issues/64352) that
+tracked the changes required to implement these rules, and details which rules were
+on or off when `markdownlint` was enabled on the docs.
 
 ## Danger Bot
 

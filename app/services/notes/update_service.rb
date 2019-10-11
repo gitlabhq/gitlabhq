@@ -5,7 +5,7 @@ module Notes
     def execute(note)
       return note unless note.editable?
 
-      old_mentioned_users = note.mentioned_users.to_a
+      old_mentioned_users = note.mentioned_users(current_user).to_a
 
       note.update(params.merge(updated_by: current_user))
 

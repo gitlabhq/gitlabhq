@@ -146,7 +146,7 @@ export default () => {
       updateTokens() {
         this.filterManager.updateTokens();
       },
-      updateDetailIssue(newIssue, multiSelect = false) {
+      updateDetailIssue(newIssue) {
         const { sidebarInfoEndpoint } = newIssue;
         if (sidebarInfoEndpoint && newIssue.subscribed === undefined) {
           newIssue.setFetchingState('subscriptions', true);
@@ -185,23 +185,9 @@ export default () => {
             });
         }
 
-        if (multiSelect) {
-          boardsStore.toggleMultiSelect(newIssue);
-
-          if (boardsStore.detail.issue) {
-            boardsStore.clearDetailIssue();
-            return;
-          }
-
-          return;
-        }
-
         boardsStore.setIssueDetail(newIssue);
       },
-      clearDetailIssue(multiSelect = false) {
-        if (multiSelect) {
-          boardsStore.clearMultiSelect();
-        }
+      clearDetailIssue() {
         boardsStore.clearDetailIssue();
       },
       toggleSubscription(id) {
