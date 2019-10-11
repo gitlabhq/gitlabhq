@@ -564,7 +564,7 @@ Inside the document:
 
 ### Remove image shadow
 
-All images displayed on docs.gitlab.com have a box shadow by default.
+All images displayed on the [GitLab Docs site](https://docs.gitlab.com) have a box shadow by default.
 To remove the box shadow, use the image class `.image-noshadow` applied
 directly to an HTML `img` tag:
 
@@ -598,7 +598,7 @@ You can link any up-to-date video that is useful to the GitLab user.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-docs/merge_requests/472) in GitLab 12.1.
 
-GitLab docs (docs.gitlab.com) support embedded videos.
+The [GitLab docs site](https://docs.gitlab.com) supports embedded videos.
 
 You can only embed videos from
 [GitLab's official YouTube account](https://www.youtube.com/channel/UCnMGQ8QHMAnVIsI3xJrihhg).
@@ -634,7 +634,7 @@ leave a blank line here
 leave a blank line here
 ```
 
-This is how it renders on docs.gitlab.com:
+This is how it renders on the GitLab Docs site:
 
 <div class="video-fallback">
   See the video: <a href="https://www.youtube.com/watch?v=enMumwvLAug">What is GitLab</a>.
@@ -693,6 +693,10 @@ use the following markup for highlighting.
 _Note that the alert boxes only work for one paragraph only. Multiple paragraphs,
 lists, headers, etc will not render correctly. For multiple lines, use blockquotes instead._
 
+Alert boxes only render properly on the GitLab Docs site (<http://docs.gitlab.com>).
+Within GitLab itself, they will appear as plain markdown text (like the examples
+above the rendered versions, below).
+
 ### Note
 
 Notes catch the eye of most readers, and therefore should be used very sparingly.
@@ -717,7 +721,7 @@ NOTE: **Note:**
 This is something to note.
 ```
 
-How it renders in docs.gitlab.com:
+How it renders on the GitLab Docs site:
 
 NOTE: **Note:**
 This is something to note.
@@ -729,7 +733,7 @@ TIP: **Tip:**
 This is a tip.
 ```
 
-How it renders in docs.gitlab.com:
+How it renders on the GitLab Docs site:
 
 TIP: **Tip:**
 This is a tip.
@@ -741,7 +745,7 @@ CAUTION: **Caution:**
 This is something to be cautious about.
 ```
 
-How it renders in docs.gitlab.com:
+How it renders on the GitLab Docs site:
 
 CAUTION: **Caution:**
 This is something to be cautious about.
@@ -753,7 +757,7 @@ DANGER: **Danger:**
 This is a breaking change, a bug, or something very important to note.
 ```
 
-How it renders in docs.gitlab.com:
+How it renders on the GitLab Docs site:
 
 DANGER: **Danger:**
 This is a breaking change, a bug, or something very important to note.
@@ -766,7 +770,7 @@ For highlighting a text within a blue blockquote, use this format:
 > This is a blockquote.
 ```
 
-which renders in docs.gitlab.com to:
+which renders on the [GitLab Docs site](https://docs.gitlab.com) as:
 
 > This is a blockquote.
 
@@ -1154,7 +1158,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --form "title=
 ```
 
 The above example is run by and administrator and will add an SSH public key
-titled ssh-key to user's account which has an id of 25.
+titled `ssh-key` to user's account which has an id of 25.
 
 #### Escape special characters
 

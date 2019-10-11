@@ -142,7 +142,7 @@ their node under pressure.
 ### Log into my Review App
 
 The default username is `root` and its password can be found in the 1Password
-secure note named **gitlab-{ce,ee} Review App's root password**.
+secure note named `gitlab-{ce,ee} Review App's root password`.
 
 ### Enable a feature flag for my Review App
 
@@ -235,7 +235,7 @@ For the record, the debugging steps to find out this issue were:
 1. Switch kubectl context to review-apps-ce (we recommend using [kubectx](https://github.com/ahmetb/kubectx/))
 1. `kubectl get pods | grep dns`
 1. `kubectl describe pod <pod name>` & confirm exact error message
-1. Web search for exact error message, following rabbit hole to [a relevant kubernetes bug report](https://github.com/kubernetes/kubernetes/issues/57345)
+1. Web search for exact error message, following rabbit hole to [a relevant Kubernetes bug report](https://github.com/kubernetes/kubernetes/issues/57345)
 1. Access the node over SSH via the GCP console (**Computer Engine > VM
    instances** then click the "SSH" button for the node where the `dns-gitlab-review-app-external-dns` pod runs)
 1. In the node: `systemctl --version` => systemd 232

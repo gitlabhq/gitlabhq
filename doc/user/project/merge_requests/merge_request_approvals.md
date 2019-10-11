@@ -66,13 +66,7 @@ suitable to your workflow:
 
 ## Editing approvals **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/1979) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.8.
-
-CAUTION: **Caution:**
-There was a [regression affecting this feature in 11.8](https://gitlab.com/gitlab-org/gitlab/merge_requests/9648). We recommend upgrading _at least_ to version 11.8.2. to avoid any issues.
-
-NOTE: **Note:**
-In 11.8 this feature does not work in [private groups](https://gitlab.com/gitlab-org/gitlab/issues/10356).
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/1979) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.10.
 
 For GitLab Premium, [multiple approver rules](#multiple-approval-rules-premium) can be configured. To configure the merge
 request approval rules:
@@ -87,7 +81,7 @@ request approval rules:
 
 ## Multiple approval rules **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/1979) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.8.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/1979) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.10.
 
 For GitLab Premium, a merge request's overall approval status is determined by a set of rules. Each rule contains:
 

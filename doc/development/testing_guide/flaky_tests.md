@@ -61,7 +61,7 @@ This was originally implemented in: <https://gitlab.com/gitlab-org/gitlab-foss/m
   - [Capybara.reset_session! should be called before requests are blocked](https://gitlab.com/gitlab-org/gitlab-foss/issues/33779): <https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/12224>
 - FFaker generates funky data that tests are not ready to handle (and tests should be predictable so that's bad!):
   - [Make `spec/mailers/notify_spec.rb` more robust](https://gitlab.com/gitlab-org/gitlab-foss/issues/20121): <https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/10015>
-  - [Transient failure in spec/requests/api/commits_spec.rb](https://gitlab.com/gitlab-org/gitlab-foss/issues/27988#note_25342521): <https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/9944>
+  - [Transient failure in `spec/requests/api/commits_spec.rb`](https://gitlab.com/gitlab-org/gitlab-foss/issues/27988#note_25342521): <https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/9944>
   - [Replace FFaker factory data with sequences](https://gitlab.com/gitlab-org/gitlab-foss/issues/29643): <https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/10184>
   - [Transient failure in spec/finders/issues_finder_spec.rb](https://gitlab.com/gitlab-org/gitlab-foss/issues/30211#note_26707685): <https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/10404>
 

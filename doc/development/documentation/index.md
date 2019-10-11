@@ -8,19 +8,18 @@ GitLab's documentation is [intended as the single source of truth (SSOT)](https:
 
 In addition to this page, the following resources can help you craft and contribute documentation:
 
-- [Style Guide](styleguide.md) - What belongs in the docs, language guidelines, and more.
+- [Style Guide](styleguide.md) - What belongs in the docs, language guidelines, Markdown standards to follow, and more.
 - [Structure and template](structure.md) - Learn the typical parts of a doc page and how to write each one.
 - [Workflows](workflow.md) - A landing page for our key workflows:
   - [Documentation process for feature changes](feature-change-workflow.md) - Adding required documentation when developing a GitLab feature.
   - [Documentation improvement workflow](improvement-workflow.md) - New content not associated with a new feature.
-- [Markdown Guide](https://about.gitlab.com/handbook/product/technical-writing/markdown-guide/) - A reference for the markdown implementation used by GitLab's documentation site and about.gitlab.com.
-- [Site architecture](site_architecture/index.md) - How docs.gitlab.com is built.
+- [Markdown Guide](../../user/markdown.md) - A reference for all markdown syntax supported by GitLab.
+- [Site architecture](site_architecture/index.md) - How <http://docs.gitlab.com> is built.
 
 ## Source files and rendered web locations
 
-Documentation for GitLab, GitLab Runner, and Omnibus is published to [docs.gitlab.com](https://docs.gitlab.com). Documentation for GitLab is also published within the application at `/help` on the domain of the GitLab instance.
-
-At `/help`, only help for your current edition and version is included. Help for other versions is available at docs.gitlab.com.
+Documentation for GitLab, GitLab Runner, Omnibus GitLab and Charts are published to <https://docs.gitlab.com>. Documentation for GitLab is also published within the application at `/help` on the domain of the GitLab instance.
+At `/help`, only help for your current edition and version is included. Help for other versions is available at <https://docs.gitlab.com/archives/>.
 
 The source of the documentation exists within the codebase of each GitLab application in the following repository locations:
 
@@ -29,6 +28,7 @@ The source of the documentation exists within the codebase of each GitLab applic
 | [GitLab](https://gitlab.com/gitlab-org/gitlab/) | [`/doc`](https://gitlab.com/gitlab-org/gitlab/tree/master/doc) |
 | [GitLab Runner](https://gitlab.com/gitlab-org/gitlab-runner/) | [`/docs`](https://gitlab.com/gitlab-org/gitlab-runner/tree/master/docs) |
 | [Omnibus GitLab](https://gitlab.com/gitlab-org/omnibus-gitlab/) | [`/doc`](https://gitlab.com/gitlab-org/gitlab/tree/master/doc) |
+| [Charts](https://gitlab.com/gitlab-org/charts/gitlab) | [`/doc`](https://gitlab.com/gitlab-org/charts/gitlab/tree/master/doc) |
 
 Documentation issues and merge requests are part of their respective repositories and all have the label `Documentation`.
 
@@ -55,8 +55,8 @@ See the [Structure](styleguide.md#structure) section of the [Documentation Style
 
 Changing a document's location requires specific steps to ensure that
 users can seamlessly access the new doc page, whether they are accessing content
-on a GitLab instance domain at `/help` or at docs.gitlab.com. Be sure to ping a
-GitLab technical writer if you have any questions during the process (such as
+on a GitLab instance domain at `/help` or at <https://docs.gitlab.com>. Be sure to assign a
+technical writer if you have any questions during the process (such as
 whether the move is necessary), and ensure that a technical writer reviews this
 change prior to merging.
 
@@ -132,7 +132,7 @@ land on the doc via `/help`.
 If the documentation page being relocated already has Disqus comments,
 we need to preserve the Disqus thread.
 
-Disqus uses an identifier per page, and for docs.gitlab.com, the page identifier
+Disqus uses an identifier per page, and for <https://docs.gitlab.com>, the page identifier
 is configured to be the page URL. Therefore, when we change the document location,
 we need to preserve the old URL as the same Disqus identifier.
 
@@ -181,9 +181,9 @@ Every GitLab instance includes the documentation, which is available at `/help`
 (`https://gitlab.example.com/help`). For example, <https://gitlab.com/help>.
 
 There are [plans](https://gitlab.com/groups/gitlab-org/-/epics/693) to end this
-practice and instead link out from the GitLab application to docs.gitlab.com URLs.
+practice and instead link out from the GitLab application to <https://docs.gitlab.com> URLs.
 
-The documentation available online on docs.gitlab.com is continuously
+The documentation available online on <https://docs.gitlab.com> is continuously
 deployed every hour from the `master` branch of GitLab, Omnibus, and Runner. Therefore,
 once a merge request gets merged, it will be available online on the same day.
 However, they will be shipped (and available on `/help`) within the milestone assigned
@@ -195,7 +195,7 @@ available online on 2018-09-15, but, as the feature freeze date has passed, if
 the MR does not have a "pick into 11.3" label, the milestone has to be changed
 to 11.4 and it will be shipped with all GitLab packages only on 2018-10-22,
 with GitLab 11.4. Meaning, it will only be available under `/help` from GitLab
-11.4 onwards, but available on docs.gitlab.com on the same day it was merged.
+11.4 onwards, but available on <https://docs.gitlab.com/archives/> on the same day it was merged.
 
 ### Linking to `/help`
 
@@ -271,7 +271,7 @@ For example, [GitLab.com's `/help`](https://gitlab.com/help).
 ## Docs site architecture
 
 See the [Docs site architecture](site_architecture/index.md) page to learn
-how we build and deploy the site at [docs.gitlab.com](https://docs.gitlab.com) and
+how we build and deploy the site at <https://docs.gitlab.com> and
 to review all the assets and libraries in use.
 
 ### Global navigation
@@ -301,7 +301,7 @@ You will need to push a branch to those repositories, it doesn't work for forks.
 
 The `review-docs-deploy*` job will:
 
-1. Create a new branch in the [gitlab-docs](https://gitlab.com/gitlab-org/gitlab-docs)
+1. Create a new branch in the [`gitlab-docs`](https://gitlab.com/gitlab-org/gitlab-docs)
    project named after the scheme: `$DOCS_GITLAB_REPO_SUFFIX-$CI_ENVIRONMENT_SLUG`,
    where `DOCS_GITLAB_REPO_SUFFIX` is the suffix for each product, e.g, `ce` for
    CE, etc.

@@ -17,7 +17,7 @@ module Gitlab
           # This is necessary to give Tiller time to restart after upgrade.
           # Ideally we'd be able to use --wait but cannot because of
           # https://github.com/helm/helm/issues/4855
-          "for i in $(seq 1 30); do #{helm_check} && break; sleep 1s; echo \"Retrying ($i)...\"; done"
+          "for i in $(seq 1 30); do #{helm_check} && break; sleep 1s; echo \"Retrying ($i)...\"; false; done"
         end
 
         def repository_command

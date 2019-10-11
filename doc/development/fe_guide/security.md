@@ -63,7 +63,7 @@ External fonts, CSS, and JavaScript should never be used with the exception of
 Google Analytics and Piwik - and only when the instance has enabled it. Assets
 should always be hosted and served locally from the GitLab instance. Embedded
 resources via `iframes` should never be used except in certain circumstances
-such as with ReCaptcha, which cannot be used without an `iframe`.
+such as with reCAPTCHA, which cannot be used without an `iframe`.
 
 ## Avoiding inline scripts and styles
 

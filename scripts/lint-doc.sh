@@ -24,12 +24,12 @@ then
 fi
 
 # Make sure no files in doc/ are executable
-EXEC_PERM_COUNT=$(find doc/ app/ -type f -perm 755 | wc -l)
+EXEC_PERM_COUNT=$(find doc/ -type f -perm 755 | wc -l)
 echo '=> Checking for executable permissions...'
 if [ "${EXEC_PERM_COUNT}" -ne 0 ]
 then
   echo '✖ ERROR: Executable permissions should not be used in documentation! Use `chmod 644` to the files in question:' >&2
-  find doc/ app/ -type f -perm 755
+  find doc/ -type f -perm 755
   exit 1
 fi
 

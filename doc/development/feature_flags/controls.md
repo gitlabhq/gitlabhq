@@ -3,7 +3,7 @@
 In order to be able to turn on/off features behind feature flags in any of the
 GitLab Inc. provided environments such as staging and production, you need to
 have access to the chatops bot. Chatops bot is currently running on the ops instance,
-which is different from GitLab.com or dev.gitlab.org.
+which is different from <https://gitlab.com> or <https://dev.gitlab.org>.
 
 Follow the Chatops document to [request access](../chatops_on_gitlabcom.md#requesting-access).
 
@@ -39,7 +39,7 @@ If you get an error "Whoops! This action is not allowed. This incident
 will be reported." that means your Slack account is not allowed to
 change feature flags or you do not [have access](#access-for-enabling-a-feature-flag-in-production).
 
-### Enabling feature for staging and dev.gitlab.org
+### Enabling feature for internal testing
 
 As a first step in a feature rollout, you should enable the feature on <https://staging.gitlab.com>
 and <https://dev.gitlab.org>.

@@ -113,7 +113,7 @@ Finished in 34.51 seconds (files took 0.76702 seconds to load)
 1 example, 0 failures
 ```
 
-Note: `live_debug` only works on javascript enabled specs.
+Note: `live_debug` only works on JavaScript enabled specs.
 
 #### Run `:js` spec in a visible browser
 
@@ -158,7 +158,7 @@ really fast since:
 
 - Gems loading is skipped
 - Rails app boot is skipped
-- gitlab-shell and Gitaly setup are skipped
+- GitLab Shell and Gitaly setup are skipped
 - Test repositories setup are skipped
 
 `fast_spec_helper` also support autoloading classes that are located inside the
@@ -347,7 +347,7 @@ them unspecified, and look up the value after the row is created.
 
 #### Redis
 
-GitLab stores two main categories of data in Redis: cached items, and sidekiq
+GitLab stores two main categories of data in Redis: cached items, and Sidekiq
 jobs.
 
 In most specs, the Rails cache is actually an in-memory store. This is replaced
@@ -587,9 +587,9 @@ All fixtures should be placed under `spec/fixtures/`.
 
 ### Repositories
 
-Testing some functionality, e.g., merging a merge request, requires a git
+Testing some functionality, e.g., merging a merge request, requires a Git
 repository with a certain state to be present in the test environment. GitLab
-maintains the [gitlab-test](https://gitlab.com/gitlab-org/gitlab-test)
+maintains the [`gitlab-test`](https://gitlab.com/gitlab-org/gitlab-test)
 repository for certain common cases - you can ensure a copy of the repository is
 used with the `:repository` trait for project factories:
 

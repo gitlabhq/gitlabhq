@@ -125,7 +125,7 @@ describe GroupsController do
     end
 
     context 'as json' do
-      it 'includes all projects from groups and subgroups in event feed' do
+      it 'includes events from all projects in group and subgroups' do
         2.times do
           project = create(:project, group: group)
           create(:event, project: project)

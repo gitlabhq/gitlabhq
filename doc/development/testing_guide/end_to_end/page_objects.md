@@ -2,7 +2,7 @@
 
 In GitLab QA we are using a known pattern, called _Page Objects_.
 
-This means that we have built an abstraction for all GitLab pages that we use
+This means that we have built an abstraction for all pages in GitLab that we use
 to drive GitLab QA scenarios. Whenever we do something on a page, like filling
 in a form, or clicking a button, we do that only through a page object
 associated with this area of GitLab.

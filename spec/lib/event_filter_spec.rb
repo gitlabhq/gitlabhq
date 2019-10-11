@@ -3,12 +3,6 @@
 require 'spec_helper'
 
 describe EventFilter do
-  describe 'FILTERS' do
-    it 'returns a definite list of filters' do
-      expect(described_class::FILTERS).to eq(%w[all push merged issue comments team])
-    end
-  end
-
   describe '#filter' do
     it 'returns "all" if given filter is nil' do
       expect(described_class.new(nil).filter).to eq(described_class::ALL)

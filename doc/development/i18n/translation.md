@@ -8,7 +8,7 @@ The first step is to get familiar with Crowdin.
 
 ### Sign In
 
-To contribute translations at [translate.gitlab.com](https://translate.gitlab.com)
+To contribute translations at <https://translate.gitlab.com>
 you must create a Crowdin account.
 You may create a new account or use any of their supported sign in services.
 
@@ -54,7 +54,7 @@ For example in French `OpenedNDaysAgo|Opened` would be translated to
 Some technical terms should be treated like proper nouns and not be translated.
 
 Technical terms that should always be in English are noted in the glossary when
-using [translate.gitlab.com](https://translate.gitlab.com).
+using <https://translate.gitlab.com>.
 
 This helps maintain a logical connection and consistency between tools (e.g.
 `git` client) and GitLab.

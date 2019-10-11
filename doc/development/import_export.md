@@ -36,7 +36,7 @@ SIDEKIQ_MEMORY_KILLER_HARD_LIMIT_RSS = 3000000
 SIDEKIQ_MEMORY_KILLER_GRACE_TIME = 900
 ```
 
-An import status `started`, and the following sidekiq logs will signal a memory issue:
+An import status `started`, and the following Sidekiq logs will signal a memory issue:
 
 ```bash
 WARN: Work still in progress <struct with JID>

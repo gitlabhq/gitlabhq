@@ -27,7 +27,7 @@ While different workers cannot share a queue, they can share a queue namespace.
 Defining a queue namespace for a worker makes it possible to start a Sidekiq
 process that automatically handles jobs for all workers in that namespace,
 without needing to explicitly list all their queue names. If, for example, all
-workers that are managed by sidekiq-cron use the `cronjob` queue namespace, we
+workers that are managed by `sidekiq-cron` use the `cronjob` queue namespace, we
 can spin up a Sidekiq process specifically for these kinds of scheduled jobs.
 If a new worker using the `cronjob` namespace is added later on, the Sidekiq
 process will automatically pick up jobs for that worker too (after having been

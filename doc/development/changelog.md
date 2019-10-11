@@ -79,7 +79,7 @@ changes.
 
 - **Bad:** Strip out `nil`s in the Array of Commit objects returned from
   `find_commits_by_message_with_elastic`
-- **Good:** Fix 500 errors caused by elasticsearch results referencing
+- **Good:** Fix 500 errors caused by Elasticsearch results referencing
   garbage-collected commits
 
 The first example focuses on _how_ we fixed something, not on _what_ it fixes.

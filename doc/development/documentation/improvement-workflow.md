@@ -20,7 +20,7 @@ to accomplish their work with GitLab.
 
 ## How to update the docs
 
-1. Click "Edit this Page" at the bottom of any page on docs.gitlab.com, or navigate to
+1. Click "Edit this Page" at the bottom of any page on <https://docs.gitlab.com>, or navigate to
    one of the repositories and doc paths listed on the [GitLab Documentation guidelines](index.md) page.
    Work in a fork if you do not have developer access to the GitLab project.
 1. Follow the described standards and processes listed on that Guidelines page,

@@ -44,12 +44,11 @@ to the relevant internal client.
 
 All calls to the Kubernetes API must be in a background process. Do not
 perform Kubernetes API calls within a web request as this will block
-unicorn and can easily lead to a Denial Of Service (DoS) attack in GitLab as
+Unicorn and can easily lead to a Denial Of Service (DoS) attack in GitLab as
 the Kubernetes cluster response times are outside of our control.
 
 The easiest way to ensure your calls happen a background process is to
-delegate any such work to happen in a [sidekiq
-worker](sidekiq_style_guide.md).
+delegate any such work to happen in a [Sidekiq worker](sidekiq_style_guide.md).
 
 There are instances where you would like to make calls to Kubernetes and
 return the response and as such a background worker does not seem to be

@@ -3309,13 +3309,8 @@ all updated Merge Requests will have a pipeline created when using
 If your commit message contains `[ci skip]` or `[skip ci]`, using any
 capitalization, the commit will be created but the pipeline will be skipped.
 
-Alternatively, one can pass the `ci.skip` [Git push option][push-option] if
-using Git 2.10 or newer:
-
-```sh
-git push --push-option=ci.skip    # using git 2.10+
-git push -o ci.skip               # using git 2.18+
-```
+Alternatively, one can pass the `ci.skip` [Git push option](../../user/project/push_options.md#push-options-for-gitlab-cicd)
+if using Git 2.10 or newer.
 
 <!-- ## Troubleshooting
 

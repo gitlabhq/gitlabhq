@@ -20,7 +20,7 @@ GitLab can run pipelines for merge requests
 on this merged result. That is, where the source and target branches are combined into a
 new ref and a pipeline for this ref validates the result prior to merging.
 
-![Merge request pipeline as the head pipeline](img/merge_request_pipeline.png)
+![Merge request pipeline as the head pipeline](img/merged_result_pipeline_v12_3.png)
 
 There are some cases where creating a combined ref is not possible or not wanted.
 For example, a source branch that has conflicts with the target branch

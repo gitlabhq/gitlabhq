@@ -82,7 +82,7 @@ To address this problem an HA object storage can be used and it's supported by [
 
 Scaling NFS is outside of our support scope, and NFS is not a part of cloud native installations.
 
-All features that require sidekiq and do not use object storage acceleration won't work without NFS. In Kubernetes, machine boundaries translate to PODs, and in this case the uploaded file will be written into the POD private disk. Since sidekiq POD cannot reach into other pods, the operation will fail to read it.
+All features that require Sidekiq and do not use object storage acceleration won't work without NFS. In Kubernetes, machine boundaries translate to PODs, and in this case the uploaded file will be written into the POD private disk. Since Sidekiq POD cannot reach into other pods, the operation will fail to read it.
 
 ## How to select the proper level of acceleration?
 
@@ -92,19 +92,19 @@ We can identify three major use-cases for an upload:
 
 1. **storage:** if we are uploading for storing a file (i.e. artifacts, packages, discussion attachments). In this case [object storage acceleration](#workhorse-object-storage-acceleration) is the proper level as it's the less resource-intensive operation. Additional information can be found on [File Storage in GitLab](file_storage.md).
 1. **in-controller/synchronous processing:** if we allow processing **small files** synchronously, using [disk acceleration](#workhorse-disk-acceleration) may speed up development.
-1. **sidekiq/asynchronous processing:** Async processing must implement [object storage acceleration](#workhorse-object-storage-acceleration), the reason being that it's the only way to support Cloud Native deployments without a shared NFS.
+1. **Sidekiq/asynchronous processing:** Async processing must implement [object storage acceleration](#workhorse-object-storage-acceleration), the reason being that it's the only way to support Cloud Native deployments without a shared NFS.
 
 For more details about currently broken feature see [epic &1802](https://gitlab.com/groups/gitlab-org/-/epics/1802).
 
 ### Handling repository uploads
 
-Some features involves git repository uploads without using a regular git client.
+Some features involves Git repository uploads without using a regular Git client.
 Some examples are uploading a repository file from the web interface and [design management](../user/project/issues/design_management.md).
 
-Those uploads requires the rails controller to act as a git client in lieu of the user.
+Those uploads requires the rails controller to act as a Git client in lieu of the user.
 Those operation falls into _in-controller/synchronous processing_ category, but we have no warranties on the file size.
 
-In case of a LFS upload, the file pointer is committed synchronously, but file upload to object storage is performed asynchronously with sidekiq.
+In case of a LFS upload, the file pointer is committed synchronously, but file upload to object storage is performed asynchronously with Sidekiq.
 
 ## Upload encodings
 
@@ -114,7 +114,7 @@ We have three kinds of file encoding in our uploads:
 
 1. <i class="fa fa-check-circle"></i> **multipart**: `multipart/form-data` is the most common, a file is encoded as a part of a multipart encoded request.
 1. <i class="fa fa-check-circle"></i> **body**: some APIs uploads files as the whole request body.
-1. <i class="fa fa-times-circle"></i> **JSON**: some JSON API uploads files as base64 encoded strings. This requires [gitlab-workhorse#226](https://gitlab.com/gitlab-org/gitlab-workhorse/issues/226) to be implemented.
+1. <i class="fa fa-times-circle"></i> **JSON**: some JSON API uploads files as base64 encoded strings. This will require a change to GitLab Workhorse, which [is planned](https://gitlab.com/gitlab-org/gitlab-workhorse/issues/226).
 
 ## Uploading technologies
 
@@ -212,7 +212,9 @@ In this setup an extra rails route needs to be implemented in order to handle au
 you can see an example of this in [`Projects::LfsStorageController`](https://gitlab.com/gitlab-org/gitlab/blob/cc723071ad337573e0360a879cbf99bc4fb7adb9/app/controllers/projects/lfs_storage_controller.rb)
 and [its routes](https://gitlab.com/gitlab-org/gitlab/blob/cc723071ad337573e0360a879cbf99bc4fb7adb9/config/routes/git_http.rb#L31-32).
 
-**note:** this will fallback to _Workhorse disk acceleration_ when object storage is not enabled in the gitlab instance. The answer to the `/authorize` call will only contain a file system path.
+NOTE: **Note:**
+This will fall back to _Workhorse disk acceleration_ when object storage is not enabled
+in the GitLab instance. The answer to the `/authorize` call will only contain a file system path.
 
 ```mermaid
 sequenceDiagram
@@ -267,4 +269,4 @@ sequenceDiagram
 
 This option affect the response to the `/authorize` call. When not enabled, the API response will not contain presigned URLs and workhorse will write the file the shared disk, on the path is provided by rails, acting like object storage was disabled.
 
-Once the request reachs rails, it will schedule an object storage upload as a sidekiq job.
+Once the request reachs rails, it will schedule an object storage upload as a Sidekiq job.

@@ -8,7 +8,7 @@
 
 See also the [corresponding UX guide](https://design.gitlab.com/#/components/dropdowns).
 
-### How to style a bootstrap dropdown
+### How to style a Bootstrap dropdown
 
 1. Use the HTML structure provided by the [docs][bootstrap-dropdowns]
 1. Add a specific class to the top level `.dropdown` element

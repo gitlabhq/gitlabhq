@@ -436,6 +436,10 @@ class Group < Namespace
     members.owners.order_recent_sign_in.limit(ACCESS_REQUEST_APPROVERS_TO_BE_NOTIFIED_LIMIT)
   end
 
+  def supports_events?
+    false
+  end
+
   private
 
   def update_two_factor_requirement

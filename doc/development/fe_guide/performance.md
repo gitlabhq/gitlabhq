@@ -65,26 +65,27 @@ within the `pages` directory correspond to Rails controllers and actions. These
 auto-generated bundles will be automatically included on the corresponding
 pages.
 
-For example, if you were to visit [gitlab.com/gitlab-org/gitlab-foss/issues](https://gitlab.com/gitlab-org/gitlab-foss/issues),
+For example, if you were to visit <https://gitlab.com/gitlab-org/gitlab/issues>,
 you would be accessing the `app/controllers/projects/issues_controller.rb`
 controller with the `index` action. If a corresponding file exists at
 `pages/projects/issues/index/index.js`, it will be compiled into a webpack
 bundle and included on the page.
 
-> **Note:** Previously we had encouraged the use of
-> `content_for :page_specific_javascripts` within haml files, along with
-> manually generated webpack bundles. However under this new system you should
-> not ever need to manually add an entry point to the `webpack.config.js` file.
->
-> **Tip:**
-> If you are unsure what controller and action corresponds to a given page, you
-> can find this out by inspecting `document.body.dataset.page` within your
-> browser's developer console while on any page within gitlab.
+NOTE: **Note:**
+Previously we had encouraged the use of
+`content_for :page_specific_javascripts` within haml files, along with
+manually generated webpack bundles. However under this new system you should
+not ever need to manually add an entry point to the `webpack.config.js` file.
+
+TIP: **Tip:**
+If you are unsure what controller and action corresponds to a given page, you
+can find this out by inspecting `document.body.dataset.page` within your
+browser's developer console while on any page within GitLab.
 
 #### Important Considerations
 
 - **Keep Entry Points Lite:**
-  Page-specific javascript entry points should be as lite as possible.  These
+  Page-specific JavaScript entry points should be as lite as possible.  These
   files are exempt from unit tests, and should be used primarily for
   instantiation and dependency injection of classes and methods that live in
   modules outside of the entry point script.  Just import, read the DOM,

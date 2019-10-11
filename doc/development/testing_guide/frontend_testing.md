@@ -482,7 +482,7 @@ As long as the fixtures don't change, `yarn test` is sufficient (and saves you s
 
 While developing locally, it may be helpful to keep Karma running so that you
 can get instant feedback on as you write tests and modify code. To do this
-you can start Karma with `yarn run karma-start`. It will compile the javascript
+you can start Karma with `yarn run karma-start`. It will compile the JavaScript
 assets and run a server at `http://localhost:9876/` where it will automatically
 run the tests on any browser which connects to it. You can enter that url on
 multiple browsers at once to have it run the tests on each in parallel.

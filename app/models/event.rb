@@ -77,15 +77,6 @@ class Event < ApplicationRecord
   scope :recent, -> { reorder(id: :desc) }
   scope :code_push, -> { where(action: PUSHED) }
 
-  scope :in_projects, -> (projects) do
-    sub_query = projects
-      .except(:order)
-      .select(1)
-      .where('projects.id = events.project_id')
-
-    where('EXISTS (?)', sub_query).recent
-  end
-
   scope :with_associations, -> do
     # We're using preload for "push_event_payload" as otherwise the association
     # is not always available (depending on the query being built).
