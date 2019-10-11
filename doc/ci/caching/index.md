@@ -12,8 +12,9 @@ content of a previous job. It can be particularly useful when you are
 developing software that depends on other libraries which are fetched via the
 internet during build time.
 
-If caching is enabled, it's shared between pipelines and jobs by default,
-starting from GitLab 9.0.
+If caching is enabled, it's shared between pipelines and jobs at the project
+level by default, starting from GitLab 9.0. Caches are not shared across
+projects.
 
 Make sure you read the [`cache` reference](../yaml/README.md#cache) to learn
 how it is defined in `.gitlab-ci.yml`.

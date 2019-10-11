@@ -39,8 +39,8 @@ module Gitlab
 
         while enabled?
           begin
-            restart_sidekiq unless rss_within_range?
             sleep(CHECK_INTERVAL_SECONDS)
+            restart_sidekiq unless rss_within_range?
           rescue => e
             log_exception(e, __method__)
           rescue Exception => e # rubocop:disable Lint/RescueException

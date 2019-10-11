@@ -351,7 +351,7 @@ Add one or more whitelisted IP subnets using CIDR notation in comma separated fo
 coming from a different IP address won't be able to access the restricted
 content.
 
-Restriction currently applies to UI and API access, Git actions via SSH are not restricted.
+Restriction currently applies to UI, API access and Git actions via SSH.
 To avoid accidental lock-out, admins and group owners are are able to access
 the group regardless of the IP restriction.
 

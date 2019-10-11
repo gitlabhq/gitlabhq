@@ -12,7 +12,7 @@
 }
 
 .log-line {
-  padding: 1px $gl-padding 1px $job-log-line-padding;
+  padding: 1px $gl-padding-8 1px $job-log-line-padding;
   min-height: $gl-line-height-20;
 }
 
@@ -20,7 +20,7 @@
   color: $gl-text-color-inverted;
   padding: 0 $gl-padding-8;
   min-width: $job-line-number-width;
-  margin-left: -$job-line-number-width;
+  margin-left: -$job-line-number-margin;
   padding-right: 1em;
 
   &:hover,

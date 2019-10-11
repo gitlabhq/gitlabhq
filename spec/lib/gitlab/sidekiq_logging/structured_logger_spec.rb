@@ -23,13 +23,15 @@ describe Gitlab::SidekiqLogging::StructuredLogger do
     end
 
     let(:logger) { double }
+    let(:clock_thread_cputime_start) { 0.222222299 }
+    let(:clock_thread_cputime_end) { 1.333333799 }
     let(:start_payload) do
       job.merge(
         'message' => 'TestWorker JID-da883554ee4fe414012f5f42: start',
         'job_status' => 'start',
         'pid' => Process.pid,
-        'created_at' => created_at.iso8601(3),
-        'enqueued_at' => created_at.iso8601(3),
+        'created_at' => created_at.iso8601(6),
+        'enqueued_at' => created_at.iso8601(6),
         'scheduling_latency_s' => scheduling_latency_s
       )
     end
@@ -38,9 +40,8 @@ describe Gitlab::SidekiqLogging::StructuredLogger do
         'message' => 'TestWorker JID-da883554ee4fe414012f5f42: done: 0.0 sec',
         'job_status' => 'done',
         'duration' => 0.0,
-        "completed_at" => timestamp.iso8601(3),
-        "system_s" => 0.0,
-        "user_s" => 0.0
+        "completed_at" => timestamp.iso8601(6),
+        "cpu_s" => 1.111112
       )
     end
     let(:exception_payload) do
@@ -57,12 +58,7 @@ describe Gitlab::SidekiqLogging::StructuredLogger do
 
       allow(subject).to receive(:current_time).and_return(timestamp.to_f)
 
-      allow(Process).to receive(:times).and_return(
-        stime:  0.0,
-        utime:  0.0,
-        cutime: 0.0,
-        cstime: 0.0
-      )
+      allow(Process).to receive(:clock_gettime).with(Process::CLOCK_THREAD_CPUTIME_ID).and_return(clock_thread_cputime_start, clock_thread_cputime_end)
     end
 
     subject { described_class.new }
@@ -187,31 +183,22 @@ describe Gitlab::SidekiqLogging::StructuredLogger do
         end
       end
     end
+  end
 
-    def ctime(times)
-      times[:cstime] + times[:cutime]
-    end
+  describe '#add_time_keys!' do
+    let(:time) { { duration: 0.1231234, cputime: 1.2342345 } }
+    let(:payload) { { 'class' => 'my-class', 'message' => 'my-message', 'job_status' => 'my-job-status' } }
+    let(:current_utc_time) { '2019-09-23 10:00:58 UTC' }
+    let(:payload_with_time_keys) { { 'class' => 'my-class', 'message' => 'my-message', 'job_status' => 'my-job-status', 'duration' => 0.123123, 'cpu_s' => 1.234235, 'completed_at' => current_utc_time } }
 
-    context 'with ctime value greater than 0' do
-      let(:times_start) { { stime: 0.04999, utime: 0.0483, cstime: 0.0188, cutime: 0.0188 } }
-      let(:times_end)   { { stime: 0.0699, utime: 0.0699, cstime: 0.0399, cutime: 0.0399 } }
+    subject { described_class.new }
 
-      before do
-        end_payload['system_s'] = 0.02
-        end_payload['user_s'] = 0.022
-        end_payload['child_s'] = 0.042
+    it 'update payload correctly' do
+      expect(Time).to receive_message_chain(:now, :utc).and_return(current_utc_time)
 
-        allow(Process).to receive(:times).and_return(times_start, times_end)
-      end
+      subject.send(:add_time_keys!, time, payload)
 
-      it 'logs with ctime data and other cpu data' do
-        Timecop.freeze(timestamp) do
-          expect(logger).to receive(:info).with(start_payload.except('args')).ordered
-          expect(logger).to receive(:info).with(end_payload.except('args')).ordered
-
-          subject.call(job, 'test_queue') { }
-        end
-      end
+      expect(payload).to eq(payload_with_time_keys)
     end
   end
 end

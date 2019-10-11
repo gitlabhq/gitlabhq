@@ -330,6 +330,38 @@ FactoryBot.define do
       options { {} }
     end
 
+    trait :dast do
+      options do
+        {
+            artifacts: { reports: { dast: 'gl-dast-report.json' } }
+        }
+      end
+    end
+
+    trait :sast do
+      options do
+        {
+            artifacts: { reports: { sast: 'gl-sast-report.json' } }
+        }
+      end
+    end
+
+    trait :dependency_scanning do
+      options do
+        {
+            artifacts: { reports: { dependency_scanning: 'gl-dependency-scanning-report.json' } }
+        }
+      end
+    end
+
+    trait :container_scanning do
+      options do
+        {
+            artifacts: { reports: { container_scanning: 'gl-container-scanning-report.json' } }
+        }
+      end
+    end
+
     trait :non_playable do
       status { 'created' }
       self.when { 'manual' }

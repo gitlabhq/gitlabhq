@@ -40,6 +40,7 @@ describe Gitlab::SidekiqDaemon::MemoryKiller do
             message: "Exception from start_working: My Exception")
 
         expect(memory_killer).to receive(:rss_within_range?).twice.and_raise(StandardError, 'My Exception')
+        expect(memory_killer).to receive(:sleep).twice.with(Gitlab::SidekiqDaemon::MemoryKiller::CHECK_INTERVAL_SECONDS)
 
         expect { subject }.not_to raise_exception
       end
@@ -53,6 +54,7 @@ describe Gitlab::SidekiqDaemon::MemoryKiller do
 
         expect(memory_killer).to receive(:rss_within_range?).once.and_raise(Exception, 'My Exception')
 
+        expect(memory_killer).to receive(:sleep).with(Gitlab::SidekiqDaemon::MemoryKiller::CHECK_INTERVAL_SECONDS)
         expect(Sidekiq.logger).to receive(:warn).once
           .with(
             class: described_class.to_s,
