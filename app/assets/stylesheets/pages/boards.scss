@@ -245,6 +245,7 @@
   box-shadow: 0 1px 2px $issue-boards-card-shadow;
   line-height: $gl-padding;
   list-style: none;
+  position: relative;
 
   &:not(:last-child) {
     margin-bottom: $gl-padding-8;
@@ -252,6 +253,11 @@
 
   &.is-active,
   &.is-active .board-card-assignee:hover a {
+    background-color: $blue-50;
+  }
+
+  &.multi-select {
+    border-color: $blue-200;
     background-color: $blue-50;
   }
 

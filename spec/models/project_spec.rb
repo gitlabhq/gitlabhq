@@ -5179,6 +5179,61 @@ describe Project do
     end
   end
 
+  describe '#drop_visibility_level!' do
+    context 'when has a group' do
+      let(:group) { create(:group, visibility_level: group_visibility_level) }
+      let(:project) { build(:project, namespace: group, visibility_level: project_visibility_level) }
+
+      context 'when the group `visibility_level` is more strict' do
+        let(:group_visibility_level) { Gitlab::VisibilityLevel::PRIVATE }
+        let(:project_visibility_level) { Gitlab::VisibilityLevel::INTERNAL }
+
+        it 'sets `visibility_level` value from the group' do
+          expect { project.drop_visibility_level! }
+            .to change { project.visibility_level }
+            .to(Gitlab::VisibilityLevel::PRIVATE)
+        end
+      end
+
+      context 'when the group `visibility_level` is less strict' do
+        let(:group_visibility_level) { Gitlab::VisibilityLevel::INTERNAL }
+        let(:project_visibility_level) { Gitlab::VisibilityLevel::PRIVATE }
+
+        it 'does not change the value of the `visibility_level` field' do
+          expect { project.drop_visibility_level! }
+            .not_to change { project.visibility_level }
+        end
+      end
+    end
+
+    context 'when `restricted_visibility_levels` of the GitLab instance exist' do
+      before do
+        stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::INTERNAL])
+      end
+
+      let(:project) { build(:project, visibility_level: project_visibility_level) }
+
+      context 'when `visibility_level` is included into `restricted_visibility_levels`' do
+        let(:project_visibility_level) { Gitlab::VisibilityLevel::INTERNAL }
+
+        it 'sets `visibility_level` value to `PRIVATE`' do
+          expect { project.drop_visibility_level! }
+            .to change { project.visibility_level }
+            .to(Gitlab::VisibilityLevel::PRIVATE)
+        end
+      end
+
+      context 'when `restricted_visibility_levels` does not include `visibility_level`' do
+        let(:project_visibility_level) { Gitlab::VisibilityLevel::PUBLIC }
+
+        it 'does not change the value of the `visibility_level` field' do
+          expect { project.drop_visibility_level! }
+            .to not_change { project.visibility_level }
+        end
+      end
+    end
+  end
+
   def rugged_config
     rugged_repo(project.repository).config
   end

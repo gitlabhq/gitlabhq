@@ -21,8 +21,8 @@ please submit a merge request to add an upcoming class, assign to
    people, only interns, only customers, etc.).
 1. To allow people to contribute all content should be in Git.
 1. The content can go in a subdirectory under `/doc/university/`.
-1. To make, view or modify the slides of the classes use [Deckset](http://www.decksetapp.com/)
-   or [RevealJS](http://lab.hakim.se/reveal-js/). Do not use Powerpoint or Google
+1. To make, view or modify the slides of the classes use [Deckset](https://www.deckset.com)
+   or [RevealJS](https://revealjs.com/#/). Do not use Powerpoint or Google
    Slides since this prevents everyone from contributing.
 1. Please upload any video recordings to our Youtube channel. We prefer them to
    be public, if needed they can be unlisted but if so they should be linked from

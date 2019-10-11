@@ -26,7 +26,7 @@ The GitLab University curriculum is composed of GitLab videos, screencasts, pres
 ### 1.1. Version Control and Git
 
 1. [Version Control Systems](https://docs.google.com/presentation/d/16sX7hUrCZyOFbpvnrAFrg6tVO5_yT98IgdAqOmXwBho/edit#slide=id.g72f2e4906_2_29)
-1. [Code School: An Introduction to Git](https://www.codeschool.com/account/courses/try-git)
+1. [Katakoda: Learn Git Version Control using Interactive Browser-Based Scenarios](https://www.katacoda.com/courses/git)
 
 ### 1.2. GitLab Basics
 
@@ -34,12 +34,12 @@ The GitLab University curriculum is composed of GitLab videos, screencasts, pres
 1. [Why Use Git and GitLab - Slides](https://docs.google.com/a/gitlab.com/presentation/d/1RcZhFmn5VPvoFu6UMxhMOy7lAsToeBZRjLRn0LIdaNc/edit?usp=drive_web)
 1. [GitLab Basics - Article](../gitlab-basics/README.md)
 1. [Git and GitLab Basics - Video](https://www.youtube.com/watch?v=03wb9FvO4Ak&index=5&list=PLFGfElNsQthbQu_IWlNOxul0TbS_2JH-e)
-1. [Git and GitLab Basics - Online Course](https://courses.platzi.com/classes/git-gitlab/concepto/part-1/part-23370/material/)
+1. [Git and GitLab Basics - Online Course](https://courses.platzi.com/classes/57-git-gitlab/2475-part-233-2/)
 1. [Comparison of GitLab Versions](https://about.gitlab.com/features/#compare)
 
 ### 1.3. Your GitLab Account
 
-1. [Create a GitLab Account - Online Course](https://courses.platzi.com/classes/git-gitlab/concepto/first-steps/create-an-account-on-gitlab/material/)
+1. [Create a GitLab Account - Online Course](https://courses.platzi.com/classes/57-git-gitlab/2434-create-an-account-on-gitlab/)
 1. [Create and Add your SSH key to GitLab - Video](https://www.youtube.com/watch?v=54mxyLo3Mqk)
 
 ### 1.4. GitLab Projects
@@ -59,7 +59,7 @@ The GitLab University curriculum is composed of GitLab videos, screencasts, pres
 
 ### 1.6. The GitLab team
 
-1. [About GitLab](https://about.gitlab.com/about/)
+1. [About GitLab](https://about.gitlab.com/company/)
 1. [GitLab Direction](https://about.gitlab.com/direction/)
 1. [GitLab Master Plan](https://about.gitlab.com/2016/09/13/gitlab-master-plan/)
 1. [Making GitLab Great for Everyone - Video](https://www.youtube.com/watch?v=GGC40y4vMx0) - Response to "Dear GitHub" letter
@@ -70,7 +70,7 @@ The GitLab University curriculum is composed of GitLab videos, screencasts, pres
 
 ### 1.7 Community and Support
 
-1. [Getting Help](https://about.gitlab.com/getting-help/)
+1. [Getting Help](https://about.gitlab.com/get-help/)
    - Proposing Features and Reporting and Tracking bugs for GitLab
    - The GitLab IRC channel, Gitter Chat Room, Community Forum and Mailing List
    - Getting Technical Support
@@ -107,7 +107,7 @@ The GitLab University curriculum is composed of GitLab videos, screencasts, pres
 ### 2.3. Continuous Integration
 
 1. [Operating Systems, Servers, VMs, Containers and Unix - Video](https://www.youtube.com/watch?v=V61kL6IC-zY&index=8&list=PLFGfElNsQthbQu_IWlNOxul0TbS_2JH-e)
-1. [GitLab CI - Product Page](https://about.gitlab.com/gitlab-ci/)
+1. [GitLab CI - Product Page](https://about.gitlab.com/product/continuous-integration/)
 1. [Getting started with GitLab and GitLab CI](https://about.gitlab.com/2015/12/14/getting-started-with-gitlab-and-gitlab-ci/)
 1. [GitLab Container Registry](https://about.gitlab.com/2016/05/23/gitlab-container-registry/)
 1. [GitLab and Docker - Video](https://www.youtube.com/watch?v=ugOrCcbdHko&index=12&list=PLFGfElNsQthbQu_IWlNOxul0TbS_2JH-e)
@@ -120,7 +120,7 @@ The GitLab University curriculum is composed of GitLab videos, screencasts, pres
 1. [Setting up GitLab CI for iOS projects](https://about.gitlab.com/2016/03/10/setting-up-gitlab-ci-for-ios-projects/)
 1. [IBM: Continuous Delivery vs Continuous Deployment - Video](https://www.youtube.com/watch?v=igwFj8PPSnw)
 1. [Amazon: Transition to Continuous Delivery - Video](https://www.youtube.com/watch?v=esEFaY0FDKc)
-1. [TechBeacon: Doing continuous delivery? Focus first on reducing release cycle times](https://techbeacon.com/doing-continuous-delivery-focus-first-reducing-release-cycle-times)
+1. [TechBeacon: Doing continuous delivery? Focus first on reducing release cycle times](https://techbeacon.com/devops/doing-continuous-delivery-focus-first-reducing-release-cycle-times)
 1. See **[Integrations](#39-integrations)** for integrations with other CI services.
 
 ### 2.4. Workflow
@@ -133,11 +133,11 @@ The GitLab University curriculum is composed of GitLab videos, screencasts, pres
 
 ### 2.5. GitLab Comparisons
 
-1. [GitLab Compared to Other Tools](https://about.gitlab.com/comparison/)
+1. [GitLab Compared to Other Tools](https://about.gitlab.com/devops-tools/)
 1. [Comparing GitLab Terminology](https://about.gitlab.com/2016/01/27/comparing-terms-gitlab-github-bitbucket/)
 1. [GitLab Compared to Atlassian (Recording 2016-03-03)](https://youtu.be/Nbzp1t45ERo)
-1. [GitLab Position FAQ](https://about.gitlab.com/handbook/positioning-faq)
-1. [Customer review of GitLab with points on why they prefer GitLab](https://www.enovate.co.uk/web-design-blog/2015/11/25/gitlab-review/)
+1. [GitLab Position FAQ](https://about.gitlab.com/handbook/positioning-faq/)
+1. [Customer review of GitLab with points on why they prefer GitLab](https://www.enovate.co.uk/blog/2015/11/25/gitlab-review)
 
 ## 3. GitLab Advanced
 
@@ -145,13 +145,13 @@ The GitLab University curriculum is composed of GitLab videos, screencasts, pres
 
 1. [Xebia Labs: Dev Ops Terminology](https://xebialabs.com/glossary/)
 1. [Xebia Labs: Periodic Table of DevOps Tools](https://xebialabs.com/periodic-table-of-devops-tools/)
-1. [Puppet Labs: State of Dev Ops 2016 - Book](https://puppet.com/resources/white-paper/2016-state-of-devops-report)
+1. [Puppet Labs: State of Dev Ops 2016 - Book](https://puppet.com/resources/whitepaper/2016-state-of-devops-report)
 
 ### 3.2. Installing GitLab with Omnibus
 
 1. [What is Omnibus - Video](https://www.youtube.com/watch?v=XTmpKudd-Oo)
 1. [How to Install GitLab with Omnibus - Video](https://www.youtube.com/watch?v=Q69YaOjqNhg)
-1. [Installing GitLab - Online Course](https://courses.platzi.com/classes/git-gitlab/concepto/part-1/part-3/material/)
+1. [Installing GitLab - Online Course](https://courses.platzi.com/classes/57-git-gitlab/2476-part-0/)
 1. [Using a Non-Packaged PostgreSQL Database](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/README.md#using-a-non-packaged-postgresql-database-management-server)
 1. [Installing GitLab on Microsoft Azure](https://about.gitlab.com/2016/07/13/how-to-setup-a-gitlab-instance-on-microsoft-azure/)
 1. [Installing GitLab on Digital Ocean](https://about.gitlab.com/2016/04/27/getting-started-with-gitlab-and-digitalocean/)
@@ -176,7 +176,7 @@ The GitLab University curriculum is composed of GitLab videos, screencasts, pres
 
 1. [Scalability and High Availability - Video](https://www.youtube.com/watch?v=cXRMJJb6sp4&list=PLFGfElNsQthbQu_IWlNOxul0TbS_2JH-e&index=2)
 1. [High Availability - Video](https://www.youtube.com/watch?v=36KS808u6bE&index=15&list=PLFGfElNsQthbQu_IWlNOxul0TbS_2JH-e)
-1. [High Availability Documentation](https://about.gitlab.com/high-availability/)
+1. [High Availability Documentation](https://about.gitlab.com/solutions/high-availability/)
 
 ### 3.8 Cycle Analytics
 
@@ -205,7 +205,7 @@ NOTE: **Note:**
 Some content can only be accessed by GitLab team members.
 
 1. [Support Path](support/README.md)
-1. [Sales Path](https://about.gitlab.com/handbook/sales-onboarding/)
+1. [Sales Path](https://about.gitlab.com/handbook/sales/onboarding/)
 1. [User Training](training/user_training.md)
 1. [GitLab Flow Training](training/gitlab_flow.md)
 1. [Training Topics](training/index.md)

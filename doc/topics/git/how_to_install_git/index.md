@@ -38,7 +38,7 @@ through the macOS App Store.
 
 ### Installing Homebrew
 
-Once Xcode is installed browse to the [Homebrew website](http://brew.sh/index.html)
+Once Xcode is installed browse to the [Homebrew website](https://brew.sh/index.html)
 for the official Homebrew installation instructions.
 
 ### Installing Git via Homebrew

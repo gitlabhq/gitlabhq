@@ -27,16 +27,16 @@ to do it for you.
 To help you out, we've gathered some instructions on how to do that
 for the most popular hosting services:
 
-- [Amazon](http://docs.aws.amazon.com/gettingstarted/latest/swh/getting-started-configure-route53.html)
+- [Amazon](https://docs.aws.amazon.com/AmazonS3/latest/dev/website-hosting-custom-domain-walkthrough.html)
 - [Bluehost](https://my.bluehost.com/cgi/help/559)
 - [CloudFlare](https://support.cloudflare.com/hc/en-us/articles/200169096-How-do-I-add-A-records-)
-- [cPanel](https://documentation.cpanel.net/display/ALD/Edit+DNS+Zone)
+- [cPanel](https://documentation.cpanel.net/display/84Docs/Edit+DNS+Zone)
 - [DreamHost](https://help.dreamhost.com/hc/en-us/articles/215414867-How-do-I-add-custom-DNS-records-)
 - [Go Daddy](https://www.godaddy.com/help/add-an-a-record-19238)
-- [Hostgator](http://support.hostgator.com/articles/changing-dns-records)
+- [Hostgator](https://www.hostgator.com/help/article/changing-dns-records)
 - [Inmotion hosting](https://my.bluehost.com/cgi/help/559)
 - [Media Temple](https://mediatemple.net/community/products/dv/204403794/how-can-i-change-the-dns-records-for-my-domain)
-- [Microsoft](https://msdn.microsoft.com/en-us/library/bb727018.aspx)
+- [Microsoft](https://docs.microsoft.com/en-us/previous-versions/windows/it-pro/windows-2000-server/bb727018(v=technet.10))
 
 If your hosting service is not listed above, you can just try to
 search the web for `how to add dns record on <my hosting service>`.

@@ -32,7 +32,7 @@ module Gitlab
 
         ActiveRecord::Base.uncached do
           ActiveRecord::Base.no_touching do
-            update_project_params
+            update_project_params!
             create_relations
           end
         end
@@ -70,7 +70,7 @@ module Gitlab
       # the configuration yaml file too.
       # Finally, it updates each attribute in the newly imported project.
       def create_relations
-        project_relations_without_project_members.each do |relation_key, relation_definition|
+        project_relations.each do |relation_key, relation_definition|
           relation_key_s = relation_key.to_s
 
           if relation_definition.present?
@@ -124,56 +124,40 @@ module Gitlab
         # no-op
       end
 
-      def project_relations_without_project_members
-        # We remove `project_members` as they are deserialized separately
-        project_relations.except(:project_members)
-      end
-
       def project_relations
-        reader.attributes_finder.find_relations_tree(:project)
+        @project_relations ||= reader.attributes_finder.find_relations_tree(:project)
       end
 
-      def update_project_params
+      def update_project_params!
         Gitlab::Timeless.timeless(@project) do
-          @project.update(project_params)
-        end
-      end
+          project_params = @tree_hash.reject do |key, value|
+            project_relations.include?(key.to_sym)
+          end
 
-      def project_params
-        @project_params ||= begin
-          attrs = json_params.merge(override_params).merge(visibility_level, external_label)
+          project_params = project_params.merge(present_project_override_params)
 
           # Cleaning all imported and overridden params
-          Gitlab::ImportExport::AttributeCleaner.clean(relation_hash: attrs,
-                                                       relation_class: Project,
-                                                       excluded_keys: excluded_keys_for_relation(:project))
+          project_params = Gitlab::ImportExport::AttributeCleaner.clean(
+            relation_hash: project_params,
+            relation_class: Project,
+            excluded_keys: excluded_keys_for_relation(:project))
+
+          @project.assign_attributes(project_params)
+          @project.drop_visibility_level!
+          @project.save!
         end
       end
 
-      def override_params
-        @override_params ||= @project.import_data&.data&.fetch('override_params', nil) || {}
+      def present_project_override_params
+        # we filter out the empty strings from the overrides
+        # keeping the default values configured
+        project_override_params.transform_values do |value|
+          value.is_a?(String) ? value.presence : value
+        end.compact
       end
 
-      def json_params
-        @json_params ||= @tree_hash.reject do |key, value|
-          # return params that are not 1 to many or 1 to 1 relations
-          value.respond_to?(:each) && !Project.column_names.include?(key)
-        end
-      end
-
-      def visibility_level
-        level = override_params['visibility_level'] || json_params['visibility_level'] || @project.visibility_level
-        level = @project.group.visibility_level if @project.group && level.to_i > @project.group.visibility_level
-        level = Gitlab::VisibilityLevel::PRIVATE if level == Gitlab::VisibilityLevel::INTERNAL && Gitlab::CurrentSettings.restricted_visibility_levels.include?(level)
-
-        { 'visibility_level' => level }
-      end
-
-      def external_label
-        label = override_params['external_authorization_classification_label'].presence ||
-          json_params['external_authorization_classification_label'].presence
-
-        { 'external_authorization_classification_label' => label }
+      def project_override_params
+        @project_override_params ||= @project.import_data&.data&.fetch('override_params', nil) || {}
       end
 
       # Given a relation hash containing one or more models and its relationships,

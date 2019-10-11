@@ -19,7 +19,7 @@ describe JiraService do
       described_class.create(
         project: create(:project),
         active: true,
-        username: 'username',
+        username: 'username ',
         password: 'test',
         jira_issue_transition_id: 24,
         url: 'http://jira.test.com/path/'
@@ -34,6 +34,15 @@ describe JiraService do
 
     it 'leaves out trailing slashes in context' do
       expect(service.options[:context_path]).to eq('/path')
+    end
+
+    it 'leaves out trailing whitespaces in username' do
+      expect(service.options[:username]).to eq('username')
+    end
+
+    it 'provides additional cookies to allow basic auth with oracle webgate' do
+      expect(service.options[:use_cookies]).to eq(true)
+      expect(service.options[:additional_cookies]).to eq(['OBBasicAuth=fromDialog'])
     end
   end
 
@@ -68,7 +77,7 @@ describe JiraService do
       expect(subject.properties).to be_nil
     end
 
-    it 'sets title  correctly' do
+    it 'sets title correctly' do
       service = subject
 
       expect(service.title).to eq('custom title')
@@ -93,7 +102,7 @@ describe JiraService do
   end
 
   # we need to make sure we are able to read both from properties and jira_tracker_data table
-  # TODO: change this as part of #63084
+  # TODO: change this as part of https://gitlab.com/gitlab-org/gitlab/issues/29404
   context 'overriding properties' do
     let(:access_params) do
       { url: url, api_url: api_url, username: username, password: password,
@@ -600,26 +609,6 @@ describe JiraService do
 
         expect(service.title).to eq(title2)
         expect(service.description).to eq(description2)
-      end
-    end
-  end
-
-  describe 'additional cookies' do
-    let(:project) { create(:project) }
-
-    context 'provides additional cookies to allow basic auth with oracle webgate' do
-      before do
-        @service = project.create_jira_service(
-          active: true, properties: { url: 'http://jira.com' })
-      end
-
-      after do
-        @service.destroy!
-      end
-
-      it 'is initialized' do
-        expect(@service.options[:use_cookies]).to eq(true)
-        expect(@service.options[:additional_cookies]).to eq(['OBBasicAuth=fromDialog'])
       end
     end
   end

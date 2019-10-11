@@ -38,7 +38,7 @@ Explaining [every detail of GitLab CI/CD](../../../ci/yaml/README.md)
 and GitLab Runner is out of the scope of this guide, but we'll
 need to understand just a few things to be able to write our own
 `.gitlab-ci.yml` or tweak an existing one. It's an
-[Yaml](http://docs.ansible.com/ansible/YAMLSyntax.html) file,
+[Yaml](https://docs.ansible.com/ansible/latest/reference_appendices/YAMLSyntax.html) file,
 with its own syntax. You can always check your CI syntax with
 the [GitLab CI Lint Tool](https://gitlab.com/ci/lint).
 
@@ -127,7 +127,7 @@ pages:
 The script above would be enough to build your Jekyll
 site with GitLab Pages. But, from Jekyll 3.4.0 on, its default
 template originated by `jekyll new project` requires
-[Bundler](http://bundler.io/) to install Jekyll dependencies
+[Bundler](https://bundler.io) to install Jekyll dependencies
 and the default theme. To adjust our script to meet these new
 requirements, we only need to install and build Jekyll with Bundler:
 

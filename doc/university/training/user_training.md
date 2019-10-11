@@ -39,7 +39,7 @@ Use the tools at your disposal when you get stuck.
 
 - Windows: Install 'Git for Windows'
 
-> <https://git-for-windows.github.io>
+> <https://gitforwindows.org>
 
 - Mac: Type '`git`' in the Terminal application.
 
@@ -242,7 +242,7 @@ See GitLab merge requests for examples: <https://gitlab.com/gitlab-org/gitlab-fo
 1. Create an annotated tag.
 1. Push the tags to the remote repository.
 
-Additional resources: <http://git-scm.com/book/en/Git-Basics-Tagging>.
+Additional resources: <https://git-scm.com/book/en/v2/Git-Basics-Tagging>.
 
 ## Commands (tags)
 

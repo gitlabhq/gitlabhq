@@ -70,7 +70,7 @@ Sometimes we need to upgrade customers from old versions of GitLab to latest, so
   - [Perform the MySQL to PostgreSQL migration to convert your backup](../../update/mysql_to_postgresql.md)
   - [Upgrade to Omnibus 7.14](https://docs.gitlab.com/omnibus/update/README.html#upgrading-from-a-non-omnibus-installation-to-an-omnibus-installation)
   - [Restore backup using our Restore rake task](../../raketasks/backup_restore.md#restore)
-  - [Upgrade to latest EE](https://about.gitlab.com/downloads-ee)
+  - [Upgrade to latest EE](https://about.gitlab.com/update/)
     - (GitLab inc. only) Acquire and apply a license for the Enterprise Edition product, ask in #support
 - Perform a downgrade from [EE to CE](../../downgrade_ee_to_ce/README.md)
 
@@ -147,12 +147,12 @@ Some tickets need specific knowledge or a deep understanding of a particular com
 
 - Read about [Escalation](https://about.gitlab.com/handbook/support/workflows/issue_escalations.html)
 - Find the macros in Zendesk for ticket escalations
-- Take a look at the [GitLab.com Team page](https://about.gitlab.com/team/) to find the resident experts in their fields
+- Take a look at the [GitLab.com Team page](https://about.gitlab.com/company/team/) to find the resident experts in their fields
 
 ### Learn about raising issues and fielding feature proposals
 
 - Understand what's in the pipeline and proposed features at GitLab: [Direction Page](https://about.gitlab.com/direction/)
-- Practice searching issues and filtering using [labels](https://gitlab.com/gitlab-org/gitlab-foss/labels) to find existing feature proposals and bugs
+- Practice searching issues and filtering using [labels](https://gitlab.com/gitlab-org/gitlab/-/labels) to find existing feature proposals and bugs
 - If raising a new issue always provide a relevant label and a link to the relevant ticket in Zendesk
 - Add [customer labels](https://gitlab.com/gitlab-org/gitlab-foss/issues?label_name%5B%5D=customer) for those issues relevant to our subscribers
 - Take a look at the [existing issue templates](https://gitlab.com/gitlab-org/gitlab/blob/master/CONTRIBUTING.md#issue-tracker) to see what is expected

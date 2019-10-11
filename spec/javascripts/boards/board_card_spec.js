@@ -67,6 +67,16 @@ describe('Board card', () => {
     expect(vm.issueDetailVisible).toBe(true);
   });
 
+  it("returns false when multiSelect doesn't contain issue", () => {
+    expect(vm.multiSelectVisible).toBe(false);
+  });
+
+  it('returns true when multiSelect contains issue', () => {
+    boardsStore.multiSelect.list = [vm.issue];
+
+    expect(vm.multiSelectVisible).toBe(true);
+  });
+
   it('adds user-can-drag class if not disabled', () => {
     expect(vm.$el.classList.contains('user-can-drag')).toBe(true);
   });
@@ -180,7 +190,7 @@ describe('Board card', () => {
       triggerEvent('mousedown');
       triggerEvent('mouseup');
 
-      expect(eventHub.$emit).toHaveBeenCalledWith('newDetailIssue', vm.issue);
+      expect(eventHub.$emit).toHaveBeenCalledWith('newDetailIssue', vm.issue, undefined);
       expect(boardsStore.detail.list).toEqual(vm.list);
     });
 
@@ -203,7 +213,7 @@ describe('Board card', () => {
       triggerEvent('mousedown');
       triggerEvent('mouseup');
 
-      expect(eventHub.$emit).toHaveBeenCalledWith('clearDetailIssue');
+      expect(eventHub.$emit).toHaveBeenCalledWith('clearDetailIssue', undefined);
     });
   });
 });

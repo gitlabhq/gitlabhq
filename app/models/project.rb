@@ -2258,6 +2258,16 @@ class Project < ApplicationRecord
     setting
   end
 
+  def drop_visibility_level!
+    if group && group.visibility_level < visibility_level
+      self.visibility_level = group.visibility_level
+    end
+
+    if Gitlab::CurrentSettings.restricted_visibility_levels.include?(visibility_level)
+      self.visibility_level = Gitlab::VisibilityLevel::PRIVATE
+    end
+  end
+
   private
 
   def closest_namespace_setting(name)
