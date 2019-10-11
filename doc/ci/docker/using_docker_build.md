@@ -155,7 +155,8 @@ docker-in-docker service and
 [GitLab.com Shared Runners](../../user/gitlab_com/index.html#shared-runners)
 support this.
 
-1. Install [GitLab Runner](https://docs.gitlab.com/runner/install).
+1. Install [GitLab Runner](https://docs.gitlab.com/runner/install/).
+
 1. Register GitLab Runner from the command line to use `docker` and `privileged`
    mode:
 
@@ -315,7 +316,8 @@ are done to the services as well, making these incompatible.
 
 In order to do that, follow the steps:
 
-1. Install [GitLab Runner](https://docs.gitlab.com/runner/install).
+1. Install [GitLab Runner](https://docs.gitlab.com/runner/install/).
+
 1. Register GitLab Runner from the command line to use `docker` and share `/var/run/docker.sock`:
 
    ```bash

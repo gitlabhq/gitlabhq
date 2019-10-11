@@ -1,9 +1,9 @@
 # Geo security review (Q&A) **(PREMIUM ONLY)**
 
-The following security review of the Geo feature set focuses on security
-aspects of the feature as they apply to customers running their own GitLab
-instances. The review questions are based in part on the [application security architecture](https://www.owasp.org/index.php/Application_Security_Architecture_Cheat_Sheet)
-questions from [owasp.org](https://www.owasp.org).
+The following security review of the Geo feature set focuses on security aspects of
+the feature as they apply to customers running their own GitLab instances. The review
+questions are based in part on the [OWASP Application Security Verification Standard Project](https://www.owasp.org/index.php/Category:OWASP_Application_Security_Verification_Standard_Project)
+from [owasp.org](https://www.owasp.org/index.php/Main_Page).
 
 ## Business Model
 
@@ -30,7 +30,7 @@ questions from [owasp.org](https://www.owasp.org).
   private projects. Geo replicates them all indiscriminately. “Selective sync”
   exists for files and repositories (but not database content), which would permit
   only less-sensitive projects to be replicated to a **secondary** node if desired.
-- See also: [developing a data classification policy](https://gitlab.com/gitlab-com/security/issues/4).
+- See also: [GitLab data classification policy](https://about.gitlab.com/handbook/engineering/security/data-classification-policy.html).
 
 ### What data backup and retention requirements have been defined for the application?
 

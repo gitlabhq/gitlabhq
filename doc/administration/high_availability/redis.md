@@ -313,12 +313,12 @@ Pick the one that suits your needs.
 - [Installations from source][source]: You need to install Redis and Sentinel
   yourself. Use the [Redis HA installation from source](redis_source.md)
   documentation.
-- [Omnibus GitLab **Community Edition** (CE) package][ce]: Redis is bundled, so you
+- [Omnibus GitLab **Community Edition** (CE) package](https://about.gitlab.com/install/?version=ce): Redis is bundled, so you
   can use the package with only the Redis service enabled as described in steps
   1 and 2 of this document (works for both master and slave setups). To install
   and configure Sentinel, jump directly to the Sentinel section in the
   [Redis HA installation from source](redis_source.md#step-3-configuring-the-redis-sentinel-instances) documentation.
-- [Omnibus GitLab **Enterprise Edition** (EE) package][ee]: Both Redis and Sentinel
+- [Omnibus GitLab **Enterprise Edition** (EE) package](https://about.gitlab.com/install/?version=ee): Both Redis and Sentinel
   are bundled in the package, so you can use the EE package to set up the whole
   Redis HA infrastructure (master, slave and Sentinel) which is described in
   this document.
@@ -1025,6 +1025,4 @@ Read more on High Availability:
 [sentinel]: https://redis.io/topics/sentinel
 [omnifile]: https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/files/gitlab-cookbooks/gitlab/libraries/gitlab_rails.rb
 [source]: ../../install/installation.md
-[ce]: https://about.gitlab.com/downloads
-[ee]: https://about.gitlab.com/downloads-ee
 [it]: https://gitlab.com/gitlab-org/gitlab-foss/uploads/c4cc8cd353604bd80315f9384035ff9e/The_Internet_IT_Crowd.png

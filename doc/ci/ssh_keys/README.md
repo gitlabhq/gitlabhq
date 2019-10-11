@@ -25,10 +25,10 @@ with any type of [executor](https://docs.gitlab.com/runner/executors/)
 
 ## How it works
 
-1. Create a new SSH key pair locally with [`ssh-keygen`](http://linux.die.net/man/1/ssh-keygen)
+1. Create a new SSH key pair locally with [`ssh-keygen`](https://linux.die.net/man/1/ssh-keygen)
 1. Add the private key as a [variable](../variables/README.md) to
    your project
-1. Run the [`ssh-agent`](http://linux.die.net/man/1/ssh-agent) during job to load
+1. Run the [`ssh-agent`](https://linux.die.net/man/1/ssh-agent) during job to load
    the private key.
 1. Copy the public key to the servers you want to have access to (usually in
    `~/.ssh/authorized_keys`) or add it as a [deploy key](../../ssh/README.md#deploy-keys)
