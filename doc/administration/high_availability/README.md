@@ -265,8 +265,24 @@ balancer. We may test and add additional options to this list in time.
 
 The Support and Quality teams are in the process of building and performance
 testing an environment that will support around 50,000 users. The specifications
-below are a work-in-progress representation of the work so far. The Quality team
-will be certifying this environment in late 2019. The specifications may be
-adjusted prior to certification based on performance testing.
+below are a very rough work-in-progress representation of the work so far. The
+Quality team will be certifying this environment in late 2019. The
+specifications may be adjusted prior to certification based on performance
+testing.
 
-TBD: Add specs
+| Service                       | Configuration           | GCP type       |
+| ------------------------------|-------------------------|----------------|
+| 15 GitLab Rails <br> - Puma workers on each node set to 90% of available CPUs with 16 threads | 32 vCPU, 28.8GB Memory | n1-highcpu-32 |
+| 3 PostgreSQL                  | 8 vCPU, 30GB Memory     | n1-standard-8  |
+| 1 PgBouncer                   | 2 vCPU, 1.8GB Memory    | n1-highcpu-2   |
+| 2 Gitaly <br> - Gitaly Ruby workers on each node set to 90% of available CPUs with 16 threads | 64 vCPU, 240GB Memory   | n1-standard-64 |
+| 3 Redis Cache + Sentinel <br> - Cache maxmemory set to 90% of available memory | 4 vCPU, 15GB Memory | n1-standard-4 |
+| 3 Redis Persistent + Sentinel | 4 vCPU, 15GB Memory     | n1-standard-4  |
+| 4 Sidekiq                     | 4 vCPU, 15GB Memory     | n1-standard-4  |
+| 3 Consul                      | 2 vCPU, 1.8GB Memory    | n1-highcpu-2   |
+| 1 NFS Server                  | 2 vCPU, 1.8GB Memory    | n1-highcpu-2   |
+| 1 Monitoring node             | 4 CPU, 3.6GB Memory     | n1-highcpu-4   |
+| 1 Load Balancing node         | 2 vCPU, 1.8GB Memory    | n1-highcpu-2   |
+
+NOTE: **Note:** At this time, HAProxy is the only tested and recommended load
+balancer. We may test and add additional options to this list in time.
