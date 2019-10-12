@@ -6,8 +6,6 @@
     - .only-code-qa-changes
   stage: test
   dependencies: []
-  # It's currently impossible to specify `needs: []` so we depend on `build-qa-image` which also has `.only-code-qa-changes`
-  needs: ["build-qa-image"]
   cache:
     key: "qa-framework-jobs:v1"
     paths:
