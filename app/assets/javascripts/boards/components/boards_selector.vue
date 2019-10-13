@@ -305,7 +305,11 @@ export default {
         <div v-if="canAdminBoard">
           <gl-dropdown-divider />
 
-          <gl-dropdown-item v-if="multipleIssueBoardsAvailable" @click.prevent="showPage('new')">
+          <gl-dropdown-item
+            v-if="multipleIssueBoardsAvailable"
+            data-qa-selector="create_new_board_button"
+            @click.prevent="showPage('new')"
+          >
             {{ s__('IssueBoards|Create new board') }}
           </gl-dropdown-item>
 
