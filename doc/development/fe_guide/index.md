@@ -41,6 +41,11 @@ or make changes to our frontend development guidelines.
 How we write frontend tests, run the GitLab test suite, and debug test related
 issues.
 
+## Pajamas Design System
+
+Reusable components with technical and usage guidelines can be found in our
+[Pajamas Design System](https://design.gitlab.com/).
+
 ## [Design Patterns](design_patterns.md)
 
 Common JavaScript design patterns in GitLab's codebase.
@@ -64,10 +69,6 @@ How to use GraphQL
 ## [Icons and Illustrations](icons.md)
 
 How we use SVG for our Icons and Illustrations.
-
-## [Components](components.md)
-
-How we use UI components.
 
 ## Frontend FAQ
 
