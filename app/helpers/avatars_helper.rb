@@ -56,16 +56,6 @@ module AvatarsHelper
     }))
   end
 
-  def user_avatar_url_for(only_path: true, **options)
-    if options[:url]
-      options[:url]
-    elsif options[:user]
-      avatar_icon_for_user(options[:user], options[:size], only_path: only_path)
-    else
-      avatar_icon_for_email(options[:user_email], options[:size], only_path: only_path)
-    end
-  end
-
   def user_avatar_without_link(options = {})
     avatar_size = options[:size] || 16
     user_name = options[:user].try(:name) || options[:user_name]
@@ -110,6 +100,19 @@ module AvatarsHelper
   end
 
   private
+
+  def user_avatar_url_for(only_path: true, **options)
+    return options[:url] if options[:url]
+
+    email = options[:user_email]
+    user = options.key?(:user) ? options[:user] : User.find_by_any_email(email)
+
+    if user
+      avatar_icon_for_user(user, options[:size], only_path: only_path)
+    else
+      gravatar_icon(email, options[:size])
+    end
+  end
 
   def source_icon(source, options = {})
     avatar_url = source.try(:avatar_url)

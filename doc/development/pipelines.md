@@ -58,7 +58,7 @@ each pipeline includes the following [variables](../ci/variables/README.md):
 - `RAILS_ENV: "test"`
 - `NODE_ENV: "test"`
 - `SIMPLECOV: "true"`
-- `GIT_DEPTH: "20"`
+- `GIT_DEPTH: "50"`
 - `GIT_SUBMODULE_STRATEGY: "none"`
 - `GET_SOURCES_ATTEMPTS: "3"`
 - `KNAPSACK_RSPEC_SUITE_REPORT_PATH: knapsack/${CI_PROJECT_NAME}/rspec_report-master.json`

@@ -17,6 +17,7 @@ module Gitlab
       i = 0
       blame.each do |commit, line|
         commit = Commit.new(commit, project)
+        commit.lazy_author # preload author
 
         sha = commit.sha
         if prev_sha != sha

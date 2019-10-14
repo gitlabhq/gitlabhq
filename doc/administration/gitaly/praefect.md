@@ -3,6 +3,19 @@
 NOTE: **Note:** Praefect is an experimental service, and for testing purposes only at
 this time.
 
+Praefect is an optional reverse-proxy for [Gitaly](../index.md) to manage a
+cluster of Gitaly nodes for high availability through replication.
+If a Gitaly node becomes unavailable, it will be possible to fail over to a
+warm Gitaly replica.
+
+The first minimal version will support:
+
+- Eventual consistency of the secondary replicas.
+- Manual fail over from the primary to the secondary.
+
+Follow the [HA Gitaly epic](https://gitlab.com/groups/gitlab-org/-/epics/1489)
+for updates and roadmap.
+
 ## Omnibus
 
 ### Architecture

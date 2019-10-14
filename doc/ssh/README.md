@@ -83,20 +83,6 @@ The minimum key size is 1024 bits, defaulting to 2048. If you wish to generate a
 stronger RSA key pair, specify the `-b` flag with a higher bit value than the
 default.
 
-The old, default password encoding for SSH private keys is
-[insecure](https://latacora.micro.blog/the-default-openssh/);
-it's only a single round of an MD5 hash. Since OpenSSH version 6.5, you should
-use the `-o` option to `ssh-keygen` to encode your private key in a new, more
-secure format.
-
-If you already have an RSA SSH key pair to use with GitLab, consider upgrading it
-to use the more secure password encryption format by using the following command
-on the private key:
-
-```bash
-ssh-keygen -o -f ~/.ssh/id_rsa
-```
-
 ## Generating a new SSH key pair
 
 Before creating an SSH key pair, make sure to understand the
@@ -114,7 +100,7 @@ To create a new SSH key pair:
    Or, if you want to use RSA:
 
    ```bash
-   ssh-keygen -o -t rsa -b 4096 -C "email@example.com"
+   ssh-keygen -t rsa -b 4096 -C "email@example.com"
    ```
 
    The `-C` flag adds a comment in the key in case you have multiple of them
@@ -139,8 +125,30 @@ To create a new SSH key pair:
    you can use the `-p` flag:
 
    ```
-   ssh-keygen -p -o -f <keyname>
+   ssh-keygen -p -f <keyname>
    ```
+
+### OpenSSH < v7.8
+
+Pre OpenSSH 7.8, default password encoding for SSH private keys was
+[insecure](https://latacora.micro.blog/the-default-openssh/);
+it's only a single round of an MD5 hash. For OpenSSH version 6.5 to version 7.8, you should
+use the `-o` option to `ssh-keygen` to [encode your private key in a new, more
+secure format.](https://superuser.com/questions/1455735/what-does-ssh-keygen-o-do#answer-1455738)
+
+If you already have an RSA SSH key pair to use with GitLab, consider upgrading it
+to use the more secure password encryption format by using the following command
+on the private key:
+
+```bash
+ssh-keygen -o -f ~/.ssh/id_rsa
+```
+
+Or generate a new RSA key:
+
+```bash
+ssh-keygen -o -t rsa -b 4096 -C "email@example.com"
+```
 
 Now, it's time to add the newly created public key to your GitLab account.
 

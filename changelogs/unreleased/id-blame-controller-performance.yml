@@ -1,0 +1,5 @@
+---
+title: Optimize SQL requests for BlameController and CommitsController
+merge_request: 18342
+author:
+type: performance

@@ -67,6 +67,11 @@ gitlab:
       limits:
         cpu: 1.2G
         memory: 2.8G
+    deployment:
+      readinessProbe:
+        initialDelaySeconds: 5  # Default is 0
+        periodSeconds: 15  # Default is 10
+        timeoutSeconds: 5  # Default is 2
     workhorse:
       resources:
         requests:
@@ -75,6 +80,10 @@ gitlab:
         limits:
           cpu: 200m
           memory: 200M
+      readinessProbe:
+        initialDelaySeconds: 5  # Default is 0
+        periodSeconds: 15  # Default is 10
+        timeoutSeconds: 5  # Default is 2
 gitlab-runner:
   resources:
     requests:

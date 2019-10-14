@@ -65,8 +65,20 @@ class TodosFinder
     params[:action_id]
   end
 
+  def action_array_provided?
+    params[:action].is_a?(Array)
+  end
+
+  def map_actions_to_ids
+    params[:action].map { |item| Todo::ACTION_NAMES.key(item.to_sym) }
+  end
+
   def to_action_id
-    Todo::ACTION_NAMES.key(action.to_sym)
+    if action_array_provided?
+      map_actions_to_ids
+    else
+      Todo::ACTION_NAMES.key(action.to_sym)
+    end
   end
 
   def action?
@@ -133,9 +145,19 @@ class TodosFinder
     end
   end
 
+  def action_id_array_provided?
+    params[:action_id].is_a?(Array) && params[:action_id].any?
+  end
+
+  def by_action_ids(items)
+    items.for_action(action_id)
+  end
+
   def by_action_id(items)
+    return by_action_ids(items) if action_id_array_provided?
+
     if action_id?
-      items.for_action(action_id)
+      by_action_ids(items)
     else
       items
     end

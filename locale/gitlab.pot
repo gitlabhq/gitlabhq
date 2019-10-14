@@ -6519,6 +6519,9 @@ msgstr ""
 msgid "Everything you need to create a GitLab Pages site using plain HTML."
 msgstr ""
 
+msgid "Example: @sub\\.company\\.com$"
+msgstr ""
+
 msgid "Example: Usage = single query. (Requested) / (Capacity) = multiple queries combined into a formula."
 msgstr ""
 

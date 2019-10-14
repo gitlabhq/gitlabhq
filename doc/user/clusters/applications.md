@@ -132,13 +132,17 @@ chart is used to install this application with a
 [`values.yaml`](https://gitlab.com/gitlab-org/gitlab/blob/master/vendor/ingress/values.yaml)
 file.
 
-#### Modsecurity Application Firewall
+#### Web Application Firewall (ModSecurity)
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/65192) in GitLab 12.3 (enabled using `ingress_modsecurity` [feature flag](../../development/feature_flags/development.md#enabling-a-feature-flag-in-development)).
 
-GitLab supports
+Out of the box, GitLab provides you real-time security monitoring with
 [`modsecurity`](https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/annotations/#modsecurity)
-to check requests against [OWASP's Core Rule Set](https://www.modsecurity.org/CRS/Documentation/).
+
+Modsecurity is a toolkit for real-time web application monitoring, logging,
+and access control. With GitLab's offering, the [OWASP's Core Rule Set](https://www.modsecurity.org/CRS/Documentation/), which provides generic attack detection capabilities,
+is automatically applied.
+
 This feature:
 
 - Runs in "Detection-only mode" unless configured otherwise.

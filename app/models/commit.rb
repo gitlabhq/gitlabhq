@@ -257,10 +257,9 @@ class Commit
   end
 
   def author
-    # We use __sync so that we get the actual objects back (including an actual
-    # nil), instead of a wrapper, as returning a wrapped nil breaks a lot of
-    # code.
-    lazy_author.__sync
+    strong_memoize(:author) do
+      lazy_author&.itself
+    end
   end
   request_cache(:author) { author_email.downcase }
 
