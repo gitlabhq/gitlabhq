@@ -20,7 +20,7 @@ graph TB
 
 Where `GitLab` is the collection of clients that can request Git operations.
 `Gitaly` is a Gitaly server before using Praefect. The Praefect node has two
-storage nodes attached. Praefect itself doesn't storage data, but connects to
+storage nodes attached. Praefect itself doesn't store data, but connects to
 three Gitaly nodes, `Praefect-Git-1`,  `Praefect-Git-2`, and `Praefect-Git-3`.
 There should be no knowledge other than with Praefect about the existence of
 the `Praefect-Git-X` nodes.

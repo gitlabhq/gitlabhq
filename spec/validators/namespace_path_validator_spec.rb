@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe NamespacePathValidator do
@@ -5,7 +7,7 @@ describe NamespacePathValidator do
 
   describe '.valid_path?' do
     it 'handles invalid utf8' do
-      expect(described_class.valid_path?("a\0weird\255path")).to be_falsey
+      expect(described_class.valid_path?(+"a\0weird\255path")).to be_falsey
     end
   end
 
