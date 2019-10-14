@@ -91,7 +91,6 @@ describe Projects::HashedStorage::MigrateRepositoryService do
 
       context 'when rollback fails' do
         before do
-          hashed_storage.ensure_storage_path_exists
           gitlab_shell.mv_repository(project.repository_storage, old_disk_path, new_disk_path)
         end
 

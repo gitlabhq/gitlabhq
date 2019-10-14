@@ -30,6 +30,10 @@ FactoryBot.define do
       end
     end
 
+    trait :management_project do
+      management_project factory: :project
+    end
+
     trait :namespace_per_environment_disabled do
       namespace_per_environment { false }
     end

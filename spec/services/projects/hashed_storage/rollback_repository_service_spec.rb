@@ -91,7 +91,6 @@ describe Projects::HashedStorage::RollbackRepositoryService, :clean_gitlab_redis
 
       context 'when rollback fails' do
         before do
-          legacy_storage.ensure_storage_path_exists
           gitlab_shell.mv_repository(project.repository_storage, old_disk_path, new_disk_path)
         end
 

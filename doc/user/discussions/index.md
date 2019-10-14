@@ -25,7 +25,7 @@ creates another standard comment. Replying to a threaded comment creates a reply
 [Markdown] and [quick actions], just as if you replied from the web.
 
 NOTE: **Note:**
-There is a limit of 5,000 comments for every object.
+There is a limit of 5,000 comments for every object, for example: issue, epic, and merge request.
 
 ## Resolvable comments and threads
 

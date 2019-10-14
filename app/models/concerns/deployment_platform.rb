@@ -11,6 +11,10 @@ module DeploymentPlatform
 
   private
 
+  def cluster_management_project_enabled?
+    Feature.enabled?(:cluster_management_project, default_enabled: true)
+  end
+
   def find_deployment_platform(environment)
     find_platform_kubernetes_with_cte(environment) ||
       find_instance_cluster_platform_kubernetes(environment: environment)
@@ -18,7 +22,7 @@ module DeploymentPlatform
 
   # EE would override this and utilize environment argument
   def find_platform_kubernetes_with_cte(_environment)
-    Clusters::ClustersHierarchy.new(self).base_and_ancestors
+    Clusters::ClustersHierarchy.new(self, include_management_project: cluster_management_project_enabled?).base_and_ancestors
       .enabled.default_environment
       .first&.platform_kubernetes
   end

@@ -23,16 +23,6 @@ module Storage
       project.full_path
     end
 
-    # TODO: remove this method entirely after 12.4 https://gitlab.com/gitlab-org/gitlab/issues/33244
-    # we no longer need ensure_storage_path_exists to call add_namespace since both creating and moving
-    # repositories will be preceded by a mkdir -p in gitaly to ensure the parent of the destination directory
-    # exists.
-    def ensure_storage_path_exists
-      return unless namespace
-
-      true
-    end
-
     def rename_repo(old_full_path: nil, new_full_path: nil)
       old_full_path ||= project.full_path_before_last_save
       new_full_path ||= project.build_full_path

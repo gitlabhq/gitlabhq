@@ -8,7 +8,6 @@ module Projects
 
         @old_storage_version = project.storage_version
         project.storage_version = ::Project::HASHED_STORAGE_FEATURES[:repository]
-        project.ensure_storage_path_exists
 
         @new_disk_path = project.disk_path
 

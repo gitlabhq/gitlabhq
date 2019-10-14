@@ -80,7 +80,6 @@ module Backup
       Project.find_each(batch_size: 1000) do |project|
         progress.print " * #{project.full_path} ... "
         path_to_project_bundle = path_to_bundle(project)
-        project.ensure_storage_path_exists
 
         restore_repo_success = nil
         if File.exist?(path_to_project_bundle)

@@ -256,6 +256,7 @@ project:
 - cycle_analytics_stages
 - group
 - namespace
+- management_clusters
 - boards
 - last_event
 - services

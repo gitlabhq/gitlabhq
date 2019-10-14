@@ -24,6 +24,7 @@ module Clusters
     KUBE_INGRESS_BASE_DOMAIN = 'KUBE_INGRESS_BASE_DOMAIN'
 
     belongs_to :user
+    belongs_to :management_project, class_name: '::Project', optional: true
 
     has_many :cluster_projects, class_name: 'Clusters::Project'
     has_many :projects, through: :cluster_projects, class_name: '::Project'
@@ -63,6 +64,7 @@ module Clusters
     validate :restrict_modification, on: :update
     validate :no_groups, unless: :group_type?
     validate :no_projects, unless: :project_type?
+    validate :unique_management_project_environment_scope
 
     after_save :clear_reactive_cache!
 
@@ -199,6 +201,18 @@ module Clusters
     end
 
     private
+
+    def unique_management_project_environment_scope
+      return unless management_project
+
+      duplicate_management_clusters = management_project.management_clusters
+        .where(environment_scope: environment_scope)
+        .where.not(id: id)
+
+      if duplicate_management_clusters.any?
+        errors.add(:environment_scope, "cannot add duplicated environment scope")
+      end
+    end
 
     def instance_domain
       @instance_domain ||= Gitlab::CurrentSettings.auto_devops_domain

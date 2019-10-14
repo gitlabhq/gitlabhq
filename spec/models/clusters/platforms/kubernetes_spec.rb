@@ -241,6 +241,23 @@ describe Clusters::Platforms::Kubernetes do
       it { is_expected.to include(key: 'KUBE_CA_PEM_FILE', value: ca_pem, public: true, file: true) }
     end
 
+    context 'cluster is managed by project' do
+      before do
+        allow(Gitlab::Kubernetes::DefaultNamespace).to receive(:new)
+          .with(cluster, project: project).and_return(double(from_environment_name: namespace))
+
+        allow(platform).to receive(:kubeconfig).with(namespace).and_return('kubeconfig')
+      end
+
+      let(:cluster) { create(:cluster, :group, platform_kubernetes: platform, management_project: project) }
+      let(:namespace) { 'kubernetes-namespace' }
+      let(:kubeconfig) { 'kubeconfig' }
+
+      it { is_expected.to include(key: 'KUBE_TOKEN', value: platform.token, public: false, masked: true) }
+      it { is_expected.to include(key: 'KUBE_NAMESPACE', value: namespace) }
+      it { is_expected.to include(key: 'KUBECONFIG', value: kubeconfig, public: false, file: true) }
+    end
+
     context 'kubernetes namespace exists' do
       let(:variable) { Hash(key: :fake_key, value: 'fake_value') }
       let(:namespace_variables) { Gitlab::Ci::Variables::Collection.new([variable]) }

@@ -11,6 +11,7 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
   subject { build(:cluster) }
 
   it { is_expected.to belong_to(:user) }
+  it { is_expected.to belong_to(:management_project).class_name('::Project') }
   it { is_expected.to have_many(:cluster_projects) }
   it { is_expected.to have_many(:projects) }
   it { is_expected.to have_many(:cluster_groups) }
@@ -287,6 +288,20 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
 
       context 'when cluster does not have a domain' do
         it { is_expected.to be_valid }
+      end
+    end
+
+    describe 'unique scope for management_project' do
+      let(:project) { create(:project) }
+      let!(:cluster_with_management_project) { create(:cluster, management_project: project) }
+
+      context 'duplicate scopes for the same management project' do
+        let(:cluster) { build(:cluster, management_project: project) }
+
+        it 'adds an error on environment_scope' do
+          expect(cluster).not_to be_valid
+          expect(cluster.errors[:environment_scope].first).to eq('cannot add duplicated environment scope')
+        end
       end
     end
   end

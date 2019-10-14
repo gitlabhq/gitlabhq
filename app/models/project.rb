@@ -68,7 +68,7 @@ class Project < ApplicationRecord
     :snippets_access_level, :builds_access_level, :repository_access_level,
     to: :project_feature, allow_nil: true
 
-  delegate :base_dir, :disk_path, :ensure_storage_path_exists, to: :storage
+  delegate :base_dir, :disk_path, to: :storage
 
   delegate :scheduled?, :started?, :in_progress?,
     :failed?, :finished?,
@@ -122,8 +122,6 @@ class Project < ApplicationRecord
   # Storage specific hooks
   after_initialize :use_hashed_storage
   after_create :check_repository_absence!
-  after_create :ensure_storage_path_exists
-  after_save :ensure_storage_path_exists, if: :saved_change_to_namespace_id?
 
   acts_as_ordered_taggable
 
@@ -247,6 +245,7 @@ class Project < ApplicationRecord
   has_one :cluster_project, class_name: 'Clusters::Project'
   has_many :clusters, through: :cluster_project, class_name: 'Clusters::Cluster'
   has_many :kubernetes_namespaces, class_name: 'Clusters::KubernetesNamespace'
+  has_many :management_clusters, class_name: 'Clusters::Cluster', foreign_key: :management_project_id, inverse_of: :management_project
 
   has_many :prometheus_metrics
 

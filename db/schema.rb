@@ -991,7 +991,9 @@ ActiveRecord::Schema.define(version: 2019_10_04_134055) do
     t.string "domain"
     t.boolean "managed", default: true, null: false
     t.boolean "namespace_per_environment", default: true, null: false
+    t.integer "management_project_id"
     t.index ["enabled"], name: "index_clusters_on_enabled"
+    t.index ["management_project_id"], name: "index_clusters_on_management_project_id", where: "(management_project_id IS NOT NULL)"
     t.index ["user_id"], name: "index_clusters_on_user_id"
   end
 
@@ -3983,6 +3985,7 @@ ActiveRecord::Schema.define(version: 2019_10_04_134055) do
   add_foreign_key "cluster_projects", "clusters", on_delete: :cascade
   add_foreign_key "cluster_projects", "projects", on_delete: :cascade
   add_foreign_key "cluster_providers_gcp", "clusters", on_delete: :cascade
+  add_foreign_key "clusters", "projects", column: "management_project_id", name: "fk_f05c5e5a42", on_delete: :nullify
   add_foreign_key "clusters", "users", on_delete: :nullify
   add_foreign_key "clusters_applications_cert_managers", "clusters", on_delete: :cascade
   add_foreign_key "clusters_applications_helm", "clusters", on_delete: :cascade

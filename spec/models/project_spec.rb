@@ -92,6 +92,7 @@ describe Project do
     it { is_expected.to have_many(:pipeline_schedules) }
     it { is_expected.to have_many(:members_and_requesters) }
     it { is_expected.to have_many(:clusters) }
+    it { is_expected.to have_many(:management_clusters).class_name('Clusters::Cluster') }
     it { is_expected.to have_many(:kubernetes_namespaces) }
     it { is_expected.to have_many(:custom_attributes).class_name('ProjectCustomAttribute') }
     it { is_expected.to have_many(:project_badges).class_name('ProjectBadge') }
