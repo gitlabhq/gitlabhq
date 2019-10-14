@@ -1,5 +1,6 @@
 <script>
 import _ from 'underscore';
+import ArtifactsApp from './artifacts_list_app.vue';
 import Deployment from './deployment.vue';
 import MrWidgetContainer from './mr_widget_container.vue';
 import MrWidgetPipeline from './mr_widget_pipeline.vue';
@@ -15,6 +16,7 @@ import MrWidgetPipeline from './mr_widget_pipeline.vue';
 export default {
   name: 'MrWidgetPipelineContainer',
   components: {
+    ArtifactsApp,
     Deployment,
     MrWidgetContainer,
     MrWidgetPipeline,
@@ -79,6 +81,9 @@ export default {
       :troubleshooting-docs-path="mr.troubleshootingDocsPath"
     />
     <template v-slot:footer>
+      <div v-if="mr.exposedArtifactsPath" class="js-exposed-artifacts">
+        <artifacts-app :endpoint="mr.exposedArtifactsPath" />
+      </div>
       <div v-if="deployments.length" class="mr-widget-extension">
         <deployment
           v-for="deployment in deployments"

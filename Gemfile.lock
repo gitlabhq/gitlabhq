@@ -370,6 +370,7 @@ GEM
       redis (> 3.0.0, < 5.0.0)
     gitlab-license (1.0.0)
     gitlab-markup (1.7.0)
+    gitlab-net-dns (0.9.1)
     gitlab-peek (0.0.1)
       railties (>= 4.0.0)
     gitlab-sidekiq-fetcher (0.5.2)
@@ -596,7 +597,6 @@ GEM
       mustermann (~> 1.0.0)
     nakayoshi_fork (0.0.4)
     nap (1.1.0)
-    net-dns (0.9.0)
     net-ldap (0.16.0)
     net-ntp (2.1.3)
     net-ssh (5.2.0)
@@ -1173,6 +1173,7 @@ DEPENDENCIES
   gitlab-labkit (~> 0.5)
   gitlab-license (~> 1.0)
   gitlab-markup (~> 1.7.0)
+  gitlab-net-dns (~> 0.9.1)
   gitlab-peek (~> 0.0.1)
   gitlab-sidekiq-fetcher (= 0.5.2)
   gitlab-styles (~> 2.7)
@@ -1222,7 +1223,6 @@ DEPENDENCIES
   mini_magick
   minitest (~> 5.11.0)
   nakayoshi_fork (~> 0.0.4)
-  net-dns (~> 0.9.0)
   net-ldap
   net-ntp
   net-ssh (~> 5.2)

@@ -465,7 +465,7 @@ gem 'lograge', '~> 0.5'
 gem 'grape_logging', '~> 1.7'
 
 # DNS Lookup
-gem 'net-dns', '~> 0.9.0'
+gem 'gitlab-net-dns', '~> 0.9.1'
 
 # Countries list
 gem 'countries', '~> 3.0'

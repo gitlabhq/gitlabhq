@@ -300,17 +300,17 @@ You will need to push a branch to those repositories, it doesn't work for forks.
 The `review-docs-deploy*` job will:
 
 1. Create a new branch in the [`gitlab-docs`](https://gitlab.com/gitlab-org/gitlab-docs)
-   project named after the scheme: `$DOCS_GITLAB_REPO_SUFFIX-$CI_ENVIRONMENT_SLUG`,
-   where `DOCS_GITLAB_REPO_SUFFIX` is the suffix for each product, e.g, `ce` for
-   CE, etc.
-1. Trigger a cross project pipeline and build the docs site with your changes
+   project named after the scheme: `docs-preview-$DOCS_GITLAB_REPO_SUFFIX-$CI_MERGE_REQUEST_IID`,
+   where `DOCS_GITLAB_REPO_SUFFIX` is the suffix for each product, e.g, `ee` for
+   EE, `omnibus` for Omnibus GitLab, etc, and `CI_MERGE_REQUEST_IID` is the ID
+   of the respective merge request.
+1. Trigger a cross project pipeline and build the docs site with your changes.
 
-After a few minutes, the Review App will be deployed and you will be able to
-preview the changes. The docs URL can be found in two places:
-
-- In the merge request widget
-- In the output of the `review-docs-deploy*` job, which also includes the
-  triggered pipeline so that you can investigate whether something went wrong
+In case the review app URL returns 404, this means that either the site is not
+yet deployed, or something went wrong with the remote pipeline. Give it a few
+minutes and it should appear online, otherwise you can check the status of the
+remote pipeline from the link in the merge request's job output.
+If the pipeline failed or got stuck, drop a line in the `#docs` chat channel.
 
 TIP: **Tip:**
 Someone with no merge rights to the GitLab projects (think of forks from
@@ -343,12 +343,11 @@ If you want to know the in-depth details, here's what's really happening:
 1. The job runs the [`scripts/trigger-build-docs`](https://gitlab.com/gitlab-org/gitlab/blob/master/scripts/trigger-build-docs)
    script with the `deploy` flag, which in turn:
    1. Takes your branch name and applies the following:
-      - The slug of the branch name is used to avoid special characters since
-        ultimately this will be used by NGINX.
-      - The `preview-` prefix is added to avoid conflicts if there's a remote branch
-        with the same name that you created in the merge request.
-      - The final branch name is truncated to 42 characters to avoid filesystem
-        limitations with long branch names (> 63 chars).
+      - The `docs-preview-` prefix is added.
+      - The product slug is used to know the project the review app originated
+        from.
+      - The number of the merge request is added so that you can know by the
+        `gitlab-docs` branch name the merge request it originated from.
    1. The remote branch is then created if it doesn't exist (meaning you can
       re-run the manual job as many times as you want and this step will be skipped).
    1. A new cross-project pipeline is triggered in the docs project.
@@ -369,6 +368,7 @@ The following GitLab features are used among others:
 - [Review Apps](../../ci/review_apps/index.md)
 - [Artifacts](../../ci/yaml/README.md#artifacts)
 - [Specific Runner](../../ci/runners/README.md#locking-a-specific-runner-from-being-enabled-for-other-projects)
+- [Pipelines for merge requests](../../ci/merge_request_pipelines/index.md)
 
 ## Testing
 

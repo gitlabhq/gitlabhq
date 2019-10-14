@@ -16,14 +16,12 @@ end
 GITLAB_DOCS_REPO = 'gitlab-org/gitlab-docs'.freeze
 
 #
-# Truncate the remote docs branch name otherwise we hit the filesystem
-# limit and the directory name where NGINX serves the site won't match
-# the branch name.
+# This is the branch that will be created in the gitlab-docs project.
+# Name it after the product we're previewing and the ID of the MR that
+# kicked the review app.
 #
 def docs_branch
-  # The maximum string length a file can have on a filesystem (ext4)
-  # is 63 characters. CI_ENVIRONMENT_SLUG is limited to 24 characters.
-  ENV["CI_ENVIRONMENT_SLUG"]
+  "docs-preview-#{slug}-#{ENV["CI_MERGE_REQUEST_IID"]}"
 end
 
 #
