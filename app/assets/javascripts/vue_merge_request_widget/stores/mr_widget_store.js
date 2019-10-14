@@ -169,6 +169,7 @@ export default class MergeRequestStore {
     this.mergeRequestPipelinesHelpPath = data.merge_request_pipelines_docs_path;
     this.conflictsDocsPath = data.conflicts_docs_path;
     this.ciEnvironmentsStatusPath = data.ci_environments_status_path;
+    this.securityApprovalsHelpPagePath = data.security_approvals_help_page_path;
   }
 
   get isNothingToMergeState() {

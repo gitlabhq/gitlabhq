@@ -1314,6 +1314,10 @@ module API
           release.links.sorted
         end
       end
+      expose :_links do
+        expose :merge_requests_url
+        expose :issues_url
+      end
 
       private
 
@@ -1324,11 +1328,27 @@ module API
       def commit_path
         return unless object.commit
 
-        Gitlab::Routing.url_helpers.project_commit_path(object.project, object.commit.id)
+        Gitlab::Routing.url_helpers.project_commit_path(project, object.commit.id)
       end
 
       def tag_path
-        Gitlab::Routing.url_helpers.project_tag_path(object.project, object.tag)
+        Gitlab::Routing.url_helpers.project_tag_path(project, object.tag)
+      end
+
+      def merge_requests_url
+        Gitlab::Routing.url_helpers.project_merge_requests_url(project, params_for_issues_and_mrs)
+      end
+
+      def issues_url
+        Gitlab::Routing.url_helpers.project_issues_url(project, params_for_issues_and_mrs)
+      end
+
+      def params_for_issues_and_mrs
+        { scope: 'all', state: 'opened', release_tag: object.tag }
+      end
+
+      def project
+        @project ||= object.project
       end
     end
 

@@ -244,17 +244,14 @@ adjusted prior to certification based on performance testing.
 | 7 GitLab Rails <br> - Puma workers on each node set to 90% of available CPUs with 16 threads | 32 vCPU, 28.8GB Memory | n1-highcpu-32 |
 | 3 PostgreSQL                  | 8 vCPU, 30GB Memory     | n1-standard-8  |
 | 1 PgBouncer                   | 2 vCPU, 1.8GB Memory    | n1-highcpu-2   |
-| 2 Gitaly <br> - Gitaly Ruby workers on each node set to 90% of available CPUs with 16 threads | 32 vCPU, 120GB Memory   | n1-standard-32 |
+| X Gitaly[^1] <br> - Gitaly Ruby workers on each node set to 90% of available CPUs with 16 threads | 32 vCPU, 120GB Memory   | n1-standard-32 |
 | 3 Redis Cache + Sentinel <br> - Cache maxmemory set to 90% of available memory | 4 vCPU, 15GB Memory | n1-standard-4 |
 | 3 Redis Persistent + Sentinel | 4 vCPU, 15GB Memory     | n1-standard-4  |
 | 4 Sidekiq                     | 4 vCPU, 15GB Memory     | n1-standard-4  |
 | 3 Consul                      | 2 vCPU, 1.8GB Memory    | n1-highcpu-2   |
 | 1 NFS Server                  | 2 vCPU, 1.8GB Memory    | n1-highcpu-2   |
 | 1 Monitoring node             | 4 CPU, 3.6GB Memory     | n1-highcpu-4   |
-| 1 Load Balancing node         | 2 vCPU, 1.8GB Memory    | n1-highcpu-2   |
-
-NOTE: **Note:** At this time, HAProxy is the only tested and recommended load
-balancer. We may test and add additional options to this list in time.
+| 1 Load Balancing node[^2] .   | 2 vCPU, 1.8GB Memory    | n1-highcpu-2   |
 
 ### 50,000 User Configuration
 
@@ -275,14 +272,20 @@ testing.
 | 15 GitLab Rails <br> - Puma workers on each node set to 90% of available CPUs with 16 threads | 32 vCPU, 28.8GB Memory | n1-highcpu-32 |
 | 3 PostgreSQL                  | 8 vCPU, 30GB Memory     | n1-standard-8  |
 | 1 PgBouncer                   | 2 vCPU, 1.8GB Memory    | n1-highcpu-2   |
-| 2 Gitaly <br> - Gitaly Ruby workers on each node set to 90% of available CPUs with 16 threads | 64 vCPU, 240GB Memory   | n1-standard-64 |
+| X Gitaly[^1] <br> - Gitaly Ruby workers on each node set to 90% of available CPUs with 16 threads | 64 vCPU, 240GB Memory   | n1-standard-64 |
 | 3 Redis Cache + Sentinel <br> - Cache maxmemory set to 90% of available memory | 4 vCPU, 15GB Memory | n1-standard-4 |
 | 3 Redis Persistent + Sentinel | 4 vCPU, 15GB Memory     | n1-standard-4  |
 | 4 Sidekiq                     | 4 vCPU, 15GB Memory     | n1-standard-4  |
 | 3 Consul                      | 2 vCPU, 1.8GB Memory    | n1-highcpu-2   |
 | 1 NFS Server                  | 2 vCPU, 1.8GB Memory    | n1-highcpu-2   |
 | 1 Monitoring node             | 4 CPU, 3.6GB Memory     | n1-highcpu-4   |
-| 1 Load Balancing node         | 2 vCPU, 1.8GB Memory    | n1-highcpu-2   |
+| 1 Load Balancing node[^2] .   | 2 vCPU, 1.8GB Memory    | n1-highcpu-2   |
 
-NOTE: **Note:** At this time, HAProxy is the only tested and recommended load
-balancer. We may test and add additional options to this list in time.
+[^1]: Gitaly node requirements are dependent on customer data. We recommend 2
+      nodes as an absolute minimum for performance at the 25,000 user scale and
+      4 nodes as an absolute minimum at the 50,000 user scale, but additional
+      nodes should be considered in conjunction with a review of project counts
+      and sizes.
+
+[^2]: HAProxy is the only tested and recommended load balancer. Additional
+      options may be supported in the future.

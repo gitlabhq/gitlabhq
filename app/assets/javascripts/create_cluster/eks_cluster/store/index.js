@@ -35,6 +35,10 @@ const createStore = () =>
         namespaced: true,
         ...clusterDropdownStore(awsServices.fetchSubnets),
       },
+      securityGroups: {
+        namespaced: true,
+        ...clusterDropdownStore(awsServices.fetchSecurityGroups),
+      },
     },
   });
 

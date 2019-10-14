@@ -12,7 +12,18 @@ export default () =>
     components: {
       CreateEksCluster,
     },
+    data() {
+      const { gitlabManagedClusterHelpPath } = document.querySelector(this.$options.el).dataset;
+
+      return {
+        gitlabManagedClusterHelpPath,
+      };
+    },
     render(createElement) {
-      return createElement('create-eks-cluster');
+      return createElement('create-eks-cluster', {
+        props: {
+          gitlabManagedClusterHelpPath: this.gitlabManagedClusterHelpPath,
+        },
+      });
     },
   });

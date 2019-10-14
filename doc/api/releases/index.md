@@ -121,6 +121,10 @@ Example response:
                "external":true
             }
          ]
+      },
+      "_links":{
+         "merge_requests_url": "https://gitlab.example.com/root/awesome_app/merge_requests?release_tag=v0.2&scope=all&state=opened",
+         "issues_url": "https://gitlab.example.com/root/awesome_app/issues?release_tag=v0.2&scope=all&state=opened"
       }
    },
    {
@@ -177,6 +181,10 @@ Example response:
          "links":[
 
          ]
+      },
+      "_links":{
+         "merge_requests_url": "https://gitlab.example.com/root/awesome_app/merge_requests?release_tag=v0.1&scope=all&state=opened",
+         "issues_url": "https://gitlab.example.com/root/awesome_app/issues?release_tag=v0.1&scope=all&state=opened"
       }
    }
 ]
@@ -288,6 +296,10 @@ Example response:
       "links":[
 
       ]
+   },
+   "_links":{
+      "merge_requests_url": "https://gitlab.example.com/root/awesome_app/merge_requests?release_tag=v0.1&scope=all&state=opened",
+      "issues_url": "https://gitlab.example.com/root/awesome_app/issues?release_tag=v0.1&scope=all&state=opened"
    }
 }
 ```
@@ -413,6 +425,10 @@ Example response:
             "external":true
          }
       ]
+   },
+   "_links":{
+      "merge_requests_url": "https://gitlab.example.com/root/awesome_app/merge_requests?release_tag=v0.3&scope=all&state=opened",
+      "issues_url": "https://gitlab.example.com/root/awesome_app/issues?release_tag=v0.3&scope=all&state=opened"
    }
 }
 ```
@@ -514,6 +530,10 @@ Example response:
       "links":[
 
       ]
+   },
+   "_links":{
+      "merge_requests_url": "https://gitlab.example.com/root/awesome_app/merge_requests?release_tag=v0.1&scope=all&state=opened",
+      "issues_url": "https://gitlab.example.com/root/awesome_app/issues?release_tag=v0.1&scope=all&state=opened"
    }
 }
 ```
@@ -596,6 +616,10 @@ Example response:
       "links":[
 
       ]
+   },
+   "_links":{
+      "merge_requests_url": "https://gitlab.example.com/root/awesome_app/merge_requests?release_tag=v0.1&scope=all&state=opened",
+      "issues_url": "https://gitlab.example.com/root/awesome_app/issues?release_tag=v0.1&scope=all&state=opened"
    }
 }
 ```

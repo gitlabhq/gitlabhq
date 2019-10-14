@@ -653,6 +653,12 @@ msgstr ""
 msgid "A member of the abuse team will review your report as soon as possible."
 msgstr ""
 
+msgid "A merge request approval is required when a security report contains a new vulnerability of high, critical, or unknown severity."
+msgstr ""
+
+msgid "A merge request approval is required when the license compliance report contains a blacklisted license."
+msgstr ""
+
 msgid "A new branch will be created in your fork and a new merge request will be started."
 msgstr ""
 
@@ -3402,6 +3408,9 @@ msgstr ""
 msgid "ClusterIntegration|Allow GitLab to manage namespace and service accounts for this cluster."
 msgstr ""
 
+msgid "ClusterIntegration|Allow GitLab to manage namespace and service accounts for this cluster. %{startLink}More information%{endLink}"
+msgstr ""
+
 msgid "ClusterIntegration|Alternatively"
 msgstr ""
 
@@ -3448,6 +3457,9 @@ msgid "ClusterIntegration|Certificate Authority bundle (PEM format)"
 msgstr ""
 
 msgid "ClusterIntegration|Choose a prefix to be used for your namespaces. Defaults to your project path."
+msgstr ""
+
+msgid "ClusterIntegration|Choose the %{startLink}security groups%{endLink} to apply to the EKS-managed Elastic Network Interfaces that are created in your worker node subnets."
 msgstr ""
 
 msgid "ClusterIntegration|Choose the %{startLink}subnets%{endLink} in your VPC where your worker nodes will run."
@@ -3502,6 +3514,9 @@ msgid "ClusterIntegration|Could not load VPCs for the selected region"
 msgstr ""
 
 msgid "ClusterIntegration|Could not load regions from your AWS account"
+msgstr ""
+
+msgid "ClusterIntegration|Could not load security groups for the selected VPC"
 msgstr ""
 
 msgid "ClusterIntegration|Could not load subnets for the selected VPC"
@@ -3669,6 +3684,12 @@ msgstr ""
 msgid "ClusterIntegration|Kubernetes clusters can be used to deploy applications and to provide Review Apps for this project"
 msgstr ""
 
+msgid "ClusterIntegration|Kubernetes version"
+msgstr ""
+
+msgid "ClusterIntegration|Kubernetes version not found"
+msgstr ""
+
 msgid "ClusterIntegration|Learn more about %{help_link_start_machine_type}machine types%{help_link_end} and %{help_link_start_pricing}pricing%{help_link_end}."
 msgstr ""
 
@@ -3702,6 +3723,9 @@ msgstr ""
 msgid "ClusterIntegration|Loading VPCs"
 msgstr ""
 
+msgid "ClusterIntegration|Loading security groups"
+msgstr ""
+
 msgid "ClusterIntegration|Loading subnets"
 msgstr ""
 
@@ -3733,6 +3757,9 @@ msgid "ClusterIntegration|No projects matched your search"
 msgstr ""
 
 msgid "ClusterIntegration|No region found"
+msgstr ""
+
+msgid "ClusterIntegration|No security group found"
 msgstr ""
 
 msgid "ClusterIntegration|No subnet found"
@@ -3822,13 +3849,22 @@ msgstr ""
 msgid "ClusterIntegration|Search regions"
 msgstr ""
 
+msgid "ClusterIntegration|Search security groups"
+msgstr ""
+
 msgid "ClusterIntegration|Search subnets"
 msgstr ""
 
 msgid "ClusterIntegration|Search zones"
 msgstr ""
 
+msgid "ClusterIntegration|Security groups"
+msgstr ""
+
 msgid "ClusterIntegration|See and edit the details for your Kubernetes cluster"
+msgstr ""
+
+msgid "ClusterIntegration|Select a VPC to choose a security group"
 msgstr ""
 
 msgid "ClusterIntegration|Select a VPC to choose a subnet"
@@ -4000,6 +4036,9 @@ msgid "ClusterIntergation|Select a VPC"
 msgstr ""
 
 msgid "ClusterIntergation|Select a region"
+msgstr ""
+
+msgid "ClusterIntergation|Select a security group"
 msgstr ""
 
 msgid "ClusterIntergation|Select a subnet"
@@ -9464,6 +9503,12 @@ msgstr ""
 msgid "Learn more about Kubernetes"
 msgstr ""
 
+msgid "Learn more about License-Check"
+msgstr ""
+
+msgid "Learn more about Vulnerability-Check"
+msgstr ""
+
 msgid "Learn more about Web Terminal"
 msgstr ""
 
@@ -9486,9 +9531,6 @@ msgid "Learn more about signing commits"
 msgstr ""
 
 msgid "Learn more about the dependency list"
-msgstr ""
-
-msgid "Learn more about vulnerability check"
 msgstr ""
 
 msgid "Learn more in the"
@@ -9525,6 +9567,9 @@ msgid "License"
 msgstr ""
 
 msgid "License Compliance"
+msgstr ""
+
+msgid "License-Check"
 msgstr ""
 
 msgid "LicenseCompliance|Add a license"
@@ -15268,6 +15313,9 @@ msgstr ""
 msgid "SortOptions|Priority"
 msgstr ""
 
+msgid "SortOptions|Project"
+msgstr ""
+
 msgid "SortOptions|Recent last activity"
 msgstr ""
 
@@ -18213,7 +18261,7 @@ msgstr ""
 msgid "Vulnerabilities over time"
 msgstr ""
 
-msgid "Vulnerability-Check requires one or more merge request approvals only if high or critical security vulnerabilities are detected."
+msgid "Vulnerability-Check"
 msgstr ""
 
 msgid "VulnerabilityChart|%{formattedStartDate} to today"

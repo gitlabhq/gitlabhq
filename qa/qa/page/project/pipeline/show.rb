@@ -18,6 +18,10 @@ module QA::Page
         element :job_link
       end
 
+      view 'app/assets/javascripts/pipelines/components/graph/linked_pipeline.vue' do
+        element :linked_pipeline_button
+      end
+
       view 'app/assets/javascripts/vue_shared/components/ci_icon.vue' do
         element :status_icon, 'ci-status-icon-${status}' # rubocop:disable QA/ElementWithPattern
       end
@@ -74,3 +78,5 @@ module QA::Page
     end
   end
 end
+
+QA::Page::Project::Pipeline::Show.prepend_if_ee('QA::EE::Page::Project::Pipeline::Show')

@@ -276,5 +276,5 @@ Parameters:
 Example request:
 
 ```bash
-curl --request DELETE --header 'Private-Token: <your_access_token>' https://gitlab.example.com/api/v4/groups/26/clusters/23'
+curl --request DELETE --header 'Private-Token: <your_access_token>' https://gitlab.example.com/api/v4/groups/26/clusters/23
 ```

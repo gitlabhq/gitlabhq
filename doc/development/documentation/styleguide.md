@@ -484,6 +484,9 @@ For other punctuation rules, please refer to the
 - Leave exactly one blank line before and after a heading.
 - Do not use links in headings.
 - Add the corresponding [product badge](#product-badges) according to the tier the feature belongs.
+- Use sentence case in headings. Do not capitalize the words of the title, unless
+  it refers to a product feature. For example, capitalizing "issues" is acceptable in
+  `## What you can do with GitLab Issues`, but not in `## Closing multiple issues`.
 
 ## Links
 
