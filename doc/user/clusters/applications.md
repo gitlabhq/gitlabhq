@@ -91,6 +91,11 @@ file. Prior to GitLab 12.3,
 the [stable/cert-manager](https://github.com/helm/charts/tree/master/stable/cert-manager)
 chart was used.
 
+NOTE: **Note:**
+If you have installed cert-manager prior to GitLab 12.3, Let's Encrypt will
+[block requests from older versions of cert-manager](https://community.letsencrypt.org/t/blocking-old-cert-manager-versions/98753).
+To resolve this, uninstall cert-manager (consider [backing up any additional configuration](https://docs.cert-manager.io/en/latest/tasks/backup-restore-crds.html)), then install cert-manager again.
+
 ### GitLab Runner
 
 > - Introduced in GitLab 10.6 for project-level clusters.

@@ -1,0 +1,5 @@
+---
+title: Unpin ingress image version, upgrade chart to 1.22.1
+merge_request: 18047
+author:
+type: added

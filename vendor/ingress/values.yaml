@@ -1,6 +1,5 @@
 controller:
   image:
-    tag: "0.10.2"
     repository: "quay.io/kubernetes-ingress-controller/nginx-ingress-controller"
   stats:
     enabled: true

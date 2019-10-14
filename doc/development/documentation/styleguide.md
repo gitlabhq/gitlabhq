@@ -212,9 +212,9 @@ Do not include the same information in multiple places. [Link to a SSOT instead.
 
 - Use inclusive language and avoid jargon, as well as uncommon
   words. The docs should be clear and easy to understand.
-- Write in the 3rd person (use "we", "you", "us", "one", instead of "I" or "me").
+- Write in the 3rd person (use "we," "you," "us," "one," instead of "I" or "me").
 - Be clear, concise, and stick to the goal of the doc.
-- Write in US English.
+- Write in US English with US grammar.
 - Capitalize "G" and "L" in GitLab.
 - Use title case when referring to:
   - [GitLab Features](https://about.gitlab.com/features/). For example, Issue Board,
@@ -225,9 +225,23 @@ Do not include the same information in multiple places. [Link to a SSOT instead.
   - Methods or methodologies. For example, Continuous Integration, Continuous
     Deployment, Scrum, and Agile.
 
-NOTE: **Note:**
-Some features are also objects. For example, "GitLab's Merge Requests support X." and
-"Create a new merge request for Z.".
+    NOTE: **Note:**
+    Some features are also objects. For example, "GitLab's Merge Requests support X" and
+    "Create a new merge request for Z."
+
+- Avoid use of the future tense:
+  - Instead of, "After you execute this command, the result will be displayed," say "After you execute this command, the result is displayed."
+  - Only use the future tense to convey when the action or result will actually occur at a future time.
+- Do not use contractions:
+  - Instead of "don't," "can't," "doesn't," and so on, say "do not," "cannot," or "does not."
+  - Possible exceptions are cases when a more familiar tone is desired, such as a blog post or other casual context.
+- Do not use slashes to clump different words together or as a replacement for the word "or":
+  - Instead of "and/or," consider saying "or," or use another sensible construction.
+  - Other examples include "clone/fetch," author/assignee," and "namespace/repository name." Break apart any such instances in an appropriate way.
+  - Exceptions to this rule include commonly accepted technical terms such as CI/CD, TCP/IP, and so on.
+- Do not use "may" and "might" interchangeably:
+  - Use "might" to indicate the probability of something occurring. "If you skip this step, the import process might fail."
+  - Use "may" to indicate giving permission for someone to do something, or consider using "can" instead. "You may select either option on this screen." Or, "you can select either option on this screen."
 
 ## Text
 

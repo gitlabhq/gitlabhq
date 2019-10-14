@@ -32,7 +32,7 @@ For additional details on each, see the [template for new docs](#template-for-ne
 below.
 
 Note that you can include additional subsections, as appropriate, such as 'How it Works', 'Architecture',
-and other logicial divisions such as pre- and post-deployment steps.
+and other logical divisions such as pre- and post-deployment steps.
 
 ## Template for new docs
 
