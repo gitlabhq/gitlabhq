@@ -892,6 +892,23 @@ queue = Sidekiq::Queue.new('repository_import')
 queue.each { |job| job.delete if <condition>}
 ```
 
+`<condition>` probably includes references to job arguments, which depend on the type of job in question.
+
+| queue | worker | job args |
+| ----- | ------ | -------- |
+| repository_import | RepositoryImportWorker | project_id |
+| update_merge_requests | UpdateMergeRequestsWorker | project_id, user_id, oldrev, newrev, ref |
+
+**Example:** Delete all UpdateMergeRequestsWorker jobs associated with a merge request on project_id 125,
+merging branch `ref/heads/my_branch`.
+
+```ruby
+queue = Sidekiq::Queue.new('update_merge_requests')
+queue.each { |job| job.delete if job.args[0]==125 and job.args[4]=='ref/heads/my_branch'}
+```
+
+**Note:** Running jobs will not be killed. Stop sidekiq before doing this, to get all matching jobs.
+
 ### Enable debug logging of Sidekiq
 
 ```ruby

@@ -54,7 +54,7 @@ If you get an error "Whoops! This action is not allowed. This incident
 will be reported." that means your Slack account is not allowed to
 change feature flags or you do not [have access](#access).
 
-### Enabling feature for internal testing
+### Enabling feature for preproduction testing
 
 As a first step in a feature rollout, you should enable the feature on <https://staging.gitlab.com>
 and <https://dev.gitlab.org>.

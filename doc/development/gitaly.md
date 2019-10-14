@@ -17,7 +17,7 @@ In May 2019, Bob Van Landuyt hosted a [Deep Dive] on GitLab's [Gitaly project] a
 
 Start by reading the Gitaly repository's
 [Beginner's guide to Gitaly contributions](https://gitlab.com/gitlab-org/gitaly/blob/master/doc/beginners_guide.md).
-It describes how to setup Gitaly, the various components of Gitaly and what they do, and how to run its test suites.
+It describes how to set up Gitaly, the various components of Gitaly and what they do, and how to run its test suites.
 
 ## Developing new Git features
 

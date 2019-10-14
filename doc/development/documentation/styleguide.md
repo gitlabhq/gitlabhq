@@ -598,7 +598,7 @@ You can link any up-to-date video that is useful to the GitLab user.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-docs/merge_requests/472) in GitLab 12.1.
 
-The [GitLab docs site](https://docs.gitlab.com) supports embedded videos.
+The [GitLab Docs site](https://docs.gitlab.com) supports embedded videos.
 
 You can only embed videos from
 [GitLab's official YouTube account](https://www.youtube.com/channel/UCnMGQ8QHMAnVIsI3xJrihhg).
@@ -693,7 +693,7 @@ use the following markup for highlighting.
 _Note that the alert boxes only work for one paragraph only. Multiple paragraphs,
 lists, headers, etc will not render correctly. For multiple lines, use blockquotes instead._
 
-Alert boxes only render properly on the GitLab Docs site (<http://docs.gitlab.com>).
+Alert boxes only render on the GitLab Docs site (<https://docs.gitlab.com>).
 Within GitLab itself, they will appear as plain markdown text (like the examples
 above the rendered versions, below).
 

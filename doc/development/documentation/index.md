@@ -13,8 +13,8 @@ In addition to this page, the following resources can help you craft and contrib
 - [Workflows](workflow.md) - A landing page for our key workflows:
   - [Documentation process for feature changes](feature-change-workflow.md) - Adding required documentation when developing a GitLab feature.
   - [Documentation improvement workflow](improvement-workflow.md) - New content not associated with a new feature.
-- [Markdown Guide](../../user/markdown.md) - A reference for all markdown syntax supported by GitLab.
-- [Site architecture](site_architecture/index.md) - How <http://docs.gitlab.com> is built.
+- [Markdown Guide](../../user/markdown.md) - A reference for all Markdown syntax supported by GitLab.
+- [Site architecture](site_architecture/index.md) - How <https://docs.gitlab.com> is built.
 
 ## Source files and rendered web locations
 
@@ -195,7 +195,7 @@ available online on 2018-09-15, but, as the feature freeze date has passed, if
 the MR does not have a "pick into 11.3" label, the milestone has to be changed
 to 11.4 and it will be shipped with all GitLab packages only on 2018-10-22,
 with GitLab 11.4. Meaning, it will only be available under `/help` from GitLab
-11.4 onwards, but available on <https://docs.gitlab.com/archives/> on the same day it was merged.
+11.4 onwards, but available on <https://docs.gitlab.com/> on the same day it was merged.
 
 ### Linking to `/help`
 

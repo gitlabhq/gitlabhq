@@ -1,6 +1,6 @@
 # Frontend tracking guide
 
-GitLab provides `Tracking`, an interface that wraps the [Snowplow JavaScript Tracker](https://github.com/snowplow/snowplow/wiki/javascript-tracker) for tracking custom events. There are a few ways to utilizing tracking, but each generally requires at minimum, a `category` and an `action`. Additional data can be provided that adheres to our [Feature instrumentation taxonomy](https://about.gitlab.com/handbook/product/feature-instrumentation/#taxonomy).
+GitLab provides `Tracking`, an interface that wraps the [Snowplow JavaScript Tracker](https://github.com/snowplow/snowplow/wiki/javascript-tracker) for tracking custom events. There are a few ways to utilize tracking, but each generally requires at minimum, a `category` and an `action`. Additional data can be provided that adheres to our [Feature instrumentation taxonomy](https://about.gitlab.com/handbook/product/feature-instrumentation/#taxonomy).
 
 | field      | type   | default value              | description |
 |:-----------|:-------|:---------------------------|:------------|

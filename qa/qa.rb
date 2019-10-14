@@ -396,14 +396,18 @@ module QA
     autoload :Shellout, 'qa/service/shellout'
     autoload :KubernetesCluster, 'qa/service/kubernetes_cluster'
     autoload :Omnibus, 'qa/service/omnibus'
-    autoload :Runner, 'qa/service/runner'
-    autoload :LDAP, 'qa/service/ldap'
 
     module ClusterProvider
       autoload :Base, 'qa/service/cluster_provider/base'
       autoload :Gcloud, 'qa/service/cluster_provider/gcloud'
       autoload :Minikube, 'qa/service/cluster_provider/minikube'
       autoload :K3d, 'qa/service/cluster_provider/k3d'
+    end
+
+    module DockerRun
+      autoload :Base, 'qa/service/docker_run/base'
+      autoload :LDAP, 'qa/service/docker_run/ldap'
+      autoload :GitlabRunner, 'qa/service/docker_run/gitlab_runner'
     end
   end
 
