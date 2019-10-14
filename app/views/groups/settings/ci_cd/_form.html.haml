@@ -1,0 +1,13 @@
+.row.prepend-top-default
+  .col-lg-12
+    = form_for group, url: group_settings_ci_cd_path(group, anchor: 'js-general-pipeline-settings') do |f|
+      = form_errors(group)
+      %fieldset.builds-feature
+        .form-group
+          = f.label :max_artifacts_size, _('Maximum artifacts size (MB)'), class: 'label-bold'
+          = f.number_field :max_artifacts_size, class: 'form-control'
+          %p.form-text.text-muted
+            = _("Set the maximum file size for each job's artifacts")
+            = link_to icon('question-circle'), help_page_path('user/admin_area/settings/continuous_integration', anchor: 'maximum-artifacts-size-core-only'), target: '_blank'
+
+        = f.submit _('Save changes'), class: "btn btn-success"

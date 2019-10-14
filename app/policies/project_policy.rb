@@ -137,6 +137,8 @@ class ProjectPolicy < BasePolicy
   # not.
   rule { guest | admin }.enable :read_project_for_iids
 
+  rule { admin }.enable :update_max_artifacts_size
+
   rule { guest }.enable :guest_access
   rule { reporter }.enable :reporter_access
   rule { developer }.enable :developer_access

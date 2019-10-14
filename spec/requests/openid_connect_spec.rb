@@ -148,34 +148,25 @@ describe 'OpenID Connect requests' do
       end
     end
 
-    # These 2 calls shouldn't actually throw, they should be handled as an
-    # unauthorized request, so we should be able to check the response.
-    #
-    # This was not possible due to an issue with Warden:
-    # https://github.com/hassox/warden/pull/162
-    #
-    # When the patch gets merged and we update Warden, these specs will need to
-    # updated to check the response instead of a raised exception.
-    # https://gitlab.com/gitlab-org/gitlab-foss/issues/40218
     context 'when user is blocked' do
-      it 'returns authentication error' do
+      it 'redirects to login page' do
         access_grant
         user.block!
 
-        expect do
-          request_access_token!
-        end.to raise_error UncaughtThrowError
+        request_access_token!
+
+        expect(response).to redirect_to('/users/sign_in')
       end
     end
 
     context 'when user is ldap_blocked' do
-      it 'returns authentication error' do
+      it 'redirects to login page' do
         access_grant
         user.ldap_block!
 
-        expect do
-          request_access_token!
-        end.to raise_error UncaughtThrowError
+        request_access_token!
+
+        expect(response).to redirect_to('/users/sign_in')
       end
     end
   end

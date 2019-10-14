@@ -46,13 +46,19 @@ module Projects
       private
 
       def update_params
-        params.require(:project).permit(
+        params.require(:project).permit(*permitted_project_params)
+      end
+
+      def permitted_project_params
+        [
           :runners_token, :builds_enabled, :build_allow_git_fetch,
           :build_timeout_human_readable, :build_coverage_regex, :public_builds,
           :auto_cancel_pending_pipelines, :ci_config_path,
           auto_devops_attributes: [:id, :domain, :enabled, :deploy_strategy],
           ci_cd_settings_attributes: [:default_git_depth]
-        )
+        ].tap do |list|
+          list << :max_artifacts_size if can?(current_user, :update_max_artifacts_size, project)
+        end
       end
 
       def run_autodevops_pipeline(service)

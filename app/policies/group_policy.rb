@@ -53,7 +53,10 @@ class GroupPolicy < BasePolicy
     enable :upload_file
   end
 
-  rule { admin }.enable :read_group
+  rule { admin }.policy do
+    enable :read_group
+    enable :update_max_artifacts_size
+  end
 
   rule { has_projects }.policy do
     enable :read_group

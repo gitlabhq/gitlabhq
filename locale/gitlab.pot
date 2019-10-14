@@ -4026,6 +4026,9 @@ msgstr ""
 msgid "Code owners"
 msgstr ""
 
+msgid "CodeAnalytics|Max files"
+msgstr ""
+
 msgid "CodeOwner|Pattern"
 msgstr ""
 
@@ -4838,6 +4841,9 @@ msgid "Customize name"
 msgstr ""
 
 msgid "Customize your pipeline configuration, view your pipeline status and coverage report."
+msgstr ""
+
+msgid "Customize your pipeline configuration."
 msgstr ""
 
 msgid "Cycle Analytics"
@@ -8222,6 +8228,9 @@ msgstr ""
 msgid "GroupSettings|New runners registration token has been generated!"
 msgstr ""
 
+msgid "GroupSettings|Pipeline settings was updated for the group"
+msgstr ""
+
 msgid "GroupSettings|Prevent sharing a project within %{group} with other groups"
 msgstr ""
 
@@ -8232,6 +8241,9 @@ msgid "GroupSettings|The Auto DevOps pipeline will run if no alternative CI conf
 msgstr ""
 
 msgid "GroupSettings|There was a problem updating Auto DevOps pipeline: %{error_messages}."
+msgstr ""
+
+msgid "GroupSettings|There was a problem updating the pipeline settings: %{error_messages}."
 msgstr ""
 
 msgid "GroupSettings|This setting is applied on %{ancestor_group} and has been overridden on this subgroup."
@@ -8479,7 +8491,7 @@ msgstr ""
 msgid "I forgot my password"
 msgstr ""
 
-msgid "I have read and agree to the Let's Encrypt %{link_start}Terms of Service%{link_end}"
+msgid "I have read and agree to the Let's Encrypt %{link_start}Terms of Service%{link_end} (PDF)"
 msgstr ""
 
 msgid "I'd like to receive updates via email about GitLab"
@@ -10756,9 +10768,6 @@ msgid "No data to display"
 msgstr ""
 
 msgid "No deployments found"
-msgstr ""
-
-msgid "No details available"
 msgstr ""
 
 msgid "No due date"

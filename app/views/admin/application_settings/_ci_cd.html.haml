@@ -34,7 +34,7 @@
       = f.number_field :max_artifacts_size, class: 'form-control'
       .form-text.text-muted
         = _("Set the maximum file size for each job's artifacts")
-        = link_to icon('question-circle'), help_page_path('user/admin_area/settings/continuous_integration', anchor: 'maximum-artifacts-size')
+        = link_to icon('question-circle'), help_page_path('user/admin_area/settings/continuous_integration', anchor: 'maximum-artifacts-size-core-only')
     .form-group
       = f.label :default_artifacts_expire_in, _('Default artifacts expiration'), class: 'label-bold'
       = f.text_field :default_artifacts_expire_in, class: 'form-control'

@@ -478,4 +478,28 @@ describe ProjectPolicy do
       end
     end
   end
+
+  describe 'update_max_artifacts_size' do
+    subject { described_class.new(current_user, project) }
+
+    context 'when no user' do
+      let(:current_user) { nil }
+
+      it { expect_disallowed(:update_max_artifacts_size) }
+    end
+
+    context 'admin' do
+      let(:current_user) { admin }
+
+      it { expect_allowed(:update_max_artifacts_size) }
+    end
+
+    %w(guest reporter developer maintainer owner).each do |role|
+      context role do
+        let(:current_user) { send(role) }
+
+        it { expect_disallowed(:update_max_artifacts_size) }
+      end
+    end
+  end
 end

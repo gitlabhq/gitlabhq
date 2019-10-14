@@ -215,6 +215,30 @@ describe Projects::Settings::CiCdController do
           expect(project.ci_default_git_depth).to eq(10)
         end
       end
+
+      context 'when max_artifacts_size is specified' do
+        let(:params) { { max_artifacts_size: 10 } }
+
+        context 'and user is not an admin' do
+          it 'does not set max_artifacts_size' do
+            subject
+
+            project.reload
+            expect(project.max_artifacts_size).to be_nil
+          end
+        end
+
+        context 'and user is an admin' do
+          let(:user) { create(:admin)  }
+
+          it 'sets max_artifacts_size' do
+            subject
+
+            project.reload
+            expect(project.max_artifacts_size).to eq(10)
+          end
+        end
+      end
     end
   end
 end

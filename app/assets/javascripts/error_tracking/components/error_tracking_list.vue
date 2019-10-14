@@ -7,10 +7,10 @@ import { __ } from '~/locale';
 
 export default {
   fields: [
-    { key: 'error', label: __('Open errors') },
+    { key: 'error', label: __('Open errors'), thClass: 'w-70p' },
     { key: 'events', label: __('Events') },
     { key: 'users', label: __('Users') },
-    { key: 'lastSeen', label: __('Last seen') },
+    { key: 'lastSeen', label: __('Last seen'), thClass: 'w-15p' },
   ],
   components: {
     GlEmptyState,
@@ -67,40 +67,39 @@ export default {
         <div class="d-flex justify-content-end">
           <gl-button class="my-3 ml-auto" variant="primary" :href="externalUrl" target="_blank">
             {{ __('View in Sentry') }}
-            <icon name="external-link" />
+            <icon name="external-link" class="flex-shrink-0" />
           </gl-button>
         </div>
-        <gl-table :items="errors" :fields="$options.fields" :show-empty="true">
+
+        <gl-table :items="errors" :fields="$options.fields" :show-empty="true" fixed stacked="sm">
           <template slot="HEAD_events" slot-scope="data">
-            <div class="text-right">{{ data.label }}</div>
+            <div class="text-md-right">{{ data.label }}</div>
           </template>
           <template slot="HEAD_users" slot-scope="data">
-            <div class="text-right">{{ data.label }}</div>
+            <div class="text-md-right">{{ data.label }}</div>
           </template>
           <template slot="error" slot-scope="errors">
             <div class="d-flex flex-column">
-              <div class="d-flex">
-                <gl-link :href="errors.item.externalUrl" class="d-flex text-dark" target="_blank">
-                  <strong>{{ errors.item.title.trim() }}</strong>
-                  <icon name="external-link" class="ml-1" />
-                </gl-link>
-                <span class="text-secondary ml-2">{{ errors.item.culprit }}</span>
-              </div>
-              {{ errors.item.message || __('No details available') }}
+              <gl-link :href="errors.item.externalUrl" class="d-flex text-dark" target="_blank">
+                <strong class="text-truncate">{{ errors.item.title.trim() }}</strong>
+                <icon name="external-link" class="ml-1 flex-shrink-0" />
+              </gl-link>
+              <span class="text-secondary text-truncate">
+                {{ errors.item.culprit }}
+              </span>
             </div>
           </template>
 
           <template slot="events" slot-scope="errors">
-            <div class="text-right">{{ errors.item.count }}</div>
+            <div class="text-md-right">{{ errors.item.count }}</div>
           </template>
 
           <template slot="users" slot-scope="errors">
-            <div class="text-right">{{ errors.item.userCount }}</div>
+            <div class="text-md-right">{{ errors.item.userCount }}</div>
           </template>
 
           <template slot="lastSeen" slot-scope="errors">
             <div class="d-flex align-items-center">
-              <icon name="calendar" class="text-secondary mr-1" />
               <time-ago :time="errors.item.lastSeen" class="text-secondary" />
             </div>
           </template>

@@ -156,4 +156,58 @@ describe Groups::Settings::CiCdController do
       end
     end
   end
+
+  describe 'PATCH #update' do
+    subject do
+      patch :update, params: {
+        group_id: group,
+        group: { max_artifacts_size: 10 }
+      }
+    end
+
+    context 'when user is not an admin' do
+      before do
+        group.add_owner(user)
+      end
+
+      it { is_expected.to have_gitlab_http_status(404) }
+    end
+
+    context 'when user is an admin' do
+      let(:user) { create(:admin) }
+
+      before do
+        group.add_owner(user)
+      end
+
+      it { is_expected.to redirect_to(group_settings_ci_cd_path) }
+
+      context 'when service execution went wrong' do
+        let(:update_service) { double }
+
+        before do
+          allow(Groups::UpdateService).to receive(:new).and_return(update_service)
+          allow(update_service).to receive(:execute).and_return(false)
+          allow_any_instance_of(Group).to receive_message_chain(:errors, :full_messages)
+            .and_return(['Error 1'])
+
+          subject
+        end
+
+        it 'returns a flash alert' do
+          expect(response).to set_flash[:alert]
+            .to eq("There was a problem updating the pipeline settings: [\"Error 1\"].")
+        end
+      end
+
+      context 'when service execution was successful' do
+        it 'returns a flash notice' do
+          subject
+
+          expect(response).to set_flash[:notice]
+            .to eq('Pipeline settings was updated for the group')
+        end
+      end
+    end
+  end
 end

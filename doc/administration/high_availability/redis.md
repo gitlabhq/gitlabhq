@@ -68,7 +68,7 @@ Omnibus:
    gitaly['enable'] = false
 
    redis['bind'] = '0.0.0.0'
-   redis['port'] = '6379'
+   redis['port'] = 6379
    redis['password'] = 'SECRET_PASSWORD_HERE'
 
    gitlab_rails['auto_migrate'] = false

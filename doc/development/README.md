@@ -99,6 +99,7 @@ description: 'Learn how to contribute to GitLab.'
 - [Post deployment migrations](post_deployment_migrations.md)
 - [Background migrations](background_migrations.md)
 - [Swapping tables](swapping_tables.md)
+- [Deleting exiting migrations](deleting_migrations.md)
 
 ### Best practices
 
@@ -118,7 +119,7 @@ description: 'Learn how to contribute to GitLab.'
 - [Database helper modules](database_helpers.md)
 - [Code comments](code_comments.md)
 
-## Case studies
+### Case studies
 
 - [Database case study: Filtering by label](filtering_by_label.md)
 - [Database case study: Namespaces storage statistics](namespaces_storage_statistics.md)

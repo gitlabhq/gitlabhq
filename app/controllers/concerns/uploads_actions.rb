@@ -29,13 +29,15 @@ module UploadsActions
   def show
     return render_404 unless uploader&.exists?
 
-    if cache_publicly?
-      # We need to reset caching from the applications controller to get rid of the no-store value
-      headers['Cache-Control'] = ''
-      expires_in 5.minutes, public: true, must_revalidate: false
-    else
-      expires_in 0.seconds, must_revalidate: true, private: true
-    end
+    # We need to reset caching from the applications controller to get rid of the no-store value
+    headers['Cache-Control'] = ''
+    headers['Pragma'] = ''
+
+    ttl, directives = *cache_settings
+    ttl ||= 6.months
+    directives ||= { private: true, must_revalidate: true }
+
+    expires_in ttl, directives
 
     disposition = uploader.embeddable? ? 'inline' : 'attachment'
 
@@ -120,8 +122,8 @@ module UploadsActions
     nil
   end
 
-  def cache_publicly?
-    false
+  def cache_settings
+    []
   end
 
   def model

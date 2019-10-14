@@ -2,6 +2,21 @@
 - page_title "CI / CD"
 
 - expanded = expanded_by_default?
+- general_expanded = @group.errors.empty? ? expanded : true
+
+-# Given we only have one field in this form which is also admin-only,
+-# we don't want to show an empty section to non-admin users,
+- if can?(current_user, :update_max_artifacts_size, @group)
+  %section.settings#js-general-pipeline-settings.no-animate{ class: ('expanded' if general_expanded) }
+    .settings-header
+      %h4
+        = _("General pipelines")
+      %button.btn.js-settings-toggle{ type: 'button' }
+        = expanded ? _('Collapse') : _('Expand')
+      %p
+        = _("Customize your pipeline configuration.")
+    .settings-content
+      = render 'groups/settings/ci_cd/form', group: @group
 
 %section.settings#ci-variables.no-animate{ class: ('expanded' if expanded) }
   .settings-header

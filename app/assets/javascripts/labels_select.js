@@ -32,6 +32,7 @@ export default class LabelsSelect {
         $selectbox,
         $sidebarCollapsedValue,
         $value,
+        $dropdownMenu,
         abilityName,
         defaultLabel,
         issueUpdateURL,
@@ -67,6 +68,7 @@ export default class LabelsSelect {
       $sidebarCollapsedValue = $block.find('.sidebar-collapsed-icon span');
       $sidebarLabelTooltip = $block.find('.js-sidebar-labels-tooltip');
       $value = $block.find('.value');
+      $dropdownMenu = $dropdown.parent().find('.dropdown-menu');
       $loading = $block.find('.block-loading').fadeOut();
       fieldName = $dropdown.data('fieldName');
       initialSelected = $selectbox
@@ -454,9 +456,21 @@ export default class LabelsSelect {
             }
 
             $loading.fadeIn();
+            const oldLabels = boardsStore.detail.issue.labels;
 
             boardsStore.detail.issue
               .update($dropdown.attr('data-issue-update'))
+              .then(() => {
+                if (isScopedLabel(label)) {
+                  const prevIds = oldLabels.map(label => label.id);
+                  const newIds = boardsStore.detail.issue.labels.map(label => label.id);
+                  const differentIds = _.difference(prevIds, newIds);
+                  $dropdown.data('marked', newIds);
+                  $dropdownMenu
+                    .find(differentIds.map(id => `[data-label-id="${id}"]`).join(','))
+                    .removeClass('is-active');
+                }
+              })
               .then(fadeOutLoader)
               .catch(fadeOutLoader);
           } else if (handleClick) {

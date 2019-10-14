@@ -29,12 +29,24 @@ If you want to disable it for a specific project, you can do so in
 ## Maximum artifacts size **(CORE ONLY)**
 
 The maximum size of the [job artifacts](../../../administration/job_artifacts.md)
-can be set in the Admin area of your GitLab instance. The value is in *MB* and
+can be set at the project level, group level, and at the instance level. The value is in *MB* and
 the default is 100MB per job; on GitLab.com it's [set to 1G](../../gitlab_com/index.md#gitlab-cicd).
 
-To change it:
+To change it at the instance level:
 
 1. Go to **Admin area > Settings > Continuous Integration and Deployment**.
+1. Change the value of maximum artifacts size (in MB).
+1. Hit **Save changes** for the changes to take effect.
+
+at the group level (this will override the instance setting):
+
+1. Go to **Group > Settings > CI / CD > General Pipelines**.
+1. Change the value of maximum artifacts size (in MB).
+1. Hit **Save changes** for the changes to take effect.
+
+at the project level (this will override the instance and group settings):
+
+1. Go to **Project > Settings > CI / CD > General Pipelines**.
 1. Change the value of maximum artifacts size (in MB).
 1. Hit **Save changes** for the changes to take effect.
 
