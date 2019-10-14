@@ -1,0 +1,5 @@
+---
+title: Fixes a Open Redirect issue in `InternalRedirect`.
+merge_request:
+author:
+type: security
