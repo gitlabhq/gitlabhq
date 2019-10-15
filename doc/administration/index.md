@@ -212,6 +212,7 @@ who are aware of the risks.
 - [Useful diagnostics tools](troubleshooting/diagnostics_tools.md)
 - [Useful Linux commands](troubleshooting/linux_cheat_sheet.md)
 - [Troubleshooting Kubernetes](troubleshooting/kubernetes_cheat_sheet.md)
+- [Troubleshooting PostgreSQL](troubleshooting/postgresql.md)
 - [Guide to test environments](troubleshooting/test_environments.md) (for Support Engineers)
 - [GitLab Rails console commands](troubleshooting/gitlab_rails_cheat_sheet.md) (for Support Engineers)
 - Useful links:

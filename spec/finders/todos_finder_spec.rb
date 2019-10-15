@@ -73,6 +73,28 @@ describe TodosFinder do
           end
         end
 
+        context 'when filtering by author' do
+          let(:author1) { create(:user) }
+          let(:author2) { create(:user) }
+
+          let!(:todo1) { create(:todo, user: user, author: author1) }
+          let!(:todo2) { create(:todo, user: user, author: author2) }
+
+          it 'returns correct todos when filtering by an author' do
+            todos = finder.new(user, { author_id: author1.id }).execute
+
+            expect(todos).to match_array([todo1])
+          end
+
+          context 'querying for multiple authors' do
+            it 'returns the correct todo items' do
+              todos = finder.new(user, { author_id: [author2.id, author1.id] }).execute
+
+              expect(todos).to match_array([todo2, todo1])
+            end
+          end
+        end
+
         context 'with subgroups' do
           let(:subgroup) { create(:group, parent: group) }
           let!(:todo3) { create(:todo, user: user, group: subgroup, target: issue) }

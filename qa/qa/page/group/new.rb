@@ -11,7 +11,7 @@ module QA
         end
 
         view 'app/views/groups/new.html.haml' do
-          element :create_group_button, "submit 'Create group'" # rubocop:disable QA/ElementWithPattern
+          element :create_group_button, "submit _('Create group')" # rubocop:disable QA/ElementWithPattern
           element :visibility_radios, 'visibility_level:' # rubocop:disable QA/ElementWithPattern
         end
 

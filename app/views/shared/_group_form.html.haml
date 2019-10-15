@@ -30,9 +30,9 @@
 
     - if @group.persisted?
       .alert.alert-warning.prepend-top-10
-        Changing group path can have unintended side effects.
+        = _('Changing group path can have unintended side effects.')
         = succeed '.' do
-          = link_to 'Learn more', help_page_path('user/group/index', anchor: 'changing-a-groups-path'), target: '_blank'
+          = link_to _('Learn more'), help_page_path('user/group/index', anchor: 'changing-a-groups-path'), target: '_blank'
 
 - if @group.persisted?
   .row

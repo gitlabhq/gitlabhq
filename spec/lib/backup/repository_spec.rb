@@ -83,30 +83,6 @@ describe Backup::Repository do
     end
   end
 
-  describe '#prepare_directories', :seed_helper do
-    before do
-      allow(FileUtils).to receive(:mkdir_p).and_call_original
-      allow(FileUtils).to receive(:mv).and_call_original
-    end
-
-    after(:all) do
-      ensure_seeds
-    end
-
-    it' removes all repositories' do
-      # Sanity check: there should be something for us to delete
-      expect(list_repositories).to include(File.join(SEED_STORAGE_PATH, TEST_REPO_PATH))
-
-      subject.prepare_directories
-
-      expect(list_repositories).to be_empty
-    end
-
-    def list_repositories
-      Dir[File.join(SEED_STORAGE_PATH, '*.git')]
-    end
-  end
-
   describe '#empty_repo?' do
     context 'for a wiki' do
       let(:wiki) { create(:project_wiki) }

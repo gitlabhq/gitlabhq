@@ -114,6 +114,7 @@ Instead of writing:
 # Don't do this:
 expect_any_instance_of(Project).to receive(:add_import_job)
 
+# Don't do this:
 allow_any_instance_of(Project).to receive(:add_import_job)
 ```
 
@@ -125,12 +126,13 @@ expect_next_instance_of(Project) do |project|
   expect(project).to receive(:add_import_job)
 end
 
+# Do this:
 allow_next_instance_of(Project) do |project|
   allow(project).to receive(:add_import_job)
 end
 ```
 
-If we also want to initialized the instance with some particular arguments, we
+If we also want to initialize the instance with some particular arguments, we
 could also pass it like:
 
 ```ruby

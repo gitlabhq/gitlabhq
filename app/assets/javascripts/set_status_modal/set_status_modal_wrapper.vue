@@ -163,7 +163,7 @@ export default {
     :ok-title="s__('SetStatusModal|Set status')"
     :cancel-title="s__('SetStatusModal|Remove status')"
     ok-variant="success"
-    class="set-user-status-modal"
+    modal-class="set-user-status-modal"
     @shown="setupEmojiListAndAutocomplete"
     @hide="hideEmojiMenu"
     @ok="setStatus"

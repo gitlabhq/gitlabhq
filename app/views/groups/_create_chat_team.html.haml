@@ -8,7 +8,7 @@
     .form-check.js-toggle-container
       .js-toggle-button.form-check-input= f.check_box(:create_chat_team, { checked: true }, true, false)
       = f.label :create_chat_team, class: 'form-check-label' do
-        Create a Mattermost team for this group
+        = _('Create a Mattermost team for this group')
       %br
       %small.light.js-toggle-content
         Mattermost URL:

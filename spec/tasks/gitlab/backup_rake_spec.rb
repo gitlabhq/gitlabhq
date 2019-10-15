@@ -117,6 +117,45 @@ describe 'gitlab:app namespace rake task' do
         expect(raw_repo.empty?).to be(true)
       end
     end
+
+    context 'when the backup is restored' do
+      let!(:included_project) { create(:project, :repository) }
+
+      before do
+        expect { run_rake_task('gitlab:backup:create') }.to output.to_stdout
+
+        backup_tar = Dir.glob(File.join(Gitlab.config.backup.path, '*_gitlab_backup.tar')).last
+        allow(Dir).to receive(:glob).and_return([backup_tar])
+        allow(File).to receive(:exist?).and_return(true)
+        allow(Kernel).to receive(:system).and_return(true)
+        allow(FileUtils).to receive(:cp_r).and_return(true)
+        allow(FileUtils).to receive(:mv).and_return(true)
+        allow(YAML).to receive(:load_file)
+          .and_return({ gitlab_version: Gitlab::VERSION })
+
+        expect(Rake::Task['gitlab:db:drop_tables']).to receive(:invoke)
+        expect(Rake::Task['gitlab:backup:db:restore']).to receive(:invoke)
+        expect(Rake::Task['gitlab:backup:repo:restore']).to receive(:invoke)
+        expect(Rake::Task['gitlab:backup:builds:restore']).to receive(:invoke)
+        expect(Rake::Task['gitlab:backup:uploads:restore']).to receive(:invoke)
+        expect(Rake::Task['gitlab:backup:artifacts:restore']).to receive(:invoke)
+        expect(Rake::Task['gitlab:backup:pages:restore']).to receive(:invoke)
+        expect(Rake::Task['gitlab:backup:lfs:restore']).to receive(:invoke)
+        expect(Rake::Task['gitlab:backup:registry:restore']).to receive(:invoke)
+        expect(Rake::Task['gitlab:shell:setup']).to receive(:invoke)
+
+        # We only need a backup of the repositories for this test
+        stub_env('SKIP', 'db,uploads,builds,artifacts,lfs,registry')
+      end
+
+      it 'restores the data' do
+        expect { run_rake_task('gitlab:backup:restore') }.to output.to_stdout
+
+        raw_repo = included_project.repository.raw
+
+        expect(raw_repo.empty?).to be(false)
+      end
+    end
   end # backup_restore task
 
   describe 'backup' do

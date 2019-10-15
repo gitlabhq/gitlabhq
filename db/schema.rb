@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_10_04_134055) do
+ActiveRecord::Schema.define(version: 2019_10_04_133612) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -100,6 +100,15 @@ ActiveRecord::Schema.define(version: 2019_10_04_134055) do
     t.integer "commit_count", limit: 2, null: false
     t.index ["analytics_repository_file_id"], name: "index_analytics_repository_file_commits_file_id"
     t.index ["project_id", "committed_date", "analytics_repository_file_id"], name: "index_file_commits_on_committed_date_file_id_and_project_id", unique: true
+  end
+
+  create_table "analytics_repository_file_edits", force: :cascade do |t|
+    t.bigint "project_id", null: false
+    t.bigint "analytics_repository_file_id", null: false
+    t.date "committed_date", null: false
+    t.integer "num_edits", default: 0, null: false
+    t.index ["analytics_repository_file_id", "committed_date", "project_id"], name: "index_file_edits_on_committed_date_file_id_and_project_id", unique: true
+    t.index ["project_id"], name: "index_analytics_repository_file_edits_on_project_id"
   end
 
   create_table "analytics_repository_files", force: :cascade do |t|
@@ -3900,6 +3909,8 @@ ActiveRecord::Schema.define(version: 2019_10_04_134055) do
   add_foreign_key "analytics_language_trend_repository_languages", "projects", on_delete: :cascade
   add_foreign_key "analytics_repository_file_commits", "analytics_repository_files", on_delete: :cascade
   add_foreign_key "analytics_repository_file_commits", "projects", on_delete: :cascade
+  add_foreign_key "analytics_repository_file_edits", "analytics_repository_files", on_delete: :cascade
+  add_foreign_key "analytics_repository_file_edits", "projects", on_delete: :cascade
   add_foreign_key "analytics_repository_files", "projects", on_delete: :cascade
   add_foreign_key "application_settings", "namespaces", column: "custom_project_templates_group_id", on_delete: :nullify
   add_foreign_key "application_settings", "projects", column: "file_template_project_id", name: "fk_ec757bd087", on_delete: :nullify

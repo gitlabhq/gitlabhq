@@ -22,6 +22,10 @@ module Banzai
       CHECKLIST_CLASSES = %w(fa fa-check-square-o fa-square-o).freeze
       LIST_CLASSES = %w(checklist none no-bullet unnumbered unstyled).freeze
 
+      TABLE_FRAME_CLASSES = %w(frame-all frame-topbot frame-sides frame-ends frame-none).freeze
+      TABLE_GRID_CLASSES = %w(grid-all grid-rows grid-cols grid-none).freeze
+      TABLE_STRIPES_CLASSES = %w(stripes-all stripes-odd stripes-even stripes-hover stripes-none).freeze
+
       ELEMENT_CLASSES_WHITELIST = {
         span: %w(big small underline overline line-through).freeze,
         div: ['admonitionblock'].freeze,
@@ -29,7 +33,8 @@ module Banzai
         i: ADMONITION_CLASSES + CALLOUT_CLASSES + CHECKLIST_CLASSES,
         ul: LIST_CLASSES,
         ol: LIST_CLASSES,
-        a: ['anchor'].freeze
+        a: ['anchor'].freeze,
+        table: TABLE_FRAME_CLASSES + TABLE_GRID_CLASSES + TABLE_STRIPES_CLASSES
       }.freeze
 
       def customize_whitelist(whitelist)
@@ -45,6 +50,7 @@ module Banzai
         whitelist[:attributes]['ul'] = %w(class)
         whitelist[:attributes]['ol'] = %w(class)
         whitelist[:attributes]['a'].push('class')
+        whitelist[:attributes]['table'] = %w(class)
         whitelist[:transformers].push(self.class.remove_element_classes)
 
         # Allow `id` in heading elements for section anchors

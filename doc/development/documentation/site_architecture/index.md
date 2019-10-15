@@ -68,7 +68,7 @@ the GitLab Documentation website.
 
 ## Global navigation
 
-Read through the global navigation](global_nav.md) documentation to understand:
+Read through [the global navigation documentation](global_nav.md) to understand:
 
 - How the global navigation is built.
 - How to add new navigation items.

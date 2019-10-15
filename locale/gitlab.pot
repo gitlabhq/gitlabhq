@@ -2946,6 +2946,9 @@ msgstr ""
 msgid "Changes won't take place until the index is %{link_start}recreated%{link_end}."
 msgstr ""
 
+msgid "Changing group path can have unintended side effects."
+msgstr ""
+
 msgid "Charts"
 msgstr ""
 
@@ -4616,6 +4619,9 @@ msgid "Create New Domain"
 msgstr ""
 
 msgid "Create a GitLab account first, and then connect it to your %{label} account."
+msgstr ""
+
+msgid "Create a Mattermost team for this group"
 msgstr ""
 
 msgid "Create a local proxy for storing frequently used upstream images. %{link_start}Learn more%{link_end} about dependency proxies."
@@ -8249,6 +8255,15 @@ msgstr ""
 msgid "GroupSettings|Badges"
 msgstr ""
 
+msgid "GroupSettings|Be careful. Changing a group's parent can have unintended %{side_effects_link_start}side effects%{side_effects_link_end}."
+msgstr ""
+
+msgid "GroupSettings|Change group path"
+msgstr ""
+
+msgid "GroupSettings|Changing group path can have unintended side effects."
+msgstr ""
+
 msgid "GroupSettings|Custom project templates"
 msgstr ""
 
@@ -8261,6 +8276,9 @@ msgstr ""
 msgid "GroupSettings|Disable email notifications"
 msgstr ""
 
+msgid "GroupSettings|If the parent group's visibility is lower than the group current visibility, visibility levels for subgroups and projects will be changed to match the new parent group's visibility."
+msgstr ""
+
 msgid "GroupSettings|Learn more about badges."
 msgstr ""
 
@@ -8271,6 +8289,9 @@ msgid "GroupSettings|New runners registration token has been generated!"
 msgstr ""
 
 msgid "GroupSettings|Pipeline settings was updated for the group"
+msgstr ""
+
+msgid "GroupSettings|Please choose a group path with no special characters."
 msgstr ""
 
 msgid "GroupSettings|Prevent sharing a project within %{group} with other groups"
@@ -8301,6 +8322,15 @@ msgid "GroupSettings|This setting will be applied to all subgroups unless overri
 msgstr ""
 
 msgid "GroupSettings|This setting will override user notification preferences for all members of the group, subgroups, and projects."
+msgstr ""
+
+msgid "GroupSettings|Transfer group"
+msgstr ""
+
+msgid "GroupSettings|You can only transfer the group to a group you manage."
+msgstr ""
+
+msgid "GroupSettings|You will need to update your local repositories to point to the new location."
 msgstr ""
 
 msgid "GroupSettings|cannot be disabled when the parent group \"Share with group lock\" is enabled, except by the owner of the parent group"
@@ -11904,6 +11934,9 @@ msgid "Please solve the reCAPTCHA"
 msgstr ""
 
 msgid "Please try again"
+msgstr ""
+
+msgid "Please type %{phrase_code} to proceed or close this modal to cancel."
 msgstr ""
 
 msgid "Please upgrade PostgreSQL to version 9.6 or greater. The status of the replication cannot be determined reliably with the current version."
