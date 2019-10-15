@@ -59,9 +59,9 @@ module QA
 
         def actions
           pending_actions = []
-          @add_files.map { |file| pending_actions << file.merge({ action: "create" }) } if @add_files
-          @update_files.map { |file| pending_actions << file.merge({ action: "update" }) } if @update_files
-          pending_actions
+          pending_actions << @add_files.map { |file| file.merge({ action: "create" }) } if @add_files
+          pending_actions << @update_files.map { |file| file.merge({ action: "update" }) } if @update_files
+          pending_actions.flatten
         end
 
         private

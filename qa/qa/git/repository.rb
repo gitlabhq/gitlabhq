@@ -76,7 +76,7 @@ module QA
       end
 
       def configure_identity(name, email)
-        run(%Q{git config user.name #{name}})
+        run(%Q{git config user.name "#{name}"})
         run(%Q{git config user.email #{email}})
       end
 

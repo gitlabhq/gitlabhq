@@ -6,8 +6,10 @@ module QA
       include Runtime::Fixtures
 
       def login
-        Runtime::Browser.visit(:gitlab, Page::Main::Login)
-        Page::Main::Login.perform(&:sign_in_using_credentials)
+        unless Page::Main::Menu.perform(&:signed_in?)
+          Runtime::Browser.visit(:gitlab, Page::Main::Login)
+          Page::Main::Login.perform(&:sign_in_using_credentials)
+        end
       end
 
       before(:all) do

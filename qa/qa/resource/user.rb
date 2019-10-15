@@ -26,7 +26,7 @@ module QA
       end
 
       def name
-        @name ||= api_resource&.dig(:name) || username
+        @name ||= api_resource&.dig(:name) || "QA User #{unique_id}"
       end
 
       def email
@@ -91,9 +91,8 @@ module QA
 
       def self.fabricate_or_use(username = nil, password = nil)
         if Runtime::Env.signup_disabled?
-          self.new.tap do |user|
+          self.fabricate_via_api! do |user|
             user.username = username
-            user.password = password
           end
         else
           self.fabricate!

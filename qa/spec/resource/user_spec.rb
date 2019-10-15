@@ -35,8 +35,8 @@ describe QA::Resource::User do
   end
 
   describe '#name' do
-    it 'defaults to the username' do
-      expect(subject.name).to eq(subject.username)
+    it 'defaults to a name based on the username' do
+      expect(subject.name).to match(/#{subject.username.tr('-', ' ')}/i)
     end
 
     it 'retrieves the name from the api_resource if present' do
