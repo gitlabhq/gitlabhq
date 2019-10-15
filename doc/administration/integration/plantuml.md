@@ -95,7 +95,7 @@ our AsciiDoc snippets, wikis and repos using delimited blocks:
   ~~~markdown
   ```plantuml
   Bob -> Alice : hello
-  Alice -> Bob : Go Away
+  Alice -> Bob : hi
   ```
   ~~~
 
@@ -105,7 +105,7 @@ our AsciiDoc snippets, wikis and repos using delimited blocks:
   [plantuml, format="png", id="myDiagram", width="200px"]
   ----
   Bob->Alice : hello
-  Alice -> Bob : Go Away
+  Alice -> Bob : hi
   ----
   ```
 
@@ -116,7 +116,7 @@ our AsciiDoc snippets, wikis and repos using delimited blocks:
      :caption: Caption with **bold** and *italic*
 
      Bob -> Alice: hello
-     Alice -> Bob: Go Away
+     Alice -> Bob: hi
   ```
 
    You can also use the `uml::` directive for compatibility with [sphinxcontrib-plantuml](https://pypi.org/project/sphinxcontrib-plantuml/), but please note that we currently only support the `caption` option.
@@ -125,7 +125,10 @@ The above blocks will be converted to an HTML img tag with source pointing to th
 PlantUML instance. If the PlantUML server is correctly configured, this should
 render a nice diagram instead of the block:
 
-![PlantUML Integration](../img/integration/plantuml-example.png)
+```plantuml
+Bob -> Alice : hello
+Alice -> Bob : hi
+```
 
 Inside the block you can add any of the supported diagrams by PlantUML such as
 [Sequence](http://plantuml.com/sequence-diagram), [Use Case](http://plantuml.com/use-case-diagram),
