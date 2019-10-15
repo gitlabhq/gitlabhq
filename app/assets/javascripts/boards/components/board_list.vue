@@ -1,12 +1,22 @@
 <script>
-/* eslint-disable @gitlab/vue-i18n/no-bare-strings */
-import Sortable from 'sortablejs';
+import { Sortable, MultiDrag } from 'sortablejs';
 import { GlLoadingIcon } from '@gitlab/ui';
+import _ from 'underscore';
 import boardNewIssue from './board_new_issue.vue';
 import boardCard from './board_card.vue';
 import eventHub from '../eventhub';
 import boardsStore from '../stores/boards_store';
-import { getBoardSortableDefaultOptions, sortableStart } from '../mixins/sortable_default_options';
+import { sprintf, __ } from '~/locale';
+import createFlash from '~/flash';
+import {
+  getBoardSortableDefaultOptions,
+  sortableStart,
+  sortableEnd,
+} from '../mixins/sortable_default_options';
+
+if (gon.features && gon.features.multiSelectBoard) {
+  Sortable.mount(new MultiDrag());
+}
 
 export default {
   name: 'BoardList',
@@ -54,6 +64,14 @@ export default {
       showIssueForm: false,
     };
   },
+  computed: {
+    paginatedIssueText() {
+      return sprintf(__('Showing %{pageSize} of %{total} issues'), {
+        pageSize: this.list.issues.length,
+        total: this.list.issuesSize,
+      });
+    },
+  },
   watch: {
     filters: {
       handler() {
@@ -87,11 +105,20 @@ export default {
     eventHub.$on(`scroll-board-list-${this.list.id}`, this.scrollToTop);
   },
   mounted() {
+    const multiSelectOpts = {};
+    if (gon.features && gon.features.multiSelectBoard) {
+      multiSelectOpts.multiDrag = true;
+      multiSelectOpts.selectedClass = 'js-multi-select';
+      multiSelectOpts.animation = 500;
+    }
+
     const options = getBoardSortableDefaultOptions({
       scroll: true,
       disabled: this.disabled,
       filter: '.board-list-count, .is-disabled',
       dataIdAttr: 'data-issue-id',
+      removeCloneOnHide: false,
+      ...multiSelectOpts,
       group: {
         name: 'issues',
         /**
@@ -145,25 +172,66 @@ export default {
         card.showDetail = false;
 
         const { list } = card;
+
         const issue = list.findIssue(Number(e.item.dataset.issueId));
+
         boardsStore.startMoving(list, issue);
 
         sortableStart();
       },
       onAdd: e => {
-        boardsStore.moveIssueToList(
-          boardsStore.moving.list,
-          this.list,
-          boardsStore.moving.issue,
-          e.newIndex,
-        );
+        const { items = [], newIndicies = [] } = e;
+        if (items.length) {
+          // Not using e.newIndex here instead taking a min of all
+          // the newIndicies. Basically we have to find that during
+          // a drop what is the index we're going to start putting
+          // all the dropped elements from.
+          const newIndex = Math.min(...newIndicies.map(obj => obj.index).filter(i => i !== -1));
+          const issues = items.map(item =>
+            boardsStore.moving.list.findIssue(Number(item.dataset.issueId)),
+          );
 
-        this.$nextTick(() => {
-          e.item.remove();
-        });
+          boardsStore.moveMultipleIssuesToList({
+            listFrom: boardsStore.moving.list,
+            listTo: this.list,
+            issues,
+            newIndex,
+          });
+        } else {
+          boardsStore.moveIssueToList(
+            boardsStore.moving.list,
+            this.list,
+            boardsStore.moving.issue,
+            e.newIndex,
+          );
+          this.$nextTick(() => {
+            e.item.remove();
+          });
+        }
       },
       onUpdate: e => {
         const sortedArray = this.sortable.toArray().filter(id => id !== '-1');
+
+        const { items = [], newIndicies = [], oldIndicies = [] } = e;
+        if (items.length) {
+          const newIndex = Math.min(...newIndicies.map(obj => obj.index));
+          const issues = items.map(item =>
+            boardsStore.moving.list.findIssue(Number(item.dataset.issueId)),
+          );
+          boardsStore.moveMultipleIssuesInList({
+            list: this.list,
+            issues,
+            oldIndicies: oldIndicies.map(obj => obj.index),
+            newIndex,
+            idArray: sortedArray,
+          });
+          e.items.forEach(el => {
+            Sortable.utils.deselect(el);
+          });
+          boardsStore.clearMultiSelect();
+          return;
+        }
+
         boardsStore.moveIssueInList(
           this.list,
           boardsStore.moving.issue,
@@ -172,8 +240,132 @@ export default {
           sortedArray,
         );
       },
+      onEnd: e => {
+        const { items = [], clones = [], to } = e;
+
+        // This is not a multi select operation
+        if (!items.length && !clones.length) {
+          sortableEnd();
+          return;
+        }
+
+        let toList;
+        if (to) {
+          const containerEl = to.closest('.js-board-list');
+          toList = boardsStore.findList('id', Number(containerEl.dataset.board));
+        }
+
+        /**
+         * onEnd is called irrespective if the cards were moved in the
+         * same list or the other list. Don't remove items if it's same list.
+         */
+        const isSameList = toList && toList.id === this.list.id;
+
+        if (toList && !isSameList && boardsStore.shouldRemoveIssue(this.list, toList)) {
+          const issues = items.map(item => this.list.findIssue(Number(item.dataset.issueId)));
+
+          if (_.compact(issues).length && !boardsStore.issuesAreContiguous(this.list, issues)) {
+            const indexes = [];
+            const ids = this.list.issues.map(i => i.id);
+            issues.forEach(issue => {
+              const index = ids.indexOf(issue.id);
+              if (index > -1) {
+                indexes.push(index);
+              }
+            });
+
+            // Descending sort because splice would cause index discrepancy otherwise
+            const sortedIndexes = indexes.sort((a, b) => (a < b ? 1 : -1));
+
+            sortedIndexes.forEach(i => {
+              /**
+               * **setTimeout and splice each element one-by-one in a loop
+               * is intended.**
+               *
+               * The problem here is all the indexes are in the list but are
+               * non-contiguous. Due to that, when we splice all the indexes,
+               * at once, Vue -- during a re-render -- is unable to find reference
+               * nodes and the entire app crashes.
+               *
+               * If the indexes are contiguous, this piece of code is not
+               * executed. If it is, this is a possible regression. Only when
+               * issue indexes are far apart, this logic should ever kick in.
+               */
+              setTimeout(() => {
+                this.list.issues.splice(i, 1);
+              }, 0);
+            });
+          }
+        }
+
+        if (!toList) {
+          createFlash(__('Something went wrong while performing the action.'));
+        }
+
+        if (!isSameList) {
+          boardsStore.clearMultiSelect();
+
+          // Since Vue's list does not re-render the same keyed item, we'll
+          // remove `multi-select` class to express it's unselected
+          if (clones && clones.length) {
+            clones.forEach(el => el.classList.remove('multi-select'));
+          }
+
+          // Due to some bug which I am unable to figure out
+          // Sortable does not deselect some pending items from the
+          // source list.
+          // We'll just do it forcefully here.
+          Array.from(document.querySelectorAll('.js-multi-select') || []).forEach(item => {
+            Sortable.utils.deselect(item);
+          });
+
+          /**
+           * SortableJS leaves all the moving items "as is" on the DOM.
+           * Vue picks up and rehydrates the DOM, but we need to explicity
+           * remove the "trash" items from the DOM.
+           *
+           * This is in parity to the logic on single item move from a list/in
+           * a list. For reference, look at the implementation of onAdd method.
+           */
+          this.$nextTick(() => {
+            if (items && items.length) {
+              items.forEach(item => {
+                item.remove();
+              });
+            }
+          });
+        }
+        sortableEnd();
+      },
       onMove(e) {
         return !e.related.classList.contains('board-list-count');
+      },
+      onSelect(e) {
+        const {
+          item: { classList },
+        } = e;
+
+        if (
+          classList &&
+          classList.contains('js-multi-select') &&
+          !classList.contains('multi-select')
+        ) {
+          Sortable.utils.deselect(e.item);
+        }
+      },
+      onDeselect: e => {
+        const {
+          item: { dataset, classList },
+        } = e;
+
+        if (
+          classList &&
+          classList.contains('multi-select') &&
+          !classList.contains('js-multi-select')
+        ) {
+          const issue = this.list.findIssue(Number(dataset.issueId));
+          boardsStore.toggleMultiSelect(issue);
+        }
       },
     });
 
@@ -260,7 +452,7 @@ export default {
       <li v-if="showCount" class="board-list-count text-center" data-issue-id="-1">
         <gl-loading-icon v-show="list.loadingMore" label="Loading more issues" />
         <span v-if="list.issues.length === list.issuesSize">{{ __('Showing all issues') }}</span>
-        <span v-else> Showing {{ list.issues.length }} of {{ list.issuesSize }} issues </span>
+        <span v-else>{{ paginatedIssueText }}</span>
       </li>
     </ul>
   </div>

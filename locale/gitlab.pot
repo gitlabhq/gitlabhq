@@ -14911,6 +14911,9 @@ msgid_plural "Showing %d events"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Showing %{pageSize} of %{total} issues"
+msgstr ""
+
 msgid "Showing Latest Version"
 msgstr ""
 
@@ -15164,6 +15167,12 @@ msgid "Something went wrong while fetching the registry list."
 msgstr ""
 
 msgid "Something went wrong while merging this merge request. Please try again."
+msgstr ""
+
+msgid "Something went wrong while moving issues."
+msgstr ""
+
+msgid "Something went wrong while performing the action."
 msgstr ""
 
 msgid "Something went wrong while reopening the %{issuable}. Please try again later"

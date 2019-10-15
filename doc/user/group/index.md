@@ -451,6 +451,11 @@ For performance reasons, we may delay the update up to 1 hour and 30 minutes.
 
 If your namespace shows `N/A` as the total storage usage, you can trigger a recalculation by pushing a commit to any project in that namespace.
 
+### Maximum artifacts size **(CORE ONLY)**
+
+For information about setting a maximum artifact size for a group, see
+[Maximum artifacts size](../admin_area/settings/continuous_integration.md#maximum-artifacts-size-core-only).
+
 ## User contribution analysis **(STARTER)**
 
 With [GitLab Contribution Analytics](contribution_analytics/index.md),

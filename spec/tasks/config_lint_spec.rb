@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rake_helper'
 Rake.application.rake_require 'tasks/config_lint'
 

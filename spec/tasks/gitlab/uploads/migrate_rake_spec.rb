@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rake_helper'
 
 describe 'gitlab:uploads:migrate and migrate_to_local rake tasks' do

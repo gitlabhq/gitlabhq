@@ -48,6 +48,16 @@ export default class BoardService {
     return boardsStore.moveIssue(id, fromListId, toListId, moveBeforeId, moveAfterId);
   }
 
+  moveMultipleIssues({
+    ids,
+    fromListId = null,
+    toListId = null,
+    moveBeforeId = null,
+    moveAfterId = null,
+  }) {
+    return boardsStore.moveMultipleIssues({ ids, fromListId, toListId, moveBeforeId, moveAfterId });
+  }
+
   newIssue(id, issue) {
     return boardsStore.newIssue(id, issue);
   }

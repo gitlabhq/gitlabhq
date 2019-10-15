@@ -180,6 +180,18 @@ These are shortcuts to your last 4 visited boards.
 When you're revisiting an issue board in a project or group with multiple boards,
 GitLab will automatically load the last board you visited.
 
+### Multi-select Issue Cards
+
+As the name suggest, multi-select issue cards allows more than one issue card
+to be dragged and dropped across different lists. This becomes helpful while
+moving and grooming a lot of issues at once.
+
+You can multi-select an issue card by pressing `CTRL` + `Left mouse click` on
+Windows or `CMD` + `Left mouse click` on MacOS. Once done, start by dragging one
+of the issue card you have selected and drop it in the new list you want.
+
+![Multi-select Issue Cards](img/issue_boards_multi_select.png)
+
 ### Configurable Issue Boards **(STARTER)**
 
 > Introduced in [GitLab Starter Edition 10.2](https://about.gitlab.com/2017/11/22/gitlab-10-2-released/#issue-boards-configuration).

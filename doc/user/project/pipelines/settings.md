@@ -60,6 +60,11 @@ if the job surpasses the threshold, it is marked as failed.
 Project defined timeout (either specific timeout set by user or the default
 60 minutes timeout) may be [overridden on Runner level](../../../ci/runners/README.html#setting-maximum-job-timeout-for-a-runner).
 
+## Maximum artifacts size **(CORE ONLY)**
+
+For information about setting a maximum artifact size for a project, see
+[Maximum artifacts size](../../admin_area/settings/continuous_integration.md#maximum-artifacts-size-core-only).
+
 ## Custom CI config path
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/12509) in GitLab 9.4.
