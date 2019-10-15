@@ -42,6 +42,6 @@
   = render 'banner'
 
   - if cluster_environments_path.present?
-    = render_if_exists 'clusters/clusters/group_cluster_environments', expanded: expanded
+    = render_if_exists 'clusters/clusters/cluster_environments', expanded: expanded
   - else
     = render 'configure', expanded: expanded

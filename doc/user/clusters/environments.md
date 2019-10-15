@@ -10,12 +10,6 @@ deployed to the Kubernetes cluster and it:
 
 ## Overview
 
-NOTE: **Note:**
-Cluster environments are only available for
-[group-level clusters](../group/clusters/index.md).
-Support for [instance-level](../instance/clusters/index.md) clusters is
-[planned](https://gitlab.com/gitlab-org/gitlab-foss/issues/63985).
-
 With cluster environments, you can gain insight into:
 
 - Which projects are deployed to the cluster.
@@ -37,7 +31,7 @@ In order to:
 - Show pod usage correctly, you must
   [enable Deploy Boards](../project/deploy_boards.md#enabling-deploy-boards).
 
-Once you have successful deployments to your group-level cluster:
+Once you have successful deployments to your group-level or instance-level cluster:
 
 1. Navigate to your group's **Kubernetes** page.
 1. Click on the **Environments** tab.

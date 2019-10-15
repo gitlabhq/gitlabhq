@@ -21,6 +21,28 @@ docker run -d --name plantuml -p 8080:8080 plantuml/plantuml-server:tomcat
 
 The **PlantUML URL** will be the hostname of the server running the container.
 
+When running GitLab in Docker, it will need to have access to the PlantUML container.
+The easiest way to achieve that is by using [Docker Compose](https://docs.docker.com/compose/).
+
+A simple `docker-compose.yml` file would be:
+
+```yaml
+version: "3"
+services:
+  gitlab:
+    image: 'gitlab/gitlab-ce:12.2.5-ce.0'
+    environment:
+      GITLAB_OMNIBUS_CONFIG: |
+        nginx['custom_gitlab_server_config'] = "location /-/plantuml/ { \n    proxy_cache off; \n    proxy_pass  http://plantuml:8080/; \n}\n"
+
+  plantuml:
+    image: 'plantuml/plantuml-server:tomcat'
+    container_name: plantuml
+```
+
+In this scenario, PlantUML will be accessible for GitLab at the URL
+`http://plantuml:8080/`.
+
 ### Debian/Ubuntu
 
 Installing and configuring your
@@ -54,6 +76,10 @@ http://localhost:8080/plantuml
 
 you can change these defaults by editing the `/etc/tomcat7/server.xml` file.
 
+Note that the default URL is different than when using the Docker-based image,
+where the service is available at the root of URL with no relative path. Adjust
+the configuration below accordingly.
+
 ### Making local PlantUML accessible using custom GitLab setup
 
 The PlantUML server runs locally on your server, so it is not accessible
@@ -61,11 +87,15 @@ externally. As such, it is necessary to catch external PlantUML calls and
 redirect them to the local server.
 
 The idea is to redirect each call to `https://gitlab.example.com/-/plantuml/`
-to the local PlantUML server `http://localhost:8080/plantuml`.
+to the local PlantUML server `http://plantuml:8080/` or `http://localhost:8080/plantuml/`, depending on your setup.
 
 To enable the redirection, add the following line in `/etc/gitlab/gitlab.rb`:
 
 ```ruby
+# Docker deployment
+nginx['custom_gitlab_server_config'] = "location /-/plantuml/ { \n    proxy_cache off; \n    proxy_pass  http://plantuml:8080/; \n}\n"
+
+# Built from source
 nginx['custom_gitlab_server_config'] = "location /-/plantuml/ { \n    proxy_cache off; \n    proxy_pass  http://127.0.0.1:8080/plantuml/; \n}\n"
 ```
 

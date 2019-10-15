@@ -14,10 +14,6 @@ describe 'Clusterable > Show page' do
   end
 
   shared_examples 'show page' do
-    before do
-      clusterable.add_maintainer(current_user)
-    end
-
     it 'allow the user to set domain' do
       visit cluster_path
 
@@ -63,7 +59,6 @@ describe 'Clusterable > Show page' do
 
   shared_examples 'editing a GCP cluster' do
     before do
-      clusterable.add_maintainer(current_user)
       visit cluster_path
     end
 
@@ -92,7 +87,6 @@ describe 'Clusterable > Show page' do
   shared_examples 'editing a user-provided cluster' do
     before do
       stub_kubeclient_discover(cluster.platform.api_url)
-      clusterable.add_maintainer(current_user)
       visit cluster_path
     end
 
@@ -123,6 +117,10 @@ describe 'Clusterable > Show page' do
     let(:cluster_path) { project_cluster_path(clusterable, cluster) }
     let(:cluster) { create(:cluster, :provided_by_gcp, :project, projects: [clusterable]) }
 
+    before do
+      clusterable.add_maintainer(current_user)
+    end
+
     it_behaves_like 'show page'
 
     it_behaves_like 'editing a GCP cluster'
@@ -137,12 +135,30 @@ describe 'Clusterable > Show page' do
     let(:cluster_path) { group_cluster_path(clusterable, cluster) }
     let(:cluster) { create(:cluster, :provided_by_gcp, :group, groups: [clusterable]) }
 
+    before do
+      clusterable.add_maintainer(current_user)
+    end
+
     it_behaves_like 'show page'
 
     it_behaves_like 'editing a GCP cluster'
 
     it_behaves_like 'editing a user-provided cluster' do
       let(:cluster) { create(:cluster, :provided_by_user, :group, groups: [clusterable]) }
+    end
+  end
+
+  context 'when clusterable is an instance' do
+    let(:current_user) { create(:admin) }
+    let(:cluster_path) { admin_cluster_path(cluster) }
+    let(:cluster) { create(:cluster, :provided_by_gcp, :instance) }
+
+    it_behaves_like 'show page'
+
+    it_behaves_like 'editing a GCP cluster'
+
+    it_behaves_like 'editing a user-provided cluster' do
+      let(:cluster) { create(:cluster, :provided_by_user, :instance) }
     end
   end
 end
