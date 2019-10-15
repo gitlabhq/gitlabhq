@@ -83,6 +83,7 @@ export default class TemplateSelector {
 
     if (this.editor instanceof $) {
       this.editor.get(0).dispatchEvent(this.autosizeUpdateEvent);
+      this.editor.trigger('input');
     }
   }
 

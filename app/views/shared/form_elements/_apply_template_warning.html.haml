@@ -2,7 +2,7 @@
   .offset-sm-2.col-sm-10
 
     .warning_message.mb-0{ role: 'alert' }
-      %btn.js-close-btn.close{ type: "button", "aria-hidden": true, "aria-label": _("Close") }
+      %btn.js-close-btn.js-dismiss-btn.close{ type: "button", "aria-hidden": true, "aria-label": _("Close") }
         = sprite_icon("close")
 
       %p
@@ -10,5 +10,5 @@
 
       %button.js-override-template.btn.btn-warning.mr-2{ type: 'button' }
         = _("Apply template")
-      %button.js-cancel-btn.btn.btn-inverted{ type: 'button' }
+      %button.js-close-btn.js-cancel-btn.btn.btn-inverted{ type: 'button' }
         = _("Cancel")

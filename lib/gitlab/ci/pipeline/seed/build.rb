@@ -73,7 +73,9 @@ module Gitlab
               if bridge?
                 ::Ci::Bridge.new(attributes)
               else
-                ::Ci::Build.new(attributes)
+                ::Ci::Build.new(attributes).tap do |job|
+                  job.deployment = Seed::Deployment.new(job).to_resource
+                end
               end
             end
           end

@@ -211,6 +211,17 @@ FactoryBot.define do
       build.project ||= build.pipeline.project
     end
 
+    trait :with_deployment do
+      after(:build) do |build, evaluator|
+        ##
+        # Build deployment/environment relations if environment name is set
+        # to the job. If `build.deployment` has already been set, it doesn't
+        # build a new instance.
+        build.deployment =
+          Gitlab::Ci::Pipeline::Seed::Deployment.new(build).to_resource
+      end
+    end
+
     trait :tag do
       tag { true }
     end

@@ -31,7 +31,8 @@ export default class IssuableTemplateSelector extends TemplateSelector {
     });
 
     this.templateWarningEl.find('.js-close-btn').on('click', () => {
-      if (this.previousSelectedIndex) {
+      // Explicitly check against 0 value
+      if (this.previousSelectedIndex !== undefined) {
         this.dropdown.data('glDropdown').selectRowAtIndex(this.previousSelectedIndex);
       } else {
         this.reset();
@@ -109,6 +110,7 @@ export default class IssuableTemplateSelector extends TemplateSelector {
     } else {
       this.setEditorContent(this.currentTemplate, { skipFocus: false });
     }
+
     return;
   }
 }

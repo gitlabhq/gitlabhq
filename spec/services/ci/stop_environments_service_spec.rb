@@ -121,8 +121,8 @@ describe Ci::StopEnvironmentsService do
         merge_requests_as_head_pipeline: [merge_request])
     end
 
-    let!(:review_job) { create(:ci_build, :start_review_app, pipeline: pipeline, project: project) }
-    let!(:stop_review_job) { create(:ci_build, :stop_review_app, :manual, pipeline: pipeline, project: project) }
+    let!(:review_job) { create(:ci_build, :with_deployment, :start_review_app, pipeline: pipeline, project: project) }
+    let!(:stop_review_job) { create(:ci_build, :with_deployment, :stop_review_app, :manual, pipeline: pipeline, project: project) }
 
     before do
       review_job.deployment.success!

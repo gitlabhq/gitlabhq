@@ -131,8 +131,15 @@ describe 'issuable templates', :js do
       end
 
       it 'user selects "bug" template, then updates description, then selects "feature-proposal" template, then cancels template change' do
-        page.find('.js-template-warning .js-cancel-btn').click
+        page.find('.js-template-warning .js-close-btn.js-cancel-btn').click
         expect(find('textarea')['value']).to eq(updated_description)
+        expect(page).not_to have_content template_override_warning
+      end
+
+      it 'user selects "bug" template, then updates description, then selects "feature-proposal" template, then dismiss the template warning' do
+        page.find('.js-template-warning .js-close-btn.js-dismiss-btn').click
+        expect(find('textarea')['value']).to eq(updated_description)
+        expect(page).not_to have_content template_override_warning
       end
 
       it 'user selects "bug" template, then updates description, then selects "feature-proposal" template, then applies template change' do

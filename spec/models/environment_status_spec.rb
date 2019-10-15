@@ -95,7 +95,7 @@ describe EnvironmentStatus do
   describe '.build_environments_status' do
     subject { described_class.send(:build_environments_status, merge_request, user, pipeline) }
 
-    let!(:build) { create(:ci_build, :deploy_to_production, pipeline: pipeline) }
+    let!(:build) { create(:ci_build, :with_deployment, :deploy_to_production, pipeline: pipeline) }
     let(:environment) { build.deployment.environment }
     let(:user) { project.owner }
 

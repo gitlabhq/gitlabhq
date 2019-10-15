@@ -2366,7 +2366,7 @@ describe MergeRequest do
         merge_requests_as_head_pipeline: [merge_request])
     end
 
-    let!(:job) { create(:ci_build, :start_review_app, pipeline: pipeline, project: project) }
+    let!(:job) { create(:ci_build, :with_deployment, :start_review_app, pipeline: pipeline, project: project) }
 
     it 'returns environments' do
       is_expected.to eq(pipeline.environments)
