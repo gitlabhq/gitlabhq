@@ -19,69 +19,18 @@ export default {
   },
   computed: {
     environment() {
-      let environmentText;
       switch (this.deploymentStatus.status) {
         case 'last':
-          environmentText = sprintf(
-            __('This job is the most recent deployment to %{link}.'),
-            { link: this.environmentLink },
-            false,
-          );
-          break;
+          return this.lastEnvironmentMessage();
         case 'out_of_date':
-          if (this.hasLastDeployment) {
-            environmentText = sprintf(
-              __(
-                'This job is an out-of-date deployment to %{environmentLink}. View the most recent deployment %{deploymentLink}.',
-              ),
-              {
-                environmentLink: this.environmentLink,
-                deploymentLink: this.deploymentLink(`#${this.lastDeployment.iid}`),
-              },
-              false,
-            );
-          } else {
-            environmentText = sprintf(
-              __('This job is an out-of-date deployment to %{environmentLink}.'),
-              { environmentLink: this.environmentLink },
-              false,
-            );
-          }
-
-          break;
+          return this.outOfDateEnvironmentMessage();
         case 'failed':
-          environmentText = sprintf(
-            __('The deployment of this job to %{environmentLink} did not succeed.'),
-            { environmentLink: this.environmentLink },
-            false,
-          );
-          break;
+          return this.failedEnvironmentMessage();
         case 'creating':
-          if (this.hasLastDeployment) {
-            environmentText = sprintf(
-              __(
-                'This job is creating a deployment to %{environmentLink} and will overwrite the %{deploymentLink}.',
-              ),
-              {
-                environmentLink: this.environmentLink,
-                deploymentLink: this.deploymentLink(__('latest deployment')),
-              },
-              false,
-            );
-          } else {
-            environmentText = sprintf(
-              __('This job is creating a deployment to %{environmentLink}.'),
-              { environmentLink: this.environmentLink },
-              false,
-            );
-          }
-          break;
+          return this.creatingEnvironmentMessage();
         default:
-          break;
+          return '';
       }
-      return environmentText && this.hasCluster
-        ? `${environmentText} ${this.clusterText}`
-        : environmentText;
     },
     environmentLink() {
       if (this.hasEnvironment) {
@@ -137,11 +86,6 @@ export default {
         false,
       );
     },
-    clusterText() {
-      return this.hasCluster
-        ? sprintf(__('Cluster %{cluster} was used.'), { cluster: this.clusterNameOrLink }, false)
-        : '';
-    },
   },
   methods: {
     deploymentLink(name) {
@@ -152,6 +96,91 @@ export default {
           name,
           endLink: '</a>',
         },
+        false,
+      );
+    },
+    failedEnvironmentMessage() {
+      const { environmentLink } = this;
+
+      return sprintf(
+        __('The deployment of this job to %{environmentLink} did not succeed.'),
+        { environmentLink },
+        false,
+      );
+    },
+    lastEnvironmentMessage() {
+      const { environmentLink, clusterNameOrLink, hasCluster } = this;
+
+      const message = hasCluster
+        ? __('This job is deployed to %{environmentLink} using cluster %{clusterNameOrLink}.')
+        : __('This job is deployed to %{environmentLink}.');
+
+      return sprintf(message, { environmentLink, clusterNameOrLink }, false);
+    },
+    outOfDateEnvironmentMessage() {
+      const { hasLastDeployment, hasCluster, environmentLink, clusterNameOrLink } = this;
+
+      if (hasLastDeployment) {
+        const message = hasCluster
+          ? __(
+              'This job is an out-of-date deployment to %{environmentLink} using cluster %{clusterNameOrLink}. View the %{deploymentLink}.',
+            )
+          : __(
+              'This job is an out-of-date deployment to %{environmentLink}. View the %{deploymentLink}.',
+            );
+
+        return sprintf(
+          message,
+          {
+            environmentLink,
+            clusterNameOrLink,
+            deploymentLink: this.deploymentLink(__('most recent deployment')),
+          },
+          false,
+        );
+      }
+
+      const message = hasCluster
+        ? __(
+            'This job is an out-of-date deployment to %{environmentLink} using cluster %{clusterNameOrLink}.',
+          )
+        : __('This job is an out-of-date deployment to %{environmentLink}.');
+
+      return sprintf(
+        message,
+        {
+          environmentLink,
+          clusterNameOrLink,
+        },
+        false,
+      );
+    },
+    creatingEnvironmentMessage() {
+      const { hasLastDeployment, hasCluster, environmentLink, clusterNameOrLink } = this;
+
+      if (hasLastDeployment) {
+        const message = hasCluster
+          ? __(
+              'This job is creating a deployment to %{environmentLink} using cluster %{clusterNameOrLink}. This will overwrite the %{deploymentLink}.',
+            )
+          : __(
+              'This job is creating a deployment to %{environmentLink}. This will overwrite the %{deploymentLink}.',
+            );
+
+        return sprintf(
+          message,
+          {
+            environmentLink,
+            clusterNameOrLink,
+            deploymentLink: this.deploymentLink(__('latest deployment')),
+          },
+          false,
+        );
+      }
+
+      return sprintf(
+        __('This job is creating a deployment to %{environmentLink}.'),
+        { environmentLink },
         false,
       );
     },

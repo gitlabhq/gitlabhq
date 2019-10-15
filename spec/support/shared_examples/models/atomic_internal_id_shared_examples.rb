@@ -47,10 +47,6 @@ shared_examples_for 'AtomicInternalId' do |validate_presence: true|
     end
 
     describe 'internal id generation' do
-      before do
-        stub_feature_flags(iid_always_track: false)
-      end
-
       subject { instance.save! }
 
       it 'calls InternalId.generate_next and sets internal id attribute' do

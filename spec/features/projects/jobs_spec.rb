@@ -534,7 +534,7 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
         end
 
         it 'shows deployment message' do
-          expect(page).to have_content 'This job is the most recent deployment to production'
+          expect(page).to have_content 'This job is deployed to production'
           expect(find('.js-environment-link')['href']).to match("environments/#{environment.id}")
         end
 
@@ -548,14 +548,14 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
           end
 
           it 'shows the name of the cluster' do
-            expect(page).to have_content 'Cluster the-cluster was used'
+            expect(page).to have_content 'using cluster the-cluster'
           end
 
           context 'when the user is not able to view the cluster' do
             let(:user_access_level) { :developer }
 
             it 'includes only the name of the cluster without a link' do
-              expect(page).to have_content 'Cluster the-cluster was used'
+              expect(page).to have_content 'using cluster the-cluster'
               expect(page).not_to have_link 'the-cluster'
             end
           end
@@ -623,8 +623,7 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
         let!(:second_deployment) { create(:deployment, :success, environment: environment, deployable: second_build) }
 
         it 'shows deployment message' do
-          expected_text = 'This job is an out-of-date deployment ' \
-            "to staging. View the most recent deployment ##{second_deployment.iid}."
+          expected_text = 'This job is an out-of-date deployment to staging. View the most recent deployment.'
 
           expect(page).to have_css('.environment-information', text: expected_text)
         end

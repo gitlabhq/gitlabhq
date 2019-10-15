@@ -92,7 +92,10 @@ describe 'Protected Branches', :js do
         set_protected_branch_name('some-branch')
         click_on "Protect"
 
-        within(".protected-branches-list") { expect(page).to have_content(commit.id[0..7]) }
+        within(".protected-branches-list") do
+          expect(page).not_to have_content("matching")
+          expect(page).not_to have_content("was deleted")
+        end
       end
 
       it "displays an error message if the named branch does not exist" do
@@ -101,7 +104,7 @@ describe 'Protected Branches', :js do
         set_protected_branch_name('some-branch')
         click_on "Protect"
 
-        within(".protected-branches-list") { expect(page).to have_content('branch was deleted') }
+        within(".protected-branches-list") { expect(page).to have_content('Branch was deleted') }
       end
     end
 
@@ -127,7 +130,6 @@ describe 'Protected Branches', :js do
         click_on "Protect"
 
         within(".protected-branches-list") do
-          expect(page).to have_content("Protected branch (2)")
           expect(page).to have_content("2 matching branches")
         end
       end

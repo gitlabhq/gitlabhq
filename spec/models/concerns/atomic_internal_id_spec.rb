@@ -22,41 +22,22 @@ describe AtomicInternalId do
     end
 
     context 'when value is set by ensure_project_iid!' do
-      context 'with iid_always_track false' do
-        before do
-          stub_feature_flags(iid_always_track: false)
-        end
+      it 'does not track the value' do
+        expect(InternalId).not_to receive(:track_greatest)
 
-        it 'does not track the value' do
-          expect(InternalId).not_to receive(:track_greatest)
-
-          milestone.ensure_project_iid!
-          subject
-        end
-
-        it 'tracks the iid for the scope that is actually present' do
-          milestone.iid = external_iid
-
-          expect(InternalId).to receive(:track_greatest).once.with(milestone, scope_attrs, usage, external_iid, anything)
-          expect(InternalId).not_to receive(:generate_next)
-
-          # group scope is not present here, the milestone does not have a group
-          milestone.track_group_iid!
-          subject
-        end
+        milestone.ensure_project_iid!
+        subject
       end
 
-      context 'with iid_always_track enabled' do
-        before do
-          stub_feature_flags(iid_always_track: true)
-        end
+      it 'tracks the iid for the scope that is actually present' do
+        milestone.iid = external_iid
 
-        it 'does not track the value' do
-          expect(InternalId).to receive(:track_greatest)
+        expect(InternalId).to receive(:track_greatest).once.with(milestone, scope_attrs, usage, external_iid, anything)
+        expect(InternalId).not_to receive(:generate_next)
 
-          milestone.ensure_project_iid!
-          subject
-        end
+        # group scope is not present here, the milestone does not have a group
+        milestone.track_group_iid!
+        subject
       end
     end
   end

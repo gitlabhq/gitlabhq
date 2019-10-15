@@ -54,7 +54,7 @@ class InternalId < ApplicationRecord
     last_value
   end
 
-  # Temporary instrumentation to track for-update locks
+  # Instrumentation to track for-update locks
   def update_and_save_counter
     strong_memoize(:update_and_save_counter) do
       Gitlab::Metrics.counter(:gitlab_internal_id_for_update_lock, 'Number of ROW SHARE (FOR UPDATE) locks on individual records from internal_ids')

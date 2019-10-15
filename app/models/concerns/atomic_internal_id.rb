@@ -57,8 +57,7 @@ module AtomicInternalId
       end
 
       define_method("track_#{scope}_#{column}!") do
-        iid_always_track = Feature.enabled?(:iid_always_track, default_enabled: true)
-        return unless @internal_id_needs_tracking || iid_always_track
+        return unless @internal_id_needs_tracking
 
         scope_value = internal_id_read_scope(scope)
         return unless scope_value

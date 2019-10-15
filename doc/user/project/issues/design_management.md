@@ -47,6 +47,8 @@ to be enabled:
   when an issue is deleted.
 - Design Management
   [isn't supported by Geo](https://gitlab.com/groups/gitlab-org/-/epics/1633) yet.
+- Only the latest version of the designs can be deleted.
+- Deleted designs cannot be recovered but you can see them on previous designs versions.
 
 ## The Design Management page
 
@@ -76,6 +78,34 @@ to help summarize changes between versions.
 | Comments | ![Comments Icon](img/design_comments_v12_3.png) |
 | Modified (in the selected version) | ![Design Modified](img/design_modified_v12_3.png) |
 | Added (in the selected version) | ![Design Added](img/design_added_v12_3.png) |
+
+## Deleting designs
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/11089) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.4.
+
+There are two ways to delete designs: manually delete them
+individually, or select a few of them to delete at once,
+as shown below.
+
+To delete a single design, click it to view it enlarged,
+then click the trash icon on the top right corner and confirm
+the deletion by clicking the **Delete** button on the modal window:
+
+![Confirm design deletion](img/confirm_design_deletion_v12_4.png)
+
+To delete multiple designs at once, on the design's list view,
+first select the designs you want to delete:
+
+![Select designs](img/select_designs_v12_4.png)
+
+Once selected, click the **Delete selected** button to confirm the deletion:
+
+![Delete multiple designs](img/delete_multiple_designs_v12_4.png)
+
+NOTE: **Note:**
+Only the latest version of the designs can be deleted.
+Deleted designs are not permanently lost; they can be
+viewed by browsing previous versions.
 
 ## Adding annotations to designs
 
