@@ -57,6 +57,11 @@ The following steps enable a GitLab cluster to serve as the **primary** node.
    roles ['geo_primary_role']
 
    ##
+   ## The unique identifier for the Geo node.
+   ##
+   gitlab_rails['geo_node_name'] = '<node_name_here>'
+
+   ##
    ## Disable automatic migrations
    ##
    gitlab_rails['auto_migrate'] = false
@@ -228,6 +233,11 @@ following modifications:
    ## Enable the Geo secondary role
    ##
    roles ['geo_secondary_role', 'application_role']
+
+   ##
+   ## The unique identifier for the Geo node.
+   ##
+   gitlab_rails['geo_node_name'] = '<node_name_here>'
 
    ##
    ## Disable automatic migrations

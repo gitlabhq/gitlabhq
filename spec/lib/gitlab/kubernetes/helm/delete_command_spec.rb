@@ -14,7 +14,7 @@ describe Gitlab::Kubernetes::Helm::DeleteCommand do
     let(:commands) do
       <<~EOS
       helm init --upgrade
-      for i in $(seq 1 30); do helm version && break; sleep 1s; echo "Retrying ($i)..."; false; done
+      for i in $(seq 1 30); do helm version && s=0 && break || s=$?; sleep 1s; echo \"Retrying ($i)...\"; done; (exit $s)
       helm delete --purge app-name
       EOS
     end
@@ -36,7 +36,7 @@ describe Gitlab::Kubernetes::Helm::DeleteCommand do
       let(:commands) do
         <<~EOS
         helm init --upgrade
-        for i in $(seq 1 30); do helm version #{tls_flags} && break; sleep 1s; echo "Retrying ($i)..."; false; done
+        for i in $(seq 1 30); do helm version #{tls_flags} && s=0 && break || s=$?; sleep 1s; echo \"Retrying ($i)...\"; done; (exit $s)
         #{helm_delete_command}
         EOS
       end

@@ -53,6 +53,19 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
    sudo -i
    ```
 
+1. Edit `/etc/gitlab/gitlab.rb` and add a **unique** name for your node:
+
+   ```ruby
+   # The unique identifier for the Geo node.
+   gitlab_rails['geo_node_name'] = '<node_name_here>'
+   ```
+
+1. Reconfigure the **primary** node for the change to take effect:
+
+   ```sh
+   gitlab-ctl reconfigure
+   ```
+
 1. Execute the command below to define the node as **primary** node:
 
    ```sh
