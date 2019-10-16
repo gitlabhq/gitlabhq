@@ -34,6 +34,7 @@ module Fog
     # Gems that have not yet updated with the new fog-core namespace
     LEGACY_FOG_PROVIDERS = %w(google rackspace aliyun).freeze
 
+    # rubocop:disable Gitlab/ConstGetInheritFalse
     def service_provider_constant(service_name, provider_name)
       args = service_provider_search_args(service_name, provider_name)
       Fog.const_get(args.first).const_get(*const_get_args(args.second))
@@ -48,5 +49,6 @@ module Fog
         [provider_name, service_name]
       end
     end
+    # rubocop:enable Gitlab/ConstGetInheritFalse
   end
 end

@@ -86,7 +86,7 @@ module Gitlab
       if name == :health_check
         Grpc::Health::V1::Health::Stub
       else
-        Gitaly.const_get(name.to_s.camelcase.to_sym).const_get(:Stub)
+        Gitaly.const_get(name.to_s.camelcase.to_sym, false).const_get(:Stub, false)
       end
     end
 

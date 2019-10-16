@@ -1,16 +1,30 @@
 # Geo with Object storage **(PREMIUM ONLY)**
 
-Geo can be used in combination with Object Storage (AWS S3, or
-other compatible object storage).
+Geo can be used in combination with Object Storage (AWS S3, or other compatible object storage).
 
-## Configuration
+Currently, **secondary** nodes can use either:
 
-At this time it is required that if object storage is enabled on the
-**primary** node, it must also be enabled on each **secondary** node.
+- The same storage bucket as the **primary** node.
+- A replicated storage bucket.
 
-**Secondary** nodes can use the same storage bucket as the **primary** node, or
-they can use a replicated storage bucket. At this time GitLab does not
-take care of content replication in object storage.
+To have:
+
+- GitLab manage replication, follow [Enabling GitLab replication](#enabling-gitlab-managed-object-storage-replication).
+- Third-party services manage replication, follow [Third-party replication services](#third-party-replication-services).
+
+## Enabling GitLab managed object storage replication
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/10586) in GitLab 12.4.
+
+**Secondary** nodes can replicate files stored on the **primary** node regardless of
+whether they are stored on the local filesystem or in object storage.
+
+To enable GitLab replication, you must:
+
+1. Go to **Admin Area > Geo**.
+1. Press **Edit** on the **secondary** node.
+1. Enable the **Allow this secondary node to replicate content on Object Storage**
+   checkbox.
 
 For LFS, follow the documentation to
 [set up LFS object storage](../../../workflow/lfs/lfs_administration.md#storing-lfs-objects-in-remote-object-storage).
@@ -20,12 +34,21 @@ For CI job artifacts, there is similar documentation to configure
 
 For user uploads, there is similar documentation to configure [upload object storage](../../uploads.md#using-object-storage-core-only)
 
-You should enable and configure object storage on both **primary** and **secondary**
-nodes. Migrating existing data to object storage should be performed on the
-**primary** node only. **Secondary** nodes will automatically notice that the migrated
-files are now in object storage.
+If you want to migrate the **primary** node's files to object storage, you can
+configure the **secondary** in a few ways:
 
-## Replication
+- Use the exact same object storage.
+- Use a separate object store but leverage your object storage solution's built-in
+  replication.
+- Use a separate object store and enable the **Allow this secondary node to replicate
+  content on Object Storage** setting.
+
+GitLab does not currently support the case where both:
+
+- The **primary** node uses local storage.
+- A **secondary** node uses object storage.
+
+## Third-party replication services
 
 When using Amazon S3, you can use
 [CRR](https://docs.aws.amazon.com/AmazonS3/latest/dev/crr.html) to

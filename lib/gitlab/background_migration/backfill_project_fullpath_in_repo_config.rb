@@ -171,7 +171,11 @@ module Gitlab
         end
 
         def schedule_retry(project, retry_count)
-          BackgroundMigrationWorker.perform_in(RETRY_DELAY, self.class::RetryOne.name, [project.id, retry_count])
+          # Constants provided to BackgroundMigrationWorker must be within the
+          # scope of Gitlab::BackgroundMigration
+          retry_class_name = self.class::RetryOne.name.sub('Gitlab::BackgroundMigration::', '')
+
+          BackgroundMigrationWorker.perform_in(RETRY_DELAY, retry_class_name, [project.id, retry_count])
         end
       end
 

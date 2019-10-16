@@ -1,3 +1,4 @@
+require_relative 'cop/gitlab/const_get_inherit_false'
 require_relative 'cop/gitlab/module_with_instance_variables'
 require_relative 'cop/gitlab/predicate_memoization'
 require_relative 'cop/gitlab/httparty'

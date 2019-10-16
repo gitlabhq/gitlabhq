@@ -138,7 +138,7 @@ class Upload < ApplicationRecord
   end
 
   def uploader_class
-    Object.const_get(uploader)
+    Object.const_get(uploader, false)
   end
 
   def identifier

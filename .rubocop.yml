@@ -178,6 +178,11 @@ Gitlab/ModuleWithInstanceVariables:
     - spec/support/**/*.rb
     - features/steps/**/*.rb
 
+Gitlab/ConstGetInheritFalse:
+  Enabled: true
+  Exclude:
+    - 'qa/bin/*'
+
 Gitlab/HTTParty:
   Enabled: true
   Exclude:

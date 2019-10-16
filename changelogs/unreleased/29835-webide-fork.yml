@@ -1,0 +1,6 @@
+---
+title: Web IDE button should fork and open forked project when selected from read-only
+  project
+merge_request: 17672
+author:
+type: added

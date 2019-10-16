@@ -15,7 +15,7 @@ FactoryBot.define do
     end
 
     path do
-      uploader_instance = Object.const_get(uploader.to_s).new(model, mount_point)
+      uploader_instance = Object.const_get(uploader.to_s, false).new(model, mount_point)
       File.join(uploader_instance.store_dir, filename)
     end
 

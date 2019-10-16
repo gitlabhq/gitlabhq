@@ -24,7 +24,7 @@ class Note < ApplicationRecord
 
     class << self
       def values
-        constants.map {|const| self.const_get(const)}
+        constants.map {|const| self.const_get(const, false)}
       end
 
       def value?(val)

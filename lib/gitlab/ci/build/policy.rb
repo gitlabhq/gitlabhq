@@ -6,7 +6,7 @@ module Gitlab
       module Policy
         def self.fabricate(specs)
           specifications = specs.to_h.map do |spec, value|
-            self.const_get(spec.to_s.camelize).new(value)
+            self.const_get(spec.to_s.camelize, false).new(value)
           end
 
           specifications.compact

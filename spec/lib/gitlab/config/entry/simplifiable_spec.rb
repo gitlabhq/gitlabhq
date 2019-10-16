@@ -24,9 +24,9 @@ describe Gitlab::Config::Entry::Simplifiable do
     let(:unknown) { double('unknown strategy') }
 
     before do
-      stub_const("#{described_class.name}::Something", first)
-      stub_const("#{described_class.name}::DifferentOne", second)
-      stub_const("#{described_class.name}::UnknownStrategy", unknown)
+      entry::Something = first
+      entry::DifferentOne = second
+      entry::UnknownStrategy = unknown
     end
 
     context 'when first strategy should be used' do

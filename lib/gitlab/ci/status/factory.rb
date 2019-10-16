@@ -20,7 +20,7 @@ module Gitlab
 
         def core_status
           Gitlab::Ci::Status
-            .const_get(@status.capitalize)
+            .const_get(@status.capitalize, false)
             .new(@subject, @user)
             .extend(self.class.common_helpers)
         end

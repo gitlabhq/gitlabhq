@@ -10,7 +10,7 @@ module Banzai
     #
     # This would return the `Banzai::ReferenceParser::IssueParser` class.
     def self.[](name)
-      const_get("#{name.to_s.camelize}Parser")
+      const_get("#{name.to_s.camelize}Parser", false)
     end
   end
 end

@@ -356,6 +356,7 @@ linters:
       - 'app/views/shared/_auto_devops_implicitly_enabled_banner.html.haml'
       - 'app/views/shared/_commit_message_container.html.haml'
       - 'app/views/shared/_confirm_modal.html.haml'
+      - 'app/views/shared/_confirm_fork_modal.html.haml'
       - 'app/views/shared/_delete_label_modal.html.haml'
       - 'app/views/shared/_group_form.html.haml'
       - 'app/views/shared/_group_tips.html.haml'

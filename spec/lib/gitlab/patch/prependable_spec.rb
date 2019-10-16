@@ -72,8 +72,8 @@ describe Gitlab::Patch::Prependable do
       expect(subject.ancestors.take(3)).to eq([subject, ee, ce])
       expect(subject.singleton_class.ancestors.take(3))
         .to eq([subject.singleton_class,
-                ee.const_get(:ClassMethods),
-                ce.const_get(:ClassMethods)])
+                ee.const_get(:ClassMethods, false),
+                ce.const_get(:ClassMethods, false)])
     end
 
     it 'prepends only once even if called twice' do
@@ -115,8 +115,8 @@ describe Gitlab::Patch::Prependable do
     it 'has the expected ancestors' do
       expect(subject.ancestors.take(3)).to eq([ee, ce, subject])
       expect(subject.singleton_class.ancestors.take(3))
-        .to eq([ee.const_get(:ClassMethods),
-                ce.const_get(:ClassMethods),
+        .to eq([ee.const_get(:ClassMethods, false),
+                ce.const_get(:ClassMethods, false),
                 subject.singleton_class])
     end
 
@@ -152,7 +152,7 @@ describe Gitlab::Patch::Prependable do
     it 'has the expected ancestors' do
       expect(subject.ancestors.take(2)).to eq([ee, subject])
       expect(subject.singleton_class.ancestors.take(2))
-        .to eq([ee.const_get(:ClassMethods),
+        .to eq([ee.const_get(:ClassMethods, false),
                 subject.singleton_class])
     end
 

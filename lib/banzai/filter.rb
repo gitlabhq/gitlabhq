@@ -3,7 +3,7 @@
 module Banzai
   module Filter
     def self.[](name)
-      const_get("#{name.to_s.camelize}Filter")
+      const_get("#{name.to_s.camelize}Filter", false)
     end
   end
 end

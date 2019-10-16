@@ -31,30 +31,30 @@ This section is for links to information elsewhere in the GitLab documentation.
   - Destructively reseeding the GitLab database.
   - Guidance around updating packaged PostgreSQL, including how to stop it happening automatically.
 
-- [More about external PostgreSQL](/ee/administration/external_database.html)
+- [More about external PostgreSQL](../external_database.md)
 
-- [Running GEO with external PostgreSQL](/ee/administration/geo/replication/external_database.html)
+- [Running GEO with external PostgreSQL](../geo/replication/external_database.md)
 
 - [Upgrades when running PostgreSQL configured for HA.](https://docs.gitlab.com/omnibus/settings/database.html#upgrading-a-gitlab-ha-cluster)
 
-- Consuming PostgreSQL from [within CI runners](/ee/ci/services/postgres.html)
+- Consuming PostgreSQL from [within CI runners](../../ci/services/postgres.md)
 
-- [Using Slony to update PostgreSQL](/ee/update/upgrading_postgresql_using_slony.html)
+- [Using Slony to update PostgreSQL](../../update/upgrading_postgresql_using_slony.md)
   - Uses replication to handle PostgreSQL upgrades - providing the schemas are the same.
   - Reduces downtime to a short window for swinging over to the newer vewrsion.
 
 - Managing Omnibus PostgreSQL versions [from the development docs](https://docs.gitlab.com/omnibus/development/managing-postgresql-versions.html)
 
-- [PostgreSQL scaling and HA](/ee/administration/high_availability/database.html)
-  - including [troubleshooting](/ee/administration/high_availability/database.html#troubleshooting) gitlab-ctl repmgr-check-master and pgbouncer errors
+- [PostgreSQL scaling and HA](../high_availability/database.md)
+  - including [troubleshooting](../high_availability/database.md#troubleshooting) gitlab-ctl repmgr-check-master and pgbouncer errors
 
-- [Developer database documentation](/ee/development/README.html#database-guides) - some of which is absolutely not for production use. Including:
+- [Developer database documentation](../../development/README.md#database-guides) - some of which is absolutely not for production use. Including:
   - understanding EXPLAIN plans
 
 ### Troubleshooting/Fixes
 
-- [GitLab database requirements](/ee/install/requirements.html#database) including
-  - Support for MySQL was removed in GitLab 12.1; [migrate to PostgreSQL](/ee/update/mysql_to_postgresql.html)
+- [GitLab database requirements](../../install/requirements.md#database) including
+  - Support for MySQL was removed in GitLab 12.1; [migrate to PostgreSQL](../../update/mysql_to_postgresql.md)
   - required extension pg_trgm
   - required extension postgres_fdw for Geo
 
@@ -71,7 +71,7 @@ pg_basebackup: could not create temporary replication slot "pg_basebackup_12345"
 HINT:  Free one or increase max_replication_slots.
 ```
 
-- GEO [replication errors](/ee/administration/geo/replication/troubleshooting.html#fixing-replication-errors) including:
+- GEO [replication errors](../geo/replication/troubleshooting.md#fixing-replication-errors) including:
 
 ```
 ERROR: replication slots can only be used if max_replication_slots > 0
@@ -83,11 +83,11 @@ Command exceeded allowed execution time
 PANIC: could not write to file ‘pg_xlog/xlogtemp.123’: No space left on device
 ```
 
-- [Checking GEO configuration](/ee/administration/geo/replication/troubleshooting.html#checking-configuration) including
+- [Checking GEO configuration](../geo/replication/troubleshooting.md#checking-configuration) including
   - reconfiguring hosts/ports
   - checking and fixing user/password mappings
 
-- [Common GEO errors](/ee/administration/geo/replication/troubleshooting.html#fixing-common-errors)
+- [Common GEO errors](../geo/replication/troubleshooting.md#fixing-common-errors)
 
 ## Support topics
 

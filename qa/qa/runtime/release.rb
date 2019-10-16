@@ -19,7 +19,7 @@ module QA
       end
 
       def strategy
-        QA.const_get("QA::#{version}::Strategy")
+        Object.const_get("QA::#{version}::Strategy", false)
       end
 
       def self.method_missing(name, *args)

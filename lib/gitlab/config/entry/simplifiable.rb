@@ -37,7 +37,7 @@ module Gitlab
 
         def self.entry_class(strategy)
           if strategy.present?
-            self.const_get(strategy.name)
+            self.const_get(strategy.name, false)
           else
             self::UnknownStrategy
           end

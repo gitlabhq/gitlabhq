@@ -13,7 +13,7 @@ def instrument_classes(instrumentation)
   instrumentation.instrument_methods(Gitlab::Git)
 
   Gitlab::Git.constants.each do |name|
-    const = Gitlab::Git.const_get(name)
+    const = Gitlab::Git.const_get(name, false)
 
     next unless const.is_a?(Module)
 
@@ -75,7 +75,7 @@ def instrument_classes(instrumentation)
   instrumentation.instrument_instance_methods(Rouge::Formatters::HTMLGitlab)
 
   [:XML, :HTML].each do |namespace|
-    namespace_mod = Nokogiri.const_get(namespace)
+    namespace_mod = Nokogiri.const_get(namespace, false)
 
     instrumentation.instrument_methods(namespace_mod)
     instrumentation.instrument_methods(namespace_mod::Document)
