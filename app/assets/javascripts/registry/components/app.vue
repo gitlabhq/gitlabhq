@@ -15,14 +15,18 @@ export default {
     GlLoadingIcon,
   },
   props: {
-    endpoint: {
-      type: String,
-      required: true,
-    },
     characterError: {
       type: Boolean,
       required: false,
       default: false,
+    },
+    containersErrorImage: {
+      type: String,
+      required: true,
+    },
+    endpoint: {
+      type: String,
+      required: true,
     },
     helpPagePath: {
       type: String,
@@ -32,11 +36,19 @@ export default {
       type: String,
       required: true,
     },
-    containersErrorImage: {
+    personalAccessTokensHelpLink: {
+      type: String,
+      required: true,
+    },
+    registryHostUrlWithPort: {
       type: String,
       required: true,
     },
     repositoryUrl: {
+      type: String,
+      required: true,
+    },
+    twoFactorAuthHelpLink: {
       type: String,
       required: true,
     },
@@ -78,6 +90,26 @@ export default {
         },
         false,
       );
+    },
+    notLoggedInToRegistryText() {
+      return sprintf(
+        s__(`ContainerRegistry|If you are not already logged in, you need to authenticate to
+             the Container Registry by using your GitLab username and password. If you have
+             %{twofaDocLinkStart}Two-Factor Authentication%{twofaDocLinkEnd} enabled, use a
+             %{personalAccessTokensDocLinkStart}Personal Access Token
+             %{personalAccessTokensDocLinkEnd}instead of a password.`),
+        {
+          twofaDocLinkStart: `<a href="${this.twoFactorAuthHelpLink}" target="_blank">`,
+          twofaDocLinkEnd: '</a>',
+          personalAccessTokensDocLinkStart: `<a href="${this.personalAccessTokensHelpLink}" target="_blank">`,
+          personalAccessTokensDocLinkEnd: '</a>',
+        },
+        false,
+      );
+    },
+    dockerLoginCommand() {
+      // eslint-disable-next-line @gitlab/i18n/no-non-i18n-strings
+      return `docker login ${this.registryHostUrlWithPort}`;
     },
     dockerBuildCommand() {
       // eslint-disable-next-line @gitlab/i18n/no-non-i18n-strings
@@ -130,6 +162,17 @@ export default {
       <template #description>
         <p class="js-no-container-images-text" v-html="noContainerImagesText"></p>
         <h5>{{ s__('ContainerRegistry|Quick Start') }}</h5>
+        <p class="js-not-logged-in-to-registry-text" v-html="notLoggedInToRegistryText"></p>
+        <div class="input-group append-bottom-10">
+          <input :value="dockerLoginCommand" type="text" class="form-control monospace" readonly />
+          <span class="input-group-append">
+            <clipboard-button
+              :text="dockerLoginCommand"
+              :title="s__('ContainerRegistry|Copy login command')"
+              class="input-group-text"
+            />
+          </span>
+        </div>
         <p>
           {{
             s__(

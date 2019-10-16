@@ -6,7 +6,7 @@ describe Groups::GroupMembersController do
   include ExternalAuthorizationServiceHelpers
 
   let(:user)  { create(:user) }
-  let(:group) { create(:group, :public, :access_requestable) }
+  let(:group) { create(:group, :public) }
   let(:membership) { create(:group_member, group: group) }
 
   describe 'GET index' do

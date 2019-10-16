@@ -7,7 +7,7 @@ describe API::AccessRequests do
   set(:stranger) { create(:user) }
 
   set(:project) do
-    create(:project, :public, :access_requestable, creator_id: maintainer.id, namespace: maintainer.namespace) do |project|
+    create(:project, :public, creator_id: maintainer.id, namespace: maintainer.namespace) do |project|
       project.add_developer(developer)
       project.add_maintainer(maintainer)
       project.request_access(access_requester)
@@ -15,7 +15,7 @@ describe API::AccessRequests do
   end
 
   set(:group) do
-    create(:group, :public, :access_requestable) do |group|
+    create(:group, :public) do |group|
       group.add_developer(developer)
       group.add_owner(maintainer)
       group.request_access(access_requester)

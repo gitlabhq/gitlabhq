@@ -153,7 +153,7 @@ describe Project do
     end
 
     describe '#members & #requesters' do
-      let(:project) { create(:project, :public, :access_requestable) }
+      let(:project) { create(:project, :public) }
       let(:requester) { create(:user) }
       let(:developer) { create(:user) }
       before do

@@ -7,6 +7,8 @@ module Gitlab
 
       def readiness
         check_result = check
+        return if check_result.nil?
+
         if successful?(check_result)
           HealthChecks::Result.new(name, true)
         elsif check_result.is_a?(Timeout::Error)
@@ -20,6 +22,8 @@ module Gitlab
 
       def metrics
         result, elapsed = with_timing(&method(:check))
+        return if result.nil?
+
         Rails.logger.error("#{human_name} check returned unexpected result #{result}") unless successful?(result) # rubocop:disable Gitlab/RailsLogger
         [
           metric("#{metric_prefix}_timeout", result.is_a?(Timeout::Error) ? 1 : 0),

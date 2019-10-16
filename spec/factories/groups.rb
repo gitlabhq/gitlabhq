@@ -32,8 +32,8 @@ FactoryBot.define do
       avatar { fixture_file_upload('spec/fixtures/dk.png') }
     end
 
-    trait :access_requestable do
-      request_access_enabled { true }
+    trait :request_access_disabled do
+      request_access_enabled { false }
     end
 
     trait :nested do

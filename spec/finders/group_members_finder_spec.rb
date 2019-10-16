@@ -4,7 +4,7 @@ require 'spec_helper'
 
 describe GroupMembersFinder, '#execute' do
   let(:group)        { create(:group) }
-  let(:nested_group) { create(:group, :access_requestable, parent: group) }
+  let(:nested_group) { create(:group, parent: group) }
   let(:user1)        { create(:user) }
   let(:user2)        { create(:user) }
   let(:user3)        { create(:user) }

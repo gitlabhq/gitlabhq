@@ -5,7 +5,7 @@ module Gitlab
     class GitalyCheck
       extend BaseAbstractCheck
 
-      METRIC_PREFIX = 'gitaly_health_check'
+      METRIC_PREFIX = 'gitaly_health_check'.freeze
 
       class << self
         def readiness

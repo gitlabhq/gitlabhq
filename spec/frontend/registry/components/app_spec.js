@@ -1,5 +1,5 @@
-import registry from '~/registry/components/app.vue';
 import { mount } from '@vue/test-utils';
+import registry from '~/registry/components/app.vue';
 import { TEST_HOST } from '../../helpers/test_constants';
 import { reposServerResponse, parsedReposServerResponse } from '../mock_data';
 
@@ -8,6 +8,7 @@ describe('Registry List', () => {
 
   const findCollapsibleContainer = w => w.findAll({ name: 'CollapsibeContainerRegisty' });
   const findNoContainerImagesText = w => w.find('.js-no-container-images-text');
+  const findNotLoggedInToRegistryText = w => w.find('.js-not-logged-in-to-registry-text');
   const findSpinner = w => w.find('.gl-spinner');
   const findCharacterErrorText = w => w.find('.js-character-error-text');
 
@@ -17,6 +18,9 @@ describe('Registry List', () => {
     noContainersImage: 'foo',
     containersErrorImage: 'foo',
     repositoryUrl: 'foo',
+    registryHostUrlWithPort: 'foo',
+    personalAccessTokensHelpLink: 'foo',
+    twoFactorAuthHelpLink: 'foo',
   };
 
   const setMainEndpoint = jest.fn();
@@ -65,6 +69,13 @@ describe('Registry List', () => {
       const noContainerImagesText = findNoContainerImagesText(localWrapper);
       expect(noContainerImagesText.text()).toEqual(
         'With the Container Registry, every project can have its own space to store its Docker images. More Information',
+      );
+    });
+
+    it('should render login help text', () => {
+      const notLoggedInToRegistryText = findNotLoggedInToRegistryText(localWrapper);
+      expect(notLoggedInToRegistryText.text()).toEqual(
+        'If you are not already logged in, you need to authenticate to the Container Registry by using your GitLab username and password. If you have Two-Factor Authentication enabled, use a Personal Access Token instead of a password.',
       );
     });
   });

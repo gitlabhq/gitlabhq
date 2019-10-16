@@ -48,10 +48,10 @@ module Projects
         # rubocop: disable CodeReuse/ActiveRecord
         Gitlab::Sentry.track_exception(ArgumentError.new('multiple tag digests')) if tag_digests.many?
 
-        # deletes the dummy image
-        # all created tag digests are the same since they all have the same dummy image.
+        # Deletes the dummy image
+        # All created tag digests are the same since they all have the same dummy image.
         # a single delete is sufficient to remove all tags with it
-        if container_repository.client.delete_repository_tag(container_repository.path, tag_digests.first)
+        if container_repository.delete_tag_by_digest(tag_digests.first)
           success(deleted: tag_names)
         else
           error('could not delete tags')

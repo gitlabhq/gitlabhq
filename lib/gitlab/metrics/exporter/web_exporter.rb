@@ -7,6 +7,16 @@ module Gitlab
   module Metrics
     module Exporter
       class WebExporter < BaseExporter
+        # This exporter is always run on master process
+        def initialize
+          super
+
+          self.additional_checks = [
+            Gitlab::HealthChecks::PumaCheck,
+            Gitlab::HealthChecks::UnicornCheck
+          ]
+        end
+
         def settings
           Settings.monitoring.web_exporter
         end

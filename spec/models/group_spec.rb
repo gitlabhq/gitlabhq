@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe Group do
-  let!(:group) { create(:group, :access_requestable) }
+  let!(:group) { create(:group) }
 
   describe 'associations' do
     it { is_expected.to have_many :projects }
@@ -331,7 +331,7 @@ describe Group do
   end
 
   describe '#avatar_url' do
-    let!(:group) { create(:group, :access_requestable, :with_avatar) }
+    let!(:group) { create(:group, :with_avatar) }
     let(:user) { create(:user) }
 
     context 'when avatar file is uploaded' do

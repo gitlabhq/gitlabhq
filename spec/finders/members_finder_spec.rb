@@ -4,7 +4,7 @@ require 'spec_helper'
 
 describe MembersFinder, '#execute' do
   set(:group)        { create(:group) }
-  set(:nested_group) { create(:group, :access_requestable, parent: group) }
+  set(:nested_group) { create(:group, parent: group) }
   set(:project)      { create(:project, namespace: nested_group) }
   set(:user1)        { create(:user) }
   set(:user2)        { create(:user) }
@@ -57,7 +57,7 @@ describe MembersFinder, '#execute' do
   context 'when include_invited_groups_members == true' do
     subject { described_class.new(project, user2).execute(include_invited_groups_members: true) }
 
-    set(:linked_group) { create(:group, :public, :access_requestable) }
+    set(:linked_group) { create(:group, :public) }
     set(:nested_linked_group) { create(:group, parent: linked_group) }
     set(:linked_group_member) { linked_group.add_guest(user1) }
     set(:nested_linked_group_member) { nested_linked_group.add_guest(user2) }

@@ -714,7 +714,7 @@ describe Notify do
 
     describe 'project access requested' do
       let(:project) do
-        create(:project, :public, :access_requestable) do |project|
+        create(:project, :public) do |project|
           project.add_maintainer(project.owner)
         end
       end
@@ -743,7 +743,7 @@ describe Notify do
     end
 
     describe 'project access denied' do
-      let(:project) { create(:project, :public, :access_requestable) }
+      let(:project) { create(:project, :public) }
       let(:project_member) do
         project.request_access(user)
         project.requesters.find_by(user_id: user.id)
@@ -765,7 +765,7 @@ describe Notify do
 
     describe 'project access changed' do
       let(:owner) { create(:user, name: "Chang O'Keefe") }
-      let(:project) { create(:project, :public, :access_requestable, namespace: owner.namespace) }
+      let(:project) { create(:project, :public, namespace: owner.namespace) }
       let(:project_member) { create(:project_member, project: project, user: user) }
       subject { described_class.member_access_granted_email('project', project_member.id) }
 
@@ -1167,7 +1167,7 @@ describe Notify do
 
   context 'for a group' do
     describe 'group access requested' do
-      let(:group) { create(:group, :public, :access_requestable) }
+      let(:group) { create(:group, :public) }
       let(:group_member) do
         group.request_access(user)
         group.requesters.find_by(user_id: user.id)

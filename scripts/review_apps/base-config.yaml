@@ -153,7 +153,8 @@ redis:
 redis-ha:
   enabled: false
 registry:
-  minReplicas: 1
+  hpa:
+    minReplicas: 1
   resources:
     requests:
       cpu: 50m

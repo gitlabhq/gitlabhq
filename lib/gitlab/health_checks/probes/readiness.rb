@@ -6,10 +6,10 @@ module Gitlab
       class Readiness
         attr_reader :checks
 
-        # This accepts an array of Proc
+        # This accepts an array of objects implementing `:readiness`
         # that returns `::Gitlab::HealthChecks::Result`
         def initialize(*additional_checks)
-          @checks = ::Gitlab::HealthChecks::CHECKS.map { |check| check.method(:readiness) }
+          @checks = ::Gitlab::HealthChecks::CHECKS
           @checks += additional_checks
         end
 
@@ -43,7 +43,7 @@ module Gitlab
 
         def probe_readiness
           checks
-            .flat_map(&:call)
+            .flat_map(&:readiness)
             .compact
             .group_by(&:name)
         end

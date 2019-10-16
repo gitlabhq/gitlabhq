@@ -117,8 +117,8 @@ FactoryBot.define do
       storage_version { nil }
     end
 
-    trait :access_requestable do
-      request_access_enabled { true }
+    trait :request_access_disabled do
+      request_access_enabled { false }
     end
 
     trait :with_avatar do

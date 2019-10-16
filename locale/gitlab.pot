@@ -1413,10 +1413,7 @@ msgstr ""
 msgid "Allow users to register any application to use GitLab as an OAuth provider"
 msgstr ""
 
-msgid "Allow users to request access"
-msgstr ""
-
-msgid "Allow users to request access if visibility is public or internal."
+msgid "Allow users to request access (if visibility is public or internal)"
 msgstr ""
 
 msgid "Allowed email domain restriction only permitted for top-level groups"
@@ -4352,10 +4349,16 @@ msgstr ""
 msgid "ContainerRegistry|Copy build command"
 msgstr ""
 
+msgid "ContainerRegistry|Copy login command"
+msgstr ""
+
 msgid "ContainerRegistry|Copy push command"
 msgstr ""
 
 msgid "ContainerRegistry|Docker connection error"
+msgstr ""
+
+msgid "ContainerRegistry|If you are not already logged in, you need to authenticate to the Container Registry by using your GitLab username and password. If you have %{twofaDocLinkStart}Two-Factor Authentication%{twofaDocLinkEnd} enabled, use a %{personalAccessTokensDocLinkStart}Personal Access Token %{personalAccessTokensDocLinkEnd}instead of a password."
 msgstr ""
 
 msgid "ContainerRegistry|Last Updated"

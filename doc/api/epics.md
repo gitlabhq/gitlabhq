@@ -147,7 +147,8 @@ Example response:
   "closed_at": "2018-08-18T12:22:05.239Z",
   "labels": [],
   "upvotes": 4,
-  "downvotes": 0
+  "downvotes": 0,
+  "subscribed": true
 }
 ```
 

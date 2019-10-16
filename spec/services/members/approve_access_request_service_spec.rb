@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 describe Members::ApproveAccessRequestService do
-  let(:project) { create(:project, :public, :access_requestable) }
-  let(:group) { create(:group, :public, :access_requestable) }
+  let(:project) { create(:project, :public) }
+  let(:group) { create(:group, :public) }
   let(:current_user) { create(:user) }
   let(:access_requester_user) { create(:user) }
   let(:access_requester) { source.requesters.find_by!(user_id: access_requester_user.id) }

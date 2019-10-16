@@ -5,7 +5,7 @@ require 'spec_helper'
 describe AccessRequestable do
   describe 'Group' do
     describe '#request_access' do
-      let(:group) { create(:group, :public, :access_requestable) }
+      let(:group) { create(:group, :public) }
       let(:user) { create(:user) }
 
       it { expect(group.request_access(user)).to be_a(GroupMember) }
@@ -13,7 +13,7 @@ describe AccessRequestable do
     end
 
     describe '#access_requested?' do
-      let(:group) { create(:group, :public, :access_requestable) }
+      let(:group) { create(:group, :public) }
       let(:user) { create(:user) }
 
       before do
@@ -26,14 +26,14 @@ describe AccessRequestable do
 
   describe 'Project' do
     describe '#request_access' do
-      let(:project) { create(:project, :public, :access_requestable) }
+      let(:project) { create(:project, :public) }
       let(:user) { create(:user) }
 
       it { expect(project.request_access(user)).to be_a(ProjectMember) }
     end
 
     describe '#access_requested?' do
-      let(:project) { create(:project, :public, :access_requestable) }
+      let(:project) { create(:project, :public) }
       let(:user) { create(:user) }
 
       before do

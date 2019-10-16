@@ -5,7 +5,7 @@ require 'spec_helper'
 describe 'Groups > Members > Request access' do
   let(:user) { create(:user) }
   let(:owner) { create(:user) }
-  let(:group) { create(:group, :public, :access_requestable) }
+  let(:group) { create(:group, :public) }
   let!(:project) { create(:project, :private, namespace: group) }
 
   before do

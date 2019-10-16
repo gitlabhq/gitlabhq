@@ -64,6 +64,18 @@ describe Gitlab::Metrics::Exporter::BaseExporter do
             exporter.start.join
           end
         end
+
+        describe 'when thread is not alive' do
+          it 'does close listeners' do
+            expect_any_instance_of(::WEBrick::HTTPServer).to receive(:start)
+            expect_any_instance_of(::WEBrick::HTTPServer).to receive(:listeners)
+              .and_call_original
+
+            expect { exporter.start.join }.to change { exporter.thread? }.from(false).to(true)
+
+            exporter.stop
+          end
+        end
       end
 
       describe '#stop' do

@@ -3,6 +3,4 @@
 .form-check
   = form.check_box :request_access_enabled, class: 'form-check-input', data: { qa_selector: 'request_access_checkbox' }
   = form.label :request_access_enabled, class: 'form-check-label' do
-    %span{ class: label_class }= _('Allow users to request access')
-    %br
-    %span.text-muted= _('Allow users to request access if visibility is public or internal.')
+    %span{ class: label_class }= _('Allow users to request access (if visibility is public or internal)')

@@ -92,7 +92,7 @@ describe Member do
 
   describe 'Scopes & finders' do
     before do
-      project = create(:project, :public, :access_requestable)
+      project = create(:project, :public)
       group = create(:group)
       @owner_user = create(:user).tap { |u| group.add_owner(u) }
       @owner = group.members.find_by(user_id: @owner_user.id)
@@ -230,7 +230,7 @@ describe Member do
   describe '.add_user' do
     %w[project group].each do |source_type|
       context "when source is a #{source_type}" do
-        let!(:source) { create(source_type, :public, :access_requestable) }
+        let!(:source) { create(source_type, :public) }
         let!(:user) { create(:user) }
         let!(:admin) { create(:admin) }
 
@@ -437,7 +437,7 @@ describe Member do
   describe '.add_users' do
     %w[project group].each do |source_type|
       context "when source is a #{source_type}" do
-        let!(:source) { create(source_type, :public, :access_requestable) }
+        let!(:source) { create(source_type, :public) }
         let!(:admin) { create(:admin) }
         let(:user1) { create(:user) }
         let(:user2) { create(:user) }

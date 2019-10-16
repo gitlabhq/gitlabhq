@@ -87,6 +87,21 @@ describe Projects::ContainerRepository::DeleteTagsService do
 
           is_expected.to include(status: :success)
         end
+
+        it 'succedes when tag delete returns 404' do
+          stub_upload("{\n  \"config\": {\n  }\n}", 'sha256:4435000728ee66e6a80e55637fc22725c256b61de344a2ecdeaac6bdb36e8bc3')
+
+          stub_request(:put, "http://registry.gitlab/v2/#{repository.path}/manifests/A")
+            .to_return(status: 200, body: "", headers: { 'docker-content-digest' => 'sha256:dummy' })
+
+          stub_request(:put, "http://registry.gitlab/v2/#{repository.path}/manifests/Ba")
+            .to_return(status: 200, body: "", headers: { 'docker-content-digest' => 'sha256:dummy' })
+
+          stub_request(:delete, "http://registry.gitlab/v2/#{repository.path}/manifests/sha256:dummy")
+            .to_return(status: 404, body: "", headers: {})
+
+          is_expected.to include(status: :success)
+        end
       end
     end
   end

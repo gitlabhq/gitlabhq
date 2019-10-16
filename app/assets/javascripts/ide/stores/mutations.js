@@ -73,16 +73,15 @@ export default {
       const entry = data.entries[key];
       const foundEntry = state.entries[key];
 
+      // NOTE: We can't clone `entry` in any of the below assignments because
+      // we need `state.entries` and the `entry.tree` to reference the same object.
       if (!foundEntry) {
         Object.assign(state.entries, {
           [key]: entry,
         });
       } else if (foundEntry.deleted) {
         Object.assign(state.entries, {
-          [key]: {
-            ...entry,
-            replaces: true,
-          },
+          [key]: Object.assign(entry, { replaces: true }),
         });
       } else {
         const tree = entry.tree.filter(

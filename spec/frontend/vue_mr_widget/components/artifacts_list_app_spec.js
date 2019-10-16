@@ -44,6 +44,7 @@ describe('Merge Requests Artifacts list app', () => {
 
   const findButtons = () => wrapper.findAll('button');
   const findTitle = () => wrapper.find('.js-title');
+  const findErrorMessage = () => wrapper.find('.js-error-state');
   const findTableRows = () => wrapper.findAll('tbody tr');
 
   describe('while loading', () => {
@@ -109,13 +110,12 @@ describe('Merge Requests Artifacts list app', () => {
     });
 
     it('renders the error state', () => {
-      expect(findTitle().text()).toBe('An error occurred while fetching the artifacts');
+      expect(findErrorMessage().text()).toBe('An error occurred while fetching the artifacts');
     });
 
-    it('renders disabled buttons', () => {
+    it('does not render buttons', () => {
       const buttons = findButtons();
-      expect(buttons.at(0).attributes('disabled')).toBe('disabled');
-      expect(buttons.at(1).attributes('disabled')).toBe('disabled');
+      expect(buttons.exists()).toBe(false);
     });
   });
 });

@@ -20,6 +20,7 @@ describe('Merge Request Collapsible Extension', () => {
   };
 
   const findTitle = () => wrapper.find('.js-title');
+  const findErrorMessage = () => wrapper.find('.js-error-state');
 
   afterEach(() => {
     wrapper.destroy();
@@ -87,19 +88,12 @@ describe('Merge Request Collapsible Extension', () => {
       mountComponent(Object.assign({}, data, { hasError: true }));
     });
 
-    it('renders the buttons disabled', () => {
-      expect(
-        wrapper
-          .findAll('button')
-          .at(0)
-          .attributes('disabled'),
-      ).toEqual('disabled');
-      expect(
-        wrapper
-          .findAll('button')
-          .at(1)
-          .attributes('disabled'),
-      ).toEqual('disabled');
+    it('does not render the buttons', () => {
+      expect(wrapper.findAll('button').exists()).toBe(false);
+    });
+
+    it('renders title message provided', () => {
+      expect(findErrorMessage().text()).toBe(data.title);
     });
   });
 });

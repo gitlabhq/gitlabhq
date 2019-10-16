@@ -6,6 +6,8 @@ module Gitlab
       class BaseExporter < Daemon
         attr_reader :server
 
+        attr_accessor :additional_checks
+
         def enabled?
           settings.enabled
         end
@@ -32,12 +34,10 @@ module Gitlab
             Port: settings.port, BindAddress: settings.address,
             Logger: logger, AccessLog: access_log)
           server.mount_proc '/readiness' do |req, res|
-            render_probe(
-              ::Gitlab::HealthChecks::Probes::Readiness.new, req, res)
+            render_probe(readiness_probe, req, res)
           end
           server.mount_proc '/liveness' do |req, res|
-            render_probe(
-              ::Gitlab::HealthChecks::Probes::Liveness.new, req, res)
+            render_probe(liveness_probe, req, res)
           end
           server.mount '/', Rack::Handler::WEBrick, rack_app
 
@@ -52,8 +52,10 @@ module Gitlab
 
         def stop_working
           if server
+            # we close sockets if thread is not longer running
+            # this happens, when the process forks
+            server.listeners.each(&:close) unless thread.alive?
             server.shutdown
-            server.listeners.each(&:close)
           end
 
           @server = nil
@@ -65,6 +67,14 @@ module Gitlab
             use ::Prometheus::Client::Rack::Exporter if ::Gitlab::Metrics.metrics_folder_present?
             run -> (env) { [404, {}, ['']] }
           end
+        end
+
+        def readiness_probe
+          ::Gitlab::HealthChecks::Probes::Readiness.new(*additional_checks)
+        end
+
+        def liveness_probe
+          ::Gitlab::HealthChecks::Probes::Liveness.new
         end
 
         def render_probe(probe, req, res)

@@ -4,7 +4,7 @@ require 'spec_helper'
 
 describe Ci::Build do
   set(:user) { create(:user) }
-  set(:group) { create(:group, :access_requestable) }
+  set(:group) { create(:group) }
   set(:project) { create(:project, :repository, group: group) }
 
   set(:pipeline) do

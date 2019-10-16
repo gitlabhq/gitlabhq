@@ -141,7 +141,7 @@ describe ProjectTeam do
   describe '#find_member' do
     context 'personal project' do
       let(:project) do
-        create(:project, :public, :access_requestable)
+        create(:project, :public)
       end
 
       let(:requester) { create(:user) }
@@ -161,7 +161,7 @@ describe ProjectTeam do
     end
 
     context 'group project' do
-      let(:group) { create(:group, :access_requestable) }
+      let(:group) { create(:group) }
       let(:project) { create(:project, group: group) }
       let(:requester) { create(:user) }
 
@@ -246,7 +246,7 @@ describe ProjectTeam do
 
     context 'personal project' do
       let(:project) do
-        create(:project, :public, :access_requestable)
+        create(:project, :public)
       end
 
       context 'when project is not shared with group' do
@@ -292,7 +292,7 @@ describe ProjectTeam do
     end
 
     context 'group project' do
-      let(:group) { create(:group, :access_requestable) }
+      let(:group) { create(:group) }
       let!(:project) do
         create(:project, group: group)
       end

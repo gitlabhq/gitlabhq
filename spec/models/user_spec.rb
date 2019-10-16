@@ -79,7 +79,7 @@ describe User do
     describe '#group_members' do
       it 'does not include group memberships for which user is a requester' do
         user = create(:user)
-        group = create(:group, :public, :access_requestable)
+        group = create(:group, :public)
         group.request_access(user)
 
         expect(user.group_members).to be_empty
@@ -89,7 +89,7 @@ describe User do
     describe '#project_members' do
       it 'does not include project memberships for which user is a requester' do
         user = create(:user)
-        project = create(:project, :public, :access_requestable)
+        project = create(:project, :public)
         project.request_access(user)
 
         expect(user.project_members).to be_empty
@@ -1191,7 +1191,7 @@ describe User do
   end
 
   describe '.without_projects' do
-    let!(:project) { create(:project, :public, :access_requestable) }
+    let!(:project) { create(:project, :public) }
     let!(:user) { create(:user) }
     let!(:user_without_project) { create(:user) }
     let!(:user_without_project2) { create(:user) }
