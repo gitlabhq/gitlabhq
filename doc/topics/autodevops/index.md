@@ -98,7 +98,7 @@ To make full use of Auto DevOps, you will need:
 - **GitLab Runner** (for all stages)
 
   Your Runner needs to be configured to be able to run Docker. Generally this
-  means using the either the [Docker](https://docs.gitlab.com/runner/executors/docker.html)
+  means using either the [Docker](https://docs.gitlab.com/runner/executors/docker.html)
   or [Kubernetes](https://docs.gitlab.com/runner/executors/kubernetes.html) executors, with
   [privileged mode enabled](https://docs.gitlab.com/runner/executors/docker.html#use-docker-in-docker-with-privileged-mode).
 
@@ -1169,13 +1169,13 @@ This configuration is deprecated and will be removed in the future.
 TIP: **Tip:**
 You can also set this inside your [project's settings](#deployment-strategy).
 
-This configuration based on
+This configuration is based on
 [incremental rollout to production](#incremental-rollout-to-production-premium).
 
 Everything behaves the same way, except:
 
 - It's enabled by setting the `INCREMENTAL_ROLLOUT_MODE` variable to `timed`.
-- Instead of the standard `production` job, the following jobs with a 5 minute delay between each are created:
+- Instead of the standard `production` job, the following jobs are created with a 5 minute delay between each :
   1. `timed rollout 10%`
   1. `timed rollout 25%`
   1. `timed rollout 50%`

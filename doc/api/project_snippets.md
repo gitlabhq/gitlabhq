@@ -78,7 +78,7 @@ Parameters:
 - `title` (required) - The title of a snippet
 - `file_name` (required) - The name of a snippet file
 - `description` (optional) - The description of a snippet
-- `code` (required) - The content of a snippet
+- `content` (required) - The content of a snippet
 - `visibility` (required) - The snippet's visibility
 
 Example request:
@@ -97,7 +97,7 @@ curl --request POST https://gitlab.com/api/v4/projects/:id/snippets \
   "title" : "Example Snippet Title",
   "description" : "More verbose snippet description",
   "file_name" : "example.txt",
-  "code" : "source code \n with multiple lines\n",
+  "content" : "source code \n with multiple lines\n",
   "visibility" : "private"
 }
 ```
@@ -117,7 +117,7 @@ Parameters:
 - `title` (optional) - The title of a snippet
 - `file_name` (optional) - The name of a snippet file
 - `description` (optional) - The description of a snippet
-- `code` (optional) - The content of a snippet
+- `content` (optional) - The content of a snippet
 - `visibility` (optional) - The snippet's visibility
 
 Example request:
@@ -136,7 +136,7 @@ curl --request PUT https://gitlab.com/api/v4/projects/:id/snippets \
   "title" : "Updated Snippet Title",
   "description" : "More verbose snippet description",
   "file_name" : "new_filename.txt",
-  "code" : "updated source code \n with multiple lines\n",
+  "content" : "updated source code \n with multiple lines\n",
   "visibility" : "private"
 }
 ```

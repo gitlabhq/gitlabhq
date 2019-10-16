@@ -44,6 +44,10 @@ module Gitlab
         duration.in_milliseconds.to_i
       end
 
+      def thread_cpu_duration
+        System.thread_cpu_duration(@thread_cputime_start)
+      end
+
       def allocated_memory
         @memory_after - @memory_before
       end
@@ -53,12 +57,14 @@ module Gitlab
 
         @memory_before = System.memory_usage
         @started_at = System.monotonic_time
+        @thread_cputime_start = System.thread_cpu_time
 
         yield
       ensure
         @memory_after = System.memory_usage
         @finished_at = System.monotonic_time
 
+        self.class.gitlab_transaction_cputime_seconds.observe(labels, thread_cpu_duration)
         self.class.gitlab_transaction_duration_seconds.observe(labels, duration)
         self.class.gitlab_transaction_allocated_memory_bytes.observe(labels, allocated_memory * 1024.0)
 
@@ -140,6 +146,12 @@ module Gitlab
       # returns string describing the action performed, usually the class plus method name.
       def action
         "#{labels[:controller]}##{labels[:action]}" if labels && !labels.empty?
+      end
+
+      define_histogram :gitlab_transaction_cputime_seconds do
+        docstring 'Transaction thread cputime'
+        base_labels BASE_LABELS
+        buckets [0.1, 0.25, 0.5, 1.0, 2.5, 5.0]
       end
 
       define_histogram :gitlab_transaction_duration_seconds do

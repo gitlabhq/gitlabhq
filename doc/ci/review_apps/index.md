@@ -24,8 +24,8 @@ In the above example:
 
 - A Review App is built every time a commit is pushed to `topic branch`.
 - The reviewer fails two reviews before passing the third review.
-- Once the review as passed, `topic branch` is merged into `master` where it's deploy to staging.
-- After been approved in staging, the changes that were merged into `master` are deployed in to production.
+- Once the review has passed, `topic branch` is merged into `master` where it is deployed to staging.
+- After having been approved in staging, the changes that were merged into `master` are deployed in to production.
 
 ## How Review Apps work
 

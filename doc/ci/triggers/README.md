@@ -157,7 +157,7 @@ curl --request POST \
 You can also benefit by using triggers in your `.gitlab-ci.yml`. Let's say that
 you have two projects, A and B, and you want to trigger a rebuild on the `master`
 branch of project B whenever a tag on project A is created. This is the job you
-need to add in project's A `.gitlab-ci.yml`:
+need to add in project A's `.gitlab-ci.yml`:
 
 ```yaml
 build_docs:

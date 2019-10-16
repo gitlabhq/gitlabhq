@@ -50,14 +50,9 @@ For more examples on artifacts, follow the [artifacts reference in
 
 ## Browsing artifacts
 
-> With GitLab 9.2, PDFs, images, videos and other formats can be previewed
-> directly in the job artifacts browser without the need to download them.
-> With [GitLab 10.1][ce-14399], HTML files in a public project can be previewed
-> directly in a new tab without the need to download them when
-> [GitLab Pages](../../../administration/pages/index.md) is enabled.
-> The same holds for textual formats (currently supported extensions: `.txt`, `.json`, and `.log`).
-> With [GitLab 12.4][gitlab-16675], also artifacts in private projects can be previewed
-> when [GitLab Pages access control](../../../administration/pages/index.md#access-control) is enabled.
+> - From GitLab 9.2, PDFs, images, videos and other formats can be previewed directly in the job artifacts browser without the need to download them.
+> - Introduced in [GitLab 10.1][ce-14399], HTML files in a public project can be previewed directly in a new tab without the need to download them when [GitLab Pages](../../../administration/pages/index.md) is enabled. The same applies for textual formats (currently supported extensions: `.txt`, `.json`, and `.log`).
+> - Introduced in [GitLab 12.4][gitlab-16675], artifacts in private projects can be previewed when [GitLab Pages access control](../../../administration/pages/index.md#access-control) is enabled.
 
 After a job finishes, if you visit the job's specific page, there are three
 buttons. You can download the artifacts archive or browse its contents, whereas
@@ -70,7 +65,7 @@ The archive browser shows the name and the actual file size of each file in the
 archive. If your artifacts contained directories, then you are also able to
 browse inside them.
 
-Below you can see how browsing looks like. In this case we have browsed inside
+Below you can see what browsing looks like. In this case we have browsed inside
 the archive and at this point there is one directory, a couple files, and
 one HTML file that you can view directly online when
 [GitLab Pages](../../../administration/pages/index.md) is enabled (opens in a new tab).

@@ -2,9 +2,9 @@
 
 ## Overview
 
-Labels allow you to categorize issues or merge requests using descriptive titles like
+Labels allow you to categorize epics, issues, and merge requests using descriptive titles like
 `bug`, `feature request`, or `docs`. Each label also has a customizable color. They
-allow you to quickly and dynamically filter and manage issues or merge requests you
+allow you to quickly and dynamically filter and manage epics, issues and merge requests you
 care about, and are visible throughout GitLab in most places where issues and merge
 requests are located.
 
@@ -12,8 +12,8 @@ requests are located.
 
 In GitLab, you can create project and group labels:
 
-- **Project labels** can be assigned to issues or merge requests in that project only.
-- **Group labels** can be assigned to any issue or merge request in any project in
+- **Project labels** can be assigned to epics, issues and merge requests in that project only.
+- **Group labels** can be assigned to any epics, issue and merge request in any project in
   that group, or any subgroups of the group.
 
 ## Scoped labels **(PREMIUM)**
@@ -21,7 +21,7 @@ In GitLab, you can create project and group labels:
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/9175) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.10.
 
 Scoped labels allow teams to use the simple and familiar label feature to
-annotate their issues, merge requests, and epics to achieve custom fields and
+annotate their epics, issues, merge requests, and epics to achieve custom fields and
 custom workflow states by leveraging a special label title syntax.
 
 A scoped label is a kind of label defined by a special double-colon syntax
@@ -141,11 +141,8 @@ action cannot be reversed and the changes are permanent.
 
 ## Assigning labels from the sidebar
 
-Every issue and merge request can be assigned any number of labels. The labels are
-visible on every issue and merge request page, in the sidebar. They are also visible on:
-
-- Every issue and merge request page in the sidebar.
-- The issue board.
+Every epic, issue, and merge request can be assigned any number of labels. The labels are
+visible on every epic, issue and merge request page, in the sidebar and on your issue boards.
 
 From the sidebar, you can assign or unassign a label to the object (i.e. label or
 unlabel it). You can also perform this as a [quick action](quick_actions.md),
@@ -166,11 +163,11 @@ GitLab will check both the label titles and descriptions for the search.
 
 ## Filtering by label
 
-The following can be filtered labels:
+The following can be filtered by labels:
 
+- Epic lists **(ULTIMATE)**
 - Issue lists
 - Merge Request lists
-- Epic lists **(ULTIMATE)**
 - Issue Boards
 
 ### Filtering in list pages
@@ -180,7 +177,7 @@ The following can be filtered labels:
   - Group labels (including subgroup ancestors)
   - Project labels
 
-- From the group issue list page and the group merge request list page, you can
+- From the group epic lists page, issue list page and the group merge request list page, you can
   [filter](../search/index.md#issues-and-merge-requests) by:
   - Group labels (including subgroup ancestors and subgroup descendants)
   - Project labels
@@ -214,7 +211,7 @@ The following can be filtered labels:
 
 From the project label list page and the group label list page, you can subscribe
 to [notifications](../../workflow/notifications.md) of a given label, to alert you
-that the label has been assigned to an issue or merge request.
+that the label has been assigned to an epic, issue, and merge request.
 
 ![Labels subscriptions](img/labels_subscriptions_v12_1.png)
 
@@ -226,7 +223,7 @@ that the label has been assigned to an issue or merge request.
 > - Priority sorting is based on the highest priority label only. [This discussion](https://gitlab.com/gitlab-org/gitlab-foss/issues/18554) considers changing this.
 
 Labels can have relative priorities, which are used in the "Label priority" and
-"Priority" sort orders of the issue and merge request list pages.
+"Priority" sort orders of the epic, issue, and merge request list pages.
 
 From the project label list page, star a label to indicate that it has a priority.
 
@@ -242,8 +239,8 @@ on the project label list page.
 
 ![Drag to change label priority](img/labels_drag_priority_v12_1.gif)
 
-On the merge request and issue pages, for both groups and projects, you can sort by `Label priority`
-and `Priority`, which account for objects (issues and merge requests) that have prioritized
+On the epic, merge request and issue pages, for both groups and projects, you can sort by `Label priority`
+and `Priority`, which account for objects (epic, issues, and merge requests) that have prioritized
 labels assigned to them.
 
 If you sort by `Label priority`, GitLab considers this sort comparison order:

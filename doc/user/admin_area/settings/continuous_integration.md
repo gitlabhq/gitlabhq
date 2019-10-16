@@ -54,6 +54,9 @@ To change it at the:
   1. Change the value of **maximum artifacts size (in MB)**.
   1. Press **Save changes** for the changes to take effect.
 
+NOTE: **Note**
+The setting at all levels is only available to GitLab administrators.
+
 ## Default artifacts expiration **(CORE ONLY)**
 
 The default expiration time of the [job artifacts](../../../administration/job_artifacts.md)
