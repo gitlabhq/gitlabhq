@@ -104,11 +104,13 @@ describe Gitlab::Danger::Roulette do
     let(:person2) { Gitlab::Danger::Teammate.new('username' => 'godfat') }
     let(:author) { Gitlab::Danger::Teammate.new('username' => 'filipa') }
     let(:ooo) { Gitlab::Danger::Teammate.new('username' => 'jacopo-beschi') }
+    let(:no_capacity) { Gitlab::Danger::Teammate.new('username' => 'uncharged') }
 
     before do
-      stub_person_message(person1, 'making GitLab magic')
-      stub_person_message(person2, 'making GitLab magic')
-      stub_person_message(ooo, 'OOO till 15th')
+      stub_person_status(person1, message: 'making GitLab magic')
+      stub_person_status(person2, message: 'making GitLab magic')
+      stub_person_status(ooo, message: 'OOO till 15th')
+      stub_person_status(no_capacity, message: 'At capacity for the next few days', emoji: 'red_circle')
       # we don't stub Filipa, as she is the author and
       # we should not fire request checking for her
 
@@ -131,10 +133,14 @@ describe Gitlab::Danger::Roulette do
       expect(subject.spin_for_person([author], random: Random.new)).to be_nil
     end
 
+    it 'excludes person with no capacity' do
+      expect(subject.spin_for_person([no_capacity], random: Random.new)).to be_nil
+    end
+
     private
 
-    def stub_person_message(person, message)
-      body = { message: message }.to_json
+    def stub_person_status(person, message: 'dummy message', emoji: 'unicorn')
+      body = { message: message, emoji: emoji }.to_json
 
       WebMock
         .stub_request(:get, "https://gitlab.com/api/v4/users/#{person.username}/status")

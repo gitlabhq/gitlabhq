@@ -42,6 +42,10 @@ module Clusters
         def on_creation?
           scheduled? || creating?
         end
+
+        def assign_operation_id(_)
+          # Implemented by individual providers if operation ID is supported.
+        end
       end
     end
   end

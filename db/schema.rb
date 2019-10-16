@@ -467,6 +467,15 @@ ActiveRecord::Schema.define(version: 2019_10_16_072826) do
     t.index ["user_id", "name"], name: "index_award_emoji_on_user_id_and_name"
   end
 
+  create_table "aws_roles", primary_key: "user_id", id: :integer, default: nil, force: :cascade do |t|
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+    t.string "role_arn", limit: 2048, null: false
+    t.string "role_external_id", limit: 64, null: false
+    t.index ["role_external_id"], name: "index_aws_roles_on_role_external_id", unique: true
+    t.index ["user_id"], name: "index_aws_roles_on_user_id", unique: true
+  end
+
   create_table "badges", id: :serial, force: :cascade do |t|
     t.string "link_url", null: false
     t.string "image_url", null: false
@@ -966,6 +975,30 @@ ActiveRecord::Schema.define(version: 2019_10_16_072826) do
     t.datetime "updated_at", null: false
     t.index ["cluster_id"], name: "index_cluster_projects_on_cluster_id"
     t.index ["project_id"], name: "index_cluster_projects_on_project_id"
+  end
+
+  create_table "cluster_providers_aws", force: :cascade do |t|
+    t.bigint "cluster_id", null: false
+    t.integer "created_by_user_id"
+    t.integer "num_nodes", null: false
+    t.integer "status", null: false
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+    t.string "key_name", limit: 255, null: false
+    t.string "role_arn", limit: 2048, null: false
+    t.string "region", limit: 255, null: false
+    t.string "vpc_id", limit: 255, null: false
+    t.string "subnet_ids", limit: 255, default: [], null: false, array: true
+    t.string "security_group_id", limit: 255, null: false
+    t.string "instance_type", limit: 255, null: false
+    t.string "access_key_id", limit: 255
+    t.string "encrypted_secret_access_key_iv", limit: 255
+    t.text "encrypted_secret_access_key"
+    t.text "session_token"
+    t.text "status_reason"
+    t.index ["cluster_id", "status"], name: "index_cluster_providers_aws_on_cluster_id_and_status"
+    t.index ["cluster_id"], name: "index_cluster_providers_aws_on_cluster_id", unique: true
+    t.index ["created_by_user_id"], name: "index_cluster_providers_aws_on_created_by_user_id"
   end
 
   create_table "cluster_providers_gcp", id: :serial, force: :cascade do |t|
@@ -3933,6 +3966,7 @@ ActiveRecord::Schema.define(version: 2019_10_16_072826) do
   add_foreign_key "approval_project_rules_users", "users", on_delete: :cascade
   add_foreign_key "approvals", "merge_requests", name: "fk_310d714958", on_delete: :cascade
   add_foreign_key "approver_groups", "namespaces", column: "group_id", on_delete: :cascade
+  add_foreign_key "aws_roles", "users", on_delete: :cascade
   add_foreign_key "badges", "namespaces", column: "group_id", on_delete: :cascade
   add_foreign_key "badges", "projects", on_delete: :cascade
   add_foreign_key "board_assignees", "boards", on_delete: :cascade
@@ -3996,6 +4030,8 @@ ActiveRecord::Schema.define(version: 2019_10_16_072826) do
   add_foreign_key "cluster_platforms_kubernetes", "clusters", on_delete: :cascade
   add_foreign_key "cluster_projects", "clusters", on_delete: :cascade
   add_foreign_key "cluster_projects", "projects", on_delete: :cascade
+  add_foreign_key "cluster_providers_aws", "clusters", on_delete: :cascade
+  add_foreign_key "cluster_providers_aws", "users", column: "created_by_user_id", on_delete: :nullify
   add_foreign_key "cluster_providers_gcp", "clusters", on_delete: :cascade
   add_foreign_key "clusters", "projects", column: "management_project_id", name: "fk_f05c5e5a42", on_delete: :nullify
   add_foreign_key "clusters", "users", on_delete: :nullify

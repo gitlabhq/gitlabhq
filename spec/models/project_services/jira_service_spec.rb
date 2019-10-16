@@ -15,20 +15,22 @@ describe JiraService do
   let(:transition_id) { 'test27' }
 
   describe '#options' do
-    let(:service) do
-      described_class.create(
+    let(:options) do
+      {
         project: create(:project),
         active: true,
-        username: 'username ',
+        username: 'username',
         password: 'test',
         jira_issue_transition_id: 24,
         url: 'http://jira.test.com/path/'
-      )
+      }
     end
 
+    let(:service) { described_class.create(options) }
+
     it 'sets the URL properly' do
-      # jira-ruby gem parses the URI and handles trailing slashes
-      # fine: https://github.com/sumoheavy/jira-ruby/blob/v1.4.1/lib/jira/http_client.rb#L59
+      # jira-ruby gem parses the URI and handles trailing slashes fine:
+      # https://github.com/sumoheavy/jira-ruby/blob/v1.7.0/lib/jira/http_client.rb#L62
       expect(service.options[:site]).to eq('http://jira.test.com/')
     end
 
@@ -36,13 +38,29 @@ describe JiraService do
       expect(service.options[:context_path]).to eq('/path')
     end
 
-    it 'leaves out trailing whitespaces in username' do
-      expect(service.options[:username]).to eq('username')
+    context 'username with trailing whitespaces' do
+      before do
+        options.merge!(username: 'username ')
+      end
+
+      it 'leaves out trailing whitespaces in username' do
+        expect(service.options[:username]).to eq('username')
+      end
     end
 
     it 'provides additional cookies to allow basic auth with oracle webgate' do
       expect(service.options[:use_cookies]).to eq(true)
       expect(service.options[:additional_cookies]).to eq(['OBBasicAuth=fromDialog'])
+    end
+
+    context 'using api URL' do
+      before do
+        options.merge!(api_url: 'http://jira.test.com/api_path/')
+      end
+
+      it 'leaves out trailing slashes in context' do
+        expect(service.options[:context_path]).to eq('/api_path')
+      end
     end
   end
 

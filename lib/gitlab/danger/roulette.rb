@@ -50,7 +50,7 @@ module Gitlab
       # @param [Teammate] person
       # @return [Boolean]
       def valid_person?(person)
-        !mr_author?(person) && !person.out_of_office?
+        !mr_author?(person) && person.available?
       end
 
       # @param [Teammate] person

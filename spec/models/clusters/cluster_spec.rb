@@ -17,6 +17,7 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
   it { is_expected.to have_many(:cluster_groups) }
   it { is_expected.to have_many(:groups) }
   it { is_expected.to have_one(:provider_gcp) }
+  it { is_expected.to have_one(:provider_aws) }
   it { is_expected.to have_one(:platform_kubernetes) }
   it { is_expected.to have_one(:application_helm) }
   it { is_expected.to have_one(:application_ingress) }
@@ -103,6 +104,31 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
 
     before do
       create(:cluster, :providing_by_gcp)
+    end
+
+    it { is_expected.to contain_exactly(cluster) }
+  end
+
+  describe '.aws_provided' do
+    subject { described_class.aws_provided }
+
+    let!(:cluster) { create(:cluster, :provided_by_aws) }
+
+    before do
+      create(:cluster, :provided_by_user)
+    end
+
+    it { is_expected.to contain_exactly(cluster) }
+  end
+
+  describe '.aws_installed' do
+    subject { described_class.aws_installed }
+
+    let!(:cluster) { create(:cluster, :provided_by_aws) }
+
+    before do
+      errored_cluster = create(:cluster, :provided_by_aws)
+      errored_cluster.provider.make_errored!("Error message")
     end
 
     it { is_expected.to contain_exactly(cluster) }
@@ -398,7 +424,14 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
 
       it 'returns a provider' do
         is_expected.to eq(cluster.provider_gcp)
-        expect(subject.class.name.deconstantize).to eq(Clusters::Providers.to_s)
+      end
+    end
+
+    context 'when provider is aws' do
+      let(:cluster) { create(:cluster, :provided_by_aws) }
+
+      it 'returns a provider' do
+        is_expected.to eq(cluster.provider_aws)
       end
     end
 

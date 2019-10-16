@@ -17,7 +17,7 @@ shared_examples 'provider status' do |factory|
       let(:provider) { build(factory) }
       let(:operation_id) { 'operation-xxx' }
 
-      it 'calls #operation_id on the provider' do
+      it 'calls #assign_operation_id on the provider' do
         expect(provider).to receive(:assign_operation_id).with(operation_id).and_call_original
 
         provider.make_creating(operation_id)

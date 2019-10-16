@@ -44,11 +44,21 @@ module Gitlab
       end
 
       # @return [Boolean]
+      def available?
+        !out_of_office? && has_capacity?
+      end
+
+      private
+
+      # @return [Boolean]
       def out_of_office?
         status&.dig("message")&.match?(/OOO/i) || false
       end
 
-      private
+      # @return [Boolean]
+      def has_capacity?
+        status&.dig("emoji") != 'red_circle'
+      end
 
       def has_capability?(project, category, kind, labels)
         case category

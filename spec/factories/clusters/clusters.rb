@@ -53,6 +53,14 @@ FactoryBot.define do
       platform_kubernetes factory: [:cluster_platform_kubernetes, :configured]
     end
 
+    trait :provided_by_aws do
+      provider_type { :aws }
+      platform_type { :kubernetes }
+
+      provider_aws factory: [:cluster_provider_aws, :created]
+      platform_kubernetes factory: [:cluster_platform_kubernetes, :configured]
+    end
+
     trait :providing_by_gcp do
       provider_type { :gcp }
       provider_gcp factory: [:cluster_provider_gcp, :creating]

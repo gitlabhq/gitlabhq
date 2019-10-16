@@ -1,0 +1,5 @@
+---
+title: Add database tables to store AWS roles and cluster providers
+merge_request: 17057
+author:
+type: added

@@ -135,17 +135,17 @@ describe Gitlab::Danger::Teammate do
     end
   end
 
-  describe '#out_of_office?' do
+  describe '#available?' do
     using RSpec::Parameterized::TableSyntax
 
     let(:capabilities) { ['dry head'] }
 
     where(:status, :result) do
-      nil                              | false
-      {}                               | false
-      { message: 'dear reader' }       | false
-      { message: 'OOO: massage' }      | true
-      { message: 'love it SOOO much' } | true
+      {}                               | true
+      { message: 'dear reader' }       | true
+      { message: 'OOO: massage' }      | false
+      { message: 'love it SOOO much' } | false
+      { emoji: 'red_circle' }          | false
     end
 
     with_them do
@@ -154,7 +154,15 @@ describe Gitlab::Danger::Teammate do
                                                      .and_return(status&.stringify_keys)
       end
 
-      it { expect(subject.out_of_office?).to be result }
+      it { expect(subject.available?).to be result }
+    end
+
+    it 'returns true if request fails' do
+      expect(Gitlab::Danger::RequestHelper).to receive(:http_get_json)
+                                                   .exactly(2).times
+                                                   .and_raise(Gitlab::Danger::RequestHelper::HTTPError.new)
+
+      expect(subject.available?).to be true
     end
   end
 end
