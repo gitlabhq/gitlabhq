@@ -21,8 +21,12 @@ export default {
 <template>
   <div class="js-line log-line">
     <line-number :line-number="line.lineNumber" :path="path" />
-    <span v-for="(content, i) in line.content" :key="i" :class="content.style">{{
-      content.text
-    }}</span>
+    <span
+      v-for="(content, i) in line.content"
+      :key="i"
+      :class="content.style"
+      class="ws-pre-wrap"
+      >{{ content.text }}</span
+    >
   </div>
 </template>

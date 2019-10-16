@@ -148,6 +148,30 @@ describe Groups::UpdateService do
     end
   end
 
+  context 'projects in group have container images' do
+    let(:service) { described_class.new(public_group, user, path: SecureRandom.hex) }
+    let(:project) { create(:project, :internal, group: public_group) }
+
+    before do
+      stub_container_registry_tags(repository: /image/, tags: %w[rc1])
+      create(:container_repository, project: project, name: :image)
+    end
+
+    it 'does not allow path to be changed' do
+      result = described_class.new(public_group, user, path: 'new-path').execute
+
+      expect(result).to eq false
+      expect(public_group.errors[:base].first).to match(/Docker images in their Container Registry/)
+    end
+
+    it 'allows other settings to be changed' do
+      result = described_class.new(public_group, user, name: 'new-name').execute
+
+      expect(result).to eq true
+      expect(public_group.reload.name).to eq('new-name')
+    end
+  end
+
   context 'for a subgroup' do
     let(:subgroup) { create(:group, :private, parent: private_group) }
 

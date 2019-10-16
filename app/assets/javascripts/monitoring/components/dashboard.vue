@@ -416,7 +416,6 @@ export default {
             <gl-button
               v-if="showRearrangePanelsBtn"
               :pressed="isRearrangingPanels"
-              new-style
               variant="default"
               class="mr-2 mt-1 js-rearrange-button"
               @click="toggleRearrangingPanels"
@@ -426,7 +425,6 @@ export default {
             <gl-button
               v-if="addingMetricsAvailable"
               v-gl-modal="$options.addMetric.modalId"
-              new-style
               variant="outline-success"
               class="mr-2 mt-1 js-add-metric-button"
             >

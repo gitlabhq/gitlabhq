@@ -19,17 +19,24 @@ describe Ci::Build do
   it { is_expected.to belong_to(:runner) }
   it { is_expected.to belong_to(:trigger_request) }
   it { is_expected.to belong_to(:erased_by) }
+
   it { is_expected.to have_many(:trace_sections) }
   it { is_expected.to have_many(:needs) }
+  it { is_expected.to have_many(:sourced_pipelines) }
+  it { is_expected.to have_many(:job_variables) }
+
   it { is_expected.to have_one(:deployment) }
   it { is_expected.to have_one(:runner_session) }
-  it { is_expected.to have_many(:job_variables) }
+
   it { is_expected.to validate_presence_of(:ref) }
+
   it { is_expected.to respond_to(:has_trace?) }
   it { is_expected.to respond_to(:trace) }
+
   it { is_expected.to delegate_method(:merge_request_event?).to(:pipeline) }
   it { is_expected.to delegate_method(:merge_request_ref?).to(:pipeline) }
   it { is_expected.to delegate_method(:legacy_detached_merge_request_pipeline?).to(:pipeline) }
+
   it { is_expected.to include_module(Ci::PipelineDelegator) }
 
   describe 'associations' do

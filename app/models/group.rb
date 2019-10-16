@@ -259,6 +259,10 @@ class Group < Namespace
     members_with_parents.maintainers.exists?(user_id: user)
   end
 
+  def has_container_repositories?
+    container_repositories.exists?
+  end
+
   # @deprecated
   alias_method :has_master?, :has_maintainer?
 

@@ -19,7 +19,7 @@ export default {
     state.isSidebarOpen = true;
   },
 
-  [types.RECEIVE_TRACE_SUCCESS](state, log) {
+  [types.RECEIVE_TRACE_SUCCESS](state, log = {}) {
     if (log.state) {
       state.traceState = log.state;
     }

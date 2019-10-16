@@ -297,6 +297,9 @@ class Project < ApplicationRecord
 
   has_many :external_pull_requests, inverse_of: :project
 
+  has_many :sourced_pipelines, class_name: 'Ci::Sources::Pipeline', foreign_key: :source_project_id
+  has_many :source_pipelines, class_name: 'Ci::Sources::Pipeline', foreign_key: :project_id
+
   has_one :pages_metadatum, class_name: 'ProjectPagesMetadatum', inverse_of: :project
 
   accepts_nested_attributes_for :variables, allow_destroy: true

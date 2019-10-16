@@ -7,7 +7,8 @@ module Groups
       namespace_with_same_path: s_('TransferGroup|The parent group already has a subgroup with the same path.'),
       group_is_already_root: s_('TransferGroup|Group is already a root group.'),
       same_parent_as_current: s_('TransferGroup|Group is already associated to the parent group.'),
-      invalid_policies: s_("TransferGroup|You don't have enough permissions.")
+      invalid_policies: s_("TransferGroup|You don't have enough permissions."),
+      group_contains_images: s_('TransferGroup|Cannot update the path because there are projects under this group that contain Docker images in their Container Registry. Please remove the images from your projects first and try again.')
     }.freeze
 
     TransferError = Class.new(StandardError)
@@ -46,6 +47,7 @@ module Groups
       raise_transfer_error(:same_parent_as_current) if same_parent?
       raise_transfer_error(:invalid_policies) unless valid_policies?
       raise_transfer_error(:namespace_with_same_path) if namespace_with_same_path?
+      raise_transfer_error(:group_contains_images) if group_projects_contain_registry_images?
     end
 
     def group_is_already_root?
@@ -71,6 +73,10 @@ module Groups
       Namespace.exists?(path: @group.path, parent: @new_parent_group)
     end
     # rubocop: enable CodeReuse/ActiveRecord
+
+    def group_projects_contain_registry_images?
+      @group.has_container_repositories?
+    end
 
     def update_group_attributes
       if @new_parent_group && @new_parent_group.visibility_level < @group.visibility_level

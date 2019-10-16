@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'cgi'
+
 module Gitlab
   module Danger
     class Teammate
@@ -32,6 +34,18 @@ module Gitlab
 
       def maintainer?(project, category, labels)
         has_capability?(project, category, :maintainer, labels)
+      end
+
+      def status
+        api_endpoint = "https://gitlab.com/api/v4/users/#{CGI.escape(username)}/status"
+        @status ||= Gitlab::Danger::RequestHelper.http_get_json(api_endpoint)
+      rescue Gitlab::Danger::RequestHelper::HTTPError, JSON::ParserError
+        nil # better no status than a crashing Danger
+      end
+
+      # @return [Boolean]
+      def out_of_office?
+        status&.dig("message")&.match?(/OOO/i) || false
       end
 
       private

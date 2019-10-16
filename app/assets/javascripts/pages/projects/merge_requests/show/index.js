@@ -4,6 +4,8 @@ import initShow from '../init_merge_request_show';
 
 document.addEventListener('DOMContentLoaded', () => {
   initShow();
-  initSidebarBundle();
+  if (gon.features && !gon.features.vueIssuableSidebar) {
+    initSidebarBundle();
+  }
   initMrNotes();
 });

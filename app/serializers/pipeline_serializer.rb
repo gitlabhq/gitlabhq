@@ -54,9 +54,9 @@ class PipelineSerializer < BaseSerializer
         artifacts: {
           project: [:route, { namespace: :route }]
         }
-      }
+      },
+      { triggered_by_pipeline: [:project, :user] },
+      { triggered_pipelines: [:project, :user] }
     ]
   end
 end
-
-PipelineSerializer.prepend_if_ee('EE::PipelineSerializer')

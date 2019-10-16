@@ -61,7 +61,7 @@ module Gitlab
 
       private
 
-      def start_working
+      def run_thread
         return unless notification_channel_enabled?
 
         begin

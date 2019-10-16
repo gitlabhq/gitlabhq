@@ -42,6 +42,10 @@ class Projects::IssuesController < Projects::ApplicationController
   before_action :authorize_import_issues!, only: [:import_csv]
   before_action :authorize_download_code!, only: [:related_branches]
 
+  before_action do
+    push_frontend_feature_flag(:vue_issuable_sidebar, project.group)
+  end
+
   respond_to :html
 
   alias_method :designs, :show

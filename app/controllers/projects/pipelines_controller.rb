@@ -184,7 +184,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def show_represent_params
-    { grouped: true }
+    { grouped: true, expanded: params[:expanded].to_a.map(&:to_i) }
   end
 
   def create_params

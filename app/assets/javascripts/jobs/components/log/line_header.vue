@@ -43,15 +43,19 @@ export default {
 
 <template>
   <div
-    class="log-line collapsible-line d-flex justify-content-between"
+    class="log-line collapsible-line d-flex justify-content-between ws-normal"
     role="button"
     @click="handleOnClick"
   >
     <icon :name="iconName" class="arrow position-absolute" />
     <line-number :line-number="line.lineNumber" :path="path" />
-    <span v-for="(content, i) in line.content" :key="i" class="line-text" :class="content.style">{{
-      content.text
-    }}</span>
+    <span
+      v-for="(content, i) in line.content"
+      :key="i"
+      class="line-text w-100 ws-pre-wrap"
+      :class="content.style"
+      >{{ content.text }}</span
+    >
     <duration-badge v-if="duration" :duration="duration" />
   </div>
 </template>

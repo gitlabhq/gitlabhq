@@ -29,7 +29,7 @@ module Gitlab
 
       private
 
-      def start_working
+      def run_thread
         Sidekiq.logger.info(
           class: self.class.to_s,
           action: 'start',

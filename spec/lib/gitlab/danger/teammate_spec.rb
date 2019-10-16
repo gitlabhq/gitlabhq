@@ -2,11 +2,13 @@
 
 require 'fast_spec_helper'
 
+require 'rspec-parameterized'
+
 require 'gitlab/danger/teammate'
 
 describe Gitlab::Danger::Teammate do
-  subject { described_class.new(options) }
-  let(:options) { { 'projects' => projects, 'role' => role } }
+  subject { described_class.new(options.stringify_keys) }
+  let(:options) { { username: 'luigi', projects: projects, role: role } }
   let(:projects) { { project => capabilities } }
   let(:role) { 'Engineer, Manage' }
   let(:labels) { [] }
@@ -93,6 +95,66 @@ describe Gitlab::Danger::Teammate do
 
     it '#maintainer? supports one role per project' do
       expect(subject.maintainer?(project, :frontend, labels)).to be_falsey
+    end
+  end
+
+  describe '#status' do
+    let(:capabilities) { ['dish washing'] }
+
+    context 'with empty cache' do
+      context 'for successful request' do
+        it 'returns the response' do
+          mock_status = double(does_not: 'matter')
+          expect(Gitlab::Danger::RequestHelper).to receive(:http_get_json)
+                                                       .and_return(mock_status)
+
+          expect(subject.status).to be mock_status
+        end
+      end
+
+      context 'for failing request' do
+        it 'returns nil' do
+          expect(Gitlab::Danger::RequestHelper).to receive(:http_get_json)
+                                                       .and_raise(Gitlab::Danger::RequestHelper::HTTPError.new)
+
+          expect(subject.status).to be nil
+        end
+      end
+    end
+
+    context 'with filled cache' do
+      it 'returns the cached response' do
+        mock_status = double(does_not: 'matter')
+        expect(Gitlab::Danger::RequestHelper).to receive(:http_get_json)
+                                                     .and_return(mock_status)
+        subject.status
+
+        expect(Gitlab::Danger::RequestHelper).not_to receive(:http_get_json)
+        expect(subject.status).to be mock_status
+      end
+    end
+  end
+
+  describe '#out_of_office?' do
+    using RSpec::Parameterized::TableSyntax
+
+    let(:capabilities) { ['dry head'] }
+
+    where(:status, :result) do
+      nil                              | false
+      {}                               | false
+      { message: 'dear reader' }       | false
+      { message: 'OOO: massage' }      | true
+      { message: 'love it SOOO much' } | true
+    end
+
+    with_them do
+      before do
+        expect(Gitlab::Danger::RequestHelper).to receive(:http_get_json)
+                                                     .and_return(status&.stringify_keys)
+      end
+
+      it { expect(subject.out_of_office?).to be result }
     end
   end
 end

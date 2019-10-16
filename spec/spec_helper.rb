@@ -154,6 +154,17 @@ RSpec.configure do |config|
       .with(:force_autodevops_on_by_default, anything)
       .and_return(false)
 
+    # The following can be removed once Vue Issuable Sidebar
+    # is feature-complete and can be made default in place
+    # of older sidebar.
+    # See https://gitlab.com/groups/gitlab-org/-/epics/1863
+    allow(Feature).to receive(:enabled?)
+      .with(:vue_issuable_sidebar, anything)
+      .and_return(false)
+    allow(Feature).to receive(:enabled?)
+      .with(:vue_issuable_epic_sidebar, anything)
+      .and_return(false)
+
     # Stub these calls due to being expensive operations
     # It can be reenabled for specific tests via:
     #
