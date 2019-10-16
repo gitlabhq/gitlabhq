@@ -11,8 +11,8 @@ There are max length constraints for the most important text fields for `Issuabl
 
 - `title`: 255 chars
 - `title_html`: 800 chars
-- `description`: 16000 chars
-- `description_html`: 48000 chars
+- `description`: 1 megabyte
+- `description_html`: 5 megabytes
 
 [Issue]: https://docs.gitlab.com/ee/user/project/issues
 [Merge Requests]: https://docs.gitlab.com/ee/user/project/merge_requests

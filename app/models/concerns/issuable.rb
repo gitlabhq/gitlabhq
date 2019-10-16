@@ -28,8 +28,8 @@ module Issuable
 
   TITLE_LENGTH_MAX = 255
   TITLE_HTML_LENGTH_MAX = 800
-  DESCRIPTION_LENGTH_MAX = 16000
-  DESCRIPTION_HTML_LENGTH_MAX = 48000
+  DESCRIPTION_LENGTH_MAX = 1.megabyte
+  DESCRIPTION_HTML_LENGTH_MAX = 5.megabytes
 
   # This object is used to gather issuable meta data for displaying
   # upvotes, downvotes, notes and closing merge requests count for issues and merge requests

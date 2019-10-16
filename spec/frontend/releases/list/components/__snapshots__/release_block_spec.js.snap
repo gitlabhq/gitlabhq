@@ -1,0 +1,332 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Release block with default props matches the snapshot 1`] = `
+<div
+  class="card release-block"
+  id="v0.3"
+>
+  <div
+    class="card-body"
+  >
+    <div
+      class="d-flex align-items-start"
+    >
+      <h2
+        class="card-title mt-0 mr-auto"
+      >
+        
+        New release
+        
+        <!---->
+      </h2>
+       
+      <a
+        class="btn btn-default js-edit-button ml-2"
+        data-original-title="Edit this release"
+        href="http://0.0.0.0:3001/root/release-test/-/releases/v0.3/edit"
+        title=""
+      >
+        <svg
+          aria-hidden="true"
+          class="s16 ic-pencil"
+        >
+          <use
+            xlink:href="#pencil"
+          />
+        </svg>
+      </a>
+    </div>
+     
+    <div
+      class="card-subtitle d-flex flex-wrap text-secondary"
+    >
+      <div
+        class="append-right-8"
+      >
+        <svg
+          aria-hidden="true"
+          class="align-middle s16 ic-commit"
+        >
+          <use
+            xlink:href="#commit"
+          />
+        </svg>
+         
+        <span
+          data-original-title="Initial commit"
+          title=""
+        >
+          c22b0728
+        </span>
+      </div>
+       
+      <div
+        class="append-right-8"
+      >
+        <svg
+          aria-hidden="true"
+          class="align-middle s16 ic-tag"
+        >
+          <use
+            xlink:href="#tag"
+          />
+        </svg>
+         
+        <span
+          data-original-title="Tag"
+          title=""
+        >
+          v0.3
+        </span>
+      </div>
+       
+      <div
+        class="js-milestone-list-label"
+      >
+        <svg
+          aria-hidden="true"
+          class="align-middle s16 ic-flag"
+        >
+          <use
+            xlink:href="#flag"
+          />
+        </svg>
+         
+        <span
+          class="js-label-text"
+        >
+          Milestones
+        </span>
+      </div>
+       
+      <a
+        class="append-right-4 prepend-left-4 js-milestone-link"
+        data-original-title="The 13.6 milestone!"
+        href="http://0.0.0.0:3001/root/release-test/-/milestones/2"
+        title=""
+      >
+        
+            13.6
+          
+      </a>
+       
+            •
+          
+      <a
+        class="append-right-4 prepend-left-4 js-milestone-link"
+        data-original-title="The 13.5 milestone!"
+        href="http://0.0.0.0:3001/root/release-test/-/milestones/1"
+        title=""
+      >
+        
+            13.5
+          
+      </a>
+       
+      <!---->
+       
+      <div
+        class="append-right-4"
+      >
+        
+        •
+        
+        <span
+          data-original-title="Aug 26, 2019 5:54pm GMT+0000"
+          title=""
+        >
+          
+          released 1 month ago
+        
+        </span>
+      </div>
+       
+      <div
+        class="d-flex"
+      >
+        
+        by
+        
+        <a
+          class="user-avatar-link prepend-left-4"
+          href=""
+        >
+          <span>
+            <img
+              alt="root's avatar"
+              class="avatar s20 "
+              data-original-title=""
+              data-src="https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon"
+              height="20"
+              src="https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon"
+              title=""
+              width="20"
+            />
+             
+            <div
+              aria-hidden="true"
+              class="js-user-avatar-image-toolip d-none"
+              style="display: none;"
+            >
+              <div>
+                 root 
+              </div>
+            </div>
+          </span>
+          <!---->
+        </a>
+      </div>
+    </div>
+     
+    <div
+      class="card-text prepend-top-default"
+    >
+      <b>
+        
+        Assets
+        
+        <span
+          class="js-assets-count badge badge-pill"
+        >
+          5
+        </span>
+      </b>
+       
+      <ul
+        class="pl-0 mb-0 prepend-top-8 list-unstyled js-assets-list"
+      >
+        <li
+          class="append-bottom-8"
+        >
+          <a
+            class=""
+            data-original-title="Download asset"
+            href="https://google.com"
+            title=""
+          >
+            <svg
+              aria-hidden="true"
+              class="align-middle append-right-4 align-text-bottom s16 ic-package"
+            >
+              <use
+                xlink:href="#package"
+              />
+            </svg>
+            
+            my link
+            
+            <span>
+              (external source)
+            </span>
+          </a>
+        </li>
+        <li
+          class="append-bottom-8"
+        >
+          <a
+            class=""
+            data-original-title="Download asset"
+            href="https://gitlab.com/gitlab-org/gitlab-foss/-/jobs/artifacts/v11.6.0-rc4/download?job=rspec-mysql+41%2F50"
+            title=""
+          >
+            <svg
+              aria-hidden="true"
+              class="align-middle append-right-4 align-text-bottom s16 ic-package"
+            >
+              <use
+                xlink:href="#package"
+              />
+            </svg>
+            
+            my second link
+            
+            <!---->
+          </a>
+        </li>
+      </ul>
+       
+      <div
+        class="dropdown"
+      >
+        <button
+          aria-expanded="false"
+          aria-haspopup="true"
+          class="btn btn-link"
+          data-toggle="dropdown"
+          type="button"
+        >
+          <svg
+            aria-hidden="true"
+            class="align-top append-right-4 s16 ic-doc-code"
+          >
+            <use
+              xlink:href="#doc-code"
+            />
+          </svg>
+          
+          Source code
+          
+          <svg
+            aria-hidden="true"
+            class="s16 ic-arrow-down"
+          >
+            <use
+              xlink:href="#arrow-down"
+            />
+          </svg>
+        </button>
+         
+        <div
+          class="js-sources-dropdown dropdown-menu"
+        >
+          <li>
+            <a
+              class=""
+              href="http://0.0.0.0:3001/root/release-test/-/archive/v0.3/release-test-v0.3.zip"
+            >
+              Download zip
+            </a>
+          </li>
+          <li>
+            <a
+              class=""
+              href="http://0.0.0.0:3001/root/release-test/-/archive/v0.3/release-test-v0.3.tar.gz"
+            >
+              Download tar.gz
+            </a>
+          </li>
+          <li>
+            <a
+              class=""
+              href="http://0.0.0.0:3001/root/release-test/-/archive/v0.3/release-test-v0.3.tar.bz2"
+            >
+              Download tar.bz2
+            </a>
+          </li>
+          <li>
+            <a
+              class=""
+              href="http://0.0.0.0:3001/root/release-test/-/archive/v0.3/release-test-v0.3.tar"
+            >
+              Download tar
+            </a>
+          </li>
+        </div>
+      </div>
+    </div>
+     
+    <div
+      class="card-text prepend-top-default"
+    >
+      <div>
+        <p
+          data-sourcepos="1:1-1:21"
+          dir="auto"
+        >
+          A super nice release!
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+`;

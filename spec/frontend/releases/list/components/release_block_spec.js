@@ -19,46 +19,53 @@ jest.mock('~/lib/utils/common_utils', () => ({
 
 describe('Release block', () => {
   let wrapper;
+  let releaseClone;
 
-  const factory = releaseProp => {
+  const factory = (releaseProp, releaseEditPageFeatureFlag = true) => {
     wrapper = mount(ReleaseBlock, {
       propsData: {
         release: releaseProp,
       },
+      provide: {
+        glFeatures: {
+          releaseEditPage: releaseEditPageFeatureFlag,
+        },
+      },
+      sync: false,
     });
+
+    return wrapper.vm.$nextTick();
   };
 
   const milestoneListLabel = () => wrapper.find('.js-milestone-list-label');
+  const editButton = () => wrapper.find('.js-edit-button');
+
+  beforeEach(() => {
+    releaseClone = JSON.parse(JSON.stringify(release));
+  });
 
   afterEach(() => {
     wrapper.destroy();
   });
 
   describe('with default props', () => {
-    beforeEach(() => {
-      factory(release);
+    beforeEach(() => factory(release));
+
+    it('matches the snapshot', () => {
+      expect(wrapper.element).toMatchSnapshot();
     });
 
     it("renders the block with an id equal to the release's tag name", () => {
       expect(wrapper.attributes().id).toBe('v0.3');
     });
 
+    it('renders an edit button that links to the "Edit release" page', () => {
+      expect(editButton().exists()).toBe(true);
+      expect(editButton().attributes('href')).toBe(release._links.edit);
+    });
+
     it('renders release name', () => {
       expect(wrapper.text()).toContain(release.name);
-    });
-
-    it('renders commit sha', () => {
-      expect(wrapper.text()).toContain(release.commit.short_id);
-
-      wrapper.setProps({ release: { ...release, commit_path: '/commit/example' } });
-      expect(wrapper.find('a[href="/commit/example"]').exists()).toBe(true);
-    });
-
-    it('renders tag name', () => {
-      expect(wrapper.text()).toContain(release.tag_name);
-
-      wrapper.setProps({ release: { ...release, tag_path: '/tag/example' } });
-      expect(wrapper.find('a[href="/tag/example"]').exists()).toBe(true);
     });
 
     it('renders release date', () => {
@@ -141,44 +148,73 @@ describe('Release block', () => {
     });
   });
 
+  it('renders commit sha', () => {
+    releaseClone.commit_path = '/commit/example';
+
+    return factory(releaseClone).then(() => {
+      expect(wrapper.text()).toContain(release.commit.short_id);
+
+      expect(wrapper.find('a[href="/commit/example"]').exists()).toBe(true);
+    });
+  });
+
+  it('renders tag name', () => {
+    releaseClone.tag_path = '/tag/example';
+
+    return factory(releaseClone).then(() => {
+      expect(wrapper.text()).toContain(release.tag_name);
+
+      expect(wrapper.find('a[href="/tag/example"]').exists()).toBe(true);
+    });
+  });
+
+  it("does not render an edit button if release._links.edit isn't a string", () => {
+    delete releaseClone._links;
+
+    return factory(releaseClone).then(() => {
+      expect(editButton().exists()).toBe(false);
+    });
+  });
+
+  it('does not render an edit button if the releaseEditPage feature flag is disabled', () =>
+    factory(releaseClone, false).then(() => {
+      expect(editButton().exists()).toBe(false);
+    }));
+
   it('does not render the milestone list if no milestones are associated to the release', () => {
-    const releaseClone = JSON.parse(JSON.stringify(release));
     delete releaseClone.milestones;
 
-    factory(releaseClone);
-
-    expect(milestoneListLabel().exists()).toBe(false);
+    return factory(releaseClone).then(() => {
+      expect(milestoneListLabel().exists()).toBe(false);
+    });
   });
 
   it('renders the label as "Milestone" if only a single milestone is passed in', () => {
-    const releaseClone = JSON.parse(JSON.stringify(release));
     releaseClone.milestones = releaseClone.milestones.slice(0, 1);
 
-    factory(releaseClone);
-
-    expect(
-      milestoneListLabel()
-        .find('.js-label-text')
-        .text(),
-    ).toEqual('Milestone');
+    return factory(releaseClone).then(() => {
+      expect(
+        milestoneListLabel()
+          .find('.js-label-text')
+          .text(),
+      ).toEqual('Milestone');
+    });
   });
 
   it('renders upcoming release badge', () => {
-    const releaseClone = JSON.parse(JSON.stringify(release));
     releaseClone.upcoming_release = true;
 
-    factory(releaseClone);
-
-    expect(wrapper.text()).toContain('Upcoming Release');
+    return factory(releaseClone).then(() => {
+      expect(wrapper.text()).toContain('Upcoming Release');
+    });
   });
 
   it('slugifies the tag_name before setting it as the elements ID', () => {
-    const releaseClone = JSON.parse(JSON.stringify(release));
     releaseClone.tag_name = 'a dangerous tag name <script>alert("hello")</script>';
 
-    factory(releaseClone);
-
-    expect(wrapper.attributes().id).toBe('a-dangerous-tag-name-script-alert-hello-script-');
+    return factory(releaseClone).then(() => {
+      expect(wrapper.attributes().id).toBe('a-dangerous-tag-name-script-alert-hello-script-');
+    });
   });
 
   describe('anchor scrolling', () => {
@@ -190,40 +226,39 @@ describe('Release block', () => {
 
     it('does not attempt to scroll the page if no anchor tag is included in the URL', () => {
       mockLocationHash = '';
-      factory(release);
-
-      expect(scrollToElement).not.toHaveBeenCalled();
+      return factory(release).then(() => {
+        expect(scrollToElement).not.toHaveBeenCalled();
+      });
     });
 
     it("does not attempt to scroll the page if the anchor tag doesn't match the release's tag name", () => {
       mockLocationHash = 'v0.4';
-      factory(release);
-
-      expect(scrollToElement).not.toHaveBeenCalled();
+      return factory(release).then(() => {
+        expect(scrollToElement).not.toHaveBeenCalled();
+      });
     });
 
     it("attempts to scroll itself into view if the anchor tag matches the release's tag name", () => {
       mockLocationHash = release.tag_name;
-      factory(release);
+      return factory(release).then(() => {
+        expect(scrollToElement).toHaveBeenCalledTimes(1);
 
-      expect(scrollToElement).toHaveBeenCalledTimes(1);
-      expect(scrollToElement).toHaveBeenCalledWith(wrapper.element);
+        expect(scrollToElement).toHaveBeenCalledWith(wrapper.element);
+      });
     });
 
     it('renders with a light blue background if it is the target of the anchor', () => {
       mockLocationHash = release.tag_name;
-      factory(release);
 
-      return wrapper.vm.$nextTick().then(() => {
+      return factory(release).then(() => {
         expect(hasTargetBlueBackground()).toBe(true);
       });
     });
 
     it('does not render with a light blue background if it is not the target of the anchor', () => {
       mockLocationHash = '';
-      factory(release);
 
-      return wrapper.vm.$nextTick().then(() => {
+      return factory(release).then(() => {
         expect(hasTargetBlueBackground()).toBe(false);
       });
     });

@@ -1,7 +1,7 @@
 <script>
 /* eslint-disable @gitlab/vue-i18n/no-bare-strings */
 import _ from 'underscore';
-import { GlTooltipDirective, GlLink, GlBadge } from '@gitlab/ui';
+import { GlTooltipDirective, GlLink, GlBadge, GlButton } from '@gitlab/ui';
 import Icon from '~/vue_shared/components/icon.vue';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
@@ -9,19 +9,21 @@ import { __, n__, sprintf } from '~/locale';
 import { slugify } from '~/lib/utils/text_utility';
 import { getLocationHash } from '~/lib/utils/url_utility';
 import { scrollToElement } from '~/lib/utils/common_utils';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
   name: 'ReleaseBlock',
   components: {
     GlLink,
     GlBadge,
+    GlButton,
     Icon,
     UserAvatarLink,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [timeagoMixin],
+  mixins: [timeagoMixin, glFeatureFlagsMixin()],
   props: {
     release: {
       type: Object,
@@ -72,6 +74,11 @@ export default {
     labelText() {
       return n__('Milestone', 'Milestones', this.release.milestones.length);
     },
+    shouldShowEditButton() {
+      return Boolean(
+        this.glFeatures.releaseEditPage && this.release._links && this.release._links.edit,
+      );
+    },
   },
   mounted() {
     const hash = getLocationHash();
@@ -89,12 +96,23 @@ export default {
 <template>
   <div :id="id" :class="{ 'bg-line-target-blue': isHighlighted }" class="card release-block">
     <div class="card-body">
-      <h2 class="card-title mt-0">
-        {{ release.name }}
-        <gl-badge v-if="release.upcoming_release" variant="warning" class="align-middle">{{
-          __('Upcoming Release')
-        }}</gl-badge>
-      </h2>
+      <div class="d-flex align-items-start">
+        <h2 class="card-title mt-0 mr-auto">
+          {{ release.name }}
+          <gl-badge v-if="release.upcoming_release" variant="warning" class="align-middle">{{
+            __('Upcoming Release')
+          }}</gl-badge>
+        </h2>
+        <gl-link
+          v-if="shouldShowEditButton"
+          v-gl-tooltip
+          class="btn btn-default js-edit-button ml-2"
+          :title="__('Edit this release')"
+          :href="release._links.edit"
+        >
+          <icon name="pencil" />
+        </gl-link>
+      </div>
 
       <div class="card-subtitle d-flex flex-wrap text-secondary">
         <div class="append-right-8">

@@ -10,7 +10,7 @@ shared_examples_for 'matches_cross_reference_regex? fails fast' do
 end
 
 shared_examples_for 'validates description length with custom validation' do
-  let(:issuable) { build(:issue, description: 'x' * 16_001) }
+  let(:issuable) { build(:issue, description: 'x' * (::Issuable::DESCRIPTION_LENGTH_MAX + 1)) }
   let(:context) { :update }
 
   subject { issuable.validate(context) }
@@ -18,7 +18,7 @@ shared_examples_for 'validates description length with custom validation' do
   context 'when Issuable is a new record' do
     it 'validates the maximum description length' do
       subject
-      expect(issuable.errors[:description]).to eq(["is too long (maximum is 16000 characters)"])
+      expect(issuable.errors[:description]).to eq(["is too long (maximum is #{::Issuable::DESCRIPTION_LENGTH_MAX} characters)"])
     end
 
     context 'on create' do
@@ -53,14 +53,14 @@ shared_examples_for 'truncates the description to its allowed maximum length on 
     allow(issuable).to receive(:importing?).and_return(true)
   end
 
-  let(:issuable) { build(:issue, description: 'x' * 16_001) }
+  let(:issuable) { build(:issue, description: 'x' * (::Issuable::DESCRIPTION_LENGTH_MAX + 1)) }
 
   subject { issuable.validate(:create) }
 
   it 'truncates the description to its allowed maximum length' do
     subject
 
-    expect(issuable.description).to eq('x' * 16_000)
+    expect(issuable.description).to eq('x' * ::Issuable::DESCRIPTION_LENGTH_MAX)
     expect(issuable.errors[:description]).to be_empty
   end
 end

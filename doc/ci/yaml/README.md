@@ -1086,12 +1086,50 @@ Manual actions are considered to be write actions, so permissions for
 [protected branches](../../user/project/protected_branches.md) are used when
 a user wants to trigger an action. In other words, in order to trigger a manual
 action assigned to a branch that the pipeline is running for, the user needs to
-have the ability to merge to this branch.
+have the ability to merge to this branch. It is possible to use protected environments
+to more strictly [protect manual deployments](#protecting-manual-jobs) from being
+run by unauthorized users.
 
 NOTE: **Note:**
 Using `when:manual` and `trigger` together results in the error `jobs:#{job-name} when
 should be on_success, on_failure or always`, because `when:manual` prevents triggers
 being used.
+
+##### Protecting manual jobs
+
+It's possible to use [protected environments](../environments/protected_environments.md)
+to define a precise list of users authorized to run a manual job. By allowing only
+users associated with a protected environment to trigger manual jobs, it is possible
+to implement some special use cases, such as:
+
+- more precisely limiting who can deploy to an environment.
+- enabling a pipeline to be blocked until an approved user "approves" it.
+
+To do this, you must add an environment to the job. For example:
+
+```yaml
+deploy_prod:
+  stage: deploy
+  script:
+    - echo "Deploy to production server"
+  environment:
+    name: production
+    url: https://example.com
+  when: manual
+  only:
+  - master
+```
+
+Then, in the [protected environments settings](../environments/protected_environments.md#protecting-environments),
+select the environment (`production` in the example above) and add the users, roles or groups
+that are authorized to trigger the manual job to the **Allowed to Deploy** list. Only those in
+this list will be able to trigger this manual job, as well as GitLab admins who are always able
+to use protected environments.
+
+Additionally, if a manual job is defined as blocking by adding `allow_failure: false`,
+the next stages of the pipeline will not run until the manual job is triggered. This
+can be used as a way to have a defined list of users allowed to "approve" later pipeline
+stages by triggering the blocking manual job.
 
 #### `when:delayed`
 

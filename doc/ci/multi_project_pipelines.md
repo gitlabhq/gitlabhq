@@ -119,7 +119,8 @@ Use:
 
 - The `project` keyword to specify the full path to a downstream project.
 - The `branch` keyword to specify the name of a branch in the project specified by `project`.
-  Variable expansion is supported.
+  [From GitLab 12.4](https://gitlab.com/gitlab-org/gitlab/issues/10126), variable expansion is
+  supported.
 
 GitLab will use a commit that is currently on the HEAD of the branch when
 creating a downstream pipeline.
