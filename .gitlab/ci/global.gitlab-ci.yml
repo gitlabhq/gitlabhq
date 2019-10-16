@@ -71,6 +71,12 @@
       - "doc/**/*"
       - ".markdownlint.json"
 
+.only-graphql-changes:
+  only:
+    changes:
+      - "{,ee/}app/graphql/**/*"
+      - "{,ee/}lib/gitlab/graphql/**/*"
+
 .only-code-qa-changes:
   only:
     changes:
@@ -153,4 +159,4 @@
 .only-ee-as-if-foss:
   extends: .only-ee
   variables:
-    IS_GITLAB_EE: '0'
+    FOSS_ONLY: '1'

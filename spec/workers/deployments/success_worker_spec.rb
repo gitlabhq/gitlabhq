@@ -8,8 +8,8 @@ describe Deployments::SuccessWorker do
   context 'when successful deployment' do
     let(:deployment) { create(:deployment, :success) }
 
-    it 'executes UpdateDeploymentService' do
-      expect(UpdateDeploymentService)
+    it 'executes Deployments::AfterCreateService' do
+      expect(Deployments::AfterCreateService)
         .to receive(:new).with(deployment).and_call_original
 
       subject
@@ -19,8 +19,8 @@ describe Deployments::SuccessWorker do
   context 'when canceled deployment' do
     let(:deployment) { create(:deployment, :canceled) }
 
-    it 'does not execute UpdateDeploymentService' do
-      expect(UpdateDeploymentService).not_to receive(:new)
+    it 'does not execute Deployments::AfterCreateService' do
+      expect(Deployments::AfterCreateService).not_to receive(:new)
 
       subject
     end
@@ -29,8 +29,8 @@ describe Deployments::SuccessWorker do
   context 'when deploy record does not exist' do
     let(:deployment) { nil }
 
-    it 'does not execute UpdateDeploymentService' do
-      expect(UpdateDeploymentService).not_to receive(:new)
+    it 'does not execute Deployments::AfterCreateService' do
+      expect(Deployments::AfterCreateService).not_to receive(:new)
 
       subject
     end

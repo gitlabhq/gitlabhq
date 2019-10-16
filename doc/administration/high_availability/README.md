@@ -217,14 +217,19 @@ workload. Your workload is influenced by factors such as - but not limited to -
 how active your users are, how much automation you use, mirroring, and
 repo/change size.
 
-- 3 PostgreSQL - 4 CPU, 16GiB memory per node
-- 1 PgBouncer - 2 CPU, 4GiB memory
-- 2 Redis - 2 CPU, 8GiB memory per node
-- 3 Consul/Sentinel - 2 CPU, 2GiB memory per node
-- 4 Sidekiq - 4 CPU, 16GiB memory per node
-- 5 GitLab application nodes - 16 CPU, 64GiB memory per node
-- 1 Gitaly - 16 CPU, 64GiB memory
-- 1 Monitoring node - 2 CPU, 8GiB memory, 100GiB local storage
+| Service                       | Configuration           | GCP type       |
+| ------------------------------|-------------------------|----------------|
+| 3 GitLab Rails <br> - Puma workers on each node set to 90% of available CPUs with 16 threads | 32 vCPU, 28.8GB Memory | n1-highcpu-32 |
+| 3 PostgreSQL                  | 4 vCPU, 15GB Memory     | n1-standard-4  |
+| 1 PgBouncer                   | 2 vCPU, 1.8GB Memory    | n1-highcpu-2   |
+| X Gitaly[^1] <br> - Gitaly Ruby workers on each node set to 90% of available CPUs with 16 threads | 16 vCPU, 60GB Memory   | n1-standard-16 |
+| 3 Redis Cache + Sentinel <br> - Cache maxmemory set to 90% of available memory | 4 vCPU, 15GB Memory | n1-standard-4 |
+| 3 Redis Persistent + Sentinel | 4 vCPU, 15GB Memory     | n1-standard-4  |
+| 4 Sidekiq                     | 4 vCPU, 15GB Memory     | n1-standard-4  |
+| 3 Consul                      | 2 vCPU, 1.8GB Memory    | n1-highcpu-2   |
+| 1 NFS Server                  | 16 vCPU, 14.4GB Memory  | n1-highcpu-16  |
+| 1 Monitoring node             | 4 CPU, 3.6GB Memory     | n1-highcpu-4   |
+| 1 Load Balancing node[^2] .   | 2 vCPU, 1.8GB Memory    | n1-highcpu-2   |
 
 ### 25,000 User Configuration
 
@@ -249,7 +254,7 @@ adjusted prior to certification based on performance testing.
 | 3 Redis Persistent + Sentinel | 4 vCPU, 15GB Memory     | n1-standard-4  |
 | 4 Sidekiq                     | 4 vCPU, 15GB Memory     | n1-standard-4  |
 | 3 Consul                      | 2 vCPU, 1.8GB Memory    | n1-highcpu-2   |
-| 1 NFS Server                  | 2 vCPU, 1.8GB Memory    | n1-highcpu-2   |
+| 1 NFS Server                  | 16 vCPU, 14.4GB Memory  | n1-highcpu-16  |
 | 1 Monitoring node             | 4 CPU, 3.6GB Memory     | n1-highcpu-4   |
 | 1 Load Balancing node[^2] .   | 2 vCPU, 1.8GB Memory    | n1-highcpu-2   |
 
@@ -277,15 +282,15 @@ testing.
 | 3 Redis Persistent + Sentinel | 4 vCPU, 15GB Memory     | n1-standard-4  |
 | 4 Sidekiq                     | 4 vCPU, 15GB Memory     | n1-standard-4  |
 | 3 Consul                      | 2 vCPU, 1.8GB Memory    | n1-highcpu-2   |
-| 1 NFS Server                  | 2 vCPU, 1.8GB Memory    | n1-highcpu-2   |
+| 1 NFS Server                  | 16 vCPU, 14.4GB Memory  | n1-highcpu-16  |
 | 1 Monitoring node             | 4 CPU, 3.6GB Memory     | n1-highcpu-4   |
 | 1 Load Balancing node[^2] .   | 2 vCPU, 1.8GB Memory    | n1-highcpu-2   |
 
 [^1]: Gitaly node requirements are dependent on customer data. We recommend 2
-      nodes as an absolute minimum for performance at the 25,000 user scale and
-      4 nodes as an absolute minimum at the 50,000 user scale, but additional
-      nodes should be considered in conjunction with a review of project counts
-      and sizes.
+      nodes as an absolute minimum for performance at the 10,000 and 25,000 user
+      scale and 4 nodes as an absolute minimum at the 50,000 user scale, but
+      additional nodes should be considered in conjunction with a review of
+      project counts and sizes.
 
 [^2]: HAProxy is the only tested and recommended load balancer. Additional
       options may be supported in the future.

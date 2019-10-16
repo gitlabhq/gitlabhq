@@ -1,3 +1,2 @@
 VERSION merge=ours
 Dangerfile gitlab-language=ruby
-db/schema.rb merge=merge_db_schema

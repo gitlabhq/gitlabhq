@@ -71,4 +71,4 @@ schedule:package-and-qa:
     - .package-and-qa-base
     - .only-code-qa-changes
     - .only-canonical-schedules
-  needs: ["build-qa-image", "gitlab:assets:compile"]
+  needs: ["build-qa-image", "gitlab:assets:compile pull-cache"]

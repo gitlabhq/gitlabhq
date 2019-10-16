@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe API::Deployments do
@@ -91,6 +93,166 @@ describe API::Deployments do
     context 'as non member' do
       it 'returns a 404 status code' do
         get api("/projects/#{project.id}/deployments/#{deployment.id}", non_member)
+
+        expect(response).to have_gitlab_http_status(404)
+      end
+    end
+  end
+
+  describe 'POST /projects/:id/deployments' do
+    let!(:project) { create(:project, :repository) }
+    let(:sha) { 'b83d6e391c22777fca1ed3012fce84f633d7fed0' }
+
+    context 'as a maintainer' do
+      it 'creates a new deployment' do
+        post(
+          api("/projects/#{project.id}/deployments", user),
+          params: {
+            environment: 'production',
+            sha: sha,
+            ref: 'master',
+            tag: false,
+            status: 'success'
+          }
+        )
+
+        expect(response).to have_gitlab_http_status(201)
+
+        expect(json_response['sha']).to eq(sha)
+        expect(json_response['ref']).to eq('master')
+        expect(json_response['environment']['name']).to eq('production')
+      end
+
+      it 'errors when creating a deployment with an invalid name' do
+        post(
+          api("/projects/#{project.id}/deployments", user),
+          params: {
+            environment: 'a' * 300,
+            sha: sha,
+            ref: 'master',
+            tag: false,
+            status: 'success'
+          }
+        )
+
+        expect(response).to have_gitlab_http_status(500)
+      end
+    end
+
+    context 'as a developer' do
+      it 'creates a new deployment' do
+        developer = create(:user)
+
+        project.add_developer(developer)
+
+        post(
+          api("/projects/#{project.id}/deployments", developer),
+          params: {
+            environment: 'production',
+            sha: sha,
+            ref: 'master',
+            tag: false,
+            status: 'success'
+          }
+        )
+
+        expect(response).to have_gitlab_http_status(201)
+
+        expect(json_response['sha']).to eq(sha)
+        expect(json_response['ref']).to eq('master')
+      end
+    end
+
+    context 'as non member' do
+      it 'returns a 404 status code' do
+        post(
+          api( "/projects/#{project.id}/deployments", non_member),
+          params: {
+            environment: 'production',
+            sha: '123',
+            ref: 'master',
+            tag: false,
+            status: 'success'
+          }
+        )
+
+        expect(response).to have_gitlab_http_status(404)
+      end
+    end
+  end
+
+  describe 'PUT /projects/:id/deployments/:deployment_id' do
+    let(:project) { create(:project) }
+    let(:build) { create(:ci_build, :failed, project: project) }
+    let(:environment) { create(:environment, project: project) }
+    let(:deploy) do
+      create(
+        :deployment,
+        :failed,
+        project: project,
+        environment: environment,
+        deployable: nil
+      )
+    end
+
+    context 'as a maintainer' do
+      it 'returns a 403 when updating a deployment with a build' do
+        deploy.update(deployable: build)
+
+        put(
+          api("/projects/#{project.id}/deployments/#{deploy.id}", user),
+          params: { status: 'success' }
+        )
+
+        expect(response).to have_gitlab_http_status(403)
+      end
+
+      it 'updates a deployment without an associated build' do
+        put(
+          api("/projects/#{project.id}/deployments/#{deploy.id}", user),
+          params: { status: 'success' }
+        )
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response['status']).to eq('success')
+      end
+    end
+
+    context 'as a developer' do
+      let(:developer) { create(:user) }
+
+      before do
+        project.add_developer(developer)
+      end
+
+      it 'returns a 403 when updating a deployment with a build' do
+        deploy.update(deployable: build)
+
+        put(
+          api("/projects/#{project.id}/deployments/#{deploy.id}", developer),
+          params: { status: 'success' }
+        )
+
+        expect(response).to have_gitlab_http_status(403)
+      end
+
+      it 'updates a deployment without an associated build' do
+        put(
+          api("/projects/#{project.id}/deployments/#{deploy.id}", developer),
+          params: { status: 'success' }
+        )
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response['status']).to eq('success')
+      end
+    end
+
+    context 'as non member' do
+      it 'returns a 404 status code' do
+        put(
+          api("/projects/#{project.id}/deployments/#{deploy.id}", non_member),
+          params: { status: 'success' }
+        )
 
         expect(response).to have_gitlab_http_status(404)
       end

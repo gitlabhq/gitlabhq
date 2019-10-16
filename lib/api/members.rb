@@ -18,6 +18,7 @@ module API
         end
         params do
           optional :query, type: String, desc: 'A query string to search for members'
+          optional :user_ids, type: Array[Integer], desc: 'Array of user ids to look up for membership'
           use :pagination
         end
         # rubocop: disable CodeReuse/ActiveRecord
@@ -26,6 +27,7 @@ module API
 
           members = source.members.where.not(user_id: nil).includes(:user)
           members = members.joins(:user).merge(User.search(params[:query])) if params[:query].present?
+          members = members.where(user_id: params[:user_ids]) if params[:user_ids].present?
           members = paginate(members)
 
           present members, with: Entities::Member
@@ -37,6 +39,7 @@ module API
         end
         params do
           optional :query, type: String, desc: 'A query string to search for members'
+          optional :user_ids, type: Array[Integer], desc: 'Array of user ids to look up for membership'
           use :pagination
         end
         # rubocop: disable CodeReuse/ActiveRecord
@@ -45,6 +48,7 @@ module API
 
           members = find_all_members(source_type, source)
           members = members.includes(:user).references(:user).merge(User.search(params[:query])) if params[:query].present?
+          members = members.where(user_id: params[:user_ids]) if params[:user_ids].present?
           members = paginate(members)
 
           present members, with: Entities::Member
@@ -62,6 +66,23 @@ module API
           source = find_source(source_type, params[:id])
 
           members = source.members
+          member = members.find_by!(user_id: params[:user_id])
+
+          present member, with: Entities::Member
+        end
+        # rubocop: enable CodeReuse/ActiveRecord
+
+        desc 'Gets a member of a group or project, including those who gained membership through ancestor group' do
+          success Entities::Member
+        end
+        params do
+          requires :user_id, type: Integer, desc: 'The user ID of the member'
+        end
+        # rubocop: disable CodeReuse/ActiveRecord
+        get ":id/members/all/:user_id" do
+          source = find_source(source_type, params[:id])
+
+          members = find_all_members(source_type, source)
           member = members.find_by!(user_id: params[:user_id])
 
           present member, with: Entities::Member

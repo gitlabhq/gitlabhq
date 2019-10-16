@@ -51,9 +51,7 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
   def render_diffs
     @environment = @merge_request.environments_for(current_user).last
 
-    note_positions = renderable_notes.map(&:position).compact
-    @diffs.unfold_diff_files(note_positions)
-
+    @diffs.unfold_diff_files(note_positions.unfoldable)
     @diffs.write_cache
 
     request = {
@@ -138,6 +136,10 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
 
     @grouped_diff_discussions = @merge_request.grouped_diff_discussions(@compare.diff_refs)
     @notes = prepare_notes_for_rendering(@grouped_diff_discussions.values.flatten.flat_map(&:notes), @merge_request)
+  end
+
+  def note_positions
+    @note_positions ||= Gitlab::Diff::PositionCollection.new(renderable_notes.map(&:position))
   end
 
   def renderable_notes

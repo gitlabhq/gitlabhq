@@ -3,14 +3,13 @@
 module Gitlab
   module HealthChecks
     module Probes
-      class Readiness
+      class Collection
         attr_reader :checks
 
         # This accepts an array of objects implementing `:readiness`
         # that returns `::Gitlab::HealthChecks::Result`
-        def initialize(*additional_checks)
-          @checks = ::Gitlab::HealthChecks::CHECKS
-          @checks += additional_checks
+        def initialize(*checks)
+          @checks = checks
         end
 
         def execute

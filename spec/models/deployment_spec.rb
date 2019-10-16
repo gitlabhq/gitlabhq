@@ -348,4 +348,17 @@ describe Deployment do
       expect(deployment.deployed_by).to eq(build_user)
     end
   end
+
+  describe '.find_successful_deployment!' do
+    it 'returns a successful deployment' do
+      deploy = create(:deployment, :success)
+
+      expect(described_class.find_successful_deployment!(deploy.iid)).to eq(deploy)
+    end
+
+    it 'raises when no deployment is found' do
+      expect { described_class.find_successful_deployment!(-1) }
+        .to raise_error(ActiveRecord::RecordNotFound)
+    end
+  end
 end

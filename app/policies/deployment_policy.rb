@@ -7,8 +7,20 @@ class DeploymentPolicy < BasePolicy
     can?(:update_build, @subject.deployable)
   end
 
-  rule { ~can_retry_deployable }.policy do
+  condition(:has_deployable) do
+    @subject.deployable.present?
+  end
+
+  condition(:can_update_deployment) do
+    can?(:update_deployment, @subject.environment)
+  end
+
+  rule { has_deployable & ~can_retry_deployable }.policy do
     prevent :create_deployment
+    prevent :update_deployment
+  end
+
+  rule { ~can_update_deployment }.policy do
     prevent :update_deployment
   end
 end

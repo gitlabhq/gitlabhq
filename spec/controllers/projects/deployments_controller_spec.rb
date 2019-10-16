@@ -75,21 +75,32 @@ describe Projects::DeploymentsController do
           }
         end
 
-        before do
+        it 'returns a metrics JSON document' do
           expect_next_instance_of(DeploymentMetrics) do |deployment_metrics|
             allow(deployment_metrics).to receive(:has_metrics?).and_return(true)
 
             expect(deployment_metrics).to receive(:metrics).and_return(empty_metrics)
           end
-        end
 
-        it 'returns a metrics JSON document' do
           get :metrics, params: deployment_params(id: deployment.to_param)
 
           expect(response).to be_ok
           expect(json_response['success']).to be(true)
           expect(json_response['metrics']).to eq({})
           expect(json_response['last_update']).to eq(42)
+        end
+
+        it 'returns a 404 if the deployment failed' do
+          failed_deployment = create(
+            :deployment,
+            :failed,
+            project: project,
+            environment: environment
+          )
+
+          get :metrics, params: deployment_params(id: failed_deployment.to_param)
+
+          expect(response).to have_gitlab_http_status(404)
         end
       end
     end

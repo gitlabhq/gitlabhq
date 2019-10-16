@@ -102,7 +102,7 @@ These common definitions are:
   `docker.elastic.co/elasticsearch/elasticsearch:5.6.12` services.
 - `.only-ee`: Only creates a job for the `gitlab` project.
 - `.only-ee-as-if-foss`: Same as `.only-ee` but simulate the FOSS project by
-  setting the `IS_GITLAB_EE='0'` environment variable.
+  setting the `FOSS_ONLY='1'` environment variable.
 
 ## Changes detection
 
@@ -115,6 +115,7 @@ from a commit or MR by extending from the following CI definitions:
 - `.only-qa-changes`: Allows a job to only be created upon QA-related changes.
 - `.only-docs-changes`: Allows a job to only be created upon docs-related changes.
 - `.only-code-qa-changes`: Allows a job to only be created upon code-related or QA-related changes.
+- `.only-graphql-changes`: Allows a job to only be created upon graphql-related changes.
 
 **See <https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab/ci/global.gitlab-ci.yml>
 for the list of exact patterns.**
@@ -127,7 +128,7 @@ execute jobs out of order for the following jobs:
 ```mermaid
 graph RL;
   A[setup-test-env];
-  B["gitlab:assets:compile<br/>(master only)"];
+  B["gitlab:assets:compile pull-push-cache<br/>(master only)"];
   C[gitlab:assets:compile pull-cache];
   D["cache gems<br/>(master and tags only)"];
   E[review-build-cng];
@@ -136,7 +137,7 @@ graph RL;
   G2["schedule:review-deploy<br/>(master only)"];
   H[karma];
   I[jest];
-  J["compile-assets<br/>(master only)"];
+  J["compile-assets pull-push-cache<br/>(master only)"];
   K[compile-assets pull-cache];
   L[webpack-dev-server];
   M[coverage];
@@ -145,39 +146,42 @@ graph RL;
   P["schedule:package-and-qa<br/>(master schedule only)"];
   Q[package-and-qa];
   R[package-and-qa-manual];
+  S["RSpec<br/>(e.g. rspec unit pg9)"]
+  T[retrieve-tests-metadata];
 
 subgraph "`prepare` stage"
     A
     F
-    J
     K
+    J
+    T
     end
 
 subgraph "`test` stage"
     B --> |needs| A;
     C --> |needs| A;
     D --> |needs| A;
-    H -.-> |depends on| A;
-    H -.-> |depends on| J;
-    H -.-> |depends on| K;
-    I -.-> |depends on| A;
-    I -.-> |depends on| J;
-    I -.-> |depends on| K;
-    L -.-> |depends on| A;
-    L -.-> |depends on| J;
-    L -.-> |depends on| K;
+    H -.-> |needs and depends on| A;
+    H -.-> |needs and depends on| K;
+    I -.-> |needs and depends on| A;
+    I -.-> |needs and depends on| K;
+    L -.-> |needs and depends on| A;
+    L -.-> |needs and depends on| K;
+    O -.-> |needs and depends on| A;
+    O -.-> |needs and depends on| K;
+    S -.-> |needs and depends on| A;
+    S -.-> |needs and depends on| K;
+    S -.-> |needs and depends on| T;
     downtime_check --> |needs and depends on| A;
     db:* --> |needs| A;
     gitlab:setup --> |needs| A;
-    O -.-> |depends on| A;
-    O -.-> |depends on| B;
-    O -.-> |depends on| C;
     downtime_check --> |needs and depends on| A;
+    graphql-docs-verify --> |needs| A;
     end
 
 subgraph "`review-prepare` stage"
     E --> |needs| C;
-    X["schedule:review-build-cng<br/>(master schedule only)"] --> |needs| B;
+    X["schedule:review-build-cng<br/>(master schedule only)"] --> |needs| C;
     end
 
 subgraph "`review` stage"
@@ -190,7 +194,7 @@ subgraph "`qa` stage"
     Q --> |needs| F;
     R --> |needs| C;
     R --> |needs| F;
-    P --> |needs| B;
+    P --> |needs| C;
     P --> |needs| F;
     review-qa-smoke -.-> |needs and depends on| G;
     review-qa-all -.-> |needs and depends on| G;
@@ -209,7 +213,7 @@ subgraph "`post-test` stage"
     end
 
 subgraph "`pages` stage"
-    N -.-> |depends on| B;
+    N -.-> |depends on| C;
     N -.-> |depends on| H;
     N -.-> |depends on| M;
     end

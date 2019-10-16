@@ -56,6 +56,10 @@ describe ApplicationSetting do
     it { is_expected.not_to allow_value(nil).for(:protected_paths) }
     it { is_expected.to allow_value([]).for(:protected_paths) }
 
+    it { is_expected.to allow_value(3).for(:push_event_hooks_limit) }
+    it { is_expected.not_to allow_value('three').for(:push_event_hooks_limit) }
+    it { is_expected.not_to allow_value(nil).for(:push_event_hooks_limit) }
+
     context "when user accepted let's encrypt terms of service" do
       before do
         setting.update(lets_encrypt_terms_of_service_accepted: true)

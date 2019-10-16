@@ -47,11 +47,9 @@ class Projects::DeploymentsController < Projects::ApplicationController
     @deployment_metrics ||= DeploymentMetrics.new(deployment.project, deployment)
   end
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def deployment
-    @deployment ||= environment.deployments.find_by(iid: params[:id])
+    @deployment ||= environment.deployments.find_successful_deployment!(params[:id])
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   def environment
     @environment ||= project.environments.find(params[:environment_id])

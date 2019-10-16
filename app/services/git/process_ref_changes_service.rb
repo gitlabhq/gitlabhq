@@ -17,7 +17,7 @@ module Git
       changes_by_action = group_changes_by_action(changes)
 
       changes_by_action.each do |_, changes|
-        process_changes(ref_type, changes) if changes.any?
+        process_changes(ref_type, changes, execute_project_hooks: execute_project_hooks?(changes)) if changes.any?
       end
     end
 
@@ -34,7 +34,11 @@ module Git
       :pushed
     end
 
-    def process_changes(ref_type, changes)
+    def execute_project_hooks?(changes)
+      (changes.size <= Gitlab::CurrentSettings.push_event_hooks_limit) || Feature.enabled?(:git_push_execute_all_project_hooks, project)
+    end
+
+    def process_changes(ref_type, changes, execute_project_hooks:)
       push_service_class = push_service_class_for(ref_type)
 
       changes.each do |change|
@@ -43,7 +47,8 @@ module Git
           current_user,
           change: change,
           push_options: params[:push_options],
-          create_pipelines: change[:index] < PIPELINE_PROCESS_LIMIT || Feature.enabled?(:git_push_create_all_pipelines, project)
+          create_pipelines: change[:index] < PIPELINE_PROCESS_LIMIT || Feature.enabled?(:git_push_create_all_pipelines, project),
+          execute_project_hooks: execute_project_hooks
         ).execute
       end
     end

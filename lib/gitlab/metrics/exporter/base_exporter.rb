@@ -6,7 +6,7 @@ module Gitlab
       class BaseExporter < Daemon
         attr_reader :server
 
-        attr_accessor :additional_checks
+        attr_accessor :readiness_checks
 
         def enabled?
           settings.enabled
@@ -73,11 +73,11 @@ module Gitlab
         end
 
         def readiness_probe
-          ::Gitlab::HealthChecks::Probes::Readiness.new(*additional_checks)
+          ::Gitlab::HealthChecks::Probes::Collection.new(*readiness_checks)
         end
 
         def liveness_probe
-          ::Gitlab::HealthChecks::Probes::Liveness.new
+          ::Gitlab::HealthChecks::Probes::Collection.new
         end
 
         def render_probe(probe, req, res)

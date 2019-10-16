@@ -6,13 +6,13 @@ module Gitlab
       include Enumerable
 
       # collection - An array of Gitlab::Diff::Position
-      def initialize(collection, diff_head_sha)
+      def initialize(collection, diff_head_sha = nil)
         @collection = collection
         @diff_head_sha = diff_head_sha
       end
 
       def each(&block)
-        @collection.each(&block)
+        filtered_positions.each(&block)
       end
 
       def concat(positions)
@@ -23,8 +23,20 @@ module Gitlab
       # positions (https://gitlab.com/gitlab-org/gitlab/issues/33271).
       def unfoldable
         select do |position|
-          position.unfoldable? && position.head_sha == @diff_head_sha
+          position.unfoldable? && valid_head_sha?(position)
         end
+      end
+
+      private
+
+      def filtered_positions
+        @collection.select { |item| item.is_a?(Position) }
+      end
+
+      def valid_head_sha?(position)
+        return true unless @diff_head_sha
+
+        position.head_sha == @diff_head_sha
       end
     end
   end

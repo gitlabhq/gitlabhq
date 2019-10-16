@@ -82,9 +82,9 @@ describe Projects::MergeRequests::DiffsController do
         end
       end
 
-      context 'when note has no position' do
+      context 'when note is a legacy diff note' do
         before do
-          create(:legacy_diff_note_on_merge_request, project: project, noteable: merge_request, position: nil)
+          create(:legacy_diff_note_on_merge_request, project: project, noteable: merge_request)
         end
 
         it 'serializes merge request diff collection' do

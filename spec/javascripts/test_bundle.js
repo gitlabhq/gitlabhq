@@ -70,7 +70,7 @@ window.gl = window.gl || {};
 window.gl.TEST_HOST = TEST_HOST;
 window.gon = window.gon || {};
 window.gon.test_env = true;
-window.gon.ee = process.env.IS_GITLAB_EE;
+window.gon.ee = process.env.IS_EE;
 gon.relative_url_root = '';
 
 let hasUnhandledPromiseRejections = false;
@@ -118,7 +118,7 @@ const axiosDefaultAdapter = getDefaultAdapter();
 // render all of our tests
 const testContexts = [require.context('spec', true, /_spec$/)];
 
-if (process.env.IS_GITLAB_EE) {
+if (process.env.IS_EE) {
   testContexts.push(require.context('ee_spec', true, /_spec$/));
 }
 
@@ -207,7 +207,7 @@ if (process.env.BABEL_ENV === 'coverage') {
   describe('Uncovered files', function() {
     const sourceFilesContexts = [require.context('~', true, /\.(js|vue)$/)];
 
-    if (process.env.IS_GITLAB_EE) {
+    if (process.env.IS_EE) {
       sourceFilesContexts.push(require.context('ee', true, /\.(js|vue)$/));
     }
 

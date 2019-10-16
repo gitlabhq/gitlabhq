@@ -18,12 +18,16 @@ module EnvironmentHelper
     end
   end
 
+  def deployment_path(deployment)
+    [deployment.project.namespace.becomes(Namespace), deployment.project, deployment.deployable]
+  end
+
   def deployment_link(deployment, text: nil)
     return unless deployment
 
     link_label = text ? text : "##{deployment.iid}"
 
-    link_to link_label, [deployment.project.namespace.becomes(Namespace), deployment.project, deployment.deployable]
+    link_to link_label, deployment_path(deployment)
   end
 
   def last_deployment_link_for_environment_build(project, build)
@@ -31,5 +35,32 @@ module EnvironmentHelper
     return unless environment
 
     deployment_link(environment.last_deployment)
+  end
+
+  def render_deployment_status(deployment)
+    status = deployment.status
+
+    status_text =
+      case status
+      when 'created'
+        s_('Deployment|created')
+      when 'running'
+        s_('Deployment|running')
+      when 'success'
+        s_('Deployment|success')
+      when 'failed'
+        s_('Deployment|failed')
+      when 'canceled'
+        s_('Deployment|canceled')
+      end
+
+    klass = "ci-status ci-#{status.dasherize}"
+    text = "#{ci_icon_for_status(status)} #{status_text}".html_safe
+
+    if deployment.deployable
+      link_to(text, deployment_path(deployment), class: klass)
+    else
+      content_tag(:span, text, class: klass)
+    end
   end
 end

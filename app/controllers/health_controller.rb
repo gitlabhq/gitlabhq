@@ -4,18 +4,31 @@ class HealthController < ActionController::Base
   protect_from_forgery with: :exception, prepend: true
   include RequiresWhitelistedMonitoringClient
 
+  CHECKS = [
+    Gitlab::HealthChecks::DbCheck,
+    Gitlab::HealthChecks::Redis::RedisCheck,
+    Gitlab::HealthChecks::Redis::CacheCheck,
+    Gitlab::HealthChecks::Redis::QueuesCheck,
+    Gitlab::HealthChecks::Redis::SharedStateCheck,
+    Gitlab::HealthChecks::GitalyCheck
+  ].freeze
+
   def readiness
-    render_probe(::Gitlab::HealthChecks::Probes::Readiness)
+    # readiness check is a collection with all above application-level checks
+    render_checks(*CHECKS)
   end
 
   def liveness
-    render_probe(::Gitlab::HealthChecks::Probes::Liveness)
+    # liveness check is a collection without additional checks
+    render_checks
   end
 
   private
 
-  def render_probe(probe_class)
-    result = probe_class.new.execute
+  def render_checks(*checks)
+    result = Gitlab::HealthChecks::Probes::Collection
+      .new(*checks)
+      .execute
 
     # disable static error pages at the gitlab-workhorse level, we want to see this error response even in production
     headers["X-GitLab-Custom-Error"] = 1 unless result.success?

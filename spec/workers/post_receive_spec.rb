@@ -93,6 +93,8 @@ describe PostReceive do
     end
 
     context 'with changes' do
+      let(:push_service) { double(execute: true) }
+
       before do
         allow_any_instance_of(Gitlab::GitPostReceive).to receive(:identify).and_return(project.owner)
         allow(Gitlab::GlRepository).to receive(:parse).and_return([project, Gitlab::GlRepository::PROJECT])

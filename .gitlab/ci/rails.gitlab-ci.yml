@@ -53,6 +53,8 @@ setup-test-env:
 .rspec-base:
   extends: .only-code-rails-job-base
   stage: test
+  needs: ["setup-test-env", "retrieve-tests-metadata", "compile-assets pull-cache"]
+  dependencies: ["setup-test-env", "retrieve-tests-metadata", "compile-assets pull-cache"]
   script:
     - source scripts/rspec_helpers.sh
     - rspec_paralellized_job "--tag ~quarantine --tag ~geo"
@@ -69,6 +71,11 @@ setup-test-env:
     reports:
       junit: junit_rspec.xml
 
+.rspec-base-foss:
+  extends: [".rspec-base", ".only-ee-as-if-foss"]
+  needs: ["setup-test-env", "retrieve-tests-metadata", "compile-assets pull-cache foss"]
+  dependencies: ["setup-test-env", "retrieve-tests-metadata", "compile-assets pull-cache foss"]
+
 .rspec-base-pg9:
   extends:
     - .rspec-base
@@ -76,9 +83,8 @@ setup-test-env:
 
 .rspec-base-pg9-foss:
   extends:
-    - .rspec-base
+    - .rspec-base-foss
     - .use-pg9
-    - .only-ee-as-if-foss
 
 .rspec-base-pg10:
   extends:
@@ -106,10 +112,9 @@ rspec system pg9:
   extends: .rspec-base-pg9
   parallel: 24
 
-# TODO: This requires FOSS assets
-# rspec system pg9-foss:
-#   extends: .rspec-base-pg9-foss
-#   parallel: 24
+rspec system pg9-foss:
+  extends: .rspec-base-pg9-foss
+  parallel: 24
 
 rspec unit pg10:
   extends: .rspec-base-pg10
@@ -229,7 +234,9 @@ rspec fast_spec_helper:
 
 static-analysis:
   extends: .only-code-qa-rails-job-base
-  dependencies: ["setup-test-env", "compile-assets", "compile-assets pull-cache"]
+  stage: test
+  needs: ["setup-test-env", "compile-assets pull-cache"]
+  dependencies: ["setup-test-env", "compile-assets pull-cache"]
   variables:
     SETUP_DB: "false"
   script:
@@ -252,16 +259,16 @@ downtime_check:
     variables:
       - $CI_COMMIT_REF_NAME =~ /^[\d-]+-stable(-ee)?$/
   stage: test
-  dependencies: ["setup-test-env"]
   needs: ["setup-test-env"]
+  dependencies: ["setup-test-env"]
 
 .db-job-base:
   extends:
     - .only-code-rails-job-base
     - .use-pg9
   stage: test
-  dependencies: ["setup-test-env"]
   needs: ["setup-test-env"]
+  dependencies: ["setup-test-env"]
 
 # DB migration, rollback, and seed jobs
 db:migrate:reset:

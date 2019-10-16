@@ -69,14 +69,14 @@ module Gitlab
       # means that checking the presence of the License class could result in
       # this method returning `false`, even for an EE installation.
       #
-      # The `IS_GITLAB_EE` is always `string` or `nil`
+      # The `FOSS_ONLY` is always `string` or `nil`
       # Thus the nil or empty string will result
-      # in using default value: true
+      # in using default value: false
       #
       # The behavior needs to be synchronised with
       # config/helpers/is_ee_env.js
       root.join('ee/app/models/license.rb').exist? &&
-        (ENV['IS_GITLAB_EE'].to_s.empty? || Gitlab::Utils.to_boolean(ENV['IS_GITLAB_EE']))
+        !%w[true 1].include?(ENV['FOSS_ONLY'].to_s)
   end
 
   def self.ee

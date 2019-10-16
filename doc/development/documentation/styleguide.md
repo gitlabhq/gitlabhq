@@ -492,18 +492,49 @@ For other punctuation rules, please refer to the
 
 - Use inline link markdown markup `[Text](https://example.com)`.
   It's easier to read, review, and maintain. **Do not** use `[Text][identifier]`.
-- To link to internal documentation, use relative links, not full URLs. Use `../` to
-  navigate to high-level directories, and always add the file name `file.md` at the
-  end of the link with the `.md` extension, not `.html`.
-  Example: instead of `[text](../../merge_requests/)`, use
-  `[text](../../merge_requests/index.md)` or, `[text](../../ci/README.md)`, or,
-  for anchor links, `[text](../../ci/README.md#examples)`.
-  Using the markdown extension is necessary for the [`/help`](index.md#gitlab-help)
-  section of GitLab.
-- To link from CE to EE-only documentation, use the EE-only doc full URL.
+
 - Use [meaningful anchor texts](https://www.futurehosting.com/blog/links-should-have-meaningful-anchor-text-heres-why/).
   E.g., instead of writing something like `Read more about GitLab Issue Boards [here](LINK)`,
   write `Read more about [GitLab Issue Boards](LINK)`.
+
+### Links to internal documentation
+
+- To link to internal documentation, use relative links, not full URLs.
+  Use `../` to navigate to high-level directories. Links should not refer to root.
+
+  Don't:
+
+  ```md
+  [Geo Troubleshooting](https://docs.gitlab.com/ee/administration/geo/replication/troubleshooting.html)
+  [Geo Troubleshooting](/ee/administration/geo/replication/troubleshooting.md)
+  ```
+
+  Do:
+
+  ```md
+  [Geo Troubleshooting](../../geo/replication/troubleshooting.md)
+  ```
+
+- Always add the file name `file.md` at the end of the link with the `.md` extension, not `.html`.
+
+  Don't:
+
+  ```md
+  [merge requests](../../merge_requests/)
+  [issues](../../issues/tags.html)
+  [issue tags](../../issues/tags.html#stages)
+  ```
+
+  Do:
+
+  ```md
+  [merge requests](../../merge_requests/index.md)
+  [issues](../../issues/tags.md)
+  [issue tags](../../issues/tags.md#stages)
+  ```
+
+- Using the markdown extension is necessary for the [`/help`](index.md#gitlab-help)
+  section of GitLab.
 
 ### Links requiring permissions
 

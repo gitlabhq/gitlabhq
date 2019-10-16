@@ -20,7 +20,7 @@ module Gitlab
         def initialize
           super
 
-          self.additional_checks = [
+          self.readiness_checks = [
             WebExporter::ExporterCheck.new(self),
             Gitlab::HealthChecks::PumaCheck,
             Gitlab::HealthChecks::UnicornCheck

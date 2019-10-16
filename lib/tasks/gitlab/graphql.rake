@@ -11,9 +11,27 @@ namespace :gitlab do
     task compile_docs: :environment do
       renderer = Gitlab::Graphql::Docs::Renderer.new(GitlabSchema.graphql_definition, render_options)
 
-      renderer.render
+      renderer.write
 
       puts "Documentation compiled."
+    end
+
+    desc 'GitLab | Check if GraphQL docs are up to date'
+    task check_docs: :environment do
+      renderer = Gitlab::Graphql::Docs::Renderer.new(GitlabSchema.graphql_definition, render_options)
+
+      doc = File.read(Rails.root.join(OUTPUT_DIR, 'index.md'))
+
+      if doc == renderer.contents
+        puts "GraphQL documentation is up to date"
+      else
+        puts '#' * 10
+        puts '#'
+        puts '# GraphQL documentation is outdated! Please update it by running `bundle exec rake gitlab:graphql:compile_docs`.'
+        puts '#'
+        puts '#' * 10
+        abort
+      end
     end
   end
 end

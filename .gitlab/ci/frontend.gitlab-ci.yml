@@ -53,7 +53,7 @@
     - gitlab-org
     - docker
 
-gitlab:assets:compile:
+gitlab:assets:compile pull-push-cache:
   extends: .gitlab:assets:compile-metadata
   only:
     refs:
@@ -63,9 +63,6 @@ gitlab:assets:compile:
 
 gitlab:assets:compile pull-cache:
   extends: .gitlab:assets:compile-metadata
-  except:
-    refs:
-      - master
   cache:
     policy: pull
 
@@ -89,14 +86,14 @@ gitlab:assets:compile pull-cache:
     # we override the max_old_space_size to prevent OOM errors
     NODE_OPTIONS: --max_old_space_size=3584
   cache:
-    key: "assets-compile:test:vendor_ruby:.yarn-cache:tmp_cache_assets_sprockets:v6"
+    key: "assets-compile:v7"
   artifacts:
     expire_in: 7d
     paths:
       - node_modules
       - public/assets
 
-compile-assets:
+compile-assets pull-push-cache:
   extends: .compile-assets-metadata
   only:
     refs:
@@ -104,13 +101,25 @@ compile-assets:
   cache:
     policy: pull-push
 
-compile-assets pull-cache:
-  extends: .compile-assets-metadata
-  except:
+compile-assets pull-push-cache foss:
+  extends: [".compile-assets-metadata", ".only-ee-as-if-foss"]
+  only:
     refs:
       - master
   cache:
+    policy: pull-push
+    key: "assets-compile:v7:foss"
+
+compile-assets pull-cache:
+  extends: .compile-assets-metadata
+  cache:
     policy: pull
+
+compile-assets pull-cache foss:
+  extends: [".compile-assets-metadata", ".only-ee-as-if-foss"]
+  cache:
+    policy: pull
+    key: "assets-compile:v7:foss"
 
 .only-code-frontend-job-base:
   extends:
@@ -121,7 +130,9 @@ compile-assets pull-cache:
     - .default-before_script
     - .only-code-changes
     - .use-pg9
-  dependencies: ["compile-assets", "compile-assets pull-cache", "setup-test-env"]
+  stage: test
+  needs: ["setup-test-env", "compile-assets pull-cache"]
+  dependencies: ["setup-test-env", "compile-assets pull-cache"]
 
 .karma-base:
   extends: .only-code-frontend-job-base
@@ -195,6 +206,7 @@ jest-foss:
     - .default-cache
     - .default-only
     - .only-code-changes
+  stage: test
   dependencies: []
   cache:
     key: "$CI_JOB_NAME"
@@ -227,7 +239,9 @@ webpack-dev-server:
     - .default-cache
     - .default-only
     - .only-code-changes
-  dependencies: ["setup-test-env", "compile-assets", "compile-assets pull-cache"]
+  stage: test
+  needs: ["setup-test-env", "compile-assets pull-cache"]
+  dependencies: ["setup-test-env", "compile-assets pull-cache"]
   variables:
     WEBPACK_MEMORY_TEST: "true"
   script:

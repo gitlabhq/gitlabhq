@@ -61,7 +61,7 @@
       "type": "array",
       "items": { "$ref": "job/job.json" }
     },
-    "status": { "type": "string" }		
+    "status": { "type": "string" }
   },
   "additionalProperties": false
 }

@@ -19,4 +19,14 @@ module ReleasesHelper
       documentation_path: help_page
     }
   end
+
+  def data_for_edit_release_page
+    {
+      project_id: @project.id,
+      tag_name: @release.tag,
+      markdown_preview_path: preview_markdown_path(@project),
+      markdown_docs_path: help_page_path('user/markdown'),
+      releases_page_path: project_releases_path(@project, anchor: @release.tag)
+    }
+  end
 end

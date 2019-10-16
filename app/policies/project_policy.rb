@@ -262,6 +262,7 @@ class ProjectPolicy < BasePolicy
     enable :destroy_container_image
     enable :create_environment
     enable :create_deployment
+    enable :update_deployment
     enable :create_release
     enable :update_release
   end

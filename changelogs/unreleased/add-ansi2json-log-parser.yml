@@ -1,0 +1,5 @@
+---
+title: Introduce new Ansi2json parser to convert job logs to JSON
+merge_request: 18133
+author:
+type: added

@@ -35,14 +35,15 @@ describe Gitlab::Diff::PositionCollection do
   let(:text_position) { build_text_position }
   let(:folded_text_position) { build_text_position(old_line: 1, new_line: 1) }
   let(:image_position) { build_image_position }
+  let(:invalid_position) { 'a position' }
   let(:head_sha) { merge_request.diff_head_sha }
 
   let(:collection) do
-    described_class.new([text_position, folded_text_position, image_position], head_sha)
+    described_class.new([text_position, folded_text_position, image_position, invalid_position], head_sha)
   end
 
   describe '#to_a' do
-    it 'returns all positions' do
+    it 'returns all positions that are Gitlab::Diff::Position' do
       expect(collection.to_a).to eq([text_position, folded_text_position, image_position])
     end
   end
@@ -57,6 +58,14 @@ describe Gitlab::Diff::PositionCollection do
 
       it 'returns no position' do
         expect(collection.unfoldable).to be_empty
+      end
+    end
+
+    context 'when given head_sha is nil' do
+      let(:head_sha) { nil }
+
+      it 'returns unfoldable diff positions unfiltered by head_sha' do
+        expect(collection.unfoldable).to eq([folded_text_position])
       end
     end
   end
