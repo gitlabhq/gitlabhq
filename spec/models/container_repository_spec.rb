@@ -78,7 +78,7 @@ describe ContainerRepository do
   describe '#delete_tags!' do
     let(:repository) do
       create(:container_repository, name: 'my_image',
-                                    tags: %w[latest rc1],
+                                    tags: { latest: '123', rc1: '234' },
                                     project: project)
     end
 
@@ -86,6 +86,7 @@ describe ContainerRepository do
       it 'returns status that indicates success' do
         expect(repository.client)
           .to receive(:delete_repository_tag)
+          .twice
           .and_return(true)
 
         expect(repository.delete_tags!).to be_truthy
@@ -96,6 +97,7 @@ describe ContainerRepository do
       it 'returns status that indicates failure' do
         expect(repository.client)
           .to receive(:delete_repository_tag)
+          .twice
           .and_return(false)
 
         expect(repository.delete_tags!).to be_falsey

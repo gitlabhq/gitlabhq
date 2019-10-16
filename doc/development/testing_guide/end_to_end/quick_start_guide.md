@@ -38,7 +38,7 @@ The GitLab QA end-to-end tests are organized by the different [stages in the Dev
 
 > There may be sub-directories inside the stages directories, for different features. For example: `.../browser_ui/2_plan/ee_epics/` and `.../browser_ui/2_plan/issues/`.
 
-Now, let's say we want to create tests for the [scoped labels](https://about.gitlab.com/2019/04/22/gitlab-11-10-released/#scoped-labels) feature, available on GitLab EE Premium (this feature is part of the Plan stage.)
+Now, let's say we want to create tests for the [scoped labels](https://about.gitlab.com/blog/2019/04/22/gitlab-11-10-released/#scoped-labels) feature, available on GitLab EE Premium (this feature is part of the Plan stage.)
 
 > Because these tests are for a feature available only on GitLab EE, we need to create them in the [EE repository](https://gitlab.com/gitlab-org/gitlab).
 

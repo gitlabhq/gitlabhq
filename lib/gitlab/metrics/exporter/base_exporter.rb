@@ -54,8 +54,11 @@ module Gitlab
           if server
             # we close sockets if thread is not longer running
             # this happens, when the process forks
-            server.listeners.each(&:close) unless thread.alive?
-            server.shutdown
+            if thread.alive?
+              server.shutdown
+            else
+              server.listeners.each(&:close)
+            end
           end
 
           @server = nil

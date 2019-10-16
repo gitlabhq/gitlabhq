@@ -385,10 +385,10 @@ to understand how to go even further on your scripts.
 
 - On this blog post, understand the concept of
   [using GitLab CI `environments` to deploy your
-  web app to staging and production](https://about.gitlab.com/2016/08/26/ci-deployment-and-environments/).
+  web app to staging and production](https://about.gitlab.com/blog/2016/08/26/ci-deployment-and-environments/).
 - On this post, learn [how to run jobs sequentially,
-  in parallel, or build a custom pipeline](https://about.gitlab.com/2016/07/29/the-basics-of-gitlab-ci/)
+  in parallel, or build a custom pipeline](https://about.gitlab.com/blog/2016/07/29/the-basics-of-gitlab-ci/)
 - On this blog post, we go through the process of
-  [pulling specific directories from different projects](https://about.gitlab.com/2016/12/07/building-a-new-gitlab-docs-site-with-nanoc-gitlab-ci-and-gitlab-pages/)
+  [pulling specific directories from different projects](https://about.gitlab.com/blog/2016/12/07/building-a-new-gitlab-docs-site-with-nanoc-gitlab-ci-and-gitlab-pages/)
   to deploy this website you're looking at, <https://docs.gitlab.com>.
-- On this blog post, we teach you [how to use GitLab Pages to produce a code coverage report](https://about.gitlab.com/2016/11/03/publish-code-coverage-report-with-gitlab-pages/).
+- On this blog post, we teach you [how to use GitLab Pages to produce a code coverage report](https://about.gitlab.com/blog/2016/11/03/publish-code-coverage-report-with-gitlab-pages/).

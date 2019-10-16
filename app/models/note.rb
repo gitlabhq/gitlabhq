@@ -145,6 +145,9 @@ class Note < ApplicationRecord
   end
   scope :with_metadata, -> { includes(:system_note_metadata) }
 
+  scope :for_note_or_capitalized_note, ->(text) { where(note: [text, text.capitalize]) }
+  scope :like_note_or_capitalized_note, ->(text) { where('(note LIKE ? OR note LIKE ?)', text, text.capitalize) }
+
   after_initialize :ensure_discussion_id
   before_validation :nullify_blank_type, :nullify_blank_line_code
   before_validation :set_discussion_id, on: :create

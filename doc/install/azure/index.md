@@ -423,7 +423,7 @@ Check out our other [Technical Articles](../../articles/index.md) or browse the 
   - [Azure - Properly Shutdown an Azure VM](https://buildazure.com/properly-shutdown-azure-vm-to-save-money/)
 - [SSH], [PuTTY](https://www.putty.org) and [Using SSH in PuTTY][Using-SSH-In-Putty]
 
-[Original-Blog-Post]: https://about.gitlab.com/2016/07/13/how-to-setup-a-gitlab-instance-on-microsoft-azure/ "How to Set up a GitLab Instance on Microsoft Azure"
+[Original-Blog-Post]: https://about.gitlab.com/blog/2016/07/13/how-to-setup-a-gitlab-instance-on-microsoft-azure/ "How to Set up a GitLab Instance on Microsoft Azure"
 [CE]: https://about.gitlab.com/features/
 [EE]: https://about.gitlab.com/features/#ee-starter
 

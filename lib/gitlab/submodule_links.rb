@@ -6,6 +6,7 @@ module Gitlab
 
     def initialize(repository)
       @repository = repository
+      @cache_store = {}
     end
 
     def for(submodule, sha)
@@ -18,8 +19,9 @@ module Gitlab
     attr_reader :repository
 
     def submodule_urls_for(sha)
-      strong_memoize(:"submodule_urls_for_#{sha}") do
-        repository.submodule_urls_for(sha)
+      @cache_store.fetch(sha) do
+        submodule_urls = repository.submodule_urls_for(sha)
+        @cache_store[sha] = submodule_urls
       end
     end
 

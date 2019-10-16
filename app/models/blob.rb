@@ -32,6 +32,7 @@ class Blob < SimpleDelegator
     BlobViewer::Balsamiq,
 
     BlobViewer::Video,
+    BlobViewer::Audio,
 
     BlobViewer::PDF,
 

@@ -668,6 +668,7 @@ Settings.monitoring['web_exporter'] ||= Settingslogic.new({})
 Settings.monitoring.web_exporter['enabled'] ||= false
 Settings.monitoring.web_exporter['address'] ||= 'localhost'
 Settings.monitoring.web_exporter['port'] ||= 8083
+Settings.monitoring.web_exporter['blackout_seconds'] ||= 10
 
 #
 # Testing settings

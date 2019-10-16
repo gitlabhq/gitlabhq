@@ -8,14 +8,50 @@ module Gitlab
     # watchdog threads. This lets us abstract away the Unix process
     # lifecycles of Unicorn, Sidekiq, Puma, Puma Cluster, etc.
     #
-    # We have three lifecycle events.
+    # We have the following lifecycle events.
     #
-    # - before_fork (only in forking processes)
-    #     In forking processes (Unicorn and Puma in multiprocess mode) this
-    #     will be called exactly once, on startup, before the workers are
-    #     forked. This will be called in the parent process.
-    # - worker_start
-    # - before_master_restart (only in forking processes)
+    # - on_master_start:
+    #
+    #     Unicorn/Puma Cluster: This will be called exactly once,
+    #       on startup, before the workers are forked. This is
+    #       called in the PARENT/MASTER process.
+    #
+    #     Sidekiq/Puma Single: This is called immediately.
+    #
+    # - on_before_fork:
+    #
+    #     Unicorn/Puma Cluster: This will be called exactly once,
+    #       on startup, before the workers are forked. This is
+    #       called in the PARENT/MASTER process.
+    #
+    #     Sidekiq/Puma Single: This is not called.
+    #
+    # - on_worker_start:
+    #
+    #     Unicorn/Puma Cluster: This is called in the worker process
+    #       exactly once before processing requests.
+    #
+    #     Sidekiq/Puma Single: This is called immediately.
+    #
+    # - on_before_phased_restart:
+    #
+    #     Unicorn/Puma Cluster: This will be called before a graceful
+    #       shutdown of workers starts happening.
+    #       This is called on `master` process.
+    #
+    #     Sidekiq/Puma Single: This is not called.
+    #
+    # - on_before_master_restart:
+    #
+    #     Unicorn: This will be called before a new master is spun up.
+    #       This is called on forked master before `execve` to become
+    #       a new masterfor Unicorn. This means that this does not really
+    #       affect old master process.
+    #
+    #     Puma Cluster: This will be called before a new master is spun up.
+    #       This is called on `master` process.
+    #
+    #     Sidekiq/Puma Single: This is not called.
     #
     # Blocks will be executed in the order in which they are registered.
     #
@@ -34,15 +70,17 @@ module Gitlab
         end
 
         def on_before_fork(&block)
-          return unless in_clustered_environment?
-
           # Defer block execution
           (@before_fork_hooks ||= []) << block
         end
 
-        def on_before_master_restart(&block)
-          return unless in_clustered_environment?
+        # Read the config/initializers/cluster_events_before_phased_restart.rb
+        def on_before_phased_restart(&block)
+          # Defer block execution
+          (@master_phased_restart ||= []) << block
+        end
 
+        def on_before_master_restart(&block)
           # Defer block execution
           (@master_restart_hooks ||= []) << block
         end
@@ -70,8 +108,14 @@ module Gitlab
           end
         end
 
+        def do_before_phased_restart
+          @master_phased_restart&.each do |block|
+            block.call
+          end
+        end
+
         def do_before_master_restart
-          @master_restart_hooks && @master_restart_hooks.each do |block|
+          @master_restart_hooks&.each do |block|
             block.call
           end
         end

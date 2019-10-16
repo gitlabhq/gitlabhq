@@ -79,7 +79,7 @@ it did not improve query performance.
 
 ## Attempt B: Denormalize using an array column
 
-Having [removed MySQL support in GitLab 12.1](https://about.gitlab.com/2019/06/27/removing-mysql-support/),
+Having [removed MySQL support in GitLab 12.1](https://about.gitlab.com/blog/2019/06/27/removing-mysql-support/),
 using [Postgres's arrays](https://www.postgresql.org/docs/9.6/arrays.html) became more
 tractable as we didn't have to support two databases. We discussed denormalizing
 the `label_links` table for querying in

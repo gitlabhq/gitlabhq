@@ -521,5 +521,5 @@ but commented out to help encourage others to add to it in the future. -->
 [git-filters-manual]: https://git-scm.com/docs/git-filter-branch#_options
 [git-official]: https://git-scm.com/
 [gitlab]: https://gitlab.com/gitlab-org/gitlab/blob/master/CONTRIBUTING.md#contribution-acceptance-criteria
-[gitlab-flow]: https://about.gitlab.com/2014/09/29/gitlab-flow/
-[gitlab-git-tips-n-tricks]: https://about.gitlab.com/2016/12/08/git-tips-and-tricks/
+[gitlab-flow]: https://about.gitlab.com/blog/2014/09/29/gitlab-flow/
+[gitlab-git-tips-n-tricks]: https://about.gitlab.com/blog/2016/12/08/git-tips-and-tricks/

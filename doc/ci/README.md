@@ -161,9 +161,9 @@ See also:
 The following articles explain reasons to use GitLab CI/CD
 for your CI/CD infrastructure:
 
-- [Why we chose GitLab CI for our CI/CD solution](https://about.gitlab.com/2016/10/17/gitlab-ci-oohlala/)
-- [Building our web-app on GitLab CI](https://about.gitlab.com/2016/07/22/building-our-web-app-on-gitlab-ci/)
-- [5 Teams that made the switch to GitLab CI/CD](https://about.gitlab.com/2019/04/25/5-teams-that-made-the-switch-to-gitlab-ci-cd/)
+- [Why we chose GitLab CI for our CI/CD solution](https://about.gitlab.com/blog/2016/10/17/gitlab-ci-oohlala/)
+- [Building our web-app on GitLab CI](https://about.gitlab.com/blog/2016/07/22/building-our-web-app-on-gitlab-ci/)
+- [5 Teams that made the switch to GitLab CI/CD](https://about.gitlab.com/blog/2019/04/25/5-teams-that-made-the-switch-to-gitlab-ci-cd/)
 
 See also the [Why CI/CD?](https://docs.google.com/presentation/d/1OGgk2Tcxbpl7DJaIOzCX4Vqg3dlwfELC3u2jEeCBbDk) presentation.
 

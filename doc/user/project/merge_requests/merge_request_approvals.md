@@ -4,7 +4,7 @@ type: reference, concepts
 
 # Merge request approvals **(STARTER)**
 
-> Introduced in [GitLab Enterprise Edition 7.12](https://about.gitlab.com/2015/06/22/gitlab-7-12-released/#merge-request-approvers-ee-only).
+> Introduced in [GitLab Enterprise Edition 7.12](https://about.gitlab.com/blog/2015/06/22/gitlab-7-12-released/#merge-request-approvers-ee-only).
 
 Merge request approvals enable enforced code review by requiring specified people
 to approve a merge request before it can be unblocked for merging.

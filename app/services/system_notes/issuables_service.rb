@@ -288,18 +288,16 @@ module SystemNotes
       "#{self.class.cross_reference_note_prefix}#{gfm_reference}"
     end
 
-    # rubocop: disable CodeReuse/ActiveRecord
     def notes_for_mentioner(mentioner, noteable, notes)
       if mentioner.is_a?(Commit)
         text = "#{self.class.cross_reference_note_prefix}%#{mentioner.to_reference(nil)}"
-        notes.where('(note LIKE ? OR note LIKE ?)', text, text.capitalize)
+        notes.like_note_or_capitalized_note(text)
       else
         gfm_reference = mentioner.gfm_reference(noteable.project || noteable.group)
         text = cross_reference_note_content(gfm_reference)
-        notes.where(note: [text, text.capitalize])
+        notes.for_note_or_capitalized_note(text)
       end
     end
-    # rubocop: enable CodeReuse/ActiveRecord
 
     def self.cross_reference_note_prefix
       'mentioned in '

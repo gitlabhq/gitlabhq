@@ -7,7 +7,7 @@ type: index, howto
 >[Introduced][ee-4642] in [GitLab Premium][eep] 10.6.
 
 NOTE: **Note:**
-This feature [is available for free](https://about.gitlab.com/2019/09/09/ci-cd-github-extended-again/) to
+This feature [is available for free](https://about.gitlab.com/blog/2019/09/09/ci-cd-github-extended-again/) to
 GitLab.com users until March 22nd, 2020.
 
 GitLab CI/CD can be used with:

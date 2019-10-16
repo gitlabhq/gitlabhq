@@ -254,7 +254,7 @@ pipeline to include running the tests along with the existing build job.
 
 To ensure our changes don't break the build and all tests still pass, we utilize
 Continuous Integration (CI) to run these checks automatically for every push.
-Read through this article to understand [Continuous Integration, Continuous Delivery, and Continuous Deployment](https://about.gitlab.com/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/),
+Read through this article to understand [Continuous Integration, Continuous Delivery, and Continuous Deployment](https://about.gitlab.com/blog/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/),
 and how these methods are leveraged by GitLab.
 From the [last tutorial](https://ryanhallcs.wordpress.com/2017/03/15/devops-and-game-dev/) we already have a `.gitlab-ci.yml` file set up for building our app from
 every push. We need to set up a new CI job for testing, which GitLab CI/CD will run after the build job using our generated artifacts from gulp.
@@ -390,7 +390,7 @@ We have our codebase built and tested on every push. To complete the full pipeli
 let's set up [free web hosting with AWS S3](https://aws.amazon.com/s/dm/optimization/server-side-test/free-tier/free_np/) and a job through which our build artifacts get
 deployed. GitLab also has a free static site hosting service we could use, [GitLab Pages](https://about.gitlab.com/product/pages/),
 however Dark Nova specifically uses other AWS tools that necessitates using `AWS S3`.
-Read through this article that describes [deploying to both S3 and GitLab Pages](https://about.gitlab.com/2016/08/26/ci-deployment-and-environments/)
+Read through this article that describes [deploying to both S3 and GitLab Pages](https://about.gitlab.com/blog/2016/08/26/ci-deployment-and-environments/)
 and further delves into the principles of GitLab CI/CD than discussed in this article.
 
 ### Set up S3 Bucket
@@ -529,4 +529,4 @@ Here are some ideas to further investigate that can speed up or improve your pip
 - Set up a custom [Docker](../../../ci/docker/using_docker_images.md#define-image-and-services-from-gitlab-ciyml) image that can preload dependencies and tools (like AWS CLI)
 - Forward a [custom domain](https://docs.aws.amazon.com/AmazonS3/latest/dev/website-hosting-custom-domain-walkthrough.html) to your game's S3 static website
 - Combine jobs if you find it unnecessary for a small project
-- Avoid the queues and set up your own [custom GitLab CI/CD runner](https://about.gitlab.com/2016/03/01/gitlab-runner-with-docker/)
+- Avoid the queues and set up your own [custom GitLab CI/CD runner](https://about.gitlab.com/blog/2016/03/01/gitlab-runner-with-docker/)

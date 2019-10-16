@@ -11,7 +11,7 @@ large projects with speed and efficiency.
 [GitLab](https://about.gitlab.com) is a Git-based fully integrated platform for
 software development. Besides Git's functionalities, GitLab has a lot of
 powerful [features](https://about.gitlab.com/features/) to enhance your
-[workflow](https://about.gitlab.com/2016/10/25/gitlab-workflow-an-overview/).
+[workflow](https://about.gitlab.com/blog/2016/10/25/gitlab-workflow-an-overview/).
 
 We've gathered some resources to help you to get the best from Git with GitLab.
 
@@ -39,8 +39,8 @@ The following resources will help you get started with Git:
 The following are resources about version control concepts:
 
 - [Git concepts](../../university/training/user_training.md#git-concepts)
-- [Why Git is Worth the Learning Curve](https://about.gitlab.com/2017/05/17/learning-curve-is-the-biggest-challenge-developers-face-with-git/)
-- [The future of SaaS hosted Git repository pricing](https://about.gitlab.com/2016/05/11/git-repository-pricing/)
+- [Why Git is Worth the Learning Curve](https://about.gitlab.com/blog/2017/05/17/learning-curve-is-the-biggest-challenge-developers-face-with-git/)
+- [The future of SaaS hosted Git repository pricing](https://about.gitlab.com/blog/2016/05/11/git-repository-pricing/)
 - [Git website topic about version control](https://git-scm.com/book/en/v2/Getting-Started-About-Version-Control)
 - [GitLab University presentation about Version Control](https://docs.google.com/presentation/d/16sX7hUrCZyOFbpvnrAFrg6tVO5_yT98IgdAqOmXwBho/edit?usp=sharing)
 
@@ -49,8 +49,8 @@ The following are resources about version control concepts:
 The following resources may help you become more efficient at using Git:
 
 - [Useful Git commands](useful_git_commands.md) collected by the GitLab support team.
-- [Git Tips & Tricks](https://about.gitlab.com/2016/12/08/git-tips-and-tricks/)
-- [Eight Tips to help you work better with Git](https://about.gitlab.com/2015/02/19/8-tips-to-help-you-work-better-with-git/)
+- [Git Tips & Tricks](https://about.gitlab.com/blog/2016/12/08/git-tips-and-tricks/)
+- [Eight Tips to help you work better with Git](https://about.gitlab.com/blog/2015/02/19/8-tips-to-help-you-work-better-with-git/)
 
 ## Troubleshooting Git
 
@@ -63,7 +63,7 @@ If you have problems with Git, the following may help:
 
 - [Git Branching - Branches in a Nutshell](https://git-scm.com/book/en/v2/Git-Branching-Branches-in-a-Nutshell)
 - [Git Branching - Branching Workflows](https://git-scm.com/book/en/v2/Git-Branching-Branching-Workflows)
-- [GitLab Flow](https://about.gitlab.com/2014/09/29/gitlab-flow/)
+- [GitLab Flow](https://about.gitlab.com/blog/2014/09/29/gitlab-flow/)
 
 ## Advanced use
 
@@ -83,9 +83,9 @@ Git-related queries from GitLab.
 
 The following relate to Git Large File Storage:
 
-- [Getting Started with Git LFS](https://about.gitlab.com/2017/01/30/getting-started-with-git-lfs-tutorial/)
+- [Getting Started with Git LFS](https://about.gitlab.com/blog/2017/01/30/getting-started-with-git-lfs-tutorial/)
 - [Migrate an existing Git repo with Git LFS](migrate_to_git_lfs/index.md)
 - [GitLab Git LFS user documentation](../../workflow/lfs/manage_large_binaries_with_git_lfs.md)
 - [GitLab Git LFS admin documentation](../../workflow/lfs/lfs_administration.md)
 - [git-annex to Git-LFS migration guide](../../workflow/lfs/migrate_from_git_annex_to_git_lfs.md)
-- [Towards a production quality open source Git LFS server](https://about.gitlab.com/2015/08/13/towards-a-production-quality-open-source-git-lfs-server/)
+- [Towards a production quality open source Git LFS server](https://about.gitlab.com/blog/2015/08/13/towards-a-production-quality-open-source-git-lfs-server/)

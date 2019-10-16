@@ -151,6 +151,10 @@ description: 'Learn how to contribute to GitLab.'
 - [Frontend tracking guide](event_tracking/frontend.md)
 - [Backend tracking guide](event_tracking/backend.md)
 
+## Experiment Guide
+
+- [Introduction](experiment_guide/index.md)
+
 ## Build guides
 
 - [Building a package for testing purposes](build_test_package.md)

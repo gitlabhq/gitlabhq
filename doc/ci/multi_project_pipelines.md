@@ -5,7 +5,7 @@ type: reference
 # Multi-project pipelines **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/2121) in
-[GitLab Premium 9.3](https://about.gitlab.com/2017/06/22/gitlab-9-3-released/#multi-project-pipeline-graphs).
+[GitLab Premium 9.3](https://about.gitlab.com/blog/2017/06/22/gitlab-9-3-released/#multi-project-pipeline-graphs).
 
 When you set up [GitLab CI/CD](README.md) across multiple projects, you can visualize
 the entire pipeline, including all cross-project inter-dependencies.
@@ -24,7 +24,7 @@ and when hovering or tapping (on touchscreen devices) they will expand and be sh
 ![Multi-project mini graph](img/multi_pipeline_mini_graph.gif)
 
 Multi-project pipelines are useful for larger products that require cross-project inter-dependencies, such as those
-adopting a [microservices architecture](https://about.gitlab.com/2016/08/16/trends-in-version-control-land-microservices/).
+adopting a [microservices architecture](https://about.gitlab.com/blog/2016/08/16/trends-in-version-control-land-microservices/).
 
 For a demonstration of how cross-functional development teams can use cross-pipeline
 triggering to trigger multiple pipelines for different microservices projects, see

@@ -69,9 +69,7 @@ class ContainerRepository < ApplicationRecord
 
     digests = tags.map { |tag| tag.digest }.compact.to_set
 
-    digests.all? do |digest|
-      delete_tag_by_digest(digest)
-    end
+    digests.map(&method(:delete_tag_by_digest)).all?
   end
 
   def delete_tag_by_digest(digest)

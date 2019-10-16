@@ -981,4 +981,55 @@ describe Note do
       expect(note.parent).to be_nil
     end
   end
+
+  describe 'scopes' do
+    let_it_be(:note1) { create(:note, note: 'Test 345') }
+    let_it_be(:note2) { create(:note, note: 'Test 789') }
+
+    describe '#for_note_or_capitalized_note' do
+      it 'returns the expected matching note' do
+        notes = described_class.for_note_or_capitalized_note('Test 345')
+
+        expect(notes.count).to eq(1)
+        expect(notes.first.id).to eq(note1.id)
+      end
+
+      it 'returns the expected capitalized note' do
+        notes = described_class.for_note_or_capitalized_note('test 345')
+
+        expect(notes.count).to eq(1)
+        expect(notes.first.id).to eq(note1.id)
+      end
+
+      it 'does not support pattern matching' do
+        notes = described_class.for_note_or_capitalized_note('test%')
+
+        expect(notes.count).to eq(0)
+      end
+    end
+
+    describe '#like_note_or_capitalized_note' do
+      it 'returns the expected matching note' do
+        notes = described_class.like_note_or_capitalized_note('Test 345')
+
+        expect(notes.count).to eq(1)
+        expect(notes.first.id).to eq(note1.id)
+      end
+
+      it 'returns the expected capitalized note' do
+        notes = described_class.like_note_or_capitalized_note('test 345')
+
+        expect(notes.count).to eq(1)
+        expect(notes.first.id).to eq(note1.id)
+      end
+
+      it 'supports pattern matching' do
+        notes = described_class.like_note_or_capitalized_note('test%')
+
+        expect(notes.count).to eq(2)
+        expect(notes.first.id).to eq(note1.id)
+        expect(notes.second.id).to eq(note2.id)
+      end
+    end
+  end
 end

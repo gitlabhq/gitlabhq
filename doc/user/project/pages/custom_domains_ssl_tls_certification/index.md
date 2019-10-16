@@ -135,8 +135,8 @@ If you're using CloudFlare, check
 > - **Do not** add any special chars after the default Pages
   domain. E.g., don't point `subdomain.domain.com` to
   or `namespace.gitlab.io/`. Some domain hosting providers may request a trailling dot (`namespace.gitlab.io.`), though.
-> - GitLab Pages IP on GitLab.com [was changed](https://about.gitlab.com/2017/03/06/we-are-changing-the-ip-of-gitlab-pages-on-gitlab-com/) in 2017.
-> - GitLab Pages IP on GitLab.com [has changed](https://about.gitlab.com/2018/07/19/gcp-move-update/#gitlab-pages-and-custom-domains)
+> - GitLab Pages IP on GitLab.com [was changed](https://about.gitlab.com/blog/2017/03/06/we-are-changing-the-ip-of-gitlab-pages-on-gitlab-com/) in 2017.
+> - GitLab Pages IP on GitLab.com [has changed](https://about.gitlab.com/blog/2018/07/19/gcp-move-update/#gitlab-pages-and-custom-domains)
   from `52.167.214.135` to `35.185.44.232` in 2018.
 
 #### 4. Verify the domain's ownership
@@ -221,7 +221,7 @@ To secure your custom domain with GitLab Pages you can opt by:
   the part of the encryption keychain that identifies the CA.
   Usually it's combined with the PEM certificate, but there are
   some cases in which you need to add them manually.
-  [CloudFlare certs](https://about.gitlab.com/2017/02/07/setting-up-gitlab-pages-with-cloudflare-certificates/)
+  [CloudFlare certs](https://about.gitlab.com/blog/2017/02/07/setting-up-gitlab-pages-with-cloudflare-certificates/)
   are one of these cases.
 - **A private key**, it's an encrypted key which validates
   your PEM against your domain.
@@ -238,7 +238,7 @@ To secure your custom domain with GitLab Pages you can opt by:
 1. Add the PEM certificate to its corresponding field.
 1. If your certificate is missing its intermediate, copy
   and paste the root certificate (usually available from your CA website)
-  and paste it in the [same field as your PEM certificate](https://about.gitlab.com/2017/02/07/setting-up-gitlab-pages-with-cloudflare-certificates/),
+  and paste it in the [same field as your PEM certificate](https://about.gitlab.com/blog/2017/02/07/setting-up-gitlab-pages-with-cloudflare-certificates/),
   just jumping a line between them.
 1. Copy your private key and paste it in the last field.
 

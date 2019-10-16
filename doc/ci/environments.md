@@ -748,7 +748,7 @@ Re-using variables defined inside `script` as part of the environment name will 
 Below are some links you may find interesting:
 
 - [The `.gitlab-ci.yml` definition of environments](yaml/README.md#environment)
-- [A blog post on Deployments & Environments](https://about.gitlab.com/2016/08/26/ci-deployment-and-environments/)
+- [A blog post on Deployments & Environments](https://about.gitlab.com/blog/2016/08/26/ci-deployment-and-environments/)
 - [Review Apps - Use dynamic environments to deploy your code for every branch](review_apps/index.md)
 - [Deploy Boards for your applications running on Kubernetes](../user/project/deploy_boards.md) **(PREMIUM)**
 

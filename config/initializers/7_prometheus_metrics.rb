@@ -70,9 +70,18 @@ if defined?(::Unicorn) || defined?(::Puma)
     Gitlab::Metrics::Exporter::WebExporter.instance.start
   end
 
+  Gitlab::Cluster::LifecycleEvents.on_before_phased_restart do
+    # We need to ensure that before we re-exec server
+    # we do stop the exporter
+    Gitlab::Metrics::Exporter::WebExporter.instance.stop
+  end
+
   Gitlab::Cluster::LifecycleEvents.on_before_master_restart do
     # We need to ensure that before we re-exec server
     # we do stop the exporter
+    #
+    # We do it again, for being extra safe,
+    # but it should not be needed
     Gitlab::Metrics::Exporter::WebExporter.instance.stop
   end
 
@@ -81,7 +90,6 @@ if defined?(::Unicorn) || defined?(::Puma)
     # but this does not happen for Ruby fork
     #
     # This does stop server, as it is running on master.
-    # However, ensures that we close the TCPSocket.
     Gitlab::Metrics::Exporter::WebExporter.instance.stop
   end
 end

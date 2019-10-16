@@ -97,7 +97,7 @@ _Read on about [Projects for GitLab Pages and URL structure](getting_started_par
 
 ### Further reading
 
-- Read through this technical overview on [Static versus Dynamic Websites](https://about.gitlab.com/2016/06/03/ssg-overview-gitlab-pages-part-1-dynamic-x-static/)
-- Understand [how modern Static Site Generators work](https://about.gitlab.com/2016/06/10/ssg-overview-gitlab-pages-part-2/) and what you can add to your static site
-- You can use [any SSG with GitLab Pages](https://about.gitlab.com/2016/06/17/ssg-overview-gitlab-pages-part-3-examples-ci/)
+- Read through this technical overview on [Static versus Dynamic Websites](https://about.gitlab.com/blog/2016/06/03/ssg-overview-gitlab-pages-part-1-dynamic-x-static/)
+- Understand [how modern Static Site Generators work](https://about.gitlab.com/blog/2016/06/10/ssg-overview-gitlab-pages-part-2/) and what you can add to your static site
+- You can use [any SSG with GitLab Pages](https://about.gitlab.com/blog/2016/06/17/ssg-overview-gitlab-pages-part-3-examples-ci/)
 - Fork an [example project](https://gitlab.com/pages) to build your website based upon

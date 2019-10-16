@@ -108,12 +108,14 @@
     background: $white-light;
 
     &.image_file,
+    &.audio,
     &.video {
       background: $gray-darker;
       text-align: center;
       padding: 30px;
 
       img,
+      audio,
       video {
         max-width: 80%;
       }

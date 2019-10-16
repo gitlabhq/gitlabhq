@@ -8,7 +8,7 @@ Managing a large number of users in GitLab can become a burden for system admini
 
 In this guide we will focus on configuring GitLab with Active Directory. [Active Directory](https://en.wikipedia.org/wiki/Active_Directory) is a popular LDAP compatible directory service provided by Microsoft, included in all modern Windows Server operating systems.
 
-GitLab has supported LDAP integration since [version 2.2](https://about.gitlab.com/2012/02/22/gitlab-version-2-2/). With GitLab LDAP [group syncing](../how_to_configure_ldap_gitlab_ee/index.html#group-sync) being added to GitLab Enterprise Edition in [version 6.0](https://about.gitlab.com/2013/08/20/gitlab-6-dot-0-released/). LDAP integration has become one of the most popular features in GitLab.
+GitLab has supported LDAP integration since [version 2.2](https://about.gitlab.com/blog/2012/02/22/gitlab-version-2-2/). With GitLab LDAP [group syncing](../how_to_configure_ldap_gitlab_ee/index.html#group-sync) being added to GitLab Enterprise Edition in [version 6.0](https://about.gitlab.com/blog/2013/08/20/gitlab-6-dot-0-released/). LDAP integration has become one of the most popular features in GitLab.
 
 ## Getting started
 

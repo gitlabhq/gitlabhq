@@ -66,5 +66,5 @@ can easily notice them.
 [ee-1659]: https://gitlab.com/gitlab-org/gitlab/issues/1659
 [kube-canary]: https://kubernetes.io/docs/concepts/cluster-administration/manage-deployment/#canary-deployments
 [deploy board]: deploy_boards.md
-[cd-blog]: https://about.gitlab.com/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/
+[cd-blog]: https://about.gitlab.com/blog/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/
 [kube-net]: https://kubernetes.io/docs/concepts/services-networking/service/#virtual-ips-and-service-proxies

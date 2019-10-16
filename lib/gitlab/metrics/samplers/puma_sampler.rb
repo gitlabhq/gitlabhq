@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'puma/state_file'
-
 module Gitlab
   module Metrics
     module Samplers

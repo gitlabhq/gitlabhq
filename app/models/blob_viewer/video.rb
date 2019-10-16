@@ -8,7 +8,5 @@ module BlobViewer
     self.partial_name = 'video'
     self.extensions = UploaderHelper::SAFE_VIDEO_EXT
     self.binary = true
-    self.switcher_icon = 'film'
-    self.switcher_title = 'video'
   end
 end

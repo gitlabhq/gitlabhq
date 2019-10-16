@@ -385,9 +385,9 @@ High Performance TCP/HTTP Load Balancer:
 - [`gitlab-cookbooks` / `gitlab-haproxy` · GitLab](https://gitlab.com/gitlab-cookbooks/gitlab-haproxy)
 
 [autoscale mode]: https://docs.gitlab.com/runner/configuration/autoscale.html "How Autoscale works"
-[runners-post]: https://about.gitlab.com/2016/04/05/shared-runners/ "Shared Runners on GitLab.com"
+[runners-post]: https://about.gitlab.com/blog/2016/04/05/shared-runners/ "Shared Runners on GitLab.com"
 [GitLab Runner]: https://gitlab.com/gitlab-org/gitlab-runner
-[altssh]: https://about.gitlab.com/2016/02/18/gitlab-dot-com-now-supports-an-alternate-git-plus-ssh-port/ "GitLab.com now supports an alternate git+ssh port"
+[altssh]: https://about.gitlab.com/blog/2016/02/18/gitlab-dot-com-now-supports-an-alternate-git-plus-ssh-port/ "GitLab.com now supports an alternate git+ssh port"
 [docker in docker]: https://hub.docker.com/_/docker/ "Docker in Docker at DockerHub"
 [mailgun]: https://www.mailgun.com/ "Mailgun website"
 [unicorn-worker-killer]: https://rubygems.org/gems/unicorn-worker-killer "unicorn-worker-killer"

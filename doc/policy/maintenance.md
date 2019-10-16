@@ -47,7 +47,7 @@ medium-level security issues, we may backport security fixes to the previous two
 monthly releases.
 
 For very serious security issues, there is
-[precedent](https://about.gitlab.com/2016/05/02/cve-2016-4340-patches/)
+[precedent](https://about.gitlab.com/blog/2016/05/02/cve-2016-4340-patches/)
 to backport security fixes to even more monthly releases of GitLab.
 This decision is made on a case-by-case basis.
 

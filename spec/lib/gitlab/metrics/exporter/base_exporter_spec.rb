@@ -19,15 +19,11 @@ describe Gitlab::Metrics::Exporter::BaseExporter do
         BindAddress: anything,
         Logger: anything,
         AccessLog: anything
-      ).and_wrap_original do |m, *args|
-        m.call(DoNotListen: true, Logger: args.first[:Logger])
-      end
-
-      allow_any_instance_of(::WEBrick::HTTPServer).to receive(:start)
+      ).and_call_original
 
       allow(settings).to receive(:enabled).and_return(true)
-      allow(settings).to receive(:port).and_return(8082)
-      allow(settings).to receive(:address).and_return('localhost')
+      allow(settings).to receive(:port).and_return(0)
+      allow(settings).to receive(:address).and_return('127.0.0.1')
     end
 
     after do
@@ -61,6 +57,8 @@ describe Gitlab::Metrics::Exporter::BaseExporter do
               m.call(DoNotListen: true, Logger: args.first[:Logger])
             end
 
+            allow_any_instance_of(::WEBrick::HTTPServer).to receive(:start)
+
             exporter.start.join
           end
         end
@@ -89,14 +87,14 @@ describe Gitlab::Metrics::Exporter::BaseExporter do
 
     describe 'when exporter is running' do
       before do
-        exporter.start.join
+        exporter.start
       end
 
       describe '#start' do
         it "doesn't start running server" do
           expect_any_instance_of(::WEBrick::HTTPServer).not_to receive(:start)
 
-          expect { exporter.start.join }.not_to change { exporter.thread? }
+          expect { exporter.start }.not_to change { exporter.thread? }
         end
       end
 
