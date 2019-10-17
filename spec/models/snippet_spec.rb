@@ -133,6 +133,32 @@ describe Snippet do
     end
   end
 
+  describe 'when default snippet visibility set to internal' do
+    using RSpec::Parameterized::TableSyntax
+
+    before do
+      stub_application_setting(default_snippet_visibility: Gitlab::VisibilityLevel::INTERNAL)
+    end
+
+    where(:attribute_name, :value) do
+      :visibility | 'private'
+      :visibility_level | Gitlab::VisibilityLevel::PRIVATE
+      'visibility' | 'private'
+      'visibility_level' | Gitlab::VisibilityLevel::PRIVATE
+    end
+
+    with_them do
+      it 'sets the visibility level' do
+        snippet = described_class.new(attribute_name => value, title: 'test', file_name: 'test.rb', content: 'test data')
+
+        expect(snippet.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE)
+        expect(snippet.title).to eq('test')
+        expect(snippet.file_name).to eq('test.rb')
+        expect(snippet.content).to eq('test data')
+      end
+    end
+  end
+
   describe '.with_optional_visibility' do
     context 'when a visibility level is provided' do
       it 'returns snippets with the given visibility' do

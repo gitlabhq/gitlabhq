@@ -66,6 +66,19 @@ describe 'Projects > Settings > Repository settings' do
         expect(page).to have_content('Write access allowed')
       end
 
+      it 'edit an existing public deploy key to be writable' do
+        project.deploy_keys << public_deploy_key
+        visit project_settings_repository_path(project)
+
+        find('.deploy-key', text: public_deploy_key.title).find('.ic-pencil').click
+
+        check 'deploy_key_deploy_keys_projects_attributes_0_can_push'
+        click_button 'Save changes'
+
+        expect(page).to have_content('public_deploy_key')
+        expect(page).to have_content('Write access allowed')
+      end
+
       it 'edit a deploy key from projects user has access to' do
         project2 = create(:project_empty_repo)
         project2.add_role(user, role)

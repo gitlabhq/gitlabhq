@@ -33,8 +33,6 @@ class Snippet < ApplicationRecord
     default_content_html_invalidator || file_name_changed?
   end
 
-  default_value_for(:visibility_level) { Gitlab::CurrentSettings.default_snippet_visibility }
-
   belongs_to :author, class_name: 'User'
   belongs_to :project
 
@@ -137,6 +135,24 @@ class Snippet < ApplicationRecord
 
   def self.link_reference_pattern
     @link_reference_pattern ||= super("snippets", /(?<snippet>\d+)/)
+  end
+
+  def initialize(attributes = {})
+    # We can't use default_value_for because the database has a default
+    # value of 0 for visibility_level. If someone attempts to create a
+    # private snippet, default_value_for will assume that the
+    # visibility_level hasn't changed and will use the application
+    # setting default, which could be internal or public.
+    #
+    # To fix the problem, we assign the actual snippet default if no
+    # explicit visibility has been initialized.
+    attributes ||= {}
+
+    unless visibility_attribute_present?(attributes)
+      attributes[:visibility_level] = Gitlab::CurrentSettings.default_snippet_visibility
+    end
+
+    super
   end
 
   def to_reference(from = nil, full: false)

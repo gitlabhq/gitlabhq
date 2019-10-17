@@ -1,9 +1,9 @@
-/* eslint-disable func-names, no-var, no-return-assign, vars-on-top */
+/* eslint-disable func-names, no-var, no-return-assign */
 
 import $ from 'jquery';
 import Cookies from 'js-cookie';
 import { __ } from '~/locale';
-import { visitUrl, mergeUrlParams } from '~/lib/utils/url_utility';
+import { mergeUrlParams } from '~/lib/utils/url_utility';
 import { serializeForm } from '~/lib/utils/forms';
 import axios from '~/lib/utils/axios_utils';
 import flash from '~/flash';
@@ -105,6 +105,10 @@ export default class Project {
       var selected = $dropdown.data('selected');
       var fieldName = $dropdown.data('fieldName');
       var shouldVisit = Boolean($dropdown.data('visit'));
+      var $form = $dropdown.closest('form');
+      var action = $form.attr('action');
+      var linkTarget = mergeUrlParams(serializeForm($form[0]), action);
+
       return $dropdown.glDropdown({
         data(term, callback) {
           axios
@@ -126,21 +130,18 @@ export default class Project {
         renderRow(ref) {
           var li = refListItem.cloneNode(false);
 
-          if (ref.header != null) {
-            li.className = 'dropdown-header';
-            li.textContent = ref.header;
-          } else {
-            var link = refLink.cloneNode(false);
+          var link = refLink.cloneNode(false);
 
-            if (ref === selected) {
-              link.className = 'is-active';
-            }
-
-            link.textContent = ref;
-            link.dataset.ref = ref;
-
-            li.appendChild(link);
+          if (ref === selected) {
+            link.className = 'is-active';
           }
+          link.textContent = ref;
+          link.dataset.ref = ref;
+          if (ref.length > 0 && shouldVisit) {
+            link.href = mergeUrlParams({ [fieldName]: ref }, linkTarget);
+          }
+
+          li.appendChild(link);
 
           return li;
         },
@@ -152,15 +153,11 @@ export default class Project {
         },
         clicked(options) {
           const { e } = options;
-          e.preventDefault();
-          if ($(`input[name="${fieldName}"]`).length) {
-            var $form = $dropdown.closest('form');
-            var action = $form.attr('action');
-
-            if (shouldVisit) {
-              visitUrl(mergeUrlParams(serializeForm($form[0]), action));
-            }
+          if (!shouldVisit) {
+            e.preventDefault();
           }
+          /* The actual process is removed since `link.href` in `RenderRow` contains the full target.
+           * It makes the visitable link can be visited when opening on a new tab of browser */
         },
       });
     });

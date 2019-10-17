@@ -2376,19 +2376,13 @@ msgstr ""
 msgid "Billing"
 msgstr ""
 
-msgid "BillingPlans|%{group_name} is currently using the %{plan_link} plan."
+msgid "BillingPlans|%{group_name} is currently using the %{plan_name} plan."
 msgstr ""
 
-msgid "BillingPlans|@%{user_name} you are currently using the %{plan_link} plan."
+msgid "BillingPlans|@%{user_name} you are currently using the %{plan_name} plan."
 msgstr ""
 
 msgid "BillingPlans|Congratulations, your new trial is activated"
-msgstr ""
-
-msgid "BillingPlans|Current plan"
-msgstr ""
-
-msgid "BillingPlans|Downgrade"
 msgstr ""
 
 msgid "BillingPlans|If you would like to downgrade your plan please contact %{support_link_start}Customer Support%{support_link_end}."
@@ -2415,13 +2409,13 @@ msgstr ""
 msgid "BillingPlans|To manage the plan for this group, visit the billing section of %{parent_billing_page_link}."
 msgstr ""
 
-msgid "BillingPlans|Upgrade"
-msgstr ""
-
 msgid "BillingPlans|Your GitLab.com trial expired on %{expiration_date}. %{learn_more_text}"
 msgstr ""
 
 msgid "BillingPlans|Your GitLab.com trial will <strong>expire after %{expiration_date}</strong>. You can learn more about GitLab.com Gold by reading about our %{features_link}."
+msgstr ""
+
+msgid "BillingPlans|billed annually at %{price_per_year}"
 msgstr ""
 
 msgid "BillingPlans|features"
@@ -2433,13 +2427,10 @@ msgstr ""
 msgid "BillingPlans|monthly"
 msgstr ""
 
-msgid "BillingPlans|paid annually at %{price_per_year}"
-msgstr ""
-
 msgid "BillingPlans|per user"
 msgstr ""
 
-msgid "BillingPlan|Upgrade plan"
+msgid "BillingPlan|Upgrade"
 msgstr ""
 
 msgid "Bitbucket Server Import"
@@ -4796,6 +4787,9 @@ msgid "Cron syntax"
 msgstr ""
 
 msgid "Current Branch"
+msgstr ""
+
+msgid "Current Plan"
 msgstr ""
 
 msgid "Current Project"

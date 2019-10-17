@@ -115,14 +115,20 @@ module API
       put ":id/deploy_keys/:key_id" do
         deploy_keys_project = find_by_deploy_key(user_project, params[:key_id])
 
-        authorize!(:update_deploy_key, deploy_keys_project.deploy_key)
+        if !can?(current_user, :update_deploy_key, deploy_keys_project.deploy_key) &&
+            !can?(current_user, :update_deploy_keys_project, deploy_keys_project)
+          forbidden!(nil)
+        end
 
-        can_push = params[:can_push].nil? ? deploy_keys_project.can_push : params[:can_push]
-        title = params[:title] || deploy_keys_project.deploy_key.title
+        update_params = {}
+        update_params[:can_push] = params[:can_push] if params.key?(:can_push)
+        update_params[:deploy_key_attributes] = { id: params[:key_id] }
 
-        result = deploy_keys_project.update(can_push: can_push,
-                                            deploy_key_attributes: { id: params[:key_id],
-                                                                     title: title })
+        if can?(current_user, :update_deploy_key, deploy_keys_project.deploy_key)
+          update_params[:deploy_key_attributes][:title] = params[:title] if params.key?(:title)
+        end
+
+        result = deploy_keys_project.update(update_params)
 
         if result
           present deploy_keys_project, with: Entities::DeployKeysProject

@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe API::DeployKeys do
   let(:user)        { create(:user) }
+  let(:maintainer)  { create(:user) }
   let(:admin)       { create(:admin) }
   let(:project)     { create(:project, creator_id: user.id) }
   let(:project2)    { create(:project, creator_id: user.id) }
@@ -124,45 +125,109 @@ describe API::DeployKeys do
   end
 
   describe 'PUT /projects/:id/deploy_keys/:key_id' do
-    let(:private_deploy_key) { create(:another_deploy_key, public: false) }
-    let(:project_private_deploy_key) do
-      create(:deploy_keys_project, project: project, deploy_key: private_deploy_key)
+    let(:extra_params) { {} }
+
+    subject do
+      put api("/projects/#{project.id}/deploy_keys/#{deploy_key.id}", api_user), params: extra_params
     end
 
-    it 'updates a public deploy key as admin' do
-      expect do
-        put api("/projects/#{project.id}/deploy_keys/#{deploy_key.id}", admin), params: { title: 'new title' }
-      end.not_to change(deploy_key, :title)
+    context 'with non-admin' do
+      let(:api_user) { user }
 
-      expect(response).to have_gitlab_http_status(200)
+      it 'does not update a public deploy key' do
+        expect { subject }.not_to change(deploy_key, :title)
+
+        expect(response).to have_gitlab_http_status(404)
+      end
     end
 
-    it 'does not update a public deploy key as non admin' do
-      expect do
-        put api("/projects/#{project.id}/deploy_keys/#{deploy_key.id}", user), params: { title: 'new title' }
-      end.not_to change(deploy_key, :title)
+    context 'with admin' do
+      let(:api_user) { admin }
 
-      expect(response).to have_gitlab_http_status(404)
+      context 'public deploy key attached to project' do
+        let(:extra_params) { { title: 'new title', can_push: true } }
+
+        it 'updates the title of the deploy key' do
+          expect { subject }.to change { deploy_key.reload.title }.to 'new title'
+          expect(response).to have_gitlab_http_status(200)
+        end
+
+        it 'updates can_push of deploy_keys_project' do
+          expect { subject }.to change { deploy_keys_project.reload.can_push }.from(false).to(true)
+          expect(response).to have_gitlab_http_status(200)
+        end
+      end
+
+      context 'private deploy key' do
+        let(:deploy_key) { create(:another_deploy_key, public: false) }
+        let(:deploy_keys_project) do
+          create(:deploy_keys_project, project: project, deploy_key: deploy_key)
+        end
+        let(:extra_params) { { title: 'new title', can_push: true } }
+
+        it 'updates the title of the deploy key' do
+          expect { subject }.to change { deploy_key.reload.title }.to 'new title'
+          expect(response).to have_gitlab_http_status(200)
+        end
+
+        it 'updates can_push of deploy_keys_project' do
+          expect { subject }.to change { deploy_keys_project.reload.can_push }.from(false).to(true)
+          expect(response).to have_gitlab_http_status(200)
+        end
+
+        context 'invalid title' do
+          let(:extra_params) { { title: '' } }
+
+          it 'does not update the title of the deploy key' do
+            expect { subject }.not_to change { deploy_key.reload.title }
+            expect(response).to have_gitlab_http_status(400)
+          end
+        end
+      end
     end
 
-    it 'does not update a private key with invalid title' do
-      project_private_deploy_key
+    context 'with admin as project maintainer' do
+      let(:api_user) { admin }
 
-      expect do
-        put api("/projects/#{project.id}/deploy_keys/#{private_deploy_key.id}", admin), params: { title: '' }
-      end.not_to change(deploy_key, :title)
+      before do
+        project.add_maintainer(admin)
+      end
 
-      expect(response).to have_gitlab_http_status(400)
+      context 'public deploy key attached to project' do
+        let(:extra_params) { { title: 'new title', can_push: true } }
+
+        it 'updates the title of the deploy key' do
+          expect { subject }.to change { deploy_key.reload.title }.to 'new title'
+          expect(response).to have_gitlab_http_status(200)
+        end
+
+        it 'updates can_push of deploy_keys_project' do
+          expect { subject }.to change { deploy_keys_project.reload.can_push }.from(false).to(true)
+          expect(response).to have_gitlab_http_status(200)
+        end
+      end
     end
 
-    it 'updates a private ssh key with correct attributes' do
-      project_private_deploy_key
+    context 'with maintainer' do
+      let(:api_user) { maintainer }
 
-      put api("/projects/#{project.id}/deploy_keys/#{private_deploy_key.id}", admin), params: { title: 'new title', can_push: true }
+      before do
+        project.add_maintainer(maintainer)
+      end
 
-      expect(json_response['id']).to eq(private_deploy_key.id)
-      expect(json_response['title']).to eq('new title')
-      expect(json_response['can_push']).to eq(true)
+      context 'public deploy key attached to project' do
+        let(:extra_params) { { title: 'new title', can_push: true } }
+
+        it 'does not update the title of the deploy key' do
+          expect { subject }.not_to change { deploy_key.reload.title }
+          expect(response).to have_gitlab_http_status(200)
+        end
+
+        it 'updates can_push of deploy_keys_project' do
+          expect { subject }.to change { deploy_keys_project.reload.can_push }.from(false).to(true)
+          expect(response).to have_gitlab_http_status(200)
+        end
+      end
     end
   end
 

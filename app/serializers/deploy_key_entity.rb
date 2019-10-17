@@ -20,6 +20,7 @@ class DeployKeyEntity < Grape::Entity
   private
 
   def can_edit
-    Ability.allowed?(options[:user], :update_deploy_key, object)
+    Ability.allowed?(options[:user], :update_deploy_key, object) ||
+      Ability.allowed?(options[:user], :update_deploy_keys_project, object.deploy_keys_project_for(options[:project]))
   end
 end
