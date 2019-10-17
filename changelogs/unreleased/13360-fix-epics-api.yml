@@ -1,0 +1,5 @@
+---
+title: Fix creating epics with dates from api
+merge_request: 18393
+author:
+type: fixed

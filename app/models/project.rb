@@ -1036,8 +1036,8 @@ class Project < ApplicationRecord
     end
   end
 
-  def web_url
-    Gitlab::Routing.url_helpers.project_url(self)
+  def web_url(only_path: nil)
+    Gitlab::Routing.url_helpers.project_url(self, only_path: only_path)
   end
 
   def readme_url
@@ -1316,7 +1316,18 @@ class Project < ApplicationRecord
   end
 
   def http_url_to_repo
-    "#{web_url}.git"
+    custom_root = Gitlab::CurrentSettings.custom_http_clone_url_root
+
+    project_url = if custom_root.present?
+                    Gitlab::Utils.append_path(
+                      custom_root,
+                      web_url(only_path: true)
+                    )
+                  else
+                    web_url
+                  end
+
+    "#{project_url}.git"
   end
 
   # Is overridden in EE

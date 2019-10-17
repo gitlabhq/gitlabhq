@@ -291,7 +291,8 @@ module ApplicationSettingsHelper
       :snowplow_enabled,
       :snowplow_site_id,
       :push_event_hooks_limit,
-      :push_event_activities_limit
+      :push_event_activities_limit,
+      :custom_http_clone_url_root
     ]
   end
 

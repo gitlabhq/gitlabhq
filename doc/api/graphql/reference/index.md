@@ -435,8 +435,13 @@ The API can be explored interactively using the [GraphiQL IDE](../index.md#graph
 | `webUrl` | String |  |
 | `upvotes` | Int! |  |
 | `downvotes` | Int! |  |
-| `subscribed` | Boolean! |  |
 | `headPipeline` | Pipeline |  |
+| `milestone` | Milestone | The milestone this merge request is linked to |
+| `subscribed` | Boolean! | Boolean flag for whether the currently logged in user is subscribed to this MR |
+| `discussionLocked` | Boolean! | Boolean flag determining if comments on the merge request are locked to members only |
+| `timeEstimate` | Int! | The time estimate for the merge request |
+| `totalTimeSpent` | Int! | Total time reported as spent on the merge request |
+| `reference` | String! | Internal merge request reference. Returned in shortened format by default |
 | `taskCompletionStatus` | TaskCompletionStatus! |  |
 
 ### MergeRequestPermissions

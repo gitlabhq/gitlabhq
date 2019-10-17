@@ -54,7 +54,7 @@ class ProjectWiki
   end
 
   def http_url_to_repo
-    "#{Gitlab.config.gitlab.url}/#{full_path}.git"
+    @project.http_url_to_repo.sub(%r{git\z}, 'wiki.git')
   end
 
   def wiki_base_path

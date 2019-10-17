@@ -59,3 +59,9 @@
     %span.js-details-content.hide
       = link_to @pipeline.sha, project_commit_path(@project, @pipeline.sha), class: "commit-sha commit-hash-full"
     = clipboard_button(text: @pipeline.sha, title: _("Copy commit SHA"))
+
+  .well-segment.related-merge-request-info
+    .icon-container
+      = sprite_icon("git-merge")
+    %span.related-merge-requests
+      = @pipeline.all_related_merge_request_text

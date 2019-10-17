@@ -128,7 +128,8 @@ module ApplicationSettingImplementation
         snowplow_collector_hostname: nil,
         snowplow_cookie_domain: nil,
         snowplow_enabled: false,
-        snowplow_site_id: nil
+        snowplow_site_id: nil,
+        custom_http_clone_url_root: nil
       }
     end
 

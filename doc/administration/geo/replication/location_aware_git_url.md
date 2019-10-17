@@ -95,13 +95,12 @@ on the external URL of the current host. For example:
 
 ![Clone panel](img/single_git_clone_panel.png)
 
-However, you can customize the SSH remote URL to use the location-aware
+You can customize the SSH remote URL to use the location-aware
 `git.example.com`. To do so, change the SSH remote URL's host by setting
 `gitlab_rails['gitlab_ssh_host']` in `gitlab.rb` of web nodes.
 
-Unfortunately the means to specify a custom HTTP clone URL is not yet
-implemented. The feature request can be found at
-[Customizable Git HTTP clone root URL](https://gitlab.com/gitlab-org/gitlab/issues/31949).
+You can customize the HTTP remote URL as shown in
+[Custom Git clone URL for HTTP(S)](../../../user/admin_area/settings/visibility_and_access_controls.md#custom-git-clone-url-for-https).
 
 ## Example Git request handling behavior
 

@@ -4828,6 +4828,9 @@ msgstr ""
 msgid "Custom CI configuration path"
 msgstr ""
 
+msgid "Custom Git clone URL for HTTP(S)"
+msgstr ""
+
 msgid "Custom hostname (for private commit emails)"
 msgstr ""
 
@@ -13736,6 +13739,9 @@ msgid "Replace all label(s)"
 msgstr ""
 
 msgid "Replaced all labels with %{label_references} %{label_text}."
+msgstr ""
+
+msgid "Replaces the clone URL root."
 msgstr ""
 
 msgid "Reply by email"

@@ -1,0 +1,5 @@
+---
+title: Extend graphql query endpoint for merge requests to return more attributes to support sidebar implementation
+merge_request: 17813
+author:
+type: other

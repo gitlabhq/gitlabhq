@@ -340,6 +340,7 @@ ActiveRecord::Schema.define(version: 2019_10_16_220135) do
     t.integer "throttle_incident_management_notification_per_period", default: 3600
     t.integer "push_event_hooks_limit", default: 3, null: false
     t.integer "push_event_activities_limit", default: 3, null: false
+    t.string "custom_http_clone_url_root", limit: 511
     t.index ["custom_project_templates_group_id"], name: "index_application_settings_on_custom_project_templates_group_id"
     t.index ["file_template_project_id"], name: "index_application_settings_on_file_template_project_id"
     t.index ["instance_administration_project_id"], name: "index_applicationsettings_on_instance_administration_project_id"
