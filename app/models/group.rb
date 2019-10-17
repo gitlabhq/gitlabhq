@@ -473,6 +473,12 @@ class Group < Namespace
 
     errors.add(:visibility_level, "#{visibility} is not allowed since there are sub-groups with higher visibility.")
   end
+
+  def self.groups_including_descendants_by(group_ids)
+    Gitlab::ObjectHierarchy
+      .new(Group.where(id: group_ids))
+      .base_and_descendants
+  end
 end
 
 Group.prepend_if_ee('EE::Group')

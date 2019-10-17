@@ -710,6 +710,20 @@ The API can be explored interactively using the [GraphiQL IDE](../index.md#graph
 | `count` | Int! |  |
 | `completedCount` | Int! |  |
 
+### Todo
+
+| Name  | Type  | Description |
+| ---   |  ---- | ----------  |
+| `id` | ID! | Id of the todo |
+| `project` | Project | The project this todo is associated with |
+| `group` | Group | Group this todo is associated with |
+| `author` | User! | The owner of this todo |
+| `action` | TodoActionEnum! | Action of the todo |
+| `targetType` | TodoTargetEnum! | Target type of the todo |
+| `body` | String! | Body of the todo |
+| `state` | TodoStateEnum! | State of the todo |
+| `createdAt` | Time! | Timestamp this todo was created |
+
 ### ToggleAwardEmojiPayload
 
 | Name  | Type  | Description |
@@ -735,6 +749,14 @@ The API can be explored interactively using the [GraphiQL IDE](../index.md#graph
 | `path` | String! |  |
 | `flatPath` | String! |  |
 | `webUrl` | String |  |
+
+### UpdateEpicPayload
+
+| Name  | Type  | Description |
+| ---   |  ---- | ----------  |
+| `clientMutationId` | String | A unique identifier for the client performing the mutation. |
+| `errors` | String! => Array | Reasons why the mutation failed. |
+| `epic` | Epic | The epic after mutation |
 
 ### UpdateNotePayload
 

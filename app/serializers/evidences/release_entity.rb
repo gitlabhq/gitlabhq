@@ -7,7 +7,7 @@ module Evidences
     expose :name
     expose :description
     expose :created_at
-    expose :project, using: ProjectEntity
-    expose :milestones, using: MilestoneEntity
+    expose :project, using: Evidences::ProjectEntity
+    expose :milestones, using: Evidences::MilestoneEntity
   end
 end

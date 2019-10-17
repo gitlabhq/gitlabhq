@@ -1,0 +1,31 @@
+{
+  "description": "Build trace",
+  "type": "object",
+  "required": [
+    "id",
+    "status",
+    "complete",
+    "state",
+    "append",
+    "truncated",
+    "offset",
+    "size",
+    "total"
+  ],
+  "properties": {
+    "id": { "type": "integer" },
+    "status": { "type": "string" },
+    "complete": { "type": "boolean" },
+    "state": { "type": ["string", "null"] },
+    "append": { "type": ["boolean", "null"] },
+    "truncated": { "type": ["boolean", "null"] },
+    "offset": { "type": ["integer", "null"] },
+    "size": { "type": ["integer", "null"] },
+    "total": { "type": ["integer", "null"] },
+    "html": { "type": ["string", "null"] },
+    "lines": {
+      "type": ["array", "null"],
+      "items": { "$ref": "./build_trace_line.json" }
+    }
+  }
+}

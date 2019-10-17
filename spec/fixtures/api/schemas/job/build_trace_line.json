@@ -1,0 +1,18 @@
+{
+  "description": "Build trace line",
+  "type": "object",
+  "required": [
+    "offset",
+    "content"
+  ],
+  "properties": {
+    "offset": { "type": "integer" },
+    "content": {
+      "type": "array",
+      "items": { "$ref": "./build_trace_line_content.json" }
+    },
+    "section": "string",
+    "section_header": "boolean",
+    "section_duration": "string"
+  }
+}

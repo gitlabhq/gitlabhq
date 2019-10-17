@@ -298,18 +298,6 @@ module Gitlab
         Gitlab::SafeRequestStore[key] = commit
       end
 
-      # rubocop: disable CodeReuse/ActiveRecord
-      def patch(revision)
-        request = Gitaly::CommitPatchRequest.new(
-          repository: @gitaly_repo,
-          revision: encode_binary(revision)
-        )
-        response = GitalyClient.call(@repository.storage, :diff_service, :commit_patch, request, timeout: GitalyClient.medium_timeout)
-
-        response.sum(&:data)
-      end
-      # rubocop: enable CodeReuse/ActiveRecord
-
       def commit_stats(revision)
         request = Gitaly::CommitStatsRequest.new(
           repository: @gitaly_repo,

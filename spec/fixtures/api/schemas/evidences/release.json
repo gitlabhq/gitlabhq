@@ -2,7 +2,7 @@
   "type": "object",
   "required": [
     "id",
-    "tag",
+    "tag_name",
     "name",
     "description",
     "created_at",
@@ -11,8 +11,8 @@
   ],
   "properties": {
     "id": { "type": "integer" },
-    "tag": { "type": "string" },
-    "name": { "type": "string" },
+    "tag_name": { "type": "string" },
+    "name": { "type": ["string", "null"] },
     "description": { "type": "string" },
     "created_at": { "type": "date" },
     "project": { "$ref": "project.json" },

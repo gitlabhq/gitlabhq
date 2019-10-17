@@ -14,6 +14,7 @@ class Release < ApplicationRecord
 
   has_many :milestone_releases
   has_many :milestones, through: :milestone_releases
+  has_one :evidence
 
   default_value_for :released_at, allows_nil: false do
     Time.zone.now
@@ -27,6 +28,8 @@ class Release < ApplicationRecord
   scope :sorted, -> { order(released_at: :desc) }
 
   delegate :repository, to: :project
+
+  after_commit :create_evidence!, on: :create
 
   def commit
     strong_memoize(:commit) do
@@ -65,6 +68,10 @@ class Release < ApplicationRecord
     strong_memoize(:actual_tag) do
       repository.find_tag(tag)
     end
+  end
+
+  def create_evidence!
+    CreateEvidenceWorker.perform_async(self.id)
   end
 end
 

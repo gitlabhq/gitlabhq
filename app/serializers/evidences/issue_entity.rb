@@ -5,7 +5,6 @@ module Evidences
     expose :id
     expose :title
     expose :description
-    expose :author, using: AuthorEntity
     expose :state
     expose :iid
     expose :confidential

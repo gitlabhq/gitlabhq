@@ -37,6 +37,8 @@ module Gitlab
 
           flush_current_line
 
+          # TODO: replace OpenStruct with a better type
+          # https://gitlab.com/gitlab-org/gitlab/issues/34305
           OpenStruct.new(
             lines: @lines,
             state: @state.encode,

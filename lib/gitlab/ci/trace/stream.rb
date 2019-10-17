@@ -63,10 +63,6 @@ module Gitlab
           end.force_encoding(Encoding.default_external)
         end
 
-        def html_with_state(state = nil)
-          ::Gitlab::Ci::Ansi2html.convert(stream, state)
-        end
-
         def html(last_lines: nil)
           text = raw(last_lines: last_lines)
           buffer = StringIO.new(text)

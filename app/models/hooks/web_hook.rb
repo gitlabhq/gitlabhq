@@ -13,7 +13,7 @@ class WebHook < ApplicationRecord
                  algorithm: 'aes-256-gcm',
                  key:       Settings.attr_encrypted_db_key_base_32
 
-  has_many :web_hook_logs, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_many :web_hook_logs
 
   validates :url, presence: true
   validates :url, public_url: true, unless: ->(hook) { hook.is_a?(SystemHook) }

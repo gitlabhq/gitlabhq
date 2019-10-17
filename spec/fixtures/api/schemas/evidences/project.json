@@ -9,7 +9,7 @@
   "properties": {
     "id": { "type": "integer" },
     "name": { "type": "string" },
-    "description": { "type": "string" },
+    "description": { "type": ["string", "null"] },
     "created_at": { "type": "date" }
   },
   "additionalProperties": false

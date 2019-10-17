@@ -6,7 +6,7 @@ describe WebHook do
   let(:hook) { build(:project_hook) }
 
   describe 'associations' do
-    it { is_expected.to have_many(:web_hook_logs).dependent(:destroy) }
+    it { is_expected.to have_many(:web_hook_logs) }
   end
 
   describe 'validations' do
@@ -83,6 +83,15 @@ describe WebHook do
       expect_any_instance_of(WebHookService).to receive(:async_execute)
 
       hook.async_execute(data, hook_name)
+    end
+  end
+
+  describe '#destroy' do
+    it 'cascades to web_hook_logs' do
+      web_hook = create(:project_hook)
+      create_list(:web_hook_log, 3, web_hook: web_hook)
+
+      expect { web_hook.destroy }.to change(web_hook.web_hook_logs, :count).by(-3)
     end
   end
 end

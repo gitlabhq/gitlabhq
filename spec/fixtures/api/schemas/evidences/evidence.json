@@ -1,0 +1,11 @@
+{
+  "type": "object",
+  "required": [
+    "release"
+  ],
+  "properties": {
+    "release": { "$ref": "release.json" }
+  },
+  "additionalProperties": false
+}
+

@@ -12,7 +12,7 @@ describe Evidences::MilestoneEntity do
     expect(subject.keys).to contain_exactly(:id, :title, :description, :state, :iid, :created_at, :due_date, :issues)
   end
 
-  context 'when there issues linked to this milestone' do
+  context 'when there are issues linked to this milestone' do
     let(:issue_1) { build(:issue) }
     let(:issue_2) { build(:issue) }
     let(:milestone) { build(:milestone, issues: [issue_1, issue_2]) }

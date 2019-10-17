@@ -9,6 +9,6 @@ module Evidences
     expose :iid
     expose :created_at
     expose :due_date
-    expose :issues, using: IssueEntity
+    expose :issues, using: Evidences::IssueEntity
   end
 end

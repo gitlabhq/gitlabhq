@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_10_16_072826) do
+ActiveRecord::Schema.define(version: 2019_10_16_220135) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -1424,6 +1424,15 @@ ActiveRecord::Schema.define(version: 2019_10_16_072826) do
     t.index ["target_type", "target_id"], name: "index_events_on_target_type_and_target_id"
   end
 
+  create_table "evidences", force: :cascade do |t|
+    t.bigint "release_id", null: false
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+    t.binary "summary_sha"
+    t.jsonb "summary", default: {}, null: false
+    t.index ["release_id"], name: "index_evidences_on_release_id"
+  end
+
   create_table "external_pull_requests", force: :cascade do |t|
     t.datetime_with_timezone "created_at", null: false
     t.datetime_with_timezone "updated_at", null: false
@@ -1934,6 +1943,15 @@ ActiveRecord::Schema.define(version: 2019_10_16_072826) do
     t.datetime_with_timezone "updated_at", null: false
     t.index ["issue_id", "prometheus_alert_event_id"], name: "issue_id_prometheus_alert_event_id_index", unique: true
     t.index ["prometheus_alert_event_id"], name: "issue_id_issues_prometheus_alert_events_index"
+  end
+
+  create_table "issues_self_managed_prometheus_alert_events", id: false, force: :cascade do |t|
+    t.bigint "issue_id", null: false
+    t.bigint "self_managed_prometheus_alert_event_id", null: false
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+    t.index ["issue_id", "self_managed_prometheus_alert_event_id"], name: "issue_id_self_managed_prometheus_alert_event_id_index", unique: true
+    t.index ["self_managed_prometheus_alert_event_id"], name: "issue_id_issues_self_managed_rometheus_alert_events_index"
   end
 
   create_table "jira_connect_installations", force: :cascade do |t|
@@ -3309,6 +3327,19 @@ ActiveRecord::Schema.define(version: 2019_10_16_072826) do
     t.index ["group_id", "token_encrypted"], name: "index_scim_oauth_access_tokens_on_group_id_and_token_encrypted", unique: true
   end
 
+  create_table "self_managed_prometheus_alert_events", force: :cascade do |t|
+    t.bigint "project_id", null: false
+    t.bigint "environment_id"
+    t.datetime_with_timezone "started_at", null: false
+    t.datetime_with_timezone "ended_at"
+    t.integer "status", limit: 2, null: false
+    t.string "title", limit: 255, null: false
+    t.string "query_expression", limit: 255
+    t.string "payload_key", limit: 255, null: false
+    t.index ["environment_id"], name: "index_self_managed_prometheus_alert_events_on_environment_id"
+    t.index ["project_id", "payload_key"], name: "idx_project_id_payload_key_self_managed_prometheus_alert_events", unique: true
+  end
+
   create_table "sent_notifications", id: :serial, force: :cascade do |t|
     t.integer "project_id"
     t.integer "noteable_id"
@@ -4079,6 +4110,7 @@ ActiveRecord::Schema.define(version: 2019_10_16_072826) do
   add_foreign_key "events", "namespaces", column: "group_id", name: "fk_61fbf6ca48", on_delete: :cascade
   add_foreign_key "events", "projects", on_delete: :cascade
   add_foreign_key "events", "users", column: "author_id", name: "fk_edfd187b6f", on_delete: :cascade
+  add_foreign_key "evidences", "releases", on_delete: :cascade
   add_foreign_key "external_pull_requests", "projects", on_delete: :cascade
   add_foreign_key "fork_network_members", "fork_networks", on_delete: :cascade
   add_foreign_key "fork_network_members", "projects", column: "forked_from_project_id", name: "fk_b01280dae4", on_delete: :nullify
@@ -4140,6 +4172,8 @@ ActiveRecord::Schema.define(version: 2019_10_16_072826) do
   add_foreign_key "issues", "users", column: "updated_by_id", name: "fk_ffed080f01", on_delete: :nullify
   add_foreign_key "issues_prometheus_alert_events", "issues", on_delete: :cascade
   add_foreign_key "issues_prometheus_alert_events", "prometheus_alert_events", on_delete: :cascade
+  add_foreign_key "issues_self_managed_prometheus_alert_events", "issues", on_delete: :cascade
+  add_foreign_key "issues_self_managed_prometheus_alert_events", "self_managed_prometheus_alert_events", on_delete: :cascade
   add_foreign_key "jira_connect_subscriptions", "jira_connect_installations", on_delete: :cascade
   add_foreign_key "jira_connect_subscriptions", "namespaces", on_delete: :cascade
   add_foreign_key "jira_tracker_data", "services", on_delete: :cascade
@@ -4279,6 +4313,8 @@ ActiveRecord::Schema.define(version: 2019_10_16_072826) do
   add_foreign_key "reviews", "users", column: "author_id", on_delete: :nullify
   add_foreign_key "saml_providers", "namespaces", column: "group_id", on_delete: :cascade
   add_foreign_key "scim_oauth_access_tokens", "namespaces", column: "group_id", on_delete: :cascade
+  add_foreign_key "self_managed_prometheus_alert_events", "environments", on_delete: :cascade
+  add_foreign_key "self_managed_prometheus_alert_events", "projects", on_delete: :cascade
   add_foreign_key "services", "projects", name: "fk_71cce407f9", on_delete: :cascade
   add_foreign_key "slack_integrations", "services", on_delete: :cascade
   add_foreign_key "smartcard_identities", "users", on_delete: :cascade
