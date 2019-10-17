@@ -361,6 +361,10 @@ class Note < ApplicationRecord
   end
 
   def to_ability_name
+    model_name.singular
+  end
+
+  def noteable_ability_name
     for_snippet? ? noteable.class.name.underscore : noteable_type.demodulize.underscore
   end
 
