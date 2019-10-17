@@ -63,6 +63,9 @@ To upload design images, click the **Upload Designs** button and select images t
 Designs with the same filename as an existing uploaded design will create a new version
 of the design, and will replace the previous version.
 
+Designs cannot be added if the issue has been moved, or its
+[discussion is locked](../../discussions/#lock-discussions).
+
 ## Viewing designs
 
 Images on the Design Management page can be enlarged by clicking on them.

@@ -1,0 +1,5 @@
+---
+title: Make designs read-only if the issue has been moved, or if its discussion has been locked
+merge_request: 18551
+author:
+type: changed

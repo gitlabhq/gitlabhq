@@ -155,6 +155,26 @@ when a project is part of a group (under a
 If you choose to leave a project you will no longer be a project
 member, therefore, unable to contribute.
 
+## Project's landing page
+
+The project's landing page shows different information depending on
+the project's visibility settings and user permissions.
+
+For public projects, and to members of internal and private projects
+with [permissions to view the project's code](../permissions.md#project-members-permissions):
+
+- The content of a
+  [`README` or an index file](repository/#repository-readme-and-index-files)
+  is displayed (if any), followed by the list of directories within the
+  project's repository.
+- If the project doesn't contain either of these files, the
+  visitor will see the list of files and directories of the repository.
+
+For users without permissions to view the project's code:
+
+- The wiki homepage is displayed, if any.
+- The list of issues within the project is displayed.
+
 ## Redirects when changing repository paths
 
 When a repository path changes, it is essential to smoothly transition from the

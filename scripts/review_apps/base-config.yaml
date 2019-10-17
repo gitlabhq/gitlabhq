@@ -35,10 +35,10 @@ gitlab:
   gitlab-shell:
     resources:
       requests:
-        cpu: 70m
+        cpu: 125m
         memory: 20M
       limits:
-        cpu: 140m
+        cpu: 250m
         memory: 40M
     maxReplicas: 3
     hpa:
@@ -75,10 +75,10 @@ gitlab:
     workhorse:
       resources:
         requests:
-          cpu: 100m
+          cpu: 175m
           memory: 100M
         limits:
-          cpu: 200m
+          cpu: 350m
           memory: 200M
       readinessProbe:
         initialDelaySeconds: 5  # Default is 0
@@ -87,10 +87,10 @@ gitlab:
 gitlab-runner:
   resources:
     requests:
-      cpu: 300m
+      cpu: 355m
       memory: 300M
     limits:
-      cpu: 600m
+      cpu: 710m
       memory: 600M
 minio:
   resources:
