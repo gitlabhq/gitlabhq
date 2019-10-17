@@ -261,6 +261,10 @@ class Milestone < ApplicationRecord
     group || project
   end
 
+  def to_ability_name
+    model_name.singular
+  end
+
   def group_milestone?
     group_id.present?
   end
