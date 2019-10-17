@@ -51,10 +51,10 @@
 
         %hr
         .form-group
-          = f.label :ci_config_path, _('Custom CI config path'), class: 'label-bold'
+          = f.label :ci_config_path, _('Custom CI configuration path'), class: 'label-bold'
           = f.text_field :ci_config_path, class: 'form-control', placeholder: '.gitlab-ci.yml'
           %p.form-text.text-muted
-            = _("The path to CI config file. Defaults to <code>.gitlab-ci.yml</code>").html_safe
+            = _("The path to the CI configuration file. Defaults to <code>.gitlab-ci.yml</code>").html_safe
             = link_to icon('question-circle'), help_page_path('user/project/pipelines/settings', anchor: 'custom-ci-config-path'), target: '_blank'
 
         %hr

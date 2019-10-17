@@ -1,0 +1,12 @@
+<%= _("A new Release %{tag} for %{name} was published. Visit the Releases page to read more about it:").html_safe % { tag: @release.tag, name: @project.name } %> <%= @target_url %>
+
+<%= _("Assets:") %>
+<% @release.links.each do |link| -%>
+  - <%= link.name %>: <%= link.url %>
+<% end -%>
+<% @release.sources.each do |source| -%>
+  - <%= _("Download %{format}:") % { format: source.format } %> <%= source.url %>
+<% end -%>
+
+<%= _("Release notes:") %>
+<%= @release.description %>

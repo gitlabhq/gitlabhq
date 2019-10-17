@@ -65,6 +65,8 @@ module Gitlab
       end
 
       def self.thread_cpu_time
+        # Not all OS kernels are supporting `Process::CLOCK_THREAD_CPUTIME_ID`
+        # Refer: https://gitlab.com/gitlab-org/gitlab/issues/30567#note_221765627
         return unless defined?(Process::CLOCK_THREAD_CPUTIME_ID)
 
         Process.clock_gettime(Process::CLOCK_THREAD_CPUTIME_ID, :float_second)

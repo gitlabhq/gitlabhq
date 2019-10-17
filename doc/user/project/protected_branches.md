@@ -86,20 +86,6 @@ Click **Protect** and the branch will appear in the "Protected branch" list.
 
 ![Roles and users list](img/protected_branches_select_roles_and_users_list.png)
 
-## Code Owners approvals **(PREMIUM)**
-
-It is possible to require at least one approval for each entry in the
-[`CODEOWNERS` file](code_owners.md) that matches a file changed in
-the merge request. To enable this feature:
-
-1. Toggle the **Require approval from code owners** slider.
-
-1. Click **Protect**.
-
-When this feature is enabled, all merge requests need approval
-from one code owner per matched rule before they can be merged. Additionally,
-pushes to the protected branch are denied if a rule is matched.
-
 ## Wildcard protected branches
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/4665) in GitLab 8.10.
@@ -165,6 +151,35 @@ branches via GitLab's web interface:
 Deleting a protected branch is only allowed via the web interface, not via Git.
 This means that you can't accidentally delete a protected branch from your
 command line or a Git client application.
+
+## Protected Branches approval by Code Owners **(PREMIUM)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/13251) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.4.
+
+It is possible to require at least one approval by a
+[Code Owner](code_owners.md) to a file changed by the
+merge request. You can either set Code Owners approvals
+at the time you protect a new branch, or set it to a branch
+already protected, as described below.
+
+To protect a new branch and enable Code Owner's approval:
+
+1. Navigate to your project's **Settings > Repository** and expand **Protected branches**.
+1. Scroll down to **Protect a branch**, select a **Branch** or wildcard you'd like to protect, select who's **Allowed to merge** and **Allowed to push**, and toggle the **Require approval from code owners** slider.
+1. Click **Protect**.
+
+![Code Owners approval - new protected branch](img/code_owners_approval_new_protected_branch_v12_4.png)
+
+To enable Code Owner's approval to branches already protected:
+
+1. Navigate to your project's **Settings > Repository** and expand **Protected branches**.
+1. Scroll down to **Protected branch** and toggle the **Code owner approval** slider for the chosen branch.
+
+![Code Owners approval - branch already protected](img/code_owners_approval_protected_branch_v12_4.png)
+
+When enabled, all merge requests targeting these branches will require approval
+by a Code Owner per matched rule before they can be merged.
+Additionally, direct pushes to the protected branch are denied if a rule is matched.
 
 ## Running pipelines on protected branches
 

@@ -130,6 +130,10 @@ export default {
 
       return title;
     },
+
+    shouldRenderHeaderCallout() {
+      return this.shouldRenderCalloutMessage && !this.hasUnmetPrerequisitesFailure;
+    },
   },
   watch: {
     // Once the job log is loaded,
@@ -239,10 +243,9 @@ export default {
             />
           </div>
 
-          <callout
-            v-if="shouldRenderCalloutMessage && !hasUnmetPrerequisitesFailure"
-            :message="job.callout_message"
-          />
+          <callout v-if="shouldRenderHeaderCallout">
+            <div v-html="job.callout_message"></div>
+          </callout>
         </header>
         <!-- EO Header Section -->
 

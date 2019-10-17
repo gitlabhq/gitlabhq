@@ -1315,8 +1315,8 @@ module API
         end
       end
       expose :_links do
-        expose :merge_requests_url
-        expose :issues_url
+        expose :merge_requests_url, if: -> (_) { release_mr_issue_urls_available? }
+        expose :issues_url, if: -> (_) { release_mr_issue_urls_available? }
       end
 
       private
@@ -1345,6 +1345,10 @@ module API
 
       def params_for_issues_and_mrs
         { scope: 'all', state: 'opened', release_tag: object.tag }
+      end
+
+      def release_mr_issue_urls_available?
+        ::Feature.enabled?(:release_mr_issue_urls, project)
       end
 
       def project

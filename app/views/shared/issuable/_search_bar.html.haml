@@ -17,12 +17,11 @@
       .issues-other-filters.filtered-search-wrapper.d-flex.flex-column.flex-md-row
         .filtered-search-box
           - if type != :boards_modal && type != :boards
-            = dropdown_tag(custom_icon('icon_history'),
+            = dropdown_tag(_('Recent searches'),
               options: { wrapper_class: "filtered-search-history-dropdown-wrapper",
               toggle_class: "filtered-search-history-dropdown-toggle-button",
               dropdown_class: "filtered-search-history-dropdown",
-              content_class: "filtered-search-history-dropdown-content",
-              title: "Recent searches" }) do
+              content_class: "filtered-search-history-dropdown-content" }) do
               .js-filtered-search-history-dropdown{ data: { full_path: search_history_storage_prefix } }
           .filtered-search-box-input-container.droplab-dropdown
             .scroll-container

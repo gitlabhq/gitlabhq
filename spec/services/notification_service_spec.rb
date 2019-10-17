@@ -678,6 +678,27 @@ describe NotificationService, :mailer do
     end
   end
 
+  describe '#send_new_release_notifications' do
+    context 'when recipients for a new release exist' do
+      let(:release) { create(:release) }
+
+      it 'calls new_release_email for each relevant recipient' do
+        user_1 = create(:user)
+        user_2 = create(:user)
+        user_3 = create(:user)
+        recipient_1 = NotificationRecipient.new(user_1, :custom, custom_action: :new_release)
+        recipient_2 = NotificationRecipient.new(user_2, :custom, custom_action: :new_release)
+        allow(NotificationRecipientService).to receive(:build_new_release_recipients).and_return([recipient_1, recipient_2])
+
+        release
+
+        should_email(user_1)
+        should_email(user_2)
+        should_not_email(user_3)
+      end
+    end
+  end
+
   describe 'Participating project notification settings have priority over group and global settings if available' do
     let!(:group) { create(:group) }
     let!(:maintainer) { group.add_owner(create(:user, username: 'maintainer')).user }

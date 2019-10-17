@@ -22,7 +22,9 @@ module GroupsHelper
   end
 
   def group_container_registry_nav?
-    Gitlab.config.registry.enabled && can?(current_user, :read_container_image, @group)
+    Gitlab.config.registry.enabled &&
+      can?(current_user, :read_container_image, @group) &&
+      Feature.enabled?(:group_container_registry_browser, @group)
   end
 
   def group_sidebar_links

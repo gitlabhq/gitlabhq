@@ -40,7 +40,10 @@ describe Gitlab::Cluster::Mixins::PumaCluster do
 
         yield(process.pid)
       ensure
-        Process.kill(:KILL, process.pid) unless process.eof?
+        begin
+          Process.kill(:KILL, process.pid)
+        rescue Errno::ESRCH
+        end
       end
     end
   end

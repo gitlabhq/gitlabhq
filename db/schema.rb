@@ -2509,6 +2509,7 @@ ActiveRecord::Schema.define(version: 2019_10_16_220135) do
     t.boolean "issue_due"
     t.boolean "new_epic"
     t.string "notification_email"
+    t.boolean "new_release"
     t.index ["source_id", "source_type"], name: "index_notification_settings_on_source_id_and_source_type"
     t.index ["user_id", "source_id", "source_type"], name: "index_notifications_on_user_id_and_source_id_and_source_type", unique: true
     t.index ["user_id"], name: "index_notification_settings_on_user_id"

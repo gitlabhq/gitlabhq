@@ -754,6 +754,10 @@ module Ci
       true
     end
 
+    def invalid_dependencies
+      dependencies.reject(&:valid_dependency?)
+    end
+
     def runner_required_feature_names
       strong_memoize(:runner_required_feature_names) do
         RUNNER_FEATURES.select do |feature, method|

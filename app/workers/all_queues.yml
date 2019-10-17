@@ -119,6 +119,8 @@
 - container_repository:delete_container_repository
 - container_repository:cleanup_container_repository
 
+- notifications:new_release
+
 - default
 - mailers # ActionMailer::DeliveryJob.queue_name
 

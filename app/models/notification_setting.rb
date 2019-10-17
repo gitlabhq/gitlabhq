@@ -25,6 +25,7 @@ class NotificationSetting < ApplicationRecord
   end
 
   EMAIL_EVENTS = [
+    :new_release,
     :new_note,
     :new_issue,
     :reopen_issue,

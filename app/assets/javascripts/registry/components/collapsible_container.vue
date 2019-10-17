@@ -1,6 +1,13 @@
 <script>
 import { mapActions, mapGetters } from 'vuex';
-import { GlLoadingIcon, GlButton, GlTooltipDirective, GlModal, GlModalDirective } from '@gitlab/ui';
+import {
+  GlLoadingIcon,
+  GlButton,
+  GlTooltipDirective,
+  GlModal,
+  GlModalDirective,
+  GlEmptyState,
+} from '@gitlab/ui';
 import createFlash from '../../flash';
 import ClipboardButton from '../../vue_shared/components/clipboard_button.vue';
 import Icon from '../../vue_shared/components/icon.vue';
@@ -17,6 +24,7 @@ export default {
     GlButton,
     Icon,
     GlModal,
+    GlEmptyState,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -103,10 +111,18 @@ export default {
 
     <div v-else-if="!repo.isLoading && isOpen" class="container-image-tags">
       <table-registry v-if="repo.list.length" :repo="repo" :can-delete-repo="canDeleteRepo" />
-
-      <div v-else class="nothing-here-block">
-        {{ s__('ContainerRegistry|No tags in Container Registry for this container image.') }}
-      </div>
+      <gl-empty-state
+        v-else
+        :title="s__('ContainerRegistry|This image has no active tags')"
+        :description="
+          s__(
+            `ContainerRegistry|The last tag related to this image was recently removed.
+            This empty image and any associated data will be automatically removed as part of the regular Garbage Collection process.
+            If you have any questions, contact your administrator.`,
+          )
+        "
+        class="mx-auto my-0"
+      />
     </div>
     <gl-modal :modal-id="modalId" ok-variant="danger" @ok="handleDeleteRepository">
       <template v-slot:modal-title>{{ s__('ContainerRegistry|Remove repository') }}</template>

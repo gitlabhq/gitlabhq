@@ -84,6 +84,7 @@ Below is the table of events users can be notified of:
 | User added to group          | User                | Sent when user is added to group |
 | Group access level changed   | User                | Sent when user group access level is changed |
 | Project moved                | Project members (1) | (1) not disabled |
+| New release                  | Project members     | Custom notification          |
 
 ### Issue / Epics / Merge request events
 

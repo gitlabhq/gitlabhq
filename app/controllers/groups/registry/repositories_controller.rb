@@ -4,6 +4,7 @@ module Groups
     class RepositoriesController < Groups::ApplicationController
       before_action :verify_container_registry_enabled!
       before_action :authorize_read_container_image!
+      before_action :feature_flag_group_container_registry_browser!
 
       def index
         track_event(:list_repositories)
@@ -21,6 +22,10 @@ module Groups
       end
 
       private
+
+      def feature_flag_group_container_registry_browser!
+        render_404 unless Feature.enabled?(:group_container_registry_browser, group)
+      end
 
       def verify_container_registry_enabled!
         render_404 unless Gitlab.config.registry.enabled

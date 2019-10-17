@@ -1,0 +1,5 @@
+---
+title: Fix container registry delete tag modal title and button
+merge_request: 34032
+author:
+type: fixed

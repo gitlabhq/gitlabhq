@@ -1,0 +1,6 @@
+---
+title: Add more specific message to clarify the role of empty images in container
+  registry
+merge_request: 32919
+author:
+type: changed

@@ -3918,4 +3918,14 @@ describe Ci::Build do
       end
     end
   end
+
+  describe '#invalid_dependencies' do
+    let!(:pre_stage_job_valid) { create(:ci_build, :manual, pipeline: pipeline, name: 'test1', stage_idx: 0) }
+    let!(:pre_stage_job_invalid) { create(:ci_build, :success, :expired, pipeline: pipeline, name: 'test2', stage_idx: 1) }
+    let!(:job) { create(:ci_build, :pending, pipeline: pipeline, stage_idx: 2, options: { dependencies: %w(test1 test2) }) }
+
+    it 'returns invalid dependencies' do
+      expect(job.invalid_dependencies).to eq([pre_stage_job_invalid])
+    end
+  end
 end

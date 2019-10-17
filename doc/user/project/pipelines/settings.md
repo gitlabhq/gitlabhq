@@ -65,14 +65,14 @@ Project defined timeout (either specific timeout set by user or the default
 For information about setting a maximum artifact size for a project, see
 [Maximum artifacts size](../../admin_area/settings/continuous_integration.md#maximum-artifacts-size-core-only).
 
-## Custom CI config path
+## Custom CI configuration path
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/12509) in GitLab 9.4.
 
 By default we look for the `.gitlab-ci.yml` file in the project's root
 directory. If you require a different location **within** the repository,
-you can set a custom filepath that will be used to lookup the config file,
-this filepath should be **relative** to the root.
+you can set a custom path that will be used to look up the configuration file,
+this path should be **relative** to the root.
 
 Here are some valid examples:
 
@@ -85,7 +85,7 @@ The path can be customized at a project level. To customize the path:
 
 1. Go to the project's **Settings > CI / CD**.
 1. Expand the **General pipelines** section.
-1. Provide a value in the **Custom CI config path** field.
+1. Provide a value in the **Custom CI configuration path** field.
 1. Click **Save changes**.
 
 ## Test coverage parsing

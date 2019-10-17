@@ -112,11 +112,13 @@ describe('table registry', () => {
 
       Vue.nextTick(() => {
         const deleteBtn = findDeleteButton(wrapper);
-        expect(wrapper.vm.itemsToBeDeleted).toEqual([0, 1]);
+        expect(wrapper.vm.selectedItems).toEqual([0, 1]);
         expect(deleteBtn.attributes('disabled')).toEqual(undefined);
+        wrapper.setData({ itemsToBeDeleted: [...wrapper.vm.selectedItems] });
         wrapper.vm.handleMultipleDelete();
 
         Vue.nextTick(() => {
+          expect(wrapper.vm.selectedItems).toEqual([]);
           expect(wrapper.vm.itemsToBeDeleted).toEqual([]);
           expect(wrapper.vm.multiDeleteItems).toHaveBeenCalledWith({
             path: bulkDeletePath,
@@ -143,13 +145,13 @@ describe('table registry', () => {
 
   describe('delete registry', () => {
     beforeEach(() => {
-      wrapper.setData({ itemsToBeDeleted: [0] });
+      wrapper.setData({ selectedItems: [0] });
     });
 
     it('should be possible to delete a registry', () => {
       const deleteBtn = findDeleteButton(wrapper);
       const deleteBtns = findDeleteButtonsRow(wrapper);
-      expect(wrapper.vm.itemsToBeDeleted).toEqual([0]);
+      expect(wrapper.vm.selectedItems).toEqual([0]);
       expect(deleteBtn).toBeDefined();
       expect(deleteBtn.attributes('disable')).toBe(undefined);
       expect(deleteBtns.is('button')).toBe(true);
@@ -212,15 +214,15 @@ describe('table registry', () => {
 
   describe('modal content', () => {
     it('should show the singular title and image name when deleting a single image', () => {
-      wrapper.setData({ itemsToBeDeleted: [1] });
-      wrapper.vm.setModalDescription(0);
+      wrapper.setData({ selectedItems: [1, 2, 3] });
+      wrapper.vm.deleteSingleItem(0);
       expect(wrapper.vm.modalAction).toBe('Remove tag');
       expect(wrapper.vm.modalDescription).toContain(firstImage.tag);
     });
 
     it('should show the plural title and image count when deleting more than one image', () => {
-      wrapper.setData({ itemsToBeDeleted: [1, 2] });
-      wrapper.vm.setModalDescription();
+      wrapper.setData({ selectedItems: [1, 2] });
+      wrapper.vm.deleteMultipleItems();
 
       expect(wrapper.vm.modalAction).toBe('Remove tags');
       expect(wrapper.vm.modalDescription).toContain('<b>2</b> tags');

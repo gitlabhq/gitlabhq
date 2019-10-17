@@ -26,10 +26,12 @@ class Release < ApplicationRecord
   validates_associated :milestone_releases, message: -> (_, obj) { obj[:value].map(&:errors).map(&:full_messages).join(",") }
 
   scope :sorted, -> { order(released_at: :desc) }
+  scope :with_project_and_namespace, -> { includes(project: :namespace) }
 
   delegate :repository, to: :project
 
   after_commit :create_evidence!, on: :create
+  after_commit :notify_new_release, on: :create
 
   def commit
     strong_memoize(:commit) do
@@ -72,6 +74,10 @@ class Release < ApplicationRecord
 
   def create_evidence!
     CreateEvidenceWorker.perform_async(self.id)
+  end
+
+  def notify_new_release
+    NewReleaseWorker.perform_async(id)
   end
 end
 

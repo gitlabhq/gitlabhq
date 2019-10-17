@@ -659,6 +659,12 @@ msgstr ""
 msgid "A merge request approval is required when the license compliance report contains a blacklisted license."
 msgstr ""
 
+msgid "A new Release %{tag} for %{name} was published. Visit the %{release_link_start}Releases page%{release_link_end} to read more about it."
+msgstr ""
+
+msgid "A new Release %{tag} for %{name} was published. Visit the Releases page to read more about it:"
+msgstr ""
+
 msgid "A new branch will be created in your fork and a new merge request will be started."
 msgstr ""
 
@@ -2007,6 +2013,9 @@ msgid "Assertion consumer service URL"
 msgstr ""
 
 msgid "Assets"
+msgstr ""
+
+msgid "Assets:"
 msgstr ""
 
 msgid "Assign"
@@ -4358,9 +4367,6 @@ msgstr ""
 msgid "ContainerRegistry|Last Updated"
 msgstr ""
 
-msgid "ContainerRegistry|No tags in Container Registry for this container image."
-msgstr ""
-
 msgid "ContainerRegistry|Quick Start"
 msgstr ""
 
@@ -4384,10 +4390,16 @@ msgstr ""
 msgid "ContainerRegistry|Tag ID"
 msgstr ""
 
+msgid "ContainerRegistry|The last tag related to this image was recently removed. This empty image and any associated data will be automatically removed as part of the regular Garbage Collection process. If you have any questions, contact your administrator."
+msgstr ""
+
 msgid "ContainerRegistry|There are no container images available in this group"
 msgstr ""
 
 msgid "ContainerRegistry|There are no container images stored for this project"
+msgstr ""
+
+msgid "ContainerRegistry|This image has no active tags"
 msgstr ""
 
 msgid "ContainerRegistry|We are having trouble connecting to Docker, which could be due to an issue with your project name or path. %{docLinkStart}More Information%{docLinkEnd}"
@@ -4813,7 +4825,7 @@ msgstr ""
 msgid "CurrentUser|Settings"
 msgstr ""
 
-msgid "Custom CI config path"
+msgid "Custom CI configuration path"
 msgstr ""
 
 msgid "Custom hostname (for private commit emails)"
@@ -5707,6 +5719,12 @@ msgid "Done"
 msgstr ""
 
 msgid "Download"
+msgstr ""
+
+msgid "Download %{format}"
+msgstr ""
+
+msgid "Download %{format}:"
 msgstr ""
 
 msgid "Download CSV"
@@ -11139,6 +11157,9 @@ msgstr ""
 msgid "NotificationEvent|New note"
 msgstr ""
 
+msgid "NotificationEvent|New release"
+msgstr ""
+
 msgid "NotificationEvent|Reassign issue"
 msgstr ""
 
@@ -11967,6 +11988,9 @@ msgid "Please provide a name"
 msgstr ""
 
 msgid "Please provide a valid email address."
+msgstr ""
+
+msgid "Please refer to <a href=\"%{docs_url}\">%{docs_url}</a>"
 msgstr ""
 
 msgid "Please retype the email address."
@@ -13490,6 +13514,9 @@ msgid "Release"
 msgstr ""
 
 msgid "Release notes"
+msgstr ""
+
+msgid "Release notes:"
 msgstr ""
 
 msgid "Release title"
@@ -16320,7 +16347,7 @@ msgstr ""
 msgid "The passphrase required to decrypt the private key. This is optional and the value is encrypted at rest."
 msgstr ""
 
-msgid "The path to CI config file. Defaults to <code>.gitlab-ci.yml</code>"
+msgid "The path to the CI configuration file. Defaults to <code>.gitlab-ci.yml</code>"
 msgstr ""
 
 msgid "The phase of the development lifecycle."
@@ -16726,6 +16753,9 @@ msgid "This issue is confidential"
 msgstr ""
 
 msgid "This issue is locked."
+msgstr ""
+
+msgid "This job depends on other jobs with expired/erased artifacts: %{invalid_dependencies}"
 msgstr ""
 
 msgid "This job depends on upstream jobs that need to succeed in order for this job to be triggered"

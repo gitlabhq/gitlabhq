@@ -24,6 +24,7 @@
   - [process_commit, 3]
   - [new_note, 2]
   - [new_issue, 2]
+  - [notifications, 2]
   - [new_merge_request, 2]
   - [pipeline_processing, 5]
   - [pipeline_creation, 4]

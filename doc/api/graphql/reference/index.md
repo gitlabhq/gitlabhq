@@ -211,6 +211,7 @@ The API can be explored interactively using the [GraphiQL IDE](../index.md#graph
 | `relativePosition` | Int | The relative position of the epic in the Epic tree |
 | `relationPath` | String |  |
 | `reference` | String! |  |
+| `subscribed` | Boolean! | Boolean flag for whether the currently logged in user is subscribed to this epic |
 
 ### EpicIssue
 

@@ -16,6 +16,7 @@ class Notify < BaseMailer
   include Emails::Members
   include Emails::AutoDevops
   include Emails::RemoteMirrors
+  include Emails::Releases
 
   helper MilestonesHelper
   helper MergeRequestsHelper

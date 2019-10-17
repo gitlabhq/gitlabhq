@@ -198,6 +198,11 @@ separately:
 
 These reference architecture examples rely on the general rule that approximately 2 requests per second (RPS) of load is generated for every 100 users.
 
+The specifications here were performance tested against a specific coded
+workload. Your exact needs may be more, depending on your workload. Your
+workload is influenced by factors such as - but not limited to - how active your
+users are, how much automation you use, mirroring, and repo/change size.
+
 ### 10,000 User Configuration
 
 - **Supported Users (approximate):** 10,000
@@ -210,12 +215,6 @@ The Support and Quality teams built, performance tested, and validated an
 environment that supports about 10,000 users. The specifications below are a
 representation of the work so far. The specifications may be adjusted in the
 future based on additional testing and iteration.
-
-NOTE: **Note:** The specifications here were performance tested against a
-specific coded workload. Your exact needs may be more, depending on your
-workload. Your workload is influenced by factors such as - but not limited to -
-how active your users are, how much automation you use, mirroring, and
-repo/change size.
 
 | Service                       | Configuration           | GCP type       |
 | ------------------------------|-------------------------|----------------|

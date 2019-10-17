@@ -85,7 +85,7 @@ GitLab CI/CD supports numerous configuration options:
 | [Job artifacts](../user/project/pipelines/job_artifacts.md) | Output, use, and reuse job artifacts. |
 | [Cache dependencies](caching/index.md) | Cache your dependencies for a faster execution. |
 | [Schedule pipelines](../user/project/pipelines/schedules.md) | Schedule pipelines to run as often as you need. |
-| [Custom path for `.gitlab-ci.yml`](../user/project/pipelines/settings.md#custom-ci-config-path) | Define a custom path for the CI/CD configuration file. |
+| [Custom path for `.gitlab-ci.yml`](../user/project/pipelines/settings.md#custom-ci-configuration-path) | Define a custom path for the CI/CD configuration file. |
 | [Git submodules for CI/CD](git_submodules.md) | Configure jobs for using Git submodules.|
 | [SSH keys for CI/CD](ssh_keys/README.md) | Using SSH keys in your CI pipelines. |
 | [Pipelines triggers](triggers/README.md) | Trigger pipelines through the API. |
