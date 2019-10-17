@@ -1,6 +1,7 @@
 # Cluster Environments **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/13392) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/13392) for group-level clusters in [GitLab Premium](https://about.gitlab.com/pricing/) 12.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/14809) for instance-level clusters in [GitLab Premium](https://about.gitlab.com/pricing/) 12.4.
 
 Cluster environments provide a consolidated view of which CI [environments](../../ci/environments.md) are
 deployed to the Kubernetes cluster and it:

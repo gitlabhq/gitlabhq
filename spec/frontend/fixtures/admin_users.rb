@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Admin::UsersController, '(JavaScript fixtures)', type: :controller do

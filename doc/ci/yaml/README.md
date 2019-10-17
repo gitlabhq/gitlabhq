@@ -318,6 +318,17 @@ There are also two edge cases worth mentioning:
    `test` and `deploy` are allowed to be used as job's stage by default.
 1. If a job doesn't specify a `stage`, the job is assigned the `test` stage.
 
+#### `.pre` and `.post`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/31441) in GitLab 12.4.
+
+The following stages are available to every pipeline:
+
+- `.pre`, which is guaranteed to always be the first stage in a pipeline.
+- `.post`, which is guaranteed to always be the last stage in a pipeline.
+
+User-defined stages are executed after `.pre` and before `.post`.
+
 ### `stage`
 
 `stage` is defined per-job and relies on [`stages`](#stages) which is defined
@@ -329,6 +340,10 @@ stages:
   - build
   - test
   - deploy
+
+job 0:
+  stage: .pre
+  script: make something useful before build stage
 
 job 1:
   stage: build
@@ -345,6 +360,10 @@ job 3:
 job 4:
   stage: deploy
   script: make deploy
+
+job 5:
+  stage: .post
+  script: make something useful at the end of pipeline
 ```
 
 #### Using your own Runners
