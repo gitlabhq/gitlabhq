@@ -74,5 +74,9 @@ describe('Embed', () => {
       expect(wrapper.find(MonitorTimeSeriesChart).exists()).toBe(true);
       expect(wrapper.findAll(MonitorTimeSeriesChart).length).toBe(2);
     });
+
+    it('includes groupId with dashboardUrl', () => {
+      expect(wrapper.find(MonitorTimeSeriesChart).props('groupId')).toBe(TEST_HOST);
+    });
   });
 });
