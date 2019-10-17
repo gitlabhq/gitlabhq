@@ -171,7 +171,7 @@ shared_examples_for 'group and project boards' do |route_definition, ee = false|
         if board_parent.try(:namespace)
           board_parent.update(namespace: owner.namespace)
         else
-          board.parent.add_owner(owner)
+          board.resource_parent.add_owner(owner)
         end
       end
 

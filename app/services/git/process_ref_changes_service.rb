@@ -16,8 +16,8 @@ module Git
     def process_changes_by_action(ref_type, changes)
       changes_by_action = group_changes_by_action(changes)
 
-      changes_by_action.each do |_, changes|
-        process_changes(ref_type, changes, execute_project_hooks: execute_project_hooks?(changes)) if changes.any?
+      changes_by_action.each do |action, changes|
+        process_changes(ref_type, action, changes, execute_project_hooks: execute_project_hooks?(changes)) if changes.any?
       end
     end
 
@@ -38,8 +38,10 @@ module Git
       (changes.size <= Gitlab::CurrentSettings.push_event_hooks_limit) || Feature.enabled?(:git_push_execute_all_project_hooks, project)
     end
 
-    def process_changes(ref_type, changes, execute_project_hooks:)
+    def process_changes(ref_type, action, changes, execute_project_hooks:)
       push_service_class = push_service_class_for(ref_type)
+
+      create_bulk_push_event = changes.size > Gitlab::CurrentSettings.push_event_activities_limit
 
       changes.each do |change|
         push_service_class.new(
@@ -48,9 +50,20 @@ module Git
           change: change,
           push_options: params[:push_options],
           create_pipelines: change[:index] < PIPELINE_PROCESS_LIMIT || Feature.enabled?(:git_push_create_all_pipelines, project),
-          execute_project_hooks: execute_project_hooks
+          execute_project_hooks: execute_project_hooks,
+          create_push_event: !create_bulk_push_event
         ).execute
       end
+
+      create_bulk_push_event(ref_type, action, changes) if create_bulk_push_event
+    end
+
+    def create_bulk_push_event(ref_type, action, changes)
+      EventCreateService.new.bulk_push(
+        project,
+        current_user,
+        Gitlab::DataBuilder::Push.build_bulk(action: action, ref_type: ref_type, changes: changes)
+      )
     end
 
     def push_service_class_for(ref_type)

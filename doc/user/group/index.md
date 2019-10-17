@@ -178,9 +178,9 @@ There are two different ways to add a new project to a group:
 
 ### Default project-creation level
 
-> [Introduced][ee-2534] in [GitLab Premium][ee] 10.5.
-> Brought to [GitLab Starter][ee] in 10.7.
-> [Moved](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/25975) to [GitLab Core](https://about.gitlab.com/pricing/) in 11.10.
+> - [Introduced][ee-2534] in [GitLab Premium][ee] 10.5.
+> - Brought to [GitLab Starter][ee] in 10.7.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/25975) to [GitLab Core](https://about.gitlab.com/pricing/) in 11.10.
 
 By default, [Developers and Maintainers](../permissions.md#group-members-permissions) can create projects under a group.
 
@@ -338,8 +338,7 @@ request to add a new user to a project through API will not be possible.
 
 #### IP access restriction **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/1985) in
-[GitLab Ultimate and Gold](https://about.gitlab.com/pricing/) 12.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/1985) in [GitLab Ultimate and Gold](https://about.gitlab.com/pricing/) 12.0.
 
 To make sure only people from within your organization can access particular
 resources, you have the option to restrict access to groups and their
@@ -351,16 +350,20 @@ Add one or more whitelisted IP subnets using CIDR notation in comma separated fo
 coming from a different IP address won't be able to access the restricted
 content.
 
-Restriction currently applies to UI, API access and Git actions via SSH.
+Restriction currently applies to:
+
+- UI.
+- API access.
+- [From GitLab 12.4](https://gitlab.com/gitlab-org/gitlab/issues/32113), Git actions via SSH.
+
 To avoid accidental lock-out, admins and group owners are are able to access
 the group regardless of the IP restriction.
 
 #### Allowed domain restriction **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/7297) in
-[GitLab Premium and Silver](https://about.gitlab.com/pricing/) 12.2.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/7297) in [GitLab Premium and Silver](https://about.gitlab.com/pricing/) 12.2.
 
-You can restrict access to groups and their underlying projects by
+You can restrict access to groups by
 allowing only users with email addresses in particular domains to be added to the group.
 
 Add email domains you want to whitelist and users with emails from different

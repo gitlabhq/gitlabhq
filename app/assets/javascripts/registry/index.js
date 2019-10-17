@@ -13,29 +13,24 @@ export default () =>
     data() {
       const { dataset } = document.querySelector(this.$options.el);
       return {
-        characterError: Boolean(dataset.characterError),
-        containersErrorImage: dataset.containersErrorImage,
-        endpoint: dataset.endpoint,
-        helpPagePath: dataset.helpPagePath,
-        noContainersImage: dataset.noContainersImage,
-        personalAccessTokensHelpLink: dataset.personalAccessTokensHelpLink,
-        registryHostUrlWithPort: dataset.registryHostUrlWithPort,
-        repositoryUrl: dataset.repositoryUrl,
-        twoFactorAuthHelpLink: dataset.twoFactorAuthHelpLink,
+        registryData: {
+          endpoint: dataset.endpoint,
+          characterError: Boolean(dataset.characterError),
+          helpPagePath: dataset.helpPagePath,
+          noContainersImage: dataset.noContainersImage,
+          containersErrorImage: dataset.containersErrorImage,
+          repositoryUrl: dataset.repositoryUrl,
+          isGroupPage: dataset.isGroupPage,
+          personalAccessTokensHelpLink: dataset.personalAccessTokensHelpLink,
+          registryHostUrlWithPort: dataset.registryHostUrlWithPort,
+          twoFactorAuthHelpLink: dataset.twoFactorAuthHelpLink,
+        },
       };
     },
     render(createElement) {
       return createElement('registry-app', {
         props: {
-          characterError: this.characterError,
-          containersErrorImage: this.containersErrorImage,
-          endpoint: this.endpoint,
-          helpPagePath: this.helpPagePath,
-          noContainersImage: this.noContainersImage,
-          personalAccessTokensHelpLink: this.personalAccessTokensHelpLink,
-          registryHostUrlWithPort: this.registryHostUrlWithPort,
-          repositoryUrl: this.repositoryUrl,
-          twoFactorAuthHelpLink: this.twoFactorAuthHelpLink,
+          ...this.registryData,
         },
       });
     },

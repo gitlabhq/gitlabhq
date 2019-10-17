@@ -7,6 +7,7 @@ describe('Getters Registry Store', () => {
     state = {
       isLoading: false,
       endpoint: '/root/empty-project/container_registry.json',
+      isDeleteDisabled: false,
       repos: [
         {
           canDelete: true,
@@ -41,6 +42,11 @@ describe('Getters Registry Store', () => {
   describe('repos', () => {
     it('should return the repos', () => {
       expect(getters.repos(state)).toEqual(state.repos);
+    });
+  });
+  describe('isDeleteDisabled', () => {
+    it('should return isDeleteDisabled', () => {
+      expect(getters.isDeleteDisabled(state)).toEqual(state.isDeleteDisabled);
     });
   });
 });

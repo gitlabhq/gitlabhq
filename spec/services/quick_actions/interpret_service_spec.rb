@@ -1545,12 +1545,20 @@ describe QuickActions::InterpretService do
     end
 
     it 'limits to commands passed ' do
-      content = "/shrug\n/close"
+      content = "/shrug test\n/close"
 
       text, commands = service.execute(content, issue, only: [:shrug])
 
       expect(commands).to be_empty
-      expect(text).to eq("#{described_class::SHRUG}\n/close")
+      expect(text).to eq("test #{described_class::SHRUG}\n/close")
+    end
+
+    it 'preserves leading whitespace ' do
+      content = " - list\n\n/close\n\ntest\n\n"
+
+      text, _ = service.execute(content, issue)
+
+      expect(text).to eq(" - list\n\ntest")
     end
 
     context '/create_merge_request command' do

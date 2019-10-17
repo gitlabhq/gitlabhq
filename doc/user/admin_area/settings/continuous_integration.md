@@ -29,7 +29,12 @@ If you want to disable it for a specific project, you can do so in
 ## Maximum artifacts size **(CORE ONLY)**
 
 The maximum size of the [job artifacts](../../../administration/job_artifacts.md)
-can be set at the project level, group level, and at the instance level. The value is:
+can be set at:
+
+- The instance level.
+- [From GitLab 12.4](https://gitlab.com/gitlab-org/gitlab/issues/21688), the project and group level.
+
+The value is:
 
 - In *MB* and the default is 100MB per job.
 - [Set to 1G](../../gitlab_com/index.md#gitlab-cicd) on GitLab.com.

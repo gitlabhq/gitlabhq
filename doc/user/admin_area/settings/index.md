@@ -22,6 +22,7 @@ include:
 - [Custom templates repository](instance_template_repository.md) **(PREMIUM)**
 - [Protected paths](protected_paths.md) **(CORE ONLY)**
 - [Help messages for the `/help` page and the login page](help_page.md)
+- [Push event activities limit and bulk push events](push_event_activities_limit.md)
 
 NOTE: **Note:**
 You can change the [first day of the week](../../profile/preferences.md) for the entire GitLab instance

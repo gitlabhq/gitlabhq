@@ -15,7 +15,7 @@ module Gitlab
           end
 
           def self.default
-            %w[build test deploy]
+            Config::EdgeStagesInjector.wrap_stages %w[build test deploy]
           end
         end
       end

@@ -972,13 +972,13 @@ describe Note do
       project = create(:project)
       note = create(:note_on_issue, project: project)
 
-      expect(note.parent).to eq(project)
+      expect(note.resource_parent).to eq(project)
     end
 
     it 'returns nil for personal snippet note' do
       note = create(:note_on_personal_snippet)
 
-      expect(note.parent).to be_nil
+      expect(note.resource_parent).to be_nil
     end
   end
 

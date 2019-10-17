@@ -62,10 +62,10 @@ gitlab:
   unicorn:
     resources:
       requests:
-        cpu: 600m
+        cpu: 400m
         memory: 1.4G
       limits:
-        cpu: 1.2G
+        cpu: 800m
         memory: 2.8G
     deployment:
       readinessProbe:
@@ -95,10 +95,10 @@ gitlab-runner:
 minio:
   resources:
     requests:
-      cpu: 100m
+      cpu: 5m
       memory: 128M
     limits:
-      cpu: 200m
+      cpu: 10m
       memory: 280M
 nginx-ingress:
   controller:
@@ -107,10 +107,10 @@ nginx-ingress:
     replicaCount: 2
     resources:
       requests:
-        cpu: 150m
+        cpu: 100m
         memory: 250M
       limits:
-        cpu: 300m
+        cpu: 200m
         memory: 500M
     minAvailable: 1
     service:

@@ -26,6 +26,8 @@ class PushEvent < Event
   delegate :commit_count, to: :push_event_payload
   alias_method :commits_count, :commit_count
 
+  delegate :ref_count, to: :push_event_payload
+
   # Returns events of pushes that either pushed to an existing ref or created a
   # new one.
   def self.created_or_pushed

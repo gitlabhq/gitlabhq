@@ -483,10 +483,9 @@ class Note < ApplicationRecord
     Upload.find_by(model: self, path: paths)
   end
 
-  def parent
+  def resource_parent
     project
   end
-  alias_method :resource_parent, :parent
 
   private
 

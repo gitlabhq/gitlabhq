@@ -1,5 +1,5 @@
 <script>
-import { mapActions } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 import { GlLoadingIcon, GlButton, GlTooltipDirective, GlModal, GlModalDirective } from '@gitlab/ui';
 import createFlash from '../../flash';
 import ClipboardButton from '../../vue_shared/components/clipboard_button.vue';
@@ -35,8 +35,12 @@ export default {
     };
   },
   computed: {
+    ...mapGetters(['isDeleteDisabled']),
     iconName() {
       return this.isOpen ? 'angle-up' : 'angle-right';
+    },
+    canDeleteRepo() {
+      return this.repo.canDelete && !this.isDeleteDisabled;
     },
   },
   methods: {
@@ -80,7 +84,7 @@ export default {
 
       <div class="controls d-none d-sm-block float-right">
         <gl-button
-          v-if="repo.canDelete"
+          v-if="canDeleteRepo"
           v-gl-tooltip
           v-gl-modal="modalId"
           :title="s__('ContainerRegistry|Remove repository')"
@@ -98,7 +102,7 @@ export default {
     <gl-loading-icon v-if="repo.isLoading" size="md" class="append-bottom-20" />
 
     <div v-else-if="!repo.isLoading && isOpen" class="container-image-tags">
-      <table-registry v-if="repo.list.length" :repo="repo" />
+      <table-registry v-if="repo.list.length" :repo="repo" :can-delete-repo="canDeleteRepo" />
 
       <div v-else class="nothing-here-block">
         {{ s__('ContainerRegistry|No tags in Container Registry for this container image.') }}

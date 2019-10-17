@@ -48,6 +48,8 @@ module Git
     # Push events in the activity feed only show information for the
     # last commit.
     def create_events
+      return unless params.fetch(:create_push_event, true)
+
       EventCreateService.new.push(project, current_user, event_push_data)
     end
 

@@ -26,7 +26,7 @@ module Gitlab
           it 'returns valid build attributes' do
             expect(subject).to eq({
               stage: "test",
-              stage_idx: 1,
+              stage_idx: 2,
               name: "rspec",
               options: {
                 before_script: ["pwd"],
@@ -56,7 +56,7 @@ module Gitlab
           it 'returns valid build attributes' do
             expect(subject).to eq({
               stage: 'test',
-              stage_idx: 1,
+              stage_idx: 2,
               name: 'rspec',
               options: { script: ['rspec'] },
               rules: [
@@ -209,13 +209,16 @@ module Gitlab
         end
 
         let(:attributes) do
-          [{ name: "build",
+          [{ name: ".pre",
              index: 0,
              builds: [] },
-           { name: "test",
+           { name: "build",
              index: 1,
+             builds: [] },
+           { name: "test",
+             index: 2,
              builds:
-               [{ stage_idx: 1,
+               [{ stage_idx: 2,
                   stage: "test",
                   name: "rspec",
                   allow_failure: false,
@@ -225,9 +228,9 @@ module Gitlab
                   only: { refs: ["branches"] },
                   except: {} }] },
            { name: "deploy",
-             index: 2,
+             index: 3,
              builds:
-               [{ stage_idx: 2,
+               [{ stage_idx: 3,
                   stage: "deploy",
                   name: "prod",
                   allow_failure: false,
@@ -235,7 +238,10 @@ module Gitlab
                   yaml_variables: [],
                   options: { script: ["cap prod"] },
                   only: { refs: ["tags"] },
-                  except: {} }] }]
+                  except: {} }] },
+           { name: ".post",
+             index: 4,
+             builds: [] }]
         end
 
         it 'returns stages seed attributes' do
@@ -425,7 +431,7 @@ module Gitlab
             expect(config_processor.stage_builds_attributes("test").size).to eq(1)
             expect(config_processor.stage_builds_attributes("test").first).to eq({
               stage: "test",
-              stage_idx: 1,
+              stage_idx: 2,
               name: "rspec",
               options: {
                 before_script: ["pwd"],
@@ -456,7 +462,7 @@ module Gitlab
             expect(config_processor.stage_builds_attributes("test").size).to eq(1)
             expect(config_processor.stage_builds_attributes("test").first).to eq({
               stage: "test",
-              stage_idx: 1,
+              stage_idx: 2,
               name: "rspec",
               options: {
                 before_script: ["pwd"],
@@ -485,7 +491,7 @@ module Gitlab
             expect(config_processor.stage_builds_attributes("test").size).to eq(1)
             expect(config_processor.stage_builds_attributes("test").first).to eq({
               stage: "test",
-              stage_idx: 1,
+              stage_idx: 2,
               name: "rspec",
               options: {
                 before_script: ["pwd"],
@@ -510,7 +516,7 @@ module Gitlab
             expect(config_processor.stage_builds_attributes("test").size).to eq(1)
             expect(config_processor.stage_builds_attributes("test").first).to eq({
               stage: "test",
-              stage_idx: 1,
+              stage_idx: 2,
               name: "rspec",
               options: {
                 before_script: ["pwd"],
@@ -977,7 +983,7 @@ module Gitlab
           expect(config_processor.stage_builds_attributes("test").size).to eq(1)
           expect(config_processor.stage_builds_attributes("test").first).to eq({
             stage: "test",
-            stage_idx: 1,
+            stage_idx: 2,
             name: "rspec",
             options: {
               before_script: ["pwd"],
@@ -1272,7 +1278,7 @@ module Gitlab
             expect(subject.builds.size).to eq(5)
             expect(subject.builds[0]).to eq(
               stage: "build",
-              stage_idx: 0,
+              stage_idx: 1,
               name: "build1",
               options: {
                 script: ["test"]
@@ -1283,7 +1289,7 @@ module Gitlab
             )
             expect(subject.builds[2]).to eq(
               stage: "test",
-              stage_idx: 1,
+              stage_idx: 2,
               name: "test1",
               options: {
                 script: ["test"],
@@ -1398,7 +1404,7 @@ module Gitlab
             expect(subject.size).to eq(1)
             expect(subject.first).to eq({
               stage: "test",
-              stage_idx: 1,
+              stage_idx: 2,
               name: "normal_job",
               options: {
                 script: ["test"]
@@ -1442,7 +1448,7 @@ module Gitlab
             expect(subject.size).to eq(2)
             expect(subject.first).to eq({
               stage: "build",
-              stage_idx: 0,
+              stage_idx: 1,
               name: "job1",
               options: {
                 script: ["execute-script-for-job"]
@@ -1453,7 +1459,7 @@ module Gitlab
             })
             expect(subject.second).to eq({
               stage: "build",
-              stage_idx: 0,
+              stage_idx: 1,
               name: "job2",
               options: {
                 script: ["execute-script-for-job"]
@@ -1665,14 +1671,14 @@ module Gitlab
           config = YAML.dump({ rspec: { script: "test", type: "acceptance" } })
           expect do
             Gitlab::Ci::YamlProcessor.new(config)
-          end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, "rspec job: stage parameter should be build, test, deploy")
+          end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, "rspec job: stage parameter should be .pre, build, test, deploy, .post")
         end
 
         it "returns errors if job stage is not a defined stage" do
           config = YAML.dump({ types: %w(build test), rspec: { script: "test", type: "acceptance" } })
           expect do
             Gitlab::Ci::YamlProcessor.new(config)
-          end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, "rspec job: stage parameter should be build, test")
+          end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, "rspec job: stage parameter should be .pre, build, test, .post")
         end
 
         it "returns errors if stages is not an array" do

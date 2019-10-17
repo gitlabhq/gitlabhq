@@ -60,6 +60,18 @@ RSpec.describe GpgSignature do
     end
   end
 
+  describe '.by_commit_sha scope' do
+    let(:gpg_key) { create(:gpg_key, key: GpgHelpers::User2.public_key) }
+    let!(:another_gpg_signature) { create(:gpg_signature, gpg_key: gpg_key) }
+
+    it 'returns all gpg signatures by sha' do
+      expect(described_class.by_commit_sha(commit_sha)).to eq([gpg_signature])
+      expect(
+        described_class.by_commit_sha([commit_sha, another_gpg_signature.commit_sha])
+      ).to contain_exactly(gpg_signature, another_gpg_signature)
+    end
+  end
+
   describe '#commit' do
     it 'fetches the commit through the project' do
       expect_any_instance_of(Project).to receive(:commit).with(commit_sha).and_return(commit)

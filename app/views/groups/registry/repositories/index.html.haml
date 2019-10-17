@@ -1,0 +1,12 @@
+- page_title _("Container Registry")
+
+%section
+  .row.registry-placeholder.prepend-bottom-10
+    .col-12
+      #js-vue-registry-images{ data: { endpoint: group_container_registries_path(@group, format: :json),
+        "help_page_path" => help_page_path('user/packages/container_registry/index'),
+        "no_containers_image" => image_path('illustrations/docker-empty-state.svg'),
+        "containers_error_image" => image_path('illustrations/docker-error-state.svg'),
+        "repository_url" => "",
+        is_group_page: true,
+        character_error: @character_error.to_s } }

@@ -18,7 +18,7 @@ class ContainerRepositoryEntity < Grape::Entity
   alias_method :repository, :object
 
   def project
-    request.project
+    request.respond_to?(:project) ? request.project : object.project
   end
 
   def can_destroy?

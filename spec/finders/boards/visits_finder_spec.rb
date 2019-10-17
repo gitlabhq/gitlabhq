@@ -10,7 +10,7 @@ describe Boards::VisitsFinder do
       let(:project)       { create(:project) }
       let(:project_board) { create(:board, project: project) }
 
-      subject(:finder) { described_class.new(project_board.parent, user) }
+      subject(:finder) { described_class.new(project_board.resource_parent, user) }
 
       it 'returns nil when there is no user' do
         finder.current_user = nil
@@ -27,7 +27,7 @@ describe Boards::VisitsFinder do
       it 'queries for last N visits' do
         expect(BoardProjectRecentVisit).to receive(:latest).with(user, project, count: 5).once
 
-        described_class.new(project_board.parent, user).latest(5)
+        described_class.new(project_board.resource_parent, user).latest(5)
       end
     end
 
@@ -35,7 +35,7 @@ describe Boards::VisitsFinder do
       let(:group)       { create(:group) }
       let(:group_board) { create(:board, group: group) }
 
-      subject(:finder) { described_class.new(group_board.parent, user) }
+      subject(:finder) { described_class.new(group_board.resource_parent, user) }
 
       it 'returns nil when there is no user' do
         finder.current_user = nil
@@ -52,7 +52,7 @@ describe Boards::VisitsFinder do
       it 'queries for last N visits' do
         expect(BoardGroupRecentVisit).to receive(:latest).with(user, group, count: 5).once
 
-        described_class.new(group_board.parent, user).latest(5)
+        described_class.new(group_board.resource_parent, user).latest(5)
       end
     end
   end

@@ -73,7 +73,8 @@ describe API::Settings, 'Settings' do
             local_markdown_version: 3,
             allow_local_requests_from_web_hooks_and_services: true,
             allow_local_requests_from_system_hooks: false,
-            push_event_hooks_limit: 2
+            push_event_hooks_limit: 2,
+            push_event_activities_limit: 2
           }
 
         expect(response).to have_gitlab_http_status(200)
@@ -104,6 +105,7 @@ describe API::Settings, 'Settings' do
         expect(json_response['allow_local_requests_from_web_hooks_and_services']).to eq(true)
         expect(json_response['allow_local_requests_from_system_hooks']).to eq(false)
         expect(json_response['push_event_hooks_limit']).to eq(2)
+        expect(json_response['push_event_activities_limit']).to eq(2)
       end
     end
 

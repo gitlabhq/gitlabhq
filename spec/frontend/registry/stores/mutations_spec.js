@@ -19,7 +19,16 @@ describe('Mutations Registry Store', () => {
       const expectedState = Object.assign({}, mockState, { endpoint: 'foo' });
       mutations[types.SET_MAIN_ENDPOINT](mockState, 'foo');
 
-      expect(mockState).toEqual(expectedState);
+      expect(mockState.endpoint).toEqual(expectedState.endpoint);
+    });
+  });
+
+  describe('SET_IS_DELETE_DISABLED', () => {
+    it('should set the is delete disabled', () => {
+      const expectedState = Object.assign({}, mockState, { isDeleteDisabled: true });
+      mutations[types.SET_IS_DELETE_DISABLED](mockState, true);
+
+      expect(mockState.isDeleteDisabled).toEqual(expectedState.isDeleteDisabled);
     });
   });
 

@@ -9,7 +9,7 @@ module Boards
     skip_before_action :authenticate_user!, only: [:index]
 
     def index
-      lists = Boards::Lists::ListService.new(board.parent, current_user).execute(board)
+      lists = Boards::Lists::ListService.new(board.resource_parent, current_user).execute(board)
 
       List.preload_preferences_for_user(lists, current_user)
 
@@ -17,7 +17,7 @@ module Boards
     end
 
     def create
-      list = Boards::Lists::CreateService.new(board.parent, current_user, create_list_params).execute(board)
+      list = Boards::Lists::CreateService.new(board.resource_parent, current_user, create_list_params).execute(board)
 
       if list.valid?
         render json: serialize_as_json(list)

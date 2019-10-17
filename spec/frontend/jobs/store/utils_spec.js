@@ -291,6 +291,13 @@ describe('Jobs Store Utils', () => {
         });
       });
     });
+
+    describe('when no data is provided', () => {
+      it('returns an empty array', () => {
+        const result = findOffsetAndRemove();
+        expect(result).toEqual([]);
+      });
+    });
   });
 
   describe('getIncrementalLineNumber', () => {

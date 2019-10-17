@@ -44,7 +44,7 @@ class Groups::MilestonesController < Groups::ApplicationController
     # all projects milestones states at once.
     milestones, update_params = get_milestones_for_update
     milestones.each do |milestone|
-      Milestones::UpdateService.new(milestone.parent, current_user, update_params).execute(milestone)
+      Milestones::UpdateService.new(milestone.resource_parent, current_user, update_params).execute(milestone)
     end
 
     redirect_to milestone_path

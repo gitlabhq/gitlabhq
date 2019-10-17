@@ -28,6 +28,23 @@ describe 'events/event/_push.html.haml' do
         expect(rendered).not_to have_link(event.ref_name)
       end
     end
+
+    context 'ref_count is more than 1' do
+      let(:payload) do
+        build_stubbed(
+          :push_event_payload,
+          event: event,
+          ref_count: 4,
+          ref_type: :branch
+        )
+      end
+
+      it 'includes the count in the text' do
+        render partial: 'events/event/push', locals: { event: event }
+
+        expect(rendered).to include('4 branches')
+      end
+    end
   end
 
   context 'with a tag' do
@@ -51,6 +68,23 @@ describe 'events/event/_push.html.haml' do
         render partial: 'events/event/push', locals: { event: event }
 
         expect(rendered).not_to have_link(event.ref_name)
+      end
+    end
+
+    context 'ref_count is more than 1' do
+      let(:payload) do
+        build_stubbed(
+          :push_event_payload,
+          event: event,
+          ref_count: 4,
+          ref_type: :tag
+        )
+      end
+
+      it 'includes the count in the text' do
+        render partial: 'events/event/push', locals: { event: event }
+
+        expect(rendered).to include('4 tags')
       end
     end
   end

@@ -191,6 +191,41 @@ describe GroupsHelper do
     end
   end
 
+  describe '#group_container_registry_nav' do
+    let(:group) { create(:group, :public) }
+    let(:user) { create(:user) }
+    before do
+      stub_container_registry_config(enabled: true)
+      allow(helper).to receive(:current_user) { user }
+      allow(helper).to receive(:can?).with(user, :read_container_image, group) { true }
+      helper.instance_variable_set(:@group, group)
+    end
+
+    subject { helper.group_container_registry_nav? }
+
+    context 'when container registry is enabled' do
+      it { is_expected.to be_truthy }
+
+      it 'is disabled for guest' do
+        allow(helper).to receive(:can?).with(user, :read_container_image, group) { false }
+        expect(subject).to be false
+      end
+    end
+
+    context 'when container registry is not enabled' do
+      before do
+        stub_container_registry_config(enabled: false)
+      end
+
+      it { is_expected.to be_falsy }
+
+      it 'is disabled for guests' do
+        allow(helper).to receive(:can?).with(user, :read_container_image, group) { false }
+        expect(subject).to be false
+      end
+    end
+  end
+
   describe '#group_sidebar_links' do
     let(:group) { create(:group, :public) }
     let(:user) { create(:user) }

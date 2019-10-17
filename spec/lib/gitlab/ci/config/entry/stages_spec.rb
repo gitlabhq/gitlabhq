@@ -42,7 +42,7 @@ describe Gitlab::Ci::Config::Entry::Stages do
 
   describe '.default' do
     it 'returns default stages' do
-      expect(described_class.default).to eq %w[build test deploy]
+      expect(described_class.default).to eq %w[.pre build test deploy .post]
     end
   end
 end

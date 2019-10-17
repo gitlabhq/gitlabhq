@@ -1,5 +1,5 @@
 <script>
-import { mapActions } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 import {
   GlButton,
   GlFormCheckbox,
@@ -35,6 +35,11 @@ export default {
       type: Object,
       required: true,
     },
+    canDeleteRepo: {
+      type: Boolean,
+      default: false,
+      required: false,
+    },
   },
   data() {
     return {
@@ -45,6 +50,7 @@ export default {
     };
   },
   computed: {
+    ...mapGetters(['isDeleteDisabled']),
     bulkDeletePath() {
       return this.repo.tagsPath ? this.repo.tagsPath.replace('?format=json', '/bulk_destroy') : '';
     },
@@ -165,6 +171,9 @@ export default {
         }
       }
     },
+    canDeleteRow(item) {
+      return item && item.canDelete && !this.isDeleteDisabled;
+    },
   },
 };
 </script>
@@ -175,7 +184,7 @@ export default {
         <tr>
           <th>
             <gl-form-checkbox
-              v-if="repo.canDelete"
+              v-if="canDeleteRepo"
               class="js-select-all-checkbox"
               :checked="selectAllChecked"
               @change="onSelectAllChange"
@@ -187,7 +196,7 @@ export default {
           <th>{{ s__('ContainerRegistry|Last Updated') }}</th>
           <th>
             <gl-button
-              v-if="repo.canDelete"
+              v-if="canDeleteRepo"
               v-gl-tooltip
               v-gl-modal="modalId"
               :disabled="!itemsToBeDeleted || itemsToBeDeleted.length === 0"
@@ -208,7 +217,7 @@ export default {
         <tr v-for="(item, index) in repo.list" :key="item.tag" class="registry-image-row">
           <td class="check">
             <gl-form-checkbox
-              v-if="item.canDelete"
+              v-if="canDeleteRow(item)"
               class="js-select-checkbox"
               :checked="itemsToBeDeleted && itemsToBeDeleted.includes(index)"
               @change="updateItemsToBeDeleted(index)"
@@ -244,7 +253,7 @@ export default {
 
           <td class="content action-buttons">
             <gl-button
-              v-if="item.canDelete"
+              v-if="canDeleteRow(item)"
               v-gl-modal="modalId"
               :title="s__('ContainerRegistry|Remove tag')"
               :aria-label="s__('ContainerRegistry|Remove tag')"

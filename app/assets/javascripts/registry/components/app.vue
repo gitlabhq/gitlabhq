@@ -2,17 +2,19 @@
 import { mapGetters, mapActions } from 'vuex';
 import { GlLoadingIcon, GlEmptyState } from '@gitlab/ui';
 import store from '../stores';
-import clipboardButton from '../../vue_shared/components/clipboard_button.vue';
 import CollapsibleContainer from './collapsible_container.vue';
+import ProjectEmptyState from './project_empty_state.vue';
+import GroupEmptyState from './group_empty_state.vue';
 import { s__, sprintf } from '../../locale';
 
 export default {
   name: 'RegistryListApp',
   components: {
-    clipboardButton,
     CollapsibleContainer,
     GlEmptyState,
     GlLoadingIcon,
+    ProjectEmptyState,
+    GroupEmptyState,
   },
   props: {
     characterError: {
@@ -38,19 +40,27 @@ export default {
     },
     personalAccessTokensHelpLink: {
       type: String,
-      required: true,
+      required: false,
+      default: null,
     },
     registryHostUrlWithPort: {
       type: String,
-      required: true,
+      required: false,
+      default: null,
     },
     repositoryUrl: {
       type: String,
       required: true,
     },
+    isGroupPage: {
+      type: Boolean,
+      default: false,
+      required: false,
+    },
     twoFactorAuthHelpLink: {
       type: String,
-      required: true,
+      required: false,
+      default: null,
     },
   },
   store,
@@ -91,37 +101,10 @@ export default {
         false,
       );
     },
-    notLoggedInToRegistryText() {
-      return sprintf(
-        s__(`ContainerRegistry|If you are not already logged in, you need to authenticate to
-             the Container Registry by using your GitLab username and password. If you have
-             %{twofaDocLinkStart}Two-Factor Authentication%{twofaDocLinkEnd} enabled, use a
-             %{personalAccessTokensDocLinkStart}Personal Access Token
-             %{personalAccessTokensDocLinkEnd}instead of a password.`),
-        {
-          twofaDocLinkStart: `<a href="${this.twoFactorAuthHelpLink}" target="_blank">`,
-          twofaDocLinkEnd: '</a>',
-          personalAccessTokensDocLinkStart: `<a href="${this.personalAccessTokensHelpLink}" target="_blank">`,
-          personalAccessTokensDocLinkEnd: '</a>',
-        },
-        false,
-      );
-    },
-    dockerLoginCommand() {
-      // eslint-disable-next-line @gitlab/i18n/no-non-i18n-strings
-      return `docker login ${this.registryHostUrlWithPort}`;
-    },
-    dockerBuildCommand() {
-      // eslint-disable-next-line @gitlab/i18n/no-non-i18n-strings
-      return `docker build -t ${this.repositoryUrl} .`;
-    },
-    dockerPushCommand() {
-      // eslint-disable-next-line @gitlab/i18n/no-non-i18n-strings
-      return `docker push ${this.repositoryUrl}`;
-    },
   },
   created() {
     this.setMainEndpoint(this.endpoint);
+    this.setIsDeleteDisabled(this.isGroupPage);
   },
   mounted() {
     if (!this.characterError) {
@@ -129,7 +112,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['setMainEndpoint', 'fetchRepos']),
+    ...mapActions(['setMainEndpoint', 'fetchRepos', 'setIsDeleteDisabled']),
   },
 };
 </script>
@@ -152,57 +135,19 @@ export default {
       <p v-html="introText"></p>
       <collapsible-container v-for="item in repos" :key="item.id" :repo="item" />
     </div>
-
-    <gl-empty-state
-      v-else
-      :title="s__('ContainerRegistry|There are no container images stored for this project')"
-      :svg-path="noContainersImage"
-      class="container-message"
-    >
-      <template #description>
-        <p class="js-no-container-images-text" v-html="noContainerImagesText"></p>
-        <h5>{{ s__('ContainerRegistry|Quick Start') }}</h5>
-        <p class="js-not-logged-in-to-registry-text" v-html="notLoggedInToRegistryText"></p>
-        <div class="input-group append-bottom-10">
-          <input :value="dockerLoginCommand" type="text" class="form-control monospace" readonly />
-          <span class="input-group-append">
-            <clipboard-button
-              :text="dockerLoginCommand"
-              :title="s__('ContainerRegistry|Copy login command')"
-              class="input-group-text"
-            />
-          </span>
-        </div>
-        <p>
-          {{
-            s__(
-              'ContainerRegistry|You can add an image to this registry with the following commands:',
-            )
-          }}
-        </p>
-
-        <div class="input-group append-bottom-10">
-          <input :value="dockerBuildCommand" type="text" class="form-control monospace" readonly />
-          <span class="input-group-append">
-            <clipboard-button
-              :text="dockerBuildCommand"
-              :title="s__('ContainerRegistry|Copy build command')"
-              class="input-group-text"
-            />
-          </span>
-        </div>
-
-        <div class="input-group">
-          <input :value="dockerPushCommand" type="text" class="form-control monospace" readonly />
-          <span class="input-group-append">
-            <clipboard-button
-              :text="dockerPushCommand"
-              :title="s__('ContainerRegistry|Copy push command')"
-              class="input-group-text"
-            />
-          </span>
-        </div>
-      </template>
-    </gl-empty-state>
+    <project-empty-state
+      v-else-if="!isGroupPage"
+      :no-containers-image="noContainersImage"
+      :help-page-path="helpPagePath"
+      :repository-url="repositoryUrl"
+      :two-factor-auth-help-link="twoFactorAuthHelpLink"
+      :personal-access-tokens-help-link="personalAccessTokensHelpLink"
+      :registry-host-url-with-port="registryHostUrlWithPort"
+    />
+    <group-empty-state
+      v-else-if="isGroupPage"
+      :no-containers-image="noContainersImage"
+      :help-page-path="helpPagePath"
+    />
   </div>
 </template>

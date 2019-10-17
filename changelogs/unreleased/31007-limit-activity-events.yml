@@ -1,0 +1,5 @@
+---
+title: Aggregate push events when there are too many
+merge_request: 18239
+author:
+type: changed

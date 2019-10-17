@@ -1,6 +1,7 @@
 export default () => ({
   isLoading: false,
   endpoint: '', // initial endpoint to fetch the repos list
+  isDeleteDisabled: false, // controls the delete buttons in the registry
   /**
    * Each object in `repos` has the following strucure:
    * {

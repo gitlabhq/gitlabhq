@@ -1,3 +1,4 @@
+import Vue from 'vue';
 import { mount } from '@vue/test-utils';
 import registry from '~/registry/components/app.vue';
 import { TEST_HOST } from '../../helpers/test_constants';
@@ -7,8 +8,8 @@ describe('Registry List', () => {
   let wrapper;
 
   const findCollapsibleContainer = w => w.findAll({ name: 'CollapsibeContainerRegisty' });
-  const findNoContainerImagesText = w => w.find('.js-no-container-images-text');
-  const findNotLoggedInToRegistryText = w => w.find('.js-not-logged-in-to-registry-text');
+  const findProjectEmptyState = w => w.find({ name: 'ProjectEmptyState' });
+  const findGroupEmptyState = w => w.find({ name: 'GroupEmptyState' });
   const findSpinner = w => w.find('.gl-spinner');
   const findCharacterErrorText = w => w.find('.js-character-error-text');
 
@@ -25,13 +26,18 @@ describe('Registry List', () => {
 
   const setMainEndpoint = jest.fn();
   const fetchRepos = jest.fn();
+  const setIsDeleteDisabled = jest.fn();
 
   const methods = {
     setMainEndpoint,
     fetchRepos,
+    setIsDeleteDisabled,
   };
 
   beforeEach(() => {
+    // This is needed due to console.error called by vue to emit a warning that stop the tests.
+    // See https://github.com/vuejs/vue-test-utils/issues/532.
+    Vue.config.silent = true;
     wrapper = mount(registry, {
       propsData,
       computed: {
@@ -41,6 +47,12 @@ describe('Registry List', () => {
       },
       methods,
     });
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+    Vue.config.silent = false;
+    wrapper.destroy();
   });
 
   describe('with data', () => {
@@ -65,18 +77,9 @@ describe('Registry List', () => {
       });
     });
 
-    it('should render empty message', () => {
-      const noContainerImagesText = findNoContainerImagesText(localWrapper);
-      expect(noContainerImagesText.text()).toEqual(
-        'With the Container Registry, every project can have its own space to store its Docker images. More Information',
-      );
-    });
-
-    it('should render login help text', () => {
-      const notLoggedInToRegistryText = findNotLoggedInToRegistryText(localWrapper);
-      expect(notLoggedInToRegistryText.text()).toEqual(
-        'If you are not already logged in, you need to authenticate to the Container Registry by using your GitLab username and password. If you have Two-Factor Authentication enabled, use a Personal Access Token instead of a password.',
-      );
+    it('should render project empty message', () => {
+      const projectEmptyState = findProjectEmptyState(localWrapper);
+      expect(projectEmptyState.exists()).toBe(true);
     });
   });
 
@@ -127,6 +130,31 @@ describe('Registry List', () => {
       expect(characterErrorText.text()).toEqual(
         'We are having trouble connecting to Docker, which could be due to an issue with your project name or path. More Information',
       );
+    });
+  });
+
+  describe('with groupId set', () => {
+    const isGroupPage = true;
+
+    beforeEach(() => {
+      wrapper = mount(registry, {
+        propsData: {
+          ...propsData,
+          endpoint: null,
+          isGroupPage,
+        },
+        methods,
+      });
+    });
+
+    it('call the right vuex setters', () => {
+      expect(methods.setMainEndpoint).toHaveBeenLastCalledWith(null);
+      expect(methods.setIsDeleteDisabled).toHaveBeenLastCalledWith(true);
+    });
+
+    it('should render groups empty message', () => {
+      const groupEmptyState = findGroupEmptyState(wrapper);
+      expect(groupEmptyState.exists()).toBe(true);
     });
   });
 });

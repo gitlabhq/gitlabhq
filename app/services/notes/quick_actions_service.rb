@@ -50,7 +50,7 @@ module Notes
       return if update_params.empty?
       return unless supported?(note)
 
-      self.class.noteable_update_service(note).new(note.parent, current_user, update_params).execute(note.noteable)
+      self.class.noteable_update_service(note).new(note.resource_parent, current_user, update_params).execute(note.noteable)
     end
   end
 end

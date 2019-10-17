@@ -933,8 +933,8 @@ module API
     end
 
     class PushEventPayload < Grape::Entity
-      expose :commit_count, :action, :ref_type, :commit_from, :commit_to
-      expose :ref, :commit_title
+      expose :commit_count, :action, :ref_type, :commit_from, :commit_to, :ref,
+             :commit_title, :ref_count
     end
 
     class Event < Grape::Entity
@@ -988,11 +988,11 @@ module API
 
       def todo_target_url(todo)
         target_type = todo.target_type.underscore
-        target_url = "#{todo.parent.class.to_s.underscore}_#{target_type}_url"
+        target_url = "#{todo.resource_parent.class.to_s.underscore}_#{target_type}_url"
 
         Gitlab::Routing
           .url_helpers
-          .public_send(target_url, todo.parent, todo.target, anchor: todo_target_anchor(todo)) # rubocop:disable GitlabSecurity/PublicSend
+          .public_send(target_url, todo.resource_parent, todo.target, anchor: todo_target_anchor(todo)) # rubocop:disable GitlabSecurity/PublicSend
       end
 
       def todo_target_anchor(todo)

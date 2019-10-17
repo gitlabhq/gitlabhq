@@ -68,20 +68,26 @@ sidekiq['enable'] = false
 gitlab_workhorse['enable'] = false
 gitaly['enable'] = false
 
+# virtual_storage_name must match the same storage name given to praefect in git_data_dirs
+praefect['virtual_storage_name'] = 'praefect'
+praefect['auth_token'] = 'super_secret_abc'
 praefect['enable'] = true
 praefect['storage_nodes'] = [
   {
     'storage' => 'praefect-git-1',
     'address' => 'tcp://praefect-git-1.internal',
+    'token'   => 'token1',
     'primary' => true
   },
   {
     'storage' => 'praefect-git-2',
-    'address' => 'tcp://praefect-git-2.internal'
+    'address' => 'tcp://praefect-git-2.internal',
+    'token'   => 'token2'
   },
   {
     'storage' => 'praefect-git-3',
-    'address' => 'tcp://praefect-git-3.internal'
+    'address' => 'tcp://praefect-git-3.internal',
+    'token'   => 'token3'
   }
 ]
 ```

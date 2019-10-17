@@ -113,6 +113,46 @@ describe EventCreateService do
     end
   end
 
+  shared_examples_for 'service for creating a push event' do |service_class|
+    it 'creates a new event' do
+      expect { subject }.to change { Event.count }
+    end
+
+    it 'creates the push event payload' do
+      expect(service_class).to receive(:new)
+        .with(an_instance_of(PushEvent), push_data)
+        .and_call_original
+
+      subject
+    end
+
+    it 'updates user last activity' do
+      expect { subject }.to change { user.last_activity_on }.to(Date.today)
+    end
+
+    it 'caches the last push event for the user' do
+      expect_any_instance_of(Users::LastPushEventService)
+        .to receive(:cache_last_push_event)
+        .with(an_instance_of(PushEvent))
+
+      subject
+    end
+
+    it 'does not create any event data when an error is raised' do
+      payload_service = double(:service)
+
+      allow(payload_service).to receive(:execute)
+        .and_raise(RuntimeError)
+
+      allow(service_class).to receive(:new)
+        .and_return(payload_service)
+
+      expect { subject }.to raise_error(RuntimeError)
+      expect(Event.count).to eq(0)
+      expect(PushEventPayload.count).to eq(0)
+    end
+  end
+
   describe '#push', :clean_gitlab_redis_shared_state do
     let(:project) { create(:project) }
     let(:user) { create(:user) }
@@ -132,46 +172,26 @@ describe EventCreateService do
       }
     end
 
-    it 'creates a new event' do
-      expect { service.push(project, user, push_data) }.to change { Event.count }
+    subject { service.push(project, user, push_data) }
+
+    it_behaves_like 'service for creating a push event', PushEventPayloadService
+  end
+
+  describe '#bulk_push', :clean_gitlab_redis_shared_state do
+    let(:project) { create(:project) }
+    let(:user) { create(:user) }
+
+    let(:push_data) do
+      {
+        action: :created,
+        ref_count: 4,
+        ref_type: :branch
+      }
     end
 
-    it 'creates the push event payload' do
-      expect(PushEventPayloadService).to receive(:new)
-        .with(an_instance_of(PushEvent), push_data)
-        .and_call_original
+    subject { service.bulk_push(project, user, push_data) }
 
-      service.push(project, user, push_data)
-    end
-
-    it 'updates user last activity' do
-      expect { service.push(project, user, push_data) }
-        .to change { user.last_activity_on }.to(Date.today)
-    end
-
-    it 'caches the last push event for the user' do
-      expect_any_instance_of(Users::LastPushEventService)
-        .to receive(:cache_last_push_event)
-        .with(an_instance_of(PushEvent))
-
-      service.push(project, user, push_data)
-    end
-
-    it 'does not create any event data when an error is raised' do
-      payload_service = double(:service)
-
-      allow(payload_service).to receive(:execute)
-        .and_raise(RuntimeError)
-
-      allow(PushEventPayloadService).to receive(:new)
-        .and_return(payload_service)
-
-      expect { service.push(project, user, push_data) }
-        .to raise_error(RuntimeError)
-
-      expect(Event.count).to eq(0)
-      expect(PushEventPayload.count).to eq(0)
-    end
+    it_behaves_like 'service for creating a push event', BulkPushEventPayloadService
   end
 
   describe 'Project' do

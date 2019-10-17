@@ -995,10 +995,10 @@
   resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-1.78.0.tgz#469493bd6cdd254eb5d1271edeab22bbbee2f4c4"
   integrity sha512-dBgEB/Q4FRD0NapmNrD86DF1FsV0uSgTx0UOJloHnGE2DNR2P1HQrCmLW2fX+QgN4P9CDAzdi2buVHuholofWw==
 
-"@gitlab/ui@5.32.0":
-  version "5.32.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-5.32.0.tgz#21bb70b6c8b68bdcbb53ffebde80ff3cd93851c8"
-  integrity sha512-xTFz4/WbR1e6zj2xI2DULcAGicA6qidb9Reoa02V5snqWcQY+iHDup/XzgXmttTPCiBlqPIFo/CMhH4gSJWuPQ==
+"@gitlab/ui@5.35.0":
+  version "5.35.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-5.35.0.tgz#843e9febf1d4ef9b846dc3280e32e3e626c6f9b1"
+  integrity sha512-PD9hqVlRhwYRPbL+u/gcHew8NfPXbphZ0CQqfIXaWUYdEOMksUtP6DnLToG6S321WjrCMD+IBHnVQxf2juZBxg==
   dependencies:
     "@babel/standalone" "^7.0.0"
     "@gitlab/vue-toasted" "^1.2.1"
@@ -1008,6 +1008,7 @@
     highlight.js "^9.13.1"
     js-beautify "^1.8.8"
     lodash "^4.17.14"
+    resize-observer-polyfill "^1.5.1"
     url-search-params-polyfill "^5.0.0"
     vue "^2.6.10"
     vue-loader "^15.4.2"
@@ -10530,6 +10531,11 @@ requizzle@~0.2.1:
   integrity sha1-aUPDUwxNmn5G8c3dUcFY/GcM294=
   dependencies:
     underscore "~1.6.0"
+
+resize-observer-polyfill@^1.5.1:
+  version "1.5.1"
+  resolved "https://registry.yarnpkg.com/resize-observer-polyfill/-/resize-observer-polyfill-1.5.1.tgz#0e9020dd3d21024458d4ebd27e23e40269810464"
+  integrity sha512-LwZrotdHOo12nQuZlHEmtuXdqGoOD0OhaxopaNFxWzInpEgaLWoVuAMbTzixuosCx2nEG58ngzW3vxdWoxIgdg==
 
 resolve-cwd@^2.0.0:
   version "2.0.0"

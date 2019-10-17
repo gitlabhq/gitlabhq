@@ -50,7 +50,7 @@ module Gitlab
 
         content, commands = perform_substitutions(content, commands)
 
-        [content.strip, commands]
+        [content.rstrip, commands]
       end
 
       private
@@ -109,7 +109,7 @@ module Gitlab
                 [ ]
                 (?<arg>[^\n]*)
               )?
-              (?:\n|$)
+              (?:\s*\n|$)
             )
         }mix
       end

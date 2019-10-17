@@ -34,7 +34,7 @@ describe('Actions Registry Store', () => {
       mock.onGet(`${TEST_HOST}/endpoint.json`).replyOnce(200, reposServerResponse, {});
     });
 
-    it('should set receveived repos', done => {
+    it('should set received repos', done => {
       testAction(
         actions.fetchRepos,
         null,
@@ -71,10 +71,10 @@ describe('Actions Registry Store', () => {
     beforeEach(() => {
       state.repos = parsedReposServerResponse;
       [, repo] = state.repos;
-      mock.onGet(repo.tagsPath).replyOnce(200, registryServerResponse, {});
     });
 
     it('should set received list', done => {
+      mock.onGet(repo.tagsPath).replyOnce(200, registryServerResponse, {});
       testAction(
         actions.fetchList,
         { repo },
@@ -97,6 +97,7 @@ describe('Actions Registry Store', () => {
     });
 
     it('should create flash on API error', done => {
+      mock.onGet(repo.tagsPath).replyOnce(400);
       const updatedRepo = {
         ...repo,
         tagsPath: null,
@@ -127,6 +128,19 @@ describe('Actions Registry Store', () => {
         'endpoint',
         state,
         [{ type: types.SET_MAIN_ENDPOINT, payload: 'endpoint' }],
+        [],
+        done,
+      );
+    });
+  });
+
+  describe('setIsDeleteDisabled', () => {
+    it('should commit set is delete disabled', done => {
+      testAction(
+        actions.setIsDeleteDisabled,
+        true,
+        state,
+        [{ type: types.SET_IS_DELETE_DISABLED, payload: true }],
         [],
         done,
       );

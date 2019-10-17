@@ -1,13 +1,7 @@
 # frozen_string_literal: true
 
 module Search
-  class SnippetService
-    attr_accessor :current_user, :params
-
-    def initialize(user, params)
-      @current_user, @params = user, params.dup
-    end
-
+  class SnippetService < Search::GlobalService
     def execute
       Gitlab::SnippetSearchResults.new(current_user, params[:search])
     end

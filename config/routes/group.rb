@@ -77,6 +77,8 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
         post :pause
       end
     end
+
+    resources :container_registries, only: [:index], controller: 'registry/repositories'
   end
 
   scope(path: '*id',
