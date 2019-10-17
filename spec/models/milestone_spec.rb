@@ -206,6 +206,14 @@ describe Milestone do
     end
   end
 
+  describe '#to_ability_name' do
+    it 'returns milestone' do
+      milestone = build(:milestone)
+
+      expect(milestone.to_ability_name).to eq('milestone')
+    end
+  end
+
   describe '.search' do
     let(:milestone) { create(:milestone, title: 'foo', description: 'bar') }
 
