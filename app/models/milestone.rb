@@ -262,6 +262,10 @@ class Milestone < ApplicationRecord
   end
   alias_method :resource_parent, :parent
 
+  def to_ability_name
+    model_name.singular
+  end
+
   def group_milestone?
     group_id.present?
   end
