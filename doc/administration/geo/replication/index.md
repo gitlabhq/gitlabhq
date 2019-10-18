@@ -255,36 +255,58 @@ This list of limitations only reflects the latest version of GitLab. If you are 
 The following table lists the GitLab features along with their replication
 and verification status on a **secondary** node.
 
-You can keep track of the progress to include the missing items in:
+You can keep track of the progress to implement the missing items in
+these epics/issues:
 
-- [ee-893](https://gitlab.com/groups/gitlab-org/-/epics/893).
-- [ee-1430](https://gitlab.com/groups/gitlab-org/-/epics/1430).
+- [Unreplicated Data Types](https://gitlab.com/groups/gitlab-org/-/epics/893)
+- [Verify all replicated data](https://gitlab.com/groups/gitlab-org/-/epics/1430)
 
-| Feature | Replicated | Verified |
-|-----------|------------|----------|
-| All database content (e.g. snippets, epics, issues, merge requests, groups, and project metadata)  | Yes | Yes |
-| Project repository | Yes | Yes |
-| Project wiki repository | Yes | Yes |
-| Project designs repository | No | No |
-| Uploads (e.g. attachments to issues, merge requests, epics, and avatars) | Yes | Yes, only on transfer, or manually (1) |
-| LFS Objects | Yes | Yes, only on transfer, or manually (1) |
-| CI job artifacts (other than traces) | Yes | No, only manually (1) |
-| Archived traces | Yes | Yes, only on transfer, or manually (1) |
-| Personal snippets | Yes | Yes |
-| Version-controlled personal snippets ([unsupported](https://gitlab.com/gitlab-org/gitlab-foss/issues/13426)) | No | No |
-| Project snippets | Yes | Yes |
-| Version-controlled project snippets ([unsupported](https://gitlab.com/gitlab-org/gitlab-foss/issues/13426)) | No | No |
-| Object pools for forked project deduplication | No | No |
-| [Server-side Git Hooks](../../custom_hooks.md) | No | No |
-| [Elasticsearch integration](../../../integration/elasticsearch.md) | No | No |
-| [GitLab Pages](../../pages/index.md) | No | No |
-| [Container Registry](../../packages/container_registry.md) | Yes | No |
-| [NPM Registry](../../../user/packages/npm_registry/index.md) | No | No |
-| [Maven Packages](../../../user/packages/maven_repository/index.md) | No | No |
-| [Conan Packages](../../../user/packages/conan_repository/index.md) | No | No |
-| [External merge request diffs](../../merge_request_diffs.md) | No, if they are on-disk | No |
+| Feature                                             | Replicated               | Verified                    | Notes                                      |
+|-----------------------------------------------------|--------------------------|-----------------------------|--------------------------------------------|
+| All database content                                | **Yes**                  | **Yes**                     |                                            |
+| Project repository                                  | **Yes**                  | **Yes**                     |                                            |
+| Project wiki repository                             | **Yes**                  | **Yes**                     |                                            |
+| Project designs repository                          | [No][design-replication] | [No][design-verification]   |                                            |
+| Uploads                                             | **Yes**                  | [No][upload-verification]   | Verified only on transfer, or manually (1) |
+| LFS Objects                                         | **Yes**                  | [No][lfs-verification]      | Verified only on transfer, or manually (1) |
+| CI job artifacts (other than traces)                | **Yes**                  | [No][artifact-verification] | Verified only manually (1)                 |
+| Archived traces                                     | **Yes**                  | [No][artifact-verification] | Verified only on transfer, or manually (1) |
+| Personal snippets                                   | **Yes**                  | **Yes**                     |                                            |
+| Version-controlled personal snippets                | No                       | No                          | [Not yet supported][unsupported-snippets]  |
+| Project snippets                                    | **Yes**                  | **Yes**                     |                                            |
+| Version-controlled project snippets                 | No                       | No                          | [Not yet supported][unsupported-snippets]  |
+| Object pools for forked project deduplication       | **Yes**                  | No                          |                                            |
+| [Server-side Git Hooks][custom-hooks]               | No                       | No                          |                                            |
+| [Elasticsearch integration][elasticsearch]          | No                       | No                          |                                            |
+| [GitLab Pages][gitlab-pages]                        | [No][pages-replication]  | No                          |                                            |
+| [Container Registry][container-registry]            | **Yes**                  | No                          |                                            |
+| [NPM Registry][npm-registry]                        | No                       | No                          |                                            |
+| [Maven Repository][maven-repository]                | No                       | No                          |                                            |
+| [Conan Repository][conan-repository]                | No                       | No                          |                                            |
+| [External merge request diffs][merge-request-diffs] | [No][diffs-replication]  | No                          |                                            |
+| Content in object storage                           | **Yes**                  | No                          |                                            |
 
-1. The integrity can be verified manually using [Integrity Check Rake Task](../../raketasks/check.md) on both nodes and comparing the output between them.
+[design-replication]: https://gitlab.com/groups/gitlab-org/-/epics/1633
+[design-verification]: https://gitlab.com/gitlab-org/gitlab/issues/32467
+[upload-verification]: https://gitlab.com/groups/gitlab-org/-/epics/1817
+[lfs-verification]: https://gitlab.com/gitlab-org/gitlab/issues/8922
+[artifact-verification]: https://gitlab.com/gitlab-org/gitlab/issues/8923
+[diffs-replication]: https://gitlab.com/gitlab-org/gitlab/issues/33817
+[pages-replication]: https://gitlab.com/groups/gitlab-org/-/epics/589
+
+[unsupported-snippets]: https://gitlab.com/gitlab-org/gitlab/issues/14228
+[custom-hooks]: ../../custom_hooks.md
+[elasticsearch]: ../../../integration/elasticsearch.md
+[gitlab-pages]: ../../pages/index.md
+[container-registry]: ../../packages/container_registry.md
+[npm-registry]: ../../../user/packages/npm_registry/index.md
+[maven-repository]: ../../../user/packages/maven_repository/index.md
+[conan-repository]: ../../../user/packages/conan_repository/index.md
+[merge-request-diffs]: ../../merge_request_diffs.md
+
+1. The integrity can be verified manually using
+[Integrity Check Rake Task](../../raketasks/check.md)
+on both nodes and comparing the output between them.
 
 DANGER: **DANGER**
 Features not on this list, or with **No** in the **Replicated** column,
