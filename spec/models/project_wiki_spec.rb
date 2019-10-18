@@ -109,6 +109,7 @@ describe ProjectWiki do
     context "when the wiki repository is empty" do
       describe '#empty?' do
         subject { super().empty? }
+
         it { is_expected.to be_truthy }
       end
     end
@@ -121,6 +122,7 @@ describe ProjectWiki do
 
       describe '#empty?' do
         subject { super().empty? }
+
         it { is_expected.to be_falsey }
 
         it 'only instantiates a Wiki page once' do

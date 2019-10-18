@@ -72,16 +72,6 @@ describe UploadedFile do
       end
     end
 
-    context 'when only remote id is specified' do
-      let(:params) do
-        { 'file.remote_id' => 'remote_id' }
-      end
-
-      it "raises an error" do
-        expect { subject }.to raise_error(UploadedFile::InvalidPathError, /file is invalid/)
-      end
-    end
-
     context 'when verifying allowed paths' do
       let(:params) do
         { 'file.path' => temp_file.path }
@@ -116,6 +106,52 @@ describe UploadedFile do
         it "raises an error" do
           expect { subject }.to raise_error(UploadedFile::InvalidPathError, /insecure path used/)
         end
+      end
+    end
+  end
+
+  describe '.initialize' do
+    context 'when no size is provided' do
+      it 'determine size from local path' do
+        file = described_class.new(temp_file.path)
+
+        expect(file.size).to eq(temp_file.size)
+      end
+
+      it 'raises an exception if is a remote file' do
+        expect do
+          described_class.new(nil, remote_id: 'id')
+        end.to raise_error(UploadedFile::UnknownSizeError, 'Unable to determine file size')
+      end
+    end
+
+    context 'when size is a number' do
+      let_it_be(:size) { 1.gigabyte }
+
+      it 'is overridden by the size of the local file' do
+        file = described_class.new(temp_file.path, size: size)
+
+        expect(file.size).to eq(temp_file.size)
+      end
+
+      it 'is respected if is a remote file' do
+        file = described_class.new(nil, remote_id: 'id', size: size)
+
+        expect(file.size).to eq(size)
+      end
+    end
+
+    context 'when size is a string' do
+      it 'is converted to a number' do
+        file = described_class.new(nil, remote_id: 'id', size: '1')
+
+        expect(file.size).to eq(1)
+      end
+
+      it 'raises an exception if does not represent a number' do
+        expect do
+          described_class.new(nil, remote_id: 'id', size: 'not a number')
+        end.to raise_error(UploadedFile::UnknownSizeError, 'Unable to determine file size')
       end
     end
   end

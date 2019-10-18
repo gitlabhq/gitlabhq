@@ -44,7 +44,7 @@ module Projects
       end
 
       expose :url do |service|
-        service.dig('status', 'url')
+        service.dig('status', 'url') || "http://#{service.dig('status', 'domain')}"
       end
 
       expose :description do |service|

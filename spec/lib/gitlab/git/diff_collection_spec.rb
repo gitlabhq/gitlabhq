@@ -10,6 +10,7 @@ describe Gitlab::Git::DiffCollection, :seed_helper do
       expanded: expanded
     )
   end
+
   let(:iterator) { MutatingConstantIterator.new(file_count, fake_diff(line_length, line_count)) }
   let(:file_count) { 0 }
   let(:line_length) { 1 }
@@ -21,6 +22,7 @@ describe Gitlab::Git::DiffCollection, :seed_helper do
 
   describe '#to_a' do
     subject { super().to_a }
+
     it { is_expected.to be_kind_of ::Array }
   end
 
@@ -52,16 +54,19 @@ describe Gitlab::Git::DiffCollection, :seed_helper do
 
         describe '#overflow?' do
           subject { super().overflow? }
+
           it { is_expected.to be_falsey }
         end
 
         describe '#empty?' do
           subject { super().empty? }
+
           it { is_expected.to be_falsey }
         end
 
         describe '#real_size' do
           subject { super().real_size }
+
           it { is_expected.to eq('3') }
         end
 
@@ -76,6 +81,7 @@ describe Gitlab::Git::DiffCollection, :seed_helper do
 
         describe '#line_count' do
           subject { super().line_count }
+
           it { is_expected.to eq file_count * line_count }
         end
 
@@ -84,16 +90,19 @@ describe Gitlab::Git::DiffCollection, :seed_helper do
 
           describe '#overflow?' do
             subject { super().overflow? }
+
             it { is_expected.to be_falsey }
           end
 
           describe '#empty?' do
             subject { super().empty? }
+
             it { is_expected.to be_falsey }
           end
 
           describe '#real_size' do
             subject { super().real_size }
+
             it { is_expected.to eq('3') }
           end
 
@@ -108,6 +117,7 @@ describe Gitlab::Git::DiffCollection, :seed_helper do
 
           describe '#line_count' do
             subject { super().line_count }
+
             it { is_expected.to eq file_count * line_count }
           end
         end
@@ -118,21 +128,25 @@ describe Gitlab::Git::DiffCollection, :seed_helper do
 
         describe '#overflow?' do
           subject { super().overflow? }
+
           it { is_expected.to be_truthy }
         end
 
         describe '#empty?' do
           subject { super().empty? }
+
           it { is_expected.to be_falsey }
         end
 
         describe '#real_size' do
           subject { super().real_size }
+
           it { is_expected.to eq('0+') }
         end
 
         describe '#line_count' do
           subject { super().line_count }
+
           it { is_expected.to eq 1000 }
         end
 
@@ -143,21 +157,25 @@ describe Gitlab::Git::DiffCollection, :seed_helper do
 
           describe '#overflow?' do
             subject { super().overflow? }
+
             it { is_expected.to be_falsey }
           end
 
           describe '#empty?' do
             subject { super().empty? }
+
             it { is_expected.to be_falsey }
           end
 
           describe '#real_size' do
             subject { super().real_size }
+
             it { is_expected.to eq('3') }
           end
 
           describe '#line_count' do
             subject { super().line_count }
+
             it { is_expected.to eq file_count * line_count }
           end
 
@@ -174,21 +192,25 @@ describe Gitlab::Git::DiffCollection, :seed_helper do
 
         describe '#overflow?' do
           subject { super().overflow? }
+
           it { is_expected.to be_truthy }
         end
 
         describe '#empty?' do
           subject { super().empty? }
+
           it { is_expected.to be_falsey }
         end
 
         describe '#real_size' do
           subject { super().real_size }
+
           it { is_expected.to eq('10+') }
         end
 
         describe '#line_count' do
           subject { super().line_count }
+
           it { is_expected.to eq 10 }
         end
 
@@ -199,21 +221,25 @@ describe Gitlab::Git::DiffCollection, :seed_helper do
 
           describe '#overflow?' do
             subject { super().overflow? }
+
             it { is_expected.to be_falsey }
           end
 
           describe '#empty?' do
             subject { super().empty? }
+
             it { is_expected.to be_falsey }
           end
 
           describe '#real_size' do
             subject { super().real_size }
+
             it { is_expected.to eq('11') }
           end
 
           describe '#line_count' do
             subject { super().line_count }
+
             it { is_expected.to eq file_count * line_count }
           end
 
@@ -226,21 +252,25 @@ describe Gitlab::Git::DiffCollection, :seed_helper do
 
         describe '#overflow?' do
           subject { super().overflow? }
+
           it { is_expected.to be_truthy }
         end
 
         describe '#empty?' do
           subject { super().empty? }
+
           it { is_expected.to be_falsey }
         end
 
         describe '#real_size' do
           subject { super().real_size }
+
           it { is_expected.to eq('3+') }
         end
 
         describe '#line_count' do
           subject { super().line_count }
+
           it { is_expected.to eq 120 }
         end
 
@@ -251,21 +281,25 @@ describe Gitlab::Git::DiffCollection, :seed_helper do
 
           describe '#overflow?' do
             subject { super().overflow? }
+
             it { is_expected.to be_falsey }
           end
 
           describe '#empty?' do
             subject { super().empty? }
+
             it { is_expected.to be_falsey }
           end
 
           describe '#real_size' do
             subject { super().real_size }
+
             it { is_expected.to eq('11') }
           end
 
           describe '#line_count' do
             subject { super().line_count }
+
             it { is_expected.to eq file_count * line_count }
           end
 
@@ -282,21 +316,25 @@ describe Gitlab::Git::DiffCollection, :seed_helper do
 
         describe '#overflow?' do
           subject { super().overflow? }
+
           it { is_expected.to be_falsey }
         end
 
         describe '#empty?' do
           subject { super().empty? }
+
           it { is_expected.to be_falsey }
         end
 
         describe '#real_size' do
           subject { super().real_size }
+
           it { is_expected.to eq('10') }
         end
 
         describe '#line_count' do
           subject { super().line_count }
+
           it { is_expected.to eq file_count * line_count }
         end
 
@@ -310,21 +348,25 @@ describe Gitlab::Git::DiffCollection, :seed_helper do
 
       describe '#overflow?' do
         subject { super().overflow? }
+
         it { is_expected.to be_truthy }
       end
 
       describe '#empty?' do
         subject { super().empty? }
+
         it { is_expected.to be_falsey }
       end
 
       describe '#real_size' do
         subject { super().real_size }
+
         it { is_expected.to eq('9+') }
       end
 
       describe '#line_count' do
         subject { super().line_count }
+
         it { is_expected.to eq file_count * line_count }
       end
 
@@ -335,21 +377,25 @@ describe Gitlab::Git::DiffCollection, :seed_helper do
 
         describe '#overflow?' do
           subject { super().overflow? }
+
           it { is_expected.to be_falsey }
         end
 
         describe '#empty?' do
           subject { super().empty? }
+
           it { is_expected.to be_falsey }
         end
 
         describe '#real_size' do
           subject { super().real_size }
+
           it { is_expected.to eq('10') }
         end
 
         describe '#line_count' do
           subject { super().line_count }
+
           it { is_expected.to eq file_count * line_count }
         end
 
@@ -363,26 +409,31 @@ describe Gitlab::Git::DiffCollection, :seed_helper do
 
     describe '#overflow?' do
       subject { super().overflow? }
+
       it { is_expected.to be_falsey }
     end
 
     describe '#empty?' do
       subject { super().empty? }
+
       it { is_expected.to be_truthy }
     end
 
     describe '#size' do
       subject { super().size }
+
       it { is_expected.to eq(0) }
     end
 
     describe '#real_size' do
       subject { super().real_size }
+
       it { is_expected.to eq('0')}
     end
 
     describe '#line_count' do
       subject { super().line_count }
+
       it { is_expected.to eq 0 }
     end
   end

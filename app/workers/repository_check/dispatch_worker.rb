@@ -7,6 +7,8 @@ module RepositoryCheck
     include ::EachShardWorker
     include ExclusiveLeaseGuard
 
+    feature_category :source_code_management
+
     LEASE_TIMEOUT = 1.hour
 
     def perform

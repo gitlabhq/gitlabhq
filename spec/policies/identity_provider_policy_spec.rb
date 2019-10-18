@@ -4,6 +4,7 @@ require 'spec_helper'
 
 describe IdentityProviderPolicy do
   subject(:policy) { described_class.new(user, provider) }
+
   let(:user) { User.new }
   let(:provider) { :a_provider }
 

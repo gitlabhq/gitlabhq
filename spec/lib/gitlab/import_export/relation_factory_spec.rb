@@ -85,7 +85,7 @@ describe Gitlab::ImportExport::RelationFactory do
   class FooModel
     include ActiveModel::Model
 
-    def initialize(params)
+    def initialize(params = {})
       params.each { |key, value| send("#{key}=", value) }
     end
 

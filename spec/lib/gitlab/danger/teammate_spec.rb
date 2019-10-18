@@ -8,6 +8,7 @@ require 'gitlab/danger/teammate'
 
 describe Gitlab::Danger::Teammate do
   subject { described_class.new(options.stringify_keys) }
+
   let(:options) { { username: 'luigi', projects: projects, role: role } }
   let(:projects) { { project => capabilities } }
   let(:role) { 'Engineer, Manage' }

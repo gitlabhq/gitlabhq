@@ -151,6 +151,7 @@ describe Gitlab::Utils::Override do
 
         context 'when subject is a module, and class is prepending it' do
           subject { extension }
+
           let(:klass) { prepending_class }
 
           it_behaves_like 'checking as intended'
@@ -158,6 +159,7 @@ describe Gitlab::Utils::Override do
 
         context 'when subject is a module, and class is including it' do
           subject { extension }
+
           let(:klass) { including_class }
 
           it_behaves_like 'checking as intended, nothing was overridden'
@@ -177,6 +179,7 @@ describe Gitlab::Utils::Override do
 
         context 'when subject is a module, and class is prepending it' do
           subject { extension }
+
           let(:klass) { prepending_class }
 
           it_behaves_like 'nothing happened'
@@ -184,6 +187,7 @@ describe Gitlab::Utils::Override do
 
         context 'when subject is a module, and class is including it' do
           subject { extension }
+
           let(:klass) { including_class }
 
           it 'does not complain when it is overriding something' do
@@ -215,6 +219,7 @@ describe Gitlab::Utils::Override do
 
         context 'when subject is a module, and class is prepending it' do
           subject { extension }
+
           let(:klass) { prepending_class_methods }
 
           it_behaves_like 'checking as intended'
@@ -222,6 +227,7 @@ describe Gitlab::Utils::Override do
 
         context 'when subject is a module, and class is extending it' do
           subject { extension }
+
           let(:klass) { extending_class_methods }
 
           it_behaves_like 'checking as intended, nothing was overridden'

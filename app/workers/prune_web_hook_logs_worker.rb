@@ -6,6 +6,8 @@ class PruneWebHookLogsWorker
   include ApplicationWorker
   include CronjobQueue
 
+  feature_category :integrations
+
   # The maximum number of rows to remove in a single job.
   DELETE_LIMIT = 50_000
 

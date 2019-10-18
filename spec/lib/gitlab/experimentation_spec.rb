@@ -75,6 +75,7 @@ describe Gitlab::Experimentation do
 
   describe '.enabled?' do
     subject { described_class.enabled?(:test_experiment, experimentation_subject_index) }
+
     let(:experimentation_subject_index) { 9 }
 
     context 'feature toggle is enabled, we are on the right environment and we are selected' do

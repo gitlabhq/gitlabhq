@@ -4,6 +4,8 @@
 class PropagateServiceTemplateWorker
   include ApplicationWorker
 
+  feature_category :source_code_management
+
   LEASE_TIMEOUT = 4.hours.to_i
 
   # rubocop: disable CodeReuse/ActiveRecord

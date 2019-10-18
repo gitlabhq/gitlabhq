@@ -5,6 +5,8 @@ module ObjectStorage
     include ApplicationWorker
     include ObjectStorageQueue
 
+    feature_category_not_owned!
+
     SanityCheckError = Class.new(StandardError)
 
     class MigrationResult

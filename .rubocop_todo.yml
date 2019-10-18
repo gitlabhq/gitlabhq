@@ -273,11 +273,6 @@ RSpec/ContextWording:
 RSpec/EmptyLineAfterFinalLet:
   Enabled: false
 
-# Offense count: 232
-# Cop supports --auto-correct.
-RSpec/EmptyLineAfterSubject:
-  Enabled: false
-
 # Offense count: 719
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle.

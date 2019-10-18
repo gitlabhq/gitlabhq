@@ -319,10 +319,10 @@ module KubernetesHelpers
     }
   end
 
-  def kube_knative_services_body(**options)
+  def kube_knative_services_body(legacy_knative: false, **options)
     {
       "kind" => "List",
-      "items" => [kube_service(options)]
+      "items" => [legacy_knative ? knative_05_service(options) : kube_service(options)]
     }
   end
 
@@ -414,6 +414,27 @@ module KubernetesHelpers
         "address" => {
           "url" => "#{name}.#{namespace}.svc.cluster.local"
         },
+        "latestCreatedRevisionName" => "#{name}-00002",
+        "latestReadyRevisionName" => "#{name}-00002",
+        "observedGeneration" => 2
+      }
+    }
+  end
+
+  def knative_05_service(name: "kubetest", namespace: "default", domain: "example.com")
+    {
+      "metadata" => {
+        "creationTimestamp" => "2018-11-21T06:16:33Z",
+        "name" => name,
+        "namespace" => namespace,
+        "selfLink" => "/apis/serving.knative.dev/v1alpha1/namespaces/#{namespace}/services/#{name}"
+      },
+      "spec" => {
+        "generation" => 2
+      },
+      "status" => {
+        "domain" => "#{name}.#{namespace}.#{domain}",
+        "domainInternal" => "#{name}.#{namespace}.svc.cluster.local",
         "latestCreatedRevisionName" => "#{name}-00002",
         "latestReadyRevisionName" => "#{name}-00002",
         "observedGeneration" => 2

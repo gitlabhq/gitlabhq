@@ -3,6 +3,8 @@
 class PagesDomainSslRenewalWorker
   include ApplicationWorker
 
+  feature_category :pages
+
   def perform(domain_id)
     domain = PagesDomain.find_by_id(domain_id)
     return unless domain&.enabled?

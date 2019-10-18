@@ -125,24 +125,54 @@ describe API::CommitStatuses do
     let(:post_url) { "/projects/#{project.id}/statuses/#{sha}" }
 
     context 'developer user' do
-      %w[pending running success failed canceled].each do |status|
-        context "for #{status}" do
-          context 'uses only required parameters' do
-            it 'creates commit status' do
-              post api(post_url, developer), params: { state: status }
+      context 'uses only required parameters' do
+        %w[pending running success failed canceled].each do |status|
+          context "for #{status}" do
+            context 'when pipeline for sha does not exists' do
+              it 'creates commit status' do
+                post api(post_url, developer), params: { state: status }
 
-              expect(response).to have_gitlab_http_status(201)
-              expect(json_response['sha']).to eq(commit.id)
-              expect(json_response['status']).to eq(status)
-              expect(json_response['name']).to eq('default')
-              expect(json_response['ref']).not_to be_empty
-              expect(json_response['target_url']).to be_nil
-              expect(json_response['description']).to be_nil
+                expect(response).to have_gitlab_http_status(201)
+                expect(json_response['sha']).to eq(commit.id)
+                expect(json_response['status']).to eq(status)
+                expect(json_response['name']).to eq('default')
+                expect(json_response['ref']).not_to be_empty
+                expect(json_response['target_url']).to be_nil
+                expect(json_response['description']).to be_nil
 
-              if status == 'failed'
-                expect(CommitStatus.find(json_response['id'])).to be_api_failure
+                if status == 'failed'
+                  expect(CommitStatus.find(json_response['id'])).to be_api_failure
+                end
               end
             end
+          end
+        end
+
+        context 'when pipeline already exists for the specified sha' do
+          let!(:pipeline) { create(:ci_pipeline, project: project, sha: sha, ref: 'ref') }
+          let(:params) { { state: 'pending' } }
+
+          shared_examples_for 'creates a commit status for the existing pipeline' do
+            it do
+              expect do
+                post api(post_url, developer), params: params
+              end.not_to change { Ci::Pipeline.count }
+
+              job = pipeline.statuses.find_by_name(json_response['name'])
+
+              expect(response).to have_gitlab_http_status(201)
+              expect(job.status).to eq('pending')
+            end
+          end
+
+          it_behaves_like 'creates a commit status for the existing pipeline'
+
+          context 'with pipeline for merge request' do
+            let!(:merge_request) { create(:merge_request, :with_detached_merge_request_pipeline, source_project: project) }
+            let!(:pipeline) { merge_request.all_pipelines.last }
+            let(:sha) { pipeline.sha }
+
+            it_behaves_like 'creates a commit status for the existing pipeline'
           end
         end
       end

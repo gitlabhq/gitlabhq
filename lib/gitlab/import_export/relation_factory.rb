@@ -292,7 +292,11 @@ module Gitlab
 
             existing_object
           else
-            relation_class.new(parsed_relation_hash)
+            object = relation_class.new
+
+            # Use #assign_attributes here to call object custom setters
+            object.assign_attributes(parsed_relation_hash)
+            object
           end
         end
       end

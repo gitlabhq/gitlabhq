@@ -6,7 +6,7 @@ module RepositoryCheckQueue
 
   included do
     queue_namespace :repository_check
-
     sidekiq_options retry: false
+    feature_category :source_code_management
   end
 end

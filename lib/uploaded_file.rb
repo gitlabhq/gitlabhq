@@ -6,6 +6,7 @@ require "fileutils"
 
 class UploadedFile
   InvalidPathError = Class.new(StandardError)
+  UnknownSizeError = Class.new(StandardError)
 
   # The filename, *not* including the path, of the "uploaded" file
   attr_reader :original_filename
@@ -18,37 +19,50 @@ class UploadedFile
 
   attr_reader :remote_id
   attr_reader :sha256
+  attr_reader :size
 
-  def initialize(path, filename: nil, content_type: "application/octet-stream", sha256: nil, remote_id: nil)
-    raise InvalidPathError, "#{path} file does not exist" unless ::File.exist?(path)
+  def initialize(path, filename: nil, content_type: "application/octet-stream", sha256: nil, remote_id: nil, size: nil)
+    if path.present?
+      raise InvalidPathError, "#{path} file does not exist" unless ::File.exist?(path)
+
+      @tempfile = File.new(path, 'rb')
+      @size = @tempfile.size
+    else
+      begin
+        @size = Integer(size)
+      rescue ArgumentError, TypeError
+        raise UnknownSizeError, 'Unable to determine file size'
+      end
+    end
 
     @content_type = content_type
-    @original_filename = sanitize_filename(filename || path)
+    @original_filename = sanitize_filename(filename || path || '')
     @content_type = content_type
     @sha256 = sha256
     @remote_id = remote_id
-    @tempfile = File.new(path, 'rb')
   end
 
   def self.from_params(params, field, upload_paths)
-    unless params["#{field}.path"]
-      raise InvalidPathError, "file is invalid" if params["#{field}.remote_id"]
+    path = params["#{field}.path"]
+    remote_id = params["#{field}.remote_id"]
+    return if path.blank? && remote_id.blank?
 
-      return
-    end
+    file_path = nil
+    if path
+      file_path = File.realpath(path)
 
-    file_path = File.realpath(params["#{field}.path"])
-
-    paths = Array(upload_paths) << Dir.tmpdir
-    unless self.allowed_path?(file_path, paths.compact)
-      raise InvalidPathError, "insecure path used '#{file_path}'"
+      paths = Array(upload_paths) << Dir.tmpdir
+      unless self.allowed_path?(file_path, paths.compact)
+        raise InvalidPathError, "insecure path used '#{file_path}'"
+      end
     end
 
     UploadedFile.new(file_path,
       filename: params["#{field}.name"],
       content_type: params["#{field}.type"] || 'application/octet-stream',
       sha256: params["#{field}.sha256"],
-      remote_id: params["#{field}.remote_id"])
+      remote_id: remote_id,
+      size: params["#{field}.size"])
   end
 
   def self.allowed_path?(file_path, paths)
@@ -68,7 +82,11 @@ class UploadedFile
   end
 
   def path
-    @tempfile.path
+    @tempfile&.path
+  end
+
+  def close
+    @tempfile&.close
   end
 
   alias_method :local_path, :path

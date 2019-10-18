@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe ConversationalDevelopmentIndex::MetricPresenter do
   subject { described_class.new(metric) }
+
   let(:metric) { build(:conversational_development_index_metric) }
 
   describe '#cards' do

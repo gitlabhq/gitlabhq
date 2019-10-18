@@ -250,6 +250,9 @@ msgstr ""
 msgid "%{firstLabel} +%{labelCount} more"
 msgstr ""
 
+msgid "%{from} to %{to}"
+msgstr ""
+
 msgid "%{gitlab_ci_yml} not found in this commit"
 msgstr ""
 
@@ -1774,6 +1777,9 @@ msgid "Applications"
 msgstr ""
 
 msgid "Applied"
+msgstr ""
+
+msgid "Apply"
 msgstr ""
 
 msgid "Apply a label"
@@ -4855,6 +4861,9 @@ msgstr ""
 msgid "Custom project templates have not been set up for groups that you are a member of. They are enabled from a group’s settings page. Contact your group’s Owner or Maintainer to setup custom project templates."
 msgstr ""
 
+msgid "Custom range"
+msgstr ""
+
 msgid "CustomCycleAnalytics|Add a stage"
 msgstr ""
 
@@ -7329,6 +7338,9 @@ msgid "Forks"
 msgstr ""
 
 msgid "Format"
+msgstr ""
+
+msgid "Format: %{dateFormat}"
 msgstr ""
 
 msgid "Forward external support email address to"
@@ -10412,6 +10424,9 @@ msgstr ""
 msgid "Metrics|Legend label (optional)"
 msgstr ""
 
+msgid "Metrics|Link contains an invalid time window."
+msgstr ""
+
 msgid "Metrics|Max"
 msgstr ""
 
@@ -13377,6 +13392,9 @@ msgid "Query is valid"
 msgstr ""
 
 msgid "Quick actions can be used in the issues description and comment boxes."
+msgstr ""
+
+msgid "Quick range"
 msgstr ""
 
 msgid "README"
@@ -17153,6 +17171,9 @@ msgid "Title:"
 msgstr ""
 
 msgid "Titles and Filenames"
+msgstr ""
+
+msgid "To"
 msgstr ""
 
 msgid "To %{link_to_help} of your domain, add the above key to a TXT record within to your DNS configuration."

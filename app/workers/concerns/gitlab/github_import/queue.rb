@@ -7,6 +7,7 @@ module Gitlab
 
       included do
         queue_namespace :github_importer
+        feature_category :importers
 
         # If a job produces an error it may block a stage from advancing
         # forever. To prevent this from happening we prevent jobs from going to

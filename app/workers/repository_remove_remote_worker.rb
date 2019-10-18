@@ -4,6 +4,8 @@ class RepositoryRemoveRemoteWorker
   include ApplicationWorker
   include ExclusiveLeaseGuard
 
+  feature_category :source_code_management
+
   LEASE_TIMEOUT = 1.hour
 
   attr_reader :project, :remote_name

@@ -25,6 +25,7 @@ issues:
 - epic
 - designs
 - design_versions
+- description_versions
 - prometheus_alerts
 - prometheus_alert_events
 - self_managed_prometheus_alert_events
@@ -132,6 +133,7 @@ merge_requests:
 - blocks_as_blockee
 - blocking_merge_requests
 - blocked_merge_requests
+- description_versions
 external_pull_requests:
 - project
 merge_request_diff:

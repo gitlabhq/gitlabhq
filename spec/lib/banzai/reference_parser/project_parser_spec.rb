@@ -8,6 +8,7 @@ describe Banzai::ReferenceParser::ProjectParser do
   let(:project) { create(:project, :public) }
   let(:user) { create(:user) }
   subject { described_class.new(Banzai::RenderContext.new(project, user)) }
+
   let(:link) { empty_html_link }
 
   describe '#referenced_by' do

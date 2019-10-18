@@ -4,6 +4,7 @@ require 'spec_helper'
 
 describe Gitlab::Metrics::Samplers::PumaSampler do
   subject { described_class.new(5) }
+
   let(:null_metric) { double('null_metric', set: nil, observe: nil) }
 
   before do

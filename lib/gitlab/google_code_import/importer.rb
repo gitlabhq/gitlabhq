@@ -117,7 +117,7 @@ module Gitlab
             description:  body,
             author_id:    project.creator_id,
             assignee_ids: [assignee_id],
-            state:        raw_issue['state'] == 'closed' ? 'closed' : 'opened'
+            state_id:     raw_issue['state'] == 'closed' ? Issue.available_states[:closed] : Issue.available_states[:opened]
           )
 
           issue_labels = ::LabelsFinder.new(nil, project_id: project.id, title: labels).execute(skip_authorization: true)

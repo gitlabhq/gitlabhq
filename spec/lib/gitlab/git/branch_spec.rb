@@ -44,6 +44,7 @@ describe Gitlab::Git::Branch, :seed_helper do
 
   describe '#size' do
     subject { super().size }
+
     it { is_expected.to eq(SeedRepo::Repo::BRANCHES.size) }
   end
 

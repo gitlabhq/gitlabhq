@@ -4,6 +4,7 @@ class CleanupContainerRepositoryWorker
   include ApplicationWorker
 
   queue_namespace :container_repository
+  feature_category :container_registry
 
   attr_reader :container_repository, :current_user
 

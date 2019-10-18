@@ -4,6 +4,8 @@ class StuckImportJobsWorker
   include ApplicationWorker
   include CronjobQueue
 
+  feature_category :importers
+
   IMPORT_JOBS_EXPIRATION = 15.hours.to_i
 
   def perform

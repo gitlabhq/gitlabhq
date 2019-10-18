@@ -2170,6 +2170,7 @@ describe User do
 
   describe "#contributed_projects" do
     subject { create(:user) }
+
     let!(:project1) { create(:project) }
     let!(:project2) { fork_project(project3) }
     let!(:project3) { create(:project) }

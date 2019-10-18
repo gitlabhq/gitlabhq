@@ -574,6 +574,7 @@ describe Ci::Build do
 
   describe '#artifacts_metadata?' do
     subject { build.artifacts_metadata? }
+
     context 'artifacts metadata does not exist' do
       it { is_expected.to be_falsy }
     end
@@ -586,6 +587,7 @@ describe Ci::Build do
 
   describe '#artifacts_expire_in' do
     subject { build.artifacts_expire_in }
+
     it { is_expected.to be_nil }
 
     context 'when artifacts_expire_at is specified' do
@@ -1265,6 +1267,7 @@ describe Ci::Build do
 
         describe '#erasable?' do
           subject { build.erasable? }
+
           it { is_expected.to be_truthy }
         end
 

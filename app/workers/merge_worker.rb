@@ -3,6 +3,8 @@
 class MergeWorker
   include ApplicationWorker
 
+  feature_category :source_code_management
+
   def perform(merge_request_id, current_user_id, params)
     params = params.with_indifferent_access
     current_user = User.find(current_user_id)

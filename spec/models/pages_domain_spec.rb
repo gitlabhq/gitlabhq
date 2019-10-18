@@ -293,11 +293,13 @@ describe PagesDomain do
   describe "#https?" do
     context "when a certificate is present" do
       subject { build(:pages_domain) }
+
       it { is_expected.to be_https }
     end
 
     context "when no certificate is present" do
       subject { build(:pages_domain, :without_certificate) }
+
       it { is_expected.not_to be_https }
     end
   end

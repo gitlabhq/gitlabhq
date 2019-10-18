@@ -1,6 +1,7 @@
 shared_context 'simple_check' do |metrics_prefix, check_name, success_result|
   describe '#metrics' do
     subject { described_class.metrics }
+
     context 'Check is passing' do
       before do
         allow(described_class).to receive(:check).and_return success_result
@@ -34,6 +35,7 @@ shared_context 'simple_check' do |metrics_prefix, check_name, success_result|
 
   describe '#readiness' do
     subject { described_class.readiness }
+
     context 'Check returns ok' do
       before do
         allow(described_class).to receive(:check).and_return success_result

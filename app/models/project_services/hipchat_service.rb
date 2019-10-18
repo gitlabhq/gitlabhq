@@ -161,7 +161,7 @@ class HipchatService < Service
     obj_attr = data[:object_attributes]
     obj_attr = HashWithIndifferentAccess.new(obj_attr)
     title = render_line(obj_attr[:title])
-    state = obj_attr[:state]
+    state = Issue.available_states.key(obj_attr[:state_id])
     issue_iid = obj_attr[:iid]
     issue_url = obj_attr[:url]
     description = obj_attr[:description]

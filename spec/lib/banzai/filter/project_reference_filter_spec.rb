@@ -15,6 +15,7 @@ describe Banzai::Filter::ProjectReferenceFilter do
 
   let(:project) { create(:project, :public) }
   subject { project }
+
   let(:subject_name) { "project" }
   let(:reference) { get_reference(project) }
 

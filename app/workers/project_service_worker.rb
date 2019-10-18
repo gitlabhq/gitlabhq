@@ -4,6 +4,7 @@ class ProjectServiceWorker
   include ApplicationWorker
 
   sidekiq_options dead: false
+  feature_category :integrations
 
   def perform(hook_id, data)
     data = data.with_indifferent_access

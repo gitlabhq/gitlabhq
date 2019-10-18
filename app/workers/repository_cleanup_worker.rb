@@ -4,6 +4,7 @@ class RepositoryCleanupWorker
   include ApplicationWorker
 
   sidekiq_options retry: 3
+  feature_category :source_code_management
 
   sidekiq_retries_exhausted do |msg, err|
     next if err.is_a?(ActiveRecord::RecordNotFound)

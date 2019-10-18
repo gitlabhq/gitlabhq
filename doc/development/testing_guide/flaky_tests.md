@@ -80,6 +80,9 @@ This was originally implemented in: <https://gitlab.com/gitlab-org/gitlab-foss/m
 - [Bis](https://gitlab.com/gitlab-org/gitlab-foss/issues/34609#note_34048715): <https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/12604>
 - [Bis](https://gitlab.com/gitlab-org/gitlab-foss/issues/34698#note_34276286): <https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/12664>
 - [Assert against the underlying database state instead of against a page's content](https://gitlab.com/gitlab-org/gitlab-foss/issues/31437): <https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/10934>
+- In JS tests, shifting elements can cause Capybara to misclick when the element moves at the exact time Capybara sends the click
+  - [Dropdowns rendering upward or downward due to window size and scroll position](https://gitlab.com/gitlab-org/gitlab/merge_requests/17660)
+  - [Lazy loaded images can cause Capybara to misclick](https://gitlab.com/gitlab-org/gitlab/merge_requests/18713)
 
 #### Capybara viewport size related issues
 

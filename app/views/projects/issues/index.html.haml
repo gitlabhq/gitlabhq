@@ -20,4 +20,5 @@
     - if new_issue_email
       = render 'projects/issuable_by_email', email: new_issue_email, issuable_type: 'issue'
 - else
-  = render 'shared/empty_states/issues', button_path: new_project_issue_path(@project), show_import_button: true
+  - new_project_issue_button_path = @project.archived? ? false : new_project_issue_path(@project)
+  = render 'shared/empty_states/issues', new_project_issue_button_path: new_project_issue_button_path, show_import_button: true

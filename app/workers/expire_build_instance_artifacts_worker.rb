@@ -3,6 +3,8 @@
 class ExpireBuildInstanceArtifactsWorker
   include ApplicationWorker
 
+  feature_category :continuous_integration
+
   # rubocop: disable CodeReuse/ActiveRecord
   def perform(build_id)
     build = Ci::Build

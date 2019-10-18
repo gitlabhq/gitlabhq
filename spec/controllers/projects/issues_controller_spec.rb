@@ -1180,6 +1180,7 @@ describe Projects::IssuesController do
         name: emoji_name
       })
     end
+
     let(:emoji_name) { 'thumbsup' }
 
     it "toggles the award emoji" do

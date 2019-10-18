@@ -308,8 +308,8 @@ describe Gitlab::BitbucketImport::Importer do
 
       importer.execute
 
-      expect(project.issues.where(state: "closed").size).to eq(5)
-      expect(project.issues.where(state: "opened").size).to eq(2)
+      expect(project.issues.where(state_id: Issue.available_states[:closed]).size).to eq(5)
+      expect(project.issues.where(state_id: Issue.available_states[:opened]).size).to eq(2)
     end
 
     describe 'wiki import' do

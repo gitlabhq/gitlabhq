@@ -55,11 +55,13 @@ describe Note do
 
     context 'when noteable and note project are the same' do
       subject { create(:note) }
+
       it { is_expected.to be_valid }
     end
 
     context 'when project is missing for a project related note' do
       subject { build(:note, project: nil, noteable: build_stubbed(:issue)) }
+
       it { is_expected.to be_invalid }
     end
 
@@ -741,6 +743,7 @@ describe Note do
 
   describe '#to_discussion' do
     subject { create(:discussion_note_on_merge_request) }
+
     let!(:note2) { create(:discussion_note_on_merge_request, project: subject.project, noteable: subject.noteable, in_reply_to: subject) }
 
     it "returns a discussion with just this note" do
@@ -808,6 +811,7 @@ describe Note do
     context 'for a note' do
       context 'when part of a discussion' do
         subject { create(:discussion_note_on_issue) }
+
         let(:note) { create(:discussion_note_on_issue, in_reply_to: subject) }
 
         it 'checks if the note is in reply to the other discussion' do
@@ -821,6 +825,7 @@ describe Note do
 
       context 'when not part of a discussion' do
         subject { create(:note) }
+
         let(:note) { create(:note, in_reply_to: subject) }
 
         it 'checks if the note is in reply to the other noteable' do
@@ -835,6 +840,7 @@ describe Note do
     context 'for a discussion' do
       context 'when part of the same discussion' do
         subject { create(:diff_note_on_merge_request) }
+
         let(:note) { create(:diff_note_on_merge_request, in_reply_to: subject) }
 
         it 'returns true' do
@@ -844,6 +850,7 @@ describe Note do
 
       context 'when not part of the same discussion' do
         subject { create(:diff_note_on_merge_request) }
+
         let(:note) { create(:diff_note_on_merge_request) }
 
         it 'returns false' do
@@ -855,6 +862,7 @@ describe Note do
     context 'for a noteable' do
       context 'when a comment on the same noteable' do
         subject { create(:note) }
+
         let(:note) { create(:note, in_reply_to: subject) }
 
         it 'returns true' do
@@ -864,6 +872,7 @@ describe Note do
 
       context 'when not a comment on the same noteable' do
         subject { create(:note) }
+
         let(:note) { create(:note) }
 
         it 'returns false' do
@@ -887,6 +896,7 @@ describe Note do
 
     context 'when not part of a discussion' do
       subject { create(:note) }
+
       let(:note) { create(:note, in_reply_to: subject) }
 
       it 'returns the noteable' do

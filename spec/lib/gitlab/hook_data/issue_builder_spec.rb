@@ -26,7 +26,7 @@ describe Gitlab::HookData::IssueBuilder do
         duplicated_to_id
         project_id
         relative_position
-        state
+        state_id
         time_estimate
         title
         updated_at
@@ -41,6 +41,7 @@ describe Gitlab::HookData::IssueBuilder do
       expect(data).to include(:human_time_estimate)
       expect(data).to include(:human_total_time_spent)
       expect(data).to include(:assignee_ids)
+      expect(data).to include(:state)
       expect(data).to include('labels' => [label.hook_attrs])
     end
 

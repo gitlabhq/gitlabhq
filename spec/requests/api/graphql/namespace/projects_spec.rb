@@ -67,6 +67,7 @@ describe 'getting projects' do
 
   context 'when the namespace is a user' do
     subject { user.namespace }
+
     let(:include_subgroups) { false }
 
     it_behaves_like 'a graphql namespace'

@@ -3,6 +3,8 @@
 class CreateGpgSignatureWorker
   include ApplicationWorker
 
+  feature_category :source_code_management
+
   # rubocop: disable CodeReuse/ActiveRecord
   def perform(commit_shas, project_id)
     # Older versions of Git::BranchPushService may push a single commit ID on

@@ -46,6 +46,20 @@
   }
 }
 
+.prometheus-graphs-header {
+  .time-window-dropdown-menu {
+    padding: $gl-padding $gl-padding 0 $gl-padding-12;
+  }
+
+  .time-window-dropdown-menu-container {
+    width: 360px;
+  }
+
+  .custom-time-range-form-group > label {
+    padding-bottom: $gl-padding;
+  }
+}
+
 .prometheus-panel {
   margin-top: 20px;
 }

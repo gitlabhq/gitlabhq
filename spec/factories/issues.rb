@@ -12,7 +12,7 @@ FactoryBot.define do
     end
 
     trait :opened do
-      state { :opened }
+      state_id { Issue.available_states[:opened] }
     end
 
     trait :locked do
@@ -20,8 +20,12 @@ FactoryBot.define do
     end
 
     trait :closed do
-      state { :closed }
+      state_id { Issue.available_states[:closed] }
       closed_at { Time.now }
+    end
+
+    after(:build) do |issue, evaluator|
+      issue.state_id = Issue.available_states[evaluator.state]
     end
 
     factory :closed_issue, traits: [:closed]

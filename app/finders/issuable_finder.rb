@@ -161,7 +161,7 @@ class IssuableFinder
     labels_count = label_names.any? ? label_names.count : 1
     labels_count = 1 if use_cte_for_search?
 
-    finder.execute.reorder(nil).group(:state).count.each do |key, value|
+    finder.execute.reorder(nil).group(:state_id).count.each do |key, value|
       counts[count_key(key)] += value / labels_count
     end
 
@@ -385,7 +385,8 @@ class IssuableFinder
   end
 
   def count_key(value)
-    Array(value).last.to_sym
+    value = Array(value).last
+    klass.available_states.key(value)
   end
 
   # Negates all params found in `negatable_params`
@@ -444,7 +445,6 @@ class IssuableFinder
     items
   end
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def by_state(items)
     case params[:state].to_s
     when 'closed'
@@ -454,12 +454,11 @@ class IssuableFinder
     when 'opened'
       items.opened
     when 'locked'
-      items.where(state: 'locked')
+      items.with_state(:locked)
     else
       items
     end
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   def by_group(items)
     # Selection by group is already covered by `by_project` and `projects`

@@ -4,6 +4,8 @@ class PagesDomainSslRenewalCronWorker
   include ApplicationWorker
   include CronjobQueue
 
+  feature_category :pages
+
   def perform
     return unless ::Gitlab::LetsEncrypt.enabled?
 

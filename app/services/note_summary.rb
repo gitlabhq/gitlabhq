@@ -10,6 +10,10 @@ class NoteSummary
               project: project, author: author, note: body }
     @metadata = { action: action, commit_count: commit_count }.compact
 
+    if action == 'description' && noteable.saved_description_version
+      @metadata[:description_version] = noteable.saved_description_version
+    end
+
     set_commit_params if note[:noteable].is_a?(Commit)
   end
 

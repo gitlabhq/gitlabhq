@@ -139,6 +139,7 @@ describe PipelineSerializer do
 
     describe 'number of queries when preloaded' do
       subject { serializer.represent(resource, preload: true) }
+
       let(:resource) { Ci::Pipeline.all }
 
       before do

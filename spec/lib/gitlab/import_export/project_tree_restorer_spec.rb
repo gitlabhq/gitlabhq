@@ -434,6 +434,11 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
                       labels: 0,
                       milestones: 0,
                       first_issue_labels: 1
+
+      it 'restores issue states' do
+        expect(project.issues.with_state(:closed).count).to eq(1)
+        expect(project.issues.with_state(:opened).count).to eq(1)
+      end
     end
 
     context 'with existing group models' do

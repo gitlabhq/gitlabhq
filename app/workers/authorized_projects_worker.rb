@@ -4,6 +4,8 @@ class AuthorizedProjectsWorker
   include ApplicationWorker
   prepend WaitableWorker
 
+  feature_category :authentication_and_authorization
+
   # This is a workaround for a Ruby 2.3.7 bug. rspec-mocks cannot restore the
   # visibility of prepended modules. See https://github.com/rspec/rspec-mocks/issues/1231
   # for more details.

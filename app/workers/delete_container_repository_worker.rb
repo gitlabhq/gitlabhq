@@ -5,6 +5,7 @@ class DeleteContainerRepositoryWorker
   include ExclusiveLeaseGuard
 
   queue_namespace :container_repository
+  feature_category :container_registry
 
   LEASE_TIMEOUT = 1.hour
 

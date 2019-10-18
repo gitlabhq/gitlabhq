@@ -39,6 +39,10 @@ module Issuable
 
           if note.system_note_metadata
             new_params[:system_note_metadata] = note.system_note_metadata.dup
+
+            # TODO: Implement copying of description versions when an issue is moved
+            # https://gitlab.com/gitlab-org/gitlab/issues/32300
+            new_params[:system_note_metadata].description_version = nil
           end
 
           new_note.update(new_params)

@@ -71,7 +71,7 @@ class Issue < ApplicationRecord
   attr_spammable :title, spam_title: true
   attr_spammable :description, spam_description: true
 
-  state_machine :state, initial: :opened do
+  state_machine :state_id, initial: :opened do
     event :close do
       transition [:opened] => :closed
     end
@@ -80,8 +80,8 @@ class Issue < ApplicationRecord
       transition closed: :opened
     end
 
-    state :opened
-    state :closed
+    state :opened, value: Issue.available_states[:opened]
+    state :closed, value: Issue.available_states[:closed]
 
     before_transition any => :closed do |issue|
       issue.closed_at = issue.system_note_timestamp
@@ -91,6 +91,13 @@ class Issue < ApplicationRecord
       issue.closed_at = nil
       issue.closed_by = nil
     end
+  end
+
+  # Alias to state machine .with_state_id method
+  # This needs to be defined after the state machine block to avoid errors
+  class << self
+    alias_method :with_state, :with_state_id
+    alias_method :with_states, :with_state_ids
   end
 
   def self.relative_positioning_query_base(issue)

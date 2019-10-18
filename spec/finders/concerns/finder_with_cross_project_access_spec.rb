@@ -24,6 +24,7 @@ describe FinderWithCrossProjectAccess do
 
   let(:user) { create(:user) }
   subject(:finder) { finder_class.new(user) }
+
   let!(:result) { create(:issue) }
 
   before do

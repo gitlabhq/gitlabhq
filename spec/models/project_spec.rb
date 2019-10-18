@@ -5014,6 +5014,7 @@ describe Project do
 
   describe '#git_objects_poolable?' do
     subject { project }
+
     context 'when not using hashed storage' do
       let(:project) { create(:project, :legacy_storage, :public, :repository) }
 

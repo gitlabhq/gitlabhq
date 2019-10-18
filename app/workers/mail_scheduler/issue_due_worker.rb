@@ -5,6 +5,8 @@ module MailScheduler
     include ApplicationWorker
     include MailSchedulerQueue
 
+    feature_category :issue_tracking
+
     # rubocop: disable CodeReuse/ActiveRecord
     def perform(project_id)
       Issue.opened.due_tomorrow.in_projects(project_id).preload(:project).find_each do |issue|

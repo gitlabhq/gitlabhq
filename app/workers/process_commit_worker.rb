@@ -10,6 +10,8 @@
 class ProcessCommitWorker
   include ApplicationWorker
 
+  feature_category :source_code_management
+
   # project_id - The ID of the project this commit belongs to.
   # user_id - The ID of the user that pushed the commit.
   # commit_hash - Hash containing commit details to use for constructing a

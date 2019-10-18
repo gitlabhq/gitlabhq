@@ -1,4 +1,4 @@
-- button_path = local_assigns.fetch(:button_path, false)
+- button_path = local_assigns.fetch(:new_project_issue_button_path, false)
 - project_select_button = local_assigns.fetch(:project_select_button, false)
 - show_import_button = local_assigns.fetch(:show_import_button, false) && can?(current_user, :import_issues, @project)
 - has_button = button_path || project_select_button
@@ -56,4 +56,3 @@
 
 - if show_import_button
   = render 'projects/issues/import_csv/modal'
-

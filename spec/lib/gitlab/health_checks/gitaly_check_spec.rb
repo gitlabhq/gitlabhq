@@ -30,6 +30,7 @@ describe Gitlab::HealthChecks::GitalyCheck do
 
   describe '#metrics' do
     subject { described_class.metrics }
+
     let(:server) { double(storage: 'default', read_writeable?: up) }
 
     before do

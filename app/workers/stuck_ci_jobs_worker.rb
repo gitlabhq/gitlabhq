@@ -4,6 +4,8 @@ class StuckCiJobsWorker
   include ApplicationWorker
   include CronjobQueue
 
+  feature_category :continuous_integration
+
   EXCLUSIVE_LEASE_KEY = 'stuck_ci_builds_worker_lease'
 
   BUILD_RUNNING_OUTDATED_TIMEOUT = 1.hour

@@ -4,6 +4,7 @@ class GitGarbageCollectWorker
   include ApplicationWorker
 
   sidekiq_options retry: false
+  feature_category :gitaly
 
   # Timeout set to 24h
   LEASE_TIMEOUT = 86400

@@ -6,6 +6,7 @@ module ObjectStorage
     include ObjectStorageQueue
 
     sidekiq_options retry: 5
+    feature_category_not_owned!
 
     def perform(uploader_class_name, subject_class_name, file_field, subject_id)
       uploader_class = uploader_class_name.constantize

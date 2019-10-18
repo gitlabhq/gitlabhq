@@ -1,4 +1,5 @@
-import { secondsIn, timeWindowsKeyNames } from './constants';
+import dateformat from 'dateformat';
+import { secondsIn, dateTimePickerRegex, dateFormats } from './constants';
 
 const secondsToMilliseconds = seconds => seconds * 1000;
 
@@ -19,7 +20,49 @@ export const getTimeWindow = ({ start, end }) =>
       return timeRange;
     }
     return acc;
-  }, timeWindowsKeyNames.eightHours);
+  }, null);
+
+export const isDateTimePickerInputValid = val => dateTimePickerRegex.test(val);
+
+export const truncateZerosInDateTime = datetime => datetime.replace(' 00:00:00', '');
+
+/**
+ * The URL params start and end need to be validated
+ * before passing them down to other components.
+ *
+ * @param {string} dateString
+ */
+export const isValidDate = dateString => {
+  try {
+    // dateformat throws error that can be caught.
+    // This is better than using `new Date()`
+    if (dateString && dateString.trim()) {
+      dateformat(dateString, 'isoDateTime');
+      return true;
+    }
+    return false;
+  } catch {
+    return false;
+  }
+};
+
+/**
+ * Convert the input in Time picker component to ISO date.
+ *
+ * @param {string} val
+ * @returns {string}
+ */
+export const stringToISODate = val =>
+  dateformat(new Date(val.replace(/-/g, '/')), dateFormats.dateTimePicker.ISODate, true);
+
+/**
+ * Convert the ISO date received from the URL to string
+ * for the Time picker component.
+ *
+ * @param {Date} date
+ * @returns {string}
+ */
+export const ISODateToString = date => dateformat(date, dateFormats.dateTimePicker.stringDate);
 
 /**
  * This method is used to validate if the graph data format for a chart component

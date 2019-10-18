@@ -3,6 +3,8 @@
 class DeleteStoredFilesWorker
   include ApplicationWorker
 
+  feature_category_not_owned!
+
   def perform(class_name, keys)
     klass = begin
       class_name.constantize

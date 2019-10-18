@@ -111,6 +111,7 @@ shared_examples 'cluster application status specs' do |application_name|
 
     describe '#make_errored' do
       subject { create(application_name, :installing) }
+
       let(:reason) { 'some errors' }
 
       it 'is errored' do

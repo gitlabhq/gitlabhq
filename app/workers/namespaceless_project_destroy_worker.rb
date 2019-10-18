@@ -10,6 +10,8 @@ class NamespacelessProjectDestroyWorker
   include ApplicationWorker
   include ExceptionBacktrace
 
+  feature_category :authentication_and_authorization
+
   def perform(project_id)
     begin
       project = Project.unscoped.find(project_id)
@@ -31,6 +33,6 @@ class NamespacelessProjectDestroyWorker
   def unlink_fork(project)
     merge_requests = project.forked_from_project.merge_requests.opened.from_project(project)
 
-    merge_requests.update_all(state: 'closed')
+    merge_requests.update_all(state_id: MergeRequest.available_states[:closed])
   end
 end

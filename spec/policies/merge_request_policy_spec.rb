@@ -53,21 +53,25 @@ describe MergeRequestPolicy do
 
     describe 'the author' do
       subject { author }
+
       it_behaves_like 'a denied user'
     end
 
     describe 'a guest' do
       subject { guest }
+
       it_behaves_like 'a denied user'
     end
 
     describe 'a developer' do
       subject { developer }
+
       it_behaves_like 'a denied user'
     end
 
     describe 'any other user' do
       subject { non_team_member }
+
       it_behaves_like 'a denied user'
     end
   end
@@ -82,11 +86,13 @@ describe MergeRequestPolicy do
 
     describe 'a non-team-member' do
       subject { non_team_member }
+
       it_behaves_like 'a denied user'
     end
 
     describe 'a developer' do
       subject { developer }
+
       it_behaves_like 'a user with access'
     end
   end

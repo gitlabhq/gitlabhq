@@ -212,6 +212,15 @@ describe ::SystemNotes::IssuablesService do
       it 'sets the note text' do
         expect(subject.note).to eq('changed the description')
       end
+
+      it 'associates the related description version' do
+        noteable.update!(description: 'New description')
+
+        description_version_id = subject.system_note_metadata.description_version_id
+
+        expect(description_version_id).not_to be_nil
+        expect(description_version_id).to eq(noteable.saved_description_version.id)
+      end
     end
   end
 

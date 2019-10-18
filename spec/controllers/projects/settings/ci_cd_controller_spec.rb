@@ -78,6 +78,7 @@ describe Projects::Settings::CiCdController do
 
   describe 'PUT #reset_registration_token' do
     subject { put :reset_registration_token, params: { namespace_id: project.namespace, project_id: project } }
+
     it 'resets runner registration token' do
       expect { subject }.to change { project.reload.runners_token }
     end

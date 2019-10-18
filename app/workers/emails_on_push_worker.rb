@@ -5,6 +5,8 @@ class EmailsOnPushWorker
 
   attr_reader :email, :skip_premailer
 
+  feature_category :source_code_management
+
   def perform(project_id, recipients, push_data, options = {})
     options.symbolize_keys!
     options.reverse_merge!(

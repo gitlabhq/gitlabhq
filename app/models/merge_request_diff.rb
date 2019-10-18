@@ -83,7 +83,7 @@ class MergeRequestDiff < ApplicationRecord
 
     metrics_join = mr_diffs.join(mr_metrics).on(metrics_join_condition)
 
-    condition = MergeRequest.arel_table[:state].eq(:merged)
+    condition = MergeRequest.arel_table[:state_id].eq(MergeRequest.available_states[:merged])
       .and(MergeRequest::Metrics.arel_table[:merged_at].lteq(before))
       .and(MergeRequest::Metrics.arel_table[:merged_at].not_eq(nil))
 
@@ -91,7 +91,7 @@ class MergeRequestDiff < ApplicationRecord
   end
 
   scope :old_closed_diffs, -> (before) do
-    condition = MergeRequest.arel_table[:state].eq(:closed)
+    condition = MergeRequest.arel_table[:state_id].eq(MergeRequest.available_states[:closed])
       .and(MergeRequest::Metrics.arel_table[:latest_closed_at].lteq(before))
 
     joins(merge_request: :metrics).where(condition)

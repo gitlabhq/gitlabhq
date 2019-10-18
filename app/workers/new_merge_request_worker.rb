@@ -4,6 +4,8 @@ class NewMergeRequestWorker
   include ApplicationWorker
   include NewIssuable
 
+  feature_category :source_code_management
+
   def perform(merge_request_id, user_id)
     return unless objects_found?(merge_request_id, user_id)
 

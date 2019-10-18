@@ -4,6 +4,8 @@ class AdminEmailWorker
   include ApplicationWorker
   include CronjobQueue
 
+  feature_category_not_owned!
+
   def perform
     send_repository_check_mail if Gitlab::CurrentSettings.repository_checks_enabled
   end

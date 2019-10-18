@@ -25,11 +25,19 @@ module Issuable
   include UpdatedAtFilterable
   include IssuableStates
   include ClosedAtFilterable
+  include VersionedDescription
 
   TITLE_LENGTH_MAX = 255
   TITLE_HTML_LENGTH_MAX = 800
   DESCRIPTION_LENGTH_MAX = 1.megabyte
   DESCRIPTION_HTML_LENGTH_MAX = 5.megabytes
+
+  STATE_ID_MAP = {
+    opened: 1,
+    closed: 2,
+    merged: 3,
+    locked: 4
+  }.with_indifferent_access.freeze
 
   # This object is used to gather issuable meta data for displaying
   # upvotes, downvotes, notes and closing merge requests count for issues and merge requests
@@ -172,13 +180,17 @@ module Issuable
       fuzzy_search(query, [:title])
     end
 
-    # Available state values persisted in state_id column using state machine
+    def available_states
+      @available_states ||= STATE_ID_MAP.slice(*available_state_names)
+    end
+
+    # Available state names used to persist state_id column using state machine
     #
     # Override this on subclasses if different states are needed
     #
-    # Check MergeRequest.available_states for example
-    def available_states
-      @available_states ||= { opened: 1, closed: 2 }.with_indifferent_access
+    # Check MergeRequest.available_states_names for example
+    def available_state_names
+      [:opened, :closed]
     end
 
     # Searches for records with a matching title or description.
@@ -295,6 +307,14 @@ module Issuable
     def parent_class
       ::Project
     end
+  end
+
+  def state
+    self.class.available_states.key(state_id)
+  end
+
+  def state=(value)
+    self.state_id = self.class.available_states[value]
   end
 
   def resource_parent

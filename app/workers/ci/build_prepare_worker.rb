@@ -6,6 +6,7 @@ module Ci
     include PipelineQueue
 
     queue_namespace :pipeline_processing
+    feature_category :continuous_integration
 
     def perform(build_id)
       Ci::Build.find_by_id(build_id).try do |build|

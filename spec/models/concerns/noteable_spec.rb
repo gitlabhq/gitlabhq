@@ -6,6 +6,7 @@ describe Noteable do
   let!(:active_diff_note1) { create(:diff_note_on_merge_request) }
   let(:project) { active_diff_note1.project }
   subject { active_diff_note1.noteable }
+
   let!(:active_diff_note2) { create(:diff_note_on_merge_request, project: project, noteable: subject, in_reply_to: active_diff_note1) }
   let!(:active_diff_note3) { create(:diff_note_on_merge_request, project: project, noteable: subject, position: active_position2) }
   let!(:outdated_diff_note1) { create(:diff_note_on_merge_request, project: project, noteable: subject, position: outdated_position) }

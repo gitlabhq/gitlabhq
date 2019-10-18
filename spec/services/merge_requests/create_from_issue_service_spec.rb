@@ -13,6 +13,7 @@ describe MergeRequests::CreateFromIssueService do
   let(:custom_source_branch) { 'custom-source-branch' }
 
   subject(:service) { described_class.new(project, user, service_params) }
+
   subject(:service_with_custom_source_branch) { described_class.new(project, user, branch_name: custom_source_branch, **service_params) }
 
   before do

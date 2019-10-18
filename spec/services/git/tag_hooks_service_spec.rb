@@ -58,6 +58,7 @@ describe Git::TagHooksService, :service do
   describe 'Push data' do
     shared_examples_for 'tag push data expectations' do
       subject(:push_data) { service.send(:push_data) }
+
       it 'has expected push data attributes' do
         is_expected.to match a_hash_including(
           object_kind: 'tag_push',

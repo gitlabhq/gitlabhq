@@ -3,6 +3,8 @@
 class PostReceive
   include ApplicationWorker
 
+  feature_category :source_code_management
+
   def perform(gl_repository, identifier, changes, push_options = {})
     project, repo_type = Gitlab::GlRepository.parse(gl_repository)
 

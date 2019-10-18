@@ -259,6 +259,7 @@ describe Gitlab::ReferenceExtractor do
 
   describe '.references_pattern' do
     subject { described_class.references_pattern }
+
     it { is_expected.to be_kind_of Regexp }
   end
 

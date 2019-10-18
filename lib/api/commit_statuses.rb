@@ -58,7 +58,6 @@ module API
       post ':id/statuses/:sha' do
         authorize! :create_commit_status, user_project
 
-        commit = @project.commit(params[:sha])
         not_found! 'Commit' unless commit
 
         # Since the CommitStatus is attached to Ci::Pipeline (in the future Pipeline)
@@ -68,13 +67,14 @@ module API
         # If we don't receive it, we will attach the CommitStatus to
         # the first found branch on that commit
 
+        pipeline = all_matching_pipelines.first
+
         ref = params[:ref]
+        ref ||= pipeline&.ref
         ref ||= @project.repository.branch_names_contains(commit.sha).first
         not_found! 'References for commit' unless ref
 
         name = params[:name] || params[:context] || 'default'
-
-        pipeline = @project.pipeline_for(ref, commit.sha, params[:pipeline_id])
 
         unless pipeline
           pipeline = @project.ci_pipelines.create!(
@@ -126,6 +126,20 @@ module API
         end
       end
       # rubocop: enable CodeReuse/ActiveRecord
+      helpers do
+        def commit
+          strong_memoize(:commit) do
+            user_project.commit(params[:sha])
+          end
+        end
+
+        def all_matching_pipelines
+          pipelines = user_project.ci_pipelines.newest_first(sha: commit.sha)
+          pipelines = pipelines.for_ref(params[:ref]) if params[:ref]
+          pipelines = pipelines.for_id(params[:pipeline_id]) if params[:pipeline_id]
+          pipelines
+        end
+      end
     end
   end
 end

@@ -107,26 +107,50 @@ describe Projects::Serverless::FunctionsController do
       end
     end
 
-    context 'valid data', :use_clean_rails_memory_store_caching do
-      before do
-        stub_kubeclient_service_pods
-        stub_reactive_cache(knative_services_finder,
-          {
-            services: kube_knative_services_body(namespace: namespace.namespace, name: cluster.project.name)["items"],
-            pods: kube_knative_pods_body(cluster.project.name, namespace.namespace)["items"]
-          },
-          *knative_services_finder.cache_args)
+    context 'with valid data', :use_clean_rails_memory_store_caching do
+      shared_examples 'GET #show with valid data' do
+        it 'has a valid function name' do
+          get :show, params: params({ format: :json, environment_id: "*", id: cluster.project.name })
+          expect(response).to have_gitlab_http_status(200)
+
+          expect(json_response).to include(
+            "name" => project.name,
+            "url" => "http://#{project.name}.#{namespace.namespace}.example.com",
+            "podcount" => 1
+          )
+        end
       end
 
-      it 'has a valid function name' do
-        get :show, params: params({ format: :json, environment_id: "*", id: cluster.project.name })
-        expect(response).to have_gitlab_http_status(200)
+      context 'on Knative 0.5' do
+        before do
+          stub_kubeclient_service_pods
+          stub_reactive_cache(knative_services_finder,
+                              {
+                                services: kube_knative_services_body(
+                                  legacy_knative: true,
+                                  namespace: namespace.namespace,
+                                  name: cluster.project.name
+                                )["items"],
+                                pods: kube_knative_pods_body(cluster.project.name, namespace.namespace)["items"]
+                              },
+                              *knative_services_finder.cache_args)
+        end
 
-        expect(json_response).to include(
-          "name" => project.name,
-          "url" => "http://#{project.name}.#{namespace.namespace}.example.com",
-          "podcount" => 1
-        )
+        include_examples 'GET #show with valid data'
+      end
+
+      context 'on Knative 0.6 or 0.7' do
+        before do
+          stub_kubeclient_service_pods
+          stub_reactive_cache(knative_services_finder,
+            {
+              services: kube_knative_services_body(namespace: namespace.namespace, name: cluster.project.name)["items"],
+              pods: kube_knative_pods_body(cluster.project.name, namespace.namespace)["items"]
+            },
+            *knative_services_finder.cache_args)
+        end
+
+        include_examples 'GET #show with valid data'
       end
     end
   end
@@ -141,38 +165,60 @@ describe Projects::Serverless::FunctionsController do
   end
 
   describe 'GET #index with data', :use_clean_rails_memory_store_caching do
-    before do
-      stub_kubeclient_service_pods
-      stub_reactive_cache(knative_services_finder,
-        {
-          services: kube_knative_services_body(namespace: namespace.namespace, name: cluster.project.name)["items"],
-          pods: kube_knative_pods_body(cluster.project.name, namespace.namespace)["items"]
-        },
-        *knative_services_finder.cache_args)
+    shared_examples 'GET #index with data' do
+      it 'has data' do
+        get :index, params: params({ format: :json })
+
+        expect(response).to have_gitlab_http_status(200)
+
+        expect(json_response).to match({
+                                         "knative_installed" => "checking",
+                                         "functions" => [
+                                           a_hash_including(
+                                             "name" => project.name,
+                                             "url" => "http://#{project.name}.#{namespace.namespace}.example.com"
+                                           )
+                                         ]
+                                       })
+      end
+
+      it 'has data in html' do
+        get :index, params: params
+
+        expect(response).to have_gitlab_http_status(200)
+      end
     end
 
-    it 'has data' do
-      get :index, params: params({ format: :json })
+    context 'on Knative 0.5' do
+      before do
+        stub_kubeclient_service_pods
+        stub_reactive_cache(knative_services_finder,
+                            {
+                              services: kube_knative_services_body(
+                                legacy_knative: true,
+                                namespace: namespace.namespace,
+                                name: cluster.project.name
+                              )["items"],
+                              pods: kube_knative_pods_body(cluster.project.name, namespace.namespace)["items"]
+                            },
+                            *knative_services_finder.cache_args)
+      end
 
-      expect(response).to have_gitlab_http_status(200)
-
-      expect(json_response).to match(
-        {
-          "knative_installed" => "checking",
-          "functions" => [
-            a_hash_including(
-              "name" => project.name,
-              "url" => "http://#{project.name}.#{namespace.namespace}.example.com"
-            )
-          ]
-        }
-      )
+      include_examples 'GET #index with data'
     end
 
-    it 'has data in html' do
-      get :index, params: params
+    context 'on Knative 0.6 or 0.7' do
+      before do
+        stub_kubeclient_service_pods
+        stub_reactive_cache(knative_services_finder,
+          {
+            services: kube_knative_services_body(namespace: namespace.namespace, name: cluster.project.name)["items"],
+            pods: kube_knative_pods_body(cluster.project.name, namespace.namespace)["items"]
+          },
+          *knative_services_finder.cache_args)
+      end
 
-      expect(response).to have_gitlab_http_status(200)
+      include_examples 'GET #index with data'
     end
   end
 end

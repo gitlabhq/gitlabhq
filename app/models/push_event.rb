@@ -54,7 +54,7 @@ class PushEvent < Event
       .select(1)
       .where('merge_requests.source_project_id = events.project_id')
       .where('merge_requests.source_branch = push_event_payloads.ref')
-      .where(state: :opened)
+      .with_state(:opened)
 
     # For reasons unknown the use of #eager_load will result in the
     # "push_event_payload" association not being set. Because of this we're

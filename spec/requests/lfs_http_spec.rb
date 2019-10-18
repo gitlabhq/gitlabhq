@@ -4,6 +4,7 @@ require 'spec_helper'
 describe 'Git LFS API and storage' do
   include LfsHttpHelpers
   include ProjectForksHelper
+  include WorkhorseHelpers
 
   set(:project) { create(:project, :repository) }
   set(:other_project) { create(:project, :repository) }
@@ -933,7 +934,7 @@ describe 'Git LFS API and storage' do
 
                 it_behaves_like 'a valid response' do
                   it 'responds with status 200, location of LFS remote store and object details' do
-                    expect(json_response['TempPath']).to eq(LfsObjectUploader.workhorse_local_upload_path)
+                    expect(json_response).not_to have_key('TempPath')
                     expect(json_response['RemoteObject']).to have_key('ID')
                     expect(json_response['RemoteObject']).to have_key('GetURL')
                     expect(json_response['RemoteObject']).to have_key('StoreURL')
@@ -992,10 +993,17 @@ describe 'Git LFS API and storage' do
                   stub_lfs_object_storage(direct_upload: true)
                 end
 
+                let(:tmp_object) do
+                  fog_connection.directories.new(key: 'lfs-objects').files.create(
+                    key: 'tmp/uploads/12312300',
+                    body: 'content'
+                  )
+                end
+
                 ['123123', '../../123123'].each do |remote_id|
                   context "with invalid remote_id: #{remote_id}" do
                     subject do
-                      put_finalize(with_tempfile: true, args: {
+                      put_finalize(remote_object: tmp_object, args: {
                         'file.remote_id' => remote_id
                       })
                     end
@@ -1009,15 +1017,8 @@ describe 'Git LFS API and storage' do
                 end
 
                 context 'with valid remote_id' do
-                  before do
-                    fog_connection.directories.new(key: 'lfs-objects').files.create(
-                      key: 'tmp/uploads/12312300',
-                      body: 'content'
-                    )
-                  end
-
                   subject do
-                    put_finalize(with_tempfile: true, args: {
+                    put_finalize(remote_object: tmp_object, args: {
                       'file.remote_id' => '12312300',
                       'file.name' => 'name'
                     })
@@ -1027,6 +1028,10 @@ describe 'Git LFS API and storage' do
                     subject
 
                     expect(response).to have_gitlab_http_status(200)
+
+                    object = LfsObject.find_by_oid(sample_oid)
+                    expect(object).to be_present
+                    expect(object.file.read).to eq(tmp_object.body)
                   end
 
                   it 'schedules migration of file to object storage' do
@@ -1268,28 +1273,31 @@ describe 'Git LFS API and storage' do
       put authorize_url(project, sample_oid, sample_size), params: {}, headers: authorize_headers
     end
 
-    def put_finalize(lfs_tmp = lfs_tmp_file, with_tempfile: false, verified: true, args: {})
-      upload_path = LfsObjectUploader.workhorse_local_upload_path
-      file_path = upload_path + '/' + lfs_tmp if lfs_tmp
+    def put_finalize(lfs_tmp = lfs_tmp_file, with_tempfile: false, verified: true, remote_object: nil, args: {})
+      uploaded_file = nil
 
       if with_tempfile
+        upload_path = LfsObjectUploader.workhorse_local_upload_path
+        file_path = upload_path + '/' + lfs_tmp if lfs_tmp
+
         FileUtils.mkdir_p(upload_path)
         FileUtils.touch(file_path)
+
+        uploaded_file = UploadedFile.new(file_path, filename: File.basename(file_path))
+      elsif remote_object
+        uploaded_file = fog_to_uploaded_file(remote_object)
       end
 
-      extra_args = {
-        'file.path' => file_path,
-        'file.name' => File.basename(file_path)
-      }
-
-      put_finalize_with_args(args.merge(extra_args).compact, verified: verified)
-    end
-
-    def put_finalize_with_args(args, verified:)
       finalize_headers = headers
       finalize_headers.merge!(workhorse_internal_api_request_header) if verified
 
-      put objects_url(project, sample_oid, sample_size), params: args, headers: finalize_headers
+      workhorse_finalize(
+        objects_url(project, sample_oid, sample_size),
+        method: :put,
+        file_key: :file,
+        params: args.merge(file: uploaded_file),
+        headers: finalize_headers
+      )
     end
 
     def lfs_tmp_file

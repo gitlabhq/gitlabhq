@@ -1,0 +1,5 @@
+---
+title: Deprecate usage of state column for issues and merge requests
+merge_request: 18099
+author:
+type: changed

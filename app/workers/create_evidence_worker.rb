@@ -3,6 +3,8 @@
 class CreateEvidenceWorker
   include ApplicationWorker
 
+  feature_category :release_governance
+
   def perform(release_id)
     release = Release.find_by_id(release_id)
     return unless release

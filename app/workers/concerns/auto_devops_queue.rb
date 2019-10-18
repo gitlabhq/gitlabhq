@@ -5,5 +5,6 @@ module AutoDevopsQueue
 
   included do
     queue_namespace :auto_devops
+    feature_category :auto_devops
   end
 end

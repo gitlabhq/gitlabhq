@@ -84,11 +84,13 @@ describe Gitlab::Gfm::UploadsRewriter do
 
     describe '#needs_rewrite?' do
       subject { rewriter.needs_rewrite? }
+
       it { is_expected.to eq true }
     end
 
     describe '#files' do
       subject { rewriter.files }
+
       it { is_expected.to be_an(Array) }
     end
   end

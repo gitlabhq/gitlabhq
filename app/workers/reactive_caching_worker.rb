@@ -3,6 +3,8 @@
 class ReactiveCachingWorker
   include ApplicationWorker
 
+  feature_category_not_owned!
+
   def perform(class_name, id, *args)
     klass = begin
       class_name.constantize

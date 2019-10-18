@@ -16,6 +16,7 @@ describe DeployKeysProject do
   describe "Destroying" do
     let(:project)     { create(:project) }
     subject           { create(:deploy_keys_project, project: project) }
+
     let(:deploy_key)  { subject.deploy_key }
 
     context "when the deploy key is only used by this project" do

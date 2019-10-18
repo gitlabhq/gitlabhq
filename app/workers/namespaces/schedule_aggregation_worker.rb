@@ -5,6 +5,7 @@ module Namespaces
     include ApplicationWorker
 
     queue_namespace :update_namespace_statistics
+    feature_category :source_code_management
 
     def perform(namespace_id)
       return unless aggregation_schedules_table_exists?

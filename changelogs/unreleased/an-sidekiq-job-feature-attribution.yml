@@ -1,0 +1,5 @@
+---
+title: Attribute each Sidekiq worker to a feature category
+merge_request: 18462
+author:
+type: other

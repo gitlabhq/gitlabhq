@@ -4,7 +4,6 @@ import { GlToast } from '@gitlab/ui';
 import VueDraggable from 'vuedraggable';
 import MockAdapter from 'axios-mock-adapter';
 import Dashboard from '~/monitoring/components/dashboard.vue';
-import { timeWindows, timeWindowsKeyNames } from '~/monitoring/constants';
 import * as types from '~/monitoring/stores/mutation_types';
 import { createStore } from '~/monitoring/stores';
 import axios from '~/lib/utils/axios_utils';
@@ -35,6 +34,12 @@ const propsData = {
   customMetricsAvailable: false,
   customMetricsPath: '',
   validateQueryPath: '',
+};
+
+const resetSpy = spy => {
+  if (spy) {
+    spy.calls.reset();
+  }
 };
 
 export default propsData;
@@ -96,8 +101,13 @@ describe('Dashboard', () => {
   });
 
   describe('requests information to the server', () => {
+    let spy;
     beforeEach(() => {
       mock.onGet(mockApiEndpoint).reply(200, metricsGroupsAPIResponse);
+    });
+
+    afterEach(() => {
+      resetSpy(spy);
     });
 
     it('shows up a loading state', done => {
@@ -272,7 +282,7 @@ describe('Dashboard', () => {
       });
     });
 
-    it('renders the time window dropdown with a set of options', done => {
+    it('renders the datetimepicker dropdown', done => {
       component = new DashboardComponent({
         el: document.querySelector('.prometheus-graphs'),
         propsData: {
@@ -282,17 +292,9 @@ describe('Dashboard', () => {
         },
         store,
       });
-      const numberOfTimeWindows = Object.keys(timeWindows).length;
 
       setTimeout(() => {
-        const timeWindowDropdown = component.$el.querySelector('.js-time-window-dropdown');
-        const timeWindowDropdownEls = component.$el.querySelectorAll(
-          '.js-time-window-dropdown .dropdown-item',
-        );
-
-        expect(timeWindowDropdown).not.toBeNull();
-        expect(timeWindowDropdownEls.length).toEqual(numberOfTimeWindows);
-
+        expect(component.$el.querySelector('.js-time-window-dropdown')).not.toBeNull();
         done();
       });
     });
@@ -355,7 +357,7 @@ describe('Dashboard', () => {
       });
     });
 
-    it('defaults to the eight hours time window for non valid url parameters', done => {
+    it('shows an error message if invalid url parameters are passed', done => {
       spyOnDependency(Dashboard, 'getParameterValues').and.returnValue([
         '<script>alert("XSS")</script>',
       ]);
@@ -366,9 +368,11 @@ describe('Dashboard', () => {
         store,
       });
 
-      Vue.nextTick(() => {
-        expect(component.selectedTimeWindowKey).toEqual(timeWindowsKeyNames.eightHours);
+      spy = spyOn(component, 'showInvalidDateError');
+      component.$mount();
 
+      component.$nextTick(() => {
+        expect(component.showInvalidDateError).toHaveBeenCalled();
         done();
       });
     });

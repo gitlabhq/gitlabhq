@@ -3,6 +3,8 @@
 class UpdateExternalPullRequestsWorker
   include ApplicationWorker
 
+  feature_category :source_code_management
+
   def perform(project_id, user_id, ref)
     project = Project.find_by_id(project_id)
     return unless project

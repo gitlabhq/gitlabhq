@@ -93,6 +93,7 @@ describe Gitlab::Git::Repository, :seed_helper do
 
     describe '#last' do
       subject { super().last }
+
       it { is_expected.to eq("v1.2.1") }
     end
     it { is_expected.to include("v1.0.0") }
@@ -215,11 +216,13 @@ describe Gitlab::Git::Repository, :seed_helper do
 
     describe '#first' do
       subject { super().first }
+
       it { is_expected.to eq('feature') }
     end
 
     describe '#last' do
       subject { super().last }
+
       it { is_expected.to eq('v1.2.1') }
     end
   end

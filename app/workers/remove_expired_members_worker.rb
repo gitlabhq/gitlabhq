@@ -4,6 +4,8 @@ class RemoveExpiredMembersWorker
   include ApplicationWorker
   include CronjobQueue
 
+  feature_category :authentication_and_authorization
+
   def perform
     Member.expired.find_each do |member|
       Members::DestroyService.new.execute(member, skip_authorization: true)
