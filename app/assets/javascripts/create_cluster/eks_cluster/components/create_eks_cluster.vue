@@ -12,11 +12,18 @@ export default {
       type: String,
       required: true,
     },
+    kubernetesIntegrationHelpPath: {
+      type: String,
+      required: true,
+    },
   },
 };
 </script>
 <template>
-  <eks-cluster-configuration-form
-    :gitlab-managed-cluster-help-path="gitlabManagedClusterHelpPath"
-  />
+  <div class="js-create-eks-cluster">
+    <eks-cluster-configuration-form
+      :gitlab-managed-cluster-help-path="gitlabManagedClusterHelpPath"
+      :kubernetes-integration-help-path="kubernetesIntegrationHelpPath"
+    />
+  </div>
 </template>

@@ -177,6 +177,7 @@ describe 'Gcp Cluster', :js do
 
   context 'when user has not dismissed GCP signup offer' do
     before do
+      stub_feature_flags(create_eks_clusters: false)
       visit project_clusters_path(project)
     end
 
@@ -200,6 +201,7 @@ describe 'Gcp Cluster', :js do
 
   context 'when user has dismissed GCP signup offer' do
     before do
+      stub_feature_flags(create_eks_clusters: false)
       visit project_clusters_path(project)
     end
 

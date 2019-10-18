@@ -10,6 +10,7 @@ module Issues
 
     def add_link(link)
       if can_add_link? && (link = parse_link(link))
+        track_meeting_added_event
         success(_('Zoom meeting added'), append_to_description(link))
       else
         error(_('Failed to add a Zoom meeting'))
@@ -22,6 +23,7 @@ module Issues
 
     def remove_link
       if can_remove_link?
+        track_meeting_removed_event
         success(_('Zoom meeting removed'), remove_from_description)
       else
         error(_('Failed to remove a Zoom meeting'))
@@ -42,6 +44,14 @@ module Issues
 
     def issue_description
       issue.description || ''
+    end
+
+    def track_meeting_added_event
+      ::Gitlab::Tracking.event('IncidentManagement::ZoomIntegration', 'add_zoom_meeting', label: 'Issue ID', value: issue.id)
+    end
+
+    def track_meeting_removed_event
+      ::Gitlab::Tracking.event('IncidentManagement::ZoomIntegration', 'remove_zoom_meeting', label: 'Issue ID', value: issue.id)
     end
 
     def success(message, description)

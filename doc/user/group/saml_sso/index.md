@@ -113,6 +113,25 @@ NOTE: **Note:** GitLab is unable to provide support for IdPs that are not listed
 | OneLogin | [Use the OneLogin SAML Test Connector](https://onelogin.service-now.com/support?id=kb_article&sys_id=93f95543db109700d5505eea4b96198f) |
 | Ping Identity | [Add and configure a new SAML application](https://support.pingidentity.com/s/document-item?bundleId=pingone&topicId=xsh1564020480660-1.html) |
 
+When [configuring your identify provider](#configuring-your-identity-provider), please consider the notes below for specific providers to help avoid common issues and as a guide for terminology used.
+
+### OneLogin setup notes
+
+NOTE: **Note:**
+The GitLab app listed in the directory is for self-managed GitLab instances. Please use a generic SAML Test Connector.
+
+| GitLab Setting | OneLogin Field |
+|--------------|----------------|
+| Identifier | Audience |
+| Assertion consumer service URL | Recipient |
+| Assertion consumer service URL | ACS (Consumer) URL |
+| Assertion consumer service URL (escaped version) | ACS (Consumer) URL Validator |
+| GitLab single sign on URL | Login URL |
+
+Recommended `NameID` value: `OneLogin ID`.
+
+Set parameters according to the [assertions table](#assertions).
+
 ## Linking SAML to your existing GitLab.com account
 
 To link SAML to your existing GitLab.com account:

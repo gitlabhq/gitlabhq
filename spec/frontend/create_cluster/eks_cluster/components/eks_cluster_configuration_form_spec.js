@@ -123,6 +123,7 @@ describe('EksClusterConfigurationForm', () => {
       store,
       propsData: {
         gitlabManagedClusterHelpPath: '',
+        kubernetesIntegrationHelpPath: '',
       },
     });
   });

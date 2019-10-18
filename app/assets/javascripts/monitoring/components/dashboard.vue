@@ -21,7 +21,14 @@ import MonitorSingleStatChart from './charts/single_stat.vue';
 import GraphGroup from './graph_group.vue';
 import EmptyState from './empty_state.vue';
 import { sidebarAnimationDuration, timeWindows } from '../constants';
-import { getTimeDiff, getTimeWindow } from '../utils';
+import TrackEventDirective from '~/vue_shared/directives/track_event';
+
+import {
+  getTimeDiff,
+  getTimeWindow,
+  downloadCSVOptions,
+  generateLinkToChartOptions,
+} from '../utils';
 
 let sidebarMutationObserver;
 
@@ -43,6 +50,7 @@ export default {
   directives: {
     GlModal: GlModalDirective,
     GlTooltip: GlTooltipDirective,
+    TrackEvent: TrackEventDirective,
   },
   props: {
     externalDashboardUrl: {
@@ -322,6 +330,8 @@ export default {
     groupHasData(group) {
       return this.chartsWithData(group.metrics).length > 0;
     },
+    downloadCSVOptions,
+    generateLinkToChartOptions,
   },
   addMetric: {
     title: s__('Metrics|Add metric'),
@@ -552,10 +562,19 @@ export default {
                 <template slot="button-content">
                   <icon name="ellipsis_v" class="text-secondary" />
                 </template>
-                <gl-dropdown-item :href="downloadCsv(graphData)" download="chart_metrics.csv">
+                <gl-dropdown-item
+                  v-track-event="downloadCSVOptions(graphData.title)"
+                  :href="downloadCsv(graphData)"
+                  download="chart_metrics.csv"
+                >
                   {{ __('Download CSV') }}
                 </gl-dropdown-item>
                 <gl-dropdown-item
+                  v-track-event="
+                    generateLinkToChartOptions(
+                      generateLink(groupData.group, graphData.title, graphData.y_label),
+                    )
+                  "
                   class="js-chart-link"
                   :data-clipboard-text="
                     generateLink(groupData.group, graphData.title, graphData.y_label)

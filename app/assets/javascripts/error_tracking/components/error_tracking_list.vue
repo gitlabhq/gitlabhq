@@ -4,6 +4,8 @@ import { GlEmptyState, GlButton, GlLink, GlLoadingIcon, GlTable } from '@gitlab/
 import Icon from '~/vue_shared/components/icon.vue';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import { __ } from '~/locale';
+import TrackEventDirective from '~/vue_shared/directives/track_event';
+import { trackViewInSentryOptions, trackClickErrorLinkToSentryOptions } from '../utils';
 
 export default {
   fields: [
@@ -20,6 +22,9 @@ export default {
     GlTable,
     Icon,
     TimeAgo,
+  },
+  directives: {
+    TrackEvent: TrackEventDirective,
   },
   props: {
     indexPath: {
@@ -53,6 +58,8 @@ export default {
   },
   methods: {
     ...mapActions(['startPolling', 'restartPolling']),
+    trackViewInSentryOptions,
+    trackClickErrorLinkToSentryOptions,
   },
 };
 </script>
@@ -65,7 +72,13 @@ export default {
       </div>
       <div v-else>
         <div class="d-flex justify-content-end">
-          <gl-button class="my-3 ml-auto" variant="primary" :href="externalUrl" target="_blank">
+          <gl-button
+            v-track-event="trackViewInSentryOptions(externalUrl)"
+            class="my-3 ml-auto"
+            variant="primary"
+            :href="externalUrl"
+            target="_blank"
+          >
             {{ __('View in Sentry') }}
             <icon name="external-link" class="flex-shrink-0" />
           </gl-button>
@@ -80,7 +93,12 @@ export default {
           </template>
           <template slot="error" slot-scope="errors">
             <div class="d-flex flex-column">
-              <gl-link :href="errors.item.externalUrl" class="d-flex text-dark" target="_blank">
+              <gl-link
+                v-track-event="trackClickErrorLinkToSentryOptions(errors.item.externalUrl)"
+                :href="errors.item.externalUrl"
+                class="d-flex text-dark"
+                target="_blank"
+              >
                 <strong class="text-truncate">{{ errors.item.title.trim() }}</strong>
                 <icon name="external-link" class="ml-1 flex-shrink-0" />
               </gl-link>

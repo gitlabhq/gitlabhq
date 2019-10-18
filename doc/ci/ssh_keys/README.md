@@ -35,8 +35,8 @@ with any type of [executor](https://docs.gitlab.com/runner/executors/)
    if you are accessing a private GitLab repository.
 
 NOTE: **Note:**
-The private key will not be displayed in the job trace, unless you enable
-[debug tracing](../variables/README.md#debug-tracing). You might also want to
+The private key will not be displayed in the job log, unless you enable
+[debug logging](../variables/README.md#debug-logging). You might also want to
 check the [visibility of your pipelines](../../user/project/pipelines/settings.md#visibility-of-pipelines).
 
 ## SSH keys when using the Docker executor

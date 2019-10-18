@@ -568,7 +568,7 @@ Below you can find supported syntax reference:
    Precedence of operators follows standard Ruby 2.5 operation
    [precedence](https://ruby-doc.org/core-2.5.0/doc/syntax/precedence_rdoc.html).
 
-## Debug tracing
+## Debug logging
 
 > Introduced in GitLab Runner 1.7.
 
@@ -576,24 +576,24 @@ CAUTION: **Warning:**
 Enabling debug tracing can have severe security implications. The
 output **will** contain the content of all your variables and any other
 secrets! The output **will** be uploaded to the GitLab server and made visible
-in job traces!
+in job logs!
 
 By default, GitLab Runner hides most of the details of what it is doing when
-processing a job. This behavior keeps job traces short, and prevents secrets
-from being leaked into the trace unless your script writes them to the screen.
+processing a job. This behavior keeps job logs short, and prevents secrets
+from being leaked into the log unless your script writes them to the screen.
 
 If a job isn't working as expected, this can make the problem difficult to
 investigate; in these cases, you can enable debug tracing in `.gitlab-ci.yml`.
 Available on GitLab Runner v1.7+, this feature enables the shell's execution
-trace, resulting in a verbose job trace listing all commands that were run,
+log, resulting in a verbose job log listing all commands that were run,
 variables that were set, etc.
 
 Before enabling this, you should ensure jobs are visible to
 [team members only](../../user/permissions.md#project-features). You should
-also [erase](../pipelines.md#accessing-individual-jobs) all generated job traces
+also [erase](../pipelines.md#accessing-individual-jobs) all generated job logs
 before making them visible again.
 
-To enable debug traces, set the `CI_DEBUG_TRACE` variable to `true`:
+To enable debug logs (traces), set the `CI_DEBUG_TRACE` variable to `true`:
 
 ```yaml
 job_name:
@@ -601,7 +601,7 @@ job_name:
     CI_DEBUG_TRACE: "true"
 ```
 
-Example truncated output with debug trace set to true:
+Example truncated output with `CI_DEBUG_TRACE` set to `true`:
 
 ```bash
 ...

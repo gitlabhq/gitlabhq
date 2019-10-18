@@ -45,4 +45,47 @@ export const graphDataValidatorForValues = (isValues, graphData) => {
   );
 };
 
+/* eslint-disable @gitlab/i18n/no-non-i18n-strings */
+/**
+ * Checks that element that triggered event is located on cluster health check dashboard
+ * @param {HTMLElement}  element to check against
+ * @returns {boolean}
+ */
+const isClusterHealthBoard = () => (document.body.dataset.page || '').includes(':clusters:show');
+
+/**
+ * Tracks snowplow event when user generates link to metric chart
+ * @param {String}  chart link that will be sent as a property for the event
+ * @return {Object} config object for event tracking
+ */
+export const generateLinkToChartOptions = chartLink => {
+  const isCLusterHealthBoard = isClusterHealthBoard();
+
+  const category = isCLusterHealthBoard
+    ? 'Cluster Monitoring'
+    : 'Incident Management::Embedded metrics';
+  const action = isCLusterHealthBoard
+    ? 'generate_link_to_cluster_metric_chart'
+    : 'generate_link_to_metrics_chart';
+
+  return { category, action, label: 'Chart link', property: chartLink };
+};
+
+/**
+ * Tracks snowplow event when user downloads CSV of cluster metric
+ * @param {String}  chart title that will be sent as a property for the event
+ */
+export const downloadCSVOptions = title => {
+  const isCLusterHealthBoard = isClusterHealthBoard();
+
+  const category = isCLusterHealthBoard
+    ? 'Cluster Monitoring'
+    : 'Incident Management::Embedded metrics';
+  const action = isCLusterHealthBoard
+    ? 'download_csv_of_cluster_metric_chart'
+    : 'download_csv_of_metrics_dashboard_chart';
+
+  return { category, action, label: 'Chart title', property: title };
+};
+
 export default {};

@@ -549,7 +549,7 @@ a few things that you need to do:
 1. Configure [database lookup of SSH keys](../operations/fast_ssh_key_lookup.md)
    to eliminate the need for a shared authorized_keys file.
 1. Configure [object storage for job artifacts](../job_artifacts.md#using-object-storage)
-   including [live tracing](../job_traces.md#new-live-trace-architecture).
+   including [incremental logging](../job_logs.md#new-incremental-logging-architecture).
 1. Configure [object storage for LFS objects](../../workflow/lfs/lfs_administration.md#storing-lfs-objects-in-remote-object-storage).
 1. Configure [object storage for uploads](../uploads.md#using-object-storage-core-only).
 

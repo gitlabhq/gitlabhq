@@ -283,11 +283,11 @@ You can also access pipelines for a merge request by navigating to its **Pipelin
 
 When you access a pipeline, you can see the related jobs for that pipeline.
 
-Clicking on an individual job will show you its job trace, and allow you to:
+Clicking on an individual job will show you its job log, and allow you to:
 
 - Cancel the job.
 - Retry the job.
-- Erase the job trace.
+- Erase the job log.
 
 ### Seeing the failure reason for jobs
 

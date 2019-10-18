@@ -22,7 +22,7 @@ module Gitlab
         )
         response = GitalyClient.call(@repository.storage, :conflicts_service, :list_conflict_files, request, timeout: GitalyClient.long_timeout)
 
-        GitalyClient::ConflictFilesStitcher.new(response)
+        GitalyClient::ConflictFilesStitcher.new(response, @gitaly_repo)
       end
 
       def conflicts?

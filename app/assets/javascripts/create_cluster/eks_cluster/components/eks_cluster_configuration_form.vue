@@ -35,6 +35,10 @@ export default {
       type: String,
       required: true,
     },
+    kubernetesIntegrationHelpPath: {
+      type: String,
+      required: true,
+    },
   },
   computed: {
     ...mapState([
@@ -93,6 +97,20 @@ export default {
     },
     securityGroupDropdownDisabled() {
       return !this.selectedVpc;
+    },
+    kubernetesIntegrationHelpText() {
+      const escapedUrl = _.escape(this.kubernetesIntegrationHelpPath);
+
+      return sprintf(
+        s__(
+          'ClusterIntegration|Read our %{link_start}help page%{link_end} on Kubernetes cluster integration.',
+        ),
+        {
+          link_start: `<a href="${escapedUrl}" target="_blank" rel="noopener noreferrer">`,
+          link_end: '</a>',
+        },
+        false,
+      );
     },
     roleDropdownHelpText() {
       return sprintf(
@@ -212,6 +230,10 @@ export default {
 </script>
 <template>
   <form name="eks-cluster-configuration-form">
+    <h2>
+      {{ s__('ClusterIntegration|Enter the details for your Amazon EKS Kubernetes cluster') }}
+    </h2>
+    <p v-html="kubernetesIntegrationHelpText"></p>
     <div class="form-group">
       <label class="label-bold" for="eks-cluster-name">{{
         s__('ClusterIntegration|Kubernetes cluster name')

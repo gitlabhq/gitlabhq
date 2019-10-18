@@ -6,6 +6,6 @@
     = create_cluster_label
   .d-flex
     = render partial: 'clusters/clusters/cloud_providers/cloud_provider_button',
-      locals: { provider: 'gke', label: gke_label, logo_path: '' }
+      locals: { provider: 'eks', label: eks_label, logo_path: 'illustrations/logos/amazon_eks.svg' }
     = render partial: 'clusters/clusters/cloud_providers/cloud_provider_button',
-      locals: { provider: 'eks', label: eks_label, logo_path: '' }
+      locals: { provider: 'gke', label: gke_label, logo_path: 'illustrations/logos/google_gke.svg' }
