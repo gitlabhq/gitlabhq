@@ -245,7 +245,7 @@ jobs, including deploy jobs, but after the restoration of [artifacts](#artifacts
 This must be an an array.
 
 `after_script` is used to define the command that will be run after all
-jobs, including failed ones. This has to be an array or a multi-line string.
+jobs, including failed ones. This must be an an array.
 
 Scripts specified in `before_script` are:
 

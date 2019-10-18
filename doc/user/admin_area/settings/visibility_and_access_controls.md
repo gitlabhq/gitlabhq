@@ -137,18 +137,21 @@ from CI/CD jobs, even if _Only SSH_ was selected.
 
 ## Custom Git clone URL for HTTP(S)
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/18422) in GitLab 12.4.
+
 You can customize project Git clone URLs for HTTP(S). This will affect the clone
 panel:
 
-![Clone panel](img/clone_panel.png)
+![Clone panel](img/clone_panel_v12_4.png)
 
-For example, if your
-GitLab instance is at `https://example.com`, then project clone URLs look like
-`https://example.com/foo/bar.git`. If you'd to provide clone URLs that look like
-`https://git.example.com/gitlab/foo/bar.git` instead, then you can set this
-setting to `https://git.example.com/gitlab/`.
+For example, if:
 
-![Custom Git clone URL for HTTP](img/custom_git_clone_url_for_https.png)
+- Your GitLab instance is at `https://example.com`, then project clone URLs are like
+  `https://example.com/foo/bar.git`.
+- You want clone URLs that look like `https://git.example.com/gitlab/foo/bar.git` instead,
+  you can set this setting to `https://git.example.com/gitlab/`.
+
+![Custom Git clone URL for HTTP](img/custom_git_clone_url_for_https_v12_4.png)
 
 To specify a custom Git clone URL for HTTP(S):
 
@@ -156,8 +159,8 @@ To specify a custom Git clone URL for HTTP(S):
 1. Click on **Save changes**.
 
 NOTE: **Note:**
-SSH clone URLs can be customized in `gitlab.rb` by setting
-`gitlab_rails["gitlab_ssh_host"]` and other related settings.
+SSH clone URLs can be customized in `gitlab.rb` by setting `gitlab_rails['gitlab_ssh_host']` and
+other related settings.
 
 ## RSA, DSA, ECDSA, ED25519 SSH keys
 

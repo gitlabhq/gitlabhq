@@ -2195,6 +2195,7 @@ describe Ci::Build do
           { key: 'CI_COMMIT_REF_NAME', value: build.ref, public: true, masked: false },
           { key: 'CI_COMMIT_REF_SLUG', value: build.ref_slug, public: true, masked: false },
           { key: 'CI_NODE_TOTAL', value: '1', public: true, masked: false },
+          { key: 'CI_DEFAULT_BRANCH', value: project.default_branch, public: true, masked: false },
           { key: 'CI_BUILD_REF', value: build.sha, public: true, masked: false },
           { key: 'CI_BUILD_BEFORE_SHA', value: build.before_sha, public: true, masked: false },
           { key: 'CI_BUILD_REF_NAME', value: build.ref, public: true, masked: false },

@@ -1051,6 +1051,38 @@ In this case:
 - Different highlighting languages are used for each config in the code block.
 - The [GitLab Restart](#gitlab-restart) section is used to explain a required restart/reconfigure of GitLab.
 
+## Feature flags
+
+Sometimes features are shipped with feature flags, either:
+
+- On by default, but providing the option to turn the feature off.
+- Off by default, but providing the option to turn the feature on.
+
+When documenting feature flags for a feature, it's important that users know:
+
+- Why a feature flag is necessary. Some of the reasons are
+  [outlined in the handbook](https://about.gitlab.com/handbook/product/#alpha-beta-ga).
+- That administrative access is required to make a feature flag change.
+- What to ask for when requesting a change to a feature flag's state.
+
+NOTE: **Note:**
+The [Product Manager for the relevant group](https://about.gitlab.com/handbook/product/categories/#devops-stages)
+must review and approve the addition or removal of any mentions of using feature flags before the doc change is merged.
+
+The following is sample text for adding feature flag documentation for a feature:
+
+````md
+### Disabling the feature
+
+This feature comes with the `:feature_flag` feature flag enabled by default. However, in some cases
+this feature is incompatible with old configuration. To turn off the feature while configuration is
+migrated, ask a GitLab administrator with Rails console access to run the following command:
+
+```ruby
+Feature.disable(:feature_flag)
+```
+````
+
 ## API
 
 Here is a list of must-have items. Use them in the exact order that appears

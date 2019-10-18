@@ -17,7 +17,7 @@ Everything you need to build, test, deploy, and run your app at scale.
 1. On the **Environments** page, you should see the status of the environment's pods with [Deploy Boards](../deploy_boards.md).
 1. When mousing over the list of pods, a tooltip will appear with the exact pod name and status.
    ![Deploy Boards pod list](img/pod_logs_deploy_board.png)
-1. Click on the desired pod to bring up the logs view, which will contain the last 500 lines for that pod. Support for pods with multiple containers is coming [in a future release](https://gitlab.com/gitlab-org/gitlab/issues/6502).
+1. Click on the desired pod to bring up the logs view, which will contain the last 500 lines for that pod. You may switch between pods and environments in this view. Support for pods with multiple containers is coming [in a future release](https://gitlab.com/gitlab-org/gitlab/issues/6502).
    ![Deploy Boards pod list](img/kubernetes_pod_logs.png)
 
 ## Requirements
