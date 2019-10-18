@@ -14,7 +14,8 @@
               = render_if_exists 'layouts/devise_help_text'
               .text-center.signup-heading.mt-3.mb-3
                 = image_tag(image_url('logo.svg'), class: 'gitlab-logo', alt: 'GitLab Logo')
-                %h2= _('Register for GitLab.com')
+                - if content_for?(:page_title)
+                  %h2= yield :page_title
               = yield
       %hr.footer-fixed
       .footer-container

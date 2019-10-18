@@ -6,6 +6,7 @@ FactoryBot.define do
     name { generate(:name) }
     username { generate(:username) }
     password { "12345678" }
+    role { 'software_developer' }
     confirmed_at { Time.now }
     confirmation_token { nil }
     can_create_group { true }

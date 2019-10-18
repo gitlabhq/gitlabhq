@@ -7841,6 +7841,9 @@ msgstr ""
 msgid "Get started with performance monitoring"
 msgstr ""
 
+msgid "Get started!"
+msgstr ""
+
 msgid "Getting started with releases"
 msgstr ""
 
@@ -8915,6 +8918,9 @@ msgid "In order to enable instance-level analytics, please ask an admin to enabl
 msgstr ""
 
 msgid "In order to gather accurate feature usage data, it can take 1 to 2 weeks to see your index."
+msgstr ""
+
+msgid "In order to tailor your experience with GitLab<br>we would like to know a bit more about you."
 msgstr ""
 
 msgid "In the next step, you'll be able to select the projects you want to import."
@@ -10706,6 +10712,9 @@ msgid "Name"
 msgstr ""
 
 msgid "Name has already been taken"
+msgstr ""
+
+msgid "Name is too long (maximum is %{max_length} characters)."
 msgstr ""
 
 msgid "Name new label"
@@ -13513,7 +13522,7 @@ msgstr ""
 msgid "Register and see your runners for this project."
 msgstr ""
 
-msgid "Register for GitLab.com"
+msgid "Register for GitLab"
 msgstr ""
 
 msgid "Register now"
@@ -14090,6 +14099,9 @@ msgid "RightSidebar|deleting the"
 msgstr ""
 
 msgid "Roadmap"
+msgstr ""
+
+msgid "Role"
 msgstr ""
 
 msgid "Rollback"

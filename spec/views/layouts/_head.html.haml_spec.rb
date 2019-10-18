@@ -7,6 +7,7 @@ describe 'layouts/_head' do
 
   before do
     allow(view).to receive(:current_application_settings).and_return(Gitlab::CurrentSettings.current_application_settings)
+    allow(view).to receive(:experiment_enabled?).and_return(false)
   end
 
   it 'escapes HTML-safe strings in page_title' do

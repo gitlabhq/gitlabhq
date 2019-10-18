@@ -234,14 +234,21 @@ future based on additional testing and iteration.
 
 - **Supported Users (approximate):** 25,000
 - **RPS:** 500 requests per second
-- **Status:** Work-in-progress
-- **Related Issue:** See the [related issue](https://gitlab.com/gitlab-org/quality/performance/issues/57) for more information.
+- **Known Issues:** The slow API endpoints that were discovered during testing
+  the 10,000 user architecture also affect the 25,000 user architecture. For
+  details, see the related issues list in
+  [this issue](https://gitlab.com/gitlab-org/gitlab-foss/issues/64335).
 
-The Support and Quality teams are in the process of building and performance
-testing an environment that will support around 25,000 users. The specifications
-below are a work-in-progress representation of the work so far. The Quality team
-will be certifying this environment in late 2019. The specifications may be
-adjusted prior to certification based on performance testing.
+The GitLab Support and Quality teams built, performance tested, and validated an
+environment that supports around 25,000 users. The specifications below are a
+representation of the work so far. The specifications may be adjusted in the
+future based on additional testing and iteration.
+
+NOTE: **Note:** The specifications here were performance tested against a
+specific coded workload. Your exact needs may be more, depending on your
+workload. Your workload is influenced by factors such as - but not limited to -
+how active your users are, how much automation you use, mirroring, and
+repo/change size.
 
 | Service                       | Configuration           | GCP type       |
 | ------------------------------|-------------------------|----------------|

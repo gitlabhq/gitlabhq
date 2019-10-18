@@ -40,8 +40,8 @@ module Gitlab
         }
       end
 
-      def experiment_enabled?(experiment)
-        Experimentation.enabled?(experiment, experimentation_subject_index)
+      def experiment_enabled?(experiment_key)
+        Experimentation.enabled?(experiment_key, experimentation_subject_index)
       end
 
       private
@@ -55,10 +55,14 @@ module Gitlab
     end
 
     class << self
+      def experiment(key)
+        Experiment.new(EXPERIMENTS[key].merge(key: key))
+      end
+
       def enabled?(experiment_key, experimentation_subject_index)
         return false unless EXPERIMENTS.key?(experiment_key)
 
-        experiment = Experiment.new(EXPERIMENTS[experiment_key].merge(key: experiment_key))
+        experiment = experiment(experiment_key)
 
         experiment.feature_toggle_enabled? &&
           experiment.enabled_for_environment? &&

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
+  include Gitlab::Experimentation::ControllerConcern
   layout 'profile'
 
   # Overridden from Doorkeeper::AuthorizationsController to

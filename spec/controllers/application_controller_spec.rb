@@ -842,4 +842,48 @@ describe ApplicationController do
       end
     end
   end
+
+  describe '#require_role' do
+    controller(described_class) do
+      def index; end
+    end
+
+    let(:user) { create(:user) }
+    let(:experiment_enabled) { true }
+
+    before do
+      stub_experiment(signup_flow: experiment_enabled)
+    end
+
+    context 'experiment enabled and user with required role' do
+      before do
+        user.set_role_required!
+        sign_in(user)
+        get :index
+      end
+
+      it { is_expected.to redirect_to users_sign_up_welcome_path }
+    end
+
+    context 'experiment enabled and user without a role' do
+      before do
+        sign_in(user)
+        get :index
+      end
+
+      it { is_expected.not_to redirect_to users_sign_up_welcome_path }
+    end
+
+    context 'experiment disabled and user with required role' do
+      let(:experiment_enabled) { false }
+
+      before do
+        user.set_role_required!
+        sign_in(user)
+        get :index
+      end
+
+      it { is_expected.not_to redirect_to users_sign_up_welcome_path }
+    end
+  end
 end

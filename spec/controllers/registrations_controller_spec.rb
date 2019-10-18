@@ -114,7 +114,12 @@ describe RegistrationsController do
     context 'when invisible captcha is enabled' do
       before do
         stub_feature_flags(invisible_captcha: true)
+        InvisibleCaptcha.timestamp_enabled = true
         InvisibleCaptcha.timestamp_threshold = treshold
+      end
+
+      after do
+        InvisibleCaptcha.timestamp_enabled = false
       end
 
       let(:treshold) { 4 }

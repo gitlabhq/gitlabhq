@@ -88,6 +88,7 @@ RSpec.configure do |config|
   config.include FixtureHelpers
   config.include GitlabRoutingHelper
   config.include StubFeatureFlags
+  config.include StubExperiments
   config.include StubGitlabCalls
   config.include StubGitlabData
   config.include NextInstanceOf
@@ -378,3 +379,6 @@ end
 
 # Prevent Rugged from picking up local developer gitconfig.
 Rugged::Settings['search_path_global'] = Rails.root.join('tmp/tests').to_s
+
+# Disable timestamp checks for invisible_captcha
+InvisibleCaptcha.timestamp_enabled = false

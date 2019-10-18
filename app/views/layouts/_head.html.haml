@@ -5,7 +5,7 @@
 -# anything from this page beforehand.
 -# Part of an experiment to build a new sign up flow. Will be removed again with
 -# https://gitlab.com/gitlab-org/growth/engineering/issues/64
-- if use_experimental_separate_sign_up_flow? && current_path?("sessions#new")
+- if experiment_enabled?(:signup_flow) && current_path?("sessions#new")
   = javascript_tag nonce: true do
     :plain
       if (window.location.hash === '#register-pane') {

@@ -1,4 +1,4 @@
-- max_name_length = 128
+- content_for(:page_title, _('Register for GitLab'))
 - max_username_length = 255
 .signup-box.p-3.mb-2
   .signup-body
@@ -6,9 +6,6 @@
       .devise-errors.mt-0
         = render "devise/shared/error_messages", resource: resource
       = invisible_captcha
-      .name.form-group
-        = f.label :name, _('Full name'), class: 'label-bold'
-        = f.text_field :name, class: "form-control top js-block-emoji js-validate-length", :data => { :max_length => max_name_length, :max_length_message => s_("SignUp|Name is too long (maximum is %{max_length} characters).") % { max_length: max_name_length }, :qa_selector => 'new_user_name_field' }, required: true, title: _("This field is required.")
       .username.form-group
         = f.label :username, class: 'label-bold'
         = f.text_field :username, class: "form-control middle js-block-emoji js-validate-length js-validate-username", :data => { :max_length => max_username_length, :max_length_message => s_("SignUp|Username is too long (maximum is %{max_length} characters).") % { max_length: max_username_length }, :qa_selector => 'new_user_username_field' }, pattern: Gitlab::PathRegex::NAMESPACE_FORMAT_REGEX_JS, required: true, title: _("Please create a username with only alphanumeric characters.")
