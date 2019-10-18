@@ -487,6 +487,9 @@ in the first place, and thus not realize that it needs to re-apply the old confi
 
 > Introduced in [GitLab Ultimate][ee] 10.4.
 
+This is an optional step, since it requires a [review app](#auto-review-apps).
+If that requirement is not met, the job will be silently skipped.
+
 Dynamic Application Security Testing (DAST) uses the
 popular open source tool [OWASP ZAProxy](https://github.com/zaproxy/zaproxy)
 to perform an analysis on the current code and checks for potential security
@@ -497,6 +500,29 @@ later download and check out.
 
 Any security warnings are also shown in the merge request widget. Read how
 [DAST works](../../user/application_security/dast/index.md).
+
+On your default branch, DAST scans an app deployed specifically for that purpose.
+The app is deleted after DAST has run.
+
+On feature branches, DAST scans the [review app](#auto-review-apps).
+
+#### Overriding the DAST target
+
+To use a custom target instead of the auto-deployed review apps,
+set a `DAST_WEBSITE` environment variable to the URL for DAST to scan.
+
+NOTE: **Note:**
+If [DAST Full Scan](../../user/application_security/dast/index.md#full-scan) is enabled, it is strongly advised **not**
+to set `DAST_WEBSITE` to any staging or production environment. DAST Full Scan
+actively attacks the target, which can take down the application and lead to
+data loss or corruption.
+
+#### Disabling Auto DAST
+
+DAST can be disabled:
+
+- On all branches by setting the `DAST_DISABLED` environment variable to `"true"`.
+- Only on the default branch by setting the `DAST_DISABLED_FOR_DEFAULT_BRANCH` environment variable to `"true"`.
 
 ### Auto Browser Performance Testing **(PREMIUM)**
 

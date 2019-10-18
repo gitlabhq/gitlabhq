@@ -99,14 +99,14 @@ these additional steps before proceeding with GitLab installation.
 
 ## First GitLab application server
 
-As a final step, run the setup rake task **only on** the first GitLab application server.
-Do not run this on additional application servers.
+On the first application server, run:
 
-1. Initialize the database by running `sudo gitlab-rake gitlab:setup`.
-1. Run `sudo gitlab-ctl reconfigure` to compile the configuration.
+```sh
+sudo gitlab-ctl reconfigure
+```
 
-   CAUTION: **WARNING:** Only run this setup task on **NEW** GitLab instances because it
-   will wipe any existing data.
+This should compile the configuration and initialize the database. Do
+not run this on additional application servers until the next step.
 
 ## Extra configuration for additional GitLab application servers
 

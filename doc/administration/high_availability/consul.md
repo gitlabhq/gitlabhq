@@ -158,7 +158,7 @@ To fix this:
 
 ### Outage recovery
 
-If you lost enough server agents in the cluster to break quorum, then the cluster is considered failed, and it will not function without manual intervenetion.
+If you lost enough server agents in the cluster to break quorum, then the cluster is considered failed, and it will not function without manual intervention.
 
 #### Recreate from scratch
 

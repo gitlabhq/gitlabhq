@@ -47,6 +47,7 @@ future GitLab releases.**
 | `CI_ENVIRONMENT_NAME`                   | 8.15   | all    | The name of the environment for this job. Only present if [`environment:name`](../yaml/README.md#environmentname) is set. |
 | `CI_ENVIRONMENT_SLUG`                   | 8.15   | all    | A simplified version of the environment name, suitable for inclusion in DNS, URLs, Kubernetes labels, etc. Only present if [`environment:name`](../yaml/README.md#environmentname) is set. |
 | `CI_ENVIRONMENT_URL`                    | 9.3    | all    | The URL of the environment for this job. Only present if [`environment:url`](../yaml/README.md#environmenturl) is set. |
+| `CI_DEFAULT_BRANCH`                     | 12.4   | all    | The name of the default branch for the project. |
 | `CI_JOB_ID`                             | 9.0    | all    | The unique id of the current job that GitLab CI uses internally |
 | `CI_JOB_MANUAL`                         | 8.12   | all    | The flag to indicate that job was manually started |
 | `CI_JOB_NAME`                           | 9.0    | 0.5    | The name of the job as defined in `.gitlab-ci.yml` |

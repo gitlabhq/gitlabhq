@@ -100,7 +100,6 @@ module TestEnv
 
     clean_test_path
 
-    # Set up GitLab shell for test instance
     setup_gitlab_shell
 
     setup_gitaly
@@ -145,10 +144,7 @@ module TestEnv
   end
 
   def setup_gitlab_shell
-    component_timed_setup('GitLab Shell',
-      install_dir: Gitlab.config.gitlab_shell.path,
-      version: Gitlab::Shell.version_required,
-      task: 'gitlab:shell:install')
+    FileUtils.mkdir_p(Gitlab.config.gitlab_shell.path)
   end
 
   def setup_gitaly
