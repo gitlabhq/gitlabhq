@@ -139,7 +139,8 @@ describe BuildDetailsEntity do
       it { is_expected.to include(failure_reason: 'missing_dependency_failure') }
 
       it 'includes the failing dependencies in the callout message' do
-        expect(message).to include('test2, test1')
+        expect(message).to include('test1')
+        expect(message).to include('test2')
       end
     end
 
