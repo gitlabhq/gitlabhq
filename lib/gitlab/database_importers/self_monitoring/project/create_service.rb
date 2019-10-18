@@ -33,7 +33,7 @@ module Gitlab
 
             if result[:status] == :success
               result
-            elsif STEPS_ALLOWED_TO_FAIL.include?(result[:failed_step])
+            elsif STEPS_ALLOWED_TO_FAIL.include?(result[:last_step])
               success
             else
               raise StandardError, result[:message]
@@ -42,121 +42,124 @@ module Gitlab
 
           private
 
-          def validate_application_settings
+          def validate_application_settings(_result)
             return success if application_settings
 
             log_error('No application_settings found')
             error(_('No application_settings found'))
           end
 
-          def validate_project_created
-            return success unless project_created?
+          def validate_project_created(result)
+            return success(result) unless project_created?
 
             log_error('Project already created')
             error(_('Project already created'))
           end
 
-          def validate_admins
+          def validate_admins(result)
             unless instance_admins.any?
               log_error('No active admin user found')
               return error(_('No active admin user found'))
             end
 
-            success
+            success(result)
           end
 
-          def create_group
+          def create_group(result)
             if project_created?
               log_info(_('Instance administrators group already exists'))
-              @group = application_settings.instance_administration_project.owner
-              return success(group: @group)
+              result[:group] = application_settings.instance_administration_project.owner
+              return success(result)
             end
 
-            @group = ::Groups::CreateService.new(group_owner, create_group_params).execute
+            result[:group] = ::Groups::CreateService.new(group_owner, create_group_params).execute
 
-            if @group.persisted?
-              success(group: @group)
+            if result[:group].persisted?
+              success(result)
             else
               error(_('Could not create group'))
             end
           end
 
-          def create_project
+          def create_project(result)
             if project_created?
               log_info('Instance administration project already exists')
-              @project = application_settings.instance_administration_project
-              return success(project: project)
+              result[:project] = application_settings.instance_administration_project
+              return success(result)
             end
 
-            @project = ::Projects::CreateService.new(group_owner, create_project_params).execute
+            result[:project] = ::Projects::CreateService.new(group_owner, create_project_params(result[:group])).execute
 
-            if project.persisted?
-              success(project: project)
+            if result[:project].persisted?
+              success(result)
             else
-              log_error("Could not create instance administration project. Errors: %{errors}" % { errors: project.errors.full_messages })
+              log_error("Could not create instance administration project. Errors: %{errors}" % { errors: result[:project].errors.full_messages })
               error(_('Could not create project'))
             end
           end
 
-          def save_project_id
+          def save_project_id(result)
             return success if project_created?
 
-            result = application_settings.update(instance_administration_project_id: @project.id)
+            response = application_settings.update(
+              instance_administration_project_id: result[:project].id
+            )
 
-            if result
-              success
+            if response
+              success(result)
             else
               log_error("Could not save instance administration project ID, errors: %{errors}" % { errors: application_settings.errors.full_messages })
               error(_('Could not save project ID'))
             end
           end
 
-          def add_group_members
-            members = @group.add_users(members_to_add, Gitlab::Access::MAINTAINER)
+          def add_group_members(result)
+            group = result[:group]
+            members = group.add_users(members_to_add(group), Gitlab::Access::MAINTAINER)
             errors = members.flat_map { |member| member.errors.full_messages }
 
             if errors.any?
               log_error('Could not add admins as members to self-monitoring project. Errors: %{errors}' % { errors: errors })
               error(_('Could not add admins as members'))
             else
-              success
+              success(result)
             end
           end
 
-          def add_to_whitelist
-            return success unless prometheus_enabled?
-            return success unless prometheus_listen_address.present?
+          def add_to_whitelist(result)
+            return success(result) unless prometheus_enabled?
+            return success(result) unless prometheus_listen_address.present?
 
             uri = parse_url(internal_prometheus_listen_address_uri)
             return error(_('Prometheus listen_address in config/gitlab.yml is not a valid URI')) unless uri
 
             application_settings.add_to_outbound_local_requests_whitelist([uri.normalized_host])
-            result = application_settings.save
+            response = application_settings.save
 
-            if result
+            if response
               # Expire the Gitlab::CurrentSettings cache after updating the whitelist.
               # This happens automatically in an after_commit hook, but in migrations,
               # the after_commit hook only runs at the end of the migration.
               Gitlab::CurrentSettings.expire_current_application_settings
-              success
+              success(result)
             else
               log_error("Could not add prometheus URL to whitelist, errors: %{errors}" % { errors: application_settings.errors.full_messages })
               error(_('Could not add prometheus URL to whitelist'))
             end
           end
 
-          def add_prometheus_manual_configuration
-            return success unless prometheus_enabled?
-            return success unless prometheus_listen_address.present?
+          def add_prometheus_manual_configuration(result)
+            return success(result) unless prometheus_enabled?
+            return success(result) unless prometheus_listen_address.present?
 
-            service = project.find_or_initialize_service('prometheus')
+            service = result[:project].find_or_initialize_service('prometheus')
 
             unless service.update(prometheus_service_attributes)
               log_error('Could not save prometheus manual configuration for self-monitoring project. Errors: %{errors}' % { errors: service.errors.full_messages })
               return error(_('Could not save prometheus manual configuration'))
             end
 
-            success
+            success(result)
           end
 
           def application_settings
@@ -196,11 +199,11 @@ module Gitlab
             instance_admins.first
           end
 
-          def members_to_add
+          def members_to_add(group)
             # Exclude admins who are already members of group because
-            # `@group.add_users(users)` returns an error if the users parameter contains
+            # `group.add_users(users)` returns an error if the users parameter contains
             # users who are already members of the group.
-            instance_admins - @group.members.collect(&:user)
+            instance_admins - group.members.collect(&:user)
           end
 
           def create_group_params
@@ -217,13 +220,13 @@ module Gitlab
             )
           end
 
-          def create_project_params
+          def create_project_params(group)
             {
               initialize_with_readme: true,
               visibility_level: VISIBILITY_LEVEL,
               name: PROJECT_NAME,
               description: "This project is automatically generated and will be used to help monitor this GitLab instance. [More information](#{docs_path})",
-              namespace_id: @group.id
+              namespace_id: group.id
             }
           end
 

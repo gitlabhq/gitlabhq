@@ -20,6 +20,38 @@ describe Profiles::NotificationsController do
 
       expect(response).to render_template :show
     end
+
+    context 'with groups that do not have notification preferences' do
+      set(:group) { create(:group) }
+      set(:subgroup) { create(:group, parent: group) }
+
+      before do
+        group.add_developer(user)
+      end
+
+      it 'still shows up in the list' do
+        sign_in(user)
+
+        get :show
+
+        expect(assigns(:group_notifications).map(&:source_id)).to include(subgroup.id)
+      end
+
+      it 'has an N+1 (but should not)' do
+        sign_in(user)
+
+        control = ActiveRecord::QueryRecorder.new do
+          get :show
+        end
+
+        create_list(:group, 2, parent: group)
+
+        # We currently have an N + 1, switch to `not_to` once fixed
+        expect do
+          get :show
+        end.to exceed_query_limit(control)
+      end
+    end
   end
 
   describe 'POST update' do

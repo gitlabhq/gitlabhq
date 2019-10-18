@@ -3735,6 +3735,80 @@ describe User do
     end
   end
 
+  describe '#notification_settings_for' do
+    let(:user) { create(:user) }
+    let(:source) { nil }
+
+    subject { user.notification_settings_for(source) }
+
+    context 'when source is nil' do
+      it 'returns a blank global notification settings object' do
+        expect(subject.source).to eq(nil)
+        expect(subject.notification_email).to eq(nil)
+        expect(subject.level).to eq('global')
+      end
+    end
+
+    context 'when source is a Group' do
+      let(:group) { create(:group) }
+
+      subject { user.notification_settings_for(group, inherit: true) }
+
+      context 'when group has no existing notification settings' do
+        context 'when group has no ancestors' do
+          it 'will be a default Global notification setting' do
+            expect(subject.notification_email).to eq(nil)
+            expect(subject.level).to eq('global')
+          end
+        end
+
+        context 'when group has ancestors' do
+          context 'when an ancestor has a level other than Global' do
+            let(:ancestor) { create(:group) }
+            let(:group) { create(:group, parent: ancestor) }
+
+            before do
+              create(:notification_setting, user: user, source: ancestor, level: 'participating', notification_email: 'ancestor@example.com')
+            end
+
+            it 'has the same level set' do
+              expect(subject.level).to eq('participating')
+            end
+
+            it 'has the same email set' do
+              expect(subject.notification_email).to eq('ancestor@example.com')
+            end
+
+            context 'when inherit is false' do
+              subject { user.notification_settings_for(group) }
+
+              it 'does not inherit settings' do
+                expect(subject.notification_email).to eq(nil)
+                expect(subject.level).to eq('global')
+              end
+            end
+          end
+
+          context 'when an ancestor has a Global level but has an email set' do
+            let(:grand_ancestor) { create(:group) }
+            let(:ancestor) { create(:group, parent: grand_ancestor) }
+            let(:group) { create(:group, parent: ancestor) }
+
+            before do
+              create(:notification_setting, user: user, source: grand_ancestor, level: 'participating', notification_email: 'grand@example.com')
+              create(:notification_setting, user: user, source: ancestor, level: 'global', notification_email: 'ancestor@example.com')
+            end
+
+            it 'has the same email set' do
+              expect(subject.level).to eq('global')
+              expect(subject.notification_email).to eq('ancestor@example.com')
+            end
+          end
+        end
+      end
+    end
+  end
+
   describe '#notification_email_for' do
     let(:user) { create(:user) }
     let(:group) { create(:group) }

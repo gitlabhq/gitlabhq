@@ -183,12 +183,12 @@ describe Snippet do
     end
   end
 
-  describe '.only_global_snippets' do
+  describe '.only_personal_snippets' do
     it 'returns snippets not associated with any projects' do
       create(:project_snippet)
 
       snippet = create(:snippet)
-      snippets = described_class.only_global_snippets
+      snippets = described_class.only_personal_snippets
 
       expect(snippets).to eq([snippet])
     end

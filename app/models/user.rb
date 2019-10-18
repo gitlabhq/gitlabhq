@@ -1317,14 +1317,27 @@ class User < ApplicationRecord
     notification_group&.notification_email_for(self) || notification_email
   end
 
-  def notification_settings_for(source)
+  def notification_settings_for(source, inherit: false)
     if notification_settings.loaded?
       notification_settings.find do |notification|
         notification.source_type == source.class.base_class.name &&
           notification.source_id == source.id
       end
     else
-      notification_settings.find_or_initialize_by(source: source)
+      notification_settings.find_or_initialize_by(source: source) do |ns|
+        next unless source.is_a?(Group) && inherit
+
+        # If we're here it means we're trying to create a NotificationSetting for a group that doesn't have one.
+        # Find the closest parent with a notification_setting that's not Global level, or that has an email set.
+        ancestor_ns = source
+                        .notification_settings(hierarchy_order: :asc)
+                        .where(user: self)
+                        .find_by('level != ? OR notification_email IS NOT NULL', NotificationSetting.levels[:global])
+        # Use it to seed the settings
+        ns.assign_attributes(ancestor_ns&.slice(*NotificationSetting.allowed_fields))
+        ns.source = source
+        ns.user = self
+      end
     end
   end
 

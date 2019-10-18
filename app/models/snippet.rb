@@ -71,7 +71,7 @@ class Snippet < ApplicationRecord
     end
   end
 
-  def self.only_global_snippets
+  def self.only_personal_snippets
     where(project_id: nil)
   end
 

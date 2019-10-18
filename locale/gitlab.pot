@@ -10947,6 +10947,9 @@ msgstr ""
 msgid "No data to display"
 msgstr ""
 
+msgid "No deployment platform available"
+msgstr ""
+
 msgid "No deployments found"
 msgstr ""
 
@@ -11011,6 +11014,9 @@ msgid "No other labels with such name or description"
 msgstr ""
 
 msgid "No parent group"
+msgstr ""
+
+msgid "No pods available"
 msgstr ""
 
 msgid "No preview for this file type"

@@ -12,5 +12,5 @@
     = render 'shared/notifications/button', notification_setting: setting, emails_disabled: emails_disabled
 
   .table-section.section-30
-    = form_for @user.notification_settings.find { |ns| ns.source == group }, url: profile_notifications_group_path(group), method: :put, html: { class: 'update-notifications' } do |f|
+    = form_for setting, url: profile_notifications_group_path(group), method: :put, html: { class: 'update-notifications' } do |f|
       = f.select :notification_email, @user.all_emails, { include_blank: 'Global notification email' }, class: 'select2 js-group-notification-email'

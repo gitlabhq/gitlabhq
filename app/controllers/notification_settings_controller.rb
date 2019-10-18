@@ -50,8 +50,6 @@ class NotificationSettingsController < ApplicationController
   end
 
   def notification_setting_params_for(source)
-    allowed_fields = NotificationSetting.email_events(source).dup
-    allowed_fields << :level
-    params.require(:notification_setting).permit(allowed_fields)
+    params.require(:notification_setting).permit(NotificationSetting.allowed_fields(source))
   end
 end

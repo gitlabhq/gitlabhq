@@ -5,7 +5,7 @@ class Profiles::GroupsController < Profiles::ApplicationController
 
   def update
     group = find_routable!(Group, params[:id])
-    notification_setting = current_user.notification_settings.find_by(source: group) # rubocop: disable CodeReuse/ActiveRecord
+    notification_setting = current_user.notification_settings_for(group)
 
     if notification_setting.update(update_params)
       flash[:notice] = "Notification settings for #{group.name} saved"

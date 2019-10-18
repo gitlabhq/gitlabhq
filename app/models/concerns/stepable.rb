@@ -11,15 +11,15 @@ module Stepable
     initial_result = {}
 
     steps.inject(initial_result) do |previous_result, callback|
-      result = method(callback).call
+      result = method(callback).call(previous_result)
 
-      if result[:status] == :error
-        result[:failed_step] = callback
+      if result[:status] != :success
+        result[:last_step] = callback
 
         break result
       end
 
-      previous_result.merge(result)
+      result
     end
   end
 

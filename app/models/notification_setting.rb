@@ -47,6 +47,10 @@ class NotificationSetting < ApplicationRecord
     EMAIL_EVENTS
   end
 
+  def self.allowed_fields(source = nil)
+    NotificationSetting.email_events(source).dup + %i(level notification_email)
+  end
+
   def email_events
     self.class.email_events(source)
   end
