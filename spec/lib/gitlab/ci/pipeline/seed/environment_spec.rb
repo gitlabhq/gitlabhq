@@ -23,9 +23,9 @@ describe Gitlab::Ci::Pipeline::Seed::Environment do
         }
       end
 
-      it 'returns an environment object' do
+      it 'returns a persisted environment object' do
         expect(subject).to be_a(Environment)
-        expect(subject).not_to be_persisted
+        expect(subject).to be_persisted
         expect(subject.project).to eq(project)
         expect(subject.name).to eq('production')
       end

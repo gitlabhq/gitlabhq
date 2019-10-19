@@ -736,6 +736,28 @@ describe Ci::CreatePipelineService do
       end
     end
 
+    context 'when environment with duplicate names' do
+      let(:ci_yaml) do
+        {
+          deploy: { environment: { name: 'production' }, script: 'ls' },
+          deploy_2: { environment: { name: 'production' }, script: 'ls' }
+        }
+      end
+
+      before do
+        stub_ci_pipeline_yaml_file(YAML.dump(ci_yaml))
+      end
+
+      it 'creates a pipeline with the environment' do
+        result = execute_service
+
+        expect(result).to be_persisted
+        expect(Environment.find_by(name: 'production')).to be_present
+        expect(result.builds.first.deployment).to be_persisted
+        expect(result.builds.first.deployment.deployable).to be_a(Ci::Build)
+      end
+    end
+
     context 'when builds with auto-retries are configured' do
       let(:pipeline)  { execute_service }
       let(:rspec_job) { pipeline.builds.find_by(name: 'rspec') }

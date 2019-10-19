@@ -22,7 +22,7 @@ module Gitlab
             # If there is a validation error on environment creation, such as
             # the name contains invalid character, the job will fall back to a
             # non-environment job.
-            return unless deployment.valid? && deployment.environment.valid?
+            return unless deployment.valid? && deployment.environment.persisted?
 
             deployment.cluster_id =
               deployment.environment.deployment_platform&.cluster_id

@@ -12,7 +12,7 @@ module Gitlab
           end
 
           def to_resource
-            find_environment || ::Environment.new(attributes)
+            find_environment || ::Environment.create(attributes)
           end
 
           private
