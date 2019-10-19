@@ -1,6 +1,7 @@
 - breadcrumb_title "Dashboard"
 
-= render_if_exists 'admin/licenses/breakdown', license: @license
+- if show_license_breakdown?
+  = render_if_exists 'admin/licenses/breakdown', license: @license
 
 .admin-dashboard.prepend-top-default
   .row
