@@ -287,7 +287,7 @@ Different issue board features are available in different [GitLab tiers](https:/
 
 | Tier     | Number of Project Issue Boards | Number of Group Issue Boards | Configurable Issue Boards | Assignee Lists |
 |----------|--------------------------------|------------------------------|---------------------------|----------------|
-| Core / Free     | 1                              | 1                            | No                        | No             |
+| Core / Free     | Multiple                              | 1                            | No                        | No             |
 | Starter / Bronze  | Multiple                       | 1                            | Yes                       | No             |
 | Premium / Silver | Multiple                       | Multiple                     | Yes                       | Yes            |
 | Ultimate / Gold | Multiple                       | Multiple                     | Yes                       | Yes            |
