@@ -6099,13 +6099,13 @@ msgstr ""
 msgid "Ensure your %{linkStart}environment is part of the deploy stage%{linkEnd} of your CI pipeline to track deployments to your cluster."
 msgstr ""
 
+msgid "Enter Admin Mode"
+msgstr ""
+
 msgid "Enter IP address range"
 msgstr ""
 
 msgid "Enter a number"
-msgstr ""
-
-msgid "Enter admin mode"
 msgstr ""
 
 msgid "Enter at least three characters to search"
@@ -9680,7 +9680,7 @@ msgstr ""
 msgid "Leave"
 msgstr ""
 
-msgid "Leave admin mode"
+msgid "Leave Admin Mode"
 msgstr ""
 
 msgid "Leave edit mode? All unsaved changes will be lost."

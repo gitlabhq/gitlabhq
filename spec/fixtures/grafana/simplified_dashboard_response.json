@@ -1,0 +1,40 @@
+{
+  "dashboard": {
+    "panels": [
+      {
+        "datasource": "GitLab Omnibus",
+        "id": 8,
+        "lines": true,
+        "targets": [
+          {
+            "expr": "sum(\n  rate(redis_net_input_bytes_total{instance=~\"$instance\"}[$__interval])\n)",
+            "format": "time_series",
+            "interval": "1m",
+            "legendFormat": "In",
+            "refId": "A"
+          },
+          {
+            "expr": "sum(\n  rate(redis_net_output_bytes_total{instance=~\"[[instance]]\"}[$__interval])\n)",
+            "format": "time_series",
+            "interval": "1m",
+            "legendFormat": "Out",
+            "refId": "B"
+          }
+        ],
+        "title": "Network I/O",
+        "type": "graph",
+        "yaxes": [{ "format": "Bps" }, { "format": "short" }]
+      }
+    ],
+    "templating": {
+      "list": [
+        {
+          "current": {
+            "value": "localhost:9121"
+          },
+          "name": "instance"
+        }
+      ]
+    }
+  }
+}

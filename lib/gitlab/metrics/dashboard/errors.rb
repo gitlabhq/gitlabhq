@@ -9,6 +9,7 @@ module Gitlab
       module Errors
         DashboardProcessingError = Class.new(StandardError)
         PanelNotFoundError = Class.new(StandardError)
+        MissingIntegrationError = Class.new(StandardError)
         LayoutError = Class.new(DashboardProcessingError)
         MissingQueryError = Class.new(DashboardProcessingError)
 
@@ -22,6 +23,10 @@ module Gitlab
             error("#{dashboard_path} could not be found.", :not_found)
           when PanelNotFoundError
             error(error.message, :not_found)
+          when ::Grafana::Client::Error
+            error(error.message, :service_unavailable)
+          when MissingIntegrationError
+            error('Proxy support for this API is not available currently', :bad_request)
           else
             raise error
           end

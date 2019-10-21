@@ -32,4 +32,5 @@ lib/gitlab/github_import/ @gitlab-org/maintainers/database
 /.gitlab/ci/ @gl-quality/eng-prod
 Dangerfile @gl-quality/eng-prod
 /danger/ @gl-quality/eng-prod
+/lib/gitlab/danger/ @gl-quality/eng-prod
 /scripts/ @gl-quality/eng-prod

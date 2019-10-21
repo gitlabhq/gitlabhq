@@ -35,7 +35,7 @@ describe Grafana::Client do
     it 'does not follow redirects' do
       expect { subject }.to raise_exception(
         Grafana::Client::Error,
-        'Grafana response status code: 302'
+        'Grafana response status code: 302, Message: {}'
       )
 
       expect(redirect_req_stub).to have_been_requested
@@ -65,6 +65,30 @@ describe Grafana::Client do
         end
       end
     end
+  end
+
+  describe '#get_dashboard' do
+    let(:grafana_api_url) { 'https://grafanatest.com/-/grafana-project/api/dashboards/uid/FndfgnX' }
+
+    subject do
+      client.get_dashboard(uid: 'FndfgnX')
+    end
+
+    it_behaves_like 'calls grafana api'
+    it_behaves_like 'no redirects'
+    it_behaves_like 'handles exceptions'
+  end
+
+  describe '#get_datasource' do
+    let(:grafana_api_url) { 'https://grafanatest.com/-/grafana-project/api/datasources/name/Test%20Name' }
+
+    subject do
+      client.get_datasource(name: 'Test Name')
+    end
+
+    it_behaves_like 'calls grafana api'
+    it_behaves_like 'no redirects'
+    it_behaves_like 'handles exceptions'
   end
 
   describe '#proxy_datasource' do
