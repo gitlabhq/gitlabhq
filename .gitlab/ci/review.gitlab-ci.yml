@@ -1,7 +1,6 @@
 .except-deploys:
   except:
     refs:
-      - /^[\d-]+-stable(-ee)?$/
       - /^\d+-\d+-auto-deploy-\d+$/
 
 .review-docker:

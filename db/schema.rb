@@ -3992,6 +3992,18 @@ ActiveRecord::Schema.define(version: 2019_10_16_220135) do
     t.index ["type"], name: "index_web_hooks_on_type"
   end
 
+  create_table "zoom_meetings", force: :cascade do |t|
+    t.bigint "project_id", null: false
+    t.bigint "issue_id", null: false
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+    t.integer "issue_status", limit: 2, default: 1, null: false
+    t.string "url", limit: 255
+    t.index ["issue_id", "issue_status"], name: "index_zoom_meetings_on_issue_id_and_issue_status", unique: true, where: "(issue_status = 1)"
+    t.index ["issue_id"], name: "index_zoom_meetings_on_issue_id"
+    t.index ["project_id"], name: "index_zoom_meetings_on_project_id"
+  end
+
   add_foreign_key "alerts_service_data", "services", on_delete: :cascade
   add_foreign_key "allowed_email_domains", "namespaces", column: "group_id", on_delete: :cascade
   add_foreign_key "analytics_cycle_analytics_group_stages", "labels", column: "end_event_label_id", on_delete: :cascade
@@ -4406,4 +4418,6 @@ ActiveRecord::Schema.define(version: 2019_10_16_220135) do
   add_foreign_key "vulnerability_scanners", "projects", on_delete: :cascade
   add_foreign_key "web_hook_logs", "web_hooks", on_delete: :cascade
   add_foreign_key "web_hooks", "projects", name: "fk_0c8ca6d9d1", on_delete: :cascade
+  add_foreign_key "zoom_meetings", "issues", on_delete: :cascade
+  add_foreign_key "zoom_meetings", "projects", on_delete: :cascade
 end
