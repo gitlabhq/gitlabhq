@@ -222,6 +222,11 @@ Check the directory layout on your Gitaly server to be sure.
 
    [auth]
    token = 'abc123secret'
+
+   [logging]
+   format = 'json'
+   level = 'info'
+   dir = '/var/log/gitaly'
    ```
 
 1. Append the following to `/home/git/gitaly/config.toml` for each respective server:

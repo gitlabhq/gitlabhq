@@ -428,7 +428,9 @@ describe Gitlab::Git::Commit, :seed_helper do
       end
     end
 
-    shared_examples 'extracting commit signature' do
+    describe '.extract_signature_lazily' do
+      subject { described_class.extract_signature_lazily(repository, commit_id).itself }
+
       context 'when the commit is signed' do
         let(:commit_id) { '0b4bc9a49b562e85de7cc9e834518ea6828729b9' }
 
@@ -492,10 +494,8 @@ describe Gitlab::Git::Commit, :seed_helper do
           expect { subject }.to raise_error(ArgumentError)
         end
       end
-    end
 
-    describe '.extract_signature_lazily' do
-      describe 'loading signatures in batch once' do
+      context 'when loading signatures in batch once' do
         it 'fetches signatures in batch once' do
           commit_ids = %w[0b4bc9a49b562e85de7cc9e834518ea6828729b9 4b4918a572fa86f9771e5ba40fbd48e1eb03e2c6]
           signatures = commit_ids.map do |commit_id|
@@ -516,16 +516,6 @@ describe Gitlab::Git::Commit, :seed_helper do
           2.times { signatures.each(&:itself) }
         end
       end
-
-      subject { described_class.extract_signature_lazily(repository, commit_id).itself }
-
-      it_behaves_like 'extracting commit signature'
-    end
-
-    describe '.extract_signature' do
-      subject { described_class.extract_signature(repository, commit_id) }
-
-      it_behaves_like 'extracting commit signature'
     end
   end
 

@@ -348,25 +348,6 @@ module Gitlab
         end
       end
 
-      def extract_signature(commit_id)
-        request = Gitaly::ExtractCommitSignatureRequest.new(repository: @gitaly_repo, commit_id: commit_id)
-        response = GitalyClient.call(@repository.storage, :commit_service, :extract_commit_signature, request, timeout: GitalyClient.fast_timeout)
-
-        signature = +''.b
-        signed_text = +''.b
-
-        response.each do |message|
-          signature << message.signature
-          signed_text << message.signed_text
-        end
-
-        return if signature.blank? && signed_text.blank?
-
-        [signature, signed_text]
-      rescue GRPC::InvalidArgument => ex
-        raise ArgumentError, ex
-      end
-
       def get_commit_signatures(commit_ids)
         request = Gitaly::GetCommitSignaturesRequest.new(repository: @gitaly_repo, commit_ids: commit_ids)
         response = GitalyClient.call(@repository.storage, :commit_service, :get_commit_signatures, request, timeout: GitalyClient.fast_timeout)
