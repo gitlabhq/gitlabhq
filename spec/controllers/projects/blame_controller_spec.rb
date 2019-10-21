@@ -25,14 +25,25 @@ describe Projects::BlameController do
           })
     end
 
-    context "valid file" do
+    context "valid branch, valid file" do
       let(:id) { 'master/files/ruby/popen.rb' }
+
       it { is_expected.to respond_with(:success) }
     end
 
-    context "invalid file" do
-      let(:id) { 'master/files/ruby/missing_file.rb'}
-      it { expect(response).to have_gitlab_http_status(404) }
+    context "valid branch, invalid file" do
+      let(:id) { 'master/files/ruby/invalid-path.rb' }
+
+      it 'redirects' do
+        expect(subject)
+            .to redirect_to("/#{project.full_path}/tree/master")
+      end
+    end
+
+    context "invalid branch, valid file" do
+      let(:id) { 'invalid-branch/files/ruby/missing_file.rb'}
+
+      it { is_expected.to respond_with(:not_found) }
     end
   end
 end

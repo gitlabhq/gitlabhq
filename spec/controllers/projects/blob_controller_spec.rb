@@ -24,26 +24,34 @@ describe Projects::BlobController do
 
       context "valid branch, valid file" do
         let(:id) { 'master/README.md' }
+
         it { is_expected.to respond_with(:success) }
       end
 
       context "valid branch, invalid file" do
         let(:id) { 'master/invalid-path.rb' }
-        it { is_expected.to respond_with(:not_found) }
+
+        it 'redirects' do
+          expect(subject)
+              .to redirect_to("/#{project.full_path}/tree/master")
+        end
       end
 
       context "invalid branch, valid file" do
         let(:id) { 'invalid-branch/README.md' }
+
         it { is_expected.to respond_with(:not_found) }
       end
 
       context "binary file" do
         let(:id) { 'binary-encoding/encoding/binary-1.bin' }
+
         it { is_expected.to respond_with(:success) }
       end
 
       context "Markdown file" do
         let(:id) { 'master/README.md' }
+
         it { is_expected.to respond_with(:success) }
       end
     end
@@ -104,6 +112,7 @@ describe Projects::BlobController do
 
       context 'redirect to tree' do
         let(:id) { 'markdown/doc' }
+
         it 'redirects' do
           expect(subject)
             .to redirect_to("/#{project.full_path}/tree/markdown/doc")

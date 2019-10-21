@@ -843,8 +843,8 @@ describe 'Git HTTP requests' do
             get "/#{project.full_path}/blob/master/info/refs"
           end
 
-          it "returns not found" do
-            expect(response).to have_gitlab_http_status(:not_found)
+          it "redirects" do
+            expect(response).to have_gitlab_http_status(302)
           end
         end
       end

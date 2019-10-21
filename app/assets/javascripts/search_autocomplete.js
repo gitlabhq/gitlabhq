@@ -95,10 +95,10 @@ export class SearchAutocomplete {
       this.createAutocomplete();
     }
 
-    this.searchInput.addClass('disabled');
     this.saveTextLength();
     this.bindEvents();
     this.dropdownToggle.dropdown();
+    this.searchInput.addClass('js-autocomplete-disabled');
   }
 
   // Finds an element inside wrapper element
@@ -338,7 +338,7 @@ export class SearchAutocomplete {
     if (!this.dropdown.hasClass('show')) {
       this.loadingSuggestions = false;
       this.dropdownToggle.dropdown('toggle');
-      return this.searchInput.removeClass('disabled');
+      return this.searchInput.removeClass('js-autocomplete-disabled');
     }
   }
 
@@ -432,8 +432,8 @@ export class SearchAutocomplete {
   }
 
   disableAutocomplete() {
-    if (!this.searchInput.hasClass('disabled') && this.dropdown.hasClass('show')) {
-      this.searchInput.addClass('disabled');
+    if (!this.searchInput.hasClass('js-autocomplete-disabled') && this.dropdown.hasClass('show')) {
+      this.searchInput.addClass('js-autocomplete-disabled');
       this.dropdown.removeClass('show').trigger('hidden.bs.dropdown');
       this.restoreMenu();
     }

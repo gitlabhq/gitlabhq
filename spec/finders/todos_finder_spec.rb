@@ -36,10 +36,18 @@ describe TodosFinder do
           expect(todos).to match_array([todo1, todo2])
         end
 
-        it 'returns correct todos when filtered by a type' do
-          todos = finder.new(user, { type: 'Issue' }).execute
+        context 'when filtering by type' do
+          it 'returns correct todos when filtered by a type' do
+            todos = finder.new(user, { type: 'Issue' }).execute
 
-          expect(todos).to match_array([todo1])
+            expect(todos).to match_array([todo1])
+          end
+
+          it 'returns the correct todos when filtering for multiple types' do
+            todos = finder.new(user, { type: %w[Issue MergeRequest] }).execute
+
+            expect(todos).to match_array([todo1, todo2])
+          end
         end
 
         context 'when filtering for actions' do
@@ -53,12 +61,10 @@ describe TodosFinder do
               expect(todos).to match_array([todo2])
             end
 
-            context 'multiple actions' do
-              it 'returns the expected todos' do
-                todos = finder.new(user, { action_id: [Todo::DIRECTLY_ADDRESSED, Todo::ASSIGNED] }).execute
+            it 'returns the expected todos when filtering for multiple action ids' do
+              todos = finder.new(user, { action_id: [Todo::DIRECTLY_ADDRESSED, Todo::ASSIGNED] }).execute
 
-                expect(todos).to match_array([todo2, todo1])
-              end
+              expect(todos).to match_array([todo2, todo1])
             end
           end
 
@@ -69,12 +75,10 @@ describe TodosFinder do
               expect(todos).to match_array([todo2])
             end
 
-            context 'multiple actions' do
-              it 'returns the expected todos' do
-                todos = finder.new(user, { action: [:directly_addressed, :assigned] }).execute
+            it 'returns the expected todos when filtering for multiple action names' do
+              todos = finder.new(user, { action: [:directly_addressed, :assigned] }).execute
 
-                expect(todos).to match_array([todo2, todo1])
-              end
+              expect(todos).to match_array([todo2, todo1])
             end
           end
         end

@@ -1,0 +1,5 @@
+---
+title: Fix incorrect selection of custom templates
+merge_request: 17205
+author:
+type: fixed

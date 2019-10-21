@@ -62,6 +62,9 @@ msgstr ""
 msgid " or references (e.g. path/to/project!merge_request_id)"
 msgstr ""
 
+msgid "\"%{path}\" did not exist on \"%{ref}\""
+msgstr ""
+
 msgid "%d comment"
 msgid_plural "%d comments"
 msgstr[0] ""

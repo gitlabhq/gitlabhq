@@ -28,8 +28,7 @@ describe 'User uses header search field', :js do
 
     context 'when clicking the search field' do
       before do
-        page.find('#search').click
-        wait_for_all_requests
+        page.find('#search.js-autocomplete-disabled').click
       end
 
       it 'shows category search dropdown' do
