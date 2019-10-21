@@ -691,7 +691,9 @@ ActiveRecord::Schema.define(version: 2019_10_16_220135) do
     t.boolean "interruptible"
     t.jsonb "config_options"
     t.jsonb "config_variables"
+    t.boolean "has_exposed_artifacts"
     t.index ["build_id"], name: "index_ci_builds_metadata_on_build_id", unique: true
+    t.index ["build_id"], name: "index_ci_builds_metadata_on_build_id_and_has_exposed_artifacts", where: "(has_exposed_artifacts IS TRUE)"
     t.index ["build_id"], name: "index_ci_builds_metadata_on_build_id_and_interruptible", where: "(interruptible = true)"
     t.index ["project_id"], name: "index_ci_builds_metadata_on_project_id"
   end

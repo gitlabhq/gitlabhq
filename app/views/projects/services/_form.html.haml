@@ -6,7 +6,6 @@
         - hide_class = 'd-none' if @service.activated? != value
         %span.js-service-active-status{ class: hide_class, data: { value: value.to_s } }
           = boolean_to_icon value
-    %p= #{@service.description}.
 
     - if @service.respond_to?(:detailed_description)
       %p= @service.detailed_description

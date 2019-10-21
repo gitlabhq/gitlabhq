@@ -20,11 +20,19 @@ module QA
 
         def search_and_select(item_text)
           find('.select2-input').set(item_text)
+
+          wait_for_search_to_complete
+
           select_item(item_text)
         end
 
         def expand_select_list
           find('span.select2-arrow').click
+        end
+
+        def wait_for_search_to_complete
+          has_css?('.select2-active')
+          has_no_css?('.select2-active', wait: 30)
         end
       end
     end

@@ -152,4 +152,34 @@ describe 'GPG signed commits' do
       end
     end
   end
+
+  context 'view signed commit on the tree view', :js do
+    shared_examples 'a commit with a signature' do
+      before do
+        visit project_tree_path(project, 'signed-commits')
+      end
+
+      it 'displays commit signature' do
+        expect(page).to have_button 'Unverified'
+
+        click_on 'Unverified'
+
+        within '.popover' do
+          expect(page).to have_content 'This commit was signed with an unverified signature'
+        end
+      end
+    end
+
+    context 'with vue tree view enabled' do
+      it_behaves_like 'a commit with a signature'
+    end
+
+    context 'with vue tree view disabled' do
+      before do
+        stub_feature_flags(vue_file_list: false)
+      end
+
+      it_behaves_like 'a commit with a signature'
+    end
+  end
 end

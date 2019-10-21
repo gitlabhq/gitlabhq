@@ -95,6 +95,17 @@ FactoryBot.define do
         end
       end
 
+      trait :with_exposed_artifacts do
+        status { :success }
+
+        after(:build) do |pipeline, evaluator|
+          pipeline.builds << build(:ci_build, :artifacts,
+            pipeline: pipeline,
+            project: pipeline.project,
+            options: { artifacts: { expose_as: 'the artifact', paths: ['ci_artifacts.txt'] } })
+        end
+      end
+
       trait :with_job do
         after(:build) do |pipeline, evaluator|
           pipeline.builds << build(:ci_build, pipeline: pipeline, project: pipeline.project)

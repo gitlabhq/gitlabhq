@@ -778,10 +778,10 @@ describe 'Pipeline', :js do
         expect(page).to have_content(failed_build.stage)
       end
 
-      it 'does not show trace' do
+      it 'does not show log' do
         subject
 
-        expect(page).to have_content('No job trace')
+        expect(page).to have_content('No job log')
       end
     end
 

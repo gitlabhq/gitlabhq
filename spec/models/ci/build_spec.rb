@@ -206,6 +206,35 @@ describe Ci::Build do
     end
   end
 
+  describe '.with_exposed_artifacts' do
+    subject { described_class.with_exposed_artifacts }
+
+    let!(:job1) { create(:ci_build) }
+    let!(:job2) { create(:ci_build, options: options) }
+    let!(:job3) { create(:ci_build) }
+
+    context 'when some jobs have exposed artifacs and some not' do
+      let(:options) { { artifacts: { expose_as: 'test', paths: ['test'] } } }
+
+      before do
+        job1.ensure_metadata.update!(has_exposed_artifacts: nil)
+        job3.ensure_metadata.update!(has_exposed_artifacts: false)
+      end
+
+      it 'selects only the jobs with exposed artifacts' do
+        is_expected.to eq([job2])
+      end
+    end
+
+    context 'when job does not expose artifacts' do
+      let(:options) { nil }
+
+      it 'returns an empty array' do
+        is_expected.to be_empty
+      end
+    end
+  end
+
   describe '.with_reports' do
     subject { described_class.with_reports(Ci::JobArtifact.test_reports) }
 
@@ -1842,6 +1871,14 @@ describe Ci::Build do
 
       it 'does not persist data in build metadata' do
         expect(build.metadata.read_attribute(:config_options)).to be_nil
+      end
+    end
+
+    context 'when options include artifacts:expose_as' do
+      let(:build) { create(:ci_build, options: { artifacts: { expose_as: 'test' } }) }
+
+      it 'saves the presence of expose_as into build metadata' do
+        expect(build.metadata).to have_exposed_artifacts
       end
     end
   end

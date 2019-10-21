@@ -5,6 +5,7 @@ require 'spec_helper'
 describe 'Merge request > User sees merge widget', :js do
   include ProjectForksHelper
   include TestReportsHelper
+  include ReactiveCachingHelpers
 
   let(:project) { create(:project, :repository) }
   let(:project_only_mwps) { create(:project, :repository, only_allow_merge_if_pipeline_succeeds: true) }
@@ -432,6 +433,54 @@ describe 'Merge request > User sees merge widget', :js do
 
       expect(page).not_to have_button('Merge')
       expect(page).to have_content('This merge request is in the process of being merged')
+    end
+  end
+
+  context 'exposed artifacts' do
+    subject { visit project_merge_request_path(project, merge_request) }
+
+    context 'when merge request has exposed artifacts' do
+      let(:merge_request) { create(:merge_request, :with_exposed_artifacts, source_project: project) }
+      let(:job) { merge_request.head_pipeline.builds.last }
+      let!(:artifacts_metadata) { create(:ci_job_artifact, :metadata, job: job) }
+
+      context 'when result has not been parsed yet' do
+        it 'shows parsing status' do
+          subject
+
+          expect(page).to have_content('Loading artifacts')
+        end
+      end
+
+      context 'when result has been parsed' do
+        before do
+          allow_any_instance_of(MergeRequest).to receive(:find_exposed_artifacts).and_return(
+            status: :parsed, data: [
+              {
+                text: "the artifact",
+                url: "/namespace1/project1/-/jobs/1/artifacts/file/ci_artifacts.txt",
+                job_path: "/namespace1/project1/-/jobs/1",
+                job_name: "test"
+              }
+            ])
+        end
+
+        it 'shows the parsed results' do
+          subject
+
+          expect(page).to have_content('View exposed artifact')
+        end
+      end
+    end
+
+    context 'when merge request does not have exposed artifacts' do
+      let(:merge_request) { create(:merge_request, source_project: project) }
+
+      it 'does not show parsing status' do
+        subject
+
+        expect(page).not_to have_content('Loading artifacts')
+      end
     end
   end
 

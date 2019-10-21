@@ -4,6 +4,7 @@ require 'spec_helper'
 
 describe Projects::MergeRequestsController do
   include ProjectForksHelper
+  include Gitlab::Routing
 
   let(:project) { create(:project, :repository) }
   let(:user)    { project.owner }
@@ -206,7 +207,7 @@ describe Projects::MergeRequestsController do
       it 'redirects to last_page if page number is larger than number of pages' do
         get_merge_requests(last_page + 1)
 
-        expect(response).to redirect_to(namespace_project_merge_requests_path(page: last_page, state: controller.params[:state], scope: controller.params[:scope]))
+        expect(response).to redirect_to(project_merge_requests_path(project, page: last_page, state: controller.params[:state], scope: controller.params[:scope]))
       end
 
       it 'redirects to specified page' do
@@ -227,7 +228,7 @@ describe Projects::MergeRequestsController do
             host: external_host
           }
 
-        expect(response).to redirect_to(namespace_project_merge_requests_path(page: last_page, state: controller.params[:state], scope: controller.params[:scope]))
+        expect(response).to redirect_to(project_merge_requests_path(project, page: last_page, state: controller.params[:state], scope: controller.params[:scope]))
       end
     end
 
@@ -766,6 +767,189 @@ describe Projects::MergeRequestsController do
             end
           end
         end
+      end
+    end
+  end
+
+  describe 'GET exposed_artifacts' do
+    let(:merge_request) do
+      create(:merge_request,
+        :with_merge_request_pipeline,
+        target_project: project,
+        source_project: project)
+    end
+
+    let(:pipeline) do
+      create(:ci_pipeline,
+        :success,
+        project: merge_request.source_project,
+        ref: merge_request.source_branch,
+        sha: merge_request.diff_head_sha)
+    end
+
+    let!(:job) { create(:ci_build, pipeline: pipeline, options: job_options) }
+    let!(:job_metadata) { create(:ci_job_artifact, :metadata, job: job) }
+
+    before do
+      allow_any_instance_of(MergeRequest)
+        .to receive(:find_exposed_artifacts)
+        .and_return(report)
+
+      allow_any_instance_of(MergeRequest)
+        .to receive(:actual_head_pipeline)
+        .and_return(pipeline)
+    end
+
+    subject do
+      get :exposed_artifacts, params: {
+        namespace_id: project.namespace.to_param,
+        project_id: project,
+        id: merge_request.iid
+      },
+      format: :json
+    end
+
+    describe 'permissions on a public project with private CI/CD' do
+      let(:project) { create :project, :repository, :public, :builds_private }
+      let(:report) { { status: :parsed, data: [] } }
+      let(:job_options) { {} }
+
+      context 'while signed out' do
+        before do
+          sign_out(user)
+        end
+
+        it 'responds with a 404' do
+          subject
+
+          expect(response).to have_gitlab_http_status(404)
+          expect(response.body).to be_blank
+        end
+      end
+
+      context 'while signed in as an unrelated user' do
+        before do
+          sign_in(create(:user))
+        end
+
+        it 'responds with a 404' do
+          subject
+
+          expect(response).to have_gitlab_http_status(404)
+          expect(response.body).to be_blank
+        end
+      end
+    end
+
+    context 'when pipeline has jobs with exposed artifacts' do
+      let(:job_options) do
+        {
+          artifacts: {
+            paths: ['ci_artifacts.txt'],
+            expose_as: 'Exposed artifact'
+          }
+        }
+      end
+
+      context 'when fetching exposed artifacts is in progress' do
+        let(:report) { { status: :parsing } }
+
+        it 'sends polling interval' do
+          expect(Gitlab::PollingInterval).to receive(:set_header)
+
+          subject
+        end
+
+        it 'returns 204 HTTP status' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:no_content)
+        end
+      end
+
+      context 'when fetching exposed artifacts is completed' do
+        let(:data) do
+          Ci::GenerateExposedArtifactsReportService.new(project, user)
+            .execute(nil, pipeline)
+        end
+
+        let(:report) { { status: :parsed, data: data } }
+
+        it 'returns exposed artifacts' do
+          subject
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(json_response['status']).to eq('parsed')
+          expect(json_response['data']).to eq([{
+            'job_name' => 'test',
+            'job_path' => project_job_path(project, job),
+            'url' => file_project_job_artifacts_path(project, job, 'ci_artifacts.txt'),
+            'text' => 'Exposed artifact'
+          }])
+        end
+      end
+
+      context 'when something went wrong on our system' do
+        let(:report) { {} }
+
+        it 'does not send polling interval' do
+          expect(Gitlab::PollingInterval).not_to receive(:set_header)
+
+          subject
+        end
+
+        it 'returns 500 HTTP status' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:internal_server_error)
+          expect(json_response).to eq({ 'status_reason' => 'Unknown error' })
+        end
+      end
+
+      context 'when feature flag :ci_expose_arbitrary_artifacts_in_mr is disabled' do
+        let(:job_options) do
+          {
+            artifacts: {
+              paths: ['ci_artifacts.txt'],
+              expose_as: 'Exposed artifact'
+            }
+          }
+        end
+        let(:report) { double }
+
+        before do
+          stub_feature_flags(ci_expose_arbitrary_artifacts_in_mr: false)
+        end
+
+        it 'does not send polling interval' do
+          expect(Gitlab::PollingInterval).not_to receive(:set_header)
+
+          subject
+        end
+
+        it 'returns 204 HTTP status' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:no_content)
+        end
+      end
+    end
+
+    context 'when pipeline does not have jobs with exposed artifacts' do
+      let(:report) { double }
+      let(:job_options) do
+        {
+          artifacts: {
+            paths: ['ci_artifacts.txt']
+          }
+        }
+      end
+
+      it 'returns no content' do
+        subject
+
+        expect(response).to have_gitlab_http_status(204)
+        expect(response.body).to be_empty
       end
     end
   end

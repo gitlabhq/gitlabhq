@@ -43,7 +43,7 @@ namespace :gitlab do
 
         [
           %w(bin/install) + repository_storage_paths_args,
-          %w(bin/compile)
+          %w(make build)
         ].each do |cmd|
           unless Kernel.system(*cmd)
             raise "command failed: #{cmd.join(' ')}"

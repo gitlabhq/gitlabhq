@@ -16,6 +16,7 @@ module Ci
 
       delegate :timeout, to: :metadata, prefix: true, allow_nil: true
       delegate :interruptible, to: :metadata, prefix: false, allow_nil: true
+      delegate :has_exposed_artifacts?, to: :metadata, prefix: false, allow_nil: true
       before_create :ensure_metadata
     end
 
@@ -45,6 +46,9 @@ module Ci
 
     def options=(value)
       write_metadata_attribute(:options, :config_options, value)
+
+      # Store presence of exposed artifacts in build metadata to make it easier to query
+      ensure_metadata.has_exposed_artifacts = value&.dig(:artifacts, :expose_as).present?
     end
 
     def yaml_variables=(value)

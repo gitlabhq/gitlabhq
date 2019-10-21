@@ -13,6 +13,10 @@ module QA
 
           def commit_changes
             click_element(:commit_button)
+
+            wait(reload: false, max: 60) do
+              finished_loading?
+            end
           end
         end
       end

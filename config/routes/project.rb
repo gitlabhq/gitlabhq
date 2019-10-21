@@ -274,6 +274,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           get :discussions, format: :json
           post :rebase
           get :test_reports
+          get :exposed_artifacts
 
           scope constraints: { format: nil }, action: :show do
             get :commits, defaults: { tab: 'commits' }

@@ -120,6 +120,18 @@ FactoryBot.define do
       end
     end
 
+    trait :with_exposed_artifacts do
+      after(:build) do |merge_request|
+        merge_request.head_pipeline = build(
+          :ci_pipeline,
+          :success,
+          :with_exposed_artifacts,
+          project: merge_request.source_project,
+          ref: merge_request.source_branch,
+          sha: merge_request.diff_head_sha)
+      end
+    end
+
     trait :with_legacy_detached_merge_request_pipeline do
       after(:create) do |merge_request|
         merge_request.pipelines_for_merge_request << create(:ci_pipeline,

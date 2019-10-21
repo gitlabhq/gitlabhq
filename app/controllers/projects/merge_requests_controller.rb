@@ -13,7 +13,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   skip_before_action :merge_request, only: [:index, :bulk_update]
   before_action :whitelist_query_limiting, only: [:assign_related_issues, :update]
   before_action :authorize_update_issuable!, only: [:close, :edit, :update, :remove_wip, :sort]
-  before_action :authorize_test_reports!, only: [:test_reports]
+  before_action :authorize_read_actual_head_pipeline!, only: [:test_reports, :exposed_artifacts]
   before_action :set_issuables_index, only: [:index]
   before_action :authenticate_user!, only: [:assign_related_issues]
   before_action :check_user_can_push_to_source_branch!, only: [:rebase]
@@ -113,6 +113,14 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
   def test_reports
     reports_response(@merge_request.compare_test_reports)
+  end
+
+  def exposed_artifacts
+    if @merge_request.has_exposed_artifacts?
+      reports_response(@merge_request.find_exposed_artifacts)
+    else
+      head :no_content
+    end
   end
 
   def edit
@@ -357,8 +365,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     end
   end
 
-  def authorize_test_reports!
-    # MergeRequest#actual_head_pipeline is the pipeline accessed in MergeRequest#compare_reports.
+  def authorize_read_actual_head_pipeline!
     return render_404 unless can?(current_user, :read_build, merge_request.actual_head_pipeline)
   end
 end

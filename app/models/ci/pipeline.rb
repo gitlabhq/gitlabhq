@@ -783,6 +783,10 @@ module Ci
       end
     end
 
+    def has_exposed_artifacts?
+      complete? && builds.latest.with_exposed_artifacts.exists?
+    end
+
     def branch_updated?
       strong_memoize(:branch_updated) do
         push_details.branch_updated?

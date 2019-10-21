@@ -1255,6 +1255,27 @@ class MergeRequest < ApplicationRecord
     compare_reports(Ci::CompareTestReportsService)
   end
 
+  def has_exposed_artifacts?
+    return false unless Feature.enabled?(:ci_expose_arbitrary_artifacts_in_mr, default_enabled: true)
+
+    actual_head_pipeline&.has_exposed_artifacts?
+  end
+
+  # TODO: this method and compare_test_reports use the same
+  # result type, which is handled by the controller's #reports_response.
+  # we should minimize mistakes by isolating the common parts.
+  # issue: https://gitlab.com/gitlab-org/gitlab/issues/34224
+  def find_exposed_artifacts
+    unless has_exposed_artifacts?
+      return { status: :error, status_reason: 'This merge request does not have exposed artifacts' }
+    end
+
+    compare_reports(Ci::GenerateExposedArtifactsReportService)
+  end
+
+  # TODO: consider renaming this as with exposed artifacts we generate reports,
+  # not always compare
+  # issue: https://gitlab.com/gitlab-org/gitlab/issues/34224
   def compare_reports(service_class, current_user = nil)
     with_reactive_cache(service_class.name, current_user&.id) do |data|
       unless service_class.new(project, current_user)
@@ -1269,6 +1290,8 @@ class MergeRequest < ApplicationRecord
   def calculate_reactive_cache(identifier, current_user_id = nil, *args)
     service_class = identifier.constantize
 
+    # TODO: the type check should change to something that includes exposed artifacts service
+    # issue: https://gitlab.com/gitlab-org/gitlab/issues/34224
     raise NameError, service_class unless service_class < Ci::CompareReportsBaseService
 
     current_user = User.find_by(id: current_user_id)

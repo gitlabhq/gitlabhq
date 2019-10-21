@@ -65,6 +65,12 @@ class MergeRequestPollWidgetEntity < IssuableEntity
     end
   end
 
+  expose :exposed_artifacts_path do |merge_request|
+    if merge_request.has_exposed_artifacts?
+      exposed_artifacts_project_merge_request_path(merge_request.project, merge_request, format: :json)
+    end
+  end
+
   expose :create_issue_to_resolve_discussions_path do |merge_request|
     presenter(merge_request).create_issue_to_resolve_discussions_path
   end

@@ -970,6 +970,7 @@ module Gitlab
                                rspec:         {
                                  artifacts: {
                                    paths: ["logs/", "binaries/"],
+                                   expose_as: "Exposed artifacts",
                                    untracked: true,
                                    name: "custom_name",
                                    expire_in: "7d"
@@ -993,6 +994,7 @@ module Gitlab
               artifacts: {
                 name: "custom_name",
                 paths: ["logs/", "binaries/"],
+                expose_as: "Exposed artifacts",
                 untracked: true,
                 expire_in: "7d"
               }

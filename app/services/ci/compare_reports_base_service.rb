@@ -1,6 +1,11 @@
 # frozen_string_literal: true
 
 module Ci
+  # TODO: when using this class with exposed artifacts we see that there are
+  # 2 responsibilities:
+  # 1. reactive caching interface (same in all cases)
+  # 2. data generator (report comparison in most of the case but not always)
+  # issue: https://gitlab.com/gitlab-org/gitlab/issues/34224
   class CompareReportsBaseService < ::BaseService
     def execute(base_pipeline, head_pipeline)
       comparer = comparer_class.new(get_report(base_pipeline), get_report(head_pipeline))

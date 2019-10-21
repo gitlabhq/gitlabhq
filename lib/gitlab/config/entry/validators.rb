@@ -61,8 +61,15 @@ module Gitlab
           include LegacyValidationHelpers
 
           def validate_each(record, attribute, value)
-            unless validate_array_of_strings(value)
-              record.errors.add(attribute, 'should be an array of strings')
+            valid = validate_array_of_strings(value)
+
+            record.errors.add(attribute, 'should be an array of strings') unless valid
+
+            if valid && options[:with]
+              unless value.all? { |v| v =~ options[:with] }
+                message = options[:message] || 'contains elements that do not match the format'
+                record.errors.add(attribute, message)
+              end
             end
           end
         end

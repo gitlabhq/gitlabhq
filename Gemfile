@@ -448,9 +448,9 @@ end
 # Gitaly GRPC protocol definitions
 gem 'gitaly', '~> 1.65.0'
 
-gem 'grpc', '~> 1.19.0'
+gem 'grpc', '~> 1.24.0'
 
-gem 'google-protobuf', '~> 3.7.1'
+gem 'google-protobuf', '~> 3.8.0'
 
 gem 'toml-rb', '~> 1.0.0', require: false
 

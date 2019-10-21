@@ -1674,6 +1674,63 @@ describe MergeRequest do
     end
   end
 
+  describe '#find_exposed_artifacts' do
+    let(:project) { create(:project, :repository) }
+    let(:merge_request) { create(:merge_request, :with_test_reports, source_project: project) }
+    let(:pipeline) { merge_request.head_pipeline }
+
+    subject { merge_request.find_exposed_artifacts }
+
+    context 'when head pipeline has exposed artifacts' do
+      let!(:job) do
+        create(:ci_build, options: { artifacts: { expose_as: 'artifact', paths: ['ci_artifacts.txt'] } }, pipeline: pipeline)
+      end
+
+      let!(:artifacts_metadata) { create(:ci_job_artifact, :metadata, job: job) }
+
+      context 'when reactive cache worker is parsing results asynchronously' do
+        it 'returns status' do
+          expect(subject[:status]).to eq(:parsing)
+        end
+      end
+
+      context 'when reactive cache worker is inline' do
+        before do
+          synchronous_reactive_cache(merge_request)
+        end
+
+        it 'returns status and data' do
+          expect(subject[:status]).to eq(:parsed)
+        end
+
+        context 'when an error occurrs' do
+          before do
+            expect_next_instance_of(Ci::FindExposedArtifactsService) do |service|
+              expect(service).to receive(:for_pipeline)
+                .and_raise(StandardError.new)
+            end
+          end
+
+          it 'returns an error message' do
+            expect(subject[:status]).to eq(:error)
+          end
+        end
+
+        context 'when cached results is not latest' do
+          before do
+            allow_next_instance_of(Ci::GenerateExposedArtifactsReportService) do |service|
+              allow(service).to receive(:latest?).and_return(false)
+            end
+          end
+
+          it 'raises and InvalidateReactiveCache error' do
+            expect { subject }.to raise_error(ReactiveCaching::InvalidateReactiveCache)
+          end
+        end
+      end
+    end
+  end
+
   describe '#compare_test_reports' do
     subject { merge_request.compare_test_reports }
 

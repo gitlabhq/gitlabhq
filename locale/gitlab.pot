@@ -686,7 +686,7 @@ msgstr ""
 msgid "A ready-to-go template for use with iOS Swift apps."
 msgstr ""
 
-msgid "A regular expression that will be used to find the test coverage output in the job trace. Leave blank to disable"
+msgid "A regular expression that will be used to find the test coverage output in the job log. Leave blank to disable"
 msgstr ""
 
 msgid "A secure token that identifies an external storage request."
@@ -1513,6 +1513,9 @@ msgid "An error occurred while enabling Service Desk."
 msgstr ""
 
 msgid "An error occurred while fetching environments."
+msgstr ""
+
+msgid "An error occurred while fetching exposed artifacts."
 msgstr ""
 
 msgid "An error occurred while fetching folder content."
@@ -9339,7 +9342,7 @@ msgstr ""
 msgid "Job is stuck. Check runners."
 msgstr ""
 
-msgid "Job traces and artifacts"
+msgid "Job logs and artifacts"
 msgstr ""
 
 msgid "Job was retried"
@@ -10992,7 +10995,7 @@ msgstr ""
 msgid "No issues for the selected time period."
 msgstr ""
 
-msgid "No job trace"
+msgid "No job log"
 msgstr ""
 
 msgid "No jobs to show"
@@ -18390,7 +18393,7 @@ msgstr ""
 msgid "View job"
 msgstr ""
 
-msgid "View job trace"
+msgid "View job log"
 msgstr ""
 
 msgid "View jobs"
