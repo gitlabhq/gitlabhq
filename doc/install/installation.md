@@ -183,7 +183,7 @@ sudo make prefix=/usr/local install
 # When editing config/gitlab.yml (Step 5), change the git -> bin_path to /usr/local/bin/git
 ```
 
-For the [Custom Favicon](../customization/favicon.md) to work, GraphicsMagick
+For the [Custom Favicon](../user/admin_area/appearance.md#favicon) to work, GraphicsMagick
 needs to be installed.
 
 ```sh

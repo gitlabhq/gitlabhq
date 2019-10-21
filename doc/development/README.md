@@ -99,7 +99,7 @@ description: 'Learn how to contribute to GitLab.'
 - [Post deployment migrations](post_deployment_migrations.md)
 - [Background migrations](background_migrations.md)
 - [Swapping tables](swapping_tables.md)
-- [Deleting exiting migrations](deleting_migrations.md)
+- [Deleting migrations](deleting_migrations.md)
 
 ### Best practices
 

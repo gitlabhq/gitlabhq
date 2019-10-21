@@ -1,6 +1,6 @@
 # GitLab utilities
 
-We developed a number of utilities to ease development.
+We have developed a number of utilities to help ease development:
 
 ## `MergeHash`
 
@@ -51,15 +51,15 @@ Refer to: <https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/utils/mer
 
 Refer to <https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/utils/override.rb>:
 
-- This utility could help us check if a particular method would override
-  another method or not. It has the same idea of Java's `@Override` annotation
-  or Scala's `override` keyword. However we only do this check when
+- This utility can help you check if one method would override
+  another or not. It is the same concept as Java's `@Override` annotation
+  or Scala's `override` keyword. However, you should only do this check when
   `ENV['STATIC_VERIFICATION']` is set to avoid production runtime overhead.
-  This is useful to check:
+  This is useful for checking:
 
-  - If we have typos in overriding methods.
-  - If we renamed the overridden methods, making original overriding methods
-    overrides nothing.
+  - If you have typos in overriding methods.
+  - If you renamed the overridden methods, which make the original override methods
+    irrelevant.
 
     Here's a simple example:
 
@@ -100,11 +100,11 @@ Refer to <https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/utils/stro
 
 - Memoize the value even if it is `nil` or `false`.
 
-  We often do `@value ||= compute`, however this doesn't work well if
-  `compute` might eventually give `nil` and we don't want to compute again.
-  Instead we could use `defined?` to check if the value is set or not.
-  However it's tedious to write such pattern, and `StrongMemoize` would
-  help us use such pattern.
+  We often do `@value ||= compute`. However, this doesn't work well if
+  `compute` might eventually give `nil` and you don't want to compute again.
+  Instead you could use `defined?` to check if the value is set or not.
+  It's tedious to write such pattern, and `StrongMemoize` would
+  help you use such pattern.
 
   Instead of writing patterns like this:
 
@@ -118,7 +118,7 @@ Refer to <https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/utils/stro
   end
   ```
 
-  We could write it like:
+  You could write it like:
 
   ``` ruby
   class Find
@@ -151,7 +151,7 @@ and the cache key would be based on the class name, method name,
 optionally customized instance level values, optionally customized
 method level values, and optional method arguments.
 
-A simple example that only uses the instance level customised values:
+A simple example that only uses the instance level customised values is:
 
 ``` ruby
 class UserAccess
@@ -169,8 +169,8 @@ end
 
 This way, the result of `can_push_to_branch?` would be cached in
 `RequestStore.store` based on the cache key. If `RequestStore` is not
-currently active, then it would be stored in a hash saved in an
-instance variable, so the cache logic would be the same.
+currently active, then it would be stored in a hash, and saved in an
+instance variable so the cache logic would be the same.
 
 We can also set different strategies for different methods:
 
