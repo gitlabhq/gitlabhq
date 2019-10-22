@@ -43,7 +43,7 @@ describe NamedEcdsaKeyValidator do
   context 'with ECDSA certificate with explicit curve params' do
     let(:value) { attributes_for(:pages_domain, :explicit_ecdsa)[:key] }
 
-    it 'adds errors', :quarantine do
+    it 'adds errors' do
       expect(value).to be_present
 
       subject

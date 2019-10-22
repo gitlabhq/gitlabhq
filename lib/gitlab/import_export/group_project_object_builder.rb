@@ -26,30 +26,60 @@ module Gitlab
       end
 
       def find
-        find_object || @klass.create(project_attributes)
+        find_object || klass.create(project_attributes)
       end
 
       private
 
+      attr_reader :klass, :attributes, :group, :project
+
       def find_object
-        @klass.where(where_clause).first
+        klass.where(where_clause).first
       end
 
       def where_clause
-        @attributes.slice('title').map do |key, value|
-          scope_clause = table[:project_id].eq(@project.id)
-          scope_clause = scope_clause.or(table[:group_id].eq(@group.id)) if @group
+        where_clauses.reduce(:and)
+      end
 
-          table[key].eq(value).and(scope_clause)
-        end.reduce(:or)
+      def where_clauses
+        [
+          where_clause_base,
+          where_clause_for_title,
+          where_clause_for_klass
+        ].compact
+      end
+
+      # Returns Arel clause `"{table_name}"."project_id" = {project.id}`
+      # or, if group is present:
+      # `"{table_name}"."project_id" = {project.id} OR "{table_name}"."group_id" = {group.id}`
+      def where_clause_base
+        clause = table[:project_id].eq(project.id)
+        clause = clause.or(table[:group_id].eq(group.id)) if group
+
+        clause
+      end
+
+      # Returns Arel clause `"{table_name}"."title" = '{attributes['title']}'`
+      # if attributes has 'title key, otherwise `nil`.
+      def where_clause_for_title
+        attrs_to_arel(attributes.slice('title'))
+      end
+
+      # Returns Arel clause:
+      # `"{table_name}"."{attrs.keys[0]}" = '{attrs.values[0]} AND {table_name}"."{attrs.keys[1]}" = '{attrs.values[1]}"`
+      # from the given Hash of attributes.
+      def attrs_to_arel(attrs)
+        attrs.map do |key, value|
+          table[key].eq(value)
+        end.reduce(:and)
       end
 
       def table
-        @table ||= @klass.arel_table
+        @table ||= klass.arel_table
       end
 
       def project_attributes
-        @attributes.except('group').tap do |atts|
+        attributes.except('group').tap do |atts|
           if label?
             atts['type'] = 'ProjectLabel' # Always create project labels
           elsif milestone?
@@ -60,15 +90,17 @@ module Gitlab
               claim_iid
             end
           end
+
+          atts['importing'] = true if klass.ancestors.include?(Importable)
         end
       end
 
       def label?
-        @klass == Label
+        klass == Label
       end
 
       def milestone?
-        @klass == Milestone
+        klass == Milestone
       end
 
       # If an existing group milestone used the IID
@@ -79,7 +111,7 @@ module Gitlab
       def claim_iid
         # The milestone has to be a group milestone, as it's the only case where
         # we set the IID as the maximum. The rest of them are fixed.
-        milestone = @project.milestones.find_by(iid: @attributes['iid'])
+        milestone = project.milestones.find_by(iid: attributes['iid'])
 
         return unless milestone
 
@@ -87,6 +119,15 @@ module Gitlab
         milestone.ensure_project_iid!
         milestone.save!
       end
+
+      protected
+
+      # Returns Arel clause for a particular model or `nil`.
+      def where_clause_for_klass
+        # no-op
+      end
     end
   end
 end
+
+Gitlab::ImportExport::GroupProjectObjectBuilder.prepend_if_ee('EE::Gitlab::ImportExport::GroupProjectObjectBuilder')

@@ -11,6 +11,20 @@ shared_examples 'cluster application status specs' do |application_name|
     end
   end
 
+  describe '#status_states' do
+    let(:cluster) { create(:cluster, :provided_by_gcp) }
+
+    subject { described_class.new(cluster: cluster) }
+
+    it 'returns a hash of state values' do
+      expect(subject.status_states).to include(:installed)
+    end
+
+    it 'returns an integer for installed state value' do
+      expect(subject.status_states[:installed]).to eq(3)
+    end
+  end
+
   describe '.available' do
     subject { described_class.available }
 
@@ -61,7 +75,7 @@ shared_examples 'cluster application status specs' do |application_name|
 
         subject.reload
 
-        expect(subject.version).to eq(subject.class.const_get(:VERSION))
+        expect(subject.version).to eq(subject.class.const_get(:VERSION, false))
       end
 
       context 'application is updating' do
@@ -90,13 +104,14 @@ shared_examples 'cluster application status specs' do |application_name|
 
           subject.reload
 
-          expect(subject.version).to eq(subject.class.const_get(:VERSION))
+          expect(subject.version).to eq(subject.class.const_get(:VERSION, false))
         end
       end
     end
 
     describe '#make_errored' do
       subject { create(application_name, :installing) }
+
       let(:reason) { 'some errors' }
 
       it 'is errored' do

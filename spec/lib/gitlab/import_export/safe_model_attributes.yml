@@ -47,6 +47,7 @@ PushEventPayload:
 - commit_to
 - ref
 - commit_title
+- ref_count
 Note:
 - id
 - note
@@ -126,6 +127,12 @@ Release:
 - created_at
 - updated_at
 - released_at
+Evidence:
+- id
+- release_id
+- summary
+- created_at
+- updated_at
 Releases::Link:
 - id
 - release_id
@@ -717,6 +724,7 @@ List:
 - updated_at
 - milestone_id
 - user_id
+- max_issue_count
 ExternalPullRequest:
 - id
 - created_at
@@ -730,3 +738,18 @@ ExternalPullRequest:
 - target_repository
 - source_sha
 - target_sha
+DesignManagement::Design:
+- id
+- project_id
+- issue_id
+- filename
+DesignManagement::Action:
+- design_id
+- event
+- version_id
+DesignManagement::Version:
+- id
+- created_at
+- sha
+- issue_id
+- user_id

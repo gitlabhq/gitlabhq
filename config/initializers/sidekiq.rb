@@ -28,16 +28,18 @@ if Rails.env.development?
 end
 
 enable_json_logs = Gitlab.config.sidekiq.log_format == 'json'
-enable_sidekiq_monitor = ENV.fetch("SIDEKIQ_MONITOR_WORKER", 0).to_i.nonzero?
+enable_sidekiq_memory_killer = ENV['SIDEKIQ_MEMORY_KILLER_MAX_RSS'].to_i.nonzero?
+use_sidekiq_daemon_memory_killer = ENV["SIDEKIQ_DAEMON_MEMORY_KILLER"].to_i.nonzero?
+use_sidekiq_legacy_memory_killer = !use_sidekiq_daemon_memory_killer
 
 Sidekiq.configure_server do |config|
   config.redis = queues_config_hash
 
   config.server_middleware do |chain|
-    chain.add Gitlab::SidekiqMiddleware::Monitor if enable_sidekiq_monitor
+    chain.add Gitlab::SidekiqMiddleware::Monitor
     chain.add Gitlab::SidekiqMiddleware::Metrics if Settings.monitoring.sidekiq_exporter
     chain.add Gitlab::SidekiqMiddleware::ArgumentsLogger if ENV['SIDEKIQ_LOG_ARGUMENTS'] && !enable_json_logs
-    chain.add Gitlab::SidekiqMiddleware::MemoryKiller if ENV['SIDEKIQ_MEMORY_KILLER_MAX_RSS']
+    chain.add Gitlab::SidekiqMiddleware::MemoryKiller if enable_sidekiq_memory_killer && use_sidekiq_legacy_memory_killer
     chain.add Gitlab::SidekiqMiddleware::RequestStoreMiddleware unless ENV['SIDEKIQ_REQUEST_STORE'] == '0'
     chain.add Gitlab::SidekiqMiddleware::BatchLoader
     chain.add Gitlab::SidekiqMiddleware::CorrelationLogger
@@ -48,6 +50,10 @@ Sidekiq.configure_server do |config|
   if enable_json_logs
     Sidekiq.logger.formatter = Gitlab::SidekiqLogging::JSONFormatter.new
     config.options[:job_logger] = Gitlab::SidekiqLogging::StructuredLogger
+
+    # Remove the default-provided handler
+    config.error_handlers.reject! { |handler| handler.is_a?(Sidekiq::ExceptionHandler::Logger) }
+    config.error_handlers << Gitlab::SidekiqLogging::ExceptionHandler.new
   end
 
   config.client_middleware do |chain|
@@ -60,7 +66,11 @@ Sidekiq.configure_server do |config|
     # Sidekiq (e.g. in an initializer).
     ActiveRecord::Base.clear_all_connections!
 
-    Gitlab::SidekiqDaemon::Monitor.instance.start if enable_sidekiq_monitor
+    # Start monitor to track running jobs. By default, cancel job is not enabled
+    # To cancel job, it requires `SIDEKIQ_MONITOR_WORKER=1` to enable notification channel
+    Gitlab::SidekiqDaemon::Monitor.instance.start
+
+    Gitlab::SidekiqDaemon::MemoryKiller.instance.start if enable_sidekiq_memory_killer && use_sidekiq_daemon_memory_killer
   end
 
   if enable_reliable_fetch?

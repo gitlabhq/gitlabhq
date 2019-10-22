@@ -11,8 +11,8 @@ class Projects::JobsController < Projects::ApplicationController
   before_action :authorize_erase_build!, only: [:erase]
   before_action :authorize_use_build_terminal!, only: [:terminal, :terminal_websocket_authorize]
   before_action :verify_api_request!, only: :terminal_websocket_authorize
-  before_action only: [:trace] do
-    push_frontend_feature_flag(:job_log_json)
+  before_action only: [:show] do
+    push_frontend_feature_flag(:job_log_json, project)
   end
 
   layout 'project'
@@ -67,36 +67,25 @@ class Projects::JobsController < Projects::ApplicationController
   # rubocop: enable CodeReuse/ActiveRecord
 
   def trace
-    if Feature.enabled?(:job_log_json, @project)
-      json_trace
-    else
-      html_trace
-    end
-  end
-
-  def html_trace
     build.trace.read do |stream|
       respond_to do |format|
         format.json do
-          result = {
-            id: @build.id, status: @build.status, complete: @build.complete?
-          }
+          # TODO: when the feature flag is removed we should not pass
+          # content_format to serialize method.
+          content_format = Feature.enabled?(:job_log_json, @project) ? :json : :html
 
-          if stream.valid?
-            stream.limit
-            state = params[:state].presence
-            trace = stream.html_with_state(state)
-            result.merge!(trace.to_h)
-          end
+          build_trace = Ci::BuildTrace.new(
+            build: @build,
+            stream: stream,
+            state: params[:state],
+            content_format: content_format)
 
-          render json: result
+          render json: BuildTraceSerializer
+            .new(project: @project, current_user: @current_user)
+            .represent(build_trace)
         end
       end
     end
-  end
-
-  def json_trace
-    # will be implemented with https://gitlab.com/gitlab-org/gitlab-foss/issues/66454
   end
 
   def retry

@@ -3,6 +3,8 @@
 class UpdateMergeRequestsWorker
   include ApplicationWorker
 
+  feature_category :source_code_management
+
   LOG_TIME_THRESHOLD = 90 # seconds
 
   # rubocop: disable CodeReuse/ActiveRecord

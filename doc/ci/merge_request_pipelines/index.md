@@ -151,13 +151,13 @@ parent project. This means you cannot completely trust the pipeline result,
 because, technically, external contributors can disguise their pipeline results
 by tweaking their GitLab Runner in the forked project.
 
-There are multiple reasons about why GitLab doesn't allow those pipelines to be
+There are multiple reasons why GitLab doesn't allow those pipelines to be
 created in the parent project, but one of the biggest reasons is security concern.
 External users could steal secret variables from the parent project by modifying
 `.gitlab-ci.yml`, which could be some sort of credentials. This should not happen.
 
 We're discussing a secure solution of running pipelines for merge requests
-that submitted from forked projects,
+that are submitted from forked projects,
 see [the issue about the permission extension](https://gitlab.com/gitlab-org/gitlab-foss/issues/23902).
 
 ## Additional predefined variables

@@ -1,0 +1,5 @@
+---
+title: Enable grid, frame and stripes styling on AsciiDoc tables
+merge_request: 18165
+author: Guillaume Grossetie
+type: fixed

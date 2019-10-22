@@ -7,6 +7,8 @@ module Noteable
   # avoiding n+1 queries and improving performance.
   NoteableMeta = Struct.new(:user_notes_count)
 
+  MAX_NOTES_LIMIT = 5_000
+
   class_methods do
     # `Noteable` class names that support replying to individual notes.
     def replyable_types

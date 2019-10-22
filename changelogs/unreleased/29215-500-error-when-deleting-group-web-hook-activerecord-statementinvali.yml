@@ -1,0 +1,5 @@
+---
+title: Use cascading deletes for deleting logs upon deleting a webhook
+merge_request: 18642
+author:
+type: performance

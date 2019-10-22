@@ -81,10 +81,10 @@ You can improve the existing built-in templates or contribute new ones in the
 #### Custom project templates **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/6860) in
-[GitLab Premium](https://about.gitlab.com/pricing) 11.2.
+[GitLab Premium](https://about.gitlab.com/pricing/) 11.2.
 
-Creating new projects based on custom project templates is a convenient option to
-bootstrap a project.
+Creating new projects based on custom project templates is a convenient option for
+quickly starting projects.
 
 Custom projects are available at the [instance-level](../user/admin_area/custom_project_templates.md)
 from the **Instance** tab, or at the [group-level](../user/group/custom_project_templates.md)

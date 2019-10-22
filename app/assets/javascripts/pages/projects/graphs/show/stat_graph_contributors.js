@@ -1,4 +1,4 @@
-/* eslint-disable func-names, no-var, one-var, camelcase, no-param-reassign, prefer-template, no-return-assign */
+/* eslint-disable func-names, no-var, one-var, camelcase, no-param-reassign, no-return-assign */
 
 import $ from 'jquery';
 import _ from 'underscore';
@@ -66,8 +66,8 @@ export default (function() {
       class: 'person',
       style: 'display: block;',
     });
-    author_name = $('<h4>' + author.author_name + '</h4>');
-    author_email = $('<p class="graph-author-email">' + author.author_email + '</p>');
+    author_name = $(`<h4>${author.author_name}</h4>`);
+    author_email = $(`<p class="graph-author-email">${author.author_email}</p>`);
     author_commit_info_span = $('<span/>', {
       class: 'commits',
     });

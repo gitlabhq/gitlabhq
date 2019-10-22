@@ -6,6 +6,7 @@ class DetectRepositoryLanguagesWorker
   include ExclusiveLeaseGuard
 
   sidekiq_options retry: 1
+  feature_category :source_code_management
 
   LEASE_TIMEOUT = 300
 

@@ -18,18 +18,19 @@ describe Gitlab::HealthChecks::GitalyCheck do
     context 'Gitaly server is up' do
       let(:gitaly_check) { double(check: { success: true }) }
 
-      it { is_expected.to eq([result_class.new(true, nil, shard: 'default')]) }
+      it { is_expected.to eq([result_class.new('gitaly_check', true, nil, shard: 'default')]) }
     end
 
     context 'Gitaly server is down' do
       let(:gitaly_check) { double(check: { success: false, message: 'Connection refused' }) }
 
-      it { is_expected.to eq([result_class.new(false, 'Connection refused', shard: 'default')]) }
+      it { is_expected.to eq([result_class.new('gitaly_check', false, 'Connection refused', shard: 'default')]) }
     end
   end
 
   describe '#metrics' do
     subject { described_class.metrics }
+
     let(:server) { double(storage: 'default', read_writeable?: up) }
 
     before do

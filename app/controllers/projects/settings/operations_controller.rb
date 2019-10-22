@@ -13,7 +13,12 @@ module Projects
       def update
         result = ::Projects::Operations::UpdateService.new(project, current_user, update_params).execute
 
+        track_events(result)
         render_update_response(result)
+      end
+
+      # overridden in EE
+      def track_events(result)
       end
 
       private
@@ -63,7 +68,9 @@ module Projects
             :api_host,
             :token,
             project: [:slug, :name, :organization_slug, :organization_name]
-          ]
+          ],
+
+          grafana_integration_attributes: [:token, :grafana_url]
         }
       end
     end

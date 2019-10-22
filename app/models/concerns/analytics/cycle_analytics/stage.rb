@@ -7,6 +7,7 @@ module Analytics
 
       included do
         validates :name, presence: true
+        validates :name, exclusion: { in: Gitlab::Analytics::CycleAnalytics::DefaultStages.names }, if: :custom?
         validates :start_event_identifier, presence: true
         validates :end_event_identifier, presence: true
         validate :validate_stage_event_pairs
@@ -15,6 +16,7 @@ module Analytics
         enum end_event_identifier: Gitlab::Analytics::CycleAnalytics::StageEvents.to_enum, _prefix: :end_event_identifier
 
         alias_attribute :custom_stage?, :custom
+        scope :default_stages, -> { where(custom: false) }
       end
 
       def parent=(_)
@@ -45,9 +47,15 @@ module Analytics
         !custom
       end
 
-      # The model that is going to be queried, Issue or MergeRequest
-      def subject_model
+      # The model class that is going to be queried, Issue or MergeRequest
+      def subject_class
         start_event.object_type
+      end
+
+      def matches_with_stage_params?(stage_params)
+        default_stage? &&
+          start_event_identifier.to_s.eql?(stage_params[:start_event_identifier].to_s) &&
+          end_event_identifier.to_s.eql?(stage_params[:end_event_identifier].to_s)
       end
 
       private

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rake_helper'
 
 describe 'gitlab:lfs namespace rake task' do
@@ -5,32 +7,49 @@ describe 'gitlab:lfs namespace rake task' do
     Rake.application.rake_require 'tasks/gitlab/lfs/migrate'
   end
 
-  describe 'migrate' do
+  context 'migration tasks' do
     let(:local) { ObjectStorage::Store::LOCAL }
     let(:remote) { ObjectStorage::Store::REMOTE }
-    let!(:lfs_object) { create(:lfs_object, :with_file, file_store: local) }
 
-    def lfs_migrate
-      run_rake_task('gitlab:lfs:migrate')
+    before do
+      stub_lfs_object_storage(background_upload: false, direct_upload: false)
     end
 
-    context 'object storage disabled' do
-      before do
-        stub_lfs_object_storage(enabled: false)
+    describe 'migrate' do
+      subject { run_rake_task('gitlab:lfs:migrate') }
+
+      let!(:lfs_object) { create(:lfs_object, :with_file) }
+
+      context 'object storage disabled' do
+        before do
+          stub_lfs_object_storage(enabled: false)
+        end
+
+        it "doesn't migrate files" do
+          expect { subject }.not_to change { lfs_object.reload.file_store }
+        end
       end
 
-      it "doesn't migrate files" do
-        expect { lfs_migrate }.not_to change { lfs_object.reload.file_store }
+      context 'object storage enabled' do
+        it 'migrates local file to object storage' do
+          expect { subject }.to change { lfs_object.reload.file_store }.from(local).to(remote)
+        end
       end
     end
 
-    context 'object storage enabled' do
+    describe 'migrate_to_local' do
+      subject { run_rake_task('gitlab:lfs:migrate_to_local') }
+
+      let(:lfs_object) { create(:lfs_object, :with_file, :object_storage) }
+
       before do
-        stub_lfs_object_storage
+        stub_lfs_object_storage(background_upload: false, direct_upload: true)
       end
 
-      it 'migrates local file to object storage' do
-        expect { lfs_migrate }.to change { lfs_object.reload.file_store }.from(local).to(remote)
+      context 'object storage enabled' do
+        it 'migrates remote files to local storage' do
+          expect { subject }.to change { lfs_object.reload.file_store }.from(remote).to(local)
+        end
       end
     end
   end

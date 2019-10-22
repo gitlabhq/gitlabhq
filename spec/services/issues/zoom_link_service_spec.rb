@@ -38,12 +38,6 @@ describe Issues::ZoomLinkService do
     end
   end
 
-  shared_context 'feature flag disabled' do
-    before do
-      stub_feature_flags(issue_zoom_integration: false)
-    end
-  end
-
   shared_context 'insufficient permissions' do
     before do
       project.add_guest(user)
@@ -56,6 +50,12 @@ describe Issues::ZoomLinkService do
         expect(result).to be_success
         expect(result.payload[:description])
           .to eq("#{issue.description}\n\n#{zoom_link}")
+      end
+
+      it 'tracks the add event' do
+        expect(Gitlab::Tracking).to receive(:event)
+          .with('IncidentManagement::ZoomIntegration', 'add_zoom_meeting', label: 'Issue ID', value: issue.id)
+        result
       end
     end
 
@@ -75,11 +75,6 @@ describe Issues::ZoomLinkService do
       context 'with invalid Zoom link' do
         let(:zoom_link) { 'https://not-zoom.link' }
 
-        include_examples 'cannot add link'
-      end
-
-      context 'when feature flag is disabled' do
-        include_context 'feature flag disabled'
         include_examples 'cannot add link'
       end
 
@@ -112,12 +107,6 @@ describe Issues::ZoomLinkService do
       include_context 'without Zoom link'
 
       it { is_expected.to eq(true) }
-
-      context 'when feature flag is disabled' do
-        include_context 'feature flag disabled'
-
-        it { is_expected.to eq(false) }
-      end
 
       context 'with insufficient permissions' do
         include_context 'insufficient permissions'
@@ -152,9 +141,11 @@ describe Issues::ZoomLinkService do
           .to eq(issue.description.delete_suffix("\n\n#{zoom_link}"))
       end
 
-      context 'when feature flag is disabled' do
-        include_context 'feature flag disabled'
-        include_examples 'cannot remove link'
+      it 'tracks the remove event' do
+        expect(Gitlab::Tracking).to receive(:event)
+          .with('IncidentManagement::ZoomIntegration', 'remove_zoom_meeting', label: 'Issue ID', value: issue.id)
+
+        result
       end
 
       context 'with insufficient permissions' do
@@ -186,12 +177,6 @@ describe Issues::ZoomLinkService do
       include_context 'with Zoom link'
 
       it { is_expected.to eq(true) }
-
-      context 'when feature flag is disabled' do
-        include_context 'feature flag disabled'
-
-        it { is_expected.to eq(false) }
-      end
 
       context 'with insufficient permissions' do
         include_context 'insufficient permissions'

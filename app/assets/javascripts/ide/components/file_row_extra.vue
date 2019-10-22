@@ -34,6 +34,9 @@ export default {
       'getUnstagedFilesCountForPath',
       'getStagedFilesCountForPath',
     ]),
+    isTree() {
+      return this.file.type === 'tree';
+    },
     folderUnstagedCount() {
       return this.getUnstagedFilesCountForPath(this.file.path);
     },
@@ -58,10 +61,13 @@ export default {
       });
     },
     showTreeChangesCount() {
-      return this.file.type === 'tree' && this.changesCount > 0 && !this.file.opened;
+      return this.isTree && this.changesCount > 0 && !this.file.opened;
+    },
+    isModified() {
+      return this.file.changed || this.file.tempFile || this.file.staged || this.file.prevPath;
     },
     showChangedFileIcon() {
-      return this.file.changed || this.file.tempFile || this.file.staged;
+      return !this.isTree && this.isModified;
     },
   },
 };
@@ -79,7 +85,7 @@ export default {
         data-container="body"
         data-placement="right"
         name="file-modified"
-        css-classes="prepend-left-5 ide-file-modified"
+        class="prepend-left-5 ide-file-modified"
       />
     </span>
     <changed-file-icon

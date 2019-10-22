@@ -35,8 +35,8 @@ class CommitEntity < API::Entities::Commit
     pipeline_project = options[:pipeline_project] || commit.project
     next unless pipeline_ref && pipeline_project
 
-    status = commit.status_for_project(pipeline_ref, pipeline_project)
-    next unless status
+    pipeline = commit.latest_pipeline_for_project(pipeline_ref, pipeline_project)
+    next unless pipeline&.status
 
     pipelines_project_commit_path(pipeline_project, commit.id, ref: pipeline_ref)
   end

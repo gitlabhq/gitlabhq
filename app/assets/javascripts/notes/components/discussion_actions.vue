@@ -58,6 +58,7 @@ export default {
       <div class="btn-group">
         <resolve-discussion-button
           v-if="discussion.resolvable"
+          data-qa-selector="resolve_discussion_button"
           :is-resolving="isResolving"
           :button-title="resolveButtonTitle"
           @onClick="$emit('resolve')"

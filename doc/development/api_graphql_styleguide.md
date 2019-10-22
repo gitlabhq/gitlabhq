@@ -526,7 +526,7 @@ Using these helpers, we can build specs like this:
 let(:mutation) do
   graphql_mutation(
     :merge_request_set_wip,
-    project_path: 'gitlab-org/gitlab-ce',
+    project_path: 'gitlab-org/gitlab-foss',
     iid: '1',
     wip: true
   )
@@ -539,3 +539,8 @@ it 'returns a successful response' do
    expect(graphql_mutation_response(:merge_request_set_wip)['errors']).to be_empty
 end
 ```
+
+## Documentation
+
+For information on generating GraphQL documentation, see
+[Rake tasks related to GraphQL](rake_tasks.md#update-graphql-documentation).

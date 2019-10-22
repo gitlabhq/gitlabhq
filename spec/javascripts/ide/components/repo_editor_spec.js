@@ -410,8 +410,21 @@ describe('RepoEditor', () => {
 
   describe('initEditor', () => {
     beforeEach(() => {
+      vm.file.tempFile = false;
       spyOn(vm.editor, 'createInstance');
       spyOnProperty(vm, 'shouldHideEditor').and.returnValue(true);
+    });
+
+    it('does not fetch file information for temp entries', done => {
+      vm.file.tempFile = true;
+
+      vm.initEditor();
+      vm.$nextTick()
+        .then(() => {
+          expect(vm.getFileData).not.toHaveBeenCalled();
+        })
+        .then(done)
+        .catch(done.fail);
     });
 
     it('is being initialised for files without content even if shouldHideEditor is `true`', done => {
@@ -429,16 +442,13 @@ describe('RepoEditor', () => {
     });
 
     it('does not initialize editor for files already with content', done => {
-      expect(vm.getFileData.calls.count()).toEqual(1);
-      expect(vm.getRawFileData.calls.count()).toEqual(1);
-
       vm.file.content = 'foo';
 
       vm.initEditor();
       vm.$nextTick()
         .then(() => {
-          expect(vm.getFileData.calls.count()).toEqual(1);
-          expect(vm.getRawFileData.calls.count()).toEqual(1);
+          expect(vm.getFileData).not.toHaveBeenCalled();
+          expect(vm.getRawFileData).not.toHaveBeenCalled();
           expect(vm.editor.createInstance).not.toHaveBeenCalled();
         })
         .then(done)
@@ -446,23 +456,56 @@ describe('RepoEditor', () => {
     });
   });
 
-  it('calls removePendingTab when old file is pending', done => {
-    spyOnProperty(vm, 'shouldHideEditor').and.returnValue(true);
-    spyOn(vm, 'removePendingTab');
+  describe('updates on file changes', () => {
+    beforeEach(() => {
+      spyOn(vm, 'initEditor');
+    });
 
-    vm.file.pending = true;
+    it('calls removePendingTab when old file is pending', done => {
+      spyOnProperty(vm, 'shouldHideEditor').and.returnValue(true);
+      spyOn(vm, 'removePendingTab');
 
-    vm.$nextTick()
-      .then(() => {
-        vm.file = file('testing');
-        vm.file.content = 'foo'; // need to prevent full cycle of initEditor
+      vm.file.pending = true;
 
-        return vm.$nextTick();
-      })
-      .then(() => {
-        expect(vm.removePendingTab).toHaveBeenCalled();
-      })
-      .then(done)
-      .catch(done.fail);
+      vm.$nextTick()
+        .then(() => {
+          vm.file = file('testing');
+          vm.file.content = 'foo'; // need to prevent full cycle of initEditor
+
+          return vm.$nextTick();
+        })
+        .then(() => {
+          expect(vm.removePendingTab).toHaveBeenCalled();
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+
+    it('does not call initEditor if the file did not change', done => {
+      Vue.set(vm, 'file', vm.file);
+
+      vm.$nextTick()
+        .then(() => {
+          expect(vm.initEditor).not.toHaveBeenCalled();
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+
+    it('calls initEditor when file key is changed', done => {
+      expect(vm.initEditor).not.toHaveBeenCalled();
+
+      Vue.set(vm, 'file', {
+        ...vm.file,
+        key: 'new',
+      });
+
+      vm.$nextTick()
+        .then(() => {
+          expect(vm.initEditor).toHaveBeenCalled();
+        })
+        .then(done)
+        .catch(done.fail);
+    });
   });
 });

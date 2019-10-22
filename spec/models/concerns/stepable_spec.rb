@@ -7,6 +7,8 @@ describe Stepable do
     Class.new do
       include Stepable
 
+      attr_writer :return_non_success
+
       steps :method1, :method2, :method3
 
       def execute
@@ -15,18 +17,18 @@ describe Stepable do
 
       private
 
-      def method1
+      def method1(_result)
         { status: :success }
       end
 
-      def method2
-        return { status: :error } unless @pass
+      def method2(result)
+        return { status: :not_a_success } if @return_non_success
 
-        { status: :success, variable1: 'var1' }
+        result.merge({ status: :success, variable1: 'var1', excluded_variable: 'a' })
       end
 
-      def method3
-        { status: :success, variable2: 'var2' }
+      def method3(result)
+        result.except(:excluded_variable).merge({ status: :success, variable2: 'var2' })
       end
     end
   end
@@ -41,8 +43,8 @@ describe Stepable do
 
       private
 
-      def appended_method1
-        { status: :success }
+      def appended_method1(previous_result)
+        previous_result.merge({ status: :success })
       end
     end
   end
@@ -51,21 +53,19 @@ describe Stepable do
     described_class.prepend(prepended_module)
   end
 
-  it 'stops after the first error' do
+  it 'stops after the first non success status' do
+    subject.return_non_success = true
+
     expect(subject).not_to receive(:method3)
     expect(subject).not_to receive(:appended_method1)
 
     expect(subject.execute).to eq(
-      status: :error,
-      failed_step: :method2
+      status: :not_a_success,
+      last_step: :method2
     )
   end
 
   context 'when all methods return success' do
-    before do
-      subject.instance_variable_set(:@pass, true)
-    end
-
     it 'calls all methods in order' do
       expect(subject).to receive(:method1).and_call_original.ordered
       expect(subject).to receive(:method2).and_call_original.ordered
@@ -81,6 +81,10 @@ describe Stepable do
         variable1: 'var1',
         variable2: 'var2'
       )
+    end
+
+    it 'can modify results of previous steps' do
+      expect(subject.execute).not_to include(excluded_variable: 'a')
     end
   end
 

@@ -21,7 +21,7 @@ module Gitlab
 
       def remote_branches(remote_name)
         request = Gitaly::FindAllRemoteBranchesRequest.new(repository: @gitaly_repo, remote_name: remote_name)
-        response = GitalyClient.call(@repository.storage, :ref_service, :find_all_remote_branches, request)
+        response = GitalyClient.call(@repository.storage, :ref_service, :find_all_remote_branches, request, timeout: GitalyClient.medium_timeout)
 
         consume_find_all_remote_branches_response(remote_name, response)
       end
@@ -158,7 +158,7 @@ module Gitlab
           start_point: encode_binary(start_point)
         )
 
-        response = GitalyClient.call(@repository.storage, :ref_service, :create_branch, request)
+        response = GitalyClient.call(@repository.storage, :ref_service, :create_branch, request, timeout: GitalyClient.medium_timeout)
 
         case response.status
         when :OK
@@ -182,7 +182,7 @@ module Gitlab
           name: encode_binary(branch_name)
         )
 
-        GitalyClient.call(@repository.storage, :ref_service, :delete_branch, request)
+        GitalyClient.call(@repository.storage, :ref_service, :delete_branch, request, timeout: GitalyClient.medium_timeout)
       end
 
       def delete_refs(refs: [], except_with_prefixes: [])
@@ -192,7 +192,7 @@ module Gitlab
           except_with_prefix: except_with_prefixes.map { |r| encode_binary(r) }
         )
 
-        response = GitalyClient.call(@repository.storage, :ref_service, :delete_refs, request, timeout: GitalyClient.default_timeout)
+        response = GitalyClient.call(@repository.storage, :ref_service, :delete_refs, request, timeout: GitalyClient.medium_timeout)
 
         raise Gitlab::Git::Repository::GitError, response.git_error if response.git_error.present?
       end
@@ -242,7 +242,7 @@ module Gitlab
       def pack_refs
         request = Gitaly::PackRefsRequest.new(repository: @gitaly_repo)
 
-        GitalyClient.call(@storage, :ref_service, :pack_refs, request)
+        GitalyClient.call(@storage, :ref_service, :pack_refs, request, timeout: GitalyClient.long_timeout)
       end
 
       private

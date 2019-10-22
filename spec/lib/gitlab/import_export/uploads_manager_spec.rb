@@ -83,7 +83,7 @@ describe Gitlab::ImportExport::UploadsManager do
     it 'restores the file' do
       manager.restore
 
-      expect(project.uploads.map { |u| u.build_uploader.filename }).to include('dummy.txt')
+      expect(project.uploads.map { |u| u.retrieve_uploader.filename }).to include('dummy.txt')
     end
   end
 end

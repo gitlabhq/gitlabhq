@@ -2,8 +2,8 @@ require 'spec_helper'
 
 describe Gitlab::ImportExport::WikiRepoSaver do
   describe 'bundle a wiki Git repo' do
-    let(:user) { create(:user) }
-    let!(:project) { create(:project, :public, :wiki_repo, name: 'searchable_project') }
+    set(:user) { create(:user) }
+    let!(:project) { create(:project, :wiki_repo) }
     let(:export_path) { "#{Dir.tmpdir}/project_tree_saver_spec" }
     let(:shared) { project.import_export_shared }
     let(:wiki_bundler) { described_class.new(project: project, shared: shared) }
@@ -22,6 +22,14 @@ describe Gitlab::ImportExport::WikiRepoSaver do
 
     it 'bundles the repo successfully' do
       expect(wiki_bundler.save).to be true
+    end
+
+    context 'when the repo is empty' do
+      let!(:project) { create(:project) }
+
+      it 'bundles the repo successfully' do
+        expect(wiki_bundler.save).to be true
+      end
     end
   end
 end

@@ -30,7 +30,7 @@ module BitbucketServer
     end
 
     def representation_class(type)
-      BitbucketServer::Representation.const_get(type.to_s.camelize)
+      BitbucketServer::Representation.const_get(type.to_s.camelize, false)
     end
   end
 end

@@ -6,6 +6,7 @@ module ObjectStorage
     include ObjectStorageQueue
 
     sidekiq_options retry: 5
+    feature_category_not_owned!
 
     def perform(uploader_class_name, subject_class_name, file_field, subject_id)
       uploader_class = uploader_class_name.constantize
@@ -22,7 +23,7 @@ module ObjectStorage
 
     def build_uploader(subject, mount_point)
       case subject
-      when Upload then subject.build_uploader(mount_point)
+      when Upload then subject.retrieve_uploader(mount_point)
       else
         subject.send(mount_point) # rubocop:disable GitlabSecurity/PublicSend
       end

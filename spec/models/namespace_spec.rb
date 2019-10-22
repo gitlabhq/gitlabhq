@@ -191,6 +191,16 @@ describe Namespace do
     end
   end
 
+  describe '.find_by_pages_host' do
+    it 'finds namespace by GitLab Pages host and is case-insensitive' do
+      namespace = create(:namespace, name: 'topnamespace')
+      create(:namespace, name: 'annother_namespace')
+      host = "TopNamespace.#{Settings.pages.host.upcase}"
+
+      expect(described_class.find_by_pages_host(host)).to eq(namespace)
+    end
+  end
+
   describe '#ancestors_upto' do
     let(:parent) { create(:group) }
     let(:child) { create(:group, parent: parent) }
@@ -240,7 +250,7 @@ describe Namespace do
       it "moves dir if path changed" do
         namespace.update(path: namespace.full_path + '_new')
 
-        expect(gitlab_shell.exists?(project.repository_storage, "#{namespace.path}/#{project.path}.git")).to be_truthy
+        expect(gitlab_shell.repository_exists?(project.repository_storage, "#{namespace.path}/#{project.path}.git")).to be_truthy
       end
 
       context 'when #write_projects_repository_config raises an error' do
@@ -348,7 +358,7 @@ describe Namespace do
         namespace.update(path: namespace.full_path + '_new')
 
         expect(before_disk_path).to eq(project.disk_path)
-        expect(gitlab_shell.exists?(project.repository_storage, "#{project.disk_path}.git")).to be_truthy
+        expect(gitlab_shell.repository_exists?(project.repository_storage, "#{project.disk_path}.git")).to be_truthy
       end
     end
 
@@ -886,30 +896,109 @@ describe Namespace do
         end
       end
     end
+  end
 
-    context 'when :emails_disabled feature flag is off' do
+  describe '#pages_virtual_domain' do
+    let(:project) { create(:project, namespace: namespace) }
+
+    context 'when there are pages deployed for the project' do
+      context 'but pages metadata is not migrated' do
+        before do
+          generic_commit_status = create(:generic_commit_status, :success, stage: 'deploy', name: 'pages:deploy')
+          generic_commit_status.update!(project: project)
+          project.pages_metadatum.destroy!
+        end
+
+        it 'migrates pages metadata and returns the virual domain' do
+          virtual_domain = namespace.pages_virtual_domain
+
+          expect(project.reload.pages_metadatum.deployed).to eq(true)
+
+          expect(virtual_domain).to be_an_instance_of(Pages::VirtualDomain)
+          expect(virtual_domain.lookup_paths).not_to be_empty
+        end
+      end
+
+      context 'and pages metadata is migrated' do
+        before do
+          project.mark_pages_as_deployed
+        end
+
+        it 'returns the virual domain' do
+          virtual_domain = namespace.pages_virtual_domain
+
+          expect(virtual_domain).to be_an_instance_of(Pages::VirtualDomain)
+          expect(virtual_domain.lookup_paths).not_to be_empty
+        end
+      end
+    end
+  end
+
+  describe '#has_parent?' do
+    it 'returns true when the group has a parent' do
+      group = create(:group, :nested)
+
+      expect(group.has_parent?).to be_truthy
+    end
+
+    it 'returns true when the group has an unsaved parent' do
+      parent = build(:group)
+      group = build(:group, parent: parent)
+
+      expect(group.has_parent?).to be_truthy
+    end
+
+    it 'returns false when the group has no parent' do
+      group = create(:group, parent: nil)
+
+      expect(group.has_parent?).to be_falsy
+    end
+  end
+
+  describe '#closest_setting' do
+    using RSpec::Parameterized::TableSyntax
+
+    shared_examples_for 'fetching closest setting' do
+      let!(:root_namespace) { create(:namespace) }
+      let!(:namespace) { create(:namespace, parent: root_namespace) }
+
+      let(:setting) { namespace.closest_setting(setting_name) }
+
       before do
-        stub_feature_flags(emails_disabled: false)
+        root_namespace.update_attribute(setting_name, root_setting)
+        namespace.update_attribute(setting_name, child_setting)
       end
 
-      context 'when not a subgroup' do
-        it 'returns false' do
-          group = create(:group, emails_disabled: true)
+      it 'returns closest non-nil value' do
+        expect(setting).to eq(result)
+      end
+    end
 
-          expect(group.emails_disabled?).to be_falsey
-        end
+    context 'when setting is of non-boolean type' do
+      where(:root_setting, :child_setting, :result) do
+        100 | 200 | 200
+        100 | nil | 100
+        nil | nil | nil
       end
 
-      context 'when a subgroup and ancestor emails are disabled' do
-        let(:grandparent) { create(:group) }
-        let(:parent)      { create(:group, parent: grandparent) }
-        let(:group)       { create(:group, parent: parent) }
+      with_them do
+        let(:setting_name) { :max_artifacts_size }
 
-        it 'returns false' do
-          grandparent.update_attribute(:emails_disabled, true)
+        it_behaves_like 'fetching closest setting'
+      end
+    end
 
-          expect(group.emails_disabled?).to be_falsey
-        end
+    context 'when setting is of boolean type' do
+      where(:root_setting, :child_setting, :result) do
+        true | false | false
+        true | nil   | true
+        nil  | nil   | nil
+      end
+
+      with_them do
+        let(:setting_name) { :lfs_enabled }
+
+        it_behaves_like 'fetching closest setting'
       end
     end
   end

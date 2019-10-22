@@ -38,7 +38,7 @@ To create an executable runbook, you will need:
     The simplest way to get started is to add a cluster using [GitLab's GKE integration](../index.md#add-new-gke-cluster).
 1. **Helm Tiller** - Helm is a package manager for Kubernetes and is required to install
     all the other applications. It is installed in its own pod inside the cluster which
-    can run the helm CLI in a safe environment.
+    can run the Helm CLI in a safe environment.
 1. **Ingress** - Ingress can provide load balancing, SSL termination, and name-based
     virtual hosting. It acts as a web proxy for your applications.
 1. **JupyterHub** - [JupyterHub](https://jupyterhub.readthedocs.io/) is a multi-user service for managing notebooks across
@@ -48,9 +48,9 @@ To create an executable runbook, you will need:
 ## Nurtch
 
 Nurtch is the company behind the [Rubix library](https://github.com/Nurtch/rubix). Rubix is
-an open-source python library that makes it easy to perform common DevOps tasks inside Jupyter Notebooks.
+an open-source Python library that makes it easy to perform common DevOps tasks inside Jupyter Notebooks.
 Tasks such as plotting Cloudwatch metrics and rolling your ECS/Kubernetes app are simplified
-down to a couple of lines of code. See the [Nurtch Documentation](http://docs.nurtch.com/en/latest)
+down to a couple of lines of code. See the [Nurtch Documentation](http://docs.nurtch.com/en/latest/)
 for more information.
 
 ## Configure an executable runbook with GitLab

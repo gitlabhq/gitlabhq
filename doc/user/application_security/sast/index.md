@@ -45,11 +45,14 @@ The results are sorted by the priority of the vulnerability:
 
 ## Requirements
 
-To run a SAST job, you need GitLab Runner with the
+To run a SAST job, by default, you need GitLab Runner with the
 [`docker`](https://docs.gitlab.com/runner/executors/docker.html#use-docker-in-docker-with-privileged-mode) or
 [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes.html#running-privileged-containers-for-the-runners)
 executor running in privileged mode. If you're using the shared Runners on GitLab.com,
 this is enabled by default.
+
+Privileged mode is not necessary if you've [disabled Docker in Docker
+for SAST](#disabling-docker-in-docker-for-sast)
 
 CAUTION: **Caution:**
 If you use your own Runners, make sure that the Docker version you have installed
@@ -62,14 +65,14 @@ The following table shows which languages, package managers and frameworks are s
 | Language (package managers) / framework                                     | Scan tool                                                                              | Introduced in GitLab Version |
 |-----------------------------------------------------------------------------|----------------------------------------------------------------------------------------|------------------------------|
 | .NET                                                                        | [Security Code Scan](https://security-code-scan.github.io)                             | 11.0                         |
-| Any                                                                         | [Gitleaks](https://github.com/zricethezav/gitleaks) and [TruffleHog](https://github.com/dxa4481/truffleHog) | 11.9 |
+| Any                                                                         | [Gitleaks](https://github.com/zricethezav/gitleaks) and [TruffleHog](https://github.com/dxa4481/truffleHog) | 11.9    |
 | Apex (Salesforce)                                                           | [pmd](https://pmd.github.io/pmd/index.html)                                            | 12.1                         |
-| C/C++                                                                       | [Flawfinder](https://www.dwheeler.com/flawfinder/)                                     | 10.7                         |
+| C/C++                                                                       | [Flawfinder](https://dwheeler.com/flawfinder/)                                         | 10.7                         |
 | Elixir (Phoenix)                                                            | [Sobelow](https://github.com/nccgroup/sobelow)                                         | 11.10                        |
 | Go                                                                          | [Gosec](https://github.com/securego/gosec)                                             | 10.7                         |
 | Groovy ([Ant](https://ant.apache.org/), [Gradle](https://gradle.org/), [Maven](https://maven.apache.org/) and [SBT](https://www.scala-sbt.org/)) | [SpotBugs](https://spotbugs.github.io/) with the [find-sec-bugs](https://find-sec-bugs.github.io/) plugin | 11.3 (Gradle) & 11.9 (Ant, Maven, SBT) |
 | Java ([Ant](https://ant.apache.org/), [Gradle](https://gradle.org/), [Maven](https://maven.apache.org/) and [SBT](https://www.scala-sbt.org/)) | [SpotBugs](https://spotbugs.github.io/) with the [find-sec-bugs](https://find-sec-bugs.github.io/) plugin | 10.6 (Maven), 10.8 (Gradle) & 11.9 (Ant, SBT) |
-| Javascript                                                                  | [ESLint security plugin](https://github.com/nodesecurity/eslint-plugin-security)       | 11.8                         |
+| JavaScript                                                                  | [ESLint security plugin](https://github.com/nodesecurity/eslint-plugin-security)       | 11.8                         |
 | Node.js                                                                     | [NodeJsScan](https://github.com/ajinabraham/NodeJsScan)                                | 11.1                         |
 | PHP                                                                         | [phpcs-security-audit](https://github.com/FloeDesignTechnologies/phpcs-security-audit) | 10.8                         |
 | Python ([pip](https://pip.pypa.io/en/stable/))                              | [bandit](https://github.com/PyCQA/bandit)                                              | 10.3                         |
@@ -110,10 +113,9 @@ is used to detect the languages/frameworks and in turn runs the matching scan to
 
 ### Customizing the SAST settings
 
-The SAST settings can be changed through environment variables by using the
+The SAST settings can be changed through [environment variables](#available-variables)
+by using the
 [`variables`](../../../ci/yaml/README.md#variables) parameter in `.gitlab-ci.yml`.
-These variables are documented in the
-[SAST tool documentation](https://gitlab.com/gitlab-org/security-products/sast#settings).
 
 In the following example, we include the SAST template and at the same time we
 set the `SAST_GOSEC_LEVEL` variable to `2`:
@@ -128,21 +130,6 @@ variables:
 
 Because the template is [evaluated before](../../../ci/yaml/README.md#include)
 the pipeline configuration, the last mention of the variable will take precedence.
-
-#### Using a variable to pass username and password to a private Maven repository
-
-If you have a private Apache Maven repository that requires login credentials,
-you can use the `MAVEN_CLI_OPTS` [environment variable](#available-variables)
-to pass a username and password. You can set it under your project's settings
-so that your credentials aren't exposed in `.gitlab-ci.yml`.
-
-If the username is `myuser` and the password is `verysecret` then you would
-set the following [variable](../../../ci/variables/README.md#via-the-ui)
-under your project's settings:
-
-| Type | Key | Value |
-| ---- | --- | ----- |
-| Variable | `MAVEN_CLI_OPTS` | `-Drepository.password=verysecret -Drepository.user=myuser` |
 
 ### Overriding the SAST template
 
@@ -159,6 +146,36 @@ sast:
     CI_DEBUG_TRACE: "true"
 ```
 
+### Using a variable to pass username and password to a private Maven repository
+
+If you have a private Apache Maven repository that requires login credentials,
+you can use the `MAVEN_CLI_OPTS` [environment variable](#available-variables)
+to pass a username and password. You can set it under your project's settings
+so that your credentials aren't exposed in `.gitlab-ci.yml`.
+
+If the username is `myuser` and the password is `verysecret` then you would
+[set the following variable](../../../ci/variables/README.md#via-the-ui)
+under your project's settings:
+
+| Type | Key | Value |
+| ---- | --- | ----- |
+| Variable | `MAVEN_CLI_OPTS` | `-Drepository.password=verysecret -Drepository.user=myuser` |
+
+### Disabling Docker in Docker for SAST
+
+You can avoid the need for Docker in Docker by running the individual analyzers.
+This does not require running the executor in privileged mode. For example:
+
+```yaml
+include:
+  template: SAST.gitlab-ci.yml
+
+variables:
+  SAST_DISABLE_DIND: "true"
+```
+
+This will create individual `<analyzer-name>-sast` jobs for each analyzer that runs in your CI/CD pipeline.
+
 ### Available variables
 
 SAST can be [configured](#customizing-the-sast-settings) using environment variables.
@@ -173,9 +190,10 @@ The following are Docker image-related variables.
 | `SAST_ANALYZER_IMAGE_PREFIX`  | Override the name of the Docker registry providing the default images (proxy). Read more about [customizing analyzers](analyzers.md). |
 | `SAST_ANALYZER_IMAGE_TAG`     | Override the Docker tag of the default images. Read more about [customizing analyzers](analyzers.md).                                 |
 | `SAST_DEFAULT_ANALYZERS`      | Override the names of default images. Read more about [customizing analyzers](analyzers.md).                                          |
+| `SAST_DISABLE_DIND`           | Disable Docker in Docker and run analyzers [individually](#disabling-docker-in-docker-for-sast).                                      |
 | `SAST_PULL_ANALYZER_IMAGES`   | Pull the images from the Docker registry (set to 0 to disable). Read more about [customizing analyzers](analyzers.md).                 |
 
-### Vulnerability filters
+#### Vulnerability filters
 
 Some analyzers make it possible to filter out vulnerabilities under a given threshold.
 
@@ -188,7 +206,7 @@ Some analyzers make it possible to filter out vulnerabilities under a given thre
 | `SAST_GOSEC_LEVEL`      |         0 | Ignore gosec vulnerabilities under given confidence level. Integer, 0=Undefined, 1=Low, 2=Medium, 3=High. | |
 | `SAST_EXCLUDED_PATHS`   |   -        | Exclude vulnerabilities from output based on the paths. This is a comma-separated list of patterns. Patterns can be globs, file or folder paths. Parent directories will also match patterns. | `SAST_EXCLUDED_PATHS=doc,spec` |
 
-### Timeouts
+#### Timeouts
 
 The following variables configure timeouts.
 
@@ -198,7 +216,7 @@ The following variables configure timeouts.
 | `SAST_PULL_ANALYZER_IMAGE_TIMEOUT`       |      5m | Time limit when pulling the image of an analyzer. Timeouts are parsed using Go's [`ParseDuration`](https://golang.org/pkg/time/#ParseDuration). Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h". For example, "300ms", "1.5h" or "2h45m". |
 | `SAST_RUN_ANALYZER_TIMEOUT`              |     20m | Time limit when running an analyzer. Timeouts are parsed using Go's [`ParseDuration`](https://golang.org/pkg/time/#ParseDuration). Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h". For example, "300ms", "1.5h" or "2h45m".|
 
-### Analyzer settings
+#### Analyzer settings
 
 Some analyzers can be customized with environment variables.
 

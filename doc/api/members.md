@@ -26,6 +26,7 @@ GET /projects/:id/members
 | --------- | ---- | -------- | ----------- |
 | `id`      | integer/string | yes | The ID or [URL-encoded path of the project or group](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `query`   | string | no     | A query string to search for members |
+| `user_ids`   | array of integers | no     | Filter the results on the given user IDs |
 
 ```bash
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/:id/members
@@ -62,9 +63,8 @@ Example response:
 ## List all members of a group or project including inherited members
 
 Gets a list of group or project members viewable by the authenticated user, including inherited members through ancestor groups.
-When a user is a member of the project/group and of one or more ancestor groups the user is returned only once with the project access_level (if exists)
-or the access_level for the user in the first group which he belongs to in the project groups ancestors chain.
-**Note:** We plan to [change](https://gitlab.com/gitlab-org/gitlab-foss/issues/62284) this behavior to return highest access_level instead.
+When a user is a member of the project/group and of one or more ancestor groups the user is returned only once with the project `access_level` (if exists)
+or the `access_level` for the user in the first group which he belongs to in the project groups ancestors chain.
 
 ```
 GET /groups/:id/members/all
@@ -75,6 +75,7 @@ GET /projects/:id/members/all
 | --------- | ---- | -------- | ----------- |
 | `id`      | integer/string | yes | The ID or [URL-encoded path of the project or group](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `query`   | string | no     | A query string to search for members |
+| `user_ids`   | array of integers | no     | Filter the results on the given user IDs |
 
 ```bash
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/:id/members/all
@@ -120,7 +121,7 @@ Example response:
 
 ## Get a member of a group or project
 
-Gets a member of a group or project.
+Gets a member of a group or project. Returns only direct members and not inherited members through ancestor groups.
 
 ```
 GET /groups/:id/members/:user_id
@@ -135,6 +136,42 @@ GET /projects/:id/members/:user_id
 ```bash
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/:id/members/:user_id
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/:id/members/:user_id
+```
+
+Example response:
+
+```json
+{
+  "id": 1,
+  "username": "raymond_smith",
+  "name": "Raymond Smith",
+  "state": "active",
+  "avatar_url": "https://www.gravatar.com/avatar/c2525a7f58ae3776070e44c106c48e15?s=80&d=identicon",
+  "web_url": "http://192.168.1.8:3000/root",
+  "access_level": 30,
+  "expires_at": null
+}
+```
+
+## Get a member of a group or project, including inherited members
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/17744) in GitLab 12.4.
+
+Gets a member of a group or project, including members inherited through ancestor groups. See the corresponding [endpoint to list all inherited members](#list-all-members-of-a-group-or-project-including-inherited-members) for details.
+
+```
+GET /groups/:id/members/all/:user_id
+GET /projects/:id/members/all/:user_id
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the project or group](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `user_id` | integer | yes   | The user ID of the member |
+
+```bash
+curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/:id/members/all/:user_id
+curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/:id/members/all/:user_id
 ```
 
 Example response:

@@ -27,12 +27,14 @@ module Gitlab
       # - The cache content is not updated (there's no need to do so)
       def load_highlight
         ids = highlightable_collection_ids
+        return if ids.empty?
+
         cached_content = read_cache(ids)
 
         uncached_ids = ids.select.each_with_index { |_, i| cached_content[i].nil? }
         mapping = highlighted_lines_by_ids(uncached_ids)
 
-        HighlightCache.write_multiple(mapping)
+        HighlightCache.write_multiple(mapping) if mapping.any?
 
         diffs = diff_files_indexed_by_id.values_at(*ids)
 

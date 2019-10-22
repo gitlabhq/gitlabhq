@@ -1,6 +1,5 @@
 <script>
 import { __, sprintf } from '~/locale';
-import { abbreviateTime } from '~/lib/utils/datetime_utility';
 import icon from '~/vue_shared/components/icon.vue';
 import tooltip from '~/vue_shared/directives/tooltip';
 
@@ -41,12 +40,6 @@ export default {
     },
   },
   computed: {
-    timeSpent() {
-      return this.abbreviateTime(this.timeSpentHumanReadable);
-    },
-    timeEstimate() {
-      return this.abbreviateTime(this.timeEstimateHumanReadable);
-    },
     divClass() {
       if (this.showComparisonState) {
         return 'compare';
@@ -73,11 +66,11 @@ export default {
     },
     text() {
       if (this.showComparisonState) {
-        return `${this.timeSpent} / ${this.timeEstimate}`;
+        return `${this.timeSpentHumanReadable} / ${this.timeEstimateHumanReadable}`;
       } else if (this.showEstimateOnlyState) {
-        return `-- / ${this.timeEstimate}`;
+        return `-- / ${this.timeEstimateHumanReadable}`;
       } else if (this.showSpentOnlyState) {
-        return `${this.timeSpent} / --`;
+        return `${this.timeSpentHumanReadable} / --`;
       } else if (this.showNoTimeTrackingState) {
         return __('None');
       }
@@ -98,11 +91,6 @@ export default {
     },
     tooltipText() {
       return this.showNoTimeTrackingState ? __('Time tracking') : this.timeTrackedTooltipText;
-    },
-  },
-  methods: {
-    abbreviateTime(timeStr) {
-      return abbreviateTime(timeStr);
     },
   },
 };

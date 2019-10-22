@@ -29,9 +29,9 @@ to the latest release.
 Since Deploy Boards are tightly coupled with Kubernetes, there is some required
 knowledge. In particular you should be familiar with:
 
-- [Kubernetes pods](https://kubernetes.io/docs/user-guide/pods)
+- [Kubernetes pods](https://kubernetes.io/docs/concepts/workloads/pods/pod/)
 - [Kubernetes labels](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/)
-- [Kubernetes namespaces](https://kubernetes.io/docs/user-guide/namespaces/)
+- [Kubernetes namespaces](https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/)
 - [Kubernetes canary deployments](https://kubernetes.io/docs/concepts/cluster-administration/manage-deployment/#canary-deployments)
 
 ## Use cases
@@ -91,7 +91,8 @@ To display the Deploy Boards for a specific [environment] you should:
    Matching based on the Kubernetes `app` label was removed in [GitLab
    12.1](https://gitlab.com/gitlab-org/gitlab/merge_requests/14020).
    To migrate, please apply the required annotations (see above) and
-   re-deploy your application.
+   re-deploy your application. If you are using Auto DevOps, this will
+   be done automatically and no action is necessary.
 
    ![Deploy Boards Kubernetes Label](img/deploy_boards_kubernetes_label.png)
 

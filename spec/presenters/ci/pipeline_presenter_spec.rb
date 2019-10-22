@@ -176,6 +176,44 @@ describe Ci::PipelinePresenter do
     end
   end
 
+  describe '#all_related_merge_request_text' do
+    subject { presenter.all_related_merge_request_text }
+
+    context 'with zero related merge requests (branch pipeline)' do
+      it { is_expected.to eq('No related merge requests found.') }
+    end
+
+    context 'with one related merge request' do
+      let!(:mr_1) { create(:merge_request, project: project, source_project: project) }
+
+      it {
+        is_expected.to eq("1 related merge request: " \
+          "<a class=\"mr-iid\" href=\"#{merge_request_path(mr_1)}\">#{mr_1.to_reference} #{mr_1.title}</a>")
+      }
+    end
+
+    context 'with two related merge requests' do
+      let!(:mr_1) { create(:merge_request, project: project, source_project: project, target_branch: 'staging') }
+      let!(:mr_2) { create(:merge_request, project: project, source_project: project, target_branch: 'feature') }
+
+      it {
+        is_expected.to eq("2 related merge requests: " \
+          "<a class=\"mr-iid\" href=\"#{merge_request_path(mr_2)}\">#{mr_2.to_reference} #{mr_2.title}</a>, " \
+          "<a class=\"mr-iid\" href=\"#{merge_request_path(mr_1)}\">#{mr_1.to_reference} #{mr_1.title}</a>")
+      }
+    end
+  end
+
+  describe '#all_related_merge_requests' do
+    it 'memoizes the returned relation' do
+      query_count = ActiveRecord::QueryRecorder.new do
+        2.times { presenter.send(:all_related_merge_requests).count }
+      end.count
+
+      expect(query_count).to eq(1)
+    end
+  end
+
   describe '#link_to_merge_request' do
     subject { presenter.link_to_merge_request }
 

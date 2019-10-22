@@ -204,6 +204,16 @@ describe Ci::RetryBuildService do
         expect(build).to be_retried
         expect(build.reload).to be_retried
       end
+
+      context 'when build with deployment is retried' do
+        let!(:build) do
+          create(:ci_build, :with_deployment, :deploy_to_production, pipeline: pipeline, stage_id: stage.id)
+        end
+
+        it 'creates a new deployment' do
+          expect { new_build }.to change { Deployment.count }.by(1)
+        end
+      end
     end
 
     context 'when user does not have ability to execute build' do

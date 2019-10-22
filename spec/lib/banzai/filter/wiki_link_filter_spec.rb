@@ -60,6 +60,14 @@ describe Banzai::Filter::WikiLinkFilter do
         expect(filtered_link.attribute('src').value).to eq("#{wiki.wiki_base_path}/#{repository_upload_folder}/a.mp4")
       end
     end
+
+    context 'with "audio" html tag' do
+      it 'rewrites links' do
+        filtered_link = filter("<audio src='#{repository_upload_folder}/a.wav'></audio>", project_wiki: wiki).children[0]
+
+        expect(filtered_link.attribute('src').value).to eq("#{wiki.wiki_base_path}/#{repository_upload_folder}/a.wav")
+      end
+    end
   end
 
   describe "invalid links" do

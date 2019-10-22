@@ -73,7 +73,7 @@ class HipchatService < Service
   private
 
   def gate
-    options = { api_version: api_version.present? ? api_version : 'v2' }
+    options = { api_version: api_version.presence || 'v2' }
     options[:server_url] = server unless server.blank?
     @gate ||= HipChat::Client.new(token, options)
   end
@@ -161,7 +161,7 @@ class HipchatService < Service
     obj_attr = data[:object_attributes]
     obj_attr = HashWithIndifferentAccess.new(obj_attr)
     title = render_line(obj_attr[:title])
-    state = obj_attr[:state]
+    state = Issue.available_states.key(obj_attr[:state_id])
     issue_iid = obj_attr[:iid]
     issue_url = obj_attr[:url]
     description = obj_attr[:description]

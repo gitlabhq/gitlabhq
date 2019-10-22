@@ -1,4 +1,4 @@
-/* eslint-disable func-names, prefer-arrow-callback */
+/* eslint-disable func-names */
 
 import $ from 'jquery';
 import Api from './api';
@@ -50,7 +50,7 @@ export default class CreateLabelDropdown {
 
     this.$dropdownBack.on('click', this.resetForm.bind(this));
 
-    this.$cancelButton.on('click', function(e) {
+    this.$cancelButton.on('click', e => {
       e.preventDefault();
       e.stopPropagation();
 

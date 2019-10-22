@@ -20,15 +20,15 @@ module Git
       strong_memoize(:commits) do
         if creating_default_branch?
           # The most recent PROCESS_COMMIT_LIMIT commits in the default branch
-          project.repository.commits(params[:newrev], limit: PROCESS_COMMIT_LIMIT)
+          project.repository.commits(newrev, limit: PROCESS_COMMIT_LIMIT)
         elsif creating_branch?
           # Use the pushed commits that aren't reachable by the default branch
           # as a heuristic. This may include more commits than are actually
           # pushed, but that shouldn't matter because we check for existing
           # cross-references later.
-          project.repository.commits_between(project.default_branch, params[:newrev])
+          project.repository.commits_between(project.default_branch, newrev)
         elsif updating_branch?
-          project.repository.commits_between(params[:oldrev], params[:newrev])
+          project.repository.commits_between(oldrev, newrev)
         else # removing branch
           []
         end
@@ -70,7 +70,7 @@ module Git
     def branch_update_hooks
       # Update the bare repositories info/attributes file using the contents of
       # the default branch's .gitattributes file
-      project.repository.copy_gitattributes(params[:ref]) if default_branch?
+      project.repository.copy_gitattributes(ref) if default_branch?
     end
 
     def branch_change_hooks
@@ -118,7 +118,7 @@ module Git
     # https://gitlab.com/gitlab-org/gitlab-foss/issues/59257
     def creating_branch?
       strong_memoize(:creating_branch) do
-        Gitlab::Git.blank_ref?(params[:oldrev]) ||
+        Gitlab::Git.blank_ref?(oldrev) ||
           !project.repository.branch_exists?(branch_name)
       end
     end
@@ -128,7 +128,7 @@ module Git
     end
 
     def removing_branch?
-      Gitlab::Git.blank_ref?(params[:newrev])
+      Gitlab::Git.blank_ref?(newrev)
     end
 
     def creating_default_branch?
@@ -137,7 +137,7 @@ module Git
 
     def count_commits_in_branch
       strong_memoize(:count_commits_in_branch) do
-        project.repository.commit_count_for_ref(params[:ref])
+        project.repository.commit_count_for_ref(ref)
       end
     end
 
@@ -148,7 +148,7 @@ module Git
     end
 
     def branch_name
-      strong_memoize(:branch_name) { Gitlab::Git.ref_name(params[:ref]) }
+      strong_memoize(:branch_name) { Gitlab::Git.ref_name(ref) }
     end
 
     def upstream_commit_ids(commits)

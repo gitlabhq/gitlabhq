@@ -9,6 +9,7 @@ module Analytics
       belongs_to :project
 
       alias_attribute :parent, :project
+      alias_attribute :parent_id, :project_id
     end
   end
 end

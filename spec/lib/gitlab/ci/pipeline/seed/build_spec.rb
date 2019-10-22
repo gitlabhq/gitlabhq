@@ -117,6 +117,24 @@ describe Gitlab::Ci::Pipeline::Seed::Build do
     context 'when job is not a bridge' do
       it { is_expected.to be_a(::Ci::Build) }
       it { is_expected.to be_valid }
+
+      context 'when job has environment name' do
+        let(:attributes) { { name: 'rspec', ref: 'master', environment: 'production' } }
+
+        it 'returns a job with deployment' do
+          expect(subject.deployment).not_to be_nil
+          expect(subject.deployment.deployable).to eq(subject)
+          expect(subject.deployment.environment.name).to eq('production')
+        end
+
+        context 'when the environment name is invalid' do
+          let(:attributes) { { name: 'rspec', ref: 'master', environment: '!!!' } }
+
+          it 'returns a job without deployment' do
+            expect(subject.deployment).to be_nil
+          end
+        end
+      end
     end
 
     context 'when job is a bridge' do

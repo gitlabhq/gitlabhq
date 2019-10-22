@@ -7,6 +7,8 @@ import BlobCiYamlSelector from './template_selectors/ci_yaml_selector';
 import DockerfileSelector from './template_selectors/dockerfile_selector';
 import GitignoreSelector from './template_selectors/gitignore_selector';
 import LicenseSelector from './template_selectors/license_selector';
+import toast from '~/vue_shared/plugins/global_toast';
+import { __ } from '~/locale';
 
 export default class FileTemplateMediator {
   constructor({ editor, currentAction, projectId }) {
@@ -19,6 +21,7 @@ export default class FileTemplateMediator {
     this.initDomElements();
     this.initDropdowns();
     this.initPageEvents();
+    this.cacheFileContents();
   }
 
   initTemplateSelectors() {
@@ -40,6 +43,7 @@ export default class FileTemplateMediator {
         return {
           name: cfg.name,
           key: cfg.key,
+          id: cfg.key,
         };
       }),
     });
@@ -58,6 +62,7 @@ export default class FileTemplateMediator {
     this.$fileContent = $fileEditor.find('#file-content');
     this.$commitForm = $fileEditor.find('form');
     this.$navLinks = $fileEditor.find('.nav-links');
+    this.$templateTypes = this.$templateSelectors.find('.template-type-selector');
   }
 
   initDropdowns() {
@@ -113,7 +118,11 @@ export default class FileTemplateMediator {
       }
     });
 
-    this.typeSelector.setToggleText(item.name);
+    this.setFilename(item.name);
+
+    if (this.editor.getValue() !== '') {
+      this.setTypeSelectorToggleText(item.name);
+    }
 
     this.cacheToggleText();
   }
@@ -123,15 +132,24 @@ export default class FileTemplateMediator {
   }
 
   selectTemplateFile(selector, query, data) {
+    const self = this;
+
     selector.renderLoading();
-    // in case undo menu is already there
-    this.destroyUndoMenu();
+
     this.fetchFileTemplate(selector.config.type, query, data)
       .then(file => {
-        this.showUndoMenu();
         this.setEditorContent(file);
-        this.setFilename(selector.config.name);
         selector.renderLoaded();
+        this.typeSelector.setToggleText(selector.config.name);
+        toast(__(`${query} template applied`), {
+          action: {
+            text: __('Undo'),
+            onClick: (e, toastObj) => {
+              self.restoreFromCache();
+              toastObj.goAway(0);
+            },
+          },
+        });
       })
       .catch(err => new Flash(`An error occurred while fetching the template: ${err}`));
   }
@@ -173,22 +191,6 @@ export default class FileTemplateMediator {
     return this.templateSelectors.find(selector => selector.config.key === key);
   }
 
-  showUndoMenu() {
-    this.$undoMenu.removeClass('hidden');
-
-    this.$undoBtn.on('click', () => {
-      this.restoreFromCache();
-      this.destroyUndoMenu();
-    });
-  }
-
-  destroyUndoMenu() {
-    this.cacheFileContents();
-    this.cacheToggleText();
-    this.$undoMenu.addClass('hidden');
-    this.$undoBtn.off('click');
-  }
-
   hideTemplateSelectorMenu() {
     this.$templatesMenu.hide();
   }
@@ -210,6 +212,7 @@ export default class FileTemplateMediator {
     this.setEditorContent(this.cachedContent);
     this.setFilename(this.cachedFilename);
     this.setTemplateSelectorToggleText();
+    this.setTypeSelectorToggleText(__('Select a template type'));
   }
 
   getTemplateSelectorToggleText() {
@@ -226,6 +229,10 @@ export default class FileTemplateMediator {
 
   getTypeSelectorToggleText() {
     return this.typeSelector.getToggleText();
+  }
+
+  setTypeSelectorToggleText(text) {
+    this.typeSelector.setToggleText(text);
   }
 
   getFilename() {

@@ -1,4 +1,4 @@
-/* eslint-disable func-names, prefer-arrow-callback */
+/* eslint-disable func-names */
 
 import $ from 'jquery';
 import { visitUrl } from './lib/utils/url_utility';
@@ -12,11 +12,11 @@ export default class BuildArtifacts {
   }
   // eslint-disable-next-line class-methods-use-this
   disablePropagation() {
-    $('.top-block').on('click', '.download', function(e) {
-      return e.stopPropagation();
+    $('.top-block').on('click', '.download', e => {
+      e.stopPropagation();
     });
-    return $('.tree-holder').on('click', 'tr[data-link] a', function(e) {
-      return e.stopImmediatePropagation();
+    return $('.tree-holder').on('click', 'tr[data-link] a', e => {
+      e.stopImmediatePropagation();
     });
   }
   // eslint-disable-next-line class-methods-use-this

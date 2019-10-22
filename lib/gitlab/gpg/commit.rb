@@ -10,6 +10,8 @@ module Gitlab
 
         repo = commit.project.repository.raw_repository
         @signature_data = Gitlab::Git::Commit.extract_signature_lazily(repo, commit.sha || commit.id)
+
+        lazy_signature
       end
 
       def signature_text
@@ -28,18 +30,16 @@ module Gitlab
         !!(signature_text && signed_text)
       end
 
-      # rubocop: disable CodeReuse/ActiveRecord
       def signature
         return unless has_signature?
 
         return @signature if @signature
 
-        cached_signature = GpgSignature.find_by(commit_sha: @commit.sha)
+        cached_signature = lazy_signature&.itself
         return @signature = cached_signature if cached_signature.present?
 
         @signature = create_cached_signature!
       end
-      # rubocop: enable CodeReuse/ActiveRecord
 
       def update_signature!(cached_signature)
         using_keychain do |gpg_key|
@@ -49,6 +49,14 @@ module Gitlab
       end
 
       private
+
+      def lazy_signature
+        BatchLoader.for(@commit.sha).batch do |shas, loader|
+          GpgSignature.by_commit_sha(shas).each do |signature|
+            loader.call(signature.commit_sha, signature)
+          end
+        end
+      end
 
       def using_keychain
         Gitlab::Gpg.using_tmp_keychain do

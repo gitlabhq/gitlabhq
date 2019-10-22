@@ -1,0 +1,8 @@
+.card-header {
+  &:first-child {
+    // intended use case: card with only a header (for example empty related issues)
+    &:last-child {
+      @include border-radius($card-inner-border-radius);
+    }
+  }
+}

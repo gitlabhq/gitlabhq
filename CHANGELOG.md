@@ -2,33 +2,28 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
-## 12.3.5
-
-- No changes.
-
 ## 12.3.4
 
-- No changes.
+### Fixed (2 changes)
 
-## 12.3.3
-
-### Security (1 change)
-
-- Fix private feature Elasticsearch leak.
+- Fix cannot merge icon showing in dropdown for users who can merge. !17306
+- Fix pipelines for merge requests in project exports. !17844
 
 
 ## 12.3.2
 
-### Security (10 changes)
+### Security (12 changes)
 
 - Fix Gitaly SearchBlobs flag RPC injection.
 - Add a policy check for system notes that may not be visible due to cross references to private items.
 - Display only participants that user has permission to see on milestone page.
 - Do not disclose project milestones on group milestones page when project milestones access is disabled in project settings.
+- Check permissions before showing head pipeline blocking merge requests.
 - Fix new project path being disclosed through unsubscribe link of issue/merge requests.
 - Prevent bypassing email verification using Salesforce.
 - Do not show resource label events referencing not accessible labels.
 - Cancel all running CI jobs triggered by the user who is just blocked.
+- Fix Gitaly SearchBlobs flag RPC injection.
 - Only render fixed number of mermaid blocks.
 - Prevent GitLab accounts takeover if SAML is configured.
 
@@ -310,6 +305,37 @@ entry.
 - Added board name to page title in boards view.
 - Remove vue resource from group service. (Lee Tickett)
 - Updates tooltip of 'detached' label/state.
+
+
+## 12.2.8
+
+### Security (1 change)
+
+- Limit search for IID to a type to avoid leaking records with the same IID that the user does not have access to.
+
+
+## 12.2.7
+
+### Security (1 change)
+
+- Fix private feature Elasticsearch leak.
+
+
+## 12.2.6
+
+### Security (11 changes)
+
+- Add a policy check for system notes that may not be visible due to cross references to private items.
+- Display only participants that user has permission to see on milestone page.
+- Do not disclose project milestones on group milestones page when project milestones access is disabled in project settings.
+- Check permissions before showing head pipeline blocking merge requests.
+- Fix new project path being disclosed through unsubscribe link of issue/merge requests.
+- Prevent bypassing email verification using Salesforce.
+- Do not show resource label events referencing not accessible labels.
+- Cancel all running CI jobs triggered by the user who is just blocked.
+- Fix Gitaly SearchBlobs flag RPC injection [Gitaly v1.59.3].
+- Only render fixed number of mermaid blocks.
+- Prevent GitLab accounts takeover if SAML is configured.
 
 
 ## 12.2.5
@@ -629,6 +655,35 @@ entry.
 - Remove Security Dashboard feature flag. !31820
 - Update Packer.gitlab-ci.yml to use latest image. (Kelly Hair)
 
+
+## 12.1.14
+
+### Security (1 change)
+
+- Limit search for IID to a type to avoid leaking records with the same IID that the user does not have access to.
+
+
+## 12.1.12
+
+### Security (12 changes)
+
+- Add a policy check for system notes that may not be visible due to cross references to private items.
+- Display only participants that user has permission to see on milestone page.
+- Do not disclose project milestones on group milestones page when project milestones access is disabled in project settings.
+- Check permissions before showing head pipeline blocking merge requests.
+- Fix new project path being disclosed through unsubscribe link of issue/merge requests.
+- Prevent bypassing email verification using Salesforce.
+- Do not show resource label events referencing not accessible labels.
+- Cancel all running CI jobs triggered by the user who is just blocked.
+- Fix Gitaly SearchBlobs flag RPC injection.
+- Only render fixed number of mermaid blocks.
+- Prevent GitLab accounts takeover if SAML is configured.
+- Upgrade mermaid to prevent XSS.
+
+
+## 12.1.10
+
+- No changes.
 
 ## 12.1.5
 
@@ -8394,7 +8449,7 @@ entry.
 - Reinstate is_admin flag in users api when authenticated user is an admin. !12211 (rickettm)
 - Fix edit button for deploy keys available from other projects. !12301 (Alexander Randa)
 - Fix passing CI_ENVIRONMENT_NAME and CI_ENVIRONMENT_SLUG for CI_ENVIRONMENT_URL. !12344
-- Disable environment list refresh due to bug https://gitlab.com/gitlab-org/gitlab-ee/issues/2677. !12347
+- Disable environment list refresh due to bug https://gitlab.com/gitlab-org/gitlab/issues/2677. !12347
 - Standardize timeline note margins across different viewport sizes. !12364
 - Fix Ordered Task List Items. !31483 (Jared Deckard <jared.deckard@gmail.com>)
 - Upgrade dependency to Go 1.8.3. !31943

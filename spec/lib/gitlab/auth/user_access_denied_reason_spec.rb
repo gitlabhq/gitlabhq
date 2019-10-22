@@ -33,5 +33,13 @@ describe Gitlab::Auth::UserAccessDeniedReason do
 
       it { is_expected.to match /This action cannot be performed by internal users/ }
     end
+
+    context 'when the user is deactivated' do
+      before do
+        user.deactivate!
+      end
+
+      it { is_expected.to eq "Your account has been deactivated by your administrator. Please log back in from a web browser to reactivate your account at #{Gitlab.config.gitlab.url}" }
+    end
   end
 end

@@ -59,7 +59,7 @@ class PackagistService < Service
   end
 
   def hook_url
-    base_url = server.present? ? server : 'https://packagist.org'
+    base_url = server.presence || 'https://packagist.org'
     "#{base_url}/api/update-package?username=#{username}&apiToken=#{token}"
   end
 end

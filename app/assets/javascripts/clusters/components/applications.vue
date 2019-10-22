@@ -16,7 +16,7 @@ import { s__, sprintf } from '../../locale';
 import applicationRow from './application_row.vue';
 import clipboardButton from '../../vue_shared/components/clipboard_button.vue';
 import KnativeDomainEditor from './knative_domain_editor.vue';
-import { CLUSTER_TYPE, APPLICATION_STATUS, INGRESS } from '../constants';
+import { CLUSTER_TYPE, PROVIDER_TYPE, APPLICATION_STATUS, INGRESS } from '../constants';
 import LoadingButton from '~/vue_shared/components/loading_button.vue';
 import eventHub from '~/clusters/event_hub';
 
@@ -54,10 +54,25 @@ export default {
       required: false,
       default: '',
     },
+    cloudRunHelpPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
     managePrometheusPath: {
       type: String,
       required: false,
       default: '',
+    },
+    providerType: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    preInstalledKnative: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
     rbac: {
       type: Boolean,
@@ -155,6 +170,25 @@ export default {
     },
     knative() {
       return this.applications.knative;
+    },
+    cloudRun() {
+      return this.providerType === PROVIDER_TYPE.GCP && this.preInstalledKnative;
+    },
+    installedVia() {
+      if (this.cloudRun) {
+        return sprintf(
+          _.escape(s__(`ClusterIntegration|installed via %{installed_via}`)),
+          {
+            installed_via: `<a href="${
+              this.cloudRunHelpPath
+            }" target="_blank" rel="noopener noreferrer">${_.escape(
+              s__('ClusterIntegration|Cloud Run'),
+            )}</a>`,
+          },
+          false,
+        );
+      }
+      return null;
     },
   },
   created() {
@@ -260,7 +294,7 @@ export default {
                 <span class="input-group-append">
                   <clipboard-button
                     :text="ingressExternalEndpoint"
-                    :title="s__('ClusterIntegration|Copy Ingress Endpoint to clipboard')"
+                    :title="s__('ClusterIntegration|Copy Ingress Endpoint')"
                     class="input-group-text js-clipboard-btn"
                   />
                 </span>
@@ -438,7 +472,7 @@ export default {
                 <span class="input-group-btn">
                   <clipboard-button
                     :text="jupyterHostname"
-                    :title="s__('ClusterIntegration|Copy Jupyter Hostname to clipboard')"
+                    :title="s__('ClusterIntegration|Copy Jupyter Hostname')"
                     class="js-clipboard-btn"
                   />
                 </span>
@@ -468,6 +502,7 @@ export default {
         :installed="applications.knative.installed"
         :install-failed="applications.knative.installFailed"
         :install-application-request-params="{ hostname: applications.knative.hostname }"
+        :installed-via="installedVia"
         :uninstallable="applications.knative.uninstallable"
         :uninstall-successful="applications.knative.uninstallSuccessful"
         :uninstall-failed="applications.knative.uninstallFailed"
@@ -499,7 +534,7 @@ export default {
           </p>
 
           <knative-domain-editor
-            v-if="knative.installed || (helmInstalled && rbac)"
+            v-if="(knative.installed || (helmInstalled && rbac)) && !preInstalledKnative"
             :knative="knative"
             :ingress-dns-help-path="ingressDnsHelpPath"
             @save="saveKnativeDomain"

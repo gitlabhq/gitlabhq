@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
 RSpec.shared_context 'GroupPolicy context' do
-  let(:guest) { create(:user) }
-  let(:reporter) { create(:user) }
-  let(:developer) { create(:user) }
-  let(:maintainer) { create(:user) }
-  let(:owner) { create(:user) }
-  let(:admin) { create(:admin) }
-  let(:group) { create(:group, :private, :owner_subgroup_creation_only) }
+  let_it_be(:guest) { create(:user) }
+  let_it_be(:reporter) { create(:user) }
+  let_it_be(:developer) { create(:user) }
+  let_it_be(:maintainer) { create(:user) }
+  let_it_be(:owner) { create(:user) }
+  let_it_be(:admin) { create(:admin) }
+  let_it_be(:group, refind: true) { create(:group, :private, :owner_subgroup_creation_only) }
 
   let(:guest_permissions) do
     %i[
@@ -16,6 +16,7 @@ RSpec.shared_context 'GroupPolicy context' do
       read_group_merge_requests
    ]
   end
+  let(:read_group_permissions) { %i[read_label read_list read_milestone] }
   let(:reporter_permissions) { %i[admin_label read_container_image] }
   let(:developer_permissions) { [:admin_milestone] }
   let(:maintainer_permissions) do
@@ -36,7 +37,7 @@ RSpec.shared_context 'GroupPolicy context' do
     ].compact
   end
 
-  before do
+  before_all do
     group.add_guest(guest)
     group.add_reporter(reporter)
     group.add_developer(developer)

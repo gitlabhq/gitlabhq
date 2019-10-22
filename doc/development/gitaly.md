@@ -15,9 +15,9 @@ In May 2019, Bob Van Landuyt hosted a [Deep Dive] on GitLab's [Gitaly project] a
 
 ## Beginner's guide
 
-Start by reading the gitaly repository's
+Start by reading the Gitaly repository's
 [Beginner's guide to Gitaly contributions](https://gitlab.com/gitlab-org/gitaly/blob/master/doc/beginners_guide.md).
-It describes how to setup gitaly, the various components of gitaly and what they do, and how to run its test suites.
+It describes how to set up Gitaly, the various components of Gitaly and what they do, and how to run its test suites.
 
 ## Developing new Git features
 
@@ -41,14 +41,14 @@ disk access (e.g. Rugged, `git`, `rm -rf`) anywhere outside
 The process for adding new Gitaly features is:
 
 - exploration / prototyping
-- design and create a new Gitaly RPC [in gitaly-proto](https://gitlab.com/gitlab-org/gitaly-proto)
-- release a new version of gitaly-proto
+- design and create a new Gitaly RPC in [`gitaly-proto`](https://gitlab.com/gitlab-org/gitaly-proto)
+- release a new version of `gitaly-proto`
 - write implementation and tests for the RPC [in Gitaly](https://gitlab.com/gitlab-org/gitaly), in Go or Ruby
 - release a new version of Gitaly
 - write client code in GitLab CE/EE, GitLab Workhorse or GitLab Shell that calls the new Gitaly RPC
 
 These steps often overlap. It is possible to use an unreleased version
-of Gitaly and gitaly-proto during testing and development.
+of Gitaly and `gitaly-proto` during testing and development.
 
 - See the [Gitaly repo](https://gitlab.com/gitlab-org/gitaly/blob/master/CONTRIBUTING.md#development-and-testing-with-a-custom-gitaly-proto) for instructions on writing server side code with an unreleased protocol.
 - See [below](#running-tests-with-a-locally-modified-version-of-gitaly) for instructions on running GitLab CE tests with a modified version of Gitaly.
@@ -58,7 +58,7 @@ of Gitaly and gitaly-proto during testing and development.
 
 It is possible to implement and test RPC's in Gitaly using Ruby code,
 in
-[gitaly-ruby](https://gitlab.com/gitlab-org/gitaly/tree/master/ruby).
+[`gitaly-ruby`](https://gitlab.com/gitlab-org/gitaly/tree/master/ruby).
 This should make it easier to contribute for developers who are less
 comfortable writing Go code.
 
@@ -234,7 +234,7 @@ Here are the steps to gate a new feature in Gitaly behind a feature flag.
    }
    ```
 
-1. Create prometheus metrics:
+1. Create Prometheus metrics:
 
    ```go
    var findAllTagsRequests = prometheus.NewCounterVec(

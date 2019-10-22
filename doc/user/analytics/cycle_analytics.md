@@ -1,7 +1,7 @@
 # Cycle Analytics
 
 > - Introduced prior to GitLab 12.3 at the project level.
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/12077) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.3 at the group level.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/12077) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.3 at the group level.
 
 Cycle Analytics measures the time spent to go from an [idea to production] - also known
 as cycle time - for each of your projects. Cycle Analytics displays the median time for an idea to
@@ -169,14 +169,14 @@ For Cycle Analytics functionality introduced in GitLab 12.3 and later:
 
 Learn more about Cycle Analytics in the following resources:
 
-- [Cycle Analytics feature page](https://about.gitlab.com/features/cycle-analytics/)
-- [Cycle Analytics feature preview](https://about.gitlab.com/2016/09/16/feature-preview-introducing-cycle-analytics/)
-- [Cycle Analytics feature highlight](https://about.gitlab.com/2016/09/21/cycle-analytics-feature-highlight/)
+- [Cycle Analytics feature page](https://about.gitlab.com/product/cycle-analytics/)
+- [Cycle Analytics feature preview](https://about.gitlab.com/blog/2016/09/16/feature-preview-introducing-cycle-analytics/)
+- [Cycle Analytics feature highlight](https://about.gitlab.com/blog/2016/09/21/cycle-analytics-feature-highlight/)
 
 [ce-5986]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/5986
 [ce-20975]: https://gitlab.com/gitlab-org/gitlab-foss/issues/20975
 [environment]: ../../ci/yaml/README.md#environment
 [GitLab flow]: ../../workflow/gitlab_flow.md
-[idea to production]: https://about.gitlab.com/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/#from-idea-to-production-with-gitlab
+[idea to production]: https://about.gitlab.com/blog/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/#from-idea-to-production-with-gitlab
 [permissions]: ../permissions.md
 [yml]: ../../ci/yaml/README.md

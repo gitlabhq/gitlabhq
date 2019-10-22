@@ -178,6 +178,8 @@ module Gitlab
 
           close_open_tags
 
+          # TODO: replace OpenStruct with a better type
+          # https://gitlab.com/gitlab-org/gitlab/issues/34305
           OpenStruct.new(
             html: @out.force_encoding(Encoding.default_external),
             state: state,

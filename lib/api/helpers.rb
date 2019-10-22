@@ -350,7 +350,7 @@ module API
       render_api_error!(message || '409 Conflict', 409)
     end
 
-    def file_to_large!
+    def file_too_large!
       render_api_error!('413 Request Entity Too Large', 413)
     end
 

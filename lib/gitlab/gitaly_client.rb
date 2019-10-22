@@ -86,7 +86,7 @@ module Gitlab
       if name == :health_check
         Grpc::Health::V1::Health::Stub
       else
-        Gitaly.const_get(name.to_s.camelcase.to_sym).const_get(:Stub)
+        Gitaly.const_get(name.to_s.camelcase.to_sym, false).const_get(:Stub, false)
       end
     end
 
@@ -142,13 +142,13 @@ module Gitlab
     #   kwargs.merge(deadline: Time.now + 10)
     # end
     #
-    def self.call(storage, service, rpc, request, remote_storage: nil, timeout: nil)
+    def self.call(storage, service, rpc, request, remote_storage: nil, timeout: default_timeout)
       start = Gitlab::Metrics::System.monotonic_time
       request_hash = request.is_a?(Google::Protobuf::MessageExts) ? request.to_h : {}
 
       enforce_gitaly_request_limits(:call)
 
-      kwargs = request_kwargs(storage, timeout, remote_storage: remote_storage)
+      kwargs = request_kwargs(storage, timeout: timeout.to_f, remote_storage: remote_storage)
       kwargs = yield(kwargs) if block_given?
 
       stub(service, storage).__send__(rpc, request, kwargs) # rubocop:disable GitlabSecurity/PublicSend
@@ -200,7 +200,7 @@ module Gitlab
     end
     private_class_method :authorization_token
 
-    def self.request_kwargs(storage, timeout, remote_storage: nil)
+    def self.request_kwargs(storage, timeout:, remote_storage: nil)
       metadata = {
         'authorization' => "Bearer #{authorization_token(storage)}",
         'client_name' => CLIENT_NAME
@@ -216,14 +216,7 @@ module Gitlab
 
       result = { metadata: metadata }
 
-      # nil timeout indicates that we should use the default
-      timeout = default_timeout if timeout.nil?
-
-      return result unless timeout > 0
-
-      deadline = real_time + timeout
-      result[:deadline] = deadline
-
+      result[:deadline] = real_time + timeout if timeout > 0
       result
     end
 
@@ -357,8 +350,6 @@ module Gitlab
 
     # The default timeout on all Gitaly calls
     def self.default_timeout
-      return no_timeout if Sidekiq.server?
-
       timeout(:gitaly_timeout_default)
     end
 
@@ -370,8 +361,12 @@ module Gitlab
       timeout(:gitaly_timeout_medium)
     end
 
-    def self.no_timeout
-      0
+    def self.long_timeout
+      if Sidekiq.server?
+        6.hours
+      else
+        default_timeout
+      end
     end
 
     def self.storage_metadata_file_path(storage)

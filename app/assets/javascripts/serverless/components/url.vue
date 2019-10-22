@@ -23,7 +23,7 @@ export default {
     <div class="url-text-field label label-monospace monospace">{{ uri }}</div>
     <clipboard-button
       :text="uri"
-      :title="s__('ServerlessURL|Copy URL to clipboard')"
+      :title="s__('ServerlessURL|Copy URL')"
       class="input-group-text js-clipboard-btn"
     />
     <gl-button

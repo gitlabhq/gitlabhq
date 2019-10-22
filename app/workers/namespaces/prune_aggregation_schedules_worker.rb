@@ -5,6 +5,8 @@ module Namespaces
     include ApplicationWorker
     include CronjobQueue
 
+    feature_category :source_code_management
+
     # Worker to prune pending rows on Namespace::AggregationSchedule
     # It's scheduled to run once a day at 1:05am.
     def perform

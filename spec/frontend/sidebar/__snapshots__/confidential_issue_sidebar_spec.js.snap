@@ -1,0 +1,229 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Confidential Issue Sidebar Block renders for isConfidential = false and isEditable = false 1`] = `
+<div
+  class="block issuable-sidebar-item confidentiality"
+>
+  <div
+    class="sidebar-collapsed-icon"
+    data-boundary="viewport"
+    data-container="body"
+    data-original-title="Not confidential"
+    data-placement="left"
+    title=""
+  >
+    <icon-stub
+      aria-hidden="true"
+      name="eye"
+      size="16"
+    />
+  </div>
+   
+  <div
+    class="title hide-collapsed"
+  >
+    
+    Confidentiality
+    
+    <!---->
+  </div>
+   
+  <div
+    class="value sidebar-item-value hide-collapsed"
+  >
+    <!---->
+     
+    <div
+      class="no-value sidebar-item-value"
+    >
+      <icon-stub
+        aria-hidden="true"
+        class="sidebar-item-icon inline"
+        name="eye"
+        size="16"
+      />
+      
+      Not confidential
+    
+    </div>
+  </div>
+   
+  <!---->
+</div>
+`;
+
+exports[`Confidential Issue Sidebar Block renders for isConfidential = false and isEditable = true 1`] = `
+<div
+  class="block issuable-sidebar-item confidentiality"
+>
+  <div
+    class="sidebar-collapsed-icon"
+    data-boundary="viewport"
+    data-container="body"
+    data-original-title="Not confidential"
+    data-placement="left"
+    title=""
+  >
+    <icon-stub
+      aria-hidden="true"
+      name="eye"
+      size="16"
+    />
+  </div>
+   
+  <div
+    class="title hide-collapsed"
+  >
+    
+    Confidentiality
+    
+    <a
+      class="float-right confidential-edit"
+      data-track-event="click_edit_button"
+      data-track-label="right_sidebar"
+      data-track-property="confidentiality"
+      href="#"
+    >
+      
+      Edit
+    
+    </a>
+  </div>
+   
+  <div
+    class="value sidebar-item-value hide-collapsed"
+  >
+    <!---->
+     
+    <div
+      class="no-value sidebar-item-value"
+    >
+      <icon-stub
+        aria-hidden="true"
+        class="sidebar-item-icon inline"
+        name="eye"
+        size="16"
+      />
+      
+      Not confidential
+    
+    </div>
+  </div>
+   
+  <!---->
+</div>
+`;
+
+exports[`Confidential Issue Sidebar Block renders for isConfidential = true and isEditable = false 1`] = `
+<div
+  class="block issuable-sidebar-item confidentiality"
+>
+  <div
+    class="sidebar-collapsed-icon"
+    data-boundary="viewport"
+    data-container="body"
+    data-original-title="Confidential"
+    data-placement="left"
+    title=""
+  >
+    <icon-stub
+      aria-hidden="true"
+      name="eye-slash"
+      size="16"
+    />
+  </div>
+   
+  <div
+    class="title hide-collapsed"
+  >
+    
+    Confidentiality
+    
+    <!---->
+  </div>
+   
+  <div
+    class="value sidebar-item-value hide-collapsed"
+  >
+    <!---->
+     
+    <div
+      class="value sidebar-item-value hide-collapsed"
+    >
+      <icon-stub
+        aria-hidden="true"
+        class="sidebar-item-icon inline is-active"
+        name="eye-slash"
+        size="16"
+      />
+      
+      This issue is confidential
+    
+    </div>
+  </div>
+   
+  <!---->
+</div>
+`;
+
+exports[`Confidential Issue Sidebar Block renders for isConfidential = true and isEditable = true 1`] = `
+<div
+  class="block issuable-sidebar-item confidentiality"
+>
+  <div
+    class="sidebar-collapsed-icon"
+    data-boundary="viewport"
+    data-container="body"
+    data-original-title="Confidential"
+    data-placement="left"
+    title=""
+  >
+    <icon-stub
+      aria-hidden="true"
+      name="eye-slash"
+      size="16"
+    />
+  </div>
+   
+  <div
+    class="title hide-collapsed"
+  >
+    
+    Confidentiality
+    
+    <a
+      class="float-right confidential-edit"
+      data-track-event="click_edit_button"
+      data-track-label="right_sidebar"
+      data-track-property="confidentiality"
+      href="#"
+    >
+      
+      Edit
+    
+    </a>
+  </div>
+   
+  <div
+    class="value sidebar-item-value hide-collapsed"
+  >
+    <!---->
+     
+    <div
+      class="value sidebar-item-value hide-collapsed"
+    >
+      <icon-stub
+        aria-hidden="true"
+        class="sidebar-item-icon inline is-active"
+        name="eye-slash"
+        size="16"
+      />
+      
+      This issue is confidential
+    
+    </div>
+  </div>
+   
+  <!---->
+</div>
+`;

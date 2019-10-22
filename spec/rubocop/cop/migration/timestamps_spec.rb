@@ -9,6 +9,7 @@ describe RuboCop::Cop::Migration::Timestamps do
   include CopHelper
 
   subject(:cop) { described_class.new }
+
   let(:migration_with_timestamps) do
     %q(
       class Users < ActiveRecord::Migration[4.2]

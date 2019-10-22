@@ -11,6 +11,23 @@ module API
         optional :description, type: String, desc: 'The description of label to be created'
       end
 
+      params :label_update_params do
+        optional :new_name, type: String, desc: 'The new name of the label'
+        optional :color, type: String, desc: "The new color of the label given in 6-digit hex notation with leading '#' sign (e.g. #FFAABB) or one of the allowed CSS color names"
+        optional :description, type: String, desc: 'The new description of label'
+      end
+
+      params :project_label_update_params do
+        use :label_update_params
+        optional :priority, type: Integer, desc: 'The priority of the label', allow_blank: true
+        at_least_one_of :new_name, :color, :description, :priority
+      end
+
+      params :group_label_update_params do
+        use :label_update_params
+        at_least_one_of :new_name, :color, :description
+      end
+
       def find_label(parent, id_or_title, include_ancestor_groups: true)
         labels = available_labels_for(parent, include_ancestor_groups: include_ancestor_groups)
         label = labels.find_by_id(id_or_title) || labels.find_by_title(id_or_title)
@@ -18,12 +35,18 @@ module API
         label || not_found!('Label')
       end
 
-      def get_labels(parent, entity)
-        present paginate(available_labels_for(parent)),
+      def get_labels(parent, entity, include_ancestor_groups: true)
+        present paginate(available_labels_for(parent, include_ancestor_groups: include_ancestor_groups)),
                 with: entity,
                 current_user: current_user,
                 parent: parent,
                 with_counts: params[:with_counts]
+      end
+
+      def get_label(parent, entity, include_ancestor_groups: true)
+        label = find_label(parent, params_id_or_title, include_ancestor_groups: include_ancestor_groups)
+
+        present label, with: entity, current_user: current_user, parent: parent
       end
 
       def create_label(parent, entity)
@@ -57,6 +80,7 @@ module API
 
         # params is used to update the label so we need to remove this field here
         params.delete(:label_id)
+        params.delete(:name)
 
         label = ::Labels::UpdateService.new(declared_params(include_missing: false)).execute(label)
         render_validation_error!(label) unless label.valid?
@@ -78,6 +102,24 @@ module API
         label = find_label(parent, params_id_or_title, include_ancestor_groups: false)
 
         destroy_conditionally!(label)
+      end
+
+      def promote_label(parent)
+        authorize! :admin_label, parent
+
+        label = find_label(parent, params[:name], include_ancestor_groups: false)
+
+        begin
+          group_label = ::Labels::PromoteService.new(parent, current_user).execute(label)
+
+          if group_label
+            present group_label, with: Entities::GroupLabel, current_user: current_user, parent: parent.group
+          else
+            render_api_error!('Failed to promote project label to group label', 400)
+          end
+        rescue => error
+          render_api_error!(error.to_s, 400)
+        end
       end
 
       def params_id_or_title

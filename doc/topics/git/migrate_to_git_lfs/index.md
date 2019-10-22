@@ -15,7 +15,7 @@ will not actually reduce the size of your repository because
 the files are still referenced by previous commits.
 
 Through the method described on this document, first migrate
-to Git LFS with [BFG](https://rtyley.github.io/bfg-repo-cleaner/)
+to Git LFS with a tool such as the open source community-maintained [BFG](https://rtyley.github.io/bfg-repo-cleaner/)
 through a mirror repo, then clean up the repository's history,
 and lastly create LFS tracking rules to prevent new binary files
 from being added.
@@ -133,7 +133,7 @@ Consider an example upstream project, `git@gitlab.com:gitlab-tests/test-git-lfs-
    # You may need to reset your local copy with upstream's `master` after force-pushing from the mirror:
    git reset --hard origin/master
    # Track the files with LFS:
-   git lfs track "*.gif" "*.png" "*.jpg" "*.psd" "*.mp4" ".gitattributes" "img/"
+   git lfs track "*.gif" "*.png" "*.jpg" "*.psd" "*.mp4" "img/"
    ```
 
    Now all existing the files you converted, as well as the new
@@ -162,7 +162,7 @@ but commented out to help encourage others to add to it in the future. -->
 
 ## References
 
-- [Getting Started with Git LFS](https://about.gitlab.com/2017/01/30/getting-started-with-git-lfs-tutorial/)
+- [Getting Started with Git LFS](https://about.gitlab.com/blog/2017/01/30/getting-started-with-git-lfs-tutorial/)
 - [Migrate from Git Annex to Git LFS](../../../workflow/lfs/migrate_from_git_annex_to_git_lfs.md)
 - [GitLab's Git LFS user documentation](../../../workflow/lfs/manage_large_binaries_with_git_lfs.md)
 - [GitLab's Git LFS administrator documentation](../../../workflow/lfs/lfs_administration.md)

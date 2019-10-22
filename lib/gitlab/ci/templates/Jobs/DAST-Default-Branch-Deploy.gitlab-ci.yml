@@ -1,0 +1,55 @@
+.auto-deploy:
+  image: "registry.gitlab.com/gitlab-org/cluster-integration/auto-deploy-image:v0.1.0"
+
+dast_environment_deploy:
+  extends: .auto-deploy
+  stage: review
+  script:
+    - auto-deploy check_kube_domain
+    - auto-deploy download_chart
+    - auto-deploy ensure_namespace
+    - auto-deploy initialize_tiller
+    - auto-deploy create_secret
+    - auto-deploy deploy
+    - auto-deploy persist_environment_url
+  environment:
+    name: dast-default
+    url: http://dast-$CI_PROJECT_ID-$CI_ENVIRONMENT_SLUG.$KUBE_INGRESS_BASE_DOMAIN
+    on_stop: stop_dast_environment
+  artifacts:
+    paths: [environment_url.txt]
+  only:
+    refs:
+      - branches
+    variables:
+      - $GITLAB_FEATURES =~ /\bdast\b/
+    kubernetes: active
+  except:
+    variables:
+      - $CI_DEFAULT_BRANCH != $CI_COMMIT_REF_NAME
+      - $DAST_DISABLED || $DAST_DISABLED_FOR_DEFAULT_BRANCH
+      - $DAST_WEBSITE # we don't need to create a review app if a URL is already given
+
+stop_dast_environment:
+  extends: .auto-deploy
+  stage: cleanup
+  variables:
+    GIT_STRATEGY: none
+  script:
+    - auto-deploy initialize_tiller
+    - auto-deploy delete
+  environment:
+    name: dast-default
+    action: stop
+  needs: ["dast"]
+  only:
+    refs:
+      - branches
+    variables:
+      - $GITLAB_FEATURES =~ /\bdast\b/
+    kubernetes: active
+  except:
+    variables:
+      - $CI_DEFAULT_BRANCH != $CI_COMMIT_REF_NAME
+      - $DAST_DISABLED || $DAST_DISABLED_FOR_DEFAULT_BRANCH
+      - $DAST_WEBSITE

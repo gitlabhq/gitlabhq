@@ -19,7 +19,7 @@ class AvatarUploader < GitlabUploader
   end
 
   def absolute_path
-    self.class.absolute_path(model.avatar.upload)
+    self.class.absolute_path(upload)
   end
 
   private

@@ -27,10 +27,6 @@ module Storage
       "#{base_dir}/#{disk_hash}" if disk_hash
     end
 
-    def ensure_storage_path_exists
-      gitlab_shell.add_namespace(repository_storage, base_dir)
-    end
-
     def rename_repo(old_full_path: nil, new_full_path: nil)
       true
     end

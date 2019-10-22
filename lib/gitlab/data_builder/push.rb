@@ -107,6 +107,14 @@ module Gitlab
         }
       end
 
+      def build_bulk(action:, ref_type:, changes:)
+        {
+          action: action,
+          ref_count: changes.count,
+          ref_type: ref_type
+        }
+      end
+
       # This method provides a sample data generated with
       # existing project and commits to test webhooks
       def build_sample(project, user)

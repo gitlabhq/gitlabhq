@@ -14,7 +14,11 @@ export default {
     {{ __('Labels') }}
     <template v-if="canEdit">
       <i aria-hidden="true" class="fa fa-spinner fa-spin block-loading" data-hidden="true"> </i>
-      <button type="button" class="edit-link btn btn-blank float-right js-sidebar-dropdown-toggle">
+      <button
+        type="button"
+        class="edit-link btn btn-blank float-right js-sidebar-dropdown-toggle"
+        data-qa-selector="labels_edit_button"
+      >
         {{ __('Edit') }}
       </button>
     </template>

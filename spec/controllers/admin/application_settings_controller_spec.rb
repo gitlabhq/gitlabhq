@@ -118,7 +118,7 @@ describe Admin::ApplicationSettingsController do
     end
 
     describe 'verify panel actions' do
-      (Admin::ApplicationSettingsController::VALID_SETTING_PANELS - %w(templates geo)).each do |valid_action|
+      Admin::ApplicationSettingsController::VALID_SETTING_PANELS.each do |valid_action|
         it_behaves_like 'renders correct panels' do
           let(:action) { valid_action }
         end
@@ -141,6 +141,24 @@ describe Admin::ApplicationSettingsController do
       subject
 
       expect(response).to redirect_to(admin_runners_path)
+    end
+  end
+
+  describe 'GET #lets_encrypt_terms_of_service' do
+    include LetsEncryptHelpers
+
+    before do
+      sign_in(admin)
+
+      stub_lets_encrypt_client
+    end
+
+    subject { get :lets_encrypt_terms_of_service }
+
+    it 'redirects the user to the terms of service page' do
+      subject
+
+      expect(response).to redirect_to("https://letsencrypt.org/documents/LE-SA-v1.2-November-15-2017.pdf")
     end
   end
 end

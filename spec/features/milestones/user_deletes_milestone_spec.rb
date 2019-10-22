@@ -12,7 +12,7 @@ describe "User deletes milestone", :js do
   end
 
   context "when milestone belongs to project" do
-    let!(:milestone) { create(:milestone, parent: project, title: "project milestone") }
+    let!(:milestone) { create(:milestone, resource_parent: project, title: "project milestone") }
 
     it "deletes milestone" do
       project.add_developer(user)
@@ -30,8 +30,8 @@ describe "User deletes milestone", :js do
   end
 
   context "when milestone belongs to group" do
-    let!(:milestone_to_be_deleted) { create(:milestone, parent: group, title: "group milestone 1") }
-    let!(:milestone) { create(:milestone, parent: group, title: "group milestone 2") }
+    let!(:milestone_to_be_deleted) { create(:milestone, resource_parent: group, title: "group milestone 1") }
+    let!(:milestone) { create(:milestone, resource_parent: group, title: "group milestone 2") }
 
     it "deletes milestone" do
       group.add_developer(user)

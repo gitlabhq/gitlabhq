@@ -64,7 +64,15 @@ describe('GCP Cluster Dropdown Store Actions', () => {
   });
 
   describe('async fetch methods', () => {
-    window.gapi = gapi();
+    let originalGapi;
+    beforeAll(() => {
+      originalGapi = window.gapi;
+      window.gapi = gapi();
+    });
+
+    afterAll(() => {
+      window.gapi = originalGapi;
+    });
 
     describe('fetchProjects', () => {
       it('fetches projects from Google API', done => {

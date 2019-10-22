@@ -1,0 +1,33 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`User Operation confirmation modal renders modal with form included 1`] = `
+<glmodal-stub
+  modalclass=""
+  modalid="user-operation-modal"
+  ok-title="action"
+  ok-variant="warning"
+  title="title"
+  titletag="h4"
+>
+  <form
+    action="/url"
+    method="post"
+  >
+    <span>
+      content
+    </span>
+     
+    <input
+      name="_method"
+      type="hidden"
+      value="method"
+    />
+     
+    <input
+      name="authenticity_token"
+      type="hidden"
+      value="csrf"
+    />
+  </form>
+</glmodal-stub>
+`;

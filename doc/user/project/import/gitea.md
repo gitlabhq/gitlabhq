@@ -43,8 +43,8 @@ Click on the **Gitea** link and the import authorization process will start.
 With this method, you will perform a one-off authorization with Gitea to grant
 GitLab access your repositories:
 
-1. Go to <https://you-gitea-instance/user/settings/applications> (replace
-   `you-gitea-instance` with the host of your Gitea instance).
+1. Go to `https://your-gitea-instance/user/settings/applications` (replace
+   `your-gitea-instance` with the host of your Gitea instance).
 1. Click **Generate New Token**.
 1. Enter a token description.
 1. Click **Generate Token**.
@@ -66,10 +66,14 @@ From there, you can see the import statuses of your Gitea repositories.
 - whereas those that are not yet imported will have an **Import** button on the
   right side of the table.
 
-If you want, you can import all your Gitea projects in one go by hitting
-**Import all projects** in the upper left corner.
+You also can:
 
-![Gitea importer page](img/import_projects_from_github_importer.png)
+- Import all your Gitea projects in one go by hitting **Import all projects** in
+  the upper left corner
+- Filter projects by name. If filter is applied, hitting **Import all projects**
+  will only import matched projects
+
+![Gitea importer page](img/import_projects_from_gitea_importer_v12_3.png)
 
 ---
 

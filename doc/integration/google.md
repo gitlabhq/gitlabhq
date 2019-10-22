@@ -16,7 +16,7 @@ In Google's side:
      the randomly generated ID or choose a new one.
 1. Refresh the page and you should see your new project in the list
 1. Go to the [Google API Console](https://console.developers.google.com/apis/dashboard)
-1. Select the previously created project form the upper left corner
+1. Select the previously created project in the upper left corner
 1. Select **Credentials** from the sidebar
 1. Select **OAuth consent screen** and fill the form with the required information
 1. In the **Credentials** tab, select **Create credentials > OAuth client ID**
@@ -40,6 +40,13 @@ In Google's side:
    - Google Kubernetes Engine API
    - Cloud Resource Manager API
    - Cloud Billing API
+
+   To do so you need to:
+
+   1. Go to the [Google API Console](https://console.developers.google.com/apis/dashboard).
+   1. Click on **ENABLE APIS AND SERVICES** button at the top of the page.
+   1. Find each of the above APIs. On the page for the API, press the **ENABLE** button.
+      It may take a few minutes for the API to be fully functional.
 
 On your GitLab server:
 

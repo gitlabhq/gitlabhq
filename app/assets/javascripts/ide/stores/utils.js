@@ -50,9 +50,7 @@ export const dataStructure = () => ({
   lastOpenedAt: 0,
   mrChange: null,
   deleted: false,
-  prevPath: '',
-  movedPath: '',
-  moved: false,
+  prevPath: undefined,
 });
 
 export const decorateData = entity => {
@@ -129,7 +127,7 @@ export const commitActionForFile = file => {
 
 export const getCommitFiles = stagedFiles =>
   stagedFiles.reduce((acc, file) => {
-    if (file.moved || file.type === 'tree') return acc;
+    if (file.type === 'tree') return acc;
 
     return acc.concat({
       ...file,
@@ -148,9 +146,9 @@ export const createCommitPayload = ({
   commit_message: state.commitMessage || getters.preBuiltCommitMessage,
   actions: getCommitFiles(rootState.stagedFiles).map(f => ({
     action: commitActionForFile(f),
-    file_path: f.moved ? f.movedPath : f.path,
-    previous_path: f.prevPath === '' ? undefined : f.prevPath,
-    content: f.prevPath ? null : f.content || undefined,
+    file_path: f.path,
+    previous_path: f.prevPath || undefined,
+    content: f.prevPath && !f.changed ? null : f.content || undefined,
     encoding: f.base64 ? 'base64' : 'text',
     last_commit_id:
       newBranch || f.deleted || f.prevPath || f.replaces ? undefined : f.lastCommitSha,
@@ -212,4 +210,62 @@ export const mergeTrees = (fromTree, toTree) => {
   }
 
   return toTree;
+};
+
+export const escapeFileUrl = fileUrl => encodeURIComponent(fileUrl).replace(/%2F/g, '/');
+
+export const replaceFileUrl = (url, oldPath, newPath) => {
+  // Add `/-/` so that we don't accidentally replace project path
+  const result = url.replace(`/-/${escapeFileUrl(oldPath)}`, `/-/${escapeFileUrl(newPath)}`);
+
+  return result;
+};
+
+export const swapInStateArray = (state, arr, key, entryPath) =>
+  Object.assign(state, {
+    [arr]: state[arr].map(f => (f.key === key ? state.entries[entryPath] : f)),
+  });
+
+export const getEntryOrRoot = (state, path) =>
+  path ? state.entries[path] : state.trees[`${state.currentProjectId}/${state.currentBranchId}`];
+
+export const swapInParentTreeWithSorting = (state, oldKey, newPath, parentPath) => {
+  if (!newPath) {
+    return;
+  }
+
+  const parent = getEntryOrRoot(state, parentPath);
+
+  if (parent) {
+    const tree = parent.tree
+      // filter out old entry && new entry
+      .filter(({ key, path }) => key !== oldKey && path !== newPath)
+      // concat new entry
+      .concat(state.entries[newPath]);
+
+    parent.tree = sortTree(tree);
+  }
+};
+
+export const removeFromParentTree = (state, oldKey, parentPath) => {
+  const parent = getEntryOrRoot(state, parentPath);
+
+  if (parent) {
+    parent.tree = sortTree(parent.tree.filter(({ key }) => key !== oldKey));
+  }
+};
+
+export const updateFileCollections = (state, key, entryPath) => {
+  ['openFiles', 'changedFiles', 'stagedFiles'].forEach(fileCollection => {
+    swapInStateArray(state, fileCollection, key, entryPath);
+  });
+};
+
+export const cleanTrailingSlash = path => path.replace(/\/$/, '');
+
+export const pathsAreEqual = (a, b) => {
+  const cleanA = a ? cleanTrailingSlash(a) : '';
+  const cleanB = b ? cleanTrailingSlash(b) : '';
+
+  return cleanA === cleanB;
 };

@@ -12,7 +12,6 @@ module Ci
     include Presentable
     include Importable
     include Gitlab::Utils::StrongMemoize
-    include Deployable
     include HasRef
 
     BuildArchivedError = Class.new(StandardError)
@@ -43,6 +42,7 @@ module Ci
 
     has_many :job_artifacts, class_name: 'Ci::JobArtifact', foreign_key: :job_id, dependent: :destroy, inverse_of: :job # rubocop:disable Cop/ActiveRecordDependent
     has_many :job_variables, class_name: 'Ci::JobVariable', foreign_key: :job_id
+    has_many :sourced_pipelines, class_name: 'Ci::Sources::Pipeline', foreign_key: :source_job_id
 
     Ci::JobArtifact.file_types.each do |key, value|
       has_one :"job_artifacts_#{key}", -> { where(file_type: value) }, class_name: 'Ci::JobArtifact', inverse_of: :job, foreign_key: :job_id
@@ -118,8 +118,6 @@ module Ci
 
     scope :eager_load_job_artifacts, -> { includes(:job_artifacts) }
 
-    scope :with_artifacts_stored_locally, -> { with_existing_job_artifacts(Ci::JobArtifact.archive.with_files_stored_locally) }
-    scope :with_archived_trace_stored_locally, -> { with_existing_job_artifacts(Ci::JobArtifact.trace.with_files_stored_locally) }
     scope :with_artifacts_not_expired, ->() { with_artifacts_archive.where('artifacts_expire_at IS NULL OR artifacts_expire_at > ?', Time.now) }
     scope :with_expired_artifacts, ->() { with_artifacts_archive.where('artifacts_expire_at < ?', Time.now) }
     scope :last_month, ->() { where('created_at > ?', Date.today - 1.month) }
@@ -129,6 +127,12 @@ module Ci
     scope :with_live_trace, -> { where('EXISTS (?)', Ci::BuildTraceChunk.where('ci_builds.id = ci_build_trace_chunks.build_id').select(1)) }
     scope :with_stale_live_trace, -> { with_live_trace.finished_before(12.hours.ago) }
     scope :finished_before, -> (date) { finished.where('finished_at < ?', date) }
+
+    scope :with_secure_reports_from_options, -> (job_type) { where('options like :job_type', job_type: "%:artifacts:%:reports:%:#{job_type}:%") }
+
+    scope :with_secure_reports_from_config_options, -> (job_types) do
+      joins(:metadata).where("ci_builds_metadata.config_options -> 'artifacts' -> 'reports' ?| array[:job_types]", job_types: job_types)
+    end
 
     scope :matches_tag_ids, -> (tag_ids) do
       matcher = ::ActsAsTaggableOn::Tagging
@@ -236,6 +240,7 @@ module Ci
       end
 
       after_transition pending: :running do |build|
+        build.pipeline.persistent_ref.create
         build.deployment&.run
 
         build.run_after_commit do
@@ -410,10 +415,6 @@ module Ci
 
     def environment_action
       self.options.fetch(:environment, {}).fetch(:action, 'start') if self.options
-    end
-
-    def has_deployment?
-      !!self.deployment
     end
 
     def outdated_deployment?
@@ -751,6 +752,10 @@ module Ci
       return false if erased?
 
       true
+    end
+
+    def invalid_dependencies
+      dependencies.reject(&:valid_dependency?)
     end
 
     def runner_required_feature_names

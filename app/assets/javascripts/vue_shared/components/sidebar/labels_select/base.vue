@@ -167,7 +167,7 @@ dropdown-menu-labels dropdown-menu-selectable"
           <div class="dropdown-page-one">
             <dropdown-header v-if="showCreate" />
             <dropdown-search-input />
-            <div class="dropdown-content"></div>
+            <div class="dropdown-content" data-qa-selector="labels_dropdown_content"></div>
             <div class="dropdown-loading"><gl-loading-icon /></div>
             <dropdown-footer
               v-if="showCreate"

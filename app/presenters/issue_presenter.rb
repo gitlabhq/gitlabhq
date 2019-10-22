@@ -11,6 +11,10 @@ class IssuePresenter < Gitlab::View::Presenter::Delegated
     url_builder.issue_path(issue)
   end
 
+  def subscribed?
+    issue.subscribed?(current_user, issue.project)
+  end
+
   private
 
   def url_builder

@@ -16,14 +16,14 @@ description: "Continuous Deployment of a Spring Boot application to Cloud Foundr
 In this article, we'll demonstrate how to deploy a [Spring
 Boot](https://projects.spring.io/spring-boot/) application to [Cloud
 Foundry (CF)](https://www.cloudfoundry.org/) with GitLab CI/CD using the [Continuous
-Deployment](https://about.gitlab.com/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/#continuous-deployment)
+Deployment](https://about.gitlab.com/blog/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/#continuous-deployment)
 method.
 
 All the code for this project can be found in this [GitLab
 repo](https://gitlab.com/gitlab-examples/spring-gitlab-cf-deploy-demo).
 
 In case you're interested in deploying Spring Boot applications to Kubernetes
-using GitLab CI/CD, read through the blog post [Continuous Delivery of a Spring Boot application with GitLab CI and Kubernetes](https://about.gitlab.com/2016/12/14/continuous-delivery-of-a-spring-boot-application-with-gitlab-ci-and-kubernetes/).
+using GitLab CI/CD, read through the blog post [Continuous Delivery of a Spring Boot application with GitLab CI and Kubernetes](https://about.gitlab.com/blog/2016/12/14/continuous-delivery-of-a-spring-boot-application-with-gitlab-ci-and-kubernetes/).
 
 ## Requirements
 

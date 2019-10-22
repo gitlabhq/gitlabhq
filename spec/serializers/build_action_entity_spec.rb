@@ -1,11 +1,18 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe BuildActionEntity do
   let(:job) { create(:ci_build, name: 'test_job') }
   let(:request) { double('request') }
+  let(:user) { create(:user) }
 
   let(:entity) do
-    described_class.new(job, request: spy('request'))
+    described_class.new(job, request: request)
+  end
+
+  before do
+    allow(request).to receive(:current_user).and_return(user)
   end
 
   describe '#as_json' do

@@ -1,0 +1,16 @@
+{
+  "type": "object",
+  "required": [
+    "id",
+    "name",
+    "description",
+    "created_at"
+  ],
+  "properties": {
+    "id": { "type": "integer" },
+    "name": { "type": "string" },
+    "description": { "type": ["string", "null"] },
+    "created_at": { "type": "date" }
+  },
+  "additionalProperties": false
+}

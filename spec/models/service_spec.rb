@@ -78,10 +78,11 @@ describe Service do
   end
 
   describe "Template" do
+    let(:project) { create(:project) }
+
     describe '.build_from_template' do
       context 'when template is invalid' do
         it 'sets service template to inactive when template is invalid' do
-          project = create(:project)
           template = build(:prometheus_service, template: true, active: true, properties: {})
           template.save(validate: false)
 
@@ -89,6 +90,64 @@ describe Service do
 
           expect(service).to be_valid
           expect(service.active).to be false
+        end
+      end
+
+      describe 'build issue tracker from a template' do
+        let(:title) { 'custom title' }
+        let(:description) { 'custom description' }
+        let(:url) { 'http://jira.example.com' }
+        let(:api_url) { 'http://api-jira.example.com' }
+        let(:username) { 'jira-username' }
+        let(:password) { 'jira-password' }
+        let(:data_params) do
+          {
+            url: url, api_url: api_url,
+            username: username, password: password
+          }
+        end
+
+        shared_examples 'service creation from a template' do
+          it 'creates a correct service' do
+            service = described_class.build_from_template(project.id, template)
+
+            expect(service).to be_active
+            expect(service.title).to eq(title)
+            expect(service.description).to eq(description)
+            expect(service.url).to eq(url)
+            expect(service.api_url).to eq(api_url)
+            expect(service.username).to eq(username)
+            expect(service.password).to eq(password)
+          end
+        end
+
+        # this  will be removed as part of https://gitlab.com/gitlab-org/gitlab/issues/29404
+        context 'when data are stored in properties' do
+          let(:properties) { data_params.merge(title: title, description: description) }
+          let!(:template) do
+            create(:jira_service, :without_properties_callback, template: true, properties: properties.merge(additional: 'something'))
+          end
+
+          it_behaves_like 'service creation from a template'
+        end
+
+        context 'when data are stored in separated fields' do
+          let(:template) do
+            create(:jira_service, data_params.merge(properties: {}, title: title, description: description, template: true))
+          end
+
+          it_behaves_like 'service creation from a template'
+        end
+
+        context 'when data are stored in both properties and separated fields' do
+          let(:properties) { data_params.merge(title: title, description: description) }
+          let(:template) do
+            create(:jira_service, :without_properties_callback, active: true, template: true, properties: properties).tap do |service|
+              create(:jira_tracker_data, data_params.merge(service: service))
+            end
+          end
+
+          it_behaves_like 'service creation from a template'
         end
       end
     end
@@ -104,7 +163,6 @@ describe Service do
             api_key: '123456789'
           })
       end
-      let(:project) { create(:project) }
 
       describe 'is prefilled for projects pushover service' do
         it "has all fields prefilled" do

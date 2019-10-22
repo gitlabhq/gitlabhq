@@ -3,7 +3,7 @@
 #cycle-analytics{ "v-cloak" => "true", data: { request_path: project_cycle_analytics_path(@project) } }
   - if @cycle_analytics_no_data
     %banner{ "v-if" => "!isOverviewDialogDismissed",
-      "documentation-link": help_page_path('user/project/cycle_analytics'),
+      "documentation-link": help_page_path('user/analytics/cycle_analytics.md'),
       "v-on:dismiss-overview-dialog" => "dismissOverviewDialog()" }
   = icon("spinner spin", "v-show" => "isLoading")
   .wrapper{ "v-show" => "!isLoading && !hasError" }

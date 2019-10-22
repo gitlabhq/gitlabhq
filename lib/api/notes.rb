@@ -80,7 +80,7 @@ module API
           note = create_note(noteable, opts)
 
           if note.valid?
-            present note, with: Entities.const_get(note.class.name)
+            present note, with: Entities.const_get(note.class.name, false)
           else
             bad_request!("Note #{note.errors.messages}")
           end

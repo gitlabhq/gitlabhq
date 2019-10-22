@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe ResourceLabelEvent, type: :model do
   subject { build(:resource_label_event, issue: issue) }
+
   let(:issue) { create(:issue) }
   let(:merge_request) { create(:merge_request) }
 

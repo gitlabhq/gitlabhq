@@ -4,17 +4,17 @@ describe Gitlab::GithubImport::Importer::ReleasesImporter do
   let(:project) { create(:project) }
   let(:client) { double(:client) }
   let(:importer) { described_class.new(project, client) }
+  let(:github_release_name) { 'Initial Release' }
   let(:created_at) { Time.new(2017, 1, 1, 12, 00) }
-  let(:updated_at) { Time.new(2017, 1, 1, 12, 15) }
   let(:released_at) { Time.new(2017, 1, 1, 12, 00) }
 
-  let(:release) do
+  let(:github_release) do
     double(
-      :release,
+      :github_release,
       tag_name: '1.0',
+      name: github_release_name,
       body: 'This is my release',
       created_at: created_at,
-      updated_at: updated_at,
       published_at: released_at
     )
   end
@@ -25,7 +25,7 @@ describe Gitlab::GithubImport::Importer::ReleasesImporter do
         tag_name: '1.0',
         description: 'This is my release',
         created_at: created_at,
-        updated_at: updated_at,
+        updated_at: created_at,
         released_at: released_at
       }
 
@@ -34,11 +34,27 @@ describe Gitlab::GithubImport::Importer::ReleasesImporter do
 
       importer.execute
     end
+
+    it 'imports draft releases' do
+      release_double = double(
+        name: 'Test',
+        body: 'This is description',
+        tag_name: '1.0',
+        description: 'This is my release',
+        created_at: created_at,
+        updated_at: created_at,
+        published_at: nil
+      )
+
+      expect(importer).to receive(:each_release).and_return([release_double])
+
+      expect { importer.execute }.to change { Release.count }.by(1)
+    end
   end
 
   describe '#build_releases' do
-    it 'returns an Array containnig release rows' do
-      expect(importer).to receive(:each_release).and_return([release])
+    it 'returns an Array containing release rows' do
+      expect(importer).to receive(:each_release).and_return([github_release])
 
       rows = importer.build_releases
 
@@ -49,13 +65,13 @@ describe Gitlab::GithubImport::Importer::ReleasesImporter do
     it 'does not create releases that already exist' do
       create(:release, project: project, tag: '1.0', description: '1.0')
 
-      expect(importer).to receive(:each_release).and_return([release])
+      expect(importer).to receive(:each_release).and_return([github_release])
       expect(importer.build_releases).to be_empty
     end
 
     it 'uses a default release description if none is provided' do
-      expect(release).to receive(:body).and_return('')
-      expect(importer).to receive(:each_release).and_return([release])
+      expect(github_release).to receive(:body).and_return('')
+      expect(importer).to receive(:each_release).and_return([github_release])
 
       release = importer.build_releases.first
 
@@ -64,7 +80,7 @@ describe Gitlab::GithubImport::Importer::ReleasesImporter do
   end
 
   describe '#build' do
-    let(:release_hash) { importer.build(release) }
+    let(:release_hash) { importer.build(github_release) }
 
     it 'returns the attributes of the release as a Hash' do
       expect(release_hash).to be_an_instance_of(Hash)
@@ -88,13 +104,17 @@ describe Gitlab::GithubImport::Importer::ReleasesImporter do
       end
 
       it 'includes the updated timestamp' do
-        expect(release_hash[:updated_at]).to eq(updated_at)
+        expect(release_hash[:updated_at]).to eq(created_at)
+      end
+
+      it 'includes the release name' do
+        expect(release_hash[:name]).to eq(github_release_name)
       end
     end
   end
 
   describe '#each_release' do
-    let(:release) { double(:release) }
+    let(:github_release) { double(:github_release) }
 
     before do
       allow(project).to receive(:import_source).and_return('foo/bar')
@@ -102,7 +122,7 @@ describe Gitlab::GithubImport::Importer::ReleasesImporter do
       allow(client)
         .to receive(:releases)
         .with('foo/bar')
-        .and_return([release].to_enum)
+        .and_return([github_release].to_enum)
     end
 
     it 'returns an Enumerator' do
@@ -110,19 +130,19 @@ describe Gitlab::GithubImport::Importer::ReleasesImporter do
     end
 
     it 'yields every release to the Enumerator' do
-      expect(importer.each_release.next).to eq(release)
+      expect(importer.each_release.next).to eq(github_release)
     end
   end
 
   describe '#description_for' do
     it 'returns the description when present' do
-      expect(importer.description_for(release)).to eq(release.body)
+      expect(importer.description_for(github_release)).to eq(github_release.body)
     end
 
     it 'returns a generated description when one is not present' do
-      allow(release).to receive(:body).and_return('')
+      allow(github_release).to receive(:body).and_return('')
 
-      expect(importer.description_for(release)).to eq('Release for tag 1.0')
+      expect(importer.description_for(github_release)).to eq('Release for tag 1.0')
     end
   end
 end

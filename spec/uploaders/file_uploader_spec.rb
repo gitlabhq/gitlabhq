@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe FileUploader do
   let(:group) { create(:group, name: 'awesome') }
   let(:project) { create(:project, :legacy_storage, namespace: group, name: 'project') }
-  let(:uploader) { described_class.new(project) }
+  let(:uploader) { described_class.new(project, :avatar) }
   let(:upload) { double(model: project, path: 'secret/foo.jpg') }
 
   subject { uploader }
@@ -181,6 +183,14 @@ describe FileUploader do
       expect(uploader).to receive(:apply_context!).with(a_hash_including(secret: secret, identifier: 'file.txt'))
 
       uploader.upload = upload
+    end
+  end
+
+  describe '#replace_file_without_saving!' do
+    let(:replacement) { Tempfile.create('replacement.jpg') }
+
+    it 'replaces an existing file without changing its metadata' do
+      expect { subject.replace_file_without_saving! CarrierWave::SanitizedFile.new(replacement) }.not_to change { subject.upload }
     end
   end
 

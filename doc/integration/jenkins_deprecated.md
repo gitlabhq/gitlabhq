@@ -14,7 +14,7 @@ Integration includes:
 Requirements:
 
 - [Jenkins GitLab Hook plugin](https://wiki.jenkins.io/display/JENKINS/GitLab+Hook+Plugin)
-- Git clone access for Jenkins from GitLab repo (via ssh key)
+- Git clone access for Jenkins from GitLab repo (via SSH key)
 
 ## Jenkins
 

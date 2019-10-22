@@ -25,7 +25,7 @@ module Ci
     belongs_to :merge_request, class_name: 'MergeRequest'
     belongs_to :external_pull_request
 
-    has_internal_id :iid, scope: :project, presence: false, init: ->(s) do
+    has_internal_id :iid, scope: :project, presence: false, ensure_if: -> { !importing? }, init: ->(s) do
       s&.project&.all_pipelines&.maximum(:iid) || s&.project&.all_pipelines&.count
     end
 
@@ -52,8 +52,14 @@ module Ci
 
     has_many :auto_canceled_pipelines, class_name: 'Ci::Pipeline', foreign_key: 'auto_canceled_by_id'
     has_many :auto_canceled_jobs, class_name: 'CommitStatus', foreign_key: 'auto_canceled_by_id'
+    has_many :sourced_pipelines, class_name: 'Ci::Sources::Pipeline', foreign_key: :source_pipeline_id
 
+    has_one :source_pipeline, class_name: 'Ci::Sources::Pipeline', inverse_of: :pipeline
     has_one :chat_data, class_name: 'Ci::PipelineChatData'
+
+    has_many :triggered_pipelines, through: :sourced_pipelines, source: :pipeline
+    has_one :triggered_by_pipeline, through: :source_pipeline, source: :source_pipeline
+    has_one :source_job, through: :source_pipeline, source: :source_job
 
     accepts_nested_attributes_for :variables, reject_if: :persisted?
 
@@ -174,6 +180,8 @@ module Ci
 
       after_transition any => ::Ci::Pipeline.completed_statuses do |pipeline|
         pipeline.run_after_commit do
+          pipeline.persistent_ref.delete
+
           pipeline.all_merge_requests.each do |merge_request|
             next unless merge_request.auto_merge_enabled?
 
@@ -209,6 +217,8 @@ module Ci
     scope :for_sha, -> (sha) { where(sha: sha) }
     scope :for_source_sha, -> (source_sha) { where(source_sha: source_sha) }
     scope :for_sha_or_source_sha, -> (sha) { for_sha(sha).or(for_source_sha(sha)) }
+    scope :for_ref, -> (ref) { where(ref: ref) }
+    scope :for_id, -> (id) { where(id: id) }
     scope :created_after, -> (time) { where('ci_pipelines.created_at > ?', time) }
 
     scope :triggered_by_merge_request, -> (merge_request) do
@@ -279,16 +289,16 @@ module Ci
       end
     end
 
-    # Returns a Hash containing the latest pipeline status for every given
+    # Returns a Hash containing the latest pipeline for every given
     # commit.
     #
-    # The keys of this Hash are the commit SHAs, the values the statuses.
+    # The keys of this Hash are the commit SHAs, the values the pipelines.
     #
-    # commits - The list of commit SHAs to get the status for.
+    # commits - The list of commit SHAs to get the pipelines for.
     # ref - The ref to scope the data to (e.g. "master"). If the ref is not
-    #       given we simply get the latest status for the commits, regardless
-    #       of what refs their pipelines belong to.
-    def self.latest_status_per_commit(commits, ref = nil)
+    #       given we simply get the latest pipelines for the commits, regardless
+    #       of what refs the pipelines belong to.
+    def self.latest_pipeline_per_commit(commits, ref = nil)
       p1 = arel_table
       p2 = arel_table.alias
 
@@ -302,15 +312,14 @@ module Ci
       cond = cond.and(p1[:ref].eq(p2[:ref])) if ref
       join = p1.join(p2, Arel::Nodes::OuterJoin).on(cond)
 
-      relation = select(:sha, :status)
-        .where(sha: commits)
+      relation = where(sha: commits)
         .where(p2[:id].eq(nil))
         .joins(join.join_sources)
 
       relation = relation.where(ref: ref) if ref
 
-      relation.each_with_object({}) do |row, hash|
-        hash[row[:sha]] = row[:status]
+      relation.each_with_object({}) do |pipeline, hash|
+        hash[pipeline.sha] = pipeline
       end
     end
 
@@ -385,13 +394,12 @@ module Ci
       end
     end
 
-    def legacy_stages
+    def legacy_stages_using_sql
       # TODO, this needs refactoring, see gitlab-foss#26481.
-
       stages_query = statuses
         .group('stage').select(:stage).order('max(stage_idx)')
 
-      status_sql = statuses.latest.where('stage=sg.stage').status_sql
+      status_sql = statuses.latest.where('stage=sg.stage').legacy_status_sql
 
       warnings_sql = statuses.latest.select('COUNT(*)')
         .where('stage=sg.stage').failed_but_allowed.to_sql
@@ -401,6 +409,30 @@ module Ci
 
       stages_with_statuses.map do |stage|
         Ci::LegacyStage.new(self, Hash[%i[name status warnings].zip(stage)])
+      end
+    end
+
+    def legacy_stages_using_composite_status
+      stages = statuses.latest
+        .order(:stage_idx, :stage)
+        .group_by(&:stage)
+
+      stages.map do |stage_name, jobs|
+        composite_status = Gitlab::Ci::Status::Composite
+          .new(jobs)
+
+        Ci::LegacyStage.new(self,
+          name: stage_name,
+          status: composite_status.status,
+          warnings: composite_status.warnings?)
+      end
+    end
+
+    def legacy_stages
+      if Feature.enabled?(:ci_composite_status, default_enabled: false)
+        legacy_stages_using_composite_status
+      else
+        legacy_stages_using_sql
       end
     end
 
@@ -584,11 +616,7 @@ module Ci
     def ci_yaml_file_path
       return unless repository_source? || unknown_source?
 
-      if project.ci_config_path.blank?
-        '.gitlab-ci.yml'
-      else
-        project.ci_config_path
-      end
+      project.ci_config_path.presence || '.gitlab-ci.yml'
     end
 
     def ci_yaml_file
@@ -638,7 +666,8 @@ module Ci
 
     def update_status
       retry_optimistic_lock(self) do
-        case latest_builds_status.to_s
+        new_status = latest_builds_status.to_s
+        case new_status
         when 'created' then nil
         when 'preparing' then prepare
         when 'pending' then enqueue
@@ -651,7 +680,7 @@ module Ci
         when 'scheduled' then delay
         else
           raise HasStatus::UnknownStatusError,
-                "Unknown status `#{latest_builds_status}`"
+                "Unknown status `#{new_status}`"
         end
       end
     end
@@ -725,6 +754,10 @@ module Ci
         end
     end
 
+    def all_merge_requests_by_recency
+      all_merge_requests.order(id: :desc)
+    end
+
     def detailed_status(current_user)
       Gitlab::Ci::Status::Pipeline::Factory
         .new(self, current_user)
@@ -768,6 +801,18 @@ module Ci
         elsif branch_updated?
           push_details.modified_paths
         end
+      end
+    end
+
+    def all_worktree_paths
+      strong_memoize(:all_worktree_paths) do
+        project.repository.ls_files(sha)
+      end
+    end
+
+    def top_level_worktree_paths
+      strong_memoize(:top_level_worktree_paths) do
+        project.repository.tree(sha).blobs.map(&:path)
       end
     end
 
@@ -845,6 +890,10 @@ module Ci
       end
     end
 
+    def persistent_ref
+      @persistent_ref ||= PersistentRef.new(pipeline: self)
+    end
+
     private
 
     def ci_yaml_from_repo
@@ -894,7 +943,7 @@ module Ci
     def latest_builds_status
       return 'failed' unless yaml_errors.blank?
 
-      statuses.latest.status || 'skipped'
+      statuses.latest.slow_composite_status || 'skipped'
     end
 
     def keep_around_commits

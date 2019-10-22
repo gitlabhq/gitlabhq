@@ -131,15 +131,27 @@ In summary, with the above `.gitlab-ci.yml` we have achieved the following:
   job will deploy our code to a staging server while the deployment
   will be recorded in an environment named `staging`.
 
-> Starting with GitLab 8.15, the environment name is exposed to the Runner in
-> two forms: `$CI_ENVIRONMENT_NAME`, and `$CI_ENVIRONMENT_SLUG`. The first is
-> the name given in `.gitlab-ci.yml` (with any variables expanded), while the
-> second is a "cleaned-up" version of the name, suitable for use in URLs, DNS,
-> etc.
->
-> Starting with GitLab 9.3, the environment URL is exposed to the Runner via
-> `$CI_ENVIRONMENT_URL`. The URL is expanded from `.gitlab-ci.yml`, or if
-> the URL was not defined there, the external URL from the environment is used.
+#### Environment variables and Runner
+
+Starting with GitLab 8.15, the environment name is exposed to the Runner in
+two forms:
+
+- `$CI_ENVIRONMENT_NAME`. The name given in `.gitlab-ci.yml` (with any variables
+  expanded).
+- `$CI_ENVIRONMENT_SLUG`. A "cleaned-up" version of the name, suitable for use in URLs,
+  DNS, etc.
+
+If you change the name of an existing environment, the:
+
+- `$CI_ENVIRONMENT_NAME` variable will be updated with the new environment name.
+- `$CI_ENVIRONMENT_SLUG` variable will remain unchanged to prevent unintended side
+  effects.
+
+Starting with GitLab 9.3, the environment URL is exposed to the Runner via
+`$CI_ENVIRONMENT_URL`. The URL is expanded from either:
+
+- `.gitlab-ci.yml`.
+- The external URL from the environment if not defined in `.gitlab-ci.yml`.
 
 ### Configuring manual deployments
 
@@ -679,7 +691,7 @@ fetch = +refs/environments/*:refs/remotes/origin/environments/*
 ### Scoping environments with specs
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/2112) in [GitLab Premium](https://about.gitlab.com/pricing/) 9.4.
-> - [Scoping for environment variables was moved to Core](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/30779) to Core in Gitlab 12.2.
+> - [Scoping for environment variables was moved to Core](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/30779) to Core in GitLab 12.2.
 
 You can limit the environment scope of a variable by
 defining which environments it can be available for.
@@ -736,7 +748,7 @@ Re-using variables defined inside `script` as part of the environment name will 
 Below are some links you may find interesting:
 
 - [The `.gitlab-ci.yml` definition of environments](yaml/README.md#environment)
-- [A blog post on Deployments & Environments](https://about.gitlab.com/2016/08/26/ci-deployment-and-environments/)
+- [A blog post on Deployments & Environments](https://about.gitlab.com/blog/2016/08/26/ci-deployment-and-environments/)
 - [Review Apps - Use dynamic environments to deploy your code for every branch](review_apps/index.md)
 - [Deploy Boards for your applications running on Kubernetes](../user/project/deploy_boards.md) **(PREMIUM)**
 

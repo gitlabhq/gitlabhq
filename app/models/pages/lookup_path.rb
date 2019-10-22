@@ -2,9 +2,10 @@
 
 module Pages
   class LookupPath
-    def initialize(project, domain: nil)
+    def initialize(project, trim_prefix: nil, domain: nil)
       @project = project
       @domain = domain
+      @trim_prefix = trim_prefix || project.full_path
     end
 
     def project_id
@@ -28,11 +29,15 @@ module Pages
     end
 
     def prefix
-      '/'
+      if project.pages_group_root?
+        '/'
+      else
+        project.full_path.delete_prefix(trim_prefix) + '/'
+      end
     end
 
     private
 
-    attr_reader :project, :domain
+    attr_reader :project, :trim_prefix, :domain
   end
 end

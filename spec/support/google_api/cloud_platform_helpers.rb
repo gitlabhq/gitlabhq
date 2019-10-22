@@ -65,7 +65,7 @@ module GoogleApi
     end
 
     def cloud_platform_create_cluster_url(project_id, zone)
-      "https://container.googleapis.com/v1/projects/#{project_id}/zones/#{zone}/clusters"
+      "https://container.googleapis.com/v1beta1/projects/#{project_id}/zones/#{zone}/clusters"
     end
 
     def cloud_platform_get_zone_operation_url(project_id, zone, operation_id)

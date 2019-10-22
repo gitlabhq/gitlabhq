@@ -41,7 +41,7 @@ about the impact.
 
 Sometimes it's hard to assess the impact of a merge request. In this case you
 should ask one of the merge request reviewers to review your changes. You can
-find a list of these reviewers at <https://about.gitlab.com/team/>. A reviewer
+find a list of these reviewers at <https://about.gitlab.com/company/team/>. A reviewer
 in turn can request a performance specialist to review the changes.
 
 ## Query Counts
@@ -68,7 +68,7 @@ end
 This will end up running one query for every object to update. This code can
 easily overload a database given enough rows to update or many instances of this
 code running in parallel. This particular problem is known as the
-["N+1 query problem"](http://guides.rubyonrails.org/active_record_querying.html#eager-loading-associations). You can write a test with [QueryRecoder](query_recorder.md) to detect this and prevent regressions.
+["N+1 query problem"](https://guides.rubyonrails.org/active_record_querying.html#eager-loading-associations). You can write a test with [QueryRecoder](query_recorder.md) to detect this and prevent regressions.
 
 In this particular case the workaround is fairly easy:
 
@@ -171,4 +171,4 @@ Caching data per transaction can be done using
 [RequestStore](https://github.com/steveklabnik/request_store) (use
 `Gitlab::SafeRequestStore` to avoid having to remember to check
 `RequestStore.active?`). Caching data in Redis can be done using [Rails' caching
-system](http://guides.rubyonrails.org/caching_with_rails.html).
+system](https://guides.rubyonrails.org/caching_with_rails.html).

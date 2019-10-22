@@ -6,7 +6,8 @@ FactoryBot.define do
     verified_at { Time.now }
     enabled_until { 1.week.from_now }
 
-    certificate '-----BEGIN CERTIFICATE-----
+    certificate do
+      '-----BEGIN CERTIFICATE-----
 MIICGzCCAYSgAwIBAgIBATANBgkqhkiG9w0BAQUFADAbMRkwFwYDVQQDExB0ZXN0
 LWNlcnRpZmljYXRlMB4XDTE2MDIxMjE0MzIwMFoXDTIwMDQxMjE0MzIwMFowGzEZ
 MBcGA1UEAxMQdGVzdC1jZXJ0aWZpY2F0ZTCBnzANBgkqhkiG9w0BAQEFAAOBjQAw
@@ -20,8 +21,10 @@ joZp2JHYvNlTPkRJ/J4TcXxBTJmArcQgTIuNoBtC+0A/SwdK4MfTCUY4vNWNdese
 5A4K65Nb7Oh1AdQieTBHNXXCdyFsva9/ScfQGEl7p55a52jOPs0StPd7g64uvjlg
 YHi2yesCrOvVXt+lgPTd
 -----END CERTIFICATE-----'
+    end
 
-    key '-----BEGIN PRIVATE KEY-----
+    key do
+      '-----BEGIN PRIVATE KEY-----
 MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBAKS+CfS9GcRSdYSN
 SzyH5QJQBr5umRL6E+KilOV39iYFO/9oHjUdapTRWkrwnNPCp7qaeck4Jr8iv14t
 PVNDfNr76eGb6/3YknOAP0QOjLWunoC8kjU+N/JHU52NrUeX3qEy8EKV9LeCDJcB
@@ -37,10 +40,11 @@ EPjGlXIT+aW2XiPmK3ZlCDcWIenE+lmtbOpI159Wpk8BGXs/s/xBAkEAlAY3ymgx
 63BDJEwvOb2IaP8lDDxNsXx9XJNVvQbv5n15vNsLHbjslHfAhAbxnLQ1fLhUPqSi
 nNp/xedE1YxutQ==
 -----END PRIVATE KEY-----'
+    end
 
     trait :disabled do
-      verified_at nil
-      enabled_until nil
+      verified_at { nil }
+      enabled_until { nil }
     end
 
     trait :scheduled_for_removal do
@@ -52,7 +56,7 @@ nNp/xedE1YxutQ==
     end
 
     trait :unverified do
-      verified_at nil
+      verified_at { nil }
     end
 
     trait :reverify do
@@ -64,17 +68,18 @@ nNp/xedE1YxutQ==
     end
 
     trait :without_certificate do
-      certificate nil
+      certificate { nil }
     end
 
     trait :without_key do
-      key nil
+      key { nil }
     end
 
     trait :with_missing_chain do
       # This certificate is signed with different key
       # And misses the CA to build trust chain
-      certificate '-----BEGIN CERTIFICATE-----
+      certificate do
+        '-----BEGIN CERTIFICATE-----
 MIIDGTCCAgGgAwIBAgIBAjANBgkqhkiG9w0BAQUFADASMRAwDgYDVQQDEwdUZXN0
 IENBMB4XDTE2MDIxMjE0MjMwMFoXDTE3MDIxMTE0MjMwMFowHTEbMBkGA1UEAxMS
 dGVzdC1jZXJ0aWZpY2F0ZS0yMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
@@ -93,13 +98,15 @@ WlU8raZoPIqf6H/8JA97pM/nk/3CqCoHsouSQv+jGY4pSL22RqsO0ylIM0LDBbmF
 m4AEaojTljX1tMJAF9Rbiw/omam5bDPq2JWtosrz/zB69y5FaQjc6FnCk0M4oN/+
 VM+d42lQAgoq318A84Xu5vRh1KCAJuztkhNbM+w=
 -----END CERTIFICATE-----'
+      end
     end
 
     trait :with_trusted_chain do
       # This contains
       # [Intermediate #2 (SHA-2)] 'Comodo RSA Domain Validation Secure Server CA'
       # [Intermediate #1 (SHA-2)] 'COMODO RSA Certification Authority'
-      certificate '-----BEGIN CERTIFICATE-----
+      certificate do
+        '-----BEGIN CERTIFICATE-----
 MIIGCDCCA/CgAwIBAgIQKy5u6tl1NmwUim7bo3yMBzANBgkqhkiG9w0BAQwFADCB
 hTELMAkGA1UEBhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4G
 A1UEBxMHU2FsZm9yZDEaMBgGA1UEChMRQ09NT0RPIENBIExpbWl0ZWQxKzApBgNV
@@ -166,13 +173,15 @@ B5a6SE2Q8pTIqXOi6wZ7I53eovNNVZ96YUWYGGjHXkBrI/V5eu+MtWuLt29G9Hvx
 PUsE2JOAWVrgQSQdso8VYFhH2+9uRv0V9dlfmrPb2LjkQLPNlzmuhbsdjrzch5vR
 pu/xO28QOG8=
 -----END CERTIFICATE-----'
+      end
     end
 
     trait :with_trusted_expired_chain do
       # This contains
       # Let's Encrypt Authority X3
       # DST Root CA X3
-      certificate '-----BEGIN CERTIFICATE-----
+      certificate do
+        '-----BEGIN CERTIFICATE-----
 MIIFSjCCBDKgAwIBAgISAw24xGWrFotvTBa6AZI/pzq1MA0GCSqGSIb3DQEBCwUA
 MEoxCzAJBgNVBAYTAlVTMRYwFAYDVQQKEw1MZXQncyBFbmNyeXB0MSMwIQYDVQQD
 ExpMZXQncyBFbmNyeXB0IEF1dGhvcml0eSBYMzAeFw0xOTAzMDcxNzU5NTZaFw0x
@@ -250,10 +259,12 @@ R8srzJmwN0jP41ZL9c8PDHIyh8bwRLtTcm1D9SZImlJnt1ir/md2cXjbDaJWFBM5
 JDGFoqgCWjBH4d1QB7wCCZAA62RjYJsWvIjJEubSfZGL+T0yjWW06XyxV3bqxbYo
 Ob8VZRzI9neWagqNdwvYkQsEjgfbKbYK7p2CNTUQ
 -----END CERTIFICATE-----'
+      end
     end
 
     trait :with_expired_certificate do
-      certificate '-----BEGIN CERTIFICATE-----
+      certificate do
+        '-----BEGIN CERTIFICATE-----
 MIIBsDCCARmgAwIBAgIBATANBgkqhkiG9w0BAQUFADAeMRwwGgYDVQQDExNleHBp
 cmVkLWNlcnRpZmljYXRlMB4XDTE1MDIxMjE0MzMwMFoXDTE2MDIwMTE0MzMwMFow
 HjEcMBoGA1UEAxMTZXhwaXJlZC1jZXJ0aWZpY2F0ZTCBnzANBgkqhkiG9w0BAQEF
@@ -265,6 +276,7 @@ Hq9LkWn6WP4EHsesHyslgTQZF8C7kVLTbLn2noLnOE+Mp3vcWlZxl3Yk6aZMhKS+
 Iy6oRpHaCF/2obZdIdgf9rlyz0fkqyHJc9GkioSoOhJZxEV2SgAkap8yS0sX2tJ9
 ZDXgrA==
 -----END CERTIFICATE-----'
+      end
     end
 
     trait :letsencrypt do
@@ -273,7 +285,8 @@ ZDXgrA==
     end
 
     trait :explicit_ecdsa do
-      certificate '-----BEGIN CERTIFICATE-----
+      certificate do
+        '-----BEGIN CERTIFICATE-----
 MIID1zCCAzkCCQDatOIwBlktwjAKBggqhkjOPQQDAjBPMQswCQYDVQQGEwJVUzEL
 MAkGA1UECAwCTlkxCzAJBgNVBAcMAk5ZMQswCQYDVQQLDAJJVDEZMBcGA1UEAwwQ
 dGVzdC1jZXJ0aWZpY2F0ZTAeFw0xOTA4MjkxMTE1NDBaFw0yMTA4MjgxMTE1NDBa
@@ -296,8 +309,10 @@ OjSJpIDdFWGVYJHyMDI5WgQyhm4hAioXJ0T22Zab8Wmq+hBYRJNcHoaV894blfqR
 V3ZJgam8EQJCAcnPpJQ0IqoT1pAQkaL3+Ka8ZaaCd6/8RnoDtGvWljisuyH65SRu
 kmYv87bZe1KqOZDoaDBdfVsoxcGbik19lBPV
 -----END CERTIFICATE-----'
+      end
 
-      key '-----BEGIN EC PARAMETERS-----
+      key do
+        '-----BEGIN EC PARAMETERS-----
 MIIBwgIBATBNBgcqhkjOPQEBAkIB////////////////////////////////////
 //////////////////////////////////////////////////8wgZ4EQgH/////
 ////////////////////////////////////////////////////////////////
@@ -326,10 +341,12 @@ ZAkCAQGhgYkDgYYABAFUb/hz+GCXfq2geP54Yvimq/uXsz5kpAni/PRj0TrEjH6C
 +Iu6YSMSWFwExlVeJeFvm3F/XW5cBafmfpCF7Llgo8w2MsuoOpobX158IsJ3bUDR
 Nw==
 -----END EC PRIVATE KEY-----'
+      end
     end
 
     trait :ecdsa do
-      certificate '-----BEGIN CERTIFICATE-----
+      certificate do
+        '-----BEGIN CERTIFICATE-----
 MIIB8zCCAVUCCQCGKuPQ6SBxUTAKBggqhkjOPQQDAjA+MQswCQYDVQQGEwJVUzEL
 MAkGA1UECAwCVVMxCzAJBgNVBAcMAlVTMRUwEwYDVQQDDAxzaHVzaGxpbi5kZXYw
 HhcNMTkwOTAyMDkyMDUxWhcNMjEwOTAxMDkyMDUxWjA+MQswCQYDVQQGEwJVUzEL
@@ -342,8 +359,10 @@ R9WYUg5+PQMg7kS+4K/5+5gonWCvaMcP+2P7hltUcvq41l3uMKKCZRU/x60/FMHc
 1ZXdAkIBuVtm9RJXziNOKS4TcpH9os/FuREW8YQlpec58LDZdlivcHnikHZ4LCri
 T7zu3VY6Rq+V/IKpsQwQjmoTJ0IpCM8=
 -----END CERTIFICATE-----'
+      end
 
-      key '-----BEGIN EC PARAMETERS-----
+      key do
+        '-----BEGIN EC PARAMETERS-----
 BgUrgQQAIw==
 -----END EC PARAMETERS-----
 -----BEGIN EC PRIVATE KEY-----
@@ -353,6 +372,7 @@ dNqyCW1lFsgyt6KHJw6H8bhNemSny1O0Sy4P6yHxq7cnLCyLz1FJnq+BWgJjv/8N
 Da9qZifIFmpsv5xNAGxDvANQRpLI/RHc/hvo7HfjuljNfBJ1I6tr0KbhMxB76mtU
 x6zG6WoibsbsJMj70nwseUnPTBQNDP+j61RJjC/r
 -----END EC PRIVATE KEY-----'
+      end
     end
   end
 end

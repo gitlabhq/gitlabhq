@@ -47,13 +47,18 @@
     margin-right: 10px;
   }
 
-  .new-file-name {
+  .new-file-name,
+  .new-file-path {
     display: inline-block;
-    max-width: 420px;
+    max-width: 250px;
     float: left;
 
     @media(max-width: map-get($grid-breakpoints, lg)-1) {
       width: 180px;
+    }
+
+    @media (max-width: 1360px) {
+      width: auto;
     }
   }
 
@@ -98,13 +103,14 @@
 }
 
 
-@include media-breakpoint-down(sm) {
+@include media-breakpoint-down(md) {
   .file-editor {
     .file-title {
       display: block;
     }
 
-    .new-file-name {
+    .new-file-name,
+    .new-file-path {
       max-width: none;
       width: 100%;
       margin-bottom: 3px;
@@ -146,20 +152,17 @@
   vertical-align: top;
   display: inline-block;
 
-  @media(max-width: map-get($grid-breakpoints, md)-1) {
+  @media(max-width: map-get($grid-breakpoints, lg)-1) {
     display: block;
     margin: 19px 0 12px;
   }
 }
 
 .template-selectors-menu {
-  display: inline-block;
+  display: flex;
   vertical-align: top;
-  margin: 14px 0 0 16px;
-  padding: 0 0 0 14px;
-  border-left: 1px solid $border-color;
 
-  @media(max-width: map-get($grid-breakpoints, md)-1) {
+  @media(max-width: map-get($grid-breakpoints, lg)-1) {
     display: block;
     width: 100%;
     margin: 5px 0;
@@ -168,24 +171,11 @@
   }
 }
 
-.templates-selectors-label {
-  display: inline-block;
-  vertical-align: top;
-  margin-top: 6px;
-  line-height: 21px;
-
-  @media(max-width: map-get($grid-breakpoints, md)-1) {
-    display: block;
-    margin: 5px 0;
-  }
-}
-
 .template-selector-dropdowns-wrap {
   display: inline-block;
-  margin: 5px 0 0 8px;
   vertical-align: top;
 
-  @media(max-width: map-get($grid-breakpoints, md)-1) {
+  @media(max-width: map-get($grid-breakpoints, lg)-1) {
     display: block;
     width: 100%;
     margin: 0 0 16px;
@@ -199,9 +189,8 @@
     display: inline-block;
     vertical-align: top;
     font-family: $regular_font;
-    margin-top: -5px;
 
-    @media(max-width: map-get($grid-breakpoints, md)-1) {
+    @media(max-width: map-get($grid-breakpoints, lg)-1) {
       display: block;
       width: 100%;
       margin: 5px 0;
@@ -212,30 +201,22 @@
     }
 
     .dropdown-menu-toggle {
-      width: 250px;
+      width: 200px;
       vertical-align: top;
 
-      @media(max-width: map-get($grid-breakpoints, md)-1) {
+      @media (max-width: map-get($grid-breakpoints, xl)-1) {
+        width: auto;
+      }
+
+      @media(max-width: map-get($grid-breakpoints, lg)-1) {
         display: block;
         width: 100%;
         margin: 5px 0;
       }
     }
-
   }
 }
 
-.template-selectors-undo-menu {
-  display: inline-block;
-  margin: 7px 0 0 10px;
-
-  @media(max-width: map-get($grid-breakpoints, md)-1) {
-    display: block;
-    width: 100%;
-    margin: 20px 0;
-  }
-
-  button {
-    margin: -4px 0 0 15px;
-  }
+.editor-title-row {
+  margin-bottom: 20px;
 }

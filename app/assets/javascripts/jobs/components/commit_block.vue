@@ -41,7 +41,7 @@ export default {
 
       <clipboard-button
         :text="commit.id"
-        :title="__('Copy commit SHA to clipboard')"
+        :title="__('Copy commit SHA')"
         css-class="btn btn-clipboard btn-transparent"
       />
 

@@ -16,7 +16,7 @@ module QA
           end
 
           view 'app/views/projects/mirrors/_mirror_repos.html.haml' do
-            element :mirroring_repositories_settings
+            element :mirroring_repositories_settings_section
           end
 
           def expand_deploy_keys(&block)
@@ -38,7 +38,7 @@ module QA
           end
 
           def expand_mirroring_repositories(&block)
-            expand_section(:mirroring_repositories_settings) do
+            expand_section(:mirroring_repositories_settings_section) do
               MirroringRepositories.perform(&block)
             end
           end
@@ -47,3 +47,5 @@ module QA
     end
   end
 end
+
+QA::Page::Project::Settings::Repository.prepend_if_ee('QA::EE::Page::Project::Settings::Repository')

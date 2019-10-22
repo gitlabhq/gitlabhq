@@ -132,7 +132,7 @@ when `roles ['geo_secondary_role']` is set. For high availability,
 refer to [Geo High Availability](../../high_availability/README.md).
 If you want to run this database external to Omnibus, please follow the instructions below.
 
-The tracking database requires an [FDW](https://www.postgresql.org/docs/9.6/static/postgres-fdw.html)
+The tracking database requires an [FDW](https://www.postgresql.org/docs/9.6/postgres-fdw.html)
 connection with the **secondary** replica database for improved performance.
 
 If you have an external database ready to be used as the tracking database,
@@ -173,7 +173,7 @@ the tracking database on port 5432.
    gitlab-rake geo:db:migrate
    ```
 
-1. Configure the [PostgreSQL FDW](https://www.postgresql.org/docs/9.6/static/postgres-fdw.html)
+1. Configure the [PostgreSQL FDW](https://www.postgresql.org/docs/9.6/postgres-fdw.html)
    connection and credentials:
 
    Save the script below in a file, ex. `/tmp/geo_fdw.sh` and modify the connection

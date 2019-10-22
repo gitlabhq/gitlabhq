@@ -7,7 +7,7 @@ module Gitlab
         class Mapper
           include Gitlab::Utils::StrongMemoize
 
-          MAX_INCLUDES = 50
+          MAX_INCLUDES = 100
 
           FILE_CLASSES = [
             External::File::Remote,
@@ -21,14 +21,9 @@ module Gitlab
           DuplicateIncludesError = Class.new(Error)
           TooManyIncludesError = Class.new(Error)
 
-          def initialize(values, project:, sha:, user:, expandset:)
-            raise Error, 'Expanded needs to be `Set`' unless expandset.is_a?(Set)
-
+          def initialize(values, context)
             @locations = Array.wrap(values.fetch(:include, []))
-            @project = project
-            @sha = sha
-            @user = user
-            @expandset = expandset
+            @context = context
           end
 
           def process
@@ -43,7 +38,9 @@ module Gitlab
 
           private
 
-          attr_reader :locations, :project, :sha, :user, :expandset
+          attr_reader :locations, :context
+
+          delegate :expandset, to: :context
 
           # convert location if String to canonical form
           def normalize_location(location)
@@ -68,11 +65,11 @@ module Gitlab
             end
 
             # We scope location to context, as this allows us to properly support
-            # relative incldues, and similarly looking relative in another project
+            # relative includes, and similarly looking relative in another project
             # does not trigger duplicate error
             scoped_location = location.merge(
-              context_project: project,
-              context_sha: sha)
+              context_project: context.project,
+              context_sha: context.sha)
 
             unless expandset.add?(scoped_location)
               raise DuplicateIncludesError, "Include `#{location.to_json}` was already included!"
@@ -87,12 +84,6 @@ module Gitlab
             raise AmbigiousSpecificationError, "Include `#{location.to_json}` needs to match exactly one accessor!" unless matching.one?
 
             matching.first
-          end
-
-          def context
-            strong_memoize(:context) do
-              External::File::Base::Context.new(project, sha, user, expandset)
-            end
           end
         end
       end

@@ -100,6 +100,7 @@ export default class MergeRequestStore {
     this.isPipelineBlocked = pipelineStatus ? pipelineStatus.group === 'manual' : false;
     this.ciStatusFaviconPath = pipelineStatus ? pipelineStatus.favicon : null;
     this.testResultsPath = data.test_reports_path;
+    this.exposedArtifactsPath = data.exposed_artifacts_path;
     this.cancelAutoMergePath = data.cancel_auto_merge_path;
     this.canCancelAutomaticMerge = Boolean(data.cancel_auto_merge_path);
 
@@ -168,6 +169,7 @@ export default class MergeRequestStore {
     this.mergeRequestPipelinesHelpPath = data.merge_request_pipelines_docs_path;
     this.conflictsDocsPath = data.conflicts_docs_path;
     this.ciEnvironmentsStatusPath = data.ci_environments_status_path;
+    this.securityApprovalsHelpPagePath = data.security_approvals_help_page_path;
   }
 
   get isNothingToMergeState() {

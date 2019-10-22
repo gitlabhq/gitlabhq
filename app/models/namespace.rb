@@ -120,6 +120,13 @@ class Namespace < ApplicationRecord
       uniquify = Uniquify.new
       uniquify.string(path) { |s| Namespace.find_by_path_or_name(s) }
     end
+
+    def find_by_pages_host(host)
+      gitlab_host = "." + Settings.pages.host.downcase
+      name = host.downcase.delete_suffix(gitlab_host)
+
+      Namespace.find_by_full_path(name)
+    end
   end
 
   def visibility_level_field
@@ -175,7 +182,7 @@ class Namespace < ApplicationRecord
   # any ancestor can disable emails for all descendants
   def emails_disabled?
     strong_memoize(:emails_disabled) do
-      Feature.enabled?(:emails_disabled, self, default_enabled: true) && self_and_ancestors.where(emails_disabled: true).exists?
+      self_and_ancestors.where(emails_disabled: true).exists?
     end
   end
 
@@ -249,7 +256,7 @@ class Namespace < ApplicationRecord
   end
 
   def has_parent?
-    parent.present?
+    parent_id.present? || parent.present?
   end
 
   def root_ancestor
@@ -305,7 +312,27 @@ class Namespace < ApplicationRecord
     aggregation_schedule.present?
   end
 
+  def pages_virtual_domain
+    Pages::VirtualDomain.new(all_projects_with_pages, trim_prefix: full_path)
+  end
+
+  def closest_setting(name)
+    self_and_ancestors(hierarchy_order: :asc)
+      .find { |n| !n.read_attribute(name).nil? }
+      .try(name)
+  end
+
   private
+
+  def all_projects_with_pages
+    if all_projects.pages_metadata_not_migrated.exists?
+      Gitlab::BackgroundMigration::MigratePagesMetadata.new.perform_on_relation(
+        all_projects.pages_metadata_not_migrated
+      )
+    end
+
+    all_projects.with_pages_deployed
+  end
 
   def parent_changed?
     parent_id_changed?

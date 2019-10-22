@@ -7,7 +7,7 @@ We have a lot of graphing libraries in our codebase to render graphs. In an effo
 We chose D3 as our library going forward because of the following features:
 
 - [Tree shaking webpack capabilities](https://github.com/d3/d3/blob/master/CHANGES.md#changes-in-d3-40).
-- [Compatible with vue.js as well as vanilla javascript](https://github.com/d3/d3/blob/master/CHANGES.md#changes-in-d3-40).
+- [Compatible with vue.js as well as vanilla JavaScript](https://github.com/d3/d3/blob/master/CHANGES.md#changes-in-d3-40).
 
 D3 is very popular across many projects outside of GitLab:
 

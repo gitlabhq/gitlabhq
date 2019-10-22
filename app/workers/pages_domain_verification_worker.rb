@@ -3,6 +3,8 @@
 class PagesDomainVerificationWorker
   include ApplicationWorker
 
+  feature_category :pages
+
   # rubocop: disable CodeReuse/ActiveRecord
   def perform(domain_id)
     return if Gitlab::Database.read_only?

@@ -31,6 +31,46 @@ describe LfsObject do
     end
   end
 
+  describe '#project_allowed_access?' do
+    set(:lfs_object) { create(:lfs_objects_project).lfs_object }
+    set(:project) { create(:project) }
+
+    it 'returns true when project is linked' do
+      create(:lfs_objects_project, lfs_object: lfs_object, project: project)
+
+      expect(lfs_object.project_allowed_access?(project)).to eq(true)
+    end
+
+    it 'returns false when project is not linked' do
+      expect(lfs_object.project_allowed_access?(project)).to eq(false)
+    end
+
+    context 'when project is a member of a fork network' do
+      set(:fork_network) { create(:fork_network) }
+      set(:fork_network_root_project) { fork_network.root_project }
+      set(:fork_network_membership) { create(:fork_network_member, project: project, fork_network: fork_network) }
+
+      it 'returns true for all members when forked project is linked' do
+        create(:lfs_objects_project, lfs_object: lfs_object, project: project)
+
+        expect(lfs_object.project_allowed_access?(project)).to eq(true)
+        expect(lfs_object.project_allowed_access?(fork_network_root_project)).to eq(true)
+      end
+
+      it 'returns true for all members when root of network is linked' do
+        create(:lfs_objects_project, lfs_object: lfs_object, project: fork_network_root_project)
+
+        expect(lfs_object.project_allowed_access?(project)).to eq(true)
+        expect(lfs_object.project_allowed_access?(fork_network_root_project)).to eq(true)
+      end
+
+      it 'returns false when no member of fork network is linked' do
+        expect(lfs_object.project_allowed_access?(project)).to eq(false)
+        expect(lfs_object.project_allowed_access?(fork_network_root_project)).to eq(false)
+      end
+    end
+  end
+
   describe '#schedule_background_upload' do
     before do
       stub_lfs_setting(enabled: true)
@@ -114,6 +154,17 @@ describe LfsObject do
           end
         end
       end
+    end
+  end
+
+  describe ".calculate_oid" do
+    let(:lfs_object) { create(:lfs_object, :with_file) }
+
+    it 'returns SHA256 sum of the file' do
+      path = lfs_object.file.path
+      expected = Digest::SHA256.file(path).hexdigest
+
+      expect(described_class.calculate_oid(path)).to eq expected
     end
   end
 end

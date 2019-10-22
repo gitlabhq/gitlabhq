@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe 'Rack Attack global throttles' do
+  include RackAttackSpecHelpers
+
   let(:settings) { Gitlab::CurrentSettings.current_application_settings }
 
   # Start with really high limits and override them with low limits to ensure
@@ -12,7 +14,9 @@ describe 'Rack Attack global throttles' do
       throttle_authenticated_api_requests_per_period: 100,
       throttle_authenticated_api_period_in_seconds: 1,
       throttle_authenticated_web_requests_per_period: 100,
-      throttle_authenticated_web_period_in_seconds: 1
+      throttle_authenticated_web_period_in_seconds: 1,
+      throttle_authenticated_protected_paths_request_per_period: 100,
+      throttle_authenticated_protected_paths_in_seconds: 1
     }
   end
 
@@ -20,21 +24,17 @@ describe 'Rack Attack global throttles' do
   let(:period_in_seconds) { 10000 }
   let(:period) { period_in_seconds.seconds }
 
-  around do |example|
-    # Instead of test environment's :null_store so the throttles can increment
-    Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new
-
-    # Make time-dependent tests deterministic
-    Timecop.freeze { example.run }
-
-    Rack::Attack.cache.store = Rails.cache
-  end
+  include_context 'rack attack cache store'
 
   describe 'unauthenticated requests' do
     let(:url_that_does_not_require_authentication) { '/users/sign_in' }
     let(:url_api_internal) { '/api/v4/internal/check' }
 
     before do
+      # Disabling protected paths throttle, otherwise requests to
+      # '/users/sign_in' are caught by this throttle.
+      settings_to_set[:throttle_protected_paths_enabled] = false
+
       # Set low limits
       settings_to_set[:throttle_unauthenticated_requests_per_period] = requests_per_period
       settings_to_set[:throttle_unauthenticated_period_in_seconds] = period_in_seconds
@@ -203,29 +203,156 @@ describe 'Rack Attack global throttles' do
     it_behaves_like 'rate-limited web authenticated requests'
   end
 
-  def api_get_args_with_token_headers(partial_url, token_headers)
-    ["/api/#{API::API.version}#{partial_url}", params: nil, headers: token_headers]
-  end
+  describe 'protected paths' do
+    context 'unauthenticated requests' do
+      let(:protected_path_that_does_not_require_authentication) do
+        '/users/confirmation'
+      end
 
-  def rss_url(user)
-    "/dashboard/projects.atom?feed_token=#{user.feed_token}"
-  end
+      before do
+        settings_to_set[:throttle_protected_paths_requests_per_period] = requests_per_period # 1
+        settings_to_set[:throttle_protected_paths_period_in_seconds] = period_in_seconds # 10_000
+      end
 
-  def private_token_headers(user)
-    { 'HTTP_PRIVATE_TOKEN' => user.private_token }
-  end
+      context 'when protected paths throttle is disabled' do
+        before do
+          settings_to_set[:throttle_protected_paths_enabled] = false
+          stub_application_setting(settings_to_set)
+        end
 
-  def personal_access_token_headers(personal_access_token)
-    { 'HTTP_PRIVATE_TOKEN' => personal_access_token.token }
-  end
+        it 'allows requests over the rate limit' do
+          (1 + requests_per_period).times do
+            get protected_path_that_does_not_require_authentication
+            expect(response).to have_http_status 200
+          end
+        end
+      end
 
-  def oauth_token_headers(oauth_access_token)
-    { 'AUTHORIZATION' => "Bearer #{oauth_access_token.token}" }
-  end
+      context 'when protected paths throttle is enabled' do
+        before do
+          settings_to_set[:throttle_protected_paths_enabled] = true
+          stub_application_setting(settings_to_set)
+        end
 
-  def expect_rejection(&block)
-    yield
+        it 'rejects requests over the rate limit' do
+          requests_per_period.times do
+            get protected_path_that_does_not_require_authentication
+            expect(response).to have_http_status 200
+          end
 
-    expect(response).to have_http_status(429)
+          expect_rejection { get protected_path_that_does_not_require_authentication }
+        end
+
+        context 'when Omnibus throttle is present' do
+          before do
+            allow(Gitlab::Throttle)
+              .to receive(:omnibus_protected_paths_present?).and_return(true)
+          end
+
+          it 'allows requests over the rate limit' do
+            (1 + requests_per_period).times do
+              get protected_path_that_does_not_require_authentication
+              expect(response).to have_http_status 200
+            end
+          end
+        end
+      end
+    end
+
+    context 'API requests authenticated with personal access token', :api do
+      let(:user) { create(:user) }
+      let(:token) { create(:personal_access_token, user: user) }
+      let(:other_user) { create(:user) }
+      let(:other_user_token) { create(:personal_access_token, user: other_user) }
+      let(:throttle_setting_prefix) { 'throttle_protected_paths' }
+      let(:api_partial_url) { '/users' }
+
+      let(:protected_paths) do
+        [
+          '/api/v4/users'
+        ]
+      end
+
+      before do
+        settings_to_set[:protected_paths] = protected_paths
+        stub_application_setting(settings_to_set)
+      end
+
+      context 'with the token in the query string' do
+        let(:get_args) { [api(api_partial_url, personal_access_token: token)] }
+        let(:other_user_get_args) { [api(api_partial_url, personal_access_token: other_user_token)] }
+
+        it_behaves_like 'rate-limited token-authenticated requests'
+      end
+
+      context 'with the token in the headers' do
+        let(:get_args) { api_get_args_with_token_headers(api_partial_url, personal_access_token_headers(token)) }
+        let(:other_user_get_args) { api_get_args_with_token_headers(api_partial_url, personal_access_token_headers(other_user_token)) }
+
+        it_behaves_like 'rate-limited token-authenticated requests'
+      end
+
+      context 'when Omnibus throttle is present' do
+        let(:get_args) { [api(api_partial_url, personal_access_token: token)] }
+        let(:other_user_get_args) { [api(api_partial_url, personal_access_token: other_user_token)] }
+
+        before do
+          settings_to_set[:"#{throttle_setting_prefix}_requests_per_period"] = requests_per_period
+          settings_to_set[:"#{throttle_setting_prefix}_period_in_seconds"] = period_in_seconds
+          settings_to_set[:"#{throttle_setting_prefix}_enabled"] = true
+          stub_application_setting(settings_to_set)
+
+          allow(Gitlab::Throttle)
+            .to receive(:omnibus_protected_paths_present?).and_return(true)
+        end
+
+        it 'allows requests over the rate limit' do
+          (1 + requests_per_period).times do
+            get(*get_args)
+            expect(response).to have_http_status 200
+          end
+        end
+      end
+    end
+
+    describe 'web requests authenticated with regular login' do
+      let(:throttle_setting_prefix) { 'throttle_protected_paths' }
+      let(:user) { create(:user) }
+      let(:url_that_requires_authentication) { '/dashboard/snippets' }
+
+      let(:protected_paths) do
+        [
+          url_that_requires_authentication
+        ]
+      end
+
+      before do
+        settings_to_set[:protected_paths] = protected_paths
+        stub_application_setting(settings_to_set)
+      end
+
+      it_behaves_like 'rate-limited web authenticated requests'
+
+      context 'when Omnibus throttle is present' do
+        before do
+          settings_to_set[:"#{throttle_setting_prefix}_requests_per_period"] = requests_per_period
+          settings_to_set[:"#{throttle_setting_prefix}_period_in_seconds"] = period_in_seconds
+          settings_to_set[:"#{throttle_setting_prefix}_enabled"] = true
+          stub_application_setting(settings_to_set)
+
+          allow(Gitlab::Throttle)
+            .to receive(:omnibus_protected_paths_present?).and_return(true)
+
+          login_as(user)
+        end
+
+        it 'allows requests over the rate limit' do
+          (1 + requests_per_period).times do
+            get url_that_requires_authentication
+            expect(response).to have_http_status 200
+          end
+        end
+      end
+    end
   end
 end

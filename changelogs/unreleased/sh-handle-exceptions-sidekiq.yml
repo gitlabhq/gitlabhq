@@ -1,0 +1,5 @@
+---
+title: Log Sidekiq exceptions properly in JSON format
+merge_request: 17412
+author:
+type: fixed

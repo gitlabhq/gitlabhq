@@ -36,6 +36,7 @@ const Api = {
   branchSinglePath: '/api/:version/projects/:id/repository/branches/:branch',
   createBranchPath: '/api/:version/projects/:id/repository/branches',
   releasesPath: '/api/:version/projects/:id/releases',
+  releasePath: '/api/:version/projects/:id/releases/:tag_name',
   mergeRequestsPipeline: '/api/:version/projects/:id/merge_requests/:merge_request_iid/pipelines',
   adminStatisticsPath: 'api/:version/application/statistics',
 
@@ -72,6 +73,11 @@ const Api = {
 
         return data;
       });
+  },
+
+  groupLabels(namespace) {
+    const url = Api.buildUrl(Api.groupLabelsPath).replace(':namespace_path', namespace);
+    return axios.get(url).then(({ data }) => data);
   },
 
   // Return namespaces list. Filtered by query
@@ -384,6 +390,22 @@ const Api = {
     const url = Api.buildUrl(this.releasesPath).replace(':id', encodeURIComponent(id));
 
     return axios.get(url);
+  },
+
+  release(projectPath, tagName) {
+    const url = Api.buildUrl(this.releasePath)
+      .replace(':id', encodeURIComponent(projectPath))
+      .replace(':tag_name', encodeURIComponent(tagName));
+
+    return axios.get(url);
+  },
+
+  updateRelease(projectPath, tagName, release) {
+    const url = Api.buildUrl(this.releasePath)
+      .replace(':id', encodeURIComponent(projectPath))
+      .replace(':tag_name', encodeURIComponent(tagName));
+
+    return axios.put(url, release);
   },
 
   adminStatistics() {

@@ -19,7 +19,7 @@ integration testing.
 Following are two great articles that everyone should read to understand what
 automated testing means, and what are its principles:
 
-- [Five Factor Testing](https://www.devmynd.com/blog/five-factor-testing): Why do we need tests?
+- [Five Factor Testing](https://madeintandem.com/blog/five-factor-testing/): Why do we need tests?
 - [Principles of Automated Testing](http://www.lihaoyi.com/post/PrinciplesofAutomatedTesting.html): Levels of testing. Prioritize tests. Cost of tests.
 
 ## [Testing levels](testing_levels.md)
@@ -59,6 +59,10 @@ Everything you should know about how to test Rake tasks.
 
 Everything you should know about how to run end-to-end tests using
 [GitLab QA][gitlab-qa] testing framework.
+
+## [Migrations tests](testing_migrations_guide.md)
+
+Everything you should know about how to test migrations.
 
 [Return to Development documentation](../README.md)
 

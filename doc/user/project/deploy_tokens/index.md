@@ -71,7 +71,7 @@ To read the container registry images, you'll need to:
 1. Log in to GitLab’s Container Registry using the deploy token:
 
 ```sh
-docker login registry.example.com -u <username> -p <deploy_token>
+docker login -u <username> -p <deploy_token> registry.example.com
 ```
 
 Just replace `<username>` and `<deploy_token>` with the proper values. Then you can simply

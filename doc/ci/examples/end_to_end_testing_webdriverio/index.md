@@ -28,7 +28,7 @@ layers of your application, from the frontend to the database.
 In this article, we will discuss how
 to write such end-to-end tests, and how to set up GitLab CI/CD to automatically run these tests
 against your new code, on a branch-by-branch basis. For the scope of this article, we will walk you
-through the process of setting up GitLab CI/CD for end-to-end testing Javascript-based applications
+through the process of setting up GitLab CI/CD for end-to-end testing JavaScript-based applications
 with WebdriverIO, but the general strategy should carry over to other languages.
 We assume you are familiar with GitLab, [GitLab CI/CD](../../README.md), [Review Apps](../../review_apps/index.md), and running your app locally, e.g., on `localhost:8000`.
 
@@ -47,14 +47,14 @@ infrastructure is up and running, and that your units of code work well together
 [Selenium](http://www.seleniumhq.org/) is a piece of software that can control web browsers, e.g., to make them
 visit a specific URL or interact with elements on the page. It can be programmatically controlled
 from a variety of programming languages. In this article we're going to be using the
-[WebdriverIO](http://webdriver.io/) Javascript bindings, but the general concept should carry over
+[WebdriverIO](https://webdriver.io/) JavaScript bindings, but the general concept should carry over
 pretty well to
 [other programming languages supported by Selenium](http://docs.seleniumhq.org/about/platforms.jsp#programming-languages).
 
 ## Writing tests
 
 You can write tests using
-[several testing frameworks supported by WebdriverIO](http://webdriver.io/guide/testrunner/frameworks.html).
+[several testing frameworks supported by WebdriverIO](https://webdriver.io/guide/testrunner/frameworks.html).
 We will be using [Jasmine](https://jasmine.github.io/) here:
 
 ```javascript
@@ -79,14 +79,14 @@ multiple tests, such as making sure you are logged in.
 
 The function `it` defines an individual test.
 
-[The `browser` object](http://webdriver.io/guide/testrunner/browserobject.html) is WebdriverIO's
-special sauce. It provides most of [the WebdriverIO API methods](http://webdriver.io/api.html) that are the key to
+[The `browser` object](https://webdriver.io/guide/testrunner/browserobject.html) is WebdriverIO's
+special sauce. It provides most of [the WebdriverIO API methods](https://webdriver.io/api.html) that are the key to
 steering the browser. In this case, we can use
-[`browser.url`](http://webdriver.io/api/protocol/url.html) to visit `/page-that-does-not-exist` to
-hit our 404 page. We can then use [`browser.getUrl`](http://webdriver.io/api/property/getUrl.html)
+[`browser.url`](https://webdriver.io/api/protocol/url.html) to visit `/page-that-does-not-exist` to
+hit our 404 page. We can then use [`browser.getUrl`](https://webdriver.io/api/property/getUrl.html)
 to verify that the current page is indeed at the location we specified. To interact with the page,
 we can simply pass CSS selectors to
-[`browser.element`](http://webdriver.io/api/protocol/element.html) to get access to elements on the
+[`browser.element`](https://webdriver.io/api/protocol/element.html) to get access to elements on the
 page and to interact with them - for example, to click on the link back to the home page.
 
 The simple test shown above
@@ -107,9 +107,9 @@ you can use [the Webpack Dev Server WebdriverIO plugin](https://www.npmjs.com/pa
 that automatically starts a development server before executing the tests.
 
 The WebdriverIO documentation has
-[an overview of all configuration options](http://webdriver.io/guide/getstarted/configuration.html), but the
+[an overview of all configuration options](https://webdriver.io/guide/getstarted/configuration.html), but the
 easiest way to get started is to start with
-[WebdriverIO's default configuration](http://webdriver.io/guide/testrunner/configurationfile.html), which
+[WebdriverIO's default configuration](https://webdriver.io/guide/testrunner/configurationfile.html), which
 provides an overview of all available options. The two options that are going to be most relevant now are the
 `specs` option, which is an array of paths to your tests, and the `baseUrl` option, which points to where your app is
 running. And finally, we will need to tell WebdriverIO in which browsers we would like to run our
@@ -182,7 +182,7 @@ e2e:chrome:
 
 Now that we have a job to run the end-to-end tests in, we need to tell WebdriverIO how to connect to
 the Selenium servers running alongside it. We've already cheated a bit above by
-passing the value of the [`host`](http://webdriver.io/guide/getstarted/configuration.html#host)
+passing the value of the [`host`](https://webdriver.io/guide/getstarted/configuration.html#host)
 option as an argument to `npm run confidence-check` on the command line.
 However, we still need to tell WebdriverIO which browser is available for it to use.
 
@@ -248,7 +248,7 @@ production project, see:
 - [Flockademic's `.gitlab-ci.yml`](https://gitlab.com/Flockademic/Flockademic/blob/dev/.gitlab-ci.yml)
 - [Flockademic's tests](https://gitlab.com/Flockademic/Flockademic/tree/dev/__e2e__)
 
-There's plenty more that WebdriverIO can do. For example, you can configure a [`screenshotPath`](http://webdriver.io/guide/getstarted/configuration.html#screenshotPath) to tell WebdriverIO to take
+There's plenty more that WebdriverIO can do. For example, you can configure a [`screenshotPath`](https://webdriver.io/guide/getstarted/configuration.html#screenshotPath) to tell WebdriverIO to take
 a screenshot when tests are failing. Then tell GitLab CI/CD to store those
 [artifacts](../../yaml/README.md#artifacts), and you'll be able to see what went
 wrong within GitLab.

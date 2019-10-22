@@ -12,7 +12,9 @@
 - css_class += " no-description" if project.description.blank? && !show_last_commit_as_description
 - cache_key = project_list_cache_key(project, pipeline_status: pipeline_status)
 - updated_tooltip = time_ago_with_tooltip(project.last_activity_date)
-- css_controls_class = compact_mode ? "" : "flex-lg-row justify-content-lg-between"
+- show_pipeline_status_icon = pipeline_status && can?(current_user, :read_cross_project) && project.pipeline_status.has_status? && can?(current_user, :read_build, project)
+- css_controls_class = compact_mode ? [] : ["flex-lg-row", "justify-content-lg-between"]
+- css_controls_class << "with-pipeline-status" if show_pipeline_status_icon
 - avatar_container_class = project.creator && use_creator_avatar ? '' : 'rect-avatar'
 
 %li.project-row.d-flex{ class: css_class }
@@ -58,12 +60,12 @@
           .description.d-none.d-sm-block.append-right-default
             = markdown_field(project, :description)
 
-      .controls.d-flex.flex-sm-column.align-items-center.align-items-sm-end.flex-wrap.flex-shrink-0.text-secondary{ class: css_controls_class }
+      .controls.d-flex.flex-sm-column.align-items-center.align-items-sm-end.flex-wrap.flex-shrink-0.text-secondary{ class: css_controls_class.join(" ") }
         .icon-container.d-flex.align-items-center
-          - if pipeline_status && can?(current_user, :read_cross_project) && project.pipeline_status.has_status? && can?(current_user, :read_build, project)
+          - if show_pipeline_status_icon
             - pipeline_path = pipelines_project_commit_path(project.pipeline_status.project, project.pipeline_status.sha, ref: project.pipeline_status.ref)
             %span.icon-wrapper.pipeline-status
-              = render 'ci/status/icon', status: project.commit.last_pipeline.detailed_status(current_user), tooltip_placement: 'top', path: pipeline_path
+              = render 'ci/status/icon', status: project.last_pipeline.detailed_status(current_user), tooltip_placement: 'top', path: pipeline_path
 
           - if project.archived
             %span.d-flex.icon-wrapper.badge.badge-warning archived

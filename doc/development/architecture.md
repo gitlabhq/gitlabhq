@@ -1,7 +1,3 @@
----
-table_display_block: true
----
-
 # GitLab Architecture Overview
 
 ## Software delivery
@@ -16,7 +12,7 @@ Both EE and CE require some add-on components called GitLab Shell and Gitaly. Th
 
 ## Components
 
-A typical install of GitLab will be on GNU/Linux. It uses Nginx or Apache as a web front end to proxypass the Unicorn web server. By default, communication between Unicorn and the front end is via a Unix domain socket but forwarding requests via TCP is also supported. The web front end accesses `/home/git/gitlab/public` bypassing the Unicorn server to serve static pages, uploads (e.g. avatar images or attachments), and precompiled assets. GitLab serves web pages and a [GitLab API](https://gitlab.com/gitlab-org/gitlab-foss/tree/master/doc/api) using the Unicorn web server. It uses Sidekiq as a job queue which, in turn, uses redis as a non-persistent database backend for job information, meta data, and incoming jobs.
+A typical install of GitLab will be on GNU/Linux. It uses NGINX or Apache as a web front end to proxypass the Unicorn web server. By default, communication between Unicorn and the front end is via a Unix domain socket but forwarding requests via TCP is also supported. The web front end accesses `/home/git/gitlab/public` bypassing the Unicorn server to serve static pages, uploads (e.g. avatar images or attachments), and precompiled assets. GitLab serves web pages and the [GitLab API](../api/README.md) using the Unicorn web server. It uses Sidekiq as a job queue which, in turn, uses Redis as a non-persistent database backend for job information, meta data, and incoming jobs.
 
 We also support deploying GitLab on Kubernetes using our [GitLab Helm chart](https://docs.gitlab.com/charts/).
 
@@ -24,7 +20,7 @@ The GitLab web app uses PostgreSQL for persistent database information (e.g. use
 
 When serving repositories over HTTP/HTTPS GitLab utilizes the GitLab API to resolve authorization and access as well as serving Git objects.
 
-The add-on component GitLab Shell serves repositories over SSH. It manages the SSH keys within `/home/git/.ssh/authorized_keys` which should not be manually edited. GitLab Shell accesses the bare repositories through Gitaly to serve Git objects and communicates with redis to submit jobs to Sidekiq for GitLab to process. GitLab Shell queries the GitLab API to determine authorization and access.
+The add-on component GitLab Shell serves repositories over SSH. It manages the SSH keys within `/home/git/.ssh/authorized_keys` which should not be manually edited. GitLab Shell accesses the bare repositories through Gitaly to serve Git objects and communicates with Redis to submit jobs to Sidekiq for GitLab to process. GitLab Shell queries the GitLab API to determine authorization and access.
 
 Gitaly executes Git operations from GitLab Shell and the GitLab web app, and provides an API to the GitLab web app to get attributes from Git (e.g. title, branches, tags, other meta data), and to get blobs (e.g. diffs, commits, files).
 
@@ -161,7 +157,7 @@ Component statuses are linked to configuration documentation for each component.
 | [Elasticsearch](#elasticsearch) | Improved search within GitLab | [⤓][elasticsearch-omnibus] | [⤓][elasticsearch-charts] | [⤓][elasticsearch-charts] | [❌](https://gitlab.com/groups/gitlab-org/-/epics/153) | [⤓][elasticsearch-source] | [⤓][elasticsearch-gdk] | EE Only |
 | [Sentry integration](#sentry) | Error tracking for deployed apps | [⤓][sentry-integration] | [⤓][sentry-integration] | [⤓][sentry-integration] | [⤓][sentry-integration] | [⤓][sentry-integration] | [⤓][sentry-integration] | CE & EE |
 | [Jaeger integration](#jaeger) | Distributed tracing for deployed apps | [⤓][jaeger-integration] | [⤓][jaeger-integration] | [⤓][jaeger-integration] | [⤓][jaeger-integration] | [⤓][jaeger-integration] | [⤓][jaeger-integration] | EE Only |
-| [GitLab Managed Apps](#gitlab-managed-apps) | Deploy [Helm](https://docs.helm.sh/), [Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/), [Cert-Manager](https://docs.cert-manager.io/en/latest/), [Prometheus](https://prometheus.io/docs/introduction/overview/), a [Runner](https://docs.gitlab.com/runner/), [JupyterHub](http://jupyter.org/), [Knative](https://cloud.google.com/knative) to a cluster | [⤓][managed-k8s-apps] | [⤓][managed-k8s-apps] | [⤓][managed-k8s-apps] | [⤓][managed-k8s-apps] | [⤓][managed-k8s-apps] | [⤓][managed-k8s-apps] | CE & EE |
+| [GitLab Managed Apps](#gitlab-managed-apps) | Deploy [Helm](https://helm.sh/docs/), [Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/), [Cert-Manager](https://docs.cert-manager.io/en/latest/), [Prometheus](https://prometheus.io/docs/introduction/overview/), a [Runner](https://docs.gitlab.com/runner/), [JupyterHub](https://jupyter.org), [Knative](https://cloud.google.com/knative/) to a cluster | [⤓][managed-k8s-apps] | [⤓][managed-k8s-apps] | [⤓][managed-k8s-apps] | [⤓][managed-k8s-apps] | [⤓][managed-k8s-apps] | [⤓][managed-k8s-apps] | CE & EE |
 
 ### Component details
 
@@ -228,7 +224,7 @@ Gitaly is a service designed by GitLab to remove our need for NFS for Git storag
 - Configuration: [Omnibus][geo-omnibus], [Charts][geo-charts], [GDK][geo-gdk]
 - Layer: Core Service (Processor)
 
-#### Gitlab Exporter
+#### GitLab Exporter
 
 - [Project page](https://gitlab.com/gitlab-org/gitlab-exporter)
 - Configuration: [Omnibus][gitlab-exporter-omnibus], [Charts][gitlab-exporter-charts]
@@ -262,7 +258,7 @@ GitLab CI is the open-source continuous integration service included with GitLab
 - Configuration: [Omnibus][shell-omnibus], [Charts][shell-charts], [Source][shell-source], [GDK][gitlab-yml]
 - Layer: Core Service (Processor)
 
-[GitLab Shell](https://gitlab.com/gitlab-org/gitlab-shell) is a program designed at GitLab to handle ssh-based `git` sessions, and modifies the list of authorized keys. GitLab Shell is not a Unix shell nor a replacement for Bash or Zsh.
+[GitLab Shell](https://gitlab.com/gitlab-org/gitlab-shell) is a program designed at GitLab to handle SSH-based `git` sessions, and modifies the list of authorized keys. GitLab Shell is not a Unix shell nor a replacement for Bash or Zsh.
 
 #### GitLab Workhorse
 
@@ -271,7 +267,7 @@ GitLab CI is the open-source continuous integration service included with GitLab
 - Layer: Core Service (Processor)
 - Process: `gitlab-workhorse`
 
-[GitLab Workhorse](https://gitlab.com/gitlab-org/gitlab-workhorse) is a program designed at GitLab to help alleviate pressure from Unicorn. You can read more about the [historical reasons for developing](https://about.gitlab.com/2016/04/12/a-brief-history-of-gitlab-workhorse/). It's designed to act as a smart reverse proxy to help speed up GitLab as a whole.
+[GitLab Workhorse](https://gitlab.com/gitlab-org/gitlab-workhorse) is a program designed at GitLab to help alleviate pressure from Unicorn. You can read more about the [historical reasons for developing](https://about.gitlab.com/blog/2016/04/12/a-brief-history-of-gitlab-workhorse/). It's designed to act as a smart reverse proxy to help speed up GitLab as a whole.
 
 #### Grafana
 
@@ -321,7 +317,7 @@ MinIO is an object storage server released under Apache License v2.0. It is comp
 - Layer: Core Service (Processor)
 - Process: `nginx`
 
-Nginx as an ingress port for all HTTP requests and routes them to the appropriate sub-systems within GitLab. We are bundling an unmodified version of the popular open source webserver.
+NGINX has an Ingress port for all HTTP requests and routes them to the appropriate sub-systems within GitLab. We are bundling an unmodified version of the popular open source webserver.
 
 #### Node Exporter
 
@@ -348,7 +344,7 @@ Lightweight connection pooler for PostgreSQL.
 
 Prometheus exporter for PgBouncer. Exports metrics at 9127/metrics.
 
-#### Postgresql
+#### PostgreSQL
 
 - [Project page](https://github.com/postgres/postgres/blob/master/README)
 - Configuration: [Omnibus][postgres-omnibus], [Charts][postgres-charts], [Source][postgres-source]
@@ -404,7 +400,7 @@ Redis is packaged to provide a place to store:
 - Layer: Core Service (Processor)
 
 The registry is what users use to store their own Docker images. The bundled
-registry uses nginx as a load balancer and GitLab as an authentication manager.
+registry uses NGINX as a load balancer and GitLab as an authentication manager.
 Whenever a client requests to pull or push an image from the registry, it will
 return a `401` response along with a header detailing where to get an
 authentication token, in this case the GitLab instance. The client will then
@@ -428,7 +424,7 @@ Sentry fundamentally is a service that helps you monitor and fix crashes in real
 - Layer: Core Service (Processor)
 - Process: `sidekiq`
 
-Sidekiq is a Ruby background job processor that pulls jobs from the redis queue and processes them. Background jobs allow GitLab to provide a faster request/response cycle by moving work into the background.
+Sidekiq is a Ruby background job processor that pulls jobs from the Redis queue and processes them. Background jobs allow GitLab to provide a faster request/response cycle by moving work into the background.
 
 #### Unicorn
 
@@ -474,9 +470,9 @@ It's important to understand the distinction as some processes are used in both 
 
 When making a request to an HTTP Endpoint (think `/users/sign_in`) the request will take the following path through the GitLab Service:
 
-- nginx - Acts as our first line reverse proxy.
+- NGINX - Acts as our first line reverse proxy.
 - GitLab Workhorse - This determines if it needs to go to the Rails application or somewhere else to reduce load on Unicorn.
-- unicorn - Since this is a web request, and it needs to access the application it will go to Unicorn.
+- Unicorn - Since this is a web request, and it needs to access the application it will go to Unicorn.
 - Postgres/Gitaly/Redis - Depending on the type of request, it may hit these services to store or retrieve data.
 
 ### GitLab Git Request Cycle
@@ -512,7 +508,7 @@ ps aux | grep '^git'
 ```
 
 GitLab has several components to operate. It requires a persistent database
-(PostgreSQL) and redis database, and uses Apache httpd or Nginx to proxypass
+(PostgreSQL) and Redis database, and uses Apache httpd or NGINX to proxypass
 Unicorn. All these components should run as different system users to GitLab
 (e.g., `postgres`, `redis` and `www-data`, instead of `git`).
 
@@ -584,7 +580,7 @@ SSH:
 - `/var/log/auth.log` auth log (on Ubuntu).
 - `/var/log/secure` auth log (on RHEL).
 
-nginx:
+NGINX:
 
 - `/var/log/nginx/` contains error and access logs.
 
@@ -614,7 +610,7 @@ GitLab Shell has a configuration file at `/home/git/gitlab-shell/config.yml`.
 
 ### Maintenance Tasks
 
-[GitLab](https://gitlab.com/gitlab-org/gitlab/tree/master) provides rake tasks with which you see version information and run a quick check on your configuration to ensure it is configured properly within the application. See [maintenance rake tasks](https://gitlab.com/gitlab-org/gitlab-foss/blob/master/doc/raketasks/maintenance.md).
+[GitLab](https://gitlab.com/gitlab-org/gitlab/tree/master) provides rake tasks with which you see version information and run a quick check on your configuration to ensure it is configured properly within the application. See [maintenance rake tasks](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/raketasks/maintenance.md).
 In a nutshell, do the following:
 
 ```
@@ -638,7 +634,7 @@ We've also detailed [our architecture of GitLab.com](https://about.gitlab.com/ha
 [unicorn-omnibus]: https://docs.gitlab.com/omnibus/settings/unicorn.html
 [unicorn-charts]: https://docs.gitlab.com/charts/charts/gitlab/unicorn/
 [unicorn-source]: ../install/installation.md#configure-it
-[gitlab-yml]: https://gitlab.com/gitlab-org/gitlab-foss/blob/master/config/gitlab.yml.example
+[gitlab-yml]: https://gitlab.com/gitlab-org/gitlab/blob/master/config/gitlab.yml.example
 [sidekiq-omnibus]: https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/files/gitlab-config-template/gitlab.rb.template
 [sidekiq-charts]: https://docs.gitlab.com/charts/charts/gitlab/sidekiq/
 [gitaly-omnibus]: ../administration/gitaly/index.md

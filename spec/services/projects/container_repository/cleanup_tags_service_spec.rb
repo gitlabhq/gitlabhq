@@ -157,6 +157,6 @@ describe Projects::ContainerRepository::CleanupTagsService do
   def expect_delete(digest)
     expect_any_instance_of(ContainerRegistry::Client)
       .to receive(:delete_repository_tag)
-      .with(repository.path, digest)
+      .with(repository.path, digest) { true }
   end
 end

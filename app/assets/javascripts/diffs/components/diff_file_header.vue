@@ -209,7 +209,7 @@ export default {
       </a>
 
       <clipboard-button
-        :title="__('Copy file path to clipboard')"
+        :title="__('Copy file path')"
         :text="diffFile.file_path"
         :gfm="gfmCopyText"
         css-class="btn-default btn-transparent btn-clipboard"

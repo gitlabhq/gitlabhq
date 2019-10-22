@@ -4,7 +4,7 @@ comments: false
 
 # Git Stash
 
-We use git stash to store our changes when they are not ready to be committed
+We use `git stash` to store our changes when they are not ready to be committed
 and we need to change to a different branch.
 
 - Stash:

@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 describe Projects::Settings::OperationsController do
-  set(:user) { create(:user) }
-  set(:project) { create(:project) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project) }
 
   before do
     sign_in(user)
@@ -172,6 +172,21 @@ describe Projects::Settings::OperationsController do
         {
           metrics_setting_attributes: {
             external_dashboard_url: 'https://gitlab.com'
+          }
+        }
+      end
+
+      it_behaves_like 'PATCHable'
+    end
+  end
+
+  context 'grafana integration' do
+    describe 'PATCH #update' do
+      let(:params) do
+        {
+          grafana_integration_attributes: {
+            grafana_url: 'https://grafana.gitlab.com',
+            token: 'eyJrIjoicDRlRTREdjhhOEZ5WjZPWXUzazJOSW0zZHJUejVOd3IiLCJuIjoiVGVzdCBLZXkiLCJpZCI6MX0='
           }
         }
       end

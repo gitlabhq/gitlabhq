@@ -47,7 +47,7 @@ describe('Wip', () => {
       it('should make a request to service and handle response', done => {
         const vm = createComponent();
 
-        spyOn(window, 'Flash').and.returnValue(true);
+        const flashSpy = spyOnDependency(WorkInProgress, 'createFlash').and.returnValue(true);
         spyOn(eventHub, '$emit');
         spyOn(vm.service, 'removeWIP').and.returnValue(
           new Promise(resolve => {
@@ -61,10 +61,7 @@ describe('Wip', () => {
         setTimeout(() => {
           expect(vm.isMakingRequest).toBeTruthy();
           expect(eventHub.$emit).toHaveBeenCalledWith('UpdateWidgetData', mrObj);
-          expect(window.Flash).toHaveBeenCalledWith(
-            'The merge request can now be merged.',
-            'notice',
-          );
+          expect(flashSpy).toHaveBeenCalledWith('The merge request can now be merged.', 'notice');
           done();
         }, 333);
       });

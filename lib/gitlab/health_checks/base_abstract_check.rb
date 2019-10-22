@@ -15,10 +15,6 @@ module Gitlab
         raise NotImplementedError
       end
 
-      def liveness
-        HealthChecks::Result.new(true)
-      end
-
       def metrics
         []
       end

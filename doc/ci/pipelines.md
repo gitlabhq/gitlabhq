@@ -204,7 +204,7 @@ the following (you can even use them interchangeably):
 - A colon (`:`).
 
 NOTE: **Note:**
-More specifically, it uses [this](https://gitlab.com/gitlab-org/gitlab-foss/blob/2f3dc314f42dbd79813e6251792853bc231e69dd/app/models/commit_status.rb#L99) regular expression: `\d+[\s:\/\\]+\d+\s*`.
+More specifically, it uses [this](https://gitlab.com/gitlab-org/gitlab/blob/2f3dc314f42dbd79813e6251792853bc231e69dd/app/models/commit_status.rb#L99) regular expression: `\d+[\s:\/\\]+\d+\s*`.
 
 #### How grouping works
 
@@ -283,11 +283,11 @@ You can also access pipelines for a merge request by navigating to its **Pipelin
 
 When you access a pipeline, you can see the related jobs for that pipeline.
 
-Clicking on an individual job will show you its job trace, and allow you to:
+Clicking on an individual job will show you its job log, and allow you to:
 
 - Cancel the job.
 - Retry the job.
-- Erase the job trace.
+- Erase the job log.
 
 ### Seeing the failure reason for jobs
 
@@ -379,6 +379,8 @@ This functionality is only available:
 
 ## Most Recent Pipeline
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/50499) in GitLab 12.3.
+
 There's a link to the latest pipeline for the last commit of a given branch at `/project/pipelines/[branch]/latest`. Also, `/project/pipelines/latest` will redirect you to the latest pipeline for the last commit on the project's default branch.
 
 ## Security on protected branches
@@ -405,3 +407,32 @@ branches, avoiding untrusted code to be executed on the protected runner and
 preserving deployment keys and other credentials from being unintentionally
 accessed. In order to ensure that jobs intended to be executed on protected
 runners will not use regular runners, they must be tagged accordingly.
+
+## Persistent pipeline refs
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/17043) in GitLab 12.4.
+
+Previously, you'd have encountered unexpected pipeline failures when you force-pushed
+a branch to its remote repository. To illustrate the problem, suppose you've had the current workflow:
+
+1. A user creates a feature branch named `example` and pushes it to a remote repository.
+1. A new pipeline starts running on the `example` branch.
+1. A user rebases the `example` branch on the latest `master` branch and force-pushes it to its remote repository.
+1. A new pipeline starts running on the `example` branch again, however,
+   the previous pipeline (2) fails because of `fatal: reference is not a tree:` error.
+
+This is because the previous pipeline cannot find a checkout-SHA (which associated with the pipeline record)
+from the `example` branch that the commit history has already been overwritten by the force-push.
+Similarly, [Pipelines for merged results](merge_request_pipelines/pipelines_for_merged_results/index.md)
+might have failed intermittently due to [the same reason](merge_request_pipelines/pipelines_for_merged_results/index.md#intermittently-pipelines-fail-by-fatal-reference-is-not-a-tree-error).
+
+As of GitLab 12.4, we've improved this behavior by persisting pipeline refs exclusively.
+To illustrate its life cycle:
+
+1. A pipeline is created on a feature branch named `example`.
+1. A persistent pipeline ref is created at `refs/pipelines/<pipeline-id>`,
+   which retains the checkout-SHA of the associated pipeline record.
+   This persistent ref stays intact during the pipeline execution,
+   even if the commit history of the `example` branch has been overwritten by force-push.
+1. GitLab Runner fetches the persistent pipeline ref and gets source code from the checkout-SHA.
+1. When the pipeline finished, its persistent ref is cleaned up in a background process.

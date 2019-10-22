@@ -131,7 +131,7 @@ export default {
 </script>
 
 <template>
-  <div v-if="!file.moved">
+  <div>
     <file-header v-if="file.isHeader" :path="file.path" />
     <div
       v-else

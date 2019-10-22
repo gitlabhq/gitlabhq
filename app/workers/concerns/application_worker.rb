@@ -8,6 +8,7 @@ module ApplicationWorker
   extend ActiveSupport::Concern
 
   include Sidekiq::Worker # rubocop:disable Cop/IncludeSidekiqWorker
+  include WorkerAttributes
 
   included do
     set_queue

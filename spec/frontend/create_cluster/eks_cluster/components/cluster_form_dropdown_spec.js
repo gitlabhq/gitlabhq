@@ -7,11 +7,21 @@ import DropdownHiddenInput from '~/vue_shared/components/dropdown/dropdown_hidde
 
 describe('ClusterFormDropdown', () => {
   let vm;
+  const firstItem = { name: 'item 1', value: 1 };
+  const secondItem = { name: 'item 2', value: 2 };
+  const items = [firstItem, secondItem, { name: 'item 3', value: 3 }];
 
   beforeEach(() => {
     vm = shallowMount(ClusterFormDropdown);
   });
   afterEach(() => vm.destroy());
+
+  describe('when initial value is provided', () => {
+    it('sets selectedItem to initial value', () => {
+      vm.setProps({ items, value: secondItem.value });
+      expect(vm.find(DropdownButton).props('toggleText')).toEqual(secondItem.name);
+    });
+  });
 
   describe('when no item is selected', () => {
     it('displays placeholder text', () => {
@@ -24,18 +34,19 @@ describe('ClusterFormDropdown', () => {
   });
 
   describe('when an item is selected', () => {
-    const selectedItem = { name: 'Name', value: 'value' };
-
     beforeEach(() => {
-      vm.setData({ selectedItem });
+      vm.setProps({ items });
+      vm.findAll('.js-dropdown-item')
+        .at(1)
+        .trigger('click');
     });
 
     it('displays selected item label', () => {
-      expect(vm.find(DropdownButton).props('toggleText')).toEqual(selectedItem.name);
+      expect(vm.find(DropdownButton).props('toggleText')).toEqual(secondItem.name);
     });
 
     it('sets selected value to dropdown hidden input', () => {
-      expect(vm.find(DropdownHiddenInput).props('value')).toEqual(selectedItem.value);
+      expect(vm.find(DropdownHiddenInput).props('value')).toEqual(secondItem.value);
     });
   });
 
@@ -124,9 +135,7 @@ describe('ClusterFormDropdown', () => {
   });
 
   it('it filters results by search query', () => {
-    const secondItem = { name: 'second item' };
-    const items = [{ name: 'first item' }, secondItem];
-    const searchQuery = 'second';
+    const searchQuery = secondItem.name;
 
     vm.setProps({ items });
     vm.setData({ searchQuery });

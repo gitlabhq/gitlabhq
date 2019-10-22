@@ -70,8 +70,8 @@ To embed a snippet, first make sure that:
 - In **Project > Settings > Permissions**, the snippets permissions are
   set to **Everyone with access**
 
-Once the above conditions are met, the "Embed" section will appear in your snippet
-where you can simply click on the "Copy to clipboard" button. This copies a one-line
+Once the above conditions are met, the "Embed" section will appear in your
+snippet where you can simply click on the "Copy" button. This copies a one-line
 script that you can add to any website or blog post.
 
 Here's how an example code looks like:

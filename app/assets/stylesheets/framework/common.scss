@@ -55,6 +55,10 @@
   background-color: $gray-light;
 }
 
+.bg-line-target-blue {
+  background: $line-target-blue;
+}
+
 .text-break-word {
   word-break: break-all;
 }
@@ -210,18 +214,26 @@ li.note {
 @mixin message($background-color, $border-color, $text-color) {
   border-left: 4px solid $border-color;
   color: $text-color;
-  padding: 10px;
-  margin-bottom: 10px;
-  background: $background-color;
-  padding-left: 20px;
+  padding: $gl-padding $gl-padding-24;
+  margin-bottom: $gl-padding-12;
+  background-color: $background-color;
 
   &.centered {
     text-align: center;
   }
+
+  .close {
+    svg {
+      width: $gl-font-size-large;
+      height: $gl-font-size-large;
+    }
+
+    color: inherit;
+  }
 }
 
 .warning_message {
-  @include message($orange-100, $orange-200, $orange-700);
+  @include message($orange-100, $orange-200, $orange-800);
 }
 
 .danger_message {
@@ -387,6 +399,7 @@ img.emoji {
 .prepend-top-16 { margin-top: 16px; }
 .prepend-top-20 { margin-top: 20px; }
 .prepend-top-32 { margin-top: 32px; }
+.prepend-left-2 { margin-left: 2px; }
 .prepend-left-4 { margin-left: 4px; }
 .prepend-left-5 { margin-left: 5px; }
 .prepend-left-8 { margin-left: 8px; }
@@ -427,6 +440,7 @@ img.emoji {
 .flex-no-shrink { flex-shrink: 0; }
 .ws-initial { white-space: initial; }
 .ws-normal { white-space: normal; }
+.ws-pre-wrap { white-space: pre-wrap; }
 .overflow-auto { overflow: auto; }
 
 .d-flex-center {
@@ -439,6 +453,8 @@ img.emoji {
 .w-0 { width: 0; }
 .w-8em { width: 8em; }
 .w-3rem { width: 3rem; }
+.w-15p { width: 15%; }
+.w-70p { width: 70%; }
 
 .h-12em { height: 12em; }
 .h-32-px { height: 32px;}
@@ -544,3 +560,6 @@ img.emoji {
     }
   }
 }
+
+.gl-font-size-small { font-size: $gl-font-size-small; }
+.gl-line-height-24 { line-height: $gl-line-height-24; }

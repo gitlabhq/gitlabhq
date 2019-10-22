@@ -3,6 +3,8 @@ import DropdownSearchInput from '~/vue_shared/components/dropdown/dropdown_searc
 import DropdownHiddenInput from '~/vue_shared/components/dropdown/dropdown_hidden_input.vue';
 import DropdownButton from '~/vue_shared/components/dropdown/dropdown_button.vue';
 
+const findItem = (items, valueProp, value) => items.find(item => item[valueProp] === value);
+
 export default {
   components: {
     DropdownButton,
@@ -26,7 +28,7 @@ export default {
       default: '',
     },
     value: {
-      type: Object,
+      type: [Object, String],
       required: false,
       default: () => null,
     },
@@ -93,8 +95,8 @@ export default {
   },
   data() {
     return {
+      selectedItem: findItem(this.items, this.value),
       searchQuery: '',
-      selectedItem: null,
     };
   },
   computed: {
@@ -127,10 +129,15 @@ export default {
       return (this.selectedItem && this.selectedItem[this.valueProperty]) || '';
     },
   },
+  watch: {
+    value(value) {
+      this.selectedItem = findItem(this.items, this.valueProperty, value);
+    },
+  },
   methods: {
     select(item) {
       this.selectedItem = item;
-      this.$emit('input', item);
+      this.$emit('input', item[this.valueProperty]);
     },
   },
 };

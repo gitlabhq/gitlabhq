@@ -139,6 +139,38 @@ shared_examples 'a GitHub-ish import controller: GET status' do
     expect { get :status, format: :json }
       .not_to exceed_all_query_limit(control_count)
   end
+
+  context 'when filtering' do
+    let(:repo_2) { OpenStruct.new(login: 'emacs', full_name: 'asd/emacs', name: 'emacs', owner: { login: 'owner' }) }
+    let(:project) { create(:project, import_type: provider, namespace: user.namespace, import_status: :finished, import_source: 'example/repo') }
+    let(:group) { create(:group) }
+
+    before do
+      group.add_owner(user)
+      stub_client(repos: [repo, repo_2, org_repo], orgs: [org], org_repos: [org_repo])
+    end
+
+    it 'filters list of repositories by name' do
+      get :status, params: { filter: 'emacs' }, format: :json
+
+      expect(response).to have_gitlab_http_status(200)
+      expect(json_response.dig("imported_projects").count).to eq(0)
+      expect(json_response.dig("provider_repos").count).to eq(1)
+      expect(json_response.dig("provider_repos", 0, "id")).to eq(repo_2.id)
+      expect(json_response.dig("namespaces", 0, "id")).to eq(group.id)
+    end
+
+    context 'when user input contains html' do
+      let(:expected_filter) { 'test' }
+      let(:filter) { "<html>#{expected_filter}</html>" }
+
+      it 'sanitizes user input' do
+        get :status, params: { filter: filter }, format: :json
+
+        expect(assigns(:filter)).to eq(expected_filter)
+      end
+    end
+  end
 end
 
 shared_examples 'a GitHub-ish import controller: POST create' do

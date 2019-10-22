@@ -4,6 +4,8 @@ class NewIssueWorker
   include ApplicationWorker
   include NewIssuable
 
+  feature_category :issue_tracking
+
   def perform(issue_id, user_id)
     return unless objects_found?(issue_id, user_id)
 

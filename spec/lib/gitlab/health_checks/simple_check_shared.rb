@@ -1,6 +1,7 @@
 shared_context 'simple_check' do |metrics_prefix, check_name, success_result|
   describe '#metrics' do
     subject { described_class.metrics }
+
     context 'Check is passing' do
       before do
         allow(described_class).to receive(:check).and_return success_result
@@ -34,6 +35,7 @@ shared_context 'simple_check' do |metrics_prefix, check_name, success_result|
 
   describe '#readiness' do
     subject { described_class.readiness }
+
     context 'Check returns ok' do
       before do
         allow(described_class).to receive(:check).and_return success_result
@@ -57,10 +59,13 @@ shared_context 'simple_check' do |metrics_prefix, check_name, success_result|
 
       it { is_expected.to have_attributes(success: false, message: "#{described_class.human_name} check timed out") }
     end
-  end
 
-  describe '#liveness' do
-    subject { described_class.readiness }
-    it { is_expected.to eq(Gitlab::HealthChecks::Result.new(true)) }
+    context 'Check is raising an unhandled exception' do
+      before do
+        allow(described_class).to receive(:check ).and_raise "unexpected error"
+      end
+
+      it { is_expected.to have_attributes(success: false, message: "unexpected #{described_class.human_name} check result: unexpected error") }
+    end
   end
 end

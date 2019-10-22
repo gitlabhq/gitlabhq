@@ -26,7 +26,7 @@ Epics in the view can be sorted by:
 Each option contains a button that toggles the sort order between **ascending** and **descending**. The sort option and order will be persisted when browsing Epics,
 including the [epics list view](../epics/index.md).
 
-Roadmaps can also be [visualized inside an epic](../epics/index.md#roadmap-in-epics).
+Roadmaps can also be [visualized inside an epic](../epics/index.md#roadmap).
 
 ## Timeline duration
 

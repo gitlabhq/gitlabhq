@@ -32,3 +32,41 @@ shared_examples 'base stage' do
     expect(stage.events).not_to be_nil
   end
 end
+
+shared_examples 'calculate #median with date range' do
+  context 'when valid date range is given' do
+    before do
+      stage_options[:from] = 5.days.ago
+      stage_options[:to] = 5.days.from_now
+    end
+
+    it { expect(stage.project_median).to eq(ISSUES_MEDIAN) }
+  end
+
+  context 'when records are out of the date range' do
+    before do
+      stage_options[:from] = 2.years.ago
+      stage_options[:to] = 1.year.ago
+    end
+
+    it { expect(stage.project_median).to eq(nil) }
+  end
+end
+
+shared_examples 'Gitlab::Analytics::CycleAnalytics::DataCollector backend examples' do
+  let(:stage_params) { Gitlab::Analytics::CycleAnalytics::DefaultStages.send("params_for_#{stage_name}_stage").merge(project: project) }
+  let(:stage) { Analytics::CycleAnalytics::ProjectStage.new(stage_params) }
+  let(:data_collector) { Gitlab::Analytics::CycleAnalytics::DataCollector.new(stage: stage, params: { from: stage_options[:from], current_user: project.creator }) }
+  let(:attribute_to_verify) { :title }
+
+  context 'provides the same results as the old implementation' do
+    it 'for the median' do
+      expect(data_collector.median.seconds).to eq(ISSUES_MEDIAN)
+    end
+
+    it 'for the list of event records' do
+      records = data_collector.records_fetcher.serialized_records
+      expect(records.map { |event| event[attribute_to_verify] }).to eq(expected_ordered_attribute_values)
+    end
+  end
+end

@@ -131,6 +131,18 @@ module Gitlab
         end
       end
 
+      def rename(new_relative_path)
+        wrapped_gitaly_errors do
+          gitaly_repository_client.rename(new_relative_path)
+        end
+      end
+
+      def remove
+        wrapped_gitaly_errors do
+          gitaly_repository_client.remove
+        end
+      end
+
       def expire_has_local_branches_cache
         clear_memoization(:has_local_branches)
       end

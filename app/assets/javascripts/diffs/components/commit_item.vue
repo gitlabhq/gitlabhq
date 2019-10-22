@@ -121,7 +121,7 @@ export default {
           <div class="label label-monospace monospace" v-text="commit.short_id"></div>
           <clipboard-button
             :text="commit.id"
-            :title="__('Copy commit SHA to clipboard')"
+            :title="__('Copy commit SHA')"
             class="btn btn-default"
           />
         </div>

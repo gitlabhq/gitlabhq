@@ -58,6 +58,22 @@ class Admin::UsersController < Admin::ApplicationController
     end
   end
 
+  def activate
+    return redirect_back_or_admin_user(notice: _("Error occurred. A blocked user must be unblocked to be activated")) if user.blocked?
+
+    user.activate
+    redirect_back_or_admin_user(notice: _("Successfully activated"))
+  end
+
+  def deactivate
+    return redirect_back_or_admin_user(notice: _("Error occurred. A blocked user cannot be deactivated")) if user.blocked?
+    return redirect_back_or_admin_user(notice: _("Successfully deactivated")) if user.deactivated?
+    return redirect_back_or_admin_user(notice: _("The user you are trying to deactivate has been active in the past %{minimum_inactive_days} days and cannot be deactivated") % { minimum_inactive_days: ::User::MINIMUM_INACTIVE_DAYS }) unless user.can_be_deactivated?
+
+    user.deactivate
+    redirect_back_or_admin_user(notice: _("Successfully deactivated"))
+  end
+
   def block
     if update_user { |user| user.block }
       redirect_back_or_admin_user(notice: _("Successfully blocked"))

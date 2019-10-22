@@ -5,7 +5,7 @@ require_relative '../support/helpers/repo_helpers'
 FactoryBot.define do
   factory :commit do
     transient do
-      author nil
+      author { nil }
     end
 
     git_commit do

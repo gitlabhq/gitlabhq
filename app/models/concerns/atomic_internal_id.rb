@@ -27,40 +27,73 @@ module AtomicInternalId
   extend ActiveSupport::Concern
 
   class_methods do
-    def has_internal_id(column, scope:, init:, presence: true) # rubocop:disable Naming/PredicateName
+    def has_internal_id(column, scope:, init:, ensure_if: nil, presence: true) # rubocop:disable Naming/PredicateName
       # We require init here to retain the ability to recalculate in the absence of a
       # InternaLId record (we may delete records in `internal_ids` for example).
       raise "has_internal_id requires a init block, none given." unless init
+      raise "has_internal_id needs to be defined on association." unless self.reflect_on_association(scope)
 
-      before_validation :"ensure_#{scope}_#{column}!", on: :create
+      before_validation :"track_#{scope}_#{column}!", on: :create
+      before_validation :"ensure_#{scope}_#{column}!", on: :create, if: ensure_if
       validates column, presence: presence
 
       define_method("ensure_#{scope}_#{column}!") do
-        scope_value = association(scope).reader
+        scope_value = internal_id_read_scope(scope)
         value = read_attribute(column)
-
         return value unless scope_value
 
-        scope_attrs = { scope_value.class.table_name.singularize.to_sym => scope_value }
-        usage = self.class.table_name.to_sym
-
-        if value.present?
-          InternalId.track_greatest(self, scope_attrs, usage, value, init)
-        else
-          value = InternalId.generate_next(self, scope_attrs, usage, init)
+        if value.nil?
+          # We don't have a value yet and use a InternalId record to generate
+          # the next value.
+          value = InternalId.generate_next(
+            self,
+            internal_id_scope_attrs(scope),
+            internal_id_scope_usage,
+            init)
           write_attribute(column, value)
         end
 
         value
       end
 
+      define_method("track_#{scope}_#{column}!") do
+        return unless @internal_id_needs_tracking
+
+        scope_value = internal_id_read_scope(scope)
+        return unless scope_value
+
+        value = read_attribute(column)
+
+        if value.present?
+          # The value was set externally, e.g. by the user
+          # We update the InternalId record to keep track of the greatest value.
+          InternalId.track_greatest(
+            self,
+            internal_id_scope_attrs(scope),
+            internal_id_scope_usage,
+            value,
+            init)
+
+          @internal_id_needs_tracking = false
+        end
+      end
+
+      define_method("#{column}=") do |value|
+        super(value).tap do |v|
+          # Indicate the iid was set from externally
+          @internal_id_needs_tracking = true
+        end
+      end
+
       define_method("reset_#{scope}_#{column}") do
         if value = read_attribute(column)
-          scope_value = association(scope).reader
-          scope_attrs = { scope_value.class.table_name.singularize.to_sym => scope_value }
-          usage = self.class.table_name.to_sym
+          did_reset = InternalId.reset(
+            self,
+            internal_id_scope_attrs(scope),
+            internal_id_scope_usage,
+            value)
 
-          if InternalId.reset(self, scope_attrs, usage, value)
+          if did_reset
             write_attribute(column, nil)
           end
         end
@@ -68,5 +101,19 @@ module AtomicInternalId
         read_attribute(column)
       end
     end
+  end
+
+  def internal_id_scope_attrs(scope)
+    scope_value = internal_id_read_scope(scope)
+
+    { scope_value.class.table_name.singularize.to_sym => scope_value } if scope_value
+  end
+
+  def internal_id_scope_usage
+    self.class.table_name.to_sym
+  end
+
+  def internal_id_read_scope(scope)
+    association(scope).reader
   end
 end

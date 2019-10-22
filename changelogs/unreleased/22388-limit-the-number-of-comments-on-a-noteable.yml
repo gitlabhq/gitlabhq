@@ -1,0 +1,5 @@
+---
+title: Limit the number of comments on an issue, MR, or commit
+merge_request: 18111
+author:
+type: added

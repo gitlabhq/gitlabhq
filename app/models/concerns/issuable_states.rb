@@ -4,22 +4,20 @@ module IssuableStates
   extend ActiveSupport::Concern
 
   # The state:string column is being migrated to state_id:integer column
-  # This is a temporary hook to populate state_id column with new values
-  # and should be removed after the state column is removed.
-  # Check https://gitlab.com/gitlab-org/gitlab-foss/issues/51789 for more information
+  # This is a temporary hook to keep state column in sync until it is removed.
+  # Check https: https://gitlab.com/gitlab-org/gitlab/issues/33814 for more information
+  # The state column can be safely removed after 2019-10-27
   included do
-    before_save :set_state_id
+    before_save :sync_issuable_deprecated_state
   end
 
-  def set_state_id
-    return if state.nil? || state.empty?
+  def sync_issuable_deprecated_state
+    return if self.is_a?(Epic)
+    return unless respond_to?(:state)
+    return if state_id.nil?
 
-    # Needed to prevent breaking some migration specs that
-    # rollback database to a point where state_id does not exist.
-    # We can use this guard clause for now since this file will
-    # be removed in the next release.
-    return unless self.has_attribute?(:state_id)
+    deprecated_state = self.class.available_states.key(state_id)
 
-    self.state_id = self.class.available_states[state]
+    self.write_attribute(:state, deprecated_state)
   end
 end

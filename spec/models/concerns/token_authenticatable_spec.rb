@@ -17,6 +17,7 @@ describe User, 'TokenAuthenticatable' do
 
   describe 'ensures authentication token' do
     subject { create(:user).send(token_field) }
+
     it { is_expected.to be_a String }
   end
 end

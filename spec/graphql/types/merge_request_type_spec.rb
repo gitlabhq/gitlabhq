@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe GitlabSchema.types['MergeRequest'] do
@@ -18,7 +20,9 @@ describe GitlabSchema.types['MergeRequest'] do
       merge_error allow_collaboration should_be_rebased rebase_commit_sha
       rebase_in_progress merge_commit_message default_merge_commit_message
       merge_ongoing source_branch_exists mergeable_discussions_state web_url
-      upvotes downvotes subscribed head_pipeline pipelines task_completion_status
+      upvotes downvotes head_pipeline pipelines task_completion_status
+      milestone assignees participants subscribed labels discussion_locked time_estimate
+      total_time_spent reference
     ]
 
     is_expected.to have_graphql_fields(*expected_fields)

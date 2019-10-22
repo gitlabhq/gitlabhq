@@ -6,6 +6,10 @@ export default {
     Object.assign(state, data);
   },
 
+  [types.SET_FILTER](state, filter) {
+    state.filter = filter;
+  },
+
   [types.REQUEST_REPOS](state) {
     state.isLoadingRepos = true;
   },

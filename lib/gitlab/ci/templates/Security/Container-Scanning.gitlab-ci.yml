@@ -1,9 +1,12 @@
 # Read more about this feature here: https://docs.gitlab.com/ee/user/application_security/container_scanning/
 
+variables:
+  CS_MAJOR_VERSION: 1
+
 container_scanning:
   stage: test
   image:
-    name: registry.gitlab.com/gitlab-org/security-products/analyzers/klar:$CI_SERVER_VERSION_MAJOR-$CI_SERVER_VERSION_MINOR-stable
+    name: registry.gitlab.com/gitlab-org/security-products/analyzers/klar:$CS_MAJOR_VERSION
     entrypoint: []
   variables:
     # By default, use the latest clair vulnerabilities database, however, allow it to be overridden here

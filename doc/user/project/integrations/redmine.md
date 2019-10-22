@@ -14,7 +14,7 @@
 
    Once you have configured and enabled Redmine you'll see the Redmine link on the GitLab project pages that takes you to the appropriate Redmine project.
 
-   As an example, below is a configuration for a project named gitlab-ci.
+   As an example, below is a configuration for a project named `gitlab-ci`.
 
    ![Redmine configuration](img/redmine_configuration.png)
 

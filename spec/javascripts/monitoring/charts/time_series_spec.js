@@ -60,6 +60,18 @@ describe('Time series component', () => {
       expect(timeSeriesChart.find('.js-graph-widgets').text()).toBe(mockWidgets);
     });
 
+    it('allows user to override max value label text using prop', () => {
+      timeSeriesChart.setProps({ legendMaxText: 'legendMaxText' });
+
+      expect(timeSeriesChart.props().legendMaxText).toBe('legendMaxText');
+    });
+
+    it('allows user to override average value label text using prop', () => {
+      timeSeriesChart.setProps({ legendAverageText: 'averageText' });
+
+      expect(timeSeriesChart.props().legendAverageText).toBe('averageText');
+    });
+
     describe('methods', () => {
       describe('formatTooltipText', () => {
         const mockDate = deploymentData[0].created_at;
@@ -138,6 +150,16 @@ describe('Time series component', () => {
         it('sets svg path content', () => {
           timeSeriesChart.vm.$nextTick(() => {
             expect(timeSeriesChart.vm.svgs[mockSvgName]).toBe(`path://${mockSvgPathContent}`);
+          });
+        });
+
+        it('contains an svg object within an array to properly render icon', () => {
+          timeSeriesChart.vm.$nextTick(() => {
+            expect(timeSeriesChart.vm.chartOptions.dataZoom).toEqual([
+              {
+                handleIcon: `path://${mockSvgPathContent}`,
+              },
+            ]);
           });
         });
       });

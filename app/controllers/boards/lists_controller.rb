@@ -9,13 +9,15 @@ module Boards
     skip_before_action :authenticate_user!, only: [:index]
 
     def index
-      lists = Boards::Lists::ListService.new(board.parent, current_user).execute(board)
+      lists = Boards::Lists::ListService.new(board.resource_parent, current_user).execute(board)
+
+      List.preload_preferences_for_user(lists, current_user)
 
       render json: serialize_as_json(lists)
     end
 
     def create
-      list = Boards::Lists::CreateService.new(board.parent, current_user, create_list_params).execute(board)
+      list = Boards::Lists::CreateService.new(board.resource_parent, current_user, create_list_params).execute(board)
 
       if list.valid?
         render json: serialize_as_json(list)
@@ -51,7 +53,10 @@ module Boards
       service = Boards::Lists::GenerateService.new(board_parent, current_user)
 
       if service.execute(board)
-        lists = board.lists.movable.preload_associations(current_user)
+        lists = board.lists.movable.preload_associations
+
+        List.preload_preferences_for_user(lists, current_user)
+
         render json: serialize_as_json(lists)
       else
         head :unprocessable_entity
@@ -64,12 +69,16 @@ module Boards
       %i[label_id]
     end
 
+    def list_update_attrs
+      %i[collapsed position]
+    end
+
     def create_list_params
       params.require(:list).permit(list_creation_attrs)
     end
 
     def update_list_params
-      params.require(:list).permit(:collapsed, :position)
+      params.require(:list).permit(list_update_attrs)
     end
 
     def serialize_as_json(resource)

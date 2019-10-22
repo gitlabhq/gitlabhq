@@ -48,4 +48,4 @@ changes will be added to the repository and branch you're merging into.
 
 ![New merge request](forking/merge_request.png)
 
-[gitlab flow]: https://about.gitlab.com/2014/09/29/gitlab-flow/ "GitLab Flow blog post"
+[gitlab flow]: https://about.gitlab.com/blog/2014/09/29/gitlab-flow/ "GitLab Flow blog post"

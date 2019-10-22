@@ -1,8 +1,20 @@
-- page_title "Projects"
+- page_title _('Projects')
 - params[:visibility_level] ||= []
 
 .top-area.scrolling-tabs-container.inner-page-scroll-tabs
-  .prepend-top-default
+  %ul.nav-links.nav.nav-tabs
+    - opts = params[:visibility_level].present? ? {} : { page: admin_projects_path }
+    = nav_link(opts) do
+      = link_to _('All'), admin_projects_path
+
+    = nav_link(html_options: { class: active_when(params[:visibility_level] == Gitlab::VisibilityLevel::PRIVATE.to_s) }) do
+      = link_to _('Private'), admin_projects_path(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+    = nav_link(html_options: { class: active_when(params[:visibility_level] == Gitlab::VisibilityLevel::INTERNAL.to_s) }) do
+      = link_to _('Internal'), admin_projects_path(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
+    = nav_link(html_options: { class: active_when(params[:visibility_level] == Gitlab::VisibilityLevel::PUBLIC.to_s) }) do
+      = link_to _('Public'), admin_projects_path(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+
+  .nav-controls
     .search-holder
       = render 'shared/projects/search_form', autofocus: true, admin_view: true
       .dropdown
@@ -21,21 +33,5 @@
       = link_to new_project_path, class: 'btn btn-success' do
         New Project
       = button_tag "Search", class: "btn btn-primary btn-search hide"
-
-  %ul.nav-links.nav.nav-tabs
-    - opts = params[:visibility_level].present? ? {} : { page: admin_projects_path }
-    = nav_link(opts) do
-      = link_to admin_projects_path do
-        All
-
-    = nav_link(html_options: { class: active_when(params[:visibility_level] == Gitlab::VisibilityLevel::PRIVATE.to_s) }) do
-      = link_to admin_projects_path(visibility_level: Gitlab::VisibilityLevel::PRIVATE) do
-        Private
-    = nav_link(html_options: { class: active_when(params[:visibility_level] == Gitlab::VisibilityLevel::INTERNAL.to_s) }) do
-      = link_to admin_projects_path(visibility_level: Gitlab::VisibilityLevel::INTERNAL) do
-        Internal
-    = nav_link(html_options: { class: active_when(params[:visibility_level] == Gitlab::VisibilityLevel::PUBLIC.to_s) }) do
-      = link_to admin_projects_path(visibility_level: Gitlab::VisibilityLevel::PUBLIC) do
-        Public
 
 = render 'projects'

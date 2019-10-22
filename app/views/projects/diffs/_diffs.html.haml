@@ -21,7 +21,7 @@
         = parallel_diff_btn
     = render 'projects/diffs/stats', diff_files: diff_files
 
-- if render_overflow_warning?(diff_files)
+- if render_overflow_warning?(diffs)
   = render 'projects/diffs/warning', diff_files: diffs
 
 .files{ data: { can_create_note: can_create_note } }

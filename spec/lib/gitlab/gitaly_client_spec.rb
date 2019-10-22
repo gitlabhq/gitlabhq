@@ -182,24 +182,24 @@ describe Gitlab::GitalyClient do
       end
 
       it 'sets the gitaly-session-id in the metadata' do
-        results = described_class.request_kwargs('default', nil)
+        results = described_class.request_kwargs('default', timeout: 1)
         expect(results[:metadata]).to include('gitaly-session-id')
       end
 
       context 'when RequestStore is not enabled' do
         it 'sets a different gitaly-session-id per request' do
-          gitaly_session_id = described_class.request_kwargs('default', nil)[:metadata]['gitaly-session-id']
+          gitaly_session_id = described_class.request_kwargs('default', timeout: 1)[:metadata]['gitaly-session-id']
 
-          expect(described_class.request_kwargs('default', nil)[:metadata]['gitaly-session-id']).not_to eq(gitaly_session_id)
+          expect(described_class.request_kwargs('default', timeout: 1)[:metadata]['gitaly-session-id']).not_to eq(gitaly_session_id)
         end
       end
 
       context 'when RequestStore is enabled', :request_store do
         it 'sets the same gitaly-session-id on every outgoing request metadata' do
-          gitaly_session_id = described_class.request_kwargs('default', nil)[:metadata]['gitaly-session-id']
+          gitaly_session_id = described_class.request_kwargs('default', timeout: 1)[:metadata]['gitaly-session-id']
 
           3.times do
-            expect(described_class.request_kwargs('default', nil)[:metadata]['gitaly-session-id']).to eq(gitaly_session_id)
+            expect(described_class.request_kwargs('default', timeout: 1)[:metadata]['gitaly-session-id']).to eq(gitaly_session_id)
           end
         end
       end

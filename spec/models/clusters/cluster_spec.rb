@@ -11,11 +11,13 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
   subject { build(:cluster) }
 
   it { is_expected.to belong_to(:user) }
+  it { is_expected.to belong_to(:management_project).class_name('::Project') }
   it { is_expected.to have_many(:cluster_projects) }
   it { is_expected.to have_many(:projects) }
   it { is_expected.to have_many(:cluster_groups) }
   it { is_expected.to have_many(:groups) }
   it { is_expected.to have_one(:provider_gcp) }
+  it { is_expected.to have_one(:provider_aws) }
   it { is_expected.to have_one(:platform_kubernetes) }
   it { is_expected.to have_one(:application_helm) }
   it { is_expected.to have_one(:application_ingress) }
@@ -37,6 +39,15 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
   it { is_expected.to delegate_method(:external_hostname).to(:application_ingress).with_prefix }
 
   it { is_expected.to respond_to :project }
+
+  describe 'applications have inverse_of: :cluster option' do
+    let(:cluster) { create(:cluster) }
+    let!(:helm) { create(:clusters_applications_helm, cluster: cluster) }
+
+    it 'does not do a third query when referencing cluster again' do
+      expect { cluster.application_helm.cluster }.not_to exceed_query_limit(2)
+    end
+  end
 
   describe '.enabled' do
     subject { described_class.enabled }
@@ -93,6 +104,31 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
 
     before do
       create(:cluster, :providing_by_gcp)
+    end
+
+    it { is_expected.to contain_exactly(cluster) }
+  end
+
+  describe '.aws_provided' do
+    subject { described_class.aws_provided }
+
+    let!(:cluster) { create(:cluster, :provided_by_aws) }
+
+    before do
+      create(:cluster, :provided_by_user)
+    end
+
+    it { is_expected.to contain_exactly(cluster) }
+  end
+
+  describe '.aws_installed' do
+    subject { described_class.aws_installed }
+
+    let!(:cluster) { create(:cluster, :provided_by_aws) }
+
+    before do
+      errored_cluster = create(:cluster, :provided_by_aws)
+      errored_cluster.provider.make_errored!("Error message")
     end
 
     it { is_expected.to contain_exactly(cluster) }
@@ -280,6 +316,20 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
         it { is_expected.to be_valid }
       end
     end
+
+    describe 'unique scope for management_project' do
+      let(:project) { create(:project) }
+      let!(:cluster_with_management_project) { create(:cluster, management_project: project) }
+
+      context 'duplicate scopes for the same management project' do
+        let(:cluster) { build(:cluster, management_project: project) }
+
+        it 'adds an error on environment_scope' do
+          expect(cluster).not_to be_valid
+          expect(cluster.errors[:environment_scope].first).to eq('cannot add duplicated environment scope')
+        end
+      end
+    end
   end
 
   describe '.ancestor_clusters_for_clusterable' do
@@ -374,7 +424,14 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
 
       it 'returns a provider' do
         is_expected.to eq(cluster.provider_gcp)
-        expect(subject.class.name.deconstantize).to eq(Clusters::Providers.to_s)
+      end
+    end
+
+    context 'when provider is aws' do
+      let(:cluster) { create(:cluster, :provided_by_aws) }
+
+      it 'returns a provider' do
+        is_expected.to eq(cluster.provider_aws)
       end
     end
 
@@ -537,7 +594,7 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
 
     before do
       expect(Clusters::KubernetesNamespaceFinder).to receive(:new)
-        .with(cluster, project: environment.project, environment_slug: environment.slug)
+        .with(cluster, project: environment.project, environment_name: environment.name)
         .and_return(double(execute: persisted_namespace))
     end
 
@@ -745,6 +802,28 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
           subject
         end
       end
+    end
+  end
+
+  describe '#knative_pre_installed?' do
+    subject { cluster.knative_pre_installed? }
+
+    context 'with a GCP provider without cloud_run' do
+      let(:cluster) { create(:cluster, :provided_by_gcp) }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'with a GCP provider with cloud_run' do
+      let(:cluster) { create(:cluster, :provided_by_gcp, :cloud_run_enabled) }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'with a user provider' do
+      let(:cluster) { create(:cluster, :provided_by_user) }
+
+      it { is_expected.to be_falsey }
     end
   end
 end

@@ -27,6 +27,7 @@ The current stages are:
 - `review`: This stage includes jobs that deploy the GitLab and Docs Review Apps.
 - `qa`: This stage includes jobs that perform QA tasks against the Review App
   that is deployed in the previous stage.
+- `notification`: This stage includes jobs that sends notifications about pipeline status.
 - `post-test`: This stage includes jobs that build reports or gather data from
   the previous stages' jobs (e.g. coverage, Knapsack metadata etc.).
 - `pages`: This stage includes a job that deploys the various reports as
@@ -37,7 +38,7 @@ The current stages are:
 ## Default image
 
 The default image is currently
-`dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.6.3-golang-1.11-git-2.22-chrome-73.0-node-12.x-yarn-1.16-postgresql-9.6-graphicsmagick-1.3.33`.
+`gitlab.com/gitlab-org/gitlab-build-images:ruby-2.6.3-golang-1.11-git-2.22-chrome-73.0-node-12.x-yarn-1.16-postgresql-9.6-graphicsmagick-1.3.33`.
 It includes Ruby 2.6.3, Go 1.11, Git 2.22, Chrome 73, Node 12, Yarn 1.16,
 PostgreSQL 9.6, and Graphics Magick 1.3.33.
 
@@ -57,11 +58,10 @@ each pipeline includes the following [variables](../ci/variables/README.md):
 - `RAILS_ENV: "test"`
 - `NODE_ENV: "test"`
 - `SIMPLECOV: "true"`
-- `GIT_DEPTH: "20"`
+- `GIT_DEPTH: "50"`
 - `GIT_SUBMODULE_STRATEGY: "none"`
 - `GET_SOURCES_ATTEMPTS: "3"`
 - `KNAPSACK_RSPEC_SUITE_REPORT_PATH: knapsack/${CI_PROJECT_NAME}/rspec_report-master.json`
-- `EE_KNAPSACK_RSPEC_SUITE_REPORT_PATH: knapsack/${CI_PROJECT_NAME}/rspec_report-master-ee.json`
 - `FLAKY_RSPEC_SUITE_REPORT_PATH: rspec_flaky/report-suite.json`
 - `BUILD_ASSETS_IMAGE: "false"`
 - `ES_JAVA_OPTS: "-Xms256m -Xmx256m"`
@@ -92,9 +92,17 @@ These common definitions are:
   for `master` and auto-deploy branches.
 - `.only-review-schedules`: Same as `.only-review` but also restrict a job to
   only run for [schedules](../user/project/pipelines/schedules.md).
-- `.use-pg`: Allows a job to use the `postgres:9.6.14` and `redis:alpine` services.
-- `.use-pg-10`: Allows a job to use the `postgres:10.9` and `redis:alpine` services.
+- `.only-canonical-schedules`: Only creates a job for scheduled pipelines in
+  the `gitlab-org/gitlab` and `gitlab-org/gitlab-foss` projects
+- `.use-pg9`: Allows a job to use the `postgres:9.6` and `redis:alpine` services.
+- `.use-pg10`: Allows a job to use the `postgres:10.9` and `redis:alpine` services.
+- `.use-pg9-ee`: Same as `.use-pg9` but also use the
+  `docker.elastic.co/elasticsearch/elasticsearch:5.6.12` services.
+- `.use-pg10-ee`: Same as `.use-pg10` but also use the
+  `docker.elastic.co/elasticsearch/elasticsearch:5.6.12` services.
 - `.only-ee`: Only creates a job for the `gitlab` project.
+- `.only-ee-as-if-foss`: Same as `.only-ee` but simulate the FOSS project by
+  setting the `FOSS_ONLY='1'` environment variable.
 
 ## Changes detection
 
@@ -107,6 +115,7 @@ from a commit or MR by extending from the following CI definitions:
 - `.only-qa-changes`: Allows a job to only be created upon QA-related changes.
 - `.only-docs-changes`: Allows a job to only be created upon docs-related changes.
 - `.only-code-qa-changes`: Allows a job to only be created upon code-related or QA-related changes.
+- `.only-graphql-changes`: Allows a job to only be created upon graphql-related changes.
 
 **See <https://gitlab.com/gitlab-org/gitlab/blob/master/.gitlab/ci/global.gitlab-ci.yml>
 for the list of exact patterns.**
@@ -119,7 +128,7 @@ execute jobs out of order for the following jobs:
 ```mermaid
 graph RL;
   A[setup-test-env];
-  B["gitlab:assets:compile<br/>(master only)"];
+  B["gitlab:assets:compile pull-push-cache<br/>(master only)"];
   C[gitlab:assets:compile pull-cache];
   D["cache gems<br/>(master and tags only)"];
   E[review-build-cng];
@@ -128,48 +137,51 @@ graph RL;
   G2["schedule:review-deploy<br/>(master only)"];
   H[karma];
   I[jest];
-  J["compile-assets<br/>(master only)"];
+  J["compile-assets pull-push-cache<br/>(master only)"];
   K[compile-assets pull-cache];
   L[webpack-dev-server];
   M[coverage];
   N[pages];
   O[static-analysis];
-  P["package-and-qa-manual:master<br/>(master schedule only)"];
+  P["schedule:package-and-qa<br/>(master schedule only)"];
   Q[package-and-qa];
   R[package-and-qa-manual];
+  S["RSpec<br/>(e.g. rspec unit pg9)"]
+  T[retrieve-tests-metadata];
 
 subgraph "`prepare` stage"
     A
     F
-    J
     K
+    J
+    T
     end
 
 subgraph "`test` stage"
     B --> |needs| A;
     C --> |needs| A;
     D --> |needs| A;
-    H -.-> |depends on| A;
-    H -.-> |depends on| J;
-    H -.-> |depends on| K;
-    I -.-> |depends on| A;
-    I -.-> |depends on| J;
-    I -.-> |depends on| K;
-    L -.-> |depends on| A;
-    L -.-> |depends on| J;
-    L -.-> |depends on| K;
+    H -.-> |needs and depends on| A;
+    H -.-> |needs and depends on| K;
+    I -.-> |needs and depends on| A;
+    I -.-> |needs and depends on| K;
+    L -.-> |needs and depends on| A;
+    L -.-> |needs and depends on| K;
+    O -.-> |needs and depends on| A;
+    O -.-> |needs and depends on| K;
+    S -.-> |needs and depends on| A;
+    S -.-> |needs and depends on| K;
+    S -.-> |needs and depends on| T;
     downtime_check --> |needs and depends on| A;
     db:* --> |needs| A;
     gitlab:setup --> |needs| A;
-    O -.-> |depends on| A;
-    O -.-> |depends on| B;
-    O -.-> |depends on| C;
     downtime_check --> |needs and depends on| A;
+    graphql-docs-verify --> |needs| A;
     end
 
 subgraph "`review-prepare` stage"
     E --> |needs| C;
-    X["schedule:review-build-cng<br/>(master schedule only)"] --> |needs| B;
+    X["schedule:review-build-cng<br/>(master schedule only)"] --> |needs| C;
     end
 
 subgraph "`review` stage"
@@ -182,13 +194,18 @@ subgraph "`qa` stage"
     Q --> |needs| F;
     R --> |needs| C;
     R --> |needs| F;
-    P --> |needs| B;
+    P --> |needs| C;
     P --> |needs| F;
-    review-qa-smoke -.-> |depends on| G;
-    review-qa-all -.-> |depends on| G;
-    review-qa-performance -.-> |depends on| G;
-    X2["schedule:review-performance<br/>(master only)"] -.-> |depends on| G2;
-    dast -.-> |depends on| G;
+    review-qa-smoke -.-> |needs and depends on| G;
+    review-qa-all -.-> |needs and depends on| G;
+    review-performance -.-> |needs and depends on| G;
+    X2["schedule:review-performance<br/>(master only)"] -.-> |needs and depends on| G2;
+    dast -.-> |needs and depends on| G;
+    end
+
+subgraph "`notification` stage"
+    NOTIFICATION1["schedule:package-and-qa:notify-success<br>(on_success)"] -.-> |needs| P;
+    NOTIFICATION2["schedule:package-and-qa:notify-failure<br>(on_failure)"] -.-> |needs| P;
     end
 
 subgraph "`post-test` stage"
@@ -196,7 +213,7 @@ subgraph "`post-test` stage"
     end
 
 subgraph "`pages` stage"
-    N -.-> |depends on| B;
+    N -.-> |depends on| C;
     N -.-> |depends on| H;
     N -.-> |depends on| M;
     end

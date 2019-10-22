@@ -28,6 +28,13 @@ module Clusters
           state :uninstalling, value: 7
           state :uninstall_errored, value: 8
 
+          # Used for applications that are pre-installed by the cluster,
+          # e.g. Knative in GCP Cloud Run enabled clusters
+          # Because we cannot upgrade or uninstall Knative in these clusters,
+          # we define only one simple state transition to enter the `pre_installed` state,
+          # and no exit transitions.
+          state :pre_installed, value: 9
+
           event :make_scheduled do
             transition [:installable, :errored, :installed, :updated, :update_errored, :uninstall_errored] => :scheduled
           end
@@ -39,6 +46,10 @@ module Clusters
           event :make_installed do
             transition [:installing] => :installed
             transition [:updating] => :updated
+          end
+
+          event :make_pre_installed do
+            transition any => :pre_installed
           end
 
           event :make_errored do
@@ -90,12 +101,18 @@ module Clusters
         end
       end
 
+      def status_states
+        self.class.state_machines[:status].states.each_with_object({}) do |state, states|
+          states[state.name] = state.value
+        end
+      end
+
       def updateable?
         installed? || updated? || update_errored?
       end
 
       def available?
-        installed? || updated?
+        pre_installed? || installed? || updated?
       end
 
       def update_in_progress?

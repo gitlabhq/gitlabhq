@@ -3,15 +3,10 @@
 module QA::Page
   module Project::Job
     class Show < QA::Page::Base
-      COMPLETED_STATUSES = %w[passed failed canceled blocked skipped manual].freeze # excludes created, pending, running
-      PASSED_STATUS = 'passed'.freeze
+      include Component::CiBadgeLink
 
       view 'app/assets/javascripts/jobs/components/job_log.vue' do
         element :build_trace
-      end
-
-      view 'app/assets/javascripts/vue_shared/components/ci_badge_link.vue' do
-        element :status_badge
       end
 
       view 'app/assets/javascripts/jobs/components/stages_dropdown.vue' do
@@ -26,8 +21,16 @@ module QA::Page
       end
 
       # Reminder: You may wish to wait for a particular job status before checking output
-      def output
-        find_element(:build_trace).text
+      def output(wait: 5)
+        result = ''
+
+        wait(reload: false, max: wait, interval: 1) do
+          result = find_element(:build_trace).text
+
+          !result.empty?
+        end
+
+        result
       end
 
       private
@@ -36,16 +39,6 @@ module QA::Page
         wait(reload: true, max: wait, interval: 1) do
           has_element?(:build_trace, wait: 1)
         end
-      end
-
-      def completed?(timeout: 60)
-        wait(reload: false, max: timeout) do
-          COMPLETED_STATUSES.include?(status_badge)
-        end
-      end
-
-      def status_badge
-        find_element(:status_badge).text
       end
     end
   end

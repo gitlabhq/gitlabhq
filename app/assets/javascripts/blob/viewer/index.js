@@ -107,18 +107,18 @@ export default class BlobViewer {
   toggleCopyButtonState() {
     if (!this.copySourceBtn) return;
     if (this.simpleViewer.getAttribute('data-loaded')) {
-      this.copySourceBtn.setAttribute('title', __('Copy source to clipboard'));
+      this.copySourceBtn.setAttribute('title', __('Copy file contents'));
       this.copySourceBtn.classList.remove('disabled');
     } else if (this.activeViewer === this.simpleViewer) {
       this.copySourceBtn.setAttribute(
         'title',
-        __('Wait for the source to load to copy it to the clipboard'),
+        __('Wait for the file to load to copy its contents'),
       );
       this.copySourceBtn.classList.add('disabled');
     } else {
       this.copySourceBtn.setAttribute(
         'title',
-        __('Switch to the source to copy it to the clipboard'),
+        __('Switch to the source to copy the file contents'),
       );
       this.copySourceBtn.classList.add('disabled');
     }

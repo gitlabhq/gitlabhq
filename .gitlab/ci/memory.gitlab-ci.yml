@@ -36,7 +36,7 @@ memory-static:
 memory-on-boot:
   extends:
     - .only-code-memory-job-base
-    - .use-pg-10
+    - .use-pg10
   variables:
     NODE_ENV: "production"
     RAILS_ENV: "production"

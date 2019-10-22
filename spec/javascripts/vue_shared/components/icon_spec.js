@@ -12,8 +12,6 @@ describe('Sprite Icon Component', function() {
       icon = mountComponent(IconComponent, {
         name: 'commit',
         size: 32,
-        cssClasses: 'extraclasses',
-        tabIndex: '0',
       });
     });
 
@@ -47,10 +45,8 @@ describe('Sprite Icon Component', function() {
     it('should properly render img css', function() {
       const { classList } = icon.$el;
       const containsSizeClass = classList.contains('s32');
-      const containsCustomClass = classList.contains('extraclasses');
 
       expect(containsSizeClass).toBe(true);
-      expect(containsCustomClass).toBe(true);
     });
 
     it('`name` validator should return false for non existing icons', () => {
@@ -59,10 +55,6 @@ describe('Sprite Icon Component', function() {
 
     it('`name` validator should return false for existing icons', () => {
       expect(Icon.props.name.validator('commit')).toBe(true);
-    });
-
-    it('should contain `tabindex` attribute on svg element when `tabIndex` prop is defined', () => {
-      expect(icon.$el.getAttribute('tabindex')).toBe('0');
     });
   });
 });

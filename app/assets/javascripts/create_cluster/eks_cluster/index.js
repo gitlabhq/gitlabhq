@@ -5,15 +5,22 @@ import createStore from './store';
 
 Vue.use(Vuex);
 
-export default () =>
-  new Vue({
-    el: '.js-create-eks-cluster-form-container',
+export default el => {
+  const { gitlabManagedClusterHelpPath, kubernetesIntegrationHelpPath } = el.dataset;
+
+  return new Vue({
+    el,
     store: createStore(),
     components: {
       CreateEksCluster,
     },
-    data() {},
     render(createElement) {
-      return createElement('create-eks-cluster');
+      return createElement('create-eks-cluster', {
+        props: {
+          gitlabManagedClusterHelpPath,
+          kubernetesIntegrationHelpPath,
+        },
+      });
     },
   });
+};

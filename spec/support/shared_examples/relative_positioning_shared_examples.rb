@@ -84,6 +84,22 @@ RSpec.shared_examples 'a class that supports relative positioning' do
 
       expect(item1.relative_position).to be < item2.relative_position
     end
+
+    context 'when there is no space' do
+      let(:item3) { create(factory, default_params) }
+
+      before do
+        item1.update(relative_position: 1000)
+        item2.update(relative_position: 1001)
+        item3.update(relative_position: 1002)
+      end
+
+      it 'moves items correctly' do
+        item3.move_before(item2)
+
+        expect(item3.relative_position).to be_between(item1.reload.relative_position, item2.reload.relative_position).exclusive
+      end
+    end
   end
 
   describe '#move_after' do
@@ -93,6 +109,22 @@ RSpec.shared_examples 'a class that supports relative positioning' do
       item1.move_after(item2)
 
       expect(item1.relative_position).to be > item2.relative_position
+    end
+
+    context 'when there is no space' do
+      let(:item3) { create(factory, default_params) }
+
+      before do
+        item1.update(relative_position: 1000)
+        item2.update(relative_position: 1001)
+        item3.update(relative_position: 1002)
+      end
+
+      it 'moves items correctly' do
+        item1.move_after(item2)
+
+        expect(item1.relative_position).to be_between(item2.reload.relative_position, item3.reload.relative_position).exclusive
+      end
     end
   end
 
@@ -196,7 +228,7 @@ RSpec.shared_examples 'a class that supports relative positioning' do
 
       new_item.move_between(item1, item2)
 
-      expect(new_item.relative_position).to be_between(item1.relative_position, item2.relative_position)
+      expect(new_item.relative_position).to be_between(item1.relative_position, item2.relative_position).exclusive
     end
 
     it 'uses rebalancing if there is no place' do
@@ -208,7 +240,7 @@ RSpec.shared_examples 'a class that supports relative positioning' do
       new_item.move_between(item2, item3)
       new_item.save!
 
-      expect(new_item.relative_position).to be_between(item2.relative_position, item3.relative_position)
+      expect(new_item.relative_position).to be_between(item2.relative_position, item3.relative_position).exclusive
       expect(item1.reload.relative_position).not_to eq(100)
     end
 

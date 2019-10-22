@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe ContainerRepositoryEntity do
@@ -21,6 +23,18 @@ describe ContainerRepositoryEntity do
 
   it 'exposes required informations' do
     expect(subject).to include(:id, :path, :location, :tags_path)
+  end
+
+  context 'when project is not preset in the request' do
+    before do
+      allow(request).to receive(:respond_to?).and_return(false)
+      allow(request).to receive(:project).and_return(nil)
+    end
+
+    it 'uses project from the object' do
+      expect(request.project).not_to equal(project)
+      expect(subject).to include(:tags_path)
+    end
   end
 
   context 'when user can manage repositories' do

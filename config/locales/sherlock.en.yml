@@ -30,7 +30,7 @@ en:
     origin: Origin
     line: line
     line_capitalized: Line
-    copy_to_clipboard: Copy to clipboard
+    copy_to_clipboard: Copy
     query_plan: Query Plan
     events: Events
     percent: '%'

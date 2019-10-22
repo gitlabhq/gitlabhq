@@ -24,13 +24,13 @@ RSpec.describe Clusters::KubernetesNamespace, type: :model do
     end
   end
 
-  describe '.with_environment_slug' do
+  describe '.with_environment_name' do
     let(:cluster) { create(:cluster, :group) }
-    let(:environment) { create(:environment, slug: slug) }
+    let(:environment) { create(:environment, name: name) }
 
-    let(:slug) { 'production' }
+    let(:name) { 'production' }
 
-    subject { described_class.with_environment_slug(slug) }
+    subject { described_class.with_environment_name(name) }
 
     context 'there is no associated environment' do
       let!(:namespace) { create(:cluster_kubernetes_namespace, cluster: cluster, project: environment.project) }
@@ -48,12 +48,12 @@ RSpec.describe Clusters::KubernetesNamespace, type: :model do
         )
       end
 
-      context 'with a matching slug' do
+      context 'with a matching name' do
         it { is_expected.to eq [namespace] }
       end
 
-      context 'without a matching slug' do
-        let(:environment) { create(:environment, slug: 'staging') }
+      context 'without a matching name' do
+        let(:environment) { create(:environment, name: 'staging') }
 
         it { is_expected.to be_empty }
       end

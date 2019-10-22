@@ -94,6 +94,13 @@ describe 'User searches for code' do
 
         expect(page).to have_selector('.results', text: 'path = gitlab-grack')
       end
+
+      it 'persist refs over browser tabs' do
+        ref = 'feature'
+        find('.js-project-refs-dropdown').click
+        link = find_link(ref)[:href]
+        expect(link.include?("repository_ref=" + ref)).to be(true)
+      end
     end
 
     it 'no ref switcher shown in issue result summary', :js do

@@ -27,20 +27,4 @@ RSpec.describe 'Dashboard Active Tab', :js do
       subject { visit dashboard_groups_path }
     end
   end
-
-  context 'on activity projects' do
-    it_behaves_like 'page has active tab', 'Activity' do
-      subject { visit activity_dashboard_path }
-    end
-  end
-
-  context 'on instance statistics' do
-    subject { visit instance_statistics_root_path }
-
-    it 'shows Instance Statistics` as active' do
-      subject
-
-      expect(find('.navbar-sub-nav li.active')).to have_link('Instance Statistics')
-    end
-  end
 end

@@ -678,6 +678,27 @@ describe NotificationService, :mailer do
     end
   end
 
+  describe '#send_new_release_notifications' do
+    context 'when recipients for a new release exist' do
+      let(:release) { create(:release) }
+
+      it 'calls new_release_email for each relevant recipient' do
+        user_1 = create(:user)
+        user_2 = create(:user)
+        user_3 = create(:user)
+        recipient_1 = NotificationRecipient.new(user_1, :custom, custom_action: :new_release)
+        recipient_2 = NotificationRecipient.new(user_2, :custom, custom_action: :new_release)
+        allow(NotificationRecipientService).to receive(:build_new_release_recipients).and_return([recipient_1, recipient_2])
+
+        release
+
+        should_email(user_1)
+        should_email(user_2)
+        should_not_email(user_3)
+      end
+    end
+  end
+
   describe 'Participating project notification settings have priority over group and global settings if available' do
     let!(:group) { create(:group) }
     let!(:maintainer) { group.add_owner(create(:user, username: 'maintainer')).user }
@@ -1942,7 +1963,7 @@ describe NotificationService, :mailer do
         let(:developer) { create(:user) }
 
         let!(:group) do
-          create(:group, :public, :access_requestable) do |group|
+          create(:group, :public) do |group|
             group.add_owner(owner)
             group.add_maintainer(maintainer)
             group.add_developer(developer)
@@ -1968,7 +1989,7 @@ describe NotificationService, :mailer do
       end
 
       it_behaves_like 'sends notification only to a maximum of ten, most recently active group owners' do
-        let(:group) { create(:group, :public, :access_requestable) }
+        let(:group) { create(:group, :public) }
         let(:notification_trigger) { group.request_access(added_user) }
       end
     end
@@ -2029,7 +2050,7 @@ describe NotificationService, :mailer do
           let(:maintainer) { create(:user) }
 
           let!(:project) do
-            create(:project, :public, :access_requestable) do |project|
+            create(:project, :public) do |project|
               project.add_developer(developer)
               project.add_maintainer(maintainer)
             end
@@ -2053,7 +2074,7 @@ describe NotificationService, :mailer do
         end
 
         it_behaves_like 'sends notification only to a maximum of ten, most recently active project maintainers' do
-          let(:project) { create(:project, :public, :access_requestable) }
+          let(:project) { create(:project, :public) }
           let(:notification_trigger) { project.request_access(added_user) }
         end
       end
@@ -2064,7 +2085,7 @@ describe NotificationService, :mailer do
 
         context 'when the project has no maintainers' do
           context 'when the group has at least one owner' do
-            let!(:project) { create(:project, :public, :access_requestable, namespace: group) }
+            let!(:project) { create(:project, :public, namespace: group) }
 
             before do
               reset_delivered_emails!
@@ -2079,14 +2100,14 @@ describe NotificationService, :mailer do
             end
 
             it_behaves_like 'sends notification only to a maximum of ten, most recently active group owners' do
-              let(:group) { create(:group, :public, :access_requestable) }
+              let(:group) { create(:group, :public) }
               let(:notification_trigger) { project.request_access(added_user) }
             end
           end
 
           context 'when the group does not have any owners' do
             let(:group) { create(:group) }
-            let!(:project) { create(:project, :public, :access_requestable, namespace: group) }
+            let!(:project) { create(:project, :public, namespace: group) }
 
             context 'recipients' do
               before do
@@ -2107,7 +2128,7 @@ describe NotificationService, :mailer do
           let(:developer) { create(:user) }
 
           let!(:project) do
-            create(:project, :public, :access_requestable, namespace: group) do |project|
+            create(:project, :public, namespace: group) do |project|
               project.add_maintainer(maintainer)
               project.add_developer(developer)
             end
@@ -2128,7 +2149,7 @@ describe NotificationService, :mailer do
           end
 
           it_behaves_like 'sends notification only to a maximum of ten, most recently active project maintainers' do
-            let(:project) { create(:project, :public, :access_requestable, namespace: group) }
+            let(:project) { create(:project, :public, namespace: group) }
             let(:notification_trigger) { project.request_access(added_user) }
           end
         end

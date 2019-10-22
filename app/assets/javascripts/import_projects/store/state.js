@@ -12,4 +12,5 @@ export default () => ({
   isLoadingRepos: false,
   canSelectNamespace: false,
   ciCdOnly: false,
+  filter: '',
 });

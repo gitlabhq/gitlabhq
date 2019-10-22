@@ -4,7 +4,7 @@ require 'spec_helper'
 
 describe 'Projects > Members > User requests access', :js do
   let(:user) { create(:user) }
-  let(:project) { create(:project, :public, :access_requestable, :repository) }
+  let(:project) { create(:project, :public, :repository) }
   let(:maintainer) { project.owner }
 
   before do

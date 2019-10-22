@@ -344,7 +344,7 @@ describe Issues::CreateService do
       end
 
       before do
-        allow_any_instance_of(SpamService).to receive(:check_for_spam?).and_return(true)
+        stub_feature_flags(allow_possible_spam: false)
       end
 
       context 'when recaptcha was verified' do
@@ -384,31 +384,67 @@ describe Issues::CreateService do
       end
 
       context 'when recaptcha was not verified' do
+        before do
+          expect_next_instance_of(SpamService) do |spam_service|
+            expect(spam_service).to receive_messages(check_for_spam?: true)
+          end
+        end
+
         context 'when akismet detects spam' do
           before do
-            allow_any_instance_of(AkismetService).to receive(:spam?).and_return(true)
+            expect_next_instance_of(AkismetService) do |akismet_service|
+              expect(akismet_service).to receive_messages(spam?: true)
+            end
           end
 
-          it 'marks an issue as a spam ' do
-            expect(issue).to be_spam
+          context 'when issuables_recaptcha_enabled feature flag is true' do
+            it 'marks an issue as a spam ' do
+              expect(issue).to be_spam
+            end
+
+            it 'invalidates the issue' do
+              expect(issue).to be_invalid
+            end
+
+            it 'creates a new spam_log' do
+              expect { issue }
+                .to log_spam(title: issue.title, description: issue.description, user_id: user.id, noteable_type: 'Issue')
+            end
+
+            it 'assigns a spam_log to an issue' do
+              expect(issue.spam_log).to eq(SpamLog.last)
+            end
           end
 
-          it 'an issue is not valid ' do
-            expect(issue.valid?).to be_falsey
-          end
+          context 'when issuable_recaptcha_enabled feature flag is false' do
+            before do
+              stub_feature_flags(allow_possible_spam: true)
+            end
 
-          it 'creates a new spam_log' do
-            expect {issue}.to change {SpamLog.count}.from(0).to(1)
-          end
+            it 'does not mark an issue as a spam ' do
+              expect(issue).not_to be_spam
+            end
 
-          it 'assigns a spam_log to an issue' do
-            expect(issue.spam_log).to eq(SpamLog.last)
+            it 'accepts the ​issue as valid' do
+              expect(issue).to be_valid
+            end
+
+            it 'creates a new spam_log' do
+              expect { issue }
+                .to log_spam(title: issue.title, description: issue.description, user_id: user.id, noteable_type: 'Issue')
+            end
+
+            it 'assigns a spam_log to an issue' do
+              expect(issue.spam_log).to eq(SpamLog.last)
+            end
           end
         end
 
         context 'when akismet does not detect spam' do
           before do
-            allow_any_instance_of(AkismetService).to receive(:spam?).and_return(false)
+            expect_next_instance_of(AkismetService) do |akismet_service|
+              expect(akismet_service).to receive_messages(spam?: false)
+            end
           end
 
           it 'does not mark an issue as a spam ' do

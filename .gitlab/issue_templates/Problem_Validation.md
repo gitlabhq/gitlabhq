@@ -26,7 +26,7 @@
 
 ## Confidence
 
-<!-- How do we know this is a problem? Please provide and link to any supporting information (e.g. data, customer verbatims) and use this basis to provide a numerical assessment on our confidence level in this problem's severity: 
+<!-- How do we know this is a problem? Please provide and link to any supporting information (e.g. data, customer verbatims) and use this basis to provide a numerical assessment on our confidence level in this problem's severity:
 
 100% = High confidence
 80% = Medium confidence
@@ -34,8 +34,8 @@
 
 ## Effort
 
-<!-- How much effort do we think it will be to solve this problem? Please include all counterparts (Product, UX, Engineering, etc) in your assessment and quantify the number of person-months needed to dedicate to the effort. 
+<!-- How much effort do we think it will be to solve this problem? Please include all counterparts (Product, UX, Engineering, etc) in your assessment and quantify the number of person-months needed to dedicate to the effort.
 
 For example, if the solution will take a product manager, designer, and engineer two weeks of effort - you may quantify this as 1.5 (based on 0.5 months x 3 people). -->
 
-/label ~"workflow::problem backlog"
+/label ~"workflow::validation backlog" ~devops:: ~category: ~group::

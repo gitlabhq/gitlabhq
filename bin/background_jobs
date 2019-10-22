@@ -28,7 +28,7 @@ restart()
     stop
   fi
   killall
-  start_sidekiq -d -L $sidekiq_logfile >> $sidekiq_logfile 2>&1
+  start_sidekiq -P $sidekiq_pidfile -d -L $sidekiq_logfile >> $sidekiq_logfile 2>&1
 }
 
 start_no_deamonize()
@@ -45,7 +45,7 @@ start_sidekiq()
     cmd="${cmd} ${chpst} -P"
   fi
 
-  ${cmd} bundle exec sidekiq -C "${sidekiq_config}" -e $RAILS_ENV -P $sidekiq_pidfile "$@"
+  ${cmd} bundle exec sidekiq -C "${sidekiq_config}" -e $RAILS_ENV "$@"
 }
 
 load_ok()

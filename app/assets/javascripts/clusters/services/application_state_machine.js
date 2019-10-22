@@ -13,6 +13,7 @@ const {
   UPDATE_ERRORED,
   UNINSTALLING,
   UNINSTALL_ERRORED,
+  PRE_INSTALLED,
 } = APPLICATION_STATUS;
 
 const applicationStateMachine = {
@@ -63,6 +64,9 @@ const applicationStateMachine = {
           uninstallFailed: true,
         },
       },
+      [PRE_INSTALLED]: {
+        target: PRE_INSTALLED,
+      },
     },
   },
   [NOT_INSTALLABLE]: {
@@ -103,6 +107,27 @@ const applicationStateMachine = {
     },
   },
   [INSTALLED]: {
+    on: {
+      [UPDATE_EVENT]: {
+        target: UPDATING,
+        effects: {
+          updateFailed: false,
+          updateSuccessful: false,
+        },
+      },
+      [NOT_INSTALLABLE]: {
+        target: NOT_INSTALLABLE,
+      },
+      [UNINSTALL_EVENT]: {
+        target: UNINSTALLING,
+        effects: {
+          uninstallFailed: false,
+          uninstallSuccessful: false,
+        },
+      },
+    },
+  },
+  [PRE_INSTALLED]: {
     on: {
       [UPDATE_EVENT]: {
         target: UPDATING,

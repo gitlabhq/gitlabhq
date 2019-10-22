@@ -49,7 +49,7 @@ describe('File Icon component', () => {
     });
 
     expect(findIcon().exists()).toBe(false);
-    expect(wrapper.find(Icon).props('cssClasses')).toContain('folder-icon');
+    expect(wrapper.find(Icon).classes()).toContain('folder-icon');
   });
 
   it('should render a loading icon', () => {

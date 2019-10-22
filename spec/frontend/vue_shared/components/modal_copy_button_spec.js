@@ -14,7 +14,7 @@ describe('modal copy button', () => {
     wrapper = shallowMount(Component, {
       propsData: {
         text: 'copy me',
-        title: 'Copy this value into Clipboard!',
+        title: 'Copy this value',
       },
     });
   });

@@ -31,7 +31,7 @@ If you want to see progress, replace `-xf` with `-xvf`.
 ### Tar pipe to another server
 
 You can also use a tar pipe to copy data to another server. If your
-'git' user has SSH access to the newserver as 'git@newserver', you
+`git` user has SSH access to the newserver as `git@newserver`, you
 can pipe the data through SSH.
 
 ```
@@ -61,7 +61,7 @@ If you want to see progress, replace `-a` with `-av`.
 
 ### Single rsync to another server
 
-If the 'git' user on your source system has SSH access to the target
+If the `git` user on your source system has SSH access to the target
 server you can send the repositories over the network with rsync.
 
 ```
@@ -95,7 +95,7 @@ after switching to the new repository storage directory.
 This will sync repositories with 10 rsync processes at a time. We keep
 track of progress so that the transfer can be restarted if necessary.
 
-First we create a new directory, owned by 'git', to hold transfer
+First we create a new directory, owned by `git`, to hold transfer
 logs. We assume the directory is empty before we start the transfer
 procedure, and that we are the only ones writing files in it.
 

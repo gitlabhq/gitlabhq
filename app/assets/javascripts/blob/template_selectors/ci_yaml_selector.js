@@ -19,7 +19,6 @@ export default class BlobCiYamlSelector extends FileTemplateSelector {
       data: this.$dropdown.data('data'),
       filterable: true,
       selectable: true,
-      toggleLabel: item => item.name,
       search: {
         fields: ['name'],
       },

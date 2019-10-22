@@ -8,6 +8,12 @@
     "created_at": { "type": "date" },
     "released_at": { "type": "date" },
     "upcoming_release": { "type": "boolean" },
+    "milestones": {
+      "type": "array",
+      "items": { "$ref": "../milestone.json" }
+    },
+    "commit_path": { "type": "string" },
+    "tag_path": { "type": "string" },
     "author": {
       "oneOf": [{ "type": "null" }, { "$ref": "../user/basic.json" }]
     },
@@ -18,6 +24,13 @@
         "links": { "$ref": "../../../release/links.json" }
       },
       "additionalProperties": false
+    },
+    "_links": {
+      "required": ["merge_requests_url", "issues_url"],
+      "properties": {
+        "merge_requests_url": { "type": "string" },
+        "issues_url": { "type": "string" }
+      }
     }
   },
   "additionalProperties": false

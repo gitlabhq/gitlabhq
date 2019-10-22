@@ -11,7 +11,8 @@ describe Gitlab::Ci::Config::External::Mapper do
   let(:local_file) { '/lib/gitlab/ci/templates/non-existent-file.yml' }
   let(:remote_url) { 'https://gitlab.com/gitlab-org/gitlab-foss/blob/1234/.gitlab-ci-1.yml' }
   let(:template_file) { 'Auto-DevOps.gitlab-ci.yml' }
-  let(:expandset) { Set.new }
+  let(:context_params) { { project: project, sha: '123456', user: user } }
+  let(:context) { Gitlab::Ci::Config::External::Context.new(**context_params) }
 
   let(:file_content) do
     <<~HEREDOC
@@ -21,10 +22,13 @@ describe Gitlab::Ci::Config::External::Mapper do
 
   before do
     stub_full_request(remote_url).to_return(body: file_content)
+
+    allow_any_instance_of(Gitlab::Ci::Config::External::Context)
+      .to receive(:check_execution_time!)
   end
 
   describe '#process' do
-    subject { described_class.new(values, project: project, sha: '123456', user: user, expandset: expandset).process }
+    subject { described_class.new(values, context).process }
 
     context "when single 'include' keyword is defined" do
       context 'when the string is a local file' do

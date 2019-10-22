@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class AuditEvent < ApplicationRecord
+  include CreatedAtFilterable
+
   serialize :details, Hash # rubocop:disable Cop/ActiveRecordSerialize
 
   belongs_to :user, foreign_key: :author_id
@@ -8,6 +10,9 @@ class AuditEvent < ApplicationRecord
   validates :author_id, presence: true
   validates :entity_id, presence: true
   validates :entity_type, presence: true
+
+  scope :by_entity_type, -> (entity_type) { where(entity_type: entity_type) }
+  scope :by_entity_id, -> (entity_id) { where(entity_id: entity_id) }
 
   after_initialize :initialize_details
 
@@ -17,6 +22,10 @@ class AuditEvent < ApplicationRecord
 
   def author_name
     self.user.name
+  end
+
+  def formatted_details
+    details.merge(details.slice(:from, :to).transform_values(&:to_s))
   end
 end
 

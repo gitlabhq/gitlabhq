@@ -41,7 +41,7 @@
                   %li
                     = link_to '#modal-create-new-dir', { 'data-target' => '#modal-create-new-dir', 'data-toggle' => 'modal' } do
                       #{ _('New directory') }
-                - elsif can?(current_user, :fork_project, @project) && can?(current_user, :create_merge_request_in, @project)
+                - elsif can_create_mr_from_fork
                   %li
                     - continue_params = { to: project_new_blob_path(@project, @id),
                                           notice: edit_in_new_fork_notice,
@@ -81,10 +81,15 @@
 
   = render 'projects/find_file_link'
 
-  - if can_collaborate
+  - if can_create_mr_from_fork
     = succeed " " do
-      = link_to ide_edit_path(@project, @ref, @path), class: 'btn btn-default qa-web-ide-button' do
-        = _('Web IDE')
+      - if can_collaborate || current_user&.already_forked?(@project)
+        = link_to ide_edit_path(@project, @ref, @path), class: 'btn btn-default qa-web-ide-button' do
+          = _('Web IDE')
+      - else
+        = link_to '#modal-confirm-fork', class: 'btn btn-default qa-web-ide-button', data: { target: '#modal-confirm-fork', toggle: 'modal'} do
+          = _('Web IDE')
+        = render 'shared/confirm_fork_modal', fork_path: ide_fork_and_edit_path(@project, @ref, @path)
 
   - if show_xcode_link?(@project)
     .project-action-button.project-xcode.inline

@@ -54,7 +54,7 @@ export default {
       :href="job.status.details_path"
       :title="tooltipText"
       data-boundary="viewport"
-      class="js-job-link"
+      class="js-job-link d-flex"
     >
       <icon
         v-if="isActive"
@@ -64,7 +64,7 @@ export default {
 
       <ci-icon :status="job.status" />
 
-      <span>{{ job.name ? job.name : job.id }}</span>
+      <span class="text-truncate w-100">{{ job.name ? job.name : job.id }}</span>
 
       <icon v-if="job.retried" name="retry" class="js-retry-icon" />
     </gl-link>

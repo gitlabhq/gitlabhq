@@ -1,11 +1,11 @@
 - if @project.pages_deployed?
   .card
     .card-header
-      Access pages
+      = s_('GitLabPages|Access pages')
     .card-body
       %p
         %strong
-          = _("Your pages are served under:")
+          = s_('GitLabPages|Your pages are served under:')
 
       %p
         = external_link(@project.pages_url, @project.pages_url)
@@ -14,4 +14,4 @@
         %p
           = external_link(domain.url, domain.url)
     .card-footer.alert-primary
-      = _("It may take up to 30 minutes before the site is available after the first deployment.")
+      = s_('GitLabPages|It may take up to 30 minutes before the site is available after the first deployment.')

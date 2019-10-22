@@ -35,7 +35,7 @@ module Resolvers
               description: 'Issues closed after this date'
     argument :search, GraphQL::STRING_TYPE, # rubocop:disable Graphql/Descriptions
               required: false
-    argument :sort, Types::SortEnum,
+    argument :sort, Types::IssueSortEnum,
               description: 'Sort issues by this criteria',
               required: false,
               default_value: 'created_desc'

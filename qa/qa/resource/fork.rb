@@ -30,7 +30,7 @@ module QA
         Page::Main::Menu.perform(&:sign_out)
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
         Page::Main::Login.perform do |login|
-          login.sign_in_using_credentials(user)
+          login.sign_in_using_credentials(user: user)
         end
 
         upstream.project.visit!

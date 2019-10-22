@@ -4,7 +4,7 @@ require 'spec_helper'
 
 describe Admin::UsersController do
   let(:user) { create(:user) }
-  set(:admin) { create(:admin) }
+  let_it_be(:admin) { create(:admin) }
 
   before do
     sign_in(admin)
@@ -57,6 +57,96 @@ describe Admin::UsersController do
       expect(response).to have_gitlab_http_status(200)
       expect(User.exists?(user.id)).to be_falsy
       expect(Issue.exists?(issue.id)).to be_falsy
+    end
+  end
+
+  describe 'PUT #activate' do
+    shared_examples 'a request that activates the user' do
+      it 'activates the user' do
+        put :activate, params: { id: user.username }
+        user.reload
+        expect(user.active?).to be_truthy
+        expect(flash[:notice]).to eq('Successfully activated')
+      end
+    end
+
+    context 'for a deactivated user' do
+      before do
+        user.deactivate
+      end
+
+      it_behaves_like 'a request that activates the user'
+    end
+
+    context 'for an active user' do
+      it_behaves_like 'a request that activates the user'
+    end
+
+    context 'for a blocked user' do
+      before do
+        user.block
+      end
+
+      it 'does not activate the user' do
+        put :activate, params: { id: user.username }
+        user.reload
+        expect(user.active?).to be_falsey
+        expect(flash[:notice]).to eq('Error occurred. A blocked user must be unblocked to be activated')
+      end
+    end
+  end
+
+  describe 'PUT #deactivate' do
+    shared_examples 'a request that deactivates the user' do
+      it 'deactivates the user' do
+        put :deactivate, params: { id: user.username }
+        user.reload
+        expect(user.deactivated?).to be_truthy
+        expect(flash[:notice]).to eq('Successfully deactivated')
+      end
+    end
+
+    context 'for an active user' do
+      let(:activity) { {} }
+      let(:user) { create(:user, **activity) }
+
+      context 'with no recent activity' do
+        let(:activity) { { last_activity_on: ::User::MINIMUM_INACTIVE_DAYS.next.days.ago } }
+
+        it_behaves_like 'a request that deactivates the user'
+      end
+
+      context 'with recent activity' do
+        let(:activity) { { last_activity_on: ::User::MINIMUM_INACTIVE_DAYS.pred.days.ago } }
+
+        it 'does not deactivate the user' do
+          put :deactivate, params: { id: user.username }
+          user.reload
+          expect(user.deactivated?).to be_falsey
+          expect(flash[:notice]).to eq("The user you are trying to deactivate has been active in the past 14 days and cannot be deactivated")
+        end
+      end
+    end
+
+    context 'for a deactivated user' do
+      before do
+        user.deactivate
+      end
+
+      it_behaves_like 'a request that deactivates the user'
+    end
+
+    context 'for a blocked user' do
+      before do
+        user.block
+      end
+
+      it 'does not deactivate the user' do
+        put :deactivate, params: { id: user.username }
+        user.reload
+        expect(user.deactivated?).to be_falsey
+        expect(flash[:notice]).to eq('Error occurred. A blocked user cannot be deactivated')
+      end
     end
   end
 

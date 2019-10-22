@@ -236,11 +236,11 @@ This makes use of [`Intl.DateTimeFormat`].
 - In Ruby/HAML, we have two ways of adding format to dates and times:
 
   1. **Through the `l` helper**, i.e. `l(active_session.created_at, format: :short)`. We have some predefined formats for
-     [dates](https://gitlab.com/gitlab-org/gitlab-foss/blob/v11.7.0/config/locales/en.yml#L54) and [times](https://gitlab.com/gitlab-org/gitlab-foss/blob/v11.7.0/config/locales/en.yml#L261).
+     [dates](https://gitlab.com/gitlab-org/gitlab/blob/4ab54c2233e91f60a80e5b6fa2181e6899fdcc3e/config/locales/en.yml#L54) and [times](https://gitlab.com/gitlab-org/gitlab/blob/4ab54c2233e91f60a80e5b6fa2181e6899fdcc3e/config/locales/en.yml#L262).
      If you need to add a new format, because other parts of the code could benefit from it,
-     you'll need to add it to [en.yml](https://gitlab.com/gitlab-org/gitlab-foss/blob/master/config/locales/en.yml) file.
+     you'll need to add it to [en.yml](https://gitlab.com/gitlab-org/gitlab/blob/master/config/locales/en.yml) file.
   1. **Through `strftime`**, i.e. `milestone.start_date.strftime('%b %-d')`. We use `strftime` in case none of the formats
-     defined on [en.yml](https://gitlab.com/gitlab-org/gitlab-foss/blob/master/config/locales/en.yml) matches the date/time
+     defined on [en.yml](https://gitlab.com/gitlab-org/gitlab/blob/master/config/locales/en.yml) matches the date/time
      specifications we need, and if there is no need to add it as a new format because is very particular (i.e. it's only used in a single view).
 
 ## Best practices
@@ -313,17 +313,22 @@ Developer documentation][mdn].
 
 ## Updating the PO files with the new content
 
-Now that the new content is marked for translation, we need to update the PO
-files with the following command:
+Now that the new content is marked for translation, we need to update
+`locale/gitlab.pot` files with the following command:
 
 ```sh
 bin/rake gettext:regenerate
 ```
 
-This command will update the `locale/gitlab.pot` file with the newly externalized
+This command will update `locale/gitlab.pot` file with the newly externalized
 strings and remove any strings that aren't used anymore. You should check this
 file in. Once the changes are on master, they will be picked up by
-[Crowdin](http://translate.gitlab.com) and be presented for translation.
+[Crowdin](https://translate.gitlab.com) and be presented for
+translation.
+
+We don't need to check in any changes to the
+`locale/[language]/gitlab.po` files. Those will be updated in a [when
+translations from Crowdin are merged](merging_translations.md).
 
 If there are merge conflicts in the `gitlab.pot` file, you can delete the file
 and regenerate it using the same command.

@@ -40,7 +40,7 @@ module Projects
         return unless tags.count == other_tags.count
 
         # delete all tags
-        tags.map(&:delete)
+        tags.map(&:unsafe_delete)
       end
 
       def group_by_digest(tags)

@@ -46,3 +46,4 @@ dast:
   except:
     variables:
       - $DAST_DISABLED
+      - $DAST_DISABLED_FOR_DEFAULT_BRANCH && $CI_DEFAULT_BRANCH == $CI_COMMIT_REF_NAME

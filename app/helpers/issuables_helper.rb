@@ -272,7 +272,7 @@ module IssuablesHelper
       markdownPreviewPath: preview_markdown_path(parent),
       markdownDocsPath: help_page_path('user/markdown'),
       lockVersion: issuable.lock_version,
-      issuableTemplates: issuable_templates(issuable),
+      issuableTemplateNamesPath: template_names_path(parent, issuable),
       initialTitleHtml: markdown_field(issuable, :title),
       initialTitleText: issuable.title,
       initialDescriptionHtml: markdown_field(issuable, :description),
@@ -372,6 +372,12 @@ module IssuablesHelper
     finder.class.scalar_params.any? { |p| params[p].present? }
   end
 
+  def assignee_sidebar_data(assignee, merge_request: nil)
+    { avatar_url: assignee.avatar_url, name: assignee.name, username: assignee.username }.tap do |data|
+      data[:can_merge] = merge_request.can_be_merged_by?(assignee) if merge_request
+    end
+  end
+
   private
 
   def sidebar_gutter_collapsed?
@@ -427,6 +433,12 @@ module IssuablesHelper
     elsif @group
       group_labels_path(@group)
     end
+  end
+
+  def template_names_path(parent, issuable)
+    return '' unless parent.is_a?(Project)
+
+    project_template_names_path(parent, template_type: issuable.class.name.underscore)
   end
 
   def issuable_sidebar_options(issuable)

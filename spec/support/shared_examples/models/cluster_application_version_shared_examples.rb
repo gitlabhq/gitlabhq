@@ -12,7 +12,7 @@ shared_examples 'cluster application version specs' do |application_name|
 
     context 'version is the same as VERSION' do
       let(:application) { build(application_name) }
-      let(:version) { application.class.const_get(:VERSION) }
+      let(:version) { application.class.const_get(:VERSION, false) }
 
       it { is_expected.to be_falsey }
     end

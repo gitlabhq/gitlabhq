@@ -193,7 +193,7 @@ cd /home/git/gitlab-shell
 
 sudo -u git -H git fetch --all --tags --prune
 sudo -u git -H git checkout v$(</home/git/gitlab/GITLAB_SHELL_VERSION)
-sudo -u git -H bin/compile
+sudo -u git -H make build
 ```
 
 ### 9. Update GitLab Workhorse
@@ -253,7 +253,7 @@ cd /home/git/gitlab
 git diff origin/PREVIOUS_BRANCH:config/gitlab.yml.example origin/BRANCH:config/gitlab.yml.example
 ```
 
-#### Nginx configuration
+#### NGINX configuration
 
 Ensure you're still up-to-date with the latest NGINX configuration changes:
 
@@ -268,13 +268,13 @@ git diff origin/PREVIOUS_BRANCH:lib/support/nginx/gitlab origin/BRANCH:lib/suppo
 ```
 
 If you are using Strict-Transport-Security in your installation to continue
-using it you must enable it in your Nginx configuration as GitLab application no
+using it you must enable it in your NGINX configuration as GitLab application no
 longer handles setting it.
 
 If you are using Apache instead of NGINX please see the updated [Apache templates].
 Also note that because Apache does not support upstreams behind Unix sockets you
 will need to let GitLab Workhorse listen on a TCP port. You can do this
-via [`/etc/default/gitlab`](https://gitlab.com/gitlab-org/gitlab-foss/blob/master/lib/support/init.d/gitlab.default.example#L38).
+via [`/etc/default/gitlab`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/support/init.d/gitlab.default.example#L38).
 
 #### SMTP configuration
 
@@ -400,7 +400,7 @@ sudo -u git -H bundle exec rake gitlab:backup:restore RAILS_ENV=production
 
 If you have more than one backup `*.tar` file(s) please add `BACKUP=timestamp_of_backup` to the command above.
 
-[yaml]: https://gitlab.com/gitlab-org/gitlab-foss/blob/master/config/gitlab.yml.example
-[gl-example]: https://gitlab.com/gitlab-org/gitlab-foss/blob/master/lib/support/init.d/gitlab.default.example
-[smtp_settings.rb.sample]: https://gitlab.com/gitlab-org/gitlab-foss/blob/master/config/initializers/smtp_settings.rb.sample#L13
+[yaml]: https://gitlab.com/gitlab-org/gitlab/blob/master/config/gitlab.yml.example
+[gl-example]: https://gitlab.com/gitlab-org/gitlab/blob/master/lib/support/init.d/gitlab.default.example
+[smtp_settings.rb.sample]: https://gitlab.com/gitlab-org/gitlab/blob/master/config/initializers/smtp_settings.rb.sample#L13
 [Apache templates]: https://gitlab.com/gitlab-org/gitlab-recipes/tree/master/web-server/apache

@@ -55,6 +55,10 @@ Rails.application.routes.draw do
     get '/autocomplete/project_groups' => 'autocomplete#project_groups'
   end
 
+  # Sign up
+  get 'users/sign_up/welcome' => 'registrations#welcome'
+  patch 'users/sign_up/update_role' => 'registrations#update_role'
+
   # Search
   get 'search' => 'search#show'
   get 'search/autocomplete' => 'search#autocomplete', as: :search_autocomplete
@@ -145,6 +149,7 @@ Rails.application.routes.draw do
           get :metrics, format: :json
           get :metrics_dashboard
           get :'/prometheus/api/v1/*proxy_path', to: 'clusters#prometheus_proxy', as: :prometheus_api
+          get :environments, format: :json
         end
 
         scope :applications do

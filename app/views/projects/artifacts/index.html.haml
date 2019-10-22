@@ -1,0 +1,10 @@
+- @no_container = true
+- page_title _('Artifacts')
+
+%div{ class: container_class }
+  .top-area.py-3
+    .align-self-center
+      = _('Total artifacts size: %{total_size}') % { total_size: number_to_human_size(@total_size, precicion: 2) }
+
+  .content-list.builds-content-list
+    = render "table", artifacts: @artifacts, project: @project

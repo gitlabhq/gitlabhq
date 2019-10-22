@@ -388,20 +388,6 @@ describe('prettyTime methods', () => {
       expect(datetimeUtility.stringifyTime(timeObject, true)).toEqual('1 week 1 hour');
     });
   });
-
-  describe('abbreviateTime', () => {
-    it('should abbreviate stringified times for weeks', () => {
-      const fullTimeString = '1w 3d 4h 5m';
-
-      expect(datetimeUtility.abbreviateTime(fullTimeString)).toBe('1w');
-    });
-
-    it('should abbreviate stringified times for non-weeks', () => {
-      const fullTimeString = '0w 3d 4h 5m';
-
-      expect(datetimeUtility.abbreviateTime(fullTimeString)).toBe('3d');
-    });
-  });
 });
 
 describe('calculateRemainingMilliseconds', () => {
@@ -438,5 +424,20 @@ describe('newDate', () => {
     const initialDate = datetimeUtility.newDate();
 
     expect(initialDate instanceof Date).toBe(true);
+  });
+});
+
+describe('getDateInPast', () => {
+  const date = new Date(1563235200000); // 2019-07-16T00:00:00.000Z;
+  const daysInPast = 90;
+
+  it('returns the correct date in the past', () => {
+    const dateInPast = datetimeUtility.getDateInPast(date, daysInPast);
+    expect(dateInPast).toBe('2019-04-17T00:00:00.000Z');
+  });
+
+  it('does not modifiy the original date', () => {
+    datetimeUtility.getDateInPast(date, daysInPast);
+    expect(date).toStrictEqual(new Date(1563235200000));
   });
 });

@@ -6,7 +6,7 @@
 
  The access levels are defined in the `Gitlab::Access` module. Currently, these levels are recognized:
 
-```
+```plaintext
 10 => Guest access
 20 => Reporter access
 30 => Developer access
@@ -18,14 +18,16 @@
 
 Gets a list of access requests viewable by the authenticated user.
 
-```
+```plaintext
 GET /groups/:id/access_requests
 GET /projects/:id/access_requests
 ```
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| Attribute | Type           | Required | Description |
+| --------- | -------------- | -------- | ----------- |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+
+Example request:
 
 ```bash
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/:id/access_requests
@@ -59,14 +61,16 @@ Example response:
 
 Requests access for the authenticated user to a group or project.
 
-```
+```plaintext
 POST /groups/:id/access_requests
 POST /projects/:id/access_requests
 ```
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| Attribute | Type           | Required | Description |
+| --------- | -------------- | -------- | ----------- |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+
+Example request:
 
 ```bash
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/:id/access_requests
@@ -90,16 +94,18 @@ Example response:
 
 Approves an access request for the given user.
 
-```
+```plaintext
 PUT /groups/:id/access_requests/:user_id/approve
 PUT /projects/:id/access_requests/:user_id/approve
 ```
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
-| `user_id` | integer | yes   | The user ID of the access requester |
-| `access_level` | integer | no | A valid access level (defaults: `30`, developer access level) |
+| Attribute      | Type           | Required | Description |
+| -------------- | -------------- | -------- | ----------- |
+| `id`           | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `user_id`      | integer        | yes      | The user ID of the access requester                                                                             |
+| `access_level` | integer        | no       | A valid access level (defaults: `30`, developer access level)                                                   |
+
+Example request:
 
 ```bash
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/:id/access_requests/:user_id/approve?access_level=20
@@ -123,15 +129,17 @@ Example response:
 
 Denies an access request for the given user.
 
-```
+```plaintext
 DELETE /groups/:id/access_requests/:user_id
 DELETE /projects/:id/access_requests/:user_id
 ```
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
-| `user_id` | integer | yes   | The user ID of the access requester |
+| Attribute | Type           | Required | Description |
+| --------- | -------------- | -------- | ----------- |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `user_id` | integer        | yes      | The user ID of the access requester                                                                             |
+
+Example request:
 
 ```bash
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/:id/access_requests/:user_id

@@ -20,6 +20,12 @@ module Gitlab
           'projects/lfs_locks_api' => %w{verify create unlock}
         }.freeze
 
+        WHITELISTED_GIT_REVISION_ROUTES = {
+          'projects/compare' => %w{create}
+        }.freeze
+
+        GRAPHQL_URL = '/api/graphql'
+
         def initialize(app, env)
           @app = app
           @env = env
@@ -79,7 +85,7 @@ module Gitlab
 
         # Overridden in EE module
         def whitelisted_routes
-          grack_route? || internal_route? || lfs_route? || sidekiq_route?
+          grack_route? || internal_route? || lfs_route? || compare_git_revisions_route? || sidekiq_route? || graphql_query?
         end
 
         def grack_route?
@@ -92,6 +98,13 @@ module Gitlab
 
         def internal_route?
           ReadOnly.internal_routes.any? { |path| request.path.include?(path) }
+        end
+
+        def compare_git_revisions_route?
+          # Calling route_hash may be expensive. Only do it if we think there's a possible match
+          return false unless request.post? && request.path.end_with?('compare')
+
+          WHITELISTED_GIT_REVISION_ROUTES[route_hash[:controller]]&.include?(route_hash[:action])
         end
 
         def lfs_route?
@@ -107,6 +120,10 @@ module Gitlab
 
         def sidekiq_route?
           request.path.start_with?("#{relative_url}/admin/sidekiq")
+        end
+
+        def graphql_query?
+          request.post? && request.path.start_with?(GRAPHQL_URL)
         end
       end
     end

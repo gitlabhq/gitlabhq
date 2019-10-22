@@ -48,8 +48,8 @@ describe Projects::HashedStorage::MigrateRepositoryService do
       it 'renames project and wiki repositories' do
         service.execute
 
-        expect(gitlab_shell.exists?(project.repository_storage, "#{new_disk_path}.git")).to be_truthy
-        expect(gitlab_shell.exists?(project.repository_storage, "#{new_disk_path}.wiki.git")).to be_truthy
+        expect(gitlab_shell.repository_exists?(project.repository_storage, "#{new_disk_path}.git")).to be_truthy
+        expect(gitlab_shell.repository_exists?(project.repository_storage, "#{new_disk_path}.wiki.git")).to be_truthy
       end
 
       it 'updates project to be hashed and not read-only' do
@@ -84,14 +84,13 @@ describe Projects::HashedStorage::MigrateRepositoryService do
 
         service.execute
 
-        expect(gitlab_shell.exists?(project.repository_storage, "#{new_disk_path}.git")).to be_falsey
-        expect(gitlab_shell.exists?(project.repository_storage, "#{new_disk_path}.wiki.git")).to be_falsey
+        expect(gitlab_shell.repository_exists?(project.repository_storage, "#{new_disk_path}.git")).to be_falsey
+        expect(gitlab_shell.repository_exists?(project.repository_storage, "#{new_disk_path}.wiki.git")).to be_falsey
         expect(project.repository_read_only?).to be_falsey
       end
 
       context 'when rollback fails' do
         before do
-          hashed_storage.ensure_storage_path_exists
           gitlab_shell.mv_repository(project.repository_storage, old_disk_path, new_disk_path)
         end
 

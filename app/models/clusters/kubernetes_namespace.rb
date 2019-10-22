@@ -27,7 +27,7 @@ module Clusters
         algorithm: 'aes-256-cbc'
 
     scope :has_service_account_token, -> { where.not(encrypted_service_account_token: nil) }
-    scope :with_environment_slug, -> (slug) { joins(:environment).where(environments: { slug: slug }) }
+    scope :with_environment_name, -> (name) { joins(:environment).where(environments: { name: name }) }
 
     def token_name
       "#{namespace}-token"

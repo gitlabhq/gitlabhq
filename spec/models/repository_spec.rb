@@ -279,7 +279,7 @@ describe Repository do
   describe '#commits' do
     context 'when neither the all flag nor a ref are specified' do
       it 'returns every commit from default branch' do
-        expect(repository.commits(limit: 60).size).to eq(37)
+        expect(repository.commits(nil, limit: 60).size).to eq(37)
       end
     end
 
@@ -320,7 +320,7 @@ describe Repository do
 
     context "when 'all' flag is set" do
       it 'returns every commit from the repository' do
-        expect(repository.commits(all: true, limit: 60).size).to eq(60)
+        expect(repository.commits(nil, all: true, limit: 60).size).to eq(60)
       end
     end
   end
@@ -1075,7 +1075,7 @@ describe Repository do
       let(:ref) { 'refs/heads/master' }
 
       it 'returns nil' do
-        is_expected.to eq(nil)
+        is_expected.to be_nil
       end
     end
 
@@ -1193,66 +1193,84 @@ describe Repository do
   end
 
   describe '#has_visible_content?' do
-    before do
-      # If raw_repository.has_visible_content? gets called more than once then
-      # caching is broken. We don't want that.
+    it 'delegates to raw_repository when true' do
       expect(repository.raw_repository).to receive(:has_visible_content?)
-        .once
-        .and_return(result)
+        .and_return(true)
+
+      expect(repository.has_visible_content?).to eq(true)
     end
 
-    context 'when true' do
-      let(:result) { true }
+    it 'delegates to raw_repository when false' do
+      expect(repository.raw_repository).to receive(:has_visible_content?)
+        .and_return(false)
 
-      it 'returns true and caches it' do
-        expect(repository.has_visible_content?).to eq(true)
-        # Second call hits the cache
-        expect(repository.has_visible_content?).to eq(true)
-      end
+      expect(repository.has_visible_content?).to eq(false)
     end
 
-    context 'when false' do
-      let(:result) { false }
-
-      it 'returns false and caches it' do
-        expect(repository.has_visible_content?).to eq(false)
-        # Second call hits the cache
-        expect(repository.has_visible_content?).to eq(false)
-      end
-    end
+    it_behaves_like 'asymmetric cached method', :has_visible_content?
   end
 
   describe '#branch_exists?' do
-    it 'uses branch_names' do
-      allow(repository).to receive(:branch_names).and_return(['foobar'])
+    let(:branch) { repository.root_ref }
 
-      expect(repository.branch_exists?('foobar')).to eq(true)
-      expect(repository.branch_exists?('master')).to eq(false)
+    subject { repository.branch_exists?(branch) }
+
+    it 'delegates to branch_names when the cache is empty' do
+      repository.expire_branches_cache
+
+      expect(repository).to receive(:branch_names).and_call_original
+      is_expected.to eq(true)
+    end
+
+    it 'uses redis set caching when the cache is filled' do
+      repository.branch_names # ensure the branch name cache is filled
+
+      expect(repository)
+        .to receive(:branch_names_include?)
+        .with(branch)
+        .and_call_original
+
+      is_expected.to eq(true)
     end
   end
 
   describe '#tag_exists?' do
-    it 'uses tag_names' do
-      allow(repository).to receive(:tag_names).and_return(['foobar'])
+    let(:tag) { repository.tags.first.name }
 
-      expect(repository.tag_exists?('foobar')).to eq(true)
-      expect(repository.tag_exists?('master')).to eq(false)
+    subject { repository.tag_exists?(tag) }
+
+    it 'delegates to tag_names when the cache is empty' do
+      repository.expire_tags_cache
+
+      expect(repository).to receive(:tag_names).and_call_original
+      is_expected.to eq(true)
+    end
+
+    it 'uses redis set caching when the cache is filled' do
+      repository.tag_names # ensure the tag name cache is filled
+
+      expect(repository)
+        .to receive(:tag_names_include?)
+        .with(tag)
+        .and_call_original
+
+      is_expected.to eq(true)
     end
   end
 
-  describe '#branch_names', :use_clean_rails_memory_store_caching do
+  describe '#branch_names', :clean_gitlab_redis_cache do
     let(:fake_branch_names) { ['foobar'] }
 
     it 'gets cached across Repository instances' do
       allow(repository.raw_repository).to receive(:branch_names).once.and_return(fake_branch_names)
 
-      expect(repository.branch_names).to eq(fake_branch_names)
+      expect(repository.branch_names).to match_array(fake_branch_names)
 
       fresh_repository = Project.find(project.id).repository
       expect(fresh_repository.object_id).not_to eq(repository.object_id)
 
       expect(fresh_repository.raw_repository).not_to receive(:branch_names)
-      expect(fresh_repository.branch_names).to eq(fake_branch_names)
+      expect(fresh_repository.branch_names).to match_array(fake_branch_names)
     end
   end
 
@@ -1972,7 +1990,7 @@ describe Repository do
     it 'returns nil if repo does not exist' do
       allow(repository).to receive(:root_ref).and_raise(Gitlab::Git::Repository::NoRepository)
 
-      expect(repository.avatar).to eq(nil)
+      expect(repository.avatar).to be_nil
     end
 
     it 'returns the first avatar file found in the repository' do
@@ -2574,6 +2592,10 @@ describe Repository do
       expect { repository.create_if_not_exists }.to change { repository.exists? }.from(false).to(true)
     end
 
+    it 'returns true' do
+      expect(repository.create_if_not_exists).to eq(true)
+    end
+
     it 'calls out to the repository client to create a repo' do
       expect(repository.raw.gitaly_repository_client).to receive(:create_repository)
 
@@ -2588,6 +2610,10 @@ describe Repository do
 
         repository.create_if_not_exists
       end
+
+      it 'returns nil' do
+        expect(repository.create_if_not_exists).to be_nil
+      end
     end
 
     context 'when the repository exists but the cache is not up to date' do
@@ -2598,6 +2624,10 @@ describe Repository do
         expect(repository.raw).to receive(:create_repository).and_call_original
 
         expect { repository.create_if_not_exists }.not_to raise_error
+      end
+
+      it 'returns nil' do
+        expect(repository.create_if_not_exists).to be_nil
       end
     end
   end

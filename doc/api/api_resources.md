@@ -104,6 +104,7 @@ The following API resources are available outside of project and group contexts 
 | Resource                                          | Available endpoints                                                     |
 |:--------------------------------------------------|:------------------------------------------------------------------------|
 | [Applications](applications.md)                   | `/applications`                                                         |
+| [Audit Events](audit_events.md) **(PREMIUM ONLY)** | `/audit_events`                                                         |
 | [Avatar](avatar.md)                               | `/avatar`                                                               |
 | [Broadcast messages](broadcast_messages.md)       | `/broadcast_messages`                                                   |
 | [Code snippets](snippets.md)                      | `/snippets`                                                             |

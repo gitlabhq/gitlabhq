@@ -104,7 +104,6 @@ class GroupsController < Groups::ApplicationController
       redirect_to edit_group_path(@group, anchor: params[:update_section]), notice: "Group '#{@group.name}' was successfully updated."
     else
       @group.path = @group.path_before_last_save || @group.path_was
-
       render action: "edit"
     end
   end
@@ -124,7 +123,7 @@ class GroupsController < Groups::ApplicationController
       flash[:notice] = "Group '#{@group.name}' was successfully transferred."
       redirect_to group_path(@group)
     else
-      flash[:alert] = service.error
+      flash[:alert] = service.error.html_safe
       redirect_to edit_group_path(@group)
     end
   end
@@ -198,15 +197,13 @@ class GroupsController < Groups::ApplicationController
   def load_events
     params[:sort] ||= 'latest_activity_desc'
 
-    options = {}
-    options[:include_subgroups] = true
-
-    @projects = GroupProjectsFinder.new(params: params, group: group, options: options, current_user: current_user)
-                  .execute
-                  .includes(:namespace)
+    options = { include_subgroups: true }
+    projects = GroupProjectsFinder.new(params: params, group: group, options: options, current_user: current_user)
+                 .execute
+                 .includes(:namespace)
 
     @events = EventCollection
-                .new(@projects, offset: params[:offset].to_i, filter: event_filter)
+                .new(projects, offset: params[:offset].to_i, filter: event_filter, groups: groups)
                 .to_a
 
     Events::RenderService
@@ -227,6 +224,14 @@ class GroupsController < Groups::ApplicationController
     params[:id] = group.to_param
 
     url_for(safe_params)
+  end
+
+  private
+
+  def groups
+    if @group.supports_events?
+      @group.self_and_descendants.public_or_visible_to_user(current_user)
+    end
   end
 end
 

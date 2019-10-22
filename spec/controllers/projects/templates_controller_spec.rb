@@ -99,4 +99,44 @@ describe Projects::TemplatesController do
       include_examples 'renders 404 when params are invalid'
     end
   end
+
+  describe '#names' do
+    before do
+      project.add_developer(user)
+      sign_in(user)
+    end
+
+    shared_examples 'template names request' do
+      it 'returns the template names' do
+        get(:names, params: { namespace_id: project.namespace, template_type: template_type, project_id: project }, format: :json)
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response.size).to eq(1)
+        expect(json_response[0]['name']).to eq(expected_template_name)
+      end
+
+      it 'fails for user with no access' do
+        other_user = create(:user)
+        sign_in(other_user)
+
+        get(:names, params: { namespace_id: project.namespace, template_type: template_type, project_id: project }, format: :json)
+
+        expect(response).to have_gitlab_http_status(404)
+      end
+    end
+
+    context 'when querying for issue templates' do
+      it_behaves_like 'template names request' do
+        let(:template_type) { 'issue' }
+        let(:expected_template_name) { 'issue_template' }
+      end
+    end
+
+    context 'when querying for merge_request templates' do
+      it_behaves_like 'template names request' do
+        let(:template_type) { 'merge_request' }
+        let(:expected_template_name) { 'merge_request_template' }
+      end
+    end
+  end
 end

@@ -41,7 +41,7 @@ describe Members::RequestAccessService do
   context 'when access requests are disabled' do
     %i[project group].each do |source_type|
       it_behaves_like 'a service raising Gitlab::Access::AccessDeniedError' do
-        let(:source) { create(source_type, :public) }
+        let(:source) { create(source_type, :public, :request_access_disabled) }
       end
     end
   end
@@ -49,7 +49,7 @@ describe Members::RequestAccessService do
   context 'when current user can request access to the project' do
     %i[project group].each do |source_type|
       it_behaves_like 'a service creating a access request' do
-        let(:source) { create(source_type, :public, :access_requestable) }
+        let(:source) { create(source_type, :public) }
       end
     end
   end

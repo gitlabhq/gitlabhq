@@ -141,6 +141,40 @@ describe GlobalPolicy do
     end
   end
 
+  describe 'receive notifications' do
+    describe 'regular user' do
+      it { is_expected.to be_allowed(:receive_notifications) }
+    end
+
+    describe 'admin' do
+      let(:current_user) { create(:admin) }
+
+      it { is_expected.to be_allowed(:receive_notifications) }
+    end
+
+    describe 'anonymous' do
+      let(:current_user) { nil }
+
+      it { is_expected.not_to be_allowed(:receive_notifications) }
+    end
+
+    describe 'blocked user' do
+      before do
+        current_user.block
+      end
+
+      it { is_expected.not_to be_allowed(:receive_notifications) }
+    end
+
+    describe 'deactivated user' do
+      before do
+        current_user.deactivate
+      end
+
+      it { is_expected.not_to be_allowed(:receive_notifications) }
+    end
+  end
+
   describe 'git access' do
     describe 'regular user' do
       it { is_expected.to be_allowed(:access_git) }
@@ -156,6 +190,14 @@ describe GlobalPolicy do
       let(:current_user) { nil }
 
       it { is_expected.to be_allowed(:access_git) }
+    end
+
+    describe 'deactivated user' do
+      before do
+        current_user.deactivate
+      end
+
+      it { is_expected.not_to be_allowed(:access_git) }
     end
 
     context 'when terms are enforced' do
@@ -241,6 +283,14 @@ describe GlobalPolicy do
     context 'when blocked' do
       before do
         current_user.block
+      end
+
+      it { is_expected.not_to be_allowed(:use_slash_commands) }
+    end
+
+    context 'when deactivated' do
+      before do
+        current_user.deactivate
       end
 
       it { is_expected.not_to be_allowed(:use_slash_commands) }

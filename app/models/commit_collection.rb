@@ -34,6 +34,20 @@ class CommitCollection
     end
   end
 
+  # Returns the collection with the latest pipeline for every commit pre-set.
+  #
+  # Setting the pipeline for each commit ahead of time removes the need for running
+  # a query for every commit we're displaying.
+  def with_latest_pipeline(ref = nil)
+    pipelines = project.ci_pipelines.latest_pipeline_per_commit(map(&:id), ref)
+
+    each do |commit|
+      commit.set_latest_pipeline_for_ref(ref, pipelines[commit.id])
+    end
+
+    self
+  end
+
   def unenriched
     commits.reject(&:gitaly_commit?)
   end
@@ -58,22 +72,15 @@ class CommitCollection
     end.compact]
 
     # Replace the commits, keeping the same order
-    @commits = @commits.map do |c|
-      replacements.fetch(c.id, c)
-    end
+    @commits = @commits.map do |original_commit|
+      # Return the original instance: if it didn't need to be batchloaded, it was
+      # already enriched.
+      batch_loaded_commit = replacements.fetch(original_commit.id, original_commit)
 
-    self
-  end
-
-  # Sets the pipeline status for every commit.
-  #
-  # Setting this status ahead of time removes the need for running a query for
-  # every commit we're displaying.
-  def with_pipeline_status
-    statuses = project.ci_pipelines.latest_status_per_commit(map(&:id), ref)
-
-    each do |commit|
-      commit.set_status_for_ref(ref, statuses[commit.id])
+      # If batch loading the commit failed, fall back to the original commit.
+      # We need to explicitly check `.nil?` since otherwise a `BatchLoader` instance
+      # that looks like `nil` is returned.
+      batch_loaded_commit.nil? ? original_commit : batch_loaded_commit
     end
 
     self

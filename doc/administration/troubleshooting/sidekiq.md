@@ -238,7 +238,7 @@ workers.each do |process_id, thread_id, work|
 end
 ```
 
-### Remove sidekiq jobs for given parameters (destructive)
+### Remove Sidekiq jobs for given parameters (destructive)
 
 ```ruby
 # for jobs like this:

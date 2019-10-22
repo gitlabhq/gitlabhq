@@ -17,7 +17,6 @@ module Gitlab
           .merge(features_usage_data)
           .merge(components_usage_data)
           .merge(cycle_analytics_usage_data)
-          .merge(usage_counters)
       end
 
       def to_json(force_refresh: false)
@@ -38,7 +37,7 @@ module Gitlab
         usage_data
       end
 
-      # rubocop:disable Metrics/AbcSize
+      # rubocop: disable Metrics/AbcSize
       # rubocop: disable CodeReuse/ActiveRecord
       def system_usage_data
         {
@@ -97,13 +96,16 @@ module Gitlab
             todos: count(Todo),
             uploads: count(Upload),
             web_hooks: count(WebHook)
-          }.merge(services_usage)
-            .merge(approximate_counts)
-        }.tap do |data|
-          data[:counts][:user_preferences] = user_preferences_usage
-        end
+          }.merge(
+            services_usage,
+            approximate_counts,
+            usage_counters,
+            user_preferences_usage
+          )
+        }
       end
       # rubocop: enable CodeReuse/ActiveRecord
+      # rubocop: enable Metrics/AbcSize
 
       def cycle_analytics_usage_data
         Gitlab::CycleAnalytics::UsageData.new.to_json
@@ -116,6 +118,7 @@ module Gitlab
       def features_usage_data_ce
         {
           container_registry_enabled: Gitlab.config.registry.enabled,
+          dependency_proxy_enabled: Gitlab.config.try(:dependency_proxy)&.enabled,
           gitlab_shared_runners_enabled: Gitlab.config.gitlab_ci.shared_runners_enabled,
           gravatar_enabled: Gitlab::CurrentSettings.gravatar_enabled?,
           influxdb_metrics_enabled: Gitlab::Metrics.influx_metrics_enabled?,
@@ -136,15 +139,15 @@ module Gitlab
       # @return [Array<#totals>] An array of objects that respond to `#totals`
       def usage_data_counters
         [
-         Gitlab::UsageDataCounters::WikiPageCounter,
-         Gitlab::UsageDataCounters::WebIdeCounter,
-         Gitlab::UsageDataCounters::NoteCounter,
-         Gitlab::UsageDataCounters::SnippetCounter,
-         Gitlab::UsageDataCounters::SearchCounter,
-         Gitlab::UsageDataCounters::CycleAnalyticsCounter,
-         Gitlab::UsageDataCounters::ProductivityAnalyticsCounter,
-         Gitlab::UsageDataCounters::SourceCodeCounter,
-         Gitlab::UsageDataCounters::MergeRequestCounter
+          Gitlab::UsageDataCounters::WikiPageCounter,
+          Gitlab::UsageDataCounters::WebIdeCounter,
+          Gitlab::UsageDataCounters::NoteCounter,
+          Gitlab::UsageDataCounters::SnippetCounter,
+          Gitlab::UsageDataCounters::SearchCounter,
+          Gitlab::UsageDataCounters::CycleAnalyticsCounter,
+          Gitlab::UsageDataCounters::ProductivityAnalyticsCounter,
+          Gitlab::UsageDataCounters::SourceCodeCounter,
+          Gitlab::UsageDataCounters::MergeRequestCounter
         ]
       end
 
@@ -186,7 +189,7 @@ module Gitlab
           .find_in_batches(batch_size: BATCH_SIZE) do |services|
 
           counts = services.group_by do |service|
-            # TODO: Simplify as part of https://gitlab.com/gitlab-org/gitlab-ce/issues/63084
+            # TODO: Simplify as part of https://gitlab.com/gitlab-org/gitlab/issues/29404
             service_url = service.data_fields&.url || (service.properties && service.properties['url'])
             service_url&.include?('.atlassian.net') ? :cloud : :server
           end

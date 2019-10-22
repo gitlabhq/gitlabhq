@@ -27,7 +27,7 @@ describe Todos::Destroy::PrivateFeaturesService do
   context 'when user_id is provided' do
     subject { described_class.new(project.id, user.id).execute }
 
-    context 'when all feaures have same visibility as the project' do
+    context 'when all features have same visibility as the project' do
       it 'removes only user issue todos' do
         expect { subject }.not_to change { Todo.count }
       end
@@ -92,7 +92,7 @@ describe Todos::Destroy::PrivateFeaturesService do
   context 'when user_id is not provided' do
     subject { described_class.new(project.id).execute }
 
-    context 'when all feaures have same visibility as the project' do
+    context 'when all features have same visibility as the project' do
       it 'does not remove any todos' do
         expect { subject }.not_to change { Todo.count }
       end

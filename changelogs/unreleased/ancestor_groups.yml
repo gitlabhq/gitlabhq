@@ -1,0 +1,5 @@
+---
+title: 'Allow to exclude ancestor groups on group labels API'
+merge_request: 17221
+author: Mathieu Parent
+type: added

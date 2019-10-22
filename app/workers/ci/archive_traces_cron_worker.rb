@@ -5,6 +5,8 @@ module Ci
     include ApplicationWorker
     include CronjobQueue
 
+    feature_category :continuous_integration
+
     # rubocop: disable CodeReuse/ActiveRecord
     def perform
       # Archive stale live traces which still resides in redis or database

@@ -8,7 +8,7 @@ module QA
     describe 'Compare archives of different user projects with the same name and check they\'re different' do
       include Support::Api
 
-      before(:all) do
+      before do
         @project_name = "project-archive-download-#{SecureRandom.hex(8)}"
         @archive_types = %w(tar.gz tar.bz2 tar zip)
         @users = {
@@ -46,7 +46,7 @@ module QA
           project.standalone = true
           project.add_name_uuid = false
           project.name = project_name
-          project.path_with_namespace = "#{user.name}/#{project_name}"
+          project.path_with_namespace = "#{user.username}/#{project_name}"
           project.user = user
           project.api_client = api_client
         end

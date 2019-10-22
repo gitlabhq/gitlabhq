@@ -1,0 +1,5 @@
+---
+title: Stops the expand button in reports from expanding
+merge_request: 18064
+author:
+type: fixed

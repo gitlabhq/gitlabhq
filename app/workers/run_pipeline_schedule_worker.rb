@@ -5,6 +5,7 @@ class RunPipelineScheduleWorker
   include PipelineQueue
 
   queue_namespace :pipeline_creation
+  feature_category :continuous_integration
 
   # rubocop: disable CodeReuse/ActiveRecord
   def perform(schedule_id, user_id)

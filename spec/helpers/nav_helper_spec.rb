@@ -1,16 +1,22 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
-describe NavHelper do
+describe NavHelper, :do_not_mock_admin_mode do
   describe '#header_links' do
+    include_context 'custom session'
+
     before do
-      allow(helper).to receive(:session) { {} }
+      allow(helper).to receive(:session).and_return(session)
     end
 
     context 'when the user is logged in' do
-      let(:user) { build(:user) }
+      let(:user) { create(:user) }
+      let(:current_user_mode) { Gitlab::Auth::CurrentUserMode.new(user) }
 
       before do
         allow(helper).to receive(:current_user).and_return(user)
+        allow(helper).to receive(:current_user_mode).and_return(current_user_mode)
         allow(helper).to receive(:can?) { true }
       end
 
@@ -24,6 +30,46 @@ describe NavHelper do
         expect(helper).to receive(:session) { { impersonator_id: 1 } }
 
         expect(helper.header_links).to include(:admin_impersonation)
+      end
+
+      context 'as admin' do
+        let(:user) { create(:user, :admin) }
+
+        context 'feature flag :user_mode_in_session is enabled' do
+          it 'does not contain the admin mode link by default' do
+            expect(helper.header_links).not_to include(:admin_mode)
+          end
+
+          context 'with admin mode enabled' do
+            before do
+              current_user_mode.enable_admin_mode!(password: user.password)
+            end
+
+            it 'contains the admin mode link' do
+              expect(helper.header_links).to include(:admin_mode)
+            end
+          end
+        end
+
+        context 'feature flag :user_mode_in_session is disabled' do
+          before do
+            stub_feature_flags(user_mode_in_session: false)
+          end
+
+          it 'does not contain the admin mode link' do
+            expect(helper.header_links).not_to include(:admin_mode)
+          end
+
+          context 'with admin mode enabled' do
+            before do
+              current_user_mode.enable_admin_mode!(password: user.password)
+            end
+
+            it 'has no effect on header links' do
+              expect(helper.header_links).not_to include(:admin_mode)
+            end
+          end
+        end
       end
 
       context 'when the user cannot read cross project' do

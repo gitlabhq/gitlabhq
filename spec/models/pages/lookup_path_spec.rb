@@ -57,8 +57,18 @@ describe Pages::LookupPath do
   end
 
   describe '#prefix' do
-    it 'returns "/"' do
+    it 'returns "/" for pages group root projects' do
+      project = instance_double(Project, pages_group_root?: true)
+      lookup_path = described_class.new(project, trim_prefix: 'mygroup')
+
       expect(lookup_path.prefix).to eq('/')
+    end
+
+    it 'returns the project full path with the provided prefix removed' do
+      project = instance_double(Project, pages_group_root?: false, full_path: 'mygroup/myproject')
+      lookup_path = described_class.new(project, trim_prefix: 'mygroup')
+
+      expect(lookup_path.prefix).to eq('/myproject/')
     end
   end
 end

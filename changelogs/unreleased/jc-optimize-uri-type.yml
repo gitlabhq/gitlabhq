@@ -1,0 +1,5 @@
+---
+title: Use GetBlobs RPC for uri type
+merge_request: 16824
+author:
+type: performance

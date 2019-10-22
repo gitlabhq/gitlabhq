@@ -537,9 +537,9 @@ Possible response status codes:
 | 400       | Invalid path provided                |
 | 404       | Build not found or no file/artifacts |
 
-## Get a trace file
+## Get a log file
 
-Get a trace of a specific job of a project
+Get a log (trace) of a specific job of a project:
 
 ```
 GET /projects/:id/jobs/:job_id/trace
@@ -556,10 +556,10 @@ curl --location --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.ex
 
 Possible response status codes:
 
-| Status    | Description                       |
-|-----------|-----------------------------------|
-| 200       | Serves the trace file             |
-| 404       | Build not found or no trace file  |
+| Status    | Description                   |
+|-----------|-------------------------------|
+| 200       | Serves the log file           |
+| 404       | Job not found or no log file  |
 
 ## Cancel a job
 
@@ -661,7 +661,7 @@ Example of response
 
 ## Erase a job
 
-Erase a single job of a project (remove job artifacts and a job trace)
+Erase a single job of a project (remove job artifacts and a job log)
 
 ```
 POST /projects/:id/jobs/:job_id/erase

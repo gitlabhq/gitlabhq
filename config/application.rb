@@ -13,6 +13,7 @@ Bundler.require(*Rails.groups)
 module Gitlab
   class Application < Rails::Application
     require_dependency Rails.root.join('lib/gitlab')
+    require_dependency Rails.root.join('lib/gitlab/utils')
     require_dependency Rails.root.join('lib/gitlab/redis/wrapper')
     require_dependency Rails.root.join('lib/gitlab/redis/cache')
     require_dependency Rails.root.join('lib/gitlab/redis/queues')
@@ -46,18 +47,20 @@ module Gitlab
 
     config.generators.templates.push("#{config.root}/generator_templates")
 
-    ee_paths = config.eager_load_paths.each_with_object([]) do |path, memo|
-      ee_path = config.root.join('ee', Pathname.new(path).relative_path_from(config.root))
-      memo << ee_path.to_s if ee_path.exist?
+    if Gitlab.ee?
+      ee_paths = config.eager_load_paths.each_with_object([]) do |path, memo|
+        ee_path = config.root.join('ee', Pathname.new(path).relative_path_from(config.root))
+        memo << ee_path.to_s
+      end
+
+      # Eager load should load CE first
+      config.eager_load_paths.push(*ee_paths)
+      config.helpers_paths.push "#{config.root}/ee/app/helpers"
+
+      # Other than Ruby modules we load EE first
+      config.paths['lib/tasks'].unshift "#{config.root}/ee/lib/tasks"
+      config.paths['app/views'].unshift "#{config.root}/ee/app/views"
     end
-
-    # Eager load should load CE first
-    config.eager_load_paths.push(*ee_paths)
-    config.helpers_paths.push "#{config.root}/ee/app/helpers"
-
-    # Other than Ruby modules we load EE first
-    config.paths['lib/tasks'].unshift "#{config.root}/ee/lib/tasks"
-    config.paths['app/views'].unshift "#{config.root}/ee/app/views"
 
     # Rake tasks ignore the eager loading settings, so we need to set the
     # autoload paths explicitly
@@ -178,16 +181,18 @@ module Gitlab
     config.assets.paths << "#{config.root}/node_modules/xterm/src/"
     config.assets.precompile << "xterm.css"
 
-    %w[images javascripts stylesheets].each do |path|
-      config.assets.paths << "#{config.root}/ee/app/assets/#{path}"
-      config.assets.precompile << "jira_connect.js"
-      config.assets.precompile << "pages/jira_connect.css"
+    if Gitlab.ee?
+      %w[images javascripts stylesheets].each do |path|
+        config.assets.paths << "#{config.root}/ee/app/assets/#{path}"
+        config.assets.precompile << "jira_connect.js"
+        config.assets.precompile << "pages/jira_connect.css"
+      end
     end
 
     # Import path for EE specific SCSS entry point
     # In CE it will import a noop file, in EE a functioning file
     # Order is important, so that the ee file takes precedence:
-    config.assets.paths << "#{config.root}/ee/app/assets/stylesheets/_ee"
+    config.assets.paths << "#{config.root}/ee/app/assets/stylesheets/_ee" if Gitlab.ee?
     config.assets.paths << "#{config.root}/app/assets/stylesheets/_ee"
 
     config.assets.paths << "#{config.root}/vendor/assets/javascripts/"
@@ -197,13 +202,15 @@ module Gitlab
     # See https://gitlab.com/gitlab-org/gitlab-foss/issues/64091#note_194512508
     config.assets.paths << "#{config.root}/node_modules"
 
-    # Compile non-JS/CSS assets in the ee/app/assets folder by default
-    # Mimic sprockets-rails default: https://github.com/rails/sprockets-rails/blob/v3.2.1/lib/sprockets/railtie.rb#L84-L87
-    LOOSE_EE_APP_ASSETS = lambda do |logical_path, filename|
-      filename.start_with?(config.root.join("ee/app/assets").to_s) &&
-        !['.js', '.css', ''].include?(File.extname(logical_path))
+    if Gitlab.ee?
+      # Compile non-JS/CSS assets in the ee/app/assets folder by default
+      # Mimic sprockets-rails default: https://github.com/rails/sprockets-rails/blob/v3.2.1/lib/sprockets/railtie.rb#L84-L87
+      LOOSE_EE_APP_ASSETS = lambda do |logical_path, filename|
+        filename.start_with?(config.root.join("ee/app/assets").to_s) &&
+          !['.js', '.css', ''].include?(File.extname(logical_path))
+      end
+      config.assets.precompile << LOOSE_EE_APP_ASSETS
     end
-    config.assets.precompile << LOOSE_EE_APP_ASSETS
 
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'

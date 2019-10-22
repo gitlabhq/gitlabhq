@@ -34,3 +34,16 @@
       = _('Allow requests to the local network from hooks and services.')
   .settings-content
     = render 'outbound'
+
+%section.settings.as-protected-paths.no-animate#js-protected-paths-settings{ class: ('expanded' if expanded_by_default?) }
+  .settings-header
+    %h4
+      = _('Protected Paths')
+    %button.btn.btn-default.js-settings-toggle{ type: 'button' }
+      = expanded_by_default? ? _('Collapse') : _('Expand')
+    %p
+      = _('Configure paths to be protected by Rack Attack. A web server restart is required after changing these settings.')
+  .settings-content
+    = render 'protected_paths'
+
+= render_if_exists 'admin/application_settings/ee_network_settings'

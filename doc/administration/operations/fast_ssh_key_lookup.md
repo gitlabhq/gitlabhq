@@ -2,7 +2,7 @@
 
 NOTE: **Note:** This document describes a drop-in replacement for the
 `authorized_keys` file for normal (non-deploy key) users. Consider
-using [ssh certificates](ssh_certificates.md), they are even faster,
+using [SSH certificates](ssh_certificates.md), they are even faster,
 but are not a drop-in replacement.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/1631) in
@@ -78,7 +78,7 @@ CAUTION: **Caution:** Do not disable writes until SSH is confirmed to be working
 perfectly, because the file will quickly become out-of-date.
 
 In the case of lookup failures (which are common), the `authorized_keys`
-file will still be scanned. So git SSH performance will still be slow for many
+file will still be scanned. So Git SSH performance will still be slow for many
 users as long as a large file exists.
 
 You can disable any more writes to the `authorized_keys` file by unchecking

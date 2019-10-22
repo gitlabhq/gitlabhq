@@ -20,6 +20,7 @@ RSpec.describe GpgSignature do
 
   describe 'validation' do
     subject { described_class.new }
+
     it { is_expected.to validate_presence_of(:commit_sha) }
     it { is_expected.to validate_presence_of(:project_id) }
     it { is_expected.to validate_presence_of(:gpg_key_primary_keyid) }
@@ -57,6 +58,18 @@ RSpec.describe GpgSignature do
       allow(described_class).to receive(:find_or_create_by).and_call_original
 
       described_class.safe_create!(attributes)
+    end
+  end
+
+  describe '.by_commit_sha scope' do
+    let(:gpg_key) { create(:gpg_key, key: GpgHelpers::User2.public_key) }
+    let!(:another_gpg_signature) { create(:gpg_signature, gpg_key: gpg_key) }
+
+    it 'returns all gpg signatures by sha' do
+      expect(described_class.by_commit_sha(commit_sha)).to eq([gpg_signature])
+      expect(
+        described_class.by_commit_sha([commit_sha, another_gpg_signature.commit_sha])
+      ).to contain_exactly(gpg_signature, another_gpg_signature)
     end
   end
 

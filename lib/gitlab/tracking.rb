@@ -6,6 +6,21 @@ module Gitlab
   module Tracking
     SNOWPLOW_NAMESPACE = 'gl'
 
+    module ControllerConcern
+      extend ActiveSupport::Concern
+
+      protected
+
+      def track_event(action = action_name, **args)
+        category = args.delete(:category) || self.class.name
+        Gitlab::Tracking.event(category, action.to_s, **args)
+      end
+
+      def track_self_describing_event(schema_url, event_data_json, **args)
+        Gitlab::Tracking.self_describing_event(schema_url, event_data_json, **args)
+      end
+    end
+
     class << self
       def enabled?
         Gitlab::CurrentSettings.snowplow_enabled?
@@ -15,6 +30,13 @@ module Gitlab
         return unless enabled?
 
         snowplow.track_struct_event(category, action, label, property, value, context, Time.now.to_i)
+      end
+
+      def self_describing_event(schema_url, event_data_json, context: nil)
+        return unless enabled?
+
+        event_json = SnowplowTracker::SelfDescribingJson.new(schema_url, event_data_json)
+        snowplow.track_self_describing_event(event_json, context, Time.now.to_i)
       end
 
       def snowplow_options(group)
@@ -33,7 +55,7 @@ module Gitlab
 
       def snowplow
         @snowplow ||= SnowplowTracker::Tracker.new(
-          SnowplowTracker::Emitter.new(Gitlab::CurrentSettings.snowplow_collector_hostname),
+          SnowplowTracker::AsyncEmitter.new(Gitlab::CurrentSettings.snowplow_collector_hostname, protocol: 'https'),
           SnowplowTracker::Subject.new,
           SNOWPLOW_NAMESPACE,
           Gitlab::CurrentSettings.snowplow_site_id

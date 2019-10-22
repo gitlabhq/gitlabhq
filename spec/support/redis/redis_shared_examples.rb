@@ -90,6 +90,7 @@ RSpec.shared_examples "redis_shared_examples" do
 
   describe '._raw_config' do
     subject { described_class._raw_config }
+
     let(:config_file_name) { '/var/empty/doesnotexist' }
 
     it 'is frozen' do

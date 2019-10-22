@@ -23,15 +23,12 @@ module Gitlab
           @parsed_schema = GraphQLDocs::Parser.new(schema, {}).parse
         end
 
-        def render
-          contents = @layout.render(self)
-
-          write_file(contents)
+        def contents
+          # Render and remove an extra trailing new line
+          @contents ||= @layout.render(self).sub!(/\n(?=\Z)/, '')
         end
 
-        private
-
-        def write_file(contents)
+        def write
           filename = File.join(@output_dir, 'index.md')
 
           FileUtils.mkdir_p(@output_dir)

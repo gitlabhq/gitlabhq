@@ -15,11 +15,10 @@ import { parseBoolean } from '~/lib/utils/common_utils';
  */
 export default function initTodoToggle() {
   $(document).on('todo:toggle', (e, count) => {
-    const parsedCount = parseInt(count, 10);
     const $todoPendingCount = $('.todos-count');
 
-    $todoPendingCount.text(highCountTrim(parsedCount));
-    $todoPendingCount.toggleClass('hidden', parsedCount === 0);
+    $todoPendingCount.text(highCountTrim(count));
+    $todoPendingCount.toggleClass('hidden', count === 0);
   });
 }
 

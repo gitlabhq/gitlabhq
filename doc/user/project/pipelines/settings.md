@@ -21,8 +21,8 @@ from GitLab in a job.
 There are two options. Using:
 
 - `git clone`, which is slower since it clones the repository from scratch
-  for every job, ensuring that the project workspace is always pristine.
-- `git fetch`, which is faster as it re-uses the project workspace (falling
+  for every job, ensuring that the local working copy is always pristine.
+- `git fetch`, which is faster as it re-uses the local working copy (falling
   back to clone if it doesn't exist).
 
 The default Git strategy can be overridden by the [GIT_STRATEGY variable](../../../ci/yaml/README.md#git-strategy)
@@ -60,14 +60,19 @@ if the job surpasses the threshold, it is marked as failed.
 Project defined timeout (either specific timeout set by user or the default
 60 minutes timeout) may be [overridden on Runner level](../../../ci/runners/README.html#setting-maximum-job-timeout-for-a-runner).
 
-## Custom CI config path
+## Maximum artifacts size **(CORE ONLY)**
+
+For information about setting a maximum artifact size for a project, see
+[Maximum artifacts size](../../admin_area/settings/continuous_integration.md#maximum-artifacts-size-core-only).
+
+## Custom CI configuration path
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/12509) in GitLab 9.4.
 
 By default we look for the `.gitlab-ci.yml` file in the project's root
 directory. If you require a different location **within** the repository,
-you can set a custom filepath that will be used to lookup the config file,
-this filepath should be **relative** to the root.
+you can set a custom path that will be used to look up the configuration file,
+this path should be **relative** to the root.
 
 Here are some valid examples:
 
@@ -80,7 +85,7 @@ The path can be customized at a project level. To customize the path:
 
 1. Go to the project's **Settings > CI / CD**.
 1. Expand the **General pipelines** section.
-1. Provide a value in the **Custom CI config path** field.
+1. Provide a value in the **Custom CI configuration path** field.
 1. Click **Save changes**.
 
 ## Test coverage parsing
@@ -92,7 +97,7 @@ job log using a regular expression. In the pipelines settings, search for the
 ![Pipelines settings test coverage](img/pipelines_settings_test_coverage.png)
 
 Leave blank if you want to disable it or enter a ruby regular expression. You
-can use <http://rubular.com> to test your regex.
+can use <https://rubular.com> to test your regex.
 
 If the pipeline succeeds, the coverage is shown in the merge request widget and
 in the jobs table.
@@ -122,37 +127,40 @@ lein cloverage | perl -pe 's/\e\[?.*?[\@-~]//g'
 
 ## Visibility of pipelines
 
-Access to pipelines and job details (including output of logs and artifacts)
-is checked against your current user access level and the **Public pipelines**
-project setting under your project's **Settings > CI/CD > General pipelines settings**.
+Pipeline visibility is determined by:
+
+- Your current [user access level](../../permissions.md).
+- The **Public pipelines** project setting under your project's **Settings > CI/CD > General pipelines**.
+
+This also determines the visibility of these related features:
+
+- Job output logs
+- Job artifacts
+- The [pipeline security dashboard](../../application_security/security_dashboard/index.md#pipeline-security-dashboard) **(ULTIMATE)**
 
 If **Public pipelines** is enabled (default):
 
-- For **public** projects, anyone can view the pipelines and access the job details
-  (output logs and artifacts).
+- For **public** projects, anyone can view the pipelines and related features.
 - For **internal** projects, any logged in user can view the pipelines
-  and access the job details
-  (output logs and artifacts).
-- For **private** projects, any member (guest or higher) can view the pipelines
-  and access the job details
-  (output logs and artifacts).
+  and related features.
+- For **private** projects, any project member (guest or higher) can view the pipelines
+  and related features.
 
 If **Public pipelines** is disabled:
 
 - For **public** projects, anyone can view the pipelines, but only members
-  (reporter or higher) can access the job details (output logs and artifacts).
+  (reporter or higher) can access the related features.
 - For **internal** projects, any logged in user can view the pipelines.
-  However, only members (reporter or higher) can access the job details (output logs
-  and artifacts).
-- For **private** projects, only members (reporter or higher)
-  can view the pipelines and access the job details (output logs and artifacts).
+  However, only members (reporter or higher) can access the job related features.
+- For **private** projects, only project members (reporter or higher)
+  can view the pipelines or access the related features.
 
 ## Auto-cancel pending pipelines
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/9362) in GitLab 9.1.
 
 If you want to auto-cancel all pending non-HEAD pipelines on branch, when
-new pipeline will be created (after your git push or manually from UI),
+new pipeline will be created (after your Git push or manually from UI),
 check **Auto-cancel pending pipelines** checkbox and save the changes.
 
 ## Pipeline Badges

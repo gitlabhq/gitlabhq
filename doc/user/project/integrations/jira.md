@@ -21,13 +21,13 @@ Here's how the integration responds when you take the following actions in GitLa
   - GitLab hyperlinks to the Jira issue.
   - The Jira issue adds an issue link to the commit/MR in GitLab.
   - The Jira issue adds a comment reflecting the comment made in GitLab, the comment author, and a link to the commit/MR in GitLab.
-- **Mention that a commit or MR 'closes', 'resolves', or 'fixes' a Jira issue ID**. When the commit is made on master or the change is merged to master:
+- **Mention that a commit or MR 'closes', 'resolves', or 'fixes' a Jira issue ID**. When the commit is made on the project's default branch (usually master) or the change is merged to the default branch:
   - GitLab's merge request page displays a note that it "Closed" the Jira issue, with a link to the issue. (Note: Before the merge, an MR will display that it "Closes" the Jira issue.)
   - The Jira issue shows the activity and the Jira issue is closed, or otherwise transitioned.
 
-You can also use [Jira's Smart Commits](https://confluence.atlassian.com/fisheye/using-smart-commits-298976812.html)
+You can also use [Jira's Smart Commits](https://confluence.atlassian.com/fisheye/using-smart-commits-960155400.html)
 directly from GitLab, as covered in the article
-[How and why to integrate GitLab with Jira](https://www.programmableweb.com/news/how-and-why-to-integrate-gitlab-Jira/how-to/2017/04/25).
+[How and why to integrate GitLab with Jira](https://www.programmableweb.com/news/how-and-why-to-integrate-gitlab-jira/how-to/2017/04/25).
 
 ## Configuration
 
@@ -45,7 +45,7 @@ In order to enable the Jira service in GitLab, you need to first configure the p
 
 #### Jira Server
 
-When connecting to **Jira Server**, which supports basic authentication, a **username and password** are required. Note that connecting to a Jira server via CAS is not possible. [Set up a user in Jira Server](jira_server_configuration.md) first and then proceed to [Configuring GitLab](#configuring-gitlab).
+When connecting to **Jira Server**, which supports basic authentication, a **username and password** are required. Note that connecting to Jira Server via CAS is not possible. [Set up a user in Jira Server](jira_server_configuration.md) first and then proceed to [Configuring GitLab](#configuring-gitlab).
 
 #### Jira Cloud
 
@@ -205,4 +205,4 @@ authenticate with the Jira site. You will need to log in to your Jira instance
 and complete the CAPTCHA.
 
 [services-templates]: services_templates.md
-[jira-repo-old-docs]: https://gitlab.com/gitlab-org/gitlab-foss/blob/8-13-stable/doc/project_services/jira.md
+[jira-repo-old-docs]: https://gitlab.com/gitlab-org/gitlab/blob/8-13-stable/doc/project_services/jira.md

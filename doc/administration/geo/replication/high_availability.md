@@ -8,7 +8,7 @@ described, it is possible to adapt these instructions to your needs.
 
 ![Geo HA Diagram](../../high_availability/img/geo-ha-diagram.png)
 
-_[diagram source - gitlab employees only][diagram-source]_
+_[diagram source - GitLab employees only][diagram-source]_
 
 The topology above assumes that the **primary** and **secondary** Geo clusters
 are located in two separate locations, on their own virtual network
@@ -57,6 +57,11 @@ The following steps enable a GitLab cluster to serve as the **primary** node.
    roles ['geo_primary_role']
 
    ##
+   ## The unique identifier for the Geo node.
+   ##
+   gitlab_rails['geo_node_name'] = '<node_name_here>'
+
+   ##
    ## Disable automatic migrations
    ##
    gitlab_rails['auto_migrate'] = false
@@ -71,8 +76,16 @@ high availability configuration documentation for
 [PostgreSQL](../../high_availability/database.md#configuring-the-application-nodes)
 and [Redis](../../high_availability/redis.md#example-configuration-for-the-gitlab-application).
 
-The **primary** database will require modification later, as part of
-[step 2](#step-2-configure-the-main-read-only-replica-postgresql-database-on-the-secondary-node).
+### Step 2: Configure the **primary** database
+
+1. Edit `/etc/gitlab/gitlab.rb` and add the following:
+
+   ```ruby
+   ##
+   ## Configure the Geo primary role and the PostgreSQL role
+   ##
+   roles ['geo_primary_role', 'postgres_role']
+   ```
 
 ## Configure a **secondary** node
 
@@ -115,9 +128,9 @@ the **primary** database. Use the following as a guide.
 
    ```ruby
    ##
-   ## Configure the PostgreSQL role
+   ## Configure the Geo secondary role and the PostgreSQL role
    ##
-   roles ['postgres_role']
+   roles ['geo_secondary_role', 'postgres_role']
 
    ##
    ## Secondary address
@@ -222,6 +235,11 @@ following modifications:
    roles ['geo_secondary_role', 'application_role']
 
    ##
+   ## The unique identifier for the Geo node.
+   ##
+   gitlab_rails['geo_node_name'] = '<node_name_here>'
+
+   ##
    ## Disable automatic migrations
    ##
    gitlab_rails['auto_migrate'] = false
@@ -274,15 +292,15 @@ After making these changes [Reconfigure GitLab][gitlab-reconfigure] so the chang
 
 On the secondary the following GitLab frontend services will be enabled:
 
-- geo-logcursor
-- gitlab-pages
-- gitlab-workhorse
-- logrotate
-- nginx
-- registry
-- remote-syslog
-- sidekiq
-- unicorn
+- `geo-logcursor`
+- `gitlab-pages`
+- `gitlab-workhorse`
+- `logrotate`
+- `nginx`
+- `registry`
+- `remote-syslog`
+- `sidekiq`
+- `unicorn`
 
 Verify these services by running `sudo gitlab-ctl status` on the frontend
 application servers.

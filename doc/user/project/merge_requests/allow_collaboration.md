@@ -52,7 +52,7 @@ Here's how the process would look like:
 
    ![Check out branch button](img/checkout_button.png)
 
-1. Use the copy to clipboard button to copy the first command and paste them
+1. Use the copy button to copy the first command and paste them
    in your terminal:
 
    ```sh

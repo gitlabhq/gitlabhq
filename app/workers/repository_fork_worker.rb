@@ -6,6 +6,8 @@ class RepositoryForkWorker
   include ProjectStartImport
   include ProjectImportOptions
 
+  feature_category :source_code_management
+
   def perform(*args)
     target_project_id = args.shift
     target_project = Project.find(target_project_id)

@@ -16,6 +16,7 @@ class Notify < BaseMailer
   include Emails::Members
   include Emails::AutoDevops
   include Emails::RemoteMirrors
+  include Emails::Releases
 
   helper MilestonesHelper
   helper MergeRequestsHelper
@@ -69,20 +70,6 @@ class Notify < BaseMailer
     end
 
     address.format
-  end
-
-  # Look up a User's notification email for a particular context.
-  # Can look up by their ID or can accept a User object.
-  #
-  # recipient          - User object OR a User ID
-  # notification_group - The parent group of the notification
-  #
-  # Returns a String containing the User's email address.
-  def recipient(recipient, notification_group = nil)
-    user = recipient if recipient.is_a?(User)
-    user ||= User.find(recipient)
-
-    user.notification_email_for(notification_group)
   end
 
   # Formats arguments into a String suitable for use as an email subject

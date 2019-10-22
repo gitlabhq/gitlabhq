@@ -78,8 +78,8 @@ class Dashboard::TodosController < Dashboard::ApplicationController
 
   def todos_counts
     {
-      count: number_with_delimiter(current_user.todos_pending_count),
-      done_count: number_with_delimiter(current_user.todos_done_count)
+      count: current_user.todos_pending_count,
+      done_count: current_user.todos_done_count
     }
   end
 

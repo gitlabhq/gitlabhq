@@ -1,0 +1,5 @@
+---
+title: 'Merge Request: Close JIRA issues when issues are disabled'
+merge_request: 17743
+author:
+type: fixed

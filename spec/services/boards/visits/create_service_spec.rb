@@ -10,7 +10,7 @@ describe Boards::Visits::CreateService do
       let(:project)       { create(:project) }
       let(:project_board) { create(:board, project: project) }
 
-      subject(:service) { described_class.new(project_board.parent, user) }
+      subject(:service) { described_class.new(project_board.resource_parent, user) }
 
       it 'returns nil when there is no user' do
         service.current_user = nil
@@ -35,7 +35,7 @@ describe Boards::Visits::CreateService do
       let(:group)       { create(:group) }
       let(:group_board) { create(:board, group: group) }
 
-      subject(:service) { described_class.new(group_board.parent, user) }
+      subject(:service) { described_class.new(group_board.resource_parent, user) }
 
       it 'returns nil when there is no user' do
         service.current_user = nil

@@ -44,7 +44,7 @@ describe Uploads::Fog do
       subject { data_store.delete_keys(keys) }
 
       before do
-        uploads.each { |upload| upload.build_uploader.migrate!(2) }
+        uploads.each { |upload| upload.retrieve_uploader.migrate!(2) }
       end
 
       it 'deletes multiple data' do

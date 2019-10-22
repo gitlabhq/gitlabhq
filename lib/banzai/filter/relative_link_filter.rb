@@ -20,16 +20,13 @@ module Banzai
       def call
         return doc if context[:system_note]
 
-        @uri_types = {}
         clear_memoization(:linkable_files)
+        clear_memoization(:linkable_attributes)
 
-        doc.search('a:not(.gfm)').each do |el|
-          process_link_attr el.attribute('href')
-        end
+        load_uri_types
 
-        doc.css('img, video').each do |el|
-          process_link_attr el.attribute('src')
-          process_link_attr el.attribute('data-src')
+        linkable_attributes.each do |attr|
+          process_link_attr(attr)
         end
 
         doc
@@ -37,16 +34,80 @@ module Banzai
 
       protected
 
+      def load_uri_types
+        return unless linkable_files?
+        return unless linkable_attributes.present?
+        return {} unless repository
+
+        @uri_types = request_path.present? ? get_uri_types([request_path]) : {}
+
+        paths = linkable_attributes.flat_map do |attr|
+          [get_uri(attr).to_s, relative_file_path(get_uri(attr))]
+        end
+
+        paths.reject!(&:blank?)
+        paths.uniq!
+
+        @uri_types.merge!(get_uri_types(paths))
+      end
+
       def linkable_files?
         strong_memoize(:linkable_files) do
           context[:project_wiki].nil? && repository.try(:exists?) && !repository.empty?
         end
       end
 
-      def process_link_attr(html_attr)
-        return if html_attr.blank?
-        return if html_attr.value.start_with?('//')
+      def linkable_attributes
+        strong_memoize(:linkable_attributes) do
+          attrs = []
 
+          attrs += doc.search('a:not(.gfm)').map do |el|
+            el.attribute('href')
+          end
+
+          attrs += doc.search('img, video, audio').flat_map do |el|
+            [el.attribute('src'), el.attribute('data-src')]
+          end
+
+          attrs.reject do |attr|
+            attr.blank? || attr.value.start_with?('//')
+          end
+        end
+      end
+
+      def get_uri_types(paths)
+        return {} if paths.empty?
+
+        uri_types = Hash[paths.collect { |name| [name, nil] }]
+
+        get_blob_types(paths).each do |name, type|
+          if type == :blob
+            blob = ::Blob.decorate(Gitlab::Git::Blob.new(name: name), project)
+            uri_types[name] = blob.image? || blob.video? || blob.audio? ? :raw : :blob
+          else
+            uri_types[name] = type
+          end
+        end
+
+        uri_types
+      end
+
+      def get_blob_types(paths)
+        revision_paths = paths.collect do |path|
+          [current_commit.sha, path.chomp("/")]
+        end
+
+        Gitlab::GitalyClient::BlobService.new(repository).get_blob_types(revision_paths, 1)
+      end
+
+      def get_uri(html_attr)
+        uri = URI(html_attr.value)
+
+        uri if uri.relative? && uri.path.present?
+      rescue URI::Error, Addressable::URI::InvalidURIError
+      end
+
+      def process_link_attr(html_attr)
         if html_attr.value.start_with?('/uploads/')
           process_link_to_upload_attr(html_attr)
         elsif linkable_files? && repo_visible_to_user?
@@ -81,6 +142,7 @@ module Banzai
 
       def process_link_to_repository_attr(html_attr)
         uri = URI(html_attr.value)
+
         if uri.relative? && uri.path.present?
           html_attr.value = rebuild_relative_uri(uri).to_s
         end
@@ -89,7 +151,7 @@ module Banzai
       end
 
       def rebuild_relative_uri(uri)
-        file_path = relative_file_path(uri)
+        file_path = nested_file_path_if_exists(uri)
 
         uri.path = [
           relative_url_root,
@@ -102,11 +164,27 @@ module Banzai
         uri
       end
 
-      def relative_file_path(uri)
-        path = Addressable::URI.unescape(uri.path).delete("\0")
-        request_path = Addressable::URI.unescape(context[:requested_path])
-        nested_path = build_relative_path(path, request_path)
+      def nested_file_path_if_exists(uri)
+        path = cleaned_file_path(uri)
+        nested_path = relative_file_path(uri)
+
         file_exists?(nested_path) ? nested_path : path
+      end
+
+      def cleaned_file_path(uri)
+        Addressable::URI.unescape(uri.path).delete("\0").chomp("/")
+      end
+
+      def relative_file_path(uri)
+        return if uri.nil?
+
+        build_relative_path(cleaned_file_path(uri), request_path)
+      end
+
+      def request_path
+        return unless context[:requested_path]
+
+        Addressable::URI.unescape(context[:requested_path]).chomp("/")
       end
 
       # Convert a relative path into its correct location based on the currently
@@ -136,6 +214,7 @@ module Banzai
         return path[1..-1] if path.start_with?('/')
 
         parts = request_path.split('/')
+
         parts.pop if uri_type(request_path) != :tree
 
         path.sub!(%r{\A\./}, '')
@@ -149,14 +228,11 @@ module Banzai
       end
 
       def file_exists?(path)
-        path.present? && !!uri_type(path)
+        path.present? && uri_type(path).present?
       end
 
       def uri_type(path)
-        # https://gitlab.com/gitlab-org/gitlab-foss/issues/58657
-        Gitlab::GitalyClient.allow_n_plus_1_calls do
-          @uri_types[path] ||= current_commit.uri_type(path)
-        end
+        @uri_types[path] == :unknown ? "" : @uri_types[path]
       end
 
       def current_commit

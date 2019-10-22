@@ -52,7 +52,7 @@ export default {
       this.$emit('projectClicked', project);
     },
     isSelected(project) {
-      return Boolean(_.findWhere(this.selectedProjects, { id: project.id }));
+      return Boolean(_.find(this.selectedProjects, { id: project.id }));
     },
     onInput: _.debounce(function debouncedOnInput() {
       this.$emit('searched', this.searchQuery);

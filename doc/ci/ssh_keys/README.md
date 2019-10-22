@@ -25,18 +25,18 @@ with any type of [executor](https://docs.gitlab.com/runner/executors/)
 
 ## How it works
 
-1. Create a new SSH key pair locally with [ssh-keygen](http://linux.die.net/man/1/ssh-keygen)
+1. Create a new SSH key pair locally with [`ssh-keygen`](https://linux.die.net/man/1/ssh-keygen)
 1. Add the private key as a [variable](../variables/README.md) to
    your project
-1. Run the [ssh-agent](http://linux.die.net/man/1/ssh-agent) during job to load
+1. Run the [`ssh-agent`](https://linux.die.net/man/1/ssh-agent) during job to load
    the private key.
 1. Copy the public key to the servers you want to have access to (usually in
    `~/.ssh/authorized_keys`) or add it as a [deploy key](../../ssh/README.md#deploy-keys)
    if you are accessing a private GitLab repository.
 
 NOTE: **Note:**
-The private key will not be displayed in the job trace, unless you enable
-[debug tracing](../variables/README.md#debug-tracing). You might also want to
+The private key will not be displayed in the job log, unless you enable
+[debug logging](../variables/README.md#debug-logging). You might also want to
 check the [visibility of your pipelines](../../user/project/pipelines/settings.md#visibility-of-pipelines).
 
 ## SSH keys when using the Docker executor

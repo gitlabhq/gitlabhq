@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe GitlabSchema.types['Query'] do
@@ -5,7 +7,7 @@ describe GitlabSchema.types['Query'] do
     expect(described_class.graphql_name).to eq('Query')
   end
 
-  it { is_expected.to have_graphql_fields(:project, :namespace, :group, :echo, :metadata) }
+  it { is_expected.to have_graphql_fields(:project, :namespace, :group, :echo, :metadata, :current_user) }
 
   describe 'namespace field' do
     subject { described_class.fields['namespace'] }

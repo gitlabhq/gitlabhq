@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+import GLDropdown from '~/gl_dropdown';
 import Vue from 'vue';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
@@ -21,6 +23,14 @@ describe('Issuable output', () => {
   beforeEach(done => {
     setFixtures(`
       <div>
+        <div class="detail-page-description content-block">
+        <details open>
+          <summary>One</summary>
+        </details>
+        <details>
+          <summary>Two</summary>
+        </details>
+      </div>
         <div class="flash-container"></div>
         <span id="task_status"></span>
       </div>
@@ -52,6 +62,7 @@ describe('Issuable output', () => {
         markdownDocsPath: '/',
         projectNamespace: '/',
         projectPath: '/',
+        issuableTemplateNamesPath: '/issuable-templates-path',
       },
     }).$mount();
 
@@ -129,11 +140,11 @@ describe('Issuable output', () => {
   });
 
   it('does not update formState if form is already open', done => {
-    vm.openForm();
+    vm.updateAndShowForm();
 
     vm.state.titleText = 'testing 123';
 
-    vm.openForm();
+    vm.updateAndShowForm();
 
     Vue.nextTick(() => {
       expect(vm.store.formState.title).not.toBe('testing 123');
@@ -284,7 +295,7 @@ describe('Issuable output', () => {
         });
       });
 
-      it('shows error mesage from backend if exists', done => {
+      it('shows error message from backend if exists', done => {
         const msg = 'Custom error message from backend';
         spyOn(vm.service, 'updateIssuable').and.callFake(
           // eslint-disable-next-line prefer-promise-reject-errors
@@ -405,24 +416,59 @@ describe('Issuable output', () => {
     });
   });
 
-  describe('open form', () => {
+  describe('updateAndShowForm', () => {
     it('shows locked warning if form is open & data is different', done => {
       vm.$nextTick()
         .then(() => {
-          vm.openForm();
+          vm.updateAndShowForm();
 
           vm.poll.makeRequest();
+
+          return new Promise(resolve => {
+            vm.$watch('formState.lockedWarningVisible', value => {
+              if (value) resolve();
+            });
+          });
         })
-        // Wait for the request
-        .then(vm.$nextTick)
-        // Wait for the successCallback to update the store state
-        .then(vm.$nextTick)
-        // Wait for the new state to flow to the Vue components
-        .then(vm.$nextTick)
         .then(() => {
           expect(vm.formState.lockedWarningVisible).toEqual(true);
           expect(vm.formState.lock_version).toEqual(1);
           expect(vm.$el.querySelector('.alert')).not.toBeNull();
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+  });
+
+  describe('requestTemplatesAndShowForm', () => {
+    beforeEach(() => {
+      spyOn(vm, 'updateAndShowForm');
+    });
+
+    it('shows the form if template names request is successful', done => {
+      const mockData = [{ name: 'Bug' }];
+      mock.onGet('/issuable-templates-path').reply(() => Promise.resolve([200, mockData]));
+
+      vm.requestTemplatesAndShowForm()
+        .then(() => {
+          expect(vm.updateAndShowForm).toHaveBeenCalledWith(mockData);
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+
+    it('shows the form if template names request failed', done => {
+      mock
+        .onGet('/issuable-templates-path')
+        .reply(() => Promise.reject(new Error('something went wrong')));
+
+      vm.requestTemplatesAndShowForm()
+        .then(() => {
+          expect(document.querySelector('.flash-container .flash-text').textContent).toContain(
+            'Error updating issue',
+          );
+
+          expect(vm.updateAndShowForm).toHaveBeenCalledWith();
         })
         .then(done)
         .catch(done.fail);

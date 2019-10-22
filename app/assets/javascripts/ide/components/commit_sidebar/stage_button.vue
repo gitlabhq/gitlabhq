@@ -4,12 +4,12 @@ import { mapActions } from 'vuex';
 import { sprintf, __ } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
 import tooltip from '~/vue_shared/directives/tooltip';
-import GlModal from '~/vue_shared/components/gl_modal.vue';
+import DeprecatedModal2 from '~/vue_shared/components/deprecated_modal_2.vue';
 
 export default {
   components: {
     Icon,
-    GlModal,
+    GlModal: DeprecatedModal2,
   },
   directives: {
     tooltip,

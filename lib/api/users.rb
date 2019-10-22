@@ -459,6 +459,42 @@ module API
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
+      desc 'Activate a deactivated user. Available only for admins.'
+      params do
+        requires :id, type: Integer, desc: 'The ID of the user'
+      end
+      # rubocop: disable CodeReuse/ActiveRecord
+      post ':id/activate' do
+        authenticated_as_admin!
+
+        user = User.find_by(id: params[:id])
+        not_found!('User') unless user
+        forbidden!('A blocked user must be unblocked to be activated') if user.blocked?
+
+        user.activate
+      end
+      # rubocop: enable CodeReuse/ActiveRecord
+      desc 'Deactivate an active user. Available only for admins.'
+      params do
+        requires :id, type: Integer, desc: 'The ID of the user'
+      end
+      # rubocop: disable CodeReuse/ActiveRecord
+      post ':id/deactivate' do
+        authenticated_as_admin!
+        user = User.find_by(id: params[:id])
+        not_found!('User') unless user
+
+        break if user.deactivated?
+
+        unless user.can_be_deactivated?
+          forbidden!('A blocked user cannot be deactivated by the API') if user.blocked?
+          forbidden!("The user you are trying to deactivate has been active in the past #{::User::MINIMUM_INACTIVE_DAYS} days and cannot be deactivated")
+        end
+
+        user.deactivate
+      end
+      # rubocop: enable CodeReuse/ActiveRecord
+
       desc 'Block a user. Available only for admins.'
       params do
         requires :id, type: Integer, desc: 'The ID of the user'
@@ -489,6 +525,8 @@ module API
 
         if user.ldap_blocked?
           forbidden!('LDAP blocked users cannot be unblocked by the API')
+        elsif user.deactivated?
+          forbidden!('Deactivated users cannot be unblocked by the API')
         else
           user.activate
         end

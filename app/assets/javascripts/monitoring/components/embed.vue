@@ -98,7 +98,7 @@ export default {
         class="w-100"
         :graph-data="graphData"
         :container-width="elWidth"
-        group-id="monitor-area-chart"
+        :group-id="dashboardUrl"
         :project-path="null"
         :show-border="true"
         :single-embed="isSingleChart"

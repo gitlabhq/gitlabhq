@@ -2,7 +2,7 @@
 
 ## Adding to the library
 
-We strive to support the 2-4 most important metrics for each common system service that supports Prometheus. If you are looking for support for a particular exporter which has not yet been added to the library, additions can be made [to the `common_metrics.yml`](https://gitlab.com/gitlab-org/gitlab-foss/blob/master/config/prometheus/common_metrics.yml) file.
+We strive to support the 2-4 most important metrics for each common system service that supports Prometheus. If you are looking for support for a particular exporter which has not yet been added to the library, additions can be made [to the `common_metrics.yml`](https://gitlab.com/gitlab-org/gitlab/blob/master/config/prometheus/common_metrics.yml) file.
 
 ### Query identifier
 

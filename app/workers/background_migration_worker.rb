@@ -3,6 +3,8 @@
 class BackgroundMigrationWorker
   include ApplicationWorker
 
+  feature_category_not_owned!
+
   # The minimum amount of time between processing two jobs of the same migration
   # class.
   #

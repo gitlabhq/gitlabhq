@@ -80,7 +80,7 @@ With the purpose of being [respectful of others' time](https://about.gitlab.com/
 
 1. Before writing code, ensure your vision of the architecture is aligned with
    GitLab's architecture.
-1. Add a diagram to the issue and ask a frontend architect in the slack channel `#fe_architectural` about it.
+1. Add a diagram to the issue and ask a frontend maintainer in the Slack channel `#frontend_maintainers` about it.
 
    ![Diagram of Issue Boards Architecture](img/boards_diagram.png)
 

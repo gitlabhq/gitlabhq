@@ -13,9 +13,9 @@ make sure that you have created and/or signed into an account on GitLab.
 Depending on your operating system, you will need to use a shell of your preference.
 Here are some suggestions:
 
-- [Terminal](http://blog.teamtreehouse.com/introduction-to-the-mac-os-x-command-line) on macOS
+- [Terminal](https://blog.teamtreehouse.com/introduction-to-the-mac-os-x-command-line) on macOS
 - [GitBash](https://msysgit.github.io) on Windows
-- [Linux Terminal](http://www.howtogeek.com/140679/beginner-geek-how-to-start-using-the-linux-terminal/) on Linux
+- [Linux Terminal](https://www.howtogeek.com/140679/beginner-geek-how-to-start-using-the-linux-terminal/) on Linux
 
 ## Check if Git has already been installed
 
@@ -110,8 +110,8 @@ and paste in your command line.
 
 As an example, consider this repository path:
 
-- HTTPS: `https://gitlab.com/gitlab-org/gitlab-foss.git`
-- SSH: `git@gitlab.com:gitlab-org/gitlab-ce.git`
+- HTTPS: `https://gitlab.com/gitlab-org/gitlab.git`
+- SSH: `git@gitlab.com:gitlab-org/gitlab.git`
 
 To get started, open a terminal window in the directory you wish to clone the repository
 files into, and run one of the following commands.
@@ -119,13 +119,13 @@ files into, and run one of the following commands.
 Clone via HTTPS:
 
 ```bash
-git clone https://gitlab.com/gitlab-org/gitlab-foss.git
+git clone https://gitlab.com/gitlab-org/gitlab.git
 ```
 
 Clone via SSH:
 
 ```bash
-git clone git@gitlab.com:gitlab-org/gitlab-ce.git
+git clone git@gitlab.com:gitlab-org/gitlab.git
 ```
 
 Both commands will download a copy of the files in a folder named after the project's

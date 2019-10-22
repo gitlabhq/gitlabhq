@@ -124,26 +124,6 @@
     float: left;
     padding-left: $gl-padding-8;
   }
-
-  .section-start {
-    display: inline;
-  }
-
-  .section-start,
-  .section-header {
-    &:hover {
-      cursor: pointer;
-
-      &::after {
-        content: '';
-        background-color: rgba($white-light, 0.2);
-        left: 0;
-        right: 0;
-        position: absolute;
-        height: $job-log-highlight-height;
-      }
-    }
-  }
 }
 
 .build-header {
@@ -308,12 +288,8 @@
     }
 
     a {
-      display: block;
       padding: $gl-padding 10px $gl-padding 40px;
       width: 270px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
 
       &:hover {
         color: $gl-text-color;

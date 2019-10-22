@@ -1,0 +1,5 @@
+---
+title: Remove thin white line at top of diff view code blocks
+merge_request: 17026
+author:
+type: fixed

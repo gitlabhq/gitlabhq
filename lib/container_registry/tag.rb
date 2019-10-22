@@ -98,6 +98,10 @@ module ContainerRegistry
       end
     end
 
+    def put(digests)
+      repository.client.put_tag(repository.path, name, digests)
+    end
+
     # rubocop: disable CodeReuse/ActiveRecord
     def total_size
       return unless layers
@@ -106,7 +110,10 @@ module ContainerRegistry
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
-    def delete
+    # Deletes the image associated with this tag
+    # Note this will delete the image and all tags associated with it.
+    # Consider using DeleteTagsService instead.
+    def unsafe_delete
       return unless digest
 
       client.delete_repository_tag(repository.path, digest)

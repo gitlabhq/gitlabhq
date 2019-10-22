@@ -12,7 +12,7 @@ Mime-Version: 1.0
 Content-Type: text/plain;
  charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Auto-Submitted: auto-generated
+X-Autoreply: yes
 X-Sieve: CMU Sieve 2.2
 X-Received: by 10.0.0.1 with SMTP id n7mr11234144ipb.85.1371157428600; Thu,
  13 Jun 2013 14:03:48 -0700 (PDT)

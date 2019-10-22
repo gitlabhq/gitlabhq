@@ -3,13 +3,12 @@
 - zones_link_url = 'https://cloud.google.com/compute/docs/regions-zones/regions-zones'
 - machine_type_link_url = 'https://cloud.google.com/compute/docs/machine-types'
 - pricing_link_url = 'https://cloud.google.com/compute/pricing#machinetype'
+- kubernetes_integration_url = help_page_path('user/project/clusters/index')
 - help_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe
 - help_link_end = ' %{external_link_icon}</a>'.html_safe % { external_link_icon: external_link_icon }
 
 %p
-  - link_to_help_page = link_to(s_('ClusterIntegration|help page'),
-    help_page_path('user/project/clusters/index'), target: '_blank', rel: 'noopener noreferrer')
-  = s_('ClusterIntegration|Read our %{link_to_help_page} on Kubernetes cluster integration.').html_safe % { link_to_help_page: link_to_help_page }
+  = s_('ClusterIntegration|Read our %{link_start}help page%{link_end} on Kubernetes cluster integration.').html_safe % { link_start: help_link_start % { url: kubernetes_integration_url }, link_end: '</a>'.html_safe }
 
 %p= link_to('Select a different Google account', @authorize_url)
 
@@ -64,6 +63,13 @@
             = icon('chevron-down')
       %p.form-text.text-muted
         = s_('ClusterIntegration|Learn more about %{help_link_start_machine_type}machine types%{help_link_end} and %{help_link_start_pricing}pricing%{help_link_end}.').html_safe % { help_link_start_machine_type: help_link_start % { url: machine_type_link_url }, help_link_start_pricing: help_link_start % { url: pricing_link_url }, help_link_end: help_link_end }
+
+    .form-group
+      = provider_gcp_field.check_box :cloud_run, { label: s_('ClusterIntegration|Enable Cloud Run on GKE (beta)'),
+        label_class: 'label-bold' }
+      .form-text.text-muted
+        = s_('ClusterIntegration|Uses the Cloud Run, Istio, and HTTP Load Balancing addons for this cluster.')
+        = link_to _('More information'), help_page_path('user/project/clusters/index.md', anchor: 'cloud-run-on-gke'), target: '_blank'
 
   .form-group
     = field.check_box :managed, { label: s_('ClusterIntegration|GitLab-managed cluster'),

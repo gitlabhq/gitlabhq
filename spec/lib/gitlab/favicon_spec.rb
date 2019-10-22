@@ -57,6 +57,7 @@ RSpec.describe Gitlab::Favicon, :request_store do
         favicon_status_manual
         favicon_status_not_found
         favicon_status_pending
+        favicon_status_preparing
         favicon_status_running
         favicon_status_scheduled
         favicon_status_skipped

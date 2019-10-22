@@ -15,7 +15,7 @@ module Banzai
 
         doc.search('a:not(.gfm)').each { |el| process_link(el.attribute('href'), el) }
 
-        doc.search('video').each { |el| process_link(el.attribute('src'), el) }
+        doc.search('video, audio').each { |el| process_link(el.attribute('src'), el) }
 
         doc.search('img').each do |el|
           attr = el.attribute('data-src') || el.attribute('src')

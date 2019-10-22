@@ -12,6 +12,7 @@ describe Banzai::Filter::UserReferenceFilter do
   let(:project)   { create(:project, :public) }
   let(:user)      { create(:user) }
   subject { user }
+
   let(:subject_name) { "user" }
   let(:reference) { get_reference(user) }
 

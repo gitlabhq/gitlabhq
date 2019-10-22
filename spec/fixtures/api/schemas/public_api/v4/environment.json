@@ -17,7 +17,8 @@
         { "type": "null" },
         { "$ref": "deployment.json" }
       ]
-    }
+    },
+    "state": { "type": "string" }
   },
   "additionalProperties": false
 }

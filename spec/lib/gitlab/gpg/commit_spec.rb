@@ -370,5 +370,33 @@ describe Gitlab::Gpg::Commit do
 
       it_behaves_like 'returns the cached signature on second call'
     end
+
+    context 'multiple commits with signatures' do
+      let(:first_signature) { create(:gpg_signature) }
+
+      let(:gpg_key) { create(:gpg_key, key: GpgHelpers::User2.public_key) }
+      let(:second_signature) { create(:gpg_signature, gpg_key: gpg_key) }
+
+      let!(:first_commit) { create(:commit, project: project, sha: first_signature.commit_sha) }
+      let!(:second_commit) { create(:commit, project: project, sha: second_signature.commit_sha) }
+
+      let(:commits) do
+        [first_commit, second_commit].map do |commit|
+          gpg_commit = described_class.new(commit)
+
+          allow(gpg_commit).to receive(:has_signature?).and_return(true)
+
+          gpg_commit
+        end
+      end
+
+      it 'does an aggregated sql request instead of 2 separate ones' do
+        recorder = ActiveRecord::QueryRecorder.new do
+          commits.each(&:signature)
+        end
+
+        expect(recorder.count).to eq(1)
+      end
+    end
   end
 end

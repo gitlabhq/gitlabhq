@@ -2,46 +2,6 @@
 
 ## Remove garbage from filesystem
 
-DANGER: **Danger:**
-The commands below will remove data permanently from your GitLab instance. Only use
-these commands if you are 100% certain that it is safe to delete this data.
-
-Remove namespaces(dirs) from all repository storage paths if they don't exist in GitLab database.
-
-```
-# omnibus-gitlab
-sudo gitlab-rake gitlab:cleanup:dirs
-
-# installation from source
-bundle exec rake gitlab:cleanup:dirs RAILS_ENV=production
-```
-
-DANGER: **Danger:**
-The following task does not currently work as expected.
-The use will probably mark more existing repositories as orphaned.
-For more information, see the [issue](https://gitlab.com/gitlab-org/gitlab-ee/issues/24633).
-
-Rename repositories from all repository storage paths if they don't exist in GitLab database.
-The repositories get a `+orphaned+TIMESTAMP` suffix so that they cannot block new repositories from being created.
-
-```
-# omnibus-gitlab
-sudo gitlab-rake gitlab:cleanup:repos
-
-# installation from source
-bundle exec rake gitlab:cleanup:repos RAILS_ENV=production
-```
-
-Remove old repository copies from repositories moved to another storage.
-
-```
-# omnibus-gitlab
-sudo gitlab-rake gitlab:cleanup:moved
-
-# installation from source
-bundle exec rake gitlab:cleanup:moved RAILS_ENV=production
-```
-
 Clean up local project upload files if they don't exist in GitLab database. The
 task attempts to fix the file if it can find its project, otherwise it moves the
 file to a lost and found directory.

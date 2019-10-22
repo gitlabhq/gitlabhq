@@ -215,7 +215,7 @@ describe Gitlab::Ci::Config::Entry::Root do
 
       describe '#stages_value' do
         it 'returns an array of root stages' do
-          expect(root.stages_value).to eq %w[build test deploy]
+          expect(root.stages_value).to eq %w[.pre build test deploy .post]
         end
       end
 

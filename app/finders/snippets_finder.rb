@@ -41,13 +41,14 @@
 class SnippetsFinder < UnionFinder
   include FinderMethods
 
-  attr_accessor :current_user, :project, :author, :scope
+  attr_accessor :current_user, :project, :author, :scope, :explore
 
   def initialize(current_user = nil, params = {})
     @current_user = current_user
     @project = params[:project]
     @author = params[:author]
     @scope = params[:scope].to_s
+    @explore = params[:explore]
 
     if project && author
       raise(
@@ -59,17 +60,29 @@ class SnippetsFinder < UnionFinder
   end
 
   def execute
-    base =
-      if project
-        snippets_for_a_single_project
-      else
-        snippets_for_multiple_projects
-      end
-
+    base = init_collection
     base.with_optional_visibility(visibility_from_scope).fresh
   end
 
   private
+
+  def init_collection
+    if explore
+      snippets_for_explore
+    elsif project
+      snippets_for_a_single_project
+    else
+      snippets_for_multiple_projects
+    end
+  end
+
+  # Produces a query that retrieves snippets for the Explore page
+  #
+  # We only show personal snippets here because this page is meant for
+  # discovery, and project snippets are of limited interest here.
+  def snippets_for_explore
+    Snippet.public_to_user(current_user).only_personal_snippets
+  end
 
   # Produces a query that retrieves snippets from multiple projects.
   #
@@ -84,7 +97,7 @@ class SnippetsFinder < UnionFinder
   # Each collection is constructed in isolation, allowing for greater control
   # over the resulting SQL query.
   def snippets_for_multiple_projects
-    queries = [global_snippets]
+    queries = [personal_snippets]
 
     if Ability.allowed?(current_user, :read_cross_project)
       queries << snippets_of_visible_projects
@@ -98,8 +111,8 @@ class SnippetsFinder < UnionFinder
     Snippet.for_project_with_user(project, current_user)
   end
 
-  def global_snippets
-    snippets_for_author_or_visible_to_user.only_global_snippets
+  def personal_snippets
+    snippets_for_author_or_visible_to_user.only_personal_snippets
   end
 
   # Returns the snippets that the current user (logged in or not) can view.
@@ -115,7 +128,7 @@ class SnippetsFinder < UnionFinder
   # This method requires that `current_user` returns a `User` instead of `nil`,
   # and is optimised for this specific scenario.
   def snippets_of_authorized_projects
-    base = author ? snippets_for_author : Snippet.all
+    base = author ? author.snippets : Snippet.all
 
     base
       .only_include_projects_with_snippets_enabled(include_private: true)
@@ -157,3 +170,5 @@ class SnippetsFinder < UnionFinder
     end
   end
 end
+
+SnippetsFinder.prepend_if_ee('EE::SnippetsFinder')

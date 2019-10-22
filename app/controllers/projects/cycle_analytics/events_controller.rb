@@ -23,7 +23,7 @@ module Projects
       end
 
       def test
-        options(cycle_analytics_params)[:branch] = cycle_analytics_params[:branch_name]
+        options(cycle_analytics_project_params)[:branch] = cycle_analytics_project_params[:branch_name]
 
         render_events(cycle_analytics[:test].events)
       end
@@ -50,13 +50,7 @@ module Projects
       end
 
       def cycle_analytics
-        @cycle_analytics ||= ::CycleAnalytics::ProjectLevel.new(project, options: options(cycle_analytics_params))
-      end
-
-      def cycle_analytics_params
-        return {} unless params[:cycle_analytics].present?
-
-        params[:cycle_analytics].permit(:start_date, :branch_name)
+        @cycle_analytics ||= ::CycleAnalytics::ProjectLevel.new(project, options: options(cycle_analytics_project_params))
       end
     end
   end

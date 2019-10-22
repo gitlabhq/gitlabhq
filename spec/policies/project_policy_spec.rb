@@ -40,14 +40,14 @@ describe ProjectPolicy do
       update_commit_status create_build update_build create_pipeline
       update_pipeline create_merge_request_from create_wiki push_code
       resolve_note create_container_image update_container_image destroy_container_image
-      create_environment create_deployment create_release update_release
+      create_environment create_deployment update_deployment create_release update_release
     ]
   end
 
   let(:base_maintainer_permissions) do
     %i[
       push_to_delete_protected_branch update_project_snippet update_environment
-      update_deployment admin_project_snippet admin_project_member admin_note admin_wiki admin_project
+      admin_project_snippet admin_project_member admin_note admin_wiki admin_project
       admin_commit_status admin_build admin_container_image
       admin_pipeline admin_environment admin_deployment destroy_release add_cluster
       daily_statistics
@@ -475,6 +475,30 @@ describe ProjectPolicy do
           .to receive(:access_allowed?).with(owner, 'default_label', project.full_path).and_call_original
 
         described_class.new(owner, project).allowed?(:read_project)
+      end
+    end
+  end
+
+  describe 'update_max_artifacts_size' do
+    subject { described_class.new(current_user, project) }
+
+    context 'when no user' do
+      let(:current_user) { nil }
+
+      it { expect_disallowed(:update_max_artifacts_size) }
+    end
+
+    context 'admin' do
+      let(:current_user) { admin }
+
+      it { expect_allowed(:update_max_artifacts_size) }
+    end
+
+    %w(guest reporter developer maintainer owner).each do |role|
+      context role do
+        let(:current_user) { send(role) }
+
+        it { expect_disallowed(:update_max_artifacts_size) }
       end
     end
   end

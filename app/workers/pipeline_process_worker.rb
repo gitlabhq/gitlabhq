@@ -5,6 +5,7 @@ class PipelineProcessWorker
   include PipelineQueue
 
   queue_namespace :pipeline_processing
+  feature_category :continuous_integration
 
   # rubocop: disable CodeReuse/ActiveRecord
   def perform(pipeline_id, build_ids = nil)

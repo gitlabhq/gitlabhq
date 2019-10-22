@@ -39,16 +39,28 @@ describe 'Dropdown milestone', :js do
   end
 
   describe 'behavior' do
-    it 'opens when the search bar has milestone:' do
-      filtered_search.set('milestone:')
+    context 'filters by "milestone:"' do
+      before do
+        filtered_search.set('milestone:')
+      end
 
-      expect(page).to have_css(js_dropdown_milestone, visible: true)
-    end
+      it 'opens when the search bar has milestone:' do
+        expect(page).to have_css(js_dropdown_milestone, visible: true)
+      end
 
-    it 'closes when the search bar is unfocused' do
-      find('body').click
+      it 'closes when the search bar is unfocused' do
+        find('body').click
 
-      expect(page).to have_css(js_dropdown_milestone, visible: false)
+        expect(page).to have_css(js_dropdown_milestone, visible: false)
+      end
+
+      it 'hides loading indicator when loaded' do
+        expect(find(js_dropdown_milestone)).not_to have_css('.filter-dropdown-loading')
+      end
+
+      it 'loads all the milestones when opened' do
+        expect(filter_dropdown).to have_selector('.filter-dropdown .filter-dropdown-item', count: 6)
+      end
     end
 
     it 'shows loading indicator when opened' do
@@ -57,18 +69,6 @@ describe 'Dropdown milestone', :js do
 
         expect(page).to have_css('#js-dropdown-milestone .filter-dropdown-loading', visible: true)
       end
-    end
-
-    it 'hides loading indicator when loaded' do
-      filtered_search.set('milestone:')
-
-      expect(find(js_dropdown_milestone)).not_to have_css('.filter-dropdown-loading')
-    end
-
-    it 'loads all the milestones when opened' do
-      filtered_search.set('milestone:')
-
-      expect(filter_dropdown).to have_selector('.filter-dropdown .filter-dropdown-item', count: 6)
     end
   end
 

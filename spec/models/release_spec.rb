@@ -15,12 +15,13 @@ RSpec.describe Release do
     it { is_expected.to have_many(:links).class_name('Releases::Link') }
     it { is_expected.to have_many(:milestones) }
     it { is_expected.to have_many(:milestone_releases) }
+    it { is_expected.to have_one(:evidence) }
   end
 
   describe 'validation' do
     it { is_expected.to validate_presence_of(:project) }
     it { is_expected.to validate_presence_of(:description) }
-    it { is_expected.to validate_presence_of(:name) }
+    it { is_expected.to validate_presence_of(:tag) }
 
     context 'when a release exists in the database without a name' do
       it 'does not require name' do
@@ -87,6 +88,44 @@ RSpec.describe Release do
         allow(release).to receive(:released_at).and_return nil
 
         expect(release.upcoming_release?).to eq(false)
+      end
+    end
+  end
+
+  describe 'evidence' do
+    describe '#create_evidence!' do
+      context 'when a release is created' do
+        it 'creates one Evidence object too' do
+          expect { release }.to change(Evidence, :count).by(1)
+        end
+      end
+    end
+
+    context 'when a release is deleted' do
+      it 'also deletes the associated evidence' do
+        release = create(:release)
+
+        expect { release.destroy }.to change(Evidence, :count).by(-1)
+      end
+    end
+  end
+
+  describe '#notify_new_release' do
+    context 'when a release is created' do
+      it 'instantiates NewReleaseWorker to send notifications' do
+        expect(NewReleaseWorker).to receive(:perform_async)
+
+        create(:release)
+      end
+    end
+
+    context 'when a release is updated' do
+      let!(:release) { create(:release) }
+
+      it 'does not send any new notification' do
+        expect(NewReleaseWorker).not_to receive(:perform_async)
+
+        release.update!(description: 'new description')
       end
     end
   end

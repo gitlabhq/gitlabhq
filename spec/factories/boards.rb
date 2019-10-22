@@ -3,11 +3,11 @@
 FactoryBot.define do
   factory :board do
     transient do
-      project nil
-      group nil
-      project_id nil
-      group_id nil
-      parent nil
+      project { nil }
+      group { nil }
+      project_id { nil }
+      group_id { nil }
+      resource_parent { nil }
     end
 
     after(:build, :stub) do |board, evaluator|
@@ -19,9 +19,9 @@ FactoryBot.define do
         board.project = evaluator.project
       elsif evaluator.project_id
         board.project_id = evaluator.project_id
-      elsif evaluator.parent
-        id = evaluator.parent.id
-        evaluator.parent.is_a?(Group) ? board.group_id = id : evaluator.project_id = id
+      elsif evaluator.resource_parent
+        id = evaluator.resource_parent.id
+        evaluator.resource_parent.is_a?(Group) ? board.group_id = id : evaluator.project_id = id
       else
         board.project = create(:project, :empty_repo)
       end

@@ -26,6 +26,51 @@ module Gitlab
     class FastHashSerializer
       attr_reader :subject, :tree
 
+      # Usage of this class results in delayed
+      # serialization of relation. The serialization
+      # will be triggered when the `JSON.generate`
+      # is exected.
+      #
+      # This class uses memory-optimised, lazily
+      # initialised, fast to recycle relation
+      # serialization.
+      #
+      # The `JSON.generate` does use `#to_json`,
+      # that returns raw JSON content that is written
+      # directly to file.
+      class JSONBatchRelation
+        include Gitlab::Utils::StrongMemoize
+
+        def initialize(relation, options, preloads)
+          @relation = relation
+          @options = options
+          @preloads = preloads
+        end
+
+        def raw_json
+          strong_memoize(:raw_json) do
+            result = +''
+
+            batch = @relation
+            batch = batch.preload(@preloads) if @preloads
+            batch.each do |item|
+              result.concat(",") unless result.empty?
+              result.concat(item.to_json(@options))
+            end
+
+            result
+          end
+        end
+
+        def to_json(options = {})
+          raw_json
+        end
+
+        def as_json(*)
+          raise NotImplementedError
+        end
+      end
+
       BATCH_SIZE = 100
 
       def initialize(subject, tree, batch_size: BATCH_SIZE)
@@ -34,8 +79,11 @@ module Gitlab
         @tree = tree
       end
 
-      # Serializes the subject into a Hash for the given option tree
-      # (e.g. Project#as_json)
+      # With the usage of `JSONBatchRelation`, it returns partially
+      # serialized hash which is not easily accessible.
+      # It means you can only manipulate and replace top-level objects.
+      # All future mutations of the hash (such as `fix_project_tree`)
+      # should be aware of that.
       def execute
         simple_serialize.merge(serialize_includes)
       end
@@ -85,12 +133,15 @@ module Gitlab
           return record.as_json(options)
         end
 
-        # has-many relation
         data = []
 
         record.in_batches(of: @batch_size) do |batch| # rubocop:disable Cop/InBatches
-          batch = batch.preload(preloads[key]) if preloads&.key?(key)
-          data += batch.as_json(options)
+          if Feature.enabled?(:export_fast_serialize_with_raw_json, default_enabled: true)
+            data.append(JSONBatchRelation.new(batch, options, preloads[key]).tap(&:raw_json))
+          else
+            batch = batch.preload(preloads[key]) if preloads&.key?(key)
+            data += batch.as_json(options)
+          end
         end
 
         data

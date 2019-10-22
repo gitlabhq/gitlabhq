@@ -265,6 +265,10 @@ module ApplicationSettingsHelper
       :throttle_unauthenticated_enabled,
       :throttle_unauthenticated_period_in_seconds,
       :throttle_unauthenticated_requests_per_period,
+      :throttle_protected_paths_enabled,
+      :throttle_protected_paths_period_in_seconds,
+      :throttle_protected_paths_requests_per_period,
+      :protected_paths_raw,
       :time_tracking_limit_to_hours,
       :two_factor_grace_period,
       :unique_ips_limit_enabled,
@@ -285,7 +289,10 @@ module ApplicationSettingsHelper
       :snowplow_collector_hostname,
       :snowplow_cookie_domain,
       :snowplow_enabled,
-      :snowplow_site_id
+      :snowplow_site_id,
+      :push_event_hooks_limit,
+      :push_event_activities_limit,
+      :custom_http_clone_url_root
     ]
   end
 
@@ -307,6 +314,10 @@ module ApplicationSettingsHelper
 
   def instance_clusters_enabled?
     can?(current_user, :read_cluster, Clusters::Instance.new)
+  end
+
+  def omnibus_protected_paths_throttle?
+    Rack::Attack.throttles.key?('protected paths')
   end
 end
 

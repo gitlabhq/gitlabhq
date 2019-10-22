@@ -24,7 +24,7 @@ Remove the `:feature_name` feature flag ...
 
 If applicable, any groups/projects that are happy to have this feature turned on early. Some organizations may wish to test big changes they are interested in with a small subset of users ahead of time for example.
 
-- `gitlab-org/gitlab-ce`/`gitlab-org/gitlab-ee` projects
+- `gitlab-org/gitlab` project
 - `gitlab-org`/`gitlab-com` groups
 - ...
 
@@ -34,6 +34,7 @@ If applicable, any groups/projects that are happy to have this feature turned on
 - [ ] Test on staging
 - [ ] Ensure that documentation has been updated
 - [ ] Enable on GitLab.com for individual groups/projects listed above and verify behaviour
+- [ ] Coordinate a time to enable the flag with `#production` and `#g_delivery` on slack.
 - [ ] Announce on the issue an estimated time this will be enabled on GitLab.com
 - [ ] Enable on GitLab.com by running chatops command in `#production`
 - [ ] Cross post chatops slack command to `#support_gitlab-com` and in your team channel

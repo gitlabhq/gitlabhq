@@ -10,7 +10,7 @@ patch and security releases. New releases are usually announced on the [GitLab b
 ## Versioning
 
 GitLab uses [Semantic Versioning](https://semver.org/) for its releases:
-`(Major).(Minor).(Patch)` in a [pragmatic way](https://gist.github.com/jashkenas/cbd2b088e20279ae2c8e).
+`(Major).(Minor).(Patch)`.
 
 For example, for GitLab version 10.5.7:
 
@@ -24,7 +24,7 @@ The following table describes the version types and their release cadence:
 
 | Version type | Description | Cadence |
 |:-------------|:------------|:--------|
-| Major        | For significant changes, or when any backward-incompatible changes are introduced to the public API. | Yearly. The next major release is GitLab 12.0 on June 22, 2019. Subsequent major releases will be scheduled for May 22 each year, by default. |
+| Major        | For significant changes, or when any backward-incompatible changes are introduced to the public API. | Yearly. The next major release is GitLab 13.0 on May 22, 2020. Subsequent major releases will be scheduled for May 22 each year, by default. |
 | Minor        | For when new backward-compatible functionality is introduced to the public API, a minor feature is introduced, or when a set of smaller features is rolled out. | Monthly on the 22nd. |
 | Patch        | For backward-compatible bug fixes that fix incorrect behavior. See [Patch releases](#patch-releases). | As needed. |
 
@@ -47,7 +47,7 @@ medium-level security issues, we may backport security fixes to the previous two
 monthly releases.
 
 For very serious security issues, there is
-[precedent](https://about.gitlab.com/2016/05/02/cve-2016-4340-patches/)
+[precedent](https://about.gitlab.com/blog/2016/05/02/cve-2016-4340-patches/)
 to backport security fixes to even more monthly releases of GitLab.
 This decision is made on a case-by-case basis.
 

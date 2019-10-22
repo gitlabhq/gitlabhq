@@ -7,9 +7,16 @@ describe Gitlab::Ci::Config::External::File::Local do
   set(:user) { create(:user) }
 
   let(:sha) { '12345' }
-  let(:context) { described_class::Context.new(project, sha, user, Set.new) }
+  let(:context_params) { { project: project, sha: sha, user: user } }
+  let(:context) { Gitlab::Ci::Config::External::Context.new(**context_params) }
+
   let(:params) { { local: location } }
   let(:local_file) { described_class.new(params, context) }
+
+  before do
+    allow_any_instance_of(Gitlab::Ci::Config::External::Context)
+      .to receive(:check_execution_time!)
+  end
 
   describe '#matching?' do
     context 'when a local is specified' do
@@ -109,7 +116,7 @@ describe Gitlab::Ci::Config::External::File::Local do
   describe '#expand_context' do
     let(:location) { 'location.yml' }
 
-    subject { local_file.send(:expand_context) }
+    subject { local_file.send(:expand_context_attrs) }
 
     it 'inherits project, user and sha' do
       is_expected.to include(user: user, project: project, sha: sha)

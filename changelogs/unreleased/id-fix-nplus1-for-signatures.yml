@@ -1,0 +1,5 @@
+---
+title: Remove N+1 for fetching commits signatures
+merge_request: 18389
+author:
+type: performance

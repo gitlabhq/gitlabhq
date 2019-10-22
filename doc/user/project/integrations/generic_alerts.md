@@ -1,6 +1,6 @@
 # Generic alerts integration **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/13203) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/13203) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.3.
 
 GitLab can accept alerts from any source via a generic webhook receiver.
 When you set up the generic alerts integration, a unique endpoint will
@@ -13,11 +13,11 @@ authored by the GitLab Alert Bot.
 
 ## Setting up generic alerts
 
-To set up the generic alerts integration:  
+To set up the generic alerts integration:
 
-1. Navigate to **Settings > Integrations** in a project.  
+1. Navigate to **Settings > Integrations** in a project.
 1. Click on **Alert endpoint**.
-1. Toggle the **Active**  alert setting. The `URL` and `Authorization Key` for the webhook configuration can be found there.  
+1. Toggle the **Active**  alert setting. The `URL` and `Authorization Key` for the webhook configuration can be found there.
 
 ## Customizing the payload
 
@@ -35,7 +35,11 @@ You can customize the payload by sending the following parameters. All fields ar
 Example request:
 
 ```sh
-curl --request POST --data '{"title": "Incident title"}' --header "Authorization: Bearer <autorization_key>" <url>
+curl --request POST \
+  --data '{"title": "Incident title"}' \
+  --header "Authorization: Bearer <autorization_key>" \
+  --header "Content-Type: application/json" \
+  <url>
 ```
 
 The `<autorization_key>` and `<url>` values can be found when [setting up generic alerts](#setting-up-generic-alerts).

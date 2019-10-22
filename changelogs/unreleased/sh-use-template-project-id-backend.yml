@@ -1,0 +1,5 @@
+---
+title: Add backend support for selecting custom templates by ID
+merge_request: 18178
+author:
+type: fixed

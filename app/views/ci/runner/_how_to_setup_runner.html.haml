@@ -8,11 +8,11 @@
   %li
     = _("Specify the following URL during the Runner setup:")
     %code#coordinator_address= root_url(only_path: false)
-    = clipboard_button(target: '#coordinator_address', title: _("Copy URL to clipboard"), class: "btn-transparent btn-clipboard")
+    = clipboard_button(target: '#coordinator_address', title: _("Copy URL"), class: "btn-transparent btn-clipboard")
   %li
     = _("Use the following registration token during setup:")
     %code#registration_token= registration_token
-    = clipboard_button(target: '#registration_token', title: _("Copy token to clipboard"), class: "btn-transparent btn-clipboard")
+    = clipboard_button(target: '#registration_token', title: _("Copy token"), class: "btn-transparent btn-clipboard")
     .prepend-top-10.append-bottom-10
       = button_to _("Reset runners registration token"), reset_token_url,
       method: :put, class: 'btn btn-default',

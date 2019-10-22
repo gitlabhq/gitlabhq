@@ -36,6 +36,7 @@ module TestEnv
     'expand-collapse-lines'              => '238e82d',
     'pages-deploy'                       => '7897d5b',
     'pages-deploy-target'                => '7975be0',
+    'audio'                              => 'c3c21fd',
     'video'                              => '8879059',
     'add-balsamiq-file'                  => 'b89b56d',
     'crlf-diff'                          => '5938907',
@@ -99,7 +100,6 @@ module TestEnv
 
     clean_test_path
 
-    # Set up GitLab shell for test instance
     setup_gitlab_shell
 
     setup_gitaly
@@ -144,10 +144,7 @@ module TestEnv
   end
 
   def setup_gitlab_shell
-    component_timed_setup('GitLab Shell',
-      install_dir: Gitlab.config.gitlab_shell.path,
-      version: Gitlab::Shell.version_required,
-      task: 'gitlab:shell:install')
+    FileUtils.mkdir_p(Gitlab.config.gitlab_shell.path)
   end
 
   def setup_gitaly

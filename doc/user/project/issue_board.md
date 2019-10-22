@@ -1,6 +1,6 @@
 # Issue Boards
 
-> [Introduced][ce-5554] in [GitLab 8.11](https://about.gitlab.com/2016/08/22/gitlab-8-11-released/#issue-board).
+> [Introduced][ce-5554] in [GitLab 8.11](https://about.gitlab.com/blog/2016/08/22/gitlab-8-11-released/#issue-board).
 
 ## Overview
 
@@ -125,9 +125,9 @@ Cards finished by the UX team will automatically appear in the **Frontend** colu
 
 NOTE: **Note:**
 For a broader use case, please see the blog post
-[GitLab Workflow, an Overview](https://about.gitlab.com/2016/10/25/gitlab-workflow-an-overview/#gitlab-workflow-use-case-scenario).
+[GitLab Workflow, an Overview](https://about.gitlab.com/blog/2016/10/25/gitlab-workflow-an-overview/#gitlab-workflow-use-case-scenario).
 For a real use case example, you can read why
-[Codepen decided to adopt Issue Boards](https://about.gitlab.com/2017/01/27/codepen-welcome-to-gitlab/#project-management-everything-in-one-place)
+[Codepen decided to adopt Issue Boards](https://about.gitlab.com/blog/2017/01/27/codepen-welcome-to-gitlab/#project-management-everything-in-one-place)
 to improve their workflow with multiple boards.
 
 #### Quick assignments
@@ -180,9 +180,21 @@ These are shortcuts to your last 4 visited boards.
 When you're revisiting an issue board in a project or group with multiple boards,
 GitLab will automatically load the last board you visited.
 
+### Multi-select Issue Cards
+
+As the name suggest, multi-select issue cards allows more than one issue card
+to be dragged and dropped across different lists. This becomes helpful while
+moving and grooming a lot of issues at once.
+
+You can multi-select an issue card by pressing `CTRL` + `Left mouse click` on
+Windows or `CMD` + `Left mouse click` on MacOS. Once done, start by dragging one
+of the issue card you have selected and drop it in the new list you want.
+
+![Multi-select Issue Cards](img/issue_boards_multi_select.png)
+
 ### Configurable Issue Boards **(STARTER)**
 
-> Introduced in [GitLab Starter Edition 10.2](https://about.gitlab.com/2017/11/22/gitlab-10-2-released/#issue-boards-configuration).
+> Introduced in [GitLab Starter Edition 10.2](https://about.gitlab.com/blog/2017/11/22/gitlab-10-2-released/#issue-boards-configuration).
 
 An Issue Board can be associated with a GitLab [Milestone](milestones/index.md#milestones),
 [Labels](labels.md), Assignee and Weight
@@ -202,7 +214,7 @@ If you don't have editing permission in a board, you're still able to see the co
 
 ### Focus mode **(STARTER)**
 
-> Introduced in [GitLab Starter 9.1](https://about.gitlab.com/2017/04/22/gitlab-9-1-released/#issue-boards-focus-mode-ees-eep).
+> Introduced in [GitLab Starter 9.1](https://about.gitlab.com/blog/2017/04/22/gitlab-9-1-released/#issue-boards-focus-mode-ees-eep).
 
 Click the button at the top right to toggle focus mode on and off. In focus mode, the navigation UI is hidden, allowing you to focus on issues in the board.
 
@@ -218,7 +230,7 @@ especially in combination with [assignee lists](#assignee-lists-premium).
 
 ### Group Issue Boards **(PREMIUM)**
 
-> Introduced in [GitLab Premium 10.0](https://about.gitlab.com/2017/09/22/gitlab-10-0-released/#group-issue-boards).
+> Introduced in [GitLab Premium 10.0](https://about.gitlab.com/blog/2017/09/22/gitlab-10-0-released/#group-issue-boards).
 
 Accessible at the group navigation level, a group issue board offers the same features as a project-level board,
 but it can display issues from all projects in that
@@ -227,7 +239,7 @@ boards. When updating milestones and labels for an issue through the sidebar upd
 group-level objects are available.
 
 NOTE: **Note:**
-Multiple group issue boards were originally introduced in [GitLab 10.0 Premium](https://about.gitlab.com/2017/09/22/gitlab-10-0-released/#group-issue-boards) and
+Multiple group issue boards were originally introduced in [GitLab 10.0 Premium](https://about.gitlab.com/blog/2017/09/22/gitlab-10-0-released/#group-issue-boards) and
 one group issue board per group was made available in GitLab 10.6 Core.
 
 ![Group issue board](img/group_issue_board.png)

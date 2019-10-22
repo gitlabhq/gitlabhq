@@ -9,6 +9,8 @@ module QA
           element :access_token_title, 'Access Tokens' # rubocop:disable QA/ElementWithPattern
           element :top_level_items, '.sidebar-top-level-items' # rubocop:disable QA/ElementWithPattern
           element :ssh_keys, 'SSH Keys' # rubocop:disable QA/ElementWithPattern
+          element :profile_emails_link
+          element :profile_password_link
         end
 
         def click_access_tokens
@@ -20,6 +22,18 @@ module QA
         def click_ssh_keys
           within_sidebar do
             click_link('SSH Keys')
+          end
+        end
+
+        def click_emails
+          within_sidebar do
+            click_element(:profile_emails_link)
+          end
+        end
+
+        def click_password
+          within_sidebar do
+            click_element(:profile_password_link)
           end
         end
 

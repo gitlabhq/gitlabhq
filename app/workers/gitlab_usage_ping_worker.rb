@@ -6,6 +6,8 @@ class GitlabUsagePingWorker
   include ApplicationWorker
   include CronjobQueue
 
+  feature_category_not_owned!
+
   # Retry for up to approximately three hours then give up.
   sidekiq_options retry: 10, dead: false
 

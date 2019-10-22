@@ -30,7 +30,7 @@
       value: key,
       placeholder: s_('CiVariables|Input variable key') }
     .ci-variable-body-item.gl-show-field-errors.table-section.section-15.border-top-0.p-0
-      .form-control.js-secret-value-placeholder.qa-ci-variable-input-value{ class: ('hide' unless id) }
+      .form-control.js-secret-value-placeholder.qa-ci-variable-input-value.overflow-hidden{ class: ('hide' unless id) }
         = '*' * 17
       %textarea.js-ci-variable-input-value.js-secret-value.qa-ci-variable-input-value.form-control{ class: ('hide' if id),
         rows: 1,

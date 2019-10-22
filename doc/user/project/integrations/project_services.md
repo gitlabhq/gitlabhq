@@ -56,6 +56,16 @@ Click on the service links to see further configuration instructions and details
 | [Redmine](redmine.md) | Redmine issue tracker |
 | [YouTrack](youtrack.md) | YouTrack issue tracker |
 
+## Push hooks limit
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/31009) in GitLab 12.4.
+
+If a single push includes changes to more than three branches or tags, services
+supported by `push_hooks` and `tag_push_hooks` events won't be executed.
+
+The number of branches or tags supported can be changed via
+[`push_event_hooks_limit` application setting](../../../api/settings.md#list-of-settings-that-can-be-accessed-via-api-calls).
+
 ## Services templates
 
 Services templates is a way to set some predefined values in the Service of

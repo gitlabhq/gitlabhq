@@ -98,6 +98,7 @@ RSpec.describe NotificationSetting do
 
     it 'returns email events' do
       expect(subject).to include(
+        :new_release,
         :new_note,
         :new_issue,
         :reopen_issue,

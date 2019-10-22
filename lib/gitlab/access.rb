@@ -103,8 +103,20 @@ module Gitlab
         }
       end
 
+      def project_creation_string_options
+        {
+          'noone'       => NO_ONE_PROJECT_ACCESS,
+          'maintainer'  => MAINTAINER_PROJECT_ACCESS,
+          'developer'   => DEVELOPER_MAINTAINER_PROJECT_ACCESS
+        }
+      end
+
       def project_creation_values
         project_creation_options.values
+      end
+
+      def project_creation_string_values
+        project_creation_string_options.keys
       end
 
       def project_creation_level_name(name)
@@ -116,6 +128,21 @@ module Gitlab
           s_('SubgroupCreationlevel|Owners') => OWNER_SUBGROUP_ACCESS,
           s_('SubgroupCreationlevel|Maintainers') => MAINTAINER_SUBGROUP_ACCESS
         }
+      end
+
+      def subgroup_creation_string_options
+        {
+          'owner'      => OWNER_SUBGROUP_ACCESS,
+          'maintainer' => MAINTAINER_SUBGROUP_ACCESS
+        }
+      end
+
+      def subgroup_creation_values
+        subgroup_creation_options.values
+      end
+
+      def subgroup_creation_string_values
+        subgroup_creation_string_options.keys
       end
     end
 

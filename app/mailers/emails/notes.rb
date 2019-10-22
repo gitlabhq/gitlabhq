@@ -55,7 +55,7 @@ module Emails
     def note_thread_options(recipient_id, reason)
       {
         from: sender(@note.author_id),
-        to: recipient(recipient_id, @project&.group || @group),
+        to: User.find(recipient_id).notification_email_for(@project&.group || @group),
         subject: subject("#{@note.noteable.title} (#{@note.noteable.reference_link_text})"),
         'X-GitLab-NotificationReason' => reason
       }

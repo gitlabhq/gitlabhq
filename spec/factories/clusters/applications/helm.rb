@@ -19,50 +19,50 @@ FactoryBot.define do
     end
 
     trait :not_installable do
-      status(-2)
+      status { -2 }
     end
 
     trait :errored do
-      status(-1)
-      status_reason 'something went wrong'
+      status { -1 }
+      status_reason { 'something went wrong' }
     end
 
     trait :installable do
-      status 0
+      status { 0 }
     end
 
     trait :scheduled do
-      status 1
+      status { 1 }
     end
 
     trait :installing do
-      status 2
+      status { 2 }
     end
 
     trait :installed do
-      status 3
+      status { 3 }
     end
 
     trait :updating do
-      status 4
+      status { 4 }
     end
 
     trait :updated do
-      status 5
+      status { 5 }
     end
 
     trait :update_errored do
-      status(6)
-      status_reason 'something went wrong'
+      status { 6 }
+      status_reason { 'something went wrong' }
     end
 
     trait :uninstalling do
-      status 7
+      status { 7 }
     end
 
     trait :uninstall_errored do
-      status(8)
-      status_reason 'something went wrong'
+      status { 8 }
+      status_reason { 'something went wrong' }
     end
 
     trait :timed_out do
@@ -75,7 +75,7 @@ FactoryBot.define do
     end
 
     factory :clusters_applications_cert_manager, class: Clusters::Applications::CertManager do
-      email 'admin@example.com'
+      email { 'admin@example.com' }
       cluster factory: %i(cluster with_installed_helm provided_by_gcp)
     end
 
@@ -89,7 +89,7 @@ FactoryBot.define do
     end
 
     factory :clusters_applications_knative, class: Clusters::Applications::Knative do
-      hostname 'example.com'
+      hostname { 'example.com' }
       cluster factory: %i(cluster with_installed_helm provided_by_gcp)
     end
 

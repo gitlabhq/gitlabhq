@@ -13,11 +13,11 @@ in the project's default branch.
 In order to change the pattern you need to have access to the server that GitLab
 is installed on.
 
-The default pattern can be located in [`gitlab.yml.example`](https://gitlab.com/gitlab-org/gitlab-foss/blob/master/config/gitlab.yml.example)
+The default pattern can be located in [`gitlab.yml.example`](https://gitlab.com/gitlab-org/gitlab/blob/master/config/gitlab.yml.example)
 under the "Automatic issue closing" section.
 
 > **Tip:**
-You are advised to use <http://rubular.com> to test the issue closing pattern.
+You are advised to use <https://rubular.com> to test the issue closing pattern.
 Because Rubular doesn't understand `%{issue_ref}`, you can replace this by
 `#\d+` when testing your patterns, which matches only local issue references like `#123`.
 

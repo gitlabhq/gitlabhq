@@ -1,8 +1,13 @@
+---
+type: reference
+---
+
 # Code Owners **(STARTER)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/6916)
 in [GitLab Starter](https://about.gitlab.com/pricing/) 11.3.
 > - [Support for group namespaces](https://gitlab.com/gitlab-org/gitlab-foss/issues/53182) added in GitLab Starter 12.1.
+> - Code Owners for Merge Request approvals was [introduced](https://gitlab.com/gitlab-org/gitlab/issues/4418) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.9.
 
 You can use a `CODEOWNERS` file to specify users or
 [shared groups](members/share_project_with_groups.md)
@@ -10,9 +15,9 @@ that are responsible for certain files in a repository.
 
 You can choose and add the `CODEOWNERS` file in three places:
 
-- to the root directory of the repository
-- inside the `.gitlab/` directory
-- inside the `docs/` directory
+- To the root directory of the repository
+- Inside the `.gitlab/` directory
+- Inside the `docs/` directory
 
 The `CODEOWNERS` file is scoped to a branch, which means that with the
 introduction of new files, the person adding the new content can
@@ -22,6 +27,18 @@ get merged to the default branch.
 When a file matches multiple entries in the `CODEOWNERS` file,
 the users from all entries are displayed on the blob page of
 the given file.
+
+## Approvals by Code Owners
+
+Once you've set Code Owners to a project, you can configure it to
+receive approvals:
+
+- As [merge request eligible approvers](merge_requests/merge_request_approvals.md#code-owners-as-eligible-approvers-starter). **(STARTER)**
+- As required approvers for [protected branches](protected_branches.md#protected-branches-approval-by-code-owners-premium). **(PREMIUM)**
+
+Once set, Code Owners are displayed in merge requests widgets:
+
+![MR widget - Code Owners](img/code_owners_mr_widget_v12_4.png)
 
 ## The syntax of Code Owners files
 

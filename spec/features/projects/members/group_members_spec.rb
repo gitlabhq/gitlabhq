@@ -5,8 +5,8 @@ require 'spec_helper'
 describe 'Projects members' do
   let(:user) { create(:user) }
   let(:developer) { create(:user) }
-  let(:group) { create(:group, :public, :access_requestable) }
-  let(:project) { create(:project, :public, :access_requestable, creator: user, group: group) }
+  let(:group) { create(:group, :public) }
+  let(:project) { create(:project, :public, creator: user, group: group) }
   let(:project_invitee) { create(:project_member, project: project, invite_token: '123', invite_email: 'test1@abc.com', user: nil) }
   let(:group_invitee) { create(:group_member, group: group, invite_token: '123', invite_email: 'test2@abc.com', user: nil) }
   let(:project_requester) { create(:user) }

@@ -34,7 +34,7 @@ export default {
         class="more-actions-toggle btn btn-transparent p-0"
         data-toggle="dropdown"
       >
-        <icon css-classes="icon" name="ellipsis_v" />
+        <icon class="icon" name="ellipsis_v" />
       </gl-button>
       <ul class="more-actions-dropdown dropdown-menu dropdown-open-left">
         <slot name="dropdown-options"></slot>

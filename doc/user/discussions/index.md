@@ -24,6 +24,9 @@ You can also reply to a comment notification email to reply to the comment if
 creates another standard comment. Replying to a threaded comment creates a reply in the thread. Email replies support
 [Markdown] and [quick actions], just as if you replied from the web.
 
+NOTE: **Note:**
+There is a limit of 5,000 comments for every object, for example: issue, epic, and merge request.
+
 ## Resolvable comments and threads
 
 > **Notes:**

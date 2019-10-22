@@ -205,7 +205,7 @@ when running our Phoenix in our `localhost`.
 
   As our project is still fresh, we don't have any data on our database, so, the `migrations`
   directory will be empty.
-  Without `.gitkeep`, git will not upload this empty directory and we'll got an error when running our
+  Without `.gitkeep`, Git will not upload this empty directory and we'll got an error when running our
   test on GitLab.
 
   > **Note:** If we add a folder via the GitLab UI, GitLab itself will add the `.gitkeep` to that new dir.
@@ -412,8 +412,8 @@ other reasons][ci-reasons] to keep using GitLab CI/CD. The benefits to our teams
 [mix-ecto]: https://hexdocs.pm/ecto/Mix.Tasks.Ecto.Create.html "mix and Ecto"
 [iex]: https://elixir-lang.org/getting-started/introduction.html#interactive-mode "Interactive Mode"
 [ci-lint]: https://gitlab.com/ci/lint "CI Lint Tool"
-[ci-reasons]: https://about.gitlab.com/2015/02/03/7-reasons-why-you-should-be-using-ci/ "7 Reasons Why You Should Be Using CI"
-[ci-guide]: https://about.gitlab.com/2015/12/14/getting-started-with-gitlab-and-gitlab-ci/ "Getting Started With GitLab And GitLab CI/CD"
+[ci-reasons]: https://about.gitlab.com/blog/2015/02/03/7-reasons-why-you-should-be-using-ci/ "7 Reasons Why You Should Be Using CI"
+[ci-guide]: https://about.gitlab.com/blog/2015/12/14/getting-started-with-gitlab-and-gitlab-ci/ "Getting Started With GitLab And GitLab CI/CD"
 [ci-docs]: ../../README.md "GitLab CI/CD Documentation"
 [skipping-jobs]: ../../yaml/README.md#skipping-jobs "Skipping Jobs"
 [gitlab-runners]: ../../runners/README.md "GitLab Runners Documentation"

@@ -24,7 +24,7 @@ If you don't exactly understand what we mean by **not everything needs to happen
 
 ### 0. Are end-to-end tests needed?
 
-At GitLab we respect the [test pyramid](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/development/testing_guide/testing_levels.md), and so, we recommend you check the code coverage of a specific feature before writing end-to-end tests, for both [CE](https://gitlab-org.gitlab.io/gitlab-ce/coverage-ruby/#_AllFiles) and [EE](https://gitlab-org.gitlab.io/gitlab-ee/coverage-ruby/#_AllFiles) projects.
+At GitLab we respect the [test pyramid](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/development/testing_guide/testing_levels.md), and so, we recommend you check the code coverage of a specific feature before writing end-to-end tests, for both [CE](https://gitlab-org.gitlab.io/gitlab-foss/coverage-ruby/#_AllFiles) and [EE](https://gitlab-org.gitlab.io/gitlab/coverage-ruby/#_AllFiles) projects.
 
 Sometimes you may notice that there is already good coverage in other test levels, and we can stay confident that if we break a feature, we will still have quick feedback about it, even without having end-to-end tests.
 
@@ -38,7 +38,7 @@ The GitLab QA end-to-end tests are organized by the different [stages in the Dev
 
 > There may be sub-directories inside the stages directories, for different features. For example: `.../browser_ui/2_plan/ee_epics/` and `.../browser_ui/2_plan/issues/`.
 
-Now, let's say we want to create tests for the [scoped labels](https://about.gitlab.com/2019/04/22/gitlab-11-10-released/#scoped-labels) feature, available on GitLab EE Premium (this feature is part of the Plan stage.)
+Now, let's say we want to create tests for the [scoped labels](https://about.gitlab.com/blog/2019/04/22/gitlab-11-10-released/#scoped-labels) feature, available on GitLab EE Premium (this feature is part of the Plan stage.)
 
 > Because these tests are for a feature available only on GitLab EE, we need to create them in the [EE repository](https://gitlab.com/gitlab-org/gitlab).
 

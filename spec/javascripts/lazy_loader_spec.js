@@ -62,7 +62,7 @@ describe('LazyLoader', function() {
         waitForAttributeChange(newImg, ['data-src', 'src']),
       ])
         .then(() => {
-          expect(LazyLoader.loadImage).toHaveBeenCalled();
+          expect(LazyLoader.loadImage).toHaveBeenCalledWith(newImg);
           expect(newImg.getAttribute('src')).toBe(testPath);
           expect(newImg).toHaveClass('js-lazy-loaded');
           done();
@@ -79,7 +79,7 @@ describe('LazyLoader', function() {
       scrollIntoViewPromise(newImg)
         .then(waitForPromises)
         .then(() => {
-          expect(LazyLoader.loadImage).not.toHaveBeenCalled();
+          expect(LazyLoader.loadImage).not.toHaveBeenCalledWith(newImg);
           expect(newImg).not.toHaveClass('js-lazy-loaded');
           done();
         })
@@ -98,7 +98,7 @@ describe('LazyLoader', function() {
       scrollIntoViewPromise(newImg)
         .then(waitForPromises)
         .then(() => {
-          expect(LazyLoader.loadImage).not.toHaveBeenCalled();
+          expect(LazyLoader.loadImage).not.toHaveBeenCalledWith(newImg);
           expect(newImg).not.toHaveClass('js-lazy-loaded');
           done();
         })
@@ -121,7 +121,7 @@ describe('LazyLoader', function() {
       ])
         .then(waitForPromises)
         .then(() => {
-          expect(LazyLoader.loadImage).toHaveBeenCalled();
+          expect(LazyLoader.loadImage).toHaveBeenCalledWith(newImg);
           expect(newImg).toHaveClass('js-lazy-loaded');
           done();
         })
@@ -156,7 +156,7 @@ describe('LazyLoader', function() {
 
       Promise.all([scrollIntoViewPromise(img), waitForAttributeChange(img, ['data-src', 'src'])])
         .then(() => {
-          expect(LazyLoader.loadImage).toHaveBeenCalled();
+          expect(LazyLoader.loadImage).toHaveBeenCalledWith(img);
           expect(img.getAttribute('src')).toBe(originalDataSrc);
           expect(img).toHaveClass('js-lazy-loaded');
           done();
@@ -176,7 +176,7 @@ describe('LazyLoader', function() {
         waitForAttributeChange(newImg, ['data-src', 'src']),
       ])
         .then(() => {
-          expect(LazyLoader.loadImage).toHaveBeenCalled();
+          expect(LazyLoader.loadImage).toHaveBeenCalledWith(newImg);
           expect(newImg.getAttribute('src')).toBe(testPath);
           expect(newImg).toHaveClass('js-lazy-loaded');
           done();
@@ -193,7 +193,7 @@ describe('LazyLoader', function() {
       scrollIntoViewPromise(newImg)
         .then(waitForPromises)
         .then(() => {
-          expect(LazyLoader.loadImage).not.toHaveBeenCalled();
+          expect(LazyLoader.loadImage).not.toHaveBeenCalledWith(newImg);
           expect(newImg).not.toHaveClass('js-lazy-loaded');
           done();
         })
@@ -212,7 +212,7 @@ describe('LazyLoader', function() {
       scrollIntoViewPromise(newImg)
         .then(waitForPromises)
         .then(() => {
-          expect(LazyLoader.loadImage).not.toHaveBeenCalled();
+          expect(LazyLoader.loadImage).not.toHaveBeenCalledWith(newImg);
           expect(newImg).not.toHaveClass('js-lazy-loaded');
           done();
         })
@@ -234,7 +234,7 @@ describe('LazyLoader', function() {
         waitForAttributeChange(newImg, ['data-src', 'src']),
       ])
         .then(() => {
-          expect(LazyLoader.loadImage).toHaveBeenCalled();
+          expect(LazyLoader.loadImage).toHaveBeenCalledWith(newImg);
           expect(newImg).toHaveClass('js-lazy-loaded');
           done();
         })

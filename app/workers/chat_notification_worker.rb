@@ -3,6 +3,8 @@
 class ChatNotificationWorker
   include ApplicationWorker
 
+  feature_category :chatops
+
   RESCHEDULE_INTERVAL = 2.seconds
 
   # rubocop: disable CodeReuse/ActiveRecord

@@ -100,6 +100,7 @@ class ProfilesController < Profiles::ApplicationController
       :avatar,
       :bio,
       :email,
+      :role,
       :hide_no_password,
       :hide_no_ssh_key,
       :hide_project_limit,

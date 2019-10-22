@@ -252,31 +252,6 @@ describe Gitlab::GitalyClient::CommitService do
     end
   end
 
-  describe '#patch' do
-    let(:request) do
-      Gitaly::CommitPatchRequest.new(
-        repository: repository_message, revision: revision
-      )
-    end
-    let(:response) { [double(data: "my "), double(data: "diff")] }
-
-    subject { described_class.new(repository).patch(revision) }
-
-    it 'sends an RPC request' do
-      expect_any_instance_of(Gitaly::DiffService::Stub).to receive(:commit_patch)
-        .with(request, kind_of(Hash)).and_return([])
-
-      subject
-    end
-
-    it 'concatenates the responses data' do
-      allow_any_instance_of(Gitaly::DiffService::Stub).to receive(:commit_patch)
-        .with(request, kind_of(Hash)).and_return(response)
-
-      expect(subject).to eq("my diff")
-    end
-  end
-
   describe '#commit_stats' do
     let(:request) do
       Gitaly::CommitStatsRequest.new(

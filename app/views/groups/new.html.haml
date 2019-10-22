@@ -40,5 +40,5 @@
           = render 'create_chat_team', f: f if Gitlab.config.mattermost.enabled
 
       .form-actions
-        = f.submit 'Create group', class: "btn btn-success"
-        = link_to 'Cancel', dashboard_groups_path, class: 'btn btn-cancel'
+        = f.submit _('Create group'), class: "btn btn-success"
+        = link_to _('Cancel'), dashboard_groups_path, class: 'btn btn-cancel'

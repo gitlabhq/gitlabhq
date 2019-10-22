@@ -8,5 +8,6 @@ module ObjectPoolQueue
 
   included do
     queue_namespace :object_pool
+    feature_category :gitaly
   end
 end

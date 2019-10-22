@@ -5,6 +5,11 @@ export const CLUSTER_TYPE = {
   PROJECT: 'project_type',
 };
 
+// These need to match the available providers in app/models/clusters/providers/
+export const PROVIDER_TYPE = {
+  GCP: 'gcp',
+};
+
 // These need to match what is returned from the server
 export const APPLICATION_STATUS = {
   NO_STATUS: null,
@@ -19,6 +24,7 @@ export const APPLICATION_STATUS = {
   UNINSTALLING: 'uninstalling',
   UNINSTALL_ERRORED: 'uninstall_errored',
   ERROR: 'errored',
+  PRE_INSTALLED: 'pre_installed',
 };
 
 /*
@@ -29,6 +35,7 @@ export const APPLICATION_INSTALLED_STATUSES = [
   APPLICATION_STATUS.INSTALLED,
   APPLICATION_STATUS.UPDATING,
   APPLICATION_STATUS.UNINSTALLING,
+  APPLICATION_STATUS.PRE_INSTALLED,
 ];
 
 // These are only used client-side

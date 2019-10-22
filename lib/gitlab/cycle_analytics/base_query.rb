@@ -23,6 +23,7 @@ module Gitlab
           .project(routes_table[:path].as("namespace_path"))
 
         query = limit_query(query, project_ids)
+        query = limit_query_by_date_range(query)
 
         # Load merge_requests
 
@@ -34,7 +35,12 @@ module Gitlab
       def limit_query(query, project_ids)
         query.where(issue_table[:project_id].in(project_ids))
           .where(routes_table[:source_type].eq('Namespace'))
-          .where(issue_table[:created_at].gteq(options[:from]))
+      end
+
+      def limit_query_by_date_range(query)
+        query = query.where(issue_table[:created_at].gteq(options[:from]))
+        query = query.where(issue_table[:created_at].lteq(options[:to])) if options[:to]
+        query
       end
 
       def load_merge_requests(query)

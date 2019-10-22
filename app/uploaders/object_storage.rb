@@ -180,10 +180,11 @@ module ObjectStorage
       end
 
       def workhorse_authorize(has_length:, maximum_size: nil)
-        {
-          RemoteObject: workhorse_remote_upload_options(has_length: has_length, maximum_size: maximum_size),
-          TempPath: workhorse_local_upload_path
-        }.compact
+        if self.object_store_enabled? && self.direct_upload_enabled?
+          { RemoteObject: workhorse_remote_upload_options(has_length: has_length, maximum_size: maximum_size) }
+        else
+          { TempPath: workhorse_local_upload_path }
+        end
       end
 
       def workhorse_local_upload_path

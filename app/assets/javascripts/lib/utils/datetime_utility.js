@@ -537,13 +537,6 @@ export const stringifyTime = (timeObject, fullNameFormat = false) => {
 };
 
 /**
- * Accepts a time string of any size (e.g. '1w 2d 3h 5m' or '1w 2d') and returns
- *  the first non-zero unit/value pair.
- */
-export const abbreviateTime = timeStr =>
-  timeStr.split(' ').filter(unitStr => unitStr.charAt(0) !== '0')[0];
-
-/**
  * Calculates the milliseconds between now and a given date string.
  * The result cannot become negative.
  *
@@ -554,3 +547,20 @@ export const calculateRemainingMilliseconds = endDate => {
   const remainingMilliseconds = new Date(endDate).getTime() - Date.now();
   return Math.max(remainingMilliseconds, 0);
 };
+
+/**
+ * Subtracts a given number of days from a given date and returns the new date.
+ *
+ * @param {Date} date the date that we will substract days from
+ * @param {number} daysInPast number of days that are subtracted from a given date
+ * @returns {String} Date string in ISO format
+ */
+export const getDateInPast = (date, daysInPast) => {
+  const dateClone = newDate(date);
+  return new Date(
+    dateClone.setTime(dateClone.getTime() - daysInPast * 24 * 60 * 60 * 1000),
+  ).toISOString();
+};
+
+export const beginOfDayTime = 'T00:00:00Z';
+export const endOfDayTime = 'T23:59:59Z';

@@ -37,7 +37,8 @@ class SpamService
     else
       # Otherwise, it goes to Akismet and check if it's a spam. If that's the
       # case, it assigns spammable record as "spam" and create a SpamLog record.
-      spammable.spam = check(api)
+      possible_spam = check(api)
+      spammable.spam = possible_spam unless spammable.allow_possible_spam?
       spammable.spam_log = spam_log
     end
   end

@@ -3,9 +3,10 @@
 require 'spec_helper'
 
 describe Projects::CommitController do
-  set(:project)  { create(:project, :repository) }
-  set(:user)     { create(:user) }
-  let(:commit)   { project.commit("master") }
+  let_it_be(:project)  { create(:project, :repository) }
+  let_it_be(:user)     { create(:user) }
+
+  let(:commit) { project.commit("master") }
   let(:master_pickable_sha) { '7d3b0f7cff5f37573aea97cebfd5692ea1689924' }
   let(:master_pickable_commit) { project.commit(master_pickable_sha) }
 

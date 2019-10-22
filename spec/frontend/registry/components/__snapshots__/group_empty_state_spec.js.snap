@@ -1,0 +1,61 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Registry Group Empty state to match the default snapshot 1`] = `
+<div
+  class="row container-message empty-state"
+>
+  <div
+    class="col-12"
+  >
+    <div
+      class="svg-250 svg-content"
+    >
+      <img
+        alt="There are no container images available in this group"
+        class=""
+        src="imageUrl"
+      />
+    </div>
+  </div>
+   
+  <div
+    class="col-12"
+  >
+    <div
+      class="text-content"
+    >
+      <h4
+        class="center"
+        style=""
+      >
+        There are no container images available in this group
+      </h4>
+       
+      <p
+        class="center"
+        style=""
+      >
+        <p
+          class="js-no-container-images-text"
+        >
+          With the Container Registry, every project can have its own space to store its Docker images. Push at least one Docker image in one of this group's projects in order to show up here. 
+          <a
+            href="help"
+            target="_blank"
+          >
+            More Information
+          </a>
+        </p>
+      </p>
+       
+      <div
+        class="text-center"
+      >
+        <!---->
+         
+        <!---->
+      </div>
+    </div>
+  </div>
+</div>
+`;

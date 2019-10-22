@@ -211,7 +211,7 @@ describe 'Edit Project Settings' do
       visit activity_project_path(project)
 
       page.within(".event-filter") do
-        expect(page).to have_selector("a", count: 2)
+        expect(page).to have_content("All")
         expect(page).not_to have_content("Push events")
         expect(page).not_to have_content("Merge events")
         expect(page).not_to have_content("Comments")

@@ -16,6 +16,16 @@ module Gitlab
           def object_type
             MergeRequest
           end
+
+          def timestamp_projection
+            mr_metrics_table[:merged_at]
+          end
+
+          # rubocop: disable CodeReuse/ActiveRecord
+          def apply_query_customization(query)
+            query.joins(:metrics)
+          end
+          # rubocop: enable CodeReuse/ActiveRecord
         end
       end
     end

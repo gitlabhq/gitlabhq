@@ -68,7 +68,7 @@ Omnibus:
    gitaly['enable'] = false
 
    redis['bind'] = '0.0.0.0'
-   redis['port'] = '6379'
+   redis['port'] = 6379
    redis['password'] = 'SECRET_PASSWORD_HERE'
 
    gitlab_rails['auto_migrate'] = false
@@ -313,12 +313,12 @@ Pick the one that suits your needs.
 - [Installations from source][source]: You need to install Redis and Sentinel
   yourself. Use the [Redis HA installation from source](redis_source.md)
   documentation.
-- [Omnibus GitLab **Community Edition** (CE) package][ce]: Redis is bundled, so you
+- [Omnibus GitLab **Community Edition** (CE) package](https://about.gitlab.com/install/?version=ce): Redis is bundled, so you
   can use the package with only the Redis service enabled as described in steps
   1 and 2 of this document (works for both master and slave setups). To install
   and configure Sentinel, jump directly to the Sentinel section in the
   [Redis HA installation from source](redis_source.md#step-3-configuring-the-redis-sentinel-instances) documentation.
-- [Omnibus GitLab **Enterprise Edition** (EE) package][ee]: Both Redis and Sentinel
+- [Omnibus GitLab **Enterprise Edition** (EE) package](https://about.gitlab.com/install/?version=ee): Both Redis and Sentinel
   are bundled in the package, so you can use the EE package to set up the whole
   Redis HA infrastructure (master, slave and Sentinel) which is described in
   this document.
@@ -397,7 +397,7 @@ The prerequisites for a HA Redis setup are the following:
 
 1. [Reconfigure Omnibus GitLab][reconfigure] for the changes to take effect.
 
-> Note: You can specify multiple roles like sentinel and redis as:
+> Note: You can specify multiple roles like sentinel and Redis as:
 > `roles ['redis_sentinel_role', 'redis_master_role']`. Read more about high
 > availability roles at <https://docs.gitlab.com/omnibus/roles/>.
 
@@ -446,7 +446,7 @@ The prerequisites for a HA Redis setup are the following:
 1. [Reconfigure Omnibus GitLab][reconfigure] for the changes to take effect.
 1. Go through the steps again for all the other slave nodes.
 
-> Note: You can specify multiple roles like sentinel and redis as:
+> Note: You can specify multiple roles like sentinel and Redis as:
 > `roles ['redis_sentinel_role', 'redis_slave_role']`. Read more about high
 > availability roles at <https://docs.gitlab.com/omnibus/roles/>.
 
@@ -628,7 +628,7 @@ single-machine install, to rotate the **Master** to one of the new nodes.
 
 Make the required changes in configuration and restart the new nodes again.
 
-To disable redis in the single install, edit `/etc/gitlab/gitlab.rb`:
+To disable Redis in the single install, edit `/etc/gitlab/gitlab.rb`:
 
 ```ruby
 redis['enable'] = false
@@ -902,7 +902,7 @@ You can check if everything is correct by connecting to each server using
 /opt/gitlab/embedded/bin/redis-cli -h <redis-host-or-ip> -a '<redis-password>' info replication
 ```
 
-When connected to a `master` redis, you will see the number of connected
+When connected to a `master` Redis, you will see the number of connected
 `slaves`, and a list of each with connection details:
 
 ```
@@ -948,7 +948,7 @@ to [this issue][gh-531].
 You must make sure you are defining the same value in `redis['master_name']`
 and `redis['master_pasword']` as you defined for your sentinel node.
 
-The way the redis connector `redis-rb` works with sentinel is a bit
+The way the Redis connector `redis-rb` works with sentinel is a bit
 non-intuitive. We try to hide the complexity in omnibus, but it still requires
 a few extra configs.
 
@@ -1025,6 +1025,4 @@ Read more on High Availability:
 [sentinel]: https://redis.io/topics/sentinel
 [omnifile]: https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/files/gitlab-cookbooks/gitlab/libraries/gitlab_rails.rb
 [source]: ../../install/installation.md
-[ce]: https://about.gitlab.com/downloads
-[ee]: https://about.gitlab.com/downloads-ee
 [it]: https://gitlab.com/gitlab-org/gitlab-foss/uploads/c4cc8cd353604bd80315f9384035ff9e/The_Internet_IT_Crowd.png

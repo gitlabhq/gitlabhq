@@ -34,7 +34,8 @@ module Ci
 
     def refspecs
       specs = []
-      specs << refspec_for_merge_request_ref if merge_request_ref?
+      specs << refspec_for_pipeline_ref if merge_request_ref?
+      specs << refspec_for_persistent_ref if persistent_ref_exist?
 
       if git_depth > 0
         specs << refspec_for_branch(ref) if branch? || legacy_detached_merge_request_pipeline?
@@ -86,8 +87,20 @@ module Ci
       "+#{Gitlab::Git::TAG_REF_PREFIX}#{ref}:#{RUNNER_REMOTE_TAG_PREFIX}#{ref}"
     end
 
-    def refspec_for_merge_request_ref
+    def refspec_for_pipeline_ref
       "+#{ref}:#{ref}"
+    end
+
+    def refspec_for_persistent_ref
+      "+#{persistent_ref_path}:#{persistent_ref_path}"
+    end
+
+    def persistent_ref_exist?
+      pipeline.persistent_ref.exist?
+    end
+
+    def persistent_ref_path
+      pipeline.persistent_ref.path
     end
 
     def git_depth_variable

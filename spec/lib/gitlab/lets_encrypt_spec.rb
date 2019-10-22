@@ -24,4 +24,16 @@ describe ::Gitlab::LetsEncrypt do
       it { is_expected.to eq(false) }
     end
   end
+
+  describe '.terms_of_service_url' do
+    before do
+      stub_lets_encrypt_client
+    end
+
+    subject { described_class.terms_of_service_url }
+
+    it 'returns the url' do
+      is_expected.to eq("https://letsencrypt.org/documents/LE-SA-v1.2-November-15-2017.pdf")
+    end
+  end
 end

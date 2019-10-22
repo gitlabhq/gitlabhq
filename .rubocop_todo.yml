@@ -273,11 +273,6 @@ RSpec/ContextWording:
 RSpec/EmptyLineAfterFinalLet:
   Enabled: false
 
-# Offense count: 232
-# Cop supports --auto-correct.
-RSpec/EmptyLineAfterSubject:
-  Enabled: false
-
 # Offense count: 719
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle.
@@ -441,19 +436,6 @@ Rails/LinkToBlank:
     - 'app/helpers/wiki_helper.rb'
     - 'ee/app/helpers/ee/user_callouts_helper.rb'
     - 'ee/app/helpers/license_helper.rb'
-
-# Offense count: 11
-# Cop supports --auto-correct.
-Rails/Presence:
-  Exclude:
-    - 'app/models/ci/pipeline.rb'
-    - 'app/models/concerns/mentionable.rb'
-    - 'app/models/project_services/hipchat_service.rb'
-    - 'app/models/project_services/irker_service.rb'
-    - 'app/models/project_services/jira_service.rb'
-    - 'app/models/project_services/packagist_service.rb'
-    - 'app/models/wiki_page.rb'
-    - 'lib/gitlab/github_import/importer/releases_importer.rb'
 
 # Offense count: 1
 # Cop supports --auto-correct.

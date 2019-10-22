@@ -1,5 +1,5 @@
 import rootActions from '~/ide/stores/actions';
-import store from '~/ide/stores';
+import { createStore } from '~/ide/stores';
 import service from '~/ide/services';
 import router from '~/ide/ide_router';
 import eventHub from '~/ide/eventhub';
@@ -11,6 +11,7 @@ import { resetStore, file } from 'spec/ide/helpers';
 import testAction from '../../../../helpers/vuex_action_helper';
 
 const TEST_COMMIT_SHA = '123456789';
+const store = createStore();
 
 describe('IDE commit module actions', () => {
   beforeEach(() => {
@@ -59,7 +60,9 @@ describe('IDE commit module actions', () => {
     });
 
     it('sets shouldCreateMR to true if "Create new MR" option is visible', done => {
-      store.state.shouldHideNewMrOption = false;
+      Object.assign(store.state, {
+        shouldHideNewMrOption: false,
+      });
 
       testAction(
         actions.updateCommitAction,
@@ -78,7 +81,9 @@ describe('IDE commit module actions', () => {
     });
 
     it('sets shouldCreateMR to false if "Create new MR" option is hidden', done => {
-      store.state.shouldHideNewMrOption = true;
+      Object.assign(store.state, {
+        shouldHideNewMrOption: true,
+      });
 
       testAction(
         actions.updateCommitAction,
@@ -172,24 +177,31 @@ describe('IDE commit module actions', () => {
         content: 'file content',
       });
 
-      store.state.currentProjectId = 'abcproject';
-      store.state.currentBranchId = 'master';
-      store.state.projects.abcproject = {
-        web_url: 'web_url',
-        branches: {
-          master: {
-            workingReference: '',
-            commit: {
-              short_id: TEST_COMMIT_SHA,
+      Object.assign(store.state, {
+        currentProjectId: 'abcproject',
+        currentBranchId: 'master',
+        projects: {
+          abcproject: {
+            web_url: 'web_url',
+            branches: {
+              master: {
+                workingReference: '',
+                commit: {
+                  short_id: TEST_COMMIT_SHA,
+                },
+              },
             },
           },
         },
-      };
-      store.state.stagedFiles.push(f, {
-        ...file('changedFile2'),
-        changed: true,
+        stagedFiles: [
+          f,
+          {
+            ...file('changedFile2'),
+            changed: true,
+          },
+        ],
+        openFiles: store.state.stagedFiles,
       });
-      store.state.openFiles = store.state.stagedFiles;
 
       store.state.stagedFiles.forEach(stagedFile => {
         store.state.entries[stagedFile.path] = stagedFile;
@@ -275,40 +287,40 @@ describe('IDE commit module actions', () => {
 
       document.body.innerHTML += '<div class="flash-container"></div>';
 
-      store.state.currentProjectId = 'abcproject';
-      store.state.currentBranchId = 'master';
-      store.state.projects.abcproject = {
-        web_url: 'webUrl',
-        branches: {
-          master: {
-            workingReference: '1',
-            commit: {
-              id: TEST_COMMIT_SHA,
-            },
-          },
-        },
-      };
-
       const f = {
         ...file('changed'),
         type: 'blob',
         active: true,
         lastCommitSha: TEST_COMMIT_SHA,
       };
-      store.state.stagedFiles.push(f);
-      store.state.changedFiles = [
-        {
-          ...f,
-        },
-      ];
-      store.state.openFiles = store.state.changedFiles;
 
-      store.state.openFiles.forEach(localF => {
-        store.state.entries[localF.path] = localF;
+      Object.assign(store.state, {
+        stagedFiles: [f],
+        changedFiles: [f],
+        openFiles: [f],
+        currentProjectId: 'abcproject',
+        currentBranchId: 'master',
+        projects: {
+          abcproject: {
+            web_url: 'webUrl',
+            branches: {
+              master: {
+                workingReference: '1',
+                commit: {
+                  id: TEST_COMMIT_SHA,
+                },
+              },
+            },
+          },
+        },
       });
 
       store.state.commit.commitAction = '2';
       store.state.commit.commitMessage = 'testing 123';
+
+      store.state.openFiles.forEach(localF => {
+        store.state.entries[localF.path] = localF;
+      });
     });
 
     afterEach(() => {
@@ -473,18 +485,16 @@ describe('IDE commit module actions', () => {
         });
 
         it('resets changed files before redirecting', done => {
+          visitUrl = visitUrl.and.callFake(() => {
+            expect(store.state.stagedFiles.length).toBe(0);
+            done();
+          });
+
           spyOn(eventHub, '$on');
 
           store.state.commit.commitAction = '3';
 
-          store
-            .dispatch('commit/commitChanges')
-            .then(() => {
-              expect(store.state.stagedFiles.length).toBe(0);
-
-              done();
-            })
-            .catch(done.fail);
+          store.dispatch('commit/commitChanges').catch(done.fail);
         });
       });
     });

@@ -61,7 +61,7 @@ GitLab makes it easy to view the logs of running pods in connected Kubernetes cl
 ### Kubernetes monitoring
 
 Automatically detect and monitor Kubernetes metrics. Automatic monitoring of
-[NGINX ingress](../integrations/prometheus_library/nginx.md) is also supported.
+[NGINX Ingress](../integrations/prometheus_library/nginx.md) is also supported.
 
 [Read more about Kubernetes monitoring](../integrations/prometheus_library/kubernetes.md)
 
@@ -112,7 +112,7 @@ There are two options when adding a new cluster to your project:
 TIP: **Tip:**
 Every new Google Cloud Platform (GCP) account receives [$300 in credit upon sign up](https://console.cloud.google.com/freetrial),
 and in partnership with Google, GitLab is able to offer an additional $200 for new GCP accounts to get started with GitLab's
-Google Kubernetes Engine Integration. All you have to do is [follow this link](https://goo.gl/AaJzRW) and apply for credit.
+Google Kubernetes Engine Integration. All you have to do is [follow this link](https://cloud.google.com/partners/partnercredit/?PCN=a0n60000006Vpz4AAC) and apply for credit.
 
 NOTE: **Note:**
 The [Google authentication integration](../../../integration/google.md) must
@@ -154,6 +154,7 @@ new Kubernetes cluster to your project:
    - **Number of nodes** - Enter the number of nodes you wish the cluster to have.
    - **Machine type** - The [machine type](https://cloud.google.com/compute/docs/machine-types)
      of the Virtual Machine instance that the cluster will be based on.
+   - **Enable Cloud Run on GKE (beta)** - Check this if you want to use Cloud Run on GKE for this cluster. See the [Cloud Run on GKE section](#cloud-run-on-gke) for more information.
    - **GitLab-managed cluster** - Leave this checked if you want GitLab to manage namespaces and service accounts for this cluster. See the [Managed clusters section](#gitlab-managed-clusters) for more information.
 1. Finally, click the **Create Kubernetes cluster** button.
 
@@ -339,6 +340,15 @@ functionalities needed to successfully build and deploy a containerized
 application. Bear in mind that the same credentials are used for all the
 applications running on the cluster.
 
+### Cloud Run on GKE
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/16566) in GitLab 12.4.
+
+You can choose to use Cloud Run on GKE in place of installing Knative and Istio
+separately after the cluster has been created. This means that Cloud Run
+(Knative), Istio, and HTTP Load Balancing will be enabled on the cluster at
+create time and cannot be [installed or uninstalled](../../clusters/applications.md) separately.
+
 ### GitLab-managed clusters
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/22011) in GitLab 11.5.
@@ -370,7 +380,7 @@ Specifying a base domain will automatically set `KUBE_INGRESS_BASE_DOMAIN` as an
 If you are using [Auto DevOps](../../../topics/autodevops/index.md), this domain will be used for the different
 stages. For example, Auto Review Apps and Auto Deploy.
 
-The domain should have a wildcard DNS configured to the Ingress IP address. After ingress has been installed (see [Installing Applications](#installing-applications)),
+The domain should have a wildcard DNS configured to the Ingress IP address. After Ingress has been installed (see [Installing Applications](#installing-applications)),
 you can either:
 
 - Create an `A` record that points to the Ingress IP address with your domain provider.
@@ -380,8 +390,8 @@ you can either:
 
 When creating a cluster in GitLab, you will be asked if you would like to create either:
 
-- An [Attribute-based access control (ABAC)](https://kubernetes.io/docs/admin/authorization/abac/) cluster.
-- A [Role-based access control (RBAC)](https://kubernetes.io/docs/admin/authorization/rbac/) cluster.
+- An [Attribute-based access control (ABAC)](https://kubernetes.io/docs/reference/access-authn-authz/abac/) cluster.
+- A [Role-based access control (RBAC)](https://kubernetes.io/docs/reference/access-authn-authz/rbac/) cluster.
 
 NOTE: **Note:**
 [RBAC](#rbac-cluster-resources) is recommended and the GitLab default.
@@ -538,7 +548,7 @@ differentiate the new cluster with the rest.
 GitLab can install and manage some applications in your project-level
 cluster. For more information on installing, upgrading, uninstalling,
 and troubleshooting applications for your project cluster, see
-[Gitlab Managed Apps](../../clusters/applications.md).
+[GitLab Managed Apps](../../clusters/applications.md).
 
 ### Getting the external endpoint
 
@@ -555,7 +565,7 @@ address or a hostname associated with your load balancer.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/17052) in GitLab 10.6.
 
-After you install [Ingress or Knative](#installing-applications), Gitlab attempts to determine the external endpoint
+After you install [Ingress or Knative](#installing-applications), GitLab attempts to determine the external endpoint
 and it should be available within a few minutes. If the endpoint doesn't appear
 and your cluster runs on Google Kubernetes Engine:
 

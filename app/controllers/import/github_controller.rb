@@ -2,6 +2,7 @@
 
 class Import::GithubController < Import::BaseController
   include ImportHelper
+  include ActionView::Helpers::SanitizeHelper
 
   before_action :verify_import_enabled
   before_action :provider_auth, only: [:status, :realtime_changes, :create]
@@ -55,7 +56,7 @@ class Import::GithubController < Import::BaseController
   def realtime_changes
     Gitlab::PollingInterval.set_header(response, interval: 3_000)
 
-    render json: find_jobs(provider)
+    render json: already_added_projects.to_json(only: [:id], methods: [:import_status])
   end
 
   private
@@ -82,7 +83,7 @@ class Import::GithubController < Import::BaseController
   end
 
   def already_added_projects
-    @already_added_projects ||= find_already_added_projects(provider)
+    @already_added_projects ||= filtered(find_already_added_projects(provider))
   end
 
   def already_added_project_names
@@ -104,7 +105,7 @@ class Import::GithubController < Import::BaseController
   end
 
   def client_repos
-    @client_repos ||= client.repos
+    @client_repos ||= filtered(client.repos)
   end
 
   def verify_import_enabled
@@ -184,6 +185,20 @@ class Import::GithubController < Import::BaseController
 
   def extra_import_params
     {}
+  end
+
+  def sanitized_filter_param
+    @filter ||= sanitize(params[:filter])
+  end
+
+  def filter_attribute
+    :name
+  end
+
+  def filtered(collection)
+    return collection unless sanitized_filter_param
+
+    collection.select { |item| item[filter_attribute].include?(sanitized_filter_param) }
   end
 end
 

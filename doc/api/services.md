@@ -10,7 +10,7 @@ Asana - Teamwork without email
 
 Set Asana service for a project.
 
-> This service adds commit messages as comments to Asana tasks. Once enabled, commit messages are checked for Asana task URLs (for example, `https://app.asana.com/0/123456/987654`) or task IDs starting with # (for example, `#987654`). Every task ID found will get the commit comment added to it. You can also close a task with a message containing: `fix #123456`. You can find your Api Keys here: <https://asana.com/developers/documentation/getting-started/auth#api-key>.
+> This service adds commit messages as comments to Asana tasks. Once enabled, commit messages are checked for Asana task URLs (for example, `https://app.asana.com/0/123456/987654`) or task IDs starting with # (for example, `#987654`). Every task ID found will get the commit comment added to it. You can also close a task with a message containing: `fix #123456`. You can find your API Keys here: <https://asana.com/developers/documentation/getting-started/auth#api-key>.
 
 ```
 PUT /projects/:id/services/asana
@@ -412,6 +412,42 @@ Get Flowdock service settings for a project.
 
 ```
 GET /projects/:id/services/flowdock
+```
+
+## GitHub **(PREMIUM)**
+
+Code collaboration software.
+
+### Create/Edit GitHub service
+
+Set GitHub service for a project.
+
+```
+PUT /projects/:id/services/github
+```
+
+Parameters:
+
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `token` | string | true | GitHub API token with `repo:status` OAuth scope |
+| `repository_url` | string | true | GitHub repository URL |
+| `static_context` | boolean | false | Append instance name instead of branch to [status check name](../user/project/integrations/github.md#static--dynamic-status-check-names) |
+
+### Delete GitHub service
+
+Delete GitHub service for a project.
+
+```
+DELETE /projects/:id/services/github
+```
+
+### Get GitHub service settings
+
+Get GitHub service settings for a project.
+
+```
+GET /projects/:id/services/github
 ```
 
 ## Hangouts Chat
@@ -1189,7 +1225,7 @@ GET /projects/:id/services/jenkins-deprecated
 ```
 
 [jira-doc]: ../user/project/integrations/jira.md
-[old-jira-api]: https://gitlab.com/gitlab-org/gitlab-foss/blob/8-13-stable/doc/api/services.md#jira
+[old-jira-api]: https://gitlab.com/gitlab-org/gitlab/blob/8-13-stable/doc/api/services.md#jira
 
 ## MockCI
 

@@ -137,6 +137,8 @@ class ProjectPolicy < BasePolicy
   # not.
   rule { guest | admin }.enable :read_project_for_iids
 
+  rule { admin }.enable :update_max_artifacts_size
+
   rule { guest }.enable :guest_access
   rule { reporter }.enable :reporter_access
   rule { developer }.enable :developer_access
@@ -260,6 +262,7 @@ class ProjectPolicy < BasePolicy
     enable :destroy_container_image
     enable :create_environment
     enable :create_deployment
+    enable :update_deployment
     enable :create_release
     enable :update_release
   end

@@ -92,13 +92,27 @@ export const showEmptyState = ({ commit, state }, { projectId, branchId }) => {
   });
 };
 
-export const openBranch = ({ dispatch, state, getters }, { projectId, branchId, basePath }) => {
-  dispatch('setCurrentBranchId', branchId);
+export const loadFile = ({ dispatch, state }, { basePath }) => {
+  if (basePath) {
+    const path = basePath.slice(-1) === '/' ? basePath.slice(0, -1) : basePath;
+    const treeEntryKey = Object.keys(state.entries).find(
+      key => key === path && !state.entries[key].pending,
+    );
+    const treeEntry = state.entries[treeEntryKey];
 
-  if (getters.emptyRepo) {
-    return dispatch('showEmptyState', { projectId, branchId });
+    if (treeEntry) {
+      dispatch('handleTreeEntryAction', treeEntry);
+    } else {
+      dispatch('createTempEntry', {
+        name: path,
+        type: 'blob',
+      });
+    }
   }
-  return dispatch('getBranchData', {
+};
+
+export const loadBranch = ({ dispatch }, { projectId, branchId }) =>
+  dispatch('getBranchData', {
     projectId,
     branchId,
   })
@@ -107,42 +121,38 @@ export const openBranch = ({ dispatch, state, getters }, { projectId, branchId, 
         projectId,
         branchId,
       });
-      dispatch('getFiles', {
+      return dispatch('getFiles', {
         projectId,
         branchId,
-      })
-        .then(() => {
-          if (basePath) {
-            const path = basePath.slice(-1) === '/' ? basePath.slice(0, -1) : basePath;
-            const treeEntryKey = Object.keys(state.entries).find(
-              key => key === path && !state.entries[key].pending,
-            );
-            const treeEntry = state.entries[treeEntryKey];
-
-            if (treeEntry) {
-              dispatch('handleTreeEntryAction', treeEntry);
-            } else {
-              dispatch('createTempEntry', {
-                name: path,
-                type: 'blob',
-              });
-            }
-          }
-        })
-        .catch(
-          () =>
-            new Error(
-              sprintf(
-                __('An error occurred whilst getting files for - %{branchId}'),
-                {
-                  branchId: `<strong>${_.escape(projectId)}/${_.escape(branchId)}</strong>`,
-                },
-                false,
-              ),
-            ),
-        );
+      });
     })
     .catch(() => {
       dispatch('showBranchNotFoundError', branchId);
+      return Promise.reject();
     });
+
+export const openBranch = ({ dispatch, state, getters }, { projectId, branchId, basePath }) => {
+  const currentProject = state.projects[projectId];
+  if (getters.emptyRepo) {
+    return dispatch('showEmptyState', { projectId, branchId });
+  }
+  if (!currentProject || !currentProject.branches[branchId]) {
+    dispatch('setCurrentBranchId', branchId);
+
+    return dispatch('loadBranch', { projectId, branchId })
+      .then(() => dispatch('loadFile', { basePath }))
+      .catch(
+        () =>
+          new Error(
+            sprintf(
+              __('An error occurred whilst getting files for - %{branchId}'),
+              {
+                branchId: `<strong>${_.escape(projectId)}/${_.escape(branchId)}</strong>`,
+              },
+              false,
+            ),
+          ),
+      );
+  }
+  return Promise.resolve(dispatch('loadFile', { basePath }));
 };

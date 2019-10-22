@@ -136,6 +136,24 @@ describe('URL utility', () => {
     });
   });
 
+  describe('doesHashExistInUrl', () => {
+    it('should return true when the given string exists in the URL hash', () => {
+      setWindowLocation({
+        href: 'https://gitlab.com/gitlab-org/gitlab-test/issues/1#note_1',
+      });
+
+      expect(urlUtils.doesHashExistInUrl('note_')).toBe(true);
+    });
+
+    it('should return false when the given string does not exist in the URL hash', () => {
+      setWindowLocation({
+        href: 'https://gitlab.com/gitlab-org/gitlab-test/issues/1#note_1',
+      });
+
+      expect(urlUtils.doesHashExistInUrl('doesnotexist')).toBe(false);
+    });
+  });
+
   describe('setUrlFragment', () => {
     it('should set fragment when url has no fragment', () => {
       const url = urlUtils.setUrlFragment('/home/feature', 'usage');

@@ -6,6 +6,17 @@ module QA
       class Show < Page::Base
         include Page::Component::Note
 
+        view 'app/assets/javascripts/vue_merge_request_widget/components/mr_widget_header.vue' do
+          element :dropdown_toggle
+          element :download_email_patches
+          element :download_plain_diff
+        end
+
+        view 'app/assets/javascripts/vue_merge_request_widget/components/mr_widget_pipeline.vue' do
+          element :merge_request_pipeline_info_content
+          element :pipeline_link
+        end
+
         view 'app/assets/javascripts/vue_merge_request_widget/components/states/ready_to_merge.vue' do
           element :merge_button
           element :fast_forward_message, 'Fast-forward merge without a merge commit' # rubocop:disable QA/ElementWithPattern
@@ -25,12 +36,6 @@ module QA
 
         view 'app/assets/javascripts/vue_merge_request_widget/components/states/squash_before_merge.vue' do
           element :squash_checkbox
-        end
-
-        view 'app/assets/javascripts/vue_merge_request_widget/components/mr_widget_header.vue' do
-          element :dropdown_toggle
-          element :download_email_patches
-          element :download_plain_diff
         end
 
         view 'app/views/projects/merge_requests/show.html.haml' do
@@ -53,6 +58,18 @@ module QA
 
         view 'app/views/projects/merge_requests/_mr_title.html.haml' do
           element :edit_button
+        end
+
+        def click_discussions_tab
+          click_element :notes_tab
+        end
+
+        def click_diffs_tab
+          click_element :diffs_tab
+        end
+
+        def click_pipeline_link
+          click_element :pipeline_link
         end
 
         def fast_forward_possible?
@@ -111,6 +128,11 @@ module QA
           end
         end
 
+        def has_pipeline_status?(text)
+          # Pipelines can be slow, so we wait a bit longer than the usual 10 seconds
+          has_element?(:merge_request_pipeline_info_content, text: text, wait: 30)
+        end
+
         def has_title?(title)
           has_element?(:title, text: title)
         end
@@ -120,17 +142,7 @@ module QA
         end
 
         def try_to_merge!
-          # The merge button is disabled on load
-          wait do
-            has_element?(:merge_button)
-          end
-
-          # The merge button is enabled via JS
-          wait(reload: false) do
-            !find_element(:merge_button).disabled?
-          end
-
-          merge_immediately
+          merge_immediately if ready_to_merge?
         end
 
         def merge!
@@ -157,14 +169,6 @@ module QA
           click_element :squash_checkbox
         end
 
-        def click_discussions_tab
-          click_element :notes_tab
-        end
-
-        def click_diffs_tab
-          click_element :diffs_tab
-        end
-
         def add_comment_to_diff(text)
           wait(interval: 5) do
             has_text?("No newline at end of file")
@@ -176,6 +180,18 @@ module QA
 
         def edit!
           click_element :edit_button
+        end
+
+        def ready_to_merge?
+          # The merge button is disabled on load
+          wait do
+            has_element?(:merge_button)
+          end
+
+          # The merge button is enabled via JS
+          wait(reload: false) do
+            !find_element(:merge_button).disabled?
+          end
         end
 
         def view_email_patches

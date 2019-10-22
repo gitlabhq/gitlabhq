@@ -101,7 +101,7 @@ describe('Blob viewer', () => {
 
     it('has tooltip when disabled', () => {
       expect(copyButton.getAttribute('data-original-title')).toBe(
-        'Switch to the source to copy it to the clipboard',
+        'Switch to the source to copy the file contents',
       );
     });
 
@@ -136,7 +136,7 @@ describe('Blob viewer', () => {
       document.querySelector('.js-blob-viewer-switch-btn[data-viewer="simple"]').click();
 
       setTimeout(() => {
-        expect(copyButton.getAttribute('data-original-title')).toBe('Copy source to clipboard');
+        expect(copyButton.getAttribute('data-original-title')).toBe('Copy file contents');
 
         done();
       });

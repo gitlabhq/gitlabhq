@@ -52,6 +52,7 @@ describe Gitlab::GitlabImport::Client do
 
   describe '#projects' do
     subject(:method) { :projects }
+
     let(:args) { [] }
     let(:element_list) { build_list(:project, 2) }
 
@@ -67,6 +68,7 @@ describe Gitlab::GitlabImport::Client do
 
   describe '#issues' do
     subject(:method) { :issues }
+
     let(:args) { [1] }
     let(:element_list) { build_list(:issue, 2) }
 
@@ -82,6 +84,7 @@ describe Gitlab::GitlabImport::Client do
 
   describe '#issue_comments' do
     subject(:method) { :issue_comments }
+
     let(:args) { [1, 1] }
     let(:element_list) { build_list(:note_on_issue, 2) }
 

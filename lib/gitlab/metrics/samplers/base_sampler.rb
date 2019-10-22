@@ -50,6 +50,11 @@ module Gitlab
 
         def start_working
           @running = true
+
+          true
+        end
+
+        def run_thread
           sleep(sleep_interval)
           while running
             safe_sample

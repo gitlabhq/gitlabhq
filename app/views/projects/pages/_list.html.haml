@@ -8,20 +8,25 @@
       - @domains.each do |domain|
         %li.pages-domain-list-item.list-group-item.d-flex.justify-content-between
           - if verification_enabled
-            - tooltip, status = domain.unverified? ? [_('Unverified'), 'failed'] : [_('Verified'), 'success']
+            - tooltip, status = domain.unverified? ? [s_('GitLabPages|Unverified'), 'failed'] : [s_('GitLabPages|Verified'), 'success']
             .domain-status.ci-status-icon.has-tooltip{ class: "ci-status-icon-#{status}", title: tooltip }
               = sprite_icon("status_#{status}", size: 16 )
           .domain-name
             = external_link(domain.url, domain.url)
             - if domain.subject
               %div
-                %span.badge.badge-gray Certificate: #{domain.subject}
+                %span.badge.badge-gray
+                  = s_('GitLabPages|Certificate: %{subject}') % { subject: domain.subject }
                 - if domain.expired?
-                  %span.badge.badge-danger Expired
+                  %span.badge.badge-danger
+                    = s_('GitLabPages|Expired')
           %div
-            = link_to 'Details', project_pages_domain_path(@project, domain), class: "btn btn-sm btn-grouped"
-            = link_to 'Remove', project_pages_domain_path(@project, domain), data: { confirm: 'Are you sure?'}, method: :delete, class: "btn btn-remove btn-sm btn-grouped"
+            = link_to s_('GitLabPages|Details'), project_pages_domain_path(@project, domain), class: "btn btn-sm btn-grouped"
+            = link_to s_('GitLabPages|Remove'), project_pages_domain_path(@project, domain), data: { confirm: s_('GitLabPages|Are you sure?')}, method: :delete, class: "btn btn-remove btn-sm btn-grouped"
         - if verification_enabled && domain.unverified?
           %li.list-group-item.bs-callout-warning
-            #{domain.domain} is not verified. To learn how to verify ownership, visit your
-            #{link_to 'domain details', project_pages_domain_path(@project, domain)}.
+            - details_link_start = "<a href='#{project_pages_domain_path(@project, domain)}'>".html_safe
+            - details_link_end = '</a>'.html_safe
+            = s_('GitLabPages|%{domain} is not verified. To learn how to verify ownership, visit your %{link_start}domain details%{link_end}.').html_safe % { domain: domain.domain,
+                link_start: details_link_start,
+                link_end: details_link_end }

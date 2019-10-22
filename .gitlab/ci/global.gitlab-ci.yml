@@ -13,6 +13,8 @@
 .default-before_script:
   before_script:
     - date
+    - export GOPATH=$CI_PROJECT_DIR/.go
+    - mkdir -p $GOPATH
     - source scripts/utils.sh
     - source scripts/prepare_build.sh
     - date
@@ -22,6 +24,7 @@
   cache:
     key: "debian-stretch-ruby-2.6.3-node-12.x"
     paths:
+      - .go/pkg/mod
       - vendor/ruby
       - .yarn-cache/
       - vendor/gitaly-ruby
@@ -33,6 +36,7 @@
       - master
       - /^[\d-]+-stable(-ee)?$/
       - /^\d+-\d+-auto-deploy-\d+$/
+      - /^security\//
       - merge_requests
       - tags
 
@@ -51,7 +55,7 @@
       - "{babel.config,jest.config}.js"
       - "config.ru"
       - "{package.json,yarn.lock}"
-      - "{app,bin,config,danger,db,ee,fixtures,haml_lint,lib,public,rubocop,scripts,spec,symbol,vendor}/**/*"
+      - "{app,bin,config,danger,db,ee,fixtures,haml_lint,lib,locale,public,rubocop,scripts,spec,symbol,vendor}/**/*"
       - "doc/README.md"  # Some RSpec test rely on this file
 
 .only-qa-changes:
@@ -66,6 +70,12 @@
       - ".gitlab/route-map.yml"
       - "doc/**/*"
       - ".markdownlint.json"
+
+.only-graphql-changes:
+  only:
+    changes:
+      - "{,ee/}app/graphql/**/*"
+      - "{,ee/}lib/gitlab/graphql/**/*"
 
 .only-code-qa-changes:
   only:
@@ -82,7 +92,7 @@
       - "{babel.config,jest.config}.js"
       - "config.ru"
       - "{package.json,yarn.lock}"
-      - "{app,bin,config,danger,db,ee,fixtures,haml_lint,lib,public,rubocop,scripts,spec,symbol,vendor}/**/*"
+      - "{app,bin,config,danger,db,ee,fixtures,haml_lint,lib,locale,public,rubocop,scripts,spec,symbol,vendor}/**/*"
       - "doc/README.md"  # Some RSpec test rely on this file
       - ".dockerignore"
       - "qa/**/*"
@@ -96,30 +106,57 @@
     refs:
       - master
       - /^\d+-\d+-auto-deploy-\d+$/
+      - /^[\d-]+-stable(-ee)?$/
 
 .only-review-schedules:
   only:
     refs:
       - schedules
     variables:
-      - $REVIEW_APP_CLEANUP && $CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org"
+      - $CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org"
     kubernetes: active
 
-.use-pg:
+.only-canonical-schedules:
+  only:
+    refs:
+      - schedules@gitlab-org/gitlab
+      - schedules@gitlab-org/gitlab-foss
+
+.use-pg9:
   services:
-    - name: postgres:9.6.14
+    - name: postgres:9.6
       command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
     - name: redis:alpine
 
-.use-pg-10:
-  image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.6.3-golang-1.11-git-2.22-chrome-73.0-node-12.x-yarn-1.16-postgresql-10-graphicsmagick-1.3.33"
+.use-pg10:
+  image: "registry.gitlab.com/gitlab-org/gitlab-build-images:ruby-2.6.3-golang-1.11-git-2.22-chrome-73.0-node-12.x-yarn-1.16-postgresql-10-graphicsmagick-1.3.33"
   services:
     - name: postgres:10.9
       command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
     - name: redis:alpine
 
+.use-pg9-ee:
+  services:
+    - name: postgres:9.6
+      command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
+    - name: redis:alpine
+    - name: docker.elastic.co/elasticsearch/elasticsearch:5.6.12
+
+.use-pg10-ee:
+  image: "registry.gitlab.com/gitlab-org/gitlab-build-images:ruby-2.6.3-golang-1.11-git-2.22-chrome-73.0-node-12.x-yarn-1.16-postgresql-10-graphicsmagick-1.3.33"
+  services:
+    - name: postgres:10.9
+      command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
+    - name: redis:alpine
+    - name: docker.elastic.co/elasticsearch/elasticsearch:5.6.12
+
 .only-ee:
   only:
     variables:
-      - $CI_PROJECT_NAME == "gitlab-ee"
-      - $CI_PROJECT_NAME == "gitlab"  # New name of gitlab-ee after the single codebase migration
+      - $CI_PROJECT_NAME == "gitlab"
+      - $CI_PROJECT_NAME == "gitlab-ee"  # Support former project name for forks/mirrors
+
+.only-ee-as-if-foss:
+  extends: .only-ee
+  variables:
+    FOSS_ONLY: '1'

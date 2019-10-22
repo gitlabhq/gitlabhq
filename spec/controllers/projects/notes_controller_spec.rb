@@ -713,6 +713,7 @@ describe Projects::NotesController do
     end
 
     subject { post(:toggle_award_emoji, params: request_params.merge(name: emoji_name)) }
+
     let(:emoji_name) { 'thumbsup' }
 
     it "toggles the award emoji" do

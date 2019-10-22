@@ -1,0 +1,11 @@
+{
+  "description": "Build trace line content",
+  "type": "object",
+  "required": [
+    "text"
+  ],
+  "properties": {
+    "text": { "type": "string" },
+    "style": { "type": "string" }
+  }
+}

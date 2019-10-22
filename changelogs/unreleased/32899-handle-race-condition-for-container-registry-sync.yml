@@ -1,0 +1,5 @@
+---
+title: 'Geo: Fix race condition for container synchronization'
+merge_request: 17823
+author:
+type: fixed

@@ -44,7 +44,7 @@ module PrometheusAdapter
     end
 
     def query_klass_for(query_name)
-      Gitlab::Prometheus::Queries.const_get("#{query_name.to_s.classify}Query")
+      Gitlab::Prometheus::Queries.const_get("#{query_name.to_s.classify}Query", false)
     end
 
     def build_query_args(*args)

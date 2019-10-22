@@ -5,8 +5,8 @@ require 'spec_helper'
 describe 'Projects > Members > Group requester cannot request access to project', :js do
   let(:user) { create(:user) }
   let(:owner) { create(:user) }
-  let(:group) { create(:group, :public, :access_requestable) }
-  let(:project) { create(:project, :public, :access_requestable, namespace: group) }
+  let(:group) { create(:group, :public) }
+  let(:project) { create(:project, :public, namespace: group) }
 
   before do
     group.add_owner(owner)

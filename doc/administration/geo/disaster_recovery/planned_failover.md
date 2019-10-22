@@ -43,22 +43,13 @@ will go smoothly.
 
 ### Object storage
 
-Some classes of non-repository data can use object storage in preference to
-file storage. Geo [does not replicate data in object storage](../replication/object_storage.md),
-leaving that task up to the object store itself. For a planned failover, this
-means you can decouple the replication of this data from the failover of the
-GitLab service.
-
-If you're already using object storage, simply verify that your **secondary**
-node has access to the same data as the **primary** node - they must either they share the
-same object storage configuration, or the **secondary** node should be configured to
-access a [geographically-replicated][os-repl] copy provided by the object store
-itself.
-
 If you have a large GitLab installation or cannot tolerate downtime, consider
 [migrating to Object Storage][os-conf] **before** scheduling a planned failover.
 Doing so reduces both the length of the maintenance window, and the risk of data
 loss as a result of a poorly executed planned failover.
+
+In GitLab 12.4, you can optionally allow GitLab to manage replication of Object Storage for
+**secondary** nodes. For more information, see [Object Storage replication][os-conf].
 
 ### Review the configuration of each **secondary** node
 
@@ -224,5 +215,4 @@ Don't forget to remove the broadcast message after failover is complete.
 [background-verification]: background_verification.md
 [limitations]: ../replication/index.md#current-limitations
 [moving-repositories]: ../../operations/moving_repositories.md
-[os-conf]: ../replication/object_storage.md#configuration
-[os-repl]: ../replication/object_storage.md#replication
+[os-conf]: ../replication/object_storage.md

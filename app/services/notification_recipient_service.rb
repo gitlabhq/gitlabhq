@@ -28,6 +28,10 @@ module NotificationRecipientService
     Builder::ProjectMaintainers.new(*args).notification_recipients
   end
 
+  def self.build_new_release_recipients(*args)
+    Builder::NewRelease.new(*args).notification_recipients
+  end
+
   module Builder
     class Base
       def initialize(*)
@@ -356,6 +360,26 @@ module NotificationRecipientService
 
       def acting_user
         note.author
+      end
+    end
+
+    class NewRelease < Base
+      attr_reader :target
+
+      def initialize(target)
+        @target = target
+      end
+
+      def build!
+        add_recipients(target.project.authorized_users, :custom, nil)
+      end
+
+      def custom_action
+        :new_release
+      end
+
+      def acting_user
+        target.author
       end
     end
 

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Import::BitbucketController < Import::BaseController
+  include ActionView::Helpers::SanitizeHelper
+
   before_action :verify_bitbucket_import_enabled
   before_action :bitbucket_auth, except: :callback
 
@@ -21,7 +23,7 @@ class Import::BitbucketController < Import::BaseController
   # rubocop: disable CodeReuse/ActiveRecord
   def status
     bitbucket_client = Bitbucket::Client.new(credentials)
-    repos = bitbucket_client.repos
+    repos = bitbucket_client.repos(filter: sanitized_filter_param)
 
     @repos, @incompatible_repos = repos.partition { |repo| repo.valid? }
 
@@ -103,5 +105,9 @@ class Import::BitbucketController < Import::BaseController
       expires_in: session[:bitbucket_expires_in],
       refresh_token: session[:bitbucket_refresh_token]
     }
+  end
+
+  def sanitized_filter_param
+    @filter ||= sanitize(params[:filter])
   end
 end

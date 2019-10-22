@@ -5,7 +5,7 @@ require 'spec_helper'
 describe Projects::PipelinesController do
   include ApiHelpers
 
-  set(:user) { create(:user) }
+  let_it_be(:user) { create(:user) }
   let(:project) { create(:project, :public, :repository) }
   let(:feature) { ProjectFeature::ENABLED }
 
@@ -217,6 +217,193 @@ describe Projects::PipelinesController do
       end
     end
 
+    context 'with triggered pipelines' do
+      let_it_be(:project) { create(:project, :repository) }
+      let_it_be(:source_project) { create(:project, :repository) }
+      let_it_be(:target_project) { create(:project, :repository) }
+      let_it_be(:root_pipeline) { create_pipeline(project) }
+      let_it_be(:source_pipeline) { create_pipeline(source_project) }
+      let_it_be(:source_of_source_pipeline) { create_pipeline(source_project) }
+      let_it_be(:target_pipeline) { create_pipeline(target_project) }
+      let_it_be(:target_of_target_pipeline) { create_pipeline(target_project) }
+
+      before do
+        create_link(source_of_source_pipeline, source_pipeline)
+        create_link(source_pipeline, root_pipeline)
+        create_link(root_pipeline, target_pipeline)
+        create_link(target_pipeline, target_of_target_pipeline)
+      end
+
+      shared_examples 'not expanded' do
+        let(:expected_stages) { be_nil }
+
+        it 'does return base details' do
+          get_pipeline_json(root_pipeline)
+
+          expect(json_response['triggered_by']).to include('id' => source_pipeline.id)
+          expect(json_response['triggered']).to contain_exactly(
+            include('id' => target_pipeline.id))
+        end
+
+        it 'does not expand triggered_by pipeline' do
+          get_pipeline_json(root_pipeline)
+
+          triggered_by = json_response['triggered_by']
+          expect(triggered_by['triggered_by']).to be_nil
+          expect(triggered_by['triggered']).to be_nil
+          expect(triggered_by['details']['stages']).to expected_stages
+        end
+
+        it 'does not expand triggered pipelines' do
+          get_pipeline_json(root_pipeline)
+
+          first_triggered = json_response['triggered'].first
+          expect(first_triggered['triggered_by']).to be_nil
+          expect(first_triggered['triggered']).to be_nil
+          expect(first_triggered['details']['stages']).to expected_stages
+        end
+      end
+
+      shared_examples 'expanded' do
+        it 'does return base details' do
+          get_pipeline_json(root_pipeline)
+
+          expect(json_response['triggered_by']).to include('id' => source_pipeline.id)
+          expect(json_response['triggered']).to contain_exactly(
+            include('id' => target_pipeline.id))
+        end
+
+        it 'does expand triggered_by pipeline' do
+          get_pipeline_json(root_pipeline)
+
+          triggered_by = json_response['triggered_by']
+          expect(triggered_by['triggered_by']).to include(
+            'id' => source_of_source_pipeline.id)
+          expect(triggered_by['details']['stages']).not_to be_nil
+        end
+
+        it 'does not recursively expand triggered_by' do
+          get_pipeline_json(root_pipeline)
+
+          triggered_by = json_response['triggered_by']
+          expect(triggered_by['triggered']).to be_nil
+        end
+
+        it 'does expand triggered pipelines' do
+          get_pipeline_json(root_pipeline)
+
+          first_triggered = json_response['triggered'].first
+          expect(first_triggered['triggered']).to contain_exactly(
+            include('id' => target_of_target_pipeline.id))
+          expect(first_triggered['details']['stages']).not_to be_nil
+        end
+
+        it 'does not recursively expand triggered' do
+          get_pipeline_json(root_pipeline)
+
+          first_triggered = json_response['triggered'].first
+          expect(first_triggered['triggered_by']).to be_nil
+        end
+      end
+
+      context 'when it does have permission to read other projects' do
+        before do
+          source_project.add_developer(user)
+          target_project.add_developer(user)
+        end
+
+        context 'when not-expanding any pipelines' do
+          let(:expanded) { nil }
+
+          it_behaves_like 'not expanded'
+        end
+
+        context 'when expanding non-existing pipeline' do
+          let(:expanded) { [-1] }
+
+          it_behaves_like 'not expanded'
+        end
+
+        context 'when expanding pipeline that is not directly expandable' do
+          let(:expanded) { [source_of_source_pipeline.id, target_of_target_pipeline.id] }
+
+          it_behaves_like 'not expanded'
+        end
+
+        context 'when expanding self' do
+          let(:expanded) { [root_pipeline.id] }
+
+          context 'it does not recursively expand pipelines' do
+            it_behaves_like 'not expanded'
+          end
+        end
+
+        context 'when expanding source and target pipeline' do
+          let(:expanded) { [source_pipeline.id, target_pipeline.id] }
+
+          it_behaves_like 'expanded'
+
+          context 'when expand depth is limited to 1' do
+            before do
+              stub_const('TriggeredPipelineEntity::MAX_EXPAND_DEPTH', 1)
+            end
+
+            it_behaves_like 'not expanded' do
+              # We expect that triggered/triggered_by is not expanded,
+              # but we still return details.stages for that pipeline
+              let(:expected_stages) { be_a(Array) }
+            end
+          end
+        end
+
+        context 'when expanding all' do
+          let(:expanded) do
+            [
+              source_of_source_pipeline.id,
+              source_pipeline.id,
+              root_pipeline.id,
+              target_pipeline.id,
+              target_of_target_pipeline.id
+            ]
+          end
+
+          it_behaves_like 'expanded'
+        end
+      end
+
+      context 'when does not have permission to read other projects' do
+        let(:expanded) { [source_pipeline.id, target_pipeline.id] }
+
+        it_behaves_like 'not expanded'
+      end
+
+      def create_pipeline(project)
+        create(:ci_empty_pipeline, project: project).tap do |pipeline|
+          create(:ci_build, pipeline: pipeline, stage: 'test', name: 'rspec')
+        end
+      end
+
+      def create_link(source_pipeline, pipeline)
+        source_pipeline.sourced_pipelines.create!(
+          source_job: source_pipeline.builds.all.sample,
+          source_project: source_pipeline.project,
+          project: pipeline.project,
+          pipeline: pipeline
+        )
+      end
+
+      def get_pipeline_json(pipeline)
+        params = {
+          namespace_id: pipeline.project.namespace,
+          project_id: pipeline.project,
+          id: pipeline,
+          expanded: expanded
+        }
+
+        get :show, params: params.compact, format: :json
+      end
+    end
+
     def get_pipeline_json
       get :show, params: { namespace_id: project.namespace, project_id: project, id: pipeline }, format: :json
     end
@@ -394,6 +581,76 @@ describe Projects::PipelinesController do
 
       it 'fails to retry pipeline' do
         expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+  end
+
+  describe 'GET test_report.json' do
+    subject(:get_test_report_json) do
+      post :test_report, params: {
+        namespace_id: project.namespace,
+        project_id: project,
+        id: pipeline.id
+      },
+      format: :json
+    end
+
+    context 'when feature is enabled' do
+      before do
+        stub_feature_flags(junit_pipeline_view: true)
+      end
+
+      context 'when pipeline does not have a test report' do
+        let(:pipeline) { create(:ci_pipeline, project: project) }
+
+        it 'renders an empty test report' do
+          get_test_report_json
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['total_count']).to eq(0)
+        end
+      end
+
+      context 'when pipeline has a test report' do
+        let(:pipeline) { create(:ci_pipeline, :with_test_reports, project: project) }
+
+        it 'renders the test report' do
+          get_test_report_json
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['total_count']).to eq(4)
+        end
+      end
+
+      context 'when pipeline has corrupt test reports' do
+        let(:pipeline) { create(:ci_pipeline, project: project) }
+
+        before do
+          job = create(:ci_build, pipeline: pipeline)
+          create(:ci_job_artifact, :junit_with_corrupted_data, job: job, project: project)
+        end
+
+        it 'renders the test reports' do
+          get_test_report_json
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['status']).to eq('error_parsing_report')
+        end
+      end
+    end
+
+    context 'when feature is disabled' do
+      let(:pipeline) { create(:ci_empty_pipeline, project: project) }
+
+      before do
+        stub_feature_flags(junit_pipeline_view: false)
+      end
+
+      it 'renders empty response' do
+        get_test_report_json
+
+        expect(response).to have_gitlab_http_status(:no_content)
+        expect(response.body).to be_empty
       end
     end
   end

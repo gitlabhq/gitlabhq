@@ -29,15 +29,17 @@ module UploadsActions
   def show
     return render_404 unless uploader&.exists?
 
-    if cache_publicly?
-      # We need to reset caching from the applications controller to get rid of the no-store value
-      headers['Cache-Control'] = ''
-      expires_in 5.minutes, public: true, must_revalidate: false
-    else
-      expires_in 0.seconds, must_revalidate: true, private: true
-    end
+    # We need to reset caching from the applications controller to get rid of the no-store value
+    headers['Cache-Control'] = ''
+    headers['Pragma'] = ''
 
-    disposition = uploader.image_or_video? ? 'inline' : 'attachment'
+    ttl, directives = *cache_settings
+    ttl ||= 6.months
+    directives ||= { private: true, must_revalidate: true }
+
+    expires_in ttl, directives
+
+    disposition = uploader.embeddable? ? 'inline' : 'attachment'
 
     uploaders = [uploader, *uploader.versions.values]
     uploader = uploaders.find { |version| version.filename == params[:filename] }
@@ -91,7 +93,7 @@ module UploadsActions
 
     upload_paths = uploader.upload_paths(params[:filename])
     upload = Upload.find_by(model: model, uploader: uploader_class.to_s, path: upload_paths)
-    upload&.build_uploader
+    upload&.retrieve_uploader
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
@@ -112,16 +114,16 @@ module UploadsActions
     uploader
   end
 
-  def image_or_video?
-    uploader && uploader.exists? && uploader.image_or_video?
+  def embeddable?
+    uploader && uploader.exists? && uploader.embeddable?
   end
 
   def find_model
     nil
   end
 
-  def cache_publicly?
-    false
+  def cache_settings
+    []
   end
 
   def model

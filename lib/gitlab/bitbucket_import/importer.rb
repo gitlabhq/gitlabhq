@@ -104,7 +104,7 @@ module Gitlab
             iid: issue.iid,
             title: issue.title,
             description: description,
-            state: issue.state,
+            state_id: Issue.available_states[issue.state],
             author_id: gitlab_user_id(project, issue.author),
             milestone: milestone,
             created_at: issue.created_at,

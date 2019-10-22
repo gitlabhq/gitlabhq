@@ -108,12 +108,14 @@
     background: $white-light;
 
     &.image_file,
+    &.audio,
     &.video {
       background: $gray-darker;
       text-align: center;
       padding: 30px;
 
       img,
+      audio,
       video {
         max-width: 80%;
       }
@@ -478,4 +480,9 @@ span.idiff {
   .md-previewer {
     padding: $gl-padding;
   }
+}
+
+.jupyter-notebook-scrolled {
+  overflow-y: auto;
+  max-height: 20rem;
 }

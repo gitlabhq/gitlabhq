@@ -8,12 +8,12 @@ describe Gitlab::SidekiqDaemon::Monitor do
   describe '#within_job' do
     it 'tracks thread' do
       blk = proc do
-        expect(monitor.jobs_thread['jid']).not_to be_nil
+        expect(monitor.jobs.dig('jid', :thread)).not_to be_nil
 
         "OK"
       end
 
-      expect(monitor.within_job('jid', 'queue', &blk)).to eq("OK")
+      expect(monitor.within_job('worker_class', 'jid', 'queue', &blk)).to eq("OK")
     end
 
     context 'when job is canceled' do
@@ -25,26 +25,42 @@ describe Gitlab::SidekiqDaemon::Monitor do
 
       it 'does not execute a block' do
         expect do |blk|
-          monitor.within_job(jid, 'queue', &blk)
+          monitor.within_job('worker_class', jid, 'queue', &blk)
         rescue described_class::CancelledError
         end.not_to yield_control
       end
 
       it 'raises exception' do
-        expect { monitor.within_job(jid, 'queue') }.to raise_error(
+        expect { monitor.within_job('worker_class', jid, 'queue') }.to raise_error(
           described_class::CancelledError)
       end
     end
   end
 
-  describe '#start_working' do
-    subject { monitor.send(:start_working) }
+  describe '#run_thread when notification channel not enabled' do
+    subject { monitor.send(:run_thread) }
+
+    it 'return directly' do
+      allow(monitor).to receive(:notification_channel_enabled?).and_return(nil)
+
+      expect(Sidekiq.logger).not_to receive(:info)
+      expect(Sidekiq.logger).not_to receive(:warn)
+      expect(monitor).not_to receive(:enabled?)
+      expect(monitor).not_to receive(:process_messages)
+
+      subject
+    end
+  end
+
+  describe '#run_thread when notification channel enabled' do
+    subject { monitor.send(:run_thread) }
 
     before do
       # we want to run at most once cycle
       # we toggle `enabled?` flag after the first call
       stub_const('Gitlab::SidekiqDaemon::Monitor::RECONNECT_TIME', 0)
       allow(monitor).to receive(:enabled?).and_return(true, false)
+      allow(monitor).to receive(:notification_channel_enabled?).and_return(1)
 
       allow(Sidekiq.logger).to receive(:info)
       allow(Sidekiq.logger).to receive(:warn)
@@ -204,7 +220,7 @@ describe Gitlab::SidekiqDaemon::Monitor do
         let(:thread) { Thread.new { sleep 1000 } }
 
         before do
-          monitor.jobs_thread[jid] = thread
+          monitor.jobs[jid] = { worker_class: 'worker_class', thread: thread, started_at: Time.now.to_i }
         end
 
         after do
@@ -256,6 +272,26 @@ describe Gitlab::SidekiqDaemon::Monitor do
         .with('sidekiq:cancel:notifications', payload)
 
       subject
+    end
+  end
+
+  describe '#notification_channel_enabled?' do
+    subject { monitor.send(:notification_channel_enabled?) }
+
+    it 'return nil when SIDEKIQ_MONITOR_WORKER is not set' do
+      expect(subject).to be nil
+    end
+
+    it 'return nil when SIDEKIQ_MONITOR_WORKER set to 0' do
+      allow(ENV).to receive(:fetch).with('SIDEKIQ_MONITOR_WORKER', 0).and_return("0")
+
+      expect(subject).to be nil
+    end
+
+    it 'return 1 when SIDEKIQ_MONITOR_WORKER set to 1' do
+      allow(ENV).to receive(:fetch).with('SIDEKIQ_MONITOR_WORKER', 0).and_return("1")
+
+      expect(subject).to be 1
     end
   end
 end

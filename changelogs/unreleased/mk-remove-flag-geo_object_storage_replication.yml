@@ -1,0 +1,5 @@
+---
+title: 'Geo: Enable replicating uploads, LFS objects, and artifacts in Object Storage'
+merge_request: 18482
+author:
+type: added

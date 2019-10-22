@@ -1,16 +1,15 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-shared_examples 'content not cached without revalidation' do
+shared_examples 'content 5 min private cached with revalidation' do
   it 'ensures content will not be cached without revalidation' do
-    expect(subject['Cache-Control']).to eq('max-age=0, private, must-revalidate')
+    expect(subject['Cache-Control']).to eq('max-age=300, private, must-revalidate')
   end
 end
 
-shared_examples 'content not cached without revalidation and no-store' do
+shared_examples 'content long term private cached with revalidation' do
   it 'ensures content will not be cached without revalidation' do
-    # Fixed in newer versions of ActivePack, it will only output a single `private`.
-    expect(subject['Cache-Control']).to eq('max-age=0, private, must-revalidate, no-store')
+    expect(subject['Cache-Control']).to eq('max-age=15778476, private, must-revalidate')
   end
 end
 
@@ -285,7 +284,7 @@ describe UploadsController do
             expect(response).to have_gitlab_http_status(200)
           end
 
-          it_behaves_like 'content not cached without revalidation' do
+          it_behaves_like 'content 5 min private cached with revalidation' do
             subject do
               get :show, params: { model: 'project', mounted_as: 'avatar', id: project.id, filename: 'dk.png' }
 
@@ -305,7 +304,7 @@ describe UploadsController do
             expect(response).to have_gitlab_http_status(200)
           end
 
-          it_behaves_like 'content not cached without revalidation and no-store' do
+          it_behaves_like 'content 5 min private cached with revalidation' do
             subject do
               get :show, params: { model: 'project', mounted_as: 'avatar', id: project.id, filename: 'dk.png' }
 
@@ -358,7 +357,7 @@ describe UploadsController do
                 expect(response).to have_gitlab_http_status(200)
               end
 
-              it_behaves_like 'content not cached without revalidation and no-store' do
+              it_behaves_like 'content 5 min private cached with revalidation' do
                 subject do
                   get :show, params: { model: 'project', mounted_as: 'avatar', id: project.id, filename: 'dk.png' }
 
@@ -390,7 +389,7 @@ describe UploadsController do
             expect(response).to have_gitlab_http_status(200)
           end
 
-          it_behaves_like 'content not cached without revalidation' do
+          it_behaves_like 'content 5 min private cached with revalidation' do
             subject do
               get :show, params: { model: 'group', mounted_as: 'avatar', id: group.id, filename: 'dk.png' }
 
@@ -410,7 +409,7 @@ describe UploadsController do
             expect(response).to have_gitlab_http_status(200)
           end
 
-          it_behaves_like 'content not cached without revalidation and no-store' do
+          it_behaves_like 'content 5 min private cached with revalidation' do
             subject do
               get :show, params: { model: 'group', mounted_as: 'avatar', id: group.id, filename: 'dk.png' }
 
@@ -454,7 +453,7 @@ describe UploadsController do
                 expect(response).to have_gitlab_http_status(200)
               end
 
-              it_behaves_like 'content not cached without revalidation and no-store' do
+              it_behaves_like 'content 5 min private cached with revalidation' do
                 subject do
                   get :show, params: { model: 'group', mounted_as: 'avatar', id: group.id, filename: 'dk.png' }
 
@@ -491,7 +490,7 @@ describe UploadsController do
             expect(response).to have_gitlab_http_status(200)
           end
 
-          it_behaves_like 'content not cached without revalidation' do
+          it_behaves_like 'content long term private cached with revalidation' do
             subject do
               get :show, params: { model: 'note', mounted_as: 'attachment', id: note.id, filename: 'dk.png' }
 
@@ -511,7 +510,7 @@ describe UploadsController do
             expect(response).to have_gitlab_http_status(200)
           end
 
-          it_behaves_like 'content not cached without revalidation and no-store' do
+          it_behaves_like 'content long term private cached with revalidation' do
             subject do
               get :show, params: { model: 'note', mounted_as: 'attachment', id: note.id, filename: 'dk.png' }
 
@@ -564,7 +563,7 @@ describe UploadsController do
                 expect(response).to have_gitlab_http_status(200)
               end
 
-              it_behaves_like 'content not cached without revalidation and no-store' do
+              it_behaves_like 'content long term private cached with revalidation' do
                 subject do
                   get :show, params: { model: 'note', mounted_as: 'attachment', id: note.id, filename: 'dk.png' }
 

@@ -23,12 +23,6 @@ module Storage
       project.full_path
     end
 
-    def ensure_storage_path_exists
-      return unless namespace
-
-      gitlab_shell.add_namespace(repository_storage, base_dir)
-    end
-
     def rename_repo(old_full_path: nil, new_full_path: nil)
       old_full_path ||= project.full_path_before_last_save
       new_full_path ||= project.build_full_path

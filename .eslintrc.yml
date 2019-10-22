@@ -1,5 +1,6 @@
 extends:
   - '@gitlab'
+  - plugin:promise/recommended
 globals:
   __webpack_public_path__: true
   gl: false
@@ -10,6 +11,7 @@ plugins:
   - import
   - "@gitlab/i18n"
   - "@gitlab/vue-i18n"
+  - no-jquery
 settings:
   import/resolver:
     webpack:
@@ -36,6 +38,13 @@ rules:
   vue/no-use-v-if-with-v-for: off
   vue/no-v-html: off
   vue/use-v-on-exact: off
+  no-jquery/no-ajax: error
+  no-jquery/no-ajax-events: error
+  no-jquery/no-load: error
+  no-jquery/no-load-shorthand: error
+  no-jquery/no-serialize: error
+  promise/always-return: off
+  promise/no-callback-in-promise: off
 overrides:
   files:
     - '**/spec/**/*'

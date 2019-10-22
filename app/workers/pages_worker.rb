@@ -4,6 +4,7 @@ class PagesWorker
   include ApplicationWorker
 
   sidekiq_options retry: 3
+  feature_category :pages
 
   def perform(action, *arg)
     send(action, *arg) # rubocop:disable GitlabSecurity/PublicSend

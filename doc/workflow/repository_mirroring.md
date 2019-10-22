@@ -79,7 +79,7 @@ mirror.
 
 To set up a mirror from GitLab to GitHub, you need to follow these steps:
 
-1. Create a [GitHub personal access token](https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/) with the `public_repo` box checked.
+1. Create a [GitHub personal access token](https://help.github.com/en/articles/creating-a-personal-access-token-for-the-command-line) with the `public_repo` box checked.
 1. Fill in the **Git repository URL** field using this format: `https://<your_github_username>@github.com/<your_github_group>/<your_github_project>.git`.
 1. Fill in **Password** field with your GitHub personal access token.
 1. Click the **Mirror repository** button.
@@ -197,10 +197,10 @@ Assuming you used the former, you now need to verify that the fingerprints are
 those you expect. GitLab.com and other code hosting sites publish their
 fingerprints in the open for you to check:
 
-- [AWS CodeCommit](http://docs.aws.amazon.com/codecommit/latest/userguide/regions.html#regions-fingerprints)
-- [Bitbucket](https://confluence.atlassian.com/bitbucket/use-the-ssh-protocol-with-bitbucket-cloud-221449711.html#UsetheSSHprotocolwithBitbucketCloud-KnownhostorBitbucket%27spublickeyfingerprints)
-- [GitHub](https://help.github.com/articles/github-s-ssh-key-fingerprints/)
-- [GitLab.com](https://about.gitlab.com/gitlab-com/settings/#ssh-host-keys-fingerprints)
+- [AWS CodeCommit](https://docs.aws.amazon.com/codecommit/latest/userguide/regions.html#regions-fingerprints)
+- [Bitbucket](https://confluence.atlassian.com/bitbucket/ssh-keys-935365775.html)
+- [GitHub](https://help.github.com/en/articles/githubs-ssh-key-fingerprints)
+- [GitLab.com](../user/gitlab_com/index.md#ssh-host-keys-fingerprints)
 - [Launchpad](https://help.launchpad.net/SSHFingerprints)
 - [Savannah](http://savannah.gnu.org/maintenance/SshAccess/)
 - [SourceForge](https://sourceforge.net/p/forge/documentation/SSH%20Key%20Fingerprints/)
@@ -398,7 +398,7 @@ CAUTION: **Warning:**
 Bidirectional mirroring should not be used as a permanent configuration. Refer to
 [Migrating from Perforce Helix](../user/project/import/perforce.md) for alternative migration approaches.
 
-[Git Fusion](https://www.perforce.com/video-tutorials/git-fusion-overview) provides a Git interface
+[Git Fusion](https://www.perforce.com/manuals/git-fusion/#Git-Fusion/section_avy_hyc_gl.html) provides a Git interface
 to [Perforce Helix](https://www.perforce.com/products) which can be used by GitLab to bidirectionally
 mirror projects with GitLab. This may be useful in some situations when migrating from Perforce Helix
 to GitLab where overlapping Perforce Helix workspaces cannot be migrated simultaneously to GitLab.
@@ -415,7 +415,7 @@ settings are recommended:
 - `unknown_git` user will be used as the commit author if the GitLab user does not exist in
   Perforce Helix.
 
-Read about [Git Fusion settings on Perforce.com](https://www.perforce.com/perforce/doc.current/manuals/git-fusion/Content/Git-Fusion/section_vss_bdw_w3.html#section_zdp_zz1_3l).
+Read about [Git Fusion settings on Perforce.com](https://www.perforce.com/manuals/git-fusion/Content/Git-Fusion/section_vss_bdw_w3.html#section_zdp_zz1_3l).
 
 ## Troubleshooting
 
@@ -423,4 +423,4 @@ Should an error occur during a push, GitLab will display an "Error" highlight fo
 
 ### 13:Received RST_STREAM with error code 2 with GitHub
 
-If you receive an "13:Received RST_STREAM with error code 2" while mirroring to a GitHub repository, your GitHub settings might be set to block pushes that expose your email address used in commits. Either set your email address on GitHub to be public, or disable the [Block command line pushes that expose my email](http://github.com/settings/emails) setting.
+If you receive an "13:Received RST_STREAM with error code 2" while mirroring to a GitHub repository, your GitHub settings might be set to block pushes that expose your email address used in commits. Either set your email address on GitHub to be public, or disable the [Block command line pushes that expose my email](https://github.com/settings/emails) setting.

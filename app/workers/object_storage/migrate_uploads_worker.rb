@@ -5,6 +5,8 @@ module ObjectStorage
     include ApplicationWorker
     include ObjectStorageQueue
 
+    feature_category_not_owned!
+
     SanityCheckError = Class.new(StandardError)
 
     class MigrationResult
@@ -119,7 +121,7 @@ module ObjectStorage
     end
 
     def build_uploaders(uploads)
-      uploads.map { |upload| upload.build_uploader(@mounted_as) }
+      uploads.map { |upload| upload.retrieve_uploader(@mounted_as) }
     end
 
     def migrate(uploads)

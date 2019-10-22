@@ -9,6 +9,7 @@ describe Banzai::ReferenceParser::MilestoneParser do
   let(:user) { create(:user) }
   let(:milestone) { create(:milestone, project: project) }
   subject { described_class.new(Banzai::RenderContext.new(project, user)) }
+
   let(:link) { empty_html_link }
 
   describe '#nodes_visible_to_user' do

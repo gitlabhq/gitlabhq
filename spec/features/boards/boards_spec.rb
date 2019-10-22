@@ -234,6 +234,12 @@ describe 'Issue Boards', :js do
 
         expect(find('.board:nth-child(2)')).to have_content(development.title)
         expect(find('.board:nth-child(2)')).to have_content(planning.title)
+
+        # Make sure list positions are preserved after a reload
+        visit project_board_path(project, board)
+
+        expect(find('.board:nth-child(2)')).to have_content(development.title)
+        expect(find('.board:nth-child(2)')).to have_content(planning.title)
       end
 
       it 'dragging does not duplicate list' do
@@ -245,7 +251,7 @@ describe 'Issue Boards', :js do
         expect(page).to have_selector(selector, text: development.title, count: 1)
       end
 
-      it 'issue moves between lists' do
+      it 'issue moves between lists and does not show the "Development" label since the card is in the "Development" list label' do
         drag(list_from_index: 1, from_index: 1, list_to_index: 2)
 
         wait_for_board_cards(2, 7)
@@ -253,10 +259,10 @@ describe 'Issue Boards', :js do
         wait_for_board_cards(4, 1)
 
         expect(find('.board:nth-child(3)')).to have_content(issue6.title)
-        expect(find('.board:nth-child(3)').all('.board-card').last).to have_content(development.title)
+        expect(find('.board:nth-child(3)').all('.board-card').last).not_to have_content(development.title)
       end
 
-      it 'issue moves between lists' do
+      it 'issue moves between lists and does not show the "Planning" label since the card is in the "Planning" list label' do
         drag(list_from_index: 2, list_to_index: 1)
 
         wait_for_board_cards(2, 9)
@@ -264,7 +270,7 @@ describe 'Issue Boards', :js do
         wait_for_board_cards(4, 1)
 
         expect(find('.board:nth-child(2)')).to have_content(issue7.title)
-        expect(find('.board:nth-child(2)').all('.board-card').first).to have_content(planning.title)
+        expect(find('.board:nth-child(2)').all('.board-card').first).not_to have_content(planning.title)
       end
 
       it 'issue moves from closed' do

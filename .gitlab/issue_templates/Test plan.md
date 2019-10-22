@@ -2,7 +2,7 @@
 
 <!-- This issue outlines testing activities related to a particular issue or epic.
 
-[Here is an example test plan](https://gitlab.com/gitlab-org/gitlab-ce/issues/50353)
+[Here is an example test plan](https://gitlab.com/gitlab-org/gitlab-foss/issues/50353)
 
 This and other comments should be removed as you write the plan -->
 
@@ -63,7 +63,7 @@ intersection of Components and Attributes.
 Some features might be simple enough that they only involve one Component, while
 more complex features could involve multiple or even all.
 
-Example (from https://gitlab.com/gitlab-org/gitlab-ce/issues/50353):
+Example (from https://gitlab.com/gitlab-org/gitlab-foss/issues/50353):
 * Repository is
   * Intuitive
     * It's easy to select the desired file template

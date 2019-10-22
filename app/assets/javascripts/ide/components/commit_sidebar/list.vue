@@ -3,7 +3,7 @@ import $ from 'jquery';
 import { mapActions } from 'vuex';
 import { __, sprintf } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
-import GlModal from '~/vue_shared/components/gl_modal.vue';
+import DeprecatedModal2 from '~/vue_shared/components/deprecated_modal_2.vue';
 import tooltip from '~/vue_shared/directives/tooltip';
 import ListItem from './list_item.vue';
 
@@ -11,7 +11,7 @@ export default {
   components: {
     Icon,
     ListItem,
-    GlModal,
+    GlModal: DeprecatedModal2,
   },
   directives: {
     tooltip,

@@ -6,7 +6,7 @@
 
 .form-group
   = form.label :title, class: 'col-form-label col-sm-2'
-  .col-sm-10= form.text_field :title, class: 'form-control'
+  .col-sm-10= form.text_field :title, class: 'form-control', readonly: ('readonly' unless can?(current_user, :update_deploy_key, deploy_key))
 
 .form-group
   - if deploy_key.new_record?

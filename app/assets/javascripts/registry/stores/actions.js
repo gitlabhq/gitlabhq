@@ -20,7 +20,6 @@ export const fetchRepos = ({ commit, state }) => {
 
 export const fetchList = ({ commit }, { repo, page }) => {
   commit(types.TOGGLE_REGISTRY_LIST_LOADING, repo);
-
   return axios
     .get(repo.tagsPath, { params: { page } })
     .then(response => {
@@ -40,6 +39,7 @@ export const multiDeleteItems = (_, { path, items }) =>
   axios.delete(path, { params: { ids: items } });
 
 export const setMainEndpoint = ({ commit }, data) => commit(types.SET_MAIN_ENDPOINT, data);
+export const setIsDeleteDisabled = ({ commit }, data) => commit(types.SET_IS_DELETE_DISABLED, data);
 export const toggleLoading = ({ commit }) => commit(types.TOGGLE_MAIN_LOADING);
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests

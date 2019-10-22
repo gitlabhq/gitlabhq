@@ -69,14 +69,6 @@
 
   details {
     margin-bottom: $gl-padding;
-
-    summary {
-      margin-bottom: $gl-padding;
-    }
-
-    *:first-child:not(summary) {
-      margin-top: $gl-padding;
-    }
   }
 
   // Single code lines should wrap
@@ -197,6 +189,141 @@
       td {
         border-color: $gl-gray-200;
       }
+    }
+
+    &.grid-none {
+      > thead > tr {
+        > th {
+          border-bottom-width: 0;
+          border-right-width: 0;
+          border-left-width: 0;
+
+          &:first-child {
+            border-left-width: 1px;
+          }
+
+          &:last-child {
+            border-right-width: 1px;
+          }
+        }
+      }
+
+      > tbody {
+        > tr > td {
+          border-width: 0;
+
+          &:first-child {
+            border-left-width: 1px;
+          }
+
+          &:last-child {
+            border-right-width: 1px;
+          }
+        }
+
+        > tr:last-child > td {
+          border-bottom-width: 1px;
+        }
+      }
+    }
+
+
+    &.grid-rows {
+      > thead > tr > th,
+      > tbody > tr > td {
+        border-right-width: 0;
+        border-left-width: 0;
+      }
+
+      > thead > tr {
+        > th:first-child {
+          border-left-width: 1px;
+        }
+
+        > th:last-child {
+          border-right-width: 1px;
+        }
+      }
+
+      > tbody > tr {
+        > td {
+          border-left-width: 0;
+          border-right-width: 0;
+        }
+
+        > td:first-child {
+          border-left-width: 1px;
+        }
+
+        > td:last-child {
+          border-right-width: 1px;
+        }
+      }
+    }
+
+    &.grid-cols {
+      > thead > tr > th {
+        border-bottom-width: 0;
+      }
+
+      > tbody > tr > td {
+        border-top-width: 0;
+        border-bottom-width: 0;
+      }
+
+      > tbody > tr:last-child > td {
+        border-bottom-width: 1px;
+      }
+    }
+
+    &.frame-sides {
+      > thead > tr > th {
+        border-top-width: 0;
+      }
+
+      > tbody > tr:last-child > td {
+        border-bottom-width: 0;
+      }
+    }
+
+    &.frame-topbot,
+    &.frame-ends {
+      > thead > tr > th:first-child,
+      > tbody > tr > td:first-child {
+        border-left-width: 0;
+      }
+
+      > thead > tr > th:last-child,
+      > tbody > tr > td:last-child {
+        border-right-width: 0;
+      }
+    }
+
+    &.frame-none {
+      > thead > tr > th {
+        border-top-width: 0;
+      }
+
+      > tbody > tr:last-child > td {
+        border-bottom-width: 0;
+      }
+
+      > thead > tr > th:first-child,
+      > tbody > tr > td:first-child {
+        border-left-width: 0;
+      }
+
+      > thead > tr > th:last-child,
+      > tbody > tr > td:last-child {
+        border-right-width: 0;
+      }
+    }
+
+    &.stripes-all tr,
+    &.stripes-odd tr:nth-of-type(odd),
+    &.stripes-even tr:nth-of-type(even),
+    &.stripes-hover tr:hover {
+      background: $gray-light;
     }
   }
 
@@ -397,7 +524,7 @@
     }
   }
 
-  .prometheus-graph-embed {
+  .metrics-embed {
     h3.popover-header {
       /** Override <h3> .popover-header
       * as embed metrics do not follow the same

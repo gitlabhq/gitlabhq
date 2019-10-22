@@ -125,7 +125,7 @@ describe GroupsController do
     end
 
     context 'as json' do
-      it 'includes all projects from groups and subgroups in event feed' do
+      it 'includes events from all projects in group and subgroups' do
         2.times do
           project = create(:project, group: group)
           create(:event, project: project)
@@ -384,6 +384,29 @@ describe GroupsController do
 
       expect(response).to have_gitlab_http_status(302)
       expect(group.reload.project_creation_level).to eq(::Gitlab::Access::MAINTAINER_PROJECT_ACCESS)
+    end
+
+    context 'when a project inside the group has container repositories' do
+      before do
+        stub_container_registry_config(enabled: true)
+        stub_container_registry_tags(repository: /image/, tags: %w[rc1])
+        create(:container_repository, project: project, name: :image)
+      end
+
+      it 'does allow the group to be renamed' do
+        post :update, params: { id: group.to_param, group: { name: 'new_name' } }
+
+        expect(controller).to set_flash[:notice]
+        expect(response).to have_gitlab_http_status(302)
+        expect(group.reload.name).to eq('new_name')
+      end
+
+      it 'does not allow to path of the group to be changed' do
+        post :update, params: { id: group.to_param, group: { path: 'new_path' } }
+
+        expect(assigns(:group).errors[:base].first).to match(/Docker images in their Container Registry/)
+        expect(response).to have_gitlab_http_status(200)
+      end
     end
   end
 
@@ -671,6 +694,28 @@ describe GroupsController do
 
       it 'is denied' do
         expect(response).to have_gitlab_http_status(404)
+      end
+    end
+
+    context 'transferring when a project has container images' do
+      let(:group) { create(:group, :public, :nested) }
+      let!(:group_member) { create(:group_member, :owner, group: group, user: user) }
+
+      before do
+        stub_container_registry_config(enabled: true)
+        stub_container_registry_tags(repository: /image/, tags: %w[rc1])
+        create(:container_repository, project: project, name: :image)
+
+        put :transfer,
+          params: {
+            id: group.to_param,
+            new_parent_group_id: ''
+          }
+      end
+
+      it 'does not allow the group to be transferred' do
+        expect(controller).to set_flash[:alert].to match(/Docker images in their Container Registry/)
+        expect(response).to redirect_to(edit_group_path(group))
       end
     end
   end

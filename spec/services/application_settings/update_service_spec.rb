@@ -147,35 +147,44 @@ describe ApplicationSettings::UpdateService do
     using RSpec::Parameterized::TableSyntax
 
     where(:params_performance_bar_enabled,
-      :params_performance_bar_allowed_group_path,
-      :previous_performance_bar_allowed_group_id,
-      :expected_performance_bar_allowed_group_id) do
-      true | '' | nil | nil
-      true | '' | 42_000_000 | nil
-      true | nil | nil | nil
-      true | nil | 42_000_000 | nil
-      true | 'foo' | nil | nil
-      true | 'foo' | 42_000_000 | nil
-      true | 'group_a' | nil | 42_000_000
-      true | 'group_b' | 42_000_000 | 43_000_000
-      true | 'group_a' | 42_000_000 | 42_000_000
-      false | '' | nil | nil
-      false | '' | 42_000_000 | nil
-      false | nil | nil | nil
-      false | nil | 42_000_000 | nil
-      false | 'foo' | nil | nil
-      false | 'foo' | 42_000_000 | nil
-      false | 'group_a' | nil | nil
-      false | 'group_b' | 42_000_000 | nil
-      false | 'group_a' | 42_000_000 | nil
+          :params_performance_bar_allowed_group_path,
+          :previous_performance_bar_allowed_group_id,
+          :expected_performance_bar_allowed_group_id,
+          :expected_valid) do
+      true | '' | nil | nil | true
+      true | '' | 42_000_000 | nil | true
+      true | nil | nil | nil | true
+      true | nil | 42_000_000 | nil | true
+      true | 'foo' | nil | nil | false
+      true | 'foo' | 42_000_000 | 42_000_000 | false
+      true | 'group_a' | nil | 42_000_000 | true
+      true | 'group_b' | 42_000_000 | 43_000_000 | true
+      true | 'group_b/' | 42_000_000 | 43_000_000 | true
+      true | 'group_a' | 42_000_000 | 42_000_000 | true
+      false | '' | nil | nil | true
+      false | '' | 42_000_000 | nil | true
+      false | nil | nil | nil | true
+      false | nil | 42_000_000 | nil | true
+      false | 'foo' | nil | nil | true
+      false | 'foo' | 42_000_000 | nil | true
+      false | 'group_a' | nil | nil | true
+      false | 'group_b' | 42_000_000 | nil | true
+      false | 'group_a' | 42_000_000 | nil | true
+      nil | '' | nil | nil | true
+      nil | 'foo' | nil | nil | false
+      nil | 'group_a' | nil | 42_000_000 | true
     end
 
     with_them do
       let(:params) do
         {
-          performance_bar_enabled: params_performance_bar_enabled,
           performance_bar_allowed_group_path: params_performance_bar_allowed_group_path
-        }
+        }.tap do |params_hash|
+          # Treat nil in the table as missing
+          unless params_performance_bar_enabled.nil?
+            params_hash[:performance_bar_enabled] = params_performance_bar_enabled
+          end
+        end
       end
 
       before do
@@ -202,6 +211,14 @@ describe ApplicationSettings::UpdateService do
             .not_to change(application_settings, :performance_bar_allowed_group_id)
         end
       end
+
+      it 'adds errors to the model for invalid params' do
+        expect(subject.execute).to eq(expected_valid)
+
+        unless expected_valid
+          expect(application_settings.errors[:performance_bar_allowed_group_id]).to be_present
+        end
+      end
     end
 
     context 'when :performance_bar_allowed_group_path is not present' do
@@ -221,7 +238,7 @@ describe ApplicationSettings::UpdateService do
       let(:group) { create(:group) }
       let(:params) { { performance_bar_allowed_group_path: group.full_path } }
 
-      it 'implicitely defaults to true' do
+      it 'implicitly defaults to true' do
         expect { subject.execute }
           .to change(application_settings, :performance_bar_allowed_group_id)
           .from(nil).to(group.id)
@@ -293,6 +310,28 @@ describe ApplicationSettings::UpdateService do
       application_settings.reload
 
       expect(application_settings.raw_blob_request_limit).to eq(600)
+    end
+  end
+
+  context 'when protected path settings are passed' do
+    let(:params) do
+      {
+        throttle_protected_paths_enabled: 1,
+        throttle_protected_paths_period_in_seconds: 600,
+        throttle_protected_paths_requests_per_period: 100,
+        protected_paths_raw: "/users/password\r\n/users/sign_in\r\n"
+      }
+    end
+
+    it 'updates protected path settings' do
+      subject.execute
+
+      application_settings.reload
+
+      expect(application_settings.throttle_protected_paths_enabled).to be_truthy
+      expect(application_settings.throttle_protected_paths_period_in_seconds).to eq(600)
+      expect(application_settings.throttle_protected_paths_requests_per_period).to eq(100)
+      expect(application_settings.protected_paths).to eq(['/users/password', '/users/sign_in'])
     end
   end
 end

@@ -9,12 +9,16 @@ describe Gitlab::Ci::Config::External::Processor do
   set(:another_project) { create(:project, :repository) }
   set(:user) { create(:user) }
 
-  let(:expandset) { Set.new }
   let(:sha) { '12345' }
-  let(:processor) { described_class.new(values, project: project, sha: '12345', user: user, expandset: expandset) }
+  let(:context_params) { { project: project, sha: sha, user: user } }
+  let(:context) { Gitlab::Ci::Config::External::Context.new(**context_params) }
+  let(:processor) { described_class.new(values, context) }
 
   before do
     project.add_developer(user)
+
+    allow_any_instance_of(Gitlab::Ci::Config::External::Context)
+      .to receive(:check_execution_time!)
   end
 
   describe "#perform" do

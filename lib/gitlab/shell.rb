@@ -113,10 +113,6 @@ module Gitlab
       success
     end
 
-    # Move repository reroutes to mv_directory which is an alias for
-    # mv_namespace. Given the underlying implementation is a move action,
-    # indescriminate of what the folders might be.
-    #
     # storage - project's storage path
     # path - project disk path
     # new_path - new project disk path
@@ -126,7 +122,13 @@ module Gitlab
     def mv_repository(storage, path, new_path)
       return false if path.empty? || new_path.empty?
 
-      !!mv_directory(storage, "#{path}.git", "#{new_path}.git")
+      Gitlab::Git::Repository.new(storage, "#{path}.git", nil, nil).rename("#{new_path}.git")
+
+      true
+    rescue => e
+      Gitlab::Sentry.track_acceptable_exception(e, extra: { path: path, new_path: new_path, storage: storage })
+
+      false
     end
 
     # Fork repository to new path
@@ -151,9 +153,13 @@ module Gitlab
     def remove_repository(storage, name)
       return false if name.empty?
 
-      !!rm_directory(storage, "#{name}.git")
-    rescue ArgumentError => e
+      Gitlab::Git::Repository.new(storage, "#{name}.git", nil, nil).remove
+
+      true
+    rescue => e
       Rails.logger.warn("Repository does not exist: #{e} at: #{name}.git") # rubocop:disable Gitlab/RailsLogger
+      Gitlab::Sentry.track_acceptable_exception(e, extra: { path: name, storage: storage })
+
       false
     end
 
@@ -265,7 +271,6 @@ module Gitlab
 
       false
     end
-    alias_method :mv_directory, :mv_namespace # Note: ShellWorker uses this alias
 
     def url_to_repo(path)
       Gitlab.config.gitlab_shell.ssh_path_prefix + "#{path}.git"
@@ -291,6 +296,12 @@ module Gitlab
       Gitlab::GitalyClient::NamespaceService.new(storage).exists?(dir_name)
     end
     # rubocop: enable CodeReuse/ActiveRecord
+
+    def repository_exists?(storage, dir_name)
+      Gitlab::Git::Repository.new(storage, dir_name, nil, nil).exists?
+    rescue GRPC::Internal
+      false
+    end
 
     def hooks_path
       File.join(gitlab_shell_path, 'hooks')

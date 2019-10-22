@@ -169,6 +169,18 @@ describe API::Commits do
         end
       end
 
+      context 'first_parent optional parameter' do
+        it 'returns all first_parent commits' do
+          commit_count = project.repository.count_commits(ref: SeedRepo::Commit::ID, first_parent: true)
+
+          get api("/projects/#{project_id}/repository/commits", user), params: { ref_name: SeedRepo::Commit::ID, first_parent: 'true' }
+
+          expect(response).to include_pagination_headers
+          expect(commit_count).to eq(12)
+          expect(response.headers['X-Total']).to eq(commit_count.to_s)
+        end
+      end
+
       context 'with_stats optional parameter' do
         let(:project) { create(:project, :public, :repository) }
 

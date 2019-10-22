@@ -1,4 +1,4 @@
-/* eslint-disable func-names, no-var, no-underscore-dangle, no-param-reassign, prefer-template, consistent-return, one-var, no-else-return */
+/* eslint-disable func-names, no-var, no-underscore-dangle, no-param-reassign, consistent-return, one-var, no-else-return */
 
 import $ from 'jquery';
 
@@ -106,7 +106,7 @@ LineHighlighter.prototype.clickHandler = function(event) {
 };
 
 LineHighlighter.prototype.clearHighlight = function() {
-  return $('.' + this.highlightLineClass).removeClass(this.highlightLineClass);
+  return $(`.${this.highlightLineClass}`).removeClass(this.highlightLineClass);
 };
 
 // Convert a URL hash String into line numbers
@@ -137,7 +137,7 @@ LineHighlighter.prototype.hashToRange = function(hash) {
 //
 // lineNumber - Line number to highlight
 LineHighlighter.prototype.highlightLine = function(lineNumber) {
-  return $('#LC' + lineNumber).addClass(this.highlightLineClass);
+  return $(`#LC${lineNumber}`).addClass(this.highlightLineClass);
 };
 
 // Highlight all lines within a range
@@ -162,9 +162,9 @@ LineHighlighter.prototype.highlightRange = function(range) {
 LineHighlighter.prototype.setHash = function(firstLineNumber, lastLineNumber) {
   var hash;
   if (lastLineNumber) {
-    hash = '#L' + firstLineNumber + '-' + lastLineNumber;
+    hash = `#L${firstLineNumber}-${lastLineNumber}`;
   } else {
-    hash = '#L' + firstLineNumber;
+    hash = `#L${firstLineNumber}`;
   }
   this._hash = hash;
   return this.__setLocationHash__(hash);

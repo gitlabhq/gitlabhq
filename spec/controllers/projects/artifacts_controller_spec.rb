@@ -4,9 +4,9 @@ require 'spec_helper'
 
 describe Projects::ArtifactsController do
   let(:user) { project.owner }
-  set(:project) { create(:project, :repository, :public) }
+  let_it_be(:project) { create(:project, :repository, :public) }
 
-  let(:pipeline) do
+  let_it_be(:pipeline, reload: true) do
     create(:ci_pipeline,
             project: project,
             sha: project.commit.sha,
@@ -14,10 +14,117 @@ describe Projects::ArtifactsController do
             status: 'success')
   end
 
-  let(:job) { create(:ci_build, :success, :artifacts, pipeline: pipeline) }
+  let!(:job) { create(:ci_build, :success, :artifacts, pipeline: pipeline) }
 
   before do
     sign_in(user)
+  end
+
+  describe 'GET index' do
+    subject { get :index, params: { namespace_id: project.namespace, project_id: project } }
+
+    context 'when feature flag is on' do
+      before do
+        stub_feature_flags(artifacts_management_page: true)
+      end
+
+      it 'sets the artifacts variable' do
+        subject
+
+        expect(assigns(:artifacts)).to contain_exactly(*project.job_artifacts)
+      end
+
+      it 'sets the total size variable' do
+        subject
+
+        expect(assigns(:total_size)).to eq(project.job_artifacts.total_size)
+      end
+
+      describe 'pagination' do
+        before do
+          stub_const("#{described_class}::MAX_PER_PAGE", 1)
+        end
+
+        it 'paginates artifacts' do
+          subject
+
+          expect(assigns(:artifacts)).to contain_exactly(project.reload.job_artifacts.last)
+        end
+      end
+    end
+
+    context 'when feature flag is off' do
+      before do
+        stub_feature_flags(artifacts_management_page: false)
+      end
+
+      it 'renders no content' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:no_content)
+      end
+
+      it 'does not set the artifacts variable' do
+        subject
+
+        expect(assigns(:artifacts)).to eq(nil)
+      end
+
+      it 'does not set the total size variable' do
+        subject
+
+        expect(assigns(:total_size)).to eq(nil)
+      end
+    end
+  end
+
+  describe 'DELETE destroy' do
+    let!(:artifact) { job.job_artifacts.erasable.first }
+
+    subject { delete :destroy, params: { namespace_id: project.namespace, project_id: project, id: artifact } }
+
+    it 'deletes the artifact' do
+      expect { subject }.to change { Ci::JobArtifact.count }.by(-1)
+      expect(artifact).not_to exist
+    end
+
+    it 'redirects to artifacts index page' do
+      subject
+
+      expect(response).to redirect_to(project_artifacts_path(project))
+    end
+
+    it 'sets the notice' do
+      subject
+
+      expect(flash[:notice]).to eq('Artifact was successfully deleted.')
+    end
+
+    context 'when artifact deletion fails' do
+      before do
+        allow_any_instance_of(Ci::JobArtifact).to receive(:destroy).and_return(false)
+      end
+
+      it 'redirects to artifacts index page' do
+        subject
+
+        expect(response).to redirect_to(project_artifacts_path(project))
+      end
+
+      it 'sets the notice' do
+        subject
+
+        expect(flash[:notice]).to eq('Artifact could not be deleted.')
+      end
+    end
+
+    context 'when user is not authorized' do
+      let(:user) { create(:user) }
+
+      it 'does not delete the artifact' do
+        expect { subject }.not_to change { Ci::JobArtifact.count }
+      end
+    end
   end
 
   describe 'GET download' do
@@ -177,6 +284,25 @@ describe Projects::ArtifactsController do
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to render_template('projects/artifacts/file')
+      end
+    end
+
+    context 'when the project is private and pages access control is enabled' do
+      let(:private_project) { create(:project, :repository, :private) }
+      let(:pipeline) { create(:ci_pipeline, project: private_project) }
+      let(:job) { create(:ci_build, :success, :artifacts, pipeline: pipeline) }
+
+      before do
+        private_project.add_developer(user)
+
+        allow(Gitlab.config.pages).to receive(:access_control).and_return(true)
+        allow(Gitlab.config.pages).to receive(:artifacts_server).and_return(true)
+      end
+
+      it 'renders the file view' do
+        get :file, params: { namespace_id: private_project.namespace, project_id: private_project, job_id: job, path: 'ci_artifacts.txt' }
+
+        expect(response).to have_gitlab_http_status(302)
       end
     end
   end

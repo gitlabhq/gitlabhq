@@ -1,1 +1,3 @@
-This page has moved [here](components.md#dropdowns).
+---
+redirect_to: 'https://design.gitlab.com/components/dropdowns/'
+---

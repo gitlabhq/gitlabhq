@@ -21,7 +21,7 @@ module Gitlab
         def count_commits
           return unless ref
 
-          gitaly_commit_client.commit_count(ref, after: @from)
+          gitaly_commit_client.commit_count(ref, after: @from, before: @to)
         end
 
         def gitaly_commit_client

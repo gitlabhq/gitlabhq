@@ -2,7 +2,9 @@
 - page_title _('Kubernetes Cluster')
 - create_eks_enabled = Feature.enabled?(:create_eks_clusters)
 - active_tab = local_assigns.fetch(:active_tab, 'create')
-- link_end = '<a/>'.html_safe
+- create_on_gke_tab_label = s_('ClusterIntegration|Create new Cluster on GKE')
+- create_on_eks_tab_label = s_('ClusterIntegration|Create new Cluster on EKS')
+- create_new_cluster_label = s_('ClusterIntegration|Create new Cluster')
 = javascript_include_tag 'https://apis.google.com/js/api.js'
 
 = render_gcp_signup_offer
@@ -14,7 +16,16 @@
     %ul.nav-links.nav-tabs.gitlab-tabs.nav{ role: 'tablist' }
       %li.nav-item{ role: 'presentation' }
         %a.nav-link{ href: '#create-cluster-pane', id: 'create-cluster-tab', class: active_when(active_tab == 'create'), data: { toggle: 'tab' }, role: 'tab' }
-          %span Create new Cluster on GKE
+          %span
+            - if create_eks_enabled
+              - if @gke_selected
+                = create_on_gke_tab_label
+              - elsif @eks_selected
+                = create_on_eks_tab_label
+              - else
+                = create_new_cluster_label
+            - else
+              = create_on_gke_tab_label
       %li.nav-item{ role: 'presentation' }
         %a.nav-link{ href: '#add-cluster-pane', id: 'add-cluster-tab', class: active_when(active_tab == 'add'), data: { toggle: 'tab' }, role: 'tab' }
           %span Add existing cluster
@@ -22,9 +33,14 @@
     .tab-content.gitlab-tab-content
       - if create_eks_enabled
         .tab-pane{ id: 'create-cluster-pane', class: active_when(active_tab == 'create'), role: 'tabpanel' }
-          - if @gke_selected && @valid_gcp_token
+          - if @gke_selected
             = render 'clusters/clusters/gcp/header'
-            = render 'clusters/clusters/gcp/form'
+            - if @valid_gcp_token
+              = render 'clusters/clusters/gcp/form'
+            - elsif @authorize_url
+              = render 'clusters/clusters/gcp/signin_with_google_button'
+            - else
+              = render 'clusters/clusters/gcp/gcp_not_configured'
           - elsif @eks_selected
             = render 'clusters/clusters/eks/index'
           - else
@@ -35,13 +51,9 @@
           - if @valid_gcp_token
             = render 'clusters/clusters/gcp/form'
           - elsif @authorize_url
-            .signin-with-google
-              - create_account_link = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: 'https://accounts.google.com/SignUpWithoutGmail?service=cloudconsole&continue=https%3A%2F%2Fconsole.cloud.google.com%2Ffreetrial%3Futm_campaign%3D2018_cpanel%26utm_source%3Dgitlab%26utm_medium%3Dreferral' }
-              = link_to(image_tag('auth_buttons/signin_with_google.png', width: '191px', alt: _('Sign in with Google')), @authorize_url)
-              = s_('or %{link_start}create a new Google account%{link_end}').html_safe % { link_start: create_account_link, link_end: link_end }
+            = render 'clusters/clusters/gcp/signin_with_google_button'
           - else
-            - documentation_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path("integration/google") }
-            = s_('Google authentication is not %{link_start}property configured%{link_end}. Ask your GitLab administrator if you want to use this service.').html_safe % { link_start: documentation_link_start, link_end: link_end }
+            = render 'clusters/clusters/gcp/gcp_not_configured'
 
       .tab-pane{ id: 'add-cluster-pane', class: active_when(active_tab == 'add'), role: 'tabpanel' }
         = render 'clusters/clusters/user/header'

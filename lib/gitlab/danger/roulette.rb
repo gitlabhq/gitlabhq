@@ -1,16 +1,11 @@
 # frozen_string_literal: true
 
-require 'net/http'
-require 'json'
-require 'cgi'
-
 require_relative 'teammate'
 
 module Gitlab
   module Danger
     module Roulette
       ROULETTE_DATA_URL = 'https://about.gitlab.com/roulette.json'
-      HTTPError = Class.new(RuntimeError)
 
       # Looks up the current list of GitLab team members and parses it into a
       # useful form
@@ -19,7 +14,7 @@ module Gitlab
       def team
         @team ||=
           begin
-            data = http_get_json(ROULETTE_DATA_URL)
+            data = Gitlab::Danger::RequestHelper.http_get_json(ROULETTE_DATA_URL)
             data.map { |hash| ::Gitlab::Danger::Teammate.new(hash) }
           rescue JSON::ParserError
             raise "Failed to parse JSON response from #{ROULETTE_DATA_URL}"
@@ -44,6 +39,7 @@ module Gitlab
 
       # Known issue: If someone is rejected due to OOO, and then becomes not OOO, the
       # selection will change on next spin
+      # @param [Array<Teammate>] people
       def spin_for_person(people, random:)
         people.shuffle(random: random)
           .find(&method(:valid_person?))
@@ -51,31 +47,16 @@ module Gitlab
 
       private
 
+      # @param [Teammate] person
+      # @return [Boolean]
       def valid_person?(person)
-        !mr_author?(person) && !out_of_office?(person)
+        !mr_author?(person) && person.available?
       end
 
+      # @param [Teammate] person
+      # @return [Boolean]
       def mr_author?(person)
         person.username == gitlab.mr_author
-      end
-
-      def out_of_office?(person)
-        username = CGI.escape(person.username)
-        api_endpoint = "https://gitlab.com/api/v4/users/#{username}/status"
-        response = http_get_json(api_endpoint)
-        response["message"]&.match?(/OOO/i)
-      rescue HTTPError, JSON::ParserError
-        false # this is no worse than not checking for OOO
-      end
-
-      def http_get_json(url)
-        rsp = Net::HTTP.get_response(URI.parse(url))
-
-        unless rsp.is_a?(Net::HTTPSuccess)
-          raise HTTPError, "Failed to read #{url}: #{rsp.code} #{rsp.message}"
-        end
-
-        JSON.parse(rsp.body)
       end
     end
   end

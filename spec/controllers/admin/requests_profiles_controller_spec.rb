@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe Admin::RequestsProfilesController do
-  set(:admin) { create(:admin) }
+  let_it_be(:admin) { create(:admin) }
 
   before do
     sign_in(admin)

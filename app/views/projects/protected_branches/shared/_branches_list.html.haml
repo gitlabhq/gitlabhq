@@ -1,9 +1,9 @@
 .protected-branches-list.js-protected-branches-list.qa-protected-branches-list
   - if @protected_branches.empty?
     .card-header.bg-white
-      Protected branch (#{@protected_branches_count})
+      = s_("ProtectedBranch|Protected branch (%{protected_branches_count})") % { protected_branches_count: @protected_branches_count }
     %p.settings-message.text-center
-      There are currently no protected branches, protect a branch with the form above.
+      = s_("ProtectedBranch|There are currently no protected branches, protect a branch with the form above.")
   - else
     %table.table.table-bordered
       %colgroup
@@ -15,10 +15,15 @@
           %col
       %thead
         %tr
-          %th Protected branch (#{@protected_branches_count})
-          %th Last commit
-          %th Allowed to merge
-          %th Allowed to push
+          %th
+            = s_("ProtectedBranch|Branch")
+          %th
+            = s_("ProtectedBranch|Allowed to merge")
+          %th
+            = s_("ProtectedBranch|Allowed to push")
+
+          = render_if_exists 'projects/protected_branches/ee/code_owner_approval_table_head'
+
           - if can_admin_project
             %th
       %tbody

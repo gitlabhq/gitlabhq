@@ -1,10 +1,40 @@
+.qa-job-base:
+  extends:
+    - .default-tags
+    - .default-retry
+    - .default-only
+    - .only-code-qa-changes
+  stage: test
+  dependencies: []
+  cache:
+    key: "qa-framework-jobs:v1"
+    paths:
+      - vendor/ruby
+  before_script:
+    - cd qa/
+    - bundle install --clean --jobs=$(nproc) --path=vendor --retry=3 --quiet
+    - bundle check
+
+qa:internal:
+  extends: .qa-job-base
+  script:
+    - bundle exec rspec
+
+qa:selectors:
+  extends: .qa-job-base
+  script:
+    - bundle exec bin/qa Test::Sanity::Selectors
+
+qa:selectors-foss:
+  extends:
+    - qa:selectors
+    - .only-ee-as-if-foss
+
 .package-and-qa-base:
   extends: .default-only
   image: ruby:2.6-alpine
   stage: qa
   dependencies: []
-  variables:
-    GIT_DEPTH: "1"
   retry: 0
   script:
     - source scripts/utils.sh
@@ -12,7 +42,7 @@
     - ./scripts/trigger-build omnibus
   only:
     variables:
-      - $CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org"
+      - $CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE =~ /^gitlab-org($|\/)/  # Matches the gitlab-org group or its subgroups
 
 package-and-qa-manual:
   extends:
@@ -21,19 +51,9 @@ package-and-qa-manual:
   except:
     refs:
       - master
+      - /^\d+-\d+-auto-deploy-\d+$/
   when: manual
   needs: ["build-qa-image", "gitlab:assets:compile pull-cache"]
-
-package-and-qa-manual:master:
-  extends:
-    - .package-and-qa-base
-    - .only-code-qa-changes
-  only:
-    refs:
-      - master@gitlab-org/gitlab-foss
-      - master@gitlab-org/gitlab
-  when: manual
-  needs: ["build-qa-image", "gitlab:assets:compile"]
 
 package-and-qa:
   extends:
@@ -42,5 +62,13 @@ package-and-qa:
   except:
     refs:
       - master
+      - /^\d+-\d+-auto-deploy-\d+$/
   needs: ["build-qa-image", "gitlab:assets:compile pull-cache"]
   allow_failure: true
+
+schedule:package-and-qa:
+  extends:
+    - .package-and-qa-base
+    - .only-code-qa-changes
+    - .only-canonical-schedules
+  needs: ["build-qa-image", "gitlab:assets:compile pull-cache"]

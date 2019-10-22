@@ -16,5 +16,7 @@ export default () => {
   new IssuableForm($('.merge-request-form'));
   new LabelsSelect();
   new MilestoneSelect();
-  new IssuableTemplateSelectors();
+  new IssuableTemplateSelectors({
+    warnTemplateOverride: true,
+  });
 };

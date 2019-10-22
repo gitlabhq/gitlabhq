@@ -113,3 +113,39 @@ To migrate all uploads created by legacy uploaders, run:
 ```shell
 bundle exec rake gitlab:uploads:legacy:migrate
 ```
+
+## Migrate from object storage to local storage
+
+If you need to disable Object Storage for any reason, first you need to migrate
+your data out of Object Storage and back into your local storage.
+
+**Before proceeding, it is important to disable both `direct_upload` and `background_upload` under `uploads` settings in `gitlab.rb`**
+
+CAUTION: **Warning:**
+   **Extended downtime is required** so no new files are created in object storage during
+   the migration. A configuration setting will be added soon to allow migrating
+   from object storage to local files with only a brief moment of downtime for configuration changes.
+   See issue [gitlab-org/gitlab#30979](https://gitlab.com/gitlab-org/gitlab/issues/30979)
+
+### All-in-one rake task
+
+GitLab provides a wrapper rake task that migrates all uploaded files - avatars,
+logos, attachments, favicon, etc. - to local storage in one go. Under the hood,
+it invokes individual rake tasks to migrate files falling under each of this
+category one by one. For details on these rake tasks please [refer to the section above](#individual-rake-tasks),
+keeping in mind the task name in this case is `gitlab:uploads:migrate_to_local`.
+
+**Omnibus Installation**
+
+```bash
+gitlab-rake "gitlab:uploads:migrate_to_local:all"
+```
+
+**Source Installation**
+
+```bash
+sudo RAILS_ENV=production -u git -H bundle exec rake gitlab:uploads:migrate_to_local:all
+```
+
+After this is done, you may disable Object Storage by undoing the changes described
+in the instructions to [configure object storage](../../uploads.md#using-object-storage-core-only)

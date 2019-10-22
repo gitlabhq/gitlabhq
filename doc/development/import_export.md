@@ -31,10 +31,12 @@ Read through the current performance problems using the Import/Export below.
 Out of memory (OOM) errors are normally caused by the [Sidekiq Memory Killer](../administration/operations/sidekiq_memory_killer.md):
 
 ```bash
-SIDEKIQ_MEMORY_KILLER_MAX_RSS = 2GB in GitLab.com
+SIDEKIQ_MEMORY_KILLER_MAX_RSS = 2000000
+SIDEKIQ_MEMORY_KILLER_HARD_LIMIT_RSS = 3000000
+SIDEKIQ_MEMORY_KILLER_GRACE_TIME = 900
 ```
 
-An import status `started`, and the following sidekiq logs will signal a memory issue:
+An import status `started`, and the following Sidekiq logs will signal a memory issue:
 
 ```bash
 WARN: Work still in progress <struct with JID>
@@ -96,7 +98,8 @@ importing big projects, using a foreground import:
 ## Security
 
 The Import/Export feature is constantly updated (adding new things to export), however
-the code hasn't been refactored in a long time. We should perform a [code audit](https://gitlab.com/gitlab-org/gitlab-foss/issues/42135)
+the code hasn't been refactored in a long time. We should perform a code audit (see
+[confidential issue](../user/project/issues/confidential_issues.md) `https://gitlab.com/gitlab-org/gitlab/issues/20720`).
 to make sure its dynamic nature does not increase the number of security concerns.
 
 ### Security in the code
@@ -309,7 +312,7 @@ module Gitlab
     class Importer
       def execute
         if import_file && check_version! && restorers.all?(&:restore) && overwrite_project
-          project_tree.restored_project
+          project
         else
           raise Projects::ImportService::Error.new(@shared.errors.join(', '))
         end

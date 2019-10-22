@@ -3,6 +3,8 @@
 module QA::Page
   module Project::Pipeline
     class Show < QA::Page::Base
+      include Component::CiBadgeLink
+
       view 'app/assets/javascripts/vue_shared/components/header_ci_component.vue' do
         element :pipeline_header, /header class.*ci-header-container.*/ # rubocop:disable QA/ElementWithPattern
       end
@@ -14,6 +16,10 @@ module QA::Page
       view 'app/assets/javascripts/pipelines/components/graph/job_item.vue' do
         element :job_component, /class.*ci-job-component.*/ # rubocop:disable QA/ElementWithPattern
         element :job_link
+      end
+
+      view 'app/assets/javascripts/pipelines/components/graph/linked_pipeline.vue' do
+        element :linked_pipeline_button
       end
 
       view 'app/assets/javascripts/vue_shared/components/ci_icon.vue' do
@@ -38,6 +44,14 @@ module QA::Page
         end
       end
 
+      def has_job?(job_name)
+        has_element?(:job_link, text: job_name)
+      end
+
+      def has_no_job?(job_name)
+        has_no_element?(:job_link, text: job_name)
+      end
+
       def has_tag?(tag_name)
         within_element(:pipeline_badges) do
           has_selector?('.badge', text: tag_name)
@@ -45,7 +59,11 @@ module QA::Page
       end
 
       def click_job(job_name)
-        find_element(:job_link, text: job_name).click
+        click_element(:job_link, text: job_name)
+      end
+
+      def click_linked_job(project_name)
+        click_element(:linked_pipeline_button, text: /#{project_name}/)
       end
 
       def click_on_first_job

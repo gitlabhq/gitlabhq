@@ -943,4 +943,14 @@ describe('common_utils', () => {
       expect(commonUtils.isScopedLabel({ title: 'foobar' })).toBe(false);
     });
   });
+
+  describe('getDashPath', () => {
+    it('returns the path following /-/', () => {
+      expect(commonUtils.getDashPath('/some/-/url-with-dashes-/')).toEqual('url-with-dashes-/');
+    });
+
+    it('returns null when no path follows /-/', () => {
+      expect(commonUtils.getDashPath('/some/url')).toEqual(null);
+    });
+  });
 });

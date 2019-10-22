@@ -257,10 +257,9 @@ class Milestone < ApplicationRecord
     title.to_slug.normalize.to_s
   end
 
-  def parent
+  def resource_parent
     group || project
   end
-  alias_method :resource_parent, :parent
 
   def group_milestone?
     group_id.present?

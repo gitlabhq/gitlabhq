@@ -66,6 +66,7 @@ tree:
       - stages:
         - :statuses
       - :external_pull_request
+      - :merge_request
     - :external_pull_requests
     - :auto_devops
     - :triggers
@@ -138,11 +139,14 @@ excluded_attributes:
     - :mirror_trigger_builds
     - :only_mirror_protected_branches
     - :pull_mirror_available_overridden
+    - :pull_mirror_branch_prefix
     - :mirror_overwrites_diverged_branches
     - :packages_enabled
     - :mirror_last_update_at
     - :mirror_last_successful_update_at
     - :emails_disabled
+    - :max_pages_size
+    - :max_artifacts_size
   namespaces:
     - :runners_token
     - :runners_token_encrypted
@@ -166,6 +170,12 @@ excluded_attributes:
     - :external_diff_size
   issues:
     - :milestone_id
+  merge_request:
+    - :milestone_id
+    - :ref_fetched
+    - :merge_jid
+    - :rebase_jid
+    - :latest_merge_request_diff_id
   merge_requests:
     - :milestone_id
     - :ref_fetched
@@ -246,7 +256,16 @@ preloads:
 ee:
   tree:
     project:
-      protected_branches:
+      - issues:
+        - designs:
+          - notes:
+            - :author
+            - events:
+              - :push_event_payload
+        - design_versions:
+          - actions:
+            - :design # Duplicate export of issues.designs in order to link the record to both Issue and DesignVersion
+      - protected_branches:
         - :unprotect_access_levels
-      protected_environments:
+      - protected_environments:
         - :deploy_access_levels

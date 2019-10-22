@@ -6,6 +6,10 @@ export default {
     Object.assign(state, { endpoint });
   },
 
+  [types.SET_IS_DELETE_DISABLED](state, isDeleteDisabled) {
+    Object.assign(state, { isDeleteDisabled });
+  },
+
   [types.SET_REPOS_LIST](state, list) {
     Object.assign(state, {
       repos: list.map(el => ({
@@ -17,6 +21,7 @@ export default {
         location: el.location,
         name: el.path,
         tagsPath: el.tags_path,
+        projectId: el.project_id,
       })),
     });
   },

@@ -4,7 +4,7 @@ class IssueTrackerService < Service
   validate :one_issue_tracker, if: :activated?, on: :manual_change
 
   # TODO: we can probably just delegate as part of
-  # https://gitlab.com/gitlab-org/gitlab-foss/issues/63084
+  # https://gitlab.com/gitlab-org/gitlab/issues/29404
   data_field :project_url, :issues_url, :new_issue_url
 
   default_value_for :category, 'issue_tracker'
@@ -25,7 +25,7 @@ class IssueTrackerService < Service
     end
   end
 
-  # this  will be removed as part of https://gitlab.com/gitlab-org/gitlab-foss/issues/63084
+  # this  will be removed as part of https://gitlab.com/gitlab-org/gitlab/issues/29404
   def title
     if title_attribute = read_attribute(:title)
       title_attribute
@@ -36,7 +36,7 @@ class IssueTrackerService < Service
     end
   end
 
-  # this  will be removed as part of https://gitlab.com/gitlab-org/gitlab-foss/issues/63084
+  # this  will be removed as part of https://gitlab.com/gitlab-org/gitlab/issues/29404
   def description
     if description_attribute = read_attribute(:description)
       description_attribute
@@ -49,7 +49,7 @@ class IssueTrackerService < Service
 
   def handle_properties
     # this has been moved from initialize_properties and should be improved
-    # as part of https://gitlab.com/gitlab-org/gitlab-foss/issues/63084
+    # as part of https://gitlab.com/gitlab-org/gitlab/issues/29404
     return unless properties
 
     @legacy_properties_data = properties.dup
@@ -62,6 +62,7 @@ class IssueTrackerService < Service
     end
 
     data_values.reject! { |key| data_fields.changed.include?(key) }
+    data_values.slice!(*data_fields.attributes.keys)
     data_fields.assign_attributes(data_values) if data_values.present?
 
     self.properties = {}
@@ -69,6 +70,10 @@ class IssueTrackerService < Service
 
   def legacy_properties_data
     @legacy_properties_data ||= {}
+  end
+
+  def supports_data_fields?
+    true
   end
 
   def data_fields

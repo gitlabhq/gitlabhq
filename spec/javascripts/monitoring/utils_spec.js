@@ -1,5 +1,14 @@
-import { getTimeDiff, graphDataValidatorForValues } from '~/monitoring/utils';
-import { timeWindows } from '~/monitoring/constants';
+import {
+  getTimeDiff,
+  getTimeWindow,
+  graphDataValidatorForValues,
+  isDateTimePickerInputValid,
+  truncateZerosInDateTime,
+  stringToISODate,
+  ISODateToString,
+  isValidDate,
+} from '~/monitoring/utils';
+import { timeWindows, timeWindowsKeyNames } from '~/monitoring/constants';
 import { graphDataPrometheusQuery, graphDataPrometheusQueryRange } from './mock_data';
 
 describe('getTimeDiff', () => {
@@ -39,6 +48,55 @@ describe('getTimeDiff', () => {
   });
 });
 
+describe('getTimeWindow', () => {
+  [
+    {
+      args: [
+        {
+          start: '2019-10-01T18:27:47.000Z',
+          end: '2019-10-01T21:27:47.000Z',
+        },
+      ],
+      expected: timeWindowsKeyNames.threeHours,
+    },
+    {
+      args: [
+        {
+          start: '2019-10-01T28:27:47.000Z',
+          end: '2019-10-01T21:27:47.000Z',
+        },
+      ],
+      expected: null,
+    },
+    {
+      args: [
+        {
+          start: '',
+          end: '',
+        },
+      ],
+      expected: null,
+    },
+    {
+      args: [
+        {
+          start: null,
+          end: null,
+        },
+      ],
+      expected: null,
+    },
+    {
+      args: [{}],
+      expected: null,
+    },
+  ].forEach(({ args, expected }) => {
+    it(`returns "${expected}" with args=${JSON.stringify(args)}`, () => {
+      expect(getTimeWindow(...args)).toEqual(expected);
+    });
+  });
+});
+
 describe('graphDataValidatorForValues', () => {
   /*
    * When dealing with a metric using the query format, e.g.
@@ -60,5 +118,192 @@ describe('graphDataValidatorForValues', () => {
     const validGraphData = graphDataValidatorForValues(false, graphDataPrometheusQueryRange);
 
     expect(validGraphData).toBe(true);
+  });
+});
+
+describe('stringToISODate', () => {
+  ['', 'null', undefined, 'abc'].forEach(input => {
+    it(`throws error for invalid input like ${input}`, done => {
+      try {
+        stringToISODate(input);
+      } catch (e) {
+        expect(e).toBeDefined();
+        done();
+      }
+    });
+  });
+  [
+    {
+      input: '2019-09-09 01:01:01',
+      output: '2019-09-09T01:01:01Z',
+    },
+    {
+      input: '2019-09-09 00:00:00',
+      output: '2019-09-09T00:00:00Z',
+    },
+    {
+      input: '2019-09-09 23:59:59',
+      output: '2019-09-09T23:59:59Z',
+    },
+    {
+      input: '2019-09-09',
+      output: '2019-09-09T00:00:00Z',
+    },
+  ].forEach(({ input, output }) => {
+    it(`returns ${output} from ${input}`, () => {
+      expect(stringToISODate(input)).toBe(output);
+    });
+  });
+});
+
+describe('ISODateToString', () => {
+  [
+    {
+      input: new Date('2019-09-09T00:00:00.000Z'),
+      output: '2019-09-09 00:00:00',
+    },
+    {
+      input: new Date('2019-09-09T07:00:00.000Z'),
+      output: '2019-09-09 07:00:00',
+    },
+  ].forEach(({ input, output }) => {
+    it(`ISODateToString return ${output} for ${input}`, () => {
+      expect(ISODateToString(input)).toBe(output);
+    });
+  });
+});
+
+describe('truncateZerosInDateTime', () => {
+  [
+    {
+      input: '',
+      output: '',
+    },
+    {
+      input: '2019-10-10',
+      output: '2019-10-10',
+    },
+    {
+      input: '2019-10-10 00:00:01',
+      output: '2019-10-10 00:00:01',
+    },
+    {
+      input: '2019-10-10 00:00:00',
+      output: '2019-10-10',
+    },
+  ].forEach(({ input, output }) => {
+    it(`truncateZerosInDateTime return ${output} for ${input}`, () => {
+      expect(truncateZerosInDateTime(input)).toBe(output);
+    });
+  });
+});
+
+describe('isValidDate', () => {
+  [
+    {
+      input: '2019-09-09T00:00:00.000Z',
+      output: true,
+    },
+    {
+      input: '2019-09-09T000:00.000Z',
+      output: false,
+    },
+    {
+      input: 'a2019-09-09T000:00.000Z',
+      output: false,
+    },
+    {
+      input: '2019-09-09T',
+      output: false,
+    },
+    {
+      input: '2019-09-09',
+      output: true,
+    },
+    {
+      input: '2019-9-9',
+      output: true,
+    },
+    {
+      input: '2019-9-',
+      output: true,
+    },
+    {
+      input: '2019--',
+      output: false,
+    },
+    {
+      input: '2019',
+      output: true,
+    },
+    {
+      input: '',
+      output: false,
+    },
+    {
+      input: null,
+      output: false,
+    },
+  ].forEach(({ input, output }) => {
+    it(`isValidDate return ${output} for ${input}`, () => {
+      expect(isValidDate(input)).toBe(output);
+    });
+  });
+});
+
+describe('isDateTimePickerInputValid', () => {
+  [
+    {
+      input: null,
+      output: false,
+    },
+    {
+      input: '',
+      output: false,
+    },
+    {
+      input: 'xxxx-xx-xx',
+      output: false,
+    },
+    {
+      input: '9999-99-19',
+      output: false,
+    },
+    {
+      input: '2019-19-23',
+      output: false,
+    },
+    {
+      input: '2019-09-23',
+      output: true,
+    },
+    {
+      input: '2019-09-23 x',
+      output: false,
+    },
+    {
+      input: '2019-09-29 0:0:0',
+      output: false,
+    },
+    {
+      input: '2019-09-29 00:00:00',
+      output: true,
+    },
+    {
+      input: '2019-09-29 24:24:24',
+      output: false,
+    },
+    {
+      input: '2019-09-29 23:24:24',
+      output: true,
+    },
+    {
+      input: '2019-09-29 23:24:24 ',
+      output: false,
+    },
+  ].forEach(({ input, output }) => {
+    it(`returns ${output} for ${input}`, () => {
+      expect(isDateTimePickerInputValid(input)).toBe(output);
+    });
   });
 });

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rake_helper'
 
 describe 'clearing redis cache' do

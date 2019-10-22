@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe MembersFinder, '#execute' do
   set(:group)        { create(:group) }
-  set(:nested_group) { create(:group, :access_requestable, parent: group) }
+  set(:nested_group) { create(:group, parent: group) }
   set(:project)      { create(:project, namespace: nested_group) }
   set(:user1)        { create(:user) }
   set(:user2)        { create(:user) }
@@ -55,7 +57,7 @@ describe MembersFinder, '#execute' do
   context 'when include_invited_groups_members == true' do
     subject { described_class.new(project, user2).execute(include_invited_groups_members: true) }
 
-    set(:linked_group) { create(:group, :public, :access_requestable) }
+    set(:linked_group) { create(:group, :public) }
     set(:nested_linked_group) { create(:group, parent: linked_group) }
     set(:linked_group_member) { linked_group.add_guest(user1) }
     set(:nested_linked_group_member) { nested_linked_group.add_guest(user2) }
@@ -86,10 +88,8 @@ describe MembersFinder, '#execute' do
         create(:project_group_link, project: project, group: nested_linked_group, group_access: Gitlab::Access::REPORTER)
         nested_linked_group.add_developer(user1)
 
-        result = subject
-
-        expect(result).to contain_exactly(linked_group_member, nested_linked_group_member)
-        expect(result.first.access_level).to eq(Gitlab::Access::REPORTER)
+        expect(subject.map(&:user)).to contain_exactly(user1, user2)
+        expect(subject.max_by(&:access_level).access_level).to eq(Gitlab::Access::REPORTER)
       end
     end
   end

@@ -6,6 +6,8 @@ describe Clusters::Providers::Gcp do
   it { is_expected.to belong_to(:cluster) }
   it { is_expected.to validate_presence_of(:zone) }
 
+  include_examples 'provider status', :cluster_provider_gcp
+
   describe 'default_value_for' do
     let(:gcp) { build(:cluster_provider_gcp) }
 
@@ -84,85 +86,19 @@ describe Clusters::Providers::Gcp do
     it { is_expected.not_to be_legacy_abac }
   end
 
-  describe '#state_machine' do
-    context 'when any => [:created]' do
-      let(:gcp) { build(:cluster_provider_gcp, :creating) }
+  describe '#knative_pre_installed?' do
+    subject { gcp.knative_pre_installed? }
 
-      before do
-        gcp.make_created
-      end
-
-      it 'nullify access_token and operation_id' do
-        expect(gcp.access_token).to be_nil
-        expect(gcp.operation_id).to be_nil
-        expect(gcp).to be_created
-      end
-    end
-
-    context 'when any => [:creating]' do
-      let(:gcp) { build(:cluster_provider_gcp) }
-
-      context 'when operation_id is present' do
-        let(:operation_id) { 'operation-xxx' }
-
-        before do
-          gcp.make_creating(operation_id)
-        end
-
-        it 'sets operation_id' do
-          expect(gcp.operation_id).to eq(operation_id)
-          expect(gcp).to be_creating
-        end
-      end
-
-      context 'when operation_id is nil' do
-        let(:operation_id) { nil }
-
-        it 'raises an error' do
-          expect { gcp.make_creating(operation_id) }
-            .to raise_error('operation_id is required')
-        end
-      end
-    end
-
-    context 'when any => [:errored]' do
-      let(:gcp) { build(:cluster_provider_gcp, :creating) }
-      let(:status_reason) { 'err msg' }
-
-      it 'nullify access_token and operation_id' do
-        gcp.make_errored(status_reason)
-
-        expect(gcp.access_token).to be_nil
-        expect(gcp.operation_id).to be_nil
-        expect(gcp.status_reason).to eq(status_reason)
-        expect(gcp).to be_errored
-      end
-
-      context 'when status_reason is nil' do
-        let(:gcp) { build(:cluster_provider_gcp, :errored) }
-
-        it 'does not set status_reason' do
-          gcp.make_errored(nil)
-
-          expect(gcp.status_reason).not_to be_nil
-        end
-      end
-    end
-  end
-
-  describe '#on_creation?' do
-    subject { gcp.on_creation? }
-
-    context 'when status is creating' do
-      let(:gcp) { create(:cluster_provider_gcp, :creating) }
-
-      it { is_expected.to be_truthy }
-    end
-
-    context 'when status is created' do
-      let(:gcp) { create(:cluster_provider_gcp, :created) }
+    context 'when cluster is cloud_run' do
+      let(:gcp) { create(:cluster_provider_gcp) }
 
       it { is_expected.to be_falsey }
+    end
+
+    context 'when cluster is not cloud_run' do
+      let(:gcp) { create(:cluster_provider_gcp, :cloud_run_enabled) }
+
+      it { is_expected.to be_truthy }
     end
   end
 
@@ -188,6 +124,33 @@ describe Clusters::Providers::Gcp do
       let(:gcp) { build(:cluster_provider_gcp, :errored) }
 
       it { is_expected.to be_nil }
+    end
+  end
+
+  describe '#nullify_credentials' do
+    let(:provider) { create(:cluster_provider_gcp, :creating) }
+
+    before do
+      expect(provider.access_token).to be_present
+      expect(provider.operation_id).to be_present
+    end
+
+    it 'removes access_token and operation_id' do
+      provider.nullify_credentials
+
+      expect(provider.access_token).to be_nil
+      expect(provider.operation_id).to be_nil
+    end
+  end
+
+  describe '#assign_operation_id' do
+    let(:provider) { create(:cluster_provider_gcp, :scheduled) }
+    let(:operation_id) { 'operation-123' }
+
+    it 'sets operation_id' do
+      provider.assign_operation_id(operation_id)
+
+      expect(provider.operation_id).to eq(operation_id)
     end
   end
 end

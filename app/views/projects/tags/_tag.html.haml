@@ -19,9 +19,15 @@
     - else
       %p
         = s_("TagsPage|Can't find HEAD commit for this tag")
-    - if release && release.description.present?
-      .description.md.prepend-top-default
-        = markdown_field(release, :description)
+
+    - if release
+      .text-secondary
+        = icon('rocket')
+        = _("Release")
+        = link_to release.name, project_releases_path(@project, anchor: release.tag), class: 'tag-release-link'
+      - if release.description.present?
+        .description.md.prepend-top-default
+          = markdown_field(release, :description)
 
   .row-fixed-content.controls.flex-row
     = render 'projects/buttons/download', project: @project, ref: tag.name, pipeline: @tags_pipelines[tag.name]

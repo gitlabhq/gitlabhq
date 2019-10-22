@@ -14,7 +14,7 @@ module QA
       include Scenario::Actable
       RepositoryCommandError = Class.new(StandardError)
 
-      attr_writer :use_lfs
+      attr_writer :use_lfs, :gpg_key_id
       attr_accessor :env_vars
 
       InvalidCredentialsError = Class.new(RuntimeError)
@@ -25,6 +25,7 @@ module QA
         # .netrc can be utilised
         self.env_vars = [%Q{HOME="#{tmp_home_dir}"}]
         @use_lfs = false
+        @gpg_key_id = nil
       end
 
       def self.perform(*args)
@@ -75,7 +76,7 @@ module QA
       end
 
       def configure_identity(name, email)
-        run(%Q{git config user.name #{name}})
+        run(%Q{git config user.name "#{name}"})
         run(%Q{git config user.email #{email}})
       end
 
@@ -99,8 +100,16 @@ module QA
         git_lfs_track_result.to_s + git_add_result.to_s
       end
 
+      def delete_tag(tag_name)
+        run(%Q{git push origin --delete #{tag_name}}).to_s
+      end
+
       def commit(message)
         run(%Q{git commit -m "#{message}"}).to_s
+      end
+
+      def commit_with_gpg(message)
+        run(%Q{git config user.signingkey #{@gpg_key_id} && git config gpg.program $(which gpg) && git commit -S -m "#{message}"}).to_s
       end
 
       def push_changes(branch = 'master')

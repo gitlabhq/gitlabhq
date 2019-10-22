@@ -487,9 +487,9 @@ git filter-branch --tree-filter 'rm filename' HEAD
 Since `git filter-branch` command might be slow on big repositories, there are
 tools that can use some of Git specifics to enable faster execution of common
 tasks (which is exactly what removing sensitive information file is about).
-An alternative is [BFG Repo-cleaner][bfg-repo-cleaner]. Keep in mind that these
-tools are faster because they do not provide a same fully feature set as `git filter-branch`
-does, but focus on specific use cases.
+An alternative is the open source community-maintained tool [BFG][bfg-repo-cleaner].  
+Keep in mind that these tools are faster because they do not provide the same  
+feature set as `git filter-branch` does, but focus on specific use cases.
 
 ## Conclusion
 
@@ -521,5 +521,5 @@ but commented out to help encourage others to add to it in the future. -->
 [git-filters-manual]: https://git-scm.com/docs/git-filter-branch#_options
 [git-official]: https://git-scm.com/
 [gitlab]: https://gitlab.com/gitlab-org/gitlab/blob/master/CONTRIBUTING.md#contribution-acceptance-criteria
-[gitlab-flow]: https://about.gitlab.com/2014/09/29/gitlab-flow/
-[gitlab-git-tips-n-tricks]: https://about.gitlab.com/2016/12/08/git-tips-and-tricks/
+[gitlab-flow]: https://about.gitlab.com/blog/2014/09/29/gitlab-flow/
+[gitlab-git-tips-n-tricks]: https://about.gitlab.com/blog/2016/12/08/git-tips-and-tricks/

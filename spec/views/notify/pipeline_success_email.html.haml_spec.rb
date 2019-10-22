@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe 'notify/pipeline_success_email.html.haml' do
@@ -33,6 +35,8 @@ describe 'notify/pipeline_success_email.html.haml' do
       expect(rendered).to have_content "##{pipeline.id}"
       expect(rendered).to have_content pipeline.user.name
     end
+
+    it_behaves_like 'correct pipeline information for pipelines for merge requests'
   end
 
   context 'pipeline without user' do

@@ -247,8 +247,8 @@ git annex uninit
 [Git LFS]: https://git-lfs.github.com/
 [install-lfs]: https://git-lfs.github.com/
 [issue-remove-annex]: https://gitlab.com/gitlab-org/gitlab/issues/1648
-[lfs-track]: https://about.gitlab.com/2017/01/30/getting-started-with-git-lfs-tutorial/#tracking-files-with-lfs
-[post-1]: https://about.gitlab.com/2017/01/30/getting-started-with-git-lfs-tutorial/
-[post-2]: https://about.gitlab.com/2015/11/23/announcing-git-lfs-support-in-gitlab/
-[post-3]: https://about.gitlab.com/2015/02/17/gitlab-annex-solves-the-problem-of-versioning-large-binaries-with-git/
+[lfs-track]: https://about.gitlab.com/blog/2017/01/30/getting-started-with-git-lfs-tutorial/#tracking-files-with-lfs
+[post-1]: https://about.gitlab.com/blog/2017/01/30/getting-started-with-git-lfs-tutorial/
+[post-2]: https://about.gitlab.com/blog/2015/11/23/announcing-git-lfs-support-in-gitlab/
+[post-3]: https://about.gitlab.com/blog/2015/02/17/gitlab-annex-solves-the-problem-of-versioning-large-binaries-with-git/
 [uninit]: https://git-annex.branchable.com/git-annex-uninit/

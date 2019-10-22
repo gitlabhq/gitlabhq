@@ -15,6 +15,10 @@ module QA
 
       def_delegators :evaluator, :view, :views
 
+      def assert_no_element(name)
+        assert_no_selector(element_selector_css(name))
+      end
+
       def refresh
         page.refresh
       end
@@ -90,8 +94,8 @@ module QA
       end
 
       # replace with (..., page = self.class)
-      def click_element(name, page = nil)
-        find_element(name).click
+      def click_element(name, page = nil, text: nil)
+        find_element(name, text: text).click
         page.validate_elements_present! if page
       end
 
@@ -102,9 +106,9 @@ module QA
       def select_element(name, value)
         element = find_element(name)
 
-        return if element.text.downcase.to_s == value.to_s
+        return if element.text == value
 
-        element.select value.to_s.capitalize
+        element.select value
       end
 
       def has_element?(name, text: nil, wait: Capybara.default_max_wait_time)
@@ -127,6 +131,10 @@ module QA
         has_no_css?('.fa-spinner', wait: Capybara.default_max_wait_time)
       end
 
+      def finished_loading_block?
+        has_no_css?('.fa-spinner.block-loading', wait: Capybara.default_max_wait_time)
+      end
+
       def wait_for_animated_element(name)
         # It would be ideal if we could detect when the animation is complete
         # but in some cases there's nothing we can easily access via capybara
@@ -143,6 +151,11 @@ module QA
       end
 
       def within_element_by_index(name, index)
+        # Finding all elements can be flaky if the elements don't all load
+        # immediately. So we wait for any to appear before trying to find a
+        # specific one.
+        has_element?(name)
+
         page.within all_elements(name)[index] do
           yield
         end

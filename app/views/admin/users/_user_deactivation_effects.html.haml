@@ -1,0 +1,18 @@
+%p
+  = s_('AdminUsers|Deactivating a user has the following effects:')
+%ul
+  %li
+    = s_('AdminUsers|The user will be logged out')
+  %li
+    = s_('AdminUsers|The user will not be able to access git repositories')
+  %li
+    = s_('AdminUsers|The user will not be able to access the API')
+  %li
+    = s_('AdminUsers|The user will not receive any notifications')
+  %li
+    = s_('AdminUsers|The user will not be able to use slash commands')
+  %li
+    = s_('AdminUsers|When the user logs back in, their account will reactivate as a fully active account')
+  %li
+    = s_('AdminUsers|Personal projects, group and user history will be left intact')
+  = render_if_exists 'admin/users/user_deactivation_effects_on_seats'

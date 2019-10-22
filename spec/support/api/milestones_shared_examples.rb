@@ -205,7 +205,7 @@ shared_examples_for 'group and project milestones' do |route_definition|
   describe "DELETE #{route_definition}/:milestone_id" do
     it "rejects a member with reporter access from deleting a milestone" do
       reporter = create(:user)
-      milestone.parent.add_reporter(reporter)
+      milestone.resource_parent.add_reporter(reporter)
 
       delete api(resource_route, reporter)
 

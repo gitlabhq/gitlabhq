@@ -1,0 +1,30 @@
+#user-modal
+#modal-texts.hidden{ "hidden": true, "aria-hidden": true }
+  %div{ data: { modal: "deactivate",
+    title: s_("AdminUsers|Deactivate User %{username}?"),
+    action: s_("AdminUsers|Deactivate") } }
+    = render partial: 'admin/users/user_deactivation_effects'
+
+  %div{ data: { modal: "block",
+    title: s_("AdminUsers|Block user %{username}?"),
+    action: s_("AdminUsers|Block") } }
+    = render partial: 'admin/users/user_block_effects'
+
+  %div{ data: { modal: "delete",
+    title: s_("AdminUsers|Delete User %{username}?"),
+    action: s_('AdminUsers|Delete user'),
+    'secondary-action': s_('AdminUsers|Block user') } }
+    = s_('AdminUsers|You are about to permanently delete the user %{username}. Issues, merge requests,
+      and groups linked to them will be transferred to a system-wide "Ghost-user". To avoid data loss,
+      consider using the %{strong_start}block user%{strong_end} feature instead. Once you %{strong_start}Delete user%{strong_end},
+      it cannot be undone or recovered.')
+
+  %div{ data: { modal: "delete-with-contributions",
+    title: s_("AdminUsers|Delete User %{username} and contributions?"),
+    action: s_('AdminUsers|Delete user and contributions') ,
+    'secondary-action': s_('AdminUsers|Block user') } }
+    = s_('AdminUsers|You are about to permanently delete the user %{username}. This will delete all of the issues,
+      merge requests, and groups linked to them. To avoid data loss,
+      consider using the %{strong_start}block user%{strong_end} feature instead. Once you %{strong_start}Delete user%{strong_end},
+      it cannot be undone or recovered.')
+

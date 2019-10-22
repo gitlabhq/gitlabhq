@@ -118,7 +118,7 @@
                 %strong.fly-out-top-item-name
                   = _('Kubernetes')
 
-      = render_if_exists 'groups/sidebar/packages' # EE-specific
+      = render_if_exists 'groups/sidebar/packages'
 
       - if group_sidebar_link?(:group_members)
         = nav_link(path: 'group_members#index') do

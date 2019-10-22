@@ -8,6 +8,11 @@ module Groups
       reject_parent_id!
       remove_unallowed_params
 
+      if renaming_group_with_container_registry_images?
+        group.errors.add(:base, container_images_error)
+        return false
+      end
+
       return false unless valid_visibility_level_change?(group, params[:visibility_level])
 
       return false unless valid_share_with_group_lock_change?
@@ -33,6 +38,17 @@ module Groups
 
     def before_assignment_hook(group, params)
       # overridden in EE
+    end
+
+    def renaming_group_with_container_registry_images?
+      new_path = params[:path]
+
+      new_path && new_path != group.path &&
+        group.has_container_repositories?
+    end
+
+    def container_images_error
+      s_("GroupSettings|Cannot update the path because there are projects under this group that contain Docker images in their Container Registry. Please remove the images from your projects first and try again.")
     end
 
     def after_update

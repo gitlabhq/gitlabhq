@@ -22,5 +22,30 @@ describe Projects::GitHttpController do
 
       expect(response.status).to eq(401)
     end
+
+    context 'with exceptions' do
+      let(:project) { create(:project, :public, :repository) }
+
+      before do
+        allow(controller).to receive(:verify_workhorse_api!).and_return(true)
+      end
+
+      it 'returns 503 with GRPC Unavailable' do
+        allow(controller).to receive(:access_check).and_raise(GRPC::Unavailable)
+
+        get :info_refs, params: { service: 'git-upload-pack', namespace_id: project.namespace.to_param, project_id: project.path + '.git' }
+
+        expect(response.status).to eq(503)
+      end
+
+      it 'returns 503 with timeout error' do
+        allow(controller).to receive(:access_check).and_raise(Gitlab::GitAccess::TimeoutError)
+
+        get :info_refs, params: { service: 'git-upload-pack', namespace_id: project.namespace.to_param, project_id: project.path + '.git' }
+
+        expect(response.status).to eq(503)
+        expect(response.body).to eq 'Gitlab::GitAccess::TimeoutError'
+      end
+    end
   end
 end

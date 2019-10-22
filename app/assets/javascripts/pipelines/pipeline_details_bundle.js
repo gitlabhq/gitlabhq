@@ -2,8 +2,8 @@ import Vue from 'vue';
 import Flash from '~/flash';
 import Translate from '~/vue_shared/translate';
 import { __ } from '~/locale';
-import pipelineGraph from 'ee_else_ce/pipelines/components/graph/graph_component.vue';
-import GraphEEMixin from 'ee_else_ce/pipelines/mixins/graph_pipeline_bundle_mixin';
+import pipelineGraph from './components/graph/graph_component.vue';
+import GraphBundleMixin from './mixins/graph_pipeline_bundle_mixin';
 import PipelinesMediator from './pipeline_details_mediator';
 import pipelineHeader from './components/header_component.vue';
 import eventHub from './event_hub';
@@ -23,7 +23,7 @@ export default () => {
     components: {
       pipelineGraph,
     },
-    mixins: [GraphEEMixin],
+    mixins: [GraphBundleMixin],
     data() {
       return {
         mediator,

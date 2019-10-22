@@ -49,6 +49,10 @@ module Types
     field :web_url, GraphQL::STRING_TYPE, null: false # rubocop:disable Graphql/Descriptions
     field :relative_position, GraphQL::INT_TYPE, null: true # rubocop:disable Graphql/Descriptions
 
+    field :participants, Types::UserType.connection_type, null: true, complexity: 5, description: 'List of participants for the issue'
+    field :time_estimate, GraphQL::INT_TYPE, null: false, description: 'The time estimate on the issue'
+    field :total_time_spent, GraphQL::INT_TYPE, null: false, description: 'Total time reported as spent on the issue'
+
     field :closed_at, Types::TimeType, null: true # rubocop:disable Graphql/Descriptions
 
     field :created_at, Types::TimeType, null: false # rubocop:disable Graphql/Descriptions

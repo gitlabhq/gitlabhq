@@ -1,6 +1,6 @@
 # Icons and SVG Illustrations
 
-We manage our own Icon and Illustration library in the [gitlab-svgs][gitlab-svgs] repository.
+We manage our own Icon and Illustration library in the [`gitlab-svgs`][gitlab-svgs] repository.
 This repository is published on [npm][npm] and managed as a dependency via yarn.
 You can browse all available Icons and Illustrations [here][svg-preview].
 To upgrade to a new version run `yarn upgrade @gitlab/svgs`.
@@ -59,8 +59,8 @@ export default {
 <template>
   <icon
     name="issues"
-    :size="72"
-    css-classes="icon-danger"
+    :size="24"
+    class="icon-danger"
   />
 </template>
 ```

@@ -4,7 +4,7 @@ type: reference, concepts
 
 # Merge request approvals **(STARTER)**
 
-> Introduced in [GitLab Enterprise Edition 7.12](https://about.gitlab.com/2015/06/22/gitlab-7-12-released/#merge-request-approvers-ee-only).
+> Introduced in [GitLab Enterprise Edition 7.12](https://about.gitlab.com/blog/2015/06/22/gitlab-7-12-released/#merge-request-approvers-ee-only).
 
 Merge request approvals enable enforced code review by requiring specified people
 to approve a merge request before it can be unblocked for merging.
@@ -66,13 +66,7 @@ suitable to your workflow:
 
 ## Editing approvals **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/1979) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.8.
-
-CAUTION: **Caution:**
-There was a [regression affecting this feature in 11.8](https://gitlab.com/gitlab-org/gitlab/merge_requests/9648). We recommend upgrading _at least_ to version 11.8.2. to avoid any issues.
-
-NOTE: **Note:**
-In 11.8 this feature does not work in [private groups](https://gitlab.com/gitlab-org/gitlab/issues/10356).
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/1979) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.10.
 
 For GitLab Premium, [multiple approver rules](#multiple-approval-rules-premium) can be configured. To configure the merge
 request approval rules:
@@ -87,7 +81,7 @@ request approval rules:
 
 ## Multiple approval rules **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/1979) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.8.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/1979) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.10.
 
 For GitLab Premium, a merge request's overall approval status is determined by a set of rules. Each rule contains:
 
@@ -107,7 +101,7 @@ any [eligible approver](#eligible-approvers) may approve.
 The following can approve merge requests:
 
 - Users being added as approvers at project or merge request level.
-- [Code owners](../code_owners.md) related to the merge request ([introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/7933) in [GitLab Starter](https://about.gitlab.com/pricing/) 11.5).
+- [Code owners](#code-owners-as-eligible-approvers-starter) to the files changed by the merge request.
 
 An individual user can be added as an approver for a project if they are a member of:
 
@@ -124,6 +118,31 @@ to the merge request, do not count as eligible approvers,
 if [**Prevent author approval**](#allowing-merge-request-authors-to-approve-their-own-merge-requests) (enabled by default)
 and [**Prevent committers approval**](#prevent-approval-of-merge-requests-by-their-committers) (disabled by default)
 are enabled on the project settings.
+
+### Code Owners as eligible approvers **(STARTER)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/7933) in [GitLab Starter](https://about.gitlab.com/pricing/) 11.5.
+
+Once you've added [Code Owners](../code_owners.md) to your
+repository, the owners to the corresponding files will become
+eligible approvers, together with members with Developer or
+higher permissions.
+
+To enable this merge request approval rule:
+
+1. Navigate to your project's **Settings > General** and expand
+**Merge request approvals**.
+1. Locate **All members with Developer role or higher and code owners (if any)** and click **Edit** to choose the number of approvals required.
+
+![MR approvals by Code Owners](img/mr_approvals_by_code_owners_v12_4.png)
+
+Once set, merge requests can only be merged once approved by the
+number of approvals you've set. GitLab will accept approvals from
+users with Developer or higher permissions, as well as by Code Owners,
+indistinguishably.
+
+Alternatively, you can **require**
+[Code Owner's approvals for Protected Branches](../protected_branches.md#protected-branches-approval-by-code-owners-premium). **(PREMIUM)**
 
 ### Implicit approvers
 
@@ -167,26 +186,6 @@ sufficient condition for unblocking a merge request from being merged. There
 are other conditions that may block it, such as merge conflicts,
 [pending discussions](../../discussions/index.md#only-allow-merge-requests-to-be-merged-if-all-threads-are-resolved)
 or a [failed CI/CD pipeline](merge_when_pipeline_succeeds.md).
-
-## Code Owners approvals **(PREMIUM)**
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/4418) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.9.
-
-It is possible to require at least one approval for each entry in the
-[`CODEOWNERS` file](../code_owners.md) that matches a file changed in
-the merge request. To enable this feature:
-
-1. Navigate to your project's **Settings > General** and expand
-   **Merge request approvals**.
-1. Tick the **Require approval from code owners** checkbox.
-1. Click **Save changes**.
-
-When this feature is enabled, all merge requests will need approval
-from one code owner per matched rule before it can be merged.
-
-NOTE: **Note:** Only the `CODEOWNERS` file on the default branch is evaluated for
-Merge Request approvals. If `CODEOWNERS` is changed on a non-default branch, those
-changes will not affect approvals until merged to the default branch.
 
 ## Overriding the merge request approvals default settings
 
@@ -329,10 +328,20 @@ the dropdown) `approver` and select the user.
 
 ## Security approvals in merge requests **(ULTIMATE)**
 
-> Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing) 12.2.
+> Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.2.
 
 Merge Request Approvals can be configured to require approval from a member
 of your security team when a vulnerability would be introduced by a merge request.
+
+For more information, see
+[Security approvals in merge requests](../../application_security/index.md#security-approvals-in-merge-requests-ultimate).
+
+## License compliance approvals in merge requests **(ULTIMATE)**
+
+> Introduced in [GitLab Ultimate](https://about.gitlab.com/pricing/) 12.3.
+
+Merge Request Approvals can be configured to require approval from a member
+of your security team when a blacklisted software license would be introduced by a merge request.
 
 For more information, see
 [Security approvals in merge requests](../../application_security/index.md#security-approvals-in-merge-requests-ultimate).

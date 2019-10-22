@@ -90,4 +90,12 @@ describe Gitlab::DataBuilder::Push do
         .not_to raise_error
     end
   end
+
+  describe '.build_bulk' do
+    subject do
+      described_class.build_bulk(action: :created, ref_type: :branch, changes: [double, double])
+    end
+
+    it { is_expected.to eq(action: :created, ref_count: 2, ref_type: :branch) }
+  end
 end

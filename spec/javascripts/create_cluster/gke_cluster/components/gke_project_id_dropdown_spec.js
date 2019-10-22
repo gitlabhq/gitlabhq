@@ -4,6 +4,7 @@ import { createStore } from '~/create_cluster/gke_cluster/store';
 import { SET_PROJECTS } from '~/create_cluster/gke_cluster/store/mutation_types';
 import { mountComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import { emptyProjectMock, selectedProjectMock } from '../mock_data';
+import { gapi } from '../helpers';
 
 const componentConfig = {
   docsUrl: 'https://console.cloud.google.com/home/dashboard',
@@ -31,6 +32,16 @@ const createComponent = (store, props = componentConfig) => {
 describe('GkeProjectIdDropdown', () => {
   let vm;
   let store;
+
+  let originalGapi;
+  beforeAll(() => {
+    originalGapi = window.gapi;
+    window.gapi = gapi();
+  });
+
+  afterAll(() => {
+    window.gapi = originalGapi;
+  });
 
   beforeEach(() => {
     store = createStore();

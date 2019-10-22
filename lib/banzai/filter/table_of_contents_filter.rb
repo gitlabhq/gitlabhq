@@ -56,7 +56,8 @@ module Banzai
       private
 
       def anchor_tag(href)
-        %Q{<a id="user-content-#{href}" class="anchor" href="##{href}" aria-hidden="true"></a>}
+        escaped_href = CGI.escape(href) # account for non-ASCII characters
+        %Q{<a id="user-content-#{href}" class="anchor" href="##{escaped_href}" aria-hidden="true"></a>}
       end
 
       def push_toc(children, root: false)
@@ -80,7 +81,7 @@ module Banzai
 
         def initialize(node: nil, href: nil, previous_header: nil)
           @node = node
-          @href = href
+          @href = CGI.escape(href) if href
           @children = []
 
           @parent = find_parent(previous_header)

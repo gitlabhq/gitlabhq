@@ -27,6 +27,38 @@ describe Gitlab::GitalyClient::StorageSettings do
     end
   end
 
+  describe '.gitaly_address' do
+    context 'when the storage settings have no gitaly address but one is requested' do
+      it 'raises an error' do
+        expect do
+          described_class.new("path" => Rails.root).gitaly_address
+        end.to raise_error("key not found: \"gitaly_address\"")
+      end
+    end
+
+    context 'when the storage settings have a gitaly address and one is requested' do
+      it 'returns the setting value' do
+        expect(described_class.new("path" => Rails.root, "gitaly_address" => "test").gitaly_address).to eq("test")
+      end
+    end
+
+    context 'when the storage settings have a gitaly address keyed symbolically' do
+      it 'raises no error' do
+        expect do
+          described_class.new("path" => Rails.root, :gitaly_address => "test").gitaly_address
+        end.not_to raise_error
+      end
+    end
+
+    context 'when the storage settings have a gitaly address keyed with a string' do
+      it 'raises no error' do
+        expect do
+          described_class.new("path" => Rails.root, "gitaly_address" => "test").gitaly_address
+        end.not_to raise_error
+      end
+    end
+  end
+
   describe '.disk_access_denied?' do
     context 'when Rugged is enabled', :enable_rugged do
       it 'returns false' do

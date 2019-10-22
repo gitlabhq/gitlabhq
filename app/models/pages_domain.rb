@@ -186,10 +186,26 @@ class PagesDomain < ApplicationRecord
   end
 
   def pages_virtual_domain
+    return unless pages_deployed?
+
     Pages::VirtualDomain.new([project], domain: self)
   end
 
   private
+
+  def pages_deployed?
+    # TODO: remove once `pages_metadatum` is migrated
+    # https://gitlab.com/gitlab-org/gitlab/issues/33106
+    unless project.pages_metadatum
+      Gitlab::BackgroundMigration::MigratePagesMetadata
+        .new
+        .perform_on_relation(Project.where(id: project_id))
+
+      project.reset
+    end
+
+    project.pages_metadatum&.deployed?
+  end
 
   def set_verification_code
     return if self.verification_code.present?

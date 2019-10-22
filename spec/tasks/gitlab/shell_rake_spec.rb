@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rake_helper'
 
 describe 'gitlab:shell rake tasks' do
@@ -12,8 +14,10 @@ describe 'gitlab:shell rake tasks' do
       storages = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
         Gitlab.config.repositories.storages.values.map(&:legacy_disk_path)
       end
-      expect(Kernel).to receive(:system).with('bin/install', *storages).and_call_original
-      expect(Kernel).to receive(:system).with('bin/compile').and_call_original
+
+      expect_any_instance_of(Gitlab::TaskHelpers).to receive(:checkout_or_clone_version)
+      allow(Kernel).to receive(:system).with('bin/install', *storages).and_return(true)
+      allow(Kernel).to receive(:system).with('bin/compile').and_return(true)
 
       run_rake_task('gitlab:shell:install')
     end

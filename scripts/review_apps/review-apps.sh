@@ -255,25 +255,13 @@ EOF
 }
 
 function display_deployment_debug() {
+  # Get all pods for this release
+  echoinfo "Pods for release ${CI_ENVIRONMENT_SLUG}"
   kubectl get pods -n "$KUBE_NAMESPACE" -lrelease=${CI_ENVIRONMENT_SLUG}
 
-  migrations_pod=$(get_pod "migrations");
-  if [ -z "${migrations_pod}" ]; then
-    echoerr "Migrations pod not found."
-  else
-    echoinfo "Logs tail of the ${migrations_pod} pod..."
-
-    kubectl logs -n "$KUBE_NAMESPACE" "${migrations_pod}" | sed "s/${REVIEW_APPS_ROOT_PASSWORD}/[REDACTED]/g"
-  fi
-
-  unicorn_pod=$(get_pod "unicorn");
-  if [ -z "${unicorn_pod}" ]; then
-    echoerr "Unicorn pod not found."
-  else
-    echoinfo "Logs tail of the ${unicorn_pod} pod..."
-
-    kubectl logs -n "$KUBE_NAMESPACE" -c unicorn "${unicorn_pod}" | sed "s/${REVIEW_APPS_ROOT_PASSWORD}/[REDACTED]/g"
-  fi
+  # Get all non-completed jobs
+  echoinfo "Unsuccessful Jobs for release ${CI_ENVIRONMENT_SLUG}"
+  kubectl get jobs -n "$KUBE_NAMESPACE" -lrelease=${CI_ENVIRONMENT_SLUG} --field-selector=status.successful!=1
 }
 
 function add_license() {

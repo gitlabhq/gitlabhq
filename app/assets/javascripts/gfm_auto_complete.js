@@ -337,6 +337,7 @@ class GfmAutoComplete {
       },
       // eslint-disable-next-line no-template-curly-in-string
       insertTpl: '${atwho-at}${title}',
+      limit: 20,
       callbacks: {
         ...this.getDefaultCallbacks(),
         beforeSave(merges) {

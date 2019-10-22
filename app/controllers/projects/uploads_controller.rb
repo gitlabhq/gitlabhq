@@ -6,7 +6,7 @@ class Projects::UploadsController < Projects::ApplicationController
 
   # These will kick you out if you don't have access.
   skip_before_action :project, :repository,
-    if: -> { action_name == 'show' && image_or_video? }
+    if: -> { action_name == 'show' && embeddable? }
 
   before_action :authorize_upload_file!, only: [:create, :authorize]
   before_action :verify_workhorse_api!, only: [:authorize]

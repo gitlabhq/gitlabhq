@@ -8,7 +8,9 @@ describe Gitlab::SubmoduleLinks do
   let(:links) { described_class.new(repo) }
 
   describe '#for' do
-    subject { links.for(submodule_item, 'ref') }
+    let(:ref) { 'ref' }
+
+    subject { links.for(submodule_item, ref) }
 
     context 'when there is no .gitmodules file' do
       before do
@@ -35,8 +37,20 @@ describe Gitlab::SubmoduleLinks do
         stub_urls({ 'gitlab-foss' => 'git@gitlab.com:gitlab-org/gitlab-foss.git' })
       end
 
-      it 'returns links' do
+      it 'returns links and caches the by ref' do
         expect(subject).to eq(['https://gitlab.com/gitlab-org/gitlab-foss', 'https://gitlab.com/gitlab-org/gitlab-foss/tree/hash'])
+
+        cache_store = links.instance_variable_get("@cache_store")
+
+        expect(cache_store[ref]).to eq({ "gitlab-foss" => "git@gitlab.com:gitlab-org/gitlab-foss.git" })
+      end
+
+      context 'when ref name contains a dash' do
+        let(:ref) { 'signed-commits' }
+
+        it 'returns links' do
+          expect(subject).to eq(['https://gitlab.com/gitlab-org/gitlab-foss', 'https://gitlab.com/gitlab-org/gitlab-foss/tree/hash'])
+        end
       end
     end
   end

@@ -12,6 +12,7 @@ FactoryBot.define do
       Google::Protobuf::RepeatedField.new(:string, ids)
     end
     subject { "My commit" }
+
     body { subject + "\nMy body" }
     author { build(:gitaly_commit_author) }
     committer { build(:gitaly_commit_author) }

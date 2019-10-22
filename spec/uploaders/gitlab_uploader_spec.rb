@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 require 'carrierwave/storage/fog'
 
@@ -66,6 +68,16 @@ describe GitlabUploader do
       subject.cache!(fixture_file_upload(fixture))
 
       expect(subject.file.path).to match(/#{subject.cache_dir}/)
+    end
+  end
+
+  describe '#replace_file_without_saving!' do
+    it 'allows file to be replaced without triggering any callbacks' do
+      new_file = CarrierWave::SanitizedFile.new(Tempfile.new)
+
+      expect(subject).not_to receive(:with_callbacks)
+
+      subject.replace_file_without_saving!(new_file)
     end
   end
 

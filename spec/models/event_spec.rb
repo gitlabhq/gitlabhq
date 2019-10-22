@@ -100,26 +100,31 @@ describe Event do
   describe '#membership_changed?' do
     context "created" do
       subject { build(:event, :created).membership_changed? }
+
       it { is_expected.to be_falsey }
     end
 
     context "updated" do
       subject { build(:event, :updated).membership_changed? }
+
       it { is_expected.to be_falsey }
     end
 
     context "expired" do
       subject { build(:event, :expired).membership_changed? }
+
       it { is_expected.to be_truthy }
     end
 
     context "left" do
       subject { build(:event, :left).membership_changed? }
+
       it { is_expected.to be_truthy }
     end
 
     context "joined" do
       subject { build(:event, :joined).membership_changed? }
+
       it { is_expected.to be_truthy }
     end
   end

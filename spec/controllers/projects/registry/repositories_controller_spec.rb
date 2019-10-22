@@ -40,6 +40,12 @@ describe Projects::Registry::RepositoriesController do
             expect(response).to have_gitlab_http_status(:ok)
           end
 
+          it 'tracks the event' do
+            expect(Gitlab::Tracking).to receive(:event).with(anything, 'list_repositories', {})
+
+            go_to_index
+          end
+
           it 'creates a root container repository' do
             expect { go_to_index }.to change { ContainerRepository.all.count }.by(1)
             expect(ContainerRepository.first).to be_root_repository
@@ -92,7 +98,15 @@ describe Projects::Registry::RepositoriesController do
           expect(DeleteContainerRepositoryWorker).to receive(:perform_async).with(user.id, repository.id)
 
           delete_repository(repository)
+
           expect(response).to have_gitlab_http_status(:no_content)
+        end
+
+        it 'tracks the event' do
+          expect(Gitlab::Tracking).to receive(:event).with(anything, 'delete_repository', {})
+          allow(DeleteContainerRepositoryWorker).to receive(:perform_async).with(user.id, repository.id)
+
+          delete_repository(repository)
         end
       end
     end

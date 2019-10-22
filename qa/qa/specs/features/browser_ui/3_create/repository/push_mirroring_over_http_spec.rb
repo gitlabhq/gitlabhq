@@ -25,8 +25,8 @@ module QA
           settings.expand_mirroring_repositories do |mirror_settings|
             # Configure the source project to push to the target project
             mirror_settings.repository_url = target_project_uri
-            mirror_settings.mirror_direction = :push
-            mirror_settings.authentication_method = :password
+            mirror_settings.mirror_direction = 'Push'
+            mirror_settings.authentication_method = 'Password'
             mirror_settings.password = Runtime::User.password
             mirror_settings.mirror_repository
             mirror_settings.update target_project_uri

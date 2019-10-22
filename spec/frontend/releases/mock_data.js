@@ -57,7 +57,7 @@ export const release = {
     committed_date: '2019-08-26T17:47:07.000Z',
   },
   upcoming_release: false,
-  milestone: milestones[0],
+  milestones,
   assets: {
     count: 5,
     sources: [
@@ -89,9 +89,12 @@ export const release = {
         id: 2,
         name: 'my second link',
         url:
-          'https://gitlab.com/gitlab-org/gitlab-ce/-/jobs/artifacts/v11.6.0-rc4/download?job=rspec-mysql+41%2F50',
+          'https://gitlab.com/gitlab-org/gitlab-foss/-/jobs/artifacts/v11.6.0-rc4/download?job=rspec-mysql+41%2F50',
         external: false,
       },
     ],
+  },
+  _links: {
+    edit: 'http://0.0.0.0:3001/root/release-test/-/releases/v0.3/edit',
   },
 };

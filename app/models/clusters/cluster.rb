@@ -24,6 +24,7 @@ module Clusters
     KUBE_INGRESS_BASE_DOMAIN = 'KUBE_INGRESS_BASE_DOMAIN'
 
     belongs_to :user
+    belongs_to :management_project, class_name: '::Project', optional: true
 
     has_many :cluster_projects, class_name: 'Clusters::Project'
     has_many :projects, through: :cluster_projects, class_name: '::Project'
@@ -34,12 +35,13 @@ module Clusters
 
     # we force autosave to happen when we save `Cluster` model
     has_one :provider_gcp, class_name: 'Clusters::Providers::Gcp', autosave: true
+    has_one :provider_aws, class_name: 'Clusters::Providers::Aws', autosave: true
 
     has_one :platform_kubernetes, class_name: 'Clusters::Platforms::Kubernetes', inverse_of: :cluster, autosave: true
 
     def self.has_one_cluster_application(name) # rubocop:disable Naming/PredicateName
       application = APPLICATIONS[name.to_s]
-      has_one application.association_name, class_name: application.to_s # rubocop:disable Rails/ReflectionClassName
+      has_one application.association_name, class_name: application.to_s, inverse_of: :cluster # rubocop:disable Rails/ReflectionClassName
     end
 
     has_one_cluster_application :helm
@@ -63,6 +65,7 @@ module Clusters
     validate :restrict_modification, on: :update
     validate :no_groups, unless: :group_type?
     validate :no_projects, unless: :project_type?
+    validate :unique_management_project_environment_scope
 
     after_save :clear_reactive_cache!
 
@@ -94,14 +97,20 @@ module Clusters
 
     enum provider_type: {
       user: 0,
-      gcp: 1
+      gcp: 1,
+      aws: 2
     }
 
     scope :enabled, -> { where(enabled: true) }
     scope :disabled, -> { where(enabled: false) }
-    scope :user_provided, -> { where(provider_type: ::Clusters::Cluster.provider_types[:user]) }
-    scope :gcp_provided, -> { where(provider_type: ::Clusters::Cluster.provider_types[:gcp]) }
-    scope :gcp_installed, -> { gcp_provided.includes(:provider_gcp).where(cluster_providers_gcp: { status: ::Clusters::Providers::Gcp.state_machines[:status].states[:created].value }) }
+
+    scope :user_provided, -> { where(provider_type: :user) }
+    scope :gcp_provided, -> { where(provider_type: :gcp) }
+    scope :aws_provided, -> { where(provider_type: :aws) }
+
+    scope :gcp_installed, -> { gcp_provided.joins(:provider_gcp).merge(Clusters::Providers::Gcp.with_status(:created)) }
+    scope :aws_installed, -> { aws_provided.joins(:provider_aws).merge(Clusters::Providers::Aws.with_status(:created)) }
+
     scope :managed, -> { where(managed: true) }
 
     scope :default_environment, -> { where(environment_scope: DEFAULT_ENVIRONMENT) }
@@ -138,7 +147,11 @@ module Clusters
     end
 
     def provider
-      return provider_gcp if gcp?
+      if gcp?
+        provider_gcp
+      elsif aws?
+        provider_aws
+      end
     end
 
     def platform
@@ -172,7 +185,7 @@ module Clusters
       persisted_namespace = Clusters::KubernetesNamespaceFinder.new(
         self,
         project: project,
-        environment_slug: environment.slug
+        environment_name: environment.name
       ).execute
 
       persisted_namespace&.namespace || Gitlab::Kubernetes::DefaultNamespace.new(self, project: project).from_environment_slug(environment.slug)
@@ -194,7 +207,23 @@ module Clusters
       end
     end
 
+    def knative_pre_installed?
+      provider&.knative_pre_installed?
+    end
+
     private
+
+    def unique_management_project_environment_scope
+      return unless management_project
+
+      duplicate_management_clusters = management_project.management_clusters
+        .where(environment_scope: environment_scope)
+        .where.not(id: id)
+
+      if duplicate_management_clusters.any?
+        errors.add(:environment_scope, "cannot add duplicated environment scope")
+      end
+    end
 
     def instance_domain
       @instance_domain ||= Gitlab::CurrentSettings.auto_devops_domain

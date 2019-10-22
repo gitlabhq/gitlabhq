@@ -115,6 +115,46 @@ describe Gitlab::LfsToken, :clean_gitlab_redis_shared_state do
           expect(lfs_token.token_valid?(lfs_token.token)).to be_truthy
         end
       end
+
+      context 'when the actor is a regular user' do
+        context 'when the user is blocked' do
+          let(:actor) { create(:user, :blocked) }
+
+          it 'returns false' do
+            expect(lfs_token.token_valid?(lfs_token.token)).to be_falsey
+          end
+        end
+
+        context 'when the user password is expired' do
+          let(:actor) { create(:user, password_expires_at: 1.minute.ago) }
+
+          it 'returns false' do
+            expect(lfs_token.token_valid?(lfs_token.token)).to be_falsey
+          end
+        end
+      end
+
+      context 'when the actor is an ldap user' do
+        before do
+          allow(actor).to receive(:ldap_user?).and_return(true)
+        end
+
+        context 'when the user is blocked' do
+          let(:actor) { create(:user, :blocked) }
+
+          it 'returns false' do
+            expect(lfs_token.token_valid?(lfs_token.token)).to be_falsey
+          end
+        end
+
+        context 'when the user password is expired' do
+          let(:actor) { create(:user, password_expires_at: 1.minute.ago) }
+
+          it 'returns true' do
+            expect(lfs_token.token_valid?(lfs_token.token)).to be_truthy
+          end
+        end
+      end
     end
   end
 

@@ -62,3 +62,9 @@
 - rbacconfigs.rbac.istio.io
 - servicerolebindings.rbac.istio.io
 - serviceroles.rbac.istio.io
+- cloudwatches.config.istio.io
+- clusterrbacconfigs.rbac.istio.io
+- dogstatsds.config.istio.io
+- ingresses.networking.internal.knative.dev
+- sidecars.networking.istio.io
+- zipkins.config.istio.io

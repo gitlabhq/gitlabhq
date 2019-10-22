@@ -4,6 +4,7 @@ module Git
   class BranchPushService < ::BaseService
     include Gitlab::Access
     include Gitlab::Utils::StrongMemoize
+    include ChangeParams
 
     # This method will be called after each git update
     # and only if the provided user and project are present in GitLab.
@@ -19,7 +20,7 @@ module Git
     #  6. Checks if the project's main language has changed
     #
     def execute
-      return unless Gitlab::Git.branch_ref?(params[:ref])
+      return unless Gitlab::Git.branch_ref?(ref)
 
       enqueue_update_mrs
       enqueue_detect_repository_languages
@@ -38,9 +39,9 @@ module Git
       UpdateMergeRequestsWorker.perform_async(
         project.id,
         current_user.id,
-        params[:oldrev],
-        params[:newrev],
-        params[:ref]
+        oldrev,
+        newrev,
+        ref
       )
     end
 
@@ -57,13 +58,6 @@ module Git
       Ci::StopEnvironmentsService.new(project, current_user).execute(branch_name)
     end
 
-    def update_remote_mirrors
-      return unless project.has_remote_mirror?
-
-      project.mark_stuck_remote_mirrors_as_failed!
-      project.update_remote_mirrors
-    end
-
     def execute_related_hooks
       BranchHooksService.new(project, current_user, params).execute
     end
@@ -76,11 +70,11 @@ module Git
     end
 
     def removing_branch?
-      Gitlab::Git.blank_ref?(params[:newrev])
+      Gitlab::Git.blank_ref?(newrev)
     end
 
     def branch_name
-      strong_memoize(:branch_name) { Gitlab::Git.ref_name(params[:ref]) }
+      strong_memoize(:branch_name) { Gitlab::Git.ref_name(ref) }
     end
 
     def default_branch?

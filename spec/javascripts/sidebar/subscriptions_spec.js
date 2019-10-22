@@ -2,14 +2,13 @@ import Vue from 'vue';
 import subscriptions from '~/sidebar/components/subscriptions/subscriptions.vue';
 import eventHub from '~/sidebar/event_hub';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import { mockTracking } from 'spec/helpers/tracking_helper';
 
 describe('Subscriptions', function() {
   let vm;
   let Subscriptions;
-  let statsSpy;
 
   beforeEach(() => {
-    statsSpy = spyOnDependency(subscriptions, 'trackEvent');
     Subscriptions = Vue.extend(subscriptions);
   });
 
@@ -53,6 +52,7 @@ describe('Subscriptions', function() {
     vm = mountComponent(Subscriptions, { subscribed: true });
     spyOn(eventHub, '$emit');
     spyOn(vm, '$emit');
+    spyOn(vm, 'track');
 
     vm.toggleSubscription();
 
@@ -60,11 +60,12 @@ describe('Subscriptions', function() {
     expect(vm.$emit).toHaveBeenCalledWith('toggleSubscription', jasmine.any(Object));
   });
 
-  it('calls trackEvent when toggled', () => {
+  it('tracks the event when toggled', () => {
     vm = mountComponent(Subscriptions, { subscribed: true });
+    const spy = mockTracking('_category_', vm.$el, spyOn);
     vm.toggleSubscription();
 
-    expect(statsSpy).toHaveBeenCalled();
+    expect(spy).toHaveBeenCalled();
   });
 
   it('onClickCollapsedIcon method emits `toggleSidebar` event on component', () => {

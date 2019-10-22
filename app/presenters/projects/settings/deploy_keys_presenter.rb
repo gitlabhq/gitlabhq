@@ -40,7 +40,7 @@ module Projects
 
       def as_json
         serializer = DeployKeySerializer.new # rubocop: disable CodeReuse/Serializer
-        opts = { user: current_user }
+        opts = { user: current_user, project: project }
 
         {
           enabled_keys: serializer.represent(enabled_keys.with_projects, opts),

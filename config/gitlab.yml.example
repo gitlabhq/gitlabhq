@@ -319,8 +319,7 @@ production: &base
     artifacts_server: true # Set to false if you want to disable online view of HTML artifacts
     # external_http: ["1.1.1.1:80", "[2001::1]:80"] # If defined, enables custom domain support in GitLab Pages
     # external_https: ["1.1.1.1:443", "[2001::1]:443"] # If defined, enables custom domain and certificate support in GitLab Pages
-    admin:
-      address: unix:/home/git/gitlab/tmp/sockets/private/pages-admin.socket # TCP connections are supported too (e.g. tcp://host:port)
+
     # File that contains the shared secret key for verifying access for gitlab-pages.
     # Default is '.gitlab_pages_shared_secret' relative to Rails.root (i.e. root of the GitLab app).
     # secret_file: /home/git/gitlab/.gitlab_pages_shared_secret
@@ -1017,7 +1016,20 @@ production: &base
     sidekiq_exporter:
     #  enabled: true
     #  address: localhost
-    #  port: 3807
+    #  port: 8082
+
+    # Web exporter is webserver built in to Unicorn/Puma to expose Prometheus metrics
+    # It runs alongside the `/metrics` endpoints to ease the publish of metrics
+    web_exporter:
+    #  enabled: true
+    #  address: localhost
+    #  port: 8083
+    #  # blackout_seconds:
+    #  #   defines an interval to block healthcheck,
+    #  #   but continue accepting application requests
+    #  #   this allows Load Balancer to notice service
+    #  #   being shutdown and not interrupt any of the clients
+    #  blackout_seconds: 10
 
   ## Prometheus settings
   # Do not modify these settings here. They should be modified in /etc/gitlab/gitlab.rb
@@ -1060,6 +1072,21 @@ production: &base
 
 development:
   <<: *base
+
+  # We want to run web/sidekiq exporters for devs
+  # to catch errors from using them.
+  #
+  # We use random port to not block ability to run
+  # multiple instances of the service
+  monitoring:
+    sidekiq_exporter:
+      enabled: true
+      address: 127.0.0.1
+      port: 0
+    web_exporter:
+      enabled: true
+      address: 127.0.0.1
+      port: 0
 
 test:
   <<: *base

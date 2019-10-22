@@ -5,8 +5,11 @@ module Gitlab
     class ConflictFilesStitcher
       include Enumerable
 
-      def initialize(rpc_response)
+      attr_reader :gitaly_repo
+
+      def initialize(rpc_response, gitaly_repo)
         @rpc_response = rpc_response
+        @gitaly_repo = gitaly_repo
       end
 
       def each
@@ -31,7 +34,7 @@ module Gitlab
 
       def file_from_gitaly_header(header)
         Gitlab::Git::Conflict::File.new(
-          Gitlab::GitalyClient::Util.git_repository(header.repository),
+          Gitlab::GitalyClient::Util.git_repository(gitaly_repo),
           header.commit_oid,
           conflict_from_gitaly_file_header(header),
           ''

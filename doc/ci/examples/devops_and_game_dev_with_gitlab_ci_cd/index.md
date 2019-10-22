@@ -22,7 +22,7 @@ and the basics of game development.
 
 Our [demo game](http://gitlab-game-demo.s3-website-us-east-1.amazonaws.com/) consists of a simple spaceship traveling in space that shoots by clicking the mouse in a given direction.
 
-Creating a strong CI/CD pipeline at the beginning of developing another game, [Dark Nova](http://darknova.io/),
+Creating a strong CI/CD pipeline at the beginning of developing another game, [Dark Nova](https://www.darknova.io),
 was essential for the fast pace the team worked at. This tutorial will build upon my
 [previous introductory article](https://ryanhallcs.wordpress.com/2017/03/15/devops-and-game-dev/) and go through the following steps:
 
@@ -254,7 +254,7 @@ pipeline to include running the tests along with the existing build job.
 
 To ensure our changes don't break the build and all tests still pass, we utilize
 Continuous Integration (CI) to run these checks automatically for every push.
-Read through this article to understand [Continuous Integration, Continuous Delivery, and Continuous Deployment](https://about.gitlab.com/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/),
+Read through this article to understand [Continuous Integration, Continuous Delivery, and Continuous Deployment](https://about.gitlab.com/blog/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/),
 and how these methods are leveraged by GitLab.
 From the [last tutorial](https://ryanhallcs.wordpress.com/2017/03/15/devops-and-game-dev/) we already have a `.gitlab-ci.yml` file set up for building our app from
 every push. We need to set up a new CI job for testing, which GitLab CI/CD will run after the build job using our generated artifacts from gulp.
@@ -390,7 +390,7 @@ We have our codebase built and tested on every push. To complete the full pipeli
 let's set up [free web hosting with AWS S3](https://aws.amazon.com/s/dm/optimization/server-side-test/free-tier/free_np/) and a job through which our build artifacts get
 deployed. GitLab also has a free static site hosting service we could use, [GitLab Pages](https://about.gitlab.com/product/pages/),
 however Dark Nova specifically uses other AWS tools that necessitates using `AWS S3`.
-Read through this article that describes [deploying to both S3 and GitLab Pages](https://about.gitlab.com/2016/08/26/ci-deployment-and-environments/)
+Read through this article that describes [deploying to both S3 and GitLab Pages](https://about.gitlab.com/blog/2016/08/26/ci-deployment-and-environments/)
 and further delves into the principles of GitLab CI/CD than discussed in this article.
 
 ### Set up S3 Bucket
@@ -509,7 +509,7 @@ deploy:
 
 Within the [demo repository](https://gitlab.com/blitzgren/gitlab-game-demo) you can also find a handful of boilerplate code to get
 [Typescript](https://www.typescriptlang.org/), [Mocha](https://mochajs.org/), [Gulp](https://gulpjs.com/) and [Phaser](https://phaser.io) all playing
-together nicely with GitLab CI/CD, which is the result of lessons learned while making [Dark Nova](http://darknova.io/).
+together nicely with GitLab CI/CD, which is the result of lessons learned while making [Dark Nova](https://www.darknova.io).
 Using a combination of free and open source software, we have a full CI/CD pipeline, a game foundation,
 and unit tests, all running and deployed at every push to master - with shockingly little code.
 Errors can be easily debugged through GitLab's build logs, and within minutes of a successful commit,
@@ -527,6 +527,6 @@ Here are some ideas to further investigate that can speed up or improve your pip
 
 - [Yarn](https://yarnpkg.com) instead of npm
 - Set up a custom [Docker](../../../ci/docker/using_docker_images.md#define-image-and-services-from-gitlab-ciyml) image that can preload dependencies and tools (like AWS CLI)
-- Forward a [custom domain](https:/docs.aws.amazon.com/AmazonS3/latest/dev/website-hosting-custom-domain-walkthrough.html) to your game's S3 static website
+- Forward a [custom domain](https://docs.aws.amazon.com/AmazonS3/latest/dev/website-hosting-custom-domain-walkthrough.html) to your game's S3 static website
 - Combine jobs if you find it unnecessary for a small project
-- Avoid the queues and set up your own [custom GitLab CI/CD runner](https://about.gitlab.com/2016/03/01/gitlab-runner-with-docker/)
+- Avoid the queues and set up your own [custom GitLab CI/CD runner](https://about.gitlab.com/blog/2016/03/01/gitlab-runner-with-docker/)

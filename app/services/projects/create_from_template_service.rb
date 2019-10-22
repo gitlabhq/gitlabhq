@@ -4,8 +4,11 @@ module Projects
   class CreateFromTemplateService < BaseService
     include Gitlab::Utils::StrongMemoize
 
+    attr_reader :template_name
+
     def initialize(user, params)
       @current_user, @params = user, params.to_h.dup
+      @template_name = @params.delete(:template_name).presence
     end
 
     def execute
@@ -19,12 +22,6 @@ module Projects
       GitlabProjectsImportService.new(current_user, params, override_params).execute
     ensure
       file&.close
-    end
-
-    def template_name
-      strong_memoize(:template_name) do
-        params.delete(:template_name).presence
-      end
     end
 
     private

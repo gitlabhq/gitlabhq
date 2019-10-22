@@ -10,12 +10,16 @@ module API
         optional :description, type: String, desc: 'The description of the group'
         optional :visibility, type: String,
                  values: Gitlab::VisibilityLevel.string_values,
-                 default: Gitlab::VisibilityLevel.string_level(
-                   Gitlab::CurrentSettings.current_application_settings.default_group_visibility),
                  desc: 'The visibility of the group'
+        optional :share_with_group_lock, type: Boolean, desc: 'Prevent sharing a project with another group within this group'
+        optional :require_two_factor_authentication, type: Boolean, desc: 'Require all users in this group to setup Two-factor authentication'
+        optional :two_factor_grace_period, type: Integer, desc: 'Time before Two-factor authentication is enforced'
+        optional :project_creation_level, type: String, values: ::Gitlab::Access.project_creation_string_values, desc: 'Determine if developers can create projects in the group', as: :project_creation_level_str
+        optional :auto_devops_enabled, type: Boolean, desc: 'Default to Auto DevOps pipeline for all projects within this group'
+        optional :subgroup_creation_level, type: String, values: ::Gitlab::Access.subgroup_creation_string_values, desc: 'Allowed to create subgroups', as: :subgroup_creation_level_str
+        optional :emails_disabled, type: Boolean, desc: 'Disable email notifications'
         optional :lfs_enabled, type: Boolean, desc: 'Enable/disable LFS for the projects in this group'
         optional :request_access_enabled, type: Boolean, desc: 'Allow users to request member access'
-        optional :share_with_group_lock, type: Boolean, desc: 'Prevent sharing a project with another group within this group'
       end
 
       params :optional_params_ee do

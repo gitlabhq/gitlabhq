@@ -16,13 +16,7 @@ describe Git::BranchHooksService do
   let(:newrev) { commit.id }
 
   let(:service) do
-    described_class.new(project, user, oldrev: oldrev, newrev: newrev, ref: ref)
-  end
-
-  it 'update remote mirrors' do
-    expect(service).to receive(:update_remote_mirrors).and_call_original
-
-    service.execute
+    described_class.new(project, user, change: { oldrev: oldrev, newrev: newrev, ref: ref })
   end
 
   describe "Git Push Data" do
@@ -356,7 +350,7 @@ describe Git::BranchHooksService do
       let(:forked_project) { fork_project(upstream_project, user, repository: true) }
 
       let!(:forked_service) do
-        described_class.new(forked_project, user, oldrev: oldrev, newrev: newrev, ref: ref)
+        described_class.new(forked_project, user, change: { oldrev: oldrev, newrev: newrev, ref: ref })
       end
 
       context 'when commits already exists in the upstream project' do

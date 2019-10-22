@@ -21,6 +21,24 @@
   - if current_user_menu?(:settings)
     %li
       = link_to s_("CurrentUser|Settings"), profile_path, data: { qa_selector: 'settings_link' }
+
+  - if current_user_menu?(:help)
+    %li.divider.d-md-none
+    %li.d-md-none
+      = link_to _("Help"), help_path
+    %li.d-md-none
+      = link_to _("Support"), support_url
+    = render_if_exists "shared/learn_gitlab_menu_item"
+  %li.d-md-none
+    = link_to _("Submit feedback"), "https://about.gitlab.com/submit-feedback"
+  - if current_user_menu?(:help) || current_user_menu?(:settings) || current_user_menu?(:profile)
+    %li.d-md-none
+      = render 'shared/user_dropdown_contributing_link'
+  = render_if_exists 'shared/user_dropdown_instance_review'
+  - if Gitlab.com?
+    %li.js-canary-link.d-md-none
+      = link_to _("Switch to GitLab Next"), "https://next.gitlab.com/"
+
   - if current_user_menu?(:sign_out)
     %li.divider
     %li

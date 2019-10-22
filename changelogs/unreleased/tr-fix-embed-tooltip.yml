@@ -1,0 +1,5 @@
+---
+title: Fixes embedded metrics chart tooltip spacing
+merge_request: 18543
+author:
+type: fixed

@@ -1,0 +1,5 @@
+---
+title: 'JIRA Service: Improve username/email validation'
+merge_request: 18397
+author:
+type: fixed

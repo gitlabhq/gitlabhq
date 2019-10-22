@@ -4,27 +4,24 @@
 
 Our current CI parallelization setup is as follows:
 
-1. The `knapsack` job in the prepare stage that is supposed to ensure we have a
-   `knapsack/${CI_PROJECT_NAME}/rspec_report-master.json` file:
-   - The `knapsack/${CI_PROJECT_NAME}/rspec_report-master.json` file is fetched
-     from S3, if it's not here we initialize the file with `{}`.
-1. Each `rspec x y` job are run with `knapsack rspec` and should have an evenly
-   distributed share of tests:
-   - It works because the jobs have access to the
-     `knapsack/${CI_PROJECT_NAME}/rspec_report-master.json` since the "artifacts
-     from all previous stages are passed by default".
+1. The `retrieve-tests-metadata` job in the `prepare` stage ensures we have a
+   `knapsack/report-master.json` file:
+   - The `knapsack/report-master.json` file is fetched from S3, if it's not here
+     we initialize the file with `{}`.
+1. Each `[rspec|rspec-ee] [unit|integration|system|geo] n m` job are run with
+   `knapsack rspec` and should have an evenly distributed share of tests:
+   - It works because the jobs have access to the `knapsack/report-master.json`
+     since the "artifacts from all previous stages are passed by default".
    - the jobs set their own report path to
-     `KNAPSACK_REPORT_PATH=knapsack/${CI_PROJECT_NAME}/${JOB_NAME[0]}_node_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json`.
+     `"knapsack/${TEST_TOOL}_${TEST_LEVEL}_${DATABASE}_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json"`.
    - if knapsack is doing its job, test files that are run should be listed under
      `Report specs`, not under `Leftover specs`.
-1. The `update-knapsack` job takes all the
-   `knapsack/${CI_PROJECT_NAME}/${JOB_NAME[0]}_node_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json`
-   files from the `rspec x y` jobs and merge them all together into a single
-   `knapsack/${CI_PROJECT_NAME}/rspec_report-master.json` file that is then
-   uploaded to S3.
+1. The `update-tests-metadata` job (which only runs on scheduled pipelines for
+   [the canonical project](https://gitlab.com/gitlab-org/gitlab) takes all the
+   `knapsack/rspec*_pg_*.json` files and merge them all together into a single
+   `knapsack/report-master.json` file that is then uploaded to S3.
 
-After that, the next pipeline will use the up-to-date
-`knapsack/${CI_PROJECT_NAME}/rspec_report-master.json` file.
+After that, the next pipeline will use the up-to-date `knapsack/report-master.json` file.
 
 ## Monitoring
 

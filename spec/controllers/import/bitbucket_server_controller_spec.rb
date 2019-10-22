@@ -39,7 +39,7 @@ describe Import::BitbucketServerController do
       assign_session_tokens
     end
 
-    set(:project) { create(:project) }
+    let_it_be(:project) { create(:project) }
 
     it 'returns the new project' do
       allow(Gitlab::BitbucketServerImport::ProjectCreator)

@@ -146,6 +146,7 @@ describe Gitlab do
 
   describe '.ee?' do
     before do
+      stub_env('FOSS_ONLY', nil) # Make sure the ENV is clean
       described_class.instance_variable_set(:@is_ee, nil)
     end
 
@@ -153,42 +154,66 @@ describe Gitlab do
       described_class.instance_variable_set(:@is_ee, nil)
     end
 
-    it 'returns true when using Enterprise Edition' do
-      root = Pathname.new('dummy')
-      license_path = double(:path, exist?: true)
+    context 'for EE' do
+      before do
+        root = Pathname.new('dummy')
+        license_path = double(:path, exist?: true)
 
-      allow(described_class)
-        .to receive(:root)
-              .and_return(root)
+        allow(described_class)
+          .to receive(:root)
+                .and_return(root)
 
-      allow(root)
-        .to receive(:join)
-              .with('ee/app/models/license.rb')
-              .and_return(license_path)
+        allow(root)
+          .to receive(:join)
+                .with('ee/app/models/license.rb')
+                .and_return(license_path)
+      end
 
-      expect(described_class.ee?).to eq(true)
+      context 'when using FOSS_ONLY=1' do
+        before do
+          stub_env('FOSS_ONLY', '1')
+        end
+
+        it 'returns not to be EE' do
+          expect(described_class).not_to be_ee
+        end
+      end
+
+      context 'when using FOSS_ONLY=0' do
+        before do
+          stub_env('FOSS_ONLY', '0')
+        end
+
+        it 'returns to be EE' do
+          expect(described_class).to be_ee
+        end
+      end
+
+      context 'when using default FOSS_ONLY' do
+        it 'returns to be EE' do
+          expect(described_class).to be_ee
+        end
+      end
     end
 
-    it 'returns false when using Community Edition' do
-      root = double(:path)
-      license_path = double(:path, exists?: false)
+    context 'for CE' do
+      before do
+        root = double(:path)
+        license_path = double(:path, exists?: false)
 
-      allow(described_class)
-        .to receive(:root)
-              .and_return(Pathname.new('dummy'))
+        allow(described_class)
+          .to receive(:root)
+                .and_return(Pathname.new('dummy'))
 
-      allow(root)
-        .to receive(:join)
-              .with('ee/app/models/license.rb')
-              .and_return(license_path)
+        allow(root)
+          .to receive(:join)
+                .with('ee/app/models/license.rb')
+                .and_return(license_path)
+      end
 
-      expect(described_class.ee?).to eq(false)
-    end
-
-    it 'returns true when the IS_GITLAB_EE variable is not empty' do
-      stub_env('IS_GITLAB_EE', '1')
-
-      expect(described_class.ee?).to eq(true)
+      it 'returns not to be EE' do
+        expect(described_class).not_to be_ee
+      end
     end
   end
 

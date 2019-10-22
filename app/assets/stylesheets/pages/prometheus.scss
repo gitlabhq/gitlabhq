@@ -15,6 +15,51 @@
   }
 }
 
+.draggable {
+  &.draggable-enabled {
+    .draggable-panel {
+      border: $gray-200 1px solid;
+      border-radius: $border-radius-default;
+      margin: -1px;
+      cursor: grab;
+    }
+
+    .prometheus-graph {
+      // Make dragging easier by disabling use of chart
+      pointer-events: none;
+    }
+  }
+
+  &.sortable-chosen .draggable-panel {
+    background: $white-light;
+    box-shadow: 0 0 4px $gray-500;
+  }
+
+  .draggable-remove {
+    z-index: 1;
+
+    .draggable-remove-link {
+      cursor: pointer;
+      color: $gray-600;
+      background-color: $white-light;
+    }
+  }
+}
+
+.prometheus-graphs-header {
+  .time-window-dropdown-menu {
+    padding: $gl-padding $gl-padding 0 $gl-padding-12;
+  }
+
+  .time-window-dropdown-menu-container {
+    width: 360px;
+  }
+
+  .custom-time-range-form-group > label {
+    padding-bottom: $gl-padding;
+  }
+}
+
 .prometheus-panel {
   margin-top: 20px;
 }
@@ -22,11 +67,11 @@
 .prometheus-graph-group {
   display: flex;
   flex-wrap: wrap;
-  padding: $gl-padding / 2;
+  margin-top: $gl-padding-8;
 }
 
 .prometheus-graph {
-  padding: $gl-padding / 2;
+  padding: $gl-padding-8;
 }
 
 .prometheus-graph-embed {
@@ -39,11 +84,14 @@
   align-items: center;
   justify-content: space-between;
   margin-bottom: $gl-padding-8;
+}
 
-  h5 {
-    font-size: $gl-font-size-large;
-    margin: 0;
-  }
+.prometheus-graph-title {
+  font-size: $gl-font-size-large;
+}
+
+.alert-current-setting {
+  max-width: 240px;
 }
 
 .prometheus-graph-cursor {

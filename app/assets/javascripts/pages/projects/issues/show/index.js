@@ -3,5 +3,7 @@ import initShow from '../show';
 
 document.addEventListener('DOMContentLoaded', () => {
   initShow();
-  initSidebarBundle();
+  if (gon.features && !gon.features.vueIssuableSidebar) {
+    initSidebarBundle();
+  }
 });

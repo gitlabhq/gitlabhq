@@ -88,6 +88,14 @@ export function getLocationHash(url = window.location.href) {
 }
 
 /**
+ * Returns a boolean indicating whether the URL hash contains the given string value
+ */
+export function doesHashExistInUrl(hashName) {
+  const hash = getLocationHash();
+  return hash && hash.includes(hashName);
+}
+
+/**
  * Apply the fragment to the given url by returning a new url string that includes
  * the fragment. If the given url already contains a fragment, the original fragment
  * will be removed.

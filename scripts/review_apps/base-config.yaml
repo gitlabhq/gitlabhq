@@ -35,11 +35,14 @@ gitlab:
   gitlab-shell:
     resources:
       requests:
-        cpu: 70m
+        cpu: 125m
         memory: 20M
       limits:
-        cpu: 140m
+        cpu: 250m
         memory: 40M
+    maxReplicas: 3
+    hpa:
+      targetAverageValue: 130m
   sidekiq:
     resources:
       requests:
@@ -59,34 +62,43 @@ gitlab:
   unicorn:
     resources:
       requests:
-        cpu: 600m
+        cpu: 400m
         memory: 1.4G
       limits:
-        cpu: 1.2G
+        cpu: 800m
         memory: 2.8G
+    deployment:
+      readinessProbe:
+        initialDelaySeconds: 5  # Default is 0
+        periodSeconds: 15  # Default is 10
+        timeoutSeconds: 5  # Default is 2
     workhorse:
       resources:
         requests:
-          cpu: 100m
+          cpu: 175m
           memory: 100M
         limits:
-          cpu: 200m
+          cpu: 350m
           memory: 200M
+      readinessProbe:
+        initialDelaySeconds: 5  # Default is 0
+        periodSeconds: 15  # Default is 10
+        timeoutSeconds: 5  # Default is 2
 gitlab-runner:
   resources:
     requests:
-      cpu: 300m
+      cpu: 355m
       memory: 300M
     limits:
-      cpu: 600m
+      cpu: 710m
       memory: 600M
 minio:
   resources:
     requests:
-      cpu: 100m
+      cpu: 5m
       memory: 128M
     limits:
-      cpu: 200m
+      cpu: 10m
       memory: 280M
 nginx-ingress:
   controller:
@@ -95,10 +107,10 @@ nginx-ingress:
     replicaCount: 2
     resources:
       requests:
-        cpu: 150m
+        cpu: 100m
         memory: 250M
       limits:
-        cpu: 300m
+        cpu: 200m
         memory: 500M
     minAvailable: 1
     service:
@@ -141,7 +153,8 @@ redis:
 redis-ha:
   enabled: false
 registry:
-  minReplicas: 1
+  hpa:
+    minReplicas: 1
   resources:
     requests:
       cpu: 50m

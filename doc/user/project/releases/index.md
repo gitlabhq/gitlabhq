@@ -65,6 +65,18 @@ project.
 
 ![Releases list](img/releases.png)
 
+## Notification for Releases
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/26001) in GitLab 12.4.
+
+You can be notified by email when a new Release is created for your project.
+
+To subscribe to these notifications, navigate to your **Project**'s landing page, then click on the
+bell icon. Choose **Custom** from the dropdown menu. The
+following modal window will be then displayed, from which you can select **New release** to complete your subscription to new Releases notifications.
+
+![Custom notification - New release](img/custom_notifications_new_release_v12_4.png)
+
 <!-- ## Troubleshooting
 
 Include any troubleshooting steps that you can foresee. If you know beforehand what issues

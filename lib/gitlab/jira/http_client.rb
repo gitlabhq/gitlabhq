@@ -4,7 +4,7 @@ module Gitlab
   module Jira
     # Gitlab JIRA HTTP client to be used with jira-ruby gem, this subclasses JIRA::HTTPClient.
     # Uses Gitlab::HTTP to make requests to JIRA REST API.
-    # The parent class implementation can be found at: https://github.com/sumoheavy/jira-ruby/blob/v1.4.0/lib/jira/http_client.rb
+    # The parent class implementation can be found at: https://github.com/sumoheavy/jira-ruby/blob/v1.7.0/lib/jira/http_client.rb
     class HttpClient < JIRA::HttpClient
       extend ::Gitlab::Utils::Override
 
@@ -24,7 +24,7 @@ module Gitlab
           password: @options.delete(:password)
         }.to_json
 
-        make_request(:post, @options[:context_path] + '/rest/auth/1/session', body, { 'Content-Type' => 'application/json' })
+        make_request(:post, @options[:context_path] + '/rest/auth/1/session', body, 'Content-Type' => 'application/json')
       end
 
       override :make_request

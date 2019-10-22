@@ -3,7 +3,7 @@
 > [Available in](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/19911) GitLab
 > Community Edition 11.2.
 
-GitLab's default SSH authentication requires users to upload their ssh
+GitLab's default SSH authentication requires users to upload their SSH
 public keys before they can use the SSH transport.
 
 In centralized (e.g. corporate) environments this can be a hassle

@@ -3,6 +3,8 @@
 class NewNoteWorker
   include ApplicationWorker
 
+  feature_category :issue_tracking
+
   # Keep extra parameter to preserve backwards compatibility with
   # old `NewNoteWorker` jobs (can remove later)
   # rubocop: disable CodeReuse/ActiveRecord

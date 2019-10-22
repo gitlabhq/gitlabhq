@@ -54,6 +54,7 @@ describe GoogleApi::CloudPlatform::Client do
 
   describe '#projects_zones_clusters_get' do
     subject { client.projects_zones_clusters_get(spy, spy, spy) }
+
     let(:gke_cluster) { double }
 
     before do
@@ -68,7 +69,7 @@ describe GoogleApi::CloudPlatform::Client do
   describe '#projects_zones_clusters_create' do
     subject do
       client.projects_zones_clusters_create(
-        project_id, zone, cluster_name, cluster_size, machine_type: machine_type, legacy_abac: legacy_abac)
+        project_id, zone, cluster_name, cluster_size, machine_type: machine_type, legacy_abac: legacy_abac, enable_addons: enable_addons)
     end
 
     let(:project_id) { 'project-123' }
@@ -77,39 +78,54 @@ describe GoogleApi::CloudPlatform::Client do
     let(:cluster_size) { 1 }
     let(:machine_type) { 'n1-standard-2' }
     let(:legacy_abac) { true }
-    let(:create_cluster_request_body) { double('Google::Apis::ContainerV1::CreateClusterRequest') }
+    let(:enable_addons) { [] }
+
+    let(:addons_config) do
+      enable_addons.each_with_object({}) do |addon, hash|
+        hash[addon] = { disabled: false }
+      end
+    end
+
+    let(:cluster_options) do
+      {
+        cluster: {
+          name: cluster_name,
+          initial_node_count: cluster_size,
+          node_config: {
+            machine_type: machine_type
+          },
+          master_auth: {
+            username: 'admin',
+            client_certificate_config: {
+              issue_client_certificate: true
+            }
+          },
+          legacy_abac: {
+            enabled: legacy_abac
+          },
+          ip_allocation_policy: {
+            use_ip_aliases: true
+          },
+          addons_config: addons_config
+        }
+      }
+    end
+
+    let(:create_cluster_request_body) { double('Google::Apis::ContainerV1beta1::CreateClusterRequest') }
     let(:operation) { double }
 
     before do
-      allow_any_instance_of(Google::Apis::ContainerV1::ContainerService)
+      allow_any_instance_of(Google::Apis::ContainerV1beta1::ContainerService)
         .to receive(:create_cluster).with(any_args)
         .and_return(operation)
     end
 
     it 'sets corresponded parameters' do
-      expect_any_instance_of(Google::Apis::ContainerV1::ContainerService)
+      expect_any_instance_of(Google::Apis::ContainerV1beta1::ContainerService)
         .to receive(:create_cluster).with(project_id, zone, create_cluster_request_body, options: user_agent_options)
 
-      expect(Google::Apis::ContainerV1::CreateClusterRequest)
-        .to receive(:new).with(
-          {
-            "cluster": {
-              "name": cluster_name,
-              "initial_node_count": cluster_size,
-              "node_config": {
-                "machine_type": machine_type
-              },
-              "master_auth": {
-                "username": "admin",
-                "client_certificate_config": {
-                  issue_client_certificate: true
-                }
-              },
-              "legacy_abac": {
-                "enabled": true
-              }
-            }
-          } ).and_return(create_cluster_request_body)
+      expect(Google::Apis::ContainerV1beta1::CreateClusterRequest)
+        .to receive(:new).with(cluster_options).and_return(create_cluster_request_body)
 
       expect(subject).to eq operation
     end
@@ -118,29 +134,25 @@ describe GoogleApi::CloudPlatform::Client do
       let(:legacy_abac) { false }
 
       it 'sets corresponded parameters' do
-        expect_any_instance_of(Google::Apis::ContainerV1::ContainerService)
+        expect_any_instance_of(Google::Apis::ContainerV1beta1::ContainerService)
           .to receive(:create_cluster).with(project_id, zone, create_cluster_request_body, options: user_agent_options)
 
-        expect(Google::Apis::ContainerV1::CreateClusterRequest)
-          .to receive(:new).with(
-            {
-              "cluster": {
-                "name": cluster_name,
-                "initial_node_count": cluster_size,
-                "node_config": {
-                  "machine_type": machine_type
-                },
-                "master_auth": {
-                  "username": "admin",
-                  "client_certificate_config": {
-                    issue_client_certificate: true
-                  }
-                },
-                "legacy_abac": {
-                  "enabled": false
-                }
-              }
-            } ).and_return(create_cluster_request_body)
+        expect(Google::Apis::ContainerV1beta1::CreateClusterRequest)
+          .to receive(:new).with(cluster_options).and_return(create_cluster_request_body)
+
+        expect(subject).to eq operation
+      end
+    end
+
+    context 'create with enable_addons for cloud_run' do
+      let(:enable_addons) { [:http_load_balancing, :istio_config, :cloud_run_config] }
+
+      it 'sets corresponded parameters' do
+        expect_any_instance_of(Google::Apis::ContainerV1beta1::ContainerService)
+          .to receive(:create_cluster).with(project_id, zone, create_cluster_request_body, options: user_agent_options)
+
+        expect(Google::Apis::ContainerV1beta1::CreateClusterRequest)
+          .to receive(:new).with(cluster_options).and_return(create_cluster_request_body)
 
         expect(subject).to eq operation
       end
@@ -149,6 +161,7 @@ describe GoogleApi::CloudPlatform::Client do
 
   describe '#projects_zones_operations' do
     subject { client.projects_zones_operations(spy, spy, spy) }
+
     let(:operation) { double }
 
     before do

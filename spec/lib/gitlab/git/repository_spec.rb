@@ -93,6 +93,7 @@ describe Gitlab::Git::Repository, :seed_helper do
 
     describe '#last' do
       subject { super().last }
+
       it { is_expected.to eq("v1.2.1") }
     end
     it { is_expected.to include("v1.0.0") }
@@ -215,11 +216,13 @@ describe Gitlab::Git::Repository, :seed_helper do
 
     describe '#first' do
       subject { super().first }
+
       it { is_expected.to eq('feature') }
     end
 
     describe '#last' do
       subject { super().last }
+
       it { is_expected.to eq('v1.2.1') }
     end
   end
@@ -2234,6 +2237,47 @@ describe Gitlab::Git::Repository, :seed_helper do
       repository.disconnect_alternates
 
       expect(repository.commit(new_commit.oid).id).to eq(new_commit.oid)
+    end
+  end
+
+  describe '#rename' do
+    let(:project) { create(:project, :repository)}
+    let(:repository) { project.repository }
+
+    it 'moves the repository' do
+      checksum = repository.checksum
+      new_relative_path = "rename_test/relative/path"
+      renamed_repository = Gitlab::Git::Repository.new(repository.storage, new_relative_path, nil, nil)
+
+      repository.rename(new_relative_path)
+
+      expect(renamed_repository.checksum).to eq(checksum)
+      expect(repository.exists?).to be false
+    end
+  end
+
+  describe '#remove' do
+    let(:project) { create(:project, :repository) }
+    let(:repository) { project.repository }
+
+    it 'removes the repository' do
+      expect(repository.exists?).to be true
+
+      repository.remove
+
+      expect(repository.raw_repository.exists?).to be false
+    end
+
+    context 'when the repository does not exist' do
+      let(:repository) { create(:project).repository }
+
+      it 'is idempotent' do
+        expect(repository.exists?).to be false
+
+        repository.remove
+
+        expect(repository.raw_repository.exists?).to be false
+      end
     end
   end
 end

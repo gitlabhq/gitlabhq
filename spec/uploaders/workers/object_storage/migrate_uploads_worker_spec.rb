@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe ObjectStorage::MigrateUploadsWorker, :sidekiq do
@@ -11,8 +13,8 @@ describe ObjectStorage::MigrateUploadsWorker, :sidekiq do
   let(:uploads) { Upload.all }
   let(:to_store) { ObjectStorage::Store::REMOTE }
 
-  def perform(uploads)
-    described_class.new.perform(uploads.ids, model_class.to_s, mounted_as, to_store)
+  def perform(uploads, store = nil)
+    described_class.new.perform(uploads.ids, model_class.to_s, mounted_as, store || to_store)
   rescue ObjectStorage::MigrateUploadsWorker::Report::MigrationFailures
     # swallow
   end
@@ -42,33 +44,23 @@ describe ObjectStorage::MigrateUploadsWorker, :sidekiq do
     end
 
     describe '.sanity_check!' do
-      shared_examples 'raises a SanityCheckError' do
+      shared_examples 'raises a SanityCheckError' do |expected_message|
         let(:mount_point) { nil }
 
         it do
           expect { described_class.sanity_check!(uploads, model_class, mount_point) }
-            .to raise_error(described_class::SanityCheckError)
+            .to raise_error(described_class::SanityCheckError).with_message(expected_message)
         end
-      end
-
-      before do
-        stub_const("WrongModel", Class.new)
       end
 
       context 'uploader types mismatch' do
         let!(:outlier) { create(:upload, uploader: 'GitlabUploader') }
 
-        include_examples 'raises a SanityCheckError'
-      end
-
-      context 'model types mismatch' do
-        let!(:outlier) { create(:upload, model_type: 'WrongModel') }
-
-        include_examples 'raises a SanityCheckError'
+        include_examples 'raises a SanityCheckError', /Multiple uploaders found/
       end
 
       context 'mount point not found' do
-        include_examples 'raises a SanityCheckError' do
+        include_examples 'raises a SanityCheckError', /Mount point [a-z:]+ not found in/ do
           let(:mount_point) { :potato }
         end
       end
@@ -97,10 +89,26 @@ describe ObjectStorage::MigrateUploadsWorker, :sidekiq do
 
       it_behaves_like 'outputs correctly', success: 10
 
-      it 'migrates files' do
+      it 'migrates files to remote storage' do
         perform(uploads)
 
         expect(Upload.where(store: ObjectStorage::Store::LOCAL).count).to eq(0)
+      end
+
+      context 'reversed' do
+        let(:to_store) { ObjectStorage::Store::LOCAL }
+
+        before do
+          perform(uploads, ObjectStorage::Store::REMOTE)
+        end
+
+        it 'migrates files to local storage' do
+          expect(Upload.where(store: ObjectStorage::Store::REMOTE).count).to eq(10)
+
+          perform(uploads)
+
+          expect(Upload.where(store: ObjectStorage::Store::LOCAL).count).to eq(10)
+        end
       end
 
       context 'migration is unsuccessful' do

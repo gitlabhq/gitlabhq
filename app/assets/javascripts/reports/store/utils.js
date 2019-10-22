@@ -11,7 +11,7 @@ const textBuilder = results => {
   const { failed, resolved, total } = results;
 
   const failedString = failed
-    ? n__('%d failed test result', '%d failed test results', failed)
+    ? n__('%d failed/error test result', '%d failed/error test results', failed)
     : null;
   const resolvedString = resolved
     ? n__('%d fixed test result', '%d fixed test results', resolved)

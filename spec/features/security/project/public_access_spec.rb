@@ -14,6 +14,7 @@ describe "Public Project Access" do
   describe "Project should be public" do
     describe '#public?' do
       subject { project.public? }
+
       it { is_expected.to be_truthy }
     end
   end

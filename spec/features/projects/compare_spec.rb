@@ -12,6 +12,23 @@ describe "Compare", :js do
   end
 
   describe "branches" do
+    shared_examples 'compares branches' do
+      it 'compares branches' do
+        visit project_compare_index_path(project, from: 'master', to: 'master')
+
+        select_using_dropdown 'from', 'feature'
+        expect(find('.js-compare-from-dropdown .dropdown-toggle-text')).to have_content('feature')
+
+        select_using_dropdown 'to', 'binary-encoding'
+        expect(find('.js-compare-to-dropdown .dropdown-toggle-text')).to have_content('binary-encoding')
+
+        click_button 'Compare'
+
+        expect(page).to have_content 'Commits'
+        expect(page).to have_link 'Create merge request'
+      end
+    end
+
     it "pre-populates fields" do
       visit project_compare_index_path(project, from: "master", to: "master")
 
@@ -19,19 +36,14 @@ describe "Compare", :js do
       expect(find(".js-compare-to-dropdown .dropdown-toggle-text")).to have_content("master")
     end
 
-    it "compares branches" do
-      visit project_compare_index_path(project, from: "master", to: "master")
+    it_behaves_like 'compares branches'
 
-      select_using_dropdown "from", "feature"
-      expect(find(".js-compare-from-dropdown .dropdown-toggle-text")).to have_content("feature")
+    context 'on a read-only instance' do
+      before do
+        allow(Gitlab::Database).to receive(:read_only?).and_return(true)
+      end
 
-      select_using_dropdown "to", "binary-encoding"
-      expect(find(".js-compare-to-dropdown .dropdown-toggle-text")).to have_content("binary-encoding")
-
-      click_button "Compare"
-
-      expect(page).to have_content "Commits"
-      expect(page).to have_link 'Create merge request'
+      it_behaves_like 'compares branches'
     end
 
     it 'renders additions info when click unfold diff' do

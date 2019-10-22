@@ -73,11 +73,87 @@ describe('Jobs Store Mutations', () => {
         html,
         size: 511846,
         complete: true,
+        lines: [],
       });
 
       expect(stateCopy.trace).toEqual(html);
       expect(stateCopy.traceSize).toEqual(511846);
       expect(stateCopy.isTraceComplete).toEqual(true);
+    });
+
+    describe('with new job log', () => {
+      let stateWithNewLog;
+      beforeEach(() => {
+        gon.features = gon.features || {};
+        gon.features.jobLogJson = true;
+
+        stateWithNewLog = state();
+      });
+
+      afterEach(() => {
+        gon.features.jobLogJson = false;
+      });
+
+      describe('log.lines', () => {
+        describe('when append is true', () => {
+          it('sets the parsed log ', () => {
+            mutations[types.RECEIVE_TRACE_SUCCESS](stateWithNewLog, {
+              append: true,
+              size: 511846,
+              complete: true,
+              lines: [
+                {
+                  offset: 1,
+                  content: [{ text: 'Running with gitlab-runner 11.12.1 (5a147c92)' }],
+                },
+              ],
+            });
+
+            expect(stateWithNewLog.trace).toEqual([
+              {
+                offset: 1,
+                content: [{ text: 'Running with gitlab-runner 11.12.1 (5a147c92)' }],
+                lineNumber: 0,
+              },
+            ]);
+          });
+        });
+
+        describe('when it is defined', () => {
+          it('sets the parsed log ', () => {
+            mutations[types.RECEIVE_TRACE_SUCCESS](stateWithNewLog, {
+              append: false,
+              size: 511846,
+              complete: true,
+              lines: [
+                { offset: 0, content: [{ text: 'Running with gitlab-runner 11.11.1 (5a147c92)' }] },
+              ],
+            });
+
+            expect(stateWithNewLog.trace).toEqual([
+              {
+                offset: 0,
+                content: [{ text: 'Running with gitlab-runner 11.11.1 (5a147c92)' }],
+                lineNumber: 0,
+              },
+            ]);
+          });
+        });
+
+        describe('when it is null', () => {
+          it('sets the default value', () => {
+            mutations[types.RECEIVE_TRACE_SUCCESS](stateWithNewLog, {
+              append: true,
+              html,
+              size: 511846,
+              complete: false,
+              lines: null,
+            });
+
+            expect(stateWithNewLog.trace).toEqual([]);
+          });
+        });
+      });
     });
   });
 

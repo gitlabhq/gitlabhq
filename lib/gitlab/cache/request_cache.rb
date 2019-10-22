@@ -23,7 +23,7 @@ module Gitlab
       end
 
       def request_cache(method_name, &method_key_block)
-        const_get(:RequestCacheExtension).module_eval do
+        const_get(:RequestCacheExtension, false).module_eval do
           cache_key_method_name = "#{method_name}_cache_key"
 
           define_method(method_name) do |*args|

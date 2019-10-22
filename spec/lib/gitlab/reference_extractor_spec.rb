@@ -259,13 +259,15 @@ describe Gitlab::ReferenceExtractor do
 
   describe '.references_pattern' do
     subject { described_class.references_pattern }
+
     it { is_expected.to be_kind_of Regexp }
   end
 
   describe 'referables prefixes' do
     def prefixes
       described_class::REFERABLES.each_with_object({}) do |referable, result|
-        klass = referable.to_s.camelize.constantize
+        class_name = referable.to_s.camelize
+        klass = class_name.constantize if Object.const_defined?(class_name)
 
         next unless klass.respond_to?(:reference_prefix)
 

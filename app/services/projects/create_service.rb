@@ -13,7 +13,7 @@ module Projects
     end
 
     def execute
-      if @params[:template_name].present?
+      if create_from_template?
         return ::Projects::CreateFromTemplateService.new(current_user, params).execute
       end
 
@@ -183,6 +183,10 @@ module Projects
     end
 
     private
+
+    def create_from_template?
+      @params[:template_name].present? || @params[:template_project_id].present?
+    end
 
     def import_schedule
       if @project.errors.empty?

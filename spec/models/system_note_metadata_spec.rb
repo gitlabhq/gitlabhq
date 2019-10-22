@@ -5,6 +5,7 @@ require 'spec_helper'
 describe SystemNoteMetadata do
   describe 'associations' do
     it { is_expected.to belong_to(:note) }
+    it { is_expected.to belong_to(:description_version) }
   end
 
   describe 'validation' do

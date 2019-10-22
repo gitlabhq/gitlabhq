@@ -1,0 +1,5 @@
+---
+title: Fix pod logs failure when pod contains more than 1 container
+merge_request: 18574
+author:
+type: fixed

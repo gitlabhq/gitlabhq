@@ -1,0 +1,5 @@
+---
+title: Fix inability to set snippet visibility via API
+merge_request: 18612
+author:
+type: fixed

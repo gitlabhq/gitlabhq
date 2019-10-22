@@ -43,7 +43,12 @@ export default {
 <template>
   <div class="d-flex ide-commit-editor-header align-items-center">
     <file-icon :file-name="activeFile.name" :size="16" class="mr-2" />
-    <strong class="mr-2"> {{ activeFile.path }} </strong>
+    <strong class="mr-2">
+      <template v-if="activeFile.prevPath && activeFile.prevPath !== activeFile.path">
+        {{ activeFile.prevPath }} &#x2192;
+      </template>
+      {{ activeFile.path }}
+    </strong>
     <changed-file-icon :file="activeFile" :is-centered="false" />
     <div class="ml-auto">
       <button

@@ -17,9 +17,9 @@ describe Groups::SharedProjectsController do
     ).execute(group)
   end
 
-  set(:group) { create(:group) }
-  set(:user) { create(:user) }
-  set(:shared_project) do
+  let_it_be(:group) { create(:group) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:shared_project) do
     shared_project = create(:project, namespace: user.namespace)
     share_project(shared_project)
 

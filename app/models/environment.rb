@@ -6,7 +6,8 @@ class Environment < ApplicationRecord
 
   belongs_to :project, required: true
 
-  has_many :deployments, -> { success }, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_many :deployments, -> { visible }, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_many :successful_deployments, -> { success }, class_name: 'Deployment'
 
   has_one :last_deployment, -> { success.order('deployments.id DESC') }, class_name: 'Deployment'
 
@@ -79,6 +80,10 @@ class Environment < ApplicationRecord
 
   def self.pluck_names
     pluck(:name)
+  end
+
+  def self.find_or_create_by_name(name)
+    find_or_create_by(name: name)
   end
 
   def predefined_variables

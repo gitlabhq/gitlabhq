@@ -58,7 +58,7 @@ GET /issues?confidential=true
 | `updated_after`     | datetime         | no         | Return issues updated on or after the given time                                                                                                    |
 | `updated_before`    | datetime         | no         | Return issues updated on or before the given time                                                                                                   |
 | `confidential`      | Boolean          | no         | Filter confidential or public issues.                                                                                                               |
-| `not`               | Hash             | no         | Return issues that do not match the parameters supplied. Accepts: `labels`, `milestone`, `author_id`, `author_username`, `assignee_id`, `assignee_username`, `my_reaction_emoji`, `search`, `in` |  
+| `not`               | Hash             | no         | Return issues that do not match the parameters supplied. Accepts: `labels`, `milestone`, `author_id`, `author_username`, `assignee_id`, `assignee_username`, `my_reaction_emoji`, `search`, `in` |
 
 ```bash
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/issues
@@ -207,7 +207,7 @@ GET /groups/:id/issues?confidential=true
 | `updated_after`     | datetime         | no         | Return issues updated on or after the given time                                                                              |
 | `updated_before`    | datetime         | no         | Return issues updated on or before the given time                                                                             |
 | `confidential`     | Boolean          | no         | Filter confidential or public issues.                                                                                         |
-| `not`               | Hash             | no         | Return issues that do not match the parameters supplied. Accepts: `labels`, `milestone`, `author_id`, `author_username`, `assignee_id`, `assignee_username`, `my_reaction_emoji`, `search`, `in` |  
+| `not`               | Hash             | no         | Return issues that do not match the parameters supplied. Accepts: `labels`, `milestone`, `author_id`, `author_username`, `assignee_id`, `assignee_username`, `my_reaction_emoji`, `search`, `in` |
 
 ```bash
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/4/issues
@@ -605,7 +605,7 @@ POST /projects/:id/issues
 | `id`                                      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `iid`                                     | integer/string | no       | The internal ID of the project's issue (requires admin or project owner rights) |
 | `title`                                   | string         | yes      | The title of an issue |
-| `description`                             | string         | no       | The description of an issue. Limited to 1 000 000 characters. |
+| `description`                             | string         | no       | The description of an issue. Limited to 1,048,576 characters. |
 | `confidential`                            | boolean        | no       | Set an issue to be confidential. Default is `false`.  |
 | `assignee_ids`                            | integer array  | no       | The ID of a user to assign issue |
 | `milestone_id`                            | integer        | no       | The global ID of a milestone to assign issue  |
@@ -615,6 +615,7 @@ POST /projects/:id/issues
 | `merge_request_to_resolve_discussions_of` | integer        | no       | The IID of a merge request in which to resolve all issues. This will fill the issue with a default description and mark all discussions as resolved. When passing a description or title, these values will take precedence over the default values.|
 | `discussion_to_resolve`                   | string         | no       | The ID of a discussion to resolve. This will fill in the issue with a default description and mark the discussion as resolved. Use in combination with `merge_request_to_resolve_discussions_of`. |
 | `weight` **(STARTER)**                    | integer        | no       | The weight of the issue. Valid values are greater than or equal to 0. |
+| `epic_iid` **(ULTIMATE)** | integer | no | IID of the epic to add the issue to. Valid values are greater than or equal to 0. |
 
 ```bash
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/4/issues?title=Issues%20with%20auth&labels=bug
@@ -706,7 +707,7 @@ PUT /projects/:id/issues/:issue_iid
 | `id`           | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `issue_iid`    | integer | yes      | The internal ID of a project's issue                                                                       |
 | `title`        | string  | no       | The title of an issue                                                                                      |
-| `description`  | string  | no       | The description of an issue. Limited to 1 000 000 characters.        |
+| `description`  | string  | no       | The description of an issue. Limited to 1,048,576 characters.        |
 | `confidential` | boolean | no       | Updates an issue to be confidential                                                                        |
 | `assignee_ids` | integer array | no | The ID of the user(s) to assign the issue to. Set to `0` or provide an empty value to unassign all assignees. |
 | `milestone_id` | integer | no       | The global ID of a milestone to assign the issue to. Set to `0` or provide an empty value to unassign a milestone.|
@@ -716,6 +717,7 @@ PUT /projects/:id/issues/:issue_iid
 | `due_date`     | string  | no       | Date time string in the format YEAR-MONTH-DAY, e.g. `2016-03-11`                                           |
 | `weight` **(STARTER)** | integer | no | The weight of the issue. Valid values are greater than or equal to 0. 0                                                                    |
 | `discussion_locked` | boolean | no  | Flag indicating if the issue's discussion is locked. If the discussion is locked only project members can add or edit comments. |
+| `epic_iid` **(ULTIMATE)** | integer | no | IID of the epic to add the issue to. Valid values are greater than or equal to 0. |
 
 ```bash
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/4/issues/85?state_event=close
@@ -1370,8 +1372,11 @@ Example response:
     "state": "opened",
     "created_at": "2018-09-18T14:36:15.510Z",
     "updated_at": "2018-09-19T07:45:13.089Z",
+    "closed_by": null,
+    "closed_at": null,
     "target_branch": "v2.x",
     "source_branch": "so_long_jquery",
+    "user_notes_count": 9,
     "upvotes": 0,
     "downvotes": 0,
     "author": {
@@ -1411,10 +1416,10 @@ Example response:
     "merge_status": "cannot_be_merged",
     "sha": "3b7b528e9353295c1c125dad281ac5b5deae5f12",
     "merge_commit_sha": null,
-    "user_notes_count": 9,
     "discussion_locked": null,
     "should_remove_source_branch": null,
     "force_remove_source_branch": false,
+    "reference": "!11",
     "web_url": "https://gitlab.example.com/twitter/flight/merge_requests/4",
     "time_stats": {
       "time_estimate": 0,
@@ -1422,7 +1427,67 @@ Example response:
       "human_time_estimate": null,
       "human_total_time_spent": null
     },
-    "squash": false
+    "squash": false,
+    "task_completion_status": {
+      "count": 0,
+      "completed_count": 0
+    },
+    "changes_count": "10",
+    "latest_build_started_at": "2018-12-05T01:16:41.723Z",
+    "latest_build_finished_at": "2018-12-05T02:35:54.046Z",
+    "first_deployed_to_production_at": null,
+    "pipeline": {
+      "id": 38980952,
+      "sha": "81c6a84c7aebd45a1ac2c654aa87f11e32338e0a",
+      "ref": "test-branch",
+      "status": "success",
+      "web_url": "https://gitlab.com/gitlab-org/gitlab/pipelines/38980952"
+    },
+    "head_pipeline": {
+      "id": 38980952,
+      "sha": "81c6a84c7aebd45a1ac2c654aa87f11e32338e0a",
+      "ref": "test-branch",
+      "status": "success",
+      "web_url": "https://gitlab.example.com/twitter/flight/pipelines/38980952",
+      "before_sha": "3c738a37eb23cf4c0ed0d45d6ddde8aad4a8da51",
+      "tag": false,
+      "yaml_errors": null,
+      "user": {
+        "id": 19,
+        "name": "Jody Baumbach",
+        "username": "felipa.kuvalis",
+        "state": "active",
+        "avatar_url": "https://www.gravatar.com/avatar/6541fc75fc4e87e203529bd275fafd07?s=80&d=identicon",
+        "web_url": "https://gitlab.example.com/felipa.kuvalis"
+      },
+      "created_at": "2018-12-05T01:16:13.342Z",
+      "updated_at": "2018-12-05T02:35:54.086Z",
+      "started_at": "2018-12-05T01:16:41.723Z",
+      "finished_at": "2018-12-05T02:35:54.046Z",
+      "committed_at": null,
+      "duration": 4436,
+      "coverage": "46.68",
+      "detailed_status": {
+        "icon": "status_warning",
+        "text": "passed",
+        "label": "passed with warnings",
+        "group": "success-with-warnings",
+        "tooltip": "passed",
+        "has_details": true,
+        "details_path": "/twitter/flight/pipelines/38",
+        "illustration": null,
+        "favicon": "https://gitlab.example.com/assets/ci_favicons/favicon_status_success-8451333011eee8ce9f2ab25dc487fe24a8758c694827a582f17f42b0a90446a2.png"
+      }
+    },
+    "diff_refs": {
+      "base_sha": "d052d768f0126e8cddf80afd8b1eb07f406a3fcb",
+      "head_sha": "81c6a84c7aebd45a1ac2c654aa87f11e32338e0a",
+      "start_sha": "d052d768f0126e8cddf80afd8b1eb07f406a3fcb"
+    },
+    "merge_error": null,
+    "user": {
+      "can_merge": true
+    }
   }
 ]
 ```

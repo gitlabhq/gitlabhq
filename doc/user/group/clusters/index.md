@@ -18,7 +18,7 @@ your group, enabling you to use the same cluster across multiple projects.
 GitLab can install and manage some applications in your group-level
 cluster. For more information on installing, upgrading, uninstalling,
 and troubleshooting applications for your group cluster, see
-[Gitlab Managed Apps](../../clusters/applications.md).
+[GitLab Managed Apps](../../clusters/applications.md).
 
 ## RBAC compatibility
 
@@ -139,7 +139,9 @@ The result will then be:
 
 ## Cluster environments **(PREMIUM)**
 
-Please see the documentation for [cluster environments](../../clusters/environments.md).
+For a consolidated view of which CI [environments](../../../ci/environments.md)
+are deployed to the Kubernetes cluster, see the documentation for
+[cluster environments](../../clusters/environments.md).
 
 ## Security of Runners
 

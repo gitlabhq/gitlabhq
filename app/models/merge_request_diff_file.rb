@@ -5,6 +5,7 @@ class MergeRequestDiffFile < ApplicationRecord
   include DiffFile
 
   belongs_to :merge_request_diff, inverse_of: :merge_request_diff_files
+  alias_attribute :index, :relative_order
 
   def utf8_diff
     return '' if diff.blank?

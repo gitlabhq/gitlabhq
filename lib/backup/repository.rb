@@ -41,12 +41,6 @@ module Backup
       end
     end
 
-    def prepare_directories
-      Gitlab.config.repositories.storages.each do |name, _repository_storage|
-        Gitlab::GitalyClient::StorageService.new(name).delete_all_repositories
-      end
-    end
-
     def backup_project(project)
       path_to_project_bundle = path_to_bundle(project)
       Gitlab::GitalyClient::RepositoryService.new(project.repository)
@@ -75,14 +69,13 @@ module Backup
     end
 
     def restore
-      prepare_directories
-
       Project.find_each(batch_size: 1000) do |project|
         progress.print " * #{project.full_path} ... "
         path_to_project_bundle = path_to_bundle(project)
-        project.ensure_storage_path_exists
 
+        project.repository.remove rescue nil
         restore_repo_success = nil
+
         if File.exist?(path_to_project_bundle)
           begin
             project.repository.create_from_bundle(path_to_project_bundle)

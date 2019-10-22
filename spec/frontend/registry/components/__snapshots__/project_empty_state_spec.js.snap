@@ -1,0 +1,186 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Registry Project Empty state to match the default snapshot 1`] = `
+<div
+  class="row container-message empty-state"
+>
+  <div
+    class="col-12"
+  >
+    <div
+      class="svg-250 svg-content"
+    >
+      <img
+        alt="There are no container images stored for this project"
+        class=""
+        src="imageUrl"
+      />
+    </div>
+  </div>
+   
+  <div
+    class="col-12"
+  >
+    <div
+      class="text-content"
+    >
+      <h4
+        class="center"
+        style=""
+      >
+        There are no container images stored for this project
+      </h4>
+       
+      <p
+        class="center"
+        style=""
+      >
+        <p
+          class="js-no-container-images-text"
+        >
+          With the Container Registry, every project can have its own space to store its Docker images. 
+          <a
+            href="help"
+            target="_blank"
+          >
+            More Information
+          </a>
+        </p>
+         
+        <h5>
+          Quick Start
+        </h5>
+         
+        <p
+          class="js-not-logged-in-to-registry-text"
+        >
+          If you are not already logged in, you need to authenticate to the Container Registry by using your GitLab username and password. If you have 
+          <a
+            href="help_link"
+            target="_blank"
+          >
+            Two-Factor Authentication
+          </a>
+           enabled, use a 
+          <a
+            href="personal_token"
+            target="_blank"
+          >
+            Personal Access Token
+          </a>
+           instead of a password.
+        </p>
+         
+        <div
+          class="input-group append-bottom-10"
+        >
+          <input
+            class="form-control monospace"
+            readonly="readonly"
+            type="text"
+          />
+           
+          <span
+            class="input-group-append"
+          >
+            <button
+              class="btn input-group-text btn-secondary btn-default"
+              data-clipboard-text="docker login host"
+              data-original-title="Copy login command"
+              title=""
+              type="button"
+            >
+              <svg
+                aria-hidden="true"
+                class="s16 ic-duplicate"
+              >
+                <use
+                  xlink:href="#duplicate"
+                />
+              </svg>
+            </button>
+          </span>
+        </div>
+         
+        <p />
+         
+        <p>
+          
+      You can add an image to this registry with the following commands:
+    
+        </p>
+         
+        <div
+          class="input-group append-bottom-10"
+        >
+          <input
+            class="form-control monospace"
+            readonly="readonly"
+            type="text"
+          />
+           
+          <span
+            class="input-group-append"
+          >
+            <button
+              class="btn input-group-text btn-secondary btn-default"
+              data-clipboard-text="docker build -t url ."
+              data-original-title="Copy build command"
+              title=""
+              type="button"
+            >
+              <svg
+                aria-hidden="true"
+                class="s16 ic-duplicate"
+              >
+                <use
+                  xlink:href="#duplicate"
+                />
+              </svg>
+            </button>
+          </span>
+        </div>
+         
+        <div
+          class="input-group"
+        >
+          <input
+            class="form-control monospace"
+            readonly="readonly"
+            type="text"
+          />
+           
+          <span
+            class="input-group-append"
+          >
+            <button
+              class="btn input-group-text btn-secondary btn-default"
+              data-clipboard-text="docker push url"
+              data-original-title="Copy push command"
+              title=""
+              type="button"
+            >
+              <svg
+                aria-hidden="true"
+                class="s16 ic-duplicate"
+              >
+                <use
+                  xlink:href="#duplicate"
+                />
+              </svg>
+            </button>
+          </span>
+        </div>
+      </p>
+       
+      <div
+        class="text-center"
+      >
+        <!---->
+         
+        <!---->
+      </div>
+    </div>
+  </div>
+</div>
+`;

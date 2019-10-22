@@ -6,6 +6,10 @@ module Gitlab
       def client_ip
         Gitlab::SafeRequestStore[:client_ip]
       end
+
+      def start_thread_cpu_time
+        Gitlab::SafeRequestStore[:start_thread_cpu_time]
+      end
     end
 
     def initialize(app)
@@ -22,6 +26,8 @@ module Gitlab
       req = Rack::Request.new(env)
 
       Gitlab::SafeRequestStore[:client_ip] = req.ip
+
+      Gitlab::SafeRequestStore[:start_thread_cpu_time] = Gitlab::Metrics::System.thread_cpu_time
 
       @app.call(env)
     end

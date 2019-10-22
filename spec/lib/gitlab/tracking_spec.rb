@@ -12,10 +12,8 @@ describe Gitlab::Tracking do
   end
 
   describe '.snowplow_options' do
-    subject(&method(:described_class))
-
     it 'returns useful client options' do
-      expect(subject.snowplow_options(nil)).to eq(
+      expect(described_class.snowplow_options(nil)).to eq(
         namespace: 'gl',
         hostname: 'gitfoo.com',
         cookieDomain: '.gitfoo.com',
@@ -32,25 +30,37 @@ describe Gitlab::Tracking do
         '_group_'
       ).and_return(false)
 
-      expect(subject.snowplow_options('_group_')).to include(
+      expect(described_class.snowplow_options('_group_')).to include(
         formTracking: false,
         linkClickTracking: false
       )
     end
   end
 
-  describe '.event' do
-    subject(&method(:described_class))
+  describe 'tracking events' do
+    shared_examples 'events not tracked' do
+      it 'does not track events' do
+        stub_application_setting(snowplow_enabled: false)
+        expect(SnowplowTracker::AsyncEmitter).not_to receive(:new)
+        expect(SnowplowTracker::Tracker).not_to receive(:new)
+
+        track_event
+      end
+    end
 
     around do |example|
       Timecop.freeze(timestamp) { example.run }
     end
 
-    it 'can track events' do
-      tracker = double
+    before do
+      described_class.instance_variable_set("@snowplow", nil)
+    end
 
-      expect(SnowplowTracker::Emitter).to receive(:new).with(
-        'gitfoo.com'
+    let(:tracker) { double }
+
+    def receive_events
+      expect(SnowplowTracker::AsyncEmitter).to receive(:new).with(
+        'gitfoo.com', { protocol: 'https' }
       ).and_return('_emitter_')
 
       expect(SnowplowTracker::Tracker).to receive(:new).with(
@@ -59,30 +69,67 @@ describe Gitlab::Tracking do
         'gl',
         '_abc123_'
       ).and_return(tracker)
-
-      expect(tracker).to receive(:track_struct_event).with(
-        'category',
-        'action',
-        '_label_',
-        '_property_',
-        '_value_',
-        '_context_',
-        timestamp.to_i
-      )
-
-      subject.event('category', 'action',
-        label: '_label_',
-        property: '_property_',
-        value: '_value_',
-        context: '_context_'
-      )
     end
 
-    it 'does not track when not enabled' do
-      stub_application_setting(snowplow_enabled: false)
-      expect(SnowplowTracker::Tracker).not_to receive(:new)
+    describe '.event' do
+      let(:track_event) do
+        described_class.event('category', 'action',
+          label: '_label_',
+          property: '_property_',
+          value: '_value_',
+          context:  nil
+        )
+      end
 
-      subject.event('epics', 'action', property: 'what', value: 'doit')
+      it_behaves_like 'events not tracked'
+
+      it 'can track events' do
+        receive_events
+        expect(tracker).to receive(:track_struct_event).with(
+          'category',
+          'action',
+          '_label_',
+          '_property_',
+          '_value_',
+          nil,
+          timestamp.to_i
+        )
+
+        track_event
+      end
+    end
+
+    describe '.self_describing_event' do
+      let(:track_event) do
+        described_class.self_describing_event('iglu:com.gitlab/example/jsonschema/1-0-2',
+          {
+            foo: 'bar',
+            foo_count: 42
+          },
+          context: nil
+        )
+      end
+
+      it_behaves_like 'events not tracked'
+
+      it 'can track self describing events' do
+        receive_events
+        expect(SnowplowTracker::SelfDescribingJson).to receive(:new).with(
+          'iglu:com.gitlab/example/jsonschema/1-0-2',
+          {
+            foo: 'bar',
+            foo_count: 42
+          }
+        ).and_return('_event_json_')
+
+        expect(tracker).to receive(:track_self_describing_event).with(
+          '_event_json_',
+          nil,
+          timestamp.to_i
+        )
+
+        track_event
+      end
     end
   end
 end

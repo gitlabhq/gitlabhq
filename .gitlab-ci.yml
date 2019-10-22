@@ -1,4 +1,4 @@
-image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.6.3-golang-1.11-git-2.22-chrome-73.0-node-12.x-yarn-1.16-postgresql-9.6-graphicsmagick-1.3.33"
+image: "registry.gitlab.com/gitlab-org/gitlab-build-images:ruby-2.6.3-golang-1.11-git-2.22-chrome-73.0-node-12.x-yarn-1.16-postgresql-9.6-graphicsmagick-1.3.33"
 
 stages:
   - prepare
@@ -8,17 +8,17 @@ stages:
   - review
   - qa
   - post-test
+  - notification
   - pages
 
 variables:
   RAILS_ENV: "test"
   NODE_ENV: "test"
   SIMPLECOV: "true"
-  GIT_DEPTH: "20"
+  GIT_DEPTH: "50"
   GIT_SUBMODULE_STRATEGY: "none"
   GET_SOURCES_ATTEMPTS: "3"
-  KNAPSACK_RSPEC_SUITE_REPORT_PATH: knapsack/${CI_PROJECT_NAME}/rspec_report-master.json
-  EE_KNAPSACK_RSPEC_SUITE_REPORT_PATH: knapsack/${CI_PROJECT_NAME}/rspec_report-master-ee.json
+  KNAPSACK_RSPEC_SUITE_REPORT_PATH: knapsack/report-master.json
   FLAKY_RSPEC_SUITE_REPORT_PATH: rspec_flaky/report-suite.json
   BUILD_ASSETS_IMAGE: "false"
   ES_JAVA_OPTS: "-Xms256m -Xmx256m"
@@ -28,11 +28,12 @@ after_script:
   - date
 
 include:
-  - local: .gitlab/ci/global.gitlab-ci.yml
   - local: .gitlab/ci/cng.gitlab-ci.yml
   - local: .gitlab/ci/docs.gitlab-ci.yml
   - local: .gitlab/ci/frontend.gitlab-ci.yml
+  - local: .gitlab/ci/global.gitlab-ci.yml
   - local: .gitlab/ci/memory.gitlab-ci.yml
+  - local: .gitlab/ci/notifications.gitlab-ci.yml
   - local: .gitlab/ci/pages.gitlab-ci.yml
   - local: .gitlab/ci/qa.gitlab-ci.yml
   - local: .gitlab/ci/reports.gitlab-ci.yml

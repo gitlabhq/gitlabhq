@@ -1,10 +1,17 @@
 # GraphQL
 
+Our GraphQL API can be explored via GraphiQL at your instance's
+`/-/graphql-explorer` or at [GitLab.com](https://gitlab.com/-/graphql-explorer).
+
+You can check all existing queries and mutations on the right side
+of GraphiQL in its **Documentation explorer**. It's also possible to
+write queries and mutations directly on the left tab and check
+their execution by clicking **Execute query** button on the top left:
+
+![GraphiQL interface](img/graphiql_explorer_v12_4.png)
+
 We use [Apollo] and [Vue Apollo][vue-apollo] for working with GraphQL
 on the frontend.
-
-In order to use GraphQL, you need to enable the `graphql` feature flag,
-read more about [Feature Flags][feature-flags].
 
 ## Apollo Client
 
@@ -119,6 +126,6 @@ Read more about the [Apollo] client in the [Apollo documentation](https://www.ap
 [Apollo]: https://www.apollographql.com/
 [vue-apollo]: https://github.com/Akryum/vue-apollo/
 [feature-flags]: ../feature_flags.md
-[default-client]: https://gitlab.com/gitlab-org/gitlab-foss/blob/master/app/assets/javascripts/lib/graphql.js
+[default-client]: https://gitlab.com/gitlab-org/gitlab/blob/master/app/assets/javascripts/lib/graphql.js
 [vue-test-utils]: https://vue-test-utils.vuejs.org/
 [apollo-link-state]: https://www.apollographql.com/docs/link/links/state.html

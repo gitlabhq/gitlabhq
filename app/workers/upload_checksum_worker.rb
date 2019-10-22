@@ -3,6 +3,8 @@
 class UploadChecksumWorker
   include ApplicationWorker
 
+  feature_category :geo_replication
+
   def perform(upload_id)
     upload = Upload.find(upload_id)
     upload.calculate_checksum!

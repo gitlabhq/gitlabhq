@@ -1,9 +1,6 @@
 # Geo database replication **(PREMIUM ONLY)**
 
 NOTE: **Note:**
-The following steps are for Omnibus installs only. Using Geo with source-based installs was **deprecated** in GitLab 11.5.
-
-NOTE: **Note:**
 If your GitLab installation uses external (not managed by Omnibus) PostgreSQL
 instances, the Omnibus roles will not be able to perform all necessary
 configuration steps. In this case,
@@ -37,8 +34,8 @@ recover. See below for more details.
 The following guide assumes that:
 
 - You are using Omnibus and therefore you are using PostgreSQL 9.6 or later
-  which includes the  [`pg_basebackup` tool][pgback] and improved
-  [Foreign Data Wrapper][FDW] support.
+  which includes the [`pg_basebackup` tool](https://www.postgresql.org/docs/9.6/app-pgbasebackup.html) and improved
+  [Foreign Data Wrapper][FDW](https://www.postgresql.org/docs/9.6/postgres-fdw.html) support.
 - You have a **primary** node already set up (the GitLab server you are
   replicating from), running Omnibus' PostgreSQL (or equivalent version), and
   you have a new **secondary** server set up with the same versions of the OS,
@@ -54,6 +51,19 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
 
    ```sh
    sudo -i
+   ```
+
+1. Edit `/etc/gitlab/gitlab.rb` and add a **unique** name for your node:
+
+   ```ruby
+   # The unique identifier for the Geo node.
+   gitlab_rails['geo_node_name'] = '<node_name_here>'
+   ```
+
+1. Reconfigure the **primary** node for the change to take effect:
+
+   ```sh
+   gitlab-ctl reconfigure
    ```
 
 1. Execute the command below to define the node as **primary** node:
@@ -149,9 +159,9 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
    address (corresponds to "internal address" for Google Cloud Platform) for
    `postgresql['md5_auth_cidr_addresses']` and `postgresql['listen_address']`.
 
-   The `listen_address` option opens PostgreSQL up to network connections
-   with the interface corresponding to the given address. See [the PostgreSQL
-   documentation][pg-docs-runtime-conn] for more details.
+   The `listen_address` option opens PostgreSQL up to network connections with the interface
+   corresponding to the given address. See [the PostgreSQL documentation](https://www.postgresql.org/docs/9.6/runtime-config-connection.html)
+   for more details.
 
    Depending on your network configuration, the suggested addresses may not
    be correct. If your **primary** node and **secondary** nodes connect over a local
@@ -202,9 +212,8 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
    postgresql['md5_auth_cidr_addresses'] = ['<primary_node_ip>/32', '<secondary_node_ip>/32', '<another_secondary_node_ip>/32']
    ```
 
-   You may also want to edit the `wal_keep_segments` and `max_wal_senders` to
-   match your database replication requirements. Consult the [PostgreSQL -
-   Replication documentation][pg-docs-runtime-replication]
+   You may also want to edit the `wal_keep_segments` and `max_wal_senders` to match your
+   database replication requirements. Consult the [PostgreSQL - Replication documentation](https://www.postgresql.org/docs/9.6/runtime-config-replication.html)
    for more information.
 
 1. Save the file and reconfigure GitLab for the database listen changes and
@@ -430,7 +439,7 @@ data before running `pg_basebackup`.
      (e.g., you know the network path is secure, or you are using a site-to-site
      VPN). This is **not** safe over the public Internet!
    - You can read more details about each `sslmode` in the
-     [PostgreSQL documentation][pg-docs-ssl];
+     [PostgreSQL documentation](https://www.postgresql.org/docs/9.6/libpq-ssl.html#LIBPQ-SSL-PROTECTION);
      the instructions above are carefully written to ensure protection against
      both passive eavesdroppers and active "man-in-the-middle" attackers.
    - Change the `--slot-name` to the name of the replication slot
@@ -443,16 +452,16 @@ data before running `pg_basebackup`.
 
 The replication process is now complete.
 
-## PGBouncer support (optional)
+## PgBouncer support (optional)
 
-[PGBouncer](http://pgbouncer.github.io/) may be used with GitLab Geo to pool
-PostgreSQL connections. We recommend using PGBouncer if you use GitLab in a
+[PgBouncer](http://pgbouncer.github.io/) may be used with GitLab Geo to pool
+PostgreSQL connections. We recommend using PgBouncer if you use GitLab in a
 high-availability configuration with a cluster of nodes supporting a Geo
 **primary** node and another cluster of nodes supporting a Geo **secondary** node. For more
 information, see [High Availability with GitLab Omnibus](../../high_availability/database.md#high-availability-with-gitlab-omnibus-premium-only).
 
-For a Geo **secondary** node to work properly with PGBouncer in front of the database,
-it will need a separate read-only user to make [PostgreSQL FDW queries][FDW]
+For a Geo **secondary** node to work properly with PgBouncer in front of the database,
+it will need a separate read-only user to make [PostgreSQL FDW queries](https://www.postgresql.org/docs/9.6/postgres-fdw.html)
 work:
 
 1. On the **primary** Geo database, enter the PostgreSQL on the console as an
@@ -498,11 +507,6 @@ work:
 Read the [troubleshooting document](troubleshooting.md).
 
 [replication-slots-article]: https://medium.com/@tk512/replication-slots-in-postgresql-b4b03d277c75
-[pgback]: http://www.postgresql.org/docs/9.2/static/app-pgbasebackup.html
 [replication user]:https://wiki.postgresql.org/wiki/Streaming_Replication
-[FDW]: https://www.postgresql.org/docs/9.6/static/postgres-fdw.html
 [toc]: index.md#using-omnibus-gitlab
 [rake-maintenance]: ../../raketasks/maintenance.md
-[pg-docs-ssl]: https://www.postgresql.org/docs/9.6/static/libpq-ssl.html#LIBPQ-SSL-PROTECTION
-[pg-docs-runtime-conn]: https://www.postgresql.org/docs/9.6/static/runtime-config-connection.html
-[pg-docs-runtime-replication]: https://www.postgresql.org/docs/9.6/static/runtime-config-replication.html

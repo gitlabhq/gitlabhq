@@ -36,8 +36,8 @@ Example Response:
       "id": 2,
       "name": "Gitlab Ce",
       "name_with_namespace": "Gitlab Org / Gitlab Ce",
-      "path": "gitlab-ce",
-      "path_with_namespace": "gitlab-org/gitlab-ce"
+      "path": "gitlab-foss",
+      "path_with_namespace": "gitlab-org/gitlab-foss"
     },
     "author": {
       "name": "Administrator",
@@ -109,8 +109,8 @@ Example Response:
       "id": 2,
       "name": "Gitlab Ce",
       "name_with_namespace": "Gitlab Org / Gitlab Ce",
-      "path": "gitlab-ce",
-      "path_with_namespace": "gitlab-org/gitlab-ce"
+      "path": "gitlab-foss",
+      "path_with_namespace": "gitlab-org/gitlab-foss"
     },
     "author": {
       "name": "Maxie Medhurst",
@@ -207,8 +207,8 @@ Example Response:
       "id": 2,
       "name": "Gitlab Ce",
       "name_with_namespace": "Gitlab Org / Gitlab Ce",
-      "path": "gitlab-ce",
-      "path_with_namespace": "gitlab-org/gitlab-ce"
+      "path": "gitlab-foss",
+      "path_with_namespace": "gitlab-org/gitlab-foss"
     },
     "author": {
       "name": "Administrator",

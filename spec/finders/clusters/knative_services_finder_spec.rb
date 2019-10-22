@@ -77,6 +77,7 @@ describe Clusters::KnativeServicesFinder do
 
   describe '#knative_detected' do
     subject { finder.knative_detected }
+
     before do
       synchronous_reactive_cache(finder)
     end

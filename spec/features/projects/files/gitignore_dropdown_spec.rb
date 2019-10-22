@@ -23,7 +23,7 @@ describe 'Projects > Files > User wants to add a .gitignore file' do
 
     wait_for_requests
 
-    expect(page).to have_css('.gitignore-selector .dropdown-toggle-text', text: 'Rails')
+    expect(page).to have_css('.gitignore-selector .dropdown-toggle-text', text: 'Apply a template')
     expect(page).to have_content('/.bundle')
     expect(page).to have_content('# Gemfile.lock, .ruby-version, .ruby-gemset')
   end

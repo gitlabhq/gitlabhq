@@ -11,8 +11,8 @@ start building up again after you clean up.
 In GitLab versions prior to 7.3.0, the session keys in Redis are 16-byte
 hexadecimal values such as '976aa289e2189b17d7ef525a6702ace9'. Starting with
 GitLab 7.3.0, the keys are
-prefixed with 'session:gitlab:', so they would look like
-'session:gitlab:976aa289e2189b17d7ef525a6702ace9'. Below we describe how to
+prefixed with `session:gitlab:`, so they would look like
+`session:gitlab:976aa289e2189b17d7ef525a6702ace9`. Below we describe how to
 remove the keys in the old format.
 
 **Note:** the instructions below must be modified in accordance with your

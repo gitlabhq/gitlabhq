@@ -49,11 +49,11 @@ module WaitForRequests
     return true unless javascript_test?
 
     finished_all_ajax_requests? &&
-      finished_all_vue_resource_requests?
+      finished_all_axios_requests?
   end
 
-  def finished_all_vue_resource_requests?
-    Capybara.page.evaluate_script('window.activeVueResources || 0').zero?
+  def finished_all_axios_requests?
+    Capybara.page.evaluate_script('window.pendingRequests || 0').zero?
   end
 
   def finished_all_ajax_requests?

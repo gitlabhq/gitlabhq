@@ -30,7 +30,7 @@ Host: redis
 And that's it. Redis will now be available to be used within your testing
 framework.
 
-You can also use any other docker image available on [Docker Hub][hub-redis].
+You can also use any other docker image available on [Docker Hub](https://hub.docker.com/_/redis).
 For example, to use Redis 2.8 the service becomes `redis:2.8`.
 
 ## Use Redis with the Shell executor
@@ -62,12 +62,9 @@ Host: localhost
 
 ## Example project
 
-We have set up an [Example Redis Project][redis-example-repo] for your convenience
+We have set up an [Example Redis Project](https://gitlab.com/gitlab-examples/redis) for your convenience
 that runs on [GitLab.com](https://gitlab.com) using our publicly available
 [shared runners](../runners/README.md).
 
 Want to hack on it? Simply fork it, commit and push  your changes. Within a few
 moments the changes will be picked by a public runner and the job will begin.
-
-[hub-redis]: https://hub.docker.com/r/_/redis/
-[redis-example-repo]: https://gitlab.com/gitlab-examples/redis

@@ -51,7 +51,7 @@ is detected in any other branch (`flaky-examples-check` job). In the future, the
 This was originally implemented in: <https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/13021>.
 
 [rspec-retry]: https://github.com/NoRedInk/rspec-retry
-[`spec/spec_helper.rb`]: https://gitlab.com/gitlab-org/gitlab-foss/blob/master/spec/spec_helper.rb
+[`spec/spec_helper.rb`]: https://gitlab.com/gitlab-org/gitlab/blob/master/spec/spec_helper.rb
 
 ## Problems we had in the past at GitLab
 
@@ -61,7 +61,7 @@ This was originally implemented in: <https://gitlab.com/gitlab-org/gitlab-foss/m
   - [Capybara.reset_session! should be called before requests are blocked](https://gitlab.com/gitlab-org/gitlab-foss/issues/33779): <https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/12224>
 - FFaker generates funky data that tests are not ready to handle (and tests should be predictable so that's bad!):
   - [Make `spec/mailers/notify_spec.rb` more robust](https://gitlab.com/gitlab-org/gitlab-foss/issues/20121): <https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/10015>
-  - [Transient failure in spec/requests/api/commits_spec.rb](https://gitlab.com/gitlab-org/gitlab-foss/issues/27988#note_25342521): <https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/9944>
+  - [Transient failure in `spec/requests/api/commits_spec.rb`](https://gitlab.com/gitlab-org/gitlab-foss/issues/27988#note_25342521): <https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/9944>
   - [Replace FFaker factory data with sequences](https://gitlab.com/gitlab-org/gitlab-foss/issues/29643): <https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/10184>
   - [Transient failure in spec/finders/issues_finder_spec.rb](https://gitlab.com/gitlab-org/gitlab-foss/issues/30211#note_26707685): <https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/10404>
 
@@ -80,6 +80,9 @@ This was originally implemented in: <https://gitlab.com/gitlab-org/gitlab-foss/m
 - [Bis](https://gitlab.com/gitlab-org/gitlab-foss/issues/34609#note_34048715): <https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/12604>
 - [Bis](https://gitlab.com/gitlab-org/gitlab-foss/issues/34698#note_34276286): <https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/12664>
 - [Assert against the underlying database state instead of against a page's content](https://gitlab.com/gitlab-org/gitlab-foss/issues/31437): <https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/10934>
+- In JS tests, shifting elements can cause Capybara to misclick when the element moves at the exact time Capybara sends the click
+  - [Dropdowns rendering upward or downward due to window size and scroll position](https://gitlab.com/gitlab-org/gitlab/merge_requests/17660)
+  - [Lazy loaded images can cause Capybara to misclick](https://gitlab.com/gitlab-org/gitlab/merge_requests/18713)
 
 #### Capybara viewport size related issues
 

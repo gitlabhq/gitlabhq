@@ -24,6 +24,7 @@ describe Backup::Files do
 
   describe '#restore' do
     subject { described_class.new('registry', '/var/gitlab-registry') }
+
     let(:timestamp) { Time.utc(2017, 3, 22) }
 
     around do |example|

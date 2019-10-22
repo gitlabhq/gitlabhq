@@ -11,15 +11,6 @@
   - [Merge request coaching](#merge-request-coaching)
 - [Assigning issues](#assigning-issues)
 - [Be kind](#be-kind)
-- [Feature freeze on the 7th for the release on the 22nd](#feature-freeze-on-the-7th-for-the-release-on-the-22nd)
-  - [Feature flags](#feature-flags)
-  - [Between the 1st and the 7th](#between-the-1st-and-the-7th)
-    - [What happens if these deadlines are missed?](#what-happens-if-these-deadlines-are-missed)
-  - [On the 7th](#on-the-7th)
-    - [Feature merge requests](#feature-merge-requests)
-    - [Documentation merge requests](#documentation-merge-requests)
-  - [After the 7th](#after-the-7th)
-  - [Asking for an exception](#asking-for-an-exception)
 - [Bugs](#bugs)
   - [Regressions](#regressions)
   - [Managing bugs](#managing-bugs)
@@ -100,135 +91,6 @@ Product Managers must have their proposal for that milestone ready by the 22nd o
 This proposal will be shared with Engineering for discussion, feedback, and planning.
 The plan for the upcoming milestone must be finalized by the 1st of the month, one week before kickoff on the 8th.
 
-## Feature freeze on the 7th for the release on the 22nd
-
-The feature freeze on the 7th has been discontinued. [Transition period overview](https://gitlab.com/gitlab-org/release/docs/blob/21cbd409dd5f157fe252f254f3e897f01908abe2/general/deploy/auto-deploy-transition.md#transition)
-describes the change to this process. During the transition period, the only guarantee that
-a change will be included in the release on the 22nd is if the change has been
-deployed to GitLab.com prior to this date.
-
-### Between the 1st and the 7th
-
-These types of merge requests for the upcoming release need special consideration:
-
-* **Large features**: a large feature is one that is highlighted in the kick-off
-  and the release blogpost; typically this will have its own channel in Slack
-  and a dedicated team with front-end, back-end, and UX.
-* **Small features**: any other feature request.
-
-It is strongly recommended that **large features** be with a maintainer **by the
-1st**. This means that:
-
-* There is a merge request (even if it's WIP).
-* The person (or people, if it needs a frontend and backend maintainer) who will
-  ultimately be responsible for merging this have been pinged on the MR.
-
-It's OK if merge request isn't completely done, but this allows the maintainer
-enough time to make the decision about whether this can make it in before the
-freeze. If the maintainer doesn't think it will make it, they should inform the
-developers working on it and the Product Manager responsible for the feature.
-
-The maintainer can also choose to assign a reviewer to perform an initial
-review, but this way the maintainer is unlikely to be surprised by receiving an
-MR later in the cycle.
-
-It is strongly recommended that **small features** be with a reviewer (not
-necessarily a maintainer) **by the 3rd**.
-
-Most merge requests from the community do not have a specific release
-target. However, if one does and falls into either of the above categories, it's
-the reviewer's responsibility to manage the above communication and assignment
-on behalf of the community member.
-
-Every new feature or change should be shipped with its corresponding documentation
-in accordance with the
-[documentation process](https://docs.gitlab.com/ee/development/documentation/feature-change-workflow.html)
-and [structure](https://docs.gitlab.com/ee/development/documentation/structure.html) guides.
-Note that a technical writer will review all changes to documentation. This can occur
-in the same MR as the feature code, but [if there is not sufficient time or need,
-it can be planned via a follow-up issue for doc review](https://docs.gitlab.com/ee/development/documentation/feature-change-workflow.html#1-product-managers-role),
-and another MR, if needed. Regardless, complete docs must be merged with code by the freeze.
-
-#### What happens if these deadlines are missed?
-
-If a small or large feature is _not_ with a maintainer or reviewer by the
-recommended date, this does _not_ mean that maintainers or reviewers will refuse
-to review or merge it, or that the feature will definitely not make it in before
-the feature freeze.
-
-However, with every day that passes without review, it will become more likely
-that the feature will slip, because maintainers and reviewers may not have
-enough time to do a thorough review, and developers may not have enough time to
-adequately address any feedback that may come back.
-
-A maintainer or reviewer may also determine that it will not be possible to
-finish the current scope of the feature in time, but that it is possible to
-reduce the scope so that something can still ship this month, with the remaining
-scope moving to the next release. The sooner this decision is made, in
-conversation with the Product Manager and developer, the more time there is to
-extract that which is now out of scope, and to finish that which remains in scope.
-
-For these reasons, it is strongly recommended to follow the guidelines above,
-to maximize the chances of your feature making it in before the feature freeze,
-and to prevent any last minute surprises.
-
-### On the 7th
-
-Merge requests should still be complete, following the [definition of done][done].
-
-If a merge request is not ready, but the developers and Product Manager
-responsible for the feature think it is essential that it is in the release,
-they can [ask for an exception](#asking-for-an-exception) in advance. This is
-preferable to merging something that we are not confident in, but should still
-be a rare case: most features can be allowed to slip a release.
-
-All Community Edition merge requests from GitLab team members merged on the
-freeze date (the 7th) should have a corresponding Enterprise Edition merge
-request, even if there are no conflicts. This is to reduce the size of the
-subsequent EE merge, as we often merge a lot to CE on the release date. For more
-information, see
-[Automatic CE->EE merge][automatic_ce_ee_merge] and
-[Guidelines for implementing Enterprise Edition features][ee_features].
-
-### After the 7th
-
-Once the stable branch is frozen, the only MRs that can be cherry-picked into
-the stable branch are:
-
-* Fixes for [regressions](#regressions) where the affected version `xx.x` in `regression:xx.x` is the current release. See [Managing bugs](#managing-bugs) section.
-* Fixes for security issues.
-* Fixes or improvements to automated QA scenarios.
-* [Documentation improvements](https://docs.gitlab.com/ee/development/documentation/workflow.html) for feature changes made in the same release, though initial docs for these features should have already been merged by the freeze, as required.
-* New or updated translations (as long as they do not touch application code).
-* Changes that are behind a feature flag and have the ~"feature flag" label.
-
-During the feature freeze all merge requests that are meant to go into the
-upcoming release should have the correct milestone assigned _and_ the
-`Pick into X.Y` label where `X.Y` is equal to the milestone, so that release
-managers can find and pick them.
-Merge requests without this label will not be picked into the stable release.
-
-For example, if the upcoming release is `10.2.0` you will need to set the
-`Pick into 10.2` label.
-
-Fixes marked like this will be shipped in the next RC (before the 22nd), or the
-next patch release.
-
-If a merge request is to be picked into more than one release it will need one
-`Pick into X.Y` label per release where the merge request should be back-ported
-to. For example:
-
-- `Pick into 10.1`
-- `Pick into 10.0`
-- `Pick into 9.5`
-
-### Asking for an exception
-
-If you think a merge request should go into an RC or patch even though it does not meet these requirements,
-you can ask for an exception to be made.
-
-Check [this guide](https://gitlab.com/gitlab-org/release/docs/blob/master/general/exception-request/process.md) about how to open an exception request before opening one.
-
 ## Bugs
 
 A ~bug is a defect, error, failure which causes the system to behave incorrectly or prevents it from fulfilling the product requirements.
@@ -256,13 +118,6 @@ Regressions should be considered high priority issues that should be solved as s
 ### Managing bugs
 
 **Prioritization:** We give higher priority to regressions on features that worked in the last recent monthly release and the current release candidates.
-The two scenarios below can [bypass the exception request in the release process](https://gitlab.com/gitlab-org/release/docs/blob/master/general/exception-request/process.md#after-the-7th), where the affected regression version matches the current monthly release version.
-* A regression which worked in the **Last monthly release**
-   * **Example:** In 11.0 we released a new `feature X` that is verified as working. Then in release 11.1 the feature no longer works, this is regression for 11.1. The issue should have the `regression:11.1` label.
-   * *Note:* When we say `the last recent monthly release`, this can refer to either the version currently running on GitLab.com, or the most recent version available in the package repositories.
-* A regression which worked in the **Current release candidates**
-   * **Example:** In 11.1-RC3 we shipped a new feature which has been verified as working. Then in 11.1-RC5 the feature no longer works, this is regression for 11.1. The issue should have the `regression:11.1` label.
-   * *Note:* Because GitLab.com runs release candidates of new releases, a regression can be reported in a release before its 'official' release date on the 22nd of the month.
 
 When a bug is found:
 1. Create an issue describing the problem in the most detailed way possible.
@@ -328,7 +183,7 @@ Thanks for the issue report. This issue has already been fixed in newer versions
 Due to the size of this project and our limited resources we are only able to support the
 latest stable release as outlined in our [contributing guidelines](https://docs.gitlab.com/ee/development/contributing/issue_workflow.html).
 In order to get this bug fix and enjoy many new features please
-[upgrade](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/update).
+[upgrade](https://gitlab.com/gitlab-org/gitlab/tree/master/doc/update).
 If you still experience issues at that time please open a new issue following our issue
 tracker guidelines found in the [contributing guidelines](https://docs.gitlab.com/ee/development/contributing/issue_workflow.html#issue-tracker-guidelines).
 ```
@@ -337,14 +192,14 @@ tracker guidelines found in the [contributing guidelines](https://docs.gitlab.co
 
 ```
 Thanks for your interest in improving the GitLab codebase!
-Please update your merge request according to the [contributing guidelines](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/development/contributing/merge_request_workflow.md#merge-request-guidelines).
+Please update your merge request according to the [contributing guidelines](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/development/contributing/merge_request_workflow.md#merge-request-guidelines).
 ```
 
 ### Accepting merge requests
 
 ```
 Is there an issue on the
-[issue tracker](https://gitlab.com/gitlab-org/gitlab-ce/issues) that is
+[issue tracker](https://gitlab.com/gitlab-org/gitlab/issues) that is
 similar to this? Could you please link it here?
 Please be aware that new functionality that is not marked
 [`Accepting merge requests`](https://docs.gitlab.com/ee/development/contributing/issue_workflow.html#label-for-community-contributors)

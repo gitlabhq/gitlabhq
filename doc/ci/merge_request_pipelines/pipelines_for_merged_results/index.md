@@ -20,7 +20,7 @@ GitLab can run pipelines for merge requests
 on this merged result. That is, where the source and target branches are combined into a
 new ref and a pipeline for this ref validates the result prior to merging.
 
-![Merge request pipeline as the head pipeline](img/merge_request_pipeline.png)
+![Merge request pipeline as the head pipeline](img/merged_result_pipeline_v12_3.png)
 
 There are some cases where creating a combined ref is not possible or not wanted.
 For example, a source branch that has conflicts with the target branch
@@ -92,6 +92,17 @@ To check these feature flag values, please ask administrator to execute the foll
 > Feature.enabled?(:ci_use_merge_request_ref)       # Check if it's enabled or not.
 > Feature.enable(:ci_use_merge_request_ref)         # Enable the feature flag.
 ```
+
+### Intermittently pipelines fail by `fatal: reference is not a tree:` error
+
+Since pipelines for merged results are a run on a merge ref of a merge request
+(`refs/merge-requests/<iid>/merge`), the git-reference could be overwritten at an
+unexpected timing, for example, when a source or target branch is advanced.
+In this case, the pipeline fails because of `fatal: reference is not a tree:` error,
+which indicates that the checkout-SHA is not found in the merge ref.
+
+This behavior was improved at GitLab 12.4 by introducing [Persistent pipeline refs](../../pipelines.md#persistent-pipeline-refs).
+You should be able to create pipelines at any timings without concerning the error.
 
 ## Using Merge Trains **(PREMIUM)**
 

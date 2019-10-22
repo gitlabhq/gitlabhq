@@ -1,4 +1,7 @@
-import $ from 'jquery';
-import initForm from '~/pages/projects/init_form';
+import ZenMode from '~/zen_mode';
+import initEditRelease from '~/releases/detail';
 
-document.addEventListener('DOMContentLoaded', () => initForm($('.release-form')));
+document.addEventListener('DOMContentLoaded', () => {
+  new ZenMode(); // eslint-disable-line no-new
+  initEditRelease();
+});

@@ -1,0 +1,5 @@
+---
+title: Allow maintainers to toggle write permission for public deploy keys
+merge_request: 17210
+author:
+type: fixed

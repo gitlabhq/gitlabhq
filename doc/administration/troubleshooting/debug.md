@@ -89,10 +89,10 @@ in Omnibus, run as root:
 Many of the tips to diagnose issues below apply to many different situations. We'll use one
 concrete example to illustrate what you can do to learn what is going wrong.
 
-### 502 Gateway Timeout after unicorn spins at 100% CPU
+### 502 Gateway Timeout after Unicorn spins at 100% CPU
 
 This error occurs when the Web server times out (default: 60 s) after not
-hearing back from the unicorn worker. If the CPU spins to 100% while this in
+hearing back from the Unicorn worker. If the CPU spins to 100% while this in
 progress, there may be something taking longer than it should.
 
 To fix this issue, we first need to figure out what is happening. The
@@ -100,7 +100,7 @@ following tips are only recommended if you do NOT mind users being affected by
 downtime. Otherwise skip to the next section.
 
 1. Load the problematic URL
-1. Run `sudo gdb -p <PID>` to attach to the unicorn process.
+1. Run `sudo gdb -p <PID>` to attach to the Unicorn process.
 1. In the gdb window, type:
 
    ```
@@ -135,7 +135,7 @@ downtime. Otherwise skip to the next section.
    exit
    ```
 
-Note that if the unicorn process terminates before you are able to run these
+Note that if the Unicorn process terminates before you are able to run these
 commands, gdb will report an error. To buy more time, you can always raise the
 Unicorn timeout. For omnibus users, you can edit `/etc/gitlab/gitlab.rb` and
 increase it from 60 seconds to 300:
@@ -152,7 +152,7 @@ For source installations, edit `config/unicorn.rb`.
 
 #### Troubleshooting without affecting other users
 
-The previous section attached to a running unicorn process, and this may have
+The previous section attached to a running Unicorn process, and this may have
 undesirable effects for users trying to access GitLab during this time. If you
 are concerned about affecting others during a production system, you can run a
 separate Rails process to debug the issue:
@@ -183,7 +183,7 @@ separate Rails process to debug the issue:
 
 ### GitLab: API is not accessible
 
-This often occurs when gitlab-shell attempts to request authorization via the
+This often occurs when GitLab Shell attempts to request authorization via the
 internal API (e.g., `http://localhost:8080/api/v4/internal/allowed`), and
 something in the check fails. There are many reasons why this may happen:
 
@@ -192,7 +192,7 @@ something in the check fails. There are many reasons why this may happen:
 1. Error accessing the repository (e.g., stale NFS handles)
 
 To diagnose this problem, try to reproduce the problem and then see if there
-is a unicorn worker that is spinning via `top`. Try to use the `gdb`
+is a Unicorn worker that is spinning via `top`. Try to use the `gdb`
 techniques above. In addition, using `strace` may help isolate issues:
 
 ```shell
@@ -211,5 +211,5 @@ The output in `/tmp/unicorn.txt` may help diagnose the root cause.
 
 ## More information
 
-- [Debugging Stuck Ruby Processes](https://blog.newrelic.com/2013/04/29/debugging-stuck-ruby-processes-what-to-do-before-you-kill-9/)
+- [Debugging Stuck Ruby Processes](https://blog.newrelic.com/engineering/debugging-stuck-ruby-processes-what-to-do-before-you-kill-9/)
 - [Cheatsheet of using gdb and ruby processes](gdb-stuck-ruby.txt)

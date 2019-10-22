@@ -65,26 +65,27 @@ within the `pages` directory correspond to Rails controllers and actions. These
 auto-generated bundles will be automatically included on the corresponding
 pages.
 
-For example, if you were to visit [gitlab.com/gitlab-org/gitlab-foss/issues](https://gitlab.com/gitlab-org/gitlab-foss/issues),
+For example, if you were to visit <https://gitlab.com/gitlab-org/gitlab/issues>,
 you would be accessing the `app/controllers/projects/issues_controller.rb`
 controller with the `index` action. If a corresponding file exists at
 `pages/projects/issues/index/index.js`, it will be compiled into a webpack
 bundle and included on the page.
 
-> **Note:** Previously we had encouraged the use of
-> `content_for :page_specific_javascripts` within haml files, along with
-> manually generated webpack bundles. However under this new system you should
-> not ever need to manually add an entry point to the `webpack.config.js` file.
->
-> **Tip:**
-> If you are unsure what controller and action corresponds to a given page, you
-> can find this out by inspecting `document.body.dataset.page` within your
-> browser's developer console while on any page within gitlab.
+NOTE: **Note:**
+Previously we had encouraged the use of
+`content_for :page_specific_javascripts` within haml files, along with
+manually generated webpack bundles. However under this new system you should
+not ever need to manually add an entry point to the `webpack.config.js` file.
+
+TIP: **Tip:**
+If you are unsure what controller and action corresponds to a given page, you
+can find this out by inspecting `document.body.dataset.page` within your
+browser's developer console while on any page within GitLab.
 
 #### Important Considerations
 
 - **Keep Entry Points Lite:**
-  Page-specific javascript entry points should be as lite as possible.  These
+  Page-specific JavaScript entry points should be as lite as possible.  These
   files are exempt from unit tests, and should be used primarily for
   instantiation and dependency injection of classes and methods that live in
   modules outside of the entry point script.  Just import, read the DOM,
@@ -165,14 +166,12 @@ General tips:
 
 ## Additional Resources
 
-- [WebPage Test][web-page-test] for testing site loading time and size.
+- [WebPage Test](https://www.webpagetest.org) for testing site loading time and size.
 - [Google PageSpeed Insights][pagespeed-insights] grades web pages and provides feedback to improve the page.
-- [Profiling with Chrome DevTools][google-devtools-profiling]
+- [Profiling with Chrome DevTools](https://developers.google.com/web/tools/chrome-devtools/)
 - [Browser Diet][browser-diet] is a community-built guide that catalogues practical tips for improving web page performance.
 
-[web-page-test]: http://www.webpagetest.org/
 [pagespeed-insights]: https://developers.google.com/speed/pagespeed/insights/
-[google-devtools-profiling]: https://developers.google.com/web/tools/chrome-devtools/profile/?hl=en
 [browser-diet]: https://browserdiet.com/
 [high-perf-animations]: https://www.html5rocks.com/en/tutorials/speed/high-performance-animations/
 [flip]: https://aerotwist.com/blog/flip-your-animations/

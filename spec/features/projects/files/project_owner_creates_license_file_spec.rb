@@ -64,7 +64,7 @@ describe 'Projects > Files > Project owner creates a license file', :js do
 
   def select_template(template)
     page.within('.js-license-selector-wrap') do
-      click_button 'Apply a license template'
+      click_button 'Apply a template'
       click_link template
       wait_for_requests
     end

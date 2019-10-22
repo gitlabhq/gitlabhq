@@ -40,13 +40,17 @@ const createFlashEl = (message, type) => `
   <div class="flash-content flash-${type} rounded">
     <div class="flash-text">
       ${_.escape(message)}
-      ${spriteIcon('close', 'close-icon')}
+      <div class="close-icon-wrapper js-close-icon">
+        ${spriteIcon('close', 'close-icon')}
+      </div>
     </div>
   </div>
 `;
 
 const removeFlashClickListener = (flashEl, fadeTransition) => {
-  flashEl.addEventListener('click', () => hideFlash(flashEl, fadeTransition));
+  flashEl
+    .querySelector('.js-close-icon')
+    .addEventListener('click', () => hideFlash(flashEl, fadeTransition));
 };
 
 /*
@@ -78,7 +82,6 @@ const createFlash = function createFlash(
   flashContainer.innerHTML = createFlashEl(message, type);
 
   const flashEl = flashContainer.querySelector(`.flash-${type}`);
-  removeFlashClickListener(flashEl, fadeTransition);
 
   if (actionConfig) {
     flashEl.innerHTML += createAction(actionConfig);
@@ -89,6 +92,8 @@ const createFlash = function createFlash(
         .addEventListener('click', e => actionConfig.clickHandler(e));
     }
   }
+
+  removeFlashClickListener(flashEl, fadeTransition);
 
   flashContainer.style.display = 'block';
 

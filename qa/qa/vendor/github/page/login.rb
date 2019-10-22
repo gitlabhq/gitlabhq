@@ -12,6 +12,12 @@ module QA
             fill_in 'password', with: QA::Runtime::Env.github_password
             click_on 'Sign in'
 
+            otp = OnePassword::CLI.new.otp
+
+            fill_in 'otp', with: otp
+
+            click_on 'Verify'
+
             click_on 'Authorize gitlab-qa' if has_button?('Authorize gitlab-qa')
           end
         end

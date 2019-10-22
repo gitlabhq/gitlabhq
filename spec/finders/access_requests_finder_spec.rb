@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe AccessRequestsFinder do
@@ -5,13 +7,13 @@ describe AccessRequestsFinder do
   let(:access_requester) { create(:user) }
 
   let(:project) do
-    create(:project, :public, :access_requestable) do |project|
+    create(:project, :public) do |project|
       project.request_access(access_requester)
     end
   end
 
   let(:group) do
-    create(:group, :public, :access_requestable) do |group|
+    create(:group, :public) do |group|
       group.request_access(access_requester)
     end
   end

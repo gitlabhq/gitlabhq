@@ -6,6 +6,8 @@ require 'socket'
 class IrkerWorker
   include ApplicationWorker
 
+  feature_category :integrations
+
   def perform(project_id, chans, colors, push_data, settings)
     project = Project.find(project_id)
 

@@ -1,0 +1,5 @@
+---
+title: Expose web_url for epics on API
+merge_request: 17380
+author:
+type: added

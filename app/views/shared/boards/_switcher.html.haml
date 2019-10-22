@@ -1,4 +1,4 @@
-- parent = board.parent
+- parent = board.resource_parent
 - milestone_filter_opts = { format: :json }
 - milestone_filter_opts = milestone_filter_opts.merge(only_group_milestones: true) if board.group_board?
 - weights = Gitlab.ee? ? ([Issue::WEIGHT_ANY] + Issue.weight_options) : []

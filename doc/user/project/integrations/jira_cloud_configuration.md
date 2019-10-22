@@ -15,6 +15,6 @@ below to create one:
 
 ![Jira API token](img/jira_api_token.png)
 
-1. Click **Copy to clipboard**, or click **View** and write down the new API token. It is required when [configuring GitLab](jira.md#configuring-gitlab).
+1. Click **Copy**, or click **View** and write down the new API token. It is required when [configuring GitLab](jira.md#configuring-gitlab).
 
 The Jira configuration is complete. You need the newly created token, and the associated email address, when [configuring GitLab](jira.md#configuring-gitlab) in the next section.

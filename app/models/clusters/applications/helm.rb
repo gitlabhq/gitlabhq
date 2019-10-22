@@ -27,7 +27,7 @@ module Clusters
       def set_initial_status
         return unless not_installable?
 
-        self.status = 'installable' if cluster&.platform_kubernetes_active?
+        self.status = status_states[:installable] if cluster&.platform_kubernetes_active?
       end
 
       # It can only be uninstalled if there are no other applications installed
@@ -66,6 +66,13 @@ module Clusters
 
       def has_ssl?
         ca_key.present? && ca_cert.present?
+      end
+
+      def post_uninstall
+        cluster.kubeclient.delete_namespace(Gitlab::Kubernetes::Helm::NAMESPACE)
+      rescue Kubeclient::ResourceNotFoundError
+        # we actually don't care if the namespace is not present
+        # since we want to delete it anyway.
       end
 
       private

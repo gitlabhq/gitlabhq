@@ -69,7 +69,7 @@ module Gitlab
         Gitlab::Auth::UniqueIpsLimiter.limit_user! do
           user = User.by_login(login)
 
-          break if user && !user.active?
+          break if user && !user.can?(:log_in)
 
           authenticators = []
 
@@ -231,7 +231,7 @@ module Gitlab
 
         authentication_abilities =
           if token_handler.user?
-            full_authentication_abilities
+            read_write_project_authentication_abilities
           elsif token_handler.deploy_key_pushable?(project)
             read_write_authentication_abilities
           else
@@ -272,10 +272,21 @@ module Gitlab
         ]
       end
 
-      def read_only_authentication_abilities
+      def read_only_project_authentication_abilities
         [
           :read_project,
-          :download_code,
+          :download_code
+        ]
+      end
+
+      def read_write_project_authentication_abilities
+        read_only_project_authentication_abilities + [
+          :push_code
+        ]
+      end
+
+      def read_only_authentication_abilities
+        read_only_project_authentication_abilities + [
           :read_container_image
         ]
       end

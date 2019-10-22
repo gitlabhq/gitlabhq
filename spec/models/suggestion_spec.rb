@@ -38,16 +38,6 @@ describe Suggestion do
   end
 
   describe '#appliable?' do
-    context 'when note does not support suggestions' do
-      it 'returns false' do
-        expect_next_instance_of(DiffNote) do |note|
-          allow(note).to receive(:supports_suggestion?) { false }
-        end
-
-        expect(suggestion).not_to be_appliable
-      end
-    end
-
     context 'when patch is already applied' do
       let(:suggestion) { create(:suggestion, :applied) }
 

@@ -289,4 +289,5 @@ export const mockStore = {
   troubleshootingDocsPath: 'troubleshooting-docs-path',
   ciStatus: 'ci-status',
   hasCI: true,
+  exposedArtifactsPath: 'exposed_artifacts.json',
 };

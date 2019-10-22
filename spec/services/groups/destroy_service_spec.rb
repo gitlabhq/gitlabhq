@@ -8,7 +8,7 @@ describe Groups::DestroyService do
   let!(:user)         { create(:user) }
   let!(:group)        { create(:group) }
   let!(:nested_group) { create(:group, parent: group) }
-  let!(:project)      { create(:project, :legacy_storage, namespace: group) }
+  let!(:project)      { create(:project, :repository, :legacy_storage, namespace: group) }
   let!(:notification_setting) { create(:notification_setting, source: group)}
   let(:gitlab_shell) { Gitlab::Shell.new }
   let(:remove_path)  { group.path + "+#{group.id}+deleted" }
@@ -119,7 +119,7 @@ describe Groups::DestroyService do
       let!(:project) { create(:project, :legacy_storage, :empty_repo, namespace: group) }
 
       it 'removes repository' do
-        expect(gitlab_shell.exists?(project.repository_storage, "#{project.disk_path}.git")).to be_falsey
+        expect(gitlab_shell.repository_exists?(project.repository_storage, "#{project.disk_path}.git")).to be_falsey
       end
     end
 
@@ -127,7 +127,7 @@ describe Groups::DestroyService do
       let!(:project) { create(:project, :empty_repo, namespace: group) }
 
       it 'removes repository' do
-        expect(gitlab_shell.exists?(project.repository_storage, "#{project.disk_path}.git")).to be_falsey
+        expect(gitlab_shell.repository_exists?(project.repository_storage, "#{project.disk_path}.git")).to be_falsey
       end
     end
   end

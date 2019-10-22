@@ -1,8 +1,10 @@
 import sqljs from 'sql.js';
+import axios from '~/lib/utils/axios_utils';
 import BalsamiqViewer from '~/blob/balsamiq/balsamiq_viewer';
 import ClassSpecHelper from '../../helpers/class_spec_helper';
 
 describe('BalsamiqViewer', () => {
+  const mockArrayBuffer = new ArrayBuffer(10);
   let balsamiqViewer;
   let viewer;
 
@@ -19,44 +21,65 @@ describe('BalsamiqViewer', () => {
   });
 
   describe('loadFile', () => {
-    let xhr;
-    let loadFile;
+    let bv;
     const endpoint = 'endpoint';
+    const requestSuccess = Promise.resolve({
+      data: mockArrayBuffer,
+      status: 200,
+    });
 
     beforeEach(() => {
-      xhr = jasmine.createSpyObj('xhr', ['open', 'send']);
-
-      balsamiqViewer = jasmine.createSpyObj('balsamiqViewer', ['renderFile']);
-
-      spyOn(window, 'XMLHttpRequest').and.returnValue(xhr);
-
-      loadFile = BalsamiqViewer.prototype.loadFile.call(balsamiqViewer, endpoint);
+      viewer = {};
+      bv = new BalsamiqViewer(viewer);
     });
 
-    it('should call .open', () => {
-      expect(xhr.open).toHaveBeenCalledWith('GET', endpoint, true);
+    it('should call `axios.get` on `endpoint` param with responseType set to `arraybuffer', () => {
+      spyOn(axios, 'get').and.returnValue(requestSuccess);
+      spyOn(bv, 'renderFile').and.stub();
+
+      bv.loadFile(endpoint);
+
+      expect(axios.get).toHaveBeenCalledWith(
+        endpoint,
+        jasmine.objectContaining({
+          responseType: 'arraybuffer',
+        }),
+      );
     });
 
-    it('should set .responseType', () => {
-      expect(xhr.responseType).toBe('arraybuffer');
+    it('should call `renderFile` on request success', done => {
+      spyOn(axios, 'get').and.returnValue(requestSuccess);
+      spyOn(bv, 'renderFile').and.callFake(() => {});
+
+      bv.loadFile(endpoint)
+        .then(() => {
+          expect(bv.renderFile).toHaveBeenCalledWith(mockArrayBuffer);
+        })
+        .then(done)
+        .catch(done.fail);
     });
 
-    it('should call .send', () => {
-      expect(xhr.send).toHaveBeenCalled();
-    });
+    it('should not call `renderFile` on request failure', done => {
+      spyOn(axios, 'get').and.returnValue(Promise.reject());
+      spyOn(bv, 'renderFile');
 
-    it('should return a promise', () => {
-      expect(loadFile).toEqual(jasmine.any(Promise));
+      bv.loadFile(endpoint)
+        .then(() => {
+          done.fail('Expected loadFile to throw error!');
+        })
+        .catch(() => {
+          expect(bv.renderFile).not.toHaveBeenCalled();
+        })
+        .then(done)
+        .catch(done.fail);
     });
   });
 
   describe('renderFile', () => {
     let container;
-    let loadEvent;
     let previews;
 
     beforeEach(() => {
-      loadEvent = { target: { response: {} } };
       viewer = jasmine.createSpyObj('viewer', ['appendChild']);
       previews = [document.createElement('ul'), document.createElement('ul')];
 
@@ -73,11 +96,11 @@ describe('BalsamiqViewer', () => {
         container = containerElement;
       });
 
-      BalsamiqViewer.prototype.renderFile.call(balsamiqViewer, loadEvent);
+      BalsamiqViewer.prototype.renderFile.call(balsamiqViewer, mockArrayBuffer);
     });
 
     it('should call .initDatabase', () => {
-      expect(balsamiqViewer.initDatabase).toHaveBeenCalledWith(loadEvent.target.response);
+      expect(balsamiqViewer.initDatabase).toHaveBeenCalledWith(mockArrayBuffer);
     });
 
     it('should call .getPreviews', () => {

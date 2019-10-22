@@ -74,7 +74,7 @@ USING GIN(column_name gin_trgm_ops);
 ```
 
 The key here is the `GIN(column_name gin_trgm_ops)` part. This creates a [GIN
-index][gin-index] with the operator class set to `gin_trgm_ops`. These indexes
+index](https://www.postgresql.org/docs/current/gin.html) with the operator class set to `gin_trgm_ops`. These indexes
 _can_ be used by `ILIKE` / `LIKE` and can lead to greatly improved performance.
 One downside of these indexes is that they can easily get quite large (depending
 on the amount of data indexed).
@@ -246,8 +246,6 @@ WHERE EXISTS (
     AND users.foo = X
 )
 ```
-
-[gin-index]: http://www.postgresql.org/docs/current/static/gin.html
 
 ## `.find_or_create_by` is not atomic
 

@@ -67,7 +67,7 @@ describe Gitlab::Badge::Pipeline::Template do
       end
 
       it 'has expected color' do
-        expect(template.value_color).to eq '#dfb317'
+        expect(template.value_color).to eq '#a7a7a7'
       end
     end
 

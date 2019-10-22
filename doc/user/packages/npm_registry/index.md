@@ -84,6 +84,28 @@ NOTE: **Note:**
 If you encounter an error message with [Yarn](https://yarnpkg.com/en/), see the
 [troubleshooting section](#troubleshooting).
 
+### Using variables to avoid hard-coding auth token values
+
+To avoid hard-coding the `authToken` value, you may use a variables in its place.
+In your `.npmrc` file, you would add:
+
+```ini
+@foo:registry=https://gitlab.com/api/v4/packages/npm/
+//gitlab.com/api/v4/packages/npm/:_authToken=${NPM_TOKEN}
+//gitlab.com/api/v4/projects/<your_project_id>/packages/npm/:_authToken=${NPM_TOKEN}
+```
+
+Then, you could run `npm publish` either locally or via GitLab CI/CD:
+
+- **Locally:** Export `NPM_TOKEN` before publishing:
+
+  ```sh
+  NPM_TOKEN=<your_token> npm publish
+  ```
+
+- **GitLab CI/CD:** Set an `NPM_TOKEN` [variable](../../../ci/variables/README.md)
+  under your project's **Settings > CI/CD > Variables**.
+
 ## Uploading packages
 
 Before you will be able to upload a package, you need to specify the registry
@@ -144,4 +166,30 @@ with your with your OAuth or personal access token):
 
 ```text
 //gitlab.com/api/v4/projects/:_authToken=<your_oauth_token>
+```
+
+### `npm publish` targets default NPM registry (`registry.npmjs.org`)
+
+Ensure that your package scope is set consistently in your `package.json` and `.npmrc` files.
+
+For example, if your project name in GitLab is `foo/my-package`, then your `package.json` file
+should look like:
+
+```json
+{
+  "name": "@foo/my-package",
+  "version": "1.0.0",
+  "description": "Example package for GitLab NPM registry",
+  "publishConfig": {
+    "@foo:registry":"https://gitlab.com/api/v4/projects/<your_project_id>/packages/npm/"
+  }
+}
+```
+
+And the `.npmrc` file should look like:
+
+```ini
+//gitlab.com/api/v4/projects/<your_project_id>/packages/npm/:_authToken=<your_oauth_token>
+//gitlab.com/api/v4/packages/npm/:_authToken=<your_oauth_token>
+@foo:registry=https://gitlab.com/api/v4/packages/npm/
 ```

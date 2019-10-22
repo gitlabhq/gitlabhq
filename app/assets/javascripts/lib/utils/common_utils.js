@@ -15,6 +15,8 @@ export const getPagePath = (index = 0) => {
   return page.split(':')[index];
 };
 
+export const getDashPath = (path = window.location.pathname) => path.split('/-/')[1] || null;
+
 export const isInGroupsPage = () => getPagePath() === 'groups';
 
 export const isInProjectPage = () => getPagePath() === 'projects';
@@ -175,6 +177,15 @@ export const urlParamsToArray = (path = '') =>
 
 export const getUrlParamsArray = () => urlParamsToArray(window.location.search);
 
+/**
+ * Accepts encoding string which includes query params being
+ * sent to URL.
+ *
+ * @param {string} path Query param string
+ *
+ * @returns {object} Query params object containing key-value pairs
+ *                   with both key and values decoded into plain string.
+ */
 export const urlParamsToObject = (path = '') =>
   splitPath(path).reduce((dataParam, filterParam) => {
     if (filterParam === '') {
@@ -183,6 +194,7 @@ export const urlParamsToObject = (path = '') =>
 
     const data = dataParam;
     let [key, value] = filterParam.split('=');
+    key = /%\w+/g.test(key) ? decodeURIComponent(key) : key;
     const isArray = key.includes('[]');
     key = key.replace('[]', '');
     value = decodeURIComponent(value.replace(/\+/g, ' '));

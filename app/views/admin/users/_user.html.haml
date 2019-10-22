@@ -1,4 +1,4 @@
-.gl-responsive-table-row{ role: 'row' }
+.gl-responsive-table-row{ role: 'row', data: { qa_selector: 'user_row_content' } }
   .table-section.section-40
     .table-mobile-header{ role: 'rowheader' }
       = _('Name')
@@ -31,7 +31,19 @@
               - elsif user.blocked?
                 = link_to _('Unblock'), unblock_admin_user_path(user), method: :put
               - else
-                = link_to _('Block'), block_admin_user_path(user), data: { confirm: "#{s_('AdminUsers|User will be blocked').upcase}! #{_('Are you sure')}?" }, method: :put
+                %button.btn{ data: { 'gl-modal-action': 'block',
+                  url: block_admin_user_path(user),
+                  username: sanitize_name(user.name) } }
+                  = s_('AdminUsers|Block')
+            - if user.can_be_deactivated?
+              %li
+                %button.btn{ data: { 'gl-modal-action': 'deactivate',
+                  url: deactivate_admin_user_path(user),
+                  username: sanitize_name(user.name) } }
+                  = s_('AdminUsers|Deactivate')
+            - elsif user.deactivated?
+              %li
+                = link_to _('Activate'), activate_admin_user_path(user), method: :put
             - if user.access_locked?
               %li
                 = link_to _('Unlock'), unlock_admin_user_path(user), method: :put, data: { confirm: _('Are you sure?') }
@@ -39,19 +51,14 @@
             %li.divider
             - if user.can_be_removed?
               %li
-                %button.delete-user-button.btn.text-danger{ data: { toggle: 'modal',
-                  target: '#delete-user-modal',
+                %button.delete-user-button.btn.text-danger{ data: { 'gl-modal-action': 'delete',
                   delete_user_url: admin_user_path(user),
                   block_user_url: block_admin_user_path(user),
-                  username: sanitize_name(user.name),
-                  delete_contributions: false }, type: 'button' }
+                  username: sanitize_name(user.name) } }
                   = s_('AdminUsers|Delete user')
-
-            %li
-              %button.delete-user-button.btn.text-danger{ data: { toggle: 'modal',
-                target: '#delete-user-modal',
-                delete_user_url: admin_user_path(user, hard_delete: true),
-                block_user_url: block_admin_user_path(user),
-                username: sanitize_name(user.name),
-                delete_contributions: true }, type: 'button' }
-                = s_('AdminUsers|Delete user and contributions')
+              %li
+                %button.delete-user-button.btn.text-danger{ data: { 'gl-modal-action': 'delete-with-contributions',
+                  delete_user_url: admin_user_path(user, hard_delete: true),
+                  block_user_url: block_admin_user_path(user),
+                  username: sanitize_name(user.name) } }
+                  = s_('AdminUsers|Delete user and contributions')

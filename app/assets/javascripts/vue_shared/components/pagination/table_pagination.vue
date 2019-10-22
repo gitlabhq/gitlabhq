@@ -27,8 +27,7 @@ export default {
 
     /**
         pageInfo will come from the headers of the API call
-        in the `.then` clause of the VueResource API call
-        there should be a function that contructs the pageInfo for this component
+        there should be a function that constructs the pageInfo for this component
 
         This is an example:
 

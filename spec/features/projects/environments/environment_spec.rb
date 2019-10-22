@@ -66,8 +66,8 @@ describe 'Environment' do
           create(:deployment, :running, environment: environment, deployable: build)
         end
 
-        it 'does not show deployments' do
-          expect(page).to have_content('You don\'t have any deployments right now.')
+        it 'does show deployments' do
+          expect(page).to have_link("#{build.name} (##{build.id})")
         end
       end
 
@@ -79,8 +79,8 @@ describe 'Environment' do
           create(:deployment, :failed, environment: environment, deployable: build)
         end
 
-        it 'does not show deployments' do
-          expect(page).to have_content('You don\'t have any deployments right now.')
+        it 'does show deployments' do
+          expect(page).to have_link("#{build.name} (##{build.id})")
         end
       end
 
@@ -175,7 +175,7 @@ describe 'Environment' do
                     #
                     # In EE we have to stub EE::Environment since it overwrites
                     # the "terminals" method.
-                    allow_any_instance_of(defined?(EE) ? EE::Environment : Environment)
+                    allow_any_instance_of(Gitlab.ee? ? EE::Environment : Environment)
                       .to receive(:terminals) { nil }
 
                     visit terminal_project_environment_path(project, environment)
@@ -304,9 +304,11 @@ describe 'Environment' do
     #
     def remove_branch_with_hooks(project, user, branch)
       params = {
-        oldrev: project.commit(branch).id,
-        newrev: Gitlab::Git::BLANK_SHA,
-        ref: "refs/heads/#{branch}"
+        change: {
+          oldrev: project.commit(branch).id,
+          newrev: Gitlab::Git::BLANK_SHA,
+          ref: "refs/heads/#{branch}"
+        }
       }
 
       yield

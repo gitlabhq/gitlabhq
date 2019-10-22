@@ -63,7 +63,7 @@ export default {
           <icon
             v-if="hasState"
             ref="iconElementXL"
-            :css-classes="iconClass"
+            :class="iconClass"
             :name="iconName"
             :size="16"
             :title="stateTitle"
@@ -100,7 +100,7 @@ export default {
             <span ref="iconElement">
               <icon
                 v-if="hasState"
-                :css-classes="iconClass"
+                :class="iconClass"
                 :name="iconName"
                 :title="stateTitle"
                 :aria-label="state"
@@ -159,7 +159,8 @@ export default {
       v-gl-tooltip
       :disabled="removeDisabled"
       type="button"
-      class="btn btn-default btn-svg btn-item-remove js-issue-item-remove-button qa-remove-issue-button mr-xl-0 align-self-xl-center"
+      class="btn btn-default btn-svg btn-item-remove js-issue-item-remove-button mr-xl-0 align-self-xl-center"
+      data-qa-selector="remove_related_issue_button"
       :title="__('Remove')"
       :aria-label="__('Remove')"
       @click="onRemoveRequest"

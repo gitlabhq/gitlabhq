@@ -36,7 +36,7 @@ describe Gitlab::Kubernetes::Helm::InstallCommand do
     let(:commands) do
       <<~EOS
       helm init --upgrade
-      for i in $(seq 1 30); do helm version #{tls_flags} && break; sleep 1s; echo "Retrying ($i)..."; done
+      for i in $(seq 1 30); do helm version #{tls_flags} && s=0 && break || s=$?; sleep 1s; echo \"Retrying ($i)...\"; done; (exit $s)
       helm repo add app-name https://repository.example.com
       helm repo update
       #{helm_install_comand}
@@ -64,7 +64,7 @@ describe Gitlab::Kubernetes::Helm::InstallCommand do
       let(:commands) do
         <<~EOS
         helm init --upgrade
-        for i in $(seq 1 30); do helm version #{tls_flags} && break; sleep 1s; echo "Retrying ($i)..."; done
+        for i in $(seq 1 30); do helm version #{tls_flags} && s=0 && break || s=$?; sleep 1s; echo \"Retrying ($i)...\"; done; (exit $s)
         helm repo add app-name https://repository.example.com
         helm repo update
         #{helm_install_command}
@@ -93,7 +93,7 @@ describe Gitlab::Kubernetes::Helm::InstallCommand do
       let(:commands) do
         <<~EOS
         helm init --upgrade
-        for i in $(seq 1 30); do helm version #{tls_flags} && break; sleep 1s; echo "Retrying ($i)..."; done
+        for i in $(seq 1 30); do helm version #{tls_flags} && s=0 && break || s=$?; sleep 1s; echo \"Retrying ($i)...\"; done; (exit $s)
         #{helm_install_command}
         EOS
       end
@@ -120,7 +120,7 @@ describe Gitlab::Kubernetes::Helm::InstallCommand do
       let(:commands) do
         <<~EOS
         helm init --upgrade
-        for i in $(seq 1 30); do helm version #{tls_flags} && break; sleep 1s; echo "Retrying ($i)..."; done
+        for i in $(seq 1 30); do helm version #{tls_flags} && s=0 && break || s=$?; sleep 1s; echo \"Retrying ($i)...\"; done; (exit $s)
         helm repo add app-name https://repository.example.com
         helm repo update
         /bin/date
@@ -151,7 +151,7 @@ describe Gitlab::Kubernetes::Helm::InstallCommand do
       let(:commands) do
         <<~EOS
         helm init --upgrade
-        for i in $(seq 1 30); do helm version #{tls_flags} && break; sleep 1s; echo "Retrying ($i)..."; done
+        for i in $(seq 1 30); do helm version #{tls_flags} && s=0 && break || s=$?; sleep 1s; echo \"Retrying ($i)...\"; done; (exit $s)
         helm repo add app-name https://repository.example.com
         helm repo update
         #{helm_install_command}
@@ -182,7 +182,7 @@ describe Gitlab::Kubernetes::Helm::InstallCommand do
       let(:commands) do
         <<~EOS
         helm init --upgrade
-        for i in $(seq 1 30); do helm version && break; sleep 1s; echo "Retrying ($i)..."; done
+        for i in $(seq 1 30); do helm version && s=0 && break || s=$?; sleep 1s; echo \"Retrying ($i)...\"; done; (exit $s)
         helm repo add app-name https://repository.example.com
         helm repo update
         #{helm_install_command}
@@ -210,7 +210,7 @@ describe Gitlab::Kubernetes::Helm::InstallCommand do
       let(:commands) do
         <<~EOS
         helm init --upgrade
-        for i in $(seq 1 30); do helm version #{tls_flags} && break; sleep 1s; echo "Retrying ($i)..."; done
+        for i in $(seq 1 30); do helm version #{tls_flags} && s=0 && break || s=$?; sleep 1s; echo \"Retrying ($i)...\"; done; (exit $s)
         helm repo add app-name https://repository.example.com
         helm repo update
         #{helm_install_command}

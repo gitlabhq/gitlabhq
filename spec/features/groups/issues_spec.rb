@@ -93,6 +93,7 @@ describe 'Group issues page' do
       end
 
       it 'shows projects only with issues feature enabled', :js do
+        find('.empty-state .js-lazy-loaded')
         find('.new-project-item-link').click
 
         page.within('.select2-results') do

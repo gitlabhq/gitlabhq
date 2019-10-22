@@ -38,24 +38,6 @@ describe Gitlab::Ci::Parsers::Test::Junit do
         end
       end
 
-      context 'when there is only one <testcase> in <testsuite>' do
-        let(:junit) do
-          <<-EOF.strip_heredoc
-            <testsuite>
-              <testcase classname='Calculator' name='sumTest1' time='0.01'></testcase>
-            </testsuite>
-          EOF
-        end
-
-        it 'parses XML and adds a test case to a suite' do
-          expect { subject }.not_to raise_error
-
-          expect(test_cases[0].classname).to eq('Calculator')
-          expect(test_cases[0].name).to eq('sumTest1')
-          expect(test_cases[0].execution_time).to eq(0.01)
-        end
-      end
-
       context 'when there is only one <testsuite> in <testsuites>' do
         let(:junit) do
           <<-EOF.strip_heredoc
@@ -73,6 +55,68 @@ describe Gitlab::Ci::Parsers::Test::Junit do
           expect(test_cases[0].classname).to eq('Calculator')
           expect(test_cases[0].name).to eq('sumTest1')
           expect(test_cases[0].execution_time).to eq(0.01)
+        end
+      end
+
+      context 'when there is <testcase>' do
+        let(:junit) do
+          <<-EOF.strip_heredoc
+              <testsuite>
+                <testcase classname='Calculator' name='sumTest1' time='0.01'>
+                  #{testcase_content}
+                </testcase>
+              </testsuite>
+          EOF
+        end
+
+        let(:test_case) { test_cases[0] }
+
+        before do
+          expect { subject }.not_to raise_error
+        end
+
+        shared_examples_for '<testcase> XML parser' do |status, output|
+          it 'parses XML and adds a test case to the suite' do
+            aggregate_failures do
+              expect(test_case.classname).to eq('Calculator')
+              expect(test_case.name).to eq('sumTest1')
+              expect(test_case.execution_time).to eq(0.01)
+              expect(test_case.status).to eq(status)
+              expect(test_case.system_output).to eq(output)
+            end
+          end
+        end
+
+        context 'and has failure' do
+          let(:testcase_content) { '<failure>Some failure</failure>' }
+
+          it_behaves_like '<testcase> XML parser',
+            ::Gitlab::Ci::Reports::TestCase::STATUS_FAILED,
+            'Some failure'
+        end
+
+        context 'and has error' do
+          let(:testcase_content) { '<error>Some error</error>' }
+
+          it_behaves_like '<testcase> XML parser',
+            ::Gitlab::Ci::Reports::TestCase::STATUS_FAILED,
+            'Some error'
+        end
+
+        context 'and has an unknown type' do
+          let(:testcase_content) { '<foo>Some foo</foo>' }
+
+          it_behaves_like '<testcase> XML parser',
+            ::Gitlab::Ci::Reports::TestCase::STATUS_SUCCESS,
+            nil
+        end
+
+        context 'and has no content' do
+          let(:testcase_content) { '' }
+
+          it_behaves_like '<testcase> XML parser',
+            ::Gitlab::Ci::Reports::TestCase::STATUS_SUCCESS,
+            nil
         end
       end
 

@@ -85,7 +85,13 @@ class MergeRequest < ApplicationRecord
   # when creating new merge request
   attr_accessor :can_be_created, :compare_commits, :diff_options, :compare
 
-  state_machine :state, initial: :opened do
+  # Keep states definition to be evaluated before the state_machine block to avoid spec failures.
+  # If this gets evaluated after, the `merged` and `locked` states which are overrided can be nil.
+  def self.available_state_names
+    super + [:merged, :locked]
+  end
+
+  state_machine :state_id, initial: :opened do
     event :close do
       transition [:opened] => :closed
     end
@@ -116,10 +122,17 @@ class MergeRequest < ApplicationRecord
       end
     end
 
-    state :opened
-    state :closed
-    state :merged
-    state :locked
+    state :opened, value: MergeRequest.available_states[:opened]
+    state :closed, value: MergeRequest.available_states[:closed]
+    state :merged, value: MergeRequest.available_states[:merged]
+    state :locked, value: MergeRequest.available_states[:locked]
+  end
+
+  # Alias to state machine .with_state_id method
+  # This needs to be defined after the state machine block to avoid errors
+  class << self
+    alias_method :with_state, :with_state_id
+    alias_method :with_states, :with_state_ids
   end
 
   state_machine :merge_status, initial: :unchecked do
@@ -196,6 +209,10 @@ class MergeRequest < ApplicationRecord
   scope :by_target_branch, ->(branch_name) { where(target_branch: branch_name) }
   scope :preload_source_project, -> { preload(:source_project) }
 
+  scope :with_open_merge_when_pipeline_succeeds, -> do
+    with_state(:opened).where(merge_when_pipeline_succeeds: true)
+  end
+
   after_save :keep_around_commit
 
   alias_attribute :project, :target_project
@@ -205,10 +222,6 @@ class MergeRequest < ApplicationRecord
 
   def self.reference_prefix
     '!'
-  end
-
-  def self.available_states
-    @available_states ||= super.merge(merged: 3, locked: 4)
   end
 
   # Returns the top 100 target branches
@@ -448,6 +461,15 @@ class MergeRequest < ApplicationRecord
 
   def non_latest_diffs
     merge_request_diffs.where.not(id: merge_request_diff.id)
+  end
+
+  # Overwritten in EE
+  def note_positions_for_paths(paths, _user = nil)
+    positions = notes.new_diff_notes.joins(:note_diff_file)
+      .where('note_diff_files.old_path IN (?) OR note_diff_files.new_path IN (?)', paths, paths)
+      .positions
+
+    Gitlab::Diff::PositionCollection.new(positions, diff_head_sha)
   end
 
   def preloads_discussion_diff_highlighting?

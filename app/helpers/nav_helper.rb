@@ -20,7 +20,6 @@ module NavHelper
 
   def page_gutter_class
     if page_has_markdown?
-
       if cookies[:collapsed_gutter] == 'true'
         %w[page-gutter right-sidebar-collapsed]
       else
@@ -85,6 +84,12 @@ module NavHelper
 
     if session[:impersonator_id]
       links << :admin_impersonation
+    end
+
+    if Feature.enabled?(:user_mode_in_session)
+      if current_user&.admin? && current_user_mode&.admin_mode?
+        links << :admin_mode
+      end
     end
 
     links

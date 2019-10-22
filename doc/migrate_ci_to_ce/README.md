@@ -268,11 +268,11 @@ If you installed GitLab CI from source we now need to configure a redirect in
 NGINX so that existing CI runners can keep using the old CI server address, and
 so that existing links to your CI server keep working.
 
-### 1. Update Nginx configuration
+### 1. Update NGINX configuration
 
 To ensure that your existing CI runners are able to communicate with the
 migrated installation, and that existing build triggers still work, you'll need
-to update your Nginx configuration to redirect requests for the old locations to
+to update your NGINX configuration to redirect requests for the old locations to
 the new ones.
 
 Edit `/etc/nginx/sites-available/gitlab_ci` and paste:
@@ -324,13 +324,13 @@ You should also make sure that you can:
 1. `curl https://YOUR_GITLAB_SERVER_FQDN/` from your previous GitLab CI server.
 1. `curl https://YOUR_CI_SERVER_FQDN/` from your GitLab CE (or EE) server.
 
-### 2. Check Nginx configuration
+### 2. Check NGINX configuration
 
 ```sh
 sudo nginx -t
 ```
 
-### 3. Restart Nginx
+### 3. Restart NGINX
 
 ```sh
 sudo /etc/init.d/nginx restart

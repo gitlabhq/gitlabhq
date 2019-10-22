@@ -58,7 +58,7 @@ module GitlabRoutingHelper
   end
 
   def commits_url(entity, *args)
-    project_commits_url(entity.project, entity.ref, *args)
+    project_commits_url(entity.project, entity.source_ref, *args)
   end
 
   def commit_url(entity, *args)
@@ -76,10 +76,10 @@ module GitlabRoutingHelper
   end
 
   def edit_milestone_path(entity, *args)
-    if entity.parent.is_a?(Group)
-      edit_group_milestone_path(entity.parent, entity, *args)
+    if entity.resource_parent.is_a?(Group)
+      edit_group_milestone_path(entity.resource_parent, entity, *args)
     else
-      edit_project_milestone_path(entity.parent, entity, *args)
+      edit_project_milestone_path(entity.resource_parent, entity, *args)
     end
   end
 

@@ -1,4 +1,4 @@
-/* eslint-disable func-names, no-restricted-syntax, no-use-before-define, no-param-reassign, new-cap, no-underscore-dangle, no-return-assign, prefer-arrow-callback, prefer-template, no-else-return, no-shadow */
+/* eslint-disable func-names, no-restricted-syntax, no-use-before-define, no-param-reassign, new-cap, no-underscore-dangle, no-return-assign, no-else-return, no-shadow */
 
 import $ from 'jquery';
 import _ from 'underscore';
@@ -69,24 +69,18 @@ export const ContributorsGraph = (function() {
   ContributorsGraph.set_y_domain = function(data) {
     return (ContributorsGraph.prototype.y_domain = [
       0,
-      d3.max(data, function(d) {
-        return (d.commits = d.commits || d.additions || d.deletions);
-      }),
+      d3.max(data, d => (d.commits = d.commits || d.additions || d.deletions)),
     ]);
   };
 
   ContributorsGraph.init_x_domain = function(data) {
-    return (ContributorsGraph.prototype.x_domain = d3.extent(data, function(d) {
-      return d.date;
-    }));
+    return (ContributorsGraph.prototype.x_domain = d3.extent(data, d => d.date));
   };
 
   ContributorsGraph.init_y_domain = function(data) {
     return (ContributorsGraph.prototype.y_domain = [
       0,
-      d3.max(data, function(d) {
-        return (d.commits = d.commits || d.additions || d.deletions);
-      }),
+      d3.max(data, d => (d.commits = d.commits || d.additions || d.deletions)),
     ]);
   };
 
@@ -124,14 +118,11 @@ export const ContributorsGraph = (function() {
   };
 
   ContributorsGraph.prototype.draw_x_axis = function() {
-    return (
-      this.svg
-        .append('g')
-        .attr('class', 'x axis')
-        /* eslint-disable-next-line @gitlab/i18n/no-non-i18n-strings */
-        .attr('transform', 'translate(0, ' + this.height + ')')
-        .call(this.x_axis)
-    );
+    return this.svg
+      .append('g')
+      .attr('class', 'x axis')
+      .attr('transform', `translate(0, ${this.height})`)
+      .call(this.x_axis);
   };
 
   ContributorsGraph.prototype.draw_y_axis = function() {
@@ -180,9 +171,7 @@ export const ContributorsMasterGraph = (function(superClass) {
 
   ContributorsMasterGraph.prototype.parse_dates = function(data) {
     const parseDate = d3.timeParse('%Y-%m-%d');
-    return data.forEach(function(d) {
-      return (d.date = parseDate(d.date));
-    });
+    return data.forEach(d => (d.date = parseDate(d.date)));
   };
 
   ContributorsMasterGraph.prototype.create_scale = function() {
@@ -208,19 +197,16 @@ export const ContributorsMasterGraph = (function(superClass) {
       .attr('height', this.height + this.MARGIN.top + this.MARGIN.bottom)
       .attr('class', 'tint-box')
       .append('g')
-      /* eslint-disable-next-line @gitlab/i18n/no-non-i18n-strings */
-      .attr('transform', 'translate(' + this.MARGIN.left + ',' + this.MARGIN.top + ')');
+      .attr('transform', `translate(${this.MARGIN.left},${this.MARGIN.top})`);
     return this.svg;
   };
 
   ContributorsMasterGraph.prototype.create_area = function(x, y) {
     return (this.area = d3
       .area()
-      .x(function(d) {
-        return x(d.date);
-      })
+      .x(d => x(d.date))
       .y0(this.height)
-      .y1(function(d) {
+      .y1(d => {
         d.commits = d.commits || d.additions || d.deletions;
         return y(d.commits);
       }));
@@ -330,7 +316,7 @@ export const ContributorsAuthorGraph = (function(superClass) {
   ContributorsAuthorGraph.prototype.create_area = function(x, y) {
     return (this.area = d3
       .area()
-      .x(function(d) {
+      .x(d => {
         const parseDate = d3.timeParse('%Y-%m-%d');
         return x(parseDate(d));
       })
@@ -358,8 +344,7 @@ export const ContributorsAuthorGraph = (function(superClass) {
       .attr('height', this.height + this.MARGIN.top + this.MARGIN.bottom)
       .attr('class', 'spark')
       .append('g')
-      /* eslint-disable-next-line @gitlab/i18n/no-non-i18n-strings */
-      .attr('transform', 'translate(' + this.MARGIN.left + ',' + this.MARGIN.top + ')');
+      .attr('transform', `translate(${this.MARGIN.left},${this.MARGIN.top})`);
     return this.svg;
   };
 

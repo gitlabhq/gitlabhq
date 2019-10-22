@@ -13,9 +13,9 @@
     = form_for 'email', url: profile_emails_path do |f|
       .form-group
         = f.label :email, _('Email'), class: 'label-bold'
-        = f.text_field :email, class: 'form-control'
+        = f.text_field :email, class: 'form-control', data: { qa_selector: 'email_address_field' }
       .prepend-top-default
-        = f.submit _('Add email address'), class: 'btn btn-success'
+        = f.submit _('Add email address'), class: 'btn btn-success', data: { qa_selector: 'add_email_address_button' }
     %hr
     %h4.prepend-top-0
       = _('Linked emails (%{email_count})') % { email_count: @emails.count + 1 }
@@ -45,7 +45,7 @@
           - if @primary_email === current_user.notification_email
             %span.badge.badge-info= s_('Profiles|Default notification email')
       - @emails.each do |email|
-        %li
+        %li{ data: { qa_selector: 'email_row_content' } }
           = render partial: 'shared/email_with_badge', locals: { email: email.email, verified: email.confirmed? }
           %span.float-right
             - if email.email === current_user.commit_email
@@ -58,6 +58,6 @@
               - confirm_title = "#{email.confirmation_sent_at ? _('Resend confirmation email') : _('Send confirmation email')}"
               = link_to confirm_title, resend_confirmation_instructions_profile_email_path(email), method: :put, class: 'btn btn-sm btn-warning prepend-left-10'
 
-            = link_to profile_email_path(email), data: { confirm: _('Are you sure?')}, method: :delete, class: 'btn btn-sm btn-danger prepend-left-10' do
+            = link_to profile_email_path(email), data: { confirm: _('Are you sure?'), qa_selector: 'delete_email_link'}, method: :delete, class: 'btn btn-sm btn-danger prepend-left-10' do
               %span.sr-only= _('Remove')
               = icon('trash')

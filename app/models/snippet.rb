@@ -14,6 +14,7 @@ class Snippet < ApplicationRecord
   include Editable
   include Gitlab::SQL::Pattern
   include FromUnion
+  extend ::Gitlab::Utils::Override
 
   cache_markdown_field :title, pipeline: :single_line
   cache_markdown_field :description
@@ -31,8 +32,6 @@ class Snippet < ApplicationRecord
   def content_html_invalidated?
     default_content_html_invalidator || file_name_changed?
   end
-
-  default_value_for(:visibility_level) { Gitlab::CurrentSettings.default_snippet_visibility }
 
   belongs_to :author, class_name: 'User'
   belongs_to :project
@@ -72,7 +71,7 @@ class Snippet < ApplicationRecord
     end
   end
 
-  def self.only_global_snippets
+  def self.only_personal_snippets
     where(project_id: nil)
   end
 
@@ -138,6 +137,24 @@ class Snippet < ApplicationRecord
     @link_reference_pattern ||= super("snippets", /(?<snippet>\d+)/)
   end
 
+  def initialize(attributes = {})
+    # We can't use default_value_for because the database has a default
+    # value of 0 for visibility_level. If someone attempts to create a
+    # private snippet, default_value_for will assume that the
+    # visibility_level hasn't changed and will use the application
+    # setting default, which could be internal or public.
+    #
+    # To fix the problem, we assign the actual snippet default if no
+    # explicit visibility has been initialized.
+    attributes ||= {}
+
+    unless visibility_attribute_present?(attributes)
+      attributes[:visibility_level] = Gitlab::CurrentSettings.default_snippet_visibility
+    end
+
+    super
+  end
+
   def to_reference(from = nil, full: false)
     reference = "#{self.class.reference_prefix}#{id}"
 
@@ -189,6 +206,12 @@ class Snippet < ApplicationRecord
   def check_for_spam?
     visibility_level_changed?(to: Snippet::PUBLIC) ||
       (public? && (title_changed? || content_changed?))
+  end
+
+  # snippers are the biggest sources of spam
+  override :allow_possible_spam?
+  def allow_possible_spam?
+    false
   end
 
   def spammable_entity_type

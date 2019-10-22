@@ -1,6 +1,6 @@
 # Frontend tracking guide
 
-GitLab provides `Tracking`, an interface that wraps the [Snowplow Javascript Tracker](https://github.com/snowplow/snowplow/wiki/javascript-tracker) for tracking custom events. There are a few ways to utilizing tracking, but each generally requires at minimum, a `category` and an `action`. Additional data can be provided that adheres to our [Feature instrumentation taxonomy](https://about.gitlab.com/handbook/product/feature-instrumentation/#taxonomy).
+GitLab provides `Tracking`, an interface that wraps the [Snowplow JavaScript Tracker](https://github.com/snowplow/snowplow/wiki/javascript-tracker) for tracking custom events. There are a few ways to utilize tracking, but each generally requires at minimum, a `category` and an `action`. Additional data can be provided that adheres to our [Feature instrumentation taxonomy](https://about.gitlab.com/handbook/product/feature-instrumentation/#taxonomy).
 
 | field      | type   | default value              | description |
 |:-----------|:-------|:---------------------------|:------------|
@@ -26,7 +26,7 @@ Below is an example of `data-track-*` attributes assigned to a button:
 />
 ```
 
-Event listeners are bound at the document level to handle click events on or within elements with these data attributes. This allows for them to be properly handled on rerendering and changes to the DOM, but it's important to know that because of the way these events are bound, click events shouldn't be stopped from propagating up the DOM tree. If for any reason click events are being stopped from propagating, you'll need to implement your own listeners and follow the instructions in [Tracking in raw Javascript](#tracking-in-raw-javascript).
+Event listeners are bound at the document level to handle click events on or within elements with these data attributes. This allows for them to be properly handled on rerendering and changes to the DOM, but it's important to know that because of the way these events are bound, click events shouldn't be stopped from propagating up the DOM tree. If for any reason click events are being stopped from propagating, you'll need to implement your own listeners and follow the instructions in [Tracking in raw JavaScript](#tracking-in-raw-javascript).
 
 Below is a list of supported `data-track-*` attributes:
 
@@ -99,7 +99,7 @@ And if needed within the template, you can use the `track` method directly as we
 </template>
 ```
 
-## Tracking in raw Javascript
+## Tracking in raw JavaScript
 
 Custom event tracking and instrumentation can be added by directly calling the `Tracking.event` static function. The following example demonstrates tracking a click on a button by calling `Tracking.event` manually.
 

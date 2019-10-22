@@ -1,0 +1,5 @@
+---
+title: Introduce diffs_batch JSON endpoint for paginated diffs
+merge_request: 17651
+author:
+type: added

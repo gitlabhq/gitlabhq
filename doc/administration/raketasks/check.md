@@ -8,7 +8,7 @@ help GitLab administrators diagnose problem repositories so they can be fixed.
 
 There are 3 things that are checked to determine integrity.
 
-1. Git repository file system check ([git fsck](https://git-scm.com/docs/git-fsck)).
+1. Git repository file system check ([`git fsck`](https://git-scm.com/docs/git-fsck)).
    This step verifies the connectivity and validity of objects in the repository.
 1. Check for `config.lock` in the repository directory.
 1. Check for any branch/references lock files in `refs/heads`.

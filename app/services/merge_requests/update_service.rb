@@ -69,7 +69,8 @@ module MergeRequests
         )
       end
 
-      added_mentions = merge_request.mentioned_users - old_mentioned_users
+      added_mentions = merge_request.mentioned_users(current_user) - old_mentioned_users
+
       if added_mentions.present?
         notification_service.async.new_mentions_in_merge_request(
           merge_request,

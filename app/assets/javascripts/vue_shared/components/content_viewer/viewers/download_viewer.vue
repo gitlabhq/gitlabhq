@@ -40,7 +40,7 @@ export default {
         </template>
       </p>
       <gl-link :href="path" class="btn btn-default" rel="nofollow" download target="_blank">
-        <icon :size="16" name="download" css-classes="float-left append-right-8" />
+        <icon :size="16" name="download" class="float-left append-right-8" />
         {{ __('Download') }}
       </gl-link>
     </div>

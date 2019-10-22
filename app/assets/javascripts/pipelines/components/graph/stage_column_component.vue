@@ -1,6 +1,6 @@
 <script>
 import _ from 'underscore';
-import stageColumnMixin from 'ee_else_ce/pipelines/mixins/stage_column_mixin';
+import stageColumnMixin from '../../mixins/stage_column_mixin';
 import JobItem from './job_item.vue';
 import JobGroupDropdown from './job_group_dropdown.vue';
 import ActionComponent from './action_component.vue';

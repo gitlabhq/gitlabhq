@@ -3,6 +3,7 @@ require 'spec_helper'
 describe API::Runner, :clean_gitlab_redis_shared_state do
   include StubGitlabCalls
   include RedisHelpers
+  include WorkhorseHelpers
 
   let(:registration_token) { 'abcdefg123456' }
 
@@ -308,7 +309,9 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
   end
 
   describe '/api/v4/jobs' do
-    let(:project) { create(:project, shared_runners_enabled: false) }
+    let(:root_namespace) { create(:namespace) }
+    let(:namespace) { create(:namespace, parent: root_namespace) }
+    let(:project) { create(:project, namespace: namespace, shared_runners_enabled: false) }
     let(:pipeline) { create(:ci_pipeline_without_jobs, project: project, ref: 'master') }
     let(:runner) { create(:ci_runner, :project, projects: [project]) }
     let(:job) do
@@ -1393,7 +1396,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
 
                   expect(response).to have_gitlab_http_status(200)
                   expect(response.content_type.to_s).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
-                  expect(json_response['TempPath']).to eq(JobArtifactUploader.workhorse_local_upload_path)
+                  expect(json_response).not_to have_key('TempPath')
                   expect(json_response['RemoteObject']).to have_key('ID')
                   expect(json_response['RemoteObject']).to have_key('GetURL')
                   expect(json_response['RemoteObject']).to have_key('StoreURL')
@@ -1412,12 +1415,54 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
             end
           end
 
-          it 'fails to post too large artifact' do
-            stub_application_setting(max_artifacts_size: 0)
+          context 'when artifact is too large' do
+            let(:sample_max_size) { 100 }
 
-            authorize_artifacts_with_token_in_params(filesize: 100)
+            shared_examples_for 'rejecting too large artifacts' do
+              it 'fails to post' do
+                authorize_artifacts_with_token_in_params(filesize: sample_max_size.megabytes.to_i)
 
-            expect(response).to have_gitlab_http_status(413)
+                expect(response).to have_gitlab_http_status(413)
+              end
+            end
+
+            context 'based on application setting' do
+              before do
+                stub_application_setting(max_artifacts_size: sample_max_size)
+              end
+
+              it_behaves_like 'rejecting too large artifacts'
+            end
+
+            context 'based on root namespace setting' do
+              before do
+                stub_application_setting(max_artifacts_size: 200)
+                root_namespace.update!(max_artifacts_size: sample_max_size)
+              end
+
+              it_behaves_like 'rejecting too large artifacts'
+            end
+
+            context 'based on child namespace setting' do
+              before do
+                stub_application_setting(max_artifacts_size: 200)
+                root_namespace.update!(max_artifacts_size: 200)
+                namespace.update!(max_artifacts_size: sample_max_size)
+              end
+
+              it_behaves_like 'rejecting too large artifacts'
+            end
+
+            context 'based on project setting' do
+              before do
+                stub_application_setting(max_artifacts_size: 200)
+                root_namespace.update!(max_artifacts_size: 200)
+                namespace.update!(max_artifacts_size: 200)
+                project.update!(max_artifacts_size: sample_max_size)
+              end
+
+              it_behaves_like 'rejecting too large artifacts'
+            end
           end
         end
 
@@ -1518,15 +1563,16 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
                 let!(:fog_connection) do
                   stub_artifacts_object_storage(direct_upload: true)
                 end
-
-                before do
+                let(:object) do
                   fog_connection.directories.new(key: 'artifacts').files.create(
                     key: 'tmp/uploads/12312300',
                     body: 'content'
                   )
+                end
+                let(:file_upload) { fog_to_uploaded_file(object) }
 
-                  upload_artifacts(file_upload, headers_with_token,
-                    { 'file.remote_id' => remote_id })
+                before do
+                  upload_artifacts(file_upload, headers_with_token, 'file.remote_id' => remote_id)
                 end
 
                 context 'when valid remote_id is used' do
@@ -1760,12 +1806,13 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
         end
 
         def upload_artifacts(file, headers = {}, params = {})
-          params = params.merge({
-            'file.path' => file.path,
-            'file.name' => file.original_filename
-          })
-
-          post api("/jobs/#{job.id}/artifacts"), params: params, headers: headers
+          workhorse_finalize(
+            api("/jobs/#{job.id}/artifacts"),
+            method: :post,
+            file_key: :file,
+            params: params.merge(file: file),
+            headers: headers
+          )
         end
       end
 

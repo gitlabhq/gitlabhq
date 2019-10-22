@@ -121,4 +121,28 @@ class BuildDetailsEntity < JobEntity
   def can_admin_build?
     can?(request.current_user, :admin_build, project)
   end
+
+  def callout_message
+    return super unless build.failure_reason.to_sym == :missing_dependency_failure
+
+    docs_url = "https://docs.gitlab.com/ce/ci/yaml/README.html#dependencies"
+
+    [
+      failure_message.html_safe,
+      help_message(docs_url).html_safe
+    ].join("<br />")
+  end
+
+  def invalid_dependencies
+    build.invalid_dependencies.map(&:name).join(', ')
+  end
+
+  def failure_message
+    _("This job depends on other jobs with expired/erased artifacts: %{invalid_dependencies}") %
+      { invalid_dependencies: invalid_dependencies }
+  end
+
+  def help_message(docs_url)
+    _("Please refer to <a href=\"%{docs_url}\">%{docs_url}</a>") % { docs_url: docs_url }
+  end
 end

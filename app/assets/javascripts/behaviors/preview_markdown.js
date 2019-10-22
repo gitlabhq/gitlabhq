@@ -1,4 +1,4 @@
-/* eslint-disable func-names, no-var, prefer-arrow-callback */
+/* eslint-disable func-names, no-var */
 
 import $ from 'jquery';
 import axios from '~/lib/utils/axios_utils';
@@ -45,26 +45,22 @@ MarkdownPreview.prototype.showPreview = function($form) {
     this.hideReferencedUsers($form);
   } else {
     preview.addClass('md-preview-loading').text(__('Loading...'));
-    this.fetchMarkdownPreview(
-      mdText,
-      url,
-      function(response) {
-        var body;
-        if (response.body.length > 0) {
-          ({ body } = response);
-        } else {
-          body = this.emptyMessage;
-        }
+    this.fetchMarkdownPreview(mdText, url, response => {
+      var body;
+      if (response.body.length > 0) {
+        ({ body } = response);
+      } else {
+        body = this.emptyMessage;
+      }
 
-        preview.removeClass('md-preview-loading').html(body);
-        preview.renderGFM();
-        this.renderReferencedUsers(response.references.users, $form);
+      preview.removeClass('md-preview-loading').html(body);
+      preview.renderGFM();
+      this.renderReferencedUsers(response.references.users, $form);
 
-        if (response.references.commands) {
-          this.renderReferencedCommands(response.references.commands, $form);
-        }
-      }.bind(this),
-    );
+      if (response.references.commands) {
+        this.renderReferencedCommands(response.references.commands, $form);
+      }
+    });
   }
 };
 
@@ -132,12 +128,12 @@ const markdownToolbar = $('.md-header-toolbar');
 
 $.fn.setupMarkdownPreview = function() {
   var $form = $(this);
-  $form.find('textarea.markdown-area').on('input', function() {
+  $form.find('textarea.markdown-area').on('input', () => {
     markdownPreview.hideReferencedUsers($form);
   });
 };
 
-$(document).on('markdown-preview:show', function(e, $form) {
+$(document).on('markdown-preview:show', (e, $form) => {
   if (!$form) {
     return;
   }
@@ -162,7 +158,7 @@ $(document).on('markdown-preview:show', function(e, $form) {
   markdownPreview.showPreview($form);
 });
 
-$(document).on('markdown-preview:hide', function(e, $form) {
+$(document).on('markdown-preview:hide', (e, $form) => {
   if (!$form) {
     return;
   }
@@ -191,7 +187,7 @@ $(document).on('markdown-preview:hide', function(e, $form) {
   markdownPreview.hideReferencedCommands($form);
 });
 
-$(document).on('markdown-preview:toggle', function(e, keyboardEvent) {
+$(document).on('markdown-preview:toggle', (e, keyboardEvent) => {
   var $target;
   $target = $(keyboardEvent.target);
   if ($target.is('textarea.markdown-area')) {

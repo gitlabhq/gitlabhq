@@ -9,9 +9,16 @@ module Projects
     end
 
     def execute
-      Projects::HousekeepingService.new(@project).execute do
+      service = Projects::HousekeepingService.new(@project)
+
+      service.execute do
         repository.delete_all_refs_except(RESERVED_REF_PREFIXES)
       end
+
+      # Right now we don't actually have a way to know if a project
+      # import actually changed, so we increment the counter to avoid
+      # causing GC to run every time.
+      service.increment!
     rescue Projects::HousekeepingService::LeaseTaken => e
       Rails.logger.info( # rubocop:disable Gitlab/RailsLogger
         "Could not perform housekeeping for project #{@project.full_path} (#{@project.id}): #{e}")

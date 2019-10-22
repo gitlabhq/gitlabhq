@@ -6,7 +6,7 @@ export default ({ container }) =>
   new Vue({
     el: container,
     components: {
-      performanceBarApp: () => import('./components/performance_bar_app.vue'),
+      PerformanceBarApp: () => import('./components/performance_bar_app.vue'),
     },
     data() {
       const performanceBarData = document.querySelector(this.$options.el).dataset;
@@ -41,7 +41,7 @@ export default ({ container }) =>
 
         PerformanceBarService.fetchRequestDetails(this.peekUrl, requestId)
           .then(res => {
-            this.store.addRequestDetails(requestId, res.data.data);
+            this.store.addRequestDetails(requestId, res.data);
           })
           .catch(() =>
             // eslint-disable-next-line no-console

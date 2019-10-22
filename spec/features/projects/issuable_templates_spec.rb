@@ -92,6 +92,9 @@ describe 'issuable templates', :js do
 
   context 'user creates a merge request using templates' do
     let(:template_content) { 'this is a test "feature-proposal" template' }
+    let(:bug_template_content) { 'this is merge request bug template' }
+    let(:template_override_warning) { 'Applying a template will replace the existing issue description.' }
+    let(:updated_description) { 'updated merge request description' }
     let(:merge_request) { create(:merge_request, :with_diffs, source_project: project) }
 
     before do
@@ -100,6 +103,12 @@ describe 'issuable templates', :js do
         '.gitlab/merge_request_templates/feature-proposal.md',
         template_content,
         message: 'added merge request template',
+        branch_name: 'master')
+      project.repository.create_file(
+        user,
+        '.gitlab/merge_request_templates/bug.md',
+        bug_template_content,
+        message: 'added merge request bug template',
         branch_name: 'master')
       visit edit_project_merge_request_path project, merge_request
       fill_in :'merge_request[title]', with: 'test merge request title'
@@ -110,6 +119,34 @@ describe 'issuable templates', :js do
       wait_for_requests
       assert_template
       save_changes
+    end
+
+    context 'changes template' do
+      before do
+        select_template 'bug'
+        wait_for_requests
+        fill_in :'merge_request[description]', with: updated_description
+        select_template 'feature-proposal'
+        expect(page).to have_content template_override_warning
+      end
+
+      it 'user selects "bug" template, then updates description, then selects "feature-proposal" template, then cancels template change' do
+        page.find('.js-template-warning .js-close-btn.js-cancel-btn').click
+        expect(find('textarea')['value']).to eq(updated_description)
+        expect(page).not_to have_content template_override_warning
+      end
+
+      it 'user selects "bug" template, then updates description, then selects "feature-proposal" template, then dismiss the template warning' do
+        page.find('.js-template-warning .js-close-btn.js-dismiss-btn').click
+        expect(find('textarea')['value']).to eq(updated_description)
+        expect(page).not_to have_content template_override_warning
+      end
+
+      it 'user selects "bug" template, then updates description, then selects "feature-proposal" template, then applies template change' do
+        page.find('.js-template-warning .js-override-template').click
+        wait_for_requests
+        assert_template
+      end
     end
   end
 

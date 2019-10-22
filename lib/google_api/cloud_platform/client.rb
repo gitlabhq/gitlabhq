@@ -2,6 +2,7 @@
 
 require 'google/apis/compute_v1'
 require 'google/apis/container_v1'
+require 'google/apis/container_v1beta1'
 require 'google/apis/cloudbilling_v1'
 require 'google/apis/cloudresourcemanager_v1'
 
@@ -53,30 +54,13 @@ module GoogleApi
         service.get_zone_cluster(project_id, zone, cluster_id, options: user_agent_header)
       end
 
-      def projects_zones_clusters_create(project_id, zone, cluster_name, cluster_size, machine_type:, legacy_abac:)
-        service = Google::Apis::ContainerV1::ContainerService.new
+      def projects_zones_clusters_create(project_id, zone, cluster_name, cluster_size, machine_type:, legacy_abac:, enable_addons: [])
+        service = Google::Apis::ContainerV1beta1::ContainerService.new
         service.authorization = access_token
 
-        request_body = Google::Apis::ContainerV1::CreateClusterRequest.new(
-          {
-            "cluster": {
-              "name": cluster_name,
-              "initial_node_count": cluster_size,
-              "node_config": {
-                "machine_type": machine_type
-              },
-              "master_auth": {
-                "username": CLUSTER_MASTER_AUTH_USERNAME,
-                "client_certificate_config": {
-                  issue_client_certificate: true
-                }
-              },
-              "legacy_abac": {
-                "enabled": legacy_abac
-              }
-            }
-          }
-        )
+        cluster_options = make_cluster_options(cluster_name, cluster_size, machine_type, legacy_abac, enable_addons)
+
+        request_body = Google::Apis::ContainerV1beta1::CreateClusterRequest.new(cluster_options)
 
         service.create_cluster(project_id, zone, request_body, options: user_agent_header)
       end
@@ -94,6 +78,33 @@ module GoogleApi
       end
 
       private
+
+      def make_cluster_options(cluster_name, cluster_size, machine_type, legacy_abac, enable_addons)
+        {
+          cluster: {
+            name: cluster_name,
+            initial_node_count: cluster_size,
+            node_config: {
+              machine_type: machine_type
+            },
+            master_auth: {
+              username: CLUSTER_MASTER_AUTH_USERNAME,
+              client_certificate_config: {
+                issue_client_certificate: true
+              }
+            },
+            legacy_abac: {
+              enabled: legacy_abac
+            },
+            ip_allocation_policy: {
+              use_ip_aliases: true
+            },
+            addons_config: enable_addons.each_with_object({}) do |addon, hash|
+              hash[addon] = { disabled: false }
+            end
+          }
+        }
+      end
 
       def token_life_time(expires_at)
         DateTime.strptime(expires_at, '%s').to_time.utc - Time.now.utc

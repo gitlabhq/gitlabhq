@@ -117,10 +117,10 @@ not without its own challenges:
   history. Concurrent jobs work fine because every build gets it's own
   instance of Docker engine so they won't conflict with each other. But this
   also means jobs can be slower because there's no caching of layers.
-- By default, `docker:dind` uses `--storage-driver vfs` which is the slowest
-  form offered. To use a different driver, see
-  [Using the overlayfs driver](#using-the-overlayfs-driver).
-- Since the `docker:dind` container and the runner container don't share their
+- By default, Docker 17.09 and higher uses `--storage-driver overlay2` which is
+  the recommended storage driver. See [Using the overlayfs driver](#using-the-overlayfs-driver)
+  for details.
+- Since the `docker:19.03.1-dind` container and the Runner container don't share their
   root filesystem, the job's working directory can be used as a mount point for
   child containers. For example, if you have files you want to share with a
   child container, you may create a subdirectory under `/builds/$CI_PROJECT_PATH`
@@ -155,7 +155,7 @@ docker-in-docker service and
 [GitLab.com Shared Runners](../../user/gitlab_com/index.html#shared-runners)
 support this.
 
-1. Install [GitLab Runner](https://docs.gitlab.com/runner/install).
+1. Install [GitLab Runner](https://docs.gitlab.com/runner/install/).
 
 1. Register GitLab Runner from the command line to use `docker` and `privileged`
    mode:
@@ -218,13 +218,10 @@ support this.
      # https://docs.gitlab.com/ee/ci/docker/using_docker_images.html#accessing-the-services.
      #
      # Note that if you're using the Kubernetes executor, the variable
-     # should be set to tcp://localhost:2376/ because of how the
+     # should be set to tcp://localhost:2376 because of how the
      # Kubernetes executor connects services to the job container
-     # DOCKER_HOST: tcp://localhost:2376/
+     # DOCKER_HOST: tcp://localhost:2376
      #
-     # When using dind, it's wise to use the overlayfs driver for
-     # improved performance.
-     DOCKER_DRIVER: overlay2
      # Specify to Docker where to create the certificates, Docker will
      # create them automatically on boot, and will create
      # `/certs/client` that will be shared between the service and job
@@ -283,15 +280,12 @@ variables:
   # https://docs.gitlab.com/ee/ci/docker/using_docker_images.html#accessing-the-services
   #
   # Note that if you're using the Kubernetes executor, the variable should be set to
-  # tcp://localhost:2375/ because of how the Kubernetes executor connects services
+  # tcp://localhost:2375 because of how the Kubernetes executor connects services
   # to the job container
-  # DOCKER_HOST: tcp://localhost:2375/
+  # DOCKER_HOST: tcp://localhost:2375
   #
-  # For non-Kubernetes executors, we use tcp://docker:2375/
-  DOCKER_HOST: tcp://docker:2375/
-  # When using dind, it's wise to use the overlayfs driver for
-  # improved performance.
-  DOCKER_DRIVER: overlay2
+  # For non-Kubernetes executors, we use tcp://docker:2375
+  DOCKER_HOST: tcp://docker:2375
   #
   # This will instruct Docker not to start over TLS.
   DOCKER_TLS_CERTDIR: ""
@@ -317,12 +311,12 @@ container so that Docker is available in the context of that image.
 NOTE: **Note:**
 If you bind the Docker socket [when using GitLab Runner 11.11 or
 newer](https://gitlab.com/gitlab-org/gitlab-runner/merge_requests/1261),
-you can no longer use `docker:dind` as a service because volume bindings
+you can no longer use `docker:19.03.1-dind` as a service because volume bindings
 are done to the services as well, making these incompatible.
 
 In order to do that, follow the steps:
 
-1. Install [GitLab Runner](https://docs.gitlab.com/runner/install).
+1. Install [GitLab Runner](https://docs.gitlab.com/runner/install/).
 
 1. Register GitLab Runner from the command line to use `docker` and share `/var/run/docker.sock`:
 
@@ -332,14 +326,14 @@ In order to do that, follow the steps:
      --registration-token REGISTRATION_TOKEN \
      --executor docker \
      --description "My Docker Runner" \
-     --docker-image "docker:stable" \
+     --docker-image "docker:19.03.1" \
      --docker-volumes /var/run/docker.sock:/var/run/docker.sock
    ```
 
    The above command will register a new Runner to use the special
-   `docker:stable` image which is provided by Docker. **Notice that it's using
-   the Docker daemon of the Runner itself, and any containers spawned by docker
-   commands will be siblings of the Runner rather than children of the runner.**
+   `docker:19.03.1` image which is provided by Docker. **Notice that it's using
+   the Docker daemon of the Runner itself, and any containers spawned by Docker
+   commands will be siblings of the Runner rather than children of the Runner.**
    This may have complications and limitations that are unsuitable for your workflow.
 
    The above command will create a `config.toml` entry similar to this:
@@ -351,7 +345,7 @@ In order to do that, follow the steps:
      executor = "docker"
      [runners.docker]
        tls_verify = false
-       image = "docker:stable"
+       image = "docker:19.03.1"
        privileged = false
        disable_cache = false
        volumes = ["/var/run/docker.sock:/var/run/docker.sock", "/cache"]
@@ -360,10 +354,11 @@ In order to do that, follow the steps:
    ```
 
 1. You can now use `docker` in the build script (note that you don't need to
-   include the `docker:dind` service as when using the Docker in Docker executor):
+   include the `docker:19.03.1-dind` service as when using the Docker in Docker
+   executor):
 
    ```yaml
-   image: docker:stable
+   image: docker:19.03.1
 
    before_script:
      - docker info
@@ -417,14 +412,15 @@ any image that's used with the `--cache-from` argument must first be pulled
 Here's a simple `.gitlab-ci.yml` file showing how Docker caching can be utilized:
 
 ```yaml
-image: docker:stable
+image: docker:19.03.1
 
 services:
-  - docker:dind
+  - docker:19.03.1-dind
 
 variables:
-  DOCKER_HOST: tcp://docker:2375
-  DOCKER_DRIVER: overlay2
+  # Use TLS https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#tls-enabled
+  DOCKER_HOST: tcp://docker:2376
+  DOCKER_TLS_CERTDIR: "/certs"
 
 before_script:
   - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
@@ -526,7 +522,7 @@ Some things you should be aware of:
   longer, but means you don’t get stuck without security patches to base images.
 - Doing an explicit `docker pull` before each `docker run` fetches
   the latest image that was just built. This is especially important if you are
-  using multiple runners that cache images locally. Using the git SHA in your
+  using multiple runners that cache images locally. Using the Git SHA in your
   image tag makes this less necessary since each job will be unique and you
   shouldn't ever have a stale image. However, it's still possible to have a
   stale image if you re-build a given commit after a dependency has changed.
@@ -597,7 +593,6 @@ assuming you have it configured with [TLS enabled](#tls-enabled):
      # `/certs/client` that will be shared between the service and
      # build container.
      DOCKER_TLS_CERTDIR: "/certs"
-     DOCKER_DRIVER: overlay2
    stage: build
    script:
      - docker build -t my-docker-image .
@@ -618,37 +613,36 @@ If you're using docker-in-docker on your Runners, this is how your `.gitlab-ci.y
 could look like:
 
 ```yaml
- build:
-   image: docker:stable
-   services:
-     - docker:dind
-   variables:
-     DOCKER_HOST: tcp://docker:2375
-     DOCKER_DRIVER: overlay2
-   stage: build
-   script:
-     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-     - docker build -t $CI_REGISTRY/group/project/image:latest .
-     - docker push $CI_REGISTRY/group/project/image:latest
+build:
+  image: docker:19.03.1
+  stage: build
+  services:
+    - docker:19.03.1-dind
+  variables:
+    # Use TLS https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#tls-enabled
+    DOCKER_HOST: tcp://docker:2376
+    DOCKER_TLS_CERTDIR: "/certs"
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker build -t $CI_REGISTRY/group/project/image:latest .
+    - docker push $CI_REGISTRY/group/project/image:latest
 ```
 
 You can also make use of [other variables](../variables/README.md) to avoid hardcoding:
 
 ```yaml
-services:
-  - docker:dind
-
-variables:
-  DOCKER_HOST: tcp://docker:2375
-  DOCKER_DRIVER: overlay2
-  IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
-
-before_script:
-  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-
 build:
+  image: docker:19.03.1
   stage: build
+  services:
+    - docker:19.03.1-dind
+  variables:
+    # Use TLS https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#tls-enabled
+    DOCKER_HOST: tcp://docker:2376
+    DOCKER_TLS_CERTDIR: "/certs"
+    IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
   script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker build -t $IMAGE_TAG .
     - docker push $IMAGE_TAG
 ```
@@ -667,9 +661,9 @@ when needed. Changes to `master` also get tagged as `latest` and deployed using
 an application-specific deploy script:
 
 ```yaml
-image: docker:stable
+image: docker:19.03.1
 services:
-  - docker:dind
+  - docker:19.03.1-dind
 
 stages:
   - build
@@ -678,8 +672,9 @@ stages:
   - deploy
 
 variables:
-  DOCKER_HOST: tcp://docker:2375
-  DOCKER_DRIVER: overlay2
+  # Use TLS https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#tls-enabled
+  DOCKER_HOST: tcp://docker:2376
+  DOCKER_TLS_CERTDIR: "/certs"
   CONTAINER_TEST_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
   CONTAINER_RELEASE_IMAGE: $CI_REGISTRY_IMAGE:latest
 

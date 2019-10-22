@@ -106,13 +106,16 @@ end
        Using `any_instance` to stub a method (elasticsearch_indexing) that has been defined on a prepended module (EE::ApplicationSetting) is not supported.
   ```
 
-### Alternative: `expect_next_instance_of`
+### Alternative: `expect_next_instance_of` or `allow_next_instance_of`
 
 Instead of writing:
 
 ```ruby
 # Don't do this:
 expect_any_instance_of(Project).to receive(:add_import_job)
+
+# Don't do this:
+allow_any_instance_of(Project).to receive(:add_import_job)
 ```
 
 We could write:
@@ -122,10 +125,15 @@ We could write:
 expect_next_instance_of(Project) do |project|
   expect(project).to receive(:add_import_job)
 end
+
+# Do this:
+allow_next_instance_of(Project) do |project|
+  allow(project).to receive(:add_import_job)
+end
 ```
 
-If we also want to expect the instance was initialized with some particular
-arguments, we could also pass it to `expect_next_instance_of` like:
+If we also want to initialize the instance with some particular arguments, we
+could also pass it like:
 
 ```ruby
 # Do this:
@@ -144,21 +152,19 @@ refresh_service.execute(oldrev, newrev, ref)
 
 ## Do not `rescue Exception`
 
-See ["Why is it bad style to `rescue Exception => e` in Ruby?"][Exception].
+See ["Why is it bad style to `rescue Exception => e` in Ruby?"](https://stackoverflow.com/questions/10048173/why-is-it-bad-style-to-rescue-exception-e-in-ruby).
 
 _**Note:** This rule is [enforced automatically by
-Rubocop](https://gitlab.com/gitlab-org/gitlab-foss/blob/8-4-stable/.rubocop.yml#L911-914)._
-
-[Exception]: http://stackoverflow.com/q/10048173/223897
+Rubocop](https://gitlab.com/gitlab-org/gitlab/blob/8-4-stable/.rubocop.yml#L911-914)._
 
 ## Do not use inline JavaScript in views
 
 Using the inline `:javascript` Haml filters comes with a
 performance overhead. Using inline JavaScript is not a good way to structure your code and should be avoided.
 
-_**Note:** We've [removed these two filters](https://gitlab.com/gitlab-org/gitlab-foss/blob/master/config/initializers/hamlit.rb)
+_**Note:** We've [removed these two filters](https://gitlab.com/gitlab-org/gitlab/blob/master/config/initializers/hamlit.rb)
 in an initializer._
 
 ### Further reading
 
-- Stack Overflow: [Why you should not write inline JavaScript](http://programmers.stackexchange.com/questions/86589/why-should-i-avoid-inline-scripting)
+- Stack Overflow: [Why you should not write inline JavaScript](https://softwareengineering.stackexchange.com/questions/86589/why-should-i-avoid-inline-scripting)

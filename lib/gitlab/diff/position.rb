@@ -79,6 +79,10 @@ module Gitlab
         formatter.line_age
       end
 
+      def unfoldable?
+        on_text? && unchanged?
+      end
+
       def unchanged?
         type.nil?
       end
@@ -118,8 +122,14 @@ module Gitlab
             path: file_path
           }
 
+          # Takes action when creating diff notes (multiple calls are
+          # submitted to this method).
           Gitlab::SafeRequestStore.fetch(key) { find_diff_file(repository) }
         end
+
+        # We need to unfold diff lines according to the position in order
+        # to correctly calculate the line code and trace position changes.
+        @diff_file&.tap { |file| file.unfold_diff_lines(self) }
       end
 
       def diff_options
@@ -152,13 +162,7 @@ module Gitlab
         return unless diff_refs.complete?
         return unless comparison = diff_refs.compare_in(repository.project)
 
-        file = comparison.diffs(diff_options).diff_files.first
-
-        # We need to unfold diff lines according to the position in order
-        # to correctly calculate the line code and trace position changes.
-        file&.unfold_diff_lines(self)
-
-        file
+        comparison.diffs(diff_options).diff_files.first
       end
 
       def get_formatter_class(type)

@@ -69,6 +69,7 @@ describe Gitlab::Ci::Config::Entry::Cache do
     context 'when entry value is not correct' do
       describe '#errors' do
         subject { entry.errors }
+
         context 'when is not a hash' do
           let(:config) { 'ls' }
 

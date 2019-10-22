@@ -104,11 +104,11 @@ export default {
       />
       <div
         :class="{ 'd-sm-flex': !group.isChildrenLoading }"
-        class="avatar-container rect-avatar s32 d-none flex-grow-0 flex-shrink-0 "
+        class="avatar-container rect-avatar s40 d-none flex-grow-0 flex-shrink-0 "
       >
         <a :href="group.relativePath" class="no-expand">
-          <img v-if="hasAvatar" :src="group.avatarUrl" class="avatar s32" />
-          <identicon v-else :entity-id="group.id" :entity-name="group.name" size-class="s32" />
+          <img v-if="hasAvatar" :src="group.avatarUrl" class="avatar s40" />
+          <identicon v-else :entity-id="group.id" :entity-name="group.name" size-class="s40" />
         </a>
       </div>
       <div class="group-text-container d-flex flex-fill align-items-center">

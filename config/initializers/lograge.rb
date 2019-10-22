@@ -32,6 +32,10 @@ unless Sidekiq.server?
       payload[:response] = event.payload[:response] if event.payload[:response]
       payload[Labkit::Correlation::CorrelationId::LOG_KEY] = Labkit::Correlation::CorrelationId.current_id
 
+      if cpu_s = Gitlab::Metrics::System.thread_cpu_duration(::Gitlab::RequestContext.start_thread_cpu_time)
+        payload[:cpu_s] = cpu_s
+      end
+
       payload
     end
   end

@@ -5,6 +5,7 @@ require 'spec_helper'
 describe Gitlab::RequestContext do
   describe '#client_ip' do
     subject { described_class.client_ip }
+
     let(:app) { -> (env) {} }
     let(:env) { Hash.new }
 

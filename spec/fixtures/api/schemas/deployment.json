@@ -60,7 +60,8 @@
     "scheduled_actions": {
       "type": "array",
       "items": { "$ref": "job/job.json" }
-    }
+    },
+    "status": { "type": "string" }
   },
   "additionalProperties": false
 }

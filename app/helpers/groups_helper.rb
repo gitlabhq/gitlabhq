@@ -15,6 +15,18 @@ module GroupsHelper
     %w[groups#projects groups#edit badges#index ci_cd#show ldap_group_links#index hooks#index audit_events#index pipeline_quota#index]
   end
 
+  def group_packages_nav_link_paths
+    %w[
+      groups/container_registries#index
+    ]
+  end
+
+  def group_container_registry_nav?
+    Gitlab.config.registry.enabled &&
+      can?(current_user, :read_container_image, @group) &&
+      Feature.enabled?(:group_container_registry_browser, @group)
+  end
+
   def group_sidebar_links
     @group_sidebar_links ||= get_group_sidebar_links
   end
@@ -32,8 +44,7 @@ module GroupsHelper
   end
 
   def can_disable_group_emails?(group)
-    Feature.enabled?(:emails_disabled, group, default_enabled: true) &&
-      can?(current_user, :set_emails_disabled, group) && !group.parent&.emails_disabled?
+    can?(current_user, :set_emails_disabled, group) && !group.parent&.emails_disabled?
   end
 
   def group_issues_count(state:)

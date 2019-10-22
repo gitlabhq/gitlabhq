@@ -5,6 +5,7 @@ module Ci
     include AfterCommitQueue
     include ObjectStorage::BackgroundMove
     include UpdateProjectStatistics
+    include Sortable
     extend Gitlab::Ci::Model
 
     NotSupportedAdapterError = Class.new(StandardError)
@@ -64,6 +65,7 @@ module Ci
     after_save :update_file_store, if: :saved_change_to_file?
 
     scope :with_files_stored_locally, -> { where(file_store: [nil, ::JobArtifactUploader::Store::LOCAL]) }
+    scope :with_files_stored_remotely, -> { where(file_store: ::JobArtifactUploader::Store::REMOTE) }
 
     scope :with_file_types, -> (file_types) do
       types = self.file_types.select { |file_type| file_types.include?(file_type) }.values
@@ -141,6 +143,10 @@ module Ci
       # The file.object_store is set during `uploader.store!`
       # which happens after object is inserted/updated
       self.update_column(:file_store, file.object_store)
+    end
+
+    def self.total_size
+      self.sum(:size)
     end
 
     def self.artifacts_size_for(project)

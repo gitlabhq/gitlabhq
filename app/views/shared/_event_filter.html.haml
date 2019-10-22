@@ -1,3 +1,5 @@
+- show_group_events = local_assigns.fetch(:show_group_events, false)
+
 .scrolling-tabs-container.inner-page-scroll-tabs.is-smaller.flex-fill
   .fade-left= icon('angle-left')
   .fade-right= icon('angle-right')
@@ -9,6 +11,8 @@
       = event_filter_link EventFilter::MERGED, _('Merge events'), s_('EventFilterBy|Filter by merge events')
     - if event_filter_visible(:issues)
       = event_filter_link EventFilter::ISSUE, _('Issue events'), s_('EventFilterBy|Filter by issue events')
+    - if show_group_events
+      = render_if_exists 'events/epics_filter'
     - if comments_visible?
       = event_filter_link EventFilter::COMMENTS, _('Comments'), s_('EventFilterBy|Filter by comments')
     = event_filter_link EventFilter::TEAM, _('Team'), s_('EventFilterBy|Filter by team')

@@ -2,6 +2,9 @@ import Vue from 'vue';
 import component from '~/jobs/components/environments_block.vue';
 import mountComponent from '../../helpers/vue_mount_component_helper';
 
+const TEST_CLUSTER_NAME = 'test_cluster';
+const TEST_CLUSTER_PATH = 'path/to/test_cluster';
+
 describe('Environments block', () => {
   const Component = Vue.extend(component);
   let vm;
@@ -20,22 +23,53 @@ describe('Environments block', () => {
 
   const lastDeployment = { iid: 'deployment', deployable: { build_path: 'bar' } };
 
+  const createEnvironmentWithLastDeployment = () => ({
+    ...environment,
+    last_deployment: { ...lastDeployment },
+  });
+
+  const createEnvironmentWithCluster = () => ({
+    ...environment,
+    last_deployment: {
+      ...lastDeployment,
+      cluster: { name: TEST_CLUSTER_NAME, path: TEST_CLUSTER_PATH },
+    },
+  });
+
+  const createComponent = (deploymentStatus = {}) => {
+    vm = mountComponent(Component, {
+      deploymentStatus,
+      iconStatus: status,
+    });
+  };
+
+  const findText = () => vm.$el.textContent.trim();
+  const findJobDeploymentLink = () => vm.$el.querySelector('.js-job-deployment-link');
+  const findEnvironmentLink = () => vm.$el.querySelector('.js-environment-link');
+  const findClusterLink = () => vm.$el.querySelector('.js-job-cluster-link');
+
   afterEach(() => {
     vm.$destroy();
   });
 
   describe('with last deployment', () => {
     it('renders info for most recent deployment', () => {
-      vm = mountComponent(Component, {
-        deploymentStatus: {
-          status: 'last',
-          environment,
-        },
-        iconStatus: status,
+      createComponent({
+        status: 'last',
+        environment,
       });
 
-      expect(vm.$el.textContent.trim()).toEqual(
-        'This job is the most recent deployment to environment.',
+      expect(findText()).toEqual('This job is deployed to environment.');
+    });
+
+    it('renders info with cluster', () => {
+      createComponent({
+        status: 'last',
+        environment: createEnvironmentWithCluster(),
+      });
+
+      expect(findText()).toEqual(
+        `This job is deployed to environment using cluster ${TEST_CLUSTER_NAME}.`,
       );
     });
   });
@@ -43,133 +77,106 @@ describe('Environments block', () => {
   describe('with out of date deployment', () => {
     describe('with last deployment', () => {
       it('renders info for out date and most recent', () => {
-        vm = mountComponent(Component, {
-          deploymentStatus: {
-            status: 'out_of_date',
-            environment: Object.assign({}, environment, {
-              last_deployment: lastDeployment,
-            }),
-          },
-          iconStatus: status,
+        createComponent({
+          status: 'out_of_date',
+          environment: createEnvironmentWithLastDeployment(),
         });
 
-        expect(vm.$el.textContent.trim()).toEqual(
-          'This job is an out-of-date deployment to environment. View the most recent deployment #deployment.',
+        expect(findText()).toEqual(
+          'This job is an out-of-date deployment to environment. View the most recent deployment.',
         );
 
-        expect(vm.$el.querySelector('.js-job-deployment-link').getAttribute('href')).toEqual('bar');
+        expect(findJobDeploymentLink().getAttribute('href')).toEqual('bar');
+      });
+
+      it('renders info with cluster', () => {
+        createComponent({
+          status: 'out_of_date',
+          environment: createEnvironmentWithCluster(),
+        });
+
+        expect(findText()).toEqual(
+          `This job is an out-of-date deployment to environment using cluster ${TEST_CLUSTER_NAME}. View the most recent deployment.`,
+        );
       });
     });
 
     describe('without last deployment', () => {
       it('renders info about out of date deployment', () => {
-        vm = mountComponent(Component, {
-          deploymentStatus: {
-            status: 'out_of_date',
-            environment,
-          },
-          iconStatus: status,
+        createComponent({
+          status: 'out_of_date',
+          environment,
         });
 
-        expect(vm.$el.textContent.trim()).toEqual(
-          'This job is an out-of-date deployment to environment.',
-        );
+        expect(findText()).toEqual('This job is an out-of-date deployment to environment.');
       });
     });
   });
 
   describe('with failed deployment', () => {
     it('renders info about failed deployment', () => {
-      vm = mountComponent(Component, {
-        deploymentStatus: {
-          status: 'failed',
-          environment,
-        },
-        iconStatus: status,
+      createComponent({
+        status: 'failed',
+        environment,
       });
 
-      expect(vm.$el.textContent.trim()).toEqual(
-        'The deployment of this job to environment did not succeed.',
-      );
+      expect(findText()).toEqual('The deployment of this job to environment did not succeed.');
     });
   });
 
   describe('creating deployment', () => {
     describe('with last deployment', () => {
       it('renders info about creating deployment and overriding latest deployment', () => {
-        vm = mountComponent(Component, {
-          deploymentStatus: {
-            status: 'creating',
-            environment: Object.assign({}, environment, {
-              last_deployment: lastDeployment,
-            }),
-          },
-          iconStatus: status,
+        createComponent({
+          status: 'creating',
+          environment: createEnvironmentWithLastDeployment(),
         });
 
-        expect(vm.$el.textContent.trim()).toEqual(
-          'This job is creating a deployment to environment and will overwrite the latest deployment.',
+        expect(findText()).toEqual(
+          'This job is creating a deployment to environment. This will overwrite the latest deployment.',
         );
 
-        expect(vm.$el.querySelector('.js-job-deployment-link').getAttribute('href')).toEqual('bar');
+        expect(findJobDeploymentLink().getAttribute('href')).toEqual('bar');
+        expect(findEnvironmentLink().getAttribute('href')).toEqual(environment.environment_path);
+        expect(findClusterLink()).toBeNull();
       });
     });
 
     describe('without last deployment', () => {
       it('renders info about failed deployment', () => {
-        vm = mountComponent(Component, {
-          deploymentStatus: {
-            status: 'creating',
-            environment,
-          },
-          iconStatus: status,
+        createComponent({
+          status: 'creating',
+          environment,
         });
 
-        expect(vm.$el.textContent.trim()).toEqual(
-          'This job is creating a deployment to environment.',
-        );
+        expect(findText()).toEqual('This job is creating a deployment to environment.');
       });
     });
 
     describe('without environment', () => {
       it('does not render environment link', () => {
-        vm = mountComponent(Component, {
-          deploymentStatus: {
-            status: 'creating',
-            environment: null,
-          },
-          iconStatus: status,
+        createComponent({
+          status: 'creating',
+          environment: null,
         });
 
-        expect(vm.$el.querySelector('.js-environment-link')).toBeNull();
+        expect(findEnvironmentLink()).toBeNull();
       });
     });
   });
 
   describe('with a cluster', () => {
     it('renders the cluster link', () => {
-      const cluster = {
-        name: 'the-cluster',
-        path: '/the-cluster-path',
-      };
-      vm = mountComponent(Component, {
-        deploymentStatus: {
-          status: 'last',
-          environment: Object.assign({}, environment, {
-            last_deployment: {
-              ...lastDeployment,
-              cluster,
-            },
-          }),
-        },
-        iconStatus: status,
+      createComponent({
+        status: 'last',
+        environment: createEnvironmentWithCluster(),
       });
 
-      expect(vm.$el.textContent.trim()).toContain('Cluster the-cluster was used.');
-
-      expect(vm.$el.querySelector('.js-job-cluster-link').getAttribute('href')).toEqual(
-        '/the-cluster-path',
+      expect(findText()).toEqual(
+        `This job is deployed to environment using cluster ${TEST_CLUSTER_NAME}.`,
       );
+
+      expect(findClusterLink().getAttribute('href')).toEqual(TEST_CLUSTER_PATH);
     });
 
     describe('when the cluster is missing the path', () => {
@@ -177,39 +184,20 @@ describe('Environments block', () => {
         const cluster = {
           name: 'the-cluster',
         };
-        vm = mountComponent(Component, {
-          deploymentStatus: {
-            status: 'last',
-            environment: Object.assign({}, environment, {
-              last_deployment: {
-                ...lastDeployment,
-                cluster,
-              },
-            }),
-          },
-          iconStatus: status,
-        });
-
-        expect(vm.$el.textContent.trim()).toContain('Cluster the-cluster was used.');
-
-        expect(vm.$el.querySelector('.js-job-cluster-link')).toBeNull();
-      });
-    });
-  });
-
-  describe('without a cluster', () => {
-    it('does not render a cluster link', () => {
-      vm = mountComponent(Component, {
-        deploymentStatus: {
+        createComponent({
           status: 'last',
           environment: Object.assign({}, environment, {
-            last_deployment: lastDeployment,
+            last_deployment: {
+              ...lastDeployment,
+              cluster,
+            },
           }),
-        },
-        iconStatus: status,
-      });
+        });
 
-      expect(vm.$el.querySelector('.js-job-cluster-link')).toBeNull();
+        expect(findText()).toContain('using cluster the-cluster.');
+
+        expect(findClusterLink()).toBeNull();
+      });
     });
   });
 });

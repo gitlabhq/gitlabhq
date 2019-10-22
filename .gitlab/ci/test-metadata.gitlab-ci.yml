@@ -1,10 +1,16 @@
 .tests-metadata-state:
   extends:
     - .default-only
+    - .only-code-changes
   variables:
     TESTS_METADATA_S3_BUCKET: "gitlab-ce-cache"
   before_script:
     - source scripts/utils.sh
+  cache:
+    key: tests_metadata
+    paths:
+      - knapsack/
+      - rspec_flaky/
   artifacts:
     expire_in: 31d
     paths:
@@ -13,55 +19,29 @@
       - rspec_profiling/
 
 retrieve-tests-metadata:
-  extends:
-    - .tests-metadata-state
-    - .only-code-changes
+  extends: .tests-metadata-state
   stage: prepare
   cache:
-    key: tests_metadata
     policy: pull
   script:
-    - mkdir -p knapsack/${CI_PROJECT_NAME}/
-    - wget -O $KNAPSACK_RSPEC_SUITE_REPORT_PATH http://${TESTS_METADATA_S3_BUCKET}.s3.amazonaws.com/$KNAPSACK_RSPEC_SUITE_REPORT_PATH || rm $KNAPSACK_RSPEC_SUITE_REPORT_PATH
-    - '[[ -f $KNAPSACK_RSPEC_SUITE_REPORT_PATH ]] || echo "{}" > ${KNAPSACK_RSPEC_SUITE_REPORT_PATH}'
-    - mkdir -p rspec_flaky/
-    - mkdir -p rspec_profiling/
-    - wget -O $FLAKY_RSPEC_SUITE_REPORT_PATH http://${TESTS_METADATA_S3_BUCKET}.s3.amazonaws.com/$FLAKY_RSPEC_SUITE_REPORT_PATH || rm $FLAKY_RSPEC_SUITE_REPORT_PATH
-    - '[[ -f $FLAKY_RSPEC_SUITE_REPORT_PATH ]] || echo "{}" > ${FLAKY_RSPEC_SUITE_REPORT_PATH}'
-    - '[[ ! -d "ee/" ]] || wget -O $EE_KNAPSACK_RSPEC_SUITE_REPORT_PATH http://${TESTS_METADATA_S3_BUCKET}.s3.amazonaws.com/$EE_KNAPSACK_RSPEC_SUITE_REPORT_PATH || rm $EE_KNAPSACK_RSPEC_SUITE_REPORT_PATH'
-    - '[[ ! -d "ee/" ]] || [[ -f $EE_KNAPSACK_RSPEC_SUITE_REPORT_PATH ]] || echo "{}" > ${EE_KNAPSACK_RSPEC_SUITE_REPORT_PATH}'
+    - source scripts/rspec_helpers.sh
+    - retrieve_tests_metadata
 
 update-tests-metadata:
-  extends:
-    - .tests-metadata-state
-    - .only-code-changes
+  extends: .tests-metadata-state
   stage: post-test
   cache:
-    key: tests_metadata
-    paths:
-      - knapsack/
-      - rspec_flaky/
     policy: push
   script:
     - retry gem install fog-aws mime-types activesupport rspec_profiling postgres-copy --no-document
-    - echo "{}" > ${KNAPSACK_RSPEC_SUITE_REPORT_PATH}
-    - scripts/merge-reports ${KNAPSACK_RSPEC_SUITE_REPORT_PATH} knapsack/${CI_PROJECT_NAME}/rspec_*_pg_node_*.json
-    - '[[ -z ${TESTS_METADATA_S3_BUCKET} ]] || scripts/sync-reports put $TESTS_METADATA_S3_BUCKET $KNAPSACK_RSPEC_SUITE_REPORT_PATH'
-    - '[[ ! -d "ee/" ]] || echo "{}" > ${EE_KNAPSACK_RSPEC_SUITE_REPORT_PATH}'
-    - '[[ ! -d "ee/" ]] || scripts/merge-reports ${EE_KNAPSACK_RSPEC_SUITE_REPORT_PATH} knapsack/${CI_PROJECT_NAME}/rspec_*_pg_ee_*node_*.json'
-    - '[[ ! -d "ee/" ]] || [[ -z ${TESTS_METADATA_S3_BUCKET} ]] || scripts/sync-reports put $TESTS_METADATA_S3_BUCKET $EE_KNAPSACK_RSPEC_SUITE_REPORT_PATH'
-    - rm -f knapsack/${CI_PROJECT_NAME}/*_node_*.json
-    - scripts/merge-reports ${FLAKY_RSPEC_SUITE_REPORT_PATH} rspec_flaky/all_*_*.json
-    - FLAKY_RSPEC_GENERATE_REPORT=1 scripts/prune-old-flaky-specs ${FLAKY_RSPEC_SUITE_REPORT_PATH}
-    - '[[ -z ${TESTS_METADATA_S3_BUCKET} ]] || scripts/sync-reports put $TESTS_METADATA_S3_BUCKET $FLAKY_RSPEC_SUITE_REPORT_PATH'
-    - rm -f rspec_flaky/all_*.json rspec_flaky/new_*.json
-    - scripts/insert-rspec-profiling-data
+    - source scripts/rspec_helpers.sh
+    - update_tests_metadata
   only:
     refs:
-      - master
+      - schedules
     variables:
-      - $CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org"
-      - $CI_SERVER_HOST == "dev.gitlab.org"
+      # Only update the Knapsack metadata on GitLab.com/gitlab-org/gitlab
+      - $CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/gitlab"
 
 flaky-examples-check:
   extends:

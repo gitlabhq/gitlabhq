@@ -12,7 +12,8 @@ end
 
 module Trigger
   def self.ee?
-    ENV['CI_PROJECT_NAME'] == 'gitlab-ee' || File.exist?('CHANGELOG-EE.md')
+    # Support former project name for `dev`
+    %w[gitlab gitlab-ee].include?(ENV['CI_PROJECT_NAME'])
   end
 
   class Base
@@ -89,7 +90,7 @@ module Trigger
     private
 
     def downstream_project_path
-      'gitlab-org/omnibus-gitlab'
+      ENV['OMNIBUS_PROJECT_PATH'] || 'gitlab-org/build/omnibus-gitlab-mirror'
     end
 
     def ref
@@ -97,7 +98,7 @@ module Trigger
     end
 
     def trigger_token
-      ENV['BUILD_TRIGGER_TOKEN']
+      ENV['CI_JOB_TOKEN']
     end
 
     def access_token

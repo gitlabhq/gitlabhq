@@ -108,6 +108,11 @@ module ApplicationHelper
     Gitlab.config.extra
   end
 
+  # shortcut for gitlab registry config
+  def registry_config
+    Gitlab.config.registry
+  end
+
   # Render a `time` element with Javascript-based relative date and tooltip
   #
   # time       - Time object

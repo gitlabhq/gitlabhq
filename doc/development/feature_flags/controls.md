@@ -1,9 +1,11 @@
-# Access for enabling a feature flag in production
+# Feature flag controls
 
-In order to be able to turn on/off features behind feature flags in any of the
+## Access
+
+To be able to turn on/off features behind feature flags in any of the
 GitLab Inc. provided environments such as staging and production, you need to
-have access to the chatops bot. Chatops bot is currently running on the ops instance,
-which is different from GitLab.com or dev.gitlab.org.
+have access to the [Chatops](../chatops_on_gitlabcom.md) bot. The Chatops bot
+is currently running on the ops instance, which is different from <https://gitlab.com> or <https://dev.gitlab.org>.
 
 Follow the Chatops document to [request access](../chatops_on_gitlabcom.md#requesting-access).
 
@@ -13,6 +15,19 @@ run:
 ```
 /chatops run feature --help
 ```
+
+## Where to run commands
+
+To increase visibility, we recommend that GitLab team members run feature flag
+related Chatops commands within certain slack channels based on the environment
+and related feature. For the [staging](https://staging.gitlab.com)
+and [development](https://dev.gitlab.org) environments of GitLab.com,
+the commands should run in a channel for the stage the feature is relevant too.
+
+For example, use the `#s_monitor` channel for features developed by the
+Monitor stage, Health group.
+
+For all production environment Chatops commands, use the `#production` channel.
 
 ## Rolling out changes
 
@@ -28,7 +43,7 @@ easier to measure the impact of both separately.
 GitLab's feature library (using
 [Flipper](https://github.com/jnunemaker/flipper), and covered in the [Feature
 Flags process](process.md) guide) supports rolling out changes to a percentage of
-users. This in turn can be controlled using [GitLab chatops](../../ci/chatops/README.md).
+users. This in turn can be controlled using [GitLab Chatops](../../ci/chatops/README.md).
 
 For an up to date list of feature flag commands please see [the source
 code](https://gitlab.com/gitlab-com/chatops/blob/master/lib/chatops/commands/feature.rb).
@@ -37,9 +52,9 @@ Note that all the examples in that file must be preceded by
 
 If you get an error "Whoops! This action is not allowed. This incident
 will be reported." that means your Slack account is not allowed to
-change feature flags or you do not [have access](#access-for-enabling-a-feature-flag-in-production).
+change feature flags or you do not [have access](#access).
 
-### Enabling feature for staging and dev.gitlab.org
+### Enabling feature for preproduction testing
 
 As a first step in a feature rollout, you should enable the feature on <https://staging.gitlab.com>
 and <https://dev.gitlab.org>.
@@ -64,7 +79,7 @@ there for any exceptions while testing your feature after enabling the feature f
 Once you are confident enough that these environments are in a good state with your
 feature enabled, you can roll out the change to GitLab.com.
 
-## Enabling feature for GitLab.com
+### Enabling a feature for GitLab.com
 
 Similar to above, to enable a feature for 25% of all users, run the following in
 Slack:
@@ -91,11 +106,11 @@ sure it is clearly communicated to your team, and the Production team if you
 anticipate any potential problems.
 
 Feature gates can also be actor based, for example a feature could first be
-enabled for only the `gitlab-ce` project. The project is passed by supplying a
+enabled for only the `gitlab` project. The project is passed by supplying a
 `--project` flag:
 
 ```
-/chatops run feature set --project=gitlab-org/gitlab-ce some_feature true
+/chatops run feature set --project=gitlab-org/gitlab some_feature true
 ```
 
 For groups the `--group` flag is available:
@@ -114,10 +129,17 @@ merge request has to be picked into a stable branch, make sure to also add the
 appropriate "Pick into X" label (e.g. "Pick into XX.X").
 See [the process document](process.md#including-a-feature-behind-feature-flag-in-the-final-release) for further details.
 
-When a feature gate has been removed from the code base, the value still exists
-in the database.
-This can be removed through ChatOps:
+When a feature gate has been removed from the code base, the feature
+record still exists in the database that the flag was deployed too.
+The record can be deleted once the MR is deployed to each environment:
 
+```sh
+/chatops run feature delete some_feature --dev
+/chatops run feature delete some_feature --staging
 ```
+
+Then, you can delete it from production after the MR is deployed to prod:
+
+```sh
 /chatops run feature delete some_feature
 ```

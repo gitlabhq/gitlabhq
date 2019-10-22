@@ -43,6 +43,7 @@ describe PostReceive do
 
       before do
         allow_any_instance_of(Gitlab::GitPostReceive).to receive(:identify).and_return(empty_project.owner)
+        # Need to mock here so we can expect calls on project
         allow(Gitlab::GlRepository).to receive(:parse).and_return([empty_project, Gitlab::GlRepository::PROJECT])
       end
 
@@ -60,31 +61,53 @@ describe PostReceive do
       end
     end
 
+    shared_examples 'not updating remote mirrors' do
+      it 'does not schedule an update' do
+        expect(project).not_to receive(:has_remote_mirror?)
+        expect(project).not_to receive(:mark_stuck_remote_mirrors_as_failed!)
+        expect(project).not_to receive(:update_remote_mirrors)
+
+        perform
+      end
+    end
+
     context 'empty changes' do
       it "does not call any PushService but runs after project hooks" do
-        expect(Git::BranchPushService).not_to receive(:new)
-        expect(Git::TagPushService).not_to receive(:new)
+        expect(Git::ProcessRefChangesService).not_to receive(:new)
         expect_next_instance_of(SystemHooksService) { |service| expect(service).to receive(:execute_hooks) }
 
         perform(changes: "")
       end
+
+      it_behaves_like 'not updating remote mirrors'
     end
 
     context 'unidentified user' do
       let!(:key_id) { "" }
 
       it 'returns false' do
-        expect(Git::BranchPushService).not_to receive(:new)
-        expect(Git::TagPushService).not_to receive(:new)
+        expect(Git::ProcessRefChangesService).not_to receive(:new)
 
         expect(perform).to be false
       end
     end
 
     context 'with changes' do
+      let(:push_service) { double(execute: true) }
+
       before do
         allow_any_instance_of(Gitlab::GitPostReceive).to receive(:identify).and_return(project.owner)
         allow(Gitlab::GlRepository).to receive(:parse).and_return([project, Gitlab::GlRepository::PROJECT])
+      end
+
+      shared_examples 'updating remote mirrors' do
+        it 'schedules an update if the project had mirrors' do
+          expect(project).to receive(:has_remote_mirror?).and_return(true)
+          expect(project).to receive(:mark_stuck_remote_mirrors_as_failed!)
+          expect(project).to receive(:update_remote_mirrors)
+
+          perform
+        end
       end
 
       context "branches" do
@@ -102,18 +125,16 @@ describe PostReceive do
         end
 
         it 'expires the status cache' do
-          expect(project).to receive(:empty_repo?).and_return(true)
+          expect(project.repository).to receive(:empty?).and_return(true)
           expect(project.repository).to receive(:expire_status_cache)
 
           perform
         end
 
-        it 'calls Git::BranchPushService' do
-          expect_any_instance_of(Git::BranchPushService) do |service|
+        it 'calls Git::ProcessRefChangesService' do
+          expect_next_instance_of(Git::ProcessRefChangesService) do |service|
             expect(service).to receive(:execute).and_return(true)
           end
-
-          expect(Git::TagPushService).not_to receive(:new)
 
           perform
         end
@@ -124,6 +145,8 @@ describe PostReceive do
 
           perform
         end
+
+        it_behaves_like 'updating remote mirrors'
 
         context 'with a default branch' do
           let(:changes) do
@@ -149,8 +172,6 @@ describe PostReceive do
             654321 210987 refs/tags/tag1
             654322 210986 refs/tags/tag2
             654323 210985 refs/tags/tag3
-            654324 210984 refs/tags/tag4
-            654325 210983 refs/tags/tag5
           EOF
         end
 
@@ -164,22 +185,18 @@ describe PostReceive do
           perform
         end
 
-        it "only invalidates tags once" do
-          expect(project.repository).to receive(:repository_event).exactly(5).times.with(:push_tag).and_call_original
+        it 'only invalidates tags once' do
+          expect(project.repository).to receive(:repository_event).exactly(3).times.with(:push_tag).and_call_original
           expect(project.repository).to receive(:expire_caches_for_tags).once.and_call_original
           expect(project.repository).to receive(:expire_tags_cache).once.and_call_original
 
           perform
         end
 
-        it "calls Git::TagPushService" do
-          expect(Git::BranchPushService).not_to receive(:new)
-
-          expect_any_instance_of(Git::TagPushService) do |service|
+        it 'calls Git::ProcessRefChangesService' do
+          expect_next_instance_of(Git::ProcessRefChangesService) do |service|
             expect(service).to receive(:execute).and_return(true)
           end
-
-          expect(Git::BranchPushService).not_to receive(:new)
 
           perform
         end
@@ -190,83 +207,20 @@ describe PostReceive do
 
           perform
         end
+
+        it_behaves_like 'updating remote mirrors'
       end
 
       context "merge-requests" do
         let(:changes) { "123456 789012 refs/merge-requests/123" }
 
         it "does not call any of the services" do
-          expect(Git::BranchPushService).not_to receive(:new)
-          expect(Git::TagPushService).not_to receive(:new)
+          expect(Git::ProcessRefChangesService).not_to receive(:new)
 
           perform
         end
-      end
 
-      context "gitlab-ci.yml" do
-        let(:changes) do
-          <<-EOF.strip_heredoc
-            123456 789012 refs/heads/feature
-            654321 210987 refs/tags/tag
-            123456 789012 refs/heads/feature2
-            123458 789013 refs/heads/feature3
-            123459 789015 refs/heads/feature4
-          EOF
-        end
-
-        let(:changes_count) { changes.lines.count }
-
-        subject { perform }
-
-        context "with valid .gitlab-ci.yml" do
-          before do
-            stub_ci_pipeline_to_return_yaml_file
-
-            allow_any_instance_of(Project)
-              .to receive(:commit)
-              .and_return(project.commit)
-
-            allow_any_instance_of(Repository)
-              .to receive(:branch_exists?)
-              .and_return(true)
-          end
-
-          context 'when git_push_create_all_pipelines is disabled' do
-            before do
-              stub_feature_flags(git_push_create_all_pipelines: false)
-            end
-
-            it "creates pipeline for branches and tags" do
-              subject
-
-              expect(Ci::Pipeline.pluck(:ref)).to contain_exactly("feature", "tag", "feature2", "feature3")
-            end
-
-            it "creates exactly #{described_class::PIPELINE_PROCESS_LIMIT} pipelines" do
-              expect(changes_count).to be > described_class::PIPELINE_PROCESS_LIMIT
-
-              expect { subject }.to change { Ci::Pipeline.count }.by(described_class::PIPELINE_PROCESS_LIMIT)
-            end
-          end
-
-          context 'when git_push_create_all_pipelines is enabled' do
-            before do
-              stub_feature_flags(git_push_create_all_pipelines: true)
-            end
-
-            it "creates all pipelines" do
-              expect { subject }.to change { Ci::Pipeline.count }.by(changes_count)
-            end
-          end
-        end
-
-        context "does not create a Ci::Pipeline" do
-          before do
-            stub_ci_pipeline_yaml_file(nil)
-          end
-
-          it { expect { subject }.not_to change { Ci::Pipeline.count } }
-        end
+        it_behaves_like 'not updating remote mirrors'
       end
 
       context 'after project changes hooks' do
@@ -277,7 +231,7 @@ describe PostReceive do
           allow_any_instance_of(Gitlab::DataBuilder::Repository).to receive(:update).and_return(fake_hook_data)
           # silence hooks so we can isolate
           allow_any_instance_of(Key).to receive(:post_create_hook).and_return(true)
-          expect_next_instance_of(Git::BranchPushService) do |service|
+          expect_next_instance_of(Git::ProcessRefChangesService) do |service|
             expect(service).to receive(:execute).and_return(true)
           end
         end
@@ -300,6 +254,11 @@ describe PostReceive do
   describe '#process_wiki_changes' do
     let(:gl_repository) { "wiki-#{project.id}" }
 
+    before do
+      # Need to mock here so we can expect calls on project
+      allow(Gitlab::GlRepository).to receive(:parse).and_return([project, Gitlab::GlRepository::WIKI])
+    end
+
     it 'updates project activity' do
       # Force Project#set_timestamps_for_create to initialize timestamps
       project
@@ -312,6 +271,28 @@ describe PostReceive do
           project.reload
         end.to change(project, :last_activity_at)
            .and change(project, :last_repository_updated_at)
+      end
+    end
+
+    context "branches" do
+      let(:changes) do
+        <<~EOF
+            123456 789012 refs/heads/tést1
+            123456 789012 refs/heads/tést2
+        EOF
+      end
+
+      it 'expires the branches cache' do
+        expect(project.wiki.repository).to receive(:expire_branches_cache).once
+
+        perform
+      end
+
+      it 'expires the status cache' do
+        expect(project.wiki.repository).to receive(:empty?).and_return(true)
+        expect(project.wiki.repository).to receive(:expire_status_cache)
+
+        perform
       end
     end
   end

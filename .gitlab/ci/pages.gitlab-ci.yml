@@ -11,7 +11,7 @@ pages:
     variables:
       - $CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org"
   stage: pages
-  dependencies: ["coverage", "karma", "gitlab:assets:compile"]
+  dependencies: ["coverage", "karma", "gitlab:assets:compile pull-cache"]
   script:
     - mv public/ .public/
     - mkdir public/

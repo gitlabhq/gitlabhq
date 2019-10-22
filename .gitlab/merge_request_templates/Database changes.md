@@ -24,6 +24,7 @@ When adding migrations:
 - [ ] Added a `down` method so the migration can be reverted
 - [ ] Added the output of the migration(s) to the MR body
 - [ ] Added tests for the migration in `spec/migrations` if necessary (e.g. when migrating data)
+- [ ] Added rollback procedure. Include either a rollback procedure or description how to rollback changes 
 
 When adding or modifying queries to improve performance:
 
@@ -37,7 +38,7 @@ When adding foreign keys to existing tables:
 
 When adding tables:
 
-- [ ] Ordered columns based on the [Ordering Table Columns](https://docs.gitlab.com/ee/development/ordering_table_columns.html#ordering-table-columns) guidelines
+- [ ] Ordered columns based on the [Ordering Table Columns](https://docs.gitlab.com/ee/development/ordering_table_columns.html) guidelines
 - [ ] Added foreign keys to any columns pointing to data in other tables
 - [ ] Added indexes for fields that are used in statements such as `WHERE`, `ORDER BY`, `GROUP BY`, and `JOIN`s
 

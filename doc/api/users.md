@@ -393,20 +393,21 @@ PUT /users/:id
 
 Parameters:
 
-- `email`                          - Email
-- `username`                       - Username
-- `name`                           - Name
-- `password`                       - Password
-- `skype`                          - Skype ID
-- `linkedin`                       - LinkedIn
-- `twitter`                        - Twitter account
-- `website_url`                    - Website URL
-- `organization`                   - Organization name
-- `projects_limit`                 - Limit projects each user can create
-- `extern_uid`                     - External UID
-- `provider`                       - External provider name
+- `id` (required)                  - The ID of the user
+- `email` (optional)               - Email
+- `username` (optional)            - Username
+- `name` (optional)                - Name
+- `password` (optional)            - Password
+- `skype` (optional)               - Skype ID
+- `linkedin` (optional)            - LinkedIn
+- `twitter` (optional)             - Twitter account
+- `website_url` (optional)         - Website URL
+- `organization` (optional)        - Organization name
+- `projects_limit` (optional)      - Limit projects each user can create
+- `extern_uid` (optional)          - External UID
+- `provider` (optional)            - External provider name
 - `group_id_for_saml` (optional)   - ID of group where SAML has been configured
-- `bio`                            - User's biography
+- `bio` (optional)                 - User's biography
 - `location` (optional)            - User's location
 - `public_email` (optional)        - The public email of the user
 - `admin` (optional)               - User is admin - true or false (default)
@@ -419,7 +420,7 @@ Parameters:
 - `private_profile` (optional)     - User's profile is private - true or false (default)
 - `shared_runners_minutes_limit` (optional)       - Pipeline minutes quota for this user **(STARTER)**
 - `extra_shared_runners_minutes_limit` (optional) - Extra pipeline minutes quota for this user **(STARTER)**
-- `note` (optional) - Admin notes for this user **(STARTER)**
+- `note` (optional)                - Admin notes for this user **(STARTER)**
 
 On password update, user will be forced to change it upon next login.
 Note, at the moment this method does only return a `404` error,
@@ -595,7 +596,7 @@ PUT /user/status
 
 | Attribute | Type   | Required | Description |
 | --------- | ------ | -------- | ----------- |
-| `emoji`   | string | no     | The name of the emoji to use as status, if omitted `speech_balloon` is used. Emoji name can be one of the specified names in the [Gemojione index][gemojione-index]. |
+| `emoji`   | string | no     | The name of the emoji to use as status, if omitted `speech_balloon` is used. Emoji name can be one of the specified names in the [Gemojione index](https://github.com/bonusly/gemojione/blob/master/config/index.json). |
 | `message` | string | no     | The message to set as a status. It can also contain emoji codes. |
 
 When both parameters `emoji` and `message` are empty, the status will be cleared.
@@ -1151,6 +1152,48 @@ Parameters:
 Will return `201 OK` on success, `404 User Not Found` is user cannot be found or
 `403 Forbidden` when trying to unblock a user blocked by LDAP synchronization.
 
+## Deactivate user
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/63921) in GitLab 12.4.
+
+Deactivates the specified user.  Available only for admin.
+
+```
+POST /users/:id/deactivate
+```
+
+Parameters:
+
+- `id` (required) - id of specified user
+
+Returns:
+
+- `201 OK` on success.
+- `404 User Not Found` if user cannot be found.
+- `403 Forbidden` when trying to deactivate a user:
+  - Blocked by admin or by LDAP synchronization.
+  - That has any activity in past 14 days. These cannot be deactivated.
+
+## Activate user
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/63921) in GitLab 12.4.
+
+Activates the specified user.  Available only for admin.
+
+```
+POST /users/:id/activate
+```
+
+Parameters:
+
+- `id` (required) - id of specified user
+
+Returns:
+
+- `201 OK` on success.
+- `404 User Not Found` if user cannot be found.
+- `403 Forbidden` when trying to activate a user blocked by admin or by LDAP synchronization.
+
 ### Get user contribution events
 
 Please refer to the [Events API documentation](events.md#get-user-contribution-events)
@@ -1362,5 +1405,3 @@ Example response:
 ```
 
 Please note that `last_activity_at` is deprecated, please use `last_activity_on`.
-
-[gemojione-index]: https://github.com/jonathanwiesel/gemojione/blob/master/config/index.json

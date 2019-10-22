@@ -1,6 +1,6 @@
 # Productivity Analytics **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/12079) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.3 (enabled by feature flags `productivity_analytics`).
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/12079) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.3 (enabled by default using the feature flags `productivity_analytics`, `productivity_analytics_scatterplot_enabled`).
 
 Track development velocity with Productivity Analytics.
 
@@ -11,6 +11,8 @@ While [Cycle Analytics](../project/cycle_analytics.md) focuses on the entire
 Software Development Life Cycle (SDLC) process, Productivity Analytics provides a way for Engineering Management to drill down in a systematic way to uncover patterns and causes for success or failure at an individual, project or group level.
 
 Productivity can slow down for many reasons ranging from degrading code base to quickly growing teams. In order to investigate, department or team leaders can start by visualizing the time it takes for merge requests to be merged.
+
+By default, a data migration job covering three months of historical data will kick off when deploying Productivity Analytics for the first time.
 
 ## Supported features
 
@@ -41,7 +43,7 @@ The following metrics and visualizations are available on a project or group lev
   - Number of files touched.
 - Scatterplot showing all MRs merged on a certain date, together with the days it took to complete the action and a 30 day rolling median.
   - Users can zoom in and out on specific days of interest.
-- Table showing list of merge requests with their respective times and size metrics.
+- Table showing the list of merge requests with their respective time duration metrics.
   - Users can sort by any of the above metrics.
 
 ## Permissions

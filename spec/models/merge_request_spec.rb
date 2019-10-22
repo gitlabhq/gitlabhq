@@ -470,7 +470,7 @@ describe MergeRequest do
       commit = double('commit1', safe_message: "Fixes #{issue.to_reference}")
 
       allow(subject).to receive(:commits).and_return([commit])
-      allow(subject).to receive(:state).and_return("closed")
+      allow(subject).to receive(:state_id).and_return(described_class.available_states[:closed])
 
       expect { subject.cache_merge_request_closes_issues!(subject.author) }.not_to change(subject.merge_requests_closing_issues, :count)
     end
@@ -479,7 +479,7 @@ describe MergeRequest do
       issue  = create :issue, project: subject.project
       commit = double('commit1', safe_message: "Fixes #{issue.to_reference}")
       allow(subject).to receive(:commits).and_return([commit])
-      allow(subject).to receive(:state).and_return("merged")
+      allow(subject).to receive(:state_id).and_return(described_class.available_states[:merged])
 
       expect { subject.cache_merge_request_closes_issues!(subject.author) }.not_to change(subject.merge_requests_closing_issues, :count)
     end
@@ -541,6 +541,7 @@ describe MergeRequest do
 
     context 'with diffs' do
       subject { create(:merge_request, :with_diffs) }
+
       it 'returns the sha of the source branch last commit' do
         expect(subject.source_branch_sha).to eq(last_branch_commit.sha)
       end
@@ -548,6 +549,7 @@ describe MergeRequest do
 
     context 'without diffs' do
       subject { create(:merge_request, :without_diffs) }
+
       it 'returns the sha of the source branch last commit' do
         expect(subject.source_branch_sha).to eq(last_branch_commit.sha)
       end
@@ -570,6 +572,7 @@ describe MergeRequest do
 
     context 'when the merge request is being created' do
       subject { build(:merge_request, source_branch: nil, compare_commits: []) }
+
       it 'returns nil' do
         expect(subject.source_branch_sha).to be_nil
       end
@@ -646,6 +649,46 @@ describe MergeRequest do
         expect(merge_request.compare).to receive(:diffs).with(options.merge(expanded: true))
 
         merge_request.diffs(options)
+      end
+    end
+  end
+
+  describe '#note_positions_for_paths' do
+    let(:merge_request) { create(:merge_request, :with_diffs) }
+    let(:project) { merge_request.project }
+    let!(:diff_note) do
+      create(:diff_note_on_merge_request, project: project, noteable: merge_request)
+    end
+
+    let(:file_paths) { merge_request.diffs.diff_files.map(&:file_path) }
+
+    subject do
+      merge_request.note_positions_for_paths(file_paths)
+    end
+
+    it 'returns a Gitlab::Diff::PositionCollection' do
+      expect(subject).to be_a(Gitlab::Diff::PositionCollection)
+    end
+
+    context 'within all diff files' do
+      it 'returns correct positions' do
+        expect(subject).to match_array([diff_note.position])
+      end
+    end
+
+    context 'within specific diff file' do
+      let(:file_paths) { [diff_note.position.file_path] }
+
+      it 'returns correct positions' do
+        expect(subject).to match_array([diff_note.position])
+      end
+    end
+
+    context 'within no diff files' do
+      let(:file_paths) { [] }
+
+      it 'returns no positions' do
+        expect(subject.to_a).to be_empty
       end
     end
   end
@@ -2032,7 +2075,7 @@ describe MergeRequest do
     end
 
     it 'refuses to enqueue a job if the MR is not open' do
-      merge_request.update_column(:state, 'foo')
+      merge_request.update_column(:state_id, 5)
 
       expect(RebaseWorker).not_to receive(:perform_async)
 
@@ -2326,7 +2369,7 @@ describe MergeRequest do
         merge_requests_as_head_pipeline: [merge_request])
     end
 
-    let!(:job) { create(:ci_build, :start_review_app, pipeline: pipeline, project: project) }
+    let!(:job) { create(:ci_build, :with_deployment, :start_review_app, pipeline: pipeline, project: project) }
 
     it 'returns environments' do
       is_expected.to eq(pipeline.environments)
@@ -2455,6 +2498,7 @@ describe MergeRequest do
   describe "#diff_refs" do
     context "with diffs" do
       subject { create(:merge_request, :with_diffs) }
+
       let(:expected_diff_refs) do
         Gitlab::Diff::DiffRefs.new(
           base_sha:  subject.merge_request_diff.base_commit_sha,
@@ -2527,32 +2571,32 @@ describe MergeRequest do
 
   describe '#merge_ongoing?' do
     it 'returns true when the merge request is locked' do
-      merge_request = build_stubbed(:merge_request, state: :locked)
+      merge_request = build_stubbed(:merge_request, state_id: described_class.available_states[:locked])
 
       expect(merge_request.merge_ongoing?).to be(true)
     end
 
     it 'returns true when merge_id, MR is not merged and it has no running job' do
-      merge_request = build_stubbed(:merge_request, state: :open, merge_jid: 'foo')
+      merge_request = build_stubbed(:merge_request, state_id: described_class.available_states[:opened], merge_jid: 'foo')
       allow(Gitlab::SidekiqStatus).to receive(:running?).with('foo') { true }
 
       expect(merge_request.merge_ongoing?).to be(true)
     end
 
     it 'returns false when merge_jid is nil' do
-      merge_request = build_stubbed(:merge_request, state: :open, merge_jid: nil)
+      merge_request = build_stubbed(:merge_request, state_id: described_class.available_states[:opened], merge_jid: nil)
 
       expect(merge_request.merge_ongoing?).to be(false)
     end
 
     it 'returns false if MR is merged' do
-      merge_request = build_stubbed(:merge_request, state: :merged, merge_jid: 'foo')
+      merge_request = build_stubbed(:merge_request, state_id: described_class.available_states[:merged], merge_jid: 'foo')
 
       expect(merge_request.merge_ongoing?).to be(false)
     end
 
     it 'returns false if there is no merge job running' do
-      merge_request = build_stubbed(:merge_request, state: :open, merge_jid: 'foo')
+      merge_request = build_stubbed(:merge_request, state_id: described_class.available_states[:opened], merge_jid: 'foo')
       allow(Gitlab::SidekiqStatus).to receive(:running?).with('foo') { false }
 
       expect(merge_request.merge_ongoing?).to be(false)
@@ -2686,7 +2730,7 @@ describe MergeRequest do
 
       context 'closed MR' do
         before do
-          merge_request.update_attribute(:state, :closed)
+          merge_request.update_attribute(:state_id, described_class.available_states[:closed])
         end
 
         it 'is not mergeable' do
@@ -2800,6 +2844,7 @@ describe MergeRequest do
 
   describe '#merge_request_diff_for' do
     subject { create(:merge_request, importing: true) }
+
     let!(:merge_request_diff1) { subject.merge_request_diffs.create(head_commit_sha: '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9') }
     let!(:merge_request_diff2) { subject.merge_request_diffs.create(head_commit_sha: nil) }
     let!(:merge_request_diff3) { subject.merge_request_diffs.create(head_commit_sha: '5937ac0a7beb003549fc5fd26fc247adbce4a52e') }
@@ -2830,6 +2875,7 @@ describe MergeRequest do
 
   describe '#version_params_for' do
     subject { create(:merge_request, importing: true) }
+
     let(:project) { subject.project }
     let!(:merge_request_diff1) { subject.merge_request_diffs.create(head_commit_sha: '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9') }
     let!(:merge_request_diff2) { subject.merge_request_diffs.create(head_commit_sha: nil) }
@@ -3257,4 +3303,40 @@ describe MergeRequest do
       end
     end
   end
+
+  describe '.with_open_merge_when_pipeline_succeeds' do
+    let!(:project) { create(:project) }
+    let!(:fork) { fork_project(project) }
+    let!(:merge_request1) do
+      create(:merge_request,
+             :merge_when_pipeline_succeeds,
+             target_project: project,
+             target_branch: 'master',
+             source_project: project,
+             source_branch: 'feature-1')
+    end
+
+    let!(:merge_request2) do
+      create(:merge_request,
+             :merge_when_pipeline_succeeds,
+             target_project: project,
+             target_branch: 'master',
+             source_project: fork,
+             source_branch: 'fork-feature-1')
+    end
+
+    let!(:merge_request4) do
+      create(:merge_request,
+             target_project: project,
+             target_branch: 'master',
+             source_project: fork,
+             source_branch: 'fork-feature-2')
+    end
+
+    let(:query) { described_class.with_open_merge_when_pipeline_succeeds }
+
+    it { expect(query).to contain_exactly(merge_request1, merge_request2) }
+  end
+
+  it_behaves_like 'versioned description'
 end

@@ -53,6 +53,7 @@ module Projects
 
     def success
       @status.success
+      @project.mark_pages_as_deployed
       super
     end
 

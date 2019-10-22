@@ -15,7 +15,7 @@ shared_examples 'boards list service' do
 
   context 'when parent has a board' do
     before do
-      create(:board, parent: parent)
+      create(:board, resource_parent: parent)
     end
 
     it 'does not create a new board' do
@@ -24,7 +24,7 @@ shared_examples 'boards list service' do
   end
 
   it 'returns parent boards' do
-    board = create(:board, parent: parent)
+    board = create(:board, resource_parent: parent)
 
     expect(service.execute).to eq [board]
   end

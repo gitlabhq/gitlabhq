@@ -21,6 +21,24 @@ On the far right is a request selector that allows you to view the same metrics
 (excluding the page timing and line profiler) for any requests made while the
 page was open. Only the first two requests per unique URL are captured.
 
+## Request warnings
+
+For requests exceeding pre-defined limits, a warning icon will be shown
+next to the failing metric, along with an explanation. In this example,
+the Gitaly call duration exceeded the threshold:
+
+![Gitaly call duration exceeded threshold](img/performance_bar_gitaly_threshold.png)
+
+If any requests on the current page generated warnings, the icon will
+appear next to the request selector:
+
+![Request selector showing two requests with warnings](img/performance_bar_request_selector_warning.png)
+
+And requests with warnings are indicated in the request selector with a
+`(!)` after their path:
+
+![Request selector showing dropdown](img/performance_bar_request_selector_warning_expanded.png)
+
 ## Enable the Performance Bar via the Admin panel
 
 GitLab Performance Bar is disabled by default. To enable it for a given group,

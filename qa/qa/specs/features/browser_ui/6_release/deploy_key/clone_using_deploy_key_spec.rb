@@ -26,7 +26,7 @@ module QA
       end
 
       after do
-        Service::Runner.new(@runner_name).remove!
+        Service::DockerRun::GitlabRunner.new(@runner_name).remove!
       end
 
       keys = [

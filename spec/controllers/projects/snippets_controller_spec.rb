@@ -111,7 +111,7 @@ describe Projects::SnippetsController do
 
         it 'creates a spam log' do
           expect { create_snippet(project, visibility_level: Snippet::PUBLIC) }
-            .to change { SpamLog.count }.by(1)
+            .to log_spam(title: 'Title', user_id: user.id, noteable_type: 'ProjectSnippet')
         end
 
         it 'renders :new with recaptcha disabled' do
@@ -192,7 +192,7 @@ describe Projects::SnippetsController do
 
         it 'creates a spam log' do
           expect { update_snippet(title: 'Foo') }
-            .to change { SpamLog.count }.by(1)
+            .to log_spam(title: 'Foo', user_id: user.id, noteable_type: 'ProjectSnippet')
         end
 
         it 'renders :edit with recaptcha disabled' do
@@ -237,7 +237,7 @@ describe Projects::SnippetsController do
 
         it 'creates a spam log' do
           expect { update_snippet(title: 'Foo', visibility_level: Snippet::PUBLIC) }
-            .to change { SpamLog.count }.by(1)
+            .to log_spam(title: 'Foo', user_id: user.id, noteable_type: 'ProjectSnippet')
         end
 
         it 'renders :edit with recaptcha disabled' do

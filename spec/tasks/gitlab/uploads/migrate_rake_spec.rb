@@ -1,31 +1,44 @@
+# frozen_string_literal: true
+
 require 'rake_helper'
 
-describe 'gitlab:uploads:migrate rake tasks' do
+describe 'gitlab:uploads:migrate and migrate_to_local rake tasks' do
   let(:model_class) { nil }
   let(:uploader_class) { nil }
   let(:mounted_as) { nil }
   let(:batch_size) { 3 }
 
   before do
-    stub_env('BATCH', batch_size.to_s)
+    stub_env('MIGRATION_BATCH_SIZE', batch_size.to_s)
     stub_uploads_object_storage(uploader_class)
     Rake.application.rake_require 'tasks/gitlab/uploads/migrate'
 
     allow(ObjectStorage::MigrateUploadsWorker).to receive(:perform_async)
   end
 
-  def run
+  def run(task)
     args = [uploader_class.to_s, model_class.to_s, mounted_as].compact
-    run_rake_task("gitlab:uploads:migrate", *args)
+    run_rake_task(task, *args)
   end
 
   shared_examples 'enqueue jobs in batch' do |batch:|
-    it do
+    it 'migrates local storage to remote object storage' do
       expect(ObjectStorage::MigrateUploadsWorker)
         .to receive(:perform_async).exactly(batch).times
-              .and_return("A fake job.")
+        .and_return("A fake job.")
 
-      run
+      run('gitlab:uploads:migrate')
+    end
+
+    it 'migrates remote object storage to local storage' do
+      expect(Upload).to receive(:where).exactly(batch + 1).times { Upload.all }
+      expect(ObjectStorage::MigrateUploadsWorker)
+        .to receive(:perform_async)
+        .with(anything, model_class.name, mounted_as, ObjectStorage::Store::LOCAL)
+        .exactly(batch).times
+        .and_return("A fake job.")
+
+      run('gitlab:uploads:migrate_to_local')
     end
   end
 

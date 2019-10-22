@@ -18,12 +18,12 @@ module Git
 
     def tag
       strong_memoize(:tag) do
-        next if Gitlab::Git.blank_ref?(params[:newrev])
+        next if Gitlab::Git.blank_ref?(newrev)
 
-        tag_name = Gitlab::Git.ref_name(params[:ref])
+        tag_name = Gitlab::Git.ref_name(ref)
         tag = project.repository.find_tag(tag_name)
 
-        tag if tag && tag.target == params[:newrev]
+        tag if tag && tag.target == newrev
       end
     end
 

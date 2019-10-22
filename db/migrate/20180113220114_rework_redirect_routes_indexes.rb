@@ -20,9 +20,7 @@ class ReworkRedirectRoutesIndexes < ActiveRecord::Migration[4.2]
   def up
     disable_statement_timeout do
       # this is a plain btree on a single boolean column. It'll never be
-      # selective enough to be valuable. This class is called by
-      # setup_postgresql.rake so it needs to be able to handle this
-      # index not existing.
+      # selective enough to be valuable.
       if index_exists?(:redirect_routes, :permanent)
         remove_concurrent_index(:redirect_routes, :permanent)
       end

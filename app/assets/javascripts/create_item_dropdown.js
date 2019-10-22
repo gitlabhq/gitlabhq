@@ -1,4 +1,5 @@
 import _ from 'underscore';
+import '~/gl_dropdown';
 
 export default class CreateItemDropdown {
   /**

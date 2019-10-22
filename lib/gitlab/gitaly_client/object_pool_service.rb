@@ -15,13 +15,15 @@ module Gitlab
           object_pool: object_pool,
           origin: repository.gitaly_repository)
 
-        GitalyClient.call(storage, :object_pool_service, :create_object_pool, request)
+        GitalyClient.call(storage, :object_pool_service, :create_object_pool,
+                          request, timeout: GitalyClient.medium_timeout)
       end
 
       def delete
         request = Gitaly::DeleteObjectPoolRequest.new(object_pool: object_pool)
 
-        GitalyClient.call(storage, :object_pool_service, :delete_object_pool, request)
+        GitalyClient.call(storage, :object_pool_service, :delete_object_pool,
+                          request, timeout: GitalyClient.long_timeout)
       end
 
       def link_repository(repository)
@@ -40,7 +42,8 @@ module Gitlab
           origin: repository.gitaly_repository
         )
 
-        GitalyClient.call(storage, :object_pool_service, :fetch_into_object_pool, request)
+        GitalyClient.call(storage, :object_pool_service, :fetch_into_object_pool,
+                          request, timeout: GitalyClient.long_timeout)
       end
     end
   end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe PipelineSerializer do
@@ -137,6 +139,7 @@ describe PipelineSerializer do
 
     describe 'number of queries when preloaded' do
       subject { serializer.represent(resource, preload: true) }
+
       let(:resource) { Ci::Pipeline.all }
 
       before do
@@ -156,7 +159,7 @@ describe PipelineSerializer do
 
         it 'verifies number of queries', :request_store do
           recorded = ActiveRecord::QueryRecorder.new { subject }
-          expected_queries = Gitlab.ee? ? 38 : 31
+          expected_queries = Gitlab.ee? ? 38 : 35
 
           expect(recorded.count).to be_within(2).of(expected_queries)
           expect(recorded.cached_count).to eq(0)
@@ -177,7 +180,8 @@ describe PipelineSerializer do
           # pipeline. With the same ref this check is cached but if refs are
           # different then there is an extra query per ref
           # https://gitlab.com/gitlab-org/gitlab-foss/issues/46368
-          expected_queries = Gitlab.ee? ? 44 : 38
+          expected_queries = Gitlab.ee? ? 44 : 41
+
           expect(recorded.count).to be_within(2).of(expected_queries)
           expect(recorded.cached_count).to eq(0)
         end

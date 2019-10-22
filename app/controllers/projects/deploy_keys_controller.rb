@@ -73,6 +73,10 @@ class Projects::DeployKeysController < Projects::ApplicationController
     @deploy_key ||= DeployKey.find(params[:id])
   end
 
+  def deploy_keys_project
+    @deploy_keys_project ||= deploy_key.deploy_keys_project_for(@project)
+  end
+
   def create_params
     create_params = params.require(:deploy_key)
                           .permit(:key, :title, deploy_keys_projects_attributes: [:can_push])
@@ -81,10 +85,16 @@ class Projects::DeployKeysController < Projects::ApplicationController
   end
 
   def update_params
-    params.require(:deploy_key).permit(:title, deploy_keys_projects_attributes: [:id, :can_push])
+    permitted_params = [deploy_keys_projects_attributes: [:id, :can_push]]
+    permitted_params << :title if can?(current_user, :update_deploy_key, deploy_key)
+
+    params.require(:deploy_key).permit(*permitted_params)
   end
 
   def authorize_update_deploy_key!
-    access_denied! unless can?(current_user, :update_deploy_key, deploy_key)
+    if !can?(current_user, :update_deploy_key, deploy_key) &&
+        !can?(current_user, :update_deploy_keys_project, deploy_keys_project)
+      access_denied!
+    end
   end
 end

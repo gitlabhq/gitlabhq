@@ -72,7 +72,7 @@ cd /home/git/gitlab
 sudo -u git -H bundle exec rake "gitlab:workhorse:install[/home/git/gitlab-workhorse]" RAILS_ENV=production
 ```
 
-### 5. Update gitaly to the corresponding version
+### 5. Update Gitaly to the corresponding version
 
 ```bash
 cd /home/git/gitlab
@@ -87,7 +87,7 @@ cd /home/git/gitlab-shell
 
 sudo -u git -H git fetch --all --tags
 sudo -u git -H git checkout v$(</home/git/gitlab/GITLAB_SHELL_VERSION) -b v$(</home/git/gitlab/GITLAB_SHELL_VERSION)
-sudo -u git -H sh -c 'if [ -x bin/compile ]; then bin/compile; fi'
+sudo -u git -H make build
 ```
 
 ### 7. Update GitLab Pages to the corresponding version (skip if not using pages)
@@ -102,7 +102,7 @@ sudo -u git -H make
 
 ### 8. Install/Update `gitlab-elasticsearch-indexer` (optional) **(STARTER ONLY)**
 
-If you're interested in using GitLab's new [elasticsearch repository indexer](../integration/elasticsearch.md#elasticsearch-repository-indexer-beta) (currently in beta)
+If you're interested in using GitLab's new [Elasticsearch repository indexer](../integration/elasticsearch.md#elasticsearch-repository-indexer-beta) (currently in beta)
 please follow the instructions on the document linked above and enable the
 indexer usage in the GitLab admin settings.
 

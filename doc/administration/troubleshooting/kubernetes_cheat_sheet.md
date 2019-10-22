@@ -15,7 +15,7 @@ If you are on a [paid tier](https://about.gitlab.com/pricing/) and are not sure 
 to use these commands, it is best to [contact Support](https://about.gitlab.com/support/)
 and they will assist you with any issues you are having.
 
-## Generic kubernetes commands
+## Generic Kubernetes commands
 
 - How to authorize to your GCP project (can be especially useful if you have projects
   under different GCP accounts):
@@ -33,7 +33,7 @@ and they will assist you with any issues you are having.
   kubectl proxy
   ```
 
-- How to ssh to a Kubernetes node and enter the container as root
+- How to SSH to a Kubernetes node and enter the container as root
   <https://github.com/kubernetes/kubernetes/issues/30656>:
 
   - For GCP, you may find the node name and run `gcloud compute ssh node-name`.
@@ -72,12 +72,12 @@ and they will assist you with any issues you are having.
   This is the principle of Kubernetes, read [Twelve-factor app](https://12factor.net/)
   for details.
 
-## GitLab-specific kubernetes information
+## GitLab-specific Kubernetes information
 
-- Minimal config that can be used to test a Kubernetes helm chart can be found
+- Minimal config that can be used to test a Kubernetes Helm chart can be found
   [here](https://gitlab.com/gitlab-org/charts/gitlab/issues/620).
 
-- Tailing logs of a separate pod. An example for a unicorn pod:
+- Tailing logs of a separate pod. An example for a Unicorn pod:
 
   ```bash
   kubectl logs gitlab-unicorn-7656fdd6bf-jqzfs -c unicorn
@@ -101,7 +101,7 @@ and they will assist you with any issues you are having.
   ```
 
 - Check all events in the `gitlab` namespace (the namespace name can be different if you
-  specified a different one when deploying the helm chart):
+  specified a different one when deploying the Helm chart):
 
   ```bash
   kubectl get events -w --namespace=gitlab
@@ -140,8 +140,8 @@ and they will assist you with any issues you are having.
 
   - Check the output of `kubectl get events -w --all-namespaces`.
   - Check the logs of pods within `gitlab-managed-apps` namespace.
-  - On the side of GitLab check sidekiq log and kubernetes log. When GitLab is installed
-    via Helm Chart, `kubernetes.log` can be found inside the sidekiq pod.
+  - On the side of GitLab check Sidekiq log and Kubernetes log. When GitLab is installed
+    via Helm Chart, `kubernetes.log` can be found inside the Sidekiq pod.
 
 - How to get your initial admin password <https://docs.gitlab.com/charts/installation/deployment.html#initial-login>:
 
@@ -191,8 +191,8 @@ and they will assist you with any issues you are having.
 
 ## Installation of minimal GitLab config via Minukube on macOS
 
-This section is based on [Developing for Kubernetes with Minikube](https://gitlab.com/gitlab-org/charts/gitlab/blob/master/doc/minikube/index.md)
-and [Helm](https://gitlab.com/gitlab-org/charts/gitlab/blob/master/doc/helm/index.md). Refer
+This section is based on [Developing for Kubernetes with Minikube](https://docs.gitlab.com/charts/development/minikube/index.html)
+and [Helm](https://docs.gitlab.com/charts/installation/tools.html#helm). Refer
 to those documents for details.
 
 - Install Kubectl via Homebrew:

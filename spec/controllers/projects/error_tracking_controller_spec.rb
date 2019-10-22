@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 describe Projects::ErrorTrackingController do
-  set(:project) { create(:project) }
-  set(:user) { create(:user) }
+  let_it_be(:project) { create(:project) }
+  let_it_be(:user) { create(:user) }
 
   before do
     sign_in(user)

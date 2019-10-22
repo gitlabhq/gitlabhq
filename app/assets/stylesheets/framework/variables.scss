@@ -606,9 +606,10 @@ $blame-blue: #254e77;
 */
 $builds-trace-bg: #111;
 $job-log-highlight-height: 18px;
-$job-log-line-padding: 62px;
-$job-line-number-width: 40px;
-$job-arrow-margin: 50px;
+$job-log-line-padding: 55px;
+$job-line-number-width: 50px;
+$job-line-number-margin: 43px;
+$job-arrow-margin: 55px;
 
 /*
 * Commit Page
@@ -832,6 +833,7 @@ Merge Requests
 */
 $mr-tabs-height: 48px;
 $mr-version-controls-height: 56px;
+$mr-widget-margin-left: 40px;
 
 /*
 Compare Branches

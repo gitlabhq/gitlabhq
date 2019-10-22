@@ -11,7 +11,7 @@
     = hidden_field_tag "#{issuable_type}[assignee_ids][]", 0, id: nil
   - else
     - assignees.each do |assignee|
-      = hidden_field_tag "#{issuable_type}[assignee_ids][]", assignee.id, id: nil, data: { avatar_url: assignee.avatar_url, name: assignee.name, username: assignee.username }
+      = hidden_field_tag "#{issuable_type}[assignee_ids][]", assignee.id, id: nil, data: assignee_sidebar_data(assignee, merge_request: @merge_request)
 
   - options = { toggle_class: 'js-user-search js-author-search',
     title: _('Assign to'),

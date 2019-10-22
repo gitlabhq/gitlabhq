@@ -23,6 +23,10 @@ module Gitlab
           ]
         end
 
+        def self.names
+          all.map { |stage| stage[:name] }
+        end
+
         def self.params_for_issue_stage
           {
             name: 'issue',
@@ -88,8 +92,8 @@ module Gitlab
             name: 'production',
             custom: false,
             relative_position: 7,
-            start_event_identifier: :merge_request_merged,
-            end_event_identifier: :merge_request_first_deployed_to_production
+            start_event_identifier: :issue_created,
+            end_event_identifier: :production_stage_end
           }
         end
       end

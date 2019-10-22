@@ -7,6 +7,8 @@ module MailScheduler
     include ApplicationWorker
     include MailSchedulerQueue
 
+    feature_category :issue_tracking
+
     def perform(meth, *args)
       check_arguments!(args)
 

@@ -7,6 +7,7 @@ import {
   metricsDashboardResponse,
   dashboardGitResponse,
 } from '../mock_data';
+import { uniqMetricsId } from '~/monitoring/stores/utils';
 
 describe('Monitoring mutations', () => {
   let stateCopy;
@@ -128,6 +129,7 @@ describe('Monitoring mutations', () => {
 
   describe('SET_QUERY_RESULT', () => {
     const metricId = 12;
+    const id = 'system_metrics_kubernetes_container_memory_total';
     const result = [{ values: [[0, 1], [1, 1], [1, 3]] }];
 
     beforeEach(() => {
@@ -146,12 +148,13 @@ describe('Monitoring mutations', () => {
     });
 
     it('sets metricsWithData value', () => {
+      const uniqId = uniqMetricsId({ metric_id: metricId, id });
       mutations[types.SET_QUERY_RESULT](stateCopy, {
-        metricId,
+        metricId: uniqId,
         result,
       });
 
-      expect(stateCopy.metricsWithData).toEqual([12]);
+      expect(stateCopy.metricsWithData).toEqual([uniqId]);
     });
 
     it('does not store empty results', () => {

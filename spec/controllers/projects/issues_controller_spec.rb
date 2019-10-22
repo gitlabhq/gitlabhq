@@ -408,6 +408,7 @@ describe Projects::IssuesController do
 
     context 'when user has access to update issue' do
       before do
+        project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
         project.add_developer(user)
       end
 
@@ -421,14 +422,30 @@ describe Projects::IssuesController do
       context 'when Akismet is enabled and the issue is identified as spam' do
         before do
           stub_application_setting(recaptcha_enabled: true)
-          allow_any_instance_of(SpamService).to receive(:check_for_spam?).and_return(true)
-          allow_any_instance_of(AkismetService).to receive(:spam?).and_return(true)
+          expect_next_instance_of(AkismetService) do |akismet_service|
+            expect(akismet_service).to receive_messages(spam?: true)
+          end
         end
 
-        it 'renders json with recaptcha_html' do
-          subject
+        context 'when allow_possible_spam feature flag is false' do
+          before do
+            stub_feature_flags(allow_possible_spam: false)
+          end
 
-          expect(json_response).to have_key('recaptcha_html')
+          it 'renders json with recaptcha_html' do
+            subject
+
+            expect(json_response).to have_key('recaptcha_html')
+          end
+        end
+
+        context 'when allow_possible_spam feature flag is true' do
+          it 'updates the issue' do
+            subject
+
+            expect(response).to have_http_status(:ok)
+            expect(issue.reload.title).to eq('New title')
+          end
         end
       end
     end
@@ -681,13 +698,13 @@ describe Projects::IssuesController do
         before do
           project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
           stub_application_setting(recaptcha_enabled: true)
-          allow_any_instance_of(SpamService).to receive(:check_for_spam?).and_return(true)
         end
 
         context 'when an issue is not identified as spam' do
           before do
-            allow_any_instance_of(described_class).to receive(:verify_recaptcha).and_return(false)
-            allow_any_instance_of(AkismetService).to receive(:spam?).and_return(false)
+            expect_next_instance_of(AkismetService) do |akismet_service|
+              expect(akismet_service).to receive_messages(spam?: false)
+            end
           end
 
           it 'normally updates the issue' do
@@ -696,45 +713,64 @@ describe Projects::IssuesController do
         end
 
         context 'when an issue is identified as spam' do
-          before do
-            allow_any_instance_of(AkismetService).to receive(:spam?).and_return(true)
-          end
-
           context 'when captcha is not verified' do
             before do
-              allow_any_instance_of(described_class).to receive(:verify_recaptcha).and_return(false)
+              expect_next_instance_of(AkismetService) do |akismet_service|
+                expect(akismet_service).to receive_messages(spam?: true)
+              end
             end
 
-            it 'rejects an issue recognized as a spam' do
-              expect { update_issue }.not_to change { issue.reload.title }
+            context 'when allow_possible_spam feature flag is false' do
+              before do
+                stub_feature_flags(allow_possible_spam: false)
+              end
+
+              it 'rejects an issue recognized as a spam' do
+                expect { update_issue }.not_to change { issue.reload.title }
+              end
+
+              it 'rejects an issue recognized as a spam when recaptcha disabled' do
+                stub_application_setting(recaptcha_enabled: false)
+
+                expect { update_issue }.not_to change { issue.reload.title }
+              end
+
+              it 'creates a spam log' do
+                expect { update_issue(issue_params: { title: 'Spam title' }) }
+                  .to log_spam(title: 'Spam title', noteable_type: 'Issue')
+              end
+
+              it 'renders recaptcha_html json response' do
+                update_issue
+
+                expect(json_response).to have_key('recaptcha_html')
+              end
+
+              it 'returns 200 status' do
+                update_issue
+
+                expect(response).to have_gitlab_http_status(200)
+              end
             end
 
-            it 'rejects an issue recognized as a spam when recaptcha disabled' do
-              stub_application_setting(recaptcha_enabled: false)
+            context 'when allow_possible_spam feature flag is true' do
+              it 'updates the issue recognized as spam' do
+                expect { update_issue }.to change { issue.reload.title }
+              end
 
-              expect { update_issue }.not_to change { issue.reload.title }
-            end
+              it 'creates a spam log' do
+                expect { update_issue(issue_params: { title: 'Spam title' }) }
+                  .to log_spam(
+                    title: 'Spam title', description: issue.description,
+                    noteable_type: 'Issue', recaptcha_verified: false
+                  )
+              end
 
-            it 'creates a spam log' do
-              update_issue(issue_params: { title: 'Spam title' })
+              it 'returns 200 status' do
+                update_issue
 
-              spam_logs = SpamLog.all
-
-              expect(spam_logs.count).to eq(1)
-              expect(spam_logs.first.title).to eq('Spam title')
-              expect(spam_logs.first.recaptcha_verified).to be_falsey
-            end
-
-            it 'renders recaptcha_html json response' do
-              update_issue
-
-              expect(json_response).to have_key('recaptcha_html')
-            end
-
-            it 'returns 200 status' do
-              update_issue
-
-              expect(response).to have_gitlab_http_status(200)
+                expect(response).to have_gitlab_http_status(200)
+              end
             end
           end
 
@@ -746,11 +782,6 @@ describe Projects::IssuesController do
               update_issue(
                 issue_params: { title: spammy_title },
                 additional_params: { spam_log_id: spam_logs.last.id, recaptcha_verification: true })
-            end
-
-            before do
-              allow_any_instance_of(described_class).to receive(:verify_recaptcha)
-                .and_return(true)
             end
 
             it 'returns 200 status' do
@@ -917,55 +948,72 @@ describe Projects::IssuesController do
     context 'Akismet is enabled' do
       before do
         stub_application_setting(recaptcha_enabled: true)
-        allow_any_instance_of(SpamService).to receive(:check_for_spam?).and_return(true)
       end
 
       context 'when an issue is not identified as spam' do
         before do
-          allow_any_instance_of(described_class).to receive(:verify_recaptcha).and_return(false)
-          allow_any_instance_of(AkismetService).to receive(:spam?).and_return(false)
+          stub_feature_flags(allow_possible_spam: false)
+
+          expect_next_instance_of(AkismetService) do |akismet_service|
+            expect(akismet_service).to receive_messages(spam?: false)
+          end
         end
 
-        it 'does not create an issue' do
-          expect { post_new_issue(title: '') }.not_to change(Issue, :count)
+        it 'creates an issue' do
+          expect { post_new_issue(title: 'Some title') }.to change(Issue, :count)
         end
       end
 
       context 'when an issue is identified as spam' do
-        before do
-          allow_any_instance_of(AkismetService).to receive(:spam?).and_return(true)
-        end
-
         context 'when captcha is not verified' do
           def post_spam_issue
             post_new_issue(title: 'Spam Title', description: 'Spam lives here')
           end
 
           before do
-            allow_any_instance_of(described_class).to receive(:verify_recaptcha).and_return(false)
+            expect_next_instance_of(AkismetService) do |akismet_service|
+              expect(akismet_service).to receive_messages(spam?: true)
+            end
           end
 
-          it 'rejects an issue recognized as a spam' do
-            expect { post_spam_issue }.not_to change(Issue, :count)
+          context 'when allow_possible_spam feature flag is false' do
+            before do
+              stub_feature_flags(allow_possible_spam: false)
+            end
+
+            it 'rejects an issue recognized as a spam' do
+              expect { post_spam_issue }.not_to change(Issue, :count)
+            end
+
+            it 'creates a spam log' do
+              expect { post_spam_issue }
+                .to log_spam(title: 'Spam Title', noteable_type: 'Issue', recaptcha_verified: false)
+            end
+
+            it 'does not create an issue when it is not valid' do
+              expect { post_new_issue(title: '') }.not_to change(Issue, :count)
+            end
+
+            it 'does not create an issue when recaptcha is not enabled' do
+              stub_application_setting(recaptcha_enabled: false)
+
+              expect { post_spam_issue }.not_to change(Issue, :count)
+            end
           end
 
-          it 'creates a spam log' do
-            post_spam_issue
-            spam_logs = SpamLog.all
+          context 'when allow_possible_spam feature flag is true' do
+            it 'creates an issue recognized as spam' do
+              expect { post_spam_issue }.to change(Issue, :count)
+            end
 
-            expect(spam_logs.count).to eq(1)
-            expect(spam_logs.first.title).to eq('Spam Title')
-            expect(spam_logs.first.recaptcha_verified).to be_falsey
-          end
+            it 'creates a spam log' do
+              expect { post_spam_issue }
+                .to log_spam(title: 'Spam Title', noteable_type: 'Issue', recaptcha_verified: false)
+            end
 
-          it 'does not create an issue when it is not valid' do
-            expect { post_new_issue(title: '') }.not_to change(Issue, :count)
-          end
-
-          it 'does not create an issue when recaptcha is not enabled' do
-            stub_application_setting(recaptcha_enabled: false)
-
-            expect { post_spam_issue }.not_to change(Issue, :count)
+            it 'does not create an issue when it is not valid' do
+              expect { post_new_issue(title: '') }.not_to change(Issue, :count)
+            end
           end
         end
 
@@ -977,7 +1025,7 @@ describe Projects::IssuesController do
           end
 
           before do
-            allow_any_instance_of(described_class).to receive(:verify_recaptcha).and_return(true)
+            expect(controller).to receive_messages(verify_recaptcha: true)
           end
 
           it 'accepts an issue after recaptcha is verified' do
@@ -1030,8 +1078,12 @@ describe Projects::IssuesController do
   describe 'POST #mark_as_spam' do
     context 'properly submits to Akismet' do
       before do
-        allow_any_instance_of(AkismetService).to receive_messages(submit_spam: true)
-        allow_any_instance_of(ApplicationSetting).to receive_messages(akismet_enabled: true)
+        expect_next_instance_of(AkismetService) do |akismet_service|
+          expect(akismet_service).to receive_messages(submit_spam: true)
+        end
+        expect_next_instance_of(ApplicationSetting) do |setting|
+          expect(setting).to receive_messages(akismet_enabled: true)
+        end
       end
 
       def post_spam
@@ -1128,6 +1180,7 @@ describe Projects::IssuesController do
         name: emoji_name
       })
     end
+
     let(:emoji_name) { 'thumbsup' }
 
     it "toggles the award emoji" do
@@ -1266,7 +1319,9 @@ describe Projects::IssuesController do
       end
 
       it "shows error when upload fails" do
-        allow_any_instance_of(UploadService).to receive(:execute).and_return(nil)
+        expect_next_instance_of(UploadService) do |upload_service|
+          expect(upload_service).to receive(:execute).and_return(nil)
+        end
 
         import_csv
 

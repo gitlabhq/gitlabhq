@@ -58,13 +58,13 @@ module Gitlab
 
     # Returns true if the given migration can be performed without downtime.
     def online?(migration)
-      migration.const_get(DOWNTIME_CONST) == false
+      migration.const_get(DOWNTIME_CONST, false) == false
     end
 
     # Returns the downtime reason, or nil if none was defined.
     def downtime_reason(migration)
       if migration.const_defined?(DOWNTIME_REASON_CONST)
-        migration.const_get(DOWNTIME_REASON_CONST)
+        migration.const_get(DOWNTIME_REASON_CONST, false)
       else
         nil
       end

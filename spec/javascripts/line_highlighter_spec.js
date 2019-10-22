@@ -1,4 +1,4 @@
-/* eslint-disable no-var, prefer-template, no-else-return, dot-notation, no-return-assign, no-new, no-underscore-dangle */
+/* eslint-disable no-var, no-else-return, dot-notation, no-return-assign, no-new, no-underscore-dangle */
 
 import $ from 'jquery';
 import LineHighlighter from '~/line_highlighter';
@@ -8,10 +8,10 @@ describe('LineHighlighter', function() {
   preloadFixtures('static/line_highlighter.html');
   clickLine = function(number, eventData = {}) {
     if ($.isEmptyObject(eventData)) {
-      return $('#L' + number).click();
+      return $(`#L${number}`).click();
     } else {
       const e = $.Event('click', eventData);
-      return $('#L' + number).trigger(e);
+      return $(`#L${number}`).trigger(e);
     }
   };
   beforeEach(function() {
@@ -42,9 +42,9 @@ describe('LineHighlighter', function() {
       var line;
       new LineHighlighter({ hash: '#L5-25' });
 
-      expect($('.' + this.css).length).toBe(21);
+      expect($(`.${this.css}`).length).toBe(21);
       for (line = 5; line <= 25; line += 1) {
-        expect($('#LC' + line)).toHaveClass(this.css);
+        expect($(`#LC${line}`)).toHaveClass(this.css);
       }
     });
 
@@ -130,7 +130,7 @@ describe('LineHighlighter', function() {
           });
 
           expect($('#LC13')).toHaveClass(this.css);
-          expect($('.' + this.css).length).toBe(1);
+          expect($(`.${this.css}`).length).toBe(1);
         });
 
         it('sets the hash', function() {
@@ -152,9 +152,9 @@ describe('LineHighlighter', function() {
             shiftKey: true,
           });
 
-          expect($('.' + this.css).length).toBe(6);
+          expect($(`.${this.css}`).length).toBe(6);
           for (line = 15; line <= 20; line += 1) {
-            expect($('#LC' + line)).toHaveClass(this.css);
+            expect($(`#LC${line}`)).toHaveClass(this.css);
           }
         });
 
@@ -165,9 +165,9 @@ describe('LineHighlighter', function() {
             shiftKey: true,
           });
 
-          expect($('.' + this.css).length).toBe(6);
+          expect($(`.${this.css}`).length).toBe(6);
           for (line = 5; line <= 10; line += 1) {
-            expect($('#LC' + line)).toHaveClass(this.css);
+            expect($(`#LC${line}`)).toHaveClass(this.css);
           }
         });
       });
@@ -188,9 +188,9 @@ describe('LineHighlighter', function() {
             shiftKey: true,
           });
 
-          expect($('.' + this.css).length).toBe(6);
+          expect($(`.${this.css}`).length).toBe(6);
           for (line = 5; line <= 10; line += 1) {
-            expect($('#LC' + line)).toHaveClass(this.css);
+            expect($(`#LC${line}`)).toHaveClass(this.css);
           }
         });
 
@@ -200,9 +200,9 @@ describe('LineHighlighter', function() {
             shiftKey: true,
           });
 
-          expect($('.' + this.css).length).toBe(6);
+          expect($(`.${this.css}`).length).toBe(6);
           for (line = 10; line <= 15; line += 1) {
-            expect($('#LC' + line)).toHaveClass(this.css);
+            expect($(`#LC${line}`)).toHaveClass(this.css);
           }
         });
       });

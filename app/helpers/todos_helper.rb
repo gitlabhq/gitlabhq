@@ -45,8 +45,8 @@ module TodosHelper
   end
 
   def todo_parent_path(todo)
-    if todo.parent.is_a?(Group)
-      link_to todo.parent.name, group_path(todo.parent)
+    if todo.resource_parent.is_a?(Group)
+      link_to todo.resource_parent.name, group_path(todo.resource_parent)
     else
       link_to_project(todo.project)
     end
@@ -64,7 +64,7 @@ module TodosHelper
     if todo.for_commit?
       project_commit_path(todo.project, todo.target, path_options)
     else
-      path = [todo.parent, todo.target]
+      path = [todo.resource_parent, todo.target]
 
       path.unshift(:pipelines) if todo.build_failed?
 

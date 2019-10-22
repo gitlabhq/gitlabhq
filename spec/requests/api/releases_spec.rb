@@ -54,6 +54,31 @@ describe API::Releases do
 
         expect(response).to match_response_schema('public_api/v4/releases')
       end
+
+      it 'returns rendered helper paths' do
+        get api("/projects/#{project.id}/releases", maintainer)
+
+        expect(json_response.first['commit_path']).to eq("/#{release_2.project.full_path}/commit/#{release_2.commit.id}")
+        expect(json_response.first['tag_path']).to eq("/#{release_2.project.full_path}/-/tags/#{release_2.tag}")
+        expect(json_response.second['commit_path']).to eq("/#{release_1.project.full_path}/commit/#{release_1.commit.id}")
+        expect(json_response.second['tag_path']).to eq("/#{release_1.project.full_path}/-/tags/#{release_1.tag}")
+      end
+
+      it 'returns the merge requests and issues links, with correct query' do
+        get api("/projects/#{project.id}/releases", maintainer)
+
+        links = json_response.first['_links']
+        release = json_response.first['tag_name']
+        expected_query = "release_tag=#{release}&scope=all&state=opened"
+        path_base = "/#{project.namespace.path}/#{project.path}"
+        mr_uri = URI.parse(links['merge_requests_url'])
+        issue_uri = URI.parse(links['issues_url'])
+
+        expect(mr_uri.path).to eq("#{path_base}/merge_requests")
+        expect(issue_uri.path).to eq("#{path_base}/issues")
+        expect(mr_uri.query).to eq(expected_query)
+        expect(issue_uri.query).to eq(expected_query)
+      end
     end
 
     it 'returns an upcoming_release status for a future release' do
@@ -103,11 +128,13 @@ describe API::Releases do
         expect(response).to have_gitlab_http_status(:ok)
       end
 
-      it "does not expose tag, commit and source code" do
+      it "does not expose tag, commit, source code or helper paths" do
         get api("/projects/#{project.id}/releases", guest)
 
         expect(response).to match_response_schema('public_api/v4/release/releases_for_guest')
         expect(json_response[0]['assets']['count']).to eq(release.links.count)
+        expect(json_response[0]['commit_path']).to be_nil
+        expect(json_response[0]['tag_path']).to be_nil
       end
 
       context 'when project is public' do
@@ -119,11 +146,13 @@ describe API::Releases do
           expect(response).to have_gitlab_http_status(:ok)
         end
 
-        it "exposes tag, commit and source code" do
+        it "exposes tag, commit, source code and helper paths" do
           get api("/projects/#{project.id}/releases", guest)
 
           expect(response).to match_response_schema('public_api/v4/releases')
-          expect(json_response[0]['assets']['count']).to eq(release.links.count + release.sources.count)
+          expect(json_response.first['assets']['count']).to eq(release.links.count + release.sources.count)
+          expect(json_response.first['commit_path']).to eq("/#{release.project.full_path}/commit/#{release.commit.id}")
+          expect(json_response.first['tag_path']).to eq("/#{release.project.full_path}/-/tags/#{release.tag}")
         end
       end
     end
@@ -172,6 +201,8 @@ describe API::Releases do
         expect(json_response['author']['name']).to eq(maintainer.name)
         expect(json_response['commit']['id']).to eq(commit.id)
         expect(json_response['assets']['count']).to eq(4)
+        expect(json_response['commit_path']).to eq("/#{release.project.full_path}/commit/#{release.commit.id}")
+        expect(json_response['tag_path']).to eq("/#{release.project.full_path}/-/tags/#{release.tag}")
       end
 
       it 'matches response schema' do

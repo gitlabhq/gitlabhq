@@ -5,6 +5,7 @@ require 'spec_helper'
 describe Projects::DeployKeysController do
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
+  let(:admin) { create(:admin) }
 
   before do
     project.add_maintainer(user)
@@ -37,7 +38,7 @@ describe Projects::DeployKeysController do
         create(:deploy_keys_project, project: project2, deploy_key: deploy_key_internal)
       end
 
-      let!(:deploy_keys_actual_project) do
+      let!(:deploy_keys_project_actual) do
         create(:deploy_keys_project, project: project, deploy_key: deploy_key_actual)
       end
 
@@ -154,7 +155,7 @@ describe Projects::DeployKeysController do
 
     context 'with admin' do
       before do
-        sign_in(create(:admin))
+        sign_in(admin)
       end
 
       it 'returns 302' do
@@ -219,7 +220,7 @@ describe Projects::DeployKeysController do
 
     context 'with admin' do
       before do
-        sign_in(create(:admin))
+        sign_in(admin)
       end
 
       it 'returns 302' do
@@ -231,6 +232,82 @@ describe Projects::DeployKeysController do
         expect(response).to redirect_to(namespace_project_settings_repository_path(anchor: 'js-deploy-keys-settings'))
 
         expect { DeployKey.find(deploy_key.id) }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+    end
+  end
+
+  describe 'PUT update' do
+    let(:extra_params) { {} }
+
+    subject do
+      put :update, params: extra_params.reverse_merge(id: deploy_key.id,
+                                                      namespace_id: project.namespace,
+                                                      project_id: project)
+    end
+
+    def deploy_key_params(title, can_push)
+      deploy_keys_projects_attributes = { '0' => { id: deploy_keys_project, can_push: can_push } }
+      { deploy_key: { title: title, deploy_keys_projects_attributes: deploy_keys_projects_attributes } }
+    end
+
+    let(:deploy_key) { create(:deploy_key, public: true) }
+    let(:project) { create(:project) }
+    let!(:deploy_keys_project) do
+      create(:deploy_keys_project, project: project, deploy_key: deploy_key)
+    end
+
+    context 'with project maintainer' do
+      before do
+        project.add_maintainer(user)
+      end
+
+      context 'public deploy key attached to project' do
+        let(:extra_params) { deploy_key_params('updated title', '1') }
+
+        it 'does not update the title of the deploy key' do
+          expect { subject }.not_to change { deploy_key.reload.title }
+        end
+
+        it 'updates can_push of deploy_keys_project' do
+          expect { subject }.to change { deploy_keys_project.reload.can_push }.from(false).to(true)
+        end
+      end
+    end
+
+    context 'with admin' do
+      before do
+        sign_in(admin)
+      end
+
+      context 'public deploy key attached to project' do
+        let(:extra_params) { deploy_key_params('updated title', '1') }
+
+        it 'updates the title of the deploy key' do
+          expect { subject }.to change { deploy_key.reload.title }.to('updated title')
+        end
+
+        it 'updates can_push of deploy_keys_project' do
+          expect { subject }.to change { deploy_keys_project.reload.can_push }.from(false).to(true)
+        end
+      end
+    end
+
+    context 'with admin as project maintainer' do
+      before do
+        sign_in(admin)
+        project.add_maintainer(admin)
+      end
+
+      context 'public deploy key attached to project' do
+        let(:extra_params) { deploy_key_params('updated title', '1') }
+
+        it 'updates the title of the deploy key' do
+          expect { subject }.to change { deploy_key.reload.title }.to('updated title')
+        end
+
+        it 'updates can_push of deploy_keys_project' do
+          expect { subject }.to change { deploy_keys_project.reload.can_push }.from(false).to(true)
+        end
       end
     end
   end

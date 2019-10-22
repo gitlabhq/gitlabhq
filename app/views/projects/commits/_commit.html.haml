@@ -6,7 +6,8 @@
 - merge_request = local_assigns.fetch(:merge_request, nil)
 - project       = local_assigns.fetch(:project) { merge_request&.project }
 - ref           = local_assigns.fetch(:ref) { merge_request&.source_branch }
-- commit_status = commit.present(current_user: current_user).status_for(ref)
+- commit        = commit.present(current_user: current_user)
+- commit_status = commit.status_for(ref)
 
 - link = commit_path(project, commit, merge_request: merge_request)
 
@@ -48,12 +49,12 @@
         = render partial: 'projects/commit/ajax_signature', locals: { commit: commit }
 
       - if commit_status
-        = render_commit_status(commit, ref: ref)
+        = render_commit_status(commit, commit_status, ref: ref)
 
       .js-commit-pipeline-status{ data: { endpoint: pipelines_project_commit_path(project, commit.id, ref: ref) } }
 
       .commit-sha-group.d-none.d-sm-flex
         .label.label-monospace.monospace
           = commit.short_id
-        = clipboard_button(text: commit.id, title: _("Copy commit SHA to clipboard"), class: "btn btn-default", container: "body")
+        = clipboard_button(text: commit.id, title: _("Copy commit SHA"), class: "btn btn-default", container: "body")
         = link_to_browse_code(project, commit)

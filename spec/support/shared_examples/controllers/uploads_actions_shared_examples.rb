@@ -104,7 +104,7 @@ shared_examples 'handle uploads' do
 
         context "when neither the uploader nor the model exists" do
           before do
-            allow_any_instance_of(Upload).to receive(:build_uploader).and_return(nil)
+            allow_any_instance_of(Upload).to receive(:retrieve_uploader).and_return(nil)
             allow(controller).to receive(:find_model).and_return(nil)
           end
 
@@ -338,7 +338,7 @@ shared_examples 'handle uploads authorize' do
 
             it_behaves_like 'a valid response' do
               it 'responds with status 200, location of uploads remote store and object details' do
-                expect(json_response['TempPath']).to eq(uploader_class.workhorse_local_upload_path)
+                expect(json_response).not_to have_key('TempPath')
                 expect(json_response['RemoteObject']).to have_key('ID')
                 expect(json_response['RemoteObject']).to have_key('GetURL')
                 expect(json_response['RemoteObject']).to have_key('StoreURL')

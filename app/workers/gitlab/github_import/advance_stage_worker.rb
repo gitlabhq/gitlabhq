@@ -10,6 +10,7 @@ module Gitlab
       include ApplicationWorker
 
       sidekiq_options dead: false
+      feature_category :importers
 
       INTERVAL = 30.seconds.to_i
 

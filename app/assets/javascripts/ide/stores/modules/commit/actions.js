@@ -152,6 +152,12 @@ export const commitChanges = ({ commit, state, getters, dispatch, rootState, roo
         branch: getters.branchName,
       })
         .then(() => {
+          commit(rootTypes.CLEAR_STAGED_CHANGES, null, { root: true });
+
+          setTimeout(() => {
+            commit(rootTypes.SET_LAST_COMMIT_MSG, '', { root: true });
+          }, 5000);
+
           if (state.shouldCreateMR) {
             const { currentProject } = rootGetters;
             const targetBranch = getters.isCreatingNewBranch
@@ -164,14 +170,6 @@ export const commitChanges = ({ commit, state, getters, dispatch, rootState, roo
               { root: true },
             );
           }
-
-          commit(rootTypes.CLEAR_STAGED_CHANGES, null, { root: true });
-
-          commit(rootTypes.CLEAR_REPLACED_FILES, null, { root: true });
-
-          setTimeout(() => {
-            commit(rootTypes.SET_LAST_COMMIT_MSG, '', { root: true });
-          }, 5000);
         })
         .then(() => {
           if (rootGetters.lastOpenedFile) {

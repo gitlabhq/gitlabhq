@@ -183,7 +183,7 @@ describe Users::DestroyService do
           let!(:project) { create(:project, :empty_repo, :legacy_storage, namespace: user.namespace) }
 
           it 'removes repository' do
-            expect(gitlab_shell.exists?(project.repository_storage, "#{project.disk_path}.git")).to be_falsey
+            expect(gitlab_shell.repository_exists?(project.repository_storage, "#{project.disk_path}.git")).to be_falsey
           end
         end
 
@@ -191,7 +191,7 @@ describe Users::DestroyService do
           let!(:project) { create(:project, :empty_repo, namespace: user.namespace) }
 
           it 'removes repository' do
-            expect(gitlab_shell.exists?(project.repository_storage, "#{project.disk_path}.git")).to be_falsey
+            expect(gitlab_shell.repository_exists?(project.repository_storage, "#{project.disk_path}.git")).to be_falsey
           end
         end
       end

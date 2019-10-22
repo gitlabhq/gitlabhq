@@ -42,7 +42,7 @@ assignees in the database of the GitLab instance (note that pull requests are ca
 
 For this association to succeed, prior to the import, each GitHub author and assignee in the repository must
 have either previously logged in to a GitLab account using the GitHub icon **or** have a GitHub account with
-a [public email address](https://help.github.com/articles/setting-your-commit-email-address-on-github/) that
+a [public email address](https://help.github.com/en/articles/setting-your-commit-email-address) that
 matches their GitLab account's email address.
 
 If a user referenced in the project is not found in GitLab's database, the project creator (typically the user
@@ -71,7 +71,7 @@ Before you begin, ensure that any GitHub users who you want to map to GitLab use
 
 - A GitLab account that has logged in using the GitHub icon
   \- or -
-- A GitLab account with an email address that matches the [public email address](https://help.github.com/articles/setting-your-commit-email-address-on-github/) of the GitHub user
+- A GitLab account with an email address that matches the [public email address](https://help.github.com/en/articles/setting-your-commit-email-address) of the GitHub user
 
 User-matching attempts occur in that order, and if a user is not identified either way, the activity is associated with
 the user account that is performing the import.
@@ -82,7 +82,7 @@ If you are using a self-hosted GitLab instance or if you are importing from GitH
 
 1. From the top navigation bar, click **+** and select **New project**.
 1. Select the **Import project** tab and then select **GitHub**.
-1. Select the first button to **List your GitHub repositories**. You are redirected to a page on github.com to authorize the GitLab application.
+1. Select the first button to **List your GitHub repositories**. You are redirected to a page on [GitHub](https://github.com) to authorize the GitLab application.
 1. Click **Authorize gitlabhq**. You are redirected back to GitLab's Import page and all of your GitHub repositories are listed.
 1. Continue on to [selecting which repositories to import](#selecting-which-repositories-to-import).
 
@@ -115,10 +115,13 @@ your GitHub repositories are listed.
 
 1. By default, the proposed repository namespaces match the names as they exist in GitHub, but based on your permissions,
    you can choose to edit these names before you proceed to import any of them.
-1. Select the **Import** button next to any number of repositories, or select **Import all repositories**.
+1. Select the **Import** button next to any number of repositories, or select **Import all repositories**. Additionally,
+   you can filter projects by name. If filter is applied, **Import all repositories** only imports matched repositories.
 1. The **Status** column shows the import status of each repository. You can choose to leave the page open and it will
    update in realtime or you can return to it later.
 1. Once a repository has been imported, click its GitLab path to open its GitLab URL.
+
+![Github importer page](img/import_projects_from_github_importer_v12_3.png)
 
 ## Mirroring and pipeline status sharing
 

@@ -51,7 +51,7 @@ must disable the **primary** node.
 
    NOTE: **Note:**
    (**CentOS only**) In CentOS 6 or older, there is no easy way to prevent GitLab from being
-   started if the machine reboots isn't available (see [gitlab-org/omnibus-gitlab#3058]).
+   started if the machine reboots isn't available (see [Omnibus GitLab issue #3058](https://gitlab.com/gitlab-org/omnibus-gitlab/issues/3058)).
    It may be safest to uninstall the GitLab package completely:
 
    ```sh
@@ -317,6 +317,5 @@ section to resolve the error. Otherwise, the secret is lost and you'll need to
 [setup-geo]: ../replication/index.md#setup-instructions
 [updating-geo]: ../replication/version_specific_updates.md#updating-to-gitlab-105
 [sec-tfa]: ../../../security/two_factor_authentication.md#disabling-2fa-for-everyone
-[gitlab-org/omnibus-gitlab#3058]: https://gitlab.com/gitlab-org/omnibus-gitlab/issues/3058
 [initiate-the-replication-process]: ../replication/database.html#step-3-initiate-the-replication-process
 [configure-the-primary-server]: ../replication/database.html#step-1-configure-the-primary-server

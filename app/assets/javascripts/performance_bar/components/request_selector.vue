@@ -1,5 +1,12 @@
 <script>
+import { glEmojiTag } from '~/emoji';
+import { n__ } from '~/locale';
+import { GlPopover } from '@gitlab/ui';
+
 export default {
+  components: {
+    GlPopover,
+  },
   props: {
     currentRequest: {
       type: Object,
@@ -14,6 +21,18 @@ export default {
     return {
       currentRequestId: this.currentRequest.id,
     };
+  },
+  computed: {
+    requestsWithWarnings() {
+      return this.requests.filter(request => request.hasWarnings);
+    },
+    warningMessage() {
+      return n__(
+        '%d request with warnings',
+        '%d requests with warnings',
+        this.requestsWithWarnings.length,
+      );
+    },
   },
   watch: {
     currentRequestId(newRequestId) {
@@ -31,6 +50,7 @@ export default {
 
       return truncated;
     },
+    glEmojiTag,
   },
 };
 </script>
@@ -44,7 +64,16 @@ export default {
         class="qa-performance-bar-request"
       >
         {{ truncatedUrl(request.url) }}
+        <span v-if="request.hasWarnings">(!)</span>
       </option>
     </select>
+    <span v-if="requestsWithWarnings.length">
+      <span id="performance-bar-request-selector-warning" v-html="glEmojiTag('warning')"></span>
+      <gl-popover
+        target="performance-bar-request-selector-warning"
+        :content="warningMessage"
+        triggers="hover focus"
+      />
+    </span>
   </div>
 </template>

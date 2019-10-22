@@ -125,6 +125,11 @@ module Gitlab
         # If the addr can't be resolved or the url is invalid (i.e http://1.1.1.1.1)
         # we block the url
         raise BlockedUrlError, "Host cannot be resolved or invalid"
+      rescue ArgumentError => error
+        # Addrinfo.getaddrinfo errors if the domain exceeds 1024 characters.
+        raise unless error.message.include?('hostname too long')
+
+        raise BlockedUrlError, "Host is too long (maximum is 1024 characters)"
       end
 
       def validate_local_request(

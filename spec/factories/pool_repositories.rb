@@ -3,7 +3,7 @@
 FactoryBot.define do
   factory :pool_repository do
     shard { Shard.by_name("default") }
-    state :none
+    state { :none }
 
     before(:create) do |pool|
       pool.source_project = create(:project, :repository)
@@ -11,19 +11,19 @@ FactoryBot.define do
     end
 
     trait :scheduled do
-      state :scheduled
+      state { :scheduled }
     end
 
     trait :failed do
-      state :failed
+      state { :failed }
     end
 
     trait :obsolete do
-      state :obsolete
+      state { :obsolete }
     end
 
     trait :ready do
-      state :ready
+      state { :ready }
 
       after(:create) do |pool|
         pool.create_object_pool

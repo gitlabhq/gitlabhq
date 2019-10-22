@@ -34,14 +34,18 @@ Example of response
     "status": "pending",
     "ref": "new-pipeline",
     "sha": "a91957a858320c0e17f3a0eca7cfacbff50ea29a",
-    "web_url": "https://example.com/foo/bar/pipelines/47"
+    "web_url": "https://example.com/foo/bar/pipelines/47",
+    "created_at": "2016-08-11T11:28:34.085Z",
+    "updated_at": "2016-08-11T11:32:35.169Z",
   },
   {
     "id": 48,
     "status": "pending",
     "ref": "new-pipeline",
     "sha": "eb94b618fb5865b26e80fdd8ae531b7a63ad851a",
-    "web_url": "https://example.com/foo/bar/pipelines/48"
+    "web_url": "https://example.com/foo/bar/pipelines/48",
+    "created_at": "2016-08-12T10:06:04.561Z",
+    "updated_at": "2016-08-12T10:09:56.223Z",
   }
 ]
 ```

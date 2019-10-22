@@ -8,7 +8,6 @@
 - if @repos.any?
   %p.light
     = _('Select projects you want to import.')
-  %hr
   %p
   - if @incompatible_repos.any?
     = button_tag class: 'btn btn-import btn-success js-import-all' do
@@ -18,6 +17,14 @@
     = button_tag class: 'btn btn-import btn-success js-import-all' do
       = _('Import all projects')
       = icon('spinner spin', class: 'loading-icon')
+
+.position-relative.ms-no-clear.d-flex.flex-fill.float-right.append-bottom-10
+  = form_tag status_import_bitbucket_path, method: 'get' do
+    = text_field_tag :filter, @filter, class: 'form-control pr-5', placeholder: _('Filter projects'), size: 40, autofocus: true, 'aria-label': _('Search')
+    .position-absolute.position-top-0.d-flex.align-items-center.text-muted.position-right-0.h-100
+      .border-left
+        %button{ class: 'btn btn-transparent btn-secondary', 'aria-label': _('Search Button'), type: 'submit' }
+          %i{ class: 'fa fa-search', 'aria-hidden': true }
 
 .table-responsive
   %table.table.import-jobs
@@ -59,7 +66,7 @@
                 - if current_user.can_select_namespace?
                   - selected = params[:namespace_id] || :current_user
                   - opts = current_user.can_create_group? ? { extra_group: Group.new(name: repo.owner, path: repo.owner) } : {}
-                  = select_tag :namespace_id, namespaces_options(selected, opts.merge({ display_path: true })), { class: 'input-group-text select2 js-select-namespace', tabindex: 1 }
+                  = select_tag :namespace_id, namespaces_options(selected, opts.merge({ display_path: true })), { class: 'select2 js-select-namespace', tabindex: 1 }
                 - else
                   = text_field_tag :path, current_user.namespace_path, class: "input-group-text input-large form-control", tabindex: 1, disabled: true
               %span.input-group-prepend

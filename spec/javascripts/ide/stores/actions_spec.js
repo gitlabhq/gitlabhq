@@ -13,12 +13,15 @@ import actions, {
   createTempEntry,
 } from '~/ide/stores/actions';
 import axios from '~/lib/utils/axios_utils';
-import store from '~/ide/stores';
+import { createStore } from '~/ide/stores';
 import * as types from '~/ide/stores/mutation_types';
 import router from '~/ide/ide_router';
 import { resetStore, file } from '../helpers';
 import testAction from '../../helpers/vuex_action_helper';
 import MockAdapter from 'axios-mock-adapter';
+import eventHub from '~/ide/eventhub';
+
+const store = createStore();
 
 describe('Multi-file store actions', () => {
   beforeEach(() => {
@@ -451,6 +454,24 @@ describe('Multi-file store actions', () => {
         done,
       );
     });
+
+    it('does not dispatch for parent, if parent does not exist', done => {
+      const f = {
+        ...file(),
+        path: 'test',
+        parentPath: 'testing',
+      };
+      store.state.entries[f.path] = f;
+
+      testAction(
+        updateTempFlagForEntry,
+        { file: f, tempFile: false },
+        store.state,
+        [{ type: 'UPDATE_TEMP_FLAG', payload: { path: f.path, tempFile: false } }],
+        [],
+        done,
+      );
+    });
   });
 
   describe('setCurrentBranchId', () => {
@@ -540,82 +561,298 @@ describe('Multi-file store actions', () => {
         done,
       );
     });
+
+    it('if renamed, reverts the rename before deleting', () => {
+      const testEntry = {
+        path: 'test',
+        name: 'test',
+        prevPath: 'lorem/ipsum',
+        prevName: 'ipsum',
+        prevParentPath: 'lorem',
+      };
+
+      store.state.entries = { test: testEntry };
+      testAction(
+        deleteEntry,
+        testEntry.path,
+        store.state,
+        [],
+        [
+          {
+            type: 'renameEntry',
+            payload: {
+              path: testEntry.path,
+              name: testEntry.prevName,
+              parentPath: testEntry.prevParentPath,
+            },
+          },
+          {
+            type: 'deleteEntry',
+            payload: testEntry.prevPath,
+          },
+        ],
+      );
+    });
   });
 
   describe('renameEntry', () => {
-    it('renames entry', done => {
-      store.state.entries.test = {
-        tree: [],
-      };
+    describe('purging of file model cache', () => {
+      beforeEach(() => {
+        spyOn(eventHub, '$emit');
+      });
 
-      testAction(
-        renameEntry,
-        { path: 'test', name: 'new-name', entryPath: null, parentPath: 'parent-path' },
-        store.state,
-        [
-          {
-            type: types.RENAME_ENTRY,
-            payload: { path: 'test', name: 'new-name', entryPath: null, parentPath: 'parent-path' },
+      it('does not purge model cache for temporary entries that got renamed', done => {
+        Object.assign(store.state.entries, {
+          test: {
+            ...file('test'),
+            key: 'foo-key',
+            type: 'blob',
+            tempFile: true,
           },
-          {
-            type: types.TOGGLE_FILE_CHANGED,
-            payload: {
-              file: store.state.entries['parent-path/new-name'],
-              changed: true,
-            },
+        });
+
+        store
+          .dispatch('renameEntry', {
+            path: 'test',
+            name: 'new',
+          })
+          .then(() => {
+            expect(eventHub.$emit.calls.allArgs()).not.toContain(
+              'editor.update.model.dispose.foo-bar',
+            );
+          })
+          .then(done)
+          .catch(done.fail);
+      });
+
+      it('purges model cache for renamed entry', done => {
+        Object.assign(store.state.entries, {
+          test: {
+            ...file('test'),
+            key: 'foo-key',
+            type: 'blob',
+            tempFile: false,
           },
-        ],
-        [{ type: 'triggerFilesChange' }],
-        done,
-      );
+        });
+
+        store
+          .dispatch('renameEntry', {
+            path: 'test',
+            name: 'new',
+          })
+          .then(() => {
+            expect(eventHub.$emit).toHaveBeenCalled();
+            expect(eventHub.$emit).toHaveBeenCalledWith(`editor.update.model.dispose.foo-key`);
+          })
+          .then(done)
+          .catch(done.fail);
+      });
     });
 
-    it('renames all entries in tree', done => {
-      store.state.entries.test = {
-        type: 'tree',
-        tree: [
-          {
-            path: 'tree-1',
-          },
-          {
-            path: 'tree-2',
-          },
-        ],
-      };
+    describe('single entry', () => {
+      let origEntry;
+      let renamedEntry;
 
-      testAction(
-        renameEntry,
-        { path: 'test', name: 'new-name', parentPath: 'parent-path' },
-        store.state,
-        [
-          {
-            type: types.RENAME_ENTRY,
-            payload: { path: 'test', name: 'new-name', entryPath: null, parentPath: 'parent-path' },
-          },
-        ],
-        [
-          {
-            type: 'renameEntry',
-            payload: {
-              path: 'test',
-              name: 'new-name',
-              entryPath: 'tree-1',
-              parentPath: 'parent-path/new-name',
+      beforeEach(() => {
+        // Need to insert both because `testAction` doesn't actually call the mutation
+        origEntry = file('orig', 'orig', 'blob');
+        renamedEntry = {
+          ...file('renamed', 'renamed', 'blob'),
+          prevKey: origEntry.key,
+          prevName: origEntry.name,
+          prevPath: origEntry.path,
+        };
+
+        Object.assign(store.state.entries, {
+          orig: origEntry,
+          renamed: renamedEntry,
+        });
+      });
+
+      afterEach(() => {
+        resetStore(store);
+      });
+
+      it('by default renames an entry and adds to changed', done => {
+        testAction(
+          renameEntry,
+          { path: 'orig', name: 'renamed' },
+          store.state,
+          [
+            {
+              type: types.RENAME_ENTRY,
+              payload: {
+                path: 'orig',
+                name: 'renamed',
+                parentPath: undefined,
+              },
             },
-          },
-          {
-            type: 'renameEntry',
-            payload: {
-              path: 'test',
-              name: 'new-name',
-              entryPath: 'tree-2',
-              parentPath: 'parent-path/new-name',
+            {
+              type: types.ADD_FILE_TO_CHANGED,
+              payload: 'renamed',
             },
+          ],
+          [{ type: 'triggerFilesChange' }],
+          done,
+        );
+      });
+
+      it('if not changed, completely unstages entry if renamed to original', done => {
+        testAction(
+          renameEntry,
+          { path: 'renamed', name: 'orig' },
+          store.state,
+          [
+            {
+              type: types.RENAME_ENTRY,
+              payload: {
+                path: 'renamed',
+                name: 'orig',
+                parentPath: undefined,
+              },
+            },
+            {
+              type: types.REMOVE_FILE_FROM_STAGED_AND_CHANGED,
+              payload: origEntry,
+            },
+          ],
+          [{ type: 'triggerFilesChange' }],
+          done,
+        );
+      });
+
+      it('if already in changed, does not add to change', done => {
+        store.state.changedFiles.push(renamedEntry);
+
+        testAction(
+          renameEntry,
+          { path: 'orig', name: 'renamed' },
+          store.state,
+          [jasmine.objectContaining({ type: types.RENAME_ENTRY })],
+          [{ type: 'triggerFilesChange' }],
+          done,
+        );
+      });
+
+      it('routes to the renamed file if the original file has been opened', done => {
+        Object.assign(store.state.entries.orig, {
+          opened: true,
+          url: '/foo-bar.md',
+        });
+
+        store
+          .dispatch('renameEntry', {
+            path: 'orig',
+            name: 'renamed',
+          })
+          .then(() => {
+            expect(router.push.calls.count()).toBe(1);
+            expect(router.push).toHaveBeenCalledWith(`/project/foo-bar.md`);
+          })
+          .then(done)
+          .catch(done.fail);
+      });
+    });
+
+    describe('folder', () => {
+      let folder;
+      let file1;
+      let file2;
+
+      beforeEach(() => {
+        folder = file('folder', 'folder', 'tree');
+        file1 = file('file-1', 'file-1', 'blob', folder);
+        file2 = file('file-2', 'file-2', 'blob', folder);
+
+        folder.tree = [file1, file2];
+
+        Object.assign(store.state.entries, {
+          [folder.path]: folder,
+          [file1.path]: file1,
+          [file2.path]: file2,
+        });
+      });
+
+      it('updates entries in a folder correctly, when folder is renamed', done => {
+        store
+          .dispatch('renameEntry', {
+            path: 'folder',
+            name: 'new-folder',
+          })
+          .then(() => {
+            const keys = Object.keys(store.state.entries);
+
+            expect(keys.length).toBe(3);
+            expect(keys.indexOf('new-folder')).toBe(0);
+            expect(keys.indexOf('new-folder/file-1')).toBe(1);
+            expect(keys.indexOf('new-folder/file-2')).toBe(2);
+          })
+          .then(done)
+          .catch(done.fail);
+      });
+
+      it('discards renaming of an entry if the root folder is renamed back to a previous name', done => {
+        const rootFolder = file('old-folder', 'old-folder', 'tree');
+        const testEntry = file('test', 'test', 'blob', rootFolder);
+
+        Object.assign(store.state, {
+          entries: {
+            'old-folder': {
+              ...rootFolder,
+              tree: [testEntry],
+            },
+            'old-folder/test': testEntry,
           },
-          { type: 'triggerFilesChange' },
-        ],
-        done,
-      );
+        });
+
+        store
+          .dispatch('renameEntry', {
+            path: 'old-folder',
+            name: 'new-folder',
+          })
+          .then(() => {
+            const { entries } = store.state;
+
+            expect(Object.keys(entries).length).toBe(2);
+            expect(entries['old-folder']).toBeUndefined();
+            expect(entries['old-folder/test']).toBeUndefined();
+
+            expect(entries['new-folder']).toBeDefined();
+            expect(entries['new-folder/test']).toEqual(
+              jasmine.objectContaining({
+                path: 'new-folder/test',
+                name: 'test',
+                prevPath: 'old-folder/test',
+                prevName: 'test',
+              }),
+            );
+          })
+          .then(() =>
+            store.dispatch('renameEntry', {
+              path: 'new-folder',
+              name: 'old-folder',
+            }),
+          )
+          .then(() => {
+            const { entries } = store.state;
+
+            expect(Object.keys(entries).length).toBe(2);
+            expect(entries['new-folder']).toBeUndefined();
+            expect(entries['new-folder/test']).toBeUndefined();
+
+            expect(entries['old-folder']).toBeDefined();
+            expect(entries['old-folder/test']).toEqual(
+              jasmine.objectContaining({
+                path: 'old-folder/test',
+                name: 'test',
+                prevPath: undefined,
+                prevName: undefined,
+              }),
+            );
+          })
+          .then(done)
+          .catch(done.fail);
+      });
     });
   });
 

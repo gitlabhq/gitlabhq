@@ -3,21 +3,24 @@
 
   %fieldset
     .sub-section
+      %h4= _("Hashed repository storage paths")
       .form-group
         .form-check
           = f.check_box :hashed_storage_enabled, class: 'form-check-input qa-hashed-storage-checkbox'
-          = f.label :hashed_storage_enabled, class: 'form-check-label' do
-            Use hashed storage paths for newly created and renamed projects
+          = f.label :hashed_storage_enabled, _("Use hashed storage"), class: 'label-bold form-check-label'
           .form-text.text-muted
-            Enable immutable, hash-based paths and repository names to store repositories on disk. This prevents
-            repositories from having to be moved or renamed when the Project URL changes and may improve disk I/O performance.
+            = _("Use hashed storage paths for newly created and renamed projects. Enable immutable, hash-based paths and repository names to store repositories on disk. This prevents repositories from having to be moved or renamed when the Project URL changes and may improve disk I/O performance.")
+    .sub-section
+      %h4= _("Storage nodes for new projects")
       .form-group
-        = f.label :repository_storages, 'Storage paths for new projects', class: 'label-bold'
-        = f.select :repository_storages, repository_storages_options_for_select(@application_setting.repository_storages),
-          {include_hidden: false}, multiple: true, class: 'form-control'
-        .form-text.text-muted
-          Manage repository storage paths. Learn more in the
-          = succeed "." do
-            = link_to "repository storages documentation", help_page_path("administration/repository_storage_paths")
+        .form-text
+          %p.text-secondary
+            = _('Select the configured storaged available for new projects to be placed on.')
+            = link_to icon('question-circle'), help_page_path('administration/repository_storage_paths')
+        .form-check
+          = f.collection_check_boxes :repository_storages, Gitlab.config.repositories.storages, :first, :first, include_hidden: false do |b|
+            = b.check_box class: 'form-check-input'
+            = b.label class: 'label-bold form-check-label'
+            %br
 
-  = f.submit 'Save changes', class: "btn btn-success qa-save-changes-button"
+  = f.submit _('Save changes'), class: "btn btn-success qa-save-changes-button"

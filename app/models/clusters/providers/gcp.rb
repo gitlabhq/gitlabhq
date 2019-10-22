@@ -3,6 +3,8 @@
 module Clusters
   module Providers
     class Gcp < ApplicationRecord
+      include Clusters::Concerns::ProviderStatus
+
       self.table_name = 'cluster_providers_gcp'
 
       belongs_to :cluster, inverse_of: :provider_gcp, class_name: 'Clusters::Cluster'
@@ -10,6 +12,9 @@ module Clusters
       default_value_for :zone, 'us-central1-a'
       default_value_for :num_nodes, 3
       default_value_for :machine_type, 'n1-standard-2'
+      default_value_for :cloud_run, false
+
+      scope :cloud_run, -> { where(cloud_run: true) }
 
       attr_encrypted :access_token,
         mode: :per_attribute_iv,
@@ -32,50 +37,25 @@ module Clusters
           greater_than: 0
         }
 
-      state_machine :status, initial: :scheduled do
-        state :scheduled, value: 1
-        state :creating, value: 2
-        state :created, value: 3
-        state :errored, value: 4
-
-        event :make_creating do
-          transition any - [:creating] => :creating
-        end
-
-        event :make_created do
-          transition any - [:created] => :created
-        end
-
-        event :make_errored do
-          transition any - [:errored] => :errored
-        end
-
-        before_transition any => [:errored, :created] do |provider|
-          provider.access_token = nil
-          provider.operation_id = nil
-        end
-
-        before_transition any => [:creating] do |provider, transition|
-          operation_id = transition.args.first
-          raise ArgumentError.new('operation_id is required') unless operation_id.present?
-
-          provider.operation_id = operation_id
-        end
-
-        before_transition any => [:errored] do |provider, transition|
-          status_reason = transition.args.first
-          provider.status_reason = status_reason if status_reason
-        end
-      end
-
-      def on_creation?
-        scheduled? || creating?
-      end
-
       def api_client
         return unless access_token
 
         @api_client ||= GoogleApi::CloudPlatform::Client.new(access_token, nil)
+      end
+
+      def nullify_credentials
+        assign_attributes(
+          access_token: nil,
+          operation_id: nil
+        )
+      end
+
+      def assign_operation_id(operation_id)
+        assign_attributes(operation_id: operation_id)
+      end
+
+      def knative_pre_installed?
+        cloud_run?
       end
     end
   end

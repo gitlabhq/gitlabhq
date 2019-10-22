@@ -24,11 +24,26 @@ describe HealthController do
       it 'responds with readiness checks data' do
         subject
 
-        expect(json_response['db_check']['status']).to eq('ok')
-        expect(json_response['cache_check']['status']).to eq('ok')
-        expect(json_response['queues_check']['status']).to eq('ok')
-        expect(json_response['shared_state_check']['status']).to eq('ok')
-        expect(json_response['gitaly_check']['status']).to eq('ok')
+        expect(json_response['db_check']).to contain_exactly({ 'status' => 'ok' })
+        expect(json_response['cache_check']).to contain_exactly({ 'status' => 'ok' })
+        expect(json_response['queues_check']).to contain_exactly({ 'status' => 'ok' })
+        expect(json_response['shared_state_check']).to contain_exactly({ 'status' => 'ok' })
+        expect(json_response['gitaly_check']).to contain_exactly(
+          { 'status' => 'ok', 'labels' => { 'shard' => 'default' } })
+      end
+
+      it 'responds with readiness checks data when a failure happens' do
+        allow(Gitlab::HealthChecks::Redis::RedisCheck).to receive(:readiness).and_return(
+          Gitlab::HealthChecks::Result.new('redis_check', false, "check error"))
+
+        subject
+
+        expect(json_response['cache_check']).to contain_exactly({ 'status' => 'ok' })
+        expect(json_response['redis_check']).to contain_exactly(
+          { 'status' => 'failed', 'message' => 'check error' })
+
+        expect(response.status).to eq(503)
+        expect(response.headers['X-GitLab-Custom-Error']).to eq(1)
       end
     end
 
@@ -76,10 +91,7 @@ describe HealthController do
       it 'responds with liveness checks data' do
         subject
 
-        expect(json_response['db_check']['status']).to eq('ok')
-        expect(json_response['cache_check']['status']).to eq('ok')
-        expect(json_response['queues_check']['status']).to eq('ok')
-        expect(json_response['shared_state_check']['status']).to eq('ok')
+        expect(json_response).to eq('status' => 'ok')
       end
     end
 

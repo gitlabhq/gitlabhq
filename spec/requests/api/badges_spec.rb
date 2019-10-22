@@ -345,7 +345,7 @@ describe API::Badges do
   end
 
   def setup_project
-    create(:project, :public, :access_requestable, creator_id: maintainer.id, namespace: project_group) do |project|
+    create(:project, :public, creator_id: maintainer.id, namespace: project_group) do |project|
       project.add_developer(developer)
       project.add_maintainer(maintainer)
       project.request_access(access_requester)
@@ -356,7 +356,7 @@ describe API::Badges do
   end
 
   def setup_group
-    create(:group, :public, :access_requestable) do |group|
+    create(:group, :public) do |group|
       group.add_developer(developer)
       group.add_owner(maintainer)
       group.request_access(access_requester)

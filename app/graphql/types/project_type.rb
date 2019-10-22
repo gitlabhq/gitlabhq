@@ -92,7 +92,7 @@ module Types
           resolver: Resolvers::IssuesResolver
 
     field :issue, # rubocop:disable Graphql/Descriptions
-          Types::IssueType,
+          Types::ExtendedIssueType,
           null: true,
           resolver: Resolvers::IssuesResolver.single
 

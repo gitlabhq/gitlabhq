@@ -37,6 +37,14 @@ describe Gitlab::LegacyGithubImport::ReleaseFormatter do
 
       expect(release.attributes).to eq(expected)
     end
+
+    context 'with a nil published_at date' do
+      let(:published_at) { nil }
+
+      it 'inserts a timestamp for released_at' do
+        expect(release.attributes[:released_at]).to be_a(Time)
+      end
+    end
   end
 
   describe '#valid' do

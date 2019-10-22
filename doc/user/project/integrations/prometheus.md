@@ -115,7 +115,7 @@ You can view the performance dashboard for an environment by [clicking on the mo
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/3799) in [GitLab Premium](https://about.gitlab.com/pricing/) 10.6.
 
-Custom metrics can be monitored by adding them on the Prometheus integration page. Once saved, they will be displayed on the environment performance dashboard provided that either:
+Custom metrics can be monitored by adding them on the monitoring dashboard page. Once saved, they will be displayed on the environment performance dashboard provided that either:
 
 - A [connected Kubernetes cluster](../clusters/index.md#adding-and-removing-clusters) with the environment scope of `*` is used and [Prometheus installed on the cluster](#enabling-prometheus-integration), or
 - Prometheus is [manually configured](#manual-configuration-of-prometheus).
@@ -300,8 +300,12 @@ Data from Prometheus charts on the metrics dashboard can be downloaded as CSV.
 
 For managed Prometheus instances using auto configuration, alerts for metrics [can be configured](#adding-additional-metrics-premium) directly in the performance dashboard.
 
-To set an alert, click on the alarm icon in the top right corner of the metric you want to create the alert for. A dropdown
-will appear, with options to set the threshold and operator. Click **Add** to save and activate the alert.
+To set an alert:
+
+1. Click on the ellipsis icon in the top right corner of the metric you want to create the alert for.
+1. Choose **Alerts**
+1. Set threshold and operator.
+1. Click **Add** to save and activate the alert.
 
 ![Adding an alert](img/prometheus_alert.png)
 
@@ -441,7 +445,7 @@ If the "No data found" screen continues to appear, it could be due to:
   [run a query](prometheus_library/kubernetes.html#metrics-supported), replacing `$CI_ENVIRONMENT_SLUG`
   with the name of your environment.
 
-[autodeploy]: ../../../ci/autodeploy/index.md
+[autodeploy]: ../../../topics/autodevops/index.md#auto-deploy
 [kubernetes]: https://kubernetes.io
 [kube]: ./kubernetes.md
 [prometheus-k8s-sd]: https://prometheus.io/docs/operating/configuration/#<kubernetes_sd_config>

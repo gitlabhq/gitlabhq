@@ -290,7 +290,9 @@ It is required to write tests for:
 - A cleanup migration.
 
 You can use the `:migration` RSpec tag when testing the migrations.
-See [README][migrations-readme].
+See the
+[Testing Rails migrations](testing_guide/testing_migrations_guide.md#testing-a-non-activerecordmigration-class)
+style guide.
 
 When you do that, keep in mind that `before` and `after` RSpec hooks are going
 to migrate you database down and up, which can result in other background

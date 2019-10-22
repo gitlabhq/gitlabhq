@@ -5,7 +5,7 @@ class Explore::SnippetsController < Explore::ApplicationController
   include Gitlab::NoteableMetadata
 
   def index
-    @snippets = SnippetsFinder.new(current_user)
+    @snippets = SnippetsFinder.new(current_user, explore: true)
       .execute
       .page(params[:page])
       .inc_author

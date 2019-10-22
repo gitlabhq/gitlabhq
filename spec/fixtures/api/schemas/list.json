@@ -35,7 +35,8 @@
       }
     },
     "title": { "type": "string" },
-    "position": { "type": ["integer", "null"] }
+    "position": { "type": ["integer", "null"] },
+    "max_issue_count": { "type": "integer" }
   },
   "additionalProperties": true
 }

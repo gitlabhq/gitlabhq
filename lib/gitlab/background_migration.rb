@@ -78,7 +78,7 @@ module Gitlab
     end
 
     def self.migration_class_for(class_name)
-      const_get(class_name)
+      const_get(class_name, false)
     end
 
     def self.enqueued_job?(queues, migration_class)

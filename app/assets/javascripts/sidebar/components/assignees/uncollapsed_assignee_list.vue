@@ -85,7 +85,12 @@ export default {
       </div>
     </div>
     <div v-if="renderShowMoreSection" class="user-list-more">
-      <button type="button" class="btn-link" @click="toggleShowLess">
+      <button
+        type="button"
+        class="btn-link"
+        data-qa-selector="more_assignees_link"
+        @click="toggleShowLess"
+      >
         <template v-if="showLess">
           {{ hiddenAssigneesLabel }}
         </template>

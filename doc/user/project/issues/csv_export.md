@@ -1,6 +1,6 @@
 # Export Issues to CSV **(STARTER)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/1126) in [GitLab Starter 9.0](https://about.gitlab.com/2017/03/22/gitlab-9-0-released/#export-issues-ees-eep).
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/1126) in [GitLab Starter 9.0](https://about.gitlab.com/blog/2017/03/22/gitlab-9-0-released/#export-issues-ees-eep).
 
 Issues can be exported as CSV from GitLab and are sent to your default notification email as an attachment.
 
@@ -28,7 +28,7 @@ Among numerous use cases for exporting issues for CSV, we can name a few:
 
 ## Choosing which issues to include
 
-From the issues page you can narrow down which issues to export using the search bar, along with the All/Open/Closed tabs. All issues returned will be exported, including those not shown on the first page.
+After selecting a project, from the issues page you can narrow down which issues to export using the search bar, along with the All/Open/Closed tabs. All issues returned will be exported, including those not shown on the first page.
 
 ![CSV export button](img/csv_export_button.png)
 
@@ -72,4 +72,5 @@ Data will be encoded with a comma as the column delimiter, with `"` used to quot
 
 ## Limitations
 
-As the issues will be sent as an email attachment, there is a limit on how much data can be exported. Currently this limit is 15MB to ensure successful delivery across a range of email providers. If this limit is reached we suggest narrowing the search before export, perhaps by exporting open and closed issues separately.
+- Export Issues to CSV is not available at the Group's Issues List.
+- As the issues will be sent as an email attachment, there is a limit on how much data can be exported. Currently this limit is 15MB to ensure successful delivery across a range of email providers. If this limit is reached we suggest narrowing the search before export, perhaps by exporting open and closed issues separately.

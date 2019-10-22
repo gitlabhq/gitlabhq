@@ -4,6 +4,8 @@ class PagesDomainVerificationCronWorker
   include ApplicationWorker
   include CronjobQueue
 
+  feature_category :pages
+
   def perform
     return if Gitlab::Database.read_only?
 

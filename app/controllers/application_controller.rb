@@ -13,6 +13,8 @@ class ApplicationController < ActionController::Base
   include WithPerformanceBar
   include SessionlessAuthentication
   include ConfirmEmailWarning
+  include Gitlab::Tracking::ControllerConcern
+  include Gitlab::Experimentation::ControllerConcern
 
   before_action :authenticate_user!
   before_action :enforce_terms!, if: :should_enforce_terms?
@@ -24,8 +26,10 @@ class ApplicationController < ActionController::Base
   before_action :add_gon_variables, unless: [:peek_request?, :json_request?]
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :require_email, unless: :devise_controller?
+  before_action :active_user_check, unless: :devise_controller?
   before_action :set_usage_stats_consent_flag
   before_action :check_impersonation_availability
+  before_action :require_role
 
   around_action :set_locale
   around_action :set_session_storage
@@ -36,6 +40,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception, prepend: true
 
   helper_method :can?
+  helper_method :current_user_mode
   helper_method :import_sources_enabled?, :github_import_enabled?,
     :gitea_import_enabled?, :github_import_configured?,
     :gitlab_import_enabled?, :gitlab_import_configured?,
@@ -286,11 +291,17 @@ class ApplicationController < ActionController::Base
   def check_password_expiration
     return if session[:impersonator_id] || !current_user&.allow_password_authentication?
 
-    password_expires_at = current_user&.password_expires_at
-
-    if password_expires_at && password_expires_at < Time.now
+    if current_user&.password_expired?
       return redirect_to new_profile_password_path
     end
+  end
+
+  def active_user_check
+    return unless current_user && current_user.deactivated?
+
+    sign_out current_user
+    flash[:alert] = _("Your account has been deactivated by your administrator. Please log back in to reactivate your account.")
+    redirect_to new_user_session_path
   end
 
   def ldap_security_check
@@ -532,6 +543,20 @@ class ApplicationController < ActionController::Base
     ::Gitlab::GitalyClient.allow_ref_name_caching do
       yield
     end
+  end
+
+  def current_user_mode
+    @current_user_mode ||= Gitlab::Auth::CurrentUserMode.new(current_user)
+  end
+
+  # A user requires a role when they are part of the experimental signup flow (executed by the Growth team). Users
+  # are redirected to the welcome page when their role is required and the experiment is enabled for the current user.
+  def require_role
+    return unless current_user && current_user.role_required? && experiment_enabled?(:signup_flow)
+
+    store_location_for :user, request.fullpath
+
+    redirect_to users_sign_up_welcome_path
   end
 end
 

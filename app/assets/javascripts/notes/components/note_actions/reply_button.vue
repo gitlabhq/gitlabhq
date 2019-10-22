@@ -19,12 +19,14 @@ export default {
     <gl-button
       ref="button"
       v-gl-tooltip
-      class="note-action-button js-note-action-reply"
+      class="note-action-button"
+      data-track-event="click_button"
+      data-track-label="reply_comment_button"
       variant="transparent"
       :title="__('Reply to comment')"
       @click="$emit('startReplying')"
     >
-      <icon name="comment" css-classes="link-highlight" />
+      <icon name="comment" class="link-highlight" />
     </gl-button>
   </div>
 </template>

@@ -148,7 +148,7 @@ For more information, please see our:
 
 - [Subscription FAQ](https://about.gitlab.com/pricing/licensing-faq/).
 - [Pricing page](https://about.gitlab.com/pricing/), which includes information
-  on our [true-up pricing policy](https://about.gitlab.com/handbook/product/pricing/#true-up-pricing)
+  on our [true-up pricing policy](https://about.gitlab.com/handbook/ceo/pricing/#true-up-pricing)
   when adding more users other than at the time of purchase.
 
 NOTE: **Note:**
@@ -192,13 +192,15 @@ account:
 
 #### Change associated namespace
 
-With a linked GitLab.com account, go to the
-[**Subscriptions**](https://customers.gitlab.com/subscriptions) page to choose
-or change the namespace your subscription applies to.
+With a linked GitLab.com account:
 
-NOTE: **Note:**
-Please note that you need to be a group owner to associate a group to your
-subscription.
+1. Log in to the [GitLab Subscription Manager](https://customers.gitlab.com/customers/sign_in).
+1. Navigate to the **Manage Purchases** page.
+1. Click **Change linked group**.
+1. Select the desired group from the **This subscription is for** dropdown.
+1. Click **Proceed to checkout**.
+
+Subscription charges are calculated based on the total number of users in a group, including its subgroups and nested projects. If the total number of users exceeds the number of seats in your subscription, you will be charged for the additional users.
 
 ### Confirm or upgrade your subscription
 
@@ -246,6 +248,9 @@ In order to purchase additional minutes, you should follow these steps:
    **Group > Settings > Pipelines quota** page:
 
    ![Additional minutes](img/additional_minutes.png)
+
+   The **Additional minutes** displayed now includes the purchased additional CI minutes, plus any
+   minutes rolled over from last month.
 
 Be aware that:
 

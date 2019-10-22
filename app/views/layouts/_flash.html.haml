@@ -5,4 +5,5 @@
     - if value
       %div{ class: "flash-content flash-#{key} rounded" }
         %span= value
-        = sprite_icon('close', size: 16, css_class: 'close-icon')
+        %div{ class: "close-icon-wrapper js-close-icon" }
+          = sprite_icon('close', size: 16, css_class: 'close-icon')

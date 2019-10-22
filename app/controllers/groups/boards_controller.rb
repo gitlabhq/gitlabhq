@@ -5,6 +5,9 @@ class Groups::BoardsController < Groups::ApplicationController
   include RecordUserLastActivity
 
   before_action :assign_endpoint_vars
+  before_action do
+    push_frontend_feature_flag(:multi_select_board)
+  end
 
   private
 

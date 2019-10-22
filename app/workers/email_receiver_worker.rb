@@ -3,6 +3,8 @@
 class EmailReceiverWorker
   include ApplicationWorker
 
+  feature_category :issue_tracking
+
   def perform(raw)
     return unless Gitlab::IncomingEmail.enabled?
 

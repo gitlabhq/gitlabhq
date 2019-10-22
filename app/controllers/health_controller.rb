@@ -14,35 +14,25 @@ class HealthController < ActionController::Base
   ].freeze
 
   def readiness
-    results = CHECKS.map { |check| [check.name, check.readiness] }
-
-    render_check_results(results)
+    # readiness check is a collection with all above application-level checks
+    render_checks(*CHECKS)
   end
 
   def liveness
-    results = CHECKS.map { |check| [check.name, check.liveness] }
-
-    render_check_results(results)
+    # liveness check is a collection without additional checks
+    render_checks
   end
 
   private
 
-  def render_check_results(results)
-    flattened = results.flat_map do |name, result|
-      if result.is_a?(Gitlab::HealthChecks::Result)
-        [[name, result]]
-      else
-        result.map { |r| [name, r] }
-      end
-    end
-    success = flattened.all? { |name, r| r.success }
+  def render_checks(*checks)
+    result = Gitlab::HealthChecks::Probes::Collection
+      .new(*checks)
+      .execute
 
-    response = flattened.map do |name, r|
-      info = { status: r.success ? 'ok' : 'failed' }
-      info['message'] = r.message if r.message
-      info[:labels] = r.labels if r.labels
-      [name, info]
-    end
-    render json: response.to_h, status: success ? :ok : :service_unavailable
+    # disable static error pages at the gitlab-workhorse level, we want to see this error response even in production
+    headers["X-GitLab-Custom-Error"] = 1 unless result.success?
+
+    render json: result.json, status: result.http_status
   end
 end

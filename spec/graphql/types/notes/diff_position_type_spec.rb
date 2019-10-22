@@ -7,6 +7,6 @@ describe GitlabSchema.types['DiffPosition'] do
                        :new_path, :position_type, :old_line, :new_line, :x, :y,
                        :width, :height]
 
-    is_expected.to have_graphql_field(*expected_fields)
+    is_expected.to have_graphql_fields(*expected_fields)
   end
 end

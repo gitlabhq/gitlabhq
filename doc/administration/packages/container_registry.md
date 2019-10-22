@@ -5,8 +5,8 @@
 >   Docker versions earlier than 1.10.
 
 NOTE: **Note:**
-This document is about the admin guide. To learn how to use GitLab Container
-Registry [user documentation](../../user/packages/container_registry/index.md).
+This document is the administrator's guide. To learn how to use GitLab Container
+Registry, see the [user documentation](../../user/packages/container_registry/index.md).
 
 With the Container Registry integrated into GitLab, every project can have its
 own space to store its Docker images.
@@ -37,7 +37,7 @@ If you have installed GitLab from source:
 1. After the installation is complete, you will have to configure the Registry's
    settings in `gitlab.yml` in order to enable it.
 1. Use the sample NGINX configuration file that is found under
-   [`lib/support/nginx/registry-ssl`](https://gitlab.com/gitlab-org/gitlab-foss/blob/master/lib/support/nginx/registry-ssl) and edit it to match the
+   [`lib/support/nginx/registry-ssl`](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/support/nginx/registry-ssl) and edit it to match the
    `host`, `port` and TLS certs paths.
 
 The contents of `gitlab.yml` are:
@@ -360,9 +360,9 @@ The different supported drivers are:
 | Driver     | Description                         |
 |------------|-------------------------------------|
 | filesystem | Uses a path on the local filesystem |
-| azure      | Microsoft Azure Blob Storage        |
+| Azure      | Microsoft Azure Blob Storage        |
 | gcs        | Google Cloud Storage                |
-| s3         | Amazon Simple Storage Service. Be sure to configure your storage bucket with the correct [S3 Permission Scopes](https://docs.docker.com/registry/storage-drivers/s3/#s3-permission-scopes).       |
+| s3         | Amazon Simple Storage Service. Be sure to configure your storage bucket with the correct [S3 Permission Scopes](https://docs.docker.com/registry/storage-drivers/s3/#s3-permission-scopes). |
 | swift      | OpenStack Swift Object Storage      |
 | oss        | Aliyun OSS                          |
 
@@ -374,7 +374,7 @@ filesystem. Remember to enable backups with your object storage provider if
 desired.
 
 NOTE: **Note:**
-`regionendpoint` is only required when configuring an S3 compatible service such as Minio. It takes a URL such as `http://127.0.0.1:9000`.
+`regionendpoint` is only required when configuring an S3 compatible service such as MinIO. It takes a URL such as `http://127.0.0.1:9000`.
 
 **Omnibus GitLab installations**
 
@@ -877,6 +877,6 @@ The above image shows:
 - The HEAD request to the AWS bucket reported a 403 Unauthorized.
 
 What does this mean? This strongly suggests that the S3 user does not have the right
-[permissions to perform a HEAD request](http://docs.aws.amazon.com/AmazonS3/latest/API/RESTObjectHEAD.html).
+[permissions to perform a HEAD request](https://docs.aws.amazon.com/AmazonS3/latest/API/RESTObjectHEAD.html).
 The solution: check the [IAM permissions again](https://docs.docker.com/registry/storage-drivers/s3/).
 Once the right permissions were set, the error will go away.

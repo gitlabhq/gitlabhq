@@ -17,15 +17,19 @@ describe CommitPresenter do
       end
 
       it 'returns commit status for ref' do
-        expect(commit).to receive(:status).with('ref').and_return('test')
+        pipeline = double
+        status = double
 
-        expect(subject).to eq('test')
+        expect(commit).to receive(:latest_pipeline).with('ref').and_return(pipeline)
+        expect(pipeline).to receive(:detailed_status).with(user).and_return(status)
+
+        expect(subject).to eq(status)
       end
     end
 
     context 'when user can not read_commit_status' do
-      it 'is false' do
-        is_expected.to eq(false)
+      it 'is nil' do
+        is_expected.to eq(nil)
       end
     end
   end
@@ -49,6 +53,19 @@ describe CommitPresenter do
       it 'is false' do
         is_expected.to eq(false)
       end
+    end
+  end
+
+  describe '#signature_html' do
+    let(:signature) { 'signature' }
+
+    before do
+      expect(commit).to receive(:has_signature?).and_return(true)
+      allow(ApplicationController.renderer).to receive(:render).and_return(signature)
+    end
+
+    it 'renders html for displaying signature' do
+      expect(presenter.signature_html).to eq(signature)
     end
   end
 end

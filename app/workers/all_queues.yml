@@ -119,6 +119,8 @@
 - container_repository:delete_container_repository
 - container_repository:cleanup_container_repository
 
+- notifications:new_release
+
 - default
 - mailers # ActionMailer::DeliveryJob.queue_name
 
@@ -173,3 +175,4 @@
 - delete_stored_files
 - import_issues_csv
 - project_daily_statistics
+- create_evidence

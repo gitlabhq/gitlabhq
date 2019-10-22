@@ -1,4 +1,4 @@
-/* eslint-disable func-names, prefer-arrow-callback, consistent-return, */
+/* eslint-disable consistent-return */
 
 import $ from 'jquery';
 import { __ } from './locale';
@@ -40,12 +40,9 @@ export default class SingleFileDiff {
       this.$toggleIcon.addClass('fa-caret-down');
     }
 
-    $('.js-file-title, .click-to-expand', this.file).on(
-      'click',
-      function(e) {
-        this.toggleDiff($(e.target));
-      }.bind(this),
-    );
+    $('.js-file-title, .click-to-expand', this.file).on('click', e => {
+      this.toggleDiff($(e.target));
+    });
   }
 
   toggleDiff($target, cb) {

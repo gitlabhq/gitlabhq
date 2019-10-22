@@ -26,6 +26,10 @@ export default {
       type: String,
       required: true,
     },
+    metadata: {
+      type: Object,
+      default: () => ({}),
+    },
   },
   computed: {
     code() {
@@ -35,6 +39,12 @@ export default {
       const type = this.type.split('put')[0];
 
       return type.charAt(0).toUpperCase() + type.slice(1);
+    },
+    cellCssClass() {
+      return {
+        [this.codeCssClass]: true,
+        'jupyter-notebook-scrolled': this.metadata.scrolled,
+      };
     },
   },
   mounted() {
@@ -46,6 +56,6 @@ export default {
 <template>
   <div :class="type">
     <prompt :type="promptType" :count="count" />
-    <pre ref="code" :class="codeCssClass" class="language-python" v-text="code"></pre>
+    <pre ref="code" :class="cellCssClass" class="language-python" v-text="code"></pre>
   </div>
 </template>

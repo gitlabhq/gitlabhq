@@ -89,7 +89,7 @@ describe Gitlab::BareRepositoryImport::Importer, :seed_helper do
         repo_path = "#{project.disk_path}.git"
         hook_path = File.join(repo_path, 'hooks')
 
-        expect(gitlab_shell.exists?(project.repository_storage, repo_path)).to be(true)
+        expect(gitlab_shell.repository_exists?(project.repository_storage, repo_path)).to be(true)
         expect(gitlab_shell.exists?(project.repository_storage, hook_path)).to be(true)
       end
 
@@ -145,8 +145,8 @@ describe Gitlab::BareRepositoryImport::Importer, :seed_helper do
 
       project = Project.find_by_full_path("#{admin.full_path}/#{project_path}")
 
-      expect(gitlab_shell.exists?(project.repository_storage, project.disk_path + '.git')).to be(true)
-      expect(gitlab_shell.exists?(project.repository_storage, project.disk_path + '.wiki.git')).to be(true)
+      expect(gitlab_shell.repository_exists?(project.repository_storage, project.disk_path + '.git')).to be(true)
+      expect(gitlab_shell.repository_exists?(project.repository_storage, project.disk_path + '.wiki.git')).to be(true)
     end
 
     context 'with a repository already on disk' do
@@ -186,7 +186,7 @@ describe Gitlab::BareRepositoryImport::Importer, :seed_helper do
 
       project = Project.find_by_full_path(project_path)
 
-      expect(gitlab_shell.exists?(project.repository_storage, project.disk_path + '.wiki.git')).to be(true)
+      expect(gitlab_shell.repository_exists?(project.repository_storage, project.disk_path + '.wiki.git')).to be(true)
     end
   end
 

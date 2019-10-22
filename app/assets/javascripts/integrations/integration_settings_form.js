@@ -42,6 +42,7 @@ export default class IntegrationSettingsForm {
     // and test the service using provided configuration.
     if (this.$form.get(0).checkValidity() && this.canTestService) {
       e.preventDefault();
+      // eslint-disable-next-line no-jquery/no-serialize
       this.testSettings(this.$form.serialize());
     }
   }

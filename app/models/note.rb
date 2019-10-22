@@ -24,7 +24,7 @@ class Note < ApplicationRecord
 
     class << self
       def values
-        constants.map {|const| self.const_get(const)}
+        constants.map {|const| self.const_get(const, false)}
       end
 
       def value?(val)
@@ -104,6 +104,8 @@ class Note < ApplicationRecord
     end
   end
 
+  validate :does_not_exceed_notes_limit?, on: :create, unless: [:system?, :importing?]
+
   # @deprecated attachments are handler by the MarkdownUploader
   mount_uploader :attachment, AttachmentUploader
 
@@ -142,6 +144,9 @@ class Note < ApplicationRecord
              project: [:project_members, :namespace, { group: [:group_members] }])
   end
   scope :with_metadata, -> { includes(:system_note_metadata) }
+
+  scope :for_note_or_capitalized_note, ->(text) { where(note: [text, text.capitalize]) }
+  scope :like_note_or_capitalized_note, ->(text) { where('(note LIKE ? OR note LIKE ?)', text, text.capitalize) }
 
   after_initialize :ensure_discussion_id
   before_validation :nullify_blank_type, :nullify_blank_line_code
@@ -193,6 +198,12 @@ class Note < ApplicationRecord
       groups
     end
 
+    def positions
+      where.not(position: nil)
+        .select(:id, :type, :position) # ActiveRecord needs id and type for typecasting.
+        .map(&:position)
+    end
+
     def count_for_collection(ids, type)
       user.select('noteable_id', 'COUNT(*) as count')
         .group(:noteable_id)
@@ -215,7 +226,7 @@ class Note < ApplicationRecord
     if force_cross_reference_regex_check?
       matches_cross_reference_regex?
     else
-      SystemNoteService.cross_reference?(note)
+      ::SystemNotes::IssuablesService.cross_reference?(note)
     end
   end
   # rubocop: enable CodeReuse/ServiceClass
@@ -472,10 +483,9 @@ class Note < ApplicationRecord
     Upload.find_by(model: self, path: paths)
   end
 
-  def parent
+  def resource_parent
     project
   end
-  alias_method :resource_parent, :parent
 
   private
 
@@ -518,6 +528,12 @@ class Note < ApplicationRecord
     return unless system?
 
     system_note_metadata&.cross_reference_types&.include?(system_note_metadata&.action)
+  end
+
+  def does_not_exceed_notes_limit?
+    return unless noteable
+
+    errors.add(:base, _('Maximum number of comments exceeded')) if noteable.notes.count >= Noteable::MAX_NOTES_LIMIT
   end
 end
 

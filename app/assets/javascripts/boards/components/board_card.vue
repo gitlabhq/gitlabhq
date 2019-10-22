@@ -42,11 +42,18 @@ export default {
     return {
       showDetail: false,
       detailIssue: boardsStore.detail,
+      multiSelect: boardsStore.multiSelect,
     };
   },
   computed: {
     issueDetailVisible() {
       return this.detailIssue.issue && this.detailIssue.issue.id === this.issue.id;
+    },
+    multiSelectVisible() {
+      return this.multiSelect.list.findIndex(issue => issue.id === this.issue.id) > -1;
+    },
+    canMultiSelect() {
+      return gon.features && gon.features.multiSelectBoard;
     },
   },
   methods: {
@@ -58,14 +65,20 @@ export default {
     },
     showIssue(e) {
       if (e.target.classList.contains('js-no-trigger')) return;
-
       if (this.showDetail) {
         this.showDetail = false;
 
+        // If CMD or CTRL is clicked
+        const isMultiSelect = this.canMultiSelect && (e.ctrlKey || e.metaKey);
+
         if (boardsStore.detail.issue && boardsStore.detail.issue.id === this.issue.id) {
-          eventHub.$emit('clearDetailIssue');
+          eventHub.$emit('clearDetailIssue', isMultiSelect);
+
+          if (isMultiSelect) {
+            eventHub.$emit('newDetailIssue', this.issue, isMultiSelect);
+          }
         } else {
-          eventHub.$emit('newDetailIssue', this.issue);
+          eventHub.$emit('newDetailIssue', this.issue, isMultiSelect);
           boardsStore.setListDetail(this.list);
         }
       }
@@ -77,6 +90,7 @@ export default {
 <template>
   <li
     :class="{
+      'multi-select': multiSelectVisible,
       'user-can-drag': !disabled && issue.id,
       'is-disabled': disabled || !issue.id,
       'is-active': issueDetailVisible,

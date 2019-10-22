@@ -1,0 +1,5 @@
+---
+title: Reduce idle in transaction time when updating a merge request
+merge_request: 18493
+author:
+type: performance

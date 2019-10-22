@@ -311,10 +311,11 @@ describe Gitlab::GithubImport::Importer::PullRequestImporter, :clean_gitlab_redi
       end
     end
 
-    it 'creates the merge request diffs' do
+    it 'creates a merge request diff and sets it as the latest' do
       mr = insert_git_data
 
       expect(mr.merge_request_diffs.exists?).to eq(true)
+      expect(mr.reload.latest_merge_request_diff_id).to eq(mr.merge_request_diffs.first.id)
     end
 
     it 'creates the merge request diff commits' do

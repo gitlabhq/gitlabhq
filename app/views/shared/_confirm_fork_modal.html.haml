@@ -1,0 +1,12 @@
+#modal-confirm-fork.modal.qa-confirm-fork-modal
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %h3.page-title= _('Fork project?')
+        %button.close{ type: "button", "data-dismiss": "modal", "aria-label" => _('Close') }
+          %span{ "aria-hidden": true } &times;
+      .modal-body.p-3
+        %p= _("You're not allowed to %{tag_start}edit%{tag_end} files in this project directly. Please fork this project, make your changes there, and submit a merge request.") % { tag_start: '', tag_end: ''}
+      .modal-footer
+        = link_to _('Cancel'), '#', class: "btn btn-cancel", "data-dismiss" => "modal"
+        = link_to _('Fork project'), fork_path, class: 'btn btn-success', method: :post

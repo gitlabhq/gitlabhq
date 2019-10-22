@@ -8,7 +8,7 @@ Rate limiting is a common technique used to improve the security and durability
 of a web application. For more details, see
 [Rate limits](../../../security/rate_limits.md).
 
-The following limits can be enforced in **Admin Area > Network > User and
+The following limits can be enforced in **Admin Area > Settings > Network > User and
 IP rate limits**:
 
 - Unauthenticated requests

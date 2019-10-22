@@ -5,7 +5,8 @@ require 'spec_helper'
 describe MergeRequests::UpdateService, :mailer do
   include ProjectForksHelper
 
-  let(:project) { create(:project, :repository) }
+  let(:group) { create(:group, :public) }
+  let(:project) { create(:project, :repository, group: group) }
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let(:user3) { create(:user) }
@@ -472,6 +473,7 @@ describe MergeRequests::UpdateService, :mailer do
 
     context 'updating mentions' do
       let(:mentionable) { merge_request }
+
       include_examples 'updating mentions', described_class
     end
 

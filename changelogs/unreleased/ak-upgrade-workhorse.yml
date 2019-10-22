@@ -1,0 +1,5 @@
+---
+title: Upgrade gitlab-workhorse to 8.12.0
+merge_request: 17892
+author:
+type: changed

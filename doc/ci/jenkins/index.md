@@ -202,7 +202,7 @@ can provide any variables they like.
 
 #### `triggers` / `cron`
 
-Because GitLab is integrated tightly with git, SCM polling options for triggers are not needed. We support an easy to use
+Because GitLab is integrated tightly with Git, SCM polling options for triggers are not needed. We support an easy to use
 [syntax for scheduling pipelines](../../user/project/pipelines/schedules.md).
 
 #### `tools`

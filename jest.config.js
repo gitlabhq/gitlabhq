@@ -3,7 +3,7 @@ const IS_EE = require('./config/helpers/is_ee_env');
 const reporters = ['default'];
 
 // To have consistent date time parsing both in local and CI environments we set
-// the timezone of the Node process. https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/27738
+// the timezone of the Node process. https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/27738
 process.env.TZ = 'GMT';
 
 if (process.env.CI) {
@@ -15,11 +15,15 @@ if (process.env.CI) {
   ]);
 }
 
-let testMatch = ['<rootDir>/spec/frontend/**/*_spec.js', '<rootDir>/ee/spec/frontend/**/*_spec.js'];
+let testMatch = ['<rootDir>/spec/frontend/**/*_spec.js'];
+if (IS_EE) {
+  testMatch.push('<rootDir>/ee/spec/frontend/**/*_spec.js');
+}
 
 // workaround for eslint-import-resolver-jest only resolving in test files
 // see https://github.com/JoinColony/eslint-import-resolver-jest#note
-const isESLint = module.parent.filename.includes('/eslint-import-resolver-jest/');
+const { filename: parentModuleName } = module.parent;
+const isESLint = parentModuleName && parentModuleName.includes('/eslint-import-resolver-jest/');
 if (isESLint) {
   testMatch = testMatch.map(path => path.replace('_spec.js', ''));
 }
@@ -41,6 +45,7 @@ module.exports = {
     '^vendor(/.*)$': '<rootDir>/vendor/assets/javascripts$1',
     '\\.(jpg|jpeg|png|svg)$': '<rootDir>/spec/frontend/__mocks__/file_mock.js',
     'emojis(/.*).json': '<rootDir>/fixtures/emojis$1.json',
+    '^spec/test_constants$': '<rootDir>/spec/frontend/helpers/test_constants',
   },
   collectCoverageFrom: ['<rootDir>/app/assets/javascripts/**/*.{js,vue}'],
   coverageDirectory: '<rootDir>/coverage-frontend/',
@@ -62,3 +67,15 @@ module.exports = {
     IS_EE,
   },
 };
+
+const karmaTestFile = process.argv.find(arg => arg.includes('spec/javascripts/'));
+if (karmaTestFile) {
+  console.error(`
+Files in spec/javascripts/ and ee/spec/javascripts need to be run with Karma.
+Please use the following command instead:
+
+yarn karma -f ${karmaTestFile}
+
+`);
+  process.exit(1);
+}

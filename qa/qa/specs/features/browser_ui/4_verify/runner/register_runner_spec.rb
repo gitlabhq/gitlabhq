@@ -6,7 +6,7 @@ module QA
       let(:executor) { "qa-runner-#{Time.now.to_i}" }
 
       after do
-        Service::Runner.new(executor).remove!
+        Service::DockerRun::GitlabRunner.new(executor).remove!
       end
 
       it 'user registers a new specific runner' do

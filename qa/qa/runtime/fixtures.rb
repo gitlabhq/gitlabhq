@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'tmpdir'
+
 module QA
   module Runtime
     module Fixtures
@@ -16,6 +18,19 @@ module QA
         end
 
         parse_body(response)[:content]
+      end
+
+      def with_fixtures(fixtures)
+        dir = Dir.mktmpdir
+        fixtures.each do |file_def|
+          path = File.join(dir, file_def[:file_path])
+          FileUtils.mkdir_p(File.dirname(path))
+          File.write(path, file_def[:content])
+        end
+
+        yield dir
+      ensure
+        FileUtils.remove_entry(dir)
       end
 
       private

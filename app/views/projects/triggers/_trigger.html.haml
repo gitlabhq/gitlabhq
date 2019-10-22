@@ -2,7 +2,7 @@
   %td
     - if trigger.has_token_exposed?
       %span= trigger.token
-      = clipboard_button(text: trigger.token, title: "Copy trigger token to clipboard")
+      = clipboard_button(text: trigger.token, title: _("Copy trigger token"))
     - else
       %span= trigger.short_token
 

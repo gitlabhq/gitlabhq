@@ -1,13 +1,15 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe MembersHelper do
   describe '#remove_member_message' do
     let(:requester) { create(:user) }
-    let(:project) { create(:project, :public, :access_requestable) }
+    let(:project) { create(:project, :public) }
     let(:project_member) { build(:project_member, project: project) }
     let(:project_member_invite) { build(:project_member, project: project).tap { |m| m.generate_invite_token! } }
     let(:project_member_request) { project.request_access(requester) }
-    let(:group) { create(:group, :access_requestable) }
+    let(:group) { create(:group) }
     let(:group_member) { build(:group_member, group: group) }
     let(:group_member_invite) { build(:group_member, group: group).tap { |m| m.generate_invite_token! } }
     let(:group_member_request) { group.request_access(requester) }
@@ -24,10 +26,10 @@ describe MembersHelper do
 
   describe '#remove_member_title' do
     let(:requester) { create(:user) }
-    let(:project) { create(:project, :public, :access_requestable) }
+    let(:project) { create(:project, :public) }
     let(:project_member) { build(:project_member, project: project) }
     let(:project_member_request) { project.request_access(requester) }
-    let(:group) { create(:group, :access_requestable) }
+    let(:group) { create(:group) }
     let(:group_member) { build(:group_member, group: group) }
     let(:group_member_request) { group.request_access(requester) }
 

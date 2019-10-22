@@ -20,26 +20,26 @@ describe('Header', function() {
   });
 
   it('should update todos-count after receiving the todo:toggle event', () => {
-    triggerToggle('5');
+    triggerToggle(5);
 
     expect($(todosPendingCount).text()).toEqual('5');
   });
 
   it('should hide todos-count when it is 0', () => {
-    triggerToggle('0');
+    triggerToggle(0);
 
     expect(isTodosCountHidden()).toEqual(true);
   });
 
   it('should show todos-count when it is more than 0', () => {
-    triggerToggle('10');
+    triggerToggle(10);
 
     expect(isTodosCountHidden()).toEqual(false);
   });
 
   describe('when todos-count is 1000', () => {
     beforeEach(() => {
-      triggerToggle('1000');
+      triggerToggle(1000);
     });
 
     it('should show todos-count', () => {

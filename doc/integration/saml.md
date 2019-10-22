@@ -111,7 +111,7 @@ in your SAML IdP:
 1. Change the values of `idp_cert_fingerprint`, `idp_sso_target_url`,
    `name_identifier_format` to match your IdP. If a fingerprint is used it must
    be a SHA1 fingerprint; check
-   [the omniauth-saml documentation](https://github.com/omniauth/omniauth-saml)
+   [the OmniAuth SAML documentation](https://github.com/omniauth/omniauth-saml)
    for more details on these options.
 
 1. Change the value of `issuer` to a unique name, which will identify the application
@@ -133,7 +133,7 @@ https://gitlab.example.com/users/auth/saml/metadata
 At a minimum the IdP *must* provide a claim containing the user's email address, using
 claim name `email` or `mail`. The email will be used to automatically generate the GitLab
 username. GitLab will also use claims with name `name`, `first_name`, `last_name`
-(see [the omniauth-saml gem](https://github.com/omniauth/omniauth-saml/blob/master/lib/omniauth/strategies/saml.rb)
+(see [the OmniAuth SAML gem](https://github.com/omniauth/omniauth-saml/blob/master/lib/omniauth/strategies/saml.rb)
 for supported claims).
 
 On the sign in page there should now be a SAML button below the regular sign in form.
@@ -370,7 +370,7 @@ This setting should only be used to map attributes that are part of the
 OmniAuth info hash schema.
 
 `attribute_statements` is used to map Attribute Names in a SAMLResponse to entries
-in the OmniAuth [info hash](https://github.com/intridea/omniauth/wiki/Auth-Hash-Schema#schema-10-and-later).
+in the OmniAuth [info hash](https://github.com/omniauth/omniauth/wiki/Auth-Hash-Schema#schema-10-and-later).
 
 For example, if your SAMLResponse contains an Attribute called 'EmailAddress',
 specify `{ email: ['EmailAddress'] }` to map the Attribute to the
@@ -414,7 +414,7 @@ args: {
 
 ### `uid_attribute`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/43806) in GitLab 10.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/17734) in GitLab 10.7.
 
 By default, the `uid` is set as the `name_id` in the SAML response. If you'd like to designate a unique attribute for the `uid`, you can set the `uid_attribute`. In the example below, the value of `uid` attribute in the SAML response is set as the `uid_attribute`.
 
@@ -428,6 +428,120 @@ args: {
         uid_attribute: 'uid'
 }
 ```
+
+## Response signature validation (required)
+
+We require Identity Providers to sign SAML responses to ensure that the assertions are
+not tampered with.
+
+This prevents user impersonation and prevents privilege escalation when specific group
+membership is required. Typically this:
+
+- Is configured using `idp_cert_fingerprint`.
+- Includes the full certificate in the response, although if your Identity Provider
+  doesn't support this, you can directly configure GitLab using the `idp_cert` option.
+
+Example configuration with `idp_cert_fingerprint`:
+
+```yaml
+args: {
+  assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback',
+  idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
+  idp_sso_target_url: 'https://login.example.com/idp',
+  issuer: 'https://gitlab.example.com',
+  name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
+}
+```
+
+Example configuration with `idp_cert`:
+
+```yaml
+args: {
+  assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback',
+  idp_cert: '-----BEGIN CERTIFICATE-----
+    <redacted>
+    -----END CERTIFICATE-----',
+  idp_sso_target_url: 'https://login.example.com/idp',
+  issuer: 'https://gitlab.example.com',
+  name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
+}
+```
+
+If the response signature validation is configured incorrectly, you can see error messages
+such as:
+
+- A key validation error.
+- Digest mismatch.
+- Fingerprint mismatch.
+
+Refer to the [troubleshooting section](#troubleshooting) for more information on
+debugging these errors.
+
+## Assertion Encryption (optional)
+
+GitLab requires the use of TLS encryption with SAML, but in some cases there can be a
+need for additional encryption of the assertions.
+
+This may be the case, for example, if you terminate TLS encryption early at a load
+balancer and include sensitive details in assertions that you do not want appearing
+in logs. Most organizations should not need additional encryption at this layer.
+
+The SAML integration supports EncryptedAssertion. You need to define the private key and the public certificate of your GitLab instance in the SAML settings:
+
+```yaml
+args: {
+  assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback',
+  idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
+  idp_sso_target_url: 'https://login.example.com/idp',
+  issuer: 'https://gitlab.example.com',
+  name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
+  certificate: '-----BEGIN CERTIFICATE-----
+    <redacted>
+    -----END CERTIFICATE-----',
+  private_key: '-----BEGIN PRIVATE KEY-----
+    <redacted>
+    -----END PRIVATE KEY-----'
+}
+```
+
+Your Identity Provider will encrypt the assertion with the public certificate of GitLab. GitLab will decrypt the EncryptedAssertion with its private key.
+
+NOTE: **Note:**
+This integration uses the `certificate` and `private_key` settings for both assertion encryption and request signing.
+
+## Request signing (optional)
+
+Another optional configuration is to sign SAML authentication requests. GitLab SAML Requests uses the SAML redirect binding so this is not necessary, unlike the SAML POST binding where signing is required to prevent intermediaries tampering with the requests.
+
+In order to sign, you need to create a private key and public certificate pair for your GitLab instance to use for SAML. The settings related to signing can be set in the `security` section of the configuration.
+
+For example:
+
+```yaml
+args: {
+  assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback',
+  idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
+  idp_sso_target_url: 'https://login.example.com/idp',
+  issuer: 'https://gitlab.example.com',
+  name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
+  certificate: '-----BEGIN CERTIFICATE-----
+    <redacted>
+    -----END CERTIFICATE-----',
+  private_key: '-----BEGIN PRIVATE KEY-----
+    <redacted>
+    -----END PRIVATE KEY-----',
+  security: {
+    authn_requests_signed: true, # enable signature on AuthNRequest
+    want_assertions_signed: true, # enable the requirement of signed assertion
+    embed_sign: true, # embedded signature or HTTP GET parameter signature
+    metadata_signed: false, # enable signature on Metadata
+    signature_method: 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256',
+    digest_method: 'http://www.w3.org/2001/04/xmlenc#sha256',
+  }
+}
+```
+
+GitLab will sign the request with the provided private key. GitLab will include the configured public x500 certificate in the metadata for your Identity Provider to validate the signature of the received request with. For more information on this option, see the [ruby-saml gem documentation](https://github.com/onelogin/ruby-saml/tree/v1.7.0). The `ruby-saml` gem is used by the [omniauth-saml gem](https://github.com/omniauth/omniauth-saml) to implement the client side of the SAML authentication.
 
 ## Troubleshooting
 
@@ -458,7 +572,7 @@ installations from source. Restart Unicorn using the `sudo gitlab-ctl restart un
 command on Omnibus installations and `sudo service gitlab restart` on installations
 from source.
 
-You may also find the [SSO Tracer](https://addons.mozilla.org/en-US/firefox/addon/sso-tracer)
+You may also find the [SSO Tracer](https://addons.mozilla.org/en-US/firefox/addon/sso-tracer/)
 (Firefox) and [SAML Chrome Panel](https://chrome.google.com/webstore/detail/saml-chrome-panel/paijfdbeoenhembfhkhllainmocckace)
 (Chrome) browser extensions useful in your debugging.
 

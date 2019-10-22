@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require './spec/simplecov_env'
 SimpleCovEnv.start!
 
@@ -10,6 +12,7 @@ require 'rspec/rails'
 require 'shoulda/matchers'
 require 'rspec/retry'
 require 'rspec-parameterized'
+require 'test_prof/recipes/rspec/let_it_be'
 
 rspec_profiling_is_configured =
   ENV['RSPEC_PROFILING_POSTGRES_URL'].present? ||
@@ -85,9 +88,10 @@ RSpec.configure do |config|
   config.include FixtureHelpers
   config.include GitlabRoutingHelper
   config.include StubFeatureFlags
+  config.include StubExperiments
   config.include StubGitlabCalls
   config.include StubGitlabData
-  config.include ExpectNextInstanceOf
+  config.include NextInstanceOf
   config.include TestEnv
   config.include Devise::Test::ControllerHelpers, type: :controller
   config.include Devise::Test::IntegrationHelpers, type: :feature
@@ -151,6 +155,17 @@ RSpec.configure do |config|
       .with(:force_autodevops_on_by_default, anything)
       .and_return(false)
 
+    # The following can be removed once Vue Issuable Sidebar
+    # is feature-complete and can be made default in place
+    # of older sidebar.
+    # See https://gitlab.com/groups/gitlab-org/-/epics/1863
+    allow(Feature).to receive(:enabled?)
+      .with(:vue_issuable_sidebar, anything)
+      .and_return(false)
+    allow(Feature).to receive(:enabled?)
+      .with(:vue_issuable_epic_sidebar, anything)
+      .and_return(false)
+
     # Stub these calls due to being expensive operations
     # It can be reenabled for specific tests via:
     #
@@ -160,6 +175,25 @@ RSpec.configure do |config|
     allow(Gitlab::Git::KeepAround).to receive(:execute)
 
     Gitlab::ThreadMemoryCache.cache_backend.clear
+
+    # Temporary patch to force admin mode to be active by default in tests when
+    # using the feature flag :user_mode_in_session, since this will require
+    # modifying a significant number of specs to test both states for admin
+    # mode enabled / disabled.
+    #
+    # See https://gitlab.com/gitlab-org/gitlab/issues/31511
+    # See gitlab/spec/support/helpers/admin_mode_helpers.rb
+    #
+    # If it is required to have the real behaviour that an admin is signed in
+    # with normal user mode and needs to switch to admin mode, it is possible to
+    # mark such tests with the `do_not_mock_admin_mode` metadata tag, e.g:
+    #
+    # context 'some test with normal user mode', :do_not_mock_admin_mode do ... end
+    unless example.metadata[:do_not_mock_admin_mode]
+      allow_any_instance_of(Gitlab::Auth::CurrentUserMode).to receive(:admin_mode?) do |current_user_mode|
+        current_user_mode.send(:user)&.admin?
+      end
+    end
   end
 
   config.around(:example, :quarantine) do |example|
@@ -330,6 +364,10 @@ FactoryBot::SyntaxRunner.class_eval do
   include RSpec::Mocks::ExampleMethods
 end
 
+# Use FactoryBot 4.x behavior:
+# https://github.com/thoughtbot/factory_bot/blob/master/GETTING_STARTED.md#associations
+FactoryBot.use_parent_strategy = false
+
 ActiveRecord::Migration.maintain_test_schema!
 
 Shoulda::Matchers.configure do |config|
@@ -341,3 +379,6 @@ end
 
 # Prevent Rugged from picking up local developer gitconfig.
 Rugged::Settings['search_path_global'] = Rails.root.join('tmp/tests').to_s
+
+# Disable timestamp checks for invisible_captcha
+InvisibleCaptcha.timestamp_enabled = false

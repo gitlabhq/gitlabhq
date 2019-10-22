@@ -155,15 +155,7 @@ export default {
 
       this.editor.clearEditor();
 
-      this.getFileData({
-        path: this.file.path,
-        makeFileActive: false,
-      })
-        .then(() =>
-          this.getRawFileData({
-            path: this.file.path,
-          }),
-        )
+      this.fetchFileData()
         .then(() => {
           this.createEditorInstance();
         })
@@ -178,6 +170,20 @@ export default {
           );
           throw err;
         });
+    },
+    fetchFileData() {
+      if (this.file.tempFile) {
+        return Promise.resolve();
+      }
+
+      return this.getFileData({
+        path: this.file.path,
+        makeFileActive: false,
+      }).then(() =>
+        this.getRawFileData({
+          path: this.file.path,
+        }),
+      );
     },
     createEditorInstance() {
       this.editor.dispose();

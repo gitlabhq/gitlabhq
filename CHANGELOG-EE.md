@@ -1,5 +1,25 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 12.3.4
+
+### Fixed (2 changes)
+
+- Fix replies to service desk emails for projects with issue access as Only Project Members. !17401
+- Geo: LFS not being synced. !17633
+
+
+## 12.3.2
+
+### Security (2 changes)
+
+- Hide approvers if a rule has any hidden groups.
+- Prevent IDOR when adding groups to protected environments.
+
+
+## 12.3.1
+
+- No changes.
+
 ## 12.3.0
 
 ### Security (3 changes)
@@ -181,6 +201,29 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Remove vue-resource from drafts. (Lee Tickett)
 - Changing instance of key-modern icon to key icon.
 - Fixes style-lint errors and warnings for EE builds.scss file.
+
+
+## 12.2.8
+
+### Fixed (1 change)
+
+- Geo: LFS not being synced. !17633
+
+
+## 12.2.7
+
+### Security (1 change)
+
+- Restrict access for security reports in MR widget.
+
+
+## 12.2.6
+
+### Security (3 changes)
+
+- Hide approvers if a rule has any hidden groups.
+- Fix Gitaly SearchBlobs flag RPC injection [Gitaly v1.59.3].
+- Prevent IDOR when adding groups to protected environments.
 
 
 ## 12.2.5
@@ -434,6 +477,27 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Remove default relative_position from epic_issues. !15008
 - Fix alignment of activity dropdown in epic tabs; add counter to discussion tab.
 
+
+## 12.1.14
+
+### Fixed (1 change)
+
+- Geo: LFS not being synced. !17633
+
+
+## 12.1.12
+
+### Security (4 changes)
+
+- Hide approvers if a rule has any hidden groups.
+- Fix Gitaly SearchBlobs flag RPC injection [Gitaly v1.53.4].
+- Prevent IDOR when adding groups to protected environments.
+- Upgrade mermaid to prevent XSS.
+
+
+## 12.1.10
+
+- No changes.
 
 ## 12.1.5
 
@@ -4207,7 +4271,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 ## 8.14.0 (2016-11-22)
 
 - Added Backfill service for Geo. !861
-- Fix for autosuggested approvers(https://gitlab.com/gitlab-org/gitlab-ee/issues/1273).
+- Fix for autosuggested approvers(https://gitlab.com/gitlab-org/gitlab/issues/1273).
 - Gracefully recover from previously failed rebase.
 - Disable retries for remote mirror update worker. !848
 - Fix Approvals API documentation.

@@ -25,6 +25,10 @@ issues:
 - epic
 - designs
 - design_versions
+- description_versions
+- prometheus_alerts
+- prometheus_alert_events
+- self_managed_prometheus_alert_events
 events:
 - author
 - project
@@ -79,6 +83,7 @@ releases:
 - links
 - milestone_releases
 - milestones
+- evidence
 links:
 - release
 project_members:
@@ -128,6 +133,7 @@ merge_requests:
 - blocks_as_blockee
 - blocking_merge_requests
 - blocked_merge_requests
+- description_versions
 external_pull_requests:
 - project
 merge_request_diff:
@@ -172,7 +178,7 @@ ci_pipelines:
 - downstream_bridges
 - job_artifacts
 - vulnerabilities_occurrence_pipelines
-- vulnerabilities
+- vulnerability_findings
 pipeline_variables:
 - pipeline
 stages:
@@ -250,11 +256,11 @@ project:
 - cluster
 - clusters
 - cluster_project
-- cluster_ingresses
 - creator
 - cycle_analytics_stages
 - group
 - namespace
+- management_clusters
 - boards
 - last_event
 - services
@@ -349,6 +355,7 @@ project:
 - members_and_requesters
 - build_trace_section_names
 - build_trace_chunks
+- job_artifacts
 - root_of_fork_network
 - fork_network_member
 - fork_network
@@ -389,6 +396,7 @@ project:
 - sourced_pipelines
 - prometheus_metrics
 - vulnerabilities
+- vulnerability_findings
 - vulnerability_feedback
 - vulnerability_identifiers
 - vulnerability_scanners
@@ -396,6 +404,7 @@ project:
 - operations_feature_flags_client
 - prometheus_alerts
 - prometheus_alert_events
+- self_managed_prometheus_alert_events
 - software_license_policies
 - project_registry
 - packages
@@ -409,6 +418,9 @@ project:
 - designs
 - project_aliases
 - external_pull_requests
+- pages_metadatum
+- alerts_service
+- grafana_integration
 award_emoji:
 - awardable
 - user
@@ -466,6 +478,8 @@ prometheus_alerts:
 - prometheus_alert_events
 prometheus_alert_events:
 - project
+self_managed_prometheus_alert_events:
+- project
 epic_issues:
 - issue
 - epic
@@ -499,3 +513,19 @@ lists:
 milestone_releases:
 - milestone
 - release
+evidences:
+- release
+design: &design
+- issue
+- actions
+- versions
+- notes
+designs: *design
+actions:
+- design
+- version
+versions: &version
+- issue
+- designs
+- actions
+design_versions: *version

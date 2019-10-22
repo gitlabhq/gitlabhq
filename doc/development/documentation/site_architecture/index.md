@@ -18,8 +18,8 @@ from where content is sourced, the `gitlab-docs` project, and the published outp
 
 ```mermaid
   graph LR
-    A[gitlab-ce/doc]
-    B[gitlab-ee/doc]
+    A[gitlab-foss/doc]
+    B[gitlab/doc]
     C[gitlab-runner/docs]
     D[omnibus-gitlab/doc]
     E[charts/doc]
@@ -68,7 +68,7 @@ the GitLab Documentation website.
 
 ## Global navigation
 
-Read through the global navigation](global_nav.md) documentation to understand:
+Read through [the global navigation documentation](global_nav.md) to understand:
 
 - How the global navigation is built.
 - How to add new navigation items.

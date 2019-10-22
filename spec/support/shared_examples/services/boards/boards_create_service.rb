@@ -17,7 +17,7 @@ shared_examples 'boards create service' do
 
   context 'when parent has a board' do
     before do
-      create(:board, parent: parent)
+      create(:board, resource_parent: parent)
     end
 
     it 'does not create a new board' do

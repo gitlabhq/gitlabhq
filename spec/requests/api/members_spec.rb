@@ -7,7 +7,7 @@ describe API::Members do
   let(:stranger) { create(:user) }
 
   let(:project) do
-    create(:project, :public, :access_requestable, creator_id: maintainer.id, namespace: maintainer.namespace) do |project|
+    create(:project, :public, creator_id: maintainer.id, namespace: maintainer.namespace) do |project|
       project.add_developer(developer)
       project.add_maintainer(maintainer)
       project.request_access(access_requester)
@@ -15,7 +15,7 @@ describe API::Members do
   end
 
   let!(:group) do
-    create(:group, :public, :access_requestable) do |group|
+    create(:group, :public) do |group|
       group.add_developer(developer)
       group.add_owner(maintainer)
       group.request_access(access_requester)
@@ -87,6 +87,15 @@ describe API::Members do
         expect(json_response.first['username']).to eq(maintainer.username)
       end
 
+      it 'finds members with the given user_ids' do
+        get api(members_url, developer), params: { user_ids: [maintainer.id, developer.id, stranger.id] }
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(json_response.map { |u| u['id'] }).to contain_exactly(maintainer.id, developer.id)
+      end
+
       it 'finds all members with no query specified' do
         get api(members_url, developer), params: { query: '' }
 
@@ -155,10 +164,10 @@ describe API::Members do
     end
   end
 
-  shared_examples 'GET /:source_type/:id/members/:user_id' do |source_type|
-    context "with :source_type == #{source_type.pluralize}" do
+  shared_examples 'GET /:source_type/:id/members/(all/):user_id' do |source_type, all|
+    context "with :source_type == #{source_type.pluralize} and all == #{all}" do
       it_behaves_like 'a 404 response when source is private' do
-        let(:route) { get api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", stranger) }
+        let(:route) { get api("/#{source_type.pluralize}/#{source.id}/members/#{all ? 'all/' : ''}#{developer.id}", stranger) }
       end
 
       context 'when authenticated as a non-member' do
@@ -166,7 +175,7 @@ describe API::Members do
           context "as a #{type}" do
             it 'returns 200' do
               user = public_send(type)
-              get api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", user)
+              get api("/#{source_type.pluralize}/#{source.id}/members/#{all ? 'all/' : ''}#{developer.id}", user)
 
               expect(response).to have_gitlab_http_status(200)
               # User attributes
@@ -434,12 +443,14 @@ describe API::Members do
     end
   end
 
-  it_behaves_like 'GET /:source_type/:id/members/:user_id', 'project' do
-    let(:source) { project }
-  end
+  [false, true].each do |all|
+    it_behaves_like 'GET /:source_type/:id/members/(all/):user_id', 'project', all do
+      let(:source) { all ? create(:project, :public, group: group) : project }
+    end
 
-  it_behaves_like 'GET /:source_type/:id/members/:user_id', 'group' do
-    let(:source) { group }
+    it_behaves_like 'GET /:source_type/:id/members/(all/):user_id', 'group', all do
+      let(:source) { all ? create(:group, parent: group) : group }
+    end
   end
 
   it_behaves_like 'POST /:source_type/:id/members', 'project' do

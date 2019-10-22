@@ -8,5 +8,6 @@ module PipelineBackgroundQueue
 
   included do
     queue_namespace :pipeline_background
+    feature_category :continuous_integration
   end
 end

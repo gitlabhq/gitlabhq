@@ -19,7 +19,7 @@ class JiraService < IssueTrackerService
   # for more information check: https://gitlab.com/gitlab-org/gitlab-foss/issues/49936.
 
   # TODO: we can probably just delegate as part of
-  # https://gitlab.com/gitlab-org/gitlab-foss/issues/63084
+  # https://gitlab.com/gitlab-org/gitlab/issues/29404
   data_field :username, :password, :url, :api_url, :jira_issue_transition_id
 
   before_update :reset_password
@@ -64,7 +64,7 @@ class JiraService < IssueTrackerService
     url = URI.parse(client_url)
 
     {
-      username: username,
+      username: username&.strip,
       password: password,
       site: URI.join(url, '/').to_s, # Intended to find the root
       context_path: url.path,
@@ -122,9 +122,13 @@ class JiraService < IssueTrackerService
   end
 
   alias_method :original_url, :url
-
   def url
-    original_url&.chomp('/')
+    original_url&.delete_suffix('/')
+  end
+
+  alias_method :original_api_url, :api_url
+  def api_url
+    original_api_url&.delete_suffix('/')
   end
 
   def execute(push)
@@ -137,10 +141,9 @@ class JiraService < IssueTrackerService
 
     return if issue.nil? || has_resolution?(issue) || !jira_issue_transition_id.present?
 
-    commit_id = if entity.is_a?(Commit)
-                  entity.id
-                elsif entity.is_a?(MergeRequest)
-                  entity.diff_head_sha
+    commit_id = case entity
+                when Commit then entity.id
+                when MergeRequest then entity.diff_head_sha
                 end
 
     commit_url = build_entity_url(:commit, commit_id)
@@ -298,7 +301,7 @@ class JiraService < IssueTrackerService
         title: title,
         status: status,
         icon: {
-          title: 'GitLab', url16x16: asset_url(Gitlab::Favicon.main, host: gitlab_config.url)
+          title: 'GitLab', url16x16: asset_url(Gitlab::Favicon.main, host: gitlab_config.base_url)
         }
       }
     }
@@ -331,7 +334,6 @@ class JiraService < IssueTrackerService
   # Handle errors when doing Jira API calls
   def jira_request
     yield
-
   rescue Timeout::Error, Errno::EINVAL, Errno::ECONNRESET, Errno::ECONNREFUSED, URI::InvalidURIError, JIRA::HTTPError, OpenSSL::SSL::SSLError => e
     @error = e.message
     log_error("Error sending message", client_url: client_url, error: @error)
@@ -339,7 +341,7 @@ class JiraService < IssueTrackerService
   end
 
   def client_url
-    api_url.present? ? api_url : url
+    api_url.presence || url
   end
 
   def reset_password?

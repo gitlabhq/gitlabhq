@@ -11,7 +11,7 @@ setup act as clients while the NFS server plays host.
 > Note: The instructions provided in this documentation allow for setting a quick
 proof of concept but will leave NFS as potential single point of failure and
 therefore not recommended for use in production. Explore options such as [Pacemaker
-and Corosync](http://clusterlabs.org/) for highly available NFS in production.
+and Corosync](https://clusterlabs.org) for highly available NFS in production.
 
 Below are instructions for setting up an application node(client) in an HA cluster
 to read from and write to a central NFS server(host).
@@ -56,7 +56,7 @@ You may need to update your server's firewall. See the [firewall section](#nfs-i
 
 ## Client/ GitLab application node Setup
 
-> Follow the instructions below to connect any GitLab rails application node running
+> Follow the instructions below to connect any GitLab Rails application node running
 inside your HA environment to the NFS server configured above.
 
 ### Step 1 - Install NFS Common on Client
@@ -108,7 +108,7 @@ When using the default Omnibus configuration you will need to share 5 data locat
 between all GitLab cluster nodes. No other locations should be shared. Changing the
 default file locations in `gitlab.rb` on the client allows you to have one main mount
 point and have all the required locations as subdirectories to use the NFS mount for
-git-data.
+`git-data`.
 
 ```text
 git_data_dirs({"default" => {"path" => "/nfs/home/var/opt/gitlab-data/git-data"}})

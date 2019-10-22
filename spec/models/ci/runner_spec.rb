@@ -686,11 +686,13 @@ describe Ci::Runner do
   describe '#has_tags?' do
     context 'when runner has tags' do
       subject { create(:ci_runner, tag_list: ['tag']) }
+
       it { is_expected.to have_tags }
     end
 
     context 'when runner does not have tags' do
       subject { create(:ci_runner, tag_list: []) }
+
       it { is_expected.not_to have_tags }
     end
   end

@@ -1,0 +1,15 @@
+- @hide_breadcrumbs = true
+- page_title _('Enter admin mode')
+
+.row.justify-content-center
+  .col-6.new-session-forms-container
+    .login-page
+      #signin-container
+        = render 'admin/sessions/tabs_normal'
+        .tab-content
+          - if password_authentication_enabled_for_web?
+            = render 'admin/sessions/signin_box'
+          - else
+            -# Show a message if none of the mechanisms above are enabled
+            .prepend-top-default.center
+              = _('No authentication methods configured.')

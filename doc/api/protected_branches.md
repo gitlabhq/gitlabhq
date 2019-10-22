@@ -46,7 +46,8 @@ Example response:
         "access_level": 40,
         "access_level_description": "Maintainers"
       }
-    ]
+    ],
+    "code_owner_approval_required": "false"
   },
   ...
 ]
@@ -76,7 +77,8 @@ Example response:
         "group_id": 1234,
         "access_level_description": "Example Merge Group"
       }
-    ]
+    ],
+    "code_owner_approval_required": "false"
   },
   ...
 ]
@@ -115,7 +117,8 @@ Example response:
       "access_level": 40,
       "access_level_description": "Maintainers"
     }
-  ]
+  ],
+  "code_owner_approval_required": "false"
 }
 ```
 
@@ -142,7 +145,8 @@ Example response:
       "group_id": 1234,
       "access_level_description": "Example Merge Group"
     }
-  ]
+  ],
+  "code_owner_approval_required": "false"
 }
 ```
 
@@ -161,14 +165,15 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" 'https://gitla
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`                     | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
-| `name`                   | string         | yes | The name of the branch or wildcard |
-| `push_access_level`      | string         | no  | Access levels allowed to push (defaults: `40`, maintainer access level) |
-| `merge_access_level`     | string         | no  | Access levels allowed to merge (defaults: `40`, maintainer access level) |
-| `unprotect_access_level` | string         | no  | Access levels allowed to unprotect (defaults: `40`, maintainer access level) |
-| `allowed_to_push`        | array          | no  | **(STARTER)** Array of access levels allowed to push, with each described by a hash |
-| `allowed_to_merge`       | array          | no  | **(STARTER)** Array of access levels allowed to merge, with each described by a hash |
-| `allowed_to_unprotect`   | array          | no  | **(STARTER)**Array of access levels allowed to unprotect, with each described by a hash |
+| `id`                            | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `name`                          | string         | yes | The name of the branch or wildcard |
+| `push_access_level`             | string         | no  | Access levels allowed to push (defaults: `40`, maintainer access level) |
+| `merge_access_level`            | string         | no  | Access levels allowed to merge (defaults: `40`, maintainer access level) |
+| `unprotect_access_level`        | string         | no  | Access levels allowed to unprotect (defaults: `40`, maintainer access level) |
+| `allowed_to_push`               | array          | no  | **(STARTER)** Array of access levels allowed to push, with each described by a hash |
+| `allowed_to_merge`              | array          | no  | **(STARTER)** Array of access levels allowed to merge, with each described by a hash |
+| `allowed_to_unprotect`          | array          | no  | **(STARTER)** Array of access levels allowed to unprotect, with each described by a hash |
+| `code_owner_approval_required`  | boolean        | no  | **(PREMIUM)** Prevent pushes to this branch if it matches an item in the [`CODEOWNERS` file](../user/project/code_owners.md). (defaults: false) |
 
 Example response:
 
@@ -192,7 +197,8 @@ Example response:
       "access_level": 40,
       "access_level_description": "Maintainers"
     }
-  ]
+  ],
+  "code_owner_approval_required": "false"
 }
 ```
 
@@ -227,7 +233,8 @@ Example response:
       "group_id": null,
       "access_level_description": "Maintainers"
     }
-  ]
+  ],
+  "code_owner_approval_required": "false"
 }
 ```
 
@@ -268,7 +275,8 @@ Example response:
       "group_id": null,
       "access_level_description": "Maintainers"
     }
-  ]
+  ],
+  "code_owner_approval_required": "false"
 }
 ```
 
@@ -288,3 +296,21 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" 'https://git
 | --------- | ---- | -------- | ----------- |
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `name` | string | yes | The name of the branch |
+
+## Require code owner approvals for a single branch
+
+Update the "code owner approval required" option for the given protected branch protected branch.
+
+```
+PATCH /projects/:id/protected_branches/:name
+```
+
+```bash
+curl --request PATCH --header "PRIVATE-TOKEN: <your_access_token>" 'https://gitlab.example.com/api/v4/projects/5/protected_branches/feature-branch'
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `name` | string | yes | The name of the branch |
+| `code_owner_approval_required`  | boolean        | no  | **(PREMIUM)** Prevent pushes to this branch if it matches an item in the [`CODEOWNERS` file](../user/project/code_owners.md). (defaults: false)|

@@ -89,7 +89,7 @@ request is as follows:
 1. Write tests for more complex migrations.
 1. Merge requests **must** adhere to the [merge request performance guidelines](../merge_request_performance_guidelines.md).
 1. For tests that use Capybara, read
-   [how to write reliable, asynchronous integration tests](https://robots.thoughtbot.com/write-reliable-asynchronous-integration-tests-with-capybara).
+   [how to write reliable, asynchronous integration tests](https://thoughtbot.com/blog/write-reliable-asynchronous-integration-tests-with-capybara).
 1. If your merge request introduces changes that require additional steps when
    installing GitLab from source, add them to `doc/install/installation.md` in
    the same merge request.
@@ -101,7 +101,7 @@ request is as follows:
 
 If you would like quick feedback on your merge request feel free to mention someone
 from the [core team](https://about.gitlab.com/community/core-team/) or one of the
-[merge request coaches](https://about.gitlab.com/team/). When having your code reviewed
+[merge request coaches](https://about.gitlab.com/company/team/). When having your code reviewed
 and when reviewing merge requests, please keep the [code review guidelines](../code_review.md)
 in mind. And if your code also makes changes to the database, or does expensive queries,
 check the [database review guidelines](../database_review.md).
@@ -140,7 +140,7 @@ When writing commit messages, please follow the guidelines below:
 - The merge request must not contain more than 10 commit messages.
 
 If the guidelines are not met, the MR will not pass the
-[Danger checks](https://gitlab.com/gitlab-org/gitlab-foss/blob/master/danger/commit_messages/Dangerfile).
+[Danger checks](https://gitlab.com/gitlab-org/gitlab/blob/master/danger/commit_messages/Dangerfile).
 For more information see [How to Write a Git Commit Message](https://chris.beams.io/posts/git-commit/).
 
 Example commit message template that can be used on your machine that embodies the above (guide for [how to apply template](https://codeinthehole.com/tips/a-useful-template-for-commit-messages/)):
@@ -220,6 +220,8 @@ requirements.
 1. Working and clean code that is commented where needed.
 1. [Unit, integration, and system tests](../testing_guide/index.md) that all pass
    on the CI server.
+1. Regressions and bugs are covered with tests that reduce the risk of the issue happening
+   again.
 1. Performance/scalability implications have been considered, addressed, and tested.
 1. [Documented](../documentation/index.md) in the `/doc` directory.
 1. [Changelog entry added](../changelog.md), if necessary.
@@ -244,5 +246,5 @@ request:
 1. [The upgrade guide](../../update/upgrading_from_source.md).
 1. The [GitLab Installation Guide](../../install/installation.md#1-packages-and-dependencies).
 1. The [GitLab Development Kit](https://gitlab.com/gitlab-org/gitlab-development-kit).
-1. The [CI environment preparation](https://gitlab.com/gitlab-org/gitlab-foss/blob/master/scripts/prepare_build.sh).
+1. The [CI environment preparation](https://gitlab.com/gitlab-org/gitlab/blob/master/scripts/prepare_build.sh).
 1. The [Omnibus package creator](https://gitlab.com/gitlab-org/omnibus-gitlab).

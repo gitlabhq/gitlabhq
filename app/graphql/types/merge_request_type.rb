@@ -55,12 +55,27 @@ module Types
     field :web_url, GraphQL::STRING_TYPE, null: true # rubocop:disable Graphql/Descriptions
     field :upvotes, GraphQL::INT_TYPE, null: false # rubocop:disable Graphql/Descriptions
     field :downvotes, GraphQL::INT_TYPE, null: false # rubocop:disable Graphql/Descriptions
-    field :subscribed, GraphQL::BOOLEAN_TYPE, method: :subscribed?, null: false # rubocop:disable Graphql/Descriptions
 
     field :head_pipeline, Types::Ci::PipelineType, null: true, method: :actual_head_pipeline # rubocop:disable Graphql/Descriptions
     field :pipelines, Types::Ci::PipelineType.connection_type, # rubocop:disable Graphql/Descriptions
           resolver: Resolvers::MergeRequestPipelinesResolver
 
+    field :milestone, Types::MilestoneType, description: 'The milestone this merge request is linked to',
+          null: true,
+          resolve: -> (obj, _args, _ctx) { Gitlab::Graphql::Loaders::BatchModelLoader.new(Milestone, obj.milestone_id).find }
+    field :assignees, Types::UserType.connection_type, null: true, complexity: 5, description: 'The list of assignees for the merge request'
+    field :participants, Types::UserType.connection_type, null: true, complexity: 5, description: 'The list of participants on the merge request'
+    field :subscribed, GraphQL::BOOLEAN_TYPE, method: :subscribed?, null: false, complexity: 5,
+          description: 'Boolean flag for whether the currently logged in user is subscribed to this MR'
+    field :labels, Types::LabelType.connection_type, null: true, complexity: 5, description: 'The list of labels on the merge request'
+    field :discussion_locked, GraphQL::BOOLEAN_TYPE, description: 'Boolean flag determining if comments on the merge request are locked to members only',
+          null: false,
+          resolve: -> (obj, _args, _ctx) { !!obj.discussion_locked }
+    field :time_estimate, GraphQL::INT_TYPE, null: false, description: 'The time estimate for the merge request'
+    field :total_time_spent, GraphQL::INT_TYPE, null: false, description: 'Total time reported as spent on the merge request'
+    field :reference, GraphQL::STRING_TYPE, null: false, method: :to_reference, description: 'Internal merge request reference. Returned in shortened format by default' do
+      argument :full, GraphQL::BOOLEAN_TYPE, required: false, default_value: false, description: 'Boolean option specifying whether the reference should be returned in full'
+    end
     field :task_completion_status, Types::TaskCompletionStatus, null: false # rubocop:disable Graphql/Descriptions
   end
 end

@@ -426,5 +426,22 @@ describe Groups::TransferService do
         end
       end
     end
+
+    context 'when a project in group has container images' do
+      let(:group) { create(:group, :public, :nested) }
+      let!(:project) { create(:project, :repository, :public, namespace: group) }
+
+      before do
+        stub_container_registry_tags(repository: /image/, tags: %w[rc1])
+        create(:container_repository, project: project, name: :image)
+        create(:group_member, :owner, group: new_parent_group, user: user)
+      end
+
+      it 'does not allow group to be transferred' do
+        transfer_service.execute(new_parent_group)
+
+        expect(transfer_service.error).to match(/Docker images in their Container Registry/)
+      end
+    end
   end
 end

@@ -17,7 +17,7 @@ module QA
 
       def constants
         @consts ||= @module.constants.map do |const|
-          @module.const_get(const)
+          @module.const_get(const, false)
         end
       end
 

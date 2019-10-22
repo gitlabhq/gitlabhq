@@ -12,9 +12,11 @@ information on `gitignore`, see the
 
 Get all `.gitignore` templates.
 
-```
+```plaintext
 GET /templates/gitignores
 ```
+
+Example request:
 
 ```bash
 curl https://gitlab.example.com/api/v4/templates/gitignores
@@ -111,13 +113,15 @@ Example response:
 
 Get a single `.gitignore` template.
 
-```
+```plaintext
 GET /templates/gitignores/:key
 ```
 
-| Attribute  | Type   | Required | Description |
-| ---------- | ------ | -------- | ----------- |
+| Attribute  | Type   | Required | Description                          |
+| ---------- | ------ | -------- | ------------------------------------ |
 | `key`      | string | yes      | The key of the `.gitignore` template |
+
+Example request:
 
 ```bash
 curl https://gitlab.example.com/api/v4/templates/gitignores/Ruby

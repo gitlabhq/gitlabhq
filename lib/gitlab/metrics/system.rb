@@ -63,6 +63,21 @@ module Gitlab
       def self.monotonic_time
         Process.clock_gettime(Process::CLOCK_MONOTONIC, :float_second)
       end
+
+      def self.thread_cpu_time
+        # Not all OS kernels are supporting `Process::CLOCK_THREAD_CPUTIME_ID`
+        # Refer: https://gitlab.com/gitlab-org/gitlab/issues/30567#note_221765627
+        return unless defined?(Process::CLOCK_THREAD_CPUTIME_ID)
+
+        Process.clock_gettime(Process::CLOCK_THREAD_CPUTIME_ID, :float_second)
+      end
+
+      def self.thread_cpu_duration(start_time)
+        end_time = thread_cpu_time
+        return unless start_time && end_time
+
+        end_time - start_time
+      end
     end
   end
 end

@@ -40,13 +40,14 @@ future GitLab releases.**
 | `CI_COMMIT_TAG`                         | 9.0    | 0.5    | The commit tag name. Present only when building tags. |
 | `CI_COMMIT_TITLE`                       | 10.8   | all    | The title of the commit - the full first line of the message |
 | `CI_CONFIG_PATH`                        | 9.4    | 0.5    | The path to CI config file. Defaults to `.gitlab-ci.yml` |
-| `CI_DEBUG_TRACE`                        | all    | 1.7    | Whether [debug tracing](README.md#debug-tracing) is enabled |
+| `CI_DEBUG_TRACE`                        | all    | 1.7    | Whether [debug logging (tracing)](README.md#debug-logging) is enabled |
 | `CI_DEPLOY_PASSWORD`                    | 10.8   | all    | Authentication password of the [GitLab Deploy Token][gitlab-deploy-token], only present if the Project has one related.|
 | `CI_DEPLOY_USER`                        | 10.8   | all    | Authentication username of the [GitLab Deploy Token][gitlab-deploy-token], only present if the Project has one related.|
 | `CI_DISPOSABLE_ENVIRONMENT`             | all    | 10.1   | Marks that the job is executed in a disposable environment (something that is created only for this job and disposed of/destroyed after the execution - all executors except `shell` and `ssh`). If the environment is disposable, it is set to true, otherwise it is not defined at all. |
 | `CI_ENVIRONMENT_NAME`                   | 8.15   | all    | The name of the environment for this job. Only present if [`environment:name`](../yaml/README.md#environmentname) is set. |
 | `CI_ENVIRONMENT_SLUG`                   | 8.15   | all    | A simplified version of the environment name, suitable for inclusion in DNS, URLs, Kubernetes labels, etc. Only present if [`environment:name`](../yaml/README.md#environmentname) is set. |
 | `CI_ENVIRONMENT_URL`                    | 9.3    | all    | The URL of the environment for this job. Only present if [`environment:url`](../yaml/README.md#environmenturl) is set. |
+| `CI_DEFAULT_BRANCH`                     | 12.4   | all    | The name of the default branch for the project. |
 | `CI_JOB_ID`                             | 9.0    | all    | The unique id of the current job that GitLab CI uses internally |
 | `CI_JOB_MANUAL`                         | 8.12   | all    | The flag to indicate that job was manually started |
 | `CI_JOB_NAME`                           | 9.0    | 0.5    | The name of the job as defined in `.gitlab-ci.yml` |
@@ -60,12 +61,12 @@ future GitLab releases.**
 | `CI_MERGE_REQUEST_PROJECT_URL`          | 11.6   | all    | The URL of the project of the merge request if [the pipelines are for merge requests](../merge_request_pipelines/index.md) (e.g. `http://192.168.10.15:3000/namespace/awesome-project`). Available only if `only: [merge_requests]` is used and the merge request is created.  |
 | `CI_MERGE_REQUEST_REF_PATH`             | 11.6   | all    | The ref path of the merge request if [the pipelines are for merge requests](../merge_request_pipelines/index.md). (e.g. `refs/merge-requests/1/head`). Available only if `only: [merge_requests]` is used and the merge request is created.  |
 | `CI_MERGE_REQUEST_SOURCE_BRANCH_NAME`   | 11.6   | all    | The source branch name of the merge request if [the pipelines are for merge requests](../merge_request_pipelines/index.md). Available only if `only: [merge_requests]` is used and the merge request is created.  |
-| `CI_MERGE_REQUEST_SOURCE_BRANCH_SHA`    | 11.9   | all    | The HEAD SHA of the source branch of the merge request if [the pipelines are for merge requests](../merge_request_pipelines/index.md). Available only if `only: [merge_requests]` is used and the merge request is created.  |
+| `CI_MERGE_REQUEST_SOURCE_BRANCH_SHA`    | 11.9   | all    | The HEAD SHA of the source branch of the merge request if [the pipelines are for merge requests](../merge_request_pipelines/index.md). Available only if `only: [merge_requests]` is used, the merge request is created, and the pipeline is a [merged result pipeline](../merge_request_pipelines/pipelines_for_merged_results/index.md). **(PREMIUM)** |
 | `CI_MERGE_REQUEST_SOURCE_PROJECT_ID`    | 11.6   | all    | The ID of the source project of the merge request if [the pipelines are for merge requests](../merge_request_pipelines/index.md). Available only if `only: [merge_requests]` is used and the merge request is created.  |
 | `CI_MERGE_REQUEST_SOURCE_PROJECT_PATH`  | 11.6   | all    | The path of the source project of the merge request if [the pipelines are for merge requests](../merge_request_pipelines/index.md). Available only if `only: [merge_requests]` is used and the merge request is created.  |
 | `CI_MERGE_REQUEST_SOURCE_PROJECT_URL`   | 11.6   | all    | The URL of the source project of the merge request if [the pipelines are for merge requests](../merge_request_pipelines/index.md). Available only if `only: [merge_requests]` is used and the merge request is created.  |
 | `CI_MERGE_REQUEST_TARGET_BRANCH_NAME`   | 11.6   | all    | The target branch name of the merge request if [the pipelines are for merge requests](../merge_request_pipelines/index.md). Available only if `only: [merge_requests]` is used and the merge request is created.  |
-| `CI_MERGE_REQUEST_TARGET_BRANCH_SHA`    | 11.9   | all    | The HEAD SHA of the target branch of the merge request if [the pipelines are for merge requests](../merge_request_pipelines/index.md). Available only if `only: [merge_requests]` is used and the merge request is created.  |
+| `CI_MERGE_REQUEST_TARGET_BRANCH_SHA`    | 11.9   | all    | The HEAD SHA of the target branch of the merge request if [the pipelines are for merge requests](../merge_request_pipelines/index.md). Available only if `only: [merge_requests]` is used, the merge request is created, and the pipeline is a [merged result pipeline](../merge_request_pipelines/pipelines_for_merged_results/index.md). **(PREMIUM)** |
 | `CI_MERGE_REQUEST_TITLE`                | 11.9   | all    | The title of the merge request if [the pipelines are for merge requests](../merge_request_pipelines/index.md). Available only if `only: [merge_requests]` is used and the merge request is created.  |
 | `CI_MERGE_REQUEST_ASSIGNEES`            | 11.9   | all    | Comma-separated list of username(s) of assignee(s) for the merge request if [the pipelines are for merge requests](../merge_request_pipelines/index.md). Available only if `only: [merge_requests]` is used and the merge request is created. |
 | `CI_MERGE_REQUEST_MILESTONE`            | 11.9   | all    | The milestone title of the merge request if [the pipelines are for merge requests](../merge_request_pipelines/index.md). Available only if `only: [merge_requests]` is used and the merge request is created.  |
@@ -87,7 +88,8 @@ future GitLab releases.**
 | `CI_PIPELINE_URL`                       | 11.1   | 0.5    | Pipeline details URL |
 | `CI_PROJECT_DIR`                        | all    | all    | The full path where the repository is cloned and where the job is run. If the GitLab Runner `builds_dir` parameter is set, this variable is set relative to the value of `builds_dir`. For more information, see [Advanced configuration](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section) for GitLab Runner. |
 | `CI_PROJECT_ID`                         | all    | all    | The unique id of the current project that GitLab CI uses internally |
-| `CI_PROJECT_NAME`                       | 8.10   | 0.5    | The project name that is currently being built (actually it is project folder name) |
+| `CI_PROJECT_NAME`                       | 8.10   | 0.5    | The name of the directory for the project that is currently being built. For example, if the project URL is `gitlab.example.com/group-name/project-1`, the `CI_PROJECT_NAME` would be `project-1`. |
+| `CI_PROJECT_TITLE`                      | 12.4   | all    | The human-readable project name as displayed in the GitLab web interface. |
 | `CI_PROJECT_NAMESPACE`                  | 8.10   | 0.5    | The project namespace (username or groupname) that is currently being built |
 | `CI_PROJECT_PATH`                       | 8.10   | 0.5    | The namespace with project name |
 | `CI_PROJECT_PATH_SLUG`                  | 9.3    | all    | `$CI_PROJECT_PATH` lowercased and with everything except `0-9` and `a-z` replaced with `-`. Use in URLs and domain names. |
@@ -108,7 +110,7 @@ future GitLab releases.**
 | `CI_RUNNER_VERSION`                     | all    | 10.6   | GitLab Runner version that is executing the current job |
 | `CI_RUNNER_SHORT_TOKEN`                 | all    | 12.3   | First eight characters of GitLab Runner's token used to authenticate new job requests. Used as Runner's unique ID |
 | `CI_SERVER`                             | all    | all    | Mark that job is executed in CI environment |
-| `CI_SERVER_HOST`                        | 12.1   | all    | Host component of the GitLab instance URL, without protocol and port (like gitlab.example.com) |
+| `CI_SERVER_HOST`                        | 12.1   | all    | Host component of the GitLab instance URL, without protocol and port (like `gitlab.example.com`) |
 | `CI_SERVER_NAME`                        | all    | all    | The name of CI server that is used to coordinate jobs |
 | `CI_SERVER_REVISION`                    | all    | all    | GitLab revision that is used to schedule jobs |
 | `CI_SERVER_VERSION`                     | all    | all    | GitLab version that is used to schedule jobs |

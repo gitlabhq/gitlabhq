@@ -98,7 +98,7 @@ docker exec -t <container name> gitlab-backup create
 NOTE: **Note**
 For GitLab 12.1 and earlier, use `gitlab-rake gitlab:backup:create`.
 
-If you are using the [GitLab helm chart](https://gitlab.com/gitlab-org/charts/gitlab) on a
+If you are using the [GitLab Helm chart](https://gitlab.com/gitlab-org/charts/gitlab) on a
 Kubernetes cluster, you can run the backup task using `backup-utility` script on
 the GitLab task runner pod via `kubectl`. Refer to [backing up a GitLab installation](https://gitlab.com/gitlab-org/charts/gitlab/blob/master/doc/backup-restore/backup.md#backing-up-a-gitlab-installation) for more details:
 
@@ -277,7 +277,7 @@ Starting with GitLab 7.4 you can let the backup script upload the '.tar' file it
 It uses the [Fog library](http://fog.io/) to perform the upload.
 In the example below we use Amazon S3 for storage, but Fog also lets you use
 [other storage providers](http://fog.io/storage/). GitLab
-[imports cloud drivers](https://gitlab.com/gitlab-org/gitlab-foss/blob/30f5b9a5b711b46f1065baf755e413ceced5646b/Gemfile#L88)
+[imports cloud drivers](https://gitlab.com/gitlab-org/gitlab/blob/30f5b9a5b711b46f1065baf755e413ceced5646b/Gemfile#L88)
 for AWS, Google, OpenStack Swift, Rackspace and Aliyun as well. A local driver is
 [also available](#uploading-to-locally-mounted-shares).
 
@@ -575,7 +575,7 @@ files. GitLab does not automatically prune old files stored in a third-party
 object storage (e.g., AWS S3) because the user may not have permission to list
 and delete files. We recommend that you configure the appropriate retention
 policy for your object storage. For example, you can configure [the S3 backup
-policy as described here](http://stackoverflow.com/questions/37553070/gitlab-omnibus-delete-backup-from-amazon-s3).
+policy as described here](https://stackoverflow.com/questions/37553070/gitlab-omnibus-delete-backup-from-amazon-s3).
 
 To schedule a cron job that backs up your repositories and GitLab metadata, use the root user:
 
@@ -775,9 +775,9 @@ If there is a GitLab version mismatch between your backup tar file and the insta
 version of GitLab, the restore command will abort with an error. Install the
 [correct GitLab version](https://packages.gitlab.com/gitlab/) and try again.
 
-### Restore for Docker image and GitLab helm chart installations
+### Restore for Docker image and GitLab Helm chart installations
 
-For GitLab installations using the Docker image or the GitLab helm chart on
+For GitLab installations using the Docker image or the GitLab Helm chart on
 a Kubernetes cluster, the restore task expects the restore directories to be empty.
 However, with docker and Kubernetes volume mounts, some system level directories
 may be created at the volume roots, like `lost+found` directory found in Linux
@@ -803,8 +803,8 @@ CAUTION: **Warning:**
 This is a [known issue](https://gitlab.com/gitlab-org/gitlab-foss/issues/62759). On GitLab 12.2 or newer, you can
 use `gitlab-backup restore` to avoid this issue.
 
-The GitLab helm chart uses a different process, documented in
-[restoring a GitLab helm chart installation](https://gitlab.com/gitlab-org/charts/gitlab/blob/master/doc/backup-restore/restore.md).
+The GitLab Helm chart uses a different process, documented in
+[restoring a GitLab Helm chart installation](https://gitlab.com/gitlab-org/charts/gitlab/blob/master/doc/backup-restore/restore.md).
 
 ## Alternative backup strategies
 
@@ -859,7 +859,7 @@ Be advised that, backup is successfully restored in spite of these warnings.
 The rake task runs this as the `gitlab` user which does not have the superuser access to the database. When restore is initiated it will also run as `gitlab` user but it will also try to alter the objects it does not have access to.
 Those objects have no influence on the database backup/restore but they give this annoying warning.
 
-For more information see similar questions on postgresql issue tracker[here](http://www.postgresql.org/message-id/201110220712.30886.adrian.klaver@gmail.com) and [here](http://www.postgresql.org/message-id/2039.1177339749@sss.pgh.pa.us) as well as [stack overflow](http://stackoverflow.com/questions/4368789/error-must-be-owner-of-language-plpgsql).
+For more information see similar questions on PostgreSQL issue tracker[here](https://www.postgresql.org/message-id/201110220712.30886.adrian.klaver@gmail.com) and [here](https://www.postgresql.org/message-id/2039.1177339749@sss.pgh.pa.us) as well as [stack overflow](https://stackoverflow.com/questions/4368789/error-must-be-owner-of-language-plpgsql).
 
 ### When the secrets file is lost
 

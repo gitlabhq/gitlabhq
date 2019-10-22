@@ -15,25 +15,52 @@ describe JiraService do
   let(:transition_id) { 'test27' }
 
   describe '#options' do
-    let(:service) do
-      described_class.create(
+    let(:options) do
+      {
         project: create(:project),
         active: true,
         username: 'username',
         password: 'test',
         jira_issue_transition_id: 24,
         url: 'http://jira.test.com/path/'
-      )
+      }
     end
 
+    let(:service) { described_class.create(options) }
+
     it 'sets the URL properly' do
-      # jira-ruby gem parses the URI and handles trailing slashes
-      # fine: https://github.com/sumoheavy/jira-ruby/blob/v1.4.1/lib/jira/http_client.rb#L59
+      # jira-ruby gem parses the URI and handles trailing slashes fine:
+      # https://github.com/sumoheavy/jira-ruby/blob/v1.7.0/lib/jira/http_client.rb#L62
       expect(service.options[:site]).to eq('http://jira.test.com/')
     end
 
     it 'leaves out trailing slashes in context' do
       expect(service.options[:context_path]).to eq('/path')
+    end
+
+    context 'username with trailing whitespaces' do
+      before do
+        options.merge!(username: 'username ')
+      end
+
+      it 'leaves out trailing whitespaces in username' do
+        expect(service.options[:username]).to eq('username')
+      end
+    end
+
+    it 'provides additional cookies to allow basic auth with oracle webgate' do
+      expect(service.options[:use_cookies]).to eq(true)
+      expect(service.options[:additional_cookies]).to eq(['OBBasicAuth=fromDialog'])
+    end
+
+    context 'using api URL' do
+      before do
+        options.merge!(api_url: 'http://jira.test.com/api_path/')
+      end
+
+      it 'leaves out trailing slashes in context' do
+        expect(service.options[:context_path]).to eq('/api_path')
+      end
     end
   end
 
@@ -68,7 +95,7 @@ describe JiraService do
       expect(subject.properties).to be_nil
     end
 
-    it 'sets title  correctly' do
+    it 'sets title correctly' do
       service = subject
 
       expect(service.title).to eq('custom title')
@@ -93,7 +120,7 @@ describe JiraService do
   end
 
   # we need to make sure we are able to read both from properties and jira_tracker_data table
-  # TODO: change this as part of #63084
+  # TODO: change this as part of https://gitlab.com/gitlab-org/gitlab/issues/29404
   context 'overriding properties' do
     let(:access_params) do
       { url: url, api_url: api_url, username: username, password: password,
@@ -278,11 +305,11 @@ describe JiraService do
       end
     end
 
-    # this  will be removed as part of https://gitlab.com/gitlab-org/gitlab-foss/issues/63084
+    # this  will be removed as part of https://gitlab.com/gitlab-org/gitlab/issues/29404
     context 'when data are stored in properties' do
       let(:properties) { data_params.merge(title: title, description: description) }
       let!(:service) do
-        create(:jira_service, :without_properties_callback, properties: properties)
+        create(:jira_service, :without_properties_callback, properties: properties.merge(additional: 'something'))
       end
 
       it_behaves_like 'issue tracker fields'
@@ -604,26 +631,6 @@ describe JiraService do
     end
   end
 
-  describe 'additional cookies' do
-    let(:project) { create(:project) }
-
-    context 'provides additional cookies to allow basic auth with oracle webgate' do
-      before do
-        @service = project.create_jira_service(
-          active: true, properties: { url: 'http://jira.com' })
-      end
-
-      after do
-        @service.destroy!
-      end
-
-      it 'is initialized' do
-        expect(@service.options[:use_cookies]).to eq(true)
-        expect(@service.options[:additional_cookies]).to eq(['OBBasicAuth=fromDialog'])
-      end
-    end
-  end
-
   describe 'project and issue urls' do
     context 'when gitlab.yml was initialized' do
       it 'is prepopulated with the settings' do
@@ -650,7 +657,7 @@ describe JiraService do
     end
   end
 
-  describe 'favicon urls', :request_store do
+  describe 'favicon urls' do
     it 'includes the standard favicon' do
       props = described_class.new.send(:build_remote_link_props, url: 'http://example.com', title: 'title')
       expect(props[:object][:icon][:url16x16]).to match %r{^http://localhost/assets/favicon(?:-\h+).png$}

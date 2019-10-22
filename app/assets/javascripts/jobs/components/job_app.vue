@@ -30,7 +30,7 @@ export default {
     EnvironmentsBlock,
     ErasedBlock,
     Icon,
-    Log: () => (isNewJobLogActive() ? import('./job_log_json.vue') : import('./job_log.vue')),
+    Log: () => (isNewJobLogActive() ? import('./log/log.vue') : import('./job_log.vue')),
     LogTopBar,
     StuckBlock,
     UnmetPrerequisitesBlock,
@@ -129,6 +129,10 @@ export default {
       }
 
       return title;
+    },
+
+    shouldRenderHeaderCallout() {
+      return this.shouldRenderCalloutMessage && !this.hasUnmetPrerequisitesFailure;
     },
   },
   watch: {
@@ -239,10 +243,9 @@ export default {
             />
           </div>
 
-          <callout
-            v-if="shouldRenderCalloutMessage && !hasUnmetPrerequisitesFailure"
-            :message="job.callout_message"
-          />
+          <callout v-if="shouldRenderHeaderCallout">
+            <div v-html="job.callout_message"></div>
+          </callout>
         </header>
         <!-- EO Header Section -->
 

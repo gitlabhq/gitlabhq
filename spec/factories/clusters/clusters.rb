@@ -3,10 +3,10 @@
 FactoryBot.define do
   factory :cluster, class: Clusters::Cluster do
     user
-    name 'test-cluster'
-    cluster_type :project_type
-    managed true
-    namespace_per_environment true
+    name { 'test-cluster' }
+    cluster_type { :project_type }
+    managed { true }
+    namespace_per_environment { true }
 
     factory :cluster_for_group, traits: [:provided_by_gcp, :group]
 
@@ -30,27 +30,39 @@ FactoryBot.define do
       end
     end
 
+    trait :management_project do
+      management_project factory: :project
+    end
+
     trait :namespace_per_environment_disabled do
-      namespace_per_environment false
+      namespace_per_environment { false }
     end
 
     trait :provided_by_user do
-      provider_type :user
-      platform_type :kubernetes
+      provider_type { :user }
+      platform_type { :kubernetes }
 
       platform_kubernetes factory: [:cluster_platform_kubernetes, :configured]
     end
 
     trait :provided_by_gcp do
-      provider_type :gcp
-      platform_type :kubernetes
+      provider_type { :gcp }
+      platform_type { :kubernetes }
 
       provider_gcp factory: [:cluster_provider_gcp, :created]
       platform_kubernetes factory: [:cluster_platform_kubernetes, :configured]
     end
 
+    trait :provided_by_aws do
+      provider_type { :aws }
+      platform_type { :kubernetes }
+
+      provider_aws factory: [:cluster_provider_aws, :created]
+      platform_kubernetes factory: [:cluster_platform_kubernetes, :configured]
+    end
+
     trait :providing_by_gcp do
-      provider_type :gcp
+      provider_type { :gcp }
       provider_gcp factory: [:cluster_provider_gcp, :creating]
     end
 
@@ -58,8 +70,12 @@ FactoryBot.define do
       platform_kubernetes factory: [:cluster_platform_kubernetes, :configured, :rbac_disabled]
     end
 
+    trait :cloud_run_enabled do
+      provider_gcp factory: [:cluster_provider_gcp, :created, :cloud_run_enabled]
+    end
+
     trait :disabled do
-      enabled false
+      enabled { false }
     end
 
     trait :production_environment do
@@ -71,11 +87,11 @@ FactoryBot.define do
     end
 
     trait :with_domain do
-      domain 'example.com'
+      domain { 'example.com' }
     end
 
     trait :not_managed do
-      managed false
+      managed { false }
     end
   end
 end

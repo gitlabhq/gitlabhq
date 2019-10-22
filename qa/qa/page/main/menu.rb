@@ -13,12 +13,14 @@ module QA
           element :navbar, required: true
           element :user_avatar, required: true
           element :user_menu, required: true
+          element :stop_impersonation_link
         end
 
         view 'app/views/layouts/nav/_dashboard.html.haml' do
           element :admin_area_link
           element :projects_dropdown, required: true
           element :groups_dropdown, required: true
+          element :more_dropdown, required: true
           element :snippets_link
         end
 
@@ -51,6 +53,13 @@ module QA
           end
         end
 
+        def go_to_snippets
+          within_top_menu do
+            click_element :more_dropdown
+            click_element :snippets_link
+          end
+        end
+
         def click_admin_area
           within_top_menu { click_element :admin_area_link }
         end
@@ -79,10 +88,6 @@ module QA
           end
         end
 
-        def click_snippets_link
-          click_element :snippets_link
-        end
-
         def search_for(term)
           fill_element :search_term_field, "#{term}\n"
         end
@@ -93,6 +98,14 @@ module QA
 
         def has_admin_area_link?(wait: Capybara.default_max_wait_time)
           has_element?(:admin_area_link, wait: wait)
+        end
+
+        def has_no_admin_area_link?(wait: Capybara.default_max_wait_time)
+          has_no_element?(:admin_area_link, wait: wait)
+        end
+
+        def click_stop_impersonation_link
+          click_element(:stop_impersonation_link)
         end
 
         private

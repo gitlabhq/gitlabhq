@@ -4,9 +4,9 @@
 
 FactoryBot.define do
   factory :appearance do
-    title "GitLab Community Edition"
-    description "Open source software to collaborate on code"
-    new_project_guidelines "Custom project guidelines"
+    title { "GitLab Community Edition" }
+    description { "Open source software to collaborate on code" }
+    new_project_guidelines { "Custom project guidelines" }
   end
 
   trait :with_logo do

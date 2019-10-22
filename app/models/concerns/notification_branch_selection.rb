@@ -21,7 +21,7 @@ module NotificationBranchSelection
           end
 
     is_default_branch = ref == project.default_branch
-    is_protected_branch = project.protected_branches.exists?(name: ref)
+    is_protected_branch = ProtectedBranch.protected?(project, ref)
 
     case branches_to_be_notified
     when "all"

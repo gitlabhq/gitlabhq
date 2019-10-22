@@ -20,13 +20,17 @@ module Gitlab
           # @param options - dashboard_path [String] Path at which the
           #         dashboard can be found. Nil values will
           #         default to the system dashboard.
-          # @param options - group [String] Title of the group
+          # @param options - group [String, Group] Title of the group
           #         to which a panel might belong. Used by
-          #         embedded dashboards.
+          #         embedded dashboards. If cluster dashboard,
+          #         refers to the Group corresponding to the cluster.
           # @param options - title [String] Title of the panel.
           #         Used by embedded dashboards.
           # @param options - y_label [String] Y-Axis label of
           #         a panel. Used by embedded dashboards.
+          # @param options - cluster [Cluster]
+          # @param options - cluster_type [Symbol] The level of
+          #         cluster, one of [:admin, :project, :group]
           # @return [Hash]
           def find(project, user, options = {})
             service_for(options)

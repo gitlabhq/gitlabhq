@@ -78,6 +78,7 @@ module Ci
         variables.append(key: "CI_JOB_MANUAL", value: 'true') if action?
         variables.append(key: "CI_NODE_INDEX", value: self.options[:instance].to_s) if self.options&.include?(:instance)
         variables.append(key: "CI_NODE_TOTAL", value: (self.options&.dig(:parallel) || 1).to_s)
+        variables.append(key: "CI_DEFAULT_BRANCH", value: project.default_branch)
         variables.concat(legacy_variables)
       end
     end

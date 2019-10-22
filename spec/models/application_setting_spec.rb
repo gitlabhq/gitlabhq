@@ -51,6 +51,18 @@ describe ApplicationSetting do
     it { is_expected.to allow_value(nil).for(:static_objects_external_storage_url) }
     it { is_expected.to allow_value(http).for(:static_objects_external_storage_url) }
     it { is_expected.to allow_value(https).for(:static_objects_external_storage_url) }
+    it { is_expected.to allow_value(['/example'] * 100).for(:protected_paths) }
+    it { is_expected.not_to allow_value(['/example'] * 101).for(:protected_paths) }
+    it { is_expected.not_to allow_value(nil).for(:protected_paths) }
+    it { is_expected.to allow_value([]).for(:protected_paths) }
+
+    it { is_expected.to allow_value(3).for(:push_event_hooks_limit) }
+    it { is_expected.not_to allow_value('three').for(:push_event_hooks_limit) }
+    it { is_expected.not_to allow_value(nil).for(:push_event_hooks_limit) }
+
+    it { is_expected.to allow_value(3).for(:push_event_activities_limit) }
+    it { is_expected.not_to allow_value('three').for(:push_event_activities_limit) }
+    it { is_expected.not_to allow_value(nil).for(:push_event_activities_limit) }
 
     context "when user accepted let's encrypt terms of service" do
       before do

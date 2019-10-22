@@ -32,7 +32,7 @@ describe Gitlab::GitalyClient::ConflictFilesStitcher do
         double(files: [double(header: nil, content: content_2[11..-1])])
       ]
 
-      conflict_files = described_class.new(messages).to_a
+      conflict_files = described_class.new(messages, target_repository.gitaly_repository).to_a
 
       expect(conflict_files.size).to be(2)
 

@@ -8,11 +8,15 @@ describe Gitlab::Ci::Config::External::File::Project do
   set(:user) { create(:user) }
 
   let(:context_user) { user }
-  let(:context) { described_class::Context.new(context_project, '12345', context_user, Set.new) }
+  let(:context_params) { { project: context_project, sha: '12345', user: context_user } }
+  let(:context) { Gitlab::Ci::Config::External::Context.new(**context_params) }
   let(:project_file) { described_class.new(params, context) }
 
   before do
     project.add_developer(user)
+
+    allow_any_instance_of(Gitlab::Ci::Config::External::Context)
+      .to receive(:check_execution_time!)
   end
 
   describe '#matching?' do
@@ -145,7 +149,7 @@ describe Gitlab::Ci::Config::External::File::Project do
   describe '#expand_context' do
     let(:params) { { file: 'file.yml', project: project.full_path, ref: 'master' } }
 
-    subject { project_file.send(:expand_context) }
+    subject { project_file.send(:expand_context_attrs) }
 
     it 'inherits user, and target project and sha' do
       is_expected.to include(user: user, project: project, sha: project.commit('master').id)

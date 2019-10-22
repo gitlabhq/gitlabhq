@@ -4,6 +4,8 @@ class ExpireBuildArtifactsWorker
   include ApplicationWorker
   include CronjobQueue
 
+  feature_category :continuous_integration
+
   def perform
     if Feature.enabled?(:ci_new_expire_job_artifacts_service, default_enabled: true)
       perform_efficient_artifacts_removal

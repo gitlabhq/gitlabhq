@@ -2,6 +2,6 @@
 
 FactoryBot.define do
   factory :shard do
-    name "default"
+    name { "default" }
   end
 end

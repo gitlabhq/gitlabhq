@@ -7,7 +7,7 @@ type: reference
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/6861) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.6.
 
 When you create a new [project](../project/index.md), creating it based on custom project templates is
-a convenient bootstrap option.
+a convenient option.
 
 Users can configure a GitLab group that serves as template
 source under a group's **Settings > General > Custom project templates**.

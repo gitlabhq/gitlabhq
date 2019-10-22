@@ -47,7 +47,7 @@ With **[GitLab Enterprise Edition][ee]**, you can also:
 - Analyze your dependencies for vulnerabilities with [Dependency Scanning](../../application_security/dependency_scanning/index.md) **(ULTIMATE)**
 - Analyze your Docker images for vulnerabilities with [Container Scanning](../../application_security/container_scanning/index.md) **(ULTIMATE)**
 - Determine the performance impact of changes with [Browser Performance Testing](#browser-performance-testing-premium) **(PREMIUM)**
-- Specify merge order dependencies with [Cross-project Merge Request Dependencies](#cross-project-merge-request-dependencies-premium) **(PREMIUM)**
+- Specify merge order dependencies with [Merge Request Dependencies](#merge-request-dependencies-premium) **(PREMIUM)**
 
 ## Use cases
 
@@ -70,7 +70,7 @@ B. Consider you're a web developer writing a webpage for your company's website:
 1. Your changes are previewed with [Review Apps](../../../ci/review_apps/index.md)
 1. You request your web designers for their implementation
 1. You request the [approval](merge_request_approvals.md) from your manager **(STARTER)**
-1. Once approved, your merge request is [squashed and merged](squash_and_merge.md), and [deployed to staging with GitLab Pages](https://about.gitlab.com/2016/08/26/ci-deployment-and-environments/)
+1. Once approved, your merge request is [squashed and merged](squash_and_merge.md), and [deployed to staging with GitLab Pages](https://about.gitlab.com/blog/2016/08/26/ci-deployment-and-environments/)
 1. Your production team [cherry picks](#cherry-pick-changes) the merge commit into production
 
 ## Merge requests per project
@@ -221,7 +221,7 @@ to learn more.
 ## Multiple assignees **(STARTER)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/2004)
-in [GitLab Starter 11.11](https://about.gitlab.com/pricing).
+in [GitLab Starter 11.11](https://about.gitlab.com/pricing/).
 
 Multiple people often review merge requests at the same time. GitLab allows you to have multiple assignees for merge requests to indicate everyone that is reviewing or accountable for it.
 
@@ -290,140 +290,10 @@ apply the patches. The target branch can be specified using the
 [`/target_branch` quick action](../quick_actions.md). If the source
 branch already exists, the patches will be applied on top of it.
 
-## Git push options
+## Use Git push options with merge requests
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/26752) in GitLab 11.10.
-
-NOTE: **Note:**
-Git push options are only available with Git 2.10 or newer. With Git older than 2.18
-`git push --push-option=...` should be used instead of `git push -o ...`.
-
-GitLab supports using
-[Git push options](https://git-scm.com/docs/git-push#Documentation/git-push.txt--oltoptiongt)
-to perform the following actions against merge requests at the same time
-as pushing changes:
-
-- Create a new merge request for the pushed branch.
-- Set the target of the merge request to a particular branch.
-- Set the merge request to merge when its pipeline succeeds.
-- Set the merge request to remove the source branch when it's merged.
-- Set the title of the merge request to a particular title.
-- Set the description of the merge request to a particular description.
-- Add or remove labels from the merge request.
-
-### Create a new merge request using git push options
-
-To create a new merge request for a branch, use the
-`merge_request.create` push option:
-
-```sh
-git push -o merge_request.create
-```
-
-### Set the target branch of a merge request using git push options
-
-To update an existing merge request's target branch, use the
-`merge_request.target=<branch_name>` push option:
-
-```sh
-git push -o merge_request.target=branch_name
-```
-
-You can also create a merge request and set its target branch at the
-same time using a `-o` flag per push option:
-
-```sh
-git push -o merge_request.create -o merge_request.target=branch_name
-```
-
-### Set merge when pipeline succeeds using git push options
-
-To set an existing merge request to
-[merge when its pipeline succeeds](merge_when_pipeline_succeeds.md), use
-the `merge_request.merge_when_pipeline_succeeds` push option:
-
-```sh
-git push -o merge_request.merge_when_pipeline_succeeds
-```
-
-You can also create a merge request and set it to merge when its
-pipeline succeeds at the same time using a `-o` flag per push option:
-
-```sh
-git push -o merge_request.create -o merge_request.merge_when_pipeline_succeeds
-```
-
-### Set removing the source branch using git push options
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/64320) in GitLab 12.2.
-
-To set an existing merge request to remove the source branch when the
-merge request is merged, the
-`merge_request.remove_source_branch` push option can be used:
-
-```sh
-git push -o merge_request.remove_source_branch
-```
-
-You can also use this push option in addition to the
-`merge_request.create` push option.
-
-### Set merge request title using git push options
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/64320) in GitLab 12.2.
-
-To set the title of an existing merge request, use
-the `merge_request.title` push option:
-
-```sh
-git push -o merge_request.title="The title I want"
-```
-
-You can also use this push option in addition to the
-`merge_request.create` push option.
-
-### Set merge request description using git push options
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/64320) in GitLab 12.2.
-
-To set the description of an existing merge request, use
-the `merge_request.description` push option:
-
-```sh
-git push -o merge_request.description="The description I want"
-```
-
-You can also use this push option in addition to the
-`merge_request.create` push option.
-
-### Add or remove labels using git push options
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/31831) in GitLab 12.3.
-
-You can add or remove labels from merge requests using push options.
-
-For example, to add two labels to an existing merge request, use the
-`merge_request.label` push option:
-
-```sh
-git push -o merge_request.label="label1" -o merge_request.label="label2"
-```
-
-To remove two labels from an existing merge request, use
-the `merge_request.unlabel` push option:
-
-```sh
-git push -o merge_request.unlabel="label1" -o merge_request.unlabel="label2"
-```
-
-You can also use these push options in addition to the
-`merge_request.create` push option.
-
-To create a merge request and add two labels to it, use:
-
-```sh
-git push -o merge_request.create -o merge_request.label="label1" -o merge_request.label="label2"
-```
+Use [Git push options](../push_options.md) to create or update merge requests when
+pushing changes to GitLab with Git, without needing to use the GitLab interface.
 
 ## Find the merge request that introduced a change
 
@@ -465,11 +335,11 @@ have been marked as a **Work In Progress**.
 ## Merge Requests for Confidential Issues
 
 Create [merge requests to resolve confidential issues](../issues/confidential_issues.md#merge-requests-for-confidential-issues)
-for preventing leakage or early release of sentive data through regular merge requests.
+for preventing leakage or early release of sensitive data through regular merge requests.
 
 ## Merge request approvals **(STARTER)**
 
-> Included in [GitLab Starter][products].
+> Included in [GitLab Starter](https://about.gitlab.com/product/).
 
 If you want to make sure every merge request is approved by one or more people,
 you can enforce this workflow by using merge request approvals. Merge request
@@ -480,7 +350,7 @@ list of approvers that will need to approve every merge request in a project.
 
 ## Code Quality **(STARTER)**
 
-> Introduced in [GitLab Starter][products] 9.3.
+> Introduced in [GitLab Starter](https://about.gitlab.com/product/) 9.3.
 
 If you are using [GitLab CI][ci], you can analyze your source code quality using
 the [Code Climate][cc] analyzer [Docker image][cd]. Going a step further, GitLab
@@ -490,7 +360,7 @@ can show the Code Climate report right in the merge request widget area.
 
 ## Metrics Reports **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/9788) in [GitLab Premium][products] 11.10.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/9788) in [GitLab Premium](https://about.gitlab.com/product/) 11.10.
 Requires GitLab Runner 11.10 and above.
 
 If you are using [GitLab CI][ci], you can configure your job to output custom
@@ -501,7 +371,7 @@ that it's fast and easy to identify changes to important metrics.
 
 ## Browser Performance Testing **(PREMIUM)**
 
-> Introduced in [GitLab Premium][products] 10.3.
+> Introduced in [GitLab Premium](https://about.gitlab.com/product/) 10.3.
 
 If your application offers a web interface and you are using [GitLab CI/CD][ci], you can quickly determine the performance impact of pending code changes. GitLab uses [Sitespeed.io][sitespeed], a free and open source tool for measuring the performance of web sites, to analyze the performance of specific pages.
 
@@ -509,9 +379,9 @@ GitLab runs the [Sitespeed.io container][sitespeed-container] and displays the d
 
 [Read more about Browser Performance Testing.](browser_performance_testing.md)
 
-## Cross-project Merge Request Dependencies **(PREMIUM)**
+## Merge Request Dependencies **(PREMIUM)**
 
-> Introduced in [GitLab Premium][products] 12.2.
+> Introduced in [GitLab Premium](https://about.gitlab.com/product/) 12.2.
 
 A single logical change may be split across several merge requests, across
 several projects. When this happens, the order in which MRs are merged is
@@ -522,7 +392,7 @@ this relationship in place, the merge request cannot be merged until all of its
 dependencies have also been merged, helping to maintain the consistency of a
 single logical change.
 
-[Read more about cross-project merge request dependencies.](merge_request_dependencies.md)
+[Read more about merge request dependencies.](merge_request_dependencies.md)
 
 ## Security reports **(ULTIMATE)**
 
@@ -570,7 +440,7 @@ whitespace changes.
 
 ## Live preview with Review Apps
 
-If you configured [Review Apps](https://about.gitlab.com/features/review-apps/) for your project,
+If you configured [Review Apps](https://about.gitlab.com/product/review-apps/) for your project,
 you can preview the changes submitted to a feature-branch through a merge request
 in a per-branch basis. No need to checkout the branch, install and preview locally;
 all your changes will be available to preview by anyone with the Review Apps link.
@@ -666,7 +536,7 @@ tricks to checkout a merge request locally.
 Please note that you can checkout a merge request locally even if the source
 project is a fork (even a private fork) of the target project.
 
-#### Checkout locally by adding a git alias
+#### Checkout locally by adding a Git alias
 
 Add the following alias to your `~/.gitconfig`:
 
@@ -736,10 +606,8 @@ And to check out a particular merge request:
 git checkout origin/merge-requests/1
 ```
 
-all the above can be done with [git-mr] script.
+All the above can be done with the [`git-mr`](https://gitlab.com/glensc/git-mr) script.
 
-[git-mr]: https://gitlab.com/glensc/git-mr
-[products]: https://about.gitlab.com/products/ "GitLab products page"
 [protected branches]: ../protected_branches.md
 [ci]: ../../../ci/README.md
 [cc]: https://codeclimate.com/

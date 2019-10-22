@@ -73,4 +73,4 @@ A directed acyclic graph is a complicated feature, and as of the initial MVC the
 are certain use cases that you may need to work around. For more information:
 
 - [`needs` requirements and limitations](../yaml/README.md#requirements-and-limitations).
-- Related epic [gitlab-org#1716](https://gitlab.com/groups/gitlab-org/-/epics/1716).
+- Related epic [tracking planned improvements](https://gitlab.com/groups/gitlab-org/-/epics/1716).

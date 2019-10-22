@@ -4,6 +4,20 @@ require 'fast_spec_helper'
 
 RSpec.describe Quality::TestLevel do
   describe '#pattern' do
+    context 'when level is all' do
+      it 'returns a pattern' do
+        expect(subject.pattern(:all))
+        .to eq("spec/**{,/**/}*_spec.rb")
+      end
+    end
+
+    context 'when level is geo' do
+      it 'returns a pattern' do
+        expect(subject.pattern(:geo))
+        .to eq("spec/**{,/**/}*_spec.rb")
+      end
+    end
+
     context 'when level is unit' do
       it 'returns a pattern' do
         expect(subject.pattern(:unit))
@@ -44,6 +58,20 @@ RSpec.describe Quality::TestLevel do
   end
 
   describe '#regexp' do
+    context 'when level is all' do
+      it 'returns a regexp' do
+        expect(subject.regexp(:all))
+        .to eq(%r{spec/})
+      end
+    end
+
+    context 'when level is geo' do
+      it 'returns a regexp' do
+        expect(subject.regexp(:geo))
+        .to eq(%r{spec/})
+      end
+    end
+
     context 'when level is unit' do
       it 'returns a regexp' do
         expect(subject.regexp(:unit))

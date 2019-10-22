@@ -35,7 +35,7 @@ module MilestoneActions
 
         render json: tabs_json("shared/milestones/_labels_tab", {
           labels: milestone_labels.map do |label|
-            label.present(issuable_subject: @milestone.parent)
+            label.present(issuable_subject: @milestone.resource_parent)
           end
         })
       end

@@ -5,9 +5,20 @@ module Groups
     class CiCdController < Groups::ApplicationController
       skip_cross_project_access_check :show
       before_action :authorize_admin_group!
+      before_action :authorize_update_max_artifacts_size!, only: [:update]
 
       def show
         define_ci_variables
+      end
+
+      def update
+        if update_group_service.execute
+          flash[:notice] = s_('GroupSettings|Pipeline settings was updated for the group')
+        else
+          flash[:alert] = s_("GroupSettings|There was a problem updating the pipeline settings: %{error_messages}." % { error_messages: group.errors.full_messages })
+        end
+
+        redirect_to group_settings_ci_cd_path
       end
 
       def reset_registration_token
@@ -40,12 +51,24 @@ module Groups
         return render_404 unless can?(current_user, :admin_group, group)
       end
 
+      def authorize_update_max_artifacts_size!
+        return render_404 unless can?(current_user, :update_max_artifacts_size, group)
+      end
+
       def auto_devops_params
         params.require(:group).permit(:auto_devops_enabled)
       end
 
       def auto_devops_service
         Groups::AutoDevopsService.new(group, current_user, auto_devops_params)
+      end
+
+      def update_group_service
+        Groups::UpdateService.new(group, current_user, update_group_params)
+      end
+
+      def update_group_params
+        params.require(:group).permit(:max_artifacts_size)
       end
     end
   end

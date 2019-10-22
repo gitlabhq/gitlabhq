@@ -67,7 +67,7 @@ Example response:
   "title": "Accusamus iste et ullam ratione voluptatem omnis debitis dolor est.",
   "description": "Molestias dolorem eos vitae expedita impedit necessitatibus quo voluptatum.",
   "state": "opened",
-  "web_edit_url": "http://localhost:3001/groups/test/-/epics/4",
+  "web_url": "http://localhost:3001/groups/test/-/epics/4",
   "reference": "&4",
   "author": {
     "id": 10,
@@ -88,6 +88,7 @@ Example response:
   "due_date_from_milestones": "2018-07-31",
   "created_at": "2018-07-17T13:36:22.770Z",
   "updated_at": "2018-07-18T12:22:05.239Z",
+  "closed_at": "2018-08-18T12:22:05.239Z",
   "labels": [],
   "upvotes": 4,
   "downvotes": 0
@@ -122,7 +123,7 @@ Example response:
   "title": "Ea cupiditate dolores ut vero consequatur quasi veniam voluptatem et non.",
   "description": "Molestias dolorem eos vitae expedita impedit necessitatibus quo voluptatum.",
   "state": "opened",
-  "web_edit_url": "http://localhost:3001/groups/test/-/epics/5",
+  "web_url": "http://localhost:3001/groups/test/-/epics/5",
   "reference": "&5",
   "author":{
     "id": 7,
@@ -143,9 +144,11 @@ Example response:
   "due_date_from_milestones": "2018-07-31",
   "created_at": "2018-07-17T13:36:22.770Z",
   "updated_at": "2018-07-18T12:22:05.239Z",
+  "closed_at": "2018-08-18T12:22:05.239Z",
   "labels": [],
   "upvotes": 4,
-  "downvotes": 0
+  "downvotes": 0,
+  "subscribed": true
 }
 ```
 
@@ -167,7 +170,7 @@ POST /groups/:id/epics
 | `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user                |
 | `title`             | string           | yes        | The title of the epic |
 | `labels`            | string           | no         | The comma separated list of labels |
-| `description`       | string           | no         | The description of the epic. Limited to 1 000 000 characters.  |
+| `description`       | string           | no         | The description of the epic. Limited to 1,048,576 characters.  |
 | `start_date_is_fixed` | boolean        | no         | Whether start date should be sourced from `start_date_fixed` or from milestones (since 11.3) |
 | `start_date_fixed`  | string           | no         | The fixed start date of an epic (since 11.3) |
 | `due_date_is_fixed` | boolean          | no         | Whether due date should be sourced from `due_date_fixed` or from milestones (since 11.3) |
@@ -188,7 +191,7 @@ Example response:
   "title": "Epic",
   "description": "Epic description",
   "state": "opened",
-  "web_edit_url": "http://localhost:3001/groups/test/-/epics/6",
+  "web_url": "http://localhost:3001/groups/test/-/epics/5",
   "reference": "&6",
   "author": {
     "name" : "Alexandra Bashirian",
@@ -209,6 +212,7 @@ Example response:
   "due_date_from_milestones": "2018-07-31",
   "created_at": "2018-07-17T13:36:22.770Z",
   "updated_at": "2018-07-18T12:22:05.239Z",
+  "closed_at": "2018-08-18T12:22:05.239Z",
   "labels": [],
   "upvotes": 4,
   "downvotes": 0
@@ -233,7 +237,7 @@ PUT /groups/:id/epics/:epic_iid
 | `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user                |
 | `epic_iid`          | integer/string   | yes        | The internal ID  of the epic  |
 | `title`             | string           | no         | The title of an epic |
-| `description`       | string           | no         | The description of an epic. Limited to 1 000 000 characters.  |
+| `description`       | string           | no         | The description of an epic. Limited to 1,048,576 characters.  |
 | `labels`            | string           | no         | The comma separated list of labels |
 | `start_date_is_fixed` | boolean        | no         | Whether start date should be sourced from `start_date_fixed` or from milestones (since 11.3) |
 | `start_date_fixed`  | string           | no         | The fixed start date of an epic (since 11.3) |
@@ -255,7 +259,7 @@ Example response:
   "title": "New Title",
   "description": "Epic description",
   "state": "opened",
-  "web_edit_url": "http://localhost:3001/groups/test/-/epics/6",
+  "web_url": "http://localhost:3001/groups/test/-/epics/5",
   "reference": "&6",
   "author": {
     "name" : "Alexandra Bashirian",
@@ -276,6 +280,7 @@ Example response:
   "due_date_from_milestones": "2018-07-31",
   "created_at": "2018-07-17T13:36:22.770Z",
   "updated_at": "2018-07-18T12:22:05.239Z",
+  "closed_at": "2018-08-18T12:22:05.239Z",
   "labels": [],
   "upvotes": 4,
   "downvotes": 0
@@ -358,7 +363,8 @@ Example response:
     "start_date": null,
     "end_date": null,
     "created_at": "2018-01-21T06:21:13.165Z",
-    "updated_at": "2018-01-22T12:41:41.166Z"
+    "updated_at": "2018-01-22T12:41:41.166Z",
+    "closed_at": "2018-08-18T12:22:05.239Z"
   },
   "target_url": "https://gitlab.example.com/groups/epics/5",
   "body": "Vel voluptas atque dicta mollitia adipisci qui at.",

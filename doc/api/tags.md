@@ -116,6 +116,12 @@ Parameters:
 - `message` (optional) - Creates annotated tag.
 - `release_description` (optional) - Add release notes to the Git tag and store it in the GitLab database.
 
+```bash
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/repository/tags?tag_name=test&ref=master"
+```
+
+Example response:
+
 ```json
 {
   "commit": {

@@ -74,7 +74,7 @@ export default {
       @click="toggleFeature"
     >
       <gl-loading-icon class="loading-icon" />
-      <span class="toggle-icon"> <icon :name="toggleIcon" css-classes="toggle-icon-svg" /> </span>
+      <span class="toggle-icon"> <icon :name="toggleIcon" class="toggle-icon-svg" /> </span>
     </button>
   </label>
 </template>

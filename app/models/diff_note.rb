@@ -75,6 +75,10 @@ class DiffNote < Note
     self.original_position.diff_refs == diff_refs
   end
 
+  # Checks if the current `position` line in the diff
+  # exists and is suggestible (not a deletion).
+  #
+  # Avoid using in iterations as it requests Gitaly.
   def supports_suggestion?
     return false unless noteable&.supports_suggestion? && on_text?
     # We don't want to trigger side-effects of `diff_file` call.

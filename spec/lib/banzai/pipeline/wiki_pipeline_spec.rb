@@ -260,11 +260,11 @@ describe Banzai::Pipeline::WikiPipeline do
     end
   end
 
-  describe 'videos' do
-    let(:namespace) { create(:namespace, name: "wiki_link_ns") }
-    let(:project)   { create(:project, :public, name: "wiki_link_project", namespace: namespace) }
-    let(:project_wiki) { ProjectWiki.new(project, double(:user)) }
-    let(:page) { build(:wiki_page, wiki: project_wiki, page: OpenStruct.new(url_path: 'nested/twice/start-page')) }
+  describe 'videos and audio' do
+    let_it_be(:namespace) { create(:namespace, name: "wiki_link_ns") }
+    let_it_be(:project)   { create(:project, :public, name: "wiki_link_project", namespace: namespace) }
+    let_it_be(:project_wiki) { ProjectWiki.new(project, double(:user)) }
+    let_it_be(:page) { build(:wiki_page, wiki: project_wiki, page: OpenStruct.new(url_path: 'nested/twice/start-page')) }
 
     it 'generates video html structure' do
       markdown = "![video_file](video_file_name.mp4)"
@@ -278,6 +278,20 @@ describe Banzai::Pipeline::WikiPipeline do
       output = described_class.to_html(markdown, project: project, project_wiki: project_wiki, page_slug: page.slug)
 
       expect(output).to include('<video src="/wiki_link_ns/wiki_link_project/wikis/nested/twice/video%20file%20name.mp4"')
+    end
+
+    it 'generates audio html structure' do
+      markdown = "![audio_file](audio_file_name.wav)"
+      output = described_class.to_html(markdown, project: project, project_wiki: project_wiki, page_slug: page.slug)
+
+      expect(output).to include('<audio src="/wiki_link_ns/wiki_link_project/wikis/nested/twice/audio_file_name.wav"')
+    end
+
+    it 'rewrites and replaces audio links names with white spaces to %20' do
+      markdown = "![audio file](audio file name.wav)"
+      output = described_class.to_html(markdown, project: project, project_wiki: project_wiki, page_slug: page.slug)
+
+      expect(output).to include('<audio src="/wiki_link_ns/wiki_link_project/wikis/nested/twice/audio%20file%20name.wav"')
     end
   end
 end

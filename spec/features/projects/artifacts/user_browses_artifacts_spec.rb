@@ -114,5 +114,24 @@ describe "User browses artifacts" do
 
       it { expect(page).to have_link("doc_sample.txt").and have_no_selector(".js-artifact-tree-external-icon") }
     end
+
+    context "when the project is private and pages access control is enabled" do
+      let!(:private_project) { create(:project, :private) }
+      let(:pipeline) { create(:ci_empty_pipeline, project: private_project) }
+      let(:job) { create(:ci_build, :artifacts, pipeline: pipeline) }
+      let(:user) { create(:user) }
+
+      before do
+        private_project.add_developer(user)
+
+        allow(Gitlab.config.pages).to receive(:access_control).and_return(true)
+
+        sign_in(user)
+
+        visit(browse_project_job_artifacts_path(private_project, job, "other_artifacts_0.1.2"))
+      end
+
+      it { expect(page).to have_link("doc_sample.txt").and have_selector(".js-artifact-tree-external-icon") }
+    end
   end
 end

@@ -18,13 +18,7 @@ Set the title to: `Security Release: 12.2.X, 12.1.X, and 12.0.X`
 
 ## Security Issues:
 
-### CE
-
-* {https://gitlab.com/gitlab-org/gitlab-ce/issues link}
-
-### EE
-
-* {https://gitlab.com/gitlab-org/gitlab-ee/issues link}
+* {https://gitlab.com/gitlab-org/gitlab/issues link}
 
 ## Security Issues in dev.gitlab.org:
 

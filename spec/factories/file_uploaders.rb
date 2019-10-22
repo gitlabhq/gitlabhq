@@ -5,7 +5,7 @@ FactoryBot.define do
     skip_create
 
     project
-    secret nil
+    secret { nil }
 
     transient do
       fixture { 'rails_sample.jpg' }

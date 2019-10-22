@@ -27,10 +27,10 @@ options:
 
 Configure your load balancer(s) to pass connections on port 443 as 'TCP' rather
 than 'HTTP(S)' protocol. This will pass the connection to the application nodes
-Nginx service untouched. Nginx will have the SSL certificate and listen on port 443.
+NGINX service untouched. NGINX will have the SSL certificate and listen on port 443.
 
-See [Nginx HTTPS documentation](https://docs.gitlab.com/omnibus/settings/nginx.html#enable-https)
-for details on managing SSL certificates and configuring Nginx.
+See [NGINX HTTPS documentation](https://docs.gitlab.com/omnibus/settings/nginx.html#enable-https)
+for details on managing SSL certificates and configuring NGINX.
 
 ### Load Balancer(s) terminate SSL without backend SSL
 
@@ -40,7 +40,7 @@ terminating SSL.
 
 Since communication between the load balancer(s) and GitLab will not be secure,
 there is some additional configuration needed. See
-[Nginx Proxied SSL documentation](https://docs.gitlab.com/omnibus/settings/nginx.html#supporting-proxied-ssl)
+[NGINX Proxied SSL documentation](https://docs.gitlab.com/omnibus/settings/nginx.html#supporting-proxied-ssl)
 for details.
 
 ### Load Balancer(s) terminate SSL with backend SSL
@@ -49,12 +49,12 @@ Configure your load balancer(s) to use the 'HTTP(S)' protocol rather than 'TCP'.
 The load balancer(s) will be responsible for managing SSL certificates that
 end users will see.
 
-Traffic will also be secure between the load balancer(s) and Nginx in this
+Traffic will also be secure between the load balancer(s) and NGINX in this
 scenario. There is no need to add configuration for proxied SSL since the
 connection will be secure all the way. However, configuration will need to be
 added to GitLab to configure SSL certificates. See
-[Nginx HTTPS documentation](https://docs.gitlab.com/omnibus/settings/nginx.html#enable-https)
-for details on managing SSL certificates and configuring Nginx.
+[NGINX HTTPS documentation](https://docs.gitlab.com/omnibus/settings/nginx.html#enable-https)
+for details on managing SSL certificates and configuring NGINX.
 
 ## Ports
 

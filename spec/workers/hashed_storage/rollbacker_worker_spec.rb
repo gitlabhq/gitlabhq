@@ -4,6 +4,7 @@ require 'spec_helper'
 
 describe HashedStorage::RollbackerWorker do
   subject(:worker) { described_class.new }
+
   let(:projects) { create_list(:project, 2, :empty_repo) }
   let(:ids) { projects.map(&:id) }
 

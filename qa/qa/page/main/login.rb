@@ -42,7 +42,7 @@ module QA
           element :login_page, required: true
         end
 
-        def sign_in_using_credentials(user = nil)
+        def sign_in_using_credentials(user: nil, skip_page_validation: false)
           # Don't try to log-in if we're already logged-in
           return if Page::Main::Menu.perform(&:signed_in?)
 
@@ -52,9 +52,9 @@ module QA
             raise NotImplementedError if Runtime::User.ldap_user? && user&.credentials_given?
 
             if Runtime::User.ldap_user?
-              sign_in_using_ldap_credentials(user || Runtime::User)
+              sign_in_using_ldap_credentials(user: user || Runtime::User)
             else
-              sign_in_using_gitlab_credentials(user || Runtime::User)
+              sign_in_using_gitlab_credentials(user: user || Runtime::User, skip_page_validation: skip_page_validation)
             end
           end
         end
@@ -68,13 +68,13 @@ module QA
           using_wait_time 0 do
             set_initial_password_if_present
 
-            sign_in_using_gitlab_credentials(admin)
+            sign_in_using_gitlab_credentials(user: admin)
           end
 
           Page::Main::Menu.perform(&:has_personal_area?)
         end
 
-        def sign_in_using_ldap_credentials(user)
+        def sign_in_using_ldap_credentials(user:)
           Page::Main::Menu.perform(&:sign_out_if_signed_in)
 
           using_wait_time 0 do
@@ -87,7 +87,7 @@ module QA
             click_element :sign_in_button
           end
 
-          Page::Main::Menu.perform(&:has_personal_area?)
+          Page::Main::Menu.perform(&:signed_in?)
         end
 
         def self.path
@@ -148,18 +148,18 @@ module QA
         def sign_out_and_sign_in_as(user:)
           Menu.perform(&:sign_out_if_signed_in)
           has_sign_in_tab?
-          sign_in_using_credentials(user)
+          sign_in_using_credentials(user: user)
         end
 
         private
 
-        def sign_in_using_gitlab_credentials(user)
+        def sign_in_using_gitlab_credentials(user:, skip_page_validation: false)
           switch_to_sign_in_tab if has_sign_in_tab?
           switch_to_standard_tab if has_standard_tab?
 
           fill_element :login_field, user.username
           fill_element :password_field, user.password
-          click_element :sign_in_button, Page::Main::Menu
+          click_element :sign_in_button, !skip_page_validation && Page::Main::Menu
         end
 
         def set_initial_password_if_present

@@ -1,7 +1,6 @@
 - if can?(current_user, :update_pages, @project)
   .card
     .card-header
-      Domains
+      = s_('GitLabPages|Domains')
     .nothing-here-block
-      Support for domains and certificates is disabled.
-      Ask your system's administrator to enable it.
+      = s_("GitLabPages|Support for domains and certificates is disabled.  Ask your system's administrator to enable it.")

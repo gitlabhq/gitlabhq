@@ -18,6 +18,28 @@ describe OmniauthCallbacksController, type: :controller do
       Rails.application.env_config['omniauth.auth'] = @original_env_config_omniauth_auth
     end
 
+    context 'a deactivated user' do
+      let(:provider) { :github }
+      let(:extern_uid) { 'my-uid' }
+
+      before do
+        user.deactivate!
+        post provider
+      end
+
+      it 'allows sign in' do
+        expect(request.env['warden']).to be_authenticated
+      end
+
+      it 'activates the user' do
+        expect(user.reload.active?).to be_truthy
+      end
+
+      it 'shows reactivation flash message after logging in' do
+        expect(flash[:notice]).to eq('Welcome back! Your account had been deactivated due to inactivity but is now reactivated.')
+      end
+    end
+
     context 'when the user is on the last sign in attempt' do
       let(:extern_uid) { 'my-uid' }
 

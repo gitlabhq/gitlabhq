@@ -6,6 +6,7 @@ module Clusters
       include Gitlab::Kubernetes
       include EnumWithNil
       include AfterCommitQueue
+      include ReactiveCaching
 
       RESERVED_NAMESPACES = %w(gitlab-managed-apps).freeze
 
@@ -23,11 +24,12 @@ module Clusters
         key: Settings.attr_encrypted_db_key_base_truncated,
         algorithm: 'aes-256-cbc'
 
+      before_validation :nullify_blank_namespace
       before_validation :enforce_namespace_to_lower_case
       before_validation :enforce_ca_whitespace_trimming
 
       validates :namespace,
-        allow_blank: true,
+        allow_nil: true,
         length: 1..63,
         format: {
           with: Gitlab::Regex.kubernetes_namespace_regex,
@@ -71,7 +73,7 @@ module Clusters
               .append(key: 'KUBE_CA_PEM_FILE', value: ca_pem, file: true)
           end
 
-          if !cluster.managed?
+          if !cluster.managed? || cluster.management_project == project
             namespace = Gitlab::Kubernetes::DefaultNamespace.new(cluster, project: project).from_environment_name(environment_name)
 
             variables
@@ -105,19 +107,11 @@ module Clusters
 
       private
 
-      ##
-      # Environment slug can be predicted given an environment
-      # name, so even if the environment isn't persisted yet we
-      # still know what to look for.
-      def environment_slug(name)
-        Gitlab::Slug::Environment.new(name).generate
-      end
-
       def find_persisted_namespace(project, environment_name:)
         Clusters::KubernetesNamespaceFinder.new(
           cluster,
           project: project,
-          environment_slug: environment_slug(environment_name)
+          environment_name: environment_name
         ).execute
       end
 
@@ -197,6 +191,10 @@ module Clusters
         end
 
         true
+      end
+
+      def nullify_blank_namespace
+        self.namespace = nil if namespace.blank?
       end
     end
   end

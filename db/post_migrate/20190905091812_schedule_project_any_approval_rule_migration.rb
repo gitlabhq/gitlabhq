@@ -22,6 +22,8 @@ class ScheduleProjectAnyApprovalRuleMigration < ActiveRecord::Migration[5.2]
   end
 
   def up
+    return unless Gitlab.ee?
+
     add_concurrent_index :projects, :id,
       name: 'tmp_projects_with_approvals_before_merge',
       where: 'approvals_before_merge <> 0'

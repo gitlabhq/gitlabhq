@@ -286,6 +286,48 @@ For a small table (such as an empty one or one with less than `1,000` records),
 use `add_column` and `change_column_default` in a single-transaction migration,
 combining it with other operations that don't require `disable_ddl_transaction!`.
 
+## Changing the column default
+
+One might think that changing a default column with `change_column_default` is an
+expensive and disruptive operation for larger tables, but in reality it's not.
+
+Take the following migration as an example:
+
+```ruby
+class DefaultRequestAccessGroups < ActiveRecord::Migration[5.2]
+  include Gitlab::Database::MigrationHelpers
+
+  DOWNTIME = false
+
+  def up
+    change_column_default :namespaces, :request_access_enabled, true
+  end
+
+  def down
+    change_column_default :namespaces, :request_access_enabled, false
+  end
+end
+```
+
+Migration above changes the default column value of one of our largest
+tables: `namespaces`. This can be translated to:
+
+```sql
+ALTER TABLE namespaces
+ALTER COLUMN request_access_enabled
+DEFAULT false
+```
+
+In this particular case, the default value exists and we're just changing the metadata for
+`request_access_enabled` column, which does not imply a rewrite of all the existing records
+in the `namespaces` table. Only when creating a new column with a default, all the records are going be rewritten.
+
+NOTE: **Note:**  A faster [ALTER TABLE ADD COLUMN with a non-null default](https://www.depesz.com/2018/04/04/waiting-for-postgresql-11-fast-alter-table-add-column-with-a-non-null-default/)
+was introduced on PostgresSQL 11.0, removing the need of rewritting the table when a new column with a default value is added.
+
+For the reasons mentioned above, it's safe to use `change_column_default` in a single-transaction migration
+without requiring `disable_ddl_transaction!`.
+
 ## Updating an existing column
 
 To update an existing column to a particular value, you can use
@@ -375,6 +417,7 @@ timestamps with timezones:
 
 - `add_timestamps_with_timezone`
 - `timestamps_with_timezone`
+- `datetime_with_timezone`
 
 This ensures all timestamps have a time zone specified. This, in turn, means
 existing timestamps won't suddenly use a different timezone when the system's
@@ -406,10 +449,7 @@ end
 
 ## Testing
 
-Make sure that your migration works for databases with data. An
-empty database does not guarantee that your migration is correct.
-
-Make sure your migration can be reversed.
+See the [Testing Rails migrations](testing_guide/testing_migrations_guide.md) style guide.
 
 ## Data migration
 
@@ -481,5 +521,5 @@ by an integer. For example: `users` would turn into `users0`
 ### Moving migrations from EE to CE
 
 When migrations need to be moved from GitLab Enterprise Edition to GitLab Community Edition,
-a migration file should be moved from `ee/db/{post_,}migrate` directory in the `gitlab-ee` project to `db/{post_,}migrate` directory in the `gitlab-ce` project. This way
+a migration file should be moved from `ee/db/{post_,}migrate` directory in the `gitlab` project to `db/{post_,}migrate` directory in the `gitlab-foss` project. This way
 the schema number remains intact, there is no need to modify old migrations, and proper columns, tables or data are added in the Community Edition.

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe 'projects/generic_commit_statuses/_generic_commit_status.html.haml' do

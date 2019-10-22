@@ -78,7 +78,8 @@ module Ci
 
     def update_status
       retry_optimistic_lock(self) do
-        case statuses.latest.status
+        new_status = latest_stage_status.to_s
+        case new_status
         when 'created' then nil
         when 'preparing' then prepare
         when 'pending' then enqueue
@@ -91,7 +92,7 @@ module Ci
         when 'skipped', nil then skip
         else
           raise HasStatus::UnknownStatusError,
-                "Unknown status `#{statuses.latest.status}`"
+                "Unknown status `#{new_status}`"
         end
       end
     end
@@ -123,6 +124,10 @@ module Ci
 
     def manual_playable?
       blocked? || skipped?
+    end
+
+    def latest_stage_status
+      statuses.latest.slow_composite_status || 'skipped'
     end
   end
 end

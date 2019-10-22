@@ -181,6 +181,10 @@ describe API::Issues do
   end
 
   describe 'PUT /projects/:id/issues/:issue_iid with spam filtering' do
+    def update_issue
+      put api("/projects/#{project.id}/issues/#{issue.iid}", user), params: params
+    end
+
     let(:params) do
       {
         title: 'updated title',
@@ -189,21 +193,52 @@ describe API::Issues do
       }
     end
 
-    it 'does not create a new project issue' do
-      allow_any_instance_of(SpamService).to receive_messages(check_for_spam?: true)
-      allow_any_instance_of(AkismetService).to receive_messages(spam?: true)
+    before do
+      expect_next_instance_of(SpamService) do |spam_service|
+        expect(spam_service).to receive_messages(check_for_spam?: true)
+      end
+      expect_next_instance_of(AkismetService) do |akismet_service|
+        expect(akismet_service).to receive_messages(spam?: true)
+      end
+    end
 
-      put api("/projects/#{project.id}/issues/#{issue.iid}", user), params: params
+    context 'when allow_possible_spam feature flag is false' do
+      before do
+        stub_feature_flags(allow_possible_spam: false)
+      end
 
-      expect(response).to have_gitlab_http_status(400)
-      expect(json_response['message']).to eq({ 'error' => 'Spam detected' })
+      it 'does not update a project issue' do
+        expect { update_issue }.not_to change { issue.reload.title }
+      end
 
-      spam_logs = SpamLog.all
-      expect(spam_logs.count).to eq(1)
-      expect(spam_logs[0].title).to eq('updated title')
-      expect(spam_logs[0].description).to eq('content here')
-      expect(spam_logs[0].user).to eq(user)
-      expect(spam_logs[0].noteable_type).to eq('Issue')
+      it 'returns correct status and message' do
+        update_issue
+
+        expect(response).to have_gitlab_http_status(400)
+        expect(json_response).to include('message' => { 'error' => 'Spam detected' })
+      end
+
+      it 'creates a new spam log entry' do
+        expect { update_issue }
+          .to log_spam(title: 'updated title', description: 'content here', user_id: user.id, noteable_type: 'Issue')
+      end
+    end
+
+    context 'when allow_possible_spam feature flag is true' do
+      it 'updates a project issue' do
+        expect { update_issue }.to change { issue.reload.title }
+      end
+
+      it 'returns correct status and message' do
+        update_issue
+
+        expect(response).to have_gitlab_http_status(200)
+      end
+
+      it 'creates a new spam log entry' do
+        expect { update_issue }
+          .to log_spam(title: 'updated title', description: 'content here', user_id: user.id, noteable_type: 'Issue')
+      end
     end
   end
 

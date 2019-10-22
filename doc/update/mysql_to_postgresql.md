@@ -196,7 +196,7 @@ After the database is created, go on with the following steps:
    sudo -u git -H chmod o-rwx config/database.yml
    ```
 
-1. Install Gems related to Postgresql
+1. Install Gems related to PostgreSQL
 
    ```bash
    sudo -u git -H rm .bundle/config

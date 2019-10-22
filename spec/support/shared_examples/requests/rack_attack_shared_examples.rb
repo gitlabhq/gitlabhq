@@ -8,6 +8,14 @@
 # * period_in_seconds
 # * period
 shared_examples_for 'rate-limited token-authenticated requests' do
+  let(:throttle_types) do
+    {
+      "throttle_protected_paths" => "throttle_authenticated_protected_paths_api",
+      "throttle_authenticated_api" => "throttle_authenticated_api",
+      "throttle_authenticated_web" => "throttle_authenticated_web"
+    }
+  end
+
   before do
     # Set low limits
     settings_to_set[:"#{throttle_setting_prefix}_requests_per_period"] = requests_per_period
@@ -84,7 +92,8 @@ shared_examples_for 'rate-limited token-authenticated requests' do
         request_method: 'GET',
         path: get_args.first,
         user_id: user.id,
-        username: user.username
+        username: user.username,
+        throttle_type: throttle_types[throttle_setting_prefix]
       }
 
       expect(Gitlab::AuthLogger).to receive(:error).with(arguments).once
@@ -116,6 +125,13 @@ end
 # * period_in_seconds
 # * period
 shared_examples_for 'rate-limited web authenticated requests' do
+  let(:throttle_types) do
+    {
+      "throttle_protected_paths" => "throttle_authenticated_protected_paths_web",
+      "throttle_authenticated_web" => "throttle_authenticated_web"
+    }
+  end
+
   before do
     login_as(user)
 
@@ -196,7 +212,8 @@ shared_examples_for 'rate-limited web authenticated requests' do
         request_method: 'GET',
         path: '/dashboard/snippets',
         user_id: user.id,
-        username: user.username
+        username: user.username,
+        throttle_type: throttle_types[throttle_setting_prefix]
       }
 
       expect(Gitlab::AuthLogger).to receive(:error).with(arguments).once

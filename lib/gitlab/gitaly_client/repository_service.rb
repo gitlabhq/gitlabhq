@@ -28,17 +28,17 @@ module Gitlab
 
       def garbage_collect(create_bitmap)
         request = Gitaly::GarbageCollectRequest.new(repository: @gitaly_repo, create_bitmap: create_bitmap)
-        GitalyClient.call(@storage, :repository_service, :garbage_collect, request)
+        GitalyClient.call(@storage, :repository_service, :garbage_collect, request, timeout: GitalyClient.long_timeout)
       end
 
       def repack_full(create_bitmap)
         request = Gitaly::RepackFullRequest.new(repository: @gitaly_repo, create_bitmap: create_bitmap)
-        GitalyClient.call(@storage, :repository_service, :repack_full, request)
+        GitalyClient.call(@storage, :repository_service, :repack_full, request, timeout: GitalyClient.long_timeout)
       end
 
       def repack_incremental
         request = Gitaly::RepackIncrementalRequest.new(repository: @gitaly_repo)
-        GitalyClient.call(@storage, :repository_service, :repack_incremental, request)
+        GitalyClient.call(@storage, :repository_service, :repack_incremental, request, timeout: GitalyClient.long_timeout)
       end
 
       def repository_size
@@ -86,12 +86,12 @@ module Gitlab
           end
         end
 
-        GitalyClient.call(@storage, :repository_service, :fetch_remote, request)
+        GitalyClient.call(@storage, :repository_service, :fetch_remote, request, timeout: GitalyClient.long_timeout)
       end
 
       def create_repository
         request = Gitaly::CreateRepositoryRequest.new(repository: @gitaly_repo)
-        GitalyClient.call(@storage, :repository_service, :create_repository, request, timeout: GitalyClient.medium_timeout)
+        GitalyClient.call(@storage, :repository_service, :create_repository, request, timeout: GitalyClient.fast_timeout)
       end
 
       def has_local_branches?
@@ -123,7 +123,7 @@ module Gitlab
           :create_fork,
           request,
           remote_storage: source_repository.storage,
-          timeout: GitalyClient.default_timeout
+          timeout: GitalyClient.long_timeout
         )
       end
 
@@ -138,7 +138,7 @@ module Gitlab
           :repository_service,
           :create_repository_from_url,
           request,
-          timeout: GitalyClient.default_timeout
+          timeout: GitalyClient.long_timeout
         )
       end
 
@@ -189,6 +189,7 @@ module Gitlab
           :repository_service,
           :fetch_source_branch,
           request,
+          timeout: GitalyClient.long_timeout,
           remote_storage: source_repository.storage
         )
 
@@ -197,7 +198,7 @@ module Gitlab
 
       def fsck
         request = Gitaly::FsckRequest.new(repository: @gitaly_repo)
-        response = GitalyClient.call(@storage, :repository_service, :fsck, request, timeout: GitalyClient.no_timeout)
+        response = GitalyClient.call(@storage, :repository_service, :fsck, request, timeout: GitalyClient.long_timeout)
 
         if response.error.empty?
           return "", 0
@@ -211,7 +212,7 @@ module Gitlab
           save_path,
           :create_bundle,
           Gitaly::CreateBundleRequest,
-          GitalyClient.no_timeout
+          GitalyClient.long_timeout
         )
       end
 
@@ -229,7 +230,7 @@ module Gitlab
           bundle_path,
           :create_repository_from_bundle,
           Gitaly::CreateRepositoryFromBundleRequest,
-          GitalyClient.no_timeout
+          GitalyClient.long_timeout
         )
       end
 
@@ -254,7 +255,7 @@ module Gitlab
           :repository_service,
           :create_repository_from_snapshot,
           request,
-          timeout: GitalyClient.no_timeout
+          timeout: GitalyClient.long_timeout
         )
       end
 
@@ -333,7 +334,7 @@ module Gitlab
 
       def search_files_by_content(ref, query)
         request = Gitaly::SearchFilesByContentRequest.new(repository: @gitaly_repo, ref: ref, query: query)
-        response = GitalyClient.call(@storage, :repository_service, :search_files_by_content, request)
+        response = GitalyClient.call(@storage, :repository_service, :search_files_by_content, request, timeout: GitalyClient.default_timeout)
 
         search_results_from_response(response)
       end
@@ -343,7 +344,19 @@ module Gitlab
           repository: @gitaly_repo
         )
 
-        GitalyClient.call(@storage, :object_pool_service, :disconnect_git_alternates, request)
+        GitalyClient.call(@storage, :object_pool_service, :disconnect_git_alternates, request, timeout: GitalyClient.long_timeout)
+      end
+
+      def rename(relative_path)
+        request = Gitaly::RenameRepositoryRequest.new(repository: @gitaly_repo, relative_path: relative_path)
+
+        GitalyClient.call(@storage, :repository_service, :rename_repository, request, timeout: GitalyClient.fast_timeout)
+      end
+
+      def remove
+        request = Gitaly::RemoveRepositoryRequest.new(repository: @gitaly_repo)
+
+        GitalyClient.call(@storage, :repository_service, :remove_repository, request, timeout: GitalyClient.long_timeout)
       end
 
       private

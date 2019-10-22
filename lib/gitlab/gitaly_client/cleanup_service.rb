@@ -18,7 +18,7 @@ module Gitlab
           :cleanup_service,
           :apply_bfg_object_map_stream,
           build_object_map_enum(io),
-          timeout: GitalyClient.no_timeout
+          timeout: GitalyClient.long_timeout
         )
 
         responses.each(&blk)

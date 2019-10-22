@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe BuildDetailsEntity do
@@ -121,6 +123,25 @@ describe BuildDetailsEntity do
       end
 
       it { is_expected.to include(failure_reason: 'unmet_prerequisites') }
+      it { is_expected.to include(callout_message: CommitStatusPresenter.callout_failure_messages[:unmet_prerequisites]) }
+    end
+
+    context 'when the build has failed due to a missing dependency' do
+      let!(:test1) { create(:ci_build, :success, :expired, pipeline: pipeline, name: 'test1', stage_idx: 0) }
+      let!(:test2) { create(:ci_build, :success, :expired, pipeline: pipeline, name: 'test2', stage_idx: 1) }
+      let!(:build) { create(:ci_build, :pending, pipeline: pipeline, stage_idx: 2, options: { dependencies: %w(test1 test2) }) }
+      let(:message) { subject[:callout_message] }
+
+      before do
+        build.drop!(:missing_dependency_failure)
+      end
+
+      it { is_expected.to include(failure_reason: 'missing_dependency_failure') }
+
+      it 'includes the failing dependencies in the callout message' do
+        expect(message).to include('test1')
+        expect(message).to include('test2')
+      end
     end
 
     context 'when a build has environment with latest deployment' do

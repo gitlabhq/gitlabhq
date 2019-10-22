@@ -210,6 +210,16 @@ class ApplicationSetting < ApplicationRecord
             presence: true,
             if: :static_objects_external_storage_url?
 
+  validates :protected_paths,
+            length: { maximum: 100, message: N_('is too long (maximum is 100 entries)') },
+            allow_nil: false
+
+  validates :push_event_hooks_limit,
+            numericality: { greater_than_or_equal_to: 0 }
+
+  validates :push_event_activities_limit,
+            numericality: { greater_than_or_equal_to: 0 }
+
   SUPPORTED_KEY_TYPES.each do |type|
     validates :"#{type}_key_restriction", presence: true, key_restriction: { type: type }
   end

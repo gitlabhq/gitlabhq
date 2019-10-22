@@ -59,7 +59,7 @@ GitLab OK
 
 ## Readiness
 
-The readiness probe checks whether the Gitlab instance is ready to use. It checks the dependent services (Database, Redis, Gitaly etc.) and gives a status for each.
+The readiness probe checks whether the GitLab instance is ready to use. It checks the dependent services (Database, Redis, Gitaly etc.) and gives a status for each.
 
 ```text
 GET /-/readiness
@@ -102,6 +102,9 @@ Example response:
 
 ## Liveness
 
+DANGER: **Warning:**
+In Gitlab [12.4](https://about.gitlab.com/upcoming-releases/) the response body of the Liveness check will change to match the example below.
+
 The liveness probe checks whether the application server is alive. Unlike the [`health`](#health) check, this check hits the database.
 
 ```text
@@ -116,28 +119,11 @@ curl 'https://gitlab.example.com/-/liveness'
 
 Example response:
 
-On success, the endpoint will return a valid successful HTTP status code, and a response like below.
+On success, the endpoint will return a `200` HTTP status code, and a response like below.
 
 ```json
 {
-   "db_check":{
-      "status":"ok"
-   },
-   "redis_check":{
-      "status":"ok"
-   },
-   "cache_check":{
-      "status":"ok"
-   },
-   "queues_check":{
-      "status":"ok"
-   },
-   "shared_state_check":{
-      "status":"ok"
-   },
-   "gitaly_check":{
-      "status":"ok"
-   }
+   "status": "ok"
 }
 ```
 

@@ -136,18 +136,6 @@ describe List do
         expect(preferences).to be_persisted
         expect(preferences.collapsed).to eq(true)
       end
-
-      context 'when preferences are already loaded for user' do
-        it 'gets preloaded user preferences' do
-          fetched_list = described_class.where(id: list.id).with_preferences_for(user).first
-
-          expect(fetched_list).to receive(:preloaded_preferences_for).with(user).and_call_original
-
-          preferences = fetched_list.preferences_for(user)
-
-          expect(preferences.collapsed).to eq(true)
-        end
-      end
     end
 
     context 'when preferences for user does not exist' do

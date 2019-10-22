@@ -26,7 +26,7 @@ question:
 document.body.dataset.page
 ```
 
-Find here the [source code setting the attribute](https://gitlab.com/gitlab-org/gitlab-foss/blob/cc5095edfce2b4d4083a4fb1cdc7c0a1898b9921/app/views/layouts/application.html.haml#L4).
+Find here the [source code setting the attribute](https://gitlab.com/gitlab-org/gitlab/blob/cc5095edfce2b4d4083a4fb1cdc7c0a1898b9921/app/views/layouts/application.html.haml#L4).
 
 #### Rails routes
 

@@ -19,6 +19,8 @@ describe Projects::AfterImportService do
 
       allow(housekeeping_service)
         .to receive(:execute).and_yield
+
+      expect(housekeeping_service).to receive(:increment!)
     end
 
     it 'performs housekeeping' do

@@ -11,6 +11,6 @@ Please describe the proposal and add a link to the source (for example, http://w
 
 /label ~"development guidelines"
 /label ~"Style decision"
-/label ~Documentation
+/label ~documentation
 
 /cc @gitlab-org/maintainers/rails-backend

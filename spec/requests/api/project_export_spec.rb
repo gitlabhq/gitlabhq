@@ -30,7 +30,7 @@ describe API::ProjectExport do
     FileUtils.mkdir_p File.join(project_started.export_path, 'securerandom-hex')
 
     # simulate in after export action
-    FileUtils.touch Gitlab::ImportExport::AfterExportStrategies::BaseAfterExportStrategy.lock_file_path(project_after_export)
+    FileUtils.touch File.join(project_after_export.import_export_shared.lock_files_path, SecureRandom.hex)
   end
 
   after do

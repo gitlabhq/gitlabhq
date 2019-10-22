@@ -109,6 +109,9 @@ if ( gon.features.vimBindings ) {
 The name of the feature flag in JavaScript will always be camelCased, meaning
 that checking for `gon.features.vim_bindings` would not work.
 
+See the [Vue guide](../fe_guide/vue.md#accessing-feature-flags) for details about
+how to access feature flags in a Vue component.
+
 ### Specs
 
 In the test environment `Feature.enabled?` is stubbed to always respond to `true`,

@@ -6,11 +6,17 @@ describe Gitlab::Ci::Config::External::File::Template do
   set(:project) { create(:project) }
   set(:user) { create(:user) }
 
-  let(:context) { described_class::Context.new(project, '12345', user, Set.new) }
+  let(:context_params) { { project: project, sha: '12345', user: user } }
+  let(:context) { Gitlab::Ci::Config::External::Context.new(**context_params) }
   let(:template) { 'Auto-DevOps.gitlab-ci.yml' }
   let(:params) { { template: template } }
 
   let(:template_file) { described_class.new(params, context) }
+
+  before do
+    allow_any_instance_of(Gitlab::Ci::Config::External::Context)
+      .to receive(:check_execution_time!)
+  end
 
   describe '#matching?' do
     context 'when a template is specified' do
@@ -97,10 +103,10 @@ describe Gitlab::Ci::Config::External::File::Template do
   describe '#expand_context' do
     let(:location) { 'location.yml' }
 
-    subject { template_file.send(:expand_context) }
+    subject { template_file.send(:expand_context_attrs) }
 
     it 'drops all parameters' do
-      is_expected.to include(user: nil, project: nil, sha: nil)
+      is_expected.to be_empty
     end
   end
 end

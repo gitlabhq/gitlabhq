@@ -8,11 +8,11 @@ module Gitlab
           include ::Gitlab::Config::Entry::Validatable
           include ::Gitlab::Config::Entry::Attributable
 
-          CLAUSES      = %i[if changes].freeze
-          ALLOWED_KEYS = %i[if changes when start_in].freeze
+          CLAUSES      = %i[if changes exists].freeze
+          ALLOWED_KEYS = %i[if changes exists when start_in].freeze
           ALLOWED_WHEN = %w[on_success on_failure always never manual delayed].freeze
 
-          attributes :if, :changes, :when, :start_in
+          attributes :if, :changes, :exists, :when, :start_in
 
           validations do
             validates :config, presence: true
@@ -24,7 +24,7 @@ module Gitlab
 
             with_options allow_nil: true do
               validates :if, expression: true
-              validates :changes, array_of_strings: true
+              validates :changes, :exists, array_of_strings: true, length: { maximum: 50 }
               validates :when, allowed_values: { in: ALLOWED_WHEN }
             end
           end

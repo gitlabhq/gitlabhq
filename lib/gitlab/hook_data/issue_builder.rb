@@ -27,7 +27,7 @@ module Gitlab
           duplicated_to_id
           project_id
           relative_position
-          state
+          state_id
           time_estimate
           title
           updated_at
@@ -46,7 +46,8 @@ module Gitlab
             human_time_estimate: issue.human_time_estimate,
             assignee_ids: issue.assignee_ids,
             assignee_id: issue.assignee_ids.first, # This key is deprecated
-            labels: issue.labels_hook_attrs
+            labels: issue.labels_hook_attrs,
+            state: issue.state
         }
 
         issue.attributes.with_indifferent_access.slice(*self.class.safe_hook_attributes)

@@ -1,8 +1,11 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe ClusterBasicEntity do
   describe '#as_json' do
     subject { described_class.new(cluster, request: request).as_json }
+
     let(:maintainer) { create(:user) }
     let(:developer) { create(:user) }
     let(:current_user) { maintainer }

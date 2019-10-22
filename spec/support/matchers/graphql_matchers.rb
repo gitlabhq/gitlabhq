@@ -28,9 +28,15 @@ RSpec::Matchers.define :have_graphql_fields do |*expected|
   end
 end
 
-RSpec::Matchers.define :have_graphql_field do |field_name|
+RSpec::Matchers.define :have_graphql_field do |field_name, args = {}|
   match do |kls|
-    expect(kls.fields.keys).to include(GraphqlHelpers.fieldnamerize(field_name))
+    field = kls.fields[GraphqlHelpers.fieldnamerize(field_name)]
+
+    expect(field).to be_present
+
+    args.each do |argument, value|
+      expect(field.send(argument)).to eq(value)
+    end
   end
 end
 

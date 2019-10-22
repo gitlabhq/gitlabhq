@@ -170,7 +170,7 @@ the `distributionManagement` section:
 <repositories>
   <repository>
     <id>gitlab-maven</id>
-    <url>https://gitlab.com/api/v4/groups/my-group/-/packages/maven</url>
+    <url>https://gitlab.com/api/v4/groups/GROUP_ID/-/packages/maven</url>
   </repository>
 </repositories>
 <distributionManagement>

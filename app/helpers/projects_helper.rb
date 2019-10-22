@@ -76,7 +76,7 @@ module ProjectsHelper
       link_to(author_html, user_path(author), class: "author-link js-user-link #{"#{opts[:extra_class]}" if opts[:extra_class]} #{"#{opts[:mobile_classes]}" if opts[:mobile_classes]}", data: data_attrs).html_safe
     else
       title = opts[:title].sub(":name", sanitize(author.name))
-      link_to(author_html, user_path(author), class: "author-link has-tooltip", title: title, data: { container: 'body' }).html_safe
+      link_to(author_html, user_path(author), class: "author-link has-tooltip", title: title, data: { container: 'body', qa_selector: 'assignee_link' }).html_safe
     end
   end
 
@@ -160,7 +160,7 @@ module ProjectsHelper
   def can_disable_emails?(project, current_user)
     return false if project.group&.emails_disabled?
 
-    can?(current_user, :set_emails_disabled, project) && Feature.enabled?(:emails_disabled, project, default_enabled: true)
+    can?(current_user, :set_emails_disabled, project)
   end
 
   def last_push_event
@@ -168,7 +168,7 @@ module ProjectsHelper
   end
 
   def link_to_autodeploy_doc
-    link_to _('About auto deploy'), help_page_path('ci/autodeploy/index'), target: '_blank'
+    link_to _('About auto deploy'), help_page_path('autodevops/index.md#auto-deploy'), target: '_blank'
   end
 
   def autodeploy_flash_notice(branch_name)
@@ -352,6 +352,14 @@ module ProjectsHelper
 
   def metrics_external_dashboard_url
     @project.metrics_setting_external_dashboard_url
+  end
+
+  def grafana_integration_url
+    @project.grafana_integration&.grafana_url
+  end
+
+  def grafana_integration_token
+    @project.grafana_integration&.token
   end
 
   private
@@ -565,7 +573,7 @@ module ProjectsHelper
       lfsHelpPath: help_page_path('workflow/lfs/manage_large_binaries_with_git_lfs'),
       pagesAvailable: Gitlab.config.pages.enabled,
       pagesAccessControlEnabled: Gitlab.config.pages.access_control,
-      pagesHelpPath: help_page_path('user/project/pages/introduction', anchor: 'gitlab-pages-access-control-core-only')
+      pagesHelpPath: help_page_path('user/project/pages/introduction', anchor: 'gitlab-pages-access-control-core')
     }
   end
 

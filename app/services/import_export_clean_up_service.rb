@@ -12,15 +12,19 @@ class ImportExportCleanUpService
 
   def execute
     Gitlab::Metrics.measure(:import_export_clean_up) do
-      clean_up_export_object_files
-
-      break unless File.directory?(path)
-
-      clean_up_export_files
+      execute_cleanup
     end
   end
 
   private
+
+  def execute_cleanup
+    clean_up_export_object_files
+  ensure
+    # We don't want a failure in cleaning up object storage from
+    # blocking us from cleaning up temporary storage.
+    clean_up_export_files if File.directory?(path)
+  end
 
   def clean_up_export_files
     Gitlab::Popen.popen(%W(find #{path} -not -path #{path} -mmin +#{mmin} -delete))

@@ -3,6 +3,8 @@
 class ProjectDailyStatisticsWorker
   include ApplicationWorker
 
+  feature_category :source_code_management
+
   def perform(project_id)
     project = Project.find_by_id(project_id)
 

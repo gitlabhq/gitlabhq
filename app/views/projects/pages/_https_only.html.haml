@@ -3,8 +3,9 @@
     .form-check
       = f.check_box :pages_https_only, class: 'form-check-input', disabled: pages_https_only_disabled?
       = f.label :pages_https_only, class: pages_https_only_label_class do
-        %strong Force HTTPS (requires valid certificates)
+        %strong
+          = s_('GitLabPages|Force HTTPS (requires valid certificates)')
 
   - unless pages_https_only_disabled?
     .prepend-top-10
-    = f.submit 'Save', class: 'btn btn-success'
+    = f.submit s_('GitLabPages|Save'), class: 'btn btn-success'

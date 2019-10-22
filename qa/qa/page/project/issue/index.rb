@@ -5,12 +5,28 @@ module QA
     module Project
       module Issue
         class Index < Page::Base
+          view 'app/helpers/projects_helper.rb' do
+            element :assignee_link
+          end
+
           view 'app/views/projects/issues/_issue.html.haml' do
             element :issue_link, 'link_to issue.title' # rubocop:disable QA/ElementWithPattern
           end
 
+          view 'app/views/shared/issuable/_assignees.html.haml' do
+            element :avatar_counter
+          end
+
           view 'app/views/shared/issuable/_nav.html.haml' do
             element :closed_issues_link
+          end
+
+          def assignee_link_count
+            all_elements(:assignee_link).count
+          end
+
+          def avatar_counter
+            find_element(:avatar_counter)
           end
 
           def click_issue_link(title)

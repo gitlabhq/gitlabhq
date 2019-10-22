@@ -2,7 +2,7 @@
 
 ## Git housekeeping
 
-There are few tasks you can run to schedule a git housekeeping to start at the
+There are few tasks you can run to schedule a Git housekeeping to start at the
 next repository sync in a **Secondary node**:
 
 ### Incremental Repack

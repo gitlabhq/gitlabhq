@@ -48,7 +48,7 @@ export default {
 <template>
   <gl-link
     :id="lineNumberId"
-    class="d-inline-block text-right position-absolute line-number"
+    class="d-inline-block text-right line-number flex-shrink-0"
     :href="buildLineNumber"
     >{{ parsedLineNumber }}</gl-link
   >

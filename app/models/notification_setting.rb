@@ -25,6 +25,7 @@ class NotificationSetting < ApplicationRecord
   end
 
   EMAIL_EVENTS = [
+    :new_release,
     :new_note,
     :new_issue,
     :reopen_issue,
@@ -44,6 +45,10 @@ class NotificationSetting < ApplicationRecord
   # Update unfound_translations.rb when events are changed
   def self.email_events(source = nil)
     EMAIL_EVENTS
+  end
+
+  def self.allowed_fields(source = nil)
+    NotificationSetting.email_events(source).dup + %i(level notification_email)
   end
 
   def email_events

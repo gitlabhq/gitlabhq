@@ -2,7 +2,10 @@ unless Rails.env.production?
   namespace :frontend do
     desc 'GitLab | Frontend | Generate fixtures for JavaScript tests'
     RSpec::Core::RakeTask.new(:fixtures, [:pattern]) do |t, args|
-      args.with_defaults(pattern: '{spec,ee/spec}/frontend/fixtures/*.rb')
+      directories = %w[spec]
+      directories << 'ee/spec' if Gitlab.ee?
+      directory_glob = "{#{directories.join(',')}}"
+      args.with_defaults(pattern: "#{directory_glob}/frontend/fixtures/*.rb")
       ENV['NO_KNAPSACK'] = 'true'
       t.pattern = args[:pattern]
       t.rspec_opts = '--format documentation'

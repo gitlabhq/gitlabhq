@@ -13,23 +13,24 @@ export default () =>
     data() {
       const { dataset } = document.querySelector(this.$options.el);
       return {
-        endpoint: dataset.endpoint,
-        characterError: Boolean(dataset.characterError),
-        helpPagePath: dataset.helpPagePath,
-        noContainersImage: dataset.noContainersImage,
-        containersErrorImage: dataset.containersErrorImage,
-        repositoryUrl: dataset.repositoryUrl,
+        registryData: {
+          endpoint: dataset.endpoint,
+          characterError: Boolean(dataset.characterError),
+          helpPagePath: dataset.helpPagePath,
+          noContainersImage: dataset.noContainersImage,
+          containersErrorImage: dataset.containersErrorImage,
+          repositoryUrl: dataset.repositoryUrl,
+          isGroupPage: dataset.isGroupPage,
+          personalAccessTokensHelpLink: dataset.personalAccessTokensHelpLink,
+          registryHostUrlWithPort: dataset.registryHostUrlWithPort,
+          twoFactorAuthHelpLink: dataset.twoFactorAuthHelpLink,
+        },
       };
     },
     render(createElement) {
       return createElement('registry-app', {
         props: {
-          endpoint: this.endpoint,
-          characterError: this.characterError,
-          helpPagePath: this.helpPagePath,
-          noContainersImage: this.noContainersImage,
-          containersErrorImage: this.containersErrorImage,
-          repositoryUrl: this.repositoryUrl,
+          ...this.registryData,
         },
       });
     },

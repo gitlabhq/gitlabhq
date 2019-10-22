@@ -146,4 +146,4 @@ end
 [CarrierWave]: https://github.com/carrierwaveuploader/carrierwave
 [Hashed Storage]: ../administration/repository_storage_types.md
 [all-in-one rake task]: ../administration/raketasks/uploads/migrate.md
-[category list]: https://gitlab.com/gitlab-org/gitlab-foss/blob/master/lib/tasks/gitlab/uploads/migrate.rake
+[category list]: https://gitlab.com/gitlab-org/gitlab/blob/master/lib/tasks/gitlab/uploads/migrate.rake

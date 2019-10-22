@@ -134,7 +134,7 @@ A lot of Gitaly RPCs need to look up Git objects from repositories.
 Most of the time we use `git cat-file --batch` processes for that. For
 better performance, Gitaly can re-use these `git cat-file` processes
 across RPC calls. Previously used processes are kept around in a
-["git cat-file cache"](https://about.gitlab.com/2019/07/08/git-performance-on-nfs/#enter-cat-file-cache).
+["git cat-file cache"](https://about.gitlab.com/blog/2019/07/08/git-performance-on-nfs/#enter-cat-file-cache).
 In order to control how much system resources this uses, we have a maximum number
 of cat-file processes that can go into the cache.
 

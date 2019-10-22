@@ -12,7 +12,9 @@ module Projects
       private
 
       def project_update_params
-        error_tracking_params.merge(metrics_setting_params)
+        error_tracking_params
+          .merge(metrics_setting_params)
+          .merge(grafana_integration_params)
       end
 
       def metrics_setting_params
@@ -43,6 +45,14 @@ module Projects
             organization_name: settings.dig(:project, :organization_name)
           }
         }
+      end
+
+      def grafana_integration_params
+        return {} unless attrs = params[:grafana_integration_attributes]
+
+        destroy = attrs[:grafana_url].blank? && attrs[:token].blank?
+
+        { grafana_integration_attributes: attrs.merge(_destroy: destroy) }
       end
     end
   end

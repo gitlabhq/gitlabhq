@@ -8,13 +8,13 @@
 
 ## References
 
-Merged MR that introduced documentation requiring review: 
+Merged MR that introduced documentation requiring review:
 
-Related issue(s): 
+Related issue(s):
 
 ## Further Details
 
 <!-- Any additional context, questions, or notes for the technical writer. -->
 
 
-/label ~Documentation ~docs-review
+/label ~documentation ~"Technical Writing"

@@ -40,8 +40,8 @@ class HelpController < ApplicationController
         end
       end
 
-      # Allow access to images in the doc folder
-      format.any(:png, :gif, :jpeg, :mp4) do
+      # Allow access to specific media files in the doc folder
+      format.any(:png, :gif, :jpeg, :mp4, :mp3) do
         # Note: We are purposefully NOT using `Rails.root.join`
         path = File.join(Rails.root, 'doc', "#{@path}.#{params[:format]}")
 

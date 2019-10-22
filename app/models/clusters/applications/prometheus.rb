@@ -112,7 +112,12 @@ module Clusters
       def delete_knative_istio_metrics
         return [] unless cluster.application_knative_available?
 
-        [Gitlab::Kubernetes::KubectlCmd.delete("-f", Clusters::Applications::Knative::METRICS_CONFIG)]
+        [
+          Gitlab::Kubernetes::KubectlCmd.delete(
+            "-f", Clusters::Applications::Knative::METRICS_CONFIG,
+            "--ignore-not-found"
+          )
+        ]
       end
     end
   end

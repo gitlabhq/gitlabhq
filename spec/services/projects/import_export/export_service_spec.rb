@@ -35,20 +35,27 @@ describe Projects::ImportExport::ExportService do
     end
 
     it 'saves the repo' do
+      # This spec errors when run against the EE codebase as there will be a third repository
+      # saved (the EE-specific design repository).
+      #
+      # Instead, skip this test when run within EE. There is a spec for the EE-specific design repo
+      # in the corresponding EE spec.
+      skip if Gitlab.ee?
+
       # once for the normal repo, once for the wiki
       expect(Gitlab::ImportExport::RepoSaver).to receive(:new).twice.and_call_original
 
       service.execute
     end
 
-    it 'saves the lfs objects' do
-      expect(Gitlab::ImportExport::LfsSaver).to receive(:new).and_call_original
+    it 'saves the wiki repo' do
+      expect(Gitlab::ImportExport::WikiRepoSaver).to receive(:new).and_call_original
 
       service.execute
     end
 
-    it 'saves the wiki repo' do
-      expect(Gitlab::ImportExport::WikiRepoSaver).to receive(:new).and_call_original
+    it 'saves the lfs objects' do
+      expect(Gitlab::ImportExport::LfsSaver).to receive(:new).and_call_original
 
       service.execute
     end
@@ -98,9 +105,9 @@ describe Projects::ImportExport::ExportService do
       end
     end
 
-    context 'when saver services fail' do
+    context 'when saving services fail' do
       before do
-        allow(service).to receive(:save_services).and_return(false)
+        allow(service).to receive(:save_exporters).and_return(false)
       end
 
       after do
@@ -122,7 +129,7 @@ describe Projects::ImportExport::ExportService do
         expect(Rails.logger).to receive(:error)
       end
 
-      it 'the after export strategy is not called' do
+      it 'does not call the export strategy' do
         expect(service).not_to receive(:execute_after_export_action)
       end
     end

@@ -43,7 +43,7 @@ Below is a diagram of the recommended architecture.
 Here's a list of the AWS services we will use, with links to pricing information:
 
 - **EC2**: GitLab will deployed on shared hardware which means
-  [on-demand pricing](https://aws.amazon.com/ec2/pricing/on-demand)
+  [on-demand pricing](https://aws.amazon.com/ec2/pricing/on-demand/)
   will apply. If you want to run it on a dedicated or reserved instance,
   consult the [EC2 pricing page](https://aws.amazon.com/ec2/pricing/) for more
   information on the cost.
@@ -112,12 +112,12 @@ RDS instances as well:
 
 1. Follow the same steps to create all subnets:
 
-   | Name tag | Type |Availability Zone | CIDR block |
-   | -------- | ---- | ---------------- | ---------- |
-   | gitlab-public-10.0.0.0  | public  | us-west-2a | 10.0.0.0 |
-   | gitlab-private-10.0.1.0 | private | us-west-2a | 10.0.1.0 |
-   | gitlab-public-10.0.2.0  | public  | us-west-2b | 10.0.2.0 |
-   | gitlab-private-10.0.3.0 | private | us-west-2b | 10.0.3.0 |
+   | Name tag                  | Type    | Availability Zone | CIDR block |
+   | ------------------------- | ------- | ----------------- | ---------- |
+   | `gitlab-public-10.0.0.0`  | public  | `us-west-2a`      | `10.0.0.0` |
+   | `gitlab-private-10.0.1.0` | private | `us-west-2a`      | `10.0.1.0` |
+   | `gitlab-public-10.0.2.0`  | public  | `us-west-2b`      | `10.0.2.0` |
+   | `gitlab-private-10.0.3.0` | private | `us-west-2b`      | `10.0.3.0` |
 
 ### Route Table
 
@@ -222,16 +222,16 @@ Now, it's time to create the database:
    1. For the size, let's select a `t2.medium` instance.
    1. Multi-AZ-deployment is recommended as redundancy, so choose "Create
       replica in different zone". Read more at
-      [High Availability (Multi-AZ)](http://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZ.html).
+      [High Availability (Multi-AZ)](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZ.html).
    1. A Provisioned IOPS (SSD) storage type is best suited for HA (though you can
       choose a General Purpose (SSD) to reduce the costs). Read more about it at
-      [Storage for Amazon RDS](http://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_Storage.html).
+      [Storage for Amazon RDS](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_Storage.html).
 
 1. The rest of the settings on this page request a DB instance identifier, username
    and a master password. We've chosen to use `gitlab-db-ha`, `gitlab` and a
    very secure password respectively. Keep these in hand for later.
 1. Click **Next** to proceed to the advanced settings.
-1. Make sure to choose our gitlab VPC, our subnet group, set public accessibility to
+1. Make sure to choose our GitLab VPC, our subnet group, set public accessibility to
    **No**, and to leave it to create a new security group. The only additional
    change which will be helpful is the database name for which we can use
    `gitlabhq_production`. At the very bottom, there's an option to enable
@@ -668,7 +668,7 @@ to request additional material:
   about administering your GitLab instance.
 - [Upload a license](../../user/admin_area/license.md):
   Activate all GitLab Enterprise Edition functionality with a license.
-- [Pricing](https://about.gitlab.com/pricing): Pricing for the different tiers.
+- [Pricing](https://about.gitlab.com/pricing/): Pricing for the different tiers.
 
 <!-- ## Troubleshooting
 

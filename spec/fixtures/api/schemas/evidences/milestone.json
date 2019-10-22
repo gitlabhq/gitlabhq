@@ -1,0 +1,27 @@
+{
+  "type": "object",
+  "required": [
+    "id",
+    "title",
+    "description",
+    "state",
+    "iid",
+    "created_at",
+    "due_date",
+    "issues"
+  ],
+  "properties": {
+    "id": { "type": "integer" },
+    "title": { "type": "string" },
+    "description": { "type": ["string", "null"] },
+    "state": { "type": "string" },
+    "iid": { "type": "integer" },
+    "created_at": { "type": "date" },
+    "due_date": { "type": ["date", "null"] },
+    "issues": {
+      "type": "array",
+      "items": { "$ref": "issue.json" }
+    }
+  },
+  "additionalProperties": false
+}

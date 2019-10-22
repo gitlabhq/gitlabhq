@@ -34,8 +34,11 @@ module Gitlab
       HMACToken.new(actor).token(DEFAULT_EXPIRE_TIME)
     end
 
+    # When the token is an lfs one and the actor
+    # is blocked or the password has been changed,
+    # the token is no longer valid
     def token_valid?(token_to_check)
-      HMACToken.new(actor).token_valid?(token_to_check)
+      HMACToken.new(actor).token_valid?(token_to_check) && valid_user?
     end
 
     def deploy_key_pushable?(project)
@@ -46,6 +49,12 @@ module Gitlab
       user? ? :lfs_token : :lfs_deploy_token
     end
 
+    def valid_user?
+      return true unless user?
+
+      !actor.blocked? && (!actor.allow_password_authentication? || !actor.password_expired?)
+    end
+
     def authentication_payload(repository_http_path)
       {
         username: actor_name,
@@ -53,6 +62,10 @@ module Gitlab
         repository_http_path: repository_http_path,
         expires_in: DEFAULT_EXPIRE_TIME
       }
+    end
+
+    def basic_encoding
+      ActionController::HttpAuthentication::Basic.encode_credentials(actor_name, token)
     end
 
     private # rubocop:disable Lint/UselessAccessModifier

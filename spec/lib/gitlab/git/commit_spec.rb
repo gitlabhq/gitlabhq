@@ -174,6 +174,7 @@ describe Gitlab::Git::Commit, :seed_helper do
 
         describe '#id' do
           subject { super().id }
+
           it { is_expected.to eq(SeedRepo::LastCommit::ID) }
         end
       end
@@ -183,6 +184,7 @@ describe Gitlab::Git::Commit, :seed_helper do
 
         describe '#id' do
           subject { super().id }
+
           it { is_expected.to eq(SeedRepo::Commit::ID) }
         end
       end
@@ -192,6 +194,7 @@ describe Gitlab::Git::Commit, :seed_helper do
 
         describe '#id' do
           subject { super().id }
+
           it { is_expected.to eq(SeedRepo::BigCommit::ID) }
         end
       end
@@ -544,11 +547,13 @@ describe Gitlab::Git::Commit, :seed_helper do
 
     describe '#id' do
       subject { super().id }
+
       it { is_expected.to eq(sample_commit_hash[:id])}
     end
 
     describe '#message' do
       subject { super().message }
+
       it { is_expected.to eq(sample_commit_hash[:message])}
     end
   end
@@ -558,16 +563,19 @@ describe Gitlab::Git::Commit, :seed_helper do
 
     describe '#additions' do
       subject { super().additions }
+
       it { is_expected.to eq(11) }
     end
 
     describe '#deletions' do
       subject { super().deletions }
+
       it { is_expected.to eq(6) }
     end
 
     describe '#total' do
       subject { super().total }
+
       it { is_expected.to eq(17) }
     end
   end
@@ -596,6 +604,7 @@ describe Gitlab::Git::Commit, :seed_helper do
 
     describe '#keys' do
       subject { super().keys.sort }
+
       it { is_expected.to match(sample_commit_hash.keys.sort) }
     end
   end

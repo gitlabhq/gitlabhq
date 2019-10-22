@@ -1,4 +1,4 @@
-/* eslint-disable consistent-return, func-names, array-callback-return, prefer-arrow-callback */
+/* eslint-disable consistent-return, func-names, array-callback-return */
 
 import $ from 'jquery';
 import _ from 'underscore';
@@ -45,7 +45,7 @@ export default {
     this.getSelectedIssues().map(function() {
       const labelsData = $(this).data('labels');
       if (labelsData) {
-        return labelsData.map(function(labelId) {
+        return labelsData.map(labelId => {
           if (labels.indexOf(labelId) === -1) {
             return labels.push(labelId);
           }

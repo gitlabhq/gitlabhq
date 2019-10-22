@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rake_helper'
 
 describe 'check.rake' do
@@ -17,6 +19,7 @@ describe 'check.rake' do
 
   describe 'gitlab:check rake task' do
     subject { run_rake_task('gitlab:check') }
+
     let(:name) { 'GitLab subtasks' }
 
     it_behaves_like 'system check rake task'
@@ -24,6 +27,7 @@ describe 'check.rake' do
 
   describe 'gitlab:gitlab_shell:check rake task' do
     subject { run_rake_task('gitlab:gitlab_shell:check') }
+
     let(:name) { 'GitLab Shell' }
 
     it_behaves_like 'system check rake task'
@@ -31,6 +35,7 @@ describe 'check.rake' do
 
   describe 'gitlab:gitaly:check rake task' do
     subject { run_rake_task('gitlab:gitaly:check') }
+
     let(:name) { 'Gitaly' }
 
     it_behaves_like 'system check rake task'
@@ -38,6 +43,7 @@ describe 'check.rake' do
 
   describe 'gitlab:sidekiq:check rake task' do
     subject { run_rake_task('gitlab:sidekiq:check') }
+
     let(:name) { 'Sidekiq' }
 
     it_behaves_like 'system check rake task'
@@ -45,6 +51,7 @@ describe 'check.rake' do
 
   describe 'gitlab:incoming_email:check rake task' do
     subject { run_rake_task('gitlab:incoming_email:check') }
+
     let(:name) { 'Incoming Email' }
 
     it_behaves_like 'system check rake task'
@@ -54,6 +61,7 @@ describe 'check.rake' do
     include LdapHelpers
 
     subject { run_rake_task('gitlab:ldap:check') }
+
     let(:name) { 'LDAP' }
 
     it_behaves_like 'system check rake task'

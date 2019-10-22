@@ -329,7 +329,7 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
 
 ### Pagination Link header
 
-[Link headers](http://www.w3.org/wiki/LinkHeader) are sent back with each
+[Link headers](https://www.w3.org/wiki/LinkHeader) are sent back with each
 response. They have `rel` set to prev/next/first/last and contain the relevant
 URL. Please use these links instead of generating your own URLs.
 
@@ -563,7 +563,7 @@ The correct encoding for the query parameter would be:
 ## Clients
 
 There are many unofficial GitLab API Clients for most of the popular
-programming languages. Visit the [GitLab website] for a complete list.
+programming languages. Visit the [GitLab website](https://about.gitlab.com/partners/#api-clients) for a complete list.
 
 ## Rate limits
 
@@ -572,7 +572,6 @@ For administrator documentation on rate limit settings, see
 specifically used by GitLab.com, see
 [GitLab.com-specific rate limits](../user/gitlab_com/index.md#gitlabcom-specific-rate-limits).
 
-[GitLab website]: https://about.gitlab.com/applications/#api-clients "Clients using the GitLab API"
 [lib-api-url]: https://gitlab.com/gitlab-org/gitlab-foss/tree/master/lib/api/api.rb
 [ce-3749]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/3749
 [ce-5951]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/5951

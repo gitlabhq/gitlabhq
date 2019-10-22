@@ -48,7 +48,8 @@ Example response:
           "color" : "#F0AD4E",
           "description" : null
         },
-        "position" : 1
+        "position" : 1,
+        "max_issue_count": 0
       },
       {
         "id" : 2,
@@ -57,7 +58,8 @@ Example response:
           "color" : "#FF0000",
           "description" : null
         },
-        "position" : 2
+        "position" : 2,
+        "max_issue_count": 0
       },
       {
         "id" : 3,
@@ -66,7 +68,8 @@ Example response:
           "color" : "#FF5F00",
           "description" : null
         },
-        "position" : 3
+        "position" : 3,
+        "max_issue_count": 0
       }
     ]
   }
@@ -117,7 +120,8 @@ Example response:
           "color" : "#F0AD4E",
           "description" : null
         },
-        "position" : 1
+        "position" : 1,
+        "max_issue_count": 0
       },
       {
         "id" : 2,
@@ -126,7 +130,8 @@ Example response:
           "color" : "#FF0000",
           "description" : null
         },
-        "position" : 2
+        "position" : 2,
+        "max_issue_count": 0
       },
       {
         "id" : 3,
@@ -135,7 +140,8 @@ Example response:
           "color" : "#FF5F00",
           "description" : null
         },
-        "position" : 3
+        "position" : 3,
+        "max_issue_count": 0
       }
     ]
   }
@@ -185,7 +191,8 @@ Example response:
           "color" : "#F0AD4E",
           "description" : null
         },
-        "position" : 1
+        "position" : 1,
+        "max_issue_count": 0
       },
       {
         "id" : 2,
@@ -194,7 +201,8 @@ Example response:
           "color" : "#FF0000",
           "description" : null
         },
-        "position" : 2
+        "position" : 2,
+        "max_issue_count": 0
       },
       {
         "id" : 3,
@@ -203,7 +211,8 @@ Example response:
           "color" : "#FF5F00",
           "description" : null
         },
-        "position" : 3
+        "position" : 3,
+        "max_issue_count": 0
       }
     ]
   }
@@ -336,7 +345,8 @@ Example response:
       "color" : "#F0AD4E",
       "description" : null
     },
-    "position" : 1
+    "position" : 1,
+    "max_issue_count": 0
   },
   {
     "id" : 2,
@@ -345,7 +355,8 @@ Example response:
       "color" : "#FF0000",
       "description" : null
     },
-    "position" : 2
+    "position" : 2,
+    "max_issue_count": 0
   },
   {
     "id" : 3,
@@ -354,7 +365,8 @@ Example response:
       "color" : "#FF5F00",
       "description" : null
     },
-    "position" : 3
+    "position" : 3,
+    "max_issue_count": 0
   }
 ]
 ```
@@ -387,7 +399,8 @@ Example response:
     "color" : "#F0AD4E",
     "description" : null
   },
-  "position" : 1
+  "position" : 1,
+  "max_issue_count": 0
 }
 ```
 
@@ -427,7 +440,8 @@ Example response:
     "color" : "#F0AD4E",
     "description" : null
   },
-  "position" : 1
+  "position" : 1,
+  "max_issue_count": 0
 }
 ```
 
@@ -460,7 +474,8 @@ Example response:
     "color" : "#F0AD4E",
     "description" : null
   },
-  "position" : 1
+  "position" : 1,
+  "max_issue_count": 0
 }
 ```
 

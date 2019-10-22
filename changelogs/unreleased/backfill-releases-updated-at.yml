@@ -1,0 +1,5 @@
+---
+title: Backfill releases table updated_at column and add not null constraints to created_at and updated_at
+merge_request: 17400
+author:
+type: fixed

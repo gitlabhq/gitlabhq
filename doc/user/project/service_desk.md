@@ -1,6 +1,6 @@
 # Service Desk **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/149) in [GitLab Premium 9.1](https://about.gitlab.com/2017/04/22/gitlab-9-1-released/#service-desk-eep).
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/149) in [GitLab Premium 9.1](https://about.gitlab.com/blog/2017/04/22/gitlab-9-1-released/#service-desk-eep).
 
 ## Overview
 
@@ -18,7 +18,7 @@ As Service Desk is built right into GitLab itself, the complexity and inefficien
 of multiple tools and external integrations are eliminated, significantly shortening
 the cycle time from feedback to software update.
 
-For an overview, check the video demonstration on [GitLab Service Desk](https://about.gitlab.com/2017/05/09/demo-service-desk/).
+For an overview, check the video demonstration on [GitLab Service Desk](https://about.gitlab.com/blog/2017/05/09/demo-service-desk/).
 
 ## Use cases
 
@@ -50,7 +50,7 @@ users will only see the thread through email.
 
 > **Note:**
 Service Desk is enabled on GitLab.com. If you're a
-[Silver subscriber](https://about.gitlab.com/gitlab-com/),
+[Silver subscriber](https://about.gitlab.com/pricing/#gitlab-com),
 you can skip the step 1 below; you only need to enable it per project.
 
 1. [Set up incoming email](../../administration/incoming_email.md#set-it-up) for the GitLab instance. This must

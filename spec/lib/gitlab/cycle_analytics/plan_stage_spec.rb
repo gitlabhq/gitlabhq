@@ -10,7 +10,8 @@ describe Gitlab::CycleAnalytics::PlanStage do
   let!(:issue_2) { create(:issue, project: project, created_at: 60.minutes.ago) }
   let!(:issue_3) { create(:issue, project: project, created_at: 30.minutes.ago) }
   let!(:issue_without_milestone) { create(:issue, project: project, created_at: 1.minute.ago) }
-  let(:stage) { described_class.new(options: { from: 2.days.ago, current_user: project.creator, project: project }) }
+  let(:stage_options) { { from: 2.days.ago, current_user: project.creator, project: project } }
+  let(:stage) { described_class.new(options: stage_options) }
 
   before do
     issue_1.metrics.update!(first_associated_with_milestone_at: 60.minutes.ago, first_mentioned_in_commit_at: 10.minutes.ago)
@@ -20,6 +21,13 @@ describe Gitlab::CycleAnalytics::PlanStage do
 
   it_behaves_like 'base stage'
 
+  context 'when using the new query backend' do
+    include_examples 'Gitlab::Analytics::CycleAnalytics::DataCollector backend examples' do
+      let(:expected_record_count) { 2 }
+      let(:expected_ordered_attribute_values) { [issue_1.title, issue_2.title] }
+    end
+  end
+
   describe '#project_median' do
     around do |example|
       Timecop.freeze { example.run }
@@ -28,6 +36,8 @@ describe Gitlab::CycleAnalytics::PlanStage do
     it 'counts median from issues with metrics' do
       expect(stage.project_median).to eq(ISSUES_MEDIAN)
     end
+
+    include_examples 'calculate #median with date range'
   end
 
   describe '#events' do

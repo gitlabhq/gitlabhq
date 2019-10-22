@@ -21,6 +21,7 @@ import Reference from './nodes/reference';
 
 import TableOfContents from './nodes/table_of_contents';
 import Video from './nodes/video';
+import Audio from './nodes/audio';
 
 import BulletList from './nodes/bullet_list';
 import OrderedList from './nodes/ordered_list';
@@ -78,6 +79,7 @@ export default [
 
   new TableOfContents(),
   new Video(),
+  new Audio(),
 
   new BulletList(),
   new OrderedList(),

@@ -5,8 +5,8 @@ across GitLab's frontend team.
 
 ## Overview
 
-GitLab is built on top of [Ruby on Rails][rails] using [Haml][haml] and also a JavaScript based Frontend with [Vue.js][vue].
-Be wary of [the limitations that come with using Hamlit][hamlit-limits]. We also use [SCSS][scss] and plain JavaScript with
+GitLab is built on top of [Ruby on Rails](https://rubyonrails.org) using [Haml][haml] and also a JavaScript based Frontend with [Vue.js](https://vuejs.org).
+Be wary of [the limitations that come with using Hamlit][hamlit-limits]. We also use [SCSS](https://sass-lang.com) and plain JavaScript with
 modern ECMAScript standards supported through [Babel][babel] and ES module support through [webpack][webpack].
 
 Working with our frontend assets requires Node (v8.10.0 or greater) and Yarn
@@ -41,6 +41,11 @@ or make changes to our frontend development guidelines.
 How we write frontend tests, run the GitLab test suite, and debug test related
 issues.
 
+## Pajamas Design System
+
+Reusable components with technical and usage guidelines can be found in our
+[Pajamas Design System](https://design.gitlab.com/).
+
 ## [Design Patterns](design_patterns.md)
 
 Common JavaScript design patterns in GitLab's codebase.
@@ -65,10 +70,6 @@ How to use GraphQL
 
 How we use SVG for our Icons and Illustrations.
 
-## [Components](components.md)
-
-How we use UI components.
-
 ## Frontend FAQ
 
 Read the [frontend's FAQ](frontend_faq.md) for common small pieces of helpful information.
@@ -83,7 +84,7 @@ changes.
 
 ### [SCSS Style Guide](style_guide_scss.md)
 
-Our SCSS conventions which are enforced through [scss-lint][scss-lint].
+Our SCSS conventions which are enforced through [scss-lint](https://github.com/sds/scss-lint).
 
 ## [Performance](performance.md)
 
@@ -102,17 +103,13 @@ Our accessibility standards and resources.
 Frontend internationalization support is described in [this document](../i18n/).
 The [externalization part of the guide](../i18n/externalization.md) explains the helpers/methods available.
 
-[rails]: http://rubyonrails.org/
 [haml]: http://haml.info/
 [hamlit]: https://github.com/k0kubun/hamlit
 [hamlit-limits]: https://github.com/k0kubun/hamlit/blob/master/REFERENCE.md#limitations
-[scss]: http://sass-lang.com/
 [babel]: https://babeljs.io/
 [webpack]: https://webpack.js.org/
 [jquery]: https://jquery.com/
-[vue]: http://vuejs.org/
 [axios]: https://github.com/axios/axios
 [airbnb-js-style-guide]: https://github.com/airbnb/javascript
-[scss-lint]: https://github.com/brigade/scss-lint
 [install]: ../../install/installation.md#4-node
 [requirements]: ../../install/requirements.md#supported-web-browsers

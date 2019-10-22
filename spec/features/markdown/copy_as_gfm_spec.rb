@@ -179,6 +179,12 @@ describe 'Copy as GFM', :js do
       )
 
       verify(
+        'AudioLinkFilter',
+
+        '![Audio](https://example.com/audio.wav)'
+      )
+
+      verify(
         'MathFilter: math as converted from GFM to HTML',
 
         '$`c = \pm\sqrt{a^2 + b^2}`$',

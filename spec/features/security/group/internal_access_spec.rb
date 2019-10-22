@@ -16,6 +16,7 @@ describe 'Internal Group access' do
   describe "Group should be internal" do
     describe '#internal?' do
       subject { group.internal? }
+
       it { is_expected.to be_truthy }
     end
   end

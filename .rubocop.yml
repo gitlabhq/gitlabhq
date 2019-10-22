@@ -51,7 +51,6 @@ Style/FrozenStringLiteralComment:
     - 'danger/**/*'
     - 'db/**/*'
     - 'ee/db/**/*'
-    - 'ee/spec/**/*'
     - 'ee/lib/tasks/**/*'
     - 'lib/tasks/**/*'
     - 'qa/**/*'
@@ -179,6 +178,11 @@ Gitlab/ModuleWithInstanceVariables:
     - spec/support/**/*.rb
     - features/steps/**/*.rb
 
+Gitlab/ConstGetInheritFalse:
+  Enabled: true
+  Exclude:
+    - 'qa/bin/*'
+
 Gitlab/HTTParty:
   Enabled: true
   Exclude:
@@ -213,6 +217,12 @@ Performance/RegexpMatch:
   Enabled: false
 
 ActiveRecordAssociationReload:
+  Enabled: true
+  Exclude:
+    - 'spec/**/*'
+    - 'ee/spec/**/*'
+
+Naming/PredicateName:
   Enabled: true
   Exclude:
     - 'spec/**/*'

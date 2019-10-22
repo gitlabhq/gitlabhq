@@ -40,12 +40,21 @@
             = _('If any job surpasses this timeout threshold, it will be marked as failed. Human readable time input language is accepted like "1 hour". Values without specification represent seconds.')
             = link_to icon('question-circle'), help_page_path('user/project/pipelines/settings', anchor: 'timeout'), target: '_blank'
 
+        - if can?(current_user, :update_max_artifacts_size, @project)
+          %hr
+          .form-group
+            = f.label :max_artifacts_size, _('Maximum artifacts size (MB)'), class: 'label-bold'
+            = f.number_field :max_artifacts_size, class: 'form-control'
+            %p.form-text.text-muted
+              = _("Set the maximum file size for each job's artifacts")
+              = link_to icon('question-circle'), help_page_path('user/admin_area/settings/continuous_integration', anchor: 'maximum-artifacts-size-core-only'), target: '_blank'
+
         %hr
         .form-group
-          = f.label :ci_config_path, _('Custom CI config path'), class: 'label-bold'
+          = f.label :ci_config_path, _('Custom CI configuration path'), class: 'label-bold'
           = f.text_field :ci_config_path, class: 'form-control', placeholder: '.gitlab-ci.yml'
           %p.form-text.text-muted
-            = _("The path to CI config file. Defaults to <code>.gitlab-ci.yml</code>").html_safe
+            = _("The path to the CI configuration file. Defaults to <code>.gitlab-ci.yml</code>").html_safe
             = link_to icon('question-circle'), help_page_path('user/project/pipelines/settings', anchor: 'custom-ci-config-path'), target: '_blank'
 
         %hr

@@ -7,7 +7,7 @@ describe Projects::ClustersController do
   include GoogleApi::CloudPlatformHelpers
   include KubernetesHelpers
 
-  set(:project) { create(:project) }
+  let_it_be(:project) { create(:project) }
 
   let(:user) { create(:user) }
 
@@ -536,7 +536,7 @@ describe Projects::ClustersController do
     end
 
     describe 'security' do
-      set(:cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
+      let_it_be(:cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
 
       it { expect { go }.to be_allowed_for(:admin) }
       it { expect { go }.to be_allowed_for(:owner).of(project) }
@@ -605,7 +605,7 @@ describe Projects::ClustersController do
     end
 
     describe 'security' do
-      set(:cluster) { create(:cluster, :provided_by_gcp, :production_environment, projects: [project]) }
+      let_it_be(:cluster) { create(:cluster, :provided_by_gcp, :production_environment, projects: [project]) }
 
       it { expect { go }.to be_allowed_for(:admin) }
       it { expect { go }.to be_allowed_for(:owner).of(project) }

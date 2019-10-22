@@ -5,6 +5,12 @@
 # Controller concern to handle PAT, RSS, and static objects token authentication methods
 #
 module SessionlessAuthentication
+  extend ActiveSupport::Concern
+
+  included do
+    before_action :enable_admin_mode!, if: :sessionless_user?
+  end
+
   # This filter handles personal access tokens, atom requests with rss tokens, and static object tokens
   def authenticate_sessionless_user!(request_format)
     user = Gitlab::Auth::RequestAuthenticator.new(request).find_sessionless_user(request_format)
@@ -24,5 +30,9 @@ module SessionlessAuthentication
       # sign in token, you can simply remove store: false.
       sign_in(user, store: false, message: :sessionless_sign_in)
     end
+  end
+
+  def enable_admin_mode!
+    current_user_mode.enable_admin_mode!(skip_password_validation: true) if Feature.enabled?(:user_mode_in_session)
   end
 end

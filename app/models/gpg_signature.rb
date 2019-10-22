@@ -23,6 +23,8 @@ class GpgSignature < ApplicationRecord
   validates :project_id, presence: true
   validates :gpg_key_primary_keyid, presence: true
 
+  scope :by_commit_sha, ->(shas) { where(commit_sha: shas) }
+
   def self.with_key_and_subkeys(gpg_key)
     subkey_ids = gpg_key.subkeys.pluck(:id)
 

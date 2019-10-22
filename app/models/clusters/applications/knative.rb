@@ -3,7 +3,7 @@
 module Clusters
   module Applications
     class Knative < ApplicationRecord
-      VERSION = '0.6.0'
+      VERSION = '0.7.0'
       REPOSITORY = 'https://storage.googleapis.com/triggermesh-charts'
       METRICS_CONFIG = 'https://storage.googleapis.com/triggermesh-charts/istio-metrics.yaml'
       FETCH_IP_ADDRESS_DELAY = 30.seconds
@@ -21,7 +21,7 @@ module Clusters
         return unless not_installable?
         return unless verify_cluster?
 
-        self.status = 'installable'
+        self.status = status_states[:installable]
       end
 
       state_machine :status do
@@ -45,6 +45,10 @@ module Clusters
 
       def values
         { "domain" => hostname }.to_yaml
+      end
+
+      def allowed_to_uninstall?
+        !pre_installed?
       end
 
       def install_command

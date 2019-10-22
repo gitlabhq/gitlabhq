@@ -97,6 +97,7 @@ describe('import_projects store actions', () => {
 
   describe('fetchRepos', () => {
     let mock;
+    const payload = { imported_projects: [{}], provider_repos: [{}], namespaces: [{}] };
 
     beforeEach(() => {
       localState.reposPath = `${TEST_HOST}/endpoint.json`;
@@ -105,8 +106,7 @@ describe('import_projects store actions', () => {
 
     afterEach(() => mock.restore());
 
-    it('dispatches requestRepos and receiveReposSuccess actions on a successful request', done => {
-      const payload = { imported_projects: [{}], provider_repos: [{}], namespaces: [{}] };
+    it('dispatches stopJobsPolling, requestRepos and receiveReposSuccess actions on a successful request', done => {
       mock.onGet(`${TEST_HOST}/endpoint.json`).reply(200, payload);
 
       testAction(
@@ -115,6 +115,7 @@ describe('import_projects store actions', () => {
         localState,
         [],
         [
+          { type: 'stopJobsPolling' },
           { type: 'requestRepos' },
           {
             type: 'receiveReposSuccess',
@@ -128,7 +129,7 @@ describe('import_projects store actions', () => {
       );
     });
 
-    it('dispatches requestRepos and receiveReposSuccess actions on an unsuccessful request', done => {
+    it('dispatches stopJobsPolling, requestRepos and receiveReposError actions on an unsuccessful request', done => {
       mock.onGet(`${TEST_HOST}/endpoint.json`).reply(500);
 
       testAction(
@@ -136,9 +137,38 @@ describe('import_projects store actions', () => {
         null,
         localState,
         [],
-        [{ type: 'requestRepos' }, { type: 'receiveReposError' }],
+        [{ type: 'stopJobsPolling' }, { type: 'requestRepos' }, { type: 'receiveReposError' }],
         done,
       );
+    });
+
+    describe('when filtered', () => {
+      beforeEach(() => {
+        localState.filter = 'filter';
+      });
+
+      it('fetches repos with filter applied', done => {
+        mock.onGet(`${TEST_HOST}/endpoint.json?filter=filter`).reply(200, payload);
+
+        testAction(
+          fetchRepos,
+          null,
+          localState,
+          [],
+          [
+            { type: 'stopJobsPolling' },
+            { type: 'requestRepos' },
+            {
+              type: 'receiveReposSuccess',
+              payload: convertObjectPropsToCamelCase(payload, { deep: true }),
+            },
+            {
+              type: 'fetchJobs',
+            },
+          ],
+          done,
+        );
+      });
     });
   });
 
@@ -249,6 +279,7 @@ describe('import_projects store actions', () => {
 
   describe('fetchJobs', () => {
     let mock;
+    const updatedProjects = [{ name: 'imported/project' }, { name: 'provider/repo' }];
 
     beforeEach(() => {
       localState.jobsPath = `${TEST_HOST}/endpoint.json`;
@@ -263,7 +294,6 @@ describe('import_projects store actions', () => {
     afterEach(() => mock.restore());
 
     it('dispatches requestJobs and receiveJobsSuccess actions on a successful request', done => {
-      const updatedProjects = [{ name: 'imported/project' }, { name: 'provider/repo' }];
       mock.onGet(`${TEST_HOST}/endpoint.json`).reply(200, updatedProjects);
 
       testAction(
@@ -279,6 +309,30 @@ describe('import_projects store actions', () => {
         ],
         done,
       );
+    });
+
+    describe('when filtered', () => {
+      beforeEach(() => {
+        localState.filter = 'filter';
+      });
+
+      it('fetches realtime changes with filter applied', done => {
+        mock.onGet(`${TEST_HOST}/endpoint.json?filter=filter`).reply(200, updatedProjects);
+
+        testAction(
+          fetchJobs,
+          null,
+          localState,
+          [],
+          [
+            {
+              type: 'receiveJobsSuccess',
+              payload: convertObjectPropsToCamelCase(updatedProjects, { deep: true }),
+            },
+          ],
+          done,
+        );
+      });
     });
   });
 });

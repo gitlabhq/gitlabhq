@@ -8,7 +8,6 @@ module Projects
 
         @old_storage_version = project.storage_version
         project.storage_version = nil
-        project.ensure_storage_path_exists
 
         @new_disk_path = project.disk_path
 

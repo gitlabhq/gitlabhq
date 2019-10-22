@@ -21,8 +21,11 @@ describe Gitlab::Import::MergeRequestCreator do
 
         subject.execute(attributes)
 
-        expect(merge_request.reload.merge_request_diffs.count).to eq(1)
-        expect(merge_request.reload.merge_request_diffs.first.commits.count).to eq(commits_count)
+        merge_request.reload
+
+        expect(merge_request.merge_request_diffs.count).to eq(1)
+        expect(merge_request.merge_request_diffs.first.commits.count).to eq(commits_count)
+        expect(merge_request.latest_merge_request_diff_id).to eq(merge_request.merge_request_diffs.first.id)
       end
     end
 

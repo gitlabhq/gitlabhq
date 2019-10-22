@@ -3,14 +3,14 @@
 FactoryBot.define do
   factory :ci_build_trace_chunk, class: Ci::BuildTraceChunk do
     build factory: :ci_build
-    chunk_index 0
-    data_store :redis
+    chunk_index { 0 }
+    data_store { :redis }
 
     trait :redis_with_data do
-      data_store :redis
+      data_store { :redis }
 
       transient do
-        initial_data 'test data'
+        initial_data { 'test data' }
       end
 
       after(:create) do |build_trace_chunk, evaluator|
@@ -19,14 +19,14 @@ FactoryBot.define do
     end
 
     trait :redis_without_data do
-      data_store :redis
+      data_store { :redis }
     end
 
     trait :database_with_data do
-      data_store :database
+      data_store { :database}
 
       transient do
-        initial_data 'test data'
+        initial_data { 'test data' }
       end
 
       after(:build) do |build_trace_chunk, evaluator|
@@ -35,14 +35,14 @@ FactoryBot.define do
     end
 
     trait :database_without_data do
-      data_store :database
+      data_store { :database }
     end
 
     trait :fog_with_data do
-      data_store :fog
+      data_store { :fog }
 
       transient do
-        initial_data 'test data'
+        initial_data { 'test data' }
       end
 
       after(:create) do |build_trace_chunk, evaluator|
@@ -51,7 +51,7 @@ FactoryBot.define do
     end
 
     trait :fog_without_data do
-      data_store :fog
+      data_store { :fog }
     end
   end
 end

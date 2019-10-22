@@ -49,7 +49,7 @@ module API
     resource :todos do
       helpers do
         def issuable_and_awardable?(type)
-          obj_type = Object.const_get(type)
+          obj_type = Object.const_get(type, false)
 
           (obj_type < Issuable) && (obj_type < Awardable)
         rescue NameError

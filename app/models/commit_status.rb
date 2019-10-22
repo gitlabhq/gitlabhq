@@ -48,6 +48,10 @@ class CommitStatus < ApplicationRecord
   scope :processables, -> { where(type: %w[Ci::Build Ci::Bridge]) }
   scope :for_ids, -> (ids) { where(id: ids) }
 
+  scope :with_preloads, -> do
+    preload(:project, :user)
+  end
+
   scope :with_needs, -> (names = nil) do
     needs = Ci::BuildNeed.scoped_build.select(1)
     needs = needs.where(name: names) if names
@@ -161,11 +165,11 @@ class CommitStatus < ApplicationRecord
   end
 
   def self.status_for_prior_stages(index)
-    before_stage(index).latest.status || 'success'
+    before_stage(index).latest.slow_composite_status || 'success'
   end
 
   def self.status_for_names(names)
-    where(name: names).latest.status || 'success'
+    where(name: names).latest.slow_composite_status || 'success'
   end
 
   def locking_enabled?

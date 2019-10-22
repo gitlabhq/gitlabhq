@@ -53,7 +53,7 @@ Otherwise, you must configure your `.gitlab-ci.yml` according to the
 
 ### If your project is hosted on GitHub (`https://github.com` / GitHub Enterprise)
 
-Since [GitLab 10.6 comes with GitHub integration](https://about.gitlab.com/features/github/),
+Since [GitLab 10.6 comes with GitHub integration](https://about.gitlab.com/solutions/github/),
 GitLab users can now create a CI/CD project in GitLab connected to an external
 GitHub.com or GitHub Enterprise repository. This will automatically prompt
 GitLab CI/CD to run whenever code is pushed to GitHub and post CI/CD results
@@ -81,7 +81,7 @@ back to both GitLab and GitHub when completed.
 
    Optional step: If you set this up on GitLab.com, make sure the project is
    public (in the project settings) if your GitHub project is public, since
-   the security feature is available only for [GitLab Ultimate](https://about.gitlab.com/pricing).
+   the security feature is available only for [GitLab Ultimate](https://about.gitlab.com/pricing/).
 
 1. To set up the dependency scanning job, corresponding to what Gemnasium was
    doing, you must create a `.gitlab-ci.yml` file, or update it according to

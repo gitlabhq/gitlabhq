@@ -68,7 +68,7 @@ module Gitlab
         }
 
         relation.find_each(find_params) do |upload|
-          clean(upload.build_uploader, dry_run: dry_run)
+          clean(upload.retrieve_uploader, dry_run: dry_run)
           sleep sleep_time if sleep_time
         rescue => err
           logger.error "failed to sanitize #{upload_ref(upload)}: #{err.message}"

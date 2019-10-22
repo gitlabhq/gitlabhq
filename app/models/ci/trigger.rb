@@ -45,3 +45,5 @@ module Ci
     end
   end
 end
+
+Ci::Trigger.prepend_if_ee('EE::Ci::Trigger')

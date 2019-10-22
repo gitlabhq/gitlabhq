@@ -38,7 +38,7 @@ Explaining [every detail of GitLab CI/CD](../../../ci/yaml/README.md)
 and GitLab Runner is out of the scope of this guide, but we'll
 need to understand just a few things to be able to write our own
 `.gitlab-ci.yml` or tweak an existing one. It's an
-[Yaml](http://docs.ansible.com/ansible/YAMLSyntax.html) file,
+[Yaml](https://docs.ansible.com/ansible/latest/reference_appendices/YAMLSyntax.html) file,
 with its own syntax. You can always check your CI syntax with
 the [GitLab CI Lint Tool](https://gitlab.com/ci/lint).
 
@@ -127,7 +127,7 @@ pages:
 The script above would be enough to build your Jekyll
 site with GitLab Pages. But, from Jekyll 3.4.0 on, its default
 template originated by `jekyll new project` requires
-[Bundler](http://bundler.io/) to install Jekyll dependencies
+[Bundler](https://bundler.io) to install Jekyll dependencies
 and the default theme. To adjust our script to meet these new
 requirements, we only need to install and build Jekyll with Bundler:
 
@@ -385,10 +385,10 @@ to understand how to go even further on your scripts.
 
 - On this blog post, understand the concept of
   [using GitLab CI `environments` to deploy your
-  web app to staging and production](https://about.gitlab.com/2016/08/26/ci-deployment-and-environments/).
+  web app to staging and production](https://about.gitlab.com/blog/2016/08/26/ci-deployment-and-environments/).
 - On this post, learn [how to run jobs sequentially,
-  in parallel, or build a custom pipeline](https://about.gitlab.com/2016/07/29/the-basics-of-gitlab-ci/)
+  in parallel, or build a custom pipeline](https://about.gitlab.com/blog/2016/07/29/the-basics-of-gitlab-ci/)
 - On this blog post, we go through the process of
-  [pulling specific directories from different projects](https://about.gitlab.com/2016/12/07/building-a-new-gitlab-docs-site-with-nanoc-gitlab-ci-and-gitlab-pages/)
-  to deploy this website you're looking at, docs.gitlab.com.
-- On this blog post, we teach you [how to use GitLab Pages to produce a code coverage report](https://about.gitlab.com/2016/11/03/publish-code-coverage-report-with-gitlab-pages/).
+  [pulling specific directories from different projects](https://about.gitlab.com/blog/2016/12/07/building-a-new-gitlab-docs-site-with-nanoc-gitlab-ci-and-gitlab-pages/)
+  to deploy this website you're looking at, <https://docs.gitlab.com>.
+- On this blog post, we teach you [how to use GitLab Pages to produce a code coverage report](https://about.gitlab.com/blog/2016/11/03/publish-code-coverage-report-with-gitlab-pages/).

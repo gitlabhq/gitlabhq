@@ -10,6 +10,7 @@ describe RuboCop::Cop::Scalability::FileUploads do
   include ExpectOffense
 
   subject(:cop) { described_class.new }
+
   let(:message) { 'Do not upload files without workhorse acceleration. Please refer to https://docs.gitlab.com/ee/development/uploads.html' }
 
   context 'with required params' do

@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`IDE pipelines list when loaded renders empty state when no latestPipeline 1`] = `
+<div
+  class="ide-pipeline"
+>
+  <!---->
+   
+  <emptystate-stub
+    cansetci="true"
+    emptystatesvgpath="http://test.host"
+    helppagepath="http://test.host"
+  />
+</div>
+`;

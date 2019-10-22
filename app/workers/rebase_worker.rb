@@ -5,6 +5,8 @@
 class RebaseWorker
   include ApplicationWorker
 
+  feature_category :source_code_management
+
   def perform(merge_request_id, current_user_id)
     current_user = User.find(current_user_id)
     merge_request = MergeRequest.find(merge_request_id)

@@ -19,12 +19,21 @@ describe Clusters::Platforms::Kubernetes do
   it_behaves_like 'having unique enum values'
 
   describe 'before_validation' do
+    let(:kubernetes) { create(:cluster_platform_kubernetes, :configured, namespace: namespace) }
+
     context 'when namespace includes upper case' do
-      let(:kubernetes) { create(:cluster_platform_kubernetes, :configured, namespace: namespace) }
       let(:namespace) { 'ABC' }
 
       it 'converts to lower case' do
         expect(kubernetes.namespace).to eq('abc')
+      end
+    end
+
+    context 'when namespace is blank' do
+      let(:namespace) { '' }
+
+      it 'nullifies the namespace' do
+        expect(kubernetes.namespace).to be_nil
       end
     end
   end
@@ -35,8 +44,8 @@ describe Clusters::Platforms::Kubernetes do
     context 'when validates namespace' do
       let(:kubernetes) { build(:cluster_platform_kubernetes, :configured, namespace: namespace) }
 
-      context 'when namespace is blank' do
-        let(:namespace) { '' }
+      context 'when namespace is nil' do
+        let(:namespace) { nil }
 
         it { is_expected.to be_truthy }
       end
@@ -218,7 +227,7 @@ describe Clusters::Platforms::Kubernetes do
 
     before do
       allow(Clusters::KubernetesNamespaceFinder).to receive(:new)
-        .with(cluster, project: project, environment_slug: environment_slug)
+        .with(cluster, project: project, environment_name: environment_name)
         .and_return(double(execute: persisted_namespace))
     end
 
@@ -230,6 +239,23 @@ describe Clusters::Platforms::Kubernetes do
 
       it { is_expected.to include(key: 'KUBE_CA_PEM', value: ca_pem, public: true) }
       it { is_expected.to include(key: 'KUBE_CA_PEM_FILE', value: ca_pem, public: true, file: true) }
+    end
+
+    context 'cluster is managed by project' do
+      before do
+        allow(Gitlab::Kubernetes::DefaultNamespace).to receive(:new)
+          .with(cluster, project: project).and_return(double(from_environment_name: namespace))
+
+        allow(platform).to receive(:kubeconfig).with(namespace).and_return('kubeconfig')
+      end
+
+      let(:cluster) { create(:cluster, :group, platform_kubernetes: platform, management_project: project) }
+      let(:namespace) { 'kubernetes-namespace' }
+      let(:kubeconfig) { 'kubeconfig' }
+
+      it { is_expected.to include(key: 'KUBE_TOKEN', value: platform.token, public: false, masked: true) }
+      it { is_expected.to include(key: 'KUBE_NAMESPACE', value: namespace) }
+      it { is_expected.to include(key: 'KUBECONFIG', value: kubeconfig, public: false, file: true) }
     end
 
     context 'kubernetes namespace exists' do

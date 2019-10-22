@@ -23,6 +23,7 @@ class SystemNoteMetadata < ApplicationRecord
   validates :action, inclusion: { in: :icon_types }, allow_nil: true
 
   belongs_to :note
+  belongs_to :description_version
 
   def icon_types
     ICON_TYPES

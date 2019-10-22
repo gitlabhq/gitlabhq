@@ -4,6 +4,7 @@ module Gitlab
   module Ci
     class Trace
       include ::Gitlab::ExclusiveLeaseHelpers
+      include Checksummable
 
       LOCK_TTL = 10.minutes
       LOCK_RETRIES = 2
@@ -193,7 +194,7 @@ module Gitlab
             project: job.project,
             file_type: :trace,
             file: stream,
-            file_sha256: Digest::SHA256.file(path).hexdigest)
+            file_sha256: self.class.hexdigest(path))
         end
       end
 

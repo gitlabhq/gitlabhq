@@ -19,15 +19,13 @@ class NamedEcdsaKeyValidator < ActiveModel::EachValidator
 
   private
 
-  UNNAMED_CURVE = "UNDEF"
-
   def explicit_ec?(value)
     return false unless value
 
     pkey = OpenSSL::PKey.read(value)
     return false unless pkey.is_a?(OpenSSL::PKey::EC)
 
-    pkey.group.curve_name == UNNAMED_CURVE
+    pkey.group.asn1_flag != OpenSSL::PKey::EC::NAMED_CURVE
   rescue OpenSSL::PKey::PKeyError
     false
   end

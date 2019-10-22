@@ -21,14 +21,16 @@ module QA
           @commit_message = 'QA Test - Commit message'
         end
 
-        def files=(files)
-          if !files.is_a?(Array) ||
-              files.empty? ||
-              files.any? { |file| !file.has_key?(:file_path) || !file.has_key?(:content) }
-            raise ArgumentError, "Please provide an array of hashes e.g.: [{file_path: 'file1', content: 'foo'}]"
-          end
+        def add_files(files)
+          validate_files!(files)
 
-          @files = files
+          @add_files = files
+        end
+
+        def update_files(files)
+          validate_files!(files)
+
+          @update_files = files
         end
 
         def resource_web_url(resource)
@@ -56,8 +58,19 @@ module QA
         end
 
         def actions
-          @files.map do |file|
-            file.merge({ action: "create" })
+          pending_actions = []
+          pending_actions << @add_files.map { |file| file.merge({ action: "create" }) } if @add_files
+          pending_actions << @update_files.map { |file| file.merge({ action: "update" }) } if @update_files
+          pending_actions.flatten
+        end
+
+        private
+
+        def validate_files!(files)
+          if !files.is_a?(Array) ||
+              files.empty? ||
+              files.any? { |file| !file.has_key?(:file_path) || !file.has_key?(:content) }
+            raise ArgumentError, "Please provide an array of hashes e.g.: [{file_path: 'file1', content: 'foo'}]"
           end
         end
       end

@@ -1,0 +1,5 @@
+---
+title: Add ability to query todos using GraphQL
+merge_request: 18218
+author:
+type: added

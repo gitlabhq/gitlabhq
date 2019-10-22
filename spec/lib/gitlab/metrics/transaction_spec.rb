@@ -27,6 +27,14 @@ describe Gitlab::Metrics::Transaction do
     end
   end
 
+  describe '#thread_cpu_duration' do
+    it 'returns the duration of a transaction in seconds' do
+      transaction.run { }
+
+      expect(transaction.thread_cpu_duration).to be > 0
+    end
+  end
+
   describe '#allocated_memory' do
     it 'returns the allocated memory in bytes' do
       transaction.run { 'a' * 32 }

@@ -2,12 +2,12 @@
 
 FactoryBot.define do
   factory :import_state, class: ProjectImportState do
-    status :none
+    status { :none }
     association :project, factory: :project
 
     transient do
       import_url { generate(:url) }
-      import_type nil
+      import_type { nil }
     end
 
     trait :repository do
@@ -15,23 +15,23 @@ FactoryBot.define do
     end
 
     trait :none do
-      status :none
+      status { :none }
     end
 
     trait :scheduled do
-      status :scheduled
+      status { :scheduled }
     end
 
     trait :started do
-      status :started
+      status { :started }
     end
 
     trait :finished do
-      status :finished
+      status { :finished }
     end
 
     trait :failed do
-      status :failed
+      status { :failed }
     end
 
     after(:create) do |import_state, evaluator|

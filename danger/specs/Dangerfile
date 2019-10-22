@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-NO_SPECS_LABELS = %w[backstage Documentation QA].freeze
+NO_SPECS_LABELS = %w[backstage documentation QA].freeze
 NO_NEW_SPEC_MESSAGE = <<~MSG.freeze
 You've made some app changes, but didn't add any tests.
 That's OK as long as you're refactoring existing code,

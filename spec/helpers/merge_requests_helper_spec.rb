@@ -39,6 +39,7 @@ describe MergeRequestsHelper do
       let(:forked_project) { fork_project(project) }
       let(:merge_request) { create(:merge_request, source_project: forked_project, target_project: project) }
       subject { format_mr_branch_names(merge_request) }
+
       let(:source_title) { "#{forked_project.full_path}:#{merge_request.source_branch}" }
       let(:target_title) { "#{project.full_path}:#{merge_request.target_branch}" }
 

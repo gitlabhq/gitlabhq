@@ -142,10 +142,10 @@
     - if milestone_ref.present?
       .block.reference
         .sidebar-collapsed-icon.dont-change-state
-          = clipboard_button(text: milestone_ref, title: "Copy reference to clipboard", placement: "left", boundary: 'viewport')
+          = clipboard_button(text: milestone_ref, title: _("Copy reference"), placement: "left", boundary: 'viewport')
         .cross-project-reference.hide-collapsed
           %span
             Reference:
             %cite{ title: milestone_ref }
               = milestone_ref
-          = clipboard_button(text: milestone_ref, title: "Copy reference to clipboard", placement: "left", boundary: 'viewport')
+          = clipboard_button(text: milestone_ref, title: _("Copy reference"), placement: "left", boundary: 'viewport')

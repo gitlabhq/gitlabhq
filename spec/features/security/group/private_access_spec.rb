@@ -16,6 +16,7 @@ describe 'Private Group access' do
   describe "Group should be private" do
     describe '#private?' do
       subject { group.private? }
+
       it { is_expected.to be_truthy }
     end
   end

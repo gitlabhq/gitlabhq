@@ -38,8 +38,8 @@ InfluxDB needs to be restarted.
 ### Storage Engine
 
 InfluxDB comes with different storage engines and as of InfluxDB 0.9.5 a new
-storage engine is available, called [TSM Tree]. All users **must** use the new
-`tsm1` storage engine as this [will be the default engine][tsm1-commit] in
+storage engine is available, called [TSM Tree](https://www.influxdata.com/blog/new-storage-engine-time-structured-merge-tree/).
+All users **must** use the new `tsm1` storage engine as this [will be the default engine][tsm1-commit] in
 upcoming InfluxDB releases.
 
 Make sure you have the following in your configuration file:
@@ -95,7 +95,7 @@ UDP can be done using the following settings:
 This does the following:
 
 1. Enable UDP and bind it to port 8089 for all addresses.
-1. Store any data received in the "gitlab" database.
+1. Store any data received in the `gitlab` database.
 1. Define a batch of points to be 1000 points in size and allow a maximum of
    5 batches _or_ flush them automatically after 1 second.
 1. Define a UDP read buffer size of 200 MB.
@@ -188,6 +188,5 @@ Read more on:
 [influxdb cli]: https://docs.influxdata.com/influxdb/v0.9/tools/shell/
 [udp]: https://docs.influxdata.com/influxdb/v0.9/write_protocols/udp/
 [influxdb]: https://www.influxdata.com/products/influxdb-overview/
-[tsm tree]: https://influxdata.com/blog/new-storage-engine-time-structured-merge-tree/
 [tsm1-commit]: https://github.com/influxdata/influxdb/commit/15d723dc77651bac83e09e2b1c94be480966cb0d
 [influx-admin]: https://docs.influxdata.com/influxdb/v0.9/administration/authentication_and_authorization/#create-a-new-admin-user

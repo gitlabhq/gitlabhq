@@ -1,7 +1,7 @@
 <script>
 import { __ } from '~/locale';
 import { mapGetters, mapActions } from 'vuex';
-import { getLocationHash } from '../../lib/utils/url_utility';
+import { getLocationHash, doesHashExistInUrl } from '../../lib/utils/url_utility';
 import Flash from '../../flash';
 import * as constants from '../constants';
 import eventHub from '../event_hub';
@@ -69,6 +69,7 @@ export default {
       'commentsDisabled',
       'getNoteableData',
       'userCanReply',
+      'discussionTabCounter',
     ]),
     noteableType() {
       return this.noteableData.noteableType;
@@ -95,13 +96,13 @@ export default {
       }
     },
     allDiscussions() {
-      if (this.discussonsCount) {
-        this.discussonsCount.textContent = this.allDiscussions.length;
+      if (this.discussionsCount && !this.isLoading) {
+        this.discussionsCount.textContent = this.discussionTabCounter;
       }
     },
   },
   created() {
-    this.discussonsCount = document.querySelector('.js-discussions-count');
+    this.discussionsCount = document.querySelector('.js-discussions-count');
 
     this.setNotesData(this.notesData);
     this.setNoteableData(this.noteableData);
@@ -155,19 +156,17 @@ export default {
 
       this.isFetching = true;
 
-      return this.fetchDiscussions({ path: this.getNotesDataByProp('discussionsPath') })
-        .then(() => {
-          this.initPolling();
-        })
+      return this.fetchDiscussions(this.getFetchDiscussionsConfig())
+        .then(this.initPolling)
         .then(() => {
           this.setLoadingState(false);
           this.setNotesFetchedState(true);
           eventHub.$emit('fetchedNotesData');
           this.isFetching = false;
         })
-        .then(() => this.$nextTick())
-        .then(() => this.startTaskList())
-        .then(() => this.checkLocationHash())
+        .then(this.$nextTick)
+        .then(this.startTaskList)
+        .then(this.checkLocationHash)
         .catch(() => {
           this.setLoadingState(false);
           this.setNotesFetchedState(true);
@@ -198,8 +197,19 @@ export default {
     },
     startReplying(discussionId) {
       return this.convertToDiscussion(discussionId)
-        .then(() => this.$nextTick())
+        .then(this.$nextTick)
         .then(() => eventHub.$emit('startReplying', discussionId));
+    },
+    getFetchDiscussionsConfig() {
+      const defaultConfig = { path: this.getNotesDataByProp('discussionsPath') };
+
+      if (doesHashExistInUrl(constants.NOTE_UNDERSCORE)) {
+        return Object.assign({}, defaultConfig, {
+          filter: constants.DISCUSSION_FILTERS_DEFAULT_VALUE,
+          persistFilter: false,
+        });
+      }
+      return defaultConfig;
     },
   },
   systemNote: constants.SYSTEM_NOTE,

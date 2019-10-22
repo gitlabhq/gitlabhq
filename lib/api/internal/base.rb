@@ -26,20 +26,11 @@ module API
         def ee_post_receive_response_hook(response)
           # Hook for EE to add messages
         end
-      end
 
-      namespace 'internal' do
-        # Check if git command is allowed for project
-        #
-        # Params:
-        #   key_id - ssh key id for Git over SSH
-        #   user_id - user id for Git over HTTP or over SSH in keyless SSH CERT mode
-        #   username - user name for Git over SSH in keyless SSH cert mode
-        #   protocol - Git access protocol being used, e.g. HTTP or SSH
-        #   project - project full_path (not path on disk)
-        #   action - git action (git-upload-pack or git-receive-pack)
-        #   changes - changes as "oldrev newrev ref", see Gitlab::ChangesList
-        post "/allowed" do
+        def check_allowed(params)
+          # This is a separate method so that EE can alter its behaviour more
+          # easily.
+
           # Stores some Git-specific env thread-safely
           env = parse_env
           Gitlab::Git::HookEnv.set(gl_repository, env) if project
@@ -53,11 +44,11 @@ module API
                            @project ||= access_checker.project
                            result
                          rescue Gitlab::GitAccess::UnauthorizedError => e
-                           break response_with_status(code: 401, success: false, message: e.message)
+                           return response_with_status(code: 401, success: false, message: e.message)
                          rescue Gitlab::GitAccess::TimeoutError => e
-                           break response_with_status(code: 503, success: false, message: e.message)
+                           return response_with_status(code: 503, success: false, message: e.message)
                          rescue Gitlab::GitAccess::NotFoundError => e
-                           break response_with_status(code: 404, success: false, message: e.message)
+                           return response_with_status(code: 404, success: false, message: e.message)
                          end
 
           log_user_activity(actor.user)
@@ -78,6 +69,10 @@ module API
             receive_max_input_size = Gitlab::CurrentSettings.receive_max_input_size.to_i
             if receive_max_input_size > 0
               payload[:git_config_options] << "receive.maxInputSize=#{receive_max_input_size.megabytes}"
+
+              if Feature.enabled?(:gitaly_upload_pack_filter, project)
+                payload[:git_config_options] << "uploadpack.allowFilter=true" << "uploadpack.allowAnySHA1InWant=true"
+              end
             end
 
             response_with_status(**payload)
@@ -86,6 +81,26 @@ module API
           else
             response_with_status(code: 500, success: false, message: UNKNOWN_CHECK_RESULT_ERROR)
           end
+        end
+      end
+
+      namespace 'internal' do
+        # Check if git command is allowed for project
+        #
+        # Params:
+        #   key_id - ssh key id for Git over SSH
+        #   user_id - user id for Git over HTTP or over SSH in keyless SSH CERT mode
+        #   username - user name for Git over SSH in keyless SSH cert mode
+        #   protocol - Git access protocol being used, e.g. HTTP or SSH
+        #   project - project full_path (not path on disk)
+        #   action - git action (git-upload-pack or git-receive-pack)
+        #   changes - changes as "oldrev newrev ref", see Gitlab::ChangesList
+        #   check_ip - optional, only in EE version, may limit access to
+        #     group resources based on its IP restrictions
+        post "/allowed" do
+          # It was moved to a separate method so that EE can alter its behaviour more
+          # easily.
+          check_allowed(params)
         end
 
         # rubocop: disable CodeReuse/ActiveRecord
@@ -108,10 +123,6 @@ module API
         end
         # rubocop: enable CodeReuse/ActiveRecord
 
-        get "/merge_request_urls" do
-          merge_request_urls
-        end
-
         #
         # Get a ssh key using the fingerprint
         #
@@ -129,20 +140,15 @@ module API
         #
         # Discover user by ssh key, user id or username
         #
-        # rubocop: disable CodeReuse/ActiveRecord
-        get "/discover" do
+        get '/discover' do
           if params[:key_id]
-            key = Key.find(params[:key_id])
-            user = key.user
-          elsif params[:user_id]
-            user = User.find_by(id: params[:user_id])
+            user = UserFinder.new(params[:key_id]).find_by_ssh_key_id
           elsif params[:username]
             user = UserFinder.new(params[:username]).find_by_username
           end
 
           present user, with: Entities::UserSafe
         end
-        # rubocop: enable CodeReuse/ActiveRecord
 
         get "/check" do
           {
@@ -151,22 +157,6 @@ module API
             gitlab_rev: Gitlab.revision,
             redis: redis_ping
           }
-        end
-
-        get "/broadcast_messages" do
-          if messages = BroadcastMessage.current
-            present messages, with: Entities::BroadcastMessage
-          else
-            []
-          end
-        end
-
-        get "/broadcast_message" do
-          if message = BroadcastMessage.current&.last
-            present message, with: Entities::BroadcastMessage
-          else
-            {}
-          end
         end
 
         # rubocop: disable CodeReuse/ActiveRecord

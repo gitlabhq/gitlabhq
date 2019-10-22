@@ -253,14 +253,14 @@ describe Todo do
     end
   end
 
-  describe '.for_group_and_descendants' do
+  describe '.for_group_ids_and_descendants' do
     it 'returns the todos for a group and its descendants' do
       parent_group = create(:group)
       child_group = create(:group, parent: parent_group)
 
       todo1 = create(:todo, group: parent_group)
       todo2 = create(:todo, group: child_group)
-      todos = described_class.for_group_and_descendants(parent_group)
+      todos = described_class.for_group_ids_and_descendants([parent_group.id])
 
       expect(todos).to contain_exactly(todo1, todo2)
     end

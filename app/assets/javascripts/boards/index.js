@@ -22,7 +22,6 @@ import Board from 'ee_else_ce/boards/components/board';
 import BoardSidebar from 'ee_else_ce/boards/components/board_sidebar';
 import initNewListDropdown from 'ee_else_ce/boards/components/new_list_dropdown';
 import BoardAddIssuesModal from '~/boards/components/modal/index.vue';
-import '~/vue_shared/vue_resource_interceptor';
 import {
   NavigationType,
   convertObjectPropsToCamelCase,
@@ -147,7 +146,7 @@ export default () => {
       updateTokens() {
         this.filterManager.updateTokens();
       },
-      updateDetailIssue(newIssue) {
+      updateDetailIssue(newIssue, multiSelect = false) {
         const { sidebarInfoEndpoint } = newIssue;
         if (sidebarInfoEndpoint && newIssue.subscribed === undefined) {
           newIssue.setFetchingState('subscriptions', true);
@@ -186,9 +185,23 @@ export default () => {
             });
         }
 
+        if (multiSelect) {
+          boardsStore.toggleMultiSelect(newIssue);
+
+          if (boardsStore.detail.issue) {
+            boardsStore.clearDetailIssue();
+            return;
+          }
+
+          return;
+        }
+
         boardsStore.setIssueDetail(newIssue);
       },
-      clearDetailIssue() {
+      clearDetailIssue(multiSelect = false) {
+        if (multiSelect) {
+          boardsStore.clearMultiSelect();
+        }
         boardsStore.clearDetailIssue();
       },
       toggleSubscription(id) {

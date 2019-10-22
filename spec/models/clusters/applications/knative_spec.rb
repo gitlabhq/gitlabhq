@@ -16,6 +16,13 @@ describe Clusters::Applications::Knative do
     allow(ClusterWaitForIngressIpAddressWorker).to receive(:perform_async)
   end
 
+  describe 'when cloud run is enabled' do
+    let(:cluster) { create(:cluster, :provided_by_gcp, :cloud_run_enabled) }
+    let(:knative_cloud_run) { create(:clusters_applications_knative, cluster: cluster) }
+
+    it { expect(knative_cloud_run).to be_not_installable }
+  end
+
   describe 'when rbac is not enabled' do
     let(:cluster) { create(:cluster, :provided_by_gcp, :rbac_disabled) }
     let(:knative_no_rbac) { create(:clusters_applications_knative, cluster: cluster) }
@@ -112,7 +119,7 @@ describe Clusters::Applications::Knative do
     subject { knative.install_command }
 
     it 'is initialized with latest version' do
-      expect(subject.version).to eq('0.6.0')
+      expect(subject.version).to eq('0.7.0')
     end
 
     it_behaves_like 'a command'

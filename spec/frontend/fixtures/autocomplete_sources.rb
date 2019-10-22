@@ -24,6 +24,10 @@ describe Projects::AutocompleteSourcesController, '(JavaScript fixtures)', type:
 
     create(:label, project: project, title: 'feature')
     create(:label, project: project, title: 'documentation')
+    create(:label, project: project, title: 'P1')
+    create(:label, project: project, title: 'P2')
+    create(:label, project: project, title: 'P3')
+    create(:label, project: project, title: 'P4')
 
     get :labels,
         format: :json,

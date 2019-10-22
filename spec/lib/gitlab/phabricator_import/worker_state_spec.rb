@@ -4,6 +4,7 @@ require 'spec_helper'
 
 describe Gitlab::PhabricatorImport::WorkerState, :clean_gitlab_redis_shared_state do
   subject(:state) { described_class.new('weird-project-id') }
+
   let(:key) { 'phabricator-import/jobs/project-weird-project-id/job-count' }
 
   describe '#add_job' do

@@ -27,19 +27,35 @@ describe Gitlab::FileMarkdownLinkBuilder do
       end
     end
 
-    context 'when file is an image or video' do
-      let(:filename) { 'dk.png' }
+    context 'when file is an image' do
+      let(:filename) { 'my_image.png' }
 
       it 'returns preview markdown link' do
-        expect(custom_class.markdown_link).to eq '![dk](/uploads/dk.png)'
+        expect(custom_class.markdown_link).to eq '![my_image](/uploads/my_image.png)'
       end
     end
 
-    context 'when file is not an image or video' do
-      let(:filename) { 'dk.zip' }
+    context 'when file is video' do
+      let(:filename) { 'my_video.mp4' }
+
+      it 'returns preview markdown link' do
+        expect(custom_class.markdown_link).to eq '![my_video](/uploads/my_video.mp4)'
+      end
+    end
+
+    context 'when file is audio' do
+      let(:filename) { 'my_audio.wav' }
+
+      it 'returns preview markdown link' do
+        expect(custom_class.markdown_link).to eq '![my_audio](/uploads/my_audio.wav)'
+      end
+    end
+
+    context 'when file is not embeddable' do
+      let(:filename) { 'my_zip.zip' }
 
       it 'returns markdown link' do
-        expect(custom_class.markdown_link).to eq '[dk.zip](/uploads/dk.zip)'
+        expect(custom_class.markdown_link).to eq '[my_zip.zip](/uploads/my_zip.zip)'
       end
     end
 
@@ -53,19 +69,35 @@ describe Gitlab::FileMarkdownLinkBuilder do
   end
 
   describe 'mardown_name' do
-    context 'when file is an image or video' do
-      let(:filename) { 'dk.png' }
+    context 'when file is an image' do
+      let(:filename) { 'my_image.png' }
 
       it 'retrieves the name without the extension' do
-        expect(custom_class.markdown_name).to eq 'dk'
+        expect(custom_class.markdown_name).to eq 'my_image'
       end
     end
 
-    context 'when file is not an image or video' do
-      let(:filename) { 'dk.zip' }
+    context 'when file is video' do
+      let(:filename) { 'my_video.mp4' }
+
+      it 'retrieves the name without the extension' do
+        expect(custom_class.markdown_name).to eq 'my_video'
+      end
+    end
+
+    context 'when file is audio' do
+      let(:filename) { 'my_audio.wav' }
+
+      it 'retrieves the name without the extension' do
+        expect(custom_class.markdown_name).to eq 'my_audio'
+      end
+    end
+
+    context 'when file is not embeddable' do
+      let(:filename) { 'my_zip.zip' }
 
       it 'retrieves the name with the extesion' do
-        expect(custom_class.markdown_name).to eq 'dk.zip'
+        expect(custom_class.markdown_name).to eq 'my_zip.zip'
       end
     end
 

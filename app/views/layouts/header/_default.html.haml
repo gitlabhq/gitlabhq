@@ -33,9 +33,9 @@
           - if current_user
             = render 'layouts/header/new_dropdown'
           - if header_link?(:search)
-            %li.nav-item.d-none.d-sm-none.d-md-block.m-auto
+            %li.nav-item.d-none.d-lg-block.m-auto
               = render 'layouts/search' unless current_controller?(:search)
-            %li.nav-item.d-inline-block.d-sm-none.d-md-none
+            %li.nav-item.d-inline-block.d-lg-none
               = link_to search_path_url, title: _('Search'), aria: { label: _('Search') }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
                 = sprite_icon('search', size: 16)
           - if header_link?(:issues)
@@ -58,7 +58,7 @@
                 = sprite_icon('todo-done', size: 16)
                 %span.badge.badge-pill.todos-count{ class: ('hidden' if todos_pending_count.zero?) }
                   = todos_count_format(todos_pending_count)
-          %li.nav-item.header-help.dropdown
+          %li.nav-item.header-help.dropdown.d-none.d-md-block
             = link_to help_path, class: 'header-help-dropdown-toggle', data: { toggle: "dropdown" } do
               = sprite_icon('question', size: 16)
               = sprite_icon('angle-down', css_class: 'caret-down')
@@ -73,7 +73,7 @@
                 = render 'layouts/header/current_user_dropdown'
           - if has_impersonation_link
             %li.nav-item.impersonation.ml-0
-              = link_to admin_impersonation_path, class: 'nav-link impersonation-btn', method: :delete, title: _('Stop impersonation'), aria: { label: _('Stop impersonation') }, data: { toggle: 'tooltip', placement: 'bottom', container: 'body' } do
+              = link_to admin_impersonation_path, class: 'nav-link impersonation-btn', method: :delete, title: _('Stop impersonation'), aria: { label: _('Stop impersonation') }, data: { toggle: 'tooltip', placement: 'bottom', container: 'body', qa_selector: 'stop_impersonation_link' } do
                 = icon('user-secret')
           - if header_link?(:sign_in)
             %li.nav-item

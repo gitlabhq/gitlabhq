@@ -15,7 +15,7 @@ abbreviation.
 
 To get an overview of GitLab community membership including those that would be reviewing or merging your contributions, please visit [the community roles page](community_roles.md).
 
-If you want to know how the GitLab [core team]
+If you want to know how the GitLab [core team](https://about.gitlab.com/community/core-team/)
 operates please see [the GitLab contributing process](https://gitlab.com/gitlab-org/gitlab/blob/master/PROCESS.md).
 
 [GitLab Inc engineers should refer to the engineering workflow document](https://about.gitlab.com/handbook/engineering/workflow/)
@@ -24,7 +24,7 @@ operates please see [the GitLab contributing process](https://gitlab.com/gitlab-
 
 Please report suspected security vulnerabilities in private to
 `support@gitlab.com`, also see the
-[disclosure section on the GitLab.com website](https://about.gitlab.com/disclosure/).
+[disclosure section on the GitLab.com website](https://about.gitlab.com/security/disclosure/).
 Please do **NOT** create publicly viewable issues for suspected security
 vulnerabilities.
 
@@ -48,7 +48,7 @@ for audiences of all ages.
 
 If a contributor is no longer actively working on a submitted merge request
 we can decide that the merge request will be finished by one of our
-[Merge request coaches][team] or close the merge request. We make this decision
+[Merge request coaches](https://about.gitlab.com/company/team/) or close the merge request. We make this decision
 based on how important the change is for our product vision. If a merge request
 coach is going to finish the merge request we assign the
 ~"coach will finish" label. When a team member picks up a community contribution,
@@ -59,18 +59,17 @@ within the MR.
 ## Helping others
 
 Please help other GitLab users when you can.
-The methods people will use to seek help can be found on the [getting help page][getting-help].
+The methods people will use to seek help can be found on the [getting help page](https://about.gitlab.com/get-help/).
 
 Sign up for the mailing list, answer GitLab questions on StackOverflow or
-respond in the IRC channel. You can also sign up on [CodeTriage][codetriage] to help with
-the remaining issues on the GitHub issue tracker.
+respond in the IRC channel.
 
 ## I want to contribute
 
 If you want to contribute to GitLab,
 [issues with the `Accepting merge requests` label](issue_workflow.md#label-for-community-contributors)
 are a great place to start.
-If you have any questions or need help visit [Getting Help](https://about.gitlab.com/getting-help/#discussion) to
+If you have any questions or need help visit [Getting Help](https://about.gitlab.com/get-help/) to
 learn how to communicate with GitLab. If you're looking for a Gitter or Slack channel
 please consider we favor
 [asynchronous communication](https://about.gitlab.com/handbook/communication/#internal-communication) over real time communication. Thanks for your contribution!
@@ -85,7 +84,7 @@ When maintainers are reading through a merge request they may request guidance f
 
 Sometimes style guides will be followed but the code will lack structural integrity, or the maintainer will have reservations about the code’s overall quality. When there is a reservation the maintainer will inform the author and provide some guidance.  The author may then choose to update the merge request. Once the merge request has been updated and reassigned to the maintainer, they will review the code again. Once the code has been resubmitted any number of times, the maintainer may choose to close the merge request with a summary of why it will not be merged, as well as some guidance. If the merge request is closed the maintainer will be open to discussion as to how to improve the code so it can be approved in the future.
 
-GitLab will do its best to review community contributions as quickly as possible. Specially appointed developers review community contributions daily. You may take a look at the [team page](https://about.gitlab.com/team/) for the merge request coach who specializes in the type of code you have written and mention them in the merge request.  For example, if you have written some JavaScript in your code then you should mention the frontend merge request coach. If your code has multiple disciplines you may mention multiple merge request coaches.
+GitLab will do its best to review community contributions as quickly as possible. Specially appointed developers review community contributions daily. You may take a look at the [team page](https://about.gitlab.com/company/team/) for the merge request coach who specializes in the type of code you have written and mention them in the merge request.  For example, if you have written some JavaScript in your code then you should mention the frontend merge request coach. If your code has multiple disciplines you may mention multiple merge request coaches.
 
 GitLab receives a lot of community contributions, so if your code has not been reviewed within two days (excluding weekend and public holidays) of its initial submission feel free to re-mention the appropriate merge request coach.
 
@@ -122,8 +121,3 @@ This [documentation](style_guides.md) outlines the current style guidelines.
 ---
 
 [Return to Development documentation](../README.md)
-
-[core team]: https://about.gitlab.com/core-team/
-[team]: https://about.gitlab.com/company/team/
-[getting-help]: https://about.gitlab.com/getting-help/
-[codetriage]: http://www.codetriage.com/gitlabhq/gitlabhq

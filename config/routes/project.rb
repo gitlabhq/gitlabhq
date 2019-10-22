@@ -37,6 +37,8 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
       scope '-' do
         get 'archive/*id', constraints: { format: Gitlab::PathRegex.archive_formats_regex, id: /.+?/ }, to: 'repositories#archive', as: 'archive'
 
+        resources :artifacts, only: [:index, :destroy]
+
         resources :jobs, only: [:index, :show], constraints: { id: /\d+/ } do
           collection do
             resources :artifacts, only: [] do
@@ -184,6 +186,10 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
         resource :import, only: [:new, :create, :show]
         resource :avatar, only: [:show, :destroy]
+
+        get 'grafana/proxy/:datasource_id/*proxy_path',
+            to: 'grafana_api#proxy',
+            as: :grafana_api
       end
       # End of the /-/ scope.
 
@@ -194,6 +200,12 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           as: :template,
           defaults: { format: 'json' },
           constraints: { key: %r{[^/]+}, template_type: %r{issue|merge_request}, format: 'json' }
+
+      get '/description_templates/names/:template_type',
+          to: 'templates#names',
+          as: :template_names,
+          defaults: { format: 'json' },
+          constraints: { template_type: %r{issue|merge_request}, format: 'json' }
 
       resources :commit, only: [:show], constraints: { id: /\h{7,40}/ } do
         member do
@@ -273,6 +285,8 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
             get :commits
             get :pipelines
             get :diffs, to: 'merge_requests/diffs#show'
+            get :diffs_batch, to: 'merge_requests/diffs#diffs_batch'
+            get :diffs_metadata, to: 'merge_requests/diffs#diffs_metadata'
             get :widget, to: 'merge_requests/content#widget'
             get :cached_widget, to: 'merge_requests/content#cached_widget'
           end
@@ -379,6 +393,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           get :builds
           get :failures
           get :status
+          get :test_report
 
           Gitlab.ee do
             get :security

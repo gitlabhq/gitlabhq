@@ -15,6 +15,8 @@ module Types
     field :message, type: GraphQL::STRING_TYPE, null: true # rubocop:disable Graphql/Descriptions
     field :authored_date, type: Types::TimeType, null: true # rubocop:disable Graphql/Descriptions
     field :web_url, type: GraphQL::STRING_TYPE, null: false # rubocop:disable Graphql/Descriptions
+    field :signature_html, type: GraphQL::STRING_TYPE,
+      null: true, calls_gitaly: true, description: 'Rendered html for the commit signature'
 
     # models/commit lazy loads the author by email
     field :author, type: Types::UserType, null: true # rubocop:disable Graphql/Descriptions

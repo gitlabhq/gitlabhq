@@ -107,7 +107,7 @@ prompted to download a set of set recovery codes. Should you ever lose access
 to your one time password authenticator, you can use one of them to log in to
 your account. We suggest copying them, printing them, or downloading them using
 the **Download codes** button for storage in a safe place. If you choose to
-download them, the file will be called **gitlab-recovery-codes.txt**.
+download them, the file will be called `gitlab-recovery-codes.txt`.
 
 If you lose the recovery codes or just want to generate new ones, you can do so
 [using SSH](#generate-new-recovery-codes-using-ssh).
@@ -243,6 +243,12 @@ Sign in and re-enable two-factor authentication as soon as possible.
   - The user logs out and attempts to log in via `first.host.xyz` - U2F authentication succeeds.
   - The user logs out and attempts to log in via `second.host.xyz` - U2F authentication fails, because
     the U2F key has only been registered on `first.host.xyz`.
+
+## Troubleshooting
+
+If you are receiving an `invalid pin code` error, this may indicate that there is a time sync issue between the authentication application and the GitLab instance itself.
+
+Most authentication apps have a feature in the settings for syncing the time for the codes themselves. For Google Authenticator for example, go to `Settings > Time correction for codes`.
 
 <!-- ## Troubleshooting
 

@@ -5,6 +5,7 @@ import ListLabel from './label';
 import ListAssignee from './assignee';
 import ListIssue from 'ee_else_ce/boards/models/issue';
 import { urlParamsToObject } from '~/lib/utils/common_utils';
+import flash from '~/flash';
 import boardsStore from '../stores/boards_store';
 import ListMilestone from './milestone';
 
@@ -176,6 +177,53 @@ class List {
     });
   }
 
+  addMultipleIssues(issues, listFrom, newIndex) {
+    let moveBeforeId = null;
+    let moveAfterId = null;
+
+    const listHasIssues = issues.every(issue => this.findIssue(issue.id));
+
+    if (!listHasIssues) {
+      if (newIndex !== undefined) {
+        if (this.issues[newIndex - 1]) {
+          moveBeforeId = this.issues[newIndex - 1].id;
+        }
+
+        if (this.issues[newIndex]) {
+          moveAfterId = this.issues[newIndex].id;
+        }
+
+        this.issues.splice(newIndex, 0, ...issues);
+      } else {
+        this.issues.push(...issues);
+      }
+
+      if (this.label) {
+        issues.forEach(issue => issue.addLabel(this.label));
+      }
+
+      if (this.assignee) {
+        if (listFrom && listFrom.type === 'assignee') {
+          issues.forEach(issue => issue.removeAssignee(listFrom.assignee));
+        }
+        issues.forEach(issue => issue.addAssignee(this.assignee));
+      }
+
+      if (IS_EE && this.milestone) {
+        if (listFrom && listFrom.type === 'milestone') {
+          issues.forEach(issue => issue.removeMilestone(listFrom.milestone));
+        }
+        issues.forEach(issue => issue.addMilestone(this.milestone));
+      }
+
+      if (listFrom) {
+        this.issuesSize += issues.length;
+
+        this.updateMultipleIssues(issues, listFrom, moveBeforeId, moveAfterId);
+      }
+    }
+  }
+
   addIssue(issue, listFrom, newIndex) {
     let moveBeforeId = null;
     let moveAfterId = null;
@@ -230,6 +278,23 @@ class List {
     });
   }
 
+  moveMultipleIssues({ issues, oldIndicies, newIndex, moveBeforeId, moveAfterId }) {
+    oldIndicies.reverse().forEach(index => {
+      this.issues.splice(index, 1);
+    });
+    this.issues.splice(newIndex, 0, ...issues);
+
+    gl.boardService
+      .moveMultipleIssues({
+        ids: issues.map(issue => issue.id),
+        fromListId: null,
+        toListId: null,
+        moveBeforeId,
+        moveAfterId,
+      })
+      .catch(() => flash(__('Something went wrong while moving issues.')));
+  }
+
   updateIssueLabel(issue, listFrom, moveBeforeId, moveAfterId) {
     gl.boardService
       .moveIssue(issue.id, listFrom.id, this.id, moveBeforeId, moveAfterId)
@@ -238,8 +303,35 @@ class List {
       });
   }
 
+  updateMultipleIssues(issues, listFrom, moveBeforeId, moveAfterId) {
+    gl.boardService
+      .moveMultipleIssues({
+        ids: issues.map(issue => issue.id),
+        fromListId: listFrom.id,
+        toListId: this.id,
+        moveBeforeId,
+        moveAfterId,
+      })
+      .catch(() => flash(__('Something went wrong while moving issues.')));
+  }
+
   findIssue(id) {
     return this.issues.find(issue => issue.id === id);
+  }
+
+  removeMultipleIssues(removeIssues) {
+    const ids = removeIssues.map(issue => issue.id);
+
+    this.issues = this.issues.filter(issue => {
+      const matchesRemove = ids.includes(issue.id);
+
+      if (matchesRemove) {
+        this.issuesSize -= 1;
+        issue.removeLabel(this.label);
+      }
+
+      return !matchesRemove;
+    });
   }
 
   removeIssue(removeIssue) {

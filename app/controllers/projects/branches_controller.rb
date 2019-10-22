@@ -11,6 +11,7 @@ class Projects::BranchesController < Projects::ApplicationController
 
   # Support legacy URLs
   before_action :redirect_for_legacy_index_sort_or_search, only: [:index]
+  before_action :limit_diverging_commit_counts!, only: [:diverging_commit_counts]
 
   def index
     respond_to do |format|
@@ -124,6 +125,24 @@ class Projects::BranchesController < Projects::ApplicationController
   end
 
   private
+
+  # It can be expensive to calculate the diverging counts for each
+  # branch. Normally the frontend should be specifying a set of branch
+  # names, but prior to
+  # https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/32496, the
+  # frontend could omit this set. To prevent excessive I/O, we require
+  # that a list of names be specified.
+  def limit_diverging_commit_counts!
+    return unless Feature.enabled?(:limit_diverging_commit_counts, default_enabled: true)
+
+    limit = Kaminari.config.default_per_page
+
+    # If we don't have many branches in the repository, then go ahead.
+    return if project.repository.branch_count <= limit
+    return if params[:names].present? && Array(params[:names]).length <= limit
+
+    render json: { error: "Specify at least one and at most #{limit} branch names" }, status: :unprocessable_entity
+  end
 
   def ref
     if params[:ref]

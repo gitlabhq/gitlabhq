@@ -1,9 +1,31 @@
 # frozen_string_literal: true
-
+#
+# This class encapsulates the directories used by project import/export:
+#
+# 1. The project export job first generates the project metadata tree
+#    (e.g. `project.json) and repository bundle (e.g. `project.bundle`)
+#    inside a temporary `export_path`
+#    (e.g. /path/to/shared/tmp/project_exports/namespace/project/:randomA/:randomB).
+#
+# 2. The job then creates a tarball (e.g. `project.tar.gz`) in
+#    `archive_path` (e.g. /path/to/shared/tmp/project_exports/namespace/project/:randomA).
+#    CarrierWave moves this tarball files into its permanent location.
+#
+# 3. Lock files are used to indicate whether a project is in the
+#    `after_export` state.  These are stored in a directory
+#    (e.g. /path/to/shared/tmp/project_exports/namespace/project/locks. The
+#    number of lock files present signifies how many concurrent project
+#    exports are running. Note that this assumes the temporary directory
+#    is a shared mount:
+#    https://gitlab.com/gitlab-org/gitlab/issues/32203
+#
+# NOTE: Stale files should be cleaned up via ImportExportCleanupService.
 module Gitlab
   module ImportExport
     class Shared
       attr_reader :errors, :project
+
+      LOCKS_DIRECTORY = 'locks'
 
       def initialize(project)
         @project = project
@@ -12,20 +34,31 @@ module Gitlab
       end
 
       def active_export_count
-        Dir[File.join(archive_path, '*')].count { |name| File.directory?(name) }
+        Dir[File.join(base_path, '*')].count { |name| File.basename(name) != LOCKS_DIRECTORY && File.directory?(name) }
       end
 
+      # The path where the project metadata and repository bundle is saved
       def export_path
         @export_path ||= Gitlab::ImportExport.export_path(relative_path: relative_path)
       end
 
+      # The path where the tarball is saved
       def archive_path
         @archive_path ||= Gitlab::ImportExport.export_path(relative_path: relative_archive_path)
       end
 
+      def base_path
+        @base_path ||= Gitlab::ImportExport.export_path(relative_path: relative_base_path)
+      end
+
+      def lock_files_path
+        @locks_files_path ||= File.join(base_path, LOCKS_DIRECTORY)
+      end
+
       def error(error)
-        log_error(message: error.message, caller: caller[0].dup)
-        log_debug(backtrace: error.backtrace&.join("\n"))
+        error_payload = { message: error.message }
+        error_payload[:error_backtrace] = Gitlab::Profiler.clean_backtrace(error.backtrace) if error.backtrace
+        log_error(error_payload)
 
         Gitlab::Sentry.track_acceptable_exception(error, extra: log_base_data)
 
@@ -37,16 +70,24 @@ module Gitlab
       end
 
       def after_export_in_progress?
-        File.exist?(after_export_lock_file)
+        locks_present?
+      end
+
+      def locks_present?
+        Dir.exist?(lock_files_path) && !Dir.empty?(lock_files_path)
       end
 
       private
 
       def relative_path
-        File.join(relative_archive_path, SecureRandom.hex)
+        @relative_path ||= File.join(relative_archive_path, SecureRandom.hex)
       end
 
       def relative_archive_path
+        @relative_archive_path ||= File.join(@project.disk_path, SecureRandom.hex)
+      end
+
+      def relative_base_path
         @project.disk_path
       end
 
@@ -69,10 +110,6 @@ module Gitlab
 
       def filtered_error_message(message)
         Projects::ImportErrorFilter.filter_message(message)
-      end
-
-      def after_export_lock_file
-        AfterExportStrategies::BaseAfterExportStrategy.lock_file_path(project)
       end
     end
   end

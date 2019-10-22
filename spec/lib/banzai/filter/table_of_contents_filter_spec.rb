@@ -82,7 +82,9 @@ describe Banzai::Filter::TableOfContentsFilter do
       it 'supports Unicode' do
         doc = filter(header(1, '한글'))
         expect(doc.css('h1 a').first.attr('id')).to eq 'user-content-한글'
-        expect(doc.css('h1 a').first.attr('href')).to eq '#한글'
+        # check that we encode the href to avoid issues with the
+        # ExternalLinkFilter (see https://gitlab.com/gitlab-org/gitlab/issues/26210)
+        expect(doc.css('h1 a').first.attr('href')).to eq "##{CGI.escape('한글')}"
       end
     end
   end

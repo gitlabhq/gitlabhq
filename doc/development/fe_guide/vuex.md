@@ -232,7 +232,7 @@ import { mapGetters } from 'vuex';
 
 ### `mutation_types.js`
 
-From [vuex mutations docs][vuex-mutations]:
+From [vuex mutations docs](https://vuex.vuejs.org/guide/mutations.html):
 > It is a commonly seen pattern to use constants for mutation types in various Flux implementations. This allows the code to take advantage of tooling like linters, and putting all constants in a single file allows your collaborators to get an at-a-glance view of what mutations are possible in the entire application.
 
 ```javascript
@@ -336,7 +336,7 @@ export default {
 
 #### Testing Vuex concerns
 
-Refer to [vuex docs][vuex-testing] regarding testing Actions, Getters and Mutations.
+Refer to [vuex docs](https://vuex.vuejs.org/guide/testing.html) regarding testing Actions, Getters and Mutations.
 
 #### Testing components that need a store
 
@@ -396,6 +396,3 @@ export default () => {};
 ```
 
 [vuex-docs]: https://vuex.vuejs.org
-[vuex-structure]: https://vuex.vuejs.org/en/structure.html
-[vuex-mutations]: https://vuex.vuejs.org/en/mutations.html
-[vuex-testing]: https://vuex.vuejs.org/en/testing.html

@@ -1,9 +1,10 @@
-
 # frozen_string_literal: true
 
 # Worker for updating project statistics.
 class UpdateProjectStatisticsWorker
   include ApplicationWorker
+
+  feature_category :source_code_management
 
   # project_id - The ID of the project for which to flush the cache.
   # statistics - An Array containing columns from ProjectStatistics to

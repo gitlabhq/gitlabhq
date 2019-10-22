@@ -14,7 +14,11 @@ class Projects::MergeRequests::ApplicationController < Projects::ApplicationCont
   end
 
   def merge_request_includes(association)
-    association.includes(:metrics, :assignees, author: :status) # rubocop:disable CodeReuse/ActiveRecord
+    association.includes(preloadable_mr_relations) # rubocop:disable CodeReuse/ActiveRecord
+  end
+
+  def preloadable_mr_relations
+    [:metrics, :assignees, { author: :status }]
   end
 
   def merge_request_params

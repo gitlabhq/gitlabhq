@@ -87,10 +87,6 @@ module Gitlab
       version.to_f < 10
     end
 
-    def self.join_lateral_supported?
-      version.to_f >= 9.3
-    end
-
     def self.replication_slots_supported?
       version.to_f >= 9.4
     end

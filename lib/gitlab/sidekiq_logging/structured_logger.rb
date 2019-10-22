@@ -58,8 +58,7 @@ module Gitlab
           payload['message'] = "#{message}: fail: #{payload['duration']} sec"
           payload['job_status'] = 'fail'
           payload['error_message'] = job_exception.message
-          payload['error'] = job_exception.class
-          payload['error_backtrace'] = backtrace_cleaner.clean(job_exception.backtrace)
+          payload['error_class'] = job_exception.class.name
         else
           payload['message'] = "#{message}: done: #{payload['duration']} sec"
           payload['job_status'] = 'done'
@@ -71,10 +70,11 @@ module Gitlab
       end
 
       def add_time_keys!(time, payload)
-        payload['duration'] = time[:duration].round(3)
-        payload['system_s'] = time[:stime].round(3)
-        payload['user_s'] = time[:utime].round(3)
-        payload['child_s'] = time[:ctime].round(3) if time[:ctime] > 0
+        payload['duration'] = time[:duration].round(6)
+
+        # ignore `cpu_s` if the platform does not support Process::CLOCK_THREAD_CPUTIME_ID (time[:cputime] == 0)
+        # supported OS version can be found at: https://www.rubydoc.info/stdlib/core/2.1.6/Process:clock_gettime
+        payload['cpu_s'] = time[:cputime].round(6) if time[:cputime] > 0
         payload['completed_at'] = Time.now.utc
       end
 
@@ -99,42 +99,32 @@ module Gitlab
       end
 
       def elapsed_by_absolute_time(start)
-        (Time.now.utc - start).to_f.round(3)
+        (Time.now.utc - start).to_f.round(6)
       end
 
       def elapsed(t0)
         t1 = get_time
         {
           duration: t1[:now] - t0[:now],
-          stime: t1[:times][:stime] - t0[:times][:stime],
-          utime: t1[:times][:utime] - t0[:times][:utime],
-          ctime: ctime(t1[:times]) - ctime(t0[:times])
+          cputime: t1[:thread_cputime] - t0[:thread_cputime]
         }
       end
 
       def get_time
         {
           now: current_time,
-          times: Process.times
+          thread_cputime: defined?(Process::CLOCK_THREAD_CPUTIME_ID) ? Process.clock_gettime(Process::CLOCK_THREAD_CPUTIME_ID) : 0
         }
-      end
-
-      def ctime(times)
-        times[:cstime] + times[:cutime]
       end
 
       def current_time
         Gitlab::Metrics::System.monotonic_time
       end
 
-      def backtrace_cleaner
-        @backtrace_cleaner ||= ActiveSupport::BacktraceCleaner.new
-      end
-
       def format_time(timestamp)
         return timestamp if timestamp.is_a?(String)
 
-        Time.at(timestamp).utc.iso8601(3)
+        Time.at(timestamp).utc.iso8601(6)
       end
 
       def limited_job_args(args)

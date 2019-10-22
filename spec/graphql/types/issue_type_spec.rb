@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe GitlabSchema.types['Issue'] do
@@ -10,8 +12,9 @@ describe GitlabSchema.types['Issue'] do
   it { expect(described_class.interfaces).to include(Types::Notes::NoteableType.to_graphql) }
 
   it 'has specific fields' do
-    fields = %i[title_html description_html relative_position web_path web_url
-                reference]
+    fields = %i[iid title description state reference author assignees participants labels milestone due_date
+                confidential discussion_locked upvotes downvotes user_notes_count web_path web_url relative_position
+                time_estimate total_time_spent closed_at created_at updated_at task_completion_status]
 
     fields.each do |field_name|
       expect(described_class).to have_graphql_field(field_name)

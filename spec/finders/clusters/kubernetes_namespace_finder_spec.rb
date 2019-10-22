@@ -7,7 +7,7 @@ RSpec.describe Clusters::KubernetesNamespaceFinder do
     described_class.new(
       cluster,
       project: project,
-      environment_slug: 'production',
+      environment_name: 'production',
       allow_blank_token: allow_blank_token
     )
   end
@@ -22,8 +22,8 @@ RSpec.describe Clusters::KubernetesNamespaceFinder do
   end
 
   describe '#execute' do
-    let(:production) { create(:environment, project: project, slug: 'production') }
-    let(:staging) { create(:environment, project: project, slug: 'staging') }
+    let(:production) { create(:environment, project: project, name: 'production') }
+    let(:staging) { create(:environment, project: project, name: 'staging') }
 
     let(:cluster) { create(:cluster, :group, :provided_by_user) }
     let(:project) { create(:project) }

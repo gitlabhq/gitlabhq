@@ -1,0 +1,5 @@
+---
+title: Time window filter in monitor dashboard gets reset
+merge_request: 17972
+author:
+type: fixed

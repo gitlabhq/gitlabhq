@@ -1,4 +1,4 @@
-/* eslint-disable no-return-assign, one-var, no-var, consistent-return, prefer-template, class-methods-use-this, no-lonely-if, vars-on-top */
+/* eslint-disable no-return-assign, one-var, no-var, consistent-return, class-methods-use-this, no-lonely-if, vars-on-top */
 
 import $ from 'jquery';
 import { escape, throttle } from 'underscore';
@@ -416,7 +416,7 @@ export class SearchAutocomplete {
     inputs = Object.keys(this.originalState);
     for (i = 0, len = inputs.length; i < len; i += 1) {
       input = inputs[i];
-      this.getElement('#' + input).val(this.originalState[input]);
+      this.getElement(`#${input}`).val(this.originalState[input]);
     }
   }
 
@@ -426,7 +426,7 @@ export class SearchAutocomplete {
     results = [];
     for (i = 0, len = inputs.length; i < len; i += 1) {
       input = inputs[i];
-      results.push(this.getElement('#' + input).val(''));
+      results.push(this.getElement(`#${input}`).val(''));
     }
     return results;
   }

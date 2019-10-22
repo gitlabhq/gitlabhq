@@ -1,6 +1,7 @@
 import { mount, createLocalVue } from '@vue/test-utils';
 import MrWidgetPipelineContainer from '~/vue_merge_request_widget/components/mr_widget_pipeline_container.vue';
 import MrWidgetPipeline from '~/vue_merge_request_widget/components/mr_widget_pipeline.vue';
+import ArtifactsApp from '~/vue_merge_request_widget/components/artifacts_list_app.vue';
 import { mockStore } from '../mock_data';
 
 describe('MrWidgetPipelineContainer', () => {
@@ -85,6 +86,12 @@ describe('MrWidgetPipelineContainer', () => {
       const deployments = wrapper.findAll('.mr-widget-extension .js-post-deployment');
 
       expect(deployments.wrappers.map(x => x.props())).toEqual(expectedProps);
+    });
+  });
+
+  describe('with artifacts path', () => {
+    it('renders the artifacts app', () => {
+      expect(wrapper.find(ArtifactsApp).isVisible()).toBe(true);
     });
   });
 });

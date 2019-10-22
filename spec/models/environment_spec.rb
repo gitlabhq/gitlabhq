@@ -882,4 +882,19 @@ describe Environment, :use_clean_rails_memory_store_caching do
       end
     end
   end
+
+  describe '.find_or_create_by_name' do
+    it 'finds an existing environment if it exists' do
+      env = create(:environment)
+
+      expect(described_class.find_or_create_by_name(env.name)).to eq(env)
+    end
+
+    it 'creates an environment if it does not exist' do
+      env = project.environments.find_or_create_by_name('kittens')
+
+      expect(env).to be_an_instance_of(described_class)
+      expect(env).to be_persisted
+    end
+  end
 end

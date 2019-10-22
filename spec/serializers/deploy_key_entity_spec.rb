@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe DeployKeyEntity do
@@ -6,13 +8,14 @@ describe DeployKeyEntity do
   let(:user) { create(:user) }
   let(:project) { create(:project, :internal)}
   let(:project_private) { create(:project, :private)}
-  let!(:project_pending_delete) { create(:project, :internal, pending_delete: true) }
   let(:deploy_key) { create(:deploy_key) }
-  let!(:deploy_key_internal) { create(:deploy_keys_project, project: project, deploy_key: deploy_key) }
-  let!(:deploy_key_private)  { create(:deploy_keys_project, project: project_private, deploy_key: deploy_key) }
-  let!(:deploy_key_pending_delete) { create(:deploy_keys_project, project: project_pending_delete, deploy_key: deploy_key) }
 
   let(:entity) { described_class.new(deploy_key, user: user) }
+
+  before do
+    project.deploy_keys << deploy_key
+    project_private.deploy_keys << deploy_key
+  end
 
   describe 'returns deploy keys with projects a user can read' do
     let(:expected_result) do
@@ -44,17 +47,30 @@ describe DeployKeyEntity do
     it { expect(entity.as_json).to eq(expected_result) }
   end
 
-  describe 'returns can_edit true if user is a maintainer of project' do
-    before do
-      project.add_maintainer(user)
-    end
+  context 'user is an admin' do
+    let(:user) { create(:user, :admin) }
 
     it { expect(entity.as_json).to include(can_edit: true) }
   end
 
-  describe 'returns can_edit true if a user admin' do
-    let(:user) { create(:user, :admin) }
+  context 'user is a project maintainer' do
+    before do
+      project.add_maintainer(user)
+    end
 
-    it { expect(entity.as_json).to include(can_edit: true) }
+    context 'project deploy key' do
+      it { expect(entity.as_json).to include(can_edit: true) }
+    end
+
+    context 'public deploy key' do
+      let(:deploy_key_public) { create(:deploy_key, public: true) }
+      let(:entity_public) { described_class.new(deploy_key_public, { user: user, project: project }) }
+
+      before do
+        project.deploy_keys << deploy_key_public
+      end
+
+      it { expect(entity_public.as_json).to include(can_edit: true) }
+    end
   end
 end

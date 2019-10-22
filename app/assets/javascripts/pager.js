@@ -56,6 +56,10 @@ export default {
     $('.content_list').append(html);
     if (count > 0) {
       this.offset += count;
+
+      if (count < this.limit) {
+        this.disable = true;
+      }
     } else {
       this.disable = true;
     }

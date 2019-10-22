@@ -1,0 +1,6 @@
+---
+title: Create a persistent ref per pipeline for keeping pipelines run from force-push
+  and merged results
+merge_request: 17043
+author:
+type: fixed

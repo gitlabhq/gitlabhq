@@ -462,78 +462,6 @@ eos
     end
   end
 
-  describe '#last_pipeline' do
-    let!(:first_pipeline) do
-      create(:ci_empty_pipeline,
-        project: project,
-        sha: commit.sha,
-        status: 'success')
-    end
-    let!(:second_pipeline) do
-      create(:ci_empty_pipeline,
-        project: project,
-        sha: commit.sha,
-        status: 'success')
-    end
-
-    it 'returns last pipeline' do
-      expect(commit.last_pipeline).to eq second_pipeline
-    end
-  end
-
-  describe '#status' do
-    context 'without ref argument' do
-      before do
-        %w[success failed created pending].each do |status|
-          create(:ci_empty_pipeline,
-                 project: project,
-                 sha: commit.sha,
-                 status: status)
-        end
-      end
-
-      it 'gives compound status from latest pipelines' do
-        expect(commit.status).to eq(Ci::Pipeline.latest_status)
-        expect(commit.status).to eq('pending')
-      end
-    end
-
-    context 'when a particular ref is specified' do
-      let!(:pipeline_from_master) do
-        create(:ci_empty_pipeline,
-               project: project,
-               sha: commit.sha,
-               ref: 'master',
-               status: 'failed')
-      end
-
-      let!(:pipeline_from_fix) do
-        create(:ci_empty_pipeline,
-               project: project,
-               sha: commit.sha,
-               ref: 'fix',
-               status: 'success')
-      end
-
-      it 'gives pipelines from a particular branch' do
-        expect(commit.status('master')).to eq(pipeline_from_master.status)
-        expect(commit.status('fix')).to eq(pipeline_from_fix.status)
-      end
-
-      it 'gives compound status from latest pipelines if ref is nil' do
-        expect(commit.status(nil)).to eq(pipeline_from_fix.status)
-      end
-    end
-  end
-
-  describe '#set_status_for_ref' do
-    it 'sets the status for a given reference' do
-      commit.set_status_for_ref('master', 'failed')
-
-      expect(commit.status('master')).to eq('failed')
-    end
-  end
-
   describe '#participants' do
     let(:user1) { build(:user) }
     let(:user2) { build(:user) }
@@ -575,6 +503,8 @@ eos
       expect(commit.uri_type('files/html')).to be(:tree)
       expect(commit.uri_type('files/images/logo-black.png')).to be(:raw)
       expect(commit.uri_type('files/images/wm.svg')).to be(:raw)
+      expect(project.commit('audio').uri_type('files/audio/clip.mp3')).to be(:raw)
+      expect(project.commit('audio').uri_type('files/audio/sample.wav')).to be(:raw)
       expect(project.commit('video').uri_type('files/videos/intro.mp4')).to be(:raw)
       expect(commit.uri_type('files/js/application.js')).to be(:blob)
     end

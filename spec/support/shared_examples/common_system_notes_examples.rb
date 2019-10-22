@@ -27,3 +27,30 @@ shared_examples 'WIP notes creation' do |wip_action|
     expect(Note.second.note).to match('changed title')
   end
 end
+
+shared_examples_for 'a note with overridable created_at' do
+  let(:noteable) { create(:issue, project: project, system_note_timestamp: Time.at(42)) }
+
+  it 'the note has the correct time' do
+    expect(subject.created_at).to eq Time.at(42)
+  end
+end
+
+shared_examples_for 'a system note' do |params|
+  let(:expected_noteable) { noteable }
+  let(:commit_count)      { nil }
+
+  it 'has the correct attributes', :aggregate_failures do
+    exclude_project = !params.nil? && params[:exclude_project]
+
+    expect(subject).to be_valid
+    expect(subject).to be_system
+
+    expect(subject.noteable).to eq expected_noteable
+    expect(subject.project).to eq project unless exclude_project
+    expect(subject.author).to eq author
+
+    expect(subject.system_note_metadata.action).to eq(action)
+    expect(subject.system_note_metadata.commit_count).to eq(commit_count)
+  end
+end

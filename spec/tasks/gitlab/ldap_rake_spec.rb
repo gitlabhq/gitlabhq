@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rake_helper'
 
 describe 'gitlab:ldap:rename_provider rake task' do

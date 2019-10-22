@@ -343,7 +343,8 @@ module API
         present paginate(::Kaminari.paginate_array(merge_requests)),
           with: Entities::MergeRequest,
           current_user: current_user,
-          project: user_project
+          project: user_project,
+          include_subscribed: false
       end
 
       desc 'List merge requests closing issue' do

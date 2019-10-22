@@ -23,6 +23,8 @@ module Gitlab
       include ProjectImportOptions # This marks the project as failed after too many tries
       include Gitlab::ExclusiveLeaseHelpers
 
+      feature_category :importers
+
       class << self
         def schedule(project_id, *args)
           perform_async(project_id, *args)

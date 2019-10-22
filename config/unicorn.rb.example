@@ -85,7 +85,7 @@ require_relative "/home/git/gitlab/lib/gitlab/cluster/lifecycle_events"
 
 before_exec do |server|
   # Signal application hooks that we're about to restart
-  Gitlab::Cluster::LifecycleEvents.do_master_restart
+  Gitlab::Cluster::LifecycleEvents.do_before_master_restart
 end
 
 run_once = true

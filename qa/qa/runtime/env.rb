@@ -145,6 +145,54 @@ module QA
         ENV['GITLAB_QA_PASSWORD_2']
       end
 
+      def gitlab_qa_username_3
+        ENV['GITLAB_QA_USERNAME_3'] || 'gitlab-qa-user3'
+      end
+
+      def gitlab_qa_password_3
+        ENV['GITLAB_QA_PASSWORD_3']
+      end
+
+      def gitlab_qa_username_4
+        ENV['GITLAB_QA_USERNAME_4'] || 'gitlab-qa-user4'
+      end
+
+      def gitlab_qa_password_4
+        ENV['GITLAB_QA_PASSWORD_4']
+      end
+
+      def gitlab_qa_username_5
+        ENV['GITLAB_QA_USERNAME_5'] || 'gitlab-qa-user5'
+      end
+
+      def gitlab_qa_password_5
+        ENV['GITLAB_QA_PASSWORD_5']
+      end
+
+      def gitlab_qa_username_6
+        ENV['GITLAB_QA_USERNAME_6'] || 'gitlab-qa-user6'
+      end
+
+      def gitlab_qa_password_6
+        ENV['GITLAB_QA_PASSWORD_6']
+      end
+
+      def gitlab_qa_1p_email
+        ENV['GITLAB_QA_1P_EMAIL']
+      end
+
+      def gitlab_qa_1p_password
+        ENV['GITLAB_QA_1P_PASSWORD']
+      end
+
+      def gitlab_qa_1p_secret
+        ENV['GITLAB_QA_1P_SECRET']
+      end
+
+      def gitlab_qa_1p_github_uuid
+        ENV['GITLAB_QA_1P_GITHUB_UUID']
+      end
+
       def knapsack?
         !!(ENV['KNAPSACK_GENERATE_REPORT'] || ENV['KNAPSACK_REPORT_PATH'] || ENV['KNAPSACK_TEST_FILE_PATTERN'])
       end

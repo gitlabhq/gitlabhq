@@ -8,7 +8,7 @@ Sometimes things don't work the way they should or as you might expect when
 you're using Git. Here are some tips on troubleshooting and resolving issues
 with Git.
 
-## Broken pipe errors on git push
+## Broken pipe errors on `git push`
 
 'Broken pipe' errors can occur when attempting to push to a remote repository.
 When pushing you will usually see:
@@ -22,8 +22,13 @@ To fix this issue, here are some possible solutions.
 
 ### Increase the POST buffer size in Git
 
-**If pushing over HTTP**, you can try increasing the POST buffer size in Git's
-configuration. Open a terminal and enter:
+**If you're using Git over HTTP instead of SSH**, you can try increasing the POST buffer size in Git's
+configuration.
+
+Example of an error during a clone:
+`fatal: pack has bad object at offset XXXXXXXXX: inflate returned -5`
+
+Open a terminal and enter:
 
 ```sh
 git config http.postBuffer 52428800
@@ -68,7 +73,7 @@ ClientAliveInterval 60
 ClientAliveCountMax 5
 ```
 
-### Running a git repack
+### Running a `git repack`
 
 **If 'pack-objects' type errors are also being displayed**, you can try to
 run a `git repack` before attempting to push to the remote repository again:
@@ -110,7 +115,7 @@ MaxStartups 100
 
 Restart SSHD for the change to take effect.
 
-## Timeout during git push/pull
+## Timeout during `git push` / `git pull`
 
 If pulling/pushing from/to your repository ends up taking more than 50 seconds,
 a timeout will be issued with a log of the number of operations performed

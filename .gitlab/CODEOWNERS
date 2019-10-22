@@ -6,8 +6,8 @@
 /doc/ @axil @marcia @eread @mikelewis
 
 # Frontend maintainers should see everything in `app/assets/`
-app/assets/ @ClemMakesApps @fatihacet @filipa @mikegreiling @timzallmann @kushalpandya @pslaughter
-*.scss @annabeldunstone @ClemMakesApps @fatihacet @filipa @mikegreiling @timzallmann @kushalpandya @pslaughter
+app/assets/ @ClemMakesApps @fatihacet @filipa @mikegreiling @timzallmann @kushalpandya @pslaughter @wortschi @ntepluhina
+*.scss @annabeldunstone @ClemMakesApps @fatihacet @filipa @mikegreiling @timzallmann @kushalpandya @pslaughter @wortschi @ntepluhina
 
 # Database maintainers should review changes in `db/`
 db/ @gitlab-org/maintainers/database
@@ -23,6 +23,13 @@ lib/gitlab/github_import/ @gitlab-org/maintainers/database
 /lib/gitlab/auth/ldap/ @dblessing @mkozono
 /lib/gitlab/ci/templates/ @nolith @zj
 /lib/gitlab/ci/templates/Auto-DevOps.gitlab-ci.yml @DylanGriffith @mayra-cabrera @tkuah
-/lib/gitlab/ci/templates/Security/ @plafoucriere @gonzoyumo @twoodham
+/lib/gitlab/ci/templates/Security/ @plafoucriere @gonzoyumo @twoodham @sethgitlab
 /ee/app/models/project_alias.rb @patrickbajao
 /ee/lib/api/project_aliases.rb @patrickbajao
+
+# Engineering Productivity owned files
+/.gitlab-ci.yml @gl-quality/eng-prod
+/.gitlab/ci/ @gl-quality/eng-prod
+Dangerfile @gl-quality/eng-prod
+/danger/ @gl-quality/eng-prod
+/scripts/ @gl-quality/eng-prod

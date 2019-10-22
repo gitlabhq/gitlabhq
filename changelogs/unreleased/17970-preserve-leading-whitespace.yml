@@ -1,0 +1,5 @@
+---
+title: Prevent the slash command parser from removing leading whitespace from content that is unrelated to slash commands
+merge_request: 18589
+author: Jared Deckard
+type: fixed

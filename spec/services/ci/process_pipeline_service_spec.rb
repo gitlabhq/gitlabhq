@@ -422,6 +422,18 @@ describe Ci::ProcessPipelineService, '#execute' do
     end
   end
 
+  context 'when an exception is raised during a persistent ref creation' do
+    before do
+      successful_build('test', stage_idx: 0)
+
+      allow_any_instance_of(Ci::PersistentRef).to receive(:delete_refs) { raise ArgumentError }
+    end
+
+    it 'process the pipeline' do
+      expect { process_pipeline }.not_to raise_error
+    end
+  end
+
   context 'when there are manual action in earlier stages' do
     context 'when first stage has only optional manual actions' do
       before do
@@ -905,6 +917,10 @@ describe Ci::ProcessPipelineService, '#execute' do
 
   def create_build(name, **opts)
     create(:ci_build, :created, pipeline: pipeline, name: name, **opts)
+  end
+
+  def successful_build(name, **opts)
+    create(:ci_build, :success, pipeline: pipeline, name: name, **opts)
   end
 
   def delayed_options

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Projects::PipelinesController < Projects::ApplicationController
+  include ::Gitlab::Utils::StrongMemoize
+
   before_action :whitelist_query_limiting, only: [:create, :retry]
   before_action :pipeline, except: [:index, :new, :create, :charts]
   before_action :set_pipeline_path, only: [:show]
@@ -151,6 +153,19 @@ class Projects::PipelinesController < Projects::ApplicationController
     @counts[:failed] = @project.all_pipelines.failed.count(:all)
   end
 
+  def test_report
+    return unless Feature.enabled?(:junit_pipeline_view, project)
+
+    if pipeline_test_report == :error
+      render json: { status: :error_parsing_report }
+      return
+    end
+
+    render json: TestReportSerializer
+      .new(current_user: @current_user)
+      .represent(pipeline_test_report)
+  end
+
   private
 
   def serialize_pipelines
@@ -169,7 +184,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def show_represent_params
-    { grouped: true }
+    { grouped: true, expanded: params[:expanded].to_a.map(&:to_i) }
   end
 
   def create_params
@@ -216,6 +231,14 @@ class Projects::PipelinesController < Projects::ApplicationController
     finder = PipelinesFinder.new(project, current_user, scope: scope)
 
     view_context.limited_counter_with_delimiter(finder.execute)
+  end
+
+  def pipeline_test_report
+    strong_memoize(:pipeline_test_report) do
+      @pipeline.test_reports
+    rescue Gitlab::Ci::Parsers::ParserError
+      :error
+    end
   end
 end
 

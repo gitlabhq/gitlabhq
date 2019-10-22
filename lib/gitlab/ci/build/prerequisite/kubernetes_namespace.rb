@@ -36,7 +36,7 @@ module Gitlab
               Clusters::KubernetesNamespaceFinder.new(
                 deployment_cluster,
                 project: environment.project,
-                environment_slug: environment.slug,
+                environment_name: environment.name,
                 allow_blank_token: true
               ).execute
             end

@@ -289,6 +289,15 @@ class NotificationService
     end
   end
 
+  # Notify users when a new release is created
+  def send_new_release_notifications(release)
+    recipients = NotificationRecipientService.build_new_release_recipients(release)
+
+    recipients.each do |recipient|
+      mailer.new_release_email(recipient.user.id, release, recipient.reason).deliver_later
+    end
+  end
+
   # Members
   def new_access_request(member)
     return true unless member.notifiable?(:subscription)

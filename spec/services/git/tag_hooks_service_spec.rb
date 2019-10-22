@@ -15,13 +15,7 @@ describe Git::TagHooksService, :service do
   let(:commit) { tag.dereferenced_target }
 
   let(:service) do
-    described_class.new(project, user, oldrev: oldrev, newrev: newrev, ref: ref)
-  end
-
-  it 'update remote mirrors' do
-    expect(service).to receive(:update_remote_mirrors).and_call_original
-
-    service.execute
+    described_class.new(project, user, change: { oldrev: oldrev, newrev: newrev, ref: ref })
   end
 
   describe 'System hooks' do
@@ -64,6 +58,7 @@ describe Git::TagHooksService, :service do
   describe 'Push data' do
     shared_examples_for 'tag push data expectations' do
       subject(:push_data) { service.send(:push_data) }
+
       it 'has expected push data attributes' do
         is_expected.to match a_hash_including(
           object_kind: 'tag_push',

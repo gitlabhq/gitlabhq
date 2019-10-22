@@ -184,8 +184,8 @@ Example response:
             "id": 1,
             "name": "GitLab Community Edition",
             "name_with_namespace": "GitLab.org / GitLab Community Edition",
-            "path": "gitlab-ce",
-            "path_with_namespace": "gitlab-org/gitlab-ce"
+            "path": "gitlab-foss",
+            "path_with_namespace": "gitlab-org/gitlab-foss"
         }
     ],
     "token": "205086a8e3b9a2b818ffac9b89d102",
@@ -243,8 +243,8 @@ Example response:
             "id": 1,
             "name": "GitLab Community Edition",
             "name_with_namespace": "GitLab.org / GitLab Community Edition",
-            "path": "gitlab-ce",
-            "path_with_namespace": "gitlab-org/gitlab-ce"
+            "path": "gitlab-foss",
+            "path_with_namespace": "gitlab-org/gitlab-foss"
         }
     ],
     "token": "205086a8e3b9a2b818ffac9b89d102",

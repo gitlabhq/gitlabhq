@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe API::Groups do
+  include GroupAPIHelpers
   include UploadHelpers
 
   let(:user1) { create(:user, can_create_group: false) }
@@ -350,6 +351,13 @@ describe API::Groups do
         expect(json_response['description']).to eq(group1.description)
         expect(json_response['visibility']).to eq(Gitlab::VisibilityLevel.string_level(group1.visibility_level))
         expect(json_response['avatar_url']).to eq(group1.avatar_url(only_path: false))
+        expect(json_response['share_with_group_lock']).to eq(group1.share_with_group_lock)
+        expect(json_response['require_two_factor_authentication']).to eq(group1.require_two_factor_authentication)
+        expect(json_response['two_factor_grace_period']).to eq(group1.two_factor_grace_period)
+        expect(json_response['auto_devops_enabled']).to eq(group1.auto_devops_enabled)
+        expect(json_response['emails_disabled']).to eq(group1.emails_disabled)
+        expect(json_response['project_creation_level']).to eq('maintainer')
+        expect(json_response['subgroup_creation_level']).to eq('maintainer')
         expect(json_response['web_url']).to eq(group1.web_url)
         expect(json_response['request_access_enabled']).to eq(group1.request_access_enabled)
         expect(json_response['full_name']).to eq(group1.full_name)
@@ -485,17 +493,59 @@ describe API::Groups do
 
     context 'when authenticated as the group owner' do
       it 'updates the group' do
-        put api("/groups/#{group1.id}", user1), params: { name: new_group_name, request_access_enabled: true }
+        put api("/groups/#{group1.id}", user1), params: {
+          name: new_group_name,
+          request_access_enabled: true,
+          project_creation_level: "noone",
+          subgroup_creation_level: "maintainer"
+        }
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response['name']).to eq(new_group_name)
+        expect(json_response['description']).to eq('')
+        expect(json_response['visibility']).to eq('public')
+        expect(json_response['share_with_group_lock']).to eq(false)
+        expect(json_response['require_two_factor_authentication']).to eq(false)
+        expect(json_response['two_factor_grace_period']).to eq(48)
+        expect(json_response['auto_devops_enabled']).to eq(nil)
+        expect(json_response['emails_disabled']).to eq(nil)
+        expect(json_response['project_creation_level']).to eq("noone")
+        expect(json_response['subgroup_creation_level']).to eq("maintainer")
         expect(json_response['request_access_enabled']).to eq(true)
+        expect(json_response['parent_id']).to eq(nil)
+        expect(json_response['projects']).to be_an Array
+        expect(json_response['projects'].length).to eq(2)
+        expect(json_response['shared_projects']).to be_an Array
+        expect(json_response['shared_projects'].length).to eq(0)
       end
 
       it 'returns 404 for a non existing group' do
         put api('/groups/1328', user1), params: { name: new_group_name }
 
         expect(response).to have_gitlab_http_status(404)
+      end
+
+      context 'within a subgroup' do
+        let(:group3) { create(:group, visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
+        let!(:subgroup) { create(:group, parent: group3, visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
+
+        before do
+          group3.add_owner(user3)
+        end
+
+        it 'does not change visibility when not requested' do
+          put api("/groups/#{group3.id}", user3), params: { description: 'Bug #23083' }
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(json_response['visibility']).to eq('public')
+        end
+
+        it 'prevents making private a group containing public subgroups' do
+          put api("/groups/#{group3.id}", user3), params: { visibility: 'private' }
+
+          expect(response).to have_gitlab_http_status(400)
+          expect(json_response['message']['visibility_level']).to contain_exactly('private is not allowed since there are sub-groups with higher visibility.')
+        end
       end
     end
 
@@ -841,7 +891,9 @@ describe API::Groups do
   describe "POST /groups" do
     context "when authenticated as user without group permissions" do
       it "does not create group" do
-        post api("/groups", user1), params: attributes_for(:group)
+        group = attributes_for_group_api
+
+        post api("/groups", user1), params: group
 
         expect(response).to have_gitlab_http_status(403)
       end
@@ -873,7 +925,7 @@ describe API::Groups do
 
     context "when authenticated as user with group permissions" do
       it "creates group" do
-        group = attributes_for(:group, { request_access_enabled: false })
+        group = attributes_for_group_api request_access_enabled: false
 
         post api("/groups", user3), params: group
 
@@ -888,7 +940,7 @@ describe API::Groups do
       it "creates a nested group" do
         parent = create(:group)
         parent.add_owner(user3)
-        group = attributes_for(:group, { parent_id: parent.id })
+        group = attributes_for_group_api parent_id: parent.id
 
         post api("/groups", user3), params: group
 

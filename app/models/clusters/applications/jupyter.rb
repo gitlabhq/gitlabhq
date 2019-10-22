@@ -23,7 +23,7 @@ module Clusters
         return unless cluster&.application_ingress_available?
 
         ingress = cluster.application_ingress
-        self.status = 'installable' if ingress.external_ip_or_hostname?
+        self.status = status_states[:installable] if ingress.external_ip_or_hostname?
       end
 
       def chart

@@ -14,6 +14,10 @@ describe 'User comments on a diff', :js do
     expect(suggested_content).to eq(expected_suggested_content)
   end
 
+  def expect_appliable_suggestions(amount)
+    expect(all('button', text: 'Apply suggestion').size).to eq(amount)
+  end
+
   let(:project) { create(:project, :repository) }
   let(:merge_request) do
     create(:merge_request_with_diffs, source_project: project, target_project: project, source_branch: 'merge-test')
@@ -82,6 +86,60 @@ describe 'User comments on a diff', :js do
         expect(page).not_to have_content('Applied')
 
         click_button('Apply suggestion')
+        wait_for_requests
+
+        expect(page).to have_content('Applied')
+      end
+    end
+  end
+
+  context 'multiple suggestions in expanded lines' do
+    it 'suggestions are appliable' do
+      diff_file = merge_request.diffs(paths: ['files/ruby/popen.rb']).diff_files.first
+      hash = Digest::SHA1.hexdigest(diff_file.file_path)
+
+      expanded_changes = [
+        {
+          line_code: "#{hash}_1_1",
+          file_path: diff_file.file_path
+        },
+        {
+          line_code: "#{hash}_5_5",
+          file_path: diff_file.file_path
+        }
+      ]
+      changes = sample_compare(expanded_changes).changes.last(expanded_changes.size)
+
+      page.within("[id='#{hash}']") do
+        find("button[data-original-title='Show full file']").click
+        wait_for_requests
+
+        click_diff_line(find("[id='#{changes.first[:line_code]}']"))
+
+        page.within('.js-discussion-note-form') do
+          fill_in('note_note', with: "```suggestion\n# change to a comment\n```")
+          click_button('Comment')
+          wait_for_requests
+        end
+
+        click_diff_line(find("[id='#{changes.last[:line_code]}']"))
+
+        page.within('.js-discussion-note-form') do
+          fill_in('note_note', with: "```suggestion\n# 2nd change to a comment\n```")
+          click_button('Comment')
+          wait_for_requests
+        end
+
+        expect_appliable_suggestions(2)
+      end
+
+      # Making sure it's not a Front-end cache.
+      visit(diffs_project_merge_request_path(project, merge_request))
+
+      expect_appliable_suggestions(2)
+
+      page.within("[id='#{hash}']") do
+        all('button', text: 'Apply suggestion').last.click
         wait_for_requests
 
         expect(page).to have_content('Applied')

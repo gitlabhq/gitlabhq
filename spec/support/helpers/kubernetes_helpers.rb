@@ -11,6 +11,10 @@ module KubernetesHelpers
     kube_response(kube_pods_body)
   end
 
+  def kube_pod_response
+    kube_response(kube_pod)
+  end
+
   def kube_logs_response
     kube_response(kube_logs_body)
   end
@@ -63,10 +67,29 @@ module KubernetesHelpers
     WebMock.stub_request(:get, pods_url).to_return(response || kube_pods_response)
   end
 
-  def stub_kubeclient_logs(pod_name, namespace, status: nil)
+  def stub_kubeclient_pod_details(pod, namespace, status: nil)
     stub_kubeclient_discover(service.api_url)
-    logs_url = service.api_url + "/api/v1/namespaces/#{namespace}/pods/#{pod_name}/log?tailLines=#{Clusters::Platforms::Kubernetes::LOGS_LIMIT}"
+
+    pod_url = service.api_url + "/api/v1/namespaces/#{namespace}/pods/#{pod}"
     response = { status: status } if status
+
+    WebMock.stub_request(:get, pod_url).to_return(response || kube_pod_response)
+  end
+
+  def stub_kubeclient_logs(pod_name, namespace, container: nil, status: nil, message: nil)
+    stub_kubeclient_discover(service.api_url)
+
+    if container
+      container_query_param = "container=#{container}&"
+    end
+
+    logs_url = service.api_url + "/api/v1/namespaces/#{namespace}/pods/#{pod_name}" \
+    "/log?#{container_query_param}tailLines=#{Clusters::Platforms::Kubernetes::LOGS_LIMIT}"
+
+    if status
+      response = { status: status }
+      response[:body] = { message: message }.to_json if message
+    end
 
     WebMock.stub_request(:get, logs_url).to_return(response || kube_logs_response)
   end
@@ -296,10 +319,10 @@ module KubernetesHelpers
     }
   end
 
-  def kube_knative_services_body(**options)
+  def kube_knative_services_body(legacy_knative: false, **options)
     {
       "kind" => "List",
-      "items" => [kube_service(options)]
+      "items" => [legacy_knative ? knative_05_service(options) : kube_service(options)]
     }
   end
 
@@ -387,6 +410,29 @@ module KubernetesHelpers
         "generation" => 2
       },
       "status" => {
+        "url" => "http://#{name}.#{namespace}.#{domain}",
+        "address" => {
+          "url" => "#{name}.#{namespace}.svc.cluster.local"
+        },
+        "latestCreatedRevisionName" => "#{name}-00002",
+        "latestReadyRevisionName" => "#{name}-00002",
+        "observedGeneration" => 2
+      }
+    }
+  end
+
+  def knative_05_service(name: "kubetest", namespace: "default", domain: "example.com")
+    {
+      "metadata" => {
+        "creationTimestamp" => "2018-11-21T06:16:33Z",
+        "name" => name,
+        "namespace" => namespace,
+        "selfLink" => "/apis/serving.knative.dev/v1alpha1/namespaces/#{namespace}/services/#{name}"
+      },
+      "spec" => {
+        "generation" => 2
+      },
+      "status" => {
         "domain" => "#{name}.#{namespace}.#{domain}",
         "domainInternal" => "#{name}.#{namespace}.svc.cluster.local",
         "latestCreatedRevisionName" => "#{name}-00002",
@@ -414,8 +460,10 @@ module KubernetesHelpers
         }
       },
       "status" => {
-        "domain" => "#{name}.#{namespace}.#{domain}",
-        "domainInternal" => "#{name}.#{namespace}.svc.cluster.local",
+        "url" => "http://#{name}.#{namespace}.#{domain}",
+        "address" => {
+          "url" => "#{name}.#{namespace}.svc.cluster.local"
+        },
         "latestCreatedRevisionName" => "#{name}-00002",
         "latestReadyRevisionName" => "#{name}-00002",
         "observedGeneration" => 2

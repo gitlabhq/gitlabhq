@@ -53,7 +53,7 @@ class DiffsEntity < Grape::Entity
   # rubocop: enable CodeReuse/ActiveRecord
 
   expose :render_overflow_warning do |diffs|
-    render_overflow_warning?(diffs.diff_files)
+    render_overflow_warning?(diffs)
   end
 
   expose :email_patch_path, if: -> (*) { merge_request } do |diffs|

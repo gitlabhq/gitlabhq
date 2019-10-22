@@ -2,38 +2,45 @@
 require 'spec_helper'
 
 describe Gitlab::FileTypeDetection do
-  def upload_fixture(filename)
-    fixture_file_upload(File.join('spec', 'fixtures', filename))
-  end
+  context 'when class is an uploader' do
+    let(:uploader) do
+      example_uploader = Class.new(CarrierWave::Uploader::Base) do
+        include Gitlab::FileTypeDetection
 
-  describe '#image_or_video?' do
-    context 'when class is an uploader' do
-      let(:uploader) do
-        example_uploader = Class.new(CarrierWave::Uploader::Base) do
-          include Gitlab::FileTypeDetection
-
-          storage :file
-        end
-
-        example_uploader.new
+        storage :file
       end
 
+      example_uploader.new
+    end
+
+    def upload_fixture(filename)
+      fixture_file_upload(File.join('spec', 'fixtures', filename))
+    end
+
+    describe '#image?' do
       it 'returns true for an image file' do
         uploader.store!(upload_fixture('dk.png'))
 
-        expect(uploader).to be_image_or_video
+        expect(uploader).to be_image
       end
 
-      it 'returns true for a video file' do
+      it 'returns false if filename has a dangerous image extension' do
+        uploader.store!(upload_fixture('unsanitized.svg'))
+
+        expect(uploader).to be_dangerous_image
+        expect(uploader).not_to be_image
+      end
+
+      it 'returns false for a video file' do
         uploader.store!(upload_fixture('video_sample.mp4'))
 
-        expect(uploader).to be_image_or_video
+        expect(uploader).not_to be_image
       end
 
-      it 'returns false for other extensions' do
-        uploader.store!(upload_fixture('doc_sample.txt'))
+      it 'returns false for an audio file' do
+        uploader.store!(upload_fixture('audio_sample.wav'))
 
-        expect(uploader).not_to be_image_or_video
+        expect(uploader).not_to be_image
       end
 
       it 'returns false if filename is blank' do
@@ -41,41 +48,542 @@ describe Gitlab::FileTypeDetection do
 
         allow(uploader).to receive(:filename).and_return(nil)
 
-        expect(uploader).not_to be_image_or_video
+        expect(uploader).not_to be_image
       end
     end
 
-    context 'when class is a regular class' do
-      let(:custom_class) do
-        custom_class = Class.new do
-          include Gitlab::FileTypeDetection
-        end
+    describe '#video?' do
+      it 'returns true for a video file' do
+        uploader.store!(upload_fixture('video_sample.mp4'))
 
-        custom_class.new
+        expect(uploader).to be_video
       end
 
-      it 'returns true for an image file' do
-        allow(custom_class).to receive(:filename).and_return('dk.png')
+      it 'returns false for an image file' do
+        uploader.store!(upload_fixture('dk.png'))
 
-        expect(custom_class).to be_image_or_video
+        expect(uploader).not_to be_video
+      end
+
+      it 'returns false for an audio file' do
+        uploader.store!(upload_fixture('audio_sample.wav'))
+
+        expect(uploader).not_to be_video
+      end
+
+      it 'returns false if file has a dangerous image extension' do
+        uploader.store!(upload_fixture('unsanitized.svg'))
+
+        expect(uploader).to be_dangerous_image
+        expect(uploader).not_to be_video
+      end
+
+      it 'returns false if filename is blank' do
+        uploader.store!(upload_fixture('video_sample.mp4'))
+
+        allow(uploader).to receive(:filename).and_return(nil)
+
+        expect(uploader).not_to be_video
+      end
+    end
+
+    describe '#audio?' do
+      it 'returns true for an audio file' do
+        uploader.store!(upload_fixture('audio_sample.wav'))
+
+        expect(uploader).to be_audio
+      end
+
+      it 'returns false for an image file' do
+        uploader.store!(upload_fixture('dk.png'))
+
+        expect(uploader).not_to be_audio
+      end
+
+      it 'returns false for a video file' do
+        uploader.store!(upload_fixture('video_sample.mp4'))
+
+        expect(uploader).not_to be_audio
+      end
+
+      it 'returns false if file has a dangerous image extension' do
+        uploader.store!(upload_fixture('unsanitized.svg'))
+
+        expect(uploader).to be_dangerous_image
+        expect(uploader).not_to be_audio
+      end
+
+      it 'returns false if filename is blank' do
+        uploader.store!(upload_fixture('audio_sample.wav'))
+
+        allow(uploader).to receive(:filename).and_return(nil)
+
+        expect(uploader).not_to be_audio
+      end
+    end
+
+    describe '#embeddable?' do
+      it 'returns true for an image file' do
+        uploader.store!(upload_fixture('dk.png'))
+
+        expect(uploader).to be_embeddable
       end
 
       it 'returns true for a video file' do
-        allow(custom_class).to receive(:filename).and_return('video_sample.mp4')
+        uploader.store!(upload_fixture('video_sample.mp4'))
 
-        expect(custom_class).to be_image_or_video
+        expect(uploader).to be_embeddable
       end
 
-      it 'returns false for other extensions' do
-        allow(custom_class).to receive(:filename).and_return('doc_sample.txt')
+      it 'returns true for an audio file' do
+        uploader.store!(upload_fixture('audio_sample.wav'))
 
-        expect(custom_class).not_to be_image_or_video
+        expect(uploader).to be_embeddable
+      end
+
+      it 'returns false if not an embeddable file' do
+        uploader.store!(upload_fixture('doc_sample.txt'))
+
+        expect(uploader).not_to be_embeddable
+      end
+
+      it 'returns false if filename has a dangerous image extension' do
+        uploader.store!(upload_fixture('unsanitized.svg'))
+
+        expect(uploader).to be_dangerous_image
+        expect(uploader).not_to be_embeddable
+      end
+
+      it 'returns false if filename is blank' do
+        uploader.store!(upload_fixture('dk.png'))
+
+        allow(uploader).to receive(:filename).and_return(nil)
+
+        expect(uploader).not_to be_embeddable
+      end
+    end
+
+    describe '#dangerous_image?' do
+      it 'returns true if filename has a dangerous extension' do
+        uploader.store!(upload_fixture('unsanitized.svg'))
+
+        expect(uploader).to be_dangerous_image
+      end
+
+      it 'returns false for an image file' do
+        uploader.store!(upload_fixture('dk.png'))
+
+        expect(uploader).not_to be_dangerous_image
+      end
+
+      it 'returns false for a video file' do
+        uploader.store!(upload_fixture('video_sample.mp4'))
+
+        expect(uploader).not_to be_dangerous_image
+      end
+
+      it 'returns false for an audio file' do
+        uploader.store!(upload_fixture('audio_sample.wav'))
+
+        expect(uploader).not_to be_dangerous_image
+      end
+
+      it 'returns false if filename is blank' do
+        uploader.store!(upload_fixture('dk.png'))
+
+        allow(uploader).to receive(:filename).and_return(nil)
+
+        expect(uploader).not_to be_dangerous_image
+      end
+    end
+
+    describe '#dangerous_video?' do
+      it 'returns false for a safe video file' do
+        uploader.store!(upload_fixture('video_sample.mp4'))
+
+        expect(uploader).not_to be_dangerous_video
+      end
+
+      it 'returns false if filename is a dangerous image extension' do
+        uploader.store!(upload_fixture('unsanitized.svg'))
+
+        expect(uploader).not_to be_dangerous_video
+      end
+
+      it 'returns false for an image file' do
+        uploader.store!(upload_fixture('dk.png'))
+
+        expect(uploader).not_to be_dangerous_video
+      end
+
+      it 'returns false for an audio file' do
+        uploader.store!(upload_fixture('audio_sample.wav'))
+
+        expect(uploader).not_to be_dangerous_video
+      end
+
+      it 'returns false if filename is blank' do
+        uploader.store!(upload_fixture('dk.png'))
+
+        allow(uploader).to receive(:filename).and_return(nil)
+
+        expect(uploader).not_to be_dangerous_video
+      end
+    end
+
+    describe '#dangerous_audio?' do
+      it 'returns false for a safe audio file' do
+        uploader.store!(upload_fixture('audio_sample.wav'))
+
+        expect(uploader).not_to be_dangerous_audio
+      end
+
+      it 'returns false if filename is a dangerous image extension' do
+        uploader.store!(upload_fixture('unsanitized.svg'))
+
+        expect(uploader).not_to be_dangerous_audio
+      end
+
+      it 'returns false for an image file' do
+        uploader.store!(upload_fixture('dk.png'))
+
+        expect(uploader).not_to be_dangerous_audio
+      end
+
+      it 'returns false for an video file' do
+        uploader.store!(upload_fixture('video_sample.mp4'))
+
+        expect(uploader).not_to be_dangerous_audio
+      end
+
+      it 'returns false if filename is blank' do
+        uploader.store!(upload_fixture('dk.png'))
+
+        allow(uploader).to receive(:filename).and_return(nil)
+
+        expect(uploader).not_to be_dangerous_audio
+      end
+    end
+
+    describe '#dangerous_embeddable?' do
+      it 'returns true if filename has a dangerous image extension' do
+        uploader.store!(upload_fixture('unsanitized.svg'))
+
+        expect(uploader).to be_dangerous_embeddable
+      end
+
+      it 'returns false for an image file' do
+        uploader.store!(upload_fixture('dk.png'))
+
+        expect(uploader).not_to be_dangerous_embeddable
+      end
+
+      it 'returns false for a video file' do
+        uploader.store!(upload_fixture('video_sample.mp4'))
+
+        expect(uploader).not_to be_dangerous_embeddable
+      end
+
+      it 'returns false for an audio file' do
+        uploader.store!(upload_fixture('audio_sample.wav'))
+
+        expect(uploader).not_to be_dangerous_embeddable
+      end
+
+      it 'returns false for a non-embeddable file' do
+        uploader.store!(upload_fixture('doc_sample.txt'))
+
+        expect(uploader).not_to be_dangerous_embeddable
+      end
+
+      it 'returns false if filename is blank' do
+        uploader.store!(upload_fixture('dk.png'))
+
+        allow(uploader).to receive(:filename).and_return(nil)
+
+        expect(uploader).not_to be_dangerous_embeddable
+      end
+    end
+  end
+
+  context 'when class is a regular class' do
+    let(:custom_class) do
+      custom_class = Class.new do
+        include Gitlab::FileTypeDetection
+      end
+
+      custom_class.new
+    end
+
+    describe '#image?' do
+      it 'returns true for an image file' do
+        allow(custom_class).to receive(:filename).and_return('dk.png')
+
+        expect(custom_class).to be_image
+      end
+
+      it 'returns false if file has a dangerous image extension' do
+        allow(custom_class).to receive(:filename).and_return('unsanitized.svg')
+
+        expect(custom_class).to be_dangerous_image
+        expect(custom_class).not_to be_image
+      end
+
+      it 'returns false for a video file' do
+        allow(custom_class).to receive(:filename).and_return('video_sample.mp4')
+
+        expect(custom_class).not_to be_image
+      end
+
+      it 'returns false for an audio file' do
+        allow(custom_class).to receive(:filename).and_return('audio_sample.wav')
+
+        expect(custom_class).not_to be_image
       end
 
       it 'returns false if filename is blank' do
         allow(custom_class).to receive(:filename).and_return(nil)
 
-        expect(custom_class).not_to be_image_or_video
+        expect(custom_class).not_to be_image
+      end
+    end
+
+    describe '#video?' do
+      it 'returns true for a video file' do
+        allow(custom_class).to receive(:filename).and_return('video_sample.mp4')
+
+        expect(custom_class).to be_video
+      end
+
+      it 'returns false for an image file' do
+        allow(custom_class).to receive(:filename).and_return('dk.png')
+
+        expect(custom_class).not_to be_video
+      end
+
+      it 'returns false for an audio file' do
+        allow(custom_class).to receive(:filename).and_return('audio_sample.wav')
+
+        expect(custom_class).not_to be_video
+      end
+
+      it 'returns false if file has a dangerous image extension' do
+        allow(custom_class).to receive(:filename).and_return('unsanitized.svg')
+
+        expect(custom_class).to be_dangerous_image
+        expect(custom_class).not_to be_video
+      end
+
+      it 'returns false if filename is blank' do
+        allow(custom_class).to receive(:filename).and_return(nil)
+
+        expect(custom_class).not_to be_video
+      end
+    end
+
+    describe '#audio?' do
+      it 'returns true for an audio file' do
+        allow(custom_class).to receive(:filename).and_return('audio_sample.wav')
+
+        expect(custom_class).to be_audio
+      end
+
+      it 'returns false for an image file' do
+        allow(custom_class).to receive(:filename).and_return('dk.png')
+
+        expect(custom_class).not_to be_audio
+      end
+
+      it 'returns false for a video file' do
+        allow(custom_class).to receive(:filename).and_return('video_sample.mp4')
+
+        expect(custom_class).not_to be_audio
+      end
+
+      it 'returns false if file has a dangerous image extension' do
+        allow(custom_class).to receive(:filename).and_return('unsanitized.svg')
+
+        expect(custom_class).to be_dangerous_image
+        expect(custom_class).not_to be_audio
+      end
+
+      it 'returns false if filename is blank' do
+        allow(custom_class).to receive(:filename).and_return(nil)
+
+        expect(custom_class).not_to be_audio
+      end
+    end
+
+    describe '#embeddable?' do
+      it 'returns true for an image file' do
+        allow(custom_class).to receive(:filename).and_return('dk.png')
+
+        expect(custom_class).to be_embeddable
+      end
+
+      it 'returns true for a video file' do
+        allow(custom_class).to receive(:filename).and_return('video_sample.mp4')
+
+        expect(custom_class).to be_embeddable
+      end
+
+      it 'returns true for an audio file' do
+        allow(custom_class).to receive(:filename).and_return('audio_sample.wav')
+
+        expect(custom_class).to be_embeddable
+      end
+
+      it 'returns false if not an embeddable file' do
+        allow(custom_class).to receive(:filename).and_return('doc_sample.txt')
+
+        expect(custom_class).not_to be_embeddable
+      end
+
+      it 'returns false if filename has a dangerous image extension' do
+        allow(custom_class).to receive(:filename).and_return('unsanitized.svg')
+
+        expect(custom_class).to be_dangerous_image
+        expect(custom_class).not_to be_embeddable
+      end
+
+      it 'returns false if filename is blank' do
+        allow(custom_class).to receive(:filename).and_return(nil)
+
+        expect(custom_class).not_to be_embeddable
+      end
+    end
+
+    describe '#dangerous_image?' do
+      it 'returns true if file has a dangerous image extension' do
+        allow(custom_class).to receive(:filename).and_return('unsanitized.svg')
+
+        expect(custom_class).to be_dangerous_image
+      end
+
+      it 'returns false for an image file' do
+        allow(custom_class).to receive(:filename).and_return('dk.png')
+
+        expect(custom_class).not_to be_dangerous_image
+      end
+
+      it 'returns false for a video file' do
+        allow(custom_class).to receive(:filename).and_return('video_sample.mp4')
+
+        expect(custom_class).not_to be_dangerous_image
+      end
+
+      it 'returns false for an audio file' do
+        allow(custom_class).to receive(:filename).and_return('audio_sample.wav')
+
+        expect(custom_class).not_to be_dangerous_image
+      end
+
+      it 'returns false if filename is blank' do
+        allow(custom_class).to receive(:filename).and_return(nil)
+
+        expect(custom_class).not_to be_dangerous_image
+      end
+    end
+
+    describe '#dangerous_video?' do
+      it 'returns false for a safe video file' do
+        allow(custom_class).to receive(:filename).and_return('video_sample.mp4')
+
+        expect(custom_class).not_to be_dangerous_video
+      end
+
+      it 'returns false for an image file' do
+        allow(custom_class).to receive(:filename).and_return('dk.png')
+
+        expect(custom_class).not_to be_dangerous_video
+      end
+
+      it 'returns false for an audio file' do
+        allow(custom_class).to receive(:filename).and_return('audio_sample.wav')
+
+        expect(custom_class).not_to be_dangerous_video
+      end
+
+      it 'returns false if file has a dangerous image extension' do
+        allow(custom_class).to receive(:filename).and_return('unsanitized.svg')
+
+        expect(custom_class).not_to be_dangerous_video
+      end
+
+      it 'returns false if filename is blank' do
+        allow(custom_class).to receive(:filename).and_return(nil)
+
+        expect(custom_class).not_to be_dangerous_video
+      end
+    end
+
+    describe '#dangerous_audio?' do
+      it 'returns false for a safe audio file' do
+        allow(custom_class).to receive(:filename).and_return('audio_sample.wav')
+
+        expect(custom_class).not_to be_dangerous_audio
+      end
+
+      it 'returns false for an image file' do
+        allow(custom_class).to receive(:filename).and_return('dk.png')
+
+        expect(custom_class).not_to be_dangerous_audio
+      end
+
+      it 'returns false for a video file' do
+        allow(custom_class).to receive(:filename).and_return('video_sample.mp4')
+
+        expect(custom_class).not_to be_dangerous_audio
+      end
+
+      it 'returns false if file has a dangerous image extension' do
+        allow(custom_class).to receive(:filename).and_return('unsanitized.svg')
+
+        expect(custom_class).not_to be_dangerous_audio
+      end
+
+      it 'returns false if filename is blank' do
+        allow(custom_class).to receive(:filename).and_return(nil)
+
+        expect(custom_class).not_to be_dangerous_audio
+      end
+    end
+
+    describe '#dangerous_embeddable?' do
+      it 'returns true if file has a dangerous image extension' do
+        allow(custom_class).to receive(:filename).and_return('unsanitized.svg')
+
+        expect(custom_class).to be_dangerous_embeddable
+      end
+
+      it 'returns false for an image file' do
+        allow(custom_class).to receive(:filename).and_return('dk.png')
+
+        expect(custom_class).not_to be_dangerous_embeddable
+      end
+
+      it 'returns false for a video file' do
+        allow(custom_class).to receive(:filename).and_return('video_sample.mp4')
+
+        expect(custom_class).not_to be_dangerous_embeddable
+      end
+
+      it 'returns false for an audio file' do
+        allow(custom_class).to receive(:filename).and_return('audio_sample.wav')
+
+        expect(custom_class).not_to be_dangerous_embeddable
+      end
+
+      it 'returns false for a non-embeddable file' do
+        allow(custom_class).to receive(:filename).and_return('doc_sample.txt')
+
+        expect(custom_class).not_to be_dangerous_embeddable
+      end
+
+      it 'returns false if filename is blank' do
+        allow(custom_class).to receive(:filename).and_return(nil)
+
+        expect(custom_class).not_to be_dangerous_embeddable
       end
     end
   end

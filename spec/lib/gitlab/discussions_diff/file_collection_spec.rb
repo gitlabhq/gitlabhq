@@ -40,6 +40,14 @@ describe Gitlab::DiscussionsDiff::FileCollection do
       subject.load_highlight
     end
 
+    it 'does not write cache for empty mapping' do
+      allow(subject).to receive(:highlighted_lines_by_ids).and_return([])
+
+      expect(Gitlab::DiscussionsDiff::HighlightCache).not_to receive(:write_multiple)
+
+      subject.load_highlight
+    end
+
     it 'does not write cache for resolved notes' do
       diff_note_a.update_column(:resolved_at, Time.now)
 

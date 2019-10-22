@@ -2,6 +2,7 @@ import $ from 'jquery';
 import Dropzone from 'dropzone';
 import Mousetrap from 'mousetrap';
 import ZenMode from '~/zen_mode';
+import initNotes from '~/init_notes';
 
 describe('ZenMode', () => {
   let zen;
@@ -28,6 +29,7 @@ describe('ZenMode', () => {
 
   beforeEach(() => {
     loadFixtures(fixtureName);
+    initNotes();
 
     dropzoneForElementSpy = spyOn(Dropzone, 'forElement').and.callFake(() => ({
       enable: () => true,

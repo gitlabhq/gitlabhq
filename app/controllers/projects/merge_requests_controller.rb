@@ -5,6 +5,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   include IssuableActions
   include RendersNotes
   include RendersCommits
+  include RendersAssignees
   include ToggleAwardEmoji
   include IssuableCollections
   include RecordUserLastActivity
@@ -16,6 +17,13 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   before_action :set_issuables_index, only: [:index]
   before_action :authenticate_user!, only: [:assign_related_issues]
   before_action :check_user_can_push_to_source_branch!, only: [:rebase]
+  before_action only: [:show] do
+    push_frontend_feature_flag(:diffs_batch_load, @project)
+  end
+
+  before_action do
+    push_frontend_feature_flag(:vue_issuable_sidebar, @project.group)
+  end
 
   around_action :allow_gitaly_ref_name_caching, only: [:index, :show, :discussions]
 
@@ -40,6 +48,8 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
       format.html do
         # use next to appease Rubocop
         next render('invalid') if target_branch_missing?
+
+        preload_assignees_for_render(@merge_request)
 
         # Build a note object for comment form
         @note = @project.notes.new(noteable: @merge_request)
@@ -79,7 +89,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     # Get commits from repository
     # or from cache if already merged
     @commits =
-      set_commits_for_rendering(@merge_request.commits.with_pipeline_status)
+      set_commits_for_rendering(@merge_request.commits.with_latest_pipeline)
 
     render json: { html: view_to_html_string('projects/merge_requests/_commits') }
   end

@@ -2,7 +2,7 @@
 - board = local_assigns.fetch(:board, nil)
 - is_not_boards_modal_or_productivity_analytics = type != :boards_modal && type != :productivity_analytics
 - block_css_class = is_not_boards_modal_or_productivity_analytics ? 'row-content-block second-block' : ''
-- user_can_admin_list = board && can?(current_user, :admin_list, board.parent)
+- user_can_admin_list = board && can?(current_user, :admin_list, board.resource_parent)
 
 .issues-filters{ class: ("w-100" if type == :boards_modal) }
   .issues-details-filters.filtered-search-block.d-flex.flex-column.flex-md-row{ class: block_css_class, "v-pre" => type == :boards_modal }
@@ -17,12 +17,11 @@
       .issues-other-filters.filtered-search-wrapper.d-flex.flex-column.flex-md-row
         .filtered-search-box
           - if type != :boards_modal && type != :boards
-            = dropdown_tag(custom_icon('icon_history'),
+            = dropdown_tag(_('Recent searches'),
               options: { wrapper_class: "filtered-search-history-dropdown-wrapper",
               toggle_class: "filtered-search-history-dropdown-toggle-button",
               dropdown_class: "filtered-search-history-dropdown",
-              content_class: "filtered-search-history-dropdown-content",
-              title: "Recent searches" }) do
+              content_class: "filtered-search-history-dropdown-content" }) do
               .js-filtered-search-history-dropdown{ data: { full_path: search_history_storage_prefix } }
           .filtered-search-box-input-container.droplab-dropdown
             .scroll-container

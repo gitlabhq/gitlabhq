@@ -1,0 +1,61 @@
+
+# 1. Human Resources
+
+dn: uid=hruser1,ou=People,ou=Global Groups,dc=example,dc=org
+cn: HR User 1
+givenName: HR
+sn: User1
+uid: hruser1
+uidNumber: 5000
+gidNumber: 10000
+homeDirectory: /home/hruser1
+mail: hruser1@example.org
+objectClass: top
+objectClass: posixAccount
+objectClass: shadowAccount
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+loginShell: /bin/bash
+# hashed value for 'password'
+userPassword: {SSHA}ICMhr6Jxt5bk2awD7HL7GxRTM3BZ1pFI
+
+# 2. Admin
+
+dn: uid=adminuser1,ou=People,ou=Global Groups,dc=example,dc=org
+cn: Admin User 1
+givenName: Admin
+sn: User1
+uid: adminuser1
+uidNumber: 5009
+gidNumber: 10009
+homeDirectory: /home/adminuser1
+mail: adminuser1@example.org
+objectClass: top
+objectClass: posixAccount
+objectClass: shadowAccount
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+loginShell: /bin/bash
+# hashed value for 'password'
+userPassword: {SSHA}ICMhr6Jxt5bk2awD7HL7GxRTM3BZ1pFI
+
+dn: uid=adminuser2,ou=People,ou=Global Groups,dc=example,dc=org
+cn: Admin User 2
+givenName: Admin
+sn: User1
+uid: adminuser2
+uidNumber: 5010
+gidNumber: 10010
+homeDirectory: /home/adminuser2
+mail: adminuser2@example.org
+objectClass: top
+objectClass: posixAccount
+objectClass: shadowAccount
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+loginShell: /bin/bash
+# hashed value for 'password'
+userPassword: {SSHA}ICMhr6Jxt5bk2awD7HL7GxRTM3BZ1pFI

@@ -245,14 +245,6 @@ $note-form-margin-left: 72px;
       }
     }
 
-    .note-header {
-      @include notes-media('max', map-get($grid-breakpoints, xs)) {
-        .inline {
-          display: block;
-        }
-      }
-    }
-
     .note-emoji-button {
       position: relative;
       line-height: 1;
@@ -363,10 +355,13 @@ $note-form-margin-left: 72px;
     }
   }
 
+  .timeline-icon {
+    float: left;
+  }
+
   .system-note,
   .discussion-filter-note {
     .timeline-icon {
-      float: left;
       display: flex;
       align-items: center;
       background-color: $white-light;
@@ -635,10 +630,6 @@ $note-form-margin-left: 72px;
 
 .note-headline-light {
   display: inline;
-
-  @include notes-media('max', map-get($grid-breakpoints, xs)) {
-    display: block;
-  }
 }
 
 .note-headline-light,

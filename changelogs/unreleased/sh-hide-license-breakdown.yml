@@ -1,0 +1,5 @@
+---
+title: Hide license breakdown in /admin if user count is high
+merge_request: 18825
+author:
+type: performance

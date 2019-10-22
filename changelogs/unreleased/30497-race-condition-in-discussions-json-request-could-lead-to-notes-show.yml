@@ -1,0 +1,5 @@
+---
+title: Fix notes race condition when linking to specific note
+merge_request: 17777
+author:
+type: fixed

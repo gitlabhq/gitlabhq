@@ -9,9 +9,9 @@ describe Boards::Lists::UpdateService do
   shared_examples 'moving list' do
     context 'when user can admin list' do
       it 'calls Lists::MoveService to update list position' do
-        board.parent.add_developer(user)
+        board.resource_parent.add_developer(user)
 
-        expect(Boards::Lists::MoveService).to receive(:new).with(board.parent, user, params).and_call_original
+        expect(Boards::Lists::MoveService).to receive(:new).with(board.resource_parent, user, params).and_call_original
         expect_any_instance_of(Boards::Lists::MoveService).to receive(:execute).with(list)
 
         service.execute(list)
@@ -30,7 +30,7 @@ describe Boards::Lists::UpdateService do
   shared_examples 'updating list preferences' do
     context 'when user can read list' do
       it 'updates list preference for user' do
-        board.parent.add_guest(user)
+        board.resource_parent.add_guest(user)
 
         service.execute(list)
 
@@ -48,7 +48,7 @@ describe Boards::Lists::UpdateService do
   end
 
   describe '#execute' do
-    let(:service) { described_class.new(board.parent, user, params) }
+    let(:service) { described_class.new(board.resource_parent, user, params) }
 
     context 'when position parameter is present' do
       let(:params) { { position: 1 } }

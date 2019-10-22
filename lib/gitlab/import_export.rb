@@ -38,6 +38,10 @@ module Gitlab
       "lfs-objects"
     end
 
+    def wiki_repo_bundle_filename
+      "project.wiki.bundle"
+    end
+
     def config_file
       Rails.root.join('lib/gitlab/import_export/import_export.yml')
     end
@@ -61,3 +65,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::ImportExport.prepend_if_ee('EE::Gitlab::ImportExport')

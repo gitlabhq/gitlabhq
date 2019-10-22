@@ -38,7 +38,7 @@ which could arise (especially with testing against browser specific features).
 - Jest runs in a Node.js environment, not in a browser. Support for running Jest tests in a browser [is planned](https://gitlab.com/gitlab-org/gitlab-foss/issues/58205).
 - Because Jest runs in a Node.js environment, it uses [jsdom](https://github.com/jsdom/jsdom) by default. See also its [limitations](#limitations-of-jsdom) below.
 - Jest does not have access to Webpack loaders or aliases.
-  The aliases used by Jest are defined in its [own config](https://gitlab.com/gitlab-org/gitlab-foss/blob/master/jest.config.js).
+  The aliases used by Jest are defined in its [own config](https://gitlab.com/gitlab-org/gitlab/blob/master/jest.config.js).
 - All calls to `setTimeout` and `setInterval` are mocked away. See also [Jest Timer Mocks](https://jestjs.io/docs/en/timer-mocks).
 - `rewire` is not required because Jest supports mocking modules. See also [Manual Mocks](https://jestjs.io/docs/en/manual-mocks).
 - No [context object](https://jasmine.github.io/tutorials/your_first_suite#section-The_%3Ccode%3Ethis%3C/code%3E_keyword) is passed to tests in Jest.
@@ -67,13 +67,13 @@ Running `yarn jest-debug` will run Jest in debug mode, allowing you to debug/ins
 ### Timeout error
 
 The default timeout for Jest is set in
-[`/spec/frontend/test_setup.js`](https://gitlab.com/gitlab-org/gitlab-foss/blob/master/spec/frontend/test_setup.js).
+[`/spec/frontend/test_setup.js`](https://gitlab.com/gitlab-org/gitlab/blob/master/spec/frontend/test_setup.js).
 
 If your test exceeds that time, it will fail.
 
 If you cannot improve the performance of the tests, you can increase the timeout
 for a specific test using
-[`setTestTimeout`](https://gitlab.com/gitlab-org/gitlab-foss/blob/master/spec/frontend/helpers/timeout.js).
+[`setTestTimeout`](https://gitlab.com/gitlab-org/gitlab/blob/master/spec/frontend/helpers/timeout.js).
 
 ```javascript
 import { setTestTimeout } from 'helpers/timeout';
@@ -388,7 +388,7 @@ it('renders something', done => {
 ##### `setTimeout()` / `setInterval()` in application
 
 If the application itself is waiting for some time, mock await the waiting. In Jest this is already
-[done by default](https://gitlab.com/gitlab-org/gitlab-foss/blob/a2128edfee799e49a8732bfa235e2c5e14949c68/jest.config.js#L47)
+[done by default](https://gitlab.com/gitlab-org/gitlab/blob/a2128edfee799e49a8732bfa235e2c5e14949c68/jest.config.js#L47)
 (see also [Jest Timer Mocks](https://jestjs.io/docs/en/timer-mocks)). In Karma you can use the
 [Jasmine mock clock](https://jasmine.github.io/api/2.9/Clock.html).
 
@@ -482,7 +482,7 @@ As long as the fixtures don't change, `yarn test` is sufficient (and saves you s
 
 While developing locally, it may be helpful to keep Karma running so that you
 can get instant feedback on as you write tests and modify code. To do this
-you can start Karma with `yarn run karma-start`. It will compile the javascript
+you can start Karma with `yarn run karma-start`. It will compile the JavaScript
 assets and run a server at `http://localhost:9876/` where it will automatically
 run the tests on any browser which connects to it. You can enter that url on
 multiple browsers at once to have it run the tests on each in parallel.
@@ -515,11 +515,6 @@ glob otherwise your shell may split it into multiple arguments:
 # Run all specs named `file_spec` within the IDE subdirectory
 yarn karma -f 'spec/javascripts/ide/**/file_spec.js'
 ```
-
-## RSpec feature integration tests
-
-Information on setting up and running RSpec integration tests with
-[Capybara] can be found in the [Testing Best Practices](best_practices.md).
 
 ## Frontend test fixtures
 
@@ -598,7 +593,6 @@ end
 [karma]: http://karma-runner.github.io/
 [vue-test]: ../fe_guide/vue.md#testing-vue-components
 [rspec]: https://github.com/rspec/rspec-rails#feature-specs
-[capybara]: https://github.com/teamcapybara/capybara
 [jasmine]: https://jasmine.github.io/
 
 ## Overview of Frontend Testing Levels
@@ -955,7 +949,11 @@ graph RL
 In contrast to [frontend integration tests](#frontend-integration-tests), feature tests make requests against the real backend instead of using fixtures.
 This also implies that database queries are executed which makes this category significantly slower.
 
-See also the [RSpec testing guidelines](../testing_guide/best_practices.md#rspec).
+See also
+
+- The [RSpec testing guidelines](../testing_guide/best_practices.md#rspec).
+- System / Feature tests in the [Testing Best Practices](best_practices.md#system--feature-tests).
+- [Issue #26159](https://gitlab.com/gitlab-org/gitlab/issues/26159) which aims at combine those guidelines with this page.
 
 ```mermaid
 graph RL
@@ -1048,7 +1046,7 @@ testAction(
 );
 ```
 
-Check an example in [spec/javascripts/ide/stores/actions_spec.jsspec/javascripts/ide/stores/actions_spec.js](https://gitlab.com/gitlab-org/gitlab-foss/blob/master/spec/javascripts/ide/stores/actions_spec.js).
+Check an example in [spec/javascripts/ide/stores/actions_spec.jsspec/javascripts/ide/stores/actions_spec.js](https://gitlab.com/gitlab-org/gitlab/blob/master/spec/javascripts/ide/stores/actions_spec.js).
 
 ### Vue Helper: `mountComponent`
 

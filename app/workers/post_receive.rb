@@ -3,7 +3,7 @@
 class PostReceive
   include ApplicationWorker
 
-  PIPELINE_PROCESS_LIMIT = 4
+  feature_category :source_code_management
 
   def perform(gl_repository, identifier, changes, push_options = {})
     project, repo_type = Gitlab::GlRepository.parse(gl_repository)
@@ -37,53 +37,31 @@ class PostReceive
   end
 
   def process_project_changes(post_received)
-    changes = []
-    refs = Set.new
     user = identify_user(post_received)
+
     return false unless user
 
-    # We only need to expire certain caches once per push
-    expire_caches(post_received)
-
-    post_received.enum_for(:changes_refs).with_index do |(oldrev, newrev, ref), index|
-      service_klass =
-        if Gitlab::Git.tag_ref?(ref)
-          Git::TagPushService
-        elsif Gitlab::Git.branch_ref?(ref)
-          Git::BranchPushService
-        end
-
-      if service_klass
-        service_klass.new(
-          post_received.project,
-          user,
-          oldrev: oldrev,
-          newrev: newrev,
-          ref: ref,
-          push_options: post_received.push_options,
-          create_pipelines: index < PIPELINE_PROCESS_LIMIT || Feature.enabled?(:git_push_create_all_pipelines, post_received.project)
-        ).execute
-      end
-
-      changes << Gitlab::DataBuilder::Repository.single_change(oldrev, newrev, ref)
-      refs << ref
-    end
-
-    after_project_changes_hooks(post_received, user, refs.to_a, changes)
-  end
-
-  # Expire the project, branch, and tag cache once per push. Schedule an
-  # update for the repository size and commit count if necessary.
-  def expire_caches(post_received)
     project = post_received.project
+    push_options = post_received.push_options
+    changes = post_received.changes
 
-    project.repository.expire_status_cache if project.empty_repo?
-    project.repository.expire_branches_cache if post_received.includes_branches?
-    project.repository.expire_caches_for_tags if post_received.includes_tags?
-
+    # We only need to expire certain caches once per push
+    expire_caches(post_received, post_received.project.repository)
     enqueue_repository_cache_update(post_received)
+
+    process_ref_changes(project, user, push_options: push_options, changes: changes)
+    update_remote_mirrors(post_received)
+    after_project_changes_hooks(project, user, changes.refs, changes.repository_data)
   end
 
+  # Expire the repository status, branch, and tag cache once per push.
+  def expire_caches(post_received, repository)
+    repository.expire_status_cache if repository.empty?
+    repository.expire_branches_cache if post_received.includes_branches?
+    repository.expire_caches_for_tags if post_received.includes_tags?
+  end
+
+  # Schedule an update for the repository size and commit count if necessary.
   def enqueue_repository_cache_update(post_received)
     stats_to_invalidate = [:repository_size]
     stats_to_invalidate << :commit_count if post_received.includes_default_branch?
@@ -96,9 +74,25 @@ class PostReceive
     )
   end
 
-  def after_project_changes_hooks(post_received, user, refs, changes)
-    hook_data = Gitlab::DataBuilder::Repository.update(post_received.project, user, changes, refs)
-    SystemHooksService.new.execute_hooks(hook_data, :repository_update_hooks)
+  def process_ref_changes(project, user, params = {})
+    return unless params[:changes].any?
+
+    Git::ProcessRefChangesService.new(project, user, params).execute
+  end
+
+  def update_remote_mirrors(post_received)
+    return unless post_received.includes_branches? || post_received.includes_tags?
+
+    project = post_received.project
+    return unless project.has_remote_mirror?
+
+    project.mark_stuck_remote_mirrors_as_failed!
+    project.update_remote_mirrors
+  end
+
+  def after_project_changes_hooks(project, user, refs, changes)
+    repository_update_hook_data = Gitlab::DataBuilder::Repository.update(project, user, changes, refs)
+    SystemHooksService.new.execute_hooks(repository_update_hook_data, :repository_update_hooks)
     Gitlab::UsageDataCounters::SourceCodeCounter.count(:pushes)
   end
 
@@ -110,7 +104,10 @@ class PostReceive
     user = identify_user(post_received)
     return false unless user
 
-    ::Git::WikiPushService.new(post_received.project, user, changes: post_received.enum_for(:changes_refs)).execute
+    # We only need to expire certain caches once per push
+    expire_caches(post_received, post_received.project.wiki.repository)
+
+    ::Git::WikiPushService.new(post_received.project, user, changes: post_received.changes).execute
   end
 
   def log(message)

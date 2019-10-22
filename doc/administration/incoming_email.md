@@ -58,7 +58,7 @@ this method only supports replies, and not the other features of [incoming email
 ## Set it up
 
 If you want to use Gmail / Google Apps for incoming emails, make sure you have
-[IMAP access enabled](https://support.google.com/mail/troubleshooter/1668960?hl=en#ts=1665018)
+[IMAP access enabled](https://support.google.com/mail/answer/7126229)
 and [allowed less secure apps to access the account](https://support.google.com/accounts/answer/6010255)
 or [turn-on 2-step validation](https://support.google.com/accounts/answer/185839)
 and use [an application password](https://support.google.com/mail/answer/185833).

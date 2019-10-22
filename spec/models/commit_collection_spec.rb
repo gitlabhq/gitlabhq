@@ -51,6 +51,30 @@ describe CommitCollection do
     end
   end
 
+  describe '#with_latest_pipeline' do
+    let!(:pipeline) do
+      create(
+        :ci_empty_pipeline,
+        ref: 'master',
+        sha: commit.id,
+        status: 'success',
+        project: project
+      )
+    end
+    let(:collection) { described_class.new(project, [commit]) }
+
+    it 'sets the latest pipeline for every commit so no additional queries are necessary' do
+      commits = collection.with_latest_pipeline('master')
+
+      recorder = ActiveRecord::QueryRecorder.new do
+        expect(commits.map { |c| c.latest_pipeline('master') })
+          .to eq([pipeline])
+      end
+
+      expect(recorder.count).to be_zero
+    end
+  end
+
   describe 'enrichment methods' do
     let(:gitaly_commit) { commit }
     let(:hash_commit) { Commit.from_hash(gitaly_commit.to_hash, project) }
@@ -125,27 +149,17 @@ describe CommitCollection do
 
         collection.enrich!
       end
-    end
-  end
 
-  describe '#with_pipeline_status' do
-    it 'sets the pipeline status for every commit so no additional queries are necessary' do
-      create(
-        :ci_empty_pipeline,
-        ref: 'master',
-        sha: commit.id,
-        status: 'success',
-        project: project
-      )
+      it 'returns the original commit if the commit could not be lazy loaded' do
+        collection = described_class.new(project, [hash_commit])
+        unexisting_lazy_commit = Commit.lazy(project, Gitlab::Git::BLANK_SHA)
 
-      collection = described_class.new(project, [commit])
-      collection.with_pipeline_status
+        expect(Commit).to receive(:lazy).with(project, hash_commit.id).and_return(unexisting_lazy_commit)
 
-      recorder = ActiveRecord::QueryRecorder.new do
-        expect(commit.status).to eq('success')
+        collection.enrich!
+
+        expect(collection.commits).to contain_exactly(hash_commit)
       end
-
-      expect(recorder.count).to be_zero
     end
   end
 

@@ -44,7 +44,7 @@ Canary deployments require that you properly configure Deploy Boards:
 
 1. Follow the steps to [enable Deploy Boards](deploy_boards.md#enabling-deploy-boards).
 1. To track canary deployments you need to label your Kubernetes deployments and
-   pods with `track: canary`. To get started quickly, you can use the [Auto Deploy](../../ci/autodeploy/index.md)
+   pods with `track: canary`. To get started quickly, you can use the [Auto Deploy](../../topics/autodevops/index.md#auto-deploy)
    template for canary deployments that GitLab provides.
 
 Depending on the deploy, the label should be either `stable` or `canary`.
@@ -66,5 +66,5 @@ can easily notice them.
 [ee-1659]: https://gitlab.com/gitlab-org/gitlab/issues/1659
 [kube-canary]: https://kubernetes.io/docs/concepts/cluster-administration/manage-deployment/#canary-deployments
 [deploy board]: deploy_boards.md
-[cd-blog]: https://about.gitlab.com/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/
+[cd-blog]: https://about.gitlab.com/blog/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/
 [kube-net]: https://kubernetes.io/docs/concepts/services-networking/service/#virtual-ips-and-service-proxies

@@ -9,12 +9,12 @@ Serverless is currently in [alpha](https://about.gitlab.com/handbook/product/#al
 
 Serverless architectures offer Operators and Developers the ability write highly scalable applications without provisioning a single server.
 
-Gitlab supports several ways deploy Serverless applications in both Kubernetes Environments and also major cloud FAAS environments.
+GitLab supports several ways deploy Serverless applications in both Kubernetes Environments and also major cloud FAAS environments.
 
 Currently we support:
 
 - [Knative](#knative): Build Knative applications with Knative and gitlabktl on GKE
-- [AWS Lambda](aws.md): Create serverless applications via the Serverless Framework and gitlab-ci
+- [AWS Lambda](aws.md): Create serverless applications via the Serverless Framework and GitLab CI
 
 ## Knative
 
@@ -31,7 +31,7 @@ With GitLab Serverless, you can deploy both functions-as-a-service (FaaS) and se
 
 ## Prerequisites
 
-To run Knative on Gitlab, you will need:
+To run Knative on GitLab, you will need:
 
 1. **Existing GitLab project:** You will need a GitLab project to associate all resources. The simplest way to get started:
 
@@ -82,10 +82,10 @@ The minimum recommended cluster size to run Knative is 3-nodes, 6 vCPUs, and 22.
    For clusters created on GKE, see [GKE Cluster Access](https://cloud.google.com/kubernetes-engine/docs/how-to/cluster-access-for-kubectl),
    for other platforms [Install kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/).
 
-1. The ingress is now available at this address and will route incoming requests to the proper service based on the DNS
+1. The Ingress is now available at this address and will route incoming requests to the proper service based on the DNS
    name in the request. To support this, a wildcard DNS A record should be created for the desired domain name. For example,
    if your Knative base domain is `knative.info` then you need to create an A record or CNAME record with domain `*.knative.info`
-   pointing the ip address or hostname of the ingress.
+   pointing the ip address or hostname of the Ingress.
 
    ![dns entry](img/dns-entry.png)
 

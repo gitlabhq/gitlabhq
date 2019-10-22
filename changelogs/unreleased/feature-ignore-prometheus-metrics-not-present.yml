@@ -1,0 +1,5 @@
+---
+title: Avoid knative and prometheus uninstall race condition
+merge_request: 18020
+author:
+type: changed

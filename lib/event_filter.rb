@@ -9,12 +9,11 @@ class EventFilter
   ISSUE = 'issue'
   COMMENTS = 'comments'
   TEAM = 'team'
-  FILTERS = [ALL, PUSH, MERGED, ISSUE, COMMENTS, TEAM].freeze
 
   def initialize(filter)
     # Split using comma to maintain backward compatibility Ex/ "filter1,filter2"
     filter = filter.to_s.split(',')[0].to_s
-    @filter = FILTERS.include?(filter) ? filter : ALL
+    @filter = filters.include?(filter) ? filter : ALL
   end
 
   def active?(key)
@@ -39,4 +38,12 @@ class EventFilter
     end
   end
   # rubocop: enable CodeReuse/ActiveRecord
+
+  private
+
+  def filters
+    [ALL, PUSH, MERGED, ISSUE, COMMENTS, TEAM]
+  end
 end
+
+EventFilter.prepend_if_ee('EE::EventFilter')

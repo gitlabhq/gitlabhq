@@ -64,4 +64,15 @@ describe Gitlab::Regex do
     it { is_expected.not_to match('.my/image') }
     it { is_expected.not_to match('my/image.') }
   end
+
+  describe '.aws_account_id_regex' do
+    subject { described_class.aws_arn_regex }
+
+    it { is_expected.to match('arn:aws:iam::123456789012:role/role-name') }
+    it { is_expected.to match('arn:aws:s3:::bucket/key') }
+    it { is_expected.to match('arn:aws:ec2:us-east-1:123456789012:volume/vol-1') }
+    it { is_expected.to match('arn:aws:rds:us-east-1:123456789012:pg:prod') }
+    it { is_expected.not_to match('123456789012') }
+    it { is_expected.not_to match('role/role-name') }
+  end
 end

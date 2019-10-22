@@ -72,7 +72,7 @@ You can do this through the [Dashboard](https://dashboard.heroku.com/).
 
 First install [Docker Engine](https://docs.docker.com/installation/).
 
-To build this project you also need to have [GitLab Runner](https://docs.gitlab.com/runner).
+To build this project you also need to have [GitLab Runner](https://docs.gitlab.com/runner/index.html).
 You can use public runners available on `gitlab.com` or you can register your own:
 
 ```sh
@@ -86,6 +86,6 @@ gitlab-runner register \
   --docker-postgres latest
 ```
 
-With the command above, you create a runner that uses the [python:3.5](https://hub.docker.com/r/_/python/) image and uses a [postgres](https://hub.docker.com/r/_/postgres/) database.
+With the command above, you create a runner that uses the [`python:3.5`](https://hub.docker.com/_/python) image and uses a [PostgreSQL](https://hub.docker.com/_/postgres) database.
 
 To access the PostgreSQL database, connect to `host: postgres` as user `postgres` with no password.

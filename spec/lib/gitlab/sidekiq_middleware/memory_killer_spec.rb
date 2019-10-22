@@ -4,6 +4,7 @@ require 'spec_helper'
 
 describe Gitlab::SidekiqMiddleware::MemoryKiller do
   subject { described_class.new }
+
   let(:pid) { 999 }
 
   let(:worker) { double(:worker, class: ProjectCacheWorker) }

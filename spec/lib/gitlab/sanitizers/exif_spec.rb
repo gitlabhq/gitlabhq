@@ -58,7 +58,7 @@ describe Gitlab::Sanitizers::Exif do
   end
 
   describe '#clean' do
-    let(:uploader) { create(:upload, :with_file, :issuable_upload).build_uploader }
+    let(:uploader) { create(:upload, :with_file, :issuable_upload).retrieve_uploader }
 
     context "no dry run" do
       it "removes exif from the image" do

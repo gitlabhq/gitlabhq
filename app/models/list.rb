@@ -21,19 +21,9 @@ class List < ApplicationRecord
   scope :destroyable, -> { where(list_type: list_types.slice(*destroyable_types).values) }
   scope :movable, -> { where(list_type: list_types.slice(*movable_types).values) }
 
-  scope :preload_associations, -> (user) do
-    preload(:board, label: :priorities)
-  end
+  scope :preload_associations, -> { preload(:board, label: :priorities) }
 
   scope :ordered, -> { order(:list_type, :position) }
-
-  # Loads list with preferences for given user
-  # if preferences exists for user or not
-  scope :with_preferences_for, -> (user) do
-    return unless user
-
-    includes(:list_user_preferences).where(list_user_preferences: { user_id: [user.id, nil] })
-  end
 
   alias_method :preferences, :list_user_preferences
 
@@ -45,25 +35,25 @@ class List < ApplicationRecord
     def movable_types
       [:label]
     end
+
+    def preload_preferences_for_user(lists, user)
+      return unless user
+
+      lists.each { |list| list.preferences_for(user) }
+    end
   end
 
   def preferences_for(user)
     return preferences.build unless user
 
-    if preferences.loaded?
-      preloaded_preferences_for(user)
-    else
-      preferences.find_or_initialize_by(user: user)
-    end
-  end
+    BatchLoader.for(list_id: id, user_id: user.id).batch(default_value: preferences.build(user: user)) do |items, loader|
+      list_ids = items.map { |i| i[:list_id] }
+      user_ids = items.map { |i| i[:user_id] }
 
-  def preloaded_preferences_for(user)
-    user_preferences =
-      preferences.find do |preference|
-        preference.user_id == user.id
+      ListUserPreference.where(list_id: list_ids.uniq, user_id: user_ids.uniq).find_each do |preference|
+        loader.call({ list_id: preference.list_id, user_id: preference.user_id }, preference)
       end
-
-    user_preferences || preferences.build(user: user)
+    end
   end
 
   def update_preferences_for(user, preferences = {})

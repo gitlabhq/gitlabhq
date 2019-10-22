@@ -27,7 +27,7 @@ if (process.env.NODE_ENV !== 'production') {
  *  <icon
  *    name="retry"
  *    :size="32"
- *    css-classes="top"
+ *    class="top"
  *  />
  */
 export default {
@@ -42,45 +42,7 @@ export default {
       type: Number,
       required: false,
       default: 16,
-      validator(value) {
-        return validSizes.includes(value);
-      },
-    },
-
-    cssClasses: {
-      type: String,
-      required: false,
-      default: '',
-    },
-
-    width: {
-      type: Number,
-      required: false,
-      default: null,
-    },
-
-    height: {
-      type: Number,
-      required: false,
-      default: null,
-    },
-
-    y: {
-      type: Number,
-      required: false,
-      default: null,
-    },
-
-    x: {
-      type: Number,
-      required: false,
-      default: null,
-    },
-
-    tabIndex: {
-      type: String,
-      required: false,
-      default: null,
+      validator: value => validSizes.includes(value),
     },
   },
 
@@ -99,15 +61,7 @@ export default {
 </script>
 
 <template>
-  <svg
-    :class="[iconSizeClass, iconTestClass, cssClasses]"
-    :width="width"
-    :height="height"
-    :x="x"
-    :y="y"
-    :tabindex="tabIndex"
-    aria-hidden="true"
-  >
+  <svg :class="[iconSizeClass, iconTestClass]" aria-hidden="true">
     <use v-bind="{ 'xlink:href': spriteHref }" />
   </svg>
 </template>

@@ -1,4 +1,7 @@
 - page_title "Sign up"
-= render 'devise/shared/signup_box'
+- if experiment_enabled?(:signup_flow)
+  = render 'devise/shared/experimental_separate_sign_up_flow_box'
+- else
+  = render 'devise/shared/signup_box'
 
 = render 'devise/shared/sign_in_link'
