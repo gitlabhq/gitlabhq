@@ -1,26 +1,37 @@
-import Vue from 'vue';
-import paginationComp from '~/vue_shared/components/pagination/table_pagination.vue';
+import { shallowMount } from '@vue/test-utils';
+import TablePagination from '~/vue_shared/components/pagination/table_pagination.vue';
 
 describe('Pagination component', () => {
-  let component;
-  let PaginationComponent;
+  let wrapper;
   let spy;
-  let mountComponent;
+
+  const mountComponent = props => {
+    wrapper = shallowMount(TablePagination, {
+      sync: false,
+      propsData: props,
+    });
+  };
+
+  const findFirstButtonLink = () => wrapper.find('.js-first-button .page-link');
+  const findPreviousButton = () => wrapper.find('.js-previous-button');
+  const findPreviousButtonLink = () => wrapper.find('.js-previous-button .page-link');
+  const findNextButton = () => wrapper.find('.js-next-button');
+  const findNextButtonLink = () => wrapper.find('.js-next-button .page-link');
+  const findLastButtonLink = () => wrapper.find('.js-last-button .page-link');
+  const findPages = () => wrapper.findAll('.page');
+  const findSeparator = () => wrapper.find('.separator');
 
   beforeEach(() => {
-    spy = jasmine.createSpy('spy');
-    PaginationComponent = Vue.extend(paginationComp);
+    spy = jest.fn();
+  });
 
-    mountComponent = function(props) {
-      return new PaginationComponent({
-        propsData: props,
-      }).$mount();
-    };
+  afterEach(() => {
+    wrapper.destroy();
   });
 
   describe('render', () => {
     it('should not render anything', () => {
-      component = mountComponent({
+      mountComponent({
         pageInfo: {
           nextPage: NaN,
           page: 1,
@@ -32,12 +43,12 @@ describe('Pagination component', () => {
         change: spy,
       });
 
-      expect(component.$el.childNodes.length).toEqual(0);
+      expect(wrapper.isEmpty()).toBe(true);
     });
 
     describe('prev button', () => {
       it('should be disabled and non clickable', () => {
-        component = mountComponent({
+        mountComponent({
           pageInfo: {
             nextPage: 2,
             page: 1,
@@ -49,17 +60,13 @@ describe('Pagination component', () => {
           change: spy,
         });
 
-        expect(
-          component.$el.querySelector('.js-previous-button').classList.contains('disabled'),
-        ).toEqual(true);
-
-        component.$el.querySelector('.js-previous-button .page-link').click();
-
+        expect(findPreviousButton().classes()).toContain('disabled');
+        findPreviousButtonLink().trigger('click');
         expect(spy).not.toHaveBeenCalled();
       });
 
       it('should be disabled and non clickable when total and totalPages are NaN', () => {
-        component = mountComponent({
+        mountComponent({
           pageInfo: {
             nextPage: 2,
             page: 1,
@@ -70,18 +77,13 @@ describe('Pagination component', () => {
           },
           change: spy,
         });
-
-        expect(
-          component.$el.querySelector('.js-previous-button').classList.contains('disabled'),
-        ).toEqual(true);
-
-        component.$el.querySelector('.js-previous-button .page-link').click();
-
+        expect(findPreviousButton().classes()).toContain('disabled');
+        findPreviousButtonLink().trigger('click');
         expect(spy).not.toHaveBeenCalled();
       });
 
       it('should be enabled and clickable', () => {
-        component = mountComponent({
+        mountComponent({
           pageInfo: {
             nextPage: 3,
             page: 2,
@@ -92,14 +94,12 @@ describe('Pagination component', () => {
           },
           change: spy,
         });
-
-        component.$el.querySelector('.js-previous-button .page-link').click();
-
+        findPreviousButtonLink().trigger('click');
         expect(spy).toHaveBeenCalledWith(1);
       });
 
       it('should be enabled and clickable when total and totalPages are NaN', () => {
-        component = mountComponent({
+        mountComponent({
           pageInfo: {
             nextPage: 3,
             page: 2,
@@ -110,16 +110,14 @@ describe('Pagination component', () => {
           },
           change: spy,
         });
-
-        component.$el.querySelector('.js-previous-button .page-link').click();
-
+        findPreviousButtonLink().trigger('click');
         expect(spy).toHaveBeenCalledWith(1);
       });
     });
 
     describe('first button', () => {
       it('should call the change callback with the first page', () => {
-        component = mountComponent({
+        mountComponent({
           pageInfo: {
             nextPage: 3,
             page: 2,
@@ -130,18 +128,14 @@ describe('Pagination component', () => {
           },
           change: spy,
         });
-
-        const button = component.$el.querySelector('.js-first-button .page-link');
-
-        expect(button.textContent.trim()).toEqual('« First');
-
-        button.click();
-
+        const button = findFirstButtonLink();
+        expect(button.text().trim()).toEqual('« First');
+        button.trigger('click');
         expect(spy).toHaveBeenCalledWith(1);
       });
 
       it('should call the change callback with the first page when total and totalPages are NaN', () => {
-        component = mountComponent({
+        mountComponent({
           pageInfo: {
             nextPage: 3,
             page: 2,
@@ -152,20 +146,16 @@ describe('Pagination component', () => {
           },
           change: spy,
         });
-
-        const button = component.$el.querySelector('.js-first-button .page-link');
-
-        expect(button.textContent.trim()).toEqual('« First');
-
-        button.click();
-
+        const button = findFirstButtonLink();
+        expect(button.text().trim()).toEqual('« First');
+        button.trigger('click');
         expect(spy).toHaveBeenCalledWith(1);
       });
     });
 
     describe('last button', () => {
       it('should call the change callback with the last page', () => {
-        component = mountComponent({
+        mountComponent({
           pageInfo: {
             nextPage: 3,
             page: 2,
@@ -176,18 +166,14 @@ describe('Pagination component', () => {
           },
           change: spy,
         });
-
-        const button = component.$el.querySelector('.js-last-button .page-link');
-
-        expect(button.textContent.trim()).toEqual('Last »');
-
-        button.click();
-
+        const button = findLastButtonLink();
+        expect(button.text().trim()).toEqual('Last »');
+        button.trigger('click');
         expect(spy).toHaveBeenCalledWith(5);
       });
 
       it('should not render', () => {
-        component = mountComponent({
+        mountComponent({
           pageInfo: {
             nextPage: 3,
             page: 2,
@@ -198,14 +184,13 @@ describe('Pagination component', () => {
           },
           change: spy,
         });
-
-        expect(component.$el.querySelector('.js-last-button .page-link')).toBeNull();
+        expect(findLastButtonLink().exists()).toBe(false);
       });
     });
 
     describe('next button', () => {
       it('should be disabled and non clickable', () => {
-        component = mountComponent({
+        mountComponent({
           pageInfo: {
             nextPage: NaN,
             page: 5,
@@ -216,16 +201,17 @@ describe('Pagination component', () => {
           },
           change: spy,
         });
-
-        expect(component.$el.querySelector('.js-next-button').textContent.trim()).toEqual('Next ›');
-
-        component.$el.querySelector('.js-next-button .page-link').click();
-
+        expect(
+          findNextButton()
+            .text()
+            .trim(),
+        ).toEqual('Next ›');
+        findNextButtonLink().trigger('click');
         expect(spy).not.toHaveBeenCalled();
       });
 
       it('should be disabled and non clickable when total and totalPages are NaN', () => {
-        component = mountComponent({
+        mountComponent({
           pageInfo: {
             nextPage: NaN,
             page: 5,
@@ -236,16 +222,17 @@ describe('Pagination component', () => {
           },
           change: spy,
         });
-
-        expect(component.$el.querySelector('.js-next-button').textContent.trim()).toEqual('Next ›');
-
-        component.$el.querySelector('.js-next-button .page-link').click();
-
+        expect(
+          findNextButton()
+            .text()
+            .trim(),
+        ).toEqual('Next ›');
+        findNextButtonLink().trigger('click');
         expect(spy).not.toHaveBeenCalled();
       });
 
       it('should be enabled and clickable', () => {
-        component = mountComponent({
+        mountComponent({
           pageInfo: {
             nextPage: 4,
             page: 3,
@@ -256,14 +243,12 @@ describe('Pagination component', () => {
           },
           change: spy,
         });
-
-        component.$el.querySelector('.js-next-button .page-link').click();
-
+        findNextButtonLink().trigger('click');
         expect(spy).toHaveBeenCalledWith(4);
       });
 
       it('should be enabled and clickable when total and totalPages are NaN', () => {
-        component = mountComponent({
+        mountComponent({
           pageInfo: {
             nextPage: 4,
             page: 3,
@@ -274,16 +259,14 @@ describe('Pagination component', () => {
           },
           change: spy,
         });
-
-        component.$el.querySelector('.js-next-button .page-link').click();
-
+        findNextButtonLink().trigger('click');
         expect(spy).toHaveBeenCalledWith(4);
       });
     });
 
     describe('numbered buttons', () => {
       it('should render 5 pages', () => {
-        component = mountComponent({
+        mountComponent({
           pageInfo: {
             nextPage: 4,
             page: 3,
@@ -294,12 +277,11 @@ describe('Pagination component', () => {
           },
           change: spy,
         });
-
-        expect(component.$el.querySelectorAll('.page').length).toEqual(5);
+        expect(findPages().length).toEqual(5);
       });
 
       it('should not render any page', () => {
-        component = mountComponent({
+        mountComponent({
           pageInfo: {
             nextPage: 4,
             page: 3,
@@ -310,14 +292,13 @@ describe('Pagination component', () => {
           },
           change: spy,
         });
-
-        expect(component.$el.querySelectorAll('.page').length).toEqual(0);
+        expect(findPages().length).toEqual(0);
       });
     });
 
     describe('spread operator', () => {
       it('should render', () => {
-        component = mountComponent({
+        mountComponent({
           pageInfo: {
             nextPage: 4,
             page: 3,
@@ -328,12 +309,15 @@ describe('Pagination component', () => {
           },
           change: spy,
         });
-
-        expect(component.$el.querySelector('.separator').textContent.trim()).toEqual('...');
+        expect(
+          findSeparator()
+            .text()
+            .trim(),
+        ).toEqual('...');
       });
 
       it('should not render', () => {
-        component = mountComponent({
+        mountComponent({
           pageInfo: {
             nextPage: 4,
             page: 3,
@@ -344,8 +328,7 @@ describe('Pagination component', () => {
           },
           change: spy,
         });
-
-        expect(component.$el.querySelector('.separator')).toBeNull();
+        expect(findSeparator().exists()).toBe(false);
       });
     });
   });

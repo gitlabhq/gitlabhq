@@ -130,5 +130,13 @@ describe DeploymentPlatform do
         end
       end
     end
+
+    context 'when instance has configured kubernetes cluster' do
+      let!(:instance_cluster) { create(:cluster, :provided_by_user, :instance) }
+
+      it 'returns the Kubernetes platform' do
+        is_expected.to eq(instance_cluster.platform_kubernetes)
+      end
+    end
   end
 end

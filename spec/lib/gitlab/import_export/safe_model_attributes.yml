@@ -537,7 +537,6 @@ Project:
 - external_webhook_token
 - pages_https_only
 - merge_requests_disable_committers_approval
-- merge_requests_require_code_owner_approval
 - require_password_to_approve
 ProjectTracingSetting:
 - external_url
