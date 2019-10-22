@@ -19,7 +19,7 @@ class Feature
 
         default_on = DEFAULT_ON_FLAGS.include?(feature_flag)
         Feature.enabled?("gitaly_#{feature_flag}", default_enabled: default_on)
-      rescue ActiveRecord::NoDatabaseError
+      rescue ActiveRecord::NoDatabaseError, PG::ConnectionBad
         false
       end
 
