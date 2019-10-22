@@ -1,5 +1,0 @@
----
-title: 'JIRA Integration API URL works having a trailing slash'
-merge_request: 18526
-author:
-type: fixed

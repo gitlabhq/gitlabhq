@@ -1,5 +1,0 @@
----
-title: Add status to deployments and state to environments in API responses
-merge_request: 16242
-author:
-type: changed

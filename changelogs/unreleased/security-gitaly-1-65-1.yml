@@ -1,5 +1,0 @@
----
-title: Fix Gitaly SearchBlobs flag RPC injection
-merge_request:
-author:
-type: security

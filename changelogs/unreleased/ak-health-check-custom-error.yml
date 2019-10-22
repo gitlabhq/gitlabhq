@@ -1,5 +1,0 @@
----
-title: Disable gitlab-workhorse static error page on health endpoints
-merge_request: 17770
-author:
-type: fixed

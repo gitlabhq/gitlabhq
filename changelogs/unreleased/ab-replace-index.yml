@@ -1,5 +1,0 @@
----
-title: Replace index on ci_triggers
-merge_request: 18652
-author:
-type: performance

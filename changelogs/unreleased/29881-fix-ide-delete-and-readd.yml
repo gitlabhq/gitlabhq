@@ -1,5 +1,0 @@
----
-title: Fix Web IDE tree not updating modified status
-merge_request: 18647
-author:
-type: fixed

@@ -1,5 +1,0 @@
----
-title: Set name and updated_at properly in GitHub ReleaseImporter
-merge_request: 17020
-author:
-type: fixed

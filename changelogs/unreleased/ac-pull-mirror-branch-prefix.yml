@@ -1,5 +1,0 @@
----
-title: Add pull_mirror_branch_prefix column on projects table
-merge_request: 17368
-author:
-type: added

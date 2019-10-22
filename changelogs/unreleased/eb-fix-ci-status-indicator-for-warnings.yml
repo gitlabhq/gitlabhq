@@ -1,5 +1,0 @@
----
-title: Show correct CI indicator when build succeeded with warnings.
-merge_request: 17034
-author:
-type: fixed

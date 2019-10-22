@@ -1,5 +1,0 @@
----
-title: Add web_exporter to expose Prometheus metrics
-merge_request: 17943
-author:
-type: added

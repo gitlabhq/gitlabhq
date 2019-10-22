@@ -1,5 +1,0 @@
----
-title: Sort vulnerabilities by severity then confidence for dashboard and pipeline views
-merge_request: 18675
-author:
-type: changed

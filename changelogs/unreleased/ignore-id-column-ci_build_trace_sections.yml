@@ -1,5 +1,0 @@
----
-title: Ignore id column of ci_build_trace_sections table
-merge_request: 17805
-author:
-type: change

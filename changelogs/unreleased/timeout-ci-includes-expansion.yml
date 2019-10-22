@@ -1,5 +1,0 @@
----
-title: Add timeout mechanism for CI config validation
-merge_request: 16807
-author:
-type: fixed

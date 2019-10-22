@@ -1,5 +1,0 @@
----
-title: 'Geo: Fix instruction from rake geo:gitlab:check'
-merge_request: 17895
-author:
-type: changed
