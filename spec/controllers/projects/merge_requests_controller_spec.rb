@@ -1409,6 +1409,33 @@ describe Projects::MergeRequestsController do
       end
     end
 
+    context 'with SELECT FOR UPDATE lock' do
+      before do
+        stub_feature_flags(merge_request_rebase_nowait_lock: false)
+      end
+
+      it 'executes rebase' do
+        allow_any_instance_of(MergeRequest).to receive(:with_lock).with(true).and_call_original
+        expect(RebaseWorker).to receive(:perform_async)
+
+        post_rebase
+
+        expect(response.status).to eq(200)
+      end
+    end
+
+    context 'with NOWAIT lock' do
+      it 'returns a 409' do
+        allow_any_instance_of(MergeRequest).to receive(:with_lock).with('FOR UPDATE NOWAIT').and_raise(ActiveRecord::LockWaitTimeout)
+        expect(RebaseWorker).not_to receive(:perform_async)
+
+        post_rebase
+
+        expect(response.status).to eq(409)
+        expect(json_response['merge_error']).to eq(MergeRequest::REBASE_LOCK_MESSAGE)
+      end
+    end
+
     context 'with a forked project' do
       let(:forked_project) { fork_project(project, fork_owner, repository: true) }
       let(:fork_owner) { create(:user) }

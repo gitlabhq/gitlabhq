@@ -2138,6 +2138,13 @@ describe MergeRequest do
 
       expect { execute }.to raise_error(ActiveRecord::StaleObjectError)
     end
+
+    it "raises ActiveRecord::LockWaitTimeout after 6 tries" do
+      expect(merge_request).to receive(:with_lock).exactly(6).times.and_raise(ActiveRecord::LockWaitTimeout)
+      expect(RebaseWorker).not_to receive(:perform_async)
+
+      expect { execute }.to raise_error(MergeRequest::RebaseLockTimeout)
+    end
   end
 
   describe '#mergeable?' do

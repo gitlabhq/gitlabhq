@@ -455,6 +455,8 @@ module API
 
         status :accepted
         present rebase_in_progress: merge_request.rebase_in_progress?
+      rescue ::MergeRequest::RebaseLockTimeout => e
+        render_api_error!(e.message, 409)
       end
 
       desc 'List issues that will be closed on merge' do

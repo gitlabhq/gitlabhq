@@ -226,6 +226,8 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     @merge_request.rebase_async(current_user.id)
 
     head :ok
+  rescue MergeRequest::RebaseLockTimeout => e
+    render json: { merge_error: e.message }, status: :conflict
   end
 
   def discussions

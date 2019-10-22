@@ -220,6 +220,10 @@ class MergeRequest < ApplicationRecord
   alias_attribute :auto_merge_enabled, :merge_when_pipeline_succeeds
   alias_method :issuing_parent, :target_project
 
+  RebaseLockTimeout = Class.new(StandardError)
+
+  REBASE_LOCK_MESSAGE = _("Failed to enqueue the rebase operation, possibly due to a long-lived transaction. Try again later.")
+
   def self.reference_prefix
     '!'
   end
@@ -409,9 +413,7 @@ class MergeRequest < ApplicationRecord
   # Set off a rebase asynchronously, atomically updating the `rebase_jid` of
   # the MR so that the status of the operation can be tracked.
   def rebase_async(user_id)
-    transaction do
-      lock!
-
+    with_rebase_lock do
       raise ActiveRecord::StaleObjectError if !open? || rebase_in_progress?
 
       # Although there is a race between setting rebase_jid here and clearing it
@@ -1467,6 +1469,30 @@ class MergeRequest < ApplicationRecord
   end
 
   private
+
+  def with_rebase_lock
+    if Feature.enabled?(:merge_request_rebase_nowait_lock, default_enabled: true)
+      with_retried_nowait_lock { yield }
+    else
+      with_lock(true) { yield }
+    end
+  end
+
+  # If the merge request is idle in transaction or has a SELECT FOR
+  # UPDATE, we don't want to block indefinitely or this could cause a
+  # queue of SELECT FOR UPDATE calls. Instead, try to get the lock for
+  # 5 s before raising an error to the user.
+  def with_retried_nowait_lock
+    # Try at most 0.25 + (1.5 * .25) + (1.5^2 * .25) ... (1.5^5 * .25) = 5.2 s to get the lock
+    Retriable.retriable(on: ActiveRecord::LockWaitTimeout, tries: 6, base_interval: 0.25) do
+      with_lock('FOR UPDATE NOWAIT') do
+        yield
+      end
+    end
+  rescue ActiveRecord::LockWaitTimeout => e
+    Gitlab::Sentry.track_acceptable_exception(e)
+    raise RebaseLockTimeout, REBASE_LOCK_MESSAGE
+  end
 
   def source_project_variables
     Gitlab::Ci::Variables::Collection.new.tap do |variables|

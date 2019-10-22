@@ -32,6 +32,7 @@ describe EnvironmentsHelper do
         'project-path' => project_path(project),
         'tags-path' => project_tags_path(project),
         'has-metrics' => "#{environment.has_metrics?}",
+        'prometheus-status' => "#{environment.prometheus_status}",
         'external-dashboard-url' => nil
       )
     end

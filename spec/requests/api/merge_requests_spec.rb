@@ -2120,6 +2120,16 @@ describe API::MergeRequests do
 
       expect(response).to have_gitlab_http_status(409)
     end
+
+    it "returns 409 if rebase can't lock the row" do
+      allow_any_instance_of(MergeRequest).to receive(:with_lock).and_raise(ActiveRecord::LockWaitTimeout)
+      expect(RebaseWorker).not_to receive(:perform_async)
+
+      put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/rebase", user)
+
+      expect(response).to have_gitlab_http_status(409)
+      expect(json_response['message']).to eq(MergeRequest::REBASE_LOCK_MESSAGE)
+    end
   end
 
   describe 'Time tracking' do
