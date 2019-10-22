@@ -2415,6 +2415,9 @@ msgstr ""
 msgid "BillingPlans|Learn more about each plan by reading our %{faq_link}, or start a free 30-day trial of GitLab.com Gold."
 msgstr ""
 
+msgid "BillingPlans|Learn more about each plan by reading our %{faq_link}."
+msgstr ""
+
 msgid "BillingPlans|Learn more about each plan by visiting our %{pricing_page_link}."
 msgstr ""
 
@@ -6070,6 +6073,9 @@ msgid "Enable or disable the Pseudonymizer data collection."
 msgstr ""
 
 msgid "Enable or disable version check and usage ping."
+msgstr ""
+
+msgid "Enable pendo tracking"
 msgstr ""
 
 msgid "Enable protected paths rate limit"
@@ -11661,6 +11667,12 @@ msgid "Paused Runners don't accept new jobs"
 msgstr ""
 
 msgid "Pending"
+msgstr ""
+
+msgid "Pendo"
+msgstr ""
+
+msgid "Pendo endpoint"
 msgstr ""
 
 msgid "People without permission will never get a notification and won't be able to comment."

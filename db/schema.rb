@@ -341,6 +341,8 @@ ActiveRecord::Schema.define(version: 2019_10_17_045817) do
     t.integer "push_event_hooks_limit", default: 3, null: false
     t.integer "push_event_activities_limit", default: 3, null: false
     t.string "custom_http_clone_url_root", limit: 511
+    t.boolean "pendo_enabled", default: false, null: false
+    t.string "pendo_url", limit: 255
     t.index ["custom_project_templates_group_id"], name: "index_application_settings_on_custom_project_templates_group_id"
     t.index ["file_template_project_id"], name: "index_application_settings_on_file_template_project_id"
     t.index ["instance_administration_project_id"], name: "index_applicationsettings_on_instance_administration_project_id"

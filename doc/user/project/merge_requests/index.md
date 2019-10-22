@@ -493,6 +493,11 @@ For more information, [read about pipelines](../../../ci/pipelines.md).
 
 Find out about [bulk editing merge requests](../../project/bulk_editing.md).
 
+## Display arbitrary job artifacts
+
+To configure pipelines to job [artifacts](../pipelines/job_artifacts.md) that can be displayed in
+merge requests, see [`artifacts:expose_as`](../../../ci/yaml/README.md#artifactsexpose_as).
+
 ## Troubleshooting
 
 Sometimes things don't go as expected in a merge request, here are some

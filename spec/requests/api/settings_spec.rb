@@ -220,6 +220,54 @@ describe API::Settings, 'Settings' do
       end
     end
 
+    context "pendo tracking settings" do
+      let(:settings) do
+        {
+          pendo_url: "https://pendo.example.com",
+          pendo_enabled: true
+        }
+      end
+
+      let(:attribute_names) { settings.keys.map(&:to_s) }
+
+      it "includes the attributes in the API" do
+        get api("/application/settings", admin)
+
+        expect(response).to have_gitlab_http_status(200)
+        attribute_names.each do |attribute|
+          expect(json_response.keys).to include(attribute)
+        end
+      end
+
+      it "allows updating the settings" do
+        put api("/application/settings", admin), params: settings
+
+        expect(response).to have_gitlab_http_status(200)
+        settings.each do |attribute, value|
+          expect(ApplicationSetting.current.public_send(attribute)).to eq(value)
+        end
+      end
+
+      context "missing pendo_url value when pendo_enabled is true" do
+        it "returns a blank parameter error message" do
+          put api("/application/settings", admin), params: { pendo_enabled: true }
+
+          expect(response).to have_gitlab_http_status(400)
+          expect(json_response["error"]).to eq("pendo_url is missing")
+        end
+
+        it "handles validation errors" do
+          put api("/application/settings", admin), params: settings.merge({
+                                                                            pendo_url: nil
+                                                                          })
+
+          expect(response).to have_gitlab_http_status(400)
+          message = json_response["message"]
+          expect(message["pendo_url"]).to include("can't be blank")
+        end
+      end
+    end
+
     context "missing plantuml_url value when plantuml_enabled is true" do
       it "returns a blank parameter error message" do
         put api("/application/settings", admin), params: { plantuml_enabled: true }

@@ -104,6 +104,11 @@ class ApplicationSetting < ApplicationRecord
             hostname: true,
             if: :snowplow_enabled
 
+  validates :pendo_url,
+            presence: true,
+            public_url: true,
+            if: :pendo_enabled
+
   validates :max_attachment_size,
             presence: true,
             numericality: { only_integer: true, greater_than: 0 }
