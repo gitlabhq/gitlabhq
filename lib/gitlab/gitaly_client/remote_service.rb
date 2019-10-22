@@ -49,7 +49,7 @@ module Gitlab
 
         response = GitalyClient.call(@storage, :remote_service,
                                      :fetch_internal_remote, request,
-                                     timeout: GitalyClient.medium_timeout,
+                                     timeout: GitalyClient.long_timeout,
                                      remote_storage: repository.storage)
 
         response.result

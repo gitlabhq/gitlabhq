@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 require Rails.root.join('db', 'migrate', '20180425131009_assure_commits_count_for_merge_request_diff.rb')
 

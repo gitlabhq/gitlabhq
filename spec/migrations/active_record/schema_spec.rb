@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 # Check consistency of db/schema.rb version, migrations' timestamps, and the latest migration timestamp

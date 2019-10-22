@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20180307012445_migrate_update_head_pipeline_for_merge_request_sidekiq_queue.rb')
 

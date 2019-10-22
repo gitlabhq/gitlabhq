@@ -329,6 +329,37 @@ The following stages are available to every pipeline:
 
 User-defined stages are executed after `.pre` and before `.post`.
 
+The order of `.pre` and `.post` cannot be changed, even if defined out of order in `.gitlab-ci.yml`.
+For example, the following are equivalent configuration:
+
+- Configured in order:
+
+  ```yml
+  stages:
+    - .pre
+    - a
+    - b
+    - .post
+  ```
+
+- Configured out of order:
+
+  ```yml
+  stages:
+    - a
+    - .pre
+    - b
+    - .post
+  ```
+
+- Not explicitly configured:
+
+  ```yml
+  stages:
+    - a
+    - b
+  ```
+
 ### `stage`
 
 `stage` is defined per-job and relies on [`stages`](#stages) which is defined

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20180816161409_migrate_legacy_artifacts_to_job_artifacts.rb')
 

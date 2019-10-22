@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20180220150310_remove_empty_extern_uid_auth0_identities.rb')
 
