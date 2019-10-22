@@ -22,6 +22,3 @@
   .input-group-append
     = clipboard_button(target: '#project_clone', title: _("Copy URL"), class: "input-group-text btn-default btn-clipboard")
 
-    = render_if_exists 'shared/geo_modal_button'
-
-= render_if_exists 'shared/geo_modal', project: project

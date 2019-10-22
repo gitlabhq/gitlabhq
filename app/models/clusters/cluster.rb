@@ -18,7 +18,8 @@ module Clusters
       Applications::Prometheus.application_name => Applications::Prometheus,
       Applications::Runner.application_name => Applications::Runner,
       Applications::Jupyter.application_name => Applications::Jupyter,
-      Applications::Knative.application_name => Applications::Knative
+      Applications::Knative.application_name => Applications::Knative,
+      Applications::ElasticStack.application_name => Applications::ElasticStack
     }.merge(PROJECT_ONLY_APPLICATIONS).freeze
     DEFAULT_ENVIRONMENT = '*'
     KUBE_INGRESS_BASE_DOMAIN = 'KUBE_INGRESS_BASE_DOMAIN'
@@ -51,6 +52,7 @@ module Clusters
     has_one_cluster_application :runner
     has_one_cluster_application :jupyter
     has_one_cluster_application :knative
+    has_one_cluster_application :elastic_stack
 
     has_many :kubernetes_namespaces
 

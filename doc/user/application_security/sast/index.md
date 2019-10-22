@@ -146,7 +146,15 @@ sast:
     CI_DEBUG_TRACE: "true"
 ```
 
-### Using a variable to pass username and password to a private Maven repository
+### Using environment variables to pass credentials for private repositories
+
+Some analyzers require downloading the project's dependencies in order to
+perform the analysis. In turn, such dependencies may live in private Git
+repositories and thus require credentials like username and password to download them.
+Depending on the analyzer, such credentials can be provided to
+it via [custom environment variables](#custom-environment-variables).
+
+#### Using a variable to pass username and password to a private Maven repository
 
 If you have a private Apache Maven repository that requires login credentials,
 you can use the `MAVEN_CLI_OPTS` [environment variable](#available-variables)
@@ -233,6 +241,19 @@ Some analyzers can be customized with environment variables.
 | `MAVEN_REPO_PATH`       | spotbugs | Path to the Maven local repository (shortcut for the `maven.repo.local` property). |
 | `SBT_PATH`              | spotbugs | Path to the `sbt` executable. |
 | `FAIL_NEVER`            | spotbugs | Set to `1` to ignore compilation failure. |
+
+#### Custom environment variables
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/18193) in GitLab Ultimate 12.5.
+
+In addition to the aforementioned SAST configuration variables,
+all [custom environment variables](../../../ci/variables/README.md#creating-a-custom-environment-variable) are propagated
+to the underlying SAST analyzer images if
+[the SAST vendored template](#configuration) is used.
+
+CAUTION: **Caution:**
+Variables having names starting with these prefixes will **not** be propagated to the SAST Docker container and/or
+analyzer containers: `DOCKER_`, `CI`, `GITLAB_`, `FF_`, `HOME`, `PWD`, `OLDPWD`, `PATH`, `SHLVL`, `HOSTNAME`.
 
 ## Reports JSON format
 

@@ -32,6 +32,7 @@ describe Gitlab::UsageData do
       create(:clusters_applications_prometheus, :installed, cluster: gcp_cluster)
       create(:clusters_applications_runner, :installed, cluster: gcp_cluster)
       create(:clusters_applications_knative, :installed, cluster: gcp_cluster)
+      create(:clusters_applications_elastic_stack, :installed, cluster: gcp_cluster)
 
       ProjectFeature.first.update_attribute('repository_access_level', 0)
     end
@@ -120,6 +121,7 @@ describe Gitlab::UsageData do
         clusters_applications_prometheus
         clusters_applications_runner
         clusters_applications_knative
+        clusters_applications_elastic_stack
         in_review_folder
         groups
         issues
@@ -190,6 +192,7 @@ describe Gitlab::UsageData do
       expect(count_data[:clusters_applications_prometheus]).to eq(1)
       expect(count_data[:clusters_applications_runner]).to eq(1)
       expect(count_data[:clusters_applications_knative]).to eq(1)
+      expect(count_data[:clusters_applications_elastic_stack]).to eq(1)
     end
 
     it 'works when queries time out' do

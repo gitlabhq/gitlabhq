@@ -35,45 +35,12 @@ sast:
           export DOCKER_HOST='tcp://localhost:2375'
         fi
       fi
-    - | # this is required to avoid undesirable reset of Docker image ENV variables being set on build stage
-      function propagate_env_vars() {
-        CURRENT_ENV=$(printenv)
-
-        for VAR_NAME; do
-          echo $CURRENT_ENV | grep "${VAR_NAME}=" > /dev/null && echo "--env $VAR_NAME "
-        done
-      }
+    - |
+      printenv | grep -E '^(DOCKER_|CI|GITLAB_|FF_|HOME|PWD|OLDPWD|PATH|SHLVL|HOSTNAME)' | cut -d'=' -f1 | \
+        (while IFS='\\n' read -r VAR; do unset -v "$VAR"; done; /bin/printenv > .env)
     - |
       docker run \
-        $(propagate_env_vars \
-          SAST_BANDIT_EXCLUDED_PATHS \
-          SAST_ANALYZER_IMAGES \
-          SAST_ANALYZER_IMAGE_PREFIX \
-          SAST_ANALYZER_IMAGE_TAG \
-          SAST_DEFAULT_ANALYZERS \
-          SAST_PULL_ANALYZER_IMAGES \
-          SAST_BRAKEMAN_LEVEL \
-          SAST_FLAWFINDER_LEVEL \
-          SAST_GITLEAKS_ENTROPY_LEVEL \
-          SAST_GOSEC_LEVEL \
-          SAST_EXCLUDED_PATHS \
-          SAST_DOCKER_CLIENT_NEGOTIATION_TIMEOUT \
-          SAST_PULL_ANALYZER_IMAGE_TIMEOUT \
-          SAST_RUN_ANALYZER_TIMEOUT \
-          SAST_JAVA_VERSION \
-          ANT_HOME \
-          ANT_PATH \
-          GRADLE_PATH \
-          JAVA_OPTS \
-          JAVA_PATH \
-          JAVA_8_VERSION \
-          JAVA_11_VERSION \
-          MAVEN_CLI_OPTS \
-          MAVEN_PATH \
-          MAVEN_REPO_PATH \
-          SBT_PATH \
-          FAIL_NEVER \
-        ) \
+        --env-file .env \
         --volume "$PWD:/code" \
         --volume /var/run/docker.sock:/var/run/docker.sock \
         "registry.gitlab.com/gitlab-org/security-products/sast:$SAST_VERSION" /app/bin/run /code

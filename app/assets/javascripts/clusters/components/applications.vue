@@ -12,6 +12,7 @@ import certManagerLogo from 'images/cluster_app_logos/cert_manager.png';
 import knativeLogo from 'images/cluster_app_logos/knative.png';
 import meltanoLogo from 'images/cluster_app_logos/meltano.png';
 import prometheusLogo from 'images/cluster_app_logos/prometheus.png';
+import elasticStackLogo from 'images/cluster_app_logos/elastic_stack.png';
 import { s__, sprintf } from '../../locale';
 import applicationRow from './application_row.vue';
 import clipboardButton from '../../vue_shared/components/clipboard_button.vue';
@@ -91,6 +92,7 @@ export default {
     knativeLogo,
     meltanoLogo,
     prometheusLogo,
+    elasticStackLogo,
   }),
   computed: {
     isProjectCluster() {
@@ -113,6 +115,9 @@ export default {
     },
     certManagerInstalled() {
       return this.applications.cert_manager.status === APPLICATION_STATUS.INSTALLED;
+    },
+    enableClusterApplicationElasticStack() {
+      return gon.features && gon.features.enableClusterApplicationElasticStack;
     },
     ingressDescription() {
       return sprintf(
@@ -167,6 +172,12 @@ export default {
     },
     jupyterHostname() {
       return this.applications.jupyter.hostname;
+    },
+    elasticStackInstalled() {
+      return this.applications.elastic_stack.status === APPLICATION_STATUS.INSTALLED;
+    },
+    elasticStackKibanaHostname() {
+      return this.applications.elastic_stack.kibana_hostname;
     },
     knative() {
       return this.applications.knative;
@@ -540,6 +551,75 @@ export default {
             @save="saveKnativeDomain"
             @set="setKnativeHostname"
           />
+        </div>
+      </application-row>
+      <application-row
+        v-if="enableClusterApplicationElasticStack"
+        id="elastic_stack"
+        :logo-url="elasticStackLogo"
+        :title="applications.elastic_stack.title"
+        :status="applications.elastic_stack.status"
+        :status-reason="applications.elastic_stack.statusReason"
+        :request-status="applications.elastic_stack.requestStatus"
+        :request-reason="applications.elastic_stack.requestReason"
+        :version="applications.elastic_stack.version"
+        :chart-repo="applications.elastic_stack.chartRepo"
+        :update-available="applications.elastic_stack.updateAvailable"
+        :installed="applications.elastic_stack.installed"
+        :install-failed="applications.elastic_stack.installFailed"
+        :update-successful="applications.elastic_stack.updateSuccessful"
+        :update-failed="applications.elastic_stack.updateFailed"
+        :uninstallable="applications.elastic_stack.uninstallable"
+        :uninstall-successful="applications.elastic_stack.uninstallSuccessful"
+        :uninstall-failed="applications.elastic_stack.uninstallFailed"
+        :disabled="!helmInstalled"
+        :install-application-request-params="{
+          kibana_hostname: applications.elastic_stack.kibana_hostname,
+        }"
+        title-link="https://github.com/helm/charts/tree/master/stable/elastic-stack"
+      >
+        <div slot="description">
+          <p>
+            {{
+              s__(
+                `ClusterIntegration|The elastic stack collects logs from all pods in your cluster`,
+              )
+            }}
+          </p>
+
+          <template v-if="ingressExternalEndpoint">
+            <div class="form-group">
+              <label for="elastic-stack-kibana-hostname">{{
+                s__('ClusterIntegration|Kibana Hostname')
+              }}</label>
+
+              <div class="input-group">
+                <input
+                  v-model="applications.elastic_stack.kibana_hostname"
+                  :readonly="elasticStackInstalled"
+                  type="text"
+                  class="form-control js-hostname"
+                />
+                <span class="input-group-btn">
+                  <clipboard-button
+                    :text="elasticStackKibanaHostname"
+                    :title="s__('ClusterIntegration|Copy Kibana Hostname')"
+                    class="js-clipboard-btn"
+                  />
+                </span>
+              </div>
+
+              <p v-if="ingressInstalled" class="form-text text-muted">
+                {{
+                  s__(`ClusterIntegration|Replace this with your own hostname if you want.
+                If you do so, point hostname to Ingress IP Address from above.`)
+                }}
+                <a :href="ingressDnsHelpPath" target="_blank" rel="noopener noreferrer">
+                  {{ __('More information') }}
+                </a>
+              </p>
+            </div>
+          </template>
         </div>
       </application-row>
     </div>

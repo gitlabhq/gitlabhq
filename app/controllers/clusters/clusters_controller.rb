@@ -15,6 +15,9 @@ class Clusters::ClustersController < Clusters::BaseController
   before_action only: [:new, :create_gcp] do
     push_frontend_feature_flag(:create_eks_clusters)
   end
+  before_action only: [:show] do
+    push_frontend_feature_flag(:enable_cluster_application_elastic_stack)
+  end
 
   helper_method :token_in_session
 

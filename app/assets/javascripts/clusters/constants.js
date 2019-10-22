@@ -51,7 +51,17 @@ export const KNATIVE = 'knative';
 export const RUNNER = 'runner';
 export const CERT_MANAGER = 'cert_manager';
 export const PROMETHEUS = 'prometheus';
+export const ELASTIC_STACK = 'elastic_stack';
 
-export const APPLICATIONS = [HELM, INGRESS, JUPYTER, KNATIVE, RUNNER, CERT_MANAGER, PROMETHEUS];
+export const APPLICATIONS = [
+  HELM,
+  INGRESS,
+  JUPYTER,
+  KNATIVE,
+  RUNNER,
+  CERT_MANAGER,
+  PROMETHEUS,
+  ELASTIC_STACK,
+];
 
 export const INGRESS_DOMAIN_SUFFIX = '.nip.io';

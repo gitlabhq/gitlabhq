@@ -52,6 +52,12 @@ const CLUSTERS_MOCK_DATA = {
             email: 'test@example.com',
             can_uninstall: false,
           },
+          {
+            name: 'elastic_stack',
+            status: APPLICATION_STATUS.INSTALLING,
+            status_reason: 'Cannot connect',
+            can_uninstall: false,
+          },
         ],
       },
     },
@@ -98,6 +104,11 @@ const CLUSTERS_MOCK_DATA = {
             status_reason: 'Cannot connect',
             email: 'test@example.com',
           },
+          {
+            name: 'elastic_stack',
+            status: APPLICATION_STATUS.ERROR,
+            status_reason: 'Cannot connect',
+          },
         ],
       },
     },
@@ -110,6 +121,7 @@ const CLUSTERS_MOCK_DATA = {
     '/gitlab-org/gitlab-shell/clusters/1/applications/prometheus': {},
     '/gitlab-org/gitlab-shell/clusters/1/applications/jupyter': {},
     '/gitlab-org/gitlab-shell/clusters/1/applications/knative': {},
+    '/gitlab-org/gitlab-shell/clusters/1/applications/elastic_stack': {},
   },
 };
 
@@ -131,6 +143,7 @@ const APPLICATIONS_MOCK_STATE = {
   prometheus: { title: 'Prometheus' },
   jupyter: { title: 'JupyterHub', status: 'installable', hostname: '' },
   knative: { title: 'Knative ', status: 'installable', hostname: '' },
+  elastic_stack: { title: 'Elastic Stack', status: 'installable', kibana_hostname: '' },
 };
 
 export { CLUSTERS_MOCK_DATA, DEFAULT_APPLICATION_STATE, APPLICATIONS_MOCK_STATE };

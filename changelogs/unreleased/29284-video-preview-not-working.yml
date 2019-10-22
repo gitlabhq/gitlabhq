@@ -1,5 +1,0 @@
----
-title: Fix inline rendering of videos for uploads with uppercase file extensions
-merge_request: 17924
-author:
-type: fixed

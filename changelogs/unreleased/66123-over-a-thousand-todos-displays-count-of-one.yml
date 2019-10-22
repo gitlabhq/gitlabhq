@@ -1,6 +1,0 @@
----
-title: Fix for count in todo badge when user has over 1,000 todos. Will now correctly
-  display todo count after user marks some todos as done.
-merge_request: 16844
-author: Jesse Hall @jessehall3
-type: fixed

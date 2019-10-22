@@ -1,5 +1,116 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 12.4.0
+
+### Security (2 changes)
+
+- Prevent IDOR when adding groups to protected environments.
+- Hide approvers if a rule has any hidden groups.
+
+### Removed (1 change)
+
+- Remove db_load_balancing_index gauge metric. !17561
+
+### Fixed (26 changes, 1 of them is from the community)
+
+- Admin settings errors now shown in the correct panel. !14374
+- Add missing error handling for epic quick actions. !15648
+- Fix project exports clobbering concurrent export paths. !16280
+- Fixes scroll handle icon in time series. !16354
+- Remove hardcoded Medium confidence for Container Scanning vulnerabilities. !16395
+- Fixed renaming changed files. !16539
+- Fix project-defined metrics dashboards not rendering. !16589
+- Remove duplication of Licenses in Dependency List page. !16946
+- Backfill SPDX identifiers in software_licenses table. !17004
+- Monitor charts: Validate form for creating an alert before submitting. !17109
+- Hide Push rules link when you dont have a license installed. !17530
+- Operations Dashboard: fix minimum query message. !17574
+- Fix page layout for sidebar on designs view. !17579
+- Display error for invalid insights config. !17589
+- Display appropriate approval status icon next to license. !17613
+- Fix deduplication of WASC vulnerabilities in the Security dashboard. !17778
+- Fix burndown negative count edge case. !18053
+- Change design management empty state button style. !18060 (George Tsiolis)
+- Decouple dependency list parser from v1.0 license scanning report. !18103
+- Respect Group SSO Enforcement on projects where the user is an owner. !18154
+- Scoped labels do not remove old label in board sidebar. !18313
+- Restrict number of users input to positive numbers. !18381
+- Fix undefined method log_geo_deleted_event for MergeRequestDiff. !18405
+- Add default empty values to prevent parser errors from approving the Vulnerability-Check rule. !18423
+- Fix time tracking info when the sidebar is collapsed.
+- Fix Discussion tab counter on Issues.
+
+### Changed (18 changes, 1 of them is from the community)
+
+- Style burndown charts with gitlab-ui. !15463
+- Add epic_iid parameter to issues API. !15640
+- Use a single badge to show number of active alerts on metrics dashboards. !15789
+- Allow files with .svg extensions to be uploaded as designs for Design Management. !16160
+- Implement dismissal behaviour when dismissed vulnerabilities are hidden. !16207
+- Remove environment_metrics_show_multiple_dashboards feature flag. !16640
+- Make name an optional parameter of releases. !16647
+- Expose epics closed_at on API. !17156
+- Add static_context API param when editing GitHub project service. !17397
+- Support variable expansion in branch property of bridge jobs. !17430
+- Add environment dropdown to pod logs screen. !17532
+- Parse v2 license scanning reports. !17646
+- Remove broken HTML5 routing behaviour from Pipeline Security Dashboard. !17767
+- Change Prometheus Alert details list from bulleted to description list. !18116 (Vitali Tatarintev)
+- Check for software license violations using SPDX identifiers. !18300
+- Move 'Advanced search' message to search page title. !18349
+- Add alert message for feature 'require approval from code owners' being moved. !18715
+- Enable Productivity Analytics feature by default. !18754
+
+### Performance (1 change)
+
+- Reduce excessive GC on pull mirrors. !17931
+
+### Added (35 changes)
+
+- Allow Design Management files and data to be included in the project exporter/importer. !14702
+- Create system notes for design events. !14791
+- Paginate SCIM responses using count and startIndex. !14892
+- Front-End UI for design deletion. !15034
+- Add max issue count to lists. !15116
+- Sign in / sign up step for trial. !15289
+- Add notification for updated privacy policy. !15435
+- Show Billing Plan as Cards in profile and groups. !15437
+- Add Audit Event API. !15698
+- Add configurable Code Owner approvals for protected branches. !15862
+- Add Alerts Service to Projects. !16117
+- Add Conan check_credentials API endpoint. !16215
+- Initial endpoint for exposing Cycle Analytics stages for the new frontend. !16240
+- Add ability to multi select issue board cards. !16317
+- Add License-Check approval UI. !16371
+- Add links to associated releases on Tags page. !16479
+- Frontend implementation for improved trial sign-up experience for GitLab.com (SaaS) users. !16732
+- Return Todos for Designs via the REST API. !16885
+- Set active insights dashboard tab from hash fragment. !16904
+- Extend group IP restriction to Git activity. !16980
+- Inactivate pipeline retries for Merge Trains. !17065
+- Expose time when the build was generated. !17113
+- Add new table for recording commit counts per file. !17277
+- Add vendored template for Browser Performance Testing. !17319
+- Link Gitlab managed Prometheus alerts and issues. !17477
+- Disable insights tab navigation whilst current page loads. !17678
+- Drop all merge requests from merge trains when the project-level setting is disabled. !17774
+- Implement DAST for default branches. !17789
+- Add rack attack settings for prometheus and generic alert endpoint. !17859
+- Add Licenses list backend usage ping. !17925
+- Associate self-managed Prometheus Alerts and Issues. !18046
+- Operator can see all projects using an instance level cluster. !18173
+- Expose subscribed attribute for Epics in GraphQL. !18607
+- Expose epic participants on GraphQL. !18691
+- Adds a generic alert integration which can accept alerts from any source via a generic webhook receiver.
+
+### Other (4 changes)
+
+- Productivity analytics: Add scatterplot. !15569
+- Updated sidebar navigation icons to be horizontally centered when bar is condensed. !16820
+- Pin major version of SAST analyzers. !17110
+- Docs for protected branch code owner approval API. !17132
+
+
 ## 12.3.4
 
 ### Fixed (2 changes)

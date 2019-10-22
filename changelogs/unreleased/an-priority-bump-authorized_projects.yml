@@ -1,5 +1,0 @@
----
-title: Priority bump authorized_projects sidekiq queue
-merge_request: 18125
-author:
-type: performance

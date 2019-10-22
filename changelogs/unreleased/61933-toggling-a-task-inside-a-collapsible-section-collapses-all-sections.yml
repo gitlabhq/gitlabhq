@@ -1,6 +1,0 @@
----
-title: When user toggles task list item, keep details open until user closes the details
-  manually
-merge_request: 16153
-author:
-type: fixed

@@ -86,33 +86,6 @@ describe Gitlab::Kubernetes::Helm::InstallCommand do
     end
   end
 
-  context 'when there is no repository' do
-    let(:repository) { nil }
-
-    it_behaves_like 'helm commands' do
-      let(:commands) do
-        <<~EOS
-        helm init --upgrade
-        for i in $(seq 1 30); do helm version #{tls_flags} && s=0 && break || s=$?; sleep 1s; echo \"Retrying ($i)...\"; done; (exit $s)
-        #{helm_install_command}
-        EOS
-      end
-
-      let(:helm_install_command) do
-        <<~EOS.squish
-        helm upgrade app-name chart-name
-          --install
-          --reset-values
-          #{tls_flags}
-          --version 1.2.3
-          --set rbac.create\\=false,rbac.enabled\\=false
-          --namespace gitlab-managed-apps
-          -f /data/helm/app-name/config/values.yaml
-        EOS
-      end
-    end
-  end
-
   context 'when there is a pre-install script' do
     let(:preinstall) { ['/bin/date', '/bin/true'] }
 

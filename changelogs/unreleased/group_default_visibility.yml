@@ -1,5 +1,0 @@
----
-title: Fix visibility level error when updating group from API
-merge_request: 17227
-author: Mathieu Parent
-type: fixed

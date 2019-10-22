@@ -1,5 +1,0 @@
----
-title: Do not start mirroring via API when paused
-merge_request: 17930
-author:
-type: changed

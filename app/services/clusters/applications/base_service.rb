@@ -19,6 +19,10 @@ module Clusters
             application.hostname = params[:hostname]
           end
 
+          if application.has_attribute?(:kibana_hostname)
+            application.kibana_hostname = params[:kibana_hostname]
+          end
+
           if application.has_attribute?(:email)
             application.email = params[:email]
           end
@@ -60,7 +64,7 @@ module Clusters
       end
 
       def invalid_application?
-        unknown_application? || (!cluster.project_type? && project_only_application?)
+        unknown_application? || (!cluster.project_type? && project_only_application?) || (application_name == Applications::ElasticStack.application_name && !Feature.enabled?(:enable_cluster_application_elastic_stack))
       end
 
       def unknown_application?

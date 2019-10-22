@@ -1,5 +1,0 @@
----
-title: Remove map-get($grid-breakpoints, xs) for max-width
-merge_request: 17420
-author: Takuya Noguchi
-type: other

@@ -1,5 +1,0 @@
----
-title: Fix protected branch detection used by notification service
-merge_request: 18221
-author:
-type: fixed

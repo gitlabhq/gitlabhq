@@ -40,11 +40,6 @@ export default class Project {
         $label.text(activeText);
       });
 
-      $('#modal-geo-info').data({
-        cloneUrlSecondary: $this.attr('href'),
-        cloneUrlPrimary: $this.data('primaryUrl') || '',
-      });
-
       if (mobileCloneField) {
         mobileCloneField.dataset.clipboardText = url;
       } else {

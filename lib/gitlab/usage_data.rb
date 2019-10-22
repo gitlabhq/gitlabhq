@@ -74,6 +74,7 @@ module Gitlab
             clusters_applications_prometheus: count(::Clusters::Applications::Prometheus.available),
             clusters_applications_runner: count(::Clusters::Applications::Runner.available),
             clusters_applications_knative: count(::Clusters::Applications::Knative.available),
+            clusters_applications_elastic_stack: count(::Clusters::Applications::ElasticStack.available),
             in_review_folder: count(::Environment.in_review_folder),
             groups: count(Group),
             issues: count(Issue),

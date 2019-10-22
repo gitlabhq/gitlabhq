@@ -37,6 +37,7 @@ export default class Clusters {
       installJupyterPath,
       installKnativePath,
       updateKnativePath,
+      installElasticStackPath,
       installPrometheusPath,
       managePrometheusPath,
       clusterEnvironmentsPath,
@@ -86,6 +87,7 @@ export default class Clusters {
       installJupyterEndpoint: installJupyterPath,
       installKnativeEndpoint: installKnativePath,
       updateKnativeEndpoint: updateKnativePath,
+      installElasticStackEndpoint: installElasticStackPath,
       clusterEnvironmentsEndpoint: clusterEnvironmentsPath,
     });
 

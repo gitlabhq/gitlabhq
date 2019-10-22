@@ -1,5 +1,0 @@
----
-title: Reduce Gitaly calls when viewing a commit
-merge_request: 17095
-author:
-type: performance

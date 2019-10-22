@@ -1,5 +1,0 @@
----
-title: Add user_id and created_at columns to design_management_versions table
-merge_request: 17316
-author:
-type: added

@@ -1,6 +1,0 @@
----
-title: Fix new project path being disclosed through unsubscribe link of issue/merge
-  requests
-merge_request:
-author:
-type: security

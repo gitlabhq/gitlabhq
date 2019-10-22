@@ -178,6 +178,37 @@ shared_examples "installing applications on a cluster" do
       end
     end
 
+    context 'when user installs Elastic Stack' do
+      before do
+        allow(ClusterInstallAppWorker).to receive(:perform_async)
+        allow(ClusterWaitForIngressIpAddressWorker).to receive(:perform_in)
+        allow(ClusterWaitForIngressIpAddressWorker).to receive(:perform_async)
+
+        create(:clusters_applications_helm, :installed, cluster: cluster)
+        create(:clusters_applications_ingress, :installed, external_ip: '127.0.0.1', cluster: cluster)
+
+        page.within('.js-cluster-application-row-elastic_stack') do
+          click_button 'Install'
+        end
+      end
+
+      it 'shows status transition' do
+        page.within('.js-cluster-application-row-elastic_stack') do
+          expect(page).to have_css('.js-cluster-application-install-button', exact_text: 'Installing')
+
+          Clusters::Cluster.last.application_elastic_stack.make_installing!
+
+          expect(page).to have_css('.js-cluster-application-install-button', exact_text: 'Installing')
+
+          Clusters::Cluster.last.application_elastic_stack.make_installed!
+
+          expect(page).to have_css('.js-cluster-application-uninstall-button', exact_text: 'Uninstall')
+        end
+
+        expect(page).to have_content('Elastic Stack was successfully installed on your Kubernetes cluster')
+      end
+    end
+
     context 'when user installs Ingress' do
       before do
         allow(ClusterInstallAppWorker).to receive(:perform_async)

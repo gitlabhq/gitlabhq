@@ -35,6 +35,7 @@
         "external_ip": { "type": ["string", "null"] },
         "external_hostname": { "type": ["string", "null"] },
         "hostname": { "type": ["string", "null"] },
+        "kibana_hostname": { "type": ["string", "null"] },
         "email": { "type": ["string", "null"] },
         "update_available": { "type": ["boolean", "null"] },
         "can_uninstall": { "type": "boolean" }

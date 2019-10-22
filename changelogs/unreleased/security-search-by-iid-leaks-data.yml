@@ -1,6 +1,0 @@
----
-title: Limit search for IID to a type to avoid leaking records with the same IID that
-  the user does not have access to
-merge_request:
-author:
-type: security

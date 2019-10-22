@@ -3510,6 +3510,9 @@ msgstr ""
 msgid "ClusterIntegration|Copy Jupyter Hostname"
 msgstr ""
 
+msgid "ClusterIntegration|Copy Kibana Hostname"
+msgstr ""
+
 msgid "ClusterIntegration|Copy Knative Endpoint"
 msgstr ""
 
@@ -3553,6 +3556,9 @@ msgid "ClusterIntegration|Create new Cluster on GKE"
 msgstr ""
 
 msgid "ClusterIntegration|Did you know?"
+msgstr ""
+
+msgid "ClusterIntegration|Elastic Stack"
 msgstr ""
 
 msgid "ClusterIntegration|Enable Cloud Run on GKE (beta)"
@@ -3673,6 +3679,9 @@ msgid "ClusterIntegration|JupyterHub, a multi-user Hub, spawns, manages, and pro
 msgstr ""
 
 msgid "ClusterIntegration|Key pair name"
+msgstr ""
+
+msgid "ClusterIntegration|Kibana Hostname"
 msgstr ""
 
 msgid "ClusterIntegration|Knative"
@@ -3976,6 +3985,9 @@ msgid "ClusterIntegration|The associated load balancer and IP will be deleted an
 msgstr ""
 
 msgid "ClusterIntegration|The associated private key will be deleted and cannot be restored."
+msgstr ""
+
+msgid "ClusterIntegration|The elastic stack collects logs from all pods in your cluster"
 msgstr ""
 
 msgid "ClusterIntegration|The endpoint is in the process of being assigned. Please check your Kubernetes cluster or Quotas on Google Kubernetes Engine if it takes a long time."

@@ -1,5 +1,0 @@
----
-title: Fix showing diff when it has legacy diff notes
-merge_request: 18510
-author:
-type: fixed

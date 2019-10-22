@@ -5,6 +5,7 @@ import {
   JUPYTER,
   KNATIVE,
   CERT_MANAGER,
+  ELASTIC_STACK,
   RUNNER,
   APPLICATION_INSTALLED_STATUSES,
   APPLICATION_STATUS,
@@ -84,6 +85,11 @@ export default class ClusterStore {
           externalHostname: null,
           updateSuccessful: false,
           updateFailed: false,
+        },
+        elastic_stack: {
+          ...applicationInitialState,
+          title: s__('ClusterIntegration|Elastic Stack'),
+          kibana_hostname: null,
         },
       },
       environments: [],
@@ -198,12 +204,11 @@ export default class ClusterStore {
         this.state.applications.cert_manager.email =
           this.state.applications.cert_manager.email || serverAppEntry.email;
       } else if (appId === JUPYTER) {
-        this.state.applications.jupyter.hostname =
-          this.state.applications.jupyter.hostname ||
-          serverAppEntry.hostname ||
-          (this.state.applications.ingress.externalIp
-            ? `jupyter.${this.state.applications.ingress.externalIp}.nip.io`
-            : '');
+        this.state.applications.jupyter.hostname = this.updateHostnameIfUnset(
+          this.state.applications.jupyter.hostname,
+          serverAppEntry.hostname,
+          'jupyter',
+        );
       } else if (appId === KNATIVE) {
         if (!this.state.applications.knative.isEditingHostName) {
           this.state.applications.knative.hostname =
@@ -216,8 +221,24 @@ export default class ClusterStore {
       } else if (appId === RUNNER) {
         this.state.applications.runner.version = version;
         this.state.applications.runner.updateAvailable = updateAvailable;
+      } else if (appId === ELASTIC_STACK) {
+        this.state.applications.elastic_stack.kibana_hostname = this.updateHostnameIfUnset(
+          this.state.applications.elastic_stack.kibana_hostname,
+          serverAppEntry.kibana_hostname,
+          'kibana',
+        );
       }
     });
+  }
+
+  updateHostnameIfUnset(current, updated, fallback) {
+    return (
+      current ||
+      updated ||
+      (this.state.applications.ingress.externalIp
+        ? `${fallback}.${this.state.applications.ingress.externalIp}.nip.io`
+        : '')
+    );
   }
 
   toggleFetchEnvironments(isFetching) {

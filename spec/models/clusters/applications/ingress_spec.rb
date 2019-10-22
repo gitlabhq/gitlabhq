@@ -21,7 +21,7 @@ describe Clusters::Applications::Ingress do
   describe '#can_uninstall?' do
     subject { ingress.can_uninstall? }
 
-    it 'returns true if application_jupyter_nil_or_installable? AND external_ip_or_hostname? are true' do
+    it 'returns true if external ip is set and no application exists' do
       ingress.external_ip = 'IP'
 
       is_expected.to be_truthy
@@ -29,6 +29,12 @@ describe Clusters::Applications::Ingress do
 
     it 'returns false if application_jupyter_nil_or_installable? is false' do
       create(:clusters_applications_jupyter, :installed, cluster: ingress.cluster)
+
+      is_expected.to be_falsey
+    end
+
+    it 'returns false if application_elastic_stack_nil_or_installable? is false' do
+      create(:clusters_applications_elastic_stack, :installed, cluster: ingress.cluster)
 
       is_expected.to be_falsey
     end

@@ -495,7 +495,6 @@ linters:
       - 'ee/app/views/projects/services/prometheus/_metrics.html.haml'
       - 'ee/app/views/projects/settings/slacks/edit.html.haml'
       - 'ee/app/views/shared/_additional_email_text.html.haml'
-      - 'ee/app/views/shared/_geo_info_modal.html.haml'
       - 'ee/app/views/shared/_mirror_update_button.html.haml'
       - 'ee/app/views/shared/_shared_runners_minutes_limit.html.haml'
       - 'ee/app/views/shared/audit_events/_event_table.html.haml'

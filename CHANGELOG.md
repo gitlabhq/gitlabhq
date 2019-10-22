@@ -2,6 +2,325 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 12.4.0
+
+### Security (14 changes)
+
+- HTML-escape search term in empty message. !18319
+- Fix private feature Elasticsearch leak.
+- Prevent bypassing email verification using Salesforce.
+- Fix new project path being disclosed through unsubscribe link of issue/merge requests.
+- Do not show resource label events referencing not accessible labels.
+- Check permissions before showing head pipeline blocking merge requests.
+- Cancel all running CI jobs triggered by the user who is just blocked.
+- Do not disclose project milestones on group milestones page when project milestones access is disabled in project settings.
+- Display only participants that user has permission to see on milestone page.
+- Fix Gitaly SearchBlobs flag RPC injection.
+- Add a policy check for system notes that may not be visible due to cross references to private items.
+- Limit search for IID to a type to avoid leaking records with the same IID that the user does not have access to.
+- Prevent GitLab accounts takeover if SAML is configured.
+- Only render fixed number of mermaid blocks.
+
+### Fixed (103 changes, 12 of them are from the community)
+
+- When user toggles task list item, keep details open until user closes the details manually. !16153
+- Fix formatting welcome screen external users. !16667
+- Fix signup link in admin area not being disabled. !16726 (Illya Klymov)
+- Fix routing bugs in security dashboards. !16738
+- Fix Jira integration favicon image with relative URL. !16802
+- Add timeout mechanism for CI config validation. !16807
+- Fix for count in todo badge when user has over 1,000 todos. Will now correctly display todo count after user marks some todos as done. !16844 (Jesse Hall @jessehall3)
+- Naming a project "shared" will no longer automatically open the "Shared Projects" tab. !16847 (Jesse Hall @jessehall3)
+- Adds the ability to delete single tags from the docker registry. Fix the issue that caused all related tags and image to be deleted at the same time. !16886
+- Changed confidential quick action to only be available on non confidential issues. !16902 (Marc Schwede)
+- Stop sidebar icons from jumping when expanded & collapsed. !16971
+- Set name and updated_at properly in GitHub ReleaseImporter. !17020
+- Remove thin white line at top of diff view code blocks. !17026
+- Show correct CI indicator when build succeeded with warnings. !17034
+- Create a persistent ref per pipeline for keeping pipelines run from force-push and merged results. !17043
+- Move SMAU usage counters to the UsageData count field. !17074
+- Allow maintainers to toggle write permission for public deploy keys. !17210
+- Fix GraphQL for read-only instances. !17225
+- Fix visibility level error when updating group from API. !17227 (Mathieu Parent)
+- Fix stylelint errors in epics.scss. !17243
+- Fix new discussion replies sometimes showing up twice. !17255
+- Adjust unnapliable suggestions in expanded lines. !17286
+- Show all groups user belongs to in Notification settings. !17303
+- Alphabetically sorts selected sidebar labels. !17309
+- Show issue weight when weight is 0. !17329 (briankabiro)
+- Generate LFS token authorization for user LFS requests. !17332
+- Backfill releases table updated_at column and add not null constraints to created_at and updated_at. !17400
+- Log Sidekiq exceptions properly in JSON format. !17412
+- Redo fix for related issues border radius. !17480
+- Show the original branch name and link of merge request in pipeline emails. !17513
+- Fixes issues with the security reports migration. !17519
+- Users can view the blame or history of a file with newlines in its filename. !17543 (Jesse Hall @jessehall3)
+- Display reCAPTCHA modal when making issue public. !17553
+- Fix css selector for details in issue description. !17557
+- Prevents a group path change when a project inside the group has container registry images. !17583
+- Show 20 labels in dropdown instead of 5. !17596
+- Nullify platform Kubernetes namespace if blank. !17657
+- Fix Issue: WebIDE asks for confirmation to leave the page when committing and creating a new MR. !17671
+- Catch unhandled exceptions in health checks. !17694
+- Suppress error messages shown when navigating to a new page. !17706
+- Specify sort order explicitly for Group and Project audit events. !17739
+- Merge Request: Close JIRA issues when issues are disabled. !17743
+- Disable gitlab-workhorse static error page on health endpoints. !17770
+- Fix notes race condition when linking to specific note. !17777
+- Fix relative positioning when moving items down and there is no space. !17781
+- Fix project imports for pipelines for merge requests. !17799
+- Increase the limit of includes in CI file to 100. !17807
+- Geo: Fix race condition for container synchronization. !17823
+- Geo: Invalidate cache after refreshing foreign tables. !17885
+- Abort Merge When Pipeline Succeeds when Fast Forward merge is impossible. !17886
+- Fix viewing merge reqeust from a fork that's being deleted. !17894
+- Fix empty security dashboard for public projects. !17915
+- Fix inline rendering of videos for uploads with uppercase file extensions. !17924
+- Hide redundant labels in issue boards. !17937
+- Time window filter in monitor dashboard gets reset. !17972
+- Use cache_method_asymmetrically with Repository#has_visible_content?. !17975
+- Allow users to compare Git revisions on a read-only instance. !18038
+- Enable Google API retries for uploads. !18040
+- Fix bug with new wiki not being indexed. !18051
+- Stops the expand button in reports from expanding. !18064
+- Make sure project insights stick on its own. !18082
+- Embed metrics time window scroll no longer affects other embeds. !18109
+- Fix broken notes avatar rendering in Chrome 77. !18110
+- Ignore incoming emails with X-Autoreply header. !18118
+- Enable grid, frame and stripes styling on AsciiDoc tables. !18165 (Guillaume Grossetie)
+- Add backend support for selecting custom templates by ID. !18178
+- Fix notifications for private group mentions in Notes, Issues, and Merge Requests. !18183
+- Do not strip forwarded message body when creating an issue from Service Desk email. !18196
+- Fix protected branch detection used by notification service. !18221
+- Fix error where helper was incorrectly returning `true`. !18231
+- Adjust placeholder to solve misleading regex. !18235
+- Fix Flaky spec/finders/members_finder_spec.rb:85. !18257 (Jacopo Beschi @jacopo-beschi)
+- Fix 500 error on clicking to LetsEncrypt Terms of Service. !18263
+- Fix error tracking table layout on small screens. !18325
+- GitHub import: Handle nil published_at dates. !18355
+- Do not allow deactivated users to use slash commands. !18365
+- Fix creating epics with dates from api. !18393
+- JIRA Service: Improve username/email validation. !18397
+- Stopped CRD apply retrying from allowing silent failures. !18421
+- Fix erroneous "No activities found" message. !18434
+- Support ES searches for project snippets. !18459
+- Fix styling of set status emoji picker. !18509
+- Fix showing diff when it has legacy diff notes. !18510
+- JIRA Integration API URL works having a trailing slash. !18526
+- Fixes embedded metrics chart tooltip spacing. !18543
+- Bump GITLAB_ELASTICSEARCH_INDEXER_VERSION=v1.4.0. !18558
+- Fix pod logs failure when pod contains more than 1 container. !18574
+- Prevent the slash command parser from removing leading whitespace from content that is unrelated to slash commands. !18589 (Jared Deckard)
+- Fix inability to set snippet visibility via API. !18612
+- Fix Web IDE tree not updating modified status. !18647
+- Fix button link foreground color. !18669
+- Resolve missing design system notes icons. !18693
+- Remove duplicate primary button in dashboard snippets. !32048 (George Tsiolis)
+- Allow to view productivity analytics page without a license. !33876
+- Fix container registry delete tag modal title and button. !34032
+- Fixes variables overflowing in sm screens.
+- Update top nav bar to fit all content in at all screen sizes.
+- Fix permissions for group milestones.
+- Removes Collapsible Sections from Job Log.
+- Fixes job overflow in stages dropdown.
+- Fix moved help URL for monitoring performance.
+- Fix issue with wiki TOC links being treated as external links. (Oren Kanner)
+- Show error message when setting an invalid group ID for the performance bar.
+
+### Deprecated (1 change)
+
+- Removing cleanup:repo, cleanup:dirs. !18087
+
+### Changed (51 changes, 3 of them are from the community)
+
+- Links on Releases page to commits and tags. !16128
+- Add status to deployments and state to environments in API responses. !16242
+- Use search scope label in empty results message. !16324
+- Add step 2 of the experimental signup flow. !16583
+- Add property to enable metrics dashboards to be rearranged. !16605
+- Allow intra-project MR dependencies. !16799
+- Use scope param instead of hide_dismissed. !16834
+- Add empty state in file search. !16851
+- Warn before applying issue templates. !16865
+- MR Test Summary now shows errors as failures. !17039
+- Add support for the association of multiple milestones to the Releases page. !17091
+- Display if an issue was moved in issue list. !17102
+- Improve UI for admin/projects and group/settings/projects pages. !17247
+- Update registry tag delete popup message. !17257
+- Show the "Set up CI/CD" prompt in empty repositories when applicable. !17274 (Ben McCormick)
+- Knative version bump 0.6 -> 0.7. !17367 (Chris Baumbauer)
+- Fix usability problems with the file template picker. !17522
+- Make commit status created for any pipelines. !17524 (Aufar Gilbran)
+- Add warnings to performance bar when page shows signs of poor performance. !17612
+- Banners should only be dismissable by clicking x button. !17642
+- Changes response body of liveness check to be more accurate. !17655
+- Enable Request Access functionality by default for new projects and groups. !17662
+- Add more attributes to issues GraphQL endpoint. !17802
+- Improve admin/system_info page ui. !17829
+- Adds management project for a cluster. !17866
+- Upgrade gitlab-workhorse to 8.12.0. !17892
+- Geo: Fix instruction from rake geo:gitlab:check. !17895
+- Upgrade to Gitaly v1.66.0. !17900
+- Do not start mirroring via API when paused. !17930
+- Use MR links in PipelinePresenter#ref_text for branch pipelines. !17947
+- Avoid knative and prometheus uninstall race condition. !18020
+- Deprecate usage of state column for issues and merge requests. !18099
+- Add missing page title to projects/container-registry. !18114
+- Port over EE pipeline functionality to CE. !18136
+- Aggregate push events when there are too many. !18239
+- Cleanup background migrations for any approval rules. !18256
+- Container registry tag(s) delete button pluralization. !18260
+- Create clusters with VPC-Native enabled. !18284
+- Update cluster link text. !18322
+- Upgrade to Gitaly v1.67.0. !18326
+- Improve UI of documentation under /help. !18331
+- Cross-link unreplicated Geo types to issues. !18443
+- Make designs read-only if the issue has been moved, or if its discussion has been locked. !18551
+- Do not show new issue button on archived projects. !18590
+- Increase group avatar size to 40px. !18654
+- Sort vulnerabilities by severity then confidence for dashboard and pipeline views. !18675
+- Add timeouts for each RPC call. !31766
+- Add more specific message to clarify the role of empty images in container registry. !32919
+- Embed Jaeger in Gitlab UI.
+- Use text instead of icon for recent searches dropdown.
+- Export liveness and readiness probes.
+
+### Performance (25 changes, 1 of them is from the community)
+
+- Limit diverging commit counts requests. !16737
+- Use GetBlobs RPC for uri type. !16824
+- Reduce Gitaly calls when viewing a commit. !17095
+- Limit snippets search count. !17585
+- Narrow snippet search scope in GitLab.com. !17625
+- Handle wiki and graphql attachments in gitlab-workhorse. !17690
+- Reduce lock contention of deployment creation by allocating IID outside of the pipeline transaction. !17696
+- Update PumaWorkerKiller defaults. !17758
+- Add trigram index on snippet content. !17806
+- Fix Gitaly N+1 queries in related merge requests API. !17850
+- Don't execute webhooks/services when above limit. !17874
+- Only schedule updating push-mirrors once per push. !17902
+- Show only personal snippets on explore page. !18092
+- Priority bump authorized_projects sidekiq queue. !18125
+- Avoid dumping files on disk when direct_upload is enabled. !18135
+- Check if mapping is empty before caching in File Collections. !18290 (briankabiro)
+- Avoid unnecessary locks on internal_ids. !18328
+- Fix N+1 queries in Jira Development Panel API endpoint. !18329
+- Optimize SQL requests for BlameController and CommitsController. !18342
+- Remove N+1 for fetching commits signatures. !18389
+- Reduce idle in transaction time when updating a merge request. !18493
+- Use cascading deletes for deleting logs upon deleting a webhook. !18642
+- Replace index on ci_triggers. !18652
+- Hide license breakdown in /admin if user count is high. !18825
+- Cache branch and tag names as Redis sets. !30476
+
+### Added (78 changes, 12 of them are from the community)
+
+- Adds sorting of packages at the project level. !15448
+- Add projects.only option to Insights. !15930
+- Add kubernetes section to group runner settings. !16338
+- Enable Cloud Run on GKE cluster creation. !16566
+- Add file matching rule to flexible CI rules. !16574
+- Enable preview of private artifacts. !16675 (Tuomo Ala-Vannesluoma)
+- Upgrade Gitaly to v1.64. !16788
+- Render xml artifact files in GitLab. !16790
+- Add GitHub & Gitea importers project filtering. !16823
+- Add project filtering to Bitbucket Cloud import. !16828
+- Provides internationalization support to chart legends. !16832
+- Expose name property in imports API. !16848
+- Add allowFilter and allowAnySHA1InWant for partial clones. !16850
+- [ObjectStorage] Allow migrating back to local storage. !16868
+- Require admins to enter admin-mode by re-authenticating before performing administrative operations. !16981 (Roger Rüttimann & Diego Louzán)
+- Deactivate a user (with self-service reactivation). !17037
+- Add database tables to store AWS roles and cluster providers. !17057
+- Collect docker registry related metrics. !17063
+- Allow releases to be targeted by URL anchor links on the Releases page. !17150
+- Add project_pages_metadata DB table. !17197
+- Add index on ci_builds for successful Pages deploys. !17204
+- Creation of Evidence collection of new releases. !17217
+- API: Add missing group parameters. !17220 (Mathieu Parent)
+- Allow to exclude ancestor groups on group labels API. !17221 (Mathieu Parent)
+- Added 'copy link' in epic comment dropdown. !17224
+- Add columns for per project/group max pages/artifacts sizes. !17231
+- Create table for grafana api token for metrics embeds. !17234
+- Add proper label REST API for update, delete and promote. !17239 (Mathieu Parent)
+- Allow cross-project pipeline triggering with CI_JOB_TOKEN in core. !17251
+- Add user_id and created_at columns to design_management_versions table. !17316
+- Add pull_mirror_branch_prefix column on projects table. !17368
+- Expose web_url for epics on API. !17380
+- Improve time window filtering on metrics dashboard. !17554
+- Group level Container Registry browser. !17615
+- Add API for manually creating and updating deployments. !17620
+- Introduce diffs_batch JSON endpoint for paginated diffs. !17651
+- Web IDE button should fork and open forked project when selected from read-only project. !17672
+- Allow users to be searched with a @ prefix. !17742
+- Add individual inherited member lookup API. !17744
+- Preserve custom .gitlab-ci.yml config path when forking. !17817 (Mathieu Parent)
+- Introduce CI_PROJECT_TITLE as predefined environment variable. !17849 (Nejc Habjan)
+- Feature enabling embedded audio elements in markdown. !17860 (Jesse Hall @jessehall3)
+- Add 'New release' to the project custom notifications. !17877
+- Added timestamps (created_at and updated_at) to API pipelines response. !17911
+- Added timestamp (updated_at) to API deployments response. !17913
+- Add pipeline preparing status icons. !17923
+- Creates Vue and Vuex app to render exposed artifacts. !17934
+- Add web_exporter to expose Prometheus metrics. !17943
+- Schedule background migration to populate pages metadata. !17993
+- Add "Edit Release" page. !18033
+- Unpin ingress image version, upgrade chart to 1.22.1. !18047
+- Adds sorting of packages at the group level. !18062
+- Introduce a lightweight diffs_metadata endpoint. !18104
+- Limit the number of comments on an issue, MR, or commit. !18111
+- Introduce new Ansi2json parser to convert job logs to JSON. !18133
+- Use new Ansi2json job log converter via feature flag. !18134
+- Snowplow custom events for Monitor: Health Product Categories. !18157
+- Support Create/Read/Destroy operations in Feature Flag API. !18198
+- Add two new predefined stages to pipelines. !18205
+- Add endpoint to proxy requests to grafana's proxy endpoint. !18210
+- Add ability to query todos using GraphQL. !18218
+- Include in the callout message a list of jobs that caused missing dependencies failure. !18219
+- Adds login input with copy box and supporting copy to empty container registry view. !18244 (nate geslin)
+- Add max_artifacts_size fields under project and group settings. !18286
+- Provide Merge requests and Issue links through the Release API. !18311
+- Adds separate parsers for mentions of users, groups, projects in markdown content. !18318
+- Add matching branch info to branch column. !18352
+- Users can preview audio files in a repository. !18354 (Jesse Hall @jessehall3)
+- Add edit button to release blocks on Releases page. !18411
+- Add "Custom HTTP Git clone URL root" setting. !18422
+- Add support for epic update through GraphQL API. !18440
+- Expose subscribed attribute for epic on API. !18475
+- Geo: Enable replicating uploads, LFS objects, and artifacts in Object Storage. !18482
+- Show related merge requests in pipeline view. !18697
+- Allow users to configure protected paths from Admin panel. !31246
+- persist the refs when open the link of refs in a new tab of browser. !31998 (minghuan lei)
+- Add first_parent option to list commits api. !32410 (jhenkens)
+- Allow users to add and remove zoom rooms on an issue using quick action commands.
+
+### Other (23 changes, 5 of them are from the community)
+
+- Sync issuables state_id with null values. !16480
+- Experimental separate sign up flow. !16482
+- Upgrade Rouge to v3.11.0. !17011
+- Better job naming for Docker.gitlab-ci.yml. !17218 (luca.orlandi@gmail.com)
+- Update GitLab Runner Helm Chart to 0.9.0. !17326
+- Change welcome message and make translatable. !17391
+- Remove map-get($grid-breakpoints, xs) for max-width. !17420 (Takuya Noguchi)
+- Document Git LFS and max file size interaction. !17609
+- Refactor email notification code. !17741 (briankabiro)
+- Ignore id column of ci_build_trace_sections table. !17805
+- Extend graphql query endpoint for merge requests to return more attributes to support sidebar implementation. !17813
+- Project list: Align star icons. !17833
+- Moves the license compliance reports to the Backend. !17905
+- Fixes wrong link on Protected paths admin settings. !17945
+- Update Pages to v1.11.0. !18010
+- Refactor checksum code in uploads. !18065 (briankabiro)
+- Make instance configuration user friendly. !18363 (Takuya Noguchi)
+- Update Workhorse to v8.14.0. !18391
+- Attribute each Sidekiq worker to a feature category. !18462
+- Update GitLab Shell to v10.2.0. !18735
+- Use correct icons for issue actions.
+- Increase color contrast of select option path.
+- Remove Postgresql specific setup tasks and move to schema.rb.
+
+
 ## 12.3.4
 
 ### Fixed (2 changes)

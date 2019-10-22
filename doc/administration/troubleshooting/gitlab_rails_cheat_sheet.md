@@ -442,7 +442,7 @@ personal_access_token = User.find(123).personal_access_tokens.create(
   scopes: [:api]
 )
 
-personal_access_token.token
+puts personal_access_token.token
 ```
 
 You might also want to manually set the token string:

@@ -1,5 +1,0 @@
----
-title: Abort Merge When Pipeline Succeeds when Fast Forward merge is impossible
-merge_request: 17886
-author:
-type: fixed

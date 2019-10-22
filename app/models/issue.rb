@@ -206,7 +206,16 @@ class Issue < ApplicationRecord
     if self.confidential?
       "#{iid}-confidential-issue"
     else
-      "#{iid}-#{title.parameterize}"
+      branch_name = "#{iid}-#{title.parameterize}"
+
+      if branch_name.length > 100
+        truncated_string = branch_name[0, 100]
+        # Delete everything dangling after the last hyphen so as not to risk
+        # existence of unintended words in the branch name due to mid-word split.
+        branch_name = truncated_string[0, truncated_string.rindex("-")]
+      end
+
+      branch_name
     end
   end
 

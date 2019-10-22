@@ -1,5 +1,0 @@
----
-title: Show the original branch name and link of merge request in pipeline emails
-merge_request: 17513
-author:
-type: fixed

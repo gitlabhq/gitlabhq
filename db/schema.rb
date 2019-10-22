@@ -1055,6 +1055,17 @@ ActiveRecord::Schema.define(version: 2019_10_17_045817) do
     t.index ["cluster_id"], name: "index_clusters_applications_cert_managers_on_cluster_id", unique: true
   end
 
+  create_table "clusters_applications_elastic_stacks", force: :cascade do |t|
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+    t.bigint "cluster_id", null: false
+    t.integer "status", null: false
+    t.string "version", limit: 255, null: false
+    t.string "kibana_hostname", limit: 255
+    t.text "status_reason"
+    t.index ["cluster_id"], name: "index_clusters_applications_elastic_stacks_on_cluster_id", unique: true
+  end
+
   create_table "clusters_applications_helm", id: :serial, force: :cascade do |t|
     t.integer "cluster_id", null: false
     t.datetime "created_at", null: false
@@ -4109,6 +4120,7 @@ ActiveRecord::Schema.define(version: 2019_10_17_045817) do
   add_foreign_key "clusters", "projects", column: "management_project_id", name: "fk_f05c5e5a42", on_delete: :nullify
   add_foreign_key "clusters", "users", on_delete: :nullify
   add_foreign_key "clusters_applications_cert_managers", "clusters", on_delete: :cascade
+  add_foreign_key "clusters_applications_elastic_stacks", "clusters", on_delete: :cascade
   add_foreign_key "clusters_applications_helm", "clusters", on_delete: :cascade
   add_foreign_key "clusters_applications_ingress", "clusters", on_delete: :cascade
   add_foreign_key "clusters_applications_jupyter", "clusters", on_delete: :cascade
