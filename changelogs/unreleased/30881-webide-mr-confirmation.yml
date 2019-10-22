@@ -1,0 +1,6 @@
+---
+title: 'Fix Issue: WebIDE asks for confirmation to leave the page when committing
+  and creating a new MR'
+merge_request: 17671
+author:
+type: fixed

@@ -1,0 +1,5 @@
+---
+title: Enable Request Access functionality by default for new projects and groups
+merge_request: 17662
+author:
+type: changed

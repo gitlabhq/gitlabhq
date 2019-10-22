@@ -1,0 +1,5 @@
+---
+title: Fixes job overflow in stages dropdown
+merge_request:
+author:
+type: fixed

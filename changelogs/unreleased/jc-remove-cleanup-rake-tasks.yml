@@ -1,0 +1,5 @@
+---
+title: Removing cleanup:repo, cleanup:dirs
+merge_request: 18087
+author:
+type: deprecated

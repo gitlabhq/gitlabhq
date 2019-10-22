@@ -1,0 +1,5 @@
+---
+title: Fix error tracking table layout on small screens
+merge_request: 18325
+author:
+type: fixed

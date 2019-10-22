@@ -1,0 +1,5 @@
+---
+title: Fix 500 error on clicking to LetsEncrypt Terms of Service
+merge_request: 18263
+author:
+type: fixed

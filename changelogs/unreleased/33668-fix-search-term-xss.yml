@@ -1,0 +1,5 @@
+---
+title: HTML-escape search term in empty message
+merge_request: 18319
+author:
+type: security

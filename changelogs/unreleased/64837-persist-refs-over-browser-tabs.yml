@@ -1,0 +1,5 @@
+---
+title: persist the refs when open the link of refs in a new tab of browser
+merge_request: 31998
+author: minghuan lei
+type: added

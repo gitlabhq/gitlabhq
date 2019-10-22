@@ -1,0 +1,6 @@
+---
+title: Reduce lock contention of deployment creation by allocating IID outside
+  of the pipeline transaction
+merge_request: 17696
+author:
+type: performance

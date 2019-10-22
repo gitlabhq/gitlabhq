@@ -1,0 +1,5 @@
+---
+title: Fix N+1 queries in Jira Development Panel API endpoint
+merge_request: 18329
+author:
+type: performance

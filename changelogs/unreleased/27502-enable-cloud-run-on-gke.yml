@@ -1,0 +1,5 @@
+---
+title: Enable Cloud Run on GKE cluster creation
+merge_request: 16566
+author:
+type: added

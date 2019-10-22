@@ -1,0 +1,5 @@
+---
+title: Ignore incoming emails with X-Autoreply header.
+merge_request: 18118
+author:
+type: fixed

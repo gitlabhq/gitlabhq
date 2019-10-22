@@ -82,16 +82,20 @@ module ChatMessage
       Gitlab::Git.blank_ref?(after)
     end
 
-    def branch_url
-      "#{project_url}/commits/#{ref}"
+    def ref_url
+      if ref_type == 'tag'
+        "#{project_url}/-/tags/#{ref}"
+      else
+        "#{project_url}/commits/#{ref}"
+      end
     end
 
     def compare_url
       "#{project_url}/compare/#{before}...#{after}"
     end
 
-    def branch_link
-      "[#{ref}](#{branch_url})"
+    def ref_link
+      "[#{ref}](#{ref_url})"
     end
 
     def project_link
@@ -104,11 +108,11 @@ module ChatMessage
 
     def compose_action_details
       if new_branch?
-        ['pushed new', branch_link, "to #{project_link}"]
+        ['pushed new', ref_link, "to #{project_link}"]
       elsif removed_branch?
         ['removed', ref, "from #{project_link}"]
       else
-        ['pushed to', branch_link, "of #{project_link} (#{compare_link})"]
+        ['pushed to', ref_link, "of #{project_link} (#{compare_link})"]
       end
     end
 

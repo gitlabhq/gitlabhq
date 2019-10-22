@@ -3,25 +3,37 @@
 require 'spec_helper'
 
 describe Gitlab::SidekiqMiddleware::Metrics do
-  describe '#call' do
-    let(:middleware) { described_class.new }
-    let(:worker) { double(:worker) }
+  let(:middleware) { described_class.new }
 
-    let(:completion_seconds_metric) { double('completion seconds metric') }
-    let(:user_execution_seconds_metric) { double('user execution seconds metric') }
-    let(:failed_total_metric) { double('failed total metric') }
-    let(:retried_total_metric) { double('retried total metric') }
-    let(:running_jobs_metric) { double('running jobs metric') }
+  let(:concurrency_metric) { double('concurrency metric') }
+  let(:completion_seconds_metric) { double('completion seconds metric') }
+  let(:user_execution_seconds_metric) { double('user execution seconds metric') }
+  let(:failed_total_metric) { double('failed total metric') }
+  let(:retried_total_metric) { double('retried total metric') }
+  let(:running_jobs_metric) { double('running jobs metric') }
 
-    before do
-      allow(Gitlab::Metrics).to receive(:histogram).with(:sidekiq_jobs_completion_seconds, anything, anything, anything).and_return(completion_seconds_metric)
-      allow(Gitlab::Metrics).to receive(:histogram).with(:sidekiq_jobs_cpu_seconds, anything, anything, anything).and_return(user_execution_seconds_metric)
-      allow(Gitlab::Metrics).to receive(:counter).with(:sidekiq_jobs_failed_total, anything).and_return(failed_total_metric)
-      allow(Gitlab::Metrics).to receive(:counter).with(:sidekiq_jobs_retried_total, anything).and_return(retried_total_metric)
-      allow(Gitlab::Metrics).to receive(:gauge).with(:sidekiq_running_jobs, anything, {}, :livesum).and_return(running_jobs_metric)
+  before do
+    allow(Gitlab::Metrics).to receive(:histogram).with(:sidekiq_jobs_completion_seconds, anything, anything, anything).and_return(completion_seconds_metric)
+    allow(Gitlab::Metrics).to receive(:histogram).with(:sidekiq_jobs_cpu_seconds, anything, anything, anything).and_return(user_execution_seconds_metric)
+    allow(Gitlab::Metrics).to receive(:counter).with(:sidekiq_jobs_failed_total, anything).and_return(failed_total_metric)
+    allow(Gitlab::Metrics).to receive(:counter).with(:sidekiq_jobs_retried_total, anything).and_return(retried_total_metric)
+    allow(Gitlab::Metrics).to receive(:gauge).with(:sidekiq_running_jobs, anything, {}, :all).and_return(running_jobs_metric)
+    allow(Gitlab::Metrics).to receive(:gauge).with(:sidekiq_concurrency, anything, {}, :all).and_return(concurrency_metric)
 
-      allow(running_jobs_metric).to receive(:increment)
+    allow(running_jobs_metric).to receive(:increment)
+    allow(concurrency_metric).to receive(:set)
+  end
+
+  describe '#initialize' do
+    it 'sets general metrics' do
+      expect(concurrency_metric).to receive(:set).with({}, Sidekiq.options[:concurrency].to_i)
+
+      middleware
     end
+  end
+
+  describe '#call' do
+    let(:worker) { double(:worker) }
 
     it 'yields block' do
       allow(completion_seconds_metric).to receive(:observe)
@@ -30,7 +42,7 @@ describe Gitlab::SidekiqMiddleware::Metrics do
       expect { |b| middleware.call(worker, {}, :test, &b) }.to yield_control.once
     end
 
-    it 'sets metrics' do
+    it 'sets queue specific metrics' do
       labels = { queue: :test }
       allow(middleware).to receive(:get_thread_cputime).and_return(1, 3)
 

@@ -1,0 +1,6 @@
+---
+title: Prevents a group path change when a project inside the group has container
+  registry images
+merge_request: 17583
+author:
+type: fixed

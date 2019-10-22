@@ -1,0 +1,5 @@
+---
+title: Enable Google API retries for uploads
+merge_request: 18040
+author:
+type: fixed

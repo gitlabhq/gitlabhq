@@ -1,0 +1,5 @@
+---
+title: Check permissions before showing head pipeline blocking merge requests
+merge_request:
+author:
+type: security

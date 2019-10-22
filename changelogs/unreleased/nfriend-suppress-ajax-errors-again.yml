@@ -1,0 +1,5 @@
+---
+title: Suppress error messages shown when navigating to a new page
+merge_request: 17706
+author:
+type: fixed

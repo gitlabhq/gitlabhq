@@ -1,0 +1,5 @@
+---
+title: Display reCAPTCHA modal when making issue public
+merge_request: 17553
+author:
+type: fixed

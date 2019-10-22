@@ -1,0 +1,5 @@
+---
+title: Added timestamps (created_at and updated_at) to API pipelines response
+merge_request: 17911
+author:
+type: added

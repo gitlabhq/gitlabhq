@@ -1,0 +1,5 @@
+---
+title: Check if mapping is empty before caching in File Collections
+merge_request: 18290
+author: briankabiro
+type: performance

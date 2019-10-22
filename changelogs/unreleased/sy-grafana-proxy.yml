@@ -1,0 +1,5 @@
+---
+title: Add endpoint to proxy requests to grafana's proxy endpoint
+merge_request: 18210
+author:
+type: added

@@ -1,0 +1,5 @@
+---
+title: Adds login input with copy box and supporting copy to empty container registry view
+merge_request: 18244
+author: nate geslin
+type: added

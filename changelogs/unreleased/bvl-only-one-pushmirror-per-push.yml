@@ -1,0 +1,5 @@
+---
+title: Only schedule updating push-mirrors once per push
+merge_request: 17902
+author:
+type: performance

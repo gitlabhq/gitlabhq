@@ -159,6 +159,45 @@ describe ChatMessage::PipelineMessage do
         )
       end
     end
+
+    context 'when ref type is tag' do
+      before do
+        args[:object_attributes][:tag] = true
+        args[:object_attributes][:ref] = 'new_tag'
+      end
+
+      it "returns the pipeline summary in the activity's title" do
+        expect(subject.activity[:title]).to eq(
+          "Pipeline [#123](http://example.gitlab.com/pipelines/123)" \
+            " of tag [new_tag](http://example.gitlab.com/-/tags/new_tag)" \
+            " by The Hacker (hacker) passed"
+        )
+      end
+
+      it "returns the pipeline summary as the attachment's text property" do
+        expect(subject.attachments.first[:text]).to eq(
+          "<http://example.gitlab.com|project_name>:" \
+            " Pipeline <http://example.gitlab.com/pipelines/123|#123>" \
+            " of tag <http://example.gitlab.com/-/tags/new_tag|new_tag>" \
+            " by The Hacker (hacker) passed in 02:00:10"
+        )
+      end
+
+      context 'when rendering markdown' do
+        before do
+          args[:markdown] = true
+        end
+
+        it 'returns the pipeline summary as the attachments in markdown format' do
+          expect(subject.attachments).to eq(
+            "[project_name](http://example.gitlab.com):" \
+              " Pipeline [#123](http://example.gitlab.com/pipelines/123)" \
+              " of tag [new_tag](http://example.gitlab.com/-/tags/new_tag)" \
+              " by The Hacker (hacker) passed in 02:00:10"
+          )
+        end
+      end
+    end
   end
 
   context 'when the fancy_pipeline_slack_notifications feature flag is enabled' do

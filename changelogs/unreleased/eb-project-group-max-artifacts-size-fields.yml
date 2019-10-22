@@ -1,0 +1,5 @@
+---
+title: Add max_artifacts_size fields under project and group settings.
+merge_request: 18286
+author:
+type: added

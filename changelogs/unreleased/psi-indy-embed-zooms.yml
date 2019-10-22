@@ -1,0 +1,5 @@
+---
+title: Embed metrics time window scroll no longer affects other embeds
+merge_request: 18109
+author:
+type: fixed

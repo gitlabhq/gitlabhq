@@ -1,0 +1,5 @@
+---
+title: Adds separate parsers for mentions of users, groups, projects in markdown content
+merge_request: 18318
+author:
+type: added

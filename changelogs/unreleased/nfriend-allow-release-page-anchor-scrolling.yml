@@ -1,0 +1,5 @@
+---
+title: Allow releases to be targeted by URL anchor links on the Releases page
+merge_request: 17150
+author:
+type: added

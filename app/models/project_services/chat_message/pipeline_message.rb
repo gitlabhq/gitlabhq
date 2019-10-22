@@ -75,11 +75,11 @@ module ChatMessage
 
     def activity
       {
-        title: s_("ChatMessage|Pipeline %{pipeline_link} of %{ref_type} %{branch_link} by %{user_combined_name} %{humanized_status}") %
+        title: s_("ChatMessage|Pipeline %{pipeline_link} of %{ref_type} %{ref_link} by %{user_combined_name} %{humanized_status}") %
           {
             pipeline_link: pipeline_link,
             ref_type: ref_type,
-            branch_link: branch_link,
+            ref_link: ref_link,
             user_combined_name: user_combined_name,
             humanized_status: humanized_status
           },
@@ -123,7 +123,7 @@ module ChatMessage
       fields = [
         {
           title: ref_type == "tag" ? s_("ChatMessage|Tag") : s_("ChatMessage|Branch"),
-          value: Slack::Notifier::LinkFormatter.format(ref_name_link),
+          value: Slack::Notifier::LinkFormatter.format(ref_link),
           short: true
         },
         {
@@ -141,12 +141,12 @@ module ChatMessage
     end
 
     def message
-      s_("ChatMessage|%{project_link}: Pipeline %{pipeline_link} of %{ref_type} %{branch_link} by %{user_combined_name} %{humanized_status} in %{duration}") %
+      s_("ChatMessage|%{project_link}: Pipeline %{pipeline_link} of %{ref_type} %{ref_link} by %{user_combined_name} %{humanized_status} in %{duration}") %
         {
           project_link: project_link,
           pipeline_link: pipeline_link,
           ref_type: ref_type,
-          branch_link: branch_link,
+          ref_link: ref_link,
           user_combined_name: user_combined_name,
           humanized_status: humanized_status,
           duration: pretty_duration(duration)
@@ -193,12 +193,16 @@ module ChatMessage
       end
     end
 
-    def branch_url
-      "#{project_url}/commits/#{ref}"
+    def ref_url
+      if ref_type == 'tag'
+        "#{project_url}/-/tags/#{ref}"
+      else
+        "#{project_url}/commits/#{ref}"
+      end
     end
 
-    def branch_link
-      "[#{ref}](#{branch_url})"
+    def ref_link
+      "[#{ref}](#{ref_url})"
     end
 
     def project_url
@@ -264,14 +268,6 @@ module ChatMessage
 
     def commit_link
       "[#{commit.title}](#{commit_url})"
-    end
-
-    def commits_page_url
-      "#{project_url}/commits/#{ref}"
-    end
-
-    def ref_name_link
-      "[#{ref}](#{commits_page_url})"
     end
 
     def author_url

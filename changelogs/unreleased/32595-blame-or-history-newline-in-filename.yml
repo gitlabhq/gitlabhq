@@ -1,0 +1,5 @@
+---
+title: Users can view the blame or history of a file with newlines in its filename.
+merge_request: 17543
+author: Jesse Hall @jessehall3
+type: fixed

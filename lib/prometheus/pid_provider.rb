@@ -6,7 +6,7 @@ module Prometheus
 
     def worker_id
       if Sidekiq.server?
-        'sidekiq'
+        sidekiq_worker_id
       elsif defined?(Unicorn::Worker)
         unicorn_worker_id
       elsif defined?(::Puma)
@@ -17,6 +17,14 @@ module Prometheus
     end
 
     private
+
+    def sidekiq_worker_id
+      if worker = ENV['SIDEKIQ_WORKER_ID']
+        "sidekiq_#{worker}"
+      else
+        'sidekiq'
+      end
+    end
 
     def unicorn_worker_id
       if matches = process_name.match(/unicorn.*worker\[([0-9]+)\]/)

@@ -1,0 +1,5 @@
+---
+title: Allow cross-project pipeline triggering with CI_JOB_TOKEN in core
+merge_request: 17251
+author:
+type: added

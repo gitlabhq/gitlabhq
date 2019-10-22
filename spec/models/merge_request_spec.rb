@@ -2267,7 +2267,7 @@ describe MergeRequest do
           allow(subject).to receive(:head_pipeline) { pipeline }
         end
 
-        it { expect(subject.mergeable_ci_state?).to be_truthy }
+        it { expect(subject.mergeable_ci_state?).to be_falsey }
       end
 
       context 'when no pipeline is associated' do

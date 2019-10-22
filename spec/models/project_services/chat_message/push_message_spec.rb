@@ -96,7 +96,7 @@ describe ChatMessage::PushMessage do
     context 'without markdown' do
       it 'returns a message regarding pushes' do
         expect(subject.pretext).to eq('test.user pushed new tag ' \
-          '<http://url.com/commits/new_tag|new_tag> to ' \
+          '<http://url.com/-/tags/new_tag|new_tag> to ' \
           '<http://url.com|project_name>')
         expect(subject.attachments).to be_empty
       end
@@ -109,10 +109,10 @@ describe ChatMessage::PushMessage do
 
       it 'returns a message regarding pushes' do
         expect(subject.pretext).to eq(
-          'test.user pushed new tag [new_tag](http://url.com/commits/new_tag) to [project_name](http://url.com)')
+          'test.user pushed new tag [new_tag](http://url.com/-/tags/new_tag) to [project_name](http://url.com)')
         expect(subject.attachments).to be_empty
         expect(subject.activity).to eq(
-          title: 'test.user pushed new tag [new_tag](http://url.com/commits/new_tag)',
+          title: 'test.user pushed new tag [new_tag](http://url.com/-/tags/new_tag)',
           subtitle: 'in [project_name](http://url.com)',
           text: '[Compare changes](http://url.com/compare/0000000000000000000000000000000000000000...after)',
           image: 'http://someavatar.com'

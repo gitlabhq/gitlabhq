@@ -1,0 +1,5 @@
+---
+title: Catch unhandled exceptions in health checks
+merge_request: 17694
+author:
+type: fixed

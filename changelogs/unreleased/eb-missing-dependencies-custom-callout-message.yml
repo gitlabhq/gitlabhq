@@ -1,0 +1,6 @@
+---
+title: Include in the callout message a list of jobs that caused missing dependencies
+  failure.
+merge_request: 18219
+author:
+type: added

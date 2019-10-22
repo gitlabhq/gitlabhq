@@ -1,0 +1,5 @@
+---
+title: Show issue weight when weight is 0
+merge_request: 17329
+author: briankabiro
+type: fixed

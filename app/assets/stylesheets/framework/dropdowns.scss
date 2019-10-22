@@ -506,7 +506,8 @@
 .dropdown-menu-selectable {
   li {
     a,
-    button {
+    button,
+    .dropdown-item {
       padding: 8px 40px;
       position: relative;
 

@@ -925,6 +925,9 @@ msgstr ""
 msgid "Add an SSH key"
 msgstr ""
 
+msgid "Add an existing issue to the epic."
+msgstr ""
+
 msgid "Add an issue"
 msgstr ""
 
@@ -2964,7 +2967,7 @@ msgstr ""
 msgid "Chat"
 msgstr ""
 
-msgid "ChatMessage|%{project_link}: Pipeline %{pipeline_link} of %{ref_type} %{branch_link} by %{user_combined_name} %{humanized_status} in %{duration}"
+msgid "ChatMessage|%{project_link}: Pipeline %{pipeline_link} of %{ref_type} %{ref_link} by %{user_combined_name} %{humanized_status} in %{duration}"
 msgstr ""
 
 msgid "ChatMessage|Branch"
@@ -2985,7 +2988,7 @@ msgstr ""
 msgid "ChatMessage|Pipeline #%{pipeline_id} %{humanized_status} in %{duration}"
 msgstr ""
 
-msgid "ChatMessage|Pipeline %{pipeline_link} of %{ref_type} %{branch_link} by %{user_combined_name} %{humanized_status}"
+msgid "ChatMessage|Pipeline %{pipeline_link} of %{ref_type} %{ref_link} by %{user_combined_name} %{humanized_status}"
 msgstr ""
 
 msgid "ChatMessage|Tag"
@@ -4672,10 +4675,16 @@ msgstr ""
 msgid "Create a new issue"
 msgstr ""
 
+msgid "Create a new issue and add it to the epic."
+msgstr ""
+
 msgid "Create a new repository"
 msgstr ""
 
 msgid "Create a personal access token on your account to pull or push via %{protocol}."
+msgstr ""
+
+msgid "Create an issue"
 msgstr ""
 
 msgid "Create an issue. Issues are created for each alert triggered."

@@ -1,0 +1,5 @@
+---
+title: Cache branch and tag names as Redis sets
+merge_request: 30476
+author:
+type: performance

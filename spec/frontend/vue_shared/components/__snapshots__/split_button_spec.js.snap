@@ -1,0 +1,37 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SplitButton renders actionItems 1`] = `
+<gldropdown-stub
+  menu-class="dropdown-menu-selectable "
+  split="true"
+  text="professor"
+>
+  <gldropdownitem-stub
+    active="true"
+    active-class="is-active"
+  >
+    <strong>
+      professor
+    </strong>
+     
+    <div>
+      very symphonic
+    </div>
+  </gldropdownitem-stub>
+   
+  <gldropdowndivider-stub />
+  <gldropdownitem-stub
+    active-class="is-active"
+  >
+    <strong>
+      captain
+    </strong>
+     
+    <div>
+      warp drive
+    </div>
+  </gldropdownitem-stub>
+   
+  <!---->
+</gldropdown-stub>
+`;

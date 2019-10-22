@@ -1,0 +1,5 @@
+---
+title: Fix relative positioning when moving items down and there is no space
+merge_request: 17781
+author:
+type: fixed
