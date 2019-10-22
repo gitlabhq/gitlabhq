@@ -1,5 +1,0 @@
----
-title: Stopped CRD apply retrying from allowing silent failures
-merge_request: 18421
-author:
-type: fixed

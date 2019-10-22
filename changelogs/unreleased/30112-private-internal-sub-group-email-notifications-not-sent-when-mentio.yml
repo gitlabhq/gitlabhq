@@ -1,5 +1,0 @@
----
-title: Fix notifications for private group mentions in Notes, Issues, and Merge Requests
-merge_request: 18183
-author:
-type: fixed

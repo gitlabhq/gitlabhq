@@ -1,5 +1,0 @@
----
-title: Do not allow deactivated users to use slash commands
-merge_request: 18365
-author:
-type: fixed

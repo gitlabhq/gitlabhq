@@ -1,6 +1,0 @@
----
-title: Do not strip forwarded message body when creating an issue from Service Desk
-  email.
-merge_request: 18196
-author:
-type: fixed

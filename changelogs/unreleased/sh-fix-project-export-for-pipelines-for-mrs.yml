@@ -1,5 +1,0 @@
----
-title: Fix project imports for pipelines for merge requests
-merge_request: 17799
-author:
-type: fixed

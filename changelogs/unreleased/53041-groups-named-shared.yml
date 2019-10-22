@@ -1,5 +1,0 @@
----
-title: Naming a project "shared" will no longer automatically open the "Shared Projects" tab.
-merge_request: 16847
-author: Jesse Hall @jessehall3
-type: fixed

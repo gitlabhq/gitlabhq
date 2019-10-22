@@ -1,5 +1,0 @@
----
-title: Limit diverging commit counts requests
-merge_request: 16737
-author:
-type: performance

@@ -1,5 +1,0 @@
----
-title: Fix GraphQL for read-only instances
-merge_request: 17225
-author:
-type: fixed

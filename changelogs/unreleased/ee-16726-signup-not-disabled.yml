@@ -1,5 +1,0 @@
----
-title: Fix signup link in admin area not being disabled
-merge_request: 16726
-author: Illya Klymov
-type: fixed

@@ -1,5 +1,0 @@
----
-title: Nullify platform Kubernetes namespace if blank
-merge_request: 17657
-author:
-type: fixed

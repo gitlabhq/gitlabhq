@@ -1,5 +1,0 @@
----
-title: Fix issue with wiki TOC links being treated as external links
-merge_request:
-author: Oren Kanner
-type: fixed

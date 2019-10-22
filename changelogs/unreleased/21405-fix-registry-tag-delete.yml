@@ -1,5 +1,0 @@
----
-title: 'Adds the ability to delete single tags from the docker registry. Fix the issue that caused all related tags and image to be deleted at the same time.'
-merge_request: 16886
-author:
-type: fixed

@@ -1,5 +1,0 @@
----
-title: Handle wiki and graphql attachments in gitlab-workhorse
-merge_request: 17690
-author:
-type: performance
