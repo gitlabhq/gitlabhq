@@ -44,6 +44,9 @@ module Metrics
       # Inherits the primary logic from the parent class and
       # maintains the service's API while including ReactiveCache
       def calculate_reactive_cache(*)
+        # This is called with explicit parentheses to prevent
+        # the params passed to #calculate_reactive_cache from
+        # being passed to #get_dashboard (which accepts none)
         ::Metrics::Dashboard::BaseService
           .instance_method(:get_dashboard)
           .bind(self)

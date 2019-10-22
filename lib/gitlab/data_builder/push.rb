@@ -19,12 +19,25 @@ module Gitlab
           user_email: "john@example.com",
           user_avatar: "https://s.gravatar.com/avatar/d4c74594d841139328695756648b6bd6?s=8://s.gravatar.com/avatar/d4c74594d841139328695756648b6bd6?s=80",
           project_id: 15,
+          project: {
+            id: 15,
+            name: "gitlab",
+            description: "",
+            web_url: "http://test.example.com/gitlab/gitlab",
+            avatar_url: "https://s.gravatar.com/avatar/d4c74594d841139328695756648b6bd6?s=8://s.gravatar.com/avatar/d4c74594d841139328695756648b6bd6?s=80",
+            git_ssh_url: "git@test.example.com:gitlab/gitlab.git",
+            git_http_url: "http://test.example.com/gitlab/gitlab.git",
+            namespace: "gitlab",
+            visibility_level: 0,
+            path_with_namespace: "gitlab/gitlab",
+            default_branch: "master"
+          },
           commits: [
             {
               id: "c5feabde2d8cd023215af4d2ceeb7a64839fc428",
               message: "Add simple search to projects in public area",
               timestamp: "2013-05-13T18:18:08+00:00",
-              url: "https://test.example.com/gitlab/gitlabhq/commit/c5feabde2d8cd023215af4d2ceeb7a64839fc428",
+              url: "https://test.example.com/gitlab/gitlab/commit/c5feabde2d8cd023215af4d2ceeb7a64839fc428",
               author: {
                 name: "Test User",
                 email: "test@example.com"
@@ -45,7 +58,20 @@ module Gitlab
       #   user_name: String,
       #   user_username: String,
       #   user_email: String
-      #   project_id: String,
+      #   project_id: Fixnum,
+      #   project: {
+      #     id: Fixnum,
+      #     name: String,
+      #     description: String,
+      #     web_url: String,
+      #     avatar_url: String,
+      #     git_ssh_url: String,
+      #     git_http_url: String,
+      #     namespace: String,
+      #     visibility_level: Fixnum,
+      #     path_with_namespace: String,
+      #     default_branch: String
+      #   }
       #   repository: {
       #     name: String,
       #     url: String,

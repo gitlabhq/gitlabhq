@@ -752,4 +752,4 @@ DesignManagement::Version:
 - created_at
 - sha
 - issue_id
-- user_id
+- author_id

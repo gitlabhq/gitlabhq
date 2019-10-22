@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 cd "$(dirname "$0")/.."
+echo "=> Linting documents at path $(pwd) as $(whoami)..."
 
 # Use long options (e.g. --header instead of -H) for curl examples in documentation.
 echo '=> Checking for cURL short options...'
@@ -25,7 +26,7 @@ fi
 
 # Make sure no files in doc/ are executable
 EXEC_PERM_COUNT=$(find doc/ -type f -perm 755 | wc -l)
-echo '=> Checking for executable permissions...'
+echo "=> Checking $(pwd)/doc for executable permissions..."
 if [ "${EXEC_PERM_COUNT}" -ne 0 ]
 then
   echo '✖ ERROR: Executable permissions should not be used in documentation! Use `chmod 644` to the files in question:' >&2
