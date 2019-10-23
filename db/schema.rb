@@ -1423,15 +1423,19 @@ ActiveRecord::Schema.define(version: 2019_10_17_045817) do
     t.integer "parent_id"
     t.integer "relative_position"
     t.integer "state_id", limit: 2, default: 1, null: false
+    t.integer "start_date_sourcing_epic_id"
+    t.integer "due_date_sourcing_epic_id"
     t.index ["assignee_id"], name: "index_epics_on_assignee_id"
     t.index ["author_id"], name: "index_epics_on_author_id"
     t.index ["closed_by_id"], name: "index_epics_on_closed_by_id"
+    t.index ["due_date_sourcing_epic_id"], name: "index_epics_on_due_date_sourcing_epic_id", where: "(due_date_sourcing_epic_id IS NOT NULL)"
     t.index ["end_date"], name: "index_epics_on_end_date"
     t.index ["group_id"], name: "index_epics_on_group_id"
     t.index ["iid"], name: "index_epics_on_iid"
     t.index ["milestone_id"], name: "index_milestone"
     t.index ["parent_id"], name: "index_epics_on_parent_id"
     t.index ["start_date"], name: "index_epics_on_start_date"
+    t.index ["start_date_sourcing_epic_id"], name: "index_epics_on_start_date_sourcing_epic_id", where: "(start_date_sourcing_epic_id IS NOT NULL)"
   end
 
   create_table "events", id: :serial, force: :cascade do |t|
@@ -4158,7 +4162,9 @@ ActiveRecord::Schema.define(version: 2019_10_17_045817) do
   add_foreign_key "epic_issues", "epics", on_delete: :cascade
   add_foreign_key "epic_issues", "issues", on_delete: :cascade
   add_foreign_key "epic_metrics", "epics", on_delete: :cascade
+  add_foreign_key "epics", "epics", column: "due_date_sourcing_epic_id", name: "fk_013c9f36ca", on_delete: :nullify
   add_foreign_key "epics", "epics", column: "parent_id", name: "fk_25b99c1be3", on_delete: :cascade
+  add_foreign_key "epics", "epics", column: "start_date_sourcing_epic_id", name: "fk_9d480c64b2", on_delete: :nullify
   add_foreign_key "epics", "milestones", on_delete: :nullify
   add_foreign_key "epics", "namespaces", column: "group_id", name: "fk_f081aa4489", on_delete: :cascade
   add_foreign_key "epics", "users", column: "assignee_id", name: "fk_dccd3f98fc", on_delete: :nullify

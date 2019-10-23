@@ -96,30 +96,14 @@ describe ApplicationController do
           request.path = '/-/peek'
         end
 
-        # TODO:
-        # remove line below once `privacy_policy_update_callout`
-        # feature flag is removed and `gon` reverts back to
-        # to not setting any variables.
-        if Gitlab.ee?
-          it_behaves_like 'setting gon variables'
-        else
-          it_behaves_like 'not setting gon variables'
-        end
+        it_behaves_like 'not setting gon variables'
       end
     end
 
     context 'with json format' do
       let(:format) { :json }
 
-      # TODO:
-      # remove line below once `privacy_policy_update_callout`
-      # feature flag is removed and `gon` reverts back to
-      # to not setting any variables.
-      if Gitlab.ee?
-        it_behaves_like 'setting gon variables'
-      else
-        it_behaves_like 'not setting gon variables'
-      end
+      it_behaves_like 'not setting gon variables'
     end
   end
 

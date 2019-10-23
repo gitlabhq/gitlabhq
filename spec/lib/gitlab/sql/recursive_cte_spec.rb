@@ -20,7 +20,7 @@ describe Gitlab::SQL::RecursiveCTE do
         [rel1.except(:order).to_sql, rel2.except(:order).to_sql]
       end
 
-      expect(sql).to eq("#{name} AS (#{sql1}\nUNION\n#{sql2})")
+      expect(sql).to eq("#{name} AS ((#{sql1})\nUNION\n(#{sql2}))")
     end
   end
 

@@ -44,12 +44,14 @@ describe Gitlab::SidekiqMiddleware::Metrics do
 
     it 'sets queue specific metrics' do
       labels = { queue: :test }
+      labels_with_job_status = { queue: :test, job_status: :done }
       allow(middleware).to receive(:get_thread_cputime).and_return(1, 3)
+      allow(Gitlab::Metrics::System).to receive(:monotonic_time).and_return(2, 3)
 
-      expect(user_execution_seconds_metric).to receive(:observe).with(labels, 2)
       expect(running_jobs_metric).to receive(:increment).with(labels, 1)
       expect(running_jobs_metric).to receive(:increment).with(labels, -1)
-      expect(completion_seconds_metric).to receive(:observe).with(labels, kind_of(Numeric))
+      expect(user_execution_seconds_metric).to receive(:observe).with(labels_with_job_status, 2)
+      expect(completion_seconds_metric).to receive(:observe).with(labels_with_job_status, 1)
 
       middleware.call(worker, {}, :test) { nil }
     end
@@ -74,8 +76,18 @@ describe Gitlab::SidekiqMiddleware::Metrics do
 
     context 'when error is raised' do
       it 'sets sidekiq_jobs_failed_total and reraises' do
-        expect(failed_total_metric).to receive(:increment)
-        expect { middleware.call(worker, {}, :test) { raise } }.to raise_error
+        labels = { queue: :test }
+        labels_with_job_status = { queue: :test, job_status: :fail }
+        allow(middleware).to receive(:get_thread_cputime).and_return(1, 4)
+        allow(Gitlab::Metrics::System).to receive(:monotonic_time).and_return(2, 6)
+
+        expect(running_jobs_metric).to receive(:increment).with(labels, 1)
+        expect(running_jobs_metric).to receive(:increment).with(labels, -1)
+        expect(failed_total_metric).to receive(:increment).with(labels, 1)
+        expect(user_execution_seconds_metric).to receive(:observe).with(labels_with_job_status, 3)
+        expect(completion_seconds_metric).to receive(:observe).with(labels_with_job_status, 4)
+
+        expect { middleware.call(worker, {}, :test) { raise StandardError, "Failed" } }.to raise_error(StandardError, "Failed")
       end
     end
   end

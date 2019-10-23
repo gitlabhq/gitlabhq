@@ -7427,9 +7427,6 @@ msgstr ""
 msgid "From merge request merge until deploy to production"
 msgstr ""
 
-msgid "From milestones:"
-msgstr ""
-
 msgid "From the Kubernetes cluster details view, install Runner from the applications list"
 msgstr ""
 
@@ -9017,6 +9014,9 @@ msgid "Inform users without uploaded SSH keys that they can't push over SSH unti
 msgstr ""
 
 msgid "Information about additional Pages templates and how to install them can be found in our %{pages_getting_started_guide}."
+msgstr ""
+
+msgid "Inherited:"
 msgstr ""
 
 msgid "Inline"
@@ -11520,9 +11520,6 @@ msgid "Other merge requests block this MR"
 msgstr ""
 
 msgid "Other visibility settings have been disabled by the administrator."
-msgstr ""
-
-msgid "Our Privacy Policy has changed, please visit %{privacy_policy_link} to review these changes."
 msgstr ""
 
 msgid "Outbound requests"

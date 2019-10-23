@@ -92,24 +92,44 @@ To remove a child epic from a parent epic:
 
 ## Start date and due date
 
-To set a **Start date** and **Due date** for an epic, you can choose either of the following:
+To set a **Start date** and **Due date** for an epic, select one of the following:
 
 - **Fixed**: Enter a fixed value.
-- **From milestones:** Inherit a dynamic value from the issues added to the epic.
+- **From milestones**: Inherit a dynamic value from the issues added to the epic.
+- **Inherited**: Inherit a dynamic value from the issues added to the epic. ([Introduced](https://gitlab.com/gitlab-org/gitlab/issues/7332) in GitLab 12.5 to replace **From milestones**).
 
-If you select **From milestones** for the start date, GitLab will automatically set the
-date to be earliest start date across all milestones that are currently assigned
-to the issues that are added to the epic. Similarly, if you select "From milestones"
-for the due date, GitLab will set it to be the latest due date across all
-milestones that are currently assigned to those issues.
+### Milestones
 
-These are dynamic dates which are recalculated immediately if any of the following occur:
+If you select **From milestones** for the start date, GitLab will automatically set the date to be earliest
+start date across all milestones that are currently assigned to the issues that are added to the epic.
+Similarly, if you select **From milestones** for the due date, GitLab will set it to be the latest due date across
+all milestones that are currently assigned to those issues.
+
+These are dynamic dates which are recalculated if any of the following occur:
 
 - Milestones are re-assigned to the issues.
 - Milestone dates change.
 - Issues are added or removed from the epic.
 
-## Roadmap
+### Inherited
+
+If you select **Inherited** for the start date, GitLab will scan all child epics and issues assigned to the epic,
+and will set the start date to match the earliest found start date or milestone. Similarly, if you select
+**Inherited** for the due date, GitLab will set the due date to match the latest due date or milestone
+found among its child epics and issues.
+
+These are dynamic dates and recalculated if any of the following occur:
+
+- A child epic's dates change.
+- Milestones are reassigned to an issue.
+- A milestone's dates change.
+- Issues are added to, or removed from, the epic.
+
+Because the epic's dates can inherit dates from its children, the start date and due date propagate from the bottom to the top.
+If the start date of a child epic on the lowest level changes, that becomes the earliest possible start date for its parent epic,
+then the parent epic's start date will reflect the change and this will propagate upwards to the top epic.
+
+## Roadmap in epics
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/7327) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.10.
 

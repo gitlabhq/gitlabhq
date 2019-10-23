@@ -43,14 +43,14 @@ a new presenter specifically for GraphQL.
 The presenter is initialized using the object resolved by a field, and
 the context.
 
-### Exposing Global ids
+### Exposing Global IDs
 
-When exposing an `id` field on a type, we will by default try to
-expose a global id by calling `to_global_id` on the resource being
+When exposing an `ID` field on a type, we will by default try to
+expose a global ID by calling `to_global_id` on the resource being
 rendered.
 
 To override this behaviour, you can implement an `id` method on the
-type for which you are exposing an id. Please make sure that when
+type for which you are exposing an ID. Please make sure that when
 exposing a `GraphQL::ID_TYPE` using a custom method that it is
 globally unique.
 
@@ -350,7 +350,10 @@ To find objects to display in a field, we can add resolvers to
 `app/graphql/resolvers`.
 
 Arguments can be defined within the resolver, those arguments will be
-made available to the fields using the resolver.
+made available to the fields using the resolver. When exposing a model
+that had an internal ID (`iid`), prefer using that in combination with
+the namespace path as arguments in a resolver over a database
+ID. Othewise use a [globally unique ID](#exposing-global-ids).
 
 We already have a `FullPathLoader` that can be included in other
 resolvers to quickly find Projects and Namespaces which will have a
@@ -364,6 +367,10 @@ Mutations are used to change any stored values, or to trigger
 actions. In the same way a GET-request should not modify data, we
 cannot modify data in a regular GraphQL-query. We can however in a
 mutation.
+
+To find objects for a mutation, arguments need to be specified. As with
+[resolvers](#resolvers), prefer using internal ID or, if needed, a
+global ID rather than the database ID.
 
 ### Fields
 

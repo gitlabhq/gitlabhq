@@ -50,12 +50,14 @@ Example response:
     "start_date": null,
     "start_date_is_fixed": false,
     "start_date_fixed": null,
-    "start_date_from_milestones": null,
-    "end_date": "2018-07-31",
+    "start_date_from_milestones": null,       //deprecated in favor of start_date_from_inherited_source
+    "start_date_from_inherited_source": null,
+    "end_date": "2018-07-31",                 //deprecated in favor of due_date
     "due_date": "2018-07-31",
     "due_date_is_fixed": false,
     "due_date_fixed": null,
-    "due_date_from_milestones": "2018-07-31",
+    "due_date_from_milestones": "2018-07-31", //deprecated in favor of start_date_from_inherited_source
+    "due_date_from_inherited_source": "2018-07-31",
     "created_at": "2018-07-17T13:36:22.770Z",
     "updated_at": "2018-07-18T12:22:05.239Z",
     "labels": []
@@ -102,12 +104,14 @@ Example response:
   "start_date": null,
   "start_date_is_fixed": false,
   "start_date_fixed": null,
-  "start_date_from_milestones": null,
-  "end_date": "2018-07-31",
+  "start_date_from_milestones": null,       //deprecated in favor of start_date_from_inherited_source
+  "start_date_from_inherited_source": null,
+  "end_date": "2018-07-31",                 //deprecated in favor of due_date
   "due_date": "2018-07-31",
   "due_date_is_fixed": false,
   "due_date_fixed": null,
-  "due_date_from_milestones": "2018-07-31",
+  "due_date_from_milestones": "2018-07-31", //deprecated in favor of start_date_from_inherited_source
+  "due_date_from_inherited_source": "2018-07-31",
   "created_at": "2018-07-17T13:36:22.770Z",
   "updated_at": "2018-07-18T12:22:05.239Z",
   "labels": []
@@ -189,12 +193,14 @@ Example response:
     "start_date": null,
     "start_date_is_fixed": false,
     "start_date_fixed": null,
-    "start_date_from_milestones": null,
-    "end_date": "2018-07-31",
+    "start_date_from_milestones": null,       //deprecated in favor of start_date_from_inherited_source
+    "start_date_from_inherited_source": null,
+    "end_date": "2018-07-31",                 //deprecated in favor of due_date
     "due_date": "2018-07-31",
     "due_date_is_fixed": false,
     "due_date_fixed": null,
-    "due_date_from_milestones": "2018-07-31",
+    "due_date_from_milestones": "2018-07-31", //deprecated in favor of start_date_from_inherited_source
+    "due_date_from_inherited_source": "2018-07-31",
     "created_at": "2018-07-17T13:36:22.770Z",
     "updated_at": "2018-07-18T12:22:05.239Z",
     "labels": []
@@ -241,12 +247,14 @@ Example response:
   "start_date": null,
   "start_date_is_fixed": false,
   "start_date_fixed": null,
-  "start_date_from_milestones": null,
-  "end_date": "2018-07-31",
+  "start_date_from_milestones": null,       //deprecated in favor of start_date_from_inherited_source
+  "start_date_from_inherited_source": null,
+  "end_date": "2018-07-31",                 //deprecated in favor of due_date
   "due_date": "2018-07-31",
   "due_date_is_fixed": false,
   "due_date_fixed": null,
-  "due_date_from_milestones": "2018-07-31",
+  "due_date_from_milestones": "2018-07-31", //deprecated in favor of start_date_from_inherited_source
+  "due_date_from_inherited_source": "2018-07-31",
   "created_at": "2018-07-17T13:36:22.770Z",
   "updated_at": "2018-07-18T12:22:05.239Z",
   "labels": []

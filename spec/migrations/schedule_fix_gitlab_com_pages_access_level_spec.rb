@@ -1,7 +1,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20191017045817_schedule_fix_gitlab_com_pages_access_level.rb')
 
-describe ScheduleFixGitlabComPagesAccessLevel, :migration, :sidekiq, schema: 2019_10_16_072826 do
+describe ScheduleFixGitlabComPagesAccessLevel, :migration, :sidekiq_might_not_need_inline, schema: 2019_10_16_072826 do
   using RSpec::Parameterized::TableSyntax
 
   let(:migration_name) { 'FixGitlabComPagesAccessLevel' }
