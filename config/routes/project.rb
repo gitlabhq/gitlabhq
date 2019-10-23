@@ -615,7 +615,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
       end
 
       # Since both wiki and repository routing contains wildcard characters
-      # its preferable to keep it below all other project routes
+      # its preferable to keep them below all other project routes
       draw :wiki
       draw :repository
 

@@ -1,0 +1,6 @@
+- add_to_breadcrumbs _("Wiki"), project_wiki_path(@project, :home)
+- add_to_breadcrumbs s_("Wiki|Pages"), project_wikis_pages_path(@project)
+- breadcrumb_title s_(@wiki_dir.slug)
+- page_title @wiki_dir.slug
+
+= render 'page_listing', { allow_change_nesting: false, wiki_page_title: page_title, page_path: ->(opts) { project_wiki_dir_path(@project, @wiki_dir, opts) } }

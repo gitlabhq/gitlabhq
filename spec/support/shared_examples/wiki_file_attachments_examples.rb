@@ -42,7 +42,7 @@ shared_examples 'wiki file attachments' do
       end
     end
 
-    context 'uploading is complete', :quarantine do
+    context 'uploading is complete' do
       it 'shows "Attach a file" button on uploading complete' do
         attach_with_dropzone
         wait_for_requests
@@ -52,11 +52,11 @@ shared_examples 'wiki file attachments' do
       end
 
       it 'the markdown link is added to the page' do
-        fill_in(:wiki_content, with: '')
+        fill_in(:wiki_page_content, with: '')
         attach_with_dropzone(true)
         wait_for_requests
 
-        expect(page.find('#wiki_content').value)
+        expect(page.find('#wiki_page_content').value)
           .to match(%r{\!\[dk\]\(uploads/\h{32}/dk\.png\)$})
       end
 
@@ -70,7 +70,7 @@ shared_examples 'wiki file attachments' do
         img_link = page.find('a.no-attachment-icon img')['src']
 
         expect(link).to eq img_link
-        expect(URI.parse(link).path).to eq File.join(wiki.wiki_base_path, file_path)
+        expect(URI.parse(link).path).to eq File.join(wiki.wiki_page_path, file_path)
       end
 
       it 'the file has been added to the wiki repository' do

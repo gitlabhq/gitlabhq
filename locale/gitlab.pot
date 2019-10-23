@@ -411,6 +411,9 @@ msgstr ""
 msgid "%{verb} %{time_spent_value} spent time."
 msgstr ""
 
+msgid "&middot;"
+msgstr ""
+
 msgid "'%{level}' is not a valid visibility level"
 msgstr ""
 
@@ -18704,7 +18707,10 @@ msgstr ""
 msgid "Wiki pages"
 msgstr ""
 
-msgid "Wiki was successfully updated."
+msgid "Wiki was successfully created"
+msgstr ""
+
+msgid "Wiki was successfully updated"
 msgstr ""
 
 msgid "WikiClone|Clone your wiki"
@@ -18720,6 +18726,18 @@ msgid "WikiClone|It is recommended to install %{markdown} so that GFM features r
 msgstr ""
 
 msgid "WikiClone|Start Gollum and edit locally"
+msgstr ""
+
+msgid "WikiDirEmpty|A wiki is where you can store all the details about your project. This can include why you've created it, its principles, how to use it, and so on."
+msgstr ""
+
+msgid "WikiDirEmpty|Create a page"
+msgstr ""
+
+msgid "WikiDirEmpty|Create a page in this directory"
+msgstr ""
+
+msgid "WikiDirEmpty|This directory has no wiki pages"
 msgstr ""
 
 msgid "WikiEditPageTip|Tip: You can move this page by adding the path to the beginning of the title."
@@ -18740,6 +18758,9 @@ msgstr ""
 msgid "WikiEmpty|A wiki is where you can store all the details about your project. This can include why you've created it, its principles, how to use it, and so on."
 msgstr ""
 
+msgid "WikiEmpty|Create this page"
+msgstr ""
+
 msgid "WikiEmpty|Create your first page"
 msgstr ""
 
@@ -18747,6 +18768,9 @@ msgid "WikiEmpty|Suggest wiki improvement"
 msgstr ""
 
 msgid "WikiEmpty|The wiki lets you write documentation for your project"
+msgstr ""
+
+msgid "WikiEmpty|This page does not exist"
 msgstr ""
 
 msgid "WikiEmpty|This project has no wiki pages"
@@ -18803,6 +18827,9 @@ msgstr ""
 msgid "WikiPage|Write your content or drag files here…"
 msgstr ""
 
+msgid "Wiki|Contents"
+msgstr ""
+
 msgid "Wiki|Create New Page"
 msgstr ""
 
@@ -18813,6 +18840,9 @@ msgid "Wiki|Created date"
 msgstr ""
 
 msgid "Wiki|Edit Page"
+msgstr ""
+
+msgid "Wiki|Hide folder contents"
 msgstr ""
 
 msgid "Wiki|More Pages"
@@ -18833,10 +18863,13 @@ msgstr ""
 msgid "Wiki|Pages"
 msgstr ""
 
-msgid "Wiki|Title"
+msgid "Wiki|Show files separately"
 msgstr ""
 
-msgid "Wiki|Wiki Pages"
+msgid "Wiki|Show folder contents"
+msgstr ""
+
+msgid "Wiki|Title"
 msgstr ""
 
 msgid "Will deploy to"

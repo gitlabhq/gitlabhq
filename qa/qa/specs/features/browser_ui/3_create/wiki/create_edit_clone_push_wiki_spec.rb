@@ -13,7 +13,7 @@ module QA
           resource.message = 'Update home'
         end
 
-        validate_content('My First Wiki Content')
+        validate_created('My First Wiki Content')
 
         Page::Project::Wiki::Edit.perform(&:click_edit)
         Page::Project::Wiki::New.perform do |page| # rubocop:disable QA/AmbiguousPageObjectName
@@ -21,7 +21,7 @@ module QA
           page.save_changes
         end
 
-        validate_content('My Second Wiki Content')
+        validate_edited('My Second Wiki Content')
 
         Resource::Repository::WikiPush.fabricate! do |push|
           push.wiki = wiki
@@ -34,7 +34,12 @@ module QA
         expect(page).to have_content('My Third Wiki Content')
       end
 
-      def validate_content(content)
+      def validate_created(content)
+        expect(page).to have_content('Wiki was successfully created')
+        expect(page).to have_content(/#{content}/)
+      end
+
+      def validate_edited(content)
         expect(page).to have_content('Wiki was successfully updated')
         expect(page).to have_content(/#{content}/)
       end

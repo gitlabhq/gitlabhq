@@ -1,0 +1,15 @@
+%li
+  %span.text-secondary-500.svg-icon.svg-baseline
+    - if @show_children
+      = sprite_icon('folder-open', size: 16)
+    - else
+      = sprite_icon('folder-o', size: 16)
+
+  = link_to wiki_dir.slug, project_wiki_dir_path(@project, wiki_dir)
+  - unless @show_children
+    %span.badge.badge-pill.wiki-dir-page-count= wiki_dir.page_count
+    .float-right
+      %small= (s_("Last edited %{date}") % { date: time_ago_with_tooltip(wiki_dir.last_version.authored_date) }).html_safe
+  - if @show_children
+    %ul
+      = render wiki_dir.pages, context: context

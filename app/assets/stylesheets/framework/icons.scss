@@ -99,3 +99,18 @@
   justify-content: center;
   color: $gray-700;
 }
+
+.svg-icon {
+  display: inline-flex;
+  align-self: center;
+
+  svg {
+    height: 1em;
+    width: 1em;
+  }
+
+  &.svg-baseline svg {
+    top: 0.125em;
+    position: relative;
+  }
+}

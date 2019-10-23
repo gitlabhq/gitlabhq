@@ -1,6 +1,6 @@
 - if (@page && @page.persisted?)
   - if can?(current_user, :create_wiki, @project)
-    = link_to project_wikis_new_path(@project), class: "add-new-wiki btn btn-success", role: "button" do
+    = link_to project_wiki_pages_new_path(@project), class: "add-new-wiki btn btn-success", role: "button" do
       = s_("Wiki|New page")
   = link_to project_wiki_history_path(@project, @page), class: "btn", role: "button" do
     = s_("Wiki|Page history")

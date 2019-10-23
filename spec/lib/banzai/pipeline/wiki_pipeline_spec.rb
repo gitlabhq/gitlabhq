@@ -3,6 +3,12 @@
 require 'spec_helper'
 
 describe Banzai::Pipeline::WikiPipeline do
+  let_it_be(:namespace) { create(:namespace, name: "wiki_link_ns") }
+  let_it_be(:project) { create(:project, :public, name: "wiki_link_project", namespace: namespace) }
+  let_it_be(:project_wiki) { ProjectWiki.new(project, double(:user)) }
+  let_it_be(:page) { build(:wiki_page, wiki: project_wiki, page: OpenStruct.new(url_path: 'nested/twice/start-page')) }
+  let(:prefix) { project_wiki.wiki_page_path }
+
   describe 'TableOfContents' do
     it 'replaces the tag with the TableOfContentsFilter result' do
       markdown = <<-MD.strip_heredoc
@@ -54,130 +60,136 @@ describe Banzai::Pipeline::WikiPipeline do
   end
 
   describe "Links" do
-    let(:namespace) { create(:namespace, name: "wiki_link_ns") }
-    let(:project)   { create(:project, :public, name: "wiki_link_project", namespace: namespace) }
-    let(:project_wiki) { ProjectWiki.new(project, double(:user)) }
-    let(:page) { build(:wiki_page, wiki: project_wiki, page: OpenStruct.new(url_path: 'nested/twice/start-page')) }
+    shared_examples 'a correct link rewrite' do
+      it 'rewrites links correctly' do
+        output = described_class.to_html(markdown, project: project, project_wiki: project_wiki, page_slug: page.slug)
 
-    { "when GitLab is hosted at a root URL" => '/',
-      "when GitLab is hosted at a relative URL" => '/nested/relative/gitlab' }.each do |test_name, relative_url_root|
-      context test_name do
+        expect(output).to include("href=\"#{page_href}\"")
+      end
+    end
+
+    shared_examples 'link examples' do |test_name|
+      let(:page_href) { "#{prefix}/#{expected_page_path}" }
+
+      context "when GitLab is hosted at a #{test_name} URL" do
         before do
           allow(Gitlab.config.gitlab).to receive(:relative_url_root).and_return(relative_url_root)
         end
 
         describe "linking to pages within the wiki" do
-          context "when creating hierarchical links to the current directory" do
-            it "rewrites non-file links to be at the scope of the current directory" do
-              markdown = "[Page](./page)"
-              output = described_class.to_html(markdown, project: project, project_wiki: project_wiki, page_slug: page.slug)
+          let(:markdown) { "[Page](#{nesting}page#{extension})" }
 
-              expect(output).to include("href=\"#{relative_url_root}/wiki_link_ns/wiki_link_project/wikis/nested/twice/page\"")
+          context "when creating hierarchical links to the current directory" do
+            let(:nesting) { './' }
+            context 'non file links' do
+              let(:extension) { '' }
+              let(:expected_page_path) { 'nested/twice/page' }
+              it_behaves_like 'a correct link rewrite'
             end
 
-            it "rewrites file links to be at the scope of the current directory" do
-              markdown = "[Link to Page](./page.md)"
-              output = described_class.to_html(markdown, project: project, project_wiki: project_wiki, page_slug: page.slug)
-
-              expect(output).to include("href=\"#{relative_url_root}/wiki_link_ns/wiki_link_project/wikis/nested/twice/page.md\"")
+            context 'file-like links' do
+              let(:extension) { '.md' }
+              let(:expected_page_path) { 'nested/twice/page.md' }
+              it_behaves_like 'a correct link rewrite'
             end
           end
 
           context "when creating hierarchical links to the parent directory" do
-            it "rewrites non-file links to be at the scope of the parent directory" do
-              markdown = "[Link to Page](../page)"
-              output = described_class.to_html(markdown, project: project, project_wiki: project_wiki, page_slug: page.slug)
-
-              expect(output).to include("href=\"#{relative_url_root}/wiki_link_ns/wiki_link_project/wikis/nested/page\"")
+            let(:nesting) { '../' }
+            context "non file links" do
+              let(:extension) { '' }
+              let(:expected_page_path) { 'nested/page' }
+              it_behaves_like 'a correct link rewrite'
             end
 
-            it "rewrites file links to be at the scope of the parent directory" do
-              markdown = "[Link to Page](../page.md)"
-              output = described_class.to_html(markdown, project: project, project_wiki: project_wiki, page_slug: page.slug)
-
-              expect(output).to include("href=\"#{relative_url_root}/wiki_link_ns/wiki_link_project/wikis/nested/page.md\"")
+            context "file-like links" do
+              let(:extension) { '.md' }
+              let(:expected_page_path) { 'nested/page.md' }
+              it_behaves_like 'a correct link rewrite'
             end
           end
 
           context "when creating hierarchical links to a sub-directory" do
-            it "rewrites non-file links to be at the scope of the sub-directory" do
-              markdown = "[Link to Page](./subdirectory/page)"
-              output = described_class.to_html(markdown, project: project, project_wiki: project_wiki, page_slug: page.slug)
+            let(:nesting) { './subdirectory/' }
 
-              expect(output).to include("href=\"#{relative_url_root}/wiki_link_ns/wiki_link_project/wikis/nested/twice/subdirectory/page\"")
+            context "non file links" do
+              let(:extension) { '' }
+              let(:expected_page_path) { 'nested/twice/subdirectory/page' }
+              it_behaves_like 'a correct link rewrite'
             end
 
-            it "rewrites file links to be at the scope of the sub-directory" do
-              markdown = "[Link to Page](./subdirectory/page.md)"
-              output = described_class.to_html(markdown, project: project, project_wiki: project_wiki, page_slug: page.slug)
-
-              expect(output).to include("href=\"#{relative_url_root}/wiki_link_ns/wiki_link_project/wikis/nested/twice/subdirectory/page.md\"")
+            context 'file-like links' do
+              let(:extension) { '.md' }
+              let(:expected_page_path) { 'nested/twice/subdirectory/page.md' }
+              it_behaves_like 'a correct link rewrite'
             end
           end
 
           describe "when creating non-hierarchical links" do
-            it 'rewrites non-file links to be at the scope of the wiki root' do
-              markdown = "[Link to Page](page)"
-              output = described_class.to_html(markdown, project: project, project_wiki: project_wiki, page_slug: page.slug)
+            let(:nesting) { '' }
 
-              expect(output).to include("href=\"#{relative_url_root}/wiki_link_ns/wiki_link_project/wikis/page\"")
+            context 'non-file links' do
+              let(:extension) { '' }
+              let(:expected_page_path) { 'page' }
+              it_behaves_like 'a correct link rewrite'
             end
 
-            it 'rewrites non-file links (with spaces) to be at the scope of the wiki root' do
-              markdown = "[Link to Page](page slug)"
-              output = described_class.to_html(markdown, project: project, project_wiki: project_wiki, page_slug: page.slug)
-
-              expect(output).to include("href=\"#{relative_url_root}/wiki_link_ns/wiki_link_project/wikis/page%20slug\"")
+            context 'non-file links (with spaces)' do
+              let(:extension) { ' slug' }
+              let(:expected_page_path) { 'page%20slug' }
+              it_behaves_like 'a correct link rewrite'
             end
 
-            it "rewrites file links to be at the scope of the current directory" do
-              markdown = "[Link to Page](page.md)"
-              output = described_class.to_html(markdown, project: project, project_wiki: project_wiki, page_slug: page.slug)
-
-              expect(output).to include("href=\"#{relative_url_root}/wiki_link_ns/wiki_link_project/wikis/nested/twice/page.md\"")
+            context "file links" do
+              let(:extension) { '.md' }
+              let(:expected_page_path) { 'nested/twice/page.md' }
+              it_behaves_like 'a correct link rewrite'
             end
 
-            it 'rewrites links with anchor' do
-              markdown = '[Link to Header](start-page#title)'
-              output = described_class.to_html(markdown, project: project, project_wiki: project_wiki, page_slug: page.slug)
-
-              expect(output).to include("href=\"#{relative_url_root}/wiki_link_ns/wiki_link_project/wikis/start-page#title\"")
+            context 'links with anchor' do
+              let(:extension) { '#title' }
+              let(:expected_page_path) { 'page#title' }
+              it_behaves_like 'a correct link rewrite'
             end
 
-            it 'rewrites links (with spaces) with anchor' do
-              markdown = '[Link to Header](start page#title)'
-              output = described_class.to_html(markdown, project: project, project_wiki: project_wiki, page_slug: page.slug)
-
-              expect(output).to include("href=\"#{relative_url_root}/wiki_link_ns/wiki_link_project/wikis/start%20page#title\"")
+            context 'links (with spaces) with anchor' do
+              let(:extension) { ' two#title' }
+              let(:expected_page_path) { 'page%20two#title' }
+              it_behaves_like 'a correct link rewrite'
             end
           end
 
           describe "when creating root links" do
-            it 'rewrites non-file links to be at the scope of the wiki root' do
-              markdown = "[Link to Page](/page)"
-              output = described_class.to_html(markdown, project: project, project_wiki: project_wiki, page_slug: page.slug)
+            let(:nesting) { '/' }
 
-              expect(output).to include("href=\"#{relative_url_root}/wiki_link_ns/wiki_link_project/wikis/page\"")
+            context 'non-file links' do
+              let(:extension) { '' }
+              let(:expected_page_path) { 'page' }
+              it_behaves_like 'a correct link rewrite'
             end
 
-            it 'rewrites file links to be at the scope of the wiki root' do
-              markdown = "[Link to Page](/page.md)"
-              output = described_class.to_html(markdown, project: project, project_wiki: project_wiki, page_slug: page.slug)
-
-              expect(output).to include("href=\"#{relative_url_root}/wiki_link_ns/wiki_link_project/wikis/page.md\"")
+            context 'file links' do
+              let(:extension) { '.md' }
+              let(:expected_page_path) { 'page.md' }
+              it_behaves_like 'a correct link rewrite'
             end
           end
         end
 
         describe "linking to pages outside the wiki (absolute)" do
-          it "doesn't rewrite links" do
-            markdown = "[Link to Page](http://example.com/page)"
-            output = described_class.to_html(markdown, project: project, project_wiki: project_wiki, page_slug: page.slug)
-
-            expect(output).to include('href="http://example.com/page"')
-          end
+          let(:markdown) { "[Link to Page](http://example.com/page)" }
+          let(:page_href)  { 'http://example.com/page' }
+          it_behaves_like 'a correct link rewrite'
         end
       end
+    end
+
+    include_examples 'link examples', :root do
+      let(:relative_url_root) { '/' }
+    end
+
+    include_examples 'link examples', :relative do
+      let(:relative_url_root) { '/nested/relative/gitlab' }
     end
 
     describe "checking slug validity when assembling links" do
@@ -261,37 +273,54 @@ describe Banzai::Pipeline::WikiPipeline do
   end
 
   describe 'videos and audio' do
-    let_it_be(:namespace) { create(:namespace, name: "wiki_link_ns") }
-    let_it_be(:project)   { create(:project, :public, name: "wiki_link_project", namespace: namespace) }
-    let_it_be(:project_wiki) { ProjectWiki.new(project, double(:user)) }
-    let_it_be(:page) { build(:wiki_page, wiki: project_wiki, page: OpenStruct.new(url_path: 'nested/twice/start-page')) }
-
-    it 'generates video html structure' do
-      markdown = "![video_file](video_file_name.mp4)"
-      output = described_class.to_html(markdown, project: project, project_wiki: project_wiki, page_slug: page.slug)
-
-      expect(output).to include('<video src="/wiki_link_ns/wiki_link_project/wikis/nested/twice/video_file_name.mp4"')
+    def src(file_name)
+      "#{prefix}/nested/twice/#{file_name}"
     end
 
-    it 'rewrites and replaces video links names with white spaces to %20' do
-      markdown = "![video file](video file name.mp4)"
-      output = described_class.to_html(markdown, project: project, project_wiki: project_wiki, page_slug: page.slug)
+    shared_examples 'correct video rewrite' do
+      let(:markdown) { "![video_file](#{file_name})" }
+      let(:video_fragment) { "<video src=\"#{prefix}/#{expected_file_path}\"" }
+      let(:options) do
+        {
+          project: project,
+          project_wiki: project_wiki,
+          page_slug: page.slug
+        }
+      end
 
-      expect(output).to include('<video src="/wiki_link_ns/wiki_link_project/wikis/nested/twice/video%20file%20name.mp4"')
+      it 'generates video html structure' do
+        output = described_class.to_html(markdown, options)
+
+        expect(output).to include(video_fragment)
+      end
+    end
+
+    context 'underscores' do
+      let(:file_name) { 'video_file_name.mp4' }
+      let(:expected_file_path) { 'nested/twice/video_file_name.mp4' }
+      it_behaves_like 'correct video rewrite'
+    end
+
+    context 'spaces' do
+      let(:file_name) { 'video file name.mp4' }
+      let(:expected_file_path) { 'nested/twice/video%20file%20name.mp4' }
+      it_behaves_like 'correct video rewrite'
     end
 
     it 'generates audio html structure' do
       markdown = "![audio_file](audio_file_name.wav)"
+      safe_name = "audio_file_name.wav"
       output = described_class.to_html(markdown, project: project, project_wiki: project_wiki, page_slug: page.slug)
 
-      expect(output).to include('<audio src="/wiki_link_ns/wiki_link_project/wikis/nested/twice/audio_file_name.wav"')
+      expect(output).to include(%Q'<audio src="#{src(safe_name)}"')
     end
 
     it 'rewrites and replaces audio links names with white spaces to %20' do
       markdown = "![audio file](audio file name.wav)"
+      safe_name = "audio%20file%20name.wav"
       output = described_class.to_html(markdown, project: project, project_wiki: project_wiki, page_slug: page.slug)
 
-      expect(output).to include('<audio src="/wiki_link_ns/wiki_link_project/wikis/nested/twice/audio%20file%20name.wav"')
+      expect(output).to include(%Q'<audio src="#{src(safe_name)}"')
     end
   end
 end

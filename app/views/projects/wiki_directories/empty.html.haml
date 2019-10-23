@@ -1,0 +1,34 @@
+- layout_path = 'shared/empty_states/wikis_layout'
+- add_to_breadcrumbs _("Wiki"), project_wiki_path(@project, :home)
+- add_to_breadcrumbs s_("Wiki|Pages"), project_wikis_pages_path(@project)
+- breadcrumb_title s_(@wiki_dir.slug)
+- page_title @wiki_dir.slug
+
+- if can?(current_user, :create_wiki, @project)
+  - create_path = project_wiki_path(@project, params[:id], { view: 'create', params: { title: "#{params[:id]}/" } })
+  - create_link = link_to s_('WikiDirEmpty|Create a page in this directory'), create_path, class: 'btn btn-success qa-create-first-page-link', title: s_('WikiDirEmpty|Create a page')
+
+  = render layout: layout_path, locals: { image_path: 'illustrations/wiki_login_empty.svg' } do
+    %h4.text-left
+      = s_('WikiDirEmpty|This directory has no wiki pages')
+    %p.text-left
+      = s_("WikiDirEmpty|A wiki is where you can store all the details about your project. This can include why you've created it, its principles, how to use it, and so on.")
+    = create_link
+
+- elsif can?(current_user, :read_issue, @project)
+  - issues_link = link_to s_('WikiEmptyIssueMessage|issue tracker'), project_issues_path(@project)
+  - new_issue_link = link_to s_('WikiEmpty|Suggest wiki improvement'), new_project_issue_path(@project), class: 'btn btn-success', title: s_('WikiEmptyIssueMessage|Suggest wiki improvement')
+
+  = render layout: layout_path, locals: { image_path: 'illustrations/wiki_logout_empty.svg' } do
+    %h4
+      = s_('WikiDirEmpty|This directory has no wiki pages')
+    %p.text-left
+      = s_('WikiEmptyIssueMessage|You must be a project member in order to add wiki pages. If you have suggestions for how to improve the wiki for this project, consider opening an issue in the %{issues_link}.').html_safe % { issues_link: issues_link }
+    = new_issue_link
+
+- else
+  = render layout: layout_path, locals: { image_path: 'illustrations/wiki_logout_empty.svg' } do
+    %h4
+      = s_('WikiDirEmpty|This directory has no wiki pages')
+    %p
+      = s_('WikiEmpty|You must be a project member in order to add wiki pages.')

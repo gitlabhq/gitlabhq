@@ -5,7 +5,7 @@ module QA
     module Project
       module Wiki
         class Edit < Page::Base
-          view 'app/views/projects/wikis/_main_links.html.haml' do
+          view 'app/views/shared/wiki/_main_links.html.haml' do
             element :new_page_link, 'New page' # rubocop:disable QA/ElementWithPattern
             element :page_history_link, 'Page history' # rubocop:disable QA/ElementWithPattern
             element :edit_page_link, 'Edit' # rubocop:disable QA/ElementWithPattern

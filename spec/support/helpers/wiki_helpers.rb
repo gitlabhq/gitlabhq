@@ -12,4 +12,10 @@ module WikiHelpers
     ::Wikis::CreateAttachmentService.new(project, user, opts)
                                     .execute[:result][:file_path]
   end
+
+  # Generate the form field name for a given attribute of an object.
+  # This is rather general, but is currently only used in the wiki featur tests.
+  def form_field_name(obj, attr_name)
+    "#{ActiveModel::Naming.param_key(obj)}[#{attr_name}]"
+  end
 end

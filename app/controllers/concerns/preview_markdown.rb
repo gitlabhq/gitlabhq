@@ -9,11 +9,10 @@ module PreviewMarkdown
 
     markdown_params =
       case controller_name
-      when 'wikis'    then { pipeline: :wiki, project_wiki: @project_wiki, page_slug: params[:id] }
       when 'snippets' then { skip_project_check: true }
       when 'groups'   then { group: group }
       when 'projects' then projects_filter_params
-      else {}
+      else preview_markdown_params
       end
 
     render json: {
@@ -25,6 +24,7 @@ module PreviewMarkdown
       }
     }
   end
+  # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
   def projects_filter_params
     {
@@ -32,5 +32,11 @@ module PreviewMarkdown
       suggestions_filter_enabled: params[:preview_suggestions].present?
     }
   end
-  # rubocop:enable Gitlab/ModuleWithInstanceVariables
+
+  private
+
+  # Override this method to customise the markdown for your controller
+  def preview_markdown_params
+    {}
+  end
 end

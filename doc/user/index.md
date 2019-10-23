@@ -130,7 +130,7 @@ gather feedback through [resolvable threads](discussions/index.md#resolvable-com
 
 Read through the [GFM documentation](markdown.md) to learn how to apply
 the best of GitLab Flavored Markdown in your threads, comments,
-issues and merge requests descriptions, and everywhere else GMF is
+issues and merge requests descriptions, and everywhere else GFM is
 supported.
 
 ## Todos

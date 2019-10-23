@@ -18,12 +18,12 @@ FactoryBot.define do
     association :wiki, factory: :project_wiki, strategy: :build
     initialize_with { new(wiki, page, true) }
 
-    before(:create) do |page, evaluator|
-      page.attributes = evaluator.attrs
+    before(:create) do |wiki_page, evaluator|
+      wiki_page.attributes = evaluator.attrs.with_indifferent_access
     end
 
-    to_create do |page|
-      page.create
+    to_create do |wiki_page|
+      wiki_page.create
     end
   end
 end

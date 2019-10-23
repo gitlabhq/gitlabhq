@@ -8,10 +8,11 @@ describe 'User views a wiki page' do
   let(:user) { create(:user) }
   let(:project) { create(:project, :wiki_repo, namespace: user.namespace) }
   let(:path) { 'image.png' }
+  let(:wiki_content) { "Look at this [image](#{path})\n\n ![alt text](#{path})" }
   let(:wiki_page) do
     create(:wiki_page,
            wiki: project.wiki,
-           attrs: { title: 'home', content: "Look at this [image](#{path})\n\n ![alt text](#{path})" })
+           attrs: { title: 'home', content: wiki_content })
   end
 
   before do
@@ -19,17 +20,18 @@ describe 'User views a wiki page' do
     sign_in(user)
   end
 
+  def create_page(attrs = {})
+    page.within('.wiki-form') do
+      attrs.each { |k, v| fill_in("wiki_page_#{k}".to_sym, with: v) }
+      click_on('Create page')
+    end
+  end
+
   context 'when wiki is empty' do
     before do
       visit(project_wikis_path(project))
       click_link "Create your first page"
-
-      fill_in(:wiki_title, with: 'one/two/three-test')
-
-      page.within('.wiki-form') do
-        fill_in(:wiki_content, with: 'wiki content')
-        click_on('Create page')
-      end
+      create_page(title: 'one/two/three-test', content: 'wiki content')
     end
 
     it 'shows the history of a page that has a path', :js do
@@ -83,24 +85,27 @@ describe 'User views a wiki page' do
 
     context 'shows a file stored in a page' do
       let(:path) { upload_file_to_wiki(project, user, 'dk.png') }
+      let(:image_path) { project_wiki_path(project, path) }
 
       it do
-        expect(page).to have_xpath("//img[@data-src='#{project.wiki.wiki_base_path}/#{path}']")
-        expect(page).to have_link('image', href: "#{project.wiki.wiki_base_path}/#{path}")
+        expect(page).to have_xpath("//img[@data-src='#{image_path}']")
+        expect(page).to have_link('image', href: "#{image_path}")
 
         click_on('image')
 
-        expect(current_path).to match("wikis/#{path}")
+        expect(current_path).to match(path)
         expect(page).not_to have_xpath('/html') # Page should render the image which means there is no html involved
       end
     end
 
     it 'shows the creation page if file does not exist' do
-      expect(page).to have_link('image', href: "#{project.wiki.wiki_base_path}/#{path}")
+      href = project_wiki_path(project, path)
+
+      expect(page).to have_link('image', href: href)
 
       click_on('image')
 
-      expect(current_path).to match("wikis/#{path}")
+      expect(current_path).to match(href)
       expect(page).to have_content('Create New Page')
     end
   end

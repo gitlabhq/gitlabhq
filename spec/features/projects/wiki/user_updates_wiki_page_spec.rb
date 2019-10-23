@@ -10,6 +10,13 @@ describe 'User updates wiki page' do
     sign_in(user)
   end
 
+  def create_page(attrs = {})
+    page.within('.wiki-form') do
+      attrs.each { |k, v| fill_in("wiki_page_#{k}".to_sym, with: v) }
+      click_on('Create page')
+    end
+  end
+
   context 'when wiki is empty' do
     before do
       visit(project_wikis_path(project))
@@ -28,12 +35,7 @@ describe 'User updates wiki page' do
       end
 
       it 'updates a page that has a path', :js do
-        fill_in(:wiki_title, with: 'one/two/three-test')
-
-        page.within '.wiki-form' do
-          fill_in(:wiki_content, with: 'wiki content')
-          click_on('Create page')
-        end
+        create_page(title: 'one/two/three-test', content: 'wiki content')
 
         expect(current_path).to include('one/two/three-test')
         expect(find('.wiki-pages')).to have_content('three')
@@ -72,9 +74,9 @@ describe 'User updates wiki page' do
 
       it 'updates a page', :js do
         # Commit message field should have correct value.
-        expect(page).to have_field('wiki[message]', with: 'Update home')
+        expect(page).to have_field('wiki_page[message]', with: 'Update home')
 
-        fill_in(:wiki_content, with: 'My awesome wiki!')
+        fill_in(:wiki_page_content, with: 'My awesome wiki!')
         click_button('Save changes')
 
         expect(page).to have_content('Home')
@@ -83,31 +85,31 @@ describe 'User updates wiki page' do
       end
 
       it 'updates the commit message as the title is changed', :js do
-        fill_in(:wiki_title, with: 'Wiki title')
+        fill_in(:wiki_page_title, with: 'Wiki title')
 
-        expect(page).to have_field('wiki[message]', with: 'Update Wiki title')
+        expect(page).to have_field('wiki_page[message]', with: 'Update Wiki title')
       end
 
       it 'does not allow XSS', :js do
-        fill_in(:wiki_title, with: '<script>')
+        fill_in(:wiki_page_title, with: '<script>')
 
-        expect(page).to have_field('wiki[message]', with: 'Update &lt;script&gt;')
+        expect(page).to have_field('wiki_page[message]', with: 'Update &lt;script&gt;')
       end
 
       it 'shows a validation error message' do
-        fill_in(:wiki_content, with: '')
+        fill_in(:wiki_page_content, with: '')
         click_button('Save changes')
 
         expect(page).to have_selector('.wiki-form')
         expect(page).to have_content('Edit Page')
         expect(page).to have_content('The form contains the following error:')
         expect(page).to have_content("Content can't be blank")
-        expect(find('textarea#wiki_content').value).to eq('')
+        expect(find('textarea#wiki_page_content').value).to eq('')
       end
 
       it 'shows the emoji autocompletion dropdown', :js do
-        find('#wiki_content').native.send_keys('')
-        fill_in(:wiki_content, with: ':')
+        find('#wiki_page_content').native.send_keys('')
+        fill_in(:wiki_page_content, with: ':')
 
         expect(page).to have_selector('.atwho-view')
       end
@@ -143,9 +145,9 @@ describe 'User updates wiki page' do
 
       it 'updates a page', :js do
         # Commit message field should have correct value.
-        expect(page).to have_field('wiki[message]', with: 'Update home')
+        expect(page).to have_field('wiki_page[message]', with: 'Update home')
 
-        fill_in(:wiki_content, with: 'My awesome wiki!')
+        fill_in(:wiki_page_content, with: 'My awesome wiki!')
 
         click_button('Save changes')
 
@@ -169,50 +171,43 @@ describe 'User updates wiki page' do
       visit(project_wiki_edit_path(project, wiki_page))
     end
 
-    it 'moves the page to the root folder' do
-      fill_in(:wiki_title, with: "/#{page_name}")
+    def edit_title!(title)
+      fill_in(:wiki_page_title, with: title)
 
       click_button('Save changes')
+    end
+
+    it 'moves the page to the root folder' do
+      edit_title!("/#{page_name}")
 
       expect(current_path).to eq(project_wiki_path(project, page_name))
     end
 
     it 'moves the page to other dir' do
-      new_page_dir = "foo1/bar1/#{page_name}"
+      new_page_path = "baz/quux/#{page_name}"
+      edit_title!(new_page_path)
 
-      fill_in(:wiki_title, with: new_page_dir)
-
-      click_button('Save changes')
-
-      expect(current_path).to eq(project_wiki_path(project, new_page_dir))
+      expect(current_path).to eq(project_wiki_path(project, new_page_path))
     end
 
     it 'remains in the same place if title has not changed' do
       original_path = project_wiki_path(project, wiki_page)
-
-      fill_in(:wiki_title, with: page_name)
-
-      click_button('Save changes')
+      edit_title!(page_name)
 
       expect(current_path).to eq(original_path)
     end
 
     it 'can be moved to a different dir with a different name' do
-      new_page_dir = "foo1/bar1/new_page_name"
+      new_page_path = "quux/baz/new_page_name"
+      edit_title!(new_page_path)
 
-      fill_in(:wiki_title, with: new_page_dir)
-
-      click_button('Save changes')
-
-      expect(current_path).to eq(project_wiki_path(project, new_page_dir))
+      expect(current_path).to eq(project_wiki_path(project, new_page_path))
     end
 
     it 'can be renamed and moved to the root folder' do
       new_name = 'new_page_name'
 
-      fill_in(:wiki_title, with: "/#{new_name}")
-
-      click_button('Save changes')
+      edit_title!("/#{new_name}")
 
       expect(current_path).to eq(project_wiki_path(project, new_name))
     end
@@ -220,9 +215,7 @@ describe 'User updates wiki page' do
     it 'squishes the title before creating the page' do
       new_page_dir = "  foo1 /  bar1  /  #{page_name}  "
 
-      fill_in(:wiki_title, with: new_page_dir)
-
-      click_button('Save changes')
+      edit_title!(new_page_dir)
 
       expect(current_path).to eq(project_wiki_path(project, "foo1/bar1/#{page_name}"))
     end

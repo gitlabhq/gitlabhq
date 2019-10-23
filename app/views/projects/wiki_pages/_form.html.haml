@@ -1,9 +1,11 @@
 - form_classes = 'wiki-form common-note-form prepend-top-default js-quick-submit'
 - form_classes += ' js-new-wiki-page' unless @page.persisted?
 
-= form_for [@project.namespace.becomes(Namespace), @project, @page], method: @page.persisted? ? :put : :post,
-           html: { class: form_classes },
-           data: { uploads_path: uploads_path } do |f|
+= form_for [@project.namespace.becomes(Namespace), @project, @page],
+    method: @page.persisted? ? 'put' : 'post',
+    url: { controller: 'wiki_pages', action: @page.persisted? ? :update : :create },
+    html: { class: form_classes },
+    data: { uploads_path: uploads_path } do |f|
   = form_errors(@page)
 
   - if @page.persisted?
@@ -12,7 +14,7 @@
   .form-group.row
     .col-sm-12= f.label :title, class: 'control-label-full-width'
     .col-sm-12
-      = f.text_field :title, class: 'form-control qa-wiki-title-textbox', value: @page.title, required: true, autofocus: !@page.persisted?, placeholder: _('Wiki|Page title')
+      = f.text_field :title, class: 'form-control qa-wiki-title-textbox', value: @page.title, required: true, autofocus: !@page.persisted?, placeholder: s_('Wiki|Page title')
       %span.d-inline-block.mw-100.prepend-top-5
         = icon('lightbulb-o')
         - if @page.persisted?

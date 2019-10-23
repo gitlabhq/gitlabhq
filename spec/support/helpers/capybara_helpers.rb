@@ -46,4 +46,14 @@ module CapybaraHelpers
   def javascript_test?
     Capybara.current_driver == Capybara.javascript_driver
   end
+
+  def scroll_to(element)
+    raise 'JS not available' unless javascript_test?
+
+    script = <<-JS
+      arguments[0].scrollIntoView(true);
+    JS
+
+    page.driver.browser.execute_script(script, element.native)
+  end
 end
