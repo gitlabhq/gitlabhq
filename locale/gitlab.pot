@@ -18181,6 +18181,9 @@ msgstr ""
 msgid "UserOnboardingTour|Take a look. Here's a nifty menu for quickly creating issues, merge requests, snippets, projects and groups. Click on it and select \"New project\" from the \"GitLab\" section to get started."
 msgstr ""
 
+msgid "UserOnboardingTour|Thanks for taking the guided tour. Remember, if you want to go through it again, you can start %{emphasisStart}Learn GitLab%{emphasisEnd} in the help menu on the top right."
+msgstr ""
+
 msgid "UserOnboardingTour|Thanks for the feedback! %{thumbsUp}"
 msgstr ""
 
