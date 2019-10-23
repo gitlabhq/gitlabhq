@@ -307,6 +307,7 @@ module API
       expose :only_allow_merge_if_pipeline_succeeds
       expose :request_access_enabled
       expose :only_allow_merge_if_all_discussions_are_resolved
+      expose :remove_source_branch_after_merge
       expose :printing_merge_request_link_enabled
       expose :merge_method
       expose :statistics, using: 'API::Entities::ProjectStatistics', if: -> (project, options) {
@@ -1290,6 +1291,8 @@ module API
     end
 
     class Release < Grape::Entity
+      include ::API::Helpers::Presentable
+
       expose :name
       expose :tag, as: :tag_name, if: ->(_, _) { can_download_code? }
       expose :description
@@ -1302,8 +1305,8 @@ module API
       expose :commit, using: Entities::Commit, if: ->(_, _) { can_download_code? }
       expose :upcoming_release?, as: :upcoming_release
       expose :milestones, using: Entities::Milestone, if: -> (release, _) { release.milestones.present? }
-      expose :commit_path, if: ->(_, _) { can_download_code? }
-      expose :tag_path, if: ->(_, _) { can_download_code? }
+      expose :commit_path, expose_nil: false
+      expose :tag_path, expose_nil: false
       expose :assets do
         expose :assets_count, as: :count do |release, _|
           assets_to_exclude = can_download_code? ? [] : [:sources]
@@ -1315,44 +1318,14 @@ module API
         end
       end
       expose :_links do
-        expose :merge_requests_url, if: -> (_) { release_mr_issue_urls_available? }
-        expose :issues_url, if: -> (_) { release_mr_issue_urls_available? }
+        expose :merge_requests_url, expose_nil: false
+        expose :issues_url, expose_nil: false
       end
 
       private
 
       def can_download_code?
         Ability.allowed?(options[:current_user], :download_code, object.project)
-      end
-
-      def commit_path
-        return unless object.commit
-
-        Gitlab::Routing.url_helpers.project_commit_path(project, object.commit.id)
-      end
-
-      def tag_path
-        Gitlab::Routing.url_helpers.project_tag_path(project, object.tag)
-      end
-
-      def merge_requests_url
-        Gitlab::Routing.url_helpers.project_merge_requests_url(project, params_for_issues_and_mrs)
-      end
-
-      def issues_url
-        Gitlab::Routing.url_helpers.project_issues_url(project, params_for_issues_and_mrs)
-      end
-
-      def params_for_issues_and_mrs
-        { scope: 'all', state: 'opened', release_tag: object.tag }
-      end
-
-      def release_mr_issue_urls_available?
-        ::Feature.enabled?(:release_mr_issue_urls, project)
-      end
-
-      def project
-        @project ||= object.project
       end
     end
 

@@ -512,6 +512,7 @@ Project:
 - request_access_enabled
 - has_external_wiki
 - only_allow_merge_if_all_discussions_are_resolved
+- remove_source_branch_after_merge
 - auto_cancel_pending_pipelines
 - printing_merge_request_link_enabled
 - resolve_outdated_diff_discussions

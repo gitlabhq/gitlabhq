@@ -80,7 +80,7 @@ describe MergeRequests::BuildService do
     end
 
     it 'does not assign force_remove_source_branch' do
-      expect(merge_request.force_remove_source_branch?).to be_falsey
+      expect(merge_request.force_remove_source_branch?).to be_truthy
     end
 
     context 'with force_remove_source_branch parameter' do
@@ -89,6 +89,36 @@ describe MergeRequests::BuildService do
 
       it 'assigns force_remove_source_branch' do
         expect(merge_request.force_remove_source_branch?).to be_truthy
+      end
+
+      context 'with project setting remove_source_branch_after_merge false' do
+        before do
+          project.remove_source_branch_after_merge = false
+        end
+
+        it 'assigns force_remove_source_branch' do
+          expect(merge_request.force_remove_source_branch?).to be_truthy
+        end
+      end
+    end
+
+    context 'with project setting remove_source_branch_after_merge true' do
+      before do
+        project.remove_source_branch_after_merge = true
+      end
+
+      it 'assigns force_remove_source_branch' do
+        expect(merge_request.force_remove_source_branch?).to be_truthy
+      end
+
+      context 'with force_remove_source_branch parameter false' do
+        before do
+          params[:force_remove_source_branch] = '0'
+        end
+
+        it 'does not assign force_remove_source_branch' do
+          expect(merge_request.force_remove_source_branch?).to be(false)
+        end
       end
     end
 

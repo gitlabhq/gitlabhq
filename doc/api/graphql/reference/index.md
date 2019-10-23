@@ -604,6 +604,7 @@ The API can be explored interactively using the [GraphiQL IDE](../index.md#graph
 | `requestAccessEnabled` | Boolean |  |
 | `onlyAllowMergeIfAllDiscussionsAreResolved` | Boolean |  |
 | `printingMergeRequestLinkEnabled` | Boolean |  |
+| `removeSourceBranchAfterMerge` | Boolean | Remove the source branch by default after merge |
 | `namespace` | Namespace |  |
 | `group` | Group |  |
 | `statistics` | ProjectStatistics |  |

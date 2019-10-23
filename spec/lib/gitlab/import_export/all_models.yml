@@ -421,6 +421,7 @@ project:
 - pages_metadatum
 - alerts_service
 - grafana_integration
+- remove_source_branch_after_merge
 award_emoji:
 - awardable
 - user

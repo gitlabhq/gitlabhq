@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class Release < ApplicationRecord
+  include Presentable
   include CacheMarkdownField
   include Gitlab::Utils::StrongMemoize
 

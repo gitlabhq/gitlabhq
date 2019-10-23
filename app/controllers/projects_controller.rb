@@ -371,6 +371,7 @@ class ProjectsController < Projects::ApplicationController
       :path,
       :printing_merge_request_link_enabled,
       :public_builds,
+      :remove_source_branch_after_merge,
       :request_access_enabled,
       :runners_token,
       :tag_list,

@@ -94,7 +94,9 @@ You can [search and filter the results](../../search/index.md#issues-and-merge-r
 
 When creating a merge request, select the "Delete source branch when merge
 request accepted" option and the source branch will be deleted when the merge
-request is merged.
+request is merged. To make this option enabled by default for all new merge
+requests, enable it in the
+[project's settings](../settings/index.md#merge-request-settings).
 
 This option is also visible in an existing merge request next to the merge
 request button and can be selected/deselected before merging. It's only visible

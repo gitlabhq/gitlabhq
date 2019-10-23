@@ -30,6 +30,7 @@ module API
 
         optional :shared_runners_enabled, type: Boolean, desc: 'Flag indication if shared runners are enabled for that project'
         optional :resolve_outdated_diff_discussions, type: Boolean, desc: 'Automatically resolve merge request diffs discussions on lines changed with a push'
+        optional :remove_source_branch_after_merge, type: Boolean, desc: 'Remove the source branch by default after merge'
         optional :container_registry_enabled, type: Boolean, desc: 'Flag indication if the container registry is enabled for that project'
         optional :lfs_enabled, type: Boolean, desc: 'Flag indication if Git LFS is enabled for that project'
         optional :visibility, type: String, values: Gitlab::VisibilityLevel.string_values, desc: 'The visibility of the project.'
@@ -94,6 +95,7 @@ module API
           :path,
           :printing_merge_request_link_enabled,
           :public_builds,
+          :remove_source_branch_after_merge,
           :repository_access_level,
           :request_access_enabled,
           :resolve_outdated_diff_discussions,
@@ -109,7 +111,6 @@ module API
           :jobs_enabled,
           :merge_requests_enabled,
           :wiki_enabled,
-          :jobs_enabled,
           :snippets_enabled
         ]
       end

@@ -12857,7 +12857,13 @@ msgstr ""
 msgid "ProjectSettings|Customize your project badges."
 msgstr ""
 
+msgid "ProjectSettings|Enable 'Delete source branch' option by default"
+msgstr ""
+
 msgid "ProjectSettings|Every merge creates a merge commit"
+msgstr ""
+
+msgid "ProjectSettings|Existing merge requests and protected branches are not affected"
 msgstr ""
 
 msgid "ProjectSettings|Failed to protect the tag"

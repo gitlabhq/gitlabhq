@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_10_17_045817) do
+ActiveRecord::Schema.define(version: 2019_10_17_094449) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -3058,6 +3058,7 @@ ActiveRecord::Schema.define(version: 2019_10_17_045817) do
     t.integer "max_pages_size"
     t.integer "max_artifacts_size"
     t.string "pull_mirror_branch_prefix", limit: 50
+    t.boolean "remove_source_branch_after_merge"
     t.index "lower((name)::text)", name: "index_projects_on_lower_name"
     t.index ["archived", "pending_delete", "merge_requests_require_code_owner_approval"], name: "projects_requiring_code_owner_approval", where: "((pending_delete = false) AND (archived = false) AND (merge_requests_require_code_owner_approval = true))"
     t.index ["created_at"], name: "index_projects_on_created_at"

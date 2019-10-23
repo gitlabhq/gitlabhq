@@ -66,6 +66,7 @@ module Types
     field :request_access_enabled, GraphQL::BOOLEAN_TYPE, null: true # rubocop:disable Graphql/Descriptions
     field :only_allow_merge_if_all_discussions_are_resolved, GraphQL::BOOLEAN_TYPE, null: true # rubocop:disable Graphql/Descriptions
     field :printing_merge_request_link_enabled, GraphQL::BOOLEAN_TYPE, null: true # rubocop:disable Graphql/Descriptions
+    field :remove_source_branch_after_merge, GraphQL::BOOLEAN_TYPE, null: true, description: 'Remove the source branch by default after merge'
 
     field :namespace, Types::NamespaceType, null: true # rubocop:disable Graphql/Descriptions
     field :group, Types::GroupType, null: true # rubocop:disable Graphql/Descriptions

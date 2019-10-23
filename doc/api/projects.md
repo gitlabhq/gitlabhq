@@ -148,6 +148,7 @@ When the user is authenticated and `simple` is not set this returns something li
     "shared_with_groups": [],
     "only_allow_merge_if_pipeline_succeeds": false,
     "only_allow_merge_if_all_discussions_are_resolved": false,
+    "remove_source_branch_after_merge": false,
     "request_access_enabled": false,
     "merge_method": "merge",
     "statistics": {
@@ -232,6 +233,7 @@ When the user is authenticated and `simple` is not set this returns something li
     "shared_with_groups": [],
     "only_allow_merge_if_pipeline_succeeds": false,
     "only_allow_merge_if_all_discussions_are_resolved": false,
+    "remove_source_branch_after_merge": false,
     "request_access_enabled": false,
     "merge_method": "merge",
     "statistics": {
@@ -357,6 +359,7 @@ GET /users/:user_id/projects
     "shared_with_groups": [],
     "only_allow_merge_if_pipeline_succeeds": false,
     "only_allow_merge_if_all_discussions_are_resolved": false,
+    "remove_source_branch_after_merge": false,
     "request_access_enabled": false,
     "merge_method": "merge",
     "statistics": {
@@ -441,6 +444,7 @@ GET /users/:user_id/projects
     "shared_with_groups": [],
     "only_allow_merge_if_pipeline_succeeds": false,
     "only_allow_merge_if_all_discussions_are_resolved": false,
+    "remove_source_branch_after_merge": false,
     "request_access_enabled": false,
     "merge_method": "merge",
     "statistics": {
@@ -550,6 +554,7 @@ Example response:
     "shared_with_groups": [],
     "only_allow_merge_if_pipeline_succeeds": false,
     "only_allow_merge_if_all_discussions_are_resolved": false,
+    "remove_source_branch_after_merge": false,
     "request_access_enabled": false,
     "merge_method": "merge",
     "statistics": {
@@ -631,6 +636,7 @@ Example response:
     "shared_with_groups": [],
     "only_allow_merge_if_pipeline_succeeds": false,
     "only_allow_merge_if_all_discussions_are_resolved": false,
+    "remove_source_branch_after_merge": false,
     "request_access_enabled": false,
     "merge_method": "merge",
     "statistics": {
@@ -757,6 +763,7 @@ GET /projects/:id
   "repository_storage": "default",
   "only_allow_merge_if_pipeline_succeeds": false,
   "only_allow_merge_if_all_discussions_are_resolved": false,
+  "remove_source_branch_after_merge": false,
   "printing_merge_requests_link_enabled": true,
   "request_access_enabled": false,
   "merge_method": "merge",
@@ -917,6 +924,7 @@ POST /projects
 | `only_allow_merge_if_pipeline_succeeds` | boolean | no | Set whether merge requests can only be merged with successful jobs |
 | `only_allow_merge_if_all_discussions_are_resolved` | boolean | no | Set whether merge requests can only be merged when all the discussions are resolved |
 | `merge_method` | string | no | Set the [merge method](#project-merge-method) used |
+| `remove_source_branch_after_merge` | boolean | no | Enable `Delete source branch` option by default for all new merge requests |
 | `lfs_enabled` | boolean | no | Enable LFS |
 | `request_access_enabled` | boolean | no | Allow users to request member access |
 | `tag_list`    | array   | no       | The list of tags for a project; put array of tags, that should be finally assigned to a project |
@@ -978,6 +986,7 @@ POST /projects/user/:user_id
 | `only_allow_merge_if_pipeline_succeeds` | boolean | no | Set whether merge requests can only be merged with successful jobs |
 | `only_allow_merge_if_all_discussions_are_resolved` | boolean | no | Set whether merge requests can only be merged when all the discussions are resolved |
 | `merge_method` | string | no | Set the [merge method](#project-merge-method) used |
+| `remove_source_branch_after_merge` | boolean | no | Enable `Delete source branch` option by default for all new merge requests |
 | `lfs_enabled` | boolean | no | Enable LFS |
 | `request_access_enabled` | boolean | no | Allow users to request member access |
 | `tag_list`    | array   | no       | The list of tags for a project; put array of tags, that should be finally assigned to a project |
@@ -1039,6 +1048,7 @@ PUT /projects/:id
 | `only_allow_merge_if_pipeline_succeeds` | boolean | no | Set whether merge requests can only be merged with successful jobs |
 | `only_allow_merge_if_all_discussions_are_resolved` | boolean | no | Set whether merge requests can only be merged when all the discussions are resolved |
 | `merge_method` | string | no | Set the [merge method](#project-merge-method) used |
+| `remove_source_branch_after_merge` | boolean | no | Enable `Delete source branch` option by default for all new merge requests |
 | `lfs_enabled` | boolean | no | Enable LFS |
 | `request_access_enabled` | boolean | no | Allow users to request member access |
 | `tag_list`    | array   | no       | The list of tags for a project; put array of tags, that should be finally assigned to a project |
@@ -1165,6 +1175,7 @@ Example responses:
     "shared_with_groups": [],
     "only_allow_merge_if_pipeline_succeeds": false,
     "only_allow_merge_if_all_discussions_are_resolved": false,
+    "remove_source_branch_after_merge": false,
     "request_access_enabled": false,
     "merge_method": "merge",
     "_links": {
@@ -1252,6 +1263,7 @@ Example response:
   "shared_with_groups": [],
   "only_allow_merge_if_pipeline_succeeds": false,
   "only_allow_merge_if_all_discussions_are_resolved": false,
+  "remove_source_branch_after_merge": false,
   "request_access_enabled": false,
   "merge_method": "merge",
   "_links": {
@@ -1338,6 +1350,7 @@ Example response:
   "shared_with_groups": [],
   "only_allow_merge_if_pipeline_succeeds": false,
   "only_allow_merge_if_all_discussions_are_resolved": false,
+  "remove_source_branch_after_merge": false,
   "request_access_enabled": false,
   "merge_method": "merge",
   "_links": {
@@ -1511,6 +1524,7 @@ Example response:
   "shared_with_groups": [],
   "only_allow_merge_if_pipeline_succeeds": false,
   "only_allow_merge_if_all_discussions_are_resolved": false,
+  "remove_source_branch_after_merge": false,
   "request_access_enabled": false,
   "merge_method": "merge",
   "_links": {
@@ -1616,6 +1630,7 @@ Example response:
   "shared_with_groups": [],
   "only_allow_merge_if_pipeline_succeeds": false,
   "only_allow_merge_if_all_discussions_are_resolved": false,
+  "remove_source_branch_after_merge": false,
   "request_access_enabled": false,
   "merge_method": "merge",
   "_links": {

@@ -10,12 +10,19 @@ module MergeRequests
       # TODO: this should handle all quick actions that don't have side effects
       # https://gitlab.com/gitlab-org/gitlab-foss/issues/53658
       merge_quick_actions_into_params!(merge_request, only: [:target_branch])
-      merge_request.merge_params['force_remove_source_branch'] = params.delete(:force_remove_source_branch) if params.has_key?(:force_remove_source_branch)
 
       # Assign the projects first so we can use policies for `filter_params`
       merge_request.author = current_user
       merge_request.source_project = find_source_project
       merge_request.target_project = find_target_project
+
+      # Source project sets the default source branch removal setting
+      merge_request.merge_params['force_remove_source_branch'] =
+        if params.key?(:force_remove_source_branch)
+          params.delete(:force_remove_source_branch)
+        else
+          merge_request.source_project.remove_source_branch_after_merge?
+        end
 
       filter_params(merge_request)
 

@@ -18,6 +18,7 @@ module Gitlab
 
       def execute
         return unless upload
+        return unless upload.model_type == 'Note'
 
         if !project
           # if we don't have models associated with the upload we can not move it

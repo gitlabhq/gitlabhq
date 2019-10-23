@@ -23,6 +23,7 @@ describe GitlabSchema.types['Project'] do
       only_allow_merge_if_all_discussions_are_resolved printing_merge_request_link_enabled
       namespace group statistics repository merge_requests merge_request issues
       issue pipelines
+      removeSourceBranchAfterMerge
     ]
 
     is_expected.to have_graphql_fields(*expected_fields)
