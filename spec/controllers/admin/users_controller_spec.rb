@@ -123,7 +123,7 @@ describe Admin::UsersController do
           put :deactivate, params: { id: user.username }
           user.reload
           expect(user.deactivated?).to be_falsey
-          expect(flash[:notice]).to eq("The user you are trying to deactivate has been active in the past 14 days and cannot be deactivated")
+          expect(flash[:notice]).to eq("The user you are trying to deactivate has been active in the past #{::User::MINIMUM_INACTIVE_DAYS} days and cannot be deactivated")
         end
       end
     end
