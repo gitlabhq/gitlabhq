@@ -65,6 +65,7 @@ describe 'GitlabSchema configurations' do
 
       context 'a deep recursive non-introspective query' do
         it 'fails due to recursion, complexity and depth' do
+          allow(GitlabSchema).to receive(:max_query_complexity).and_return 1
           query = File.read(Rails.root.join('spec/fixtures/api/graphql/recursive-query.graphql'))
 
           post_graphql(query, current_user: nil)
