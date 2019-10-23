@@ -1650,6 +1650,10 @@ ActiveRecord::Schema.define(version: 2019_10_17_045817) do
     t.integer "container_repositories_synced_count"
     t.integer "container_repositories_failed_count"
     t.integer "container_repositories_registry_count"
+    t.integer "design_repositories_count"
+    t.integer "design_repositories_synced_count"
+    t.integer "design_repositories_failed_count"
+    t.integer "design_repositories_registry_count"
     t.index ["geo_node_id"], name: "index_geo_node_statuses_on_geo_node_id", unique: true
   end
 

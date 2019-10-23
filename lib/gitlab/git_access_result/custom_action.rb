@@ -3,7 +3,7 @@
 module Gitlab
   module GitAccessResult
     class CustomAction
-      attr_reader :payload, :message
+      attr_reader :payload, :console_messages
 
       # Example of payload:
       #
@@ -16,9 +16,9 @@ module Gitlab
       #   }
       # }
       #
-      def initialize(payload, message)
+      def initialize(payload, console_messages)
         @payload = payload
-        @message = message
+        @console_messages = console_messages
       end
     end
   end

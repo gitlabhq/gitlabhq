@@ -156,6 +156,15 @@ describe Clusters::Applications::Ingress do
       it 'includes modsecurity core ruleset enablement' do
         expect(subject.values).to include("enable-owasp-modsecurity-crs: 'true'")
       end
+
+      it 'includes modsecurity.conf content' do
+        expect(subject.values).to include('modsecurity.conf')
+        # Includes file content from Ingress#modsecurity_config_content
+        expect(subject.values).to include('SecAuditLog')
+
+        expect(subject.values).to include('extraVolumes')
+        expect(subject.values).to include('extraVolumeMounts')
+      end
     end
 
     context 'when ingress_modsecurity is disabled' do
@@ -171,6 +180,15 @@ describe Clusters::Applications::Ingress do
 
       it 'excludes modsecurity core ruleset enablement' do
         expect(subject.values).not_to include('enable-owasp-modsecurity-crs')
+      end
+
+      it 'excludes modsecurity.conf content' do
+        expect(subject.values).not_to include('modsecurity.conf')
+        # Excludes file content from Ingress#modsecurity_config_content
+        expect(subject.values).not_to include('SecAuditLog')
+
+        expect(subject.values).not_to include('extraVolumes')
+        expect(subject.values).not_to include('extraVolumeMounts')
       end
     end
   end

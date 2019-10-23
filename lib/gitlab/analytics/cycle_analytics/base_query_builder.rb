@@ -68,3 +68,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::Analytics::CycleAnalytics::BaseQueryBuilder.prepend_if_ee('EE::Gitlab::Analytics::CycleAnalytics::BaseQueryBuilder')

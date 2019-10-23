@@ -7493,6 +7493,9 @@ msgstr ""
 msgid "GeoNodes|Data replication lag"
 msgstr ""
 
+msgid "GeoNodes|Design repositories"
+msgstr ""
+
 msgid "GeoNodes|Does not match the primary storage configuration"
 msgstr ""
 
