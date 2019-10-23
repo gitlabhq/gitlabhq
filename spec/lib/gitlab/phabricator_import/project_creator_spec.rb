@@ -11,7 +11,7 @@ describe Gitlab::PhabricatorImport::ProjectCreator do
   subject(:creator) { described_class.new(user, params) }
 
   describe '#execute' do
-    it 'creates a project correctly and schedule an import' do
+    it 'creates a project correctly and schedule an import', :sidekiq_might_not_need_inline do
       expect_next_instance_of(Gitlab::PhabricatorImport::Importer) do |importer|
         expect(importer).to receive(:execute)
       end

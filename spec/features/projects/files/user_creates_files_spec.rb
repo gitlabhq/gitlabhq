@@ -42,7 +42,7 @@ describe 'Projects > Files > User creates files' do
         visit(project2_tree_path_root_ref)
       end
 
-      it 'opens new file page on a forked project' do
+      it 'opens new file page on a forked project', :sidekiq_might_not_need_inline do
         find('.add-to-tree').click
         click_link('New file')
 
@@ -159,7 +159,7 @@ describe 'Projects > Files > User creates files' do
       end
     end
 
-    context 'when an user does not have write access' do
+    context 'when an user does not have write access', :sidekiq_might_not_need_inline do
       before do
         project2.add_reporter(user)
         visit(project2_tree_path_root_ref)

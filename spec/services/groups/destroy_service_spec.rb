@@ -26,7 +26,7 @@ describe Groups::DestroyService do
   end
 
   shared_examples 'group destruction' do |async|
-    context 'database records' do
+    context 'database records', :sidekiq_might_not_need_inline do
       before do
         destroy_group(group, user, async)
       end
@@ -37,7 +37,7 @@ describe Groups::DestroyService do
       it { expect(NotificationSetting.unscoped.all).not_to include(notification_setting) }
     end
 
-    context 'mattermost team' do
+    context 'mattermost team', :sidekiq_might_not_need_inline do
       let!(:chat_team) { create(:chat_team, namespace: group) }
 
       it 'destroys the team too' do
@@ -47,7 +47,7 @@ describe Groups::DestroyService do
       end
     end
 
-    context 'file system' do
+    context 'file system', :sidekiq_might_not_need_inline do
       context 'Sidekiq inline' do
         before do
           # Run sidekiq immediately to check that renamed dir will be removed
@@ -55,8 +55,8 @@ describe Groups::DestroyService do
         end
 
         it 'verifies that paths have been deleted' do
-          expect(gitlab_shell.exists?(project.repository_storage, group.path)).to be_falsey
-          expect(gitlab_shell.exists?(project.repository_storage, remove_path)).to be_falsey
+          expect(TestEnv.storage_dir_exists?(project.repository_storage, group.path)).to be_falsey
+          expect(TestEnv.storage_dir_exists?(project.repository_storage, remove_path)).to be_falsey
         end
       end
     end
@@ -73,13 +73,13 @@ describe Groups::DestroyService do
 
       after do
         # Clean up stale directories
-        gitlab_shell.rm_namespace(project.repository_storage, group.path)
-        gitlab_shell.rm_namespace(project.repository_storage, remove_path)
+        TestEnv.rm_storage_dir(project.repository_storage, group.path)
+        TestEnv.rm_storage_dir(project.repository_storage, remove_path)
       end
 
       it 'verifies original paths and projects still exist' do
-        expect(gitlab_shell.exists?(project.repository_storage, group.path)).to be_truthy
-        expect(gitlab_shell.exists?(project.repository_storage, remove_path)).to be_falsey
+        expect(TestEnv.storage_dir_exists?(project.repository_storage, group.path)).to be_truthy
+        expect(TestEnv.storage_dir_exists?(project.repository_storage, remove_path)).to be_falsey
         expect(Project.unscoped.count).to eq(1)
         expect(Group.unscoped.count).to eq(2)
       end

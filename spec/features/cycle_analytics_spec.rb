@@ -56,7 +56,7 @@ describe 'Cycle Analytics', :js do
         expect(deploys_counter).to have_content('1')
       end
 
-      it 'shows data on each stage' do
+      it 'shows data on each stage', :sidekiq_might_not_need_inline do
         expect_issue_to_be_present
 
         click_stage('Plan')

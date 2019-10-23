@@ -36,7 +36,7 @@ describe "User creates a merge request", :js do
   context "to a forked project" do
     let(:forked_project) { fork_project(project, user, namespace: user.namespace, repository: true) }
 
-    it "creates a merge request" do
+    it "creates a merge request", :sidekiq_might_not_need_inline do
       visit(project_new_merge_request_path(forked_project))
 
       expect(page).to have_content("Source branch").and have_content("Target branch")

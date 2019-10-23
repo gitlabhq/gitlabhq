@@ -357,9 +357,16 @@ However, if a spec makes direct Redis calls, it should mark itself with the
 `:clean_gitlab_redis_queues` traits as appropriate.
 
 Sidekiq jobs are typically not run in specs, but this behaviour can be altered
-in each spec through the use of `perform_enqueued_jobs` blocks. Any spec that
-causes Sidekiq jobs to be pushed to Redis should use the `:sidekiq` trait, to
-ensure that they are removed once the spec completes.
+in each spec through the use of `perform_enqueued_jobs` blocks.
+Any spec that causes Sidekiq jobs to be pushed to Redis should use the
+`:sidekiq_inline` trait, to ensure that they are removed once the spec completes.
+
+The `:sidekiq_might_not_need_inline` trait was added when [Sidekiq inline mode was
+changed to fake mode](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/31662)
+to all the examples that needed Sidekiq to actually process jobs. Examples with
+this trait should be either fixed to not rely on Sidekiq processing jobs, or their
+`:sidekiq_might_not_need_inline` trait should be updated to `:sidekiq_inline` if the
+processing of background jobs is needed/expected.
 
 #### Filesystem
 

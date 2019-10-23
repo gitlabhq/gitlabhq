@@ -153,7 +153,7 @@ describe API::ProjectImport do
       expect(import_project.import_data.data['override_params']).to be_empty
     end
 
-    it 'correctly overrides params during the import' do
+    it 'correctly overrides params during the import', :sidekiq_might_not_need_inline do
       override_params = { 'description' => 'Hello world' }
 
       perform_enqueued_jobs do

@@ -76,7 +76,7 @@ describe 'Merge request > User sees merge widget', :js do
       expect(find('.accept-merge-request')['disabled']).not_to be(true)
     end
 
-    it 'allows me to merge, see cherry-pick modal and load branches list' do
+    it 'allows me to merge, see cherry-pick modal and load branches list', :sidekiq_might_not_need_inline do
       wait_for_requests
       click_button 'Merge'
 
@@ -191,7 +191,7 @@ describe 'Merge request > User sees merge widget', :js do
     end
 
     shared_examples 'pipeline widget' do
-      it 'shows head pipeline information' do
+      it 'shows head pipeline information', :sidekiq_might_not_need_inline do
         within '.ci-widget-content' do
           expect(page).to have_content("Detached merge request pipeline ##{pipeline.id} pending for #{pipeline.short_sha}")
         end
@@ -230,7 +230,7 @@ describe 'Merge request > User sees merge widget', :js do
     end
 
     shared_examples 'pipeline widget' do
-      it 'shows head pipeline information' do
+      it 'shows head pipeline information', :sidekiq_might_not_need_inline do
         within '.ci-widget-content' do
           expect(page).to have_content("Merged result pipeline ##{pipeline.id} pending for #{pipeline.short_sha}")
         end
@@ -371,7 +371,7 @@ describe 'Merge request > User sees merge widget', :js do
       visit project_merge_request_path(project, merge_request)
     end
 
-    it 'updates the MR widget' do
+    it 'updates the MR widget', :sidekiq_might_not_need_inline do
       click_button 'Merge'
 
       page.within('.mr-widget-body') do
@@ -417,7 +417,7 @@ describe 'Merge request > User sees merge widget', :js do
       visit project_merge_request_path(project, merge_request)
     end
 
-    it 'user cannot remove source branch' do
+    it 'user cannot remove source branch', :sidekiq_might_not_need_inline do
       expect(page).not_to have_field('remove-source-branch-input')
       expect(page).to have_content('Deletes source branch')
     end

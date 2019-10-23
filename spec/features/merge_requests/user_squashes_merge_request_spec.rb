@@ -10,7 +10,7 @@ describe 'User squashes a merge request', :js do
   let!(:original_head) { project.repository.commit('master') }
 
   shared_examples 'squash' do
-    it 'squashes the commits into a single commit, and adds a merge commit' do
+    it 'squashes the commits into a single commit, and adds a merge commit', :sidekiq_might_not_need_inline do
       expect(page).to have_content('Merged')
 
       latest_master_commits = project.repository.commits_between(original_head.sha, 'master').map(&:raw)
@@ -31,7 +31,7 @@ describe 'User squashes a merge request', :js do
   end
 
   shared_examples 'no squash' do
-    it 'accepts the merge request without squashing' do
+    it 'accepts the merge request without squashing', :sidekiq_might_not_need_inline do
       expect(page).to have_content('Merged')
       expect(project.repository).to be_merged_to_root_ref(source_branch)
     end

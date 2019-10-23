@@ -27,7 +27,7 @@ RSpec.shared_examples 'updating mentions' do |service_class|
         update_mentionable(title: "For #{mentioned_user.to_reference}")
       end
 
-      it 'emails only the newly-mentioned user' do
+      it 'emails only the newly-mentioned user', :sidekiq_might_not_need_inline do
         should_only_email(mentioned_user)
       end
     end
@@ -37,7 +37,7 @@ RSpec.shared_examples 'updating mentions' do |service_class|
         update_mentionable(description: "For #{mentioned_user.to_reference}")
       end
 
-      it 'emails only the newly-mentioned user' do
+      it 'emails only the newly-mentioned user', :sidekiq_might_not_need_inline do
         should_only_email(mentioned_user)
       end
     end
@@ -51,7 +51,7 @@ RSpec.shared_examples 'updating mentions' do |service_class|
         )
       end
 
-      it 'emails group members' do
+      it 'emails group members', :sidekiq_might_not_need_inline do
         should_email(mentioned_user)
         should_email(group_member1)
         should_email(group_member2)
@@ -81,7 +81,7 @@ RSpec.shared_examples 'updating mentions' do |service_class|
         )
       end
 
-      it 'emails mentioned user' do
+      it 'emails mentioned user', :sidekiq_might_not_need_inline do
         should_only_email(mentioned_user)
       end
     end

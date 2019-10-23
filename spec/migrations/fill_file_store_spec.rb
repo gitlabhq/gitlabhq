@@ -23,7 +23,7 @@ describe FillFileStore, :migration do
     uploads.create!(size: 10, path: 'path', uploader: 'uploader', mount_point: 'file_name', store: nil)
   end
 
-  it 'correctly migrates nullified file_store/store column' do
+  it 'correctly migrates nullified file_store/store column', :sidekiq_might_not_need_inline do
     expect(job_artifacts.where(file_store: nil).count).to eq(1)
     expect(lfs_objects.where(file_store: nil).count).to eq(1)
     expect(uploads.where(store: nil).count).to eq(1)

@@ -12,7 +12,7 @@ describe Ci::CancelUserPipelinesService do
       let(:pipeline) { create(:ci_pipeline, :running, user: user) }
       let!(:build) { create(:ci_build, :running, pipeline: pipeline) }
 
-      it 'cancels all running pipelines and related jobs' do
+      it 'cancels all running pipelines and related jobs', :sidekiq_might_not_need_inline do
         subject
 
         expect(pipeline.reload).to be_canceled

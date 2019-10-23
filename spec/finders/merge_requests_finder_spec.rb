@@ -23,6 +23,18 @@ describe MergeRequestsFinder do
         expect(merge_requests).to contain_exactly(merge_request1)
       end
 
+      it 'filters by nonexistent author ID and MR term using CTE for search' do
+        params = {
+          author_id: 'does-not-exist',
+          search: 'git',
+          attempt_group_search_optimizations: true
+        }
+
+        merge_requests = described_class.new(user, params).execute
+
+        expect(merge_requests).to be_empty
+      end
+
       it 'filters by projects' do
         params = { projects: [project2.id, project3.id] }
 

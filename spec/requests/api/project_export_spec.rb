@@ -370,7 +370,7 @@ describe API::ProjectExport do
       end
 
       context 'when overriding description' do
-        it 'starts' do
+        it 'starts', :sidekiq_might_not_need_inline do
           params = { description: "Foo" }
 
           expect_any_instance_of(Projects::ImportExport::ExportService).to receive(:execute)

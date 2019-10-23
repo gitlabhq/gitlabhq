@@ -225,7 +225,7 @@ describe AutoMerge::MergeWhenPipelineSucceedsService do
         test.drop
       end
 
-      it 'merges when all stages succeeded' do
+      it 'merges when all stages succeeded', :sidekiq_might_not_need_inline do
         expect(MergeWorker).to receive(:perform_async)
 
         build.success

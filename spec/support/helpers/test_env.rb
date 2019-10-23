@@ -243,6 +243,22 @@ module TestEnv
     FileUtils.chmod_R 0755, target_repo_path
   end
 
+  def rm_storage_dir(storage, dir)
+    Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+      repos_path = Gitlab.config.repositories.storages[storage].legacy_disk_path
+      target_repo_refs_path = File.join(repos_path, dir)
+      FileUtils.remove_dir(target_repo_refs_path)
+    end
+  rescue Errno::ENOENT
+  end
+
+  def storage_dir_exists?(storage, dir)
+    Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+      repos_path = Gitlab.config.repositories.storages[storage].legacy_disk_path
+      File.exist?(File.join(repos_path, dir))
+    end
+  end
+
   def create_bare_repository(path)
     FileUtils.mkdir_p(path)
 

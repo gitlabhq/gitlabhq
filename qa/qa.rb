@@ -407,6 +407,7 @@ module QA
     module DockerRun
       autoload :Base, 'qa/service/docker_run/base'
       autoload :LDAP, 'qa/service/docker_run/ldap'
+      autoload :Maven, 'qa/service/docker_run/maven'
       autoload :NodeJs, 'qa/service/docker_run/node_js'
       autoload :GitlabRunner, 'qa/service/docker_run/gitlab_runner'
     end

@@ -345,7 +345,7 @@ describe Git::BranchHooksService do
       end
     end
 
-    context 'when the project is forked' do
+    context 'when the project is forked', :sidekiq_might_not_need_inline do
       let(:upstream_project) { project }
       let(:forked_project) { fork_project(upstream_project, user, repository: true) }
 

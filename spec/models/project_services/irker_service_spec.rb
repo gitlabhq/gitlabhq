@@ -60,7 +60,7 @@ describe IrkerService do
       @irker_server.close
     end
 
-    it 'sends valid JSON messages to an Irker listener' do
+    it 'sends valid JSON messages to an Irker listener', :sidekiq_might_not_need_inline do
       irker.execute(sample_data)
 
       conn = @irker_server.accept

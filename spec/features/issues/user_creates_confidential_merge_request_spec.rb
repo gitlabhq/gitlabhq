@@ -42,7 +42,7 @@ describe 'User creates confidential merge request on issue page', :js do
       visit_confidential_issue
     end
 
-    it 'create merge request in fork' do
+    it 'create merge request in fork', :sidekiq_might_not_need_inline do
       click_button 'Create confidential merge request'
 
       page.within '.create-confidential-merge-request-dropdown-menu' do

@@ -483,6 +483,7 @@ class IssuableFinder
   # rubocop: disable CodeReuse/ActiveRecord
   def by_search(items)
     return items unless search
+    return items if items.is_a?(ActiveRecord::NullRelation)
 
     if use_cte_for_search?
       cte = Gitlab::SQL::RecursiveCTE.new(klass.table_name)

@@ -190,7 +190,7 @@ describe 'Project' do
       sign_in user
     end
 
-    it 'shows a link to the source project when it is available' do
+    it 'shows a link to the source project when it is available', :sidekiq_might_not_need_inline do
       visit project_path(forked_project)
 
       expect(page).to have_content('Forked from')
@@ -206,7 +206,7 @@ describe 'Project' do
       expect(page).not_to have_content('Forked from')
     end
 
-    it 'shows the name of the deleted project when the source was deleted' do
+    it 'shows the name of the deleted project when the source was deleted', :sidekiq_might_not_need_inline do
       forked_project
       Projects::DestroyService.new(base_project, base_project.owner).execute
 
@@ -218,7 +218,7 @@ describe 'Project' do
     context 'a fork of a fork' do
       let(:fork_of_fork) { fork_project(forked_project, user, repository: true) }
 
-      it 'links to the base project if the source project is removed' do
+      it 'links to the base project if the source project is removed', :sidekiq_might_not_need_inline do
         fork_of_fork
         Projects::DestroyService.new(forked_project, user).execute
 
@@ -263,7 +263,7 @@ describe 'Project' do
       expect(page).to have_selector '#confirm_name_input:focus'
     end
 
-    it 'removes a project' do
+    it 'removes a project', :sidekiq_might_not_need_inline do
       expect { remove_with_confirm('Remove project', project.path) }.to change { Project.count }.by(-1)
       expect(page).to have_content "Project '#{project.full_name}' is in the process of being deleted."
       expect(Project.all.count).to be_zero

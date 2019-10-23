@@ -52,7 +52,7 @@ describe Import::PhabricatorController do
           namespace_id: current_user.namespace_id }
       end
 
-      it 'creates a project to import' do
+      it 'creates a project to import', :sidekiq_might_not_need_inline do
         expect_next_instance_of(Gitlab::PhabricatorImport::Importer) do |importer|
           expect(importer).to receive(:execute)
         end

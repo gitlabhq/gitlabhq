@@ -395,7 +395,7 @@ describe ::SystemNotes::IssuablesService do
       end
     end
 
-    context 'commit with cross-reference from fork' do
+    context 'commit with cross-reference from fork', :sidekiq_might_not_need_inline do
       let(:author2) { create(:project_member, :reporter, user: create(:user), project: project).user }
       let(:forked_project) { fork_project(project, author2, repository: true) }
       let(:commit2) { forked_project.commit }

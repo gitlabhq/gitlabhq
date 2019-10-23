@@ -7,7 +7,7 @@ shared_examples 'merge quick action' do
       visit project_merge_request_path(project, merge_request)
     end
 
-    it 'merges the MR' do
+    it 'merges the MR', :sidekiq_might_not_need_inline do
       add_note("/merge")
 
       expect(page).to have_content 'Scheduled to merge this merge request when the pipeline succeeds.'

@@ -25,7 +25,7 @@ describe ScheduleToArchiveLegacyTraces, :migration do
     create_legacy_trace(@build_running, 'This job is not done yet')
   end
 
-  it 'correctly archive legacy traces' do
+  it 'correctly archive legacy traces', :sidekiq_might_not_need_inline do
     expect(job_artifacts.count).to eq(0)
     expect(File.exist?(legacy_trace_path(@build_success))).to be_truthy
     expect(File.exist?(legacy_trace_path(@build_failed))).to be_truthy

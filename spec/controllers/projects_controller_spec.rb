@@ -653,7 +653,7 @@ describe ProjectsController do
   describe "#destroy" do
     let(:admin) { create(:admin) }
 
-    it "redirects to the dashboard" do
+    it "redirects to the dashboard", :sidekiq_might_not_need_inline do
       controller.instance_variable_set(:@project, project)
       sign_in(admin)
 
@@ -674,7 +674,7 @@ describe ProjectsController do
           target_project: project)
       end
 
-      it "closes all related merge requests" do
+      it "closes all related merge requests", :sidekiq_might_not_need_inline do
         project.merge_requests << merge_request
         sign_in(admin)
 

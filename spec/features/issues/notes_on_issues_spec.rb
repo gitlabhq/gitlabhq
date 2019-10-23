@@ -23,7 +23,7 @@ describe 'Create notes on issues', :js do
       submit_comment(note_text)
     end
 
-    it 'creates a note with reference and cross references the issue' do
+    it 'creates a note with reference and cross references the issue', :sidekiq_might_not_need_inline do
       page.within('div#notes li.note div.note-text') do
         expect(page).to have_content(note_text)
         expect(page.find('a')).to have_content(mention.to_reference)

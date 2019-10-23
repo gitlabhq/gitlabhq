@@ -42,7 +42,7 @@ describe MigrateLegacyArtifactsToJobArtifacts, :migration, :sidekiq do
       end
     end
 
-    it 'migrates legacy artifacts to ci_job_artifacts table' do
+    it 'migrates legacy artifacts to ci_job_artifacts table', :sidekiq_might_not_need_inline do
       migrate!
 
       expect(job_artifacts.order(:job_id, :file_type).pluck('project_id, job_id, file_type, file_store, size, expire_at, file, file_sha256, file_location'))

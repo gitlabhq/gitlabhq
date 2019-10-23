@@ -369,7 +369,7 @@ describe API::Commits do
                   valid_c_params[:start_project] = public_project.id
                 end
 
-                it 'adds a new commit to forked_project and returns a 201' do
+                it 'adds a new commit to forked_project and returns a 201', :sidekiq_might_not_need_inline do
                   expect_request_with_status(201) { post api(url, guest), params: valid_c_params }
                     .to change { last_commit_id(forked_project, valid_c_params[:branch]) }
                     .and not_change { last_commit_id(public_project, valid_c_params[:start_branch]) }
@@ -381,14 +381,14 @@ describe API::Commits do
                   valid_c_params[:start_project] = public_project.full_path
                 end
 
-                it 'adds a new commit to forked_project and returns a 201' do
+                it 'adds a new commit to forked_project and returns a 201', :sidekiq_might_not_need_inline do
                   expect_request_with_status(201) { post api(url, guest), params: valid_c_params }
                     .to change { last_commit_id(forked_project, valid_c_params[:branch]) }
                     .and not_change { last_commit_id(public_project, valid_c_params[:start_branch]) }
                 end
               end
 
-              context 'when branch already exists' do
+              context 'when branch already exists', :sidekiq_might_not_need_inline do
                 before do
                   valid_c_params.delete(:start_branch)
                   valid_c_params[:branch] = 'master'
@@ -835,7 +835,7 @@ describe API::Commits do
         }
       end
 
-      it 'allows pushing to the source branch of the merge request' do
+      it 'allows pushing to the source branch of the merge request', :sidekiq_might_not_need_inline do
         post api(url, user), params: push_params('feature')
 
         expect(response).to have_gitlab_http_status(:created)
@@ -1417,7 +1417,7 @@ describe API::Commits do
 
       let(:project_id) { forked_project.id }
 
-      it 'allows access from a maintainer that to the source branch' do
+      it 'allows access from a maintainer that to the source branch', :sidekiq_might_not_need_inline do
         post api(route, user), params: { branch: 'feature' }
 
         expect(response).to have_gitlab_http_status(:created)

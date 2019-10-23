@@ -76,7 +76,7 @@ describe 'Projects > Files > User uploads files' do
       visit(project2_tree_path_root_ref)
     end
 
-    it 'uploads and commit a new file to a forked project', :js do
+    it 'uploads and commit a new file to a forked project', :js, :sidekiq_might_not_need_inline do
       find('.add-to-tree').click
       click_link('Upload file')
 

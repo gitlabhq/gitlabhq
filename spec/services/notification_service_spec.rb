@@ -682,7 +682,7 @@ describe NotificationService, :mailer do
     context 'when recipients for a new release exist' do
       let(:release) { create(:release) }
 
-      it 'calls new_release_email for each relevant recipient' do
+      it 'calls new_release_email for each relevant recipient', :sidekiq_might_not_need_inline do
         user_1 = create(:user)
         user_2 = create(:user)
         user_3 = create(:user)

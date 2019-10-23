@@ -1277,7 +1277,7 @@ describe API::Users do
       admin
     end
 
-    it "deletes user" do
+    it "deletes user", :sidekiq_might_not_need_inline do
       perform_enqueued_jobs { delete api("/users/#{user.id}", admin) }
 
       expect(response).to have_gitlab_http_status(204)
@@ -1312,7 +1312,7 @@ describe API::Users do
     end
 
     context "hard delete disabled" do
-      it "moves contributions to the ghost user" do
+      it "moves contributions to the ghost user", :sidekiq_might_not_need_inline do
         perform_enqueued_jobs { delete api("/users/#{user.id}", admin) }
 
         expect(response).to have_gitlab_http_status(204)
@@ -1322,7 +1322,7 @@ describe API::Users do
     end
 
     context "hard delete enabled" do
-      it "removes contributions" do
+      it "removes contributions", :sidekiq_might_not_need_inline do
         perform_enqueued_jobs { delete api("/users/#{user.id}?hard_delete=true", admin) }
 
         expect(response).to have_gitlab_http_status(204)

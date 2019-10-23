@@ -5,7 +5,7 @@ require 'spec_helper'
 describe 'GPG signed commits' do
   let(:project) { create(:project, :public, :repository) }
 
-  it 'changes from unverified to verified when the user changes his email to match the gpg key' do
+  it 'changes from unverified to verified when the user changes his email to match the gpg key', :sidekiq_might_not_need_inline do
     ref = GpgHelpers::SIGNED_AND_AUTHORED_SHA
     user = create(:user, email: 'unrelated.user@example.org')
 
@@ -30,7 +30,7 @@ describe 'GPG signed commits' do
     expect(page).to have_button 'Verified'
   end
 
-  it 'changes from unverified to verified when the user adds the missing gpg key' do
+  it 'changes from unverified to verified when the user adds the missing gpg key', :sidekiq_might_not_need_inline do
     ref = GpgHelpers::SIGNED_AND_AUTHORED_SHA
     user = create(:user, email: GpgHelpers::User1.emails.first)
 

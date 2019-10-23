@@ -180,7 +180,7 @@ describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
           subject
         end
 
-        it 'migrates data to object storage' do
+        it 'migrates data to object storage', :sidekiq_might_not_need_inline do
           perform_enqueued_jobs do
             subject
 
@@ -582,7 +582,7 @@ describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
     end
 
     shared_examples_for 'deletes all build_trace_chunk and data in redis' do
-      it do
+      it 'deletes all build_trace_chunk and data in redis', :sidekiq_might_not_need_inline do
         Gitlab::Redis::SharedState.with do |redis|
           expect(redis.scan_each(match: "gitlab:ci:trace:*:chunks:*").to_a.size).to eq(3)
         end

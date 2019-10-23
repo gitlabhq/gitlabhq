@@ -46,7 +46,7 @@ describe "Jira", :js do
       end
     end
 
-    it "creates a note on the referenced issues" do
+    it "creates a note on the referenced issues", :sidekiq_might_not_need_inline do
       click_button("Comment")
 
       wait_for_requests

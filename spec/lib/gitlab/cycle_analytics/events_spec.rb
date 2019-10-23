@@ -129,7 +129,7 @@ describe 'cycle analytics events' do
     end
   end
 
-  describe '#test_events' do
+  describe '#test_events', :sidekiq_might_not_need_inline do
     let(:stage) { :test }
 
     let(:merge_request) { MergeRequest.first }
@@ -234,7 +234,7 @@ describe 'cycle analytics events' do
     end
   end
 
-  describe '#staging_events' do
+  describe '#staging_events', :sidekiq_might_not_need_inline do
     let(:stage) { :staging }
     let(:merge_request) { MergeRequest.first }
 
@@ -306,7 +306,7 @@ describe 'cycle analytics events' do
     end
   end
 
-  describe '#production_events' do
+  describe '#production_events', :sidekiq_might_not_need_inline do
     let(:stage) { :production }
     let!(:context) { create(:issue, project: project, created_at: 2.days.ago) }
 

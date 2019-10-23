@@ -33,7 +33,7 @@ describe ScheduleSyncIssuablesStateId, :migration, :sidekiq do
 
   describe '#up' do
     context 'issues' do
-      it 'migrates state column to integer' do
+      it 'migrates state column to integer', :sidekiq_might_not_need_inline do
         opened_issue = issues.create!(description: 'first', state: 'opened')
         closed_issue = issues.create!(description: 'second', state: 'closed')
         invalid_state_issue = issues.create!(description: 'fourth', state: 'not valid')
@@ -55,7 +55,7 @@ describe ScheduleSyncIssuablesStateId, :migration, :sidekiq do
     end
 
     context 'merge requests' do
-      it 'migrates state column to integer' do
+      it 'migrates state column to integer', :sidekiq_might_not_need_inline do
         opened_merge_request = merge_requests.create!(state: 'opened', target_project_id: project.id, target_branch: 'feature1', source_branch: 'master')
         closed_merge_request = merge_requests.create!(state: 'closed', target_project_id: project.id, target_branch: 'feature2', source_branch: 'master')
         merged_merge_request = merge_requests.create!(state: 'merged', target_project_id: project.id, target_branch: 'feature3', source_branch: 'master')

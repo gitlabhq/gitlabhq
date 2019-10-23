@@ -102,7 +102,7 @@ describe 'Commits' do
         end
 
         describe 'Cancel all builds' do
-          it 'cancels commit', :js do
+          it 'cancels commit', :js, :sidekiq_might_not_need_inline do
             visit pipeline_path(pipeline)
             click_on 'Cancel running'
             expect(page).to have_content 'canceled'
@@ -110,7 +110,7 @@ describe 'Commits' do
         end
 
         describe 'Cancel build' do
-          it 'cancels build', :js do
+          it 'cancels build', :js, :sidekiq_might_not_need_inline do
             visit pipeline_path(pipeline)
             find('.js-btn-cancel-pipeline').click
             expect(page).to have_content 'canceled'

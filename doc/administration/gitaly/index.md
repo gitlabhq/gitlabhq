@@ -142,11 +142,6 @@ the Gitaly server. The easiest way to accomplish this is to copy `/etc/gitlab/gi
 from an existing GitLab server to the Gitaly server. Without this shared secret,
 Git operations in GitLab will result in an API error.
 
-NOTE: **Note:**
-In most or all cases, the storage paths below end in `/repositories` which is
-not the case with `path` in `git_data_dirs` of Omnibus GitLab installations.
-Check the directory layout on your Gitaly server to be sure.
-
 **For Omnibus GitLab**
 
 1. Edit `/etc/gitlab/gitlab.rb`:
@@ -193,23 +188,25 @@ Check the directory layout on your Gitaly server to be sure.
    On `gitaly1.internal`:
 
    ```
-   gitaly['storage'] = [
-     { 'name' => 'default' },
-     { 'name' => 'storage1' },
-   ]
+   git_data_dirs({
+     'default' => {
+       'path' => '/var/opt/gitlab/git-data'
+     },
+     'storage1' => {
+       'path' => '/mnt/gitlab/git-data'
+     },
+   })
    ```
 
    On `gitaly2.internal`:
 
    ```
-   gitaly['storage'] = [
-     { 'name' => 'storage2' },
-   ]
+   git_data_dirs({
+     'storage2' => {
+       'path' => '/srv/gitlab/git-data'
+     },
+   })
    ```
-
-   NOTE: **Note:**
-   In some cases, you'll have to set `path` for `gitaly['storage']` in the
-   format `'path' => '/mnt/gitlab/<storage name>/repositories'`.
 
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
 
@@ -236,9 +233,11 @@ Check the directory layout on your Gitaly server to be sure.
    ```toml
    [[storage]]
    name = 'default'
+   path = '/var/opt/gitlab/git-data/repositories'
 
    [[storage]]
    name = 'storage1'
+   path = '/mnt/gitlab/git-data/repositories'
    ```
 
    On `gitaly2.internal`:
@@ -246,11 +245,8 @@ Check the directory layout on your Gitaly server to be sure.
    ```toml
    [[storage]]
    name = 'storage2'
+   path = '/srv/gitlab/git-data/repositories'
    ```
-
-   NOTE: **Note:**
-   In some cases, you'll have to set `path` for each `[[storage]]` in the
-   format `path = '/mnt/gitlab/<storage name>/repositories'`.
 
 1. Save the file and [restart GitLab](../restart_gitlab.md#installations-from-source).
 

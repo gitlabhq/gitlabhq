@@ -4284,22 +4284,25 @@ describe Project do
 
   describe '#check_repository_path_availability' do
     let(:project) { build(:project, :repository, :legacy_storage) }
-    subject { project.check_repository_path_availability }
 
     context 'when the repository already exists' do
       let(:project) { create(:project, :repository, :legacy_storage) }
 
-      it { is_expected.to be_falsey }
+      it 'returns false when repository already exists' do
+        expect(project.check_repository_path_availability).to be_falsey
+      end
     end
 
     context 'when the repository does not exist' do
-      it { is_expected.to be_truthy }
+      it 'returns false when repository already exists' do
+        expect(project.check_repository_path_availability).to be_truthy
+      end
 
       it 'skips gitlab-shell exists?' do
         project.skip_disk_validation = true
 
         expect(project.gitlab_shell).not_to receive(:repository_exists?)
-        is_expected.to be_truthy
+        expect(project.check_repository_path_availability).to be_truthy
       end
     end
   end
@@ -4623,7 +4626,7 @@ describe Project do
     end
 
     describe '#any_branch_allows_collaboration?' do
-      it 'allows access when there are merge requests open allowing collaboration' do
+      it 'allows access when there are merge requests open allowing collaboration', :sidekiq_might_not_need_inline do
         expect(project.any_branch_allows_collaboration?(user))
           .to be_truthy
       end
@@ -4637,7 +4640,7 @@ describe Project do
     end
 
     describe '#branch_allows_collaboration?' do
-      it 'allows access if the user can merge the merge request' do
+      it 'allows access if the user can merge the merge request', :sidekiq_might_not_need_inline do
         expect(project.branch_allows_collaboration?(user, 'awesome-feature-1'))
           .to be_truthy
       end

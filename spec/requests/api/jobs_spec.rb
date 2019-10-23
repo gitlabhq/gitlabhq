@@ -595,7 +595,7 @@ describe API::Jobs do
 
     context 'find proper job' do
       shared_examples 'a valid file' do
-        context 'when artifacts are stored locally' do
+        context 'when artifacts are stored locally', :sidekiq_might_not_need_inline do
           let(:download_headers) do
             { 'Content-Transfer-Encoding' => 'binary',
               'Content-Disposition' =>
@@ -674,7 +674,7 @@ describe API::Jobs do
           let(:visibility_level) { Gitlab::VisibilityLevel::PUBLIC }
           let(:public_builds) { true }
 
-          it 'allows to access artifacts' do
+          it 'allows to access artifacts', :sidekiq_might_not_need_inline do
             expect(response).to have_gitlab_http_status(200)
             expect(response.headers.to_h)
               .to include('Content-Type' => 'application/json',
@@ -711,7 +711,7 @@ describe API::Jobs do
         let(:visibility_level) { Gitlab::VisibilityLevel::PRIVATE }
         let(:public_builds) { true }
 
-        it 'returns a specific artifact file for a valid path' do
+        it 'returns a specific artifact file for a valid path', :sidekiq_might_not_need_inline do
           expect(Gitlab::Workhorse)
             .to receive(:send_artifacts_entry)
                   .and_call_original
@@ -732,7 +732,7 @@ describe API::Jobs do
                           sha: project.commit('improve/awesome').sha)
         end
 
-        it 'returns a specific artifact file for a valid path' do
+        it 'returns a specific artifact file for a valid path', :sidekiq_might_not_need_inline do
           get_artifact_file(artifact, 'improve/awesome')
 
           expect(response).to have_gitlab_http_status(200)

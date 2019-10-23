@@ -15,7 +15,7 @@ shared_examples 'languages and percentages JSON response' do
   end
 
   context "when the languages haven't been detected yet" do
-    it 'returns expected language values' do
+    it 'returns expected language values', :sidekiq_might_not_need_inline do
       get api("/projects/#{project.id}/languages", user)
 
       expect(response).to have_gitlab_http_status(:ok)

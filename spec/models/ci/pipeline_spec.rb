@@ -1346,7 +1346,7 @@ describe Ci::Pipeline, :mailer do
       end
     end
 
-    describe '#duration' do
+    describe '#duration', :sidekiq_might_not_need_inline do
       context 'when multiple builds are finished' do
         before do
           travel_to(current + 30) do
@@ -1422,7 +1422,7 @@ describe Ci::Pipeline, :mailer do
     end
 
     describe '#finished_at' do
-      it 'updates on transitioning to success' do
+      it 'updates on transitioning to success', :sidekiq_might_not_need_inline do
         build.success
 
         expect(pipeline.reload.finished_at).not_to be_nil
@@ -2102,7 +2102,7 @@ describe Ci::Pipeline, :mailer do
     it { is_expected.not_to include('created', 'preparing', 'pending') }
   end
 
-  describe '#status' do
+  describe '#status', :sidekiq_might_not_need_inline do
     let(:build) do
       create(:ci_build, :created, pipeline: pipeline, name: 'test')
     end
@@ -2675,7 +2675,7 @@ describe Ci::Pipeline, :mailer do
         stub_full_request(hook.url, method: :post)
       end
 
-      context 'with multiple builds' do
+      context 'with multiple builds', :sidekiq_might_not_need_inline do
         context 'when build is queued' do
           before do
             build_a.enqueue
@@ -2930,7 +2930,7 @@ describe Ci::Pipeline, :mailer do
     end
 
     shared_examples 'sending a notification' do
-      it 'sends an email' do
+      it 'sends an email', :sidekiq_might_not_need_inline do
         should_only_email(pipeline.user, kind: :bcc)
       end
     end

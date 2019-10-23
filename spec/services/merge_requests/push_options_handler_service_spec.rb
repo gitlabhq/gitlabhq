@@ -46,7 +46,7 @@ describe MergeRequests::PushOptionsHandlerService do
       expect(last_mr.assignees).to contain_exactly(user)
     end
 
-    context 'when project has been forked' do
+    context 'when project has been forked', :sidekiq_might_not_need_inline do
       let(:forked_project) { fork_project(project, user, repository: true) }
       let(:service) { described_class.new(forked_project, user, changes, push_options) }
 

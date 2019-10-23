@@ -67,7 +67,7 @@ describe 'User creates branch and merge request on issue page', :js do
       end
 
       context 'when branch name is auto-generated' do
-        it 'creates a merge request' do
+        it 'creates a merge request', :sidekiq_might_not_need_inline do
           perform_enqueued_jobs do
             select_dropdown_option('create-mr')
 
@@ -96,7 +96,7 @@ describe 'User creates branch and merge request on issue page', :js do
       context 'when branch name is custom' do
         let(:branch_name) { 'custom-branch-name' }
 
-        it 'creates a merge request' do
+        it 'creates a merge request', :sidekiq_might_not_need_inline do
           perform_enqueued_jobs do
             select_dropdown_option('create-mr', branch_name)
 

@@ -34,7 +34,7 @@ describe ScheduleFillValidTimeForPagesDomainCertificates, :migration, :sidekiq d
     end
   end
 
-  it 'sets certificate valid_not_before/not_after' do
+  it 'sets certificate valid_not_before/not_after', :sidekiq_might_not_need_inline do
     perform_enqueued_jobs do
       migrate!
 

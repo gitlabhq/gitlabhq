@@ -62,7 +62,8 @@ class AutomatedCleanup
     gitlab.deployments(project_path, per_page: DEPLOYMENTS_PER_PAGE).auto_paginate do |deployment|
       environment = deployment.environment
 
-      next unless !environment.nil? && environment.name.start_with?('review/')
+      next unless environment
+      next unless environment.name.start_with?('review/')
       next if checked_environments.include?(environment.slug)
 
       last_deploy = deployment.created_at

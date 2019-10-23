@@ -13,14 +13,17 @@ describe Gitlab::Tracking do
 
   describe '.snowplow_options' do
     it 'returns useful client options' do
-      expect(described_class.snowplow_options(nil)).to eq(
+      expected_fields = {
         namespace: 'gl',
         hostname: 'gitfoo.com',
         cookieDomain: '.gitfoo.com',
         appId: '_abc123_',
         formTracking: true,
-        linkClickTracking: true
-      )
+        linkClickTracking: true,
+        userId: nil
+      }
+
+      expect(subject.snowplow_options(nil, nil)).to match(expected_fields)
     end
 
     it 'enables features using feature flags' do
@@ -29,11 +32,12 @@ describe Gitlab::Tracking do
         :additional_snowplow_tracking,
         '_group_'
       ).and_return(false)
-
-      expect(described_class.snowplow_options('_group_')).to include(
+      addition_feature_fields = {
         formTracking: false,
         linkClickTracking: false
-      )
+      }
+
+      expect(subject.snowplow_options('_group_', nil)).to include(addition_feature_fields)
     end
   end
 

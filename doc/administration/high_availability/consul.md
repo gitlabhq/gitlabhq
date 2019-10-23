@@ -102,6 +102,23 @@ To be safe, we recommend you only restart one server agent at a time to ensure t
 
 For larger clusters, it is possible to restart multiple agents at a time. See the [Consul consensus document](https://www.consul.io/docs/internals/consensus.html#deployment-table) for how many failures it can tolerate. This will be the number of simulateneous restarts it can sustain.
 
+## Upgrades for bundled Consul
+
+Nodes running GitLab-bundled Consul should be:
+
+- Members of a healthy cluster prior to upgrading the GitLab Omnibus package.
+- Upgraded one node at a time.
+
+NOTE: **NOTE:**
+Running `curl http://127.0.0.1:8500/v1/health/state/critical` from any Consul node will identify existing health issues in the cluster. The command will return an empty array if the cluster is healthy.
+
+Consul clusters communicate using the raft protocol. If the current leader goes offline, there needs to be a leader election. A leader node must exist to facilitate synchronization across the cluster. If too many nodes go offline at the same time, the cluster will lose quorum and not elect a leader due to [broken consensus](https://www.consul.io/docs/internals/consensus.html).
+
+Consult the [troubleshooting section](#troubleshooting) if the cluster is not able to recover after the upgrade. The [outage recovery](#outage-recovery) may be of particular interest.
+
+NOTE: **NOTE:**
+GitLab only uses Consul to store transient data that is easily regenerated. If the bundled Consul was not used by any process other than GitLab itself, then [rebuilding the cluster from scratch](#recreate-from-scratch) is fine.
+
 ## Troubleshooting
 
 ### Consul server agents unable to communicate

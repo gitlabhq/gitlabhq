@@ -1190,7 +1190,7 @@ describe MergeRequest do
     context 'diverged on fork' do
       subject(:merge_request_fork_with_divergence) { create(:merge_request, :diverged, source_project: forked_project, target_project: project) }
 
-      it 'counts commits that are on target branch but not on source branch' do
+      it 'counts commits that are on target branch but not on source branch', :sidekiq_might_not_need_inline do
         expect(subject.diverged_commits_count).to eq(29)
       end
     end
@@ -2391,7 +2391,7 @@ describe MergeRequest do
         create(:deployment, :success, environment: source_environment, ref: 'feature', sha: merge_request.diff_head_sha)
       end
 
-      it 'selects deployed environments' do
+      it 'selects deployed environments', :sidekiq_might_not_need_inline do
         expect(merge_request.environments_for(user)).to contain_exactly(source_environment)
       end
 
@@ -2402,7 +2402,7 @@ describe MergeRequest do
           create(:deployment, :success, environment: target_environment, tag: true, sha: merge_request.diff_head_sha)
         end
 
-        it 'selects deployed environments' do
+        it 'selects deployed environments', :sidekiq_might_not_need_inline do
           expect(merge_request.environments_for(user)).to contain_exactly(source_environment, target_environment)
         end
       end
@@ -2996,7 +2996,7 @@ describe MergeRequest do
     describe '#unlock_mr' do
       subject { create(:merge_request, state: 'locked', merge_jid: 123) }
 
-      it 'updates merge request head pipeline and sets merge_jid to nil' do
+      it 'updates merge request head pipeline and sets merge_jid to nil', :sidekiq_might_not_need_inline do
         pipeline = create(:ci_empty_pipeline, project: subject.project, ref: subject.source_branch, sha: subject.source_branch_sha)
 
         subject.unlock_mr

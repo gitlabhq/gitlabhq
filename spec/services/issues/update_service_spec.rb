@@ -169,7 +169,7 @@ describe Issues::UpdateService, :mailer do
         end
       end
 
-      context 'with background jobs processed' do
+      context 'with background jobs processed', :sidekiq_might_not_need_inline do
         before do
           perform_enqueued_jobs do
             update_issue(opts)
@@ -366,7 +366,7 @@ describe Issues::UpdateService, :mailer do
 
         it_behaves_like 'system notes for milestones'
 
-        it 'sends notifications for subscribers of changed milestone' do
+        it 'sends notifications for subscribers of changed milestone', :sidekiq_might_not_need_inline do
           issue.milestone = create(:milestone, project: project)
 
           issue.save
@@ -398,7 +398,7 @@ describe Issues::UpdateService, :mailer do
 
         it_behaves_like 'system notes for milestones'
 
-        it 'sends notifications for subscribers of changed milestone' do
+        it 'sends notifications for subscribers of changed milestone', :sidekiq_might_not_need_inline do
           perform_enqueued_jobs do
             update_issue(milestone: create(:milestone, project: project))
           end
@@ -435,7 +435,7 @@ describe Issues::UpdateService, :mailer do
         end
       end
 
-      it 'sends notifications for subscribers of newly added labels' do
+      it 'sends notifications for subscribers of newly added labels', :sidekiq_might_not_need_inline do
         opts = { label_ids: [label.id] }
 
         perform_enqueued_jobs do

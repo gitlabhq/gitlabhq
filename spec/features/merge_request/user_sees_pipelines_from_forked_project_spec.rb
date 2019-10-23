@@ -28,7 +28,7 @@ describe 'Merge request > User sees pipelines from forked project', :js do
     visit project_merge_request_path(target_project, merge_request)
   end
 
-  it 'user visits a pipelines page' do
+  it 'user visits a pipelines page', :sidekiq_might_not_need_inline do
     page.within('.merge-request-tabs') { click_link 'Pipelines' }
 
     page.within('.ci-table') do

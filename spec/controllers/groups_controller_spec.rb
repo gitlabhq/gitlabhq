@@ -45,7 +45,7 @@ describe GroupsController do
 
       it { is_expected.to render_template('groups/show') }
 
-      it 'assigns events for all the projects in the group' do
+      it 'assigns events for all the projects in the group', :sidekiq_might_not_need_inline do
         subject
         expect(assigns(:events)).to contain_exactly(event)
       end
@@ -125,7 +125,7 @@ describe GroupsController do
     end
 
     context 'as json' do
-      it 'includes events from all projects in group and subgroups' do
+      it 'includes events from all projects in group and subgroups', :sidekiq_might_not_need_inline do
         2.times do
           project = create(:project, group: group)
           create(:event, project: project)
@@ -255,7 +255,7 @@ describe GroupsController do
     end
   end
 
-  describe 'GET #issues' do
+  describe 'GET #issues', :sidekiq_might_not_need_inline do
     let(:issue_1) { create(:issue, project: project, title: 'foo') }
     let(:issue_2) { create(:issue, project: project, title: 'bar') }
 
@@ -304,7 +304,7 @@ describe GroupsController do
     end
   end
 
-  describe 'GET #merge_requests' do
+  describe 'GET #merge_requests', :sidekiq_might_not_need_inline do
     let(:merge_request_1) { create(:merge_request, source_project: project) }
     let(:merge_request_2) { create(:merge_request, :simple, source_project: project) }
 

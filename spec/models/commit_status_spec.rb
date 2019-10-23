@@ -522,7 +522,7 @@ describe CommitStatus do
 
       let(:stage) { Ci::Stage.first }
 
-      it 'creates a new stage' do
+      it 'creates a new stage', :sidekiq_might_not_need_inline do
         expect { commit_status }.to change { Ci::Stage.count }.by(1)
 
         expect(stage.name).to eq 'test'
@@ -548,7 +548,7 @@ describe CommitStatus do
                                status: :success)
       end
 
-      it 'uses existing stage' do
+      it 'uses existing stage', :sidekiq_might_not_need_inline do
         expect { commit_status }.not_to change { Ci::Stage.count }
 
         expect(commit_status.stage_id).to eq stage.id

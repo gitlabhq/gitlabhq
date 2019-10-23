@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Metrics rendering', :js, :use_clean_rails_memory_store_caching do
+describe 'Metrics rendering', :js, :use_clean_rails_memory_store_caching, :sidekiq_might_not_need_inline do
   include PrometheusHelpers
 
   let(:user) { create(:user) }

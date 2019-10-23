@@ -134,11 +134,9 @@ describe 'Contributions Calendar', :js do
     shared_examples 'a day with activity' do |contribution_count:|
       include_context 'visit user page'
 
-      it 'displays calendar activity square color for 1 contribution' do
+      it 'displays calendar activity square for 1 contribution', :sidekiq_might_not_need_inline do
         expect(find('#js-overview')).to have_selector(get_cell_color_selector(contribution_count), count: 1)
-      end
 
-      it 'displays calendar activity square on the correct date' do
         today = Date.today.strftime(date_format)
         expect(find('#js-overview')).to have_selector(get_cell_date_selector(contribution_count, today), count: 1)
       end
@@ -154,7 +152,7 @@ describe 'Contributions Calendar', :js do
       describe 'issue title is shown on activity page' do
         include_context 'visit user page'
 
-        it 'displays calendar activity log' do
+        it 'displays calendar activity log', :sidekiq_might_not_need_inline do
           expect(find('#js-overview .overview-content-list .event-target-title')).to have_content issue_title
         end
       end
@@ -186,11 +184,11 @@ describe 'Contributions Calendar', :js do
       end
       include_context 'visit user page'
 
-      it 'displays calendar activity squares for both days' do
+      it 'displays calendar activity squares for both days', :sidekiq_might_not_need_inline do
         expect(find('#js-overview')).to have_selector(get_cell_color_selector(1), count: 2)
       end
 
-      it 'displays calendar activity square for yesterday' do
+      it 'displays calendar activity square for yesterday', :sidekiq_might_not_need_inline do
         yesterday = Date.yesterday.strftime(date_format)
         expect(find('#js-overview')).to have_selector(get_cell_date_selector(1, yesterday), count: 1)
       end

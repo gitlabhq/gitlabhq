@@ -87,7 +87,7 @@ describe 'Git HTTP requests' do
   end
 
   shared_examples_for 'pulls are allowed' do
-    it do
+    it 'allows pulls' do
       download(path, env) do |response|
         expect(response).to have_gitlab_http_status(:ok)
         expect(response.content_type.to_s).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
@@ -96,7 +96,7 @@ describe 'Git HTTP requests' do
   end
 
   shared_examples_for 'pushes are allowed' do
-    it do
+    it 'allows pushes', :sidekiq_might_not_need_inline do
       upload(path, env) do |response|
         expect(response).to have_gitlab_http_status(:ok)
         expect(response.content_type.to_s).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)

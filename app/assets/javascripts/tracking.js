@@ -102,6 +102,7 @@ export function initUserTracking() {
   window.snowplow('enableActivityTracking', 30, 30);
   window.snowplow('trackPageView'); // must be after enableActivityTracking
 
+  if (opts.userId) window.snowplow('setUserId', opts.userId);
   if (opts.formTracking) window.snowplow('enableFormTracking');
   if (opts.linkClickTracking) window.snowplow('enableLinkClickTracking');
 

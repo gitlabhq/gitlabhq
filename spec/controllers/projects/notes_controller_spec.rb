@@ -518,7 +518,7 @@ describe Projects::NotesController do
           project.id && Project.maximum(:id).succ
         end
 
-        it 'returns a 404' do
+        it 'returns a 404', :sidekiq_might_not_need_inline do
           create!
           expect(response).to have_gitlab_http_status(404)
         end
@@ -527,13 +527,13 @@ describe Projects::NotesController do
       context 'when the user has no access to the fork' do
         let(:fork_visibility) { Gitlab::VisibilityLevel::PRIVATE }
 
-        it 'returns a 404' do
+        it 'returns a 404', :sidekiq_might_not_need_inline do
           create!
           expect(response).to have_gitlab_http_status(404)
         end
       end
 
-      context 'when the user has access to the fork' do
+      context 'when the user has access to the fork', :sidekiq_might_not_need_inline do
         let!(:discussion) { forked_project.notes.find_discussion(existing_comment.discussion_id) }
         let(:fork_visibility) { Gitlab::VisibilityLevel::PUBLIC }
 

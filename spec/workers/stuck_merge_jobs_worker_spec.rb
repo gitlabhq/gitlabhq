@@ -22,7 +22,7 @@ describe StuckMergeJobsWorker do
         expect(mr_without_sha.merge_jid).to be_nil
       end
 
-      it 'updates merge request to opened when locked but has not been merged' do
+      it 'updates merge request to opened when locked but has not been merged', :sidekiq_might_not_need_inline do
         allow(Gitlab::SidekiqStatus).to receive(:completed_jids).and_return(%w(123))
         merge_request = create(:merge_request, :locked, merge_jid: '123', state: :locked)
         pipeline = create(:ci_empty_pipeline, project: merge_request.project, ref: merge_request.source_branch, sha: merge_request.source_branch_sha)

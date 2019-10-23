@@ -27,7 +27,7 @@ describe ProjectImportState, type: :model do
       expect(project.wiki.repository).to receive(:after_import).and_call_original
     end
 
-    it 'imports a project' do
+    it 'imports a project', :sidekiq_might_not_need_inline do
       expect(RepositoryImportWorker).to receive(:perform_async).and_call_original
 
       expect { import_state.schedule }.to change { import_state.jid }

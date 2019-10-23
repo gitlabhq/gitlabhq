@@ -71,7 +71,7 @@ describe 'Projects > Files > User creates a directory', :js do
       visit(project2_tree_path_root_ref)
     end
 
-    it 'creates a directory in a forked project' do
+    it 'creates a directory in a forked project', :sidekiq_might_not_need_inline do
       find('.add-to-tree').click
       click_link('New directory')
 

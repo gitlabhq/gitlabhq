@@ -29,7 +29,7 @@ module CycleAnalyticsHelpers
       scenarios.each do |start_time_conditions, end_time_conditions|
         context "start condition: #{start_time_conditions.map(&:first).to_sentence}" do
           context "end condition: #{end_time_conditions.map(&:first).to_sentence}" do
-            it "finds the median of available durations between the two conditions" do
+            it "finds the median of available durations between the two conditions", :sidekiq_might_not_need_inline do
               time_differences = Array.new(5) do |index|
                 data = data_fn[self]
                 start_time = (index * 10).days.from_now

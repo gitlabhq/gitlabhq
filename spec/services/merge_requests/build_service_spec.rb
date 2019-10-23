@@ -130,7 +130,7 @@ describe MergeRequests::BuildService do
             let!(:project) { fork_project(target_project, user, namespace: user.namespace, repository: true) }
             let(:source_project) { project }
 
-            it 'creates compare object with target branch as default branch' do
+            it 'creates compare object with target branch as default branch', :sidekiq_might_not_need_inline do
               expect(merge_request.compare).to be_present
               expect(merge_request.target_branch).to eq(project.default_branch)
             end

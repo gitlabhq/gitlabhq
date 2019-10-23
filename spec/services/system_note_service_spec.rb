@@ -115,51 +115,36 @@ describe SystemNoteService do
   end
 
   describe '.merge_when_pipeline_succeeds' do
-    let(:pipeline) { build(:ci_pipeline_without_jobs )}
-    let(:noteable) do
-      create(:merge_request, source_project: project, target_project: project)
-    end
+    it 'calls MergeRequestsService' do
+      sha = double
 
-    subject { described_class.merge_when_pipeline_succeeds(noteable, project, author, pipeline.sha) }
+      expect_next_instance_of(::SystemNotes::MergeRequestsService) do |service|
+        expect(service).to receive(:merge_when_pipeline_succeeds).with(sha)
+      end
 
-    it_behaves_like 'a system note' do
-      let(:action) { 'merge' }
-    end
-
-    it "posts the 'merge when pipeline succeeds' system note" do
-      expect(subject.note).to match(%r{enabled an automatic merge when the pipeline for (\w+/\w+@)?\h{40} succeeds})
+      described_class.merge_when_pipeline_succeeds(noteable, project, author, sha)
     end
   end
 
   describe '.cancel_merge_when_pipeline_succeeds' do
-    let(:noteable) do
-      create(:merge_request, source_project: project, target_project: project)
-    end
+    it 'calls MergeRequestsService' do
+      expect_next_instance_of(::SystemNotes::MergeRequestsService) do |service|
+        expect(service).to receive(:cancel_merge_when_pipeline_succeeds)
+      end
 
-    subject { described_class.cancel_merge_when_pipeline_succeeds(noteable, project, author) }
-
-    it_behaves_like 'a system note' do
-      let(:action) { 'merge' }
-    end
-
-    it "posts the 'merge when pipeline succeeds' system note" do
-      expect(subject.note).to eq "canceled the automatic merge"
+      described_class.cancel_merge_when_pipeline_succeeds(noteable, project, author)
     end
   end
 
   describe '.abort_merge_when_pipeline_succeeds' do
-    let(:noteable) do
-      create(:merge_request, source_project: project, target_project: project)
-    end
+    it 'calls MergeRequestsService' do
+      reason = double
 
-    subject { described_class.abort_merge_when_pipeline_succeeds(noteable, project, author, 'merge request was closed') }
+      expect_next_instance_of(::SystemNotes::MergeRequestsService) do |service|
+        expect(service).to receive(:abort_merge_when_pipeline_succeeds).with(reason)
+      end
 
-    it_behaves_like 'a system note' do
-      let(:action) { 'merge' }
-    end
-
-    it "posts the 'merge when pipeline succeeds' system note" do
-      expect(subject.note).to eq "aborted the automatic merge because merge request was closed"
+      described_class.abort_merge_when_pipeline_succeeds(noteable, project, author, reason)
     end
   end
 
@@ -196,77 +181,55 @@ describe SystemNoteService do
   end
 
   describe '.change_branch' do
-    subject { described_class.change_branch(noteable, project, author, 'target', old_branch, new_branch) }
+    it 'calls MergeRequestsService' do
+      old_branch = double
+      new_branch = double
+      branch_type = double
 
-    let(:old_branch) { 'old_branch'}
-    let(:new_branch) { 'new_branch'}
-
-    it_behaves_like 'a system note' do
-      let(:action) { 'branch' }
-    end
-
-    context 'when target branch name changed' do
-      it 'sets the note text' do
-        expect(subject.note).to eq "changed target branch from `#{old_branch}` to `#{new_branch}`"
+      expect_next_instance_of(::SystemNotes::MergeRequestsService) do |service|
+        expect(service).to receive(:change_branch).with(branch_type, old_branch, new_branch)
       end
+
+      described_class.change_branch(noteable, project, author, branch_type, old_branch, new_branch)
     end
   end
 
   describe '.change_branch_presence' do
-    subject { described_class.change_branch_presence(noteable, project, author, :source, 'feature', :delete) }
+    it 'calls MergeRequestsService' do
+      presence = double
+      branch = double
+      branch_type = double
 
-    it_behaves_like 'a system note' do
-      let(:action) { 'branch' }
-    end
-
-    context 'when source branch deleted' do
-      it 'sets the note text' do
-        expect(subject.note).to eq "deleted source branch `feature`"
+      expect_next_instance_of(::SystemNotes::MergeRequestsService) do |service|
+        expect(service).to receive(:change_branch_presence).with(branch_type, branch, presence)
       end
+
+      described_class.change_branch_presence(noteable, project, author, branch_type, branch, presence)
     end
   end
 
   describe '.new_issue_branch' do
-    let(:branch) { '1-mepmep' }
+    it 'calls MergeRequestsService' do
+      branch = double
+      branch_project = double
 
-    subject { described_class.new_issue_branch(noteable, project, author, branch, branch_project: branch_project) }
-
-    shared_examples_for 'a system note for new issue branch' do
-      it_behaves_like 'a system note' do
-        let(:action) { 'branch' }
+      expect_next_instance_of(::SystemNotes::MergeRequestsService) do |service|
+        expect(service).to receive(:new_issue_branch).with(branch, branch_project: branch_project)
       end
 
-      context 'when a branch is created from the new branch button' do
-        it 'sets the note text' do
-          expect(subject.note).to start_with("created branch [`#{branch}`]")
-        end
-      end
-    end
-
-    context 'branch_project is set' do
-      let(:branch_project) { create(:project, :repository) }
-
-      it_behaves_like 'a system note for new issue branch'
-    end
-
-    context 'branch_project is not set' do
-      let(:branch_project) { nil }
-
-      it_behaves_like 'a system note for new issue branch'
+      described_class.new_issue_branch(noteable, project, author, branch, branch_project: branch_project)
     end
   end
 
   describe '.new_merge_request' do
-    subject { described_class.new_merge_request(noteable, project, author, merge_request) }
+    it 'calls MergeRequestsService' do
+      merge_request = double
 
-    let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
+      expect_next_instance_of(::SystemNotes::MergeRequestsService) do |service|
+        expect(service).to receive(:new_merge_request).with(merge_request)
+      end
 
-    it_behaves_like 'a system note' do
-      let(:action) { 'merge' }
-    end
-
-    it 'sets the new merge request note text' do
-      expect(subject.note).to eq("created merge request #{merge_request.to_reference(project)} to address this issue")
+      described_class.new_merge_request(noteable, project, author, merge_request)
     end
   end
 
@@ -642,57 +605,24 @@ describe SystemNoteService do
   end
 
   describe '.handle_merge_request_wip' do
-    context 'adding wip note' do
-      let(:noteable) { create(:merge_request, source_project: project, title: 'WIP Lorem ipsum') }
-
-      subject { described_class.handle_merge_request_wip(noteable, project, author) }
-
-      it_behaves_like 'a system note' do
-        let(:action) { 'title' }
+    it 'calls MergeRequestsService' do
+      expect_next_instance_of(::SystemNotes::MergeRequestsService) do |service|
+        expect(service).to receive(:handle_merge_request_wip)
       end
 
-      it 'sets the note text' do
-        expect(subject.note).to eq 'marked as a **Work In Progress**'
-      end
-    end
-
-    context 'removing wip note' do
-      let(:noteable) { create(:merge_request, source_project: project, title: 'Lorem ipsum') }
-
-      subject { described_class.handle_merge_request_wip(noteable, project, author) }
-
-      it_behaves_like 'a system note' do
-        let(:action) { 'title' }
-      end
-
-      it 'sets the note text' do
-        expect(subject.note).to eq 'unmarked as a **Work In Progress**'
-      end
+      described_class.handle_merge_request_wip(noteable, project, author)
     end
   end
 
   describe '.add_merge_request_wip_from_commit' do
-    let(:noteable) do
-      create(:merge_request, source_project: project, target_project: project)
-    end
+    it 'calls MergeRequestsService' do
+      commit = double
 
-    subject do
-      described_class.add_merge_request_wip_from_commit(
-        noteable,
-        project,
-        author,
-        noteable.diff_head_commit
-      )
-    end
+      expect_next_instance_of(::SystemNotes::MergeRequestsService) do |service|
+        expect(service).to receive(:add_merge_request_wip_from_commit).with(commit)
+      end
 
-    it_behaves_like 'a system note' do
-      let(:action) { 'title' }
-    end
-
-    it "posts the 'marked as a Work In Progress from commit' system note" do
-      expect(subject.note).to match(
-        /marked as a \*\*Work In Progress\*\* from #{Commit.reference_pattern}/
-      )
+      described_class.add_merge_request_wip_from_commit(noteable, project, author, commit)
     end
   end
 
@@ -709,75 +639,25 @@ describe SystemNoteService do
   end
 
   describe '.resolve_all_discussions' do
-    let(:noteable) { create(:merge_request, source_project: project, target_project: project) }
+    it 'calls MergeRequestsService' do
+      expect_next_instance_of(::SystemNotes::MergeRequestsService) do |service|
+        expect(service).to receive(:resolve_all_discussions)
+      end
 
-    subject { described_class.resolve_all_discussions(noteable, project, author) }
-
-    it_behaves_like 'a system note' do
-      let(:action) { 'discussion' }
-    end
-
-    it 'sets the note text' do
-      expect(subject.note).to eq 'resolved all threads'
+      described_class.resolve_all_discussions(noteable, project, author)
     end
   end
 
   describe '.diff_discussion_outdated' do
-    let(:discussion) { create(:diff_note_on_merge_request, project: project).to_discussion }
-    let(:merge_request) { discussion.noteable }
-    let(:change_position) { discussion.position }
+    it 'calls MergeRequestsService' do
+      discussion = double
+      change_position = double
 
-    def reloaded_merge_request
-      MergeRequest.find(merge_request.id)
-    end
-
-    subject { described_class.diff_discussion_outdated(discussion, project, author, change_position) }
-
-    it_behaves_like 'a system note' do
-      let(:expected_noteable) { discussion.first_note.noteable }
-      let(:action)            { 'outdated' }
-    end
-
-    context 'when the change_position is valid for the discussion' do
-      it 'creates a new note in the discussion' do
-        # we need to completely rebuild the merge request object, or the `@discussions` on the merge request are not reloaded.
-        expect { subject }.to change { reloaded_merge_request.discussions.first.notes.size }.by(1)
+      expect_next_instance_of(::SystemNotes::MergeRequestsService) do |service|
+        expect(service).to receive(:diff_discussion_outdated).with(discussion, change_position)
       end
 
-      it 'links to the diff in the system note' do
-        diff_id = merge_request.merge_request_diff.id
-        line_code = change_position.line_code(project.repository)
-        link = diffs_project_merge_request_path(project, merge_request, diff_id: diff_id, anchor: line_code)
-
-        expect(subject.note).to eq("changed this line in [version 1 of the diff](#{link})")
-      end
-
-      context 'discussion is on an image' do
-        let(:discussion) { create(:image_diff_note_on_merge_request, project: project).to_discussion }
-
-        it 'links to the diff in the system note' do
-          diff_id = merge_request.merge_request_diff.id
-          file_hash = change_position.file_hash
-          link = diffs_project_merge_request_path(project, merge_request, diff_id: diff_id, anchor: file_hash)
-
-          expect(subject.note).to eq("changed this file in [version 1 of the diff](#{link})")
-        end
-      end
-    end
-
-    context 'when the change_position does not point to a valid version' do
-      before do
-        allow(merge_request).to receive(:version_params_for).and_return(nil)
-      end
-
-      it 'creates a new note in the discussion' do
-        # we need to completely rebuild the merge request object, or the `@discussions` on the merge request are not reloaded.
-        expect { subject }.to change { reloaded_merge_request.discussions.first.notes.size }.by(1)
-      end
-
-      it 'does not create a link' do
-        expect(subject.note).to eq('changed this line in version 1 of the diff')
-      end
+      described_class.diff_discussion_outdated(discussion, project, author, change_position)
     end
   end
 

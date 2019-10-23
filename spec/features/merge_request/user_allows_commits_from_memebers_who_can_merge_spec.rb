@@ -23,7 +23,7 @@ describe 'create a merge request, allowing commits from members who can merge to
     sign_in(user)
   end
 
-  it 'allows setting possible' do
+  it 'allows setting possible', :sidekiq_might_not_need_inline do
     visit_new_merge_request
 
     check 'Allow commits from members who can merge to the target branch'
@@ -35,7 +35,7 @@ describe 'create a merge request, allowing commits from members who can merge to
     expect(page).to have_content('Allows commits from members who can merge to the target branch')
   end
 
-  it 'shows a message when one of the projects is private' do
+  it 'shows a message when one of the projects is private', :sidekiq_might_not_need_inline do
     source_project.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
 
     visit_new_merge_request
@@ -43,7 +43,7 @@ describe 'create a merge request, allowing commits from members who can merge to
     expect(page).to have_content('Not available for private projects')
   end
 
-  it 'shows a message when the source branch is protected' do
+  it 'shows a message when the source branch is protected', :sidekiq_might_not_need_inline do
     create(:protected_branch, project: source_project, name: 'fix')
 
     visit_new_merge_request

@@ -70,7 +70,7 @@ describe Issues::CloseService do
   end
 
   describe '#close_issue' do
-    context "closed by a merge request" do
+    context "closed by a merge request", :sidekiq_might_not_need_inline do
       it 'mentions closure via a merge request' do
         perform_enqueued_jobs do
           described_class.new(project, user).close_issue(issue, closed_via: closing_merge_request)
@@ -100,7 +100,7 @@ describe Issues::CloseService do
       end
     end
 
-    context "closed by a commit" do
+    context "closed by a commit", :sidekiq_might_not_need_inline do
       it 'mentions closure via a commit' do
         perform_enqueued_jobs do
           described_class.new(project, user).close_issue(issue, closed_via: closing_commit)
@@ -146,7 +146,7 @@ describe Issues::CloseService do
         expect(issue.closed_by_id).to be(user.id)
       end
 
-      it 'sends email to user2 about assign of new issue' do
+      it 'sends email to user2 about assign of new issue', :sidekiq_might_not_need_inline do
         email = ActionMailer::Base.deliveries.last
         expect(email.to.first).to eq(user2.email)
         expect(email.subject).to include(issue.title)

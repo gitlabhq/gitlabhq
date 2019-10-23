@@ -62,7 +62,7 @@ describe 'Merge request > User sees diff', :js do
     end
 
     context 'as author' do
-      it 'shows direct edit link' do
+      it 'shows direct edit link', :sidekiq_might_not_need_inline do
         sign_in(author_user)
         visit diffs_project_merge_request_path(project, merge_request)
 
@@ -72,7 +72,7 @@ describe 'Merge request > User sees diff', :js do
     end
 
     context 'as user who needs to fork' do
-      it 'shows fork/cancel confirmation' do
+      it 'shows fork/cancel confirmation', :sidekiq_might_not_need_inline do
         sign_in(user)
         visit diffs_project_merge_request_path(project, merge_request)
 

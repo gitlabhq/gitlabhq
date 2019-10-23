@@ -7,12 +7,6 @@ module Gitlab
         @storage = storage
       end
 
-      def exists?(name)
-        request = Gitaly::NamespaceExistsRequest.new(storage_name: @storage, name: name)
-
-        gitaly_client_call(:namespace_exists, request, timeout: GitalyClient.fast_timeout).exists
-      end
-
       def add(name)
         request = Gitaly::AddNamespaceRequest.new(storage_name: @storage, name: name)
 

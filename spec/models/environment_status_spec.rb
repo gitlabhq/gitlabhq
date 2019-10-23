@@ -113,7 +113,7 @@ describe EnvironmentStatus do
                head_pipeline: pipeline)
       end
 
-      it 'returns environment status' do
+      it 'returns environment status', :sidekiq_might_not_need_inline do
         expect(subject.count).to eq(1)
         expect(subject[0].environment).to eq(environment)
         expect(subject[0].merge_request).to eq(merge_request)

@@ -92,7 +92,7 @@ RSpec.describe Release do
     end
   end
 
-  describe 'evidence' do
+  describe 'evidence', :sidekiq_might_not_need_inline do
     describe '#create_evidence!' do
       context 'when a release is created' do
         it 'creates one Evidence object too' do

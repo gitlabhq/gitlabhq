@@ -23,7 +23,7 @@ describe Namespaces::StatisticsRefresherService, '#execute' do
     end
   end
 
-  context 'with a root storage statistics relation' do
+  context 'with a root storage statistics relation', :sidekiq_might_not_need_inline do
     before do
       Namespace::AggregationSchedule.safe_find_or_create_by!(namespace_id: group.id)
     end

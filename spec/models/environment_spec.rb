@@ -259,7 +259,7 @@ describe Environment, :use_clean_rails_memory_store_caching do
     let(:head_commit)   { project.commit }
     let(:commit)        { project.commit.parent }
 
-    it 'returns deployment id for the environment' do
+    it 'returns deployment id for the environment', :sidekiq_might_not_need_inline do
       expect(environment.first_deployment_for(commit.id)).to eq deployment1
     end
 
@@ -267,7 +267,7 @@ describe Environment, :use_clean_rails_memory_store_caching do
       expect(environment.first_deployment_for(head_commit.id)).to eq nil
     end
 
-    it 'returns a UTF-8 ref' do
+    it 'returns a UTF-8 ref', :sidekiq_might_not_need_inline do
       expect(environment.first_deployment_for(commit.id).ref).to be_utf8
     end
   end

@@ -320,7 +320,7 @@ describe Projects::BlobController do
           default_params[:project_id] = forked_project
         end
 
-        it 'redirects to blob' do
+        it 'redirects to blob', :sidekiq_might_not_need_inline do
           put :update, params: default_params
 
           expect(response).to redirect_to(project_blob_path(forked_project, 'master/CHANGELOG'))
@@ -328,7 +328,7 @@ describe Projects::BlobController do
       end
 
       context 'when editing on the original repository' do
-        it "redirects to forked project new merge request" do
+        it "redirects to forked project new merge request", :sidekiq_might_not_need_inline do
           default_params[:branch_name] = "fork-test-1"
           default_params[:create_merge_request] = 1
 
