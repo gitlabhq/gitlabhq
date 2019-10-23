@@ -356,17 +356,22 @@ However, if a spec makes direct Redis calls, it should mark itself with the
 `:clean_gitlab_redis_cache`, `:clean_gitlab_redis_shared_state` or
 `:clean_gitlab_redis_queues` traits as appropriate.
 
-Sidekiq jobs are typically not run in specs, but this behaviour can be altered
-in each spec through the use of `perform_enqueued_jobs` blocks.
-Any spec that causes Sidekiq jobs to be pushed to Redis should use the
-`:sidekiq_inline` trait, to ensure that they are removed once the spec completes.
+#### Background jobs / Sidekiq
+
+By default, Sidekiq jobs are enqueued into a jobs array and aren't processed.
+If a test enqueues Sidekiq jobs and need them to be processed, the
+`:sidekiq_inline` trait can be used.
 
 The `:sidekiq_might_not_need_inline` trait was added when [Sidekiq inline mode was
-changed to fake mode](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/31662)
-to all the examples that needed Sidekiq to actually process jobs. Examples with
+changed to fake mode](https://gitlab.com/gitlab-org/gitlab/merge_requests/15479)
+to all the tests that needed Sidekiq to actually process jobs. Tests with
 this trait should be either fixed to not rely on Sidekiq processing jobs, or their
-`:sidekiq_might_not_need_inline` trait should be updated to `:sidekiq_inline` if the
-processing of background jobs is needed/expected.
+`:sidekiq_might_not_need_inline` trait should be updated to `:sidekiq_inline` if
+the processing of background jobs is needed/expected.
+
+NOTE: **Note:**
+The usage of `perform_enqueued_jobs` is currently useless since our
+workers aren't inheriting from `ApplicationJob` / `ActiveJob::Base`.
 
 #### Filesystem
 

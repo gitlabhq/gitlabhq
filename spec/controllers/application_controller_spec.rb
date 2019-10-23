@@ -836,7 +836,7 @@ describe ApplicationController do
     let(:experiment_enabled) { true }
 
     before do
-      stub_experiment(signup_flow: experiment_enabled)
+      stub_experiment_for_user(signup_flow: experiment_enabled)
     end
 
     context 'experiment enabled and user with required role' do

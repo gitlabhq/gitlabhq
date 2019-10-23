@@ -2321,6 +2321,24 @@ staging:
     branch: stable
 ```
 
+It is possible to mirror the status from a triggered pipeline:
+
+```
+trigger_job:
+  trigger:
+    project: my/project
+    strategy: depend
+```
+
+It is possible to mirror the status from an upstream pipeline:
+
+```
+upstream_bridge:
+  stage: test
+  needs:
+    pipeline: other/project
+```
+
 ### `interruptible`
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/23464) in GitLab 12.3.

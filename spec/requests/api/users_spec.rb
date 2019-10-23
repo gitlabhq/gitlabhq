@@ -636,7 +636,7 @@ describe API::Users do
   describe "GET /users/sign_up" do
     context 'when experimental signup_flow is active' do
       before do
-        stub_experiment(signup_flow: true)
+        stub_experiment_for_user(signup_flow: true)
       end
 
       it "shows sign up page" do
@@ -648,7 +648,7 @@ describe API::Users do
 
     context 'when experimental signup_flow is not active' do
       before do
-        stub_experiment(signup_flow: false)
+        stub_experiment_for_user(signup_flow: false)
       end
 
       it "redirects to sign in page" do

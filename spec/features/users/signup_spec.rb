@@ -413,6 +413,7 @@ end
 describe 'With original flow' do
   before do
     stub_experiment(signup_flow: false)
+    stub_experiment_for_user(signup_flow: false)
   end
 
   it_behaves_like 'Signup'
@@ -421,6 +422,7 @@ end
 describe 'With experimental flow' do
   before do
     stub_experiment(signup_flow: true)
+    stub_experiment_for_user(signup_flow: true)
   end
 
   it_behaves_like 'Signup'
