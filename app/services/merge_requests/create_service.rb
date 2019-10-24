@@ -9,7 +9,6 @@ module MergeRequests
       merge_request.target_project = @project
       merge_request.source_project = @source_project
       merge_request.source_branch = params[:source_branch]
-      merge_request.merge_params['force_remove_source_branch'] = params.delete(:force_remove_source_branch)
 
       create(merge_request)
     end
