@@ -145,6 +145,27 @@ describe Projects::Operations::UpdateService do
         end
       end
 
+      context 'with masked param token' do
+        let(:params) do
+          {
+            error_tracking_setting_attributes: {
+              enabled: false,
+              token: '*' * 8
+            }
+          }
+        end
+
+        before do
+          create(:project_error_tracking_setting, project: project, token: 'token')
+        end
+
+        it 'does not update token' do
+          expect(result[:status]).to eq(:success)
+
+          expect(project.error_tracking_setting.token).to eq('token')
+        end
+      end
+
       context 'with invalid parameters' do
         let(:params) { {} }
 
