@@ -15,6 +15,8 @@ class NamespacePolicy < BasePolicy
   end
 
   rule { personal_project & ~can_create_personal_project }.prevent :create_projects
+
+  rule { (owner | admin) & can?(:create_projects) }.enable :transfer_projects
 end
 
 NamespacePolicy.prepend_if_ee('EE::NamespacePolicy')
