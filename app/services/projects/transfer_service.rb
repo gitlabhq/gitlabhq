@@ -98,7 +98,7 @@ module Projects
       @new_namespace &&
         can?(current_user, :change_namespace, project) &&
         @new_namespace.id != project.namespace_id &&
-        current_user.can?(:create_projects, @new_namespace)
+        current_user.can?(:transfer_projects, @new_namespace)
     end
 
     def update_namespace_and_visibility(to_namespace)
