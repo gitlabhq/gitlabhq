@@ -220,7 +220,7 @@ module Gitlab
           return if @sections.include?(section)
 
           @sections << section
-          write_raw %{<div class="js-section-start section-start fa fa-caret-down pr-2 cursor-pointer" data-timestamp="#{timestamp}" data-section="#{data_section_names}" role="button"></div>}
+          write_raw %{<div class="section-start" data-timestamp="#{timestamp}" data-section="#{data_section_names}" role="button"></div>}
           @lineno_in_section = 0
         end
 
@@ -308,7 +308,7 @@ module Gitlab
             css_classes << "section"
 
             css_classes << if @lineno_in_section == 0
-                             "js-section-header section-header cursor-pointer"
+                             "section-header"
                            else
                              "line"
                            end

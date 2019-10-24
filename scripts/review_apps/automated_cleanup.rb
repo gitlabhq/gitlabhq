@@ -58,8 +58,11 @@ class AutomatedCleanup
     checked_environments = []
     delete_threshold = threshold_time(days: days_for_delete)
     stop_threshold = threshold_time(days: days_for_stop)
+    deployments_look_back_threshold = threshold_time(days: days_for_delete * 5)
 
-    gitlab.deployments(project_path, per_page: DEPLOYMENTS_PER_PAGE).auto_paginate do |deployment|
+    gitlab.deployments(project_path, per_page: DEPLOYMENTS_PER_PAGE, sort: 'desc').auto_paginate do |deployment|
+      break if Time.parse(deployment.created_at) < deployments_look_back_threshold
+
       environment = deployment.environment
 
       next unless environment
@@ -89,6 +92,9 @@ class AutomatedCleanup
     threshold_day = threshold_time(days: days)
 
     helm_releases.each do |release|
+      # Prevents deleting `dns-gitlab-review-app` releases or other unrelated releases
+      next unless release.name.start_with?('review-')
+
       if release.status == 'FAILED' || release.last_update < threshold_day
         delete_helm_release(release)
       else

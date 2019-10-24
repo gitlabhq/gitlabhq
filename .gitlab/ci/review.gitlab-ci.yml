@@ -35,14 +35,12 @@ build-qa-image:
     - echo "${CI_JOB_TOKEN}" | docker login --username gitlab-ci-token --password-stdin ${CI_REGISTRY}
     - time docker push ${QA_IMAGE}
 
-schedule:review-cleanup:
+.base-review-cleanup:
   extends:
     - .default-tags
     - .default-retry
     - .default-only
     - .only-code-qa-changes
-    - .only-review-schedules
-    - .except-deploys
   stage: prepare
   image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-charts-build-base
   allow_failure: true
@@ -54,6 +52,16 @@ schedule:review-cleanup:
     - install_gitlab_gem
   script:
     - ruby -rrubygems scripts/review_apps/automated_cleanup.rb
+
+schedule:review-cleanup:
+  extends:
+    - .base-review-cleanup
+    - .only-review-schedules
+
+manual:review-cleanup:
+  extends:
+    - .base-review-cleanup
+  when: manual
 
 .review-build-cng-base:
   extends:
