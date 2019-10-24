@@ -7,4 +7,4 @@
     };p[i].q=p[i].q||[];n=l.createElement(o);g=l.getElementsByTagName(o)[0];n.async=1;
     n.src=w;g.parentNode.insertBefore(n,g)}}(window,document,"script","#{asset_url('snowplow/sp.js')}","snowplow"));
 
-    window.snowplowOptions = #{Gitlab::Tracking.snowplow_options(@group, current_user).to_json}
+    window.snowplowOptions = #{Gitlab::Tracking.snowplow_options(@group).to_json}

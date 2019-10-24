@@ -19,11 +19,10 @@ describe Gitlab::Tracking do
         cookieDomain: '.gitfoo.com',
         appId: '_abc123_',
         formTracking: true,
-        linkClickTracking: true,
-        userId: nil
+        linkClickTracking: true
       }
 
-      expect(subject.snowplow_options(nil, nil)).to match(expected_fields)
+      expect(subject.snowplow_options(nil)).to match(expected_fields)
     end
 
     it 'enables features using feature flags' do
@@ -37,7 +36,7 @@ describe Gitlab::Tracking do
         linkClickTracking: false
       }
 
-      expect(subject.snowplow_options('_group_', nil)).to include(addition_feature_fields)
+      expect(subject.snowplow_options('_group_')).to include(addition_feature_fields)
     end
   end
 

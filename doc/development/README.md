@@ -118,6 +118,7 @@ description: 'Learn how to contribute to GitLab.'
 - [Query Count Limits](query_count_limits.md)
 - [Database helper modules](database_helpers.md)
 - [Code comments](code_comments.md)
+- [Creating enums](creating_enums.md)
 
 ### Case studies
 

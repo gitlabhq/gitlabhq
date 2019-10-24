@@ -29,4 +29,4 @@
     = render 'third_party_offers', application_setting: @application_setting
 
 = render 'admin/application_settings/snowplow', expanded: expanded_by_default?
-= render 'admin/application_settings/pendo'
+= render_if_exists 'admin/application_settings/pendo'

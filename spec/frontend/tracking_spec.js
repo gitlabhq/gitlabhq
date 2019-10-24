@@ -11,7 +11,6 @@ describe('Tracking', () => {
       namespace: '_namespace_',
       hostname: 'app.gitfoo.com',
       cookieDomain: '.gitfoo.com',
-      userId: null,
     };
     snowplowSpy = jest.spyOn(window, 'snowplow');
   });
@@ -35,7 +34,6 @@ describe('Tracking', () => {
         contexts: { webPage: true },
         formTracking: false,
         linkClickTracking: false,
-        userId: null,
       });
     });
 
@@ -43,18 +41,15 @@ describe('Tracking', () => {
       initUserTracking();
       expect(snowplowSpy).toHaveBeenCalledWith('enableActivityTracking', 30, 30);
       expect(snowplowSpy).toHaveBeenCalledWith('trackPageView');
-      expect(snowplowSpy).not.toHaveBeenCalledWith('setUserId');
       expect(snowplowSpy).not.toHaveBeenCalledWith('enableFormTracking');
       expect(snowplowSpy).not.toHaveBeenCalledWith('enableLinkClickTracking');
 
       window.snowplowOptions = Object.assign({}, window.snowplowOptions, {
         formTracking: true,
         linkClickTracking: true,
-        userId: '1',
       });
 
       initUserTracking();
-      expect(snowplowSpy).toHaveBeenCalledWith('setUserId', '1');
       expect(snowplowSpy).toHaveBeenCalledWith('enableFormTracking');
       expect(snowplowSpy).toHaveBeenCalledWith('enableLinkClickTracking');
     });

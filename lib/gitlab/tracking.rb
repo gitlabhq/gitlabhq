@@ -39,7 +39,7 @@ module Gitlab
         snowplow.track_self_describing_event(event_json, context, Time.now.to_i)
       end
 
-      def snowplow_options(group, user)
+      def snowplow_options(group)
         additional_features = Feature.enabled?(:additional_snowplow_tracking, group)
         {
           namespace: SNOWPLOW_NAMESPACE,
@@ -47,8 +47,7 @@ module Gitlab
           cookie_domain: Gitlab::CurrentSettings.snowplow_cookie_domain,
           app_id: Gitlab::CurrentSettings.snowplow_site_id,
           form_tracking: additional_features,
-          link_click_tracking: additional_features,
-          user_id: user&.id
+          link_click_tracking: additional_features
         }.transform_keys! { |key| key.to_s.camelize(:lower).to_sym }
       end
 
