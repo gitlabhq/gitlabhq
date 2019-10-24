@@ -176,12 +176,6 @@ describe ApplicationController do
       expect(controller).to receive(:not_found)
       controller.send(:route_not_found)
     end
-
-    it 'does redirect to login page via authenticate_user! if not authenticated' do
-      allow(controller).to receive(:current_user).and_return(nil)
-      expect(controller).to receive(:authenticate_user!)
-      controller.send(:route_not_found)
-    end
   end
 
   describe '#set_page_title_header' do
