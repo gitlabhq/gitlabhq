@@ -17,7 +17,7 @@ module Trigger
   end
 
   class Base
-    def invoke!(post_comment: false)
+    def invoke!(post_comment: false, downstream_job_name: nil)
       pipeline = Gitlab.run_trigger(
         downstream_project_path,
         trigger_token,
@@ -28,7 +28,18 @@ module Trigger
       puts "Waiting for downstream pipeline status"
 
       Trigger::CommitComment.post!(pipeline, access_token) if post_comment
-      Trigger::Pipeline.new(downstream_project_path, pipeline.id, access_token)
+      downstream_job =
+        if downstream_job_name
+          Gitlab.pipeline_jobs(downstream_project_path, pipeline.id).auto_paginate.find do |potential_job|
+            potential_job.name == downstream_job_name
+          end
+        end
+
+      if downstream_job
+        Trigger::Job.new(downstream_project_path, downstream_job.id, access_token)
+      else
+        Trigger::Pipeline.new(downstream_project_path, pipeline.id, access_token)
+      end
     end
 
     private
@@ -187,6 +198,14 @@ module Trigger
 
     attr_reader :project, :id, :api_token
 
+    def self.unscoped_class_name
+      name.split('::').last
+    end
+
+    def self.gitlab_api_method_name
+      unscoped_class_name.downcase
+    end
+
     def initialize(project, id, api_token)
       @project = project
       @id = id
@@ -199,17 +218,17 @@ module Trigger
 
     def wait!
       loop do
-        raise "Pipeline timed out after waiting for #{duration} minutes!" if timeout?
+        raise "#{self.class.unscoped_class_name} timed out after waiting for #{duration} minutes!" if timeout?
 
         case status
         when :created, :pending, :running
           print "."
           sleep INTERVAL
         when :success
-          puts "Pipeline succeeded in #{duration} minutes!"
+          puts "#{self.class.unscoped_class_name} succeeded in #{duration} minutes!"
           break
         else
-          raise "Pipeline did not succeed!"
+          raise "#{self.class.unscoped_class_name} did not succeed!"
         end
 
         STDOUT.flush
@@ -225,7 +244,7 @@ module Trigger
     end
 
     def status
-      Gitlab.pipeline(project, id).status.to_sym
+      Gitlab.public_send(self.class.gitlab_api_method_name, project, id).status.to_sym # rubocop:disable GitlabSecurity/PublicSend
     rescue Gitlab::Error::Error => error
       puts "Ignoring the following error: #{error}"
       # Ignore GitLab API hiccups. If GitLab is really down, we'll hit the job
@@ -233,11 +252,13 @@ module Trigger
       :running
     end
   end
+
+  Job = Class.new(Pipeline)
 end
 
 case ARGV[0]
 when 'omnibus'
-  Trigger::Omnibus.new.invoke!(post_comment: true).wait!
+  Trigger::Omnibus.new.invoke!(post_comment: true, downstream_job_name: 'Trigger:qa-test').wait!
 when 'cng'
   Trigger::CNG.new.invoke!.wait!
 else
