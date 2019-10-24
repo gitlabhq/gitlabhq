@@ -1,6 +1,6 @@
 # Productivity Analytics **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/12079) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.3 (enabled by default using the feature flags `productivity_analytics`, `productivity_analytics_scatterplot_enabled`).
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/12079) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.3.
 
 Track development velocity with Productivity Analytics.
 
@@ -52,3 +52,29 @@ The **Productivity Analytics** dashboard can be accessed only:
 
 - On [Premium or Silver tier](https://about.gitlab.com/pricing/) and above.
 - By users with [Reporter access](../permissions.md) and above.
+
+## Enabling and disabling using feature flags
+
+Productivity Analytics is:
+
+- [Enabled by default](https://gitlab.com/gitlab-org/gitlab/merge_requests/18754) from GitLab 12.4,
+  but can be disabled using the following feature flags:
+  - `productivity_analytics`.
+  - `productivity_analytics_scatterplot_enabled`.
+- Disabled by default in GitLab 12.3, but can be enabled using the following feature flag:
+  - `productivity_analytics`.
+
+A GitLab administrator can:
+
+- Disable this feature from GitLab 12.4 by running the follow in a Rails console:
+
+  ```ruby
+  Feature.disable(:productivity_analytics)
+  Feature.disable(:productivity_analytics_scatterplot_enabled)
+  ```
+
+- Enable this feature in GitLab 12.3 by running the following in a Rails console:
+
+  ```ruby
+  Feature.enable(:productivity_analytics)
+  ```
