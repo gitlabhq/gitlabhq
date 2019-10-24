@@ -163,7 +163,7 @@ module Gitlab
       return Milestone.none if project_ids.nil?
 
       authorized_project_ids_relation =
-        Project.where(id: project_ids).ids_with_milestone_available_for(current_user)
+        Project.where(id: project_ids).ids_with_issuables_available_for(current_user)
 
       milestones.where(project_id: authorized_project_ids_relation)
     end
