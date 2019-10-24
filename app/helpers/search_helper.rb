@@ -96,8 +96,9 @@ module SearchHelper
     result
   end
 
-  def search_blob_title(project, filename)
-    filename
+  # Overriden in EE
+  def search_blob_title(project, path)
+    path
   end
 
   def search_service

@@ -79,20 +79,20 @@ describe Gitlab::ProjectSearchResults do
     end
 
     it 'finds by name' do
-      expect(results.map(&:filename)).to include(expected_file_by_name)
+      expect(results.map(&:path)).to include(expected_file_by_path)
     end
 
-    it "loads all blobs for filename matches in single batch" do
+    it "loads all blobs for path matches in single batch" do
       expect(Gitlab::Git::Blob).to receive(:batch).once.and_call_original
 
       expected = project.repository.search_files_by_name(query, 'master')
-      expect(results.map(&:filename)).to include(*expected)
+      expect(results.map(&:path)).to include(*expected)
     end
 
     it 'finds by content' do
-      blob = results.select { |result| result.filename == expected_file_by_content }.flatten.last
+      blob = results.select { |result| result.path == expected_file_by_content }.flatten.last
 
-      expect(blob.filename).to eq(expected_file_by_content)
+      expect(blob.path).to eq(expected_file_by_content)
     end
   end
 
@@ -146,7 +146,7 @@ describe Gitlab::ProjectSearchResults do
       let(:blob_type) { 'blobs' }
       let(:disabled_project) { create(:project, :public, :repository, :repository_disabled) }
       let(:private_project) { create(:project, :public, :repository, :repository_private) }
-      let(:expected_file_by_name) { 'files/images/wm.svg' }
+      let(:expected_file_by_path) { 'files/images/wm.svg' }
       let(:expected_file_by_content) { 'CHANGELOG' }
     end
 
@@ -169,7 +169,7 @@ describe Gitlab::ProjectSearchResults do
       let(:blob_type) { 'wiki_blobs' }
       let(:disabled_project) { create(:project, :public, :wiki_repo, :wiki_disabled) }
       let(:private_project) { create(:project, :public, :wiki_repo, :wiki_private) }
-      let(:expected_file_by_name) { 'Files/Title.md' }
+      let(:expected_file_by_path) { 'Files/Title.md' }
       let(:expected_file_by_content) { 'CHANGELOG.md' }
     end
 

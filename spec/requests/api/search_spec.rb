@@ -436,6 +436,7 @@ describe API::Search do
 
             expect(response).to have_gitlab_http_status(200)
             expect(json_response.size).to eq(2)
+            expect(json_response.first['path']).to eq('PROCESS.md')
             expect(json_response.first['filename']).to eq('PROCESS.md')
           end
 

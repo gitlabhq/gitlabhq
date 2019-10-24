@@ -15,7 +15,6 @@ describe Gitlab::Search::FoundBlob do
       is_expected.to be_an described_class
       expect(subject.id).to be_nil
       expect(subject.path).to eq('CHANGELOG')
-      expect(subject.filename).to eq('CHANGELOG')
       expect(subject.basename).to eq('CHANGELOG')
       expect(subject.ref).to eq('master')
       expect(subject.startline).to eq(188)
@@ -25,12 +24,12 @@ describe Gitlab::Search::FoundBlob do
     it 'does not parse content if not needed' do
       expect(subject).not_to receive(:parse_search_result)
       expect(subject.project_id).to eq(project.id)
-      expect(subject.binary_filename).to eq('CHANGELOG')
+      expect(subject.binary_path).to eq('CHANGELOG')
     end
 
     it 'parses content only once when needed' do
       expect(subject).to receive(:parse_search_result).once.and_call_original
-      expect(subject.filename).to eq('CHANGELOG')
+      expect(subject.path).to eq('CHANGELOG')
       expect(subject.startline).to eq(188)
     end
 
@@ -38,7 +37,7 @@ describe Gitlab::Search::FoundBlob do
       let(:search_result) { "master:testdata/project::function1.yaml\x001\x00---\n" }
 
       it 'returns a valid FoundBlob' do
-        expect(subject.filename).to eq('testdata/project::function1.yaml')
+        expect(subject.path).to eq('testdata/project::function1.yaml')
         expect(subject.basename).to eq('testdata/project::function1')
         expect(subject.ref).to eq('master')
         expect(subject.startline).to eq(1)
@@ -50,7 +49,7 @@ describe Gitlab::Search::FoundBlob do
       let(:search_result) { "master:testdata/foo.txt\x001\x00blah:9:blah" }
 
       it 'returns a valid FoundBlob' do
-        expect(subject.filename).to eq('testdata/foo.txt')
+        expect(subject.path).to eq('testdata/foo.txt')
         expect(subject.basename).to eq('testdata/foo')
         expect(subject.ref).to eq('master')
         expect(subject.startline).to eq(1)
@@ -62,7 +61,7 @@ describe Gitlab::Search::FoundBlob do
       let(:search_result) { "master:testdata/foo.txt\x001\x00blah\x001\x00foo" }
 
       it 'returns a valid FoundBlob' do
-        expect(subject.filename).to eq('testdata/foo.txt')
+        expect(subject.path).to eq('testdata/foo.txt')
         expect(subject.basename).to eq('testdata/foo')
         expect(subject.ref).to eq('master')
         expect(subject.startline).to eq(1)
@@ -74,7 +73,7 @@ describe Gitlab::Search::FoundBlob do
       let(:results) { project.repository.search_files_by_content('Role models', 'master') }
 
       it 'returns a valid FoundBlob that ends with an empty line' do
-        expect(subject.filename).to eq('files/markdown/ruby-style-guide.md')
+        expect(subject.path).to eq('files/markdown/ruby-style-guide.md')
         expect(subject.basename).to eq('files/markdown/ruby-style-guide')
         expect(subject.ref).to eq('master')
         expect(subject.startline).to eq(1)
@@ -87,7 +86,7 @@ describe Gitlab::Search::FoundBlob do
         let(:results) { project.repository.search_files_by_content('файл', 'master') }
 
         it 'returns results as UTF-8' do
-          expect(subject.filename).to eq('encoding/russian.rb')
+          expect(subject.path).to eq('encoding/russian.rb')
           expect(subject.basename).to eq('encoding/russian')
           expect(subject.ref).to eq('master')
           expect(subject.startline).to eq(1)
@@ -99,7 +98,7 @@ describe Gitlab::Search::FoundBlob do
         let(:results) { project.repository.search_files_by_content('webhook', 'master') }
 
         it 'returns results as UTF-8' do
-          expect(subject.filename).to eq('encoding/テスト.txt')
+          expect(subject.path).to eq('encoding/テスト.txt')
           expect(subject.basename).to eq('encoding/テスト')
           expect(subject.ref).to eq('master')
           expect(subject.startline).to eq(3)
@@ -111,7 +110,7 @@ describe Gitlab::Search::FoundBlob do
         let(:search_result) { (+"master:encoding/iso8859.txt\x001\x00\xC4\xFC\nmaster:encoding/iso8859.txt\x002\x00\nmaster:encoding/iso8859.txt\x003\x00foo\n").force_encoding(Encoding::ASCII_8BIT) }
 
         it 'returns results as UTF-8' do
-          expect(subject.filename).to eq('encoding/iso8859.txt')
+          expect(subject.path).to eq('encoding/iso8859.txt')
           expect(subject.basename).to eq('encoding/iso8859')
           expect(subject.ref).to eq('master')
           expect(subject.startline).to eq(1)
@@ -124,7 +123,6 @@ describe Gitlab::Search::FoundBlob do
       let(:search_result) { "master:CONTRIBUTE.md\x005\x00- [Contribute to GitLab](#contribute-to-gitlab)\n" }
 
       it { expect(subject.path).to eq('CONTRIBUTE.md') }
-      it { expect(subject.filename).to eq('CONTRIBUTE.md') }
       it { expect(subject.basename).to eq('CONTRIBUTE') }
     end
 
@@ -132,7 +130,6 @@ describe Gitlab::Search::FoundBlob do
       let(:search_result) { "master:a/b/c.md\x005\x00a b c\n" }
 
       it { expect(subject.path).to eq('a/b/c.md') }
-      it { expect(subject.filename).to eq('a/b/c.md') }
       it { expect(subject.basename).to eq('a/b/c') }
     end
   end
@@ -141,7 +138,7 @@ describe Gitlab::Search::FoundBlob do
     context 'when file is under directory' do
       let(:path) { 'a/b/c.md' }
 
-      subject { described_class.new(blob_filename: path, project: project, ref: 'master') }
+      subject { described_class.new(blob_path: path, project: project, ref: 'master') }
 
       before do
         allow(Gitlab::Git::Blob).to receive(:batch).and_return([
@@ -150,7 +147,6 @@ describe Gitlab::Search::FoundBlob do
       end
 
       it { expect(subject.path).to eq('a/b/c.md') }
-      it { expect(subject.filename).to eq('a/b/c.md') }
       it { expect(subject.basename).to eq('a/b/c') }
 
       context 'when filename has multiple extensions' do

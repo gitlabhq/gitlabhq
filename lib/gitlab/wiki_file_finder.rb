@@ -12,12 +12,12 @@ module Gitlab
 
     private
 
-    def search_filenames(query)
+    def search_paths(query)
       safe_query = Regexp.escape(query.tr(' ', '-'))
       safe_query = Regexp.new(safe_query, Regexp::IGNORECASE)
-      filenames = repository.ls_files(ref)
+      paths = repository.ls_files(ref)
 
-      filenames.grep(safe_query)
+      paths.grep(safe_query)
     end
   end
 end
