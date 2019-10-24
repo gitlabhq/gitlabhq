@@ -9,7 +9,7 @@ class NotePolicy < BasePolicy
 
   condition(:editable, scope: :subject) { @subject.editable? }
 
-  condition(:can_read_noteable) { can?(:"read_#{@subject.to_ability_name}") }
+  condition(:can_read_noteable) { can?(:"read_#{@subject.noteable_ability_name}") }
 
   condition(:is_visible) { @subject.visible_for?(@user) }
 
