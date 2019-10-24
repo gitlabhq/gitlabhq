@@ -1791,6 +1791,7 @@ module API
       expose :user, using: Entities::UserBasic
       expose :platform_kubernetes, using: Entities::Platform::Kubernetes
       expose :provider_gcp, using: Entities::Provider::Gcp
+      expose :management_project, using: Entities::ProjectIdentity
     end
 
     class ClusterProject < Cluster

@@ -1,0 +1,5 @@
+---
+title: Remove pointer cursor from MemoryUsage chart on MR widget deployment
+merge_request: 18599
+author:
+type: fixed

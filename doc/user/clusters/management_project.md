@@ -4,7 +4,7 @@ CAUTION: **Warning:**
 This is an _alpha_ feature, and it is subject to change at any time without
 prior notice.
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/17866) in GitLab 12.4
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/32810) in GitLab 12.5
 
 A project can be designated as the management project for a cluster.
 A management project can be used to run deployment jobs with
@@ -21,6 +21,14 @@ This can be useful for:
 
 Only the management project will receive `cluster-admin` privileges. All
 other projects will continue to receive [namespace scoped `edit` level privileges](../project/clusters/index.md#rbac-cluster-resources).
+
+Management projects are restricted to the following:
+
+- For project-level clusters, the management project must in the same
+  namespace (or descendants) as the cluster's project.
+- For group-level clusters, the management project must in the same
+  group (or descendants) as as the cluster's group.
+- For instance-level clusters, there are no such restrictions.
 
 ## Usage
 
@@ -87,9 +95,9 @@ configure production cluster:
     name: production
 ```
 
-## Disabling this feature
+## Enabling this feature
 
-This feature is enabled by default. To disable this feature, disable the
+This feature is disabled by default. To enable this feature, enable the
 feature flag `:cluster_management_project`.
 
 To check if the feature flag is enabled on your GitLab instance,

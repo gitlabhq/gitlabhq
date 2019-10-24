@@ -125,19 +125,21 @@ export default {
         </div>
         <div class="commit-actions flex-row">
           <div v-if="commit.signatureHtml" v-html="commit.signatureHtml"></div>
-          <gl-link
-            v-if="commit.latestPipeline"
-            v-gl-tooltip
-            :href="commit.latestPipeline.detailedStatus.detailsPath"
-            :title="statusTitle"
-            class="js-commit-pipeline"
-          >
-            <ci-icon
-              :status="commit.latestPipeline.detailedStatus"
-              :size="24"
-              :aria-label="statusTitle"
-            />
-          </gl-link>
+          <div class="ci-status-link">
+            <gl-link
+              v-if="commit.latestPipeline"
+              v-gl-tooltip
+              :href="commit.latestPipeline.detailedStatus.detailsPath"
+              :title="statusTitle"
+              class="js-commit-pipeline"
+            >
+              <ci-icon
+                :status="commit.latestPipeline.detailedStatus"
+                :size="24"
+                :aria-label="statusTitle"
+              />
+            </gl-link>
+          </div>
           <div class="commit-sha-group d-flex">
             <div class="label label-monospace monospace">
               {{ showCommitId }}

@@ -12701,6 +12701,9 @@ msgstr ""
 msgid "Project details"
 msgstr ""
 
+msgid "Project does not exist or you don't have permission to perform this action"
+msgstr ""
+
 msgid "Project export could not be deleted."
 msgstr ""
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20191017045817_schedule_fix_gitlab_com_pages_access_level.rb')
 

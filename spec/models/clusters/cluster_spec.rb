@@ -152,6 +152,16 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
     end
   end
 
+  describe '.for_project_namespace' do
+    subject { described_class.for_project_namespace(namespace_id) }
+
+    let!(:cluster) { create(:cluster, :project) }
+    let!(:another_cluster) { create(:cluster, :project) }
+    let(:namespace_id) { cluster.first_project.namespace_id }
+
+    it { is_expected.to contain_exactly(cluster) }
+  end
+
   describe 'validations' do
     subject { cluster.valid? }
 

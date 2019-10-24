@@ -13,7 +13,11 @@ describe DeploymentPlatform do
     end
 
     context 'when project is the cluster\'s management project ' do
-      let!(:cluster_with_management_project) { create(:cluster, :provided_by_user, management_project: project) }
+      let(:another_project) { create(:project, namespace: project.namespace) }
+
+      let!(:cluster_with_management_project) do
+        create(:cluster, :provided_by_user, projects: [another_project], management_project: project)
+      end
 
       context 'cluster_management_project feature is enabled' do
         it 'returns the cluster with management project' do
@@ -66,7 +70,11 @@ describe DeploymentPlatform do
       end
 
       context 'when project is the cluster\'s management project ' do
-        let!(:cluster_with_management_project) { create(:cluster, :provided_by_user, management_project: project) }
+        let(:another_project) { create(:project, namespace: project.namespace) }
+
+        let!(:cluster_with_management_project) do
+          create(:cluster, :provided_by_user, projects: [another_project], management_project: project)
+        end
 
         context 'cluster_management_project feature is enabled' do
           it 'returns the cluster with management project' do

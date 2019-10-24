@@ -62,19 +62,23 @@ exports[`Repository last commit component renders commit widget 1`] = `
     >
       <!---->
        
-      <gllink-stub
-        class="js-commit-pipeline"
-        data-original-title="Commit: failed"
-        href="https://test.com/pipeline"
-        title=""
+      <div
+        class="ci-status-link"
       >
-        <ciicon-stub
-          aria-label="Commit: failed"
-          cssclasses=""
-          size="24"
-          status="[object Object]"
-        />
-      </gllink-stub>
+        <gllink-stub
+          class="js-commit-pipeline"
+          data-original-title="Commit: failed"
+          href="https://test.com/pipeline"
+          title=""
+        >
+          <ciicon-stub
+            aria-label="Commit: failed"
+            cssclasses=""
+            size="24"
+            status="[object Object]"
+          />
+        </gllink-stub>
+      </div>
        
       <div
         class="commit-sha-group d-flex"
@@ -165,19 +169,23 @@ exports[`Repository last commit component renders the signature HTML as returned
         </button>
       </div>
        
-      <gllink-stub
-        class="js-commit-pipeline"
-        data-original-title="Commit: failed"
-        href="https://test.com/pipeline"
-        title=""
+      <div
+        class="ci-status-link"
       >
-        <ciicon-stub
-          aria-label="Commit: failed"
-          cssclasses=""
-          size="24"
-          status="[object Object]"
-        />
-      </gllink-stub>
+        <gllink-stub
+          class="js-commit-pipeline"
+          data-original-title="Commit: failed"
+          href="https://test.com/pipeline"
+          title=""
+        >
+          <ciicon-stub
+            aria-label="Commit: failed"
+            cssclasses=""
+            size="24"
+            status="[object Object]"
+          />
+        </gllink-stub>
+      </div>
        
       <div
         class="commit-sha-group d-flex"

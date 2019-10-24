@@ -286,12 +286,15 @@ describe API::GroupClusters do
     let(:update_params) do
       {
         domain: domain,
-        platform_kubernetes_attributes: platform_kubernetes_attributes
+        platform_kubernetes_attributes: platform_kubernetes_attributes,
+        management_project_id: management_project_id
       }
     end
 
     let(:domain) { 'new-domain.com' }
     let(:platform_kubernetes_attributes) { {} }
+    let(:management_project) { create(:project, group: group) }
+    let(:management_project_id) { management_project.id }
 
     let(:cluster) do
       create(:cluster, :group, :provided_by_gcp,
@@ -308,6 +311,8 @@ describe API::GroupClusters do
 
     context 'authorized user' do
       before do
+        management_project.add_maintainer(current_user)
+
         put api("/groups/#{group.id}/clusters/#{cluster.id}", current_user), params: update_params
 
         cluster.reload
@@ -320,6 +325,7 @@ describe API::GroupClusters do
 
         it 'updates cluster attributes' do
           expect(cluster.domain).to eq('new-domain.com')
+          expect(cluster.management_project).to eq(management_project)
         end
       end
 
@@ -332,10 +338,23 @@ describe API::GroupClusters do
 
         it 'does not update cluster attributes' do
           expect(cluster.domain).to eq('old-domain.com')
+          expect(cluster.management_project).to be_nil
         end
 
         it 'returns validation errors' do
           expect(json_response['message']['domain'].first).to match('contains invalid characters (valid characters: [a-z0-9\\-])')
+        end
+      end
+
+      context 'current user does not have access to management_project_id' do
+        let(:management_project_id) { create(:project).id }
+
+        it 'responds with 400' do
+          expect(response).to have_gitlab_http_status(400)
+        end
+
+        it 'returns validation errors' do
+          expect(json_response['message']['management_project_id'].first).to match('don\'t have permission')
         end
       end
 

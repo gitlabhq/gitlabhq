@@ -142,6 +142,7 @@ class Clusters::ClustersController < Clusters::BaseController
         :environment_scope,
         :managed,
         :base_domain,
+        :management_project_id,
         platform_kubernetes_attributes: [
           :api_url,
           :token,
@@ -155,6 +156,7 @@ class Clusters::ClustersController < Clusters::BaseController
         :environment_scope,
         :managed,
         :base_domain,
+        :management_project_id,
         platform_kubernetes_attributes: [
           :namespace
         ]
