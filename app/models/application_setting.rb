@@ -7,6 +7,13 @@ class ApplicationSetting < ApplicationRecord
   include IgnorableColumn
   include ChronicDurationAttribute
 
+  GRAFANA_URL_RULES = {
+    allow_localhost: true,
+    allow_local_network: true,
+    enforce_sanitization: true,
+    require_absolute: false
+  }.freeze
+
   add_authentication_token_field :runners_registration_token, encrypted: -> { Feature.enabled?(:application_settings_tokens_optional_encryption, default_enabled: true) ? :optional : :required }
   add_authentication_token_field :health_check_access_token
 
@@ -55,6 +62,11 @@ class ApplicationSetting < ApplicationRecord
             allow_nil: false,
             qualified_domain_array: true
 
+  validates :grafana_url,
+            allow_blank: true,
+            allow_nil: true,
+            addressable_url: GRAFANA_URL_RULES
+
   validates :session_expire_delay,
             presence: true,
             numericality: { only_integer: true, greater_than_or_equal_to: 0 }
@@ -72,7 +84,6 @@ class ApplicationSetting < ApplicationRecord
   validates :after_sign_out_path,
             allow_blank: true,
             addressable_url: true
-
   validates :admin_notification_email,
             devise_email: true,
             allow_blank: true
@@ -301,6 +312,14 @@ class ApplicationSetting < ApplicationRecord
   rescue ActiveRecord::RecordNotUnique
     # We already have an ApplicationSetting record, so just return it.
     current_without_cache
+  end
+
+  def grafana_url
+    if Gitlab::UrlBlocker.blocked_url?(self[:grafana_url], GRAFANA_URL_RULES)
+      ApplicationSetting.column_defaults["grafana_url"]
+    else
+      self[:grafana_url]
+    end
   end
 
   # By default, the backend is Rails.cache, which uses

@@ -1,0 +1,5 @@
+---
+title: Fix stored XSS issue for grafana_url
+merge_request:
+author:
+type: security

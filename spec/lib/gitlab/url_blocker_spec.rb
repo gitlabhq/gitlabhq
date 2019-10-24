@@ -2,7 +2,18 @@
 require 'spec_helper'
 
 describe Gitlab::UrlBlocker do
+  include StubRequests
+
   describe '#validate!' do
+    shared_examples 'validates URI and hostname' do
+      it 'runs the url validations' do
+        uri, hostname = subject
+
+        expect(uri).to eq(Addressable::URI.parse(expected_uri))
+        expect(hostname).to eq(expected_hostname)
+      end
+    end
+
     context 'when URI is nil' do
       let(:import_url) { nil }
 
@@ -34,6 +45,14 @@ describe Gitlab::UrlBlocker do
         expect(uri).to eq(Addressable::URI.parse('https://93.184.216.34'))
         expect(hostname).to eq('example.org')
       end
+
+      context 'when scheme is missing' do
+        let(:import_url) { '//example.org/path' }
+
+        it 'raises and error' do
+          expect { described_class.validate!(import_url) }.to raise_error(described_class::BlockedUrlError)
+        end
+      end
     end
 
     context 'when the URL hostname is an IP address' do
@@ -44,6 +63,32 @@ describe Gitlab::UrlBlocker do
 
         expect(uri).to eq(Addressable::URI.parse('https://93.184.216.34'))
         expect(hostname).to be(nil)
+      end
+    end
+
+    context 'disabled require_absolute' do
+      subject { described_class.validate!(import_url, require_absolute: false) }
+
+      context 'with scheme and hostname' do
+        let(:import_url) { 'https://example.org/path' }
+
+        before do
+          stub_dns(import_url, ip_address: '93.184.216.34')
+        end
+
+        it_behaves_like 'validates URI and hostname' do
+          let(:expected_uri) { 'https://93.184.216.34/path' }
+          let(:expected_hostname) { 'example.org' }
+        end
+      end
+
+      context 'without scheme' do
+        let(:import_url) { '//93.184.216.34/path' }
+
+        it_behaves_like 'validates URI and hostname' do
+          let(:expected_uri) { import_url }
+          let(:expected_hostname) { nil }
+        end
       end
     end
 
@@ -517,6 +562,21 @@ describe Gitlab::UrlBlocker do
         expect(described_class.blocked_url?('https://miςςile.com/foo/foo.bar', ascii_only: true)).to be true
         expect(described_class.blocked_url?('https://git‍lab.com/foo/foo.bar', ascii_only: true)).to be true
         expect(described_class.blocked_url?('https://git‌lab.com/foo/foo.bar', ascii_only: true)).to be true
+      end
+    end
+
+    context 'when require_absolute is false' do
+      it 'allows paths' do
+        expect(described_class.blocked_url?('/foo/foo.bar', require_absolute: false)).to be false
+      end
+
+      it 'allows absolute urls without paths' do
+        expect(described_class.blocked_url?('http://example.com', require_absolute: false)).to be false
+      end
+
+      it 'paths must begin with a slash' do
+        expect(described_class.blocked_url?('foo/foo.bar', require_absolute: false)).to be true
+        expect(described_class.blocked_url?('', require_absolute: false)).to be true
       end
     end
 
