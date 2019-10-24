@@ -55,7 +55,8 @@ class AddressableUrlValidator < ActiveModel::EachValidator
     ascii_only: false,
     enforce_user: false,
     enforce_sanitization: false,
-    dns_rebind_protection: false
+    dns_rebind_protection: false,
+    require_absolute: true
   }.freeze
 
   DEFAULT_OPTIONS = BLOCKER_VALIDATE_OPTIONS.merge({
