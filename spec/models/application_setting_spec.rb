@@ -17,6 +17,7 @@ describe ApplicationSetting do
     let(:http)  { 'http://example.com' }
     let(:https) { 'https://example.com' }
     let(:ftp)   { 'ftp://example.com' }
+    let(:javascript) { 'javascript:alert(window.opener.document.location)' }
 
     it { is_expected.to allow_value(nil).for(:home_page_url) }
     it { is_expected.to allow_value(http).for(:home_page_url) }
@@ -51,6 +52,11 @@ describe ApplicationSetting do
     it { is_expected.to allow_value(nil).for(:static_objects_external_storage_url) }
     it { is_expected.to allow_value(http).for(:static_objects_external_storage_url) }
     it { is_expected.to allow_value(https).for(:static_objects_external_storage_url) }
+
+    it { is_expected.to allow_value(http).for(:grafana_url) }
+    it { is_expected.to allow_value(https).for(:grafana_url) }
+    it { is_expected.not_to allow_value(ftp).for(:grafana_url) }
+    it { is_expected.not_to allow_value(javascript).for(:grafana_url) }
 
     context "when user accepted let's encrypt terms of service" do
       before do
