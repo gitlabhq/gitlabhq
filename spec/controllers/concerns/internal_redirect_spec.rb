@@ -19,7 +19,8 @@ describe InternalRedirect do
       [
         'Hello world',
         '//example.com/hello/world',
-        'https://example.com/hello/world'
+        'https://example.com/hello/world',
+        "not-starting-with-a-slash\n/starting/with/slash"
       ]
     end
 
