@@ -49,7 +49,8 @@ class AddressableUrlValidator < ActiveModel::EachValidator
     allow_local_network: true,
     ascii_only: false,
     enforce_user: false,
-    enforce_sanitization: false
+    enforce_sanitization: false,
+    require_absolute: true
   }.freeze
 
   DEFAULT_OPTIONS = BLOCKER_VALIDATE_OPTIONS.merge({
