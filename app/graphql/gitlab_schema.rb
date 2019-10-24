@@ -18,15 +18,15 @@ class GitlabSchema < GraphQL::Schema
   use Gitlab::Graphql::GenericTracing
 
   query_analyzer Gitlab::Graphql::QueryAnalyzers::LoggerAnalyzer.new
-
-  query(Types::QueryType)
-
-  default_max_page_size 100
+  query_analyzer Gitlab::Graphql::QueryAnalyzers::RecursionAnalyzer.new
 
   max_complexity DEFAULT_MAX_COMPLEXITY
   max_depth DEFAULT_MAX_DEPTH
 
-  mutation(Types::MutationType)
+  query Types::QueryType
+  mutation Types::MutationType
+
+  default_max_page_size 100
 
   class << self
     def multiplex(queries, **kwargs)
