@@ -60,6 +60,13 @@ describe 'Editing file blob', :js do
       expect(page).to have_content 'NextFeature'
     end
 
+    it 'renders a URL in the content of file as a link' do
+      project.repository.create_file(user, 'file.yml', '# go to https://gitlab.com', message: 'testing', branch_name: branch)
+      visit project_edit_blob_path(project, tree_join(branch, 'file.yml'))
+
+      expect(page).to have_selector('.ace_content .ace_line a')
+    end
+
     context 'from blob file path' do
       before do
         visit project_blob_path(project, tree_join(branch, file_path))

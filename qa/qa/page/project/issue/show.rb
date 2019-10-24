@@ -108,6 +108,10 @@ module QA
             find_element(:more_assignees_link)
           end
 
+          def noteable_note_item
+            find_element(:noteable_note_item)
+          end
+
           def select_all_activities_filter
             select_filter_with_text('Show all activity')
           end

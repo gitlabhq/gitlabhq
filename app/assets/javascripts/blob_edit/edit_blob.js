@@ -4,7 +4,8 @@ import $ from 'jquery';
 import axios from '~/lib/utils/axios_utils';
 import createFlash from '~/flash';
 import { __ } from '~/locale';
-import TemplateSelectorMediator from '../blob/file_template_mediator';
+import { blobLinkRegex } from '~/blob/blob_utils';
+import TemplateSelectorMediator from '~/blob/file_template_mediator';
 import getModeByFileExtension from '~/lib/utils/ace_utils';
 import { addEditorMarkdownListeners } from '~/lib/utils/text_markdown';
 
@@ -17,6 +18,7 @@ export default class EditBlob {
     this.initModePanesAndLinks();
     this.initSoftWrap();
     this.initFileSelectors();
+    this.initBlobContentLinkClickability();
   }
 
   configureAceEditor() {
@@ -87,6 +89,22 @@ export default class EditBlob {
     this.$toggleButton.show();
 
     return this.editor.focus();
+  }
+
+  initBlobContentLinkClickability() {
+    this.editor.renderer.on('afterRender', () => {
+      document.querySelectorAll('.ace_text-layer .ace_line > *').forEach(token => {
+        if (token.dataset.linkified || !token.textContent.includes('http')) return;
+
+        // eslint-disable-next-line no-param-reassign
+        token.innerHTML = token.innerHTML.replace(
+          blobLinkRegex,
+          '<a target="_blank" href="$&">$&</a>',
+        );
+        // eslint-disable-next-line no-param-reassign
+        token.dataset.linkified = true;
+      });
+    });
   }
 
   initSoftWrap() {
