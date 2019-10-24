@@ -43,7 +43,7 @@ module Gitlab
       end
 
       def experiment_enabled?(experiment_key)
-        Experimentation.enabled_for_user?(experiment_key, experimentation_subject_index)
+        Experimentation.enabled_for_user?(experiment_key, experimentation_subject_index) || forced_enabled?(experiment_key)
       end
 
       def track_experiment_event(experiment_key, action)
@@ -93,6 +93,10 @@ module Gitlab
         return unless Experimentation.enabled?(experiment_key)
 
         experiment_enabled?(experiment_key) ? 'experimental_group' : 'control_group'
+      end
+
+      def forced_enabled?(experiment_key)
+        params.has_key?(:force_experiment) && params[:force_experiment] == experiment_key.to_s
       end
     end
 

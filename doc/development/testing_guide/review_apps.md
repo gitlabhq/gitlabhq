@@ -189,10 +189,10 @@ that the `review-apps-ce/ee` cluster is unhealthy. Leading indicators may be hea
 
 The following items may help diagnose this:
 
-- [Instance group CPU Utilization in GCP](https://console.cloud.google.com/compute/instanceGroups/details/us-central1-b/gke-review-apps-ee-preemp-n1-standard-8affc0f5-grp?project=gitlab-review-apps&tab=monitoring&graph=GCE_CPU&duration=P30D) - helpful to identify if nodes are problematic or the entire cluster is trending towards unhealthy
-- [Instance Group size in GCP](https://console.cloud.google.com/compute/instanceGroups/details/us-central1-b/gke-review-apps-ee-preemp-n1-standard-8affc0f5-grp?project=gitlab-review-apps&tab=monitoring&graph=GCE_SIZE&duration=P30D) - aids in identifying load spikes on the cluster. Kubernetes will add nodes up to 220 based on total resource requests.
-- `kubectl top nodes --sort-by=cpu` - can identify if node spikes are common or load on specific nodes which may get rebalanced by the Kubernetes scheduler.
-- `kubectl top pods --sort-by=cpu` -
+- [Review Apps Health dashboard](https://app.google.stackdriver.com/dashboards/6798952013815386466?project=gitlab-review-apps&timeDomain=1d)
+  - Aids in identifying load spikes on the cluster, and if nodes are problematic or the entire cluster is trending towards unhealthy.
+- `kubectl top nodes | sort --key 3 --numeric` - can identify if node spikes are common or load on specific nodes which may get rebalanced by the Kubernetes scheduler.
+- `kubectl top pods | sort --key 2 --numeric` -
 - [K9s] - K9s is a powerful command line dashboard which allows you to filter by labels. This can help identify trends with apps exceeding the [review-app resource requests](https://gitlab.com/gitlab-org/gitlab/blob/master/scripts/review_apps/base-config.yaml). Kubernetes will schedule pods to nodes based on resource requests and allow for CPU usage up to the limits.
   - In K9s you can sort or add filters by typing the `/` character
     - `-lrelease=<review-app-slug>` - filters down to all pods for a release. This aids in determining what is having issues in a single deployment

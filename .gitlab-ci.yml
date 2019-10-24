@@ -1,6 +1,7 @@
 image: "registry.gitlab.com/gitlab-org/gitlab-build-images:ruby-2.6.3-golang-1.11-git-2.22-chrome-73.0-node-12.x-yarn-1.16-postgresql-9.6-graphicsmagick-1.3.33"
 
 stages:
+  - sync
   - prepare
   - quick-test
   - test
@@ -40,3 +41,4 @@ include:
   - local: .gitlab/ci/setup.gitlab-ci.yml
   - local: .gitlab/ci/test-metadata.gitlab-ci.yml
   - local: .gitlab/ci/yaml.gitlab-ci.yml
+  - local: .gitlab/ci/releases.gitlab-ci.yml

@@ -93,6 +93,7 @@ module QA
         if Runtime::Env.signup_disabled?
           self.fabricate_via_api! do |user|
             user.username = username
+            user.password = password
           end
         else
           self.fabricate!
