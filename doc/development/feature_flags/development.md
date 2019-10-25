@@ -25,7 +25,8 @@ end
 
 Features that are developed and are intended to be merged behind a feature flag
 should not include a changelog entry. The entry should be added in the merge
-request removing the feature flags.
+request removing the feature flag. If the feature contains any DB migration it
+should include a changelog entry for DB changes.
 
 In the rare case that you need the feature flag to be on automatically, use
 `default_enabled: true` when checking:

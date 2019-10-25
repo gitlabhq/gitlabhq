@@ -119,6 +119,50 @@ Global mocks introduce magic and can affect how modules are imported in your tes
 
 When in doubt, construct mocks in your test file using [`jest.mock()`](https://jestjs.io/docs/en/jest-object#jestmockmodulename-factory-options), [`jest.spyOn()`](https://jestjs.io/docs/en/jest-object#jestspyonobject-methodname), etc.
 
+### Data-driven tests
+
+Similar to [RSpec's parameterized tests](best_practices.md#table-based--parameterized-tests),
+Jest supports data-driven tests for:
+
+- Individual tests using [`test.each`](https://jestjs.io/docs/en/api#testeachtable-name-fn-timeout) (aliased to `it.each`).
+- Groups of tests using [`describe.each`](https://jestjs.io/docs/en/api#describeeachtable-name-fn-timeout).
+
+These can be useful for reducing repetition within tests. Each option can take an array of
+data values or a tagged template literal.
+
+For example:
+
+```javascript
+// function to test
+const icon = status => status ? 'pipeline-passed' : 'pipeline-failed'
+const message = status => status ? 'pipeline-passed' : 'pipeline-failed'
+
+// test with array block
+it.each([
+    [false, 'pipeline-failed'],
+    [true, 'pipeline-passed']
+])('icon with %s will return %s',
+ (status, icon) => {
+    expect(renderPipeline(status)).toEqual(icon)
+ }
+);
+
+// test suite with tagged template literal block
+describe.each`
+    status   | icon                 | message
+    ${false} | ${'pipeline-failed'} | ${'Pipeline failed - boo-urns'}
+    ${true}  | ${'pipeline-passed'} | ${'Pipeline succeeded - win!'}
+`('pipeline component', ({ status, icon, message }) => {
+    it(`returns icon ${icon} with status ${status}`, () => {
+        expect(icon(status)).toEqual(message)
+    })
+
+    it(`returns message ${message} with status ${status}`, () => {
+        expect(message(status)).toEqual(message)
+    })
+});
+```
+
 ## Karma test suite
 
 GitLab uses the [Karma][karma] test runner with [Jasmine] as its test

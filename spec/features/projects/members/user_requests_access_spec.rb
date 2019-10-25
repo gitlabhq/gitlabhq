@@ -26,7 +26,6 @@ describe 'Projects > Members > User requests access', :js do
     expect(ActionMailer::Base.deliveries.last.subject).to eq "Request to join the #{project.full_name} project"
 
     expect(project.requesters.exists?(user_id: user)).to be_truthy
-    expect(page).to have_content 'Your request for access has been queued for review.'
 
     expect(page).to have_content 'Withdraw Access Request'
     expect(page).not_to have_content 'Leave Project'
@@ -64,7 +63,6 @@ describe 'Projects > Members > User requests access', :js do
 
     accept_confirm { click_link 'Withdraw Access Request' }
 
-    expect(page).to have_content 'Your access request to the project has been withdrawn.'
     expect(page).not_to have_content 'Withdraw Access Request'
     expect(page).to have_content 'Request Access'
   end

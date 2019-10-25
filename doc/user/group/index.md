@@ -421,8 +421,9 @@ Define project templates at a group level by setting a group as the template sou
 
 #### Disabling email notifications
 
-You can disable all email notifications related to the group, which also includes
-it's subgroups and projects.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/23585) in GitLab 12.2.
+
+You can disable all email notifications related to the group, which includes its subgroups and projects.
 
 To enable this feature:
 

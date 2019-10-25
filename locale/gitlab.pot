@@ -1404,9 +1404,6 @@ msgstr ""
 msgid "Allow group owners to manage LDAP-related settings"
 msgstr ""
 
-msgid "Allow mirrors to be set up for projects"
-msgstr ""
-
 msgid "Allow only the selected protocols to be used for Git access."
 msgstr ""
 
@@ -1417,6 +1414,9 @@ msgid "Allow public access to pipelines and job details, including output logs a
 msgstr ""
 
 msgid "Allow rendering of PlantUML diagrams in Asciidoc documents."
+msgstr ""
+
+msgid "Allow repository mirroring to be configured by project maintainers"
 msgstr ""
 
 msgid "Allow requests to the local network from hooks and services."
@@ -4328,7 +4328,7 @@ msgstr ""
 msgid "Configure paths to be protected by Rack Attack. A web server restart is required after changing these settings."
 msgstr ""
 
-msgid "Configure push mirrors."
+msgid "Configure repository mirroring."
 msgstr ""
 
 msgid "Configure storage path settings."
@@ -8794,7 +8794,7 @@ msgstr ""
 msgid "If disabled, a diverged local branch will not be automatically updated with commits from its remote counterpart, to prevent local data loss. If the default branch (%{default_branch}) has diverged and cannot be updated, mirroring will fail. Other diverged branches are silently ignored."
 msgstr ""
 
-msgid "If disabled, only admins will be able to set up mirrors in projects."
+msgid "If disabled, only admins will be able to configure repository mirroring."
 msgstr ""
 
 msgid "If disabled, the access level will depend on the user's permissions in the project."
@@ -13948,7 +13948,7 @@ msgstr ""
 msgid "Repository maintenance"
 msgstr ""
 
-msgid "Repository mirror"
+msgid "Repository mirroring"
 msgstr ""
 
 msgid "Repository static objects"
