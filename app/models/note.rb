@@ -37,6 +37,10 @@ class Note < ApplicationRecord
 
   redact_field :note
 
+  TYPES_RESTRICTED_BY_ABILITY = {
+    branch: :download_code
+  }.freeze
+
   # Aliases to make application_helper#edited_time_ago_with_tooltip helper work properly with notes.
   # See https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/10392/diffs#note_28719102
   alias_attribute :last_edited_at, :updated_at
@@ -330,7 +334,7 @@ class Note < ApplicationRecord
   end
 
   def visible_for?(user)
-    !cross_reference_not_visible_for?(user)
+    !cross_reference_not_visible_for?(user) && system_note_viewable_by?(user)
   end
 
   def award_emoji?
@@ -482,6 +486,15 @@ class Note < ApplicationRecord
   alias_method :resource_parent, :parent
 
   private
+
+  def system_note_viewable_by?(user)
+    return true unless system_note_metadata
+
+    restriction = TYPES_RESTRICTED_BY_ABILITY[system_note_metadata.action.to_sym]
+    return Ability.allowed?(user, restriction, project) if restriction
+
+    true
+  end
 
   def keep_around_commit
     project.repository.keep_around(self.commit_id)
