@@ -36,15 +36,17 @@ module Projects
           organization_slug: settings.dig(:project, :organization_slug)
         )
 
-        {
+        params = {
           error_tracking_setting_attributes: {
             api_url: api_url,
-            token: settings[:token],
             enabled: settings[:enabled],
             project_name: settings.dig(:project, :name),
             organization_name: settings.dig(:project, :organization_name)
           }
         }
+        params[:error_tracking_setting_attributes][:token] = settings[:token] unless /\A\*+\z/.match?(settings[:token]) # Don't update token if we receive masked value
+
+        params
       end
 
       def grafana_integration_params
