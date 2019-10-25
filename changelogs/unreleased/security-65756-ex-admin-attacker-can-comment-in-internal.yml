@@ -1,0 +1,5 @@
+---
+title: Disallow unprivileged users from commenting on private repository commits
+merge_request:
+author:
+type: security
