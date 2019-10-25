@@ -16,11 +16,15 @@ describe LfsRequest do
     end
 
     def project
-      @project ||= Project.find(params[:id])
+      @project ||= Project.find_by(id: params[:id])
     end
 
     def download_request?
       true
+    end
+
+    def upload_request?
+      false
     end
 
     def ci?
@@ -47,6 +51,43 @@ describe LfsRequest do
       get :show, params: { id: forked_project.id }
 
       expect(assigns(:storage_project)).to eq(project)
+    end
+  end
+
+  context 'user is authenticated without access to lfs' do
+    before do
+      allow(controller).to receive(:authenticate_user)
+      allow(controller).to receive(:authentication_result) do
+        Gitlab::Auth::Result.new
+      end
+    end
+
+    context 'with access to the project' do
+      it 'returns 403' do
+        get :show, params: { id: project.id }
+
+        expect(response.status).to eq(403)
+      end
+    end
+
+    context 'without access to the project' do
+      context 'project does not exist' do
+        it 'returns 404' do
+          get :show, params: { id: 'does not exist' }
+
+          expect(response.status).to eq(404)
+        end
+      end
+
+      context 'project is private' do
+        let(:project) { create(:project, :private) }
+
+        it 'returns 404' do
+          get :show, params: { id: project.id }
+
+          expect(response.status).to eq(404)
+        end
+      end
     end
   end
 end
