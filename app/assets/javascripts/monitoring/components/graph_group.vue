@@ -45,7 +45,7 @@ export default {
   <div v-if="showPanels" class="card prometheus-panel">
     <div class="card-header d-flex align-items-center">
       <h4 class="flex-grow-1">{{ name }}</h4>
-      <a role="button" @click="collapse">
+      <a role="button" class="js-graph-group-toggle" @click="collapse">
         <icon :size="16" :aria-label="__('Toggle collapse')" :name="caretIcon" />
       </a>
     </div>

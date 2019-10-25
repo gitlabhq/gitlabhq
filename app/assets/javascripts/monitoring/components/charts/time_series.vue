@@ -1,16 +1,14 @@
 <script>
 import { s__, __ } from '~/locale';
-import { GlLink, GlButton, GlTooltip } from '@gitlab/ui';
+import { GlLink, GlButton, GlTooltip, GlResizeObserverDirective } from '@gitlab/ui';
 import { GlAreaChart, GlLineChart, GlChartSeriesLabel } from '@gitlab/ui/dist/charts';
 import dateFormat from 'dateformat';
-import { debounceByAnimationFrame, roundOffFloat } from '~/lib/utils/common_utils';
+import { roundOffFloat } from '~/lib/utils/common_utils';
 import { getSvgIconPathContent } from '~/lib/utils/icon_utils';
 import Icon from '~/vue_shared/components/icon.vue';
 import { chartHeight, graphTypes, lineTypes, symbolSizes, dateFormats } from '../../constants';
 import { makeDataSeries } from '~/helpers/monitor_helper';
 import { graphDataValidatorForValues } from '../../utils';
-
-let debouncedResize;
 
 export default {
   components: {
@@ -22,16 +20,15 @@ export default {
     GlLink,
     Icon,
   },
+  directives: {
+    GlResizeObserverDirective,
+  },
   inheritAttrs: false,
   props: {
     graphData: {
       type: Object,
       required: true,
       validator: graphDataValidatorForValues.bind(null, false),
-    },
-    containerWidth: {
-      type: Number,
-      required: true,
     },
     deploymentData: {
       type: Array,
@@ -206,21 +203,13 @@ export default {
       return `${this.graphData.y_label}`;
     },
   },
-  watch: {
-    containerWidth: 'onResize',
-  },
   mounted() {
     const graphTitleEl = this.$refs.graphTitle;
     if (graphTitleEl && graphTitleEl.scrollWidth > graphTitleEl.offsetWidth) {
       this.showTitleTooltip = true;
     }
   },
-  beforeDestroy() {
-    window.removeEventListener('resize', debouncedResize);
-  },
   created() {
-    debouncedResize = debounceByAnimationFrame(this.onResize);
-    window.addEventListener('resize', debouncedResize);
     this.setSvg('rocket');
     this.setSvg('scroll-handle');
   },
@@ -276,7 +265,7 @@ export default {
 </script>
 
 <template>
-  <div class="prometheus-graph">
+  <div v-gl-resize-observer-directive="onResize" class="prometheus-graph">
     <div class="prometheus-graph-header">
       <h5
         ref="graphTitle"

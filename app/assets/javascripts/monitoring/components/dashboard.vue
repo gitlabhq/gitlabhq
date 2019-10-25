@@ -22,11 +22,8 @@ import MonitorTimeSeriesChart from './charts/time_series.vue';
 import MonitorSingleStatChart from './charts/single_stat.vue';
 import GraphGroup from './graph_group.vue';
 import EmptyState from './empty_state.vue';
-import { sidebarAnimationDuration } from '../constants';
 import TrackEventDirective from '~/vue_shared/directives/track_event';
 import { getTimeDiff, isValidDate, downloadCSVOptions, generateLinkToChartOptions } from '../utils';
-
-let sidebarMutationObserver;
 
 export default {
   components: {
@@ -167,7 +164,6 @@ export default {
   data() {
     return {
       state: 'gettingStarted',
-      elWidth: 0,
       formIsValid: null,
       selectedTimeWindow: {},
       isRearrangingPanels: false,
@@ -214,11 +210,6 @@ export default {
       projectPath: this.projectPath,
     });
   },
-  beforeDestroy() {
-    if (sidebarMutationObserver) {
-      sidebarMutationObserver.disconnect();
-    }
-  },
   mounted() {
     if (!this.hasMetrics) {
       this.setGettingStartedEmptyState();
@@ -239,13 +230,6 @@ export default {
       } else {
         this.fetchData(range);
       }
-
-      sidebarMutationObserver = new MutationObserver(this.onSidebarMutation);
-      sidebarMutationObserver.observe(document.querySelector('.layout-page'), {
-        attributes: true,
-        childList: false,
-        subtree: false,
-      });
     }
   },
   methods: {
@@ -305,11 +289,6 @@ export default {
     },
     hideAddMetricModal() {
       this.$refs.addMetricModal.hide();
-    },
-    onSidebarMutation() {
-      setTimeout(() => {
-        this.elWidth = this.$el.clientWidth;
-      }, sidebarAnimationDuration);
     },
     toggleRearrangingPanels() {
       this.isRearrangingPanels = !this.isRearrangingPanels;
@@ -503,7 +482,6 @@ export default {
                     generateLink(groupData.group, graphData.title, graphData.y_label)
                   "
                   :graph-data="graphData"
-                  :dashboard-width="elWidth"
                   :alerts-endpoint="alertsEndpoint"
                   :prometheus-alerts-available="prometheusAlertsAvailable"
                   :index="`${index}-${graphIndex}`"
@@ -520,7 +498,6 @@ export default {
             :graph-data="graphData"
             :deployment-data="deploymentData"
             :thresholds="getGraphAlertValues(graphData.queries)"
-            :container-width="elWidth"
             :project-path="projectPath"
             group-id="monitor-time-series-chart"
           >

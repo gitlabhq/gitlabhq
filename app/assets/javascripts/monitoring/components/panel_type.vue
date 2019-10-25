@@ -40,10 +40,6 @@ export default {
       type: Object,
       required: true,
     },
-    dashboardWidth: {
-      type: Number,
-      required: true,
-    },
     index: {
       type: String,
       required: false,
@@ -103,7 +99,6 @@ export default {
     :deployment-data="deploymentData"
     :project-path="projectPath"
     :thresholds="getGraphAlertValues(graphData.queries)"
-    :container-width="dashboardWidth"
     group-id="monitor-area-chart"
   >
     <div class="d-flex align-items-center">

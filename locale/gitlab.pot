@@ -20040,9 +20040,6 @@ msgstr ""
 msgid "mrWidget|%{metricsLinkStart} Memory %{metricsLinkEnd} usage is %{emphasisStart} unchanged %{emphasisEnd} at %{memoryFrom}MB"
 msgstr ""
 
-msgid "mrWidget|Added to the merge train at position %{mergeTrainPosition}"
-msgstr ""
-
 msgid "mrWidget|Added to the merge train by"
 msgstr ""
 
@@ -20122,6 +20119,9 @@ msgid "mrWidget|If the %{branch} branch exists in your local repository, you can
 msgstr ""
 
 msgid "mrWidget|If the %{missingBranchName} branch exists in your local repository, you can merge this merge request manually using the command line"
+msgstr ""
+
+msgid "mrWidget|In the merge train at position %{mergeTrainPosition}"
 msgstr ""
 
 msgid "mrWidget|Loading deployment statistics"
