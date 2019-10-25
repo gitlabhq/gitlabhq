@@ -70,7 +70,8 @@ describe('MergeRequest', function() {
         });
       });
 
-      it('shows an error notification when tasklist update failed', done => {
+      // eslint-disable-next-line jasmine/no-disabled-tests
+      xit('shows an error notification when tasklist update failed', done => {
         mock
           .onPatch(`${gl.TEST_HOST}/frontend-fixtures/merge-requests-project/merge_requests/1.json`)
           .reply(409, {});

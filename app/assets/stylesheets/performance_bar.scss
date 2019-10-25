@@ -18,6 +18,11 @@
     width: 200px;
   }
 
+  input {
+    color: $gl-gray-400;
+    width: $input-short-width - 60px;
+  }
+
   &.disabled {
     display: none;
   }
@@ -25,7 +30,8 @@
   &.production {
     background-color: $perf-bar-production;
 
-    select {
+    select,
+    input {
       background: $perf-bar-production;
     }
   }
@@ -33,7 +39,8 @@
   &.staging {
     background-color: $perf-bar-staging;
 
-    select {
+    select,
+    input {
       background: $perf-bar-staging;
     }
   }
@@ -41,7 +48,8 @@
   &.development {
     background-color: $perf-bar-development;
 
-    select {
+    select,
+    input {
       background: $perf-bar-development;
     }
   }

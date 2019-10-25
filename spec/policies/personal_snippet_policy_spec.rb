@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 # Snippet visibility scenarios are included in more details in spec/support/snippet_visibility.rb

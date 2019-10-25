@@ -6,7 +6,7 @@ Error tracking allows developers to easily discover and view the errors that the
 
 ## Sentry error tracking
 
-[Sentry](https://sentry.io/) is an open source error tracking system. GitLab allows administrators to connect Sentry to GitLab, to allow users to view a list of Sentry errors in GitLab itself.
+[Sentry](https://sentry.io/) is an open source error tracking system. GitLab allows administrators to connect Sentry to GitLab, to allow users to view a list of Sentry errors in GitLab.
 
 ### Deploying Sentry
 
@@ -30,6 +30,10 @@ GitLab provides an easy way to connect Sentry to your project:
 1. From the **Project** dropdown, choose a Sentry project to link to your GitLab project.
 1. Click **Save changes** for the changes to take effect.
 1. You can now visit **Operations > Error Tracking** in your project's sidebar to [view a list](#error-tracking-list) of Sentry errors.
+
+### Enabling Gitlab issues links
+
+You may also want to enable Sentry's GitLab integration by following the steps in the [Sentry documentation](https://docs.sentry.io/workflow/integrations/global-integrations/#gitlab)
 
 ## Error Tracking List
 

@@ -988,6 +988,9 @@ msgstr ""
 msgid "Add reaction"
 msgstr ""
 
+msgid "Add request manually"
+msgstr ""
+
 msgid "Add to Slack"
 msgstr ""
 
@@ -17627,6 +17630,9 @@ msgid "URL"
 msgstr ""
 
 msgid "URL of the external storage that will serve the repository static objects (e.g. archives, blobs, ...)."
+msgstr ""
+
+msgid "URL or request ID"
 msgstr ""
 
 msgid "Unable to apply suggestions to a deleted line."
