@@ -34,6 +34,7 @@ module LfsRequest
   end
 
   def lfs_check_access!
+    return render_lfs_not_found unless project
     return if download_request? && lfs_download_access?
     return if upload_request? && lfs_upload_access?
 
