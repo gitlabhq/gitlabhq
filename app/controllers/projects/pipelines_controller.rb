@@ -156,14 +156,21 @@ class Projects::PipelinesController < Projects::ApplicationController
   def test_report
     return unless Feature.enabled?(:junit_pipeline_view, project)
 
-    if pipeline_test_report == :error
-      render json: { status: :error_parsing_report }
-      return
-    end
+    respond_to do |format|
+      format.html do
+        render 'show'
+      end
 
-    render json: TestReportSerializer
-      .new(current_user: @current_user)
-      .represent(pipeline_test_report)
+      format.json do
+        if pipeline_test_report == :error
+          render json: { status: :error_parsing_report }
+        else
+          render json: TestReportSerializer
+            .new(current_user: @current_user)
+            .represent(pipeline_test_report)
+        end
+      end
+    end
   end
 
   private

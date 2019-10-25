@@ -200,8 +200,9 @@ module Gitlab
           to: to
         )
 
-        response = GitalyClient.call(@repository.storage, :commit_service, :commits_between, request, timeout: GitalyClient.medium_timeout)
-        consume_commits_response(response)
+        GitalyClient.streaming_call(@repository.storage, :commit_service, :commits_between, request, timeout: GitalyClient.medium_timeout) do |response|
+          consume_commits_response(response)
+        end
       end
 
       def diff_stats(left_commit_sha, right_commit_sha)
@@ -224,8 +225,9 @@ module Gitlab
         )
         request.order = opts[:order].upcase if opts[:order].present?
 
-        response = GitalyClient.call(@repository.storage, :commit_service, :find_all_commits, request, timeout: GitalyClient.medium_timeout)
-        consume_commits_response(response)
+        GitalyClient.streaming_call(@repository.storage, :commit_service, :find_all_commits, request, timeout: GitalyClient.medium_timeout) do |response|
+          consume_commits_response(response)
+        end
       end
 
       def list_commits_by_oid(oids)
@@ -233,8 +235,9 @@ module Gitlab
 
         request = Gitaly::ListCommitsByOidRequest.new(repository: @gitaly_repo, oid: oids)
 
-        response = GitalyClient.call(@repository.storage, :commit_service, :list_commits_by_oid, request, timeout: GitalyClient.medium_timeout)
-        consume_commits_response(response)
+        GitalyClient.streaming_call(@repository.storage, :commit_service, :list_commits_by_oid, request, timeout: GitalyClient.medium_timeout) do |response|
+          consume_commits_response(response)
+        end
       rescue GRPC::NotFound # If no repository is found, happens mainly during testing
         []
       end
@@ -249,8 +252,9 @@ module Gitlab
           offset: offset.to_i
         )
 
-        response = GitalyClient.call(@repository.storage, :commit_service, :commits_by_message, request, timeout: GitalyClient.medium_timeout)
-        consume_commits_response(response)
+        GitalyClient.streaming_call(@repository.storage, :commit_service, :commits_by_message, request, timeout: GitalyClient.medium_timeout) do |response|
+          consume_commits_response(response)
+        end
       end
 
       def languages(ref = nil)
@@ -323,9 +327,9 @@ module Gitlab
 
         request.paths = encode_repeated(Array(options[:path])) if options[:path].present?
 
-        response = GitalyClient.call(@repository.storage, :commit_service, :find_commits, request, timeout: GitalyClient.medium_timeout)
-
-        consume_commits_response(response)
+        GitalyClient.streaming_call(@repository.storage, :commit_service, :find_commits, request, timeout: GitalyClient.medium_timeout) do |response|
+          consume_commits_response(response)
+        end
       end
 
       def filter_shas_with_signatures(shas)

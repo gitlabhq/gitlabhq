@@ -41,5 +41,6 @@ NOTE: **Note:**
 You will need at least Reporter [permissions](../../permissions.md) to view the Error Tracking list.
 
 The Error Tracking list may be found at **Operations > Error Tracking** in your project's sidebar.
+Errors can be filtered by title.
 
 ![Error Tracking list](img/error_tracking_list.png)

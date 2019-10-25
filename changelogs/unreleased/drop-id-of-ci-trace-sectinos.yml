@@ -1,0 +1,5 @@
+---
+title: Drop `id` column from `ci_build_trace_sections` table
+merge_request: 18741
+author:
+type: changed

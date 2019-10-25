@@ -1,6 +1,13 @@
 <script>
-import { mapActions, mapState } from 'vuex';
-import { GlEmptyState, GlButton, GlLink, GlLoadingIcon, GlTable } from '@gitlab/ui';
+import { mapActions, mapState, mapGetters } from 'vuex';
+import {
+  GlEmptyState,
+  GlButton,
+  GlLink,
+  GlLoadingIcon,
+  GlTable,
+  GlSearchBoxByType,
+} from '@gitlab/ui';
 import Icon from '~/vue_shared/components/icon.vue';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import { __ } from '~/locale';
@@ -20,6 +27,7 @@ export default {
     GlLink,
     GlLoadingIcon,
     GlTable,
+    GlSearchBoxByType,
     Icon,
     TimeAgo,
   },
@@ -48,8 +56,17 @@ export default {
       required: true,
     },
   },
+  data() {
+    return {
+      errorSearchQuery: '',
+    };
+  },
   computed: {
     ...mapState(['errors', 'externalUrl', 'loading']),
+    ...mapGetters(['filterErrorsByTitle']),
+    filteredErrors() {
+      return this.errorSearchQuery ? this.filterErrorsByTitle(this.errorSearchQuery) : this.errors;
+    },
   },
   created() {
     if (this.errorTrackingEnabled) {
@@ -71,10 +88,17 @@ export default {
         <gl-loading-icon :size="3" />
       </div>
       <div v-else>
-        <div class="d-flex justify-content-end">
+        <div class="d-flex flex-row justify-content-around bg-secondary border">
+          <gl-search-box-by-type
+            v-model="errorSearchQuery"
+            class="col-lg-10 m-3 p-0"
+            :placeholder="__('Search or filter results...')"
+            type="search"
+            autofocus
+          />
           <gl-button
             v-track-event="trackViewInSentryOptions(externalUrl)"
-            class="my-3 ml-auto"
+            class="m-3"
             variant="primary"
             :href="externalUrl"
             target="_blank"
@@ -84,7 +108,14 @@ export default {
           </gl-button>
         </div>
 
-        <gl-table :items="errors" :fields="$options.fields" :show-empty="true" fixed stacked="sm">
+        <gl-table
+          class="mt-3"
+          :items="filteredErrors"
+          :fields="$options.fields"
+          :show-empty="true"
+          fixed
+          stacked="sm"
+        >
           <template slot="HEAD_events" slot-scope="data">
             <div class="text-md-right">{{ data.label }}</div>
           </template>
