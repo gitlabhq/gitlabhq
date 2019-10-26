@@ -4391,6 +4391,9 @@ msgstr ""
 msgid "Container registry images"
 msgstr ""
 
+msgid "Container registry is not enabled on this GitLab instance. Ask an administrator to enable it in order for AutoDevOps to work."
+msgstr ""
+
 msgid "ContainerRegistry|Container Registry"
 msgstr ""
 

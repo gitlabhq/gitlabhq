@@ -57,5 +57,18 @@ describe 'Project > Show > User interacts with auto devops implicitly enabled ba
         expect(page).not_to have_css('.auto-devops-implicitly-enabled-banner')
       end
     end
+
+    context 'when AutoDevOps enabled but container registry is disabled' do
+      before do
+        stub_application_setting(auto_devops_enabled: true)
+        stub_container_registry_config(enabled: false)
+
+        visit project_path(project)
+      end
+
+      it 'shows message that container registry is disabled' do
+        expect(page).to have_content('Container registry is not enabled on this GitLab instance')
+      end
+    end
   end
 end
