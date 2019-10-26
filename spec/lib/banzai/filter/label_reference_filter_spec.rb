@@ -521,6 +521,15 @@ describe Banzai::Filter::LabelReferenceFilter do
 
       expect(reference_filter(act).to_html).to eq exp
     end
+
+    context 'when group name has HTML entities' do
+      let(:another_group) { create(:group, name: '<img src=x onerror=alert(1)>', path: 'another_group') }
+
+      it 'escapes the HTML entities' do
+        expect(result.text)
+          .to eq "See #{group_label.name} in #{another_project.full_name}"
+      end
+    end
   end
 
   describe 'cross-project / same-group_label complete reference' do
