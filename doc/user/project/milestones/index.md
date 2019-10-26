@@ -107,7 +107,7 @@ Not all features in the project milestone view are available in the group milest
 
 | Feature                              | Project milestone view | Group milestone view |
 |--------------------------------------|:----------------------:|:--------------------:|
-| Title an description                 | ✓                      | ✓                    |
+| Title and description                | ✓                      | ✓                    |
 | Issues assigned to milestone         | ✓                      |                      |
 | Merge requests assigned to milestone | ✓                      |                      |
 | Participants and labels used         | ✓                      |                      |

@@ -204,6 +204,24 @@ describe Projects::LabelsController do
           expect(response).to redirect_to(project_labels_path(project))
           expect(controller).to set_flash[:notice].to(project_moved_message(redirect_route, project))
         end
+
+        context 'with an AJAX request' do
+          it 'redirects to the canonical path but does not set flash message' do
+            get :index, params: { namespace_id: project.namespace, project_id: project.to_param + 'old' }, xhr: true
+
+            expect(response).to redirect_to(project_labels_path(project))
+            expect(controller).not_to set_flash[:notice]
+          end
+        end
+
+        context 'with JSON format' do
+          it 'redirects to the canonical path but does not set flash message' do
+            get :index, params: { namespace_id: project.namespace, project_id: project.to_param + 'old' }, format: :json
+
+            expect(response).to redirect_to(project_labels_path(project, format: :json))
+            expect(controller).not_to set_flash[:notice]
+          end
+        end
       end
     end
   end
