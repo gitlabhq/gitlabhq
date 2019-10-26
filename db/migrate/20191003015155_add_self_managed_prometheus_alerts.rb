@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class AddSelfManagedPrometheusAlerts < ActiveRecord::Migration[5.2]
-  # Set this constant to true if this migration requires downtime.
   DOWNTIME = false
 
   def change
