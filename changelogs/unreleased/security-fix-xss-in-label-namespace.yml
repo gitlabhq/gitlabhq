@@ -1,0 +1,5 @@
+---
+title: Escape namespace in label references to prevent XSS
+merge_request:
+author:
+type: security
