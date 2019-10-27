@@ -287,7 +287,7 @@ Once you wrote your comment, you can either:
 
 ## Notifications
 
-- [Receive notifications](../../../workflow/notifications.md) for epic events.
+- [Receive notifications](../../profile/notifications.md) for epic events.
 
 <!-- ## Troubleshooting
 

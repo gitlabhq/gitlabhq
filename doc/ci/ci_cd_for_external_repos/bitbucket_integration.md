@@ -151,7 +151,7 @@ To use GitLab CI/CD with a Bitbucket Cloud repository:
 GitLab is now configured to mirror changes from Bitbucket, run CI/CD pipelines
 configured in `.gitlab-ci.yml` and push the status to Bitbucket.
 
-[pull-mirroring]: ../../workflow/repository_mirroring.md#pulling-from-a-remote-repository-starter
+[pull-mirroring]: ../../user/project/repository/repository_mirroring.md#pulling-from-a-remote-repository-starter
 
 <!-- ## Troubleshooting
 

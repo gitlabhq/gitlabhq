@@ -1,6 +1,6 @@
 # How Git object deduplication works in GitLab
 
-When a GitLab user [forks a project](../workflow/forking_workflow.md),
+When a GitLab user [forks a project](../user/project/repository/forking_workflow.md),
 GitLab creates a new Project with an associated Git repository that is a
 copy of the original project at the time of the fork. If a large project
 gets forked often, this can lead to a quick increase in Git repository

@@ -183,7 +183,8 @@ CI Artifacts are S3 compatible since **9.4** (GitLab Premium), and available in 
 
 ##### LFS Objects
 
-LFS Objects implements a similar storage pattern using 2 chars, 2 level folders, following Git own implementation:
+[LFS Objects in GitLab](lfs/manage_large_binaries_with_git_lfs.md) implement a similar
+storage pattern using 2 chars, 2 level folders, following Git's own implementation:
 
 ```ruby
 "shared/lfs-objects/#{oid[0..1}/#{oid[2..3]}/#{oid[4..-1]}"
@@ -192,7 +193,7 @@ LFS Objects implements a similar storage pattern using 2 chars, 2 level folders,
 "shared/lfs-objects/89/09/029eb962194cfb326259411b22ae3f4a814b5be4f80651735aeef9f3229c"
 ```
 
-They are also S3 compatible since **10.0** (GitLab Premium), and available in GitLab Core since **10.7**.
+LFS objects are also [S3 compatible](lfs/lfs_administration.md#storing-lfs-objects-in-remote-object-storage).
 
 [ce-2821]: https://gitlab.com/gitlab-com/infrastructure/issues/2821
 [ce-28283]: https://gitlab.com/gitlab-org/gitlab-foss/issues/28283

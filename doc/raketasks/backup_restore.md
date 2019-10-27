@@ -877,7 +877,7 @@ including (but not restricted to):
 - [Custom Pages domains](../user/project/pages/custom_domains_ssl_tls_certification/index.md)
 - [Project error tracking](../user/project/operations/error_tracking.md)
 - [Runner authentication](../ci/runners/README.md)
-- [Project mirroring](../workflow/repository_mirroring.md)
+- [Project mirroring](../user/project/repository/repository_mirroring.md)
 - [Web hooks](../user/project/integrations/webhooks.md)
 
 In cases like CI/CD variables and Runner authentication, you might

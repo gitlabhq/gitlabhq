@@ -109,7 +109,7 @@ from which you can select **Create new label**.
 
 #### 9. Weight **(STARTER)**
 
-[Assign a weight](../../../workflow/issue_weight.md) to an issue.
+[Assign a weight](issue_weight.md) to an issue.
 Larger values are used to indicate more effort is required to complete the issue. Only
 positive values or zero are allowed.
 
@@ -131,7 +131,7 @@ or were mentioned in the description or threads.
 
 #### 13. Notifications
 
-Click on the icon to enable/disable [notifications](../../../workflow/notifications.md#issue--epics--merge-request-events)
+Click on the icon to enable/disable [notifications](../../profile/notifications.md#issue--epics--merge-request-events)
 for the issue. This will automatically enable if you participate in the issue in any way.
 
 - **Enable**: If you are not a participant in the discussion on that issue, but
@@ -162,7 +162,7 @@ allowing many formatting options.
 You can mention a user or a group present in your GitLab instance with `@username` or
 `@groupname` and they will be notified via todos and email, unless they have disabled
 all notifications in their profile settings. This is controlled in the
-[notification settings](../../../workflow/notifications.md).
+[notification settings](../../profile/notifications.md).
 
 Mentions for yourself (the current logged in user), will be highlighted in a different
 color, allowing you to easily see which comments involve you, helping you focus on

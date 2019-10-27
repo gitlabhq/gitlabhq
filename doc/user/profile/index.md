@@ -53,7 +53,7 @@ From there, you can:
   [use GitLab as an OAuth provider](../../integration/oauth_provider.md#introduction-to-oauth)
 - Manage [personal access tokens](personal_access_tokens.md) to access your account via API and authorized applications
 - Add and delete emails linked to your account
-- Choose which email to use for notifications, web-based commits, and display on your public profile
+- Choose which email to use for [notifications](notifications.md), web-based commits, and display on your public profile
 - Manage [SSH keys](../../ssh/README.md) to access your account via SSH
 - Manage your [preferences](preferences.md#syntax-highlighting-theme)
   to customize your own GitLab experience

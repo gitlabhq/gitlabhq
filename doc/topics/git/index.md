@@ -32,7 +32,7 @@ The following resources will help you get started with Git:
 - Commits:
   - [Revert a commit](../../user/project/merge_requests/revert_changes.md#reverting-a-commit)
   - [Cherry-picking a commit](../../user/project/merge_requests/cherry_pick_changes.md#cherry-picking-a-commit)
-  - [Squashing commits](../../workflow/gitlab_flow.md#squashing-commits-with-rebase)
+  - [Squashing commits](../gitlab_flow.md#squashing-commits-with-rebase)
 
 ### Concepts
 

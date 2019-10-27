@@ -292,7 +292,7 @@ For the value of:
   the web server to serve these requests is based on your setup.
 
   We have used `$CI_ENVIRONMENT_SLUG` here because it is guaranteed to be unique. If
-  you're using a workflow like [GitLab Flow](../workflow/gitlab_flow.md), collisions
+  you're using a workflow like [GitLab Flow](../topics/gitlab_flow.md), collisions
   are unlikely and you may prefer environment names to be more closely based on the
   branch name. In that case, you could use `$CI_COMMIT_REF_SLUG` in `environment:url` in
   the example above: `https://$CI_COMMIT_REF_SLUG.example.com`, which would give a URL

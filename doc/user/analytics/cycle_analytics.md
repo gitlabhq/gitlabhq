@@ -176,7 +176,7 @@ Learn more about Cycle Analytics in the following resources:
 [ce-5986]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/5986
 [ce-20975]: https://gitlab.com/gitlab-org/gitlab-foss/issues/20975
 [environment]: ../../ci/yaml/README.md#environment
-[GitLab flow]: ../../workflow/gitlab_flow.md
+[GitLab flow]: ../../topics/gitlab_flow.md
 [idea to production]: https://about.gitlab.com/blog/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/#from-idea-to-production-with-gitlab
 [permissions]: ../permissions.md
 [yml]: ../../ci/yaml/README.md

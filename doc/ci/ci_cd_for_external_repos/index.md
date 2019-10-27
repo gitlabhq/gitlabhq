@@ -101,5 +101,5 @@ requests and not on branches you can add `except: [branches]` to the job specs.
 
 [ee-4642]: https://gitlab.com/gitlab-org/gitlab/merge_requests/4642
 [eep]: https://about.gitlab.com/pricing/
-[mirroring]: ../../workflow/repository_mirroring.md
+[mirroring]: ../../user/project/repository/repository_mirroring.md
 [settings]: ../../user/project/settings/index.md#sharing-and-permissions

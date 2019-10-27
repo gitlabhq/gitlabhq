@@ -46,7 +46,7 @@ repositories:
 GitLab will:
 
 1. Import the project.
-1. Enable [Pull Mirroring](../../workflow/repository_mirroring.md#pulling-from-a-remote-repository-starter)
+1. Enable [Pull Mirroring](../../user/project/repository/repository_mirroring.md#pulling-from-a-remote-repository-starter)
 1. Enable [GitHub project integration](../../user/project/integrations/github.md)
 1. Create a web hook on GitHub to notify GitLab of new commits.
 

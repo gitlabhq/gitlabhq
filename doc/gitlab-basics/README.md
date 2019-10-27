@@ -30,7 +30,7 @@ The following are guides to basic GitLab functionality:
 - [Create a merge request](add-merge-request.md), to request changes made in a branch
   be merged into a project's repository.
 - See how these features come together in the [GitLab Flow introduction video](https://youtu.be/InKNIvky2KE)
-  and [GitLab Flow page](../workflow/gitlab_flow.md).
+  and [GitLab Flow page](../topics/gitlab_flow.md).
 
 ## Working with Git from the command line
 

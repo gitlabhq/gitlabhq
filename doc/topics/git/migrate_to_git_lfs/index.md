@@ -163,9 +163,9 @@ but commented out to help encourage others to add to it in the future. -->
 ## References
 
 - [Getting Started with Git LFS](https://about.gitlab.com/blog/2017/01/30/getting-started-with-git-lfs-tutorial/)
-- [Migrate from Git Annex to Git LFS](../../../workflow/lfs/migrate_from_git_annex_to_git_lfs.md)
-- [GitLab's Git LFS user documentation](../../../workflow/lfs/manage_large_binaries_with_git_lfs.md)
-- [GitLab's Git LFS administrator documentation](../../../workflow/lfs/lfs_administration.md)
+- [Migrate from Git Annex to Git LFS](../../../administration/lfs/migrate_from_git_annex_to_git_lfs.md)
+- [GitLab's Git LFS user documentation](../../../administration/lfs/manage_large_binaries_with_git_lfs.md)
+- [GitLab's Git LFS administrator documentation](../../../administration/lfs/lfs_administration.md)
 - Alternative method to [migrate an existing repo to Git LFS](https://github.com/git-lfs/git-lfs/wiki/Tutorial#migrating-existing-repository-data-to-lfs)
 
 <!--

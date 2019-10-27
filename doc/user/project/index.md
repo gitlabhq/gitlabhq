@@ -26,6 +26,7 @@ When you create a project in GitLab, you'll have access to a large number of
   from messing with history or pushing code without review
   - [Protected tags](protected_tags.md): Control over who has
   permission to create tags, and prevent accidental update or deletion
+  - [Repository mirroring](repository/repository_mirroring.md)
   - [Signing commits](gpg_signed_commits/index.md): use GPG to sign your commits
   - [Deploy tokens](deploy_tokens/index.md): Manage project-based deploy tokens that allow permanent access to the repository and Container Registry.
 - [Web IDE](web_ide/index.md)

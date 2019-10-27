@@ -212,7 +212,7 @@ under **Settings > CI/CD > Environment variables**.
 
 ### Working with branches
 
-Following the [GitLab flow](../../workflow/gitlab_flow.md#working-with-feature-branches),
+Following the [GitLab flow](../gitlab_flow.md#working-with-feature-branches),
 let's create a feature branch that will add some content to the application.
 
 Under your repository, navigate to the following file: `app/views/welcome/index.html.erb`.

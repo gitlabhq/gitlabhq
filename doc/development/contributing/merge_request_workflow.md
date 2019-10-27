@@ -36,7 +36,7 @@ include a regression test are merged quickly, while new features without proper
 tests might be slower to receive feedback. The workflow to make a merge
 request is as follows:
 
-1. [Fork](../../workflow/forking_workflow.md#creating-a-fork) the project into
+1. [Fork](../../user/project/repository/forking_workflow.md) the project into
    your personal namespace (or group) on GitLab.com.
 1. Create a feature branch in your fork (don't work off `master`).
 1. Write [tests](../rake_tasks.md#run-tests) and code.
