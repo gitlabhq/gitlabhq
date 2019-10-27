@@ -259,9 +259,6 @@ gem 'loofah', '~> 2.2'
 # Working with license
 gem 'licensee', '~> 8.9'
 
-# Protect against bruteforcing
-gem 'rack-attack', '~> 4.4.1'
-
 # Ace editor
 gem 'ace-rails-ap', '~> 4.1.0'
 
@@ -292,6 +289,9 @@ gem 'request_store', '~> 1.3'
 gem 'base32', '~> 0.3.0'
 
 gem "gitlab-license", "~> 1.0"
+
+# Protect against bruteforcing
+gem 'rack-attack', '~> 6.2.0'
 
 # Sentry integration
 gem 'sentry-raven', '~> 2.9'

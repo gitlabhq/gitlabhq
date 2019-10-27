@@ -2,8 +2,10 @@
 #
 # Adds logging for all Rack Attack blocks and throttling events.
 
-ActiveSupport::Notifications.subscribe('rack.attack') do |name, start, finish, request_id, req|
-  if [:throttle, :blacklist].include? req.env['rack.attack.match_type']
+ActiveSupport::Notifications.subscribe(/rack_attack/) do |name, start, finish, request_id, payload|
+  req = payload[:request]
+
+  if [:throttle, :blocklist].include? req.env['rack.attack.match_type']
     rack_attack_info = {
       message: 'Rack_Attack',
       env: req.env['rack.attack.match_type'],
