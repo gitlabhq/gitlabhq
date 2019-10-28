@@ -188,11 +188,9 @@ class TodosFinder
   end
 
   def by_state(items)
-    if params[:state].to_s == 'done'
-      items.done
-    else
-      items.pending
-    end
+    return items.pending if params[:state].blank?
+
+    items.with_states(params[:state])
   end
 
   def by_type(items)

@@ -775,6 +775,8 @@ describe API::MergeRequests do
       expect(json_response['merge_error']).to eq(merge_request.merge_error)
       expect(json_response['user']['can_merge']).to be_truthy
       expect(json_response).not_to include('rebase_in_progress')
+      expect(json_response['has_conflicts']).to be_falsy
+      expect(json_response['blocking_discussions_resolved']).to be_truthy
     end
 
     it 'exposes description and title html when render_html is true' do

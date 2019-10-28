@@ -304,7 +304,9 @@ Parameters:
     "task_completion_status":{
       "count":0,
       "completed_count":0
-    }
+    },
+    "has_conflicts": false,
+    "blocking_discussions_resolved": true
   }
 ]
 ```
@@ -453,7 +455,9 @@ Parameters:
     "task_completion_status":{
       "count":0,
       "completed_count":0
-    }
+    },
+    "has_conflicts": false,
+    "blocking_discussions_resolved": true
   }
 ]
 ```
@@ -606,7 +610,9 @@ Parameters:
   "task_completion_status":{
     "count":0,
     "completed_count":0
-  }
+  },
+  "has_conflicts": false,
+  "blocking_discussions_resolved": true
 }
 ```
 

@@ -23,6 +23,13 @@
       %label
         = s_('Pipeline|Variables')
       %ul.ci-variable-list
+        - if params[:var]
+          - params[:var].each do |variable|
+            = render 'ci/variables/url_query_variable_row', form_field: 'pipeline', variable: variable
+        - if params[:file_var]
+          - params[:file_var].each do |variable|
+            - variable.push("file")
+            = render 'ci/variables/url_query_variable_row', form_field: 'pipeline', variable: variable
         = render 'ci/variables/variable_row', form_field: 'pipeline', only_key_value: true
       .form-text.text-muted
         = (s_("Pipeline|Specify variable values to be used in this run. The values specified in %{settings_link} will be used by default.") % {settings_link: settings_link}).html_safe

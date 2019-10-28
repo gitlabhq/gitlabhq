@@ -140,6 +140,29 @@ describe TodosFinder do
             end
           end
         end
+
+        context 'by state' do
+          let!(:todo1) { create(:todo, user: user, group: group, target: issue, state: :done) }
+          let!(:todo2) { create(:todo, user: user, group: group, target: issue, state: :pending) }
+
+          it 'returns the expected items when no state is provided' do
+            todos = finder.new(user, {}).execute
+
+            expect(todos).to match_array([todo2])
+          end
+
+          it 'returns the expected items when a state is provided' do
+            todos = finder.new(user, { state: :done }).execute
+
+            expect(todos).to match_array([todo1])
+          end
+
+          it 'returns the expected items when multiple states are provided' do
+            todos = finder.new(user, { state: [:pending, :done] }).execute
+
+            expect(todos).to match_array([todo1, todo2])
+          end
+        end
       end
 
       context 'external authorization' do
