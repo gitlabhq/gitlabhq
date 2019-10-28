@@ -41,7 +41,7 @@ after it is closed.
 
 #### 2. To Do
 
-You can add issues to and remove issues from your [GitLab To-Do List](../../../workflow/todos.md).
+You can add issues to and remove issues from your [GitLab To-Do List](../../todos.md).
 
 The button to do this has a different label depending on whether the issue is already on your To-Do List or not. If the issue is:
 
@@ -83,9 +83,9 @@ Select a [milestone](../milestones/index.md) to attribute that issue to.
 
 #### 6. Time Tracking
 
-Use [GitLab Quick Actions](../quick_actions.md) to [track estimates and time spent on issues](../../../workflow/time_tracking.md).
-You can add an [estimate of the time it will take](../../../workflow/time_tracking.md#estimates)
-to resolve the issue, and also add [the time spent](../../../workflow/time_tracking.md#time-spent)
+Use [GitLab Quick Actions](../quick_actions.md) to [track estimates and time spent on issues](../time_tracking.md).
+You can add an [estimate of the time it will take](../time_tracking.md#estimates)
+to resolve the issue, and also add [the time spent](../time_tracking.md#time-spent)
 on the resolution of the issue.
 
 #### 7. Due date

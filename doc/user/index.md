@@ -135,7 +135,7 @@ supported.
 
 ## Todos
 
-Never forget to reply to your collaborators. [GitLab Todos](../workflow/todos.md)
+Never forget to reply to your collaborators. [GitLab Todos](todos.md)
 are a tool for working faster and more effectively with your team,
 by listing all user or group mentions, as well as issues and merge
 requests you're assigned to.
@@ -149,6 +149,11 @@ requests you're assigned to.
 [Snippets](snippets.md) are code blocks that you want to store in GitLab, from which
 you have quick access to. You can also gather feedback on them through
 [Discussions](#Discussions).
+
+## Keyboard shortcuts
+
+There are many [keyboard shortcuts](shortcuts.md) in GitLab to help you navigate between
+pages and accomplish tasks faster.
 
 ## Integrations
 

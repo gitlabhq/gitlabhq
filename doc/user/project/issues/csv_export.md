@@ -67,8 +67,8 @@ Data will be encoded with a comma as the column delimiter, with `"` used to quot
 | Milestone | Title of the issue milestone |
 | Weight | Issue weight |
 | Labels | Title of any labels joined with a `,` |
-| Time Estimate | [Time estimate](../../../workflow/time_tracking.md#estimates) in seconds |
-| Time Spent | [Time spent](../../../workflow/time_tracking.md#time-spent) in seconds |
+| Time Estimate | [Time estimate](../time_tracking.md#estimates) in seconds |
+| Time Spent | [Time spent](../time_tracking.md#time-spent) in seconds |
 
 ## Limitations
 

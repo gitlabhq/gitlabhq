@@ -23,6 +23,7 @@ The following are guides to basic GitLab functionality:
 - [Create a group](../user/group/index.md#create-a-new-group), to combine and administer
   projects together.
 - [Create a branch](create-branch.md), to make changes to files stored in a project's repository.
+- [Feature branch workflow](feature_branch_workflow.md).
 - [Fork a project](fork-project.md), to duplicate projects so they can be worked on in parallel.
 - [Add a file](add-file.md), to add new files to a project's repository.
 - [Create an issue](../user/project/issues/managing_issues.md#create-a-new-issue),

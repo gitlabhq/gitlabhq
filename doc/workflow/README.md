@@ -5,10 +5,9 @@ comments: false
 # Workflow
 
 - [Automatic issue closing](../user/project/issues/managing_issues.md#closing-issues-automatically)
-- [Change your time zone](timezone.md)
 - [Cycle Analytics](../user/project/cycle_analytics.md)
 - [Description templates](../user/project/description_templates.md)
-- [Feature branch workflow](workflow.md)
+- [Feature branch workflow](../gitlab-basics/feature_branch_workflow.md)
 - [Groups](../user/group/index.md)
 - Issues - The GitLab Issue Tracker is an advanced and complete tool for
   tracking the evolution of a new idea or the process of solving a problem.
@@ -16,7 +15,6 @@ comments: false
   - [Confidential issues](../user/project/issues/confidential_issues.md)
   - [Due date for issues](../user/project/issues/due_dates.md)
 - [Issue Board](../user/project/issue_board.md)
-- [Keyboard shortcuts](shortcuts.md)
 - [File finder](../user/project/repository/file_finder.md)
 - [File lock](../user/project/file_lock.md) **(PREMIUM)**
 - [Labels](../user/project/labels.md)
@@ -27,7 +25,6 @@ comments: false
 - [Protected tags](../user/project/protected_tags.md)
 - [Quick Actions](../user/project/quick_actions.md)
 - [Sharing projects with groups](../user/project/members/share_project_with_groups.md)
-- [Time tracking](time_tracking.md)
 - [Web Editor](../user/project/repository/web_editor.md)
 - [Milestones](../user/project/milestones/index.md)
 - [Merge Requests](../user/project/merge_requests/index.md)
@@ -42,7 +39,6 @@ comments: false
   - [Fast-forward merge requests](../user/project/merge_requests/fast_forward_merge.md)
   - [Merge request approvals](../user/project/merge_requests/merge_request_approvals.md) **(STARTER)**
 - [Service Desk](../user/project/service_desk.md) **(PREMIUM)**
-- [Importing from SVN, GitHub, Bitbucket, etc](importing/README.md)
-- [Todos](todos.md)
+- [Importing from SVN, GitHub, Bitbucket, etc](../user/project/import/index.md)
 - [Snippets](../user/snippets.md)
 - [Subgroups](../user/group/subgroups/index.md)

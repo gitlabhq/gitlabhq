@@ -27,7 +27,7 @@ With GitLab merge requests, you can:
 - Assign it to any registered user, and change the assignee how many times you need
 - Assign a [milestone](../../project/milestones/index.md) and track the development of a broader implementation
 - Organize your issues and merge requests consistently throughout the project with [labels](../../project/labels.md)
-- Add a time estimation and the time spent with that merge request with [Time Tracking](../../../workflow/time_tracking.md#time-tracking)
+- Add a time estimation and the time spent with that merge request with [Time Tracking](../time_tracking.md#time-tracking)
 - [Resolve merge conflicts from the UI](#resolve-conflicts)
 - Enable [fast-forward merge requests](#fast-forward-merge-requests)
 - Enable [semi-linear history merge requests](#semi-linear-history-merge-requests) as another security layer to guarantee the pipeline is passing in the target branch

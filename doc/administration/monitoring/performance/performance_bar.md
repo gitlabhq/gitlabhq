@@ -54,7 +54,7 @@ Make sure _Enable the Performance Bar_ is checked and hit
 **Save** to save the changes.
 
 Once the Performance Bar is enabled, you will need to press the [<kbd>p</kbd> +
-<kbd>b</kbd> keyboard shortcut](../../../workflow/shortcuts.md) to actually
+<kbd>b</kbd> keyboard shortcut](../../../user/shortcuts.md) to actually
 display it.
 
 You can toggle the Bar using the same shortcut.

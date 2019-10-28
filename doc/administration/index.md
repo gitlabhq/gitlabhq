@@ -43,7 +43,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 
 ### Configuring GitLab
 
-- [Adjust your instance's timezone](../workflow/timezone.md): Customize the default time zone of GitLab.
+- [Adjust your instance's timezone](timezone.md): Customize the default time zone of GitLab.
 - [System hooks](../system_hooks/system_hooks.md): Notifications when users, projects and keys are changed.
 - [Security](../security/README.md): Learn what you can do to further secure your GitLab instance.
 - [Usage statistics, version check, and usage ping](../user/admin_area/settings/usage_statistics.md): Enable or disable information about your instance to be sent to GitLab, Inc.

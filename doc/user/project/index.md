@@ -45,7 +45,7 @@ When you create a project in GitLab, you'll have access to a large number of
   - [Review Apps](../../ci/review_apps/index.md): Live preview the results
   of the changes proposed in a merge request in a per-branch basis
 - [Labels](labels.md): Organize issues and merge requests by labels
-- [Time Tracking](../../workflow/time_tracking.md): Track estimate time
+- [Time Tracking](time_tracking.md): Track estimate time
   and time spent on
   the conclusion of an issue or merge request
 - [Milestones](milestones/index.md): Work towards a target date
