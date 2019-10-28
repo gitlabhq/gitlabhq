@@ -1,6 +1,0 @@
----
-title: Don't allow maintainers of a target project to delete the source branch of
-  a merge request from a fork
-merge_request:
-author:
-type: security
