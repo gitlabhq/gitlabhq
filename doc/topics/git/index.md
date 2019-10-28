@@ -85,7 +85,7 @@ The following relate to Git Large File Storage:
 
 - [Getting Started with Git LFS](https://about.gitlab.com/blog/2017/01/30/getting-started-with-git-lfs-tutorial/)
 - [Migrate an existing Git repo with Git LFS](migrate_to_git_lfs/index.md)
-- [GitLab Git LFS user documentation](../../workflow/lfs/manage_large_binaries_with_git_lfs.md)
-- [GitLab Git LFS admin documentation](../../workflow/lfs/lfs_administration.md)
-- [git-annex to Git-LFS migration guide](../../workflow/lfs/migrate_from_git_annex_to_git_lfs.md)
+- [GitLab Git LFS user documentation](../../administration/lfs/manage_large_binaries_with_git_lfs.md)
+- [GitLab Git LFS admin documentation](../../administration/lfs/lfs_administration.md)
+- [git-annex to Git-LFS migration guide](../../administration/lfs/migrate_from_git_annex_to_git_lfs.md)
 - [Towards a production quality open source Git LFS server](https://about.gitlab.com/blog/2015/08/13/towards-a-production-quality-open-source-git-lfs-server/)

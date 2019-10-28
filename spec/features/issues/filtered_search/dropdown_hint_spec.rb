@@ -68,7 +68,7 @@ describe 'Dropdown hint', :js do
       it 'filters with text' do
         filtered_search.set('a')
 
-        expect(find(js_dropdown_hint)).to have_selector('.filter-dropdown .filter-dropdown-item', count: 5)
+        expect(find(js_dropdown_hint)).to have_selector('.filter-dropdown .filter-dropdown-item', count: 6)
       end
     end
 
@@ -101,6 +101,15 @@ describe 'Dropdown hint', :js do
         expect(page).to have_css(js_dropdown_hint, visible: false)
         expect(page).to have_css('#js-dropdown-milestone', visible: true)
         expect_tokens([{ name: 'Milestone' }])
+        expect_filtered_search_input_empty
+      end
+
+      it 'opens the release dropdown when you click on release' do
+        click_hint('release')
+
+        expect(page).to have_css(js_dropdown_hint, visible: false)
+        expect(page).to have_css('#js-dropdown-release', visible: true)
+        expect_tokens([{ name: 'Release' }])
         expect_filtered_search_input_empty
       end
 

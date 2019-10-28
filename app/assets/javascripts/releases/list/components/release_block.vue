@@ -76,7 +76,7 @@ export default {
     },
     shouldShowEditButton() {
       return Boolean(
-        this.glFeatures.releaseEditPage && this.release._links && this.release._links.edit,
+        this.glFeatures.releaseEditPage && this.release._links && this.release._links.edit_url,
       );
     },
   },
@@ -108,7 +108,7 @@ export default {
           v-gl-tooltip
           class="btn btn-default js-edit-button ml-2"
           :title="__('Edit this release')"
-          :href="release._links.edit"
+          :href="release._links.edit_url"
         >
           <icon name="pencil" />
         </gl-link>

@@ -15,7 +15,7 @@ project.
 ![Find file button](img/file_finder_find_button.png)
 
 For those who prefer to keep their fingers on the keyboard, there is a
-[shortcut button](../../../workflow/shortcuts.md) as well, which you can invoke from _anywhere_
+[shortcut button](../../shortcuts.md) as well, which you can invoke from _anywhere_
 in a project.
 
 Press `t` to launch the File search function when in **Issues**,

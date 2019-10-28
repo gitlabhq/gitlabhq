@@ -166,12 +166,11 @@ end
 
 Normally, GitLab CE/EE tests use a local clone of Gitaly in
 `tmp/tests/gitaly` pinned at the version specified in
-`GITALY_SERVER_VERSION`. The `GITALY_SERVER_VERSION` file supports
-`=my-branch` syntax to use a custom branch in <https://gitlab.com/gitlab-org/gitaly>. If
+`GITALY_SERVER_VERSION`. The `GITALY_SERVER_VERSION` file supports also
+branches and SHA to use a custom commit in <https://gitlab.com/gitlab-org/gitaly>. If
 you want to run tests locally against a modified version of Gitaly you
 can replace `tmp/tests/gitaly` with a symlink. This is much faster
-because the `=my-branch` syntax forces a Gitaly re-install each time
-you run `rspec`.
+because if will avoid a Gitaly re-install each time you run `rspec`.
 
 ```shell
 rm -rf tmp/tests/gitaly

@@ -170,7 +170,7 @@ Some tickets need specific knowledge or a deep understanding of a particular com
 
 Move on to understanding some of GitLab's more advanced features. You can make use of GitLab.com to understand the features from an end-user perspective and then use your own instance to understand setup and configuration of the feature from an Administrative perspective
 
-- Set up and try [Git LFS](../../workflow/lfs/manage_large_binaries_with_git_lfs.md)
+- Set up and try [Git LFS](../../administration/lfs/manage_large_binaries_with_git_lfs.md)
 - Get to know the [GitLab API](../../api/README.md), its capabilities and shortcomings
 - Learn how to [migrate from SVN to Git](../../user/project/import/svn.md)
 - Set up [GitLab CI](../../ci/quick_start/README.md)

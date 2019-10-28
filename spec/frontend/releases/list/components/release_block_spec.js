@@ -73,7 +73,7 @@ describe('Release block', () => {
 
     it('renders an edit button that links to the "Edit release" page', () => {
       expect(editButton().exists()).toBe(true);
-      expect(editButton().attributes('href')).toBe(release._links.edit);
+      expect(editButton().attributes('href')).toBe(release._links.edit_url);
     });
 
     it('renders release name', () => {
@@ -180,7 +180,7 @@ describe('Release block', () => {
     });
   });
 
-  it("does not render an edit button if release._links.edit isn't a string", () => {
+  it("does not render an edit button if release._links.edit_url isn't a string", () => {
     delete releaseClone._links;
 
     return factory(releaseClone).then(() => {

@@ -1,7 +1,9 @@
 import FilteredSearchTokenKeys from './filtered_search_token_keys';
 import { __ } from '~/locale';
 
-export const tokenKeys = [
+export const tokenKeys = [];
+
+tokenKeys.push(
   {
     key: 'author',
     type: 'string',
@@ -26,15 +28,27 @@ export const tokenKeys = [
     icon: 'clock',
     tag: '%milestone',
   },
-  {
-    key: 'label',
-    type: 'array',
-    param: 'name[]',
-    symbol: '~',
-    icon: 'labels',
-    tag: '~label',
-  },
-];
+);
+
+if (gon && gon.features && gon.features.releaseSearchFilter) {
+  tokenKeys.push({
+    key: 'release',
+    type: 'string',
+    param: 'tag',
+    symbol: '',
+    icon: 'rocket',
+    tag: __('tag name'),
+  });
+}
+
+tokenKeys.push({
+  key: 'label',
+  type: 'array',
+  param: 'name[]',
+  symbol: '~',
+  icon: 'labels',
+  tag: '~label',
+});
 
 if (gon.current_user_id) {
   // Appending tokenkeys only logged-in
@@ -87,6 +101,16 @@ export const conditions = [
     url: 'milestone_title=%23started',
     tokenKey: 'milestone',
     value: __('Started'),
+  },
+  {
+    url: 'release_tag=None',
+    tokenKey: 'release',
+    value: __('None'),
+  },
+  {
+    url: 'release_tag=Any',
+    tokenKey: 'release',
+    value: __('Any'),
   },
   {
     url: 'label_name[]=None',

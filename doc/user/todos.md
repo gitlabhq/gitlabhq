@@ -43,7 +43,7 @@ A To Do displays on your To-Do List when:
   - The author
   - Have set it to automatically merge once the pipeline succeeds
 
-To-do triggers are not affected by [GitLab Notification Email settings](../workflow/notifications.md).
+To-do triggers are not affected by [GitLab Notification Email settings](profile/notifications.md).
 
 NOTE: **Note:**
 When a user no longer has access to a resource related to a To Do (like an issue, merge request, project, or group) the related To-Do items are deleted within the next hour for security reasons. The delete is delayed to prevent data loss, in case the user's access was revoked by mistake.

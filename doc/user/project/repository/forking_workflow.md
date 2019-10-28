@@ -7,7 +7,7 @@ disqus_identifier: 'https://docs.gitlab.com/ee/workflow/forking_workflow.html'
 Forking a project to your own namespace is useful if you have no write
 access to the project you want to contribute to. If you do have write
 access or can request it, we recommend working together in the same
-repository since it is simpler. See our [GitLab Flow](../../../workflow/gitlab_flow.md)
+repository since it is simpler. See our [GitLab Flow](../../../topics/gitlab_flow.md)
 document more information about using branches to work together.
 
 ## Creating a fork

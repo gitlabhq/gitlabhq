@@ -89,6 +89,7 @@ export default class FilteredSearchManager {
           this.filteredSearchInput.getAttribute('data-runner-tags-endpoint') || '',
         labelsEndpoint: this.filteredSearchInput.getAttribute('data-labels-endpoint') || '',
         milestonesEndpoint: this.filteredSearchInput.getAttribute('data-milestones-endpoint') || '',
+        releasesEndpoint: this.filteredSearchInput.getAttribute('data-releases-endpoint') || '',
         tokenizer: this.tokenizer,
         page: this.page,
         isGroup: this.isGroup,

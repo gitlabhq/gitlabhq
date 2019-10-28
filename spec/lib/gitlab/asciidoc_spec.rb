@@ -58,7 +58,7 @@ module Gitlab
           },
           'image with onerror' => {
             input: 'image:https://localhost.com/image.png[Alt text" onerror="alert(7)]',
-            output: "<div>\n<p><span><img src=\"https://localhost.com/image.png\" alt='Alt text\" onerror=\"alert(7)'></span></p>\n</div>"
+            output: "<div>\n<p><span><a class=\"no-attachment-icon\" href=\"https://localhost.com/image.png\" target=\"_blank\" rel=\"noopener noreferrer\"><img src=\"data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==\" alt='Alt text\" onerror=\"alert(7)' class=\"lazy\" data-src=\"https://localhost.com/image.png\"></a></span></p>\n</div>"
           },
           'fenced code with inline script' => {
             input: '```mypre"><script>alert(3)</script>',
@@ -70,6 +70,20 @@ module Gitlab
           it "does not convert dangerous #{name} into HTML" do
             expect(render(data[:input], context)).to include(data[:output])
           end
+        end
+      end
+
+      context "images" do
+        it "does lazy load and link image" do
+          input = 'image:https://localhost.com/image.png[]'
+          output = "<div>\n<p><span><a class=\"no-attachment-icon\" href=\"https://localhost.com/image.png\" target=\"_blank\" rel=\"noopener noreferrer\"><img src=\"data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==\" alt=\"image\" class=\"lazy\" data-src=\"https://localhost.com/image.png\"></a></span></p>\n</div>"
+          expect(render(input, context)).to include(output)
+        end
+
+        it "does not automatically link image if link is explicitly defined" do
+          input = 'image:https://localhost.com/image.png[link=https://gitlab.com]'
+          output = "<div>\n<p><span><a href=\"https://gitlab.com\" rel=\"nofollow noreferrer noopener\" target=\"_blank\"><img src=\"data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==\" alt=\"image\" class=\"lazy\" data-src=\"https://localhost.com/image.png\"></a></span></p>\n</div>"
+          expect(render(input, context)).to include(output)
         end
       end
 
@@ -107,7 +121,7 @@ module Gitlab
           ADOC
 
           output = <<~HTML
-           <h2>Title</h2>
+            <h2>Title</h2>
           HTML
 
           expect(render(input, context)).to include(output.strip)
@@ -149,15 +163,15 @@ module Gitlab
           ADOC
 
           output = <<~HTML
-           <div>
-           <p>This paragraph has a footnote.<sup>[<a id="_footnoteref_1" href="#_footnotedef_1" title="View footnote.">1</a>]</sup></p>
-           </div>
-           <div>
-           <hr>
-           <div id="_footnotedef_1">
-           <a href="#_footnoteref_1">1</a>. This is the text of the footnote.
-           </div>
-           </div>
+            <div>
+            <p>This paragraph has a footnote.<sup>[<a id="_footnoteref_1" href="#_footnotedef_1" title="View footnote.">1</a>]</sup></p>
+            </div>
+            <div>
+            <hr>
+            <div id="_footnotedef_1">
+            <a href="#_footnoteref_1">1</a>. This is the text of the footnote.
+            </div>
+            </div>
           HTML
 
           expect(render(input, context)).to include(output.strip)
@@ -183,34 +197,34 @@ module Gitlab
           ADOC
 
           output = <<~HTML
-           <h1>Title</h1>
-           <div>
-           <h2 id="user-content-first-section">
-           <a class="anchor" href="#user-content-first-section"></a>First section</h2>
-           <div>
-           <div>
-           <p>This is the first section.</p>
-           </div>
-           </div>
-           </div>
-           <div>
-           <h2 id="user-content-second-section">
-           <a class="anchor" href="#user-content-second-section"></a>Second section</h2>
-           <div>
-           <div>
-           <p>This is the second section.</p>
-           </div>
-           </div>
-           </div>
-           <div>
-           <h2 id="user-content-thunder">
-           <a class="anchor" href="#user-content-thunder"></a>Thunder ⚡ !</h2>
-           <div>
-           <div>
-           <p>This is the third section.</p>
-           </div>
-           </div>
-           </div>
+            <h1>Title</h1>
+            <div>
+            <h2 id="user-content-first-section">
+            <a class="anchor" href="#user-content-first-section"></a>First section</h2>
+            <div>
+            <div>
+            <p>This is the first section.</p>
+            </div>
+            </div>
+            </div>
+            <div>
+            <h2 id="user-content-second-section">
+            <a class="anchor" href="#user-content-second-section"></a>Second section</h2>
+            <div>
+            <div>
+            <p>This is the second section.</p>
+            </div>
+            </div>
+            </div>
+            <div>
+            <h2 id="user-content-thunder">
+            <a class="anchor" href="#user-content-thunder"></a>Thunder ⚡ !</h2>
+            <div>
+            <div>
+            <p>This is the third section.</p>
+            </div>
+            </div>
+            </div>
           HTML
 
           expect(render(input, context)).to include(output.strip)

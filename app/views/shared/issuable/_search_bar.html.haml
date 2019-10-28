@@ -91,6 +91,19 @@
                 %li.filter-dropdown-item
                   %button.btn.btn-link.js-data-value{ type: 'button' }
                     {{title}}
+            #js-dropdown-release.filtered-search-input-dropdown-menu.dropdown-menu
+              %ul{ data: { dropdown: true } }
+                %li.filter-dropdown-item{ data: { value: 'None' } }
+                  %button.btn.btn-link{ type: 'button' }
+                    = _('None')
+                %li.filter-dropdown-item{ data: { value: 'Any' } }
+                  %button.btn.btn-link{ type: 'button' }
+                    = _('Any')
+                %li.divider.droplab-item-ignore
+              %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
+                %li.filter-dropdown-item
+                  %button.btn.btn-link.js-data-value{ type: 'button' }
+                    {{title}}
             #js-dropdown-label.filtered-search-input-dropdown-menu.dropdown-menu
               %ul{ data: { dropdown: true } }
                 %li.filter-dropdown-item{ data: { value: 'None' } }

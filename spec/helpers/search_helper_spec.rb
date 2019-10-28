@@ -167,6 +167,7 @@ describe SearchHelper do
         expect(search_filter_input_options('')[:data]['runner-tags-endpoint']).to eq(tag_list_admin_runners_path)
         expect(search_filter_input_options('')[:data]['labels-endpoint']).to eq(project_labels_path(@project))
         expect(search_filter_input_options('')[:data]['milestones-endpoint']).to eq(project_milestones_path(@project))
+        expect(search_filter_input_options('')[:data]['releases-endpoint']).to eq(project_releases_path(@project))
       end
 
       it 'includes autocomplete=off flag' do

@@ -20497,6 +20497,9 @@ msgstr ""
 msgid "syntax is incorrect"
 msgstr ""
 
+msgid "tag name"
+msgstr ""
+
 msgid "this document"
 msgstr ""
 

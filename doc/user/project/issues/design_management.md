@@ -22,12 +22,12 @@ For an overview, see the video [Design Management (GitLab 12.2)](https://www.you
 ## Requirements
 
 Design Management requires
-[Large File Storage (LFS)](../../../workflow/lfs/manage_large_binaries_with_git_lfs.md)
+[Large File Storage (LFS)](../../../administration/lfs/manage_large_binaries_with_git_lfs.md)
 to be enabled:
 
 - For GitLab.com, LFS is already enabled.
 - For self-managed instances, a GitLab administrator must have
-  [enabled LFS globally](../../../workflow/lfs/lfs_administration.md).
+  [enabled LFS globally](../../../administration/lfs/lfs_administration.md).
 - For both GitLab.com and self-managed instances: LFS must be enabled for the project itself.
   If enabled globally, LFS will be enabled by default to all projects. To enable LFS on the
   project level, navigate to your project's **Settings > General**, expand **Visibility, project features, permissions**
