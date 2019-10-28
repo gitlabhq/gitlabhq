@@ -8656,6 +8656,9 @@ msgstr[1] ""
 msgid "Hide values"
 msgstr ""
 
+msgid "Hiding all labels"
+msgstr ""
+
 msgid "Highest number of requests per minute for each raw path, default to 300. To disable throttling set to 0."
 msgstr ""
 
@@ -14813,6 +14816,9 @@ msgstr ""
 msgid "Select user"
 msgstr ""
 
+msgid "Select your role"
+msgstr ""
+
 msgid "Selected levels cannot be used by non-admin users for groups, projects or snippets. If the public level is restricted, user profiles are only visible to logged in users."
 msgstr ""
 
@@ -15176,6 +15182,9 @@ msgid "Showing Version #%{versionNumber}"
 msgstr ""
 
 msgid "Showing all issues"
+msgstr ""
+
+msgid "Showing all labels"
 msgstr ""
 
 msgid "Showing last %{size} of log -"

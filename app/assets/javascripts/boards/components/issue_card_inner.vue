@@ -1,5 +1,6 @@
 <script>
 import _ from 'underscore';
+import { mapState } from 'vuex';
 import { GlTooltipDirective } from '@gitlab/ui';
 import { sprintf, __ } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
@@ -63,6 +64,7 @@ export default {
     };
   },
   computed: {
+    ...mapState(['isShowingLabels']),
     numberOverLimit() {
       return this.issue.assignees.length - this.limitBeforeCounter;
     },
@@ -92,7 +94,7 @@ export default {
       return false;
     },
     showLabelFooter() {
-      return this.issue.labels.find(l => this.showLabel(l)) !== undefined;
+      return this.isShowingLabels && this.issue.labels.find(this.showLabel);
     },
     issueReferencePath() {
       const { referencePath, groupId } = this.issue;

@@ -13,6 +13,7 @@ import 'ee_else_ce/boards/models/issue';
 import 'ee_else_ce/boards/models/list';
 import '~/boards/models/milestone';
 import '~/boards/models/project';
+import store from '~/boards/stores';
 import boardsStore from '~/boards/stores/boards_store';
 import ModalStore from '~/boards/stores/modal_store';
 import BoardService from 'ee_else_ce/boards/services/board_service';
@@ -29,6 +30,7 @@ import {
 } from '~/lib/utils/common_utils';
 import boardConfigToggle from 'ee_else_ce/boards/config_toggle';
 import toggleFocusMode from 'ee_else_ce/boards/toggle_focus';
+import toggleLabels from 'ee_else_ce/boards/toggle_labels';
 import {
   setPromotionState,
   setWeigthFetchingState,
@@ -67,6 +69,7 @@ export default () => {
       BoardSidebar,
       BoardAddIssuesModal,
     },
+    store,
     data: {
       state: boardsStore.state,
       loading: true,
@@ -314,5 +317,6 @@ export default () => {
   }
 
   toggleFocusMode(ModalStore, boardsStore, $boardApp);
+  toggleLabels();
   mountMultipleBoardsSwitcher();
 };

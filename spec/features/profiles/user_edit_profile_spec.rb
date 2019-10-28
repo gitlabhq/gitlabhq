@@ -66,6 +66,34 @@ describe 'User edit profile' do
     end
   end
 
+  describe 'when I change my role' do
+    context 'experiment enabled' do
+      before do
+        stub_experiment_for_user(signup_flow: true)
+        visit(profile_path)
+      end
+
+      it 'changes my role' do
+        expect(page).to have_content 'Role'
+        select 'Data Analyst', from: 'user_role'
+        submit_settings
+        user.reload
+        expect(user.role).to eq 'data_analyst'
+      end
+    end
+
+    context 'experiment disabled' do
+      before do
+        stub_experiment_for_user(signup_flow: false)
+        visit(profile_path)
+      end
+
+      it 'does not show the role picker' do
+        expect(page).not_to have_content 'Role'
+      end
+    end
+  end
+
   context 'user avatar' do
     before do
       attach_file(:user_avatar, Rails.root.join('spec', 'fixtures', 'banana_sample.gif'))

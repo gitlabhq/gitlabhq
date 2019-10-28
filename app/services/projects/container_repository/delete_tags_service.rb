@@ -9,24 +9,10 @@ module Projects
         tag_names = params[:tags]
         return error('not tags specified') if tag_names.blank?
 
-        if can_use?
-          smart_delete(container_repository, tag_names)
-        else
-          unsafe_delete(container_repository, tag_names)
-        end
+        smart_delete(container_repository, tag_names)
       end
 
       private
-
-      def unsafe_delete(container_repository, tag_names)
-        deleted_tags = tag_names.select do |tag_name|
-          container_repository.tag(tag_name).unsafe_delete
-        end
-
-        return error('could not delete tags') if deleted_tags.empty?
-
-        success(deleted: deleted_tags)
-      end
 
       # Replace a tag on the registry with a dummy tag.
       # This is a hack as the registry doesn't support deleting individual
@@ -56,10 +42,6 @@ module Projects
         else
           error('could not delete tags')
         end
-      end
-
-      def can_use?
-        Feature.enabled?(:container_registry_smart_delete, project, default_enabled: true)
       end
     end
   end

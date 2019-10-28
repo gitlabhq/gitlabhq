@@ -57,21 +57,7 @@ describe Projects::ContainerRepository::DeleteTagsService do
         end
       end
 
-      context 'with dummy tags disabled' do
-        let(:tags) { %w[A Ba] }
-
-        before do
-          stub_feature_flags(container_registry_smart_delete: false)
-        end
-
-        it 'deletes tags one by one' do
-          expect_delete_tag('sha256:configA')
-          expect_delete_tag('sha256:configB')
-          is_expected.to include(status: :success)
-        end
-      end
-
-      context 'with dummy tags enabled' do
+      context 'with tags to delete' do
         let(:tags) { %w[A Ba] }
 
         it 'deletes the tags using a dummy image' do

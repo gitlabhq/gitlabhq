@@ -10,6 +10,7 @@ import BoardList from '~/boards/components/board_list.vue';
 import '~/boards/models/issue';
 import '~/boards/models/list';
 import { listObj, boardsMockInterceptor, mockBoardService } from './mock_data';
+import store from '~/boards/stores';
 import boardsStore from '~/boards/stores/boards_store';
 
 window.Sortable = Sortable;
@@ -39,6 +40,7 @@ export default function createComponent({ done, listIssueProps = {}, componentPr
 
   const component = new BoardListComp({
     el,
+    store,
     propsData: {
       disabled: false,
       list,

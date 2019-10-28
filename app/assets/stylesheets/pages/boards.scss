@@ -545,3 +545,15 @@
 .board-issue-path.js-show-tooltip {
   cursor: help;
 }
+
+.board-labels-toggle-wrapper {
+  /**
+   * Make the wrapper the same height as a button so it aligns properly when the
+   * filtered-search-box input element increases in size on Linux smaller breakpoints
+   */
+  height: 34px;
+
+  @include media-breakpoint-down(sm) {
+    margin-bottom: 10px;
+  }
+}

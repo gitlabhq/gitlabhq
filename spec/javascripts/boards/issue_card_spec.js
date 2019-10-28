@@ -10,6 +10,7 @@ import '~/boards/models/issue';
 import '~/boards/models/list';
 import IssueCardInner from '~/boards/components/issue_card_inner.vue';
 import { listObj } from './mock_data';
+import store from '~/boards/stores';
 
 describe('Issue card component', () => {
   const user = new ListAssignee({
@@ -50,6 +51,7 @@ describe('Issue card component', () => {
 
     component = new Vue({
       el: document.querySelector('.test-container'),
+      store,
       components: {
         'issue-card': IssueCardInner,
       },

@@ -15,6 +15,8 @@ as much as possible.
 
 The current stages are:
 
+- `sync`: This stage is used to synchronize changes from gitlab-org/gitlab to
+  gitlab-org/gitlab-foss.
 - `prepare`: This stage includes jobs that prepare artifacts that are needed by
   jobs in subsequent stages.
 - `quick-test`: This stage includes test jobs that should run first and fail the

@@ -147,6 +147,7 @@
 
           %button.clear-search.hidden{ type: 'button' }
             = icon('times')
+        #js-board-labels-toggle
         .filter-dropdown-container.d-flex.flex-column.flex-md-row
           - if type == :boards
             .js-board-config{ data: { can_admin_list: user_can_admin_list, has_scope: board.scoped? } }

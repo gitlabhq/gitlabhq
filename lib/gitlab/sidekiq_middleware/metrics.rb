@@ -15,6 +15,9 @@ module Gitlab
 
       def call(_worker, job, queue)
         labels = create_labels(queue)
+        queue_duration = ::Gitlab::InstrumentationHelper.queue_duration_for_job(job)
+
+        @metrics[:sidekiq_jobs_queue_duration_seconds].observe(labels, queue_duration) if queue_duration
         @metrics[:sidekiq_running_jobs].increment(labels, 1)
 
         if job['retry_count'].present?
@@ -49,12 +52,13 @@ module Gitlab
 
       def init_metrics
         {
-          sidekiq_jobs_cpu_seconds:        ::Gitlab::Metrics.histogram(:sidekiq_jobs_cpu_seconds, 'Seconds of cpu time to run sidekiq job', {}, SIDEKIQ_LATENCY_BUCKETS),
-          sidekiq_jobs_completion_seconds: ::Gitlab::Metrics.histogram(:sidekiq_jobs_completion_seconds, 'Seconds to complete sidekiq job', {}, SIDEKIQ_LATENCY_BUCKETS),
-          sidekiq_jobs_failed_total:       ::Gitlab::Metrics.counter(:sidekiq_jobs_failed_total, 'Sidekiq jobs failed'),
-          sidekiq_jobs_retried_total:      ::Gitlab::Metrics.counter(:sidekiq_jobs_retried_total, 'Sidekiq jobs retried'),
-          sidekiq_running_jobs:            ::Gitlab::Metrics.gauge(:sidekiq_running_jobs, 'Number of Sidekiq jobs running', {}, :all),
-          sidekiq_concurrency:             ::Gitlab::Metrics.gauge(:sidekiq_concurrency, 'Maximum number of Sidekiq jobs', {}, :all)
+          sidekiq_jobs_cpu_seconds:            ::Gitlab::Metrics.histogram(:sidekiq_jobs_cpu_seconds, 'Seconds of cpu time to run Sidekiq job', {}, SIDEKIQ_LATENCY_BUCKETS),
+          sidekiq_jobs_completion_seconds:     ::Gitlab::Metrics.histogram(:sidekiq_jobs_completion_seconds, 'Seconds to complete Sidekiq job', {}, SIDEKIQ_LATENCY_BUCKETS),
+          sidekiq_jobs_queue_duration_seconds: ::Gitlab::Metrics.histogram(:sidekiq_jobs_queue_duration_seconds, 'Duration in seconds that a Sidekiq job was queued before being executed', {}, SIDEKIQ_LATENCY_BUCKETS),
+          sidekiq_jobs_failed_total:           ::Gitlab::Metrics.counter(:sidekiq_jobs_failed_total, 'Sidekiq jobs failed'),
+          sidekiq_jobs_retried_total:          ::Gitlab::Metrics.counter(:sidekiq_jobs_retried_total, 'Sidekiq jobs retried'),
+          sidekiq_running_jobs:                ::Gitlab::Metrics.gauge(:sidekiq_running_jobs, 'Number of Sidekiq jobs running', {}, :all),
+          sidekiq_concurrency:                 ::Gitlab::Metrics.gauge(:sidekiq_concurrency, 'Maximum number of Sidekiq jobs', {}, :all)
         }
       end
 
