@@ -51,7 +51,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 - [Polling](polling.md): Configure how often the GitLab UI polls for updates.
 - [GitLab Pages configuration](pages/index.md): Enable and configure GitLab Pages.
 - [GitLab Pages configuration for GitLab source installations](pages/source.md): Enable and configure GitLab Pages on [source installations](../install/installation.md#installation-from-source).
-- [Uploads configuration](uploads.md): Configure GitLab uploads storage.
+- [Uploads administration](uploads.md): Configure GitLab uploads storage.
 - [Environment variables](environment_variables.md): Supported environment variables that can be used to override their defaults values in order to configure GitLab.
 - [Plugins](plugins.md): With custom plugins, GitLab administrators can introduce custom integrations without modifying GitLab's source code.
 - [Enforcing Terms of Service](../user/admin_area/settings/terms.md)

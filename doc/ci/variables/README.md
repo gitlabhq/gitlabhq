@@ -54,25 +54,37 @@ or directly in the `.gitlab-ci.yml` file and reuse them as you wish.
 That can be very powerful as it can be used for scripting without
 the need to specify the value itself.
 
-#### Variable types
+#### Types of variables
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/46806) in GitLab 11.11.
 
 There are two types of variables supported by GitLab:
 
-- "Variable": the Runner will create an environment variable named same as the variable key and set its value to the variable value.
-- "File": the Runner will write the variable value to a temporary file and set the path to this file as the value of an environment variable named same as the variable key.
+- [Variable type](#variable-type): The Runner will create an environment variable named the same as the
+  variable key and set its value to the variable value.
+- [File type](#file-type): The Runner will write the variable value to a temporary file and set the
+  path to this file as the value of an environment variable, named the same as the variable key.
 
-Many tools (like [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-envvars.html) and [kubectl](https://kubernetes.io/docs/concepts/configuration/organize-cluster-access-kubeconfig/#the-kubeconfig-environment-variable)) provide the ability to customise configuration using files by either providing the file path as a command line argument or an environment variable. Prior to the introduction of variable types, the common pattern was to use the value of a CI variable, save it in a file, and then use the newly created file in your script:
+##### Variable type
+
+Many tools (like [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-envvars.html)
+and [kubectl](https://kubernetes.io/docs/concepts/configuration/organize-cluster-access-kubeconfig/#the-kubeconfig-environment-variable))
+provide the ability to customise configuration using files by either providing the
+file path as a command line argument or an environment variable. In the past, the
+common pattern was to read the value of a CI variable, save it in a file, and then
+use the newly created file in your script:
 
 ```bash
-# Save the content of variable in a file
+# Read certificate stored in $KUBE_CA_PEM variable and save it in a new file
 echo "$KUBE_CA_PEM" > "$(pwd)/kube.ca.pem"
- # Use the newly created file
+# Pass the newly created file to kubectl
 kubectl config set-cluster e2e --server="$KUBE_URL" --certificate-authority="$(pwd)/kube.ca.pem"
 ```
 
-This can be simplified by creating a variable of type "File" and using it directly. For example, let's say we have the following variables.
+##### File type
+
+The example above can now be simplified by creating a "File" type variable, and using
+it directly. For example, let's say we have the following variables:
 
 ![CI/CD settings - variable types usage example](img/variable_types_usage_example.png)
 
