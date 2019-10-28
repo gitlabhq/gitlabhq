@@ -29,6 +29,7 @@ issues:
 - prometheus_alerts
 - prometheus_alert_events
 - self_managed_prometheus_alert_events
+- zoom_meetings
 events:
 - author
 - project
@@ -529,4 +530,6 @@ versions: &version
 - issue
 - designs
 - actions
+zoom_meetings:
+- issue
 design_versions: *version

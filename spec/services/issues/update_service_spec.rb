@@ -187,7 +187,6 @@ describe Issues::UpdateService, :mailer do
         it 'creates system note about issue reassign' do
           note = find_note('assigned to')
 
-          expect(note).not_to be_nil
           expect(note.note).to include "assigned to #{user2.to_reference}"
         end
 
@@ -202,14 +201,12 @@ describe Issues::UpdateService, :mailer do
         it 'creates system note about title change' do
           note = find_note('changed title')
 
-          expect(note).not_to be_nil
           expect(note.note).to eq 'changed title from **{-Old-} title** to **{+New+} title**'
         end
 
         it 'creates system note about discussion lock' do
           note = find_note('locked this issue')
 
-          expect(note).not_to be_nil
           expect(note.note).to eq 'locked this issue'
         end
       end
@@ -221,18 +218,8 @@ describe Issues::UpdateService, :mailer do
 
         note = find_note('changed the description')
 
-        expect(note).not_to be_nil
         expect(note.note).to eq('changed the description')
       end
-    end
-
-    it 'creates zoom_link_added system note when a zoom link is added to the description' do
-      update_issue(description: 'Changed description https://zoom.us/j/5873603787')
-
-      note = find_note('added a Zoom call')
-
-      expect(note).not_to be_nil
-      expect(note.note).to eq('added a Zoom call to this issue')
     end
 
     context 'when issue turns confidential' do
@@ -252,7 +239,6 @@ describe Issues::UpdateService, :mailer do
 
         note = find_note('made the issue confidential')
 
-        expect(note).not_to be_nil
         expect(note.note).to eq 'made the issue confidential'
       end
 

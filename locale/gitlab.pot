@@ -4226,6 +4226,9 @@ msgstr ""
 msgid "Commits per weekday"
 msgstr ""
 
+msgid "Commits to"
+msgstr ""
+
 msgid "Commits|An error occurred while fetching merge requests data."
 msgstr ""
 
@@ -4508,18 +4511,6 @@ msgid "Contributions per group member"
 msgstr ""
 
 msgid "Contributors"
-msgstr ""
-
-msgid "ContributorsPage|%{startDate} – %{endDate}"
-msgstr ""
-
-msgid "ContributorsPage|Building repository graph."
-msgstr ""
-
-msgid "ContributorsPage|Commits to %{branch_name}, excluding merge commits. Limited to 6,000 commits."
-msgstr ""
-
-msgid "ContributorsPage|Please wait a moment, this page will automatically refresh when ready."
 msgstr ""
 
 msgid "Control emails linked to your account"
@@ -6465,9 +6456,6 @@ msgstr ""
 msgid "Error deleting  %{issuableType}"
 msgstr ""
 
-msgid "Error fetching contributors data."
-msgstr ""
-
 msgid "Error fetching diverging counts for branches. Please try again."
 msgstr ""
 
@@ -6703,6 +6691,9 @@ msgid "Example: Usage = single query. (Requested) / (Capacity) = multiple querie
 msgstr ""
 
 msgid "Except policy:"
+msgstr ""
+
+msgid "Excluding merge commits. Limited to 6,000 commits."
 msgstr ""
 
 msgid "Existing"
@@ -11322,6 +11313,9 @@ msgstr ""
 msgid "Number of changes (branches or tags) in a single push to determine whether webhooks and services will be fired or not. Webhooks and services won't be submitted if it surpasses that value."
 msgstr ""
 
+msgid "Number of commits"
+msgstr ""
+
 msgid "Number of commits per MR"
 msgstr ""
 
@@ -12915,6 +12909,9 @@ msgid "ProjectSettings|No merge commits are created"
 msgstr ""
 
 msgid "ProjectSettings|Only signed commits can be pushed to this repository."
+msgstr ""
+
+msgid "ProjectSettings|Pages"
 msgstr ""
 
 msgid "ProjectSettings|Pipelines must succeed"
@@ -18903,6 +18900,9 @@ msgid "Wiki|Title"
 msgstr ""
 
 msgid "Will deploy to"
+msgstr ""
+
+msgid "With GitLab Pages you can host your static websites on GitLab"
 msgstr ""
 
 msgid "With contribution analytics you can have an overview for the activity of issues, merge requests and push events of your organization and its members."

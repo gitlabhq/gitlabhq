@@ -12,6 +12,11 @@ describe Gitlab::Ci::Config::Entry::Root do
 
     context 'when filtering all the entry/node names' do
       it 'contains the expected node names' do
+        # No inheritable fields should be added to the `Root`
+        #
+        # Inheritable configuration can only be added to `default:`
+        #
+        # The purpose of `Root` is have only globally defined configuration.
         expect(described_class.nodes.keys)
           .to match_array(%i[before_script image services
                              after_script variables cache

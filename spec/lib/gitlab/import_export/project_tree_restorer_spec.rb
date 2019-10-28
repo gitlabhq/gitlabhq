@@ -211,6 +211,13 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
         expect(CustomIssueTrackerService.first).not_to be_nil
       end
 
+      it 'restores zoom meetings' do
+        meetings = @project.issues.first.zoom_meetings
+
+        expect(meetings.count).to eq(1)
+        expect(meetings.first.url).to eq('https://zoom.us/j/123456789')
+      end
+
       context 'Merge requests' do
         it 'always has the new project as a target' do
           expect(MergeRequest.find_by_title('MR1').target_project).to eq(@project)

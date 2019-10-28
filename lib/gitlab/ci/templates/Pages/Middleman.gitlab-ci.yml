@@ -12,7 +12,7 @@ test:
     - bundle install --path vendor
     - bundle exec middleman build
   except:
-    - master
+    - $CI_DEFAULT_BRANCH
 
 pages:
   script:
@@ -24,4 +24,4 @@ pages:
     paths:
       - public
   only:
-    - master
+    - $CI_DEFAULT_BRANCH

@@ -29,12 +29,6 @@ describe 'Project Graph', :js do
     end
   end
 
-  it 'renders graphs' do
-    visit project_graph_path(project, 'master')
-
-    expect(page).to have_selector('.stat-graph', visible: false)
-  end
-
   context 'commits graph' do
     before do
       visit commits_project_graph_path(project, 'master')

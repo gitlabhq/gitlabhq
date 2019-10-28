@@ -6,32 +6,37 @@ module Issues
       super(issue.project, user)
 
       @issue = issue
+      @added_meeting = ZoomMeeting.canonical_meeting(@issue)
     end
 
     def add_link(link)
       if can_add_link? && (link = parse_link(link))
-        track_meeting_added_event
-        success(_('Zoom meeting added'), append_to_description(link))
+        begin
+          add_zoom_meeting(link)
+          success(_('Zoom meeting added'))
+        rescue ActiveRecord::RecordNotUnique
+          error(_('Failed to add a Zoom meeting'))
+        end
       else
         error(_('Failed to add a Zoom meeting'))
       end
     end
 
-    def can_add_link?
-      can? && !link_in_issue_description?
-    end
-
     def remove_link
       if can_remove_link?
-        track_meeting_removed_event
-        success(_('Zoom meeting removed'), remove_from_description)
+        remove_zoom_meeting
+        success(_('Zoom meeting removed'))
       else
         error(_('Failed to remove a Zoom meeting'))
       end
     end
 
+    def can_add_link?
+      can_update_issue? && !@added_meeting
+    end
+
     def can_remove_link?
-      can? && link_in_issue_description?
+      can_update_issue? && !!@added_meeting
     end
 
     def parse_link(link)
@@ -42,10 +47,6 @@ module Issues
 
     attr_reader :issue
 
-    def issue_description
-      issue.description || ''
-    end
-
     def track_meeting_added_event
       ::Gitlab::Tracking.event('IncidentManagement::ZoomIntegration', 'add_zoom_meeting', label: 'Issue ID', value: issue.id)
     end
@@ -54,39 +55,33 @@ module Issues
       ::Gitlab::Tracking.event('IncidentManagement::ZoomIntegration', 'remove_zoom_meeting', label: 'Issue ID', value: issue.id)
     end
 
-    def success(message, description)
-      ServiceResponse
-        .success(message: message, payload: { description: description })
+    def add_zoom_meeting(link)
+      ZoomMeeting.create(
+        issue: @issue,
+        project: @issue.project,
+        issue_status: :added,
+        url: link
+      )
+      track_meeting_added_event
+      SystemNoteService.zoom_link_added(@issue, @project, current_user)
+    end
+
+    def remove_zoom_meeting
+      @added_meeting.update(issue_status: :removed)
+      track_meeting_removed_event
+      SystemNoteService.zoom_link_removed(@issue, @project, current_user)
+    end
+
+    def success(message)
+      ServiceResponse.success(message: message)
     end
 
     def error(message)
       ServiceResponse.error(message: message)
     end
 
-    def append_to_description(link)
-      "#{issue_description}\n\n#{link}"
-    end
-
-    def remove_from_description
-      link = parse_link(issue_description)
-      return issue_description unless link
-
-      issue_description.delete_suffix(link).rstrip
-    end
-
-    def link_in_issue_description?
-      link = extract_link_from_issue_description
-      return unless link
-
-      Gitlab::ZoomLinkExtractor.new(link).match?
-    end
-
-    def extract_link_from_issue_description
-      issue_description[/(\S+)\z/, 1]
-    end
-
-    def can?
-      current_user.can?(:update_issue, project)
+    def can_update_issue?
+      can?(current_user, :update_issue, project)
     end
   end
 end

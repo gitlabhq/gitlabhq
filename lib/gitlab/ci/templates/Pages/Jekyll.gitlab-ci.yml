@@ -17,7 +17,7 @@ test:
     paths:
       - test
   except:
-    - master
+    - $CI_DEFAULT_BRANCH
 
 pages:
   stage: deploy
@@ -27,4 +27,4 @@ pages:
     paths:
       - public
   only:
-    - master
+    - $CI_DEFAULT_BRANCH

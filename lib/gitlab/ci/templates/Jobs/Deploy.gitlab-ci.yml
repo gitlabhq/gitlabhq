@@ -25,7 +25,7 @@ review:
     kubernetes: active
   except:
     refs:
-      - master
+      - $CI_DEFAULT_BRANCH
     variables:
       - $REVIEW_DISABLED
 
@@ -49,7 +49,7 @@ stop_review:
     kubernetes: active
   except:
     refs:
-      - master
+      - $CI_DEFAULT_BRANCH
     variables:
       - $REVIEW_DISABLED
 
@@ -74,7 +74,7 @@ staging:
     url: http://$CI_PROJECT_PATH_SLUG-staging.$KUBE_INGRESS_BASE_DOMAIN
   only:
     refs:
-      - master
+      - $CI_DEFAULT_BRANCH
     kubernetes: active
     variables:
       - $STAGING_ENABLED
@@ -99,7 +99,7 @@ canary:
   when: manual
   only:
     refs:
-      - master
+      - $CI_DEFAULT_BRANCH
     kubernetes: active
     variables:
       - $CANARY_ENABLED
@@ -127,7 +127,7 @@ production:
   <<: *production_template
   only:
     refs:
-      - master
+      - $CI_DEFAULT_BRANCH
     kubernetes: active
   except:
     variables:
@@ -142,7 +142,7 @@ production_manual:
   allow_failure: false
   only:
     refs:
-      - master
+      - $CI_DEFAULT_BRANCH
     kubernetes: active
     variables:
       - $STAGING_ENABLED
@@ -152,7 +152,7 @@ production_manual:
       - $INCREMENTAL_ROLLOUT_ENABLED
       - $INCREMENTAL_ROLLOUT_MODE
 
-# This job implements incremental rollout on for every push to `master`.
+# This job implements incremental rollout for every push to the default branch.
 
 .rollout: &rollout_template
   extends: .auto-deploy
@@ -179,7 +179,7 @@ production_manual:
   # This selectors are backward compatible mode with $INCREMENTAL_ROLLOUT_ENABLED (before 11.4)
   only:
     refs:
-      - master
+      - $CI_DEFAULT_BRANCH
     kubernetes: active
     variables:
       - $INCREMENTAL_ROLLOUT_MODE == "manual"
@@ -194,7 +194,7 @@ production_manual:
   start_in: 5 minutes
   only:
     refs:
-      - master
+      - $CI_DEFAULT_BRANCH
     kubernetes: active
     variables:
       - $INCREMENTAL_ROLLOUT_MODE == "timed"

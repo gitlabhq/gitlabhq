@@ -28,6 +28,7 @@ tree:
         - label:
           - :priorities
       - :issue_assignees
+      - :zoom_meetings
     - snippets:
       - :award_emoji
       - notes:

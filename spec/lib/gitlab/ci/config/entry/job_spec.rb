@@ -5,6 +5,18 @@ require 'spec_helper'
 describe Gitlab::Ci::Config::Entry::Job do
   let(:entry) { described_class.new(config, name: :rspec) }
 
+  it_behaves_like 'with inheritable CI config' do
+    let(:inheritable_key) { 'default' }
+    let(:inheritable_class) { Gitlab::Ci::Config::Entry::Default }
+
+    # These are entries defined in Default
+    # that we know that we don't want to inherit
+    # as they do not have sense in context of Job
+    let(:ignored_inheritable_columns) do
+      %i[]
+    end
+  end
+
   describe '.nodes' do
     context 'when filtering all the entry/node names' do
       subject { described_class.nodes.keys }

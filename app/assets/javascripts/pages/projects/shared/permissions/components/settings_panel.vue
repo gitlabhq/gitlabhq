@@ -345,8 +345,8 @@ export default {
       <project-setting-row
         v-if="pagesAvailable && pagesAccessControlEnabled"
         :help-path="pagesHelpPath"
-        label="Pages access control"
-        help-text="Access control for the project's static website"
+        :label="s__('ProjectSettings|Pages')"
+        :help-text="__('With GitLab Pages you can host your static websites on GitLab')"
       >
         <project-feature-setting
           v-model="pagesAccessLevel"

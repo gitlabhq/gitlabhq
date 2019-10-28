@@ -1,5 +1,5 @@
 - users = capture_haml do
-  - if search_tabs?(:members)
+  - if show_user_search_tab?
     = search_filter_link 'users', _("Users")
 
 .scrolling-tabs-container.inner-page-scroll-tabs.is-smaller

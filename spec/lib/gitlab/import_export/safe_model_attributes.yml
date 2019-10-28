@@ -753,3 +753,11 @@ DesignManagement::Version:
 - sha
 - issue_id
 - author_id
+ZoomMeeting:
+- id
+- issue_id
+- project_id
+- issue_status
+- url
+- created_at
+- updated_at

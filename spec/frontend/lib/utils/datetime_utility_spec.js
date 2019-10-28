@@ -441,3 +441,34 @@ describe('getDateInPast', () => {
     expect(date).toStrictEqual(new Date(1563235200000));
   });
 });
+
+describe('getDatesInRange', () => {
+  it('returns an empty array if 1st or 2nd argument is not a Date object', () => {
+    const d1 = new Date('2019-01-01');
+    const d2 = 90;
+    const range = datetimeUtility.getDatesInRange(d1, d2);
+
+    expect(range).toEqual([]);
+  });
+
+  it('returns a range of dates between two given dates', () => {
+    const d1 = new Date('2019-01-01');
+    const d2 = new Date('2019-01-31');
+
+    const range = datetimeUtility.getDatesInRange(d1, d2);
+
+    expect(range.length).toEqual(31);
+  });
+
+  it('applies mapper function if provided fro each item in range', () => {
+    const d1 = new Date('2019-01-01');
+    const d2 = new Date('2019-01-31');
+    const formatter = date => date.getDate();
+
+    const range = datetimeUtility.getDatesInRange(d1, d2, formatter);
+
+    range.forEach((formattedItem, index) => {
+      expect(formattedItem).toEqual(index + 1);
+    });
+  });
+});

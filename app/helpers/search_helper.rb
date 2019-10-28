@@ -273,7 +273,7 @@ module SearchHelper
     sanitize(html, tags: %w(a p ol ul li pre code))
   end
 
-  def search_tabs?(tab)
+  def show_user_search_tab?
     return false if Feature.disabled?(:users_search, default_enabled: true)
 
     if @project

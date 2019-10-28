@@ -26,4 +26,4 @@ pages:
     paths:
       - public
   only:
-    - master
+    - $CI_DEFAULT_BRANCH

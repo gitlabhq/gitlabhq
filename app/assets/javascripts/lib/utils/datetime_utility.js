@@ -564,3 +564,26 @@ export const getDateInPast = (date, daysInPast) => {
 
 export const beginOfDayTime = 'T00:00:00Z';
 export const endOfDayTime = 'T23:59:59Z';
+
+/**
+ * @param {Date} d1
+ * @param {Date} d2
+ * @param {Function} formatter
+ * @return {Any[]} an array of formatted dates between 2 given dates (including start&end date)
+ */
+export const getDatesInRange = (d1, d2, formatter = x => x) => {
+  if (!(d1 instanceof Date) || !(d2 instanceof Date)) {
+    return [];
+  }
+  let startDate = d1.getTime();
+  const endDate = d2.getTime();
+  const oneDay = 24 * 3600 * 1000;
+  const range = [d1];
+
+  while (startDate < endDate) {
+    startDate += oneDay;
+    range.push(new Date(startDate));
+  }
+
+  return range.map(formatter);
+};

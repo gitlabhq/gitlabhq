@@ -40,6 +40,7 @@ class Issue < ApplicationRecord
 
   has_many :issue_assignees
   has_many :assignees, class_name: "User", through: :issue_assignees
+  has_many :zoom_meetings
 
   validates :project, presence: true
 
