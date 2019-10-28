@@ -205,9 +205,13 @@ To add an existing Kubernetes cluster to your project:
       `default-token-xxxxx`. Copy that token name for use below.
      - Get the certificate by running this command:
 
-     ```sh
-     kubectl get secret <secret name> -o jsonpath="{['data']['ca\.crt']}" | base64 --decode
-     ```
+       ```sh
+       kubectl get secret <secret name> -o jsonpath="{['data']['ca\.crt']}" | base64 --decode
+       ```
+
+       NOTE: **Note:**
+       If the command returns the entire certificate chain, you need copy the *root ca*
+       certificate at the bottom of the chain.
 
    - **Token** -
      GitLab authenticates against Kubernetes using service tokens, which are
