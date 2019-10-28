@@ -1,5 +1,0 @@
----
-title: Return 404 on LFS request if project doesn't exist
-merge_request:
-author:
-type: security
