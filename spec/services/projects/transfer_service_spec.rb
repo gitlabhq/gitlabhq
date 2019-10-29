@@ -222,6 +222,24 @@ describe Projects::TransferService do
     it { expect(project.errors[:new_namespace]).to include('Project with same name or path in target namespace already exists') }
   end
 
+  context 'target namespace allows developers to create projects' do
+    let(:group) { create(:group, project_creation_level: ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS) }
+
+    context 'the user is a member of the target namespace with developer permissions' do
+      subject(:transfer_project_result) { transfer_project(project, user, group) }
+
+      before do
+        group.add_developer(user)
+      end
+
+      it 'does not allow project transfer to the target namespace' do
+        expect(transfer_project_result).to eq false
+        expect(project.namespace).to eq(user.namespace)
+        expect(project.errors[:new_namespace]).to include('Transfer failed, please contact an admin.')
+      end
+    end
+  end
+
   def transfer_project(project, user, new_namespace)
     service = Projects::TransferService.new(project, user)
 
