@@ -190,6 +190,56 @@ describe Projects::PagesDomainsController do
     end
   end
 
+  describe 'DELETE #clean_certificate' do
+    subject do
+      delete(:clean_certificate, params: request_params.merge(id: pages_domain.domain))
+    end
+
+    it 'redirects to edit page' do
+      subject
+
+      expect(response).to redirect_to(edit_project_pages_domain_path(project, pages_domain))
+    end
+
+    it 'removes certificate' do
+      expect do
+        subject
+      end.to change { pages_domain.reload.certificate }.to(nil)
+        .and change { pages_domain.reload.key }.to(nil)
+    end
+
+    it 'sets certificate source to user_provided' do
+      pages_domain.update!(certificate_source: :gitlab_provided)
+
+      expect do
+        subject
+      end.to change { pages_domain.reload.certificate_source }.from("gitlab_provided").to("user_provided")
+    end
+
+    context 'when pages_https_only is set' do
+      before do
+        project.update!(pages_https_only: true)
+        stub_pages_setting(external_https: '127.0.0.1')
+      end
+
+      it 'does not remove certificate' do
+        subject
+
+        pages_domain.reload
+        expect(pages_domain.certificate).to be_present
+        expect(pages_domain.key).to be_present
+      end
+
+      it 'redirects to edit page with a flash message' do
+        subject
+
+        expect(flash[:alert]).to include('Certificate')
+        expect(flash[:alert]).to include('Key')
+        expect(response).to redirect_to(edit_project_pages_domain_path(project, pages_domain))
+      end
+    end
+  end
+
   context 'pages disabled' do
     before do
       allow(Gitlab.config.pages).to receive(:enabled).and_return(false)

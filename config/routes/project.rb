@@ -222,6 +222,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         resources :domains, except: :index, controller: 'pages_domains', constraints: { id: %r{[^/]+} } do
           member do
             post :verify
+            delete :clean_certificate
           end
         end
       end

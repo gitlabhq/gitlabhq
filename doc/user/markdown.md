@@ -417,9 +417,10 @@ GFM will recognize the following:
 
 > If this is not rendered correctly, [view it in GitLab itself](https://gitlab.com/gitlab-org/gitlab/blob/master/doc/user/markdown.md#task-lists).
 
-You can add task lists anywhere markdown is supported, but you can only "click" to
-toggle the boxes if they are in issues, merge requests, or comments. In other places
-you must edit the markdown manually to change the status by adding or removing the `x`.
+You can add task lists anywhere Markdown is supported, but you can only "click"
+to toggle the boxes if they are in issues, merge requests, or comments. In other
+places you must edit the Markdown manually to change the status by adding or
+removing an `x` within the square brackets.
 
 To create a task list, add a specially-formatted Markdown list. You can use either
 unordered or ordered lists:

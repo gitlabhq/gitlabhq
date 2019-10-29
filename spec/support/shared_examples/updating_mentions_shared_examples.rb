@@ -58,9 +58,25 @@ RSpec.shared_examples 'updating mentions' do |service_class|
       end
     end
 
+    shared_examples 'updating attribute with existing group mention' do |attribute|
+      before do
+        mentionable.update!({ attribute => "FYI: #{group.to_reference}" })
+      end
+
+      it 'creates todos for only newly mentioned users' do
+        expect do
+          update_mentionable(
+            { attribute => "For #{group.to_reference}, cc: #{mentioned_user.to_reference}" }
+          )
+        end.to change { Todo.count }.by(1)
+      end
+    end
+
     context 'when group is public' do
       it_behaves_like 'updating attribute with allowed mentions', :title
       it_behaves_like 'updating attribute with allowed mentions', :description
+      it_behaves_like 'updating attribute with existing group mention', :title
+      it_behaves_like 'updating attribute with existing group mention', :description
     end
 
     context 'when the group is private' do
@@ -70,6 +86,8 @@ RSpec.shared_examples 'updating mentions' do |service_class|
 
       it_behaves_like 'updating attribute with allowed mentions', :title
       it_behaves_like 'updating attribute with allowed mentions', :description
+      it_behaves_like 'updating attribute with existing group mention', :title
+      it_behaves_like 'updating attribute with existing group mention', :description
     end
   end
 

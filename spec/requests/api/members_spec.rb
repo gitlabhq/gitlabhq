@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe API::Members do
@@ -24,7 +26,7 @@ describe API::Members do
 
   shared_examples 'GET /:source_type/:id/members/(all)' do |source_type, all|
     let(:members_url) do
-      "/#{source_type.pluralize}/#{source.id}/members".tap do |url|
+      (+"/#{source_type.pluralize}/#{source.id}/members").tap do |url|
         url << "/all" if all
       end
     end

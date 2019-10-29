@@ -17,6 +17,8 @@ The Advanced Syntax Search is a subset of the
 [Advanced Global Search](advanced_global_search.md), which you can use if you
 want to have more specific search results.
 
+Advanced Global Search only supports searching the [default branch](../project/repository/branches/index.md#default-branch).
+
 ## Use cases
 
 Let's say for example that the product you develop relies on the code of another

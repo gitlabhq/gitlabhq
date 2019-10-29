@@ -62,6 +62,14 @@ class Projects::PagesDomainsController < Projects::ApplicationController
     end
   end
 
+  def clean_certificate
+    unless @domain.update(user_provided_certificate: nil, user_provided_key: nil)
+      flash[:alert] = @domain.errors.full_messages.join(', ')
+    end
+
+    redirect_to edit_project_pages_domain_path(@project, @domain)
+  end
+
   private
 
   def create_params
