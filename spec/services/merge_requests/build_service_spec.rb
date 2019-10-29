@@ -83,8 +83,9 @@ describe MergeRequests::BuildService do
       expect(merge_request.force_remove_source_branch?).to be_truthy
     end
 
-    context 'with force_remove_source_branch parameter' do
+    context 'with force_remove_source_branch parameter when the user is authorized' do
       let(:mr_params) { params.merge(force_remove_source_branch: '1') }
+      let(:source_project) { fork_project(project, user) }
       let(:merge_request) { described_class.new(project, user, mr_params).execute }
 
       it 'assigns force_remove_source_branch' do
