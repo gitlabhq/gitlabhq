@@ -8,12 +8,12 @@ gem 'bootsnap', '~> 1.4'
 gem 'nakayoshi_fork', '~> 0.0.4'
 
 # Responders respond_to and respond_with
-gem 'responders', '~> 2.0'
+gem 'responders', '~> 3.0'
 
 gem 'sprockets', '~> 3.7.0'
 
 # Default values for AR models
-gem 'default_value_for', '~> 3.2.0'
+gem 'default_value_for', '~> 3.3.0'
 
 # Supported DBs
 gem 'pg', '~> 1.1'
@@ -175,7 +175,7 @@ group :puma do
 end
 
 # State machine
-gem 'state_machines-activerecord', '~> 0.5.1'
+gem 'state_machines-activerecord', '~> 0.6.0'
 
 # Issue tags
 gem 'acts-as-taggable-on', '~> 6.0'

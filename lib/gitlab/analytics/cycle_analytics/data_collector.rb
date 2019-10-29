@@ -12,6 +12,8 @@ module Gitlab
       class DataCollector
         include Gitlab::Utils::StrongMemoize
 
+        delegate :serialized_records, to: :records_fetcher
+
         def initialize(stage:, params: {})
           @stage = stage
           @params = params
