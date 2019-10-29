@@ -3,14 +3,15 @@ import DiffFileComponent from '~/diffs/components/diff_file.vue';
 import { diffViewerModes, diffViewerErrors } from '~/ide/constants';
 import { createStore } from 'ee_else_ce/mr_notes/stores';
 import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
-import diffFileMockData from '../mock_data/diff_file';
+import diffFileMockDataReadable from '../mock_data/diff_file';
+import diffFileMockDataUnreadable from '../mock_data/diff_file_unreadable';
 
 describe('DiffFile', () => {
   let vm;
 
   beforeEach(() => {
     vm = createComponentWithStore(Vue.extend(DiffFileComponent), createStore(), {
-      file: JSON.parse(JSON.stringify(diffFileMockData)),
+      file: JSON.parse(JSON.stringify(diffFileMockDataReadable)),
       canCurrentUserFork: false,
     }).$mount();
   });
@@ -70,6 +71,24 @@ describe('DiffFile', () => {
       });
 
       it('should have collapsed text and link even before rendered', done => {
+        vm.renderIt = false;
+        vm.isCollapsed = true;
+
+        vm.$nextTick(() => {
+          expect(vm.$el.innerText).toContain('This diff is collapsed');
+          expect(vm.$el.querySelectorAll('.js-click-to-expand').length).toEqual(1);
+
+          done();
+        });
+      });
+
+      it('should be collapsable for unreadable files', done => {
+        vm.$destroy();
+        vm = createComponentWithStore(Vue.extend(DiffFileComponent), createStore(), {
+          file: JSON.parse(JSON.stringify(diffFileMockDataUnreadable)),
+          canCurrentUserFork: false,
+        }).$mount();
+
         vm.renderIt = false;
         vm.isCollapsed = true;
 
@@ -180,6 +199,32 @@ describe('DiffFile', () => {
         })
         .then(() => {
           expect(vm.handleLoadCollapsedDiff).toHaveBeenCalled();
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+
+    it('does not call handleLoadCollapsedDiff if collapsed changed & file is unreadable', done => {
+      vm.$destroy();
+      vm = createComponentWithStore(Vue.extend(DiffFileComponent), createStore(), {
+        file: JSON.parse(JSON.stringify(diffFileMockDataUnreadable)),
+        canCurrentUserFork: false,
+      }).$mount();
+
+      spyOn(vm, 'handleLoadCollapsedDiff');
+
+      vm.file.highlighted_diff_lines = undefined;
+      vm.file.parallel_diff_lines = [];
+      vm.isCollapsed = true;
+
+      vm.$nextTick()
+        .then(() => {
+          vm.isCollapsed = false;
+
+          return vm.$nextTick();
+        })
+        .then(() => {
+          expect(vm.handleLoadCollapsedDiff).not.toHaveBeenCalled();
         })
         .then(done)
         .catch(done.fail);

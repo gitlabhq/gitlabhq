@@ -1,0 +1,5 @@
+---
+title: Add support for YAML anchors in CI scripts.
+merge_request: 18849
+author:
+type: changed

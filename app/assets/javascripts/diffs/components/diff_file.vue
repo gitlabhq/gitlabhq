@@ -54,11 +54,12 @@ export default {
     showLoadingIcon() {
       return this.isLoadingCollapsedDiff || (!this.file.renderIt && !this.isCollapsed);
     },
-    hasDiffLines() {
+    hasDiff() {
       return (
-        this.file.highlighted_diff_lines &&
-        this.file.parallel_diff_lines &&
-        this.file.parallel_diff_lines.length > 0
+        (this.file.highlighted_diff_lines &&
+          this.file.parallel_diff_lines &&
+          this.file.parallel_diff_lines.length > 0) ||
+        !this.file.blob.readable_text
       );
     },
     isFileTooLarge() {
@@ -82,7 +83,7 @@ export default {
   },
   watch: {
     isCollapsed: function fileCollapsedWatch(newVal, oldVal) {
-      if (!newVal && oldVal && !this.hasDiffLines) {
+      if (!newVal && oldVal && !this.hasDiff) {
         this.handleLoadCollapsedDiff();
       }
 
@@ -103,7 +104,7 @@ export default {
       'setFileCollapsed',
     ]),
     handleToggle() {
-      if (!this.hasDiffLines) {
+      if (!this.hasDiff) {
         this.handleLoadCollapsedDiff();
       } else {
         this.isCollapsed = !this.isCollapsed;

@@ -94,7 +94,7 @@ describe Gitlab::Ci::Pipeline::Chain::Validate::Config do
 
     it 'appends configuration validation errors to pipeline errors' do
       expect(pipeline.errors.to_a)
-        .to include "jobs:rspec:before_script config should be an array of strings"
+        .to include "jobs:rspec:before_script config should be an array containing strings and arrays of strings"
     end
 
     it 'breaks the chain' do

@@ -12,11 +12,26 @@ describe Gitlab::Ci::Ansi2json do
       ])
     end
 
-    it 'adds new line in a separate element' do
-      expect(convert_json("Hello\nworld")).to eq([
-        { offset: 0, content: [{ text: 'Hello' }] },
-        { offset: 6, content: [{ text: 'world' }] }
-      ])
+    context 'new lines' do
+      it 'adds new line when encountering \n' do
+        expect(convert_json("Hello\nworld")).to eq([
+          { offset: 0, content: [{ text: 'Hello' }] },
+          { offset: 6, content: [{ text: 'world' }] }
+        ])
+      end
+
+      it 'adds new line when encountering \r\n' do
+        expect(convert_json("Hello\r\nworld")).to eq([
+          { offset: 0, content: [{ text: 'Hello' }] },
+          { offset: 7, content: [{ text: 'world' }] }
+        ])
+      end
+
+      it 'replace the current line when encountering \r' do
+        expect(convert_json("Hello\rworld")).to eq([
+          { offset: 0, content: [{ text: 'world' }] }
+        ])
+      end
     end
 
     it 'recognizes color changing ANSI sequences' do
@@ -113,10 +128,6 @@ describe Gitlab::Ci::Ansi2json do
             content: [],
             section_duration: '01:03',
             section: 'prepare-script'
-          },
-          {
-            offset: 63,
-            content: []
           }
         ])
       end
@@ -134,10 +145,6 @@ describe Gitlab::Ci::Ansi2json do
             content: [],
             section: 'prepare-script',
             section_duration: '01:03'
-          },
-          {
-            offset: 56,
-            content: []
           }
         ])
       end
@@ -157,7 +164,7 @@ describe Gitlab::Ci::Ansi2json do
             section_duration: '01:03'
           },
           {
-            offset: 49,
+            offset: 91,
             content: [{ text: 'world' }]
           }
         ])
@@ -198,7 +205,7 @@ describe Gitlab::Ci::Ansi2json do
           expect(convert_json("#{section_start}hello")).to eq([
             {
               offset: 0,
-              content: [{ text: "#{section_start.gsub("\033[0K", '')}hello" }]
+              content: [{ text: 'hello' }]
             }
           ])
         end
@@ -211,7 +218,7 @@ describe Gitlab::Ci::Ansi2json do
           expect(convert_json("#{section_start}hello")).to eq([
             {
               offset: 0,
-              content: [{ text: "#{section_start.gsub("\033[0K", '').gsub('<', '&lt;')}hello" }]
+              content: [{ text: 'hello' }]
             }
           ])
         end
@@ -231,10 +238,6 @@ describe Gitlab::Ci::Ansi2json do
             content: [],
             section: 'prepare-script',
             section_duration: '01:03'
-          },
-          {
-            offset: 95,
-            content: []
           }
         ])
       end
@@ -274,7 +277,7 @@ describe Gitlab::Ci::Ansi2json do
                 section_duration: '00:02'
               },
               {
-                offset: 106,
+                offset: 155,
                 content: [{ text: 'baz' }],
                 section: 'prepare-script'
               },
@@ -285,7 +288,7 @@ describe Gitlab::Ci::Ansi2json do
                 section_duration: '01:03'
               },
               {
-                offset: 158,
+                offset: 200,
                 content: [{ text: 'world' }]
               }
             ])
@@ -318,14 +321,10 @@ describe Gitlab::Ci::Ansi2json do
                 section_duration: '00:02'
               },
               {
-                offset: 115,
+                offset: 164,
                 content: [],
                 section: 'prepare-script',
                 section_duration: '01:03'
-              },
-              {
-                offset: 164,
-                content: []
               }
             ])
         end
@@ -380,7 +379,7 @@ describe Gitlab::Ci::Ansi2json do
           ]
         end
 
-        it 'returns the full line' do
+        it 'returns the line since last partially processed line' do
           expect(pass2.lines).to eq(lines)
           expect(pass2.append).to be_truthy
         end
@@ -399,7 +398,7 @@ describe Gitlab::Ci::Ansi2json do
           ]
         end
 
-        it 'returns the full line' do
+        it 'returns the line since last partially processed line' do
           expect(pass2.lines).to eq(lines)
           expect(pass2.append).to be_falsey
         end
@@ -416,7 +415,7 @@ describe Gitlab::Ci::Ansi2json do
           ]
         end
 
-        it 'returns the full line' do
+        it 'returns a blank line and the next line' do
           expect(pass2.lines).to eq(lines)
           expect(pass2.append).to be_falsey
         end
@@ -502,10 +501,6 @@ describe Gitlab::Ci::Ansi2json do
                 content: [],
                 section: 'prepare-script',
                 section_duration: '01:03'
-              },
-              {
-                offset: 77,
-                content: []
               }
             ]
           end

@@ -175,6 +175,9 @@ NOTE: **Note:**
 Starting from [GitLab 12.1](https://gitlab.com/gitlab-org/gitlab-foss/issues/55902), all GKE clusters
 created by GitLab are RBAC-enabled. Take a look at the [RBAC section](#rbac-cluster-resources) for more information.
 
+NOTE: **Note:**
+Starting from [GitLab 12.5](https://gitlab.com/gitlab-org/gitlab/merge_requests/18341), the cluster's pod address IP range will be set to /16 instead of the regular /14. (/16 is a CIDR notation)
+
 ### Cloud Run on GKE
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/merge_requests/16566) in GitLab 12.4.
