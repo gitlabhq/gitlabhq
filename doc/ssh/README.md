@@ -51,7 +51,7 @@ GitLab supports RSA, DSA, ECDSA, and ED25519 keys. Their difference lies on
 the signing algorithm, and some of them have advantages over the others. For
 more information, you can read this
 [nice article on ArchWiki](https://wiki.archlinux.org/index.php/SSH_keys#Choosing_the_authentication_key_type).
-We'll focus on ED25519 and RSA and here.
+We'll focus on ED25519 and RSA here.
 
 NOTE: **Note:**
 As an admin, you can [restrict which keys should be permitted and their minimum length](../security/ssh_keys_restrictions.md).

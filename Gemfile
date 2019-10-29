@@ -331,7 +331,6 @@ group :metrics do
 end
 
 group :development do
-  gem 'foreman', '~> 0.84.0'
   gem 'brakeman', '~> 4.2', require: false
   gem 'danger', '~> 6.0', require: false
 

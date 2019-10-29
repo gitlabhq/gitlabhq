@@ -117,7 +117,7 @@ You can view the performance dashboard for an environment by [clicking on the mo
 
 Custom metrics can be monitored by adding them on the monitoring dashboard page. Once saved, they will be displayed on the environment performance dashboard provided that either:
 
-- A [connected Kubernetes cluster](../clusters/index.md#adding-and-removing-clusters) with the environment scope of `*` is used and [Prometheus installed on the cluster](#enabling-prometheus-integration), or
+- A [connected Kubernetes cluster](../clusters/add_remove_clusters.md) with the environment scope of `*` is used and [Prometheus installed on the cluster](#enabling-prometheus-integration)
 - Prometheus is [manually configured](#manual-configuration-of-prometheus).
 
 ![Add New Metric](img/prometheus_add_metric.png)

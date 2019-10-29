@@ -7,7 +7,7 @@ These applications are needed for [Review Apps](../../ci/review_apps/index.md)
 and [deployments](../../ci/environments.md) when using [Auto DevOps](../../topics/autodevops/index.md).
 
 You can install them after you
-[create a cluster](../project/clusters/index.md#adding-and-removing-clusters).
+[create a cluster](../project/clusters/add_remove_clusters.md).
 
 ## Installing applications
 
@@ -244,7 +244,7 @@ server to use the external IP address for that domain. For any
 application created and installed, they will be accessible as
 `<program_name>.<kubernetes_namespace>.<domain_name>`. This will require
 your Kubernetes cluster to have [RBAC
-enabled](../project/clusters/index.md#rbac-cluster-resources).
+enabled](../project/clusters/add_remove_clusters.md#rbac-cluster-resources).
 
 NOTE: **Note:**
 The [`knative/knative`](https://storage.googleapis.com/triggermesh-charts)

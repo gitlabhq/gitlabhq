@@ -13,14 +13,16 @@ GitLab supports several ways deploy Serverless applications in both Kubernetes E
 
 Currently we support:
 
-- [Knative](#knative): Build Knative applications with Knative and gitlabktl on GKE
-- [AWS Lambda](aws.md): Create serverless applications via the Serverless Framework and GitLab CI
+- [Knative](#knative): Build Knative applications with Knative and gitlabktl on GKE.
+- [AWS Lambda](aws.md): Create serverless applications via the Serverless Framework and GitLab CI.
 
 ## Knative
 
 Run serverless workloads on Kubernetes using [Knative](https://cloud.google.com/knative/).
 
-Knative extends Kubernetes to provide a set of middleware components that are useful to build modern, source-centric, container-based applications. Knative brings some significant benefits out of the box through its main components:
+Knative extends Kubernetes to provide a set of middleware components that are useful to build
+modern, source-centric, container-based applications. Knative brings some significant benefits out
+of the box through its main components:
 
 - [Serving](https://github.com/knative/serving): Request-driven compute that can scale to zero.
 - [Eventing](https://github.com/knative/eventing): Management and delivery of events.
@@ -39,7 +41,7 @@ To run Knative on GitLab, you will need:
    - If you are planning on deploying a serverless application, clone the sample [Knative Ruby App](https://gitlab.com/knative-examples/knative-ruby-app) to get started.
 
 1. **Kubernetes Cluster:** An RBAC-enabled Kubernetes cluster is required to deploy Knative.
-   The simplest way to get started is to add a cluster using [GitLab's GKE integration](../index.md#add-new-gke-cluster).
+   The simplest way to get started is to add a cluster using [GitLab's GKE integration](../add_remove_clusters.md#add-new-gke-cluster).
    The set of minimum recommended cluster specifications to run Knative is 3 nodes, 6 vCPUs, and 22.50 GB memory.
 1. **Helm Tiller:** Helm is a package manager for Kubernetes and is required to install
    Knative.
@@ -68,7 +70,7 @@ To run Knative on GitLab, you will need:
 NOTE: **Note:**
 The minimum recommended cluster size to run Knative is 3-nodes, 6 vCPUs, and 22.50 GB memory. **RBAC must be enabled.**
 
-1. [Add a Kubernetes cluster](../index.md) and [install Helm](../index.md#installing-applications).
+1. [Add a Kubernetes cluster](../add_remove_clusters.md) and [install Helm](../index.md#installing-applications).
 1. Once Helm has been successfully installed, scroll down to the Knative app section. Enter the domain to be used with
    your application/functions (e.g. `example.com`) and click **Install**.
 
@@ -108,7 +110,7 @@ You must do the following:
 
 1. Follow the steps to
    [add an existing Kubernetes
-   cluster](../index.md#add-existing-kubernetes-cluster).
+   cluster](../add_remove_clusters.md#add-existing-cluster).
 
 1. Ensure GitLab can manage Knative:
    - For a non-GitLab managed cluster, ensure that the service account for the token

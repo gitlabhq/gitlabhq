@@ -1,7 +1,6 @@
 # Project clusters API
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/23922)
-in GitLab 11.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/23922) in GitLab 11.7.
 
 NOTE: **Note:**
 User will need at least maintainer access to use these endpoints.
@@ -283,7 +282,7 @@ Parameters:
 
 NOTE: **Note:**
 `name`, `api_url`, `ca_cert` and `token` can only be updated if the cluster was added
-through the ["Add existing Kubernetes cluster"](../user/project/clusters/index.md#add-existing-kubernetes-cluster) option or
+through the ["Add existing Kubernetes cluster"](../user/project/clusters/add_remove_clusters.md#add-existing-cluster) option or
 through the ["Add existing cluster to project"](#add-existing-cluster-to-project) endpoint.
 
 Example request:
