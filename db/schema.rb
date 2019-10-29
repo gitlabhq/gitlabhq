@@ -1041,6 +1041,8 @@ ActiveRecord::Schema.define(version: 2019_10_26_041447) do
     t.boolean "managed", default: true, null: false
     t.boolean "namespace_per_environment", default: true, null: false
     t.integer "management_project_id"
+    t.integer "cleanup_status", limit: 2, default: 1, null: false
+    t.text "cleanup_status_reason"
     t.index ["enabled"], name: "index_clusters_on_enabled"
     t.index ["management_project_id"], name: "index_clusters_on_management_project_id", where: "(management_project_id IS NOT NULL)"
     t.index ["user_id"], name: "index_clusters_on_user_id"
@@ -2340,6 +2342,7 @@ ActiveRecord::Schema.define(version: 2019_10_26_041447) do
     t.index ["target_project_id", "iid"], name: "index_merge_requests_on_target_project_id_and_iid", unique: true
     t.index ["target_project_id", "iid"], name: "index_merge_requests_on_target_project_id_and_iid_opened", where: "((state)::text = 'opened'::text)"
     t.index ["target_project_id", "merge_commit_sha", "id"], name: "index_merge_requests_on_tp_id_and_merge_commit_sha_and_id"
+    t.index ["target_project_id", "target_branch"], name: "index_merge_requests_on_target_project_id_and_target_branch", where: "((state_id = 1) AND (merge_when_pipeline_succeeds = true))"
     t.index ["title"], name: "index_merge_requests_on_title"
     t.index ["title"], name: "index_merge_requests_on_title_trigram", opclass: :gin_trgm_ops, using: :gin
     t.index ["updated_by_id"], name: "index_merge_requests_on_updated_by_id", where: "(updated_by_id IS NOT NULL)"

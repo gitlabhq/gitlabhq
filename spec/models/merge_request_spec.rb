@@ -3368,7 +3368,7 @@ describe MergeRequest do
     end
   end
 
-  describe '.with_open_merge_when_pipeline_succeeds' do
+  describe '.with_auto_merge_enabled' do
     let!(:project) { create(:project) }
     let!(:fork) { fork_project(project) }
     let!(:merge_request1) do
@@ -3380,15 +3380,6 @@ describe MergeRequest do
              source_branch: 'feature-1')
     end
 
-    let!(:merge_request2) do
-      create(:merge_request,
-             :merge_when_pipeline_succeeds,
-             target_project: project,
-             target_branch: 'master',
-             source_project: fork,
-             source_branch: 'fork-feature-1')
-    end
-
     let!(:merge_request4) do
       create(:merge_request,
              target_project: project,
@@ -3397,9 +3388,9 @@ describe MergeRequest do
              source_branch: 'fork-feature-2')
     end
 
-    let(:query) { described_class.with_open_merge_when_pipeline_succeeds }
+    let(:query) { described_class.with_auto_merge_enabled }
 
-    it { expect(query).to contain_exactly(merge_request1, merge_request2) }
+    it { expect(query).to contain_exactly(merge_request1) }
   end
 
   it_behaves_like 'versioned description'

@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 #
 # # generate-seed-repo-rb
 #
@@ -15,9 +16,9 @@
 require 'erb'
 require 'tempfile'
 
-SOURCE = File.expand_path('gitlab-git-test.git', __dir__).freeze
-SCRIPT_NAME = 'generate-seed-repo-rb'.freeze
-REPO_NAME = 'gitlab-git-test.git'.freeze
+SOURCE = File.expand_path('gitlab-git-test.git', __dir__)
+SCRIPT_NAME = 'generate-seed-repo-rb'
+REPO_NAME = 'gitlab-git-test.git'
 
 def main
   Dir.mktmpdir do |dir|

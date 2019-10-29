@@ -6,6 +6,7 @@ class GroupsController < Groups::ApplicationController
   include ParamsBackwardCompatibility
   include PreviewMarkdown
   include RecordUserLastActivity
+  extend ::Gitlab::Utils::Override
 
   respond_to :html
 
@@ -232,6 +233,11 @@ class GroupsController < Groups::ApplicationController
     if @group.supports_events?
       @group.self_and_descendants.public_or_visible_to_user(current_user)
     end
+  end
+
+  override :markdown_service_params
+  def markdown_service_params
+    params.merge(group: group)
   end
 end
 

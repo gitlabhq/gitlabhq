@@ -686,12 +686,36 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
 
     context 'the cluster has a provider' do
       let(:cluster) { create(:cluster, :provided_by_gcp) }
+      let(:provider_status) { :errored }
 
       before do
         cluster.provider.make_errored!
       end
 
-      it { is_expected.to eq :errored }
+      it { is_expected.to eq provider_status }
+
+      context 'when cluster cleanup is ongoing' do
+        using RSpec::Parameterized::TableSyntax
+
+        where(:status_name, :cleanup_status) do
+          provider_status  | :cleanup_not_started
+          :cleanup_ongoing | :cleanup_uninstalling_applications
+          :cleanup_ongoing | :cleanup_removing_project_namespaces
+          :cleanup_ongoing | :cleanup_removing_service_account
+          :cleanup_errored | :cleanup_errored
+        end
+
+        with_them do
+          it 'returns cleanup_ongoing when uninstalling applications' do
+            cluster.cleanup_status = described_class
+              .state_machines[:cleanup_status]
+              .states[cleanup_status]
+              .value
+
+            is_expected.to eq status_name
+          end
+        end
+      end
     end
 
     context 'there is a cached connection status' do
@@ -712,6 +736,83 @@ describe Clusters::Cluster, :use_clean_rails_memory_store_caching do
       end
 
       it { is_expected.to eq :created }
+    end
+  end
+
+  describe 'cleanup_status state_machine' do
+    shared_examples 'cleanup_status transition' do
+      let(:cluster) { create(:cluster, from_state) }
+
+      it 'transitions cleanup_status correctly' do
+        expect { subject }.to change { cluster.cleanup_status_name }
+          .from(from_state).to(to_state)
+      end
+
+      it 'schedules a Clusters::Cleanup::*Worker' do
+        expect(expected_worker_class).to receive(:perform_async).with(cluster.id)
+        subject
+      end
+    end
+
+    describe '#start_cleanup!' do
+      let(:expected_worker_class) { Clusters::Cleanup::AppWorker }
+      let(:to_state) { :cleanup_uninstalling_applications }
+
+      subject { cluster.start_cleanup! }
+
+      context 'when cleanup_status is cleanup_not_started' do
+        let(:from_state) { :cleanup_not_started }
+
+        it_behaves_like 'cleanup_status transition'
+      end
+
+      context 'when cleanup_status is errored' do
+        let(:from_state) { :cleanup_errored }
+
+        it_behaves_like 'cleanup_status transition'
+      end
+    end
+
+    describe '#make_cleanup_errored!' do
+      NON_ERRORED_STATES = Clusters::Cluster.state_machines[:cleanup_status].states.keys - [:cleanup_errored]
+
+      NON_ERRORED_STATES.each do |state|
+        it "transitions cleanup_status from #{state} to cleanup_errored" do
+          cluster = create(:cluster, state)
+
+          expect { cluster.make_cleanup_errored! }.to change { cluster.cleanup_status_name }
+            .from(state).to(:cleanup_errored)
+        end
+
+        it "sets error message" do
+          cluster = create(:cluster, state)
+
+          expect { cluster.make_cleanup_errored!("Error Message") }.to change { cluster.cleanup_status_reason }
+            .from(nil).to("Error Message")
+        end
+      end
+    end
+
+    describe '#continue_cleanup!' do
+      context 'when cleanup_status is cleanup_uninstalling_applications' do
+        let(:expected_worker_class) { Clusters::Cleanup::ProjectNamespaceWorker }
+        let(:from_state) { :cleanup_uninstalling_applications }
+        let(:to_state) { :cleanup_removing_project_namespaces }
+
+        subject { cluster.continue_cleanup! }
+
+        it_behaves_like 'cleanup_status transition'
+      end
+
+      context 'when cleanup_status is cleanup_removing_project_namespaces' do
+        let(:expected_worker_class) { Clusters::Cleanup::ServiceAccountWorker }
+        let(:from_state) { :cleanup_removing_project_namespaces }
+        let(:to_state) { :cleanup_removing_service_account }
+
+        subject { cluster.continue_cleanup! }
+
+        it_behaves_like 'cleanup_status transition'
+      end
     end
   end
 

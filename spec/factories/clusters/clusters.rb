@@ -93,5 +93,25 @@ FactoryBot.define do
     trait :not_managed do
       managed { false }
     end
+
+    trait :cleanup_not_started do
+      cleanup_status { 1 }
+    end
+
+    trait :cleanup_uninstalling_applications do
+      cleanup_status { 2 }
+    end
+
+    trait :cleanup_removing_project_namespaces do
+      cleanup_status { 3 }
+    end
+
+    trait :cleanup_removing_service_account do
+      cleanup_status { 4 }
+    end
+
+    trait :cleanup_errored do
+      cleanup_status { 5 }
+    end
   end
 end

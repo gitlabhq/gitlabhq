@@ -20,7 +20,7 @@ module QA
           element :admin_area_link
           element :projects_dropdown, required: true
           element :groups_dropdown, required: true
-          element :more_dropdown, required: true
+          element :more_dropdown
           element :snippets_link
         end
 

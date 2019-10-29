@@ -16,8 +16,12 @@ class PreviewMarkdownService < BaseService
 
   private
 
+  def quick_action_types
+    %w(Issue MergeRequest Commit)
+  end
+
   def explain_quick_actions(text)
-    return text, [] unless %w(Issue MergeRequest Commit).include?(target_type)
+    return text, [] unless quick_action_types.include?(target_type)
 
     quick_actions_service = QuickActions::InterpretService.new(project, current_user)
     quick_actions_service.explain(text, find_commands_target)
@@ -51,7 +55,7 @@ class PreviewMarkdownService < BaseService
 
   def find_commands_target
     QuickActions::TargetService
-      .new(project, current_user)
+      .new(project, current_user, group: params[:group])
       .execute(target_type, target_id)
   end
 
@@ -63,3 +67,5 @@ class PreviewMarkdownService < BaseService
     params[:target_id]
   end
 end
+
+PreviewMarkdownService.prepend_if_ee('EE::PreviewMarkdownService')

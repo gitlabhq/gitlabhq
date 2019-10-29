@@ -9,8 +9,10 @@ import { parseBoolean } from '../lib/utils/common_utils';
 
 export default function setupVueRepositoryList() {
   const el = document.getElementById('js-tree-list');
-  const { projectPath, projectShortPath, ref, fullName } = el.dataset;
+  const { dataset } = el;
+  const { projectPath, projectShortPath, ref, fullName } = dataset;
   const router = createRouter(projectPath, ref);
+  const hideOnRootEls = document.querySelectorAll('.js-hide-on-root');
 
   apolloProvider.clients.defaultClient.cache.writeData({
     data: {
@@ -35,6 +37,7 @@ export default function setupVueRepositoryList() {
     document
       .querySelectorAll('.js-hide-on-navigation')
       .forEach(elem => elem.classList.toggle('hidden', !isRoot));
+    hideOnRootEls.forEach(elem => elem.classList.toggle('hidden', isRoot));
   });
 
   const breadcrumbEl = document.getElementById('js-repo-breadcrumb');
@@ -88,7 +91,8 @@ export default function setupVueRepositoryList() {
     },
   });
 
-  return new Vue({
+  // eslint-disable-next-line no-new
+  new Vue({
     el,
     router,
     apolloProvider,
@@ -96,4 +100,6 @@ export default function setupVueRepositoryList() {
       return h(App);
     },
   });
+
+  return { router, data: dataset };
 }

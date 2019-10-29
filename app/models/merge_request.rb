@@ -209,14 +209,20 @@ class MergeRequest < ApplicationRecord
   scope :by_target_branch, ->(branch_name) { where(target_branch: branch_name) }
   scope :preload_source_project, -> { preload(:source_project) }
 
-  scope :with_open_merge_when_pipeline_succeeds, -> do
-    with_state(:opened).where(merge_when_pipeline_succeeds: true)
+  scope :with_auto_merge_enabled, -> do
+    with_state(:opened).where(auto_merge_enabled: true)
   end
 
   after_save :keep_around_commit
 
   alias_attribute :project, :target_project
   alias_attribute :project_id, :target_project_id
+
+  # Currently, `merge_when_pipeline_succeeds` column is used as a flag
+  # to check if _any_ auto merge strategy is activated on the merge request.
+  # Today, we have multiple strategies and MWPS is one of them.
+  # we'd eventually rename the column for avoiding confusions, but in the mean time
+  # please use `auto_merge_enabled` alias instead of `merge_when_pipeline_succeeds`.
   alias_attribute :auto_merge_enabled, :merge_when_pipeline_succeeds
   alias_method :issuing_parent, :target_project
 

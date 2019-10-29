@@ -6,7 +6,7 @@ module Gitlab
       def self.use(_schema)
         GraphQL::Relay::BaseConnection.register_connection_implementation(
           ActiveRecord::Relation,
-          Gitlab::Graphql::Connections::KeysetConnection
+          Gitlab::Graphql::Connections::Keyset::Connection
         )
       end
     end

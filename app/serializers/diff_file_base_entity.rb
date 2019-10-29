@@ -89,6 +89,14 @@ class DiffFileBaseEntity < Grape::Entity
 
   expose :viewer, using: DiffViewerEntity
 
+  expose :old_size do |diff_file|
+    diff_file.old_blob&.raw_size
+  end
+
+  expose :new_size do |diff_file|
+    diff_file.new_blob&.raw_size
+  end
+
   private
 
   def memoized_submodule_links(diff_file, options)

@@ -8,6 +8,8 @@ describe 'projects/tree/_tree_header' do
   let(:repository) { project.repository }
 
   before do
+    stub_feature_flags(vue_file_list: false)
+
     assign(:project, project)
     assign(:repository, repository)
     assign(:id, File.join('master', ''))

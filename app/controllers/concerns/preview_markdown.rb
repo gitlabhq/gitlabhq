@@ -5,7 +5,7 @@ module PreviewMarkdown
 
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def preview_markdown
-    result = PreviewMarkdownService.new(@project, current_user, params).execute
+    result = PreviewMarkdownService.new(@project, current_user, markdown_service_params).execute
 
     markdown_params =
       case controller_name
@@ -26,6 +26,8 @@ module PreviewMarkdown
   end
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
+  private
+
   def projects_filter_params
     {
       issuable_state_filter_enabled: true,
@@ -33,10 +35,12 @@ module PreviewMarkdown
     }
   end
 
-  private
-
   # Override this method to customise the markdown for your controller
   def preview_markdown_params
     {}
+  end
+
+  def markdown_service_params
+    params
   end
 end

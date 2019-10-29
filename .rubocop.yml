@@ -56,7 +56,7 @@ Style/FrozenStringLiteralComment:
     - 'qa/**/*'
     - 'rubocop/**/*'
     - 'scripts/**/*'
-    - 'spec/**/*'
+    - 'spec/lib/**/*'
 
 RSpec/FilePath:
   Exclude:

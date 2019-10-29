@@ -769,7 +769,7 @@ describe MergeRequests::RefreshService do
       fork_project(target_project, author, repository: true)
     end
 
-    let_it_be(:merge_request) do
+    let_it_be(:merge_request, refind: true) do
       create(:merge_request,
              author: author,
              source_project: source_project,
@@ -795,88 +795,58 @@ describe MergeRequests::RefreshService do
         .parent_id
     end
 
+    let(:auto_merge_strategy) { AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS }
     let(:refresh_service) { service.new(project, user) }
 
     before do
       target_project.merge_method = merge_method
       target_project.save!
+      merge_request.auto_merge_strategy = auto_merge_strategy
+      merge_request.save!
 
       refresh_service.execute(oldrev, newrev, 'refs/heads/master')
       merge_request.reload
     end
 
-    let(:aborted_message) do
-      /aborted the automatic merge because target branch was updated/
-    end
-
-    shared_examples 'aborted MWPS' do
-      it 'aborts auto_merge' do
-        expect(merge_request.auto_merge_enabled?).to be_falsey
-        expect(merge_request.notes.last.note).to match(aborted_message)
-      end
-
-      it 'removes merge_user' do
-        expect(merge_request.merge_user).to be_nil
-      end
-
-      it 'does not add todos for merge user' do
-        expect(user.todos.for_target(merge_request)).to be_empty
-      end
-
-      it 'adds todos for merge author' do
-        expect(author.todos.for_target(merge_request)).to be_present.and be_all(&:pending?)
-      end
-    end
-
     context 'when Project#merge_method is set to FF' do
       let(:merge_method) { :ff }
 
-      it_behaves_like 'aborted MWPS'
+      it_behaves_like 'aborted merge requests for MWPS'
 
       context 'with forked project' do
         let(:source_project) { forked_project }
 
-        it_behaves_like 'aborted MWPS'
+        it_behaves_like 'aborted merge requests for MWPS'
+      end
+
+      context 'with bogus auto merge strategy' do
+        let(:auto_merge_strategy) { 'bogus' }
+
+        it_behaves_like 'maintained merge requests for MWPS'
       end
     end
 
     context 'when Project#merge_method is set to rebase_merge' do
       let(:merge_method) { :rebase_merge }
 
-      it_behaves_like 'aborted MWPS'
+      it_behaves_like 'aborted merge requests for MWPS'
 
       context 'with forked project' do
         let(:source_project) { forked_project }
 
-        it_behaves_like 'aborted MWPS'
+        it_behaves_like 'aborted merge requests for MWPS'
       end
     end
 
     context 'when Project#merge_method is set to merge' do
       let(:merge_method) { :merge }
 
-      shared_examples 'maintained MWPS' do
-        it 'does not cancel auto merge' do
-          expect(merge_request.auto_merge_enabled?).to be_truthy
-          expect(merge_request.notes).to be_empty
-        end
-
-        it 'does not change merge_user' do
-          expect(merge_request.merge_user).to eq(user)
-        end
-
-        it 'does not add todos' do
-          expect(author.todos.for_target(merge_request)).to be_empty
-          expect(user.todos.for_target(merge_request)).to be_empty
-        end
-      end
-
-      it_behaves_like 'maintained MWPS'
+      it_behaves_like 'maintained merge requests for MWPS'
 
       context 'with forked project' do
         let(:source_project) { forked_project }
 
-        it_behaves_like 'maintained MWPS'
+        it_behaves_like 'maintained merge requests for MWPS'
       end
     end
   end

@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
   leaveByUrl('project');
 
   if (document.getElementById('js-tree-list')) {
-    import('~/repository')
+    import('ee_else_ce/repository')
       .then(m => m.default())
       .catch(e => {
         throw e;

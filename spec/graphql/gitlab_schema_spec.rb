@@ -36,7 +36,7 @@ describe GitlabSchema do
   it 'paginates active record relations using `Gitlab::Graphql::Connections::KeysetConnection`' do
     connection = GraphQL::Relay::BaseConnection::CONNECTION_IMPLEMENTATIONS[ActiveRecord::Relation.name]
 
-    expect(connection).to eq(Gitlab::Graphql::Connections::KeysetConnection)
+    expect(connection).to eq(Gitlab::Graphql::Connections::Keyset::Connection)
   end
 
   describe '.execute' do

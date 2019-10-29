@@ -1,0 +1,5 @@
+---
+title: Fix Todo IDs in GraphQL API
+merge_request: 19068
+author:
+type: fixed

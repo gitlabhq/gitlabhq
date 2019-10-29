@@ -21,7 +21,7 @@
           %td{ "aria-label" => (service.activated? ? s_("ProjectService|%{service_title}: status on") : s_("ProjectService|%{service_title}: status off")) % { service_title: service.title } }
             = boolean_to_icon service.activated?
           %td
-            = link_to edit_project_service_path(@project, service.to_param) do
+            = link_to edit_project_service_path(@project, service.to_param), { data: { qa_selector: "#{service.title.downcase.gsub(/[\s\(\)]/,'_')}_link" } } do
               %strong= service.title
           %td.d-none.d-sm-block
             = service.description

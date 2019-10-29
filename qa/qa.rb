@@ -331,6 +331,7 @@ module QA
 
         module Component
           autoload :IpLimits, 'qa/page/admin/settings/component/ip_limits'
+          autoload :OutboundRequests, 'qa/page/admin/settings/component/outbound_requests'
           autoload :RepositoryStorage, 'qa/page/admin/settings/component/repository_storage'
           autoload :AccountAndLimit, 'qa/page/admin/settings/component/account_and_limit'
           autoload :PerformanceBar, 'qa/page/admin/settings/component/performance_bar'
@@ -406,6 +407,7 @@ module QA
 
     module DockerRun
       autoload :Base, 'qa/service/docker_run/base'
+      autoload :Jenkins, 'qa/service/docker_run/jenkins'
       autoload :LDAP, 'qa/service/docker_run/ldap'
       autoload :Maven, 'qa/service/docker_run/maven'
       autoload :NodeJs, 'qa/service/docker_run/node_js'
@@ -435,6 +437,17 @@ module QA
       module Page
         autoload :Base, 'qa/vendor/saml_idp/page/base'
         autoload :Login, 'qa/vendor/saml_idp/page/login'
+      end
+    end
+
+    module Jenkins
+      module Page
+        autoload :Base, 'qa/vendor/jenkins/page/base'
+        autoload :Login, 'qa/vendor/jenkins/page/login'
+        autoload :Configure, 'qa/vendor/jenkins/page/configure'
+        autoload :NewCredentials, 'qa/vendor/jenkins/page/new_credentials'
+        autoload :NewJob, 'qa/vendor/jenkins/page/new_job'
+        autoload :ConfigureJob, 'qa/vendor/jenkins/page/configure_job'
       end
     end
 

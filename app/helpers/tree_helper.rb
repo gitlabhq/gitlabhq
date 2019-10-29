@@ -186,6 +186,15 @@ module TreeHelper
 
     attrs
   end
+
+  def vue_file_list_data(project, ref)
+    {
+      project_path: project.full_path,
+      project_short_path: project.path,
+      ref: ref,
+      full_name: project.name_with_namespace
+    }
+  end
 end
 
 TreeHelper.prepend_if_ee('::EE::TreeHelper')

@@ -1,10 +1,12 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
+
 require 'fileutils'
 
-REPO = 'spec/support/gitlab-git-test.git'.freeze
+REPO = 'spec/support/gitlab-git-test.git'
 PACK_DIR = REPO + '/objects/pack'
 GIT = %W[git --git-dir=#{REPO}].freeze
-BASE_PACK = 'pack-691247af2a6acb0b63b73ac0cb90540e93614043'.freeze
+BASE_PACK = 'pack-691247af2a6acb0b63b73ac0cb90540e93614043'
 
 def main
   unpack

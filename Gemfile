@@ -387,7 +387,6 @@ group :development, :test do
 
   gem 'benchmark-ips', '~> 2.3.0', require: false
 
-  gem 'license_finder', '~> 5.4', require: false
   gem 'knapsack', '~> 1.17'
 
   gem 'stackprof', '~> 0.2.10', require: false
@@ -395,6 +394,11 @@ group :development, :test do
   gem 'simple_po_parser', '~> 1.1.2', require: false
 
   gem 'timecop', '~> 0.8.0'
+end
+
+# Gems required in omnibus-gitlab pipeline
+group :development, :test, :omnibus do
+  gem 'license_finder', '~> 5.4', require: false
 end
 
 group :test do
