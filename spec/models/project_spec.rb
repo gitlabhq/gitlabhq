@@ -4444,6 +4444,14 @@ describe Project do
     end
   end
 
+  describe '#to_ability_name' do
+    it 'returns project' do
+      project = build(:project_empty_repo)
+
+      expect(project.to_ability_name).to eq('project')
+    end
+  end
+
   describe '#execute_hooks' do
     let(:data) { { ref: 'refs/heads/master', data: 'data' } }
     it 'executes active projects hooks with the specified scope' do

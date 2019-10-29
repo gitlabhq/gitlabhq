@@ -578,24 +578,30 @@ describe Note do
   end
 
   describe '#to_ability_name' do
-    it 'returns snippet for a project snippet note' do
-      expect(build(:note_on_project_snippet).to_ability_name).to eq('project_snippet')
+    it 'returns note' do
+      expect(build(:note).to_ability_name).to eq('note')
+    end
+  end
+
+  describe '#noteable_ability_name' do
+    it 'returns project_snippet for a project snippet note' do
+      expect(build(:note_on_project_snippet).noteable_ability_name).to eq('project_snippet')
     end
 
     it 'returns personal_snippet for a personal snippet note' do
-      expect(build(:note_on_personal_snippet).to_ability_name).to eq('personal_snippet')
+      expect(build(:note_on_personal_snippet).noteable_ability_name).to eq('personal_snippet')
     end
 
     it 'returns merge_request for an MR note' do
-      expect(build(:note_on_merge_request).to_ability_name).to eq('merge_request')
+      expect(build(:note_on_merge_request).noteable_ability_name).to eq('merge_request')
     end
 
     it 'returns issue for an issue note' do
-      expect(build(:note_on_issue).to_ability_name).to eq('issue')
+      expect(build(:note_on_issue).noteable_ability_name).to eq('issue')
     end
 
-    it 'returns issue for a commit note' do
-      expect(build(:note_on_commit).to_ability_name).to eq('commit')
+    it 'returns commit for a commit note' do
+      expect(build(:note_on_commit).noteable_ability_name).to eq('commit')
     end
   end
 
