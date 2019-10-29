@@ -146,7 +146,7 @@ describe Projects::ErrorTrackingController do
       it 'redirects to sign-in page' do
         post :list_projects, params: list_projects_params
 
-        expect(response).to have_gitlab_http_status(:unauthorized)
+        expect(response).to have_gitlab_http_status(:redirect)
       end
     end
 
