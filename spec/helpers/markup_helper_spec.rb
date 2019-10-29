@@ -3,18 +3,18 @@
 require 'spec_helper'
 
 describe MarkupHelper do
-  let!(:project) { create(:project, :repository) }
-
-  let(:user)          { create(:user, username: 'gfm') }
-  let(:commit)        { project.commit }
-  let(:issue)         { create(:issue, project: project) }
-  let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
-  let(:snippet)       { create(:project_snippet, project: project) }
+  set(:project) { create(:project, :repository) }
+  set(:user) do
+    user = create(:user, username: 'gfm')
+    project.add_maintainer(user)
+    user
+  end
+  set(:issue) { create(:issue, project: project) }
+  set(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
+  set(:snippet) { create(:project_snippet, project: project) }
+  let(:commit) { project.commit }
 
   before do
-    # Ensure the generated reference links aren't redacted
-    project.add_maintainer(user)
-
     # Helper expects a @project instance variable
     helper.instance_variable_set(:@project, project)
 
@@ -44,8 +44,8 @@ describe MarkupHelper do
 
     describe "override default project" do
       let(:actual) { issue.to_reference }
-      let(:second_project) { create(:project, :public) }
-      let(:second_issue) { create(:issue, project: second_project) }
+      set(:second_project) { create(:project, :public) }
+      set(:second_issue) { create(:issue, project: second_project) }
 
       it 'links to the issue' do
         expected = urls.project_issue_path(second_project, second_issue)
@@ -55,7 +55,7 @@ describe MarkupHelper do
 
     describe 'uploads' do
       let(:text) { "![ImageTest](/uploads/test.png)" }
-      let(:group) { create(:group) }
+      set(:group) { create(:group) }
 
       subject { helper.markdown(text) }
 
@@ -77,7 +77,7 @@ describe MarkupHelper do
       end
 
       describe "with a group in the context" do
-        let(:project_in_group) { create(:project, group: group) }
+        set(:project_in_group) { create(:project, group: group) }
 
         before do
           helper.instance_variable_set(:@group, group)
@@ -235,38 +235,48 @@ describe MarkupHelper do
   end
 
   describe '#render_wiki_content' do
+    let(:wiki) { double('WikiPage', path: "file.#{extension}") }
+    let(:context) do
+      {
+        pipeline: :wiki, project: project, project_wiki: wiki,
+        page_slug: 'nested/page', issuable_state_filter_enabled: true
+      }
+    end
+
     before do
-      @wiki = double('WikiPage')
-      allow(@wiki).to receive(:content).and_return('wiki content')
-      allow(@wiki).to receive(:slug).and_return('nested/page')
-      helper.instance_variable_set(:@project_wiki, @wiki)
+      expect(wiki).to receive(:content).and_return('wiki content')
+      expect(wiki).to receive(:slug).and_return('nested/page')
+      helper.instance_variable_set(:@project_wiki, wiki)
     end
 
-    it "uses Wiki pipeline for markdown files" do
-      allow(@wiki).to receive(:format).and_return(:markdown)
+    context 'when file is Markdown' do
+      let(:extension) { 'md' }
 
-      expect(helper).to receive(:markdown_unsafe).with('wiki content',
-        pipeline: :wiki, project: project, project_wiki: @wiki, page_slug: "nested/page",
-        issuable_state_filter_enabled: true)
+      it 'renders using #markdown_unsafe helper method' do
+        expect(helper).to receive(:markdown_unsafe).with('wiki content', context)
 
-      helper.render_wiki_content(@wiki)
+        helper.render_wiki_content(wiki)
+      end
     end
 
-    it "uses Asciidoctor for asciidoc files" do
-      allow(@wiki).to receive(:format).and_return(:asciidoc)
+    context 'when file is Asciidoc' do
+      let(:extension) { 'adoc' }
 
-      expect(helper).to receive(:asciidoc_unsafe).with('wiki content')
+      it 'renders using Gitlab::Asciidoc' do
+        expect(Gitlab::Asciidoc).to receive(:render)
 
-      helper.render_wiki_content(@wiki)
+        helper.render_wiki_content(wiki)
+      end
     end
 
-    it "uses the Gollum renderer for all other file types" do
-      allow(@wiki).to receive(:format).and_return(:rdoc)
-      formatted_content_stub = double('formatted_content')
-      expect(formatted_content_stub).to receive(:html_safe)
-      allow(@wiki).to receive(:formatted_content).and_return(formatted_content_stub)
+    context 'any other format' do
+      let(:extension) { 'foo' }
 
-      helper.render_wiki_content(@wiki)
+      it 'renders all other formats using Gitlab::OtherMarkup' do
+        expect(Gitlab::OtherMarkup).to receive(:render)
+
+        helper.render_wiki_content(wiki)
+      end
     end
   end
 
