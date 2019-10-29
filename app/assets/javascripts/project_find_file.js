@@ -5,6 +5,7 @@ import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import axios from '~/lib/utils/axios_utils';
 import flash from '~/flash';
 import { __ } from '~/locale';
+import sanitize from 'sanitize-html';
 
 // highlight text(awefwbwgtc -> <b>a</b>wefw<b>b</b>wgt<b>c</b> )
 const highlighter = function(element, text, matches) {
@@ -74,7 +75,7 @@ export default class ProjectFindFile {
 
   findFile() {
     var result, searchText;
-    searchText = this.inputElement.val();
+    searchText = sanitize(this.inputElement.val());
     result =
       searchText.length > 0 ? fuzzaldrinPlus.filter(this.filePaths, searchText) : this.filePaths;
     return this.renderList(result, searchText);

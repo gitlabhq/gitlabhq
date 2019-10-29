@@ -3,6 +3,9 @@ import $ from 'jquery';
 import ProjectFindFile from '~/project_find_file';
 import axios from '~/lib/utils/axios_utils';
 import { TEST_HOST } from 'helpers/test_constants';
+import sanitize from 'sanitize-html';
+
+jest.mock('sanitize-html', () => jest.fn(val => val));
 
 const BLOB_URL_TEMPLATE = `${TEST_HOST}/namespace/project/blob/master`;
 const FILE_FIND_URL = `${TEST_HOST}/namespace/project/files/master?format=json`;
@@ -38,31 +41,31 @@ describe('ProjectFindFile', () => {
         href: el.querySelector('a').href,
       }));
 
+  const files = [
+    'fileA.txt',
+    'fileB.txt',
+    'fi#leC.txt',
+    'folderA/fileD.txt',
+    'folder#B/fileE.txt',
+    'folde?rC/fil#F.txt',
+  ];
+
   beforeEach(() => {
     // Create a mock adapter for stubbing axios API requests
     mock = new MockAdapter(axios);
 
     element = $(TEMPLATE);
+    mock.onGet(FILE_FIND_URL).replyOnce(200, files);
+    getProjectFindFileInstance(); // This triggers a load / axios call + subsequent render in the constructor
   });
 
   afterEach(() => {
     // Reset the mock adapter
     mock.restore();
+    sanitize.mockClear();
   });
 
   it('loads and renders elements from remote server', done => {
-    const files = [
-      'fileA.txt',
-      'fileB.txt',
-      'fi#leC.txt',
-      'folderA/fileD.txt',
-      'folder#B/fileE.txt',
-      'folde?rC/fil#F.txt',
-    ];
-    mock.onGet(FILE_FIND_URL).replyOnce(200, files);
-
-    getProjectFindFileInstance(); // This triggers a load / axios call + subsequent render in the constructor
-
     setImmediate(() => {
       expect(findFiles()).toEqual(
         files.map(text => ({
@@ -71,6 +74,16 @@ describe('ProjectFindFile', () => {
         })),
       );
 
+      done();
+    });
+  });
+
+  it('sanitizes search text', done => {
+    const searchText = element.find('.file-finder-input').val();
+
+    setImmediate(() => {
+      expect(sanitize).toHaveBeenCalledTimes(1);
+      expect(sanitize).toHaveBeenCalledWith(searchText);
       done();
     });
   });
