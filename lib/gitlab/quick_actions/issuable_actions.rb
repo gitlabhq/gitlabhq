@@ -234,7 +234,7 @@ module Gitlab
           "#{comment} #{SHRUG}"
         end
 
-        desc _("Append the comment with %{TABLEFLIP}") % { tableflip: TABLEFLIP }
+        desc _("Append the comment with %{tableflip}") % { tableflip: TABLEFLIP }
         params '<Comment>'
         types Issuable
         substitution :tableflip do |comment|

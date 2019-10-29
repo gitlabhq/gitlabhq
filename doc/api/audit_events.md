@@ -15,7 +15,7 @@ GET /audit_events
 | `created_after` | string | no | Return audit events created on or after the given time. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ  |
 | `created_before` | string | no | Return audit events created on or before the given time. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ |
 | `entity_type` | string | no | Return audit events for the given entity type. Valid values are: `User`, `Group`, or `Project`.  |
-| `entity_id` | boolean | no | Return audit events for the given entity ID. Requires `entity_type` attribute to be present. |
+| `entity_id` | integer | no | Return audit events for the given entity ID. Requires `entity_type` attribute to be present. |
 
 By default, `GET` requests return 20 results at a time because the API results
 are paginated.

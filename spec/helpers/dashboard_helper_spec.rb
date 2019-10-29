@@ -25,39 +25,62 @@ describe DashboardHelper do
   end
 
   describe '#feature_entry' do
-    context 'when implicitly enabled' do
-      it 'considers feature enabled by default' do
-        entry = feature_entry('Demo', href: 'demo.link')
+    shared_examples "a feature is enabled" do
+      it { is_expected.to include('<p aria-label="Demo: status on">') }
+    end
 
-        expect(entry).to include('<p aria-label="Demo: status on">')
-        expect(entry).to include('<a href="demo.link">Demo</a>')
+    shared_examples "a feature is disabled" do
+      it { is_expected.to include('<p aria-label="Demo: status off">') }
+    end
+
+    shared_examples "a feature without link" do
+      it do
+        is_expected.not_to have_link('Demo')
+        is_expected.not_to have_link('Documentation')
       end
     end
 
-    context 'when explicitly enabled' do
-      it 'returns a link' do
-        entry = feature_entry('Demo', href: 'demo.link', enabled: true)
+    shared_examples "a feature with configuration" do
+      it { is_expected.to have_link('Demo', href: 'demo.link') }
+    end
 
-        expect(entry).to include('<p aria-label="Demo: status on">')
-        expect(entry).to include('<a href="demo.link">Demo</a>')
+    shared_examples "a feature with documentation" do
+      it { is_expected.to have_link('Documentation', href: 'doc.link') }
+    end
+
+    context 'when implicitly enabled' do
+      subject { feature_entry('Demo') }
+
+      it_behaves_like 'a feature is enabled'
+    end
+
+    context 'when explicitly enabled' do
+      context 'without links' do
+        subject { feature_entry('Demo', enabled: true) }
+
+        it_behaves_like 'a feature is enabled'
+        it_behaves_like 'a feature without link'
       end
 
-      it 'returns text if href is not provided' do
-        entry = feature_entry('Demo', enabled: true)
+      context 'with configure link' do
+        subject { feature_entry('Demo', href: 'demo.link', enabled: true) }
 
-        expect(entry).to include('<p aria-label="Demo: status on">')
-        expect(entry).not_to match(/<a[^>]+>/)
+        it_behaves_like 'a feature with configuration'
+      end
+
+      context 'with configure and documentation links' do
+        subject { feature_entry('Demo', href: 'demo.link', doc_href: 'doc.link', enabled: true) }
+
+        it_behaves_like 'a feature with configuration'
+        it_behaves_like 'a feature with documentation'
       end
     end
 
     context 'when disabled' do
-      it 'returns text without link' do
-        entry = feature_entry('Demo', href: 'demo.link', enabled: false)
+      subject { feature_entry('Demo', href: 'demo.link', enabled: false) }
 
-        expect(entry).to include('<p aria-label="Demo: status off">')
-        expect(entry).not_to match(/<a[^>]+>/)
-        expect(entry).to include('Demo')
-      end
+      it_behaves_like 'a feature is disabled'
+      it_behaves_like 'a feature without link'
     end
   end
 

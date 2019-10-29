@@ -1761,10 +1761,10 @@ msgstr ""
 msgid "Appearance was successfully updated."
 msgstr ""
 
-msgid "Append the comment with %{TABLEFLIP}"
+msgid "Append the comment with %{shrug}"
 msgstr ""
 
-msgid "Append the comment with %{shrug}"
+msgid "Append the comment with %{tableflip}"
 msgstr ""
 
 msgid "Application"
@@ -5740,6 +5740,9 @@ msgid "Do you want to customize how Google Code email addresses and usernames ar
 msgstr ""
 
 msgid "Dockerfile"
+msgstr ""
+
+msgid "Documentation"
 msgstr ""
 
 msgid "Documentation for popular identity providers"
@@ -10500,6 +10503,9 @@ msgid "Metrics|Show last"
 msgstr ""
 
 msgid "Metrics|There was an error fetching the environments data, please try again"
+msgstr ""
+
+msgid "Metrics|There was an error fetching the logs, please try again"
 msgstr ""
 
 msgid "Metrics|There was an error getting deployment information."
