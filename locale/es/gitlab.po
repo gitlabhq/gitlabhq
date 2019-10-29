@@ -16382,7 +16382,7 @@ msgstr "Para abrir Jaeger y ver fácilmente la trazabilidad desde GitLab, enlace
 msgid "To preserve performance only <strong>%{display_size} of %{real_size}</strong> files are displayed."
 msgstr "Para mantener el rendimiento, solo se muestran <strong>%{display_size} de %{real_size}</strong> archivos."
 
-msgid "To protect this issue's confidentiality, %{link_start}fork the project%{link_end} and set the forks visiblity to private."
+msgid "To protect this issue's confidentiality, %{link_start}fork the project%{link_end} and set the forks visibility to private."
 msgstr ""
 
 msgid "To protect this issue's confidentiality, a private fork of this project was selected."

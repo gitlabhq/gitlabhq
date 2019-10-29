@@ -20,6 +20,7 @@ describe Bitbucket::Representation::PullRequest do
   describe '#state' do
     it { expect(described_class.new({ 'state' => 'MERGED' }).state).to eq('merged') }
     it { expect(described_class.new({ 'state' => 'DECLINED' }).state).to eq('closed') }
+    it { expect(described_class.new({ 'state' => 'SUPERSEDED' }).state).to eq('closed') }
     it { expect(described_class.new({}).state).to eq('opened') }
   end
 

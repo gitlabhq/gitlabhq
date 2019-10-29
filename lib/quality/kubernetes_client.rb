@@ -12,7 +12,7 @@ module Quality
       @namespace = namespace
     end
 
-    def cleanup(release_name:)
+    def cleanup(release_name:, wait: true)
       selector = case release_name
                  when String
                    %(-l release="#{release_name}")
@@ -29,6 +29,7 @@ module Quality
         '--now',
         '--ignore-not-found',
         '--include-uninitialized',
+        %(--wait=#{wait}),
         selector
       ]
 

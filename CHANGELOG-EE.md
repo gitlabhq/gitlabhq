@@ -4162,7 +4162,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Show hook errors for fast-forward merges. !1375
 - Allow all parameters of group webhooks to be set through the UI. !1376
 - Fix Elasticsearch queries when a group_id is specified. !1423
-- Check the right index mapping based on Rails environment for rake gitlab:elastic:add_feature_visiblity_levels_to_project. !1473
+- Check the right index mapping based on Rails environment for rake gitlab:elastic:add_feature_visibility_levels_to_project. !1473
 - Fix issues with another milestone that has a matching list label could not be added to a board.
 - Only admins or group owners can set LDAP overrides.
 - Add support for load balancing database queries.

@@ -138,7 +138,7 @@ class AutomatedCleanup
 
     releases_names = releases.map(&:name)
     helm.delete(release_name: releases_names)
-    kubernetes.cleanup(release_name: releases_names)
+    kubernetes.cleanup(release_name: releases_names, wait: false)
 
   rescue Quality::HelmClient::CommandFailedError => ex
     raise ex unless ignore_exception?(ex.message, IGNORED_HELM_ERRORS)

@@ -26,7 +26,7 @@ exports[`Confidential merge request project form group component renders empty s
         >
           fork the project
         </a>
-         and set the forks visiblity to private.
+         and set the forks visibility to private.
       </span>
        
       <gllink-stub
@@ -76,7 +76,7 @@ exports[`Confidential merge request project form group component renders fork dr
         >
           fork the project
         </a>
-         and set the forks visiblity to private.
+         and set the forks visibility to private.
       </span>
        
       <gllink-stub

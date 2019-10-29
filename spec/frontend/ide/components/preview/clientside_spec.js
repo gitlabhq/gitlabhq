@@ -178,13 +178,13 @@ describe('IDE clientside preview', () => {
     });
 
     describe('showOpenInCodeSandbox', () => {
-      it('returns true when visiblity is public', () => {
+      it('returns true when visibility is public', () => {
         createComponent({ getters: { currentProject: () => ({ visibility: 'public' }) } });
 
         expect(wrapper.vm.showOpenInCodeSandbox).toBe(true);
       });
 
-      it('returns false when visiblity is private', () => {
+      it('returns false when visibility is private', () => {
         createComponent({ getters: { currentProject: () => ({ visibility: 'private' }) } });
 
         expect(wrapper.vm.showOpenInCodeSandbox).toBe(false);

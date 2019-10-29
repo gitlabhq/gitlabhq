@@ -16,9 +16,10 @@ module Bitbucket
       end
 
       def state
-        if raw['state'] == 'MERGED'
+        case raw['state']
+        when 'MERGED'
           'merged'
-        elsif raw['state'] == 'DECLINED'
+        when 'DECLINED', 'SUPERSEDED'
           'closed'
         else
           'opened'
