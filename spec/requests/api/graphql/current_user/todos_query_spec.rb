@@ -13,7 +13,7 @@ describe 'Query current user todos' do
   let(:fields) do
     <<~QUERY
     nodes {
-      id
+      #{all_graphql_fields_for('todos'.classify)}
     }
     QUERY
   end
@@ -28,11 +28,21 @@ describe 'Query current user todos' do
     post_graphql(query, current_user: current_user)
   end
 
+  it_behaves_like 'a working graphql query'
+
   it 'contains the expected ids' do
     is_expected.to include(
       a_hash_including('id' => commit_todo.to_global_id.to_s),
       a_hash_including('id' => issue_todo.to_global_id.to_s),
       a_hash_including('id' => merge_request_todo.to_global_id.to_s)
+    )
+  end
+
+  it 'returns Todos for all target types' do
+    is_expected.to include(
+      a_hash_including('targetType' => 'COMMIT'),
+      a_hash_including('targetType' => 'ISSUE'),
+      a_hash_including('targetType' => 'MERGEREQUEST')
     )
   end
 end

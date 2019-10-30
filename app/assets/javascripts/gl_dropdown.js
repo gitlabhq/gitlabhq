@@ -617,7 +617,7 @@ GitLabDropdown = (function() {
   GitLabDropdown.prototype.hidden = function(e) {
     var $input;
     this.resetRows();
-    this.removeArrayKeyEvent();
+    this.removeArrowKeyEvent();
     $input = this.dropdown.find('.dropdown-input-field');
     if (this.options.filterable) {
       $input.blur();
@@ -900,7 +900,7 @@ GitLabDropdown = (function() {
     );
   };
 
-  GitLabDropdown.prototype.removeArrayKeyEvent = function() {
+  GitLabDropdown.prototype.removeArrowKeyEvent = function() {
     return $('body').off('keydown');
   };
 

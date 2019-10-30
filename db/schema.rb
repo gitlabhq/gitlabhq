@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_10_26_041447) do
+ActiveRecord::Schema.define(version: 2019_10_26_124116) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -158,8 +158,8 @@ ActiveRecord::Schema.define(version: 2019_10_26_041447) do
     t.text "restricted_visibility_levels"
     t.boolean "version_check_enabled", default: true
     t.integer "max_attachment_size", default: 10, null: false
-    t.integer "default_project_visibility"
-    t.integer "default_snippet_visibility"
+    t.integer "default_project_visibility", default: 0, null: false
+    t.integer "default_snippet_visibility", default: 0, null: false
     t.text "domain_whitelist"
     t.boolean "user_oauth_applications", default: true
     t.string "after_sign_out_path"

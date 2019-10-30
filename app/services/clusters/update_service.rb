@@ -23,7 +23,7 @@ module Clusters
     end
 
     def validate_params(cluster)
-      if params[:management_project_id]
+      if params[:management_project_id].present?
         management_project = management_project_scope(cluster).find_by_id(params[:management_project_id])
 
         unless management_project

@@ -1,0 +1,75 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Repository directory download links component renders downloads links for path app 1`] = `
+<section
+  class="border-top pt-1 mt-1"
+>
+  <h5
+    class="m-0 dropdown-bold-header"
+  >
+    Download this directory
+  </h5>
+   
+  <div
+    class="dropdown-menu-content"
+  >
+    <div
+      class="btn-group ml-0 w-100"
+    >
+      <gllink-stub
+        class="btn btn-xs btn-primary"
+        href="http://test.com/?path=app"
+      >
+        
+        zip
+      
+      </gllink-stub>
+      <gllink-stub
+        class="btn btn-xs"
+        href="http://test.com/?path=app"
+      >
+        
+        tar
+      
+      </gllink-stub>
+    </div>
+  </div>
+</section>
+`;
+
+exports[`Repository directory download links component renders downloads links for path app/assets 1`] = `
+<section
+  class="border-top pt-1 mt-1"
+>
+  <h5
+    class="m-0 dropdown-bold-header"
+  >
+    Download this directory
+  </h5>
+   
+  <div
+    class="dropdown-menu-content"
+  >
+    <div
+      class="btn-group ml-0 w-100"
+    >
+      <gllink-stub
+        class="btn btn-xs btn-primary"
+        href="http://test.com/?path=app/assets"
+      >
+        
+        zip
+      
+      </gllink-stub>
+      <gllink-stub
+        class="btn btn-xs"
+        href="http://test.com/?path=app/assets"
+      >
+        
+        tar
+      
+      </gllink-stub>
+    </div>
+  </div>
+</section>
+`;

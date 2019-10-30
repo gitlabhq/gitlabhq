@@ -138,6 +138,23 @@ describe Clusters::UpdateService do
             expect(cluster.management_project_id).to be_nil
           end
         end
+
+        context 'cluster already has a management project set' do
+          before do
+            cluster.update!(management_project: create(:project))
+          end
+
+          let(:params) do
+            { management_project_id: '' }
+          end
+
+          it 'unsets management_project_id' do
+            is_expected.to eq(true)
+
+            cluster.reload
+            expect(cluster.management_project_id).to be_nil
+          end
+        end
       end
 
       context 'project cluster' do

@@ -1,4 +1,4 @@
-/* eslint-disable no-return-assign, one-var, no-var, consistent-return, class-methods-use-this, no-lonely-if, vars-on-top */
+/* eslint-disable no-return-assign, one-var, no-var, consistent-return, class-methods-use-this, vars-on-top */
 
 import $ from 'jquery';
 import { escape, throttle } from 'underscore';
@@ -95,7 +95,6 @@ export class SearchAutocomplete {
       this.createAutocomplete();
     }
 
-    this.saveTextLength();
     this.bindEvents();
     this.dropdownToggle.dropdown();
     this.searchInput.addClass('js-autocomplete-disabled');
@@ -107,7 +106,7 @@ export class SearchAutocomplete {
     this.onClearInputClick = this.onClearInputClick.bind(this);
     this.onSearchInputFocus = this.onSearchInputFocus.bind(this);
     this.onSearchInputKeyUp = this.onSearchInputKeyUp.bind(this);
-    this.onSearchInputKeyDown = this.onSearchInputKeyDown.bind(this);
+    this.onSearchInputChange = this.onSearchInputChange.bind(this);
     this.setScrollFade = this.setScrollFade.bind(this);
   }
   getElement(selector) {
@@ -116,10 +115,6 @@ export class SearchAutocomplete {
 
   saveOriginalState() {
     return (this.originalState = this.serializeState());
-  }
-
-  saveTextLength() {
-    return (this.lastTextLength = this.searchInput.val().length);
   }
 
   createAutocomplete() {
@@ -318,12 +313,16 @@ export class SearchAutocomplete {
   }
 
   bindEvents() {
-    this.searchInput.on('keydown', this.onSearchInputKeyDown);
+    this.searchInput.on('input', this.onSearchInputChange);
     this.searchInput.on('keyup', this.onSearchInputKeyUp);
     this.searchInput.on('focus', this.onSearchInputFocus);
     this.searchInput.on('blur', this.onSearchInputBlur);
     this.clearInput.on('click', this.onClearInputClick);
     this.dropdownContent.on('scroll', throttle(this.setScrollFade, 250));
+
+    this.searchInput.on('click', e => {
+      e.stopPropagation();
+    });
   }
 
   enableAutocomplete() {
@@ -342,43 +341,19 @@ export class SearchAutocomplete {
     }
   }
 
-  // Saves last length of the entered text
-  onSearchInputKeyDown() {
-    return this.saveTextLength();
+  onSearchInputChange() {
+    this.enableAutocomplete();
   }
 
   onSearchInputKeyUp(e) {
     switch (e.keyCode) {
-      case KEYCODE.BACKSPACE:
-        // When removing the last character and no badge is present
-        if (this.lastTextLength === 1) {
-          this.disableAutocomplete();
-        }
-        // When removing any character from existin value
-        if (this.lastTextLength > 1) {
-          this.enableAutocomplete();
-        }
-        break;
       case KEYCODE.ESCAPE:
         this.restoreOriginalState();
         break;
       case KEYCODE.ENTER:
         this.disableAutocomplete();
         break;
-      case KEYCODE.UP:
-      case KEYCODE.DOWN:
-        return;
       default:
-        // Handle the case when deleting the input value other than backspace
-        // e.g. Pressing ctrl + backspace or ctrl + x
-        if (this.searchInput.val() === '') {
-          this.disableAutocomplete();
-        } else {
-          // We should display the menu only when input is not empty
-          if (e.keyCode !== KEYCODE.ENTER) {
-            this.enableAutocomplete();
-          }
-        }
     }
     this.wrap.toggleClass('has-value', Boolean(e.target.value));
   }
@@ -434,7 +409,7 @@ export class SearchAutocomplete {
   disableAutocomplete() {
     if (!this.searchInput.hasClass('js-autocomplete-disabled') && this.dropdown.hasClass('show')) {
       this.searchInput.addClass('js-autocomplete-disabled');
-      this.dropdown.removeClass('show').trigger('hidden.bs.dropdown');
+      this.dropdown.dropdown('toggle');
       this.restoreMenu();
     }
   }
