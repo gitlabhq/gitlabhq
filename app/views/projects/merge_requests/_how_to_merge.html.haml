@@ -12,8 +12,8 @@
         = clipboard_button(target: "pre#merge-info-1", title: _("Copy commands"))
         %pre.dark#merge-info-1
           - if @merge_request.for_fork?
+            -# All repo/branch refs have been quoted to allow support for special characters (such as #my-branch)
             :preserve
-              -# All repo/branch refs have been quoted to allow support for special characters (such as #my-branch)
               git fetch "#{h default_url_to_repo(@merge_request.source_project)}" "#{h @merge_request.source_branch}"
               git checkout -b "#{h @merge_request.source_project_path}-#{h @merge_request.source_branch}" FETCH_HEAD
           - else

@@ -14,4 +14,4 @@ pages:
       - node_modules
     key: project
   only:
-    - $CI_DEFAULT_BRANCH
+    - master

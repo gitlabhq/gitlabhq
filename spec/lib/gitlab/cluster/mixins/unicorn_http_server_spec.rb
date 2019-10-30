@@ -5,31 +5,30 @@ require 'spec_helper'
 # For easier debugging set `UNICORN_DEBUG=1`
 
 describe Gitlab::Cluster::Mixins::UnicornHttpServer do
-  UNICORN_STARTUP_TIMEOUT = 10
+  UNICORN_STARTUP_TIMEOUT = 30
 
   context 'when running Unicorn' do
-    %i[USR2].each do |signal|
-      it "for #{signal} does execute phased restart block" do
-        with_unicorn(workers: 1) do |pid|
-          Process.kill(signal, pid)
+    using RSpec::Parameterized::TableSyntax
 
-          child_pid, child_status = Process.wait2(pid)
-          expect(child_pid).to eq(pid)
-          expect(child_status).to be_exited
-          expect(child_status.exitstatus).to eq(140)
-        end
-      end
+    where(:signal, :exitstatus, :termsig) do
+      # executes phased restart block
+      :USR2 | 140 | nil
+      :QUIT | 140 | nil
+
+      # does not execute phased restart block
+      :INT | 0 | nil
+      :TERM | 0 | nil
     end
 
-    %i[QUIT TERM INT].each do |signal|
-      it "for #{signal} does not execute phased restart block" do
+    with_them do
+      it 'properly handles process lifecycle' do
         with_unicorn(workers: 1) do |pid|
           Process.kill(signal, pid)
 
           child_pid, child_status = Process.wait2(pid)
           expect(child_pid).to eq(pid)
-          expect(child_status).to be_exited
-          expect(child_status.exitstatus).to eq(0)
+          expect(child_status.exitstatus).to eq(exitstatus)
+          expect(child_status.termsig).to eq(termsig)
         end
       end
     end
@@ -74,8 +73,12 @@ describe Gitlab::Cluster::Mixins::UnicornHttpServer do
 
         Unicorn::HttpServer.prepend(#{described_class})
 
-        Gitlab::Cluster::LifecycleEvents.on_before_phased_restart do
-          exit(140)
+        mutex = Mutex.new
+
+        Gitlab::Cluster::LifecycleEvents.on_before_graceful_shutdown do
+          mutex.synchronize do
+            exit(140)
+          end
         end
 
         # redirect stderr to stdout

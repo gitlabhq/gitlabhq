@@ -70,8 +70,8 @@ if defined?(::Unicorn) || defined?(::Puma)
     Gitlab::Metrics::Exporter::WebExporter.instance.start
   end
 
-  Gitlab::Cluster::LifecycleEvents.on_before_phased_restart do
-    # We need to ensure that before we re-exec server
+  Gitlab::Cluster::LifecycleEvents.on_before_graceful_shutdown do
+    # We need to ensure that before we re-exec or shutdown server
     # we do stop the exporter
     Gitlab::Metrics::Exporter::WebExporter.instance.stop
   end

@@ -25,7 +25,7 @@ before_script:
 release:
   stage: deploy
   only:
-    - $CI_DEFAULT_BRANCH
+    - master
   artifacts:
     paths:
       - build/release/MyProject.exe

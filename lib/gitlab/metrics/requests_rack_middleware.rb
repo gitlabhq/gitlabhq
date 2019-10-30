@@ -35,7 +35,7 @@ module Gitlab
       def self.initialize_http_request_duration_seconds
         HTTP_METHODS.each do |method, statuses|
           statuses.each do |status|
-            http_request_duration_seconds.get({ method: method, status: status })
+            http_request_duration_seconds.get({ method: method, status: status.to_i })
           end
         end
       end

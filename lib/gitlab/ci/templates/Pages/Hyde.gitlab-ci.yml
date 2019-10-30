@@ -11,7 +11,7 @@ test:
     - pip install hyde
     - hyde gen
   except:
-    - $CI_DEFAULT_BRANCH
+    - master
 
 pages:
   stage: deploy
@@ -22,4 +22,4 @@ pages:
     paths:
       - public
   only:
-    - $CI_DEFAULT_BRANCH
+    - master

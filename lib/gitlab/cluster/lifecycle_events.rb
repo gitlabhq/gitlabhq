@@ -33,7 +33,7 @@ module Gitlab
     #
     #     Sidekiq/Puma Single: This is called immediately.
     #
-    # - on_before_phased_restart:
+    # - on_before_graceful_shutdown:
     #
     #     Unicorn/Puma Cluster: This will be called before a graceful
     #       shutdown of workers starts happening.
@@ -75,9 +75,9 @@ module Gitlab
         end
 
         # Read the config/initializers/cluster_events_before_phased_restart.rb
-        def on_before_phased_restart(&block)
+        def on_before_graceful_shutdown(&block)
           # Defer block execution
-          (@master_phased_restart ||= []) << block
+          (@master_graceful_shutdown ||= []) << block
         end
 
         def on_before_master_restart(&block)
@@ -108,8 +108,8 @@ module Gitlab
           end
         end
 
-        def do_before_phased_restart
-          @master_phased_restart&.each do |block|
+        def do_before_graceful_shutdown
+          @master_graceful_shutdown&.each do |block|
             block.call
           end
         end

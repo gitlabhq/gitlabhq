@@ -25,4 +25,4 @@ build:
     - find . -maxdepth 1 -name '*.json' -print0 | xargs -t0n1 packer build
   when: manual
   only:
-    - $CI_DEFAULT_BRANCH
+    - master

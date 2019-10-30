@@ -13,7 +13,7 @@ module Boards
 
     requires_cross_project_access if: -> { board&.group_board? }
 
-    before_action :whitelist_query_limiting, only: [:index, :update, :bulk_move]
+    before_action :whitelist_query_limiting, only: [:bulk_move]
     before_action :authorize_read_issue, only: [:index]
     before_action :authorize_create_issue, only: [:create]
     before_action :authorize_update_issue, only: [:update]
@@ -130,8 +130,7 @@ module Boards
     end
 
     def whitelist_query_limiting
-      # Also see https://gitlab.com/gitlab-org/gitlab-foss/issues/42439
-      Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-foss/issues/42428')
+      Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab/issues/35174')
     end
 
     def validate_id_list

@@ -8,10 +8,10 @@ pages:
     paths:
       - public
   only:
-    - $CI_DEFAULT_BRANCH
+    - master
 
 test:
   script:
     - hugo
   except:
-    - $CI_DEFAULT_BRANCH
+    - master

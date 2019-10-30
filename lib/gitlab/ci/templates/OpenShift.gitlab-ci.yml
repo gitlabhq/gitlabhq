@@ -49,7 +49,7 @@ review:
   only:
     - branches
   except:
-    - $CI_DEFAULT_BRANCH
+    - master
 
 stop-review:
   <<: *deploy
@@ -66,7 +66,7 @@ stop-review:
   only:
     - branches
   except:
-    - $CI_DEFAULT_BRANCH
+    - master
 
 staging:
   <<: *deploy
@@ -78,7 +78,7 @@ staging:
     name: staging
     url: http://$CI_PROJECT_NAME-staging.$OPENSHIFT_DOMAIN
   only:
-    - $CI_DEFAULT_BRANCH
+    - master
 
 production:
   <<: *deploy
@@ -91,4 +91,4 @@ production:
     name: production
     url: http://$CI_PROJECT_NAME.$OPENSHIFT_DOMAIN
   only:
-    - $CI_DEFAULT_BRANCH
+    - master

@@ -53,4 +53,4 @@ apply:
     - plan
   when: manual
   only:
-    - $CI_DEFAULT_BRANCH
+    - master
