@@ -358,6 +358,23 @@ describe WikiPage do
     end
   end
 
+  describe '#path' do
+    let(:path) { 'mypath.md' }
+    let(:wiki_page) { instance_double('Gitlab::Git::WikiPage', path: path).as_null_object }
+
+    it 'returns the path when persisted' do
+      page = described_class.new(wiki, wiki_page, true)
+
+      expect(page.path).to eq(path)
+    end
+
+    it 'returns nil when not persisted' do
+      page = described_class.new(wiki, wiki_page, false)
+
+      expect(page.path).to be_nil
+    end
+  end
+
   describe '#directory' do
     context 'when the page is at the root directory' do
       it 'returns an empty string' do

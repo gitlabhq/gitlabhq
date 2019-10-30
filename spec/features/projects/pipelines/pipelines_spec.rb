@@ -819,7 +819,10 @@ describe 'Pipelines', :js do
     context 'when project is private' do
       let(:project) { create(:project, :private, :repository) }
 
-      it { expect(page).to have_content 'You need to sign in' }
+      it 'redirects the user to sign_in and displays the flash alert' do
+        expect(page).to have_content 'You need to sign in'
+        expect(page.current_path).to eq("/users/sign_in")
+      end
     end
   end
 

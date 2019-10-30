@@ -128,6 +128,89 @@ describe LabelsFinder do
           expect(finder.execute).to eq [private_subgroup_label_1]
         end
       end
+
+      context 'when including labels from group projects with limited visibility' do
+        let(:finder)                     { described_class.new(user, group_id: group_4.id) }
+        let(:group_4)                    { create(:group) }
+        let(:limited_visibility_project) { create(:project, :public, group: group_4) }
+        let(:visible_project)            { create(:project, :public, group: group_4) }
+        let!(:group_label_1)             { create(:group_label, group: group_4) }
+        let!(:limited_visibility_label)  { create(:label, project: limited_visibility_project) }
+        let!(:visible_label)             { create(:label, project: visible_project) }
+
+        shared_examples 'with full visibility' do
+          it 'returns all projects labels' do
+            expect(finder.execute).to eq [group_label_1, limited_visibility_label, visible_label]
+          end
+        end
+
+        shared_examples 'with limited visibility' do
+          it 'returns only authorized projects labels' do
+            expect(finder.execute).to eq [group_label_1, visible_label]
+          end
+        end
+
+        context 'when merge requests and issues are not visible for non members' do
+          before do
+            limited_visibility_project.project_feature.update!(
+              merge_requests_access_level: ProjectFeature::PRIVATE,
+              issues_access_level: ProjectFeature::PRIVATE
+            )
+          end
+
+          context 'when user is not a group member' do
+            it_behaves_like 'with limited visibility'
+          end
+
+          context 'when user is a group member' do
+            before do
+              group_4.add_developer(user)
+            end
+
+            it_behaves_like 'with full visibility'
+          end
+        end
+
+        context 'when merge requests are not visible for non members' do
+          before do
+            limited_visibility_project.project_feature.update!(
+              merge_requests_access_level: ProjectFeature::PRIVATE
+            )
+          end
+
+          context 'when user is not a group member' do
+            it_behaves_like 'with full visibility'
+          end
+
+          context 'when user is a group member' do
+            before do
+              group_4.add_developer(user)
+            end
+
+            it_behaves_like 'with full visibility'
+          end
+        end
+
+        context 'when issues are not visible for non members' do
+          before do
+            limited_visibility_project.project_feature.update!(
+              issues_access_level: ProjectFeature::PRIVATE
+            )
+          end
+
+          context 'when user is not a group member' do
+            it_behaves_like 'with full visibility'
+          end
+
+          context 'when user is a group member' do
+            before do
+              group_4.add_developer(user)
+            end
+
+            it_behaves_like 'with full visibility'
+          end
+        end
+      end
     end
 
     context 'filtering by project_id' do

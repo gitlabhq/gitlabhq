@@ -614,11 +614,11 @@ class Project < ApplicationRecord
       joins(:namespace).where(namespaces: { type: 'Group' }).select(:namespace_id)
     end
 
-    # Returns ids of projects with milestones available for given user
+    # Returns ids of projects with issuables available for given user
     #
-    # Used on queries to find milestones which user can see
-    # For example: Milestone.where(project_id: ids_with_milestone_available_for(user))
-    def ids_with_milestone_available_for(user)
+    # Used on queries to find milestones or labels which user can see
+    # For example: Milestone.where(project_id: ids_with_issuables_available_for(user))
+    def ids_with_issuables_available_for(user)
       with_issues_enabled = with_issues_available_for_user(user).select(:id)
       with_merge_requests_enabled = with_merge_requests_available_for_user(user).select(:id)
 
@@ -1263,6 +1263,10 @@ class Project < ApplicationRecord
     else
       namespace.try(:owner)
     end
+  end
+
+  def to_ability_name
+    model_name.singular
   end
 
   # rubocop: disable CodeReuse/ServiceClass

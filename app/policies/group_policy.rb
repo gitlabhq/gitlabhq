@@ -131,6 +131,8 @@ class GroupPolicy < BasePolicy
 
   rule { owner | admin }.enable :read_statistics
 
+  rule { maintainer & can?(:create_projects) }.enable :transfer_projects
+
   def access_level
     return GroupMember::NO_ACCESS if @user.nil?
 

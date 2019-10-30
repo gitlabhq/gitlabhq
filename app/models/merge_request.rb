@@ -69,6 +69,14 @@ class MergeRequest < ApplicationRecord
   has_many :merge_request_assignees
   has_many :assignees, class_name: "User", through: :merge_request_assignees
 
+  KNOWN_MERGE_PARAMS = [
+    :auto_merge_strategy,
+    :should_remove_source_branch,
+    :force_remove_source_branch,
+    :commit_message,
+    :squash_commit_message,
+    :sha
+  ].freeze
   serialize :merge_params, Hash # rubocop:disable Cop/ActiveRecordSerialize
 
   after_create :ensure_merge_request_diff

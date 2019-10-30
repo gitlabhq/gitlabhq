@@ -3416,7 +3416,7 @@ describe Project do
     end
   end
 
-  describe '.ids_with_milestone_available_for' do
+  describe '.ids_with_issuables_available_for' do
     let!(:user) { create(:user) }
 
     it 'returns project ids with milestones available for user' do
@@ -3426,7 +3426,7 @@ describe Project do
       project_4 = create(:project, :public)
       project_4.project_feature.update(issues_access_level: ProjectFeature::PRIVATE, merge_requests_access_level: ProjectFeature::PRIVATE )
 
-      project_ids = described_class.ids_with_milestone_available_for(user).pluck(:id)
+      project_ids = described_class.ids_with_issuables_available_for(user).pluck(:id)
 
       expect(project_ids).to include(project_2.id, project_3.id)
       expect(project_ids).not_to include(project_1.id, project_4.id)
@@ -4441,6 +4441,14 @@ describe Project do
       project = create(:project_empty_repo)
 
       expect { project.write_repository_config }.not_to raise_error
+    end
+  end
+
+  describe '#to_ability_name' do
+    it 'returns project' do
+      project = build(:project_empty_repo)
+
+      expect(project.to_ability_name).to eq('project')
     end
   end
 

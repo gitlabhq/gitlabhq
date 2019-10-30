@@ -8,7 +8,7 @@ describe NamespacePolicy do
   let(:admin) { create(:admin) }
   let(:namespace) { create(:namespace, owner: owner) }
 
-  let(:owner_permissions) { [:create_projects, :admin_namespace, :read_namespace, :read_statistics] }
+  let(:owner_permissions) { [:create_projects, :admin_namespace, :read_namespace, :read_statistics, :transfer_projects] }
 
   subject { described_class.new(current_user, namespace) }
 
@@ -33,6 +33,7 @@ describe NamespacePolicy do
       let(:owner) { create(:user, projects_limit: 0) }
 
       it { is_expected.to be_disallowed(:create_projects) }
+      it { is_expected.to be_disallowed(:transfer_projects) }
     end
   end
 

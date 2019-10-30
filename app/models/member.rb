@@ -8,6 +8,7 @@ class Member < ApplicationRecord
   include Gitlab::Access
   include Presentable
   include Gitlab::Utils::StrongMemoize
+  include FromUnion
 
   attr_accessor :raw_invite_token
 

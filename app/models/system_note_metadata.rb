@@ -10,6 +10,7 @@ class SystemNoteMetadata < ApplicationRecord
     commit cross_reference
     close duplicate
     moved merge
+    label milestone
   ].freeze
 
   ICON_TYPES = %w[

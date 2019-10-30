@@ -1,0 +1,15 @@
+query allSchemaTypes {
+  __schema {
+    types {
+      fields {
+        type {
+          fields {
+            type {
+              name
+            }
+          }
+        }
+      }
+    }
+  }
+}

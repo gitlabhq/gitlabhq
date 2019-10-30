@@ -1,0 +1,5 @@
+---
+title: Sanitize all wiki markup formats with GitLab sanitization pipelines
+merge_request:
+author:
+type: security

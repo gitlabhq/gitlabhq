@@ -129,6 +129,7 @@ module GraphqlHelpers
 
     allow_unlimited_graphql_complexity
     allow_unlimited_graphql_depth
+    allow_high_graphql_recursion
 
     type = GitlabSchema.types[class_name.to_s]
     return "" unless type
@@ -213,6 +214,23 @@ module GraphqlHelpers
     end
   end
 
+  def expect_graphql_errors_to_include(regexes_to_match)
+    raise "No errors. Was expecting to match #{regexes_to_match}" if graphql_errors.nil? || graphql_errors.empty?
+
+    error_messages = flattened_errors.collect { |error_hash| error_hash["message"] }
+    Array.wrap(regexes_to_match).flatten.each do |regex|
+      expect(error_messages).to include a_string_matching regex
+    end
+  end
+
+  def expect_graphql_errors_to_be_empty
+    expect(flattened_errors).to be_empty
+  end
+
+  def flattened_errors
+    Array.wrap(graphql_errors).flatten.compact
+  end
+
   # Raises an error if no response is found
   def graphql_mutation_response(mutation_name)
     graphql_data.fetch(GraphqlHelpers.fieldnamerize(mutation_name))
@@ -259,6 +277,10 @@ module GraphqlHelpers
   def allow_unlimited_graphql_depth
     allow_any_instance_of(GitlabSchema).to receive(:max_depth).and_return nil
     allow(GitlabSchema).to receive(:max_query_depth).with(any_args).and_return nil
+  end
+
+  def allow_high_graphql_recursion
+    allow_any_instance_of(Gitlab::Graphql::QueryAnalyzers::RecursionAnalyzer).to receive(:recursion_threshold).and_return 1000
   end
 end
 
