@@ -11,11 +11,14 @@ module Gitlab
       # Validates the given url according to the constraints specified by arguments.
       #
       # ports - Raises error if the given URL port does is not between given ports.
-      # allow_localhost - Raises error if URL resolves to a localhost IP address and argument is true.
-      # allow_local_network - Raises error if URL resolves to a link-local address and argument is true.
+      # allow_localhost - Raises error if URL resolves to a localhost IP address and argument is false.
+      # allow_local_network - Raises error if URL resolves to a link-local address and argument is false.
       # ascii_only - Raises error if URL has unicode characters and argument is true.
       # enforce_user - Raises error if URL user doesn't start with alphanumeric characters and argument is true.
       # enforce_sanitization - Raises error if URL includes any HTML/CSS/JS tags and argument is true.
+      # require_absolute - Raises error if URL is not absolute and argument is true.
+      #                    Allow relative URLs beginning with slash when argument is false
+      #                    Raises error if relative URL does not begin with slash and argument is false
       #
       # Returns an array with [<uri>, <original-hostname>].
       # rubocop:disable Metrics/ParameterLists
@@ -28,7 +31,8 @@ module Gitlab
         ascii_only: false,
         enforce_user: false,
         enforce_sanitization: false,
-        dns_rebind_protection: true)
+        dns_rebind_protection: true,
+        require_absolute: true)
         # rubocop:enable Metrics/ParameterLists
 
         return [nil, nil] if url.nil?
@@ -42,10 +46,11 @@ module Gitlab
           ports: ports,
           enforce_sanitization: enforce_sanitization,
           enforce_user: enforce_user,
-          ascii_only: ascii_only
+          ascii_only: ascii_only,
+          require_absolute: require_absolute
         )
 
-        address_info = get_address_info(uri, dns_rebind_protection)
+        address_info = get_address_info(uri, dns_rebind_protection) if require_absolute || uri.absolute?
         return [uri, nil] unless address_info
 
         ip_address = ip_address(address_info)
@@ -95,12 +100,14 @@ module Gitlab
         address_info.first&.ip_address
       end
 
-      def validate_uri(uri:, schemes:, ports:, enforce_sanitization:, enforce_user:, ascii_only:)
+      def validate_uri(uri:, schemes:, ports:, enforce_sanitization:, enforce_user:, ascii_only:, require_absolute:)
         validate_html_tags(uri) if enforce_sanitization
+        validate_absolute(uri) if require_absolute
+        validate_relative(uri) unless require_absolute
 
         return if internal?(uri)
 
-        validate_scheme(uri.scheme, schemes)
+        validate_scheme(uri.scheme, schemes, require_absolute)
         validate_port(get_port(uri), ports) if ports.any?
         validate_user(uri.user) if enforce_user
         validate_hostname(uri.hostname)
@@ -177,8 +184,20 @@ module Gitlab
         raise BlockedUrlError, "Only allowed ports are #{ports.join(', ')}, and any over 1024"
       end
 
-      def validate_scheme(scheme, schemes)
-        if scheme.blank? || (schemes.any? && !schemes.include?(scheme))
+      def validate_absolute(uri)
+        return if uri.absolute?
+
+        raise BlockedUrlError, 'must be absolute'
+      end
+
+      def validate_relative(uri)
+        return if uri.absolute? || uri.path.starts_with?('/')
+
+        raise BlockedUrlError, 'relative path must begin with a / (slash)'
+      end
+
+      def validate_scheme(scheme, schemes, require_absolute)
+        if (require_absolute && scheme.blank?) || (schemes.any? && !schemes.include?(scheme))
           raise BlockedUrlError, "Only allowed schemes are #{schemes.join(', ')}"
         end
       end
@@ -237,9 +256,10 @@ module Gitlab
       end
 
       def internal_web?(uri)
-        uri.scheme == config.gitlab.protocol &&
-          uri.hostname == config.gitlab.host &&
-          (uri.port.blank? || uri.port == config.gitlab.port)
+        (uri.scheme.blank? && uri.hostname.blank? && uri.port.blank? && uri.path.starts_with?('/')) ||
+        (uri.scheme == config.gitlab.protocol &&
+         uri.hostname == config.gitlab.host &&
+         (uri.port.blank? || uri.port == config.gitlab.port))
       end
 
       def internal_shell?(uri)

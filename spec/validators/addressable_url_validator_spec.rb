@@ -349,4 +349,67 @@ describe AddressableUrlValidator do
       end
     end
   end
+
+  context 'when require_absolute is' do
+    let(:validator) { described_class.new(attributes: [:link_url], require_absolute: require_absolute) }
+    let(:valid_relative_url) { '/relative/path' }
+    let(:invalid_relative_url) { 'relative/path' }
+    let(:absolute_url) { 'https://example.com' }
+
+    context 'true' do
+      let(:require_absolute) { true }
+
+      it 'prevents valid relative urls' do
+        badge.link_url = valid_relative_url
+
+        subject
+
+        expect(badge.errors).to be_present
+      end
+
+      it 'prevents invalid relative urls' do
+        badge.link_url = invalid_relative_url
+
+        subject
+
+        expect(badge.errors).to be_present
+      end
+
+      it 'allows absolute urls' do
+        badge.link_url = absolute_url
+
+        subject
+
+        expect(badge.errors).to be_empty
+      end
+    end
+
+    context 'false' do
+      let(:require_absolute) { false }
+
+      it 'allows valid relative urls' do
+        badge.link_url = valid_relative_url
+
+        subject
+
+        expect(badge.errors).to be_empty
+      end
+
+      it 'prevents invalid relative urls' do
+        badge.link_url = invalid_relative_url
+
+        subject
+
+        expect(badge.errors).to be_present
+      end
+
+      it 'allows absolute urls' do
+        badge.link_url = absolute_url
+
+        subject
+
+        expect(badge.errors).to be_empty
+      end
+    end
+  end
 end

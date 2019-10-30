@@ -2,6 +2,8 @@
 
 module MergeRequests
   class BaseService < ::IssuableBaseService
+    include MergeRequests::AssignsMergeParams
+
     def create_note(merge_request, state = merge_request.state)
       SystemNoteService.change_status(merge_request, merge_request.target_project, current_user, state, nil)
     end
@@ -28,6 +30,18 @@ module MergeRequests
     end
 
     private
+
+    def create(merge_request)
+      self.params = assign_allowed_merge_params(merge_request, params)
+
+      super
+    end
+
+    def update(merge_request)
+      self.params = assign_allowed_merge_params(merge_request, params)
+
+      super
+    end
 
     def handle_wip_event(merge_request)
       if wip_event = params.delete(:wip_event)
