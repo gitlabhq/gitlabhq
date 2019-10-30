@@ -6,7 +6,7 @@ cache gems:
     - .default-retry
     - .default-cache
     - .default-before_script
-    - .only-code-qa-changes
+    - .only:changes-code-backstage-qa
   stage: test
   dependencies: ["setup-test-env"]
   needs: ["setup-test-env"]
@@ -29,7 +29,7 @@ cache gems:
     - .default-tags
     - .default-retry
     - .default-only
-    - .only-code-changes
+    - .only:changes-code-backstage
   dependencies: []
 
 gitlab_git_test:

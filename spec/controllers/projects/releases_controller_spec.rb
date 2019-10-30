@@ -56,8 +56,8 @@ describe Projects::ReleasesController do
       context 'when the project is private and the user is not logged in' do
         let(:project) { private_project }
 
-        it 'renders a 302' do
-          expect(response.status).to eq(302)
+        it 'returns a redirect' do
+          expect(response).to have_gitlab_http_status(:redirect)
         end
       end
     end
@@ -78,8 +78,8 @@ describe Projects::ReleasesController do
       context 'when the project is private and the user is not logged in' do
         let(:project) { private_project }
 
-        it 'renders a 401' do
-          expect(response.status).to eq(401)
+        it 'returns a redirect' do
+          expect(response).to have_gitlab_http_status(:redirect)
         end
       end
     end

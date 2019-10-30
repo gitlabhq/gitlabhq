@@ -1,4 +1,4 @@
-- content_for(:page_title, _('Welcome to GitLab<br>%{username}!' % { username: html_escape(current_user.username) }).html_safe)
+- content_for(:page_title, _('Welcome to GitLab %{username}!') % { username: current_user.username })
 - max_name_length = 128
 .text-center.mb-3
   = _('In order to tailor your experience with GitLab<br>we would like to know a bit more about you.').html_safe

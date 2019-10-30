@@ -14,11 +14,11 @@ gitlab:
   gitaly:
     resources:
       requests:
-        cpu: 600m
-        memory: 200M
-      limits:
         cpu: 1200m
-        memory: 420M
+        memory: 240M
+      limits:
+        cpu: 1800m
+        memory: 360M
     persistence:
       size: 10G
   gitlab-exporter:
@@ -35,22 +35,22 @@ gitlab:
   gitlab-shell:
     resources:
       requests:
-        cpu: 125m
-        memory: 20M
+        cpu: 230m
+        memory: 25M
       limits:
-        cpu: 250m
-        memory: 40M
+        cpu: 345m
+        memory: 37.5M
     maxReplicas: 3
     hpa:
       targetAverageValue: 130m
   sidekiq:
     resources:
       requests:
-        cpu: 500m
-        memory: 800M
+        cpu: 650m
+        memory: 880M
       limits:
-        cpu: 1000m
-        memory: 1.6G
+        cpu: 975m
+        memory: 1320M
   task-runner:
     resources:
       requests:
@@ -62,11 +62,11 @@ gitlab:
   unicorn:
     resources:
       requests:
-        cpu: 400m
-        memory: 1.4G
+        cpu: 500m
+        memory: 1540M
       limits:
-        cpu: 800m
-        memory: 2.8G
+        cpu: 750m
+        memory: 2310M
     deployment:
       readinessProbe:
         initialDelaySeconds: 5  # Default is 0
@@ -75,11 +75,11 @@ gitlab:
     workhorse:
       resources:
         requests:
-          cpu: 300m
-          memory: 100M
+          cpu: 250m
+          memory: 50M
         limits:
-          cpu: 600m
-          memory: 200M
+          cpu: 375m
+          memory: 75M
       readinessProbe:
         initialDelaySeconds: 5  # Default is 0
         periodSeconds: 15  # Default is 10
@@ -87,11 +87,11 @@ gitlab:
 gitlab-runner:
   resources:
     requests:
-      cpu: 355m
-      memory: 300M
+      cpu: 450m
+      memory: 100M
     limits:
-      cpu: 710m
-      memory: 600M
+      cpu: 675m
+      memory: 150M
 minio:
   resources:
     requests:
@@ -108,10 +108,10 @@ nginx-ingress:
     resources:
       requests:
         cpu: 100m
-        memory: 250M
+        memory: 450M
       limits:
         cpu: 200m
-        memory: 500M
+        memory: 675M
     minAvailable: 1
     service:
       enableHttp: false
@@ -133,10 +133,11 @@ postgresql:
     enabled: false
   resources:
     requests:
-      cpu: 250m
-      memory: 256M
+      cpu: 300m
+      memory: 250M
     limits:
-      cpu: 500m
+      cpu: 450m
+      memory: 375M
 prometheus:
   install: false
 redis:
@@ -157,8 +158,8 @@ registry:
     minReplicas: 1
   resources:
     requests:
-      cpu: 50m
-      memory: 32M
-    limits:
       cpu: 100m
-      memory: 64M
+      memory: 30M
+    limits:
+      cpu: 200m
+      memory: 45M

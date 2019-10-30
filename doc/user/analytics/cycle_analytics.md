@@ -3,9 +3,10 @@
 > - Introduced prior to GitLab 12.3 at the project level.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/12077) in [GitLab Premium](https://about.gitlab.com/pricing/) 12.3 at the group level.
 
-Cycle Analytics measures the time spent to go from an [idea to production] - also known
-as cycle time - for each of your projects. Cycle Analytics displays the median time for an idea to
-reach production, along with the time typically spent in each DevOps stage along the way.
+Cycle Analytics measures the time spent to go from an
+[idea to production](https://about.gitlab.com/blog/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/#from-idea-to-production-with-gitlab)
+(also known as cycle time) for each of your projects. Cycle Analytics displays the median time
+spent in each stage defined in the process.
 
 NOTE: **Note:**
 Use the `cycle_analytics` feature flag to enable at the group level.
@@ -14,8 +15,8 @@ Cycle Analytics is useful in order to quickly determine the velocity of a given
 project. It points to bottlenecks in the development process, enabling management
 to uncover, triage, and identify the root cause of slowdowns in the software development life cycle.
 
-Cycle Analytics is tightly coupled with the [GitLab flow] and calculates a separate median for each
-stage.
+Cycle Analytics is tightly coupled with the [GitLab flow](../../topics/gitlab_flow.md) and
+calculates a separate median for each stage.
 
 ## Overview
 
@@ -46,6 +47,16 @@ There are seven stages that are tracked as part of the Cycle Analytics calculati
 - **Production** (Total)
   - Total lifecycle time; i.e. the velocity of the project or team
 
+## Date ranges
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/13216) in GitLab 12.4.
+
+GitLab provides the ability to filter analytics based on a date range. To filter results:
+
+1. Select a group.
+1. Optionally select a project.
+1. Select a date range using the available date pickers.
+
 ## How the data is measured
 
 Cycle Analytics records cycle time and data based on the project issues with the
@@ -53,7 +64,8 @@ exception of the staging and production stages, where only data deployed to
 production are measured.
 
 Specifically, if your CI is not set up and you have not defined a `production`
-or `production/*` [environment], then you will not have any data for those stages.
+or `production/*` [environment](../../ci/yaml/README.md#environment), then you will not have any
+data for those stages.
 
 Each stage of Cycle Analytics is further described in the table below.
 
@@ -64,10 +76,8 @@ Each stage of Cycle Analytics is further described in the table below.
 | Code      | Measures the median time between pushing a first commit (previous stage) and creating a merge request (MR) related to that commit. The key to keep the process tracked is to include the [issue closing pattern](../project/issues/managing_issues.md#closing-issues-automatically) to the description of the merge request (for example, `Closes #xxx`, where `xxx` is the number of the issue related to this merge request). If the issue closing pattern is not present in the merge request description, the MR is not considered to the measurement time of the stage. |
 | Test      | Measures the median time to run the entire pipeline for that project. It's related to the time GitLab CI takes to run every job for the commits pushed to that merge request defined in the previous stage. It is basically the start->finish time for all pipelines. |
 | Review    | Measures the median time taken to review the merge request that has closing issue pattern, between its creation and until it's merged. |
-| Staging   | Measures the median time between merging the merge request with closing issue pattern until the very first deployment to production. It's tracked by the [environment] set to `production` or matching `production/*` (case-sensitive, `Production` won't work) in your GitLab CI configuration. If there isn't a production environment, this is not tracked. |
+| Staging   | Measures the median time between merging the merge request with closing issue pattern until the very first deployment to production. It's tracked by the environment set to `production` or matching `production/*` (case-sensitive, `Production` won't work) in your GitLab CI configuration. If there isn't a production environment, this is not tracked. |
 | Production| The sum of all time (medians) taken to run the entire process, from issue creation to deploying the code to production. |
-
----
 
 How this works, behind the scenes:
 
@@ -81,12 +91,12 @@ How this works, behind the scenes:
    we need for the stages, like issue creation date, merge request merge time,
    etc.
 
-To sum up, anything that doesn't follow [GitLab flow] will not be tracked and the
+To sum up, anything that doesn't follow [GitLab flow](../../workflow/gitlab_flow.md) will not be tracked and the
 Cycle Analytics dashboard will not present any data for:
 
-- merge requests that do not close an issue.
-- issues not labeled with a label present in the Issue Board or for issues not assigned a milestone.
-- staging and production stages, if the project has no `production` or `production/*`
+- Merge requests that do not close an issue.
+- Issues not labeled with a label present in the Issue Board or for issues not assigned a milestone.
+- Staging and production stages, if the project has no `production` or `production/*`
   environment.
 
 ## Example workflow
@@ -107,7 +117,7 @@ environments is configured.
 1. Push branch and create a merge request that contains the [issue closing pattern](../project/issues/managing_issues.md#closing-issues-automatically)
    in its description at 14:00 (stop of **Code** stage / start of **Test** and
    **Review** stages).
-1. The CI starts running your scripts defined in [`.gitlab-ci.yml`][yml] and
+1. The CI starts running your scripts defined in [`.gitlab-ci.yml`](../../ci/yaml/README.md) and
    takes 5min (stop of **Test** stage).
 1. Review merge request, ensure that everything is OK and merge the merge
    request at 19:00. (stop of **Review** stage / start of **Staging** stage).
@@ -151,7 +161,7 @@ The current permissions on the Project Cycle Analytics dashboard are:
 - Internal projects - any authenticated user can access.
 - Private projects - any member Guest and above can access.
 
-You can [read more about permissions][permissions] in general.
+You can [read more about permissions](../../ci/yaml/README.md) in general.
 
 NOTE: **Note:**
 As of GitLab 12.3, the project-level page is deprecated. You should access
@@ -169,14 +179,6 @@ For Cycle Analytics functionality introduced in GitLab 12.3 and later:
 
 Learn more about Cycle Analytics in the following resources:
 
-- [Cycle Analytics feature page](https://about.gitlab.com/product/cycle-analytics/)
-- [Cycle Analytics feature preview](https://about.gitlab.com/blog/2016/09/16/feature-preview-introducing-cycle-analytics/)
-- [Cycle Analytics feature highlight](https://about.gitlab.com/blog/2016/09/21/cycle-analytics-feature-highlight/)
-
-[ce-5986]: https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/5986
-[ce-20975]: https://gitlab.com/gitlab-org/gitlab-foss/issues/20975
-[environment]: ../../ci/yaml/README.md#environment
-[GitLab flow]: ../../topics/gitlab_flow.md
-[idea to production]: https://about.gitlab.com/blog/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/#from-idea-to-production-with-gitlab
-[permissions]: ../permissions.md
-[yml]: ../../ci/yaml/README.md
+- [Cycle Analytics feature page](https://about.gitlab.com/product/cycle-analytics/).
+- [Cycle Analytics feature preview](https://about.gitlab.com/blog/2016/09/16/feature-preview-introducing-cycle-analytics/).
+- [Cycle Analytics feature highlight](https://about.gitlab.com/blog/2016/09/21/cycle-analytics-feature-highlight/).

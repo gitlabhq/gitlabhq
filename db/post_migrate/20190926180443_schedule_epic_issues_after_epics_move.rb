@@ -24,7 +24,7 @@ class ScheduleEpicIssuesAfterEpicsMove < ActiveRecord::Migration[5.2]
 
     Epic.each_batch(of: BATCH_SIZE) do |batch, index|
       range = batch.pluck('MIN(id)', 'MAX(id)').first
-      delay = index * interval
+      delay = index * INTERVAL
       BackgroundMigrationWorker.perform_in(delay, MIGRATION, *range)
     end
   end

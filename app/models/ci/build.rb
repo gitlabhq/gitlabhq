@@ -35,6 +35,10 @@ module Ci
       refspecs: -> (build) { build.merge_request_ref? }
     }.freeze
 
+    DEFAULT_RETRIES = {
+      scheduler_failure: 2
+    }.freeze
+
     has_one :deployment, as: :deployable, class_name: 'Deployment'
     has_many :trace_sections, class_name: 'Ci::BuildTraceSection'
     has_many :trace_chunks, class_name: 'Ci::BuildTraceChunk', foreign_key: :build_id
@@ -372,18 +376,25 @@ module Ci
       pipeline.builds.retried.where(name: self.name).count
     end
 
-    def retries_max
-      normalized_retry.fetch(:max, 0)
-    end
-
-    def retry_when
-      normalized_retry.fetch(:when, ['always'])
-    end
-
     def retry_failure?
-      return false if retries_max.zero? || retries_count >= retries_max
+      max_allowed_retries = nil
+      max_allowed_retries ||= options_retry_max if retry_on_reason_or_always?
+      max_allowed_retries ||= DEFAULT_RETRIES.fetch(failure_reason.to_sym, 0)
 
-      retry_when.include?('always') || retry_when.include?(failure_reason.to_s)
+      max_allowed_retries > 0 && retries_count < max_allowed_retries
+    end
+
+    def options_retry_max
+      options_retry[:max]
+    end
+
+    def options_retry_when
+      options_retry.fetch(:when, ['always'])
+    end
+
+    def retry_on_reason_or_always?
+      options_retry_when.include?(failure_reason.to_s) ||
+        options_retry_when.include?('always')
     end
 
     def latest?
@@ -831,6 +842,13 @@ module Ci
       :creating
     end
 
+    # Consider this object to have a structural integrity problems
+    def doom!
+      update_columns(
+        status: :failed,
+        failure_reason: :data_integrity_failure)
+    end
+
     private
 
     def successful_deployment_status
@@ -875,8 +893,8 @@ module Ci
     # format, but builds created before GitLab 11.5 and saved in database still
     # have the old integer only format. This method returns the retry option
     # normalized as a hash in 11.5+ format.
-    def normalized_retry
-      strong_memoize(:normalized_retry) do
+    def options_retry
+      strong_memoize(:options_retry) do
         value = options&.dig(:retry)
         value = value.is_a?(Integer) ? { max: value } : value.to_h
         value.with_indifferent_access

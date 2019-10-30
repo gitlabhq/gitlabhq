@@ -23,6 +23,7 @@
 
   .signup-heading h2 {
     font-weight: $gl-font-weight-bold;
+    padding: 0 10px;
 
     @include media-breakpoint-down(md) {
       font-size: $gl-font-size-large;

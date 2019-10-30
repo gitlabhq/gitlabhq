@@ -9814,8 +9814,18 @@ msgid_plural "LicenseCompliance|License Compliance detected %d licenses for the 
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "LicenseCompliance|License Compliance detected %d license for the source branch only; approval required"
+msgid_plural "LicenseCompliance|License Compliance detected %d licenses for the source branch only; approval required"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "LicenseCompliance|License Compliance detected %d new license"
 msgid_plural "LicenseCompliance|License Compliance detected %d new licenses"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "LicenseCompliance|License Compliance detected %d new license; approval required"
+msgid_plural "LicenseCompliance|License Compliance detected %d new licenses; approval required"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -15967,6 +15977,9 @@ msgstr ""
 msgid "Subkeys"
 msgstr ""
 
+msgid "Submit a review"
+msgstr ""
+
 msgid "Submit as spam"
 msgstr ""
 
@@ -15980,6 +15993,12 @@ msgid "Submit review"
 msgstr ""
 
 msgid "Submit search"
+msgstr ""
+
+msgid "Submit the current review."
+msgstr ""
+
+msgid "Submitted the current review."
 msgstr ""
 
 msgid "Subscribe"
@@ -18790,6 +18809,9 @@ msgid "Welcome back! Your account had been deactivated due to inactivity but is 
 msgstr ""
 
 msgid "Welcome to GitLab"
+msgstr ""
+
+msgid "Welcome to GitLab %{username}!"
 msgstr ""
 
 msgid "Welcome to the Guided GitLab Tour"

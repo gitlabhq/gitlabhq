@@ -25,25 +25,6 @@ The following identity providers are supported:
 ## Requirements
 
 - [Group SSO](index.md) needs to be configured.
-- The `scim_group` feature flag must be enabled:
-
-  Run the following commands in a Rails console:
-
-  ```sh
-  # Omnibus GitLab
-  gitlab-rails console
-
-  # Installation from source
-  cd /home/git/gitlab
-  sudo -u git -H bin/rails console RAILS_ENV=production
-  ```
-
-  To enable SCIM for a group named `group_name`:
-
-  ```ruby
-  group = Group.find_by_full_path('group_name')
-  Feature.enable(:group_scim, group)
-  ```
 
 ## GitLab configuration
 

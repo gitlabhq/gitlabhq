@@ -4,7 +4,7 @@ pages:
     - .default-retry
     - .default-cache
     - .default-only
-    - .only-code-qa-changes
+    - .only:changes-code-backstage-qa
   only:
     refs:
       - master

@@ -1,7 +1,7 @@
 .tests-metadata-state:
   extends:
     - .default-only
-    - .only-code-changes
+    - .only:changes-code-backstage
   variables:
     TESTS_METADATA_S3_BUCKET: "gitlab-ce-cache"
   before_script:
@@ -48,7 +48,7 @@ flaky-examples-check:
     - .default-tags
     - .default-retry
     - .default-only
-    - .only-code-changes
+    - .only:changes-code-backstage
   image: ruby:2.6-alpine
   stage: post-test
   variables:

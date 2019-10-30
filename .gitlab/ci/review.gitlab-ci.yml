@@ -23,7 +23,7 @@
 build-qa-image:
   extends:
     - .review-docker
-    - .only-code-qa-changes
+    - .only:changes-code-qa
   only:
     variables:
       - $CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org"
@@ -40,7 +40,7 @@ build-qa-image:
     - .default-tags
     - .default-retry
     - .default-only
-    - .only-code-qa-changes
+    - .only:changes-code-qa
   stage: prepare
   image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-charts-build-base
   allow_failure: true
@@ -66,7 +66,7 @@ manual:review-cleanup:
 .review-build-cng-base:
   extends:
     - .default-only
-    - .only-code-qa-changes
+    - .only:changes-code-qa
     - .except-deploys
   image: ruby:2.6-alpine
   stage: review-prepare
@@ -95,7 +95,7 @@ schedule:review-build-cng:
     - .default-tags
     - .default-retry
     - .default-only
-    - .only-code-qa-changes
+    - .only:changes-code-qa
     - .except-deploys
   stage: review
   image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-charts-build-base
@@ -189,7 +189,7 @@ review-cleanup-failed-deployment:
   extends:
     - .review-docker
     - .only-review
-    - .only-code-qa-changes
+    - .only:changes-code-qa
   stage: qa
   allow_failure: true
   variables:
@@ -236,7 +236,7 @@ review-qa-all:
 .review-performance-base:
   extends:
     - .review-docker
-    - .only-code-qa-changes
+    - .only:changes-code-qa
   stage: qa
   allow_failure: true
   before_script:
@@ -288,7 +288,7 @@ parallel-spec-reports:
   extends:
     - .default-tags
     - .default-only
-    - .only-code-qa-changes
+    - .only:changes-code-qa
     - .only-review
     - .except-deploys
   image: ruby:2.6-alpine

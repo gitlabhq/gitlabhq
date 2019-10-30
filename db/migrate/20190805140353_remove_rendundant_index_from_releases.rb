@@ -12,10 +12,13 @@ class RemoveRendundantIndexFromReleases < ActiveRecord::Migration[5.2]
   disable_ddl_transaction!
 
   def up
-    remove_concurrent_index :releases, :project_id
+    remove_concurrent_index_by_name :releases, 'index_releases_on_project_id'
+
+    # This is an extra index that is not present in db/schema.rb but known to exist on some installs
+    remove_concurrent_index_by_name :releases, 'releases_project_id_idx'
   end
 
   def down
-    add_concurrent_index :releases, :project_id
+    add_concurrent_index :releases, :project_id, name: 'index_releases_on_project_id'
   end
 end

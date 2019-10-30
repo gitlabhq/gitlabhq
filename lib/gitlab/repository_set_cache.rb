@@ -25,7 +25,7 @@ module Gitlab
     end
 
     def read(key)
-      with { |redis| redis.smembers(cache_key(key)) }
+      with { |redis| redis.sscan_each(cache_key(key)).to_a }
     end
 
     def write(key, value)
@@ -47,11 +47,10 @@ module Gitlab
     end
 
     def fetch(key, &block)
-      if exist?(key)
-        read(key)
-      else
-        write(key, yield)
-      end
+      result = read(key)
+      return result unless result.empty?
+
+      write(key, yield)
     end
 
     def include?(key, value)

@@ -3,7 +3,7 @@
     - .default-tags
     - .default-retry
     - .default-only
-    - .only-code-qa-changes
+    - .only:changes-code-qa
   stage: test
   dependencies: []
   cache:
@@ -47,7 +47,7 @@ qa:selectors-foss:
 package-and-qa-manual:
   extends:
     - .package-and-qa-base
-    - .only-code-changes
+    - .only:changes-code
   except:
     refs:
       - master
@@ -58,7 +58,7 @@ package-and-qa-manual:
 package-and-qa:
   extends:
     - .package-and-qa-base
-    - .only-qa-changes
+    - .only:changes-qa
   except:
     refs:
       - master
@@ -69,6 +69,6 @@ package-and-qa:
 schedule:package-and-qa:
   extends:
     - .package-and-qa-base
-    - .only-code-qa-changes
+    - .only:changes-code-qa
     - .only-canonical-schedules
   needs: ["build-qa-image", "gitlab:assets:compile pull-cache"]

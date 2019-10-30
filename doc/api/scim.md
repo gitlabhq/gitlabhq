@@ -5,8 +5,7 @@
 The SCIM API implements the [the RFC7644 protocol](https://tools.ietf.org/html/rfc7644).
 
 NOTE: **Note:**
-[Group SSO](../user/group/saml_sso/index.md) and the feature
-flag `:group_scim` must be enabled for the group. For more information, see [SCIM setup documentation](../user/group/saml_sso/scim_setup.md#requirements).
+[Group SSO](../user/group/saml_sso/index.md) must be enabled for the group. For more information, see [SCIM setup documentation](../user/group/saml_sso/scim_setup.md#requirements).
 
 ## Get a list of SAML users
 

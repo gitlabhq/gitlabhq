@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import { formatDate } from '~/lib/utils/datetime_utility';
 import { mount, createLocalVue } from '@vue/test-utils';
-import { PathIdSeparator } from 'ee/related_issues/constants';
 import RelatedIssuableItem from '~/vue_shared/components/issue/related_issuable_item.vue';
 import {
   defaultAssignees,
@@ -13,7 +12,7 @@ describe('RelatedIssuableItem', () => {
   const props = {
     idKey: 1,
     displayReference: 'gitlab-org/gitlab-test#1',
-    pathIdSeparator: PathIdSeparator.Issue,
+    pathIdSeparator: '#',
     path: `${gl.TEST_HOST}/path`,
     title: 'title',
     confidential: true,

@@ -1587,7 +1587,7 @@ describe Ci::Build do
       end
     end
 
-    describe '#retries_max' do
+    describe '#options_retry_max' do
       context 'with retries max config option' do
         subject { create(:ci_build, options: { retry: { max: 1 } }) }
 
@@ -1597,7 +1597,7 @@ describe Ci::Build do
           end
 
           it 'returns the number of configured max retries' do
-            expect(subject.retries_max).to eq 1
+            expect(subject.options_retry_max).to eq 1
           end
         end
 
@@ -1607,7 +1607,7 @@ describe Ci::Build do
           end
 
           it 'returns the number of configured max retries' do
-            expect(subject.retries_max).to eq 1
+            expect(subject.options_retry_max).to eq 1
           end
         end
       end
@@ -1615,16 +1615,16 @@ describe Ci::Build do
       context 'without retries max config option' do
         subject { create(:ci_build) }
 
-        it 'returns zero' do
-          expect(subject.retries_max).to eq 0
+        it 'returns nil' do
+          expect(subject.options_retry_max).to be_nil
         end
       end
 
       context 'when build is degenerated' do
         subject { create(:ci_build, :degenerated) }
 
-        it 'returns zero' do
-          expect(subject.retries_max).to eq 0
+        it 'returns nil' do
+          expect(subject.options_retry_max).to be_nil
         end
       end
 
@@ -1632,17 +1632,17 @@ describe Ci::Build do
         subject { create(:ci_build, options: { retry: 1 }) }
 
         it 'returns the number of configured max retries' do
-          expect(subject.retries_max).to eq 1
+          expect(subject.options_retry_max).to eq 1
         end
       end
     end
 
-    describe '#retry_when' do
+    describe '#options_retry_when' do
       context 'with retries when config option' do
         subject { create(:ci_build, options: { retry: { when: ['some_reason'] } }) }
 
         it 'returns the configured when' do
-          expect(subject.retry_when).to eq ['some_reason']
+          expect(subject.options_retry_when).to eq ['some_reason']
         end
       end
 
@@ -1650,7 +1650,7 @@ describe Ci::Build do
         subject { create(:ci_build) }
 
         it 'returns always array' do
-          expect(subject.retry_when).to eq ['always']
+          expect(subject.options_retry_when).to eq ['always']
         end
       end
 
@@ -1658,72 +1658,38 @@ describe Ci::Build do
         subject { create(:ci_build, options: { retry: 1 }) }
 
         it 'returns always array' do
-          expect(subject.retry_when).to eq ['always']
+          expect(subject.options_retry_when).to eq ['always']
         end
       end
     end
 
     describe '#retry_failure?' do
-      subject { create(:ci_build) }
+      using RSpec::Parameterized::TableSyntax
 
-      context 'when retries max is zero' do
-        before do
-          expect(subject).to receive(:retries_max).at_least(:once).and_return(0)
-        end
+      let(:build) { create(:ci_build) }
 
-        it 'returns false' do
-          expect(subject.retry_failure?).to eq false
-        end
+      subject { build.retry_failure? }
+
+      where(:description, :retry_count, :options, :failure_reason, :result) do
+        "retries are disabled" | 0 | { max: 0 } | nil | false
+        "max equals count" | 2 | { max: 2 } | nil | false
+        "max is higher than count" | 1 | { max: 2 } | nil | true
+        "matching failure reason" | 0 | { when: %w[api_failure], max: 2 } | :api_failure | true
+        "not matching with always" | 0 | { when: %w[always], max: 2 } | :api_failure | true
+        "not matching reason" | 0 | { when: %w[script_error], max: 2 } | :api_failure | false
+        "scheduler failure override" | 1 | { when: %w[scheduler_failure], max: 1 } | :scheduler_failure | false
+        "default for scheduler failure" | 1 | {} | :scheduler_failure | true
       end
 
-      context 'when retries max equals retries count' do
+      with_them do
         before do
-          expect(subject).to receive(:retries_max).at_least(:once).and_return(1)
-          expect(subject).to receive(:retries_count).at_least(:once).and_return(1)
+          allow(build).to receive(:retries_count) { retry_count }
+
+          build.options[:retry] = options
+          build.failure_reason = failure_reason
         end
 
-        it 'returns false' do
-          expect(subject.retry_failure?).to eq false
-        end
-      end
-
-      context 'when retries max is higher than retries count' do
-        before do
-          expect(subject).to receive(:retries_max).at_least(:once).and_return(2)
-          expect(subject).to receive(:retries_count).at_least(:once).and_return(1)
-        end
-
-        context 'and retry when is always' do
-          before do
-            expect(subject).to receive(:retry_when).at_least(:once).and_return(['always'])
-          end
-
-          it 'returns true' do
-            expect(subject.retry_failure?).to eq true
-          end
-        end
-
-        context 'and retry when includes the failure_reason' do
-          before do
-            expect(subject).to receive(:failure_reason).at_least(:once).and_return('some_reason')
-            expect(subject).to receive(:retry_when).at_least(:once).and_return(['some_reason'])
-          end
-
-          it 'returns true' do
-            expect(subject.retry_failure?).to eq true
-          end
-        end
-
-        context 'and retry when does not include failure_reason' do
-          before do
-            expect(subject).to receive(:failure_reason).at_least(:once).and_return('some_reason')
-            expect(subject).to receive(:retry_when).at_least(:once).and_return(['some', 'other failure'])
-          end
-
-          it 'returns false' do
-            expect(subject.retry_failure?).to eq false
-          end
-        end
+        it { is_expected.to eq(result) }
       end
     end
   end

@@ -11,7 +11,9 @@ class CommitStatusPresenter < Gitlab::View::Presenter::Delegated
     stale_schedule: 'Delayed job could not be executed by some reason, please try again',
     job_execution_timeout: 'The script exceeded the maximum execution time set for the job',
     archived_failure: 'The job is archived and cannot be run',
-    unmet_prerequisites: 'The job failed to complete prerequisite tasks'
+    unmet_prerequisites: 'The job failed to complete prerequisite tasks',
+    scheduler_failure: 'The scheduler failed to assign job to the runner, please try again or contact system administrator',
+    data_integrity_failure: 'There has been a structural integrity problem detected, please contact system administrator'
   }.freeze
 
   private_constant :CALLOUT_FAILURE_MESSAGES
@@ -33,6 +35,6 @@ class CommitStatusPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def unrecoverable?
-    script_failure? || missing_dependency_failure? || archived_failure?
+    script_failure? || missing_dependency_failure? || archived_failure? || scheduler_failure? || data_integrity_failure?
   end
 end

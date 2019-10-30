@@ -773,8 +773,8 @@ describe Ci::CreatePipelineService do
 
         it 'correctly creates builds with auto-retry value configured' do
           expect(pipeline).to be_persisted
-          expect(rspec_job.retries_max).to eq 2
-          expect(rspec_job.retry_when).to eq ['always']
+          expect(rspec_job.options_retry_max).to eq 2
+          expect(rspec_job.options_retry_when).to eq ['always']
         end
       end
 
@@ -783,8 +783,8 @@ describe Ci::CreatePipelineService do
 
         it 'correctly creates builds with auto-retry value configured' do
           expect(pipeline).to be_persisted
-          expect(rspec_job.retries_max).to eq 2
-          expect(rspec_job.retry_when).to eq ['runner_system_failure']
+          expect(rspec_job.options_retry_max).to eq 2
+          expect(rspec_job.options_retry_when).to eq ['runner_system_failure']
         end
       end
     end

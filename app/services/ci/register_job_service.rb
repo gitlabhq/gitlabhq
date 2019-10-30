@@ -42,26 +42,16 @@ module Ci
       end
 
       builds.each do |build|
-        next unless runner.can_pick?(build)
+        result = process_build(build, params)
+        next unless result
 
-        begin
-          # In case when 2 runners try to assign the same build, second runner will be declined
-          # with StateMachines::InvalidTransition or StaleObjectError when doing run! or save method.
-          if assign_runner!(build, params)
-            register_success(build)
+        if result.valid?
+          register_success(result.build)
 
-            return Result.new(build, true)
-          end
-        rescue StateMachines::InvalidTransition, ActiveRecord::StaleObjectError
-          # We are looping to find another build that is not conflicting
-          # It also indicates that this build can be picked and passed to runner.
-          # If we don't do it, basically a bunch of runners would be competing for a build
-          # and thus we will generate a lot of 409. This will increase
-          # the number of generated requests, also will reduce significantly
-          # how many builds can be picked by runner in a unit of time.
-          # In case we hit the concurrency-access lock,
-          # we still have to return 409 in the end,
-          # to make sure that this is properly handled by runner.
+          return result
+        else
+          # The usage of valid: is described in
+          # handling of ActiveRecord::StaleObjectError
           valid = false
         end
       end
@@ -72,6 +62,35 @@ module Ci
     # rubocop: enable CodeReuse/ActiveRecord
 
     private
+
+    def process_build(build, params)
+      return unless runner.can_pick?(build)
+
+      # In case when 2 runners try to assign the same build, second runner will be declined
+      # with StateMachines::InvalidTransition or StaleObjectError when doing run! or save method.
+      if assign_runner!(build, params)
+        Result.new(build, true)
+      end
+    rescue StateMachines::InvalidTransition, ActiveRecord::StaleObjectError
+      # We are looping to find another build that is not conflicting
+      # It also indicates that this build can be picked and passed to runner.
+      # If we don't do it, basically a bunch of runners would be competing for a build
+      # and thus we will generate a lot of 409. This will increase
+      # the number of generated requests, also will reduce significantly
+      # how many builds can be picked by runner in a unit of time.
+      # In case we hit the concurrency-access lock,
+      # we still have to return 409 in the end,
+      # to make sure that this is properly handled by runner.
+      Result.new(nil, false)
+    rescue => ex
+      raise ex unless Feature.enabled?(:ci_doom_build, default_enabled: true)
+
+      scheduler_failure!(build)
+      track_exception_for_build(ex, build)
+
+      # skip, and move to next one
+      nil
+    end
 
     def assign_runner!(build, params)
       build.runner_id = runner.id
@@ -94,6 +113,28 @@ module Ci
 
       build.run!
       true
+    end
+
+    def scheduler_failure!(build)
+      Gitlab::OptimisticLocking.retry_lock(build, 3) do |subject|
+        subject.drop!(:scheduler_failure)
+      end
+    rescue => ex
+      build.doom!
+
+      # This requires extra exception, otherwise we would loose information
+      # why we cannot perform `scheduler_failure`
+      track_exception_for_build(ex, build)
+    end
+
+    def track_exception_for_build(ex, build)
+      Gitlab::Sentry.track_acceptable_exception(ex, extra: {
+        build_id: build.id,
+        build_name: build.name,
+        build_stage: build.stage,
+        pipeline_id: build.pipeline_id,
+        project_id: build.project_id
+      })
     end
 
     # rubocop: disable CodeReuse/ActiveRecord
