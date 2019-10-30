@@ -39,7 +39,7 @@ shared_examples 'todos actions' do
         post_create
       end.to change { user.todos.count }.by(0)
 
-      expect(response).to have_gitlab_http_status(parent.is_a?(Group) ? 401 : 302)
+      expect(response).to have_gitlab_http_status(302)
     end
   end
 end

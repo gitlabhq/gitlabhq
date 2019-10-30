@@ -379,6 +379,63 @@ describe Note do
         expect(label_note.cross_reference?).to be_falsy
       end
     end
+
+    context 'when system note metadata is not present' do
+      let(:note) { build(:note, :system) }
+
+      before do
+        allow(note).to receive(:system_note_metadata).and_return(nil)
+      end
+
+      it 'delegates to the system note service' do
+        expect(SystemNotes::IssuablesService).to receive(:cross_reference?).with(note.note)
+
+        note.cross_reference?
+      end
+    end
+
+    context 'with a system note' do
+      let(:issue)     { create(:issue, project: create(:project, :repository)) }
+      let(:note)      { create(:system_note, note: "test", noteable: issue, project: issue.project) }
+
+      shared_examples 'system_note_metadata includes note action' do
+        it 'delegates to the cross-reference regex' do
+          expect(note).to receive(:matches_cross_reference_regex?)
+
+          note.cross_reference?
+        end
+      end
+
+      context 'with :label action' do
+        let!(:metadata) {create(:system_note_metadata, note: note, action: :label)}
+
+        it_behaves_like 'system_note_metadata includes note action'
+
+        it { expect(note.cross_reference?).to be_falsy }
+
+        context 'with cross reference label note' do
+          let(:label) { create(:label, project: issue.project)}
+          let(:note) { create(:system_note, note: "added #{label.to_reference} label", noteable: issue, project: issue.project) }
+
+          it { expect(note.cross_reference?).to be_truthy }
+        end
+      end
+
+      context 'with :milestone action' do
+        let!(:metadata) {create(:system_note_metadata, note: note, action: :milestone)}
+
+        it_behaves_like 'system_note_metadata includes note action'
+
+        it { expect(note.cross_reference?).to be_falsy }
+
+        context 'with cross reference milestone note' do
+          let(:milestone) { create(:milestone, project: issue.project)}
+          let(:note) { create(:system_note, note: "added #{milestone.to_reference} milestone", noteable: issue, project: issue.project) }
+
+          it { expect(note.cross_reference?).to be_truthy }
+        end
+      end
+    end
   end
 
   describe 'clear_blank_line_code!' do
@@ -578,24 +635,30 @@ describe Note do
   end
 
   describe '#to_ability_name' do
-    it 'returns snippet for a project snippet note' do
-      expect(build(:note_on_project_snippet).to_ability_name).to eq('project_snippet')
+    it 'returns note' do
+      expect(build(:note).to_ability_name).to eq('note')
+    end
+  end
+
+  describe '#noteable_ability_name' do
+    it 'returns project_snippet for a project snippet note' do
+      expect(build(:note_on_project_snippet).noteable_ability_name).to eq('project_snippet')
     end
 
     it 'returns personal_snippet for a personal snippet note' do
-      expect(build(:note_on_personal_snippet).to_ability_name).to eq('personal_snippet')
+      expect(build(:note_on_personal_snippet).noteable_ability_name).to eq('personal_snippet')
     end
 
     it 'returns merge_request for an MR note' do
-      expect(build(:note_on_merge_request).to_ability_name).to eq('merge_request')
+      expect(build(:note_on_merge_request).noteable_ability_name).to eq('merge_request')
     end
 
     it 'returns issue for an issue note' do
-      expect(build(:note_on_issue).to_ability_name).to eq('issue')
+      expect(build(:note_on_issue).noteable_ability_name).to eq('issue')
     end
 
-    it 'returns issue for a commit note' do
-      expect(build(:note_on_commit).to_ability_name).to eq('commit')
+    it 'returns commit for a commit note' do
+      expect(build(:note_on_commit).noteable_ability_name).to eq('commit')
     end
   end
 

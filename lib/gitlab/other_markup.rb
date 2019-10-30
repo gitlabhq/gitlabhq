@@ -10,7 +10,7 @@ module Gitlab
     def self.render(file_name, input, context)
       html = GitHub::Markup.render(file_name, input)
         .force_encoding(input.encoding)
-      context[:pipeline] = :markup
+      context[:pipeline] ||= :markup
 
       html = Banzai.render(html, context)
 

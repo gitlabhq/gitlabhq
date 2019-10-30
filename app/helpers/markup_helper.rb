@@ -133,15 +133,7 @@ module MarkupHelper
       issuable_state_filter_enabled: true
     )
 
-    html =
-      case wiki_page.format
-      when :markdown
-        markdown_unsafe(text, context)
-      when :asciidoc
-        asciidoc_unsafe(text)
-      else
-        wiki_page.formatted_content.html_safe
-      end
+    html = markup_unsafe(wiki_page.path, text, context)
 
     prepare_for_rendering(html, context)
   end
