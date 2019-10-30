@@ -3,12 +3,13 @@
 module AutoMerge
   class BaseService < ::BaseService
     include Gitlab::Utils::StrongMemoize
+    include MergeRequests::AssignsMergeParams
 
     def execute(merge_request)
-      merge_request.merge_params.merge!(params)
+      assign_allowed_merge_params(merge_request, params.merge(auto_merge_strategy: strategy))
+
       merge_request.auto_merge_enabled = true
       merge_request.merge_user = current_user
-      merge_request.auto_merge_strategy = strategy
 
       return :failed unless merge_request.save
 
@@ -21,7 +22,7 @@ module AutoMerge
     end
 
     def update(merge_request)
-      merge_request.merge_params.merge!(params)
+      assign_allowed_merge_params(merge_request, params.merge(auto_merge_strategy: strategy))
 
       return :failed unless merge_request.save
 

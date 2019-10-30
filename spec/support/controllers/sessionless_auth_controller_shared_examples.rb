@@ -34,8 +34,15 @@ shared_examples 'authenticates sessionless user' do |path, format, params|
 
   context 'when the personal access token has no api scope', unless: params[:public] do
     it 'does not log the user in' do
-      expect(authentication_metrics)
-        .to increment(:user_unauthenticated_counter)
+      # Several instances of where these specs are shared route the request
+      #   through ApplicationController#route_not_found which does not involve
+      #   the usual auth code from Devise, so does not increment the
+      #   :user_unauthenticated_counter
+      #
+      unless params[:ignore_incrementing]
+        expect(authentication_metrics)
+          .to increment(:user_unauthenticated_counter)
+      end
 
       personal_access_token.update(scopes: [:read_user])
 
@@ -84,8 +91,15 @@ shared_examples 'authenticates sessionless user' do |path, format, params|
   end
 
   it "doesn't log the user in otherwise", unless: params[:public] do
-    expect(authentication_metrics)
-      .to increment(:user_unauthenticated_counter)
+    # Several instances of where these specs are shared route the request
+    #   through ApplicationController#route_not_found which does not involve
+    #   the usual auth code from Devise, so does not increment the
+    #   :user_unauthenticated_counter
+    #
+    unless params[:ignore_incrementing]
+      expect(authentication_metrics)
+        .to increment(:user_unauthenticated_counter)
+    end
 
     get path, params: default_params.merge(private_token: 'token')
 

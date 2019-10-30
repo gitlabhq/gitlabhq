@@ -57,4 +57,108 @@ describe Projects::ParticipantsService do
       end
     end
   end
+
+  describe '#project_members' do
+    subject(:usernames) { service.project_members.map { |member| member[:username] } }
+
+    context 'when there is a project in group namespace' do
+      set(:public_group) { create(:group, :public) }
+      set(:public_project) { create(:project, :public, namespace: public_group)}
+
+      set(:public_group_owner) { create(:user) }
+
+      let(:service) { described_class.new(public_project, create(:user)) }
+
+      before do
+        public_group.add_owner(public_group_owner)
+      end
+
+      it 'returns members of a group' do
+        expect(usernames).to include(public_group_owner.username)
+      end
+    end
+
+    context 'when there is a private group and a public project' do
+      set(:public_group) { create(:group, :public) }
+      set(:private_group) { create(:group, :private, :nested) }
+      set(:public_project) { create(:project, :public, namespace: public_group)}
+
+      set(:project_issue) { create(:issue, project: public_project)}
+
+      set(:public_group_owner) { create(:user) }
+      set(:private_group_member) { create(:user) }
+      set(:public_project_maintainer) { create(:user) }
+      set(:private_group_owner) { create(:user) }
+
+      set(:group_ancestor_owner) { create(:user) }
+
+      before(:context) do
+        public_group.add_owner public_group_owner
+        private_group.add_developer private_group_member
+        public_project.add_maintainer public_project_maintainer
+
+        private_group.add_owner private_group_owner
+        private_group.parent.add_owner group_ancestor_owner
+      end
+
+      context 'when the private group is invited to the public project' do
+        before(:context) do
+          create(:project_group_link, group: private_group, project: public_project)
+        end
+
+        context 'when a user who is outside the public project and the private group is signed in' do
+          let(:service) { described_class.new(public_project, create(:user)) }
+
+          it 'does not return the private group' do
+            expect(usernames).not_to include(private_group.name)
+          end
+
+          it 'does not return private group members' do
+            expect(usernames).not_to include(private_group_member.username)
+          end
+
+          it 'returns the project maintainer' do
+            expect(usernames).to include(public_project_maintainer.username)
+          end
+
+          it 'returns project members from an invited public group' do
+            invited_public_group = create(:group, :public)
+            invited_public_group.add_owner create(:user)
+
+            create(:project_group_link, group: invited_public_group, project: public_project)
+
+            expect(usernames).to include(invited_public_group.users.first.username)
+          end
+
+          it 'does not return ancestors of the private group' do
+            expect(usernames).not_to include(group_ancestor_owner.username)
+          end
+        end
+
+        context 'when private group owner is signed in' do
+          let(:service) { described_class.new(public_project, private_group_owner) }
+
+          it 'returns private group members' do
+            expect(usernames).to include(private_group_member.username)
+          end
+
+          it 'returns ancestors of the the private group' do
+            expect(usernames).to include(group_ancestor_owner.username)
+          end
+        end
+
+        context 'when the namespace owner of the public project is signed in' do
+          let(:service) { described_class.new(public_project, public_group_owner) }
+
+          it 'returns private group members' do
+            expect(usernames).to include(private_group_member.username)
+          end
+
+          it 'does not return members of the ancestral groups of the private group' do
+            expect(usernames).to include(group_ancestor_owner.username)
+          end
+        end
+      end
+    end
+  end
 end
