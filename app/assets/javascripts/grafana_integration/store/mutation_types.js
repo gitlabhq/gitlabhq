@@ -1,0 +1,2 @@
+export const SET_GRAFANA_URL = 'SET_GRAFANA_URL';
+export const SET_GRAFANA_TOKEN = 'SET_GRAFANA_TOKEN';

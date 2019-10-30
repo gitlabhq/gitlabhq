@@ -1,0 +1,5 @@
+---
+title: Fix environment name in rollback dialog
+merge_request: 19209
+author:
+type: fixed

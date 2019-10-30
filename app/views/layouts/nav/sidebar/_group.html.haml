@@ -16,13 +16,19 @@
             .nav-icon-container
               = sprite_icon('home')
             %span.nav-item-name
-              = _('Overview')
+              - if @group.subgroup?
+                = _('Subgroup overview')
+              - else
+                = _('Group overview')
 
           %ul.sidebar-sub-level-items
             = nav_link(path: ['groups#show', 'groups#details', 'groups#activity', 'groups#subgroups'], html_options: { class: "fly-out-top-item" } ) do
               = link_to group_path(@group) do
                 %strong.fly-out-top-item-name
-                  = _('Overview')
+                  - if @group.subgroup?
+                    = _('Subgroup overview')
+                  - else
+                    = _('Group overview')
             %li.divider.fly-out-top-item
 
             = nav_link(path: ['groups#show', 'groups#details', 'groups#subgroups'], html_options: { class: 'home' }) do

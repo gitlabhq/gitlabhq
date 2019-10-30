@@ -102,5 +102,40 @@ describe 'Projects > Settings > For a forked project', :js do
         end
       end
     end
+
+    context 'grafana integration settings form' do
+      it 'is not present when the feature flag is disabled' do
+        stub_feature_flags(gfm_grafana_integration: false)
+
+        visit project_settings_operations_path(project)
+
+        wait_for_requests
+
+        expect(page).to have_no_css('.js-grafana-integration')
+      end
+
+      it 'is present when the feature flag is enabled' do
+        visit project_settings_operations_path(project)
+
+        wait_for_requests
+
+        within '.js-grafana-integration' do
+          click_button('Expand')
+        end
+
+        expect(page).to have_content('Grafana URL')
+        expect(page).to have_content('API Token')
+        expect(page).to have_button('Save Changes')
+
+        fill_in('grafana-url', with: 'http://gitlab-test.grafana.net')
+        fill_in('grafana-token', with: 'token')
+
+        click_button('Save Changes')
+
+        wait_for_requests
+
+        assert_text('Your changes have been saved')
+      end
+    end
   end
 end

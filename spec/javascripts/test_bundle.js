@@ -171,38 +171,7 @@ describe('test errors', () => {
 // see: https://github.com/deepsweet/istanbul-instrumenter-loader/issues/15
 if (process.env.BABEL_ENV === 'coverage') {
   // exempt these files from the coverage report
-  const troubleMakers = [
-    './blob_edit/blob_bundle.js',
-    './boards/components/modal/empty_state.vue',
-    './boards/components/modal/footer.js',
-    './boards/components/modal/header.js',
-    './cycle_analytics/cycle_analytics_bundle.js',
-    './cycle_analytics/components/stage_plan_component.js',
-    './cycle_analytics/components/stage_staging_component.js',
-    './cycle_analytics/components/stage_test_component.js',
-    './commit/pipelines/pipelines_bundle.js',
-    './diff_notes/diff_notes_bundle.js',
-    './diff_notes/components/jump_to_discussion.js',
-    './diff_notes/components/resolve_count.js',
-    './dispatcher.js',
-    './environments/environments_bundle.js',
-    './graphs/graphs_bundle.js',
-    './issuable/time_tracking/time_tracking_bundle.js',
-    './main.js',
-    './merge_conflicts/merge_conflicts_bundle.js',
-    './merge_conflicts/components/inline_conflict_lines.js',
-    './merge_conflicts/components/parallel_conflict_lines.js',
-    './monitoring/monitoring_bundle.js',
-    './network/network_bundle.js',
-    './network/branch_graph.js',
-    './profile/profile_bundle.js',
-    './protected_branches/protected_branches_bundle.js',
-    './snippet/snippet_bundle.js',
-    './terminal/terminal_bundle.js',
-    './users/users_bundle.js',
-    './issue_show/index.js',
-    './pages/admin/application_settings/general/index.js',
-  ];
+  const troubleMakers = ['./pages/admin/application_settings/general/index.js'];
 
   describe('Uncovered files', function() {
     const sourceFilesContexts = [require.context('~', true, /\.(js|vue)$/)];

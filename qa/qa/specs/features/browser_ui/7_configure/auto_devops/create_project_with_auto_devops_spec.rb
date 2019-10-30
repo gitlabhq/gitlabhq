@@ -3,7 +3,8 @@
 require 'pathname'
 
 module QA
-  context 'Configure' do
+  # Issue: https://gitlab.com/gitlab-org/gitlab/issues/35156
+  context 'Configure', :quarantine do
     def login
       Runtime::Browser.visit(:gitlab, Page::Main::Login)
       Page::Main::Login.perform(&:sign_in_using_credentials)

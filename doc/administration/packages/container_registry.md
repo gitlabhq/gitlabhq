@@ -353,7 +353,7 @@ configuration.
 
 NOTE: **Note:** Enabling a storage driver other than `filesystem` would mean
 that your Docker client needs to be able to access the storage backend directly.
-In that case, you must use an address that resolves and is accessible outside GitLab server.
+In that case, you must use an address that resolves and is accessible outside GitLab server. The Docker client will continue to authenticate via GitLab but data transfer will be direct to and from the storage backend.
 
 The different supported drivers are:
 

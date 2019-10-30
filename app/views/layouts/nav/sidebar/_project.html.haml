@@ -13,13 +13,13 @@
           .nav-icon-container
             = sprite_icon('home')
           %span.nav-item-name
-            = _('Project')
+            = _('Project overview')
 
         %ul.sidebar-sub-level-items
           = nav_link(path: 'projects#show', html_options: { class: "fly-out-top-item" } ) do
             = link_to project_path(@project) do
               %strong.fly-out-top-item-name
-                = _('Project')
+                = _('Project overview')
           %li.divider.fly-out-top-item
           = nav_link(path: 'projects#show') do
             = link_to project_path(@project), title: _('Project details'), class: 'shortcuts-project' do

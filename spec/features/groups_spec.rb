@@ -237,14 +237,28 @@ describe 'Group' do
     let!(:group) { create(:group) }
     let!(:nested_group) { create(:group, parent: group) }
     let!(:project) { create(:project, namespace: group) }
-    let!(:path) { group_path(group) }
 
     it 'renders projects and groups on the page' do
-      visit path
+      visit group_path(group)
       wait_for_requests
 
       expect(page).to have_content(nested_group.name)
       expect(page).to have_content(project.name)
+      expect(page).to have_link('Group overview')
+    end
+
+    it 'renders subgroup page with the text "Subgroup overview"' do
+      visit group_path(nested_group)
+      wait_for_requests
+
+      expect(page).to have_link('Subgroup overview')
+    end
+
+    it 'renders project page with the text "Project overview"' do
+      visit project_path(project)
+      wait_for_requests
+
+      expect(page).to have_link('Project overview')
     end
   end
 

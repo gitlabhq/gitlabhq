@@ -20,12 +20,17 @@ document.addEventListener('DOMContentLoaded', () => {
   // Save the URL fragment from the current window location. This will be present if the user was
   // redirected to sign-in after attempting to access a protected URL that included a fragment.
   preserveUrlFragment(window.location.hash);
+});
 
+export default function trackData() {
   if (gon.tracking_data) {
     const tab = document.querySelector(".new-session-tabs a[href='#register-pane']");
     const { category, action, ...data } = gon.tracking_data;
+
     tab.addEventListener('click', () => {
       Tracking.event(category, action, data);
     });
   }
-});
+}
+
+trackData();
