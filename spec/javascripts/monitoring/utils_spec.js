@@ -7,9 +7,14 @@ import {
   stringToISODate,
   ISODateToString,
   isValidDate,
+  graphDataValidatorForAnomalyValues,
 } from '~/monitoring/utils';
 import { timeWindows, timeWindowsKeyNames } from '~/monitoring/constants';
-import { graphDataPrometheusQuery, graphDataPrometheusQueryRange } from './mock_data';
+import {
+  graphDataPrometheusQuery,
+  graphDataPrometheusQueryRange,
+  anomalyMockGraphData,
+} from './mock_data';
 
 describe('getTimeDiff', () => {
   function secondsBetween({ start, end }) {
@@ -305,5 +310,36 @@ describe('isDateTimePickerInputValid', () => {
     it(`returns ${output} for ${input}`, () => {
       expect(isDateTimePickerInputValid(input)).toBe(output);
     });
+  });
+});
+
+describe('graphDataValidatorForAnomalyValues', () => {
+  let oneQuery;
+  let threeQueries;
+  let fourQueries;
+  beforeEach(() => {
+    oneQuery = graphDataPrometheusQuery;
+    threeQueries = anomalyMockGraphData;
+
+    const queries = [...threeQueries.queries];
+    queries.push(threeQueries.queries[0]);
+    fourQueries = {
+      ...anomalyMockGraphData,
+      queries,
+    };
+  });
+  /*
+   * Anomaly charts can accept results for exactly 3 queries,
+   */
+  it('validates passes with the right query format', () => {
+    expect(graphDataValidatorForAnomalyValues(threeQueries)).toBe(true);
+  });
+
+  it('validation fails for wrong format, 1 metric', () => {
+    expect(graphDataValidatorForAnomalyValues(oneQuery)).toBe(false);
+  });
+
+  it('validation fails for wrong format, more than 3 metrics', () => {
+    expect(graphDataValidatorForAnomalyValues(fourQueries)).toBe(false);
   });
 });

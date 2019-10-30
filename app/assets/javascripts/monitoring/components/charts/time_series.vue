@@ -1,12 +1,20 @@
 <script>
 import { s__, __ } from '~/locale';
+import _ from 'underscore';
 import { GlLink, GlButton, GlTooltip, GlResizeObserverDirective } from '@gitlab/ui';
 import { GlAreaChart, GlLineChart, GlChartSeriesLabel } from '@gitlab/ui/dist/charts';
 import dateFormat from 'dateformat';
 import { roundOffFloat } from '~/lib/utils/common_utils';
 import { getSvgIconPathContent } from '~/lib/utils/icon_utils';
 import Icon from '~/vue_shared/components/icon.vue';
-import { chartHeight, graphTypes, lineTypes, symbolSizes, dateFormats } from '../../constants';
+import {
+  chartHeight,
+  graphTypes,
+  lineTypes,
+  lineWidths,
+  symbolSizes,
+  dateFormats,
+} from '../../constants';
 import { makeDataSeries } from '~/helpers/monitor_helper';
 import { graphDataValidatorForValues } from '../../utils';
 
@@ -29,6 +37,16 @@ export default {
       type: Object,
       required: true,
       validator: graphDataValidatorForValues.bind(null, false),
+    },
+    option: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
+    seriesConfig: {
+      type: Object,
+      required: false,
+      default: () => ({}),
     },
     deploymentData: {
       type: Array,
@@ -96,29 +114,35 @@ export default {
         const lineWidth =
           appearance && appearance.line && appearance.line.width
             ? appearance.line.width
-            : undefined;
+            : lineWidths.default;
         const areaStyle = {
           opacity:
             appearance && appearance.area && typeof appearance.area.opacity === 'number'
               ? appearance.area.opacity
               : undefined,
         };
-
         const series = makeDataSeries(query.result, {
           name: this.formatLegendLabel(query),
           lineStyle: {
             type: lineType,
             width: lineWidth,
+            color: this.primaryColor,
           },
           showSymbol: false,
           areaStyle: this.graphData.type === 'area-chart' ? areaStyle : undefined,
+          ...this.seriesConfig,
         });
 
         return acc.concat(series);
       }, []);
     },
+    chartOptionSeries() {
+      return (this.option.series || []).concat(this.scatterSeries ? [this.scatterSeries] : []);
+    },
     chartOptions() {
+      const option = _.omit(this.option, 'series');
       return {
+        series: this.chartOptionSeries,
         xAxis: {
           name: __('Time'),
           type: 'time',
@@ -135,8 +159,8 @@ export default {
             formatter: num => roundOffFloat(num, 3).toString(),
           },
         },
-        series: this.scatterSeries,
         dataZoom: [this.dataZoomConfig],
+        ...option,
       };
     },
     dataZoomConfig() {
@@ -144,6 +168,14 @@ export default {
 
       return handleIcon ? { handleIcon } : {};
     },
+    /**
+     * This method returns the earliest time value in all series of a chart.
+     * Takes a chart data with data to populate a timeseries.
+     * data should be an array of data points [t, y] where t is a ISO formatted date,
+     * and is sorted by t (time).
+     * @returns {(String|null)} earliest x value from all series, or null when the
+     * chart series data is empty.
+     */
     earliestDatapoint() {
       return this.chartData.reduce((acc, series) => {
         const { data } = series;
@@ -230,10 +262,11 @@ export default {
           this.tooltip.sha = deploy.sha.substring(0, 8);
           this.tooltip.commitUrl = deploy.commitUrl;
         } else {
-          const { seriesName, color } = dataPoint;
+          const { seriesName, color, dataIndex } = dataPoint;
           const value = yVal.toFixed(3);
           this.tooltip.content.push({
             name: seriesName,
+            dataIndex,
             value,
             color,
           });
@@ -306,23 +339,27 @@ export default {
       </template>
       <template v-else>
         <template slot="tooltipTitle">
-          <div class="text-nowrap">
-            {{ tooltip.title }}
-          </div>
+          <slot name="tooltipTitle">
+            <div class="text-nowrap">
+              {{ tooltip.title }}
+            </div>
+          </slot>
         </template>
         <template slot="tooltipContent">
-          <div
-            v-for="(content, key) in tooltip.content"
-            :key="key"
-            class="d-flex justify-content-between"
-          >
-            <gl-chart-series-label :color="isMultiSeries ? content.color : ''">
-              {{ content.name }}
-            </gl-chart-series-label>
-            <div class="prepend-left-32">
-              {{ content.value }}
+          <slot name="tooltipContent" :tooltip="tooltip">
+            <div
+              v-for="(content, key) in tooltip.content"
+              :key="key"
+              class="d-flex justify-content-between"
+            >
+              <gl-chart-series-label :color="isMultiSeries ? content.color : ''">
+                {{ content.name }}
+              </gl-chart-series-label>
+              <div class="prepend-left-32">
+                {{ content.value }}
+              </div>
             </div>
-          </div>
+          </slot>
         </template>
       </template>
     </component>

@@ -14,11 +14,26 @@ export const graphTypes = {
 };
 
 export const symbolSizes = {
+  anomaly: 8,
   default: 14,
+};
+
+export const areaOpacityValues = {
+  default: 0.2,
+};
+
+export const colorValues = {
+  primaryColor: '#1f78d1', // $blue-500 (see variables.scss)
+  anomalySymbol: '#db3b21',
+  anomalyAreaColor: '#1f78d1',
 };
 
 export const lineTypes = {
   default: 'solid',
+};
+
+export const lineWidths = {
+  default: 2,
 };
 
 export const timeWindows = {

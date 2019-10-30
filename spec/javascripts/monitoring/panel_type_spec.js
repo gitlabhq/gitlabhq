@@ -2,7 +2,9 @@ import { shallowMount } from '@vue/test-utils';
 import PanelType from '~/monitoring/components/panel_type.vue';
 import EmptyChart from '~/monitoring/components/charts/empty_chart.vue';
 import TimeSeriesChart from '~/monitoring/components/charts/time_series.vue';
+import AnomalyChart from '~/monitoring/components/charts/anomaly.vue';
 import { graphDataPrometheusQueryRange } from './mock_data';
+import { anomalyMockGraphData } from '../../frontend/monitoring/mock_data';
 import { createStore } from '~/monitoring/stores';
 
 describe('Panel Type component', () => {
@@ -49,17 +51,20 @@ describe('Panel Type component', () => {
 
   describe('when Graph data is available', () => {
     const exampleText = 'example_text';
+    const propsData = {
+      clipboardText: exampleText,
+      dashboardWidth,
+      graphData: graphDataPrometheusQueryRange,
+    };
 
-    beforeEach(() => {
+    beforeEach(done => {
       store = createStore();
       panelType = shallowMount(PanelType, {
-        propsData: {
-          clipboardText: exampleText,
-          dashboardWidth,
-          graphData: graphDataPrometheusQueryRange,
-        },
+        propsData,
+        sync: false,
         store,
       });
+      panelType.vm.$nextTick(done);
     });
 
     describe('Time Series Chart panel type', () => {
@@ -73,6 +78,20 @@ describe('Panel Type component', () => {
         const clipboardText = () => link().element.dataset.clipboardText;
 
         expect(clipboardText()).toBe(exampleText);
+      });
+    });
+
+    describe('Anomaly Chart panel type', () => {
+      beforeEach(done => {
+        panelType.setProps({
+          graphData: anomalyMockGraphData,
+        });
+        panelType.vm.$nextTick(done);
+      });
+
+      it('is rendered with an anomaly chart', () => {
+        expect(panelType.find(AnomalyChart).isVueInstance()).toBe(true);
+        expect(panelType.find(AnomalyChart).exists()).toBe(true);
       });
     });
   });

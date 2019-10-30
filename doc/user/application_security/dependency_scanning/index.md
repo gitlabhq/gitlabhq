@@ -63,23 +63,6 @@ The following languages and dependency managers are supported.
 | Python ([poetry](https://poetry.eustace.io/)) | not currently ([issue](https://gitlab.com/gitlab-org/gitlab/issues/7006 "Support Poetry in Dependency Scanning")) | not available |
 | Ruby ([gem](https://rubygems.org/)) | yes | [gemnasium](https://gitlab.com/gitlab-org/security-products/gemnasium), [bundler-audit](https://github.com/rubysec/bundler-audit) |
 
-## Remote checks
-
-While some tools pull a local database to check vulnerabilities, some others
-like Gemnasium require sending data to GitLab central servers to analyze them:
-
-1. Gemnasium scans the dependencies of your project locally and sends a list of
-   packages to GitLab central servers.
-1. The servers return the list of known vulnerabilities for all versions of
-   these packages.
-1. The client picks up the relevant vulnerabilities by comparing with the versions
-   of the packages that are used by the project.
-
-The Gemnasium client does **NOT** send the exact package versions your project relies on.
-
-You can disable the remote checks by [using](#customizing-the-dependency-scanning-settings)
-the `DS_DISABLE_REMOTE_CHECKS` environment variable and setting it to `"true"`.
-
 ## Configuration
 
 For GitLab 11.9 and later, to enable Dependency Scanning, you must
@@ -116,7 +99,7 @@ include:
   template: Dependency-Scanning.gitlab-ci.yml
 
 variables:
-  DS_DISABLE_REMOTE_CHECKS: "true"
+  DS_PYTHON_VERSION: 2
 ```
 
 Because template is [evaluated before](../../../ci/yaml/README.md#include) the pipeline
@@ -150,7 +133,6 @@ using environment variables.
 | `DS_PYTHON_VERSION`                     | Version of Python. If set to 2, dependencies are installed using Python 2.7 instead of Python 3.6. ([Introduced](https://gitlab.com/gitlab-org/gitlab/issues/12296) in GitLab 12.1)| |
 | `DS_PIP_DEPENDENCY_PATH`                | Path to load Python pip dependencies from. ([Introduced](https://gitlab.com/gitlab-org/gitlab/issues/12412) in GitLab 12.2) | |
 | `DS_DEFAULT_ANALYZERS`                  | Override the names of the official default images. Read more about [customizing analyzers](analyzers.md). | |
-| `DS_DISABLE_REMOTE_CHECKS`              | Do not send any data to GitLab. Used in the [Gemnasium analyzer](#remote-checks). | |
 | `DS_PULL_ANALYZER_IMAGES`               | Pull the images from the Docker registry (set to `0` to disable). | |
 | `DS_EXCLUDED_PATHS`                     | Exclude vulnerabilities from output based on the paths. A comma-separated list of patterns. Patterns can be globs, file or folder paths. Parent directories will also match patterns. | `DS_EXCLUDED_PATHS=doc,spec` |
 | `DS_DOCKER_CLIENT_NEGOTIATION_TIMEOUT`  | Time limit for Docker client negotiation. Timeouts are parsed using Go's [`ParseDuration`](https://golang.org/pkg/time/#ParseDuration). Valid time units are `ns`, `us` (or `µs`), `ms`, `s`, `m`, `h`. For example, `300ms`, `1.5h`, or `2h45m`. | |

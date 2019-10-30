@@ -4,6 +4,7 @@ class EmailReceiverWorker
   include ApplicationWorker
 
   feature_category :issue_tracking
+  latency_sensitive_worker!
 
   def perform(raw)
     return unless Gitlab::IncomingEmail.enabled?

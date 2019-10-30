@@ -195,9 +195,22 @@ function download_chart() {
   helm dependency build .
 }
 
+function base_config_changed() {
+  git fetch origin master --depth=50
+
+  [ -n "$(git diff origin/master... --name-only -- scripts/review_apps/base-config.yaml)" ]
+}
+
 function deploy() {
   local name="$CI_ENVIRONMENT_SLUG"
   local edition="${GITLAB_EDITION-ce}"
+  local base_config_file_ref="master"
+  echo "REVIEW_APP_CONFIG_CHANGED: ${REVIEW_APP_CONFIG_CHANGED}"
+  if [ -n "${REVIEW_APP_CONFIG_CHANGED}" ]; then
+    base_config_file_ref="$CI_COMMIT_SHA"
+  fi
+  local base_config_file="https://gitlab.com/gitlab-org/gitlab/raw/${base_config_file_ref}/scripts/review_apps/base-config.yaml"
+
   echoinfo "Deploying ${name}..." true
 
   IMAGE_REPOSITORY="registry.gitlab.com/gitlab-org/build/cng-mirror"
@@ -240,11 +253,11 @@ EOF
 )
 
 HELM_CMD=$(cat << EOF
-  $HELM_CMD \
+  ${HELM_CMD} \
   --namespace="$KUBE_NAMESPACE" \
-  --version="$CI_PIPELINE_ID-$CI_JOB_ID" \
-  -f "../scripts/review_apps/base-config.yaml" \
-  "$name" .
+  --version="${CI_PIPELINE_ID}-${CI_JOB_ID}" \
+  -f "${base_config_file}" \
+  "${name}" .
 EOF
 )
 

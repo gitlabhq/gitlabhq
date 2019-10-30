@@ -5,6 +5,7 @@ class ProjectServiceWorker
 
   sidekiq_options dead: false
   feature_category :integrations
+  worker_has_external_dependencies!
 
   def perform(hook_id, data)
     data = data.with_indifferent_access

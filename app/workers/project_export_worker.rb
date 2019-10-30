@@ -6,6 +6,7 @@ class ProjectExportWorker
 
   sidekiq_options retry: 3
   feature_category :source_code_management
+  worker_resource_boundary :memory
 
   def perform(current_user_id, project_id, after_export_strategy = {}, params = {})
     current_user = User.find(current_user_id)

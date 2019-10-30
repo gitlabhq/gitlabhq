@@ -131,4 +131,20 @@ export const downloadCSVOptions = title => {
   return { category, action, label: 'Chart title', property: title };
 };
 
+/**
+ * This function validates the graph data contains exactly 3 queries plus
+ * value validations from graphDataValidatorForValues.
+ * @param {Object} isValues
+ * @param {Object} graphData  the graph data response from a prometheus request
+ * @returns {boolean} true if the data is valid
+ */
+export const graphDataValidatorForAnomalyValues = graphData => {
+  const anomalySeriesCount = 3; // metric, upper, lower
+  return (
+    graphData.queries &&
+    graphData.queries.length === anomalySeriesCount &&
+    graphDataValidatorForValues(false, graphData)
+  );
+};
+
 export default {};

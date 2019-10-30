@@ -1,3 +1,7 @@
+import { anomalyMockGraphData as importedAnomalyMockGraphData } from '../../frontend/monitoring/mock_data';
+
+export const anomalyMockGraphData = importedAnomalyMockGraphData;
+
 export const mockApiEndpoint = `${gl.TEST_HOST}/monitoring/mock`;
 
 export const mockProjectPath = '/frontend-fixtures/environments-project';
@@ -975,7 +979,7 @@ export const graphDataPrometheusQuery = {
 
 export const graphDataPrometheusQueryRange = {
   title: 'Super Chart A1',
-  type: 'area',
+  type: 'area-chart',
   weight: 2,
   metrics: [
     {

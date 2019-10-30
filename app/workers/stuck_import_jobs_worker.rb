@@ -5,6 +5,7 @@ class StuckImportJobsWorker
   include CronjobQueue
 
   feature_category :importers
+  worker_resource_boundary :cpu
 
   IMPORT_JOBS_EXPIRATION = 15.hours.to_i
 

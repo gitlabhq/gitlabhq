@@ -5,6 +5,8 @@ module ObjectPool
     include ApplicationWorker
     include ObjectPoolQueue
 
+    worker_resource_boundary :cpu
+
     # The use of pool id is deprecated. Keeping the argument allows old jobs to
     # still be performed.
     def perform(_pool_id, project_id)

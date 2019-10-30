@@ -1,7 +1,6 @@
 <script>
-/* eslint-disable @gitlab/vue-i18n/no-bare-strings */
 import settingsMixin from 'ee_else_ce/pages/projects/shared/permissions/mixins/settings_pannel_mixin';
-import { __ } from '~/locale';
+import { s__ } from '~/locale';
 import projectFeatureSetting from './project_feature_setting.vue';
 import projectFeatureToggle from '~/vue_shared/components/toggle_button.vue';
 import projectSettingRow from './project_setting_row.vue';
@@ -13,7 +12,7 @@ import {
 } from '../constants';
 import { toggleHiddenClassBySelector } from '../external';
 
-const PAGE_FEATURE_ACCESS_LEVEL = __('Everyone');
+const PAGE_FEATURE_ACCESS_LEVEL = s__('ProjectSettings|Everyone');
 
 export default {
   components: {
@@ -207,7 +206,10 @@ export default {
 <template>
   <div>
     <div class="project-visibility-setting">
-      <project-setting-row :help-path="visibilityHelpPath" label="Project visibility">
+      <project-setting-row
+        :help-path="visibilityHelpPath"
+        :label="s__('ProjectSettings|Project visibility')"
+      >
         <div class="project-feature-controls">
           <div class="select-wrapper">
             <select
@@ -220,17 +222,17 @@ export default {
               <option
                 :value="visibilityOptions.PRIVATE"
                 :disabled="!visibilityAllowed(visibilityOptions.PRIVATE)"
-                >{{ __('Private') }}</option
+                >{{ s__('ProjectSettings|Private') }}</option
               >
               <option
                 :value="visibilityOptions.INTERNAL"
                 :disabled="!visibilityAllowed(visibilityOptions.INTERNAL)"
-                >{{ __('Internal') }}</option
+                >{{ s__('ProjectSettings|Internal') }}</option
               >
               <option
                 :value="visibilityOptions.PUBLIC"
                 :disabled="!visibilityAllowed(visibilityOptions.PUBLIC)"
-                >{{ __('Public') }}</option
+                >{{ s__('ProjectSettings|Public') }}</option
               >
             </select>
             <i aria-hidden="true" data-hidden="true" class="fa fa-chevron-down"></i>
@@ -243,14 +245,15 @@ export default {
             type="hidden"
             name="project[request_access_enabled]"
           />
-          <input v-model="requestAccessEnabled" type="checkbox" /> Allow users to request access
+          <input v-model="requestAccessEnabled" type="checkbox" />
+          {{ s__('ProjectSettings|Allow users to request access') }}
         </label>
       </project-setting-row>
     </div>
     <div :class="{ 'highlight-changes': highlightChangesClass }" class="project-feature-settings">
       <project-setting-row
-        label="Issues"
-        help-text="Lightweight issue tracking system for this project"
+        :label="s__('ProjectSettings|Issues')"
+        :help-text="s__('ProjectSettings|Lightweight issue tracking system for this project')"
       >
         <project-feature-setting
           v-model="issuesAccessLevel"
@@ -258,7 +261,10 @@ export default {
           name="project[project_feature_attributes][issues_access_level]"
         />
       </project-setting-row>
-      <project-setting-row label="Repository" help-text="View and edit files in this project">
+      <project-setting-row
+        :label="s__('ProjectSettings|Repository')"
+        :help-text="s__('ProjectSettings|View and edit files in this project')"
+      >
         <project-feature-setting
           v-model="repositoryAccessLevel"
           :options="featureAccessLevelOptions"
@@ -267,8 +273,8 @@ export default {
       </project-setting-row>
       <div class="project-feature-setting-group">
         <project-setting-row
-          label="Merge requests"
-          help-text="Submit changes to be merged upstream"
+          :label="s__('ProjectSettings|Merge requests')"
+          :help-text="s__('ProjectSettings|Submit changes to be merged upstream')"
         >
           <project-feature-setting
             v-model="mergeRequestsAccessLevel"
@@ -277,7 +283,10 @@ export default {
             name="project[project_feature_attributes][merge_requests_access_level]"
           />
         </project-setting-row>
-        <project-setting-row label="Pipelines" help-text="Build, test, and deploy your changes">
+        <project-setting-row
+          :label="s__('ProjectSettings|Pipelines')"
+          :help-text="s__('ProjectSettings|Build, test, and deploy your changes')"
+        >
           <project-feature-setting
             v-model="buildsAccessLevel"
             :options="repoFeatureAccessLevelOptions"
@@ -288,11 +297,17 @@ export default {
         <project-setting-row
           v-if="registryAvailable"
           :help-path="registryHelpPath"
-          label="Container registry"
-          help-text="Every project can have its own space to store its Docker images"
+          :label="s__('ProjectSettings|Container registry')"
+          :help-text="
+            s__('ProjectSettings|Every project can have its own space to store its Docker images')
+          "
         >
           <div v-if="showContainerRegistryPublicNote" class="text-muted">
-            {{ __('Note: the container registry is always visible when a project is public') }}
+            {{
+              s__(
+                'ProjectSettings|Note: the container registry is always visible when a project is public',
+              )
+            }}
           </div>
           <project-feature-toggle
             v-model="containerRegistryEnabled"
@@ -303,8 +318,10 @@ export default {
         <project-setting-row
           v-if="lfsAvailable"
           :help-path="lfsHelpPath"
-          label="Git Large File Storage"
-          help-text="Manages large files such as audio, video, and graphics files"
+          :label="s__('ProjectSettings|Git Large File Storage')"
+          :help-text="
+            s__('ProjectSettings|Manages large files such as audio, video, and graphics files')
+          "
         >
           <project-feature-toggle
             v-model="lfsEnabled"
@@ -315,8 +332,10 @@ export default {
         <project-setting-row
           v-if="packagesAvailable"
           :help-path="packagesHelpPath"
-          label="Packages"
-          help-text="Every project can have its own space to store its packages"
+          :label="s__('ProjectSettings|Packages')"
+          :help-text="
+            s__('ProjectSettings|Every project can have its own space to store its packages')
+          "
         >
           <project-feature-toggle
             v-model="packagesEnabled"
@@ -325,7 +344,10 @@ export default {
           />
         </project-setting-row>
       </div>
-      <project-setting-row label="Wiki" help-text="Pages for project documentation">
+      <project-setting-row
+        :label="s__('ProjectSettings|Wiki')"
+        :help-text="s__('ProjectSettings|Pages for project documentation')"
+      >
         <project-feature-setting
           v-model="wikiAccessLevel"
           :options="featureAccessLevelOptions"
@@ -333,8 +355,8 @@ export default {
         />
       </project-setting-row>
       <project-setting-row
-        label="Snippets"
-        help-text="Share code pastes with others out of Git repository"
+        :label="s__('ProjectSettings|Snippets')"
+        :help-text="s__('ProjectSettings|Share code pastes with others out of Git repository')"
       >
         <project-feature-setting
           v-model="snippetsAccessLevel"
@@ -346,7 +368,9 @@ export default {
         v-if="pagesAvailable && pagesAccessControlEnabled"
         :help-path="pagesHelpPath"
         :label="s__('ProjectSettings|Pages')"
-        :help-text="__('With GitLab Pages you can host your static websites on GitLab')"
+        :help-text="
+          s__('ProjectSettings|With GitLab Pages you can host your static websites on GitLab')
+        "
       >
         <project-feature-setting
           v-model="pagesAccessLevel"
@@ -358,10 +382,13 @@ export default {
     <project-setting-row v-if="canDisableEmails" class="mb-3">
       <label class="js-emails-disabled">
         <input :value="emailsDisabled" type="hidden" name="project[emails_disabled]" />
-        <input v-model="emailsDisabled" type="checkbox" /> {{ __('Disable email notifications') }}
+        <input v-model="emailsDisabled" type="checkbox" />
+        {{ s__('ProjectSettings|Disable email notifications') }}
       </label>
       <span class="form-text text-muted">{{
-        __('This setting will override user notification preferences for all project members.')
+        s__(
+          'ProjectSettings|This setting will override user notification preferences for all project members.',
+        )
       }}</span>
     </project-setting-row>
   </div>

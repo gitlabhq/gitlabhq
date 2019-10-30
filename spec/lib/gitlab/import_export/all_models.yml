@@ -423,6 +423,7 @@ project:
 - alerts_service
 - grafana_integration
 - remove_source_branch_after_merge
+- deleting_user
 award_emoji:
 - awardable
 - user

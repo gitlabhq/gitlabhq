@@ -5628,9 +5628,6 @@ msgstr ""
 msgid "Disable"
 msgstr ""
 
-msgid "Disable email notifications"
-msgstr ""
-
 msgid "Disable for this project"
 msgstr ""
 
@@ -11202,9 +11199,6 @@ msgstr ""
 msgid "Note: Consider asking your GitLab administrator to configure %{github_integration_link}, which will allow login via GitHub and allow importing repositories without generating a Personal Access Token."
 msgstr ""
 
-msgid "Note: the container registry is always visible when a project is public"
-msgstr ""
-
 msgid "NoteForm|Note"
 msgstr ""
 
@@ -12869,10 +12863,16 @@ msgstr ""
 msgid "ProjectSettings|All discussions must be resolved"
 msgstr ""
 
+msgid "ProjectSettings|Allow users to request access"
+msgstr ""
+
 msgid "ProjectSettings|Automatically resolve merge request diff discussions when they become outdated"
 msgstr ""
 
 msgid "ProjectSettings|Badges"
+msgstr ""
+
+msgid "ProjectSettings|Build, test, and deploy your changes"
 msgstr ""
 
 msgid "ProjectSettings|Choose your merge method, merge options, and merge checks."
@@ -12884,13 +12884,28 @@ msgstr ""
 msgid "ProjectSettings|Contact an admin to change this setting."
 msgstr ""
 
+msgid "ProjectSettings|Container registry"
+msgstr ""
+
 msgid "ProjectSettings|Customize your project badges."
+msgstr ""
+
+msgid "ProjectSettings|Disable email notifications"
 msgstr ""
 
 msgid "ProjectSettings|Enable 'Delete source branch' option by default"
 msgstr ""
 
 msgid "ProjectSettings|Every merge creates a merge commit"
+msgstr ""
+
+msgid "ProjectSettings|Every project can have its own space to store its Docker images"
+msgstr ""
+
+msgid "ProjectSettings|Every project can have its own space to store its packages"
+msgstr ""
+
+msgid "ProjectSettings|Everyone"
 msgstr ""
 
 msgid "ProjectSettings|Existing merge requests and protected branches are not affected"
@@ -12908,7 +12923,22 @@ msgstr ""
 msgid "ProjectSettings|Fast-forward merges only"
 msgstr ""
 
+msgid "ProjectSettings|Git Large File Storage"
+msgstr ""
+
+msgid "ProjectSettings|Internal"
+msgstr ""
+
+msgid "ProjectSettings|Issues"
+msgstr ""
+
 msgid "ProjectSettings|Learn more about badges."
+msgstr ""
+
+msgid "ProjectSettings|Lightweight issue tracking system for this project"
+msgstr ""
+
+msgid "ProjectSettings|Manages large files such as audio, video, and graphics files"
 msgstr ""
 
 msgid "ProjectSettings|Merge checks"
@@ -12929,13 +12959,28 @@ msgstr ""
 msgid "ProjectSettings|Merge pipelines will try to validate the post-merge result prior to merging"
 msgstr ""
 
+msgid "ProjectSettings|Merge requests"
+msgstr ""
+
 msgid "ProjectSettings|No merge commits are created"
+msgstr ""
+
+msgid "ProjectSettings|Note: the container registry is always visible when a project is public"
 msgstr ""
 
 msgid "ProjectSettings|Only signed commits can be pushed to this repository."
 msgstr ""
 
+msgid "ProjectSettings|Packages"
+msgstr ""
+
 msgid "ProjectSettings|Pages"
+msgstr ""
+
+msgid "ProjectSettings|Pages for project documentation"
+msgstr ""
+
+msgid "ProjectSettings|Pipelines"
 msgstr ""
 
 msgid "ProjectSettings|Pipelines must succeed"
@@ -12944,7 +12989,28 @@ msgstr ""
 msgid "ProjectSettings|Pipelines need to be configured to enable this feature."
 msgstr ""
 
+msgid "ProjectSettings|Private"
+msgstr ""
+
+msgid "ProjectSettings|Project visibility"
+msgstr ""
+
+msgid "ProjectSettings|Public"
+msgstr ""
+
+msgid "ProjectSettings|Repository"
+msgstr ""
+
+msgid "ProjectSettings|Share code pastes with others out of Git repository"
+msgstr ""
+
 msgid "ProjectSettings|Show link to create/view merge request when pushing from the command line"
+msgstr ""
+
+msgid "ProjectSettings|Snippets"
+msgstr ""
+
+msgid "ProjectSettings|Submit changes to be merged upstream"
 msgstr ""
 
 msgid "ProjectSettings|These checks must pass before merge requests can be merged"
@@ -12959,13 +13025,25 @@ msgstr ""
 msgid "ProjectSettings|This setting will be applied to all projects unless overridden by an admin."
 msgstr ""
 
+msgid "ProjectSettings|This setting will override user notification preferences for all project members."
+msgstr ""
+
 msgid "ProjectSettings|This will dictate the commit history when you merge a merge request"
 msgstr ""
 
 msgid "ProjectSettings|Users can only push commits to this repository that were committed with one of their own verified emails."
 msgstr ""
 
+msgid "ProjectSettings|View and edit files in this project"
+msgstr ""
+
 msgid "ProjectSettings|When conflicts arise the user is given the option to rebase"
+msgstr ""
+
+msgid "ProjectSettings|Wiki"
+msgstr ""
+
+msgid "ProjectSettings|With GitLab Pages you can host your static websites on GitLab"
 msgstr ""
 
 msgid "ProjectTemplates|.NET Core"
@@ -16437,6 +16515,9 @@ msgstr ""
 msgid "The group and its projects can only be viewed by members."
 msgstr ""
 
+msgid "The group has already been shared with this group"
+msgstr ""
+
 msgid "The group settings for %{group_links} require you to enable Two-Factor Authentication for your account. You can %{leave_group_links}."
 msgstr ""
 
@@ -17029,9 +17110,6 @@ msgid "This runner will only run on pipelines triggered on protected branches"
 msgstr ""
 
 msgid "This setting can be overridden in each project."
-msgstr ""
-
-msgid "This setting will override user notification preferences for all project members."
 msgstr ""
 
 msgid "This setting will update the hostname that is used to generate private commit emails. %{learn_more}"
@@ -18927,9 +19005,6 @@ msgid "Wiki|Title"
 msgstr ""
 
 msgid "Will deploy to"
-msgstr ""
-
-msgid "With GitLab Pages you can host your static websites on GitLab"
 msgstr ""
 
 msgid "With contribution analytics you can have an overview for the activity of issues, merge requests and push events of your organization and its members."

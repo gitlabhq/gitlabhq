@@ -5,6 +5,8 @@ class BuildFinishedWorker
   include PipelineQueue
 
   queue_namespace :pipeline_processing
+  latency_sensitive_worker!
+  worker_resource_boundary :cpu
 
   # rubocop: disable CodeReuse/ActiveRecord
   def perform(build_id)

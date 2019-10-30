@@ -969,7 +969,6 @@ The following table lists variables related to security tools.
 
 | **Variable**                            | **Description**                    |
 | `SAST_CONFIDENCE_LEVEL`                 | Minimum confidence level of security issues you want to be reported; `1` for Low, `2` for Medium, `3` for High. Defaults to `3`. |
-| `DS_DISABLE_REMOTE_CHECKS`              | Whether remote Dependency Scanning checks are disabled. Defaults to `"false"`. Set to `"true"` to disable checks that send data to GitLab central servers. [Read more about remote checks](../../user/application_security/dependency_scanning/index.md#remote-checks). |
 
 #### Disable jobs
 

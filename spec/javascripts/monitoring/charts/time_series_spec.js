@@ -29,7 +29,6 @@ describe('Time series component', () => {
       shallowMount(TimeSeries, {
         propsData: {
           graphData: { ...graphData, type },
-          containerWidth: 0,
           deploymentData: store.state.monitoringDashboard.deploymentData,
           projectPath,
         },
@@ -82,7 +81,7 @@ describe('Time series component', () => {
               seriesName: timeSeriesChart.vm.chartData[0].name,
               componentSubType: type,
               value: [mockDate, 5.55555],
-              seriesIndex: 0,
+              dataIndex: 0,
             },
           ],
           value: mockDate,
@@ -101,11 +100,15 @@ describe('Time series component', () => {
           it('formats tooltip content', () => {
             const name = 'Core Usage';
             const value = '5.556';
+            const dataIndex = 0;
             const seriesLabel = timeSeriesChart.find(GlChartSeriesLabel);
 
             expect(seriesLabel.vm.color).toBe('');
             expect(shallowWrapperContainsSlotText(seriesLabel, 'default', name)).toBe(true);
-            expect(timeSeriesChart.vm.tooltip.content).toEqual([{ name, value, color: undefined }]);
+            expect(timeSeriesChart.vm.tooltip.content).toEqual([
+              { name, value, dataIndex, color: undefined },
+            ]);
+
             expect(
               shallowWrapperContainsSlotText(
                 timeSeriesChart.find(GlAreaChart),
@@ -212,6 +215,39 @@ describe('Time series component', () => {
       });
 
       describe('chartOptions', () => {
+        describe('are extended by `option`', () => {
+          const mockSeriesName = 'Extra series 1';
+          const mockOption = {
+            option1: 'option1',
+            option2: 'option2',
+          };
+
+          it('arbitrary options', () => {
+            timeSeriesChart.setProps({
+              option: mockOption,
+            });
+
+            expect(timeSeriesChart.vm.chartOptions).toEqual(jasmine.objectContaining(mockOption));
+          });
+
+          it('additional series', () => {
+            timeSeriesChart.setProps({
+              option: {
+                series: [
+                  {
+                    name: mockSeriesName,
+                  },
+                ],
+              },
+            });
+
+            const optionSeries = timeSeriesChart.vm.chartOptions.series;
+
+            expect(optionSeries.length).toEqual(2);
+            expect(optionSeries[0].name).toEqual(mockSeriesName);
+          });
+        });
+
         describe('yAxis formatter', () => {
           let format;
 

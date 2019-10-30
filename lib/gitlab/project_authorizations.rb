@@ -57,7 +57,7 @@ module Gitlab
     private
 
     # Builds a recursive CTE that gets all the groups the current user has
-    # access to, including any nested groups.
+    # access to, including any nested groups and any shared groups.
     def recursive_cte
       cte = Gitlab::SQL::RecursiveCTE.new(:namespaces_cte)
       members = Member.arel_table
@@ -68,20 +68,27 @@ module Gitlab
         .select([namespaces[:id], members[:access_level]])
         .except(:order)
 
+      if Feature.enabled?(:share_group_with_group)
+        # Namespaces shared with any of the group
+        cte << Group.select([namespaces[:id], 'group_group_links.group_access AS access_level'])
+                    .joins(join_group_group_links)
+                    .joins(join_members_on_group_group_links)
+      end
+
       # Sub groups of any groups the user is a member of.
       cte << Group.select([
           namespaces[:id],
           greatest(members[:access_level], cte.table[:access_level], 'access_level')
         ])
         .joins(join_cte(cte))
-        .joins(join_members)
+        .joins(join_members_on_namespaces)
         .except(:order)
 
       cte
     end
 
     # Builds a LEFT JOIN to join optional memberships onto the CTE.
-    def join_members
+    def join_members_on_namespaces
       members = Member.arel_table
       namespaces = Namespace.arel_table
 
@@ -92,6 +99,23 @@ module Gitlab
         .and(members[:user_id].eq(user.id))
 
       Arel::Nodes::OuterJoin.new(members, Arel::Nodes::On.new(cond))
+    end
+
+    def join_group_group_links
+      group_group_links = GroupGroupLink.arel_table
+      namespaces = Namespace.arel_table
+
+      cond = group_group_links[:shared_group_id].eq(namespaces[:id])
+      Arel::Nodes::InnerJoin.new(group_group_links, Arel::Nodes::On.new(cond))
+    end
+
+    def join_members_on_group_group_links
+      group_group_links = GroupGroupLink.arel_table
+      members = Member.arel_table
+
+      cond = group_group_links[:shared_with_group_id].eq(members[:source_id])
+                    .and(members[:user_id].eq(user.id))
+      Arel::Nodes::InnerJoin.new(members, Arel::Nodes::On.new(cond))
     end
 
     # Builds an INNER JOIN to join namespaces onto the CTE.

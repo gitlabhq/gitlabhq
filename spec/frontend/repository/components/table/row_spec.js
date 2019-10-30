@@ -104,7 +104,7 @@ describe('Repository table row component', () => {
     if (pushes) {
       expect(visitUrl).not.toHaveBeenCalled();
     } else {
-      expect(visitUrl).toHaveBeenCalledWith('https://test.com');
+      expect(visitUrl).toHaveBeenCalledWith('https://test.com', undefined);
     }
   });
 

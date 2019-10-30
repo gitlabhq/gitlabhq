@@ -97,11 +97,13 @@ export default {
     },
   },
   methods: {
-    openRow() {
-      if (this.isFolder) {
+    openRow(e) {
+      if (e.target.tagName === 'A') return;
+
+      if (this.isFolder && !e.metaKey) {
         this.$router.push(this.routerLinkTo);
       } else {
-        visitUrl(this.url);
+        visitUrl(this.url, e.metaKey);
       }
     },
   },

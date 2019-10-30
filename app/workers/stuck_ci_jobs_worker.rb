@@ -5,6 +5,7 @@ class StuckCiJobsWorker
   include CronjobQueue
 
   feature_category :continuous_integration
+  worker_resource_boundary :cpu
 
   EXCLUSIVE_LEASE_KEY = 'stuck_ci_builds_worker_lease'
 

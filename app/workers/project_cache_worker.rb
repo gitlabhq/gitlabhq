@@ -3,6 +3,9 @@
 # Worker for updating any project specific caches.
 class ProjectCacheWorker
   include ApplicationWorker
+
+  latency_sensitive_worker!
+
   LEASE_TIMEOUT = 15.minutes.to_i
 
   feature_category :source_code_management

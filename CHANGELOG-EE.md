@@ -1,5 +1,17 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 12.4.1
+
+### Security (6 changes)
+
+- Do not display project labels that are not visible for user accessing group labels.
+- Do not index system notes for issue update.
+- Redact search results based on Ability.allowed?.
+- Do not show private cross references in epic notes.
+- Filter out packages the user does'nt have permission to see at group level.
+- Fixes a Open Redirect issue in `InternalRedirect`.
+
+
 ## 12.4.0
 
 ### Security (2 changes)

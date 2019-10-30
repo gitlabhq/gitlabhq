@@ -343,6 +343,7 @@ ActiveRecord::Schema.define(version: 2019_10_26_124116) do
     t.string "custom_http_clone_url_root", limit: 511
     t.boolean "pendo_enabled", default: false, null: false
     t.string "pendo_url", limit: 255
+    t.integer "deletion_adjourned_period", default: 7, null: false
     t.index ["custom_project_templates_group_id"], name: "index_application_settings_on_custom_project_templates_group_id"
     t.index ["file_template_project_id"], name: "index_application_settings_on_file_template_project_id"
     t.index ["instance_administration_project_id"], name: "index_applicationsettings_on_instance_administration_project_id"
@@ -1820,6 +1821,17 @@ ActiveRecord::Schema.define(version: 2019_10_26_124116) do
     t.index ["key", "value"], name: "index_group_custom_attributes_on_key_and_value"
   end
 
+  create_table "group_group_links", force: :cascade do |t|
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+    t.bigint "shared_group_id", null: false
+    t.bigint "shared_with_group_id", null: false
+    t.date "expires_at"
+    t.integer "group_access", limit: 2, default: 30, null: false
+    t.index ["shared_group_id", "shared_with_group_id"], name: "index_group_group_links_on_shared_group_and_shared_with_group", unique: true
+    t.index ["shared_with_group_id"], name: "index_group_group_links_on_shared_with_group_id"
+  end
+
   create_table "historical_data", id: :serial, force: :cascade do |t|
     t.date "date", null: false
     t.integer "active_user_count"
@@ -3062,6 +3074,8 @@ ActiveRecord::Schema.define(version: 2019_10_26_124116) do
     t.integer "max_artifacts_size"
     t.string "pull_mirror_branch_prefix", limit: 50
     t.boolean "remove_source_branch_after_merge"
+    t.date "marked_for_deletion_at"
+    t.integer "marked_for_deletion_by_user_id"
     t.index "lower((name)::text)", name: "index_projects_on_lower_name"
     t.index ["archived", "pending_delete", "merge_requests_require_code_owner_approval"], name: "projects_requiring_code_owner_approval", where: "((pending_delete = false) AND (archived = false) AND (merge_requests_require_code_owner_approval = true))"
     t.index ["created_at"], name: "index_projects_on_created_at"
@@ -3074,6 +3088,7 @@ ActiveRecord::Schema.define(version: 2019_10_26_124116) do
     t.index ["last_repository_check_at"], name: "index_projects_on_last_repository_check_at", where: "(last_repository_check_at IS NOT NULL)"
     t.index ["last_repository_check_failed"], name: "index_projects_on_last_repository_check_failed"
     t.index ["last_repository_updated_at"], name: "index_projects_on_last_repository_updated_at"
+    t.index ["marked_for_deletion_by_user_id"], name: "index_projects_on_marked_for_deletion_by_user_id", where: "(marked_for_deletion_by_user_id IS NOT NULL)"
     t.index ["mirror_last_successful_update_at"], name: "index_projects_on_mirror_last_successful_update_at"
     t.index ["mirror_user_id"], name: "index_projects_on_mirror_user_id"
     t.index ["name"], name: "index_projects_on_name_trigram", opclass: :gin_trgm_ops, using: :gin
@@ -4220,6 +4235,8 @@ ActiveRecord::Schema.define(version: 2019_10_26_124116) do
   add_foreign_key "gpg_signatures", "projects", on_delete: :cascade
   add_foreign_key "grafana_integrations", "projects", on_delete: :cascade
   add_foreign_key "group_custom_attributes", "namespaces", column: "group_id", on_delete: :cascade
+  add_foreign_key "group_group_links", "namespaces", column: "shared_group_id", on_delete: :cascade
+  add_foreign_key "group_group_links", "namespaces", column: "shared_with_group_id", on_delete: :cascade
   add_foreign_key "identities", "saml_providers", name: "fk_aade90f0fc", on_delete: :cascade
   add_foreign_key "import_export_uploads", "projects", on_delete: :cascade
   add_foreign_key "index_statuses", "projects", name: "fk_74b2492545", on_delete: :cascade
@@ -4343,6 +4360,7 @@ ActiveRecord::Schema.define(version: 2019_10_26_124116) do
   add_foreign_key "project_statistics", "projects", on_delete: :cascade
   add_foreign_key "project_tracing_settings", "projects", on_delete: :cascade
   add_foreign_key "projects", "pool_repositories", name: "fk_6e5c14658a", on_delete: :nullify
+  add_foreign_key "projects", "users", column: "marked_for_deletion_by_user_id", name: "fk_25d8780d11", on_delete: :nullify
   add_foreign_key "prometheus_alert_events", "projects", on_delete: :cascade
   add_foreign_key "prometheus_alert_events", "prometheus_alerts", on_delete: :cascade
   add_foreign_key "prometheus_alerts", "environments", on_delete: :cascade
