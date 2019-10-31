@@ -128,6 +128,10 @@ module Gitlab
     def aws_arn_regex_message
       "must be a valid Amazon Resource Name"
     end
+
+    def utc_date_regex
+      @utc_date_regex ||= /\A[0-9]{4}-[0-9]{2}-[0-9]{2}\z/.freeze
+    end
   end
 end
 

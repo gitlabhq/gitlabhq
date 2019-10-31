@@ -4801,6 +4801,12 @@ msgstr ""
 msgid "Created a branch and a merge request to resolve this issue."
 msgstr ""
 
+msgid "Created after"
+msgstr ""
+
+msgid "Created before"
+msgstr ""
+
 msgid "Created branch '%{branch_name}' and a merge request to resolve this issue."
 msgstr ""
 
@@ -9151,6 +9157,9 @@ msgid "Invalid URL"
 msgstr ""
 
 msgid "Invalid date"
+msgstr ""
+
+msgid "Invalid date format. Please use UTC format as YYYY-MM-DD"
 msgstr ""
 
 msgid "Invalid feature"

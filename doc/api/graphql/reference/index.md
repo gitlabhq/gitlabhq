@@ -271,6 +271,14 @@ The API can be explored interactively using the [GraphiQL IDE](../index.md#graph
 | `createNote` | Boolean! | Whether or not a user can perform `create_note` on this resource |
 | `awardEmoji` | Boolean! | Whether or not a user can perform `award_emoji` on this resource |
 
+### EpicSetSubscriptionPayload
+
+| Name  | Type  | Description |
+| ---   |  ---- | ----------  |
+| `clientMutationId` | String | A unique identifier for the client performing the mutation. |
+| `errors` | String! => Array | Reasons why the mutation failed. |
+| `epic` | Epic | The epic after mutation |
+
 ### EpicTreeReorderPayload
 
 | Name  | Type  | Description |

@@ -75,4 +75,14 @@ describe Gitlab::Regex do
     it { is_expected.not_to match('123456789012') }
     it { is_expected.not_to match('role/role-name') }
   end
+
+  describe '.utc_date_regex' do
+    subject { described_class.utc_date_regex }
+
+    it { is_expected.to match('2019-10-20') }
+    it { is_expected.to match('1990-01-01') }
+    it { is_expected.not_to match('11-1234-90') }
+    it { is_expected.not_to match('aa-1234-cc') }
+    it { is_expected.not_to match('9/9/2018') }
+  end
 end
