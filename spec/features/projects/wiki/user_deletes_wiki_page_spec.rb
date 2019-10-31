@@ -6,7 +6,6 @@ describe 'User deletes wiki page', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project, :wiki_repo, namespace: user.namespace) }
   let(:wiki_page) { create(:wiki_page, wiki: project.wiki) }
-  let(:project_wiki) { ProjectWiki.new(project, user) }
 
   before do
     sign_in(user)
@@ -19,6 +18,5 @@ describe 'User deletes wiki page', :js do
     find('.modal-footer .btn-danger').click
 
     expect(page).to have_content('Page was successfully deleted')
-    expect(project_wiki.find_page(wiki_page.slug)).to be nil
   end
 end

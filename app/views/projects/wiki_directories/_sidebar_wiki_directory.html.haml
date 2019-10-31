@@ -1,7 +1,0 @@
-%li
-  %span.text-secondary-300.svg-icon.svg-baseline
-    = sprite_icon('folder-open', size: 16)
-
-  = link_to wiki_dir.slug, project_wiki_dir_path(@project, wiki_dir)
-  %ul= render wiki_dir.pages, context: context
-

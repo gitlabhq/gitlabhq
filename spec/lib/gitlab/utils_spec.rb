@@ -252,41 +252,4 @@ describe Gitlab::Utils do
       expect(described_class.string_to_ip_object('1:0:0:0:0:0:0:0/124')).to eq(IPAddr.new('1:0:0:0:0:0:0:0/124'))
     end
   end
-
-  describe '.allow_hash_values' do
-    it 'removes keys that do not pass the inclusion filters' do
-      symbols = %i[x y z]
-      ints = (0..100)
-      strings = %w[foo bar baz].to_set
-
-      hash = {
-        a: :x,
-        b: 100,
-        c: 'foo',
-        d: :irrelevant,
-        aa: :w,
-        bb: 200,
-        cc: 'food',
-        dd: :totally_irrelevant
-      }
-      allowed = {
-        a: symbols,
-        b: ints,
-        c: strings,
-        aa: symbols,
-        bb: ints,
-        cc: strings
-      }
-
-      described_class.allow_hash_values(hash, allowed)
-
-      expect(hash).to eq({
-        a: :x,
-        b: 100,
-        c: 'foo',
-        d: :irrelevant,
-        dd: :totally_irrelevant
-      })
-    end
-  end
 end

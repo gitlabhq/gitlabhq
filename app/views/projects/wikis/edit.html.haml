@@ -1,10 +1,5 @@
-- @content_class = 'edit-wiki-page' + (fluid_layout ? '' : ' limit-container-width')
-- add_to_breadcrumbs _("Wiki"), project_wiki_path(@project, :home)
-- add_to_breadcrumbs s_("Wiki|Pages"), project_wikis_pages_path(@project)
-- if @page.persisted? && @page_dir.present?
-  - add_to_breadcrumbs _(@page_dir.slug), project_wiki_dir_path(@project, @page_dir)
-- if @page.persisted?
-  - add_to_breadcrumbs @page.human_title, project_wiki_path(@project, @page)
+- @content_class = "limit-container-width" unless fluid_layout
+- add_to_breadcrumbs _("Wiki"), project_wiki_path(@project, @page)
 - breadcrumb_title @page.persisted? ? _("Edit") : _("New")
 - page_title @page.persisted? ? _("Edit") : _("New"), @page.human_title, _("Wiki")
 
@@ -17,7 +12,10 @@
   .nav-text
     %h2.wiki-page-title
       - if @page.persisted?
-        = render partial: 'page_title', locals: { subtitle: s_("Wiki|Edit Page") }
+        = link_to @page.human_title, project_wiki_path(@project, @page)
+        %span.light
+          &middot;
+          = s_("Wiki|Edit Page")
       - else
         = s_("Wiki|Create New Page")
 

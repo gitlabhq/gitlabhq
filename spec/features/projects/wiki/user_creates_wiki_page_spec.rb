@@ -3,15 +3,9 @@
 require "spec_helper"
 
 describe "User creates wiki page" do
-  include CapybaraHelpers
-  include WikiHelpers
-
-  set(:user) { create(:user) }
-
-  let(:project) { create(:project) }
+  let(:user) { create(:user) }
   let(:wiki) { ProjectWiki.new(project, user) }
-  let(:new_page) { WikiPage.new(wiki) }
-  let(:message_field) { form_field_name(new_page, :message) }
+  let(:project) { create(:project) }
 
   before do
     project.add_maintainer(user)
@@ -19,76 +13,36 @@ describe "User creates wiki page" do
     sign_in(user)
   end
 
-  def start_writing(page_path)
-    click_link("New page")
-    fill_in(:wiki_page_title, with: page_path)
-  end
-
-  def create_page(attrs = {})
-    page.within(".wiki-form") do
-      attrs.each do |k, v|
-        fill_in("wiki_page_#{k}".to_sym, with: v)
-      end
-    end
-    click_on("Create page")
-  end
-
-  shared_examples 'updates commit message' do
-    describe 'commit message', :js do
-      it "has `Create home` as a commit message" do
-        wait_for_requests
-
-        expect(page).to have_field(message_field, with: "Create home")
-      end
-    end
-  end
-
   context "when wiki is empty" do
     before do
       visit(project_wikis_path(project))
 
       click_link "Create your first page"
-      find('.wiki-form')
     end
 
     context "in a user namespace" do
       let(:project) { create(:project, :wiki_repo, namespace: user.namespace) }
-      let(:wiki_page_content) { '' }
 
       it "shows validation error message" do
-        create_page
+        page.within(".wiki-form") do
+          fill_in(:wiki_content, with: "")
 
-        expect(page)
-          .to have_content("The form contains the following error:")
-          .and have_content("Content can't be blank")
-          .and have_css('.wiki-form')
-          .and have_css('.qa-create-page-button')
-      end
+          click_on("Create page")
+        end
 
-      it 'offers to create pages that do not yet exist' do
-        create_page(content: "[link test](test)")
+        expect(page).to have_content("The form contains the following error:").and have_content("Content can't be blank")
 
-        expect(page)
-          .to have_content("Home")
-          .and have_content("link test")
+        page.within(".wiki-form") do
+          fill_in(:wiki_content, with: "[link test](test)")
+
+          click_on("Create page")
+        end
+
+        expect(page).to have_content("Home").and have_content("link test")
 
         click_link("link test")
 
         expect(page).to have_content("Create New Page")
-      end
-
-      it "has a link to the parent directory in the pages sidebar" do
-        wiki_full_path = "one/two/three-test"
-        create_page(title: wiki_full_path, content: 'wiki content')
-
-        wiki_page = wiki.find_page(wiki_full_path)
-        expect(wiki_page).to be_present
-        dir = wiki.find_dir(wiki_page.directory)
-        expect(dir).to be_present
-
-        expect(current_path).to include(wiki_full_path)
-
-        expect(page).to have_link(dir.slug, href: project_wiki_dir_path(project, dir))
       end
 
       it "shows non-escaped link in the pages list", :quarantine do
@@ -104,17 +58,19 @@ describe "User creates wiki page" do
         expect(page).to have_xpath("//a[@href='/#{project.full_path}/wikis/one/two/three-test']")
       end
 
-      it_behaves_like 'updates commit message'
+      it "has `Create home` as a commit message", :js do
+        wait_for_requests
+
+        expect(page).to have_field("wiki[message]", with: "Create home")
+      end
 
       it "creates a page from the home page" do
-        page_content = <<~WIKI_CONTENT
-          [test](test)
-          [GitLab API doc](api)
-          [Rake tasks](raketasks)
-          # Wiki header
-        WIKI_CONTENT
+        fill_in(:wiki_content, with: "[test](test)\n[GitLab API doc](api)\n[Rake tasks](raketasks)\n# Wiki header\n")
+        fill_in(:wiki_message, with: "Adding links to wiki")
 
-        create_page(content: page_content, message: "Adding links to wiki")
+        page.within(".wiki-form") do
+          click_button("Create page")
+        end
 
         expect(current_path).to eq(project_wiki_path(project, "home"))
         expect(page).to have_content("test GitLab API doc Rake tasks Wiki header")
@@ -155,7 +111,7 @@ describe "User creates wiki page" do
         end
       end
 
-      it "creates ASCIIdoc wiki with LaTeX blocks", :js do
+      it "creates ASCII wiki with LaTeX blocks", :js do
         stub_application_setting(plantuml_url: "http://localhost", plantuml_enabled: true)
 
         ascii_content = <<~MD
@@ -176,25 +132,37 @@ describe "User creates wiki page" do
           stem:[2+2] is 4
         MD
 
-        find("#wiki_page_format option[value=asciidoc]").select_option
+        find("#wiki_format option[value=asciidoc]").select_option
 
-        create_page(content: ascii_content)
+        fill_in(:wiki_content, with: ascii_content)
+
+        page.within(".wiki-form") do
+          click_button("Create page")
+        end
 
         page.within ".md" do
           expect(page).to have_selector(".katex", count: 3).and have_content("2+2 is 4")
         end
       end
 
-      it_behaves_like 'wiki file attachments'
+      it_behaves_like 'wiki file attachments', :quarantine
     end
 
-    context "in a group namespace" do
+    context "in a group namespace", :js do
       let(:project) { create(:project, :wiki_repo, namespace: create(:group, :public)) }
 
-      it_behaves_like 'updates commit message'
+      it "has `Create home` as a commit message" do
+        wait_for_requests
 
-      it "creates a page from the home page" do
-        create_page(content: "My awesome wiki!")
+        expect(page).to have_field("wiki[message]", with: "Create home")
+      end
+
+      it "creates a page from the home page", :quarantine do
+        page.within(".wiki-form") do
+          fill_in(:wiki_content, with: "My awesome wiki!")
+
+          click_button("Create page")
+        end
 
         expect(page).to have_content("Home")
                    .and have_content("Last edited by #{user.name}")
@@ -210,37 +178,76 @@ describe "User creates wiki page" do
       visit(project_wikis_path(project))
     end
 
-    shared_examples 'creates page by slug' do |slug, unslug|
-      it "creates #{slug}" do
-        start_writing(slug)
-
-        # Commit message field should have correct value.
-        expect(page).to have_field(message_field, with: "Create #{unslug}")
-
-        create_page(content: "My awesome wiki!")
-
-        expect(page).to have_content(unslug)
-                   .and have_content("Last edited by #{user.name}")
-                   .and have_content("My awesome wiki!")
-      end
-    end
-
     context "in a user namespace" do
       let(:project) { create(:project, :wiki_repo, namespace: user.namespace) }
 
       context "via the `new wiki page` page" do
-        include_examples 'creates page by slug', 'foo', 'foo'
-        include_examples 'creates page by slug', 'Spaces in the name', 'Spaces in the name'
-        include_examples 'creates page by slug', 'Hyphens-in-the-name', 'Hyphens in the name'
+        it "creates a page with a single word" do
+          click_link("New page")
+
+          page.within(".wiki-form") do
+            fill_in(:wiki_title, with: "foo")
+            fill_in(:wiki_content, with: "My awesome wiki!")
+          end
+
+          # Commit message field should have correct value.
+          expect(page).to have_field("wiki[message]", with: "Create foo")
+
+          click_button("Create page")
+
+          expect(page).to have_content("foo")
+                     .and have_content("Last edited by #{user.name}")
+                     .and have_content("My awesome wiki!")
+        end
+
+        it "creates a page with spaces in the name" do
+          click_link("New page")
+
+          page.within(".wiki-form") do
+            fill_in(:wiki_title, with: "Spaces in the name")
+            fill_in(:wiki_content, with: "My awesome wiki!")
+          end
+
+          # Commit message field should have correct value.
+          expect(page).to have_field("wiki[message]", with: "Create Spaces in the name")
+
+          click_button("Create page")
+
+          expect(page).to have_content("Spaces in the name")
+                     .and have_content("Last edited by #{user.name}")
+                     .and have_content("My awesome wiki!")
+        end
+
+        it "creates a page with hyphens in the name" do
+          click_link("New page")
+
+          page.within(".wiki-form") do
+            fill_in(:wiki_title, with: "hyphens-in-the-name")
+            fill_in(:wiki_content, with: "My awesome wiki!")
+          end
+
+          # Commit message field should have correct value.
+          expect(page).to have_field("wiki[message]", with: "Create hyphens in the name")
+
+          page.within(".wiki-form") do
+            fill_in(:wiki_content, with: "My awesome wiki!")
+
+            click_button("Create page")
+          end
+
+          expect(page).to have_content("hyphens in the name")
+                     .and have_content("Last edited by #{user.name}")
+                     .and have_content("My awesome wiki!")
+        end
       end
 
       it "shows the emoji autocompletion dropdown" do
-        start_writing('text-autocomplete')
+        click_link("New page")
 
         page.within(".wiki-form") do
-          find("#wiki_page_content").native.send_keys("")
+          find("#wiki_content").native.send_keys("")
 
-          fill_in(:wiki_page_content, with: ":")
+          fill_in(:wiki_content, with: ":")
         end
 
         expect(page).to have_selector(".atwho-view")
@@ -251,9 +258,23 @@ describe "User creates wiki page" do
       let(:project) { create(:project, :wiki_repo, namespace: create(:group, :public)) }
 
       context "via the `new wiki page` page" do
-        include_examples 'creates page by slug', 'foo', 'foo'
-        include_examples 'creates page by slug', 'Spaces in the name', 'Spaces in the name'
-        include_examples 'creates page by slug', 'Hyphens-in-the-name', 'Hyphens in the name'
+        it "creates a page" do
+          click_link("New page")
+
+          page.within(".wiki-form") do
+            fill_in(:wiki_title, with: "foo")
+            fill_in(:wiki_content, with: "My awesome wiki!")
+          end
+
+          # Commit message field should have correct value.
+          expect(page).to have_field("wiki[message]", with: "Create foo")
+
+          click_button("Create page")
+
+          expect(page).to have_content("foo")
+                     .and have_content("Last edited by #{user.name}")
+                     .and have_content("My awesome wiki!")
+        end
       end
     end
   end

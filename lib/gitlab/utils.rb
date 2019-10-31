@@ -130,15 +130,5 @@ module Gitlab
       IPAddr.new(str)
     rescue IPAddr::InvalidAddressError
     end
-
-    # Filter a Hash against a mapping of keys to sets of allowed values.
-    #
-    # Keys that do not pass the filter will be removed from the Hash.
-    # This mutates the input hash.
-    def allow_hash_values(hash, allowed)
-      allowed.each do |key, allowed_values|
-        hash.delete(key) if hash.key?(key) && !allowed_values.include?(hash[key])
-      end
-    end
   end
 end

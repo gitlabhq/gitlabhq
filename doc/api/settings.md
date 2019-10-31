@@ -316,6 +316,7 @@ are listed in the descriptions of the relevant settings.
 | `snowplow_cookie_domain`                 | string           | no                                   | The Snowplow cookie domain. (e.g. `.gitlab.com`) |
 | `snowplow_enabled`                       | boolean          | no                                   | Enable snowplow tracking. |
 | `snowplow_site_id`                       | string           | no                                   | The Snowplow site name / application id. (e.g. `gitlab`) |
+| `snowplow_iglu_registry_url`             | string           | no                                   | The Snowplow base Iglu Schema Registry URL to use for custom context and self describing events'|
 | `pendo_url`                              | string           | required by: `pendo_enabled`         | The Pendo endpoint url with js snippet. (e.g. `https://cdn.pendo.io/agent/static/your-api-key/pendo.js`) |
 | `pendo_enabled`                          | boolean          | no                                   | Enable pendo tracking. |
 | `terminal_max_session_time`              | integer          | no                                   | Maximum time for web terminal websocket connection (in seconds). Set to `0` for unlimited time. |

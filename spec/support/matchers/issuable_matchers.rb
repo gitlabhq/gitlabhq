@@ -2,8 +2,7 @@
 
 RSpec::Matchers.define :have_header_with_correct_id_and_link do |level, text, id, parent = ".md"|
   match do |actual|
-    # anchors may be invisible
-    node = find("#{parent} h#{level} a#user-content-#{id}", visible: false)
+    node = find("#{parent} h#{level} a#user-content-#{id}")
 
     expect(node[:href]).to end_with("##{id}")
 

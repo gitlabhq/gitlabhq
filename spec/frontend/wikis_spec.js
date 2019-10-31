@@ -3,27 +3,27 @@ import { setHTMLFixture } from './helpers/fixtures';
 
 describe('Wikis', () => {
   describe('setting the commit message when the title changes', () => {
+    const editFormHtmlFixture = args => `<form class="wiki-form ${
+      args.newPage ? 'js-new-wiki-page' : ''
+    }">
+        <input type="text" id="wiki_title" value="My title" />
+        <input type="text" id="wiki_message" />
+      </form>`;
+
     let wikis;
     let titleInput;
     let messageInput;
-    const CREATE = true;
-    const UPDATE = false;
-
-    const editFormHtmlFixture = newPage =>
-      `<form class="wiki-form ${newPage ? 'js-new-wiki-page' : ''}">
-        <input type="text" id="wiki_page_title" value="My title" />
-        <input type="text" id="wiki_page_message" />
-      </form>`;
-
-    const init = newPage => {
-      setHTMLFixture(editFormHtmlFixture(newPage));
-      titleInput = document.getElementById('wiki_page_title');
-      messageInput = document.getElementById('wiki_page_message');
-      wikis = new Wikis();
-    };
 
     describe('when the wiki page is being created', () => {
-      beforeEach(() => init(CREATE));
+      const formHtmlFixture = editFormHtmlFixture({ newPage: true });
+
+      beforeEach(() => {
+        setHTMLFixture(formHtmlFixture);
+
+        titleInput = document.getElementById('wiki_title');
+        messageInput = document.getElementById('wiki_message');
+        wikis = new Wikis();
+      });
 
       it('binds an event listener to the title input', () => {
         wikis.handleWikiTitleChange = jest.fn();
@@ -51,7 +51,15 @@ describe('Wikis', () => {
     });
 
     describe('when the wiki page is being updated', () => {
-      beforeEach(() => init(UPDATE));
+      const formHtmlFixture = editFormHtmlFixture({ newPage: false });
+
+      beforeEach(() => {
+        setHTMLFixture(formHtmlFixture);
+
+        titleInput = document.getElementById('wiki_title');
+        messageInput = document.getElementById('wiki_message');
+        wikis = new Wikis();
+      });
 
       it('sets the commit message when title changes, prefixing with "Update"', () => {
         titleInput.value = 'My title';

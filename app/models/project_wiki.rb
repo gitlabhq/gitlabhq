@@ -17,13 +17,6 @@ class ProjectWiki
   CREATED_AT_ORDER = 'created_at'
   DIRECTION_DESC = 'desc'
   DIRECTION_ASC = 'asc'
-  SORT_ORDERS = [TITLE_ORDER, CREATED_AT_ORDER].freeze
-  SORT_DIRECTIONS = [DIRECTION_ASC, DIRECTION_DESC].freeze
-
-  NESTING_FLAT = 'flat'
-  NESTING_TREE = 'tree'
-  NESTING_CLOSED = 'hidden'
-  NESTINGS = [NESTING_TREE, NESTING_CLOSED, NESTING_FLAT].freeze
 
   # Returns a string describing what went wrong after
   # an operation fails.
@@ -65,11 +58,7 @@ class ProjectWiki
   end
 
   def wiki_base_path
-    ::File.join(project_base_path, 'wikis')
-  end
-
-  def wiki_page_path
-    ::File.join(project_base_path, '-', 'wiki_pages')
+    [Gitlab.config.gitlab.relative_url_root, '/', @project.full_path, '/wikis'].join('')
   end
 
   # Returns the Gitlab::Git::Wiki object.
@@ -136,23 +125,6 @@ class ProjectWiki
     end
   end
 
-  # Finds directory within the repository based on a slug
-  #
-  # dir_name - The directory prefix.
-  #
-  # Returns an initialized WikiDirectory instance or nil
-  def find_dir(dir_name, sort = nil, direction = DIRECTION_ASC)
-    descending = direction == DIRECTION_DESC
-    # WikiListPagesRequest currently does not support server-side
-    # filtering. Ideally this logic should be moved to the gitaly
-    # side.
-    pages = wiki
-      .list_pages(sort: sort, direction_desc: descending)
-      .map { |page| WikiPage.new(self, page, true) }
-      .select { |wp| wp.directory == dir_name }
-    WikiDirectory.new(dir_name, pages) if pages.present?
-  end
-
   def find_sidebar(version = nil)
     find_page(SIDEBAR, version)
   end
@@ -170,12 +142,6 @@ class ProjectWiki
   rescue Gitlab::Git::Wiki::DuplicatePageError => e
     @error_message = "Duplicate page: #{e.message}"
     false
-  end
-
-  def build_page(attrs)
-    WikiPage.new(self).tap do |page|
-      page.update_attributes(attrs) # rubocop:disable Rails/ActiveRecordAliases
-    end
   end
 
   def update_page(page, content:, title: nil, format: :markdown, message: nil)
@@ -205,7 +171,7 @@ class ProjectWiki
 
     title_array = title.split("/")
     title = title_array.pop
-    [title, ::File.join(title_array)]
+    [title, title_array.join("/")]
   end
 
   def repository
@@ -231,10 +197,6 @@ class ProjectWiki
   end
 
   private
-
-  def project_base_path
-    ::File.join(Gitlab.config.gitlab.relative_url_root, @project.full_path)
-  end
 
   def create_repo!(raw_repository)
     gitlab_shell.create_wiki_repository(project)

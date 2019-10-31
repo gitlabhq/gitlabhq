@@ -3,9 +3,8 @@
 require 'spec_helper'
 
 describe 'Edit Project Settings' do
-  set(:project) { create(:project, :public, :repository) }
-
   let(:member) { create(:user) }
+  let!(:project) { create(:project, :public, :repository) }
   let!(:issue) { create(:issue, project: project) }
   let(:non_member) { create(:user) }
 
@@ -82,88 +81,85 @@ describe 'Edit Project Settings' do
   end
 
   describe 'project features visibility pages' do
-    set(:pipeline) { create(:ci_empty_pipeline, project: project) }
-    set(:job) { create(:ci_build, pipeline: pipeline) }
+    let(:pipeline) { create(:ci_empty_pipeline, project: project) }
+    let(:job) { create(:ci_build, pipeline: pipeline) }
 
-    where(:method_name, :build_url) do
-      [
-        [:builds,         -> { project_job_path(project, job) }],
-        [:issues,         -> { project_issues_path(project) }],
-        [:wiki,           -> { project_wiki_path(project, :home) }],
-        [:snippets,       -> { project_snippets_path(project) }],
-        [:merge_requests, -> { project_merge_requests_path(project) }]
-      ]
+    let(:tools) do
+      {
+        builds: project_job_path(project, job),
+        issues: project_issues_path(project),
+        wiki: project_wiki_path(project, :home),
+        snippets: project_snippets_path(project),
+        merge_requests: project_merge_requests_path(project)
+      }
     end
 
-    with_them do
-      let(:url) { build_url.call }
-      let(:attr_name) { "#{method_name}_access_level" }
+    context 'normal user' do
+      before do
+        sign_in(member)
+      end
 
-      context 'normal user' do
-        before do
-          project.team.truncate
-          sign_in(member)
-        end
-
-        it 'renders 200 if tool is enabled' do
-          project.project_feature.update_attribute(attr_name, ProjectFeature::ENABLED)
-
+      it 'renders 200 if tool is enabled' do
+        tools.each do |method_name, url|
+          project.project_feature.update_attribute("#{method_name}_access_level", ProjectFeature::ENABLED)
           visit url
-
-          expect(page.status_code).to eq(200)
-        end
-
-        it 'renders 404 if feature is disabled' do
-          project.project_feature.update_attribute(attr_name, ProjectFeature::DISABLED)
-
-          visit url
-
-          expect(page.status_code).to eq(404)
-        end
-
-        it 'renders 404 if feature is enabled only for team members' do
-          project.project_feature.update_attribute(attr_name, ProjectFeature::PRIVATE)
-
-          visit url
-
-          expect(page.status_code).to eq(404)
-        end
-
-        it 'renders 200 if user is member of group' do
-          group = create(:group)
-          project.group = group
-          project.save
-
-          group.add_owner(member)
-
-          project.project_feature.update_attribute(attr_name, ProjectFeature::PRIVATE)
-
-          visit url
-
           expect(page.status_code).to eq(200)
         end
       end
 
-      context 'admin user' do
-        before do
-          non_member.update_attribute(:admin, true)
-          project.team.truncate
-          sign_in(non_member)
-        end
-
-        it 'renders 404 if feature is disabled' do
+      it 'renders 404 if feature is disabled' do
+        tools.each do |method_name, url|
           project.project_feature.update_attribute("#{method_name}_access_level", ProjectFeature::DISABLED)
-
           visit url
-
           expect(page.status_code).to eq(404)
         end
+      end
 
-        it 'renders 200 if feature is enabled only for team members' do
+      it 'renders 404 if feature is enabled only for team members' do
+        project.team.truncate
+
+        tools.each do |method_name, url|
           project.project_feature.update_attribute("#{method_name}_access_level", ProjectFeature::PRIVATE)
-
           visit url
+          expect(page.status_code).to eq(404)
+        end
+      end
 
+      it 'renders 200 if user is member of group' do
+        group = create(:group)
+        project.group = group
+        project.save
+
+        group.add_owner(member)
+
+        tools.each do |method_name, url|
+          project.project_feature.update_attribute("#{method_name}_access_level", ProjectFeature::PRIVATE)
+          visit url
+          expect(page.status_code).to eq(200)
+        end
+      end
+    end
+
+    context 'admin user' do
+      before do
+        non_member.update_attribute(:admin, true)
+        sign_in(non_member)
+      end
+
+      it 'renders 404 if feature is disabled' do
+        tools.each do |method_name, url|
+          project.project_feature.update_attribute("#{method_name}_access_level", ProjectFeature::DISABLED)
+          visit url
+          expect(page.status_code).to eq(404)
+        end
+      end
+
+      it 'renders 200 if feature is enabled only for team members' do
+        project.team.truncate
+
+        tools.each do |method_name, url|
+          project.project_feature.update_attribute("#{method_name}_access_level", ProjectFeature::PRIVATE)
+          visit url
           expect(page.status_code).to eq(200)
         end
       end

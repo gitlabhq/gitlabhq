@@ -23,13 +23,8 @@ describe WikiHelper do
 
   describe '#wiki_sort_controls' do
     let(:project) { create(:project) }
-    let(:classes) { described_class::WIKI_SORT_CSS_CLASSES }
-
-    subject(:wiki_link) do
-      helper.wiki_sort_controls(sort: sort, direction: direction) do |opts|
-        project_wikis_pages_path(project, opts)
-      end
-    end
+    let(:wiki_link) { helper.wiki_sort_controls(project, sort, direction) }
+    let(:classes) { "btn btn-default has-tooltip reverse-sort-btn qa-reverse-sort rspec-reverse-sort" }
 
     def expected_link(sort, direction, icon_class)
       path = "/#{project.full_path}/wikis/pages?direction=#{direction}&sort=#{sort}"
@@ -63,18 +58,6 @@ describe WikiHelper do
 
       it 'renders a link with opposite direction' do
         expect(wiki_link).to eq(expected_link('created_at', 'asc', 'highest'))
-      end
-    end
-  end
-
-  describe '#wiki_show_children_icon' do
-    ProjectWiki::NESTINGS.each do |nesting|
-      context "When the nesting parameter is `#{nesting}`" do
-        let(:element) { helper.wiki_show_children_icon(nesting) }
-
-        it 'produces something that contains an SVG' do
-          expect(element).to match(/svg/)
-        end
       end
     end
   end

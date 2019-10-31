@@ -28,9 +28,7 @@ describe ProjectWiki do
 
   describe '#web_url' do
     it 'returns the full web URL to the wiki' do
-      home_url = Gitlab::Routing.url_helpers.project_wiki_url(project, :home)
-
-      expect(subject.web_url).to eq(home_url)
+      expect(subject.web_url).to eq("#{Gitlab.config.gitlab.url}/#{project.full_path}/wikis/home")
     end
   end
 
@@ -73,23 +71,9 @@ describe ProjectWiki do
 
   describe "#wiki_base_path" do
     it "returns the wiki base path" do
-      wiki_path = Gitlab::Routing.url_helpers.project_wikis_path(project)
+      wiki_base_path = "#{Gitlab.config.gitlab.relative_url_root}/#{project.full_path}/wikis"
 
-      expect(subject.wiki_base_path).to eq(wiki_path)
-    end
-  end
-
-  describe "#wiki_page_path" do
-    let(:page) { create(:wiki_page, wiki: project_wiki) }
-
-    describe 'suffixed with /:page_slug' do
-      subject { "#{project_wiki.wiki_page_path}/#{page.slug}" }
-
-      it "equals the project_wiki_path" do
-        path = Gitlab::Routing.url_helpers.project_wiki_path(project, page)
-
-        expect(subject).to eq(path)
-      end
+      expect(subject.wiki_base_path).to eq(wiki_base_path)
     end
   end
 

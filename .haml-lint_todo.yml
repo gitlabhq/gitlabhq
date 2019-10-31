@@ -343,6 +343,8 @@ linters:
       - 'app/views/projects/triggers/_index.html.haml'
       - 'app/views/projects/triggers/_trigger.html.haml'
       - 'app/views/projects/triggers/edit.html.haml'
+      - 'app/views/projects/wikis/_new.html.haml'
+      - 'app/views/projects/wikis/_pages_wiki_page.html.haml'
       - 'app/views/projects/wikis/edit.html.haml'
       - 'app/views/projects/wikis/history.html.haml'
       - 'app/views/repository_check_mailer/notify.html.haml'

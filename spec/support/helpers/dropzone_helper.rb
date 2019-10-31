@@ -14,8 +14,6 @@ module DropzoneHelper
   # If it's 'false', then the helper will NOT wait for backend response
   # It lets to test behaviors while AJAX is processing.
   def dropzone_file(files, max_file_size = 0, wait_for_queuecomplete = true)
-    # Assert that there is a dropzone to use (waiting until it is ready)
-    expect(page).to have_css('.div-dropzone')
     # Generate a fake file input that Capybara can attach to
     page.execute_script <<-JS.strip_heredoc
       $('#fakeFileInput').remove();

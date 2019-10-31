@@ -5,11 +5,8 @@ require 'spec_helper'
 describe 'project routing' do
   before do
     allow(Project).to receive(:find_by_full_path).and_return(false)
-    allow(Project).to receive(:find_by_full_path).with('gitlab/gitlabhq', any_args).and_return(project)
+    allow(Project).to receive(:find_by_full_path).with('gitlab/gitlabhq', any_args).and_return(true)
   end
-
-  set(:namespace) { create(:namespace, name: 'gitlab') }
-  set(:project) { create(:project, namespace: namespace, name: 'gitlabhq') }
 
   # Shared examples for a resource inside a Project
   #
@@ -150,39 +147,24 @@ describe 'project routing' do
     it_behaves_like 'redirecting a legacy project path', "/gitlab/gitlabhq/autocomplete_sources/labels", "/gitlab/gitlabhq/-/autocomplete_sources/labels"
   end
 
-  # GET    /:project_id/wikis/pages(.:format)             projects/wikis#pages
-  # GET    /:project_id/-/wiki_pages/:id/history(.:format) projects/wiki_pages#history
-  # POST   /:project_id/-/wiki_pages(.:format)             projects/wiki_pages#create
-  # GET    /:project_id/-/wiki_pages/:id/edit(.:format)    projects/wiki_pages#edit
-  # GET    /:project_id/-/wiki_pages/:id(.:format)         projects/wiki_pages#show
-  # DELETE /:project_id/-/wiki_pages/:id(.:format)         projects/wiki_pages#destroy
+  #  pages_project_wikis GET    /:project_id/wikis/pages(.:format)       projects/wikis#pages
+  # history_project_wiki GET    /:project_id/wikis/:id/history(.:format) projects/wikis#history
+  #        project_wikis POST   /:project_id/wikis(.:format)             projects/wikis#create
+  #    edit_project_wiki GET    /:project_id/wikis/:id/edit(.:format)    projects/wikis#edit
+  #         project_wiki GET    /:project_id/wikis/:id(.:format)         projects/wikis#show
+  #                      DELETE /:project_id/wikis/:id(.:format)         projects/wikis#destroy
   describe Projects::WikisController, 'routing' do
-    let(:wiki) { ProjectWiki.new(project, project.owner) }
-    let(:wiki_page) { create(:wiki_page, wiki: wiki) }
-
-    it '#pages' do
-      expect(get('/gitlab/gitlabhq/wikis/pages'))
-        .to route_to('projects/wikis#pages',
-                     namespace_id: 'gitlab',
-                     project_id: 'gitlabhq')
+    it 'to #pages' do
+      expect(get('/gitlab/gitlabhq/wikis/pages')).to route_to('projects/wikis#pages', namespace_id: 'gitlab', project_id: 'gitlabhq')
     end
 
-    describe '#history' do
-      let(:history_path) { project_wiki_history_path(project, wiki_page) }
-
-      it 'routes to history' do
-        expect(get(history_path))
-          .to route_to('projects/wiki_pages#history',
-                       namespace_id: namespace.path,
-                       project_id: project.name,
-                       id: wiki_page.slug)
-      end
+    it 'to #history' do
+      expect(get('/gitlab/gitlabhq/wikis/1/history')).to route_to('projects/wikis#history', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1')
     end
 
     it_behaves_like 'RESTful project resources' do
       let(:actions)    { [:create, :edit, :show, :destroy] }
-      let(:controller) { 'wiki_pages' }
-      let(:controller_path) { '-/wiki_pages' }
+      let(:controller) { 'wikis' }
     end
   end
 

@@ -7,11 +7,11 @@ module QA
         class Show < Page::Base
           include Page::Component::LegacyClonePanel
 
-          view 'app/views/shared/wiki/_page_listing.html.haml' do
+          view 'app/views/projects/wikis/pages.html.haml' do
             element :clone_repository_link, 'Clone repository' # rubocop:disable QA/ElementWithPattern
           end
 
-          view 'app/views/projects/wiki_pages/show.html.haml' do
+          view 'app/views/projects/wikis/show.html.haml' do
             element :wiki_page_content
           end
 

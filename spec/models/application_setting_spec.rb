@@ -72,10 +72,14 @@ describe ApplicationSetting do
       it { is_expected.not_to allow_value(nil).for(:snowplow_collector_hostname) }
       it { is_expected.to allow_value("snowplow.gitlab.com").for(:snowplow_collector_hostname) }
       it { is_expected.not_to allow_value('/example').for(:snowplow_collector_hostname) }
+      it { is_expected.to allow_value('https://example.org').for(:snowplow_iglu_registry_url) }
+      it { is_expected.not_to allow_value('not-a-url').for(:snowplow_iglu_registry_url) }
+      it { is_expected.to allow_value(nil).for(:snowplow_iglu_registry_url) }
     end
 
     context 'when snowplow is not enabled' do
       it { is_expected.to allow_value(nil).for(:snowplow_collector_hostname) }
+      it { is_expected.to allow_value(nil).for(:snowplow_iglu_registry_url) }
     end
 
     context 'when pendo is enabled' do

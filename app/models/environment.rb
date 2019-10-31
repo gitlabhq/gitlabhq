@@ -10,6 +10,7 @@ class Environment < ApplicationRecord
   has_many :successful_deployments, -> { success }, class_name: 'Deployment'
 
   has_one :last_deployment, -> { success.order('deployments.id DESC') }, class_name: 'Deployment'
+  has_one :last_visible_deployment, -> { visible.distinct_on_environment }, class_name: 'Deployment'
 
   before_validation :nullify_external_url
   before_validation :generate_slug, if: ->(env) { env.slug.blank? }

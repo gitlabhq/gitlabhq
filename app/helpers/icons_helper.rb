@@ -41,12 +41,6 @@ module IconsHelper
     ActionController::Base.helpers.image_path('file_icons.svg', host: sprite_base_url)
   end
 
-  def sprite_icon_with_text(icon_name, content, opts = {})
-    wrapper_class = opts.delete(:wrapper_class)
-    icon = sprite_icon(icon_name, opts)
-    content_tag(:span, [icon, content].join('').html_safe, class: wrapper_class)
-  end
-
   def sprite_icon(icon_name, size: nil, css_class: nil)
     if Gitlab::Sentry.should_raise_for_dev?
       unless known_sprites.include?(icon_name)

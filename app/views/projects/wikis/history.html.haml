@@ -1,4 +1,3 @@
-- @content_class = 'wiki-history'
 - page_title _("History"), @page.human_title, _("Wiki")
 
 .wiki-page-header.top-area.has-sidebar-toggle.flex-column.flex-lg-row
@@ -7,7 +6,10 @@
 
   .nav-text
     %h2.wiki-page-title
-      = render partial: 'page_title', locals: { subtitle: _("History") }
+      = link_to @page.human_title, project_wiki_path(@project, @page)
+      %span.light
+        &middot;
+        = _("History")
 
 .table-holder
   %table.table
@@ -37,4 +39,4 @@
               = version.format
 = paginate @page_versions, theme: 'gitlab'
 
-= render 'shared/wiki/sidebar'
+= render 'sidebar'

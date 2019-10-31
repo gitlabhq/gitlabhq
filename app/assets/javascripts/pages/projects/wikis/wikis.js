@@ -12,8 +12,8 @@ export default class Wikis {
     }
 
     this.isNewWikiPage = Boolean(document.querySelector('.js-new-wiki-page'));
-    this.editTitleInput = document.querySelector('form.wiki-form #wiki_page_title');
-    this.commitMessageInput = document.querySelector('form.wiki-form #wiki_page_message');
+    this.editTitleInput = document.querySelector('form.wiki-form #wiki_title');
+    this.commitMessageInput = document.querySelector('form.wiki-form #wiki_message');
     this.commitMessageI18n = this.isNewWikiPage
       ? s__('WikiPageCreate|Create %{pageTitle}')
       : s__('WikiPageEdit|Update %{pageTitle}');

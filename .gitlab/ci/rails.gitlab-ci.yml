@@ -239,6 +239,7 @@ static-analysis:
   dependencies: ["setup-test-env", "compile-assets pull-cache"]
   variables:
     SETUP_DB: "false"
+  parallel: 2
   script:
     - scripts/static-analysis
   cache:

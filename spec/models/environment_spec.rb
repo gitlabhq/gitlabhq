@@ -515,6 +515,48 @@ describe Environment, :use_clean_rails_memory_store_caching do
     end
   end
 
+  describe '#last_visible_deployment' do
+    subject { environment.last_visible_deployment }
+
+    before do
+      allow_any_instance_of(Deployment).to receive(:create_ref)
+    end
+
+    context 'when there is an old deployment record' do
+      let!(:previous_deployment) { create(:deployment, :success, environment: environment) }
+
+      context 'when there is a deployment record with created status' do
+        let!(:deployment) { create(:deployment, environment: environment) }
+
+        it { is_expected.to eq(previous_deployment) }
+      end
+
+      context 'when there is a deployment record with running status' do
+        let!(:deployment) { create(:deployment, :running, environment: environment) }
+
+        it { is_expected.to eq(deployment) }
+      end
+
+      context 'when there is a deployment record with success status' do
+        let!(:deployment) { create(:deployment, :success, environment: environment) }
+
+        it { is_expected.to eq(deployment) }
+      end
+
+      context 'when there is a deployment record with failed status' do
+        let!(:deployment) { create(:deployment, :failed, environment: environment) }
+
+        it { is_expected.to eq(deployment) }
+      end
+
+      context 'when there is a deployment record with canceled status' do
+        let!(:deployment) { create(:deployment, :canceled, environment: environment) }
+
+        it { is_expected.to eq(deployment) }
+      end
+    end
+  end
+
   describe '#has_terminals?' do
     subject { environment.has_terminals? }
 

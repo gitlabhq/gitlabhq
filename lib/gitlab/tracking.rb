@@ -47,7 +47,8 @@ module Gitlab
           cookie_domain: Gitlab::CurrentSettings.snowplow_cookie_domain,
           app_id: Gitlab::CurrentSettings.snowplow_site_id,
           form_tracking: additional_features,
-          link_click_tracking: additional_features
+          link_click_tracking: additional_features,
+          iglu_registry_url: Gitlab::CurrentSettings.snowplow_iglu_registry_url
         }.transform_keys! { |key| key.to_s.camelize(:lower).to_sym }
       end
 

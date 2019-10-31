@@ -150,7 +150,7 @@ describe Gitlab::UrlBuilder do
         wiki_page = build(:wiki_page)
         url = described_class.build(wiki_page)
 
-        expect(url).to eq "#{Gitlab.config.gitlab.url}#{wiki_page.wiki.wiki_page_path}/#{wiki_page.slug}"
+        expect(url).to eq "#{Gitlab.config.gitlab.url}#{wiki_page.wiki.wiki_base_path}/#{wiki_page.slug}"
       end
     end
   end

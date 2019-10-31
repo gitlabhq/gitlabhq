@@ -104,6 +104,11 @@ class ApplicationSetting < ApplicationRecord
             hostname: true,
             if: :snowplow_enabled
 
+  validates :snowplow_iglu_registry_url,
+            addressable_url: true,
+            allow_blank: true,
+            if: :snowplow_enabled
+
   validates :pendo_url,
             presence: true,
             public_url: true,

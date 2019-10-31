@@ -1,45 +1,8 @@
-.new-wiki-page {
-  .new-wiki-page-slug-tip {
-    display: inline-block;
-    max-width: 100%;
-    margin-top: 5px;
-  }
-}
-
-.wiki-history,
-.wiki-page,
-.edit-wiki-page {
-  margin-right: $gutter-width;
-}
-
-.edit-wiki-page {
-  @media only screen and (min-width: map-get($grid-breakpoints, lg) + (2 * $gutter-width)) and (max-width: map-get($grid-breakpoints, lg) + (3 * $gutter-width)) {
-    margin-right: $gutter-width * 1.5;
-  }
-}
-
-.wiki-form {
-  .edit-wiki-page-slug-tip {
-    display: inline-block;
-    max-width: 100%;
-    margin-top: 5px;
-  }
-}
-
 .title .edit-wiki-header {
   width: 780px;
   margin-left: auto;
   margin-right: auto;
   padding-right: 7px;
-}
-
-.container-fluid.wiki-page,
-.container-fluid.edit-wiki-page {
-  width: initial;
-}
-
-.wiki-history.breadcrumbs {
-  min-height: (2 * $gl-padding) + 22;
 }
 
 .wiki-page-header {
@@ -116,7 +79,7 @@
   }
 
   .sidebar-container {
-    padding-bottom: $gl-padding;
+    padding: $gl-padding 0;
     width: calc(100% + 100px);
     padding-right: 100px;
     height: 100%;
@@ -162,7 +125,7 @@
   }
 
   .wiki-sidebar-header {
-    padding: $gl-padding;
+    padding: 0 $gl-padding $gl-padding;
 
     .gutter-toggle {
       margin-top: 0;

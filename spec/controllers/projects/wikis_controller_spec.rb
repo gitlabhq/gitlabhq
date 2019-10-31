@@ -4,10 +4,10 @@ require 'spec_helper'
 
 describe Projects::WikisController do
   let_it_be(:project) { create(:project, :public, :repository) }
-  let_it_be(:user) { project.owner }
-  let_it_be(:project_wiki) { ProjectWiki.new(project, user) }
-  let_it_be(:wiki) { project_wiki.wiki }
-  let_it_be(:wiki_title) { 'page title test' }
+  let(:user) { project.owner }
+  let(:project_wiki) { ProjectWiki.new(project, user) }
+  let(:wiki) { project_wiki.wiki }
+  let(:wiki_title) { 'page title test' }
 
   before do
     create_page(wiki_title, 'hello world')
@@ -19,86 +19,231 @@ describe Projects::WikisController do
     destroy_page(wiki_title)
   end
 
-  describe 'GET #pages' do
-    subject do
-      get :pages, params: { namespace_id: project.namespace, project_id: project, id: wiki_title }.merge(extra_params)
-    end
+  describe 'GET #new' do
+    subject { get :new, params: { namespace_id: project.namespace, project_id: project } }
 
-    let(:extra_params) { {} }
+    it 'redirects to #show and appends a `random_title` param' do
+      subject
+
+      expect(response).to have_http_status(302)
+      expect(Rails.application.routes.recognize_path(response.redirect_url)).to include(
+        controller: 'projects/wikis',
+        action: 'show'
+      )
+      expect(response.redirect_url).to match(/\?random_title=true\Z/)
+    end
+  end
+
+  describe 'GET #pages' do
+    subject { get :pages, params: { namespace_id: project.namespace, project_id: project, id: wiki_title } }
 
     it 'does not load the pages content' do
       expect(controller).to receive(:load_wiki).and_return(project_wiki)
+
       expect(project_wiki).to receive(:list_pages).twice.and_call_original
 
       subject
     end
+  end
 
-    describe 'illegal params' do
-      shared_examples :a_bad_request do
-        it do
-          expect { subject }.to raise_error(ActionController::BadRequest)
-        end
+  describe 'GET #history' do
+    before do
+      allow(controller)
+        .to receive(:can?)
+        .with(any_args)
+        .and_call_original
+
+      # The :create_wiki permission is irrelevant to reading history.
+      expect(controller)
+        .not_to receive(:can?)
+        .with(anything, :create_wiki, any_args)
+
+      allow(controller)
+        .to receive(:can?)
+        .with(anything, :read_wiki, any_args)
+        .and_return(allow_read_wiki)
+    end
+
+    shared_examples 'fetching history' do |expected_status|
+      before do
+        get :history, params: { namespace_id: project.namespace, project_id: project, id: wiki_title }
       end
 
-      describe ':sort' do
-        let(:extra_params) { { sort: 'wibble' } }
-
-        it_behaves_like :a_bad_request
-      end
-
-      describe ':direction' do
-        let(:extra_params) { { direction: 'wibble' } }
-
-        it_behaves_like :a_bad_request
-      end
-
-      describe ':show_children' do
-        let(:extra_params) { { show_children: 'wibble' } }
-
-        it_behaves_like :a_bad_request
+      it "returns status #{expected_status}" do
+        expect(response).to have_http_status(expected_status)
       end
     end
 
-    shared_examples 'sorting-and-nesting' do |sort_key, default_nesting|
-      context "the user is sorting by #{sort_key}" do
-        let(:extra_params) { sort_params.merge(nesting_params) }
-        let(:sort_params) { { sort: sort_key } }
-        let(:nesting_params) { {} }
+    it_behaves_like 'fetching history', :ok do
+      let(:allow_read_wiki)   { true }
 
-        before do
+      it 'assigns @page_versions' do
+        expect(assigns(:page_versions)).to be_present
+      end
+    end
+
+    it_behaves_like 'fetching history', :not_found do
+      let(:allow_read_wiki)   { false }
+    end
+  end
+
+  describe 'GET #show' do
+    render_views
+
+    let(:random_title) { nil }
+
+    subject { get :show, params: { namespace_id: project.namespace, project_id: project, id: id, random_title: random_title } }
+
+    context 'when page exists' do
+      let(:id) { wiki_title }
+
+      it 'limits the retrieved pages for the sidebar' do
+        expect(controller).to receive(:load_wiki).and_return(project_wiki)
+        expect(project_wiki).to receive(:list_pages).with(limit: 15).and_call_original
+
+        subject
+
+        expect(response).to have_http_status(:ok)
+        expect(assigns(:page).title).to eq(wiki_title)
+      end
+
+      context 'when page content encoding is invalid' do
+        it 'sets flash error' do
+          allow(controller).to receive(:valid_encoding?).and_return(false)
+
           subject
-        end
 
-        it "sets nesting to #{default_nesting} by default" do
-          expect(assigns :nesting).to eq default_nesting
-        end
-
-        it 'hides children if the default requires it' do
-          expect(assigns :show_children).to be(default_nesting != ProjectWiki::NESTING_CLOSED)
-        end
-
-        ProjectWiki::NESTINGS.each do |nesting|
-          context "the user explicitly passes show_children = #{nesting}" do
-            let(:nesting_params) { { show_children: nesting } }
-
-            it 'sets nesting to the provided value' do
-              expect(assigns :nesting).to eq nesting
-            end
-          end
-        end
-
-        context 'the user wants children hidden' do
-          let(:nesting_params) { { show_children: 'hidden' } }
-
-          it 'hides children' do
-            expect(assigns :show_children).to be false
-          end
+          expect(response).to have_http_status(:ok)
+          expect(flash[:notice]).to eq('The content of this page is not encoded in UTF-8. Edits can only be made via the Git repository.')
         end
       end
     end
 
-    include_examples 'sorting-and-nesting', ProjectWiki::CREATED_AT_ORDER, ProjectWiki::NESTING_FLAT
-    include_examples 'sorting-and-nesting', ProjectWiki::TITLE_ORDER, ProjectWiki::NESTING_CLOSED
+    context 'when the page does not exist' do
+      let(:id) { 'does not exist' }
+
+      before do
+        subject
+      end
+
+      it 'builds a new wiki page with the id as the title' do
+        expect(assigns(:page).title).to eq(id)
+      end
+
+      context 'when a random_title param is present' do
+        let(:random_title) { true }
+
+        it 'builds a new wiki page with no title' do
+          expect(assigns(:page).title).to be_empty
+        end
+      end
+    end
+
+    context 'when page is a file' do
+      include WikiHelpers
+
+      let(:id) { upload_file_to_wiki(project, user, file_name) }
+
+      before do
+        subject
+      end
+
+      context 'when file is an image' do
+        let(:file_name) { 'dk.png' }
+
+        it 'delivers the image' do
+          expect(response.headers['Content-Disposition']).to match(/^inline/)
+          expect(response.headers[Gitlab::Workhorse::DETECT_HEADER]).to eq "true"
+        end
+
+        context 'when file is a svg' do
+          let(:file_name) { 'unsanitized.svg' }
+
+          it 'delivers the image' do
+            expect(response.headers['Content-Disposition']).to match(/^inline/)
+            expect(response.headers[Gitlab::Workhorse::DETECT_HEADER]).to eq "true"
+          end
+        end
+      end
+
+      context 'when file is a pdf' do
+        let(:file_name) { 'git-cheat-sheet.pdf' }
+
+        it 'sets the content type to sets the content response headers' do
+          expect(response.headers['Content-Disposition']).to match(/^inline/)
+          expect(response.headers[Gitlab::Workhorse::DETECT_HEADER]).to eq "true"
+        end
+      end
+    end
+  end
+
+  describe 'POST #preview_markdown' do
+    it 'renders json in a correct format' do
+      post :preview_markdown, params: { namespace_id: project.namespace, project_id: project, id: 'page/path', text: '*Markdown* text' }
+
+      expect(json_response.keys).to match_array(%w(body references))
+    end
+  end
+
+  describe 'GET #edit' do
+    subject { get(:edit, params: { namespace_id: project.namespace, project_id: project, id: wiki_title }) }
+
+    context 'when page content encoding is invalid' do
+      it 'redirects to show' do
+        allow(controller).to receive(:valid_encoding?).and_return(false)
+
+        subject
+
+        expect(response).to redirect_to(project_wiki_path(project, project_wiki.list_pages.first))
+      end
+    end
+
+    context 'when page content encoding is valid' do
+      render_views
+
+      it 'shows the edit page' do
+        subject
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include('Edit Page')
+      end
+    end
+  end
+
+  describe 'PATCH #update' do
+    let(:new_title) { 'New title' }
+    let(:new_content) { 'New content' }
+    subject do
+      patch(:update,
+            params: {
+              namespace_id: project.namespace,
+              project_id: project,
+              id: wiki_title,
+              wiki: { title: new_title, content: new_content }
+            })
+    end
+
+    context 'when page content encoding is invalid' do
+      it 'redirects to show' do
+        allow(controller).to receive(:valid_encoding?).and_return(false)
+
+        subject
+        expect(response).to redirect_to(project_wiki_path(project, project_wiki.list_pages.first))
+      end
+    end
+
+    context 'when page content encoding is valid' do
+      render_views
+
+      it 'updates the page' do
+        subject
+
+        wiki_page = project_wiki.list_pages(load_content: true).first
+
+        expect(wiki_page.title).to eq new_title
+        expect(wiki_page.content).to eq new_content
+      end
+    end
   end
 
   def create_page(name, content)

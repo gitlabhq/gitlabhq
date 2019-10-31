@@ -26,5 +26,8 @@
         .form-group
           = f.label :snowplow_cookie_domain, _('Cookie domain'), class: 'label-light'
           = f.text_field :snowplow_cookie_domain, class: 'form-control'
+        .form-group
+          = f.label :snowplow_iglu_registry_url, _('Iglu registry URL (optional)'), class: 'label-light'
+          = f.text_field :snowplow_iglu_registry_url, class: 'form-control'
 
       = f.submit _('Save changes'), class: 'btn btn-success'

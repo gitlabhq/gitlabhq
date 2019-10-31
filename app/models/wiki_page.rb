@@ -15,7 +15,30 @@ class WikiPage
   end
 
   def self.model_name
-    ActiveModel::Name.new(self, nil, 'wiki_page')
+    ActiveModel::Name.new(self, nil, 'wiki')
+  end
+
+  # Sorts and groups pages by directory.
+  #
+  # pages - an array of WikiPage objects.
+  #
+  # Returns an array of WikiPage and WikiDirectory objects. The entries are
+  # sorted by alphabetical order (directories and pages inside each directory).
+  # Pages at the root level come before everything.
+  def self.group_by_directory(pages)
+    return [] if pages.blank?
+
+    pages.each_with_object([]) do |page, grouped_pages|
+      next grouped_pages << page unless page.directory.present?
+
+      directory = grouped_pages.find do |obj|
+        obj.is_a?(WikiDirectory) && obj.slug == page.directory
+      end
+
+      next directory.pages << page if directory
+
+      grouped_pages << WikiDirectory.new(page.directory, [page])
+    end
   end
 
   def self.unhyphenize(name)
@@ -43,16 +66,6 @@ class WikiPage
     Gitlab::HookData::WikiPageBuilder.new(self).build
   end
 
-  # Create a new WikiPage
-  #
-  # == Parameters:
-  # wiki::
-  #   A `ProjectWiki` model object
-  # page::
-  #   A `Gitlab::Git::WikiPage` business object, to which this class provides a facade
-  # persisted::
-  #   Is this page fully saved on disk?
-  #
   def initialize(wiki, page = nil, persisted = false)
     @wiki       = wiki
     @page       = page
@@ -243,10 +256,10 @@ class WikiPage
     end
   end
 
-  def to_partial_path(context = nil)
-    name = [context, 'wiki_page'].compact.join('_')
-
-    "projects/wiki_pages/#{name}"
+  # Relative path to the partial to be used when rendering collections
+  # of this object.
+  def to_partial_path
+    'projects/wikis/wiki_page'
   end
 
   def id

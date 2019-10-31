@@ -9,6 +9,7 @@ describe Gitlab::Tracking do
     stub_application_setting(snowplow_collector_hostname: 'gitfoo.com')
     stub_application_setting(snowplow_cookie_domain: '.gitfoo.com')
     stub_application_setting(snowplow_site_id: '_abc123_')
+    stub_application_setting(snowplow_iglu_registry_url: 'https://example.org')
   end
 
   describe '.snowplow_options' do
@@ -19,7 +20,8 @@ describe Gitlab::Tracking do
         cookieDomain: '.gitfoo.com',
         appId: '_abc123_',
         formTracking: true,
-        linkClickTracking: true
+        linkClickTracking: true,
+        igluRegistryUrl: 'https://example.org'
       }
 
       expect(subject.snowplow_options(nil)).to match(expected_fields)
