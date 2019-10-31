@@ -1,22 +1,27 @@
-import Vue from 'vue';
-import commitComp from '~/vue_shared/components/commit.vue';
-import mountComponent from '../../helpers/vue_mount_component_helper';
+import { shallowMount } from '@vue/test-utils';
+import CommitComponent from '~/vue_shared/components/commit.vue';
+import Icon from '~/vue_shared/components/icon.vue';
+import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 
 describe('Commit component', () => {
   let props;
-  let component;
-  let CommitComponent;
+  let wrapper;
 
-  beforeEach(() => {
-    CommitComponent = Vue.extend(commitComp);
-  });
+  const findUserAvatar = () => wrapper.find(UserAvatarLink);
+
+  const createComponent = propsData => {
+    wrapper = shallowMount(CommitComponent, {
+      propsData,
+      sync: false,
+    });
+  };
 
   afterEach(() => {
-    component.$destroy();
+    wrapper.destroy();
   });
 
   it('should render a fork icon if it does not represent a tag', () => {
-    component = mountComponent(CommitComponent, {
+    createComponent({
       tag: false,
       commitRef: {
         name: 'master',
@@ -34,7 +39,12 @@ describe('Commit component', () => {
       },
     });
 
-    expect(component.$el.querySelector('.icon-container').children).toContain('svg');
+    expect(
+      wrapper
+        .find('.icon-container')
+        .find(Icon)
+        .exists(),
+    ).toBe(true);
   });
 
   describe('Given all the props', () => {
@@ -56,68 +66,51 @@ describe('Commit component', () => {
           username: 'jschatz1',
         },
       };
-
-      component = mountComponent(CommitComponent, props);
+      createComponent(props);
     });
 
     it('should render a tag icon if it represents a tag', () => {
-      expect(component.$el.querySelector('.icon-container svg.ic-tag')).not.toBeNull();
+      expect(wrapper.find('icon-stub[name="tag"]').exists()).toBe(true);
     });
 
     it('should render a link to the ref url', () => {
-      expect(component.$el.querySelector('.ref-name').getAttribute('href')).toEqual(
-        props.commitRef.ref_url,
-      );
+      expect(wrapper.find('.ref-name').attributes('href')).toBe(props.commitRef.ref_url);
     });
 
     it('should render the ref name', () => {
-      expect(component.$el.querySelector('.ref-name').textContent).toContain(props.commitRef.name);
+      expect(wrapper.find('.ref-name').text()).toContain(props.commitRef.name);
     });
 
     it('should render the commit short sha with a link to the commit url', () => {
-      expect(component.$el.querySelector('.commit-sha').getAttribute('href')).toEqual(
-        props.commitUrl,
-      );
+      expect(wrapper.find('.commit-sha').attributes('href')).toEqual(props.commitUrl);
 
-      expect(component.$el.querySelector('.commit-sha').textContent).toContain(props.shortSha);
+      expect(wrapper.find('.commit-sha').text()).toContain(props.shortSha);
     });
 
     it('should render icon for commit', () => {
-      expect(
-        component.$el.querySelector('.js-commit-icon use').getAttribute('xlink:href'),
-      ).toContain('commit');
+      expect(wrapper.find('icon-stub[name="commit"]').exists()).toBe(true);
     });
 
     describe('Given commit title and author props', () => {
       it('should render a link to the author profile', () => {
-        expect(
-          component.$el.querySelector('.commit-title .avatar-image-container').getAttribute('href'),
-        ).toEqual(props.author.path);
+        const userAvatar = findUserAvatar();
+
+        expect(userAvatar.props('linkHref')).toBe(props.author.path);
       });
 
       it('Should render the author avatar with title and alt attributes', () => {
-        expect(
-          component.$el
-            .querySelector('.commit-title .avatar-image-container .js-user-avatar-image-toolip')
-            .textContent.trim(),
-        ).toContain(props.author.username);
+        const userAvatar = findUserAvatar();
 
-        expect(
-          component.$el
-            .querySelector('.commit-title .avatar-image-container img')
-            .getAttribute('alt'),
-        ).toContain(`${props.author.username}'s avatar`);
+        expect(userAvatar.exists()).toBe(true);
+
+        expect(userAvatar.props('imgAlt')).toBe(`${props.author.username}'s avatar`);
       });
     });
 
     it('should render the commit title', () => {
-      expect(component.$el.querySelector('a.commit-row-message').getAttribute('href')).toEqual(
-        props.commitUrl,
-      );
+      expect(wrapper.find('.commit-row-message').attributes('href')).toEqual(props.commitUrl);
 
-      expect(component.$el.querySelector('a.commit-row-message').textContent).toContain(
-        props.title,
-      );
+      expect(wrapper.find('.commit-row-message').text()).toContain(props.title);
     });
   });
 
@@ -136,9 +129,9 @@ describe('Commit component', () => {
         author: {},
       };
 
-      component = mountComponent(CommitComponent, props);
+      createComponent(props);
 
-      expect(component.$el.querySelector('.commit-title span').textContent).toContain(
+      expect(wrapper.find('.commit-title span').text()).toContain(
         "Can't find HEAD commit for this branch",
       );
     });
@@ -159,16 +152,16 @@ describe('Commit component', () => {
         author: {},
       };
 
-      component = mountComponent(CommitComponent, props);
-      const refEl = component.$el.querySelector('.ref-name');
+      createComponent(props);
+      const refEl = wrapper.find('.ref-name');
 
-      expect(refEl.textContent).toContain('master');
+      expect(refEl.text()).toContain('master');
 
-      expect(refEl.href).toBe(props.commitRef.ref_url);
+      expect(refEl.attributes('href')).toBe(props.commitRef.ref_url);
 
-      expect(refEl.getAttribute('data-original-title')).toBe(props.commitRef.name);
+      expect(refEl.attributes('data-original-title')).toBe(props.commitRef.name);
 
-      expect(component.$el.querySelector('.icon-container .ic-branch')).not.toBeNull();
+      expect(wrapper.find('icon-stub[name="branch"]').exists()).toBe(true);
     });
   });
 
@@ -192,16 +185,16 @@ describe('Commit component', () => {
         author: {},
       };
 
-      component = mountComponent(CommitComponent, props);
-      const refEl = component.$el.querySelector('.ref-name');
+      createComponent(props);
+      const refEl = wrapper.find('.ref-name');
 
-      expect(refEl.textContent).toContain('1234');
+      expect(refEl.text()).toContain('1234');
 
-      expect(refEl.href).toBe(props.mergeRequestRef.path);
+      expect(refEl.attributes('href')).toBe(props.mergeRequestRef.path);
 
-      expect(refEl.getAttribute('data-original-title')).toBe(props.mergeRequestRef.title);
+      expect(refEl.attributes('data-original-title')).toBe(props.mergeRequestRef.title);
 
-      expect(component.$el.querySelector('.icon-container .ic-git-merge')).not.toBeNull();
+      expect(wrapper.find('icon-stub[name="git-merge"]').exists()).toBe(true);
     });
   });
 
@@ -226,9 +219,9 @@ describe('Commit component', () => {
         showRefInfo: false,
       };
 
-      component = mountComponent(CommitComponent, props);
+      createComponent(props);
 
-      expect(component.$el.querySelector('.ref-name')).toBeNull();
+      expect(wrapper.find('.ref-name').exists()).toBe(false);
     });
   });
 });

@@ -2,6 +2,8 @@ require 'spec_helper'
 include ImportExport::CommonUtil
 
 describe Gitlab::ImportExport::ProjectTreeRestorer do
+  include ImportExport::CommonUtil
+
   let(:shared) { project.import_export_shared }
 
   describe 'restore project tree' do
@@ -16,7 +18,8 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
       RSpec::Mocks.with_temporary_scope do
         @project = create(:project, :builds_enabled, :issues_disabled, name: 'project', path: 'project')
         @shared = @project.import_export_shared
-        allow(@shared).to receive(:export_path).and_return('spec/fixtures/lib/gitlab/import_export/')
+
+        setup_import_export_config('complex')
 
         allow_any_instance_of(Repository).to receive(:fetch_source_branch!).and_return(true)
         allow_any_instance_of(Gitlab::Git::Repository).to receive(:branch_exists?).and_return(false)
@@ -257,9 +260,9 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
         end
 
         it 'has the correct number of pipelines and statuses' do
-          expect(@project.ci_pipelines.size).to eq(5)
+          expect(@project.ci_pipelines.size).to eq(6)
 
-          @project.ci_pipelines.zip([2, 2, 2, 2, 2])
+          @project.ci_pipelines.zip([0, 2, 2, 2, 2, 2])
             .each do |(pipeline, expected_status_size)|
             expect(pipeline.statuses.size).to eq(expected_status_size)
           end
@@ -268,7 +271,7 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
 
       context 'when restoring hierarchy of pipeline, stages and jobs' do
         it 'restores pipelines' do
-          expect(Ci::Pipeline.all.count).to be 5
+          expect(Ci::Pipeline.all.count).to be 6
         end
 
         it 'restores pipeline stages' do
@@ -314,21 +317,33 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
     end
   end
 
+  context 'project.json file access check' do
+    let(:user) { create(:user) }
+    let!(:project) { create(:project, :builds_disabled, :issues_disabled, name: 'project', path: 'project') }
+    let(:project_tree_restorer) { described_class.new(user: user, shared: shared, project: project) }
+    let(:restored_project_json) { project_tree_restorer.restore }
+
+    it 'does not read a symlink' do
+      Dir.mktmpdir do |tmpdir|
+        setup_symlink(tmpdir, 'project.json')
+        allow(shared).to receive(:export_path).and_call_original
+
+        expect(project_tree_restorer.restore).to eq(false)
+        expect(shared.errors).to include('Incorrect JSON format')
+      end
+    end
+  end
+
   context 'Light JSON' do
     let(:user) { create(:user) }
     let!(:project) { create(:project, :builds_disabled, :issues_disabled, name: 'project', path: 'project') }
     let(:project_tree_restorer) { described_class.new(user: user, shared: shared, project: project) }
     let(:restored_project_json) { project_tree_restorer.restore }
 
-    before do
-      allow(shared).to receive(:export_path).and_return('spec/fixtures/lib/gitlab/import_export/')
-    end
-
     context 'with a simple project' do
       before do
-        project_tree_restorer.instance_variable_set(:@path, "spec/fixtures/lib/gitlab/import_export/project.light.json")
-
-        restored_project_json
+        setup_import_export_config('light')
+        expect(restored_project_json).to eq(true)
       end
 
       it_behaves_like 'restores project correctly',
@@ -338,19 +353,6 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
                       milestones: 1,
                       first_issue_labels: 1,
                       services: 1
-
-      context 'project.json file access check' do
-        it 'does not read a symlink' do
-          Dir.mktmpdir do |tmpdir|
-            setup_symlink(tmpdir, 'project.json')
-            allow(shared).to receive(:export_path).and_call_original
-
-            restored_project_json
-
-            expect(shared.errors).to be_empty
-          end
-        end
-      end
 
       context 'when there is an existing build with build token' do
         before do
@@ -367,6 +369,10 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
     end
 
     context 'when the project has overridden params in import data' do
+      before do
+        setup_import_export_config('light')
+      end
+
       it 'handles string versions of visibility_level' do
         # Project needs to be in a group for visibility level comparison
         # to happen
@@ -375,24 +381,21 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
 
         project.create_import_data(data: { override_params: { visibility_level: Gitlab::VisibilityLevel::INTERNAL.to_s } })
 
-        restored_project_json
-
+        expect(restored_project_json).to eq(true)
         expect(project.visibility_level).to eq(Gitlab::VisibilityLevel::INTERNAL)
       end
 
       it 'overwrites the params stored in the JSON' do
         project.create_import_data(data: { override_params: { description: "Overridden" } })
 
-        restored_project_json
-
+        expect(restored_project_json).to eq(true)
         expect(project.description).to eq("Overridden")
       end
 
       it 'does not allow setting params that are excluded from import_export settings' do
         project.create_import_data(data: { override_params: { lfs_enabled: true } })
 
-        restored_project_json
-
+        expect(restored_project_json).to eq(true)
         expect(project.lfs_enabled).to be_falsey
       end
 
@@ -408,7 +411,7 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
 
         project.create_import_data(data: { override_params: disabled_access_levels })
 
-        restored_project_json
+        expect(restored_project_json).to eq(true)
 
         aggregate_failures do
           access_level_keys.each do |key|
@@ -429,9 +432,8 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
       end
 
       before do
-        project_tree_restorer.instance_variable_set(:@path, "spec/fixtures/lib/gitlab/import_export/project.group.json")
-
-        restored_project_json
+        setup_import_export_config('group')
+        expect(restored_project_json).to eq(true)
       end
 
       it_behaves_like 'restores project correctly',
@@ -463,11 +465,11 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
       end
 
       before do
-        project_tree_restorer.instance_variable_set(:@path, "spec/fixtures/lib/gitlab/import_export/project.light.json")
+        setup_import_export_config('light')
       end
 
       it 'does not import any templated services' do
-        restored_project_json
+        expect(restored_project_json).to eq(true)
 
         expect(project.services.where(template: true).count).to eq(0)
       end
@@ -477,8 +479,7 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
 
         expect_any_instance_of(Gitlab::ImportExport::Shared).not_to receive(:error)
 
-        restored_project_json
-
+        expect(restored_project_json).to eq(true)
         expect(project.labels.count).to eq(1)
       end
 
@@ -487,8 +488,7 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
 
         expect_any_instance_of(Gitlab::ImportExport::Shared).not_to receive(:error)
 
-        restored_project_json
-
+        expect(restored_project_json).to eq(true)
         expect(project.group.milestones.count).to eq(1)
         expect(project.milestones.count).to eq(0)
       end
@@ -504,13 +504,14 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
                group: create(:group))
       end
 
-      it 'preserves the project milestone IID' do
-        project_tree_restorer.instance_variable_set(:@path, "spec/fixtures/lib/gitlab/import_export/project.milestone-iid.json")
+      before do
+        setup_import_export_config('milestone-iid')
+      end
 
+      it 'preserves the project milestone IID' do
         expect_any_instance_of(Gitlab::ImportExport::Shared).not_to receive(:error)
 
-        restored_project_json
-
+        expect(restored_project_json).to eq(true)
         expect(project.milestones.count).to eq(2)
         expect(Milestone.find_by_title('Another milestone').iid).to eq(1)
         expect(Milestone.find_by_title('Group-level milestone').iid).to eq(2)
@@ -518,19 +519,21 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
     end
 
     context 'with external authorization classification labels' do
+      before do
+        setup_import_export_config('light')
+      end
+
       it 'converts empty external classification authorization labels to nil' do
         project.create_import_data(data: { override_params: { external_authorization_classification_label: "" } })
 
-        restored_project_json
-
+        expect(restored_project_json).to eq(true)
         expect(project.external_authorization_classification_label).to be_nil
       end
 
       it 'preserves valid external classification authorization labels' do
         project.create_import_data(data: { override_params: { external_authorization_classification_label: "foobar" } })
 
-        restored_project_json
-
+        expect(restored_project_json).to eq(true)
         expect(project.external_authorization_classification_label).to eq("foobar")
       end
     end

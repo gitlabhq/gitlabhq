@@ -3342,22 +3342,6 @@ describe Project do
     end
   end
 
-  describe '#append_or_update_attribute' do
-    let(:project) { create(:project) }
-
-    it 'shows full error updating an invalid MR' do
-      expect { project.append_or_update_attribute(:merge_requests, [create(:merge_request)]) }
-        .to raise_error(ActiveRecord::RecordInvalid, /Failed to set merge_requests:/)
-    end
-
-    it 'updates the project successfully' do
-      merge_request = create(:merge_request, target_project: project, source_project: project)
-
-      expect { project.append_or_update_attribute(:merge_requests, [merge_request]) }
-        .not_to raise_error
-    end
-  end
-
   describe '#update' do
     let(:project) { create(:project) }
 

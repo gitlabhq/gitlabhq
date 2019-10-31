@@ -1966,27 +1966,6 @@ class Project < ApplicationRecord
     (auto_devops || build_auto_devops)&.predefined_variables
   end
 
-  def append_or_update_attribute(name, value)
-    if Project.reflect_on_association(name).try(:macro) == :has_many
-      # if this is 1-to-N relation, update the parent object
-      value.each do |item|
-        item.update!(
-          Project.reflect_on_association(name).foreign_key => id)
-      end
-
-      # force to drop relation cache
-      public_send(name).reset # rubocop:disable GitlabSecurity/PublicSend
-
-      # succeeded
-      true
-    else
-      # if this is another relation or attribute, update just object
-      update_attribute(name, value)
-    end
-  rescue ActiveRecord::RecordInvalid => e
-    raise e, "Failed to set #{name}: #{e.message}"
-  end
-
   # Tries to set repository as read_only, checking for existing Git transfers in progress beforehand
   #
   # @return [Boolean] true when set to read_only or false when an existing git transfer is in progress
