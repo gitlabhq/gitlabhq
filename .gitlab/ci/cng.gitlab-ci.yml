@@ -1,4 +1,5 @@
 cloud-native-image:
+  extends: .only:variables-canonical-dot-com
   image: ruby:2.6-alpine
   dependencies: []
   stage: post-test
@@ -12,5 +13,3 @@ cloud-native-image:
   only:
     refs:
       - tags
-    variables:
-      - $CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org"

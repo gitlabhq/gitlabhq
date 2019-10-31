@@ -40,6 +40,46 @@
       - merge_requests
       - tags
 
+.only:variables-canonical-dot-com:
+  only:
+    variables:
+      - $CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE =~ /^gitlab-org($|\/)/  # Matches the gitlab-org group or its subgroups
+
+.only:variables_refs-canonical-dot-com-schedules:
+  extends: .only:variables-canonical-dot-com
+  only:
+    refs:
+      - schedules
+
+.except:refs-deploy:
+  except:
+    refs:
+      - /^\d+-\d+-auto-deploy-\d+$/
+
+.except:refs-master-tags-stable-deploy:
+  except:
+    refs:
+      - master
+      - tags
+      - /^[\d-]+-stable(-ee)?$/
+      - /^\d+-\d+-auto-deploy-\d+$/
+
+.only:kubernetes:
+  only:
+    kubernetes: active
+
+.only-review:
+  extends:
+    - .only:variables-canonical-dot-com
+    - .only:kubernetes
+    - .except:refs-master-tags-stable-deploy
+
+.only-review-schedules:
+  extends:
+    - .only:variables_refs-canonical-dot-com-schedules
+    - .only:kubernetes
+    - .except:refs-deploy
+
 .code-patterns: &code-patterns
   - ".gitlab/ci/**/*"
   - ".{eslintignore,gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
@@ -158,31 +198,6 @@
       # QA changes
       - ".dockerignore"
       - "qa/**/*"
-
-.only-review:
-  only:
-    variables:
-      - $CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org"
-    kubernetes: active
-  except:
-    refs:
-      - master
-      - /^\d+-\d+-auto-deploy-\d+$/
-      - /^[\d-]+-stable(-ee)?$/
-
-.only-review-schedules:
-  only:
-    refs:
-      - schedules
-    variables:
-      - $CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org"
-    kubernetes: active
-
-.only-canonical-schedules:
-  only:
-    refs:
-      - schedules@gitlab-org/gitlab
-      - schedules@gitlab-org/gitlab-foss
 
 .use-pg9:
   services:

@@ -252,12 +252,7 @@ downtime_check:
   extends:
     - .rake-exec
     - .only:changes-code-backstage
-  except:
-    refs:
-      - master
-      - tags
-    variables:
-      - $CI_COMMIT_REF_NAME =~ /^[\d-]+-stable(-ee)?$/
+    - .except:refs-master-tags-stable-deploy
   stage: test
   needs: ["setup-test-env"]
   dependencies: ["setup-test-env"]

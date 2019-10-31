@@ -2,12 +2,11 @@
   extends:
     - .default-tags
     - .default-retry
+    - .only:variables-canonical-dot-com
     - .only:changes-docs
   only:
     refs:
       - merge_requests
-    variables:
-      - $CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org"
   image: ruby:2.6-alpine
   stage: review
   dependencies: []
