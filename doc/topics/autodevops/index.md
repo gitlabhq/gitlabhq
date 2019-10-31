@@ -725,6 +725,8 @@ or a `.buildpacks` file in your project:
 CAUTION: **Caution:**
 Using multiple buildpacks isn't yet supported by Auto DevOps.
 
+CAUTION: **Caution:** When using the `.buildpacks` file, Auto Test will not work. The buildpack [heroku-buildpack-multi](https://github.com/heroku/heroku-buildpack-multi/) (which is used under the hood to parse the `.buildpacks` file) doesn't provide the necessary commands `bin/test-compile` and `bin/test`. Make sure to provide the project variable `BUILDPACK_URL` instead.
+
 ### Custom `Dockerfile`
 
 If your project has a `Dockerfile` in the root of the project repo, Auto DevOps
