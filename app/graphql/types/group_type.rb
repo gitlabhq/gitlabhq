@@ -8,14 +8,17 @@ module Types
 
     expose_permissions Types::PermissionTypes::Group
 
-    field :web_url, GraphQL::STRING_TYPE, null: false # rubocop:disable Graphql/Descriptions
+    field :web_url, GraphQL::STRING_TYPE, null: false,
+          description: 'Web URL of the group'
 
-    field :avatar_url, GraphQL::STRING_TYPE, null: true, resolve: -> (group, args, ctx) do # rubocop:disable Graphql/Descriptions
-      group.avatar_url(only_path: false)
-    end
+    field :avatar_url, GraphQL::STRING_TYPE, null: true,
+          description: 'Avatar URL of the group',
+          resolve: -> (group, args, ctx) do
+            group.avatar_url(only_path: false)
+          end
 
-    field :parent, GroupType, # rubocop:disable Graphql/Descriptions
-          null: true,
+    field :parent, GroupType, null: true,
+          description: 'Parent group',
           resolve: -> (obj, _args, _ctx) { Gitlab::Graphql::Loaders::BatchModelLoader.new(Group, obj.parent_id).find }
   end
 end

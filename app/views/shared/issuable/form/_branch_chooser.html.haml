@@ -4,21 +4,19 @@
 - return unless issuable.is_a?(MergeRequest)
 - return if issuable.closed_without_fork?
 
-%hr
-- if issuable.new_record?
-  .form-group.row
-    = form.label :source_branch, class: 'col-form-label col-sm-2'
-    .col-sm-10
-      .issuable-form-select-holder
-        = form.select(:source_branch, [issuable.source_branch], {}, { class: 'source_branch select2 ref-name', disabled: true })
-.form-group.row
-  = form.label :target_branch, class: 'col-form-label col-sm-2'
-  .col-sm-10.target-branch-select-dropdown-container
-    .issuable-form-select-holder
-      = form.hidden_field(:target_branch,
-        { class: 'target_branch js-target-branch-select ref-name',
-          disabled: issuable.new_record?,
-          data: { placeholder: "Select branch", endpoint: refs_project_path(@project, sort: 'updated_desc', find: 'branches') }})
+- source_title, target_title = format_mr_branch_names(@merge_request)
+
+.form-group.row.d-flex.gl-pl-3.gl-pr-3.branch-selector
+  .align-self-center
+    %span= s_('From %{source_title} into').html_safe % { source_title: "<code>#{source_title}</code>".html_safe }
     - if issuable.new_record?
+      %code= target_title
       &nbsp;
-      = link_to 'Change branches', mr_change_branches_path(issuable)
+      = link_to _('Change branches'), mr_change_branches_path(issuable)
+    - elsif issuable.for_fork?
+      %code= issuable.target_project_path + ":"
+  - unless issuable.new_record?
+    %span.dropdown.prepend-left-5.d-inline-block
+      = form.hidden_field(:target_branch,
+        { class: 'target_branch js-target-branch-select ref-name mw-xl',
+          data: { placeholder: _('Select branch'), endpoint: refs_project_path(@project, sort: 'updated_desc', find: 'branches') }})

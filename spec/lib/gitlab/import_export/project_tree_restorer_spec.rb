@@ -262,7 +262,7 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
         it 'has the correct number of pipelines and statuses' do
           expect(@project.ci_pipelines.size).to eq(6)
 
-          @project.ci_pipelines.zip([0, 2, 2, 2, 2, 2])
+          @project.ci_pipelines.order(:id).zip([2, 2, 2, 2, 2, 0])
             .each do |(pipeline, expected_status_size)|
             expect(pipeline.statuses.size).to eq(expected_status_size)
           end

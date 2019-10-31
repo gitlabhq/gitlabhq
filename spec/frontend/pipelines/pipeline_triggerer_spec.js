@@ -17,6 +17,7 @@ describe('Pipelines Triggerer', () => {
   const createComponent = () => {
     wrapper = mount(pipelineTriggerer, {
       propsData: mockData,
+      sync: false,
     });
   };
 
@@ -49,6 +50,8 @@ describe('Pipelines Triggerer', () => {
       },
     });
 
-    expect(wrapper.find('.js-pipeline-url-api').text()).toEqual('API');
+    wrapper.vm.$nextTick(() => {
+      expect(wrapper.find('.js-pipeline-url-api').text()).toEqual('API');
+    });
   });
 });

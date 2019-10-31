@@ -17,7 +17,7 @@ describe 'User edits a merge request', :js do
   end
 
   it 'changes the target branch' do
-    expect(page).to have_content('Target branch')
+    expect(page).to have_content('From master into feature')
 
     select2('merge-test', from: '#merge_request_target_branch')
     click_button('Save changes')

@@ -252,6 +252,7 @@
 
     .fa-caret-down {
       margin-left: 3px;
+      line-height: 0;
 
       &.dropdown-btn-icon {
         margin-left: 0;
@@ -269,7 +270,7 @@
   }
 
   .count-badge,
-  .btn-xs {
+  .btn {
     height: 24px;
   }
 

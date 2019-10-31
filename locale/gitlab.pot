@@ -2898,6 +2898,9 @@ msgstr ""
 msgid "Change assignee(s)."
 msgstr ""
 
+msgid "Change branches"
+msgstr ""
+
 msgid "Change label"
 msgstr ""
 
@@ -7397,6 +7400,9 @@ msgstr ""
 msgid "From %{providerTitle}"
 msgstr ""
 
+msgid "From %{source_title} into"
+msgstr ""
+
 msgid "From Bitbucket"
 msgstr ""
 
@@ -10285,6 +10291,9 @@ msgid "Merge immediately"
 msgstr ""
 
 msgid "Merge in progress"
+msgstr ""
+
+msgid "Merge options"
 msgstr ""
 
 msgid "Merge request"
@@ -14869,6 +14878,9 @@ msgid "Select all"
 msgstr ""
 
 msgid "Select an existing Kubernetes cluster or create a new one"
+msgstr ""
+
+msgid "Select branch"
 msgstr ""
 
 msgid "Select branch/tag"

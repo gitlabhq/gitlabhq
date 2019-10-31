@@ -1,3 +1,5 @@
+- hide_label = local_assigns.fetch(:hide_label, false)
+
 .modal.fade{ tabindex: "-1", role: "dialog", id: notifications_menu_identifier("modal", notification_setting), "aria-labelledby": "custom-notifications-title" }
   .modal-dialog
     .modal-content
@@ -11,6 +13,7 @@
         .container-fluid
           = form_for notification_setting, html: { class: "custom-notifications-form" } do |f|
             = hidden_setting_source_input(notification_setting)
+            = hidden_field_tag("hide_label", true) if hide_label
             .row
               .col-lg-4
                 %h4.prepend-top-0= _('Notification events')
