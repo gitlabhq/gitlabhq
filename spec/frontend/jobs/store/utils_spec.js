@@ -26,7 +26,7 @@ describe('Jobs Store Utils', () => {
       const parsedHeaderLine = parseHeaderLine(headerLine, 2);
 
       expect(parsedHeaderLine).toEqual({
-        isClosed: true,
+        isClosed: false,
         isHeader: true,
         line: {
           ...headerLine,
@@ -57,7 +57,7 @@ describe('Jobs Store Utils', () => {
     it('adds the section duration to the correct header', () => {
       const parsed = [
         {
-          isClosed: true,
+          isClosed: false,
           isHeader: true,
           line: {
             section: 'prepare-script',
@@ -66,7 +66,7 @@ describe('Jobs Store Utils', () => {
           lines: [],
         },
         {
-          isClosed: true,
+          isClosed: false,
           isHeader: true,
           line: {
             section: 'foo-bar',
@@ -85,7 +85,7 @@ describe('Jobs Store Utils', () => {
     it('does not add the section duration when the headers do not match', () => {
       const parsed = [
         {
-          isClosed: true,
+          isClosed: false,
           isHeader: true,
           line: {
             section: 'bar-foo',
@@ -94,7 +94,7 @@ describe('Jobs Store Utils', () => {
           lines: [],
         },
         {
-          isClosed: true,
+          isClosed: false,
           isHeader: true,
           line: {
             section: 'foo-bar',
@@ -183,7 +183,7 @@ describe('Jobs Store Utils', () => {
 
     describe('collpasible section', () => {
       it('adds a `isClosed` property', () => {
-        expect(result[1].isClosed).toEqual(true);
+        expect(result[1].isClosed).toEqual(false);
       });
 
       it('adds a `isHeader` property', () => {
@@ -213,7 +213,7 @@ describe('Jobs Store Utils', () => {
       const existingLog = [
         {
           isHeader: true,
-          isClosed: true,
+          isClosed: false,
           line: { content: [{ text: 'bar' }], offset: 10, lineNumber: 1 },
         },
       ];
@@ -263,7 +263,7 @@ describe('Jobs Store Utils', () => {
       const existingLog = [
         {
           isHeader: true,
-          isClosed: true,
+          isClosed: false,
           lines: [{ offset: 101, content: [{ text: 'foobar' }], lineNumber: 2 }],
           line: {
             offset: 10,
@@ -435,7 +435,7 @@ describe('Jobs Store Utils', () => {
 
         expect(result).toEqual([
           {
-            isClosed: true,
+            isClosed: false,
             isHeader: true,
             line: {
               offset: 1,
@@ -461,7 +461,7 @@ describe('Jobs Store Utils', () => {
 
         expect(result).toEqual([
           {
-            isClosed: true,
+            isClosed: false,
             isHeader: true,
             line: {
               offset: 1,

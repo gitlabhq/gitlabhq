@@ -60,8 +60,8 @@ describe('Job Log', () => {
       expect(wrapper.find('.collapsible-line').attributes('role')).toBe('button');
     });
 
-    it('renders an icon with the closed state', () => {
-      expect(wrapper.find('.collapsible-line svg').classes()).toContain('ic-angle-right');
+    it('renders an icon with the open state', () => {
+      expect(wrapper.find('.collapsible-line svg').classes()).toContain('ic-angle-down');
     });
 
     describe('on click header section', () => {

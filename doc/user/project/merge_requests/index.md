@@ -1,5 +1,5 @@
 ---
-type: index, reference, concepts
+type: index, reference
 ---
 
 # Merge requests
@@ -9,45 +9,9 @@ to source code that exist as commits on a given Git branch.
 
 ![Merge request view](img/merge_request.png)
 
-## Overview
-
-A Merge Request (**MR**) is the basis of GitLab as a code collaboration
-and version control platform.
-It is as simple as the name implies: a _request_ to _merge_ one branch into another.
-
-With GitLab merge requests, you can:
-
-- Compare the changes between two [branches](https://git-scm.com/book/en/v2/Git-Branching-Branches-in-a-Nutshell#_git_branching)
-- [Review and discuss](../../discussions/index.md#threads) the proposed modifications inline
-- Live preview the changes when [Review Apps](../../../ci/review_apps/index.md) is configured for your project
-- Build, test, and deploy your code in a per-branch basis with built-in [GitLab CI/CD](../../../ci/README.md)
-- Prevent the merge request from being merged before it's ready with [WIP MRs](#work-in-progress-merge-requests)
-- View the deployment process through [Pipeline Graphs](../../../ci/pipelines.md#visualizing-pipelines)
-- [Automatically close the issue(s)](../../project/issues/managing_issues.md#closing-issues-automatically) that originated the implementation proposed in the merge request
-- Assign it to any registered user, and change the assignee how many times you need
-- Assign a [milestone](../../project/milestones/index.md) and track the development of a broader implementation
-- Organize your issues and merge requests consistently throughout the project with [labels](../../project/labels.md)
-- Add a time estimation and the time spent with that merge request with [Time Tracking](../time_tracking.md#time-tracking)
-- [Resolve merge conflicts from the UI](#resolve-conflicts)
-- Enable [fast-forward merge requests](#fast-forward-merge-requests)
-- Enable [semi-linear history merge requests](#semi-linear-history-merge-requests) as another security layer to guarantee the pipeline is passing in the target branch
-- [Create new merge requests by email](#create-new-merge-requests-by-email)
-- [Allow collaboration](allow_collaboration.md) so members of the target project can push directly to the fork
-- [Squash and merge](squash_and_merge.md) for a cleaner commit history
-
-With **[GitLab Enterprise Edition][ee]**, you can also:
-
-- Prepare a full review and submit it once it's ready with [Merge Request Reviews](../../discussions/index.md#merge-request-reviews-premium) **(PREMIUM)**
-- View the deployment process across projects with [Multi-Project Pipelines](../../../ci/multi_project_pipelines.md) **(PREMIUM)**
-- Request [approvals](merge_request_approvals.md) from your managers **(STARTER)**
-- Analyze the impact of your changes with [Code Quality reports](code_quality.md) **(STARTER)**
-- Manage the licenses of your dependencies with [License Compliance](../../application_security/license_compliance/index.md) **(ULTIMATE)**
-- Analyze your source code for vulnerabilities with [Static Application Security Testing](../../application_security/sast/index.md) **(ULTIMATE)**
-- Analyze your running web applications for vulnerabilities with [Dynamic Application Security Testing](../../application_security/dast/index.md) **(ULTIMATE)**
-- Analyze your dependencies for vulnerabilities with [Dependency Scanning](../../application_security/dependency_scanning/index.md) **(ULTIMATE)**
-- Analyze your Docker images for vulnerabilities with [Container Scanning](../../application_security/container_scanning/index.md) **(ULTIMATE)**
-- Determine the performance impact of changes with [Browser Performance Testing](#browser-performance-testing-premium) **(PREMIUM)**
-- Specify merge order dependencies with [Merge Request Dependencies](#merge-request-dependencies-premium) **(PREMIUM)**
+A Merge Request (**MR**) is the basis of GitLab as a code collaboration and version
+control platform. It is as simple as the name implies: a _request_ to _merge_ one
+branch into another.
 
 ## Use cases
 
@@ -58,8 +22,11 @@ A. Consider you are a software developer working in a team:
 1. You work on the implementation optimizing code with [Code Quality reports](code_quality.md) **(STARTER)**
 1. You verify your changes with [JUnit test reports](../../../ci/junit_test_reports.md) in GitLab CI/CD
 1. You avoid using dependencies whose license is not compatible with your project with [License Compliance reports](../../application_security/license_compliance/index.md) **(ULTIMATE)**
-1. You request the [approval](#merge-request-approvals-starter) from your manager
-1. Your manager pushes a commit with their final review, [approves the merge request](merge_request_approvals.md), and set it to [merge when pipeline succeeds](#merge-when-pipeline-succeeds) (Merge Request Approvals are available in GitLab Starter)
+1. You request the [approval](merge_request_approvals.md) from your manager **(STARTER)**
+1. Your manager:
+   1. Pushes a commit with their final review
+   1. [Approves the merge request](merge_request_approvals.md) **(STARTER)**
+   1. Sets it to [merge when pipeline succeeds](merge_when_pipeline_succeeds.md)
 1. Your changes get deployed to production with [manual actions](../../../ci/yaml/README.md#whenmanual) for GitLab CI/CD
 1. Your implementations were successfully shipped to your customer
 
@@ -71,554 +38,112 @@ B. Consider you're a web developer writing a webpage for your company's website:
 1. You request your web designers for their implementation
 1. You request the [approval](merge_request_approvals.md) from your manager **(STARTER)**
 1. Once approved, your merge request is [squashed and merged](squash_and_merge.md), and [deployed to staging with GitLab Pages](https://about.gitlab.com/blog/2016/08/26/ci-deployment-and-environments/)
-1. Your production team [cherry picks](#cherry-pick-changes) the merge commit into production
+1. Your production team [cherry picks](cherry_pick_changes.md) the merge commit into production
 
-## Merge requests per project
+## Creating merge requests
 
-View all the merge requests within a project by navigating to **Project > Merge Requests**.
+While making changes to files in the `master` branch of a repository is possible, it is not
+the common workflow. In most cases, a user will make changes in a [branch](https://git-scm.com/book/en/v2/Git-Branching-Branches-in-a-Nutshell#_git_branching),
+then [create a merge request](creating_merge_requests.md) to request that the changes
+be merged into another branch (often the `master` branch).
 
-When you access your project's merge requests, GitLab will present them in a list,
-and you can use the tabs available to quickly filter by open and closed. You can also [search and filter the results](../../search/index.md#issues-and-merge-requests-per-project).
+It is then [reviewed](#reviewing-and-managing-merge-requests), possibly updated after
+discussions and suggestions, and finally approved and merged into the target branch.
+Creating and reviewing merge requests is one of the most fundamental parts of working
+with GitLab.
 
-![Project merge requests list view](img/project_merge_requests_list_view.png)
+When [creating merge requests](creating_merge_requests.md), there are a number of features
+to be aware of:
 
-## Merge requests per group
+| Feature                                                                                                                                       | Description                                                                                                                                                                                |
+|-----------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [Adding patches when creating a merge request via e-mail](creating_merge_requests.md#adding-patches-when-creating-a-merge-request-via-e-mail) | Add commits to a merge request created by e-mail, by adding patches as e-mail attachments.                                                                                                 |
+| [Allow collaboration on merge requests across forks](allow_collaboration.md)                                                                  | Allows the maintainers of an upstream project to collaborate on a fork, to make fixes or rebase branches before merging, reducing the back and forth of accepting community contributions. |
+| [Assignee](creating_merge_requests.md#assignee)                                                                                               | Add an assignee to indicate who is reviewing or accountable for it.                                                                                                                        |
+| [Automatic issue closing](../../project/issues/managing_issues.md#closing-issues-automatically)                                               | Set a merge request to close defined issues automatically as soon as it is merged.                                                                                                         |
+| [Create new merge requests by email](creating_merge_requests.md#create-new-merge-requests-by-email)                                           | Create new merge requests by sending an email to a user-specific email address.                                                                                                            |
+| [Deleting the source branch](creating_merge_requests.md#deleting-the-source-branch)                                                           | Select the "Delete source branch when merge request accepted" option and the source branch will be deleted when the merge request is merged.                                               |
+| [Git push options](../push_options.md)                                                                                                        | Use Git push options to create or update merge requests when pushing changes to GitLab with Git, without needing to use the GitLab interface.                                              |
+| [Labels](../../project/labels.md)                                                                                                             | Organize your issues and merge requests consistently throughout the project.                                                                                                               |
+| [Merge request approvals](merge_request_approvals.md) **(STARTER)**                                                                           | Set the number of necessary approvals and predefine a list of approvers that will need to approve every merge request in a project.                                                        |
+| [Merge Request dependencies](merge_request_dependencies.md) **(PREMIUM)**                                                                     | Specify that a merge request depends on other merge requests, enforcing a desired order of merging.                                                                                        |
+| [Merge Requests for Confidential Issues](../issues/confidential_issues.md#merge-requests-for-confidential-issues)                             | Create merge requests to resolve confidential issues for preventing leakage or early release of sensitive data through regular merge requests.                                             |
+| [Milestones](../../project/milestones/index.md)                                                                                               | Track merge requests to achieve a broader goal in a certain period of time.                                                                                                                |
+| [Multiple assignees](creating_merge_requests.md#multiple-assignees-starter) **(STARTER)**                                                     | Have multiple assignees for merge requests to indicate everyone that is reviewing or accountable for it.                                                                                   |
+| [Squash and merge](squash_and_merge.md)                                                                                                       | Squash all changes present in a merge request into a single commit when merging, to allow for a neater commit history.                                                                     |
+| [Work In Progress merge requests](work_in_progress_merge_requests.md)                                                                         | Prevent the merge request from being merged before it's ready                                                                                                                              |
 
-View merge requests in all projects in the group, including all projects of all descendant subgroups of the group. Navigate to **Group > Merge Requests** to view these merge requests. This view also has the open and closed merge requests tabs.
+## Reviewing and managing merge requests
 
-You can [search and filter the results](../../search/index.md#issues-and-merge-requests-per-group) from here.
+Once a merge request has been [created](#creating-merge-requests) and submitted, there
+are many powerful features that you can use during the review process to make sure only
+the changes you want are merged into the repository.
 
-![Group Issues list view](img/group_merge_requests_list_view.png)
+For managers and administrators, it is also important to be able to view and manage
+all the merge requests in a group or project. When [reviewing or managing merge requests](reviewing_and_managing_merge_requests.md),
+there are a number of features to be aware of:
 
-## Deleting the source branch
+| Feature                                                                                                                                               | Description                                                                                                                                              |
+|-------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [Bulk editing merge requests](../../project/bulk_editing.md)                                                                                          | Update the attributes of multiple merge requests simultaneously.                                                                                         |
+| [Cherry-pick changes](cherry_pick_changes.md)                                                                                                         | Cherry-pick any commit in the UI by simply clicking the **Cherry-pick** button in a merged merge requests or a commit.                                   |
+| [Commenting on any file line in merge requests](reviewing_and_managing_merge_requests.md#commenting-on-any-file-line-in-merge-requests)               | Make comments directly on the exact line of a file you want to talk about.                                                                               |
+| [Discuss changes in threads in merge requests reviews](../../discussions/index.md)                                                                    | Keep track of the progress during a code review by making and resolving comments.                                                                        |
+| [Fast-forward merge requests](fast_forward_merge.md)                                                                                                  | For a linear Git history and a way to accept merge requests without creating merge commits                                                               |
+| [Find the merge request that introduced a change](versions.md)                                                                                        | When viewing the commit details page, GitLab will link to the merge request(s) containing that commit.                                                   |
+| [Ignore whitespace changes in Merge Request diff view](reviewing_and_managing_merge_requests.md#ignore-whitespace-changes-in-Merge-Request-diff-view) | Hide whitespace changes from the diff view for a to focus on more important changes.                                                                     |
+| [Incrementally expand merge request diffs](reviewing_and_managing_merge_requests.md#incrementally-expand-merge-request-diffs)                         | View the content directly above or below a change, to better understand the context of that change.                                                      |
+| [Live preview with Review Apps](reviewing_and_managing_merge_requests.md#live-preview-with-review-apps)                                               | Live preview the changes when Review Apps are configured for your project                                                                                |
+| [Merge request diff file navigation](reviewing_and_managing_merge_requests.md#merge-request-diff-file-navigation)                                     | Quickly jump to any changed file within the diff view.                                                                                                   |
+| [Merge requests versions](versions.md)                                                                                                                | Select and compare the different versions of merge request diffs                                                                                         |
+| [Merge when pipeline succeeds](merge_when_pipeline_succeeds.md)                                                                                       | Set a merge request that looks ready to merge to merge automatically when CI pipeline succeeds.                                                          |
+| [Perform a Review](../../discussions/index.md#merge-request-reviews-premium) **(PREMIUM)**                                                            | Start a review in order to create multiple comments on a diff and publish them once you're ready.                                                        |
+| [Pipeline status in merge requests](reviewing_and_managing_merge_requests.md#pipeline-status-in-merge-requests)                                       | If using [GitLab CI/CD](../../../ci/README.md), see pre and post-merge pipelines information, and which deployments are in progress.                     |
+| [Post-merge pipeline status](reviewing_and_managing_merge_requests.md#post-merge-pipeline-status)                                                     | When a merge request is merged, see the post-merge pipeline status of the branch the merge request was merged into.                                      |
+| [Resolve conflicts](resolve_conflicts.md)                                                                                                             | GitLab can provide the option to resolve certain merge request conflicts in the GitLab UI.                                                               |
+| [Revert changes](revert_changes.md)                                                                                                                   | Revert changes from any commit from within a merge request.                                                                                              |
+| [Semi-linear history merge requests](reviewing_and_managing_merge_requests.md#semi-linear-history-merge-requests)                                     | Enable semi-linear history merge requests as another security layer to guarantee the pipeline is passing in the target branch                            |
+| [Suggest changes](../../discussions/index.md#suggest-changes)                                                                                         | Add suggestions to change the content of merge requests directly into merge request threads, and easily apply them to the codebase directly from the UI. |
+| [Time Tracking](../time_tracking.md#time-tracking)                                                                                                    | Add a time estimation and the time spent with that merge request.                                                                                        |
+| [View changes between file versions](reviewing_and_managing_merge_requests.md#view-changes-between-file-versions)                                     | View what will be changed when a merge request is merged.                                                                                                |
+| [View group merge requests](reviewing_and_managing_merge_requests.md#view-merge-requests-for-all-projects-in-a-group)                                 | List and view the merge requests within a group.                                                                                                         |
+| [View project merge requests](reviewing_and_managing_merge_requests.md#view-project-merge-requests)                                                   | List and view the merge requests within a project.                                                                                                       |
 
-When creating a merge request, select the "Delete source branch when merge
-request accepted" option and the source branch will be deleted when the merge
-request is merged. To make this option enabled by default for all new merge
-requests, enable it in the
-[project's settings](../settings/index.md#merge-request-settings).
+## Testing and reports in merge requests
 
-This option is also visible in an existing merge request next to the merge
-request button and can be selected/deselected before merging. It's only visible
-to users with [Maintainer permissions](../../permissions.md) in the source project.
+GitLab has the ability to test the changes included in a merge request, and can display
+or link to useful information directly in the merge request page:
 
-If the user viewing the merge request does not have the correct permissions to
-delete the source branch and the source branch is set for deletion, the merge
-request widget will show the "Deletes source branch" text.
+| Feature                                                                                                | Description                                                                                                                                                                                               |
+|--------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [Browser Performance Testing](browser_performance_testing.md) **(PREMIUM)**                            | Quickly determine the performance impact of pending code changes.                                                                                                                                         |
+| [Code Quality](code_quality.md) **(STARTER)**                                                          | Analyze your source code quality using the [Code Climate](https://codeclimate.com/) analyzer and show the Code Climate report right in the merge request widget area.                                     |
+| [Display arbitrary job artifacts](../../../ci/yaml/README.md#artifactsexpose_as)                       | Configure CI pipelines with the `artifacts:expose_as` parameter to directly link to selected [artifacts](../pipelines/job_artifacts.md) in merge requests.                                                |
+| [GitLab CI/CD](../../../ci/README.md)                                                                  | Build, test, and deploy your code in a per-branch basis with built-in CI/CD.                                                                                                                              |
+| [JUnit test reports](../../../ci/junit_test_reports.md)                                                | Configure your CI jobs to use JUnit test reports, and let GitLab display a report on the merge request so that it’s easier and faster to identify the failure without having to check the entire job log. |
+| [Metrics Reports](../../../ci/metrics_reports.md) **(PREMIUM)**                                        | Display the Metrics Report on the merge request so that it's fast and easy to identify changes to important metrics.                                                                                      |
+| [Multi-Project pipelines](../../../ci/multi_project_pipelines.md) **(PREMIUM)**                        | When you set up GitLab CI/CD across multiple projects, you can visualize the entire pipeline, including all cross-project interdependencies.                                                              |
+| [Pipelines for merge requests](../../../ci/merge_request_pipelines/index.md)                           | Customize a specific pipeline structure for merge requests in order to speed the cycle up by running only important jobs.                                                                                 |
+| [Pipeline Graphs](../../../ci/pipelines.md#visualizing-pipelines)                                      | View the status of pipelines within the merge request, including the deployment process.                                                                                                                  |
 
-![Delete source branch status](img/remove_source_branch_status.png)
+### Security Reports **(ULTIMATE)**
 
-## Allow collaboration on merge requests across forks
+In addition to the reports listed above, GitLab can do many types of [Security reports](../../application_security/index.md),
+generated by scanning and reporting any vulnerabilities found in your project:
 
-When a user opens a merge request from a fork, they are given the option to allow
-upstream maintainers to collaborate with them on the source branch. This allows
-the maintainers of the upstream project to make small fixes or rebase branches
-before merging, reducing the back and forth of accepting community contributions.
-
-[Learn more about allowing upstream members to push to forks.](allow_collaboration.md)
+| Feature                                                                                 | Description                                                      |
+|-----------------------------------------------------------------------------------------|------------------------------------------------------------------|
+| [Container Scanning](../../application_security/container_scanning/index.md)            | Analyze your Docker images for known vulnerabilities.            |
+| [Dynamic Application Security Testing (DAST)](../../application_security/dast/index.md) | Analyze your running web applications for known vulnerabilities. |
+| [Dependency Scanning](../../application_security/dependency_scanning/index.md)          | Analyze your dependencies for known vulnerabilities.             |
+| [License Compliance](../../application_security/license_compliance/index.md)            | Manage the licenses of your dependencies.                        |
+| [Static Application Security Testing (SAST)](../../application_security/sast/index.md)  | Analyze your source code for known vulnerabilities.              |
 
 ## Authorization for merge requests
 
 There are two main ways to have a merge request flow with GitLab:
 
-1. Working with [protected branches][] in a single repository
+1. Working with [protected branches](../protected_branches.md) in a single repository
 1. Working with forks of an authoritative project
 
 [Learn more about the authorization for merge requests.](authorization_for_merge_requests.md)
-
-## Cherry-pick changes
-
-Cherry-pick any commit in the UI by simply clicking the **Cherry-pick** button
-in a merged merge requests or a commit.
-
-[Learn more about cherry-picking changes.](cherry_pick_changes.md)
-
-## Semi-linear history merge requests
-
-A merge commit is created for every merge, but the branch is only merged if
-a fast-forward merge is possible. This ensures that if the merge request build
-succeeded, the target branch build will also succeed after merging.
-
-Navigate to a project's settings, select the **Merge commit with semi-linear
-history** option under **Merge Requests: Merge method** and save your changes.
-
-## Fast-forward merge requests
-
-If you prefer a linear Git history and a way to accept merge requests without
-creating merge commits, you can configure this on a per-project basis.
-
-[Read more about fast-forward merge requests.](fast_forward_merge.md)
-
-## Merge when pipeline succeeds
-
-When reviewing a merge request that looks ready to merge but still has one or
-more CI jobs running, you can set it to be merged automatically when CI
-pipeline succeeds. This way, you don't have to wait for the pipeline to finish
-and remember to merge the request manually.
-
-[Learn more about merging when pipeline succeeds.](merge_when_pipeline_succeeds.md)
-
-## Resolve threads in merge requests reviews
-
-Keep track of the progress during a code review with resolving comments.
-Resolving comments prevents you from forgetting to address feedback and lets
-you hide threads that are no longer relevant.
-
-[Read more about resolving threads in merge requests reviews.](../../discussions/index.md)
-
-## View changes between file versions
-
-The **Changes** tab of a merge request shows the changes to files between branches or
-commits. This view of changes to a file is also known as a **diff**. By default, the diff view
-compares the file in the merge request branch and the file in the target branch.
-
-The diff view includes the following:
-
-- The file's name and path.
-- The number of lines added and deleted.
-- Buttons for the following options:
-  - Toggle comments for this file; useful for inline reviews.
-  - Edit the file in the merge request's branch.
-  - Show full file, in case you want to look at the changes in context with the rest of the file.
-  - View file at the current commit.
-  - Preview the changes with [Review Apps](../../../ci/review_apps/index.md).
-- The changed lines, with the specific changes highlighted.
-
-![Example screenshot of a source code diff](img/merge_request_diff_v12_2.png)
-
-## Commenting on any file line in merge requests
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/13950) in GitLab 11.5.
-
-GitLab provides a way of leaving comments in any part of the file being changed
-in a Merge Request. To do so, click the **...** button in the gutter of the Merge Request diff UI to expand the diff lines and leave a comment, just as you would for a changed line.
-
-![Comment on any diff file line](img/comment-on-any-diff-line.png)
-
-## Perform a Review **(PREMIUM)**
-
-Start a review in order to create multiple comments on a diff and publish them once you're ready.
-Starting a review allows you to get all your thoughts in order and ensure you haven't missed anything
-before submitting all your comments.
-
-[Learn more about Merge Request Reviews](../../discussions/index.md#merge-request-reviews-premium)
-
-## Squash and merge
-
-GitLab allows you to squash all changes present in a merge request into a single
-commit when merging, to allow for a neater commit history.
-
-[Learn more about squash and merge.](squash_and_merge.md)
-
-## Suggest changes
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/18008) in GitLab 11.6.
-
-As a reviewer, you can add suggestions to change the content in
-merge request threads, and users with appropriate [permission](../../permissions.md)
-can easily apply them to the codebase directly from the UI. Read
-through the documentation on [Suggest changes](../../discussions/index.md#suggest-changes)
-to learn more.
-
-## Multiple assignees **(STARTER)**
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/2004)
-in [GitLab Starter 11.11](https://about.gitlab.com/pricing/).
-
-Multiple people often review merge requests at the same time. GitLab allows you to have multiple assignees for merge requests to indicate everyone that is reviewing or accountable for it.
-
-![multiple assignees for merge requests sidebar](img/multiple_assignees_for_merge_requests_sidebar.png)
-
-To assign multiple assignees to a merge request:
-
-1. From a merge request, expand the right sidebar and locate the **Assignees** section.
-1. Click on **Edit** and from the dropdown menu, select as many users as you want
-   to assign the merge request to.
-
-Similarly, assignees are removed by deselecting them from the same dropdown menu.
-
-It's also possible to manage multiple assignees:
-
-- When creating a merge request.
-- Using [quick actions](../quick_actions.md#quick-actions-for-issues-merge-requests-and-epics).
-
-## Resolve conflicts
-
-When a merge request has conflicts, GitLab may provide the option to resolve
-those conflicts in the GitLab UI.
-
-[Learn more about resolving merge conflicts in the UI.](resolve_conflicts.md)
-
-## Create new merge requests by email
-
-_This feature needs [incoming email](../../../administration/incoming_email.md)
-to be configured by a GitLab administrator to be available for CE/EE users, and
-it's available on GitLab.com._
-
-You can create a new merge request by sending an email to a user-specific email
-address. The address can be obtained on the merge requests page by clicking on
-a **Email a new merge request to this project** button.  The subject will be
-used as the source branch name for the new merge request and the target branch
-will be the default branch for the project. The message body (if not empty)
-will be used as the merge request description. You need
-["Reply by email"](../../../administration/reply_by_email.md) enabled to use
-this feature. If it's not enabled to your instance, you may ask your GitLab
-administrator to do so.
-
-This is a private email address, generated just for you. **Keep it to yourself**
-as anyone who gets ahold of it can create issues or merge requests as if they were you.
-You can add this address to your contact list for easy access.
-
-![Create new merge requests by email](img/create_from_email.png)
-
-_In GitLab 11.7, we updated the format of the generated email address.
-However the older format is still supported, allowing existing aliases
-or contacts to continue working._
-
-### Adding patches when creating a merge request via e-mail
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/22723) in GitLab 11.5.
-
-You can add commits to the merge request being created by adding
-patches as attachments to the email. All attachments with a filename
-ending in `.patch` will be considered patches and they will be processed
-ordered by name.
-
-The combined size of the patches can be 2MB.
-
-If the source branch from the subject does not exist, it will be
-created from the repository's HEAD or the specified target branch to
-apply the patches. The target branch can be specified using the
-[`/target_branch` quick action](../quick_actions.md). If the source
-branch already exists, the patches will be applied on top of it.
-
-## Use Git push options with merge requests
-
-Use [Git push options](../push_options.md) to create or update merge requests when
-pushing changes to GitLab with Git, without needing to use the GitLab interface.
-
-## Find the merge request that introduced a change
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/2383) in GitLab 10.5.
-
-When viewing the commit details page, GitLab will link to the merge request (or
-merge requests, if it's in more than one) containing that commit.
-
-This only applies to commits that are in the most recent version of a merge
-request - if a commit was in a merge request, then rebased out of that merge
-request, they will not be linked.
-
-[Read more about merge request versions](versions.md)
-
-## Revert changes
-
-GitLab implements Git's powerful feature to revert any commit with introducing
-a **Revert** button in merge requests and commit details.
-
-[Learn more about reverting changes in the UI](revert_changes.md)
-
-## Merge requests versions
-
-Every time you push to a branch that is tied to a merge request, a new version
-of merge request diff is created. When you visit a merge request that contains
-more than one pushes, you can select and compare the versions of those merge
-request diffs.
-
-[Read more about merge request versions](versions.md)
-
-## Work In Progress merge requests
-
-To prevent merge requests from accidentally being accepted before they're
-completely ready, GitLab blocks the "Accept" button for merge requests that
-have been marked as a **Work In Progress**.
-
-[Learn more about setting a merge request as "Work In Progress".](work_in_progress_merge_requests.md)
-
-## Merge Requests for Confidential Issues
-
-Create [merge requests to resolve confidential issues](../issues/confidential_issues.md#merge-requests-for-confidential-issues)
-for preventing leakage or early release of sensitive data through regular merge requests.
-
-## Merge request approvals **(STARTER)**
-
-> Included in [GitLab Starter](https://about.gitlab.com/product/).
-
-If you want to make sure every merge request is approved by one or more people,
-you can enforce this workflow by using merge request approvals. Merge request
-approvals allow you to set the number of necessary approvals and predefine a
-list of approvers that will need to approve every merge request in a project.
-
-[Read more about merge request approvals.](merge_request_approvals.md)
-
-## Code Quality **(STARTER)**
-
-> Introduced in [GitLab Starter](https://about.gitlab.com/product/) 9.3.
-
-If you are using [GitLab CI][ci], you can analyze your source code quality using
-the [Code Climate][cc] analyzer [Docker image][cd]. Going a step further, GitLab
-can show the Code Climate report right in the merge request widget area.
-
-[Read more about Code Quality reports.](code_quality.md)
-
-## Metrics Reports **(PREMIUM)**
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/issues/9788) in [GitLab Premium](https://about.gitlab.com/product/) 11.10.
-Requires GitLab Runner 11.10 and above.
-
-If you are using [GitLab CI][ci], you can configure your job to output custom
-metrics and GitLab will display the Metrics Report on the merge request so
-that it's fast and easy to identify changes to important metrics.
-
-[Read more about Metrics Report](../../../ci/metrics_reports.md).
-
-## Browser Performance Testing **(PREMIUM)**
-
-> Introduced in [GitLab Premium](https://about.gitlab.com/product/) 10.3.
-
-If your application offers a web interface and you are using [GitLab CI/CD][ci], you can quickly determine the performance impact of pending code changes. GitLab uses [Sitespeed.io][sitespeed], a free and open source tool for measuring the performance of web sites, to analyze the performance of specific pages.
-
-GitLab runs the [Sitespeed.io container][sitespeed-container] and displays the difference in overall performance scores between the source and target branches.
-
-[Read more about Browser Performance Testing.](browser_performance_testing.md)
-
-## Merge Request Dependencies **(PREMIUM)**
-
-> Introduced in [GitLab Premium](https://about.gitlab.com/product/) 12.2.
-
-A single logical change may be split across several merge requests, across
-several projects. When this happens, the order in which MRs are merged is
-important.
-
-GitLab allows you to specify that a merge request depends on other MRs. With
-this relationship in place, the merge request cannot be merged until all of its
-dependencies have also been merged, helping to maintain the consistency of a
-single logical change.
-
-[Read more about merge request dependencies.](merge_request_dependencies.md)
-
-## Security reports **(ULTIMATE)**
-
-GitLab can scan and report any vulnerabilities found in your project.
-
-[Read more about security reports.](../../application_security/index.md)
-
-## JUnit test reports
-
-Configure your CI jobs to use JUnit test reports, and let GitLab display a report
-on the merge request so that it’s easier and faster to identify the failure
-without having to check the entire job log.
-
-[Read more about JUnit test reports](../../../ci/junit_test_reports.md).
-
-## Merge request diff file navigation
-
-When reviewing changes in the **Changes** tab the diff can be navigated using
-the file tree or file list. As you scroll through large diffs with many
-changes, you can quickly jump to any changed file using the file tree or file
-list.
-
-![Merge request diff file navigation](img/merge_request_diff_file_navigation.png)
-
-### Incrementally expand merge request diffs
-
-By default, the diff shows only the parts of a file which are changed.
-To view more unchanged lines above or below a change click on the
-**Expand up** or **Expand down** icons. You can also click on **Show all lines**
-to expand the entire file.
-
-![Incrementally expand merge request diffs](img/incrementally_expand_merge_request_diffs_v12_2.png)
-
-## Ignore whitespace changes in Merge Request diff view
-
-If you click the **Hide whitespace changes** button, you can see the diff
-without whitespace changes (if there are any). This is also working when on a
-specific commit page.
-
-![MR diff](img/merge_request_diff.png)
-
->**Tip:**
-You can append `?w=1` while on the diffs page of a merge request to ignore any
-whitespace changes.
-
-## Live preview with Review Apps
-
-If you configured [Review Apps](https://about.gitlab.com/product/review-apps/) for your project,
-you can preview the changes submitted to a feature-branch through a merge request
-in a per-branch basis. No need to checkout the branch, install and preview locally;
-all your changes will be available to preview by anyone with the Review Apps link.
-
-With GitLab's [Route Maps](../../../ci/review_apps/index.md#route-maps) set, the
-merge request widget takes you directly to the pages changed, making it easier and
-faster to preview proposed modifications.
-
-[Read more about Review Apps](../../../ci/review_apps/index.md).
-
-## Pipelines for merge requests
-
-When a developer updates a merge request, a pipeline should quickly report back
-its result to the developer, but often pipelines take long time to complete
-because general branch pipelines contain unnecessary jobs from the merge request standpoint.
-You can customize a specific pipeline structure for merge requests in order to
-speed the cycle up by running only important jobs.
-
-Learn more about [pipelines for merge requests](../../../ci/merge_request_pipelines/index.md).
-
-## Pipeline status in merge requests
-
-If you've set up [GitLab CI/CD](../../../ci/README.md) in your project,
-you will be able to see:
-
-- Both pre and post-merge pipelines and the environment information if any.
-- Which deployments are in progress.
-
-If there's an [environment](../../../ci/environments.md) and the application is
-successfully deployed to it, the deployed environment and the link to the
-Review App will be shown as well.
-
-### Post-merge pipeline status
-
-When a merge request is merged, you can see the post-merge pipeline status of
-the branch the merge request was merged into. For example, when a merge request
-is merged into the master branch and then triggers a deployment to the staging
-environment.
-
-Deployments that are ongoing will be shown, as well as the deploying/deployed state
-for environments. If it's the first time the branch is deployed, the link
-will return a `404` error until done. During the deployment, the stop button will
-be disabled. If the pipeline fails to deploy, the deployment info will be hidden.
-
-![Merge request pipeline](img/merge_request_pipeline.png)
-
-For more information, [read about pipelines](../../../ci/pipelines.md).
-
-## Bulk editing merge requests
-
-Find out about [bulk editing merge requests](../../project/bulk_editing.md).
-
-## Display arbitrary job artifacts
-
-To configure pipelines to job [artifacts](../pipelines/job_artifacts.md) that can be displayed in
-merge requests, see [`artifacts:expose_as`](../../../ci/yaml/README.md#artifactsexpose_as).
-
-## Troubleshooting
-
-Sometimes things don't go as expected in a merge request, here are some
-troubleshooting steps.
-
-### Merge request cannot retrieve the pipeline status
-
-This can occur if Sidekiq doesn't pick up the changes fast enough.
-
-#### Sidekiq
-
-Sidekiq didn't process the CI state change fast enough. Please wait a few
-seconds and the status will update automatically.
-
-#### Bug
-
-Merge Request pipeline statuses can't be retrieved when the following occurs:
-
-1. A Merge Request is created
-1. The Merge Request is closed
-1. Changes are made in the project
-1. The Merge Request is reopened
-
-To enable the pipeline status to be properly retrieved, close and reopen the
-Merge Request again.
-
-## Tips
-
-Here are some tips that will help you be more efficient with merge requests in
-the command line.
-
-> **Note:**
-This section might move in its own document in the future.
-
-### Checkout merge requests locally
-
-A merge request contains all the history from a repository, plus the additional
-commits added to the branch associated with the merge request. Here's a few
-tricks to checkout a merge request locally.
-
-Please note that you can checkout a merge request locally even if the source
-project is a fork (even a private fork) of the target project.
-
-#### Checkout locally by adding a Git alias
-
-Add the following alias to your `~/.gitconfig`:
-
-```
-[alias]
-    mr = !sh -c 'git fetch $1 merge-requests/$2/head:mr-$1-$2 && git checkout mr-$1-$2' -
-```
-
-Now you can check out a particular merge request from any repository and any
-remote. For example, to check out the merge request with ID 5 as shown in GitLab
-from the `origin` remote, do:
-
-```
-git mr origin 5
-```
-
-This will fetch the merge request into a local `mr-origin-5` branch and check
-it out.
-
-#### Checkout locally by modifying `.git/config` for a given repository
-
-Locate the section for your GitLab remote in the `.git/config` file. It looks
-like this:
-
-```
-[remote "origin"]
-  url = https://gitlab.com/gitlab-org/gitlab-foss.git
-  fetch = +refs/heads/*:refs/remotes/origin/*
-```
-
-You can open the file with:
-
-```
-git config -e
-```
-
-Now add the following line to the above section:
-
-```
-fetch = +refs/merge-requests/*/head:refs/remotes/origin/merge-requests/*
-```
-
-In the end, it should look like this:
-
-```
-[remote "origin"]
-  url = https://gitlab.com/gitlab-org/gitlab-foss.git
-  fetch = +refs/heads/*:refs/remotes/origin/*
-  fetch = +refs/merge-requests/*/head:refs/remotes/origin/merge-requests/*
-```
-
-Now you can fetch all the merge requests:
-
-```
-git fetch origin
-
-...
-From https://gitlab.com/gitlab-org/gitlab-foss.git
- * [new ref]         refs/merge-requests/1/head -> origin/merge-requests/1
- * [new ref]         refs/merge-requests/2/head -> origin/merge-requests/2
-...
-```
-
-And to check out a particular merge request:
-
-```
-git checkout origin/merge-requests/1
-```
-
-All the above can be done with the [`git-mr`](https://gitlab.com/glensc/git-mr) script.
-
-[protected branches]: ../protected_branches.md
-[ci]: ../../../ci/README.md
-[cc]: https://codeclimate.com/
-[cd]: https://hub.docker.com/r/codeclimate/codeclimate/
-[sitespeed]: https://www.sitespeed.io
-[sitespeed-container]: https://hub.docker.com/r/sitespeedio/sitespeed.io/
-[ee]: https://about.gitlab.com/pricing/ "GitLab Enterprise Edition"

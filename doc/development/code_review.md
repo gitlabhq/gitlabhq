@@ -170,8 +170,8 @@ Maintainers should check before merging if the merge request is approved by the
 required approvers.
 
 Maintainers must check before merging if the merge request is introducing new
-vulnerabilities, by inspecting the list in the Merge Request [Security
-Widget](../user/project/merge_requests/index.md#security-reports-ultimate).
+vulnerabilities, by inspecting the list in the Merge Request
+[Security Widget](../user/application_security/index.md).
 When in doubt, a [Security Engineer](https://about.gitlab.com/company/team/) can be involved. The list of detected
 vulnerabilities must be either empty or containing:
 

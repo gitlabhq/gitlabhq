@@ -7486,7 +7486,7 @@ msgstr "Go Micro是一个微服务开发的框架。"
 msgid "Go back"
 msgstr "返回"
 
-msgid "Go back (while searching for files"
+msgid "Go back (while searching for files)"
 msgstr ""
 
 msgid "Go back to %{startTag}Open issues%{endTag} and select some issues to add to your board."

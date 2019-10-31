@@ -7669,7 +7669,7 @@ msgstr "Go Micro — це фреймворк для розробки мікро�
 msgid "Go back"
 msgstr "Повернутися"
 
-msgid "Go back (while searching for files"
+msgid "Go back (while searching for files)"
 msgstr "Перейти назад (при пошуку файлів"
 
 msgid "Go back to %{startTag}Open issues%{endTag} and select some issues to add to your board."

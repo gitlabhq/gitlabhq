@@ -19,6 +19,12 @@ module QA
         self.class.configure!
       end
 
+      def self.blank_page?
+        ['', 'about:blank', 'data:,'].include?(Capybara.current_session.driver.browser.current_url)
+      rescue
+        true
+      end
+
       ##
       # Visit a page that belongs to a GitLab instance under given address.
       #

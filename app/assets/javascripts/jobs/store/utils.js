@@ -17,7 +17,7 @@ export const parseLine = (line = {}, lineNumber) => ({
  * @param Number lineNumber
  */
 export const parseHeaderLine = (line = {}, lineNumber) => ({
-  isClosed: true,
+  isClosed: false,
   isHeader: true,
   line: parseLine(line, lineNumber),
   lines: [],

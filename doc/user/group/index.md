@@ -75,7 +75,7 @@ By doing so:
 ## Issues and merge requests within a group
 
 Issues and merge requests are part of projects. For a given group, you can view all of the
-[issues](../project/issues/index.md#issues-list) and [merge requests](../project/merge_requests/index.md#merge-requests-per-group) across all projects in that group,
+[issues](../project/issues/index.md#issues-list) and [merge requests](../project/merge_requests/reviewing_and_managing_merge_requests.md#view-merge-requests-for-all-projects-in-a-group) across all projects in that group,
 together in a single list view.
 
 ### Bulk editing issues and merge requests

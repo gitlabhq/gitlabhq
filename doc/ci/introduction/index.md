@@ -207,7 +207,7 @@ With GitLab CI/CD you can also:
 - Deploy your app to different [environments](../environments.md).
 - Install your own [GitLab Runner](https://docs.gitlab.com/runner/).
 - [Schedule pipelines](../../user/project/pipelines/schedules.md).
-- Check for app vulnerabilities with [Security Test reports](../../user/project/merge_requests/index.md#security-reports-ultimate). **(ULTIMATE)**
+- Check for app vulnerabilities with [Security Test reports](../../user/application_security/index.md). **(ULTIMATE)**
 
 To see all CI/CD features, navigate back to the [CI/CD index](../README.md).
 
