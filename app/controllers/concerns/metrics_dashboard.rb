@@ -3,21 +3,24 @@
 # Provides an action which fetches a metrics dashboard according
 # to the parameters specified by the controller.
 module MetricsDashboard
+  include RenderServiceResults
   extend ActiveSupport::Concern
 
   def metrics_dashboard
     result = dashboard_finder.find(
       project_for_dashboard,
       current_user,
-      metrics_dashboard_params
+      metrics_dashboard_params.to_h.symbolize_keys
     )
 
-    if include_all_dashboards?
+    if include_all_dashboards? && result
       result[:all_dashboards] = dashboard_finder.find_all_paths(project_for_dashboard)
     end
 
     respond_to do |format|
-      if result[:status] == :success
+      if result.nil?
+        format.json { continue_polling_response }
+      elsif result[:status] == :success
         format.json { render dashboard_success_response(result) }
       else
         format.json { render dashboard_error_response(result) }
@@ -56,7 +59,7 @@ module MetricsDashboard
 
   def dashboard_error_response(result)
     {
-      status: result[:http_status],
+      status: result[:http_status] || :bad_request,
       json: result.slice(:all_dashboards, :message, :status)
     }
   end

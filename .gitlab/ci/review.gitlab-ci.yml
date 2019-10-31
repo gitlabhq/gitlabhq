@@ -94,10 +94,7 @@ schedule:review-build-cng:
   variables:
     HOST_SUFFIX: "${CI_ENVIRONMENT_SLUG}"
     DOMAIN: "-${CI_ENVIRONMENT_SLUG}.${REVIEW_APPS_DOMAIN}"
-    # v2.3.7 + some stability improvements not yet released:
-    # - sidekiq readinessProbe should be `pgrep -f sidekiq`: https://gitlab.com/gitlab-org/charts/gitlab/merge_requests/991
-    # - Allows livenessProbe and readinessProbe to be configured for unicorn: https://gitlab.com/gitlab-org/charts/gitlab/merge_requests/985
-    GITLAB_HELM_CHART_REF: "df7c52dc69df441909880b8f2fd15e938cdb2047"
+    GITLAB_HELM_CHART_REF: "v2.4.4"
     GITLAB_EDITION: "ce"
   environment:
     name: review/${CI_COMMIT_REF_NAME}

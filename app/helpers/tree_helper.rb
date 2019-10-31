@@ -197,9 +197,7 @@ module TreeHelper
   end
 
   def directory_download_links(project, ref, archive_prefix)
-    formats = ['zip', 'tar.gz', 'tar.bz2', 'tar']
-
-    formats.map do |fmt|
+    Gitlab::Workhorse::ARCHIVE_FORMATS.map do |fmt|
       {
         text: fmt,
         path: project_archive_path(project, id: tree_join(ref, archive_prefix), format: fmt)

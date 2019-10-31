@@ -28,6 +28,7 @@ describe 'User uses header search field', :js do
 
     context 'when using the keyboard shortcut' do
       before do
+        find('#search.js-autocomplete-disabled')
         find('body').native.send_keys('s')
       end
 

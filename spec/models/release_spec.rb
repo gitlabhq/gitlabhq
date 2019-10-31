@@ -57,14 +57,14 @@ RSpec.describe Release do
     subject { release.assets_count }
 
     it 'returns the number of sources' do
-      is_expected.to eq(Releases::Source::FORMATS.count)
+      is_expected.to eq(Gitlab::Workhorse::ARCHIVE_FORMATS.count)
     end
 
     context 'when a links exists' do
       let!(:link) { create(:release_link, release: release) }
 
       it 'counts the link as an asset' do
-        is_expected.to eq(1 + Releases::Source::FORMATS.count)
+        is_expected.to eq(1 + Gitlab::Workhorse::ARCHIVE_FORMATS.count)
       end
 
       it "excludes sources count when asked" do

@@ -30,6 +30,7 @@ module Banzai
           Filter::ImageLazyLoadFilter,
           Filter::ImageLinkFilter,
           Filter::InlineMetricsFilter,
+          Filter::InlineGrafanaMetricsFilter,
           Filter::TableOfContentsFilter,
           Filter::AutolinkFilter,
           Filter::ExternalLinkFilter,

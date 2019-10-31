@@ -31,16 +31,27 @@ describe MetricsDashboard do
     end
 
     context 'when params are provided' do
+      let(:params) { { environment: environment } }
+
       before do
         allow(controller).to receive(:project).and_return(project)
         allow(controller)
           .to receive(:metrics_dashboard_params)
-          .and_return(environment: environment)
+          .and_return(params)
       end
 
       it 'returns the specified dashboard' do
         expect(json_response['dashboard']['dashboard']).to eq('Environment metrics')
         expect(json_response).not_to have_key('all_dashboards')
+      end
+
+      context 'when the params are in an alternate format' do
+        let(:params) { ActionController::Parameters.new({ environment: environment }).permit! }
+
+        it 'returns the specified dashboard' do
+          expect(json_response['dashboard']['dashboard']).to eq('Environment metrics')
+          expect(json_response).not_to have_key('all_dashboards')
+        end
       end
 
       context 'when parameters are provided and the list of all dashboards is required' do

@@ -30,7 +30,7 @@ For other deployments, there is [some configuration](#manually-setting-up-nginx-
 
 ### About managed NGINX Ingress deployments
 
-NGINX Ingress is deployed into the `gitlab-managed-apps` namespace, using the [official Helm chart](https://github.com/helm/charts/tree/master/stable/nginx-ingress). NGINX Ingress will be [externally reachable via the Load Balancer's Endpoint](../../clusters/index.md#getting-the-external-endpoint).
+NGINX Ingress is deployed into the `gitlab-managed-apps` namespace, using the [official Helm chart](https://github.com/helm/charts/tree/master/stable/nginx-ingress). NGINX Ingress will be [externally reachable via the Load Balancer's Endpoint](../../../clusters/applications.md#ingress).
 
 NGINX is configured for Prometheus monitoring, by setting:
 

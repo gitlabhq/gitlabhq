@@ -21,8 +21,8 @@ open source Certificate Authority.
 
 To follow along with this tutorial, we assume you already have:
 
-- Created a [project](getting_started_part_two.md) in GitLab which
-  contains your website's source code.
+- [Created a project](index.md#getting-started) in GitLab
+  containing your website's source code.
 - Acquired a domain (`example.com`) and added a [DNS entry](custom_domains_ssl_tls_certification/index.md#set-up-pages-with-a-custom-domain)
   pointing it to your Pages website.
 - [Added your domain to your Pages project](custom_domains_ssl_tls_certification/index.md#steps)

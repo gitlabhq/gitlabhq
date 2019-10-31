@@ -42,6 +42,9 @@ it is not possible due to a naming collision. For example:
 | `gitlab-org/gitlab`    | `@gitlab-org/gitlab`    | Yes       |
 | `gitlab-org/gitlab`    | `@foo/bar`              | No        |
 
+CAUTION: **When updating the path of a user/group or transferring a (sub)group/project:**
+If you update the root namespace of a project with NPM packages, your changes will be rejected. To be allowed to do that, make sure to remove any NPM package first. Don't forget to update your `.npmrc` files to follow the above naming convention and run `npm publish` if necessary.
+
 Now, you can configure your project to authenticate with the GitLab NPM
 Registry.
 

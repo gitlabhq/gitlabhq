@@ -77,7 +77,7 @@ The minimum recommended cluster size to run Knative is 3-nodes, 6 vCPUs, and 22.
    ![install-knative](img/install-knative.png)
 
 1. After the Knative installation has finished, you can wait for the IP address or hostname to be displayed in the
-   **Knative Endpoint** field or [retrieve the Istio Ingress Endpoint manually](../#manually-determining-the-external-endpoint).
+   **Knative Endpoint** field or [retrieve the Istio Ingress Endpoint manually](../../../clusters/applications.md#determining-the-external-endpoint-manually).
 
    NOTE: **Note:**
    Running `kubectl` commands on your cluster requires setting up access to the cluster first.

@@ -107,10 +107,20 @@ To resolve this:
 project that is used to run your jobs and send the results back to
 GitLab. It is used in conjunction with [GitLab
 CI/CD](../../ci/README.md), the open-source continuous integration
-service included with GitLab that coordinates the jobs. When installing
-the GitLab Runner via the applications, it will run in **privileged
-mode** by default. Make sure you read the [security
-implications](../project/clusters/index.md#security-implications) before doing so.
+service included with GitLab that coordinates the jobs.
+
+If the project is on GitLab.com, shared Runners are available
+(the first 2000 minutes are free, you can
+[buy more later](../../subscriptions/index.md#extra-shared-runners-pipeline-minutes))
+and you do not have to deploy one if they are enough for your needs. If a
+project-specific Runner is desired, or there are no shared Runners, it is easy
+to deploy one.
+
+Note that the deployed Runner will be set as **privileged**, which means it will essentially
+have root access to the underlying machine. This is required to build Docker images,
+so it is the default. Make sure you read the
+[security implications](../project/clusters/index.md#security-implications)
+before deploying one.
 
 NOTE: **Note:**
 The [`runner/gitlab-runner`](https://gitlab.com/gitlab-org/charts/gitlab-runner)
@@ -129,10 +139,111 @@ web proxy for your applications and is useful if you want to use [Auto
 DevOps](../../topics/autodevops/index.md) or deploy your own web apps.
 
 NOTE: **Note:**
+With the following procedure, a load balancer must be installed in your cluster
+to obtain the endpoint. You can use either
+Ingress, or Knative's own load balancer ([Istio](https://istio.io)) if using Knative.
+
+In order to publish your web application, you first need to find the endpoint which will be either an IP
+address or a hostname associated with your load balancer.
+
+To install it, click on the **Install** button for Ingress. GitLab will attempt
+to determine the external endpoint and it should be available within a few minutes.
+
+#### Determining the external endpoint automatically
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/17052) in GitLab 10.6.
+
+After you install Ingress, the external endpoint should be available within a few minutes.
+
+TIP: **Tip:**
+This endpoint can be used for the
+[Auto DevOps base domain](../../topics/autodevops/index.md#auto-devops-base-domain)
+using the `KUBE_INGRESS_BASE_DOMAIN` environment variable.
+
+If the endpoint doesn't appear and your cluster runs on Google Kubernetes Engine:
+
+1. Check your [Kubernetes cluster on Google Kubernetes Engine](https://console.cloud.google.com/kubernetes) to ensure there are no errors on its nodes.
+1. Ensure you have enough [Quotas](https://console.cloud.google.com/iam-admin/quotas) on Google Kubernetes Engine. For more information, see [Resource Quotas](https://cloud.google.com/compute/quotas).
+1. Check [Google Cloud's Status](https://status.cloud.google.com/) to ensure they are not having any disruptions.
+
+Once installed, you may see a `?` for "Ingress IP Address" depending on the
+cloud provider. For EKS specifically, this is because the ELB is created
+with a DNS name, not an IP address. If GitLab is still unable to
+determine the endpoint of your Ingress or Knative application, you can
+[determine it manually](#determining-the-external-endpoint-manually).
+
+NOTE: **Note:**
 The [`stable/nginx-ingress`](https://github.com/helm/charts/tree/master/stable/nginx-ingress)
 chart is used to install this application with a
 [`values.yaml`](https://gitlab.com/gitlab-org/gitlab/blob/master/vendor/ingress/values.yaml)
 file.
+
+#### Determining the external endpoint manually
+
+If the cluster is on GKE, click the **Google Kubernetes Engine** link in the
+**Advanced settings**, or go directly to the
+[Google Kubernetes Engine dashboard](https://console.cloud.google.com/kubernetes/)
+and select the proper project and cluster. Then click **Connect** and execute
+the `gcloud` command in a local terminal or using the **Cloud Shell**.
+
+If the cluster is not on GKE, follow the specific instructions for your
+Kubernetes provider to configure `kubectl` with the right credentials.
+The output of the following examples will show the external endpoint of your
+cluster. This information can then be used to set up DNS entries and forwarding
+rules that allow external access to your deployed applications.
+
+If you installed Ingress via the **Applications**, run the following command:
+
+```bash
+kubectl get service --namespace=gitlab-managed-apps ingress-nginx-ingress-controller -o jsonpath='{.status.loadBalancer.ingress[0].ip}'
+```
+
+Some Kubernetes clusters return a hostname instead, like [Amazon EKS](https://aws.amazon.com/eks/). For these platforms, run:
+
+```bash
+kubectl get service --namespace=gitlab-managed-apps ingress-nginx-ingress-controller -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'
+```
+
+For Istio/Knative, the command will be different:
+
+```bash
+kubectl get svc --namespace=istio-system knative-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip} '
+```
+
+Otherwise, you can list the IP addresses of all load balancers:
+
+```bash
+kubectl get svc --all-namespaces -o jsonpath='{range.items[?(@.status.loadBalancer.ingress)]}{.status.loadBalancer.ingress[*].ip} '
+```
+
+NOTE: **Note:**
+If EKS is used, an [Elastic Load Balancer](https://docs.aws.amazon.com/elasticloadbalancing/)
+will also be created, which will incur additional AWS costs.
+
+NOTE: **Note:**
+You may see a trailing `%` on some Kubernetes versions, **do not include it**.
+
+The Ingress is now available at this address and will route incoming requests to
+the proper service based on the DNS name in the request. To support this, a
+wildcard DNS CNAME record should be created for the desired domain name. For example,
+`*.myekscluster.com` would point to the Ingress hostname obtained earlier.
+
+#### Using a static IP
+
+By default, an ephemeral external IP address is associated to the cluster's load
+balancer. If you associate the ephemeral IP with your DNS and the IP changes,
+your apps will not be able to be reached, and you'd have to change the DNS
+record again. In order to avoid that, you should change it into a static
+reserved IP.
+
+Read how to [promote an ephemeral external IP address in GKE](https://cloud.google.com/compute/docs/ip-addresses/reserve-static-external-ip-address#promote_ephemeral_ip).
+
+#### Pointing your DNS at the external endpoint
+
+Once you've set up the external endpoint, you should associate it with a [wildcard DNS
+record](https://en.wikipedia.org/wiki/Wildcard_DNS_record) such as `*.example.com.`
+in order to be able to reach your apps. If your external endpoint is an IP address,
+use an A record. If your external endpoint is a hostname, use a CNAME record.
 
 #### Web Application Firewall (ModSecurity)
 
@@ -258,6 +369,14 @@ chart is used to install this application.
 [Prometheus](https://prometheus.io/docs/introduction/overview/) is an
 open-source monitoring and alerting system useful to supervise your
 deployed applications.
+
+GitLab is able to monitor applications automatically, using the
+[Prometheus integration](../project/integrations/prometheus.md). Kubernetes container CPU and
+memory metrics are automatically collected, and response metrics are retrieved
+from NGINX Ingress as well.
+
+To enable monitoring, simply install Prometheus into the cluster with the
+**Install** button.
 
 NOTE: **Note:**
 The [`stable/prometheus`](https://github.com/helm/charts/tree/master/stable/prometheus)

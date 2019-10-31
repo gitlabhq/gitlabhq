@@ -14,17 +14,31 @@ module Gitlab
           def regex
             %r{
               (?<url>
-                #{Regexp.escape(Gitlab.config.gitlab.url)}
-                \/#{Project.reference_pattern}
+                #{gitlab_pattern}
+                #{project_pattern}
                 (?:\/\-)?
                 \/environments
                 \/(?<environment>\d+)
                 \/metrics
-                (?<query>
-                  \?[a-zA-Z0-9%.()+_=-]+
-                  (&[a-zA-Z0-9%.()+_=-]+)*
-                )?
-                (?<anchor>\#[a-z0-9_-]+)?
+                #{query_pattern}
+                #{anchor_pattern}
+              )
+            }x
+          end
+
+          # Matches dashboard urls for a Grafana embed.
+          #
+          # EX - https://<host>/<namespace>/<project>/grafana/metrics_dashboard
+          def grafana_regex
+            %r{
+              (?<url>
+                #{gitlab_pattern}
+                #{project_pattern}
+                (?:\/\-)?
+                \/grafana
+                \/metrics_dashboard
+                #{query_pattern}
+                #{anchor_pattern}
               )
             }x
           end
@@ -44,6 +58,24 @@ module Gitlab
           # Builds a metrics dashboard url based on the passed in arguments
           def build_dashboard_url(*args)
             Gitlab::Routing.url_helpers.metrics_dashboard_namespace_project_environment_url(*args)
+          end
+
+          private
+
+          def gitlab_pattern
+            Regexp.escape(Gitlab.config.gitlab.url)
+          end
+
+          def project_pattern
+            "\/#{Project.reference_pattern}"
+          end
+
+          def query_pattern
+            '(?<query>\?[a-zA-Z0-9%.()+_=-]+(&[a-zA-Z0-9%.()+_=-]+)*)?'
+          end
+
+          def anchor_pattern
+            '(?<anchor>\#[a-z0-9_-]+)?'
           end
         end
       end

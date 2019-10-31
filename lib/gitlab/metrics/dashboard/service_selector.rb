@@ -18,6 +18,7 @@ module Gitlab
           # @return [Gitlab::Metrics::Dashboard::Services::BaseService]
           def call(params)
             return SERVICES::CustomMetricEmbedService if custom_metric_embed?(params)
+            return SERVICES::GrafanaMetricEmbedService if grafana_metric_embed?(params)
             return SERVICES::DynamicEmbedService if dynamic_embed?(params)
             return SERVICES::DefaultEmbedService if params[:embedded]
             return SERVICES::SystemDashboardService if system_dashboard?(params[:dashboard_path])
@@ -38,6 +39,10 @@ module Gitlab
 
           def custom_metric_embed?(params)
             SERVICES::CustomMetricEmbedService.valid_params?(params)
+          end
+
+          def grafana_metric_embed?(params)
+            SERVICES::GrafanaMetricEmbedService.valid_params?(params)
           end
 
           def dynamic_embed?(params)

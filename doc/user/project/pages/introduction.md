@@ -69,40 +69,7 @@ don't have to create and edit HTML files manually. For example, Jekyll has the
 
 ## GitLab Pages Access Control **(CORE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/issues/33422) in GitLab 11.5.
-
-You can enable Pages access control on your project, so that only
-[members of your project](../../permissions.md#project-members-permissions)
-(at least Guest) can access your website:
-
-1. Navigate to your project's **Settings > General > Permissions**.
-1. Toggle the **Pages** button to enable the access control.
-
-   NOTE: **Note:**
-   If you don't see the toggle button, that means that it's not enabled.
-   Ask your administrator to [enable it](../../../administration/pages/index.md#access-control).
-
-1. The Pages access control dropdown allows you to set who can view pages hosted
-   with GitLab Pages, depending on your project's visibility:
-
-   - If your project is private:
-     - **Only project members**: Only project members will be able to browse the website.
-     - **Everyone**: Everyone, both logged into and logged out of GitLab, will be able to browse the website, no matter their project membership.
-   - If your project is internal:
-     - **Only project members**: Only project members will be able to browse the website.
-     - **Everyone with access**: Everyone logged into GitLab will be able to browse the website, no matter their project membership.
-     - **Everyone**: Everyone, both logged into and logged out of GitLab, will be able to browse the website, no matter their project membership.
-   - If your project is public:
-     - **Only project members**: Only project members will be able to browse the website.
-     - **Everyone with access**: Everyone, both logged into and logged out of GitLab, will be able to browse the website, no matter their project membership.
-
-1. Click **Save changes**.
-
----
-
-The next time someone tries to access your website and the access control is
-enabled, they will be presented with a page to sign into GitLab and verify they
-can access the website.
+To restrict access to your website, enable [GitLab Pages Access Control](pages_access_control.md).
 
 ## Unpublishing your Pages
 

@@ -6,11 +6,9 @@ module Releases
 
     attr_accessor :project, :tag_name, :format
 
-    FORMATS = %w(zip tar.gz tar.bz2 tar).freeze
-
     class << self
       def all(project, tag_name)
-        Releases::Source::FORMATS.map do |format|
+        Gitlab::Workhorse::ARCHIVE_FORMATS.map do |format|
           Releases::Source.new(project: project,
                                tag_name: tag_name,
                                format: format)

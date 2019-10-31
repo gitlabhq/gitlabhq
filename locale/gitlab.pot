@@ -8498,6 +8498,9 @@ msgstr ""
 msgid "GroupSettings|cannot be disabled when the parent group \"Share with group lock\" is enabled, except by the owner of the parent group"
 msgstr ""
 
+msgid "GroupSettings|cannot change when group contains projects with NPM packages"
+msgstr ""
+
 msgid "GroupSettings|remove the share with group lock from %{ancestor_group_name}"
 msgstr ""
 
@@ -17645,6 +17648,9 @@ msgstr ""
 msgid "TransferGroup|Database is not supported."
 msgstr ""
 
+msgid "TransferGroup|Group contains projects with NPM packages."
+msgstr ""
+
 msgid "TransferGroup|Group is already a root group."
 msgstr ""
 
@@ -17670,6 +17676,9 @@ msgid "TransferProject|Project cannot be transferred, because tags are present i
 msgstr ""
 
 msgid "TransferProject|Project with same name or path in target namespace already exists"
+msgstr ""
+
+msgid "TransferProject|Root namespace can't be updated if project has NPM packages"
 msgstr ""
 
 msgid "TransferProject|Transfer failed, please contact an admin."
@@ -19207,6 +19216,9 @@ msgid "You can specify notification level per group or per project."
 msgstr ""
 
 msgid "You can test your .gitlab-ci.yml in %{linkStart}CI Lint%{linkEnd}."
+msgstr ""
+
+msgid "You can try again using %{begin_link}basic search%{end_link}"
 msgstr ""
 
 msgid "You cannot access the raw file. Please wait a minute."

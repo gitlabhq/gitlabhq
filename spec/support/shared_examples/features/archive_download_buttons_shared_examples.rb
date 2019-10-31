@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 shared_examples 'archive download buttons' do
-  let(:formats) { %w(zip tar.gz tar.bz2 tar) }
   let(:path_to_visit) { project_path(project) }
   let(:ref) { project.default_branch }
 
@@ -13,7 +12,7 @@ shared_examples 'archive download buttons' do
 
     context 'private project' do
       it 'shows archive download buttons with external storage URL prepended and user token appended to their href' do
-        formats.each do |format|
+        Gitlab::Workhorse::ARCHIVE_FORMATS.each do |format|
           path = archive_path(project, ref, format)
           uri = URI('https://cdn.gitlab.com')
           uri.path = path
@@ -28,7 +27,7 @@ shared_examples 'archive download buttons' do
       let(:project) { create(:project, :repository, :public) }
 
       it 'shows archive download buttons with external storage URL prepended to their href' do
-        formats.each do |format|
+        Gitlab::Workhorse::ARCHIVE_FORMATS.each do |format|
           path = archive_path(project, ref, format)
           uri = URI('https://cdn.gitlab.com')
           uri.path = path
@@ -45,7 +44,7 @@ shared_examples 'archive download buttons' do
     end
 
     it 'shows default archive download buttons' do
-      formats.each do |format|
+      Gitlab::Workhorse::ARCHIVE_FORMATS.each do |format|
         path = archive_path(project, ref, format)
 
         expect(page).to have_link format, href: path

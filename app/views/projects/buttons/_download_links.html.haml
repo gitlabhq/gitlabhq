@@ -1,6 +1,4 @@
-- formats = [['zip', 'btn-primary'], ['tar.gz'], ['tar.bz2'], ['tar']]
-
 .btn-group.ml-0.w-100
-  - formats.each do |(fmt, extra_class)|
+  - Gitlab::Workhorse::ARCHIVE_FORMATS.each_with_index do |fmt, index|
     - archive_path = project_archive_path(project, id: tree_join(ref, archive_prefix), path: path, format: fmt)
-    = link_to fmt, external_storage_url_or_path(archive_path), rel: 'nofollow', download: '', class: "btn btn-xs #{extra_class}"
+    = link_to fmt, external_storage_url_or_path(archive_path), rel: 'nofollow', download: '', class: "btn btn-xs #{"btn-primary" if index == 0}"

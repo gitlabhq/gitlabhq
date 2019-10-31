@@ -12,6 +12,7 @@ module Gitlab
           # @param project [Project]
           # @param user [User]
           # @param environment [Environment]
+          # @param options [Hash<Symbol,Any>]
           # @param options - embedded [Boolean] Determines whether the
           #         dashboard is to be rendered as part of an
           #         issue or location other than the primary
@@ -31,6 +32,8 @@ module Gitlab
           # @param options - cluster [Cluster]
           # @param options - cluster_type [Symbol] The level of
           #         cluster, one of [:admin, :project, :group]
+          # @param options - grafana_url [String] URL pointing
+          #         to a grafana dashboard panel
           # @return [Hash]
           def find(project, user, options = {})
             service_for(options)

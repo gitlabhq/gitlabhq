@@ -13,7 +13,7 @@ module Groups
 
     TransferError = Class.new(StandardError)
 
-    attr_reader :error
+    attr_reader :error, :new_parent_group
 
     def initialize(group, user, params = {})
       super
@@ -115,3 +115,5 @@ module Groups
     end
   end
 end
+
+Groups::TransferService.prepend_if_ee('EE::Groups::TransferService')
