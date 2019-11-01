@@ -383,11 +383,15 @@ module Gitlab
     end
 
     def self.long_timeout
-      if Sidekiq.server?
-        6.hours
-      else
+      if web_app_server?
         default_timeout
+      else
+        6.hours
       end
+    end
+
+    def self.web_app_server?
+      defined?(::Unicorn) || defined?(::Puma)
     end
 
     def self.storage_metadata_file_path(storage)
