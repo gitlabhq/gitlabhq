@@ -96,7 +96,7 @@ To enable the redirection, add the following line in `/etc/gitlab/gitlab.rb`:
 nginx['custom_gitlab_server_config'] = "location /-/plantuml/ { \n    proxy_cache off; \n    proxy_pass  http://plantuml:8080/; \n}\n"
 
 # Built from source
-nginx['custom_gitlab_server_config'] = "location /-/plantuml/ { \n    proxy_cache off; \n    proxy_pass  http://127.0.0.1:8080/plantuml/; \n}\n"
+nginx['custom_gitlab_server_config'] = "location /-/plantuml { \n rewrite ^/-/(plantuml.*) /$1 break;\n proxy_cache off; \n proxy_pass http://localhost:8080/plantuml; \n}\n"
 ```
 
 To activate the changes, run the following command:

@@ -4,11 +4,11 @@ module Gitlab
   module Config
     module Entry
       class Simplifiable < SimpleDelegator
-        EntryStrategy = Struct.new(:name, :klass, :condition)
+        EntryStrategy = Struct.new(:name, :condition)
 
         attr_reader :subject
 
-        def initialize(config, **metadata, &blk)
+        def initialize(config, **metadata)
           unless self.class.const_defined?(:UnknownStrategy)
             raise ArgumentError, 'UndefinedStrategy not available!'
           end
@@ -19,13 +19,14 @@ module Gitlab
 
           entry = self.class.entry_class(strategy)
 
-          @subject = entry.new(config, metadata, &blk)
+          @subject = entry.new(config, metadata)
 
+          yield(@subject) if block_given?
           super(@subject)
         end
 
         def self.strategy(name, **opts)
-          EntryStrategy.new(name, opts.dig(:class), opts.fetch(:if)).tap do |strategy|
+          EntryStrategy.new(name, opts.fetch(:if)).tap do |strategy|
             strategies.append(strategy)
           end
         end
@@ -36,7 +37,7 @@ module Gitlab
 
         def self.entry_class(strategy)
           if strategy.present?
-            strategy.klass || self.const_get(strategy.name, false)
+            self.const_get(strategy.name, false)
           else
             self::UnknownStrategy
           end

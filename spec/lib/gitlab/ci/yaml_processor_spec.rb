@@ -1293,7 +1293,7 @@ module Gitlab
         end
       end
 
-      describe "Job Needs" do
+      describe "Needs" do
         let(:needs) { }
         let(:dependencies) { }
 
@@ -1333,7 +1333,12 @@ module Gitlab
               stage: "test",
               stage_idx: 2,
               name: "test1",
-              options: { script: ["test"] },
+              options: {
+                script: ["test"],
+                # This does not make sense, there is a follow-up:
+                # https://gitlab.com/gitlab-org/gitlab-foss/issues/65569
+                bridge_needs: %w[build1 build2]
+              },
               needs_attributes: [
                 { name: "build1" },
                 { name: "build2" }
@@ -1343,6 +1348,12 @@ module Gitlab
               yaml_variables: []
             )
           end
+        end
+
+        context 'needs two builds defined as symbols' do
+          let(:needs) { [:build1, :build2] }
+
+          it { expect { subject }.not_to raise_error }
         end
 
         context 'undefined need' do

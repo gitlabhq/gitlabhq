@@ -50,6 +50,7 @@ module Gitlab
               validates :timeout, duration: { limit: ChronicDuration.output(Project::MAX_BUILD_TIMEOUT) }
 
               validates :dependencies, array_of_strings: true
+              validates :needs, array_of_strings: true
               validates :extends, array_of_strings_or_string: true
               validates :rules, array_of_hashes: true
             end
@@ -111,11 +112,6 @@ module Gitlab
 
           entry :rules, Entry::Rules,
             description: 'List of evaluable Rules to determine job inclusion.',
-            inherit: false
-
-          entry :needs, Entry::Needs,
-            description: 'Needs configuration for this job.',
-            metadata: { allowed_needs: %i[job] },
             inherit: false
 
           entry :variables, Entry::Variables,
