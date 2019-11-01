@@ -54,6 +54,23 @@ describe AuthHelper do
     end
   end
 
+  describe 'any_form_based_providers_enabled?' do
+    before do
+      allow(Gitlab::Auth::LDAP::Config).to receive(:enabled?).and_return(true)
+    end
+
+    it 'detects form-based providers' do
+      allow(helper).to receive(:auth_providers) { [:twitter, :ldapmain] }
+      expect(helper.any_form_based_providers_enabled?).to be(true)
+    end
+
+    it 'ignores ldap providers when ldap web sign in is disabled' do
+      allow(helper).to receive(:auth_providers) { [:twitter, :ldapmain] }
+      allow(helper).to receive(:ldap_sign_in_enabled?).and_return(false)
+      expect(helper.any_form_based_providers_enabled?).to be(false)
+    end
+  end
+
   describe 'enabled_button_based_providers' do
     before do
       allow(helper).to receive(:auth_providers) { [:twitter, :github] }

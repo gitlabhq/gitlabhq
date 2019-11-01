@@ -101,15 +101,16 @@ it's successful, we replace the main repo with the newly cloned one.
 ### Uploads replication
 
 File uploads are also being replicated to the **secondary** node. To
-track the state of syncing, the `Geo::FileRegistry` model is used.
+track the state of syncing, the `Geo::UploadRegistry` model is used.
 
-#### File Registry
+#### Upload Registry
 
 Similar to the [Project Registry](#project-registry), there is a
-`Geo::FileRegistry` model that tracks the synced uploads.
+`Geo::UploadRegistry` model that tracks the synced uploads.
 
-CI Job Artifacts are synced in a similar way as uploads or LFS
-objects, but they are tracked by `Geo::JobArtifactRegistry` model.
+CI Job Artifacts and LFS objects are synced in a similar way as uploads,
+but they are tracked by `Geo::JobArtifactRegistry`, and `Geo::LfsObjectRegistry`
+models respectively.
 
 #### File Download Dispatch worker
 

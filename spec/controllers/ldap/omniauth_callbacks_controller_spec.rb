@@ -11,6 +11,14 @@ describe Ldap::OmniauthCallbacksController do
     expect(request.env['warden']).to be_authenticated
   end
 
+  context 'with sign in prevented' do
+    let(:ldap_settings) { ldap_setting_defaults.merge(prevent_ldap_sign_in: true) }
+
+    it 'does not allow sign in' do
+      expect { post provider }.to raise_error(ActionController::UrlGenerationError)
+    end
+  end
+
   it 'respects remember me checkbox' do
     expect do
       post provider, params: { remember_me: '1' }

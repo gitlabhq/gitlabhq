@@ -270,7 +270,13 @@ class SessionsController < Devise::SessionsController
   end
 
   def ldap_servers
-    @ldap_servers ||= Gitlab::Auth::LDAP::Config.available_servers
+    @ldap_servers ||= begin
+      if Gitlab::Auth::LDAP::Config.sign_in_enabled?
+        Gitlab::Auth::LDAP::Config.available_servers
+      else
+        []
+      end
+    end
   end
 
   def unverified_anonymous_user?

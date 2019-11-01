@@ -4,6 +4,7 @@ require 'spec_helper'
 
 describe SessionsController do
   include DeviseHelpers
+  include LdapHelpers
 
   describe '#new' do
     before do
@@ -31,6 +32,30 @@ describe SessionsController do
           get(:new, params: { auto_sign_in: 'false' })
 
           expect(response).to have_gitlab_http_status(200)
+        end
+      end
+    end
+
+    context 'with LDAP enabled' do
+      before do
+        stub_ldap_setting(enabled: true)
+      end
+
+      it 'assigns ldap_servers' do
+        get(:new)
+
+        expect(assigns[:ldap_servers].first.to_h).to include('label' => 'ldap', 'provider_name' => 'ldapmain')
+      end
+
+      context 'with sign_in disabled' do
+        before do
+          stub_ldap_setting(prevent_ldap_sign_in: true)
+        end
+
+        it 'assigns no ldap_servers' do
+          get(:new)
+
+          expect(assigns[:ldap_servers]).to eq []
         end
       end
     end

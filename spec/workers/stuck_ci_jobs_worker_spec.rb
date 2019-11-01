@@ -18,14 +18,29 @@ describe StuckCiJobsWorker do
   end
 
   shared_examples 'job is dropped' do
-    before do
+    it "changes status" do
       worker.perform
       job.reload
-    end
 
-    it "changes status" do
       expect(job).to be_failed
       expect(job).to be_stuck_or_timeout_failure
+    end
+
+    context 'when job have data integrity problem' do
+      it "does drop the job and logs the reason" do
+        job.update_columns(yaml_variables: '[{"key" => "value"}]')
+
+        expect(Gitlab::Sentry).to receive(:track_acceptable_exception)
+                                          .with(anything, a_hash_including(extra: a_hash_including(build_id: job.id)))
+                                          .once
+                                          .and_call_original
+
+        worker.perform
+        job.reload
+
+        expect(job).to be_failed
+        expect(job).to be_data_integrity_failure
+      end
     end
   end
 

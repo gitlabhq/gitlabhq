@@ -13,6 +13,7 @@ import Icon from '~/vue_shared/components/icon.vue';
 import MonitorTimeSeriesChart from './charts/time_series.vue';
 import MonitorAnomalyChart from './charts/anomaly.vue';
 import MonitorSingleStatChart from './charts/single_stat.vue';
+import MonitorHeatmapChart from './charts/heatmap.vue';
 import MonitorEmptyChart from './charts/empty_chart.vue';
 import TrackEventDirective from '~/vue_shared/directives/track_event';
 import { downloadCSVOptions, generateLinkToChartOptions } from '../utils';
@@ -20,6 +21,7 @@ import { downloadCSVOptions, generateLinkToChartOptions } from '../utils';
 export default {
   components: {
     MonitorSingleStatChart,
+    MonitorHeatmapChart,
     MonitorEmptyChart,
     Icon,
     GlDropdown,
@@ -98,6 +100,11 @@ export default {
   <monitor-single-stat-chart
     v-if="isPanelType('single-stat') && graphDataHasMetrics"
     :graph-data="graphData"
+  />
+  <monitor-heatmap-chart
+    v-else-if="isPanelType('heatmap') && graphDataHasMetrics"
+    :graph-data="graphData"
+    :container-width="dashboardWidth"
   />
   <component
     :is="monitorChartComponent"

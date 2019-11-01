@@ -8,6 +8,10 @@ module AuthHelper
     Gitlab::Auth::LDAP::Config.enabled?
   end
 
+  def ldap_sign_in_enabled?
+    Gitlab::Auth::LDAP::Config.sign_in_enabled?
+  end
+
   def omniauth_enabled?
     Gitlab::Auth.omniauth_enabled?
   end
@@ -54,6 +58,16 @@ module AuthHelper
 
   def form_based_providers
     auth_providers.select { |provider| form_based_provider?(provider) }
+  end
+
+  def any_form_based_providers_enabled?
+    form_based_providers.any? { |provider| form_enabled_for_sign_in?(provider) }
+  end
+
+  def form_enabled_for_sign_in?(provider)
+    return true unless provider.to_s.match?(LDAP_PROVIDER)
+
+    ldap_sign_in_enabled?
   end
 
   def crowd_enabled?

@@ -1,4 +1,4 @@
-%ul.nav-links.new-session-tabs.nav-tabs.nav{ class: ('custom-provider-tabs' if form_based_providers.any?) }
+%ul.nav-links.new-session-tabs.nav-tabs.nav{ class: ('custom-provider-tabs' if any_form_based_providers_enabled?) }
   - if crowd_enabled?
     %li.nav-item
       = link_to "Crowd", "#crowd", class: "nav-link #{active_when(form_based_auth_provider_has_active_class?(:crowd))}", 'data-toggle' => 'tab'

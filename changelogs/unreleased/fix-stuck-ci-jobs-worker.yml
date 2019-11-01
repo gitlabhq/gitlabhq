@@ -1,0 +1,5 @@
+---
+title: Properly handle exceptions in StuckCiJobsWorker
+merge_request: 19465
+author:
+type: fixed

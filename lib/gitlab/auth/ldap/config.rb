@@ -21,6 +21,14 @@ module Gitlab
           Gitlab.config.ldap.enabled
         end
 
+        def self.sign_in_enabled?
+          enabled? && !prevent_ldap_sign_in?
+        end
+
+        def self.prevent_ldap_sign_in?
+          Gitlab.config.ldap.prevent_ldap_sign_in
+        end
+
         def self.servers
           Gitlab.config.ldap['servers']&.values || []
         end
