@@ -15,7 +15,7 @@ class RemoveRendundantIndexFromReleases < ActiveRecord::Migration[5.2]
     remove_concurrent_index_by_name :releases, 'index_releases_on_project_id'
 
     # This is an extra index that is not present in db/schema.rb but known to exist on some installs
-    remove_concurrent_index_by_name :releases, 'releases_project_id_idx'
+    remove_concurrent_index_by_name :releases, 'releases_project_id_idx' if index_exists_by_name?(:releases, 'releases_project_id_idx')
   end
 
   def down

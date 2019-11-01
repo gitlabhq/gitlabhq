@@ -44,6 +44,14 @@ describe Gitlab::CycleAnalytics::GroupStageSummary do
           expect(subject.first[:value]).to eq(2)
         end
       end
+
+      context 'when `from` and `to` parameters are provided' do
+        subject { described_class.new(group, options: { from: 10.days.ago, to: Time.now, current_user: user }).data }
+
+        it 'finds issues from 5 days ago' do
+          expect(subject.first[:value]).to eq(2)
+        end
+      end
     end
 
     context 'with other projects' do
@@ -94,6 +102,14 @@ describe Gitlab::CycleAnalytics::GroupStageSummary do
         subject { described_class.new(group, options: { from: Time.now, current_user: user, projects: [project.id, project_2.id] }).data }
 
         it 'shows deploys from those projects' do
+          expect(subject.second[:value]).to eq(2)
+        end
+      end
+
+      context 'when `from` and `to` parameters are provided' do
+        subject { described_class.new(group, options: { from: 10.days.ago, to: Time.now, current_user: user }).data }
+
+        it 'finds deployments from 5 days ago' do
           expect(subject.second[:value]).to eq(2)
         end
       end
