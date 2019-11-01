@@ -8,8 +8,7 @@ describe ReleasesFinder do
   let(:repository) { project.repository }
   let(:v1_0_0)     { create(:release, project: project, tag: 'v1.0.0') }
   let(:v1_1_0)     { create(:release, project: project, tag: 'v1.1.0') }
-
-  subject { described_class.new(project, user)}
+  let(:finder) { described_class.new(project, user) }
 
   before do
     v1_0_0.update_attribute(:released_at, 2.days.ago)
@@ -17,11 +16,13 @@ describe ReleasesFinder do
   end
 
   describe '#execute' do
+    subject { finder.execute(**args) }
+
+    let(:args) { {} }
+
     context 'when the user is not part of the project' do
       it 'returns no releases' do
-        releases = subject.execute
-
-        expect(releases).to be_empty
+        is_expected.to be_empty
       end
     end
 
@@ -31,11 +32,25 @@ describe ReleasesFinder do
       end
 
       it 'sorts by release date' do
-        releases = subject.execute
+        is_expected.to be_present
+        expect(subject.size).to eq(2)
+        expect(subject).to eq([v1_1_0, v1_0_0])
+      end
 
-        expect(releases).to be_present
-        expect(releases.size).to eq(2)
-        expect(releases).to eq([v1_1_0, v1_0_0])
+      it 'preloads associations' do
+        expect(Release).to receive(:preloaded).once.and_call_original
+
+        subject
+      end
+
+      context 'when preload is false' do
+        let(:args) { { preload: false } }
+
+        it 'does not preload associations' do
+          expect(Release).not_to receive(:preloaded)
+
+          subject
+        end
       end
     end
   end

@@ -27,12 +27,16 @@ class Release < ApplicationRecord
   validates_associated :milestone_releases, message: -> (_, obj) { obj[:value].map(&:errors).map(&:full_messages).join(",") }
 
   scope :sorted, -> { order(released_at: :desc) }
-  scope :with_project_and_namespace, -> { includes(project: :namespace) }
+  scope :preloaded, -> { includes(project: :namespace) }
 
   delegate :repository, to: :project
 
   after_commit :create_evidence!, on: :create
   after_commit :notify_new_release, on: :create
+
+  def to_param
+    CGI.escape(tag)
+  end
 
   def commit
     strong_memoize(:commit) do

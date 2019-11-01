@@ -551,7 +551,7 @@ it 'returns a successful response' do
 end
 ```
 
-## Documentation
+## Documentation and Schema
 
-For information on generating GraphQL documentation, see
-[Rake tasks related to GraphQL](rake_tasks.md#update-graphql-documentation).
+For information on generating GraphQL documentation and schema files, see
+[Rake tasks related to GraphQL](rake_tasks.md#update-graphql-documentation-and-schema-definitions).

@@ -221,7 +221,7 @@ bundle exec rake db:obsolete_ignored_columns
 
 Feel free to remove their definitions from their `ignored_columns` definitions.
 
-## Update GraphQL Documentation
+## Update GraphQL Documentation and Schema definitions
 
 To generate GraphQL documentation based on the GitLab schema, run:
 
@@ -243,3 +243,13 @@ The actual renderer is at `Gitlab::Graphql::Docs::Renderer`.
 `@parsed_schema` is an instance variable that the `graphql-docs` gem expects to have available.
 `Gitlab::Graphql::Docs::Helper` defines the `object` method we currently use. This is also where you
 should implement any new methods for new types you'd like to display.
+
+### Update machine-readable schema files
+
+To generate GraphQL schema files based on the GitLab schema, run:
+
+```shell
+bundle exec rake gitlab:graphql:schema:dump
+```
+
+This uses graphql-ruby's built-in rake tasks to generate files in both [IDL](https://www.prisma.io/blog/graphql-sdl-schema-definition-language-6755bcb9ce51) and JSON formats.

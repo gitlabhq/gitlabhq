@@ -67,7 +67,7 @@ docs lint:
     # Check the internal anchor links
     - bundle exec nanoc check internal_anchors
 
-graphql-docs-verify:
+graphql-reference-verify:
   extends:
     - .only-ee
     - .default-tags
@@ -82,3 +82,4 @@ graphql-docs-verify:
   needs: ["setup-test-env"]
   script:
     - bundle exec rake gitlab:graphql:check_docs
+    - bundle exec rake gitlab:graphql:check_schema

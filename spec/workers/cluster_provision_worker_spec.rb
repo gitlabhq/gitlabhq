@@ -9,7 +9,18 @@ describe ClusterProvisionWorker do
       let(:provider) { create(:cluster_provider_gcp, :scheduled) }
 
       it 'provision a cluster' do
-        expect_any_instance_of(Clusters::Gcp::ProvisionService).to receive(:execute)
+        expect_any_instance_of(Clusters::Gcp::ProvisionService).to receive(:execute).with(provider)
+
+        described_class.new.perform(cluster.id)
+      end
+    end
+
+    context 'when provider type is aws' do
+      let(:cluster) { create(:cluster, provider_type: :aws, provider_aws: provider) }
+      let(:provider) { create(:cluster_provider_aws, :scheduled) }
+
+      it 'provision a cluster' do
+        expect_any_instance_of(Clusters::Aws::ProvisionService).to receive(:execute).with(provider)
 
         described_class.new.perform(cluster.id)
       end

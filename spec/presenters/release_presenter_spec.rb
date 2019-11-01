@@ -82,4 +82,20 @@ describe ReleasePresenter do
       it { is_expected.to be_nil }
     end
   end
+
+  describe '#edit_url' do
+    subject { presenter.edit_url }
+
+    it 'returns release edit url' do
+      is_expected.to match /#{edit_project_release_url(project, release)}/
+    end
+
+    context 'when release_edit_page feature flag is disabled' do
+      before do
+        stub_feature_flags(release_edit_page: false)
+      end
+
+      it { is_expected.to be_nil }
+    end
+  end
 end

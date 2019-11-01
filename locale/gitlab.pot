@@ -3585,7 +3585,13 @@ msgstr ""
 msgid "ClusterIntegration|Every new Google Cloud Platform (GCP) account receives $300 in credit upon %{sign_up_link}. In partnership with Google, GitLab is able to offer an additional $200 for both new and existing GCP accounts to get started with GitLab's Google Kubernetes Engine Integration."
 msgstr ""
 
+msgid "ClusterIntegration|Failed to configure EKS provider: %{message}"
+msgstr ""
+
 msgid "ClusterIntegration|Failed to configure Google Kubernetes Engine Cluster: %{message}"
+msgstr ""
+
+msgid "ClusterIntegration|Failed to fetch CloudFormation stack: %{message}"
 msgstr ""
 
 msgid "ClusterIntegration|Failed to request to Google Cloud Platform: %{message}"

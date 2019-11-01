@@ -1324,6 +1324,7 @@ module API
       expose :_links do
         expose :merge_requests_url, expose_nil: false
         expose :issues_url, expose_nil: false
+        expose :edit_url, expose_nil: false
       end
 
       private

@@ -31,6 +31,12 @@ class ReleasePresenter < Gitlab::View::Presenter::Delegated
     project_issues_url(project, params_for_issues_and_mrs)
   end
 
+  def edit_url
+    return unless release_edit_page_available?
+
+    edit_project_release_url(project, release)
+  end
+
   private
 
   def can_download_code?
@@ -43,5 +49,9 @@ class ReleasePresenter < Gitlab::View::Presenter::Delegated
 
   def release_mr_issue_urls_available?
     ::Feature.enabled?(:release_mr_issue_urls, project)
+  end
+
+  def release_edit_page_available?
+    ::Feature.enabled?(:release_edit_page, project)
   end
 end

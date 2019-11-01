@@ -53,6 +53,11 @@ GitLab's GraphQL reference [is available](reference/index.md).
 
 It is automatically generated from GitLab's GraphQL schema and embedded in a Markdown file.
 
+Machine-readable versions are also available:
+
+- [JSON format](reference/gitlab_schema.json)
+- [IDL format](reference/gitlab_schema.graphql)
+
 ## GraphiQL
 
 The API can be explored by using the GraphiQL IDE, it is available on your

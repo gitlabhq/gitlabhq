@@ -3,6 +3,7 @@
 module Clusters
   module Providers
     class Aws < ApplicationRecord
+      include Gitlab::Utils::StrongMemoize
       include Clusters::Concerns::ProviderStatus
 
       self.table_name = 'cluster_providers_aws'
@@ -41,6 +42,18 @@ module Clusters
           secret_access_key: nil,
           session_token: nil
         )
+      end
+
+      def api_client
+        strong_memoize(:api_client) do
+          ::Aws::CloudFormation::Client.new(credentials: credentials, region: region)
+        end
+      end
+
+      def credentials
+        strong_memoize(:credentials) do
+          ::Aws::Credentials.new(access_key_id, secret_access_key, session_token)
+        end
       end
     end
   end
