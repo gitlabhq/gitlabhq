@@ -208,7 +208,7 @@ code reviewer have ensured:
 Documentation [is required](../contributing/merge_request_workflow.html#definition-of-done) for a
 milestone when:
 
-- A new or enhanced feature is shipped that impacts the user of administrator experience.
+- A new or enhanced feature is shipped that impacts the user or administrator experience.
 - There are changes to the UI or API.
 - A process, workflow, or previously documented feature is changed.
 - A feature is deprecated or removed.

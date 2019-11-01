@@ -4,77 +4,133 @@ disqus_identifier: 'https://docs.gitlab.com/ee/workflow/notifications.html'
 
 # GitLab Notification Emails
 
-GitLab has a notification system in place to notify a user of events that are important for the workflow.
+GitLab Notifications allow you to stay informed about what's happening in GitLab. With notifications enabled, you can receive updates about activity in issues, merge requests, and epics. Notifications are sent via email.
 
-## Notification settings
+## Receiving notifications
 
-You can find notification settings under the user profile.
+You will receive notifications for one of the following reasons:
+
+- You participate in an issue, merge request, or epic. In this context, _participate_ means comment, or edit.
+- You enable notifications in an issue, merge request, or epic. To enable notifications, click the **Notifications** toggle in the sidebar to _on_.
+
+While notifications are enabled, you will receive notification of actions occurring in that issue, merge request, or epic.
+
+NOTE: **Note:**
+Notifications can be blocked by an admin, preventing them from being sent.
+
+## Tuning your notifications
+
+The quantity of notifications can be overwhelming. GitLab allows you to tune the notifications you receive. For example, you may want to be notified about all activity in a specific project, but for others, only be notified when you are mentioned by name.
+
+You can tune the notifications you receive by combining your notification settings:
+
+- [Global notification settings](#global-notification-settings)
+- [Notification scope](#notification-scope)
+- [Notification levels](#notification-levels)
+
+### Editing notification settings
+
+To edit your notification settings:
+
+1. Click on your profile picture and select **Settings**.
+1. Click **Notifications** in the left sidebar.
+1. Edit the desired notification settings. Edited settings are automatically saved and enabled.
+
+These notification settings apply only to you. They do not affect the notifications received by anyone else in the same project or group.
 
 ![notification settings](img/notification_global_settings.png)
 
-Notification settings are divided into three groups:
+## Global notification settings
 
-- Global settings
-- Group settings
-- Project settings
+Your **Global notification settings** are the default settings unless you select different values for a project or a group.
 
-Each of these settings have levels of notification:
+- Notification email
+  - This is the email address your notifications will be sent to.
+- Global notification level
+  - This is the default [notification level](#notification-levels) which applies to all your notifications.
+- Receive notifications about your own activity.
+  - Check this checkbox if you want to receive notification about your own activity. Default: Not checked.
 
-- Global: For groups and projects, notifications as per global settings.
-- Watch: Receive notifications for any activity.
-- Participate: Receive notifications for threads you have participated in.
-- On Mention: Receive notifications when `@mentioned` in comments.
-- Disabled: Turns off notifications.
-- Custom: Receive notifications for custom selected events.
+### Notification scope
 
-> Introduced in GitLab 12.0
+You can tune the scope of your notifications by selecting different notification levels for each project and group.
 
-You can also select an email address to receive notifications for each group you belong to.
+Notification scope is applied in order of precedence (highest to lowest):
 
-### Global Settings
+- Project
+  - For each project, you can select a notification level. Your project setting overrides the group setting.
+- Group
+  - For each group, you can select a notification level. Your group setting overrides your default setting.
+- Global (default)
+  - Your global, or _default_, notification level applies if you have not selected a notification level for the project or group in which the activity occurred.
 
-Global settings are at the bottom of the hierarchy.
-Any setting set here will be overridden by a setting at the group or a project level.
+#### Project notifications
 
-Group or Project settings can use `global` notification setting which will then use
-anything that is set at Global Settings.
-
-### Group Settings
-
-![notification settings](img/notification_group_settings.png)
-
-Group settings are taking precedence over Global Settings but are on a level below Project or Subgroup settings:
-
-```
-Group < Subgroup < Project
-```
-
-This means that you can set a different level of notifications per group while still being able
-to have a finer level setting per project or subgroup.
-Organization like this is suitable for users that belong to different groups but don't have the
-same need for being notified for every group they are member of.
-These settings can be configured on group page under the name of the group. It will be the dropdown with the bell icon. They can also be configured on the user profile notifications dropdown.
-
-The group owner can disable email notifications for a group, which includes
-its subgroups and projects. If this is the case, you will not receive any corresponding notifications,
-and the notification button will be disabled with an explanatory tooltip.
-
-### Project Settings
+You can select a notification level for each project. This can be useful if you need to closely monitor activity in select projects.
 
 ![notification settings](img/notification_project_settings.png)
 
-Project settings are at the top level and any setting placed at this level will take precedence of any
-other setting.
-This is suitable for users that have different needs for notifications per project basis.
-These settings can be configured on project page under the name of the project. It will be the dropdown with the bell icon. They can also be configured on the user profile notifications dropdown.
+To select a notification level for a project, use either of these methods:
 
-The project owner (or its group owner) can disable email notifications for the project.
-If this is the case, you will not receive any corresponding notifications, and the notification
-button will be disabled with an explanatory tooltip.
+1. Click on your profile picture and select **Settings**.
+1. Click **Notifications** in the left sidebar.
+1. Locate the project in the **Projects** section.
+1. Select the desired [notification level](#notification-levels).
+
+---
+
+1. Navigate to the project's page.
+1. Click the notification dropdown, marked with a bell icon.
+1. Select the desired [notification level](#notification-levels).
+
+#### Group notifications
+
+You can select a notification level and email address for each group.
+
+![notification settings](img/notification_group_settings.png)
+
+##### Group notification level
+
+To select a notification level for a group, use either of these methods:
+
+1. Click on your profile picture and select **Settings**.
+1. Click **Notifications** in the left sidebar.
+1. Locate the project in the **Groups** section.
+1. Select the desired [notification level](#notification-levels).
+
+---
+
+1. Navigate to the group's page.
+1. Click the notification dropdown, marked with a bell icon.
+1. Select the desired [notification level](#notification-levels).
+
+##### Group notification email address
+
+> Introduced in GitLab 12.0
+
+You can select an email address to receive notifications for each group you belong to. This could be useful, for example, if you work freelance, and want to keep email about clients' projects separate.
+
+1. Click on your profile picture and select **Settings**.
+1. Click **Notifications** in the left sidebar.
+1. Locate the project in the **Groups** section.
+1. Select the desired email address.
+
+### Notification levels
+
+For each project and group you can select one of the following levels:
+
+| Level       | Description |
+|:------------|:------------|
+| Global      | Your global settings apply. |
+| Watch       | Receive notifications for any activity. |
+| On mention  | Receive notifications when `@mentioned` in comments. |
+| Participate | Receive notifications for threads you have participated in. |
+| Disabled    | Turns off notifications. |
+| Custom      | Receive notifications for custom selected events. |
 
 ## Notification events
 
-Below is the table of events users can be notified of:
+Users will be notified of the following events:
 
 | Event                        | Sent to             | Settings level               |
 |------------------------------|---------------------|------------------------------|
@@ -90,7 +146,7 @@ Below is the table of events users can be notified of:
 | Project moved                | Project members (1) | (1) not disabled             |
 | New release                  | Project members     | Custom notification          |
 
-### Issue / Epics / Merge request events
+## Issue / Epics / Merge request events
 
 In most of the below cases, the notification will be sent to:
 
@@ -98,8 +154,7 @@ In most of the below cases, the notification will be sent to:
   - the author and assignee of the issue/merge request
   - authors of comments on the issue/merge request
   - anyone mentioned by `@username` in the title or description of the issue, merge request or epic **(ULTIMATE)**
-  - anyone with notification level "Participating" or higher that is mentioned by `@username`
-    in any of the comments on the issue, merge request, or epic **(ULTIMATE)**
+  - anyone with notification level "Participating" or higher that is mentioned by `@username` in any of the comments on the issue, merge request, or epic **(ULTIMATE)**
 - Watchers: users with notification level "Watch"
 - Subscribers: anyone who manually subscribed to the issue, merge request, or epic **(ULTIMATE)**
 - Custom: Users with notification level "custom" who turned on notifications for any of the events present in the table below
@@ -141,7 +196,7 @@ If an open merge request becomes unmergeable due to conflict, its author will be
 If a user has also set the merge request to automatically merge once pipeline succeeds,
 then that user will also be notified.
 
-### Email Headers
+## Email Headers
 
 Notification emails include headers that provide extra content about the notification received:
 
@@ -157,7 +212,7 @@ Notification emails include headers that provide extra content about the notific
 | X-GitLab-NotificationReason | The reason for being notified. "mentioned", "assigned", etc             |
 | List-Id                     | The path of the project in a RFC 2919 mailing list identifier useful for email organization, for example, with Gmail filters |
 
-#### X-GitLab-NotificationReason
+### X-GitLab-NotificationReason
 
 This header holds the reason for the notification to have been sent out,
 where reason can be `mentioned`, `assigned`, `own_activity`, etc.

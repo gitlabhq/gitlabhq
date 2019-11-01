@@ -26,7 +26,7 @@ To perform a one-off authorization with GitHub to grant GitLab access your
 repositories:
 
 1. Open <https://github.com/settings/tokens/new> to create a **Personal Access
-   Token**. This token with be used to access your repository and push commit
+   Token**. This token will be used to access your repository and push commit
    statuses to GitHub.
 
    The `repo` and `admin:repo_hook` should be enable to allow GitLab access to

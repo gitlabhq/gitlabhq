@@ -30,6 +30,7 @@ describe RegistrationsController do
 
       it 'renders new template and sets the resource variable' do
         expect(subject).to render_template(:new)
+        expect(response).to have_gitlab_http_status(200)
         expect(assigns(:resource)).to be_a(User)
       end
     end
@@ -47,6 +48,7 @@ describe RegistrationsController do
 
       it 'renders new template and sets the resource variable' do
         subject
+        expect(response).to have_gitlab_http_status(302)
         expect(response).to redirect_to(new_user_session_path(anchor: 'register-pane'))
       end
     end
