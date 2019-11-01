@@ -2,7 +2,7 @@
 type: reference, howto
 ---
 
-# Start a new Pages website from scratch or deploy an exising website
+# Start a new Pages website from scratch or deploy an existing website
 
 If you already have a website and want to deploy it with GitLab Pages,
 or, if you want to start a new site from scratch, you'll need to:

@@ -362,6 +362,10 @@ module ProjectsHelper
     @project.grafana_integration&.token
   end
 
+  def grafana_integration_enabled?
+    @project.grafana_integration&.enabled?
+  end
+
   private
 
   def get_project_nav_tabs(project, current_user)

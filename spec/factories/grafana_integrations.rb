@@ -5,5 +5,6 @@ FactoryBot.define do
     project
     grafana_url { 'https://grafana.example.com' }
     token { SecureRandom.hex(10) }
+    enabled { true }
   end
 end

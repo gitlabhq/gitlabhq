@@ -150,7 +150,10 @@ schedule:review-deploy:
   needs: ["schedule:review-build-cng"]
 
 .base-review-stop:
-  extends: .review-workflow-base
+  extends:
+    - .review-workflow-base
+    - .only-review
+    - .only:changes-code-qa
   environment:
     action: stop
   variables:
@@ -164,7 +167,7 @@ schedule:review-deploy:
     - source utils.sh
     - source review-apps.sh
 
-review-cleanup-failed-deployment:
+review-stop-failed-deployment:
   extends: .base-review-stop
   stage: prepare
   script:
@@ -172,6 +175,7 @@ review-cleanup-failed-deployment:
 
 review-stop:
   extends: .base-review-stop
+  stage: review
   when: manual
   allow_failure: true
   script:
