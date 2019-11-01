@@ -1,4 +1,4 @@
-import initGkeNamespace from '~/projects/gke_cluster_namespace';
+import initGkeNamespace from '~/create_cluster/gke_cluster_namespace';
 
 describe('GKE cluster namespace', () => {
   const changeEvent = new Event('change');
@@ -14,7 +14,7 @@ describe('GKE cluster namespace', () => {
       <input class="js-gl-managed" type="checkbox" value="1" checked />
       <div class="js-namespace">
         <input type="text" />
-      </div>      
+      </div>
       <div class="js-namespace-prefixed">
         <input type="text" />
       </div>

@@ -27,7 +27,7 @@ describe 'AWS EKS Cluster', :js do
       end
 
       it 'user sees a form to create an EKS cluster' do
-        expect(page).to have_selector(:css, '.js-create-eks-cluster')
+        expect(page).to have_content('Create new Cluster on EKS')
       end
     end
   end
