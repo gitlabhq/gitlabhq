@@ -51,12 +51,15 @@ module MarkupHelper
       text = fragment.children[0].text
       fragment.children[0].replace(link_to(text, url, html_options))
     else
-      # Traverse the fragment's first generation of children looking for pure
-      # text, wrapping anything found in the requested link
+      # Traverse the fragment's first generation of children looking for
+      # either pure text or emojis, wrapping anything found in the
+      # requested link
       fragment.children.each do |node|
-        next unless node.text?
-
-        node.replace(link_to(node.text, url, html_options))
+        if node.text?
+          node.replace(link_to(node.text, url, html_options))
+        elsif node.name == 'gl-emoji'
+          node.replace(link_to(node.to_html.html_safe, url, html_options))
+        end
       end
     end
 

@@ -210,7 +210,7 @@ describe MarkupHelper do
     it 'replaces commit message with emoji to link' do
       actual = link_to_markdown(':book: Book', '/foo')
       expect(actual)
-        .to eq '<gl-emoji title="open book" data-name="book" data-unicode-version="6.0">📖</gl-emoji><a href="/foo"> Book</a>'
+        .to eq '<a href="/foo"><gl-emoji title="open book" data-name="book" data-unicode-version="6.0">📖</gl-emoji></a><a href="/foo"> Book</a>'
     end
   end
 
@@ -231,6 +231,12 @@ describe MarkupHelper do
 
       expect(doc.css('a')[0].attr('href')).to eq link
       expect(doc.css('a')[0].text).to eq 'This should finally fix '
+    end
+
+    it "escapes HTML passed as an emoji" do
+      rendered = '<gl-emoji>&lt;div class="test"&gt;test&lt;/div&gt;</gl-emoji>'
+      expect(helper.link_to_html(rendered, '/foo'))
+        .to eq '<a href="/foo"><gl-emoji>&lt;div class="test"&gt;test&lt;/div&gt;</gl-emoji></a>'
     end
   end
 

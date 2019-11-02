@@ -189,7 +189,7 @@
           "fields": [
             {
               "name": "archived",
-              "description": null,
+              "description": "Archived status of the project",
               "args": [
 
               ],
@@ -203,7 +203,7 @@
             },
             {
               "name": "avatarUrl",
-              "description": null,
+              "description": "URL to avatar image file of the project",
               "args": [
 
               ],
@@ -217,7 +217,7 @@
             },
             {
               "name": "containerRegistryEnabled",
-              "description": null,
+              "description": "Indicates if the project stores Docker container images in a container registry",
               "args": [
 
               ],
@@ -231,7 +231,7 @@
             },
             {
               "name": "createdAt",
-              "description": null,
+              "description": "Timestamp of the project creation",
               "args": [
 
               ],
@@ -245,7 +245,7 @@
             },
             {
               "name": "description",
-              "description": null,
+              "description": "Short description of the project",
               "args": [
 
               ],
@@ -273,7 +273,7 @@
             },
             {
               "name": "forksCount",
-              "description": null,
+              "description": "Number of times the project has been forked",
               "args": [
 
               ],
@@ -291,7 +291,7 @@
             },
             {
               "name": "fullPath",
-              "description": null,
+              "description": "Full path of the project",
               "args": [
 
               ],
@@ -309,7 +309,7 @@
             },
             {
               "name": "group",
-              "description": null,
+              "description": "Group of the project",
               "args": [
 
               ],
@@ -323,7 +323,7 @@
             },
             {
               "name": "httpUrlToRepo",
-              "description": null,
+              "description": "URL to connect to the project via HTTPS",
               "args": [
 
               ],
@@ -337,7 +337,7 @@
             },
             {
               "name": "id",
-              "description": null,
+              "description": "ID of the project",
               "args": [
 
               ],
@@ -355,7 +355,7 @@
             },
             {
               "name": "importStatus",
-              "description": null,
+              "description": "Status of project import background job of the project",
               "args": [
 
               ],
@@ -369,7 +369,7 @@
             },
             {
               "name": "issue",
-              "description": null,
+              "description": "A single issue of the project",
               "args": [
                 {
                   "name": "iid",
@@ -514,7 +514,7 @@
             },
             {
               "name": "issues",
-              "description": null,
+              "description": "Issues of the project",
               "args": [
                 {
                   "name": "iid",
@@ -699,7 +699,7 @@
             },
             {
               "name": "issuesEnabled",
-              "description": null,
+              "description": "(deprecated) Does this project have issues enabled?. Use `issues_access_level` instead",
               "args": [
 
               ],
@@ -713,7 +713,7 @@
             },
             {
               "name": "jobsEnabled",
-              "description": null,
+              "description": "(deprecated) Enable jobs for this project. Use `builds_access_level` instead",
               "args": [
 
               ],
@@ -727,7 +727,7 @@
             },
             {
               "name": "lastActivityAt",
-              "description": null,
+              "description": "Timestamp of the project last activity",
               "args": [
 
               ],
@@ -741,7 +741,7 @@
             },
             {
               "name": "lfsEnabled",
-              "description": null,
+              "description": "Indicates if the project has Large File Storage (LFS) enabled",
               "args": [
 
               ],
@@ -755,7 +755,7 @@
             },
             {
               "name": "mergeRequest",
-              "description": null,
+              "description": "A single merge request of the project",
               "args": [
                 {
                   "name": "iid",
@@ -796,7 +796,7 @@
             },
             {
               "name": "mergeRequests",
-              "description": null,
+              "description": "Merge requests of the project",
               "args": [
                 {
                   "name": "iid",
@@ -877,7 +877,7 @@
             },
             {
               "name": "mergeRequestsEnabled",
-              "description": null,
+              "description": "(deprecated) Does this project have merge_requests enabled?. Use `merge_requests_access_level` instead",
               "args": [
 
               ],
@@ -891,7 +891,7 @@
             },
             {
               "name": "mergeRequestsFfOnlyEnabled",
-              "description": null,
+              "description": "Indicates if no merge commits should be created and all merges should instead be fast-forwarded, which means that merging is only allowed if the branch could be fast-forwarded.",
               "args": [
 
               ],
@@ -905,7 +905,7 @@
             },
             {
               "name": "name",
-              "description": null,
+              "description": "Name of the project (without namespace)",
               "args": [
 
               ],
@@ -923,7 +923,7 @@
             },
             {
               "name": "nameWithNamespace",
-              "description": null,
+              "description": "Full name of the project with its namespace",
               "args": [
 
               ],
@@ -941,7 +941,7 @@
             },
             {
               "name": "namespace",
-              "description": null,
+              "description": "Namespace of the project",
               "args": [
 
               ],
@@ -955,7 +955,7 @@
             },
             {
               "name": "onlyAllowMergeIfAllDiscussionsAreResolved",
-              "description": null,
+              "description": "Indicates if merge requests of the project can only be merged when all the discussions are resolved",
               "args": [
 
               ],
@@ -969,7 +969,7 @@
             },
             {
               "name": "onlyAllowMergeIfPipelineSucceeds",
-              "description": null,
+              "description": "Indicates if merge requests of the project can only be merged with successful jobs",
               "args": [
 
               ],
@@ -983,7 +983,7 @@
             },
             {
               "name": "openIssuesCount",
-              "description": null,
+              "description": "Number of open issues for the project",
               "args": [
 
               ],
@@ -997,7 +997,7 @@
             },
             {
               "name": "path",
-              "description": null,
+              "description": "Path of the project",
               "args": [
 
               ],
@@ -1015,7 +1015,7 @@
             },
             {
               "name": "pipelines",
-              "description": null,
+              "description": "Build pipelines of the project",
               "args": [
                 {
                   "name": "status",
@@ -1098,7 +1098,7 @@
             },
             {
               "name": "printingMergeRequestLinkEnabled",
-              "description": null,
+              "description": "Indicates if a link to create or view a merge request should display after a push to Git repositories of the project from the command line",
               "args": [
 
               ],
@@ -1112,7 +1112,21 @@
             },
             {
               "name": "publicJobs",
-              "description": null,
+              "description": "Indicates if there is public access to pipelines and job details of the project, including output logs and artifacts",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "removeSourceBranchAfterMerge",
+              "description": "Indicates if `Delete source branch` option should be enabled by default for all new merge requests of the project",
               "args": [
 
               ],
@@ -1126,7 +1140,7 @@
             },
             {
               "name": "repository",
-              "description": null,
+              "description": "Git repository of the project",
               "args": [
 
               ],
@@ -1140,7 +1154,7 @@
             },
             {
               "name": "requestAccessEnabled",
-              "description": null,
+              "description": "Indicates if users can request member access to the project",
               "args": [
 
               ],
@@ -1154,7 +1168,7 @@
             },
             {
               "name": "sharedRunnersEnabled",
-              "description": null,
+              "description": "Indicates if shared runners are enabled on the project",
               "args": [
 
               ],
@@ -1168,7 +1182,7 @@
             },
             {
               "name": "snippetsEnabled",
-              "description": null,
+              "description": "(deprecated) Does this project have snippets enabled?. Use `snippets_access_level` instead",
               "args": [
 
               ],
@@ -1182,7 +1196,7 @@
             },
             {
               "name": "sshUrlToRepo",
-              "description": null,
+              "description": "URL to connect to the project via SSH",
               "args": [
 
               ],
@@ -1196,7 +1210,7 @@
             },
             {
               "name": "starCount",
-              "description": null,
+              "description": "Number of times the project has been starred",
               "args": [
 
               ],
@@ -1214,7 +1228,7 @@
             },
             {
               "name": "statistics",
-              "description": null,
+              "description": "Statistics of the project",
               "args": [
 
               ],
@@ -1228,7 +1242,7 @@
             },
             {
               "name": "tagList",
-              "description": null,
+              "description": "List of project tags",
               "args": [
 
               ],
@@ -1260,7 +1274,7 @@
             },
             {
               "name": "visibility",
-              "description": null,
+              "description": "Visibility of the project",
               "args": [
 
               ],
@@ -1274,7 +1288,7 @@
             },
             {
               "name": "webUrl",
-              "description": null,
+              "description": "Web URL of the project",
               "args": [
 
               ],
@@ -1288,7 +1302,7 @@
             },
             {
               "name": "wikiEnabled",
-              "description": null,
+              "description": "(deprecated) Does this project have wiki enabled?. Use `wiki_access_level` instead",
               "args": [
 
               ],
@@ -2096,7 +2110,7 @@
           "fields": [
             {
               "name": "description",
-              "description": null,
+              "description": "Description of the namespace",
               "args": [
 
               ],
@@ -2124,7 +2138,7 @@
             },
             {
               "name": "fullName",
-              "description": null,
+              "description": "Full name of the namespace",
               "args": [
 
               ],
@@ -2142,7 +2156,7 @@
             },
             {
               "name": "fullPath",
-              "description": null,
+              "description": "Full path of the namespace",
               "args": [
 
               ],
@@ -2160,7 +2174,7 @@
             },
             {
               "name": "id",
-              "description": null,
+              "description": "ID of the namespace",
               "args": [
 
               ],
@@ -2178,7 +2192,7 @@
             },
             {
               "name": "lfsEnabled",
-              "description": null,
+              "description": "Indicates if Large File Storage (LFS) is enabled for namespace",
               "args": [
 
               ],
@@ -2192,7 +2206,7 @@
             },
             {
               "name": "name",
-              "description": null,
+              "description": "Name of the namespace",
               "args": [
 
               ],
@@ -2210,7 +2224,7 @@
             },
             {
               "name": "path",
-              "description": null,
+              "description": "Path of the namespace",
               "args": [
 
               ],
@@ -2228,7 +2242,7 @@
             },
             {
               "name": "projects",
-              "description": null,
+              "description": "Projects within this namespace",
               "args": [
                 {
                   "name": "includeSubgroups",
@@ -2295,7 +2309,7 @@
             },
             {
               "name": "requestAccessEnabled",
-              "description": null,
+              "description": "Indicates if users can request access to namespace",
               "args": [
 
               ],
@@ -2309,7 +2323,7 @@
             },
             {
               "name": "rootStorageStatistics",
-              "description": "The aggregated storage statistics. Only available for root namespaces",
+              "description": "Aggregated storage statistics of the namespace. Only available for root namespaces",
               "args": [
 
               ],
@@ -2323,7 +2337,7 @@
             },
             {
               "name": "visibility",
-              "description": null,
+              "description": "Visibility of the namespace",
               "args": [
 
               ],
@@ -2660,7 +2674,7 @@
           "fields": [
             {
               "name": "avatarUrl",
-              "description": null,
+              "description": "Avatar URL of the group",
               "args": [
 
               ],
@@ -2674,7 +2688,7 @@
             },
             {
               "name": "description",
-              "description": null,
+              "description": "Description of the namespace",
               "args": [
 
               ],
@@ -2994,7 +3008,7 @@
             },
             {
               "name": "fullName",
-              "description": null,
+              "description": "Full name of the namespace",
               "args": [
 
               ],
@@ -3012,7 +3026,7 @@
             },
             {
               "name": "fullPath",
-              "description": null,
+              "description": "Full path of the namespace",
               "args": [
 
               ],
@@ -3030,7 +3044,7 @@
             },
             {
               "name": "id",
-              "description": null,
+              "description": "ID of the namespace",
               "args": [
 
               ],
@@ -3048,7 +3062,7 @@
             },
             {
               "name": "lfsEnabled",
-              "description": null,
+              "description": "Indicates if Large File Storage (LFS) is enabled for namespace",
               "args": [
 
               ],
@@ -3062,7 +3076,7 @@
             },
             {
               "name": "name",
-              "description": null,
+              "description": "Name of the namespace",
               "args": [
 
               ],
@@ -3080,7 +3094,7 @@
             },
             {
               "name": "parent",
-              "description": null,
+              "description": "Parent group",
               "args": [
 
               ],
@@ -3094,7 +3108,7 @@
             },
             {
               "name": "path",
-              "description": null,
+              "description": "Path of the namespace",
               "args": [
 
               ],
@@ -3112,7 +3126,7 @@
             },
             {
               "name": "projects",
-              "description": null,
+              "description": "Projects within this namespace",
               "args": [
                 {
                   "name": "includeSubgroups",
@@ -3179,7 +3193,7 @@
             },
             {
               "name": "requestAccessEnabled",
-              "description": null,
+              "description": "Indicates if users can request access to namespace",
               "args": [
 
               ],
@@ -3193,7 +3207,7 @@
             },
             {
               "name": "rootStorageStatistics",
-              "description": "The aggregated storage statistics. Only available for root namespaces",
+              "description": "Aggregated storage statistics of the namespace. Only available for root namespaces",
               "args": [
 
               ],
@@ -3225,7 +3239,7 @@
             },
             {
               "name": "visibility",
-              "description": null,
+              "description": "Visibility of the namespace",
               "args": [
 
               ],
@@ -3239,7 +3253,7 @@
             },
             {
               "name": "webUrl",
-              "description": null,
+              "description": "Web URL of the group",
               "args": [
 
               ],
@@ -4758,7 +4772,7 @@
           "fields": [
             {
               "name": "avatarUrl",
-              "description": null,
+              "description": "URL of the user's avatar",
               "args": [
 
               ],
@@ -4776,7 +4790,7 @@
             },
             {
               "name": "name",
-              "description": null,
+              "description": "Human-readable name of the user",
               "args": [
 
               ],
@@ -4794,7 +4808,7 @@
             },
             {
               "name": "todos",
-              "description": "Todos of this user",
+              "description": "Todos of the user",
               "args": [
                 {
                   "name": "action",
@@ -4959,7 +4973,7 @@
             },
             {
               "name": "username",
-              "description": null,
+              "description": "Username of the user. Unique within this instance of GitLab",
               "args": [
 
               ],
@@ -4977,7 +4991,7 @@
             },
             {
               "name": "webUrl",
-              "description": null,
+              "description": "Web URL of the user",
               "args": [
 
               ],
@@ -5342,20 +5356,32 @@
           "interfaces": null,
           "enumValues": [
             {
-              "name": "Issue",
-              "description": null,
+              "name": "COMMIT",
+              "description": "A Commit",
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
-              "name": "MergeRequest",
-              "description": null,
+              "name": "ISSUE",
+              "description": "An Issue",
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
-              "name": "Epic",
-              "description": null,
+              "name": "MERGEREQUEST",
+              "description": "A MergeRequest",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "DESIGN",
+              "description": "A Design",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "EPIC",
+              "description": "An Epic",
               "isDeprecated": false,
               "deprecationReason": null
             }
@@ -6454,7 +6480,7 @@
           "fields": [
             {
               "name": "assignees",
-              "description": null,
+              "description": "Assignees of the issue",
               "args": [
                 {
                   "name": "after",
@@ -6507,7 +6533,7 @@
             },
             {
               "name": "author",
-              "description": null,
+              "description": "User that created the issue",
               "args": [
 
               ],
@@ -6525,7 +6551,7 @@
             },
             {
               "name": "closedAt",
-              "description": null,
+              "description": "Timestamp of when the issue was closed",
               "args": [
 
               ],
@@ -6539,7 +6565,7 @@
             },
             {
               "name": "confidential",
-              "description": null,
+              "description": "Indicates the issue is confidential",
               "args": [
 
               ],
@@ -6557,7 +6583,7 @@
             },
             {
               "name": "createdAt",
-              "description": null,
+              "description": "Timestamp of when the issue was created",
               "args": [
 
               ],
@@ -6575,7 +6601,7 @@
             },
             {
               "name": "description",
-              "description": null,
+              "description": "Description of the issue",
               "args": [
 
               ],
@@ -6631,7 +6657,7 @@
             },
             {
               "name": "discussionLocked",
-              "description": null,
+              "description": "Indicates discussion is locked on the issue",
               "args": [
 
               ],
@@ -6706,7 +6732,7 @@
             },
             {
               "name": "downvotes",
-              "description": null,
+              "description": "Number of downvotes the issue has received",
               "args": [
 
               ],
@@ -6724,7 +6750,7 @@
             },
             {
               "name": "dueDate",
-              "description": null,
+              "description": "Due date of the issue",
               "args": [
 
               ],
@@ -6784,7 +6810,7 @@
             },
             {
               "name": "iid",
-              "description": null,
+              "description": "Internal ID of the issue",
               "args": [
 
               ],
@@ -6802,7 +6828,7 @@
             },
             {
               "name": "labels",
-              "description": null,
+              "description": "Labels of the issue",
               "args": [
                 {
                   "name": "after",
@@ -6855,7 +6881,7 @@
             },
             {
               "name": "milestone",
-              "description": null,
+              "description": "Milestone of the issue",
               "args": [
 
               ],
@@ -6926,7 +6952,7 @@
             },
             {
               "name": "participants",
-              "description": "List of participants for the issue",
+              "description": "List of participants in the issue",
               "args": [
                 {
                   "name": "after",
@@ -6979,11 +7005,11 @@
             },
             {
               "name": "reference",
-              "description": null,
+              "description": "Internal reference of the issue. Returned in shortened format by default",
               "args": [
                 {
                   "name": "full",
-                  "description": null,
+                  "description": "Boolean option specifying whether the reference should be returned in full",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Boolean",
@@ -7020,7 +7046,7 @@
             },
             {
               "name": "relativePosition",
-              "description": null,
+              "description": "Relative position of the issue (used for positioning in epic tree and issue boards)",
               "args": [
 
               ],
@@ -7034,7 +7060,7 @@
             },
             {
               "name": "state",
-              "description": null,
+              "description": "State of the issue",
               "args": [
 
               ],
@@ -7052,7 +7078,7 @@
             },
             {
               "name": "taskCompletionStatus",
-              "description": null,
+              "description": "Task completion status of the issue",
               "args": [
 
               ],
@@ -7070,7 +7096,7 @@
             },
             {
               "name": "timeEstimate",
-              "description": "The time estimate on the issue",
+              "description": "Time estimate of the issue",
               "args": [
 
               ],
@@ -7088,7 +7114,7 @@
             },
             {
               "name": "title",
-              "description": null,
+              "description": "Title of the issue",
               "args": [
 
               ],
@@ -7138,7 +7164,7 @@
             },
             {
               "name": "updatedAt",
-              "description": null,
+              "description": "Timestamp of when the issue was last updated",
               "args": [
 
               ],
@@ -7156,7 +7182,7 @@
             },
             {
               "name": "upvotes",
-              "description": null,
+              "description": "Number of upvotes the issue has received",
               "args": [
 
               ],
@@ -7174,7 +7200,7 @@
             },
             {
               "name": "userNotesCount",
-              "description": null,
+              "description": "Number of user notes of the issue",
               "args": [
 
               ],
@@ -7210,7 +7236,7 @@
             },
             {
               "name": "webPath",
-              "description": null,
+              "description": "Web path of the issue",
               "args": [
 
               ],
@@ -7228,7 +7254,7 @@
             },
             {
               "name": "webUrl",
-              "description": null,
+              "description": "Web URL of the issue",
               "args": [
 
               ],
@@ -7575,7 +7601,7 @@
           "fields": [
             {
               "name": "color",
-              "description": null,
+              "description": "Background color of the label",
               "args": [
 
               ],
@@ -7593,7 +7619,7 @@
             },
             {
               "name": "description",
-              "description": null,
+              "description": "Description of the label (markdown rendered as HTML for caching)",
               "args": [
 
               ],
@@ -7621,7 +7647,7 @@
             },
             {
               "name": "textColor",
-              "description": null,
+              "description": "Text color of the label",
               "args": [
 
               ],
@@ -7639,7 +7665,7 @@
             },
             {
               "name": "title",
-              "description": null,
+              "description": "Content of the label",
               "args": [
 
               ],
@@ -7670,7 +7696,7 @@
           "fields": [
             {
               "name": "createdAt",
-              "description": null,
+              "description": "Timestamp of milestone creation",
               "args": [
 
               ],
@@ -7688,7 +7714,7 @@
             },
             {
               "name": "description",
-              "description": null,
+              "description": "Description of the milestone",
               "args": [
 
               ],
@@ -7702,7 +7728,7 @@
             },
             {
               "name": "dueDate",
-              "description": null,
+              "description": "Timestamp of the milestone due date",
               "args": [
 
               ],
@@ -7716,7 +7742,7 @@
             },
             {
               "name": "startDate",
-              "description": null,
+              "description": "Timestamp of the milestone start date",
               "args": [
 
               ],
@@ -7730,7 +7756,7 @@
             },
             {
               "name": "state",
-              "description": null,
+              "description": "State of the milestone",
               "args": [
 
               ],
@@ -7748,7 +7774,7 @@
             },
             {
               "name": "title",
-              "description": null,
+              "description": "Title of the milestone",
               "args": [
 
               ],
@@ -7766,7 +7792,7 @@
             },
             {
               "name": "updatedAt",
-              "description": null,
+              "description": "Timestamp of last milestone update",
               "args": [
 
               ],
@@ -7797,7 +7823,7 @@
           "fields": [
             {
               "name": "completedCount",
-              "description": null,
+              "description": "Number of completed tasks",
               "args": [
 
               ],
@@ -7815,7 +7841,7 @@
             },
             {
               "name": "count",
-              "description": null,
+              "description": "Number of total tasks",
               "args": [
 
               ],
@@ -7848,6 +7874,24 @@
               "name": "designs",
               "description": "All designs for this collection",
               "args": [
+                {
+                  "name": "ids",
+                  "description": "The list of IDs of designs.",
+                  "type": {
+                    "kind": "LIST",
+                    "name": null,
+                    "ofType": {
+                      "kind": "NON_NULL",
+                      "name": null,
+                      "ofType": {
+                        "kind": "SCALAR",
+                        "name": "ID",
+                        "ofType": null
+                      }
+                    }
+                  },
+                  "defaultValue": null
+                },
                 {
                   "name": "atVersion",
                   "description": "Filters designs to only those that existed at the version. If argument is omitted or nil then all designs will reflect the latest version.",
@@ -8019,7 +8063,7 @@
           "fields": [
             {
               "name": "assignees",
-              "description": null,
+              "description": "Assignees of the issue",
               "args": [
                 {
                   "name": "after",
@@ -8072,7 +8116,7 @@
             },
             {
               "name": "author",
-              "description": null,
+              "description": "User that created the issue",
               "args": [
 
               ],
@@ -8090,7 +8134,7 @@
             },
             {
               "name": "closedAt",
-              "description": null,
+              "description": "Timestamp of when the issue was closed",
               "args": [
 
               ],
@@ -8104,7 +8148,7 @@
             },
             {
               "name": "confidential",
-              "description": null,
+              "description": "Indicates the issue is confidential",
               "args": [
 
               ],
@@ -8122,7 +8166,7 @@
             },
             {
               "name": "createdAt",
-              "description": null,
+              "description": "Timestamp of when the issue was created",
               "args": [
 
               ],
@@ -8140,7 +8184,7 @@
             },
             {
               "name": "description",
-              "description": null,
+              "description": "Description of the issue",
               "args": [
 
               ],
@@ -8196,7 +8240,7 @@
             },
             {
               "name": "discussionLocked",
-              "description": null,
+              "description": "Indicates discussion is locked on the issue",
               "args": [
 
               ],
@@ -8271,7 +8315,7 @@
             },
             {
               "name": "downvotes",
-              "description": null,
+              "description": "Number of downvotes the issue has received",
               "args": [
 
               ],
@@ -8289,7 +8333,7 @@
             },
             {
               "name": "dueDate",
-              "description": null,
+              "description": "Due date of the issue",
               "args": [
 
               ],
@@ -8317,7 +8361,7 @@
             },
             {
               "name": "iid",
-              "description": null,
+              "description": "Internal ID of the issue",
               "args": [
 
               ],
@@ -8335,7 +8379,7 @@
             },
             {
               "name": "labels",
-              "description": null,
+              "description": "Labels of the issue",
               "args": [
                 {
                   "name": "after",
@@ -8388,7 +8432,7 @@
             },
             {
               "name": "milestone",
-              "description": null,
+              "description": "Milestone of the issue",
               "args": [
 
               ],
@@ -8459,7 +8503,7 @@
             },
             {
               "name": "participants",
-              "description": "List of participants for the issue",
+              "description": "List of participants in the issue",
               "args": [
                 {
                   "name": "after",
@@ -8512,11 +8556,11 @@
             },
             {
               "name": "reference",
-              "description": null,
+              "description": "Internal reference of the issue. Returned in shortened format by default",
               "args": [
                 {
                   "name": "full",
-                  "description": null,
+                  "description": "Boolean option specifying whether the reference should be returned in full",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Boolean",
@@ -8539,7 +8583,7 @@
             },
             {
               "name": "relativePosition",
-              "description": null,
+              "description": "Relative position of the issue (used for positioning in epic tree and issue boards)",
               "args": [
 
               ],
@@ -8553,7 +8597,7 @@
             },
             {
               "name": "state",
-              "description": null,
+              "description": "State of the issue",
               "args": [
 
               ],
@@ -8571,7 +8615,7 @@
             },
             {
               "name": "taskCompletionStatus",
-              "description": null,
+              "description": "Task completion status of the issue",
               "args": [
 
               ],
@@ -8589,7 +8633,7 @@
             },
             {
               "name": "timeEstimate",
-              "description": "The time estimate on the issue",
+              "description": "Time estimate of the issue",
               "args": [
 
               ],
@@ -8607,7 +8651,7 @@
             },
             {
               "name": "title",
-              "description": null,
+              "description": "Title of the issue",
               "args": [
 
               ],
@@ -8657,7 +8701,7 @@
             },
             {
               "name": "updatedAt",
-              "description": null,
+              "description": "Timestamp of when the issue was last updated",
               "args": [
 
               ],
@@ -8675,7 +8719,7 @@
             },
             {
               "name": "upvotes",
-              "description": null,
+              "description": "Number of upvotes the issue has received",
               "args": [
 
               ],
@@ -8693,7 +8737,7 @@
             },
             {
               "name": "userNotesCount",
-              "description": null,
+              "description": "Number of user notes of the issue",
               "args": [
 
               ],
@@ -8729,7 +8773,7 @@
             },
             {
               "name": "webPath",
-              "description": null,
+              "description": "Web path of the issue",
               "args": [
 
               ],
@@ -8747,7 +8791,7 @@
             },
             {
               "name": "webUrl",
-              "description": null,
+              "description": "Web URL of the issue",
               "args": [
 
               ],
@@ -9511,7 +9555,7 @@
           "fields": [
             {
               "name": "buildArtifactsSize",
-              "description": null,
+              "description": "Build artifacts size of the project",
               "args": [
 
               ],
@@ -9529,7 +9573,7 @@
             },
             {
               "name": "commitCount",
-              "description": null,
+              "description": "Commit count of the project",
               "args": [
 
               ],
@@ -9547,7 +9591,7 @@
             },
             {
               "name": "lfsObjectsSize",
-              "description": null,
+              "description": "Large File Storage (LFS) object size of the project",
               "args": [
 
               ],
@@ -9565,7 +9609,7 @@
             },
             {
               "name": "packagesSize",
-              "description": null,
+              "description": "Packages size of the project",
               "args": [
 
               ],
@@ -9583,7 +9627,7 @@
             },
             {
               "name": "repositorySize",
-              "description": null,
+              "description": "Repository size of the project",
               "args": [
 
               ],
@@ -9601,7 +9645,7 @@
             },
             {
               "name": "storageSize",
-              "description": null,
+              "description": "Storage size of the project",
               "args": [
 
               ],
@@ -9619,7 +9663,7 @@
             },
             {
               "name": "wikiSize",
-              "description": null,
+              "description": "Wiki size of the project",
               "args": [
 
               ],
@@ -9646,7 +9690,7 @@
           "fields": [
             {
               "name": "empty",
-              "description": null,
+              "description": "Indicates repository has no visible content",
               "args": [
 
               ],
@@ -9664,7 +9708,7 @@
             },
             {
               "name": "exists",
-              "description": null,
+              "description": "Indicates a corresponding Git repository exists on disk",
               "args": [
 
               ],
@@ -9682,7 +9726,7 @@
             },
             {
               "name": "rootRef",
-              "description": null,
+              "description": "Default branch of the repository",
               "args": [
 
               ],
@@ -9696,7 +9740,7 @@
             },
             {
               "name": "tree",
-              "description": null,
+              "description": "Tree of the repository",
               "args": [
                 {
                   "name": "path",
@@ -9950,7 +9994,7 @@
           "fields": [
             {
               "name": "author",
-              "description": null,
+              "description": "Author of the commit",
               "args": [
 
               ],
@@ -9964,7 +10008,7 @@
             },
             {
               "name": "authoredDate",
-              "description": null,
+              "description": "Timestamp of when the commit was authored",
               "args": [
 
               ],
@@ -9978,7 +10022,7 @@
             },
             {
               "name": "description",
-              "description": null,
+              "description": "Description of the commit message",
               "args": [
 
               ],
@@ -9992,7 +10036,7 @@
             },
             {
               "name": "id",
-              "description": null,
+              "description": "ID (global ID) of the commit",
               "args": [
 
               ],
@@ -10010,7 +10054,7 @@
             },
             {
               "name": "latestPipeline",
-              "description": "Latest pipeline for this commit",
+              "description": "Latest pipeline of the commit",
               "args": [
 
               ],
@@ -10024,7 +10068,7 @@
             },
             {
               "name": "message",
-              "description": null,
+              "description": "Raw commit message",
               "args": [
 
               ],
@@ -10038,7 +10082,7 @@
             },
             {
               "name": "sha",
-              "description": null,
+              "description": "SHA1 ID of the commit",
               "args": [
 
               ],
@@ -10056,7 +10100,7 @@
             },
             {
               "name": "signatureHtml",
-              "description": "Rendered html for the commit signature",
+              "description": "Rendered HTML of the commit signature",
               "args": [
 
               ],
@@ -10070,7 +10114,7 @@
             },
             {
               "name": "title",
-              "description": null,
+              "description": "Title of the commit message",
               "args": [
 
               ],
@@ -10084,7 +10128,7 @@
             },
             {
               "name": "webUrl",
-              "description": null,
+              "description": "Web URL of the commit",
               "args": [
 
               ],
@@ -11646,7 +11690,7 @@
           "fields": [
             {
               "name": "allowCollaboration",
-              "description": null,
+              "description": "Indicates if members of the target project can push to the fork",
               "args": [
 
               ],
@@ -11660,7 +11704,7 @@
             },
             {
               "name": "assignees",
-              "description": "The list of assignees for the merge request",
+              "description": "Assignees of the merge request",
               "args": [
                 {
                   "name": "after",
@@ -11713,7 +11757,7 @@
             },
             {
               "name": "createdAt",
-              "description": null,
+              "description": "Timestamp of when the merge request was created",
               "args": [
 
               ],
@@ -11731,7 +11775,7 @@
             },
             {
               "name": "defaultMergeCommitMessage",
-              "description": null,
+              "description": "Default merge commit message of the merge request",
               "args": [
 
               ],
@@ -11745,7 +11789,7 @@
             },
             {
               "name": "description",
-              "description": null,
+              "description": "Description of the merge request (markdown rendered as HTML for caching)",
               "args": [
 
               ],
@@ -11773,7 +11817,7 @@
             },
             {
               "name": "diffHeadSha",
-              "description": null,
+              "description": "Diff head SHA of the merge request",
               "args": [
 
               ],
@@ -11787,7 +11831,7 @@
             },
             {
               "name": "diffRefs",
-              "description": null,
+              "description": "References of the base SHA, the head SHA, and the start SHA for this merge request",
               "args": [
 
               ],
@@ -11801,7 +11845,7 @@
             },
             {
               "name": "discussionLocked",
-              "description": "Boolean flag determining if comments on the merge request are locked to members only",
+              "description": "Indicates if comments on the merge request are locked to members only",
               "args": [
 
               ],
@@ -11876,7 +11920,7 @@
             },
             {
               "name": "downvotes",
-              "description": null,
+              "description": "Number of downvotes for the merge request",
               "args": [
 
               ],
@@ -11894,7 +11938,7 @@
             },
             {
               "name": "forceRemoveSourceBranch",
-              "description": null,
+              "description": "Indicates if the project settings will lead to source branch deletion after merge",
               "args": [
 
               ],
@@ -11908,7 +11952,7 @@
             },
             {
               "name": "headPipeline",
-              "description": null,
+              "description": "The pipeline running on the branch HEAD of the merge request",
               "args": [
 
               ],
@@ -11922,7 +11966,7 @@
             },
             {
               "name": "id",
-              "description": null,
+              "description": "ID of the merge request",
               "args": [
 
               ],
@@ -11940,7 +11984,7 @@
             },
             {
               "name": "iid",
-              "description": null,
+              "description": "Internal ID of the merge request",
               "args": [
 
               ],
@@ -11958,7 +12002,7 @@
             },
             {
               "name": "inProgressMergeCommitSha",
-              "description": null,
+              "description": "Commit SHA of the merge request if merge is in progress",
               "args": [
 
               ],
@@ -11972,7 +12016,7 @@
             },
             {
               "name": "labels",
-              "description": "The list of labels on the merge request",
+              "description": "Labels of the merge request",
               "args": [
                 {
                   "name": "after",
@@ -12025,7 +12069,7 @@
             },
             {
               "name": "mergeCommitMessage",
-              "description": null,
+              "description": "Deprecated - renamed to defaultMergeCommitMessage",
               "args": [
 
               ],
@@ -12039,7 +12083,7 @@
             },
             {
               "name": "mergeCommitSha",
-              "description": null,
+              "description": "SHA of the merge request commit (set once merged)",
               "args": [
 
               ],
@@ -12053,7 +12097,7 @@
             },
             {
               "name": "mergeError",
-              "description": null,
+              "description": "Error message due to a merge error",
               "args": [
 
               ],
@@ -12067,7 +12111,7 @@
             },
             {
               "name": "mergeOngoing",
-              "description": null,
+              "description": "Indicates if a merge is currently occurring",
               "args": [
 
               ],
@@ -12085,7 +12129,7 @@
             },
             {
               "name": "mergeStatus",
-              "description": null,
+              "description": "Status of the merge request",
               "args": [
 
               ],
@@ -12099,7 +12143,7 @@
             },
             {
               "name": "mergeWhenPipelineSucceeds",
-              "description": null,
+              "description": "Indicates if the merge has been set to be merged when its pipeline succeeds (MWPS)",
               "args": [
 
               ],
@@ -12113,7 +12157,7 @@
             },
             {
               "name": "mergeableDiscussionsState",
-              "description": null,
+              "description": "Indicates if all discussions in the merge request have been resolved, allowing the merge request to be merged",
               "args": [
 
               ],
@@ -12127,7 +12171,7 @@
             },
             {
               "name": "milestone",
-              "description": "The milestone this merge request is linked to",
+              "description": "The milestone of the merge request",
               "args": [
 
               ],
@@ -12198,7 +12242,7 @@
             },
             {
               "name": "participants",
-              "description": "The list of participants on the merge request",
+              "description": "Participants in the merge request",
               "args": [
                 {
                   "name": "after",
@@ -12251,7 +12295,7 @@
             },
             {
               "name": "pipelines",
-              "description": null,
+              "description": "Pipelines for the merge request",
               "args": [
                 {
                   "name": "status",
@@ -12338,7 +12382,7 @@
             },
             {
               "name": "project",
-              "description": null,
+              "description": "Alias for target_project",
               "args": [
 
               ],
@@ -12356,7 +12400,7 @@
             },
             {
               "name": "projectId",
-              "description": null,
+              "description": "ID of the merge request project",
               "args": [
 
               ],
@@ -12374,7 +12418,7 @@
             },
             {
               "name": "rebaseCommitSha",
-              "description": null,
+              "description": "Rebase commit SHA of the merge request",
               "args": [
 
               ],
@@ -12388,7 +12432,7 @@
             },
             {
               "name": "rebaseInProgress",
-              "description": null,
+              "description": "Indicates if there is a rebase currently in progress for the merge request",
               "args": [
 
               ],
@@ -12406,7 +12450,7 @@
             },
             {
               "name": "reference",
-              "description": "Internal merge request reference. Returned in shortened format by default",
+              "description": "Internal reference of the merge request. Returned in shortened format by default",
               "args": [
                 {
                   "name": "full",
@@ -12433,7 +12477,7 @@
             },
             {
               "name": "shouldBeRebased",
-              "description": null,
+              "description": "Indicates if the merge request will be rebased",
               "args": [
 
               ],
@@ -12451,7 +12495,7 @@
             },
             {
               "name": "shouldRemoveSourceBranch",
-              "description": null,
+              "description": "Indicates if the source branch of the merge request will be deleted after merge",
               "args": [
 
               ],
@@ -12465,7 +12509,7 @@
             },
             {
               "name": "sourceBranch",
-              "description": null,
+              "description": "Source branch of the merge request",
               "args": [
 
               ],
@@ -12483,7 +12527,7 @@
             },
             {
               "name": "sourceBranchExists",
-              "description": null,
+              "description": "Indicates if the source branch of the merge request exists",
               "args": [
 
               ],
@@ -12501,7 +12545,7 @@
             },
             {
               "name": "sourceProject",
-              "description": null,
+              "description": "Source project of the merge request",
               "args": [
 
               ],
@@ -12515,7 +12559,7 @@
             },
             {
               "name": "sourceProjectId",
-              "description": null,
+              "description": "ID of the merge request source project",
               "args": [
 
               ],
@@ -12529,7 +12573,7 @@
             },
             {
               "name": "state",
-              "description": null,
+              "description": "State of the merge request",
               "args": [
 
               ],
@@ -12547,7 +12591,7 @@
             },
             {
               "name": "subscribed",
-              "description": "Boolean flag for whether the currently logged in user is subscribed to this MR",
+              "description": "Indicates if the currently logged in user is subscribed to this merge request",
               "args": [
 
               ],
@@ -12565,7 +12609,7 @@
             },
             {
               "name": "targetBranch",
-              "description": null,
+              "description": "Target branch of the merge request",
               "args": [
 
               ],
@@ -12583,7 +12627,7 @@
             },
             {
               "name": "targetProject",
-              "description": null,
+              "description": "Target project of the merge request",
               "args": [
 
               ],
@@ -12601,7 +12645,7 @@
             },
             {
               "name": "targetProjectId",
-              "description": null,
+              "description": "ID of the merge request target project",
               "args": [
 
               ],
@@ -12619,7 +12663,7 @@
             },
             {
               "name": "taskCompletionStatus",
-              "description": null,
+              "description": "Completion status of tasks",
               "args": [
 
               ],
@@ -12637,7 +12681,7 @@
             },
             {
               "name": "timeEstimate",
-              "description": "The time estimate for the merge request",
+              "description": "Time estimate of the merge request",
               "args": [
 
               ],
@@ -12655,7 +12699,7 @@
             },
             {
               "name": "title",
-              "description": null,
+              "description": "Title of the merge request",
               "args": [
 
               ],
@@ -12705,7 +12749,7 @@
             },
             {
               "name": "updatedAt",
-              "description": null,
+              "description": "Timestamp of when the merge request was last updated",
               "args": [
 
               ],
@@ -12723,7 +12767,7 @@
             },
             {
               "name": "upvotes",
-              "description": null,
+              "description": "Number of upvotes for the merge request",
               "args": [
 
               ],
@@ -12741,7 +12785,7 @@
             },
             {
               "name": "userNotesCount",
-              "description": null,
+              "description": "User notes count of the merge request",
               "args": [
 
               ],
@@ -12773,7 +12817,7 @@
             },
             {
               "name": "webUrl",
-              "description": null,
+              "description": "Web URL of the merge request",
               "args": [
 
               ],
@@ -12787,7 +12831,7 @@
             },
             {
               "name": "workInProgress",
-              "description": null,
+              "description": "Indicates if the merge request is a work in progress (WIP)",
               "args": [
 
               ],
@@ -13302,7 +13346,7 @@
           "fields": [
             {
               "name": "assignees",
-              "description": null,
+              "description": "Assignees of the issue",
               "args": [
                 {
                   "name": "after",
@@ -13355,7 +13399,7 @@
             },
             {
               "name": "author",
-              "description": null,
+              "description": "User that created the issue",
               "args": [
 
               ],
@@ -13373,7 +13417,7 @@
             },
             {
               "name": "closedAt",
-              "description": null,
+              "description": "Timestamp of when the issue was closed",
               "args": [
 
               ],
@@ -13387,7 +13431,7 @@
             },
             {
               "name": "confidential",
-              "description": null,
+              "description": "Indicates the issue is confidential",
               "args": [
 
               ],
@@ -13405,7 +13449,7 @@
             },
             {
               "name": "createdAt",
-              "description": null,
+              "description": "Timestamp of when the issue was created",
               "args": [
 
               ],
@@ -13423,7 +13467,7 @@
             },
             {
               "name": "description",
-              "description": null,
+              "description": "Description of the issue",
               "args": [
 
               ],
@@ -13479,7 +13523,7 @@
             },
             {
               "name": "discussionLocked",
-              "description": null,
+              "description": "Indicates discussion is locked on the issue",
               "args": [
 
               ],
@@ -13554,7 +13598,7 @@
             },
             {
               "name": "downvotes",
-              "description": null,
+              "description": "Number of downvotes the issue has received",
               "args": [
 
               ],
@@ -13572,7 +13616,7 @@
             },
             {
               "name": "dueDate",
-              "description": null,
+              "description": "Due date of the issue",
               "args": [
 
               ],
@@ -13600,7 +13644,7 @@
             },
             {
               "name": "iid",
-              "description": null,
+              "description": "Internal ID of the issue",
               "args": [
 
               ],
@@ -13618,7 +13662,7 @@
             },
             {
               "name": "labels",
-              "description": null,
+              "description": "Labels of the issue",
               "args": [
                 {
                   "name": "after",
@@ -13671,7 +13715,7 @@
             },
             {
               "name": "milestone",
-              "description": null,
+              "description": "Milestone of the issue",
               "args": [
 
               ],
@@ -13742,7 +13786,7 @@
             },
             {
               "name": "participants",
-              "description": "List of participants for the issue",
+              "description": "List of participants in the issue",
               "args": [
                 {
                   "name": "after",
@@ -13795,11 +13839,11 @@
             },
             {
               "name": "reference",
-              "description": null,
+              "description": "Internal reference of the issue. Returned in shortened format by default",
               "args": [
                 {
                   "name": "full",
-                  "description": null,
+                  "description": "Boolean option specifying whether the reference should be returned in full",
                   "type": {
                     "kind": "SCALAR",
                     "name": "Boolean",
@@ -13822,7 +13866,7 @@
             },
             {
               "name": "relativePosition",
-              "description": null,
+              "description": "Relative position of the issue (used for positioning in epic tree and issue boards)",
               "args": [
 
               ],
@@ -13836,7 +13880,7 @@
             },
             {
               "name": "state",
-              "description": null,
+              "description": "State of the issue",
               "args": [
 
               ],
@@ -13872,7 +13916,7 @@
             },
             {
               "name": "taskCompletionStatus",
-              "description": null,
+              "description": "Task completion status of the issue",
               "args": [
 
               ],
@@ -13890,7 +13934,7 @@
             },
             {
               "name": "timeEstimate",
-              "description": "The time estimate on the issue",
+              "description": "Time estimate of the issue",
               "args": [
 
               ],
@@ -13908,7 +13952,7 @@
             },
             {
               "name": "title",
-              "description": null,
+              "description": "Title of the issue",
               "args": [
 
               ],
@@ -13958,7 +14002,7 @@
             },
             {
               "name": "updatedAt",
-              "description": null,
+              "description": "Timestamp of when the issue was last updated",
               "args": [
 
               ],
@@ -13976,7 +14020,7 @@
             },
             {
               "name": "upvotes",
-              "description": null,
+              "description": "Number of upvotes the issue has received",
               "args": [
 
               ],
@@ -13994,7 +14038,7 @@
             },
             {
               "name": "userNotesCount",
-              "description": null,
+              "description": "Number of user notes of the issue",
               "args": [
 
               ],
@@ -14030,7 +14074,7 @@
             },
             {
               "name": "webPath",
-              "description": null,
+              "description": "Web path of the issue",
               "args": [
 
               ],
@@ -14048,7 +14092,7 @@
             },
             {
               "name": "webUrl",
-              "description": null,
+              "description": "Web URL of the issue",
               "args": [
 
               ],
@@ -14097,7 +14141,7 @@
           "fields": [
             {
               "name": "revision",
-              "description": null,
+              "description": "Revision",
               "args": [
 
               ],
@@ -14115,7 +14159,7 @@
             },
             {
               "name": "version",
-              "description": null,
+              "description": "Version",
               "args": [
 
               ],
@@ -14193,6 +14237,33 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "CreateDiffNotePayload",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "createEpic",
+              "description": null,
+              "args": [
+                {
+                  "name": "input",
+                  "description": null,
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "CreateEpicInput",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "CreateEpicPayload",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -14328,6 +14399,33 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "DestroyNotePayload",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "epicSetSubscription",
+              "description": null,
+              "args": [
+                {
+                  "name": "input",
+                  "description": null,
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "EpicSetSubscriptionInput",
+                      "ofType": null
+                    }
+                  },
+                  "defaultValue": null
+                }
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "EpicSetSubscriptionPayload",
                 "ofType": null
               },
               "isDeprecated": false,
@@ -16551,6 +16649,66 @@
               "defaultValue": null
             },
             {
+              "name": "title",
+              "description": "The title of the epic",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "description",
+              "description": "The description of the epic",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "startDateFixed",
+              "description": "The start date of the epic",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "dueDateFixed",
+              "description": "The end date of the epic",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "startDateIsFixed",
+              "description": "Indicates start date should be sourced from start_date_fixed field not the issue milestones",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "dueDateIsFixed",
+              "description": "Indicates end date should be sourced from due_date_fixed field not the issue milestones",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
               "name": "iid",
               "description": "The iid of the epic to mutate",
               "type": {
@@ -16559,6 +16717,141 @@
                 "ofType": {
                   "kind": "SCALAR",
                   "name": "String",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "stateEvent",
+              "description": "State event for the epic",
+              "type": {
+                "kind": "ENUM",
+                "name": "EpicStateEvent",
+                "ofType": null
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "clientMutationId",
+              "description": "A unique identifier for the client performing the mutation.",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "defaultValue": null
+            }
+          ],
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "ENUM",
+          "name": "EpicStateEvent",
+          "description": "State event of a GitLab Epic",
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "enumValues": [
+            {
+              "name": "REOPEN",
+              "description": "Reopen the Epic",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "CLOSE",
+              "description": "Close the Epic",
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "CreateEpicPayload",
+          "description": "Autogenerated return type of CreateEpic",
+          "fields": [
+            {
+              "name": "clientMutationId",
+              "description": "A unique identifier for the client performing the mutation.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "epic",
+              "description": "The created epic",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "Epic",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "errors",
+              "description": "Reasons why the mutation failed.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "INPUT_OBJECT",
+          "name": "CreateEpicInput",
+          "description": "Autogenerated input type of CreateEpic",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "groupPath",
+              "description": "The group the epic to mutate is in",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
                   "ofType": null
                 }
               },
@@ -16625,12 +16918,132 @@
               "defaultValue": null
             },
             {
-              "name": "stateEvent",
-              "description": "State event for the epic",
+              "name": "clientMutationId",
+              "description": "A unique identifier for the client performing the mutation.",
               "type": {
-                "kind": "ENUM",
-                "name": "EpicStateEvent",
+                "kind": "SCALAR",
+                "name": "String",
                 "ofType": null
+              },
+              "defaultValue": null
+            }
+          ],
+          "interfaces": null,
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "EpicSetSubscriptionPayload",
+          "description": "Autogenerated return type of EpicSetSubscription",
+          "fields": [
+            {
+              "name": "clientMutationId",
+              "description": "A unique identifier for the client performing the mutation.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "epic",
+              "description": "The epic after mutation",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "OBJECT",
+                "name": "Epic",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "errors",
+              "description": "Reasons why the mutation failed.",
+              "args": [
+
+              ],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  }
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "INPUT_OBJECT",
+          "name": "EpicSetSubscriptionInput",
+          "description": "Autogenerated input type of EpicSetSubscription",
+          "fields": null,
+          "inputFields": [
+            {
+              "name": "groupPath",
+              "description": "The group the epic to (un)subscribe is in",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "iid",
+              "description": "The iid of the epic to (un)subscribe",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "subscribedState",
+              "description": "The desired state of the subscription",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                }
               },
               "defaultValue": null
             },
@@ -16647,29 +17060,6 @@
           ],
           "interfaces": null,
           "enumValues": null,
-          "possibleTypes": null
-        },
-        {
-          "kind": "ENUM",
-          "name": "EpicStateEvent",
-          "description": "State event of a GitLab Epic",
-          "fields": null,
-          "inputFields": null,
-          "interfaces": null,
-          "enumValues": [
-            {
-              "name": "REOPEN",
-              "description": "Reopen the Epic",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
-              "name": "CLOSE",
-              "description": "Close the Epic",
-              "isDeprecated": false,
-              "deprecationReason": null
-            }
-          ],
           "possibleTypes": null
         },
         {
