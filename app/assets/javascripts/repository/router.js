@@ -16,7 +16,7 @@ export default function createRouter(base, baseRef) {
         name: 'treePath',
         component: TreePage,
         props: route => ({
-          path: route.params.pathMatch && route.params.pathMatch.replace(/^\//, ''),
+          path: route.params.pathMatch && (route.params.pathMatch.replace(/^\//, '') || '/'),
         }),
       },
       {

@@ -81,7 +81,7 @@ describe('fetchLogsTree', () => {
   it('calls axios get', () =>
     fetchLogsTree(client, '', '0', resolver).then(() => {
       expect(axios.get).toHaveBeenCalledWith(
-        'https://test.com/gitlab-org/gitlab-foss/refs/master/logs_tree',
+        'https://test.com/gitlab-org/gitlab-foss/refs/master/logs_tree/',
         { params: { format: 'json', offset: '0' } },
       );
     }));
